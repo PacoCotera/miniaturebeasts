@@ -91,7 +91,7 @@ const V4_PODS = {
 test("S01 version 4 is the frame it was, and so is every other frame: the snapshot only gained 1.5 and 1.6, at the end", () => {
   const frames = FRAME_DATA.frames, keys = frames.map((f) => `${f.species}.${f.version}`);
   assert.deepEqual(keys.slice(0, Object.keys(BEFORE).length), Object.keys(BEFORE), "every earlier frame is in the same place");
-  assert.deepEqual(keys.slice(Object.keys(BEFORE).length), ["1.5", "1.6"], "and the Loika's versions 5 and 6 follow the last of them");
+  assert.deepEqual(keys.slice(Object.keys(BEFORE).length), ["1.5", "1.6", "20.1"], "and the Loika's versions 5 and 6 follow the last of them, then the Tuliko");
   for (const f of frames.slice(0, Object.keys(BEFORE).length)) assert.equal(sha(JSON.stringify(f)), BEFORE[`${f.species}.${f.version}`], `${f.id} ${f.species}.${f.version} is unchanged`);
   assert.ok(frameFor(1, 4).heritable.some((l) => l.id === "anatomy.crown-presence"), "version 4 keeps the crown switch open");
   assert.ok(!frameFor(1, 4).heritable.some((l) => l.id === "growth.crown-height-ratio"), "and carries no crown size");

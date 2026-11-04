@@ -1,12 +1,13 @@
 // Test conditions for the stamp: how an image is made and distorted for one
 // individual, and the checks run on its decode.
 import { byName, rng } from "../src/frames.mjs";
-import { sameGenome } from "../src/codec.mjs";
+import { sameGenome, stepValue, BLEND_STEPS } from "../src/codec.mjs";
 import { stampGeometry, rasterize, imageSize } from "../src/stamp.mjs";
 import { decode } from "../src/decode.mjs";
 import { blank, cameraH, warp, gaussianBlur, lighting, monochrome, noise, jpeg, dotGain } from "./distort.mjs";
 
-export const SPECIES = ["S01", "S03", "S03-pm", "future150"];
+// STAMP_SPECIES (a comma list) runs the harness on other species, for example "S20,S20-pm" (the Tuliko: 37x37 plain, 41x41 with a postmark); the default is the four of the README.
+export const SPECIES = (process.env.STAMP_SPECIES ?? "S01,S03,S03-pm,future150").split(",");
 // ids are the registry's (S01 = Loika, S03 = Tuikis); the legacy ids hopper, puffcap and glowtail still decode. "S03-pm": a Tuikis carrying a 64-bit postmark
 export const frameOf = (sp) => byName(sp.replace(/-pm$/, ""));
 
@@ -31,7 +32,8 @@ export const SCREEN = [
 export function individual(frame, seed, { read } = {}) {
   const r = rng(seed);
   const copies = {};
-  for (const l of frame.heritable) { const p = l.pool ?? l.alleles; copies[l.id] = Array.from({ length: l.copies }, () => p[Math.floor(r() * p.length)]); }
+  // A pool name the stamp has no allele for (the Tuliko's sheen, glow brightness and cycle rate list only "between", the type's step) is drawn as a step of the blend grid instead
+  for (const l of frame.heritable) { const p = l.pool ?? l.alleles, named = p.every((a) => l.alleles.includes(a)); copies[l.id] = Array.from({ length: l.copies }, () => (named ? p[Math.floor(r() * p.length)] : stepValue(l, Math.floor(r() * (BLEND_STEPS + 1))))); }
   const open = frame.chapters.filter((c) => !c.sealed).map((c) => c.name);
   // about one in three individuals has some chapters unread
   const rr = rng(seed ^ 0x5bd1e995);

@@ -3,6 +3,7 @@
 //   - the current frames, from the workbench registry (prototypes/workbench/frames/*.json,
 //     mb-species-frame/2 on catalogue mb-genome-framework@10): species number = the species' order
 //     (S01 = 1 … S16 = 16), frame version = the registry's frame version;
+//   - the body-engine species (mb-species-frame/3, prototypes/workbench/body/frames/species-S*.json: S20, the Tuliko, version 1), appended after them;
 //   - every frame already in the snapshot that the registry no longer builds at that version (the
 //     legacy frames, species 11–13, version 1, on catalogue 6; the sixteen at frame version 2), kept
 //     as they are so an old print decodes for as long as its frame is carried. A frame already in
@@ -13,7 +14,7 @@
 // bin, the nearest named allele.
 //   node tools/extract-frames.mjs            # write
 //   node tools/extract-frames.mjs --check    # fail if the snapshot would change (exit 1), writing nothing
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { CATALOGUE as WORKBENCH, LOCI, lookConflicts } from "../../workbench/framework/catalogue.mjs";
 import { FRAME_VERSION } from "../../workbench/framework/species.mjs";
 
@@ -23,8 +24,16 @@ let carried = [];
 const snapshot = new URL("../src/frames-data.mjs", import.meta.url);
 if (existsSync(snapshot)) carried = (await import(snapshot.href)).FRAME_DATA.frames; // any error here (a truncated snapshot) stops the tool: never rewrite from a partial read
 // else first run: nothing to carry
-const frames = index.species.map((s) => {
-  const d = JSON.parse(readFileSync(new URL(s.file, registryUrl), "utf8"));
+// The body-engine species (mb-species-frame/3, written by the workbench frame writer) sit in prototypes/workbench/body/frames/, apart from the form engine's registry, whose tests read every
+// species file there. Each is appended after the registry's own species. Its frame is read at catalogue frame version 7 (CATALOGUE_FRAME: pin 11's alleles carry sinceFrame 7), not at its own
+// version 1, since a species' frame version counts its own changes and the catalogue's alleles a frame sees are those of the pin it is written on.
+const bodyUrl = new URL("../../workbench/body/frames/", import.meta.url);
+const CATALOGUE_FRAME = 7;
+const bodyFiles = existsSync(bodyUrl) ? readdirSync(bodyUrl).filter((f) => /^species-S\d+\.json$/.test(f)).sort() : [];
+const sources = [...index.species.map((s) => ({ url: new URL(s.file, registryUrl), body: false })), ...bodyFiles.map((f) => ({ url: new URL(f, bodyUrl), body: true }))];
+const frames = sources.map(({ url, body }) => {
+  const d = JSON.parse(readFileSync(url, "utf8"));
+  if (body && d.schema !== "mb-species-frame/3") throw new Error(`${d.species.id}: a body frame is mb-species-frame/3, not ${d.schema}`);
   const byId = new Map(d.loci.map((l) => [l.id, l]));
   // One look, one record (catalogue LOOK_PAIRS): a frame that opens both records of a pair is not carried
   const twice = lookConflicts(d.loci.filter((l) => l.kind !== "locked").map((l) => l.id));
@@ -33,7 +42,7 @@ const frames = index.species.map((s) => {
   const locusOf = (id) => {
     const cat = LOCI.get(id), row = byId.get(id);
     // the alleles this frame's version knows (pin 11 appends alleles with a later `sinceFrame`; they are not in an older frame, so its bit widths never move)
-    let known = cat.alleles.filter((a) => !(a.sinceFrame > version));
+    let known = cat.alleles.filter((a) => !(a.sinceFrame > (body ? CATALOGUE_FRAME : version)));
     const numeric = cat.operator === "copy-mean" && known.every((a) => typeof a.value === "number");
     // A blended copy is 6 bits: 59 + 1 steps leave 4 codes for names. A record with more names than that (the ear length at frame version 6: short, long, tall, small, medium) names only
     // what the species can carry (its pool) and the two ends of the catalogue's range, which keep the step grid the catalogue's; in catalogue order. A frame that fits is untouched.

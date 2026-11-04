@@ -39,7 +39,7 @@ test("the Tuliko test frame holds every sleeping record as a heritable locus, an
   assert.ok(d.ok, d.detail);
   for (const id of SLEEPERS) assert.deepEqual(d.genome.copies[id], g.copies[id], `${id}: both sleeping copies come back`);
   assert.deepEqual(Object.keys(d.genome.copies), f.heritable.map((l) => l.id)); assert.equal(genomeString(f, d.genome), s, "one genome, one string");
-  assert.equal(s, "G1-S20v1-20A00XY1GC3A861080DT00AB0302GTW3SEP1008GC30R616G01005A004G430R61GC30R61GC30TG8012Q"); assert.equal(s.length, 91);
+  assert.equal(s, "G1-S20v1-20A00XY1GC3A861080DT00AB0302GTW3SEP1008GC30R611M00801AG01410R61GC30R61GC30R6M2008VT"); assert.equal(s.length, 92);
   // the same genome with the sleeping copies swapped inside each pair is the same mibi: a pair has no order for a named record, so the string differs only where the copies are written
   const other = structuredClone(g); other.copies["appearance.emblem-place"] = ["belly", "forehead"];
   assert.notEqual(genomeString(f, other), s, "the string writes the copies in the order given: the two copies of a named record are two indexes");

@@ -16,7 +16,7 @@ function genomeOf(frame, seed) {
   for (const l of frame.heritable) {
     const pick = () => {
       const p = l.pool ?? l.alleles;
-      if (l.values && r() < 0.6) return stepValue(l, Math.floor(r() * (BLEND_STEPS + 1)));
+      if (l.values && (r() < 0.6 || !p.every((a) => l.alleles.includes(a)))) return stepValue(l, Math.floor(r() * (BLEND_STEPS + 1)));
       return p[Math.floor(r() * p.length)];
     };
     const a = pick();
@@ -71,7 +71,7 @@ test("B.4, the Tuliko (a test frame of S20, version 1, the 54 records of A.3): t
   assert.equal(f.heritable.length, 54); assert.equal(f.heritable.filter((l) => l.values).length, 40, "40 continuous"); assert.equal(f.heritable.filter((l) => !l.values).length, 14, "14 named");
   const type = tulikoType(f);
   const s = genomeString(f, type);
-  assert.equal(s, "G1-S20v1-20A00XY1GC3A86100430R210861WQB0R4GC30R61621GC30G10R61GC30R61GC30R44200836"); assert.equal(s.length, 82);
+  assert.equal(s, "G1-S20v1-20A00XY1GC3A86100430R210861WQB0R4GC30R611GGC30R40861GC30R61GC30R6110G02HF"); assert.equal(s.length, 82);
   const bred = structuredClone(type);
   const step = (id, k) => stepValue(f.heritable.find((l) => l.id === id), k);
   Object.assign(bred.copies, {
@@ -80,7 +80,7 @@ test("B.4, the Tuliko (a test frame of S20, version 1, the 54 records of A.3): t
   });
   assert.equal(bred.copies["form.tail-length"][0], 0.79661); assert.equal(bred.copies["appearance.body-hue"][0], 0.20339);
   const b = genomeString(f, bred);
-  assert.equal(b, "G1-S20v1-20A00SY1GC3A86188430R210861WQB0R4GC30R61621GC30GB0R61GC30R61WM30R5420080H"); assert.equal(b.length, 82);
+  assert.equal(b, "G1-S20v1-20A00SY1GC3A86188430R210861WQB0R4GC30R611GGC30R42R61GC30R61GF50R6190G02CJ"); assert.equal(b.length, 82);
   for (const [str, g] of [[s, type], [b, bred]]) { const d = decodeGenomeString(str, (sp, v) => (sp === 20 && v === 1 ? f : null)); assert.ok(d.ok, d.detail); assert.deepEqual(d.genome.copies, g.copies); }
 });
 
@@ -102,7 +102,7 @@ test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for
 
 // --- every frame in the registry --------------------------------------------------------------------------------------------------------------------
 test("a round trip for every frame in the registry (the real ones at every version, the legacy frames and the two synthetic test frames): string, decode, the same copies, and the same string again", () => {
-  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 1 + 1 + 3 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis and the Loika at 5, the Loika at 6, S17 to S19 at 6, the three legacy frames and the two synthetic frames");
+  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 1 + 1 + 3 + 1 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis and the Loika at 5, the Loika at 6, S17 to S19 at 6, the Tuliko at 1, the three legacy frames and the two synthetic frames");
   let n = 0;
   for (const f of FRAMES_LIST) {
     for (const seed of [1, 2, 3, 4, 5]) {
@@ -181,7 +181,7 @@ test("an unknown format is refused before anything is read: G2, G0 and G15, with
 
 test("an unknown frame version or species is refused with the studio's words: valid check, no frame", () => {
   const payload = payloadOf(LOIKA(), { copies: LOIKA_TYPE });
-  for (const [species, version] of [[1, 99], [1, 7], [1, 0], [999, 1], [20, 1], [3000, 1], [21, 1], [22, 1]]) {
+  for (const [species, version] of [[1, 99], [1, 7], [1, 0], [999, 1], [20, 2], [3000, 1], [21, 1], [22, 1]]) {
     const d = decodeGenomeString(assemble({ species, version, payload }));
     assert.equal(d.ok, false, `${species}.${version}`); assert.equal(d.stage, "species", `${species}.${version}`); assert.match(d.detail, /isn't in the studio yet/);
   }
