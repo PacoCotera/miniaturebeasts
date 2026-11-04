@@ -79,6 +79,7 @@ test("the port's bytes are the golden: the digest of each signed state's picture
 });
 
 // ---- the oracle: the original specimen3.js in Chromium (CI), three fixture species x two found-look sets ----
+// The frozen specimen3.js reference now follows the dew gleam for its glint (owner pick 2026-11-03); the rest of it is as the art director signed it.
 const require = createRequire(import.meta.url); let chromium = null;
 try { ({ chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright")); } catch { chromium = null; }
 const ORIGINAL = readFileSync(path.join(fx, "specimen3.js"), "utf8"), HOOK = "if (s.fresh) acc.push(p); }", PATCHED = ORIGINAL.replace(HOOK, "if (s.fresh) acc.push(p); if (opts.onBead) opts.onBead(p, t, s); }");   // the one edit the port makes, the bead's centre

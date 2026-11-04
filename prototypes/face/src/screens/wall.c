@@ -60,9 +60,12 @@ static void rail_words(const char *cur) {
       if (v_plen(v_fmt("%s.find", base)) >= 0 && spec_len("props", v_fmt("%s.find.text", base)) < 0) {
         int gy = r[1] + v_si(V, "wall.rail.addRow.line2", 32); char text[48]; copy(text, sizeof text, v_pstr(v_fmt("%s.find.text", base))); int on = v_pbool(v_fmt("%s.find.lit", base), 0);
         v_region(v_fmt("%s.text", rid), LAYER_TYPE); v_say(v_fmt("%s.text", rid), text, r[0] + v_si(V, "wall.rail.addRow.text", 28), gy, V_ANCHOR_LINE, on ? "small" : "small.quiet", "pane", V_ALIGN_LEFT);
-        { char ops[400]; int n = 0; const char *col = on ? "sand" : "stone";   /* the glint: a four-point star of the palette (a plus with a block at its centre), lit when a find is home, dimmed when none is */
-          n += snprintf(ops + n, sizeof ops - (size_t)n, "[");
-          for (int y = 2; y <= 13; y++) n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", y > 2 ? "," : "", (y >= 5 && y <= 10) ? 3 : 7, y, (y >= 5 && y <= 10) ? 10 : 2, col);
+        { static const char *DEW[16] = { "................", "................", "................", "................", "................", "......eeee......", ".....eeiiee.....", "rRSSiwwwwwwiSSRr", ".....esiise.....", ".....eessee.....", "......eeee......", "................", "................", "................", "................", "................" };
+          char ops[1200]; int n = snprintf(ops, sizeof ops, "[");   /* the glint: the dew gleam (a lit dew bead, ice above, sky below, edged in sea, with a level white gleam and two level arms), lit when a find is home, one stone colour when none is */
+          for (int y = 0, first = 1; y < 16; y++) for (int x = 0; x < 16; ) { char ch = DEW[y][x]; if (ch == '.') { x++; continue; }
+            const char *c = ch == 'e' ? "sea" : (ch == 's' || ch == 'S') ? "sky" : ch == 'i' ? "ice" : ch == 'w' ? "white" : "river"; if (!on) c = "stone";
+            int e = x; while (e + 1 < 16 && DEW[y][e + 1] != '.' && (on ? DEW[y][e + 1] == ch || ((ch == 's' || ch == 'S') && (DEW[y][e + 1] == 's' || DEW[y][e + 1] == 'S')) || ((ch == 'R' || ch == 'r') && (DEW[y][e + 1] == 'R' || DEW[y][e + 1] == 'r')) : 1)) e++;
+            n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", first ? "" : ",", x, y, e - x + 1, c); first = 0; x = e + 1; }
           snprintf(ops + n, sizeof ops - (size_t)n, "]"); v_region(v_fmt("%s.glint", rid), LAYER_CHROME); v_composed(v_fmt("%s.glint", rid), r[0] + v_sk(V, "wall.rail.addRow.glint", 0), gy, 16, 16, ops); }
       }
     } else {
