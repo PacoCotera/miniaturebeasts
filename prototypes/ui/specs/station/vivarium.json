@@ -1589,6 +1589,15 @@
    "restOne": "{A} rests 1 turn · {B} {m}",
    "onboard": "on the Companion",
    "tucked": "tucked away",
+   "family": {
+    "parent": "{A}'s parent",
+    "grandparent": "{A}'s grandparent",
+    "great-grandparent": "{A}'s great-grandparent",
+    "child": "{A}'s child",
+    "grandchild": "{A}'s grandchild",
+    "great-grandchild": "{A}'s great-grandchild",
+    "same-parents": "same parents as {A}"
+   },
    "kin": {
     "wild": "wild blood",
     "distant": "distant kin",

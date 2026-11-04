@@ -250,23 +250,30 @@ test("several picked into a room with too little space: the row reads '1 free ·
 });
 
 // ---- Breed opens the partner pick (the breeding design §3.1, §3.2) ----
-const pairWorld = () => {   // Roots: Fen (A) and its sibling Wren (both children of Oak and Elm), Oak, Elm; Reeds: Moss, Pip (founders), Bud (young), Sky (on a breather)
+const pairWorld = () => {   // Roots: Fen (A, a child of Oak and Elm), Wren (a child of Oak and Pip: half kin of Fen), Oak, Elm; Reeds: Moss, Pip (founders), Bud (young), Sky (on a breather)
   const st = world(2); const ms = fillRooms(st, [4, 4]); const [oak, elm, fen, wren, moss, pip, bud, sky] = ms;
   oak.name = "Oak"; elm.name = "Elm"; fen.name = "Fen"; wren.name = "Wren"; moss.name = "Moss"; pip.name = "Pip"; bud.name = "Bud"; sky.name = "Sky";
-  fen.parents = [{ id: oak.id, name: "Oak" }, { id: elm.id, name: "Elm" }]; wren.parents = [{ id: oak.id, name: "Oak" }, { id: elm.id, name: "Elm" }]; oak.born = 1; elm.born = 2; moss.born = 3; pip.born = 3; bud.born = st.turn; sky.restUntil = st.turn + 2; st.turn += 1; sky.restUntil = st.turn + 2;
+  fen.parents = [{ id: oak.id, name: "Oak" }, { id: elm.id, name: "Elm" }]; wren.parents = [{ id: oak.id, name: "Oak" }, { id: pip.id, name: "Pip" }]; oak.born = 1; elm.born = 2; moss.born = 3; pip.born = 3; bud.born = st.turn; sky.restUntil = st.turn + 2; st.turn += 1; sky.restUntil = st.turn + 2;
   return { st, ms, fen, wren, oak, elm, moss, pip, bud, sky };
 };
 test("the partner pick: A's species only with A left out; those who can breed now first, furthest kin first and the oldest on a tie, then those who cannot, dimmed; rail and toolbar held; Back is Cancel", () => {
   const { st, fen, wren, oak, elm, moss, pip, bud, sky } = pairWorld();
   const b = build(st, { pair: { a: fen.id }, focus: null }); const W = b.props.regions.wall;
   assert.deepEqual(validate(b.props, schema), []);
-  assert.deepEqual(W.cells.map((c) => +c.id), [moss, pip, oak, elm, wren, sky, bud].map((x) => x.id), "unrelated first (the older first on a tie, then by id), the parents and the sibling next, then those who cannot: the one resting, the young");
+  assert.deepEqual(W.cells.map((c) => +c.id), [moss, pip, wren, sky, bud, oak, elm].map((x) => x.id), "unrelated first (the older first on a tie, then by id), half kin next, then those who cannot yet: the one resting, the young, then family, the oldest first: Fen's parents");
   assert.deepEqual(b.props.focus.targets.map((t) => t.group).filter((g, i, a) => a.indexOf(g) === i).sort(), ["cell", "plate"], "the rail and the toolbar are held: no ring lands on them");
   assert.equal(b.props.focus.cur, "cell." + moss.id, "the ring starts on the first partner in rank order"); assert.equal(b.line.back, "Cancel");
   const C = b.props.regions.card; assert.equal(C.state, "pair"); assert.equal(C.head, "Breed Fen with…"); assert.equal(C.name, "Moss"); assert.match(C.headFace, /:36x37(:|$)/);
   assert.deepEqual(C.lines, ["wild blood"]); assert.deepEqual(C.stateLines, []); assert.deepEqual(C.long, ["nothing shared, so nothing shifts"]); assert.match(C.pairLine, /^Fen rests 1 turn · Moss 1$/); assert.equal(C.plates.length, 1); assert.deepEqual([C.plates[0].verb, C.plates[0].held], ["See this pair", true]);
-  const kin = build(st, { pair: { a: fen.id }, focus: "cell." + wren.id }).props.regions.card; assert.deepEqual(kin.lines, ["close kin"]);
-  assert.deepEqual(kin.long, ["hidden looks show more, blends stay near the middle", "the child rests a turn longer after each cross"]); assert.ok(!kin.long.join(" ").includes("close kin"), "the kin word is printed once");
+  const kin = build(st, { pair: { a: fen.id }, focus: "cell." + wren.id }).props.regions.card; assert.deepEqual(kin.lines, ["half kin"]);
+  assert.deepEqual(kin.long, ["hidden looks show more, blends drift toward the middle"]); assert.ok(!kin.long.join(" ").includes("half kin"), "the kin word is printed once");
+  // family: dimmed with the relation in place of the kin word, the refusal on the held plate, no forecast line, never a state line or a rest line
+  const fam = build(st, { pair: { a: fen.id }, focus: "cell." + oak.id, forecastOpen: true }), fc = fam.props.regions.card;
+  assert.deepEqual([fc.lines, fc.stateLines, fc.long, fc.pairLine], [[spec.strings.pair.family.parent.replace("{A}", "Fen")], [], [], ""]); assert.equal(fc.plates[0].held, true); assert.equal(fam.line.ok, null);
+  assert.equal(build(st, { pair: { a: fen.id }, focus: "plate.0", last: oak.id }).props.regions.card.why, spec.strings.why.family);
+  const rel = (x) => build(st, { pair: { a: oak.id }, focus: "cell." + x.id }).props.regions.card.lines[0];
+  assert.deepEqual([rel(fen), rel(wren), rel(elm)], [1, 2].map(() => spec.strings.pair.family.child.replace("{A}", "Oak")).concat(spec.strings.pair.kin.wild), "the co-parent is not family");
+  assert.deepEqual(Object.keys(spec.strings.pair.family), ["parent", "grandparent", "great-grandparent", "child", "grandchild", "great-grandchild", "same-parents"]);
   const young = build(st, { pair: { a: fen.id }, focus: "cell." + bud.id }).props.regions.card; assert.equal(young.stateLines[0], "young"); assert.match(young.stateLines[1], /^grows up in \d+ turns?$/);
   const rest = build(st, { pair: { a: fen.id }, focus: "cell." + sky.id }); assert.deepEqual(rest.props.regions.card.stateLines, ["on a breather", "breeds in 2 turns"]); assert.match(rest.props.regions.card.mark, /mark-breather-16/, "the breather's mark leads the state"); assert.equal(rest.props.regions.card.why, "", "the why line shows with the ring on the plate");
   const onPlate = build(st, { pair: { a: fen.id }, focus: "plate.0", last: sky.id }); assert.equal(onPlate.props.regions.card.why, "on a breather · can breed in 2 turns", "an unpickable partner: the plate is held with its reason");

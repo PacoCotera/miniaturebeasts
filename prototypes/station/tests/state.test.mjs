@@ -350,10 +350,10 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.equal(S.kinshipOf(st, child, a), 0.25);
   child.born = st.turn - 2;
   assert.equal(S.forecastOf(st, child, a, settings), null, "a child and its parent: no forecast");
-  assert.equal(S.crossBlock(st, null, child, a, settings), S.FAMILY_LINE, "a parent and its child are refused");
+  assert.equal(S.crossBlock(st, null, child, a, settings), S.FAMILY, "a parent and its child are refused");
   const sib = S.seedSiblings(st, "S01", 99, { ...settings, rooms: 2 }); assert.equal(sib.ok, true, sib.msg);
   assert.equal(S.kinshipOf(st, sib.mibis[0], sib.mibis[1]), 0.25, "two children of one pair");
-  assert.equal(S.crossBlock(st, null, sib.mibis[0], sib.mibis[1], settings), S.FAMILY_LINE, "two children of one pair are refused");
+  assert.equal(S.crossBlock(st, null, sib.mibis[0], sib.mibis[1], settings), S.FAMILY, "two children of one pair are refused");
   assert.equal(S.forecastOf(st, sib.mibis[0], sib.mibis[1], settings), null);
   assert.equal(S.kinshipOf(st, sib.mibis[0], sib.parents[0]), 0.25);
   assert.equal(S.kinshipOf(st, sib.mibis[0], a), 0, "unrelated lines");

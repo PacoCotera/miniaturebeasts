@@ -1146,14 +1146,14 @@ export const isAway = (st, sv, m) => !!m && !docked(st) && carriedIds(st, sv).in
 export const isCarried = (st, sv, m) => !!m && carriedIds(st, sv).includes(m.id);
 // Direct kin (a parent, grandparent or great-grandparent, or two children of one pair) never cross; null, or { rel, by }. The pedigree is walked through the records of mibis let go too.
 export const directKinOf = (st, a, b) => directKin(a, b, genomeLookup(st));
-export const FAMILY_LINE = "family \u00b7 find a partner on a walk";   // the one refusal line, wherever a family pair is refused
+export const FAMILY = "family";   // crossBlock's key for a family pair; its words are the spec's (vivarium.json strings.why.family)
 // Refused before cost, on the pick itself, reasons that never change first: the same individual, another species, gone to the wild, family, then not adult, tucked away, carried (R4b, the owner: no breeding while a mibi is carried, docked or away), busy, full.
 export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return "pick two";
   if (a === b || a.id === b.id) return "one mibi is not a pair";
   if (speciesOf(a) !== speciesOf(b)) return "another species";
   if (a.released || b.released) return "gone to the wild";
-  if (directKinOf(st, a, b)) return FAMILY_LINE;
+  if (directKinOf(st, a, b)) return FAMILY;
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (inStore(a) || inStore(b) || comingOut(st, a) || comingOut(st, b)) return "tucked away";   // it cannot cross until it is back (the put-away rules)
   if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";

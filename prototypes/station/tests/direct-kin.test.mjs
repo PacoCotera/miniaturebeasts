@@ -18,12 +18,12 @@ const world = () => { const st = S.freshSt("w1", 3, 1000); S.normalize(st); st.e
 test("direct kin: the refusal, the order of refusals, the partner list, the forecast and the Breed plate", () => {
   const st = world(), sib = S.seedSiblings(st, "S01", 4242, settings); assert.equal(sib.ok, true, sib.msg);
   const [x, y] = sib.mibis, [pa, pb] = sib.parents;
-  assert.equal(S.crossBlock(st, null, x, y, settings), S.FAMILY_LINE, "two children of one pair");
-  assert.equal(S.crossBlock(st, null, x, pa, settings), S.FAMILY_LINE, "a child and its parent");
+  assert.equal(S.crossBlock(st, null, x, y, settings), S.FAMILY, "two children of one pair");
+  assert.equal(S.crossBlock(st, null, x, pa, settings), S.FAMILY, "a child and its parent");
   assert.equal(S.crossBlock(st, null, pa, pb, settings), "", "the founders themselves cross");
-  x.born = st.turn; assert.equal(S.crossBlock(st, null, x, pa, settings), S.FAMILY_LINE, "family before not adult: waiting will not help");
+  x.born = st.turn; assert.equal(S.crossBlock(st, null, x, pa, settings), S.FAMILY, "family before not adult: waiting will not help");
   x.born = st.turn - 99; pa.released = true; assert.equal(S.crossBlock(st, null, x, pa, settings), "gone to the wild", "gone to the wild comes first"); pa.released = false;
-  assert.equal(S.forecastOf(st, x, y, settings), null); assert.equal(S.doCross(st, null, x, y, settings, 1).msg, "Cross them · " + S.FAMILY_LINE);
+  assert.equal(S.forecastOf(st, x, y, settings), null); assert.equal(S.doCross(st, null, x, y, settings, 1).msg, "Cross them · " + S.FAMILY);
   const fam = S.crossPartners(st, null, x, settings).filter((m) => m.family).map((m) => [m.id, m.family]).sort();
   assert.deepEqual(fam, [[y.id, "same-parents"], [pa.id, "parent"], [pb.id, "parent"]].sort(), "family is listed, marked with the relation");
   const h = { st, sv, settings, ui: {}, goto() {} }; openCross(h, x); assert.equal(h.ui.cross.bId, null, "the ring never opens on family");
@@ -31,7 +31,7 @@ test("direct kin: the refusal, the order of refusals, the partner list, the fore
   const only = world(), s2 = S.seedSiblings(only, "S01", 4243, settings), [u, v] = s2.mibis;
   only.mibis = only.mibis.filter((m) => m === u || m === v);
   const plate = platesOf(only, sv, u, settings, spec.strings, true).find((p) => p.act === "breed");
-  assert.deepEqual([plate.held, plate.why, plate.plate], [true, "only family at home · find a partner on a walk", "family"]);
+  assert.deepEqual([plate.held, plate.why, plate.plate], [true, spec.strings.why.breedFamily, "family"]);
   const stranger = S.seedAdults(only, "S01", 77, 1, settings).mibis[0];
   assert.notEqual(platesOf(only, sv, u, settings, spec.strings, true).find((p) => p.act === "breed").plate, "family", "an unrelated partner is at home");
   assert.equal(S.crossBlock(only, null, u, stranger, settings), "");
