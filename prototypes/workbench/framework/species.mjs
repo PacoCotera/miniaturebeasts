@@ -209,6 +209,7 @@ export function buildFrame(spec, options = {}) {
       if (isPartSwitch(id)) a = switchesOn[id] ?? "off";
       else if (id === "appearance.cap-palette") a = spec.anchor in BODY_PIGMENTS ? ["coral", "raspberry", "marigold", "plum"][Math.floor(r() * 4)] : "coral";
       else a = pick(r, alleleIds(id));
+      if (spec.reset?.[id] !== undefined) a = spec.reset[id];   // the seeded roll is still taken, so no other locked copy moves; the species' value replaces what it rolled
     }
     const pair = Array.isArray(a) ? [...a].sort() : [a, a];
     if (pair.length !== 2 || !pair.every((x) => alleleIds(id).includes(x))) throw new Error(`${spec.id}: ${id} cannot be ${JSON.stringify(a)}`);
@@ -352,6 +353,8 @@ function finishFrame(frame, spec) {
 }
 
 // --- individuals ---------------------------------------------------------------------------------
+// Catalogue 11 retired the feather antenna: a saved genome that carries it reads as curl (the one place an old copy is mapped).
+export const readGenome = (g) => g?.loci?.["anatomy.antenna-form"]?.includes("feather") ? { ...g, loci: { ...g.loci, "anatomy.antenna-form": g.loci["anatomy.antenna-form"].map((a) => (a === "feather" ? "curl" : a)) } } : g;
 export const openLoci = (frame) => frame.loci.filter((l) => l.kind !== "locked");
 
 // The type specimen is the plan's default body: every open part switch on, every open locus at the

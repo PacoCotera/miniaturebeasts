@@ -4,14 +4,14 @@
 // Station page fetches the frames beside it (the sandbox publishes prototypes/* side by side); the
 // tests read them from disk and call setFrames.
 import { LOCI, resolveCopies, isContinuous, quantize, valueRange } from "../../workbench/framework/catalogue.mjs";
-import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, FRAME_VERSION } from "../../workbench/framework/species.mjs";
+import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, readGenome, FRAME_VERSION } from "../../workbench/framework/species.mjs";
 import { lookOf } from "../../workbench/framework/describe.mjs";
 import { cross, forecast, kinship, directKin, relatedness, identity, SPREAD, blendRange } from "../../workbench/framework/cross.mjs";
 import { frameFor as stampFrameFor } from "../../genome-stamp/src/frames.mjs";
 import { sizeFor as stampSizeFor } from "../../genome-stamp/src/codec.mjs";
 import { stampCode as stampCodeOf, decodeStampCode } from "../../genome-stamp/src/codec.mjs";
 
-export { genomeDigest, checkGenome, buildIndividual, shapeTrait, cross, forecast, kinship, directKin, relatedness, identity, SPREAD, decodeStampCode };
+export { genomeDigest, readGenome, checkGenome, buildIndividual, shapeTrait, cross, forecast, kinship, directKin, relatedness, identity, SPREAD, decodeStampCode };
 
 // The Companion page's species indexes: 0 is S01 Loika, 1 is S03 Tuikis, 2 is S02 Untuva (station-build.md §2.2).
 export const SP_INDEX = ["S01", "S03", "S02"];
