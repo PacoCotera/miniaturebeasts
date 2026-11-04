@@ -29,6 +29,12 @@ CAMERAS = {
     (128, 160): (38.0, (-0.35, 0.0, 1.3 + 36 / (38.0 * 0.985))),
 }
 SIL = (0.10, 0.10, 0.12)
+SUPER = 4                                                        # every `from: render` size under the 304 stand is drawn at 4x and reduced
+FILTER = "box, premultiplied"                                    # the house reduction, named in the manifest
+
+
+def supersample(size):
+    return 1 if size[0] >= 304 else SUPER
 # where the figure stands in each canvas (art director, 4 Nov; the signed masters S01 to S16 stand so): the ink's centre column and the feet line's row. The 304 stand is centred on x 152 with its feet on row 304 (303 to 306);
 # the card and the thumb are centred with the feet 3 px off the bottom (2 to 4).
 TRAIT = dict(left=6.0, up=5.0)         # the close-up's content, nudged left and up (px of the picture) so the lamp, not the layer's box, is at the centre
@@ -95,6 +101,8 @@ class Proxy:
         for (w, h), (ppH, c) in CAMERAS.items():
             self.ids[(w, h)] = 100000 + w * 1000 + h                      # a private size id per canvas
             P.SIZES[self.ids[(w, h)]] = (w, h, ppH)
+            self.ids[((w, h), SUPER)] = 200000 + w * 1000 + h              # and one at the supersample factor
+            P.SIZES[self.ids[((w, h), SUPER)]] = (w * SUPER, h * SUPER, ppH * SUPER)
 
     def _clay_mesh(self, subject):
         """The clay in the stand pose, as the plush and the silhouette are: the posed shipped mesh, with the face (flat eyes and mouth) placed on its rest surface and carried with the pose by the displacement of the nearest vertex."""
@@ -126,7 +134,7 @@ class Proxy:
             self.pr.set_mesh(self._clay_mesh(subject), key)
         return self._render("clay", az, size, path, camera(size, az)[1])
 
-    def silhouette(self, subject, az, size, path, centre=None):
+    def silhouette(self, subject, az, size, path, centre=None, ss=1):
         key = ("sil", subject.r.key)
         if self.pr.mesh_key != key:
             m = subject.welded()
@@ -138,7 +146,7 @@ class Proxy:
         saved = (sc.render.film_transparent, sc.render.image_settings.color_mode, self.P.CENTRE, sh.light, sh.color_type)
         sc.render.film_transparent, sc.render.image_settings.color_mode = True, "RGBA"
         self.P.CENTRE = np.array(camera(size, az)[1] if centre is None else centre, float)
-        pr._camera(float(az), self.ids[tuple(size)])
+        pr._camera(float(az), self.ids[tuple(size)] if ss == 1 else self.ids[(tuple(size), ss)])
         pr.wire.hide_render = True
         sh.light, sh.color_type = "FLAT", "MATERIAL"
         sc.render.filepath = path
@@ -148,8 +156,21 @@ class Proxy:
         finally:
             sc.render.film_transparent, sc.render.image_settings.color_mode, self.P.CENTRE, sh.light, sh.color_type = saved
         a = pngio.read(path)
+        if ss > 1:
+            a = box_reduce(a, ss)
         a[..., :3] = [round(c * 255) for c in SIL]                      # one flat fill: only the alpha is the picture
         return a
+
+
+def box_reduce(px, ss):
+    """A picture drawn at ss times its size reduced by the box filter, premultiplied (the house filter for every `from: render` small size). Straight-alpha uint8 RGBA in and out."""
+    h, w = px.shape[0] // ss, px.shape[1] // ss
+    a = px.astype(np.float64)
+    al = a[..., 3:4] / 255.0
+    pre = np.concatenate([a[..., :3] * al, al], 2).reshape(h, ss, w, ss, 4).mean((1, 3))
+    out_a = pre[..., 3:4]
+    rgb = np.where(out_a > 1e-9, pre[..., :3] / np.maximum(out_a, 1e-9), 0)
+    return np.concatenate([np.round(rgb), np.round(out_a * 255)], 2).clip(0, 255).astype(np.uint8)
 
 
 def solve_frames(px, subject, scratch, sizes, azs=(32, 0, 90, 180), tol=0.75, tries=6):
@@ -189,10 +210,8 @@ def floor_shadow(px, ppH):
 def plush(subject, az, size, path, floor="bounce", body_visible=True, samples=None, shadow=False):
     """floor: \"bounce\" (the default: a floor out of the camera's sight that lights the body from below, so every picture of the set has the same exposure and no shadow), True (the floor's shadow catcher) or False (no floor)."""
     import s20render as RN, plush as PL
-    for w, ss in ((96, 3), (128, 3)):
-        PL.SS.setdefault(w, ss)
     ppH, centre = camera(size, az)
-    a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, size[0], size[1], ppH, az=float(az), el=EL, centre=centre, samples=samples, floor=floor, body_visible=body_visible, light=PL.GAME_LIGHT)
+    a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, size[0], size[1], ppH, az=float(az), el=EL, centre=centre, samples=samples, floor=floor, body_visible=body_visible, light=PL.GAME_LIGHT, ss=supersample(size))
     px = np.clip(a * 255 + 0.5, 0, 255).astype(np.uint8)
     if shadow:
         px = floor_shadow(px, ppH)
@@ -227,7 +246,7 @@ def trait_picture(subject, r, layers, path):
     lx, ly = (xs.min() + xs.max() + 1) / 2.0, (ys.min() + ys.max() + 1) / 2.0
     centre = np.array(centre0, float) + right * (lx - 152.0) / ppH0 - up * (ly - 156.0) / ppH0
     centre = centre + (right * TRAIT["left"] + up * TRAIT["up"]) / ppH
-    a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, r["size"][0], r["size"][1], ppH, az=32.0, el=EL, centre=tuple(centre), floor="bounce", light=PL.GAME_LIGHT)
+    a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, r["size"][0], r["size"][1], ppH, az=32.0, el=EL, centre=tuple(centre), floor="bounce", light=PL.GAME_LIGHT, ss=supersample(r["size"]))
     px = np.clip(a * 255 + 0.5, 0, 255).astype(np.uint8)
     h, w = px.shape[:2]
     d = np.sqrt((np.abs(np.arange(w)[None, :] + 0.5 - w / 2) / (TRAIT_BOX[0] / 2)) ** 2 + (np.abs(np.arange(h)[:, None] + 0.5 - h / 2) / (TRAIT_BOX[1] / 2)) ** 2)
@@ -331,7 +350,7 @@ def main():
             continue
         fn = os.path.join(out, f"{sid}-{r['output']}-{r['variant']}.png")
         t = time.time()
-        img = (px.clay if r["style"] == "clay" else px.silhouette)(typ, r["az"], r["size"], fn)
+        img = px.clay(typ, r["az"], r["size"], fn) if r["style"] == "clay" else px.silhouette(typ, r["az"], r["size"], fn, ss=supersample(r["size"]))
         pngio.write(fn, img)
         res.append(dict(r, file=os.path.basename(fn), ms=round((time.time() - t) * 1000)))
         log(f"{r['output']} {r['variant']}")
@@ -379,7 +398,9 @@ def main():
         pngio.write(fn, pic)
         res.append(dict(r, file=os.path.basename(fn), scale=round(s, 5), figure_box=fig, shadow=view_shadow, ms=0))
         log(f"{r['output']} {r['variant']} scale {s:.4f}")
-    json.dump(dict(species=sid, built=time.strftime("%Y-%m-%d %H:%M"), set=RS.BASE, stand_index=index, rows=res, owed=[{k: o[k] for k in ("output", "variant", "style", "age", "pose", "why")} for o in owed], not_yet=RS.not_yet(spec), seconds=round(time.time() - T0)),
+    for row in res:
+        row["ss"] = supersample(row["size"]) if row["from"] == "render" and row["size"] and row["style"] != "clay" else 1
+    json.dump(dict(species=sid, built=time.strftime("%Y-%m-%d %H:%M"), set=RS.BASE, supersample=dict(factor=SUPER, filter=FILTER, below=304, note="every from-render size under 304 wide is drawn at this multiple and reduced by the filter"), stand_index=index, rows=res, owed=[{k: o[k] for k in ("output", "variant", "style", "age", "pose", "why")} for o in owed], not_yet=RS.not_yet(spec), seconds=round(time.time() - T0)),
               open(os.path.join(out, "manifest.json"), "w"), indent=1, default=str)
     log("done")
 
