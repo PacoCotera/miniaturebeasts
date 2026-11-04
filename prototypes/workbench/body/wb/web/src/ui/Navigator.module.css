@@ -15,7 +15,7 @@
 .rail .row { justify-content: center; padding: 8px 14px 8px 4px; }
 .rail .row { position: relative; }
 .rail .dot { position: absolute; top: 50%; right: 3px; margin: -4.5px 0 0 0; }   /* beside the two letters, never over them */
-.rail .sw { width: 16px; height: 16px; }
+.rail .sw { width: 10px; height: 10px; }
 .head { font-size: var(--t-14); font-weight: 500; color: var(--text-3); padding: 0 var(--s-3); margin: var(--s-4) 0 var(--s-1); }
 section:first-child .head { margin-top: 0; }
 .dot[data-kind=stale] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
@@ -37,3 +37,10 @@ section:first-child .head { margin-top: 0; }
 .gdot[data-kind=changed] { background: var(--attn-dot); }
 .gdot[data-kind=stale], .gdot[data-kind=missing] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
 .rail .gdot { position: absolute; top: 50%; right: 3px; margin: -4.5px 0 0 0; }
+
+/* Shape: the parts under the range they grow from, then the sections */
+.child { padding-left: 34px; color: var(--text-2); }
+.gap { margin-top: var(--s-4); }
+.rail .child { padding-left: 24px; justify-content: flex-start; }
+.rail .gap { margin-top: var(--s-3); }
+.rail .row:has(.sw) { gap: 6px; justify-content: flex-start; padding-left: 8px; }

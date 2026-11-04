@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import * as Toast from '@radix-ui/react-toast'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getToken, patchSpecies, speciesOne } from '../lib/api'
-import { entryKey, fieldLabel, fmtValue, initials, newEntries } from '../lib/edits'
+import { entryKey, fieldLabel, fmtValue, initials, isOwn, newEntries } from '../lib/edits'
 import { useUI } from '../lib/store'
 import { W } from '../lib/words'
 import s from './Toasts.module.css'
@@ -16,7 +16,7 @@ export function Toasts({ species }: { species: string }) {
   useEffect(() => { seen.current = null }, [species])
   useEffect(() => {
     if (!data) return
-    for (const e of newEntries(seen.current, data.history)) pushToast(e)
+    for (const e of newEntries(seen.current, data.history)) if (!isOwn(e)) pushToast(e)
     seen.current = new Set(data.history.map(entryKey))
   }, [data, pushToast])
   const undo = async (path: string, old: unknown, now: unknown) => {

@@ -8,3 +8,4 @@
 .cards { display: grid; gap: var(--s-3); margin-top: var(--s-4); }
 .passes { display: flex; align-items: center; gap: 10px; margin: var(--s-3) 0 0; color: var(--text-2); font-size: var(--t-14); }
 .passes i { width: 9px; height: 9px; border-radius: 50%; background: var(--pass-dot); flex: none; }
+.fields { display: grid; margin-top: var(--s-3); }

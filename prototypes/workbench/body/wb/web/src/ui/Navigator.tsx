@@ -1,4 +1,5 @@
 import { OUTLINE } from '../lib/outline'
+import { formsOne } from '../lib/forms'
 import type { CheckRow, CheckMeta } from '../lib/checks'
 import { stateOfPart } from '../lib/checks'
 import type { StudioUrl } from '../lib/url'
@@ -20,17 +21,20 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
   const sheet = vq.data
   const gq = useQuery({ ...goldensOne(url.species, species?.hash ?? ''), enabled: !!species && url.mode === 'goldens' })
   const gold = gq.data
+  const fq = useQuery({ ...formsOne(url.species), enabled: !!species && url.mode === 'shape' })
+  const outline = fq.data?.outline ?? OUTLINE
   const gsel = url.mode === 'goldens' ? pick(gold, url.sel) : null
   return (
     <aside className={`${s.nav} ${rail ? s.rail : ''}`} aria-label="Navigator">
       {url.mode === 'shape' && (
         <ul className={s.tree}>
-          {OUTLINE.map((r) => {
-            const st = stateOfPart(rows, metas, r.id)
+          {outline.map((r, i) => {
+            const st = r.kind === 'section' ? null : stateOfPart(rows, metas, r.id)
             return (
-              <li key={r.id}>
-                <button className={`${s.row} ${url.sel === r.id ? s.sel : ''}`} onClick={() => go({ sel: url.sel === r.id ? null : r.id })} aria-pressed={url.sel === r.id} title={r.label}>
-                  <span className={s.sw} style={r.sw ? { background: r.sw } : undefined} />
+              <li key={r.id} className={r.kind === 'section' && outline[i - 1]?.kind !== 'section' ? s.gap : undefined}>
+                <button className={`${s.row} ${r.kind === 'part' ? s.child : ''} ${url.sel === r.id ? s.sel : ''}`} onClick={() => go({ sel: url.sel === r.id ? null : r.id })} aria-pressed={url.sel === r.id} title={r.label}>
+                  {r.kind === 'range' && <span className={s.sw} style={r.sw ? { background: r.sw } : undefined} />}
+                  <span className={s.mono}>{r.label.slice(0, 2)}</span>
                   <span className={s.label}>{r.label}</span>
                   {st && <i className={s.dot} data-kind={st} aria-label={st === 'fail' ? 'fails a check' : 'needs a look'} />}
                 </button>

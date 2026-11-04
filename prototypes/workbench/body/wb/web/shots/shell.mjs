@@ -36,7 +36,11 @@ const freqS20 = JSON.parse(readFileSync(join(here, 'fixture/freq-s20.json'), 'ut
 const varietyS20 = JSON.parse(readFileSync(join(here, 'fixture/variety-s20.json'), 'utf8'))
 const goldensSame = JSON.parse(readFileSync(join(here, 'fixture/goldens-same.json'), 'utf8'))
 const goldensChanged = JSON.parse(readFileSync(join(here, 'fixture/goldens-changed.json'), 'utf8'))
+const formsS20 = JSON.parse(readFileSync(join(here, 'fixture/forms-s20.json'), 'utf8'))
 const freqDemo = JSON.parse(readFileSync(join(here, 'fixture/freq-demo.json'), 'utf8'))
+const metasShape = metas.map((m) => (m.id === 'tail.size' ? { ...m, fields: ['spine.tail.length', 'spine.tail.root', 'spine.tail.tip_r'] } : m))
+const shapeFile = structuredClone(s20file)
+shapeFile.spine.tail.length = 1.24
 const TYPE_STRING = 'G1-S20v1-20A00R61GC3A86100430R210861WQB0R4GC30R61621GC30G10R61GC30R61GC30R442008YR'     // the type's genome string (wb frame writes it into frames/species-S20.json)
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf' }
@@ -71,6 +75,8 @@ const cases = [
   { name: 'goldens-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, mode: 'goldens', goldens: goldensSame, q: '&sel=stand%2Fadult-calm' },
   { name: 'goldens-light-1440', theme: 'light', w: 1440, h: 900, ready: true, mode: 'goldens', goldens: goldensChanged, q: '&sel=stand%2Fadult-calm&gv=diff' },
   { name: 'goldens-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true, mode: 'goldens', goldens: goldensSame, q: '&sel=turn%2Fadult-calm-az90-plush' },
+  { name: 'shape-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, shape: true, q: '&sel=tail' },
+  { name: 'shape-light-1180', theme: 'light', w: 1180, h: 820, ready: true, shape: true, touch: true, q: '&sel=legs' },
   { name: 'stage-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true },
 ]
 let failed = 0
@@ -80,14 +86,16 @@ for (const c of cases) {
   if (c.token) await ctx.addInitScript(() => sessionStorage.setItem('wb.token', 'shots'))
   const page = await ctx.newPage()
   await page.route('**/api/species', (r) => r.fulfill({ json: [{ id: 'S20', name: 'Tuliko', hash: 'h', error: null }] }))
-  await page.route('**/api/species/S20', (r) => { const j = species(c.ready, c.checks); if (c.genes) { j.file.genome = c.demo ? demoFile.genome : genome; j.file.expressions = c.demo ? demoFile.expressions : s20file.expressions; j.extremes = extremes }; r.fulfill({ json: j }) })
+  await page.route('**/api/species/S20', (r) => { const j = species(c.ready, c.checks); if (c.shape) { j.file = shapeFile; j.checks = checks }
+    if (c.genes) { j.file.genome = c.demo ? demoFile.genome : genome; j.file.expressions = c.demo ? demoFile.expressions : s20file.expressions; j.extremes = extremes }; r.fulfill({ json: j }) })
   await page.route('**/api/species/S20/freq*', (r) => r.fulfill({ json: c.demo ? freqDemo : freqS20 }))
   await page.route('**/api/species/S20/string*', (r) => r.fulfill({ json: { species: 'S20', genome: 'type', string: TYPE_STRING, code: null, length: TYPE_STRING.length, version: 1, hash: 'h' } }))
   await page.route('**/api/species/S20/jobs', (r) => r.fulfill({ json: { id: 'j1', state: 'done', result: { views: [{ mode: 'clay', az: 32, size: 304, key: 'clayend'.padEnd(64, '0') }] } } }))
   await page.route('**/api/species/S20/variety*', (r) => r.fulfill({ json: varietyS20 }))
   await page.route('**/api/species/S20/goldens', (r) => r.fulfill({ json: c.goldens ?? goldensSame }))
   await page.route('**/api/species/S20/goldens/file*', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
-  await page.route('**/api/checks', (r) => r.fulfill({ json: metas }))
+  await page.route('**/api/checks', (r) => r.fulfill({ json: c.shape ? metasShape : metas }))
+  await page.route('**/api/species/S20/forms', (r) => r.fulfill({ json: formsS20 }))
   await page.route('**/cas/*.png', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
   await page.route('**/events*', (r) => r.fulfill({ body: ': connected\n\n', contentType: 'text/event-stream' }))
   await page.goto(`${base}/studio/S20/${c.mode ?? (c.genes ? 'genes' : 'shape')}?theme=${c.theme}${c.q ?? ''}`)

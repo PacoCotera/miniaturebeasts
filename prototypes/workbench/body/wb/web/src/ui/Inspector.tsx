@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import type { Species } from '../lib/api'
+import { getToken, type Species } from '../lib/api'
+import { formsOne, getAt } from '../lib/forms'
+import { Field } from './Field'
 import { checkMetas, needsYou, partsOf, ORDER } from '../lib/checks'
 import { clock, leaseFrom } from '../lib/edits'
 import { partLabel } from '../lib/outline'
@@ -19,6 +21,12 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
   const metas = useQuery(checkMetas()).data ?? []
   const byId = Object.fromEntries(metas.map((m) => [m.id, m]))
   const rows = species?.checks?.rows ?? []
+  const forms = useQuery({ ...formsOne(id), enabled: !!species && !genes }).data
+  const part = url.sel ? forms?.parts[url.sel] : undefined
+  const row = url.sel ? forms?.outline.find((r) => r.id === url.sel) : undefined
+  const selLabel = part?.label ?? row?.label ?? partLabel(url.sel)
+  const selKind = row ? (row.kind === 'range' ? 'spine range' : row.kind === 'part' ? 'appendage' : null) : ['head', 'neck', 'back', 'seat', 'tail'].includes(url.sel ?? '') ? 'spine range' : 'appendage'
+  const editable = !!getToken() && !lease
   const touching = url.sel ? rows.filter((r) => partsOf(r, byId[r.id]).includes(url.sel!)) : rows
   const cards = needsYou(touching).sort((a, b) => ORDER[a.state] - ORDER[b.state])
   const passes = touching.filter((r) => r.state === 'pass').length
@@ -26,8 +34,11 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
     <aside className={`${s.insp} ${sheet ? s.sheet : ''}`} data-open={open || undefined} aria-label="Inspector">
       {lease && <Banner who={lease.holder} />}
       {genes ?? <>
-      <div className={s.title}><b>{url.sel ? partLabel(url.sel) : name}</b>{url.sel && <span className={s.kind}>{['head', 'neck', 'back', 'seat', 'tail'].includes(url.sel) ? 'spine range' : 'appendage'}</span>}</div>
+      <div className={s.title}><b>{url.sel ? selLabel : name}</b>{url.sel && selKind && <span className={s.kind}>{selKind}</span>}</div>
       {!url.sel && line && <p className={s.line}>{line}</p>}
+      {species && part && part.fields.some((d) => getAt(species.file, d.ptr) !== undefined) && (
+        <div className={s.fields}>{part.fields.filter((d) => getAt(species.file, d.ptr) !== undefined).map((d) => <Field key={d.id} species={species} id={id} desc={d} editable={editable} rows={rows} metas={byId} />)}</div>
+      )}
       {cards.length > 0 && (
         <div className={s.cards}>
           {cards.map((r) => (
@@ -35,7 +46,7 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
           ))}
         </div>
       )}
-      {url.sel && passes > 0 && <p className={s.passes}><i />{passes} other {partLabel(url.sel)?.toLowerCase()} {passes === 1 ? 'check passes' : 'checks pass'}</p>}
+      {url.sel && passes > 0 && <p className={s.passes}><i />{passes} other {selLabel?.toLowerCase()} {passes === 1 ? 'check passes' : 'checks pass'}</p>}
       </>}
     </aside>
   )

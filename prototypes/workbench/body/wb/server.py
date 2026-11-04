@@ -898,6 +898,10 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)/freq", p)
             if m:
                 return self.send_json(srv.freq(srv.get_species(m.group(1)), int(q.get("n", ["1000"])[0])))
+            m = re.fullmatch(r"/api/species/([^/]+)/forms", p)
+            if m:
+                from wb import forms as FM
+                return self.send_json(FM.forms(srv.get_species(m.group(1)).spec))
             m = re.fullmatch(r"/api/species/([^/]+)/variety", p)
             if m:
                 return self.send_json(srv.variety(srv.get_species(m.group(1)), q.get("n", [None])[0], q.get("seed", [None])[0]))

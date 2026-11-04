@@ -27,6 +27,7 @@ export function applyEvent(qc: QueryClient, species: string, ev: WbEvent, now = 
   if (ev.type === 'done' || ev.type === 'edited' || (ev.type === 'failed' && !ev.superseded)) void qc.invalidateQueries({ queryKey: ['species', species] })
   if (ev.type === 'done' || ev.type === 'edited') void qc.invalidateQueries({ queryKey: ['variety', species] }) // a tile landed, or the file moved on
   if (ev.type === 'done' || ev.type === 'edited') void qc.invalidateQueries({ queryKey: ['goldens', species] }) // goldens made or compared, or the file moved on
+  if (ev.type === 'edited') void qc.invalidateQueries({ queryKey: ['forms', species] }) // the parts and their fields come from the file
 }
 
 export function useSpeciesEvents(species: string): void {
