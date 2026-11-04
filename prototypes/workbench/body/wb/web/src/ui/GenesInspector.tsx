@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { checkEnds, getToken, patchSpecies, type Species } from '../lib/api'
 import { bandOf, binIndex, copyRule, endLine, endMeasure, endsOf, fixPointer, proofEnd, modifierLine, selectedLocus, unitOf, unitText, wakeLine } from '../lib/genes'
 import type { StudioUrl } from '../lib/url'
+import { lookName, shortWord } from '../lib/variety'
 import { RangeBar } from './RangeBar'
 import { ExpressionRules, GenomeString, HowOften, ModifierBox } from './Expressions'
 import s from './GenesInspector.module.css'
@@ -21,6 +22,7 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
   const blend = l.op === 'blend'
   const shown = proofEnd(ext, l.locus, url.proof)
   const band = bandOf(l)
+  const lw = species.file.variety?.look_words
   const sleep = wakeLine(g, l)
   const chapter = g.chapters.find((c) => c.id === l.chapter)?.name
   const setLimit = async (e: (typeof bad)[number]) => {
@@ -47,8 +49,8 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
       ) : (
         <>
           <div className={s.field}><label>Type</label><span className={s.v}>{String(l.type)}</span></div>
-          <div className={s.field}><label>Looks</label><span className={s.seg}>{(l.limits as string[]).map((b) => <span key={b} className={b === l.type ? s.on : ''}>{b}</span>)}</span></div>
-          {l.op === 'pair-map' && l.order && <div className={s.field}><label>Shows</label><span className={s.v}>{`${copyRule(l)} · ${l.order.join(' over ')}`}</span></div>}
+          <div className={s.field}><label>Looks</label><span className={s.seg}>{(l.limits as string[]).map((b) => <span key={b} className={b === l.type ? s.on : ''}>{lookName(lw, l.locus, b)}</span>)}</span></div>
+          {l.op === 'pair-map' && l.order && <div className={s.field}><label>Shows</label><span className={s.v}>{`${copyRule(l)} · ${l.order.map((o) => shortWord(lw, l.locus, o)).join(' over ')}`}</span></div>}
         </>
       )}
       {sleep && (

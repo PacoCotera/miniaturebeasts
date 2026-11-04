@@ -32,9 +32,17 @@ class TestSocketForms(unittest.TestCase):
 
     def test_the_play_column_shows_the_toy_with_the_chips_play_has_words_for(self):
         p = FM.forms(S20)["parts"]["ears"]["play"]
-        self.assertEqual((p["toy"], [(c["word"], c["on"]) for c in p["chips"]]), ("Ears", [("pointy", True), ("floppy", False), ("nubs", False)]))
+        self.assertEqual((p["toy"], [(c["word"], c["on"]) for c in p["chips"]]), ("Ears", [("pointy", True), ("floppy", False), ("nub", False)]))
         self.assertEqual(p["slider"]["steps"], 7)
         self.assertIsNone(FM.forms(S20)["parts"]["legs"]["play"])
+
+    def test_the_families_carry_the_copywriters_look_names_and_the_ids_stay(self):
+        d = self.fields("ears")["sockets.ear.L.default"]
+        self.assertEqual(d["options"][:3], ["prick", "lop", "nub"])
+        self.assertEqual([d["names"][o][0] for o in d["options"][:3]], ["Pointy ears", "Floppy ears", "Nub ears"])
+        w = self.fields("ears")["genome.loci.form.ear-kind.weights"]
+        self.assertEqual(w["names"]["lop"], ["Floppy ears", "floppy"])
+        self.assertEqual(self.fields("tip")["genome.loci.anatomy.tail-tip-form.weights"]["names"]["tuft"][0], "Tuft tip")
 
 
 class TestUndo(unittest.TestCase):

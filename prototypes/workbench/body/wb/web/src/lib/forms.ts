@@ -11,6 +11,7 @@ export type FieldDesc = {
   type: 'number' | 'int' | 'enum' | 'bool' | 'text' | string
   unit: string
   range?: [number, number] | null; step?: number; options?: string[]
+  names?: Record<string, [string, string]> // an option's name for the eye and its short word, where the file has them (looks)
 }
 export type OutlineRow = { id: string; label: string; kind: 'range' | 'part' | 'section'; under: string | null; sw: string | null }
 // What the player sees of a part (spec 2.3): the toy it feeds, the picture chips (family and the short word play shows, the one in force on) and the slider with its steps.
@@ -97,6 +98,8 @@ export function rebalance(weights: number[], i: number, to: number): number[] {
   if (others.length) out[others[0][1]] = snap(out[others[0][1]] + (1 - k), 0.001)
   return out
 }
+// An option as the eye reads it: the file's look name, else the id spelled out.
+export const optName = (d: Pick<FieldDesc, 'names'>, o: string) => d.names?.[o]?.[0] ?? o.charAt(0).toUpperCase() + o.slice(1).replace(/-/g, ' ')
 export const pct = (w: number) => `${Math.round(w * 100)}%`
 // The step a slider of `steps` stops is on (0 to steps-1), for a value in its band.
 export const stepOf = (v: number, r: [number, number], steps: number) => Math.round(Math.min(1, Math.max(0, (v - r[0]) / (r[1] - r[0]))) * (steps - 1))

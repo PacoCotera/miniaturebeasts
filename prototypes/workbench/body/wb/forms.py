@@ -144,6 +144,12 @@ def _part_index(doc, pid):
     return next((i for i, p in enumerate(doc.get("parts") or []) if isinstance(p, dict) and p.get("id") == pid), None)
 
 
+def look_names(doc, locus, ids):
+    """The copywriter's name for each look of a trait ({id: [label, short word]}), from the file's own look words; a look it has no words for is left out and the page spells the id."""
+    words = ((doc.get("variety") or {}).get("look_words") or {}).get(locus) or {}
+    return {i: list(words[i]) for i in ids if isinstance(words.get(i), list) and len(words[i]) == 2}
+
+
 def socket_fields(doc, part):
     """The join of the part's socket (hard or soft, nothing in between), the socket's default family and how often each family shows. A part's socket is the `socket` of the part (limbs and appendages) or an entry of `sockets` (crown, tail tip)."""
     lab = part.capitalize()
@@ -163,13 +169,14 @@ def socket_fields(doc, part):
         fam = spec.get("families")
         if isinstance(fam, list) and len(fam) > 1 and spec.get("default") in fam:
             d = spec_at("parts[].default")
-            out.append(dict(id=f"sockets.{sid}.default", ptr=f"/sockets/{k}/spec/default", label="Default family", full="Default family", help=d["help"], type="enum", unit="", options=list(fam)))
+            out.append(dict(id=f"sockets.{sid}.default", ptr=f"/sockets/{k}/spec/default", label="Default family", full="Default family", help=d["help"], type="enum", unit="", options=list(fam),
+                            names=look_names(doc, FAMILY_LOCUS.get(part), fam)))
     loc = FAMILY_LOCUS.get(part)
     li = _locus_index(doc, loc) if loc else None
     if li is not None:
         l = doc["genome"]["loci"][li]
         if isinstance(l.get("weights"), list) and len(l["weights"]) == len(l.get("limits") or []):
-            out.append(dict(id=f"genome.loci.{loc}.weights", ptr=f"/genome/loci/{li}/weights", label="How often", full=f"{l.get('label', loc)}, how often each shows", help="How often each family shows in wild draws.", type="weights", unit="", options=list(l["limits"])))
+            out.append(dict(id=f"genome.loci.{loc}.weights", ptr=f"/genome/loci/{li}/weights", label="How often", full=f"{l.get('label', loc)}, how often each shows", help="How often each family shows in wild draws.", type="weights", unit="", options=list(l["limits"]), names=look_names(doc, loc, l["limits"])))
     return out
 
 
@@ -185,7 +192,8 @@ def play_of(doc, part):
     k = _socket_index(doc, sid) if sid else None
     spec = (doc["sockets"][k].get("spec") or {}) if k is not None else {}
     fam = [f for f in spec.get("families") or [] if f in p["chips"]]
-    chips = [dict(family=f, word=p["chips"][f], on=f == spec.get("default"), ptr=f"/sockets/{k}/spec/default") for f in fam]
+    names = look_names(doc, FAMILY_LOCUS.get(part) or ("anatomy.tail-tip-form" if part == "tail" else None), fam)
+    chips = [dict(family=f, word=names[f][1] if f in names else p["chips"][f], on=f == spec.get("default"), ptr=f"/sockets/{k}/spec/default") for f in fam]
     sl = p["slider"]
     if "{locus:" in sl:
         loc = sl[sl.index("{locus:") + 7:sl.index("}")]

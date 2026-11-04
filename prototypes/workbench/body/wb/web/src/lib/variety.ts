@@ -18,6 +18,8 @@ export const runSheet = (id: string, seed: number | null) => postJob(id, 'variet
 export const failLine = (n: number, f: VFail) => `No. ${n}: ${f.words}`
 // The Shows line's short words ("pointy over nub over floppy"): the file's own words for each look, else the id spelled out.
 export const shortWord = (words: Record<string, Record<string, [string, string]>> | undefined, locus: string, look: string) => words?.[locus]?.[look]?.[1] ?? look.replace(/-/g, ' ')
+// A look's name for the eye ("Pointy ears"): the file's own look words, else the id spelled out.
+export const lookName = (words: Record<string, Record<string, [string, string]>> | undefined, locus: string, look: string) => words?.[locus]?.[look]?.[0] ?? look.replace(/-/g, ' ')
 // A tile's loud genes by their on-screen names (the ids are the file's).
 export const LOUD_WORD: Record<string, string> = { glow: 'glow pattern', pattern: 'coat pattern', emblem: 'emblem', brow: 'brow tufts' }
 export const loudLine = (loud: string[], hue: number) => `${loud.length ? `Loud traits: ${loud.map((x) => LOUD_WORD[x] ?? x).join(', ')}` : 'No loud traits'} · hue ${Math.round(hue)}°`

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { freqOne, getToken, patchSpecies, stringOne, type Species } from '../lib/api'
 import { ageLine, barSegments, expressionsOf, GROUPS, grouped, isModifier, labelOf, modifierLine, modifiersOf, needLine, newModifier, orderLine, pct, STAGES, stageWord, type Genome, type Locus, type Stage } from '../lib/genes'
+import { lookName, shortWord } from '../lib/variety'
 import s from './Expressions.module.css'
 
 // Chapter 9 in the Genes inspector: how often each look shows (wild, this sheet, a cross), the expressions of the locus with their rules, a modifier gene on a shared locus, and the genome string of the selected mibi.
@@ -15,20 +16,22 @@ export function HowOften({ species, l }: { species: Species; l: Locus }) {
   if (isModifier(l) || l.op === 'blend' && !l.bins) return null
   if (!f) return <div className={s.sec}><p className={s.h}>How often</p><p className={s.note}>{q.isError ? 'The counts are not ready.' : 'Counting…'}</p></div>
   const n = q.data!.n
+  const lw = species.file.variety?.look_words
+  const nm = (look: string) => look === 'asleep' ? look : lookName(lw, l.locus, look)
   return (
     <div className={s.sec}>
       <p className={s.h}>How often</p>
       {GROUPS.filter((g) => n[g.id] > 0).map((g) => (
-        <div key={g.id} className={s.row} title={`${g.word}: ${barSegments(f, g.id).map((x) => `${x.look} ${pct(x.pct)}`).join(', ')}`}>
+        <div key={g.id} className={s.row} title={`${g.word}: ${barSegments(f, g.id).map((x) => `${nm(x.look)} ${pct(x.pct)}`).join(', ')}`}>
           <label>{g.word}</label>
-          <div className={s.bar} role="img" aria-label={`${g.word}: ${barSegments(f, g.id).map((x) => `${x.look} ${pct(x.pct)}`).join(', ')}`}>
+          <div className={s.bar} role="img" aria-label={`${g.word}: ${barSegments(f, g.id).map((x) => `${nm(x.look)} ${pct(x.pct)}`).join(', ')}`}>
             {barSegments(f, g.id).map((x) => <i key={x.look} className={x.tone < 0 ? s.zz : s[BAR_TONE[x.tone % BAR_TONE.length]]} style={{ width: `${x.pct}%` }} />)}
           </div>
         </div>
       ))}
       <div className={s.legend}>
         {[...f.looks, ...(GROUPS.some((g) => (f[g.id]?.asleep ?? 0) > 0) ? ['asleep'] : [])].map((look, i) => (
-          <span key={look}><i className={look === 'asleep' ? s.zz : s[BAR_TONE[i % BAR_TONE.length]]} />{look} {pct(f.wild[look] ?? 0)}</span>
+          <span key={look}><i className={look === 'asleep' ? s.zz : s[BAR_TONE[i % BAR_TONE.length]]} />{nm(look)} {pct(f.wild[look] ?? 0)}</span>
         ))}
       </div>
       <p className={s.note}>Wild: {n.wild.toLocaleString()} drawn from the pools. Sheet: {n.sheet || 'no'} mibis. Cross: {n.cross} seeds of the type with a mate.</p>
@@ -41,6 +44,7 @@ export function ExpressionRules({ species, l }: { species: Species; l: Locus }) 
   const xs = expressionsOf(species.file.expressions, l.locus)
   const [stage, setStage] = useState<Stage>('adult')
   const q = useFreq(species)
+  const lw = species.file.variety?.look_words
   if (!xs.length) return null
   return (
     <div className={s.sec}>
@@ -52,10 +56,10 @@ export function ExpressionRules({ species, l }: { species: Species; l: Locus }) 
       )}
       {xs.map((x) => {
         const ef = q.data?.expressions[x.id]
-        const rule = l.op === 'pair-map' ? `Shows · ${orderLine(l.order)}` : null
+        const rule = l.op === 'pair-map' ? `Shows · ${orderLine((l.order ?? []).map((o) => shortWord(lw, l.locus, o)))}` : null
         return (
           <div key={x.id} className={s.x} data-expression={x.id}>
-            <div className={s.xh}><b>{x.label ?? x.id}</b><span className={s.tag}>{x.loud ? 'loud · ' : ''}{x.look}</span></div>
+            <div className={s.xh}><b>{x.label ?? x.id}</b><span className={s.tag}>{x.loud ? 'loud · ' : ''}{lookName(lw, l.locus, x.look)}</span></div>
             {rule && <p className={s.rule}>{rule}</p>}
             {ageLine(x) && <p className={s.rule}>{ageLine(x)}{x.age?.grow ? (x.age.grow === 0.5 ? ' · full size half way through' : ` · full size ${Math.round(x.age.grow * 100)}% of the way through`) : ''}</p>}
             {needLine(g, x) && <p className={s.rule}>{needLine(g, x)}</p>}

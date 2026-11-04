@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CheckMeta, CheckRow } from './checks'
-import { barPos, clamp, controlFor, drives, failingFor, fmtNum, getAt, parseNum, patchFor, scrub, setAt, snap } from './forms'
+import { barPos, clamp, controlFor, drives, failingFor, fmtNum, getAt, parseNum, optName, patchFor, scrub, setAt, snap } from './forms'
 
 const tail = { range: [0.6, 1.8] as [number, number], step: 0.01 }
 
@@ -69,5 +69,11 @@ describe('the Shape forms', () => {
   })
   it('saves as one patch that first tests the value it started from', () => {
     expect(patchFor('/spine/tail/length', 1.1, 1.24)).toEqual([{ op: 'test', path: '/spine/tail/length', value: 1.1 }, { op: 'replace', path: '/spine/tail/length', value: 1.24 }])
+  })
+  it('names a family by the copywriter look name, the id spelled out where the file has none', () => {
+    const d = { names: { prick: ['Pointy ears', 'pointy'] as [string, string] } }
+    expect(optName(d, 'prick')).toBe('Pointy ears')
+    expect(optName(d, 'frond')).toBe('Frond')
+    expect(optName({}, 'belly-arcs')).toBe('Belly arcs')
   })
 })
