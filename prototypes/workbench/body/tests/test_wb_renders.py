@@ -231,6 +231,77 @@ class TestDrawn(unittest.TestCase):
         shutil.rmtree(out, ignore_errors=True)
 
 
+class TestArtDirectorFixes(unittest.TestCase):
+    """The nine fixes of the art director's ruling on the first set (4 Nov), measured on the set drawn for real (about 2 minutes)."""
+    @classmethod
+    def setUpClass(cls):
+        import subprocess
+        cls.out = os.path.join(SCRATCH, "ad")
+        shutil.rmtree(cls.out, ignore_errors=True)
+        r = subprocess.run([sys.executable, "-m", "wb.renderset", os.path.join(BODY, "species_v1", "S20.json"), cls.out], cwd=BODY, capture_output=True, text=True, timeout=900)
+        if r.returncode != 0 and "No module named 'bpy'" in r.stderr:
+            raise unittest.SkipTest("no Blender python")
+        assert r.returncode == 0, r.stderr[-800:]
+        cls.m = json.load(open(os.path.join(cls.out, "manifest.json")))
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.out, ignore_errors=True)
+
+    def rd(self, n):
+        return pngio.read(os.path.join(self.out, f"S20-{n}.png"))
+
+    def test_1_key_light_from_the_left(self):
+        t = self.rd("turn-adult-calm-az0-plush")
+        head = t[100:150, 95:210, :3].astype(float).mean(2)
+        ok = t[100:150, 95:210, 3] > 250
+        self.assertGreater(head[:, :57][ok[:, :57]].mean(), head[:, 57:][ok[:, 57:]].mean() + 5)
+
+    def test_2_one_exposure(self):
+        base = self.rd("adult-calm-304x312-base")
+        comp = ST.compose(base, [("erase", self.rd("adult-calm-304x312-lantern-tail-erase")), ("over", self.rd("adult-calm-304x312-lantern-tail"))])
+        t32 = self.rd("turn-adult-calm-az32-plush")
+        mm = (comp[..., 3] > 250) & (t32[..., 3] > 250)
+        d = np.abs(comp[..., :3].astype(int) - t32[..., :3].astype(int)).max(2)[mm]
+        self.assertLessEqual(float(np.percentile(d, 95)), 4)
+
+    def test_3_shadow_layer_and_4_floor_shadows(self):
+        a = self.rd("adult-304x48-shadow")[..., 3]
+        self.assertTrue(130 <= a.max() <= 150)
+        for n in ("adult-304x48-shadow", "turn-adult-calm-az0-plush", "turn-adult-calm-az32-plush", "turn-adult-calm-az90-plush", "turn-adult-calm-az180-plush", "card-adult-calm", "thumb-adult-calm"):
+            x = self.rd(n)[..., 3]
+            self.assertEqual(max(int(x[0].max()), int(x[-1].max()), int(x[:, 0].max()), int(x[:, -1].max())), 0, n)
+
+    def test_5_the_house_feet_point(self):
+        b = ST.ink_box(self.rd("adult-calm-304x312-base"))
+        self.assertLessEqual(abs(b[0] + b[2] / 2 - 152), 1)
+        self.assertTrue(303 <= b[1] + b[3] - 1 <= 306)
+        for n, w, h in (("card-adult-calm", 96, 96), ("thumb-adult-calm", 48, 48), ("silhouette-adult-calm-48x48", 48, 48), ("resident-adult-calm", 144, 152)):
+            b = ST.ink_box(self.rd(n))
+            self.assertLessEqual(abs(b[0] + b[2] / 2 - w / 2), 1, n)
+        b = ST.ink_box(self.rd("card-adult-calm"))
+        self.assertTrue(2 <= 95 - (b[1] + b[3] - 1) <= 4)
+        e = self.m["stand_index"]["S20"]["adult"]
+        self.assertEqual(e["figure"], b_ := e["figure"])
+        self.assertEqual(e["sizes"]["304x312"]["layers"][0]["standFeet"], e["figure"][1] + e["figure"][3] - 1)
+
+    def test_6_clay_in_the_stand_pose(self):
+        c = self.rd("turn-adult-calm-az32-clay")[..., 3] > 127
+        s = self.rd("silhouette-adult-calm-304x312")[..., 3] > 127
+        self.assertLessEqual(int((c ^ s).sum()), 40)
+
+    def test_7_the_trait_is_a_close_up(self):
+        ys, xs = np.where(self.rd("trait-adult-calm-lantern-tail")[..., 3] > 8)
+        self.assertTrue(16 <= xs.min() and xs.max() <= 111 and 20 <= ys.min() and ys.max() <= 139)
+
+    def test_8_and_9_manifest(self):
+        self.assertEqual((self.m["supersample"]["factor"], self.m["supersample"]["filter"]), (4, "box, premultiplied"))
+        small = {r["output"] for r in self.m["rows"] if r["from"] == "render" and r["size"][0] < 304 and r["style"] != "clay"}
+        self.assertTrue(small >= {"card", "trait", "thumb", "silhouette"})
+        self.assertTrue(all(r["ss"] == 4 for r in self.m["rows"] if r["output"] in ("card", "trait", "thumb")))
+        self.assertIn("habitat", self.m["stand_index"]["S20"]["adult"]["sizes"]["304x312"]["layers"][0]["views"])
+
+
 class TestServer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
