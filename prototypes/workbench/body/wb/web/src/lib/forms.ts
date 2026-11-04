@@ -73,11 +73,13 @@ export function failingFor(id: string, rows: CheckRow[], metas: Record<string, C
 // ---- the registry: a field's kind picks its control
 export type Control = 'number' | 'segmented' | 'select' | 'switch' | 'weights' | null
 export const SEGMENTED_MAX = 3
-export function controlFor(f: Pick<FieldDesc, 'type' | 'options'>): Control {
+// Up to three options side by side, as long as their names fit the row; look names ("Lantern tail") are long, and a select takes them in a line each.
+export const SEGMENTED_CHARS = 24
+export function controlFor(f: Pick<FieldDesc, 'type' | 'options' | 'names'>): Control {
   if (f.type === 'number' || f.type === 'int') return 'number'
   if (f.type === 'bool') return 'switch'
   if (f.type === 'weights') return 'weights'
-  if (f.type === 'enum') return (f.options?.length ?? 0) <= SEGMENTED_MAX ? 'segmented' : 'select'
+  if (f.type === 'enum') return (f.options?.length ?? 0) <= SEGMENTED_MAX && (f.options ?? []).reduce((n, o) => n + optName(f, o).length, 0) <= SEGMENTED_CHARS ? 'segmented' : 'select'
   return null
 }
 

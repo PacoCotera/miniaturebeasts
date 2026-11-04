@@ -64,6 +64,8 @@ describe('the Shape forms', () => {
     expect(controlFor({ type: 'enum', options: ['hard', 'soft'] })).toBe('segmented')
     expect(controlFor({ type: 'enum', options: ['a', 'b', 'c'] })).toBe('segmented')
     expect(controlFor({ type: 'enum', options: ['a', 'b', 'c', 'd'] })).toBe('select')
+    expect(controlFor({ type: 'enum', options: ['plain', 'tuft', 'lantern'], names: { plain: ['Plain tip', 'plain'], tuft: ['Tuft tip', 'tuft'], lantern: ['Lantern tail', 'lantern'] } })).toBe('select')
+    expect(controlFor({ type: 'enum', options: ['hard', 'soft'] })).toBe('segmented')
     expect(controlFor({ type: 'bool' })).toBe('switch')
     expect(controlFor({ type: 'free' })).toBeNull()
   })
