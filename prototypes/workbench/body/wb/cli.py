@@ -1,6 +1,6 @@
 """wb: the command line. A thin client of the job server's HTTP API (standard library only, so it runs under any python3).
 Every command takes --json and prints one JSON object. Exit codes: 0 done and passing; 1 a check failed; 2 build or validation error (with the field); 3 still running at the --wait timeout; 4 refused by role (or no token).
-Server: WB_URL, else the server.json in WB_HOME (default <body>/scratch/wb-home). Token: WB_TOKEN."""
+Server: WB_URL, else the server.json in WB_HOME (default ~/studio/home). Token: WB_TOKEN."""
 import argparse
 import json
 import os
@@ -12,7 +12,7 @@ import urllib.parse
 import urllib.request
 
 BODY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-HOME = os.environ.get("WB_HOME") or os.path.join(BODY, "scratch", "wb-home")
+HOME = os.environ.get("WB_HOME") or os.path.join(os.path.expanduser("~"), "studio", "home")          # the studio's persistent home: the content-addressed cache (the warm set lives in it), the tokens and the logs
 EXIT = dict(ok=0, check_failed=1, error=2, timeout=3, refused=4)
 
 

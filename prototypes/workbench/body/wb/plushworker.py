@@ -13,6 +13,7 @@ if BODY not in sys.path:
     sys.path.insert(0, BODY)
 
 AZ, SIZE = 32, (304, 312)
+SAMPLES = 128           # the hero draw's samples (the render sets' plush, the goldens', use 256: that constant is left alone). With the denoiser, 128 is the same picture at 1x (mean difference 0.4 of 255) in half the render time.
 
 
 def draw(spec, genome, out, scratch):
@@ -35,6 +36,8 @@ def main():
     out = os.fdopen(os.dup(1), "w", buffering=1)
     os.dup2(2, 1)
     os.makedirs(a.scratch, exist_ok=True)
+    import plush as PL
+    PL.SOFT_RENDER["samples"] = SAMPLES                              # this process only draws play's hero pictures
     out.write(json.dumps(dict(ready=True, pid=os.getpid())) + "\n")
     for line in sys.stdin:
         req = json.loads(line)

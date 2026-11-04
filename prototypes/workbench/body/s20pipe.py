@@ -6,9 +6,7 @@ import s20tex as TX
 def make_tex(b, genome, size=TX.SIZE, pad_px=12, frames=("open", "half", "closed"), ship_level=None):
     out = TX.bake(b, genome, level=3, frames=frames, size=size, ship_level=ship_level)
     cov = out["cov"]
-    col, _ = TX.pad(out["col"]["open"], cov, pad_px)
-    em, _ = TX.pad(out["emit"], cov, pad_px)
-    ro, _ = TX.pad(out["rough"][..., None], cov, pad_px)
+    (col, em, ro), _ = TX.pad_many([out["col"]["open"], out["emit"], out["rough"][..., None]], cov, pad_px)
     tex = dict(col=col, emit=em, rough=ro[..., 0], cov=cov, bake=out)
     fr = {}
     base = out["col"]["open"]

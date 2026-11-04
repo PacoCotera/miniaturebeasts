@@ -341,25 +341,38 @@ def write_png(path, arr):
     return path
 
 
-def pad(img, covered, n=10):
-    """Fill the pixels within n px of an island with the mean of their covered neighbours (so bilinear filtering and mips never bleed the background colour in)."""
-    img = img.copy()
+def pad_many(imgs, covered, n=10):
+    """Fill the pixels within n px of an island with the mean of their covered neighbours (so bilinear filtering and mips never bleed the background colour in), for several images that share one coverage.
+    Only the ring of pixels next to the covered ones is worked on in each round (the same sums in the same order as a whole-image pass, wrapping at the edges as it does). Returns ([padded images], coverage)."""
+    imgs = [i.copy() for i in imgs]
     cov = covered.copy()
+    H, W = cov.shape
+    shifts = [(dy, dx) for dy in (-1, 0, 1) for dx in (-1, 0, 1) if not (dx == 0 and dy == 0)]
     for _ in range(n):
-        acc = np.zeros_like(img, dtype=np.float64)
-        cnt = np.zeros(cov.shape, np.float64)
-        for dy in (-1, 0, 1):
-            for dx in (-1, 0, 1):
-                if dx == 0 and dy == 0:
-                    continue
-                sh = np.roll(np.roll(cov, dy, 0), dx, 1)
-                src = np.roll(np.roll(img, dy, 0), dx, 1)
-                acc += np.where(sh[..., None], src, 0)
-                cnt += sh
-        new = (~cov) & (cnt > 0)
-        img[new] = (acc[new] / cnt[new, None]).astype(img.dtype)
-        cov = cov | new
-    return img, cov
+        near = np.zeros(cov.shape, bool)
+        for dy, dx in shifts:
+            near |= np.roll(np.roll(cov, dy, 0), dx, 1)
+        ys, xs = np.nonzero(near & ~cov)
+        if not len(ys):
+            break
+        src = [((ys - dy) % H, (xs - dx) % W) for dy, dx in shifts]
+        sh = [cov[yy, xx] for yy, xx in src]
+        cnt = np.zeros(len(ys), np.float64)
+        for s_ in sh:
+            cnt += s_
+        for img in imgs:
+            acc = np.zeros((len(ys),) + img.shape[2:], np.float64)
+            for (yy, xx), s_ in zip(src, sh):
+                acc += np.where(s_.reshape((-1,) + (1,) * (img.ndim - 2)), img[yy, xx], 0)
+            img[ys, xs] = (acc / cnt.reshape((-1,) + (1,) * (img.ndim - 2))).astype(img.dtype)
+        cov[ys, xs] = True
+    return imgs, cov
+
+
+def pad(img, covered, n=10):
+    """One image of pad_many."""
+    out, cov = pad_many([img], covered, n)
+    return out[0], cov
 
 
 def refine_uv(uv, levels):

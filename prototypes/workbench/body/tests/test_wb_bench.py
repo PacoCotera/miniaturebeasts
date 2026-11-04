@@ -133,5 +133,43 @@ class TestStarterStart(unittest.TestCase):
             shutil.rmtree(root, ignore_errors=True)
 
 
+class TestPlushSpeed(unittest.TestCase):
+    def test_the_padded_atlas_is_the_whole_image_pass_to_the_bit(self):
+        import numpy as np
+        import s20tex as TX
+        rng = np.random.RandomState(3)
+        cov = np.zeros((64, 64), bool)
+        cov[10:30, 8:40] = True
+        cov[40:60, 50:64] = True                                              # touches the edge: the pass wraps there
+        imgs = [rng.rand(64, 64, 3).astype(np.float32), rng.rand(64, 64, 1).astype(np.float32)]
+
+        def whole(img, covered, n):
+            img, cov = img.copy(), covered.copy()
+            for _ in range(n):
+                acc, cnt = np.zeros_like(img, dtype=np.float64), np.zeros(cov.shape, np.float64)
+                for dy in (-1, 0, 1):
+                    for dx in (-1, 0, 1):
+                        if dx == 0 and dy == 0:
+                            continue
+                        sh = np.roll(np.roll(cov, dy, 0), dx, 1)
+                        acc += np.where(sh[..., None], np.roll(np.roll(img, dy, 0), dx, 1), 0)
+                        cnt += sh
+                new = (~cov) & (cnt > 0)
+                img[new] = (acc[new] / cnt[new, None]).astype(img.dtype)
+                cov = cov | new
+            return img, cov
+        got, gcov = TX.pad_many(imgs, cov, 6)
+        for g, i in zip(got, imgs):
+            w, wcov = whole(i, cov, 6)
+            self.assertTrue(np.array_equal(g, w))
+            self.assertTrue(np.array_equal(gcov, wcov))
+
+    def test_the_hero_draw_has_its_own_samples_and_the_goldens_keep_theirs(self):
+        from wb import plushworker as PW
+        import plush as PL
+        self.assertEqual(PW.SAMPLES, 128)
+        self.assertEqual(PL.SOFT_RENDER["samples"], 256)                       # this process never ran the worker's main
+
+
 if __name__ == "__main__":
     unittest.main()

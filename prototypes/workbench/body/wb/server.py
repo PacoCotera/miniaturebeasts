@@ -142,7 +142,7 @@ class ProxyWorker:
             self.proc.kill()
 
 
-PLUSH_LOOK = "plush-1"                                          # the house look-dev of the plush hero (Cycles, velvet, studio light): bump when it changes, and every plush picture is drawn again
+PLUSH_LOOK = "plush-2"                                          # the house look-dev of the plush hero (Cycles, velvet, studio light): bump when it changes, and every plush picture is drawn again
 PLAY_ACTOR = dict(name="play", role="server")
 
 
@@ -203,7 +203,7 @@ class PlushWorker:
 
 
 class Server:
-    def __init__(self, home, species_dirs, static=None, host="127.0.0.1", port=0, cache_limit_gb=30.0, proxy_workers=1, trusted_proxy=None, plush_workers=1):
+    def __init__(self, home, species_dirs, static=None, host="127.0.0.1", port=0, cache_limit_gb=30.0, proxy_workers=1, trusted_proxy=None, plush_workers=2):
         self.trusted_proxy = trusted_proxy or None
         self.home = os.path.abspath(home)
         os.makedirs(self.home, exist_ok=True)
@@ -1493,7 +1493,7 @@ def main():
     ap.add_argument("--port", type=int, default=0)
     ap.add_argument("--cache-limit-gb", type=float, default=30.0)
     ap.add_argument("--proxy-workers", type=int, default=1)
-    ap.add_argument("--plush-workers", type=int, default=1)
+    ap.add_argument("--plush-workers", type=int, default=2)
     ap.add_argument("--trusted-proxy", default="", help="the address of the proxy whose X-Studio-User header is believed (it acts as the owner); empty: the header is never believed")
     a = ap.parse_args()
     dirs = a.species or [os.path.join(BODY, d) for d in ("species_v1", "species_play")]
