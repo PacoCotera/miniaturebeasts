@@ -146,7 +146,7 @@ def plush(subject, az, size, path, floor=True, body_visible=True, samples=None):
     for w, ss in ((96, 3), (128, 3)):
         PL.SS.setdefault(w, ss)
     ppH, centre = camera(size)
-    a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, size[0], size[1], ppH, az=float(az), el=EL, centre=centre, samples=samples, floor=floor, body_visible=body_visible)
+    a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, size[0], size[1], ppH, az=float(az), el=EL, centre=centre, samples=samples, floor=floor, body_visible=body_visible, light=PL.GAME_LIGHT)
     px = np.clip(a * 255 + 0.5, 0, 255).astype(np.uint8)
     pngio.write(path, px)
     return px

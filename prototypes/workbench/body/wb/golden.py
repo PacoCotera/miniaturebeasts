@@ -42,7 +42,7 @@ class GoldenError(Exception):
 # ---------------------------------------------------------------- what the key is made of
 def lookdev():
     """The look-dev version: a short hash of the plush look's own settings (material, light, render, small-size scale in plush.py), read from the source so Blender is not needed. A comment or an unrelated edit does not move it."""
-    names = {"PLUSH_MATERIAL", "PLUSH_LIGHT", "SOFT_RENDER", "SS"}
+    names = {"PLUSH_MATERIAL", "PLUSH_LIGHT", "GAME_LIGHT", "SOFT_RENDER", "SS"}
     with open(os.path.join(BODY, "plush.py")) as fh:
         tree = ast.parse(fh.read())
     parts = [ast.dump(n.value) for n in tree.body if isinstance(n, ast.Assign) and any(getattr(t, "id", None) in names for t in n.targets)]

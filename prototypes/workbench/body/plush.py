@@ -28,6 +28,9 @@ PLUSH_LIGHT = dict(
     view="AgX", look="AgX - Punchy", exposure=0.0, gamma=1.0,
 )
 
+# the game's rig (render sets): the house light mirrored, so the key comes from the top left of the picture, as on the painted plate and the signed masters, and the warm bounce fills from the right; the cool rim stays behind the shade side
+GAME_LIGHT = dict(PLUSH_LIGHT, key_mirror=True)
+
 SOFT_RENDER = dict(samples=256, denoise=True, filter=1.0, bounces=6)
 SS = {304: 1, 96: 3, 48: 4}        # render the small sprites at this multiple and box-filter down premultiplied (the soft floor shadow streaks at native 96 and 48)
 
@@ -206,12 +209,14 @@ def soft_lights(sc, az, L):
     from mathutils import Euler
     trav = np.array(Euler((math.radians(L.get("key_tilt", 50)), 0, math.radians(az + 125)), "XYZ").to_matrix() @ __import__("mathutils").Vector((0, 0, -1)))
     kp = c - trav * L["key_dist"]
-    area(sc, "key", kp, c, L["key_size"], L["key_energy"], L["key_color"])
     a = math.radians(az)
     cam_dir = np.array([math.cos(a), math.sin(a), 0.0])
-    side = np.array([-math.sin(a), math.cos(a), 0.0])
+    side = np.array([-math.sin(a), math.cos(a), 0.0])             # the picture's right
+    if L.get("key_mirror"):
+        kp = kp - 2.0 * float((kp - c) @ side) * side              # the key to the other side of the camera's plane: from the picture's left
+    area(sc, "key", kp, c, L["key_size"], L["key_energy"], L["key_color"])
     # bounce: low, from the camera side and the key side, aimed at the belly and legs
-    bp = c + cam_dir * 3.2 + side * -1.2 + np.array([0, 0, -0.9])
+    bp = c + cam_dir * 3.2 + side * (1.2 if L.get("bounce_mirror") else -1.2) + np.array([0, 0, -0.9])
     bp[2] = max(bp[2], 0.12)
     area(sc, "bounce", bp, c + np.array([0, 0, -0.2]), L["bounce_size"], L["bounce_energy"], L["bounce_color"])
     rp = c - cam_dir * 3.6 + side * 2.6 + np.array([0, 0, 2.6])

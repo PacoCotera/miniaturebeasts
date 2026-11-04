@@ -163,10 +163,10 @@ def tex_obj(M, paths, genome, glow_scale=1.5):
     return ob
 
 
-def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3), samples=None, glow_scale=1.5, floor=True, body_visible=True):
+def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3), samples=None, glow_scale=1.5, floor=True, body_visible=True, light=None, ss=None):
     """The plush look (look-dev 30ad1e70, plush.py): the velvet material, the soft studio light, AgX Punchy, 256 samples with the denoiser; 96 px frames are rendered at 3x and 48 px at 4x and box-filtered down (native small renders streak). Returns the RGBA float array and the camera."""
     import plush as PL
-    ss = PL.SS.get(int(w), 1)
+    ss = ss or PL.SS.get(int(w), 1)
     sc = B.reset()
     PL.plush_render(sc)
     sc.render.image_settings.color_mode = "RGBA"
@@ -194,7 +194,7 @@ def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.3
     if floor and el > 0:
         fl = bpy.data.meshes.new("floor"); fl.from_pydata([(-7, -5, 0), (5, -5, 0), (5, 5, 0), (-7, 5, 0)], [], [(0, 1, 2, 3)])
         fo = bpy.data.objects.new("floor", fl); sc.collection.objects.link(fo); fo.is_shadow_catcher = True
-    PL.plush_light(sc, az)
+    PL.plush_light(sc, az, light)
     cam = B.camera(sc, az, el, w * ss, h * ss, np.array(centre, float), ppH=ppH * ss)
     os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
     sc.render.filepath = path
