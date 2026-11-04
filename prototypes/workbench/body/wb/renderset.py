@@ -77,14 +77,34 @@ class Subject:
         self.spec, self.genome, self.scratch = spec, genome, scratch
         self.r = F.build(spec, genome, "base")
         self.b, self.c = self.r.body, self.r.c
-        self._M = self._paths = self._rest = None
+        self._M = self._paths = self._rest = self._base = self._R = None
+        self._frames = {}
 
-    def posed(self):
-        if self._M is None:
-            import s20rig, s20tex as TX, s20p2 as P2
-            R = s20rig.Rig(self.b.ctx)
-            self._M = P2.posed(TX.render_mesh(self.b), self.b, R, R.stand_pose())
-        return self._M
+    def posed(self, clip=None, i=0):
+        """The mesh in the stand pose, or in frame `i` of a clip (wb/clips.py: the file's walk, idle)."""
+        if clip is None:
+            if self._M is None:
+                self._M = self._pose(None, 0)
+            return self._M
+        key = (clip, i)
+        if key not in self._frames:
+            self._frames[key] = self._pose(clip, i)
+        return self._frames[key]
+
+    def _pose(self, clip, i):
+        import s20rig, s20tex as TX, s20p2 as P2
+        if self._base is None:
+            self._R = s20rig.Rig(self.b.ctx)
+            self._base = TX.render_mesh(self.b)
+        R = self._R
+        if clip is None:
+            return P2.posed(self._base, self.b, R, R.stand_pose())
+        from wb import clips as CL
+        pose, breath = CL.pose_at(R, self.spec, clip, i)
+        M = self._base
+        if breath:
+            M = dict(M, Vw=np.asarray(M["Vw"], float) + breath * R.breath(np.asarray(M["Vw"], float), M["attr"], M["part"]))
+        return P2.posed(M, self.b, R, pose)
 
     def tex(self):
         if self._paths is None:
@@ -93,9 +113,9 @@ class Subject:
             self._paths = P2.write_tex(tex, os.path.join(self.scratch, f"tex-{self.r.genome_hash[:10]}"))
         return self._paths
 
-    def welded(self):
+    def welded(self, M=None):
         """The posed level-2 mesh as the proxy renderer takes it: welded vertices, quads, the part of each vertex."""
-        M = self.posed()
+        M = M or self.posed()
         Vw = np.zeros_like(M["Vw"])
         Vw[M["vid"]] = M["V"]
         return dict(V=Vw, F=np.asarray(M["Fw"], int), part=M["part"])
@@ -103,11 +123,13 @@ class Subject:
 
 # ---------------------------------------------------------------- the Workbench styles (clay, silhouette)
 class Proxy:
-    def __init__(self, scratch):
+    def __init__(self, scratch, pr=None):
+        """`pr`: a proxy renderer that is already warm (the proxy worker's own), used as it is."""
         from wb import proxy as P
         self.P = P
-        self.pr = P.ProxyRenderer()
-        self.pr.warm(os.path.join(scratch, "warm.png"))
+        self.pr = pr or P.ProxyRenderer()
+        if pr is None:
+            self.pr.warm(os.path.join(scratch, "warm.png"))
         import bpy
         self.bpy = bpy
         self.sil_mat = bpy.data.materials.new("sil")
@@ -121,14 +143,14 @@ class Proxy:
             self.ids[((w, h), SUPER)] = 200000 + w * 1000 + h              # and one at the supersample factor
             P.SIZES[self.ids[((w, h), SUPER)]] = (w * SUPER, h * SUPER, ppH * SUPER)
 
-    def _clay_mesh(self, subject):
+    def _clay_mesh(self, subject, M=None):
         """The clay in the stand pose, as the plush and the silhouette are: the posed shipped mesh, with the face (flat eyes and mouth) placed on its rest surface and carried with the pose by the displacement of the nearest vertex."""
         from wb import clayface as CF
-        M = subject.posed()
+        M = M or subject.posed()
         rest = dict(V=np.asarray(M["Vw"], float), F=np.asarray(M["Fw"], int))
         cx = subject.b.ctx
         fv, ff = CF.face_mesh(cx["T"], cx["spec"], dict(subject.r.c.get("coat") or {}), rest)
-        m = subject.welded()
+        m = subject.welded(M)
         D = np.asarray(m["V"], float) - rest["V"]
         nn = np.array([np.argmin(((rest["V"] - p) ** 2).sum(1)) for p in fv])
         m["face_V"], m["face_F"] = fv + D[nn], ff
@@ -145,10 +167,11 @@ class Proxy:
             sc.render.film_transparent, sc.render.image_settings.color_mode, self.P.CENTRE = saved
         return pngio.read(path)
 
-    def clay(self, subject, az, size, path):
-        key = ("clay", subject.r.key)
+    def clay(self, subject, az, size, path, clip=None, i=0):
+        """The clay at az, in the stand pose or in frame i of a clip."""
+        key = ("clay", subject.r.key) if clip is None else ("clay", subject.r.key, clip, i)
         if self.pr.mesh_key != key:
-            self.pr.set_mesh(self._clay_mesh(subject), key)
+            self.pr.set_mesh(self._clay_mesh(subject, None if clip is None else subject.posed(clip, i)), key)
         return self._render("clay", az, size, path, camera(size, az)[1])
 
     def silhouette(self, subject, az, size, path, centre=None, ss=1):
@@ -212,16 +235,21 @@ def solve_frames(px, subject, scratch, sizes, azs=(32, 0, 90, 180), tol=0.75, tr
 
 
 # ---------------------------------------------------------------- plush (Cycles)
-def floor_shadow(px, ppH):
-    """The picture with its contact shadow laid under the figure: the same short soft ellipse as the stand's shadow layer, at this picture's scale, under both feet (the Cycles floor shadow is long and runs off the frame)."""
+def shadow_layer(px, ppH):
+    """The contact shadow of a picture: the same short soft ellipse as the stand's shadow layer, at this picture's scale, under both feet (the Cycles floor shadow is long and runs off the frame). None for an empty picture."""
     fig = ST.ink_box(px)
     if fig is None:
-        return px
+        return None
     scale = ppH / CAMERAS[(304, 312)][0]
     feet = fig[1] + fig[3] - 1
     span = ST.feet_span(px, feet, depth=max(2, round(6 * scale)))
-    sh = ST.contact_shadow((px.shape[1], px.shape[0]), (span[0] + span[1] + 1) / 2.0, feet, span[1] - span[0] + 1, scale=scale)
-    return ST.over(sh, px)
+    return ST.contact_shadow((px.shape[1], px.shape[0]), (span[0] + span[1] + 1) / 2.0, feet, span[1] - span[0] + 1, scale=scale)
+
+
+def floor_shadow(px, ppH):
+    """The picture with its contact shadow laid under the figure."""
+    sh = shadow_layer(px, ppH)
+    return px if sh is None else ST.over(sh, px)
 
 
 def plush(subject, az, size, path, floor="bounce", body_visible=True, samples=None, shadow=False):
@@ -234,6 +262,57 @@ def plush(subject, az, size, path, floor="bounce", body_visible=True, samples=No
         px = floor_shadow(px, ppH)
     pngio.write(path, px)
     return px
+
+
+def plush_clip(subject, clip, size, outdir, scratch, on_frame=None):
+    """The plush frames of a clip, each on its own pose of the loop, with one contact shadow for all of them (laid from frame 0, where both feet are down: a shadow that jumped with every lifted foot would read as a flicker). Returns the straight-alpha frames
+    and the milliseconds each took. `on_frame(i, n, ms)` is called after each."""
+    from wb import clips as CL
+    n = CL.frames(clip)
+    ppH = camera(size, 32)[0]
+    frames, ms, sh = [], [], None
+    for i in range(n):
+        t = time.perf_counter()
+        px = plush_frame(subject, clip, i, size, os.path.join(outdir, f"{clip}-{i}.png"))
+        if sh is None:
+            sh = shadow_layer(px, ppH)
+        frames.append(px if sh is None else ST.over(sh, px))
+        ms.append(round((time.perf_counter() - t) * 1000))
+        if on_frame:
+            on_frame(i, n, ms[-1])
+    return frames, ms
+
+
+def plush_frame(subject, clip, i, size, path, samples=None):
+    import s20render as RN, plush as PL
+    ppH, centre = camera(size, 32)
+    a, cam = RN.render_tex(subject.posed(clip, i), subject.tex(), subject.c["coat"], path, size[0], size[1], ppH, az=32.0, el=EL, centre=centre, samples=samples, floor="bounce", body_visible=True, light=PL.GAME_LIGHT, ss=supersample(size))
+    px = np.clip(a * 255 + 0.5, 0, 255).astype(np.uint8)
+    pngio.write(path, px)
+    return px
+
+
+def clay_clip_frame(px, subject, clip, i, size, outdir):
+    """Frame i of a clip in clay: (straight-alpha RGBA, milliseconds)."""
+    t = time.perf_counter()
+    img = neutral_shade(px.clay(subject, 32, size, os.path.join(outdir, f"clay-{clip}-{i}.png"), clip, i))
+    return img, round((time.perf_counter() - t) * 1000)
+
+
+def clay_clip(px, subject, clip, size, outdir):
+    """The clay frames of a clip (the stand's camera, the clay's face on, the neutral shade): straight-alpha RGBA, and the milliseconds each took."""
+    from wb import clips as CL
+    frames, ms = [], []
+    for i in range(CL.frames(clip)):
+        f, m = clay_clip_frame(px, subject, clip, i, size, outdir)
+        frames.append(f)
+        ms.append(m)
+    return frames, ms
+
+
+def strip_of(frames):
+    """The clip's frames side by side (straight-alpha RGBA, one frame after another, left to right)."""
+    return np.concatenate(frames, axis=1)
 
 
 # ---------------------------------------------------------------- the trait picture: a close-up of the look
@@ -434,6 +513,12 @@ def main():
             continue
         fn = os.path.join(out, f"{sid}-{r['output']}-{r['variant']}.png")
         t = time.time()
+        if r["kind"] == "strip":
+            fr, ms = clay_clip(px, typ, r["pose"], r["size"], scratch)
+            pngio.write(fn, strip_of(fr))
+            res.append(dict(r, file=os.path.basename(fn), frames=len(fr), frame_ms=ms, ms=round((time.time() - t) * 1000)))
+            log(f"{r['output']} {r['variant']}")
+            continue
         img = px.clay(typ, r["az"], r["size"], fn) if r["style"] == "clay" else px.silhouette(typ, r["az"], r["size"], fn, ss=supersample(r["size"]))
         if r["style"] == "clay":
             img = neutral_shade(img)
@@ -456,6 +541,12 @@ def main():
             res.append(dict(r, file=entry["sizes"]["304x312"]["base"], ms=round((time.time() - t) * 1000)))
             continue
         fn = os.path.join(out, f"{sid}-{r['output']}-{r['variant']}.png")
+        if r["kind"] == "strip":
+            fr, ms = plush_clip(typ, r["pose"], r["size"], scratch, scratch)
+            pngio.write(fn, strip_of(fr))
+            res.append(dict(r, file=os.path.basename(fn), frames=len(fr), frame_ms=ms, ms=round((time.time() - t) * 1000)))
+            log(f"{r['output']} {r['variant']}")
+            continue
         if r["output"] == "trait":
             if (r["age"], "calm") not in masters:                    # the picture is centred on the look's layer, so the stand is drawn first
                 masters[(r["age"], "calm")] = stand(spec, typ, out, scratch, sid, r["age"], "calm", log)

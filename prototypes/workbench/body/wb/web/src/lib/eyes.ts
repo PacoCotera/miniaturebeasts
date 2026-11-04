@@ -39,7 +39,8 @@ export function keyOut(d: Uint8ClampedArray, w: number, h: number): void {
   }
 }
 
-export function withEyes(src: string): Promise<string> {
+// `cells`: a strip of that many frames side by side (a clip): each frame is read for its own eyes.
+export function withEyes(src: string, cells = 1): Promise<string> {
   return new Promise((res) => {
     const img = new Image()
     img.onload = () => {
@@ -49,15 +50,18 @@ export function withEyes(src: string): Promise<string> {
         const g = c.getContext('2d')
         if (!g) return res(src)
         g.drawImage(img, 0, 0)
-        const px = g.getImageData(0, 0, c.width, c.height)
-        if (px.data[3] > 250) { keyOut(px.data, c.width, c.height); g.putImageData(px, 0, 0) }
-        for (const e of eyesOf(darkBlobs(px.data, c.width, c.height), c.width)) {
-          const bw = e.x1 - e.x0 + 1, bh = e.y1 - e.y0 + 1, r = Math.max(1.5, Math.min(bw, bh) * 0.2)
-          g.fillStyle = '#fff'
-          g.beginPath(); g.arc(e.x0 + bw * 0.62, e.y0 + bh * 0.3, r, 0, Math.PI * 2); g.fill()
-          g.globalAlpha = 0.8
-          g.beginPath(); g.arc(e.x0 + bw * 0.34, e.y0 + bh * 0.68, r * 0.45, 0, Math.PI * 2); g.fill()
-          g.globalAlpha = 1
+        const cw = Math.floor(c.width / cells)
+        for (let k = 0; k < cells; k++) {
+          const px = g.getImageData(k * cw, 0, cw, c.height)
+          if (px.data[3] > 250) { keyOut(px.data, cw, c.height); g.putImageData(px, k * cw, 0) }
+          for (const e of eyesOf(darkBlobs(px.data, cw, c.height), cw)) {
+            const bw = e.x1 - e.x0 + 1, bh = e.y1 - e.y0 + 1, r = Math.max(1.5, Math.min(bw, bh) * 0.2), ox = k * cw
+            g.fillStyle = '#fff'
+            g.beginPath(); g.arc(ox + e.x0 + bw * 0.62, e.y0 + bh * 0.3, r, 0, Math.PI * 2); g.fill()
+            g.globalAlpha = 0.8
+            g.beginPath(); g.arc(ox + e.x0 + bw * 0.34, e.y0 + bh * 0.68, r * 0.45, 0, Math.PI * 2); g.fill()
+            g.globalAlpha = 1
+          }
         }
         res(c.toDataURL('image/png'))
       } catch { res(src) }

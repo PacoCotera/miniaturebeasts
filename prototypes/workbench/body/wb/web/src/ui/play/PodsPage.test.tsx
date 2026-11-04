@@ -2,8 +2,9 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-const m = vi.hoisted(() => ({ getPods: vi.fn(), keepPod: vi.fn(), saveMove: vi.fn() }))
+const m = vi.hoisted(() => ({ getPods: vi.fn(), keepPod: vi.fn(), saveMove: vi.fn(), getClip: vi.fn() }))
 vi.mock('../../lib/play', async (orig) => ({ ...(await orig<typeof import('../../lib/play')>()), ...m }))
+vi.mock('../../lib/eyes', () => ({ withEyes: (src: string) => Promise.resolve(src) }))
 import { PodsPage } from './PodsPage'
 
 afterEach(() => { cleanup(); vi.clearAllMocks() })
@@ -80,5 +81,24 @@ describe('P3, pods', () => {
     await waitFor(() => expect(m.keepPod).toHaveBeenCalledWith('S71', { round: 0, i: 2, tries: 0, diff: 'some', grow: 'juvenile', name: 'Luna' }))
     await screen.findByText('Luna is in My mibis.')
     expect((screen.getAllByRole('button', { name: 'Keep' })[2] as HTMLButtonElement).getAttribute('aria-pressed')).toBe('true')
+  })
+
+  const clip = (clay: boolean, plush: boolean) => ({ clip: 'walk', genome: 'g0', frames: 6, period: 0.9, frame_s: 0.15, size: [304, 312], clay: { key: 'c'.padEnd(64, '0'), ready: clay, job: clay ? null : 'jc' }, plush: { key: 'w'.padEnd(64, '0'), ready: plush, job: plush ? null : 'jw' } })
+
+  it('walks a baby: the clay loop plays as soon as it is drawn while the plush is fluffed, and the plush takes its place', async () => {
+    m.getPods.mockResolvedValue(pods(6))
+    m.getClip.mockResolvedValueOnce(clip(false, false)).mockResolvedValueOnce(clip(true, false)).mockResolvedValue(clip(true, true))
+    const { container } = go()
+    await screen.findByText("Pemmi's pods")
+    fireEvent.click(screen.getAllByRole('button', { name: 'Walk' })[0])
+    await screen.findByText('Sculpting…')
+    expect(container.querySelector('[data-clip="walk"]')).toBeNull()                       // nothing drawn yet: the baby keeps breathing
+    await waitFor(() => expect(container.querySelector('[data-clip="walk"]')).not.toBeNull(), { timeout: 4000 })
+    const walk = container.querySelector('[data-clip="walk"]') as HTMLElement
+    expect(walk.getAttribute('style')).toContain('--frames: 6')
+    expect(walk.getAttribute('style')).toContain('--loop: 0.9s')
+    await waitFor(() => expect(screen.queryByText('Fluffing up…')).toBeNull(), { timeout: 4000 })
+    expect(m.getClip).toHaveBeenCalledWith('S71', 'g0', 'walk')
+    expect((container.querySelector('[data-clip="walk"]') as HTMLElement).getAttribute('style')).toContain('/cas/' + 'w'.padEnd(64, '0'))
   })
 })

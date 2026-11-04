@@ -29,6 +29,21 @@ def draw(spec, genome, out, scratch, big=False):
     return T
 
 
+def draw_clip(spec, genome, clip, out, scratch, progress=None):
+    """The plush strip of a clip of `genome` (wb/clips.py): its frames side by side in one PNG at `out`, one shadow for all of them. Returns the milliseconds of the build and of each frame."""
+    from wb import renderset as RSET, pngio
+    T = {}
+    t = time.perf_counter()
+    subject = RSET.Subject(spec, genome, scratch)
+    subject.tex()
+    T["build_ms"] = round((time.perf_counter() - t) * 1000)
+    frames, ms = RSET.plush_clip(subject, clip, SIZE, scratch, scratch, on_frame=progress)
+    pngio.write(out, RSET.strip_of(frames))
+    T["frame_ms"] = ms
+    T["plush_ms"] = sum(ms)
+    return T
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scratch", required=True)
@@ -45,7 +60,10 @@ def main():
             break
         t0 = time.perf_counter()
         try:
-            T = draw(req["spec"], req.get("genome", "type"), req["out"], a.scratch, bool(req.get("big")))
+            if req.get("clip"):
+                T = draw_clip(req["spec"], req.get("genome", "type"), req["clip"], req["out"], a.scratch, lambda i, n, ms: out.write(json.dumps(dict(id=req["id"], progress=dict(done=i + 1, of=n))) + "\n"))
+            else:
+                T = draw(req["spec"], req.get("genome", "type"), req["out"], a.scratch, bool(req.get("big")))
             out.write(json.dumps(dict(id=req["id"], ok=True, ms=round((time.perf_counter() - t0) * 1000), **T)) + "\n")
         except Exception as e:                                       # noqa: BLE001
             traceback.print_exc()

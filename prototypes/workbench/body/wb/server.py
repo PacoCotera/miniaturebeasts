@@ -102,7 +102,7 @@ class ProxyWorker:
         srv = self.srv
         self.start_proc()
         while not srv.stopping:
-            job = srv.queue.pop(("render", "build", "check"), timeout=0.5)
+            job = srv.queue.pop(("render", "build", "check", "clayclip"), timeout=0.5)
             if job is None:
                 continue
             srv.hub.emit("running", job.species, job=job.id, kind=job.kind, actor=(job.actor or {}).get("name"))
@@ -110,7 +110,7 @@ class ProxyWorker:
                 if self.proc.poll() is not None:
                     self.start_proc()
                 views = job.args.get("views", [])
-                self.proc.stdin.write(json.dumps(dict(id=job.id, op=job.kind, spec=job.spec, genome=job.args["genome"], views=views, stage=job.args.get("stage", "all"), loci=job.args.get("loci"))) + "\n")
+                self.proc.stdin.write(json.dumps(dict(id=job.id, op=job.kind, spec=job.spec, genome=job.args["genome"], views=views, stage=job.args.get("stage", "all"), loci=job.args.get("loci"), clip=job.args.get("clip"), key=job.key)) + "\n")
                 self.proc.stdin.flush()
                 while True:
                     line = self.proc.stdout.readline()
@@ -171,18 +171,24 @@ class PlushWorker:
                 if self.proc is None or self.proc.poll() is not None:
                     self.start_proc()
                 tmp = srv.cas.tmp("png")
-                self.proc.stdin.write(json.dumps(dict(id=job.id, spec=job.spec, genome=job.args["genome"], out=tmp, big=bool(job.args.get("big")))) + "\n")
+                self.proc.stdin.write(json.dumps(dict(id=job.id, spec=job.spec, genome=job.args["genome"], out=tmp, big=bool(job.args.get("big")), clip=job.args.get("clip"))) + "\n")
                 self.proc.stdin.flush()
-                line = self.proc.stdout.readline()
-                if not line:
-                    raise RuntimeError("the plush worker died")
-                msg = json.loads(line)
+                while True:
+                    line = self.proc.stdout.readline()
+                    if not line:
+                        raise RuntimeError("the plush worker died")
+                    msg = json.loads(line)
+                    if "progress" in msg:
+                        job.progress = msg["progress"]
+                        srv.hub.emit("running", job.species, job=job.id, kind="plush", progress=job.progress)
+                        continue
+                    break
                 if not msg["ok"]:
                     srv.bad_pics.add(job.key)
                     srv.finish_failed(job, msg["error"], None)
                     continue
                 srv.cas.adopt(tmp, job.key, "png")
-                srv.cas.put_json(job.key, dict(plush=True, genome=job.args["genome"], ms=msg["ms"], build_ms=msg["build_ms"], plush_ms=msg["plush_ms"], look=PLUSH_LOOK))
+                srv.cas.put_json(job.key, dict(plush=True, genome=job.args["genome"], ms=msg["ms"], build_ms=msg["build_ms"], plush_ms=msg["plush_ms"], look=PLUSH_LOOK, **({"clip": job.args["clip"], "frame_ms": msg.get("frame_ms")} if job.args.get("clip") else {})))
                 res = dict(views=[dict(mode="plush", az=32, size=608 if job.args.get("big") else 304, key=job.key, cached=False, ms=msg["ms"])], ms=msg["ms"], cache=dict(job_hit=False))
                 srv.queue.finish(job, "done", res)
                 srv.hub.emit("done", job.species, job=job.id, kind="plush", key=job.key, cached=False, ms=msg["ms"], urls=[f"/cas/{job.key}.png"], actor=(job.actor or {}).get("name"))
@@ -1037,11 +1043,43 @@ class Server:
                     g = PL.genome_of({**home, ax["locus"]: v}, spec)
                     x["now"] = dict(genome=g, **self.picture(spec, g, n, nh))
 
-    def submit_plush(self, sp, genome, actor, priority=None, spec=None, big=False):
+    def clip_key(self, spec, genome, clip, style, neutral=None):
+        """Where a clip's strip is in the cache: the frames of one clip of one genome in one style, side by side. It moves with everything the plush picture moves with, and with the clip's own poses (wb/clips.py)."""
+        from wb import clips as CL
+        return H.hash_of("clip", style, CL.V, clip, CL.frames(clip), self.plush_key(spec, genome, neutral), spec.get("motion"))
+
+    def clip_of(self, sp, spec, genome, clip, n=None, nh=None, ask=True):
+        """A clip of a genome: the clay strip first (a few seconds), then the plush (about 25 s on one worker). {clay, plush: {key, ready, job}, frames, period, frame_s, size}; with `ask` what is not in the cache is asked for, the clay first."""
+        from wb import clips as CL
+        n = n or self.neutral(spec)
+        out = dict(CL.timings(spec, clip, None), genome=genome)
+        out.pop("ms")
+        for style in ("clay", "plush"):
+            k = self.clip_key(spec, genome, clip, style, n)
+            ready = self.cas.has(k, "png", touch=False)
+            job = None
+            if not ready and ask:
+                job = self.submit_clay_clip(sp, genome, clip, k, spec) if style == "clay" else self.submit_plush(sp, genome, PLAY_ACTOR, 1, spec=spec, clip=clip, key=k)
+            out[style] = dict(key=k, ready=ready, job=job.id if job else None)
+        return out
+
+    def submit_clay_clip(self, sp, genome, clip, key, spec):
+        job = J.Job(self.queue.new_id(), sp.id, "clayclip", dict(genome=genome, clip=clip), key, J.PRIORITY["clayclip"], spec, H.hash_of(spec), PLAY_ACTOR)
+        with self.queue.cv:
+            for j in self.queue.jobs.values():
+                if j.kind == "clayclip" and j.key == key and j.state in ("queued", "running"):
+                    return j
+        self.queue.add(job)
+        self.hub.emit("queued", sp.id, job=job.id, kind="clayclip", priority=job.priority, key=key, actor="play", spec_hash=job.spec_hash)
+        return job
+
+    def submit_plush(self, sp, genome, actor, priority=None, spec=None, big=False, clip=None, key=None):
         """The plush of one genome (az 32, 304x312, or the stage's 608x624 with `big`): from the cache at once, else a job. `priority` 1 (play) or 3 (the warm set); a job already waiting at a lower priority is moved up."""
         spec = copy.deepcopy(sp.spec) if spec is None else spec
         pic = self.picture(spec, genome, big=big)
-        job = J.Job(self.queue.new_id(), sp.id, "plush", dict(genome=genome, big=True) if big else dict(genome=genome), pic["key"], J.PRIORITY["plush"] if priority is None else priority, spec, H.hash_of(spec), actor)
+        if clip:                                                     # a clip's strip of the plush: the same worker, its own key
+            pic = dict(key=key, ready=self.cas.has(key, "png", touch=False))
+        job = J.Job(self.queue.new_id(), sp.id, "plush", dict(genome=genome, big=True) if big else dict(genome=genome, **({"clip": clip} if clip else {})), pic["key"], J.PRIORITY["plush"] if priority is None else priority, spec, H.hash_of(spec), actor)
         if pic["ready"]:
             job.cached, job.state = True, "done"
             job.result = dict(views=[dict(mode="plush", az=32, size=608 if big else 304, key=pic["key"], cached=True, ms=0.0)], ms=0.0, cache=dict(job_hit=True))
@@ -1454,6 +1492,18 @@ def make_handler(srv):
                 job = None if pic["ready"] else srv.submit_plush(sp, g, PLAY_ACTOR, 1)
                 clay = None if pic["ready"] else srv.submit(sp.id, "render", dict(genome=g, views=[["clay", 32, 304]]), PLAY_ACTOR, priority=0)
                 return self.send_json(dict(genome=g, **pic, job=job.id if job else None, clay_job=clay.id if clay else None))
+            m = re.fullmatch(r"/api/species/([^/]+)/clip", p)
+            if m:
+                sp = srv.get_species(m.group(1))
+                from wb import clips as CL
+                clip = q.get("clip", ["walk"])[0]
+                if clip not in CL.CLIPS:
+                    raise ApiError(400, f"clip is one of {', '.join(CL.CLIPS)}", "clip")
+                g = q.get("genome", [None])[0] or __import__("wb.play", fromlist=["x"]).state_genome(sp.spec)
+                try:
+                    return self.send_json(srv.clip_of(sp, copy.deepcopy(sp.spec), g, clip))
+                except F.BuildError as e:
+                    raise ApiError(400, e.message, "genome")
             m = re.fullmatch(r"/api/species/([^/]+)/spine", p)
             if m:
                 from wb import spine as SPN

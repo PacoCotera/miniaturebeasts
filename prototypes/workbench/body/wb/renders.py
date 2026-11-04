@@ -37,11 +37,11 @@ GAME_V1 = {
 # what this framework can draw of a set today; a variant outside it is `owed` with the reason
 CAN = dict(
     ages={"adult": True},
-    poses={"calm": True, "anchor": True},                       # anchor is the stage's own entry pose: the same pixels as calm until a species cuts more poses
-    kinds={"sprite": True, "layers": True},
+    poses={"calm": True, "anchor": True, "walk": True, "idle": True},         # anchor is the stage's own entry pose: the same pixels as calm until a species cuts more poses; walk and idle are the rig's clips (wb/clips.py)
+    kinds={"sprite": True, "layers": True, "strip": True},
     why_age="no young body in the species file yet",
     why_pose="no {pose} pose on the rig yet",
-    why_kind={"strip": "no clips yet", "glb": "no model export yet"},
+    why_kind={"glb": "no model export yet"},
 )
 
 

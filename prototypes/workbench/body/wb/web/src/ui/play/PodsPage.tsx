@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { getPods, keepPod, picUrl, saveMove, type Dial, type FamilyRow, type Pod, type Pods, type Stage } from '../../lib/play'
+import { getClip, getPods, keepPod, picUrl, saveMove, type Clip, type Dial, type FamilyRow, type Pod, type Pods, type Stage } from '../../lib/play'
 import { P } from '../../lib/words'
+import { withEyes } from '../../lib/eyes'
 import { Chevron, Frame, crop, root } from './PlayPage'
 import s from './play.module.css'
 import p from './pods.module.css'
@@ -55,17 +56,53 @@ function usePods(id: string) {
   }
 }
 
-function Card({ pod, name, on, kept, onPick, onKeep }: { pod: Pod; name: string; on: boolean; kept: boolean; onPick: () => void; onKeep: () => void }) {
+// The walk of a baby (spec 2.5, Moving): the clay loop plays as soon as it is drawn (a few seconds) and the plush loop takes its place when it lands, the same frames either way. A strip is its frames side by side: the picture steps along it.
+// While the clay plays the pill says the plush is being fluffed; while nothing is drawn yet the baby keeps breathing and the pill says sculpting. After a few loops the baby stands still again.
+const LOOPS = 4
+function useWalk(species: string, genome: string, on: number) {
+  const [clip, setClip] = useState<Clip | null>(null)
+  const [clay, setClay] = useState<string | null>(null)
+  useEffect(() => {
+    if (!on) return
+    let live = true
+    let timer = 0
+    const tick = async () => {
+      try {
+        const c = await getClip(species, genome, 'walk')
+        if (!live) return
+        setClip(c)
+        if (!c.plush.ready) timer = window.setTimeout(() => void tick(), 1200)
+      } catch { /* the still picture stays */ }
+    }
+    void tick()
+    return () => { live = false; window.clearTimeout(timer) }
+  }, [species, genome, on])
+  const ck = clip?.clay.ready && !clip.plush.ready ? picUrl(clip.clay.key) : null
+  useEffect(() => { let dead = false; setClay(null); if (ck && clip) void withEyes(ck, clip.frames).then((u) => { if (!dead) setClay(u) }); return () => { dead = true } }, [ck]) // eslint-disable-line react-hooks/exhaustive-deps
+  return { clip, clay: ck ? clay : null, plush: clip?.plush.ready ? picUrl(clip.plush.key) : null, ask: !!on }
+}
+
+function Card({ pod, species, name, on, kept, onPick, onKeep }: { pod: Pod; species: string; name: string; on: boolean; kept: boolean; onPick: () => void; onKeep: () => void }) {
   const [walk, setWalk] = useState(0)
+  const [loops, setLoops] = useState(0)
+  const w = useWalk(species, pod.genome, walk)
   const hatched = pod.ready && !!pod.key
+  const src = w.plush ?? w.clay
+  const stepping = !!walk && !!src && !!w.clip && loops < LOOPS
+  useEffect(() => { setLoops(0) }, [walk, src])
+  useEffect(() => { if (walk && loops >= LOOPS && w.plush) setWalk(0) }, [walk, loops, w.plush])
+  const pill = !!walk && (!src ? P.sculpt : !w.plush ? P.fluff : null)
   return (
     <div className={p.card} data-on={on || undefined} data-hatched={hatched || undefined} role="group" aria-label={P.pod(pod.i + 1)} onClick={onPick}>
       <div className={p.fig}>
-        {hatched ? <img key={pod.key} src={picUrl(pod.key!)} alt={name} className={[p.baby, p.hatch, walk ? p.toddle : ''].join(' ')} data-walk={walk || undefined} draggable={false} onAnimationEnd={(e) => { if (e.animationName.includes('toddle')) setWalk(0) }} />
+        {hatched ? (stepping ? <div className={[p.stride, w.plush ? '' : s.clay].join(' ')} role="img" aria-label={name} data-clip="walk" onAnimationIteration={() => setLoops((n) => n + 1)}
+            style={{ backgroundImage: `url(${src})`, ['--frames' as string]: w.clip!.frames, ['--loop' as string]: `${w.clip!.period}s` }} />
+          : <img key={pod.key} src={picUrl(pod.key!)} alt={name} className={[p.baby, p.hatch].join(' ')} draggable={false} />)
           : <div className={p.nestling}><Egg /><span className={p.wob}>{P.wobble}</span></div>}
+        {pill && <span className={p.pill} role="status"><i className={s.yarn} />{pill}</span>}
       </div>
       <div className={p.btns}>
-        <button className={s.round} aria-label={P.walk} disabled={!hatched} onClick={(e) => { e.stopPropagation(); setWalk((w) => w + 1) }}><Play /></button>
+        <button className={s.round} aria-label={P.walk} disabled={!hatched} onClick={(e) => { e.stopPropagation(); setWalk((n) => n + 1) }}><Play /></button>
         <button className={s.round} data-kept={kept || undefined} aria-label={P.keep} aria-pressed={kept} disabled={!hatched || kept} onClick={(e) => { e.stopPropagation(); onKeep() }}><Heart on={kept} /></button>
       </div>
     </div>
@@ -191,7 +228,7 @@ export function PodsPage() {
           <div className={p.nest} role="group" aria-label={P.nest}>
             <div className={p.felt} />
             <div className={p.grid}>
-              {(d?.pods ?? []).map((x, k) => <Card key={`${d?.round}.${x.i}.${x.tries}`} pod={x} name={d?.name ?? ''} on={sel === k} kept={!!kept[keepKey(x)]} onPick={() => setSel(k)} onKeep={() => setNaming(x)} />)}
+              {(d?.pods ?? []).map((x, k) => <Card key={`${d?.round}.${x.i}.${x.tries}`} species={species} pod={x} name={d?.name ?? ''} on={sel === k} kept={!!kept[keepKey(x)]} onPick={() => setSel(k)} onKeep={() => setNaming(x)} />)}
             </div>
           </div>
           <div className={p.side}>

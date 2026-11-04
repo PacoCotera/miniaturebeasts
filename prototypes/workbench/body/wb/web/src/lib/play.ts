@@ -34,6 +34,10 @@ export const getLook = (s: string, genome?: string) => call<Look>('GET', `/api/s
 export const getBig = (s: string, genome: string) => call<Look>('GET', `/api/species/${id(s)}/plush?size=big&genome=${encodeURIComponent(genome)}`)
 export const getJob = (j: string, wait = 2) => call<Job>('GET', `/api/jobs/${j}?wait=${wait}`)
 export const getPods = (s: string, round: number, diff?: Dial, grow?: Stage) => call<Pods>('GET', `/api/species/${id(s)}/pods?round=${round}${diff ? `&diff=${diff}` : ''}${grow ? `&grow=${grow}` : ''}`)
+// A clip of a genome (chunk 16): the strips of its frames side by side, the clay first and the plush after it; each is {key, ready}, and `frame_s` is how long one frame is shown.
+export type ClipStrip = { key: string; ready: boolean; job: string | null }
+export type Clip = { clip: 'walk' | 'idle'; genome: string; frames: number; period: number; frame_s: number; size: [number, number]; clay: ClipStrip; plush: ClipStrip }
+export const getClip = (s: string, genome: string, clip: 'walk' | 'idle' = 'walk') => call<Clip>('GET', `/api/species/${id(s)}/clip?clip=${clip}&genome=${encodeURIComponent(genome)}`)
 export const keepPod = (s: string, pod: { round: number; i: number; tries: number; diff: Dial; grow: Stage; name: string }) => call<Kept>('POST', `/api/species/${id(s)}/keep`, pod)
 export const undoMove = (s: string) => call<{ undo: boolean; redo: boolean }>('POST', `/api/species/${id(s)}/undo`)
 

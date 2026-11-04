@@ -10,8 +10,8 @@
 .hatch { animation: hatch .6s cubic-bezier(.3, 1.5, .5, 1), breathe 4.2s ease-in-out .6s infinite; }
 @keyframes hatch { 0% { opacity: .2; transform: translateX(-50%) scale(.6); } 70% { opacity: 1; transform: translateX(-50%) scale(1.06); } 100% { transform: translateX(-50%) scale(1); } }
 @keyframes breathe { 50% { transform: translateX(-50%) scale(1.012, 1.02); } }
-.toddle { animation: toddle 2.2s ease-in-out; }
-@keyframes toddle { 0%, 100% { transform: translateX(-50%) rotate(0); } 12% { transform: translateX(-62%) rotate(-5deg) translateY(-6px); } 25% { transform: translateX(-50%) rotate(0); } 37% { transform: translateX(-38%) rotate(5deg) translateY(-6px); } 50% { transform: translateX(-50%) rotate(0); } 62% { transform: translateX(-62%) rotate(-5deg) translateY(-6px); } 75% { transform: translateX(-50%) rotate(0); } 87% { transform: translateX(-42%) rotate(4deg) translateY(-4px); } }
+
+
 .nestling { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .egg { width: 96px; height: 120px; animation: wobble 1.4s ease-in-out infinite; transform-origin: 50% 90%; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .12)); }
 @keyframes wobble { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-7deg); } 45% { transform: rotate(6deg); } 70% { transform: rotate(-3deg); } }
@@ -51,3 +51,10 @@
   .egg { width: 70px; height: 88px; }
   .side { width: 100%; overflow: visible; flex: none; }
 }
+
+/* The walk of a baby: the strip of a clip (its frames side by side) stepped along, on the same footing as the still picture. */
+.stride { position: absolute; left: 50%; top: 0; height: 100%; aspect-ratio: 304 / 312; transform: translateX(-50%); background-repeat: no-repeat; background-size: calc(var(--frames) * 100%) 100%; animation: stride var(--loop) steps(var(--frames), jump-none) infinite; pointer-events: none; }
+@keyframes stride { from { background-position: 0 0; } to { background-position: 100% 0; } }
+.pill { position: absolute; left: 50%; top: 4px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 18px; padding: 6px 12px; font-size: 16px; font-weight: 500; white-space: nowrap; box-shadow: 0 4px 0 rgba(0, 0, 0, .08); z-index: 3; }
+.pill i { width: 20px; height: 20px; flex: none; }
+@media (prefers-reduced-motion: reduce) { .stride { animation-duration: calc(var(--loop) * 3); } }

@@ -153,9 +153,39 @@ def main():
         T["extremes_builds"] = n
         return crun("extremes", Ctx(spec, doc=raw, ends=ends)), ends
 
+    clay = {}
+
+    def do_clip(req):
+        """The clay strip of a clip of one genome (wb/clips.py): its frames side by side in one PNG, into the cache under the request's key."""
+        import tempfile
+        from wb import renderset as RSET, pngio, clips as CL
+        t0 = time.perf_counter()
+        if "px" not in clay:
+            clay["px"] = RSET.Proxy(None, pr=pr)
+        scratch = tempfile.mkdtemp(prefix="clip-", dir=os.path.dirname(cas.tmp("png")))
+        try:
+            subject = RSET.Subject(req["spec"], req.get("genome", "type"), scratch)
+            frames, ms = [], []
+            n = CL.frames(req["clip"])
+            for i in range(n):
+                f, m = RSET.clay_clip_frame(clay["px"], subject, req["clip"], i, CL.SIZE, scratch)
+                frames.append(f)
+                ms.append(m)
+                send(dict(id=req["id"], progress=dict(done=i + 1, of=n)))
+            tmp = cas.tmp("png")
+            pngio.write(tmp, RSET.strip_of(frames))
+            cas.adopt(tmp, req["key"], "png")
+            cas.put_json(req["key"], dict(clip=req["clip"], style="clay", frame_ms=ms, ms=round((time.perf_counter() - t0) * 1000)))
+            return dict(views=[dict(mode="clay", clip=req["clip"], key=req["key"], frame_ms=ms, cached=False, ms=round((time.perf_counter() - t0) * 1000))], ms=round((time.perf_counter() - t0) * 1000), cache=dict(job_hit=False))
+        finally:
+            import shutil
+            shutil.rmtree(scratch, ignore_errors=True)
+
     def handle(req):
         T = {}
         t0 = time.perf_counter()
+        if req["op"] == "clayclip":
+            return do_clip(req)
         ck, summ, mesh, cage_hit = ensure_cage(req, T)
         res = dict(cage=dict(key=ck, cage_hash=summ["cage_hash"], vertices=summ["vertices"], vertices_l1=summ.get("vertices_l1"), faces=summ["faces"], cached=cage_hit,
                              timings_ms=summ["timings_ms"], balance=summ.get("balance")), views=[])

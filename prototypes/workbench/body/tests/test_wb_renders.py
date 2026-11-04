@@ -60,7 +60,9 @@ class TestBlock(unittest.TestCase):
                 owed.setdefault(r["output"], []).append(r["why"])
         self.assertIn("young body", owed["incubator"][0])
         self.assertTrue(any("curl" in w for w in owed["sleeper"]))
-        self.assertIn("clip", owed["walk"][0])
+        self.assertEqual([r["age"] for r in rows if r["output"] == "walk" and r["state"] == "owed"], ["juvenile"])     # the clips are drawn for the grown body; the young one waits for its own body
+        self.assertIn("young body", owed["walk"][0])
+        self.assertIn(("walk", "adult-walk"), ready)
         self.assertIn("model export", owed["model"][0])
         self.assertTrue(all(r["state"] == "ready" for r in rows if r["age"] == "adult" and r["pose"] in ("calm", "anchor") and r["kind"] in ("sprite", "layers")))
 
