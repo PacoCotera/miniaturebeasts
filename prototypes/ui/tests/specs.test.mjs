@@ -738,6 +738,7 @@ const walk = (o, fn, trail = []) => { if (o && typeof o === "object") for (const
 // every target the screens ring, with the shape its object makes of it (§8): the radius of a plate (6) or of a square panel (0), the pod's oval, the circles, the footprint and the tab
 const SHAPES = {
   "home.json": { vivarium: { rect: 10 }, library: { rect: 10 }, pods: { rect: 8 }, incubator: { rect: 8 }, companion: { rect: 8 }, bay: { rect: 8 }, settings: { rect: 2 } },   // the bezels' radius 10 and the stations' 8: the ring (4 out) is 14 and 12
+  "settings.json": { realm: { rect: 8 }, companion: { rect: 8 }, sleeping: { rect: 8 }, sleep: { rect: 8 } },   // the rows' radius 8 (the ring 4 out makes 12, a station's)
   "vivarium.json": { resident: "footprint", room: { rect: 6 }, plate: { rect: 6 }, cell: { rect: 6 }, rail: { rect: 6 }, tool: { rect: 6 }, band: { rect: 6 }, move: { rect: 6 }, swap: { rect: 6 } },
   "habitat.json": { room: { rect: 6 }, resident: "footprint", name: { rect: 0 }, species: { rect: 0, chip: 4 }, family: { rect: 0, chip: 4 }, plate: { rect: 0 }, door: { rect: 6 }, portrait: { rect: 6 }, cross: { rect: 6 }, wild: { rect: 6 }, tile: { rect: 6 } },
   "namer.json": { key: { rect: 0 }, "mod.shift": { rect: 0 }, "mod.space": { rect: 0 }, "mod.page": { rect: 0 }, "act.done": { rect: 0 }, "act.suggest": { rect: 0 } },

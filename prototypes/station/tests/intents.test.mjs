@@ -40,7 +40,7 @@ const openInv = (h) => { h.ui.screen = "pods"; openInventory(h, { from: "home" }
 const chapters = (id) => frameOf(id).chapters.map((c) => c.id);
 
 test("every screen with intents has a module, and a face intent reaches it; the frame's verbs are the same on every screen", () => {
-  assert.deepEqual(Object.keys(INTENTS).sort(), ["bench", "cargo", "create", "frame", "habitat", "home", "incubator", "library", "library.family", "library.species", "namer", "panel", "pods", "sitting", "vivarium"]);
+  assert.deepEqual(Object.keys(INTENTS).sort(), ["bench", "cargo", "create", "frame", "habitat", "home", "incubator", "library", "library.family", "library.species", "namer", "panel", "pods", "settings", "sitting", "vivarium"]);
   const st = world(), h = host(st); h.ui.screen = "library";
   dispatch(h, { screen: "library", target: "x", verb: "room:home" }); assert.deepEqual(h.went, ["home"]); assert.equal(h.ui.home.f, "room");
 });

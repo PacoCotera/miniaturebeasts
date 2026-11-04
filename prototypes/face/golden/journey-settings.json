@@ -1,0 +1,227 @@
+{
+ "_note": "Settings, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and the focus and intents the face said, the screen, the ring and the line after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "settings-walk": [
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "settings"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "settings",
+    "ok": null,
+    "subject": null,
+    "back": null,
+    "line": {
+     "verb": "Go to Settings"
+    },
+    "sleepDim": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "settings",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "settings",
+    "ok": null,
+    "subject": null,
+    "back": null,
+    "line": {
+     "verb": "Go to Settings"
+    },
+    "sleepDim": null
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "companion"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "companion",
+    "ok": null,
+    "subject": null,
+    "back": null,
+    "line": {
+     "verb": "Go to the Probe bench"
+    },
+    "sleepDim": null
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "settings"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "settings",
+    "ok": null,
+    "subject": null,
+    "back": null,
+    "line": {
+     "verb": "Go to Settings"
+    },
+    "sleepDim": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "settings",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "settings",
+    "state": "settings",
+    "focus": "realm",
+    "ok": null,
+    "subject": "Your realm",
+    "back": "Home",
+    "line": null,
+    "sleepDim": false
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "settings",
+      "target": "companion"
+     }
+    ],
+    "screen": "settings",
+    "state": "settings",
+    "focus": "companion",
+    "ok": null,
+    "subject": "Your Companion",
+    "back": "Home",
+    "line": null,
+    "sleepDim": false
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "settings",
+      "target": "sleeping"
+     }
+    ],
+    "screen": "settings",
+    "state": "settings",
+    "focus": "sleeping",
+    "ok": null,
+    "subject": "Sleeping realms",
+    "back": "Home",
+    "line": null,
+    "sleepDim": false
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "settings",
+      "target": "sleep"
+     }
+    ],
+    "screen": "settings",
+    "state": "settings",
+    "focus": "sleep",
+    "ok": null,
+    "subject": "Put this realm to sleep",
+    "back": "Home",
+    "line": null,
+    "sleepDim": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "settings",
+      "target": "sleep",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "settings",
+    "state": "settings",
+    "focus": "sleep",
+    "ok": null,
+    "subject": "Put this realm to sleep",
+    "back": "Home",
+    "line": null,
+    "sleepDim": false
+   },
+   {
+    "key": "down",
+    "said": [],
+    "screen": "settings",
+    "state": "settings",
+    "focus": "sleep",
+    "ok": null,
+    "subject": "Put this realm to sleep",
+    "back": "Home",
+    "line": null,
+    "sleepDim": false
+   },
+   {
+    "lifted": true,
+    "focus": "sleep",
+    "sleep": {
+     "sub": "Dock your Companion to sign",
+     "dim": true
+    },
+    "detail": [
+     {
+      "kind": "notice",
+      "text": "Dock your Companion to sign"
+     }
+    ]
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "settings",
+      "target": "sleep",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "settings",
+    "ok": null,
+    "subject": null,
+    "back": null,
+    "line": {
+     "verb": "Go to Settings"
+    },
+    "sleepDim": null
+   }
+  ]
+ }
+}
