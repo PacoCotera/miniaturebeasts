@@ -95,7 +95,8 @@
     "para": "body",
     "facts": "body.facts",
     "label": "quiet",
-    "notice": "notice"
+    "notice": "notice",
+    "labelGap": 4
    },
    "foot": {
     "bottom": 20,
@@ -171,7 +172,7 @@
    },
    "sleep": {
     "title": "Put this realm to sleep",
-    "hint": "Needs your Companion docked"
+    "sub": "Kept on the Caddy · a new realm begins"
    }
   },
   "state": {
@@ -187,7 +188,8 @@
    "companion": {
     "title": "Your Companion",
     "facts": "{name} · {state} · with this realm since {since}",
-    "factsNone": "No Companion has docked at this Station yet"
+    "factsNone": "No Companion has docked at this Station yet",
+    "sinceNone": "its first dock"
    },
    "sleeping": {
     "title": "Sleeping realms",
@@ -196,15 +198,15 @@
    },
    "sleep": {
     "title": "Put this realm to sleep",
-    "paras": ["Your whole realm sleeps: its regions, mibis, pods, the Library, Data, Energy and Essence. It is kept on the Caddy, signed by your Companion, and only your Companion can wake it.", "Your Station, Caddy and Companion then begin a new realm, from the beginning."],
-    "label": "Your realm",
+    "paras": ["Your whole realm sleeps: its regions, mibis, pods, the Library, Data, Energy and Essence. It is kept on the Caddy, signed by your Companion.", "Then your Station, Caddy and Companion start a new realm in the Meadows."],
+    "label": "This realm",
     "facts": ["Began {began} · world turn {turn}", "{regions} · {mibis} · {pods}"],
     "factsNoDate": ["World turn {turn}", "{regions} · {mibis} · {pods}"],
-    "foot": "Two steps: a check, then hold ✓ for 3 seconds."
+    "foot": "Two steps: see what sleeps, then hold ✓ for 3 seconds."
    }
   },
   "reasons": {
-   "not docked": "Dock your Companion to sign",
+   "not docked": "Dock your Companion · it signs the realm",
    "no key": "This Companion has no key this Station trusts",
    "no save": "This realm is not saved in a form that can sleep"
   },

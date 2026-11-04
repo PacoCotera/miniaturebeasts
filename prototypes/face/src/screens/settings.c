@@ -37,13 +37,14 @@ static void detail(void) {
   char title[V_STR], role[40]; snprintf(title, sizeof title, "%s", v_pstr("regions.detail.title")); snprintf(role, sizeof role, "%s", v_sstr(S, strcmp(v_pstr("regions.detail.key"), "sleep") == 0 ? "regions.detail.title.variants.sleep" : "regions.detail.title.role"));
   v_region("detail", LAYER_TYPE);
   v_say("detail.title", title, x, r[1] + v_si(S, "regions.detail.title.y", 20), V_ANCHOR_LINE, role, g, V_ALIGN_LEFT);
-  int n = v_plen("regions.detail.blocks");
+  int n = v_plen("regions.detail.blocks"), lgap = v_si(S, "regions.detail.flow.labelGap", 4);
   for (int i = 0; i < n; i++) {
-    char kind[16], text[V_STR * 2], buf[V_STR * 3], rl[40]; snprintf(kind, sizeof kind, "%s", v_pstr(v_fmt("regions.detail.blocks.%d.kind", i))); snprintf(text, sizeof text, "%s", v_pstr(v_fmt("regions.detail.blocks.%d.text", i)));
+    char kind[16], next[16] = "", text[V_STR * 2], buf[V_STR * 3], rl[40]; snprintf(kind, sizeof kind, "%s", v_pstr(v_fmt("regions.detail.blocks.%d.kind", i))); snprintf(text, sizeof text, "%s", v_pstr(v_fmt("regions.detail.blocks.%d.text", i)));
+    if (i + 1 < n) snprintf(next, sizeof next, "%s", v_pstr(v_fmt("regions.detail.blocks.%d.kind", i + 1)));
     snprintf(rl, sizeof rl, "%s", v_sstr(S, v_fmt("regions.detail.flow.%s", kind)));
     int lines = v_role_wrap(text, w, rl, buf, sizeof buf, 6), pitch = v_role_pitch(rl); const char *q = buf;
     for (int k = 0; k < lines; k++) { v_say(v_fmt("detail.b%d.l%d", i, k), q, x, y, V_ANCHOR_LINE, rl, g, V_ALIGN_LEFT); y += pitch; q += strlen(q) + 1; }
-    y += strcmp(kind, "label") == 0 ? 4 : gap;
+    y += strcmp(kind, "label") == 0 ? lgap : (strcmp(kind, "facts") == 0 && strcmp(next, "facts") == 0) ? 0 : gap;   /* a facts line follows a facts line at the facts pitch; the label sits close above its lines */
   }
   const char *foot = v_pstr("regions.detail.foot");
   if (*foot) { const char *fr = v_sstr(S, "regions.detail.foot.role"); v_say("detail.foot", foot, x, r[1] + r[3] - v_si(S, "regions.detail.foot.bottom", 20) - v_role_pitch(fr), V_ANCHOR_LINE, fr, g, V_ALIGN_LEFT); }

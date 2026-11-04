@@ -20,11 +20,11 @@ export function sleepBlock(m) {
   return null;
 }
 
-// The realm's counts as words: the regions the save holds, the mibis that are not released, the pods in the case and the rack, and the world turn.
+// The realm's counts as words: the regions the save holds, the mibis that are not released, the pods in the case and the rack, and the world turn as the top bar counts it (the bar says Turn n + 1).
 export function realmFacts(m, spec) {
   const { st, sv } = m, U = spec.strings.units, n = (k, v) => fill(U[k], { n: v });
   const regions = Array.isArray(sv?.regions) ? sv.regions.length : 1, mibis = st.mibis.filter((x) => !x.released).length, pods = st.tray.length + st.waiting.length;
-  return { began: dayWords(sv?.began), regions: n("regions", regions), mibis: n("mibis", mibis), pods: n("pods", pods), turn: String(sv?.turn ?? st.turn ?? 0) };
+  return { began: dayWords(sv?.began), regions: n("regions", regions), mibis: n("mibis", mibis), pods: n("pods", pods), turn: String((st.turn ?? 0) + 1) };
 }
 
 export function settingsBuild(m, spec) {
@@ -35,13 +35,13 @@ export function settingsBuild(m, spec) {
     realm: { sub: f.began ? fill(R.realm.sub, { began: f.began }) : R.realm.subNoDate },
     companion: { sub: c ? fill(R.companion.sub, { name: c.name, state }) : R.companion.subNone },
     sleeping: { sub: count ? fill(R.sleeping.count, { n: count }) : R.sleeping.none },
-    sleep: { sub: block ? Sg.reasons[block] : R.sleep.hint, dim: !!block },
+    sleep: { sub: block ? Sg.reasons[block] : R.sleep.sub, dim: !!block },
   };
   const detail = { key: cur, title: "", blocks: [], foot: "" };
   if (cur === "realm") { detail.title = D.realm.title; detail.blocks.push({ kind: "facts", text: capLine(fill(f.began ? D.realm.facts : D.realm.factsNoDate, f)) }); }
   else if (cur === "companion") {
     detail.title = D.companion.title;
-    detail.blocks.push({ kind: "facts", text: c ? capLine(fill(D.companion.facts, { name: c.name, state, since: dayWords(c.since) || "its first dock" })) : D.companion.factsNone });
+    detail.blocks.push({ kind: "facts", text: c ? capLine(fill(D.companion.facts, { name: c.name, state, since: dayWords(c.since) || D.companion.sinceNone })) : D.companion.factsNone });
   } else if (cur === "sleeping") { detail.title = D.sleeping.title; detail.blocks.push({ kind: "facts", text: count ? fill(D.sleeping.count, { n: count }) : D.sleeping.none }); }
   else {
     const Z = D.sleep; detail.title = Z.title;

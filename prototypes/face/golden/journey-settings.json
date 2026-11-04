@@ -8,28 +8,27 @@
      {
       "t": "focus",
       "screen": "home",
-      "target": "settings"
+      "target": "vivarium"
      }
     ],
     "screen": "home",
     "state": "home",
-    "focus": "settings",
+    "focus": "vivarium",
     "ok": null,
     "subject": null,
     "back": null,
     "line": {
-     "verb": "Go to Settings"
+     "verb": "Go to the Vivarium"
     },
     "sleepDim": null
    },
    {
-    "key": "confirm",
+    "key": "up",
     "said": [
      {
-      "t": "intent",
+      "t": "focus",
       "screen": "home",
-      "target": "settings",
-      "verb": "confirm"
+      "target": "settings"
      }
     ],
     "screen": "home",
@@ -191,13 +190,13 @@
     "lifted": true,
     "focus": "sleep",
     "sleep": {
-     "sub": "Dock your Companion to sign",
+     "sub": "Dock your Companion · it signs the realm",
      "dim": true
     },
     "detail": [
      {
       "kind": "notice",
-      "text": "Dock your Companion to sign"
+      "text": "Dock your Companion · it signs the realm"
      }
     ]
    },

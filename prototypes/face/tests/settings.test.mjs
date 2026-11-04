@@ -79,20 +79,25 @@ test("the sleep row says why it cannot act, in the order of the sleep's own pref
   for (const [sc, why] of [["the sleep row, lifted", "not docked"], ["the sleep row, no key", "no key"], ["the sleep row, no save", "no save"]]) {
     const p = settingsBuild(SCENES[sc](), spec).props.regions; assert.equal(p.sleep.dim, true); assert.equal(p.sleep.sub, R[why]); assert.ok(p.detail.blocks.some((b) => b.kind === "notice" && b.text === R[why]), sc);
   }
-  const ok = settingsBuild(SCENES["the sleep row, docked"](), spec).props.regions; assert.equal(ok.sleep.dim, false); assert.equal(ok.sleep.sub, spec.strings.rows.sleep.hint); assert.ok(!ok.detail.blocks.some((b) => b.kind === "notice"));
+  const ok = settingsBuild(SCENES["the sleep row, docked"](), spec).props.regions; assert.equal(ok.sleep.dim, false); assert.equal(ok.sleep.sub, spec.strings.rows.sleep.sub); assert.ok(!Object.values(spec.strings.reasons).includes(ok.sleep.sub), "nothing stops it: the line names no condition"); assert.ok(!ok.detail.blocks.some((b) => b.kind === "notice"));
 });
 
 test("the realm's words: the day it began, the regions, the mibis that are not released, the world turn; plural and singular; no date when the save has none", () => {
   const m = model({ mibis: 3 }); m.st.mibis[0].released = true;
-  assert.equal(settingsBuild(m, spec).props.regions.detail.blocks[0].text, "Began 4 Nov 2026 · 3 regions · 2 mibis · world turn 41");
-  assert.equal(settingsBuild(model({ regions: 1, mibis: 1 }), spec).props.regions.detail.blocks[0].text, "Began 4 Nov 2026 · 1 region · 1 mibi · world turn 41");
-  const nd = settingsBuild(model({ began: null, regions: 2 }), spec).props.regions; assert.equal(nd.realm.sub, spec.strings.rows.realm.subNoDate); assert.equal(nd.detail.blocks[0].text, "2 regions · 3 mibis · world turn 41");
+  assert.equal(settingsBuild(m, spec).props.regions.detail.blocks[0].text, "Began 4 Nov 2026 · 3 regions · 2 mibis · world turn 42");
+  assert.equal(settingsBuild(model({ regions: 1, mibis: 1 }), spec).props.regions.detail.blocks[0].text, "Began 4 Nov 2026 · 1 region · 1 mibi · world turn 42");
+  const nd = settingsBuild(model({ began: null, regions: 2 }), spec).props.regions; assert.equal(nd.realm.sub, spec.strings.rows.realm.subNoDate); assert.equal(nd.detail.blocks[0].text, "2 regions · 3 mibis · world turn 42");
   assert.equal(dayWords(BEGAN), "4 Nov 2026"); assert.equal(dayWords(undefined), "");
   const c = settingsBuild(model({ f: "companion" }), spec).props.regions; assert.equal(c.companion.sub, "Companion A · docked"); assert.equal(c.detail.blocks[0].text, "Companion A · docked · with this realm since 4 Nov 2026");
   assert.equal(settingsBuild(model({ f: "companion", docked: false }), spec).props.regions.companion.sub, "Companion A · lifted");
   assert.equal(settingsBuild(model({ f: "companion", noCompanion: true }), spec).props.regions.companion.sub, spec.strings.rows.companion.subNone);
   assert.equal(settingsBuild(model({ f: "sleeping", sleeping: 2 }), spec).props.regions.sleeping.sub, "2 kept");
   assert.equal(settingsBuild(model({ f: "sleeping" }), spec).props.regions.detail.blocks[0].text, "None yet");
+});
+
+test("one turn on one screen: the detail's world turn is the figure the top bar shows (the bar counts from 1)", () => {
+  const m = model({ turn: 7 }), b = settingsBuild({ ...m, ui: { f: "realm" } }, spec); assert.match(b.props.regions.detail.blocks[0].text, /world turn 8$/);
+  assert.match(settingsBuild({ ...m, ui: { f: "sleep" } }, spec).props.regions.detail.blocks.find((x) => x.text.startsWith("Began")).text, /world turn 8$/);
 });
 
 test("the bottom line: the focused row's name, no ✓ yet, ← Home", () => {
@@ -145,6 +150,12 @@ for (const [name, mk] of Object.entries(SCENES)) {
     const detail = (lg.type ?? []).filter((t) => t.region === "detail").map((t) => t.text); assert.equal(detail[0], b.props.regions.detail.title);
   });
 }
+
+test("the facts lines of the sleep detail stand at the facts pitch under their label: the second 24 px under the first", { skip }, async () => {
+  const f = await start(settingsBuild(SCENES["the sleep row, docked"](), spec)), lg = logOf(f), t = (lg.type ?? []).filter((x) => x.region === "detail");
+  const a = t.find((x) => x.text.startsWith("Began")), b = t.find((x) => x.text.includes("regions ·")); assert.ok(a && b); assert.equal(b.cap - a.cap, 24);
+  const label = t.find((x) => x.text === "This realm"); assert.ok(a.cap - label.cap < 28, "the label sits close above its first line");
+});
 
 test("every vector of the spec is played on the face: the focus is said on the frame of the key, a key that moves nothing changes no pixel", { skip }, async () => {
   assert.equal(spec.focus.vectors.length, 16, "four rows, four keys each");
