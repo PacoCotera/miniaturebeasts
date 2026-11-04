@@ -150,6 +150,52 @@ class Species:
         t = now()
         return [dict(t=t, actor=actor["name"] if actor else "file", role=actor["role"] if actor else None, agent=bool(actor and actor.get("agent")), via=via, op="replace", path=p, old=o, new=n, hash_before=h0, hash_after=h1) for p, o, n in changes]
 
+    def groups(self):
+        """The undo log as saves: the entries one patch wrote (same time and hash) are one save. Returns (all saves in order, the saves that can be undone, the saves that can be redone).
+        An edit (api, cli or a file edit) goes on the undo stack and empties the redo stack; an undo moves the save it undid to the redo stack, and a redo moves it back."""
+        if not os.path.exists(self.undo_path):
+            return [], [], []
+        with open(self.undo_path) as fh:
+            ents = [json.loads(l) for l in fh if l.strip()]
+        saves = []
+        for e in ents:
+            if saves and saves[-1][0]["t"] == e["t"] and saves[-1][0]["hash_after"] == e["hash_after"]:
+                saves[-1].append(e)
+            else:
+                saves.append([e])
+        undo, redo = [], []
+        for g in saves:
+            via = g[0].get("via")
+            if via == "undo" and undo:
+                redo.append(undo.pop())
+            elif via == "redo" and redo:
+                undo.append(redo.pop())
+            else:
+                undo.append(g)
+                redo = []
+        return saves, undo, redo
+
+    def can_undo_redo(self):
+        _, u, r = self.groups()
+        return dict(undo=bool(u), redo=bool(r))
+
+    def revert(self, kind, actor):
+        """Undo the last save that is not undone (kind 'undo'), or redo the last one undone ('redo'): the fields go back to the values that save found (or took), as one new save in the log with the actor who asked.
+        Each field is tested first: a hand that changed it since is not overwritten (409, naming the field)."""
+        with self.lock:
+            _, u, r = self.groups()
+            stack = u if kind == "undo" else r
+            if not stack:
+                raise ApiError(409, "nothing to undo" if kind == "undo" else "nothing to redo", None)
+            g = stack[-1]
+            ops = []
+            for e in reversed(g):
+                cur, want = (e["new"], e["old"]) if kind == "undo" else (e["old"], e["new"])
+                if cur is not None:
+                    ops.append(dict(op="test", path=e["path"], value=cur))
+                ops.append(dict(op="remove", path=e["path"]) if want is None else dict(op="add" if cur is None else "replace", path=e["path"], value=want))
+            return ops
+
     def patch(self, ops, actor, via="api"):
         """Apply a JSON patch, write the file, log each changed field with the actor. Returns (changes, hash)."""
         with self.lock:

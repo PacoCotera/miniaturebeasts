@@ -119,7 +119,93 @@ def fields_of(doc, part):
     return out
 
 
+# ---------------------------------------------------------------------------------------------- chunk 21B: sockets, joins and families
+# Which locus holds how often each family shows (the weights of its pair-map), for a part or socket of the outline.
+FAMILY_LOCUS = {"ears": "form.ear-kind", "tip": "anatomy.tail-tip-form"}
+# The play surface (spec 2.3): the toy a part feeds, its picture chips (the family and the short word play shows) and its size slider (the field that moves). The words are `pl.toy.*` of the copywriter's list.
+PLAY = {
+    "ears": dict(toy="Ears", chips={"prick": "pointy", "lop": "floppy", "nub": "nubs"}, slider="/genome/loci/{locus:form.ear-length}/type"),
+    "tip": dict(toy="Tail", chips={"lantern": "lantern", "tuft": "tuft", "plain": "plain"}, slider="/spine/tail/length"),
+    "tail": dict(toy="Tail", chips={"lantern": "lantern", "tuft": "tuft", "plain": "plain"}, slider="/spine/tail/length"),
+}
+PLAY_STEPS = 7
+
+
+def _socket_index(doc, sid):
+    return next((i for i, s in enumerate(doc.get("sockets") or []) if isinstance(s, dict) and s.get("id") == sid), None)
+
+
+def _locus_index(doc, locus):
+    loci = (doc.get("genome") or {}).get("loci") or []
+    return next((i for i, l in enumerate(loci) if isinstance(l, dict) and l.get("locus") == locus), None)
+
+
+def _part_index(doc, pid):
+    return next((i for i, p in enumerate(doc.get("parts") or []) if isinstance(p, dict) and p.get("id") == pid), None)
+
+
+def socket_fields(doc, part):
+    """The join of the part's socket (hard or soft, nothing in between), the socket's default family and how often each family shows. A part's socket is the `socket` of the part (limbs and appendages) or an entry of `sockets` (crown, tail tip)."""
+    lab = part.capitalize()
+    nest = {i: m for i, _, _, m in NESTED.get(doc.get("plan"), NESTED["biped"])}
+    m = nest.get(part)
+    out = []
+    if not m:
+        return out
+    if "part" in m:
+        k = _part_index(doc, m["part"])
+        if k is not None and isinstance((doc["parts"][k].get("socket") or {}).get("join"), str):
+            out.append(_field(doc, lab, f"/parts/{k}/socket/join", f"parts.{m['part']}.socket.join", "parts[].socket.join", label="Join"))
+    sid = {"ears": "ear.L"}.get(part, m.get("socket"))
+    k = _socket_index(doc, sid) if sid else None
+    if k is not None:
+        spec = doc["sockets"][k].get("spec") or {}
+        fam = spec.get("families")
+        if isinstance(fam, list) and len(fam) > 1 and spec.get("default") in fam:
+            d = spec_at("parts[].default")
+            out.append(dict(id=f"sockets.{sid}.default", ptr=f"/sockets/{k}/spec/default", label="Default family", full="Default family", help=d["help"], type="enum", unit="", options=list(fam)))
+    loc = FAMILY_LOCUS.get(part)
+    li = _locus_index(doc, loc) if loc else None
+    if li is not None:
+        l = doc["genome"]["loci"][li]
+        if isinstance(l.get("weights"), list) and len(l["weights"]) == len(l.get("limits") or []):
+            out.append(dict(id=f"genome.loci.{loc}.weights", ptr=f"/genome/loci/{li}/weights", label="How often", full=f"{l.get('label', loc)}, how often each shows", help="How often each family shows in wild draws.", type="weights", unit="", options=list(l["limits"])))
+    return out
+
+
+def play_of(doc, part):
+    """What the player sees of a part: the toy's head, its picture chips (the families the socket allows that play has a word for, the one in force marked) and the slider with its 7 steps. None when no toy reads this part."""
+    p = PLAY.get(part)
+    if not p:
+        return None
+    chips = []
+    nest = {i: m for i, _, _, m in NESTED.get(doc.get("plan"), NESTED["biped"])}
+    m = nest.get(part, {})
+    sid = {"ears": "ear.L"}.get(part, m.get("socket", "tail.tip" if part == "tail" else None))
+    k = _socket_index(doc, sid) if sid else None
+    spec = (doc["sockets"][k].get("spec") or {}) if k is not None else {}
+    fam = [f for f in spec.get("families") or [] if f in p["chips"]]
+    chips = [dict(family=f, word=p["chips"][f], on=f == spec.get("default"), ptr=f"/sockets/{k}/spec/default") for f in fam]
+    sl = p["slider"]
+    if "{locus:" in sl:
+        loc = sl[sl.index("{locus:") + 7:sl.index("}")]
+        li = _locus_index(doc, loc)
+        if li is None:
+            ptr, rng = None, None
+        else:
+            l = doc["genome"]["loci"][li]
+            ptr = f"/genome/loci/{li}/type"
+            rng = (l.get("band") or l.get("absolute") or {})
+            rng = [rng.get("lo"), rng.get("hi")] if rng else l.get("range")
+    else:
+        ptr = sl
+        plan = V1.PLANS.get(doc.get("plan")) or V1.PLANS["biped"]
+        r = V1._range(spec_at("spine.tail.length"), plan)
+        rng = [r[0], r[1]] if r else None
+    return dict(toy=p["toy"], chips=chips, slider=dict(ptr=ptr, range=rng, steps=PLAY_STEPS) if ptr and rng else None)
+
+
 def forms(doc):
-    """Everything Shape mode needs of a file: the outline and each part's fields."""
+    """Everything Shape mode needs of a file: the outline and each part's fields (the socket's join, default family and family weights after the numbers), and what the player sees of it."""
     rows = outline(doc)
-    return dict(plan=doc.get("plan"), outline=rows, parts={r["id"]: dict(label=r["label"], kind=r["kind"], fields=fields_of(doc, r["id"])) for r in rows if r["kind"] != "section"})
+    return dict(plan=doc.get("plan"), outline=rows, parts={r["id"]: dict(label=r["label"], kind=r["kind"], fields=fields_of(doc, r["id"]) + socket_fields(doc, r["id"]), play=play_of(doc, r["id"])) for r in rows if r["kind"] != "section"})

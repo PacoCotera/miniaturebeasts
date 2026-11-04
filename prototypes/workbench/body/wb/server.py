@@ -238,15 +238,22 @@ class Server:
             return []
         return [dict(mode=m, az=a, size=z, key=k, ready=self.cas.has(k, "png")) for (m, a, z), k in zip(K_VIEWS, K.frames(ck, K_VIEWS))]
 
-    def patch_species(self, sid, ops, actor):
+    def patch_species(self, sid, ops, actor, via="api"):
         sp = self.get_species(sid)
         with sp.lock:
             new = S.apply_patch(sp.spec, ops)
             self.check_file(new, raise_on_fail=True)
-            changes, h = sp.patch(ops, actor)
+            changes, h = sp.patch(ops, actor, via)
         if changes:
             self.after_edit(sp, actor, [c[0] for c in changes], "api")
-        return dict(hash=h, changed=[dict(path=p, old=o, new=n) for p, o, n in changes], touches=[], validation=dict(ok=True, errors=[]))
+        return dict(hash=h, changed=[dict(path=p, old=o, new=n) for p, o, n in changes], touches=[], validation=dict(ok=True, errors=[]), **sp.can_undo_redo())
+
+    def revert(self, sid, kind, actor):
+        """Undo or redo the last save through the undo log: it is a save of its own (via 'undo' or 'redo'), made by the actor who asked, so History shows both."""
+        sp = self.get_species(sid)
+        with sp.lock:
+            ops = sp.revert(kind, actor)
+            return self.patch_species(sid, ops, actor, via=kind)
 
     # ---- instant (file-stage) checks, in this process
     def check_file(self, spec, raise_on_fail=False):
@@ -894,7 +901,7 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)", p)
             if m:
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), views=srv.current_views(s), labels=V1_labels()))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()))
             m = re.fullmatch(r"/api/species/([^/]+)/freq", p)
             if m:
                 return self.send_json(srv.freq(srv.get_species(m.group(1)), int(q.get("n", ["1000"])[0])))
@@ -902,6 +909,10 @@ def make_handler(srv):
             if m:
                 from wb import forms as FM
                 return self.send_json(FM.forms(srv.get_species(m.group(1)).spec))
+            m = re.fullmatch(r"/api/species/([^/]+)/history", p)
+            if m:
+                s = srv.get_species(m.group(1))
+                return self.send_json(dict(entries=s.history(int(q.get("n", ["200"])[0])), **s.can_undo_redo()))
             m = re.fullmatch(r"/api/species/([^/]+)/variety", p)
             if m:
                 return self.send_json(srv.variety(srv.get_species(m.group(1)), q.get("n", [None])[0], q.get("seed", [None])[0]))
@@ -1022,6 +1033,9 @@ def make_handler(srv):
                 b = self.body() or {}
                 job = srv.submit(m.group(1), b.get("kind"), b.get("args"), actor)
                 return self.send_json(job.public(), 200 if job.state == "done" else 202)
+            m = re.fullmatch(r"/api/species/([^/]+)/(undo|redo)", p)
+            if m:
+                return self.send_json(srv.revert(m.group(1), m.group(2), self.actor(need=True)))
             if re.fullmatch(r"/api/species/[^/]+/gate/.+", p):
                 actor = self.actor(need=True)
                 if actor["role"] == "maker":
