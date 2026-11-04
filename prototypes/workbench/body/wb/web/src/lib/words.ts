@@ -41,3 +41,31 @@ export const KEYS: [string, string][] = [
   ['P', 'Open this species in play'],
   ['D', '(Goldens) diff view'],
 ]
+
+// Play's strings, from words.md section 5.1 and 5.2 (ids in the comments). Play says "mibi" (words.md section 1). Strings play needs that words.md does not have are marked OWED and are the lead's list to the copywriter.
+export const P = {
+  title: 'Pick a mibi', // pl.open.title
+  sub: 'Then squish it, paint it and make pods.', // pl.open.sub
+  species: (s: string) => `a ${s}`, // pl.open.starter (second line)
+  surprise: 'Surprise me', // pl.open.surprise
+  mine: 'My mibis', // pl.open.mine, pl.open.shelf
+  shelfLine: 'Mibis you keep wait here.', // pl.open.shelf.line
+  shelfEmpty: 'Keep a young mibi and it waits here.', // pl.open.shelf.empty
+  undo: 'Undo', // pl.shape.undo
+  wiggle: 'Wiggle', // pl.shape.wiggle
+  sculpt: 'Sculpting…', // pl.wait.sculpt
+  fluff: 'Fluffing up…', // pl.wait.fluff
+  busy: 'Busy bench, yours is next.', // pl.wait.busy
+  fail: "Hmm, that shape didn't work. Try another?", // pl.wait.fail
+  // OWED (no id in words.md yet): the back button's label, the menu button's label, the toys' ends for a screen reader, the pots' names, a page that cannot load.
+  back: 'Back', menu: 'Menu',
+  toyEnd: (toy: string, end: 'first' | 'last') => `${toy}: ${end === 'first' ? 'least' : 'most'}`,
+  pot: (n: number) => `Colour ${n}`,
+  noBench: 'The bench is not ready yet.',
+  // The toys' questions (words.md "Toy labels"): on screen only where a toy has two sliders; a screen reader hears every axis. Chips, paint pots and a toy's only slider carry no label on screen.
+  axis: {
+    'body.size': { on: null, sr: 'How round?' }, 'ears.size': { on: 'How big?', sr: 'How big?' }, 'tail.length': { on: 'How long?', sr: 'How long?' }, 'tail.curl': { on: 'How curly?', sr: 'How curly?' },
+    'ears.kind': { on: null, sr: 'Ear shape' }, 'tail.tip': { on: null, sr: 'Tail tip' }, 'paint.hue': { on: null, sr: 'Colour' }, 'pattern.kind': { on: null, sr: 'Pattern' },
+  } as Record<string, { on: string | null; sr: string }>,
+  noMibis: 'No mibis yet.',
+} as const

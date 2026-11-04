@@ -55,7 +55,7 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
         )}</div>
       {!url.sel && line && <p className={s.line}>{line}</p>}
       {url.sel && species && !getToken() && <p className={s.line} title={W.tokenTip}>{W.readOnly}</p>}
-      {species && showToy && toy && <PlayPanel toys={toy} sentences={toysQ?.sentences} hold={toysQ?.hold} />}
+      {species && showToy && toy && <PlayPanel toys={toy} sentences={toysQ?.sentences} hold={toysQ?.hold} species={species.file.name} />}
       {species && part && !showToy && part.fields.some((d) => getAt(species.file, d.ptr) !== undefined) && (
         <div className={s.fields}>{part.fields.filter((d) => getAt(species.file, d.ptr) !== undefined).map((d) => <Field key={d.id} species={species} id={id} desc={d} editable={editable} rows={rows} metas={byId} />)}</div>
       )}

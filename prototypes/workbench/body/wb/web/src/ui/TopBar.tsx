@@ -41,7 +41,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
         <Popover.Trigger className={s.species}>
           {thumb && <img src={thumb} alt="" />}
           <span className={s.name}>{name}</span>
-          <span className={s.sub}>{url.species}</span>
+          {species?.file.name && <span className={s.sub}>{url.species}</span>}
           <span className={s.caret} />
         </Popover.Trigger>
         <Popover.Portal>
@@ -49,7 +49,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
             {(list.data ?? []).map((r) => (
               <Popover.Close asChild key={r.id}>
                 <Link to={buildStudioUrl({ ...url, species: r.id, sel: null })} className={s.menuRow}>
-                  <span>{r.name || `${r.id} · no name yet`}</span><span className={s.sub}>{r.id}</span>
+                  <span>{r.name || `${r.id} · no name yet`}</span>{r.name && <span className={s.sub}>{r.id}</span>}
                 </Link>
               </Popover.Close>
             ))}

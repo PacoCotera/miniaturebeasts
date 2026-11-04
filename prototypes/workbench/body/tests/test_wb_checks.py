@@ -41,7 +41,7 @@ class TestRegistry(unittest.TestCase):
         for i, (name, fail) in WORDS.items():
             self.assertEqual((metas[i]["name"], metas[i]["fail"]), (name, fail), i)
         for m in metas.values():
-            self.assertRegex(m["rule"]["date"], r"^2026-11-0[12]( \d\d:\d\d)?$")
+            self.assertRegex(m["rule"]["date"], r"^2026-11-0[124]( \d\d:\d\d)?$")
             self.assertGreater(len(m["rule"]["words"]), 40, m["id"])
             self.assertIn(m["stage"], ("file", "cage", "extremes"))
         self.assertEqual({m["id"] for m in metas.values() if m["play"]}, {"head.neck", "tail.taper", "tail.size", "balance"})        # words.md 5.2: the limit sentences

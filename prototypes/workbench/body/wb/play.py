@@ -41,8 +41,12 @@ _TOYS = [
 ]
 SURFACE = {"biped": _TOYS, "quadruped": _TOYS}
 BUILT = {"biped": True, "quadruped": False}            # whether the plan has a cage builder yet (the quadruped's is chunks 17-20)
-# The words play says when a check stops a toy. These are the copywriter's proposals (words.md 5.2, `pl.limit.*`) and are PLACEHOLDERS until the AD has picked them; a check's own `play` sentence and the file's `play.words` come first.
-PLACEHOLDER = dict(body="Any rounder and I'd roll away!", ears="Big ears! Any bigger and I couldn't see.", loud="That's a lot of sparkle for one mibi.", default="I can't go any further that way.")
+# The words play says when a check stops a toy: the copywriter's (words.md "Play sentences (chunk 13)", ids pl.limit.*), one per check, true for every toy the check reaches and both ends of the toy. A few have a sentence for one toy, in TOY_WORDS.
+# A check's own `play` sentence and the file's `play.words` come first. "loud" and "body" and "ears" belong to checks that are still to come.
+WORDS = {"joins": "Then I wouldn't fit together any more!", "head.attach": "Then my head wouldn't sit straight!", "limbs": "My arms and legs need somewhere to hold on!"}
+TOY_WORDS = {("joins", "body"): "Then my arms and legs wouldn't fit on!", ("joins", "ears"): "Then my ears wouldn't fit on my head!", ("joins", "tail"): "Then my tail wouldn't fit on right!",
+             ("head.attach", "ears"): "With ears like these, my head wouldn't sit straight!", ("limbs", "tail"): "My legs need somewhere to hold on!"}
+PLACEHOLDER = dict(body="Any rounder and I'd roll away!", ears="Big ears! Any bigger and I couldn't see.", loud="Ooh, that's more sparkle than I can carry!", default="That's as far as I can go!")
 HOLD = "Hmm, that shape didn't work. Try another?"       # a build fails (words.md pl.wait.fail), also a placeholder
 
 
@@ -174,10 +178,12 @@ def validate(doc):
         return []
     errs = []
     if not isinstance(p, dict):
-        return [("play", "play: must be an object {toys, words, state, starter}")]
+        return [("play", "play: must be an object {toys, words, state, starter, name}")]
     for k in p:
-        if k not in ("toys", "words", "state", "starter"):
-            errs.append((f"play.{k}", f"play.{k}: not a field of play (toys, words, state, starter)"))
+        if k not in ("toys", "words", "state", "starter", "name"):
+            errs.append((f"play.{k}", f"play.{k}: not a field of play (toys, words, state, starter, name)"))
+    if "name" in p and not (isinstance(p["name"], str) and 0 < len(p["name"].strip()) <= 10):
+        errs.append(("play.name", "play.name: the mibi's own name, one to ten letters"))
     if "starter" in p and not isinstance(p["starter"], bool):
         errs.append(("play.starter", "play.starter: must be true or false"))
     plan = {t["id"]: t for t in plan_toys(doc)}
@@ -277,8 +283,8 @@ def validate(doc):
 
 
 # ---------------------------------------------------------------------------------------------------------------------------- sentences
-def sentence_of(doc, check_id):
-    """The one sentence play says when this check stops a toy, and where it came from: ('file' | 'check' | 'placeholder', text). The file's own words come first, then the check's, then the placeholder."""
+def sentence_of(doc, check_id, toy=None):
+    """The one sentence play says when this check stops a toy, and where it came from: ('file' | 'check' | 'words', text). The file's own words come first, then the check's, then the copywriter's (for this toy, then for the check), then the default."""
     w = ((doc or {}).get("play") or {}).get("words") or {}
     if isinstance(w.get(check_id), str) and w[check_id].strip():
         return "file", w[check_id]
@@ -287,23 +293,27 @@ def sentence_of(doc, check_id):
     c = next((c for c in REGISTRY if c.id == check_id), None)
     if c is not None and c.play:
         return "check", c.play
+    if (check_id, toy) in TOY_WORDS:
+        return "words", TOY_WORDS[(check_id, toy)]
+    if check_id in WORDS:
+        return "words", WORDS[check_id]
     if isinstance(w.get("default"), str) and w["default"].strip():
         return "file", w["default"]
-    return "placeholder", PLACEHOLDER["default"]
+    return "words", PLACEHOLDER["default"]
 
 
 def slots(doc):
     """Every sentence slot play has: [{check, name, toy, axis, situation, source, sentence}], one for each cage check that can stop a toy (a check of a part the toy moves), in the order the checks list.
-    `source` says who wrote the sentence: file, check (the AD's), or placeholder (the copywriter's proposal, owed). A check of no part (vertices, normals, mesh) is never shown to a player: it is listed once with toy None."""
+    `source` says who wrote the sentence: file, check (the AD's), or words (the copywriter's). A check of no part (vertices, normals, mesh) is never shown to a player: it is listed once with toy None."""
     from checks import REGISTRY
     import checks.biped  # noqa: F401
     out = []
     for c in REGISTRY:
         if c.stage != "cage":
             continue
-        src, text = sentence_of(doc, c.id)
         hit = [t for t in plan_toys(doc) if set(t["parts"]) & set(c.part)]
         for t in hit or [None]:
+            src, text = sentence_of(doc, c.id, t["id"] if t else None)
             ax = next((a for a in t["axes"] if a["cage"]), None) if t else None
             out.append(dict(check=c.id, name=c.name, toy=t["label"] if t else None, axis=ax["id"] if ax else None,
                             situation=(f"the {t['label']} toy at the far end of a step the check refuses" if t else "no toy reaches it: a trimmed step says the default"), source=src, sentence=text))
@@ -527,3 +537,46 @@ def step_state(doc, toy_id, axis_id, to):
     toy = next(t for t in plan_toys(doc) if t["id"] == toy_id)
     locus = next(a for a in toy["axes"] if a["id"] == axis_id)["locus"]
     return dict(state_of(doc), **{locus: v[locus] if isinstance(v, dict) and "state" not in v else (v["state"][locus] if isinstance(v, dict) else v)})
+
+
+# ---------------------------------------------------------------------------------------------------------------------------- the warm set (spec 7)
+def mibi_name(doc):
+    """The mibi's own name: `play.name`, else the species file's own (a species with no mibi name is its species)."""
+    n = (doc.get("play") or {}).get("name") if isinstance(doc.get("play"), dict) else None
+    return n if isinstance(n, str) and n.strip() else (doc.get("name") or doc.get("id"))
+
+
+def home_state(doc, sweep=None):
+    """The mibi's setting of every axis it shows, as {locus: value}: the step it stands on (a range's value, a chip's id). Hidden toys have no setting."""
+    out = {}
+    for t in toys_of(doc, sweep):
+        if t["hidden"]:
+            continue
+        for ax in t["axes"]:
+            out[ax["locus"]] = ax["steps"][ax["home"]]["value"] if ax["kind"] == "range" else ax["home"]
+    return out
+
+
+def warm_set(doc, sweep=None):
+    """Every picture the page may need at once, as [{kind, toy, axis, step, genome}]: `step` the mibi with that one axis at that step (every other axis where the mibi stands), and `end` the toy's own end pictures
+    (the type with only that value changed: the first and last step a slider reaches, every chip, every paint pot). A step the sweep trimmed is never listed. Each genome once."""
+    base = home_state(doc, sweep)
+    out, seen = [], set()
+
+    def add(kind, toy, axis, step, genome):
+        if genome not in seen:
+            seen.add(genome)
+            out.append(dict(kind=kind, toy=toy, axis=axis, step=step, genome=genome))
+    for t in toys_of(doc, sweep):
+        if t["hidden"]:
+            continue
+        for ax in t["axes"]:
+            items = ax["steps"] if ax["kind"] == "range" else ax["options"]
+            ok = [x for x in items if x["ok"]]
+            for x in ok:
+                v = x["value"] if ax["kind"] == "range" else x["id"]
+                add("step", t["id"], ax["id"], x.get("i", v), genome_of({**base, ax["locus"]: v}))
+            ends = ok if (ax["kind"] == "choice" or t["id"] == "paint") else ok[:1] + ok[-1:]
+            for x in ends:
+                add("end", t["id"], ax["id"], x.get("i", x.get("id")), x["end"]["genome"])
+    return out

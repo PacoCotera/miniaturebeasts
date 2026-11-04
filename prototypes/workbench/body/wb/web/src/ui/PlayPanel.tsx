@@ -3,7 +3,7 @@ import s from './PlayPanel.module.css'
 
 // "Show as in play": the toys this part feeds in play (spec 2.3), as the player has them. Each toy is its name, then its axes: chips (the one the mibi has lit), a slider of steps, or the paint pots.
 // A step the safe-step sweep trimmed is shown struck through, and under it the sentence the mibi says when the player pushes that far. It is a picture of the player's choice, not a second set of controls.
-type Props = { toys: PlayToy[]; sentences?: Record<string, string>; hold?: string }
+type Props = { toys: PlayToy[]; sentences?: Record<string, string>; hold?: string; species?: string }
 
 const sentenceFor = (why: string[], sentences?: Record<string, string>) => (why.length ? (sentences?.[why[0]] ?? sentences?.default ?? '') : '')
 
@@ -42,12 +42,12 @@ function Pots({ ax }: { ax: PlayAxis }) {
   )
 }
 
-export function PlayPanel({ toys, sentences }: Props) {
+export function PlayPanel({ toys, sentences, species }: Props) {
   return (
     <>
       {toys.map((t) => (
         <section key={t.id} className={s.toy} aria-label={`${t.label}, as in play`} data-hidden={t.hidden || undefined}>
-          <b className={s.head}>{t.label}{t.hidden && <small> · hidden in this species</small>}</b>
+          <b className={s.head}>{t.label}{t.hidden && <small title={`${species ?? 'This species'} hides this toy.`}> · off in play</small>}</b>
           {t.axes.map((ax) => ax.kind === 'choice' ? <Chips key={ax.id} ax={ax} sentences={sentences} /> : t.kind === 'pots' ? <Pots key={ax.id} ax={ax} /> : <Slider key={ax.id} ax={ax} sentences={sentences} />)}
         </section>
       ))}

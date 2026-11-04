@@ -74,9 +74,11 @@ class TestSurface(unittest.TestCase):
 
 
 class TestSentences(unittest.TestCase):
-    def test_the_order_is_the_files_words_then_the_checks_then_the_placeholder(self):
-        self.assertEqual(PL.sentence_of(S20, "tail.size"), ("check", "Any longer and I'd tip over backwards!"))
-        self.assertEqual(PL.sentence_of(S20, "joins")[0], "placeholder")
+    def test_the_order_is_the_files_words_then_the_checks_then_the_copywriters_words(self):
+        self.assertEqual(PL.sentence_of(S20, "tail.size"), ("check", "Any more tail and I'd tip over backwards!"))
+        self.assertEqual(PL.sentence_of(S20, "joins"), ("words", "Then I wouldn't fit together any more!"))
+        self.assertEqual(PL.sentence_of(S20, "joins", "ears")[1], "Then my ears wouldn't fit on my head!")
+        self.assertEqual(PL.sentence_of(S20, "verts"), ("words", "That's as far as I can go!"))
         d = with_play(words={"tail.size": "Wobbly!"})
         self.assertEqual(PL.sentence_of(d, "tail.size"), ("file", "Wobbly!"))
 
@@ -180,7 +182,7 @@ class TestServer(unittest.TestCase):
         quad["id"], quad["name"], quad["plan"] = "S22", "", "quadruped"
         quad["spine"]["head_attach"].update(a=0.0, d=0.0)
         S.write_spec(os.path.join(cls.sp, "S22.json"), quad)
-        cls.srv = SV.Server(os.path.join(SCRATCH, "home"), [cls.sp], proxy_workers=1)
+        cls.srv = SV.Server(os.path.join(SCRATCH, "home"), [cls.sp], proxy_workers=1, plush_workers=0)
         cls.srv.start()
 
     @classmethod
@@ -205,13 +207,15 @@ class TestServer(unittest.TestCase):
         st, j = self.req("/api/species/S20/toys")
         self.assertEqual(st, 200)
         self.assertEqual((j["plan"], j["built"], j["sweep"]["state"]), ("biped", True, "none"))
-        self.assertEqual(j["sentences"]["tail.size"], "Any longer and I'd tip over backwards!")
-        self.assertTrue(any(s["source"] == "placeholder" for s in j["slots"]))
+        self.assertEqual(j["sentences"]["tail.size"], "Any more tail and I'd tip over backwards!")
+        self.assertTrue(all(s["source"] in ("check", "words") for s in j["slots"]))
+        self.assertEqual(j["by_toy"]["tail"]["joins"], "Then my tail wouldn't fit on right!")
 
     def test_2_a_play_save_that_passes_is_saved_and_a_toy_step_that_does_not_exist_is_a_400(self):
         st, j = self.req("/api/species/S20/play", "POST", dict(toy="ears", axis="kind", to="lop"))
         self.assertEqual((st, j["ok"]), (200, True))
         self.assertEqual(j["genome"], "set:form.ear-kind=lop")
+        self.assertEqual((j["plush"]["ready"], len(j["plush"]["key"]), bool(j["plush"]["job"]), bool(j["clay_job"])), (False, 64, True, True))      # not drawn yet: the clay at once, the plush behind it
         self.assertEqual(self.srv.species["S20"].spec["play"]["state"], {"form.ear-kind": "lop"})
         self.assertEqual(self.req("/api/species/S20/play", "POST", dict(toy="tail", axis="length", to=12))[0], 400)
 
@@ -219,7 +223,7 @@ class TestServer(unittest.TestCase):
         before = json.dumps(self.srv.species["S21"].spec, sort_keys=True)
         st, j = self.req("/api/species/S21/play", "POST", dict(toy="tail", axis="length", to=6))
         self.assertEqual((st, j["ok"], j["refused"], j["why"]), (409, False, True, "check"))
-        self.assertEqual((j["checks"][0]["check"], j["sentence"]), ("tail.size", "Any longer and I'd tip over backwards!"))
+        self.assertEqual((j["checks"][0]["check"], j["sentence"]), ("tail.size", "Any more tail and I'd tip over backwards!"))
         self.assertEqual(j["back_to"], 2)
         self.assertEqual(json.dumps(self.srv.species["S21"].spec, sort_keys=True), before)
         st, j = self.req("/api/species/S21/play", "POST", dict(toy="tail", axis="length", to=1))

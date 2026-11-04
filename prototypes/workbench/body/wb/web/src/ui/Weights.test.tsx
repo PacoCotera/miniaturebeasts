@@ -40,15 +40,15 @@ describe('as in play', () => {
   const tip = { id: 'tip', locus: 'anatomy.tail-tip-form', kind: 'choice' as const, label: 'tip', cage: true, home: 'lantern', options: [{ id: 'lantern', word: 'lantern', ok: true, why: [], end: { genome: 'x' } }, { id: 'plain', word: 'plain', ok: false, why: ['tail.size'], end: { genome: 'x' } }] }
   const toy = { id: 'tail', label: 'Tail', plain: 'Tail', hidden: false, kind: 'slider+chips', parts: ['tail'], axes: [axis, tip] }
   it('names the toy, lights the chip in force, strikes a trimmed chip and puts the slider on its step of 7', () => {
-    render(<PlayPanel toys={[toy]} sentences={{ 'tail.size': "Any longer and I'd tip over backwards!" }} />)
+    render(<PlayPanel toys={[toy]} sentences={{ 'tail.size': "Any more tail and I'd tip over backwards!" }} />)
     expect(screen.getByText('Tail')).toBeTruthy()
     expect(screen.getByText('lantern').getAttribute('data-on')).toBe('true')
     expect(screen.getByText('plain').getAttribute('data-trimmed')).toBe('true')
     expect(screen.getByRole('img').getAttribute('aria-label')).toBe('length: step 3 of 7, 2 trimmed')
   })
   it('says the mibi\'s sentence under the steps the sweep trimmed', () => {
-    render(<PlayPanel toys={[toy]} sentences={{ 'tail.size': "Any longer and I'd tip over backwards!" }} />)
-    expect(screen.getAllByText(/Any longer and I'd tip over backwards!/).length).toBe(2)
+    render(<PlayPanel toys={[toy]} sentences={{ 'tail.size': "Any more tail and I'd tip over backwards!" }} />)
+    expect(screen.getAllByText(/Any more tail and I'd tip over backwards!/).length).toBe(2)
   })
   it('draws the paint pots and lights the one the mibi has', () => {
     const paint = { ...toy, id: 'paint', label: 'Paint', kind: 'pots', axes: [{ ...axis, id: 'hue', steps: Array.from({ length: 8 }, (_, i) => ({ i, value: 180 + i * 25, ok: true, why: [], end: { genome: 'x' } })), home: 3 }] }

@@ -142,8 +142,68 @@ class ProxyWorker:
             self.proc.kill()
 
 
+PLUSH_LOOK = "plush-1"                                          # the house look-dev of the plush hero (Cycles, velvet, studio light): bump when it changes, and every plush picture is drawn again
+PLAY_ACTOR = dict(name="play", role="server")
+
+
+class PlushWorker:
+    """The plush worker: one subprocess (wb.plushworker, Blender's Cycles) and the thread that feeds it plush jobs. The process starts with the first job, so a server that never draws plush never loads Blender twice."""
+    def __init__(self, srv, n):
+        self.srv, self.n = srv, n
+        self.proc = None
+        self.thread = threading.Thread(target=self.loop, daemon=True, name=f"plush-{n}")
+
+    def start_proc(self):
+        env = dict(os.environ, PYTHONPATH=BODY)
+        log = open(os.path.join(self.srv.home, f"plush-{self.n}.log"), "a")
+        scratch = os.path.join(self.srv.home, f"plush-scratch-{self.n}")
+        self.proc = subprocess.Popen([sys.executable, "-m", "wb.plushworker", "--scratch", scratch], cwd=BODY, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=log, text=True, bufsize=1)
+        assert json.loads(self.proc.stdout.readline()).get("ready")
+
+    def loop(self):
+        srv = self.srv
+        while not srv.stopping:
+            job = srv.queue.pop(("plush",), timeout=0.5)
+            if job is None:
+                continue
+            srv.hub.emit("running", job.species, job=job.id, kind="plush", actor=(job.actor or {}).get("name"))
+            try:
+                if self.proc is None or self.proc.poll() is not None:
+                    self.start_proc()
+                tmp = srv.cas.tmp("png")
+                self.proc.stdin.write(json.dumps(dict(id=job.id, spec=job.spec, genome=job.args["genome"], out=tmp)) + "\n")
+                self.proc.stdin.flush()
+                line = self.proc.stdout.readline()
+                if not line:
+                    raise RuntimeError("the plush worker died")
+                msg = json.loads(line)
+                if not msg["ok"]:
+                    srv.finish_failed(job, msg["error"], None)
+                    continue
+                srv.cas.adopt(tmp, job.key, "png")
+                srv.cas.put_json(job.key, dict(plush=True, genome=job.args["genome"], ms=msg["ms"], build_ms=msg["build_ms"], plush_ms=msg["plush_ms"], look=PLUSH_LOOK))
+                res = dict(views=[dict(mode="plush", az=32, size=304, key=job.key, cached=False, ms=msg["ms"])], ms=msg["ms"], cache=dict(job_hit=False))
+                srv.queue.finish(job, "done", res)
+                srv.hub.emit("done", job.species, job=job.id, kind="plush", key=job.key, cached=False, ms=msg["ms"], urls=[f"/cas/{job.key}.png"], actor=(job.actor or {}).get("name"))
+            except Exception as e:                                   # noqa: BLE001
+                srv.finish_failed(job, f"{type(e).__name__}: {e}", None)
+                try:
+                    self.proc.kill()
+                except Exception:                                    # noqa: BLE001
+                    pass
+
+    def stop(self):
+        try:
+            self.proc.stdin.write(json.dumps(dict(op="quit")) + "\n")
+            self.proc.stdin.flush()
+            self.proc.wait(5)
+        except Exception:                                            # noqa: BLE001
+            if self.proc is not None:
+                self.proc.kill()
+
+
 class Server:
-    def __init__(self, home, species_dirs, static=None, host="127.0.0.1", port=0, cache_limit_gb=30.0, proxy_workers=1, trusted_proxy=None):
+    def __init__(self, home, species_dirs, static=None, host="127.0.0.1", port=0, cache_limit_gb=30.0, proxy_workers=1, trusted_proxy=None, plush_workers=1):
         self.trusted_proxy = trusted_proxy or None
         self.home = os.path.abspath(home)
         os.makedirs(self.home, exist_ok=True)
@@ -156,8 +216,13 @@ class Server:
         self.queue = J.JobQueue()
         self.stopping = False
         self.species = {}
+        self.started = False
         self.scan()
         self.workers = [ProxyWorker(self, i) for i in range(proxy_workers)]
+        self.plushers = [PlushWorker(self, i) for i in range(plush_workers)]
+        self.warmer = threading.Thread(target=self.warm_loop, daemon=True, name="warm")
+        self.warms = {}                                         # species id -> the last warm result and its key, for the page while a new one runs
+        self.pic_keys = {}                                      # (neutral file hash, genome) -> plush key
         self.sheeter = threading.Thread(target=self.sheet_loop, daemon=True, name="sheets")
         self.varieter = threading.Thread(target=self.variety_loop, daemon=True, name="variety")
         self.golder = threading.Thread(target=self.golden_loop, daemon=True, name="goldens")
@@ -184,6 +249,8 @@ class Server:
                         sid = f[:-5]
                         if sid not in self.species:
                             self.species[sid] = S.Species(sid, os.path.join(d, f))
+                            if self.started:
+                                self.play_start(self.species[sid])
 
     def get_species(self, sid):
         sp = self.species.get(sid)
@@ -226,6 +293,10 @@ class Server:
         self.hub.emit("edited", sp.id, actor=name, role=actor["role"] if actor else None, agent=bool(actor and actor.get("agent")), via=via, hash=sp.hash, changes=paths)
         for j in self.queue.supersede(sp.id, sp.hash):
             self.hub.emit("failed", sp.id, job=j.id, kind=j.kind, superseded=True, error=j.error)
+        if any(str(p).replace("/", ".").strip(".") in ("play", "play.starter") for p in paths):
+            self.play_start(sp)                                  # a mibi kept as a starter: its sweep and warm set start now
+        if via == "play":                                        # a toy moves the mibi's own setting, never the type: nothing of the type to draw again
+            return
         try:
             self.submit(sp.id, "render", dict(genome="type", modes=["clay"], az=list(K.AZ), sizes=[304, 608]), dict(name="auto", role="server"))
             self.submit(sp.id, "check", dict(genome="type", stage="all"), dict(name="auto", role="server"))
@@ -353,6 +424,10 @@ class Server:
             return self.submit_golden(sp, args, actor)
         if kind == "sweep":
             return self.submit_sweep(sp, args, actor)
+        if kind == "plush":
+            return self.submit_plush(sp, (args or {}).get("genome", "type"), actor, priority)
+        if kind == "warm":
+            return self.submit_warm(sp, actor)
         spec = copy.deepcopy(sp.spec) if spec is None else spec
         a = self.norm_args(kind, args, spec)
         spec_hash = spec_hash or H.hash_of(spec)
@@ -778,7 +853,12 @@ class Server:
         from wb import play as PL
         sw = self.sweep_state(sp)
         res = sw["result"]
-        return dict(plan=sp.spec.get("plan"), built=PL.BUILT.get(sp.spec.get("plan"), False), toys=PL.toys_of(sp.spec, res), slots=PL.slots(sp.spec), genome=PL.state_genome(sp.spec),
+        toys = PL.toys_of(sp.spec, res)
+        if PL.BUILT.get(sp.spec.get("plan"), False):
+            self.add_pictures(sp.spec, toys, PL.home_state(sp.spec, res))
+        return dict(plan=sp.spec.get("plan"), built=PL.BUILT.get(sp.spec.get("plan"), False), toys=toys, slots=PL.slots(sp.spec), genome=PL.state_genome(sp.spec), name=PL.mibi_name(sp.spec), species=sp.spec.get("name") or sp.id,
+                    warm=self.warm_state(sp),
+                    by_toy={t["id"]: {m["id"]: PL.sentence_of(sp.spec, m["id"], t["id"])[1] for m in CH.metas() if m["stage"] == "cage"} for t in toys},
                     sentences={**{m["id"]: PL.sentence_of(sp.spec, m["id"])[1] for m in CH.metas() if m["stage"] == "cage"}, "build": PL.HOLD, "default": PL.sentence_of(sp.spec, "default")[1]},
                     sweep=dict(state=sw["state"], key=sw["key"], summary=None if res is None else {k: v for k, v in res.items() if k != "toys"}), hold=PL.HOLD)
 
@@ -869,14 +949,14 @@ class Server:
         back = None if cur_ax is None else cur_ax["home"]
 
         def refuse(why, check_ids, field=None, src=None):
-            sent = [dict(check=c, source=PL.sentence_of(spec, c)[0], sentence=PL.sentence_of(spec, c)[1] if c != "build" else PL.HOLD) for c in check_ids]
+            sent = [dict(check=c, source=PL.sentence_of(spec, c, toy)[0], sentence=PL.sentence_of(spec, c, toy)[1] if c != "build" else PL.HOLD) for c in check_ids]
             return dict(ok=False, refused=True, why=why, checks=sent, sentence=(sent[0]["sentence"] if sent else PL.HOLD), back_to=back, toy=toy, axis=axis, field=field, hash=sp.hash)
         new = S.apply_patch(spec, ops)
         errs = V1.validate(new)
         if errs:
             return refuse("file", [], errs[0][0])
         sw = self.sweep_state(sp)
-        if sw["state"] == "fresh":
+        if sw["state"] in ("fresh", "stale"):                       # the trims of the sweep made when the starter was made hold for the mibi's later settings too; the build below is the last word
             t = next((t for t in PL.toys_of(spec, sw["result"]) if t["id"] == toy), None)
             a = next((a for a in (t or {}).get("axes", []) if a["id"] == axis), None)
             if a:
@@ -890,12 +970,201 @@ class Server:
         if fails:
             return refuse("check", fails)
         res = self.patch_species(sid, ops, actor, via="play")
-        rj = None
+        g = PL.state_genome(new)
+        pic = self.picture(new, g)
+        rj = pj = None
         try:
-            rj = self.submit(sid, "render", dict(genome=PL.state_genome(new), views=[["clay", 32, 304]]), actor, priority=0)
+            if not pic["ready"]:                                    # not drawn yet: the clay at once, the plush behind it (the latest move wins: a newer save drops these if they have not started)
+                rj = self.submit(sid, "render", dict(genome=g, views=[["clay", 32, 304]]), actor, priority=0)
+                pj = self.submit_plush(self.get_species(sid), g, actor, 1)
         except ApiError:
             pass
-        return dict(ok=True, refused=False, hash=res["hash"], genome=PL.state_genome(new), state=PL.state_of(new), render=rj.public() if rj else None, toys=PL.toys_of(new, sw["result"] if sw["state"] == "fresh" else None))
+        return dict(ok=True, refused=False, hash=res["hash"], genome=g, state=PL.state_of(new), render=rj.public() if rj else None, plush=dict(pic, job=pj.id if pj else None), clay_job=rj.id if rj else None,
+                    toys=PL.toys_of(new, sw["result"] if sw["state"] in ("fresh", "stale") else None), **sp.can_undo_redo())
+
+    # ---- play (chunk 14): plush pictures, the warm set, the starters
+    def neutral(self, spec):
+        """The file as the pictures see it: no id, name or play block, so a starter and its species draw the same picture for the same genome (and share the toys' end pictures)."""
+        n = copy.deepcopy(spec)
+        n["id"], n["name"] = "S00", ""
+        n.pop("play", None)
+        return n
+
+    def plush_key(self, spec, genome, neutral=None):
+        n = neutral or self.neutral(spec)
+        ispec = F.internal(n)
+        c, _ = F.cage_inputs(ispec, F.resolve_genome(genome, ispec))
+        return H.hash_of("plush", PLUSH_LOOK, F.cage_key(n, genome), c.get("coat"), {k: ispec.get(k) for k in ("zones", "layouts", "palettes", "material", "face")})
+
+    def picture(self, spec, genome, neutral=None, nh=None):
+        """{key, ready}: where the plush of this genome is in the cache, and whether it is there."""
+        nh = nh or H.hash_of(neutral or self.neutral(spec))
+        k = self.pic_keys.get((nh, genome))
+        if k is None:
+            try:
+                k = self.plush_key(spec, genome, neutral)
+            except F.BuildError as e:
+                raise ApiError(400, e.message, "genome")
+            self.pic_keys[(nh, genome)] = k
+        return dict(key=k, ready=self.cas.has(k, "png", touch=False))
+
+    def add_pictures(self, spec, toys, home):
+        """Every step and chip of every toy with its pictures: `end` (the type with only this value changed; the toy's own end picture) and `now` (the mibi as it stands with this one axis moved: what a move shows at once)."""
+        from wb import play as PL
+        n = self.neutral(spec)
+        nh = H.hash_of(n)
+        for t in toys:
+            for ax in t["axes"]:
+                for x in (ax.get("steps") or ax.get("options") or []):
+                    v = x["value"] if ax["kind"] == "range" else x["id"]
+                    x["end"] = dict(x["end"], **self.picture(spec, x["end"]["genome"], n, nh))
+                    g = PL.genome_of({**home, ax["locus"]: v})
+                    x["now"] = dict(genome=g, **self.picture(spec, g, n, nh))
+
+    def submit_plush(self, sp, genome, actor, priority=None, spec=None):
+        """The plush of one genome (az 32, 304x312): from the cache at once, else a job. `priority` 1 (play) or 3 (the warm set); a job already waiting at a lower priority is moved up."""
+        spec = copy.deepcopy(sp.spec) if spec is None else spec
+        pic = self.picture(spec, genome)
+        job = J.Job(self.queue.new_id(), sp.id, "plush", dict(genome=genome), pic["key"], J.PRIORITY["plush"] if priority is None else priority, spec, H.hash_of(spec), actor)
+        if pic["ready"]:
+            job.cached, job.state = True, "done"
+            job.result = dict(views=[dict(mode="plush", az=32, size=304, key=pic["key"], cached=True, ms=0.0)], ms=0.0, cache=dict(job_hit=True))
+            job.t_start = job.t_end = time.time()
+            job.event.set()
+            self.queue.add(job)
+            self.hub.emit("done", sp.id, job=job.id, kind="plush", cached=True, key=pic["key"], actor=(actor or {}).get("name"))
+            return job
+        with self.queue.cv:
+            for j in self.queue.jobs.values():
+                if j.kind == "plush" and j.key == pic["key"] and j.state in ("queued", "running"):
+                    if j.state == "queued" and job.priority < j.priority:
+                        j.priority, j.spec_hash = job.priority, job.spec_hash
+                    return j
+        self.queue.add(job)
+        self.hub.emit("queued", sp.id, job=job.id, kind="plush", priority=job.priority, key=pic["key"], actor=(actor or {}).get("name"), spec_hash=job.spec_hash)
+        return job
+
+    def warm_key(self, spec, sweep_key):
+        from wb import play as PL
+        return H.hash_of("warm", PLUSH_LOOK, self.neutral(spec), PL.state_of(spec), sweep_key, CH.version_id("cage"))
+
+    def warm_state(self, sp):
+        """What the page says about the starter's warm set: {state: none | running | done, done, total, result}. It never starts anything."""
+        from wb import play as PL
+        sw = self.sweep_state(sp)
+        key = self.warm_key(sp.spec, sw["key"])
+        res = self.cas.get_json(key)
+        if res is not None:
+            self.warms[sp.id] = res
+            return dict(state="done", done=res["frames"], total=res["frames"], result=res, key=key)
+        j = self.queue.find_active(sp.id, "warm", key) or next((x for x in list(self.queue.jobs.values()) if x.species == sp.id and x.kind == "warm" and x.state in ("queued", "running")), None)
+        if j is not None:
+            return dict(state="running", done=(j.progress or {}).get("done", 0), total=(j.progress or {}).get("total"), key=key)
+        old = self.warms.get(sp.id)                                  # the mibi has moved since: its starter's warm set is still what the cache holds
+        if old is not None:
+            return dict(state="done", done=old["frames"], total=old["frames"], result=old, key=key, stale=True)
+        return dict(state="none", done=0, total=None, key=key)
+
+    def play_start(self, sp):
+        """A starter is made or kept: its sweep runs (spec 2.4) and then its warm set (spec 7). Nothing is started for a species that is not a starter or whose plan has no cage builder yet."""
+        from wb import play as PL
+        if not isinstance(sp.spec, dict) or not (sp.spec.get("play") or {}).get("starter") or not PL.BUILT.get(sp.spec.get("plan")):
+            return None
+        try:
+            return self.submit_warm(sp, PLAY_ACTOR)
+        except ApiError:
+            return None
+
+    def submit_warm(self, sp, actor):
+        spec = copy.deepcopy(sp.spec)
+        sk = self.sweep_key(spec)
+        key = self.warm_key(spec, sk)
+        job = J.Job(self.queue.new_id(), sp.id, "warm", dict(), key, J.PRIORITY["warm"], spec, H.hash_of(spec), actor)
+        res = self.cas.get_json(key)
+        if res is not None:
+            job.cached, job.state, job.result = True, "done", dict(res, cache=dict(job_hit=True))
+            job.t_start = job.t_end = time.time()
+            job.event.set()
+            self.queue.add(job)
+            return job
+        active = self.queue.find_active(sp.id, "warm", key)
+        if active:
+            return active
+        self.queue.add(job)
+        self.hub.emit("queued", sp.id, job=job.id, kind="warm", priority=job.priority, key=key, actor=(actor or {}).get("name"), spec_hash=job.spec_hash)
+        return job
+
+    def warm_loop(self):
+        """The warm set of a starter: its sweep first, then the plush of every step of every toy and each toy's ends, and the cage check of every step (so a move answers at once), all at P3 behind any player's job."""
+        from wb import play as PL
+        while not self.stopping:
+            job = self.queue.pop(("warm",), timeout=0.5)
+            if job is None:
+                continue
+            self.hub.emit("running", job.species, job=job.id, kind="warm", actor=(job.actor or {}).get("name"))
+            try:
+                sp = self.get_species(job.species)
+                spec = job.spec
+                sj = self.submit_sweep(sp, {}, job.actor) if self.sweep_state(sp)["state"] == "none" else None
+                if sj is not None:
+                    sj.event.wait(3600)
+                res_sw = self.sweep_state(sp)["result"]
+                items = PL.warm_set(spec, res_sw)
+                t0 = time.time()
+                job.progress = dict(done=0, total=len(items))
+                base_ids = set(self.cage_fails(job.species, spec, job.spec_hash, PL.state_genome(spec), job.actor, priority=3))
+                pending = []
+                for it in items:
+                    pj = self.submit_plush(sp, it["genome"], job.actor, 3, spec=spec)
+                    cj = None
+                    if it["kind"] == "step" and it["toy"] not in ("paint", "pattern"):
+                        cj = self.submit(job.species, "check", dict(genome=it["genome"], stage="cage"), job.actor, priority=3, spec=spec, spec_hash=job.spec_hash)
+                    pending.append((it, pj, cj))
+                done, frames, size, bad = 0, [], 0, []
+                for it, pj, cj in pending:
+                    pj.event.wait(3600)
+                    if cj is not None:
+                        cj.event.wait(3600)
+                    done += 1
+                    job.progress = dict(done=done, total=len(items))
+                    self.hub.emit("running", job.species, job=job.id, kind="warm", progress=job.progress)
+                    if pj.state != "done":
+                        bad.append(dict(genome=it["genome"], error=pj.error))
+                        continue
+                    k = pj.key
+                    frames.append(dict(it, key=k))
+                    try:
+                        size += os.path.getsize(self.cas.path(k, "png"))
+                    except OSError:
+                        pass
+                times = [self.cas.get_json(f["key"]) or {} for f in frames]
+                res = dict(version=PL.VERSION, look=PLUSH_LOOK, frames=len(frames), bytes=size, failed=bad, seconds=round(time.time() - t0, 1), draw_seconds=round(sum((t.get("ms") or 0) for t in times) / 1000, 1),
+                           drawn=sum(1 for t in times if t.get("ms")), items=frames, at=S.now())
+                if not bad:
+                    self.cas.put_json(job.key, res)
+                self.queue.finish(job, "done", dict(res, cache=dict(job_hit=False)))
+                self.hub.emit("done", job.species, job=job.id, kind="warm", key=job.key, cached=False, actor=(job.actor or {}).get("name"))
+            except Exception as e:                                   # noqa: BLE001
+                self.finish_failed(job, f"{type(e).__name__}: {e}", None)
+
+    def starters(self):
+        """P1's cushions: every species that is a starter, with its own name, its species, the genome it stands in and its plush (asked for when it is not drawn yet)."""
+        from wb import play as PL
+        out = []
+        for sp in sorted(self.species.values(), key=lambda s: s.id):
+            spec = sp.spec
+            if not isinstance(spec, dict) or not (spec.get("play") or {}).get("starter"):
+                continue
+            built = PL.BUILT.get(spec.get("plan"), False)
+            g = PL.state_genome(spec)
+            pic = self.picture(spec, g) if built else dict(key=None, ready=False)
+            if built and not pic["ready"]:
+                try:
+                    self.submit_plush(sp, g, PLAY_ACTOR, 1)
+                except ApiError:
+                    pass
+            out.append(dict(id=sp.id, name=PL.mibi_name(spec), species=spec.get("name") or sp.id, plan=spec.get("plan"), built=built, genome=g, plush=pic, warm=self.warm_state(sp) if built else None))
+        return out
 
     # ---- goldens (chunk 12): the state is read from files alone (instant); `make` and `diff` are jobs that draw the set in a Blender process of their own
     def goldens(self, sp):
@@ -946,8 +1215,9 @@ class Server:
 
     # ---- life cycle
     def start(self):
-        for w in self.workers:
+        for w in self.workers + self.plushers:
             w.thread.start()
+        self.warmer.start()
         self.sheeter.start()
         self.varieter.start()
         self.golder.start()
@@ -958,12 +1228,15 @@ class Server:
         with open(os.path.join(self.home, "server.json"), "w") as fh:
             json.dump(dict(host=self.host, port=self.port, pid=os.getpid(), url=f"http://{self.host}:{self.port}"), fh)
         threading.Thread(target=self.httpd.serve_forever, daemon=True, name="http").start()
+        self.started = True
+        for sp in list(self.species.values()):
+            self.play_start(sp)
 
     def stop(self):
         self.stopping = True
         self.httpd.shutdown()
         self.httpd.server_close()
-        for w in self.workers:
+        for w in self.workers + self.plushers:
             w.stop()
         try:
             os.remove(os.path.join(self.home, "server.json"))
@@ -1057,6 +1330,16 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)/toys", p)
             if m:
                 return self.send_json(srv.toys(srv.get_species(m.group(1))))
+            if p == "/api/play/starters":
+                return self.send_json(srv.starters())
+            m = re.fullmatch(r"/api/species/([^/]+)/plush", p)
+            if m:
+                sp = srv.get_species(m.group(1))
+                g = q.get("genome", [None])[0] or __import__("wb.play", fromlist=["x"]).state_genome(sp.spec)
+                pic = srv.picture(sp.spec, g)
+                job = None if pic["ready"] else srv.submit_plush(sp, g, PLAY_ACTOR, 1)
+                clay = None if pic["ready"] else srv.submit(sp.id, "render", dict(genome=g, views=[["clay", 32, 304]]), PLAY_ACTOR, priority=0)
+                return self.send_json(dict(genome=g, **pic, job=job.id if job else None, clay_job=clay.id if clay else None))
             m = re.fullmatch(r"/api/species/([^/]+)/spine", p)
             if m:
                 from wb import spine as SPN
@@ -1210,10 +1493,11 @@ def main():
     ap.add_argument("--port", type=int, default=0)
     ap.add_argument("--cache-limit-gb", type=float, default=30.0)
     ap.add_argument("--proxy-workers", type=int, default=1)
+    ap.add_argument("--plush-workers", type=int, default=1)
     ap.add_argument("--trusted-proxy", default="", help="the address of the proxy whose X-Studio-User header is believed (it acts as the owner); empty: the header is never believed")
     a = ap.parse_args()
-    dirs = a.species or [os.path.join(BODY, "species_v1")]
-    srv = Server(a.home, dirs, a.static or None, a.host, a.port, a.cache_limit_gb, a.proxy_workers, a.trusted_proxy)
+    dirs = a.species or [os.path.join(BODY, d) for d in ("species_v1", "species_play")]
+    srv = Server(a.home, dirs, a.static or None, a.host, a.port, a.cache_limit_gb, a.proxy_workers, a.trusted_proxy, a.plush_workers)
     srv.start()
     import signal
     signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))          # a stop request ends the workers and removes server.json
