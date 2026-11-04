@@ -15,7 +15,7 @@
 // survivor set: anything the plan carries is built; what cannot be built throws, and validate.mjs
 // reports it. Nothing is repaired.
 import { add, sub, mul, unit, norm, dot, cross, IDENTITY, localVector, worldPoint, localPoint, frameAlong, rotateFrameZ, lerp, newNode, ringSolid, ellipsoid, segment, sheet, sweep, surfaceAlong, addFace, envelope, sharedWitness, rootOn, longitudinalWeight, inflate } from "./geometry.mjs";
-import { clampRegionLength, clampHead, clampEye, clampMuzzle, clampLeg, clampFoot, BEAK_CAP, MUZZLE_DEPTH_FLOOR } from "./envelope.mjs"; // the cute envelope: rules E1–E7
+import { clampRegionLength, clampHead, clampEye, clampMuzzle, clampLeg, clampFoot, BEAK_CAP, MUZZLE_DEPTH_FLOOR, SAIL_HEIGHT, SAIL_HEIGHT_CAP } from "./envelope.mjs"; // the cute envelope: rules E1–E7
 
 const EYE_RIM = "#f1eddc", PUPIL = "#273036"; // v1 fixed inks (COMPOSITIONAL_CONTENT.surfaces.fixedEyes)
 
@@ -139,6 +139,18 @@ export function buildBody(resolved) {
   envelopes.delete(head.id);
   const headCenter = head.center;
   connect(root, head, headDir, join, v, push, envOf, L, "neck");
+  if (v["tongue.enabled"]) {
+    // The dew tongue, coiled: a flat spiral of beads under the front of the head, in the side plane, its outer end rooted on the face.
+    const rt = rootOn(head, headCenter, unit([-1, 0, -0.55]), 0.1 * headR[0], envOf(head));
+    const R0 = 0.4 * Math.min(headR[0], headR[2]), c = add(rt.surface, [-0.1 * R0, 0, -R0]);
+    let prev = head;
+    for (let i = 0; i < 10; i++) {
+      const phi = 0.5 * Math.PI + (i * 1.9 * Math.PI) / 9, rho = R0 * (1 - 0.65 * (i / 9));
+      const bead = newNode(`tongue-${i}`, "tongue", prev.id, "second"); bead.part = "tongue";
+      bead.center = add(c, [rho * Math.cos(phi), 0, rho * Math.sin(phi)]); const br = (0.36 - 0.14 * (i / 9)) * R0; ellipsoid(bead, [br, 0.85 * br, br]);
+      push(bead, prev, i === 0 ? rt.witness : undefined); prev = bead;
+    }
+  }
   if (v["beak.enabled"]) {
     const len = Math.min(BEAK_CAP, 1.5 * (v["growth.beak-length-ratio"] ?? 0.8)) * headR[0]; // a beak as long as the head at the long allele; E4 caps it
     const rt = rootOn(head, headCenter, unit([-1, 0, -0.25]), 0.12 * headR[0], envOf(head));
@@ -240,7 +252,17 @@ export function buildBody(resolved) {
     push(jn, a1);
     const a2 = newNode(`antenna-${side < 0 ? "L" : "R"}-2`, "antenna", jn.id, "body"); segment(a2, joint, end, 0.8 * r, formA === "thread" ? 0.4 * r : 0.7 * r); a2.part = "antenna";
     push(a2, jn);
-    if (formA !== "thread") {
+    if (formA === "curl") {
+      // A fern-tip curl: the antenna ends in a spiral of beads that turns up and back over itself, once and a bit.
+      const d = unit(sub(end, joint)), t = unit([d[0], 0, d[2]]), n = [t[2], 0, -t[0]], R0 = 2 * r;
+      let prev = a2;
+      for (let i = 0; i < 9; i++) {
+        const phi = (i * 1.7 * Math.PI) / 8, rho = R0 * (1 - 0.55 * (i / 8));
+        const centre = add(end, mul(n, R0)), bead = newNode(`antenna-${side < 0 ? "L" : "R"}-curl-${i}`, "antenna-tip", prev.id, "body"); bead.part = "antenna";
+        bead.center = add(centre, add(mul(n, -rho * Math.cos(phi)), mul(t, rho * Math.sin(phi)))); const br = (0.78 - 0.3 * (i / 8)) * r; ellipsoid(bead, [br, br, br]);
+        push(bead, prev); prev = bead;
+      }
+    } else if (formA !== "thread") {
       const tip = newNode(`antenna-${side < 0 ? "L" : "R"}-tip`, "antenna-tip", a2.id, "body"); tip.part = "antenna";
       tip.center = add(end, mul(unit(sub(end, joint)), r)); ellipsoid(tip, formA === "club" ? [2.2 * r, 2 * r, 2 * r] : [3.5 * r, 1.2 * r, 4 * r]);
       push(tip, a2);
@@ -351,9 +373,26 @@ export function buildBody(resolved) {
       // One pair held up in a V (reads in every view), or, on a plan with flapRest "flat", one or two
       // pairs laid broadside over the back like a moth at rest: the fore pair ahead, the hind pair
       // behind and shorter, both sloping down and back from the thorax.
-      const flat = plan.extras?.flapRest === "flat", pairs = plan.extras?.flapPairs ?? 1;
+      const flat = plan.extras?.flapRest === "flat", sail = plan.extras?.flapRest === "sail", pairs = plan.extras?.flapPairs ?? 1;
       for (let pair = 0; pair < pairs; pair++) for (const side of [-1, 1]) {
         const u = pairs === 2 ? (pair === 0 ? -0.15 : 0.35) : 0.15;
+        if (sail) {
+          // E9b: held upright and together over the back, one closed silhouette: the fore pair ahead, the hind pair behind it
+          // and a little lower, each blade standing in the side plane just clear of its twin, leaning back, its top a bit
+          // narrower than its foot. Both pairs overlap (the hind foot starts inside the fore blade); the fore top stands 1.3
+          // head heights over the highest line of the back (SAIL_HEIGHT, at most SAIL_HEIGHT_CAP), and the front edge starts behind the head.
+          const k = pair === 0 ? 1 : 0.88, rx = owner.radii[0];
+          const rt = rootOn(owner, worldPoint(owner, [u * rx, 0, 0]), localVector(owner.frame, [0, side * 0.22, 0.97]), 0.05 * L, envOf(owner));
+          const rootP = rt.surface, hh = 2 * headR[2];
+          const foot = Math.max(0.9 * chord * k, 0.62 * rx), backTop = Math.max(...serialRegions.map((r) => r.center[2] + r.radii[2])), H = (backTop - (rootP[2] - 0.02 * L)) + Math.min(SAIL_HEIGHT, SAIL_HEIGHT_CAP) * hh * k, lean = 0.22 * H;
+          const x0 = pair === 0 ? Math.max(rootP[0] - 0.36 * foot, head.center[0] + headR[0] + 0.08 * foot) : rootP[0] - 0.5 * foot;
+          const x1 = pair === 0 ? x0 + foot : rootP[0] + 0.5 * foot;
+          const y = rootP[1] + side * 0.03 * L, z0 = rootP[2] - 0.02 * L;
+          const wing = newNode(`wing-${pairs === 2 ? (pair === 0 ? "fore-" : "hind-") : ""}${side < 0 ? "L" : "R"}`, "thin-surface", owner.id, "second"); wing.part = "flap"; wing.opacity = flapOpacity;
+          sheet(wing, [[x0, y, z0], [x1, y, z0], [x1 + lean - 0.14 * foot, y, z0 + H], [x0 + lean + 0.06 * foot, y, z0 + H]], [0, side, 0], thickness);
+          push(wing, owner, rt.inner);
+          continue;
+        }
         const rt = rootOn(owner, worldPoint(owner, [u * owner.radii[0], 0, 0]), localVector(owner.frame, [0, side * 0.55, 0.83]), 0.05 * L, envOf(owner));
         const rootP = rt.surface;
         // E9 (the cute envelope): a wing pair at rest is part of the body outline: each blade lies tucked

@@ -2,7 +2,7 @@
  "schema": "mb-frame-registry/1",
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 11,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -153,7 +153,7 @@
    "file": "species-S12.json",
    "open": 7,
    "traits": 7,
-   "carried": 49
+   "carried": 50
   },
   {
    "id": "S13",

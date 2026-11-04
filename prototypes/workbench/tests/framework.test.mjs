@@ -5,7 +5,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, stepOf, stepValue, BLEND_STEPS } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
-import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK, frameVersionOf } from "../framework/species.mjs";
+import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK, frameVersionOf, readGenome } from "../framework/species.mjs";
+import { RULES } from "../framework/envelope.mjs";
 import { cross, forecast, kinship, directKin, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
@@ -15,21 +16,21 @@ const framesDir = path.resolve(here, "../frames");
 const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 const frameOf = (id) => frames.find((f) => f.species.id === id);
 
-test("catalogue 10 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
+test("catalogue 11 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
   const v1 = CATALOGUE.loci.filter((l) => l.provenance.catalogue.startsWith("genomic-compositional-source-experiment"));
   const mine = CATALOGUE.loci.filter((l) => l.provenance.catalogue === "mb-genome-framework@7");
   assert.equal(v1.filter((l) => l.status === "validated").length, 114);
   assert.equal(v1.filter((l) => l.status !== "validated").length, 6);
-  assert.equal(mine.length, 49, "45 taxonomy records plus the two ear proportions");
+  assert.equal(mine.length, 50, "45 taxonomy records plus the two ear proportions, plus the dew tongue");
   const gaps = (l) => ["anatomy.tail-tip-bulb", "anatomy.top-cap-sheet", "appearance.cap-palette", "appearance.cap-spots", "appearance.belly-field", "growth.crest-leaf-count"].includes(l.id);
   const proportions = (l) => ["growth.auricular-set-ratio", "growth.auricular-width-ratio"].includes(l.id);
   const kinds = mine.filter((l) => !gaps(l) && !proportions(l) && l.id !== "energy.light-feeding" && !l.id.startsWith("appearance.emission"));
-  assert.equal(kinds.filter((l) => l.switch === "part").length, 11, "eleven new switches");
+  assert.equal(kinds.filter((l) => l.switch === "part").length, 12, "eleven new switches and the dew tongue");
   assert.equal(kinds.filter((l) => l.switch !== "part").length, 27, "twenty-five new loci");
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
   assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 16, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, and ash");
-  assert.equal(CATALOGUE.version, 10, "pin 10: ash for the fine-tuned Loika (T-20261016-200)");
+  assert.equal(CATALOGUE.version, 11, "pin 11: the Peplos genome (curl antennae, a locked dew tongue)");
   assert.deepEqual(LOCI.get("appearance.body-palette").alleles.at(-1), { id: "ash", label: "ash", value: "#8e98a4" }, "ash appended last, so every older copy keeps its index");
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 10).length === 1);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 8).length === 3);
@@ -73,7 +74,7 @@ test("every frame carries only trunk loci its plan owns plus its clan's branch; 
   assert.ok(loika.absent.some((a) => a.id === "growth.wing-span-ratio"), "a Loika has no wing locus at all");
   assert.ok(loika.loci.some((l) => l.id === "appearance.belly-field" && l.scope === "branch"), "but its clan's belly field");
   assert.ok(loika.absent.some((a) => a.id === "anatomy.tail-tip-bulb" && a.why.includes("C03")));
-  assert.equal(frameVersionOf(loika), 4, "the Loika fine-tuned (owner 2026-10-17): frame version 4, with every frame on catalogue 10");
+  assert.equal(frameVersionOf(loika), 4, "the Loika fine-tuned (owner 2026-10-17): frame version 4, with every frame on catalogue 11");
   assert.equal(loika.counts.traits, 6, "six traits: the starter tier counts traits");
   assert.equal(loika.counts.open, 7, "Colour, the marking switch and layout, Crown, Eyes, Drive, Efficiency");
   assert.deepEqual(loika.loci.find((l) => l.id === "appearance.marking-switch").legacy, ["off"], "plain stays legal for a version-3 line");
@@ -574,4 +575,85 @@ test("a shed pod's pedigree is known only when its parent resolves, as a cross c
   assert.equal(known.pedigreeKnown, true);
   assert.ok(known.kinship >= 0.5, `kinship to its parent ${known.kinship}`);
   assert.equal(relatedness(f, pod, m, () => null).pedigreeKnown, false, "an unresolvable parent: identity is the fallback");
+});
+
+// --- the Peplos genome (catalogue 11, frame 5 of the Peplos) ---------------------------------------------------
+
+const peplos = () => { const f = frameOf("S12"), g = typeSpecimen(f); return { f, g, built: buildIndividual(f, g) }; };
+const inQuad = (q, [x, z]) => { let s = 0; for (let i = 0; i < 4; i++) { const [ax, az] = q[i], [bx, bz] = q[(i + 1) % 4], c = (bx - ax) * (z - az) - (bz - az) * (x - ax); if (c !== 0) { if (s && Math.sign(c) !== s) return false; s = Math.sign(c); } } return true; };
+
+test("the Peplos type shows spots and carries plain: a cross of two type-like Peplos shows plain one time in four", () => {
+  const { f, g, built } = peplos();
+  assert.deepEqual([...g.loci["appearance.flap-marking"]].sort(), ["plain", "spots"]);
+  assert.equal(resolveCopies(LOCI.get("appearance.flap-marking"), g.loci["appearance.flap-marking"]), "spots", "spots over plain: the type shows spots");
+  assert.equal(frameOf("S12").loci.find((l) => l.id === "appearance.flap-marking").kind, "heritable-look");
+  assert.equal(built.validation.status, "valid");
+  const r = rng("peplos-pattern"); let plain = 0; const n = 4000;
+  for (let i = 0; i < n; i++) { const c = cross(f, g, structuredClone(g), { rng: r, kinship: 0 }); if (resolveCopies(LOCI.get("appearance.flap-marking"), c.loci["appearance.flap-marking"]) === "plain") plain++; }
+  assert.ok(Math.abs(plain / n - 0.25) < 0.03, `plain ${plain / n}`);
+});
+
+test("antenna form is thread, club or curl; the Peplos is fixed to curl; an old feather copy reads as curl", () => {
+  const form = LOCI.get("anatomy.antenna-form");
+  assert.deepEqual(form.alleles.map((a) => a.id), ["thread", "club", "curl"]);
+  assert.equal(resolveCopies(form, ["curl", "thread"]), "curl");
+  const f = frameOf("S12");
+  assert.deepEqual(f.loci.find((l) => l.id === "anatomy.antenna-form").copies, ["curl", "curl"]);
+  assert.equal(f.loci.find((l) => l.id === "appearance.surface-texture").copies[0], "smooth", "the body is one smooth bean");
+  const old = structuredClone(typeSpecimen(f)); old.loci["anatomy.antenna-form"] = ["feather", "feather"];
+  assert.ok(checkGenome(f, old).length > 0, "feather is no longer a legal copy");
+  const read = readGenome(old);
+  assert.deepEqual(read.loci["anatomy.antenna-form"], ["curl", "curl"]);
+  assert.equal(checkGenome(f, read).length, 0);
+  const cur = typeSpecimen(f); assert.equal(readGenome(cur), cur, "a current genome passes through untouched");
+});
+
+test("the dew tongue is a locked C12 locus with no chapter and no trait, drawn coiled on the Peplos only", () => {
+  const l = LOCI.get("anatomy.dew-tongue");
+  assert.equal(l.scope, "branch"); assert.equal(l.clan, "C12");
+  const row = frameOf("S12").loci.find((x) => x.id === "anatomy.dew-tongue");
+  assert.equal(row.kind, "locked"); assert.deepEqual(row.copies, ["on", "on"]); assert.equal(row.chapter, null); assert.equal(row.trait, null);
+  assert.ok(!frameOf("S12").chapters.some((c) => c.traits.some((t) => t.loci.includes("anatomy.dew-tongue"))));
+  for (const g of frames) if (g.species.id !== "S12") assert.ok(!g.loci.some((x) => x.id === "anatomy.dew-tongue"), `${g.species.id} has no tongue`);
+  const { built } = peplos();
+  assert.ok(built.scene.nodes.filter((n) => n.part === "tongue").length >= 8, "a coil of beads");
+  assert.ok(built.scene.nodes.filter((n) => n.id.includes("-curl-")).length >= 18, "a curl on each antenna");
+});
+
+test("flapRest has three values; the Peplos sails its flaps; E9b holds for the sail", () => {
+  assert.equal(planFacts("three|serial|bilateral|contact|zero|one|three|on|skin", { flapRest: "sail", flapPairs: 2 }).extras.flapRest, "sail");
+  assert.equal(planFacts("three|serial|bilateral|contact|zero|one|three|on|skin", { flapRest: "flat", flapPairs: 2 }).extras.flapRest, "flat");
+  assert.equal(planFacts("three|serial|bilateral|contact|zero|one|three|on|skin", { flapRest: "other", flapPairs: 2 }).extras.flapRest, "raised");
+  assert.equal(frameOf("S12").plan.extras.flapRest, "sail");
+  assert.equal(frameOf("S09").plan.extras.flapRest, "flat", "the big bird keeps its flat rest");
+  const { built } = peplos();
+  const wings = built.scene.nodes.filter((n) => n.part === "flap");
+  assert.equal(wings.length, 4);
+  const head = built.scene.nodes.find((n) => n.id === "head"), headH = 2 * head.radii[2];
+  const body = built.scene.nodes.filter((n) => n.role === "primary-region"), top = Math.max(...body.map((b) => b.center[2] + b.radii[2]));
+  const wingTop = Math.max(...wings.flatMap((w) => w.corners.map((c) => c[2])));
+  assert.ok(wingTop - top <= 1.6 * headH, `the sail stands ${((wingTop - top) / headH).toFixed(2)} head heights over the back (cap 1.6)`);
+  assert.ok(wingTop - top >= headH, "and stands at least a head high");
+  // one closed silhouette in the side view: the four blades rasterised together are one connected piece
+  const quads = wings.map((w) => w.corners.map((c) => [c[0], c[2]])), xs = quads.flat().map((p) => p[0]), zs = quads.flat().map((p) => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), z0 = Math.min(...zs), z1 = Math.max(...zs), N = 160, cell = new Set();
+  for (let i = 0; i <= N; i++) for (let j = 0; j <= N; j++) { const p = [x0 + ((x1 - x0) * i) / N, z0 + ((z1 - z0) * j) / N]; if (quads.some((q) => inQuad(q, p))) cell.add(i * 1000 + j); }
+  const seen = new Set(), stack = [[...cell][0]]; seen.add(stack[0]);
+  while (stack.length) { const k = stack.pop(), i = Math.floor(k / 1000), j = k % 1000; for (const m of [k + 1000, k - 1000, k + 1, k - 1]) if (cell.has(m) && !seen.has(m) && Math.abs(m % 1000 - j) <= 1) { seen.add(m); stack.push(m); } }
+  assert.equal(seen.size, cell.size, "one closed silhouette");
+  // the near eye is never covered, from the side and from three-quarter views on either side
+  const eyes = built.scene.nodes.filter((n) => n.id === "eye-L" || n.id === "eye-R");
+  assert.equal(eyes.length, 2);
+  for (const yaw of [0, 35, -35, 55, -55, 180, 145, 215]) for (const e of eyes) {
+    const a = (yaw * Math.PI) / 180, proj = (p) => [p[0] * Math.cos(a) + p[1] * Math.sin(a), p[2]];
+    assert.ok(!wings.some((w) => inQuad(w.corners.map(proj), proj(e.center))), `the sail covers an eye at yaw ${yaw}`);
+  }
+  assert.ok(RULES.some((r) => r.id === "E9b"));
+});
+
+test("the sleep rest stays flat: the flat value still builds the moth's roof over the back", () => {
+  const f = frameOf("S12"), g = typeSpecimen(f), flat = structuredClone(frameOf("S12")); flat.plan.extras.flapRest = "flat";
+  const b = buildIndividual(flat, g); assert.equal(b.validation.status, "valid");
+  const wing = b.scene.nodes.find((n) => n.id === "wing-fore-L"), body = b.scene.nodes.filter((n) => n.role === "primary-region"), top = Math.max(...body.map((x) => x.center[2] + x.radii[2]));
+  assert.ok(Math.max(...wing.corners.map((c) => c[2])) < top, "lies along the flank, under the back line");
 });
