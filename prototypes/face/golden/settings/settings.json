@@ -32,6 +32,30 @@
   "hold-quarter-3": {
    "hash": "35a40007",
    "png": "hold-quarter-3.png"
+  },
+  "settings-realm": {
+   "hash": "89be5cc3",
+   "png": "settings-realm.png"
+  },
+  "settings-companion": {
+   "hash": "9b4d4718",
+   "png": "settings-companion.png"
+  },
+  "settings-sleeping-none": {
+   "hash": "486a63eb",
+   "png": "settings-sleeping-none.png"
+  },
+  "settings-sleep-docked": {
+   "hash": "59c7bb8a",
+   "png": "settings-sleep-docked.png"
+  },
+  "settings-sleep-lifted": {
+   "hash": "6f2292e7",
+   "png": "settings-sleep-lifted.png"
+  },
+  "settings-cannot-sign": {
+   "hash": "17c384b2",
+   "png": "settings-cannot-sign.png"
   }
  }
 }

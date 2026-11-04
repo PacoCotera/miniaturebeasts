@@ -9,11 +9,13 @@ import { fileURLToPath } from "node:url";
 import { listPitch } from "../../ui/specs/derive.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), file = path.resolve(here, "../tests/vectors/focus.json"), specs = path.resolve(here, "../../ui/specs/station");
-const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["home", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench", "pods-screen"];
+const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["home", "settings", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench", "pods-screen"];
 const V = JSON.parse(readFileSync(file, "utf8")), J = (n) => JSON.parse(readFileSync(path.join(specs, n.replace(/-screen$/, "") + ".json"), "utf8"));   // pods-screen: pods.json's vectors (its hand-written cases are named "pods: ...")
 const TARGETS = {
   // Home: the six targets in the order the view lists them (the two bezels, then the four stations), each on its region's rectangle; the room (no ring at rest) is a vector's from, never a listed target
   home: (state, spec) => spec.focus.targets ? Object.entries(spec.focus.targets).map(([id, t]) => ({ id, rect: spec.regions[id].rect, group: t.group })) : [],
+  // Settings: the four rows, each its region's rectangle, in the order the view lists them
+  settings: (state, spec) => Object.entries(spec.focus.targets).map(([id, t]) => ({ id, rect: spec.regions[id].rect, group: t.group })),
   incubator: (state, spec) => [{ id: "room", rect: spec.focus.roomAt, group: "room" }],   // one subject: the room, no ring drawn
   // the wireframe 18's targets (focus.layout), in the order the view lists them: the residents, then the tiles; a mibi `away` (out with the Companion) is a tile and no resident
   // the collection v2 room view's targets (focus.layout), in the order the view lists them: the residents, the chips (with their index), the card's plates (with theirs)

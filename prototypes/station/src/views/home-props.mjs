@@ -283,10 +283,10 @@ export function homeBuild(m, spec, frame) {
   // the windows: the Vivarium's readout (each part only when non-zero; "all on a trip" when nobody is home)
   const housed = S.housed(st), onTrip = housed.filter((mb) => S.isAway(st, sv, mb)).length, atHome = housed.length - onTrip, R = Sg.readout;
   const readout = !housed.length ? "" : atHome === 0 ? R.allTrip : [atHome ? fill(R.home, { n: atHome }) : "", onTrip ? fill(R.trip, { m: onTrip }) : ""].filter(Boolean).join(R.sep);
-  // the focus: the six targets, the ring on `cur` or nowhere
+  // the focus: the six targets and, behind the developer setting realmSleep, the Settings knob last, the ring on `cur` or nowhere
   const living = glassOf(m, spec, frame, housed, requests);
   const lib = library(st, settings, spec); if (lib.request) { requests.push(lib.request); requests.push({ kind: "star", id: "star:12" }); }   // the Library's specimen (build spec 4.2) and the glint on a bead found since it was last opened
-  const targets = ["vivarium", "library", "pods", "incubator", "companion", "bay"].map((id) => ({ id, group: id }));
+  const targets = ["vivarium", "library", "pods", "incubator", "companion", "bay", ...(settings.realmSleep ? ["settings"] : [])].map((id) => ({ id, group: id }));
   const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
   const line = lineOf(m, spec, frame, { cur, needs, docked, companion });
   const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: lib.region, glass: living.glass, room: living.room, residents: living.residents, pods, incubator, companion, bay };

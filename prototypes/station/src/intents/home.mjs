@@ -19,7 +19,7 @@ export function doNeed(h, nd) {
   else if (nd.act === "pods") toPods(h);
   else if (nd.act === "vivarium") { h.goto("vivarium"); const first = S.inRoom(h.st, h.st.face?.room ?? 0)[0]; h.ui.viv.f = nd.ring === "room.new" ? "room.new" : first ? "resident." + first.id : null; }   // the full need: ✓ Add a room puts the ring on the new-room chip, ✓ Make room on the first resident of the room shown (home.json strings.needs.full)
 }
-// ✓ on a target of Home: room | vivarium | library | pods | incubator | companion | bay. A bezel opens full screen, a station opens its room; the Companion opens the Probe bench while docked and does nothing away (the line says it is on a trip).
+// ✓ on a target of Home: room | vivarium | library | pods | incubator | companion | bay | settings. A bezel opens full screen, a station opens its room; the Companion opens the Probe bench while docked and does nothing away (the line says it is on a trip).
 // `back` does nothing on Home (the top).
 export function intent(h, target, verb) {
   if (verb !== "confirm") return;
@@ -31,6 +31,7 @@ export function intent(h, target, verb) {
   else if (target === "incubator") h.goto("incubator");
   else if (target === "companion") { if (S.docked(h.st)) { ui.bench.f = null; h.goto("bench"); } }
   else if (target === "bay") h.goto("cargo");
+  else if (target === "settings") { if (h.settings.realmSleep) h.goto("settings"); }   // the Settings knob: behind the developer setting realmSleep until the screen is signed
 }
 // The Home room key pressed at rest: the Station rests (events.rest: the ring is already gone, then the 180 ms dither to Idle, which holds 380); with reduced motion it is a cut and Idle shows on the frame of the key.
 export function rest(h) {
