@@ -346,7 +346,7 @@
     "pending": [] },
   { "state": "create/create-confirm-keep", "card": "create-L5-4", "verdict": "fault", "from": "owner card create-L5-4, marked fault: almost aligned: right edges 494 and 498, 4 → 0",
     "expect": [
-     { "rule": "L5", "part": "b", "container": "opening", "node": "panelPrice", "other": "panelPrice#3", "mark": "owner", "why": "marked a fault by the owner: almost aligned: right edges 494 and 498 in the reviewed run; with the re-cut pod mark the price run's edges differ by 1" }
+     { "rule": "L5", "part": "b", "container": "opening", "node": "panelPrice#3", "other": "panelRoom", "mark": "owner", "why": "marked a fault by the owner: almost aligned: right edges 494 and 498, 4 → 0 in the reviewed run" }
     ],
     "clear": [],
     "pending": [] },

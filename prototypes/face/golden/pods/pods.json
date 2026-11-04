@@ -6,23 +6,23 @@
    "png": "pods-inventory-no-pods.png"
   },
   "inventory, one sealed pod": {
-   "hash": "f8b908f9",
+   "hash": "cd864d20",
    "png": "pods-inventory-one-sealed-pod.png"
   },
   "inventory, twelve pods": {
-   "hash": "51d48ba5",
+   "hash": "56d0b3b4",
    "png": "pods-inventory-twelve-pods.png"
   },
   "inventory, the panel's first button": {
-   "hash": "39427d3f",
+   "hash": "2074ce2e",
    "png": "pods-inventory-the-panel-s-first-button.png"
   },
   "inventory, sorted by species": {
-   "hash": "6bb2c21f",
+   "hash": "32aab4d9",
    "png": "pods-inventory-sorted-by-species.png"
   },
   "inventory, filtered": {
-   "hash": "e51e2f8b",
+   "hash": "d170931f",
    "png": "pods-inventory-filtered.png"
   },
   "inventory, the filter tray": {
@@ -38,19 +38,19 @@
    "png": "pods-inventory-find.png"
   },
   "inventory, drying": {
-   "hash": "4bfbca37",
+   "hash": "0a3f9f17",
    "png": "pods-inventory-drying.png"
   },
   "inventory, a pod dried": {
-   "hash": "85d701e9",
+   "hash": "2492070a",
    "png": "pods-inventory-a-pod-dried.png"
   },
   "inventory, let it go asks": {
-   "hash": "8bec519b",
+   "hash": "b71f7aa5",
    "png": "pods-inventory-let-it-go-asks.png"
   },
   "inventory, forty pods": {
-   "hash": "4ca7ed31",
+   "hash": "6e1a6749",
    "png": "pods-inventory-forty-pods.png"
   },
   "read, Loika fresh, Coat in hand": {
