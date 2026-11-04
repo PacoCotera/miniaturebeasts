@@ -80,6 +80,7 @@ VARIETY = {"n": 12, "seed": 2026, "cycle": ["form.ear-kind", "anatomy.tail-tip-f
            "species_rules": [{"id": "ember", "label": "The ember rule", "when": [{"field": "hue", "in": [10, 35]}], "then": [{"any": [{"field": "belly", "is": "dark"}, {"field": "tip", "not": "lantern"}]}],
                               "fail": "warm hue with a lit tip and a light belly"}]}       # the ember rule as data: a hue of 10 to 35 degrees needs a dark belly or an unlit tip
 
+RENDERS = {"base": "game-v1", "add": {}}        # the game's render set, and nothing of S20's own to add
 
 def block():
     pin = GA.pin()
@@ -147,7 +148,7 @@ def main():
         doc = json.load(fh)
     b = block()
     if "--check" in sys.argv:
-        print("same" if doc["genome"] == b and doc.get("expressions") == EXPRESSIONS and doc.get("variety") == VARIETY else "differs")
+        print("same" if doc["genome"] == b and doc.get("expressions") == EXPRESSIONS and doc.get("variety") == VARIETY and doc.get("renders") == RENDERS else "differs")
         return
     legacy = doc["legacy"]
     if "genes" in doc["genome"]:
@@ -155,6 +156,7 @@ def main():
     doc["genome"] = b
     doc["expressions"] = EXPRESSIONS
     doc["variety"] = VARIETY
+    doc["renders"] = RENDERS
     with open(FILE, "w") as fh:
         json.dump(doc, fh, indent=1)
         fh.write("\n")

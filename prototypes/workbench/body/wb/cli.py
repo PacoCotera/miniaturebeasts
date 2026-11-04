@@ -296,6 +296,26 @@ def cmd_freq(a):
     return 0
 
 
+def cmd_renders(a):
+    """The render set of the file: every picture the game asks for with its size, style and state (ready, or owed with the reason). --make DIR draws the ready ones with Blender (plush, clay, silhouette, the layered stand, the sprites made from the master)."""
+    r = call("GET", f"/api/species/{a.species}/renders")
+    lines = [f"{a.species}  {r['base']}  {r['ready']} ready, {r['owed']} owed"]
+    for x in r["rows"]:
+        sz = "x".join(map(str, x["size"])) if x["size"] else "all clips"
+        lines.append(f"  {x['output']:11} {x['variant']:28} {sz:8} {x['style']:10} {x['kind']:7} " + ("ready" if x["state"] == "ready" else f"owed: {x['why']}"))
+    for n in r["not_yet"]:
+        lines.append(f"  not yet: {n['style']}  ({n['why']})")
+    if a.make:
+        import subprocess
+        py = os.environ.get("WB_BPY") or sys.executable
+        rc = subprocess.run([py, "-m", "wb.renderset", r["path"], a.make] + (["--only", a.only] if a.only else []), cwd=BODY).returncode
+        lines.append(f"drawn into {a.make}" if rc == 0 else f"the render set failed ({rc}); set WB_BPY to the Blender python")
+        out(a, dict(ok=rc == 0, species=a.species, ready=r["ready"], owed=r["owed"], out=a.make), "\n".join(lines))
+        return 0 if rc == 0 else 2
+    out(a, dict(ok=True, species=a.species, ready=r["ready"], owed=r["owed"], rows=r["rows"], not_yet=r["not_yet"]), "\n".join(lines))
+    return 0
+
+
 def cmd_variety(a):
     """The Variety sheet: N individuals drawn from the file's own rules, how often each look shows (this sheet, wild, a cross), the species rules, and the tiles (clay renders, cached; a second run is cached tile by tile). --no-tiles prints the numbers alone."""
     q = "&".join(f"{k}={v}" for k, v in (("n", a.n), ("seed", a.seed)) if v is not None)
@@ -420,6 +440,7 @@ def main(argv=None):
     p = sub.add_parser("check"); p.add_argument("species"); common(p); p.add_argument("--stage", default="all", choices=STAGES); p.add_argument("--locus", action="append", default=[], help="extremes only: build just this locus (repeat for more)"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_check)
     p = sub.add_parser("freq"); p.add_argument("species", nargs="?", default=""); p.add_argument("--file", default=""); p.add_argument("-n", type=int, default=1000, help="wild draws"); p.add_argument("--locus", action="append", default=[], help="also print this locus's looks"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_freq)
     p = sub.add_parser("variety"); p.add_argument("species"); p.add_argument("--n", type=int, default=None); p.add_argument("--seed", type=int, default=None); p.add_argument("--no-tiles", action="store_true"); p.add_argument("--sheet", default="", help="write the sheet (HTML and PNG) into this folder"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_variety)
+    p = sub.add_parser("renders"); p.add_argument("species"); p.add_argument("--make", default="", help="draw the ready pictures into this folder (needs WB_BPY, the Blender python)"); p.add_argument("--only", default=""); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_renders)
     p = sub.add_parser("string"); p.add_argument("selector", nargs="?", default="type"); p.add_argument("--species", default=""); p.add_argument("--code", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_string)
     p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)
     p = sub.add_parser("watch"); p.add_argument("species"); p.add_argument("--json", action="store_true"); p.add_argument("--count", type=int, default=0); p.add_argument("--timeout", type=float, default=0); p.set_defaults(f=cmd_watch)

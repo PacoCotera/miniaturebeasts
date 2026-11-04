@@ -317,7 +317,7 @@ class Server:
             modes = list(K.MODES) if modes in ("all", ["all"]) else ([modes] if isinstance(modes, str) else list(modes))
             for m in modes:
                 if m == "plush":
-                    raise ApiError(400, "mode 'plush' needs the plush worker, which is a later chunk; the proxy modes are " + ", ".join(K.MODES), "mode")
+                    raise ApiError(400, "mode 'plush' is drawn by the render set (wb renders --make), not by the proxy; the proxy modes are " + ", ".join(K.MODES), "mode")
                 if m not in K.MODES:
                     raise ApiError(400, f"mode '{m}': one of {', '.join(K.MODES)}", "mode")
             azs = [int(a) for a in (args.get("az") or K.AZ)]
@@ -659,6 +659,13 @@ class Server:
         ck = K.cage_key(spec, genome)
         return {str(z): k for (m, a, z), k in zip(self.VARIETY_VIEWS, K.frames(ck, self.VARIETY_VIEWS))}
 
+    def renders(self, sp):
+        """The render set of the file as it is now (instant, no render): every variant with its size, style and state (ready, or owed with the reason), and the styles that are not yet."""
+        from wb import renders as RS
+        rows = RS.expand(sp.spec)
+        return dict(species=sp.id, path=sp.path, hash=sp.hash, base=RS.block(sp.spec).get("base", RS.BASE), rows=[dict(r, size=list(r["size"]) if r["size"] else None) for r in rows],
+                    ready=sum(r["state"] == "ready" for r in rows), owed=sum(r["state"] == "owed" for r in rows), not_yet=RS.not_yet(sp.spec))
+
     def variety_run_key(self, spec_hash, n, seed):
         return H.hash_of("variety", spec_hash, int(n), int(seed), K.LOOK, "variety-1")
 
@@ -833,6 +840,9 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)/variety", p)
             if m:
                 return self.send_json(srv.variety(srv.get_species(m.group(1)), q.get("n", [None])[0], q.get("seed", [None])[0]))
+            m = re.fullmatch(r"/api/species/([^/]+)/renders", p)
+            if m:
+                return self.send_json(srv.renders(srv.get_species(m.group(1))))
             m = re.fullmatch(r"/api/species/([^/]+)/string", p)
             if m:
                 return self.send_json(srv.string_of(srv.get_species(m.group(1)), q.get("genome", ["type"])[0]))

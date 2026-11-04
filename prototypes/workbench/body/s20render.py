@@ -163,7 +163,7 @@ def tex_obj(M, paths, genome, glow_scale=1.5):
     return ob
 
 
-def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3), samples=None, glow_scale=1.5, floor=True):
+def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3), samples=None, glow_scale=1.5, floor=True, body_visible=True):
     """The plush look (look-dev 30ad1e70, plush.py): the velvet material, the soft studio light, AgX Punchy, 256 samples with the denoiser; 96 px frames are rendered at 3x and 48 px at 4x and box-filtered down (native small renders streak). Returns the RGBA float array and the camera."""
     import plush as PL
     ss = PL.SS.get(int(w), 1)
@@ -189,6 +189,7 @@ def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.3
         pass
     ob = bpy.data.objects.new("body", me)
     sc.collection.objects.link(ob)
+    ob.visible_camera = body_visible                 # False: the body only casts its shadow on the floor (the stand's shadow layer)
     me.materials.append(mat)
     if floor and el > 0:
         fl = bpy.data.meshes.new("floor"); fl.from_pydata([(-7, -5, 0), (5, -5, 0), (5, 5, 0), (-7, 5, 0)], [], [(0, 1, 2, 3)])

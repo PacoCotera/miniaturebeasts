@@ -4465,5 +4465,9 @@
     "fail": "warm hue with a lit tip and a light belly"
    }
   ]
+ },
+ "renders": {
+  "base": "game-v1",
+  "add": {}
  }
 }
