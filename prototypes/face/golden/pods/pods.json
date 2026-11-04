@@ -90,7 +90,7 @@
    "png": "pods-read-a-sealed-chapter-the-pod-s-reason.png"
   },
   "read, a sealed pod, Identify": {
-   "hash": "00aac3a7",
+   "hash": "9514db2d",
    "png": "pods-read-a-sealed-pod-identify.png"
   },
   "read, the stamp moment": {
@@ -102,19 +102,19 @@
    "png": "pods-read-the-stamp-view.png"
   },
   "compare": {
-   "hash": "d91e942b",
+   "hash": "bf3a13cf",
    "png": "pods-compare.png"
   },
   "compare, the next chapter the same": {
-   "hash": "d14c6044",
+   "hash": "c67a9e20",
    "png": "pods-compare-the-next-chapter-the-same.png"
   },
   "compare, nothing read on both": {
-   "hash": "e6219093",
+   "hash": "b087c5e7",
    "png": "pods-compare-nothing-read-on-both.png"
   },
   "compare, a kin's unread lane glints": {
-   "hash": "b2d31b01",
+   "hash": "7b74e25d",
    "png": "pods-compare-a-kin-s-unread-lane-glints.png"
   }
  }
