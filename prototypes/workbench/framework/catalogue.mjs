@@ -1,4 +1,4 @@
-// The genome framework's catalogue, version 11 (the Peplos genome: curl antennae, a locked dew tongue): the v1 authoring catalogue6 (114 validated pairs
+// The genome framework's catalogue, version 12 (the Peplos genome: curl antennae, a locked dew tongue). Pin 11 is not on this line: it is the genome-string pin on the studio line, so this line goes from 10 to 12 and a pin of 11 read here is read as 12 (species.mjs readPin): the v1 authoring catalogue6 (114 validated pairs
 // and six drafts, snapshotted with provenance in catalogue6-data.mjs) plus the records the
 // taxonomy proposal lists as missing for the V1 roster (design/proposals/taxonomy.md §3, "What the
 // catalogue needs": 11 switches · 25 loci + 6 alleles) and the three gaps the species frames list
@@ -73,13 +73,13 @@ const NEW_LOCI = [
   // Insect-like (S12, S13; trunk unless one clan): antennae, wing cases, flap markings, translucent flaps. 2 · 6.
   { id: "anatomy.antenna-presence", family: "structure", label: "Antennae", scope: "trunk", owner: "head", consumer: "rig: antenna pair on the head", ...enable() },
   { id: "growth.antenna-length-ratio", family: "structure", label: "Antenna length", scope: "trunk", owner: "anatomy.antenna-presence", consumer: "rig: antenna length over head depth", ...mean({ short: 0.7 }, { long: 1.5 }) },
-  { id: "anatomy.antenna-form", family: "structure", label: "Antenna form", scope: "trunk", owner: "anatomy.antenna-presence", consumer: "rig: thread, club or fern-tip curl", version: 2, ...pairMap({ thread: "thread", club: "club", curl: "curl" }, dominance(["curl", "club", "thread"])) },   // catalogue 11: feather retired (nothing is drawn feathered); an old copy reads as curl (species.mjs migrateGenome)
+  { id: "anatomy.antenna-form", family: "structure", label: "Antenna form", scope: "trunk", owner: "anatomy.antenna-presence", consumer: "rig: thread, club or fern-tip curl", version: 2, ...pairMap({ thread: "thread", club: "club", curl: "curl" }, dominance(["curl", "club", "thread"])) },   // catalogue 12: feather retired (nothing is drawn feathered); an old copy reads as curl (species.mjs readGenome)
   { id: "anatomy.wing-case-presence", family: "structure", label: "Wing cases", scope: "branch", clan: "C13", owner: null, consumer: "rig: two hard half-shells over the back", ...enable() },
   { id: "growth.wing-case-extent", family: "structure", label: "Wing-case extent", scope: "branch", clan: "C13", owner: "anatomy.wing-case-presence", consumer: "rig: how far back the cases reach", ...mean({ short: 0.5 }, { long: 0.9 }) },
   { id: "anatomy.wing-case-seam", family: "structure", label: "Wing-case seam", scope: "branch", clan: "C13", owner: "anatomy.wing-case-presence", consumer: "rig: cases closed or parted", ...pairMap({ closed: "closed", parted: "parted" }, { "closed|closed": "closed", "closed|parted": "closed", "parted|parted": "parted" }) },
   { id: "appearance.flap-marking", family: "appearance", label: "Flap markings", scope: "trunk", owner: "flaps", consumer: "sketch: marking field on thin surfaces", ...pairMap({ plain: "plain", spots: "spots", bars: "bars" }, { "plain|plain": "plain", "plain|spots": "spots", "spots|spots": "spots", "bars|plain": "bars", "bars|spots": "bars-and-spots", "bars|bars": "bars" }) },
   { id: "appearance.flap-translucency", family: "appearance", label: "Flap translucency", scope: "trunk", owner: "flaps", consumer: "sketch: thin-surface opacity (the transparency draft, validated for flaps)", ...mean({ opaque: 0 }, { clear: 0.6 }) },
-  // Catalogue 11, moth (C12 branch): the dew-drinker's coiled tongue. Locked on, no chapter, no trait: nothing a player shapes.
+  // Catalogue 12, moth (C12 branch): the dew-drinker's coiled tongue. Locked on, no chapter, no trait: nothing a player shapes.
   { id: "anatomy.dew-tongue", family: "structure", label: "Dew tongue", scope: "branch", clan: "C12", owner: "head", consumer: "rig: a coiled tongue under the head", ...enable() },
   // Slug (C14 branch): a foot skirt; sheen is trunk, a surface finish any body can carry. 1 · 2.
   { id: "anatomy.foot-skirt-presence", family: "structure", label: "Foot skirt", scope: "branch", clan: "C14", owner: null, consumer: "rig: a flat skirt under the body", ...enable() },
@@ -181,7 +181,7 @@ function newLocus(l) {
 export const CATALOGUE = {
   // Pin 8: 7 plus the tiny head alleles (a changed range is a new pin; frames and genomes carry the pin
   // they were built against, and a saved mibi keeps its own).
-  id: "mb-genome-framework", version: 11, schema: "mb-catalogue/11",
+  id: "mb-genome-framework", version: 12, schema: "mb-catalogue/12",
   parent: { id: CATALOGUE6.id, version: CATALOGUE6.version, foundationDigest: CATALOGUE6.foundationDigest, source: CATALOGUE6.source },
   families: CATALOGUE6.families,
   loci: [...CATALOGUE6.loci.map(v1Locus), ...NEW_LOCI.map(newLocus)],
