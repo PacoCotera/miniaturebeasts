@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, frameIds, podGenome, traitState, chapterLooks } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
+import { fourSlots } from "../src/splice.mjs";
 import { traitLooks, currentLooks } from "../../workbench/framework/describe.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
@@ -134,6 +135,19 @@ test("the wish in the cross forecast: a switch lights the seeds that show the pi
   // a pinned look the pair cannot reach lights nothing
   const unreach = L.possibleLooks(fr, tr(sw.trait)).find((l) => !sw.seeds.some((sd, i) => traitState(fr, tr(sw.trait), withLoci({ [sw.locus]: sd.copies })).shows === l));
   if (unreach) { S.guideAdd(st, "S01", sw.trait, [unreach]); L.wishPin(st, "S01", sw.trait, unreach); const r = L.wishForecast(st, a, b, settings), z = r.pinned.find((x) => x.trait === sw.trait); assert.deepEqual(z.seeds, []); assert.ok(!z.lit); assert.ok(!r.lit.includes(sw.trait)); }
+});
+
+test("the wish on a kin pair lights the four drawn slots, never a raw seed past the fourth", () => {
+  const st = fresh(); st.knownIds.push("S01"); const fr = frameOf("S01"); const [a, b, c, d] = S.seedAdults(st, "S01", 21, 4, { ...settings, rooms: 2 }).mibis;
+  c.parents = [{ id: a.id }, { id: a.id }]; d.parents = [{ id: a.id }, { id: b.id }];   // a shed-like child of a and a child of a and b: allowed, kinship exactly a quarter
+  assert.equal(S.directKinOf(st, c, d), null); assert.equal(S.kinshipOf(st, c, d), 0.25);
+  const fc = S.forecastOf(st, c, d, settings), sw = fc.traits.filter((x) => x.kind === "switch").sort((p, q) => q.seeds.length - p.seeds.length)[0], tr = fr.chapters.flatMap((t) => t.traits).find((t) => t.id === sw.trait);
+  assert.ok(sw.seeds.length > 4, "under a quarter of kinship the raw list holds more than four");
+  const withLoci = (loci) => ({ ...c.genome, loci: { ...c.genome.loci, ...loci } }), slots = fourSlots(sw.seeds);
+  const look = traitState(fr, tr, withLoci({ [sw.locus]: sw.seeds.at(-1).copies })).shows; S.guideAdd(st, "S01", sw.trait, [look]); assert.ok(L.wishPin(st, "S01", sw.trait, look).ok);
+  const z = L.wishForecast(st, c, d, settings).pinned[0];
+  assert.deepEqual(z.seeds, slots.map((sd, i) => (traitState(fr, tr, withLoci({ [sw.locus]: sd.copies })).shows === look ? i : -1)).filter((i) => i >= 0));
+  assert.ok(z.seeds.every((i) => i < 4));
 });
 
 // ---- the wish may mark an unread chapter, but never say what (the game designer's brief) ----

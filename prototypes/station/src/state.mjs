@@ -1146,7 +1146,7 @@ export const isAway = (st, sv, m) => !!m && !docked(st) && carriedIds(st, sv).in
 export const isCarried = (st, sv, m) => !!m && carriedIds(st, sv).includes(m.id);
 // Direct kin (a parent, grandparent or great-grandparent, or two children of one pair) never cross; null, or { rel, by }. The pedigree is walked through the records of mibis let go too.
 export const directKinOf = (st, a, b) => directKin(a, b, genomeLookup(st));
-export const FAMILY = "family";   // crossBlock's key for a family pair; its words are the spec's (vivarium.json strings.why.family)
+export const FAMILY = "family \u00b7 find a partner on walks";   // the one refusal line, wherever a family pair is refused (vivarium.json strings.why.partnerFamily says the same; a test holds them equal)
 // Refused before cost, on the pick itself, reasons that never change first: the same individual, another species, gone to the wild, family, then not adult, tucked away, carried (R4b, the owner: no breeding while a mibi is carried, docked or away), busy, full.
 export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return "pick two";
@@ -1166,7 +1166,7 @@ export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibi
 // A child of close kin or the same line: its parents' kinship is a quarter or more (the card says "bred close"); a founder or a pod has no parents
 export const bredClose = (st, m) => Array.isArray(m?.parents) && m.parents.length === 2 && pedigreeKinship(m.parents[0], m.parents[1], genomeLookup(st)) >= 0.25;
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
-export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
+export const kinshipWord = (k) => (k <= 0 ? "no kin in common" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
 // The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you
 // have read, and an indication of everything missing"): a trait whose chapter either parent has not read is marked `missing`, with no seeds, range or firmness, and names which parent
 // and which chapter to read; a sealed chapter's traits stay `sealed`. `missing` counts the readable traits still unknown, `sealedTraits` the sealed ones, `unknown` both; the genome-wide

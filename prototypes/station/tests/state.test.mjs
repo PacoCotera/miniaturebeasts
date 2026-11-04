@@ -357,7 +357,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.equal(S.forecastOf(st, sib.mibis[0], sib.mibis[1], settings), null);
   assert.equal(S.kinshipOf(st, sib.mibis[0], sib.parents[0]), 0.25);
   assert.equal(S.kinshipOf(st, sib.mibis[0], a), 0, "unrelated lines");
-  assert.match(S.kinshipWord(0.25), /close kin/); assert.match(S.kinshipWord(0), /wild founders/);
+  assert.match(S.kinshipWord(0.25), /close kin/); assert.equal(S.kinshipWord(0), "no kin in common");
 });
 
 test("kinship by id: two mibis with identical genomes are two mibis, unrelated as founders and children of one pair by their recorded parents", () => {

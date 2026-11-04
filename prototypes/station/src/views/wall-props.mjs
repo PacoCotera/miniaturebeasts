@@ -50,7 +50,7 @@ export function looksOf(st, m, Sg) {
 // The partner pick (the Wall in a mode): why a mibi of A's species cannot be picked as B now, { key, text }, or null when it can. Family first (a reason that never changes: waiting will not help), then a traveller, one tucked away or coming out, one still young, one on a breather
 export function pairWhy(st, sv, x, settings, Sg, a = null) {
   const W = Sg.why, P = Sg.pair, w = whereOf(st, sv, x), kin = a ? S.directKinOf(st, a, x) : null;
-  if (kin) return { key: "family", text: W.family, rel: kin.rel };
+  if (kin) return { key: "family", text: W.partnerFamily, rel: kin.rel };
   if (w === "carried") return { key: "onboard", text: P.onboard };
   if (w === "store") return { key: "tucked", text: P.tucked };
   if (w === "coming") { const n = S.backIn(st, x); return { key: "coming", text: n === 1 ? W.comingOne : fill(W.coming, { n }) }; }
@@ -203,7 +203,7 @@ export function wallBuild(m, spec, frame, home, pods) {
   }
   if (pairing && cmb) {   // the pair card (the partner pick): "Breed {A} with…" and A's face, the ringed partner with its kinship, its state and the pair's breathers; the plate "See this pair"
     const P = Sg.pair, Wh = Sg.why, why = pairWhy(st, sv, cmb, settings, Sg, pairA), fam = why?.key === "family", k = S.kinshipOf(st, pairA, cmb), band = kinBand(k), n = breatherAfter(pairA), q = breatherAfter(cmb);
-    const lines = fam ? [fill(P.family[why.rel], { A: pairA.name })] : [P.kin[band], ...(S.bredClose(st, cmb) ? [Sg.card.bredClose] : [])], open = !!m.forecastOpen && !why;   // the forecast is the breeding screens': until it opens See this pair is held
+    const lines = fam ? [fill(P.rel[why.rel.replace(/-(\w)/g, (_, c) => c.toUpperCase())], { name: pairA.name })] : [P.kin[band], ...(S.bredClose(st, cmb) ? [Sg.card.bredClose] : [])], open = !!m.forecastOpen && !why;   // the forecast is the breeding screens': until it opens See this pair is held
     plates = [{ act: "seePair", verb: Sg.plate.seePair, price: "", held: !open, why: why ? why.text : open ? "" : Wh.pairSoon, plate: "pairHeld", id: "plate.0" }];
     card = { state: "pair", id: String(cmb.id), name: cmb.name, head: fill(P.head, { A: pairA.name }), headFace: req(mibiRequest(st, pairA, [36, 37], settings, light, "vivariumFace36")), looks: [], lines, stateLines: why && !fam ? pairStateLines(why, st, cmb, settings, Sg) : [], mark: why?.key === "breather" ? markPic("breather") : "", pairLine: fam ? "" : fill(n === 1 ? P.restOne : P.restLine, { A: pairA.name, n, B: cmb.name, m: q }), long: fam ? [] : P.long[band] ?? [],
       picture: req(mibiRequest(st, cmb, CS, settings, light, CV)), figure: figureOf(st, cmb, CS, settings, CV) ?? [0, 0, CS[0], CS[1]], plates: [{ id: "plate.0", verb: Sg.plate.seePair, price: "", held: !open }], why: "" };

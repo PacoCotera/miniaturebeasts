@@ -1397,8 +1397,8 @@
    "breedNoPlace4": "No place free · return one to make room",
    "breedOne": "no partner at home yet",
    "breedNone": "No partner of its kind at home",
-   "breedFamily": "only family at home · find a partner on a walk",
-   "family": "family · find a partner on a walk",
+   "breedFamily": "only its family at home · try a walk",
+   "partnerFamily": "family · find a partner on walks",
    "returnBond": "A bond is for good",
    "return": "{name} goes back to the wild · asks first",
    "incubator": "Your first mibi hatches there",
@@ -1421,7 +1421,7 @@
    "turnsOne": "1 turn"
   },
   "kin": {
-   "none": "wild founders",
+   "none": "no kin in common",
    "line": "the same line",
    "close": "close kin",
    "half": "half kin",
@@ -1491,8 +1491,8 @@
      "No partner of its kind at home"
     ],
     "family": [
-     "Only family at home",
-     "Find a partner on a walk"
+     "Only {name}'s family is at home",
+     "A walk can find a partner"
     ],
     "move1": [
      "There is no other room yet",
@@ -1589,17 +1589,17 @@
    "restOne": "{A} rests 1 turn · {B} {m}",
    "onboard": "on the Companion",
    "tucked": "tucked away",
-   "family": {
-    "parent": "{A}'s parent",
-    "grandparent": "{A}'s grandparent",
-    "great-grandparent": "{A}'s great-grandparent",
-    "child": "{A}'s child",
-    "grandchild": "{A}'s grandchild",
-    "great-grandchild": "{A}'s great-grandchild",
-    "same-parents": "same parents as {A}"
+   "rel": {
+    "parent": "{name}'s parent",
+    "grandparent": "{name}'s grandparent",
+    "greatGrandparent": "{name}'s great-grandparent",
+    "child": "{name}'s child",
+    "grandchild": "{name}'s grandchild",
+    "greatGrandchild": "{name}'s great-grandchild",
+    "sameParents": "same parents as {name}"
    },
    "kin": {
-    "wild": "wild blood",
+    "wild": "no kin in common",
     "distant": "distant kin",
     "cousins": "cousins",
     "half": "half kin",
