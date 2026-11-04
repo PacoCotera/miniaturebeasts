@@ -346,18 +346,21 @@ test("the cross: refusals before cost; a child of two founders with real parents
   const unread = fr.chapters.find((ch) => !child.read.includes(ch.id)); assert.ok(unread, "a chapter stays unread on the child");
   const cost = S.mibiReadCost(st, child, unread.id, settings); assert.ok(cost >= 1);
   const rr = S.readMibi(st, child, unread.id, settings); assert.equal(rr.ok, true); assert.ok(child.read.includes(unread.id)); assert.equal(S.readMibi(st, child, unread.id, settings).again, true);
-  // kinship: the child to a parent is a quarter; siblings a quarter; the penalty surfaces more
+  // kinship: the child to a parent is a quarter, two children of one pair a quarter (both are direct kin: refused, never forecast); the penalty surfaces more
   assert.equal(S.kinshipOf(st, child, a), 0.25);
   child.born = st.turn - 2;
-  const fc2 = S.forecastOf(st, child, a, settings); assert.equal(fc2.kinship, 0.25);
+  assert.equal(S.forecastOf(st, child, a, settings), null, "a child and its parent: no forecast");
+  assert.equal(S.crossBlock(st, null, child, a, settings), S.FAMILY_LINE, "a parent and its child are refused");
   const sib = S.seedSiblings(st, "S01", 99, { ...settings, rooms: 2 }); assert.equal(sib.ok, true, sib.msg);
-  assert.equal(S.kinshipOf(st, sib.mibis[0], sib.mibis[1]), 0.25, "full siblings");
+  assert.equal(S.kinshipOf(st, sib.mibis[0], sib.mibis[1]), 0.25, "two children of one pair");
+  assert.equal(S.crossBlock(st, null, sib.mibis[0], sib.mibis[1], settings), S.FAMILY_LINE, "two children of one pair are refused");
+  assert.equal(S.forecastOf(st, sib.mibis[0], sib.mibis[1], settings), null);
   assert.equal(S.kinshipOf(st, sib.mibis[0], sib.parents[0]), 0.25);
   assert.equal(S.kinshipOf(st, sib.mibis[0], a), 0, "unrelated lines");
   assert.match(S.kinshipWord(0.25), /close kin/); assert.match(S.kinshipWord(0), /wild founders/);
 });
 
-test("kinship by id: two mibis with identical genomes are two mibis, unrelated as founders and full siblings by their recorded parents", () => {
+test("kinship by id: two mibis with identical genomes are two mibis, unrelated as founders and children of one pair by their recorded parents", () => {
   const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
   const big = { ...settings, rooms: 2 };
   const [a, b] = S.seedAdults(st, "S01", 41, 2, big).mibis;
@@ -367,8 +370,9 @@ test("kinship by id: two mibis with identical genomes are two mibis, unrelated a
   assert.equal(S.kinshipOf(st, a, twin), 0, "two founders, unrelated whatever their genomes");
   assert.equal(S.kinshipOf(st, a, a), 0.5, "a mibi with itself");
   const sib = S.seedSiblings(st, "S01", 43, big); assert.equal(sib.ok, true, sib.msg);
-  const [s1, s2] = sib.mibis; s2.genome = structuredClone(s1.genome);   // siblings that happen to be identical
-  assert.equal(S.kinshipOf(st, s1, s2), 0.25, "full siblings by their parents' ids, not one mibi");
+  const [s1, s2] = sib.mibis; s2.genome = structuredClone(s1.genome);   // two children of one pair that happen to be identical
+  assert.equal(S.kinshipOf(st, s1, s2), 0.25, "children of one pair by their parents' ids, not one mibi");
+  assert.deepEqual(S.directKinOf(st, s1, s2)?.rel, "same-parents"); assert.equal(S.directKinOf(st, s1, twin), null, "equal genomes alone are never family");
   assert.equal(S.kinshipOf(st, s1, sib.parents[0]), 0.25, "parent and child");
   assert.equal(S.kinshipOf(st, s1, a), 0, "unrelated lines");
   const look = S.genomeLookup(st); assert.equal(look(s1.id), s1); assert.equal(look(a.genome), null, "the lookup is by id, never by genome");
@@ -722,13 +726,11 @@ test("rooms: a young mibi returns (paying nothing) and its place is free at once
   const a = roomsWorld(2), b = roomsWorld(2); S.returnMibi(a, null, a.mibis[0], settings);   // two: the last mibi at home stays (the put-away rules) S.returnMibi(b, null, b.mibis[0], settings); assert.deepEqual(a.sheds[0].genome, b.sheds[0].genome, "the same release always sheds the same pod");
   const sv = S.seededRng(7), sw = S.seededRng(7); assert.deepEqual([sv(), sv()], [sw(), sw()]);
 });
-test("rooms: the shed genome's origin.kinship is max(1/8, the mibi's own): a founder 0.125, a child of full siblings 0.25", () => {
+test("rooms: the shed genome's origin.kinship is max(1/8, the mibi's own): a founder 0.125, a child bred at a quarter 0.25", () => {
   const st = roomsWorld(0); const big = { ...settings, rooms: 4 };
   const f = S.seedAdults(st, "S01", 5, 2, big).mibis[0]; S.returnMibi(st, null, f, big);   // a second stays at home: the last mibi at home stays (the put-away rules)
   assert.deepEqual([st.sheds[0].kinship, st.sheds[0].genome.origin.kinship, st.sheds[0].genome.origin.kind], [0.125, 0.125, "shed"]);
-  const sib = S.seedSiblings(st, "S01", 99, big); assert.equal(sib.ok, true, sib.msg); const [x, y] = sib.mibis; assert.equal(S.kinshipOf(st, x, y), 0.25);
-  let r = null; for (let i = 0; i < 20 && !r?.ok; i++) { st.e = 99; st.s = 99; st.bud = null; r = S.doCross(st, svOf(), x, y, big, 1, S.seededRng(1 + i)); } assert.equal(r.ok, true);
-  const kid = S.seedAdults(st, "S01", 12, 1, big).mibis[0]; kid.genome = st.bud.genome; assert.equal(kid.genome.origin.kinship, 0.25);
+  const kid = S.seedAdults(st, "S01", 12, 1, big).mibis[0]; kid.genome = { ...kid.genome, origin: { ...kid.genome.origin, kind: "cross", kinship: 0.25 } };   // a child bred at a quarter (only a line folded back on itself reaches it now)
   S.returnMibi(st, null, kid, big); const sh = st.sheds.at(-1); assert.deepEqual([sh.kinship, sh.genome.origin.kinship], [0.25, 0.25]);
 });
 test("rooms: the v3 migration: 0, 6 and 12 housed give 1, 1 and 2 rooms, the slots in bay order, bay kept, nothing lost, and a second migrate changes nothing", () => {

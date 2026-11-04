@@ -26,7 +26,7 @@ function heldModule(h, m, target) {
   h.say(row.plate.join("\n")); return true;
 }
 // A pick of the Cross screen: the first partner not out with the Companion while it is away.
-export function openCross(h, a) { h.ui.cross = { aId: a.id, bId: null, state: 0, fc: null, clash: [] }; const p = S.crossPartners(h.st, h.sv, a, h.settings).find((x) => !x.away); if (p) h.ui.cross.bId = p.id; h.goto("cross"); }
+export function openCross(h, a) { h.ui.cross = { aId: a.id, bId: null, state: 0, fc: null, clash: [] }; const p = S.crossPartners(h.st, h.sv, a, h.settings).find((x) => !x.away && !x.family); if (p) h.ui.cross.bId = p.id; h.goto("cross"); }
 // The mibi's chapter ids in ring order: the plate a target names.
 const chapterAt = (m, target) => frameOf(S.speciesOf(m))?.chapters[+target.slice(6)];
 // A way into one mibi up close (the whole's resident or tile, the hatch, Home's ✓ Meet): the first draw after a refusal at the dock says it once (events.refused).
@@ -75,7 +75,7 @@ export function intent(h, target, verb) {
   else if (target === "cross") {
     if (heldModule(h, m, "cross")) return;   // no breeding while carried (the owner); young, alone, partners away: the house rule
     if (!doorOpen("cross") || !S.isAdult(h.st, m, h.settings)) return;
-    if (S.crossPartners(h.st, h.sv, m, h.settings).some((p) => !p.away)) openCross(h, m);   // only partners at home can be picked
+    if (S.crossPartners(h.st, h.sv, m, h.settings).some((p) => !p.away && !p.family)) openCross(h, m);   // only partners at home, and not family, can be picked
   }
   else if (target === "wild") {
     if (heldModule(h, m, "wild")) return;   // no freeing while carried (the owner); bonded, going at the next dock: the house rule, never silent

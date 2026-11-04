@@ -1128,7 +1128,7 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
 
 // --- The cross (the-cross.md, decided; station-build.md M4): two adults of one species make one child --------
 import { lociOf, copyWords, copyHides, rangeWords } from "./splice.mjs";
-import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, identity as genomeIdentity } from "./genome.mjs";
+import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, directKin, identity as genomeIdentity } from "./genome.mjs";
 export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.growE, settings), s: price(PRICE.growS, settings), d: 0 });
 // The pedigree by id, never by digest (two mibis with equal genomes are two mibis): an id names a mibi's record in the vivarium, else the
 // parent snapshot a child holds (a parent no longer in the vivarium counts as a founder beyond it).
@@ -1144,13 +1144,17 @@ export const isAdult = (st, m, settings) => { const s = mibiStage(st, m, setting
 export const isAway = (st, sv, m) => !!m && !docked(st) && carriedIds(st, sv).includes(m.id);
 // R4b: a mibi in the carried set, docked or away: never drawn in a room, its place reserved, its tile and card say where it is and hold every action (isAway is only the Companion's being out)
 export const isCarried = (st, sv, m) => !!m && carriedIds(st, sv).includes(m.id);
-// Refused before cost, on the pick itself: the same individual, another species, not adult, released, carried (R4b, the owner: no breeding while a mibi is carried, docked or away).
+// Direct kin (a parent, grandparent or great-grandparent, or two children of one pair) never cross; null, or { rel, by }. The pedigree is walked through the records of mibis let go too.
+export const directKinOf = (st, a, b) => directKin(a, b, genomeLookup(st));
+export const FAMILY_LINE = "family \u00b7 find a partner on a walk";   // the one refusal line, wherever a family pair is refused
+// Refused before cost, on the pick itself, reasons that never change first: the same individual, another species, gone to the wild, family, then not adult, tucked away, carried (R4b, the owner: no breeding while a mibi is carried, docked or away), busy, full.
 export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return "pick two";
   if (a === b || a.id === b.id) return "one mibi is not a pair";
   if (speciesOf(a) !== speciesOf(b)) return "another species";
-  if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (a.released || b.released) return "gone to the wild";
+  if (directKinOf(st, a, b)) return FAMILY_LINE;
+  if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (inStore(a) || inStore(b) || comingOut(st, a) || comingOut(st, b)) return "tucked away";   // it cannot cross until it is back (the put-away rules)
   if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";
   if (st.bud) return "the incubator is busy";
@@ -1158,7 +1162,7 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   return "";
 }
 // The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
-export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) || inStore(m) || comingOut(st, m) ? { ...m, away: true } : m));   // tucked away or on its way back: listed dimmed, never picked (the put-away rules)
+export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => { const kin = directKinOf(st, a, m), away = isCarried(st, sv, m) || inStore(m) || comingOut(st, m); return kin || away ? { ...m, ...(away ? { away: true } : {}), ...(kin ? { family: kin.rel } : {}) } : m; });   // tucked away or on its way back: listed dimmed, never picked (the put-away rules); family: listed, marked with the relation, never picked
 // A child of close kin or the same line: its parents' kinship is a quarter or more (the card says "bred close"); a founder or a pod has no parents
 export const bredClose = (st, m) => Array.isArray(m?.parents) && m.parents.length === 2 && pedigreeKinship(m.parents[0], m.parents[1], genomeLookup(st)) >= 0.25;
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
@@ -1168,7 +1172,7 @@ export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 
 // and which chapter to read; a sealed chapter's traits stay `sealed`. `missing` counts the readable traits still unknown, `sealedTraits` the sealed ones, `unknown` both; the genome-wide
 // likeness is shown only when nothing is unknown. The cross itself (`doCross`) still draws on the whole genomes: the mask is only what the screen may say.
 export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
-  const fr = frameFor(a); if (!fr || crossBlock(st, null, a, b, settings) === "another species") return null;
+  const fr = frameFor(a); if (!fr || crossBlock(st, null, a, b, settings) === "another species" || (a !== b && directKinOf(st, a, b))) return null;
   const k = kinshipOf(st, a, b), opts = { kinship: k, lookup: genomeLookup(st) }, full = crossForecast(fr, a, b, opts);   // the mibi records: by id
   const traitOf = (id) => fr.chapters.flatMap((c) => c.traits).find((t) => t.id === id), chapterName = (id) => fr.chapters.find((c) => c.id === id)?.name || id;
   let loci = null;   // every locus's own outcome, computed once and only read for a trait whose chapter both parents have read

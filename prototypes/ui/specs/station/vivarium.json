@@ -1397,6 +1397,8 @@
    "breedNoPlace4": "No place free · return one to make room",
    "breedOne": "no partner at home yet",
    "breedNone": "No partner of its kind at home",
+   "breedFamily": "only family at home · find a partner on a walk",
+   "family": "family · find a partner on a walk",
    "returnBond": "A bond is for good",
    "return": "{name} goes back to the wild · asks first",
    "incubator": "Your first mibi hatches there",
@@ -1487,6 +1489,10 @@
     ],
     "none": [
      "No partner of its kind at home"
+    ],
+    "family": [
+     "Only family at home",
+     "Find a partner on a walk"
     ],
     "move1": [
      "There is no other room yet",
