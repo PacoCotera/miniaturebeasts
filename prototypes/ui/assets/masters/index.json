@@ -1693,8 +1693,8 @@
    "file": "pods/glint-star-12x12.png",
    "w": 12,
    "h": 12,
-   "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "cb891e1b4894988df906a3747ca72ab4fd1c7006d0c6622b59588d74535f7771",
+   "signed": "signed: the dew gleam, art director final 2026-11-04 (same id, new picture)"
   },
   "hatch-frame-166x266": {
    "file": "pods/hatch-frame-166x266.png",
@@ -9877,7 +9877,7 @@
    "file": "pods/reading/reading-glint-11x11.png",
    "w": 11,
    "h": 11,
-   "sha256": "63adec7b30b0cdf45f625ff32a1308d99e307396c800ab7e1bce7302b21142f4",
+   "sha256": "b2a2b374565525ac6b340c38858bfbcd80aeeee53ffa0cfc9c36d2e376a20300",
    "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
   },
   "reading-star-11x11": {
@@ -9898,7 +9898,7 @@
    "file": "pods/reading/reading-glint-13x13.png",
    "w": 13,
    "h": 13,
-   "sha256": "03d6e52f9ea2f8adc9781c7fb116118a3eca5b349281dce2738218a36c2ecbca",
+   "sha256": "eda39e5f5e8b7fe963febdb552fdd2a796359c0757f9a90422edbcb8f3480363",
    "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
   },
   "reading-star-13x13": {
@@ -9919,7 +9919,7 @@
    "file": "pods/reading/reading-glint-16x16.png",
    "w": 16,
    "h": 16,
-   "sha256": "981f6a229c845fffd00e03bfec3b05104494b2f2c7c3afe6d964e749c9300dfa",
+   "sha256": "0850856025670f24a21df0f088067b4e13b348a3ed4dd2203c339b1987411761",
    "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
   },
   "reading-star-16x16": {
@@ -9940,7 +9940,7 @@
    "file": "pods/reading/reading-chip-86x32.png",
    "w": 86,
    "h": 32,
-   "sha256": "3aeff55e90d104672d65eac010e44ac1cca721962acc4f51004b7c109f1039e2",
+   "sha256": "967d340199942c559b84a163e3a89ee3cbfb8297d0c08163b7800db2d54fa3a4",
    "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
   },
   "reading-sweep-28x356": {
@@ -10227,7 +10227,7 @@
    "file": "pods/reading/reading-badge-glint-20x20.png",
    "w": 20,
    "h": 20,
-   "sha256": "e56b4a0d7e409efb8b9f3b5b97e929412c5825d1527982835a60d6c4f050c250",
+   "sha256": "cf9f264b2379710650cf02f484e0f8bc2afc77e5f226e5f510507fba170610b0",
    "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
   },
   "reading-badge-star-20x20": {
@@ -10241,7 +10241,7 @@
    "file": "pods/reading/reading-glint-12x12.png",
    "w": 12,
    "h": 12,
-   "sha256": "f5808abf34dc33a740efcf35847670ca3ce90a1ebec534a4af9e95e6f1d6e91c",
+   "sha256": "cb891e1b4894988df906a3747ca72ab4fd1c7006d0c6622b59588d74535f7771",
    "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
   },
   "reading-star-12x12": {
