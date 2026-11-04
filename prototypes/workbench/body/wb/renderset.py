@@ -315,7 +315,7 @@ def stand(spec, subject_type, outdir, scratch, species, age, pose, log):
     shadow_fn = f"{species}-{age}-304x48-shadow.png"
     pngio.write(os.path.join(outdir, shadow_fn), shadow)
     entry = dict(traits=sorted({l["trait"] for l in layers}), pose=pose, figure=fig,
-                 sizes={"304x312": dict(base=os.path.basename(base_path), bases={}, layers=[dict(op="under", order=0, file=shadow_fn, views=["home", "vivarium", "idle"], size=[304, ST.SHADOW_H], feetRow=ST.FEET_ROW, standFeet=feet)] +
+                 sizes={"304x312": dict(base=os.path.basename(base_path), bases={}, layers=[dict(op="under", order=0, file=shadow_fn, views=["home", "vivarium", "idle", "habitat", "sitting"], size=[304, ST.SHADOW_H], feetRow=ST.FEET_ROW, standFeet=feet)] +
                                                                                       [{k: v for k, v in l.items() if k != "pixels"} for l in layers])})
     return entry, base, layers, shadow, feet
 
@@ -392,7 +392,7 @@ def main():
         entry, base, layers, shadow, feet = masters[(r["age"], "calm")]
         art = ST.compose(base, [(l["op"], l["pixels"]) for l in layers if l["op"] in ("over", "erase")])
         fig = ST.ink_box(art)
-        view_shadow = r["output"] == "resident"
+        view_shadow = r["output"] in ("resident", "habitat")                # the views that stand on the shadow layer: a figure with no shadow under it is a sticker
         pic, s = ST.from_master(art, fig, r["figure"], r["size"], shadow if view_shadow else None, feet)
         fn = os.path.join(out, f"{sid}-{r['output']}-{r['variant']}.png")
         pngio.write(fn, pic)
