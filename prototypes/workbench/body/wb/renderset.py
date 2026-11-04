@@ -141,7 +141,19 @@ class Proxy:
 
 
 # ---------------------------------------------------------------- plush (Cycles)
-def plush(subject, az, size, path, floor="bounce", body_visible=True, samples=None):
+def floor_shadow(px, ppH):
+    """The picture with its contact shadow laid under the figure: the same short soft ellipse as the stand's shadow layer, at this picture's scale, under both feet (the Cycles floor shadow is long and runs off the frame)."""
+    fig = ST.ink_box(px)
+    if fig is None:
+        return px
+    scale = ppH / CAMERAS[(304, 312)][0]
+    feet = fig[1] + fig[3] - 1
+    span = ST.feet_span(px, feet, depth=max(2, round(6 * scale)))
+    sh = ST.contact_shadow((px.shape[1], px.shape[0]), (span[0] + span[1] + 1) / 2.0, feet, span[1] - span[0] + 1, scale=scale)
+    return ST.over(sh, px)
+
+
+def plush(subject, az, size, path, floor="bounce", body_visible=True, samples=None, shadow=False):
     """floor: \"bounce\" (the default: a floor out of the camera's sight that lights the body from below, so every picture of the set has the same exposure and no shadow), True (the floor's shadow catcher) or False (no floor)."""
     import s20render as RN, plush as PL
     for w, ss in ((96, 3), (128, 3)):
@@ -149,6 +161,8 @@ def plush(subject, az, size, path, floor="bounce", body_visible=True, samples=No
     ppH, centre = camera(size)
     a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, size[0], size[1], ppH, az=float(az), el=EL, centre=centre, samples=samples, floor=floor, body_visible=body_visible, light=PL.GAME_LIGHT)
     px = np.clip(a * 255 + 0.5, 0, 255).astype(np.uint8)
+    if shadow:
+        px = floor_shadow(px, ppH)
     pngio.write(path, px)
     return px
 
@@ -267,7 +281,7 @@ def main():
             res.append(dict(r, file=entry["sizes"]["304x312"]["base"], ms=round((time.time() - t) * 1000)))
             continue
         fn = os.path.join(out, f"{sid}-{r['output']}-{r['variant']}.png")
-        plush(typ, r["az"], r["size"], fn)
+        plush(typ, r["az"], r["size"], fn, shadow=r["output"] != "trait")             # a close-up of the tail has no floor in it
         res.append(dict(r, file=os.path.basename(fn), ms=round((time.time() - t) * 1000)))
         log(f"{r['output']} {r['variant']}")
     # the anchor is the calm stand
