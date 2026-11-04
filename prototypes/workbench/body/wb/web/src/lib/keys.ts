@@ -3,7 +3,8 @@ import { AZS, MODES, VIEWS, type StudioUrl } from './url'
 import { useUI } from './store'
 import { useRail } from './useStudio'
 
-const typing = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))
+// A slider is an input too, but it takes no letters: the keys stay the app's while it has the focus.
+const typing = (t: EventTarget | null) => t instanceof HTMLElement && !(t instanceof HTMLInputElement && t.type === 'range') && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))
 
 // The keys of studio-ui.md 4.5 that exist so far, plus T for the theme (the design names no key for it).
 export type CheckKeys = { toggleDrawer: () => void; history: () => void; file: () => void; undo: () => void; redo: () => void; proof: () => void; field: () => void; escape: () => boolean }
@@ -21,7 +22,7 @@ export function useKeys(url: StudioUrl, go: (p: Partial<StudioUrl>, replace?: bo
       else if (k === '[') ui.toggleNav()
       else if (k === ']') ui.toggleInsp()
       else if (k === 'ArrowLeft' || k === 'ArrowRight') {
-        if (url.mode !== 'shape') return
+        if (url.mode !== 'shape' || (e.target instanceof HTMLInputElement && e.target.type === 'range')) return   // a slider keeps its own arrows
         const i = AZS.indexOf(url.az)
         go({ az: AZS[(i + (k === 'ArrowRight' ? 1 : AZS.length - 1)) % AZS.length] }, true)
       } else if (k === 'm' || k === 'M') {

@@ -56,6 +56,8 @@ export function labelOf(path: string, labels: Record<string, string>): string | 
 
 // What a toast calls the field: the schema's label when the file has one for it (with the part and joint it sits in: "leg ankle length"); else the part and field words from words.md.
 export function fieldLabel(path: string, labels?: Record<string, string>, file?: unknown): string {
+  const locus = file ? locusLabel(path, file) : null
+  if (locus) return locus
   if (labels && file) {
     const d = dottedPath(path, file)
     const lab = labelOf(d, labels)
@@ -80,6 +82,14 @@ export function fieldLabel(path: string, labels?: Record<string, string>, file?:
     words.push(PART[t] ?? FIELD[t] ?? t.replace(/[-_]/g, ' '))
   }
   return words.slice(-3).join(' ')
+}
+// A locus (a family's weights, or the trait's type): the locus' own label, and for a weight the family it belongs to.
+function locusLabel(path: string, file: unknown): string | null {
+  const toks = path.split('/').filter(Boolean)
+  if (toks[0] !== 'genome' || toks[1] !== 'loci') return null
+  const l = ((file as { genome?: { loci?: { label?: string; limits?: string[] }[] } }).genome?.loci ?? [])[Number(toks[2])]
+  if (!l?.label) return null
+  return [l.label.toLowerCase(), toks[3] === 'weights' && toks[4] !== undefined ? l.limits?.[Number(toks[4])] : null].filter(Boolean).join(' ')
 }
 export function fmtValue(v: unknown): string {
   if (typeof v === 'number') return String(Math.round(v * 1e4) / 1e4)

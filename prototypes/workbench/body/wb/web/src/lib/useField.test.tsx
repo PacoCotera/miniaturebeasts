@@ -79,4 +79,15 @@ describe('a field that saves itself', () => {
     expect(patch).not.toHaveBeenCalled()
     expect(result.current.value).toBe(1.1)
   })
+
+  it('saves a list of weights as one patch and knows each element it wrote as its own, so no toast tells it what it did itself', async () => {
+    const qc = new QueryClient()
+    const sp = { ...species(1.1), file: { g: { w: [0.4, 0.3, 0.3] } } } as unknown as Species
+    const { result } = renderHook(() => useField<number[]>(sp, 'S20', '/g/w'), { wrapper: wrap(qc) })
+    act(() => result.current.set([0.6, 0.2, 0.2]))
+    await act(async () => { vi.advanceTimersByTime(650) })
+    expect(patch).toHaveBeenCalledWith('S20', [{ op: 'test', path: '/g/w', value: [0.4, 0.3, 0.3] }, { op: 'replace', path: '/g/w', value: [0.6, 0.2, 0.2] }])
+    expect(isOwn({ path: '/g/w/0', new: 0.6 })).toBe(true)
+    expect(isOwn({ path: '/g/w/1', new: 0.2 })).toBe(true)
+  })
 })

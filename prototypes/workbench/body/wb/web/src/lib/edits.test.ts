@@ -33,6 +33,9 @@ describe('toasts for other hands', () => {
     expect(newEntries(new Set([entryKey(a)]), [a, b])).toEqual([b])
   })
   it('words: the field, the values and the avatar', () => {
+    const gfile = { genome: { loci: [{ label: 'Ear shape', limits: ['prick', 'lop', 'nub'] }] } }
+    expect(fieldLabel('/genome/loci/0/weights/1', undefined, gfile)).toBe('ear shape lop')
+    expect(fieldLabel('/genome/loci/0/type', undefined, gfile)).toBe('ear shape')
     expect(fieldLabel('/parts/tail/joints/2/len')).toBe('tail joint 2 length')
     expect(fieldLabel('/parts/leg.L/joints/1/r')).toBe('leg joint 1 radius')
     expect(fieldLabel('/spine/tail/length')).toBe('tail length')

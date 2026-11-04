@@ -30,7 +30,8 @@ export function useField<T>(species: Species | undefined, id: string, ptr: strin
     if (JSON.stringify(v) === JSON.stringify(saved.current)) { setDraft(null); return }
     busy.current = true
     setSaving(true)
-    noteOwn(ptr, v)
+    // a list is saved as one change for each element that moved: the log's entries are those
+    if (Array.isArray(v)) v.forEach((x, i) => noteOwn(`${ptr}/${i}`, x)); else noteOwn(ptr, v)
     try {
       await patchSpecies(id, patchFor(ptr, saved.current, v))
       saved.current = v
