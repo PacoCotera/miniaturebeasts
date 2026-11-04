@@ -96,10 +96,16 @@ class Proxy:
             P.SIZES[self.ids[(w, h)]] = (w, h, ppH)
 
     def _clay_mesh(self, subject):
+        """The clay in the stand pose, as the plush and the silhouette are: the posed shipped mesh, with the face (flat eyes and mouth) placed on its rest surface and carried with the pose by the displacement of the nearest vertex."""
         from wb import clayface as CF
-        m = F.proxy_mesh(subject.b, 1)
+        M = subject.posed()
+        rest = dict(V=np.asarray(M["Vw"], float), F=np.asarray(M["Fw"], int))
         cx = subject.b.ctx
-        m["face_V"], m["face_F"] = CF.face_mesh(cx["T"], cx["spec"], dict(subject.r.c.get("coat") or {}), m)
+        fv, ff = CF.face_mesh(cx["T"], cx["spec"], dict(subject.r.c.get("coat") or {}), rest)
+        m = subject.welded()
+        D = np.asarray(m["V"], float) - rest["V"]
+        nn = np.array([np.argmin(((rest["V"] - p) ** 2).sum(1)) for p in fv])
+        m["face_V"], m["face_F"] = fv + D[nn], ff
         return m
 
     def _render(self, mode, az, size, path, centre):
