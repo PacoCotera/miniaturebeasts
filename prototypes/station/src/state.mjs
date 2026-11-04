@@ -541,12 +541,12 @@ export function compareDiff(st, a, b) {
   return diff;
 }
 export const canCompare = (st, a, b) => compareDiff(st, a, b) !== null;
-// Letting a pod go (the pod inventory's design): it only tidies and pays nothing; every read on it stays on the species (the field guide keeps what was read), and the Companion learns of it at the next dock.
+// Letting a pod go (the pod inventory's design): it only tidies and pays nothing; a shed pod keeps its line (shed, of, genome) to be found again as itself; every read on it stays on the species (the field guide keeps what was read), and the Companion learns of it at the next dock.
 // The one guard: a pod that carries the goal, or the only pod of its species, asks once (letGoGuard); the screen asks, the rule does not.
 export function returnPod(st, p) {
   if (!st.tray.includes(p)) return { ok: false };
   leavePod(st, p);
-  st.returned.push({ id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, gs: p.gs >>> 0, k: p.k || null, ...(p.rg ? { rg: p.rg } : {}) }); if (st.returned.length > 30) st.returned.shift();
+  st.returned.push({ id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, gs: p.gs >>> 0, k: p.k || null, ...(p.rg ? { rg: p.rg } : {}), ...(p.shed != null ? { shed: p.shed, of: p.of ?? null, genome: structuredClone(p.genome) } : {}) }); if (st.returned.length > 30) st.returned.shift();
   logEv(st, "Let " + aAn(podName(p)) + " pod go · its reads stay in the field guide");
   return { ok: true, msg: "Back to the " + (PLACE_WORD[p.g] || "wild") + " · its reads stay in the field guide" };
 }
