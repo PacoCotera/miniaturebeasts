@@ -33,7 +33,7 @@ function Tile({ ind, on, picked, prev, onPick }: { ind: VInd; on: boolean; picke
   )
 }
 
-export const runClock = (t: string) => { const d = new Date(t.length <= 19 ? t + 'Z' : t); return Number.isNaN(d.getTime()) ? t : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
+export const runClock = (t: string) => { const d = new Date(t.length <= 19 ? t + 'Z' : t); return Number.isNaN(d.getTime()) ? t : d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }) }
 
 export function VarietyStage({ url, species, go, inset = 0 }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>) => void; inset?: number }) {
   const q = useQuery({ ...varietyOne(url.species, species?.hash ?? '', url.seed), enabled: !!species })
@@ -55,9 +55,9 @@ export function VarietyStage({ url, species, go, inset = 0 }: { url: StudioUrl; 
         {look ? <span className={s.chip}>{look.label}<button onClick={() => go({ sel: null })} aria-label="Show every look">×</button></span> : null}
         <span className={s.count}>{look ? `${shown} of ${v.n}` : `${ready(v)} of ${v.n} drawn`}</span>
         <span className={s.grow} />
-        {v.previous && <button className={s.toggle} aria-pressed={cmp} onClick={() => go({ cmp: !url.cmp })} title={`Seed ${v.previous.seed}, ${runClock(v.previous.t)}`}>Previous run</button>}
+        {v.previous && <button className={s.toggle} aria-pressed={cmp} onClick={() => go({ cmp: !url.cmp })} title={`Seed ${v.previous.seed} · ${runClock(v.previous.t)}`}>Previous run</button>}
       </div>
-      {cmp && v.previous && <p className={s.note}>Left, this run (seed {v.seed}). Right, the run before: seed {v.previous.seed}, {runClock(v.previous.t)}.</p>}
+      {cmp && v.previous && <p className={s.note}>Left: this run, seed {v.seed}. Right: the run before, seed {v.previous.seed} at {runClock(v.previous.t)}.</p>}
       <div className={s.grid} data-cmp={cmp || undefined}>
         {v.individuals.map((i) => <Tile key={i.n} ind={i} on={lit(look, i.n)} picked={url.ind === i.n} prev={cmp ? previousKey(v, i.n) : undefined} onPick={() => go({ ind: url.ind === i.n ? null : i.n })} />)}
       </div>

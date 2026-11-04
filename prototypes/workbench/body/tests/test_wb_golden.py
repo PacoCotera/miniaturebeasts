@@ -180,6 +180,21 @@ class TestState(Base):
         self.assertEqual([e["id"] for e in st["entries"] if e["state"] == "missing"], ["thumb/adult-calm"])
         self.assertEqual(st["totals"]["missing"], 1)
 
+    def test_names_use_the_screens_words(self):
+        looks = {"lantern-tail": "Lantern tail"}
+        ent = lambda **k: G.label_of(dict(variant="v", **k), looks)
+        self.assertEqual(ent(output="stand", age="adult"), "Stand · grown")
+        self.assertEqual(ent(output="stand", age="adult", part="shadow"), "Shadow · grown")
+        self.assertEqual(ent(output="stand", age="adult", part="lantern-tail"), "Layer · lantern tail")
+        self.assertEqual(ent(output="stand", age="adult", part="lantern-tail-erase"), "Erase · lantern tail")
+        self.assertEqual(ent(output="habitat", age="juvenile"), "Habitat figure · young")
+        self.assertEqual(ent(output="turn", style="plush", az=32), "Plush turn · 32°")
+        self.assertEqual(ent(output="turn", style="clay", az=32), "Clay turn · 32°")
+        self.assertEqual(ent(output="trait", look="lantern-tail"), "Trait · lantern tail")
+        self.assertEqual(ent(output="trait"), "Trait pictures")
+        self.assertEqual(G.GROUPS["sleeper"], "Sleep")
+        self.assertEqual(G.line(dict(same=6, changed=13, missing=1, stale=2)), "6 same · 13 changed · 1 new · 2 stale")
+
     def test_no_goldens_at_all_is_all_missing(self):
         path = os.path.join(SCRATCH, "none", "S20.json")
         os.makedirs(os.path.dirname(path), exist_ok=True)

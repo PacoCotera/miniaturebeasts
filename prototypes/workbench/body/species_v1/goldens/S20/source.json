@@ -3208,8 +3208,8 @@
    },
    {
     "locus": "form.ear-kind",
-    "label": "Ear kind",
-    "short": "Ear kind",
+    "label": "Ear shape",
+    "short": "Ear shape",
     "chapter": "face",
     "scope": "trunk",
     "kind": "heritable-look",
@@ -4438,7 +4438,7 @@
   "species_rules": [
    {
     "id": "ember",
-    "label": "The ember rule",
+    "label": "Ember rule",
     "when": [
      {
       "field": "hue",
@@ -4462,9 +4462,92 @@
       ]
      }
     ],
-    "fail": "warm hue with a lit tip and a light belly"
+    "fail": "lantern on a warm coat with a light belly"
    }
-  ]
+  ],
+  "look_words": {
+   "form.ear-kind": {
+    "prick": [
+     "Pointy ears",
+     "pointy"
+    ],
+    "lop": [
+     "Floppy ears",
+     "floppy"
+    ],
+    "nub": [
+     "Nub ears",
+     "nub"
+    ]
+   },
+   "anatomy.tail-tip-form": {
+    "lantern": [
+     "Lantern tail",
+     "lantern"
+    ],
+    "tuft": [
+     "Tuft tip",
+     "tuft"
+    ],
+    "plain": [
+     "Plain tip",
+     "plain"
+    ]
+   },
+   "appearance.marking-layout": {
+    "masked": [
+     "Pale muzzle",
+     "muzzle"
+    ],
+    "points": [
+     "Dark points",
+     "points"
+    ],
+    "bands": [
+     "Tail bands",
+     "bands"
+    ],
+    "patches": [
+     "Patches",
+     "patches"
+    ],
+    "spotted": [
+     "Spotted back",
+     "spotted"
+    ],
+    "capped": [
+     "Head cap",
+     "cap"
+    ]
+   },
+   "appearance.pattern-kind": {
+    "spots": [
+     "Dot pattern",
+     "dots"
+    ],
+    "labyrinth": [
+     "Maze pattern",
+     "maze"
+    ],
+    "rings": [
+     "Ring pattern",
+     "rings"
+    ]
+   },
+   "appearance.glow-pattern": {
+    "belly-arcs": [
+     "Belly arcs",
+     "belly arcs"
+    ]
+   }
+  },
+  "trait_words": {
+   "form.ear-kind": "Ear shape",
+   "anatomy.tail-tip-form": "Tail tip",
+   "appearance.marking-layout": "Markings",
+   "appearance.pattern-kind": "Pattern",
+   "appearance.glow-pattern": "Glow pattern"
+  }
  },
  "renders": {
   "base": "game-v1",

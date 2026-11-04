@@ -103,7 +103,7 @@ const NEW_LOCI_11 = [
   { id: "form.whisker-droop", ...F7, family: "structure", label: "Whisker droop", scope: "trunk", owner: "anatomy.whisker-presence", consumer: "engine: how far the whiskers hang", ...position("level", "between", "drooping") },
   { id: "form.whisker-curl", ...F7, family: "structure", label: "Whisker curl", scope: "trunk", owner: "anatomy.whisker-presence", consumer: "engine: how far the whiskers curl", ...position("straight", "between", "curled") },
   { id: "appearance.whisker-glow", ...F7, family: "appearance", label: "Whisker glow", scope: "branch", clan: "C20", owner: "anatomy.whisker-presence", consumer: "engine: glowing whisker tips (Tuliko's glow family)", ...renable() },
-  { id: "form.ear-kind", ...F7, family: "structure", label: "Ear kind", scope: "trunk", owner: "ears", consumer: "engine: prick, nub or lop ears", ...pairMap({ prick: "prick", lop: "lop", nub: "nub" }, dominance(["prick", "nub", "lop"])) },   // allele order is the Tuliko's (prick, lop, nub: permanent, an index in every copy); dominance is prick > nub > lop
+  { id: "form.ear-kind", ...F7, family: "structure", label: "Ear shape", scope: "trunk", owner: "ears", consumer: "engine: prick, nub or lop ears", ...pairMap({ prick: "prick", lop: "lop", nub: "nub" }, dominance(["prick", "nub", "lop"])) },   // allele order is the Tuliko's (prick, lop, nub: permanent, an index in every copy); dominance is prick > nub > lop
   { id: "form.ear-length", ...F7, family: "structure", label: "Ear length", scope: "trunk", owner: "ears", consumer: "engine: ear length", ...position("short", "between", "long") },
   { id: "form.ear-width", ...F7, family: "structure", label: "Ear width", scope: "trunk", owner: "ears", consumer: "engine: ear width", ...position("slim", "between", "broad") },
   { id: "form.ear-splay", ...F7, family: "structure", label: "Ear splay", scope: "trunk", owner: "ears", consumer: "engine: how far the ears tilt out (one name for the ear tilt of the foundation list; anatomy.ear-tilt means upright or drooping)", ...position("low", "between", "high") },
@@ -295,7 +295,7 @@ for (const l of CATALOGUE.loci) if (l.wakesWhen) {
 // One look, one record. The catalogue holds an older record and a newer one for the same look in a few places (the newer `form.*` and `appearance.*` records of pin 11 beside the
 // body engine's older ones); a breeder who saw both would see two controls with one label. A frame may open at most one record of each pair below (game designer, 3 Nov 2026).
 export const LOOK_PAIRS = [
-  ["Ear kind", "anatomy.auricular-form", "form.ear-kind"], ["Ear droop", "anatomy.ear-tilt", "form.ear-droop"], ["Ear width", "growth.auricular-width-ratio", "form.ear-width"],
+  ["Ear shape", "anatomy.auricular-form", "form.ear-kind"], ["Ear droop", "anatomy.ear-tilt", "form.ear-droop"], ["Ear width", "growth.auricular-width-ratio", "form.ear-width"],
   ["Eye size", "growth.exterior-eye-size-ratio", "form.eye-size"], ["Eye height", "growth.exterior-eye-height-ratio", "form.eye-height"], ["Eye spacing", "growth.exterior-eye-spacing-ratio", "form.eye-spacing"],
   ["Cream reach", "growth.belly-field-extent", "appearance.cream-extent"],
 ];

@@ -760,7 +760,7 @@ class Server:
         if a.get("release"):
             raise ApiError(400, "release goldens are made by the release export, from the signed file; draft goldens are made here", "release")
         if act == "diff" and G.read_manifest(sp.path, sp.id) is None:
-            raise ApiError(400, f"{sp.id} has no goldens yet: make them first", "action")
+            raise ApiError(400, f"{sp.spec.get('name') or sp.id} has no goldens yet. Make goldens first.", "action")
         spec = copy.deepcopy(sp.spec)
         cur = G.current(spec)
         key = H.hash_of("golden-job", act, cur["key"])

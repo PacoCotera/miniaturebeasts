@@ -76,9 +76,13 @@ SWITCH_DRAW = {"appearance.marking-switch": (0.75, "off"), "appearance.blush": (
 RANGE_OF = {"appearance.body-hue": (150.0, 375.0), "form.ear-length": (0.6, 1.5)}
 EXPRESSIONS = [dict(id="lantern-tail", label="Lantern tail", locus="anatomy.tail-tip-form", look="lantern")]       # S20's own looks need no rule beyond the catalogue's (the order lantern, tuft, plain); a species with age gates or needs lists them here
 
-VARIETY = {"n": 12, "seed": 2026, "cycle": ["form.ear-kind", "anatomy.tail-tip-form", "appearance.marking-layout", "appearance.pattern-kind", "appearance.glow-pattern"], "hue_wheel": True, "max_loud": 2,
-           "species_rules": [{"id": "ember", "label": "The ember rule", "when": [{"field": "hue", "in": [10, 35]}], "then": [{"any": [{"field": "belly", "is": "dark"}, {"field": "tip", "not": "lantern"}]}],
-                              "fail": "warm hue with a lit tip and a light belly"}]}       # the ember rule as data: a hue of 10 to 35 degrees needs a dark belly or an unlit tip
+LOOK_WORDS = {"form.ear-kind": {"prick": ["Pointy ears", "pointy"], "lop": ["Floppy ears", "floppy"], "nub": ["Nub ears", "nub"]}, "anatomy.tail-tip-form": {"lantern": ["Lantern tail", "lantern"], "tuft": ["Tuft tip", "tuft"], "plain": ["Plain tip", "plain"]}, "appearance.marking-layout": {"masked": ["Pale muzzle", "muzzle"], "points": ["Dark points", "points"], "bands": ["Tail bands", "bands"], "patches": ["Patches", "patches"], "spotted": ["Spotted back", "spotted"], "capped": ["Head cap", "cap"]}, "appearance.pattern-kind": {"spots": ["Dot pattern", "dots"], "labyrinth": ["Maze pattern", "maze"], "rings": ["Ring pattern", "rings"]}, "appearance.glow-pattern": {"belly-arcs": ["Belly arcs", "belly arcs"]}}      # what a look is called on screen: [label, short word]; the trait's name is the inspector's subtitle
+
+TRAIT_WORDS = {"form.ear-kind": "Ear shape", "anatomy.tail-tip-form": "Tail tip", "appearance.marking-layout": "Markings", "appearance.pattern-kind": "Pattern", "appearance.glow-pattern": "Glow pattern"}      # each cycled trait's name on the Variety screen (the inspector's quiet subtitle)
+
+VARIETY = {"n": 12, "seed": 2026, "cycle": ["form.ear-kind", "anatomy.tail-tip-form", "appearance.marking-layout", "appearance.pattern-kind", "appearance.glow-pattern"], "hue_wheel": True, "max_loud": 2, "look_words": LOOK_WORDS, "trait_words": TRAIT_WORDS,
+           "species_rules": [{"id": "ember", "label": "Ember rule", "when": [{"field": "hue", "in": [10, 35]}], "then": [{"any": [{"field": "belly", "is": "dark"}, {"field": "tip", "not": "lantern"}]}],
+                              "fail": "lantern on a warm coat with a light belly"}]}       # the ember rule as data: a hue of 10 to 35 degrees needs a dark belly or an unlit tip
 
 RENDERS = {"base": "game-v1", "add": {}}        # the game's render set, and nothing of S20's own to add
 

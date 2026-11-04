@@ -14,9 +14,12 @@ export const goldensOne = (id: string, hash: string) => queryOptions({ queryKey:
 export const goldenJob = (id: string, action: 'make' | 'diff') => postJob(id, 'golden', { action })
 export const goldenUrl = (id: string, gid: string) => apiPath(`/api/species/${encodeURIComponent(id)}/goldens/file?id=${encodeURIComponent(gid)}`)
 
+// The state ids are the files'; the words are the screen's: a picture the set asks for with no golden yet reads New.
+export const stateWord = (s: GState) => ({ same: 'Same', changed: 'Changed', missing: 'New', stale: 'Stale' })[s]
+export const stateTip = (s: GState) => ({ missing: 'New to the set · no golden yet', stale: 'The file moved on · not compared yet' } as Partial<Record<GState, string>>)[s] ?? stateWord(s)
 export const STATE_ORDER: GState[] = ['same', 'changed', 'missing', 'stale']
 // The quiet totals line of the navigator: "58 same · 1 changed · 2 stale" (a state with none is left out).
-export const totalsLine = (t: Goldens['totals']) => STATE_ORDER.filter((s) => t[s] > 0).map((s) => `${t[s]} ${s}`).join(' · ')
+export const totalsLine = (t: Goldens['totals']) => STATE_ORDER.filter((s) => t[s] > 0).map((s) => `${t[s]} ${stateWord(s).toLowerCase()}`).join(' · ')
 
 export type Group = { name: string; rows: GEntry[] }
 export const groupsOf = (g: Goldens): Group[] => {

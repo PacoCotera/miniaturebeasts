@@ -8,7 +8,7 @@ export function AppShell({ top, nav, stage, inspector, overlay }: { top: ReactNo
   const rail = useRail()
   const sheet = usePortraitSheet()
   const { navOpen, inspOpen } = useUI()
-  const navW = !navOpen ? 0 : rail ? 56 : 232
+  const navW = !navOpen ? 0 : rail ? 64 : 232
   const inspW = sheet || !inspOpen ? 0 : 344
   const style = { '--nav-w': `${navW}px`, '--insp-w': `${inspW}px` } as CSSProperties
   return (

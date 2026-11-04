@@ -58,10 +58,10 @@ class TestBlock(unittest.TestCase):
         for r in rows:
             if r["state"] == "owed":
                 owed.setdefault(r["output"], []).append(r["why"])
-        self.assertIn("juvenile", owed["incubator"][0])
+        self.assertIn("young body", owed["incubator"][0])
         self.assertTrue(any("curl" in w for w in owed["sleeper"]))
         self.assertIn("clip", owed["walk"][0])
-        self.assertIn("glb", owed["model"][0])
+        self.assertIn("model export", owed["model"][0])
         self.assertTrue(all(r["state"] == "ready" for r in rows if r["age"] == "adult" and r["pose"] in ("calm", "anchor") and r["kind"] in ("sprite", "layers")))
 
     def test_a_species_adds_and_never_removes(self):
@@ -82,7 +82,7 @@ class TestBlock(unittest.TestCase):
         for want in ("renders.base", "renders.extra", "renders.add.a.size", "renders.add.a.style", "renders.add.a.age", "renders.add.a.kind", "renders.add.a.figure", "renders.add.a.colour", "renders.add.b.style"):
             self.assertIn(want, paths)
         msg = dict(RS.validate(doc))["renders.add.a.style"]
-        self.assertIn("not yet", msg)
+        self.assertIn("not ready", msg)
         self.assertTrue(any(m.startswith("renders.add.b.style:") for _, m in GA.validate(doc)))        # the file's validator carries them
 
     def test_pixel_is_listed_as_not_yet(self):

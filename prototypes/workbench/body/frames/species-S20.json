@@ -482,7 +482,7 @@
     },
     {
      "id": "ear-kind",
-     "name": "Ear kind",
+     "name": "Ear shape",
      "loci": [
       "form.ear-kind"
      ],

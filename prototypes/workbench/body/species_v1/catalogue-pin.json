@@ -5,7 +5,7 @@
  "digest": "2666ebb3e6be79739a49f45aa840a876e87737e27361c01e1be5722d0cd8ada4",
  "lookPairs": [
   [
-   "Ear kind",
+   "Ear shape",
    "anatomy.auricular-form",
    "form.ear-kind"
   ],
@@ -5653,7 +5653,7 @@
    "scope": "trunk",
    "clan": null,
    "family": "structure",
-   "label": "Ear kind",
+   "label": "Ear shape",
    "nature": "look",
    "owner": "ears",
    "requires": [],

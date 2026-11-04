@@ -8,7 +8,7 @@ export type ViewRef = { mode: string; az: number; size: number; key: string; rea
 export type Lease = { holder: string; agent: boolean; since: string }
 export type Species = {
   id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; views: ViewRef[]; checks: ChecksState | null; extremes?: ExtremesState | null; labels?: Record<string, string>
-  file: { name?: string; species?: string; body_plan?: string; plan?: string; genome?: Genome; expressions?: import("./genes").Expression[] }
+  file: { name?: string; species?: string; body_plan?: string; plan?: string; genome?: Genome; expressions?: import("./genes").Expression[]; variety?: { look_words?: Record<string, Record<string, [string, string]>> } }
 }
 export type SpeciesRow = { id: string; name?: string; hash: string; error: string | null }
 

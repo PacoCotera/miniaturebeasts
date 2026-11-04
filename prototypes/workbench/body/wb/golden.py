@@ -30,9 +30,11 @@ from wb import hashing as H, pngio, renders as RS, store as S
 SCHEMA = "goldens-1"
 THRESHOLD = 4                         # a pixel has moved when a channel moved by more than this, of 255
 BIG = 1_000_000                       # a strip or turnaround above this many bytes sits in the cache; the manifest keeps its hash
-GROUPS = dict(stand="Habitat, Sitting", habitat="Habitat, Sitting", incubator="Incubator", resident="Home, Vivarium", sleeper="Nap, sleep", card="Cards, Library", trait="Cards, Library",
+GROUPS = dict(stand="Habitat, Sitting", habitat="Habitat, Sitting", incubator="Incubator", resident="Home, Vivarium", sleeper="Sleep", card="Cards, Library", trait="Cards, Library",
               thumb="Roster, Cross", silhouette="Roster, Cross", turn="Review", walk="Review", model="Review")
 STATES = ("same", "changed", "missing", "stale")
+STATE_WORD = dict(missing="new")                  # the id `missing` stays in files and code; on screen and in the CLI it reads new
+AGE_WORD = dict(juvenile="young", adult="grown", elder="elder")
 
 
 class GoldenError(Exception):
@@ -87,13 +89,14 @@ def label_of(e, looks):
     look = looks.get(e.get("look") or "", e.get("look") or "")
     if o == "stand":
         if e.get("part") == "shadow":
-            return f"Shadow · {age}"
+            return f"Shadow · {AGE_WORD.get(age, age)}"
         if e.get("part"):
-            return f"Layer · {looks.get(e['part'].replace('-erase', ''), e['part'].replace('-erase', '').replace('-', ' ')).lower()}" + (" off" if e["part"].endswith("-erase") else "")
-        return f"Stand · {age}"
-    return {"resident": f"Resident {w}", "habitat": "Habitat figure" if age == "adult" else f"Habitat figure · {age}", "incubator": "Incubator figure", "sleeper": f"Sleeper {w}", "card": f"Card {w}",
+            what = looks.get(e['part'].replace('-erase', ''), e['part'].replace('-erase', '').replace('-', ' ')).lower()
+            return f"Erase · {what}" if e["part"].endswith("-erase") else f"Layer · {what}"
+        return f"Stand · {AGE_WORD.get(age, age)}"
+    return {"resident": f"Resident {w}", "habitat": "Habitat figure" if age == "adult" else f"Habitat figure · {AGE_WORD.get(age, age)}", "incubator": "Incubator figure", "sleeper": f"Sleeper {w}", "card": f"Card {w}",
             "trait": f"Trait · {look.lower()}" if look else "Trait pictures", "thumb": f"Thumb {w}", "silhouette": f"Silhouette {w}",
-            "turn": f"Turnaround · {e.get('style')} {e.get('az')}°", "walk": "Walk", "model": "Model"}.get(o, o)
+            "turn": f"{str(e.get('style')).capitalize()} turn · {e.get('az')}°", "walk": "Walk", "model": "Model"}.get(o, o)
 
 
 def order_key(e):
@@ -227,7 +230,8 @@ def git_commit(path, message):
 
 # ---------------------------------------------------------------- diff
 def heat_map(gold, now):
-    """(moved mask, max channel difference, heat picture): the golden dimmed to grey under a heat ramp (amber, then red) on every pixel that moved by more than 4/255."""
+    """(moved mask, max channel difference, heat picture): the golden dimmed to a pale grey, and over every pixel that moved by more than 4/255 a heat colour by how much it moved: pale amber for the smallest moves, through orange, to deep red for the largest.
+    The ramp is spread over the moves this picture has (its 95th percentile is the top), so a change that moves the whole figure a little still shows where it moved most."""
     g, n = gold.astype(np.int16), now.astype(np.int16)
     d = np.abs(g - n).max(2)
     d[(gold[..., 3] == 0) & (now[..., 3] == 0)] = 0                   # two clear pixels are the same pixel, whatever their hidden colour
@@ -235,10 +239,12 @@ def heat_map(gold, now):
     a = gold[..., 3:4].astype(np.float32) / 255
     lum = (gold[..., :3].astype(np.float32) @ np.array([0.3, 0.59, 0.11], np.float32))[..., None]
     base = 244 * (1 - a) + lum * a
-    base = 236 - (236 - base) * 0.45                                  # pale grey: the art stays readable, the heat reads over it
+    base = 240 - (240 - base) * 0.28                                  # the unchanged art is dim: the heat reads over it
     pic = np.repeat(base, 3, axis=2)
-    t = np.clip((d - THRESHOLD) / 80.0, 0, 1)[..., None]
-    ramp = np.array([255, 196, 64], np.float32) * (1 - t) + np.array([205, 40, 38], np.float32) * t
+    top = max(float(np.percentile(d[moved], 95)) if moved.any() else 0.0, THRESHOLD + 24.0)
+    t = np.clip((d - THRESHOLD) / (top - THRESHOLD), 0, 1)[..., None]
+    lo, mid, hi = (np.array(c, np.float32) for c in ((255, 224, 150), (246, 130, 36), (170, 24, 36)))
+    ramp = np.where(t < 0.5, lo + (mid - lo) * (t / 0.5), mid + (hi - mid) * ((t - 0.5) / 0.5))
     pic = np.where(moved[..., None], ramp, pic)
     return moved, d, np.concatenate([np.clip(pic + 0.5, 0, 255).astype(np.uint8), np.full(d.shape + (1,), 255, np.uint8)], 2)
 
@@ -407,7 +413,7 @@ def totals(rows):
 
 def line(t):
     """The totals as one quiet line: 58 same · 1 changed · 2 stale (a state with none is left out)."""
-    return " · ".join(f"{t[s]} {s}" for s in STATES if t[s]) or "no goldens"
+    return " · ".join(f"{t[s]} {STATE_WORD.get(s, s)}" for s in STATES if t[s]) or "no goldens"
 
 
 # ---------------------------------------------------------------- framework commits

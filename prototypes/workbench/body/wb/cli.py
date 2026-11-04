@@ -379,7 +379,7 @@ def golden_lines(G, st):
     lines = [f"{st['species']}  {G.line(st['totals'])}" + ("  (release)" if st["release"] else "  (draft)")]
     for e in st["entries"]:
         extra = f"  {e['pct']:g}% moved" if e.get("pct") else ""
-        lines.append(f"  {e['state']:8} {e['id']}{extra}")
+        lines.append(f"  {G.STATE_WORD.get(e['state'], e['state']):8} {e['id']}{extra}")
     for c in st.get("causes", []):
         lines.append("  because " + (f"{c['field']} {c['old']} -> {c['new']}" if c["kind"] == "file" and c["field"] else f"the {c['kind']} moved: {c.get('old')} -> {c.get('new')}"))
     return lines
@@ -418,7 +418,7 @@ def cmd_golden(a):
         for st in sts:
             if not a.json:
                 print("\n".join(golden_lines(G, st)))
-        out(a, dict(ok=not bad, species=[s["species"] for s in sts], totals=[s["totals"] for s in sts], states=sts), f"{len(sts)} species with " + ("release goldens, " if a.release else "goldens, ") + (f"{bad} changed or missing" if bad else "all same"))
+        out(a, dict(ok=not bad, species=[s["species"] for s in sts], totals=[s["totals"] for s in sts], states=sts), f"{len(sts)} species with " + ("release goldens, " if a.release else "goldens, ") + (f"{bad} changed or new" if bad else "all same"))
         return 1 if bad else 0
     except G.GoldenError as e:
         raise Fail(2, str(e))

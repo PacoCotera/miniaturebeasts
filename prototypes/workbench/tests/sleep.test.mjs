@@ -104,7 +104,7 @@ test("the forecast shows a sleeping record in its trait, as sleeping for each pa
 
 test("one look, one record: the seven pairs, a frame that opens both of a pair is refused, and S01 to S19 each open at most one of each", () => {
   assert.equal(LOOK_PAIRS.length, 7);
-  assert.deepEqual(LOOK_PAIRS.map((p) => p[0]), ["Ear kind", "Ear droop", "Ear width", "Eye size", "Eye height", "Eye spacing", "Cream reach"]);
+  assert.deepEqual(LOOK_PAIRS.map((p) => p[0]), ["Ear shape", "Ear droop", "Ear width", "Eye size", "Eye height", "Eye spacing", "Cream reach"]);
   for (const [look, a, b] of LOOK_PAIRS) {
     assert.deepEqual(lookConflicts([a, b]).map((c) => c.look), [look], look); assert.deepEqual(lookConflicts([a]), []); assert.deepEqual(lookConflicts([b, "appearance.blush"]), []);
   }

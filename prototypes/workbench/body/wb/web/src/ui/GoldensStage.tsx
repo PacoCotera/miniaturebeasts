@@ -26,7 +26,7 @@ function Split({ gold, now, h }: { gold: string | null; now: string | null; h: n
       <Img src={gold} alt={W.gold.golden} w={304} h={h} />
       <div className={s.nowClip} style={{ clipPath: `inset(0 0 0 ${x}%)` }}><Img src={now} alt={W.gold.now} w={304} h={h} /></div>
       <span className={s.line} style={{ left: `${x}%` }} />
-      <span className={s.handle} style={{ left: `${x}%` }} role="slider" aria-label="Split" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(x)} tabIndex={0}
+      <span className={s.handle} style={{ left: `${x}%` }} role="slider" aria-label="Split handle" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(x)} tabIndex={0}
         onKeyDown={(e) => { if (e.key === 'ArrowLeft') setX((v) => Math.max(2, v - 5)); if (e.key === 'ArrowRight') setX((v) => Math.min(98, v + 5)) }} />
       <span className={s.tag}>{W.gold.golden}</span><span className={`${s.tag} ${s.r}`}>{W.gold.now}</span>
     </div>

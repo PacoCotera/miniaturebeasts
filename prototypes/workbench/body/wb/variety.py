@@ -112,7 +112,15 @@ def validate(doc):
     return errs
 
 
-def _label(g, expressions, locus, look):
+def look_words(v, locus, look):
+    """[label, short word] of a look as the file names it (`variety.look_words`), or None."""
+    w = ((v.get("look_words") or {}).get(locus) or {}).get(look)
+    return list(w) if isinstance(w, (list, tuple)) and len(w) == 2 else None
+
+
+def _label(g, expressions, locus, look, words=None):
+    if words:
+        return words[0]
     x = next((x for x in expressions if x["locus"] == locus and x["look"] == look), None)
     if x:
         return x.get("label") or x["id"]
@@ -139,7 +147,7 @@ def sheet(doc, n=None, seed=None, wild_n=1000):
         f = fields(ind)
         fails = [dict(rule=r["id"], label=r.get("label") or r["id"], words=r["fail"]) for r in v["species_rules"] if broken(r, f)]
         if len(f["loud"]) > v["max_loud"]:
-            fails.append(dict(rule="loud", label="Loud looks", words=f"{len(f['loud'])} loud looks, at most {v['max_loud']}"))
+            fails.append(dict(rule="loud", label="Loud traits", words=f"{len(f['loud'])} loud traits, limit {v['max_loud']}"))
         looks = X.looks_of(g, c)
         inds.append(dict(n=i, genome=selector(i, v["seed"], file_seed), hue=f["hue"], loud=f["loud"], looks=looks, fails=fails))
         copies.append(c)
@@ -157,14 +165,14 @@ def sheet(doc, n=None, seed=None, wild_n=1000):
             xs = [x for x in expressions if x["locus"] == locus and x["look"] == look]
             x = xs[0] if xs else None
             age = (x.get("age") or {}).get("from") if x else None
-            rows.append(dict(id=f"{locus}={look}", locus=locus, look=look, label=_label(g, expressions, locus, look), count=len(who), who=who, age=age,
+            rows.append(dict(id=f"{locus}={look}", locus=locus, look=look, label=_label(g, expressions, locus, look, look_words(v, locus, look)), short=(look_words(v, locus, look) or [None, str(look).replace('-', ' ')])[1], trait=(v.get('trait_words') or {}).get(locus) or e.get('short', locus), count=len(who), who=who, age=age,
                              wild=(fl.get("wild") or {}).get(look, 0.0), cross=(fl.get("cross") or {}).get(look, 0.0), cross_of=fq["n"]["cross"], rule=fl.get("rule_words"), order=e.get("order"), modifiers=fl.get("modifiers") or []))
     for x in expressions:
         if x["locus"] in v["cycle"] or not (x.get("age") or x.get("needs")):
             continue
         xf = fq["expressions"][x["id"]]
         who = [i["n"] for i, c in zip(inds, copies) if x["id"] in X.showing(g, expressions, c, (x.get("age") or {}).get("from", "adult"))]
-        rows.append(dict(id=f"expr:{x['id']}", locus=x["locus"], look=x["look"], label=x.get("label") or x["id"], count=len(who), who=who, age=(x.get("age") or {}).get("from"),
+        rows.append(dict(id=f"expr:{x['id']}", locus=x["locus"], look=x["look"], label=x.get("label") or x["id"], short=str(x["look"]).replace("-", " "), trait=(v.get("trait_words") or {}).get(x["locus"]) or (by.get(x["locus"]) or {}).get("short", x["locus"]), count=len(who), who=who, age=(x.get("age") or {}).get("from"),
                          wild=xf["wild"].get((x.get("age") or {}).get("from", "adult"), 0.0), cross=xf["cross"].get((x.get("age") or {}).get("from", "adult"), 0.0), cross_of=fq["n"]["cross"], rule=None, order=None, modifiers=[]))
     return dict(n=v["n"], seed=v["seed"], file_seed=file_seed, max_loud=v["max_loud"], wild_n=wild_n, individuals=inds, looks=rows,
                 rules=[dict(id=r["id"], label=r.get("label") or r["id"], fail=r["fail"], broken=[i["n"] for i, c in zip(inds, copies) if any(f["rule"] == r["id"] for f in i["fails"])]) for r in v["species_rules"]],

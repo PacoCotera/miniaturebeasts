@@ -5,7 +5,7 @@ import { call, postJob } from './api'
 export type VTile = { key: string; ready: boolean }
 export type VFail = { rule: string; label: string; words: string }
 export type VInd = { n: number; genome: string; hue: number; loud: string[]; looks: Record<string, string | null>; fails: VFail[]; tiles: Record<'304' | '96' | '48', VTile> }
-export type VLook = { id: string; locus: string; look: string; label: string; count: number; who: number[]; age: string | null; wild: number; cross: number; cross_of: number; rule: string | null; order: string[] | null; modifiers: string[] }
+export type VLook = { id: string; locus: string; look: string; label: string; short: string; trait: string; count: number; who: number[]; age: string | null; wild: number; cross: number; cross_of: number; rule: string | null; order: string[] | null; modifiers: string[] }
 export type VRule = { id: string; label: string; fail: string; broken: number[] }
 export type VRun = { key: string; t: string; spec_hash: string; n: number; seed: number; tiles: { n: number; genome: string; keys: Record<string, string>; fails: string[] }[]; failing: number[] }
 export type Variety = { n: number; seed: number; file_seed: number; max_loud: number; wild_n: number; individuals: VInd[]; looks: VLook[]; rules: VRule[]; failing: number[]; species: string; hash: string; key: string; ran: boolean; previous: VRun | null }
@@ -16,6 +16,11 @@ export const runSheet = (id: string, seed: number | null) => postJob(id, 'variet
 
 // words.md st.var.fail: "No. 7: {the rule's own fail words}"; the same line is the Checks drawer's ck.ember row.
 export const failLine = (n: number, f: VFail) => `No. ${n}: ${f.words}`
+// The Shows line's short words ("pointy over nub over floppy"): the file's own words for each look, else the id spelled out.
+export const shortWord = (words: Record<string, Record<string, [string, string]>> | undefined, locus: string, look: string) => words?.[locus]?.[look]?.[1] ?? look.replace(/-/g, ' ')
+// A tile's loud genes by their on-screen names (the ids are the file's).
+export const LOUD_WORD: Record<string, string> = { glow: 'glow pattern', pattern: 'coat pattern', emblem: 'emblem', brow: 'brow tufts' }
+export const loudLine = (loud: string[], hue: number) => `${loud.length ? `Loud traits: ${loud.map((x) => LOUD_WORD[x] ?? x).join(', ')}` : 'No loud traits'} · hue ${Math.round(hue)}°`
 export const crossCount = (l: VLook) => Math.round((l.cross * l.cross_of) / 100)
 export const ofSheet = (l: VLook, n: number) => `${l.count}/${n}`
 

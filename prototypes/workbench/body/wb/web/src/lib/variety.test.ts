@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { crossCount, failLine, lit, litCount, lookOf, nextSeed, previousKey, ready, type VInd, type VLook, type Variety } from './variety'
+import { crossCount, failLine, lit, loudLine, shortWord, litCount, lookOf, nextSeed, previousKey, ready, type VInd, type VLook, type Variety } from './variety'
 
 const tile = (r: boolean) => ({ key: 'k', ready: r })
 const ind = (n: number, r = true, fails: VInd['fails'] = []): VInd => ({ n, genome: `seed:${n}`, hue: 0, loud: [], looks: {}, fails, tiles: { '304': tile(r), '96': tile(r), '48': tile(r) } })
-const look = (id: string, who: number[], extra: Partial<VLook> = {}): VLook => ({ id, locus: id.split('=')[0], look: id.split('=')[1], label: id, count: who.length, who, age: null, wild: 40.6, cross: 50, cross_of: 4, rule: null, order: null, modifiers: [], ...extra })
+const look = (id: string, who: number[], extra: Partial<VLook> = {}): VLook => ({ id, locus: id.split('=')[0], look: id.split('=')[1], label: id, short: id, trait: 'Trait', count: who.length, who, age: null, wild: 40.6, cross: 50, cross_of: 4, rule: null, order: null, modifiers: [], ...extra })
 const v: Variety = {
   n: 4, seed: 2026, file_seed: 2026, max_loud: 2, wild_n: 1000, species: 'S20', hash: 'h', key: 'k', ran: true,
-  individuals: [ind(1), ind(2, false), ind(3, true, [{ rule: 'ember', label: 'The ember rule', words: 'warm hue with a lit tip and a light belly' }]), ind(4)],
+  individuals: [ind(1), ind(2, false), ind(3, true, [{ rule: 'ember', label: 'Ember rule', words: 'lantern on a warm coat with a light belly' }]), ind(4)],
   looks: [look('t=lantern', [1, 3, 4]), look('t=tuft', [2]), look('h=horn', [], { age: 'adult' })], rules: [], failing: [3],
   previous: { key: 'p', t: '2026-11-04T01:35:00', spec_hash: 'x', n: 4, seed: 2026, failing: [], tiles: [{ n: 1, genome: 'seed:1', keys: { '304': 'old1', '96': 'o96' }, fails: [] }] },
 }
@@ -25,7 +25,13 @@ describe('the Variety sheet', () => {
     expect(ready(v)).toBe(3)
   })
   it('writes a failing tile the way words.md does: No. 7 and the rule\'s own words', () => {
-    expect(failLine(3, v.individuals[2].fails[0])).toBe('No. 3: warm hue with a lit tip and a light belly')
+    expect(failLine(3, v.individuals[2].fails[0])).toBe('No. 3: lantern on a warm coat with a light belly')
+  })
+  it('names a look by its short word and a tile\'s loud traits by their on-screen names', () => {
+    expect(shortWord({ 'form.ear-kind': { prick: ['Pointy ears', 'pointy'] } }, 'form.ear-kind', 'prick')).toBe('pointy')
+    expect(shortWord(undefined, 'a', 'belly-arcs')).toBe('belly arcs')
+    expect(loudLine(['glow', 'pattern'], 313.6)).toBe('Loud traits: glow pattern, coat pattern · hue 314°')
+    expect(loudLine([], 90)).toBe('No loud traits · hue 90°')
   })
   it('turns a cross share into seeds of four', () => {
     expect(crossCount(v.looks[0])).toBe(2)

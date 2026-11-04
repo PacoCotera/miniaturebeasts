@@ -3,10 +3,10 @@ import type { CheckRow, CheckMeta } from '../lib/checks'
 import { stateOfPart } from '../lib/checks'
 import type { StudioUrl } from '../lib/url'
 import type { Species } from '../lib/api'
-import { isAsleep, locusDot, selectedLocus } from '../lib/genes'
+import { isAsleep, locusDot, selectedLocus, stageWord, type Stage } from '../lib/genes'
 import { useQuery } from '@tanstack/react-query'
 import { lookOf, ready, varietyOne, type VLook } from '../lib/variety'
-import { goldensOne, groupsOf, pick, totalsLine } from '../lib/goldens'
+import { goldensOne, groupsOf, pick, stateTip, totalsLine, type GState } from '../lib/goldens'
 import s from './Navigator.module.css'
 
 const mono = (w: string) => { const p = w.split(' '); return p.length > 1 ? p[0][0] + p[1][0] : w.slice(0, 2) } // the rail's two letters: Limb length -> Ll, Limb girth -> Lg, Lift -> Li
@@ -51,7 +51,7 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
                     <button className={`${s.row} ${on ? s.sel : ''}`} onClick={() => go({ sel: on ? null : l.id })} aria-pressed={on} data-empty={l.count === 0 || undefined} title={`${l.label} · ${l.count} of ${sheet.n}`}>
                       <span className={s.mono}>{l.label.slice(0, 2)}</span>
                       <span className={s.label}>{l.label}</span>
-                      <span className={s.num}>{l.count === 0 && l.age ? l.age : l.count}</span>
+                      <span className={s.num}>{l.count === 0 && l.age ? stageWord(l.age as Stage) : l.count}</span>
                     </button>
                   </li>
                 )
@@ -75,10 +75,10 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
               <ul className={s.tree}>
                 {grp.rows.map((e) => (
                   <li key={e.id}>
-                    <button className={`${s.row} ${gsel?.id === e.id ? s.sel : ''}`} onClick={() => go({ sel: e.id })} aria-pressed={gsel?.id === e.id} title={`${e.label} · ${e.state}`}>
+                    <button className={`${s.row} ${gsel?.id === e.id ? s.sel : ''}`} onClick={() => go({ sel: e.id })} aria-pressed={gsel?.id === e.id} title={`${e.label} · ${stateTip(e.state)}`}>
                       <span className={s.mono}>{e.output === 'turn' ? `${e.style?.[0]}${e.az}` : (e.label ?? e.id).slice(0, 2)}</span>
                       <span className={s.label}>{e.label}</span>
-                      <i className={s.gdot} data-kind={e.state} aria-label={e.state} />
+                      <i className={s.gdot} data-kind={e.state} aria-label={stateTip(e.state as GState)} />
                     </button>
                   </li>
                 ))}

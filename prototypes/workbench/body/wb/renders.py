@@ -39,9 +39,9 @@ CAN = dict(
     ages={"adult": True},
     poses={"calm": True, "anchor": True},                       # anchor is the stage's own entry pose: the same pixels as calm until a species cuts more poses
     kinds={"sprite": True, "layers": True},
-    why_age="the species file has no juvenile body yet",
-    why_pose="the rig has no {pose} pose yet",
-    why_kind={"strip": "clips for strips arrive with the clip chunk", "glb": "the glb export arrives with the export chunk"},
+    why_age="no young body in the species file yet",
+    why_pose="no {pose} pose on the rig yet",
+    why_kind={"strip": "no clips yet", "glb": "no model export yet"},
 )
 
 
@@ -94,7 +94,7 @@ def validate(doc):
                 errs.append((f"{p}.size", f"size '{s}' is WxH, for example 96x96"))
         for s in as_list(o.get("style", "plush")):
             if s in NOT_YET:
-                errs.append((f"{p}.style", f"style '{s}' is not yet: it needs the Companion's palette and the art director's say"))
+                errs.append((f"{p}.style", f"style '{s}' is not ready: it waits for the Companion's signed colours and the art director's ruling"))
             elif s not in STYLES:
                 errs.append((f"{p}.style", f"style '{s}': one of {', '.join(STYLES)}"))
         for a in as_list(o.get("az", [32])):
@@ -154,4 +154,4 @@ def expand(doc, expressions=None):
 
 
 def not_yet(doc):
-    return [dict(style=s, why="needs the Companion's signed colours and the art director's say on whether a render can feed pixel art") for s in NOT_YET]
+    return [dict(style=s, why="waits for the Companion's signed colours and the art director's ruling on pixel art from renders") for s in NOT_YET]

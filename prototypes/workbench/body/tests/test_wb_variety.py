@@ -43,6 +43,18 @@ class TestRules(unittest.TestCase):
         self.assertEqual(sum(ear.values()), 12)
         self.assertEqual(look_row(sh, "anatomy.tail-tip-form", "lantern")["who"], [1, 2, 3, 5, 6, 8, 9, 11, 12])
 
+    def test_a_look_is_named_by_what_you_see_and_the_trait_is_the_subtitle(self):
+        sh = VY.sheet(S20)
+        names = {r["id"]: (r["label"], r["short"], r["trait"]) for r in sh["looks"]}
+        self.assertEqual(names["form.ear-kind=prick"], ("Pointy ears", "pointy", "Ear shape"))
+        self.assertEqual(names["form.ear-kind=lop"], ("Floppy ears", "floppy", "Ear shape"))
+        self.assertEqual(names["appearance.marking-layout=masked"], ("Pale muzzle", "muzzle", "Markings"))
+        self.assertEqual(names["appearance.marking-layout=capped"], ("Head cap", "cap", "Markings"))
+        self.assertEqual(names["appearance.pattern-kind=labyrinth"], ("Maze pattern", "maze", "Pattern"))
+        self.assertEqual(names["appearance.glow-pattern=belly-arcs"], ("Belly arcs", "belly arcs", "Glow pattern"))
+        self.assertFalse([r["label"] for r in sh["looks"] if " · " in r["label"] or r["label"].startswith("Prick")])
+        self.assertEqual(len({r["label"][:2] for r in sh["looks"]}), len(sh["looks"]), "the rail's two letters differ for every look")
+
     def test_wild_and_cross_columns(self):
         sh = VY.sheet(S20)
         r = look_row(sh, "anatomy.tail-tip-form", "lantern")
@@ -72,7 +84,7 @@ class TestRules(unittest.TestCase):
         doc["variety"]["species_rules"][0]["when"] = [{"field": "hue", "in": [0, 360]}]               # every hue now needs an unlit tip: the nine with a lantern break it
         sh = VY.sheet(doc)
         self.assertEqual(sh["failing"], [1, 2, 3, 5, 6, 8, 9, 11, 12])
-        self.assertEqual(sh["individuals"][0]["fails"][0], dict(rule="ember", label="The ember rule", words="warm hue with a lit tip and a light belly"))
+        self.assertEqual(sh["individuals"][0]["fails"][0], dict(rule="ember", label="Ember rule", words="lantern on a warm coat with a light belly"))
         self.assertEqual(sh["rules"][0]["broken"], sh["failing"])
 
     def test_the_loud_limit_is_the_files(self):
@@ -82,7 +94,7 @@ class TestRules(unittest.TestCase):
         two = [i["n"] for i in sh["individuals"] if len(i["loud"]) == 2]
         self.assertTrue(two)
         self.assertEqual(sh["failing"], two)
-        self.assertIn("at most 1", sh["individuals"][two[0] - 1]["fails"][0]["words"])
+        self.assertEqual(sh["individuals"][two[0] - 1]["fails"][0], dict(rule="loud", label="Loud traits", words="2 loud traits, limit 1"))
 
     def test_the_conditions(self):
         f = dict(hue=20.0, tip="lantern", belly="light")

@@ -97,7 +97,7 @@ for (const c of cases) {
   if (c.act) { await c.act(page); await page.waitForTimeout(300) }
   const geo = await page.evaluate(() => ({ nav: document.querySelector('aside[aria-label=Navigator]').getBoundingClientRect().width, insp: document.querySelector('aside[aria-label=Inspector]').getBoundingClientRect().width, theme: document.documentElement.dataset.theme }))
   if (geo.theme !== c.theme) fail(`${c.name}: theme ${geo.theme}`)
-  if (geo.nav !== (c.w >= 1280 ? 232 : 56)) fail(`${c.name}: navigator ${geo.nav}px`)
+  if (geo.nav !== (c.w >= 1280 ? 232 : 64)) fail(`${c.name}: navigator ${geo.nav}px`)
   if (geo.insp !== 344) fail(`${c.name}: inspector ${geo.insp}px`)
   const png = await page.screenshot()
   const out = join(here, 'out', `${c.name}.png`)
