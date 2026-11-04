@@ -210,8 +210,10 @@
    "picture": "rackpod:{species}",
    "layers": {
     "id": "home-rack-pod-{layer}-24x32",
-    "order": ["body","light","shade","accent","pattern","outline"],
-    "fill": {"body":"A","light":"lighter(A)","shade":"darker(A)","accent":"B","pattern":"B","outline":"darkest(A)"},
+    "order": ["body","light","shade","accent","pattern","outline","crown","crown-light","crown-shade","crown-outline","crown-glow"],
+    "fill": {"body":"A","light":"lighter(A)","shade":"darker(A)","accent":"B","pattern":"B","outline":"darkest(A)","crown":"B","crown-light":"lighter(B)","crown-shade":"darker(B)","crown-outline":"darkest(A)","crown-glow":"glow"},
+    "crown": "the clan's crown, drawn after the pod and not clipped to its body: a crown layer's id is the template with `crown-<clan>` for `crown` (home-rack-pod-crown-C03-glow-24x32); the clan is the frame's (taxonomy.clan), a pod of no known species has none; a layer not placed draws none; `glow` is the lit chip of the clans that have one",
+    "glow": {"C03":"mint","C20":"lime"},
     "pattern": "home-rack-pod-pattern-{name}-24x32, name from shellPattern through pods.json podLayers.patterns; a word with no layer draws none",
     "colours": "A, B: colourPair[0], [1] .pigment through cross.json colours.pigmentChips; not listed: mist; a pod of no known species: A stone, B fog, no pattern",
     "ramp": "light lighter[A]; shade darker[A]; outline the last colour of A's darker chain before ink or void, ink where that would be night",

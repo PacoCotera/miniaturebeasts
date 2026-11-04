@@ -11,7 +11,7 @@ import { juvenileMirrored, mirrorPic } from "./facing.mjs";
 import { layeredStand, composeStand, standPictureId, standVariant, fitDown, curlPicture, curlOfStand, traitTile, factorPicture, variantPixels } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
 import { portraitSource, portraitOpening } from "./portrait-source.mjs";
-import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
+import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackCrownIds, rackPatternId, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
 import { emblemArt, dewArt, ICON, beamArt, mibiArt, founderArt, speciesArt } from "./art.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
@@ -44,7 +44,7 @@ function podPicture(species, state, [bw, bh], env) {
   const cls = podClass([bw, bh]);
   if (cls && layersPlaced(layerClass(cls))) {
     const frame = species ? env.frameOf(species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
-    return podFromLayers(layerClass(cls), pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, state === "sealed");
+    return podFromLayers(layerClass(cls), pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, state === "sealed", frame?.taxonomy?.clan ?? null);
   }
   return new PB(bw, bh);
 }
@@ -94,15 +94,15 @@ export function registerPictures(reqs, env) {
       case "pod": if (!r.species && r.state === "sealed" && podClass(r.size) && masterAt(`pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1])) { putOrMaster(r.id, `pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1]); break; } { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { status: podStatus(layerClass(podClass(r.size))) } : {}); break; }
       case "rackpod": {   // the Home rack pod: the signed 24×32 layers recoloured by the species' pair (home.json regions.rackPod.layers); an empty picture until the base layers are placed
         const P = SPECS.home.regions.rackPod; if (!r.size || r.size[0] !== P.size[0] || r.size[1] !== P.size[1]) throw new Error(`rackpod ${r.id}: size ${r.size} is not the spec's ${P.size}`); const L = P.layers, patterns = SPECS.pods.podLayers.patterns, frame = r.species ? env.frameOf(r.species) : null, placed = rackLayersPlaced(L), pid = rackPatternId(frame, L, patterns);
-        put(r.id, P.size[0], P.size[1], "the rack pod's layers (the home hand masters)", () => (placed ? rackPodFromLayers(frame, L, SPECS.cross.colours.pigmentChips, patterns, P.size) : new PB(P.size[0], P.size[1])), placed ? { status: leastFinal([...rackBase(L), ...(pid ? [pid] : [])]) } : {}); break;
+        put(r.id, P.size[0], P.size[1], "the rack pod's layers (the home hand masters)", () => (placed ? rackPodFromLayers(frame, L, SPECS.cross.colours.pigmentChips, patterns, P.size) : new PB(P.size[0], P.size[1])), placed ? { status: leastFinal([...rackBase(L), ...rackCrownIds(frame, L), ...(pid ? [pid] : [])]) } : {}); break;
       }
       case "podpart": {   // a piece of a pod from its signed layers at their own size (the opened pod's bowl and cap, pod-opened-*), recoloured by the species' pair, never scaled (T-20261016-222)
         const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
-        put(r.id, r.size[0], r.size[1], "the opened pod's layers", () => (layersPlaced(r.cls) ? podFromLayers(r.cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false) : new PB(r.size[0], r.size[1])), layersPlaced(r.cls) ? { status: podStatus(r.cls) } : {}); break;
+        put(r.id, r.size[0], r.size[1], "the opened pod's layers", () => (layersPlaced(r.cls) ? podFromLayers(r.cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false, frame?.taxonomy?.clan ?? null) : new PB(r.size[0], r.size[1])), layersPlaced(r.cls) ? { status: podStatus(r.cls) } : {}); break;
       }
       case "podicon": {   // the founder's pod in the Incubate panel's price (build spec 6a.2): the renderer's collection pod (88 x 112) reduced once to 16 x 20 in the logic process
         const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR(), [w, h] = r.size;
-        put(r.id, w, h, "the collection pod's layers", () => { if (!layersPlaced("collection")) return new PB(w, h); const big = podFromLayers("collection", pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false), px = fitDown(big.rgba(), big.w, big.h, w, h); return { w, h, rgba: () => px }; }); break;
+        put(r.id, w, h, "the collection pod's layers", () => { if (!layersPlaced("collection")) return new PB(w, h); const big = podFromLayers("collection", pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false, frame?.taxonomy?.clan ?? null), px = fitDown(big.rgba(), big.w, big.h, w, h); return { w, h, rgba: () => px }; }); break;
       }
       case "relit": {   // a figure lit to the capsule's roof lamp, with its shadow and the moss blades in front of its feet, one picture (relight.mjs), made in the logic process; parts: [{ id, over?: [id] }], bg: { id, at: [x, y] } or null
         const ok = r.parts.every((p) => isFilled(p.id) || hasAsset(p.id));
