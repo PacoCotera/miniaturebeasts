@@ -177,10 +177,10 @@ function refuseMissing(frame, g, who) {
   const missing = missingLoci(frame, g);
   if (missing.length) throw new Error(`${frame.species.name} ${who} was born on frame version ${versionOf(g)}, which lacks ${missing.length === 1 ? missing[0] : `${missing.length} loci (${missing.slice(0, 3).join(", ")}${missing.length > 3 ? ", ..." : ""})`} of version ${frameVersionOf(frame)}: it cannot be bred with this frame`);
 }
-export const versionRefusal = (frame, a, b) => (versionOf(a) !== versionOf(b) ? `${frame.species.name} born on frame version ${versionOf(a)} cannot be bred with one born on version ${versionOf(b)}: a cross needs two of the same version` : null);
+export const versionRefusal = (frame, a, b) => (versionOf(a) !== versionOf(b) ? `${frame.species.name} born on frame version ${versionOf(a)} cannot be crossed with one born on version ${versionOf(b)}: a cross needs two of the same version` : null);
 function refuse(frame, x, y, lookup = () => null) {
   const a = genomeOf(x), b = genomeOf(y);
-  if (a.species !== frame.species.id || b.species !== frame.species.id) throw new Error("breeding is same-species only");
+  if (a.species !== frame.species.id || b.species !== frame.species.id) throw new Error("a cross needs two of the same species");
   const split = versionRefusal(frame, a, b); if (split) throw new Error(split);
   refuseMissing(frame, a, "the first parent"); refuseMissing(frame, b, "the second parent");
   if (x === y || (idOf(x) != null && idOf(x) === idOf(y)) || (idOf(x) == null && idOf(y) == null && a === b)) throw new Error("one mibi is not a pair");
