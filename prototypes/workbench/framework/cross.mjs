@@ -31,7 +31,7 @@
 // The forecast shows quarters for switches (the four pairings of the parents' copies, resolved) and
 // a range for blends (the parents' shown values widened by the spread, clamped, as bins), never a
 // promise; a trait where both parents hold the same copies is known for sure before any read.
-import { LOCI, resolveCopies, isContinuous, copyValue, binFor, valueRange, quantize, samePair } from "./catalogue.mjs";
+import { LOCI, resolveCopies, isContinuous, copyValue, binFor, valueRange, quantize, offStepEnds, samePair } from "./catalogue.mjs";
 import { genomeDigest, frameVersionOf, buildIndividual, FRAME_VERSION } from "./species.mjs";
 import { isDoing } from "./guards.mjs";
 import { resolveIndividual } from "./resolve.mjs";
@@ -174,7 +174,8 @@ function drawLoci(frame, a, b, k, opts) {
       let v = mid + (rng() - 0.5) * (vb - va) * narrow + (rng() * 2 - 1) * spread * (chi - clo) * narrow;
       if (weaken && isDoing(l.id)) v -= weaken * (v - lo); // C: a doing moves toward its weak end, the low end of the pool
       v = quantize(locus, clamp(v, lo, hi), [lo, hi]); // on the blend step, inside the pool
-      loci[l.id] = [v, v];
+      const end = offStepEnds(locus, [lo, hi]).includes(v) ? l.alleles.find((id) => copyValue(locus, id) === v) : undefined;
+      loci[l.id] = end ? [end, end] : [v, v]; // a copy landed on a pool's off-step end is that allele, by name
       continue;
     }
     const pair = [a.loci[l.id][rng() < 0.5 ? 0 : 1], b.loci[l.id][rng() < 0.5 ? 0 : 1]];

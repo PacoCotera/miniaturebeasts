@@ -3,10 +3,10 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, stepOf, stepValue, BLEND_STEPS } from "../framework/catalogue.mjs";
+import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, offStepEnds, copyValue, stepOf, stepValue, BLEND_STEPS } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
 import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK, frameVersionOf } from "../framework/species.mjs";
-import { cross, forecast, kinship, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
+import { cross, blendRange, forecast, kinship, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
 
@@ -183,7 +183,7 @@ test("the forecast's quarters and ranges are honest against ten thousand crosses
     const c = cross(f, pip, moss, { rng: r });
     if (resolveCopies(LOCI.get("appearance.marking-switch"), c.loci["appearance.marking-switch"])) counts.markings++;
     if (resolveCopies(LOCI.get("anatomy.crown-presence"), c.loci["anatomy.crown-presence"])) counts.crown++;
-    const v = c.loci["growth.exterior-eye-size-ratio"][0];
+    const v = resolveCopies(LOCI.get("growth.exterior-eye-size-ratio"), c.loci["growth.exterior-eye-size-ratio"]);
     if (v >= by["eye-rings"].range[0] - 1e-9 && v <= by["eye-rings"].range[1] + 1e-9) inRange++;
   }
   assert.ok(Math.abs(counts.markings / N - 0.25) < 0.02, `pale patches ${counts.markings / N}`);
@@ -367,10 +367,12 @@ test("C5: the cross draws every blended copy on the blend step, inside the pool,
         const locus = LOCI.get(l.id);
         if (l.kind === "locked" || !isContinuous(locus)) continue;
         const [p, q] = child.loci[l.id];
-        assert.ok(stepOf(locus, p) >= 0, `${f.species.id} ${l.id}: ${p} on the step`); assert.equal(p, q);
+        assert.equal(p, q);
+        if (typeof p === "string") assert.ok(offStepEnds(locus, blendRange(f, l)).includes(copyValue(locus, p)), `${f.species.id} ${l.id}: ${p} is a pool end off the step`); // a named copy is only ever such an end
+        else assert.ok(stepOf(locus, p) >= 0, `${f.species.id} ${l.id}: ${p} on the step`);
       }
       assert.deepEqual(checkGenome(f, child), [], `${f.species.id}: a stepped child is in its pools`);
-      for (const t of forecast(f, a, b).traits) if (t.kind === "blend") for (const v of t.range) assert.ok(stepOf(LOCI.get(t.locus), v) >= 0, `${t.locus} range end ${v}`);
+      for (const t of forecast(f, a, b).traits) if (t.kind === "blend") for (const v of t.range) assert.ok(stepOf(LOCI.get(t.locus), v) >= 0 || offStepEnds(LOCI.get(t.locus), blendRange(f, f.loci.find((l) => l.id === t.locus))).includes(v), `${t.locus} range end ${v}`);
     }
   }
   const eye = LOCI.get("growth.exterior-eye-size-ratio"), [lo, hi] = valueRange(eye);
@@ -488,8 +490,8 @@ test("the shed pod: a returned mibi's self cross never equals its parent, always
         const locus = LOCI.get(l.id), p = m.genome.loci[l.id], c = g.loci[l.id];
         if (l.kind === "locked") { assert.deepEqual([...c].sort(), [...l.copies].sort()); continue; }
         if (isContinuous(locus)) {
-          const shown = (valueOf(locus, p[0]) + valueOf(locus, p[1])) / 2, [lo, hi] = valueRange(locus), reach = SPREAD * (hi - lo) * (1 - 4 * SELF_KINSHIP) + Math.abs(valueOf(locus, p[0]) - valueOf(locus, p[1])) / 2 * (1 - 4 * SELF_KINSHIP) + 1e-6 + (hi - lo) / 32;
-          assert.ok(Math.abs(c[0] - shown) <= reach, `${m.id} ${l.id}: a blend stays by its parent's (${c[0]} vs ${shown})`);
+          const shown = (valueOf(locus, p[0]) + valueOf(locus, p[1])) / 2, cv = valueOf(locus, c[0]), [lo, hi] = valueRange(locus), reach = SPREAD * (hi - lo) * (1 - 4 * SELF_KINSHIP) + Math.abs(valueOf(locus, p[0]) - valueOf(locus, p[1])) / 2 * (1 - 4 * SELF_KINSHIP) + 1e-6 + (hi - lo) / 32;
+          assert.ok(Math.abs(cv - shown) <= reach, `${m.id} ${l.id}: a blend stays by its parent's (${cv} vs ${shown})`);
         } else for (const x of c) assert.ok(p.includes(x), `${m.id} ${l.id}: copy ${x} is one of the parent's (${p})`);
       }
       for (const ch of frame.chapters) for (const t of ch.traits) {
@@ -524,4 +526,56 @@ test("a shed pod's pedigree is known only when its parent resolves, as a cross c
   assert.equal(known.pedigreeKnown, true);
   assert.ok(known.kinship >= 0.5, `kinship to its parent ${known.kinship}`);
   assert.equal(relatedness(f, pod, m, () => null).pedigreeKnown, false, "an unresolvable parent: identity is the fallback");
+});
+
+test("ruling 5: a pool's off-step ends are places a bred copy can land; a named value in the middle of a pool is not", () => {
+  const f = frameOf("S01"), l = f.loci.find((x) => x.id === "growth.auricular-length-ratio"), ear = LOCI.get(l.id);
+  const [lo, hi] = blendRange(f, l);
+  assert.equal(hi, 0.75, "the Loika's top ear end is medium, 0.75");
+  assert.deepEqual(offStepEnds(ear, [lo, hi]), [hi]);
+  assert.ok(stepOf(ear, 0.75) < 0, "0.75 is off the step");
+  assert.equal(quantize(ear, 0.75, [lo, hi]), 0.75, "a bred copy can land on the end");
+  assert.equal(quantize(ear, 0.9, [lo, hi]), 0.75, "and a value past it is held there");
+  assert.equal(quantize(ear, 0.752, [lo, hi]), 0.75, "nearer the end than the step above");
+  const step = quantize(ear, 0.74, [lo, hi]);
+  assert.ok(stepOf(ear, step) >= 0 && step < 0.75, "below the end, the step as before");
+  assert.equal(quantize(ear, quantize(ear, 0.7497, [lo, hi]), [lo, hi]), quantize(ear, 0.7497, [lo, hi]), "idempotent");
+  let prev = -Infinity; for (let v = lo; v <= hi; v += 0.0007) { const q = quantize(ear, v, [lo, hi]); assert.ok(q >= prev, "monotone"); prev = q; }
+  // a named value in the middle of a pool adds no place
+  const mid = ear.alleles.map((a) => a.value).filter((v) => v > lo && v < hi && stepOf(ear, v) < 0);
+  assert.ok(mid.length > 0, "the ear has a named value inside its pool, off the step");
+  for (const v of mid) assert.ok(stepOf(ear, quantize(ear, v, [lo, hi])) >= 0, "which quantises to a step");
+  // a child with a pool end is written by its allele name, and the draw is seeded
+  const base = typeSpecimen(f), top = ear.alleles.find((a) => a.value === 0.75).id;
+  const p = { ...base, loci: { ...base.loci, [l.id]: [top, top] }, origin: { kind: "random" } };
+  const q = { ...base, loci: { ...base.loci, [l.id]: [top, top] }, origin: { kind: "random" } };
+  const draw = (seed) => { const r = rng(seed), out = []; for (let i = 0; i < 300; i++) out.push(cross(f, p, q, { rng: r }).loci[l.id]); return out; };
+  const kids = draw("ruling5");
+  assert.deepEqual(kids, draw("ruling5"), "same seed, same children");
+  assert.ok(kids.some((c) => c[0] === top && c[1] === top), "a bred child shows the top end, by name");
+  for (const c of kids) assert.ok(typeof c[0] === "string" ? c[0] === top && c[1] === top : stepOf(ear, c[0]) >= 0);
+});
+
+test("ruling 5: an end that sits on the step changes nothing, and old strings decode and draw as before", () => {
+  const eye = LOCI.get("growth.exterior-eye-size-ratio"), [clo, chi] = valueRange(eye);
+  assert.deepEqual(offStepEnds(eye, [clo, chi]), [], "the catalogue's own ends are on the step");
+  for (const v of [0.2, 0.3337, 0.5, 0.9]) assert.equal(quantize(eye, v), quantize(eye, v, [clo, chi]));
+  // a pool whose ends are on the step quantises exactly as the step alone would
+  for (const f of frames) for (const l of f.loci) {
+    const locus = LOCI.get(l.id); if (l.kind === "locked" || !isContinuous(locus)) continue;
+    const b = blendRange(f, l); if (offStepEnds(locus, b).length) continue;
+    const [lo, hi] = valueRange(locus), s = (hi - lo) / BLEND_STEPS;
+    for (const v of [b[0], (b[0] + b[1]) / 2, b[1]]) assert.equal(quantize(locus, v, b), stepValue(locus, Math.min(Math.ceil((b[1] - lo) / s - 1e-9) , Math.max(Math.ceil((b[0] - lo) / s - 1e-9), Math.round((v - lo) / s)))));
+  }
+});
+
+test("ruling 5: how many of the pool ends off the step a bred copy can now reach", () => {
+  let n = 0, reach = 0;
+  for (const f of frames) for (const l of f.loci) {
+    const locus = LOCI.get(l.id); if (l.kind === "locked" || !isContinuous(locus)) continue;
+    const b = blendRange(f, l);
+    for (const e of offStepEnds(locus, b)) { n++; if (quantize(locus, e, b) === e) reach++; }
+  }
+  console.log(`off-step pool ends: ${n}, reachable: ${reach}`);
+  assert.equal(reach, n);
 });

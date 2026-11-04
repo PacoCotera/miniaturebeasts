@@ -370,13 +370,21 @@ export function stepOf(locus, v) {
   return k >= 0 && k <= BLEND_STEPS && stepValue(locus, k) === v ? k : -1;
 }
 // A blended value on the step: the nearest step, kept inside `bounds` (a species pool's range) by
-// moving inward to the nearest step that lies within it. Monotone, so a range's ends quantise to the
-// ends of its quantised children; idempotent.
+// moving inward to the nearest step that lies within it. A pool end that sits off the step is one more
+// place to land (a named end is a place breeding can reach; a named value in the middle of a pool is
+// not). Monotone, so a range's ends quantise to the ends of its quantised children; idempotent.
 export function quantize(locus, v, bounds = valueRange(locus)) {
   const [lo, hi] = valueRange(locus), s = (hi - lo) / BLEND_STEPS, eps = 1e-9;
   const kmin = Math.ceil((bounds[0] - lo) / s - eps), kmax = Math.floor((bounds[1] - lo) / s + eps);
   if (kmin > kmax) throw new Error(`${locus.id}: no step inside [${bounds[0]}, ${bounds[1]}]`);
-  return stepValue(locus, Math.min(kmax, Math.max(kmin, Math.round((v - lo) / s))));
+  let best = stepValue(locus, Math.min(kmax, Math.max(kmin, Math.round((v - lo) / s))));
+  for (const e of offStepEnds(locus, bounds)) if (Math.abs(e - v) < Math.abs(best - v)) best = e;
+  return best;
+}
+// The ends of `bounds` that fall off the blend step (none when they sit on it).
+export function offStepEnds(locus, bounds) {
+  const [lo, hi] = valueRange(locus), s = (hi - lo) / BLEND_STEPS;
+  return [...new Set(bounds)].filter((e) => e > lo && e < hi && Math.abs((e - lo) / s - Math.round((e - lo) / s)) * s > 1e-9);
 }
 // Two copy pairs carry the same copies, in either order (a pair has no order): the one comparison the
 // frame check and the cross use for a locked pair.
