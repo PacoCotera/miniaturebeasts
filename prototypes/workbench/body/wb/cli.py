@@ -399,6 +399,12 @@ def cmd_golden(a):
                 return 0
             a.release, a.all, a.only, a.set, a.action = True, True, "", "", "diff"
         if a.action == "make":
+            if a.missing:
+                if a.release:
+                    raise G.GoldenError("release goldens are made by the release export, from the signed file; draft goldens are made here")
+                m = G.make_missing(golden_file(a), home, setdir=a.set or None, commit=not a.no_commit, log=lambda m: None if a.json else print(m))
+                out(a, dict(ok=True, species=m["species"], added=m["added"], commit=m["committed"]), f"{m['species']} goldens added: {len(m['added'])}")
+                return 0
             m = G.make(golden_file(a), home, setdir=a.set or None, release=a.release, commit=not a.no_commit, log=lambda m: None if a.json else print(m))
             out(a, dict(ok=True, species=m["species"], goldens=len(m["entries"]), file=m["file_hash"], framework=m["framework"], lookdev=m["lookdev"], commit=m["committed"]), f"{m['species']} goldens made")
             return 0
@@ -578,7 +584,7 @@ def main(argv=None):
     p = sub.add_parser("renders"); p.add_argument("species"); p.add_argument("--make", default="", help="draw the ready pictures into this folder (needs WB_BPY, the Blender python)"); p.add_argument("--only", default=""); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_renders)
     p = sub.add_parser("golden"); p.add_argument("action", choices=("make", "diff", "list", "precommit")); p.add_argument("species", nargs="?", default="S20"); p.add_argument("--file", default="", help="the species file (default: the framework's own species_v1 folder)"); p.add_argument("--home", default="", help="the server's home (cache and last diff)")
     p.add_argument("--release", action="store_true", help="make: refused (the release export makes release goldens); diff: only release goldens, exit 1 when one changed"); p.add_argument("--all", action="store_true", help="diff: every species of the framework's folder"); p.add_argument("--only", default="", help="diff: only these outputs or ids")
-    p.add_argument("--set", default="", help="use a set folder already drawn by wb.renderset instead of drawing"); p.add_argument("--no-commit", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_golden)
+    p.add_argument("--set", default="", help="use a set folder already drawn by wb.renderset instead of drawing"); p.add_argument("--missing", action="store_true", help="make: add the goldens that are missing and touch none that is there"); p.add_argument("--no-commit", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_golden)
     p = sub.add_parser("toys"); p.add_argument("species"); p.add_argument("--slots", action="store_true", help="also list every sentence slot"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_toys)
     p = sub.add_parser("sweep"); p.add_argument("species"); p.add_argument("--wait", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=900.0); p.set_defaults(f=cmd_sweep)
     p = sub.add_parser("step"); p.add_argument("species"); p.add_argument("toy"); p.add_argument("axis"); p.add_argument("to", help="a step number, or a chip's name"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=300.0); p.set_defaults(f=cmd_step)

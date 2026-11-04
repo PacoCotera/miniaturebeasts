@@ -180,6 +180,45 @@ class TestState(Base):
         self.assertEqual([e["id"] for e in st["entries"] if e["state"] == "missing"], ["thumb/adult-calm"])
         self.assertEqual(st["totals"]["missing"], 1)
 
+    def test_make_missing_adds_the_new_golden_and_touches_no_other(self):
+        path = os.path.join(SCRATCH, "addm", "S20.json")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        gd = G.golden_dir(path, "S20")
+        shutil.copytree(G.golden_dir(self.path, "S20"), gd)
+        mp = os.path.join(gd, "manifest.json")
+        m = json.load(open(mp))
+        m["entries"] = [e for e in m["entries"] if e["id"] != "walk/adult-walk"]
+        json.dump(m, open(mp, "w"))
+        os.remove(os.path.join(gd, "walk", "adult-walk.png"))
+        S.write_spec(path, S20)
+        subprocess.run(["git", "init", "-q", os.path.dirname(path)], check=True)
+        before = {e["id"]: (open(os.path.join(gd, e["file"]), "rb").read(), e) for e in m["entries"]}
+        src0 = open(os.path.join(gd, "source.json")).read()
+        got = G.make_missing(path, self.home, setdir=self.set0, commit=False, log=lambda x: None)
+        self.assertEqual(got["added"], ["walk/adult-walk"])
+        m2 = json.load(open(mp))
+        self.assertEqual([e["id"] for e in m2["entries"]][-1], "walk/adult-walk")
+        for eid, (data, e) in before.items():
+            self.assertEqual(open(os.path.join(gd, e["file"]), "rb").read(), data)             # no picture is rewritten
+            self.assertIn(e, m2["entries"])                                                    # no row is changed
+        for k in ("key", "file_hash", "framework", "lookdev", "made_by", "made_at"):
+            self.assertEqual(m2[k], m[k])                                                       # the stamp stays the one the set was made at
+        self.assertEqual(open(os.path.join(gd, "source.json")).read(), src0)
+        self.assertEqual(G.state(path, self.home)["totals"], dict(same=len(m2["entries"]), changed=0, missing=0, stale=0, all=len(m2["entries"])))
+        again = G.make_missing(path, self.home, setdir=self.set0, commit=False, log=lambda x: None)
+        self.assertEqual(again["added"], [])                                                    # nothing missing: nothing done
+
+    def test_make_missing_needs_goldens_and_a_file_that_moved_keeps_the_new_row_apart(self):
+        path = os.path.join(SCRATCH, "addn", "S20.json")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        S.write_spec(path, S20)
+        with self.assertRaises(G.GoldenError):
+            G.make_missing(path, self.home, setdir=self.set0, commit=False, log=lambda x: None)
+
+    def test_idle_is_not_in_the_game_set(self):
+        self.assertNotIn("idle", RS.GAME_V1)
+        self.assertNotIn("idle", {i.split("/")[0] for i in G.expected_ids(S20)})
+
     def test_names_use_the_screens_words(self):
         looks = {"lantern-tail": "Lantern tail"}
         ent = lambda **k: G.label_of(dict(variant="v", **k), looks)

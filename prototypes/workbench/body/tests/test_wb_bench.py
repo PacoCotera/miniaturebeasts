@@ -76,6 +76,18 @@ class TestPictures(unittest.TestCase):
         self.assertEqual(b["key"], c["key"])
         self.assertNotEqual(self.srv.picture(self.srv.species["S20"].spec, "set:appearance.body-hue=200")["key"], a["key"])
 
+    def test_the_warm_set_holds_the_walk_strip_and_not_the_idle_strip(self):
+        sp = self.srv.species["S71"]
+        k0 = self.srv.warm_key(sp.spec, "sweep")
+        moved = copy.deepcopy(sp.spec)
+        moved["motion"]["walk"]["period"] = 1.2
+        self.assertNotEqual(self.srv.warm_key(moved, "sweep"), k0)                              # a new walk is a new warm set
+        g = PL.state_genome(sp.spec)
+        c = self.srv.clip_of(sp, copy.deepcopy(sp.spec), g, "walk", priority=3)
+        job = next(j for j in self.srv.queue.jobs.values() if j.kind == "plush" and j.key == c["plush"]["key"])
+        self.assertEqual((job.priority, job.args.get("clip")), (3, "walk"))                    # the warm set asks for it behind any player's job
+        self.assertFalse(any(j.args.get("clip") == "idle" for j in self.srv.queue.jobs.values()))
+
     def test_toys_carry_each_steps_end_and_now_pictures(self):
         t = self.srv.toys(self.srv.species["S71"])
         tail = next(x for x in t["toys"] if x["id"] == "tail")

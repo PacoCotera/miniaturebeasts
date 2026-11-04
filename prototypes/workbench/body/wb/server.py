@@ -1048,7 +1048,7 @@ class Server:
         from wb import clips as CL
         return H.hash_of("clip", style, CL.V, clip, CL.frames(clip), self.plush_key(spec, genome, neutral), spec.get("motion"))
 
-    def clip_of(self, sp, spec, genome, clip, n=None, nh=None, ask=True):
+    def clip_of(self, sp, spec, genome, clip, n=None, nh=None, ask=True, priority=1):
         """A clip of a genome: the clay strip first (a few seconds), then the plush (about 25 s on one worker). {clay, plush: {key, ready, job}, frames, period, frame_s, size}; with `ask` what is not in the cache is asked for, the clay first."""
         from wb import clips as CL
         n = n or self.neutral(spec)
@@ -1059,7 +1059,7 @@ class Server:
             ready = self.cas.has(k, "png", touch=False)
             job = None
             if not ready and ask:
-                job = self.submit_clay_clip(sp, genome, clip, k, spec) if style == "clay" else self.submit_plush(sp, genome, PLAY_ACTOR, 1, spec=spec, clip=clip, key=k)
+                job = self.submit_clay_clip(sp, genome, clip, k, spec) if style == "clay" else self.submit_plush(sp, genome, PLAY_ACTOR, priority, spec=spec, clip=clip, key=k)
             out[style] = dict(key=k, ready=ready, job=job.id if job else None)
         return out
 
@@ -1100,7 +1100,7 @@ class Server:
 
     def warm_key(self, spec, sweep_key):
         from wb import play as PL
-        return H.hash_of("warm", PLUSH_LOOK, self.neutral(spec), PL.state_of(spec), (spec.get("play") or {}).get("genome"), sweep_key, CH.version_id("cage"))
+        return H.hash_of("warm", PLUSH_LOOK, self.neutral(spec), PL.state_of(spec), (spec.get("play") or {}).get("genome"), sweep_key, CH.version_id("cage"), "walk-strip", __import__("wb.clips", fromlist=["x"]).V, spec.get("motion"))
 
     def warm_state(self, sp):
         """What the page says about the starter's warm set: {state: none | running | done, done, total, result}. It never starts anything."""
@@ -1174,13 +1174,16 @@ class Server:
                     if it["kind"] == "step" and it["toy"] not in ("paint", "pattern"):
                         cj = self.submit(job.species, "check", dict(genome=it["genome"], stage="cage"), job.actor, priority=3, spec=spec, spec_hash=job.spec_hash)
                     pending.append((it, pj, cj))
+                walk = self.clip_of(sp, spec, PL.state_genome(spec), "walk", ask=False)["plush"]    # the walk strip of the mibi as it stands: plush only, the clay strip is asked for on the page
+                wj = None if walk["ready"] else self.submit_plush(sp, PL.state_genome(spec), job.actor, 3, spec=spec, clip="walk", key=walk["key"])
+                job.progress = dict(done=0, total=len(items) + 1)
                 done, frames, size, bad = 0, [], 0, []
                 for it, pj, cj in pending:
                     pj.event.wait(3600)
                     if cj is not None:
                         cj.event.wait(3600)
                     done += 1
-                    job.progress = dict(done=done, total=len(items))
+                    job.progress = dict(done=done, total=len(items) + 1)
                     self.hub.emit("running", job.species, job=job.id, kind="warm", progress=job.progress)
                     if pj.state != "done":
                         bad.append(dict(genome=it["genome"], error=pj.error))
@@ -1191,9 +1194,18 @@ class Server:
                         size += os.path.getsize(self.cas.path(k, "png"))
                     except OSError:
                         pass
+                if wj is not None:
+                    wj.event.wait(3600)
+                    if wj.state != "done":
+                        bad.append(dict(genome=PL.state_genome(spec), clip="walk", error=wj.error))
+                if wj is None or wj.state == "done":
+                    try:
+                        size += os.path.getsize(self.cas.path(walk["key"], "png"))
+                    except OSError:
+                        pass
                 times = [self.cas.get_json(f["key"]) or {} for f in frames]
                 res = dict(version=PL.VERSION, look=PLUSH_LOOK, frames=len(frames), bytes=size, failed=bad, seconds=round(time.time() - t0, 1), draw_seconds=round(sum((t.get("ms") or 0) for t in times) / 1000, 1),
-                           drawn=sum(1 for t in times if t.get("ms")), items=frames, at=S.now())
+                           drawn=sum(1 for t in times if t.get("ms")), items=frames, walk=dict(key=walk["key"], clip="walk"), at=S.now())
                 if not bad:
                     self.cas.put_json(job.key, res)
                 self.queue.finish(job, "done", dict(res, cache=dict(job_hit=False)))

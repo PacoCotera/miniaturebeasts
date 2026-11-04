@@ -572,6 +572,38 @@
     304,
     312
    ]
+  },
+  {
+   "id": "walk/adult-walk",
+   "output": "walk",
+   "variant": "adult-walk",
+   "style": "plush",
+   "age": "adult",
+   "pose": "walk",
+   "az": 32,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "strip",
+   "look": null,
+   "group": "Review",
+   "label": "Walk",
+   "file": "walk/adult-walk.png",
+   "game_name": "S20-walk-adult-walk.png",
+   "sha256": "418acd6bb069805aeb47d9dc58d5cf8efaae38057baa38cc09561b1fb56f835a",
+   "pixels": "09e1023d69cf816c80dc38f59cb4281d6afabf58f0bc1e024b14e398081c5a54",
+   "bytes": 337175,
+   "pixel_size": [
+    1824,
+    312
+   ],
+   "key": "72ff89c7f97895c98b820bd4b29fa3a965079eb7533b3c81f2887a9febe75c5f",
+   "file_hash": "df9f0df6073e5e5b771ac0074d492970c31ff617445a3dcdf378a35a12c9d2c9",
+   "framework": "9c722401a270",
+   "lookdev": "918011fb",
+   "made_by": "mb",
+   "made_at": "2026-11-04T17:57:52.150+00:00"
   }
  ]
 }

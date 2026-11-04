@@ -161,6 +161,65 @@ def who():
 
 
 # ---------------------------------------------------------------- make
+def write_entry(gd, setdir, e, cur, eid):
+    """One golden's picture into the golden folder, marked with the key it is made at; returns its manifest row."""
+    px = pngio.read(os.path.join(setdir, e["src"]))
+    dst = os.path.join(gd, e["file"])
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    ph = pixel_hash(px)
+    pngio.write(dst, px, {"wb-species": cur["species"], "wb-file": cur["file"], "wb-framework": cur["framework"], "wb-lookdev": cur["lookdev"], "wb-key": cur["key"], "wb-id": eid, "wb-pixels": ph})
+    row = {k: v for k, v in e.items() if k != "src"}
+    row.update(game_name=e["src"], sha256=sha256(dst), pixels=ph, bytes=os.path.getsize(dst), pixel_size=[px.shape[1], px.shape[0]])
+    if row["bytes"] > BIG:
+        row["cache"] = True                                   # above 1 MB: the cache holds the picture and the manifest its hash
+    return row
+
+
+def make_missing(species_path, home, setdir=None, commit=True, actor=None, py=None, log=print):
+    """Add the goldens the set asks for and the folder does not have, and touch no golden that is there: the pictures and rows already made, the stamp and the source stay as they are. The new rows carry the key they were made at.
+    Returns the manifest, with `added` (the new ids) and `committed`."""
+    species_path = os.path.abspath(species_path)
+    spec = S.read_spec(species_path)
+    sid = spec.get("id") or os.path.basename(species_path)[:-5]
+    man = read_manifest(species_path, sid)
+    if man is None:
+        raise GoldenError(f"{sid} has no goldens yet: wb golden make {sid} draws the whole set")
+    have = {e["id"] for e in man["entries"]}
+    want = [i for i in expected_ids(spec) if i not in have]
+    if not want:
+        log(f"{sid}: no golden is missing")
+        return dict(man, added=[], committed=None)
+    cur = dict(current(spec), species=sid)
+    tmp = None
+    if setdir is None:
+        os.makedirs(home, exist_ok=True)
+        tmp = tempfile.mkdtemp(prefix=f"gold-{sid}-", dir=home)
+        setdir = draw(species_path, tmp, py, only=sorted({i.split("/")[0] for i in want}), log=log)
+    try:
+        ents, _ = entries_of(spec, setdir)
+        gone = [i for i in want if i not in ents]
+        if gone:
+            raise GoldenError(f"the drawn set has no picture for {', '.join(gone[:4])}")
+        gd = golden_dir(species_path, sid)
+        made, by = S.now(), actor or who()
+        rows = []
+        for eid in want:
+            row = write_entry(gd, setdir, ents[eid], cur, eid)
+            row.update(key=cur["key"], file_hash=cur["file"], framework=cur["framework"], lookdev=cur["lookdev"], made_by=by, made_at=made)
+            rows.append(row)
+        man["entries"] = man["entries"] + rows
+        with open(os.path.join(gd, "manifest.json"), "w") as fh:
+            json.dump(man, fh, indent=1)
+    finally:
+        if tmp:
+            shutil.rmtree(tmp, ignore_errors=True)
+    man["added"] = want
+    man["committed"] = git_commit(gd, f"{sid} goldens added: {', '.join(want)}") if commit else None
+    forget_diff(home, sid)
+    log(f"{sid}: {len(rows)} goldens added ({', '.join(want)}); none that was there was touched" + (f"; commit {man['committed'][:9]}" if man["committed"] else ""))
+    return man
+
+
 def make(species_path, home, setdir=None, release=False, commit=True, actor=None, py=None, log=print):
     """Make the goldens of one species. Returns the manifest. `setdir` is a set folder already drawn (wb.renderset) of this file; without it the set is drawn now. Release goldens come from the release export (the gate), never from here."""
     if release:
@@ -168,7 +227,7 @@ def make(species_path, home, setdir=None, release=False, commit=True, actor=None
     species_path = os.path.abspath(species_path)
     spec = S.read_spec(species_path)
     sid = spec.get("id") or os.path.basename(species_path)[:-5]
-    cur = current(spec)
+    cur = dict(current(spec), species=sid)
     tmp = None
     if setdir is None:
         os.makedirs(home, exist_ok=True)
@@ -187,17 +246,7 @@ def make(species_path, home, setdir=None, release=False, commit=True, actor=None
         by = actor or who()
         rows = []
         for eid in sorted(ents):
-            e = ents[eid]
-            px = pngio.read(os.path.join(setdir, e["src"]))
-            dst = os.path.join(gd, e["file"])
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            ph = pixel_hash(px)
-            pngio.write(dst, px, {"wb-species": sid, "wb-file": cur["file"], "wb-framework": cur["framework"], "wb-lookdev": cur["lookdev"], "wb-key": cur["key"], "wb-id": eid, "wb-pixels": ph})
-            row = {k: v for k, v in e.items() if k != "src"}
-            row.update(game_name=e["src"], sha256=sha256(dst), pixels=ph, bytes=os.path.getsize(dst), pixel_size=[px.shape[1], px.shape[0]])
-            if row["bytes"] > BIG:
-                row["cache"] = True                                   # above 1 MB: the cache holds the picture and the manifest its hash
-            rows.append(row)
+            rows.append(write_entry(gd, setdir, ents[eid], cur, eid))
         manifest = dict(schema=SCHEMA, species=sid, set=setm.get("set", RS.BASE), release=False, file_hash=cur["file"], framework=cur["framework"], lookdev=cur["lookdev"], key=cur["key"], made_by=by, made_at=made,
                         stand_index=setm.get("stand_index"), not_yet=setm.get("not_yet", []), entries=rows)
         with open(os.path.join(gd, "manifest.json"), "w") as fh:
@@ -391,7 +440,7 @@ def state(species_path, home, history=()):
     rows, have = [], {e["id"] for e in man["entries"]}
     for e in man["entries"]:
         row = {k: e.get(k) for k in ("id", "output", "variant", "style", "age", "pose", "az", "size", "kind", "group", "label", "file", "sha256", "pixels", "part")}
-        if cur["key"] == man["key"]:
+        if cur["key"] == man["key"] or e.get("key") == cur["key"]:
             row["state"] = "same"
         elif d and e["id"] in d["entries"]:
             r = d["entries"][e["id"]]
