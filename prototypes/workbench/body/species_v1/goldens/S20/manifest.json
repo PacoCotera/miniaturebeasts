@@ -1,0 +1,577 @@
+{
+ "schema": "goldens-1",
+ "species": "S20",
+ "set": "game-v1",
+ "release": false,
+ "file_hash": "b87745d16d933d447f5a0294006851c3f0563385066e92ddb7d9669992c18e12",
+ "framework": "8b5ed4be788c",
+ "lookdev": "918011fb",
+ "key": "8a93fc1688af79f7b745b6a0f8aa0f8d089e3a58cad499934682441a3c804ee4",
+ "made_by": "mb",
+ "made_at": "2026-11-04T04:16:00.855+00:00",
+ "stand_index": {
+  "S20": {
+   "adult": {
+    "traits": [
+     "anatomy.tail-tip-form"
+    ],
+    "pose": "calm",
+    "figure": [
+     77,
+     66,
+     150,
+     240
+    ],
+    "sizes": {
+     "304x312": {
+      "base": "S20-adult-calm-304x312-base.png",
+      "bases": {},
+      "layers": [
+       {
+        "op": "under",
+        "order": 0,
+        "file": "S20-adult-304x48-shadow.png",
+        "views": [
+         "home",
+         "vivarium",
+         "idle",
+         "habitat",
+         "sitting"
+        ],
+        "size": [
+         304,
+         48
+        ],
+        "feetRow": 24,
+        "standFeet": 305
+       },
+       {
+        "op": "erase",
+        "trait": "anatomy.tail-tip-form",
+        "looks": [
+         "lantern"
+        ],
+        "order": 10,
+        "file": "S20-adult-calm-304x312-lantern-tail-erase.png"
+       },
+       {
+        "op": "over",
+        "trait": "anatomy.tail-tip-form",
+        "looks": [
+         "lantern"
+        ],
+        "order": 11,
+        "file": "S20-adult-calm-304x312-lantern-tail.png"
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "not_yet": [
+  {
+   "style": "pixel",
+   "why": "needs the Companion's signed colours and the art director's say on whether a render can feed pixel art"
+  }
+ ],
+ "entries": [
+  {
+   "id": "card/adult-calm",
+   "output": "card",
+   "variant": "adult-calm",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    96,
+    96
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Cards, Library",
+   "label": "Card 96",
+   "file": "card/adult-calm.png",
+   "game_name": "S20-card-adult-calm.png",
+   "sha256": "942fb01caa23a6e7a62ae5460e93055bf9f29c3f66f15100d55faf0912ffb207",
+   "pixels": "92bd423fca39659c46d0d2ad010ba930f6ceed4ffe85426ff47ce45ebf56b8ab",
+   "bytes": 8157,
+   "pixel_size": [
+    96,
+    96
+   ]
+  },
+  {
+   "id": "habitat/adult-calm",
+   "output": "habitat",
+   "variant": "adult-calm",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Habitat, Sitting",
+   "label": "Habitat figure",
+   "file": "habitat/adult-calm.png",
+   "game_name": "S20-habitat-adult-calm.png",
+   "sha256": "86e08417d7036347c8b44e39dc78e3fbb823625ced972e7664706c47ab353559",
+   "pixels": "fb8acae17af4956f9ce0d42a3c28886257dcb7f420ae8e753351cd6484f979a5",
+   "bytes": 32787,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "resident/adult-calm",
+   "output": "resident",
+   "variant": "adult-calm",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    144,
+    152
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Home, Vivarium",
+   "label": "Resident 144",
+   "file": "resident/adult-calm.png",
+   "game_name": "S20-resident-adult-calm.png",
+   "sha256": "3f12442f6b275a4ee17a8f83a59de3fca6a26bc0fb11dc8183c14b455f4fb656",
+   "pixels": "5f733a486f68c9325a9f0e7bd99b6bd421fed7c79a0008174f7b1cda33ec6f83",
+   "bytes": 7467,
+   "pixel_size": [
+    144,
+    152
+   ]
+  },
+  {
+   "id": "silhouette/adult-calm-304x312",
+   "output": "silhouette",
+   "variant": "adult-calm-304x312",
+   "style": "silhouette",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Roster, Cross",
+   "label": "Silhouette 304",
+   "file": "silhouette/adult-calm-304x312.png",
+   "game_name": "S20-silhouette-adult-calm-304x312.png",
+   "sha256": "4a1c7d75a75ce73964af0cbe17db3d0dcf7465e85ce802e2a7f6e05d4159abdf",
+   "pixels": "cd009314a642ad13c4aca8220266a5854cb84b05be6c89a18bcca614388817e3",
+   "bytes": 5847,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "silhouette/adult-calm-48x48",
+   "output": "silhouette",
+   "variant": "adult-calm-48x48",
+   "style": "silhouette",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    48,
+    48
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Roster, Cross",
+   "label": "Silhouette 48",
+   "file": "silhouette/adult-calm-48x48.png",
+   "game_name": "S20-silhouette-adult-calm-48x48.png",
+   "sha256": "80976616488edd3d15e28373f93f706500fef5f661da358c422cc8df5ceb0899",
+   "pixels": "9c6457fe637c0c4e7fbde66c847486742c91b69f7e3e7c29522fb52d0557ef6a",
+   "bytes": 1222,
+   "pixel_size": [
+    48,
+    48
+   ]
+  },
+  {
+   "id": "stand/adult-304x48-shadow",
+   "output": "stand",
+   "variant": "adult-304x48-shadow",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    304,
+    48
+   ],
+   "kind": "layers",
+   "part": "shadow",
+   "op": "under",
+   "group": "Habitat, Sitting",
+   "label": "Shadow \u00b7 adult",
+   "file": "stand/adult-304x48-shadow.png",
+   "game_name": "S20-adult-304x48-shadow.png",
+   "sha256": "9728b53cba73e8cdd526e09c6ecc2189181f92c871d9b2a11ffbe8f80b5726fc",
+   "pixels": "a6052541279f98c3962d555c0087e80d1b55573415a1a3a92922af867d8aacc4",
+   "bytes": 941,
+   "pixel_size": [
+    304,
+    48
+   ]
+  },
+  {
+   "id": "stand/adult-calm",
+   "output": "stand",
+   "variant": "adult-calm",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "layers",
+   "look": null,
+   "group": "Habitat, Sitting",
+   "label": "Stand \u00b7 adult",
+   "file": "stand/adult-calm.png",
+   "game_name": "S20-adult-calm-304x312-base.png",
+   "sha256": "f9fab214dee6005764f8bd262e835ecf83a9793702356923776a2cf5b1d2c6cf",
+   "pixels": "66e3beabfd20dfe925d169d53549daffc30c3fad681b0ae1e6110a6570528d4a",
+   "bytes": 77861,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "stand/adult-calm-304x312-lantern-tail",
+   "output": "stand",
+   "variant": "adult-calm-304x312-lantern-tail",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "layers",
+   "part": "lantern-tail",
+   "op": "over",
+   "group": "Habitat, Sitting",
+   "label": "Layer \u00b7 lantern tail",
+   "file": "stand/adult-calm-304x312-lantern-tail.png",
+   "game_name": "S20-adult-calm-304x312-lantern-tail.png",
+   "sha256": "00c2d708b0e3fa553345d4274fe5094a299cd068909bbf421c9ee7199f949962",
+   "pixels": "250fda931cb2a5790b107fbbba10dd916cd54e0763d539d1b54f1f2807c24e40",
+   "bytes": 4478,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "stand/adult-calm-304x312-lantern-tail-erase",
+   "output": "stand",
+   "variant": "adult-calm-304x312-lantern-tail-erase",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "layers",
+   "part": "lantern-tail-erase",
+   "op": "erase",
+   "group": "Habitat, Sitting",
+   "label": "Layer \u00b7 lantern tail off",
+   "file": "stand/adult-calm-304x312-lantern-tail-erase.png",
+   "game_name": "S20-adult-calm-304x312-lantern-tail-erase.png",
+   "sha256": "e1a7d08c0b2bf2810c515a71df6ca6a09c36f657ab6451c4bcb42267d426b3d6",
+   "pixels": "2797d984204914a74a9fd0d4e933ac8fa368cd9cce4505c5e5d178607415a1bd",
+   "bytes": 1697,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "thumb/adult-calm",
+   "output": "thumb",
+   "variant": "adult-calm",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    48,
+    48
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Roster, Cross",
+   "label": "Thumb 48",
+   "file": "thumb/adult-calm.png",
+   "game_name": "S20-thumb-adult-calm.png",
+   "sha256": "30151464fa0050dfe7f7904e503dd01f5ad2371d0da365ea9473dfa305c8bdb8",
+   "pixels": "4683630da7b17b730c89093f9687c3f528aa58d4b878ac074179882c61073a81",
+   "bytes": 2960,
+   "pixel_size": [
+    48,
+    48
+   ]
+  },
+  {
+   "id": "trait/adult-calm-lantern-tail",
+   "output": "trait",
+   "variant": "adult-calm-lantern-tail",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    128,
+    160
+   ],
+   "kind": "sprite",
+   "look": "lantern-tail",
+   "group": "Cards, Library",
+   "label": "Trait \u00b7 lantern tail",
+   "file": "trait/adult-calm-lantern-tail.png",
+   "game_name": "S20-trait-adult-calm-lantern-tail.png",
+   "sha256": "5ffcea8a942496fe29afbd5723247678a16f7c37173aee42240781b2a97e496b",
+   "pixels": "8fca13ffb4667a373a6847f63dea978d68dd4b163624041f5039b3c789c152ac",
+   "bytes": 8718,
+   "pixel_size": [
+    128,
+    160
+   ]
+  },
+  {
+   "id": "turn/adult-calm-az0-clay",
+   "output": "turn",
+   "variant": "adult-calm-az0-clay",
+   "style": "clay",
+   "age": "adult",
+   "pose": "calm",
+   "az": 0,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Review",
+   "label": "Turnaround \u00b7 clay 0\u00b0",
+   "file": "turn/adult-calm-az0-clay.png",
+   "game_name": "S20-turn-adult-calm-az0-clay.png",
+   "sha256": "1b2ecabb16781e4d7dd5ad8bf80252eb47277087d9a3aedf747814973523c6d9",
+   "pixels": "e2c57574e06e4509f993db58c96f420a6bf170675f319d49bc4da5133f68972d",
+   "bytes": 47825,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "turn/adult-calm-az0-plush",
+   "output": "turn",
+   "variant": "adult-calm-az0-plush",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 0,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Review",
+   "label": "Turnaround \u00b7 plush 0\u00b0",
+   "file": "turn/adult-calm-az0-plush.png",
+   "game_name": "S20-turn-adult-calm-az0-plush.png",
+   "sha256": "a76bf5e618bdda461af7f856184fb6cfec4c54f8bd61ec9719f2ec9a43dc3e4b",
+   "pixels": "36874756b9c0fdfdb611f6cb8252625b2a82dd5b2fab1116f4fdc4158b76c307",
+   "bytes": 57246,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "turn/adult-calm-az180-clay",
+   "output": "turn",
+   "variant": "adult-calm-az180-clay",
+   "style": "clay",
+   "age": "adult",
+   "pose": "calm",
+   "az": 180,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Review",
+   "label": "Turnaround \u00b7 clay 180\u00b0",
+   "file": "turn/adult-calm-az180-clay.png",
+   "game_name": "S20-turn-adult-calm-az180-clay.png",
+   "sha256": "7dade18a539c558da90acd2d2f32d4571506bb6bcd5fad855f713129bc9d61d1",
+   "pixels": "66e2b810fda6a125689814a8da795199a1ce079bab5a10ffdd9f5077ad1deb9e",
+   "bytes": 44206,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "turn/adult-calm-az180-plush",
+   "output": "turn",
+   "variant": "adult-calm-az180-plush",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 180,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Review",
+   "label": "Turnaround \u00b7 plush 180\u00b0",
+   "file": "turn/adult-calm-az180-plush.png",
+   "game_name": "S20-turn-adult-calm-az180-plush.png",
+   "sha256": "2cf9d2c6176104d96970a4438b9707dfda1ca9444aac94ca2fc655e2acecd26f",
+   "pixels": "0374f4efc0eeb2f172775c8c025b52cdfa02594db698c608f79fe5aedca5d494",
+   "bytes": 53162,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "turn/adult-calm-az32-clay",
+   "output": "turn",
+   "variant": "adult-calm-az32-clay",
+   "style": "clay",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Review",
+   "label": "Turnaround \u00b7 clay 32\u00b0",
+   "file": "turn/adult-calm-az32-clay.png",
+   "game_name": "S20-turn-adult-calm-az32-clay.png",
+   "sha256": "59559d29fb9651da8b0f1835b6a2f852f7303c34ad052af3ca5c7a72ad01721e",
+   "pixels": "fcd9451ed40cdc39eea7526d948a28afa01529411dbd40d7d849ab5e5008700c",
+   "bytes": 49342,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "turn/adult-calm-az32-plush",
+   "output": "turn",
+   "variant": "adult-calm-az32-plush",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 32,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Review",
+   "label": "Turnaround \u00b7 plush 32\u00b0",
+   "file": "turn/adult-calm-az32-plush.png",
+   "game_name": "S20-turn-adult-calm-az32-plush.png",
+   "sha256": "e31155b2bf2210bcb58bcd81cc352fa4d73517c8d5418bb2f8a01ce881ae4377",
+   "pixels": "7c0f776e62e5b11565cde1d17d4694e89cb75716907103ad058cf019edc5051b",
+   "bytes": 57355,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "turn/adult-calm-az90-clay",
+   "output": "turn",
+   "variant": "adult-calm-az90-clay",
+   "style": "clay",
+   "age": "adult",
+   "pose": "calm",
+   "az": 90,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Review",
+   "label": "Turnaround \u00b7 clay 90\u00b0",
+   "file": "turn/adult-calm-az90-clay.png",
+   "game_name": "S20-turn-adult-calm-az90-clay.png",
+   "sha256": "2c72d0f30ab290230966f7de5589381a9a8eaa0cf5eed2ab43c43ef0806c0cf3",
+   "pixels": "f41c6dbd27e15b11977a6ddfdf059a3c6300430d4dfd40eb525373bd711d4f9d",
+   "bytes": 46371,
+   "pixel_size": [
+    304,
+    312
+   ]
+  },
+  {
+   "id": "turn/adult-calm-az90-plush",
+   "output": "turn",
+   "variant": "adult-calm-az90-plush",
+   "style": "plush",
+   "age": "adult",
+   "pose": "calm",
+   "az": 90,
+   "size": [
+    304,
+    312
+   ],
+   "kind": "sprite",
+   "look": null,
+   "group": "Review",
+   "label": "Turnaround \u00b7 plush 90\u00b0",
+   "file": "turn/adult-calm-az90-plush.png",
+   "game_name": "S20-turn-adult-calm-az90-plush.png",
+   "sha256": "a5e2c44f8eee9e6a1e9e80cd9e1c9b92cd7f153f5e14686b601d38d4214428c0",
+   "pixels": "ad096a4123fa836b0bff4c4bc3c7d4ae7785f1d0a7057d46b0aece774d1c097f",
+   "bytes": 52649,
+   "pixel_size": [
+    304,
+    312
+   ]
+  }
+ ]
+}
