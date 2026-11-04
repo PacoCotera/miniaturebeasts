@@ -6755,113 +6755,407 @@
    "file": "pods/pod-shelf-band.png",
    "w": 64,
    "h": 76,
-   "sha256": "1b7062cf4a54cba5c229a902e69a9665c5059a6c0201eb597612bc6c84c346fb",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "0142cbb6412a10a1c97222e82fd2bbf10ac965120ecc60fed3f7cf2f45a53a93",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-crack": {
    "file": "pods/pod-shelf-crack.png",
    "w": 64,
    "h": 76,
-   "sha256": "7cc58a2b74b78e2ac553b168523c02634104f31f67b9befce477fbd3f6d914ef",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "5f3cd0b9bae90502fa7b9f064c7f6ee9bb51fce7fa2560ae1eb618ca0af9f0da",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C01-mask": {
+   "file": "pods/pod-shelf-crown-C01-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "2c2c05d90f7ad15b330ad70e8b9008c96457910dc810ddefdbc2860baeaecb78",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C01-shade": {
+   "file": "pods/pod-shelf-crown-C01-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "3ee4b51971a7b8f56f8084d4ae9449798c2c5174b1c37a853c65b8f759f283ba",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C02-mask": {
+   "file": "pods/pod-shelf-crown-C02-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "9e106543ce458877cdd95b5b82273139fdbe5bdc0f07224b23998a0adb0cf3d8",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C02-shade": {
+   "file": "pods/pod-shelf-crown-C02-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "4dc20483218f54e0c38dabdd39e7ceeb40aad167378a77cc84dce5a0dad0223f",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C03-glow": {
+   "file": "pods/pod-shelf-crown-C03-glow.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "dabe47f8937a1d4af28443cc34ccdc91224481d9f48545a7dfdd934d7ad5d769",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C03-mask": {
+   "file": "pods/pod-shelf-crown-C03-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "a9c8d1a6abc952270df3b08751b4295adc541b5cd2a2be41c873b6484fed92d2",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C03-shade": {
+   "file": "pods/pod-shelf-crown-C03-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "ac3613b9b5dde07cb02859f58f05e8ad72d35f9a663755a53ad4bafa094b7059",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C04-mask": {
+   "file": "pods/pod-shelf-crown-C04-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "eaa7063ce6ebf1c2f062753a12f89693a9a985cec16f37bd7ca4a584c896355e",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C04-shade": {
+   "file": "pods/pod-shelf-crown-C04-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "69de044c44a69f0551437a33a4f0ddd31a81b568672c88e7ec2e886e641e1d4b",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C05-mask": {
+   "file": "pods/pod-shelf-crown-C05-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "9bb0214ecd5454b0dc30e5b2b1c256510e8cdcb6d2e1449a3de57b2753cd6524",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C05-shade": {
+   "file": "pods/pod-shelf-crown-C05-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "286fbe6c952b3ebfa85e79d70ec2e47891a1d466bf2f2513604683b830d329a5",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C06-mask": {
+   "file": "pods/pod-shelf-crown-C06-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "8910eb5544230ba68d8de8b08ac9d15f0b7f0895076ecb21e21c3280af08370f",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C06-shade": {
+   "file": "pods/pod-shelf-crown-C06-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "32347dc7ee9f23c757e6105e91fa02ab0a6f2d4dc48fb183ebbc23896a5f884b",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C07-mask": {
+   "file": "pods/pod-shelf-crown-C07-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "f3122fb83b6fd6e2ec6df8a1ff7d83f7fca3011171ada90682aa9ddaa5dfc59a",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C07-shade": {
+   "file": "pods/pod-shelf-crown-C07-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "3d8d3042a54280512a3b18a8474ef5e2ec56e24ac941833375ab896c33fbcee7",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C08-mask": {
+   "file": "pods/pod-shelf-crown-C08-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "f0aeea13867058a1fcf57ca1523d8f38c05275adcf63bd8d93819853edeb2cbd",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C08-shade": {
+   "file": "pods/pod-shelf-crown-C08-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "50afddc9cd976139fd7f50eb81b4fa4b9952e57301ee5ed35534493edd7bea49",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C09-mask": {
+   "file": "pods/pod-shelf-crown-C09-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "70501776311fc247fd5b6257e35b55a35d3e449b6a074957ae8a52b41bf9e314",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C09-shade": {
+   "file": "pods/pod-shelf-crown-C09-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "4c835a5e57835a85d3599916da01ea79a4f3e9cb3b62ad37bdcaad6facf75c15",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C10-mask": {
+   "file": "pods/pod-shelf-crown-C10-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "a6d4bdce714963c7e4d7c3cb44f7ae50635c11f0b5f5521a6f69c7432739ec36",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C10-shade": {
+   "file": "pods/pod-shelf-crown-C10-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "3cc3df8c717c382629ea05934b764b5ddefb2ae42b171e5938d01f1b4ef0803c",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C11-mask": {
+   "file": "pods/pod-shelf-crown-C11-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "0f3793abbaca53976fc697b3c24b4c3283f2545426aef7e026d0a50debcb10ba",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C11-shade": {
+   "file": "pods/pod-shelf-crown-C11-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "81dbffeec96afe2edbbe4b6424577cdf9b69ad3a3ac049768abff9bdbaee1069",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C12-mask": {
+   "file": "pods/pod-shelf-crown-C12-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "6dd9be75775be1fcb898ea1ebee42af27b9ab8fd4708b65f2b7cac461673e77a",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C12-shade": {
+   "file": "pods/pod-shelf-crown-C12-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "a44c53c40d254cb190d1cc89f0a6ed4e2072fc8987b8b617e68ab1699cf6464f",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C13-mask": {
+   "file": "pods/pod-shelf-crown-C13-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "e5af7f2793118b3484abd28cc9609aadfe86aec5abe1b7e79eae7f43ef015a13",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C13-shade": {
+   "file": "pods/pod-shelf-crown-C13-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "03404360f094c8cf7fb587a49a88f2e5d0e934594b52ff0b804fee6a13b95f04",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C14-mask": {
+   "file": "pods/pod-shelf-crown-C14-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "e813ec19fafb2fffe052cf1373e5b2d3d2e3d088203fab3e64ccf401ed8644a2",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C14-shade": {
+   "file": "pods/pod-shelf-crown-C14-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "55128657793630e278bd6d16414a44e86f438d12906fab312f6d3f2472976447",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C15-mask": {
+   "file": "pods/pod-shelf-crown-C15-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "9e31ec2332f6b02593562e8b27fd96f82e806cd7c26f486054b374389b6ef072",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C15-shade": {
+   "file": "pods/pod-shelf-crown-C15-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "23f3ac1e5276e6380713a7099ea321f0440e40408d6fd4281daf235edca1cdee",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C16-mask": {
+   "file": "pods/pod-shelf-crown-C16-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "04866737e6270fdbb70a77c9aa028f8e194f2a99bcfa0152e9315a8eff654c35",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C16-shade": {
+   "file": "pods/pod-shelf-crown-C16-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "5867aab3344df4fffd8aea2aa7cab2d3827eace7beb98d27ec1396fc7055c193",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C17-mask": {
+   "file": "pods/pod-shelf-crown-C17-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "b223f3d3a0e2a5701abdd3940a5767b3fda40d10edfe605f658926f3d9ac00f6",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C17-shade": {
+   "file": "pods/pod-shelf-crown-C17-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "7826ee89d9ed1e1bebf70e17f7a9c471d0bb075416c87f17027c66071995ab16",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C18-mask": {
+   "file": "pods/pod-shelf-crown-C18-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "e02c76550a5f8b022ceec6e4186d262bc2ec24d51c333baf320c66bcf1585d6d",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C18-shade": {
+   "file": "pods/pod-shelf-crown-C18-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "3f289b3996d6591bf80c546859e42f1222545d76f554c08cf587553592f2e4a7",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C19-mask": {
+   "file": "pods/pod-shelf-crown-C19-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "b9755bbf8cb7be3083888cd6c96f5d82dec86165cbfcf3e5cfde9efad0339155",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C19-shade": {
+   "file": "pods/pod-shelf-crown-C19-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "462a0ec94e1f6e857cd5294a1a8d9246c3f759b9cbd14649f7921a6811995d1f",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C20-glow": {
+   "file": "pods/pod-shelf-crown-C20-glow.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "75195d15957ddf9f26f9866a480f5785c0fb644eb76e0fdcad9c5f3a5f31fdbe",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C20-mask": {
+   "file": "pods/pod-shelf-crown-C20-mask.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "ce2e2304e995d1395f6126b445f3c8ba9976de71b70721c05e03e0fe84ff6a6c",
+   "signed": "art director, the clan crowns (pods direction B)"
+  },
+  "pod-shelf-crown-C20-shade": {
+   "file": "pods/pod-shelf-crown-C20-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "71be526d18c6e3a96f5210ebfe0cd7ffe3f43f4b0ed98595cabcbe341fc762fc",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-identified": {
    "file": "pods/pod-shelf-identified.png",
    "w": 64,
    "h": 76,
-   "sha256": "cd0b2c79dcc77c557ceffe2b42c0c2cba5c36cab4e5d0955cd4cb98a4ce91781",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "24b4c25d65ab8c966f102a0a11b11cf35d50c4597dfdadca4e04200516f1d969",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-mask-accent": {
    "file": "pods/pod-shelf-mask-accent.png",
    "w": 64,
    "h": 76,
-   "sha256": "bfb3a83f1d419d25822b069181918f5fb16ef6dda296e2d95c799aaeefb924fe",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "92f10142d5342911598bd17cb67497cfada9b81f405ccb3897000892b1c724ab",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-mask-body": {
    "file": "pods/pod-shelf-mask-body.png",
    "w": 64,
    "h": 76,
-   "sha256": "e3fd2c6847beb548b59335d8f98557304fcdca5826b9229a9eec8dda759f3a75",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "50ce5a681df667e7be9b7e0db92db15608217fe8ff5b378ca01dd649867723d1",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-pattern-bands": {
    "file": "pods/pod-shelf-pattern-bands.png",
    "w": 64,
    "h": 76,
-   "sha256": "e084106aa7caab0329cafe39dc58ddb714e4ea1131b13556f666109c6ecc8430",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "11ca1ad8ae0512d31ab16443aeea3e05b67644056d303f0656c5a28bb37b3372",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-pattern-dots": {
    "file": "pods/pod-shelf-pattern-dots.png",
    "w": 64,
    "h": 76,
-   "sha256": "cf3c963e25a88fa816c428cb000cb3f293d17f4bf78e19964575ed856fcb3841",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "53dceb1b87d1f320b9034c8e0bfb74fd4bc8ab1ad4a5815e35d58ba6ccdbedd4",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-pattern-plates": {
    "file": "pods/pod-shelf-pattern-plates.png",
    "w": 64,
    "h": 76,
-   "sha256": "7d1f285b3ee3217c8483822ad640869cd441b270990cb4c1267d2512b1008a4a",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "153d79f20ca7de073a04bdfec0a1b3410ad708eca3dec00acf0ec5211ad50297",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-pattern-plates-relief": {
    "file": "pods/pod-shelf-pattern-plates-relief.png",
    "w": 64,
    "h": 76,
-   "sha256": "a5138de81c6e17e2039dd58082edbacae9a7e4ec9e8bb1d1c517171f58bf47a1",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "91a54c398ec2cbc57f65f0e6ec9f1150cad86a3a3f74a85b0c82f29df6238d94",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-pattern-ribs": {
    "file": "pods/pod-shelf-pattern-ribs.png",
    "w": 64,
    "h": 76,
-   "sha256": "85a60a6fb1473449838d8442dd0a5c27babdad2a13fab2c7e278b9b30fa2101b",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "ff92700b963ac53ad8399aa5f131615979dfc8885313bd6b3ca2cb879fe5f23a",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-pattern-segments": {
    "file": "pods/pod-shelf-pattern-segments.png",
    "w": 64,
    "h": 76,
-   "sha256": "5e2aa98280ed369c99174c7dd50bc555ba2031665f9a97c17bbe12e99ec34f10",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "e66900355e8f3587fac7e3f442a042ddb813fa36c0b6efaccd08211b8e313224",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-pattern-segments-relief": {
    "file": "pods/pod-shelf-pattern-segments-relief.png",
    "w": 64,
    "h": 76,
-   "sha256": "71bacf3734431f315c368c0b0f6b500815e1d45a4da4cfbfcf0644565b6356fd",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "94c8316fda62f9ab13ffde54c246ab70c141a3ef2b09f1d86b1d853ece50a4e0",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-pattern-stripes": {
    "file": "pods/pod-shelf-pattern-stripes.png",
    "w": 64,
    "h": 76,
-   "sha256": "f6396056f6552c4910f23bcf2dc85a57513cb290a8c5d4084e3ccdd7cc660c2f",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "cea12dfb381ed43ac11c67aa214f50e9c1ffe43d4a9aa294c10e5120afd094bb",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-sealed": {
    "file": "pods/pod-shelf-sealed.png",
    "w": 64,
    "h": 76,
-   "sha256": "6814b3d8cf9ea276a818003832a457cb7727474d2f75d127d47f6c26a2e60a33",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "9be4a3656dbcfe2faf602ea244a386d9b5925b23e87c4dc9ba83d8e62f3ca755",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-shade": {
    "file": "pods/pod-shelf-shade.png",
    "w": 64,
    "h": 76,
-   "sha256": "f1f5e20272bf4079d961dbb787244d23c3351eaa982d555a7ca85b75535394e3",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "249dee55bcf382c7b1e9dd773ac9ac72b5c20408b246f5659e0752f49e28f4cf",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-shelf-unknown": {
    "file": "pods/pod-shelf-unknown.png",
    "w": 64,
    "h": 76,
-   "sha256": "95a2e3eee4355fb794de4e1ac5383f40b1197fd8f3b9b8b255b812cbc6ef2236",
-   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+   "sha256": "5c7619a2e8d72bbbcd3018616fbe3985bad70e35b4fcf2ed6f9444838d0fcd52",
+   "signed": "art director, the clan crowns (pods direction B)"
   },
   "pod-small-band": {
    "file": "pods/pod-small-band.png",
