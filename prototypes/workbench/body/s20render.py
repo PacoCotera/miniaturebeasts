@@ -197,7 +197,11 @@ def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.3
     me.materials.append(mat)
     if floor and el > 0:
         fl = bpy.data.meshes.new("floor"); fl.from_pydata([(-7, -5, 0), (5, -5, 0), (5, 5, 0), (-7, 5, 0)], [], [(0, 1, 2, 3)])
-        fo = bpy.data.objects.new("floor", fl); sc.collection.objects.link(fo); fo.is_shadow_catcher = True
+        fo = bpy.data.objects.new("floor", fl); sc.collection.objects.link(fo)
+        if floor == "bounce":
+            fo.visible_camera = False                  # the floor lights the body from below as it does in a picture with its shadow, and shows nothing itself
+        else:
+            fo.is_shadow_catcher = True
     PL.plush_light(sc, az, light)
     cam = B.camera(sc, az, el, w * ss, h * ss, np.array(centre, float), ppH=ppH * ss)
     os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
