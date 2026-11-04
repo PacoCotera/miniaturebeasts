@@ -37,7 +37,7 @@ def supersample(size):
     return 1 if size[0] >= 304 else SUPER
 # where the figure stands in each canvas (art director, 4 Nov; the signed masters S01 to S16 stand so): the ink's centre column and the feet line's row. The 304 stand is centred on x 152 with its feet on row 304 (303 to 306);
 # the card and the thumb are centred with the feet 3 px off the bottom (2 to 4).
-TRAIT = dict(left=5.0, up=0.0)         # the close-up's content, nudged left and up (px of the picture) so the lamp, not the layer's box, is at the centre
+TRAIT = dict(left=0.0, up=0.0)         # the close-up's content, nudged left and up (px of the picture) so the lamp, not the layer's box, is at the centre
 TARGETS = {(304, 312): (152.0, 304), (96, 96): (48.0, 92), (48, 48): (24.0, 44)}
 FRAMES = {}                                                      # (canvas, angle) -> the camera's centre that puts the figure on its target (solved from the silhouette)
 
@@ -245,21 +245,69 @@ def smoothstep(a, b, x):
     return t * t * (3 - 2 * t)
 
 
-TRAIT_AZ = 125.0                      # the camera that shows the curl whole, with the lamp hanging at its end
-TRAIT_CUT = -0.70                     # the tail is cut here (world x, towards the back): nothing of the body is drawn
+TRAIT_AZ = 90.0                       # the side camera: the tail's S-curve and the hook with the lamp at its end read whole
+TRAIT_EL = 15.0
+TRAIT_CUT = -0.60                     # the tail is cut here (world x, towards the back): nothing of the body is drawn
 TRAIT_CAP = 0.20                      # the cut end closes in a round tip over this length, so the edge is crisp all round
+
+
+TAIL_UV = (0.545, 0.77, 0.52, 0.655)   # the tail island's box in the atlas (u0, u1, v0, v1)
+
+
+def clean_lamp_texture(paths):
+    """The atlas copies the trait picture draws with: the dark collar rings between the tail and the lamp take the tail's own purple (one smooth edge from tail to lamp), the green flecks on the tube are filled with the tube's colour, and nothing glows but the lamp. The body's own atlas is untouched."""
+    out = dict(paths)
+    d = os.path.join(os.path.dirname(paths["col"]), "lamp")
+    os.makedirs(d, exist_ok=True)
+    col = pngio.read(paths["col"]).copy()
+    emi = pngio.read(paths["emit"]).copy()
+    H, W = col.shape[:2]
+    r0, r1, c0, c1 = int(TAIL_UV[2] * H), int(TAIL_UV[3] * H), int(TAIL_UV[0] * W), int(TAIL_UV[1] * W)
+    sub = col[r0:r1, c0:c1, :3].astype(float)
+    solid = col[r0:r1, c0:c1, 3] > 0
+    R_, G_, B_ = sub[..., 0], sub[..., 1], sub[..., 2]
+    green = (G_ > R_ * 1.25) & (G_ > B_ * 1.25) & solid
+    lamp_rows = np.where(green.sum(1) >= 40)[0]
+    top = int(lamp_rows.min()) if len(lamp_rows) else sub.shape[0]
+    lum = sub.mean(2)
+    rows = np.arange(sub.shape[0])[:, None]
+    good = (lum > 110) & (B_ > G_) & (rows < top)                     # the tube's own purple
+    for x in range(sub.shape[1]):                                     # the collar: each column continues its last purple down to the lamp's edge
+        if lum[top - 1, x] < 20:
+            continue
+        ys_ = np.where(good[:top, x])[0]
+        if len(ys_):
+            sub[ys_.max() + 1:top, x] = sub[ys_.max(), x]
+    sm = np.zeros_like(sub); cnt = np.zeros(sub.shape[:2])
+    mk = (lum > 60) & (rows < top)
+    for dy in range(-3, 4):                                           # the flecks: a pixel far from its 7x7 neighbourhood takes the neighbourhood's colour
+        for dx in range(-3, 4):
+            m = np.roll(np.roll(mk, dy, 0), dx, 1)
+            sm += np.roll(np.roll(sub * mk[..., None], dy, 0), dx, 1); cnt += m
+    sm = sm / np.maximum(cnt, 1)[..., None]
+    fl = mk & (cnt > 12) & (np.abs(sub - sm).max(2) > 10)
+    for _ in range(3):
+        sub[fl] = sm[fl]
+    col[r0:r1, c0:c1, :3] = np.clip(np.round(sub), 0, 255).astype(np.uint8)
+    e = emi[r0:r1, c0:c1]
+    e[:top, :, :3] = 0                                              # nothing above the lamp glows
+    emi[r0:r1, c0:c1] = e
+    out["col"], out["emit"] = os.path.join(d, "col.png"), os.path.join(d, "emit.png")
+    pngio.write(out["col"], col)
+    pngio.write(out["emit"], emi)
+    return out
 
 
 def tail_only(M, cut=TRAIT_CUT, cap=TRAIT_CAP):
     """The posed mesh with the body left out: the faces of the tail behind `cut`, the end closed to a round tip (no open edge, no alpha ramp)."""
     V = np.asarray(M["V"], float)
     F = np.asarray(M["F"], int)
-    keep = V[F][:, :, 0].max(1) < cut
+    keep = (V[F][:, :, 0].max(1) < cut) & np.isin(np.asarray(M["isl"]), ["tail", "tip"])
     V2 = V.copy()
     sel = V[:, 0] > cut - cap
     ring = sel & (V[:, 0] < cut) & (V[:, 2] < 1.3)
     cen = V[ring].mean(0)
-    t = np.clip((V[:, 0] - (cut - cap)) / cap, 0, 1)
+    t = np.clip((V[:, 0] - (cut - cap)) / cap * 1.25, 0, 1)
     f = np.sqrt(np.clip(1 - t * t, 0, 1))
     for ax in (1, 2):
         V2[sel, ax] = cen[ax] + (V[sel, ax] - cen[ax]) * f[sel]
@@ -276,15 +324,15 @@ def trait_picture(subject, r, layers, path):
     bw, bh = xs.max() - xs.min() + 1, ys.max() - ys.min() + 1
     lamp_px = max(8.0, float(min(bw, bh)) - 10.0)                  # the layer's box less the soft edge it was widened by and the tip's curl
     ppH0, centre0 = camera((304, 312), 32)
-    ppH = float(np.clip(ppH0 * TRAIT_LAMP / lamp_px * 0.9, 40.0, 160.0))
+    ppH = float(np.clip(ppH0 * TRAIT_LAMP / lamp_px * 0.82, 40.0, 160.0))
     import s20render as RN, plush as PL
     from wb import proxy as P
-    right, up, fwd, _ = P.basis(TRAIT_AZ, EL)
+    right, up, fwd, _ = P.basis(TRAIT_AZ, TRAIT_EL)
     M = tail_only(subject.posed())
     V = np.asarray(M["V"], float)[np.unique(np.asarray(M["F"], int))]
     c = (V.min(0) + V.max(0)) / 2.0
     centre = c + (right * TRAIT["left"] + up * TRAIT["up"]) / ppH
-    a, cam = RN.render_tex(M, subject.tex(), subject.c["coat"], path, r["size"][0], r["size"][1], ppH, az=TRAIT_AZ, el=EL, centre=tuple(centre), floor="bounce", light=PL.GAME_LIGHT, ss=supersample(r["size"]))
+    a, cam = RN.render_tex(M, clean_lamp_texture(subject.tex()), subject.c["coat"], path, r["size"][0], r["size"][1], ppH, az=TRAIT_AZ, el=TRAIT_EL, centre=tuple(centre), floor="bounce", light=PL.GAME_LIGHT, ss=supersample(r["size"]))
     px = np.clip(a * 255 + 0.5, 0, 255).astype(np.uint8)
     pngio.write(path, px)
     return px, ppH
