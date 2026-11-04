@@ -141,7 +141,8 @@ class Proxy:
 
 
 # ---------------------------------------------------------------- plush (Cycles)
-def plush(subject, az, size, path, floor=True, body_visible=True, samples=None):
+def plush(subject, az, size, path, floor="bounce", body_visible=True, samples=None):
+    """floor: \"bounce\" (the default: a floor out of the camera's sight that lights the body from below, so every picture of the set has the same exposure and no shadow), True (the floor's shadow catcher) or False (no floor)."""
     import s20render as RN, plush as PL
     for w, ss in ((96, 3), (128, 3)):
         PL.SS.setdefault(w, ss)
@@ -191,13 +192,13 @@ def stand(spec, subject_type, outdir, scratch, species, age, pose, log):
     sb = Subject(spec, base_ind, scratch)
     t = time.time()
     base_path = os.path.join(outdir, f"{name}-304x312-base.png")
-    base = plush(sb, 32, (304, 312), base_path, floor=False)
+    base = plush(sb, 32, (304, 312), base_path)
     log(f"stand base {time.time() - t:.0f} s")
     fig = ST.ink_box(base)
     layers = []
     for e in exprs:
         so = Subject(spec, off_individual(spec, exprs, keep=e["id"]), scratch)
-        on = plush(so, 32, (304, 312), os.path.join(scratch, f"on-{e['id']}.png"), floor=False)
+        on = plush(so, 32, (304, 312), os.path.join(scratch, f"on-{e['id']}.png"))
         ov, er = ST.layer_from_pair(base, on)
         for op, px in (("erase", er), ("over", ov)):                  # what the look takes off first, then what it lays on
             if px is None:

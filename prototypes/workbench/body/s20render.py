@@ -88,7 +88,11 @@ def render(prep, genome, path, size, az=57.5, el=10.0, centre=None, samples=48, 
     mesh_obj(prep, genome, glow_scale)
     if floor and el > 0:                 # no floor under the creature when the camera looks up from below
         fl = bpy.data.meshes.new("floor"); fl.from_pydata([(-2.4, -1.6, 0), (1.2, -1.6, 0), (1.2, 1.6, 0), (-2.4, 1.6, 0)], [], [(0, 1, 2, 3)])
-        fo = bpy.data.objects.new("floor", fl); sc.collection.objects.link(fo); fo.is_shadow_catcher = True
+        fo = bpy.data.objects.new("floor", fl); sc.collection.objects.link(fo)
+        if floor == "bounce":
+            fo.visible_camera = False                  # the floor lights the body from below as it does in a picture with its shadow, and shows nothing itself
+        else:
+            fo.is_shadow_catcher = True
     ko = B.lights(sc, az)
     ko.data.angle = math.radians(2.5)
     c0 = np.array([-0.35, 0.0, 1.3]) if centre is None else np.array(centre)
