@@ -31,6 +31,7 @@ CAMERAS = {
 SIL = (0.10, 0.10, 0.12)
 # where the figure stands in each canvas (art director, 4 Nov; the signed masters S01 to S16 stand so): the ink's centre column and the feet line's row. The 304 stand is centred on x 152 with its feet on row 304 (303 to 306);
 # the card and the thumb are centred with the feet 3 px off the bottom (2 to 4).
+TRAIT = dict(left=6.0, up=5.0)         # the close-up's content, nudged left and up (px of the picture) so the lamp, not the layer's box, is at the centre
 TARGETS = {(304, 312): (152.0, 304), (96, 96): (48.0, 92), (48, 48): (24.0, 44)}
 FRAMES = {}                                                      # (canvas, angle) -> the camera's centre that puts the figure on its target (solved from the silhouette)
 
@@ -199,6 +200,42 @@ def plush(subject, az, size, path, floor="bounce", body_visible=True, samples=No
     return px
 
 
+# ---------------------------------------------------------------- the trait picture: a close-up of the look
+TRAIT_LAMP = 28.0                     # the lamp's width in the picture (24 to 32 px)
+TRAIT_BOX = (96, 120)                 # the content lies inside this box, centred in the 128x160 canvas, and touches no edge
+
+
+def smoothstep(a, b, x):
+    t = np.clip((x - a) / (b - a), 0, 1)
+    return t * t * (3 - 2 * t)
+
+
+def trait_picture(subject, r, layers, path):
+    """The trait picture of a look: a close-up of the look itself (the tail curl and its lamp, with the hip they grow from), rendered at its own size and scale, never cut from the stand and enlarged.
+    The camera is centred on the look's layer (where the stand draws it), at the scale that makes its lamp TRAIT_LAMP px across; the hip fades out softly toward the rim of the ellipse inscribed in TRAIT_BOX, so no ink touches the canvas."""
+    over = [l for l in layers if l["op"] == "over" and l["file"].endswith(f"-{r['look']}.png")]
+    if not over:
+        raise ValueError(f"the stand has no layer for the look '{r['look']}'")
+    ys, xs = np.where(over[0]["pixels"][..., 3] > 0)
+    bw, bh = xs.max() - xs.min() + 1, ys.max() - ys.min() + 1
+    lamp_px = max(8.0, float(min(bw, bh)) - 10.0)                  # the layer's box less the soft edge it was widened by and the tip's curl
+    ppH0, centre0 = camera((304, 312), 32)
+    ppH = float(np.clip(ppH0 * TRAIT_LAMP / lamp_px, 40.0, 160.0))
+    import s20render as RN, plush as PL
+    from wb import proxy as P
+    right, up, fwd, _ = P.basis(32.0, EL)
+    lx, ly = (xs.min() + xs.max() + 1) / 2.0, (ys.min() + ys.max() + 1) / 2.0
+    centre = np.array(centre0, float) + right * (lx - 152.0) / ppH0 - up * (ly - 156.0) / ppH0
+    centre = centre + (right * TRAIT["left"] + up * TRAIT["up"]) / ppH
+    a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, r["size"][0], r["size"][1], ppH, az=32.0, el=EL, centre=tuple(centre), floor="bounce", light=PL.GAME_LIGHT)
+    px = np.clip(a * 255 + 0.5, 0, 255).astype(np.uint8)
+    h, w = px.shape[:2]
+    d = np.sqrt((np.abs(np.arange(w)[None, :] + 0.5 - w / 2) / (TRAIT_BOX[0] / 2)) ** 2 + (np.abs(np.arange(h)[:, None] + 0.5 - h / 2) / (TRAIT_BOX[1] / 2)) ** 2)
+    px[..., 3] = np.round(px[..., 3] * (1 - smoothstep(0.7, 1.0, d))).astype(np.uint8)
+    pngio.write(path, px)
+    return px, ppH
+
+
 # ---------------------------------------------------------------- the layered stand
 def off_individual(spec, expr_list, keep=None):
     """The type with every look of `expr_list` off, except `keep` (an expression id) shown. The individual dict the facade's builder takes."""
@@ -314,8 +351,14 @@ def main():
             res.append(dict(r, file=entry["sizes"]["304x312"]["base"], ms=round((time.time() - t) * 1000)))
             continue
         fn = os.path.join(out, f"{sid}-{r['output']}-{r['variant']}.png")
-        plush(typ, r["az"], r["size"], fn, shadow=r["output"] != "trait")             # a close-up of the tail has no floor in it
-        res.append(dict(r, file=os.path.basename(fn), ms=round((time.time() - t) * 1000)))
+        if r["output"] == "trait":
+            if (r["age"], "calm") not in masters:                    # the picture is centred on the look's layer, so the stand is drawn first
+                masters[(r["age"], "calm")] = stand(spec, typ, out, scratch, sid, r["age"], "calm", log)
+            _, pph = trait_picture(typ, r, masters[(r["age"], "calm")][2], fn)
+            res.append(dict(r, file=os.path.basename(fn), ppH=round(pph, 2), ms=round((time.time() - t) * 1000)))
+        else:
+            plush(typ, r["az"], r["size"], fn, shadow=True)
+            res.append(dict(r, file=os.path.basename(fn), ms=round((time.time() - t) * 1000)))
         log(f"{r['output']} {r['variant']}")
     # the anchor is the calm stand
     for r in rows:
