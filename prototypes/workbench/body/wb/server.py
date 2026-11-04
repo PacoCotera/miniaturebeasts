@@ -160,6 +160,7 @@ class Server:
         self.workers = [ProxyWorker(self, i) for i in range(proxy_workers)]
         self.sheeter = threading.Thread(target=self.sheet_loop, daemon=True, name="sheets")
         self.varieter = threading.Thread(target=self.variety_loop, daemon=True, name="variety")
+        self.golder = threading.Thread(target=self.golden_loop, daemon=True, name="goldens")
         self.runs_lock = threading.Lock()
         self.watcher = threading.Thread(target=self.watch_loop, daemon=True, name="watcher")
         self.proofs = queue.Queue()
@@ -339,6 +340,8 @@ class Server:
             return self.run_check(sp, args, actor)
         if kind == "variety":
             return self.submit_variety(sp, args, actor)
+        if kind == "golden":
+            return self.submit_golden(sp, args, actor)
         spec = copy.deepcopy(sp.spec) if spec is None else spec
         a = self.norm_args(kind, args, spec)
         spec_hash = spec_hash or H.hash_of(spec)
@@ -743,12 +746,60 @@ class Server:
             except Exception as e:
                 self.finish_failed(job, f"{type(e).__name__}: {e}", None)
 
+    # ---- goldens (chunk 12): the state is read from files alone (instant); `make` and `diff` are jobs that draw the set in a Blender process of their own
+    def goldens(self, sp):
+        from wb import golden as G
+        return G.state(sp.path, self.home, sp.history(200))
+
+    def submit_golden(self, sp, args, actor):
+        from wb import golden as G
+        a = dict(args or {})
+        act = a.get("action", "make")
+        if act not in ("make", "diff"):
+            raise ApiError(400, f"golden action '{act}': make or diff", "action")
+        if a.get("release"):
+            raise ApiError(400, "release goldens are made by the release export, from the signed file; draft goldens are made here", "release")
+        if act == "diff" and G.read_manifest(sp.path, sp.id) is None:
+            raise ApiError(400, f"{sp.id} has no goldens yet: make them first", "action")
+        spec = copy.deepcopy(sp.spec)
+        cur = G.current(spec)
+        key = H.hash_of("golden-job", act, cur["key"])
+        active = self.queue.find_active(sp.id, "golden", key)
+        if active:
+            return active
+        job = J.Job(self.queue.new_id(), sp.id, "golden", dict(action=act), key, J.PRIORITY["golden"], spec, H.hash_of(spec), actor)
+        self.queue.add(job)
+        self.hub.emit("queued", sp.id, job=job.id, kind="golden", priority=job.priority, key=key, actor=(actor or {}).get("name"), spec_hash=job.spec_hash)
+        return job
+
+    def golden_loop(self):
+        from wb import golden as G
+        while not self.stopping:
+            job = self.queue.pop(("golden",), timeout=0.5)
+            if job is None:
+                continue
+            sp = self.species.get(job.species)
+            self.hub.emit("running", job.species, job=job.id, kind="golden", actor=(job.actor or {}).get("name"))
+            try:
+                quiet = lambda m: None
+                if job.args["action"] == "make":
+                    m = G.make(sp.path, self.home, actor=(job.actor or {}).get("name"), commit=True, log=quiet)
+                    res = dict(action="make", goldens=len(m["entries"]), commit=m["committed"])
+                else:
+                    G.diff(sp.path, self.home, self.cas, log=quiet)
+                    res = dict(action="diff")
+                self.queue.finish(job, "done", dict(res, totals=G.state(sp.path, self.home)["totals"]))
+                self.hub.emit("done", job.species, job=job.id, kind="golden", key=job.key, cached=False, actor=(job.actor or {}).get("name"))
+            except Exception as e:
+                self.finish_failed(job, f"{type(e).__name__}: {e}", None)
+
     # ---- life cycle
     def start(self):
         for w in self.workers:
             w.thread.start()
         self.sheeter.start()
         self.varieter.start()
+        self.golder.start()
         self.proofer.start()
         self.watcher.start()
         self.cas.evict(self.cache_limit)
@@ -766,6 +817,16 @@ class Server:
             os.remove(os.path.join(self.home, "server.json"))
         except OSError:
             pass
+
+
+def G_dir(sp):
+    from wb import golden as G
+    return G.golden_dir(sp.path, sp.id)
+
+
+def G_read(sp):
+    from wb import golden as G
+    return G.read_manifest(sp.path, sp.id)
 
 
 def make_handler(srv):
@@ -840,6 +901,25 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)/variety", p)
             if m:
                 return self.send_json(srv.variety(srv.get_species(m.group(1)), q.get("n", [None])[0], q.get("seed", [None])[0]))
+            m = re.fullmatch(r"/api/species/([^/]+)/goldens", p)
+            if m:
+                return self.send_json(srv.goldens(srv.get_species(m.group(1))))
+            m = re.fullmatch(r"/api/species/([^/]+)/goldens/file", p)
+            if m:
+                sp = srv.get_species(m.group(1))
+                rel = q.get("id", [""])[0]
+                man = G_read(sp)
+                ent = next((e for e in (man or {}).get("entries", []) if e["id"] == rel), None)
+                if not ent:
+                    raise ApiError(404, "no such golden", "id")
+                with open(os.path.join(G_dir(sp), ent["file"]), "rb") as fh:
+                    data = fh.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "image/png")
+                self.send_header("Content-Length", str(len(data)))
+                self.send_header("Cache-Control", "private, no-cache")
+                self.end_headers()
+                return self.wfile.write(data)
             m = re.fullmatch(r"/api/species/([^/]+)/renders", p)
             if m:
                 return self.send_json(srv.renders(srv.get_species(m.group(1))))

@@ -1,4 +1,4 @@
-"""Chunk 11: 8-bit PNG read and write with numpy and zlib only (no Blender, no imaging library). Reads gray, RGB and RGBA, not interlaced; writes RGBA, RGB or gray with the Sub filter, no text chunks (the same pixels are the same bytes)."""
+"""Chunk 11: 8-bit PNG read and write with numpy and zlib only (no Blender, no imaging library). Reads gray, RGB and RGBA, not interlaced; writes RGBA, RGB or gray with the Sub filter, text chunks only when asked for (the same pixels and text are the same bytes)."""
 import struct
 import zlib
 
@@ -68,7 +68,22 @@ def read(path):
     return np.concatenate([plte[a[..., 0]], np.full((h, w, 1), 255, np.uint8)], 2)
 
 
-def write(path, arr):
+def read_text(path):
+    """The tEXt chunks of a PNG as a dict (keyword -> text); {} when there are none."""
+    with open(path, "rb") as fh:
+        d = fh.read()
+    out, pos = {}, 8
+    while pos < len(d):
+        n, t = struct.unpack(">I4s", d[pos:pos + 8])
+        if t == b"tEXt":
+            k, _, v = d[pos + 8:pos + 8 + n].partition(b"\0")
+            out[k.decode("latin-1")] = v.decode("latin-1")
+        pos += 12 + n
+    return out
+
+
+def write(path, arr, text=None):
+    """`text`: a dict of tEXt chunks written before the pixels (a golden carries its hashes there, never on the art). The pixels' bytes do not depend on it."""
     a = np.asarray(arr, np.uint8)
     h, w = a.shape[:2]
     a3 = a.reshape(h, w, -1)
@@ -82,4 +97,4 @@ def write(path, arr):
         c = struct.pack(">I", len(body)) + t + body
         return c + struct.pack(">I", zlib.crc32(t + body) & 0xFFFFFFFF)
     with open(path, "wb") as fh:
-        fh.write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, ct, 0, 0, 0)) + chunk(b"IDAT", zlib.compress(rows.tobytes(), 6)) + chunk(b"IEND", b""))
+        fh.write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, ct, 0, 0, 0)) + b"".join(chunk(b"tEXt", k.encode("latin-1") + b"\0" + str(v).encode("latin-1")) for k, v in (text or {}).items()) + chunk(b"IDAT", zlib.compress(rows.tobytes(), 6)) + chunk(b"IEND", b""))

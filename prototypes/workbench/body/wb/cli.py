@@ -349,6 +349,78 @@ def cmd_variety(a):
     return 1 if sh["failing"] else 0
 
 
+def golden_file(a):
+    """The species file of `wb golden`: --file, else the framework's own folder, else the server's."""
+    if a.file:
+        return a.file
+    p = os.path.join(BODY, "species_v1", f"{a.species}.json")
+    if os.path.exists(p):
+        return p
+    return call("GET", f"/api/species/{a.species}")["path"]
+
+
+def golden_files(a):
+    if getattr(a, "all", False):
+        d = os.path.join(BODY, "species_v1")
+        return [os.path.join(d, f) for f in sorted(os.listdir(d)) if re.fullmatch(r"S\d+[a-z]*\.json", f)]
+    return [golden_file(a)]
+
+
+def golden_tools(a):
+    sys.path.insert(0, BODY)
+    from wb import golden as G, cas as C
+    return G, C
+
+
+def golden_lines(G, st):
+    lines = [f"{st['species']}  {G.line(st['totals'])}" + ("  (release)" if st["release"] else "  (draft)")]
+    for e in st["entries"]:
+        extra = f"  {e['pct']:g}% moved" if e.get("pct") else ""
+        lines.append(f"  {e['state']:8} {e['id']}{extra}")
+    for c in st.get("causes", []):
+        lines.append("  because " + (f"{c['field']} {c['old']} -> {c['new']}" if c["kind"] == "file" and c["field"] else f"the {c['kind']} moved: {c.get('old')} -> {c.get('new')}"))
+    return lines
+
+
+def cmd_golden(a):
+    """wb golden make|diff|list|precommit (precommit is the framework commit's hook: .git/hooks/pre-commit runs `wb golden precommit`). make draws the whole set (Blender: set WB_BPY) and commits it as one commit; diff re-draws and compares; list reads the files and says same, changed, missing or stale for each golden."""
+    G, C = golden_tools(a)
+    home = a.home or HOME
+    try:
+        if a.action == "precommit":
+            import subprocess
+            # the hook of a framework commit: when the staged files include framework source, every release golden is re-drawn and compared; a changed one stops the commit
+            staged = subprocess.run(["git", "diff", "--cached", "--name-only"], capture_output=True, text=True, cwd=BODY).stdout.split()
+            if not G.framework_touched(staged):
+                out(a, dict(ok=True, checked=False), "no framework source staged: release goldens not checked")
+                return 0
+            a.release, a.all, a.only, a.set, a.action = True, True, "", "", "diff"
+        if a.action == "make":
+            m = G.make(golden_file(a), home, setdir=a.set or None, release=a.release, commit=not a.no_commit, log=lambda m: None if a.json else print(m))
+            out(a, dict(ok=True, species=m["species"], goldens=len(m["entries"]), file=m["file_hash"], framework=m["framework"], lookdev=m["lookdev"], commit=m["committed"]), f"{m['species']} goldens made")
+            return 0
+        if a.action == "list":
+            st = G.state(golden_file(a), home)
+            out(a, dict(ok=True, **st), "\n".join(golden_lines(G, st)))
+            return 0
+        bad, sts = 0, []
+        for f in golden_files(a):
+            sid = os.path.basename(f)[:-5]
+            man = G.read_manifest(f, sid)
+            if a.release and not (man and man.get("release")):
+                continue                                          # the release check looks at release goldens only
+            st = G.diff(f, home, C.Cas(os.path.join(home, "cas")), only=set(a.only.split(",")) if a.only else None, setdir=a.set or None, log=lambda m: None if a.json else print(m))
+            sts.append(st)
+            bad += st["totals"]["changed"] + st["totals"]["missing"]
+        for st in sts:
+            if not a.json:
+                print("\n".join(golden_lines(G, st)))
+        out(a, dict(ok=not bad, species=[s["species"] for s in sts], totals=[s["totals"] for s in sts], states=sts), f"{len(sts)} species with " + ("release goldens, " if a.release else "goldens, ") + (f"{bad} changed or missing" if bad else "all same"))
+        return 1 if bad else 0
+    except G.GoldenError as e:
+        raise Fail(2, str(e))
+
+
 def cmd_string(a):
     """The genome string of one mibi: `wb string seed:3`, `wb string type`, `wb string string:G1-S20v1-...` (read back), `wb string code:S20v1-...`. The string alone on one line (so `$(wb string seed:3)` works); --json has more; --code adds the stamp code."""
     sp = a.species
@@ -441,6 +513,9 @@ def main(argv=None):
     p = sub.add_parser("freq"); p.add_argument("species", nargs="?", default=""); p.add_argument("--file", default=""); p.add_argument("-n", type=int, default=1000, help="wild draws"); p.add_argument("--locus", action="append", default=[], help="also print this locus's looks"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_freq)
     p = sub.add_parser("variety"); p.add_argument("species"); p.add_argument("--n", type=int, default=None); p.add_argument("--seed", type=int, default=None); p.add_argument("--no-tiles", action="store_true"); p.add_argument("--sheet", default="", help="write the sheet (HTML and PNG) into this folder"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_variety)
     p = sub.add_parser("renders"); p.add_argument("species"); p.add_argument("--make", default="", help="draw the ready pictures into this folder (needs WB_BPY, the Blender python)"); p.add_argument("--only", default=""); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_renders)
+    p = sub.add_parser("golden"); p.add_argument("action", choices=("make", "diff", "list", "precommit")); p.add_argument("species", nargs="?", default="S20"); p.add_argument("--file", default="", help="the species file (default: the framework's own species_v1 folder)"); p.add_argument("--home", default="", help="the server's home (cache and last diff)")
+    p.add_argument("--release", action="store_true", help="make: refused (the release export makes release goldens); diff: only release goldens, exit 1 when one changed"); p.add_argument("--all", action="store_true", help="diff: every species of the framework's folder"); p.add_argument("--only", default="", help="diff: only these outputs or ids")
+    p.add_argument("--set", default="", help="use a set folder already drawn by wb.renderset instead of drawing"); p.add_argument("--no-commit", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_golden)
     p = sub.add_parser("string"); p.add_argument("selector", nargs="?", default="type"); p.add_argument("--species", default=""); p.add_argument("--code", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_string)
     p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)
     p = sub.add_parser("watch"); p.add_argument("species"); p.add_argument("--json", action="store_true"); p.add_argument("--count", type=int, default=0); p.add_argument("--timeout", type=float, default=0); p.set_defaults(f=cmd_watch)
