@@ -182,7 +182,7 @@ static void price_width(void) {
 /* the derived rules (layout.json, made from ui/specs/derive.mjs): the C rules give the same integers for every case */
 static void layout_vectors(const char *dir, const char *specs) {
   char path[512]; long len; char *js;
-  static const char *FILES[] = { "frame", "pods", "incubator", "vivarium", "habitat", "home", "cargo", "namer", "bench" };
+  static const char *FILES[] = { "frame", "pods", "incubator", "vivarium", "habitat", "home", "cargo", "namer", "bench", "settings" };
   for (int i = 0; i < 9; i++) {
     snprintf(path, sizeof path, "%s/%s.json", specs, FILES[i]); js = slurp(path, &len);
     if (!js || spec_load(FILES[i], js, (size_t)len) < 0) { check(0, path, js ? spec_error() : "cannot read"); free(js); return; }

@@ -95,8 +95,8 @@ const reading = (screen) => async (name, page, fail) => {
     ringTxt += ` · clearance ${d.length}`; if (process.env.CLEARANCE_SHOW) for (const x of d) console.log(`  ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`); for (const x of d) if (enforcedDeparture(frame, screen, x)) fail(`${name}: ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`);
     const fr = d.filter((x) => FRAME_REGIONS.has(x.node.split(" ")[0])); clearanceFrame.states++; clearanceFrame.departures += fr.length; }
   if (screen === "home") {
-    const c = await page.evaluate(() => ({ log: window.__st.check().log, cur: window.__st.props?.focus?.cur ?? "room", size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = departures(c.log, home, frame, c.cur); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const c = await page.evaluate(() => ({ log: window.__st.check().log, cur: window.__st.props?.focus?.cur ?? "room", props: window.__st.props ?? null, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
+    const d = departures(c.log, home, frame, c.cur, c.props); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   // incubator-hatch-skip is left out of the Incubator region checks: the frame after ✓ Skip is the first frame of the 180 ms hand-off dither into the Habitat meet (T-90; incubator-states asserts screen habitat)

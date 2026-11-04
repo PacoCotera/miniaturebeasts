@@ -99,7 +99,7 @@ The exact values are in `prototypes/ui/palettes/station.json` (92 colours: the C
 Body type needs 4.5 : 1 or more, so:
 - `mist` sits only on `ground` or `bar`; on a `panel` the quiet line is `fog`;
 - `red` is never type;
-- loss words are `coral` on `ground`.
+- loss words are `coral` on `ground`; a loss heading (20 px and up) may be `coral` on `panel` (4.4 : 1); loss body text stays `coral` on `ground`.
 
 **Painted art.** Painted art (the vivarium, creatures, pods, scenes, the housing) carries its own full colour. Its device parts stay in the housing family (sage, sand, rubber), and its life is the saturated Miniature Lives colour.
 
