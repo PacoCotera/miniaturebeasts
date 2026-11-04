@@ -156,7 +156,7 @@ test("crosses pass one copy from each parent at a switch locus, blend a continuo
   assert.equal(child.origin.kind, "cross"); assert.equal(child.origin.kinship, 0);
   const shaped = shapeTrait(oc, a, "eyes", 1);
   for (const id of ["growth.exterior-eye-size-ratio", "growth.exterior-eye-spacing-ratio"]) assert.deepEqual(shaped.loci[id], [a.loci[id][0], a.loci[id][0]]);
-  assert.throws(() => crossIndividuals(frameOf("S01"), a, b, r), /same-species/);
+  assert.throws(() => crossIndividuals(frameOf("S01"), a, b, r), /a cross needs two of the same species/);
   assert.throws(() => cross(oc, a, a, { rng: r }), /not a pair/);
   const bad = structuredClone(child); bad.loci["growth.exterior-eye-size-ratio"] = [0.9, 0.9];
   assert.ok(checkGenome(oc, bad).some((p) => /outside the species pool/.test(p)), "a number outside the pool is refused");

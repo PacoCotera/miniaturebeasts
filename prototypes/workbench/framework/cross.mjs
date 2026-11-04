@@ -170,7 +170,7 @@ export function relatedness(frame, a, b, lookup = () => null) {
 // whose genomes are equal are. A locked pair is compared in either order (samePair, as checkGenome).
 function refuse(frame, x, y, lookup = () => null) {
   const a = genomeOf(x), b = genomeOf(y);
-  if (a.species !== frame.species.id || b.species !== frame.species.id) throw new Error("breeding is same-species only");
+  if (a.species !== frame.species.id || b.species !== frame.species.id) throw new Error("a cross needs two of the same species");
   if (x === y || (idOf(x) != null && idOf(x) === idOf(y)) || (idOf(x) == null && idOf(y) == null && a === b)) throw new Error("one mibi is not a pair");
   for (const l of frame.loci) if (l.kind === "locked" && (!samePair(a.loci[l.id], l.copies) || !samePair(b.loci[l.id], l.copies))) throw new Error(`${l.id}: a parent's locked copy differs from the frame (not this species)`);
   const kin = directKin(x, y, lookup);
