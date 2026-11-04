@@ -12,7 +12,7 @@ import d from './Drawers.module.css'
 type Go = (p: Partial<StudioUrl>, replace?: boolean) => void
 
 // The three drawers share a frame: the grip, the three names to switch between (Checks, History, File (JSON)) and a close button.
-export const DRAWERS = [['checks', W.drawer.checks], ['history', W.drawer.history], ['file', W.drawer.file]] as const
+export const DRAWERS = [['checks', W.drawer.checks], ['history', W.drawer.history], ['section', W.drawer.section], ['file', W.drawer.file]] as const
 export function DrawerTabs({ url, go }: { url: StudioUrl; go: Go }) {
   return (
     <span className={d.tabs} role="tablist" aria-label="Drawer">
@@ -87,6 +87,22 @@ export function FileDrawer({ species, url, go }: { species: Species; url: Studio
         <pre className={d.nums} aria-hidden="true">{lines.map((_, i) => i + 1).join('\n')}</pre>
         <pre className={d.code}>{lines.join('\n')}</pre>
       </div>
+    </DrawerFrame>
+  )
+}
+
+// Section table: the loft's rows (height, then the back, side and front radius), worked out from the profile knobs. Read-only: a knob is moved on the stage or in the inspector and the table follows.
+type Row3 = [number, [number, number, number]]
+export function SectionDrawer({ species, url, go }: { species: Species; url: StudioUrl; go: Go }) {
+  const rows = ((species.file as { spine?: { loft?: { section?: { stations?: Row3[] } } } }).spine?.loft?.section?.stations ?? []).slice().reverse()
+  return (
+    <DrawerFrame url={url} go={go} label="Section table" quiet={`${W.section.rows(rows.length)} · ${W.section.note}`}>
+      {rows.length === 0 ? <p className={s.empty}>This file has no section table.</p> : (
+        <table className={d.sect} aria-label="Section table, read-only">
+          <thead><tr>{W.section.cols.map((c) => <th key={c} scope="col">{c}</th>)}</tr></thead>
+          <tbody>{rows.map(([z, r]) => <tr key={z}><th scope="row" className="num">{z.toFixed(3)}</th>{r.map((x, i) => <td key={i} className="num">{x.toFixed(4)}</td>)}</tr>)}</tbody>
+        </table>
+      )}
     </DrawerFrame>
   )
 }

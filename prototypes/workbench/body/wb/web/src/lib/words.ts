@@ -10,7 +10,8 @@ export const W = {
   undo: 'Undo', // st.toast.edit
   asPlayer: 'Show as player sees it', // ui 4.3 (the Inspector's ⋯ menu); owed to the copywriter
   redo: 'Redo', // ui 4.5 (Z, Shift Z)
-  drawer: { checks: 'Checks', history: 'History', file: 'File (JSON)' }, // ui 3.2 Drawer
+  drawer: { checks: 'Checks', history: 'History', file: 'File (JSON)', section: 'Section table' }, // ui 3.2 Drawer; the section table's name and notes are owed to the copywriter
+  section: { cols: ['Height', 'Back', 'Side', 'Front'], rows: (n: number) => `${n} rows`, note: 'Worked out from the profile knobs. Not edited.' }, // owed to the copywriter
   viewBar: ['Plush', 'Clay', 'Normal', 'Parts', 'Wire'], // ui 3.2 ViewBar
   before: 'Before', // ui 3.2 ViewBar
   help: { go: 'Go to', do: 'Do', choose: 'choose', run: 'run', everyKey: 'every key' }, // ui mock 10

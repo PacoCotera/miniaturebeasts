@@ -64,11 +64,36 @@ def _tokens(ptr):
     return [t.replace("~1", "/").replace("~0", "~") for t in ptr[1:].split("/")]
 
 
+# The loft's section table is worked out from its profile knobs (headshape.stations), never edited: a patch of a knob writes the table in the same save, and a patch of the table itself is refused.
+KNOBS = "/spine/loft/head_profile"
+TABLE = ("/spine/loft/section/stations", "/spine/loft/section/stations_base")
+
+
+def derived(path):
+    """True for the paths a person never writes: the section table. A save's log names the knob, not the sixty rows it moved."""
+    return path.startswith("/spine/loft/section/stations")
+
+
+def derive(doc):
+    """The section table from the base table and the knobs, in place."""
+    import headshape as HS
+    loft = doc["spine"]["loft"]
+    sec = loft["section"]
+    if "stations_base" in sec and isinstance(loft.get("head_profile"), dict):
+        sec["stations"] = HS.stations(sec["stations_base"], **loft["head_profile"])
+    return doc
+
+
 def apply_patch(doc, ops):
-    """RFC 6902 subset: replace, add, remove, test. Returns a new document; raises ApiError(400/409) naming the path."""
+    """RFC 6902 subset: replace, add, remove, test. Returns a new document; raises ApiError(400/409) naming the path.
+    The section table is derived: a patch of it is refused (it names the knobs), and a patch of a knob writes the table again."""
     doc = copy.deepcopy(doc)
+    knob = False
     for op in ops:
         kind, ptr = op.get("op"), op.get("path", "")
+        if kind != "test" and ptr.startswith(TABLE):
+            raise ApiError(400, "spine.loft.section.stations is worked out from the profile knobs (spine.loft.head_profile) and is never edited; change a knob", ptr)
+        knob = knob or (kind != "test" and ptr.startswith(KNOBS))
         toks = _tokens(ptr)
         if not toks:
             raise ApiError(400, "a patch cannot replace the whole file", ptr)
@@ -97,6 +122,8 @@ def apply_patch(doc, ops):
                 raise ApiError(400, f"patch op '{kind}' is not supported (replace, add, remove, test)", ptr)
         except (KeyError, IndexError, ValueError, TypeError) as e:
             raise ApiError(400, f"{ptr}: no such field ({type(e).__name__})", ptr)
+    if knob:
+        derive(doc)
     return doc
 
 
@@ -203,6 +230,7 @@ class Species:
             changes = diff(self.spec, new)
             if not changes:
                 return [], self.hash
+            changes = [c for c in changes if not derived(c[0])] or changes
             h0, h1 = self.hash, H.hash_of(new)
             write_spec(self.path, new)
             self.spec, self.hash = new, h1

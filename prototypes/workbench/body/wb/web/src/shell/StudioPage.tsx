@@ -20,7 +20,7 @@ import { Palette } from '../ui/Palette'
 import { HelpSheet } from '../ui/HelpSheet'
 import { Toasts } from '../ui/Toasts'
 import { ChecksDrawer } from '../ui/ChecksDrawer'
-import { FileDrawer, HistoryDrawer } from '../ui/Drawers'
+import { FileDrawer, HistoryDrawer, SectionDrawer } from '../ui/Drawers'
 import { useRevert } from '../lib/undo'
 import { checkMetas, needsYou, partsOf } from '../lib/checks'
 
@@ -38,7 +38,7 @@ export default function StudioPage() {
   const byId = useMemo(() => Object.fromEntries(metas.map((m) => [m.id, m])), [metas])
   const rows = species?.checks?.rows ?? []
   const drawerH = useUI((u) => u.drawerH)
-  const open = !!url.drawer && ['checks', 'history', 'file'].includes(url.drawer) && !!species
+  const open = !!url.drawer && ['checks', 'history', 'section', 'file'].includes(url.drawer) && !!species
   const rev = useRevert(url.species)
   // C opens the drawer; V puts the proof of the selection's first failing check (or the selected row) on the stage; G goes to the check's part; Esc steps back one layer.
   const firstFor = () => { const hit = needsYou(url.sel ? rows.filter((r) => partsOf(r, byId[r.id]).includes(url.sel!)) : rows); return hit[0]?.id ?? null }
@@ -60,7 +60,7 @@ export default function StudioPage() {
         nav={<Navigator rail={rail} url={url} go={go} rows={rows} metas={byId} species={species} />}
         stage={url.mode === 'genes' ? <GenesStage url={url} species={species} inset={open ? drawerH : 0} /> : url.mode === 'goldens' ? <GoldensStage url={url} species={species} go={go} inset={open ? drawerH : 0} /> : url.mode === 'variety' ? <VarietyStage url={url} species={species} go={go} inset={open ? drawerH : 0} /> : <Stage url={url} species={species} go={go} inset={open ? drawerH : 0} />}
         inspector={<Inspector species={species} id={url.species} sheet={sheet} open={inspOpen} url={url} go={go} genes={url.mode === 'genes' && species ? <GenesInspector species={species} url={url} go={go} /> : url.mode === 'goldens' && species ? <GoldensInspector species={species} url={url} /> : url.mode === 'variety' && species ? <VarietyInspector species={species} url={url} go={go} /> : undefined} />}
-        overlay={<><Toasts species={url.species} />{open && species && (url.drawer === 'history' ? <HistoryDrawer species={species} url={url} go={go} /> : url.drawer === 'file' ? <FileDrawer species={species} url={url} go={go} /> : <ChecksDrawer species={species} url={url} go={go} />)}</>}
+        overlay={<><Toasts species={url.species} />{open && species && (url.drawer === 'history' ? <HistoryDrawer species={species} url={url} go={go} /> : url.drawer === 'section' ? <SectionDrawer species={species} url={url} go={go} /> : url.drawer === 'file' ? <FileDrawer species={species} url={url} go={go} /> : <ChecksDrawer species={species} url={url} go={go} />)}</>}
       />
       <Palette url={url} />
       <HelpSheet />

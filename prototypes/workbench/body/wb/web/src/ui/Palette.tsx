@@ -29,6 +29,7 @@ export function Palette({ url }: { url: StudioUrl }) {
         </Command.Group>
         <Command.Group heading={W.help.do}>
           <Command.Item value="History" onSelect={() => run(buildStudioUrl({ ...url, drawer: 'history' }))} className={s.item}>{W.drawer.history}<span className={s.k}><kbd>H</kbd></span></Command.Item>
+          <Command.Item value="Section table" onSelect={() => run(buildStudioUrl({ ...url, drawer: 'section' }))} className={s.item}>{W.drawer.section}</Command.Item>
           <Command.Item value="File JSON" onSelect={() => run(buildStudioUrl({ ...url, drawer: 'file' }))} className={s.item}>{W.drawer.file}<span className={s.k}><kbd>J</kbd></span></Command.Item>
           <Command.Item value="Undo" onSelect={() => { setPalette(false); void rev.run('undo') }} className={s.item}>{W.undo}<span className={s.k}><kbd>Z</kbd></span></Command.Item>
           <Command.Item value="Redo" onSelect={() => { setPalette(false); void rev.run('redo') }} className={s.item}>{W.redo}<span className={s.k}><kbd>Shift Z</kbd></span></Command.Item>

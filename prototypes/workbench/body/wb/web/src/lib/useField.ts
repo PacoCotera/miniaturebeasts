@@ -2,7 +2,17 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { ApiError, patchSpecies, type Species } from './api'
 import { noteOwn } from './edits'
+import { create } from 'zustand'
 import { AUTOSAVE_MS, getAt, patchFor, setAt } from './forms'
+
+// The value being set on a field, shared by every control that shows the same pointer: a handle dragged on the stage and the field in the inspector read one number, so the inspector mirrors the drag as it happens.
+type Live = { live: Record<string, { owner: number; v: unknown }>; put: (ptr: string, owner: number, v: unknown) => void; drop: (ptr: string, owner: number) => void }
+export const useLive = create<Live>((set) => ({
+  live: {},
+  put: (ptr, owner, v) => set((s) => ({ live: { ...s.live, [ptr]: { owner, v } } })),
+  drop: (ptr, owner) => set((s) => (s.live[ptr]?.owner === owner ? { live: Object.fromEntries(Object.entries(s.live).filter(([k]) => k !== ptr)) } : s)),
+}))
+let owners = 0
 
 // One field's edit, as the person feels it: the value they set shows at once (optimistic), the save follows 0.6 s after the last change as one patch (a scrub is one save, not a hundred),
 // and the server has the last word: a refusal puts the value back and says why on the field, in the server's own words (they name the field).
@@ -13,6 +23,9 @@ export function useField<T>(species: Species | undefined, id: string, ptr: strin
   const qc = useQueryClient()
   const fileValue = getAt(species?.file, ptr) as T
   const [draft, setDraft] = useState<{ v: T } | null>(null)
+  const me = useRef(++owners).current
+  const other = useLive((s) => s.live[ptr])
+  useEffect(() => { if (!draft) useLive.getState().drop(ptr, me) }, [draft, ptr, me])
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const saved = useRef(fileValue)       // the value the file last had, as far as this page knows
@@ -52,9 +65,10 @@ export function useField<T>(species: Species | undefined, id: string, ptr: strin
   const set = useCallback((v: T) => {
     setError(null)
     setDraft({ v })
+    useLive.getState().put(ptr, me, v)
     next.current = { v }
     if (timer.current) clearTimeout(timer.current)
     timer.current = setTimeout(() => void flush(), delay)
   }, [flush, delay])
-  return { value: draft ? draft.v : fileValue, set, error, saving, clearError: () => setError(null) }
+  return { value: draft ? draft.v : other && other.owner !== me ? (other.v as T) : fileValue, set, error, saving, clearError: () => setError(null) }
 }

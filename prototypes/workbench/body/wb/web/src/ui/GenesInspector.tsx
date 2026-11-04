@@ -48,7 +48,7 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
         </>
       ) : (
         <>
-          <div className={s.field}><label>Type</label><span className={s.v}>{String(l.type)}</span></div>
+          <div className={s.field}><label>Type</label><span className={s.v}>{lookName(lw, l.locus, String(l.type))}</span></div>
           <div className={s.field}><label>Looks</label><span className={s.seg}>{(l.limits as string[]).map((b) => <span key={b} className={b === l.type ? s.on : ''}>{lookName(lw, l.locus, b)}</span>)}</span></div>
           {l.op === 'pair-map' && l.order && <div className={s.field}><label>Shows</label><span className={s.v}>{`${copyRule(l)} · ${l.order.map((o) => shortWord(lw, l.locus, o)).join(' over ')}`}</span></div>}
         </>

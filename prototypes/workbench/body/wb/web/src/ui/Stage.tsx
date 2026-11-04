@@ -9,6 +9,8 @@ import type { StudioUrl, View } from '../lib/url'
 import { Plate } from './Plate'
 import { ViewBar } from './ViewBar'
 import { AngleStrip } from './AngleStrip'
+import { SpineOverlay } from './SpineOverlay'
+import { leaseFrom } from '../lib/edits'
 import { W } from '../lib/words'
 import s from './Stage.module.css'
 
@@ -62,10 +64,13 @@ export function Stage({ url, species, go, inset = 0 }: { url: StudioUrl; species
     go({ view: v })
     if (!species?.views.some((x) => x.mode === v && x.ready) && getToken()) void renderViews(url.species, v)
   }
+  const onSpine = !!species && url.az === 90 && url.view === 'clay' && !proof && !showBefore
+  const editable = !!getToken() && !(species && leaseFrom(species.lease, species.history))
   return (
     <main className={s.stage} ref={ref} style={inset ? { paddingBottom: inset + 8, justifyContent: 'flex-start' } : undefined}>
       <div className={s.hero}>
         <Plate onPointerEnter={() => setHover(true)} onPointerLeave={() => setHover(false)} onPointerDown={() => touch && setTapped(true)} src={src} kind="clay" width={pw} height={ph} footer={proof ? 0 : FOOT} stale={!proof && !!hero?.src && hero.stale && !showBefore} progress={!proof && hero?.stale ? progress : null} tag={proof ? `proof · az ${proof.az}` : showBefore ? W.before : undefined} tagKind={proof ? 'proof' : undefined} alt={`${species?.file.name ?? url.species}, ${url.view}, az ${url.az}`} className={s.heroPlate}>
+          {onSpine && species && <SpineOverlay species={species} id={url.species} sel={url.sel} scale={pw / 608} editable={editable} go={go} />}
           <ViewBar view={url.view} onView={pick} available={ready} onBefore={setBefore} canBefore={!!hero?.before} show={tapped || hover} />
         </Plate>
       </div>

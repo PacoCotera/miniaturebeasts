@@ -909,6 +909,10 @@ def make_handler(srv):
             if m:
                 from wb import forms as FM
                 return self.send_json(FM.forms(srv.get_species(m.group(1)).spec))
+            m = re.fullmatch(r"/api/species/([^/]+)/spine", p)
+            if m:
+                from wb import spine as SPN
+                return self.send_json(SPN.spine_view(srv.get_species(m.group(1)).spec))
             m = re.fullmatch(r"/api/species/([^/]+)/history", p)
             if m:
                 s = srv.get_species(m.group(1))

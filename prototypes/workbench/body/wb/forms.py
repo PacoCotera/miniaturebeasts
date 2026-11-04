@@ -21,6 +21,8 @@ NESTED = {
               ("arms", "Arms", "back", dict(part="arm.L")), ("legs", "Legs", "seat", dict(part="leg.L")), ("tip", "Tip", "tail", dict(socket="tail.tip"))],
 }
 NESTED["quadruped"] = NESTED["biped"]
+# The profile knob each range of the spine carries (spine.loft.head_profile); the plan's band for it is in species_v1.PLANS.
+KNOB_OF = dict(head="R_scale", neck="neck_ratio", back="chest_front", seat="rump_gain")
 SECTIONS = [("coat", "Coat"), ("motion", "Motion"), ("renders", "Renders")]
 
 
@@ -104,6 +106,9 @@ def fields_of(doc, part):
             out += [_field(doc, lab, "/spine/tail/length", "spine.tail.length", "spine.tail.length"), _field(doc, lab, "/spine/tail/root", "spine.tail.root", "spine.tail.root"),
                     _field(doc, lab, "/spine/tail/tip_r", "spine.tail.tip_r", "spine.tail.tip_r"), _field(doc, lab, "/spine/tail/curl/turns", "spine.tail.curl.turns", "spine.tail.curl.turns"),
                     _field(doc, lab, "/spine/tail/fillet", "spine.tail.fillet", "spine.tail.fillet")]
+        knob = KNOB_OF.get(part)
+        if knob and knob in ((sp.get("loft") or {}).get("head_profile") or {}):
+            out.append(_field(doc, lab, f"/spine/loft/head_profile/{knob}", f"spine.loft.head_profile.{knob}", f"spine.loft.head_profile.{knob}"))
         return out
     nest = {i: m for i, _, _, m in NESTED.get(doc.get("plan"), NESTED["biped"])}
     m = nest.get(part)

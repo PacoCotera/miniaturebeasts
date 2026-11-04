@@ -37,6 +37,7 @@ const varietyS20 = JSON.parse(readFileSync(join(here, 'fixture/variety-s20.json'
 const goldensSame = JSON.parse(readFileSync(join(here, 'fixture/goldens-same.json'), 'utf8'))
 const goldensChanged = JSON.parse(readFileSync(join(here, 'fixture/goldens-changed.json'), 'utf8'))
 const formsS20 = JSON.parse(readFileSync(join(here, 'fixture/forms-s20.json'), 'utf8'))
+const spineS20 = JSON.parse(readFileSync(join(here, 'fixture/spine-s20.json'), 'utf8'))
 const freqDemo = JSON.parse(readFileSync(join(here, 'fixture/freq-demo.json'), 'utf8'))
 const metasShape = metas.map((m) => (m.id === 'tail.size' ? { ...m, fields: ['spine.tail.length', 'spine.tail.root', 'spine.tail.tip_r'] } : m))
 const shapeFile = structuredClone(s20file)
@@ -77,6 +78,8 @@ const cases = [
   { name: 'goldens-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true, mode: 'goldens', goldens: goldensSame, q: '&sel=turn%2Fadult-calm-az90-plush' },
   { name: 'shape-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, shape: true, q: '&sel=tail' },
   { name: 'shape-light-1180', theme: 'light', w: 1180, h: 820, ready: true, shape: true, touch: true, q: '&sel=legs' },
+  { name: 'spine-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, shape: true, token: true, q: '&sel=neck&az=90&view=clay' },
+  { name: 'spine-light-1180', theme: 'light', w: 1180, h: 820, ready: true, shape: true, touch: true, token: true, q: '&sel=back&az=90&view=clay&drawer=section' },
   { name: 'stage-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true },
 ]
 let failed = 0
@@ -95,6 +98,7 @@ for (const c of cases) {
   await page.route('**/api/species/S20/goldens', (r) => r.fulfill({ json: c.goldens ?? goldensSame }))
   await page.route('**/api/species/S20/goldens/file*', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
   await page.route('**/api/checks', (r) => r.fulfill({ json: c.shape ? metasShape : metas }))
+  await page.route('**/api/species/S20/spine', (r) => r.fulfill({ json: spineS20 }))
   await page.route('**/api/species/S20/forms', (r) => r.fulfill({ json: formsS20 }))
   await page.route('**/cas/*.png', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
   await page.route('**/events*', (r) => r.fulfill({ body: ': connected\n\n', contentType: 'text/event-stream' }))
