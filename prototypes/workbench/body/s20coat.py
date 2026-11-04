@@ -420,23 +420,36 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         gx = (theta * 0.5) % 1.0
         gy = (zeff - 0.2) / 2.0
         grid = _rd(g["rd"], seed, sc)
+        rz = rd_limits(spec)                                         # the species file's limits for the reaction-diffusion patterns (coat.zones.rd)
+        stripes = g["rd"] in ("labyrinth", "rings")
+        rep = int(rz["repeat"]) if stripes else 1                    # finer: the same field laid round the body (and mirrored up it) `repeat` times, so a stripe is thin and reads as texture at 140 px, not as limbs
+        gx = (theta * 0.5 * rep) % 1.0
+        gy = np.abs(1.0 - ((zeff - 0.2) / 2.0 * rep) % 2.0) if rep > 1 else gy
         pat = sample_grid(grid, gx, gy)
         w = torso * (1 - belly) * (1 - sstep(1.95, 2.15, z)) * (1 - fc)
-        if g["rd"] in ("labyrinth", "rings"):                       # AD limit 1 (ad-tuliko-worst.md): stripes and loops stay below the neck (the chin sits at 1.40 H); the head stays clear. Spots keep their reach
-            w = w * (1 - sstep(1.30, 1.42, z))
-        m = w * sstep(0.46, 0.62, pat) * (0.55 + 0.45 * g["rd_contrast"])
+        front = 1.0 - sstep(rz["front_clear"][0], rz["front_clear"][1], np.abs(theta))      # 1 on the front line, 0 off the front third
+        if stripes:                                                 # stripes and loops stay on the back and flanks: below the shoulder line, off the front third (the chin sits at 1.40 H)
+            w = w * (1 - sstep(rz["z_max"][0], rz["z_max"][1], z)) * (1 - front)
+        else:                                                       # dots keep off the face: above the shoulder line the front third is clear (the crown behind the ears and the back of the head may carry them)
+            w = w * (1 - front * sstep(rz["z_max"][0], rz["z_max"][1], z))
+        if stripes:
+            m = w * sstep(0.46, 0.62, pat) * (rz["cap"] * (0.55 + 0.45 * g["rd_contrast"]))
+        else:
+            m = w * sstep(0.46, 0.62, pat) * (0.55 + 0.45 * g["rd_contrast"])
         F["rd"] = m
-        col = col * (1 - m[:, None]) + mark * m[:, None] * 1.0
+        mk = col * (rz["value"] ** 2.2) if stripes else mark                  # a stripe is drawn in the coat's own hue, a little darker; a dot in the mark colour
+        col = col * (1 - m[:, None]) + mk * m[:, None]
     # ---- zones by layout
     zones = set(spec["layouts"][g["layout"]])
     belly_c = srgb_to_lin(pal["belly"])
     col = col * (1 - belly[:, None]) + belly_c * belly[:, None]
     # ear-inner: the forward face of the ear, soft, inset
     if "ear-inner" in zones and ear.any():
-        d = np.array([0.85, -0.35, 0.25]); d /= np.linalg.norm(d)
+        lop = ((spec.get("parts") or {}).get("ear.L") or {}).get("default") == "lop"
+        d = np.array([0.92, -0.35, -0.1]) if lop else np.array([0.85, -0.35, 0.25]); d /= np.linalg.norm(d)      # a lop's inner face is the broad face turned to the front; the back face and the rim stay the coat's own colour
         recs = ctx["info"]["tubes"].get("ear.L")
         Le = recs["path"].length if recs else 0.6
-        m = sstep(0.30, 0.62, Nm @ d) * (1 - sstep(Le - 0.14, Le - 0.03, s)) * sstep(recs["first_s"] - 0.02 if recs else 0.2, recs["first_s"] + 0.12 if recs else 0.3, s)
+        m = (sstep(0.72, 0.93, Nm @ d) if lop else sstep(0.30, 0.62, Nm @ d)) * (1 - sstep(Le - 0.14, Le - 0.03, s)) * sstep(recs["first_s"] - 0.02 if recs else 0.2, recs["first_s"] + 0.12 if recs else 0.3, s)
         m = np.where(ear, m, 0.0)
         F["ear_inner"] = m
         col = col * (1 - m[:, None]) + srgb_to_lin(pal["ear-inner"]) * m[:, None]
@@ -714,6 +727,15 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         col = col * (1 - m[:, None]) + mc * m[:, None]
         emit = emit + (glow * (0.35 * gl * m)[:, None] if g["mark"] == "star" else 0)
     return dict(col=np.clip(col, 0, 4), emit=np.clip(emit, 0, 4), rough=rough, fields=F)
+
+
+RD_LIMITS = dict(z_max=[1.05, 1.18], front_clear=[0.35, 0.55], cap=0.55, repeat=2, value=0.75)
+
+
+def rd_limits(spec):
+    """The limits of the maze, rings and dots (the species file's coat.zones.rd, over these defaults): z_max, the height where stripes and the front third of the dots end; front_clear, the width round the front line (0 front to 1 back) that stays clear;
+    cap, the strongest a stripe's mark gets; repeat, how many times the field is laid round the body; value, how dark a stripe is against the coat."""
+    return {**RD_LIMITS, **((spec.get("zones") or {}).get("rd") or {})}
 
 
 def _rd(kind, seed, sc):

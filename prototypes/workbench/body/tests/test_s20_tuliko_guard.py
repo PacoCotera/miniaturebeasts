@@ -111,8 +111,9 @@ class TestGuard(unittest.TestCase):
     def test_the_lop_ear_spreads_and_hangs_and_the_lantern_is_lit_more_often(self):
         ear = [p for p in DOC["parts"] if p.get("id") == "ear.L"][0]
         lop = ear["families"]["lop"]
-        self.assertEqual(lop["plane"]["yaw"], 108)
-        self.assertEqual([j.get("pitch") for j in lop["joints"][1:]], [15, -40, -70])
+        self.assertEqual(lop["plane"]["yaw"], 100)                       # AD ruling 5 on the play screens: a flat drooping leaf, hung clear of the cheek, never level
+        self.assertEqual([j.get("pitch") for j in lop["joints"][1:]], [-20, -40, -70])
+        self.assertGreaterEqual(lop["joints"][0]["at"][1], 0.56)
         import s20genes as GN
         self.assertEqual(GN.PAIRS["body.tail-tip"][1], [0.75, 0.20, 0.05])
 
