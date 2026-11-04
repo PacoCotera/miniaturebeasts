@@ -17,7 +17,7 @@ export function useRevert(species: string) {
       await qc.invalidateQueries({ queryKey: ['species', species] })
       await qc.invalidateQueries({ queryKey: ['forms', species] })
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'The save did not reach the server.')
+      setError(e instanceof ApiError ? e.message : `The ${kind} did not reach the server.`)
     }
   }, [species, qc])
   return { run, error, clear: () => setError(null) }

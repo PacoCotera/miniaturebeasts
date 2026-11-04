@@ -87,9 +87,26 @@ export function fieldLabel(path: string, labels?: Record<string, string>, file?:
 function locusLabel(path: string, file: unknown): string | null {
   const toks = path.split('/').filter(Boolean)
   if (toks[0] !== 'genome' || toks[1] !== 'loci') return null
-  const l = ((file as { genome?: { loci?: { label?: string; limits?: string[] }[] } }).genome?.loci ?? [])[Number(toks[2])]
+  const l = ((file as { genome?: { loci?: { label?: string; locus?: string; limits?: string[] }[] } }).genome?.loci ?? [])[Number(toks[2])]
   if (!l?.label) return null
-  return [l.label.toLowerCase(), toks[3] === 'weights' && toks[4] !== undefined ? l.limits?.[Number(toks[4])] : null].filter(Boolean).join(' ')
+  if (toks[3] === 'weights' && toks[4] !== undefined) {
+    const look = l.limits?.[Number(toks[4])]
+    const words = (file as { variety?: { look_words?: Record<string, Record<string, string[]>> } }).variety?.look_words?.[l.locus ?? '']
+    return `${(look && words?.[look]?.[0] ? words[look][0] : [look, l.label].filter(Boolean).join(' ')).toLowerCase()} wild odds`
+  }
+  return l.label.toLowerCase()
+}
+// A value as History says it: a share as a percentage, a look by its short word, anything else as fmtValue.
+export function fieldValue(path: string, v: unknown, file?: unknown): string {
+  const toks = path.split('/').filter(Boolean)
+  if (toks[0] === 'genome' && toks[3] === 'weights' && typeof v === 'number') return `${Math.round(v * 100)}%`
+  if (toks[0] === 'sockets' && toks[3] === 'default' && typeof v === 'string' && file) {
+    const sid = ((file as { sockets?: { id?: string }[] }).sockets ?? [])[Number(toks[1])]?.id
+    const locus = sid === 'ear.L' ? 'form.ear-kind' : sid === 'tail.tip' ? 'anatomy.tail-tip-form' : ''
+    const w = (file as { variety?: { look_words?: Record<string, Record<string, string[]>> } }).variety?.look_words?.[locus]?.[v]
+    if (w?.[1]) return w[1]
+  }
+  return fmtValue(v)
 }
 export function fmtValue(v: unknown): string {
   if (typeof v === 'number') return String(Math.round(v * 1e4) / 1e4)

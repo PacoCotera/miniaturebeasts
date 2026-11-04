@@ -43,7 +43,7 @@ class TestKnobs(unittest.TestCase):
         d["spine"]["loft"]["head_profile"]["neck_ratio"] = 1.4
         e = V1.validate(d)
         self.assertEqual(e[0][0], "spine.loft.head_profile.neck_ratio")
-        self.assertIn("outside the biped plan's band 0.45 to 0.95", e[0][1])
+        self.assertIn("the biped plan allows 0.45 to 0.95", e[0][1])
 
 
 class TestView(unittest.TestCase):

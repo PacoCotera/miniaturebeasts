@@ -39,7 +39,7 @@ describe('a field that saves itself', () => {
   })
 
   it('puts the value back and says why, in the server\'s words, when the server refuses', async () => {
-    patch.mockRejectedValue(new ApiError(400, 'spine.tail.length is 9 H, outside the biped plan\'s band 0.6 to 1.8', 'spine.tail.length'))
+    patch.mockRejectedValue(new ApiError(400, 'spine.tail.length is 9 H; the biped plan allows 0.6 to 1.8', 'spine.tail.length'))
     const qc = new QueryClient()
     qc.setQueryData(['species', 'S20'], species(1.1))
     const { result } = renderHook(() => useField<number>(species(1.1), 'S20', PTR), { wrapper: wrap(qc) })
@@ -47,7 +47,7 @@ describe('a field that saves itself', () => {
     expect(result.current.value).toBe(9)
     await act(async () => { vi.advanceTimersByTime(700) })
     expect(result.current.value).toBe(1.1)
-    expect(result.current.error).toBe('spine.tail.length is 9 H, outside the biped plan\'s band 0.6 to 1.8')
+    expect(result.current.error).toBe('spine.tail.length is 9 H; the biped plan allows 0.6 to 1.8')
     act(() => result.current.set(1.2))
     expect(result.current.error).toBeNull()                 // the next change clears it
   })

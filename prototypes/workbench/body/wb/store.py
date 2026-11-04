@@ -213,7 +213,7 @@ class Species:
             _, u, r = self.groups()
             stack = u if kind == "undo" else r
             if not stack:
-                raise ApiError(409, "nothing to undo" if kind == "undo" else "nothing to redo", None)
+                raise ApiError(409, "Nothing to undo." if kind == "undo" else "Nothing to redo.", None)
             g = stack[-1]
             ops = []
             for e in reversed(g):

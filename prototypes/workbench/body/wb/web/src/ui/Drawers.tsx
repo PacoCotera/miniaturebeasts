@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getToken, historyOne, type Entry, type Species } from '../lib/api'
-import { clock, fieldLabel, fmtValue, initials } from '../lib/edits'
+import { clock, fieldLabel, fieldValue, initials } from '../lib/edits'
 import { useUI } from '../lib/store'
 import { useRevert } from '../lib/undo'
 import type { StudioUrl } from '../lib/url'
@@ -67,13 +67,11 @@ export function HistoryDrawer({ species, url, go }: { species: Species; url: Stu
   )
 }
 function Row({ e, species }: { e: Entry; species: Species }) {
-  const tag = e.via === 'undo' ? W.undo : e.via === 'redo' ? W.redo : null
   return (
     <li className={d.row} data-via={e.via}>
       <span className={d.time + ' num'}>{clock(e.t)}</span>
       <span className={d.avatar} data-agent={e.agent || undefined}>{initials(e.actor)}</span>
-      <span className={d.what}><b>{e.actor}</b> set {fieldLabel(e.path, species.labels, species.file)} <span className="num">{fmtValue(e.old)} → {fmtValue(e.new)}</span></span>
-      {tag && <span className={d.tag}>{tag}</span>}
+      <span className={d.what}><b>{e.actor}</b> {e.via === 'undo' ? 'undid' : e.via === 'redo' ? 'redid' : 'set'} {fieldLabel(e.path, species.labels, species.file)} <span className="num">{fieldValue(e.path, e.old, species.file)} → {fieldValue(e.path, e.new, species.file)}</span></span>
     </li>
   )
 }
@@ -82,7 +80,7 @@ function Row({ e, species }: { e: Entry; species: Species }) {
 export function FileDrawer({ species, url, go }: { species: Species; url: StudioUrl; go: Go }) {
   const lines = useMemo(() => JSON.stringify(species.file, null, 1).split('\n'), [species.file])
   return (
-    <DrawerFrame url={url} go={go} label="File" quiet={`${lines.length.toLocaleString('en-GB')} lines`}>
+    <DrawerFrame url={url} go={go} label="File" quiet={`${lines.length.toLocaleString('en-GB')} lines · Read only`}>
       <div className={d.file} tabIndex={0} aria-label="The species file as JSON, read-only">
         <pre className={d.nums} aria-hidden="true">{lines.map((_, i) => i + 1).join('\n')}</pre>
         <pre className={d.code}>{lines.join('\n')}</pre>

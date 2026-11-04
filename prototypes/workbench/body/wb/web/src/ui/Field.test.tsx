@@ -103,8 +103,8 @@ describe('the number field', () => {
     expect(on).not.toHaveBeenCalled()
   })
   it('turns the mark red while its check fails, and shows the server\'s refusal under the field', () => {
-    const { container } = render(<NumberField desc={len} value={1.8} onChange={() => {}} editable fail error="spine.tail.length is 9 H, outside the biped plan's band 0.6 to 1.8" />)
-    expect(screen.getByRole('alert').textContent).toContain('outside the biped plan')
+    const { container } = render(<NumberField desc={len} value={1.8} onChange={() => {}} editable fail error="spine.tail.length is 9 H; the biped plan allows 0.6 to 1.8" />)
+    expect(screen.getByRole('alert').textContent).toContain('the biped plan allows')
     expect(container.querySelector('[class*=fmark][class*=fail]')).toBeTruthy()
   })
 })

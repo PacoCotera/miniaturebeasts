@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Entry } from './api'
-import { clock, dottedPath, entryKey, fieldLabel, fmtValue, initials, leaseFrom, newEntries } from './edits'
+import { clock, dottedPath, entryKey, fieldLabel, fieldValue, fmtValue, initials, leaseFrom, newEntries } from './edits'
 
 const e = (over: Partial<Entry> = {}): Entry => ({ t: '2026-11-02T14:02:00.000-06:00', actor: 'agent-3', role: 'maker', agent: true, via: 'api', op: 'replace', path: '/parts/tail/joints/2/len', old: 0.21, new: 0.33, hash_before: 'a', hash_after: 'b', ...over })
 
@@ -33,8 +33,8 @@ describe('toasts for other hands', () => {
     expect(newEntries(new Set([entryKey(a)]), [a, b])).toEqual([b])
   })
   it('words: the field, the values and the avatar', () => {
-    const gfile = { genome: { loci: [{ label: 'Ear shape', limits: ['prick', 'lop', 'nub'] }] } }
-    expect(fieldLabel('/genome/loci/0/weights/1', undefined, gfile)).toBe('ear shape lop')
+    const gfile = { genome: { loci: [{ locus: 'form.ear-kind', label: 'Ear shape', limits: ['prick', 'lop', 'nub'] }] }, sockets: [{ id: 'ear.L' }], variety: { look_words: { 'form.ear-kind': { lop: ['Floppy ears', 'floppy'], prick: ['Pointy ears', 'pointy'] } } } }
+    expect(fieldLabel('/genome/loci/0/weights/1', undefined, gfile)).toBe('floppy ears wild odds')
     expect(fieldLabel('/genome/loci/0/type', undefined, gfile)).toBe('ear shape')
     expect(fieldLabel('/parts/tail/joints/2/len')).toBe('tail joint 2 length')
     expect(fieldLabel('/parts/leg.L/joints/1/r')).toBe('leg joint 1 radius')
@@ -48,6 +48,9 @@ describe('toasts for other hands', () => {
     expect(dottedPath('/parts/0/chain/1/len', file)).toBe('parts.leg.L.chain.ankle.len')
     expect(fmtValue(1.2400000001)).toBe('1.24')
     expect(fmtValue('soft')).toBe('soft')
+    expect(fieldValue('/genome/loci/0/weights/1', 0.3, gfile)).toBe('30%')
+    expect(fieldValue('/sockets/0/spec/default', 'prick', gfile)).toBe('pointy')
+    expect(fieldValue('/spine/tail/length', 1.2400000001, gfile)).toBe('1.24')
     expect(initials('agent-3')).toBe('a3')
     expect(initials('local')).toBe('LO')
   })

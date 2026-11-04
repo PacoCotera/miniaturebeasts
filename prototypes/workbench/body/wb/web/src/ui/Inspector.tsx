@@ -29,7 +29,7 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
   const part = url.sel ? forms?.parts[url.sel] : undefined
   const row = url.sel ? forms?.outline.find((r) => r.id === url.sel) : undefined
   const selLabel = part?.label ?? row?.label ?? partLabel(url.sel)
-  const selKind = row ? (row.kind === 'range' ? 'spine range' : row.kind === 'part' ? 'appendage' : null) : ['head', 'neck', 'back', 'seat', 'tail'].includes(url.sel ?? '') ? 'spine range' : 'appendage'
+  const selKind = row ? (row.kind === 'range' ? 'spine range' : row.kind === 'part' && row.under ? `on the ${row.under}` : null) : ['head', 'neck', 'back', 'seat', 'tail'].includes(url.sel ?? '') ? 'spine range' : null
   const editable = !!getToken() && !lease
   const asPlayer = useUI((u) => u.player)
   const setPlayer = useUI((u) => u.setPlayer)
@@ -49,15 +49,17 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
           <Popover.Root>
             <Popover.Trigger className={s.more} aria-label="More">⋯</Popover.Trigger>
             <Popover.Portal><Popover.Content className={s.menu} align="end" sideOffset={4}>
-              <button role="menuitemcheckbox" aria-checked={showToy} className={s.mi} disabled={!toy} onClick={() => setPlayer(!asPlayer)}><i className={s.tick} data-on={showToy || undefined} />{W.asPlayer}</button>
+              <button role="menuitemcheckbox" aria-checked={showToy} className={s.mi} disabled={!toy} title={toy ? undefined : W.noToy(selLabel ?? '')} onClick={() => setPlayer(!asPlayer)}><i className={s.tick} data-on={showToy || undefined} />{W.asPlayer}</button>
             </Popover.Content></Popover.Portal>
           </Popover.Root>
         )}</div>
       {!url.sel && line && <p className={s.line}>{line}</p>}
+      {url.sel && species && !getToken() && <p className={s.line} title={W.tokenTip}>{W.readOnly}</p>}
       {species && showToy && toy && <PlayPanel toys={toy} sentences={toysQ?.sentences} hold={toysQ?.hold} />}
       {species && part && !showToy && part.fields.some((d) => getAt(species.file, d.ptr) !== undefined) && (
         <div className={s.fields}>{part.fields.filter((d) => getAt(species.file, d.ptr) !== undefined).map((d) => <Field key={d.id} species={species} id={id} desc={d} editable={editable} rows={rows} metas={byId} />)}</div>
       )}
+      {url.sel && species && forms && !showToy && !(part?.fields ?? []).some((d) => getAt(species.file, d.ptr) !== undefined) && <p className={s.line}>{W.nothing}</p>}
       {cards.length > 0 && (
         <div className={s.cards}>
           {cards.map((r) => (

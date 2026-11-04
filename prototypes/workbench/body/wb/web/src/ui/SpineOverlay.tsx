@@ -72,7 +72,7 @@ function RangeHandle({ species, id, view, r, len, xy, scale, editable, go }: { s
   const { dragging, bind } = useDrag(scale, () => len, (dx, dy, v0, fine) => set(v0 + along(view.camera, r.tangent as V3, dx, dy) * (fine ? 0.1 : 1)), () => go({ sel: r.name }, true))
   return (
     <g className={s_.hand} data-kind="range" data-drag={dragging || undefined} data-disabled={!editable || undefined} transform={`translate(${xy[0].toFixed(1)} ${xy[1].toFixed(1)})`}
-      role="slider" tabIndex={editable ? 0 : -1} aria-label={`${r.name} length`} aria-valuemin={band[0]} aria-valuemax={band[1]} aria-valuenow={len} aria-valuetext={`${fmtNum(len)} H`} aria-disabled={!editable}
+      role="slider" tabIndex={editable ? 0 : -1} aria-label={`${r.name.charAt(0).toUpperCase()}${r.name.slice(1)} length`} aria-valuemin={band[0]} aria-valuemax={band[1]} aria-valuenow={len} aria-valuetext={`${fmtNum(len)} H`} aria-disabled={!editable}
       onKeyDown={(e) => { const dir = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0; if (editable && dir) { e.preventDefault(); set(len + dir * STEP_LEN * (e.shiftKey ? 10 : 1)) } }}
       {...(editable ? bind : {})}>
       <circle className={s_.hit} r={18} />
@@ -91,7 +91,7 @@ function KnobHandle({ species, id, view, k, value, scale, editable, go, on }: { 
   const lab = species.labels?.[k.id] ?? k.name
   return (
     <g className={s_.hand} data-kind="knob" data-on={on || undefined} data-drag={dragging || undefined} data-disabled={!editable || undefined} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}
-      role="slider" tabIndex={editable ? 0 : -1} aria-label={lab} aria-valuemin={k.band[0]} aria-valuemax={k.band[1]} aria-valuenow={value} aria-valuetext={fmtNum(value)} aria-disabled={!editable}
+      role="slider" tabIndex={editable ? 0 : -1} aria-label={lab} aria-valuemin={k.band[0]} aria-valuemax={k.band[1]} aria-valuenow={value} aria-valuetext={`${fmtNum(value)}${k.unit ? ` ${k.unit}` : ''}`} aria-disabled={!editable}
       onKeyDown={(e) => { const dir = e.key === 'ArrowUp' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowDown' || e.key === 'ArrowLeft' ? -1 : 0; if (editable && dir) { e.preventDefault(); f.set(nice(value + dir * Math.max(0.001, step) * (e.shiftKey ? 10 : 1))) } }}
       {...(editable ? bind : {})}>
       <circle className={s_.hit} r={20} />

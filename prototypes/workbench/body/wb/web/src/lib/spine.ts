@@ -6,7 +6,7 @@ import { clamp, snap } from './forms'
 export type Camera = { az: number; el: number; w: number; h: number; ppH: number; centre: [number, number, number]; right: [number, number, number]; up: [number, number, number] }
 export type V3 = [number, number, number]
 export type SpineRange = { name: string; lo: number; hi: number; id: string | null; ptr: string | null; value: number | null; band: [number, number] | null; sw: string | null; tangent: V3 }
-export type SpineKnob = { name: string; part: string; id: string; ptr: string; at: V3; axis: V3; gain: number; value: number; band: [number, number] }
+export type SpineKnob = { name: string; part: string; id: string; ptr: string; at: V3; axis: V3; gain: number; value: number; band: [number, number]; unit?: string }
 export type SpineView = { plan: string; built: boolean; camera: Camera; step: number; path: V3[]; ranges: SpineRange[]; knobs: SpineKnob[]; outline: { back: [number, number][]; front: [number, number][] } | null }
 
 export const spineOne = (id: string, hash: string) => queryOptions({ queryKey: ['spine', id, hash], queryFn: () => call<SpineView>('GET', `/api/species/${encodeURIComponent(id)}/spine`), staleTime: Infinity })

@@ -35,7 +35,7 @@ describe('the families\' weights', () => {
   })
 })
 
-describe('as the player sees it', () => {
+describe('as in play', () => {
   const axis = { id: 'length', locus: 'form.tail-length', kind: 'range' as const, label: 'length', cage: true, home: 2, steps: Array.from({ length: 7 }, (_, i) => ({ i, value: 0.8 + i * 0.1, ok: i < 5, why: i < 5 ? [] : ['tail.size'], end: { genome: 'x' } })) }
   const tip = { id: 'tip', locus: 'anatomy.tail-tip-form', kind: 'choice' as const, label: 'tip', cage: true, home: 'lantern', options: [{ id: 'lantern', word: 'lantern', ok: true, why: [], end: { genome: 'x' } }, { id: 'plain', word: 'plain', ok: false, why: ['tail.size'], end: { genome: 'x' } }] }
   const toy = { id: 'tail', label: 'Tail', plain: 'Tail', hidden: false, kind: 'slider+chips', parts: ['tail'], axes: [axis, tip] }

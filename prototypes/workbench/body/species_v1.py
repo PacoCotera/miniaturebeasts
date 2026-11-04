@@ -52,7 +52,7 @@ SCHEMA = dict(
         ranges=dict(type="list", label="Ranges", help="The spine's named ranges, in the plan's order, with their lengths.", stage="shape",
                     item=dict(name=text("Range", "The range's name.", stage="shape"), length=num("Length", "The range's length along the spine; the last range runs to the end.", rng=None, nullable=True))),
         head_attach=obj("Head attachment", "Where the head sits on the spine. The kind is the plan's.", dict(
-            a=num("Head a", "How far in from the back of the head's depth the spine ends.", rng="a", unit="× depth"), d=num("Head d", "How far forward of the spine axis the head's centre lies.", rng="d", unit="× depth"),
+            a=num("Head spine reach", "How far in from the back of the head's depth the spine ends.", rng="a", unit="× depth"), d=num("Head overhang", "How far forward of the spine axis the head's centre lies.", rng="d", unit="× depth"),
             z_under=num("Head underside", "The height of the head's underside, where the spine ends.", rng=(0.9, 1.5))), required=["a", "d", "z_under"]),
         seat=obj("Seat", "The seat's size.", dict(radius=num("Seat radius", "The seat's radius; the tail's root is measured against it.", rng="seat_radius")), required=["radius"]),
         tail=obj("Tail", "The tail range of the spine.", dict(
@@ -70,10 +70,10 @@ SCHEMA = dict(
             required=["length", "root", "tip_r", "root_at", "segments"]),
         loft=obj("Spine loft", "The loft's profile knobs, and the section table and mesh topology that travel with them (the table is derived from the knobs; the topology is the plan's, until it owns it).", dict(
             head_profile=obj("Profile", "The knobs that shape the loft's section table: the head ball, the neck band, the chest and the rump. The table is worked out from these and is never edited.", dict(
-                R_scale=num("Head scale", "The head ball's size, as a share of the base table's.", rng="prof_R_scale", unit="×"),
-                neck_ratio=num("Neck ratio", "The neck band's radius over the head ball's.", rng="prof_neck_ratio", unit="×"),
+                R_scale=num("Head size", "The head ball's size, as a share of the base table's.", rng="prof_R_scale", unit="×"),
+                neck_ratio=num("Neck width", "The neck band's radius over the head ball's.", rng="prof_neck_ratio", unit="× head"),
                 chest_front=num("Chest swell", "How far the chest's front swells out under the neck band.", rng="prof_chest_front", unit="×"),
-                rump_gain=num("Rump fullness", "How far the back swells at the seat, under the tail.", rng="prof_rump_gain", unit="×")), rest=True)), rest=True),
+                rump_gain=num("Seat fullness", "How far the back swells at the seat, under the tail.", rng="prof_rump_gain", unit="×")), rest=True)), rest=True),
     ), required=["ranges", "head_attach", "seat", "tail", "loft"]),
     skeleton=obj("Skeleton", "The girdles that anchor the limbs.", dict(chest=vec3("Chest joint", "The chest joint, on the back range."), pelvis=vec3("Pelvis joint", "The pelvis joint, in the seat range."),
                                                                          shoulder=vec3("Shoulder joint", "Where the arm's shell sits."), hip=text("Hip joint", "Where the leg's root is taken from.", stage="shape"), note=text("Note", "A note.", stage="shape")), required=["chest", "pelvis"]),
@@ -83,7 +83,7 @@ SCHEMA = dict(
                                                                                                                                  spec=free("Socket details", "Patch, columns, push and the rest of the socket's numbers.")), required=["join"], rest=True),
         root=free("Root joint", "A limb's root joint: where it is, its radius and its role."), chain=dict(type="list", label="Chain", help="A limb's joints after the root, each with its length, pitch and radius.", stage="shape", item=dict(
             joint=text("Joint", "The joint's name.", stage="shape"), len=num("Length", "The segment's length.", rng=(0.0, 1.5)), pitch=num("Pitch", "The segment's pitch.", rng=(-720, 720), unit="°"), r=dict(type="pair", label="Radius", help="The segment's radius at its start and end.", stage="shape", unit="H"), role=text("Role", "The joint's role.", stage="shape"), apex=text("Bend side", "Which way the joint bends (fwd or back).", stage="shape"))),
-        families=free("Families", "An appendage's families and their joints."), default=text("Default family", "The family a new individual starts with.", stage="shape"), mirror=text("Mirror", "lateral or centre.", stage="shape"),
+        families=free("Families", "An appendage's families and their joints."), default=text("Default look", "The family a new individual starts with.", stage="shape"), mirror=text("Mirror", "lateral or centre.", stage="shape"),
         family=text("Family reference", "A reference into the body plan.", stage="shape"), topology=free("Mesh topology", "Rings, edge length and the rest of the part's topology (the plan will own them)."),
         fillet=num("Roundness", "The path's fillet.", rng=(0.5, 3.0), unit=""), end=free("End", "How the part's end is capped."), plane=free("Plane", "The plane the chain bends in."), note=text("Note", "A note.", stage="shape")),
         required=["id", "kind", "socket"]),
@@ -172,7 +172,7 @@ def _check(path, v, f, plan, errs):
             return
         r = _range(f, plan)
         if r and not (r[0] <= v <= r[1]):
-            errs.append((path, f"{path} is {v:g}{(' ' + f['unit']) if f.get('unit') else ''}, outside the {doc_plan_name(plan)} plan's band {r[0]:g} to {r[1]:g}"))
+            errs.append((path, f"{path} is {v:g}{(' ' + f['unit']) if f.get('unit') else ''}; the {doc_plan_name(plan)} plan allows {r[0]:g} to {r[1]:g}"))
     elif t == "text":
         if not isinstance(v, str):
             errs.append((path, f"{path}: must be text, got {_kind(v)}"))
@@ -250,7 +250,7 @@ def validate(doc):
                     lo_hi = plan["range_len"].get(r["name"])
                     L = r.get("length")
                     if lo_hi and isinstance(L, (int, float)) and not (lo_hi[0] <= L <= lo_hi[1]):
-                        errs.append((f"spine.ranges.{r['name']}.length", f"spine.ranges.{r['name']}.length is {L:g} H, outside the {doc_plan_name(plan)} plan's band {lo_hi[0]:g} to {lo_hi[1]:g}"))
+                        errs.append((f"spine.ranges.{r['name']}.length", f"spine.ranges.{r['name']}.length is {L:g} H; the {doc_plan_name(plan)} plan allows {lo_hi[0]:g} to {lo_hi[1]:g}"))
         ha = doc["spine"].get("head_attach")
         if isinstance(ha, dict) and plan["attach"] == "back" and ha.get("a", 0) not in (0, 0.0):
             errs.append(("spine.head_attach.a", "spine.head_attach.a: a quadruped's head is entered from behind on the spine axis, so a is 0"))

@@ -8,10 +8,12 @@ export const W = {
   leaseBanner: (who: string) => `${who} is editing`, // st.lease.banner
   takeOver: 'Take over', // st.lease.banner
   undo: 'Undo', // st.toast.edit
-  asPlayer: 'Show as player sees it', // ui 4.3 (the Inspector's ⋯ menu); owed to the copywriter
+  asPlayer: 'Show as in play', // ui 4.3 (the Inspector's ⋯ menu); cw-chunks-21-22
+  noToy: (part: string) => `${part} has no toy in play.`, // the menu item's tooltip when it is grey
+  readOnly: 'Read only · no edit token', tokenTip: 'Open the page with ?token=… to edit.', nothing: 'Nothing to set here yet.', // the inspector, cw-chunks-21-22
   redo: 'Redo', // ui 4.5 (Z, Shift Z)
   drawer: { checks: 'Checks', history: 'History', file: 'File (JSON)', section: 'Section table' }, // ui 3.2 Drawer; the section table's name and notes are owed to the copywriter
-  section: { cols: ['Height', 'Back', 'Side', 'Front'], rows: (n: number) => `${n} rows`, note: 'Worked out from the profile knobs. Not edited.' }, // owed to the copywriter
+  section: { cols: ['Height', 'Back radius', 'Side radius', 'Front radius'], rows: (n: number) => `${n} rows`, note: 'From the profile knobs · Read only' }, // cw-chunks-21-22
   viewBar: ['Plush', 'Clay', 'Normal', 'Parts', 'Wire'], // ui 3.2 ViewBar
   before: 'Before', // ui 3.2 ViewBar
   help: { go: 'Go to', do: 'Do', choose: 'choose', run: 'run', everyKey: 'every key' }, // ui mock 10

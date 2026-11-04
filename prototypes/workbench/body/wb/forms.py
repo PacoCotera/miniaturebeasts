@@ -150,6 +150,10 @@ def look_names(doc, locus, ids):
     return {i: list(words[i]) for i in ids if isinstance(words.get(i), list) and len(words[i]) == 2}
 
 
+# The studio's names for looks the file has no words for (a socket's families that are not traits): the look's name, then its id in brackets so the id never goes missing (cw-chunks-21-22).
+STUDIO_LOOKS = {"none": ["Smooth crown (smooth)", "smooth"], "cowlick": ["Cowlick (cowlick)", "cowlick"], "frond": ["Frond ears (frond)", "frond"]}
+
+
 def socket_fields(doc, part):
     """The join of the part's socket (hard or soft, nothing in between), the socket's default family and how often each family shows. A part's socket is the `socket` of the part (limbs and appendages) or an entry of `sockets` (crown, tail tip)."""
     lab = part.capitalize()
@@ -169,14 +173,14 @@ def socket_fields(doc, part):
         fam = spec.get("families")
         if isinstance(fam, list) and len(fam) > 1 and spec.get("default") in fam:
             d = spec_at("parts[].default")
-            out.append(dict(id=f"sockets.{sid}.default", ptr=f"/sockets/{k}/spec/default", label="Default family", full="Default family", help=d["help"], type="enum", unit="", options=list(fam),
-                            names=look_names(doc, FAMILY_LOCUS.get(part), fam)))
+            out.append(dict(id=f"sockets.{sid}.default", ptr=f"/sockets/{k}/spec/default", label="Default look", full="Default look", help=d["help"], type="enum", unit="", options=list(fam),
+                            names=dict({i: STUDIO_LOOKS[i] for i in fam if i in STUDIO_LOOKS}, **look_names(doc, FAMILY_LOCUS.get(part), fam))))
     loc = FAMILY_LOCUS.get(part)
     li = _locus_index(doc, loc) if loc else None
     if li is not None:
         l = doc["genome"]["loci"][li]
         if isinstance(l.get("weights"), list) and len(l["weights"]) == len(l.get("limits") or []):
-            out.append(dict(id=f"genome.loci.{loc}.weights", ptr=f"/genome/loci/{li}/weights", label="How often", full=f"{l.get('label', loc)}, how often each shows", help="How often each family shows in wild draws.", type="weights", unit="", options=list(l["limits"]), names=look_names(doc, loc, l["limits"])))
+            out.append(dict(id=f"genome.loci.{loc}.weights", ptr=f"/genome/loci/{li}/weights", label="Wild odds", full=f"{l.get('label', loc)}, wild odds", help="Each look's share of wild draws. They add up to 100%.", type="weights", unit="", options=list(l["limits"]), names=look_names(doc, loc, l["limits"])))
     return out
 
 

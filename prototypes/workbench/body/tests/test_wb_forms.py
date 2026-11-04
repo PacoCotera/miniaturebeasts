@@ -131,7 +131,7 @@ class TestShapeServer(unittest.TestCase):
         st, j = self.req("/api/species/S20", "PATCH", [{"op": "replace", "path": "/spine/tail/length", "value": 9}])
         self.assertEqual(st, 400)
         self.assertEqual(j["field"], "spine.tail.length")
-        self.assertIn("outside the biped plan's band 0.6 to 1.8", j["error"])
+        self.assertIn("the biped plan allows 0.6 to 1.8", j["error"])
         self.assertNotEqual(json.load(open(self.file))["spine"]["tail"]["length"], 9)
 
     def test_a_save_over_a_hand_that_changed_the_field_meanwhile_is_refused(self):
@@ -142,3 +142,30 @@ class TestShapeServer(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestCopywritersWords(unittest.TestCase):
+    """The words of chunks 21, 21B and 22 (cw-chunks-21-22): ids unchanged, labels and names the copywriter picked."""
+    def test_the_head_attachment_and_the_profile_knobs_have_plain_labels_and_the_inspector_shortens_them(self):
+        f = {x["id"]: x for x in FM.fields_of(S20, "head")}
+        self.assertEqual((f["spine.head_attach.a"]["full"], f["spine.head_attach.a"]["label"]), ("Head spine reach", "Spine reach"))
+        self.assertEqual((f["spine.head_attach.d"]["full"], f["spine.head_attach.d"]["label"]), ("Head overhang", "Overhang"))
+        self.assertEqual(f["spine.loft.head_profile.R_scale"]["full"], "Head size")
+        n = {x["id"]: x for x in FM.fields_of(S20, "neck")}["spine.loft.head_profile.neck_ratio"]
+        self.assertEqual((n["full"], n["label"], n["unit"]), ("Neck width", "Width", "× head"))
+        self.assertEqual({x["id"]: x for x in FM.fields_of(S20, "seat")}["spine.loft.head_profile.rump_gain"]["full"], "Seat fullness")
+
+    def test_default_look_and_wild_odds_replace_default_family_and_how_often(self):
+        d = {x["id"]: x for x in FM.socket_fields(S20, "ears")}
+        self.assertEqual(d["sockets.ear.L.default"]["label"], "Default look")
+        self.assertEqual(d["sockets.ear.L.default"]["names"]["frond"][0], "Frond ears (frond)")
+        w = d["genome.loci.form.ear-kind.weights"]
+        self.assertEqual((w["label"], w["full"]), ("Wild odds", "Ear shape, wild odds"))
+        self.assertEqual(w["help"], "Each look's share of wild draws. They add up to 100%.")
+        c = {x["id"]: x for x in FM.socket_fields(S20, "crown")}["sockets.crown.default"]
+        self.assertEqual([c["options"], [c["names"][o][0] for o in c["options"]]], [["none", "cowlick"], ["Smooth crown (smooth)", "Cowlick (cowlick)"]])
+
+    def test_a_refusal_says_what_the_plan_allows(self):
+        d = copy.deepcopy(S20)
+        d["spine"]["tail"]["length"] = 9
+        self.assertIn(("spine.tail.length", "spine.tail.length is 9 H; the biped plan allows 0.6 to 1.8"), V1.validate(d))

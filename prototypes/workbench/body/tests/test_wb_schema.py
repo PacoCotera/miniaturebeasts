@@ -67,7 +67,7 @@ class TestMessages(unittest.TestCase):
     def test_a_number_outside_the_plans_band(self):
         def f(d):
             d["spine"]["tail"]["root"] = 0.9
-        self.assertEqual(broken(f), [("spine.tail.root", "spine.tail.root is 0.9 × seat, outside the biped plan's band 0.1 to 0.45")])
+        self.assertEqual(broken(f), [("spine.tail.root", "spine.tail.root is 0.9 × seat; the biped plan allows 0.1 to 0.45")])
 
     def test_a_socket_without_its_join(self):
         def f(d):
@@ -131,7 +131,7 @@ class TestServer(unittest.TestCase):
         with self.assertRaises(S.ApiError) as e:
             self.srv.patch_species("S20x", [dict(op="replace", path="/spine/tail/length", value=9)], agent)
         self.assertEqual((e.exception.status, e.exception.field), (400, "spine.tail.length"))
-        self.assertIn("outside the biped plan's band 0.6 to 1.8", e.exception.message)
+        self.assertIn("the biped plan allows 0.6 to 1.8", e.exception.message)
         self.assertEqual(self.srv.species["S20x"].spec["spine"]["tail"]["length"], 1.4)
         rows = self.srv.check_file(dict(self.srv.species["S20x"].spec, spine=dict(self.srv.species["S20x"].spec["spine"], tial=1)))
         self.assertEqual(rows[0]["field"], "spine.tial")
