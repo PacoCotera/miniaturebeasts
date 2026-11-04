@@ -82,6 +82,36 @@ class LedgerTest(unittest.TestCase):
                              capture_output=True, text=True, env={**os.environ, "MB_LEDGER": self.dir}, check=True).stdout
         self.assertEqual(json.loads(out)["costUSD"], 0.5)
 
+    def put(self, tool, at, usd):
+        os.makedirs(os.path.join(self.dir, "calls"), exist_ok=True)
+        with open(os.path.join(self.dir, "calls", "2026-11.jsonl"), "a") as f:
+            f.write(json.dumps({"tool": tool, "at": at, "costUSD": usd}) + "\n")
+
+    NOW = __import__("datetime").datetime(2026, 11, 4, 18, 0, tzinfo=__import__("datetime").timezone.utc)  # noon in Mexico City
+
+    def test_day_line_under(self):
+        self.put("grow/service.py paint", "2026-11-04T17:00:00Z", 5.0)  # 100 MXN
+        self.assertAlmostEqual(ledger.require_day_line(now=self.NOW), 100.0)
+
+    def test_day_line_at_the_line(self):
+        self.put("grow/service.py paint", "2026-11-04T17:00:00Z", 12.26)  # 245.2 MXN, plus the 4.8 worst case: exactly 250
+        self.assertAlmostEqual(ledger.require_day_line(now=self.NOW), 245.2)
+        self.put("grow/service.py paint", "2026-11-04T17:20:00Z", 0.01)   # 0.2 MXN more passes the line
+        with self.assertRaises(SystemExit) as c:
+            ledger.require_day_line(now=self.NOW)
+        self.assertIn("250 MXN day line", str(c.exception))
+
+    def test_day_line_leaves_out_the_book_and_other_days(self):
+        self.put(ledger.BOOK_TOOL, "2026-11-04T17:00:00Z", 50.0)
+        self.put("grow/service.py paint", "2026-11-05T07:00:00Z", 50.0)  # 01:00 on the 5th in Mexico City: another day
+        self.put("grow/service.py paint", "2026-11-05T05:00:00Z", 1.0)   # 23:00 on the 4th in Mexico City: counts
+        self.assertAlmostEqual(ledger.require_day_line(now=self.NOW), 20.0)
+
+    def test_day_line_without_the_ledger_makes_no_call(self):
+        os.environ.pop("MB_LEDGER")
+        with self.assertRaises(SystemExit):
+            ledger.require_day_line(now=self.NOW)
+
 
 if __name__ == "__main__":
     unittest.main()
