@@ -19,7 +19,7 @@ if BODY not in sys.path:
     sys.path.insert(0, BODY)
 
 VERSION = "play-1"                     # part of the sweep's cache key: bump to re-sweep everything
-MAX_TOYS = 6
+MAX_TOYS = 7                   # five toys that shape the mibi on P2 and two that belong to the pods on P3 (How different?, Grow)
 
 
 def rng(id, locus, steps, label=None, cage=True):
@@ -30,6 +30,11 @@ def pick(id, locus, options, label=None, cage=True):
     return dict(id=id, kind="choice", locus=locus, options=options, label=label or id, cage=cage)
 
 
+def dial(id, field, options, default, label=None):
+    """A toy axis that is not a gene: the setting lives in the file's `play` block (`play.diff`, `play.grow`), is never built or swept and has no picture of its own."""
+    return dict(id=id, kind="choice", locus=f"play.{field}", options=options, label=label or id, cage=False, virtual=True, default=default)
+
+
 # The surface of a plan: each toy's id, its name in play (the copywriter's: words.md pl.toy.*), its kind, the parts of the body it moves (the checks of those parts are the ones that can stop it) and its axes.
 # The quadruped's is alike (spec 2.3): the same toys on the same named ranges, against the genes its file carries (a toy whose genes the file does not have is left out).
 _TOYS = [
@@ -38,6 +43,9 @@ _TOYS = [
     dict(id="tail", label="Tail", kind="slider+chips", parts=["tail", "seat", "legs"], axes=[rng("length", "form.tail-length", 7), rng("curl", "form.tail-curl", 5), pick("tip", "anatomy.tail-tip-form", ["lantern", "tuft", "plain"])]),
     dict(id="paint", label="Paint", kind="pots", parts=[], axes=[rng("hue", "appearance.body-hue", 8, cage=False)]),
     dict(id="pattern", label="Pattern", kind="chips", parts=[], axes=[pick("kind", "appearance.pattern-kind", ["none", "spots", "labyrinth", "rings"], cage=False)]),
+    # the pods' toys (chunk 15, spec 2.3): the width of the genes' pools for the babies, and the age at which the babies are shown (life stages: the ids are the file's, play says young, grown, elder)
+    dict(id="diff", label="How different?", kind="dial", screen="pods", parts=[], axes=[dial("width", "diff", ["alike", "some", "wild"], "some")]),
+    dict(id="grow", label="Grow", kind="grow", screen="pods", parts=[], axes=[dial("age", "grow", ["juvenile", "adult", "elder"], "juvenile")]),
 ]
 SURFACE = {"biped": _TOYS, "quadruped": _TOYS}
 BUILT = {"biped": True, "quadruped": False}            # whether the plan has a cage builder yet (the quadruped's is chunks 17-20)
@@ -74,6 +82,8 @@ def _file_toy(doc, tid):
 
 def _axis_plan(doc, ax):
     """The plan's ends of an axis as this file carries its gene: ('range', lo, hi) or ('choice', options), or None when the file has no such gene."""
+    if ax.get("virtual"):
+        return ("choice", list(ax["options"]))
     e = _entry(doc, ax["locus"])
     if e is None:
         return None
@@ -118,6 +128,9 @@ def state_of(doc):
 
 def home_of(doc, ax, eff):
     """The axis's current value: the mibi's own setting, else the type's (clamped into the axis)."""
+    if ax.get("virtual"):
+        v = (doc.get("play") or {}).get(ax["locus"].split(".", 1)[1], ax["default"]) if isinstance(doc.get("play"), dict) else ax["default"]
+        return v if v in eff[1] else ax["default"]
     e = _entry(doc, ax["locus"])
     v = state_of(doc).get(ax["locus"], e.get("type") if e else None)
     if eff[0] == "range":
@@ -143,7 +156,7 @@ def toys_of(doc, sweep=None):
             if eff is None:
                 continue
             s = (sw.get(toy["id"]) or {}).get(ax["id"]) or {}
-            a = dict(id=ax["id"], locus=ax["locus"], kind=ax["kind"], label=ax["label"], cage=ax["cage"], locked=bool(s))
+            a = dict(id=ax["id"], locus=ax["locus"], kind=ax["kind"], label=ax["label"], cage=ax["cage"], locked=bool(s), virtual=bool(ax.get("virtual")))
             e = _entry(doc, ax["locus"])
             if ax["kind"] == "range":
                 vals = steps_of(eff[1], eff[2], ax["steps"])
@@ -155,10 +168,10 @@ def toys_of(doc, sweep=None):
                 banned = {b["option"]: b["checks"] for b in s.get("banned", [])}
                 h = home_of(doc, ax, eff)
                 words = ((doc.get("variety") or {}).get("look_words") or {}).get(ax["locus"]) or {}
-                a.update(home=h, options=[dict(id=o, word=words[o][1] if isinstance(words.get(o), list) and len(words[o]) == 2 else o, ok=o not in banned, why=banned.get(o, []), end=dict(genome=f"set:{ax['locus']}={o}")) for o in eff[1]])
+                a.update(home=h, options=[dict(id=o, word=words[o][1] if isinstance(words.get(o), list) and len(words[o]) == 2 else o, ok=o not in banned, why=banned.get(o, []), end=dict(genome=None if ax.get("virtual") else f"set:{ax['locus']}={o}")) for o in eff[1]])
             axes.append(a)
         if axes:
-            out.append(dict(id=toy["id"], label=ft.get("label") if isinstance(ft.get("label"), str) and ft.get("label") else toy["label"], plain=toy["label"], hidden=bool(ft.get("hide")), kind=toy["kind"], parts=toy["parts"], axes=axes))
+            out.append(dict(id=toy["id"], label=ft.get("label") if isinstance(ft.get("label"), str) and ft.get("label") else toy["label"], plain=toy["label"], hidden=bool(ft.get("hide")), kind=toy["kind"], screen=toy.get("screen", "shape"), parts=toy["parts"], axes=axes))
     return out
 
 
@@ -180,8 +193,15 @@ def validate(doc):
     if not isinstance(p, dict):
         return [("play", "play: must be an object {toys, words, state, starter, name}")]
     for k in p:
-        if k not in ("toys", "words", "state", "starter", "name"):
-            errs.append((f"play.{k}", f"play.{k}: not a field of play (toys, words, state, starter, name)"))
+        if k not in ("toys", "words", "state", "starter", "name", "diff", "grow", "genome", "parents", "kept"):
+            errs.append((f"play.{k}", f"play.{k}: not a field of play (toys, words, state, starter, name, diff, grow, genome, parents, kept)"))
+    for k, opts in (("diff", DIALS), ("grow", GROWS)):
+        if k in p and p[k] not in opts:
+            errs.append((f"play.{k}", f"play.{k}: one of {', '.join(opts)}"))
+    if "genome" in p and not (isinstance(p["genome"], dict) and all(isinstance(v, list) and len(v) == 2 for v in p["genome"].values())):
+        errs.append(("play.genome", "play.genome: the mibi's own copies, {record: [copy, copy]}"))
+    if "parents" in p and not (isinstance(p["parents"], list) and all(isinstance(x, str) for x in p["parents"])):
+        errs.append(("play.parents", "play.parents: the ids of the mibi's parents"))
     if "name" in p and not (isinstance(p["name"], str) and 0 < len(p["name"].strip()) <= 10):
         errs.append(("play.name", "play.name: the mibi's own name, one to ten letters"))
     if "starter" in p and not isinstance(p["starter"], bool):
@@ -264,7 +284,7 @@ def validate(doc):
     if not isinstance(st, dict):
         errs.append(("play.state", "play.state: must be an object of gene to value"))
     else:
-        by = {ax["locus"]: (t, ax) for t in plan.values() for ax in t["axes"]}
+        by = {ax["locus"]: (t, ax) for t in plan.values() for ax in t["axes"] if not ax.get("virtual")}
         for locus, v in st.items():
             sp = f"play.state.{locus}"
             if locus not in by:
@@ -340,8 +360,13 @@ def axes_of(doc):
     return out
 
 
-def genome_of(state):
-    """The genome selector of a state {locus: value or allele}; an empty state is the type (the home)."""
+def genome_of(state, doc=None):
+    """The genome selector of a state {locus: value or allele}; an empty state is the type (the home). For a kept mibi (`play.genome`), the selector of its own copies with the settings that differ from them put on top."""
+    own = (doc.get("play") or {}).get("genome") if isinstance(doc, dict) and isinstance(doc.get("play"), dict) else None
+    if own:
+        mine = pod_values(doc)
+        diff = {k: v for k, v in state.items() if k not in mine or (abs(float(v) - float(mine[k])) > 1e-6 if isinstance(v, (int, float)) and isinstance(mine[k], (int, float)) else v != mine[k])}
+        return pod_selector(own, diff)
     items = [f"{k}={round(v, 6) if isinstance(v, float) else v}" for k, v in sorted(state.items())]
     return "set:" + ";".join(items) if items else "type"
 
@@ -509,6 +534,13 @@ def edit_ops(doc, toy_id, axis_id, to):
     eff = _narrowed(doc, toy, ax)
     if eff is None:
         raise ValueError(f"this file has no gene {ax['locus']}")
+    if ax.get("virtual"):
+        if to not in eff[1]:
+            raise ValueError(f"{toy_id}.{axis_id}: '{to}' is not one of {', '.join(eff[1])}")
+        key = ax["locus"].split(".", 1)[1]
+        if not isinstance(doc.get("play"), dict):
+            return [dict(op="add", path="/play", value={key: to})]
+        return [dict(op="add", path=f"/play/{key}", value=to)]
     if eff[0] == "range":
         vals = steps_of(eff[1], eff[2], ax["steps"])
         if not isinstance(to, int) or isinstance(to, bool) or not 0 <= to < len(vals):
@@ -527,8 +559,8 @@ def edit_ops(doc, toy_id, axis_id, to):
 
 
 def state_genome(doc):
-    """The genome selector that builds the mibi as its toys have it: the file's `play.state`, or the type when it has none."""
-    return genome_of(state_of(doc))
+    """The genome selector that builds the mibi as its toys have it: the file's `play.state`, or the type when it has none (a kept mibi: its own copies, with the toys' settings on top)."""
+    return genome_of(state_of(doc), doc)
 
 
 def step_state(doc, toy_id, axis_id, to):
@@ -553,7 +585,8 @@ def home_state(doc, sweep=None):
         if t["hidden"]:
             continue
         for ax in t["axes"]:
-            out[ax["locus"]] = ax["steps"][ax["home"]]["value"] if ax["kind"] == "range" else ax["home"]
+            if not ax["virtual"]:
+                out[ax["locus"]] = ax["steps"][ax["home"]]["value"] if ax["kind"] == "range" else ax["home"]
     return out
 
 
@@ -571,12 +604,316 @@ def warm_set(doc, sweep=None):
         if t["hidden"]:
             continue
         for ax in t["axes"]:
+            if ax["virtual"]:
+                continue
             items = ax["steps"] if ax["kind"] == "range" else ax["options"]
             ok = [x for x in items if x["ok"]]
             for x in ok:
                 v = x["value"] if ax["kind"] == "range" else x["id"]
-                add("step", t["id"], ax["id"], x.get("i", v), genome_of({**base, ax["locus"]: v}))
+                add("step", t["id"], ax["id"], x.get("i", v), genome_of({**base, ax["locus"]: v}, doc))
             ends = ok if (ax["kind"] == "choice" or t["id"] == "paint") else ok[:1] + ok[-1:]
             for x in ends:
                 add("end", t["id"], ax["id"], x.get("i", x.get("id")), x["end"]["genome"])
     return out
+
+
+# ---------------------------------------------------------------------------------------------------------------------------- pods and growing up (chunk 15, spec 2.1 from 3:00, 2.2 P3)
+# A pod is a cross, never a breeding: one mibi alone sheds a pod of its own line (the game's shed pod: a cross of the mibi with itself), and two mibis cross only when they are not direct kin. Every pod holds the two copies of every record, so it is a
+# whole genome of the file; the picture of a pod is the plush of that genome. The pods of one make come from the mibi, the dial and the round alone, so asking again gives the same six.
+DIALS = ("alike", "some", "wild")
+GROWS = ("juvenile", "adult", "elder")                   # the file's life stages; play says young, grown, elder
+POD_COUNT = 6
+SHED_TRIES = 24                                           # the game's: a pod that equals its parent is drawn again, and after this many draws there is no pod
+# How different? is the width of the genes' pools for the babies, inside the hard limits (a position never leaves the pool, a look is only one of the pool's): `spread` is how far a blend moves from the parent, in shares of its pool; `redraw` is the chance
+# that a copy of a look is drawn again from the pool instead of coming from the parent's two copies.
+WIDTH = dict(alike=dict(spread=0.10, redraw=0.0), some=dict(spread=0.28, redraw=0.12), wild=dict(spread=0.55, redraw=0.35))
+
+
+def pod_selector(copies, set_=None):
+    """The genome selector of a whole genome of copies (and the toys' settings put on top): `pod:` and compact JSON."""
+    import json
+    o = dict(copies=copies)
+    if set_:
+        o["set"] = set_
+    return "pod:" + json.dumps(o, sort_keys=True, separators=(",", ":"))
+
+
+def _tables(doc):
+    from wb import facade as F
+    ispec = F.internal(doc)
+    return F, ispec, F.tables(ispec)
+
+
+def parent_copies(doc):
+    """The mibi's two copies of every record as it stands: its own (a kept mibi, its toys' settings on top) or the type with its toys' settings."""
+    F, ispec, tbl = _tables(doc)
+    return F.genome_copies(F.resolve_genome(state_genome(doc), ispec), ispec)
+
+
+def pod_values(doc):
+    """What the kept mibi's own copies say at the toys' genes, as the toys read them: {locus: number or look}."""
+    import genomeapply as GA
+    import expressions as E
+    g, own = doc["genome"], doc["play"]["genome"]
+    out = {}
+    for t in plan_toys(doc):
+        for ax in t["axes"]:
+            e = _entry(doc, ax["locus"])
+            if ax.get("virtual") or e is None or ax["locus"] not in own:
+                continue
+            if ax["kind"] == "range":
+                f, lo, hi = GA.blend_map(e)
+                tm = (E._value(ax["locus"], own[ax["locus"]][0]) + E._value(ax["locus"], own[ax["locus"]][1])) / 2.0
+                out[ax["locus"]] = GA.value_of(f, lo, hi, tm)
+            else:
+                out[ax["locus"]] = E.looks_of(g, own)[ax["locus"]]
+    return out
+
+
+def _is_tight(i):
+    import s20genes as GN
+    old = GN.SAMPLER_OF.get(i)
+    return old in GN.GENES and GN.GENES[old][3] in ("body", "face")
+
+
+def _copies_key(c):
+    return {k: sorted(str(round(x, 5)) if isinstance(x, float) else str(x) for x in v) for k, v in c.items()}
+
+
+def _redraw(e, rng):
+    import numpy as np
+    if e["op"] == "switch":
+        return "on" if rng.random() < float(e.get("weight", 0.5)) else "off"
+    al = [str(a) for a in e["limits"]]
+    w = np.array(e.get("weights") or [1.0 / len(al)] * len(al), float)
+    return str(rng.choice(al, p=w / w.sum()))
+
+
+def draw_pod(g, parent, dial, rng):
+    """One pod of one parent's copies: each position moves inside the pool by the dial's spread (the body and the face stay inside the middle 70 % of it, as the wild draws do), each look comes from one of the parent's two copies or, by the dial's
+    chance, is drawn again from the pool. Of the loud looks a pod would show, only two stay."""
+    import expressions as E
+    import s20genes as GN
+    W = WIDTH[dial]
+    out = {}
+    for e in g["loci"]:
+        i = e["locus"]
+        pc = parent[i]
+        if e["op"] == "blend":
+            if i in E.ABS_RECORD or E.is_modifier(e):
+                out[i] = list(pc)
+                continue
+            t0 = (E._value(i, pc[0]) + E._value(i, pc[1])) / 2.0
+            lo, hi = (0.15, 0.85) if _is_tight(i) else (0.0, 1.0)
+            t = GN.grid_t(min(hi, max(lo, t0 + (float(rng.random()) * 2 - 1) * W["spread"])))
+            out[i] = [t, t]
+        else:
+            out[i] = [(_redraw(e, rng) if rng.random() < W["redraw"] else pc[int(rng.integers(2))]) for _ in (0, 1)]
+    if any(c == "on" for c in out.get("anatomy.whisker-presence", [])):                 # whiskers that show have at least one whisker
+        for i_ in ("form.whisker-count",):
+            if i_ in out and E._value(i_, out[i_][0]) < 0.4:
+                out[i_] = [GN.grid_t(0.4)] * 2
+    return E.limit_loud(g, out, E.type_copies(g))
+
+
+def pod_rng(doc, parent, dial, round_no, i, tries=0):
+    import hashlib
+    import numpy as np
+    seed = int(hashlib.sha256(f"{doc.get('id')}|{sorted(_copies_key(parent).items())}|{dial}|{round_no}|{i}|{tries}".encode()).hexdigest()[:15], 16)
+    return np.random.Generator(np.random.PCG64([seed]))
+
+
+def make_pod(doc, parent, dial, round_no, i, tries=0):
+    """Pod `i` of round `round_no`: the copies, or None when the game's rule finds none (every draw equals the parent: SHED_TRIES draws)."""
+    rng = pod_rng(doc, parent, dial, round_no, i, tries)
+    pk = _copies_key(parent)
+    for _ in range(SHED_TRIES):
+        c = draw_pod(doc["genome"], parent, dial, rng)
+        if _copies_key(c) != pk:
+            return c
+    return None
+
+
+def make_pods(doc, round_no=0, dial=None, n=POD_COUNT, parent=None, tries=None):
+    """The six pods of a make: [{i, tries, copies}]. `tries[i]` is how many times pod i has been drawn again (its picture would not build)."""
+    dial = dial or (doc.get("play") or {}).get("diff") or "some"
+    if dial not in DIALS:
+        raise ValueError(f"how different? is one of {', '.join(DIALS)}")
+    parent = parent or parent_copies(doc)
+    out = []
+    for i in range(n):
+        k = (tries or {}).get(i, 0)
+        c = make_pod(doc, parent, dial, round_no, i, k)
+        if c is not None:
+            out.append(dict(i=i, tries=k, copies=c))
+    return out
+
+
+def at_stage(doc, copies, stage):
+    """The pod's copies at a life stage: a look that waits for an age the stage has not come to is put to sleep (the look's copies become the pool's first other look; what is passed on is unchanged, spec 4.2 rule 2)."""
+    import expressions as E
+    g = doc["genome"]
+    by = E.by_locus(g)
+    out = {k: list(v) for k, v in copies.items()}
+    for x in doc.get("expressions") or []:
+        if not E.stage_ok(x, stage):
+            off = next((a for a in E.pool_of(by[x["locus"]]) if str(a) != str(x["look"])), None)
+            if off is not None:
+                out[x["locus"]] = [off, off]
+    return out
+
+
+def gated_looks(doc, copies, stage):
+    """The age-gated looks this pod carries and shows at the grown stage, and whether each has come at `stage`: [(expression id, label, shows now)]."""
+    import expressions as E
+    last = E.STAGES[-1]
+    shown = E.showing(doc["genome"], doc.get("expressions") or [], copies, last)
+    return [(x["id"], x.get("label") or x["id"], x["id"] in E.showing(doc["genome"], doc.get("expressions") or [], copies, stage)) for x in (doc.get("expressions") or []) if x.get("age") and x["id"] in shown]
+
+
+def how_often(share, aged):
+    """The word under a look of the family strip: often, sometimes, rarely, or when grown for a look that waits for an age (words.md pl.family.rows)."""
+    return "grown" if aged else ("often" if share >= 50 else "sometimes" if share >= 15 else "rarely")
+
+
+def family_rows(doc, limit=4):
+    """The strip under the nest, in pictures and four short words: how often each look runs in this family (1,000 wild draws, spec 4.2). The file's expressions first, then the looks the chips offer, the commonest of the rare ones last."""
+    import expressions as E
+    g = doc["genome"]
+    ex = doc.get("expressions") or []
+    f = E.freq(g, ex, n=1000, doc_id=doc.get("id"))
+    words = ((doc.get("variety") or {}).get("look_words") or {})
+    rows = []
+    for x in ex:
+        r = f["expressions"].get(x["id"])
+        if not r:
+            continue
+        aged = bool(x.get("age"))
+        share = r["wild"]["elder" if aged else "adult"]
+        rows.append(dict(id=x["id"], label=x.get("label") or x["id"], locus=x["locus"], look=x["look"], how=how_often(share, aged), share=share))
+    for t in plan_toys(doc):
+        for ax in t["axes"]:
+            if ax["kind"] != "choice" or ax.get("virtual") or _entry(doc, ax["locus"]) is None or ax["locus"] not in f["loci"]:
+                continue
+            for o in ax["options"]:
+                share = f["loci"][ax["locus"]]["wild"].get(o)
+                w = words.get(ax["locus"], {}).get(o)
+                if share is None or not w or any(r["locus"] == ax["locus"] and r["look"] == o for r in rows) or o in ("none", "plain", "prick"):
+                    continue
+                rows.append(dict(id=f"{ax['locus']}={o}", label=w[0], locus=ax["locus"], look=o, how=how_often(share, False), share=share, toy=t["id"], axis=ax["id"]))
+    rows.sort(key=lambda r: (0 if r["how"] == "grown" else 1, -r["share"]))
+    return rows[:limit]
+
+
+# ---- two mibis cross only when they are not direct kin (the game's rule, framework/cross.mjs directKin): a parent, a grandparent or a great-grandparent with its line, and two children of the same pair never cross
+KIN_DEPTH = 3
+LINE = ["parent", "grandparent", "great-grandparent"]
+
+
+def direct_kin(x, y, lookup=lambda i: None, depth=KIN_DEPTH):
+    """None, or {rel, by}: what y is to x. A mibi is {id, parents: [id, id]}; `lookup(id)` gives a parent's record (its own parents), None when it is gone: the walk stops there, and the id still counts."""
+    def links(n):
+        return [(p, lookup(p)) for p in (n.get("parents") or [])]
+
+    def ancestors(z):
+        out = {}
+
+        def walk(n, gen):
+            for k, node in links(n):
+                if k is not None and k not in out:
+                    out[k] = gen
+                if node and gen < depth:
+                    walk(node, gen + 1)
+        walk(z, 1)
+        return out
+    ax, ay = ancestors(x), ancestors(y)
+    if y["id"] in ax:
+        return dict(rel=LINE[ax[y["id"]] - 1], by=y["id"])
+    if x["id"] in ay:
+        return dict(rel=LINE[ay[x["id"]] - 1].replace("parent", "child"), by=x["id"])
+    px, py = x.get("parents") or [], y.get("parents") or []
+    if len(px) == 2 and len(py) == 2 and sorted(px) == sorted(py):
+        return dict(rel="same-parents", by="|".join(sorted(px)))
+    return None
+
+
+def pods_with(doc, mate_doc, lookup, round_no=0, dial=None, n=POD_COUNT):
+    """Pods of two mibis, refused for direct kin. Raises ValueError("direct kin (rel): family does not cross"), the game's own line."""
+    import expressions as E
+    a = dict(id=doc["id"], parents=(doc.get("play") or {}).get("parents") or [])
+    b = dict(id=mate_doc["id"], parents=(mate_doc.get("play") or {}).get("parents") or [])
+    if a["id"] == b["id"]:
+        raise ValueError("one mibi is not a pair")
+    kin = direct_kin(a, b, lookup)
+    if kin:
+        raise ValueError(f"direct kin ({kin['rel']}): family does not cross")
+    if (doc.get("species") or doc.get("name")) != (mate_doc.get("species") or mate_doc.get("name")) or doc.get("genome", {}).get("clan") != mate_doc.get("genome", {}).get("clan"):
+        raise ValueError("the two are not of one species")
+    import numpy as np
+    dial = dial or "some"
+    pa, pb = parent_copies(doc), parent_copies(mate_doc)
+    out = []
+    for i in range(n):
+        import hashlib
+        rng = np.random.Generator(np.random.PCG64([int(hashlib.sha256(f"{doc['id']}|{mate_doc['id']}|{round_no}|{i}".encode()).hexdigest()[:15], 16)]))
+        out.append(dict(i=i, tries=0, copies=E.limit_loud(doc["genome"], E.cross(doc["genome"], pa, pb, rng), E.type_copies(doc["genome"]))))
+    return out
+
+
+# ---- keeping a pod: the pod becomes its own species file in the player's space, a mibi of its own
+NAMES = ["Churro", "Luna", "Michi", "Pepita", "Tilo", "Nube", "Bimbo", "Tamal", "Mochi", "Pico", "Lola", "Fresa"]       # the namer's offers (words.md pl.name.picks names three of them; the game's namer owns the real list)
+
+
+def valid_name(n):
+    return isinstance(n, str) and 0 < len(n.strip()) <= 10 and n.strip().replace("-", "").replace(" ", "").isalpha()
+
+
+def name_picks(doc, k=3, round_no=0):
+    """Three of the namer's names, the same three each time for one mibi and round."""
+    import hashlib
+    h = int(hashlib.sha256(f"{doc.get('id')}|{round_no}".encode()).hexdigest()[:8], 16)
+    taken = {(doc.get("play") or {}).get("name")}
+    pool = [n for n in NAMES if n not in taken]
+    return [pool[(h + 5 * j) % len(pool)] for j in range(k)]
+
+
+def state_of_copies(doc, copies):
+    """The toys' settings of a whole genome: what a toy would show at each of its genes (a slider's value inside the axis, a chip's look). A kept mibi starts with them."""
+    import genomeapply as GA
+    import expressions as E
+    out = {}
+    looks = E.looks_of(doc["genome"], copies)
+    for t in plan_toys(doc):
+        for ax in t["axes"]:
+            if ax.get("virtual"):
+                continue
+            e = _entry(doc, ax["locus"])
+            eff = _narrowed(doc, t, ax)
+            if e is None or eff is None:
+                continue
+            if eff[0] == "range":
+                f, lo, hi = GA.blend_map(e)
+                tm = (E._value(ax["locus"], copies[ax["locus"]][0]) + E._value(ax["locus"], copies[ax["locus"]][1])) / 2.0
+                out[ax["locus"]] = min(eff[2], max(eff[1], GA.value_of(f, lo, hi, tm)))
+            else:
+                v = looks.get(ax["locus"])
+                out[ax["locus"]] = v if v in eff[1] else eff[1][0]
+    return out
+
+
+def kept_doc(doc, new_id, name, copies, diff=None, grow=None):
+    """The species file of a kept mibi: the parent's file with its own copies, its toys' settings from them, its name, and its parents (a pod's parents are the mibi that shed it, twice)."""
+    import copy as _copy
+    d = _copy.deepcopy(doc)
+    d["id"] = new_id
+    pl = dict(starter=True, kept=True, name=name.strip(), state=state_of_copies(doc, copies), genome=copies, parents=[doc["id"], doc["id"]])
+    old = doc.get("play") or {}
+    for k in ("toys", "words"):
+        if k in old:
+            pl[k] = _copy.deepcopy(old[k])
+    if diff:
+        pl["diff"] = diff
+    if grow:
+        pl["grow"] = grow
+    d["play"] = pl
+    return d

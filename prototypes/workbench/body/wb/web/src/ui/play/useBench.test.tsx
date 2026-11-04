@@ -70,7 +70,7 @@ describe('the bench (spec 2.5)', () => {
     await waitFor(() => expect(result.current.shown).toEqual({ src: expect.stringContaining('c'.repeat(64)), kind: 'clay' }))
     expect(result.current.wait?.phase).toBe('fluff')
     await act(async () => { finishPlush() })
-    await waitFor(() => expect(result.current.shown).toEqual({ src: expect.stringContaining('p'.repeat(64)), kind: 'plush' }))
+    await waitFor(() => expect(result.current.shown).toEqual({ src: expect.stringContaining('p'.repeat(64)), kind: 'plush', genome: 'g2' }))
     expect(result.current.puff).toBe(result.current.shown.src)
     expect(result.current.wait).toBeNull()
   })

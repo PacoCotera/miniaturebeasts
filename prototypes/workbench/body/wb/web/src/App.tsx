@@ -7,6 +7,7 @@ import { useUI } from './lib/store'
 const StudioPage = lazy(() => import('./shell/StudioPage')) // studio and play are two lazy route chunks of one app
 const Pick = lazy(() => import('./ui/play/PlayPage').then((m) => ({ default: m.Pick })))
 const Shape = lazy(() => import('./ui/play/PlayPage').then((m) => ({ default: m.Shape })))
+const Pods = lazy(() => import('./ui/play/PodsPage').then((m) => ({ default: m.PodsPage })))
 
 const qc = new QueryClient({ defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } } })
 
@@ -29,8 +30,10 @@ export default function App() {
             <Route path="/studio/:species/*" element={<StudioPage />} />
             <Route path="/play" element={<Pick />} />
             <Route path="/play/:species" element={<Shape />} />
+            <Route path="/play/:species/pods" element={<Pods />} />
             <Route path="/studio/play" element={<Pick />} />
             <Route path="/studio/play/:species" element={<Shape />} />
+            <Route path="/studio/play/:species/pods" element={<Pods />} />
             <Route path="*" element={null} />
           </Routes>
         </Suspense>

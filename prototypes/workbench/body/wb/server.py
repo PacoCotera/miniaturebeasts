@@ -142,7 +142,7 @@ class ProxyWorker:
             self.proc.kill()
 
 
-PLUSH_LOOK = "plush-2"                                          # the house look-dev of the plush hero (Cycles, velvet, studio light): bump when it changes, and every plush picture is drawn again
+PLUSH_LOOK = "plush-3"                                          # the house look-dev of the plush hero (Cycles, velvet, studio light): bump when it changes, and every plush picture is drawn again
 PLAY_ACTOR = dict(name="play", role="server")
 
 
@@ -171,18 +171,19 @@ class PlushWorker:
                 if self.proc is None or self.proc.poll() is not None:
                     self.start_proc()
                 tmp = srv.cas.tmp("png")
-                self.proc.stdin.write(json.dumps(dict(id=job.id, spec=job.spec, genome=job.args["genome"], out=tmp)) + "\n")
+                self.proc.stdin.write(json.dumps(dict(id=job.id, spec=job.spec, genome=job.args["genome"], out=tmp, big=bool(job.args.get("big")))) + "\n")
                 self.proc.stdin.flush()
                 line = self.proc.stdout.readline()
                 if not line:
                     raise RuntimeError("the plush worker died")
                 msg = json.loads(line)
                 if not msg["ok"]:
+                    srv.bad_pics.add(job.key)
                     srv.finish_failed(job, msg["error"], None)
                     continue
                 srv.cas.adopt(tmp, job.key, "png")
                 srv.cas.put_json(job.key, dict(plush=True, genome=job.args["genome"], ms=msg["ms"], build_ms=msg["build_ms"], plush_ms=msg["plush_ms"], look=PLUSH_LOOK))
-                res = dict(views=[dict(mode="plush", az=32, size=304, key=job.key, cached=False, ms=msg["ms"])], ms=msg["ms"], cache=dict(job_hit=False))
+                res = dict(views=[dict(mode="plush", az=32, size=608 if job.args.get("big") else 304, key=job.key, cached=False, ms=msg["ms"])], ms=msg["ms"], cache=dict(job_hit=False))
                 srv.queue.finish(job, "done", res)
                 srv.hub.emit("done", job.species, job=job.id, kind="plush", key=job.key, cached=False, ms=msg["ms"], urls=[f"/cas/{job.key}.png"], actor=(job.actor or {}).get("name"))
             except Exception as e:                                   # noqa: BLE001
@@ -203,14 +204,18 @@ class PlushWorker:
 
 
 class Server:
-    def __init__(self, home, species_dirs, static=None, host="127.0.0.1", port=0, cache_limit_gb=30.0, proxy_workers=1, trusted_proxy=None, plush_workers=2):
+    def __init__(self, home, species_dirs, static=None, host="127.0.0.1", port=0, cache_limit_gb=30.0, proxy_workers=1, trusted_proxy=None, plush_workers=2, cache=None):
         self.trusted_proxy = trusted_proxy or None
         self.home = os.path.abspath(home)
         os.makedirs(self.home, exist_ok=True)
-        self.cas = C.Cas(os.path.join(self.home, "cas"))
+        self.cas = C.Cas(os.path.abspath(cache) if cache else os.path.join(self.home, "cas"))          # `cache`: a content-addressed store kept apart from the home (the studio's own, shared with a dev server on a home of its own)
         self.cache_limit = int(cache_limit_gb * 1e9)
         self.tokens = S.Tokens(os.path.join(self.home, "tokens.json"))
         self.species_dirs = [os.path.abspath(d) for d in species_dirs]
+        self.mine_dir = os.path.join(self.home, "mine")                # the mibis the players keep: each is a species file of its own, in the player's space
+        os.makedirs(self.mine_dir, exist_ok=True)
+        self.species_dirs.append(self.mine_dir)
+        self.bad_pics = set()                                          # plush keys whose draw failed: a pod with such a picture is drawn again from the same stream
         self.static = os.path.abspath(static) if static else (STATIC_APP if os.path.isfile(os.path.join(STATIC_APP, "index.html")) else None)
         self.hub = Hub()
         self.queue = J.JobQueue()
@@ -910,7 +915,7 @@ class Server:
                     base_ids = set(self.cage_fails(job.species, spec, job.spec_hash, PL.state_genome(spec), job.actor))
 
                     def fails_of(states):
-                        jobs = [self.submit(job.species, "check", dict(genome=PL.genome_of(s), stage="cage"), job.actor, priority=2, spec=spec, spec_hash=job.spec_hash) for s in states]
+                        jobs = [self.submit(job.species, "check", dict(genome=PL.genome_of(s, spec), stage="cage"), job.actor, priority=2, spec=spec, spec_hash=job.spec_hash) for s in states]
                         out = []
                         for j in jobs:
                             j.event.wait(900)
@@ -944,6 +949,13 @@ class Server:
             ops = PL.edit_ops(spec, toy, axis, to)
         except ValueError as e:
             raise ApiError(400, str(e), f"play.{toy}.{axis}")
+        plan_ax = next((a for t in PL.plan_toys(spec) if t["id"] == toy for a in t["axes"] if a["id"] == axis), None)
+        if plan_ax and plan_ax.get("virtual"):                      # How different? and Grow are settings of the pods, not of the body: nothing to build or check, the file keeps them
+            errs = V1.validate(S.apply_patch(spec, ops))
+            if errs:
+                return dict(ok=False, refused=True, why="file", checks=[], sentence=PL.HOLD, back_to=PL.toys_of(spec)[0]["axes"][0]["home"], toy=toy, axis=axis, field=errs[0][0], hash=sp.hash)
+            res = self.patch_species(sid, ops, actor, via="play")
+            return dict(ok=True, refused=False, virtual=True, hash=res["hash"], genome=PL.state_genome(spec), state=PL.state_of(spec), plush=dict(key=None, ready=True, job=None), clay_job=None, toys=PL.toys_of(S.apply_patch(spec, ops)), **sp.can_undo_redo())
         cur_toy = next((t for t in PL.toys_of(spec) if t["id"] == toy), None)
         cur_ax = next((a for a in (cur_toy or {}).get("axes", []) if a["id"] == axis), None)
         back = None if cur_ax is None else cur_ax["home"]
@@ -996,8 +1008,8 @@ class Server:
         c, _ = F.cage_inputs(ispec, F.resolve_genome(genome, ispec))
         return H.hash_of("plush", PLUSH_LOOK, F.cage_key(n, genome), c.get("coat"), {k: ispec.get(k) for k in ("zones", "layouts", "palettes", "material", "face")})
 
-    def picture(self, spec, genome, neutral=None, nh=None):
-        """{key, ready}: where the plush of this genome is in the cache, and whether it is there."""
+    def picture(self, spec, genome, neutral=None, nh=None, big=False):
+        """{key, ready}: where the plush of this genome is in the cache, and whether it is there. `big`: the stage's picture, twice the size (608x624, the mibi filling about 85 % of the height)."""
         nh = nh or H.hash_of(neutral or self.neutral(spec))
         k = self.pic_keys.get((nh, genome))
         if k is None:
@@ -1006,6 +1018,8 @@ class Server:
             except F.BuildError as e:
                 raise ApiError(400, e.message, "genome")
             self.pic_keys[(nh, genome)] = k
+        if big:
+            k = H.hash_of("plush-big", k)
         return dict(key=k, ready=self.cas.has(k, "png", touch=False))
 
     def add_pictures(self, spec, toys, home):
@@ -1015,20 +1029,22 @@ class Server:
         nh = H.hash_of(n)
         for t in toys:
             for ax in t["axes"]:
+                if ax["virtual"]:
+                    continue
                 for x in (ax.get("steps") or ax.get("options") or []):
                     v = x["value"] if ax["kind"] == "range" else x["id"]
                     x["end"] = dict(x["end"], **self.picture(spec, x["end"]["genome"], n, nh))
-                    g = PL.genome_of({**home, ax["locus"]: v})
+                    g = PL.genome_of({**home, ax["locus"]: v}, spec)
                     x["now"] = dict(genome=g, **self.picture(spec, g, n, nh))
 
-    def submit_plush(self, sp, genome, actor, priority=None, spec=None):
-        """The plush of one genome (az 32, 304x312): from the cache at once, else a job. `priority` 1 (play) or 3 (the warm set); a job already waiting at a lower priority is moved up."""
+    def submit_plush(self, sp, genome, actor, priority=None, spec=None, big=False):
+        """The plush of one genome (az 32, 304x312, or the stage's 608x624 with `big`): from the cache at once, else a job. `priority` 1 (play) or 3 (the warm set); a job already waiting at a lower priority is moved up."""
         spec = copy.deepcopy(sp.spec) if spec is None else spec
-        pic = self.picture(spec, genome)
-        job = J.Job(self.queue.new_id(), sp.id, "plush", dict(genome=genome), pic["key"], J.PRIORITY["plush"] if priority is None else priority, spec, H.hash_of(spec), actor)
+        pic = self.picture(spec, genome, big=big)
+        job = J.Job(self.queue.new_id(), sp.id, "plush", dict(genome=genome, big=True) if big else dict(genome=genome), pic["key"], J.PRIORITY["plush"] if priority is None else priority, spec, H.hash_of(spec), actor)
         if pic["ready"]:
             job.cached, job.state = True, "done"
-            job.result = dict(views=[dict(mode="plush", az=32, size=304, key=pic["key"], cached=True, ms=0.0)], ms=0.0, cache=dict(job_hit=True))
+            job.result = dict(views=[dict(mode="plush", az=32, size=608 if big else 304, key=pic["key"], cached=True, ms=0.0)], ms=0.0, cache=dict(job_hit=True))
             job.t_start = job.t_end = time.time()
             job.event.set()
             self.queue.add(job)
@@ -1046,7 +1062,7 @@ class Server:
 
     def warm_key(self, spec, sweep_key):
         from wb import play as PL
-        return H.hash_of("warm", PLUSH_LOOK, self.neutral(spec), PL.state_of(spec), sweep_key, CH.version_id("cage"))
+        return H.hash_of("warm", PLUSH_LOOK, self.neutral(spec), PL.state_of(spec), (spec.get("play") or {}).get("genome"), sweep_key, CH.version_id("cage"))
 
     def warm_state(self, sp):
         """What the page says about the starter's warm set: {state: none | running | done, done, total, result}. It never starts anything."""
@@ -1163,8 +1179,95 @@ class Server:
                     self.submit_plush(sp, g, PLAY_ACTOR, 1)
                 except ApiError:
                     pass
-            out.append(dict(id=sp.id, name=PL.mibi_name(spec), species=spec.get("name") or sp.id, plan=spec.get("plan"), built=built, genome=g, plush=pic, warm=self.warm_state(sp) if built else None))
+            out.append(dict(id=sp.id, name=PL.mibi_name(spec), species=spec.get("name") or sp.id, plan=spec.get("plan"), built=built, genome=g, plush=pic, warm=self.warm_state(sp) if built else None, mine=bool((spec.get("play") or {}).get("kept"))))
         return out
+
+
+    # ---- play (chunk 15): the pods, growing up, keeping
+    def pic_of(self, sp, spec, genome, priority, n=None, nh=None):
+        """{key, ready, job}: the plush of a genome, from the cache or asked for."""
+        pic = self.picture(spec, genome, n, nh)
+        job = None if pic["ready"] else self.submit_plush(sp, genome, PLAY_ACTOR, priority, spec=spec)
+        return dict(pic, job=job.id if job else None)
+
+    def pods(self, sp, round_no=0, dial=None, grow=None, mate=None):
+        """The six pods of a make and their pictures at the age the Grow toy shows: each pod is a genome of the file (the mibi's own line, the dial's width, the round), asked for in order so the first hatches first. A pod whose picture would not
+        build is drawn again from the same stream. The strip under the nest and the two ends of the Grow toy come with them."""
+        from wb import play as PL
+        spec = copy.deepcopy(sp.spec)
+        pl = spec.get("play") if isinstance(spec.get("play"), dict) else {}
+        dial = dial or pl.get("diff") or "some"
+        grow = grow or pl.get("grow") or "juvenile"
+        if dial not in PL.DIALS or grow not in PL.GROWS:
+            raise ApiError(400, f"how different? is one of {', '.join(PL.DIALS)}; grow is one of {', '.join(PL.GROWS)}", "pods")
+        if not PL.BUILT.get(spec.get("plan")):
+            raise ApiError(409, f"the {spec.get('plan')} plan has no cage builder yet: its pods cannot be drawn", "plan")
+        n = self.neutral(spec)
+        nh = H.hash_of(n)
+        parent = PL.parent_copies(spec)
+        crossed = None
+        if mate:                                                   # two mibis: a cross, refused for direct kin as the game refuses it
+            m = self.get_species(mate)
+            look = lambda i: dict(id=i, parents=((self.species[i].spec.get("play") or {}).get("parents") or [])) if i in self.species else None
+            try:
+                crossed = {p_["i"]: p_ for p_ in PL.pods_with(spec, copy.deepcopy(m.spec), look, round_no, dial)}
+            except ValueError as e:
+                raise ApiError(409, str(e), "mate")
+        pods = []
+        for i in range(PL.POD_COUNT):
+            k = 0
+            while True:
+                c = crossed[i]["copies"] if crossed else PL.make_pod(spec, parent, dial, round_no, i, k)
+                if c is None:
+                    break
+                g = PL.pod_selector(PL.at_stage(spec, c, grow))
+                if self.picture(spec, g, n, nh)["key"] in self.bad_pics and k < 3 and not crossed:
+                    k += 1
+                    continue
+                break
+            if c is None:
+                continue
+            pods.append(dict(i=i, tries=k, genome=g, gated=[dict(id=a, label=b, now=now) for a, b, now in PL.gated_looks(spec, c, grow)], **self.pic_of(sp, spec, g, 1, n, nh)))
+        first = next((p for p in pods), None)
+        ends = []
+        if first:
+            c0 = PL.make_pod(spec, parent, dial, round_no, first["i"], first["tries"])
+            for st in (PL.GROWS[0], PL.GROWS[-1]):
+                ends.append(dict(stage=st, **self.pic_of(sp, spec, PL.pod_selector(PL.at_stage(spec, c0, st)), 2, n, nh)))
+        fam = PL.family_rows(spec)
+        for r in fam:
+            r["pic"] = self.pic_of(sp, spec, f"set:{r['locus']}={r['look']}", 2, n, nh)
+        return dict(round=round_no, diff=dial, grow=grow, name=PL.mibi_name(spec), species=spec.get("name") or sp.id, pods=pods, grow_ends=ends, family=fam, names=PL.NAMES)
+
+    def next_mibi_id(self):
+        n = 1 + max([int(k[1:]) for k in self.species if re.fullmatch(r"M\d{4}", k)] or [0])
+        return f"M{n:04d}"
+
+    def keep(self, sid, b, actor):
+        """Keep a pod: it becomes a species file of its own in the player's space, a mibi that joins My mibis and is shaped like a starter. Its warm set is made in the background (play_start)."""
+        from wb import play as PL
+        import species_v1 as V1
+        sp = self.get_species(sid)
+        spec = copy.deepcopy(sp.spec)
+        try:
+            round_no, i, tries = int(b.get("round", 0)), int(b["i"]), int(b.get("tries", 0))
+        except (KeyError, TypeError, ValueError):
+            raise ApiError(400, "keep needs the pod: round, i, tries", "pod")
+        pl = spec.get("play") if isinstance(spec.get("play"), dict) else {}
+        dial, grow = b.get("diff") or pl.get("diff") or "some", b.get("grow") or pl.get("grow") or "juvenile"
+        name = b.get("name")
+        if not PL.valid_name(name):
+            raise ApiError(400, "a mibi's name is one to ten letters", "name")
+        c = PL.make_pod(spec, PL.parent_copies(spec), dial, round_no, i, tries)
+        if c is None:
+            raise ApiError(404, "there is no such pod", "pod")
+        d = PL.kept_doc(spec, self.next_mibi_id(), name, c, dial, grow)
+        errs = V1.validate(d)
+        if errs:
+            raise ApiError(400, errs[0][1], errs[0][0])
+        S.write_spec(os.path.join(self.mine_dir, d["id"] + ".json"), d)
+        self.scan()
+        return dict(id=d["id"], name=d["play"]["name"], species=d.get("name"), parents=d["play"]["parents"])
 
     # ---- goldens (chunk 12): the state is read from files alone (instant); `make` and `diff` are jobs that draw the set in a Blender process of their own
     def goldens(self, sp):
@@ -1332,10 +1435,21 @@ def make_handler(srv):
                 return self.send_json(srv.toys(srv.get_species(m.group(1))))
             if p == "/api/play/starters":
                 return self.send_json(srv.starters())
+            m = re.fullmatch(r"/api/species/([^/]+)/pods", p)
+            if m:
+                try:
+                    r = int(q.get("round", ["0"])[0])
+                except ValueError:
+                    raise ApiError(400, "round is a whole number", "round")
+                return self.send_json(srv.pods(srv.get_species(m.group(1)), r, q.get("diff", [None])[0], q.get("grow", [None])[0], q.get("mate", [None])[0]))
             m = re.fullmatch(r"/api/species/([^/]+)/plush", p)
             if m:
                 sp = srv.get_species(m.group(1))
                 g = q.get("genome", [None])[0] or __import__("wb.play", fromlist=["x"]).state_genome(sp.spec)
+                if q.get("size", [None])[0] == "big":                              # the stage's sharp picture: asked for after the 304 one is on the stage, behind every move and every pod
+                    pic = srv.picture(sp.spec, g, big=True)
+                    job = None if pic["ready"] else srv.submit_plush(sp, g, PLAY_ACTOR, 2, big=True)
+                    return self.send_json(dict(genome=g, **pic, job=job.id if job else None, clay_job=None))
                 pic = srv.picture(sp.spec, g)
                 job = None if pic["ready"] else srv.submit_plush(sp, g, PLAY_ACTOR, 1)
                 clay = None if pic["ready"] else srv.submit(sp.id, "render", dict(genome=g, views=[["clay", 32, 304]]), PLAY_ACTOR, priority=0)
@@ -1472,6 +1586,9 @@ def make_handler(srv):
             if m:
                 res = srv.play_save(m.group(1), self.body() or {}, self.actor(need=True))
                 return self.send_json(res, 200 if res["ok"] else 409)
+            m = re.fullmatch(r"/api/species/([^/]+)/keep", p)
+            if m:
+                return self.send_json(srv.keep(m.group(1), self.body() or {}, self.actor(need=True)))
             m = re.fullmatch(r"/api/species/([^/]+)/(undo|redo)", p)
             if m:
                 return self.send_json(srv.revert(m.group(1), m.group(2), self.actor(need=True)))
@@ -1494,10 +1611,11 @@ def main():
     ap.add_argument("--cache-limit-gb", type=float, default=30.0)
     ap.add_argument("--proxy-workers", type=int, default=1)
     ap.add_argument("--plush-workers", type=int, default=2)
+    ap.add_argument("--cache", default="", help="the content-addressed store (default <home>/cas); the studio's persistent one is ~/studio/home/cas")
     ap.add_argument("--trusted-proxy", default="", help="the address of the proxy whose X-Studio-User header is believed (it acts as the owner); empty: the header is never believed")
     a = ap.parse_args()
     dirs = a.species or [os.path.join(BODY, d) for d in ("species_v1", "species_play")]
-    srv = Server(a.home, dirs, a.static or None, a.host, a.port, a.cache_limit_gb, a.proxy_workers, a.trusted_proxy, a.plush_workers)
+    srv = Server(a.home, dirs, a.static or None, a.host, a.port, a.cache_limit_gb, a.proxy_workers, a.trusted_proxy, a.plush_workers, a.cache or None)
     srv.start()
     import signal
     signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))          # a stop request ends the workers and removes server.json

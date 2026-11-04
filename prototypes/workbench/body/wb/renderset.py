@@ -23,6 +23,7 @@ EL = 10.0
 # the cameras: (canvas w, h) -> (px per H, centre). The house cameras of proxy.py for 304x312, 96 and 48; the others keep the house framing (the figure's feet the same share of the canvas up from the bottom)
 CAMERAS = {
     (304, 312): (95.0, (-0.35, 0.0, 1.3)),
+    (608, 624): (210.0, (-0.35, 0.0, 1.255)),                      # play's stage picture: twice the 304 canvas, the mibi filling about 85 % of its height (the 304 one fills 77 %) with its feet 3 % up from the bottom
     (96, 88): (30.0, (-0.35, 0.0, 1.3)),
     (96, 96): (30.0, (-0.35, 0.0, 1.3 + 4 / (30.0 * 0.985))),
     (48, 48): (15.0, (-0.35, 0.0, 1.25)),

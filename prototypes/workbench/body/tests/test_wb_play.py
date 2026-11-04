@@ -20,7 +20,7 @@ class TestSurface(unittest.TestCase):
     def test_the_plan_declares_up_to_six_toys_each_with_a_few_steps(self):
         toys = PL.toys_of(S20)
         self.assertLessEqual(len(toys), PL.MAX_TOYS)
-        self.assertEqual([t["id"] for t in toys], ["body", "ears", "tail", "paint", "pattern"])
+        self.assertEqual([t["id"] for t in toys], ["body", "ears", "tail", "paint", "pattern", "diff", "grow"])
         for t in toys:
             for a in t["axes"]:
                 if a["kind"] == "range":
@@ -67,7 +67,7 @@ class TestSurface(unittest.TestCase):
     def test_the_quadruped_declares_its_toys_against_the_plan_interface(self):
         d = copy.deepcopy(S20)
         d["plan"] = "quadruped"
-        self.assertEqual([t["id"] for t in PL.toys_of(d)], ["body", "ears", "tail", "paint", "pattern"])
+        self.assertEqual([t["id"] for t in PL.toys_of(d)], ["body", "ears", "tail", "paint", "pattern", "diff", "grow"])
         self.assertFalse(PL.BUILT["quadruped"])
         r = PL.unbuilt(d)
         self.assertTrue(r["unbuilt"] and r["builds"] == 0 and r["toys"] == {})
@@ -261,7 +261,7 @@ class TestServer(unittest.TestCase):
         self.assertEqual(j.state, "done")
         self.assertTrue(j.result["unbuilt"] and j.result["builds"] == 0)
         st, t = self.req("/api/species/S22/toys")
-        self.assertEqual((t["built"], len(t["toys"])), (False, 5))
+        self.assertEqual((t["built"], len(t["toys"])), (False, 7))
         st, ref = self.req("/api/species/S22/play", "POST", dict(toy="tail", axis="length", to=1))
         self.assertEqual((st, ref["why"]), (409, "unbuilt"))
 

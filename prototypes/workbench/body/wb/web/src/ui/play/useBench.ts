@@ -1,6 +1,6 @@
 import { P } from '../../lib/words'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { getJob, getLook, getSpecies, getToys, picUrl, saveMove, stepOf, undoMove, sentenceFor, type Axis, type PlayToys, type Saved } from '../../lib/play'
+import { getBig, getJob, getLook, getSpecies, getToys, picUrl, saveMove, stepOf, undoMove, sentenceFor, type Axis, type PlayToys, type Saved } from '../../lib/play'
 
 // The bench of one mibi (spec 2.5, waiting honestly). The page shows one picture at a time and keeps the last good one until a better one is ready:
 //   0 to 0.1 s   the toy clicks and the picture squishes;
@@ -8,7 +8,8 @@ import { getJob, getLook, getSpecies, getToys, picUrl, saveMove, stepOf, undoMov
 //   about 3 s    the clay of the new shape crossfades in under the sculpting hands;
 //   about 10 s   the plush fluffs in;   over 15 s  "Busy bench, yours is next." and the last good picture stays.
 // Every move takes a number; a picture or a sentence that belongs to an older move is dropped, so the latest move wins.
-export type Shown = { src: string | null; kind: 'plush' | 'clay' }
+export type Shown = { src: string | null; kind: 'plush' | 'clay'; genome?: string | null }
+export type Sharp = { genome: string; src: string }          // the stage's own picture, twice the size: it takes the place of the 304 one when it is drawn
 export type Wait = null | { phase: 'sculpt' | 'fluff' | 'busy'; dots: 1 | 2 | 3 }
 export type Say = { toy: string; text: string; n: number } | null
 
@@ -17,6 +18,7 @@ const BUSY_MS = 15000
 export function useBench(id: string) {
   const [toys, setToys] = useState<PlayToys | null>(null)
   const [shown, setShown] = useState<Shown>({ src: null, kind: 'plush' })
+  const [sharp, setSharp] = useState<Sharp | null>(null)
   const [puff, setPuff] = useState<string | null>(null)                      // the plush that arrived after a wait: it fluffs in
   const [squish, setSquish] = useState(0)
   const [wait, setWait] = useState<Wait>(null)
@@ -37,15 +39,15 @@ export function useBench(id: string) {
     return t
   }, [id])
 
-  const showPlush = useCallback((key: string, puffed: boolean) => {
-    const s: Shown = { src: picUrl(key), kind: 'plush' }
+  const showPlush = useCallback((key: string, puffed: boolean, genome?: string | null) => {
+    const s: Shown = { src: picUrl(key), kind: 'plush', genome: genome ?? null }
     good.current = s
     setShown(s)
     setPuff(puffed ? s.src : null)
   }, [])
 
   // Follow the jobs of one look until the plush is in: clay first, then plush. `n` is the move they belong to.
-  const follow = useCallback(async (n: number, clay: string | null, plush: string | null) => {
+  const follow = useCallback(async (n: number, clay: string | null, plush: string | null, genome?: string | null) => {
     const t0 = Date.now()
     setWait({ phase: 'sculpt', dots: 1 })
     let clayDone = !clay
@@ -67,7 +69,7 @@ export function useBench(id: string) {
           if (!mine()) return
           if (p.state === 'done') {
             const k = p.result?.views?.[0]?.key
-            if (k) showPlush(k, true)
+            if (k) showPlush(k, true, genome)
             setWait(null)
             return
           }
@@ -83,7 +85,7 @@ export function useBench(id: string) {
   const look = useCallback(async (n: number, genome?: string) => {
     const l = await getLook(id, genome)
     if (!alive.current || seq.current !== n) return
-    if (l.ready && l.key) { setWait(null); showPlush(l.key, false) } else await follow(n, l.clay_job, l.job)
+    if (l.ready && l.key) { setWait(null); showPlush(l.key, false, l.genome) } else await follow(n, l.clay_job, l.job, l.genome)
   }, [id, showPlush])
 
   useEffect(() => {
@@ -92,6 +94,26 @@ export function useBench(id: string) {
     getToys(id).then(async (t) => { if (!alive.current || seq.current !== n) return; setToys(t); await look(n, undefined) }).catch((e) => { if (alive.current) setError(String(e.message ?? e)) })
     getSpecies(id).then((s) => { if (alive.current) setUndo(!!s.undo?.undo) }).catch(() => undefined)
   }, [id, look])
+
+  // The stage's sharp picture: once a 304 plush has stood on the stage for a moment, the same mibi is asked for at twice the size (behind every move and every pod) and takes its place.
+  useEffect(() => {
+    const g = shown.genome
+    if (!g || shown.kind !== 'plush') return
+    let dead = false
+    const t = window.setTimeout(async () => {
+      try {
+        const r = await getBig(id, g)
+        if (dead) return
+        if (r.ready && r.key) { setSharp({ genome: g, src: picUrl(r.key) }); return }
+        while (!dead && r.job) {
+          const j = await getJob(r.job, 3)
+          if (j.state === 'done') { const k = j.result?.views?.[0]?.key; if (k && !dead) setSharp({ genome: g, src: picUrl(k) }); return }
+          if (j.state === 'failed' || j.state === 'superseded') return
+        }
+      } catch { /* the 304 picture stays */ }
+    }, 600)
+    return () => { dead = true; window.clearTimeout(t) }
+  }, [shown.genome, shown.kind, id])
 
   const sayIt = useCallback((n: number, toy: string, text: string) => { setSay({ toy, text, n }); window.setTimeout(() => { if (alive.current) setSay((s) => (s && s.n === n ? null : s)) }, 7000) }, [])
   const springBack = useCallback((key: string, back: number | string) => { setPos((p) => ({ ...p, [key]: back })); setSpring((s) => ({ ...s, [key]: (s[key] ?? 0) + 1 })); window.setTimeout(() => { if (alive.current) setPos((p) => { const q = { ...p }; delete q[key]; return q }) }, 600) }, [])
@@ -112,7 +134,7 @@ export function useBench(id: string) {
       return
     }
     const prevShown = good.current
-    if (st.now.ready && st.now.key) showPlush(st.now.key, false)         // drawn already: the answer is on the stage before the save is back
+    if (st.now.ready && st.now.key) showPlush(st.now.key, false, st.now.genome)         // drawn already: the answer is on the stage before the save is back
     setWait(st.now.ready ? null : { phase: 'sculpt', dots: 1 })
     let r: Awaited<ReturnType<typeof saveMove>>
     try { const run = saving.current.then(() => saveMove(id, toy, axis.id, to)); saving.current = run.catch(() => undefined); r = await run } catch (e) {
@@ -133,7 +155,7 @@ export function useBench(id: string) {
     setUndo(s.undo)
     void refresh().then(() => { if (alive.current) setPos((p) => { const q = { ...p }; delete q[key]; return q }) })
     if (seq.current !== n) return                             // a later move is on: it shows its own picture
-    if (s.plush.ready && s.plush.key) { setWait(null); showPlush(s.plush.key, false) } else await follow(n, s.clay_job, s.plush.job)
+    if (s.plush.ready && s.plush.key) { setWait(null); showPlush(s.plush.key, false, s.genome) } else await follow(n, s.clay_job, s.plush.job, s.genome)
   }, [toys, pos, id, follow, refresh, showPlush, sayIt, springBack])
 
   const doUndo = useCallback(async () => {
@@ -149,5 +171,5 @@ export function useBench(id: string) {
     } catch { sayIt(n, '', toys?.hold ?? '') }
   }, [id, refresh, look, sayIt, toys])
 
-  return { toys, shown, puff, squish, wait, say, pos, spring, undo, error, move, doUndo }
+  return { toys, shown, sharp, puff, squish, wait, say, pos, spring, undo, error, move, doUndo }
 }

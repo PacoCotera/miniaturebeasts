@@ -68,4 +68,22 @@ export const P = {
     'ears.kind': { on: null, sr: 'Ear shape' }, 'tail.tip': { on: null, sr: 'Tail tip' }, 'paint.hue': { on: null, sr: 'Colour' }, 'pattern.kind': { on: null, sr: 'Pattern' },
   } as Record<string, { on: string | null; sr: string }>,
   noMibis: 'No mibis yet.',
+  // P3, pods (words.md 5.3 and 5.4; ids in the comments).
+  go: 'Make pods', // pl.shape.go
+  podsTitle: (name: string) => `${name}'s pods`, // pl.pods.title
+  again: 'More pods', // pl.pods.again (the egg is the picture beside it)
+  walk: 'Walk', // pl.pods.play
+  keep: 'Keep', // pl.pods.keep
+  kept: (name: string) => `${name} is in My mibis.`, // pl.pods.kept
+  wobble: 'Hatching…', // pl.pods.wobble
+  grow: 'Grow', // pl.grow
+  growSteps: { juvenile: 'young', adult: 'grown', elder: 'elder' } as Record<string, string>, // pl.grow.steps
+  diff: 'How different?', // pl.diff
+  diffSteps: { alike: 'alike', some: 'some', wild: 'wild' } as Record<string, string>, // pl.diff.steps
+  family: 'In this family', // pl.family
+  how: { often: 'often', sometimes: 'sometimes', rarely: 'rarely', grown: 'when grown' } as Record<string, string>, // pl.family.rows
+  nameTitle: 'Name your mibi', // pl.name.title
+  nameKeep: (name: string) => `Keep ${name}`, // pl.name.keep
+  // OWED (no id in words.md yet): the nest and a pod for a screen reader, the dice, the name sheet's close, a pod that could not be drawn, a make that has nothing to show, the Grow toy's name for a screen reader.
+  nest: 'Pods', pod: (n: number) => `Pod ${n}`, dice: 'Other names', closeName: 'Close', noPod: 'This pod did not hatch.', growSr: 'Age',
 } as const

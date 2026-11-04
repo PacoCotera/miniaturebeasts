@@ -3,6 +3,7 @@
 S20's modules are used as they are; the timing wraps their stage functions for the length of one build and puts them back."""
 import contextlib
 import copy
+import json
 import os
 import sys
 import time
@@ -97,6 +98,21 @@ def resolve_genome(g, spec=None):
             else:
                 _set_value(ind, tbl, g, name, v)
         return GN.limit_loud(ind)
+    if kind == "pod":
+        # pod:<json {copies: {record: [copy, copy]}, set?: {locus: value}}>  a pod of play, or a kept mibi: every record's two copies, and the toys' settings put on top of them
+        try:
+            o = json.loads(arg)
+            ind = GN.individual_of({k: list(v) for k, v in o["copies"].items()}, tbl)
+        except (ValueError, KeyError, TypeError) as e:
+            raise BuildError(f"genome 'pod:...': the pod's copies are not readable ({type(e).__name__}: {e})", "genome")
+        for name, v in sorted((o.get("set") or {}).items()):
+            entry = locus_entry(spec, name)
+            if entry is not None and entry["op"] != "blend":
+                _set_allele(ind, spec, tbl, g, name, v)
+            else:
+                _set_value(ind, tbl, g, name, v)
+        ind.pop("copies", None) if o.get("set") else None
+        return ind
     if kind == "corner":
         bad = [x for x in arg.split("+") if x and x not in GN.LOUD]
         if bad:

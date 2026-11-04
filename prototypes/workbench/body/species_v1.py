@@ -43,7 +43,7 @@ def vec3(label, help, stage="shape"):
 # ---- the schema: path -> field. Lists name their item fields; `required` lists the keys that must be there.
 SCHEMA = dict(
     schema=dict(type="enum", values=[SCHEMA_ID], label="Schema", help="The schema this file is written in.", stage="meta"),
-    id=text("Species id", "S and two digits, unique on the server.", pattern=r"S\d\d"),
+    id=text("Species id", "S and two digits, unique on the server. A mibi a player keeps is M and four digits.", pattern=r"S\d\d|M\d{4}"),
     name=text("Name", "The species' name, once it has a cleared one."),
     plan=dict(type="enum", values=list(PLANS), label="Body plan", help="The body plan: it fixes the spine's ranges, the head attachment and the limits.", stage="meta"),
     plan_version=dict(type="int", label="Plan version", help="The version of the plan this file was made against.", stage="meta"),

@@ -142,16 +142,18 @@ for (const c of cases) {
 const playStarters = JSON.parse(readFileSync(join(here, 'fixture/play-starters.json'), 'utf8'))
 const playPlush = readFileSync(join(here, 'fixture/play-plush.png'))
 const playToys = JSON.parse(readFileSync(join(here, 'fixture/play-toys.json'), 'utf8'))
-for (const c of [{ name: 'play-pick-1440', w: 1440, h: 900, path: '/play' }, { name: 'play-pick-390', w: 390, h: 844, path: '/play' }, { name: 'play-shape-1440', w: 1440, h: 900, path: '/play/S71' }, { name: 'play-shape-390', w: 390, h: 844, path: '/play/S71' }]) {
+const playPods = JSON.parse(readFileSync(join(here, 'fixture/play-pods.json'), 'utf8'))          // chunk 15: six pods, four hatched and two still wobbling
+for (const c of [{ name: 'play-pick-1440', w: 1440, h: 900, path: '/play' }, { name: 'play-pick-390', w: 390, h: 844, path: '/play' }, { name: 'play-shape-1440', w: 1440, h: 900, path: '/play/S71' }, { name: 'play-shape-390', w: 390, h: 844, path: '/play/S71' }, { name: 'play-pods-1440', w: 1440, h: 900, path: '/play/S71/pods' }, { name: 'play-pods-390', w: 390, h: 844, path: '/play/S71/pods' }]) {
   const ctx = await browser.newContext({ viewport: { width: c.w, height: c.h }, reducedMotion: 'reduce' })
   const page = await ctx.newPage()
   await page.route('**/api/play/starters', (r) => r.fulfill({ json: playStarters }))
+  await page.route('**/api/species/S71/pods*', (r) => r.fulfill({ json: playPods }))
   await page.route('**/api/species/S71/toys', (r) => r.fulfill({ json: playToys }))
   await page.route('**/api/species/S71/plush*', (r) => r.fulfill({ json: { genome: playToys.genome, key: 'p'.repeat(64), ready: true, job: null, clay_job: null } }))
   await page.route('**/api/species/S71', (r) => r.fulfill({ json: { id: 'S71', undo: { undo: true, redo: false } } }))
   await page.route('**/cas/*.png', (r) => r.fulfill({ body: playPlush, contentType: 'image/png' }))
   await page.goto(`${base}${c.path}`)
-  await page.waitForSelector(c.path === '/play' ? '[class*=cushion]' : '[class*=tray] section')
+  await page.waitForSelector(c.path === '/play' ? '[class*=cushion]' : c.path.endsWith('/pods') ? '[role=group] img' : '[class*=tray] section')
   await page.evaluate(() => document.fonts.ready)
   await page.waitForTimeout(900)
   await judge(page, c.name, await page.screenshot())
