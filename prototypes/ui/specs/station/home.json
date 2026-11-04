@@ -232,7 +232,7 @@
    "library": {"up":"none","down":"bay","left":"vivarium","right":"none"},
    "pods": {"up":"vivarium","down":"none","left":"none","right":"incubator"},
    "incubator": {"up":"vivarium","down":"none","left":"pods","right":"companion"},
-   "companion": {"up":"settings","down":"none","left":"incubator","right":"bay"},
+   "companion": {"up":["settings","vivarium"],"down":"none","left":"incubator","right":"bay"},
    "settings": {"up":"vivarium","down":"companion","left":"none","right":"none"},
    "bay": {"up":"library","down":"none","left":"companion","right":"none"}
   },

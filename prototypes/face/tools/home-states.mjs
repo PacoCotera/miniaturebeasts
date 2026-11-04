@@ -16,6 +16,7 @@ export const SCENES = {
   "focus-companion":   { f: "companion", set: (w) => { w.adults(3); w.carry([0]); } },
   "focus-companion-away": { f: "companion", set: (w) => { w.adults(3); w.carry([0]); w.away(); } },
   "focus-bay":         { f: "bay", set: (w) => { w.adults(3); w.crates(2); } },
+  "focus-companion-nosleep": { f: "companion", sleep: false, set: (w) => { w.adults(3); w.carry([0]); } },   // the developer setting realmSleep off: no knob, no target, Companion ▲ is the Vivarium
   "focus-settings":    { f: "settings", set: (w) => { w.adults(3); w.carry([0]); } },   // the Settings knob focused: its ring and the line "Go to Settings"
   "vivarium-all-home":   { f: "room", set: (w) => { w.adults(4); w.young(2); } },
   "vivarium-some-away":  { f: "room", set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.away(); } },
@@ -71,10 +72,10 @@ export const WORLD = () => ({
 export async function homeStates(visit, { motion = false } = {}) {
   const { page, fails, fail, close } = await openStation({ motion });
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
-  const apply = (sc) => page.evaluate(([setSrc, f, lt, tm]) => {
+  const apply = (sc) => page.evaluate(([setSrc, f, lt, tm, sl]) => {
     const w = window.__world; w.reset(); eval(`(${setSrc})`)(w);
-    const S = window.__st; S.settings.light = lt; S.settings.stationTime = tm; S.settings.stationDate = "2026-10-17"; S.UI.home.f = f; S.UI.idle = false; S.UI.lastInput = performance.now(); S.goto("home");
-  }, [sc.set.toString(), sc.f, sc.light ?? "day", sc.time ?? "12:00"]);
+    const S = window.__st; S.settings.light = lt; S.settings.stationTime = tm; S.settings.stationDate = "2026-10-17"; S.settings.realmSleep = sl; S.UI.home.f = f; S.UI.idle = false; S.UI.lastInput = performance.now(); S.goto("home");
+  }, [sc.set.toString(), sc.f, sc.light ?? "day", sc.time ?? "12:00", sc.sleep ?? true]);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
       await apply(sc); await page.waitForTimeout(600);

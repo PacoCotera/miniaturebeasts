@@ -163,8 +163,10 @@ static void bezel_words(const char *key) {
 
 /* ---- the Settings knob: a slate tab on the Vivarium bezel's lower lip (regions.settings) ----
    One composed picture of the region's box in the art layer, palette-exact: the first row `lit`, the rows below it `fill`, the last row `shade` inset `inset` px each side (the rounded bottom corners). Never lit; no word on it.
-   It is drawn after the bezels, so it covers the bezel's edge row, and before the ring. */
+   It exists only when the props list the target. It is drawn after the bezels, so it covers the bezel's edge row, and before the ring. */
+static int has_target(const char *id) { int n = v_plen("focus.targets"); for (int i = 0; i < n; i++) if (strcmp(v_pstr(v_fmt("focus.targets.%d.id", i)), id) == 0) return 1; return 0; }
 static void settings_knob(void) {
+  if (!has_target("settings")) return;   /* the knob and its target come together, behind the developer setting realmSleep */
   int r[4]; v_srect(H, "regions.settings.rect", r); if (r[2] < 3 || r[3] < 3) return;
   char lit[24], fill[24], shade[24], ops[480]; spec_str(H, "regions.settings.lit", lit, sizeof lit); spec_str(H, "regions.settings.fill", fill, sizeof fill); spec_str(H, "regions.settings.shade", shade, sizeof shade);
   int in = v_si(H, "regions.settings.inset", 1), n = snprintf(ops, sizeof ops, "[[\"h\",0,0,%d,\"%s\"]", r[2], lit);

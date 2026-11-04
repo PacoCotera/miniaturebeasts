@@ -25,7 +25,7 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000, R = homeSpec.regions;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12, realmSleep: true }, T0 = 1_000_000, R = homeSpec.regions;
 
 // ---- scenes: the state through the rules, the props through the view ----
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: T0 }; return st; };
@@ -115,6 +115,14 @@ test("the pad is home.json's graph on the boxes the words drew: every vector of 
     else { assert.equal(out.length, 1, `${v.from} ${v.key}`); assert.deepEqual([out[0].t, out[0].screen, out[0].target], ["focus", "home", v.to], `${v.from} ${v.key}`); assert.notEqual(f.hash(), before, `${v.from} ${v.key}: the ring moves in the same frame`); }
   }
 });
+test("with the developer setting realmSleep off there is no Settings knob: no tab drawn, Companion ▲ is the Vivarium, and Home is station-gate's pixel for pixel round the tab", { skip }, async () => {
+  const off = (o) => { const b = scene(o); return b; };
+  const mk = scene({ adults: 2, focus: "companion" }), props = JSON.parse(JSON.stringify(mk)); props.props.focus.targets = props.props.focus.targets.filter((t) => t.id !== "settings"); Object.assign(props, { st: mk.st, sv: mk.sv });
+  const f = await start(props, { motion: false }), lg = logOf(f);
+  assert.equal((lg.regions ?? []).filter((r) => r.id === "settings").length, 0, "no knob drawn");
+  const [m] = key(f, "up"); assert.deepEqual([m.t, m.target], ["focus", "vivarium"], "Companion ▲ lands on the Vivarium"); void off;
+});
+
 test("✓ on the focus says an intent on its target (on the room, on 'room'); the room keys say theirs; ← says nothing: Home is the top", { skip }, async () => {
   const f = await start(scene({ adults: 2 }));
   let [m] = key(f, "confirm"); assert.deepEqual([m.t, m.screen, m.target, m.verb], ["intent", "home", "room", "confirm"]);
