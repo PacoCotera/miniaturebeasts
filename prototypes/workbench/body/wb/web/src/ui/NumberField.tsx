@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { clamp, fmtNum, parseNum, scrub, snap, type FieldDesc } from '../lib/forms'
+import { clamp, fmtVal, parseVal, scrub, snap, valText, type FieldDesc } from '../lib/forms'
 import { FieldBar } from './RangeBar'
 import s from './Field.module.css'
 
@@ -12,9 +12,9 @@ export function NumberField({ desc, value, onChange, editable, fail, error, savi
   const step = desc.step ?? 0.01
   const range = desc.range ?? null
   const commit = (text: string) => {
-    const n = parseNum(text)
+    const n = parseVal(text, desc.unit)
     setTyping(null)
-    if (text.trim() === fmtNum(value)) return                // what was shown, untouched: the file's own digits stay
+    if (text.trim() === fmtVal(value, desc.unit)) return                // what was shown, untouched: the file's own digits stay
     if (n !== null && n !== value) onChange(desc.type === 'int' ? Math.round(n) : n)
   }
   const unit = desc.unit ? <span className={s.unit}>{desc.unit}</span> : null
@@ -35,19 +35,19 @@ export function NumberField({ desc, value, onChange, editable, fail, error, savi
                 if (!d.moved) { d.moved = true; setScrubbing(true) }
                 onChange(scrub(d.v0, e.clientX - d.x0, desc, e.shiftKey))
               }}
-              onPointerUp={() => { const d = drag.current; drag.current = null; setScrubbing(false); if (d && !d.moved) setTyping(fmtNum(value)) }}
+              onPointerUp={() => { const d = drag.current; drag.current = null; setScrubbing(false); if (d && !d.moved) setTyping(fmtVal(value, desc.unit)) }}
               onPointerCancel={() => { drag.current = null; setScrubbing(false) }}
               onKeyDown={(e) => {
                 if (!editable) return
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setTyping(fmtNum(value)) }
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setTyping(fmtVal(value, desc.unit)) }
                 const dir = e.key === 'ArrowUp' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowDown' || e.key === 'ArrowLeft' ? -1 : 0
                 if (dir) { e.preventDefault(); onChange(clamp(snap(value + dir * step * (e.shiftKey ? 10 : 1), step), range)) }
-              }}>{fmtNum(value)}</button>
+              }}>{fmtVal(value, desc.unit)}</button>
           )}
           {unit}
         </span>
       </div>
-      {range && <FieldBar range={range} value={value} tick={tick} fail={fail} label={`${desc.full}: ${fmtNum(value)}${desc.unit ? ' ' + desc.unit : ''}, the plan allows ${fmtNum(range[0])} to ${fmtNum(range[1])}`}
+      {range && <FieldBar range={range} value={value} tick={tick} fail={fail} label={`${desc.full}: ${valText(value, desc.unit)}, the plan allows ${fmtVal(range[0], desc.unit)} to ${valText(range[1], desc.unit)}`}
         onPick={editable ? (f) => onChange(clamp(snap(range[0] + f * (range[1] - range[0]), step), range)) : undefined} />}
       {error && <p className={s.err} role="alert">{error}</p>}
     </div>

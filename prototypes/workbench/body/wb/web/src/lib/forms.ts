@@ -53,6 +53,15 @@ export function setAt<T>(file: T, ptr: string, value: unknown): T {
 
 // ---- numbers: what a field shows, what a typed or scrubbed value becomes
 export const fmtNum = (v: number) => String(Math.round(v * 1e3) / 1e3)
+// A share (unit "%") is stored as a fraction and said as a percentage with its sign: 0.05 reads "+5 %". Everything else reads as it is stored.
+export const isPct = (unit?: string) => unit === '%'
+export const fmtVal = (v: number, unit?: string) => (isPct(unit) ? `${v < 0 ? '−' : '+'}${Math.round(Math.abs(v) * 1e3) / 10}` : fmtNum(v))
+export const valText = (v: number, unit?: string) => `${fmtVal(v, unit)}${unit ? ` ${unit}` : ''}`
+// A typed percentage ("+5", "5", "5 %") back to the fraction the file holds.
+export function parseVal(text: string, unit?: string): number | null {
+  const n = parseNum(text.replace(/\s*%\s*$/, '').replace('−', '-'))
+  return n === null ? null : isPct(unit) ? Math.round(n * 10) / 1000 : n
+}
 // A typed value: a decimal comma is a point; anything that is not a number is not accepted (null), so the field goes back to what it had.
 export function parseNum(text: string): number | null {
   const t = text.trim().replace(',', '.')

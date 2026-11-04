@@ -21,9 +21,21 @@ class TestKnobs(unittest.TestCase):
 
     def test_each_range_has_its_knob_with_the_plans_band(self):
         f = FM.forms(S20)["parts"]
-        for part, knob, band in (("head", "R_scale", [0.8, 1.2]), ("neck", "neck_ratio", [0.45, 0.95]), ("back", "chest_front", [0.0, 0.12]), ("seat", "rump_gain", [0.0, 0.6])):
+        for part, knob, band in (("head", "R_scale", [0.8, 1.2]), ("neck", "neck_ratio", [0.5, 0.8]), ("back", "chest_front", [0.0, 0.12]), ("seat", "rump_gain", [0.0, 0.6])):
             d = next(x for x in f[part]["fields"] if x["id"] == f"spine.loft.head_profile.{knob}")
             self.assertEqual((d["range"], d["ptr"], d["type"]), (band, f"/spine/loft/head_profile/{knob}", "number"))
+
+    def test_the_seat_band_differs_by_plan_and_the_units_say_what_the_number_is(self):
+        self.assertEqual((V1.PLANS["biped"]["prof_rump_gain"], V1.PLANS["quadruped"]["prof_rump_gain"]), ((0.0, 0.6), (0.0, 0.3)))
+        self.assertEqual((V1.PLANS["biped"]["prof_neck_ratio"], V1.PLANS["quadruped"]["prof_neck_ratio"]), ((0.5, 0.8), (0.5, 0.8)))
+        f = {x["id"]: x["unit"] for part in FM.forms(S20)["parts"].values() for x in part["fields"]}
+        for k, u in (("R_scale", "× type"), ("neck_ratio", "× head"), ("chest_front", "%"), ("rump_gain", "%")):
+            self.assertEqual(f[f"spine.loft.head_profile.{k}"], u)
+        d = copy.deepcopy(S20)
+        d["plan"] = "quadruped"
+        d["spine"]["loft"]["head_profile"]["rump_gain"] = 0.45
+        e = [x for x in V1.validate(d) if x[0].endswith("rump_gain")]
+        self.assertIn("is +45 %; the quadruped plan allows +0 to +30 %", e[0][1])
 
     def test_a_knob_save_writes_the_table_again_in_the_same_save(self):
         new = S.apply_patch(S20, [{"op": "replace", "path": "/spine/loft/head_profile/neck_ratio", "value": 0.8}])
@@ -43,7 +55,7 @@ class TestKnobs(unittest.TestCase):
         d["spine"]["loft"]["head_profile"]["neck_ratio"] = 1.4
         e = V1.validate(d)
         self.assertEqual(e[0][0], "spine.loft.head_profile.neck_ratio")
-        self.assertIn("the biped plan allows 0.45 to 0.95", e[0][1])
+        self.assertIn("the biped plan allows 0.5 to 0.8", e[0][1])
 
 
 class TestView(unittest.TestCase):

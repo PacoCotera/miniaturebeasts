@@ -63,7 +63,7 @@ class TestFields(unittest.TestCase):
 
     def test_a_limb_lists_each_joint_by_its_name(self):
         f = self.fields("legs")
-        self.assertEqual([x["label"] for x in f.values()], ["Roundness", "Knee length", "Ankle length", "Sole length"])
+        self.assertEqual([x["label"] for x in f.values()], ["Roundness", "Hip to knee", "Knee to ankle", "Ankle to sole"])
         self.assertEqual(f["parts.leg.L.chain.knee.len"]["ptr"], "/parts/0/chain/0/len")
 
     def test_a_part_with_nothing_modelled_has_no_fields(self):

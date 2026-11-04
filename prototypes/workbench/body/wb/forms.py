@@ -120,11 +120,13 @@ def fields_of(doc, part):
             out.append(_field(doc, lab, f"/parts/{k}/fillet", f"parts.{pid}.fillet", "parts[].fillet"))
             for j, c in enumerate(parts[k].get("chain") or []):
                 if isinstance(c, dict) and isinstance(c.get("len"), (int, float)):
-                    out.append(_field(doc, lab, f"/parts/{k}/chain/{j}/len", f"parts.{pid}.chain.{c.get('joint', j)}.len", "parts[].chain[].len", label=f"{str(c.get('joint', j)).capitalize()} length"))
+                    out.append(_field(doc, lab, f"/parts/{k}/chain/{j}/len", f"parts.{pid}.chain.{c.get('joint', j)}.len", "parts[].chain[].len", label=CHAIN_LABEL.get(str(c.get("joint", j)), f"{str(c.get('joint', j)).capitalize()} length")))
     return out
 
 
 # ---------------------------------------------------------------------------------------------- chunk 21B: sockets, joins and families
+# The copywriter's names for a leg's lengths: each is the stretch that ends at the joint (ids unchanged).
+CHAIN_LABEL = {"knee": "Hip to knee", "ankle": "Knee to ankle", "sole": "Ankle to sole"}
 # Which locus holds how often each family shows (the weights of its pair-map), for a part or socket of the outline.
 FAMILY_LOCUS = {"ears": "form.ear-kind", "tip": "anatomy.tail-tip-form"}
 # The toys each part of the outline feeds in play (spec 2.3). What a toy is, its steps and its trims come from wb/play.py (the plan's declaration, narrowed by the file).

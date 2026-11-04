@@ -36,7 +36,7 @@ def run_cage(spec):
 class TestRegistry(unittest.TestCase):
     def test_twelve_checks_with_the_owners_words(self):
         metas = {m["id"]: m for m in CH.metas()}
-        self.assertEqual(len(metas), 14)                              # thirteen of the file and cage stages (chunk 9 adds the expressions check), and the extremes stage's limits (chunk 8)
+        self.assertEqual(len(metas), 15)                              # thirteen of the file and cage stages (chunk 9 adds the expressions check), and the extremes stage's limits (chunk 8)
         self.assertEqual([m for m in metas if metas[m]["stage"] == "extremes"], ["limits"])
         for i, (name, fail) in WORDS.items():
             self.assertEqual((metas[i]["name"], metas[i]["fail"]), (name, fail), i)
@@ -74,6 +74,14 @@ class TestMeasures(unittest.TestCase):
         self.assertEqual({i for i, s in st.items() if s != "pass"}, set())
         self.assertEqual(self.ok["verts"]["value"], 3382)             # 3,446 until the cat ear of 3 Nov 2026 (the ear tube is slimmer); spec 9: Tuliko was 3,606 and amber; the stalk on 8 columns (V5) and the shells at cage level (V2) bring it under 3,500
         self.assertEqual(self.ok["balance"]["value"], round(self.ok_r.balance["margin"], 4))
+
+    def test_head_to_height_is_judged_per_plan_with_a_proof(self):
+        r = self.ok["head.size"]
+        self.assertEqual((r["state"], r["extra"]["band"], r["extra"]["plan"]), ("pass", [0.35, 0.5], "biped"))
+        self.assertTrue(0.40 < r["value"] < 0.48 and r["proof"]["svg"])
+        m = F.proxy_mesh(self.ok_r.body, 1)
+        quad = CH.run("cage", CX.Ctx(s20(), self.ok_r.body, dict(self.ok_r.summary(), vertices_l1=len(m["V"])), m, doc=dict(plan="quadruped")), only=["head.size"])[0]
+        self.assertEqual((quad["state"], quad["extra"]["band"], quad["extra"]["fail"]), ("fail", [0.45, 0.6], "Head is too small for the body"))
 
     def test_the_long_tail_fails_tail_size_with_its_numbers(self):
         r = self.bad["tail.size"]
@@ -132,8 +140,8 @@ class TestServer(unittest.TestCase):
         self.srv.wait(j, 180)
         self.assertEqual(j.state, "done", j.error)
         rows = j.result["rows"]
-        self.assertEqual(len(rows), 13)
-        self.assertEqual(j.result["counts"], dict(total=13, fail=1, warn=0, need=1, passed=12))          # the long tail's mesh failed in the seat range with the root dart listed from the stalk vertex (V5); it passes since V8
+        self.assertEqual(len(rows), 14)
+        self.assertEqual(j.result["counts"], dict(total=14, fail=1, warn=0, need=1, passed=13))          # the long tail's mesh failed in the seat range with the root dart listed from the stalk vertex (V5); it passes since V8
         j2 = self.srv.submit("S20x", "check", dict(stage="all"), None)
         self.assertEqual((j2.state, j2.cached), ("done", True))
         import time
@@ -150,7 +158,7 @@ class TestServer(unittest.TestCase):
             if r.get("proof"):
                 self.assertTrue(r["proof"]["ready"], r["id"])
                 self.assertEqual(open(r["proof"]["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
-        self.assertEqual(len(self.srv.current_checks(sp)["rows"]), 13)
+        self.assertEqual(len(self.srv.current_checks(sp)["rows"]), 14)
 
     def test_the_stage_a_later_chunk_owns_is_refused_with_its_name(self):
         from wb import cli

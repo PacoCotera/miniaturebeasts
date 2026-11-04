@@ -20,7 +20,7 @@ import s from './TopBar.module.css'
 export function TopBar({ url, species, go }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>) => void }) {
   const list = useQuery(speciesList())
   const thumb = useFrames(species, 'clay')[32]?.src
-  const name = species?.file.name ?? `${url.species} · no name yet`
+  const name = species?.file.name || `${url.species} · no name yet`
   const sheet = usePortraitSheet()
   const toggleInsp = useUI((u) => u.toggleInsp)
   const qc = useQueryClient()
@@ -49,7 +49,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
             {(list.data ?? []).map((r) => (
               <Popover.Close asChild key={r.id}>
                 <Link to={buildStudioUrl({ ...url, species: r.id, sel: null })} className={s.menuRow}>
-                  <span>{r.name ?? `${r.id} · no name yet`}</span><span className={s.sub}>{r.id}</span>
+                  <span>{r.name || `${r.id} · no name yet`}</span><span className={s.sub}>{r.id}</span>
                 </Link>
               </Popover.Close>
             ))}

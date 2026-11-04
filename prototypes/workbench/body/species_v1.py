@@ -12,10 +12,10 @@ SCHEMA_ID = "mb-species/1"
 PLANS = {
     "biped": dict(ranges=["head", "neck", "back", "seat", "tail"], range_len=dict(head=(0.7, 1.3), neck=(0.15, 0.4), back=(0.6, 1.2), seat=(0.3, 0.8)), tail_length=(0.6, 1.8), tail_root=(0.1, 0.45), tip_r=(0.02, 0.1),
                   attach="underside", a=(0.2, 0.6), d=(0.0, 0.3), seat_radius=(0.4, 0.7), limb_joints=3,
-                  prof_R_scale=(0.8, 1.2), prof_neck_ratio=(0.45, 0.95), prof_chest_front=(0.0, 0.12), prof_rump_gain=(0.0, 0.6)),
+                  prof_R_scale=(0.8, 1.2), prof_neck_ratio=(0.50, 0.80), prof_chest_front=(0.0, 0.12), prof_rump_gain=(0.0, 0.6)),
     "quadruped": dict(ranges=["head", "neck", "back", "seat", "tail"], range_len=dict(head=(0.7, 1.3), neck=(0.15, 0.4), back=(0.6, 1.8), seat=(0.3, 0.8)), tail_length=(0.6, 2.4), tail_root=(0.1, 0.8), tip_r=(0.02, 0.15),
                       attach="back", a=(0.0, 0.0), d=(0.0, 0.0), seat_radius=(0.4, 0.9), limb_joints=3,
-                      prof_R_scale=(0.8, 1.2), prof_neck_ratio=(0.45, 0.95), prof_chest_front=(0.0, 0.12), prof_rump_gain=(0.0, 0.6)),
+                      prof_R_scale=(0.8, 1.2), prof_neck_ratio=(0.50, 0.80), prof_chest_front=(0.0, 0.12), prof_rump_gain=(0.0, 0.3)),
 }
 STAGES = ("shape", "face", "coat", "motion", "meta")
 
@@ -70,10 +70,10 @@ SCHEMA = dict(
             required=["length", "root", "tip_r", "root_at", "segments"]),
         loft=obj("Spine loft", "The loft's profile knobs, and the section table and mesh topology that travel with them (the table is derived from the knobs; the topology is the plan's, until it owns it).", dict(
             head_profile=obj("Profile", "The knobs that shape the loft's section table: the head ball, the neck band, the chest and the rump. The table is worked out from these and is never edited.", dict(
-                R_scale=num("Head size", "The head ball's size, as a share of the base table's.", rng="prof_R_scale", unit="×"),
+                R_scale=num("Head size", "The head ball's size, as a share of the base table's.", rng="prof_R_scale", unit="× type"),
                 neck_ratio=num("Neck width", "The neck band's radius over the head ball's.", rng="prof_neck_ratio", unit="× head"),
-                chest_front=num("Chest swell", "How far the chest's front swells out under the neck band.", rng="prof_chest_front", unit="×"),
-                rump_gain=num("Seat fullness", "How far the back swells at the seat, under the tail.", rng="prof_rump_gain", unit="×")), rest=True)), rest=True),
+                chest_front=num("Chest swell", "How far the chest's front swells out under the neck band.", rng="prof_chest_front", unit="%"),
+                rump_gain=num("Seat fullness", "How far the back swells at the seat, under the tail.", rng="prof_rump_gain", unit="%")), rest=True)), rest=True),
     ), required=["ranges", "head_attach", "seat", "tail", "loft"]),
     skeleton=obj("Skeleton", "The girdles that anchor the limbs.", dict(chest=vec3("Chest joint", "The chest joint, on the back range."), pelvis=vec3("Pelvis joint", "The pelvis joint, in the seat range."),
                                                                          shoulder=vec3("Shoulder joint", "Where the arm's shell sits."), hip=text("Hip joint", "Where the leg's root is taken from.", stage="shape"), note=text("Note", "A note.", stage="shape")), required=["chest", "pelvis"]),
@@ -172,7 +172,10 @@ def _check(path, v, f, plan, errs):
             return
         r = _range(f, plan)
         if r and not (r[0] <= v <= r[1]):
-            errs.append((path, f"{path} is {v:g}{(' ' + f['unit']) if f.get('unit') else ''}; the {doc_plan_name(plan)} plan allows {r[0]:g} to {r[1]:g}"))
+            if f.get("unit") == "%":                                         # a share is said as a percentage: 0.05 is "+5 %"
+                errs.append((path, f"{path} is +{v * 100:g} %; the {doc_plan_name(plan)} plan allows +{r[0] * 100:g} to +{r[1] * 100:g} %"))
+            else:
+                errs.append((path, f"{path} is {v:g}{(' ' + f['unit']) if f.get('unit') else ''}; the {doc_plan_name(plan)} plan allows {r[0]:g} to {r[1]:g}"))
     elif t == "text":
         if not isinstance(v, str):
             errs.append((path, f"{path}: must be text, got {_kind(v)}"))

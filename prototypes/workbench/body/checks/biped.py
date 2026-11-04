@@ -219,6 +219,40 @@ def c_head_neck(ctx):
     return row(st, f2(max(r_head, r_chest)), lim_, meas, dict(mode="clay", az=90, svg="".join(out)), dict(fail=("Back of the head is flat" if flat and not wide else None)))
 
 
+# 5b ------------------------------------------------------------------------------------------------------------------------------------------------------ head.size
+# The head's share of the standing height, H over S (the art director's chibi bands, per plan): H is the head ball's height from its chin pole to the crown, S the floor to the crown.
+HS_BANDS = dict(biped=(0.35, 0.5), quadruped=(0.45, 0.6))
+
+
+@check(id="head.size", name="Head to height", fail="Head is {size} for the body", stage="cage", version=1, part=["head"], fields=["spine.loft.head_profile.R_scale", "spine.head_attach.z_under", "parts.leg.L.chain"],
+       rule=R("2026-11-02 23:38", "Head size is the chibi read itself: the head is the biggest mass, and its height over the standing height stays in the plan's band (biped 0.35 to 0.5, quadruped 0.45 to 0.6)."),
+       limit=dict(text="head height over standing height: biped 0.35-0.5, quadruped 0.45-0.6", value=None), az=90)
+def c_head_size(ctx):
+    import headshape as HS
+    plan = (ctx.doc or {}).get("plan") if isinstance(ctx.doc, dict) else None
+    plan = plan if plan in HS_BANDS else "biped"
+    lo, hi = HS_BANDS[plan]
+    V, F, at, fp = ctx.level(2)
+    crown = float(V[np.rint(at[:, 0]).astype(int) == ctx.body.parts["torso"]][:, 2].max())             # the head's crown, ears and crests left out
+    prof = {**HS.DEFAULTS, **(ctx.body.ctx["spec"]["parts"]["torso"].get("head_profile") or {})}
+    chin = float(prof["zc"]) - float(prof["b_dn"])
+    floor = float(V[:, 2].min())
+    S_, H_ = crown - floor, crown - chin
+    r = H_ / S_
+    bad = not lo <= r <= hi
+    Pj = PR.projector(90)
+    x0 = float(np.mean(V[:, 0]))
+    (ax_, ay_), (bx_, by_), (fx_, fy_) = Pj(np.array([x0 - 1.1, 0, crown]))[0], Pj(np.array([x0 - 1.1, 0, chin]))[0], Pj(np.array([x0 - 1.1, 0, floor]))[0]
+    col = PR.RED if bad else PR.SAGE
+    out = [PR.line((ax_ - 14, ay_), (ax_ + 14, ay_), PR.INK, 3), PR.line((bx_ - 14, by_), (bx_ + 14, by_), PR.INK, 3), PR.line((fx_ - 14, fy_), (fx_ + 14, fy_), PR.INK, 3),
+           PR.line((ax_, ay_), (bx_, by_), col, 7), PR.line((bx_, by_ + 8), (fx_, fy_), PR.BLUE, 3, "8 6"),
+           PR.label(ax_ + 18, (ay_ + by_) / 2, f"head  {H_:.2f} H", col, "start"), PR.label(ax_ + 18, (by_ + fy_) / 2, f"body  {S_:.2f} H", PR.INK, "start"),
+           PR.panel(24, 628, 560, 140), PR.bar(40, 676, 400, r / 0.7, "head over height", f"{r:.2f}", col, hi / 0.7, f"{plan}: {lo:.2f} to {hi:.2f}")]
+    size = "too small" if r < lo else "too big"
+    meas = f"Head is {r:.2f} of the standing height, the {plan} band is {lo:.2f} to {hi:.2f}"
+    return row("fail" if bad else "pass", f2(r), f"{lo:.2f}-{hi:.2f}", meas, dict(mode="clay", az=90, svg="".join(out)), dict(head=H_, height=S_, band=[lo, hi], plan=plan, fail=(f"Head is {size} for the body" if bad else None)))
+
+
 # 6 -------------------------------------------------------------------------------------------------------------------------------------------------------- tail.taper
 @check(id="tail.taper", name="Tail taper", fail="Tail bulges on the way down", stage="cage", version=1, part=["tail"], fields=["spine.tail.segments", "spine.tail.taper", "spine.tail.root", "spine.tail.tip_r"],
        rule=R("2026-11-02 01:01", "Tails taper monotonically from root to tip, with no bulge, pinch and bulge again (\"looks like stuffed intestines, not cute\"); the seat flows into the tail root as one soft curve."),

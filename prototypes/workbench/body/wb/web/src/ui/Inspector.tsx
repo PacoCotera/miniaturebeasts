@@ -20,7 +20,7 @@ import s from './Inspector.module.css'
 export function Inspector({ species, id, sheet, open, url, go, genes }: { species: Species | undefined; id: string; sheet: boolean; open: boolean; url: StudioUrl; go: (p: Partial<StudioUrl>) => void; genes?: ReactNode }) {
   const lease = species ? leaseFrom(species.lease, species.history) : null
   const last = species?.history[species.history.length - 1]
-  const name = species?.file.name ?? `${id} · no name yet`
+  const name = species?.file.name || `${id} · no name yet`
   const line = [species?.file.body_plan, last && `last edit ${clock(last.t)} by ${last.actor}`].filter(Boolean).join(' · ')
   const metas = useQuery(checkMetas()).data ?? []
   const byId = Object.fromEntries(metas.map((m) => [m.id, m]))

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { Species } from '../lib/api'
-import { fmtNum, getAt, snap, clamp } from '../lib/forms'
+import { fmtNum, fmtVal, getAt, snap, clamp, valText } from '../lib/forms'
 import { along, ends, knobValue, pointAt, project, spineOne, type SpineKnob, type SpineRange, type SpineView, type V3 } from '../lib/spine'
 import { useField, useLive } from '../lib/useField'
 import s_ from './SpineOverlay.module.css'
@@ -91,13 +91,13 @@ function KnobHandle({ species, id, view, k, value, scale, editable, go, on }: { 
   const lab = species.labels?.[k.id] ?? k.name
   return (
     <g className={s_.hand} data-kind="knob" data-on={on || undefined} data-drag={dragging || undefined} data-disabled={!editable || undefined} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}
-      role="slider" tabIndex={editable ? 0 : -1} aria-label={lab} aria-valuemin={k.band[0]} aria-valuemax={k.band[1]} aria-valuenow={value} aria-valuetext={`${fmtNum(value)}${k.unit ? ` ${k.unit}` : ''}`} aria-disabled={!editable}
+      role="slider" tabIndex={editable ? 0 : -1} aria-label={lab} aria-valuemin={k.band[0]} aria-valuemax={k.band[1]} aria-valuenow={value} aria-valuetext={valText(value, k.unit)} aria-disabled={!editable}
       onKeyDown={(e) => { const dir = e.key === 'ArrowUp' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowDown' || e.key === 'ArrowLeft' ? -1 : 0; if (editable && dir) { e.preventDefault(); f.set(nice(value + dir * Math.max(0.001, step) * (e.shiftKey ? 10 : 1))) } }}
       {...(editable ? bind : {})}>
       <circle className={s_.hit} r={20} />
       <path className={s_.arrows} d="M-17 0 L-9 -5 M-17 0 L-9 5 M17 0 L9 -5 M17 0 L9 5 M-17 0 H17" />
       <rect className={s_.knob} x={-7} y={-7} width={14} height={14} rx={4} />
-      <text className={s_.klab} x={-26} y={5} textAnchor="end">{fmtNum(value)}</text>
+      <text className={s_.klab} x={-26} y={5} textAnchor="end">{fmtVal(value, k.unit)}</text>
       <text className={`${s_.klab} ${s_.kname}`} x={0} y={-17} textAnchor="middle">{lab}</text>
     </g>
   )

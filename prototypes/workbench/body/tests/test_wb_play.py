@@ -177,7 +177,7 @@ class TestServer(unittest.TestCase):
         tight["id"], tight["name"], tight["limits"] = "S21", "Tuliko, tight tail", {"tail_side_area": 0.2}
         S.write_spec(os.path.join(cls.sp, "S21.json"), tight)
         quad = copy.deepcopy(S20)
-        quad["id"], quad["name"], quad["plan"] = "S22", "Loika stand-in", "quadruped"
+        quad["id"], quad["name"], quad["plan"] = "S22", "", "quadruped"
         quad["spine"]["head_attach"].update(a=0.0, d=0.0)
         S.write_spec(os.path.join(cls.sp, "S22.json"), quad)
         cls.srv = SV.Server(os.path.join(SCRATCH, "home"), [cls.sp], proxy_workers=1)

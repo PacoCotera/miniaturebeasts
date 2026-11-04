@@ -79,3 +79,15 @@ describe('the Shape forms', () => {
     expect(optName({}, 'belly-arcs')).toBe('Belly arcs')
   })
 })
+
+describe('a share is said as a percentage', () => {
+  it('shows 0.05 as +5 % and takes +30 back as 0.3', async () => {
+    const { fmtVal, valText, parseVal } = await import('./forms')
+    expect(fmtVal(0.05, '%')).toBe('+5')
+    expect(valText(0.3, '%')).toBe('+30 %')
+    expect(valText(0.715, '× head')).toBe('0.715 × head')
+    expect(parseVal('+30', '%')).toBe(0.3)
+    expect(parseVal('5 %', '%')).toBe(0.05)
+    expect(parseVal('0.8', '× head')).toBe(0.8)
+  })
+})
