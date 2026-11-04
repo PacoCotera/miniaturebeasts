@@ -141,8 +141,8 @@ export function ModifierBox({ species, l }: { species: Species; l: Locus }) {
 }
 
 // The genome string of the selected mibi: the type, or No. N of the sheet (?ind=N). Players see and share strings (owner, 2 Nov 2026).
-export function GenomeString({ species, ind }: { species: Species; ind: number | null }) {
-  const sel = ind ? `seed:${ind}` : 'type'
+export function GenomeString({ species, ind, genome }: { species: Species; ind: number | null; genome?: string }) {
+  const sel = genome ?? (ind ? `seed:${ind}` : 'type')
   const q = useQuery(stringOne(species.id, species.hash, sel))
   const [copied, setCopied] = useState(false)
   const copy = async () => {

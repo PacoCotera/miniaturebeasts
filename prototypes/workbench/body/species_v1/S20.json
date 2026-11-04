@@ -4422,5 +4422,48 @@
    "locus": "anatomy.tail-tip-form",
    "look": "lantern"
   }
- ]
+ ],
+ "variety": {
+  "n": 12,
+  "seed": 2026,
+  "cycle": [
+   "form.ear-kind",
+   "anatomy.tail-tip-form",
+   "appearance.marking-layout",
+   "appearance.pattern-kind",
+   "appearance.glow-pattern"
+  ],
+  "hue_wheel": true,
+  "max_loud": 2,
+  "species_rules": [
+   {
+    "id": "ember",
+    "label": "The ember rule",
+    "when": [
+     {
+      "field": "hue",
+      "in": [
+       10,
+       35
+      ]
+     }
+    ],
+    "then": [
+     {
+      "any": [
+       {
+        "field": "belly",
+        "is": "dark"
+       },
+       {
+        "field": "tip",
+        "not": "lantern"
+       }
+      ]
+     }
+    ],
+    "fail": "warm hue with a lit tip and a light belly"
+   }
+  ]
+ }
 }

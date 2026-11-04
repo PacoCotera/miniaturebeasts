@@ -159,6 +159,8 @@ class Server:
         self.scan()
         self.workers = [ProxyWorker(self, i) for i in range(proxy_workers)]
         self.sheeter = threading.Thread(target=self.sheet_loop, daemon=True, name="sheets")
+        self.varieter = threading.Thread(target=self.variety_loop, daemon=True, name="variety")
+        self.runs_lock = threading.Lock()
         self.watcher = threading.Thread(target=self.watch_loop, daemon=True, name="watcher")
         self.proofs = queue.Queue()
         self.proofer = threading.Thread(target=self.proof_loop, daemon=True, name="proofs")
@@ -335,6 +337,8 @@ class Server:
         sp = self.get_species(sid)
         if kind == "check" and (args or {}).get("stage", "all") == "file":
             return self.run_check(sp, args, actor)
+        if kind == "variety":
+            return self.submit_variety(sp, args, actor)
         spec = copy.deepcopy(sp.spec) if spec is None else spec
         a = self.norm_args(kind, args, spec)
         spec_hash = spec_hash or H.hash_of(spec)
@@ -623,11 +627,121 @@ class Server:
             except Exception as e:
                 self.finish_failed(job, f"{type(e).__name__}: {e}", None)
 
+    # ---- the Variety sheet (chunk 10): the sheet's numbers are instant; its tiles are clay renders of seed:N@S genomes, cached like any other, and each run is remembered so the next can sit beside it
+    VARIETY_VIEWS = (("clay", 32, 304), ("clay", 32, 96), ("clay", 32, 48))
+
+    def runs_path(self):
+        return os.path.join(self.home, "variety-runs.json")
+
+    def runs_of(self, sid):
+        with self.runs_lock:
+            try:
+                with open(self.runs_path()) as fh:
+                    return json.load(fh).get(sid, [])
+            except (OSError, ValueError):
+                return []
+
+    def save_run(self, sid, run):
+        with self.runs_lock:
+            try:
+                with open(self.runs_path()) as fh:
+                    allr = json.load(fh)
+            except (OSError, ValueError):
+                allr = {}
+            rs = [r for r in allr.get(sid, []) if r["key"] != run["key"]] + [run]
+            allr[sid] = rs[-8:]
+            tmp = self.runs_path() + ".tmp"
+            with open(tmp, "w") as fh:
+                json.dump(allr, fh)
+            os.replace(tmp, self.runs_path())
+
+    def tile_keys(self, spec, genome):
+        ck = K.cage_key(spec, genome)
+        return {str(z): k for (m, a, z), k in zip(self.VARIETY_VIEWS, K.frames(ck, self.VARIETY_VIEWS))}
+
+    def variety_run_key(self, spec_hash, n, seed):
+        return H.hash_of("variety", spec_hash, int(n), int(seed), K.LOOK, "variety-1")
+
+    def variety(self, sp, n=None, seed=None):
+        """The Variety sheet of the file as it is now: its numbers (instant), the tile keys with whether each picture is in the cache, and the run before this one (the last run of a different file or seed)."""
+        from wb import variety as VY
+        spec = sp.spec
+        res = VY.sheet(spec, n, seed)
+        if res is None:
+            raise ApiError(400, "this species has no sampler for a Variety sheet yet", "variety")
+        for ind in res["individuals"]:
+            keys = self.tile_keys(spec, ind["genome"])
+            ind["tiles"] = {z: dict(key=k, ready=self.cas.has(k, "png")) for z, k in keys.items()}
+        cur_key = self.variety_run_key(sp.hash, res["n"], res["seed"])
+        runs = self.runs_of(sp.id)
+        prev = next((r for r in reversed(runs) if r["key"] != cur_key), None)
+        res.update(species=sp.id, hash=sp.hash, key=cur_key, ran=any(r["key"] == cur_key for r in runs), previous=prev)
+        return res
+
+    def submit_variety(self, sp, args, actor):
+        from wb import variety as VY
+        a = dict(args or {})
+        spec = copy.deepcopy(sp.spec)
+        try:
+            v = VY.settings(spec, a.get("n"), a.get("seed"))
+        except (TypeError, ValueError):
+            raise ApiError(400, "n and seed are whole numbers", "args")
+        if VY.sheet(spec, 1, v["seed"]) is None:
+            raise ApiError(400, "this species has no sampler for a Variety sheet yet", "variety")
+        spec_hash = H.hash_of(spec)
+        key = self.variety_run_key(spec_hash, v["n"], v["seed"])
+        job = J.Job(self.queue.new_id(), sp.id, "variety", dict(n=v["n"], seed=v["seed"]), key, J.PRIORITY["variety"], spec, spec_hash, actor)
+        run = next((r for r in self.runs_of(sp.id) if r["key"] == key), None)
+        if run and all(self.cas.has(k, "png") for t in run["tiles"] for k in t["keys"].values()):
+            job.cached, job.state, job.result = True, "done", dict(run, cache=dict(job_hit=True))
+            job.t_start = job.t_end = time.time()
+            job.event.set()
+            self.queue.add(job)
+            self.hub.emit("done", sp.id, job=job.id, kind="variety", cached=True, key=key, actor=(actor or {}).get("name"))
+            return job
+        active = self.queue.find_active(sp.id, "variety", key)
+        if active:
+            return active
+        self.queue.add(job)
+        self.hub.emit("queued", sp.id, job=job.id, kind="variety", priority=job.priority, key=key, actor=(actor or {}).get("name"), spec_hash=spec_hash)
+        return job
+
+    def variety_loop(self):
+        from wb import variety as VY
+        while not self.stopping:
+            job = self.queue.pop(("variety",), timeout=0.5)
+            if job is None:
+                continue
+            self.hub.emit("running", job.species, job=job.id, kind="variety")
+            try:
+                sheet = VY.sheet(job.spec, job.args["n"], job.args["seed"])
+                tiles, hits, total = [], 0, 0
+                for k, ind in enumerate(sheet["individuals"]):
+                    rj = self.submit(job.species, "render", dict(genome=ind["genome"], views=[list(v) for v in self.VARIETY_VIEWS]), job.actor, priority=job.priority, spec=job.spec, spec_hash=job.spec_hash)
+                    rj.event.wait(900)
+                    if rj.state != "done":
+                        self.finish_failed(job, f"No. {ind['n']}: " + (rj.error or f"the render job ended {rj.state}"), rj.field)
+                        break
+                    vs = rj.result["views"]
+                    hits += sum(1 for v in vs if v["cached"])
+                    total += len(vs)
+                    tiles.append(dict(n=ind["n"], genome=ind["genome"], keys={str(v["size"]): v["key"] for v in vs}, fails=[f["rule"] for f in ind["fails"]]))
+                    job.progress = round((k + 1) / len(sheet["individuals"]), 3)
+                    self.hub.emit("running", job.species, job=job.id, kind="variety", progress=job.progress)
+                else:
+                    run = dict(key=job.key, t=S.now(), spec_hash=job.spec_hash, n=job.args["n"], seed=job.args["seed"], tiles=tiles, failing=sheet["failing"], cached_tiles=hits, tiles_total=total)
+                    self.save_run(job.species, run)
+                    self.queue.finish(job, "done", dict(run, cache=dict(job_hit=False, views_hit=hits, views_total=total)))
+                    self.hub.emit("done", job.species, job=job.id, kind="variety", key=job.key, cached=False)
+            except Exception as e:
+                self.finish_failed(job, f"{type(e).__name__}: {e}", None)
+
     # ---- life cycle
     def start(self):
         for w in self.workers:
             w.thread.start()
         self.sheeter.start()
+        self.varieter.start()
         self.proofer.start()
         self.watcher.start()
         self.cas.evict(self.cache_limit)
@@ -716,6 +830,9 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)/freq", p)
             if m:
                 return self.send_json(srv.freq(srv.get_species(m.group(1)), int(q.get("n", ["1000"])[0])))
+            m = re.fullmatch(r"/api/species/([^/]+)/variety", p)
+            if m:
+                return self.send_json(srv.variety(srv.get_species(m.group(1)), q.get("n", [None])[0], q.get("seed", [None])[0]))
             m = re.fullmatch(r"/api/species/([^/]+)/string", p)
             if m:
                 return self.send_json(srv.string_of(srv.get_species(m.group(1)), q.get("genome", ["type"])[0]))

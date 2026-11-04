@@ -90,3 +90,36 @@ def contact_sheet(info, outdir, name):
     if erows:
         body += "<h2>Last edits (the undo log)</h2>" + SL.table(erows, ["who", "how", "field", "change"])
     return write(outdir, name, "contact sheet", body, 1300)
+
+
+def variety_sheet(sh, tiles, outdir, name="variety", previous=None, title=None, note=""):
+    """The Variety sheet page: the counts panel (each look, how many of the sheet show it, wild and cross), then the individuals as tiles (a failing one with a red edge and its words).
+    sh: the server's variety data; tiles: {n: png file name inside outdir}; previous: None or dict(caption, tiles {n: file name}, hint) for the run before, shown under each tile."""
+    def pct(v):
+        return f"{v:.0f}%" if v >= 10 or float(v).is_integer() else f"{v:.1f}%"
+    fails = {i["n"]: i["fails"] for i in sh["individuals"]}
+    body = f"<h1>{html.escape(title or 'Variety')} &middot; seed {sh['seed']} &middot; {sh['n']} individuals</h1>"
+    if note:
+        body += f"<p>{note}</p>"
+    rows = []
+    for l in sh["looks"]:
+        age = f" &middot; from {html.escape(l['age'])}" if l.get("age") else ""
+        rows.append((html.escape(l["label"]) + age, f"<b>{l['count']}</b> of {sh['n']}", "no. " + ", ".join(map(str, l["who"])) if l["who"] else "&ndash;", pct(l["wild"]), f"{round(l['cross'] * l['cross_of'] / 100)} of {l['cross_of']}"))
+    counts = SL.table(rows, ["look", "on this sheet", "which", f"wild ({sh['wild_n']:,} pods)", "cross (seeds)"])
+    rules = "".join(f"<p><b>{html.escape(r['label'])}</b>: " + (("broken by no. " + ", ".join(map(str, r["broken"]))) if r["broken"] else "holds for all " + str(sh["n"])) + f" &middot; breaking it reads &ldquo;{html.escape(r['fail'])}&rdquo;</p>" for r in sh["rules"])
+    def cell(n, f, w=304):
+        bad = fails[n]
+        edge = "border:3px solid #c0392b;" if bad else ""
+        cap = f"<b>No. {n}</b> &middot; {html.escape(sh['individuals'][n - 1]['genome'])}" + ("<br><span class='fail'>" + "; ".join(html.escape(x["words"]) for x in bad) + "</span>" if bad else "")
+        pair = f"<img src='{f}' width='{w}'>"
+        if previous and n in previous["tiles"]:
+            pair = "<div style='display:flex;gap:6px'>" + pair + f"<img src='{previous['tiles'][n]}' width='{w}'></div>"
+            cap = f"<div style='display:flex;justify-content:space-around'><span>{html.escape(previous.get('left', 'now'))}</span><span>{html.escape(previous['caption'])}</span></div>" + cap
+        return f"<div class='cell' style='{edge}'>{pair}<div class='cap'>{cap}</div></div>"
+    cols = 2 if previous else 4
+    wcell = (2 * 304 + 22) if previous else 320
+    grid = f"<div class='grid' style='grid-template-columns:repeat({cols},{wcell}px)'>" + "".join(cell(i["n"], tiles[i["n"]]) for i in sh["individuals"]) + "</div>"
+    body += "<div class='row'><div style='width:600px;flex:none'><h2>Looks on this sheet</h2>" + counts + "<h2>Species rules</h2>" + rules + "</div><div>" + grid + "</div></div>"
+    if previous and previous.get("hint"):
+        body += "<p>" + previous["hint"] + "</p>"
+    return write(outdir, name, "Variety sheet", body, 2000 if previous else 1900)

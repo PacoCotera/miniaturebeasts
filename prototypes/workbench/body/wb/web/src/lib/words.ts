@@ -2,6 +2,7 @@
 export const W = {
   modes: ['Shape', 'Genes', 'Variety', 'Goldens', 'Gate'], // st.modes
   play: 'Open in play', // st.play
+  newSheet: 'New sheet', // st.var.new
   jobsWait: 'Waiting for a worker', // st.jobs.wait
   leaseBanner: (who: string) => `${who} is editing`, // st.lease.banner
   takeOver: 'Take over', // st.lease.banner

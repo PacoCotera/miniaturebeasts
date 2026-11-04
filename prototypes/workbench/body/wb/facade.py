@@ -50,7 +50,7 @@ def locus_entry(spec, name):
 
 def resolve_genome(g, spec=None):
     """A genome string or dict -> the individual dict (t, pairs, switches, seed) that s20genes builds from.
-    type = the type specimen; seed:N = the variety sheet's individual N;
+    type = the type specimen; seed:N = the variety sheet's individual N (seed:N@S: of the sheet with seed S);
     low:<locus> / high:<locus> = the type with that blend at its low or high limit (t = 0 or 1); allele:<locus>=<allele> = the type with that pair or switch set to an allowed allele;
     value:<locus>=<v> = a blend at a value (the computed fix builds these; the value may lie outside the limits); corner:<loud>+<loud> = the type with those loud genes on (glow, pattern, emblem, brow)."""
     import s20genes as GN, genomeapply as GA
@@ -63,7 +63,8 @@ def resolve_genome(g, spec=None):
     kind, _, arg = g.partition(":")
     if kind == "seed":
         try:
-            return GN.draw(int(arg))
+            n, _, sd = arg.partition("@")                                  # seed:N is individual N of the species' sheet; seed:N@S is individual N of the sheet drawn with seed S
+            return GN.draw(int(n), int(sd)) if sd else GN.draw(int(n))
         except ValueError:
             raise BuildError(f"genome '{g}': seed needs a whole number", "genome")
     G = tbl[0] if tbl else GN.GENES

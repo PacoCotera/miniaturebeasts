@@ -4,6 +4,8 @@ import { stateOfPart } from '../lib/checks'
 import type { StudioUrl } from '../lib/url'
 import type { Species } from '../lib/api'
 import { isAsleep, locusDot, selectedLocus } from '../lib/genes'
+import { useQuery } from '@tanstack/react-query'
+import { lookOf, ready, varietyOne, type VLook } from '../lib/variety'
 import s from './Navigator.module.css'
 
 const mono = (w: string) => { const p = w.split(' '); return p.length > 1 ? p[0][0] + p[1][0] : w.slice(0, 2) } // the rail's two letters: Limb length -> Ll, Limb girth -> Lg, Lift -> Li
@@ -13,6 +15,8 @@ const mono = (w: string) => { const p = w.split(' '); return p.length > 1 ? p[0]
 export function Navigator({ rail, url, go, rows, metas, species }: { rail: boolean; url: StudioUrl; go: (p: Partial<StudioUrl>) => void; rows: CheckRow[]; metas: Record<string, CheckMeta>; species?: Species }) {
   const g = species?.file.genome
   const cur = selectedLocus(g, url.sel)
+  const vq = useQuery({ ...varietyOne(url.species, species?.hash ?? '', url.seed), enabled: !!species && url.mode === 'variety' })
+  const sheet = vq.data
   return (
     <aside className={`${s.nav} ${rail ? s.rail : ''}`} aria-label="Navigator">
       {url.mode === 'shape' && (
@@ -30,6 +34,33 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
             )
           })}
         </ul>
+      )}
+      {url.mode === 'variety' && sheet && (
+        <>
+          <section>
+            <h6 className={s.head}>Looks on this sheet</h6>
+            <ul className={s.tree}>
+              {sheet.looks.map((l: VLook) => {
+                const on = lookOf(sheet, url.sel)?.id === l.id
+                return (
+                  <li key={l.id}>
+                    <button className={`${s.row} ${on ? s.sel : ''}`} onClick={() => go({ sel: on ? null : l.id })} aria-pressed={on} data-empty={l.count === 0 || undefined} title={`${l.label} · ${l.count} of ${sheet.n}`}>
+                      <span className={s.mono}>{l.label.slice(0, 2)}</span>
+                      <span className={s.label}>{l.label}</span>
+                      <span className={s.num}>{l.count === 0 && l.age ? l.age : l.count}</span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+          <section>
+            <h6 className={s.head}>Seed</h6>
+            <ul className={s.tree}>
+              <li><span className={`${s.row} ${s.plain}`}><span className={s.label}>{sheet.seed}</span><span className={s.num}>{ready(sheet)} of {sheet.n}</span></span></li>
+            </ul>
+          </section>
+        </>
       )}
       {url.mode === 'genes' && g && g.chapters.map((c) => (
         <section key={c.id}>

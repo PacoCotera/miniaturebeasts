@@ -76,6 +76,10 @@ SWITCH_DRAW = {"appearance.marking-switch": (0.75, "off"), "appearance.blush": (
 RANGE_OF = {"appearance.body-hue": (150.0, 375.0), "form.ear-length": (0.6, 1.5)}
 EXPRESSIONS = [dict(id="lantern-tail", label="Lantern tail", locus="anatomy.tail-tip-form", look="lantern")]       # S20's own looks need no rule beyond the catalogue's (the order lantern, tuft, plain); a species with age gates or needs lists them here
 
+VARIETY = {"n": 12, "seed": 2026, "cycle": ["form.ear-kind", "anatomy.tail-tip-form", "appearance.marking-layout", "appearance.pattern-kind", "appearance.glow-pattern"], "hue_wheel": True, "max_loud": 2,
+           "species_rules": [{"id": "ember", "label": "The ember rule", "when": [{"field": "hue", "in": [10, 35]}], "then": [{"any": [{"field": "belly", "is": "dark"}, {"field": "tip", "not": "lantern"}]}],
+                              "fail": "warm hue with a lit tip and a light belly"}]}       # the ember rule as data: a hue of 10 to 35 degrees needs a dark belly or an unlit tip
+
 
 def block():
     pin = GA.pin()
@@ -143,13 +147,14 @@ def main():
         doc = json.load(fh)
     b = block()
     if "--check" in sys.argv:
-        print("same" if doc["genome"] == b and doc.get("expressions") == EXPRESSIONS else "differs")
+        print("same" if doc["genome"] == b and doc.get("expressions") == EXPRESSIONS and doc.get("variety") == VARIETY else "differs")
         return
     legacy = doc["legacy"]
     if "genes" in doc["genome"]:
         legacy["genome_v0"] = dict(genes=doc["genome"]["genes"], counts=doc["genome"]["counts"])
     doc["genome"] = b
     doc["expressions"] = EXPRESSIONS
+    doc["variety"] = VARIETY
     with open(FILE, "w") as fh:
         json.dump(doc, fh, indent=1)
         fh.write("\n")

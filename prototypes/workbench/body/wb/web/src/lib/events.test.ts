@@ -32,8 +32,9 @@ describe('events and the query cache', () => {
     expect(inv).not.toHaveBeenCalled()
     applyEvent(qc, 'S20', ev('edited', { job: undefined, actor: 'agent-3' }))
     applyEvent(qc, 'S20', ev('done'))
-    expect(inv).toHaveBeenCalledTimes(2)
-    expect(inv).toHaveBeenLastCalledWith({ queryKey: ['species', 'S20'] })
+    expect(inv).toHaveBeenCalledTimes(4) // the species and the Variety sheet, for each
+    expect(inv).toHaveBeenCalledWith({ queryKey: ['species', 'S20'] })
+    expect(inv).toHaveBeenLastCalledWith({ queryKey: ['variety', 'S20'] })
     expect(qc.getQueryData<JobsState>(['jobs', 'S20'])?.jobs).toEqual({})
   })
   it('a superseded job is not a failure to refetch for', () => {

@@ -25,6 +25,7 @@ export function reduceJobs(s: JobsState, ev: WbEvent, now: number): JobsState {
 export function applyEvent(qc: QueryClient, species: string, ev: WbEvent, now = Date.now()): void {
   qc.setQueryData<JobsState>(['jobs', species], (prev) => reduceJobs(prev ?? NO_JOBS, ev, now))
   if (ev.type === 'done' || ev.type === 'edited' || (ev.type === 'failed' && !ev.superseded)) void qc.invalidateQueries({ queryKey: ['species', species] })
+  if (ev.type === 'done' || ev.type === 'edited') void qc.invalidateQueries({ queryKey: ['variety', species] }) // a tile landed, or the file moved on
 }
 
 export function useSpeciesEvents(species: string): void {

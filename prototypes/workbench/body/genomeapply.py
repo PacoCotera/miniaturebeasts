@@ -452,4 +452,5 @@ def validate(doc):
             if mvv["op"] == "set" and e["op"] == "blend":
                 errs.append((f"{mp}.op", f"{mp}.op: a blend scales or adds; set is for switches and pairs"))
     import expressions as EX
-    return errs + EX.validate(full)
+    from wb import variety as VY
+    return errs + EX.validate(full) + [(p_, f"{p_}: {m}") for p_, m in VY.validate(full)]

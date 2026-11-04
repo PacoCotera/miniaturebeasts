@@ -24,7 +24,7 @@ export const locusById = (g: Genome | undefined, id: string | null) => g?.loci.f
 // The selection in Genes mode: a locus id; the tail from Shape takes the tail length; a chapter name takes that chapter's first locus; nothing takes the first of the legs & tail chapter, else of the first.
 export function selectedLocus(g: Genome | undefined, sel: string | null): Locus | null {
   if (!g) return null
-  const hit = locusById(g, sel)
+  const hit = locusById(g, sel?.split('=')[0] ?? null) // a look picked in Variety is `locus=look`
   if (hit) return hit
   if (sel === 'tail') return locusById(g, 'form.tail-length') ?? g.loci[0] ?? null
   const ch = g.chapters.find((c) => c.id === sel) ?? g.chapters.find((c) => c.id === 'legs-tail') ?? g.chapters[0]

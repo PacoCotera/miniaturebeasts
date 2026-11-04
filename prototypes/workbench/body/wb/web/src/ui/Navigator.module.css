@@ -23,3 +23,9 @@ section:first-child .head { margin-top: 0; }
 .rail .head { display: none; }
 .nested { padding-left: 32px; color: var(--text-2); font-size: var(--t-14); }
 .rail .nested { display: none; }
+
+.num { flex: none; font-size: var(--t-14); color: var(--text-2); font-variant-numeric: tabular-nums; }
+.row[data-empty] .label, .row[data-empty] .num { color: var(--text-3); }
+.plain { cursor: default; }
+.plain:hover { background: transparent; }
+.rail .num { display: none; }

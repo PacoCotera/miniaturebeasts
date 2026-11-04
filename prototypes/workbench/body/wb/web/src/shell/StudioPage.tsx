@@ -11,6 +11,8 @@ import { Navigator } from '../ui/Navigator'
 import { Stage } from '../ui/Stage'
 import { GenesStage } from '../ui/GenesStage'
 import { GenesInspector } from '../ui/GenesInspector'
+import { VarietyStage } from '../ui/VarietyStage'
+import { VarietyInspector } from '../ui/VarietyInspector'
 import { Inspector } from '../ui/Inspector'
 import { Palette } from '../ui/Palette'
 import { HelpSheet } from '../ui/HelpSheet'
@@ -47,8 +49,8 @@ export default function StudioPage() {
       <AppShell
         top={<TopBar url={url} species={species} go={go} />}
         nav={<Navigator rail={rail} url={url} go={go} rows={rows} metas={byId} species={species} />}
-        stage={url.mode === 'genes' ? <GenesStage url={url} species={species} inset={open ? drawerH : 0} /> : <Stage url={url} species={species} go={go} inset={open ? drawerH : 0} />}
-        inspector={<Inspector species={species} id={url.species} sheet={sheet} open={inspOpen} url={url} go={go} genes={url.mode === 'genes' && species ? <GenesInspector species={species} url={url} go={go} /> : undefined} />}
+        stage={url.mode === 'genes' ? <GenesStage url={url} species={species} inset={open ? drawerH : 0} /> : url.mode === 'variety' ? <VarietyStage url={url} species={species} go={go} inset={open ? drawerH : 0} /> : <Stage url={url} species={species} go={go} inset={open ? drawerH : 0} />}
+        inspector={<Inspector species={species} id={url.species} sheet={sheet} open={inspOpen} url={url} go={go} genes={url.mode === 'genes' && species ? <GenesInspector species={species} url={url} go={go} /> : url.mode === 'variety' && species ? <VarietyInspector species={species} url={url} go={go} /> : undefined} />}
         overlay={<><Toasts species={url.species} />{open && species && <ChecksDrawer species={species} url={url} go={go} />}</>}
       />
       <Palette url={url} />

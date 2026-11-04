@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import * as Popover from '@radix-ui/react-popover'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { speciesList, type Species } from '../lib/api'
 import { useFrames } from '../lib/frames'
 import { buildStudioUrl, type StudioUrl } from '../lib/url'
@@ -12,6 +12,8 @@ import { AttentionPill } from './AttentionPill'
 import { failingEnds } from '../lib/genes'
 import { useUI } from '../lib/store'
 import { usePortraitSheet } from '../lib/useStudio'
+import { nextSeed, runSheet, varietyOne } from '../lib/variety'
+import { getToken } from '../lib/api'
 import s from './TopBar.module.css'
 
 export function TopBar({ url, species, go }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>) => void }) {
@@ -20,6 +22,14 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
   const name = species?.file.name ?? `${url.species} · no name yet`
   const sheet = usePortraitSheet()
   const toggleInsp = useUI((u) => u.toggleInsp)
+  const qc = useQueryClient()
+  // Variety's one primary action: a new sheet draws the next seed, so every tile is new.
+  const newSheet = async () => {
+    const cur = qc.getQueryData<import('../lib/variety').Variety>(varietyOne(url.species, species?.hash ?? '', url.seed).queryKey)
+    const seed = nextSeed(cur, url.seed)
+    go({ seed, ind: null, cmp: false })
+    await runSheet(url.species, seed)
+  }
   return (
     <header className={s.top}>
       <Popover.Root>
@@ -48,6 +58,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
         <LeaseAvatar species={species} />
         {sheet && <button className={s.iconbtn} onClick={toggleInsp} aria-label="Inspector"><span className={s.panelIcon} /></button>}
         <button className={s.quiet} disabled>{W.play}</button>
+        {url.mode === 'variety' && <button className={s.primary} onClick={newSheet} disabled={!getToken() || !species}>{W.newSheet}</button>}
       </div>
     </header>
   )

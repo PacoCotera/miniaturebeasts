@@ -88,6 +88,7 @@ SCHEMA = dict(
         borrows=free("Borrowed records", "Branch records of another clan this species lists.", stage="meta"), chapters=free("Chapters", "The chapters the loci are grouped in.", stage="meta"),
         loci=free("Loci", "Each locus: kind, op, limits, type, bins and moves (typed paths into this file).", stage="meta")), stage="meta", required=["catalogue", "chapters", "loci"]),
     expressions=free("Expressions", "The looks the species can draw with their rules: the age a look shows from and the other looks it needs (checked in expressions.py; how copies show is the catalogue's, or a modifier gene's).", stage="meta"),
+    variety=free("Variety", "The Variety sheet's rules: how many individuals, the seed, the loci whose looks cycle, the most loud looks one individual shows, and the species rules as data: {id, label, when: [conditions], then: [conditions], fail}. A condition is {field, is | not | in: [lo, hi]} or {any: [conditions]}.", stage="meta"),
     motion=free("Motion", "Walk, breathe, blink and idle clips.", stage="motion"),
     limits=obj("Limits", "Overrides of the plan's limits. A file may only tighten them, never loosen.", dict(vertices=num("Vertex budget", "Vertices at subdivision level 1.", rng=(1000, 3500), unit=""), balance_margin=num("Balance margin", "Share of the sole in front of the heel.", rng=(0.15, 0.5), unit=""),
                                                                                             tail_side_area=num("Tail side area", "Tail silhouette over the trunk's.", rng=(0.02, 0.25), unit=""), neck_ratio=num("Neck ratio", "Neck over head and chest.", rng=(0.3, 0.85), unit=""),
@@ -328,6 +329,7 @@ def from_internal(d):
     from wb import make_genome_block as MG
     doc["genome"] = MG.block()
     doc["expressions"] = copy.deepcopy(MG.EXPRESSIONS)
+    doc["variety"] = copy.deepcopy(MG.VARIETY)
     return doc
 
 

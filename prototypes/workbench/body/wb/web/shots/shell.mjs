@@ -33,13 +33,15 @@ const extremes = { fresh: true, running: false, key: 'k', rows: [], ends: [end('
 const s20file = JSON.parse(readFileSync(join(here, '../../../species_v1/S20.json'), 'utf8'))
 const demoFile = JSON.parse(readFileSync(join(here, 'fixture/demo-file.json'), 'utf8'))
 const freqS20 = JSON.parse(readFileSync(join(here, 'fixture/freq-s20.json'), 'utf8'))
+const varietyS20 = JSON.parse(readFileSync(join(here, 'fixture/variety-s20.json'), 'utf8'))
 const freqDemo = JSON.parse(readFileSync(join(here, 'fixture/freq-demo.json'), 'utf8'))
 const TYPE_STRING = 'G1-S20v1-20A00R61GC3A86100430R210861WQB0R4GC30R61621GC30G10R61GC30R61GC30R442008YR'     // the type's genome string (wb frame writes it into frames/species-S20.json)
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf' }
 const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://x').pathname
-  const f = join(APP, p.startsWith('/assets/') ? p : 'index.html')
+  const q = p.replace(/^\/studio(?=\/assets\/)/, '') // the app is built with base /studio/
+  const f = join(APP, q.startsWith('/assets/') ? q : 'index.html')
   res.writeHead(200, { 'Content-Type': TYPES[extname(f)] ?? 'text/html' })
   res.end(readFileSync(f))
 })
@@ -56,6 +58,8 @@ const cases = [
   { name: 'checks-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, checks: true, q: '&sel=tail&drawer=checks&proof=tail.size' },
   { name: 'checks-light-1180', theme: 'light', w: 1180, h: 820, ready: true, checks: true, touch: true, q: '&sel=tail' },
   { name: 'genes-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, q: '&sel=form.tail-length' },
+  { name: 'variety-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, mode: 'variety', q: '&sel=anatomy.tail-tip-form%3Dlantern' },
+  { name: 'variety-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true, mode: 'variety', q: '&sel=form.ear-kind%3Dprick&ind=3' },
   { name: 'express-lantern-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, demo: true, q: '&sel=anatomy.tail-tip-form&proof=none', act: async (p) => { await p.locator('aside[aria-label=Navigator] >> text=Tail tip order').scrollIntoViewIfNeeded() } },
   { name: 'express-horn-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, demo: true, q: '&sel=anatomy.horn-presence&proof=none' },
   { name: 'express-sparkle-light-1440', theme: 'light', w: 1440, h: 900, ready: true, genes: true, demo: true, q: '&sel=appearance.freckle-glow&proof=none' },
@@ -75,10 +79,11 @@ for (const c of cases) {
   await page.route('**/api/species/S20/freq*', (r) => r.fulfill({ json: c.demo ? freqDemo : freqS20 }))
   await page.route('**/api/species/S20/string*', (r) => r.fulfill({ json: { species: 'S20', genome: 'type', string: TYPE_STRING, code: null, length: TYPE_STRING.length, version: 1, hash: 'h' } }))
   await page.route('**/api/species/S20/jobs', (r) => r.fulfill({ json: { id: 'j1', state: 'done', result: { views: [{ mode: 'clay', az: 32, size: 304, key: 'clayend'.padEnd(64, '0') }] } } }))
+  await page.route('**/api/species/S20/variety*', (r) => r.fulfill({ json: varietyS20 }))
   await page.route('**/api/checks', (r) => r.fulfill({ json: metas }))
   await page.route('**/cas/*.png', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
   await page.route('**/events*', (r) => r.fulfill({ body: ': connected\n\n', contentType: 'text/event-stream' }))
-  await page.goto(`${base}/studio/S20/${c.genes ? 'genes' : 'shape'}?theme=${c.theme}${c.q ?? ''}`)
+  await page.goto(`${base}/studio/S20/${c.mode ?? (c.genes ? 'genes' : 'shape')}?theme=${c.theme}${c.q ?? ''}`)
   await page.waitForSelector('main')
   await page.evaluate(() => document.fonts.ready)
   await page.waitForTimeout(c.ready ? 700 : 300)

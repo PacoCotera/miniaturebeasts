@@ -296,6 +296,39 @@ def cmd_freq(a):
     return 0
 
 
+def cmd_variety(a):
+    """The Variety sheet: N individuals drawn from the file's own rules, how often each look shows (this sheet, wild, a cross), the species rules, and the tiles (clay renders, cached; a second run is cached tile by tile). --no-tiles prints the numbers alone."""
+    q = "&".join(f"{k}={v}" for k, v in (("n", a.n), ("seed", a.seed)) if v is not None)
+    job = None
+    if not a.no_tiles:
+        job = run_job(a, "variety", {k: v for k, v in (("n", a.n), ("seed", a.seed)) if v is not None})
+    sh = call("GET", f"/api/species/{a.species}/variety" + (f"?{q}" if q else ""))
+    lines = [f"{a.species}  seed {sh['seed']} · {sh['n']} individuals" + (f" · tiles: {job['result']['cache'].get('views_hit', 0)} of {job['result']['cache'].get('views_total', len(job['result']['tiles']) * 3)} from the cache" if job and not job["cached"] else (" · tiles: all from the cache" if job else ""))]
+    for l in sh["looks"]:
+        lines.append(f"  {l['label']:32} {l['count']:>2} of {sh['n']}   wild {l['wild']:g}%   cross {round(l['cross'] * l['cross_of'] / 100)} of {l['cross_of']}" + (f"   (from {l['age']})" if l.get("age") else ""))
+    for r in sh["rules"]:
+        lines.append(f"rule {r['id']}: " + (f"broken by no. {', no. '.join(map(str, r['broken']))}" if r["broken"] else "holds"))
+    for i in sh["individuals"]:
+        for f in i["fails"]:
+            lines.append(f"No. {i['n']}: {f['words']}")
+    if a.sheet:
+        import urllib.request
+        sys.path.insert(0, BODY)
+        from wb import report as R
+        os.makedirs(a.sheet, exist_ok=True)
+        tiles = {}
+        for i in sh["individuals"]:
+            k = i["tiles"]["304"]["key"]
+            fn = f"tile-{i['n']:02d}.png"
+            with urllib.request.urlopen(server_url() + f"/cas/{k}.png") as r, open(os.path.join(a.sheet, fn), "wb") as fh:
+                fh.write(r.read())
+            tiles[i["n"]] = fn
+        h, p = R.variety_sheet(sh, tiles, a.sheet, "variety", title=a.species)
+        lines.append(f"sheet {p}")
+    out(a, dict(ok=not sh["failing"], species=a.species, **{k: sh[k] for k in ("seed", "n", "looks", "rules", "failing", "individuals", "key")}), "\n".join(lines))
+    return 1 if sh["failing"] else 0
+
+
 def cmd_string(a):
     """The genome string of one mibi: `wb string seed:3`, `wb string type`, `wb string string:G1-S20v1-...` (read back), `wb string code:S20v1-...`. The string alone on one line (so `$(wb string seed:3)` works); --json has more; --code adds the stamp code."""
     sp = a.species
@@ -386,6 +419,7 @@ def main(argv=None):
     p = sub.add_parser("convert"); p.add_argument("src"); p.add_argument("--out", default=""); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_convert)
     p = sub.add_parser("check"); p.add_argument("species"); common(p); p.add_argument("--stage", default="all", choices=STAGES); p.add_argument("--locus", action="append", default=[], help="extremes only: build just this locus (repeat for more)"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_check)
     p = sub.add_parser("freq"); p.add_argument("species", nargs="?", default=""); p.add_argument("--file", default=""); p.add_argument("-n", type=int, default=1000, help="wild draws"); p.add_argument("--locus", action="append", default=[], help="also print this locus's looks"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_freq)
+    p = sub.add_parser("variety"); p.add_argument("species"); p.add_argument("--n", type=int, default=None); p.add_argument("--seed", type=int, default=None); p.add_argument("--no-tiles", action="store_true"); p.add_argument("--sheet", default="", help="write the sheet (HTML and PNG) into this folder"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_variety)
     p = sub.add_parser("string"); p.add_argument("selector", nargs="?", default="type"); p.add_argument("--species", default=""); p.add_argument("--code", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_string)
     p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)
     p = sub.add_parser("watch"); p.add_argument("species"); p.add_argument("--json", action="store_true"); p.add_argument("--count", type=int, default=0); p.add_argument("--timeout", type=float, default=0); p.set_defaults(f=cmd_watch)
