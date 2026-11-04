@@ -25,9 +25,11 @@
 // picture, never a penalty.
 // The inbreeding penalty is B with A: at each switch locus where the child would carry one hidden
 // copy, with chance 2 × kinship it takes that hidden copy twice (what hides, surfaces); and the
-// blend's spread and draw narrow by (1 − 4 × kinship), so a line bred brother to sister averages
+// blend's spread and draw narrow by (1 − 4 × kinship), so a line folded back on itself averages
 // itself. The dials (spread, penalty form none | A | B | C | AB, strength) are there so the forms can
 // be looked at side by side; the decided one is AB at strength 1.
+// Direct kin never cross (owner, 2026-11-03): a parent, grandparent or great-grandparent with its line, and two
+// children of the same pair; see directKin. Half kin, cousins and anything further cross with the penalty.
 // The forecast shows quarters for switches (the four pairings of the parents' copies, resolved) and
 // a range for blends (the parents' shown values widened by the spread, clamped, as bins), never a
 // promise; a trait where both parents hold the same copies is known for sure before any read.
@@ -80,17 +82,57 @@ export function hiddenCopy(locus, pair) {
 // For records, `lookup(id)` returns the parent's record (else the snapshot the child holds is used);
 // for bare genomes, `lookup(digest)` returns the parent's genome. An individual is one with itself by
 // id (a record) or by pedigree name (a bare genome), never because two genomes are equal.
+// The parents of an individual, in order, as links { key, node }: key names the parent as kinship and
+// directKin do (id:<id> for a record, g:<pedigree name> for a bare genome; null when unknown), node is
+// the parent's record or genome (a snapshot the child holds when the record is gone, else null).
+// Sources: x.parents (records or snapshots with ids, or ids), else origin.parentIds (a shed pod's
+// [A, A]), else for a bare genome origin.parents (digests).
+function parentLinks(x, lookup) {
+  if (idOf(x) != null) {
+    const ps = x.parents ?? genomeOf(x)?.origin?.parentIds ?? [];
+    return ps.map((p) => {
+      if (p == null) return { key: null, node: null };
+      const id = typeof p === "object" ? p.id : p;
+      if (id == null) return { key: null, node: null };
+      const found = lookup(id);
+      return { key: `id:${id}`, node: found ?? (typeof p === "object" ? p : null) };
+    });
+  }
+  return (genomeOf(x).origin?.parents ?? []).map((d) => (d == null ? { key: null, node: null } : { key: `g:${d}`, node: lookup(d) }));
+}
+const keyOf = (x) => (idOf(x) != null ? `id:${idOf(x)}` : `g:${pedigreeName(genomeOf(x))}`);
+
+// Direct kin: either is in the other's line within `depth` generations, or both record the same two
+// parents. Returns null, or { rel, by }: rel is what y is to x ("parent" | "grandparent" |
+// "great-grandparent" | "child" | "grandchild" | "great-grandchild" | "same-parents"), by names the
+// link. A parent counts by its recorded id even when its record is gone (its own parents unknown, so
+// the walk stops there); a missing parent matches nothing; a genome is never compared.
+const LINE = ["parent", "grandparent", "great-grandparent"];
+export function directKin(x, y, lookup = () => null, depth = KINSHIP_DEPTH) {
+  const ancestors = (z) => {
+    const out = new Map();
+    const walk = (n, g) => {
+      for (const { key, node } of parentLinks(n, lookup)) {
+        if (key != null && !out.has(key)) out.set(key, g);
+        if (node && g < depth) walk(node, g + 1);
+      }
+    };
+    walk(z, 1);
+    return out;
+  };
+  const kx = keyOf(x), ky = keyOf(y);
+  const ax = ancestors(x), ay = ancestors(y);
+  if (ax.has(ky)) return { rel: LINE[ax.get(ky) - 1], by: ky };
+  if (ay.has(kx)) return { rel: LINE[ay.get(kx) - 1].replace("parent", "child"), by: kx };
+  const px = parentLinks(x, lookup).map((l) => l.key), py = parentLinks(y, lookup).map((l) => l.key);
+  if (px.length === 2 && py.length === 2 && px.every((k) => k != null) && py.every((k) => k != null) && same(px, py)) return { rel: "same-parents", by: [...px].sort().join("|") };
+  return null;
+}
+
 export function kinship(a, b, lookup = () => null, depth = KINSHIP_DEPTH) {
   const memo = new Map();
-  const id = (x) => (idOf(x) != null ? `id:${idOf(x)}` : `g:${pedigreeName(genomeOf(x))}`);
-  const parentsOf = (x, d) => {
-    if (d <= 0) return [];
-    if (idOf(x) != null) {
-      const ps = x.parents ?? genomeOf(x)?.origin?.parentIds ?? [];
-      return ps.map((p) => (p != null && typeof p === "object" ? lookup(p.id) ?? (p.id != null ? p : null) : lookup(p))).filter(Boolean);
-    }
-    return (genomeOf(x).origin?.parents ?? []).map((p) => lookup(p)).filter(Boolean);
-  };
+  const id = keyOf;
+  const parentsOf = (x, d) => (d <= 0 ? [] : parentLinks(x, lookup).map((l) => l.node).filter(Boolean));
   const phi = (x, y, dx, dy) => {
     const kx = id(x), ky = id(y), key = kx < ky ? `${kx}|${ky}|${dx}|${dy}` : `${ky}|${kx}|${dy}|${dx}`;
     if (memo.has(key)) return memo.get(key);
@@ -136,13 +178,15 @@ function refuseMissing(frame, g, who) {
   if (missing.length) throw new Error(`${frame.species.name} ${who} was born on frame version ${versionOf(g)}, which lacks ${missing.length === 1 ? missing[0] : `${missing.length} loci (${missing.slice(0, 3).join(", ")}${missing.length > 3 ? ", ..." : ""})`} of version ${frameVersionOf(frame)}: it cannot be bred with this frame`);
 }
 export const versionRefusal = (frame, a, b) => (versionOf(a) !== versionOf(b) ? `${frame.species.name} born on frame version ${versionOf(a)} cannot be bred with one born on version ${versionOf(b)}: a cross needs two of the same version` : null);
-function refuse(frame, x, y) {
+function refuse(frame, x, y, lookup = () => null) {
   const a = genomeOf(x), b = genomeOf(y);
   if (a.species !== frame.species.id || b.species !== frame.species.id) throw new Error("breeding is same-species only");
   const split = versionRefusal(frame, a, b); if (split) throw new Error(split);
   refuseMissing(frame, a, "the first parent"); refuseMissing(frame, b, "the second parent");
   if (x === y || (idOf(x) != null && idOf(x) === idOf(y)) || (idOf(x) == null && idOf(y) == null && a === b)) throw new Error("one mibi is not a pair");
   for (const l of frame.loci) if (l.kind === "locked" && (!samePair(a.loci[l.id], l.copies) || !samePair(b.loci[l.id], l.copies))) throw new Error(`${l.id}: a parent's locked copy differs from the frame (not this species)`);
+  const kin = directKin(x, y, lookup);
+  if (kin) throw new Error(`direct kin (${kin.rel}): family does not cross`);
 }
 
 // One child. opts: rng (a function in [0, 1)), spread (share of the range), penalty (none | A | B | C
@@ -150,7 +194,7 @@ function refuse(frame, x, y) {
 // `lookup`), lookup (digest → genome, for the pedigree).
 export function cross(frame, x, y, opts = {}) {
   const { spread = SPREAD, penalty = PENALTY, strength = 1, lookup = () => null } = opts;
-  refuse(frame, x, y);
+  refuse(frame, x, y, lookup);
   const a = genomeOf(x), b = genomeOf(y);
   const k = clamp(opts.kinship ?? kinship(x, y, lookup), 0, 0.5);
   const loci = drawLoci(frame, a, b, k, opts);
@@ -191,7 +235,7 @@ function drawLoci(frame, a, b, k, opts) {
 // seeded stream. cross(m, m) stays refused; this is the one way a single parent makes a pod.
 // SELF_KINSHIP is a game rule, not a genetics claim: a mibi with itself has kinship 1/2, and at that
 // kinship the decided penalty copies every blend exactly and surfaces every hidden copy, so the pod is
-// often its parent again (measured: 2–100% of draws by species). The draw uses 1/8 (half siblings),
+// often its parent again (measured: 2–100% of draws by species). The draw uses 1/8 (half kin),
 // under which hidden looks still surface; the record keeps the true pedigree (parents [m, m]), so any
 // later cross with its relatives is penalised from the recorded line.
 // The child is redrawn from the same stream while it equals its parent (a clone never comes out) or its
@@ -249,6 +293,8 @@ export function forecast(frame, x, y, opts = {}) {
   const a = genomeOf(x), b = genomeOf(y);
   const split = versionRefusal(frame, a, b); if (split) throw new Error(split);
   refuseMissing(frame, a, "the first parent"); refuseMissing(frame, b, "the second parent");
+  const kin = directKin(x, y, lookup);
+  if (kin) throw new Error(`direct kin (${kin.rel}): family does not cross`);
   const k = clamp(opts.kinship ?? kinship(x, y, lookup), 0, 0.5);
   const narrow = penalty.includes("A") ? Math.max(0, 1 - 4 * k * strength) : 1;
   const surface = penalty.includes("B") ? clamp(2 * k * strength, 0, 1) : 0;
