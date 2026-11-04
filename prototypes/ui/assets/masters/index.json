@@ -412,8 +412,8 @@
    "file": "pods/bud-shape-S12-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "d8423149f13fb9dd9d38e6b9359ed602fe970fb876f4d0e316a90a5ba9970653",
-   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+   "sha256": "cdf19a5f162f040c9c5fbbd9b52c3c510faf799f3bd9dca7a456ccbf2048b51a",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "bud-shape-S13-112x112": {
    "file": "pods/bud-shape-S13-112x112.png",
@@ -1490,8 +1490,8 @@
    "file": "pods/face-S12-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "52a4fc0733805a2a3a116dfd80e9b7f1174a9bad1c455cf121a4e82461ab492b",
-   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+   "sha256": "4a4cb277da0c035f5f8ff3280502657898a3247875e3ab3ece0b3e71a7ecb00b",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "face-S13-24": {
    "file": "pods/face-S13-24.png",
@@ -2973,36 +2973,36 @@
    "file": "pods/mibi-adult-S12-144x152.png",
    "w": 144,
    "h": 152,
-   "sha256": "d0ce7993456a303316b113e0fa4d3e5059bb9c45ca2f4bc24796d55c89d522de",
-   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+   "sha256": "d33e273f4d08ee4dee8c4b5e96504299fc1de7a838205c8004760d8b33f258cc",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-adult-S12-304x312": {
    "file": "pods/mibi-adult-S12-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "7e44a0f925cdfe068f1082903d59090fb0d2d7c8d119d6309251f89427f2d741",
-   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+   "sha256": "fab9de87bc9470e5a8b637603bea66efd582c7d76bc6ab6432f8f7b484f84ece",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-adult-S12-48x48": {
    "file": "pods/mibi-adult-S12-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "a7d6f77736c10b46bf8fff45681fcae66919d9e827df2a3bafea59f1a92c6cfc",
-   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+   "sha256": "db3d1bf2ce7289ab4c2ecfe839ac47263756d1779c30ef9b51562c93e786b04d",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-adult-S12-96x88": {
    "file": "pods/mibi-adult-S12-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "7528d31f49ebaf313676cfdd02eeca38451218a42f12819384c8e49a6a0b5089",
-   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+   "sha256": "31208733e3f8f36c9df9ef943284ca4bf2509c9e6e44ec4180e6ebd987f0655a",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-adult-S12-curl-304x312": {
    "file": "pods/mibi-adult-S12-curl-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "31036fd6dbe8230e717ab1c7f2b50a1cf3bea40435b06471fbfb510cb98dee82",
-   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+   "sha256": "9b794e09fd25878d79371f5a203518ade0b294787c1730a5f8df18d327c332b1",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-adult-S13-144x152": {
    "file": "pods/mibi-adult-S13-144x152.png",
@@ -3324,15 +3324,15 @@
    "file": "pods/mibi-halo-S12-128x160-clear.png",
    "w": 128,
    "h": 160,
-   "sha256": "0907254c6b8d5d1dae3e7435721f3071d71343761dc37dfcf2d3dc5c860097e1",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "a68d190ade6ad0fd383a4199491be7f4418d73e81e55b37790a4d65c1b8dc727",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-halo-S12-128x160-mist": {
    "file": "pods/mibi-halo-S12-128x160-mist.png",
    "w": 128,
    "h": 160,
-   "sha256": "82bdc838d923f2449b332343d9ce7705a779a959facc0e6c6e1b067517165a6f",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "3019cec24a465b5eb2581cfee2ccf93e56fb2625dbb6f34d2e9233a795dd58c5",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-halo-S13-128x160-clear": {
    "file": "pods/mibi-halo-S13-128x160-clear.png",
@@ -3822,36 +3822,36 @@
    "file": "pods/mibi-juvenile-S12-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "acd97a354d69fa26d985d06d29dee745f523a889fcc85dc5ffc16dd6035b1667",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "db35d478542f149ccf29046f972e7b7573afab4adfcb1114c01417707840e3f9",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-juvenile-S12-304x312": {
    "file": "pods/mibi-juvenile-S12-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "dc9cb4788570294f4510e414865fdbe91bef68df18c1a04cf64ce53929581edd",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "5a0b148a3ef80015e75636320a5710bb00e29e97952c15d159aba64b8878f445",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-juvenile-S12-48x48": {
    "file": "pods/mibi-juvenile-S12-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "3cf5c1034bd623b43633521ee2df1904d21bae229371673266c01b7eaa42065c",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "252983cccb9918b9324f8de926cf7c443e957bae52d7f7e14a56d2bb900a6b1e",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-juvenile-S12-96x88": {
    "file": "pods/mibi-juvenile-S12-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "4e22a942549848068a55449f7e38e63e33c1b4fe035177d4d51274cd810572ac",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "f34888970cd5f2fadcf3de444bc70d9ca6cd8b9be7dec8eb3b3a4cf390e01e83",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-juvenile-S12-curl-304x312": {
    "file": "pods/mibi-juvenile-S12-curl-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "1d01ec54776680ff5e83b4d30b493d8be58d7605924051b6c07cbe9a50e08388",
-   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+   "sha256": "7cbae325923a51cd8a7ecc418e20c9dc5f2dff38157d1794aa089e72c228d73b",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "mibi-juvenile-S13-104x112": {
    "file": "pods/mibi-juvenile-S13-104x112.png",
@@ -8230,8 +8230,8 @@
    "file": "pods/spread-plate-S12-80x96.png",
    "w": 80,
    "h": 96,
-   "sha256": "d4ec08b91f45759f5900afbfca86edc02945f05153c6316a04c43047a98aee73",
-   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+   "sha256": "3e75cc60d8a999e146548e34c3a4a1adcc0ed41877f0862dc410fe0e3952fb75",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "spread-plate-S13-80x96": {
    "file": "pods/spread-plate-S13-80x96.png",
@@ -9542,196 +9542,176 @@
    "file": "pods/trait-S12-colour-marigold-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "e918fea72b763bdef9f676b2acf677fa341ae10572306b253a719e0e5d8acf11",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "bd8b53fc4cc9258428bd0f09e8b2aa92d8d835275734f6ecd16e33a6ab2a98e6",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-colour-marigold-104x64": {
    "file": "pods/trait-S12-colour-marigold-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "bb178796811734b16cf20e3b751c4b6124093d95e2675de2a49e9f18b3cd63e3",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "c701572e373825199797ac239258bc689e4d29cf5bdd28f8521e14d9071b09b8",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-colour-marigold-104x96": {
    "file": "pods/trait-S12-colour-marigold-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "4cfb1060ff3898f6650ce52b1d6fdbbd00e651b22af06c1c160d3f05b3481cae",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "aaf619f1e5c25449fa828be79494908004accd247fe81ad978ade12e7f6baaaa",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-colour-marigold-128x160": {
    "file": "pods/trait-S12-colour-marigold-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "56440c699fe8b31e5cb042faa2f857fedb58255d9ca3097dbe08bd5d0ec5b0c4",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "645b329a37d983252d10f730faa313c24a9088ed487db1d0c99214649f1573a0",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-colour-marigold-144x176": {
    "file": "pods/trait-S12-colour-marigold-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "7e0ac0c46e375d5f172081d1226e40eff0a76542a58dd35479a676980c3c4ae4",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "62582cede346026b5879b6e6ca4e16cd81243f2e7da6045b05a78949c32bbb57",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-haunch-between-104x160": {
    "file": "pods/trait-S12-haunch-between-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "27ffdfc8cd3febf6961a064c419770b43afa9184682ab89ba8afb03c461d8e23",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "46a9ddbf6c4bf252b3f94a2d9921bcbba7dc1236822b916e36a7c34f836b9125",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-haunch-between-104x64": {
    "file": "pods/trait-S12-haunch-between-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "b431d03234b86531dcf8b66b42097a664fdfac9e31b71e55f575a33c4950099f",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "768347f47ac47b4dbb48042e95ca5d000897467bca2c06c1f6fa43b9e84ae08b",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-haunch-between-104x96": {
    "file": "pods/trait-S12-haunch-between-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "ab94f92b531dfeb2e5d6d233d08f34b9e445b4ef9d2dee9e14b39671f13488dc",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "9d5ccbd44c8429d07f673a00a514a565a4c6783bcab302d427348d4cf39a20f2",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-haunch-between-128x160": {
    "file": "pods/trait-S12-haunch-between-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "6d06df6c776c246751769dc38f7ec6d28ec0633df595545d7daf09612ea393a6",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "25641f787a23bc0fd15c6ee941fd820a943aaf703e2df55e54b0843bced5455d",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-haunch-between-144x176": {
    "file": "pods/trait-S12-haunch-between-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "b65e1d9dbdaea7b629c87c5523c73c81a10b66855137e36271016b84b51397c8",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "e454ff07b1fee3838c15bf953f2da72e8b3402b1420ec15e5008dd2ae86a39be",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-pattern-plain-104x160": {
    "file": "pods/trait-S12-pattern-plain-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "8989e2769f82cd272d0d169805e298c8790d00dd965810e4b4532a54ec3e3f65",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "a4e2b040228a50ccf119fb1b0dd642ce496e07636c19bde888eeffa3d9b927a4",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-pattern-plain-104x64": {
    "file": "pods/trait-S12-pattern-plain-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "fdede88a1f2a940ad92841509776dd525d5c9d73ca5ecc1cdce6cc0b5e04e8c5",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "2334702c7b5589b7851a977487480b21ab500efd9377a49c96db65377d4ad918",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-pattern-plain-104x96": {
    "file": "pods/trait-S12-pattern-plain-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "643cd3feaa1e217d91350f8ae846675f4515a63ccb4f5924404af8ede37b45ac",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "21df8a9174ee01ee2fb5e536357684312d1be2c48fb08e69df16a56b861f1496",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-pattern-plain-128x160": {
    "file": "pods/trait-S12-pattern-plain-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "0aa03765c666a84efcd3620d2832259526030a4e61260917ed8d857556bfb887",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "9b9c482cbeae5eec55b1d8e3323bfa656f4ebb07a722c3bad5c9589b6c8e3638",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-pattern-plain-144x176": {
    "file": "pods/trait-S12-pattern-plain-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "49851d7dc1be77fee21e4a97f3f9e66c61e25c56181d1883b51688fd5a59deba",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "659299d6b06da2f27a5138f43b6c99a431ab4a3768a1eb80a900dac31c2e3a2a",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-translucency-between-104x160": {
    "file": "pods/trait-S12-translucency-between-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "da9545cb8fdea8d62135b92e5c8d88fd5615369efdab6498c9b6938aff8b91b0",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "a73cdcb4fbdf581fcc22a6487e1bd8169b2e90e291fe892fd3a0db33182fbe90",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-translucency-between-104x64": {
    "file": "pods/trait-S12-translucency-between-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "2adfa6407afbfef08595a1b93526b4da4ea113baa46459ef1aacd2b06aa9875a",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "62e8abb08c0c0739dea110803b1c1a7c783794be6d7798c1644140810a83464b",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-translucency-between-104x96": {
    "file": "pods/trait-S12-translucency-between-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "f2188e73c8ce543ad16ac405afde12f550b20a6caf4417bb2ca1a2e759d8de13",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "caf5c484eb639e083b57f40196d6c399ef3ded060d83ae6ccbee0929fd600ea5",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-translucency-between-128x160": {
    "file": "pods/trait-S12-translucency-between-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "82002c13694d777d096b963ca5b81bdb7be4f9a7e5c41e7daae62580f101bdb2",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "cfc1875903d1ed208e5aacced740f44417c41f7d34010e56a04a4cb344481a6f",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-translucency-between-144x176": {
    "file": "pods/trait-S12-translucency-between-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "71814d956b88488715f6a44f0b3f0bc3b0d3b0a93a35a149fa91c35688f0aff3",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "39b18d59e4756b1e93f441a703ed3ccbde1cf2164585f09a944addf3d5123933",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-trim-butter-104x160": {
    "file": "pods/trait-S12-trim-butter-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "0795c3b2c6788ac30a5be7a6aa7909e95749e5e02ef170e4c762b73d1ab58121",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "50c0562c9ebf3c462f67c3e6201cee8675e1e5b9e53e650d7fdf59852ab71cea",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-trim-butter-104x64": {
    "file": "pods/trait-S12-trim-butter-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "5eabf3180efaf9639d83f7952e2fb267dd72ec55fd826213a3fe417670d66b8d",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "46fbfb20c557b91eb5e3d6693832390989b33cb3ae0385060b1314f956ba900b",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-trim-butter-104x96": {
    "file": "pods/trait-S12-trim-butter-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "69a8a71aaa85b1f903330bff6e33400c8a96578242fe93a47275edf9bb8d1657",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "d21232ff58d160937d984fb7e3fb34555c4adbc6ec394e4c8f3cc7bcf8f89494",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-trim-butter-128x160": {
    "file": "pods/trait-S12-trim-butter-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "23ee88b38ab308da4f7e256706e2c97ce6f69b4b6e06e07d4aff9666d7b0e555",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "a009f380fac8fc2db932a05636ac4b49b3af1e66172398a858966061c04acb40",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "trait-S12-trim-butter-144x176": {
    "file": "pods/trait-S12-trim-butter-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "5854821ebbf957c3ef2f558baf5e58790a8cb021ede9cd432b85e39ac24725fd",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "ad41d714febc7228b1526d79f09bc3a24490e0d5ff6c07d77fa2423ee1c1dfa7",
+   "signed": "AD 2026-11-04 at 1x (Peplos sail-wing redraw)"
   },
   "vivarium-near-dawn-544x408": {
    "file": "vivarium/vivarium-near-dawn-544x408.png",
