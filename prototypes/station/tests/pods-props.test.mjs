@@ -197,6 +197,15 @@ test("the reading screen (ux-reading-v2.md): the ground, the chamber of its plac
   const dt = body(model(st, { view: "room", lane: 0, at: "detail", trait: 0 }, "trait")); assert.equal(dt.props.regions.read.right.form, "detail"); assert.equal(dt.props.regions.read.rail.trait, 0); assert.equal(dt.line.back, "Coat"); assert.equal(dt.line.ok, null);
   st.tray[0].why = "a new species"; assert.equal(P(model(st, { view: "room" }, "rail")).regions.read.why, "a new species", "the pod's reason when it carries one");
 });
+test("the reading room's mate: a shed pod shows no odds with its own parent, and takes an adult that is not its direct kin", () => {
+  const st = home(2); S.putOnBench(st, st.tray[0]); ident(st); st.d = 40; read(st, 0, 1); st.firstMibi = false;
+  const [fa, fb] = S.seedAdults(st, "S01", 9, 2, settings).mibis, pod = st.tray[0];
+  const mate = () => body(model(st, { view: "room", lane: 0, at: "detail", trait: 0 }, "trait")).props.regions.read.right.mate;
+  assert.ok(mate() && [fa.name, fb.name].includes(mate().name), "a wild pod: any adult of its species");
+  pod.genome = { ...pod.genome, origin: { ...pod.genome.origin, kind: "shed", parents: ["x", "x"], parentIds: [fa.id, fa.id] } };
+  assert.equal(mate()?.name, fb.name, "the shed pod of Fa is shown with Fb, never with Fa");
+  st.mibis = st.mibis.filter((m) => m !== fb); assert.ok(!mate(), "no one but its parent at home: no odds");
+});
 test("the stamp in progress: the view on ▲ once taught, its plate and stamp at the reading screen's cell, the blocks lane by lane", () => {
   const st = home(2); S.putOnBench(st, st.tray[0]); ident(st); read(st, 0, 1); st.stampTaught = true;
   const v = body(model(st, { view: "room", at: "stamp" }, "stamp")), sp = v.props.regions.read.stamp; assert.equal(sp.mode, "view"); assert.equal(sp.cell, 8); assert.equal(sp.plateSize, 232, "the Loika's plate: 25 cells at 8 px and 32"); assert.equal(sp.blocks.length, 4); assert.equal(v.line.back, "Loika");
