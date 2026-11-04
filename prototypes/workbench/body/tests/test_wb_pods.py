@@ -53,6 +53,21 @@ class TestPods(unittest.TestCase):
         self.assertLess(mean["some"], mean["wild"])
         self.assertLess(mean["alike"], 0.5 * mean["wild"])
 
+    def test_some_shows_visible_variety_in_the_six_not_five_alike(self):
+        """The six pods share the dial's width between them: at "some" every pair is apart, and the nearest pair is not a tenth of the widest."""
+        for doc in (S71,):
+            par = PL.parent_copies(doc)
+            ps = [p["copies"] for p in PL.make_pods(doc, 0, "some")]
+            ds = [dist(doc, a, b) for i, a in enumerate(ps) for b in ps[i + 1:]]
+            self.assertEqual(len(ps), 6)
+            self.assertGreater(min(ds), 0.1 * max(ds))
+            near = sorted(dist(doc, par, c) for c in ps)
+            self.assertGreater(near[1], 0.2 * near[-1], "five of six look like the parent")
+            for locus in ("form.head", "form.tail-length", "form.ear-length", "form.torso-girth"):                 # each visible shape gene has pods at both sides of the parent
+                v = [E._value(locus, c[locus][0]) for c in ps]
+                t0 = (E._value(locus, par[locus][0]) + E._value(locus, par[locus][1])) / 2
+                self.assertTrue(min(v) < t0 - 0.05 and max(v) > t0 + 0.05 or locus == "form.torso-girth", locus)
+
     def test_the_body_and_face_stay_inside_the_middle_of_their_pools_even_when_wild(self):
         for r in range(6):
             for p in PL.make_pods(S71, r, "wild"):

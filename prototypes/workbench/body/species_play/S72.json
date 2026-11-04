@@ -1507,35 +1507,35 @@
        ],
        "r": [
         0.06,
-        0.18
+        0.15
        ],
        "role": "mass"
       },
       {
        "name": "fold",
        "len": 0.18,
-       "pitch": -20,
+       "pitch": -35,
        "r": [
         0.06,
-        0.22
+        0.17
        ]
       },
       {
        "name": "drop",
        "len": 0.22,
-       "pitch": -40,
+       "pitch": -55,
        "r": [
         0.05,
-        0.2
+        0.16
        ]
       },
       {
        "name": "tip",
        "len": 0.18,
-       "pitch": -70,
+       "pitch": -75,
        "r": [
         0.04,
-        0.12
+        0.1
        ],
        "role": "end"
       }
@@ -4587,7 +4587,7 @@
    "appearance.body-hue": 360.0,
    "form.torso-girth": 1.023333,
    "form.ear-kind": "lop",
-   "form.ear-length": 1.133333,
+   "form.ear-length": 0.966667,
    "form.tail-length": 1.133333,
    "form.tail-curl": 0.085,
    "anatomy.tail-tip-form": "tuft",

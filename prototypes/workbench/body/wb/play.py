@@ -626,7 +626,9 @@ POD_COUNT = 6
 SHED_TRIES = 24                                           # the game's: a pod that equals its parent is drawn again, and after this many draws there is no pod
 # How different? is the width of the genes' pools for the babies, inside the hard limits (a position never leaves the pool, a look is only one of the pool's): `spread` is how far a blend moves from the parent, in shares of its pool; `redraw` is the chance
 # that a copy of a look is drawn again from the pool instead of coming from the parent's two copies.
-WIDTH = dict(alike=dict(spread=0.10, redraw=0.0), some=dict(spread=0.28, redraw=0.12), wild=dict(spread=0.55, redraw=0.35))
+# The six pods of a make share the width between them: each blend's offset is drawn from one of six equal strips of [-spread, +spread], and the six pods take the six strips in an order drawn per gene, so the six cover the width instead of
+# clustering (five of six looked alike at "some" with plain draws). A shed pod is a cross of a mibi with itself, so "alike" stays at the catalogue's own nudge (10 % of the locus range); "some" and "wild" are the dial's wider pools.
+WIDTH = dict(alike=dict(spread=0.10, redraw=0.0), some=dict(spread=0.45, redraw=0.15), wild=dict(spread=0.80, redraw=0.35))
 
 
 def pod_selector(copies, set_=None):
@@ -689,7 +691,15 @@ def _redraw(e, rng):
     return str(rng.choice(al, p=w / w.sum()))
 
 
-def draw_pod(g, parent, dial, rng):
+def _strip(doc_id, parent, dial, round_no, locus, i, n):
+    """The strip (0..n-1) pod i takes at this locus: a permutation of the n strips drawn from the make alone."""
+    import hashlib
+    import numpy as np
+    seed = int(hashlib.sha256(f"strip|{doc_id}|{sorted(_copies_key(parent).items())}|{dial}|{round_no}|{locus}".encode()).hexdigest()[:15], 16)
+    return int(np.random.Generator(np.random.PCG64([seed])).permutation(n)[i % n])
+
+
+def draw_pod(g, parent, dial, rng, strips=None):
     """One pod of one parent's copies: each position moves inside the pool by the dial's spread (the body and the face stay inside the middle 70 % of it, as the wild draws do), each look comes from one of the parent's two copies or, by the dial's
     chance, is drawn again from the pool. Of the loud looks a pod would show, only two stay."""
     import expressions as E
@@ -705,7 +715,10 @@ def draw_pod(g, parent, dial, rng):
                 continue
             t0 = (E._value(i, pc[0]) + E._value(i, pc[1])) / 2.0
             lo, hi = (0.15, 0.85) if _is_tight(i) else (0.0, 1.0)
-            t = GN.grid_t(min(hi, max(lo, t0 + (float(rng.random()) * 2 - 1) * W["spread"])))
+            u = float(rng.random())
+            if strips:
+                u = (strips(i) + u) / strips.n                                         # one of the n strips of the width
+            t = GN.grid_t(min(hi, max(lo, t0 + (u * 2 - 1) * W["spread"])))
             out[i] = [t, t]
         else:
             out[i] = [(_redraw(e, rng) if rng.random() < W["redraw"] else pc[int(rng.integers(2))]) for _ in (0, 1)]
@@ -723,12 +736,20 @@ def pod_rng(doc, parent, dial, round_no, i, tries=0):
     return np.random.Generator(np.random.PCG64([seed]))
 
 
+class _Strips:
+    def __init__(self, doc_id, parent, dial, round_no, i, n):
+        self.a, self.n, self.i = (doc_id, parent, dial, round_no), n, i
+
+    def __call__(self, locus):
+        return _strip(*self.a, locus, self.i, self.n)
+
+
 def make_pod(doc, parent, dial, round_no, i, tries=0):
     """Pod `i` of round `round_no`: the copies, or None when the game's rule finds none (every draw equals the parent: SHED_TRIES draws)."""
     rng = pod_rng(doc, parent, dial, round_no, i, tries)
     pk = _copies_key(parent)
     for _ in range(SHED_TRIES):
-        c = draw_pod(doc["genome"], parent, dial, rng)
+        c = draw_pod(doc["genome"], parent, dial, rng, _Strips(doc.get("id"), parent, dial, round_no, i, POD_COUNT))
         if _copies_key(c) != pk:
             return c
     return None

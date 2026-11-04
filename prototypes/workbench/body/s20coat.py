@@ -449,7 +449,9 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         d = np.array([0.92, -0.35, -0.1]) if lop else np.array([0.85, -0.35, 0.25]); d /= np.linalg.norm(d)      # a lop's inner face is the broad face turned to the front; the back face and the rim stay the coat's own colour
         recs = ctx["info"]["tubes"].get("ear.L")
         Le = recs["path"].length if recs else 0.6
-        m = (sstep(0.72, 0.93, Nm @ d) if lop else sstep(0.30, 0.62, Nm @ d)) * (1 - sstep(Le - 0.14, Le - 0.03, s)) * sstep(recs["first_s"] - 0.02 if recs else 0.2, recs["first_s"] + 0.12 if recs else 0.3, s)
+        tipcut = (1 - sstep(Le - 0.24, Le - 0.10, s)) if lop else (1 - sstep(Le - 0.14, Le - 0.03, s))              # a lop's inner colour stops well short of the tip and of the rim: the coat's own colour round the edge, so the ear reads as a flap of the coat, not a cream paddle
+        rootcut = sstep(recs["first_s"] + 0.04 if recs else 0.2, recs["first_s"] + 0.18 if recs else 0.3, s) if lop else sstep(recs["first_s"] - 0.02 if recs else 0.2, recs["first_s"] + 0.12 if recs else 0.3, s)
+        m = (sstep(0.86, 0.98, Nm @ d) * 0.8 if lop else sstep(0.30, 0.62, Nm @ d)) * tipcut * rootcut
         m = np.where(ear, m, 0.0)
         F["ear_inner"] = m
         col = col * (1 - m[:, None]) + srgb_to_lin(pal["ear-inner"]) * m[:, None]
