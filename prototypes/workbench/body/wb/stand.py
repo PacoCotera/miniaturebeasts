@@ -24,6 +24,38 @@ def ink_box(px, alpha=128, solid=200):
     return [int(xs.min()), int(ys.min()), int(xs.max() - xs.min() + 1), int(y1 - ys.min() + 1)]
 
 
+SHADOW_TINT = (6, 12, 18)            # a cool dark, never black
+SHADOW_CORE = 140                    # the core's alpha (130 to 150); nothing is ever opaque
+SHADOW_WIDE = 1.3                    # the ellipse's width, in feet spans
+SHADOW_HALF_H = 7                    # at the stand's scale: the ink lies from the feet line -8 to +6 rows
+SHADOW_SHIFT = 3                     # a few px to the right of the feet, where the key (top left) throws it
+
+
+def feet_span(art, feet_row, depth=6, alpha=128):
+    """The x range [x0, x1] of the drawn pixels in the last `depth` rows down to the feet line: both feet, with the gap between them."""
+    a = art[max(0, feet_row - depth):feet_row + 1, :, 3]
+    xs = np.where((a >= alpha).any(0))[0]
+    return (int(xs.min()), int(xs.max())) if len(xs) else None
+
+
+def contact_shadow(size, cx, feet_row, span, scale=1.0, core=SHADOW_CORE):
+    """One soft ellipse under both feet: SHADOW_WIDE feet spans wide, SHADOW_HALF_H rows either side of the feet line less one, SHADOW_SHIFT px right of the feet (all at `scale`), the core at `core` alpha fading by a smoothstep to nothing at the rim,
+    in a cool dark tint. `size` (w, h) is the canvas, `cx` the feet's centre column, `feet_row` the canvas row of the feet line. Straight-alpha uint8 RGBA; alpha 0 on every edge."""
+    w, h = size
+    a = SHADOW_WIDE * span / 2.0
+    b = max(1.5, SHADOW_HALF_H * scale)
+    x = np.arange(w)[None, :] + 0.5
+    y = np.arange(h)[:, None] + 0.5
+    r = np.sqrt(((x - (cx + SHADOW_SHIFT * scale)) / a) ** 2 + ((y - (feet_row - scale + 0.5)) / b) ** 2)
+    t = np.clip((r - 0.25) / 0.75, 0, 1)
+    al = core * (1 - t * t * (3 - 2 * t))
+    out = np.zeros((h, w, 4), np.uint8)
+    out[..., :3] = SHADOW_TINT
+    out[..., 3] = np.round(al).astype(np.uint8)
+    out[(r >= 1.0) | (al < 0.5), 3] = 0
+    return out
+
+
 def over(dst, src):
     """src laid over dst (straight alpha, the usual over); both uint8 RGBA of one size."""
     sa = src[..., 3:4].astype(np.float64) / 255.0

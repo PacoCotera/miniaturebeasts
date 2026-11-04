@@ -169,6 +169,40 @@ class TestStand(unittest.TestCase):
         self.assertEqual(tuple(c[200, 100]), (120, 60, 200, 255))      # the art over it
 
 
+class TestShadow(unittest.TestCase):
+    """The contact shadow (art director, 4 Nov): one soft ellipse, cool dark, core 130 to 150, never opaque, clear on all four edges, 8 px clear at each end, ink within the feet line -8 to +6."""
+    def test_the_shadow_layer(self):
+        art = blob(box=(70, 50, 150, 242))
+        art[:, :, 3] = 0
+        art[280:292, 100:130] = (50, 40, 90, 255)
+        art[280:292, 160:190] = (50, 40, 90, 255)
+        x0, x1 = ST.feet_span(art, 291)
+        self.assertEqual((x0, x1), (100, 189))
+        sh = ST.contact_shadow((304, 48), (x0 + x1 + 1) / 2.0, ST.FEET_ROW, x1 - x0 + 1)
+        al = sh[..., 3]
+        self.assertTrue(130 <= int(al.max()) <= 150)
+        self.assertLess(int(al.max()), 255)
+        self.assertTrue((sh[al > 0][:, :3] == ST.SHADOW_TINT).all())
+        for edge in (al[0], al[-1], al[:, 0], al[:, -1]):
+            self.assertEqual(int(edge.max()), 0)
+        ys, xs = np.where(al > 0)
+        self.assertGreaterEqual(int(xs.min()), 8)
+        self.assertLessEqual(int(xs.max()), 303 - 8)
+        self.assertGreaterEqual(int(ys.min()), ST.FEET_ROW - 8)
+        self.assertLessEqual(int(ys.max()), ST.FEET_ROW + 6)
+        wide = (xs.max() - xs.min() + 1) / (x1 - x0 + 1)
+        self.assertTrue(1.1 <= wide <= 1.4, wide)
+        mid = (xs.max() + xs.min()) / 2
+        self.assertTrue(0 < mid - (x0 + x1) / 2 <= 6)                              # a few px to the right of the feet
+
+    def test_a_small_picture_gets_the_same_shadow_at_its_scale(self):
+        sh = ST.contact_shadow((48, 48), 24, 44, 14, scale=15 / 95)
+        al = sh[..., 3]
+        self.assertTrue(al.max() > 100)
+        for edge in (al[0], al[-1], al[:, 0], al[:, -1]):
+            self.assertEqual(int(edge.max()), 0)
+
+
 class TestDrawn(unittest.TestCase):
     """The Workbench styles of the set, drawn for real in a child process (about 5 s; the plush pictures are the done-picture's run)."""
     def test_silhouette_is_alpha_only_and_clay_has_alpha_around_it(self):

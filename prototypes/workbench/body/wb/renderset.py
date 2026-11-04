@@ -207,12 +207,9 @@ def stand(spec, subject_type, outdir, scratch, species, age, pose, log):
             pngio.write(os.path.join(outdir, fn), px)
             layers.append(dict(op=op, trait=e["locus"], looks=[e["look"]], order=10 + len(layers), file=fn, pixels=px))
         log(f"stand layer {e['id']}")
-    shadow_full = plush(sb, 32, (304, 312), os.path.join(scratch, "shadow.png"), floor=True, body_visible=False)
     feet = fig[1] + fig[3] - 1
-    top = max(0, feet - ST.FEET_ROW)
-    shadow = np.zeros((ST.SHADOW_H, 304, 4), np.uint8)
-    band = shadow_full[top:top + ST.SHADOW_H]
-    shadow[:len(band)] = band
+    x0, x1 = ST.feet_span(base, feet)
+    shadow = ST.contact_shadow((304, ST.SHADOW_H), (x0 + x1 + 1) / 2.0, ST.FEET_ROW, x1 - x0 + 1)          # the shadow layer: one soft ellipse under both feet, drawn (the floor's own cast shadow is long and hard to bound)
     shadow_fn = f"{species}-{age}-304x48-shadow.png"
     pngio.write(os.path.join(outdir, shadow_fn), shadow)
     entry = dict(traits=sorted({l["trait"] for l in layers}), pose=pose, figure=fig,
