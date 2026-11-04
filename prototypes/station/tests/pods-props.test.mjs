@@ -108,6 +108,17 @@ test("the worth line: at most two tags, from what the game holds, in their order
   assert.deepEqual(worthTags(st, p, spec).map((t) => t.text), ["your goal · " + look + " may be here", "known in full"], "the goal first");
   const shed = st.tray[1]; shed.shed = 7; shed.of = "Fig"; assert.ok(worthTags(st, shed, spec).some((t) => t.text === "of Fig's line"));
 });
+test("the partner tag: a lone mibi of the species, or a home of one family, names the newest in need; a pair of unrelated founders needs nothing; a shed pod keeps its line tag", () => {
+  const st = mixed(); ident(st); const p = st.tray[0]; st.firstMibi = false;
+  const founders = S.seedAdults(st, "S01", 9, 1, settings).mibis, lone = founders[0];
+  const tag = () => worthTags(st, p, spec).find((t) => t.key === "partner");
+  assert.equal(tag()?.text, spec.strings.inv.worth.partner.replace("{name}", lone.name), "one mibi of the species: it needs a partner");
+  const sib = S.seedSiblings(st, "S01", 4242, { ...settings, rooms: 3 }); assert.equal(sib.ok, true, sib.msg);
+  assert.equal(tag(), undefined, "two unrelated founders and their children: a pair is allowed");
+  st.mibis = st.mibis.filter((m) => sib.mibis.includes(m)); st.mibis[0].born = 1; st.mibis[1].born = 2;
+  assert.equal(tag()?.text, spec.strings.inv.worth.partner.replace("{name}", st.mibis[1].name), "all of the species is one family: the newest is named");
+  const shed = st.tray[1]; shed.shed = 7; shed.of = "Fig"; assert.ok(!worthTags(st, shed, spec).some((t) => t.key === "partner"));
+});
 test("sort by use puts the goal first and nothing new last; by species groups each species under its label; drying soon puts the fewest turns first and the bench pod last", () => {
   const st = mixed(); ident(st); read(st, 0); st.firstMibi = false; S.seedAdults(st, "S01", 9, 2, settings); S.seedAdults(st, "S02", 9, 2, settings);
   const ch = frameOf("S01").chapters[0], t = ch.traits[0]; st.wish.S01 = { [t.id]: chapterLooks(frameOf("S01"), ch, st.tray[0].genome).find(([id]) => id === t.id)[1][0] };
