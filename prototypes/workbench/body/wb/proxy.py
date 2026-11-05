@@ -154,7 +154,7 @@ class ProxyRenderer:
             fme.materials.append(self.mats["face"])
             self.face = bpy.data.objects.new("face", fme)
             self.sc.collection.objects.link(self.face)
-        self.mesh = dict(V=V, F=F, part=part)
+        self.mesh = dict(V=V, F=F, part=part, frame=mesh.get("frame"))
         from gltf_out import vertex_normals
         self.mesh["N"] = vertex_normals(V, F)
         self.mesh_key = key
@@ -163,8 +163,11 @@ class ProxyRenderer:
     # ---- the views
     def _camera(self, az, size, el=EL):
         w, h, ppH = SIZES[size]
+        fr = (self.mesh or {}).get("frame")                         # a plan that frames its own clay (the quadruped's long body): its centre, and its scale on the house's pixels per H
+        centre = np.array(fr["centre"], float) if fr else CENTRE
+        ppH = ppH * float(fr["scale"]) if fr else ppH
         right, up, fwd, pos_dir = basis(az, el)
-        pos = CENTRE + 12.0 * pos_dir
+        pos = centre + 12.0 * pos_dir
         M = np.stack([right, up, -fwd], 1)
         self.cam.data.ortho_scale = w / ppH
         self.cam.matrix_world = Matrix([[M[0, 0], M[0, 1], M[0, 2], pos[0]], [M[1, 0], M[1, 1], M[1, 2], pos[1]], [M[2, 0], M[2, 1], M[2, 2], pos[2]], [0, 0, 0, 1]])
@@ -201,7 +204,8 @@ class ProxyRenderer:
             sh.studio_light = "clay_studio.exr"
         if mode == "wire":
             w, h, ppH = SIZES[size]
-            self.wire.modifiers["wf"].thickness = 1.3 / ppH
+            fr = (self.mesh or {}).get("frame")
+            self.wire.modifiers["wf"].thickness = 1.3 / (ppH * float(fr["scale"]) if fr else ppH)
         self.sc.render.filepath = path
         bpy.ops.render.render(write_still=True)
         strip_png_text(path)

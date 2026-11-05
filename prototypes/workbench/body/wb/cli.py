@@ -418,6 +418,10 @@ def cmd_golden(a):
             man = G.read_manifest(f, sid)
             if a.release and not (man and man.get("release")):
                 continue                                          # the release check looks at release goldens only
+            if man is None and a.all:
+                if not a.json:
+                    print(f"{sid}  no goldens yet")                # a species of the folder that has none (a test species) is left out of the sweep
+                continue
             st = G.diff(f, home, C.Cas(os.path.join(home, "cas")), only=set(a.only.split(",")) if a.only else None, setdir=a.set or None, log=lambda m: None if a.json else print(m))
             sts.append(st)
             bad += st["totals"]["changed"] + st["totals"]["missing"]

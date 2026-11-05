@@ -87,15 +87,14 @@ class TestView(unittest.TestCase):
         row2 = next(r for r in moved["spine"]["loft"]["section"]["stations"] if abs(r[0] - 1.2) < 1e-9)
         self.assertAlmostEqual((row2[1][2] - row[1][2]) * k["gain"], 0.02, places=3)
 
-    def test_the_quadruped_plan_answers_in_the_same_shape_without_a_cage(self):
-        q = copy.deepcopy(S20)
-        q["plan"] = "quadruped"
+    def test_the_quadruped_plan_answers_in_the_same_shape_over_its_own_cage(self):
+        q = json.load(open(os.path.join(BODY, "species_v1", "S22.json")))
         v = self.view(q)
-        self.assertFalse(v["built"])
+        self.assertTrue(v["built"])
         self.assertEqual([r["name"] for r in v["ranges"]], ["head", "neck", "back", "seat", "tail"])
         self.assertEqual({k["name"] for k in v["knobs"]}, {"neck_ratio", "R_scale", "chest_front", "rump_gain"})
-        self.assertIsNone(v["outline"])
-        zs = {round(p[2], 3) for p in v["path"]}
+        self.assertEqual(sorted(v["outline"]), ["back", "front"])
+        zs = {round(p[2], 3) for p in v["path"][:40]}
         self.assertEqual(len(zs), 1)                         # a horizontal spine
         self.assertGreater(v["path"][0][0], v["path"][-1][0])  # the head at the front, +x
 

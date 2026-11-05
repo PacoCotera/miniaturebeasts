@@ -12,6 +12,8 @@ def cage_key(spec, genome, stage="base"):
     """The cache key of a cage's proxy mesh. The clay's face (the eyes and mouth drawn on the proxy) comes from coat genes that the cage hash leaves out, so a genome whose face differs from the type's gets its own key: eye size low and high must not share one cached mesh."""
     ck = F.cage_key(spec, genome, stage)
     spec_ = F.internal(spec)
+    if F.is_quadruped(spec_):
+        return ck                                                  # no coat genes yet: the clay has no face to move the key
     c, _ = F.cage_inputs(spec_, F.resolve_genome(genome, spec_))
     coat = c.get("coat") or {}
     face = {k: round(float(coat.get(k, d)) + 0.0, 6) for k, d in FACE.items()}

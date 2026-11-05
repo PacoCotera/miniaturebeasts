@@ -26,15 +26,26 @@ class BuildError(Exception):
         self.message, self.field = message, field
 
 
+def is_quadruped(spec):
+    """A v1 file of the quadruped plan: its cage builder reads the file as it is (quadruped.py), not through the biped's converter."""
+    return isinstance(spec, dict) and spec.get("schema") == "mb-species/1" and spec.get("plan") == "quadruped"
+
+
 def internal(spec):
-    """The species file as the cage builder reads it. A v1 file (mb-species/1) is converted (species_v1.to_internal); a file in today's shape is used as it is. A v1 file that is not valid is a build error naming its field."""
+    """The species file as the cage builder reads it. A v1 file (mb-species/1) is converted (species_v1.to_internal); a file in today's shape is used as it is. A v1 file that is not valid is a build error naming its field.
+    A quadruped's file is read as it is."""
     import species_v1 as V1
     if not V1.is_v1(spec):
         return spec
     errs = V1.validate(spec)
     if errs:
         raise BuildError(errs[0][1], errs[0][0])
-    return V1.to_internal(spec)
+    return spec if is_quadruped(spec) else V1.to_internal(spec)
+
+
+def quad_check_genome(genome):
+    if genome not in (None, "type"):
+        raise BuildError(f"genome '{genome}': the quadruped has no genes yet, only the type builds", "genome")
 
 
 def tables(spec):
@@ -211,6 +222,9 @@ def cage_inputs(spec, ind):
 
 def cage_key(spec, genome, stage="base"):
     spec = internal(spec)
+    if is_quadruped(spec):
+        quad_check_genome(genome)
+        return H.hash_of("cage", H.framework_id(), dict(plan=spec["plan"], spine=spec["spine"], parts=spec.get("parts")), stage)
     ind = resolve_genome(genome, spec)
     _, ci = cage_inputs(spec, ind)
     return H.hash_of("cage", H.framework_id(), spec, ci, stage)
@@ -277,6 +291,8 @@ def build(spec, genome="type", stage="base"):
     spec = internal(spec)
     if stage not in STAGES:
         raise BuildError(f"stage '{stage}': one of {', '.join(STAGES)}", "stage")
+    if is_quadruped(spec):
+        return build_quadruped(spec, genome, stage)
     T = {}
     t0 = time.perf_counter()
     ind = resolve_genome(genome, spec)
@@ -309,6 +325,24 @@ def build(spec, genome="type", stage="base"):
     return Result(species=spec.get("species"), stage=stage, body=body, c=c, ind=ind, genome_hash=H.hash_of(ci), key=H.hash_of("cage", H.framework_id(), spec, ci, stage), cage_hash=ch,
                   vertices=len(V), faces=len(F), timings_ms={k: round(v, 1) for k, v in T.items()}, calls=dict({k: n for k, (n, s) in acc.items()}, **cache),
                   parts={k: int(v) for k, v in body.parts.items()}, balance=H._norm(body.ctx.get("balance", {})))
+
+
+def build_quadruped(doc, genome="type", stage="base"):
+    """The quadruped's cage (quadruped.py): the horizontal spine in the plan's ranges. Its genes, legs and girdles come with the next chunks, so the stage only says how far the build went."""
+    import quadruped as Q
+    quad_check_genome(genome)
+    t0 = time.perf_counter()
+    try:
+        body = Q.build(doc)
+    except (KeyError, ValueError, AssertionError, IndexError, np.linalg.LinAlgError) as e:
+        raise BuildError(f"{type(e).__name__}: {e}", _field_of(str(e)))
+    T = dict(cage=(time.perf_counter() - t0) * 1000)
+    ch = H.cage_hash(body)
+    V, F, *_ = body.full()
+    key = cage_key(doc, genome, stage)
+    T["total"] = (time.perf_counter() - t0) * 1000
+    return Result(species=doc.get("id"), stage=stage, body=body, c={}, ind={}, genome_hash=H.hash_of("type"), key=key, cage_hash=ch, vertices=len(V), faces=len(F), timings_ms={k: round(v, 1) for k, v in T.items()},
+                  calls={}, parts={k: int(v) for k, v in body.parts.items()}, balance={})
 
 
 def _field_of(msg):

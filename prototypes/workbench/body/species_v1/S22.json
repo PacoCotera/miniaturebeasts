@@ -1,0 +1,150 @@
+{
+ "schema": "mb-species/1",
+ "id": "S22",
+ "name": "",
+ "plan": "quadruped",
+ "plan_version": 1,
+ "anchors": {
+  "ears": "wide",
+  "tail": "wide",
+  "coat": "wide",
+  "body": "tight",
+  "face": "tight"
+ },
+ "spine": {
+  "ranges": [
+   {
+    "name": "head",
+    "length": 1.25
+   },
+   {
+    "name": "neck",
+    "length": 0.25
+   },
+   {
+    "name": "back",
+    "length": 0.85
+   },
+   {
+    "name": "seat",
+    "length": 0.45
+   },
+   {
+    "name": "tail",
+    "length": null
+   }
+  ],
+  "head_attach": {
+   "a": 0.0,
+   "d": 0.0,
+   "z_under": 0.95
+  },
+  "seat": {
+   "radius": 0.45
+  },
+  "tail": {
+   "length": 1.1,
+   "root": 0.4,
+   "tip_r": 0.06,
+   "root_at": [
+    -1.4,
+    0.0,
+    0.95
+   ],
+   "segments": [
+    {
+     "name": "t1",
+     "share": 0.34,
+     "pitch": 180,
+     "r": [
+      0.18,
+      0.18
+     ]
+    },
+    {
+     "name": "t2",
+     "share": 0.33,
+     "pitch": 165,
+     "r": [
+      0.12,
+      0.12
+     ]
+    },
+    {
+     "name": "t3",
+     "share": 0.33,
+     "pitch": 150,
+     "r": [
+      0.06,
+      0.06
+     ],
+     "role": "end"
+    }
+   ],
+   "fillet": 1.4
+  },
+  "loft": {
+   "label": "trunk",
+   "axis_z": 0.95,
+   "head_profile": {
+    "R_scale": 1.0,
+    "neck_ratio": 0.7,
+    "chest_front": 0.05,
+    "rump_gain": 0.15
+   }
+  }
+ },
+ "skeleton": {
+  "chest": [
+   0.0,
+   0.0,
+   0.95
+  ],
+  "pelvis": [
+   -0.8,
+   0.0,
+   0.95
+  ]
+ },
+ "parts": [],
+ "sockets": [],
+ "face": {},
+ "coat": {
+  "zones": {},
+  "layouts": {},
+  "palettes": {},
+  "material": {}
+ },
+ "genome": {
+  "catalogue": {
+   "id": "mb-genome-framework",
+   "version": 11,
+   "digest": "2666ebb3e6be79739a49f45aa840a876e87737e27361c01e1be5722d0cd8ada4"
+  },
+  "chapters": [
+   {
+    "id": "coat",
+    "name": "Coat"
+   },
+   {
+    "id": "face",
+    "name": "Face"
+   },
+   {
+    "id": "shape",
+    "name": "Shape"
+   },
+   {
+    "id": "legs-tail",
+    "name": "Legs & tail"
+   },
+   {
+    "id": "movement",
+    "name": "Movement"
+   }
+  ],
+  "loci": []
+ },
+ "motion": {},
+ "legacy": {}
+}

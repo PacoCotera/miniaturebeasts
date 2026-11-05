@@ -57,7 +57,8 @@ def c_schema(ctx):
     if errs:
         return row("fail", f"{len(errs)} problem{'s' if len(errs) > 1 else ''}", "valid", errs[0][1] + (f" (and {len(errs) - 1} more)" if len(errs) > 1 else ""), extra=dict(field=errs[0][0]))
     try:
-        SC.validate(copy.deepcopy(ctx.spec))
+        if not F.is_quadruped(ctx.spec):                                          # a quadruped's file is the v1 file as it is: V1.validate above is its schema
+            SC.validate(copy.deepcopy(ctx.spec))
     except Exception as e:                                                       # noqa: BLE001
         return row("fail", str(e), "valid", str(e), extra=dict(field=F._field_of(str(e))))
     return row("pass", "valid", "valid", "The file passes its schema")
@@ -83,20 +84,29 @@ def c_express(ctx):
        rule=R("2026-11-02 17:43", "The spine is one object. The neck, back and its parts, and the tail are named segments of one path and one loft, not attached parts."),
        limit=dict(text="head, neck, back, seat, tail, each inside its band", value=None), az=90)
 def c_ranges(ctx):
-    rg = ctx.spec["parts"]["torso"]["spine"]["ranges"]
+    plan = BIPED
+    if isinstance(ctx.spec, dict) and ctx.spec.get("schema") == "mb-species/1" and ctx.spec.get("plan") == "quadruped":              # the quadruped's file lists the ranges as {name, length}: the same bands, its own plan's
+        import species_v1 as V1
+        rg, at = {}, 0.0
+        for r in ctx.doc["spine"]["ranges"]:
+            end = at + (r["length"] if r["length"] is not None else float(ctx.doc["spine"]["tail"]["length"]))
+            rg[r["name"]], at = [at, end], end
+        plan = dict(BIPED, ranges=V1.PLANS["quadruped"]["ranges"], range_len=V1.PLANS["quadruped"]["range_len"])
+    else:
+        rg = ctx.spec["parts"]["torso"]["spine"]["ranges"]
     names = list(rg)
     bad = []
-    if names != BIPED["ranges"]:
-        meas = f"The ranges are {', '.join(names)}; the plan's are {', '.join(BIPED['ranges'])}"
-        return row("fail", len(names), len(BIPED["ranges"]), meas, PR_ranges(rg, BIPED["ranges"]), dict(parts=[]))
+    if names != plan["ranges"]:
+        meas = f"The ranges are {', '.join(names)}; the plan's are {', '.join(plan['ranges'])}"
+        return row("fail", len(names), len(plan["ranges"]), meas, PR_ranges(rg, plan["ranges"]), dict(parts=[]))
     lens = {k: rg[k][1] - rg[k][0] for k in names if k != "tail"}
-    for k, (lo, hi) in BIPED["range_len"].items():
+    for k, (lo, hi) in plan["range_len"].items():
         if not lo <= lens[k] <= hi:
             bad.append(k)
     contiguous = all(abs(rg[a][1] - rg[b][0]) < 1e-9 for a, b in zip(names, names[1:]))
     if not contiguous:
         bad.append("gap")
-    meas = ("; ".join(f"{k} {lens[k]:.2f} H (band {BIPED['range_len'][k][0]}-{BIPED['range_len'][k][1]})" for k in bad if k in lens) + ("; the ranges leave a gap" if "gap" in bad else "")) if bad else \
+    meas = ("; ".join(f"{k} {lens[k]:.2f} H (band {plan['range_len'][k][0]}-{plan['range_len'][k][1]})" for k in bad if k in lens) + ("; the ranges leave a gap" if "gap" in bad else "")) if bad else \
         "Head " + ", neck ".join([f"{lens['head']:.2f}", f"{lens['neck']:.2f}"]) + f", back {lens['back']:.2f}, seat {lens['seat']:.2f} H, all inside their bands"
     return row("fail" if bad else "pass", f2(sum(lens.values())), "inside the bands", meas, PR_ranges(rg, bad), dict(parts=[b for b in bad if b in names]))
 

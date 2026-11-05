@@ -18,6 +18,9 @@ class Check:
                     play=self.play, az=self.az, mode=self.mode, sources=list(self.sources))
 
 
+QUAD_CHECKS = ("schema", "express", "ranges", "verts")          # what judges a quadruped's bare base today: its file, its ranges and its vertex count
+
+
 def check(**kw):
     def deco(fn):
         REGISTRY.append(Check(fn=fn, **kw))
@@ -50,9 +53,12 @@ def run(stage, ctx, only=None):
     """Run the checks of one stage ("file" or "cage") on a Ctx. A check that raises is a row with state "fail" and the error as its measure, never a crash."""
     from . import biped  # noqa: F401  (registers the checks)
     out = []
+    quad = isinstance(ctx.spec, dict) and ctx.spec.get("schema") == "mb-species/1" and ctx.spec.get("plan") == "quadruped"      # a quadruped's own file (the cage builder reads it as it is)
     for c in REGISTRY:
         if c.stage != stage or (only and c.id not in only):
             continue
+        if quad and c.id not in QUAD_CHECKS:
+            continue                                                  # the biped's measures read the biped's body; the quadruped's own come with its checks
         try:
             r = c.fn(ctx)
         except Exception as e:                                   # noqa: BLE001

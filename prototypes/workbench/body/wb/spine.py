@@ -4,8 +4,9 @@
   ranges  each range's start and end `u`, the field that holds its length (the tail's is null: it runs to the end) and its swatch;
   knobs   each profile knob: where its handle sits now, the axis a drag moves it along and `gain`, the value a handle moving 1 H along that axis changes by;
   outline the loft's derived section table as two polylines (the back and the front edge), for the thin profile line;
-  built   whether the plan has a cage builder yet. The quadruped's has not (chunks 17-20): its path and knobs come from the plan's own formula and nothing is drawn over a clay.
+  built   whether the plan has a cage builder yet (both have: the quadruped's bare base is quadruped.py).
 A plan is one function that returns (path points, knobs, outline); `PLANS` below is the table the plan modules own from chunk 26."""
+import copy
 import math
 import os
 import sys
@@ -97,31 +98,42 @@ def biped(doc):
     return u, pts, knobs, outline, True, None
 
 
-# ---- the quadruped: a horizontal spine, the head entered from behind on the spine axis. No cage builder yet, so the path is the plan's own formula (a straight run at the shoulder height, head at the front) and the
-# knobs sit above the axis; nothing is drawn over a clay. The same function returns the real path once chunk 17 builds one.
-QUAD_AXIS_Z = 0.95
+# ---- the quadruped: a horizontal spine, the head entered from behind on the spine axis (quadruped.py builds it). The path is the cage's own, the knobs ride the top edge of the section table where each moves it, and the camera is the plan's own framing.
+def quad_knobs(doc):
+    """The four profile knobs of the quadruped: where each handle sits on the section table's top edge, the axis a drag moves it along (up) and `gain`, the value a handle moving 1 H up changes by, found by moving the knob a little."""
+    import quadruped as QD
+    p = QD.params(doc)
+    pa = QD._path(doc, p)
+    hp = dict(QD.DEFAULT_KNOBS, **((doc["spine"].get("loft") or {}).get("head_profile") or {}))
+    u = np.linspace(0.0, p["total"], 1601)
+    nk = (u >= p["head"]) & (u <= p["head"] + p["neck"])
+    at = dict(R_scale=p["R_head"], neck_ratio=float(u[nk][np.argmin(QD.table(doc, u[nk], p)[0])]), chest_front=p["u_c"] - 0.08, rump_gain=p["u_p"])
+    out = []
+    for name in ("neck_ratio", "R_scale", "chest_front", "rump_gain"):
+        s0 = at[name]
+        top = lambda d_: float(QD.table(d_, [s0], QD.params(d_))[1][0])
+        h = 0.01 if name in ("neck_ratio", "R_scale") else 0.005
+        moved = copy.deepcopy(doc)
+        moved["spine"].setdefault("loft", {}).setdefault("head_profile", {})
+        moved["spine"]["loft"]["head_profile"] = dict(hp, **{name: float(hp[name]) + h})
+        dz = top(moved) - top(doc)
+        pt = pa.at([s0])[0][0]
+        out.append(dict(name=name, at=[round(float(pt[0]), 5), 0.0, round(float(pt[2]) + top(doc), 5)], axis=[0.0, 0.0, 1.0], gain=round((h / dz) if abs(dz) > 1e-9 else 0.0, 5)))
+    return out
 
 
 def quadruped(doc):
-    sp = doc["spine"]
-    lens = [r.get("length") for r in sp["ranges"]]
-    total = sum(x for x in lens if x) + float((sp.get("tail") or {}).get("length", 1.0))
-    u = np.arange(0.0, total, STEP)
-    x0 = CENTRE[0] + total / 2
-    pts = np.stack([x0 - u, np.zeros_like(u), np.full_like(u, QUAD_AXIS_Z)], 1)
-    knobs, at = [], 0.0
-    hp = (sp.get("loft") or {}).get("head_profile") or {}
-    for r in sp["ranges"]:
-        name = r["name"]
-        k = FM.KNOB_OF.get(name)
-        L = r.get("length")
-        if k in hp and L:
-            band = V1.PLANS["quadruped"]["prof_" + k]
-            r_axis = 0.3 + 0.35 * float(hp[k]) / max(band[1], 1e-9)                   # the radius the handle rides at: a share of the band, in H
-            knobs.append(dict(name=k, at=[round(x0 - at - L / 2, 5), 0.0, round(QUAD_AXIS_Z + r_axis, 5)], axis=[0.0, 0.0, 1.0], gain=round(band[1] / 0.35, 5)))
-        at += L or 0.0
-    ppH = min(HERO[2], HERO[0] * 0.64 / total)                                           # until the plan frames its own clay, the spine is fitted to the left of the plate, the names' column free on the right
-    return u, pts, knobs, None, False, camera(centre=(x0 - total / 2 - 0.1 * HERO[0] / ppH, 0.0, QUAD_AXIS_Z + 0.2), ppH=ppH)
+    import quadruped as QD
+    p = QD.params(doc)
+    pa = QD._path(doc, p)
+    u = np.arange(0.0, p["total"], STEP)
+    pts = pa.at(u)[0]
+    t = np.linspace(0.0, p["total"], 241)
+    top, bot = QD.table(doc, t, p)[1], QD.table(doc, t, p)[2]
+    c = pa.at(t)[0]
+    outline = dict(back=[[round(float(c[i][0]), 4), round(float(c[i][2] + top[i]), 4)] for i in range(len(t))], front=[[round(float(c[i][0]), 4), round(float(c[i][2] - bot[i]), 4)] for i in range(len(t))])
+    fr = QD.frame(doc)
+    return u, pts, quad_knobs(doc), outline, True, camera(centre=tuple(fr["centre"]), ppH=HERO[2] * fr["scale"])
 
 
 PLANS = dict(biped=biped, quadruped=quadruped)
