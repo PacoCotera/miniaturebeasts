@@ -18,7 +18,7 @@
   {"i": 16, "name": "leaf", "hex": "#329245", "dark": 15, "light": 17, "dark2": 14, "fog": 47, "fade": 4, "mat": "grass"},
   {"i": 17, "name": "grass", "hex": "#5cbb4c", "dark": 16, "light": 18, "dark2": 15, "fog": 6, "fade": 16, "mat": "grass"},
   {"i": 18, "name": "sprout", "hex": "#98d85c", "dark": 17, "light": 19, "dark2": 16, "fog": 6, "fade": 17, "mat": "grass"},
-  {"i": 19, "name": "lime", "hex": "#d4f281", "dark": 18, "light": 43, "dark2": 17, "fog": 9, "fade": 5, "mat": "grass"},
+  {"i": 19, "name": "lime", "hex": "#d4f281", "dark": 18, "light": 43, "dark2": 17, "fog": 6, "fade": 5, "mat": "grass"},
   {"i": 20, "name": "deep", "hex": "#142650", "dark": 1, "light": 21, "dark2": 0, "fog": 5, "fade": 3, "mat": "core"},
   {"i": 21, "name": "sea", "hex": "#1e5196", "dark": 20, "light": 22, "dark2": 1, "fog": 47, "fade": 4, "mat": "core"},
   {"i": 22, "name": "river", "hex": "#3084d8", "dark": 21, "light": 23, "dark2": 20, "fog": 47, "fade": 4, "mat": "core"},

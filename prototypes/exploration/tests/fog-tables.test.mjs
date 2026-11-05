@@ -14,13 +14,16 @@ const nearest = (rgb, [r, g, b], n) => { let best = 0, bd = 1e9; for (let i = 0;
 const mixTo = (rgb, target, t, n) => rgb.map(c => nearest(rgb, c.map((v, k) => v + (rgb[target][k] - v) * t), n));
 const RGB100 = FILE.entries.map(rgbOf);
 
-test("sprout fogs to fog in the page's table (map) and in the palette's place fog; no other core fog entry moved", () => {
+test("sprout and lime fog to fog in the page's table (map) and in the palette's place fog; no other core fog entry moved", () => {
   const p = makePage(), fog = Array.from(p.run("FOGLUT.slice(0, 48)"));
-  const want = mixTo(RGB100.slice(0, 48), at("bone"), .62, 48); want[at("sprout")] = at("fog");
+  const want = mixTo(RGB100.slice(0, 48), at("bone"), .62, 48); want[at("sprout")] = at("fog"); want[at("lime")] = at("fog");
   assert.deepEqual(fog, want);
   assert.equal(fog[at("sprout")], at("fog"));
   assert.equal(FILE.entries[at("sprout")].fog, at("fog"), "the palette's place fog");
+  assert.equal(fog[at("lime")], at("fog"));
+  assert.equal(FILE.entries[at("lime")].fog, at("fog"), "the palette's place fog");
   assert.notEqual(mixTo(RGB100.slice(0, 48), at("bone"), .62, 48)[at("sprout")], at("fog"), "(it was lime before)");
+  assert.equal(mixTo(RGB100.slice(0, 48), at("bone"), .62, 48)[at("lime")], at("paper"), "(it was paper, as bright as woken, before)");
 });
 
 test("the Shade's wash: every colour 48 % toward bone, to the nearest core colour, cool ones to mist; one table over all 100 entries once the palette is in (built, not drawn yet)", () => {

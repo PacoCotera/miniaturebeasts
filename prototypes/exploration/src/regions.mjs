@@ -13,12 +13,12 @@ export const REALM_SAVE_V = 9;
 export const MAP_KEYS = ["revealed", "visited", "called", "signs", "pins", "cells", "pods", "cr", "veil", "svy", "svyF", "opened", "skulls", "lastStorm", "lastEntered", "lastTrail", "lastPos"];
 export const BIOMES_V1 = ["mixed", "woods", "fells", "marsh"];   // the kinds a realm of version 1 draws from
 export const BIOMES = [...BIOMES_V1, "downs", "thickets", "tallwood", "tarns", "meres"];
-export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Fells", marsh: "Marsh", downs: "Downs", thickets: "Thickets", tallwood: "Tallwood", tarns: "Tarns", meres: "Meres" };   // the player's words (the copywriter owns them)
+export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Cliffs", marsh: "Marsh", downs: "Hills", thickets: "Thickets", tallwood: "Tallwood", tarns: "Highpools", meres: "Lakes" };   // the player's words (the copywriter owns them)
 // A realm's kind version: 1 draws its slots from the four older kinds, 2 from all nine by rarity. It is written on a new realm; a save without
 // it is version 1 and never changes, so its unopened slots keep their words.
 export const REALM_BIOME_V = 2;
 export const biomeVersion = realm => realm && realm.biomeV != null ? realm.biomeV : 1;
-// Common 6: Meadows, Woods, Downs, Fells, Marsh. Uncommon 3: Thickets, Tallwood, Tarns, Meres.
+// Common 6: Meadows, Woods, Hills, Cliffs, Marsh. Uncommon 3: Thickets, Tallwood, Highpools, Lakes.
 export const BIOME_WEIGHT = { mixed: 6, woods: 6, downs: 6, fells: 6, marsh: 6, thickets: 3, tallwood: 3, tarns: 3, meres: 3 };
 export const ATLAS = 5, CENTER = [2, 2], MAX_HOME = 25, REGION_EVERY = 140;
 const GOOD_CLOCK = Date.UTC(2026, 0, 1);   // a time before this is a clock that was never set
@@ -67,8 +67,8 @@ const pickWeighted = (kinds, h) => { let r = h % kinds.reduce((a, b) => a + BIOM
 // A slot's biome is fixed by the realm seed. The four slots around region 1 hold Woods, Fells and Marsh and one repeat of the three
 // (which one, and where, comes from the seed), so the first choice always offers all three.
 // Version 1: slots further out take any of the four older kinds. Version 2: all 25 slots are assigned ring by ring outward from the centre; a slot
-// draws, by rarity, from the kinds of the groups every inner neighbour (the slots beside it one ring nearer) allows, and takes Green when no group
-// is allowed by all of them. That depends on the seed alone, so it is the same whatever order the regions open in.
+// draws a group, equally among the groups every inner neighbour (the slots beside it one ring nearer) allows (Green when no group is allowed by all of
+// them), then a kind inside that group by rarity. That depends on the seed alone, so it is the same whatever order the regions open in.
 const slotCache = new Map();
 function realmSlots(seed) {
   if (slotCache.has(seed)) return slotCache.get(seed);
@@ -85,7 +85,8 @@ function realmSlots(seed) {
       const allow = GROUP_TOUCH[BIOME_GROUP[grid.get(x + "," + y)]]; ok = ok ? ok.filter(g => allow.includes(g)) : allow.slice();
     }
     const groups = ok && ok.length ? ok : ["green"];
-    grid.set(key, pickWeighted(BIOMES.filter(b => groups.includes(BIOME_GROUP[b])), hash(seed, "slot", ax, ay)));
+    const group = groups[hash(seed, "slot", ax, ay) % groups.length];   // the group first, equally among those allowed; then the kind by rarity inside it
+    grid.set(key, pickWeighted(BIOMES.filter(b => BIOME_GROUP[b] === group), hash(seed, "slot", "kind", ax, ay)));
   }
   if (slotCache.size > 64) slotCache.clear();
   slotCache.set(seed, grid); return grid;
@@ -124,7 +125,7 @@ export function canOpen(S, every = REGION_EVERY) {
 }
 export const exploredAcross = S => homes(S.regions).reduce((a, r) => a + exploredOf(S, r), 0);
 
-// A home region is named by its side of region 1 and its biome: "the Meadows", "North Woods", and "Far East Fells" for the second on a side.
+// A home region is named by its side of region 1 and its biome: "the Meadows", "North Woods", and "Far East Cliffs" for the second on a side.
 // A seasonal region has the event's own name. A home region off the four axes has no name yet: the copywriter owes the words.
 const SIDE = { "0,-1": "North", "1,0": "East", "0,1": "South", "-1,0": "West" };
 export function regionName(region, realm) {
