@@ -118,7 +118,7 @@
    "socket": {
     "join": "soft",
     "kind": "patch",
-    "col": 5,
+    "col": 6,
     "size": [
      2,
      2

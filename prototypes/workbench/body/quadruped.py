@@ -22,6 +22,9 @@ UNDER, OVER = 0.05, 0.05          # the belly side is a little fuller than the b
 BEND_GIRTH = 1.8                  # the tail's bends are filleted on this many times the section's radius at the joint (times the file's fillet): the fillet's arc is not a circle, and under about 2.4 radii of curve the rings' inner edges collapse on a thick tail
 ROOT_REACH = 0.3                  # the tail's root keeps the trunk's ring step this far behind the seat (the junction sags between rings further apart)
 TAIL_RINGS = 10                   # the most rings the tail takes, bar the two the tip's curve adds: a tail of the plan's longest, 2.4 H, spaces them about 0.2 H apart
+PROTECT_RINGS = 0
+ROOT_SMOOTH = dict(before=0.15, after=0.4, iters=20, hops=4, radius=0.3)          # the rings that turn the rump into the tail
+SOCKET_SMOOTH = dict(iters=150, hops=8, radius=0.7)          # the reach of the socket smoothing: edges and H
 DEFAULT_KNOBS = dict(R_scale=1.0, neck_ratio=0.66, chest_front=0.05, rump_gain=0.15)
 
 
@@ -109,7 +112,7 @@ def table(doc, u, p=None):
     # the tail: the root's radius to the tip's by a monotone cubic, the last tip_r a half ball
     L, rt = p["total"], p["tip_r"]
     tk = np.array([p["u_e"], 0.5 * (p["u_e"] + L - rt), L - rt])
-    tr = np.array([p["root_r"], 0.5 * (p["root_r"] + rt) + 0.02, rt])
+    tr = np.array([p["root_r"], min(0.5 * (p["root_r"] + rt) + 0.02, max(p["root_r"], rt)), rt])          # the middle knot is a little full, never fuller than the root
     tail = PA.mono_cubic(tk, tr, np.clip(u, tk[0], tk[-1]))
     ball = np.sqrt(np.clip(rt * rt - (u - (L - rt)) ** 2, 0.0, None))
     tail = np.where(u > L - rt, ball, np.where(u >= p["u_e"], tail, 0.0))
@@ -177,7 +180,25 @@ def build(doc, step=RING_STEP):
         for k in ((cp.na, 0), (cp.na, cp.nb)):
             body.target[cp.G[k]] = None
     body.ctx["log"]["limit"] = limit_fix(body, free_caps=True)
+    smooth_sockets(body)
     return body
+
+
+def smooth_sockets(body, opts=None):
+    """The legs' sockets are cut straight from the trunk: the loop and its band lie on a cone. A weighted smoothing round each socket loop rounds the cone into a fillet (relax.smooth_junctions, as the biped's sockets are); the flat soles' rims are deliberate sharp features, tagged as creases the normal check leaves out."""
+    import relax
+    m = body.ctx["remap"]
+    for rec in body.ctx["info"]["limbs"].values():
+        for v in rec["rings"][rec["support_ring"]] + [rec["sole_centre"]]:
+            if v in m:
+                body.tag[m[v]] = 1.0
+    keep = [m[v] for rec in body.ctx["info"]["limbs"].values() for r in rec["rings"][:PROTECT_RINGS] for v in r if v in m]               # the leg's own first rings keep their width: the join's neck is what the pinch check reads
+    body.ctx["log"]["junctions"] = relax.smooth_junctions(body, body.ctx, protect=keep, **dict(SOCKET_SMOOTH, **(opts or {})))
+    p = body.ctx["params"]
+    ids = [v for v in range(len(body.cage.V)) if body.part[v] == body.parts["torso"] and p["u_e"] - ROOT_SMOOTH["before"] <= body.s[v] <= p["u_e"] + ROOT_SMOOTH["after"]]
+    body.ctx["log"]["root_smooth"] = relax.smooth_junctions(body, body.ctx, only=[], extra_seeds=ids, iters=ROOT_SMOOTH["iters"], hops=ROOT_SMOOTH["hops"], radius=ROOT_SMOOTH["radius"])        # where the rump turns into the tail
+    for h in body.hooks:
+        h(body)
 
 
 def frame(doc, margin=0.10):

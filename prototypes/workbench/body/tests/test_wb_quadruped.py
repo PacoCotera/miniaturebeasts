@@ -25,8 +25,8 @@ def with_(doc, **kv):
         node = d
         keys = path.split(".")
         for k in keys[:-1]:
-            node = node[k]
-        node[keys[-1]] = v
+            node = node[int(k)] if isinstance(node, list) else node[k]
+        node[int(keys[-1]) if isinstance(node, list) else keys[-1]] = v
     return d
 
 
@@ -302,7 +302,7 @@ class TestRangesAndKnobs(unittest.TestCase):
 class TestFacade(unittest.TestCase):
     def test_the_facade_builds_the_quadruped_and_keys_it_by_the_spine_and_the_framework(self):
         r = F.build(S22)
-        self.assertEqual((r.species, r.vertices, r.stage), ("S22", 834, "base"))
+        self.assertEqual((r.species, r.vertices, r.stage), ("S22", 818, "base"))
         self.assertEqual(r.cage_hash, H.cage_hash(Q.build(S22)))
         k = F.cage_key(S22, "type")
         self.assertEqual(r.key, k)
@@ -377,7 +377,7 @@ class TestChecks(unittest.TestCase):
         r = F.build(S22)
         m = F.proxy_mesh(r.body, 1)
         rows = crun("cage", Ctx(S22, r.body, dict(r.summary(), vertices_l1=len(m["V"])), m, doc=S22))
-        self.assertEqual([x["id"] for x in rows], ["joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "mesh"])
+        self.assertEqual([x["id"] for x in rows], ["joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh"])
         self.assertEqual({x["state"] for x in rows}, {"pass"})
 
 
@@ -393,8 +393,8 @@ def broken(**kv):
         node = d
         keys = path.split(".")
         for k in keys[:-1]:
-            node = node[k]
-        node[keys[-1]] = v
+            node = node[int(k)] if isinstance(node, list) else node[k]
+        node[int(keys[-1]) if isinstance(node, list) else keys[-1]] = v
     return d
 
 
@@ -405,7 +405,7 @@ class TestPlanChecks(unittest.TestCase):
         cls.base = rows_of(S22)
 
     def test_the_bare_base_is_green_on_every_check_the_quadruped_has(self):
-        self.assertEqual(sorted(self.base), sorted(["schema", "express", "ranges", "joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "mesh"]))
+        self.assertEqual(sorted(self.base), sorted(["schema", "express", "ranges", "joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh"]))
         self.assertEqual({k: v["state"] for k, v in self.base.items()}, {k: "pass" for k in self.base})
 
     def test_the_template_is_the_bare_base_with_its_own_id_and_passes_every_check(self):
@@ -435,7 +435,7 @@ class TestPlanChecks(unittest.TestCase):
                 rc = cli.main(["new", "S23", "--plan", "quadruped", "--from", "template", "--out", out])
             self.assertEqual(rc, 0, buf.getvalue())
             self.assertEqual(json.load(open(os.path.join(out, "S23.json")))["id"], "S23")
-            self.assertEqual(buf.getvalue().count("PASS"), 12)
+            self.assertEqual(buf.getvalue().count("PASS"), 13)
             err = io.StringIO()
             with contextlib.redirect_stderr(err):
                 rc = cli.main(["new", "S23", "--plan", "quadruped", "--from", "template", "--out", out])
@@ -479,11 +479,27 @@ class TestPlanChecks(unittest.TestCase):
         self.assertEqual((r["balance"]["state"], r["balance"]["limit"]), ("fail", 0.3))
 
     def test_a_tight_bend_on_a_heavy_short_tail_fails_the_mesh_in_the_tail_range_and_the_caps_are_not_judged(self):
-        r = rows_of(broken(**{"spine.tail.length": 1.1, "spine.tail.root": 0.8, "spine.tail.tip_r": 0.15, "spine.tail.fillet": 0.5}))["mesh"]
+        r = rows_of(broken(**{"spine.tail.length": 1.1, "spine.tail.root": 0.8, "spine.tail.tip_r": 0.15, "spine.tail.fillet": 0.5, "spine.tail.segments.1.pitch": 150, "spine.tail.segments.2.pitch": 120}))["mesh"]
         self.assertEqual((r["state"], r["extra"]["bad_ranges"], r["extra"]["fail"]), ("fail", ["tail"], "Thin or bent faces in the tail"))
-        self.assertIn("tail: area", r["measure"])
+        self.assertIn("tail: bend", r["measure"])
         self.assertLess(self.base["mesh"]["extra"]["ranges"]["tail"]["nonplanar"], 0.3)                    # the tip's grid cap is 0.64 and is left out
         self.assertEqual(sorted(self.base["mesh"]["extra"]["ranges"]), ["back", "head", "neck", "seat", "tail"])
+
+    def test_the_legs_sockets_are_smooth_so_normals_pass_on_the_bare_base_and_round_the_band(self):
+        r = self.base["normals"]
+        self.assertEqual((r["state"], r["value"]), ("pass", 0))
+        self.assertLess(r["extra"]["worst"], 30.0)                                                        # the steepest visible edge: along the tail, where 30 degrees is allowed
+        for L in (0.6, 2.4):
+            for root, tip in ((0.4, 0.15), (0.8, 0.06)):
+                rr = rows_of(broken(**{"spine.tail.length": L, "spine.tail.root": root, "spine.tail.tip_r": tip}))
+                self.assertEqual(rr["normals"]["state"], "pass", (L, root, tip, rr["normals"]["measure"]))
+                self.assertEqual(rr["joins"]["state"], "pass", (L, root, tip, rr["joins"]["measure"]))
+
+    def test_the_tail_taper_holds_over_the_whole_band_wherever_the_tip_is_no_wider_than_the_root(self):
+        for L in (0.6, 1.1, 1.4, 1.8, 2.1, 2.4):
+            for root, tip in ((0.4, 0.02), (0.4, 0.06), (0.4, 0.15), (0.8, 0.02), (0.8, 0.06), (0.8, 0.15), (0.1, 0.02)):
+                r = rows_of(broken(**{"spine.tail.length": L, "spine.tail.root": root, "spine.tail.tip_r": tip}))["tail.taper"]
+                self.assertEqual(r["state"], "pass", (L, root, tip, r["measure"]))
 
     def test_the_whole_tail_band_stays_under_the_vertex_budget_and_passes_the_mesh_in_every_range(self):
         for L in (0.6, 1.4, 2.1, 2.4):
@@ -545,7 +561,7 @@ class TestRender(unittest.TestCase):
         j = self.srv.submit("S22", "render", dict(modes=["clay"], az=[0, 32, 90, 180], sizes=[304]), None)
         self.srv.wait(j, 120)
         self.assertEqual(j.state, "done", j.error)
-        self.assertEqual(j.result["cage"]["vertices"], 834)
+        self.assertEqual(j.result["cage"]["vertices"], 818)
         for v in j.result["views"]:
             self.assertEqual(open(v["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
         self.assertEqual(len({v["key"] for v in j.result["views"]}), 4)
@@ -557,7 +573,7 @@ class TestRender(unittest.TestCase):
         j = self.srv.submit("S22", "check", dict(stage="all"), None)
         self.srv.wait(j, 120)
         self.assertEqual(j.state, "done", j.error)
-        self.assertEqual({r["id"]: r["state"] for r in j.result["rows"]}, dict(schema="pass", express="pass", ranges="pass", **{"joins": "pass", "head.attach": "pass", "head.neck": "pass", "tail.taper": "pass", "tail.size": "pass", "balance": "pass", "limbs": "pass"}, verts="pass", mesh="pass"))
+        self.assertEqual({r["id"]: r["state"] for r in j.result["rows"]}, dict(schema="pass", express="pass", ranges="pass", **{"joins": "pass", "head.attach": "pass", "head.neck": "pass", "tail.taper": "pass", "tail.size": "pass", "balance": "pass", "limbs": "pass"}, verts="pass", normals="pass", mesh="pass"))
 
 
 if __name__ == "__main__":

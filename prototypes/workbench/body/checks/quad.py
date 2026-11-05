@@ -1,6 +1,8 @@
 """The quadruped plan's measures for the cage checks (chunk 19): the head, neck and chest, the tail's taper and size, the mesh by range and balance over four soles. Each takes the same Ctx as the biped's and returns the same row, and the biped's check functions hand a quadruped's Ctx to these (checks/biped.py), so a check has one id, one name and one fail line on both plans.
 The numbers are the biped's where nobody gave the quadruped its own (marked); the tail's are the quadruped's own, the heavier tail the owner allowed it (decisions 2 Nov 18:26: tail size and balance limits are set per plan).
 Everything is read off the cage as built: the radius of each ring is the side-most vertex of the torso's ring, at its arc length along the spine (quadruped.py keys the section table by the same arc length)."""
+import os
+
 import numpy as np
 
 from . import row
@@ -365,3 +367,45 @@ def limbs(ctx):
     first = probs[0] if probs else None
     return row("fail" if probs else "pass", len(probs), 0, first[1] if first else "Shoulders and hips are on their girdles: three bones to each foot, the chest joint on the back range, the pelvis joint on the seat range",
                dict(mode="clay", az=90, svg="".join(out)), dict(fail=(f"{first[0]} floats off its girdle" if first else None), parts=["legs"] if probs else []))
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------- normals
+def normals(ctx):
+    """The biped's rule on the quadruped's cage: no visible edge over 20 degrees between faces at level 2 (30 along the tail); tagged creases (the flat soles' rims) and the underside left out. The arch between the legs the biped leaves out is not left out here: a quadruped's belly is seen from the side."""
+    import s20indiv as IN
+    import s20normals as NM
+    b = ctx.body
+    p = b.ctx["params"]
+    V, F, at, fp2 = ctx.level(int(os.environ.get("WB_NORMALS_LEVEL", "2")))
+    F = np.array(F, int)
+    part = IN.part_of(b, F, fp2, len(V))
+    m = NM.measure(V, F, at[:, 3])
+    E = m["E"]
+    vn = NM.vertex_normals(V, F)
+    nz = 0.5 * (vn[E[:, 0], 2] + vn[E[:, 1], 2])
+    s_edge = 0.5 * (at[E[:, 0], 1] + at[E[:, 1], 1])
+    tail = (part[E[:, 0]] == b.parts["torso"]) & (s_edge > p["u_e"])
+    vis = (nz >= -0.35) & ~m["crease"]
+    lim_ = lim(ctx, "normal_deg", BIPED["normal_deg"])
+    bad = vis & np.where(tail, m["ang"] > BIPED["tail_normal_deg"], m["ang"] > lim_)
+    names = {v: k for k, v in b.parts.items()}
+    by = {names[int(q)]: int((bad & (part[E[:, 0]] == q)).sum()) for q in set(part[E[:, 0]][bad])}
+    rg = range_edges(ctx)
+    by_range = {}
+    for nm, (lo, hi) in rg.items():
+        k_ = int((bad & (s_edge >= lo - 1e-9) & (s_edge <= hi + 1e-9) & (part[E[:, 0]] == b.parts["torso"])).sum())
+        if k_:
+            by_range[nm] = k_
+    n = int(bad.sum())
+    worst = float(m["ang"][vis].max())
+    P = proj(ctx, 32)
+    out = []
+    for i in np.where(bad)[0][:600]:
+        a_, c_ = P(V[E[i, 0]])[0], P(V[E[i, 1]])[0]
+        out.append(PR.line(a_, c_, PR.RED, 4))
+    out += [PR.panel(24, 640, 560, 100), PR.label(40, 682, f"{n} edges over {lim_:.0f}° (red on the picture)", PR.RED if n else PR.INK, "start", 19, bg=False),
+            PR.label(40, 718, f"steepest visible edge {worst:.1f}°", PR.INK, "start", 19, bg=False)]
+    where = max(by, key=by.get) if by else ""
+    meas = f"{n} visible edges over {lim_:.0f}° (steepest {worst:.1f}°)" + (f"; most in {where}" if where else "")
+    return row("fail" if n else "pass", n, 0, meas, dict(mode="normal", az=32, svg="".join(out)),
+               dict(parts=[], fail=(f"Sharp crease in {where}" if where else None), by_part=by, by_range=by_range, worst=round(worst, 2), s_range=([round(float(s_edge[bad].min()), 3), round(float(s_edge[bad].max()), 3)] if n else None)))

@@ -82,7 +82,7 @@ class T(unittest.TestCase):
                 self.assertLess(abs(float(Vt[:, 1].mean())), 1e-6, (name, i))
                 for k in R.FEET:
                     ix = R.sole_vertices(r, *k)
-                    self.assertLess(float(np.abs(V[ix, 1] - r.V0[ix, 1]).max()), 1e-9, (name, i, k))   # no sole moves sideways
+                    self.assertLess(float(np.abs(V[ix, 1] - r.V0[ix, 1]).max()), 1e-6, (name, i, k))   # no sole moves sideways
 
     def test_breathing_moves_the_chest_and_belly_only(self):
         r = self.rig

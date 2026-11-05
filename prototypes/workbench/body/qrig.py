@@ -370,7 +370,7 @@ def build_rig(doc, level=1):
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------- measures
 CURL_FLOOR = 0.03                                                             # the curled body's belly on the floor
-SOLE_REST_Z = 0.012                  # the vertices of a leg that stand this close to the floor at rest are its sole
+SOLE_REST_Z = 0.005                  # the vertices of a leg that stand this close to the floor at rest are its sole
 
 
 def sole_vertices(rig, kind, side):

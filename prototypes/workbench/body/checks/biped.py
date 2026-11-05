@@ -452,6 +452,9 @@ def c_verts(ctx):
        rule=R("2026-11-02 20:25", "Normals must never change abruptly. A junction is either a deliberate sharp crease (like the toes) or a smooth filleted transition. This is tested for every species."),
        limit=dict(text="no visible edge over 20° between faces at level 2 (30° along the tail, 36° on the tail's 8-column stalk rings); tagged creases, the underside and the hard-overlay shells excepted. Level 2 is where the crease rule is read, on a surface close to the limit one; the mesh ships at level 1, whose edges are twice as long, so 20° at level 2 is about 40° at level 1 (60° on the tail). The 36° on the stalk is the art director's sign of 3 Nov 2026 (ad-viability-2), at level 2 on the 8-column stalk rings only; it does not rise", value=BIPED["normal_deg"]), az=32, mode="normal")
 def c_normals(ctx):
+    from . import quad as QD
+    if QD.is_quad(ctx):
+        return QD.normals(ctx)
     import s20indiv as IN, s20normals as NM
     b = ctx.body
     V, F, at, fp2 = ctx.level(int(os.environ.get("WB_NORMALS_LEVEL", "2")))                  # the owner's rule is held at level 2; WB_NORMALS_LEVEL=1 measures the shipped level once (the harness, not a gate)
