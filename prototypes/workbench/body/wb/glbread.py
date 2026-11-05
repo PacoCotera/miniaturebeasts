@@ -1,6 +1,6 @@
 """Reads an exported glb back, with numpy only: the mesh, the skin and a clip's pose, so the file can be checked against the pictures it was made from. It does what any glTF viewer does: the joint matrices of a
 clip's first sample, linear blend skinning of the bind mesh, and the normals taken again on the posed surface (the vertices of a UV seam are welded by position, so the normal is continuous across it).
-    read(path) -> Glb;  Glb.posed(clip) -> dict(V, N, F (quads), UV);  Glb.write_textures(dir) -> {col, emit, rough} PNG paths"""
+    read(path) -> Glb;  Glb.posed(clip, sample=0) -> dict(V, N, F (quads), UV (None without a coat), part);  Glb.write_textures(dir) -> {col, emit, rough} PNG paths"""
 import json
 import os
 import struct
@@ -45,7 +45,7 @@ class Glb:
         return self.json["asset"]["extras"]
 
     # ---- the skeleton
-    def local_matrices(self, clip):
+    def local_matrices(self, clip, at=0):
         nodes = self.json["nodes"]
         T = [np.array(n.get("translation", [0, 0, 0]), float) for n in nodes]
         R = [np.array(n.get("rotation", [0, 0, 0, 1]), float) for n in nodes]
@@ -53,7 +53,7 @@ class Glb:
         if clip is not None:
             an = next(a for a in self.json["animations"] if a["name"] == clip)
             for ch in an["channels"]:
-                out = self.accessor(an["samplers"][ch["sampler"]]["output"])[0].astype(float)         # the first sample
+                out = self.accessor(an["samplers"][ch["sampler"]]["output"])[at].astype(float)         # the first sample, or sample `at`
                 {"translation": T, "rotation": R, "scale": S}[ch["target"]["path"]][ch["target"]["node"]] = out
         mats = []
         for t, q, s in zip(T, R, S):
@@ -67,9 +67,9 @@ class Glb:
             mats.append(m)
         return mats
 
-    def joint_matrices(self, clip):
+    def joint_matrices(self, clip, at=0):
         nodes = self.json["nodes"]
-        loc = self.local_matrices(clip)
+        loc = self.local_matrices(clip, at)
         parent = {}
         for i, n in enumerate(nodes):
             for c in n.get("children", []):
@@ -85,7 +85,7 @@ class Glb:
         return np.array([w(j) @ ibm[k] for k, j in enumerate(skin["joints"])])
 
     # ---- the mesh
-    def posed(self, clip="stand"):
+    def posed(self, clip="stand", sample=0):
         p = self.json["meshes"][0]["primitives"][0]
         at = p["attributes"]
         V = self.accessor(at["POSITION"]).astype(float)
@@ -93,7 +93,7 @@ class Glb:
         tri = self.accessor(p["indices"]).reshape(-1, 3).astype(int)
         n = len(tri) // 2
         quads = np.concatenate([tri[:n], tri[n:, 2:3]], 1)                       # the writer lays a quad (a, b, c, d) down as (a, b, c) then (a, c, d)
-        JM = self.joint_matrices(clip)
+        JM = self.joint_matrices(clip, sample)
         Vh = np.concatenate([V, np.ones((len(V), 1))], 1)
         Vp = np.zeros_like(V)
         for k in range(4):
@@ -102,7 +102,7 @@ class Glb:
         inv = inv.reshape(-1)
         import gltf_out
         Nw = gltf_out.vertex_normals(Vp[first], inv[quads])
-        return dict(V=Vp, N=Nw[inv], F=quads, UV=self.accessor(at["TEXCOORD_0"]).astype(float))
+        return dict(V=Vp, N=Nw[inv], F=quads, UV=self.accessor(at["TEXCOORD_0"]).astype(float) if "TEXCOORD_0" in at else None, part=np.rint(self.accessor(at["_PART"])).astype(int) if "_PART" in at else None)
 
     # ---- the coat
     def write_textures(self, d):

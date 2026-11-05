@@ -80,9 +80,10 @@ def stamp_of(file_hash):
 
 
 def write_glb(subject, path, extras):
-    """The glb of a subject by its plan. The biped's writer reads the cage body, its rig and the baked coat; a plan without a writer is refused."""
+    """The glb of a subject by its plan. The biped's writer reads the cage body, its rig and the baked coat; the quadruped's reads the cage, its rig and the render's own mesh (it has no coat yet)."""
     if getattr(subject, "quad", False):
-        raise ExportRefused(["no model export yet"])
+        import qglb
+        return qglb.build(subject.b, subject.rig, subject.mesh, path, extras=extras)
     import s20glb
     import s20pipe as PP
     import s20rig
@@ -102,8 +103,6 @@ def make(species_path, outdir, release=False, stands=True, log=print):
     spec = S.read_spec(species_path)
     sid = spec.get("id") or os.path.basename(species_path)[:-5]
     file_hash = G.current(spec)["file"]
-    if F.is_quadruped(spec):
-        raise ExportRefused(["no model export yet"])                        # the quadruped has no coat and no glb writer yet
     rows = F.check_rows(spec)
     fails = failing(spec, rows)
     if release:
@@ -115,11 +114,10 @@ def make(species_path, outdir, release=False, stands=True, log=print):
     files = []
     try:
         subject = RSET.make_subject(spec, "type", scratch)
-        if getattr(subject, "quad", False):
-            raise ExportRefused(["no model export yet"])
         stamp = stamp_of(file_hash)
+        creature = subject.c or dict(plan=getattr(subject, "plan", None), params=subject.b.ctx["params"])         # the type, every number resolved (the quadruped's is its plan's resolved parameters: it has no coat yet)
         extras = dict(species=dict(id=sid, name=spec.get("name") or sid), build=stamp, review=dict(failing=[r["measure"] for r in fails], waived=[w.get("check") for w in (spec.get("waivers") or [])], checks=len(rows)),
-                      digest=hashlib.sha256(json.dumps(subject.c, sort_keys=True, default=str).encode()).hexdigest()[:16])
+                      digest=hashlib.sha256(json.dumps(creature, sort_keys=True, default=str).encode()).hexdigest()[:16])
         glb = os.path.join(outdir, f"{sid}.glb")
         g = write_glb(subject, glb, extras)
         log(f"glb {g['bytes']} bytes, {len(g['clips'])} clips, {len(g['parts'])} parts; {time.time() - t0:.0f} s")
@@ -129,7 +127,7 @@ def make(species_path, outdir, release=False, stands=True, log=print):
         files.append(viewer)
         cj = os.path.join(outdir, "creature.json")
         with open(cj, "w") as fh:
-            json.dump(dict(subject.c, species=sid), fh, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+            json.dump(dict(creature, species=sid), fh, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
         files.append(cj)
         owed = []
         if sid in FRAME_SPECIES:
@@ -150,11 +148,11 @@ def make(species_path, outdir, release=False, stands=True, log=print):
             if os.path.isdir(sd):
                 shutil.rmtree(sd)
             os.makedirs(sd)
-            RSET.solve_frames(RSET.Proxy(scratch), subject, scratch, [(304, 312)])          # the stand's framing, solved as the render set solves it, so the stands are the set's own pictures
+            wanted = [r for r in RS.expand(spec) if r["kind"] == "layers" and r["state"] == "ready" and r["pose"] != "anchor" and r["style"] == "plush"]
+            if wanted:                                                                   # a plan whose set has no layered stand yet (the quadruped has no plush) has none to frame
+                RSET.solve_frames(RSET.Proxy(scratch), subject, scratch, [(304, 312)])          # the stand's framing, solved as the render set solves it, so the stands are the set's own pictures
             idx = {sid: {}}
-            for r in RS.expand(spec):
-                if r["kind"] != "layers" or r["state"] != "ready" or r["pose"] == "anchor" or r["style"] != "plush":
-                    continue
+            for r in wanted:
                 entry, *_ = RSET.stand(spec, subject, sd, scratch, sid, r["age"], r["pose"], log)
                 idx[sid].setdefault(r["age"], entry)
             ip = os.path.join(sd, "index.json")

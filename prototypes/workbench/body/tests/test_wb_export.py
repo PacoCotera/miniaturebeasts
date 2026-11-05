@@ -1,5 +1,5 @@
 """Chunk 24: the export. The release refusal and its reasons, the viewer page, the review export of S20 (glb with parts, clips and the build stamp in asset.extras; viewer, creature.json, the game frame, the manifest of hashes),
-the byte-determinism of the glb, a plan with no model export, and the Export job on a server (a release is refused before anything is queued; a review runs, and the second ask is the cache). Under the bpy venv."""
+the byte-determinism of the glb, the quadruped's glb (no coat), and the Export job on a server (a release is refused before anything is queued; a review runs, and the second ask is the cache). Under the bpy venv."""
 import copy
 import hashlib
 import json
@@ -155,15 +155,55 @@ class TestStands(unittest.TestCase):
         shutil.rmtree(SCRATCH, ignore_errors=True)
 
 
-class TestNoModelYet(unittest.TestCase):
-    def test_a_plan_without_a_model_writer_says_so_and_writes_nothing(self):
-        out = os.path.join(SCRATCH, "quad")
+class TestQuadruped(unittest.TestCase):
+    """The quadruped plan has its glb: parts, clips and the build stamp as the biped's has, the render's own mesh and rig, no coat."""
+    @classmethod
+    def setUpClass(cls):
+        cls.out = os.path.join(SCRATCH, "quad")
         shutil.rmtree(SCRATCH, ignore_errors=True)
-        with self.assertRaises(EX.ExportRefused) as c:
-            EX.make(QUAD, out, stands=False, log=lambda m: None)
-        self.assertEqual(c.exception.reasons, ["no model export yet"])
-        self.assertEqual([f for f in os.listdir(out)] if os.path.exists(out) else [], [])
+        cls.man = EX.make(QUAD, cls.out, stands=False, log=lambda m: None)
+        cls.glb = os.path.join(cls.out, "quadruped.glb") if os.path.exists(os.path.join(cls.out, "quadruped.glb")) else os.path.join(cls.out, [f for f in os.listdir(cls.out) if f.endswith(".glb")][0])
+
+    @classmethod
+    def tearDownClass(cls):
         shutil.rmtree(SCRATCH, ignore_errors=True)
+
+    def test_the_export_writes_the_glb_the_viewer_and_says_what_is_owed(self):
+        names = [f["name"] for f in self.man["files"]]
+        self.assertEqual([n for n in names if n.endswith(".glb")], [os.path.basename(self.glb)])
+        self.assertIn("viewer.html", names)
+        self.assertEqual([o["file"] for o in self.man["owed"]], ["frame"])
+
+    def test_the_glb_carries_parts_clips_bones_and_the_stamp(self):
+        ex = glb_json(self.glb)["asset"]["extras"]
+        self.assertEqual(ex["parts"], ["torso", "fore.L", "hind.L", "fore.R", "hind.R"])
+        self.assertEqual(ex["clips"], ["stand", "walk", "breathe", "sit", "curl"])
+        self.assertTrue(ex["build"].startswith("built "))
+        self.assertEqual(ex["counts"]["level"], 1)
+        self.assertGreater(len(ex["bones"]["points"]), 20)
+        g = glb_json(self.glb)
+        self.assertEqual(len(g["skins"][0]["joints"]), 22)
+        self.assertEqual(g.get("images"), None)                          # no coat yet: no textures
+
+    def test_it_reads_back_to_the_mesh_the_render_draws_in_the_stand_and_in_a_walk_frame(self):
+        import numpy as np
+        from wb import glbread, renderset as RSET
+        g = glbread.read(self.glb)
+        spec = S.read_spec(QUAD)
+        subj = RSET.make_subject(spec, "type", os.path.join(SCRATCH, "rb"))
+        for clip, i, live in (("stand", 0, subj.posed()), ("walk", 5, subj.posed("walk", 5)), ("sit", 0, subj.posed("sit", 0))):
+            M = g.posed(clip, i)
+            self.assertEqual(M["V"].shape, np.asarray(live["V"]).shape)
+            self.assertLess(float(np.abs(M["V"] - np.asarray(live["V"])).max()), 2e-3, clip)
+
+    def test_the_glb_is_byte_deterministic(self):
+        import qglb
+        from wb import renderset as RSET
+        subj = RSET.make_subject(S.read_spec(QUAD), "type", os.path.join(SCRATCH, "det"))
+        ex = glb_json(self.glb)["asset"]["extras"]
+        again = os.path.join(SCRATCH, "again.glb")
+        EX.write_glb(subj, again, {k: ex[k] for k in ("species", "build", "review", "digest")})
+        self.assertEqual(open(again, "rb").read(), open(self.glb, "rb").read())
 
 
 class TestJob(unittest.TestCase):
