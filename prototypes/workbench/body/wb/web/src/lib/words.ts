@@ -4,6 +4,15 @@ export const W = {
   play: 'Open in play', // st.play
   newSheet: 'New sheet', // st.var.new
   gold: { make: 'Make goldens', ask: 'Ask for a look-change round', draft: 'Draft golden · remake freely', golden: 'Golden', now: 'Now', views: ['Split', 'Side by side', 'Diff'], state: 'State', moved: 'Pixels moved', because: 'Because of', from: 'Golden made from', file: 'File', framework: 'Framework', lookdev: 'Look-dev', by: 'Made by' }, // st.gold.* and mocks/studio/05-goldens
+  gate: {
+    ask: 'Ask for review', sign: (n: number) => `Sign round ${n}`, release: 'Sign and release', note: 'A note for the maker', // st.impact.go, st.gate.sign, st.gate.release, st.gate.note
+    round: (n: number) => `Round ${n}`, sheets: (n: number) => `Round ${n} sheets`, earlier: 'Earlier', file: 'file', // mocks/studio/06-gate
+    order: 'Sign in order', reviewer: 'Reviewer', owner: 'Owner', you: 'you', afterYou: 'after you', export: 'Export', forReview: 'For review', releaseRow: 'Release', afterBoth: 'after both signatures', sendBack: 'Send back', seeIt: 'See it', // mocks/studio/06-gate
+    ticked: (k: number, n: number) => `${k} of ${n} ticked`, // st.inbox.round
+    oneFails: 'One check fails', signAnyway: 'Sign anyway, or send it back.', // st.gate.red (the check's own fail line sits between)
+    // OWED to the copywriter (words.md has none): the voided line, the signed-by line, the plural of the red card, each sheet's one judgement sentence, the sheet pages' own sentences.
+    voided: 'Changed after signing · both signatures are void', signedBy: (who: string, day: string) => `${who} · ${day}`, manyFail: (n: number) => `${n} checks fail`, sentBack: 'Sent back',
+  },
   jobsWait: 'Waiting for a worker', // st.jobs.wait
   leaseBanner: (who: string) => `${who} is editing`, // st.lease.banner
   takeOver: 'Take over', // st.lease.banner

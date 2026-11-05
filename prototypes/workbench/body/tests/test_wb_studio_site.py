@@ -88,8 +88,8 @@ class T(unittest.TestCase):
     GATE = "/studio/api/species/S20/gate/tick"
 
     def test_the_header_from_the_trusted_address_acts_as_that_user_with_the_owner_role(self):
-        # an owner passes the role check (a maker would be 403) and reaches the gate's 501
-        self.assertEqual(call(self.near_url + self.GATE, "POST", {"X-Studio-User": "paco"}, {})[0], 501)
+        # an owner passes the role check (a maker would be 403) and reaches the gate: this path is not a gate route, so 404
+        self.assertEqual(call(self.near_url + self.GATE, "POST", {"X-Studio-User": "paco"}, {})[0], 404)
 
     def test_the_header_from_any_other_peer_is_ignored_and_needs_a_token(self):
         for url in (self.far_url, self.none_url):

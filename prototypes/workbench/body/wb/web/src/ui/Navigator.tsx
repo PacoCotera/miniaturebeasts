@@ -8,6 +8,8 @@ import { isAsleep, locusDot, selectedLocus, stageWord, type Stage } from '../lib
 import { useQuery } from '@tanstack/react-query'
 import { lookOf, ready, varietyOne, type VLook } from '../lib/variety'
 import { goldensOne, groupsOf, pick, stateTip, totalsLine, type GState } from '../lib/goldens'
+import { current, day, gateOne, pickSheet } from '../lib/gate'
+import { W } from '../lib/words'
 import s from './Navigator.module.css'
 
 const mono = (w: string) => { const p = w.split(' '); return p.length > 1 ? p[0][0] + p[1][0] : w.slice(0, 2) } // the rail's two letters: Limb length -> Ll, Limb girth -> Lg, Lift -> Li
@@ -23,6 +25,9 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
   const gold = gq.data
   const fq = useQuery({ ...formsOne(url.species), enabled: !!species && url.mode === 'shape' })
   const outline = fq.data?.outline ?? OUTLINE
+  const gtq = useQuery({ ...gateOne(url.species), enabled: !!species && url.mode === 'gate' })
+  const round = current(gtq.data)
+  const sheetSel = round ? pickSheet(round, url.sel) : null
   const gsel = url.mode === 'goldens' ? pick(gold, url.sel) : null
   return (
     <aside className={`${s.nav} ${rail ? s.rail : ''}`} aria-label="Navigator">
@@ -89,6 +94,34 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
               </ul>
             </section>
           ))}
+        </>
+      )}
+      {url.mode === 'gate' && round && (
+        <>
+          <section>
+            <h6 className={s.head}>{W.gate.sheets(round.round)}</h6>
+            <ul className={s.tree}>
+              {round.sheets.map((x) => (
+                <li key={x.id}>
+                  <button className={`${s.row} ${sheetSel?.id === x.id ? s.sel : ''}`} onClick={() => go({ sel: x.id })} aria-pressed={sheetSel?.id === x.id} title={x.label}>
+                    <span className={s.mono}>{x.label.slice(0, 2)}</span>
+                    <span className={s.label}>{x.label}</span>
+                    <i className={s.tickbox} data-on={x.tick || undefined} aria-label={x.tick ? 'ticked' : 'not ticked'} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+          {gtq.data && gtq.data.rounds.length > 1 && (
+            <section>
+              <h6 className={s.head}>{W.gate.earlier}</h6>
+              <ul className={s.tree}>
+                {gtq.data.rounds.filter((r) => r.round !== round.round).reverse().map((r) => (
+                  <li key={r.round}><span className={`${s.row} ${s.plain}`}><span className={s.label}>{W.gate.round(r.round)}</span><span className={s.num}>{day(r.asked_at)}</span></span></li>
+                ))}
+              </ul>
+            </section>
+          )}
         </>
       )}
       {url.mode === 'genes' && g && g.chapters.map((c) => (

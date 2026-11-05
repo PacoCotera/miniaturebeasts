@@ -604,6 +604,32 @@ def cmd_export(a):
     return 0
 
 
+def cmd_gate(a):
+    """wb gate request|state|tick|back|sign S20: the gate (spec 6.2). request asks for a round (a maker's, or an agent's); state reads it; tick, back and sign are the reviewer's and the owner's, and the server refuses them (exit 4) from a maker or agent token."""
+    base = f"/api/species/{a.species}/gate"
+    if a.action == "request":
+        st = call("POST", base, {})
+    elif a.action == "state":
+        st = call("GET", base)
+    else:
+        cur = call("GET", base).get("current")
+        if cur is None:
+            raise Fail(2, "no round was asked for: wb gate request first", "round")
+        n = a.round or cur
+        if a.action == "tick":
+            st = call("POST", f"{base}/{n}/rows/{a.sheet}", dict(tick=not a.off, note=a.note))
+        elif a.action == "back":
+            st = call("POST", f"{base}/{n}/back", dict(note=a.note))
+        else:
+            st = call("POST", f"{base}/{n}/sign", {})
+    lines = [f"{st['species']}  file {st['hash'][:8]}  " + ("signed" if st["signed"] else "not signed")]
+    for r in st["rounds"][-3:]:
+        s_ = r["state"]
+        lines.append(f"  round {r['round']}  asked by {r['asked_by']}  {s_['ticked']} of {len(r['sheets'])} ticked  reviewer: {(r['reviewer'] or {}).get('name', '-')}{'' if s_['reviewer_valid'] or not r['reviewer'] else ' (void)'}  owner: {(r['owner'] or {}).get('name', '-')}{'' if s_['owner_valid'] or not r['owner'] else ' (void)'}" + (f"  {r['verdict']}" if r.get("verdict") else ""))
+    out(a, dict(ok=True, **st), "\n".join(lines))
+    return 0
+
+
 def cmd_step(a):
     """wb step S20 tail length 5: one play move (a toy's axis to a step number, or a chip's name), saved the way play saves: a check that fails refuses it, nothing is saved, and the mibi's sentence comes back (exit 1)."""
     to = int(a.to) if re.fullmatch(r"\d+", a.to) else a.to
@@ -644,6 +670,7 @@ def main(argv=None):
     p.add_argument("--set", default="", help="use a set folder already drawn by wb.renderset instead of drawing"); p.add_argument("--missing", action="store_true", help="make: add the goldens that are missing and touch none that is there"); p.add_argument("--no-commit", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_golden)
     p = sub.add_parser("toys"); p.add_argument("species"); p.add_argument("--slots", action="store_true", help="also list every sentence slot"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_toys)
     p = sub.add_parser("sweep"); p.add_argument("species"); p.add_argument("--wait", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=900.0); p.set_defaults(f=cmd_sweep)
+    p = sub.add_parser("gate"); p.add_argument("action", choices=("request", "state", "tick", "back", "sign")); p.add_argument("species"); p.add_argument("sheet", nargs="?", default=""); p.add_argument("--round", type=int, default=0); p.add_argument("--off", action="store_true"); p.add_argument("--note", default=None); common(p, genome=False); p.set_defaults(f=cmd_gate)
     p = sub.add_parser("export"); p.add_argument("species"); g = p.add_mutually_exclusive_group(required=True); g.add_argument("--review", action="store_true"); g.add_argument("--release", action="store_true")
     p.add_argument("--no-wait", dest="wait", action="store_false"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=900.0); p.set_defaults(f=cmd_export)
     p = sub.add_parser("step"); p.add_argument("species"); p.add_argument("toy"); p.add_argument("axis"); p.add_argument("to", help="a step number, or a chip's name"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=300.0); p.set_defaults(f=cmd_step)

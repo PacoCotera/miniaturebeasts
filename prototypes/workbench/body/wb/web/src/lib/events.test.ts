@@ -32,10 +32,11 @@ describe('events and the query cache', () => {
     expect(inv).not.toHaveBeenCalled()
     applyEvent(qc, 'S20', ev('edited', { job: undefined, actor: 'agent-3' }))
     applyEvent(qc, 'S20', ev('done'))
-    expect(inv).toHaveBeenCalledTimes(7) // the species, the Variety sheet and the goldens, for each; the forms too, for the edit
+    expect(inv).toHaveBeenCalledTimes(8) // the species, the Variety sheet and the goldens, for each; the gate and the forms too, for the edit
     expect(inv).toHaveBeenCalledWith({ queryKey: ['species', 'S20'] })
     expect(inv).toHaveBeenCalledWith({ queryKey: ['variety', 'S20'] })
     expect(inv).toHaveBeenCalledWith({ queryKey: ['forms', 'S20'] })
+    expect(inv).toHaveBeenCalledWith({ queryKey: ['gate', 'S20'] })
     expect(inv).toHaveBeenLastCalledWith({ queryKey: ['goldens', 'S20'] })
     expect(qc.getQueryData<JobsState>(['jobs', 'S20'])?.jobs).toEqual({})
   })

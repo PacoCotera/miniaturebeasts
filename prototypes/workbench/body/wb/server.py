@@ -218,6 +218,7 @@ class Server:
         self.cas = C.Cas(os.path.abspath(cache) if cache else os.path.join(self.home, "cas"))          # `cache`: a content-addressed store kept apart from the home (the studio's own, shared with a dev server on a home of its own)
         self.cache_limit = int(cache_limit_gb * 1e9)
         self.tokens = S.Tokens(os.path.join(self.home, "tokens.json"))
+        self.gate_building = {}
         self.species_dirs = [os.path.abspath(d) for d in species_dirs]
         self.mine_dir = os.path.join(self.home, "mine")                # the mibis the players keep: each is a species file of its own, in the player's space
         os.makedirs(self.mine_dir, exist_ok=True)
@@ -304,6 +305,9 @@ class Server:
     def after_edit(self, sp, actor, paths, via):
         name = actor["name"] if actor else "file edit"
         self.hub.emit("edited", sp.id, actor=name, role=actor["role"] if actor else None, agent=bool(actor and actor.get("agent")), via=via, hash=sp.hash, changes=paths)
+        from wb import gate as GT
+        if GT.note_edit(sp.path, sp.hash, name):                  # signatures on the old file no longer count: the round records who voided them
+            self.hub.emit("gate", sp.id, voided=True, actor=name)
         for j in self.queue.supersede(sp.id, sp.hash):
             self.hub.emit("failed", sp.id, job=j.id, kind=j.kind, superseded=True, error=j.error)
         if any(str(p).replace("/", ".").strip(".") in ("play", "play.starter") for p in paths):
@@ -1449,6 +1453,44 @@ class Server:
             except Exception as e:
                 self.finish_failed(job, f"{type(e).__name__}: {e}", None)
 
+    # ---- the gate (chunk 25): rounds, ticks and the two signatures live in wb.gate (a sidecar beside the species file); the six sheets of a round are drawn here, from the server's own jobs, one thread per round
+    def gate_sheet_dir(self, sp, n):
+        return os.path.join(self.home, "gate", sp.id, f"round-{n}")
+
+    def gate_state(self, sp):
+        from wb import gate as GT
+        out = GT.public(GT.read(sp.path), H.hash_of(sp.spec))
+        building = self.gate_building.get((sp.id, out["current"]))
+        for r in out["rounds"]:
+            d = self.gate_sheet_dir(sp, r["round"])
+            for sh in r["sheets"]:
+                if os.path.exists(os.path.join(d, sh["id"] + ".png")):
+                    sh["url"] = f"/api/species/{sp.id}/gate/{r['round']}/sheet/{sh['id']}.png"
+        out["building"] = bool(building and building.is_alive())
+        out["actions"] = {}
+        return out
+
+    def gate_request(self, sp, actor):
+        from wb import gate as GT, gatesheets as GS
+        r, new = GT.request(sp.path, copy.deepcopy(sp.spec), actor)
+        n = r["round"]
+        have = os.path.exists(os.path.join(self.gate_sheet_dir(sp, n), "index.json"))
+        live = self.gate_building.get((sp.id, n))
+        if not have and not (live and live.is_alive()):
+            def run():
+                try:
+                    shutil.rmtree(self.gate_sheet_dir(sp, n), ignore_errors=True)
+                    GS.make(self, sp, n, self.gate_sheet_dir(sp, n), PLAY_ACTOR, log=lambda m: None)
+                    self.hub.emit("gate", sp.id, sheets=True, round=n)
+                except Exception as e:
+                    print("gate sheets:", type(e).__name__, e, file=sys.stderr)
+                    self.hub.emit("gate", sp.id, failed=str(e), round=n)
+            t = threading.Thread(target=run, daemon=True, name=f"gate-{sp.id}-{n}")
+            self.gate_building[(sp.id, n)] = t
+            t.start()
+        self.hub.emit("gate", sp.id, asked=True, round=n, actor=(actor or {}).get("name"))
+        return r
+
     # ---- life cycle
     def start(self):
         for w in self.workers + self.plushers:
@@ -1611,6 +1653,26 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)/variety", p)
             if m:
                 return self.send_json(srv.variety(srv.get_species(m.group(1)), q.get("n", [None])[0], q.get("seed", [None])[0]))
+            if p == "/api/me":
+                who = self.actor()
+                return self.send_json(dict(name=who["name"], role=who["role"], agent=bool(who.get("agent"))) if who else dict(name=None, role=None, agent=False))
+            m = re.fullmatch(r"/api/species/([^/]+)/gate", p)
+            if m:
+                return self.send_json(srv.gate_state(srv.get_species(m.group(1))))
+            m = re.fullmatch(r"/api/species/([^/]+)/gate/(\d+)/sheet/([a-z-]+)\.(png|html)", p)
+            if m:
+                sp = srv.get_species(m.group(1))
+                f = os.path.join(srv.gate_sheet_dir(sp, int(m.group(2))), f"{m.group(3)}.{m.group(4)}")
+                if not os.path.exists(f):
+                    raise ApiError(404, "that sheet is not drawn yet", "sheet")
+                with open(f, "rb") as fh:
+                    data = fh.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "image/png" if m.group(4) == "png" else "text/html")
+                self.send_header("Content-Length", str(len(data)))
+                self.send_header("Cache-Control", "private, no-cache")
+                self.end_headers()
+                return self.wfile.write(data)
             m = re.fullmatch(r"/api/species/([^/]+)/goldens", p)
             if m:
                 return self.send_json(srv.goldens(srv.get_species(m.group(1))))
@@ -1738,11 +1800,33 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)/(undo|redo)", p)
             if m:
                 return self.send_json(srv.revert(m.group(1), m.group(2), self.actor(need=True)))
-            if re.fullmatch(r"/api/species/[^/]+/gate/.+", p):
+            m = re.fullmatch(r"/api/species/([^/]+)/gate", p)
+            if m:                                                      # asking for a round: a maker's own action (and a reviewer's or the owner's may ask too); an anonymous call is refused by need=True
+                sp = srv.get_species(m.group(1))
+                srv.gate_request(sp, self.actor(need=True))
+                return self.send_json(srv.gate_state(sp), 202)
+            m = re.fullmatch(r"/api/species/([^/]+)/gate/(\d+)/(rows/[a-z-]+|note|sign|back)", p)
+            if m:                                                      # ticks, notes, sending back and signing: refused from makers and from every agent token, here, whatever the page shows
+                from wb import gate as GT
+                sp = srv.get_species(m.group(1))
                 actor = self.actor(need=True)
-                if actor["role"] == "maker":
-                    raise ApiError(403, "refused: a maker token cannot tick, waive or sign; the reviewer signs first and the owner last", "role")
-                raise ApiError(501, "the gate arrives in a later chunk", None)
+                GT.need_judge(actor)
+                n, what, b = int(m.group(2)), m.group(3), self.body() or {}
+                spec = copy.deepcopy(sp.spec)
+                if what.startswith("rows/"):
+                    GT.tick(sp.path, spec, n, what[5:], b.get("tick", True), b.get("note"), actor)
+                elif what == "note":
+                    GT.tick(sp.path, spec, n, "note", None, b.get("note"), actor)
+                elif what == "back":
+                    GT.back(sp.path, spec, n, b.get("note"), actor)
+                else:
+                    GT.sign(sp.path, spec, n, actor)
+                srv.hub.emit("gate", sp.id, round=n, what=what, actor=actor["name"], role=actor["role"])
+                return self.send_json(srv.gate_state(sp))
+            if re.fullmatch(r"/api/species/[^/]+/gate/.+", p):          # any other gate path: the role check first, so a maker is refused whatever the path is
+                from wb import gate as GT
+                GT.need_judge(self.actor(need=True))
+                raise ApiError(404, "no such gate route", None)
             raise ApiError(404, "no such route", None)
     return H_
 

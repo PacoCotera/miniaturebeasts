@@ -15,6 +15,8 @@ import { VarietyStage } from '../ui/VarietyStage'
 import { VarietyInspector } from '../ui/VarietyInspector'
 import { GoldensStage } from '../ui/GoldensStage'
 import { GoldensInspector } from '../ui/GoldensInspector'
+import { GateStage } from '../ui/GateStage'
+import { GateInspector } from '../ui/GateInspector'
 import { Inspector } from '../ui/Inspector'
 import { Palette } from '../ui/Palette'
 import { HelpSheet } from '../ui/HelpSheet'
@@ -58,8 +60,8 @@ export default function StudioPage() {
       <AppShell
         top={<TopBar url={url} species={species} go={go} />}
         nav={<Navigator rail={rail} url={url} go={go} rows={rows} metas={byId} species={species} />}
-        stage={url.mode === 'genes' ? <GenesStage url={url} species={species} inset={open ? drawerH : 0} /> : url.mode === 'goldens' ? <GoldensStage url={url} species={species} go={go} inset={open ? drawerH : 0} /> : url.mode === 'variety' ? <VarietyStage url={url} species={species} go={go} inset={open ? drawerH : 0} /> : <Stage url={url} species={species} go={go} inset={open ? drawerH : 0} />}
-        inspector={<Inspector species={species} id={url.species} sheet={sheet} open={inspOpen} url={url} go={go} genes={url.mode === 'genes' && species ? <GenesInspector species={species} url={url} go={go} /> : url.mode === 'goldens' && species ? <GoldensInspector species={species} url={url} /> : url.mode === 'variety' && species ? <VarietyInspector species={species} url={url} go={go} /> : undefined} />}
+        stage={url.mode === 'genes' ? <GenesStage url={url} species={species} inset={open ? drawerH : 0} /> : url.mode === 'gate' ? <GateStage url={url} species={species} inset={open ? drawerH : 0} /> : url.mode === 'goldens' ? <GoldensStage url={url} species={species} go={go} inset={open ? drawerH : 0} /> : url.mode === 'variety' ? <VarietyStage url={url} species={species} go={go} inset={open ? drawerH : 0} /> : <Stage url={url} species={species} go={go} inset={open ? drawerH : 0} />}
+        inspector={<Inspector species={species} id={url.species} sheet={sheet} open={inspOpen} url={url} go={go} genes={url.mode === 'genes' && species ? <GenesInspector species={species} url={url} go={go} /> : url.mode === 'gate' && species ? <GateInspector species={species} url={url} go={go} /> : url.mode === 'goldens' && species ? <GoldensInspector species={species} url={url} /> : url.mode === 'variety' && species ? <VarietyInspector species={species} url={url} go={go} /> : undefined} />}
         overlay={<><Toasts species={url.species} />{open && species && (url.drawer === 'history' ? <HistoryDrawer species={species} url={url} go={go} /> : url.drawer === 'section' ? <SectionDrawer species={species} url={url} go={go} /> : url.drawer === 'file' ? <FileDrawer species={species} url={url} go={go} /> : <ChecksDrawer species={species} url={url} go={go} />)}</>}
       />
       <Palette url={url} />

@@ -3,7 +3,7 @@
 A review export writes, next to each other: `<id>.glb` (skinned mesh, coat textures, every clip; parts, clips, counts, bones and the build stamp in `asset.extras`), `viewer.html` (body/viewer.py: the page that opens the glb),
 `creature.json` (the type, every number resolved), `frame/species-<id>.json` (the game frame, a draft), `stands/` (the layered stands the render set names, with their index) and `manifest.json` (every file, its size and sha256, the stamp).
 A review export is always allowed: the checks that fail are written into the glb and the viewer's label. A release export is refused with every reason, and writes nothing, until the checks pass or are waived, the frame uses only rules
-the game reads, and the gate is signed (the gate arrives in a later chunk, so nothing is signed yet)."""
+the game reads, and the gate is signed: the reviewer's and then the owner's signature on the file as it is (wb.gate)."""
 import argparse
 import datetime
 import hashlib
@@ -40,9 +40,10 @@ def sha256(path):
     return h.hexdigest()
 
 
-def gate_signed(spec):
-    """Whether both signatures are on the file's current round. The gate is a later chunk: nothing can be signed yet."""
-    return False
+def gate_signed(spec, species_path=None):
+    """Whether both signatures (reviewer, then owner) are on the file as it is now."""
+    from wb import gate as GT
+    return GT.is_signed(species_path, spec)
 
 
 def waived(spec, row):
@@ -53,12 +54,14 @@ def failing(spec, rows):
     return [r for r in rows if r["state"] == "fail" and not waived(spec, r)]
 
 
-def release_blockers(spec, rows):
+def release_blockers(spec, rows, species_path=None):
     """Every reason a release export is refused, one line each (empty when it may go)."""
     from wb import frame_writer as FW
     out = [f"{r['measure']} ({r['value']}, limit {r['limit']})" if r.get("limit") not in (None, "", r.get("value")) else str(r["measure"]) for r in failing(spec, rows)]
     out += FW.uses_new_rules(spec)
-    if not gate_signed(spec):
+    if not gate_signed(spec, species_path):
+        from wb import gate as GT
+        out += GT.blockers(species_path, spec)
         out.append("gate not signed")
     return out
 
@@ -104,7 +107,7 @@ def make(species_path, outdir, release=False, stands=True, log=print):
     rows = F.check_rows(spec)
     fails = failing(spec, rows)
     if release:
-        why = release_blockers(spec, rows)
+        why = release_blockers(spec, rows, species_path)
         if why:
             raise ExportRefused(why)
     os.makedirs(outdir, exist_ok=True)
@@ -182,7 +185,7 @@ def main(argv=None):
     if a.blockers:
         from wb import facade as F, store as S
         spec = S.read_spec(a.species)
-        why = release_blockers(spec, F.check_rows(spec)) if a.release else []
+        why = release_blockers(spec, F.check_rows(spec), os.path.abspath(a.species)) if a.release else []
         print(json.dumps(dict(refused=bool(why), reasons=why)))
         return 3 if why else 0
     try:

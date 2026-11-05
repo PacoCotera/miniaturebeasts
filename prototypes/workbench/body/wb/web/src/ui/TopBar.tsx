@@ -13,8 +13,9 @@ import { failingEnds } from '../lib/genes'
 import { useUI } from '../lib/store'
 import { usePortraitSheet } from '../lib/useStudio'
 import { nextSeed, runSheet, varietyOne } from '../lib/variety'
-import { getToken } from '../lib/api'
+import { getToken, postJob } from '../lib/api'
 import { goldenJob, goldensOne } from '../lib/goldens'
+import { allTicked, canJudge, current, gateOne, meOne, turn, useGateActions, isOpen } from '../lib/gate'
 import s from './TopBar.module.css'
 
 export function TopBar({ url, species, go }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>) => void }) {
@@ -35,6 +36,14 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
   const gold = useQuery({ ...goldensOne(url.species, species?.hash ?? ''), enabled: !!species && url.mode === 'goldens' }).data
   const ask = !!gold?.release && (gold?.totals.changed ?? 0) > 0
   const makeGoldens = async () => { await goldenJob(url.species, 'make') }
+  // Gate's one primary: the maker asks for review; the reviewer signs round n (lit when every sheet is ticked); the owner signs and releases. A role with no action has no button, not a grey one.
+  const gq = useQuery({ ...gateOne(url.species), enabled: !!species && url.mode === 'gate' }).data
+  const me = useQuery({ ...meOne(), enabled: url.mode === 'gate' }).data
+  const act = useGateActions(url.species)
+  const round = current(gq)
+  const t = turn(round)
+  const judge = canJudge(me)
+  const signAndRelease = async () => { if (round && (await act.sign(round.round))) await postJob(url.species, 'export', { mode: 'release' }).catch((e: Error) => act.fail(e.message)) }
   return (
     <header className={s.top}>
       <Popover.Root>
@@ -64,6 +73,10 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
         {sheet && <button className={s.iconbtn} onClick={toggleInsp} aria-label="Inspector"><span className={s.panelIcon} /></button>}
         <button className={s.quiet} disabled>{W.play}</button>
         {url.mode === 'goldens' && (ask ? <button className={s.primary} disabled>{W.gold.ask}</button> : <button className={s.primary} onClick={makeGoldens} disabled={!getToken() || !species}>{W.gold.make}</button>)}
+        {url.mode === 'gate' && species && !!getToken() && (!isOpen(round) && !judge
+          ? <button className={s.primary} onClick={() => void act.ask()} disabled={act.busy}>{W.gate.ask}</button>
+          : round && judge && t === 'reviewer' && me?.role === 'reviewer' ? <button className={s.primary} onClick={() => void act.sign(round.round)} disabled={act.busy || !allTicked(round)}>{W.gate.sign(round.round)}</button>
+          : round && judge && t === 'owner' && me?.role === 'owner' ? <button className={s.primary} onClick={() => void signAndRelease()} disabled={act.busy}>{W.gate.release}</button> : null)}
         {url.mode === 'variety' && <button className={s.primary} onClick={newSheet} disabled={!getToken() || !species}>{W.newSheet}</button>}
       </div>
     </header>

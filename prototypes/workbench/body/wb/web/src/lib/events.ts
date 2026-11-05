@@ -3,8 +3,8 @@ import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiPath } from './prefix'
 
 // The server's events (spec 6.3, wb/server.py): queued, running, done, failed, edited.
-export type WbEvent = { id: number; type: 'queued' | 'running' | 'done' | 'failed' | 'edited'; species: string; t: string; job?: string; kind?: string; actor?: string | null; progress?: number; superseded?: boolean; key?: string; urls?: string[]; error?: string; field?: string }
-export const EVENT_TYPES: WbEvent['type'][] = ['queued', 'running', 'done', 'failed', 'edited']
+export type WbEvent = { id: number; type: 'queued' | 'running' | 'done' | 'failed' | 'edited' | 'gate'; species: string; t: string; job?: string; kind?: string; actor?: string | null; progress?: number; superseded?: boolean; key?: string; urls?: string[]; error?: string; field?: string }
+export const EVENT_TYPES: WbEvent['type'][] = ['queued', 'running', 'done', 'failed', 'edited', 'gate']
 
 export type JobRow = { id: string; kind: string; state: 'queued' | 'running'; since: number; actor: string | null; progress?: number }
 export type JobsState = { jobs: Record<string, JobRow> }
@@ -27,6 +27,7 @@ export function applyEvent(qc: QueryClient, species: string, ev: WbEvent, now = 
   if (ev.type === 'done' || ev.type === 'edited' || (ev.type === 'failed' && !ev.superseded)) void qc.invalidateQueries({ queryKey: ['species', species] })
   if (ev.type === 'done' || ev.type === 'edited') void qc.invalidateQueries({ queryKey: ['variety', species] }) // a tile landed, or the file moved on
   if (ev.type === 'done' || ev.type === 'edited') void qc.invalidateQueries({ queryKey: ['goldens', species] }) // goldens made or compared, or the file moved on
+  if (ev.type === 'gate' || ev.type === 'edited') void qc.invalidateQueries({ queryKey: ['gate', species] }) // a round asked for, ticked, signed, or voided by an edit
   if (ev.type === 'edited') void qc.invalidateQueries({ queryKey: ['forms', species] }) // the parts and their fields come from the file
 }
 

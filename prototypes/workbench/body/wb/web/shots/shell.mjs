@@ -45,6 +45,15 @@ const shapeFile = structuredClone(s20file)
 shapeFile.spine.tail.length = 1.24
 const TYPE_STRING = 'G1-S20v1-20A00R61GC3A86100430R210861WQB0R4GC30R61621GC30G10R61GC30R61GC30R442008YR'     // the type's genome string (wb frame writes it into frames/species-S20.json)
 
+// Chunk 25: the gate. One round of six sheets, as a maker, a reviewer (5 of 6 ticked) and with both signatures; the same stubbed server answers for each.
+const SHEETS = [['turnaround', 'Turnaround'], ['before-after', 'Before and after'], ['joins', 'Joins'], ['twelve', 'The twelve'], ['motion', 'Motion'], ['close-up', 'Close-up']]
+const gateOf = (ticked, sig) => ({ species: 'S20', hash: 'h', current: 3, signed: sig === 2, building: false, sheets: [], rounds: [
+  { round: 2, file_hash: 'c1', asked_by: 'maker-dev', asked_at: '2026-10-27T10:00:00', note: '', reviewer: null, owner: null, verdict: 'superseded', voided: null, state: { live: false, reviewer_valid: false, owner_valid: false, signed: false, voided: false, ticked: 6 }, sheets: [] },
+  { round: 3, file_hash: '7d2e91b4'.padEnd(64, '0'), asked_by: 'maker-dev', asked_at: '2026-11-05T10:00:00', note: '', verdict: null, voided: null,
+    reviewer: sig >= 1 ? { name: 'test-reviewer', at: '2026-11-05T11:00:00', hash: 'h' } : null, owner: sig >= 2 ? { name: 'test-owner', at: '2026-11-05T12:00:00', hash: 'h' } : null,
+    state: { live: true, reviewer_valid: sig >= 1, owner_valid: sig >= 2, signed: sig === 2, voided: false, ticked }, sheets: SHEETS.map(([id, label], i) => ({ id, label, tick: i < ticked, url: '/x.png' })) }] })
+const ME = { maker: { name: 'maker-dev', role: 'maker', agent: false }, reviewer: { name: 'test-reviewer', role: 'reviewer', agent: false }, owner: { name: 'test-owner', role: 'owner', agent: false } }
+
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf' }
 const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://x').pathname
@@ -83,6 +92,9 @@ const cases = [
   { name: 'spine-light-1180', theme: 'light', w: 1180, h: 820, ready: true, shape: true, touch: true, token: true, q: '&sel=back&az=90&view=clay&drawer=section' },
   { name: 'play-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, shape: true, q: '&sel=tail&player=1' },
   { name: 'play-light-1180', theme: 'light', w: 1180, h: 820, ready: true, shape: true, touch: true, q: '&sel=coat&player=1' },
+  { name: 'gate-reviewer-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, mode: 'gate', token: true, gate: gateOf(5, 0), me: 'reviewer', q: '&sel=close-up' },
+  { name: 'gate-maker-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, mode: 'gate', token: true, gate: gateOf(5, 0), me: 'maker', q: '&sel=close-up' },
+  { name: 'gate-signed-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true, mode: 'gate', token: true, gate: gateOf(6, 2), me: 'owner', q: '&sel=turnaround' },
   { name: 'stage-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true },
 ]
 let failed = 0
@@ -119,6 +131,9 @@ for (const c of cases) {
   await page.route('**/api/species/S20/variety*', (r) => r.fulfill({ json: varietyS20 }))
   await page.route('**/api/species/S20/goldens', (r) => r.fulfill({ json: c.goldens ?? goldensSame }))
   await page.route('**/api/species/S20/goldens/file*', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
+  await page.route('**/api/me', (r) => r.fulfill({ json: ME[c.me] ?? { name: null, role: null, agent: false } }))
+  await page.route('**/api/species/S20/gate', (r) => r.fulfill({ json: c.gate ?? { species: 'S20', hash: 'h', rounds: [], current: null, signed: false, building: false, sheets: [] } }))
+  await page.route('**/api/species/S20/gate/*/sheet/*', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
   await page.route('**/api/checks', (r) => r.fulfill({ json: c.shape ? metasShape : metas }))
   await page.route('**/api/species/S20/spine', (r) => r.fulfill({ json: spineS20 }))
   await page.route('**/api/species/S20/toys', (r) => r.fulfill({ json: toysS21 }))
