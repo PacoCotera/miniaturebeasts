@@ -693,3 +693,30 @@ test("pins: a frame or save pinned to catalogue 10 loads as it is; a pin of 11 (
     assert.equal(buildIndividual(f, g).validation.status, "valid", `and builds, pinned ${pin}`);
   }
 });
+
+test("each clan's type-specimen sentence reads as written: the line, then the feature", async () => {
+  const { describeGenome } = await import("../framework/describe.mjs");
+  const want = {
+    S01: "a round body, mostly head, on four short legs: a leaf crest and a flat face; charcoal, of meadow and pond",
+    S02: "a puff with a face and stub feet: a cap of flaps, coral, radial bodies; soft, round, sleepy",
+    S03: "a big round head on a slim four-legged body: a glowing tail and a crest, lagoon; small lights of wood and rock",
+    S04: "a long tail wrapped round four paws: upright pointed ears, striped fur; quiet hunters of the grass",
+    S05: "a four-legged body with a tail just as big: tall ears, a long muzzle, a bushy tail; clever wanderers",
+    S06: "a four-legged body: a face mask and a ringed tail; masked tinkerers",
+    S07: "a sturdy build on four short legs: broad claws, a striped face, stout bodies; the diggers",
+    S08: "a light, slim-legged body with big cupped ears: horns and hooves; climbers of the high rocks",
+    S09: "an upright body on two legs, wings tucked in: a beak and a pointed crest; watchers of the open sky",
+    S10: "a long barrel-shaped body with a flat round snout: small ears and a broad tail; the water players",
+    S11: "a high dome on four stumpy legs: a shell; slow keepers of the pond",
+    S12: "a round body on six fine legs, wings up like a sail: patterned flaps; fliers of the flowers",
+    S13: "a low domed body on six legs: plates and wing cases; armoured crawlers",
+    S14: "a long soft body gliding on one flat foot: eye stalks and a sheen; the fog-lovers",
+    S15: "an upright body, broad below, on two short legs: leaves and roots; the walking green",
+    S16: "a creature that paddles the air with four flippers: a body of charge; storm-born",
+  };
+  for (const [id, sentence] of Object.entries(want)) {
+    const f = frameOf(id), g = typeSpecimen(f);
+    const { text } = describeGenome(f, g, buildIndividual(f, g).scene, { typeSpecimen: true });
+    assert.ok(text.includes(` It is the type of its kind, ${sentence}.`), `${id}: ${text.match(/It is the type of its kind[^.]*\./)?.[0]}`);
+  }
+});
