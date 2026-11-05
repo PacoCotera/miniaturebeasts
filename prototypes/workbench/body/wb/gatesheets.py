@@ -79,7 +79,7 @@ def make(srv, sp, n, outdir, actor=None, log=print):
     plush = ""
     if pic["ready"]:
         plush = _cell(_put(srv, pic["key"], outdir, "plush-32.png"), "plush, az 32", 304)
-    page("turnaround", "The four house angles in clay" + (" and the plush hero" if plush else "") + ".", _row(cells) + (f"<h2>Plush</h2>{_row([plush], 1)}" if plush else ""))
+    page("turnaround", "The four house angles in clay" + (" and the plush hero" if plush else "") + ".", _row(cells, 2) + (f"<h2>Plush</h2>{_row([plush], 1)}" if plush else ""), 700)   # two to a row: the page is 700 wide, so it shows whole on the Gate stage of a desktop and a tablet
 
     # Before and after: this file beside the file of the round before (or the file the goldens were made from)
     before = GT.read_snapshot(sp.path, n - 1) if n > 1 else None
