@@ -11,8 +11,15 @@ export const REALM_SAVE_V = 9;
 // the fields of a region's own map state: on S while the region is mounted, in regions[i].map when it is not.
 // lastPos lives in S.ui.lastPos on the page (the last start flag of the inset) and moves with the region.
 export const MAP_KEYS = ["revealed", "visited", "called", "signs", "pins", "cells", "pods", "cr", "veil", "svy", "svyF", "opened", "skulls", "lastStorm", "lastEntered", "lastTrail", "lastPos"];
-export const BIOMES = ["mixed", "woods", "fells", "marsh"];
-export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Fells", marsh: "Marsh" };   // the player's words (the copywriter owns them)
+export const BIOMES_V1 = ["mixed", "woods", "fells", "marsh"];   // the kinds a realm of version 1 draws from
+export const BIOMES = [...BIOMES_V1, "downs", "thickets", "tallwood", "tarns", "meres"];
+export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Fells", marsh: "Marsh", downs: "Downs", thickets: "Thickets", tallwood: "Tallwood", tarns: "Tarns", meres: "Meres" };   // the player's words (the copywriter owns them)
+// A realm's kind version: 1 draws its slots from the four older kinds, 2 from all nine by rarity. It is written on a new realm; a save without
+// it is version 1 and never changes, so its unopened slots keep their words.
+export const REALM_BIOME_V = 2;
+export const biomeVersion = realm => realm && realm.biomeV != null ? realm.biomeV : 1;
+// Common 6: Meadows, Woods, Downs, Fells, Marsh. Uncommon 3: Thickets, Tallwood, Tarns, Meres.
+export const BIOME_WEIGHT = { mixed: 6, woods: 6, downs: 6, fells: 6, marsh: 6, thickets: 3, tallwood: 3, tarns: 3, meres: 3 };
 export const ATLAS = 5, CENTER = [2, 2], MAX_HOME = 25, REGION_EVERY = 140;
 const GOOD_CLOCK = Date.UTC(2026, 0, 1);   // a time before this is a clock that was never set
 
@@ -52,8 +59,8 @@ export function prefixPods(pods, n) {
 // ---- the atlas: 5 x 5 slots, region 1 at the centre ----
 const NEIGHBOURS = [[2, 1], [3, 2], [2, 3], [1, 2]];   // north, east, south, west of region 1
 // A slot's biome is fixed by the realm seed. The four slots around region 1 hold Woods, Fells and Marsh and one repeat of the three
-// (which one, and where, comes from the seed), so the first choice always offers all three. Slots further out take any biome.
-export function slotBiome(seed, ax, ay) {
+// (which one, and where, comes from the seed), so the first choice always offers all three. Slots further out take any biome (version 2: any of the nine).
+export function slotBiome(seed, ax, ay, version = 1) {
   if (ax === CENTER[0] && ay === CENTER[1]) return "mixed";
   const i = NEIGHBOURS.findIndex(([x, y]) => x === ax && y === ay);
   if (i >= 0) {
@@ -61,7 +68,10 @@ export function slotBiome(seed, ax, ay) {
     const order = [0, 1, 2, 3].sort((a, b) => hash(seed, "slot", "order", a) - hash(seed, "slot", "order", b) || a - b);
     return items[order[i]];
   }
-  return BIOMES[hash(seed, "slot", ax, ay) % BIOMES.length];
+  const h = hash(seed, "slot", ax, ay);
+  if (version < 2) return BIOMES_V1[h % BIOMES_V1.length];
+  let r = h % BIOMES.reduce((a, b) => a + BIOME_WEIGHT[b], 0);   // slots further out: any kind, by rarity
+  for (const b of BIOMES) { if (r < BIOME_WEIGHT[b]) return b; r -= BIOME_WEIGHT[b]; }
 }
 const homes = regions => regions.filter(r => r.kind === "home" && r.slot);
 // The slots a new region can open in: free, inside the 5 x 5, and sharing an edge with an open home region. Row by row.
@@ -156,6 +166,7 @@ export function migrate8(v8, { now = Date.now() } = {}) {
 export function realmStatus(s, gens = GENS) {
   if (!s || typeof s !== "object" || Array.isArray(s)) return "broken";
   if (typeof s.v === "number" && s.v > REALM_SAVE_V) return "newer";
+  if (typeof s.biomeV === "number" && s.biomeV > REALM_BIOME_V) return "newer";
   if (s.v !== REALM_SAVE_V || !Array.isArray(s.regions) || !s.regions.length || !s.regions.every(r => r && r.map && typeof r.map === "object")) return "broken";
   return s.regions.every(r => gens.includes(r.gen)) ? "ok" : "newer";
 }

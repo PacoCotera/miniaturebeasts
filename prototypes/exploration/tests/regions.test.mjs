@@ -178,6 +178,21 @@ test("7. slotBiome: the four slots around region 1 hold Woods, Fells and Marsh a
   assert.notDeepEqual(around.map(([x, y]) => R.slotBiome(1, x, y)), around.map(([x, y]) => R.slotBiome(2, x, y)), "(the seeds differ)");
 });
 
+test("7b. slotBiome by realm version: version 1 (and a save without one) never changes; version 2 draws all nine by rarity; ring 1 is the same", () => {
+  const around = [[2, 1], [3, 2], [2, 3], [1, 2]], far = [[0, 0], [4, 4], [0, 4], [3, 3], [2, 0], [4, 1], [1, 4], [0, 2], [4, 3], [1, 0]];
+  const tally = {}; let n = 0;
+  for (const seed of SEEDS) {
+    for (const [x, y] of around) assert.equal(R.slotBiome(seed, x, y, 2), R.slotBiome(seed, x, y, 1), "ring 1 is Woods, Fells and Marsh and a repeat in both");
+    for (const [x, y] of far) { assert.ok(R.BIOMES_V1.includes(R.slotBiome(seed, x, y)), "default is version 1"); assert.equal(R.slotBiome(seed, x, y, 1), R.slotBiome(seed, x, y));
+      const b = R.slotBiome(seed, x, y, 2); tally[b] = (tally[b] || 0) + 1; n++; }
+  }
+  assert.deepEqual(Object.keys(tally).sort(), [...R.BIOMES].sort(), "every kind turns up");
+  for (const [b, w] of Object.entries(R.BIOME_WEIGHT)) { const want = n * w / 42, got = tally[b]; assert.ok(Math.abs(got - want) <= want * 0.2, `${b}: ${got} against about ${want.toFixed(0)}`); }
+  assert.equal(R.biomeVersion({}), 1); assert.equal(R.biomeVersion({ biomeV: 2 }), 2); assert.equal(R.biomeVersion(null), 1);
+  assert.deepEqual(R.BIOME_NAME, { mixed: "Meadows", woods: "Woods", fells: "Fells", marsh: "Marsh", downs: "Downs", thickets: "Thickets", tallwood: "Tallwood", tarns: "Tarns", meres: "Meres" });
+  assert.equal(R.realmStatus({ v: 9, biomeV: 3, regions: [{ map: {}, gen: 3 }] }), "newer");
+});
+
 const home = (n, slot, o = {}) => R.regionRecord({ n, slot, biome: "woods", seed: n * 11, gen: 4, opened: NOW, exploredN: 0, ...o });
 test("8. freeSlots: the empty neighbours of the open home regions, inside the 5 x 5", () => {
   const g1 = home(1, [2, 2], { biome: "mixed", gen: 3 });

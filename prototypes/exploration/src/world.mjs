@@ -487,7 +487,7 @@ function g2Land(sub, B) {
   const smallLakes = RL => {   // a biome's small lakes of one or two cells
     for (let k = 0, tries = 0; k < B.lakes && tries < 400; tries++) {
       const x = 1 + RL.int(MW - 2), y = 1 + RL.int(MH - 2), c = at(x, y), two = RL.int(100) < B.lakeTwo, dx = RL.int(2), c2 = dx ? c + 1 : c + MW;
-      const free = d => land[d] !== L.WATER && !island[d] && !ford[d] && land[d] !== L.CLIFF;
+      const free = d => land[d] !== L.WATER && !island[d] && !ford[d] && land[d] !== L.CLIFF && (!B.lakeSep || NB8.every(([ox, oy]) => { const X = d % MW + ox, Y = ((d / MW) | 0) + oy; return !onMapXY(X, Y) || land[Y * MW + X] !== L.WATER; }));
       if (!free(c) || (two && (!free(c2) || (dx && x + 1 >= MW - 1) || (!dx && y + 1 >= MH - 1)))) continue;
       land[c] = L.WATER; if (two) land[c2] = L.WATER; k++;
     }
@@ -1244,13 +1244,15 @@ export function genLife3(G, seed, roster, biome) {
 // Generator 2's ground with a land-weight table per biome, and generator 3's life with the biome's habitat herds doubled. `mixed` is
 // generator 3's ground to the bit. Every other biome re-weights generator 2's own stages (BIOME_GROUND) and draws on its own seed streams.
 // No cell is L.CLIFF here, as in generator 2: a cliff is an edge between levels, so the Fells' cliffs are their doubled height changes.
-export const BIOMES = ['mixed', 'woods', 'fells', 'marsh'];
+export const BIOMES = ['mixed', 'woods', 'fells', 'marsh'];   // the four of realm version 1: their worlds never change
+export const BIOMES_R1 = ['downs', 'thickets', 'tallwood', 'tarns', 'meres'];   // the five of realm version 2
+export const ALL_BIOMES = [...BIOMES, ...BIOMES_R1];
 //   river: the river setting (g4Course); mP1, mP2: the wood noise lattices (generator 2: 8, 4; Woods ranks on a coarser noise for one body of forest);
 //   wood, rock: how many cells the noise ranks take for each land (generator 2: 80 and 48); fords: extra ford rows (generator 2 has 2 rows);
 //   lakes, lakeTwo: extra small lakes and the percent of them with a second cell; pondP, ring8: the pond edge (generator 2: 35 percent, 4 sides);
 //   hP1, hP2, rampQ, lv, zoneMin: the height noise lattices, the slope toward the mountain edge, the level shares by rank and the smallest zone kept
 //   (generator 2: 8, 4, 16384, 15 45 40, 4). Fells: a valley (the slope rises on both sides of the river by its distance from it, rampQ at 8 cells),
-//   the rock ranked on the high ground (rockHigh), the wood on the low (woodLow), a few small tarns, and extraStairs: that percent of stairs again on cliff
+//   the rock ranked on the high ground (rockHigh), lakeSep: no two small lakes touch (Tarns), the wood on the low (woodLow), a few small tarns, and extraStairs: that percent of stairs again on cliff
 //   edges besides the spanning tree's, so the walls stay long and the stairs are twice generator 2's. Marsh: its ground is low, so its ranks put most of it on the top level.
 const RIVER_G2 = { axis: 'ns', lo: 8, hi: 13, turnP: 45, iy: [3, 16], n: 1, ford: 2 };   // generator 2's river band, with the island row drawn from 3 to 16
 export const BIOME_GROUND = {
@@ -1258,14 +1260,19 @@ export const BIOME_GROUND = {
   woods: { name: 'woods', river: { axis: 'pick', lo: 2, hi: 13, turnP: 60, iy: [3, 16], n: 1, ford: 1 }, mP1: 16, mP2: 8, wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
   fells: { name: 'fells', river: { axis: 'ns', lo: 5, hi: 10, turnP: 15, iy: [3, 16], n: 1, ford: 2, lake: 0 }, valley: true, rockHigh: true, woodLow: 6, extraStairs: 110, wood: 66, rock: 128, fords: 0, lakes: 5, lakeTwo: 80, pondP: 0, ring8: false, hP1: 8, hP2: 4, rampQ: 24576, lv: [20, 35, 45], zoneMin: 4 },
   marsh: { name: 'marsh', river: { axis: 'ns', lo: 2, hi: 13, turnP: 40, iy: [3, 16], n: 2, span: 11, ford: 2, lake: 0 }, pools: 6, poolMin: 3, poolMax: 6, wood: 78, rock: 44, fords: 2, lakes: 0, lakeTwo: 0, pondP: 50, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
+  downs: { name: 'downs', river: { axis: 'ns', lo: 4, hi: 11, turnP: 30, iy: [3, 16], n: 1, ford: 2 }, mP1: 8, mP2: 4, wood: 36, rock: 20, fords: 0, lakes: 1, lakeTwo: 0, pondP: 25, ring8: false, hP1: 16, hP2: 8, rampQ: 8192, lv: [30, 40, 30], zoneMin: 4, extraStairs: 80 },
+  thickets: { name: 'thickets', river: { axis: 'pick', lo: 3, hi: 12, turnP: 50, iy: [3, 16], n: 1, ford: 1 }, mP1: 1, mP2: 1, wood: 137, rock: 24, fords: 0, lakes: 0, lakeTwo: 0, pondP: 35, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
+  tallwood: { name: 'tallwood', river: { axis: 'pick', lo: 2, hi: 13, turnP: 40, iy: [3, 16], n: 1, ford: 1 }, mP1: 24, mP2: 12, wood: 180, rock: 30, fords: 0, lakes: 1, lakeTwo: 0, pondP: 40, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
+  tarns: { name: 'tarns', river: { axis: 'ns', lo: 5, hi: 10, turnP: 15, iy: [3, 16], n: 1, ford: 2, lake: 0 }, rockHigh: true, lakeSep: true, woodLow: 4, extraStairs: 60, wood: 30, rock: 120, fords: 0, lakes: 9, lakeTwo: 70, pondP: 30, ring8: false, hP1: 8, hP2: 4, rampQ: 12288, lv: [10, 30, 60], zoneMin: 4 },
+  meres: { name: 'meres', river: { axis: 'ns', lo: 2, hi: 13, turnP: 30, iy: [3, 16], n: 1, ford: 2, lake: 0 }, pools: 3, poolMin: 8, poolMax: 12, wood: 50, rock: 16, fords: 1, lakes: 0, lakeTwo: 0, pondP: 70, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
 };
 export const WALK_MIN = 260;   // a biome world holds at least this many walkable cells on its reachable component
 // The land a biome's habitat herds stand on: a species whose habitat holds it has its herds there doubled.
-export const BIOME_HABITAT = { woods: L.WOOD, fells: L.ROCK, marsh: L.POND };
+export const BIOME_HABITAT = { woods: L.WOOD, fells: L.ROCK, marsh: L.POND };   // the five of realm version 2 have none yet
 
 function walkCells(G) { let n = 0; for (let c = 0; c < NC; c++) n += G.comp[c]; return n; }
 export function genWorld4(seed, biome = 'mixed') {
-  if (!BIOMES.includes(biome)) throw new RangeError('unknown biome: ' + biome);
+  if (!ALL_BIOMES.includes(biome)) throw new RangeError('unknown biome: ' + biome);
   const B = BIOME_GROUND[biome];
   const done = G => ({ ...G, gen: 4, biome, shade: shadeCells(G, seed, biome) });
   for (let t = 0; t < G2.TRIES; t++) { const G = g2Attempt(seed, t, B); if (G && !g2Check(G, false).length && walkCells(G) >= WALK_MIN) return done(G); }
