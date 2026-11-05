@@ -205,8 +205,19 @@ test("7b. realm version 2: ring 1 is as in version 1; every kind turns up; a slo
     for (const k of kinds) { const want = tot * R.BIOME_WEIGHT[k] / w; assert.ok(Math.abs(tally[k] - want) <= want * 0.2, `${grp}/${k}: ${tally[k]} against about ${want.toFixed(0)}`); }
   }
   assert.equal(R.biomeVersion({}), 1); assert.equal(R.biomeVersion({ biomeV: 2 }), 2); assert.equal(R.biomeVersion(null), 1);
-  assert.deepEqual(R.BIOME_NAME, { mixed: "Meadows", woods: "Woods", fells: "Fells", marsh: "Marsh", downs: "Downs", thickets: "Thickets", tallwood: "Tallwood", tarns: "Tarns", meres: "Meres" });
+  assert.deepEqual(R.BIOME_NAME, { mixed: "Meadows", woods: "Woods", fells: "Cliffs", marsh: "Marsh", downs: "Hills", thickets: "Thickets", tallwood: "Tallwood", tarns: "Highpools", meres: "Lakes" });
   assert.equal(R.realmStatus({ v: 9, biomeV: 3, regions: [{ map: {}, gen: 3 }] }), "newer");
+});
+
+test("7b2. version 2 draws the group first: over seeds 1-200, rings 2-4 are about half Green, Highlands and Waters each at least 20 %, no ring 60 % Green", () => {
+  const sum = { 2: [0, 0, 0, 0], 3: [0, 0, 0, 0], 4: [0, 0, 0, 0] }, all = [0, 0, 0, 0], gi = { green: 0, highlands: 1, waters: 2 };
+  for (let seed = 1; seed <= 200; seed++) for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) {
+    const r = ringOf(x, y); if (r < 2) continue; const i = gi[R.BIOME_GROUP[R.slotBiome(seed, x, y, 2)]];
+    sum[r][i]++; sum[r][3]++; all[i]++; all[3]++;
+  }
+  for (const r of [2, 3, 4]) assert.ok(sum[r][0] / sum[r][3] < 0.6, `ring ${r} Green ${(100 * sum[r][0] / sum[r][3]).toFixed(1)} %`);
+  assert.ok(all[0] / all[3] >= 0.45 && all[0] / all[3] <= 0.56, "Green " + (100 * all[0] / all[3]).toFixed(1));
+  assert.ok(all[1] / all[3] >= 0.2 && all[2] / all[3] >= 0.2, "Highlands " + all[1] / all[3] + " Waters " + all[2] / all[3]);
 });
 
 test("7c. a Fells beside a Marsh ring-outward slot is Green; Highlands and Waters never sit side by side in a version 2 atlas", () => {
@@ -307,8 +318,8 @@ test("9. canOpen: 140 x n explored cells across the home regions, up to 25, seas
 test("10. regionName: the Meadows, then the side and the biome; Far for the second on a side; the event's own name for a seasonal region", () => {
   const nm = (slot, biome, n = 9) => R.regionName(home(n, slot, { biome }), {});
   assert.equal(R.regionName(home(1, [2, 2], { biome: "mixed" }), {}), "the Meadows");
-  assert.equal(nm([2, 1], "woods"), "North Woods"); assert.equal(nm([3, 2], "fells"), "East Fells"); assert.equal(nm([2, 3], "marsh"), "South Marsh"); assert.equal(nm([1, 2], "woods"), "West Woods");
-  assert.equal(nm([2, 0], "fells"), "Far North Fells"); assert.equal(nm([4, 2], "woods"), "Far East Woods"); assert.equal(nm([0, 2], "marsh"), "Far West Marsh"); assert.equal(nm([2, 4], "marsh"), "Far South Marsh");
+  assert.equal(nm([2, 1], "woods"), "North Woods"); assert.equal(nm([3, 2], "fells"), "East Cliffs"); assert.equal(nm([2, 3], "marsh"), "South Marsh"); assert.equal(nm([1, 2], "woods"), "West Woods");
+  assert.equal(nm([2, 0], "fells"), "Far North Cliffs"); assert.equal(nm([4, 2], "woods"), "Far East Woods"); assert.equal(nm([0, 2], "marsh"), "Far West Marsh"); assert.equal(nm([2, 4], "marsh"), "Far South Marsh");
   assert.equal(nm([3, 2], "mixed"), "East Meadows", "a repeat of the Meadows later");
   // the diagonals have no words yet: the copywriter owes them
   assert.equal(nm([1, 1], "woods"), null); assert.equal(nm([4, 4], "fells"), null);
