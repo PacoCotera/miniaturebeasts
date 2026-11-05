@@ -580,6 +580,30 @@ def cmd_sweep(a):
     return 1 if r.get("still_failing") else 0
 
 
+def cmd_export(a):
+    """wb export S20 --review|--release: the export job (glb, viewer, creature.json, the game frame, the layered stands) as paths and hashes. A release is refused with every reason (exit 1) until the checks pass or are waived and the gate is signed."""
+    mode = "release" if a.release else "review"
+    try:
+        j = run_job(a, "export", dict(mode=mode), wait=a.wait)
+    except Fail as e:
+        body = e.extra.get("body") or {}
+        if body.get("reasons"):
+            lines = ["Release export is blocked by"] + [f"  \u2022 {r}" for r in body["reasons"]]
+            out(a, dict(ok=False, species=a.species, mode=mode, refused=True, reasons=body["reasons"]), "\n".join(lines))
+            return 1
+        raise
+    if j["state"] in ("queued", "running"):
+        out(a, dict(ok=True, species=a.species, job=j["id"], state=j["state"], key=j["key"]), f"queued {j['id']}; wb export {a.species} --{mode} --wait to see it through")
+        return 0
+    r = j["result"]
+    lines = [f"{a.species} {mode} export" + (" (from the cache)" if j["cached"] else "") + f"  {r['build']}", f"folder {r['dir']}"]
+    lines += [f"{f['sha256'][:12]}  {f['bytes']:>9}  {f['name']}" for f in r["files"]]
+    if r["checks"]["failing"]:
+        lines.append("checks failing, written into the viewer: " + "; ".join(r["checks"]["failing"]))
+    out(a, dict(ok=True, species=a.species, mode=mode, job=j["id"], cached=j["cached"], dir=r["dir"], files=r["files"], build=r["build"], checks=r["checks"]), "\n".join(lines))
+    return 0
+
+
 def cmd_step(a):
     """wb step S20 tail length 5: one play move (a toy's axis to a step number, or a chip's name), saved the way play saves: a check that fails refuses it, nothing is saved, and the mibi's sentence comes back (exit 1)."""
     to = int(a.to) if re.fullmatch(r"\d+", a.to) else a.to
@@ -620,6 +644,8 @@ def main(argv=None):
     p.add_argument("--set", default="", help="use a set folder already drawn by wb.renderset instead of drawing"); p.add_argument("--missing", action="store_true", help="make: add the goldens that are missing and touch none that is there"); p.add_argument("--no-commit", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_golden)
     p = sub.add_parser("toys"); p.add_argument("species"); p.add_argument("--slots", action="store_true", help="also list every sentence slot"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_toys)
     p = sub.add_parser("sweep"); p.add_argument("species"); p.add_argument("--wait", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=900.0); p.set_defaults(f=cmd_sweep)
+    p = sub.add_parser("export"); p.add_argument("species"); g = p.add_mutually_exclusive_group(required=True); g.add_argument("--review", action="store_true"); g.add_argument("--release", action="store_true")
+    p.add_argument("--no-wait", dest="wait", action="store_false"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=900.0); p.set_defaults(f=cmd_export)
     p = sub.add_parser("step"); p.add_argument("species"); p.add_argument("toy"); p.add_argument("axis"); p.add_argument("to", help="a step number, or a chip's name"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=300.0); p.set_defaults(f=cmd_step)
     p = sub.add_parser("string"); p.add_argument("selector", nargs="?", default="type"); p.add_argument("--species", default=""); p.add_argument("--code", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_string)
     p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)

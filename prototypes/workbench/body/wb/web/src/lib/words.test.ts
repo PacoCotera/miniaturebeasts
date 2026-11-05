@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { P } from './words'
+import { P, jobWord } from './words'
 
 describe('the copywriter\'s play words', () => {
   it('names a paint pot by its hue', () => {
@@ -14,5 +14,11 @@ describe('the copywriter\'s play words', () => {
   it('counts the kept mibis for a screen reader and says where back goes', () => {
     expect([0, 1, 4].map(P.count)).toEqual(['none yet', '1 kept', '4 kept'])
     expect([P.backShape, P.backPods('Pemmi'), P.podsSub('Tulikos')]).toEqual(['Pick another mibi', 'Back to Pemmi', 'young Tulikos'])
+  })
+})
+
+describe('the job indicator\'s one word', () => {
+  it('says clay, sheet, goldens and glb', () => {
+    expect(['render', 'variety', 'golden', 'export', 'plush'].map(jobWord)).toEqual(['clay', 'sheet', 'goldens', 'glb', 'plush'])
   })
 })

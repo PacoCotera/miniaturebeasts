@@ -20,7 +20,7 @@ export const W = {
   held: (who: string, since: string) => `held by ${who} since ${since}`, // spec 6.2
 }
 // The job's kind, one word (st.jobs): the proxy renders are clay; plush and glb arrive with their workers.
-export const jobWord = (kind: string) => ({ render: 'clay', variety: 'sheet', golden: 'goldens' } as Record<string, string>)[kind] ?? kind
+export const jobWord = (kind: string) => ({ render: 'clay', variety: 'sheet', golden: 'goldens', export: 'glb' } as Record<string, string>)[kind] ?? kind
 
 // ui 4.5: the key table. Not on screen anywhere but the "?" sheet and the palette.
 export const KEYS: [string, string][] = [

@@ -8,6 +8,7 @@ import json
 import os
 import queue
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -237,6 +238,7 @@ class Server:
         self.sheeter = threading.Thread(target=self.sheet_loop, daemon=True, name="sheets")
         self.varieter = threading.Thread(target=self.variety_loop, daemon=True, name="variety")
         self.golder = threading.Thread(target=self.golden_loop, daemon=True, name="goldens")
+        self.exporter = threading.Thread(target=self.export_loop, daemon=True, name="exports")
         self.sweeper = threading.Thread(target=self.sweep_loop, daemon=True, name="sweeps")
         self.sweeps_seen = {}                                   # species id -> (the last sweep result, its key): shown stale when the file has moved on
         self.runs_lock = threading.Lock()
@@ -433,6 +435,8 @@ class Server:
             return self.submit_variety(sp, args, actor)
         if kind == "golden":
             return self.submit_golden(sp, args, actor)
+        if kind == "export":
+            return self.submit_export(sp, args, actor)
         if kind == "sweep":
             return self.submit_sweep(sp, args, actor)
         if kind == "plush":
@@ -1376,6 +1380,75 @@ class Server:
             except Exception as e:
                 self.finish_failed(job, f"{type(e).__name__}: {e}", None)
 
+    # ---- the export (chunk 24): glb, viewer, creature.json, the game frame and the layered stands, drawn by wb.export in its own process (it needs the render python); a P3 job pinned to the file it was asked for
+    def export_dir(self, sid, mode, key):
+        return os.path.join(self.home, "exports", sid, f"{mode}-{key[:16]}")
+
+    def export_process(self, sp, argv_tail, timeout):
+        from wb import golden as G
+        env = dict(os.environ, PYTHONPATH=BODY)
+        p = subprocess.run([G.render_python(), "-m", "wb.export", sp.path] + argv_tail, cwd=BODY, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=timeout)
+        lines = [l for l in p.stdout.splitlines() if l.startswith("{")]
+        if not lines:
+            raise RuntimeError("the export failed (" + str(p.returncode) + "): " + " | ".join(p.stdout.splitlines()[-6:]))
+        return p.returncode, json.loads(lines[-1])
+
+    def submit_export(self, sp, args, actor):
+        from wb import export as EX
+        a = dict(args or {})
+        mode = a.get("mode", "review")
+        if mode not in ("review", "release"):
+            raise ApiError(400, f"export mode '{mode}': review or release", "mode")
+        if mode == "release":                                      # the refusal comes first, with every reason, and nothing is queued
+            code, res = self.export_process(sp, ["/dev/null", "--release", "--blockers"], 300)
+            if res.get("refused"):
+                raise ApiError(400, "Release export is blocked: " + "; ".join(res["reasons"]), "release", reasons=res["reasons"])
+        spec = copy.deepcopy(sp.spec)
+        spec_hash = H.hash_of(spec)
+        stands = a.get("stands", True) is not False
+        key = H.hash_of("export", mode, spec_hash, H.framework_id(), EX.VERSION, stands)
+        out = self.export_dir(sp.id, mode, key)
+        man = os.path.join(out, "manifest.json")
+        job = J.Job(self.queue.new_id(), sp.id, "export", dict(mode=mode, stands=stands), key, J.PRIORITY["export"], spec, spec_hash, actor)
+        if os.path.exists(man):
+            with open(man) as fh:
+                job.cached, job.state, job.result = True, "done", dict(dir=out, manifest=man, **json.load(fh))
+            job.t_start = job.t_end = time.time()
+            job.event.set()
+            self.queue.add(job)
+            self.hub.emit("done", sp.id, job=job.id, kind="export", cached=True, key=key, actor=(actor or {}).get("name"))
+            return job
+        active = self.queue.find_active(sp.id, "export", key)
+        if active:
+            return active
+        self.queue.add(job)
+        self.hub.emit("queued", sp.id, job=job.id, kind="export", priority=job.priority, key=key, actor=(actor or {}).get("name"), spec_hash=spec_hash)
+        return job
+
+    def export_loop(self):
+        while not self.stopping:
+            job = self.queue.pop(("export",), timeout=0.5)
+            if job is None:
+                continue
+            sp = self.species.get(job.species)
+            self.hub.emit("running", job.species, job=job.id, kind="export", actor=(job.actor or {}).get("name"))
+            try:
+                out = self.export_dir(job.species, job.args["mode"], job.key)
+                tmp = out + ".part"
+                shutil.rmtree(tmp, ignore_errors=True)
+                code, res = self.export_process(sp, [tmp] + (["--release"] if job.args["mode"] == "release" else []) + ([] if job.args.get("stands", True) else ["--no-stands"]), 1800)
+                if res.get("refused"):
+                    self.finish_failed(job, "Release export is blocked: " + "; ".join(res["reasons"]), "release")
+                    continue
+                shutil.rmtree(out, ignore_errors=True)
+                os.replace(tmp, out)                                   # the folder appears whole or not at all
+                with open(os.path.join(out, "manifest.json")) as fh:
+                    man = json.load(fh)
+                self.queue.finish(job, "done", dict(dir=out, manifest=os.path.join(out, "manifest.json"), **man))
+                self.hub.emit("done", job.species, job=job.id, kind="export", key=job.key, cached=False, actor=(job.actor or {}).get("name"))
+            except Exception as e:
+                self.finish_failed(job, f"{type(e).__name__}: {e}", None)
+
     # ---- life cycle
     def start(self):
         for w in self.workers + self.plushers:
@@ -1384,6 +1457,7 @@ class Server:
         self.sheeter.start()
         self.varieter.start()
         self.golder.start()
+        self.exporter.start()
         self.sweeper.start()
         self.proofer.start()
         self.watcher.start()

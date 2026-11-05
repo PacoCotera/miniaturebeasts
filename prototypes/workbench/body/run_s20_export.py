@@ -19,5 +19,5 @@ commit = subprocess.run(["git", "-C", repo, "rev-parse", "--short", "HEAD"], cap
 dirty = subprocess.run(["git", "-C", repo, "status", "--porcelain", "--untracked-files=no"], capture_output=True, text=True).stdout.strip() != ""
 stamp = f"built {now.strftime('%a')} {now.day} {now.strftime('%b %H:%M')} Mexico City \u00b7 {commit}{'+wip' if dirty else ''}"
 r = s20glb.build(b, R, M, tex, glb, extras=dict(digest=GN.digest(c), level=LEVEL, build=stamp))
-subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "viewer_s20.py"), glb, os.path.join(OUT, "viewer.html")], check=True)
+subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "viewer.py"), glb, os.path.join(OUT, "viewer.html")], check=True)
 print("glb", r["bytes"], "bytes;", r["verts"], "vertices;", r["tris"], "triangles; clips", r["clips"], "; %.0f s" % (time.time() - t0))
