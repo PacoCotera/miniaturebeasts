@@ -19,6 +19,9 @@ RING_STEP = 0.11                  # arc length of the section's outline between 
 CHEST_OVER_SEAT = 1.3             # the chest's radius over the seat's: the pelvis is 0.7 to 1.0 of the chest, so a seat at +30 % just matches it
 NECK_FILLET = 0.16                # the smooth union's width where the head, the neck band and the chest meet
 UNDER, OVER = 0.05, 0.05          # the belly side is a little fuller than the back side, from the chest on
+BEND_GIRTH = 1.8                  # the tail's bends are filleted on this many times the section's radius at the joint (times the file's fillet): the fillet's arc is not a circle, and under about 2.4 radii of curve the rings' inner edges collapse on a thick tail
+ROOT_REACH = 0.3                  # the tail's root keeps the trunk's ring step this far behind the seat (the junction sags between rings further apart)
+TAIL_RINGS = 10                   # the most rings the tail takes, bar the two the tip's curve adds: a tail of the plan's longest, 2.4 H, spaces them about 0.2 H apart
 DEFAULT_KNOBS = dict(R_scale=1.0, neck_ratio=0.66, chest_front=0.05, rump_gain=0.15)
 
 
@@ -51,7 +54,12 @@ def params(doc):
     p["u_b"] = p["head"] + p["neck"] + 0.6 * p["back"]             # the belly
     p["u_p"] = p["head"] + p["neck"] + p["back"] + 0.45 * p["seat"]  # the seat's widest place
     p["u_e"] = p["trunk"]                                           # the seat's end, the tail's root
-    p["total"] = _path(doc, p).length                              # the tail's bends are filleted, so the spine is a little shorter than the file's lengths added up
+    pa = _path(doc, p)
+    p["total"] = pa.length                                         # the tail's bends are filleted, so the spine is a little shorter than the file's lengths added up
+    # a bend is filleted on a radius that is a multiple of the largest radius at its joint: where the file's own radius there is thinner than the tail really is (a heavy root on a thin segment) the bend is tighter than the tube is wide and the inner edge of the rings
+    # there shrinks to nothing, so the path is filleted on the section table's radius at each joint (the table keys by the path's length, which the fillets change by a hair: once is enough)
+    p["girth"] = [BEND_GIRTH * float(table(doc, [x], p)[2][0]) for x in pa.js[2:]]
+    p["total"] = _path(doc, p, p["girth"]).length
     return p
 
 
@@ -63,19 +71,21 @@ def tail_joints(doc, p):
     return PA.fk(root, js), [s["r"] for s in t["segments"]]
 
 
-def _path(doc, p):
+def _path(doc, p, girth=None):
     P, rr = tail_joints(doc, p)
     nose = np.array([p["x0"], 0.0, p["axis_z"]], float)
     pts = [nose] + [x for x in P]
     names = ["nose", "root"] + [s["name"] for s in doc["spine"]["tail"]["segments"]]
     R = [[0.04, 0.04], [p["root_r"], p["root_r"]]] + [list(r) for r in rr]
+    if girth is not None:
+        R[2:] = [[max(float(r[0]), float(w)), max(float(r[1]), float(w))] for r, w in zip(rr, girth)]
     return PA.Path(names, pts, R, doc["spine"]["tail"].get("fillet", 1.4), up=[0.0, 0.0, 1.0])
 
 
 def spine_path(doc, p=None):
     """The spine as a filleted path from the nose (s = 0) along the trunk and out along the tail, and its joints' names."""
     p = p or params(doc)
-    pa = _path(doc, p)
+    pa = _path(doc, p, p.get("girth"))
     return pa, pa.names
 
 
@@ -114,11 +124,14 @@ def table(doc, u, p=None):
 
 
 def stations(doc, p=None, step=RING_STEP):
-    """The rings' arc lengths: equal steps along the outline of the section table (so rings crowd where the section turns fast: the nose, the neck band, the seat, the tip), the first and last close to the poles."""
+    """The rings' arc lengths: equal steps along the outline of the section table (so rings crowd where the section turns fast: the nose, the neck band, the seat, the tip), the first and last close to the poles. Behind the seat the step grows with the tail's length so that the tail takes
+    at most TAIL_RINGS rings however long the file makes it (the vertex budget is the trunk's and the tail's together, and the plan lets the tail grow to 2.4 H)."""
     p = p or params(doc)
     u = np.linspace(0.0, p["total"], 4001)
     r = table(doc, u, p)[0]
-    s = np.r_[0.0, np.cumsum(np.hypot(np.diff(u), np.diff(r)))]
+    tail_step = max(step, (p["total"] - p["u_e"]) / TAIL_RINGS)
+    w = np.where(u[1:] > p["u_e"] + ROOT_REACH, step / tail_step, 1.0)                           # a stretch of the outline further behind the seat's end than ROOT_REACH counts for less, so its rings are further apart
+    s = np.r_[0.0, np.cumsum(np.hypot(np.diff(u), np.diff(r)) * w)]
     n = max(int(round(s[-1] / step)), 8)
     q = np.linspace(0.0, s[-1], n + 1)[1:-1]                      # the poles themselves are caps
     st = np.interp(q, s, u)
@@ -170,7 +183,7 @@ def build(doc, step=RING_STEP):
 def frame(doc, margin=0.10):
     """The camera framing of the plan, as the proxy renderer takes it: the centre of the body's extent and a scale on the house's pixels per H (1 at most), so the whole length from the nose to the tail's end fits across a plate at 304 with a margin on each side (the house plate is 3.2 H wide)."""
     p = params(doc)
-    pa = _path(doc, p)
+    pa = _path(doc, p, p.get("girth"))
     x_lo, x_hi = float(pa.pts[:, 0].min()) - 0.1, p["x0"] + 0.1
     z_lo, z_hi = 0.0, float(max(pa.pts[:, 2].max() + 0.2, p["axis_z"] + p["R_head"]))
     fit = (304.0 / 95.0) * (1 - 2 * margin) / (x_hi - x_lo)

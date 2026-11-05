@@ -201,14 +201,14 @@ def cmd_new(a):
     import species_v1 as V1
     from wb import store as S
     if a.source != "template":
-        raise Fail(2, f"--from {a.source}: only `template` is made here so far (a species or a kept play mibi come with the New screen)", "from")
+        raise Fail(2, f"--from {a.source}: only `template` for now. To start from a species or a mibi, use New species in the studio.", "from")
     try:
         doc = V1.new_from_template(a.species, a.plan)
     except ValueError as e:
         raise Fail(2, str(e), "plan" if "plan" in str(e) else "species")
     path = os.path.join(a.out or ".", f"{a.species}.json")
     if os.path.exists(path):
-        raise Fail(2, f"{path} is there already; a new species never overwrites a file", "species")
+        raise Fail(2, f"{path} is already there. wb new never writes over a file.", "species")
     errs = V1.validate(doc)
     if errs:
         raise Fail(2, errs[0][1], errs[0][0])
@@ -219,7 +219,9 @@ def cmd_new(a):
     except ImportError:
         rows = None                                              # the checks need numpy and the framework's modules: `wb check` on a server does them anywhere
     bad = [r for r in (rows or []) if r["state"] != "pass"]
-    lines = [f"{path}  new {a.plan} species from its template"] + ([f"{'PASS' if r['state'] == 'pass' else r['state'].upper():5} {r['id']:11} {r['measure']}" for r in rows] if rows is not None else ["checks not run here (numpy is missing); run `wb check` on a server"])
+    fix = ", ".join(r["id"] for r in bad)
+    last = [] if rows is None else [f"All {len(rows)} checks pass." if not bad else f"{len(bad)} to fix: {fix}. `wb check {a.species}` shows the proofs."]
+    lines = [f"{path} \u00b7 new species from the {a.plan} template"] + ([f"{'PASS' if r['state'] == 'pass' else r['state'].upper():5} {r['id']:11} {r['measure']}" for r in rows] + last if rows is not None else [f"Checks not run: numpy is missing here. Run `wb check {a.species}` on a server."])
     out(a, dict(ok=not bad, file=path, plan=a.plan, rows=[dict(id=r["id"], state=r["state"], value=r["value"], limit=r["limit"], measure=r["measure"]) for r in rows or []]), "\n".join(lines))
     return 1 if bad else 0
 

@@ -9,7 +9,7 @@
 .seg .num { margin-left: 6px; color: var(--text-3); }
 .quiet { color: var(--text-3); font-size: var(--t-14); }
 .close { margin-left: auto; width: 36px; height: 36px; border-radius: var(--r-1); color: var(--text-2); }
-.body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; min-height: 0; border-top: 1px solid var(--line); }
+.body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; grid-template-rows: minmax(0, 1fr); min-height: 0; overflow: hidden; border-top: 1px solid var(--line); }
 .tablewrap { overflow: auto; min-height: 0; }
 .empty { padding: var(--s-5); color: var(--text-2); margin: 0; }
 .table { width: 100%; border-collapse: collapse; font-size: var(--t-14); }

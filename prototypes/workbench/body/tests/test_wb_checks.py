@@ -12,7 +12,7 @@ SCRATCH = os.path.join(BODY, "scratch", "t_checks")
 # words.md 5.12: id -> (name, fail line)
 WORDS = {"ranges": ("Spine ranges", "Spine ranges don't match the plan"), "joins": ("Joins", "{part} join is half-blended"), "head.attach": ("Head on the spine", "Head sits off the end of the spine"),
          "head.neck": ("Head, neck and chest", "Neck band too wide"), "tail.taper": ("Tail taper", "Tail bulges on the way down"), "tail.size": ("Tail size", "Tail too big for the body"), "balance": ("Balance", "Tips over at {end}"),
-         "limbs": ("Shoulders and hips", "{limb} floats off its girdle"), "verts": ("Vertex budget", "{n} vertices, over 3,500"), "normals": ("Smooth normals", "Sharp crease in {part}"), "mesh": ("Mesh quality", "Thin or bent faces in {range}")}
+         "limbs": ("Shoulders and hips", "{limb} floats off its girdle"), "verts": ("Vertex budget", "{n} vertices, over 3,500"), "normals": ("Smooth normals", "Sharp crease in {part}"), "mesh": ("Mesh quality", "Thin or bent faces in the {range}")}
 
 
 def s20():

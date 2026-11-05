@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { Species } from '../lib/api'
-import { checkMetas, dotted, failLine, fmtVal, lastMover, needsYou, ORDER, partsOf, type CheckMeta, type CheckRow } from '../lib/checks'
+import { checkMetas, dotted, failLine, shownLimit, shownValue, lastMover, needsYou, ORDER, partsOf, type CheckMeta, type CheckRow } from '../lib/checks'
 import { clock } from '../lib/edits'
 import { useJobs } from '../lib/events'
 import { useUI } from '../lib/store'
@@ -63,8 +63,8 @@ export function ChecksDrawer({ species, url, go }: { species: Species; url: Stud
                   <tr key={r.id} className={r.id === sel?.id ? s.sel : ''} onClick={() => go({ proof: r.id }, true)} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter') go({ proof: r.id }, true) }}>
                     <td><i className={s.dot} data-kind={r.state} data-stale={!checks?.fresh || undefined} /></td>
                     <td>{byId[r.id]?.name ?? r.id}</td>
-                    <td className={`${s.r} num`}>{fmtVal(r.value)}</td>
-                    <td className={`${s.r} num`}>{fmtVal(r.limit)}</td>
+                    <td className={`${s.r} num`}>{shownValue(r)}</td>
+                    <td className={`${s.r} num`}>{shownLimit(r)}</td>
                     <td>{r.stage}</td>
                     <td className={s.r}>{checks?.fresh ? 'just now' : 'older file'}</td>
                   </tr>
@@ -87,7 +87,7 @@ function Detail({ row, meta, species, go }: { row: CheckRow; meta: CheckMeta; sp
       {row.state !== 'pass' && <span className={s.fail}>{failLine(row, meta)}</span>}
       <span className={s.measure}>{row.measure}</span>
       <q>{meta.rule.words}</q>
-      <span className={s.src}>Owner rule · {meta.rule.date} · {meta.limit.text}</span>
+      <span className={s.src}>Owner rule · {meta.rule.date} · {row.extra?.limit_text ?? meta.limit.text}</span>
       {meta.play && <span className={s.play}>In play: “{meta.play}”</span>}
       {meta.fields.length > 0 && (
         <div className={s.flds}>

@@ -132,6 +132,9 @@ def PR_ranges(rg, bad):
        rule=R("2026-11-02 23:02", "Every attachment is either a hard overlay (a separate shell sunk in, with a clean intersection line, like the toes) or a soft taper (it grows from the parent's skin with a wide filleted base). A half-blend is never allowed. Each socket declares join hard or soft in the species file."),
        limit=dict(text="hard: buried 0.04 H or more and tagged · soft: footprint 1.5-1.8 × the middle, no pinch", value=None), az=32)
 def c_joins(ctx):
+    from . import quad as QD
+    if QD.is_quad(ctx):
+        return QD.joins(ctx)
     import s20p2 as P2
     spec = ctx.body.ctx["spec"]
     lines, bad, pts = [], [], []
@@ -174,6 +177,9 @@ def c_joins(ctx):
        rule=R("2026-11-02 23:57", "The head sits at the end of the spine on top of the neck, and its attachment follows the body plan."),
        limit=dict(text="biped: underside; a 0.2-0.6, d 0-0.3 of the head's depth", value=None), az=90)
 def c_head_attach(ctx):
+    from . import quad as QD
+    if QD.is_quad(ctx):
+        return QD.head_attach(ctx)
     import headshape as HS
     spec = ctx.body.ctx["spec"]
     ha = spec["parts"]["torso"]["head_attach"]
@@ -305,7 +311,7 @@ def c_tail_taper(ctx):
 # 7 ---------------------------------------------------------------------------------------------------------------------------------------------------------- tail.size
 @check(id="tail.size", name="Tail size", fail="Tail too big for the body", stage="cage", version=1, part=["tail"], fields=["spine.tail.length", "spine.tail.root", "spine.tail.tip_r"],
        rule=R("2026-11-02 18:26", "The S20 tail is too big for its legs and body. The tail is scaled to the creature: root about 0.45 of the seat radius, a thin stalk, the bulb about eye size, side area at most about 1/4 of the trunk."),
-       limit=dict(text="side area at most 1/4 of the trunk · root at most 0.47 of the seat radius (a quadruped's heavier tail: 2/5 and 0.8)", value=BIPED["tail_side_area"]), az=90,
+       limit=dict(text="Side area at most 0.25 of the trunk · root at most 0.47 of the seat radius", value=BIPED["tail_side_area"]), az=90,
        play="Any more tail and I'd tip over backwards!")
 def c_tail_size(ctx):
     from . import quad as QD
@@ -333,7 +339,7 @@ def c_tail_size(ctx):
            PR.bar(40, 664, 400, 1.0, "trunk", f"{a_trunk:,} px", PR.INK),
            PR.bar(40, 712, 400, share, "tail", f"{share * 100:.0f}% of the trunk", PR.RED if bad else PR.SAGE, limit, f"limit {limit * 100:.0f}%")]
     meas = f"Side area {share:.3f} of the trunk, limit {limit:.2f}" + (f"; root {root_ratio:.2f} of the seat radius" if root_ratio > 0.47 else "")
-    return row("fail" if bad or root_ratio > 0.47 else "pass", f2(share), limit, meas, dict(mode="clay", az=90, svg="".join(out)), dict(share=share, tail_px=a_tail, trunk_px=a_trunk, root_ratio=root_ratio))
+    return row("fail" if bad or root_ratio > 0.47 else "pass", f2(share), limit, meas, dict(mode="clay", az=90, svg="".join(out)), dict(share=share, tail_px=a_tail, trunk_px=a_trunk, root_ratio=root_ratio, limit_text=f"Side area at most {limit:.2f} of the trunk · root at most 0.47 of the seat radius"))
 
 
 # 8 ---------------------------------------------------------------------------------------------------------------------------------------------------------- balance
@@ -369,6 +375,9 @@ def c_balance(ctx):
        rule=R("2026-11-02 02:07", "Rigs must have shoulders and hips. Arm and leg chains must not float: a shoulder girdle (a chest joint on the spine, a clavicle to each shoulder joint) and a pelvis (a seat joint, a hip bone to each hip joint) anchor the limbs. Limb sockets are placed from those joints, so the mesh follows the skeleton. (And 2026-11-02 10:35: legs are hip, knee, ankle; arms must match: shoulder, elbow, wrist.)"),
        limit=dict(text="each limb has three joints and its root on its girdle joint · the chest joint is on the back range", value=None), az=32)
 def c_limbs(ctx):
+    from . import quad as QD
+    if QD.is_quad(ctx):
+        return QD.limbs(ctx)
     spec = ctx.body.ctx["spec"]
     sk = spec["parts"]["torso"]["skeleton"]
     arm = spec["parts"]["arm.L"]
@@ -491,7 +500,7 @@ def c_normals(ctx):
 
 
 # 12 -------------------------------------------------------------------------------------------------------------------------------------------------------------- mesh
-@check(id="mesh", name="Mesh quality", fail="Thin or bent faces in {range}", stage="cage", version=1, part=[], fields=["spine.loft.rings_z", "spine.loft.column_layouts", "spine.loft.edge"],
+@check(id="mesh", name="Mesh quality", fail="Thin or bent faces in the {range}", stage="cage", version=1, part=[], fields=["spine.loft.rings_z", "spine.loft.column_layouts", "spine.loft.edge"],
        rule=R("2026-11-01 13:40", "'You're smashing blobs.' The mesh body is to be box-modelled as one continuous cage grown from the skeleton: one continuous all-quad surface with edge flow from torso into limbs."),
        limit=dict(text="edge-length, face-area and planarity ratios by spine range inside the species file's mesh_quality", value=None), az=32, mode="wire")
 def c_mesh(ctx):
@@ -538,7 +547,7 @@ def c_mesh(ctx):
         out.append(PR.label(36, 692 + 26 * i, f"{nm}", PR.RED if nm in bad else PR.INK, "start", 18, bg=False))
         out.append(PR.label(110, 692 + 26 * i, f"edge {r['along']:.1f} ({BIPED['ratio_along']:.0f})  ring {r['around']:.1f} ({BIPED['ratio_around']:.0f})  area {r['area']:.1f} ({th['area_ratio_max'] * 2:.0f})  flat {r['nonplanar']:.2f} ({th['nonplanar_max'] * 6:.1f})", PR.INK, "start", 15, bg=False))
     meas = (f"{bad[0]}: " + ", ".join(f"{k} {rows_[bad[0]][k]:.2f}" for k in rows_[bad[0]]['bad'])) if bad else "Edge, area and planarity ratios are inside the limits in every range"
-    return row("fail" if bad else "pass", len(bad), 0, meas, dict(mode="wire", az=32, svg="".join(out)), dict(parts=[], fail=(f"Thin or bent faces in {bad[0]}" if bad else None), bad_ranges=list(bad), ranges={k: {a: round(float(b_), 3) for a, b_ in v.items() if a != "bad"} | dict(bad=list(v["bad"])) for k, v in rows_.items()}))
+    return row("fail" if bad else "pass", len(bad), 0, meas, dict(mode="wire", az=32, svg="".join(out)), dict(parts=[], fail=(f"Thin or bent faces in the {bad[0]}" if bad else None), bad_ranges=list(bad), ranges={k: {a: round(float(b_), 3) for a, b_ in v.items() if a != "bad"} | dict(bad=list(v["bad"])) for k, v in rows_.items()}))
 
 
 # 13 ------------------------------------------------------------------------------------------------------------------------------------------------------- limits (the extremes stage)

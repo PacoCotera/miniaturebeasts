@@ -459,9 +459,9 @@ def template(plan):
 def new_from_template(species_id, plan):
     """A new species file from the plan's template: the same bare base with its own id and no name yet. Raises ValueError with the words to say when it cannot."""
     if not re.fullmatch(r"S\d\d", str(species_id)):
-        raise ValueError(f"'{species_id}' is not a species id: S and two digits")
+        raise ValueError(f"'{species_id}' is not a species id. An id is S and two digits, like S23.")
     doc = template(plan)
     if doc is None:
-        raise ValueError(f"the {plan} plan has no template yet")
+        raise ValueError(f"The {plan} plan has no template yet.")
     doc["id"], doc["name"] = species_id, ""
     return doc
