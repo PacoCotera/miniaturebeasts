@@ -43,7 +43,7 @@ def _page(outdir, sid, title, head, body, width=1400):
     p = os.path.join(outdir, sid + ".png")
     with open(h, "w") as fh:
         fh.write(SL.page(title, f"<h1>{html.escape(title)}</h1><p>{html.escape(head)}</p>" + body))
-    SL.shoot(h, p, width)
+    SL.shoot(h, p, width, 100)                                      # a short window: the picture is as tall as the page, with no blank space under it
     return p
 
 

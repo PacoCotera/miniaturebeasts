@@ -13,10 +13,11 @@ def page(title, body):
     return f"<!doctype html><html><head><meta charset='utf-8'><title>{html.escape(title)}</title><style>{CSS}</style></head><body>{body}</body></html>"
 
 
-def shoot(html_path, png_path, width=1600):
+def shoot(html_path, png_path, width=1600, height=900):
+    """`height` is the browser window's: a page shorter than it is padded to it, so a small one (the gate's sheets use 100) gives a picture exactly as tall as the page."""
     here = os.path.dirname(os.path.abspath(__file__))
     env = dict(os.environ, PLAYWRIGHT_BROWSERS_PATH="/home/mb/pw156/browsers")
-    subprocess.run(["node", os.path.join(here, "shot.cjs"), os.path.abspath(html_path), os.path.abspath(png_path), str(width)], check=True, env=env)
+    subprocess.run(["node", os.path.join(here, "shot.cjs"), os.path.abspath(html_path), os.path.abspath(png_path), str(width), str(height)], check=True, env=env)
 
 
 def table(rows, header=None):
