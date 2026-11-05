@@ -103,6 +103,14 @@ export function slotBiome(seed, ax, ay, version = 1) {
   if (version < 2) return BIOMES_V1[hash(seed, "slot", ax, ay) % BIOMES_V1.length];
   return realmSlots(seed).get(ax + "," + ay);
 }
+// The generator a realm opens a new home region with: version 2 realms use generator 4 (the region's kind shapes its world); version 1 realms keep generator 3.
+// A region keeps the generator and kind it was opened with, in its record.
+export const openGen = realm => biomeVersion(realm) >= 2 ? 4 : 3;
+// A new home region's record for a free slot: the slot's kind (by the realm's kind version), the realm's generator rule, its own seed.
+export function openHome(realm, slot, { n = realm.regions.length + 1, opened = Date.now(), openedTurn = realm.turn || 0 } = {}) {
+  const seed1 = realm.regions[0].seed;
+  return regionRecord({ n, kind: "home", biome: slotBiome(seed1, slot[0], slot[1], biomeVersion(realm)), slot, seed: regionSeed(seed1, n), gen: openGen(realm), opened, openedTurn });
+}
 const homes = regions => regions.filter(r => r.kind === "home" && r.slot);
 // The slots a new region can open in: free, inside the 5 x 5, and sharing an edge with an open home region. Row by row.
 export function freeSlots(regions) {
