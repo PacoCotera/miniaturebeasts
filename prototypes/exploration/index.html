@@ -2018,6 +2018,7 @@ function pickStrike(X) {
 function canStand(X, x, y, who) { return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * PW + x]); }
 function stepToward(X, who, tgt, n) {
   for (let k = 0; k < (n || 1); k++) {
+    if (tgt.tree && man(who, tgt) <= 1) return;   // a hollow trunk is entered from beside it: stop there, the next tick goes in
     let best = null, bd = man(who, tgt);
     const ds = Object.values(DIRS).slice(); const r = hash(S.seed, 'st', who.id || 0, S.exp.actions, k) % 4;
     for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy;
@@ -2057,7 +2058,7 @@ function nearestHole(X, c, maxD) {
 }
 // Flight: a Tuikis dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
 function hideOrFlee(X, c) {
-  if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = { x: h.x, y: h.y }; return; } }
+  if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = h.tree ? { x: h.x, y: h.y, tree: 1 } : { x: h.x, y: h.y }; return; } }
   c.st = 'flee'; c.t = 2;
 }
 // Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once,
