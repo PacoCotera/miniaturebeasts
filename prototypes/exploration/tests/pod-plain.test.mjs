@@ -5,11 +5,11 @@ import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 
 test("the field pod is the same picture for every species on the same ground, at 1x and 2x", () => {
-  const p = makePage({ console: "silent", canvas: true });
-  const grounds = p.run("Object.keys(POD_SHELL)");
+  const grounds = makePage({ console: "silent", canvas: true }).run("Object.keys(POD_SHELL)");
   assert.ok(grounds.length >= 5);
   for (const g of grounds) for (const s of [1, 2]) {
-    const px = sp => JSON.stringify(Array.from(p.run(`podArt(POD_SHELL[${JSON.stringify(g)}], ${s}, ${sp})`).p));
+    // each picture comes from a fresh page, so a species left out of the art cache key cannot hide a mark
+    const px = sp => JSON.stringify(Array.from(makePage({ console: "silent", canvas: true }).run(`podArt(POD_SHELL[${JSON.stringify(g)}], ${s}, ${sp})`).p));
     const base = px("undefined");
     for (const sp of [0, 1, 2]) assert.equal(px(sp), base, `${g} ${s}x species ${sp}`);
   }
