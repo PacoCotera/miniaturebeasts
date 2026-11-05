@@ -256,7 +256,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById, REALM_BIOME_V } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
@@ -869,7 +869,7 @@ const newWorld = newRealm;   // the name the tests and the page's buttons call
 function mountRegion(id) {
   unmount(S); const R = mount(S, id);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; RT.mp = null; RT.key = null; mapCv = null;
-  G = genWorld(R.seed, R.gen); indexCreatures();
+  G = genWorld(R.seed, R.gen, R.biome); indexCreatures();   // the region's own kind (generators before 4 have none)
   catchUp(R);
 }
 // A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
@@ -885,6 +885,12 @@ function inRegion(id, fn) {
   if (id === S.here) return fn();
   const was = S.here; mountRegion(id);
   try { return fn(); } finally { mountRegion(was); }
+}
+// A new home region in a free slot: its kind and generator by the realm's rule (src/regions.mjs openHome), its own life; the hand is put back.
+function openRegion(slot) {
+  const rec = openHome(S, slot); S.regions.push(rec);
+  inRegion(rec.id, () => { const life = genLife(S.seed); S.cr = life.cr; S.pods = prefixPods(life.pods, rec.n); indexCreatures(); });
+  return rec.id;
 }
 // Crates and the expedition under way name their region; none means region 1, so a realm of one region writes nothing new.
 const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
@@ -959,7 +965,7 @@ function load() {
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = genWorld(S.seed, gen);
+    layoutCache.clear(); G = genWorld(S.seed, gen, S.v === SAVE_V ? S.regions.find(r => r.id === S.here).biome : 'mixed');   // the mounted region's kind
     if (S.v === 8) S = realmOf(S);   // v8 → v9, after the fill: one region, the world the save held
     if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
