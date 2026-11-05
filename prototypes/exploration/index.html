@@ -258,6 +258,7 @@ import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep,
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById, REALM_BIOME_V } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
+import { mapHooks } from "./src/mapkinds.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -2521,7 +2522,7 @@ function nearestPal(r, g, b) { let best = 0, bd = 1e9; RGB.forEach(([R, G2, B], 
 function mixLUT(target, t) { const [tr, tg, tb] = RGB[C[target]]; return RGB.map(([r, g, b]) => nearestPal(r + (tr - r) * t, g + (tg - g) * t, b + (tb - b) * t)); }
 const FOGLUT = mixLUT('bone', .62),   // fog whitens and washes out: pale, low contrast
      FADE = mixLUT('stone', .5);
-FOGLUT[C.sprout] = C.fog;   // the lightest grass fogs to fog, as grass does: it never grows brighter asleep than woken (the palette's place fog says the same)
+FOGLUT[C.sprout] = C.fog; FOGLUT[C.lime] = C.fog;   // the lightest grass fogs to fog, as grass does: it never grows brighter asleep than woken (the palette's place fog says the same)
 // The Shade's asleep wash, one table: every colour mixed .48 toward bone, then the nearest of the 48 core colours; a cool colour that lands there
 // (sky, ice, river, aqua, mint) becomes mist, so a glow cap or water never shines through the Shade. Built and tested; nothing draws through it yet
 // (over today's green Shade trees it reads brighter than woken, so it waits for the teal Shade art).
@@ -3220,12 +3221,14 @@ function blit48(id, x, y, rm) { const pc = ART48.pieces.get(id); if (!pc) return
   blit(art('p48|' + id, () => { const pb = new PB(pc.w, pc.h); pb.p.set(pc.px); return pb; }), x, y, rm); }
 
 // ---------- World map terrain (416×520), built once per world as one indexed image ----------
+const MAPK = mapHooks();
 function buildMapPB() {
   const pb = new PB(MW * CELL, MH * CELL);
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = x * CELL, py = y * CELL, l = G.land[c], h = hash(G.seed, 'mc', c), R = makeRng(h);
     const sp = (n, cols) => { for (let i = 0; i < n; i++) pb.set(px + R.int(CELL), py + R.int(CELL), R.pick(cols)); };
-    switch (l) {
+    const own = MAPK.cell(pb, G, c, px, py, l, R, C);   // Tarns, Thickets and Tallwood draw their own cells; every other map is drawn as below
+    if (!own) switch (l) {
       case L.MEADOW: pb.rect(px, py, CELL, CELL, C.grass); sp(26, [C.sprout, C.leaf, C.leaf]);
         for (let i = 0; i < 3; i++) { const tx = px + 2 + R.int(CELL - 4), ty = py + 3 + R.int(CELL - 5); pb.rect(tx, ty, 1, 2, C.leaf); pb.set(tx, ty - 1, C.lime); }
         if (R.chance(.45)) { const fx = px + 4 + R.int(CELL - 8), fy = py + 4 + R.int(CELL - 8), fc = R.pick([C.pink, C.cream, C.white]); pb.set(fx - 1, fy, fc); pb.set(fx + 1, fy, fc); pb.set(fx, fy - 1, fc); pb.set(fx, fy + 1, fc); pb.set(fx, fy, C.amber); }
@@ -3255,16 +3258,17 @@ function buildMapPB() {
   }
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = x * CELL, py = y * CELL, l = G.land[c];
-    if (l === L.WATER) { // foam along every shore
+    if (l === L.WATER) { // foam along every shore (Tarns: a pale stone rim)
+      const FOAM = MAPK.foam(G, c, C) || C.ice;
       const land = (X, Y) => X >= 0 && Y >= 0 && X < MW && Y < MH && G.land[Y * MW + X] !== L.WATER;
-      if (land(x, y - 1)) pb.rect(px, py, CELL, 2, C.ice); if (land(x, y + 1)) pb.rect(px, py + CELL - 2, CELL, 2, C.ice);
-      if (land(x - 1, y)) pb.rect(px, py, 2, CELL, C.ice); if (land(x + 1, y)) pb.rect(px + CELL - 2, py, 2, CELL, C.ice);
+      if (land(x, y - 1)) pb.rect(px, py, CELL, 2, FOAM); if (land(x, y + 1)) pb.rect(px, py + CELL - 2, CELL, 2, FOAM);
+      if (land(x - 1, y)) pb.rect(px, py, 2, CELL, FOAM); if (land(x + 1, y)) pb.rect(px + CELL - 2, py, 2, CELL, FOAM);
       for (const sy of [1, -1]) for (const sx of [1, -1]) {   // every generation: every outward corner (both side neighbours land) is cut as a 7 px quarter disc of the ground across it, with the 2 px foam along the arc
         if (!land(x, y - sy) || !land(x - sx, y)) continue;
         const cx = sx > 0 ? px : px + CELL, cy = sy > 0 ? py : py + CELL, diag = land(x - sx, y - sy), cut = [];
         for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { const d = Math.hypot(i + .5, j + .5), X = sx > 0 ? cx + i : cx - 1 - i, Y = sy > 0 ? cy + j : cy - 1 - j;
           if (d >= 9) continue;
-          if (d >= 7) { cut.push([X, Y, C.ice]); continue; }
+          if (d >= 7) { cut.push([X, Y, FOAM]); continue; }
           const mx = sx > 0 ? cx - 1 - i : cx + i, my = sy > 0 ? cy - 1 - j : cy + j;   // the pixel mirrored through the corner point, else mirrored across the nearer side
           cut.push([X, Y, diag ? pb.get(mx, my) : i < j ? pb.get(mx, Y) : pb.get(X, my)]); }
         for (const [X, Y, v] of cut) pb.set(X, Y, v);
@@ -3275,6 +3279,7 @@ function buildMapPB() {
     }
     if (c === G.mouth && !G.gen) { pb.ell(px + 13, py + CELL, 7, 15, C.bark, { clip: (X, Y) => Y < py + CELL }); pb.ell(px + 13, py + CELL + 1, 5, 13, C.void, { clip: (X, Y) => Y < py + CELL }); }
   }
+  MAPK.post(pb, G, { C, CELL, MW, MH, L, TINT });
   return pb;
 }
 // Fog: one continuous cloud layer for the whole map (dithered noise), shown only over unseen cells.
