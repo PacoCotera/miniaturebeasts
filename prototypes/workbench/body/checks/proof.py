@@ -21,12 +21,13 @@ def basis(az, el):
     return right, np.cross(right, fwd), fwd
 
 
-def projector(az, el=10.0, w=W, h=H, ppH=PPH):
-    """world (n, 3) -> pixel (n, 2) at the house camera of the frame (orthographic, the proxy renderer's own)."""
+def projector(az, el=10.0, w=W, h=H, ppH=PPH, centre=None):
+    """world (n, 3) -> pixel (n, 2) at the house camera of the frame (orthographic, the proxy renderer's own); `centre` is a plan's own framing (the quadruped's long body), else the house's."""
     right, up, _ = basis(float(az), el)
+    c0 = CENTRE if centre is None else np.asarray(centre, float)
 
     def P(X):
-        X = np.atleast_2d(np.asarray(X, float)) - CENTRE
+        X = np.atleast_2d(np.asarray(X, float)) - c0
         return np.stack([w / 2 + (X @ right) * ppH, h / 2 - (X @ up) * ppH], 1)
     return P
 

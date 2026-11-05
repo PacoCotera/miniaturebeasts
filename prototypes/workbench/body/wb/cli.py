@@ -195,6 +195,35 @@ def cmd_validate(a):
     return 1 if r["fail"] else 0
 
 
+def cmd_new(a):
+    """wb new S23 --plan quadruped --from template: a new species file from the plan's template (offline), then the bare base's checks, one line each. Writes ID.json in --out (the current folder)."""
+    sys.path.insert(0, BODY)
+    import species_v1 as V1
+    from wb import store as S
+    if a.source != "template":
+        raise Fail(2, f"--from {a.source}: only `template` is made here so far (a species or a kept play mibi come with the New screen)", "from")
+    try:
+        doc = V1.new_from_template(a.species, a.plan)
+    except ValueError as e:
+        raise Fail(2, str(e), "plan" if "plan" in str(e) else "species")
+    path = os.path.join(a.out or ".", f"{a.species}.json")
+    if os.path.exists(path):
+        raise Fail(2, f"{path} is there already; a new species never overwrites a file", "species")
+    errs = V1.validate(doc)
+    if errs:
+        raise Fail(2, errs[0][1], errs[0][0])
+    S.write_spec(path, doc)
+    try:
+        from wb import facade as F
+        rows = F.check_rows(doc)
+    except ImportError:
+        rows = None                                              # the checks need numpy and the framework's modules: `wb check` on a server does them anywhere
+    bad = [r for r in (rows or []) if r["state"] != "pass"]
+    lines = [f"{path}  new {a.plan} species from its template"] + ([f"{'PASS' if r['state'] == 'pass' else r['state'].upper():5} {r['id']:11} {r['measure']}" for r in rows] if rows is not None else ["checks not run here (numpy is missing); run `wb check` on a server"])
+    out(a, dict(ok=not bad, file=path, plan=a.plan, rows=[dict(id=r["id"], state=r["state"], value=r["value"], limit=r["limit"], measure=r["measure"]) for r in rows or []]), "\n".join(lines))
+    return 1 if bad else 0
+
+
 STAGES = ("file", "cage", "extremes", "rig", "coat", "all")
 LATER = dict(rig="chunk 23", coat="chunk 23")
 
@@ -576,6 +605,7 @@ def main(argv=None):
         p.add_argument("--timeout", type=float, default=300.0)
         if genome:
             p.add_argument("--genome", default="type")
+    p = sub.add_parser("new"); p.add_argument("species", help="the new species' id: S and two digits"); p.add_argument("--plan", required=True, choices=("biped", "quadruped")); p.add_argument("--from", dest="source", default="template"); p.add_argument("--out", default=""); p.add_argument("--json", action="store_true"); p.set_defaults(f=cmd_new)
     p = sub.add_parser("build"); p.add_argument("species"); common(p); p.set_defaults(f=cmd_build)
     p = sub.add_parser("render"); p.add_argument("species"); common(p)
     p.add_argument("--mode", default="clay"); p.add_argument("--az", default="0,32,90,180"); p.add_argument("--size", default="304"); p.add_argument("--sheet", action="store_true"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_render)

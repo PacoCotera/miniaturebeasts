@@ -377,8 +377,128 @@ class TestChecks(unittest.TestCase):
         r = F.build(S22)
         m = F.proxy_mesh(r.body, 1)
         rows = crun("cage", Ctx(S22, r.body, dict(r.summary(), vertices_l1=len(m["V"])), m, doc=S22))
-        self.assertEqual([x["id"] for x in rows], ["verts"])
-        self.assertEqual(rows[0]["state"], "pass")
+        self.assertEqual([x["id"] for x in rows], ["head.neck", "tail.taper", "tail.size", "balance", "verts", "mesh"])
+        self.assertEqual({x["state"] for x in rows}, {"pass"})
+
+
+def rows_of(doc):
+    from checks import run as crun
+    return {r["id"]: r for r in F.check_rows(doc)}
+
+
+def broken(**kv):
+    """S22 with the fields set (dotted paths, in the plan's bands: the file is valid, the cage is built and the check says no)."""
+    d = copy.deepcopy(S22)
+    for path, v in kv.items():
+        node = d
+        keys = path.split(".")
+        for k in keys[:-1]:
+            node = node[k]
+        node[keys[-1]] = v
+    return d
+
+
+class TestPlanChecks(unittest.TestCase):
+    """Chunk 19: the head, neck and chest, the tail by the plan, the mesh by range and balance over four soles; the template passes them all."""
+    @classmethod
+    def setUpClass(cls):
+        cls.base = rows_of(S22)
+
+    def test_the_bare_base_is_green_on_every_check_the_quadruped_has(self):
+        self.assertEqual(sorted(self.base), sorted(["schema", "express", "ranges", "head.neck", "tail.taper", "tail.size", "balance", "verts", "mesh"]))
+        self.assertEqual({k: v["state"] for k, v in self.base.items()}, {k: "pass" for k in self.base})
+
+    def test_the_template_is_the_bare_base_with_its_own_id_and_passes_every_check(self):
+        t = V1.new_from_template("S23", "quadruped")
+        self.assertEqual((t["id"], t["name"], t["plan"], V1.validate(t)), ("S23", "", "quadruped", []))
+        rows = rows_of(t)
+        self.assertEqual({k: v["state"] for k, v in rows.items()}, {k: "pass" for k in self.base})
+        self.assertEqual({k: v["value"] for k, v in rows.items()}, {k: v["value"] for k, v in self.base.items()})
+        self.assertEqual(V1.template("quadruped")["genome"]["loci"], [])                                   # the template stays bare when S22 grows genes
+
+    def test_a_template_asked_for_in_words_it_cannot_say_refuses_in_plain_words(self):
+        with self.assertRaises(ValueError) as e:
+            V1.new_from_template("S23", "biped")
+        self.assertIn("no template yet", str(e.exception))
+        with self.assertRaises(ValueError):
+            V1.new_from_template("Moss", "quadruped")
+
+    def test_wb_new_writes_the_file_and_never_over_one(self):
+        import io, contextlib
+        from wb import cli
+        out = os.path.join(BODY, "scratch", "t_new")
+        shutil.rmtree(out, ignore_errors=True)
+        os.makedirs(out)
+        try:
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = cli.main(["new", "S23", "--plan", "quadruped", "--from", "template", "--out", out])
+            self.assertEqual(rc, 0, buf.getvalue())
+            self.assertEqual(json.load(open(os.path.join(out, "S23.json")))["id"], "S23")
+            self.assertEqual(buf.getvalue().count("PASS"), 9)
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err):
+                rc = cli.main(["new", "S23", "--plan", "quadruped", "--from", "template", "--out", out])
+            self.assertEqual(rc, 2)
+            self.assertIn("never overwrites", err.getvalue())
+        finally:
+            shutil.rmtree(out, ignore_errors=True)
+
+    def test_a_neck_wider_than_the_chest_fails_with_the_checks_own_words(self):
+        r = rows_of(broken(**{"spine.loft.head_profile.R_scale": 1.2, "spine.loft.head_profile.neck_ratio": 0.8}))["head.neck"]
+        self.assertEqual(r["state"], "fail")
+        self.assertIn("of the chest, limit 0.85", r["measure"])
+        self.assertGreaterEqual(r["value"], 0.85)
+
+    def test_the_head_must_stand_over_the_neck_band(self):
+        from checks import quad as QD
+        self.assertEqual(QD.QUAD["dome_overhang"], 0.12)
+        self.assertGreater(float(self.base["head.neck"]["measure"].split("overhangs by ")[1].split(" H")[0]), 0.12)
+
+    def test_a_tail_that_grows_toward_its_tip_fails_the_taper(self):
+        r = rows_of(broken(**{"spine.tail.root": 0.1, "spine.tail.tip_r": 0.14}))["tail.taper"]
+        self.assertEqual(r["state"], "fail")
+        self.assertIn("Radius grows", r["measure"])
+        self.assertEqual(self.base["tail.taper"]["value"], 0.0)
+
+    def test_the_quadrupeds_tail_may_be_heavier_than_the_bipeds_and_has_a_limit_of_its_own(self):
+        from checks import biped as BP, quad as QD
+        self.assertGreater(QD.QUAD["tail_side_area"], BP.BIPED["tail_side_area"])
+        self.assertGreater(QD.QUAD["tail_root"], 0.47)
+        self.assertEqual(self.base["tail.size"]["limit"], QD.QUAD["tail_side_area"])
+        big = rows_of(broken(**{"spine.tail.length": 2.4, "spine.tail.root": 0.8, "spine.tail.tip_r": 0.15}))["tail.size"]
+        self.assertEqual(big["state"], "fail")
+        self.assertGreater(big["value"], QD.QUAD["tail_side_area"])
+        mid = rows_of(broken(**{"spine.tail.length": 2.0, "spine.tail.root": 0.8, "spine.tail.tip_r": 0.15}))["tail.size"]
+        self.assertGreater(mid["value"], BP.BIPED["tail_side_area"])                                   # a tail the biped could not carry
+        self.assertEqual(mid["state"], "pass")
+
+    def test_a_file_may_only_tighten_the_tails_limit(self):
+        r = rows_of(broken(**{"limits": {"tail_side_area": 0.1, "balance_margin": 0.3}, "spine.tail.length": 1.4, "spine.tail.root": 0.6, "spine.tail.tip_r": 0.1}))
+        self.assertEqual((r["tail.size"]["state"], r["tail.size"]["limit"]), ("fail", 0.1))
+        self.assertEqual((r["balance"]["state"], r["balance"]["limit"]), ("fail", 0.3))
+
+    def test_a_long_heavy_tail_fails_the_mesh_in_the_tail_range_and_the_caps_are_not_judged(self):
+        r = rows_of(broken(**{"spine.tail.length": 1.8, "spine.tail.root": 0.6, "spine.tail.tip_r": 0.1}))["mesh"]
+        self.assertEqual((r["state"], r["extra"]["bad_ranges"], r["extra"]["fail"]), ("fail", ["tail"], "Thin or bent faces in tail"))
+        self.assertLess(self.base["mesh"]["extra"]["ranges"]["tail"]["nonplanar"], 0.3)                    # the tip's grid cap is 0.64 and is left out
+        self.assertEqual(sorted(self.base["mesh"]["extra"]["ranges"]), ["back", "head", "neck", "seat", "tail"])
+
+    def test_forelegs_at_the_back_of_the_back_put_the_centre_of_mass_off_the_soles(self):
+        r = rows_of(broken(**{"skeleton.chest_at": 1.0}))["balance"]
+        self.assertEqual(r["state"], "fail")
+        self.assertIn("outside the soles", r["measure"])
+        self.assertEqual(r["extra"]["fail"], "Tips over at the front")
+
+    def test_every_new_check_draws_its_proof_on_the_plans_own_frame(self):
+        for k in ("head.neck", "tail.taper", "tail.size", "balance", "mesh"):
+            p = self.base[k]["proof"]
+            self.assertTrue(p["svg"].count("<") > 5, k)
+            self.assertEqual(p["az"], 90 if k != "mesh" else 90)
+
+    def test_the_biped_still_runs_its_own_measures(self):
+        from checks import quad as QD
+        self.assertFalse(QD.is_quad(type("C", (), dict(spec=json.load(open(os.path.join(BODY, "species_v1", "S20.json")))))()))
 
 
 class TestRender(unittest.TestCase):
@@ -415,7 +535,7 @@ class TestRender(unittest.TestCase):
         j = self.srv.submit("S22", "check", dict(stage="all"), None)
         self.srv.wait(j, 120)
         self.assertEqual(j.state, "done", j.error)
-        self.assertEqual({r["id"]: r["state"] for r in j.result["rows"]}, dict(schema="pass", express="pass", ranges="pass", verts="pass"))
+        self.assertEqual({r["id"]: r["state"] for r in j.result["rows"]}, dict(schema="pass", express="pass", ranges="pass", **{"head.neck": "pass", "tail.taper": "pass", "tail.size": "pass", "balance": "pass"}, verts="pass", mesh="pass"))
 
 
 if __name__ == "__main__":

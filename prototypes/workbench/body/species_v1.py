@@ -439,3 +439,29 @@ def to_internal(doc, check=True):
 
 def is_v1(spec):
     return isinstance(spec, dict) and spec.get("schema") == SCHEMA_ID
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------- plan templates
+TEMPLATES = {"quadruped": "templates/quadruped.json"}          # a plan's template: a bare base that passes every check (the biped's is S20 itself until its plan module, chunk 26)
+
+
+def template(plan):
+    """The plan's template file as it is stored, or None when the plan has none yet."""
+    rel = TEMPLATES.get(plan)
+    if rel is None:
+        return None
+    import json
+    import os
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "species_v1", rel)) as fh:
+        return json.load(fh)
+
+
+def new_from_template(species_id, plan):
+    """A new species file from the plan's template: the same bare base with its own id and no name yet. Raises ValueError with the words to say when it cannot."""
+    if not re.fullmatch(r"S\d\d", str(species_id)):
+        raise ValueError(f"'{species_id}' is not a species id: S and two digits")
+    doc = template(plan)
+    if doc is None:
+        raise ValueError(f"the {plan} plan has no template yet")
+    doc["id"], doc["name"] = species_id, ""
+    return doc

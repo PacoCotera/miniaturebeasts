@@ -205,6 +205,9 @@ def c_head_attach(ctx):
        limit=dict(text="neck under 0.85 of the head and of the chest; the back of the head overhangs the neck by 0.12 H or more", value=BIPED["neck_ratio"]), az=90,
        play="My head needs a neck to sit on.")
 def c_head_neck(ctx):
+    from . import quad as QD
+    if QD.is_quad(ctx):
+        return QD.head_neck(ctx)
     import s20p2 as P2, s20p3 as P3
     n = P3.head_numbers(ctx.body)
     V, F, at, fp2 = ctx.level(2)
@@ -268,6 +271,9 @@ def c_head_size(ctx):
        limit=dict(text="the radius only grows from the stalk to the root; the root is at least 1.8 × the stalk", value=0), az=90,
        play="My tail likes to get thinner at the end.")
 def c_tail_taper(ctx):
+    from . import quad as QD
+    if QD.is_quad(ctx):
+        return QD.tail_taper(ctx)
     G = ctx.G
     s = np.arange(G.bulb[0] + 0.02, G.s_root, 0.01)
     r = G.tail_radius(s)
@@ -299,9 +305,12 @@ def c_tail_taper(ctx):
 # 7 ---------------------------------------------------------------------------------------------------------------------------------------------------------- tail.size
 @check(id="tail.size", name="Tail size", fail="Tail too big for the body", stage="cage", version=1, part=["tail"], fields=["spine.tail.length", "spine.tail.root", "spine.tail.tip_r"],
        rule=R("2026-11-02 18:26", "The S20 tail is too big for its legs and body. The tail is scaled to the creature: root about 0.45 of the seat radius, a thin stalk, the bulb about eye size, side area at most about 1/4 of the trunk."),
-       limit=dict(text="side area at most 1/4 of the trunk · root at most 0.47 of the seat radius", value=BIPED["tail_side_area"]), az=90,
+       limit=dict(text="side area at most 1/4 of the trunk · root at most 0.47 of the seat radius (a quadruped's heavier tail: 2/5 and 0.8)", value=BIPED["tail_side_area"]), az=90,
        play="Any more tail and I'd tip over backwards!")
 def c_tail_size(ctx):
+    from . import quad as QD
+    if QD.is_quad(ctx):
+        return QD.tail_size(ctx)
     G, b = ctx.G, ctx.body
     V, F, at, fp = ctx.level(1)
     F = np.array(F, int)
@@ -333,6 +342,9 @@ def c_tail_size(ctx):
        limit=dict(text="the centre of mass inside the soles, at least 15 % of the sole length in front of the heel (the type; the extremes are checked in chunk 8)", value=BIPED["balance_margin"]), az=90,
        play="Whoa, I need my feet under me.")
 def c_balance(ctx):
+    from . import quad as QD
+    if QD.is_quad(ctx):
+        return QD.balance(ctx)
     import s20balance as BL
     m = BL.measure(ctx.body)
     lim_ = lim(ctx, "balance_margin", BIPED["balance_margin"], "max")
@@ -483,6 +495,9 @@ def c_normals(ctx):
        rule=R("2026-11-01 13:40", "'You're smashing blobs.' The mesh body is to be box-modelled as one continuous cage grown from the skeleton: one continuous all-quad surface with edge flow from torso into limbs."),
        limit=dict(text="edge-length, face-area and planarity ratios by spine range inside the species file's mesh_quality", value=None), az=32, mode="wire")
 def c_mesh(ctx):
+    from . import quad as QD
+    if QD.is_quad(ctx):
+        return QD.mesh(ctx)
     import mquality as Q
     b = ctx.body
     V, F, attr, fp = Q.full_topology(b)

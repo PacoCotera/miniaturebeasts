@@ -4,7 +4,7 @@ import hashlib
 import json
 
 REGISTRY = []                  # the checks, in the order the drawer lists them
-VERSION_SALT = "checks-9"      # bump to re-measure everything
+VERSION_SALT = "checks-10"      # bump to re-measure everything
 
 
 class Check:
@@ -18,7 +18,7 @@ class Check:
                     play=self.play, az=self.az, mode=self.mode, sources=list(self.sources))
 
 
-QUAD_CHECKS = ("schema", "express", "ranges", "verts")          # what judges a quadruped's bare base today: its file, its ranges and its vertex count
+QUAD_CHECKS = ("schema", "express", "ranges", "head.neck", "tail.taper", "tail.size", "balance", "verts", "mesh")          # what judges a quadruped's bare base: its file, its ranges, the head, neck and chest, the tail, balance over four soles, the vertex count and the mesh by range
 
 
 def check(**kw):
