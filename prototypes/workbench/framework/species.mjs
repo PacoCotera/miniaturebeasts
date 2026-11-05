@@ -353,8 +353,10 @@ function finishFrame(frame, spec) {
 }
 
 // --- individuals ---------------------------------------------------------------------------------
-// Catalogue 11 retired the feather antenna: a saved genome that carries it reads as curl (the one place an old copy is mapped).
+// Catalogue 12 retired the feather antenna: a saved genome that carries it reads as curl (the one place an old copy is mapped).
 export const readGenome = (g) => g?.loci?.["anatomy.antenna-form"]?.includes("feather") ? { ...g, loci: { ...g.loci, "anatomy.antenna-form": g.loci["anatomy.antenna-form"].map((a) => (a === "feather" ? "curl" : a)) } } : g;
+// 11 was never a pin on this line (it is the genome-string pin on the studio line); anything stamped 11 in the short window before the bump to 12 reads as 12.
+export const readPin = (v) => (v === 11 ? 12 : v);
 export const openLoci = (frame) => frame.loci.filter((l) => l.kind !== "locked");
 
 // The type specimen is the plan's default body: every open part switch on, every open locus at the
