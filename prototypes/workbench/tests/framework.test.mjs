@@ -633,8 +633,18 @@ test("flapRest has three values; the Peplos sails its flaps; E9b holds for the s
   const head = built.scene.nodes.find((n) => n.id === "head"), headH = 2 * head.radii[2];
   const body = built.scene.nodes.filter((n) => n.role === "primary-region"), top = Math.max(...body.map((b) => b.center[2] + b.radii[2]));
   const wingTop = Math.max(...wings.flatMap((w) => w.corners.map((c) => c[2])));
-  assert.ok(wingTop - top <= 1.6 * headH, `the sail stands ${((wingTop - top) / headH).toFixed(2)} head heights over the back (cap 1.6)`);
-  assert.ok(wingTop - top >= headH, "and stands at least a head high");
+  const fore = wings.filter((w) => w.id.startsWith("wing-fore")), hind = wings.filter((w) => w.id.startsWith("wing-hind"));
+  assert.equal(fore.length + hind.length, 4);
+  const top2 = (ws) => Math.max(...ws.flatMap((w) => w.corners.map((c) => c[2]))) - top;
+  assert.ok(Math.abs(top2(fore) / headH - 2.1) <= 0.1, `the fore sail stands ${(top2(fore) / headH).toFixed(2)} head heights over the back (the signed plate: 2.1)`);
+  assert.ok(top2(fore) <= 2.3 * headH, "and within the cap of 2.3");
+  assert.ok(top2(hind) / headH >= 0.15 && top2(hind) / headH <= 0.5, `the hind pair stands low, ${(top2(hind) / headH).toFixed(2)} head heights over the back (the plate: 0.3)`);
+  // the hind blade is splayed: it points back and a little up (13 degrees in the plate), and its tip lies out past the fore blade's rear edge
+  const hw = hind[0], mid = (a, b) => a.map((v, i) => (v + b[i]) / 2), tip = mid(hw.corners[2], hw.corners[3]), rootC = mid(hw.corners[0], hw.corners[1]); // the blade's axis: root edge to tip edge
+  const tilt = (Math.atan2(tip[2] - rootC[2], tip[0] - rootC[0]) * 180) / Math.PI; // the back is +x (the head at -x)
+  assert.ok(tilt > 5 && tilt < 30, `the hind blade points back and a little up (${tilt.toFixed(0)} degrees, the plate: 13)`);
+  assert.ok(tip[0] - Math.max(...fore.flatMap((w) => w.corners.map((c) => c[0]))) > 0.3 * headH, "the hind tip reaches out past the fore blade (the plate: 0.4 head heights)");
+  assert.ok(Math.abs(tip[1]) > Math.abs(rootC[1]), "and splays outward from the flank");
   // one closed silhouette in the side view: the four blades rasterised together are one connected piece
   const quads = wings.map((w) => w.corners.map((c) => [c[0], c[2]])), xs = quads.flat().map((p) => p[0]), zs = quads.flat().map((p) => p[1]);
   const x0 = Math.min(...xs), x1 = Math.max(...xs), z0 = Math.min(...zs), z1 = Math.max(...zs), N = 160, cell = new Set();
@@ -650,6 +660,19 @@ test("flapRest has three values; the Peplos sails its flaps; E9b holds for the s
     assert.ok(!wings.some((w) => inQuad(w.corners.map(proj), proj(e.center))), `the sail covers an eye at yaw ${yaw}`);
   }
   assert.ok(RULES.some((r) => r.id === "E9b"));
+});
+
+test("asleep (pose sleep or curl) the sail plan lays its flaps flat like a roof; awake it keeps the sail", () => {
+  const f = frameOf("S12"), g = typeSpecimen(f), awake = buildIndividual(f, g), roofTop = (b) => { const body = b.scene.nodes.filter((x) => x.role === "primary-region"), t = Math.max(...body.map((x) => x.center[2] + x.radii[2])); return Math.max(...b.scene.nodes.filter((n) => n.part === "flap").flatMap((w) => w.corners.map((c) => c[2]))) - t; };
+  for (const pose of ["sleep", "curl"]) {
+    const b = buildIndividual(f, g, { pose }); assert.equal(b.validation.status, "valid", pose);
+    assert.equal(b.scene.nodes.filter((n) => n.part === "flap").length, 4);
+    assert.ok(roofTop(b) < 0, `${pose}: the flaps lie under the back line`);
+    assert.ok(roofTop(awake) > 0, "awake: the sail stands over the back");
+  }
+  assert.equal(buildIndividual(f, g, { pose: "stand" }).scene.nodes.find((n) => n.id === "wing-fore-L").corners.length, awake.scene.nodes.find((n) => n.id === "wing-fore-L").corners.length);
+  const bird = frameOf("S09"), bg = typeSpecimen(bird);
+  assert.deepEqual(buildIndividual(bird, bg, { pose: "sleep" }).scene.nodes.filter((n) => n.part === "flap").map((n) => n.corners), buildIndividual(bird, bg).scene.nodes.filter((n) => n.part === "flap").map((n) => n.corners), "a plan that already rests flat is unchanged");
 });
 
 test("the sleep rest stays flat: the flat value still builds the moth's roof over the back", () => {
