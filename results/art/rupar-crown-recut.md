@@ -1,0 +1,3 @@
+# Rupar (C08) pod crown recut: merge note
+
+The art director found the C08 row cut sliced the lowest leaves flat (iwq 38de1e42, ad-final C1); recut so only the stem stub is cleared, foot and scale unchanged. Rerun with the old cut reproduced the shipped layers at 0 levels. Changed: 12 pod and opened-cap crown layers, 2 shelf crown layers, index.json; rack crowns are hand-drawn and unaffected. No golden changed. Builder gates 164/2 and 168/1, each failure a known load-timing golden (pods, read the stamp moment) that matched alone. Guard ok; masters 1827 placed, 0 problems. Lead looked at 1x. Merged as c66897982.
