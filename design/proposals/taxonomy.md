@@ -91,7 +91,7 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 
 | Code | Name | Diet | Signature look | Habit or ability | Clan: what members share; feel | Character, in a line |
 | --- | --- | --- | --- | --- | --- | --- |
-| S01 | Loika | fruit | charcoal, cream belly, orange eyes, three-leaf crest | calms wary creatures | C01 Lophessa: a leaf crest and a flat face, charcoal; the friendly garden-pond hoppers | gentle and curious, a little shy |
+| S01 | Loika | fruit | charcoal, cream belly, orange eyes, three-leaf crest | calms wary creatures | C01 Lophessa: a leaf crest and a flat face; charcoal, of meadow and pond; the friendly garden-pond hoppers | gentle and curious, a little shy |
 | S02 | Untuva | fruit | a round fluff under a cap of three flaps | sniffs out buried pods; sheds after a full meal | C02 Kausida: a cap of flaps, coral, radial bodies; soft, round, sleepy | a sleepy glutton nothing startles |
 | S03 | Tuikis | dew | a gold glow at the tail in shade and fog, a pointed crest | digs narrow burrows; lights fog and the Shade | C03 Stilbera: a glowing tail and a crest, lagoon; small lights of wood and rock | a brave little torchbearer |
 | S04 | Hiljan | fruit | upright pointed ears, short muzzle, long tail, striped coat | creeps up without startling anything | C04 Lathreta: upright pointed ears, striped fur; quiet stalkers of the grass | aloof at first, then devoted |
