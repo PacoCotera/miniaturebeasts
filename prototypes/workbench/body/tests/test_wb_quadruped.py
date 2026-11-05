@@ -501,10 +501,9 @@ class TestPlanChecks(unittest.TestCase):
         self.assertIn("a 0.00, d 0.00", self.base["head.attach"]["measure"])
         self.assertEqual((QD.LEG_REACH, QD.LEG_PINCH), (0.7, 0.8))
 
-    def test_the_tail_is_quadrupeds_provisional_limit_says_so(self):
+    def test_the_quadrupeds_tail_limit_and_its_text(self):
         from checks import quad as QD
-        self.assertEqual((QD.QUAD["tail_side_area"], QD.QUAD["tail_side_area_provisional"]), (0.4, True))
-        self.assertTrue(self.base["tail.size"]["extra"]["provisional"])
+        self.assertEqual(QD.QUAD["tail_side_area"], 0.4)
         self.assertEqual(self.base["tail.size"]["extra"]["limit_text"], "Side area at most 0.40 of the trunk \u00b7 root at most 0.80 of the seat radius")
 
     def test_forelegs_at_the_back_of_the_back_put_the_centre_of_mass_off_the_soles(self):

@@ -10,7 +10,6 @@ from .biped import BIPED, SW, f2, lim
 QUAD = dict(
     neck_ratio=BIPED["neck_ratio"],            # the biped's: the neck band under 0.85 of the head and of the chest (spec 8.2)
     dome_overhang=BIPED["dome_overhang"],      # the biped's: the head's ball stands 0.12 H or more over the neck band
-    tail_side_area_provisional=True,           # the game designer confirms the 0.40 later: it stays as it is until then
     tail_side_area=0.4,                        # the quadruped's heavier tail: its side area at most 2/5 of the trunk's (the biped's is 1/4); the plan's band corner (length 2.4, root 0.8, tip 0.15) measures 0.44, so the limit binds before the bands do
     tail_root=0.8,                             # the quadruped's tail root, at most 0.8 of the seat radius (the biped's 0.47); the plan's band in species_v1
     balance_margin=BIPED["balance_margin"],    # the rule asks the centre of mass 15 % of the sole polygon's shorter side inside its edge
@@ -106,17 +105,17 @@ def head_neck(ctx):
     cx = P(_at(ctx, s[inn]))[0]
     col = PR.RED if bad else PR.SAGE
     # the radii plotted along the spine, under the figure
-    px0, py0, pw, ph = 80, 692, 300, 44
+    px0, py0, pw, ph = 48, 694, 204, 42
     xs = lambda u: px0 + pw * u / s[-1]
     ys = lambda v: py0 + ph - ph * v / (1.05 * max(float(r.max()), 1e-9))
     pts = [(xs(a), ys(b)) for a, b in zip(s, r)]
     mark = lambda i, name, v, c, dy=-12, anchor="middle": [PR.dot(xs(s[i]), ys(r[i]), 7, c), PR.label(xs(s[i]) + {"end": -8, "start": 8, "middle": 0}[anchor], ys(r[i]) + dy, f"{name} {v:.2f}", c, anchor, 16, bg=False)]
     out = [PR.ring(nx[0], (nx[1] + cx[1]) / 2, 44, col, 4), PR.panel(24, 628, 560, 140), PR.poly(pts, PR.INK, 3),
-           PR.label(px0, 658, "Side radius along the spine, head to tail (H)", PR.INK, "start", 17, bg=False),
+           PR.label(40, 652, "Side radius along the spine, head to tail (H)", PR.INK, "start", 17, bg=False),
            *mark(ih, "head", Wh, PR.INK, -12, "middle"), *mark(inn, "neck", Wn, PR.RED if wide else PR.INK, 26), *mark(ic, "chest", Wc, PR.INK, -12, "start"),
-           PR.label(px0 + pw + 22, 690, f"Neck {r_head:.2f} of the head", PR.RED if wide else PR.INK, "start", 17, bg=False),
-           PR.label(px0 + pw + 22, 718, f"and {r_chest:.2f} of the chest", PR.RED if wide else PR.INK, "start", 17, bg=False),
-           PR.label(px0 + pw + 22, 752, f"Head overhangs the neck by {dome:.2f} H", PR.RED if flat else PR.INK, "start", 17, bg=False)]
+           PR.label(290, 696, f"Neck {r_head:.2f} of the head", PR.RED if wide else PR.INK, "start", 16, bg=False),
+           PR.label(290, 722, f"and {r_chest:.2f} of the chest", PR.RED if wide else PR.INK, "start", 16, bg=False),
+           PR.label(290, 752, f"Head overhangs the neck by {dome:.2f} H", PR.RED if flat else PR.INK, "start", 16, bg=False)]
     return row("fail" if bad else "pass", f2(max(r_head, r_chest)), lim_, meas, dict(mode="clay", az=90, svg="".join(out)), dict(fail=("Back of the head is flat" if flat and not wide else None)))
 
 
@@ -181,7 +180,7 @@ def tail_size(ctx):
     if big_root:
         out.append(PR.label(40, 758, f"Root {root_ratio:.2f} of the seat radius, limit {root_lim:.2f}", PR.RED, "start", 18, bg=False))
     meas = f"Side area {share:.3f} of the trunk, limit {limit:.2f}" + (f"; root {root_ratio:.2f} of the seat radius, limit {root_lim:.2f}" if big_root else "")
-    return row("fail" if bad or big_root else "pass", f2(share), limit, meas, dict(mode="clay", az=90, svg="".join(out)), dict(share=share, tail_px=a_tail, trunk_px=a_trunk, root_ratio=root_ratio, provisional=QUAD["tail_side_area_provisional"], limit_text=f"Side area at most {limit:.2f} of the trunk · root at most {root_lim:.2f} of the seat radius"))
+    return row("fail" if bad or big_root else "pass", f2(share), limit, meas, dict(mode="clay", az=90, svg="".join(out)), dict(share=share, tail_px=a_tail, trunk_px=a_trunk, root_ratio=root_ratio, limit_text=f"Side area at most {limit:.2f} of the trunk · root at most {root_lim:.2f} of the seat radius"))
 
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------- mesh
@@ -222,9 +221,9 @@ def mesh(ctx):
         c0 = P(V[np.unique(F[loft & inside])].mean(0))[0]
         out.append(PR.ring(c0[0], c0[1], 46, PR.RED, 4))
     out.append(PR.panel(24, 628, 560, 148))
-    out.append(PR.label(36, 652, "Worst ratio in each range (limit)", PR.INK, "start", 17, bg=False))
+    out.append(PR.label(36, 650, "Worst ratio in each range (limit)", PR.INK, "start", 17, bg=False))
     for i, (nm, r) in enumerate(rows_.items()):
-        y = 678 + 24 * i
+        y = 676 + 20 * i
         out.append(PR.label(36, y, nm, PR.RED if nm in bad else PR.INK, "start", 18, bg=False))
         out.append(PR.label(104, y, f"along {r['along']:.1f} ({BIPED['ratio_along']:.0f})  around {r['around']:.1f} ({BIPED['ratio_around']:.0f})  area {r['area']:.1f} ({BIPED['area_ratio']:.0f})  bend {r['nonplanar']:.2f} ({BIPED['nonplanar']:.1f})", PR.INK, "start", 15, bg=False))
     meas = (f"{bad[0]}: " + ", ".join(f"{WORD.get(k, k)} {rows_[bad[0]][k]:.2f}" for k in rows_[bad[0]]["bad"])) if bad else "Edge, area and planarity ratios are inside the limits in every range"
