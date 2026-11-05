@@ -46,7 +46,8 @@ test("the registry carries the sixteen species of the workbench at frame version
   const s03v5 = frameFor(3, 5), claws = s03v5.heritable.find((l) => l.id === "anatomy.contact-terminal-form");
   assert.deepEqual(claws.pool, ["rounded", "pad", "wedge"], "the Tuikis at version 5: its claws drawn from the three digging forms (T-20261016-194)");
   assert.equal(claws.alleles.length, 6, "the copy still indexes the catalogue's six forms, so a legacy hoof, webbed or root copy stamps and reads");
-  assert.deepEqual(FRAMES_LIST.filter((f) => f.version === 5).map((f) => f.id), ["S03"]);
+  assert.deepEqual(FRAMES_LIST.filter((f) => f.version === 5).map((f) => f.id).sort(), ["S03", "S12"], "the Tuikis and the Peplos are at version 5");
+  assert.equal(byName("S12").version, 5); assert.equal(byName("S12", 4).version, 4);
   assert.equal(byName("S03").version, 5); assert.equal(byName("S03", 4).version, 4);
   for (const f of v4) if (f.id !== "S01") { const old = frameFor(f.species, 3); assert.deepEqual(old.heritable.map((l) => [l.id, l.bits]), f.heritable.map((l) => [l.id, l.bits]), `${f.id}: same loci and bits at v4`); }
   assert.equal(byName("S01", 2).version, 2);
@@ -99,7 +100,7 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   const rows = [];
   for (const id of ROSTER) {
     const f = byName(id), wf = stationFrame(id);
-    assert.equal(f.version, id === "S03" ? 5 : 4);
+    assert.equal(f.version, id === "S03" || id === "S12" ? 5 : 4);
     const blended = f.heritable.filter((l) => l.values);
     for (const l of blended) {
       assert.ok(l.alleles.length + BLEND_STEPS + 1 <= 2 ** STEP_BITS, `${l.id}: its names and steps fit ${STEP_BITS} bits`);
@@ -243,4 +244,22 @@ test("C6: the stamp code is the stamp's own bytes as text: it round-trips for ev
   het.loci["appearance.marking-switch"] = ["off", "on"];
   const d1 = decodeStampCode(stationStampCode(f1, het, ["coat"]));
   assert.deepEqual(d1.genome.copies["appearance.marking-switch"], ["off", "on"]);
+});
+
+test("a Peplos born now has a stamp code at frame 5; an old frame-4 Peplos still reads back as frame 4", () => {
+  const fr = stationFrame("S12"), all = fr.chapters.map((c) => c.id);
+  assert.equal(fr.frameVersion, 5);
+  const now = podGenome(fr, 11), code = stationStampCode(fr, now, all);
+  assert.ok(code, "a new Peplos has a stamp code (it was null before frame 5 was carried)");
+  const d = decodeStampCode(code);
+  assert.ok(d.ok, d.detail); assert.equal(d.genome.species, 12); assert.equal(d.genome.version, 5);
+  const old = { ...podGenome(fr, 12), frameVersion: 4 }, oldCode = stationStampCode(fr, old, all);
+  assert.ok(oldCode, "a frame-4 Peplos still stamps");
+  const o = decodeStampCode(oldCode);
+  assert.ok(o.ok, o.detail); assert.equal(o.genome.species, 12); assert.equal(o.genome.version, 4);
+  const sg4 = stampGenome(fr, old, all), sg5 = stampGenome(fr, now, all);
+  assert.equal(Object.keys(sg4.copies).length, frameFor(12, 4).heritable.length);
+  assert.equal(Object.keys(sg5.copies).length, frameFor(12, 5).heritable.length);
+  for (const [id, c] of Object.entries(sg4.copies)) assert.deepEqual(o.genome.copies[id], c, `${id}: the frame-4 copies read back as written`);
+  for (const [id, c] of Object.entries(sg5.copies)) assert.deepEqual(d.genome.copies[id], c, `${id}: the frame-5 copies read back as written`);
 });

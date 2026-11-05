@@ -17,13 +17,16 @@ export const RULES = [
   { id: "E7", rule: "Crest and ear parts are soft sheets: a pointed or leaf crown is a leaf sheet, never a pyramid; a rounded crown is an ellipsoid; ears are sheets.", where: "rig: crown, ears", reason: "spikes read as armour; Pip's crest is three leaves" },
   { id: "E9", rule: "A wing pair at rest is part of the body outline: each blade lies tucked along its flank from the shoulder ridge down to the body's widest line and back to the body's end (a little past it at most), the hind pair under the fore pair; never a plane standing out from the thorax, never a plank reaching past the abdomen.", where: "rig: flaps at rest (plans with flapRest flat); the controls and the painting prompt's plan line", reason: "a plane reads as a board with legs in the portrait and the token, and a wing that stands out from the body is a wing the painter re-lays or spreads; a wing inside the body outline leaves nothing to spread" },
   { id: "E8", rule: "Pool bounds: an open head-ratio trait never offers the tiny alleles outside the turtle's clan (C11); an open leg-bulk trait on a legged plan never offers fine legs.", where: "frames: species.mjs pools", reason: "the rig's clamps keep the shape, but a pool should not offer what the clamp will undo: the player would see no difference" },
-  { id: "E9b", rule: "A wing pair held in the sail rest stands inside one closed silhouette above the back: both pairs together (the hind pair behind the fore, the two overlapping), no taller over the back than about 1.6 times the head height, and never covering the near eye in the side or the three-quarter view.", where: "rig: flaps at rest (plans with flapRest sail); the controls and the painting prompt's plan line", reason: "a plane standing out from the thorax reads as a board (E9); a sail that is a closed shape over the back reads as one wing, and a sail that hides the eye hides the face (chibi R17)" },
+  { id: "E9b", rule: "A wing pair held in the sail rest stands inside one closed silhouette above the back: both pairs in one piece (the hind pair low behind the fore, the two overlapping at the root), no taller over the back than about 2.3 times the head height (the signed plate stands at 2.1; the fore pair held up together, the hind pair lower and splayed back and a little up), and never covering the near eye in the side or the three-quarter view.", where: "rig: flaps at rest (plans with flapRest sail); the controls and the painting prompt's plan line", reason: "a plane standing out from the thorax reads as a board (E9); a sail that is a closed shape over the back reads as one wing, and a sail that hides the eye hides the face (chibi R17)" },
 ];
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
 // E9b
-export const SAIL_HEIGHT = 1.3, SAIL_HEIGHT_CAP = 1.6;
+// Measured on the signed sail-wing plate (304 x 312 stand): the fore top stands 2.1 head heights over the back; the hind blade
+// points back 13 degrees above level, its top 0.3 head heights over the back, its tip 0.4 head heights out past the fore blade, 0.65 head heights wide.
+export const SAIL_HEIGHT = 2.1, SAIL_HEIGHT_CAP = 2.3;
+export const HIND_TOP = 0.3, HIND_OUT = 0.4, HIND_WIDTH = 0.65, HIND_TILT = 13, HIND_SPLAY = 0.2;
 // E1
 export const REGION_LENGTH_MAX = 2.0, REGION_LENGTH_MIN = 0.85;
 export function clampRegionLength(radii) {

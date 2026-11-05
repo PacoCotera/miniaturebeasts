@@ -50,7 +50,7 @@ export function planCode(p, extras = {}) {
 // float (afloat, no ground contact), stand (a fan plan stands on its up axis: the plant's bulb with
 // leaves on top, the wisp's vertical ribbon; plans.json standingPlans), flapPairs (1 or 2 pairs on the
 // flap region) and flapRest ("raised", a V that reads in every view; "flat", broadside over the
-// back like a moth at rest, which is also the sleep pose; or "sail", both pairs held upright and together over the back; plans.json twoPairFlapPlans).
+// back like a moth at rest; or "sail", the fore pair held up over the back and the hind pair low and splayed, which lies flat as a roof in the sleep and curl pose; plans.json twoPairFlapPlans).
 export function planFacts(key, extras = {}) {
   const p = parsePlanKey(key);
   const depth = DEPTH[p.segments], radial = p.symmetry === "radial", fan = p.layout === "fan";

@@ -15,7 +15,7 @@
 // survivor set: anything the plan carries is built; what cannot be built throws, and validate.mjs
 // reports it. Nothing is repaired.
 import { add, sub, mul, unit, norm, dot, cross, IDENTITY, localVector, worldPoint, localPoint, frameAlong, rotateFrameZ, lerp, newNode, ringSolid, ellipsoid, segment, sheet, sweep, surfaceAlong, addFace, envelope, sharedWitness, rootOn, longitudinalWeight, inflate } from "./geometry.mjs";
-import { clampRegionLength, clampHead, clampEye, clampMuzzle, clampLeg, clampFoot, BEAK_CAP, MUZZLE_DEPTH_FLOOR, SAIL_HEIGHT, SAIL_HEIGHT_CAP } from "./envelope.mjs"; // the cute envelope: rules E1–E7
+import { clampRegionLength, clampHead, clampEye, clampMuzzle, clampLeg, clampFoot, BEAK_CAP, MUZZLE_DEPTH_FLOOR, SAIL_HEIGHT, SAIL_HEIGHT_CAP, HIND_TOP, HIND_OUT, HIND_WIDTH, HIND_TILT, HIND_SPLAY } from "./envelope.mjs"; // the cute envelope: rules E1–E7
 
 const EYE_RIM = "#f1eddc", PUPIL = "#273036"; // v1 fixed inks (COMPOSITIONAL_CONTENT.surfaces.fixedEyes)
 
@@ -373,23 +373,31 @@ export function buildBody(resolved) {
       // One pair held up in a V (reads in every view), or, on a plan with flapRest "flat", one or two
       // pairs laid broadside over the back like a moth at rest: the fore pair ahead, the hind pair
       // behind and shorter, both sloping down and back from the thorax.
-      const flat = plan.extras?.flapRest === "flat", sail = plan.extras?.flapRest === "sail", pairs = plan.extras?.flapPairs ?? 1;
+      const asleep = resolved.pose === "sleep" || resolved.pose === "curl"; // the sleep and curl pose lays a sail's flaps flat, like a roof
+      const flat = plan.extras?.flapRest === "flat" || (plan.extras?.flapRest === "sail" && asleep), sail = plan.extras?.flapRest === "sail" && !asleep, pairs = plan.extras?.flapPairs ?? 1;
+      let foreRear = null; // the fore blade's rearmost corner (world X; the back is +X), where the hind tip is measured from
       for (let pair = 0; pair < pairs; pair++) for (const side of [-1, 1]) {
         const u = pairs === 2 ? (pair === 0 ? -0.15 : 0.35) : 0.15;
         if (sail) {
-          // E9b: held upright and together over the back, one closed silhouette: the fore pair ahead, the hind pair behind it
-          // and a little lower, each blade standing in the side plane just clear of its twin, leaning back, its top a bit
-          // narrower than its foot. Both pairs overlap (the hind foot starts inside the fore blade); the fore top stands 1.3
-          // head heights over the highest line of the back (SAIL_HEIGHT, at most SAIL_HEIGHT_CAP), and the front edge starts behind the head.
-          const k = pair === 0 ? 1 : 0.88, rx = owner.radii[0];
+          // E9b, after the signed plate: the fore pair held up together over the back, leaning back a little, its top
+          // SAIL_HEIGHT head heights over the highest line of the back (at most SAIL_HEIGHT_CAP); the hind pair lower and
+          // splayed, a blade pointing back and a little up from the thorax, its top HIND_TOP head heights over the back and
+          // its tip out past the fore blade. The two overlap at the root, so the four blades are one closed silhouette; the
+          // front edge starts behind the head, so the near eye is never covered.
+          const rx = owner.radii[0];
           const rt = rootOn(owner, worldPoint(owner, [u * rx, 0, 0]), localVector(owner.frame, [0, side * 0.22, 0.97]), 0.05 * L, envOf(owner));
           const rootP = rt.surface, hh = 2 * headR[2];
-          const foot = Math.max(0.9 * chord * k, 0.62 * rx), backTop = Math.max(...serialRegions.map((r) => r.center[2] + r.radii[2])), H = (backTop - (rootP[2] - 0.02 * L)) + Math.min(SAIL_HEIGHT, SAIL_HEIGHT_CAP) * hh * k, lean = 0.22 * H;
-          const x0 = pair === 0 ? Math.max(rootP[0] - 0.36 * foot, head.center[0] + headR[0] + 0.08 * foot) : rootP[0] - 0.5 * foot;
-          const x1 = pair === 0 ? x0 + foot : rootP[0] + 0.5 * foot;
-          const y = rootP[1] + side * 0.03 * L, z0 = rootP[2] - 0.02 * L;
+          const backTop = Math.max(...serialRegions.map((r) => r.center[2] + r.radii[2])), y = rootP[1] + side * 0.03 * L, z0 = rootP[2] - 0.02 * L;
           const wing = newNode(`wing-${pairs === 2 ? (pair === 0 ? "fore-" : "hind-") : ""}${side < 0 ? "L" : "R"}`, "thin-surface", owner.id, "second"); wing.part = "flap"; wing.opacity = flapOpacity;
-          sheet(wing, [[x0, y, z0], [x1, y, z0], [x1 + lean - 0.14 * foot, y, z0 + H], [x0 + lean + 0.06 * foot, y, z0 + H]], [0, side, 0], thickness);
+          if (pair === 0) {
+            const foot = Math.max(0.9 * chord, 0.62 * rx), H = (backTop - z0) + Math.min(SAIL_HEIGHT, SAIL_HEIGHT_CAP) * hh, lean = 0.22 * H;
+            const x0 = Math.max(rootP[0] - 0.36 * foot, head.center[0] + headR[0] + 0.08 * foot), x1 = x0 + foot; foreRear = Math.max(x1, x1 + lean - 0.14 * foot, x0 + lean + 0.06 * foot);
+            sheet(wing, [[x0, y, z0], [x1, y, z0], [x1 + lean - 0.14 * foot, y, z0 + H], [x0 + lean + 0.06 * foot, y, z0 + H]], [0, side, 0], thickness);
+          } else {
+            const foot = Math.max(0.9 * chord * 0.88, 0.62 * rx), xa = rootP[0] - 0.3 * foot, len = Math.max((foreRear ?? rootP[0]) + HIND_OUT * hh - xa, 0.5 * foot), wid = HIND_WIDTH * hh, rise = len * Math.tan(HIND_TILT * Math.PI / 180), splay = HIND_SPLAY * len;
+            const zTop = backTop + HIND_TOP * hh, zBase = zTop - wid - rise, ye = y + side * splay;
+            sheet(wing, [[xa, y, zBase], [xa, y, zBase + wid], [xa + len, ye, zTop], [xa + 0.92 * len, ye, zTop - wid]], [0, side, 0], thickness);
+          }
           push(wing, owner, rt.inner);
           continue;
         }

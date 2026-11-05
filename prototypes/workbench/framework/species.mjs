@@ -413,8 +413,9 @@ export function checkGenome(frame, genome) {
   return problems;
 }
 
-export function buildIndividual(frame, genome) {
+export function buildIndividual(frame, genome, opts = {}) {
   const resolved = resolveIndividual(frame, genome);
+  if (opts.pose) resolved.pose = opts.pose; // "sleep" or "curl": a sail's flaps lie flat like a roof
   resolved.species = frame.species.id; // the kind, for the envelope's caps by kind
   const scene = buildBody(resolved);
   const validation = validateBody(scene);
