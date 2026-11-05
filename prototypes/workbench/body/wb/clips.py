@@ -4,14 +4,16 @@ idle   the tail's slow sway, the ears' small lagging sway, the head's small nod,
 import math
 
 CLIPS = {"walk": 6, "idle": 6}
+QUAD_CLIPS = {"walk": 12, "breathe": 6, "sit": 1, "curl": 1}          # the quadruped's own (qrig.py): a four-beat walk of twelve frames (each foot is in the air for three of them), breathing, a sit and a curl
 SIZE = (304, 312)
 V = 1                                                           # bump when a clip's poses change: every strip is drawn again
 
 
-def frames(clip):
-    if clip not in CLIPS:
-        raise ValueError(f"clip is one of {', '.join(CLIPS)}")
-    return CLIPS[clip]
+def frames(clip, plan=None):
+    table = QUAD_CLIPS if plan == "quadruped" else CLIPS
+    if clip not in table:
+        raise ValueError(f"clip is one of {', '.join(table)}")
+    return table[clip]
 
 
 def period(spec, clip):
