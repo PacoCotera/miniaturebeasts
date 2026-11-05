@@ -1296,3 +1296,35 @@ function shadeCells(G, seed, biome) {
   return shade;
 }
 // ---- end generator 4 ----
+
+// ---- tree kinds (generator 4 and later) ----
+// Every trunk in a place has a kind, drawn from its region kind's list by the hash of the seed, the place and the tile, so it never changes.
+//   Meadows ('mixed'): round-crown, one trunk in three a fruit tree; a wood place in a Meadows region draws from the Woods' list.
+//   Woods and Tallwood: broadleaf, one trunk in six a hollow trunk. Hills: round-crown. The Shade (a place in G.shade): its column.
+//   Cliffs, Marsh, Thickets, Highpools and Lakes have no kind yet: their trunks stay the built tree. Generators 1 to 3 stay as they were.
+// A fruit tree carries a bush's shake ('b' feature) and a hollow trunk carries a hole ('n' feature), on the trunk's own tile; the tile and every
+// other feature of the place are untouched, so a place a save has walked keeps all it had. Called on a finished layout.
+export function treeKindAt(G, seed, lay, i) {
+  if (!G || (G.gen || 1) < 4 || lay.cave) return null;
+  const biome = G.biome || 'mixed', h = hash(seed, 'tree', lay.key, i) % 6;
+  if (G.shade && G.shade[lay.cell]) return 'shade';
+  if (biome === 'woods' || biome === 'tallwood' || (biome === 'mixed' && lay.land === L.WOOD)) return h === 0 ? 'hollow' : 'broad';
+  if (biome === 'mixed') return h < 2 ? 'fruit' : 'round';
+  if (biome === 'downs') return 'round';
+  return null;
+}
+export function placeTrees(G, seed, lay) {
+  if (lay.trees) return lay;
+  lay.trees = {};
+  for (let i = 0; i < PW * PH; i++) {
+    if (lay.tiles[i] !== T.TRUNK) continue;
+    const kind = treeKindAt(G, seed, lay, i); if (!kind) continue;
+    const x = i % PW, y = (i / PW) | 0, t = { kind, seed: 1 + hash(seed, 'trs', lay.key, i) % 3 };
+    const fk = kind === 'fruit' ? 'b' : kind === 'hollow' ? 'n' : null;
+    if (fk && Object.values(DIRS).some(([dx, dy]) => { const X = x + dx, Y = y + dy; return X >= 0 && Y >= 0 && X < PW && Y < PH && lay.reach[Y * PW + X]; })) {
+      const f = { id: 't' + fk + i, kind: fk, x, y, tree: kind }; lay.feats.push(f); t.fid = f.id;
+    }
+    lay.trees[i] = t;
+  }
+  return lay;
+}

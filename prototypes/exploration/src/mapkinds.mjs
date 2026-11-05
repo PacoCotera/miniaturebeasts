@@ -3,18 +3,36 @@
 // The page calls these in buildMapPB: cell() draws a whole cell and returns true for the cells it owns (false: the page draws it as before),
 // foam() is the shore colour of a water cell, and post() runs after the second pass (the Thickets' tangles, joined across cell edges).
 import { L } from "./world.mjs";
+import { mapTuft } from "./trees48.mjs";
 
 const CELL = 26;
 const sp = (pb, px, py, R, n, cols) => { for (let i = 0; i < n; i++) pb.set(px + R.int(CELL), py + R.int(CELL), R.pick(cols)); };
 const mix = (a, b) => (((a * 2654435761) ^ (b * 40503)) >>> 0);
+const blitS = (pb, s, x, y) => { for (let j = 0; j < s.h; j++) for (let i = 0; i < s.w; i++) { const v = s.p[j * s.w + i]; if (v >= 0) pb.set(x - s.ax + i, y - s.ay + j, v); } };
+const hollowAt = (G, c, i) => mix(G.seed || 0, c * 7 + i) % 6 === 0;   // one tuft in six is a hollow trunk (the same share as at 48 px)
 
 // ---- Tallwood: one big old crown per cell, standing apart, on a darker floor with ferns
-function tallCell(pb, px, py, R, C) {
+function tallCell(pb, G, c, px, py, R, C) {
   pb.rect(px, py, CELL, CELL, C.forest); sp(pb, px, py, R, 16, [C.pine, C.leaf, C.pine]);
   for (let i = 0; i < 3; i++) { const fx = px + 2 + R.int(CELL - 4), fy = py + 3 + R.int(CELL - 5); pb.set(fx, fy, C.leaf); pb.set(fx - 1, fy + 1, C.leaf); pb.set(fx + 1, fy + 1, C.grass); }
   const x = px + 11 + R.int(5), y = py + 10 + R.int(4);
+  if (hollowAt(G, c, 0)) { blitS(pb, mapTuft('hollow', {}, C), x, y); return; }
   pb.ell(x + 2, y + 5, 10, 6.5, C.ink); pb.rect(x, y + 6, 2, 3, C.soil);
   pb.ell(x - 4, y, 6.4, 6, C.forest, { sh: [C.leaf, C.pine] }); pb.ell(x + 4, y - 1, 6.6, 6.2, C.forest, { sh: [C.grass, C.pine] }); pb.ell(x, y - 4, 5, 4.2, C.leaf, { sh: [C.grass, C.forest] });
+}
+
+// ---- the Woods: today's cell to the bit, except that a hollow trunk may stand in a tuft's place; the Shade: four teal columns on a dark moss floor
+function woodsCell(pb, G, c, px, py, R, C) {
+  if (G.shade && G.shade[c]) {
+    pb.rect(px, py, CELL, CELL, C.pine); sp(pb, px, py, R, 22, [C.tealD, C.ink, C.tealD, C.forest]);
+    for (let i = 0; i < 4; i++) { const tx = px + 6 + (i % 2) * 13 + R.int(3), ty = py + 4 + (i >> 1) * 11 + R.int(3); blitS(pb, mapTuft('shade', {}, C), tx, ty); }
+    return 'flat';   // under its closed roof the Shade takes no level tint: it stays the darkest wood at every height
+  }
+  pb.rect(px, py, CELL, CELL, C.leaf); sp(pb, px, py, R, 14, [C.forest, C.grass]);
+  for (let i = 0; i < 3; i++) { const tx = px + 5 + R.int(CELL - 10), ty = py + 5 + R.int(CELL - 10);
+    if (hollowAt(G, c, i)) { blitS(pb, mapTuft('hollow', {}, C), tx, ty); continue; }
+    pb.ell(tx, ty + 2, 5.4, 4.6, C.pine); pb.ell(tx, ty, 5, 4.8, C.grass, { sh: [C.sprout, C.forest] }); }
+  return true;
 }
 
 // ---- Tarns: grey rock, stony moor turf with heather, moss and sedge round the tarns, dark cold water with a stone rim, crouch pines
@@ -94,10 +112,12 @@ export function mapHooks() {
     cell(pb, G, c, px, py, l, R, C) {
       if (G.biome === 'tarns') return tarnsCell(pb, G, c, px, py, l, R, C, L);
       if (l !== L.WOOD) return false;
-      if (G.biome === 'tallwood') { tallCell(pb, px, py, R, C); return true; }
+      if (G.biome === 'tallwood') { tallCell(pb, G, c, px, py, R, C); return true; }
+      if (G.biome === 'woods') return woodsCell(pb, G, c, px, py, R, C);
       if (G.biome === 'thickets') { thicketsGround(pb, px, py, R, C); return true; }
       return false;
     },
+    ownsShade: G => G.biome === 'woods',   // the Shade's cells are drawn teal by cell(), not stepped dark
     foam: (G, c, C) => G.biome === 'tarns' ? C.rockL : null,
     post(pb, G, X) { if (G.biome === 'thickets') thicketsPost(pb, G, X); },
   };
