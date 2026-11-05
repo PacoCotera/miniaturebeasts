@@ -9,7 +9,7 @@
  },
  "taxonomy": {
   "code": "S10",
-  "resembles": "an otter",
+  "resembles": "a long barrel-shaped body with a flat round snout",
   "moves": "swims, slides",
   "habitat": "pond, fast water",
   "gate": "opens fast water",
@@ -81,7 +81,7 @@
  "signature": {
   "anchor": "russet",
   "second": "peach",
-  "feature": "long sleek bodies and webbed paws; the water players",
+  "feature": "small ears and a broad tail; the water players",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.muzzle-presence": "on",
@@ -89,7 +89,7 @@
    "anatomy.axial-tail-presence": "on"
   },
   "finish": {
-   "anatomy.contact-terminal-form": "webbed",
+   "anatomy.contact-terminal-form": "pad",
    "anatomy.auricular-form": "rounded",
    "growth.auricular-length-ratio": "short",
    "growth.axial-tail-width-ratio": "broad",
@@ -1273,11 +1273,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "webbed",
-    "webbed"
+    "pad",
+    "pad"
    ],
    "looks": [
-    "webbed"
+    "pad"
    ],
    "guard": "rig: terminal.form",
    "nature": "look",
@@ -2251,8 +2251,8 @@
      "barrel"
     ],
     "anatomy.contact-terminal-form": [
-     "webbed",
-     "webbed"
+     "pad",
+     "pad"
     ],
     "appearance.fur-length": [
      "short",
@@ -2336,12 +2336,12 @@
   "bounds": {
    "min": [
     -1.1799808931447713,
-    -0.505322101803853,
-    0.03954824999999995
+    -0.4448321118038529,
+    0
    ],
    "max": [
     1.7093667263935655,
-    0.505322101803853,
+    0.44483211180385296,
     1.325993032738246
    ]
   },
@@ -2538,8 +2538,8 @@
    "barrel"
   ],
   "anatomy.contact-terminal-form": [
-   "webbed",
-   "webbed"
+   "pad",
+   "pad"
   ],
   "appearance.fur-length": [
    "short",

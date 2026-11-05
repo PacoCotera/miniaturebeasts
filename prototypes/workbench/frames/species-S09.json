@@ -9,7 +9,7 @@
  },
  "taxonomy": {
   "code": "S09",
-  "resembles": "a big bird",
+  "resembles": "an upright body on two legs, wings tucked in",
   "moves": "strides, soars",
   "habitat": "meadow, rock field",
   "gate": "Weather expeditions",
@@ -79,7 +79,7 @@
  "signature": {
   "anchor": "cobalt",
   "second": "butter",
-  "feature": "wings and a beak; big birds of open sky",
+  "feature": "a beak and a pointed crest; watchers of the open sky",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.beak-presence": "on",
@@ -89,7 +89,7 @@
   },
   "finish": {
    "anatomy.crown-form": "pointed",
-   "growth.wing-span-ratio": "long",
+   "growth.wing-span-ratio": "short",
    "growth.wing-chord-ratio": "wide",
    "appearance.flap-translucency": "opaque",
    "growth.support-drop-ratio": "long",
