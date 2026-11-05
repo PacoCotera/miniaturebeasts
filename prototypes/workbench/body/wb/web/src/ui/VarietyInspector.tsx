@@ -24,7 +24,7 @@ function Often({ v, l }: { v: Variety; l: VLook }) {
     <div className={s.sec}>
       <p className={s.h}>How often</p>
       <Bar label="Sheet" value={(100 * l.count) / v.n} text={`${l.count}/${v.n}`} tip={`${l.count} of ${v.n} on this sheet`} />
-      <Bar label="Wild" value={l.wild} text={wildText(l.wild)} tip={`${wildText(l.wild)} of ${v.wild_n.toLocaleString('en-US')} wild pods`} />
+      <Bar label="Wild" value={l.wild} text={wildText(l.wild)} tip={`${wildText(l.wild)} of ${v.wild_n.toLocaleString('en-US')} wild ${v.wild_n === 1 ? 'pod' : 'pods'}`} />
       <Bar label="Cross" value={l.cross} text={`${crossCount(l)}/${l.cross_of}`} tip={`${crossCount(l)} of ${l.cross_of} young: the type crossed with a sample parent`} />
     </div>
   )

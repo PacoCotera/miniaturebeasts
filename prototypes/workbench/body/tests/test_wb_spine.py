@@ -98,6 +98,17 @@ class TestView(unittest.TestCase):
         self.assertEqual(len(zs), 1)                         # a horizontal spine
         self.assertGreater(v["path"][0][0], v["path"][-1][0])  # the head at the front, +x
 
+    def test_no_knob_is_named_by_a_code_key(self):
+        import re
+        code = re.compile(r"^[a-z][a-z0-9]*(_[A-Za-z0-9]+)+$|^[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)+$|^R_scale$")
+        S22 = json.load(open(os.path.join(BODY, "species_v1", "S22.json")))
+        for doc in (S20, S22):
+            for k in SP.spine_view(doc)["knobs"]:
+                self.assertTrue(k["label"], k["name"])
+                self.assertIsNone(code.match(k["label"]), k["label"])
+                self.assertNotIn("_", k["label"])
+        self.assertEqual([k["label"] for k in SP.spine_view(S20)["knobs"]], ["Neck width", "Head size", "Chest swell", "Seat fullness"])
+
     def test_a_plan_with_no_spine_view_answers_nothing(self):
         self.assertIsNone(SP.spine_view(dict(S20, plan="serpent")))
 

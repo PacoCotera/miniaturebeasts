@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { Species } from '../lib/api'
 import { fmtNum, fmtVal, getAt, snap, clamp, valText } from '../lib/forms'
-import { along, ends, knobValue, placeKnobLabels, pointAt, project, spineOne, textWidth, type Box, type Placed, type SpineKnob, type SpineRange, type SpineView, type V3 } from '../lib/spine'
+import { along, ends, knobName, knobValue, placeKnobLabels, pointAt, project, spineOne, textWidth, type Box, type Placed, type SpineKnob, type SpineRange, type SpineView, type V3 } from '../lib/spine'
 import { useField, useLive } from '../lib/useField'
 import s_ from './SpineOverlay.module.css'
 
@@ -37,7 +37,7 @@ export function SpineOverlay({ species, id, sel, scale, editable, go }: { specie
   ]
   const knobAt = (k: SpineKnob) => { const value = val(k.ptr, k.value), h = (value - k.value) / k.gain; const [x, y] = project(c, [k.at[0] + k.axis[0] * h, k.at[1] + k.axis[1] * h, k.at[2] + k.axis[2] * h]); return { k, value, x, y } }
   const kn = v.knobs.map(knobAt)
-  const placed = placeKnobLabels(kn.map(({ k, value, x, y }) => ({ id: k.id, x, y, text: fmtVal(value, k.unit), name: species.labels?.[k.id] ?? k.name, selected: sel === k.part })), blocked, px, { w: c.w, h: c.h })
+  const placed = placeKnobLabels(kn.map(({ k, value, x, y }) => ({ id: k.id, x, y, text: fmtVal(value, k.unit), name: knobName(k, species.labels), selected: sel === k.part })), blocked, px, { w: c.w, h: c.h })
   return (
     <div className={s_.wrap} style={{ ['--k' as string]: scale }}>
       <svg className={s_.svg} viewBox={`0 0 ${c.w} ${c.h}`} aria-label="The spine: its ranges and profile knobs" role="group">
@@ -101,7 +101,7 @@ function KnobHandle({ species, id, view, k, value, scale, editable, go, on, plac
   const { dragging, bind } = useDrag(scale, () => value, (dx, dy, v0, fine) => f.set(knobValue(v0, along(view.camera, k.axis, dx, dy) * (fine ? 0.1 : 1), k.gain, k.band, Math.max(0.001, Math.round(step * 1000) / 1000))), () => go({ sel: k.part }, true))
   const h = (value - k.value) / k.gain                                      // how far the handle has moved along its axis from where the file put it
   const [x, y] = project(view.camera, [k.at[0] + k.axis[0] * h, k.at[1] + k.axis[1] * h, k.at[2] + k.axis[2] * h])
-  const lab = species.labels?.[k.id] ?? k.name
+  const lab = knobName(k, species.labels)
   return (
     <g className={s_.hand} data-kind="knob" data-on={on || undefined} data-drag={dragging || undefined} data-disabled={!editable || undefined} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}
       role="slider" tabIndex={editable ? 0 : -1} aria-label={lab} aria-valuemin={k.band[0]} aria-valuemax={k.band[1]} aria-valuenow={value} aria-valuetext={valText(value, k.unit)} aria-disabled={!editable}

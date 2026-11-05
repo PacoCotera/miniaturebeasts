@@ -159,7 +159,7 @@ def spine_view(doc):
         part = KNOB_RANGE[k["name"]]
         ptr = f"/spine/loft/head_profile/{k['name']}"
         band = V1.PLANS[plan]["prof_" + k["name"]]
-        kn.append(dict(k, part=part, id=f"spine.loft.head_profile.{k['name']}", ptr=ptr, value=float(doc["spine"]["loft"]["head_profile"][k["name"]]), band=list(band), unit=FM.spec_at(f"spine.loft.head_profile.{k['name']}").get("unit") or ""))
+        kn.append(dict(k, part=part, id=f"spine.loft.head_profile.{k['name']}", ptr=ptr, value=float(doc["spine"]["loft"]["head_profile"][k["name"]]), band=list(band), unit=FM.spec_at(f"spine.loft.head_profile.{k['name']}").get("unit") or "", label=V1.label_of(f"spine.loft.head_profile.{k['name']}")))
     # tangents at the range ends, for dragging a boundary along the spine
     for r in ranges:
         j = min(len(u) - 1, max(1, int(round(r["hi"] / STEP))))

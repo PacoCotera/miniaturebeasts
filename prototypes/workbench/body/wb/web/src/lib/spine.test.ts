@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { along, ends, knobValue, placeKnobLabels, pointAt, project, screenAxis, textWidth, type Camera, type V3 } from './spine'
+import { along, ends, knobName, knobValue, placeKnobLabels, pointAt, project, screenAxis, textWidth, type Camera, type V3 } from './spine'
 
 // The hero camera at az 90: the creature's left side, x running across the frame.
 const cam: Camera = { az: 90, el: 10, w: 608, h: 624, ppH: 190, centre: [-0.35, 0, 1.3], right: [0, 0, 0] as V3, up: [0, 0, 1] as V3 }
@@ -52,5 +52,23 @@ describe('the knob labels', () => {
   it('puts a lone knob\'s value to its left', () => {
     const [p] = placeKnobLabels([{ id: 'a', x: 300, y: 300, text: '1', selected: false }], [], 1, frame)
     expect(p.value.anchor).toBe('end')
+  })
+})
+
+describe('the knob names', () => {
+  const keys = ['R_scale', 'neck_ratio', 'chest_front', 'rump_gain']
+  const code = /^[a-z][a-z0-9]*(_[a-zA-Z0-9]+)+$|^[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)+$|^R_scale$/
+  it('says every knob in words, whether or not the server sent a label', () => {
+    for (const name of keys) {
+      const k = { name, id: `spine.loft.head_profile.${name}` }
+      const lab = knobName(k)
+      expect(lab).not.toBe('')
+      expect(lab).not.toMatch(code)
+      expect(lab).not.toContain('_')
+    }
+  })
+  it('prefers the label the server sent, then the schema label', () => {
+    expect(knobName({ name: 'neck_ratio', id: 'x', label: 'Neck width' })).toBe('Neck width')
+    expect(knobName({ name: 'neck_ratio', id: 'x' }, { x: 'Width of the neck' })).toBe('Width of the neck')
   })
 })

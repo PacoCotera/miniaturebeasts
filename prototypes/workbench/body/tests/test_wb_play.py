@@ -8,6 +8,7 @@ import species_v1 as V1
 BODY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRATCH = os.path.join(BODY, "scratch", "t_play")
 S20 = json.load(open(os.path.join(BODY, "species_v1", "S20.json")))
+S22 = json.load(open(os.path.join(BODY, "species_v1", "S22.json")))
 
 
 def with_play(**kw):
@@ -65,9 +66,8 @@ class TestSurface(unittest.TestCase):
         self.assertEqual([a["id"] for a in tail["axes"]], ["length", "tip"])
 
     def test_the_quadruped_declares_its_toys_against_the_plan_interface(self):
-        d = copy.deepcopy(S20)
-        d["plan"] = "quadruped"
-        self.assertEqual([t["id"] for t in PL.toys_of(d)], ["body", "ears", "tail", "paint", "pattern", "diff", "grow"])
+        d = copy.deepcopy(S22)
+        self.assertEqual([t["id"] for t in PL.toys_of(d)], ["diff", "grow"])                    # S22 has no genes yet: only the pods' two toys
         self.assertFalse(PL.BUILT["quadruped"])
         r = PL.unbuilt(d)
         self.assertTrue(r["unbuilt"] and r["builds"] == 0 and r["toys"] == {})
@@ -178,10 +178,7 @@ class TestServer(unittest.TestCase):
         tight = copy.deepcopy(S20)
         tight["id"], tight["name"], tight["limits"] = "S21", "Tuliko, tight tail", {"tail_side_area": 0.2}
         S.write_spec(os.path.join(cls.sp, "S21.json"), tight)
-        quad = copy.deepcopy(S20)
-        quad["id"], quad["name"], quad["plan"] = "S22", "", "quadruped"
-        quad["spine"]["head_attach"].update(a=0.0, d=0.0)
-        S.write_spec(os.path.join(cls.sp, "S22.json"), quad)
+        S.write_spec(os.path.join(cls.sp, "S22.json"), copy.deepcopy(S22))
         cls.srv = SV.Server(os.path.join(SCRATCH, "home"), [cls.sp], proxy_workers=1, plush_workers=0)
         cls.srv.start()
 
@@ -261,9 +258,9 @@ class TestServer(unittest.TestCase):
         self.assertEqual(j.state, "done")
         self.assertTrue(j.result["unbuilt"] and j.result["builds"] == 0)
         st, t = self.req("/api/species/S22/toys")
-        self.assertEqual((t["built"], len(t["toys"])), (False, 7))
+        self.assertEqual((t["built"], len(t["toys"])), (False, 2))
         st, ref = self.req("/api/species/S22/play", "POST", dict(toy="tail", axis="length", to=1))
-        self.assertEqual((st, ref["why"]), (409, "unbuilt"))
+        self.assertEqual(st, 400)                                                              # S22 has no genes yet: no toy moves its body, only the pods' two settings
 
 
 class TestCli(unittest.TestCase):
