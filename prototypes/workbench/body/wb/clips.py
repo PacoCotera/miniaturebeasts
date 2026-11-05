@@ -9,15 +9,28 @@ SIZE = (304, 312)
 V = 1                                                           # bump when a clip's poses change: every strip is drawn again
 
 
+def plan_of(spec):
+    """The plan a species file is on: `quadruped`, else the biped's."""
+    return "quadruped" if isinstance(spec, dict) and spec.get("plan") == "quadruped" else "biped"
+
+
+def table(plan=None):
+    """The clips a plan has and their frame counts: the render set's clip table."""
+    return QUAD_CLIPS if plan == "quadruped" else CLIPS
+
+
 def frames(clip, plan=None):
-    table = QUAD_CLIPS if plan == "quadruped" else CLIPS
-    if clip not in table:
-        raise ValueError(f"clip is one of {', '.join(table)}")
-    return table[clip]
+    t = table(plan)
+    if clip not in t:
+        raise ValueError(f"clip is one of {', '.join(t)}")
+    return t[clip]
 
 
 def period(spec, clip):
     """Seconds of one loop."""
+    if plan_of(spec) == "quadruped":
+        import qrig as QR
+        return float(QR.PERIOD[clip])
     m = (spec or {}).get("motion") or {}
     if clip == "walk":
         return float((m.get("walk") or {}).get("period", 0.9))
@@ -47,6 +60,6 @@ def pose_at(R, spec, clip, i, n=None):
 
 def timings(spec, clip, ms):
     """What the page needs to play a strip: frames, the loop's seconds, each frame's seconds, and the drawing time per frame."""
-    n = frames(clip)
+    n = frames(clip, plan_of(spec))
     p = period(spec, clip)
     return dict(clip=clip, frames=n, period=p, frame_s=round(p / n, 4), size=list(SIZE), ms=ms)

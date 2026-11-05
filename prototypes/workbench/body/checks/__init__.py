@@ -18,7 +18,7 @@ class Check:
                     play=self.play, az=self.az, mode=self.mode, sources=list(self.sources))
 
 
-QUAD_CHECKS = ("schema", "express", "ranges", "joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh")          # what judges a quadruped's bare base: its file, its ranges, the head, neck and chest, the tail, balance over four soles, the vertex count and the mesh by range
+QUAD_CHECKS = ("schema", "express", "ranges", "joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh", "midline", "breath", "waddle")          # what judges a quadruped's bare base: its file, its ranges, the head, neck and chest, the tail, balance over four soles, the vertex count and the mesh by range
 
 
 def check(**kw):
@@ -34,7 +34,7 @@ def by_id(i):
 
 def stages(stage):
     """The stage names a request covers: file, cage, extremes, or all (file then cage: the extremes stage builds about fifty cages, so it runs when asked)."""
-    return {"file": ("file",), "cage": ("cage",), "extremes": ("extremes",), "all": ("file", "cage")}[stage]
+    return {"file": ("file",), "cage": ("cage",), "rig": ("rig",), "coat": ("coat",), "extremes": ("extremes",), "all": ("file", "cage", "rig", "coat")}[stage]
 
 
 def version_id(stage="all"):

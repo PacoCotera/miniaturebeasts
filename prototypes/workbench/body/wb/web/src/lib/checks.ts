@@ -4,7 +4,7 @@ import { dottedPath } from './edits'
 
 // The check rows the server measured (spec 9) and what the page says about each: one place for the counts, so the pill and the drawer are the same number (studio-ui 8.3).
 export type Proof = { mode: string; az: number; key: string; ready: boolean; path?: string | null }
-export type CheckRow = { id: string; state: 'pass' | 'warn' | 'fail'; value: number | string | null; limit: number | string | null; measure: string; stage: string; version: number; proof: Proof | null; extra?: { fail?: string | null; parts?: string[]; field?: string; limit_text?: string } }
+export type CheckRow = { id: string; state: 'pass' | 'warn' | 'fail'; value: number | string | null; limit: number | string | null; measure: string; stage: string; version: number; proof: Proof | null; extra?: { fail?: string | null; parts?: string[]; field?: string; limit_text?: string; shown?: { value: string; limit: string } } }
 export type CheckMeta = { id: string; name: string; fail: string; stage: string; rule: { date: string; words: string }; limit: { text: string; value: unknown }; part: string[]; fields: string[]; play: string | null; az: number; mode: string }
 export type ChecksState = { hash: string; fresh: boolean; rows: CheckRow[]; counts: { total: number; fail: number; warn: number; need: number; passed: number } }
 
@@ -41,12 +41,14 @@ export const ORDER = { fail: 0, warn: 1, pass: 2 } as const
 export const fmtVal = (v: number | string | null) => (v === null || v === undefined ? '–' : typeof v === 'number' ? (Number.isInteger(v) ? v.toLocaleString('en-US') : String(Math.round(v * 1e4) / 1e4)) : v)
 
 // The Value and Limit columns on the count checks: "0 against 0" says nothing, so those rows say what was measured (words.md ck.col.*). Every other row shows its number as it is.
-export function shownValue(r: Pick<CheckRow, 'id' | 'value'>): string {
+export function shownValue(r: Pick<CheckRow, 'id' | 'value'> & { extra?: CheckRow['extra'] }): string {
+  if (r.extra?.shown) return r.extra.shown.value
   if (r.id === 'tail.taper' && typeof r.value === 'number') return r.value > 0.01 ? `bump ${fmtVal(r.value)} H` : 'no bump'
   if (r.id === 'mesh' && typeof r.value === 'number') return r.value === 0 ? 'all ranges' : r.value === 1 ? '1 range' : `${r.value} ranges`
   return fmtVal(r.value)
 }
-export function shownLimit(r: Pick<CheckRow, 'id' | 'limit'>): string {
+export function shownLimit(r: Pick<CheckRow, 'id' | 'limit'> & { extra?: CheckRow['extra'] }): string {
+  if (r.extra?.shown) return r.extra.shown.limit
   if ((r.id === 'tail.taper' || r.id === 'mesh') && (r.limit === 0 || r.limit === '0')) return 'none'
   return fmtVal(r.limit)
 }

@@ -348,7 +348,7 @@ def build_quadruped(doc, genome="type", stage="base"):
                   calls={}, parts={k: int(v) for k, v in body.parts.items()}, balance=H._norm(body.ctx.get("balance", {})))
 
 
-def check_rows(doc, stages=("file", "cage")):
+def check_rows(doc, stages=("file", "cage", "rig", "coat")):
     """The rows of the file and cage checks on a species file, built in this process (no server, no pictures): what `wb new` and the framework tests read."""
     from checks import run as crun
     from checks.ctx import Ctx
@@ -356,13 +356,16 @@ def check_rows(doc, stages=("file", "cage")):
     rows = []
     if "file" in stages:
         rows += crun("file", Ctx(spec, doc=doc))
-    if "cage" in stages:
+    if any(s_ in stages for s_ in ("cage", "rig", "coat")):
         r = build(doc, "type", "base")
         mesh = proxy_mesh(r.body, 1)
         if is_quadruped(spec):
             import quadruped as Q
             mesh["frame"] = Q.frame(spec)
-        rows += crun("cage", Ctx(spec, r.body, dict(vertices_l1=len(mesh["V"])), mesh, doc=doc))
+        cx = Ctx(spec, r.body, dict(vertices_l1=len(mesh["V"])), mesh, doc=doc)
+        for st in ("cage", "rig", "coat"):
+            if st in stages:
+                rows += crun(st, cx)
     return rows
 
 

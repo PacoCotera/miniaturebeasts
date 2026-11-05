@@ -43,6 +43,11 @@ describe('the Value and Limit columns on the count checks', () => {
     expect(shownValue({ id: 'mesh', value: 3 })).toBe('3 ranges')
     expect(shownLimit({ id: 'mesh', limit: 0 })).toBe('none')
   })
+  it('says what the server measured on the rows that count nothing worth showing (joins, head on the spine, shoulders and hips, normals, the rig and coat)', () => {
+    const extra = { shown: { value: '0.83 · 0.83', limit: '0.8' } }
+    expect(shownValue({ id: 'joins', value: 0, extra })).toBe('0.83 · 0.83')
+    expect(shownLimit({ id: 'joins', limit: 0, extra })).toBe('0.8')
+  })
   it('leaves every other row as its number', () => {
     expect(shownValue({ id: 'verts', value: 3330 })).toBe('3,330')
     expect(shownLimit({ id: 'verts', limit: 3500 })).toBe('3,500')

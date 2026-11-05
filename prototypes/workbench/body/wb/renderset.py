@@ -121,6 +121,40 @@ class Subject:
         return dict(V=Vw, F=np.asarray(M["Fw"], int), part=M["part"])
 
 
+class QuadSubject:
+    """One genome of a quadruped: its cage, the rig on the level-1 mesh and the mesh in a pose (clips from qrig). It has no coat yet, so only the Workbench styles draw it."""
+    quad = True
+    plan = "quadruped"
+
+    def __init__(self, spec, genome, scratch):
+        import quadruped as Q
+        import qrig as QR
+        self.spec, self.genome, self.scratch = spec, genome, scratch
+        self.r = F.build(spec, genome, "base")
+        self.b, self.c = self.r.body, self.r.c
+        self.QR = QR
+        self.rig, self.mesh = QR.rig_of(self.b, 1)
+        self.frame = Q.frame(F.internal(spec))
+        self._frames = {}
+
+    def posed(self, clip=None, i=0):
+        """The mesh at rest, or in frame i of one of the quadruped's clips (qrig.clip_pose)."""
+        key = (clip, i)
+        if key not in self._frames:
+            pose = self.QR.Pose() if clip in (None, "calm", "anchor") else self.QR.clip_pose(self.rig, clip, i / self.QR.FRAMES[clip])
+            V, _ = self.rig.skin(pose)
+            self._frames[key] = dict(self.mesh, V=V, frame=self.frame)
+        return self._frames[key]
+
+    def welded(self, M=None):
+        return M or self.posed()
+
+
+def make_subject(spec, genome, scratch):
+    from wb import clips as CL
+    return (QuadSubject if CL.plan_of(spec) == "quadruped" else Subject)(spec, genome, scratch)
+
+
 # ---------------------------------------------------------------- the Workbench styles (clay, silhouette)
 class Proxy:
     def __init__(self, scratch, pr=None):
@@ -147,6 +181,8 @@ class Proxy:
         """The clay in the stand pose, as the plush and the silhouette are: the posed shipped mesh, with the face (flat eyes and mouth) placed on its rest surface and carried with the pose by the displacement of the nearest vertex."""
         from wb import clayface as CF
         M = M or subject.posed()
+        if getattr(subject, "quad", False):
+            return M                                                       # a quadruped's clay has no face yet
         rest = dict(V=np.asarray(M["Vw"], float), F=np.asarray(M["Fw"], int))
         cx = subject.b.ctx
         fv, ff = CF.face_mesh(cx["T"], cx["spec"], dict(subject.r.c.get("coat") or {}), rest)
@@ -268,7 +304,7 @@ def plush_clip(subject, clip, size, outdir, scratch, on_frame=None):
     """The plush frames of a clip, each on its own pose of the loop, with one contact shadow for all of them (laid from frame 0, where both feet are down: a shadow that jumped with every lifted foot would read as a flicker). Returns the straight-alpha frames
     and the milliseconds each took. `on_frame(i, n, ms)` is called after each."""
     from wb import clips as CL
-    n = CL.frames(clip)
+    n = CL.frames(clip, getattr(subject, "plan", None))
     ppH = camera(size, 32)[0]
     frames, ms, sh = [], [], None
     for i in range(n):
@@ -303,7 +339,7 @@ def clay_clip(px, subject, clip, size, outdir):
     """The clay frames of a clip (the stand's camera, the clay's face on, the neutral shade): straight-alpha RGBA, and the milliseconds each took."""
     from wb import clips as CL
     frames, ms = [], []
-    for i in range(CL.frames(clip)):
+    for i in range(CL.frames(clip, getattr(subject, "plan", None))):
         f, m = clay_clip_frame(px, subject, clip, i, size, outdir)
         frames.append(f)
         ms.append(m)
@@ -504,7 +540,7 @@ def main():
     rows = [r for r in RS.expand(spec) if r["state"] == "ready" and (not only or r["output"] in only) and (not styles or r["style"] in styles)]
     owed = [r for r in RS.expand(spec) if r["state"] == "owed"]
     res = []
-    typ = Subject(spec, "type", scratch)
+    typ = make_subject(spec, "type", scratch)
     # Workbench styles first (Cycles resets the scene)
     px = Proxy(scratch)
     solve_frames(px, typ, scratch, sorted({tuple(r["size"]) for r in rows if r["size"]}))

@@ -12,7 +12,8 @@ SCRATCH = os.path.join(BODY, "scratch", "t_checks")
 # words.md 5.12: id -> (name, fail line)
 WORDS = {"ranges": ("Spine ranges", "Spine ranges don't match the plan"), "joins": ("Joins", "{part} join is half-blended"), "head.attach": ("Head on the spine", "Head sits off the end of the spine"),
          "head.neck": ("Head, neck and chest", "Neck band too wide"), "tail.taper": ("Tail taper", "Tail bulges on the way down"), "tail.size": ("Tail size", "Tail too big for the body"), "balance": ("Balance", "Tips over at {end}"),
-         "limbs": ("Shoulders and hips", "{limb} floats off its girdle"), "verts": ("Vertex budget", "{n} vertices, over 3,500"), "normals": ("Smooth normals", "Sharp crease in {part}"), "mesh": ("Mesh quality", "Thin or bent faces in the {range}")}
+         "limbs": ("Shoulders and hips", "{limb} floats off its girdle"), "verts": ("Vertex budget", "{n} vertices, over 3,500"), "normals": ("Smooth normals", "Sharp crease in {part}"), "mesh": ("Mesh quality", "Thin or bent faces in the {range}"),
+         "midline": ("Tail on the midline", "Tail swings to one side in {clip}"), "breath": ("Breathing", "Breathing moves the {part}"), "waddle": ("Waddle", "Feet lift in the waddle"), "coat": ("Coat", "Coat stretches on {part}")}
 
 
 def s20():
@@ -36,14 +37,14 @@ def run_cage(spec):
 class TestRegistry(unittest.TestCase):
     def test_twelve_checks_with_the_owners_words(self):
         metas = {m["id"]: m for m in CH.metas()}
-        self.assertEqual(len(metas), 15)                              # thirteen of the file and cage stages (chunk 9 adds the expressions check), and the extremes stage's limits (chunk 8)
+        self.assertEqual(len(metas), 19)                              # thirteen of the file and cage stages (chunk 9 adds the expressions check), the extremes stage's limits (chunk 8), and the rig and coat checks (chunk 23)
         self.assertEqual([m for m in metas if metas[m]["stage"] == "extremes"], ["limits"])
         for i, (name, fail) in WORDS.items():
             self.assertEqual((metas[i]["name"], metas[i]["fail"]), (name, fail), i)
         for m in metas.values():
             self.assertRegex(m["rule"]["date"], r"^2026-11-0[124]( \d\d:\d\d)?$")
             self.assertGreater(len(m["rule"]["words"]), 40, m["id"])
-            self.assertIn(m["stage"], ("file", "cage", "extremes"))
+            self.assertIn(m["stage"], ("file", "cage", "rig", "coat", "extremes"))
         self.assertEqual({m["id"] for m in metas.values() if m["play"]}, {"head.neck", "tail.taper", "tail.size", "balance"})        # words.md 5.2: the limit sentences
 
     def test_file_stage_on_s20(self):
@@ -140,8 +141,8 @@ class TestServer(unittest.TestCase):
         self.srv.wait(j, 180)
         self.assertEqual(j.state, "done", j.error)
         rows = j.result["rows"]
-        self.assertEqual(len(rows), 14)
-        self.assertEqual(j.result["counts"], dict(total=14, fail=1, warn=0, need=1, passed=13))          # the long tail's mesh failed in the seat range with the root dart listed from the stalk vertex (V5); it passes since V8
+        self.assertEqual(len(rows), 18)
+        self.assertEqual(j.result["counts"], dict(total=18, fail=2, warn=0, need=2, passed=16))          # the long tail is too big for the trunk (tail size), and its UV island runs over another in the atlas (coat); the rig checks pass
         j2 = self.srv.submit("S20x", "check", dict(stage="all"), None)
         self.assertEqual((j2.state, j2.cached), ("done", True))
         import time
@@ -158,14 +159,14 @@ class TestServer(unittest.TestCase):
             if r.get("proof"):
                 self.assertTrue(r["proof"]["ready"], r["id"])
                 self.assertEqual(open(r["proof"]["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
-        self.assertEqual(len(self.srv.current_checks(sp)["rows"]), 14)
+        self.assertEqual(len(self.srv.current_checks(sp)["rows"]), 18)                  # the file and cage checks, then the rig and coat checks of the background tier
 
-    def test_the_stage_a_later_chunk_owns_is_refused_with_its_name(self):
-        from wb import cli
-        a = type("A", (), dict(stage="rig", species="S20x", genome="type", wait=True, json=True, timeout=5.0))()
-        with self.assertRaises(cli.Fail) as e:
-            cli.cmd_check(a)
-        self.assertIn("chunk 23", e.exception.message)
+    def test_the_rig_and_coat_stages_exist_and_an_unknown_one_is_refused(self):
+        from wb import server as SV
+        self.assertEqual(self.srv.norm_args("check", dict(stage="rig"), None)["stage"], "rig")
+        self.assertEqual(self.srv.norm_args("check", dict(stage="coat"), None)["stage"], "coat")
+        with self.assertRaises(SV.ApiError):
+            self.srv.norm_args("check", dict(stage="later"), None)
 
 
 if __name__ == "__main__":

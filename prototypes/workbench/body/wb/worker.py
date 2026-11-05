@@ -89,10 +89,13 @@ def main():
         rows = []
         if stage in ("file", "all"):
             rows += crun("file", Ctx(spec, doc=raw))
-        if stage in ("cage", "all"):
+        if stage in ("cage", "rig", "coat", "all"):
             if last["ck"] != ck:
                 last.update(ck=ck, r=F.build(raw, genome, "base"))
-            rows += crun("cage", Ctx(spec, last["r"].body, summ, mesh, doc=raw))
+            cx = Ctx(spec, last["r"].body, summ, mesh, doc=raw)                          # one Ctx for the cage, rig and coat stages: the level-2 mesh and the rig are made once
+            for st in ("cage", "rig", "coat"):
+                if stage in (st, "all"):
+                    rows += crun(st, cx)
         T["checks_ms"] = round((time.perf_counter() - t) * 1000, 1)
         t = time.perf_counter()
         need = sorted({(r["proof"]["mode"], r["proof"]["az"], 608) for r in rows if r.get("proof")})
@@ -168,9 +171,9 @@ def main():
             clay["px"] = RSET.Proxy(None, pr=pr)
         scratch = tempfile.mkdtemp(prefix="clip-", dir=os.path.dirname(cas.tmp("png")))
         try:
-            subject = RSET.Subject(req["spec"], req.get("genome", "type"), scratch)
+            subject = RSET.make_subject(req["spec"], req.get("genome", "type"), scratch)
             frames, ms = [], []
-            n = CL.frames(req["clip"])
+            n = CL.frames(req["clip"], CL.plan_of(req["spec"]))
             for i in range(n):
                 f, m = RSET.clay_clip_frame(clay["px"], subject, req["clip"], i, CL.SIZE, scratch)
                 frames.append(f)

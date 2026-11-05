@@ -350,11 +350,9 @@ def clip_frames(name):
     return FRAMES[name]
 
 
-def build_rig(doc, level=1):
-    """Build the cage of a quadruped file and its rig on the level-`level` whole-body mesh: (rig, mesh dict with V, F, part, names)."""
+def rig_of(body, level=1):
+    """The rig on the level-`level` whole-body mesh of a built quadruped cage: (rig, mesh dict with V, F, part, names)."""
     import subdiv as SD
-    from wb import facade as F
-    body = Q.build(F.internal(doc))
     Vf, Ff, attr, fp, cr, mir = body.full()
     V, Fq, _, at, fpp = SD.subdivide_body(body, Vf, Ff, cr, attr, fp, levels=level)
     at = np.asarray(at, float)
@@ -366,6 +364,12 @@ def build_rig(doc, level=1):
     rig = QRig(body, V, at, part)
     mesh = dict(V=np.asarray(V, float), F=np.array(Fq, int), part=part, names={int(v): k for k, v in body.parts.items()})
     return rig, mesh
+
+
+def build_rig(doc, level=1):
+    """Build the cage of a quadruped file and its rig on the level-`level` whole-body mesh: (rig, mesh dict with V, F, part, names)."""
+    from wb import facade as F
+    return rig_of(Q.build(F.internal(doc)), level)
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------- measures

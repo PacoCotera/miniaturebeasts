@@ -405,7 +405,7 @@ class TestPlanChecks(unittest.TestCase):
         cls.base = rows_of(S22)
 
     def test_the_bare_base_is_green_on_every_check_the_quadruped_has(self):
-        self.assertEqual(sorted(self.base), sorted(["schema", "express", "ranges", "joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh"]))
+        self.assertEqual(sorted(self.base), sorted(["schema", "express", "ranges", "joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh", "midline", "breath", "waddle"]))
         self.assertEqual({k: v["state"] for k, v in self.base.items()}, {k: "pass" for k in self.base})
 
     def test_the_template_is_the_bare_base_with_its_own_id_and_passes_every_check(self):
@@ -435,7 +435,7 @@ class TestPlanChecks(unittest.TestCase):
                 rc = cli.main(["new", "S23", "--plan", "quadruped", "--from", "template", "--out", out])
             self.assertEqual(rc, 0, buf.getvalue())
             self.assertEqual(json.load(open(os.path.join(out, "S23.json")))["id"], "S23")
-            self.assertEqual(buf.getvalue().count("PASS"), 13)
+            self.assertEqual(buf.getvalue().count("PASS"), 16)
             err = io.StringIO()
             with contextlib.redirect_stderr(err):
                 rc = cli.main(["new", "S23", "--plan", "quadruped", "--from", "template", "--out", out])
@@ -573,7 +573,7 @@ class TestRender(unittest.TestCase):
         j = self.srv.submit("S22", "check", dict(stage="all"), None)
         self.srv.wait(j, 120)
         self.assertEqual(j.state, "done", j.error)
-        self.assertEqual({r["id"]: r["state"] for r in j.result["rows"]}, dict(schema="pass", express="pass", ranges="pass", **{"joins": "pass", "head.attach": "pass", "head.neck": "pass", "tail.taper": "pass", "tail.size": "pass", "balance": "pass", "limbs": "pass"}, verts="pass", normals="pass", mesh="pass"))
+        self.assertEqual({r["id"]: r["state"] for r in j.result["rows"]}, dict(schema="pass", express="pass", ranges="pass", **{"joins": "pass", "head.attach": "pass", "head.neck": "pass", "tail.taper": "pass", "tail.size": "pass", "balance": "pass", "limbs": "pass"}, verts="pass", normals="pass", mesh="pass", midline="pass", breath="pass", waddle="pass"))
 
 
 if __name__ == "__main__":

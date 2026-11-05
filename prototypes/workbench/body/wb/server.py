@@ -383,8 +383,8 @@ class Server:
         out = dict(genome=genome)
         if kind == "check":
             st = (args or {}).get("stage", "all")
-            if st not in ("file", "cage", "extremes", "all"):
-                raise ApiError(400, f"check stage '{st}': one of file, cage, extremes, all (rig and coat arrive with their chunks)", "stage")
+            if st not in ("file", "cage", "rig", "coat", "extremes", "all"):
+                raise ApiError(400, f"check stage '{st}': one of file, cage, rig, coat, extremes, all", "stage")
             if st == "extremes":
                 out = dict(genome="type")                        # the stage builds its own genomes
                 loci = args.get("loci")
@@ -1046,7 +1046,7 @@ class Server:
     def clip_key(self, spec, genome, clip, style, neutral=None):
         """Where a clip's strip is in the cache: the frames of one clip of one genome in one style, side by side. It moves with everything the plush picture moves with, and with the clip's own poses (wb/clips.py)."""
         from wb import clips as CL
-        return H.hash_of("clip", style, CL.V, clip, CL.frames(clip), self.plush_key(spec, genome, neutral), spec.get("motion"))
+        return H.hash_of("clip", style, CL.V, clip, CL.frames(clip, CL.plan_of(spec)), self.plush_key(spec, genome, neutral), spec.get("motion"))
 
     def clip_of(self, sp, spec, genome, clip, n=None, nh=None, ask=True, priority=1):
         """A clip of a genome: the clay strip first (a few seconds), then the plush (about 25 s on one worker). {clay, plush: {key, ready, job}, frames, period, frame_s, size}; with `ask` what is not in the cache is asked for, the clay first."""
@@ -1519,8 +1519,8 @@ def make_handler(srv):
                 sp = srv.get_species(m.group(1))
                 from wb import clips as CL
                 clip = q.get("clip", ["walk"])[0]
-                if clip not in CL.CLIPS:
-                    raise ApiError(400, f"clip is one of {', '.join(CL.CLIPS)}", "clip")
+                if clip not in CL.table(CL.plan_of(sp.spec)):
+                    raise ApiError(400, f"clip is one of {', '.join(CL.table(CL.plan_of(sp.spec)))}", "clip")
                 g = q.get("genome", [None])[0] or __import__("wb.play", fromlist=["x"]).state_genome(sp.spec)
                 try:
                     return self.send_json(srv.clip_of(sp, copy.deepcopy(sp.spec), g, clip))

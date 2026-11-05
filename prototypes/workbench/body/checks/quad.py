@@ -313,7 +313,8 @@ def joins(ctx):
     for i, ln in enumerate(lines):
         out.append(PR.label(36, 672 + 34 * i, ln, PR.RED if bad and any(ln.startswith(w) for w in bad) else PR.INK, "start", 19, bg=False))
     first = bad[0] if bad else ""
-    return row("fail" if bad else "pass", len(bad), 0, "; ".join(lines), dict(mode="clay", az=90, svg="".join(out)), dict(parts=bad, fail=(f"{first.capitalize()} join is half-blended" if first else None)))
+    necks = [leg_join_report(ctx, n_)["narrow"] for n_ in LEGS if (parts[n_].get("socket") or {}).get("join") == "soft"]
+    return row("fail" if bad else "pass", len(bad), 0, "; ".join(lines), dict(mode="clay", az=90, svg="".join(out)), dict(parts=bad, fail=(f"{first.capitalize()} join is half-blended" if first else None), shown=dict(value=" · ".join(f"{x:.2f}" for x in necks) or "hard", limit=f"{LEG_PINCH:.1f}")))
 
 
 def head_attach(ctx):
@@ -333,7 +334,7 @@ def head_attach(ctx):
     xy = P(pts)
     ball = P(_at(ctx, p["R_head"]))[0]
     out = [PR.poly(xy, PR.BLUE, 5), PR.ring(ball[0], ball[1], 40, PR.RED if probs else PR.SAGE, 4), PR.dot(ball[0], ball[1], 7, PR.INK), PR.label(ball[0] + 46, ball[1] - 16, "head, entered from behind", PR.INK), PR.label(xy[len(xy) // 2][0], xy[len(xy) // 2][1] + 34, "spine axis", PR.BLUE, "middle")]
-    return row("fail" if probs else "pass", f2(abs(float(ha.get("a", 0.0)))), "0", "; ".join(probs) if probs else f"From behind on the spine axis at {p['axis_z']:.2f} H, a {float(ha.get('a', 0.0)):.2f}, d {float(ha.get('d', 0.0)):.2f}", dict(mode="clay", az=90, svg="".join(out)))
+    return row("fail" if probs else "pass", f2(abs(float(ha.get("a", 0.0)))), "0", "; ".join(probs) if probs else f"From behind on the spine axis at {p['axis_z']:.2f} H, a {float(ha.get('a', 0.0)):.2f}, d {float(ha.get('d', 0.0)):.2f}", dict(mode="clay", az=90, svg="".join(out)), dict(shown=dict(value=f"a {float(ha.get('a', 0.0)):.2f} · d {float(ha.get('d', 0.0)):.2f}", limit="0 · 0")))
 
 
 def limbs(ctx):
@@ -366,7 +367,7 @@ def limbs(ctx):
     out = [PR.panel(24, 700, 560, 68), PR.label(36, 742, f"each root within {LEG_REACH:.1f} H of its girdle joint, under the body", PR.INK, "start", 18, bg=False)] + out
     first = probs[0] if probs else None
     return row("fail" if probs else "pass", len(probs), 0, first[1] if first else "Shoulders and hips are on their girdles: three bones to each foot, the chest joint on the back range, the pelvis joint on the seat range",
-               dict(mode="clay", az=90, svg="".join(out)), dict(fail=(f"{first[0]} floats off its girdle" if first else None), parts=["legs"] if probs else []))
+               dict(mode="clay", az=90, svg="".join(out)), dict(fail=(f"{first[0]} floats off its girdle" if first else None), parts=["legs"] if probs else [], shown=dict(value=" · ".join(f"{p_[4]:.2f}" for p_ in pts) + " H", limit=f"{LEG_REACH:.1f} H")))
 
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------- normals
@@ -408,4 +409,4 @@ def normals(ctx):
     where = max(by, key=by.get) if by else ""
     meas = f"{n} visible edges over {lim_:.0f}° (steepest {worst:.1f}°)" + (f"; most in {where}" if where else "")
     return row("fail" if n else "pass", n, 0, meas, dict(mode="normal", az=32, svg="".join(out)),
-               dict(parts=[], fail=(f"Sharp crease in {where}" if where else None), by_part=by, by_range=by_range, worst=round(worst, 2), s_range=([round(float(s_edge[bad].min()), 3), round(float(s_edge[bad].max()), 3)] if n else None)))
+               dict(parts=[], fail=(f"Sharp crease in {where}" if where else None), by_part=by, by_range=by_range, worst=round(worst, 2), s_range=([round(float(s_edge[bad].min()), 3), round(float(s_edge[bad].max()), 3)] if n else None), shown=dict(value=f"{float(m['ang'][vis & ~tail].max()):.1f}°", limit=f"{lim_:.0f}°")))

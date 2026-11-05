@@ -35,6 +35,15 @@ GAME_V1 = {
     "model": dict(style=["plush"], pose=["all clips"], age=["adult"], kind="glb", where="The viewer and the review export"),
 }
 # what this framework can draw of a set today; a variant outside it is `owed` with the reason
+CAN_QUAD = dict(
+    ages={"adult": True},
+    poses={"calm": True, "anchor": True, "walk": True, "curl": True},         # the quadruped's rig has the clips of wb/clips.py QUAD_CLIPS: walk, breathe, sit, curl (a strip's frames are counted there)
+    kinds={"sprite": True, "layers": True, "strip": True},
+    why_age="no young body in the species file yet",
+    why_pose="no {pose} pose on the quadruped's rig",
+    why_kind={"glb": "no model export yet"},
+    why_style="the quadruped has no coat yet: only clay and silhouette draw it",
+)
 CAN = dict(
     ages={"adult": True},
     poses={"calm": True, "anchor": True, "walk": True, "idle": True},         # anchor is the stage's own entry pose: the same pixels as calm until a species cuts more poses; walk and idle are the rig's clips (wb/clips.py)
@@ -124,6 +133,7 @@ def expand(doc, expressions=None):
     """Every variant the set asks for. Each row: output, variant (the file stem), style, age, pose, az, size (w, h), kind, from, figure, genome, where, state (ready | owed), why."""
     expressions = expressions if expressions is not None else list((doc or {}).get("expressions") or [])
     rows = []
+    can = CAN_QUAD if (doc or {}).get("plan") == "quadruped" else CAN
     for name, o in outputs(doc).items():
         ages = as_list(o.get("age", "adult"))
         for age in ages:
@@ -140,12 +150,14 @@ def expand(doc, expressions=None):
                         for pick, sz1 in ((p_, s_) for p_ in picks for s_ in szl):
                             kind = o.get("kind", "sprite")
                             why = None
-                            if age not in CAN["ages"]:
-                                why = CAN["why_age"]
-                            elif kind in CAN["why_kind"]:
-                                why = CAN["why_kind"][kind]
-                            elif pose not in CAN["poses"]:
-                                why = CAN["why_pose"].format(pose=pose)
+                            if age not in can["ages"]:
+                                why = can["why_age"]
+                            elif kind in can["why_kind"]:
+                                why = can["why_kind"][kind]
+                            elif pose not in can["poses"]:
+                                why = can["why_pose"].format(pose=pose)
+                            elif can.get("why_style") and style not in ("clay", "silhouette"):
+                                why = can["why_style"]
                             stem = "-".join(str(x) for x in (age, pose, f"az{az}" if len(as_list(o.get("az", [32]))) > 1 else None, style if len(as_list(o.get("style", ["plush"]))) > 1 else None, sz1 if len(szl) > 1 else None, pick) if x)
                             rows.append(dict(output=name, variant=stem, style=style, age=age, pose=pose, az=az, size=parse_size(sz1) if sz1 else None, kind=kind, **{"from": o.get("from", "render")},
                                              figure=(o.get("figure") or {}).get(age), genome=o.get("genome", "type"), look=pick, where=o.get("where", ""),

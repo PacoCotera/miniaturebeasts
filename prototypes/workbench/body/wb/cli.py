@@ -227,7 +227,6 @@ def cmd_new(a):
 
 
 STAGES = ("file", "cage", "extremes", "rig", "coat", "all")
-LATER = dict(rig="chunk 23", coat="chunk 23")
 
 
 def unit_text(v, unit):
@@ -257,8 +256,6 @@ def check_rows(a, job):
 
 
 def cmd_check(a):
-    if a.stage in LATER:
-        raise Fail(2, f"check stage '{a.stage}' arrives with {LATER[a.stage]}; the stages that exist are file, cage, extremes and all", "stage")
     args = dict(stage=a.stage, genome=a.genome)
     if getattr(a, "locus", None):
         args["loci"] = a.locus

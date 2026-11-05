@@ -3,6 +3,7 @@ Each check function takes a Ctx (the species file as the cage builder reads it, 
 Fields are the schema's dotted paths (mb-species/1)."""
 import copy
 import os
+import re
 
 import numpy as np
 
@@ -169,7 +170,8 @@ def c_joins(ctx):
     for i, ln in enumerate(lines):
         out.append(PR.label(36, 672 + 34 * i, ln, PR.RED if i < len(lines) and any(ln.startswith(w[:-1]) for w in bad) else PR.INK, "start", 19, bg=False))
     first = bad[0][:-1] if bad else ""
-    return row("fail" if bad else "pass", len(bad), 0, "; ".join(lines), dict(mode="clay", az=32, svg="".join(out)), dict(parts=bad, fail=(f"{first.capitalize()} join is half-blended" if first else None)))
+    buried = [float(x) for x in re.findall(r"buried ([0-9.]+) H", "; ".join(lines))]
+    return row("fail" if bad else "pass", len(bad), 0, "; ".join(lines), dict(mode="clay", az=32, svg="".join(out)), dict(parts=bad, fail=(f"{first.capitalize()} join is half-blended" if first else None), shown=dict(value=(" · ".join(f"{x:.3f}" for x in buried) + " H") if buried else "soft", limit="0.04 H")))
 
 
 # 4 ------------------------------------------------------------------------------------------------------------------------------------------------------------ head.attach
@@ -423,7 +425,7 @@ def c_limbs(ctx):
     out += [PR.label(sx + 12, sy - 14, "shoulder", PR.INK), PR.label(hx + 12, hy + 30, "hip", PR.INK)]
     first = probs[0] if probs else None
     return row("fail" if probs else "pass", len(probs), 0, first[1] if first else "Shoulders and hips are on their girdles: arm roots at the shoulder joint, legs hip-knee-ankle, chest on the back range",
-               dict(mode="clay", az=32, svg="".join(out)), dict(fail=(f"{first[0]} floats off its girdle" if first else None), parts=["arms"] if first and first[0] == "Arm" else ["legs"] if probs else []))
+               dict(mode="clay", az=32, svg="".join(out)), dict(fail=(f"{first[0]} floats off its girdle" if first else None), parts=["arms"] if first and first[0] == "Arm" else ["legs"] if probs else [], shown=dict(value=f"chest {ch:.2f} H", limit="0.90-1.17 H")))
 
 
 # 10 ------------------------------------------------------------------------------------------------------------------------------------------------------------ verts
@@ -498,7 +500,7 @@ def c_normals(ctx):
             k_ = int(((u_bad >= lo_ - 1e-9) & (u_bad <= hi_ + 1e-9)).sum())
             if k_:
                 where_u[nm_] = k_
-    r = row("fail" if n else "pass", n, 0, meas, dict(mode="normal", az=32, svg="".join(out)), dict(parts=[], fail=(f"Sharp crease in {where}" if where else None), by_part=by, by_range=where_u, worst=round(worst, 2), s_range=([round(float(s_edge[bad].min()), 3), round(float(s_edge[bad].max()), 3)] if n else None)))
+    r = row("fail" if n else "pass", n, 0, meas, dict(mode="normal", az=32, svg="".join(out)), dict(parts=[], fail=(f"Sharp crease in {where}" if where else None), by_part=by, by_range=where_u, worst=round(worst, 2), s_range=([round(float(s_edge[bad].min()), 3), round(float(s_edge[bad].max()), 3)] if n else None), shown=dict(value=f"{worst:.1f}°", limit=f"{lim_:.0f}°")))
     return r
 
 
@@ -572,3 +574,6 @@ def c_limits(ctx):
     meas = f"{where}: {f0['fail'] or f0['id']}" + (f" ({f0['measure']})" if f0.get("measure") else "") + (f"; {len(bad) - 1} more end{'s' if len(bad) > 2 else ''} fail" if len(bad) > 1 else "")
     r = row("fail", len(bad), 0, meas, e.get("proof"), dict(fail=line, ends=[x["id"] for x in bad]))
     return r
+
+
+from . import rig, coat  # noqa: E402,F401  (the rig and coat checks of the background tier)
