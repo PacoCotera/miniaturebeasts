@@ -563,7 +563,7 @@
       "figure": [
        59,
        120,
-       245,
+       246,
        303
       ],
       "sizes": {
@@ -896,37 +896,37 @@
    "file": "S01-adult-shake-304x312-base-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "36129f3793d79f9f8c85ace9ac308347ee88c4603077e26495594ea17e08f050"
+   "sha256": "c9ee481393448c1c9e03dc281c2ffba0f1defea4ef4526aa1bf888ccbae2b102"
   },
   "S01-adult-shake-304x312-base-charcoal-and-ash.png": {
    "file": "S01-adult-shake-304x312-base-charcoal-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "12b785e2ecb05a2ab369fea697f0377794c62aaa4d0fdd45cae38101a8819870"
+   "sha256": "42d1967bbd53ab7484ba7ad27db252715dc4d5a028ac8526c84d2cd2b1e77e89"
   },
   "S01-adult-shake-304x312-base-charcoal-and-russet.png": {
    "file": "S01-adult-shake-304x312-base-charcoal-and-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "2b40b3c3219e1aebd8cbce86efa925ef5eaf2c777ac5cf044927dc653acce9e0"
+   "sha256": "c67e6706bbe266c47d6428c0059d59f9c1907580dcbd38716cb426c9f28b171c"
   },
   "S01-adult-shake-304x312-base-russet-and-ash.png": {
    "file": "S01-adult-shake-304x312-base-russet-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "8e4faa1b5753c95ef80d54fcbcb0f79e141ff38bc45eea24dc1d497595f48317"
+   "sha256": "b5f6e3af3503cd65fe3a1094856e0b7827ae0a65b1b5486e24fc8c3b0bc56833"
   },
   "S01-adult-shake-304x312-base-russet.png": {
    "file": "S01-adult-shake-304x312-base-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "989648eecfe702dfc62e7681cc0897632b349b28a2adff30ca05ee0fc2bda755"
+   "sha256": "4d6b8c5170d53553928f364727f851f7fde47064dbaa2cfe14bfe50b0e7bd52c"
   },
   "S01-adult-shake-304x312-base.png": {
    "file": "S01-adult-shake-304x312-base.png",
    "w": 304,
    "h": 312,
-   "sha256": "8e74699a5960266f61fd59885b5d5ea5b6a5d7e91a4b06f187374e1feff9c21a"
+   "sha256": "6f07528349aa96bf5461db34a6837f8c1edb332416525699e44bd11e6506e885"
   },
   "S01-adult-shake-304x312-crest.png": {
    "file": "S01-adult-shake-304x312-crest.png",
@@ -950,37 +950,37 @@
    "file": "S01-juvenile-304x312-base-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "3389604b30ddd276744123f5b38b6efd8f34c8ed43caa0973659193da56371fb"
+   "sha256": "5b6c7d62dbfc5c9970ccd7d1e22341e368b363ca847b402333596d1abd45ccc4"
   },
   "S01-juvenile-304x312-base-charcoal-and-ash.png": {
    "file": "S01-juvenile-304x312-base-charcoal-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "27c801c39c721af39bcf1c3d2c093e0e9014806fa710f6169ab1c354e0131228"
+   "sha256": "c974035173aff3713b6142a0c13f0eddde5a311e8c954baaae453b454a0a5845"
   },
   "S01-juvenile-304x312-base-charcoal-and-russet.png": {
    "file": "S01-juvenile-304x312-base-charcoal-and-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "90997014c43d25bcf0d583a675cd93805adea76f295ed86662b524d03171d107"
+   "sha256": "67498453dab853b00e8dcc767eb50e41c4ff621d673167bd5ed685ac90a4f29b"
   },
   "S01-juvenile-304x312-base-russet-and-ash.png": {
    "file": "S01-juvenile-304x312-base-russet-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "64cf18180f81602dcaf376ae6bfeb43ff353a49cc384917026f2d9448c3691b0"
+   "sha256": "53331a51d660212af8bd706f3afdc7014107f2169f8bc86daf374f94a290dfc4"
   },
   "S01-juvenile-304x312-base-russet.png": {
    "file": "S01-juvenile-304x312-base-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "3a17e5736820f33e0631f3a76f80bedd5566d107021d7ca4f16f6a4e7aa75a31"
+   "sha256": "86d965ccd627b18a47a5f9088becf35c927f7a0ddbdb7e5d3af945ab0fcb3f2f"
   },
   "S01-juvenile-304x312-base.png": {
    "file": "S01-juvenile-304x312-base.png",
    "w": 304,
    "h": 312,
-   "sha256": "7bb4bffaf61c17940a701c4fa2277f1eed3f82ab1ed9dbb621acda9a6ca269b4"
+   "sha256": "3f898f17ce07189dad23785cc837222407235f4dacdd836b0529992848de0610"
   },
   "S01-juvenile-304x312-crest.png": {
    "file": "S01-juvenile-304x312-crest.png",
@@ -1010,37 +1010,37 @@
    "file": "S01-juvenile-calm-304x312-base-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "ca04581d0312b6e10f967a9717f161aa407806b4c80af8b20de292e1f5661da6"
+   "sha256": "4e7c78e5098b3fc9a38329b6939b5b7ce558239a1567abf5969c3034e7e91cfa"
   },
   "S01-juvenile-calm-304x312-base-charcoal-and-ash.png": {
    "file": "S01-juvenile-calm-304x312-base-charcoal-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "4d841ccb93a7f156e93a4f4dc638c0646795ff5bf29affe21395a594243d99bc"
+   "sha256": "9cd359b5f0cbb5834cba93f6c8f105562d728392b0443b867a9e38d6beb3e92e"
   },
   "S01-juvenile-calm-304x312-base-charcoal-and-russet.png": {
    "file": "S01-juvenile-calm-304x312-base-charcoal-and-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "3c33847c025a2aca605a56baf2da464c5cba0b2a73e593122ea97fb4b8e72313"
+   "sha256": "abb0e0238ad0a0b21d4e7a9c32d5b2771a37d78b95fcb701083a62ea9b435bba"
   },
   "S01-juvenile-calm-304x312-base-russet-and-ash.png": {
    "file": "S01-juvenile-calm-304x312-base-russet-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "d8f3d6283511e2510f6ca079317243c1d3ba08edbcaa6b243c4f116723813024"
+   "sha256": "781eab10fa9777ce74ddba4947b134507048fac27deceb6ecb45cd882ed7c007"
   },
   "S01-juvenile-calm-304x312-base-russet.png": {
    "file": "S01-juvenile-calm-304x312-base-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "d04a54f4503dbf09af1efc592aaec7c5de14b953931b609e23c0f4b87ff1a082"
+   "sha256": "a9197d3d797d5e974568d5938cbd2a231ebd6e9ccf5417d73be934d41a33da0a"
   },
   "S01-juvenile-calm-304x312-base.png": {
    "file": "S01-juvenile-calm-304x312-base.png",
    "w": 304,
    "h": 312,
-   "sha256": "0466a410285130ed16dc206214e0c8d41c5f64b68d85f916fd7961da7874f8e5"
+   "sha256": "e01e91a6da5149017fe42d2468942329c2e99d3ce6634aaf2dde613bf285f3cd"
   },
   "S01-juvenile-calm-304x312-crest.png": {
    "file": "S01-juvenile-calm-304x312-crest.png",
@@ -1064,37 +1064,37 @@
    "file": "S01-juvenile-curl-304x312-base-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "698bdc54e4f21ab5c14191ce0877a180b02389710cf700844411024cb618d3c2"
+   "sha256": "d3965d1b86e76cd7feb07b6e2f1b9b261a75d80ed0e34ab58ec3ae54ae38a441"
   },
   "S01-juvenile-curl-304x312-base-charcoal-and-ash.png": {
    "file": "S01-juvenile-curl-304x312-base-charcoal-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "3ac407e0e61ad945a2becc987229ed67eab899b7e825ed175b3ec7e2d3d1af00"
+   "sha256": "938e1f9ed3f83bbb4622dbf4f4ee8b35fda5e1d46e5c76e987a24a312bcd6d70"
   },
   "S01-juvenile-curl-304x312-base-charcoal-and-russet.png": {
    "file": "S01-juvenile-curl-304x312-base-charcoal-and-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "ae3cc4a738ad6bd7ab61691d708660dff8971e06e7428fcd9e61cf1dd2af9551"
+   "sha256": "9754e2803f1f937ac7cd05154e43fc3084d30791f5e58940d4b6cdee258f3199"
   },
   "S01-juvenile-curl-304x312-base-russet-and-ash.png": {
    "file": "S01-juvenile-curl-304x312-base-russet-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "f399cb9d85294314ec075752a9dfe49ea592de8e828d9c30a00ea9b2f54b886b"
+   "sha256": "9232a8dae997e5a0c771e4f444466931522bc13d53c3a46d1daad01c55539542"
   },
   "S01-juvenile-curl-304x312-base-russet.png": {
    "file": "S01-juvenile-curl-304x312-base-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "d9364c3070d3960b0bd740771cc3747fd527fa2a9b5b2b2d16903e9563905418"
+   "sha256": "d25260353f5935fc772861f3548861c0a0f7c9b89d3ef9b7f3be71fc2c7606dc"
   },
   "S01-juvenile-curl-304x312-base.png": {
    "file": "S01-juvenile-curl-304x312-base.png",
    "w": 304,
    "h": 312,
-   "sha256": "5ab4254fa126ef6834af09fc0bbcf14698a9c30d545fe857b7831a3ae346b5f5"
+   "sha256": "096caf04a5928027c75ffad2952065901196cc09e88740d888a37276f3a8ecf0"
   },
   "S01-juvenile-curl-304x312-crest.png": {
    "file": "S01-juvenile-curl-304x312-crest.png",
@@ -1124,37 +1124,37 @@
    "file": "S01-juvenile-shake-304x312-base-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "418ec4e5d9cbdf3bf891fbfe6f9ab2f7f4393b32edaece12fc6f57bb681f3bfc"
+   "sha256": "e9fcda0dceac547ad80d4c8d6375804d6ffbdb2084429bc476c01ff6e069f840"
   },
   "S01-juvenile-shake-304x312-base-charcoal-and-ash.png": {
    "file": "S01-juvenile-shake-304x312-base-charcoal-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "52910249d576c6110ba92cd21b95b002421eea4b69e570e1793a3718970ab136"
+   "sha256": "d952d153484a3b9ce27e372632efc7d080afb1353dd03ba6dd04cdaa34bebb81"
   },
   "S01-juvenile-shake-304x312-base-charcoal-and-russet.png": {
    "file": "S01-juvenile-shake-304x312-base-charcoal-and-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "21f7027fd8cdfc94fa7b035a9dc4873cba830b73c50ce3637f8c534a25c43569"
+   "sha256": "16783fe4781a6863d3df4855735b6c7786e9a7854b00e04f70d3994cfcaefc7d"
   },
   "S01-juvenile-shake-304x312-base-russet-and-ash.png": {
    "file": "S01-juvenile-shake-304x312-base-russet-and-ash.png",
    "w": 304,
    "h": 312,
-   "sha256": "edafb4f16b5498fe2f76355c23db8273d5f6eeee5c23ca370725af25decaaacc"
+   "sha256": "2af3d8adaf95408dc7f913f2bfcd89dee283003c6fa971b3be612eb8f1d00cd7"
   },
   "S01-juvenile-shake-304x312-base-russet.png": {
    "file": "S01-juvenile-shake-304x312-base-russet.png",
    "w": 304,
    "h": 312,
-   "sha256": "c17fa2d8f0d32fc15127acfccbc7d124876fa693033f26f3f6f18407a168b201"
+   "sha256": "1cd38ee1745c18c60c783e2a94bac0158c69a34a6bc51c1881fe210b66a8441c"
   },
   "S01-juvenile-shake-304x312-base.png": {
    "file": "S01-juvenile-shake-304x312-base.png",
    "w": 304,
    "h": 312,
-   "sha256": "2740cd468edef6f55fc4385742a93ef4d265293261b9b5569ec66466c28f2c26"
+   "sha256": "aa1be8dc35f0f0fcb260592e1e2073785fe5857ef03abb26bcd733e696fc85d3"
   },
   "S01-juvenile-shake-304x312-crest.png": {
    "file": "S01-juvenile-shake-304x312-crest.png",
