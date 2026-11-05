@@ -256,7 +256,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById, REALM_BIOME_V } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
@@ -858,7 +858,7 @@ function newRealm(seed, gen = NEW_GEN, wid) {   // a new realm takes the newest 
   G = genWorld(seed, gen);
   S = worldFields(seed, gen, wid);
   const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
-  S = realmOf(S);
+  S = realmOf(S); S.biomeV = REALM_BIOME_V;   // a new realm draws the newest kinds; a save without biomeV is version 1
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
 const newWorld = newRealm;   // the name the tests and the page's buttons call

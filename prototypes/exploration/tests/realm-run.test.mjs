@@ -50,7 +50,7 @@ for (const [name, opts] of Object.entries(SAVES)) {
     // the fixture is the v8 page's bytes; the v9 page leaves the same realm in v9 shape: unfolded, every field is the fixture's, region 1 holds the map
     const v9 = JSON.parse(r.save), v8 = JSON.parse(text), g1 = v9.regions[0];
     assert.equal(v9.v, 9); assert.equal(v9.regions.length, 1); assert.equal(v9.here, "g1"); assert.equal(g1.seed, v8.seed); assert.equal(g1.gen, v8.gen);
-    const rest = { ...v9 }; for (const k of ["v", "began", "here", "regions"]) delete rest[k];
+    const rest = { ...v9 }; for (const k of ["v", "began", "here", "regions", "biomeV"]) delete rest[k];
     const wantRest = { ...v8 }; delete wantRest.v; delete wantRest.gen;
     const ui = { ...rest.ui }, wui = { ...wantRest.ui }; delete ui.lastPos; delete wui.lastPos; rest.ui = ui; wantRest.ui = wui;
     for (const k of MAP_KEYS) if (k !== "lastPos" && Object.hasOwn(wantRest, k)) { assert.deepEqual(g1.map[k], wantRest[k], "region 1 map " + k); delete wantRest[k]; }
