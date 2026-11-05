@@ -253,12 +253,13 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById, REALM_BIOME_V } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
+import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -454,7 +455,7 @@ function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state 
 const layoutCache = new Map();
 function layout(key) {
   let lay = layoutCache.get(key);
-  if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
+  if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
 
@@ -1048,7 +1049,7 @@ function chooseWarm(ex) {
   for (const o of cand.slice(0, n)) if (S.veil[o.key]) { veilAround(o.key, o.f.x, o.f.y, 1); updateSurvey(o.c); }
 }
 function stoneCharge(key, f) { const ch = stormCharge(key, f); return ch > 0 ? ch : stoneWarm(key, f); }
-function bushFull(key, f) { return !fs(key, f.id).bare; }
+function bushFull(key, f) { return f.tree ? !!fs(key, f.id).ripe : !fs(key, f.id).bare; }   // a fruit tree starts bare and ripens at a bloom; a bush starts full
 function podTag(sp) { return S.known.includes(sp) ? spOf(sp).name : 'unknown species'; }
 function addPin(c, k) { if (!S.pins.some(p => p.c === c && p.k === k)) { S.pins.push({ c, k }); logEv('Pin · ' + PIN_TEXT[k]); return true; } return false; }
 function ownPin(c) { return S.pins.find(p => p.c === c && p.k === 'own') || null; }
@@ -1640,7 +1641,7 @@ function patchAction() {
   if (o && o.type === 'feat') {
     const ft = o.f;
     switch (ft.kind) {
-      case 'b': if (bushFull(key, ft)) return { label: 'Shake the bush', run: () => shakeBush(ft) }; break;
+      case 'b': if (bushFull(key, ft)) return { label: ft.tree ? 'Shake the tree' : 'Shake the bush', run: () => shakeBush(ft) }; break;
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
       case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : 'Collect dew', run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
@@ -1691,7 +1692,7 @@ function eatersHere(live) {
   return 'watch who comes for it';
 }
 function shakeBush(f) {
-  const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, { bare: 1 });
+  const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, f.tree ? { ripe: 0 } : { bare: 1 });
   const p = freeAround(key, f.x, f.y, S.exp.patch); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
   if (p) fxMsg('A fruit drops · ' + eatersHere(live), 2);
   advance('patch', { noise: 'act', ring: { x: f.x, y: f.y, r: 2 } });
@@ -2017,6 +2018,7 @@ function pickStrike(X) {
 function canStand(X, x, y, who) { return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * PW + x]); }
 function stepToward(X, who, tgt, n) {
   for (let k = 0; k < (n || 1); k++) {
+    if (tgt.tree && man(who, tgt) <= 1) return;   // a hollow trunk is entered from beside it: stop there, the next tick goes in
     let best = null, bd = man(who, tgt);
     const ds = Object.values(DIRS).slice(); const r = hash(S.seed, 'st', who.id || 0, S.exp.actions, k) % 4;
     for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy;
@@ -2056,7 +2058,7 @@ function nearestHole(X, c, maxD) {
 }
 // Flight: a Tuikis dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
 function hideOrFlee(X, c) {
-  if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = { x: h.x, y: h.y }; return; } }
+  if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = h.tree ? { x: h.x, y: h.y, tree: 1 } : { x: h.x, y: h.y }; return; } }
   c.st = 'flee'; c.t = 2;
 }
 // Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once,
@@ -2445,7 +2447,9 @@ function regionTurn(R, t, pending, farFromPlayer) {
   const far = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && farFromPlayer(c)) far.push(c);
   if (far.length) { const ctr = rng.pick(far); bloom = ctr;
     for (let c = 0; c < MW * MH; c++) { if (cdist(c, ctr) > 3) continue; const key = String(c), cs = S.cells[key]; if (!cs) continue;
-      for (const id in cs) if (cs[id].bare) { delete cs[id].bare; bushes++; } } }
+      for (const id in cs) if (cs[id].bare) { delete cs[id].bare; bushes++; } }
+    if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || cdist(c, ctr) > 3) continue; const key = String(c);   // fruit trees in the bloom's reach ripen too (silently: the line counts bushes)
+      for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); } }
   // New arrivals, away from where the player just was.
   const occupied = [...new Set(S.cr.filter(w => !w.cv && G.comp[w.c] && farFromPlayer(w.c)).map(w => w.c))];
   const nPods = 2 + rng.int(2);
@@ -2525,7 +2529,7 @@ const FOGLUT = mixLUT('bone', .62),   // fog whitens and washes out: pale, low c
 FOGLUT[C.sprout] = C.fog; FOGLUT[C.lime] = C.fog;   // the lightest grass fogs to fog, as grass does: it never grows brighter asleep than woken (the palette's place fog says the same)
 // The Shade's asleep wash, one table: every colour mixed .48 toward bone, then the nearest of the 48 core colours; a cool colour that lands there
 // (sky, ice, river, aqua, mint) becomes mist, so a glow cap or water never shines through the Shade. Built and tested; nothing draws through it yet
-// (over today's green Shade trees it reads brighter than woken, so it waits for the teal Shade art).
+// (the Shade place and its teal trees draw through it; it needs the Shade's moss ground, or the wash turns the green floor to sprout).
 const SHADE_WASH = [];
 function buildShadeWash() {
   const [tr, tg, tb] = RGB[C.bone], cool = [C.sky, C.ice, C.river, C.aqua, C.mint]; SHADE_WASH.length = 0;
@@ -2538,7 +2542,9 @@ const REMAP = [null, DARK, DARK2, FOGLUT, FADE];
 // The place view's own set at 48 px: a biome palette may override the storm, fog and fade tables (they default to the core's).
 const PLACE_STORM = DARK.slice(), PLACE_FOG = FOGLUT.slice(), PLACE_FADE = FADE.slice();
 const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE];
-REMAP.id = 0; REMAP_PLACE.id = 1;
+// The Shade place's set: the same, with its own fog table (the wash) and its own id, so no canvas cache mixes the two.
+const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE];
+REMAP.id = 0; REMAP_PLACE.id = 1; REMAP_SHADE.id = 11;
 const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
 const lite = (c, n) => { for (let i = 0; i < (n || 1); i++) c = LIGHT[c]; return c; };
 
@@ -3178,7 +3184,18 @@ function layers48(lay, fr) {
 function placeTs(lay) { return !lay.cave && ART48.ready && layers48(lay, 0).ok ? 48 : 32; }
 const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP;
 const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.' + base + '@' + l.dx + ',' + l.dy : l.id + ':' + l.sx + ',' + l.sy + ',' + l.w + ',' + l.h + '@' + l.dx + ',' + l.dy + (l.tone ? '~' + l.tone : '')).join(';');
-function tile48Key(lay, i, fr) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : ''); }
+// A trunk's tree kind and crop, and the Shade's moss, are part of a 48 px tile's key; sl is the asleep variant (the tile's light is the fog table).
+const treeCrop = (lay, t) => t.kind === 'fruit' && t.fid && fs(lay.key, t.fid).ripe ? 'fruit' : 'bare';
+function treeSig(lay, i, sl) { const t = lay.trees && lay.trees[i]; return (t ? '|r3' + t.kind + t.seed + treeCrop(lay, t) + (sl ? 'z' : '') : '') + (lay.shade ? '|m' : ''); }
+function tile48Key(lay, i, fr, sl) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : '') + treeSig(lay, i, sl); }
+// The tree kinds' sprites (trees48.mjs) as PBs: the trunk stand with its foot-shadow mask, the canopy whole and thinned. One build per kind, seed, crop and state.
+function treeSet(t, crop, sl) {
+  return art('r3|' + t.kind + t.seed + crop + (sl ? 'z' : ''), () => { const s = treeSprites(t.kind, { asleep: !!sl, crop, seed: t.seed }, C, DARK), tr = new PB(32, 32), cn = [0, 1].map(chk => { const pb = new PB(88, 76); pb.p.set(s.canopy.p);
+      if (chk) for (let y = 0; y < 76; y++) for (let x = 0; x < 88; x++) if ((x + y) % 2) pb.p[y * 88 + x] = -1; return pb; });
+    tr.p.set(s.trunk.p); return { trunk: tr, shadow: s.trunk.shadow, canopy: cn }; });
+}
+const treeCanopy = (lay, i, chk, sl) => { const t = lay.trees && lay.trees[i]; return t ? treeSet(t, treeCrop(lay, t), sl).canopy[chk] : null; };
+let SHADE_MOSS = null; const shadeMoss = () => SHADE_MOSS || (SHADE_MOSS = shadeMossLut(RGB, C));
 // The Fells' two colour steps at 48 px, found by colour so they follow the palette file: the earth family to greys, and the stair's treads up and risers down.
 const FELLS_STEPS = {
   scree: [['#c2a376', '#a4999f'], ['#a68d65', '#7a717e'], ['#a78f4c', '#828176'], ['#cbbc56', '#a4999f'], ['#9a734b', '#7a717e'], ['#8a7456', '#635967'], ['#857541', '#5c564b'], ['#7a583d', '#635967'], ['#e6c98c', '#a4999f'], ['#bf9157', '#7a717e']],
@@ -3193,12 +3210,14 @@ function fellsLut(kind) {
 }
 // A 48 px tile composed as an indexed PB: each layer's opaque pixels through its level tone (grass colours only), the 32 px stand-ins, then the dark of
 // a wood place. Identical tiles share one buffer (and one canvas per light level).
-function tile48(lay, i, fr) {
-  const key = tile48Key(lay, i, fr); let pb = ART.get(key); if (pb) return pb;
+function tile48(lay, i, fr, sl) {
+  const key = tile48Key(lay, i, fr, sl); let pb = ART.get(key); if (pb) return pb;
   if (ART48.g48 > 4000) { for (const k of [...ART.keys()]) if (k.startsWith('g48|')) ART.delete(k); ART48.g48 = 0; }
   const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; pb = new PB(48, 48);
   for (const l of t.layers) {
-    if (l.stand) { const s32 = stand32(l.stand, lay.base); for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }
+    if (l.stand) { const tr = lay.trees && lay.trees[i], ts32 = tr ? treeSet(tr, treeCrop(lay, tr), sl) : null, s32 = ts32 ? ts32.trunk : stand32(l.stand, lay.base);
+      if (ts32) for (let k = 0; k < 1024; k++) { const q = (l.dy + (k >> 5)) * 48 + l.dx + (k & 31); if (ts32.shadow[k] && pb.p[q] >= 0) pb.p[q] = DARK[pb.p[q]]; }   // the tree's foot shadow on the ground
+      for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }
     const pc = ART48.pieces.get(l.id); if (!pc) continue;
     let lut = l.tone === 'light' ? LIGHT_GRASS : l.tone === 'dark' ? DARK_GRASS : null;   // the level tone moves grass only
     if (lay.scree && /^meadow\/(ground\/sand|shore\/sand-|stair\/(foot|landing|apron-top))/.test(l.id)) lut = fellsLut('scree');   // the Fells' rock ground: grey scree for the brown earth
@@ -3206,6 +3225,7 @@ function tile48(lay, i, fr) {
     for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) { let c = pc.px[(l.sy + y) * pc.w + l.sx + x]; if (c < 0) continue; if (lut) c = lut[c]; pb.p[(l.dy + y) * 48 + l.dx + x] = c; }
   }
   if (t.dark) for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = DARK[pb.p[k]];
+  if (lay.shade) { const mo = shadeMoss(); for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = mo[pb.p[k]]; }   // the Shade's ground: cool moss, so its wash never reads as sprout
   ART.set(key, pb); ART48.g48++; return pb;
 }
 // The 32 px code stand-ins a 48 px tile carries (registered in CARE_ASSETS): today's trunk and stepping stone, without their ground.
@@ -3253,8 +3273,8 @@ function buildMapPB() {
         if (y > 0 && G.land[c - MW] !== L.CLIFF) { pb.rect(px, py, CELL, 3, C.grass); pb.rect(px, py + 3, CELL, 1, C.sand); }
         break;
     }
-    if (G.level) tintLevel(pb, px, py, CELL, CELL, G.level[c]);   // generator 2: the level tint, baked with the ground (the marks never are)
-    if (G.shade && G.shade[c]) for (let yy = py; yy < py + CELL; yy++) for (let xx = px; xx < px + CELL; xx++) { const v = pb.get(xx, yy); if (v >= 0) pb.set(xx, yy, SHADE_LUT[v]); }   // generator 4: the Shade, one value darker than wood
+    if (G.level && own !== 'flat') tintLevel(pb, px, py, CELL, CELL, G.level[c]);   // generator 2: the level tint, baked with the ground (the marks never are)
+    if (G.shade && G.shade[c] && !MAPK.ownsShade(G)) for (let yy = py; yy < py + CELL; yy++) for (let xx = px; xx < px + CELL; xx++) { const v = pb.get(xx, yy); if (v >= 0) pb.set(xx, yy, SHADE_LUT[v]); }   // generator 4: the Shade, one value darker than wood
   }
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = x * CELL, py = y * CELL, l = G.land[c];
@@ -3838,14 +3858,14 @@ function drawPatch(t) {
   else if (RT.ts === 32 && (!RT.pl || NOW - RT.pl.at >= RT.pl.dur) && placeTs(lay) === 48) { RT.ts = 48; RT.cr.clear(); RT.pt = null; RT.pl = null; }   // the art arrived: switch with no slide running
   const fr = motion() ? Math.floor(t * 2) % 2 : 0;
   const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, o = sprOff(ts);
-  if (ts === 48) RT.remap = REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
+  if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
   const c0 = camAt(v, RT.pl.rx, RT.pl.ry), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // centred, clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
-  const tileFor = (i) => ts === 48 ? tile48(lay, i, fr) : tilePB(lay, i, fr), keyFor = (i) => ts === 48 ? tile48Key(lay, i, fr) : tileKey(lay, i, fr);
+  const tileFor = (i, sl) => ts === 48 ? tile48(lay, i, fr, sl) : tilePB(lay, i, fr), keyFor = (i) => ts === 48 ? tile48Key(lay, i, fr) : tileKey(lay, i, fr);
   RT.plScr = { x: W(PX(RT.pl)) + (ts >> 1), y: H(PY(RT.pl)) + (ts >> 1) };
   const raining = !lay.cave && stormRain(lay.cell % MW), overcast = !lay.cave && stormCovers(lay.cell % MW), fogged = !lay.cave && inFog(lay.cell);
   let darkW = 0, darkLeft = true;
@@ -3906,7 +3926,7 @@ function drawPatch(t) {
       if (darkW && L0 === 0) { const side = tileLight(tx - 1, ty) === 1 ? 'W' : tileLight(tx + 1, ty) === 1 ? 'E' : null;
         if (side) { g.drawImage(edge48('S' + key + '|' + side + (uv ? '' : 'v'), pb, (x, y) => stormStep(side === 'W' ? x : 47 - x, x, y),
           (c, x, y) => uv ? c : veilPx(c, x, y), (c, x, y) => uv ? set[1][c] : veilPx(set[1][c], x, y)), W(tx * ts), H(ty * ts)); continue; } }
-      g.drawImage(pb.canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts)); continue;
+      g.drawImage((L0 === 3 ? tileFor(i, true) : pb).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts)); continue;
     }
     if (fogged && L0 !== 3) { const fk = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y), u = fk(tx, ty - 1), r = fk(tx + 1, ty), d = fk(tx, ty + 1), l = fk(tx - 1, ty);
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
@@ -3916,11 +3936,12 @@ function drawPatch(t) {
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
       if (!u && !l && vk(tx - 1, ty - 1)) m |= 16; if (!u && !r && vk(tx + 1, ty - 1)) m |= 32; if (!d && !r && vk(tx + 1, ty + 1)) m |= 64; if (!d && !l && vk(tx - 1, ty + 1)) m |= 128;
       if (m) { g.drawImage(veilEdgeTile(keyFor(i), tileFor(i), L0, m), W(tx * ts), H(ty * ts)); continue; } }
-    g.drawImage(tileFor(i).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
+    g.drawImage(tileFor(i, L0 === 3).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
   }
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
   // ground decals
   for (const f of lay.feats) {
+    if (f.tree) continue;   // a tree's feature is drawn by its tree
     const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue; const rm = spriteRm(f.x, f.y);
     if (!'gxim'.includes(f.kind) && !see(f.x, f.y)) continue;   // landmarks always show; the rest wait for the survey
     if (f.kind === 's' && fs(P.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(W(x + 8 + (k % 4) * 5) + o.x, H(y + 18 + (k >> 2) * 4) + o.y, 3, 1); }
@@ -3934,7 +3955,9 @@ function drawPatch(t) {
   }
   // y-sorted sprites
   const items = [];
-  for (const f of lay.feats) { if (!'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
+  for (const f of lay.feats) if (f.tree === 'hollow' && see(f.x, f.y) && live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1))   // a shy one in a hollow trunk: the hole's one glint, in the trunk's opening
+    items.push({ y: f.y * ts + 2, d: () => blit(art('hglint', () => { const pb = new PB(2, 2); pb.rect(0, 0, 2, 2, C.yellow); return pb; }), SX(f.x * ts) + 15, SY(f.y * ts) + 22, spriteRm(f.x, f.y)) });
+  for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     const rm = spriteRm(p.x, p.y); let a;
     if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
@@ -3971,7 +3994,7 @@ function drawPatch(t) {
   for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK) {
     const x = i % PW, y = (i / PW) | 0; if (!vis2(x * ts, y * ts)) continue;
     const under = tokens.some(o => cheb(o, { x, y }) <= 1);
-    overlay(canopyArt(under ? 1 : 0), W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
+    overlay((ts === 48 && treeCanopy(lay, i, under ? 1 : 0, !lightAt && tileLight(x, y) === 3)) || canopyArt(under ? 1 : 0), W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
   }
   for (const f of lay.feats) if (f.kind === 'o') { const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue;
     const under = tokens.some(o => o.y === f.y + 2 && o.x >= f.x && o.x <= f.x + 2);
@@ -4381,17 +4404,17 @@ function placeLightFn(P, lay) {   // the place's own light for a tile (fog beyon
 function warnPicPlace(x0, y0, a) {
   const ex = S.exp, P = ex.patch, lay = layout(a.key), live = ex.live[a.key] || { fr: [], tf: [], cr: [] }, { ts, light, inS, see } = placeLightFn(P, lay), o = sprOff(ts), keepRm = RT.remap;   // at 48 the card shows the cell's sprite box (columns 8–39, rows 16–47 of the cell: everything shifted up and left by sprOff, (8, 16)) in the place's own tables
   const i = a.y * PW + a.x, L = light(a.x, a.y), uv = unveiled(a.key, a.x, a.y), ox = a.x * ts, oy = a.y * ts, X = sx => x0 + sx - ox - o.x, Y = sy => y0 + sy - oy - o.y;
-  g.save(); g.beginPath(); g.rect(x0, y0, 32, 32); g.clip(); if (ts === 48) RT.remap = REMAP_PLACE;
-  g.drawImage((ts === 48 ? tile48(lay, i, 0) : tilePB(lay, i, 0)).canvas(L, false, false, L !== 3 && !uv), x0 - o.x, y0 - o.y);
+  g.save(); g.beginPath(); g.rect(x0, y0, 32, 32); g.clip(); if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;
+  g.drawImage((ts === 48 ? tile48(lay, i, 0, L === 3) : tilePB(lay, i, 0)).canvas(L, false, false, L !== 3 && !uv), x0 - o.x, y0 - o.y);
   const here = (x, y) => x === a.x && y === a.y;
-  for (const f of lay.feats) { if (!here(f.x, f.y) || (!'gxim'.includes(f.kind) && !see(f.x, f.y))) continue;   // ground marks
+  for (const f of lay.feats) { if (f.tree || !here(f.x, f.y) || (!'gxim'.includes(f.kind) && !see(f.x, f.y))) continue;   // ground marks
     if (f.kind === 'n') blit(holeArt(live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1) ? 1 : 0), x0, y0);
     else if (f.kind === 'e') blit(NEST(), x0, y0); else if (f.kind === 'm') blit(mushArt(0), x0, y0);
     else if (f.kind === 'd') blit(CRACK(), x0, y0); else if (f.kind === 'x') blit(exitArt(0), x0, y0);
     else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), x0, y0);
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), x0 + 9, y0 + 8, L); }
     else if (f.kind === 's' && fs(a.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(x0 + 8 + (k % 4) * 5, y0 + 18 + (k >> 2) * 4, 3, 1); } }
-  for (const f of lay.feats) { if (!'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
+  for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
     let art;
     if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
     else if (f.kind === 'u') art = cupArt(cupFull(a.key, f), lay.cave);
@@ -4404,7 +4427,7 @@ function warnPicPlace(x0, y0, a) {
   const over = (pb, sx, sy, tx, ty) => { if (sx >= ox + ts || sx + pb.w <= ox || sy >= oy + ts || sy + pb.h <= oy) return; const rm = light(tx, ty);
     g.drawImage(pb.canvas(rm, false, false, rm !== 3 && !unveiled(a.key, tx, ty)), Math.round(X(sx)), Math.round(Y(sy))); };
   for (let k = 0; k < PW * PH; k++) if (lay.tiles[k] === T.TRUNK) { const tx = k % PW, ty = (k / PW) | 0, under = tokens.some(q => cheb(q, { x: tx, y: ty }) <= 1);
-    over(canopyArt(under ? 1 : 0), tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
+    over((ts === 48 && treeCanopy(lay, k, under ? 1 : 0, light(tx, ty) === 3)) || canopyArt(under ? 1 : 0), tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
   for (const f of lay.feats) if (f.kind === 'o') { const under = tokens.some(q => q.y === f.y + 2 && q.x >= f.x && q.x <= f.x + 2);
     over(roofArt(under ? 1 : 0), f.x * ts + ((3 * ts - 104) >> 1), (f.y + 2) * ts - 10, f.x + 1, f.y); }
   for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1), x0 + 8, y0 + 8);
