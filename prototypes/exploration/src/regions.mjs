@@ -58,20 +58,49 @@ export function prefixPods(pods, n) {
 
 // ---- the atlas: 5 x 5 slots, region 1 at the centre ----
 const NEIGHBOURS = [[2, 1], [3, 2], [2, 3], [1, 2]];   // north, east, south, west of region 1
+// The groups, and which groups touch: a slot draws from its inner neighbours' groups and the groups that border them. Green borders both;
+// Highlands and Waters do not touch each other (until the Cold and the Warm exist).
+export const BIOME_GROUP = { mixed: "green", woods: "green", downs: "green", thickets: "green", tallwood: "green", fells: "highlands", tarns: "highlands", marsh: "waters", meres: "waters" };
+const GROUP_TOUCH = { green: ["green", "highlands", "waters"], highlands: ["highlands", "green"], waters: ["waters", "green"] };
+const ringOf = (ax, ay) => Math.abs(ax - CENTER[0]) + Math.abs(ay - CENTER[1]);   // steps from region 1: ring 1 is the four slots around it
+const pickWeighted = (kinds, h) => { let r = h % kinds.reduce((a, b) => a + BIOME_WEIGHT[b], 0); for (const b of kinds) { if (r < BIOME_WEIGHT[b]) return b; r -= BIOME_WEIGHT[b]; } };
 // A slot's biome is fixed by the realm seed. The four slots around region 1 hold Woods, Fells and Marsh and one repeat of the three
-// (which one, and where, comes from the seed), so the first choice always offers all three. Slots further out take any biome (version 2: any of the nine).
+// (which one, and where, comes from the seed), so the first choice always offers all three.
+// Version 1: slots further out take any of the four older kinds. Version 2: all 25 slots are assigned ring by ring outward from the centre; a slot
+// draws, by rarity, from the kinds of the groups every inner neighbour (the slots beside it one ring nearer) allows, and takes Green when no group
+// is allowed by all of them. That depends on the seed alone, so it is the same whatever order the regions open in.
+const slotCache = new Map();
+function realmSlots(seed) {
+  if (slotCache.has(seed)) return slotCache.get(seed);
+  const grid = new Map(), cells = [];
+  for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) cells.push([ax, ay]);
+  cells.sort((a, b) => ringOf(...a) - ringOf(...b) || a[1] - b[1] || a[0] - b[0]);
+  for (const [ax, ay] of cells) {
+    const d = ringOf(ax, ay), key = ax + "," + ay;
+    if (d === 0) { grid.set(key, "mixed"); continue; }
+    if (d === 1) { grid.set(key, ring1(seed, ax, ay)); continue; }
+    let ok = null;
+    for (const [dx, dy] of [[0, -1], [1, 0], [0, 1], [-1, 0]]) {
+      const x = ax + dx, y = ay + dy; if (x < 0 || y < 0 || x >= ATLAS || y >= ATLAS || ringOf(x, y) !== d - 1) continue;
+      const allow = GROUP_TOUCH[BIOME_GROUP[grid.get(x + "," + y)]]; ok = ok ? ok.filter(g => allow.includes(g)) : allow.slice();
+    }
+    const groups = ok && ok.length ? ok : ["green"];
+    grid.set(key, pickWeighted(BIOMES.filter(b => groups.includes(BIOME_GROUP[b])), hash(seed, "slot", ax, ay)));
+  }
+  if (slotCache.size > 64) slotCache.clear();
+  slotCache.set(seed, grid); return grid;
+}
+function ring1(seed, ax, ay) {
+  const i = NEIGHBOURS.findIndex(([x, y]) => x === ax && y === ay);
+  const three = ["woods", "fells", "marsh"], items = [...three, three[hash(seed, "slot", "repeat") % 3]];
+  const order = [0, 1, 2, 3].sort((a, b) => hash(seed, "slot", "order", a) - hash(seed, "slot", "order", b) || a - b);
+  return items[order[i]];
+}
 export function slotBiome(seed, ax, ay, version = 1) {
   if (ax === CENTER[0] && ay === CENTER[1]) return "mixed";
-  const i = NEIGHBOURS.findIndex(([x, y]) => x === ax && y === ay);
-  if (i >= 0) {
-    const three = ["woods", "fells", "marsh"], items = [...three, three[hash(seed, "slot", "repeat") % 3]];
-    const order = [0, 1, 2, 3].sort((a, b) => hash(seed, "slot", "order", a) - hash(seed, "slot", "order", b) || a - b);
-    return items[order[i]];
-  }
-  const h = hash(seed, "slot", ax, ay);
-  if (version < 2) return BIOMES_V1[h % BIOMES_V1.length];
-  let r = h % BIOMES.reduce((a, b) => a + BIOME_WEIGHT[b], 0);   // slots further out: any kind, by rarity
-  for (const b of BIOMES) { if (r < BIOME_WEIGHT[b]) return b; r -= BIOME_WEIGHT[b]; }
+  if (ringOf(ax, ay) === 1) return ring1(seed, ax, ay);
+  if (version < 2) return BIOMES_V1[hash(seed, "slot", ax, ay) % BIOMES_V1.length];
+  return realmSlots(seed).get(ax + "," + ay);
 }
 const homes = regions => regions.filter(r => r.kind === "home" && r.slot);
 // The slots a new region can open in: free, inside the 5 x 5, and sharing an edge with an open home region. Row by row.

@@ -178,19 +178,87 @@ test("7. slotBiome: the four slots around region 1 hold Woods, Fells and Marsh a
   assert.notDeepEqual(around.map(([x, y]) => R.slotBiome(1, x, y)), around.map(([x, y]) => R.slotBiome(2, x, y)), "(the seeds differ)");
 });
 
-test("7b. slotBiome by realm version: version 1 (and a save without one) never changes; version 2 draws all nine by rarity; ring 1 is the same", () => {
-  const around = [[2, 1], [3, 2], [2, 3], [1, 2]], far = [[0, 0], [4, 4], [0, 4], [3, 3], [2, 0], [4, 1], [1, 4], [0, 2], [4, 3], [1, 0]];
+const grid = (seed, v) => { const a = []; for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) a.push(R.slotBiome(seed, x, y, v)); return a; };
+const ringOf = (x, y) => Math.abs(x - 2) + Math.abs(y - 2);
+const around = [[2, 1], [3, 2], [2, 3], [1, 2]];
+
+test("7b. realm version 2: ring 1 is as in version 1; every kind turns up; a slot's kind sits in a group every inner neighbour allows (Green when none); rarity inside the group", () => {
   const tally = {}; let n = 0;
+  const touch = { green: ["green", "highlands", "waters"], highlands: ["highlands", "green"], waters: ["waters", "green"] };
   for (const seed of SEEDS) {
     for (const [x, y] of around) assert.equal(R.slotBiome(seed, x, y, 2), R.slotBiome(seed, x, y, 1), "ring 1 is Woods, Fells and Marsh and a repeat in both");
-    for (const [x, y] of far) { assert.ok(R.BIOMES_V1.includes(R.slotBiome(seed, x, y)), "default is version 1"); assert.equal(R.slotBiome(seed, x, y, 1), R.slotBiome(seed, x, y));
-      const b = R.slotBiome(seed, x, y, 2); tally[b] = (tally[b] || 0) + 1; n++; }
+    const g = grid(seed, 2); assert.equal(g[12], "mixed"); assert.ok(g.every(b => R.BIOMES.includes(b)));
+    for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) {
+      const d = ringOf(x, y); if (d < 2) continue;
+      const inner = [[0, -1], [1, 0], [0, 1], [-1, 0]].map(([dx, dy]) => [x + dx, y + dy]).filter(([a, b]) => a >= 0 && b >= 0 && a < 5 && b < 5 && ringOf(a, b) === d - 1);
+      assert.ok(inner.length >= 1);
+      let ok = ["green", "highlands", "waters"]; for (const [a, b] of inner) ok = ok.filter(q => touch[R.BIOME_GROUP[g[b * 5 + a]]].includes(q));
+      if (!ok.length) ok = ["green"];
+      const b = g[y * 5 + x]; assert.ok(ok.includes(R.BIOME_GROUP[b]), `seed ${seed} slot ${x},${y}: ${b} is not allowed beside ${inner.map(([a, c]) => g[c * 5 + a])}`);
+      tally[b] = (tally[b] || 0) + 1; n++;
+    }
   }
   assert.deepEqual(Object.keys(tally).sort(), [...R.BIOMES].sort(), "every kind turns up");
-  for (const [b, w] of Object.entries(R.BIOME_WEIGHT)) { const want = n * w / 42, got = tally[b]; assert.ok(Math.abs(got - want) <= want * 0.2, `${b}: ${got} against about ${want.toFixed(0)}`); }
+  // inside a group the weights hold: common 6 to uncommon 3
+  for (const [grp, kinds] of Object.entries({ green: ["mixed", "woods", "downs", "thickets", "tallwood"], highlands: ["fells", "tarns"], waters: ["marsh", "meres"] })) {
+    const tot = kinds.reduce((a, k) => a + tally[k], 0), w = kinds.reduce((a, k) => a + R.BIOME_WEIGHT[k], 0);
+    for (const k of kinds) { const want = tot * R.BIOME_WEIGHT[k] / w; assert.ok(Math.abs(tally[k] - want) <= want * 0.2, `${grp}/${k}: ${tally[k]} against about ${want.toFixed(0)}`); }
+  }
   assert.equal(R.biomeVersion({}), 1); assert.equal(R.biomeVersion({ biomeV: 2 }), 2); assert.equal(R.biomeVersion(null), 1);
   assert.deepEqual(R.BIOME_NAME, { mixed: "Meadows", woods: "Woods", fells: "Fells", marsh: "Marsh", downs: "Downs", thickets: "Thickets", tallwood: "Tallwood", tarns: "Tarns", meres: "Meres" });
   assert.equal(R.realmStatus({ v: 9, biomeV: 3, regions: [{ map: {}, gen: 3 }] }), "newer");
+});
+
+test("7c. a Fells beside a Marsh ring-outward slot is Green; Highlands and Waters never sit side by side in a version 2 atlas", () => {
+  const bad = (a, b) => (R.BIOME_GROUP[a] === "highlands" && R.BIOME_GROUP[b] === "waters") || (R.BIOME_GROUP[a] === "waters" && R.BIOME_GROUP[b] === "highlands");
+  let corner = 0;
+  for (const seed of SEEDS) {
+    const g = grid(seed, 2);
+    for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) {
+      if (ringOf(x, y) < 2) continue;   // ring 1 holds Fells and Marsh at the centre's sides: they touch only by corner, never by edge
+      for (const [dx, dy] of [[1, 0], [0, 1]]) { const X = x + dx, Y = y + dy; if (X < 5 && Y < 5 && ringOf(X, Y) >= 2) assert.ok(!bad(g[y * 5 + x], g[Y * 5 + X]), `seed ${seed} ${x},${y}`); }
+    }
+    // the diagonal slot between a Fells and a Marsh of ring 1 has both as inner neighbours: Green
+    for (const [x, y] of [[1, 1], [3, 1], [1, 3], [3, 3]]) { const a = g[y * 5 + 2], b = g[2 * 5 + x]; if (R.BIOME_GROUP[a] !== R.BIOME_GROUP[b] && a !== "mixed") {
+      if (bad(a, b)) { corner++; assert.equal(R.BIOME_GROUP[g[y * 5 + x]], "green", `seed ${seed} corner ${x},${y}`); } } }
+  }
+  assert.ok(corner > 50, "the case turns up (" + corner + ")");
+});
+
+test("7d. version 2 is seed-fixed: the same 25 kinds whatever order the slots are asked (and regions opened) in", () => {
+  const rng = a => { let h = a; return () => (h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0) / 4294967296; };
+  const slots = []; for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) slots.push([x, y]);
+  const orders = [slots, [...slots].reverse(), [...slots].sort((a, b) => ringOf(...b) - ringOf(...a) || a[0] - b[0]), [...slots].sort((a, b) => ((a[0] * 7 + a[1] * 13) % 11) - ((b[0] * 7 + b[1] * 13) % 11))];
+  for (const seed of SEEDS.slice(0, 60)) {
+    const want = grid(seed, 2).join();
+    for (const ord of orders) { const got = {}; for (const [x, y] of ord) got[y * 5 + x] = R.slotBiome(seed, x, y, 2); assert.equal(Object.values(got).join(), want, `seed ${seed}`); }
+    const r = rng(seed); const shuffled = [...slots].sort(() => r() - 0.5), got = {}; for (const [x, y] of shuffled) got[y * 5 + x] = R.slotBiome(seed, x, y, 2);
+    assert.equal(Object.values(got).join(), want, "a shuffled order, seed " + seed);
+  }
+  // regions opened in three orders (each opens the free slot a rule picks): every region's kind is the atlas's kind for its slot
+  for (const seed of [1, 2, 3, 4, 5, 77, 1234]) {
+    const want = grid(seed, 2);
+    for (const pick of [fs => fs[0], fs => fs[fs.length - 1], fs => fs[Math.floor(fs.length / 2)]]) {
+      const regs = [R.regionRecord({ n: 1, slot: R.CENTER, biome: "mixed", seed, gen: 3, opened: NOW })];
+      while (regs.length < 25) { const fs = R.freeSlots(regs), [x, y] = pick(fs); regs.push(R.regionRecord({ n: regs.length + 1, slot: [x, y], biome: R.slotBiome(seed, x, y, 2), seed: regs.length, gen: 4, opened: NOW })); }
+      for (const r of regs) assert.equal(r.biome, want[r.slot[1] * 5 + r.slot[0]]);
+    }
+  }
+});
+
+test("7e. version 1 realms: every slot's kind is as the older page drew it (200 seeds, 25 slots, from a frozen list), opened or not; a saved region keeps its kind", () => {
+  const frozen = JSON.parse(readFileSync(new URL("./regions-v1-slots.json", import.meta.url), "utf8"));
+  for (const seed of SEEDS) { assert.equal(grid(seed, 1).join(), frozen[seed], "seed " + seed + " (version 1)"); assert.equal(grid(seed, undefined).join(), frozen[seed], "no version is version 1"); }
+  // an old save, loaded by the page: version 1, and its unopened slots come out as the older page's, whatever the newest version is
+  for (const name of FIXTURES) {
+    const p = loaded(name), S = p.S; assert.equal(R.biomeVersion(S), 1, name + " has no biomeV: version 1");
+    assert.equal(S.biomeV, undefined);
+    assert.equal(grid(S.regions[0].seed, R.biomeVersion(S)).join(), frozen[S.regions[0].seed] ?? grid(S.regions[0].seed, 1).join(), name);
+    assert.equal(S.regions[0].biome, "mixed");
+  }
+  // a saved realm with regions opened keeps the kinds on its records, and its unopened slots come out as version 1
+  const seed = 1234, opened = R.regionRecord({ n: 2, slot: [2, 1], biome: R.slotBiome(seed, 2, 1, 1), seed: 9, gen: 4, opened: NOW });
+  assert.equal(R.slotBiome(seed, 2, 1, R.biomeVersion({})), opened.biome);
 });
 
 const home = (n, slot, o = {}) => R.regionRecord({ n, slot, biome: "woods", seed: n * 11, gen: 4, opened: NOW, exploredN: 0, ...o });
@@ -299,4 +367,15 @@ test("13. the page imports regions.mjs (the page and the Station took v9 in one 
   const src = readFileSync(new URL("../src/regions.mjs", import.meta.url), "utf8");
   assert.ok(!/\b(document|window|localStorage|fetch|Math\.random)\b/.test(src.replace(/\/\/.*$/gm, "")), "no page, no storage, no chance");
   assert.ok(/from "\.\/src\/regions\.mjs"/.test(readFileSync(new URL("../index.html", import.meta.url), "utf8")));
+});
+
+test("0. a new realm is written as version 2 (biomeV 2); a loaded old save stays without one", () => {
+  const p = makePage({ console: "silent", canvas: true, date: NOW });
+  p.run("newRealm(5)");
+  assert.equal(p.run("S.biomeV"), 2, "newRealm writes biomeV 2");
+  assert.equal(R.REALM_BIOME_V, 2);
+  assert.equal(R.biomeVersion(p.S), 2);
+  assert.equal(JSON.parse(p.store[p.KEY]).biomeV, 2, "and it is on disk");
+  const q = makePage({ console: "silent", canvas: true, date: NOW }); q.store[q.KEY] = FIX("played-g1"); assert.equal(q.run("load()"), true);
+  assert.equal(q.run("S.biomeV"), undefined);
 });
