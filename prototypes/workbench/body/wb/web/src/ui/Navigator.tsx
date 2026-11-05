@@ -8,7 +8,7 @@ import { isAsleep, locusDot, selectedLocus, stageWord, type Stage } from '../lib
 import { useQuery } from '@tanstack/react-query'
 import { lookOf, ready, varietyOne, type VLook } from '../lib/variety'
 import { goldensOne, groupsOf, pick, stateTip, totalsLine, type GState } from '../lib/goldens'
-import { current, day, gateOne, pickSheet } from '../lib/gate'
+import { day, gateOne, pickSheet, shown } from '../lib/gate'
 import { W } from '../lib/words'
 import s from './Navigator.module.css'
 
@@ -26,7 +26,7 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
   const fq = useQuery({ ...formsOne(url.species), enabled: !!species && url.mode === 'shape' })
   const outline = fq.data?.outline ?? OUTLINE
   const gtq = useQuery({ ...gateOne(url.species), enabled: !!species && url.mode === 'gate' })
-  const round = current(gtq.data)
+  const round = shown(gtq.data, url.rd)
   const sheetSel = round ? pickSheet(round, url.sel) : null
   const gsel = url.mode === 'goldens' ? pick(gold, url.sel) : null
   return (
@@ -117,7 +117,7 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
               <h6 className={s.head}>{W.gate.earlier}</h6>
               <ul className={s.tree}>
                 {gtq.data.rounds.filter((r) => r.round !== round.round).reverse().map((r) => (
-                  <li key={r.round}><span className={`${s.row} ${s.plain}`}><span className={s.label}>{W.gate.round(r.round)}</span><span className={s.num}>{day(r.asked_at)}</span></span></li>
+                  <li key={r.round}><button className={s.row} onClick={() => go({ rd: r.round === gtq.data?.current ? null : r.round })} title={W.gate.round(r.round)}><span className={s.mono}>{r.round}</span><span className={s.label}>{W.gate.round(r.round)}</span><span className={s.num}>{day(r.asked_at)}</span></button></li>
                 ))}
               </ul>
             </section>

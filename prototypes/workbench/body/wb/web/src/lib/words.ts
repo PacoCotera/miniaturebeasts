@@ -10,8 +10,10 @@ export const W = {
     order: 'Sign in order', reviewer: 'Reviewer', owner: 'Owner', you: 'you', afterYou: 'after you', export: 'Export', forReview: 'For review', releaseRow: 'Release', afterBoth: 'after both signatures', sendBack: 'Send back', seeIt: 'See it', // mocks/studio/06-gate
     ticked: (k: number, n: number) => `${k} of ${n} ticked`, // st.inbox.round
     oneFails: 'One check fails', signAnyway: 'Sign anyway, or send it back.', // st.gate.red (the check's own fail line sits between)
-    // OWED to the copywriter (words.md has none): the voided line, the signed-by line, the plural of the red card, each sheet's one judgement sentence, the sheet pages' own sentences.
-    voided: 'Changed after signing · both signatures are void', signedBy: (who: string, day: string) => `${who} · ${day}`, manyFail: (n: number) => `${n} checks fail`, sentBack: 'Sent back',
+    // OWED to the copywriter (words.md has none): the voided line (with who changed the file and whose signatures it voided), the signed-by line, the plural of the red card, each sheet's one judgement sentence, the sheet pages' own sentences,
+    // and the earlier-round view's two lines (the read-only note and the way back to the current round).
+    voided: (by: string | null, who: string[]) => `Changed after signing${by ? ` by ${by}` : ''} · ${who.length ? `signatures of ${who.join(' and ')} are void` : 'both signatures are void'}`,
+    readOnly: 'An earlier round · look only', backTo: (n: number) => `Back to round ${n}`, signedBy: (who: string, day: string) => `${who} · ${day}`, manyFail: (n: number) => `${n} checks fail`, sentBack: 'Sent back',
   },
   jobsWait: 'Waiting for a worker', // st.jobs.wait
   leaseBanner: (who: string) => `${who} is editing`, // st.lease.banner

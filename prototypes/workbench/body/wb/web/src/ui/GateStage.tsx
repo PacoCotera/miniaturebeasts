@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { Species } from '../lib/api'
-import { current, gateOne, pickSheet, sheetUrl } from '../lib/gate'
+import { gateOne, pickSheet, shown, sheetUrl } from '../lib/gate'
 import type { StudioUrl } from '../lib/url'
 import { W } from '../lib/words'
 import s from './GateStage.module.css'
@@ -10,7 +10,7 @@ import s from './GateStage.module.css'
 export function GateStage({ url, species, inset = 0 }: { url: StudioUrl; species: Species | undefined; inset?: number }) {
   const q = useQuery({ ...gateOne(url.species), enabled: !!species })
   const g = q.data
-  const r = current(g)
+  const r = shown(g, url.rd)
   const sh = r ? pickSheet(r, url.sel) : null
   const [bad, setBad] = useState(false)
   useEffect(() => setBad(false), [sh?.url])

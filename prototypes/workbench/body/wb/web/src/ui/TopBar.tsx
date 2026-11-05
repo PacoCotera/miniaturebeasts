@@ -15,7 +15,7 @@ import { usePortraitSheet } from '../lib/useStudio'
 import { nextSeed, runSheet, varietyOne } from '../lib/variety'
 import { getToken, postJob } from '../lib/api'
 import { goldenJob, goldensOne } from '../lib/goldens'
-import { allTicked, canJudge, current, gateOne, meOne, turn, useGateActions, isOpen } from '../lib/gate'
+import { allTicked, canJudge, current, gateOne, isEarlier, meOne, shown, turn, useGateActions, isOpen } from '../lib/gate'
 import s from './TopBar.module.css'
 
 export function TopBar({ url, species, go }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>) => void }) {
@@ -41,6 +41,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
   const me = useQuery({ ...meOne(), enabled: url.mode === 'gate' }).data
   const act = useGateActions(url.species)
   const round = current(gq)
+  const looking = isEarlier(gq, shown(gq, url.rd))                                   // an earlier round is looked at, never acted on: no primary button
   const t = turn(round)
   const judge = canJudge(me)
   const signAndRelease = async () => { if (round && (await act.sign(round.round))) await postJob(url.species, 'export', { mode: 'release' }).catch((e: Error) => act.fail(e.message)) }
@@ -73,7 +74,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
         {sheet && <button className={s.iconbtn} onClick={toggleInsp} aria-label="Inspector"><span className={s.panelIcon} /></button>}
         <button className={s.quiet} disabled>{W.play}</button>
         {url.mode === 'goldens' && (ask ? <button className={s.primary} disabled>{W.gold.ask}</button> : <button className={s.primary} onClick={makeGoldens} disabled={!getToken() || !species}>{W.gold.make}</button>)}
-        {url.mode === 'gate' && species && !!getToken() && (!isOpen(round) && !judge
+        {url.mode === 'gate' && species && !!getToken() && !looking && (!isOpen(round) && !judge
           ? <button className={s.primary} onClick={() => void act.ask()} disabled={act.busy}>{W.gate.ask}</button>
           : round && judge && t === 'reviewer' && me?.role === 'reviewer' ? <button className={s.primary} onClick={() => void act.sign(round.round)} disabled={act.busy || !allTicked(round)}>{W.gate.sign(round.round)}</button>
           : round && judge && t === 'owner' && me?.role === 'owner' ? <button className={s.primary} onClick={() => void signAndRelease()} disabled={act.busy}>{W.gate.release}</button> : null)}

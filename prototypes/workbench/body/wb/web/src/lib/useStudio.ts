@@ -6,7 +6,7 @@ export function useStudioUrl(): [StudioUrl, (patch: Partial<StudioUrl>, replace?
   const { pathname, search } = useLocation()
   const navigate = useNavigate()
   const cur = parseStudioUrl(pathname, search) as StudioUrl
-  const go = useCallback((patch: Partial<StudioUrl>, replace = false) => navigate(buildStudioUrl({ ...cur, ...patch }), { replace }), [cur.species, cur.mode, cur.sel, cur.az, cur.view, cur.drawer, cur.proof, cur.ind, cur.seed, cur.cmp, cur.gv, navigate]) // eslint-disable-line react-hooks/exhaustive-deps
+  const go = useCallback((patch: Partial<StudioUrl>, replace = false) => navigate(buildStudioUrl({ ...cur, ...patch }), { replace }), [cur.species, cur.mode, cur.sel, cur.az, cur.view, cur.drawer, cur.proof, cur.ind, cur.seed, cur.cmp, cur.gv, cur.rd, navigate]) // eslint-disable-line react-hooks/exhaustive-deps
   return [cur, go]
 }
 

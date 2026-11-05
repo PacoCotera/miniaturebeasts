@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getToken, postJob, type Species } from '../lib/api'
 import { checkMetas, failLine, needsYou } from '../lib/checks'
-import { canJudge, current, day, gateOne, isOpen, meOne, pickSheet, shortHash, turn, useGateActions, useGateError, type Round } from '../lib/gate'
+import { canJudge, day, gateOne, isEarlier, isOpen, meOne, pickSheet, shortHash, shown, turn, useGateActions, useGateError, voidedNames, current, type Round } from '../lib/gate'
 import type { StudioUrl } from '../lib/url'
 import { W } from '../lib/words'
 import s from './GateInspector.module.css'
@@ -26,22 +26,24 @@ export function GateInspector({ species, url, go }: { species: Species; url: Stu
   const act = useGateActions(url.species)
   const err = useGateError(url.species)
   const g = q.data
-  const r = current(g)
+  const r = shown(g, url.rd)
+  const earlier = isEarlier(g, r)
   const [note, setNote] = useState('')
   useEffect(() => setNote(r?.note ?? ''), [r?.round, r?.note])
   if (!g) return <p className={s.help}>{q.isError ? (q.error as Error).message : '…'}</p>
   if (!r) return <><div className={s.title}><b>{species.file.name || url.species}</b></div>{err && <p className={s.err} role="alert">{err}</p>}</>
   const sh = pickSheet(r, url.sel)
-  const open = isOpen(r)
+  const open = isOpen(r) && !earlier
   const judge = canJudge(me)
   const t = turn(r)
   const fails = needsYou((species.checks?.rows ?? []).filter((x) => x.state === 'fail'))
-  const you = (role: 'reviewer' | 'owner') => (me?.role === role && judge ? W.gate.you : null)
+  const you = (role: 'reviewer' | 'owner') => (me?.role === role && judge && !earlier ? W.gate.you : null)
   const exportJob = (mode: 'review' | 'release') => void postJob(url.species, 'export', { mode }).catch((e: Error) => act.fail(e.message))
   return (
     <>
       <div className={s.title}><b>{W.gate.round(r.round)}</b><span className={s.kind}>{W.gate.file} {shortHash(r.file_hash)}</span></div>
-      {r.state.voided && <p className={s.void} role="status"><i />{W.gate.voided}</p>}
+      {earlier && <p className={s.line} role="status">{W.gate.readOnly} · <button className={s.link} onClick={() => go({ rd: null })}>{W.gate.backTo(current(g)?.round ?? r.round)}</button></p>}
+      {r.state.voided && <p className={s.void} role="status"><i />{W.gate.voided(r.voided?.by ?? null, voidedNames(r))}</p>}
       {r.verdict === 'back' && <p className={s.void} role="status"><i />{W.gate.sentBack}</p>}
       {judge && open && !r.reviewer && sh && (
         <div className={s.judge}>
@@ -49,11 +51,11 @@ export function GateInspector({ species, url, go }: { species: Species; url: Stu
           <textarea placeholder={W.gate.note} value={note} onChange={(e) => setNote(e.target.value)} onBlur={() => note !== r.note && void act.note(r.round, note)} aria-label={W.gate.note} />
         </div>
       )}
-      {!judge && r.note && <p className={s.line}>{r.note}</p>}
+      {(!judge || earlier) && r.note && <p className={s.line}>{r.note}</p>}
       <h6 className={s.h}>{W.gate.order}</h6>
       <div className={s.steps}>
         <Step n={1} label={W.gate.reviewer} who={r.reviewer ? null : you('reviewer')} sign={r.state.reviewer_valid ? r.reviewer : null} state={r.state.reviewer_valid ? 'done' : t === 'reviewer' ? 'now' : 'wait'} note={W.gate.ticked(r.state.ticked, r.sheets.length)} />
-        <Step n={2} label={W.gate.owner} who={you('owner')} sign={r.state.owner_valid ? r.owner : null} state={r.state.owner_valid ? 'done' : t === 'owner' ? 'now' : 'wait'} note={me?.role === 'reviewer' && judge && !r.state.owner_valid ? W.gate.afterYou : ''} />
+        <Step n={2} label={W.gate.owner} who={you('owner')} sign={r.state.owner_valid ? r.owner : null} state={r.state.owner_valid ? 'done' : t === 'owner' ? 'now' : 'wait'} note={me?.role === 'reviewer' && judge && !earlier && !r.state.owner_valid ? W.gate.afterYou : ''} />
       </div>
       {judge && open && fails.length > 0 && (
         <div className={s.card}>
@@ -63,9 +65,13 @@ export function GateInspector({ species, url, go }: { species: Species; url: Stu
         </div>
       )}
       {err && <p className={s.err} role="alert">{err}</p>}
-      <h6 className={s.h}>{W.gate.export}</h6>
-      <div className={s.field}><label>{W.gate.forReview}</label><span className={s.v}><button className={s.link} onClick={() => exportJob('review')} disabled={!getToken()}>{W.gate.export}</button></span></div>
-      <div className={s.field}><label>{W.gate.releaseRow}</label><span className={s.v}>{g.signed ? <button className={s.link} onClick={() => exportJob('release')} disabled={!getToken()}>{W.gate.export}</button> : <span className={s.quiet}>{W.gate.afterBoth}</span>}</span></div>
+      {!earlier && (
+        <>
+          <h6 className={s.h}>{W.gate.export}</h6>
+          <div className={s.field}><label>{W.gate.forReview}</label><span className={s.v}><button className={s.link} onClick={() => exportJob('review')} disabled={!getToken()}>{W.gate.export}</button></span></div>
+          <div className={s.field}><label>{W.gate.releaseRow}</label><span className={s.v}>{g.signed ? <button className={s.link} onClick={() => exportJob('release')} disabled={!getToken()}>{W.gate.export}</button> : <span className={s.quiet}>{W.gate.afterBoth}</span>}</span></div>
+        </>
+      )}
     </>
   )
 }

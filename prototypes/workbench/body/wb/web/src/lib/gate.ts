@@ -18,6 +18,11 @@ export const sheetUrl = (id: string, n: number, sheet: string) => apiPath(`/api/
 // Reviewers and the owner judge; a maker (and any agent) does not see the controls at all.
 export const canJudge = (me: Me | undefined) => !!me && !me.agent && (me.role === 'reviewer' || me.role === 'owner')
 export const current = (g: Gate | undefined): Round | null => g?.rounds.find((r) => r.round === g.current) ?? null
+// The round on the screen: the earlier one the address names (`rd`), else the current. An earlier round is only looked at: nothing on it can be ticked, signed or sent back.
+export const shown = (g: Gate | undefined, rd: number | null): Round | null => g?.rounds.find((r) => r.round === rd && r.round !== g.current) ?? current(g)
+export const isEarlier = (g: Gate | undefined, r: Round | null) => !!g && !!r && r.round !== g.current
+// Who signed the round and was voided by the change: the names on the voided line.
+export const voidedNames = (r: Round): string[] => [r.reviewer, r.owner].flatMap((x) => (x ? [x.name] : []))
 // The round's open state: a verdict closes it, a changed file voids its signatures.
 export const isOpen = (r: Round | null) => !!r && !r.verdict && r.state.live
 export const allTicked = (r: Round) => r.state.ticked === r.sheets.length
