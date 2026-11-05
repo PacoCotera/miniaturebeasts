@@ -149,7 +149,7 @@ def _part_index(doc, pid):
 def look_names(doc, locus, ids):
     """The copywriter's name for each look of a trait ({id: [label, short word]}), from the file's own look words; a look it has no words for is left out and the page spells the id."""
     words = ((doc.get("variety") or {}).get("look_words") or {}).get(locus) or {}
-    return {i: list(words[i]) for i in ids if isinstance(words.get(i), list) and len(words[i]) == 2}
+    return {i: list(words[i])[:2] for i in ids if isinstance(words.get(i), list) and len(words[i]) in (2, 3)}
 
 
 # The studio's names for looks the file has no words for (a socket's families that are not traits): the look's name, then its id in brackets so the id never goes missing (cw-chunks-21-22).

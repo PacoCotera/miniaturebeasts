@@ -95,18 +95,160 @@
   }
  },
  "skeleton": {
-  "chest": [
-   0.0,
-   0.0,
-   0.95
+  "chest_at": 0.06,
+  "pelvis_at": 0.44,
+  "shoulder_off": [
+   0.12,
+   0.5,
+   -0.23
   ],
-  "pelvis": [
-   -0.8,
+  "hip_off": [
    0.0,
-   0.95
-  ]
+   0.46,
+   -0.29
+  ],
+  "note": "the girdles: a chest joint on the spine at 0.06 along the back range and a pelvis joint at 0.44 along the seat range, so the legs follow the trunk when a range moves; each leg's root is its shoulder or hip, an offset from its girdle joint (left side; the right is the mirror image)"
  },
- "parts": [],
+ "parts": [
+  {
+   "id": "fore.L",
+   "kind": "limb",
+   "parent": "torso",
+   "label": "limb",
+   "socket": {
+    "join": "soft",
+    "kind": "patch",
+    "col": 5,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.02,
+    "transition": 1,
+    "gap": 0.08,
+    "match": "distance"
+   },
+   "root": {
+    "name": "shoulder",
+    "r": [
+     0.27,
+     0.28
+    ],
+    "role": "mass"
+   },
+   "chain": [
+    {
+     "joint": "elbow",
+     "len": 0.2,
+     "pitch": -92,
+     "r": [
+      0.21,
+      0.22
+     ],
+     "apex": "back"
+    },
+    {
+     "joint": "wrist",
+     "len": 0.24,
+     "pitch": -84,
+     "r": [
+      0.19,
+      0.19
+     ],
+     "apex": "fwd"
+    },
+    {
+     "joint": "sole",
+     "len": 0.2814,
+     "pitch": -90,
+     "r": [
+      0.22,
+      0.25
+     ],
+     "role": "end"
+    }
+   ],
+   "fillet": 1.25,
+   "end": {
+    "kind": "paw",
+    "height": 0.22,
+    "flat": true,
+    "band": 0.14
+   },
+   "topology": {
+    "edge": 0.2
+   }
+  },
+  {
+   "id": "hind.L",
+   "kind": "limb",
+   "parent": "torso",
+   "label": "limb",
+   "socket": {
+    "join": "soft",
+    "kind": "patch",
+    "col": 6,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.02,
+    "transition": 1,
+    "gap": 0.08,
+    "match": "distance"
+   },
+   "root": {
+    "name": "hip",
+    "r": [
+     0.3,
+     0.3
+    ],
+    "role": "mass"
+   },
+   "chain": [
+    {
+     "joint": "knee",
+     "len": 0.22,
+     "pitch": -80,
+     "r": [
+      0.23,
+      0.23
+     ],
+     "apex": "fwd"
+    },
+    {
+     "joint": "hock",
+     "len": 0.24,
+     "pitch": -97,
+     "r": [
+      0.18,
+      0.18
+     ],
+     "apex": "back"
+    },
+    {
+     "joint": "sole",
+     "len": 0.2051,
+     "pitch": -90,
+     "r": [
+      0.22,
+      0.26
+     ],
+     "role": "end"
+    }
+   ],
+   "fillet": 1.25,
+   "end": {
+    "kind": "paw",
+    "height": 0.22,
+    "flat": true,
+    "band": 0.14
+   },
+   "topology": {
+    "edge": 0.2
+   }
+  }
+ ],
  "sockets": [],
  "face": {},
  "coat": {

@@ -224,7 +224,7 @@ def cage_key(spec, genome, stage="base"):
     spec = internal(spec)
     if is_quadruped(spec):
         quad_check_genome(genome)
-        return H.hash_of("cage", H.framework_id(), dict(plan=spec["plan"], spine=spec["spine"], parts=spec.get("parts")), stage)
+        return H.hash_of("cage", H.framework_id(), dict(plan=spec["plan"], spine=spec["spine"], skeleton=spec.get("skeleton"), parts=spec.get("parts")), stage)
     ind = resolve_genome(genome, spec)
     _, ci = cage_inputs(spec, ind)
     return H.hash_of("cage", H.framework_id(), spec, ci, stage)
@@ -328,7 +328,7 @@ def build(spec, genome="type", stage="base"):
 
 
 def build_quadruped(doc, genome="type", stage="base"):
-    """The quadruped's cage (quadruped.py): the horizontal spine in the plan's ranges. Its genes, legs and girdles come with the next chunks, so the stage only says how far the build went."""
+    """The quadruped's cage (quadruped.py): the horizontal spine in the plan's ranges, the girdles and four legs, and its balance over the four soles. Its genes come with a later chunk."""
     import quadruped as Q
     quad_check_genome(genome)
     t0 = time.perf_counter()
@@ -340,9 +340,12 @@ def build_quadruped(doc, genome="type", stage="base"):
     ch = H.cage_hash(body)
     V, F, *_ = body.full()
     key = cage_key(doc, genome, stage)
+    t1 = time.perf_counter()
+    body.ctx["balance"] = Q.balance(body)                          # the centre of mass over the four soles' polygon
+    T["balance"] = (time.perf_counter() - t1) * 1000
     T["total"] = (time.perf_counter() - t0) * 1000
     return Result(species=doc.get("id"), stage=stage, body=body, c={}, ind={}, genome_hash=H.hash_of("type"), key=key, cage_hash=ch, vertices=len(V), faces=len(F), timings_ms={k: round(v, 1) for k, v in T.items()},
-                  calls={}, parts={k: int(v) for k, v in body.parts.items()}, balance={})
+                  calls={}, parts={k: int(v) for k, v in body.parts.items()}, balance=H._norm(body.ctx.get("balance", {})))
 
 
 def _field_of(msg):

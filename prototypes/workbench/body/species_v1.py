@@ -76,7 +76,11 @@ SCHEMA = dict(
                 rump_gain=num("Seat fullness", "How far the back swells at the seat, under the tail.", rng="prof_rump_gain", unit="%")), rest=True)), rest=True),
     ), required=["ranges", "head_attach", "seat", "tail", "loft"]),
     skeleton=obj("Skeleton", "The girdles that anchor the limbs.", dict(chest=vec3("Chest joint", "The chest joint, on the back range."), pelvis=vec3("Pelvis joint", "The pelvis joint, in the seat range."),
-                                                                         shoulder=vec3("Shoulder joint", "Where the arm's shell sits."), hip=text("Hip joint", "Where the leg's root is taken from.", stage="shape"), note=text("Note", "A note.", stage="shape")), required=["chest", "pelvis"]),
+                                                                         shoulder=vec3("Shoulder joint", "Where the arm's shell sits."), hip=text("Hip joint", "Where the leg's root is taken from.", stage="shape"),
+                                                                         chest_at=num("Chest joint on the back", "A quadruped's chest joint: where on the back range it stands, 0 at the neck and 1 at the seat.", rng=(0.0, 1.0), unit=""),
+                                                                         pelvis_at=num("Pelvis joint on the seat", "A quadruped's pelvis joint: where on the seat range it stands, 0 at the back and 1 at the tail.", rng=(0.0, 1.0), unit=""),
+                                                                         shoulder_off=vec3("Shoulder offset", "A quadruped's shoulder: where the foreleg's root is from the chest joint (x forward, y outward, z up)."),
+                                                                         hip_off=vec3("Hip offset", "A quadruped's hip: where the hind leg's root is from the pelvis joint (x forward, y outward, z up)."), note=text("Note", "A note.", stage="shape"))),
     parts=dict(type="list", label="Parts", help="The limbs and appendages, each on a socket.", stage="shape", id_key="id", item=dict(
         id=text("Part", "The part's id.", stage="shape"), kind=dict(type="enum", values=["limb", "appendage"], label="Kind", help="A limb has a chain of joints; an appendage has families.", stage="shape"), parent=text("Parent", "The part it grows from.", stage="shape"),
         label=text("Label", "The part's group.", stage="shape"), socket=obj("Socket", "Where and how the part joins its parent.", dict(join=dict(type="enum", values=["hard", "soft"], label="Join", help="Hard: a separate shell sunk in. Soft: it grows out of the parent's skin. Nothing in between.", stage="shape"),
@@ -263,6 +267,13 @@ def validate(doc):
             tot = sum(s["share"] for s in segs)
             if abs(tot - 1.0) > 1e-6:
                 errs.append(("spine.tail.segments", f"spine.tail.segments: the shares add up to {tot:.4g}, they must add up to 1"))
+    if plan and doc.get("plan") == "biped" and isinstance(doc.get("skeleton"), dict):
+        for g in ("chest", "pelvis"):
+            if g not in doc["skeleton"]:
+                errs.append((f"skeleton.{g}", f"skeleton.{g}: missing (it is required: the {g} joint)"))
+    if plan and doc.get("plan") == "quadruped" and isinstance(doc.get("spine"), dict) and isinstance(doc.get("skeleton"), dict) and not errs:
+        import quadruped as QD
+        errs += QD.girdle_errors(doc)                        # the girdles on the spine in their ranges, the limbs named and standing on the floor
     if "play" in doc and isinstance(doc.get("genome"), dict) and plan:
         from wb import play as PL
         errs += PL.validate(doc)

@@ -1,4 +1,4 @@
-"""Chunk 17: the quadruped's cage. A horizontal spine in the plan's ranges, the head entered from behind on the spine axis, the neck band. No Blender here except the one render test at the end; the cage is plain numpy."""
+"""Chunks 17 and 18: the quadruped's cage. A horizontal spine in the plan's ranges, the head entered from behind on the spine axis, the neck band; the girdles, four three-joint legs with flat soles and balance over the four soles. No Blender here except the render tests at the end; the cage is plain numpy."""
 import collections
 import copy
 import json
@@ -96,9 +96,10 @@ class TestCage(unittest.TestCase):
         self.assertGreater(r[b + 400], r[b] * 1.1)
 
     def test_the_head_ball_is_ahead_of_the_chest_on_the_axis(self):
-        V, *_ = self.body.full()
+        V, _, attr, *_ = self.body.full()
         p = Q.params(S22)
         V = np.asarray(V)
+        V = V[np.rint(np.asarray(attr)[:, 0]).astype(int) == self.body.parts["torso"]]           # the trunk's own vertices: a forefoot may reach as far forward as the head's rear
         self.assertAlmostEqual(V[:, 0].max(), p["x0"], delta=0.02)                              # the nose is the front end
         head = V[V[:, 0] > p["x0"] - p["head"]]
         self.assertAlmostEqual(0.5 * (head[:, 2].max() + head[:, 2].min()), p["axis_z"], delta=0.05)  # the head's centre is on the spine axis
@@ -112,6 +113,150 @@ class TestCage(unittest.TestCase):
         self.assertLess(gaps[:3].max(), gaps.max())                                              # the nose rings are closer than the barrel's
 
 
+def with_girdles(doc, **kv):
+    d = copy.deepcopy(doc)
+    d["skeleton"].update(kv)
+    return d
+
+
+class TestGirdles(unittest.TestCase):
+    def test_the_file_places_the_girdles_by_their_ranges_and_the_legs_by_offsets_from_them(self):
+        self.assertEqual(V1.validate(S22), [])
+        g = Q.girdle_joints(S22)
+        p = Q.params(S22)
+        back_u = (p["head"] + p["neck"], p["head"] + p["neck"] + p["back"])
+        seat_u = (back_u[1], p["trunk"])
+        self.assertTrue(back_u[0] <= g["u"]["chest"] <= back_u[1] and seat_u[0] <= g["u"]["pelvis"] <= seat_u[1])
+        for j in ("chest", "pelvis"):
+            self.assertEqual((g[j][1], g[j][2]), (0.0, p["axis_z"]))                              # on the spine axis
+            self.assertAlmostEqual(g[j][0], p["x0"] - g["u"][j], places=9)
+        lp = Q.limb_parts(S22)
+        self.assertEqual(sorted(lp), ["fore.L", "hind.L"])
+        self.assertTrue(np.allclose(lp["fore.L"]["P"][0], g["chest"] + np.array(S22["skeleton"]["shoulder_off"])))
+        self.assertTrue(np.allclose(lp["hind.L"]["P"][0], g["pelvis"] + np.array(S22["skeleton"]["hip_off"])))
+
+    def test_a_girdle_off_its_range_or_a_limb_that_is_not_on_the_floor_names_its_field(self):
+        for k, v, field in (("chest_at", 1.2, "skeleton.chest_at"), ("pelvis_at", -0.1, "skeleton.pelvis_at")):
+            errs = V1.validate(with_girdles(S22, **{k: v}))
+            self.assertEqual([e[0] for e in errs], [field])
+        d = copy.deepcopy(S22)
+        d["parts"][0]["chain"][2]["len"] += 0.1
+        self.assertEqual([e[0] for e in V1.validate(d)], ["parts.fore.L.chain"])
+        self.assertIn("from the floor", V1.validate(d)[0][1])
+        d = copy.deepcopy(S22)
+        del d["skeleton"]["hip_off"]
+        self.assertEqual([e[0] for e in V1.validate(d)], ["skeleton.hip_off"])
+        d = copy.deepcopy(S22)
+        d["parts"][1]["id"] = "hind.R"
+        self.assertEqual([e[0] for e in V1.validate(d)], ["parts.hind.R"])
+
+    def test_the_biped_still_needs_its_girdle_joints(self):
+        s20 = json.load(open(os.path.join(BODY, "species_v1", "S20.json")))
+        self.assertEqual(V1.validate(s20), [])
+        del s20["skeleton"]["chest"]
+        self.assertEqual([e[0] for e in V1.validate(s20)], ["skeleton.chest"])
+
+
+class TestLegs(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.body = Q.build(S22)
+        cls.V, cls.F, *_ = cls.body.full()
+        cls.V = np.asarray(cls.V)
+        cls.sk = Q.skeleton(S22)
+
+    def test_four_legs_in_a_closed_cage_the_right_side_the_mirror_of_the_left(self):
+        self.assertEqual(sorted(self.body.parts), ["fore.L", "hind.L", "torso"])
+        self.assertEqual(closed(self.body)[0], 0)
+        ys = self.V[:, 1]
+        for n in ("fore.L", "hind.L"):
+            self.assertTrue((ys > 0.01).any())
+        mirrored = {tuple(np.round(v * [1, -1, 1], 6)) for v in self.V}
+        self.assertTrue(all(tuple(np.round(v, 6)) in mirrored for v in self.V))                  # every vertex has its mirror image: two legs a side, four in all
+        self.assertEqual(len(F.proxy_mesh(self.body, 1)["V"]) < 3500, True)
+
+    def test_each_leg_is_three_joints_after_its_root_and_the_chain_stands_on_the_floor(self):
+        for name, lp in Q.limb_parts(S22).items():
+            self.assertEqual(len(lp["joints"]), 4, name)                                            # the root, then the knee, the ankle and the sole
+            self.assertEqual(len(S22["parts"][0]["chain"]), V1.PLANS["quadruped"]["limb_joints"])
+            self.assertLess(abs(lp["P"][-1][2]), Q.LEG_ON_FLOOR, name)
+            self.assertTrue(lp["P"][0][2] > lp["P"][1][2] > lp["P"][2][2] > lp["P"][3][2], name)    # every joint lower than the one above it
+
+    def test_the_soles_are_flat_and_the_four_stand_at_one_height(self):
+        import subdiv as SD
+        Vf, Ff, at, fpp, cr, mir = self.body.full()
+        V2, F2, _, a2, fp2 = SD.subdivide_body(self.body, Vf, Ff, cr, at, fpp, levels=2)
+        V2 = np.asarray(V2)
+        self.assertLess(V2[:, 2].min(), 0.02)
+        floor = {}
+        for n, i in self.body.parts.items():
+            if n == "torso":
+                continue
+            fv = np.unique(np.asarray(F2, int)[np.asarray(fp2).astype(int) == i])
+            pts = V2[fv]
+            for side, sel in (("L", pts[:, 1] > 0), ("R", pts[:, 1] < 0)):
+                s = pts[sel]
+                low = s[s[:, 2] < Q.SOLE_Z]
+                floor[f"{n.split('.')[0]}.{side}"] = (low[:, 2].min(), low[:, 2].max(), len(low))
+        self.assertEqual(sorted(floor), ["fore.L", "fore.R", "hind.L", "hind.R"])
+        zmin = [v[0] for v in floor.values()]
+        self.assertLess(max(zmin) - min(zmin), 1e-3)                                              # the four soles reach the same height
+        self.assertTrue(all(abs(v[0]) < 0.02 and v[2] > 20 for v in floor.values()))               # on the floor, each a sole of many vertices
+        for n, lp in Q.limb_parts(S22).items():
+            ri = self.body.ctx["info"]["limbs"][n]["ringinfo"]
+            self.assertTrue(np.allclose(ri[-1]["N"], [1, 0, 0]) and np.allclose(ri[-1]["B"], [0, -1, 0]), n)   # the foot's last rings are level
+
+    def test_balance_is_the_centre_of_mass_inside_the_polygon_of_the_four_soles_with_room_to_spare(self):
+        b = Q.balance(self.body)
+        self.assertTrue(b["inside"])
+        self.assertGreaterEqual(b["margin"], 0.15)                                                 # at least 0.15 of the polygon's shorter side from any edge
+        self.assertEqual(sorted(b["soles"]), ["fore.L", "fore.R", "hind.L", "hind.R"])
+        c = {k: v["centre"] for k, v in b["soles"].items()}
+        self.assertTrue(c["hind.L"][0] < b["com"][0] < c["fore.L"][0] + 0.2)                        # the centre of mass lies between the hind soles and the front of the forefeet
+        self.assertGreater(c["fore.L"][1], 0)
+        self.assertAlmostEqual(c["fore.L"][1], -c["fore.R"][1], places=6)
+        self.assertAlmostEqual(b["com"][1], 0.0, places=6)                                          # a mirrored body's centre of mass is on the midline
+        self.assertGreater(b["volume"], 2.0)
+
+    def test_the_polygon_moves_with_the_legs_and_a_front_heavy_mibi_tips_out_of_it(self):
+        d = copy.deepcopy(S22)
+        d["skeleton"]["shoulder_off"] = [-0.4, 0.5, -0.23]                                           # forelegs far back: the head hangs over nothing
+        d["parts"][0]["chain"][1]["pitch"] = -118
+        d["parts"][0]["chain"][2]["len"] = round(0.72 + 0.2 * np.sin(np.radians(-95)) + 0.24 * np.sin(np.radians(-118)), 4)     # the sole still ends on the floor
+        b = Q.balance(Q.build(d))
+        self.assertLess(b["margin"], Q.balance(self.body)["margin"])
+
+    def test_the_legs_follow_the_ranges(self):
+        for name, e in (("head", 0.9), ("neck", 0.35), ("back", 1.4), ("seat", 0.6)):
+            d = with_range(S22, name, e)
+            self.assertEqual(V1.validate(d), [], (name, e))
+            b = Q.build(d)
+            self.assertEqual(closed(b)[0], 0, (name, e))
+            g = Q.girdle_joints(d)
+            p = Q.params(d)
+            self.assertAlmostEqual(g["u"]["chest"] - (p["head"] + p["neck"]), S22["skeleton"]["chest_at"] * p["back"], places=9)
+            self.assertLess(abs(Q.limb_parts(d)["fore.L"]["P"][-1][2]), Q.LEG_ON_FLOOR)
+            self.assertTrue(Q.balance(b)["inside"], (name, e))
+
+    def test_the_skeleton_is_a_spine_two_girdles_and_three_bones_to_a_leg(self):
+        J, B = self.sk["joints"], self.sk["bones"]
+        names = [b[0] for b in B]
+        self.assertEqual(len(names), len(set(names)))
+        for b in B:
+            self.assertIn(b[2], J)
+            self.assertIn(b[3], J)
+        legs = [b for b in B if b[1] == "leg"]
+        self.assertEqual(sorted(b[0] for b in legs), sorted(f"{k}.{bn}.{s}" for k in ("fore", "hind") for bn in ("upper", "lower", "paw") for s in "LR"))
+        girdle = {b[0]: (b[2], b[3]) for b in B if b[1] == "girdle"}
+        self.assertEqual(sorted(girdle), ["girdle.fore.L", "girdle.fore.R", "girdle.hind.L", "girdle.hind.R"])
+        self.assertTrue(all(v[0] == ("chest" if "fore" in k else "pelvis") for k, v in girdle.items()))       # each girdle bone runs from its girdle joint to the leg's root
+        for k in ("fore.shoulder.L", "hind.hip.R"):
+            self.assertIn(k, J)
+        self.assertTrue(np.allclose(J["fore.sole.L"] * [1, -1, 1], J["fore.sole.R"]))
+        for s in "LR":
+            self.assertLess(abs(J[f"fore.sole.{s}"][2]), Q.LEG_ON_FLOOR)
+
+
 class TestRangesAndKnobs(unittest.TestCase):
     def test_each_end_of_each_range_builds_a_closed_cage_with_the_neck_band_in_range(self):
         for name, (lo, hi) in PLAN["range_len"].items():
@@ -121,7 +266,7 @@ class TestRangesAndKnobs(unittest.TestCase):
                 b = Q.build(d)
                 self.assertEqual(closed(b)[0], 0, (name, e))
                 self.assertGreater(closed(b)[1], 0.5, (name, e))
-                self.assertLess(len(F.proxy_mesh(b, 1)["V"]), 3500, (name, e))
+                self.assertLess(len(F.proxy_mesh(b, 1)["V"]), 4200, (name, e))                    # the vertex budget by range is chunk 19's (mesh by range)
         for e in PLAN["tail_length"]:
             d = with_(S22, **{"spine.tail.length": e})
             self.assertEqual(V1.validate(d), [])
@@ -157,7 +302,7 @@ class TestRangesAndKnobs(unittest.TestCase):
 class TestFacade(unittest.TestCase):
     def test_the_facade_builds_the_quadruped_and_keys_it_by_the_spine_and_the_framework(self):
         r = F.build(S22)
-        self.assertEqual((r.species, r.vertices, r.stage), ("S22", 674, "base"))
+        self.assertEqual((r.species, r.vertices, r.stage), ("S22", 834, "base"))
         self.assertEqual(r.cage_hash, H.cage_hash(Q.build(S22)))
         k = F.cage_key(S22, "type")
         self.assertEqual(r.key, k)
@@ -258,7 +403,7 @@ class TestRender(unittest.TestCase):
         j = self.srv.submit("S22", "render", dict(modes=["clay"], az=[0, 32, 90, 180], sizes=[304]), None)
         self.srv.wait(j, 120)
         self.assertEqual(j.state, "done", j.error)
-        self.assertEqual(j.result["cage"]["vertices"], 674)
+        self.assertEqual(j.result["cage"]["vertices"], 834)
         for v in j.result["views"]:
             self.assertEqual(open(v["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
         self.assertEqual(len({v["key"] for v in j.result["views"]}), 4)
