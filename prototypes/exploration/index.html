@@ -2786,16 +2786,13 @@ function playerArt(dir, pose, fr) {
 function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) o.p[y * pb.w + x] = pb.p[y * pb.w + pb.w - 1 - x]; return o; }
 
 // ---------- Small items and features ----------
-// Pods: shell colour from the ground, a subtle mark from the species, and a dark outline so they read on grass and in shade.
-function podArt(shell, s, sp) {
-  return art('pod' + shell + (s || 1) + ':' + (sp ?? -1), () => {
+// Pods: shell colour from the ground and a dark outline so they read on grass and in shade. An unread pod shows nothing of its kind.
+function podArt(shell, s) {
+  return art('pod' + shell + (s || 1), () => {
     s = s || 1; const pb = new PB(16 * s, 20 * s), c = C[shell], P = (x, y, w, h, col) => pb.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), col);
     pb.ell(8 * s, 10.5 * s, 5.8 * s, 7.8 * s, c, { sh: [lite(c), shade(c)] });
     for (let i = -4; i <= 4; i++) P(8 + i, 12 + (Math.abs(i) > 3 ? 0 : 1), 1, 1, shade(c));
     P(5, 6, 1, 2, C.white);
-    if (sp === 0) { P(7, 4, 1, 3, C.plum); P(10, 4, 1, 3, C.plum); }               // Loika: two ear stripes
-    else if (sp === 1) { P(7, 3, 3, 3, C.gold); P(8, 4, 1, 1, C.cream); }        // Tuikis: a glowing dot
-    else if (sp === 2) { P(6, 8, 2, 1, C.red); P(9, 5, 2, 1, C.red); P(11, 9, 1, 2, C.red); } // Untuva: cap spots
     pb.outline(() => C.ink); return pb;
   });
 }
@@ -3978,7 +3975,7 @@ function drawPatch(t) {
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     // a find your Call or partner turned up stays outlined until you take it
     if (p.out) { const o2 = fr ? 0 : 1; for (let k = 2; k < ts - 2; k += 4) { R(W(x + k), H(y + 1 + o2), 2, 2, C.cream); R(W(x + k), H(y + ts - 3 - o2), 2, 2, C.cream); R(W(x + 1 + o2), H(y + k), 2, 2, C.cream); R(W(x + ts - 3 - o2), H(y + k), 2, 2, C.cream); } }
-    blit(podArt(POD_SHELL[p.g] || 'bone', 1, p.sp), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), spriteRm(p.x, p.y)); }
+    blit(podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), spriteRm(p.x, p.y)); }
   // what Confirm will act on
   const act = patchAction();
   if (act.run && act !== NOTHING) { const f = frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
@@ -4157,7 +4154,7 @@ function shieldBars(x, y, n, max, w, h) {
   for (let i = 0; i < max; i++) { const bx = x + i * (w + 3); if (i < n) { R(bx, y, w, h, C.bone); R(bx, y + h - 2, w, 2, C.fog); } else { R(bx, y, w, h, C.stone); R(bx + 1, y + 1, w - 2, h - 2, C.ink); } }
 }
 function podSlot(x, y, pod) {
-  if (pod) blit(podArt(POD_SHELL[pod.g] || 'bone', 1, pod.sp), x, y);
+  if (pod) blit(podArt(POD_SHELL[pod.g] || 'bone', 1), x, y);
   else dashedRect(x, y, 16, 20, C.stone);   // an empty slot: a free place, never an oval that reads as a zero
 }
 // Device status, far right of every top bar: battery and connectivity. Static placeholders for now.
@@ -4405,7 +4402,7 @@ function warnPicPlace(x0, y0, a) {
     over(canopyArt(under ? 1 : 0), tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
   for (const f of lay.feats) if (f.kind === 'o') { const under = tokens.some(q => q.y === f.y + 2 && q.x >= f.x && q.x <= f.x + 2);
     over(roofArt(under ? 1 : 0), f.x * ts + ((3 * ts - 104) >> 1), (f.y + 2) * ts - 10, f.x + 1, f.y); }
-  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1, q.sp), x0 + 8, y0 + 8);
+  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1), x0 + 8, y0 + 8);
   RT.remap = keepRm;
   g.restore();
   R(x0, y0, 32, 2, C.yellow); R(x0, y0 + 30, 32, 2, C.yellow); R(x0, y0, 2, 32, C.yellow); R(x0 + 30, y0, 2, 32, C.yellow);
@@ -4423,7 +4420,7 @@ const PIC = {
   warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 1), x, y)),
   charged: (x, y) => onGrass(x, y, () => blit(stoneArt(1, false, 0), x, y)),
   shelter: (x, y) => cen(SHELTER(), x, y),
-  pod: (x, y, p) => cen(podArt(POD_SHELL[p && p.g] || 'bone', 1, p && p.sp), x, y),
+  pod: (x, y, p) => cen(podArt(POD_SHELL[p && p.g] || 'bone', 1), x, y),
   full: (x, y, ps) => { podSlot(x, y + 6, (ps && ps[0]) || { g: 'meadow' }); podSlot(x + 16, y + 6, (ps && ps[1]) || { g: 'pond' }); },
   bank: (x, y) => cen2('crate', crateArt(), x, y),
   fog: (x, y) => ditherFill(x, y, 32, 32, 'fog', 8),
@@ -4636,7 +4633,7 @@ function drawMats(c, y) {
 // The pods held: each a pod at 2× in a 122×52 slot, with its species beside it when known; an empty slot is a dashed outline.
 function drawPods(pods, n, y) {
   for (let i = 0; i < n; i++) { const p = pods[i], x = 24 + i * 130; panel(x, y, 122, 52, C.ink, C.slate);
-    if (p) { blit(podArt(POD_SHELL[p.g] || 'bone', 2, p.sp), x + 8, y + 6); text(clipText(S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown', 122 - 46 - 4, 2), x + 46, y + 19, C.bone); }
+    if (p) { blit(podArt(POD_SHELL[p.g] || 'bone', 2), x + 8, y + 6); text(clipText(S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown', 122 - 46 - 4, 2), x + 46, y + 19, C.bone); }
     else dashedRect(x + 8, y + 6, 32, 40, C.stone); }
 }
 // A crate in the bay (read-only): its expedition number and its contents as icons.
