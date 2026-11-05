@@ -214,7 +214,7 @@
    "note": "the spec says Inter 15 medium; the face has Inter 16, 20 and 28 (open question in the T-20261016-222 report)"
   },
   "price": {
-   "right": 12,
+   "right": 8,
    "gap": 12,
    "px": 16,
    "colour": "price",

@@ -46,15 +46,15 @@
    "png": "create-shape-sealed.png"
   },
   "create-confirm": {
-   "hash": "5e3b4a13",
+   "hash": "2c82c82b",
    "png": "create-confirm.png"
   },
   "create-confirm-keep": {
-   "hash": "67c8522c",
+   "hash": "94271574",
    "png": "create-confirm-keep.png"
   },
   "create-confirm-S02": {
-   "hash": "fdbbc82f",
+   "hash": "93f01c57",
    "png": "create-confirm-s02.png"
   },
   "create-shape-first": {
@@ -70,7 +70,7 @@
    "png": "create-roll-100.png"
   },
   "create-confirm-dither-90": {
-   "hash": "3c8e4840",
+   "hash": "ae344e78",
    "png": "create-confirm-dither-90.png"
   },
   "create-grow-150": {

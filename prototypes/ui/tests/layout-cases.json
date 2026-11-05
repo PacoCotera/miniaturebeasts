@@ -344,11 +344,11 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "create/create-confirm-keep", "card": "create-L5-4", "verdict": "fault", "from": "owner card create-L5-4, marked fault: almost aligned: right edges 494 and 498, 4 → 0",
-    "expect": [
-     { "rule": "L5", "part": "b", "container": "opening", "node": "panelPrice#3", "other": "panelRoom", "mark": "owner", "why": "marked a fault by the owner: almost aligned: right edges 494 and 498, 4 → 0 in the reviewed run" }
+  { "state": "create/create-confirm-keep", "card": "create-L5-4", "verdict": "fault", "fixed": "price run inset 8", "from": "owner card create-L5-4, marked fault: almost aligned: right edges 494 and 498, 4 → 0",
+    "expect": [],
+    "clear": [
+     { "rule": "L5", "part": "b", "container": "opening", "node": "panelPrice#3", "other": "panelRoom", "mark": "owner", "why": "fixed: the price run's right inset is 8 (panel.json incubate.price.right), so its right edge sits on the room's edge, 498 and 498" }
     ],
-    "clear": [],
     "pending": [] },
   { "state": "create/create-grow-150", "card": "create-L6-2", "verdict": "fault", "from": "owner card create-L6-2, marked fault: an empty 120 x 61, 0.51 → 0.25",
     "expect": [

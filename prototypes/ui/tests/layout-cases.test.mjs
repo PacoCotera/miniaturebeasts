@@ -52,7 +52,7 @@ test("the owner's review: 98 cards, one case each: a fault expects (its own kind
   assert.equal(owner.length, 98); assert.equal(new Set(owner.map((c) => c.card)).size, 98, "one case a card");
   assert.deepEqual([by("fault").length, by("fine").length, by("unsure").length, by("unmarked").length], [53, 22, 21, 2]);
   for (const c of by("fault")) assert.ok(c.expect.length || c.fixed || c.ruled || c.pending.length, `${c.card}: a fault expects a finding, or names the commit that fixed it, or the owner's ruling that replaced it, or is pending`);
-  assert.deepEqual(by("fault").filter((c) => c.fixed).map((c) => c.card).sort(), ["vivarium-L1-10", "vivarium-L11-1", "vivarium-L7-11"], "three faults are fixed (L11-1 by Q1; L1-10 and L7-11 by the collection v2 build: the bed centred)");
+  assert.deepEqual(by("fault").filter((c) => c.fixed).map((c) => c.card).sort(), ["create-L5-4", "vivarium-L1-10", "vivarium-L11-1", "vivarium-L7-11"], "four faults are fixed (create-L5-4 by the price run's 8 px inset; L11-1 by Q1; L1-10 and L7-11 by the collection v2 build: the bed centred)");
   assert.deepEqual(by("fault").filter((c) => c.ruled).map((c) => [c.card, c.ruled]), [["vivarium-L10-1", "2026-10-29 14:38"]], "one fault is ruled (the window edge rule)");
   for (const c of by("fine")) assert.ok(c.clear.length && !c.expect.length, `${c.card}: a fine clears its kind`);
   for (const c of [...by("unsure"), ...by("unmarked")]) assert.ok(c.expect.length || c.clear.length, `${c.card}: as the tune left it`);
