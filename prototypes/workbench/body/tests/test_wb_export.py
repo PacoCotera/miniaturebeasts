@@ -138,6 +138,23 @@ class TestPipe(unittest.TestCase):
         self.assertLess(float(np.abs(M["N"] - np.asarray(live["N"])).max()), 5e-2)
 
 
+class TestStands(unittest.TestCase):
+    def test_the_layered_stand_is_the_golden_stand_pixel_for_pixel(self):
+        from wb import golden as G, pngio
+        shutil.rmtree(SCRATCH, ignore_errors=True)
+        out = os.path.join(SCRATCH, "stands")
+        man = EX.make(S20, out, stands=True, log=lambda m: None)
+        gd = os.path.join(BODY, "species_v1", "goldens", "S20", "stand")
+        sd = os.path.join(out, "stands")
+        idx = json.load(open(os.path.join(sd, "index.json")))["S20"]["adult"]["sizes"]["304x312"]
+        pairs = [(idx["base"], "adult-calm.png")] + [(l["file"], l["file"].replace("S20-", "").replace("adult-calm-", "adult-calm-", 1)) for l in idx["layers"] if l["op"] != "under"] + [("S20-adult-304x48-shadow.png", "adult-304x48-shadow.png")]
+        self.assertGreaterEqual(len(pairs), 4)
+        for mine, gold in pairs:
+            self.assertEqual(G.pixel_hash(pngio.read(os.path.join(sd, mine))), G.pixel_hash(pngio.read(os.path.join(gd, gold))), mine)
+        self.assertTrue(all(f["name"].startswith("stands/") for f in man["files"][4:]))
+        shutil.rmtree(SCRATCH, ignore_errors=True)
+
+
 class TestNoModelYet(unittest.TestCase):
     def test_a_plan_without_a_model_writer_says_so_and_writes_nothing(self):
         out = os.path.join(SCRATCH, "quad")

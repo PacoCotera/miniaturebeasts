@@ -147,6 +147,7 @@ def make(species_path, outdir, release=False, stands=True, log=print):
             if os.path.isdir(sd):
                 shutil.rmtree(sd)
             os.makedirs(sd)
+            RSET.solve_frames(RSET.Proxy(scratch), subject, scratch, [(304, 312)])          # the stand's framing, solved as the render set solves it, so the stands are the set's own pictures
             idx = {sid: {}}
             for r in RS.expand(spec):
                 if r["kind"] != "layers" or r["state"] != "ready" or r["pose"] == "anchor" or r["style"] != "plush":
