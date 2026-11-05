@@ -4,7 +4,7 @@
 // Station page fetches the frames beside it (the sandbox publishes prototypes/* side by side); the
 // tests read them from disk and call setFrames.
 import { LOCI, resolveCopies, isContinuous, quantize, valueRange } from "../../workbench/framework/catalogue.mjs";
-import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, readGenome, FRAME_VERSION } from "../../workbench/framework/species.mjs";
+import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, readGenome, readPin, FRAME_VERSION } from "../../workbench/framework/species.mjs";
 import { lookOf } from "../../workbench/framework/describe.mjs";
 import { cross, forecast, kinship, directKin, relatedness, identity, SPREAD, blendRange } from "../../workbench/framework/cross.mjs";
 import { frameFor as stampFrameFor } from "../../genome-stamp/src/frames.mjs";
@@ -19,7 +19,7 @@ export const speciesIndex = (id) => SP_INDEX.indexOf(id);           // -1 for a 
 export const speciesId = (index) => SP_INDEX[index] ?? null;
 
 const FRAMES = new Map();
-export function setFrames(list) { FRAMES.clear(); for (const f of list) FRAMES.set(f.species.id, f); }
+export function setFrames(list) { FRAMES.clear(); for (const f of list) FRAMES.set(f.species.id, f.catalogue && readPin(f.catalogue.version) !== f.catalogue.version ? { ...f, catalogue: { ...f.catalogue, version: readPin(f.catalogue.version) } } : f); }   // a frame stamped 11 in the short window before the bump to 12 reads as 12
 export const frameOf = (id) => FRAMES.get(id) ?? null;
 export const frameIds = () => [...FRAMES.keys()].sort();
 export const framesLoaded = () => FRAMES.size > 0;

@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, stepOf, stepValue, BLEND_STEPS } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
-import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK, frameVersionOf, readGenome } from "../framework/species.mjs";
+import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK, frameVersionOf, readGenome, readPin } from "../framework/species.mjs";
 import { RULES } from "../framework/envelope.mjs";
 import { cross, forecast, kinship, directKin, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
@@ -16,7 +16,7 @@ const framesDir = path.resolve(here, "../frames");
 const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 const frameOf = (id) => frames.find((f) => f.species.id === id);
 
-test("catalogue 11 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
+test("catalogue 12 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
   const v1 = CATALOGUE.loci.filter((l) => l.provenance.catalogue.startsWith("genomic-compositional-source-experiment"));
   const mine = CATALOGUE.loci.filter((l) => l.provenance.catalogue === "mb-genome-framework@7");
   assert.equal(v1.filter((l) => l.status === "validated").length, 114);
@@ -30,7 +30,8 @@ test("catalogue 11 carries catalogue6 plus the taxonomy's switches and loci, the
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
   assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 16, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, and ash");
-  assert.equal(CATALOGUE.version, 11, "pin 11: the Peplos genome (curl antennae, a locked dew tongue)");
+  assert.equal(CATALOGUE.version, 12, "pin 12: the Peplos genome (curl antennae, a locked dew tongue); 11 is the genome-string pin on the studio line");
+  assert.equal(CATALOGUE.schema, "mb-catalogue/12");
   assert.deepEqual(LOCI.get("appearance.body-palette").alleles.at(-1), { id: "ash", label: "ash", value: "#8e98a4" }, "ash appended last, so every older copy keeps its index");
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 10).length === 1);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 8).length === 3);
@@ -74,7 +75,7 @@ test("every frame carries only trunk loci its plan owns plus its clan's branch; 
   assert.ok(loika.absent.some((a) => a.id === "growth.wing-span-ratio"), "a Loika has no wing locus at all");
   assert.ok(loika.loci.some((l) => l.id === "appearance.belly-field" && l.scope === "branch"), "but its clan's belly field");
   assert.ok(loika.absent.some((a) => a.id === "anatomy.tail-tip-bulb" && a.why.includes("C03")));
-  assert.equal(frameVersionOf(loika), 4, "the Loika fine-tuned (owner 2026-10-17): frame version 4, with every frame on catalogue 11");
+  assert.equal(frameVersionOf(loika), 4, "the Loika fine-tuned (owner 2026-10-17): frame version 4, with every frame on catalogue 12");
   assert.equal(loika.counts.traits, 6, "six traits: the starter tier counts traits");
   assert.equal(loika.counts.open, 7, "Colour, the marking switch and layout, Crown, Eyes, Drive, Efficiency");
   assert.deepEqual(loika.loci.find((l) => l.id === "appearance.marking-switch").legacy, ["off"], "plain stays legal for a version-3 line");
@@ -577,7 +578,7 @@ test("a shed pod's pedigree is known only when its parent resolves, as a cross c
   assert.equal(relatedness(f, pod, m, () => null).pedigreeKnown, false, "an unresolvable parent: identity is the fallback");
 });
 
-// --- the Peplos genome (catalogue 11, frame 5 of the Peplos) ---------------------------------------------------
+// --- the Peplos genome (catalogue 12, frame 5 of the Peplos) ---------------------------------------------------
 
 const peplos = () => { const f = frameOf("S12"), g = typeSpecimen(f); return { f, g, built: buildIndividual(f, g) }; };
 const inQuad = (q, [x, z]) => { let s = 0; for (let i = 0; i < 4; i++) { const [ax, az] = q[i], [bx, bz] = q[(i + 1) % 4], c = (bx - ax) * (z - az) - (bz - az) * (x - ax); if (c !== 0) { if (s && Math.sign(c) !== s) return false; s = Math.sign(c); } } return true; };
@@ -656,4 +657,16 @@ test("the sleep rest stays flat: the flat value still builds the moth's roof ove
   const b = buildIndividual(flat, g); assert.equal(b.validation.status, "valid");
   const wing = b.scene.nodes.find((n) => n.id === "wing-fore-L"), body = b.scene.nodes.filter((n) => n.role === "primary-region"), top = Math.max(...body.map((x) => x.center[2] + x.radii[2]));
   assert.ok(Math.max(...wing.corners.map((c) => c[2])) < top, "lies along the flank, under the back line");
+});
+
+test("pins: a frame or save pinned to catalogue 10 loads as it is; a pin of 11 (the short window since the Peplos bump) reads as 12", () => {
+  assert.deepEqual([9, 10, 12].map(readPin), [9, 10, 12], "10 and every other pin pass through");
+  assert.equal(readPin(11), 12, "11 on this line is 12");
+  assert.equal(CATALOGUE.version, 12);
+  for (const pin of [10, 11, 12]) {
+    const f = { ...structuredClone(frameOf("S12")), catalogue: { ...frameOf("S12").catalogue, version: pin } };
+    const g = typeSpecimen(f);
+    assert.deepEqual(checkGenome(f, g), [], `a genome on a frame pinned ${pin} checks clean`);
+    assert.equal(buildIndividual(f, g).validation.status, "valid", `and builds, pinned ${pin}`);
+  }
 });
