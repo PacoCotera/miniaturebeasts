@@ -21,7 +21,7 @@ export type Stage = 'juvenile' | 'adult' | 'elder'
 export type PodPic = Pic & { job: string | null }
 export type Pod = { i: number; tries: number; genome: string; gated: { id: string; label: string; now: boolean }[] } & PodPic
 export type FamilyRow = { id: string; label: string; locus: string; look: string; how: 'often' | 'sometimes' | 'rarely' | 'grown'; share: number; pic: PodPic }
-export type Pods = { round: number; diff: Dial; grow: Stage; name: string; species: string; pods: Pod[]; grow_ends: ({ stage: Stage } & PodPic)[]; family: FamilyRow[]; names: string[] }
+export type Pods = { round: number; diff: Dial; grow: Stage; name: string; species: string; plural: string; pods: Pod[]; grow_ends: ({ stage: Stage } & PodPic)[]; family: FamilyRow[]; names: string[] }
 export type Kept = { id: string; name: string; species: string; parents: string[] }
 
 export const picUrl = (key: string) => apiPath(`/cas/${key}.png`)

@@ -80,7 +80,7 @@ function Row({ e, species }: { e: Entry; species: Species }) {
 export function FileDrawer({ species, url, go }: { species: Species; url: StudioUrl; go: Go }) {
   const lines = useMemo(() => JSON.stringify(species.file, null, 1).split('\n'), [species.file])
   return (
-    <DrawerFrame url={url} go={go} label="File" quiet={`${lines.length.toLocaleString('en-GB')} lines · Read only`}>
+    <DrawerFrame url={url} go={go} label="File" quiet={`${lines.length.toLocaleString('en-GB')} ${lines.length === 1 ? 'line' : 'lines'} · Read only`}>
       <div className={d.file} tabIndex={0} aria-label="The species file as JSON, read-only">
         <pre className={d.nums} aria-hidden="true">{lines.map((_, i) => i + 1).join('\n')}</pre>
         <pre className={d.code}>{lines.join('\n')}</pre>

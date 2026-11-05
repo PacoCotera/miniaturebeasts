@@ -150,10 +150,12 @@ class TestKin(unittest.TestCase):
     def test_pods_of_two_mibis_refuse_a_parent_and_its_child(self):
         a, b = copy.deepcopy(S71), copy.deepcopy(S71)
         a["id"], b["id"] = "M0001", "M0002"
-        b["play"] = dict(b["play"], parents=["M0001", "M0001"])
-        with self.assertRaises(ValueError) as r:
+        a["play"] = dict(a["play"], name="Churro")
+        b["play"] = dict(b["play"], parents=["M0001", "M0001"], name="Luna")
+        with self.assertRaises(PL.KinError) as r:
             PL.pods_with(a, b, lambda i: None)
-        self.assertEqual(str(r.exception), "direct kin (child): family does not cross")
+        self.assertEqual(str(r.exception), "Luna is Churro's child. Family can't cross.")
+        self.assertEqual(r.exception.rel, "child")
         c = copy.deepcopy(S71)
         c["id"] = "M0003"
         pods = PL.pods_with(a, c, lambda i: None)
@@ -234,6 +236,12 @@ class TestServer(unittest.TestCase):
         for bad in ("", "x" * 11, "Lu na!", None, 3):
             with self.assertRaises(SV.ApiError):
                 self.srv.keep("S71", dict(round=5, i=0, name=bad), dict(name="t", role="maker"))
+        with self.assertRaises(SV.ApiError) as r:
+            self.srv.keep("S71", dict(round=5, i=0, name="Churro"), dict(name="t", role="maker"))
+        self.assertEqual((r.exception.message, r.exception.extra), ("Churro has that name", dict(refused="taken", holder="Churro")))
+        with self.assertRaises(SV.ApiError) as r:
+            self.srv.keep("S71", dict(round=5, i=0, name="X"), dict(name="t", role="maker"))
+        self.assertEqual((r.exception.message, r.exception.extra), ("A name needs two letters", dict(refused="short")))
 
     def test_zz_a_toy_move_on_a_kept_mibi_builds_on_its_own_copies(self):
         k = self.srv.species.get("M0001")
@@ -256,11 +264,48 @@ class TestServer(unittest.TestCase):
         for a, b, rel in (("S71", "M0001", "child"), ("M0001", "S71", "parent"), ("M0001", "M0002", "same-parents")):
             with self.assertRaises(SV.ApiError) as r:
                 self.srv.pods(sp(a), 0, mate=b)
-            self.assertEqual((r.exception.status, r.exception.message), (409, f"direct kin ({rel}): family does not cross"))
+            na, nb = PL.mibi_name(sp(a).spec), PL.mibi_name(sp(b).spec)
+            want = f"{na} and {nb} have the same parents. Family can't cross." if rel == "same-parents" else f"{nb} is {na}'s {rel}. Family can't cross."
+            self.assertEqual((r.exception.status, r.exception.message, r.exception.extra), (409, want, dict(rel=rel)))
         ok = self.srv.pods(sp("M0001"), 0, mate="S72")
         self.assertEqual(len(ok["pods"]), 6)
         self.assertEqual([p["genome"] for p in ok["pods"]], [p["genome"] for p in self.srv.pods(sp("M0001"), 0, mate="S72")["pods"]])
         self.assertNotEqual(ok["pods"][0]["genome"], self.srv.pods(sp("M0001"), 0)["pods"][0]["genome"])
+
+
+class TestNamer(unittest.TestCase):
+    """The name sheet meets the game's namer: its list, its order, its rules and its eight refusal lines."""
+    def test_the_offers_are_the_games_list_in_its_order_without_held_names(self):
+        names = PL.game_names()
+        self.assertEqual(names[:4], ["Tita", "Kenya", "Simba", "Nina"])
+        offered = PL.offered_names(held=["Tita", "Nina"])
+        self.assertEqual(offered[:3], ["Kenya", "Simba", "Arya"])
+        self.assertEqual(len(offered), 12)
+        self.assertTrue(all(len(n) <= 10 for n in offered))
+        self.assertNotIn("Moss", PL.offered_names())
+        self.assertNotIn("Pemmi", PL.offered_names())
+
+    def test_the_game_says_no_the_games_way(self):
+        line = lambda n, **k: (PL.refuse_line(PL.name_problem(n, **k)) if PL.name_problem(n, **k) else None)
+        self.assertEqual(line("A"), "A name needs two letters")
+        self.assertEqual(line("Abcdefghijk"), "No room for more letters")
+        self.assertEqual(line("-Ab"), "Start with a letter")
+        self.assertEqual(line("Ab-"), "End with a letter")
+        self.assertEqual(line("A--b"), "One space or dash at a time")
+        self.assertEqual(line("Tuliko"), "A species has that name")
+        self.assertEqual(line("Lathreta"), "A clan has that name")
+        self.assertEqual(line("Churro", held=["churro"]), "churro has that name")
+        self.assertIsNone(line("Mo-Mo"))
+        self.assertEqual(sorted(PL.refusals()), sorted(["short", "full", "first", "last", "twice", "species", "clan", "taken"]))
+
+    def test_the_plural_is_the_species_name_with_an_s(self):
+        self.assertEqual(PL.plural_of(dict(name="Tuliko", id="S20")), "Tulikos")
+        self.assertEqual(PL.plural_of(dict(name="Tuliko", plural="Tuliko")), "Tuliko")
+
+    def test_the_paint_pots_and_family_words(self):
+        rows = PL.family_rows(dict(S71, id="S71"))
+        self.assertTrue(rows)
+        self.assertTrue(all(r["label"].endswith("s") or r["label"] in ("Whiskers",) for r in rows), [r["label"] for r in rows])
 
 
 if __name__ == "__main__":

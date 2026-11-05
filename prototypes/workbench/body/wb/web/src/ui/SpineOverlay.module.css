@@ -17,5 +17,6 @@
 .hand[data-kind=knob]:hover .knob, .hand[data-kind=knob][data-drag] .knob { fill: #ff7a33; }
 .hand:focus-visible .knob, .hand:focus-visible .dot { stroke: var(--focus); }
 .lead { stroke: #3d3954; stroke-width: 1; opacity: .55; stroke-dasharray: 2 3; vector-effect: non-scaling-stroke; }
-.kname { display: none; }
-.hand[data-on] .kname, .hand:hover .kname, .hand:focus-visible .kname, .hand[data-drag] .kname { display: block; }
+.kname { font-weight: 400; fill: #4d4960; }
+.hovername { display: none; }
+.hand:hover .hovername, .hand:focus-visible .hovername, .hand[data-drag] .hovername { display: block; }

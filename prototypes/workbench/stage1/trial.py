@@ -111,7 +111,7 @@ def template(man, frame_name):
 
 def gemini_call(model, parts, record):
     key = os.environ["GEMINI_API_KEY"]
-    ledger.require_ledger(); ledger.price("google", model)  # every paid call is logged at a known price: without the ledger the tool stops before the call
+    ledger.require_ledger(); ledger.require_day_line(); ledger.price("google", model)  # the game's day line, then every paid call is logged at a known price: without the ledger the tool stops before the call
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": "1:1", "imageSize": "1K"}}}
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"x-goog-api-key": key, "Content-Type": "application/json"}, method="POST")
@@ -229,7 +229,7 @@ def cmd_fetch():
 
 
 def cmd_token(only, check=False):
-    if not check: ledger.require_ledger()  # the check_cost dry run is free and writes no ledger line
+    if not check: ledger.require_ledger(); ledger.require_day_line()  # the game's day line; the check_cost dry run is free and writes no ledger line
     prompts = load_prompts()
     done = {(c["species"], c["individual"], c["purpose"]) for c in prompts["calls"] if c.get("status") == "ok"}
     pal = Image.open(os.path.join(REPO, "art/retro-diffusion-trial/companion-palette-48.png")).convert("RGB")

@@ -18,7 +18,7 @@ export function pillWords(rows: CheckRow[]): { text: string; kind: 'fail' | 'war
   if (!n) return null
   if (w === 0) return { text: `${n} to fix`, kind: 'fail', n }
   if (f === 0) return { text: n === 1 ? '1 needs a look' : `${n} need a look`, kind: 'warn', n }
-  return { text: `${n} need you`, kind: 'fail', n }
+  return { text: n === 1 ? '1 needs you' : `${n} need you`, kind: 'fail', n }
 }
 
 // The fail line (words.md 5.12): the row's own, with its placeholders filled by the check, else the check's, placeholders dropped.

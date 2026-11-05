@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { along, ends, knobValue, pointAt, project, screenAxis, type Camera, type V3 } from './spine'
+import { along, ends, knobValue, placeKnobLabels, pointAt, project, screenAxis, textWidth, type Camera, type V3 } from './spine'
 
 // The hero camera at az 90: the creature's left side, x running across the frame.
 const cam: Camera = { az: 90, el: 10, w: 608, h: 624, ppH: 190, centre: [-0.35, 0, 1.3], right: [0, 0, 0] as V3, up: [0, 0, 1] as V3 }
@@ -32,5 +32,25 @@ describe('the spine on the stage', () => {
     expect(knobValue(0.715, 9, 1.78, [0.45, 0.95], 0.004)).toBe(0.95)
     expect(knobValue(0.715, -9, 1.78, [0.45, 0.95], 0.004)).toBe(0.45)
     expect(knobValue(0.05, 0.1, -2.1, [0, 0.6], 0.005)).toBe(0)
+  })
+})
+
+describe('the knob labels', () => {
+  const frame = { w: 608, h: 624 }
+  it('keeps every label off the others, off the handles and off the range names', () => {
+    const knobs = [{ id: 'a', x: 100, y: 300, text: '1', selected: false }, { id: 'b', x: 160, y: 318, text: '0.7', name: 'Neck width', selected: true }, { id: 'c', x: 200, y: 304, text: '+5', selected: false }, { id: 'd', x: 290, y: 312, text: '+15', selected: false }]
+    const blocked = [{ x0: 500, y0: 380, x1: 600, y1: 400 }]
+    const placed = placeKnobLabels(knobs, blocked, 1.3, frame)
+    const boxes = placed.map((p, i) => {
+      const k = knobs[i], text = k.selected ? `${k.name}  ${k.text}` : k.text, w = textWidth(text, 1.3)
+      const x0 = k.x + p.value.dx - (p.value.anchor === 'end' ? w : p.value.anchor === 'middle' ? w / 2 : 0)
+      return { x0, x1: x0 + w, y0: k.y + p.value.dy - 16.6, y1: k.y + p.value.dy + 5 }
+    })
+    boxes.forEach((a, i) => boxes.forEach((b, j) => { if (i < j) expect(a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1).toBe(false) }))
+    knobs.forEach((k) => boxes.forEach((b, i) => { if (knobs[i] !== k) expect(b.x0 < k.x + 27 && k.x - 27 < b.x1 && b.y0 < k.y + 13 && k.y - 13 < b.y1).toBe(false) }))
+  })
+  it('puts a lone knob\'s value to its left', () => {
+    const [p] = placeKnobLabels([{ id: 'a', x: 300, y: 300, text: '1', selected: false }], [], 1, frame)
+    expect(p.value.anchor).toBe('end')
   })
 })

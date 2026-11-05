@@ -72,7 +72,7 @@ export const VOCAB = [
   ["face", "crown", "Crown", ["growth.crown-height-ratio"], ["low", "between", "tall"]],
   ["face", "ears", "Ears", ["anatomy.auricular-form", "growth.auricular-length-ratio"], ["short, round", "between", "long, pointed"]],
   ["face", "head", "Head", ["growth.head-length-ratio", "growth.head-width-ratio", "growth.head-depth-ratio", "growth.head-lift-ratio"], ["small, low", "between", "big, raised"]],
-  ["face", "antennae", "Antennae", ["growth.antenna-length-ratio", "anatomy.antenna-form"], ["short threads", "between", "long feathers"]],
+  ["face", "antennae", "Antennae", ["growth.antenna-length-ratio", "anatomy.antenna-form"], ["short threads", "between", "long curls"]],
   ["face", "ear-tilt", "Ears", ["anatomy.ear-tilt"], ["upright", "drooping"]],
   ["face", "horns", "Horns", ["growth.horn-curl", "anatomy.horn-branching"], ["straight", "between", "curled antlers"]],
   ["face", "brow-tufts", "Brows", ["growth.brow-tuft-length"], ["short tassels", "between", "long tassels"]],   // the switch itself is opened only by an authored trait (a species that has tassels keeps them)

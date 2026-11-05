@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { ApiError } from '../../lib/api'
 import { getClip, getPods, keepPod, picUrl, saveMove, type Clip, type Dial, type FamilyRow, type Pod, type Pods, type Stage } from '../../lib/play'
 import { P } from '../../lib/words'
 import { withEyes } from '../../lib/eyes'
@@ -214,13 +215,13 @@ export function PodsPage() {
       setKept((o) => ({ ...o, [keepKey(pod)]: k.id }))
       setToast(P.kept(k.name))
       window.setTimeout(() => setToast(null), 4000)
-    } catch { setToast(P.fail); window.setTimeout(() => setToast(null), 4000) }
+    } catch (e) { setToast(e instanceof ApiError && e.field === 'name' ? e.message : P.fail); window.setTimeout(() => setToast(null), 4000) }   // a name the namer refuses says so in the game's own line
   }
   return (
     <Frame>
       <div className={s.bar}>
-        <button className={s.round} aria-label={P.back} onClick={() => nav(`${root()}/${species}`)}><Chevron /></button>
-        <div className={s.titles}><span className={s.name}>{P.podsTitle(d?.name ?? '')}</span>{d && <span className={s.of}>{P.species(d.species)}</span>}</div>
+        <button className={s.round} aria-label={P.backPods(d?.name ?? '')} onClick={() => nav(`${root()}/${species}`)}><Chevron /></button>
+        <div className={s.titles}><span className={s.name}>{P.podsTitle(d?.name ?? '')}</span>{d && <span className={s.of}>{P.podsSub(d.plural)}</span>}</div>
         <button className={s.go} onClick={b.again}><span className={p.eggmark}><EggMark /></span>{P.again}</button>
       </div>
       {b.error ? <p className={s.err}>{P.noBench}</p> : (

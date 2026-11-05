@@ -39,3 +39,37 @@ export function along(c: Camera, axis: V3, dx: number, dy: number): number {
 }
 // What a knob's value becomes when its handle moves `h` H along its axis from the value `v0`: inside the plan's band, on the field's step.
 export const knobValue = (v0: number, h: number, gain: number, band: [number, number], step: number) => clamp(snap(v0 + h * gain, step), band)
+
+// Where the labels of the profile knobs stand. A knob's value (and, on the selected one, its name) goes beside it, and no label may sit on another label, on a handle or on a range's name: each takes the first
+// of its places that is clear, the selected knob first. Sizes are in the frame's own units; `px` is what one screen pixel is in them (a label is 14 px on the screen, whatever the plate's size).
+export type Box = { x0: number; y0: number; x1: number; y1: number }
+export type KnobLabel = { id: string; x: number; y: number; text: string; name?: string; selected: boolean }
+export type Placed = { id: string; value: { dx: number; dy: number; anchor: 'start' | 'middle' | 'end' }; name: { dx: number; dy: number } | null }
+const hits = (a: Box, b: Box) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1
+export const textWidth = (s: string, px: number) => s.length * 7.8 * px
+export function placeKnobLabels(knobs: KnobLabel[], blocked: Box[], px: number, frame: { w: number; h: number }): Placed[] {
+  const H = 16 * px, glyph = 21 * px, gy = 10 * px
+  const taken: Box[] = [...blocked, ...knobs.map((k) => ({ x0: k.x - glyph, y0: k.y - gy, x1: k.x + glyph, y1: k.y + gy }))]
+  const out = new Map<string, Placed>()
+  const inside = (b: Box) => b.x0 >= 2 && b.x1 <= frame.w - 2 && b.y0 >= 2 && b.y1 <= frame.h - 2
+  const free = (b: Box) => inside(b) && !taken.some((t) => hits(t, b))
+  const order = [...knobs].sort((a, b) => Number(b.selected) - Number(a.selected))
+  for (const k of order) {
+    const text = k.selected && k.name ? `${k.name}  ${k.text}` : k.text
+    const w = textWidth(text, px)
+    // [dx of the text's anchor, baseline dy, anchor] around the knob
+    const cands: ['start' | 'middle' | 'end', number, number][] = [
+      ['end', -26 * px, 5 * px], ['start', 26 * px, 5 * px],
+      ['middle', 0, -17 * px], ['middle', 0, 31 * px], ['middle', 0, -35 * px], ['middle', 0, 49 * px], ['middle', 0, -53 * px], ['middle', 0, 67 * px],
+    ]
+    if (k.selected) { const up = cands.splice(2, 4); cands.unshift(...up) }
+    const box = (c: (typeof cands)[number]): Box => {
+      const x0 = k.x + c[1] - (c[0] === 'end' ? w : c[0] === 'middle' ? w / 2 : 0)
+      return { x0, y0: k.y + c[2] - H * 0.8, x1: x0 + w, y1: k.y + c[2] + H * 0.25 }
+    }
+    const at = cands.find((c) => free(box(c))) ?? cands[0]
+    taken.push(box(at))
+    out.set(k.id, { id: k.id, value: { dx: at[1], dy: at[2], anchor: at[0] }, name: null })
+  }
+  return knobs.map((k) => out.get(k.id)!)
+}

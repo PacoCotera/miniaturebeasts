@@ -26,7 +26,7 @@ describe('times', () => {
   })
 })
 
-describe('toasts for other hands', () => {
+describe('toasts for edits made elsewhere', () => {
   it('shows nothing on the first look, then only entries not seen before', () => {
     const a = e(), b = e({ path: '/parts/tail/joints/3/len', hash_after: 'c' })
     expect(newEntries(null, [a])).toEqual([])

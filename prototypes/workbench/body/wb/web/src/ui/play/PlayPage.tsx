@@ -45,7 +45,7 @@ export function Pick() {
   }
   return (
     <Frame>
-      <div className={s.bar}><div className={s.mine} role="button" tabIndex={0} onClick={() => setShelfOpen((o) => !o)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setShelfOpen((o) => !o) }}>{P.mine}<span className={s.count} aria-label={mineList.length ? P.mine : P.noMibis}>{mineList.length}</span></div></div>
+      <div className={s.bar}><div className={s.mine} role="button" tabIndex={0} onClick={() => setShelfOpen((o) => !o)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setShelfOpen((o) => !o) }}>{P.mine}<span className={s.count} aria-label={P.count(mineList.length)}>{mineList.length}</span></div></div>
       <div className={s.pick}>
         <div className={s.head}><h1>{P.title}</h1><p>{P.sub}</p></div>
         {err ? <p className={s.err}>{P.noBench}</p> : (
@@ -109,7 +109,7 @@ function Slider({ toy, axis, at, spring, onPick }: { toy: Toy; axis: Axis; at: n
   const key = `${toy.id}.${axis.id}`
   return (
     <div className={s.slide} data-toy={key}>
-      {first && <End p={first.end} at={`${toy.id}.${axis.id}`} label={P.toyEnd(toy.label, 'first')} />}
+      {first && <End p={first.end} at={`${toy.id}.${axis.id}`} label={P.toyEnd(key, toy.label, 'first')} />}
       <div ref={track} className={s.track} role="slider" tabIndex={0} aria-label={P.axis[`${toy.id}.${axis.id}`]?.sr ?? `${toy.label} ${axis.id}`} aria-valuemin={0} aria-valuemax={steps.length - 1} aria-valuenow={at}
         onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); const f = at_(e); setDrag(f); send(near(f)) }}
         onPointerMove={(e) => { if (drag === null) return; const f = at_(e); setDrag(f); send(near(f)) }}
@@ -118,7 +118,7 @@ function Slider({ toy, axis, at, spring, onPick }: { toy: Toy; axis: Axis; at: n
         {steps.map((x: Step) => <i key={x.i} data-trim={!x.ok || undefined} />)}
         <span key={spring} className={s.knob} data-drag={drag !== null || undefined} style={{ left: drag !== null ? `calc(18px + (100% - 36px) * ${drag})` : `calc(18px + (100% - 36px) * ${pct(at) / 100})` }} />
       </div>
-      {last && <End p={last.end} at={`${toy.id}.${axis.id}`} label={P.toyEnd(toy.label, 'last')} />}
+      {last && <End p={last.end} at={`${toy.id}.${axis.id}`} label={P.toyEnd(key, toy.label, 'last')} />}
     </div>
   )
 }
@@ -143,12 +143,12 @@ function Pots({ axis, at, onPick }: { axis: Axis; at: number; onPick: (i: number
   useEffect(() => { urls.forEach((u, i) => { if (u) void potColour(u).then((c) => { if (c) setCol((o) => ({ ...o, [i]: c })) }) }) }, [urls])
   return (
     <div className={s.pots} role="radiogroup" aria-label={P.axis["paint.hue"].sr}>
-      {steps.map((x, i) => <button key={x.i} className={s.pot} role="radio" aria-checked={i === at} aria-label={P.pot(i + 1)} data-on={i === at || undefined} style={{ background: col[i] ?? `hsl(${x.value} 45% 58%)` }} onClick={() => onPick(i)} />)}
+      {steps.map((x, i) => <button key={x.i} className={s.pot} role="radio" aria-checked={i === at} aria-label={P.pot(x.value)} data-on={i === at || undefined} style={{ background: col[i] ?? `hsl(${x.value} 45% 58%)` }} onClick={() => onPick(i)} />)}
     </div>
   )
 }
 
-// The clay under the sculpting hands: solid warm clay with eyes that have a catch light.
+// The clay under the yarn: solid warm clay with eyes that have a catch light.
 function ClayFigure({ src, name, className }: { src: string; name: string; className: string }) {
   const [eyes, setEyes] = useState<string | null>(null)
   useEffect(() => { let dead = false; setEyes(null); void withEyes(src).then((u) => { if (!dead) setEyes(u) }); return () => { dead = true } }, [src])
@@ -203,7 +203,7 @@ export function Shape() {
   return (
     <Frame>
       <div className={s.bar}>
-        <button className={s.round} aria-label={P.back} onClick={() => nav(root())}><Chevron /></button>
+        <button className={s.round} aria-label={P.backShape} onClick={() => nav(root())}><Chevron /></button>
         <div className={s.titles}><span className={s.name}>{name}</span>{sp && <span className={s.of}>{P.species(sp)}</span>}</div>
         <button className={s.round} aria-label={P.undo} disabled={!b.undo} onClick={() => void b.doUndo()}><Arrow /></button>
         <button className={s.go} onClick={() => nav(`${root()}/${species}/pods`)}>{P.go}</button>

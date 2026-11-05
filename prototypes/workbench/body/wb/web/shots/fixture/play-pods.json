@@ -4,6 +4,7 @@
  "grow": "juvenile",
  "name": "Pemmi",
  "species": "Tuliko",
+ "plural": "Tulikos",
  "pods": [
   {
    "i": 0,
@@ -133,17 +134,17 @@
   }
  ],
  "names": [
+  "Tita",
+  "Kenya",
+  "Simba",
+  "Nina",
+  "Arya",
+  "Wero",
+  "Jax",
+  "Totopo",
   "Churro",
   "Luna",
-  "Michi",
-  "Pepita",
-  "Tilo",
-  "Nube",
-  "Bimbo",
-  "Tamal",
-  "Mochi",
-  "Pico",
-  "Lola",
-  "Fresa"
+  "Solovino",
+  "Lucky"
  ]
 }

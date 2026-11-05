@@ -10,7 +10,7 @@ import { PodsPage } from './PodsPage'
 afterEach(() => { cleanup(); vi.clearAllMocks() })
 const pic = (k: string, ready = true) => ({ key: ready ? k.padEnd(64, '0') : null, ready, job: ready ? null : 'j' + k })
 const pods = (hatched: number) => ({
-  round: 0, diff: 'some', grow: 'juvenile', name: 'Pemmi', species: 'Tuliko', names: ['Churro', 'Luna', 'Michi', 'Pepita', 'Tilo', 'Nube'],
+  round: 0, diff: 'some', grow: 'juvenile', name: 'Pemmi', species: 'Tuliko', plural: 'Tulikos', names: ['Churro', 'Luna', 'Michi', 'Pepita', 'Tilo', 'Nube'],
   pods: [0, 1, 2, 3, 4, 5].map((i) => ({ i, tries: 0, genome: 'g' + i, gated: i === 1 ? [{ id: 'whiskers', label: 'Whiskers', now: false }] : [], ...pic('p' + i, i < hatched) })),
   grow_ends: [{ stage: 'juvenile', ...pic('gy') }, { stage: 'elder', ...pic('ge') }],
   family: [{ id: 'a', label: 'Lantern tail', locus: 'l', look: 'lantern', how: 'often', share: 90, pic: pic('f1') }, { id: 'b', label: 'Dot pattern', locus: 'l', look: 'spots', how: 'sometimes', share: 25, pic: pic('f2') },
@@ -30,7 +30,7 @@ describe('P3, pods', () => {
     expect(screen.getAllByRole('button', { name: 'Keep' })).toHaveLength(6)
     expect((screen.getAllByRole('button', { name: 'Walk' })[5] as HTMLButtonElement).disabled).toBe(true)         // a pod that has not hatched cannot walk or be kept
     expect(screen.getByText('More pods')).toBeTruthy()
-    expect(screen.getByText('a Tuliko')).toBeTruthy()
+    expect(screen.getByText('young Tulikos')).toBeTruthy()
     const text = (container.textContent ?? '').toLowerCase()
     for (const w of ['baby', 'babies', 'beast', 'breed']) expect(text).not.toContain(w)
   })
@@ -44,7 +44,7 @@ describe('P3, pods', () => {
     expect((screen.getByRole('radio', { name: 'some' }) as HTMLElement).getAttribute('aria-checked')).toBe('true')
     expect(screen.getByText('In this family')).toBeTruthy()
     for (const w of ['often', 'sometimes', 'rarely', 'when grown']) expect(screen.getByText(w)).toBeTruthy()
-    expect(screen.getByRole('slider', { name: 'Age' }).getAttribute('aria-valuetext')).toBe('young')
+    expect(screen.getByRole('slider', { name: 'How old?' }).getAttribute('aria-valuetext')).toBe('young')
   })
 
   it('saves the dial and the age in the file and asks for the pods again at that width and age', async () => {
@@ -55,7 +55,7 @@ describe('P3, pods', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'wild' }))
     await waitFor(() => expect(m.saveMove).toHaveBeenCalledWith('S71', 'diff', 'width', 'wild'))
     await waitFor(() => expect(m.getPods).toHaveBeenLastCalledWith('S71', 0, 'wild', undefined))
-    fireEvent.keyDown(screen.getByRole('slider', { name: 'Age' }), { key: 'ArrowRight' })
+    fireEvent.keyDown(screen.getByRole('slider', { name: 'How old?' }), { key: 'ArrowRight' })
     await waitFor(() => expect(m.saveMove).toHaveBeenCalledWith('S71', 'grow', 'age', 'adult'))
     await waitFor(() => expect(m.getPods).toHaveBeenLastCalledWith('S71', 0, 'wild', 'adult'))
   })

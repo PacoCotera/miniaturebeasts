@@ -22,7 +22,7 @@ export function Plate({ src, kind, width, height, stale, progress, tag, tagKind,
   }, [next])
   const zs = zoom ? { transform: `scale(${zoom.s})`, transformOrigin: `${zoom.ox}% ${zoom.oy}%` } : undefined
   return (
-    <div className={`${s.plate} ${kind === 'clay' ? s.clay : ''} ${stale ? s.stale : ''} ${className ?? ''}`} style={{ width, height }} onPointerDown={onPointerDown} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave}>
+    <div className={`${s.plate} ${kind === 'clay' ? s.clay : ''} ${stale ? s.stale : ''} ${className ?? ''}`} style={{ width, height, ...(footer ? { ['--foot' as string]: `${footer}px` } : {}) }} onPointerDown={onPointerDown} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave}>
       {cur && <img className={s.img} style={{ ...(footer ? { bottom: footer, height: `calc(100% - ${footer}px)` } : {}), ...zs }} src={cur} alt={alt} draggable={false} />}
       {next && <img className={`${s.img} ${s.incoming}`} style={{ ...(footer ? { bottom: footer, height: `calc(100% - ${footer}px)` } : {}), ...zs }} src={next} alt="" draggable={false} />}
       {progress != null && <div className={s.progress} style={progress === 'indeterminate' ? undefined : { width: `${Math.round(progress * 100)}%` }} data-indeterminate={progress === 'indeterminate' || undefined} />}

@@ -4482,75 +4482,91 @@
    "form.ear-kind": {
     "prick": [
      "Pointy ears",
-     "pointy"
+     "pointy",
+     "Pointy ears"
     ],
     "lop": [
      "Floppy ears",
-     "floppy"
+     "floppy",
+     "Floppy ears"
     ],
     "nub": [
      "Nub ears",
-     "nub"
+     "nub",
+     "Nub ears"
     ]
    },
    "anatomy.tail-tip-form": {
     "lantern": [
      "Lantern tail",
-     "lantern"
+     "lantern",
+     "Lantern tails"
     ],
     "tuft": [
      "Tuft tip",
-     "tuft"
+     "tuft",
+     "Tuft tips"
     ],
     "plain": [
      "Plain tip",
-     "plain"
+     "plain",
+     "Plain tips"
     ]
    },
    "appearance.marking-layout": {
     "masked": [
      "Pale muzzle",
-     "muzzle"
+     "muzzle",
+     "Pale muzzles"
     ],
     "points": [
      "Dark points",
-     "points"
+     "points",
+     "Dark points"
     ],
     "bands": [
      "Tail bands",
-     "bands"
+     "bands",
+     "Tail bands"
     ],
     "patches": [
      "Patches",
-     "patches"
+     "patches",
+     "Patches"
     ],
     "spotted": [
      "Spotted back",
-     "spotted"
+     "spotted",
+     "Spotted backs"
     ],
     "capped": [
      "Head cap",
-     "cap"
+     "cap",
+     "Head caps"
     ]
    },
    "appearance.pattern-kind": {
     "spots": [
      "Dot pattern",
-     "dots"
+     "dots",
+     "Dotted coats"
     ],
     "labyrinth": [
      "Maze pattern",
-     "maze"
+     "maze",
+     "Maze coats"
     ],
     "rings": [
      "Ring pattern",
-     "rings"
+     "rings",
+     "Ringed coats"
     ]
    },
    "appearance.glow-pattern": {
     "belly-arcs": [
      "Belly arcs",
-     "belly arcs"
+     "belly arcs",
+     "Belly arcs"
     ]
    }
   },

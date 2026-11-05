@@ -121,7 +121,7 @@ export const initials = (name: string) => {
 // Times are shown in the viewer's own time zone (the browser's), never the server's; `tz` is for tests and for a shot taken on purpose in another zone.
 export const clock = (iso: string, tz?: string) => new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: tz }).format(new Date(iso))
 
-// An edit this page made itself is not announced to it: the toast is for other hands. A save notes the path and the value it is about to write; the entry that comes back in the undo log is that one.
+// An edit this page made itself is not announced to it: the toast is for edits made elsewhere. A save notes the path and the value it is about to write; the entry that comes back in the undo log is that one.
 const own = new Map<string, number>()
 const ownKey = (path: string, value: unknown) => `${path}|${JSON.stringify(value)}`
 export const noteOwn = (path: string, value: unknown, now = Date.now()) => { own.set(ownKey(path, value), now + 30_000) }

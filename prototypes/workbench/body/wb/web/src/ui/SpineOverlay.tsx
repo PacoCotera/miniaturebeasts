@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { Species } from '../lib/api'
 import { fmtNum, fmtVal, getAt, snap, clamp, valText } from '../lib/forms'
-import { along, ends, knobValue, pointAt, project, spineOne, type SpineKnob, type SpineRange, type SpineView, type V3 } from '../lib/spine'
+import { along, ends, knobValue, placeKnobLabels, pointAt, project, spineOne, textWidth, type Box, type Placed, type SpineKnob, type SpineRange, type SpineView, type V3 } from '../lib/spine'
 import { useField, useLive } from '../lib/useField'
 import s_ from './SpineOverlay.module.css'
 
@@ -24,30 +24,43 @@ export function SpineOverlay({ species, id, sel, scale, editable, go }: { specie
   const at = (u: number) => project(c, pointAt(v.path, v.step, u))
   const poly = (a: number, b: number) => { const n = Math.max(2, Math.round((b - a) / v.step)); return Array.from({ length: n + 1 }, (_, i) => at(a + ((b - a) * i) / n).map((x) => x.toFixed(1)).join(',')).join(' ') }
   const lo = (i: number) => (i ? hi[i - 1] : 0)
+  const px = 1 / scale                                                       // one screen pixel in the frame's units
+  const nameOf = (r: SpineRange, i: number) => `${r.name.charAt(0).toUpperCase()}${r.name.slice(1)}${lens[i] !== null ? ` ${fmtNum(lens[i]!)}` : ''}`
+  const colW = Math.max(...v.ranges.map((r, i) => textWidth(nameOf(r, i), px)))
+  const colLeft = c.w - 8 * px - colW - 6 * px
+  const edge: [number, number][] = [...Array.from({ length: Math.round(total / v.step) + 1 }, (_, i) => at(i * v.step)), ...(v.outline ? [...v.outline.back, ...v.outline.front].map(([x, z]) => project(c, [x, 0, z])) : [])]
+  const floor = Math.max(-Infinity, ...edge.filter(([x]) => x > colLeft).map(([, y]) => y + 18 * px))           // the names stand clear of what reaches into their margin (a tail's tip)
+  const rows = labelRows(v.ranges.map((r, i) => ({ r, i, xy: at((lo(i) + hi[i]) / 2) })), px, floor)
+  const blocked: Box[] = [
+    ...rows.map(({ r, i, y }) => ({ x0: c.w - 8 * px - textWidth(nameOf(r, i), px), y0: y - 14 * px, x1: c.w - 8 * px, y1: y + 5 * px })),
+    ...v.ranges.map((_, i) => { const [x, y] = at(hi[i]); return { x0: x - 12 * px, y0: y - 12 * px, x1: x + 12 * px, y1: y + 12 * px } }),
+  ]
+  const knobAt = (k: SpineKnob) => { const value = val(k.ptr, k.value), h = (value - k.value) / k.gain; const [x, y] = project(c, [k.at[0] + k.axis[0] * h, k.at[1] + k.axis[1] * h, k.at[2] + k.axis[2] * h]); return { k, value, x, y } }
+  const kn = v.knobs.map(knobAt)
+  const placed = placeKnobLabels(kn.map(({ k, value, x, y }) => ({ id: k.id, x, y, text: fmtVal(value, k.unit), name: species.labels?.[k.id] ?? k.name, selected: sel === k.part })), blocked, px, { w: c.w, h: c.h })
   return (
     <div className={s_.wrap} style={{ ['--k' as string]: scale }}>
       <svg className={s_.svg} viewBox={`0 0 ${c.w} ${c.h}`} aria-label="The spine: its ranges and profile knobs" role="group">
         {v.outline && (['back', 'front'] as const).map((e) => <polyline key={e} className={s_.outline} points={v.outline![e].map(([x, z]) => project(c, [x, 0, z]).map((n) => n.toFixed(1)).join(',')).join(' ')} />)}
         {v.ranges.map((r, i) => <g key={r.name}><polyline className={s_.casing} points={poly(lo(i), hi[i])} /><polyline className={s_.seg} stroke={r.sw ?? '#999'} points={poly(lo(i), hi[i])} /></g>)}
-        {labelRows(v.ranges.map((r, i) => ({ r, i, xy: at((lo(i) + hi[i]) / 2) })), scale, c.w).map(({ r, i, xy, y }) => (
+        {rows.map(({ r, i, xy, y }) => (
           <g key={`l${r.name}`}>
-            <line className={s_.lead} x1={xy[0]} y1={xy[1]} x2={c.w - 96} y2={y - 5} />
-            <text className={s_.lab} x={c.w - 8} y={y} textAnchor="end" data-range={r.name}>{r.name.charAt(0).toUpperCase() + r.name.slice(1)}{lens[i] !== null && <tspan className={s_.num} dx={6}>{fmtNum(lens[i]!)}</tspan>}</text>
+            <line className={s_.lead} x1={xy[0]} y1={xy[1]} x2={colLeft - 4 * px} y2={y - 5 * px} />
+            <text className={s_.lab} x={c.w - 8 * px} y={y} textAnchor="end" data-range={r.name}>{r.name.charAt(0).toUpperCase() + r.name.slice(1)}{lens[i] !== null && <tspan className={s_.num} dx={6 * px}>{fmtNum(lens[i]!)}</tspan>}</text>
           </g>
         ))}
         {v.ranges.map((r, i) => r.ptr && <RangeHandle key={`h${r.name}`} species={species} id={id} view={v} r={r} len={lens[i]!} xy={at(hi[i])} scale={scale} editable={editable} go={go} />)}
-        {v.knobs.map((k) => <KnobHandle key={k.name} species={species} id={id} view={v} k={k} value={val(k.ptr, k.value)} scale={scale} editable={editable} go={go} on={sel === k.part} />)}
+        {kn.map(({ k, value }, i) => <KnobHandle key={k.name} species={species} id={id} view={v} k={k} value={value} scale={scale} editable={editable} go={go} on={sel === k.part} place={placed[i]} />)}
       </svg>
     </div>
   )
 }
 
-// The range names stand in the margin on the right in the spine's order, each level with its range and kept clear of the one above (a name is 14 px on the screen, whatever the plate's size).
-function labelRows<T extends { xy: [number, number] }>(rows: T[], scale: number, w: number): (T & { y: number })[] {
-  const gap = 22 / scale
-  let prev = -Infinity
-  void w
-  return rows.map((r) => { const y = Math.max(r.xy[1] + 5, prev + gap); prev = y; return { ...r, y } })
+// The range names stand in the margin on the right in the spine's order, each level with its range, kept clear of the one above (a name is 14 px on the screen, whatever the plate's size) and below `floor`, where the spine and its outline reach into the margin.
+function labelRows<T extends { xy: [number, number] }>(rows: T[], px: number, floor: number): (T & { y: number })[] {
+  const gap = 22 * px
+  let prev = floor - gap
+  return rows.map((r) => { const y = Math.max(r.xy[1] + 5 * px, prev + gap); prev = y; return { ...r, y } })
 }
 
 // A press, and the moves after it as pixels from where it began, in the frame's own units (the plate is scaled to the screen).
@@ -81,7 +94,7 @@ function RangeHandle({ species, id, view, r, len, xy, scale, editable, go }: { s
   )
 }
 
-function KnobHandle({ species, id, view, k, value, scale, editable, go, on }: { species: Species; id: string; view: SpineView; k: SpineKnob; value: number; scale: number; editable: boolean; go: Go; on: boolean }) {
+function KnobHandle({ species, id, view, k, value, scale, editable, go, on, place }: { species: Species; id: string; view: SpineView; k: SpineKnob; value: number; scale: number; editable: boolean; go: Go; on: boolean; place: Placed }) {
   const f = useField<number>(species, id, k.ptr)
   const step = (k.band[1] - k.band[0]) / 120
   const nice = (n: number) => knobValue(n, 0, k.gain, k.band, Math.max(0.001, Math.round(step * 1000) / 1000))
@@ -97,8 +110,8 @@ function KnobHandle({ species, id, view, k, value, scale, editable, go, on }: { 
       <circle className={s_.hit} r={20} />
       <path className={s_.arrows} d="M-17 0 L-9 -5 M-17 0 L-9 5 M17 0 L9 -5 M17 0 L9 5 M-17 0 H17" />
       <rect className={s_.knob} x={-7} y={-7} width={14} height={14} rx={4} />
-      <text className={s_.klab} x={-26} y={5} textAnchor="end">{fmtVal(value, k.unit)}</text>
-      <text className={`${s_.klab} ${s_.kname}`} x={0} y={-17} textAnchor="middle">{lab}</text>
+      <text className={s_.klab} x={place.value.dx} y={place.value.dy} textAnchor={place.value.anchor}>{on && <tspan className={s_.kname}>{lab}  </tspan>}{fmtVal(value, k.unit)}</text>
+      {!on && <text className={`${s_.klab} ${s_.hovername}`} x={0} y={-17 / scale} textAnchor="middle">{lab}</text>}
     </g>
   )
 }

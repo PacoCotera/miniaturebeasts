@@ -34,7 +34,7 @@ export function HowOften({ species, l }: { species: Species; l: Locus }) {
           <span key={look}><i className={look === 'asleep' ? s.zz : s[BAR_TONE[i % BAR_TONE.length]]} />{nm(look)} {pct(f.wild[look] ?? 0)}</span>
         ))}
       </div>
-      <p className={s.note}>Wild: {n.wild.toLocaleString()} drawn from the pools. Sheet: {n.sheet || 'no'} mibis. Cross: {n.cross} seeds of the type with a mate.</p>
+      <p className={s.note}>Wild: {n.wild.toLocaleString()} drawn from the pools. Sheet: {n.sheet || 'no'} {n.sheet === 1 ? 'mibi' : 'mibis'}. Cross: {n.cross} seeds of the type with a mate.</p>
     </div>
   )
 }

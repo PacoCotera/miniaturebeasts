@@ -5,7 +5,7 @@ import { getBig, getJob, getLook, getSpecies, getToys, picUrl, saveMove, stepOf,
 // The bench of one mibi (spec 2.5, waiting honestly). The page shows one picture at a time and keeps the last good one until a better one is ready:
 //   0 to 0.1 s   the toy clicks and the picture squishes;
 //   already drawn  the plush at once (the step's `now` picture, or the answer's);
-//   about 3 s    the clay of the new shape crossfades in under the sculpting hands;
+//   about 3 s    the clay of the new shape crossfades in under the yarn;
 //   about 10 s   the plush fluffs in;   over 15 s  "Busy bench, yours is next." and the last good picture stays.
 // Every move takes a number; a picture or a sentence that belongs to an older move is dropped, so the latest move wins.
 export type Shown = { src: string | null; kind: 'plush' | 'clay'; genome?: string | null }

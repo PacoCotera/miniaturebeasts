@@ -115,7 +115,7 @@ def build_frame(doc, viability=None, draft=False):
     kinds = [e["kind"] for e in heritable]
     f = dict(
         frameVersion=1, schema=SCHEMA, engine="body",
-        species=dict(id=doc["id"], name=doc.get("name") or "Tuliko", plural=doc.get("name") or "Tuliko", order=int(doc["id"][1:]),
+        species=dict(id=doc["id"], name=doc.get("name") or "Tuliko", plural=doc.get("plural") or (doc.get("name") or "Tuliko") + "s", order=int(doc["id"][1:]),
                      summary="The first species of the body engine: a biped night-light with a lantern tail. Frame version 1, on catalogue pin 11 (54 records, clan C20 with the brow tufts borrowed from C18)."),
         taxonomy=dict(code=doc["id"], clan=g.get("clan"), plan=doc["plan"], planVersion=doc["plan_version"], speciesNumber=int(doc["id"][1:]), tier="starter"),
         catalogue=dict(id=pins["id"], version=pins["version"], digest=pins.get("digest")),

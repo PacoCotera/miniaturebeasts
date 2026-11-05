@@ -99,7 +99,7 @@ export function VarietyInspector({ species, url, go }: { species: Species; url: 
   return (
     <>
       <div className={s.title}><b>{species.file.name ?? species.id}</b><span className={s.kind}>seed {v.seed}</span></div>
-      <p className={s.help}>{v.n} mibis. {v.failing.length ? '' : v.rules.length ? `${v.rules.map((r) => r.label).join(', ')} hold${v.rules.length === 1 ? 's' : ''} for all ${v.n}.` : ''}</p>
+      <p className={s.help}>{v.n} {v.n === 1 ? 'mibi' : 'mibis'}. {v.failing.length ? '' : v.rules.length ? `${v.rules.map((r) => r.label).join(', ')} hold${v.rules.length === 1 ? 's' : ''} for all ${v.n}.` : ''}</p>
       {rule && <p className={s.help}>{rule.label} fails on: {rule.fail}.</p>}
       <Cards v={v} go={go} />
     </>

@@ -1,4 +1,4 @@
-// The clay's eyes: the proxy draws them as flat dark discs. Play gives each a small white catch light, so a mibi under the sculpting hands looks at you instead of staring (the clay itself, and the studio's clay views, are unchanged).
+// The clay's eyes: the proxy draws them as flat dark discs. Play gives each a small white catch light, so a mibi in clay under the yarn looks at you instead of staring (the clay itself, and the studio's clay views, are unchanged).
 // The dark discs are found in the picture: connected dark pixels, roundish, of an eye's size.
 export type Blob = { x0: number; y0: number; x1: number; y1: number; n: number }
 

@@ -234,7 +234,7 @@ def c_head_neck(ctx):
 HS_BANDS = dict(biped=(0.35, 0.5), quadruped=(0.45, 0.6))
 
 
-@check(id="head.size", name="Head to height", fail="Head is {size} for the body", stage="cage", version=1, part=["head"], fields=["spine.loft.head_profile.R_scale", "spine.head_attach.z_under", "parts.leg.L.chain"],
+@check(id="head.size", name="Head height", fail="Head {size} for the body", stage="cage", version=2, part=["head"], fields=["spine.loft.head_profile.R_scale", "spine.head_attach.z_under", "parts.leg.L.chain"],
        rule=R("2026-11-04", "Head size is the chibi read itself: the head is the biggest mass, and its height over the standing height stays in the plan's band (biped 0.35 to 0.5, quadruped 0.45 to 0.6), as the game designer ruled on 4 Nov from the art director's chibi bands."),
        limit=dict(text="head height over standing height: biped 0.35-0.5, quadruped 0.45-0.6", value=None), az=90)
 def c_head_size(ctx):
@@ -258,8 +258,8 @@ def c_head_size(ctx):
            PR.label(left + 18, (ay_ + by_) / 2 + 6, f"{H_:.2f} H", col, "start"), PR.label(left + 18, (by_ + fy_) / 2 + 6, f"{S_ - H_:.2f} H", PR.INK, "start"),
            PR.panel(24, 628, 560, 140), PR.bar(40, 676, 400, r / 0.7, f"head {H_:.2f} H over standing height {S_:.2f} H  =  {r:.2f}", "", col, hi / 0.7, f"{plan}: {lo:.2f} to {hi:.2f}")]
     size = "too small" if r < lo else "too big"
-    meas = f"Head is {r:.2f} of the standing height, the {plan} band is {lo:.2f} to {hi:.2f}"
-    return row("fail" if bad else "pass", f2(r), f"{lo:.2f}-{hi:.2f}", meas, dict(mode="clay", az=90, svg="".join(out)), dict(head=H_, height=S_, band=[lo, hi], plan=plan, fail=(f"Head is {size} for the body" if bad else None)))
+    meas = f"Head {r:.2f} of the height \u00b7 the {plan} plan allows {lo:.2f} to {hi:.2f}"
+    return row("fail" if bad else "pass", f2(r), f"{lo:.2f}-{hi:.2f}", meas, dict(mode="clay", az=90, svg="".join(out)), dict(head=H_, height=S_, band=[lo, hi], plan=plan, fail=(f"Head {size} for the body" if bad else None)))
 
 
 # 6 -------------------------------------------------------------------------------------------------------------------------------------------------------- tail.taper

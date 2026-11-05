@@ -7,7 +7,7 @@ import { useUI } from '../lib/store'
 import { W } from '../lib/words'
 import s from './Toasts.module.css'
 
-// Bottom-left toasts for other hands' edits: "agent-3 set tail length 1.10 → 1.24 · Undo". Failures never come here.
+// Bottom-left toasts for edits made elsewhere: "agent-3 set tail length 1.10 → 1.24 · Undo". Failures never come here.
 export function Toasts({ species }: { species: string }) {
   const { data } = useQuery(speciesOne(species))
   const seen = useRef<Set<string> | null>(null)

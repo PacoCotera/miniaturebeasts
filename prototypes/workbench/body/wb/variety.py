@@ -113,9 +113,9 @@ def validate(doc):
 
 
 def look_words(v, locus, look):
-    """[label, short word] of a look as the file names it (`variety.look_words`), or None."""
+    """[label, short word, plural] of a look as the file names it (`variety.look_words`), or None."""
     w = ((v.get("look_words") or {}).get(locus) or {}).get(look)
-    return list(w) if isinstance(w, (list, tuple)) and len(w) == 2 else None
+    return list(w) if isinstance(w, (list, tuple)) and len(w) in (2, 3) else None
 
 
 def _label(g, expressions, locus, look, words=None):

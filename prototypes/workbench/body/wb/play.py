@@ -9,7 +9,9 @@ studio can write), `play.words` the species' own limit sentences, `play.starter`
 
 The plan modules own `SURFACE` and `BUILT` from chunk 26; until then the table lives here, as `spine.PLANS` does."""
 import copy
+import functools
 import itertools
+import json
 import os
 import sys
 import time
@@ -51,7 +53,8 @@ SURFACE = {"biped": _TOYS, "quadruped": _TOYS}
 BUILT = {"biped": True, "quadruped": False}            # whether the plan has a cage builder yet (the quadruped's is chunks 17-20)
 # The words play says when a check stops a toy: the copywriter's (words.md "Play sentences (chunk 13)", ids pl.limit.*), one per check, true for every toy the check reaches and both ends of the toy. A few have a sentence for one toy, in TOY_WORDS.
 # A check's own `play` sentence and the file's `play.words` come first. "loud" and "body" and "ears" belong to checks that are still to come.
-WORDS = {"joins": "Then I wouldn't fit together any more!", "head.attach": "Then my head wouldn't sit straight!", "limbs": "My arms and legs need somewhere to hold on!"}
+WORDS = {"joins": "Then I wouldn't fit together any more!", "head.attach": "Then my head wouldn't sit straight!", "limbs": "My arms and legs need somewhere to hold on!",
+         "head.size": "Then my head and my body wouldn't match!"}
 TOY_WORDS = {("joins", "body"): "Then my arms and legs wouldn't fit on!", ("joins", "ears"): "Then my ears wouldn't fit on my head!", ("joins", "tail"): "Then my tail wouldn't fit on right!",
              ("head.attach", "ears"): "With ears like these, my head wouldn't sit straight!", ("limbs", "tail"): "My legs need somewhere to hold on!"}
 PLACEHOLDER = dict(body="Any rounder and I'd roll away!", ears="Big ears! Any bigger and I couldn't see.", loud="Ooh, that's more sparkle than I can carry!", default="That's as far as I can go!")
@@ -168,7 +171,7 @@ def toys_of(doc, sweep=None):
                 banned = {b["option"]: b["checks"] for b in s.get("banned", [])}
                 h = home_of(doc, ax, eff)
                 words = ((doc.get("variety") or {}).get("look_words") or {}).get(ax["locus"]) or {}
-                a.update(home=h, options=[dict(id=o, word=words[o][1] if isinstance(words.get(o), list) and len(words[o]) == 2 else o, ok=o not in banned, why=banned.get(o, []), end=dict(genome=None if ax.get("virtual") else f"set:{ax['locus']}={o}")) for o in eff[1]])
+                a.update(home=h, options=[dict(id=o, word=words[o][1] if isinstance(words.get(o), list) and len(words[o]) in (2, 3) else o, ok=o not in banned, why=banned.get(o, []), end=dict(genome=None if ax.get("virtual") else f"set:{ax['locus']}={o}")) for o in eff[1]])
             axes.append(a)
         if axes:
             out.append(dict(id=toy["id"], label=ft.get("label") if isinstance(ft.get("label"), str) and ft.get("label") else toy["label"], plain=toy["label"], hidden=bool(ft.get("hide")), kind=toy["kind"], screen=toy.get("screen", "shape"), parts=toy["parts"], axes=axes))
@@ -797,6 +800,11 @@ def how_often(share, aged):
     return "grown" if aged else ("often" if share >= 50 else "sometimes" if share >= 15 else "rarely")
 
 
+def _plural_label(w):
+    """The strip says what runs in a family, so a look is named in the plural: the file's third word, else its label."""
+    return (w[2] if len(w) > 2 else w[0]) if isinstance(w, (list, tuple)) and w else None
+
+
 def family_rows(doc, limit=4):
     """The strip under the nest, in pictures and four short words: how often each look runs in this family (1,000 wild draws, spec 4.2). The file's expressions first, then the looks the chips offer, the commonest of the rare ones last."""
     import expressions as E
@@ -811,7 +819,8 @@ def family_rows(doc, limit=4):
             continue
         aged = bool(x.get("age"))
         share = r["wild"]["elder" if aged else "adult"]
-        rows.append(dict(id=x["id"], label=x.get("label") or x["id"], locus=x["locus"], look=x["look"], how=how_often(share, aged), share=share))
+        w = (words.get(x["locus"]) or {}).get(x["look"])
+        rows.append(dict(id=x["id"], label=_plural_label(w) or x.get("label") or x["id"], locus=x["locus"], look=x["look"], how=how_often(share, aged), share=share))
     for t in plan_toys(doc):
         for ax in t["axes"]:
             if ax["kind"] != "choice" or ax.get("virtual") or _entry(doc, ax["locus"]) is None or ax["locus"] not in f["loci"]:
@@ -821,7 +830,7 @@ def family_rows(doc, limit=4):
                 w = words.get(ax["locus"], {}).get(o)
                 if share is None or not w or any(r["locus"] == ax["locus"] and r["look"] == o for r in rows) or o in ("none", "plain", "prick"):
                     continue
-                rows.append(dict(id=f"{ax['locus']}={o}", label=w[0], locus=ax["locus"], look=o, how=how_often(share, False), share=share, toy=t["id"], axis=ax["id"]))
+                rows.append(dict(id=f"{ax['locus']}={o}", label=_plural_label(w), locus=ax["locus"], look=o, how=how_often(share, False), share=share, toy=t["id"], axis=ax["id"]))
     rows.sort(key=lambda r: (0 if r["how"] == "grown" else 1, -r["share"]))
     return rows[:limit]
 
@@ -858,8 +867,22 @@ def direct_kin(x, y, lookup=lambda i: None, depth=KIN_DEPTH):
     return None
 
 
+class KinError(ValueError):
+    """Two mibis that are direct kin: the sentence is the studio's (words.md st.cross.kin.no), `rel` is kept apart for agents and the CLI."""
+    def __init__(self, sentence, rel):
+        super().__init__(sentence)
+        self.rel = rel
+
+
+def kin_sentence(a_name, b_name, kin):
+    """\"{B} is {A}'s {rel}. Family can't cross.\" or, for the same two parents, \"{A} and {B} have the same parents. Family can't cross.\" """
+    if kin["rel"] == "same-parents":
+        return f"{a_name} and {b_name} have the same parents. Family can't cross."
+    return f"{b_name} is {a_name}'s {kin['rel']}. Family can't cross."
+
+
 def pods_with(doc, mate_doc, lookup, round_no=0, dial=None, n=POD_COUNT):
-    """Pods of two mibis, refused for direct kin. Raises ValueError("direct kin (rel): family does not cross"), the game's own line."""
+    """Pods of two mibis, refused for direct kin. Raises KinError (a ValueError) with the studio's sentence."""
     import expressions as E
     a = dict(id=doc["id"], parents=(doc.get("play") or {}).get("parents") or [])
     b = dict(id=mate_doc["id"], parents=(mate_doc.get("play") or {}).get("parents") or [])
@@ -867,7 +890,7 @@ def pods_with(doc, mate_doc, lookup, round_no=0, dial=None, n=POD_COUNT):
         raise ValueError("one mibi is not a pair")
     kin = direct_kin(a, b, lookup)
     if kin:
-        raise ValueError(f"direct kin ({kin['rel']}): family does not cross")
+        raise KinError(kin_sentence(mibi_name(doc), mibi_name(mate_doc), kin), kin["rel"])
     if (doc.get("species") or doc.get("name")) != (mate_doc.get("species") or mate_doc.get("name")) or doc.get("genome", {}).get("clan") != mate_doc.get("genome", {}).get("clan"):
         raise ValueError("the two are not of one species")
     import numpy as np
@@ -882,20 +905,106 @@ def pods_with(doc, mate_doc, lookup, round_no=0, dial=None, n=POD_COUNT):
 
 
 # ---- keeping a pod: the pod becomes its own species file in the player's space, a mibi of its own
-NAMES = ["Churro", "Luna", "Michi", "Pepita", "Tilo", "Nube", "Bimbo", "Tamal", "Mochi", "Pico", "Lola", "Fresa"]       # the namer's offers (words.md pl.name.picks names three of them; the game's namer owns the real list)
+# The namer is the game's (words.md pl.name.*): its list is es-pets-1 in play/src/names.mjs, its refusals are station/namer.json strings.refuse, and its rules are state.mjs nameProblem and peekNames.
+_GAME = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))                  # prototypes/
+NAME_MAX = 10
+SEPARATORS = " -\u2019"
+STARTER_NAMES = ("Pemmi", "Fennel", "Tomtom", "Moss")           # held by the starters (Moss is the quadruped's, made in chunk 29)
 
 
-def valid_name(n):
-    return isinstance(n, str) and 0 < len(n.strip()) <= 10 and n.strip().replace("-", "").replace(" ", "").isalpha()
+def game_names():
+    """The game's current list, in its order, read from the one file both devices read."""
+    import re
+    src = open(os.path.join(_GAME, "play", "src", "names.mjs"), encoding="utf-8").read()
+    cur = re.search(r'NAME_LIST_CURRENT\s*=\s*"([^"]+)"', src).group(1)
+    block = re.search(r'"' + re.escape(cur) + r'":\s*\[(.*?)\]', src, re.S).group(1)
+    return re.findall(r'"([^"]+)"', block)
 
 
-def name_picks(doc, k=3, round_no=0):
-    """Three of the namer's names, the same three each time for one mibi and round."""
-    import hashlib
-    h = int(hashlib.sha256(f"{doc.get('id')}|{round_no}".encode()).hexdigest()[:8], 16)
-    taken = {(doc.get("play") or {}).get("name")}
-    pool = [n for n in NAMES if n not in taken]
-    return [pool[(h + 5 * j) % len(pool)] for j in range(k)]
+def refusals():
+    """The game's refusal lines, unchanged: key -> line ({holder} stands where the holder's name goes)."""
+    with open(os.path.join(_GAME, "ui", "specs", "station", "namer.json"), encoding="utf-8") as fh:
+        return json.load(fh)["strings"]["refuse"]
+
+
+def name_key(s):
+    import unicodedata
+    s = str(s).replace("'", "\u2019").lower().replace("\u0153", "oe")
+    s = "".join(c for c in unicodedata.normalize("NFD", s) if not unicodedata.combining(c))
+    return "".join(c for c in s if c not in SEPARATORS)
+
+
+@functools.lru_cache(maxsize=1)
+def _taxon_names():
+    """Every species' and clan's name the workbench knows: a mibi may not carry one."""
+    import glob
+    here = os.path.dirname(os.path.abspath(__file__))
+    out = {"species": set(), "clan": set()}
+    for d in (os.path.join(here, "..", "frames"), os.path.join(here, "..", "..", "frames")):
+        for f in glob.glob(os.path.join(d, "species-S*.json")):
+            try:
+                with open(f, encoding="utf-8") as fh:
+                    fr = json.load(fh)
+            except (OSError, ValueError):
+                continue
+            out["species"].add(name_key(fr.get("species", {}).get("name", "")))
+            out["clan"].add(name_key((fr.get("taxonomy") or {}).get("clanName") or ""))
+    out["species"].discard("")
+    out["clan"].discard("")
+    return out
+
+
+def name_problem(text, held=(), species_names=(), at_done=True):
+    """What stops a name from being saved, as the game's namer says it: None, or {key, holder?} with key short, full, first, last, twice, species, clan or taken. `held` is the names the player's other mibis carry."""
+    t = str(text if text is not None else "").replace("'", "\u2019")
+    cs = list(t)
+    marks = [c in SEPARATORS for c in cs]
+    if sum(1 for m in marks if not m) < 2:
+        return dict(key="short")
+    if len(cs) > NAME_MAX:
+        return dict(key="full")
+    if marks[0]:
+        return dict(key="first")
+    if any(x and marks[i + 1] for i, x in enumerate(marks[:-1])):
+        return dict(key="twice")
+    if at_done and marks[-1]:
+        return dict(key="last")
+    if not all(c in SEPARATORS or c.isalpha() for c in cs):
+        return dict(key="first")
+    k = name_key(t)
+    tx = _taxon_names()
+    if k in tx["species"] or k in {name_key(s) for s in species_names}:
+        return dict(key="species")
+    if k in tx["clan"]:
+        return dict(key="clan")
+    for h in held:
+        if h and name_key(h) == k:
+            return dict(key="taken", holder=h)
+    return None
+
+
+def refuse_line(problem):
+    """The game's line for a problem, with the holder's name in place."""
+    return refusals()[problem["key"]].replace("{holder}", problem.get("holder", ""))
+
+
+def offered_names(held=(), species_names=(), n=12):
+    """The names play offers, the game's way (peekNames): the list in its order, skipping a name held by another of the player's mibis, a species' or a clan's name, and anything over ten letters."""
+    held = list(held) + list(STARTER_NAMES)
+    out = []
+    for c in game_names():
+        if len(out) >= n:
+            break
+        if any(ch.isdigit() for ch in c) or len(c) > NAME_MAX or name_problem(c, held, species_names):
+            continue
+        out.append(c)
+    return out
+
+
+def plural_of(doc):
+    """The species' plural for a sentence ("young Tulikos"): the file's own, else its name with an s."""
+    n = doc.get("plural") or doc.get("name") or doc.get("id")
+    return n if doc.get("plural") else (n if str(n).endswith("s") else f"{n}s")
 
 
 def state_of_copies(doc, copies):

@@ -1261,6 +1261,8 @@ class Server:
             look = lambda i: dict(id=i, parents=((self.species[i].spec.get("play") or {}).get("parents") or [])) if i in self.species else None
             try:
                 crossed = {p_["i"]: p_ for p_ in PL.pods_with(spec, copy.deepcopy(m.spec), look, round_no, dial)}
+            except PL.KinError as e:
+                raise ApiError(409, str(e), "mate", rel=e.rel)
             except ValueError as e:
                 raise ApiError(409, str(e), "mate")
         pods = []
@@ -1287,7 +1289,13 @@ class Server:
         fam = PL.family_rows(spec)
         for r in fam:
             r["pic"] = self.pic_of(sp, spec, f"set:{r['locus']}={r['look']}", 2, n, nh)
-        return dict(round=round_no, diff=dial, grow=grow, name=PL.mibi_name(spec), species=spec.get("name") or sp.id, pods=pods, grow_ends=ends, family=fam, names=PL.NAMES)
+        return dict(round=round_no, diff=dial, grow=grow, name=PL.mibi_name(spec), species=spec.get("name") or sp.id, pods=pods, grow_ends=ends, family=fam, names=PL.offered_names(*self.name_sets()), plural=PL.plural_of(spec))
+
+    def name_sets(self):
+        """What the namer checks a name against: the names the player's mibis hold, and the species' names."""
+        from wb import play as PL
+        held = [pl["name"] for pl in ((sp.spec.get("play") or {}) for sp in self.species.values()) if isinstance(pl, dict) and isinstance(pl.get("name"), str) and pl["name"].strip()]
+        return held, [sp.spec.get("name") for sp in self.species.values() if sp.spec.get("name") and not (sp.spec.get("play") or {}).get("name")]
 
     def next_mibi_id(self):
         n = 1 + max([int(k[1:]) for k in self.species if re.fullmatch(r"M\d{4}", k)] or [0])
@@ -1306,8 +1314,10 @@ class Server:
         pl = spec.get("play") if isinstance(spec.get("play"), dict) else {}
         dial, grow = b.get("diff") or pl.get("diff") or "some", b.get("grow") or pl.get("grow") or "juvenile"
         name = b.get("name")
-        if not PL.valid_name(name):
-            raise ApiError(400, "a mibi's name is one to ten letters", "name")
+        why = PL.name_problem(name, *self.name_sets(), at_done=True)
+        if why:
+            raise ApiError(400, PL.refuse_line(why), "name", refused=why["key"], **({"holder": why["holder"]} if "holder" in why else {}))
+        name = name.strip()
         c = PL.make_pod(spec, PL.parent_copies(spec), dial, round_no, i, tries)
         if c is None:
             raise ApiError(404, "there is no such pod", "pod")
@@ -1448,7 +1458,7 @@ def make_handler(srv):
             try:
                 fn()
             except ApiError as e:
-                self.send_json(dict(error=e.message, field=e.field), e.status)
+                self.send_json(dict(error=e.message, field=e.field, **e.extra), e.status)
             except (BrokenPipeError, ConnectionResetError):
                 pass
             except Exception as e:

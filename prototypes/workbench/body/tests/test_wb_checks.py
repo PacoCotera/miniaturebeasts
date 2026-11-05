@@ -81,7 +81,7 @@ class TestMeasures(unittest.TestCase):
         self.assertTrue(0.40 < r["value"] < 0.48 and r["proof"]["svg"])
         m = F.proxy_mesh(self.ok_r.body, 1)
         quad = CH.run("cage", CX.Ctx(s20(), self.ok_r.body, dict(self.ok_r.summary(), vertices_l1=len(m["V"])), m, doc=dict(plan="quadruped")), only=["head.size"])[0]
-        self.assertEqual((quad["state"], quad["extra"]["band"], quad["extra"]["fail"]), ("fail", [0.45, 0.6], "Head is too small for the body"))
+        self.assertEqual((quad["state"], quad["extra"]["band"], quad["extra"]["fail"]), ("fail", [0.45, 0.6], "Head too small for the body"))
 
     def test_the_long_tail_fails_tail_size_with_its_numbers(self):
         r = self.bad["tail.size"]

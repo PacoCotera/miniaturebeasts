@@ -13,7 +13,7 @@ export const W = {
   readOnly: 'Read only · no edit token', tokenTip: 'Open the page with ?token=… to edit.', nothing: 'Nothing to set here yet.', // the inspector, cw-chunks-21-22
   redo: 'Redo', // ui 4.5 (Z, Shift Z)
   drawer: { checks: 'Checks', history: 'History', file: 'File (JSON)', section: 'Section table' }, // ui 3.2 Drawer; the section table's name and notes are owed to the copywriter
-  section: { cols: ['Height', 'Back radius', 'Side radius', 'Front radius'], rows: (n: number) => `${n} rows`, note: 'From the profile knobs · Read only' }, // cw-chunks-21-22
+  section: { cols: ['Height', 'Back radius', 'Side radius', 'Front radius'], rows: (n: number) => `${n} ${n === 1 ? 'row' : 'rows'}`, note: 'From the profile knobs · Read only' }, // cw-chunks-21-22
   viewBar: ['Plush', 'Clay', 'Normal', 'Parts', 'Wire'], // ui 3.2 ViewBar
   before: 'Before', // ui 3.2 ViewBar
   help: { go: 'Go to', do: 'Do', choose: 'choose', run: 'run', everyKey: 'every key' }, // ui mock 10
@@ -57,17 +57,28 @@ export const P = {
   fluff: 'Fluffing up…', // pl.wait.fluff
   busy: 'Busy bench, yours is next.', // pl.wait.busy
   fail: "Hmm, that shape didn't work. Try another?", // pl.wait.fail
-  // OWED (no id in words.md yet): the back button's label, the menu button's label, the toys' ends for a screen reader, the pots' names, a page that cannot load.
-  back: 'Back', menu: 'Menu',
-  toyEnd: (toy: string, end: 'first' | 'last') => `${toy}: ${end === 'first' ? 'least' : 'most'}`,
-  pot: (n: number) => `Colour ${n}`,
-  noBench: 'The bench is not ready yet.',
+  menu: 'Menu',
+  backShape: 'Pick another mibi', // pl.shape.back (the chevron on the shape screen, for a screen reader)
+  backPods: (name: string) => `Back to ${name}`, // pl.pods.back
+  // The toys' ends for a screen reader (pl.toy.end.*): each end names the picture it shows.
+  toyEnd: (key: string, toy: string, end: 'first' | 'last') => {
+    const ends: Record<string, [string, string]> = { 'body.size': ['Slim body', 'Round body'], 'ears.size': ['Small ears', 'Big ears'], 'tail.length': ['Short tail', 'Long tail'], 'tail.curl': ['Straight tail', 'Curly tail'] }
+    return ends[key]?.[end === 'first' ? 0 : 1] ?? `${toy}: ${end === 'first' ? 'a little' : 'a lot'}`
+  },
+  // The paint pots' names come from the pot's own hue (pl.paint.pot): the bands are the same for every species.
+  pot: (hue: number) => {
+    const h = ((hue % 360) + 360) % 360
+    const bands: [number, string][] = [[15, 'Red'], [45, 'Orange'], [70, 'Yellow'], [160, 'Green'], [193, 'Teal'], [218, 'Sky blue'], [244, 'Blue'], [270, 'Violet'], [296, 'Purple'], [321, 'Berry'], [347, 'Pink']]
+    return (bands.find(([to]) => h < to) ?? [0, 'Red'])[1]
+  },
+  noBench: 'The mibis are still waking up. Try again soon.', // pl.wait.nobench
   // The toys' questions (words.md "Toy labels"): on screen only where a toy has two sliders; a screen reader hears every axis. Chips, paint pots and a toy's only slider carry no label on screen.
   axis: {
     'body.size': { on: null, sr: 'How round?' }, 'ears.size': { on: 'How big?', sr: 'How big?' }, 'tail.length': { on: 'How long?', sr: 'How long?' }, 'tail.curl': { on: 'How curly?', sr: 'How curly?' },
     'ears.kind': { on: null, sr: 'Ear shape' }, 'tail.tip': { on: null, sr: 'Tail tip' }, 'paint.hue': { on: null, sr: 'Colour' }, 'pattern.kind': { on: null, sr: 'Pattern' },
   } as Record<string, { on: string | null; sr: string }>,
-  noMibis: 'No mibis yet.',
+  count: (n: number) => (n === 0 ? 'none yet' : n === 1 ? '1 kept' : `${n} kept`), // pl.open.count (read after "My mibis"; the screen shows the number)
+  podsSub: (plural: string) => `young ${plural}`, // pl.pods.sub
   // P3, pods (words.md 5.3 and 5.4; ids in the comments).
   go: 'Make pods', // pl.shape.go
   podsTitle: (name: string) => `${name}'s pods`, // pl.pods.title
@@ -84,6 +95,5 @@ export const P = {
   how: { often: 'often', sometimes: 'sometimes', rarely: 'rarely', grown: 'when grown' } as Record<string, string>, // pl.family.rows
   nameTitle: 'Name your mibi', // pl.name.title
   nameKeep: (name: string) => `Keep ${name}`, // pl.name.keep
-  // OWED (no id in words.md yet): the nest and a pod for a screen reader, the dice, the name sheet's close, a pod that could not be drawn, a make that has nothing to show, the Grow toy's name for a screen reader.
-  nest: 'Pods', pod: (n: number) => `Pod ${n}`, dice: 'Other names', closeName: 'Close', noPod: 'This pod did not hatch.', growSr: 'Age',
+  nest: 'Pods', pod: (n: number) => `Pod ${n}`, dice: 'More names', closeName: 'Close', noPod: "This one didn't hatch.", growSr: 'How old?',
 } as const

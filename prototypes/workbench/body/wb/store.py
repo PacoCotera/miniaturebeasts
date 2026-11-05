@@ -10,9 +10,9 @@ from wb import hashing as H
 
 
 class ApiError(Exception):
-    def __init__(self, status, message, field=None):
+    def __init__(self, status, message, field=None, **extra):
         super().__init__(message)
-        self.status, self.message, self.field = status, message, field
+        self.status, self.message, self.field, self.extra = status, message, field, extra
 
 
 def read_spec(path):
