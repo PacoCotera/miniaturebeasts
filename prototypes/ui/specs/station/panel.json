@@ -331,7 +331,7 @@
   },
   "caption": {
    "role": "quiet",
-   "note": "'ready in about {n} min', Inter 16, fog on the bezel's panel fill, right-aligned in Wait's header (12 in from the bezel's right, the baseline as the verbs'), mirroring Hatch now's price; the window carries no text"
+   "note": "'ready in about {n} min', Inter 16, fog on the bezel's panel fill, right-aligned in Wait's header (8 in from the bezel's right, the baseline as the verbs'), mirroring Hatch now's price; the window carries no text"
   }
  }
 }
