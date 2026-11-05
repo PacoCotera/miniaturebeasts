@@ -13,14 +13,22 @@ import quadruped as Q
 KINDS = ("fore", "hind")
 SIDES = ("L", "R")
 FEET = (("hind", "L"), ("fore", "L"), ("hind", "R"), ("fore", "R"))          # the four-beat order of a lateral-sequence walk
-FOLLOW = 0.20                                                                # how far below its first ring a leg keeps following its girdle (H of the leg's arc)
+FOLLOW = 0.30                                                                # how far below its first ring a leg keeps following its girdle (H of the leg's arc)
 WALK_DUTY = 0.75                                                              # the share of the cycle a foot is on the ground: three feet are down at once, never fewer than two
-WALK_HALF_STRIDE = 0.10                                                       # the sole's reach each side of its rest place (H)
+WALK_TRAVEL = 0.09                                                            # each foot's whole travel across the loop (H): the same on the ground (sliding back) as in the air (swinging forward)
 WALK_LIFT = 0.08                                                              # the height a foot clears the ground in the middle of its swing (H)
-WALK_CROUCH = 0.07                                                            # how far the body lowers for the walk (H)
-WALK_TOE = math.radians(8.0)                                                 # the toe's pitch at the middle of a swing (the paw rolls up as the foot leaves and down as it lands)
+WALK_CROUCH = 0.027                                                           # how far the body lowers for the walk (H), on top of the bob
+WALK_BOB = 0.025                                                              # the body's bob, top to bottom, twice a loop, lowest as a foot lands (H)
+WALK_ROLL = math.radians(5.0)                                                 # chest and pelvis pitch against each other
+WALK_YAW = math.radians(3.0)                                                  # the rear block's yaw about its own vertical axis, with the tail on it
+WALK_FLEX = math.radians(30.0)                                                # how far the paw folds at the wrist (fore) or hock (hind) in the middle of a swing
+WALK_TOE = math.radians(3.0)                                                  # the sole's roll: it stays level to a few degrees
+MAX_BEND = math.radians(48.0)                                                 # the most the elbow or stifle bends: the paw folds further at the wrist or hock rather than let the leg crumple
+MAX_FLEX = math.radians(75.0)
+FOOT_H = 0.08                                                                 # the foot bone: the lowest 0.08 H of the leg, always level; the paw above it folds
 BREATHE_AMP = 0.035                                                           # the chest's and belly's displacement at full inhale (H)
 FRAMES = {"walk": 12, "breathe": 6, "sit": 1, "curl": 1}
+FRAME_MS = 150                                                                # a walk frame lasts 150 ms
 PERIOD = {"walk": 1.8, "breathe": 3.0, "sit": 1.0, "curl": 1.0}
 
 
@@ -39,6 +47,16 @@ def rot_y(theta, about):
     return M
 
 
+def rot_z(theta, about):
+    """4x4 rotation by theta (rad) about the vertical axis through `about`: positive turns +x toward +y."""
+    c, s = math.cos(theta), math.sin(theta)
+    R = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+    M = np.eye(4)
+    M[:3, :3] = R
+    M[:3, 3] = np.asarray(about, float) - R @ np.asarray(about, float)
+    return M
+
+
 def shift(d):
     M = np.eye(4)
     M[:3, 3] = d
@@ -48,10 +66,13 @@ def shift(d):
 @dataclass
 class Pose:
     """chest, pelvis: (x, z, pitch) of the two girdle joints (rad, positive = the front of the block drops). head: pitch about the neck's base. tail: pitches of the three bones, added to the rest (positive = the tip rises).
-    feet: {(kind, side): (x, z, toe)}: where the sole's centre stands in the x-z plane and the paw's pitch; absent = the rest place, flat. breath: 0..1."""
+    yaw: the rear block's turn about its own vertical axis through the pelvis joint (the tail turns with it); head_yaw: the head's turn about the vertical axis through the neck's base (positive turns the nose toward +y).
+    feet: {(kind, side): (x, z, toe, flex)}: where the sole's centre stands in the x-z plane, the sole's roll and how far the paw folds at the wrist or hock (the sole itself stays level); absent = the rest place, flat, straight. breath: 0..1."""
     chest: tuple = None
     pelvis: tuple = None
+    yaw: float = 0.0
     head: float = 0.0
+    head_yaw: float = 0.0
     tail: tuple = (0.0, 0.0, 0.0)
     feet: dict = field(default_factory=dict)
     breath: float = 0.0
@@ -81,12 +102,14 @@ class QRig:
                 sg = 1.0 if side == "L" else -1.0
                 P = np.array(self.limbs[f"{kind}.L"]["P"], float) * np.array([1.0, sg, 1.0])
                 apex = [j.get("apex") for j in Q.limb_parts(self.doc, self.p)[f"{kind}.L"]["joints"]]
-                self.leg[(kind, side)] = dict(P=P, l1=float(np.linalg.norm(P[1] - P[0])), l2=float(np.linalg.norm(P[2] - P[1])), paw=P[3] - P[2], apex=apex)
+                paw = P[3] - P[2]
+                self.leg[(kind, side)] = dict(P=P, l1=float(np.linalg.norm(P[1] - P[0])), l2=float(np.linalg.norm(P[2] - P[1])), paw=paw, l3=float(np.linalg.norm(paw)) - FOOT_H, apex=apex,
+                                              A0=P[3] + np.array([0.0, 0.0, FOOT_H]), fold=1.0 if apex[2] == "fwd" else -1.0)
         self.W, self.bones = self._weights()
 
     # ------------------------------------------------------------------------------------------------------------------------ weights
     def _bone_names(self):
-        return ["front", "rear", "head", "tail1", "tail2", "tail3"] + [f"{k}.{b}.{s}" for k in KINDS for s in SIDES for b in ("upper", "lower", "paw")]
+        return ["front", "rear", "head", "tail1", "tail2", "tail3"] + [f"{k}.{b}.{s}" for k in KINDS for s in SIDES for b in ("upper", "lower", "paw", "foot")]
 
     def _weights(self):
         names = self._bone_names()
@@ -127,12 +150,15 @@ class QRig:
                 ss = u[m]
                 h1, h2 = 0.6 * max(r[1]), 0.6 * max(r[2])
                 t1, t2 = smooth(js[1] - h1, js[1] + h1, ss), smooth(js[2] - h2, js[2] + h2, ss)
-                follow = 1 - smooth(first - 0.10, first + FOLLOW, ss)                           # the socket and the rings below it move with the girdle's block, and hand over to the leg's own bones further down
+                follow = np.maximum(1 - smooth(first - 0.02, first + FOLLOW, ss), (ss > js[3] + 0.04) * 1.0)                    # the flange the limb's rings make back up the torso (arc length past the sole) belongs to the block                           # the socket and the rings below it move with the girdle's block, and hand over to the leg's own bones further down
                 rows = np.where(m)[0]
                 blk = "front" if kind == "fore" else "rear"
                 W[rows, ix[f"{kind}.upper.{side}"]] = (1 - t1) * (1 - follow)
                 W[rows, ix[f"{kind}.lower.{side}"]] = t1 * (1 - t2) * (1 - follow)
-                W[rows, ix[f"{kind}.paw.{side}"]] = t2 * (1 - follow)
+                zf = V[m, 2] - self.leg[(kind, side)]["P"][3][2]
+                wf = 1.0 - smooth(FOOT_H - 0.03, FOOT_H + 0.06, zf)                                    # the lowest of the paw is the foot, which stays level
+                W[rows, ix[f"{kind}.paw.{side}"]] = t2 * (1 - follow) * (1 - wf)
+                W[rows, ix[f"{kind}.foot.{side}"]] = t2 * (1 - follow) * wf
                 W[rows, ix[blk]] += follow
         sm = W.sum(1)
         sm[sm == 0] = 1.0
@@ -143,41 +169,50 @@ class QRig:
         return lp["R"]
 
     # ------------------------------------------------------------------------------------------------------------------------ the pose's bones
-    def ik(self, kind, side, root, target_sole, toe=0.0):
-        """Two-link IK in the x-z plane from the leg's root to the wrist that puts the sole on `target_sole` with the paw level (plus `toe`); each joint keeps the side its apex names. Returns the joint positions (root, mid, wrist, sole) in the plane, and the paw's angle."""
+    def ik(self, kind, side, root, target_sole, toe=0.0, flex=0.0):
+        """The leg in the x-z plane from its root to a sole on `target_sole`: the foot (the lowest FOOT_H of the leg) level plus `toe`, the paw above it folded back `flex` at the wrist (fore, the knee points forward) or hock (hind, it points back), and two-link IK from the root to the wrist, the elbow or stifle on the side its apex names. Returns the points root, mid, wrist, ankle, sole, and whether the leg reached."""
         L = self.leg[(kind, side)]
-        l1, l2 = L["l1"], L["l2"]
-        pawv = np.array([L["paw"][0], L["paw"][2]])
+        l1, l2, l3 = L["l1"], L["l2"], L["l3"]
         c, s = math.cos(-toe), math.sin(-toe)
-        pawv = np.array([c * pawv[0] - s * pawv[1], s * pawv[0] + c * pawv[1]])
+        footv = np.array([c * 0.0 - s * -FOOT_H, s * 0.0 + c * -FOOT_H])
         sole = np.asarray(target_sole, float)
-        wrist = sole - pawv
+        ankle = sole - footv
         R = np.asarray(root, float)
-        d = float(np.linalg.norm(wrist - R))
-        d = min(max(d, abs(l1 - l2) + 1e-3), l1 + l2 - 1e-3)
-        base = math.atan2(wrist[1] - R[1], wrist[0] - R[0])
+        while True:                                                                                      # the paw folds as far as the leg needs to keep its elbow or stifle open
+            wrist = ankle + l3 * np.array([L["fold"] * math.sin(flex), math.cos(flex)])
+            dd = float(np.linalg.norm(wrist - R))
+            bend = math.pi - math.acos(np.clip((l1 * l1 + l2 * l2 - dd * dd) / (2 * l1 * l2), -1, 1))
+            if bend <= MAX_BEND or flex >= MAX_FLEX or sole[1] < 0.004:
+                break
+            flex = min(flex + 0.03, MAX_FLEX)
+        ch = wrist - R
+        d0 = float(np.linalg.norm(ch))
+        reach = d0 <= l1 + l2 - 1e-3
+        d = min(max(d0, abs(l1 - l2) + 1e-3), l1 + l2 - 1e-3)
+        base = math.atan2(ch[1], ch[0])
         a = math.acos(np.clip((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1))
-        out = None
+        want = 1.0 if L["apex"][1] == "fwd" else -1.0
+        best = None
         for sg in (1.0, -1.0):
-            ang = base + sg * a
-            E = R + l1 * np.array([math.cos(ang), math.sin(ang)])
-            # the side of the chord the joint lies on: +x of it for a joint whose apex is forward, -x for back
-            ch = wrist - R
+            E = R + l1 * np.array([math.cos(base + sg * a), math.sin(base + sg * a)])
             off = (E[0] - R[0]) - ch[0] * np.dot(E - R, ch) / max(np.dot(ch, ch), 1e-9)
-            want = 1.0 if L["apex"][1] == "fwd" else -1.0
-            if out is None or off * want > out[1] * want:
-                out = (E, off)
-        E = out[0]
-        w = R + (wrist - R) * min(1.0, (l1 + l2) / max(float(np.linalg.norm(wrist - R)), 1e-9)) if np.linalg.norm(wrist - R) > l1 + l2 else wrist
-        return [R, E, w, w + pawv]
+            if best is None or off * want > best[1] * want:
+                best = (E, off)
+        E = best[0]
+        w = wrist
+        if d0 > l1 + l2 - 1e-3:
+            w = R + ch * (d / d0)
+            ankle = w - l3 * np.array([L["fold"] * math.sin(flex), math.cos(flex)])
+            sole = ankle + footv
+        return [R, E, w, ankle, sole], reach
 
     def block(self, pose):
         """The 4x4 transforms of the front and rear blocks, the head, and the tail's three bones."""
         cx, cz, cp = pose.chest if pose.chest else (self.chest0[0], self.chest0[2], 0.0)
         px, pz, pp = pose.pelvis if pose.pelvis else (self.pelvis0[0], self.pelvis0[2], 0.0)
         front = shift([cx - self.chest0[0], 0, cz - self.chest0[2]]) @ rot_y(cp, self.chest0)
-        rear = shift([px - self.pelvis0[0], 0, pz - self.pelvis0[2]]) @ rot_y(pp, self.pelvis0)
-        head = front @ rot_y(pose.head, self.neck0)
+        rear = shift([px - self.pelvis0[0], 0, pz - self.pelvis0[2]]) @ rot_z(pose.yaw, self.pelvis0) @ rot_y(pp, self.pelvis0)
+        head = front @ rot_z(pose.head_yaw, self.neck0) @ rot_y(pose.head, self.neck0)
         M = {"front": front, "rear": rear, "head": head}
         T = rear
         for k in range(3):
@@ -187,27 +222,25 @@ class QRig:
 
     def bone_matrices(self, pose):
         M = self.block(pose)
+        self.reached = {}
         for (kind, side), L in self.leg.items():
             blk = M["front" if kind == "fore" else "rear"]
             P = L["P"]
             root = (blk @ np.r_[P[0], 1.0])[:3]
-            fx, fz, toe = pose.feet.get((kind, side), (P[3][0], P[3][2], 0.0))
-            # a foot's place is given for the half model: the sole's x and height; the leg's lateral place is the rest's
-            pts = self.ik(kind, side, [root[0], root[2]], [fx, fz], toe)
+            fx, fz, toe, flex = (tuple(pose.feet.get((kind, side), (P[3][0], P[3][2], 0.0, 0.0))) + (0.0,))[:4]
+            pts, ok = self.ik(kind, side, [root[0], root[2]], [fx, fz], toe, flex)
+            self.reached[(kind, side)] = ok
             A = np.array([[q[0], 0.0, q[1]] for q in pts])
-            rest = [P[0], P[1], P[2], P[3]]
-            # the bone's rotation about y from its rest direction to the solved one, about its own head joint
-            Mu = None
-            prev = blk
+            rest = [P[0], P[1], P[2], L["A0"]]
+            heads = [A[0], A[1], A[2], A[3]]
+            tails = [A[1], A[2], A[3], A[4]]
             Ms = []
             for i in range(3):
                 dr = math.atan2(rest[i + 1][2] - rest[i][2], rest[i + 1][0] - rest[i][0])
                 dn = math.atan2(A[i + 1][2] - A[i][2], A[i + 1][0] - A[i][0])
-                th = -(dn - dr)
-                # the transform that takes the rest bone to the solved one: rotate about its rest head, then move the head to the solved head
-                Mi = shift([A[i][0] - rest[i][0], 0, A[i][2] - rest[i][2]]) @ rot_y(th, rest[i])
-                Ms.append(Mi)
-            M[f"{kind}.upper.{side}"], M[f"{kind}.lower.{side}"], M[f"{kind}.paw.{side}"] = Ms
+                Ms.append(shift([A[i][0] - rest[i][0], 0, A[i][2] - rest[i][2]]) @ rot_y(-(dn - dr), rest[i]))
+            Ms.append(shift([A[3][0] - L["A0"][0], 0, A[3][2] - L["A0"][2]]) @ rot_y(toe, L["A0"]))
+            M[f"{kind}.upper.{side}"], M[f"{kind}.lower.{side}"], M[f"{kind}.paw.{side}"], M[f"{kind}.foot.{side}"] = Ms
             M[f"{kind}.ik.{side}"] = A
         return M
 
@@ -248,23 +281,24 @@ def rest_feet(rig):
 
 
 def walk_pose(rig, phase):
-    """One frame of the walk. A foot's cycle starts at its own offset (hind left 0, fore left 1/4, hind right 1/2, fore right 3/4): on the ground for WALK_DUTY of it, its sole sliding back from +A to -A under the body, then in the air for the rest, swinging forward from -A to +A and rising to WALK_LIFT in the middle."""
+    """One frame of the walk. A foot's cycle starts at its own offset (hind left 0, fore left 1/4, hind right 1/2, fore right 3/4): on the ground for WALK_DUTY of it, its sole sliding back WALK_TRAVEL under the body, then in the air for the rest, swinging forward the same distance, rising WALK_LIFT in the middle with the paw folding at the wrist or hock."""
     rf = rest_feet(rig)
     feet = {}
     for i, key in enumerate(FEET):
         u = (phase - 0.25 * i) % 1.0
         if u < WALK_DUTY:
-            dx, lf, toe = WALK_HALF_STRIDE - 2 * WALK_HALF_STRIDE * u / WALK_DUTY, 0.0, 0.0
+            dx, lf, toe, fl = 0.5 * WALK_TRAVEL - WALK_TRAVEL * u / WALK_DUTY, 0.0, 0.0, 0.0
         else:
             w = (u - WALK_DUTY) / (1 - WALK_DUTY)
             s = math.sin(math.pi * w)
-            dx, lf, toe = -WALK_HALF_STRIDE + 2 * WALK_HALF_STRIDE * (w * w * (3 - 2 * w)), WALK_LIFT * s, WALK_TOE * math.sin(2 * math.pi * w) * 0.0 + WALK_TOE * s
-        feet[key] = (rf[key][0] + dx, rf[key][1] + lf, toe)
+            dx, lf, toe, fl = -0.5 * WALK_TRAVEL + WALK_TRAVEL * (w * w * (3 - 2 * w)), WALK_LIFT * s, WALK_TOE * math.sin(2 * math.pi * w), WALK_FLEX * s
+        feet[key] = (rf[key][0] + dx, rf[key][1] + lf, toe, fl)
     s = 2 * math.pi * phase
-    bob = -WALK_CROUCH + 0.0125 * math.cos(4 * math.pi * phase)                                             # the body walks a little lower than it stands (the legs stand straight, so a stride's reach needs them bent), with two bobs a cycle
-    roll = math.radians(5.0) * math.sin(s)
+    bob = -WALK_CROUCH - 0.5 * WALK_BOB * math.cos(4 * math.pi * phase)                                     # lowest as a foot lands (at 0 and 1/2), highest between
+    roll = WALK_ROLL * math.sin(s)
     c0, p0 = rig.chest0, rig.pelvis0
-    return Pose(chest=(c0[0], c0[2] + bob, roll), pelvis=(p0[0], p0[2] + bob, -roll), head=math.radians(2.0) * math.sin(s + 0.6), tail=(math.radians(3.0) * math.sin(s - 0.5), math.radians(5.0) * math.sin(s - 1.0), math.radians(7.0) * math.sin(s - 1.5)), feet=feet, name="walk")
+    return Pose(chest=(c0[0], c0[2] + bob, roll), pelvis=(p0[0], p0[2] + bob, -roll), yaw=WALK_YAW * math.sin(s + 1.0), head=math.radians(2.0) * math.sin(s + 0.6),
+                tail=(math.radians(3.0) * math.sin(s - 0.5), math.radians(5.0) * math.sin(s - 1.0), math.radians(7.0) * math.sin(s - 1.5)), feet=feet, name="walk")
 
 
 def breathe_pose(rig, phase):
@@ -272,24 +306,38 @@ def breathe_pose(rig, phase):
     return Pose(breath=0.5 - 0.5 * math.cos(s), name="breathe")
 
 
-def sit_pose(rig, phase=0.0):
-    """Sitting: the haunches down and forward, the front up (the spine slopes back), the forefeet where they stood, the hind feet flat under the hips; the tail rests along the floor."""
+def _tilted(rig, theta, drop):
+    """The two girdle joints for the whole body tilted nose-up by `theta` about the chest joint, the chest let down `drop`: (chest, pelvis) as Pose takes them."""
     c0, p0 = rig.chest0, rig.pelvis0
+    L = float(c0[0] - p0[0])
+    cz = c0[2] - drop
+    return (c0[0], cz, -theta), (c0[0] - L * math.cos(theta), cz - L * math.sin(theta), -theta)
+
+
+def sit_pose(rig, phase=0.0):
+    """Sitting: the haunches down, the body tilted nose-up, the forefeet where they stood and straight, the hind legs folded at the stifle and the hock with the soles flat ahead of the hips, the head level, the tail resting low."""
     rf = rest_feet(rig)
-    pz, px = 0.70, p0[0] + 0.20
-    feet = {("hind", "L"): (rf[("hind", "L")][0] + 0.26, 0.0, 0.0), ("hind", "R"): (rf[("hind", "R")][0] + 0.26, 0.0, 0.0)}
-    feet[("fore", "L")] = (rf[("fore", "L")][0], 0.0, 0.0)
-    feet[("fore", "R")] = (rf[("fore", "R")][0], 0.0, 0.0)
-    return Pose(chest=(c0[0], c0[2], 0.0), pelvis=(px, pz, 0.0), head=0.0, tail=(math.radians(-8.0), math.radians(-18.0), math.radians(-14.0)), feet=feet, name="sit")
+    th = math.radians(16.0)
+    P0 = rig.leg[("fore", "L")]["P"][0]
+    z_root = float((rot_y(-th, rig.chest0) @ np.r_[P0, 1.0])[2])
+    chest, pelvis = _tilted(rig, th, z_root - (P0[2] - 0.01))                                                # the chest down until the forelegs' roots are where they stood
+    feet = {}
+    for side in SIDES:
+        feet[("fore", side)] = (rf[("fore", side)][0], 0.0, 0.0, 0.0)
+        feet[("hind", side)] = (pelvis[0] + 0.30, 0.0, 0.0, math.radians(24.0))
+    return Pose(chest=chest, pelvis=pelvis, head=math.radians(8.0), tail=(math.radians(10.0), math.radians(-8.0), math.radians(-6.0)), feet=feet, name="sit")
 
 
 def curl_pose(rig, phase=0.0):
-    """Curling up: the belly on the floor, the spine low and level, all four feet flat under it, the tail curled up and over the rump: every bone of it in the x-z plane, on the midline."""
+    """Curling up: the belly on the floor, the spine level, the legs folded under it with the soles flat, the head turned round to lie against the flank (it cannot lie flush: S22's head is as tall as its body, so it turns as far as its own size lets it), the tail curled up and over the rump on the midline."""
     c0, p0 = rig.chest0, rig.pelvis0
     rf = rest_feet(rig)
-    z = 0.66
-    feet = {("fore", "L"): (rf[("fore", "L")][0] + 0.18, 0.0, 0.0), ("fore", "R"): (rf[("fore", "R")][0] + 0.18, 0.0, 0.0), ("hind", "L"): (rf[("hind", "L")][0] + 0.22, 0.0, 0.0), ("hind", "R"): (rf[("hind", "R")][0] + 0.22, 0.0, 0.0)}
-    return Pose(chest=(c0[0] + 0.1, z, 0.0), pelvis=(p0[0] + 0.1, z, 0.0), head=math.radians(0.0), tail=(math.radians(38.0), math.radians(52.0), math.radians(52.0)), feet=feet, name="curl")
+    z = c0[2] - (float(rig.V0[rig.part == rig.parts["torso"]][:, 2].min()) - CURL_FLOOR)                  # the lowest of the trunk on the floor
+    feet = {}
+    for side in SIDES:
+        feet[("fore", side)] = (rf[("fore", side)][0] + 0.18, 0.0, 0.0, math.radians(24.0))
+        feet[("hind", side)] = (rf[("hind", side)][0] + 0.30, 0.0, 0.0, math.radians(24.0))
+    return Pose(chest=(c0[0] + 0.1, z, 0.0), pelvis=(p0[0] + 0.1, z, 0.0), head=math.radians(0.0), head_yaw=math.radians(105.0), tail=(math.radians(38.0), math.radians(52.0), math.radians(52.0)), feet=feet, name="curl")
 
 
 def clip_pose(rig, name, phase=0.0):
@@ -318,3 +366,40 @@ def build_rig(doc, level=1):
     rig = QRig(body, V, at, part)
     mesh = dict(V=np.asarray(V, float), F=np.array(Fq, int), part=part, names={int(v): k for k, v in body.parts.items()})
     return rig, mesh
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------- measures
+CURL_FLOOR = 0.03                                                             # the curled body's belly on the floor
+SOLE_REST_Z = 0.012                  # the vertices of a leg that stand this close to the floor at rest are its sole
+
+
+def sole_vertices(rig, kind, side):
+    m = (rig.part == rig.parts[f"{kind}.L"]) & ((rig.V0[:, 1] >= 0) if side == "L" else (rig.V0[:, 1] < 0)) & (rig.V0[:, 2] < SOLE_REST_Z)
+    return np.where(m)[0]
+
+
+def sole_angle(rig, V, kind, side):
+    """The sole's pitch in degrees from level: the slope of the line through its vertices in the x-z plane (positive = the toe down)."""
+    ix = sole_vertices(rig, kind, side)
+    x, z = V[ix, 0], V[ix, 2]
+    return math.degrees(math.atan(-np.polyfit(x, z, 1)[0])) if np.ptp(x) > 1e-6 else 0.0
+
+
+def walk_numbers(rig, px_per_h, frames=None):
+    """For every frame of the walk and each foot: whether it is on the ground, the sole's pitch from level (deg) and, on the ground, how far the sole is from where the loop puts it (px at the strip's scale: the sole's centre in x against its commanded place and its lowest point against the floor)."""
+    n = frames or FRAMES["walk"]
+    base = {k: float(np.mean(rig.V0[sole_vertices(rig, *k), 0])) - rest_feet(rig)[k][0] for k in FEET}          # where the sole's centre stands against the foot's own place
+    rows = []
+    for i in range(n):
+        pose = clip_pose(rig, "walk", i / n)
+        V, _ = rig.skin(pose)
+        row = []
+        for k in FEET:
+            ix = sole_vertices(rig, *k)
+            fx, fz = pose.feet[k][0], pose.feet[k][1]
+            on = fz - rest_feet(rig)[k][1] < 1e-9
+            dx = float(np.mean(V[ix, 0])) - (fx + base[k])
+            dz = float(V[ix, 2].min())
+            row.append(dict(foot=k, ground=bool(on), angle=round(sole_angle(rig, V, *k), 2), hold=round(max(abs(dx), abs(dz)) * px_per_h, 2) if on else None, dx=round(dx * px_per_h, 2), dz=round(dz * px_per_h, 2)))
+        rows.append(row)
+    return rows

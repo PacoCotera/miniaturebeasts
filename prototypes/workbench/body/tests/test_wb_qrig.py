@@ -1,5 +1,6 @@
 """Chunk 20: the quadruped's rig and clips (qrig.py), numpy only: the four-beat walk where every foot lifts and lands, soles flat on the floor, breathing in the chest and belly only, a sit, a curl, and the tail on the midline in every pose."""
 import json
+import math
 import os
 import sys
 import unittest
@@ -20,9 +21,7 @@ class T(unittest.TestCase):
         cls.rig_part = cls.rig.part
 
     def foot_verts(self, V, kind, side):
-        r = self.rig
-        m = (r.part == r.parts[f"{kind}.L"]) & ((r.V0[:, 1] >= 0) if side == "L" else (r.V0[:, 1] < 0))
-        return V[m]
+        return V[R.sole_vertices(self.rig, kind, side)]                                              # the vertices of the sole itself: the rings the limb makes back up the torso are not the foot
 
     def feet_z(self, V):
         return {k: float(self.foot_verts(V, *k)[:, 2].min()) for k in R.FEET}
@@ -77,10 +76,13 @@ class T(unittest.TestCase):
                 pose = R.clip_pose(r, name, i / n)
                 V, M = r.skin(pose)
                 # the mirror pairs stay mirrored: the tail's mean side position is zero, and no tail vertex leaves the half it began in by more than its own radius
-                self.assertLess(abs(float(V[tail][:, 1].mean())), 1e-6, (name, i))
-                self.assertLess(float(np.abs(V[tail][:, 1] - r.V0[tail][:, 1]).max()), 1e-9, (name, i))      # the bones turn about y only: nothing of the tail moves sideways
-                if name != "breathe":
-                    self.assertLess(float(np.abs(V[:, 1] - r.V0[:, 1]).max()), 1e-9)                  # no vertex of the body moves sideways in a walk, a sit or a curl (a breath swells the chest outward)
+                rear_inv = np.linalg.inv(r.block(pose)["rear"])
+                Vt = (rear_inv @ np.hstack([V[tail], np.ones((int(tail.sum()), 1))]).T).T[:, :3]
+                self.assertLess(float(np.abs(Vt[:, 1] - r.V0[tail][:, 1]).max()), 1e-9, (name, i))           # in the rear block's own frame (the walk turns it a few degrees about its vertical axis) the tail bones turn about y only: nothing of the tail leaves the midline plane
+                self.assertLess(abs(float(Vt[:, 1].mean())), 1e-6, (name, i))
+                for k in R.FEET:
+                    ix = R.sole_vertices(r, *k)
+                    self.assertLess(float(np.abs(V[ix, 1] - r.V0[ix, 1]).max()), 1e-9, (name, i, k))   # no sole moves sideways
 
     def test_breathing_moves_the_chest_and_belly_only(self):
         r = self.rig
@@ -116,6 +118,54 @@ class T(unittest.TestCase):
         self.assertLess(float(sit[seat][:, 2].max()), float(V0[seat][:, 2].max()) - 0.15)
         back = (r.attr[:, 1] > 1.5) & (r.attr[:, 1] < 2.5) & (r.part == r.parts["torso"])
         self.assertLess(float(curl[back][:, 2].max()), float(V0[back][:, 2].max()) - 0.2)
+
+    def test_the_walk_numbers_of_the_art_direction(self):
+        rf = R.rest_feet(self.rig)
+        n = 12
+        poses = [R.clip_pose(self.rig, "walk", i / n) for i in range(n)]
+        for k in R.FEET:
+            xs = [p.feet[k][0] - rf[k][0] for p in poses]
+            self.assertAlmostEqual(max(xs) - min(xs), 0.09, delta=0.012)                              # each foot's whole travel across the loop: 0.09 H (the sampling of twelve frames misses the very ends)
+            self.assertLessEqual(max(p.feet[k][1] - rf[k][1] for p in poses), 0.08 + 1e-9)
+            self.assertGreater(max(p.feet[k][1] - rf[k][1] for p in poses), 0.06)                    # lift: 0.08 H at the middle of a swing
+        z = [p.pelvis[1] for p in [R.clip_pose(self.rig, "walk", i / 96) for i in range(96)]]
+        self.assertAlmostEqual(max(z) - min(z), 0.025, delta=1e-4)                                    # bob 0.025 H
+        zz = [R.clip_pose(self.rig, "walk", i / 96).pelvis[1] for i in range(96)]
+        self.assertEqual([i for i in range(96) if zz[i] == min(zz)][:2], [0, 48])                     # twice a loop, lowest as a foot lands
+        self.assertEqual(R.FRAME_MS * R.FRAMES["walk"] / 1000.0, R.PERIOD["walk"])                    # 150 ms a frame
+        self.assertAlmostEqual(max(abs(p.chest[2]) for p in poses), math.radians(5.0), delta=0.01)
+        self.assertAlmostEqual(max(abs(R.clip_pose(self.rig, "walk", i / 96).yaw) for i in range(96)), math.radians(3.0), delta=1e-3)
+
+    def test_the_soles_stay_level_and_the_stance_feet_hold_on_the_strip(self):
+        from wb import facade as F
+        import quadruped as Q
+        pxh = 95 * Q.frame(F.internal(S22))["scale"]
+        for i, row in enumerate(R.walk_numbers(self.rig, pxh)):
+            for r in row:
+                self.assertLessEqual(abs(r["angle"]), 8.0, (i, r))                                    # the sole level within 8 degrees
+                if r["ground"]:
+                    self.assertLessEqual(r["hold"], 1.0, (i, r))                                      # a stance foot holds within a pixel
+
+    def test_each_knee_bends_the_way_the_animals_does_and_never_folds_through(self):
+        r = self.rig
+        for i in range(24):
+            V, M = r.skin(R.clip_pose(r, "walk", i / 24))
+            for (kind, side), L in r.leg.items():
+                A = M[f"{kind}.ik.{side}"]
+                t, u = A[1] - A[0], A[2] - A[1]
+                cross = t[0] * u[2] - t[2] * u[0]
+                bend = math.atan2(abs(cross), t[0] * u[0] + t[2] * u[2])
+                self.assertLessEqual(bend, R.MAX_BEND + 0.05, (i, kind, side))                       # the elbow or stifle never bends past its limit: the paw folds instead
+                if bend > 0.1:
+                    # the joint's apex side: the fore elbow points back, the hind stifle forward (the apex of the file's joint)
+                    side_of = 1.0 if L["apex"][1] == "fwd" else -1.0
+                    # x of the joint against the chord from the root to the wrist
+                    ch = A[2] - A[0]
+                    off = (A[1][0] - A[0][0]) - ch[0] * np.dot(A[1] - A[0], ch) / np.dot(ch, ch)
+                    self.assertGreater(off * side_of, 0.0, (i, kind, side))
+                # the paw folds the way the animal's does: the fore knee forward, the hind hock back, of the ankle
+                if A[3][2] - A[4][2] > 0 and A[4][2] > 0.01:
+                    self.assertGreaterEqual((A[2][0] - A[3][0]) * L["fold"], -1e-9, (i, kind, side))
 
     def test_the_same_pose_is_the_same_vertices(self):
         a, _ = self.rig.skin(R.clip_pose(self.rig, "walk", 0.3))
