@@ -327,7 +327,7 @@ test("every species in every biome: a herd floor of 2 or more, creatures and bur
   for (const b of W.BIOMES) for (let s = 0; s < 60; s++) { const G = worldsOf(b)[s], { cr, pods } = W.genLife(G, s, W.ROSTER);
     W.ROSTER.forEach((r, sp) => { assert.ok(cr.some(w => w.sp === sp && !w.cv), `${b} ${s} species ${sp}`); assert.ok(herds(G, cr, sp) >= W.HERD.FLOOR, `${b} ${s} herds ${sp}`); assert.ok(pods.some(p => p.sp === sp)); }); }
   // a biome's habitat species: at least twice the herds on its land that generator 3's life gives the same ground
-  for (const b of ["woods", "fells", "marsh"]) { const hl = W.BIOME_HABITAT[b]; let a = 0, d = 0;
+  for (const b of ["woods", "fells", "marsh", ...W.BIOMES_R1]) { const hl = W.BIOME_HABITAT[b]; let a = 0, d = 0;
     for (let s = 0; s < 60; s++) { const G = worldsOf(b)[s], G3 = { ...G, gen: 3 }, l4 = W.genLife(G, s, W.ROSTER), l3 = W.genLife(G3, s, W.ROSTER);
       W.ROSTER.forEach((r, sp) => { if (!r.hab.includes(hl)) return; a += herds(G, l3.cr, sp, hl); d += herds(G, l4.cr, sp, hl); }); }
     console.log(`# ${b}: habitat herds ${a} -> ${d}`); assert.ok(d >= 1.9 * a, `${b}: ${a} -> ${d}`); }

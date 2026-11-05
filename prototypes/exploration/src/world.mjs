@@ -1268,7 +1268,7 @@ export const BIOME_GROUND = {
 };
 export const WALK_MIN = 260;   // a biome world holds at least this many walkable cells on its reachable component
 // The land a biome's habitat herds stand on: a species whose habitat holds it has its herds there doubled.
-export const BIOME_HABITAT = { woods: L.WOOD, fells: L.ROCK, marsh: L.POND };   // the five of realm version 2 have none yet
+export const BIOME_HABITAT = { woods: L.WOOD, fells: L.ROCK, marsh: L.POND, downs: L.MEADOW, thickets: L.WOOD, tallwood: L.WOOD, tarns: L.ROCK, meres: L.POND };
 
 function walkCells(G) { let n = 0; for (let c = 0; c < NC; c++) n += G.comp[c]; return n; }
 export function genWorld4(seed, biome = 'mixed') {
