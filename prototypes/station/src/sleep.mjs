@@ -24,7 +24,7 @@
 //   freshStation(newWid)   makes the Station's part fresh for the new realm and stores it
 //   now(), rand()  the time in ms and a number in [0, 1)
 //   quota          optional: bytes the store may hold (5 MB when absent)
-import { prepareSleep, assembleSleepFile, verifySleepFile, parseSleepFile, fileHash, MAX_BYTES } from "../../play/src/realm/sleepfile.mjs";
+import { prepareSleep, assembleSleepFile, verifySleepFile, parseSleepFile, fileHash, MAX_BYTES, SAVE_V } from "../../play/src/realm/sleepfile.mjs";
 import { utf8, hexEncode } from "../../play/src/realm/b64.mjs";
 import { canonical } from "../../play/src/realm/canonical.mjs";
 import { sha256 } from "../../play/src/realm/keys.mjs";
@@ -125,7 +125,7 @@ export function makeSleep(h) {
     if (!who || !who.id || typeof who.pub !== "string" || !who.pub) return { ok: false, why: "no key" };
     const raw = store.getItem(h.saveKey());
     let save = null; try { save = raw == null ? null : JSON.parse(raw); } catch { /* none */ }
-    if (!save || save.v !== 9 || typeof save.wid !== "string" || !save.wid || !save.st || typeof save.st !== "object" || !Array.isArray(save.regions)) return { ok: false, why: "no save" };
+    if (!save || save.v !== SAVE_V || typeof save.wid !== "string" || !save.wid || !save.st || typeof save.st !== "object" || !Array.isArray(save.regions)) return { ok: false, why: "no save" };
     try { const r = await h.caddy.identity(); if (r.status !== 200 || r.body.fault) return { ok: false, why: "no caddy" }; } catch { return { ok: false, why: "no caddy" }; }
     if (!roomFor(raw.length)) return { ok: false, why: "no room" };
     return { ok: true, who };
@@ -169,7 +169,7 @@ export function makeSleep(h) {
     let j = c.j; const wid = j.wid;
     const lock = c.lock = need(await ask("lock", { wid }), "lock"); checkpoint(c);
     const raw = store.getItem(h.saveKey()); let save = null; try { save = JSON.parse(raw); } catch { /* none */ }
-    if (!save || save.v !== 9 || save.wid !== wid || !save.st) throw new Abort("the stored save is not this realm");
+    if (!save || save.v !== SAVE_V || save.wid !== wid || !save.st) throw new Abort("the stored save is not this realm");
     const realm = await reach(() => h.caddy.realm(wid));
     if (realm.status !== 200 || !realm.body.caddy) throw new Abort("the Caddy has no records");
     const ident = await reach(() => h.caddy.identity());

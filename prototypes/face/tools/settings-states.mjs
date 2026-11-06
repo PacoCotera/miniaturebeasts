@@ -53,7 +53,7 @@ async function screens(visit) {
     for (const sc of SCREENS) {
       await page.evaluate(([name, f, docked, key]) => {
         const w = window.__world; w.reset(); w.adults(5); w.young(2); w.pods(3); w.seen();
-        const S = window.__st, sv = S.SV; sv.v = 9; sv.wid = sv.wid || "wtest00001"; sv.began = Date.UTC(2026, 10, 4, 12); sv.turn = 41; S.ST.turn = 41; sv.regions = [{ id: "g1" }, { id: "g2" }, { id: "g3" }]; w.persist();
+        const S = window.__st, sv = S.SV; sv.v = 10; sv.wid = sv.wid || "wtest00001"; sv.began = Date.UTC(2026, 10, 4, 12); sv.turn = 41; S.ST.turn = 41; sv.regions = [{ id: "g1" }, { id: "g2" }, { id: "g3" }]; w.persist();
         const map = JSON.parse(localStorage.getItem("mb-station-companions")); const me = map.known.find((k) => k.id === map.active); me.name = "Companion A"; me.at = Date.UTC(2026, 10, 4, 12);
         if (key) { me.pub = "A".repeat(43); delete me.pubMismatch; } else delete me.pub;
         localStorage.setItem("mb-station-companions", JSON.stringify(map));

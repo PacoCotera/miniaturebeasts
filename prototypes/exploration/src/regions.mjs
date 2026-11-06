@@ -2,13 +2,13 @@
 // everything else. Pure functions on plain objects, no page, no storage but an adapter.
 // The page keeps reading S.seed, S.revealed, S.pods and the rest; the region in use is
 // mounted onto S, and unmounted before anything is written.
-//   save v9 on disk: { v: 9, seed (= regions[0].seed), began, here, regions: [Region …], …the realm's fields… }
+//   save v10 on disk: { v: 10, seed (= regions[0].seed), began, here, regions: [Region …], resetFrom?, …the realm's fields… }
 //   Region = { id, n, kind: "home" | "season", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
 //              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
 import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "./world.mjs";
 import { LANGUAGE } from "../../workbench/framework/language.mjs";
 
-export const REALM_SAVE_V = 9;
+export const REALM_SAVE_V = 10;
 // the fields of a region's own map state: on S while the region is mounted, in regions[i].map when it is not.
 // lastPos lives in S.ui.lastPos on the page (the last start flag of the inset) and moves with the region.
 export const MAP_KEYS = ["revealed", "visited", "called", "signs", "pins", "cells", "pods", "cr", "veil", "svy", "svyF", "opened", "skulls", "lastStorm", "lastEntered", "lastTrail", "lastPos"];
@@ -20,7 +20,9 @@ export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Cliffs", m
 export const BIOME_KINDS = Object.fromEntries(BIOMES.map(b => [b, LANGUAGE.kinds.filter(k => !k.template && k.land === b).map(k => k.id)]));
 // The game's species list, by place (the `sp` of a creature, a pod and a mibi): the three starters keep 0 to 2, the other seventeen are appended (the Station's SP_INDEX is the same list).
 export const SP_ORDER = ["S01", "S03", "S02", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20"];
-export const STARTERS = ["S01", "S03", "S02"];   // the home region's kinds (Loika calms, Tuikis digs, Untuva sniffs out buried pods), whatever its land
+// What the Companion page makes its SPECIES rows from, one per place of SP_ORDER: the frame's name and plural (a plural is the name itself: the frames give no other), the family and its ground.
+export const KIND_INFO = SP_ORDER.map(id => { const k = LANGUAGE.kinds.find(x => x.id === id); return { id, name: k.name, plural: k.name, family: k.family, hab: FAMILY_GROUND[k.family] }; });
+export const STARTERS =["S01", "S03", "S02"];   // the home region's kinds (Loika calms, Tuikis digs, Untuva sniffs out buried pods), whatever its land
 // The kinds a region spawns, as genLife5 reads them: the home region (region 1, the centre slot) keeps the three starters on their present grounds (ROSTER);
 // every other region spawns its land's kinds on their families' grounds (FAMILY_GROUND), the registry's order.
 export function regionKinds(region) {
@@ -30,7 +32,7 @@ export function regionKinds(region) {
     const sp = SP_ORDER.indexOf(id);
     if (home && sp < 3) { const r = ROSTER[sp]; return { id, sp, hab: r.hab, ...(r.nest ? { nest: true } : {}) }; }
     const k = LANGUAGE.kinds.find(x => x.id === id);
-    return { id, sp, hab: FAMILY_GROUND[k.family] };
+    return { id, sp, hab: FAMILY_GROUND[k.family], ...(sp === 1 ? { nest: true } : {}) };   // Tuikis (sp 1) keeps its nest wherever it spawns
   });
 }
 // A realm's kind version: 1 draws its slots from the four older kinds, 2 from all nine by rarity. It is written on a new realm; a save without
@@ -122,9 +124,9 @@ export function slotBiome(seed, ax, ay, version = 1) {
   if (version < 2) return BIOMES_V1[hash(seed, "slot", ax, ay) % BIOMES_V1.length];
   return realmSlots(seed).get(ax + "," + ay);
 }
-// The generator a realm opens a new home region with: version 2 realms use generator 4 (the region's kind shapes its world); version 1 realms keep generator 3.
+// The generator a realm opens a new home region with: generator 5 (generator 4's ground, the life by land). Every save since the release's reset is a version 2 realm of generator 5.
 // A region keeps the generator and kind it was opened with, in its record.
-export const openGen = realm => biomeVersion(realm) >= 2 ? 4 : 3;
+export const openGen = () => 5;
 // A new home region's record for a free slot: the slot's kind (by the realm's kind version), the realm's generator rule, its own seed.
 export function openHome(realm, slot, { n = realm.regions.length + 1, opened = Date.now(), openedTurn = realm.turn || 0 } = {}) {
   const seed1 = realm.regions[0].seed;
@@ -240,28 +242,4 @@ export function keepPre9(store, key, raw) {
   } catch (e) { return false; }
 }
 
-// ---- the release's save reset (release 21b): what a page does with what it finds under the save key ----
-// Save v10 is the first of the twenty kinds and generator 5. A save of v8 or v9 holds mibis and pods of the earlier art and species: it is copied once, byte for byte, to <key>.pre10
-// (never read by play) and a new realm starts. A save above the page's own version, and bytes it cannot read, stay read-only as they were. Whichever page opens first does the reset;
-// the other finds v10 and plays. `RESET_V` is the version a page writes after a reset; nothing here reads the page or writes a save.
-export const RESET_V = 10, RESET_FROM = [8, 9];
-// 'none' (an empty slot: a new realm, today's path), 'play' (a v10 save), 'reset' (a v8 or v9 save; `from` says which), 'newer' (above v10) or 'broken' (unreadable).
-export function resetPlan(raw, playV = RESET_V) {
-  if (raw == null || raw === "") return { action: "none" };
-  let s; try { s = JSON.parse(raw); } catch (e) { return { action: "broken" }; }
-  if (!s || typeof s !== "object" || Array.isArray(s)) return { action: "broken" };
-  if (typeof s.v === "number" && s.v > playV) return { action: "newer" };
-  if (s.v === playV) return { action: "play" };
-  if (RESET_FROM.includes(s.v)) return { action: "reset", from: s.v };
-  return { action: "broken" };
-}
-// The copy a reset keeps: <key>.pre10, untouched, never read by play. An older <key>.pre9 is removed at the reset. Returns true when the copy is in place and equal to `raw`; false when it could not be
-// made (the page then opens read-only and writes nothing, as it did for .pre9). A copy already there is kept: it is the oldest bytes.
-export function keepPre10(store, key, raw) {
-  const k = key + ".pre10";
-  try {
-    if (store.getItem(k) == null) { store.setItem(k, raw); if (store.getItem(k) !== raw) return false; }
-    try { store.removeItem(key + ".pre9"); } catch (e) { /* an older copy that cannot be removed stays */ }
-    return true;
-  } catch (e) { return false; }
-}
+export { RESET_V, RESET_FROM, resetPlan, keepPre10 } from "../../play/src/realm/reset.mjs";   // the release's save reset, shared with the Station (release 21b)

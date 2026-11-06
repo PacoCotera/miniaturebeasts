@@ -1,6 +1,7 @@
 // The Station page in a browser for the tools that take a screen's states (pods-states.mjs, home-states.mjs): the repository served beside the sandbox's paths, the fixture save loaded once, the face in test mode (?test),
 // page errors and console errors failing the run. `motion: false` is the reduced-motion preference (the goldens: the walk and the events jump to their end).
 import { createServer } from "node:http";
+import { fixtureStorage } from "../../station/tools/fixture-save.mjs";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -31,8 +32,8 @@ export async function openStation({ motion = true, clock = false, longNames = pr
   page.on("pageerror", (e) => fail("pageerror: " + e.message)); page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) fail("console: " + m.text().split("\n")[0]); });
   if (clock) await page.addInitScript(VIRTUAL_CLOCK);
   for (const script of init) await page.addInitScript(script);
-  const fixture = readFileSync(path.join(root, "station/tests/fixtures/save-v8-schema1.json"), "utf8");
-  await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
+  const fixture = fixtureStorage();   // the schema fixture as a v10 save under a Companion A (station/tools/fixture-save.mjs): a v8 save would be reset
+  await page.addInitScript((entries) => { if (!sessionStorage.getItem("fixture-done")) { for (const [k, v] of Object.entries(entries)) localStorage.setItem(k, v); localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
   await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test&names=en-short-1`, { waitUntil: "load" });
   await page.evaluate(() => window.__st.ready); await page.waitForTimeout(500);
   if (longNames) console.log("long names: " + (await page.evaluate((adv) => window.__st.useLongNames(adv), JSON.parse(readFileSync(path.join(here, "../dist/metrics.json"), "utf8")).fonts["16"].advance)).join(", "));   // the layout check's --long-names pass: the longest names of the live list, not the archived short ones

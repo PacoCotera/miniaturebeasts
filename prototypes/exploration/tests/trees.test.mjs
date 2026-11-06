@@ -162,8 +162,10 @@ const OLD = JSON.parse(readFileSync(new URL("./fixtures/old-save-walked.json", i
 const tilesOf = lay => Array.from(lay.tiles).map(t => t.toString(36)).join("");
 
 test("an old save keeps what it walked: the same tiles, every old feature and its state; trees only add", () => {
-  const p = makePage({ console: "silent", els: true, raf: 1, store: JSON.parse(JSON.stringify(OLD.store)) });
-  assert.equal(p.run("S.seed"), 9); assert.equal(p.run("S.gen"), 4); assert.deepEqual(OLD.walked.map(c => p.run(`S.visited[${c}]`)), [1, 1, 1, 1], "the walked places are walked in the load");
+  // the fixture is a v9 save of generator 4; the release resets such a save, so the same realm is played as v10 on generator 5 (its ground is generator 4's, so every tile and feature is the fixture's)
+  const store = JSON.parse(JSON.stringify(OLD.store)), sk = Object.keys(store).find(k => k.startsWith("mb-save")), sv10 = JSON.parse(store[sk]); sv10.v = 10; sv10.regions[0].gen = 5; store[sk] = JSON.stringify(sv10);
+  const p = makePage({ console: "silent", els: true, raf: 1, store });
+  assert.equal(p.run("S.seed"), 9); assert.equal(p.run("S.gen"), 5); assert.deepEqual(OLD.walked.map(c => p.run(`S.visited[${c}]`)), [1, 1, 1, 1], "the walked places are walked in the load");
   const saved = JSON.parse(OLD.store[Object.keys(OLD.store).find(k => k.startsWith("mb-save"))]), state = p.run("JSON.stringify(S.cells)");
   assert.ok(Object.keys(JSON.parse(state)).length >= 3, "feature state came in");
   let added = 0;
@@ -182,7 +184,7 @@ test("an old save keeps what it walked: the same tiles, every old feature and it
   assert.equal(p.run(`bushFull('${k[0]}', layout('${k[0]}').feats.find(f => f.id === '${bush.id}'))`), false, "the bush is still bare");
   assert.equal(p.run(`JSON.stringify(featPos('${k[1]}', layout('${k[1]}').feats.find(f => f.id === '${slab.id}')))`), JSON.stringify({ x: slab.x + 1, y: slab.y }), "the slab is where it was pushed");
   // and a place the save never walked: the generator's tiles and old features (as built, a layout may change here, but only by its trees)
-  const W = genWorld(9, 4), un = Array.from(W.comp).findIndex((v, c) => v && !OLD.walked.includes(c)), raw = genPlace(W, 9, String(un));
+  const W = genWorld(9, 5), un = Array.from(W.comp).findIndex((v, c) => v && !OLD.walked.includes(c)), raw = genPlace(W, 9, String(un));
   const ul = JSON.parse(p.run(`(() => { const l = layout('${un}'); return JSON.stringify({ tiles: Array.from(l.tiles), feats: l.feats.filter(f => !f.tree) }); })()`));
   assert.deepEqual(ul.tiles, Array.from(raw.tiles)); assert.deepEqual(JSON.parse(JSON.stringify(raw.feats)), ul.feats);
 });

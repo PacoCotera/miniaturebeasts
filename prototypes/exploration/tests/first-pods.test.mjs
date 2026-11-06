@@ -16,6 +16,8 @@ const SEEDS = Array.from({ length: 1000 }, (_, i) => i + 1);
 // One sandbox for the pure checks: G is set per seed, S is never read by genLife or firstPods.
 const P0 = page();
 const life = s => { P0.run(`G = genWorld(${s}, 2)`); return plain(P0.run(`genLife(${s})`)); };
+// a new world is generator 5 (region 1, the three starters): test 5 reads the life a new world really has
+const life5 = s => { P0.run(`G = genWorld(${s}, 5)`); return plain(P0.run(`genLife(${s}, { n: 1, biome: "mixed" })`)); };
 const first = (s, glint, pods) => plain(P0.run(`firstPods(${s}, ${glint}, ${JSON.stringify(pods)})`));
 const geo = () => plain(P0.run(`({ spawns: G.spawns, gate: G.gate, deep: G.deep, swim: G.swim, glow: G.glow, land: G.land, comp: G.comp, island: G.island,
   pass: G.land.map((_, c) => passable(c)), reach: Object.fromEntries(G.spawns.map(g => [g, reachCells(g, TIER[1].range)])) })`));
@@ -121,7 +123,7 @@ test("5. it runs once: the first placement adds the pods, a second expedition an
   for (const s of [1, 7, 42]) {
     const store = {}, p = page(store);
     p.run(`newWorld(${s}); TEST.calm = true; startExpedition('weather', G.spawns[0])`);
-    const want = first(s, p.run("G.spawns[0]"), life(s).pods).map(q => q.id);
+    const want = first(s, p.run("G.spawns[0]"), life5(s).pods).map(q => q.id);
     assert.ok(want.length >= 1);
     assert.deepEqual(added(p), want, "the first placement adds them");
     const n = p.S.pods.length;

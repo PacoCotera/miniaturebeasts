@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as R from "../src/regions.mjs";
-const REGIONS = { migrate8: R.migrate8, mount: R.mount, unmount: R.unmount, serialize: R.serialize, realmStatus: R.realmStatus, keepPre9: R.keepPre9, prefixPods: R.prefixPods };   // what the page imports from regions.mjs
+const REGIONS = { migrate8: R.migrate8, mount: R.mount, unmount: R.unmount, serialize: R.serialize, realmStatus: R.realmStatus, resetPlan: R.resetPlan, keepPre10: R.keepPre10, regionKinds: R.regionKinds, KIND_INFO: R.KIND_INFO, prefixPods: R.prefixPods, RESET_CARRY: null };   // what the page imports from regions.mjs
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -149,10 +149,10 @@ test("old saves: no trips list, an expedition without the new fields", () => {
   assert.deepEqual(plain(t.tripRecord({ n: 3 })), { v: 1, n: 3, partner: null, places: [], storm: false, carried: [] });
   assert.equal(t.tripsWith(undefined, t.tripRecord({ n: 3 })).length, 1);
   // the page's load gives a save without `trips` an empty list
-  const saved = { v: 8, seed: 7, cr: [], mibis: [], wid: "w7", retSeen: [], bay: [] }, store = { "mb-save-v8": JSON.stringify(saved) };
+  const saved = R.migrate8({ v: 8, seed: 7, gen: 5, cr: [], mibis: [], wid: "w7", retSeen: [], bay: [] }, { now: 1 }), store = { "mb-save-v8": JSON.stringify(saved) };
   const ctx = { localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; }, removeItem: k => { delete store[k]; } },
-    SAVE_KEY: "mb-save-v8", LEGACY_KEY: "mb-save-v8-shared", COMPANION: { slot: "A" }, SAVE_V: 9, V7_KEY: "v7", OLD_SAVE_KEYS: [], migrate7: o => o, ...REGIONS,
-    layoutCache: { clear() {} }, genWorld() {}, genLife: () => ({ pods: [], cr: [] }), GENS: [1], indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2, MW: 16, MH: 20 };
+    SAVE_KEY: "mb-save-v8", LEGACY_KEY: "mb-save-v8-shared", COMPANION: { slot: "A" }, SAVE_V: 10, V7_KEY: "v7", OLD_SAVE_KEYS: [], migrate7: o => o, ...REGIONS,
+    layoutCache: { clear() {} }, genWorld() {}, genLife: () => ({ pods: [], cr: [] }), GENS: [5], indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2, MW: 16, MH: 20 };
   const l = load(["load", "migrateCarried", "normalizeCare", "worldFields", "idsIn", "realmOf"], ctx);
   assert.equal(l.load(), true);
   assert.deepEqual(plain(vm.runInContext("S.trips", l.ctx)), []);
@@ -175,7 +175,7 @@ test("End expedition while docked at the start", () => {
   const sv = () => JSON.parse(store["mb-save-v8"]);
   const t = load(["endExpedition", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSt", "stPart", "isDocked", "syncStation", "carryApply",
     "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen", ...TRIP], {
-    S, window: {}, RT: {}, FX: {}, NOW: 0, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 9, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
+    S, window: {}, RT: {}, FX: {}, NOW: 0, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
     CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ surveyed: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},

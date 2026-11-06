@@ -17,9 +17,9 @@ function realm3(turn, seen2, seen3 = turn) {
   const p = makePage({ console: "silent" });
   p.run(`newWorld(7); S.turn = ${turn}; S.expN = ${turn}; S.regions[0].turnSeen = ${turn}`);
   for (const [n, seen] of [[2, seen2], [3, seen3]]) {
-    const seed = R.regionSeed(p.run("S.seed"), n), G = W.genWorld(seed, 3), map = R.blankMap(), life = W.genLife(G, seed);
+    const seed = R.regionSeed(p.run("S.seed"), n), G = W.genWorld(seed, 5, "mixed"), map = R.blankMap(), life = W.genLife(G, seed, R.regionKinds({ n, biome: "mixed" }));   // a Meadows region of generator 5: Rupar, Peplos, Wickle
     map.cr = life.cr; map.pods = life.pods;
-    p.run(`S.regions.push(${JSON.stringify(R.regionRecord({ n, kind: "home", biome: "mixed", slot: [2 + n, 1], seed, gen: 3, opened: 1, openedTurn: 0, turnSeen: seen, map }))})`);
+    p.run(`S.regions.push(${JSON.stringify(R.regionRecord({ n, kind: "home", biome: "mixed", slot: [2 + n, 1], seed, gen: 5, opened: 1, openedTurn: 0, turnSeen: seen, map }))})`);
   }
   return p;
 }
@@ -104,9 +104,9 @@ test("5. W4: a species the region lacks surfaces at its next region turn as one 
 
 test("6. W4 in a catch-up too, and a region that holds every species draws nothing extra", () => {
   const p = realm3(10, 3);
-  p.run("mountRegion('g2'); S.cr = S.cr.filter(w => w.sp !== 0); indexCreatures(); S.regions[1].turnSeen = 9; catchUp(S.regions[1])");
-  assert.ok(p.run("S.cr.filter(w => w.sp === 0).length") >= W.HERD.SIZE, "Loikas surface in region 2 at its catch-up turn");
-  // all present: the surfacing never fires (gen 3 holds every species by construction)
+  p.run("mountRegion('g2'); S.cr = S.cr.filter(w => w.sp !== 7); indexCreatures(); S.regions[1].turnSeen = 9; catchUp(S.regions[1])");
+  assert.ok(p.run("S.cr.filter(w => w.sp === 7).length") >= W.HERD.SIZE, "Rupar (the Meadows' first kind) surface in region 2 at its catch-up turn");
+  // all present: the surfacing never fires (a generator 5 region holds every kind of its land by construction)
   const q = realm3(10, 3); q.run("globalThis.SURF = 0; { const o = surfaceMissing; surfaceMissing = (...a) => { const n = S.cr.length; o(...a); SURF += S.cr.length - n; }; }");
   q.run("mountRegion('g2')"); q.run("worldTurn({ trail: [], storm: [] })");
   assert.equal(q.run("SURF"), 0);

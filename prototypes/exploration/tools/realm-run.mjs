@@ -2,7 +2,7 @@
 // It is the golden run of the realm work: recorded on the v8 page, and the
 // v9 page with one region must give the same digest. The page is played only through its keys (page-harness.mjs), the Date stands still, and
 // every choice comes from the bot's own generator, so one (seed, generator, expeditions) gives one digest, byte for byte.
-//   node prototypes/exploration/tools/realm-run.mjs [--seed 7] [--gen 3] [--exp 20] [--mibis 0] [--dock 0] [--stop-mid] [--save out.json] [--record]
+//   node prototypes/exploration/tools/realm-run.mjs [--seed 7] [--gen 5] [--exp 20] [--mibis 0] [--dock 0] [--stop-mid] [--save out.json] [--record]
 //   --mibis n    n grown mibis ride with the Companion from the start (the Station hands them over)
 //   --dock n     the Companion docks at the Station before every n-th expedition (the crates are opened, then it is lifted); it also docks whenever the Probe is broken
 //   --stop-mid   stop expedition --exp after its walk out, still on the map, and keep that save (the save of an expedition under way)
@@ -26,7 +26,7 @@ const STATE = `(() => { const u = {}, s = S; for (const k of ["seed", "gen", "wi
   "skulls", "lastStorm", "known", "found", "met", "firsts", "mibis", "carried", "lead", "tier", "shield", "deepRead", "bay", "hold", "exp", "report", "log", "hist", "totalActions", "walkTurn", "phase"]) if (s[k] !== undefined) u[k] = s[k];
   u.lastPos = s.ui && s.ui.lastPos; return JSON.parse(JSON.stringify(u)); })()`;
 
-export function runBot({ seed = 7, gen = 3, expeditions = 20, mibis = 0, dock = 0, stopMid = false } = {}) {
+export function runBot({ seed = 7, gen = 5, expeditions = 20, mibis = 0, dock = 0, stopMid = false } = {}) {
   const p = makePage({ console: "silent", date: FIXED_DATE });
   let x = (seed * 2654435761 + gen * 40503) >>> 0;
   const rng = n => { x = (Math.imul(x, 1664525) + 1013904223) >>> 0; return (x >>> 8) % n; };   // the bot's own: it never touches the page's draws
@@ -111,7 +111,7 @@ export function summary(s) {
 }
 
 const GOLDEN = new URL("../tests/realm-run.golden.json", import.meta.url);
-export const RUN = { seed: 7, gen: 3, expeditions: 20, mibis: 0, dock: 0 };   // the golden run
+export const RUN = { seed: 7, gen: 5, expeditions: 20, mibis: 0, dock: 0 };   // the golden run
 
 if (import.meta.url === new URL(process.argv[1], "file:").href) {
   const a = process.argv.slice(2), arg = (k, d) => { const i = a.indexOf("--" + k); return i < 0 ? d : +a[i + 1]; };
@@ -119,6 +119,6 @@ if (import.meta.url === new URL(process.argv[1], "file:").href) {
   const r = runBot(opts);
   const { save, page, ...pub } = r;
   const at = a.indexOf("--save"); if (at >= 0) writeFileSync(a[at + 1], r.save);
-  if (a.includes("--record")) { writeFileSync(GOLDEN, JSON.stringify({ note: "Recorded on the v8 page by tools/realm-run.mjs: 20 expeditions, seed 7, generator 3, no mibis. The v9 page with one region must give the same digest.", ...pub }, null, 1) + "\n"); console.log("recorded", pub.digest); }
+  if (a.includes("--record")) { writeFileSync(GOLDEN, JSON.stringify({ note: "Recorded by tools/realm-run.mjs on the v10 page (the release: a new realm is generator 5, life by land): 20 expeditions, seed 7, generator 5, no mibis. Retaken once at the release; the digest moves only with the world.", ...pub }, null, 1) + "\n"); console.log("recorded", pub.digest); }
   else console.log(JSON.stringify(pub, null, 1));
 }

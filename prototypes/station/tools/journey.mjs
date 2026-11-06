@@ -15,6 +15,7 @@ import { sameGenome } from "../../genome-stamp/src/codec.mjs";
 import { frameFor } from "../../genome-stamp/src/frames.mjs";
 import { createApp, loadFrames as loadCaddyFrames } from "../../caddy/app.mjs";
 import { decodePNG } from "../../ui/png.mjs";
+import { fixtureStorage, fixtureRealm } from "./fixture-save.mjs";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import http from "node:http";
@@ -73,10 +74,10 @@ const settled = async (name, fn) => {
 };
 const frameShot = (name, ink = false) => settled(name, async () => { await record(name, ink); const url = await page.evaluate(() => window.__st.capture()); writeFileSync(path.join(here, `../img/${name}.png`), Buffer.from(url.split(",")[1], "base64")); });
 const shot = (name, ink = false) => settled(name, async () => { await record(name, ink); return page.screenshot({ path: path.join(here, `../img/${name}.png`), fullPage: false }); });
-const fixture = readFileSync(path.join(here, "../tests/fixtures/save-v8-schema1.json"), "utf8");
-const companionBefore = JSON.stringify({ ...JSON.parse(fixture), st: undefined });
+const fixture = fixtureStorage();   // the schema fixture as a v10 save under a Companion A (fixture-save.mjs): a v8 save would be reset
+const companionBefore = JSON.stringify({ ...fixtureRealm(), st: undefined });
 await page.addInitScript(() => { window.__fillTextCalls = 0; for (const f of ["fillText", "strokeText", "measureText"]) { const o = CanvasRenderingContext2D.prototype[f]; CanvasRenderingContext2D.prototype[f] = function (...a) { window.__fillTextCalls++; return o.apply(this, a); }; } });
-await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
+await page.addInitScript((entries) => { if (!sessionStorage.getItem("fixture-done")) { for (const [k, v] of Object.entries(entries)) localStorage.setItem(k, v); localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
 // The page's clock, real until held: __hold() freezes performance.now() and queues requestAnimationFrame; __step(ms) runs the queued frames at 40 ms steps (as face/tools/station-page.mjs VIRTUAL_CLOCK); __release() resumes real time from where it stopped (no jump forward or back). The hold is at the last frame's own timestamp, so the face's first step is exactly 40 ms whatever the frame phase was
 await page.addInitScript(() => {
   const realNow = performance.now.bind(performance), realRaf = window.requestAnimationFrame.bind(window); let held = false, t = 0, off = 0, q = [], last = null, pend = new Set();
@@ -756,7 +757,7 @@ const benchIdle = () => page.waitForFunction(() => !window.__st.holding(), null,
   stepOf("settings-walk");
   await page.emulateMedia({ reducedMotion: "reduce" });
   const snap = await page.evaluate(() => { const S = window.__st; return JSON.stringify({ rs: S.settings.realmSleep, dock: S.ST.dock, map: localStorage.getItem("mb-station-companions"), sv: { v: S.SV.v, began: S.SV.began, regions: S.SV.regions } }); });
-  await page.evaluate(() => { const S = window.__st, map = JSON.parse(localStorage.getItem("mb-station-companions")), me = map.known.find((k) => k.id === map.active); me.pub = "A".repeat(43); delete me.pubMismatch; localStorage.setItem("mb-station-companions", JSON.stringify(map)); S.SV.v = 9; S.SV.began = Date.UTC(2026, 10, 4, 12); S.SV.regions = [{ id: "g1" }, { id: "g2" }]; S.settings.realmSleep = false; S.ST.dock = { docked: true, at: 1 }; S.UI.idle = false; S.UI.home.f = "companion"; S.goto("home"); }); await page.waitForTimeout(400);
+  await page.evaluate(() => { const S = window.__st, map = JSON.parse(localStorage.getItem("mb-station-companions")), me = map.known.find((k) => k.id === map.active); me.pub = "A".repeat(43); delete me.pubMismatch; localStorage.setItem("mb-station-companions", JSON.stringify(map)); S.SV.v = 10; S.SV.began = Date.UTC(2026, 10, 4, 12); S.SV.regions = [{ id: "g1" }, { id: "g2" }]; S.settings.realmSleep = false; S.ST.dock = { docked: true, at: 1 }; S.UI.idle = false; S.UI.home.f = "companion"; S.goto("home"); }); await page.waitForTimeout(400);
   let r = await gpress("up", 200); expect(r.ring === "vivarium" && r.p.regions.line.verb === "Go to the Vivarium", "settings-walk: with the developer setting off there is no knob: Companion ▲ is the Vivarium: " + JSON.stringify([r.ring, r.p.regions.line]));
   await page.evaluate(() => { window.__st.settings.realmSleep = true; window.__st.UI.home.f = "companion"; window.__st.goto("home"); }); await page.waitForTimeout(400);
   r = await gpress("up", 200); expect(r.ring === "settings" && r.p.regions.line.verb === "Go to Settings", "settings-walk: with it on, Companion ▲ is the Settings knob, the line says Go to Settings: " + JSON.stringify([r.ring, r.p.regions.line]));

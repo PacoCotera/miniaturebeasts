@@ -112,6 +112,11 @@ export function hatchNowBuild(m, spec, frame, pods) {
   const line = { ok: card.name, subject: "", need: card.dim ? fill(pods.strings.needMore, { icons: card.short }) : "", back: spec.strings.back ?? "Back" };
   return { overlay: { id: "panel", state: "open", form: "hatchnow", regions, focus: { cur, targets: [{ id: "card.grow", enabled: true }, { id: "card.wait", enabled: true }] } }, line, requests, cards };
 }
+// The release's one-time notice (panel.json strings.reset; words OWED to the copywriter): one card with no picture, the one way on is its button.
+export function resetCards(spec) {
+  const Sg = spec.strings.reset;
+  return [{ id: "begin", act: "begin", room: null, picture: "", pictureSize: [744, 160], bare: true, mark: "", name: Sg.cards.begin.name, cost: "", gain: false, short: "", line: Sg.cards.begin.line, loss: false, dim: false }];
+}
 // The cards of the dock arrival's choice strip (the dock arrival spec, the strip form): Open now (the crates open, small; free; "{N} crates to open") and Later (the crates sealed, small; free; "They wait while docked").
 export const STRIP_PICTURE = [96, 96];
 export function dockCards(m, spec, frame, requests) {
@@ -134,7 +139,7 @@ export function artOf(frame, n, requests, wild = false) {
   const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return id ? req(id, sz(id)) : ""; };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };
 }
-export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "addRoom" ? addRoomCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
+export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "addRoom" ? addRoomCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : m.ui.panel.id === "reset" ? resetCards(spec) : wildCards(m, spec, frame, requests));
 export const titleOf = (m, spec) => {
   const id = m.ui.panel.id, t = spec.strings[id].title;
   if (id === "wildMibi") return fill(t, { name: habitatShown(m.st, m.sv, m.ui.hab.id)?.name ?? "" });

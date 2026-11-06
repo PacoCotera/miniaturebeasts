@@ -325,10 +325,10 @@ test("normalizeCare: defaults for the additive fields; ids not in S.mibis droppe
   assert.deepEqual(plain(S.mibis[2]), { id: 3, name: "Fig", born: 0, care: 0, tends: 0, outings: 0, notches: 0, tendDay: null, grownTurn: null });
   const once = JSON.stringify(S); t.normalizeCare(S); assert.equal(JSON.stringify(S), once);
 });
-test("a new world: the carried set, no `with`; SAVE_V is 9 and the storage key keeps its name", () => {
+test("a new world: the carried set, no `with`; SAVE_V is 10 and the storage key keeps its name", () => {
   assert.match(source("worldFields"), /mibis: \[\], carried: \[\], lead: null, carrySeen: 0, carryRefused: \[\]/);
   assert.ok(!/\bwith: null\b|withSeen: 0, probeSeen/.test(source("worldFields")));
-  assert.match(PAGE, /LEGACY_KEY = 'mb-save-v8', SAVE_V = 9/);
+  assert.match(PAGE, /LEGACY_KEY = 'mb-save-v8', SAVE_V = 10/);
 });
 
 // ---- §1: the Station's requests, applied at the dock (T3 and T7, the Companion's half) ----
@@ -745,10 +745,10 @@ test("the Lead card's context: docked with no one carried reads 'no one with you
 
 // ---- X1: a Station species the Companion does not know (design/proposals/station-build.md §2.3, spName) ----
 // The whole page script in a sandbox (as freeze.test.mjs runs it), with the Station's real code and frames: seedAdults S05 and S10
-// (sp 4 and 9 on the Station: species beyond the Companion's three, until the release's second chunk gives the page its twenty), then dockKey, then the Companion reads the save.
+// (sp 4 and 9 on the Station). The page now has rows for all twenty, so each page here has its SPECIES cut to the first three: S05 and S10 stand for a species the Companion has no entry for (the intent of X1), then dockKey, then the Companion reads the save.
 const X1 = await (async () => {
   const { frameOf } = await import("../../station/src/genome.mjs");
-  const page = (store = {}) => { const p = makePage({ store }); p.putSt = st => { const o = JSON.parse(store[p.KEY]); o.st = JSON.parse(JSON.stringify(st)); store[p.KEY] = JSON.stringify(o); }; return p; };
+  const page = (store = {}) => { const p = makePage({ store }); p.run("SPECIES.length = 3"); p.putSt = st => { const o = JSON.parse(store[p.KEY]); o.st = JSON.parse(JSON.stringify(st)); store[p.KEY] = JSON.stringify(o); }; return p; };
   // The Companion's world, the Station's write (S05 Dot and Moss, S10 Bean and Fig, docked), normalized as the Station does before every save,
   // so each mibi carries the spName the Station's own normalize writes; `oldSave` drops it (a Station save from before the field).
   function docked({ oldSave = false, seed = true } = {}) {
@@ -767,7 +767,7 @@ const X1 = await (async () => {
 const COMPANION_NEW = ["mibis", "dockSeen", "log"];
 const without = (o, keys) => { const c = JSON.parse(JSON.stringify(o)); for (const k of keys) delete c[k]; return JSON.stringify(c); };
 
-test("X1 1: a save holding S05 and S10 mibis (sp 4 and 9, beyond the page's three until 21b) loads: save() does not throw, and a page built from the result boots", () => {
+test("X1 1: a save holding S05 and S10 mibis (sp 4 and 9, beyond the list the page is cut to here) loads: save() does not throw, and a page built from the result boots", () => {
   const { p } = X1.docked();
   assert.deepEqual(plain(p.sv().st.mibis.map(m => [m.name, m.sp, m.species])), [["Dot", 4, "S05"], ["Moss", 4, "S05"], ["Bean", 9, "S10"], ["Fig", 9, "S10"]], "the Station's real seeds");
   assert.doesNotThrow(() => p.run("save()"));
@@ -809,7 +809,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   p.key("confirm"); assert.equal(p.S.phase, "patch", "into a place");
   d = render("patch"); assert.ok(d.some(x => x.startsWith("c-sprite-other-32@") && x.endsWith("x1")), "the field partner: the plate at 1×: " + d);
   assert.ok(d.some(x => x.startsWith("c-mini-other-12@")), "the HUD mini in a place");
-  assert.doesNotThrow(() => p.run("ptCtx()")); assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), 4, "never matches a wild species (the page carries three until 21b)");
+  assert.doesNotThrow(() => p.run("ptCtx()")); assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), 4, "never matches a wild species (the page is cut to three here)");
   assert.equal(p.run("canDig()"), false); assert.equal(p.run("digPartner()"), null);
   assert.doesNotThrow(() => p.run("onStateChanged(); notesText();"));
   const lines = p.run("FX.notes.map(n => n.text).concat(S.log).join('\\n')");

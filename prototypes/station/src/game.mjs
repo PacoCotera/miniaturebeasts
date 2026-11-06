@@ -9,6 +9,7 @@ import { createTimeline } from "../../ui/timeline.mjs";
 import { createFramePresenter } from "./present.mjs";
 import { createFocus } from "../../ui/focus.mjs";
 import * as C from "./companions.mjs";
+import { resetPlan, keepPre10 } from "../../play/src/realm/reset.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
@@ -43,15 +44,28 @@ export function switchCompanion(who) {
   if (!r.switched) return false;
   KEY = null; load(); UI.lib.pending = null; goScreen("home"); save(); return true;
 }
+// The release's reset (the Companion does the same for its own page; whichever opens first does it): a v8 or v9 save is copied once, byte for byte, to <key>.pre10, then this key holds
+// { v: 10, wid: a new world, resetFrom: 9 (or 8), st: a fresh Station part }; the Companion then finds a save with no world and starts one under that world id. If the copy cannot be made
+// the key is kept as it is, read-only: nothing is written under it (G.lockedKey).
+function resetFound() {
+  let raw = null; try { raw = localStorage.getItem(saveKey()); } catch { return; }
+  const plan = resetPlan(raw, S.SAVE_V); if (plan.action !== "reset") return;
+  if (!keepPre10(localStorage, saveKey(), raw)) { G.lockedKey = saveKey(); return; }
+  const wid = "w" + Date.now().toString(36), sv = { v: S.SAVE_V, wid, resetFrom: plan.from, st: S.freshSt(wid, 0) };
+  try { localStorage.setItem(saveKey(), JSON.stringify(sv)); } catch { G.lockedKey = saveKey(); }
+}
 export function readStored() {
   try {
+    resetFound();
+    if (G.lockedKey === saveKey()) return null;
     const raw = localStorage.getItem(saveKey());
     if (raw) { const o = JSON.parse(raw); if (o && S.SAVE_VS.includes(o.v)) return o; }
   } catch { /* unreadable: a fresh Station */ }
   return null;
 }
-// A save from a newer page (its v is above what this Station knows) is read as no save and never written over: the bytes stay as they are.
+// A save from a newer page (its v is above what this Station knows) is read as no save and never written over: the bytes stay as they are. So is a save the reset could not copy (G.lockedKey).
 function storedNewer() {
+  if (G.lockedKey === saveKey()) return true;
   try { const raw = localStorage.getItem(saveKey()); if (!raw) return false; const o = JSON.parse(raw); return !!o && typeof o.v === "number" && o.v > S.SAVE_V; } catch { return false; }
 }
 function adopt(sv) {
@@ -69,6 +83,7 @@ export function load() {
   const o = readStored();
   if (!o) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; return; }
   adopt(o);
+  if (S.resetNotice(G.st, G.sv)) { UI.panel = { screen: "home", id: "reset", focus: "card.begin" }; G.st.resetSeen = true; save(); }   // the one-time notice over Home, shown once on this device
 }
 // Re-read before writing and keep the Companion's part as stored; only `st` is ours.
 export function save() {
@@ -95,7 +110,7 @@ export function storageChanged() {
 }
 export function resetSave() {
   G.resetting = true;
-  try { for (const k of [saveKey(), S.SAVE_KEY, saveKey() + ".pre9"].concat(S.OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch { /* nothing to erase */ }
+  try { for (const k of [saveKey(), S.SAVE_KEY, saveKey() + ".pre9", saveKey() + ".pre10"].concat(S.OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch { /* nothing to erase */ }
 }
 // --- developer settings, under their own key ---
 export function loadSettings() {
