@@ -1,0 +1,1537 @@
+{
+  "version": 1,
+  "approved": "2026-11-05T21:18-06:00",
+  "bodyRange": {
+    "hue": 12,
+    "lightness": 0.07
+  },
+  "chromaMargin": 0.02,
+  "plans": [
+    "quadruped",
+    "biped",
+    "mass",
+    "legless",
+    "hexapod",
+    "radial"
+  ],
+  "lands": [
+    {
+      "id": "mixed",
+      "art": "Meadows",
+      "word": "Meadows",
+      "body": {
+        "hex": "#D4B060",
+        "name": "straw gold",
+        "oklch": {
+          "L": 0.7727,
+          "C": 0.1076,
+          "h": 85.59
+        }
+      },
+      "marking": {
+        "hex": "#A87E36",
+        "name": "honey ochre",
+        "oklch": {
+          "L": 0.6204,
+          "C": 0.1028,
+          "h": 78.21
+        }
+      },
+      "accent": {
+        "hex": "#C0663A",
+        "name": "burnt orange",
+        "oklch": {
+          "L": 0.6067,
+          "C": 0.1291,
+          "h": 45.31
+        }
+      },
+      "bodyRange": {
+        "hue": 12,
+        "lightness": 0.07
+      },
+      "markingOffset": {
+        "dL": -0.1523,
+        "dC": -0.0048,
+        "dh": -7.38
+      },
+      "chromaTop": 0.1291,
+      "chromaCap": 0.1491
+    },
+    {
+      "id": "woods",
+      "art": "Woods",
+      "word": "Woods",
+      "body": {
+        "hex": "#A0603E",
+        "name": "russet",
+        "oklch": {
+          "L": 0.5535,
+          "C": 0.0964,
+          "h": 47.94
+        }
+      },
+      "marking": {
+        "hex": "#5E3C2A",
+        "name": "bark brown",
+        "oklch": {
+          "L": 0.3914,
+          "C": 0.0561,
+          "h": 48.46
+        }
+      },
+      "accent": {
+        "hex": "#E2D3B4",
+        "name": "mushroom cream",
+        "oklch": {
+          "L": 0.8711,
+          "C": 0.0445,
+          "h": 85.23
+        }
+      },
+      "bodyRange": {
+        "hue": 12,
+        "lightness": 0.07
+      },
+      "markingOffset": {
+        "dL": -0.1621,
+        "dC": -0.0403,
+        "dh": 0.52
+      },
+      "chromaTop": 0.0964,
+      "chromaCap": 0.1164
+    },
+    {
+      "id": "tallwood",
+      "art": "Tallwood",
+      "word": "Tallwood",
+      "body": {
+        "hex": "#A8B39C",
+        "name": "lichen",
+        "oklch": {
+          "L": 0.7516,
+          "C": 0.0344,
+          "h": 128.14
+        }
+      },
+      "marking": {
+        "hex": "#6E7E63",
+        "name": "sage",
+        "oklch": {
+          "L": 0.5722,
+          "C": 0.0445,
+          "h": 132.72
+        }
+      },
+      "accent": {
+        "hex": "#D6CC72",
+        "name": "pale citron",
+        "oklch": {
+          "L": 0.8343,
+          "C": 0.1125,
+          "h": 102.91
+        }
+      },
+      "bodyRange": {
+        "hue": 12,
+        "lightness": 0.07
+      },
+      "markingOffset": {
+        "dL": -0.1794,
+        "dC": 0.0101,
+        "dh": 4.58
+      },
+      "chromaTop": 0.1125,
+      "chromaCap": 0.1325
+    },
+    {
+      "id": "thickets",
+      "art": "Thickets",
+      "word": "Thickets",
+      "body": {
+        "hex": "#7C4C66",
+        "name": "bramble plum",
+        "oklch": {
+          "L": 0.48,
+          "C": 0.074,
+          "h": 346.58
+        }
+      },
+      "marking": {
+        "hex": "#4E2E42",
+        "name": "mulberry",
+        "oklch": {
+          "L": 0.3482,
+          "C": 0.0557,
+          "h": 342.32
+        }
+      },
+      "accent": {
+        "hex": "#C9A27A",
+        "name": "thorn tan",
+        "oklch": {
+          "L": 0.7381,
+          "C": 0.0711,
+          "h": 67.07
+        }
+      },
+      "bodyRange": {
+        "hue": 12,
+        "lightness": 0.07
+      },
+      "markingOffset": {
+        "dL": -0.1318,
+        "dC": -0.0183,
+        "dh": -4.26
+      },
+      "chromaTop": 0.074,
+      "chromaCap": 0.094
+    },
+    {
+      "id": "fells",
+      "art": "Fells",
+      "word": "Cliffs",
+      "body": {
+        "hex": "#A79B8B",
+        "name": "warm stone",
+        "oklch": {
+          "L": 0.6953,
+          "C": 0.0268,
+          "h": 75.17
+        }
+      },
+      "marking": {
+        "hex": "#AE6A4C",
+        "name": "terracotta",
+        "oklch": {
+          "L": 0.5922,
+          "C": 0.0975,
+          "h": 44.26
+        }
+      },
+      "accent": {
+        "hex": "#C9B160",
+        "name": "lichen ochre",
+        "oklch": {
+          "L": 0.7641,
+          "C": 0.105,
+          "h": 93.26
+        }
+      },
+      "bodyRange": {
+        "hue": 12,
+        "lightness": 0.07
+      },
+      "markingOffset": {
+        "dL": -0.1031,
+        "dC": 0.0707,
+        "dh": -30.91
+      },
+      "chromaTop": 0.105,
+      "chromaCap": 0.125
+    },
+    {
+      "id": "downs",
+      "art": "Downs",
+      "word": "Hills",
+      "body": {
+        "hex": "#8F7598",
+        "name": "heather",
+        "oklch": {
+          "L": 0.5993,
+          "C": 0.0602,
+          "h": 317.32
+        }
+      },
+      "marking": {
+        "hex": "#5F4A6C",
+        "name": "deep heather",
+        "oklch": {
+          "L": 0.4445,
+          "C": 0.0601,
+          "h": 312.09
+        }
+      },
+      "accent": {
+        "hex": "#C98E98",
+        "name": "dusty rose",
+        "oklch": {
+          "L": 0.7073,
+          "C": 0.0728,
+          "h": 7.89
+        }
+      },
+      "bodyRange": {
+        "hue": 12,
+        "lightness": 0.07
+      },
+      "markingOffset": {
+        "dL": -0.1548,
+        "dC": -0.0001,
+        "dh": -5.23
+      },
+      "chromaTop": 0.0728,
+      "chromaCap": 0.0928
+    },
+    {
+      "id": "marsh",
+      "art": "Marsh",
+      "word": "Marsh",
+      "body": {
+        "hex": "#8A8B58",
+        "name": "reed olive",
+        "oklch": {
+          "L": 0.6233,
+          "C": 0.0708,
+          "h": 109.25
+        }
+      },
+      "marking": {
+        "hex": "#5A4B34",
+        "name": "peat",
+        "oklch": {
+          "L": 0.4219,
+          "C": 0.0408,
+          "h": 77.96
+        }
+      },
+      "accent": {
+        "hex": "#C8923E",
+        "name": "marigold amber",
+        "oklch": {
+          "L": 0.6968,
+          "C": 0.1189,
+          "h": 75.35
+        }
+      },
+      "bodyRange": {
+        "hue": 12,
+        "lightness": 0.07
+      },
+      "markingOffset": {
+        "dL": -0.2014,
+        "dC": -0.03,
+        "dh": -31.29
+      },
+      "chromaTop": 0.1189,
+      "chromaCap": 0.1389
+    },
+    {
+      "id": "tarns",
+      "art": "Tarns",
+      "word": "Highpools",
+      "body": {
+        "hex": "#6F87A1",
+        "name": "slate blue",
+        "oklch": {
+          "L": 0.6141,
+          "C": 0.0483,
+          "h": 250.67
+        }
+      },
+      "marking": {
+        "hex": "#4F6F86",
+        "name": "deep slate",
+        "oklch": {
+          "L": 0.5262,
+          "C": 0.0519,
+          "h": 240.22
+        }
+      },
+      "accent": {
+        "hex": "#9CC3C2",
+        "name": "glacier teal",
+        "oklch": {
+          "L": 0.7887,
+          "C": 0.0416,
+          "h": 194.4
+        }
+      },
+      "bodyRange": {
+        "hue": 12,
+        "lightness": 0.07
+      },
+      "markingOffset": {
+        "dL": -0.0879,
+        "dC": 0.0036,
+        "dh": -10.45
+      },
+      "chromaTop": 0.0519,
+      "chromaCap": 0.0719
+    },
+    {
+      "id": "meres",
+      "art": "Meres",
+      "word": "Lakes",
+      "body": {
+        "hex": "#2F6E74",
+        "name": "deep teal",
+        "oklch": {
+          "L": 0.4999,
+          "C": 0.0647,
+          "h": 203.79
+        }
+      },
+      "marking": {
+        "hex": "#24505E",
+        "name": "dark mere",
+        "oklch": {
+          "L": 0.4063,
+          "C": 0.0537,
+          "h": 221.4
+        }
+      },
+      "accent": {
+        "hex": "#C17C4E",
+        "name": "kingfisher copper",
+        "oklch": {
+          "L": 0.649,
+          "C": 0.1058,
+          "h": 53.47
+        }
+      },
+      "bodyRange": {
+        "hue": 12,
+        "lightness": 0.07
+      },
+      "markingOffset": {
+        "dL": -0.0936,
+        "dC": -0.011,
+        "dh": 17.61
+      },
+      "chromaTop": 0.1058,
+      "chromaCap": 0.1258
+    }
+  ],
+  "families": [
+    {
+      "n": 1,
+      "id": "trotter",
+      "name": "trotter",
+      "plan": "quadruped",
+      "legs": 4,
+      "contact": "four feet",
+      "parts": [
+        {
+          "part": "tail",
+          "job": "balance"
+        }
+      ],
+      "gait": "four-beat walk",
+      "simpleMass": false,
+      "fourLegged": true,
+      "fix": "plain four-legged build; the studio's template"
+    },
+    {
+      "n": 2,
+      "id": "shoulder-heavy",
+      "name": "shoulder-heavy",
+      "plan": "quadruped",
+      "legs": 4,
+      "contact": "four feet, forelegs thicker, deep chest",
+      "parts": [
+        {
+          "part": "tail",
+          "job": "short, balance"
+        }
+      ],
+      "gait": "heavy walk",
+      "simpleMass": false,
+      "fourLegged": true,
+      "fix": "forelegs thicker; the fluffy chest is a coat zone, not a part"
+    },
+    {
+      "n": 3,
+      "id": "hopper",
+      "name": "hopper",
+      "plan": "quadruped",
+      "legs": 4,
+      "contact": "short folded hind legs; front feet rest on the ground",
+      "parts": [
+        {
+          "part": "tail",
+          "job": "balance"
+        }
+      ],
+      "gait": "hop",
+      "simpleMass": false,
+      "fourLegged": true,
+      "fix": "short folded hind legs under a round egg-shaped mass; front soles on the ground"
+    },
+    {
+      "n": 4,
+      "id": "digger",
+      "name": "digger",
+      "plan": "quadruped",
+      "legs": 4,
+      "contact": "four feet, spade forepaws",
+      "parts": [
+        {
+          "part": "tail",
+          "job": "short"
+        }
+      ],
+      "gait": "walk; dig idle",
+      "simpleMass": false,
+      "fourLegged": true,
+      "fix": "spade forepaws"
+    },
+    {
+      "n": 5,
+      "id": "loaf",
+      "name": "loaf",
+      "plan": "quadruped",
+      "legs": 4,
+      "contact": "four very short legs under a long barrel",
+      "parts": [
+        {
+          "part": "tail",
+          "job": "stub"
+        }
+      ],
+      "gait": "short-step walk",
+      "simpleMass": false,
+      "fourLegged": true,
+      "fix": "very short legs under a long barrel"
+    },
+    {
+      "n": 6,
+      "id": "bridge",
+      "name": "bridge",
+      "plan": "quadruped",
+      "legs": 4,
+      "contact": "four feet at the corners of a long low body",
+      "parts": [
+        {
+          "part": "tail",
+          "job": "tapering"
+        }
+      ],
+      "gait": "low walk",
+      "simpleMass": false,
+      "fourLegged": true,
+      "fix": "long low body, legs at the corners"
+    },
+    {
+      "n": 7,
+      "id": "sitter",
+      "name": "sitter",
+      "plan": "biped",
+      "legs": 2,
+      "contact": "two legs plus the tail as third support",
+      "parts": [
+        {
+          "part": "tail",
+          "job": "coiled, third support"
+        },
+        {
+          "part": "hands",
+          "job": "small, at the chest"
+        }
+      ],
+      "gait": "sit-shuffle",
+      "simpleMass": false,
+      "fourLegged": false,
+      "fix": "the tail is a support; hands at the chest"
+    },
+    {
+      "n": 8,
+      "id": "waddler",
+      "name": "waddler",
+      "plan": "biped",
+      "legs": 2,
+      "contact": "two short legs",
+      "parts": [
+        {
+          "part": "arms",
+          "job": "small"
+        }
+      ],
+      "gait": "waddle",
+      "simpleMass": false,
+      "fourLegged": false,
+      "fix": "two short legs, small arms"
+    },
+    {
+      "n": 9,
+      "id": "roundling",
+      "name": "roundling",
+      "plan": "mass",
+      "legs": 0,
+      "contact": "tiny feet",
+      "parts": [],
+      "gait": "bounce-walk",
+      "simpleMass": true,
+      "fourLegged": false,
+      "fix": "one round mass on tiny feet"
+    },
+    {
+      "n": 10,
+      "id": "mound",
+      "name": "mound",
+      "plan": "mass",
+      "legs": 0,
+      "contact": "none seen; the coat makes the body",
+      "parts": [
+        {
+          "part": "coat",
+          "job": "makes the body"
+        }
+      ],
+      "gait": "shuffle, curtain sway",
+      "simpleMass": true,
+      "fourLegged": false,
+      "fix": "the coat is the body"
+    },
+    {
+      "n": 11,
+      "id": "swimmer",
+      "name": "swimmer",
+      "plan": "legless",
+      "legs": 0,
+      "contact": "belly; no legs",
+      "parts": [
+        {
+          "part": "fins",
+          "job": "paddle"
+        },
+        {
+          "part": "fluke",
+          "job": "propulsion"
+        }
+      ],
+      "gait": "swim undulation",
+      "simpleMass": true,
+      "fourLegged": false,
+      "fix": "no legs; fins only here"
+    },
+    {
+      "n": 12,
+      "id": "climber",
+      "name": "climber",
+      "plan": "biped",
+      "legs": 2,
+      "contact": "two legs",
+      "parts": [
+        {
+          "part": "hands",
+          "job": "grip"
+        },
+        {
+          "part": "tail",
+          "job": "prehensile"
+        }
+      ],
+      "gait": "walk; grip idle",
+      "simpleMass": false,
+      "fourLegged": false,
+      "fix": "grip hands, prehensile tail"
+    },
+    {
+      "n": 13,
+      "id": "flutterer",
+      "name": "flutterer",
+      "plan": "biped",
+      "legs": 2,
+      "contact": "two legs",
+      "parts": [
+        {
+          "part": "wings",
+          "job": "one pair, big enough to lift"
+        }
+      ],
+      "gait": "flutter",
+      "simpleMass": false,
+      "fourLegged": false,
+      "fix": "one wing pair big enough to lift"
+    },
+    {
+      "n": 14,
+      "id": "four-wing",
+      "name": "four-wing",
+      "plan": "quadruped",
+      "legs": 4,
+      "contact": "four short legs",
+      "parts": [
+        {
+          "part": "wings",
+          "job": "two pairs on the back, lift"
+        }
+      ],
+      "gait": "flutter (two pairs)",
+      "simpleMass": false,
+      "fourLegged": true,
+      "fix": "two wing pairs on the back"
+    },
+    {
+      "n": 15,
+      "id": "glider",
+      "name": "glider",
+      "plan": "quadruped",
+      "legs": 4,
+      "contact": "four legs",
+      "parts": [
+        {
+          "part": "membrane",
+          "job": "skin leg to leg, glide"
+        },
+        {
+          "part": "tail",
+          "job": "flat, steering"
+        }
+      ],
+      "gait": "walk; glide pose",
+      "simpleMass": false,
+      "fourLegged": true,
+      "fix": "skin membranes leg to leg, flat steering tail"
+    },
+    {
+      "n": 16,
+      "id": "two-part crawler",
+      "name": "two-part crawler",
+      "plan": "hexapod",
+      "legs": 6,
+      "contact": "six legs on two rounded body parts",
+      "parts": [
+        {
+          "part": "antennae",
+          "job": "allowed"
+        }
+      ],
+      "gait": "six-leg walk",
+      "simpleMass": false,
+      "fourLegged": false,
+      "fix": "two body parts, never three"
+    },
+    {
+      "n": 17,
+      "id": "floater",
+      "name": "floater",
+      "plan": "mass",
+      "legs": 0,
+      "contact": "none: floats, shadow below",
+      "parts": [
+        {
+          "part": "puff edge",
+          "job": "soft edge"
+        },
+        {
+          "part": "nub arms",
+          "job": "small"
+        }
+      ],
+      "gait": "bob",
+      "simpleMass": true,
+      "fourLegged": false,
+      "fix": "floats; shadow below"
+    },
+    {
+      "n": 18,
+      "id": "shell-carrier",
+      "name": "shell-carrier",
+      "plan": "quadruped",
+      "legs": 4,
+      "contact": "four legs",
+      "parts": [
+        {
+          "part": "shell",
+          "job": "dome, never a spiral"
+        }
+      ],
+      "gait": "slow walk",
+      "simpleMass": false,
+      "fourLegged": true,
+      "fix": "a dome shell, never a spiral"
+    },
+    {
+      "n": 19,
+      "id": "slider",
+      "name": "slider",
+      "plan": "legless",
+      "legs": 0,
+      "contact": "one foot rim",
+      "parts": [],
+      "gait": "slide wave",
+      "simpleMass": false,
+      "fourLegged": false,
+      "fix": "one foot rim, no legs"
+    },
+    {
+      "n": 20,
+      "id": "six-arm",
+      "name": "six-arm",
+      "plan": "radial",
+      "legs": 0,
+      "contact": "six soft arms, no suckers",
+      "parts": [
+        {
+          "part": "arms",
+          "job": "six, soft"
+        }
+      ],
+      "gait": "six-arm walk",
+      "simpleMass": false,
+      "fourLegged": false,
+      "fix": "six soft arms, no suckers"
+    }
+  ],
+  "vocab": {
+    "signatureSockets": [
+      "head-top",
+      "back-line",
+      "tail",
+      "neck",
+      "coat"
+    ],
+    "coatMaterials": [
+      "felt",
+      "velvet",
+      "suede",
+      "skin",
+      "chitin",
+      "stone",
+      "scale",
+      "fur",
+      "glass"
+    ],
+    "furPiles": [
+      "teddy",
+      "fluffy",
+      "fleece",
+      "long",
+      "long hair",
+      "down",
+      "cloud"
+    ],
+    "irisColours": [
+      "amber",
+      "honey",
+      "olive",
+      "moss",
+      "hazel",
+      "teal",
+      "slate",
+      "violet",
+      "copper"
+    ],
+    "attitudes": [
+      "content",
+      "curious",
+      "deadpan",
+      "knowing"
+    ],
+    "eyeCounts": [
+      2,
+      3
+    ]
+  },
+  "kinds": [
+    {
+      "id": "S01",
+      "name": "Loika",
+      "family": "trotter",
+      "land": "woods",
+      "coat": {
+        "material": "felt",
+        "pile": null
+      },
+      "signature": {
+        "type": "leaf crest",
+        "socket": "head-top",
+        "count": [
+          2,
+          3,
+          3
+        ],
+        "curl": null,
+        "accent": "own"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "anchor": true
+    },
+    {
+      "id": "S02",
+      "name": "Untuva",
+      "family": "loaf",
+      "land": "downs",
+      "coat": {
+        "material": "fur",
+        "pile": "fleece"
+      },
+      "signature": {
+        "type": "felt lobe fan",
+        "socket": "head-top",
+        "count": [
+          4,
+          7,
+          5
+        ],
+        "curl": null,
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      }
+    },
+    {
+      "id": "S03",
+      "name": "Tuikis",
+      "family": "hopper",
+      "land": "fells",
+      "coat": {
+        "material": "suede",
+        "pile": null
+      },
+      "signature": {
+        "type": "tail swelling into a glowing tip",
+        "socket": "tail",
+        "count": null,
+        "curl": [
+          0,
+          0.15
+        ],
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "coatNote": "speckled"
+    },
+    {
+      "id": "S04",
+      "name": "Hiljan",
+      "family": "climber",
+      "land": "tallwood",
+      "coat": {
+        "material": "velvet",
+        "pile": null
+      },
+      "signature": {
+        "type": "two blunt horn-knobs",
+        "socket": "head-top",
+        "count": 2,
+        "curl": null,
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      }
+    },
+    {
+      "id": "S05",
+      "name": "Tepor",
+      "family": "waddler",
+      "land": "woods",
+      "coat": {
+        "material": "suede",
+        "pile": null
+      },
+      "signature": {
+        "type": "two ribbed crown flaps swept back",
+        "socket": "head-top",
+        "count": 2,
+        "curl": [
+          0,
+          0.15
+        ],
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "coatNote": "leathery"
+    },
+    {
+      "id": "S06",
+      "name": "Pesko",
+      "family": "bridge",
+      "land": "thickets",
+      "coat": {
+        "material": "velvet",
+        "pile": null
+      },
+      "signature": {
+        "type": "ridge of tall beads",
+        "socket": "back-line",
+        "count": [
+          6,
+          10,
+          8
+        ],
+        "curl": null,
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "coatNote": "smooth matte velvet-suede; the beads are the signature only"
+    },
+    {
+      "id": "S07",
+      "name": "Azkon",
+      "family": "shoulder-heavy",
+      "land": "fells",
+      "coat": {
+        "material": "suede",
+        "pile": null
+      },
+      "signature": {
+        "type": "hooked tail ending in a knob",
+        "socket": "tail",
+        "count": null,
+        "curl": [
+          0.3,
+          0.5
+        ],
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "chestFur": "fluffy",
+      "coatNote": "grey suede, no plates"
+    },
+    {
+      "id": "S08",
+      "name": "Rupar",
+      "family": "digger",
+      "land": "mixed",
+      "coat": {
+        "material": "fur",
+        "pile": "fluffy"
+      },
+      "signature": {
+        "type": "fan of tall slats",
+        "socket": "back-line",
+        "count": [
+          5,
+          9,
+          7
+        ],
+        "curl": null,
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      }
+    },
+    {
+      "id": "S09",
+      "name": "Belatz",
+      "family": "flutterer",
+      "land": "tallwood",
+      "coat": {
+        "material": "fur",
+        "pile": "down"
+      },
+      "signature": {
+        "type": "quill crown",
+        "socket": "head-top",
+        "count": [
+          7,
+          13,
+          9
+        ],
+        "curl": null,
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      }
+    },
+    {
+      "id": "S10",
+      "name": "Igara",
+      "family": "swimmer",
+      "land": "meres",
+      "coat": {
+        "material": "glass",
+        "pile": null
+      },
+      "signature": {
+        "type": "tip curling over like a wave",
+        "socket": "back-line",
+        "count": null,
+        "curl": [
+          0.25,
+          0.5
+        ],
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "waterKind": true
+    },
+    {
+      "id": "S11",
+      "name": "Kilpo",
+      "family": "two-part crawler",
+      "land": "thickets",
+      "coat": {
+        "material": "chitin",
+        "pile": null
+      },
+      "signature": {
+        "type": "antennae with weighted tips",
+        "socket": "head-top",
+        "count": 2,
+        "curl": [
+          0,
+          0.2
+        ],
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      }
+    },
+    {
+      "id": "S12",
+      "name": "Peplos",
+      "family": "four-wing",
+      "land": "mixed",
+      "coat": {
+        "material": "fur",
+        "pile": "down"
+      },
+      "signature": {
+        "type": "curled plume",
+        "socket": "head-top",
+        "count": 1,
+        "curl": [
+          0.2,
+          0.5
+        ],
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "coatNote": "the head is merged into the body"
+    },
+    {
+      "id": "S13",
+      "name": "Oskol",
+      "family": "six-arm",
+      "land": "tarns",
+      "coat": {
+        "material": "stone",
+        "pile": null
+      },
+      "signature": {
+        "type": "tall soft cone crest",
+        "socket": "head-top",
+        "count": 1,
+        "curl": [
+          0,
+          0.15
+        ],
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "coatNote": "matte floor; not a satin glaze"
+    },
+    {
+      "id": "S14",
+      "name": "Usvel",
+      "family": "slider",
+      "land": "marsh",
+      "coat": {
+        "material": "skin",
+        "pile": null
+      },
+      "signature": {
+        "type": "one coil on the crown",
+        "socket": "head-top",
+        "count": 1,
+        "curl": [
+          0.75,
+          1.25
+        ],
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      }
+    },
+    {
+      "id": "S15",
+      "name": "Lehten",
+      "family": "shell-carrier",
+      "land": "downs",
+      "coat": {
+        "material": "skin",
+        "pile": null
+      },
+      "signature": {
+        "type": "three stacked knobs on the shell top",
+        "socket": "back-line",
+        "count": 3,
+        "curl": null,
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 3,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "coatNote": "body and the dome shell in skin, shell in deep heather"
+    },
+    {
+      "id": "S16",
+      "name": "Blikur",
+      "family": "floater",
+      "land": "tarns",
+      "coat": {
+        "material": "fur",
+        "pile": "cloud"
+      },
+      "signature": {
+        "type": "spark crown",
+        "socket": "head-top",
+        "count": [
+          3,
+          5,
+          4
+        ],
+        "curl": null,
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      }
+    },
+    {
+      "id": "S17",
+      "name": "Wickle",
+      "family": "roundling",
+      "land": "mixed",
+      "coat": {
+        "material": "fur",
+        "pile": "long"
+      },
+      "signature": {
+        "type": "flame curl",
+        "socket": "head-top",
+        "count": 1,
+        "curl": [
+          0.25,
+          0.6
+        ],
+        "accent": "own"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "anchor": true
+    },
+    {
+      "id": "S18",
+      "name": "Drapet",
+      "family": "mound",
+      "land": "downs",
+      "coat": {
+        "material": "fur",
+        "pile": "long hair"
+      },
+      "signature": {
+        "type": "the curtain",
+        "socket": "coat",
+        "count": null,
+        "curl": null,
+        "accent": "own"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "anchor": true
+    },
+    {
+      "id": "S19",
+      "name": "Curlop",
+      "family": "sitter",
+      "land": "meres",
+      "coat": {
+        "material": "fur",
+        "pile": "long"
+      },
+      "signature": {
+        "type": "coiled tail",
+        "socket": "tail",
+        "count": 1,
+        "curl": [
+          1,
+          1.75
+        ],
+        "accent": "own"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "anchor": true
+    },
+    {
+      "id": "S20",
+      "name": "Tuliko",
+      "family": "glider",
+      "land": "tallwood",
+      "coat": {
+        "material": "scale",
+        "pile": null
+      },
+      "signature": {
+        "type": "scalloped coin crest",
+        "socket": "back-line",
+        "count": [
+          5,
+          8,
+          6
+        ],
+        "curl": null,
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      }
+    },
+    {
+      "id": "S22",
+      "name": "Studio quad",
+      "family": "trotter",
+      "land": null,
+      "coat": {
+        "material": "fur",
+        "pile": "teddy"
+      },
+      "signature": {
+        "type": null,
+        "socket": null,
+        "count": null,
+        "curl": null,
+        "accent": "land"
+      },
+      "eyes": {
+        "count": 2,
+        "irisPool": null,
+        "attitudePool": null
+      },
+      "template": true
+    }
+  ],
+  "exceptions": [
+    {
+      "kind": "S01",
+      "check": "face.size",
+      "reason": "Loika's big ringed eyes, kept at the owner's 21:15 approval",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S01",
+      "check": "face.flush",
+      "reason": "Loika's ringed eyes: the rims stay",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S01",
+      "check": "coat.pale",
+      "reason": "Loika's cream chest, kept at the owner's 21:15 approval",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S01",
+      "check": "coat.land",
+      "reason": "Loika's black coat, not Woods russet",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S01",
+      "check": "sig.accent",
+      "reason": "Loika's leaf-green leaves, not the Woods accent",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S01",
+      "check": "face.clear",
+      "reason": "Loika's ears, kept at the owner's ruling 2026-11-05 22:33",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint",
+      "scope": "ears",
+      "ears": {
+        "size": "small",
+        "shape": "round",
+        "position": "sides of the head, below the crest",
+        "colour": "coat",
+        "pointed": false,
+        "onlyKind": "S01"
+      }
+    },
+    {
+      "kind": "S17",
+      "check": "coat.land",
+      "reason": "Wickle's own colours and long-fur face",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S17",
+      "check": "sig.accent",
+      "reason": "Wickle's own flame colour",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S17",
+      "check": "coat.pale",
+      "reason": "Wickle's own pale areas",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S17",
+      "check": "face.size",
+      "reason": "Wickle's long-fur face",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S18",
+      "check": "coat.land",
+      "reason": "Drapet's own colours and long-hair face",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S18",
+      "check": "sig.accent",
+      "reason": "Drapet's own curtain colour",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S18",
+      "check": "coat.pale",
+      "reason": "Drapet's own pale areas",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S18",
+      "check": "face.size",
+      "reason": "Drapet's long-hair face",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S18",
+      "check": "face.clear",
+      "reason": "Drapet's brow tufts, kept at the owner's ruling 2026-11-05 22:33",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint",
+      "scope": "brow-tufts"
+    },
+    {
+      "kind": "S19",
+      "check": "coat.land",
+      "reason": "Curlop's own colours and long-fur face",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S19",
+      "check": "sig.accent",
+      "reason": "Curlop's own tail colour",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S19",
+      "check": "coat.pale",
+      "reason": "Curlop's own pale areas",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    },
+    {
+      "kind": "S19",
+      "check": "face.size",
+      "reason": "Curlop's long-fur face",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint"
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "S20",
+      "name": "old Tuliko",
+      "file": "species_v1/S20.json",
+      "note": "upright biped regression fixture; schema mb-species/1; its id is reassigned to the glider Tuliko when that kind is built",
+      "frozen": true
+    }
+  ]
+}

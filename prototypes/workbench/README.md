@@ -264,3 +264,7 @@ The lead's review of the volume rig: the turtle, the slug and the bear read; S04
 ## What this does not claim
 
 The sketch stops at form and slots: smooth volumes, flat fields, no craft. All sixteen pass the kind check by parts and eight the coarse gate; the targets are mine, drawn from one line each, and a target can be wrong as easily as a body. The parts score measures what a silhouette carries; markings, the mask and the rings are pigment fields the slot passes show and this check does not weigh. Feathers, the leaf mantle and sheen are labels and slot facts for the masters, not drawn materials. Behaviour loci are carried and weighed nowhere yet; the state machine's states come from the plan, its transitions do not exist. Nothing here is art, and nothing here changes a gene.
+
+## The language registry
+
+`framework/language.mjs` holds the mibi visual language as data: the nine lands (three colours as hex and OKLCH, body range, body-to-marking offset, chroma cap), the twenty families, the twenty kinds and the studio quad, the anchors' per-check signed exception records, the fixtures, and the roster rules as functions (one kind per family, simple masses at most a third, five or more four-legged families, only S15 three-eyed, every land one to three kinds, every kind complete). `tools/language-json.mjs` generates `framework/language.json` from it (`--check` fails when stale); edit the module, never the JSON. A value change is a registry version. Tests: `tests/language.test.mjs`.
