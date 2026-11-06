@@ -102,8 +102,8 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   assert.equal(CATALOGUE_STEPS, BLEND_STEPS, "the workbench and the codec share one step");
   const rows = [];
   for (const id of ROSTER) {
-    const f = byName(id), wf = stationFrame(id);
-    assert.equal(f.version, id === "S01" ? 8 : id === "S03" || id === "S10" || id === "S12" ? 5 : 4);
+    const f = id === "S01" ? byName(id, 6) : byName(id), wf = stationFrame(id);   // the Station still loads the form frames: the Loika at 6 (the language frame, 8, is the stamp's newest and waits for the game art swap)
+    assert.equal(f.version, id === "S01" ? 6 : id === "S03" || id === "S10" || id === "S12" ? 5 : 4);
     const blended = f.heritable.filter((l) => l.values);
     for (const l of blended) {
       assert.ok(l.alleles.length + BLEND_STEPS + 1 <= 2 ** STEP_BITS, `${l.id}: its names and steps fit ${STEP_BITS} bits`);
@@ -120,7 +120,7 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   for (const r of rows) t.diagnostic(`${r.id} ${r.name}: ${r.open} open, ${r.blended} blended, ${r.bits[0]} -> ${r.bits[1]} bits, ${r.before.join("/")} -> ${r.after.join("/")}`);
   // pinned so a change of the step or the frames shows here
   assert.deepEqual(Object.fromEntries(rows.map((r) => [r.id, r.after.join("/")])), {
-    S01: "29/33", S02: "29/33", S03: "37/37", S04: "25/29", S05: "29/29", S06: "29/33", S07: "33/33", S08: "29/33",
+    S01: "25/29", S02: "29/33", S03: "37/37", S04: "25/29", S05: "29/29", S06: "29/33", S07: "33/33", S08: "29/33",
     S09: "37/37", S10: "29/33", S11: "33/33", S12: "25/25", S13: "29/33", S14: "25/29", S15: "33/33", S16: "33/33",
   });
 });
@@ -163,10 +163,10 @@ test("C1: a genome missing a heritable locus is refused by the stamp, naming tha
   const fr = stationFrame("S01"), g = podGenome(fr, 77);
   const ok = stampGenome(fr, g, ["coat"]);
   assert.ok(!ok.refused); assert.deepEqual(ok.read, ["Coat"]);
-  const lack = structuredClone(g); delete lack.loci["appearance.iris-colour"]; delete lack.loci["movement.cycle-rate"];   // the Loika's crest switch is locked on at version 8, so the lacking record is the iris colour
+  const lack = structuredClone(g); delete lack.loci["anatomy.crown-presence"]; delete lack.loci["movement.cycle-rate"];
   const r = stampGenome(fr, lack, ["coat"]);
-  assert.equal(r.refused, true); assert.deepEqual(r.missing.sort(), ["appearance.iris-colour", "movement.cycle-rate"]);
-  assert.match(r.reason, /appearance\.iris-colour/);
+  assert.equal(r.refused, true); assert.deepEqual(r.missing.sort(), ["anatomy.crown-presence", "movement.cycle-rate"]);
+  assert.match(r.reason, /anatomy\.crown-presence/);
   assert.equal(r.copies, undefined, "nothing stamped");
   assert.equal(stationStampCode(fr, lack, ["coat"]), null, "no code for a refused genome");
 });
