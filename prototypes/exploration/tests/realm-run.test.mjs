@@ -1,6 +1,6 @@
 // The realm work's yardstick: a fixed-policy bot plays whole expeditions on the
-// page (tools/realm-run.mjs); its digest after 20 expeditions is recorded in realm-run.golden.json, and the three played v8 saves are what the
-// same tool leaves behind. The save-format work must keep the digest, and must read the three saves with nothing lost.
+// page (tools/realm-run.mjs, a new realm: generator 5); its digest after 20 expeditions is recorded in realm-run.golden.json, and the three played v8 saves are what the
+// same tool leaves behind (the release resets them: each is kept whole in .pre10 and a new realm starts).
 //   node --test prototypes/exploration/tests/realm-run.test.mjs      to rewrite the golden: node prototypes/exploration/tools/realm-run.mjs --record
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -25,7 +25,7 @@ test("1. the golden run: twice over, the same digest, and the one on file", () =
   assert.equal(a.digest, GOLDEN.digest);
   assert.deepEqual(a.steps, GOLDEN.steps, "expedition by expedition");
   assert.deepEqual(a.summary, GOLDEN.summary);
-  assert.equal(GOLDEN.expeditions, 20); assert.equal(GOLDEN.gen, 3); assert.equal(GOLDEN.seed, 7);
+  assert.equal(GOLDEN.expeditions, 20); assert.equal(GOLDEN.gen, 5); assert.equal(GOLDEN.seed, 7);
   assert.equal(a.page.S.turn, 20, "20 world turns");
 });
 
@@ -44,23 +44,13 @@ test("3. the played saves: what each one holds", () => {
   assert.equal(mid.gen, 3); assert.ok(mid.exp && mid.exp.n === 8, "an expedition under way"); assert.equal(mid.exp.cargo.d, 20, "the hold full (Data at its cap of 20)"); assert.equal(mid.bay.length, 3, "and the bay full");
 });
 
-for (const [name, opts] of Object.entries(SAVES)) {
-  test(`4. ${name}: the v9 page leaves the v8 fixture's realm, and reads the v8 bytes back as they were`, () => {
-    const text = FIX(name), r = runBot(opts);
-    // the fixture is the v8 page's bytes; the v9 page leaves the same realm in v9 shape: unfolded, every field is the fixture's, region 1 holds the map
-    const v9 = JSON.parse(r.save), v8 = JSON.parse(text), g1 = v9.regions[0];
-    assert.equal(v9.v, 9); assert.equal(v9.regions.length, 1); assert.equal(v9.here, "g1"); assert.equal(g1.seed, v8.seed); assert.equal(g1.gen, v8.gen);
-    const rest = { ...v9 }; for (const k of ["v", "began", "here", "regions", "biomeV"]) delete rest[k];
-    const wantRest = { ...v8 }; delete wantRest.v; delete wantRest.gen;
-    const ui = { ...rest.ui }, wui = { ...wantRest.ui }; delete ui.lastPos; delete wui.lastPos; rest.ui = ui; wantRest.ui = wui;
-    for (const k of MAP_KEYS) if (k !== "lastPos" && Object.hasOwn(wantRest, k)) { assert.deepEqual(g1.map[k], wantRest[k], "region 1 map " + k); delete wantRest[k]; }
-    assert.deepEqual(g1.map.lastPos, v8.ui.lastPos, "the last start moved into the region");
-    assert.deepEqual(rest, wantRest, "every other field is the v8 page's");
-    const p = makePage({ console: "silent", date: FIXED_DATE });   // a page of its own (its Companion has another id): the save goes under that page's key
-    p.store[p.KEY] = text; assert.equal(p.run("load()"), true, "the page loads it");
-    const S = JSON.parse(JSON.stringify(p.S)), want = JSON.parse(text);
-    for (const k of ["seed", "gen", "turn", "expN", "revealed", "visited", "called", "pods", "cr", "veil", "svy", "bay", "hold", "mibis", "carried", "known", "found", "met", "firsts", "tier", "shield"])
-      assert.deepEqual(S[k], want[k], k);
-    if (want.exp) assert.deepEqual(S.exp.cargo, want.exp.cargo, "the expedition's cargo");
+
+for (const name of Object.keys(SAVES)) {
+  test(`4. ${name}: the v10 page keeps the v8 fixture whole in .pre10 and starts a new generator 5 realm`, () => {
+    const text = FIX(name), p = makePage({ console: "silent", date: FIXED_DATE });   // a page of its own: the save goes under that page's key
+    p.store[p.KEY] = text; assert.equal(p.run("load()"), false, "nothing to play: a new realm starts");
+    assert.equal(p.store[p.KEY + ".pre10"], text, "the v8 bytes, untouched, in the copy");
+    p.run("newWorld(5)"); const now = JSON.parse(p.store[p.KEY]);
+    assert.equal(now.v, 10); assert.equal(now.resetFrom, 8); assert.equal(now.regions.length, 1); assert.equal(now.regions[0].gen, 5); assert.deepEqual(now.mibis, []);
   });
 }

@@ -256,7 +256,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
@@ -312,7 +312,8 @@ const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'shallows', 'cli
 // random id kept under mb-companion-<slot> (the play page's second Companion is slot B, ?companion=B), and stored with
 // the first write. The single shared save of earlier builds (LEGACY_KEY) moves under Companion A's key with its first
 // write once it has loaded; bytes this page cannot load stay where they are and open read-only, as before.
-const LEGACY_KEY = 'mb-save-v8', SAVE_V = 9, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
+let RESET_CARRY = null;   // set by load() when the save found was reset (or the Station reset first); the new realm takes it (newRealm)
+const LEGACY_KEY = 'mb-save-v8', SAVE_V = 10, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
 let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
 let SAVE_KEY = keyOfCompanion(COMPANION.id);
 function keyOfCompanion(id) { return 'mb-save-v8@' + id; }
@@ -375,6 +376,10 @@ const SPECIES = [
     ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas sometimes shed after a full meal, more often for someone they trust.',
     col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' } },
 ];
+// The other seventeen kinds (the language frames, by the game's species list): name and plural from the frame, ground from the family, plain defaults the game designer tunes later
+// (notice 2 to 4, flee 2, eats, shed chance 0.1 at a calm moment) and no field ability: their abilities wait for the game designer, so no line about one is shown (ab, abText null).
+for (const k of KIND_INFO.slice(3)) SPECIES.push({ name: k.name, plural: k.plural, hab: k.hab, notice: [2, 4], flee: 2, eats: true, shedP: .1, how: 'calm',
+  ab: null, abText: null, born: null, learn: null, col: { body: 'bone', light: 'bone', shade: 'bone', dark: 'bone' } });
 // Shedding is rare unless the creature is special: shedP is a plain creature's chance at its moment; a creature
 // fed or settled this expedition sheds at SHED_BOND; one of a species not yet known always does; at most SHED_MAX pods from creature
 // moments an expedition (a returned line's pod is apart). Tune.
@@ -416,7 +421,9 @@ function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
 
 
 // The world's creatures and buried pods: src/world.mjs, by the world's generator (the herd floor is generator 3's).
-function genLife(seed) { return genLifeIn(G, seed, ROSTER); }
+const hereRegion = () => S.regions.find(r => r.id === S.here);   // the region mounted on S
+const hereKinds = (R = hereRegion()) => regionKinds(R);   // its kinds: the home region's three starters, any other region's land (src/regions.mjs)
+function genLife(seed, region) { return genLifeIn(G, seed, G.gen >= 5 ? hereKinds(region ?? hereRegion()) : ROSTER); }
 // The first expedition of a new world finds two buried pods in tier 1 reach of the start glint (design/world-and-exploration.md,
 // Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
 // a Tuikis's, at the reach's edge while the reach holds fewer than 2. Pure: reads G, never S, and never mutates `pods`;
@@ -858,8 +865,10 @@ function newRealm(seed, gen = NEW_GEN, wid) {   // a new realm takes the newest 
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   G = genWorld(seed, gen);
-  S = worldFields(seed, gen, wid);
-  const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
+  const carry = RESET_CARRY; RESET_CARRY = null;   // a realm that follows the release's reset: it says where it came from, and takes the world id the Station wrote if the Station reset first
+  S = worldFields(seed, gen, wid ?? (carry && carry.wid) ?? undefined);
+  if (carry && carry.resetFrom != null) S.resetFrom = carry.resetFrom;
+  const life = genLife(seed, { n: 1, biome: 'mixed' }); S.cr = life.cr; S.pods = life.pods;   // region 1, the Meadows: the three starters
   S = realmOf(S); S.biomeV = REALM_BIOME_V;   // a new realm draws the newest kinds; a save without biomeV is version 1
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
@@ -895,7 +904,7 @@ function openRegion(slot) {
 // Crates and the expedition under way name their region; none means region 1, so a realm of one region writes nothing new.
 const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
 // The Station's part as last stored, if it belongs to this world.
-function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && (o.v === 8 || o.v === SAVE_V) && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
+function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
 function save() {
   if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
@@ -946,16 +955,21 @@ function load() {
       if (!s) { dropOld(); return false; }
     } else s = JSON.parse(raw);
     if (!s || typeof s !== 'object' || Array.isArray(s)) return 'broken';
-    if (typeof s.v === 'number' && s.v > SAVE_V) return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
-    if (s.v === SAVE_V) {   // v9: a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet) starts a new world, as in v8
-      if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; }
+    const plan = resetPlan(raw, SAVE_V);   // what to do with what is found: play it, reset it (a v8 or v9 save), keep it read-only (newer, unreadable)
+    if (plan.action === 'newer') return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
+    if (plan.action === 'reset') {   // the release's reset: the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
+      if (!keepPre10(localStorage, own, raw)) return 'broken';
+      if (SAVE_KEY === LEGACY_KEY) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) { } }   // the shared old save is kept in the copy: it must not be found and reset again
+      RESET_CARRY = { resetFrom: plan.from }; dropOld(); return false;
+    }
+    if (plan.action !== 'play') return 'broken';
+    if (s.v === SAVE_V) {   // v10: a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet) starts a new world
+      if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { RESET_CARRY = { resetFrom: s.resetFrom ?? null, wid: s.wid ?? null }; dropOld(); return false; }   // the Station reset first: its world id and its part stay
       const rs = realmStatus(s, GENS); if (rs !== 'ok') return rs;   // 'newer': a region of a generator this page does not know, kept as stored
       mount(s, s.here);
-    } else if (s.v !== 8) return 'broken';
+    }
     if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { if (s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; } return 'broken'; }   // a Station-only save: a new world starts (and a fresh Station with it)
     const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
-    // a v8 save is copied byte for byte beside itself (<key>.pre9) before it is read as a realm; if the copy cannot be made the save opens read-only
-    if (s.v === 8 && !keepPre9(localStorage, own, raw)) return 'broken';
     S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
@@ -965,8 +979,7 @@ function load() {
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = genWorld(S.seed, gen, S.v === SAVE_V ? S.regions.find(r => r.id === S.here).biome : 'mixed');   // the mounted region's kind
-    if (S.v === 8) S = realmOf(S);   // v8 → v9, after the fill: one region, the world the save held
+    layoutCache.clear(); G = genWorld(S.seed, gen, S.regions.find(r => r.id === S.here).biome);   // the mounted region's kind
     if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
@@ -1726,7 +1739,7 @@ function pushSlab(f) {
   setFS(key, f.id, { moved: 1, x: tx, y: ty });
   if (first && f.under === 'pod') { // something was hiding under it
     const lay = layout(key), here = S.cr.filter(w => w.c === lay.cell && !!w.cv === lay.cave);
-    const sp = here.length ? here[hash(S.seed, 'slab', key, f.id) % here.length].sp : hash(S.seed, 'slab', key) % 3;
+    const sp = here.length ? here[hash(S.seed, 'slab', key, f.id) % here.length].sp : (k => k[hash(S.seed, 'slab', key) % k.length].sp)(hereKinds());
     S.pods.push({ id: 's:' + key + ':' + f.id, k: key, x: f.x, y: f.y, sp, h: 0, g: groundName(lay.land, lay.cave), how: 'slab' });
     fxGlint(f.x, f.y); logEv('A pod was under the slab');
   }
@@ -1944,7 +1957,7 @@ function probeDeep() {
   if (S.tier >= 2) {
     const lay = curLay(), f = lay.feats.find(q => q.kind === 'd');
     if (!S.deepRead) { S.deepRead = 1; S.pins = S.pins.filter(p => p.k !== 'deep');
-      const sp = hash(S.seed, 'deep') % 3; S.pods.push({ id: 'deep', k: lay.key, x: f.x, y: f.y + 1, sp, h: 0, g: 'cave', how: 'deep' });
+      const sp = (k => k[hash(S.seed, 'deep') % k.length].sp)(hereKinds()); S.pods.push({ id: 'deep', k: lay.key, x: f.x, y: f.y + 1, sp, h: 0, g: 'cave', how: 'deep' });
       fxGlint(f.x, f.y + 1); fxMsg('The Probe reads deep down · a sealed pod rises', 3); logEv('Read the deep ?'); }
     else fxMsg('Nothing more down there');
     recordSigns(lay.cell); advance('patch', { noise: 'act' }); return;
@@ -2424,7 +2437,7 @@ function worldTurn(pending) {
 function regionTurn(R, t, pending, farFromPlayer) {
   if (R.id !== S.here) throw new Error('regionTurn: region ' + R.id + ' is not mounted');
   const rng = makeRng(hash(R.seed, 'turn', t));
-  const mv = [0, 1, 2].map(() => ({ dx: 0, dy: 0, n: 0 }));
+  const mv = SPECIES.map(() => ({ dx: 0, dy: 0, n: 0 })), kinds = hereKinds(R).map(k => k.sp);   // the mounted region's kinds
   let charged = [], bushes = 0, bloom = -1; const newPods = [], young = [];
   // Creatures roam within their habitat.
   for (const w of S.cr) {
@@ -2461,11 +2474,11 @@ function regionTurn(R, t, pending, farFromPlayer) {
   const nPods = 2 + rng.int(2);
   for (let i = 0; i < nPods && occupied.length; i++) { const c = rng.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
     S.pods.push({ id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: rng.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); newPods.push(c); reveil(c); }
-  const families = occupied.filter(c => [0, 1, 2].some(sp => S.cr.filter(w => w.c === c && w.sp === sp && !w.cv).length >= 2));
+  const families = occupied.filter(c => kinds.some(sp => S.cr.filter(w => w.c === c && w.sp === sp && !w.cv).length >= 2));
   const nYoung = 1 + rng.int(2);
   let nextCr = S.cr.reduce((m, w) => Math.max(m, w.id), 0) + 1;
   for (let i = 0; i < nYoung && families.length; i++) { const c = rng.pick(families), here = S.cr.filter(w => w.c === c && !w.cv);
-    const counts = [0, 1, 2].map(sp => here.filter(w => w.sp === sp).length), sp = counts.indexOf(Math.max(...counts));
+    const counts = kinds.map(sp => here.filter(w => w.sp === sp).length), sp = kinds[counts.indexOf(Math.max(...counts))];
     S.cr.push({ id: nextCr, sp, c, cv: 0, b: Math.round(rnd(S.seed, 'bold', nextCr) * 100) / 100, s: 0, young: 1 }); nextCr++; young.push({ sp, c }); }
   for (const c of newPods) if (S.revealed[c]) recordSigns(c, t + 1);   // a sign carries the turn that has just been made
   surfaceMissing(R, t, farFromPlayer);
@@ -2476,7 +2489,8 @@ function regionTurn(R, t, pending, farFromPlayer) {
 // herd of three or more on the reachable ground of its habitat, away from where the player last walked, and nothing is said. It draws on a stream of its own,
 // so the turn's other draws never move; a region that holds every species draws nothing.
 function surfaceMissing(R, t, farFromPlayer) {
-  ROSTER.forEach((r, sp) => {
+  hereKinds(R).forEach(r => {   // the region's own kinds (its land's, or the home region's three starters)
+    const sp = r.sp;
     if (S.cr.some(w => w.sp === sp && !w.cv)) return;
     const ok = [], rg = makeRng(hash(R.seed, 'surface', t, sp));
     for (let c = 0; c < MW * MH; c++) if (G.comp[c] === 1 && passable(c) && G.land[c] !== L.WATER && r.hab.includes(G.land[c]) && farFromPlayer(c)) ok.push(c);
@@ -2497,7 +2511,7 @@ function realmTurn(turned, pending) {
   for (const c of depotCells(S.seed)) { const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
     if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
   // Movement: a species you know first; a direction only when the herd really drifted one way.
-  const moves = [0, 1, 2].filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
+  const moves = hereKinds().map(k => k.sp).filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
     .filter(o => o.dw || o.known).sort((a, b) => (b.known - a.known) || (!!b.dw - !!a.dw) || (mv[b.sp].n - mv[a.sp].n));
   if (moves.length) { const o = moves[0], who = o.known ? 'The ' + spOf(o.sp).plural : 'Unfamiliar creatures';
     say(o.dw ? who + ' moved ' + o.dw + '.' : who + ' spread out.', ['herd', null, o.known ? o.sp : -1, o.dw ? DIR_CODE[o.dw] : 0]); }
@@ -2755,13 +2769,14 @@ function tokenPB(rle, w) {
 // approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null. juv: the mibi is a
 // juvenile: its own picture where the species has one, else the adult's.
 function tokenOf(sp, pose, fr, juv) {
-  const t = SPECIES_ART[sp]; if (!t) return null;
+  const t = SPECIES_ART[sp]; if (!t) return sp >= 3 && sp < SPECIES.length ? standIn(32) : null;   // a kind without a token yet (the art release adds them) shows a plain stand-in
   const n = pose === 'approach' ? 'alert' : pose === 'glow' || pose === 'nest' ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
   const j = juv && JUVENILE_ART[sp];
   if (j && j.idle) { const k = n !== 'mini' && j[n] ? n : 'idle'; return art('tj' + sp + k, () => tokenPB(j[k], 32)); }
   return t[n] && n !== 'mini' ? art('tk' + sp + n, () => tokenPB(t[n], 32)) : null;
 }
-const miniArt = (sp, juv) => { const j = juv && JUVENILE_ART[sp]; return j && j.mini ? art('tjm' + sp, () => tokenPB(j.mini, 12)) : SPECIES_ART[sp] ? art('tkm' + sp, () => tokenPB(SPECIES_ART[sp].mini, 12)) : null; };
+const miniArt = (sp, juv) => { const j = juv && JUVENILE_ART[sp]; return j && j.mini ? art('tjm' + sp, () => tokenPB(j.mini, 12)) : SPECIES_ART[sp] ? art('tkm' + sp, () => tokenPB(SPECIES_ART[sp].mini, 12)) : sp >= 3 && sp < SPECIES.length ? standIn(12) : null; };
+function standIn(n) { return art('stand' + n, () => { const pb = new PB(n, n), e = Math.max(1, n / 12 | 0); pb.ell(n / 2, n * .6, n * .38, n * .3, C.slate); pb.rect(Math.floor(n * .38), Math.floor(n * .5), e, e, C.bone); pb.rect(Math.floor(n * .58), Math.floor(n * .5), e, e, C.bone); return pb; }); }
 
 // A mibi's picture at s× (1 field, 2 cards): the signed token (an unlisted pose shows the idle), each pixel a whole block above 1×.
 function creatureArt(sp, pose, fr, s, juv) { const t = tokenOf(sp, pose, fr, juv) || tokenOf(sp, 'idle', 0, juv); return (s || 1) === 1 ? t : upArt('tk' + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), t, s); }
@@ -5180,6 +5195,7 @@ function lineBase() {
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
+  if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.plScr = null; RT.litScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
@@ -5269,6 +5285,7 @@ function refuseFrozen() {
 }
 function act(k, mode) {
   if (RT.readOnly) { actReadOnly(k); return; }   // a save that cannot be shown: the one way out is a new world, the old save kept
+  if (RT.notice) { actNotice(k); return; }
   const refused = frozenRefuses(k);
   if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
@@ -5587,6 +5604,20 @@ function readOnlyBroken() { RT.readOnly = true; RT.broken = true; document.getEl
 // The device's way out (no page needed): ✓ arms, ✓ again keeps the old save whole under its own key (one per move, never replacing an older one) and starts a new world.
 // Only the page's Reset game erases a save. Any other key is refused with the usual bump and clears the arm.
 const KEPT_KEY = 'mb-save-kept';
+// The release's one-time notice, shown on this device the first time it opens after the reset, then never again (S.resetSeen). Words OWED to the copywriter (placeholder keys:
+// reset.notice.companion, reset.button.companion). No numbers, no talk of versions or saves.
+const RESET_TEXT = { lines: ['The land has changed.', 'New mibis live in it now.'], button: 'Explore' };
+function drawNotice() {
+  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
+  viewBg();
+  RESET_TEXT.lines.forEach((l, i) => text(l, 225, 279 + i * 24, C.bone, 2, 'center'));
+  drawLine({ ok: RESET_TEXT.button, ctx: '', back: '' });
+}
+function actNotice(k) {
+  NOW = performance.now(); if (NOW < FX.lockUntil) return;
+  if (k !== 'confirm') { FX.bumpAt = NOW; return; }
+  RT.notice = false; S.resetSeen = 1; save();
+}
 function drawNewer() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
@@ -5608,6 +5639,7 @@ function actReadOnly(k) {
   newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition();
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
+if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
@@ -5619,7 +5651,7 @@ for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
   btn.addEventListener('click', () => { ask.hidden = false; yes.focus(); });
   no.addEventListener('click', back);
-  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
+  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', SAVE_KEY + '.pre10', V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
     window.__mbResetting = true; location.reload(); }); }
 // The Station page wrote the shared save: take its part (dock, accepted crates, mibis, the Probe) and keep ours.
 // A reset there (the save erased) reloads this page too.

@@ -65,6 +65,17 @@ test("Tuikis keeps its nest wherever it is the home region's kind: the cave crea
   for (const c of G.glow) assert.ok(life.cr.filter((w) => w.sp === 1 && w.c === c).length >= 3, "a glow cell holds three Tuikis");
 });
 
+test("Tuikis keeps its nest wherever it spawns: in a Cliffs region too, the glow cells hold three of them and the gate holds the cave creatures", () => {
+  let nests = 0;
+  for (const seed of SEEDS.slice(0, 20)) {
+    const { G, life, kinds } = lifeOf(seed, "fells", 2);
+    assert.ok(kinds.some((k) => k.sp === 1 && k.nest), "Tuikis in a Cliffs region is the nest's kind");
+    for (const c of G.glow) assert.ok(life.cr.filter((w) => w.sp === 1 && w.c === c).length >= 3, "a glow cell holds three Tuikis");
+    if (G.gate >= 0) { assert.ok(life.cr.some((w) => w.sp === 1 && w.cv === 1), "the nest under the cliff"); nests++; }
+  }
+  assert.ok(nests > 0, "some Cliffs world has its gate");
+});
+
 test("a kind whose ground has no walkable cell on the reachable part takes every walkable cell that is not water", () => {
   const seed = 8, G = worldOf(seed, "mixed"), none = { id: "S98", sp: 18, hab: [L.CLIFF] };
   const life = genLife5(G, seed, [none]);

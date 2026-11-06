@@ -1,4 +1,4 @@
-// A v8 save that passes load()'s guard never throws: load() fills every field a new world has and the save lacks, from
+// A v10 save that passes load()'s guard never throws: load() fills every field a new world has and the save lacks, from
 // the new world's own values (worldFields), and a save that still cannot draw its screen opens read-only and is never
 // written. The whole page script is read out of index.html and run in a sandbox with the browser stubbed, as in
 // freeze.test.mjs, so the boot runs as the page runs it.
@@ -6,8 +6,12 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { makePage, PAGE } from "./page-harness.mjs";
+import { migrate8 } from "../src/regions.mjs";
 
-const SCHEMA = readFileSync(new URL("../../station/tests/fixtures/save-v8-schema1.json", import.meta.url), "utf8");
+const SCHEMA_V8 = readFileSync(new URL("../../station/tests/fixtures/save-v8-schema1.json", import.meta.url), "utf8");   // the Station's schema fixture: a flat v8 save
+const FLAT = Object.assign(JSON.parse(SCHEMA_V8), { gen: 5 }), flat = () => JSON.parse(JSON.stringify(FLAT));   // its world as generator 5: since the release's reset every world is
+const real = o => JSON.stringify(migrate8({ ...o, v: 8 }, { now: 1793664000000 }));   // the same save as the v10 realm the page plays (a flat v8 save is reset, not read: reset.test.mjs)
+const SCHEMA = real(FLAT);
 
 // The page in a sandbox: every DOM and canvas call lands on an inert stub, except that an element keeps what is set on it
 // (els[id].hidden); localStorage is `store`, its writes counted; requestAnimationFrame calls are counted.
@@ -48,35 +52,8 @@ test("a save missing several fields gains exactly the new world's values for the
   assert.doesNotThrow(() => p.run("drawSetup(0)"));
 });
 
-// the v8 form of a v9 save: the map back at the top level (what the page wrote before v9)
-function asV8(o) { const r = o.regions[0], v8 = { ...o, v: 8, seed: r.seed, gen: r.gen, ...r.map, ui: { ...o.ui, ...(r.map.lastPos !== undefined ? { lastPos: r.map.lastPos } : {}) } }; for (const k of ["began", "here", "regions"]) delete v8[k]; delete v8.lastPos; return v8; }
-
-test("a v8 save without gen is not given one: it stays generator 1, in region 1", () => {
-  const v8 = asV8(JSON.parse(newSave())); delete v8.gen;
-  const p = page({ "mb-save-v8": JSON.stringify(v8) });
-  assert.equal(p.run("RT.readOnly"), undefined);
-  assert.equal(p.run("S.regions[0].gen"), 1, "region 1 is generator 1");
-  assert.equal(Object.hasOwn(JSON.parse(p.store[p.KEY]), "gen"), false, "no gen at the top of the v9 save");
-  assert.equal(JSON.parse(p.store[p.KEY]).regions[0].gen, 1);
-});
-
-test("a v8 save: its bytes are copied to <key>.pre9 first, then it opens as a v9 realm of one region", () => {
-  const raw = JSON.stringify(asV8(JSON.parse(newSave()))), p = page({ "mb-save-v8": raw });
-  assert.equal(p.store[p.KEY + ".pre9"], raw, "the v8 bytes, untouched");
-  const v9 = JSON.parse(p.store[p.KEY]); assert.equal(v9.v, 9); assert.equal(v9.regions.length, 1); assert.equal(v9.here, "g1");
-  assert.equal(p.run("S.v"), 9);
-});
-
-test("a v8 save whose copy cannot be made opens read-only and is never written or migrated", () => {
-  const raw = JSON.stringify(asV8(JSON.parse(newSave())));
-  const store = new Proxy({ "mb-save-v8": raw }, { set: (t, k, v) => { if (!String(k).endsWith(".pre9")) t[k] = v; return true; } });   // storage that drops the copy
-  const p = makePage({ store, console: "collect", els: true, raf: "count" });
-  assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("RT.broken"), true);
-  assert.equal(store["mb-save-v8"], raw, "the v8 bytes stay where they were"); assert.equal(p.writes.filter(k => k === "mb-save-v8" || k === p.KEY).length, 0);
-});
-
-test("a v9 save with a region of a generator this page does not know, and a v10 save, open read-only and are never written", () => {
-  for (const mod of [o => { o.regions[0].gen = 99; }, o => { o.v = 10; }]) {
+test("a v10 save with a region of a generator this page does not know, and a v11 save, open read-only and are never written", () => {
+  for (const mod of [o => { o.regions[0].gen = 99; }, o => { o.v = 11; }]) {
     const o = JSON.parse(newSave()); mod(o); const raw = JSON.stringify(o), p = page({ "mb-save-v8": raw });
     assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("RT.broken"), undefined);
     assert.equal(p.store[p.KEY] ?? p.store["mb-save-v8"], raw, "kept as stored");
@@ -85,7 +62,7 @@ test("a v9 save with a region of a generator this page does not know, and a v10 
 });
 
 test("a save forced to throw (ui present but null, kept as it is) opens read-only and is never written back", () => {
-  const o = JSON.parse(SCHEMA); o.ui = null; const raw = JSON.stringify(o);
+  const o = flat(); o.ui = null; const raw = real(o);
   const p = page({ "mb-save-v8": raw });
   assert.equal(p.run("RT.readOnly"), true);
   assert.equal(p.run("S.ui"), null, "the wrong-typed field is not fixed");
@@ -102,10 +79,10 @@ function drawnText(p) { p.run("var __said = []; { const t0 = text; text = (s, ..
 const BROKEN_LINE = "This save can’t be shown · kept untouched", NEWER_LINE = "Newer save · untouched · reload plays it", PAGE_LINE = "Reset game erases this save and starts fresh";
 
 test("nextId: missing, it is 1 + the highest r/p/b/n pod id held anywhere in the save; a valid one is kept, an invalid one is counted", () => {
-  const p = page(), o = JSON.parse(SCHEMA);
+  const p = page(), o = flat();
   o.pods = [{ id: "b7", k: "4", x: -1, y: -1, sp: 0, h: 1, bur: 1, g: "meadow", how: "ground" }];
   o.exp = { cargo: { pods: [{ id: "n12", sp: 1 }] } }; delete o.nextId;
-  const at = x => { p.store[p.KEY] = JSON.stringify(x); assert.equal(p.run("load()"), true); return p.run("S.nextId"); };
+  const at = x => { p.store[p.KEY] = real(x); assert.equal(p.run("load()"), true); return p.run("S.nextId"); };
   assert.equal(at(o), 13);
   assert.equal(at(Object.assign({}, o, { nextId: 3 })), 3, "a valid nextId is kept, even lower");
   for (const bad of [0, -2, 1.5, "9", null]) assert.equal(at(Object.assign({}, o, { nextId: bad })), 13, "nextId " + JSON.stringify(bad) + " is counted");
@@ -113,19 +90,19 @@ test("nextId: missing, it is 1 + the highest r/p/b/n pod id held anywhere in the
 });
 
 test("pods: missing, the world's life is regenerated, minus any id the save already holds; a present list, even empty, is kept", () => {
-  const p = page(), o = JSON.parse(SCHEMA); delete o.pods;
-  o.bay[0].pods.push({ id: "w0", sp: 0, g: "meadow", how: "ground", gs: 5 });   // a world pod already taken
-  p.store[p.KEY] = JSON.stringify(o); assert.equal(p.run("load()"), true);
+  const p = page(), o = flat(); delete o.pods;
+  o.bay[0].pods.push({ id: "w0p0", sp: 0, g: "meadow", how: "ground", gs: 5 });   // a world pod already taken
+  p.store[p.KEY] = real(o); assert.equal(p.run("load()"), true);
   const life = plain(p.run("genLife(123456).pods")), got = plain(p.run("S.pods"));
-  assert.ok(life.some(q => q.id === "w0"));
-  assert.deepEqual(got, life.filter(q => q.id !== "w0"));
+  assert.ok(life.some(q => q.id === "w0p0"));
+  assert.deepEqual(got, life.filter(q => q.id !== "w0p0"));
   assert.equal(p.run("S.nextId"), 1, "generated ids are not r/p/b/n: nextId 1");
   p.store[p.KEY] = SCHEMA; assert.equal(p.run("load()"), true);
   assert.deepEqual(plain(p.run("S.pods")), [], "the fixture's empty pods is kept");
 });
 
 test("a loaded save whose break throws (endExpedition) opens read-only, is byte-identical, and the frames still run", () => {
-  const o = JSON.parse(SCHEMA); o.exp = { shield: 0, n: 1 }; const raw = JSON.stringify(o);
+  const o = flat(); o.exp = { shield: 0, n: 1 }; const raw = real(o);
   const p = page({ "mb-save-v8": raw });
   assert.equal(p.run("RT.readOnly"), true);
   assert.equal(p.errors.length, 1, "the throw was logged once"); assert.match(String(p.errors[0].stack), /at endExpedition/, "it was the break that threw");
@@ -136,23 +113,23 @@ test("a loaded save whose break throws (endExpedition) opens read-only, is byte-
 
 test("the read-only line: a broken save says it is kept untouched, with the page line beside Reset game; a newer page's save keeps its own line", () => {
   assert.match(PAGE, new RegExp('<button class="btn" id="resetGame" type="button">Reset game</button></div>\\s*<p class="obs-note" id="resetNote" hidden>' + PAGE_LINE + "</p>"));
-  const o = JSON.parse(SCHEMA); o.ui = null;
-  const b = page({ "mb-save-v8": JSON.stringify(o) });
+  const o = flat(); o.ui = null;
+  const b = page({ "mb-save-v8": real(o) });
   assert.equal(b.run("RT.readOnly"), true);
   const said = drawnText(b); assert.ok(said.includes(BROKEN_LINE)); assert.ok(!said.includes(NEWER_LINE));
   assert.equal(b.els.resetNote.hidden, false, "the page line shows");
-  const n = page({ "mb-save-v8": JSON.stringify(Object.assign(JSON.parse(SCHEMA), { gen: 99 })) });
+  const n = page({ "mb-save-v8": real(Object.assign(flat(), { gen: 99 })) });
   assert.equal(n.run("RT.readOnly"), true); assert.equal(n.run("S"), null);
   const saidN = drawnText(n); assert.ok(saidN.includes(NEWER_LINE)); assert.ok(!saidN.includes(BROKEN_LINE));
   assert.notEqual(n.els.resetNote && n.els.resetNote.hidden, false, "no page line for a newer page's save");
   const ok = page({ "mb-save-v8": SCHEMA }); assert.notEqual(ok.els.resetNote && ok.els.resetNote.hidden, false, "none for a save that draws");
 });
 
-test("pods: a world pod the save already holds, as itself (w3 in the cargo) or in the Station's crate form (c9:w5 in st.pods), is not regenerated", () => {
-  const p = page(), o = JSON.parse(SCHEMA); delete o.pods;
-  o.exp = { cargo: { pods: [{ id: "w3", sp: 0 }] } }; o.st.pods = [{ id: "c9:w5", sp: 1 }];
-  p.store[p.KEY] = JSON.stringify(o); assert.equal(p.run("load()"), true);
+test("pods: a world pod the save already holds, as itself (w1p0 in the cargo) or in the Station's crate form (c9:w0p1 in st.pods), is not regenerated", () => {
+  const p = page(), o = flat(); delete o.pods;
+  o.exp = { cargo: { pods: [{ id: "w1p0", sp: 0 }] } }; o.st.pods = [{ id: "c9:w0p1", sp: 1 }];
+  p.store[p.KEY] = real(o); assert.equal(p.run("load()"), true);
   const life = plain(p.run("genLife(123456).pods")), got = plain(p.run("S.pods"));
-  assert.ok(life.some(q => q.id === "w3") && life.some(q => q.id === "w5"));
-  assert.deepEqual(got, life.filter(q => q.id !== "w3" && q.id !== "w5"));
+  assert.ok(life.some(q => q.id === "w1p0") && life.some(q => q.id === "w0p1"));
+  assert.deepEqual(got, life.filter(q => q.id !== "w1p0" && q.id !== "w0p1"));
 });

@@ -8,14 +8,16 @@ import { b64uEncode, b64uDecode, hexDecode, utf8, unutf8 } from "../src/realm/b6
 import { canonical } from "../src/realm/canonical.mjs";
 import { sha256, pairFromSeed, generateKeyPair, sign, verify } from "../src/realm/keys.mjs";
 import { formatRecovery, recoveryPub, kid } from "../src/realm/recovery.mjs";
-import { MAGIC, MAX_BYTES, fileHash, prepareSleep, assembleSleepFile, buildSleepFile, parseSleepFile, verifySleepFile, readBody, ledgerState, wakeCheck, wake } from "../src/realm/sleepfile.mjs";
+import { MAGIC, MAX_BYTES, OLD_SAVE_LINE, fileHash, prepareSleep, assembleSleepFile, buildSleepFile, parseSleepFile, verifySleepFile, readBody, ledgerState, wakeCheck, wake } from "../src/realm/sleepfile.mjs";
 import { migrate8 } from "../../exploration/src/regions.mjs";
 
 const V = JSON.parse(readFileSync(new URL("../src/realm/vectors.json", import.meta.url), "utf8"));
-const GOLDEN = new URL("./fixtures/sleep-v1-golden.mbr", import.meta.url);
+const GOLDEN = new URL("./fixtures/sleep-v2-golden.mbr", import.meta.url);   // from a v10 save (the release)
+const OLD_GOLDEN = new URL("./fixtures/sleep-v1-golden.mbr", import.meta.url);   // a file stored before the release: from a v9 save, left as it is; it verifies, and never wakes
 const SLEPT = 1800000000000;                                                      // fixed
 const v8 = JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-played-g2.json", import.meta.url), "utf8"));
-const save = migrate8(v8, { now: 1793664000000 });
+const save = migrate8({ ...v8, gen: 5 }, { now: 1793664000000 });   // a v10 realm: generator 5
+const save9 = { ...migrate8(v8, { now: 1793664000000 }), v: 9 };   // the same realm as the v9 save of before the release
 const caddy = { dock: { v: 1, wid: v8.wid, crates: [], at: SLEPT - 1000 }, jobs: [{ id: "j1", kind: "tend", due: SLEPT + 5000 }], prints: [] };
 
 const companion = await pairFromSeed(hexDecode(V.companion.seed));              // the test Companion
@@ -69,7 +71,7 @@ test("the header says what the design says", () => {
   assert.equal(h.wid, v8.wid); assert.equal(h.began, save.began); assert.equal(h.slept, SLEPT);
   assert.deepEqual(h.companion, who);
   assert.deepEqual(h.recovery, recovery);
-  assert.deepEqual(h.save, { v: 9, st: 4, gens: [2] });
+  assert.deepEqual(h.save, { v: 10, st: 4, gens: [5] });
   assert.deepEqual(Object.keys(h.parts).sort(), ["caddy", "companion", "station"]);
   assert.equal(h.body.bytes, utf8(parseSleepFile(built.bytes).bodyLine).length);
   assert.deepEqual(h.summary, { regions: 1, mibis: 2, pods: 72, crates: 2, d: 96, e: 24, s: 48, turn: 20, exp: null, names: ["Mibi1", save.st.mibis[1].name] });
@@ -91,6 +93,14 @@ test("the golden file verifies, and its body equals the input", async () => {
   const { st, ...rest } = save;
   assert.deepEqual(body, { companion: rest, station: st, caddy });
   assert.deepEqual({ ...body.companion, st: body.station }, save);                   // the save comes back whole
+});
+
+test("a file stored before the release (a v9 save) still verifies and reads whole, and is left as it is", async () => {
+  const bytes = new Uint8Array(readFileSync(OLD_GOLDEN));
+  assert.deepEqual([(await verifySleepFile(bytes)).ok, (await verifySleepFile(bytes)).why], [true, ""]);
+  assert.equal(parseSleepFile(bytes).header.save.v, 9);
+  const body = await readBody(bytes), { st, ...rest } = save9;
+  assert.deepEqual(body, { companion: rest, station: st, caddy });
 });
 
 test("the head reads three lines and never touches the body", () => {
@@ -178,8 +188,8 @@ test("a file over 8 MB is refused", async () => {
   await assert.rejects(prepareSleep({ ...opts, caddy: { dock: "x".repeat(MAX_BYTES), jobs: [], prints: [] } }), /8 MB/);
 });
 
-test("building refuses what is not a v9 realm", async () => {
-  await assert.rejects(prepareSleep({ ...opts, save: v8 }), /v9/);
+test("building refuses what is not a v10 realm", async () => {
+  await assert.rejects(prepareSleep({ ...opts, save: v8 }), /v10/); await assert.rejects(prepareSleep({ ...opts, save: save9 }), /v10/);
   const { st, ...nost } = save;
   await assert.rejects(prepareSleep({ ...opts, save: nost }), /Station part/);
   await assert.rejects(prepareSleep({ ...opts, save: { ...save, wid: "" } }), /wid/);
@@ -228,6 +238,15 @@ test("wakeCheck: companion.pub swapped and the file re-signed by another key is 
   assert.equal((await wakeCheck(swapped, { recoveryText: recText, ledgers: [] })).ok, true);                         // ...but the owner's recovery key, whose pub the copy still names, may
   const noRec = await forge({ header: { ...built.header, companion: { ...who, pub: thief.pub }, recovery: recovery && { ...recovery, pub: thief.pub } }, body: body0(), key: thief.privateKey });
   assert.equal((await wakeCheck(noRec, { recoveryText: recText, ledgers: [] })).why, "recovery-pub");                // a copy that puts its own recovery pub in does not take the owner's key
+});
+
+test("wakeCheck: waking a file whose save is v9 is refused with its own reason and line, whatever the proof", async () => {
+  const old = new Uint8Array(readFileSync(OLD_GOLDEN)), sha = await fileHash(old);
+  const ledgers = [[{ sha, state: "kept" }, { sha, state: "committed" }]];
+  assert.deepEqual(await wakeCheck(old, { ...(await proof()), ledgers }), { ok: false, why: "old-save" });
+  assert.deepEqual(await wakeCheck(old, { recoveryText: recText, ledgers: [] }), { ok: false, why: "old-save" });
+  assert.match(OLD_SAVE_LINE, /^[A-Z][^0-9]*\.$/, "a plain line: no numbers, no versions");
+  assert.ok((await wakeCheck(built.bytes, { ...(await proof()), ledgers: committed })).ok, "a v10 file wakes as before");
 });
 
 test("wakeCheck: kept but not committed, already woken, not in the ledger", async () => {

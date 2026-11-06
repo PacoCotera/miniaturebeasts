@@ -16,7 +16,7 @@ export function sleepBlock(m) {
   const { sv, docked, companion } = m;
   if (!docked) return "not docked";
   if (!companion || !companion.keyed) return "no key";
-  if (!sv || sv.v !== 9 || typeof sv.wid !== "string" || !Array.isArray(sv.regions)) return "no save";
+  if (!sv || sv.v !== S.SAVE_V || typeof sv.wid !== "string" || !Array.isArray(sv.regions)) return "no save";
   return null;
 }
 
