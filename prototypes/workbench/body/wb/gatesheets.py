@@ -83,7 +83,7 @@ def language_sheet(srv, spec, sid, pic, clay32, outdir):
     def ref_cell(pattern, cap, w, name):
         f = _find(ref, pattern)
         if f is None:
-            return f"<div class='cell none' style='width:{w}px'><div class='cap'>{html.escape(cap)}: none yet</div></div>"
+            return f"<div class='cell none' style='width:{max(w, 230)}px'><div class='cap'>{html.escape(cap)}: none yet</div></div>"
         shutil.copyfile(f, os.path.join(outdir, name))
         return _cell(name, cap, w)
     wall = ref_cell("wall-96.png", "the wall at 96", 480, "language-wall.png")
@@ -119,14 +119,20 @@ def make(srv, sp, n, outdir, actor=None, log=print):
     clay = _views(srv, sp, spec, sh, ["clay"], AZ, [304, 608], actor)
     # Turnaround: the four clay angles and the plush hero
     cells = [_cell(_put(srv, clay[("clay", a, 304)], outdir, f"clay-{a}.png"), f"clay, az {a}", 304) for a in AZ]
-    pic = srv.picture(spec, "type")
-    if not pic["ready"]:                                      # the plush hero is asked for at the sheet's own priority and waited for
+    def hero():
+        try:
+            return srv.picture(spec, "type")
+        except Exception as e:                                # a plan with no plush yet: the sheet is drawn in clay
+            log(f"no plush: {e}")
+            return dict(ready=False)
+    pic = hero()
+    if "key" in pic and not pic["ready"]:                     # the plush hero is asked for at the sheet's own priority and waited for
         try:
             job = srv.submit_plush(sp, "type", actor, 3, spec=spec)
             job.event.wait(180)
         except Exception as e:
             log(f"no plush: {e}")
-        pic = srv.picture(spec, "type")
+        pic = hero()
     plush = ""
     if pic["ready"]:
         plush = _cell(_put(srv, pic["key"], outdir, "plush-32.png"), "plush, az 32", 304)
