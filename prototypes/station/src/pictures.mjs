@@ -8,7 +8,7 @@ import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
 import { gradedOf, grade } from "./light-grade.mjs";
 import { juvenileMirrored, mirrorPic } from "./facing.mjs";
-import { layeredStand, composeStand, standPictureId, standVariant, fitDown, curlPicture, curlOfStand, traitTile, factorPicture, variantPixels } from "./layered-stand.mjs";
+import { layeredStand, composeStand, standPictureId, standVariant, fitDown, curlPicture, curlOfStand, traitTile, chipId, CHIP_TILE, factorPicture, variantPixels } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
 import { portraitSource, portraitOpening } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackCrownIds, rackPatternId, leastFinal } from "./podmasters.mjs";
@@ -123,10 +123,11 @@ export function registerPictures(reqs, env) {
         else registerSlot({ id: r.id, w: r.size[0], h: r.size[1], until: r.until });
         break;
       }
-      case "traittile": {   // a Colour or Markings tile on a read chapter page: the layered stand cropped and reduced once here (layered-stand.mjs traitTile); an empty slot where the species has no layered stand
+      case "traittile": {   // a Markings or Signature size tile: the trait chip of the look shown, cropped and reduced once here (layered-stand.mjs traitTile); an empty slot where the chip is not placed
         const [w, h] = r.size; if (hasAsset(r.id)) break;
-        if (!layeredStand(r.species, "adult", [304, 312], "default")) { registerSlot({ id: r.id, w, h, until: r.until }); break; }
-        registerAsset({ id: r.id, w, h, status: "placeholder", until: LAYER_UNTIL, build: () => traitTile(r.species, "adult", r.trait, r.look, r.size) });
+        const cid = chipId(r.species, r.trait, r.look);   // release 21c: the chip master of the look shown
+        if (!cid || !masterAt(cid, CHIP_TILE.chip[0], CHIP_TILE.chip[1])) { registerSlot({ id: r.id, w, h, until: r.until }); break; }
+        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => data ?? (data = traitTile(assetOf(cid), r.size).rgba()) }; } });
         break;
       }
       case "hatch": putOrMaster(r.id, `ring-hatch-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1], "the pod list master", () => hatchPB(r.size[0]), STAND_IN); break;
