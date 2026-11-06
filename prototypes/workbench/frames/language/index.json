@@ -1,0 +1,75 @@
+{
+ "schema": "mb-frame-registry/1",
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 13,
+  "digest": "8d405a729aeb9973c026c9823b316405d91c6c01402b51870f471b9a1c551fd5",
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "species": [
+  {
+   "id": "S01",
+   "name": "Loika",
+   "clan": "C01",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "family": "trotter",
+   "land": "woods",
+   "frameVersion": 8,
+   "file": "species-S01.json",
+   "open": 17,
+   "traits": 16,
+   "carried": 94
+  },
+  {
+   "id": "S17",
+   "name": "Wickle",
+   "clan": "C17",
+   "plan": "B1·L2",
+   "rig": "B1",
+   "family": "roundling",
+   "land": "mixed",
+   "frameVersion": 8,
+   "file": "species-S17.json",
+   "draft": true,
+   "open": 19,
+   "traits": 17,
+   "carried": 91
+  },
+  {
+   "id": "S18",
+   "name": "Drapet",
+   "clan": "C18",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "family": "mound",
+   "land": "downs",
+   "frameVersion": 8,
+   "file": "species-S18.json",
+   "draft": true,
+   "open": 21,
+   "traits": 17,
+   "carried": 83
+  },
+  {
+   "id": "S19",
+   "name": "Curlop",
+   "clan": "C19",
+   "plan": "B1·L2·arms",
+   "rig": "B1",
+   "family": "sitter",
+   "land": "meres",
+   "frameVersion": 8,
+   "file": "species-S19.json",
+   "draft": true,
+   "open": 21,
+   "traits": 19,
+   "carried": 94
+  }
+ ]
+}

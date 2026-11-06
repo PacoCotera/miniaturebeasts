@@ -30,7 +30,9 @@ if (existsSync(snapshot)) carried = (await import(snapshot.href)).FRAME_DATA.fra
 const bodyUrl = new URL("../../workbench/body/frames/", import.meta.url);
 const CATALOGUE_FRAME = 7;
 const bodyFiles = existsSync(bodyUrl) ? readdirSync(bodyUrl).filter((f) => /^species-S\d+\.json$/.test(f)).sort() : [];
-const sources = [...index.species.map((s) => ({ url: new URL(s.file, registryUrl), body: false })), ...bodyFiles.map((f) => ({ url: new URL(f, bodyUrl), body: true }))];
+// The language frames (version 8, schema /4) sit in frames/language/ with their own index, as new files beside the registry; each is appended after the others.
+const languageIndex = existsSync(new URL("language/index.json", registryUrl)) ? JSON.parse(readFileSync(new URL("language/index.json", registryUrl), "utf8")) : { species: [] };
+const sources = [...index.species.map((s) => ({ url: new URL(s.file, registryUrl), body: false })), ...bodyFiles.map((f) => ({ url: new URL(f, bodyUrl), body: true })), ...languageIndex.species.map((s) => ({ url: new URL(`language/${s.file}`, registryUrl), body: false }))];
 const frames = sources.map(({ url, body }) => {
   const d = JSON.parse(readFileSync(url, "utf8"));
   if (body && d.schema !== "mb-species-frame/3") throw new Error(`${d.species.id}: a body frame is mb-species-frame/3, not ${d.schema}`);

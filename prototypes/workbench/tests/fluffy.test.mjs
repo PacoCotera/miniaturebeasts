@@ -13,8 +13,7 @@ import { sweep, newNode } from "../framework/geometry.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const framesDir = path.resolve(here, "../frames");
-import { loadFormFrames } from "./form-frames.mjs";
-const frames = loadFormFrames();   // the form frames: S01 and S17-S19 from their version-6 files (they are language frames, version 8, now)
+const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 const frameOf = (id) => frames.find((f) => f.species.id === id);
 const NEW = VALIDATED.filter((l) => l.sinceFrame === 6).map((l) => l.id);
 const sceneOf = (id, mutate) => { const g = typeSpecimen(frameOf(id)); if (mutate) mutate(g); return buildIndividual(frameOf(id), g); };

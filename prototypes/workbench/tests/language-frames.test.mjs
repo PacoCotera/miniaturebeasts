@@ -14,8 +14,9 @@ import {
 import { FRAME_DATA } from "../../genome-stamp/src/frames-data.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const file = (id) => JSON.parse(readFileSync(path.resolve(here, "../frames", `species-${id}.json`), "utf8"));
-const index = JSON.parse(readFileSync(path.resolve(here, "../frames/index.json"), "utf8"));
+const file = (id) => JSON.parse(readFileSync(path.resolve(here, "../frames/language", `species-${id}.json`), "utf8"));
+const index = JSON.parse(readFileSync(path.resolve(here, "../frames/language/index.json"), "utf8"));
+const formFile = (id) => JSON.parse(readFileSync(path.resolve(here, "../frames", `species-${id}.json`), "utf8"));
 const frames = Object.fromEntries(LANGUAGE_ANCHORS.map((id) => [id, buildLanguageFrame(id, { samples: 24 })]));
 const open = (f) => f.loci.filter((l) => l.kind !== "locked");
 const openIds = (f) => open(f).map((l) => l.id);
@@ -33,16 +34,18 @@ test("the generator writes the four anchors as language frames: schema /4, catal
   }
 });
 
-test("the files on disk are the generator's output, and no other frame was touched", () => {
+test("the files on disk are the generator's output, in frames/language, and the form frames beside them are untouched version-6 and older files", () => {
   for (const id of LANGUAGE_ANCHORS) {
     const disk = file(id);
     assert.equal(disk.frameVersion, 8, id);
     assert.deepEqual(disk.loci.map((l) => [l.id, l.kind]), frames[id].loci.map((l) => [l.id, l.kind]), `${id}: the file lists the loci the generator opens`);
+    assert.equal(formFile(id).frameVersion, 6, `${id}: the old frame file is still version 6, byte for byte as it was`);
+    assert.equal(formFile(id).schema, "mb-species-frame/2");
   }
-  const versions = index.species.filter((s) => s.frameVersion).map((s) => s.id);
-  assert.deepEqual(versions, ["S01", "S17", "S18", "S19"], "the index marks exactly the language frames");
-  assert.equal(index.language.version, 13); assert.equal(index.catalogue.version, 12);
-  for (const s of index.species.filter((x) => !x.frameVersion)) assert.ok((file(s.id).frameVersion ?? 4) < 8, `${s.id}: still a form frame`);
+  assert.deepEqual(index.species.map((s) => s.id), ["S01", "S17", "S18", "S19"], "the language index names exactly the four");
+  assert.equal(index.catalogue.version, 13); assert.ok(index.species.every((s) => s.frameVersion === 8 && s.family && s.land));
+  const main = JSON.parse(readFileSync(path.resolve(here, "../frames/index.json"), "utf8"));
+  assert.equal(main.catalogue.version, 12); assert.ok(!("language" in main), "the form index is as it was");
 });
 
 test("the palette records are closed: the named colours are locked (colour comes from the land), body hue and value are open with the land's band", () => {

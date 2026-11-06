@@ -11,17 +11,6 @@
    "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
   }
  },
- "language": {
-  "id": "mb-genome-framework",
-  "version": 13,
-  "digest": "8d405a729aeb9973c026c9823b316405d91c6c01402b51870f471b9a1c551fd5",
-  "parent": {
-   "id": "genomic-compositional-source-experiment",
-   "version": 6,
-   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
-   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
-  }
- },
  "species": [
   {
    "id": "S01",
@@ -31,10 +20,9 @@
    "rig": "B1",
    "tier": "starter",
    "file": "species-S01.json",
-   "frameVersion": 8,
-   "open": 17,
-   "traits": 16,
-   "carried": 94
+   "open": 11,
+   "traits": 7,
+   "carried": 56
   },
   {
    "id": "S02",
@@ -227,11 +215,10 @@
    "rig": "B1",
    "tier": "early",
    "file": "species-S17.json",
-   "frameVersion": 8,
    "draft": true,
-   "open": 19,
-   "traits": 17,
-   "carried": 91
+   "open": 16,
+   "traits": 10,
+   "carried": 48
   },
   {
    "id": "S18",
@@ -241,11 +228,10 @@
    "rig": "B1",
    "tier": "mid",
    "file": "species-S18.json",
-   "frameVersion": 8,
    "draft": true,
-   "open": 21,
-   "traits": 17,
-   "carried": 83
+   "open": 20,
+   "traits": 15,
+   "carried": 44
   },
   {
    "id": "S19",
@@ -255,11 +241,10 @@
    "rig": "B1",
    "tier": "mid",
    "file": "species-S19.json",
-   "frameVersion": 8,
    "draft": true,
-   "open": 21,
-   "traits": 19,
-   "carried": 94
+   "open": 20,
+   "traits": 14,
+   "carried": 53
   }
  ]
 }
