@@ -23,7 +23,7 @@ RANGES = ("head", "neck", "back", "seat", "tail")
 
 def is_quad(ctx):
     sp = ctx.spec
-    return isinstance(sp, dict) and sp.get("schema") == "mb-species/1" and sp.get("plan") == "quadruped"
+    return isinstance(sp, dict) and sp.get("schema") in ("mb-species/1", "mb-species/2") and sp.get("plan") == "quadruped"
 
 
 def proj(ctx, az=90, el=10.0):

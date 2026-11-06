@@ -86,7 +86,7 @@ def c_express(ctx):
        limit=dict(text="head, neck, back, seat, tail, each inside its band", value=None), az=90)
 def c_ranges(ctx):
     plan = BIPED
-    if isinstance(ctx.spec, dict) and ctx.spec.get("schema") == "mb-species/1" and ctx.spec.get("plan") == "quadruped":              # the quadruped's file lists the ranges as {name, length}: the same bands, its own plan's
+    if isinstance(ctx.spec, dict) and ctx.spec.get("schema") in ("mb-species/1", "mb-species/2") and ctx.spec.get("plan") == "quadruped":              # the quadruped's file lists the ranges as {name, length}: the same bands, its own plan's
         import species_v1 as V1
         rg, at = {}, 0.0
         for r in ctx.doc["spine"]["ranges"]:

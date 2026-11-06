@@ -129,6 +129,51 @@ class TestRounds(unittest.TestCase):
         self.assertFalse(EX.gate_signed(self.spec, None))
 
 
+S22 = os.path.join(BODY, "species_v1", "S22.json")
+
+
+class TestLanguageRows(unittest.TestCase):
+    """A language file (mb-species/2) has the language sheet and the eight judgement rows besides the six sheets; a fixture (S20) has the six only. Only a reviewer or the owner ticks any of them."""
+    def setUp(self):
+        shutil.rmtree(SCRATCH, ignore_errors=True)
+        os.makedirs(SCRATCH)
+        self.path = os.path.join(SCRATCH, "S22t.json")
+        self.spec = S.read_spec(S22)
+        S.write_spec(self.path, self.spec)
+
+    def tearDown(self):
+        shutil.rmtree(SCRATCH, ignore_errors=True)
+
+    def test_a_language_file_has_fifteen_rows_and_a_fixture_six(self):
+        r, _ = GT.request(self.path, self.spec, MAKER)
+        self.assertEqual(list(r["rows"]), GT.SHEET_IDS + ["language"] + GT.JUDGEMENT_IDS)
+        self.assertEqual(len(GT.JUDGEMENT_IDS), 8)
+        pub = GT.public(GT.read(self.path), GT.file_hash(self.spec))
+        rows = pub["rounds"][0]["sheets"]
+        self.assertEqual([x["label"] for x in rows][6:], ["Language", "Odd, with a thought behind the eyes", "Nothing acted", "Never a real animal you can name", "Clean silhouette", "Faces read as their own species", "Anatomy makes sense", "Nothing sad, sick or scary", "No seams"])
+        self.assertEqual({x["on"] for x in rows if x["id"] in GT.JUDGEMENT_IDS}, {"language"})
+        fix = os.path.join(SCRATCH, "S20t.json")
+        S.write_spec(fix, S.read_spec(S20))
+        self.assertEqual(list(GT.request(fix, S.read_spec(S20), MAKER)[0]["rows"]), GT.SHEET_IDS)
+
+    def test_no_maker_or_agent_ticks_a_judgement_row_and_the_reviewer_signs_only_when_all_fifteen_are_ticked(self):
+        GT.request(self.path, self.spec, MAKER)
+        for who in (MAKER, AGENT, AGENT_OWNER):
+            for row in GT.JUDGEMENT_IDS:
+                refused(self, 403, GT.tick, self.path, self.spec, 1, row, True, None, who)
+        refused(self, 404, GT.tick, self.path, self.spec, 1, "no-such-row", True, None, REVIEWER)
+        for row in GT.SHEET_IDS + ["language"]:
+            GT.tick(self.path, self.spec, 1, row, True, None, REVIEWER)
+        e = refused(self, 409, GT.sign, self.path, self.spec, 1, REVIEWER)
+        self.assertIn("7 of 15 sheets are ticked", str(e))
+        for row in GT.JUDGEMENT_IDS:
+            GT.tick(self.path, self.spec, 1, row, True, None, REVIEWER)
+        self.assertEqual(GT.ticked(GT.read(self.path)["rounds"][0]), 15)
+        GT.sign(self.path, self.spec, 1, REVIEWER)
+        GT.sign(self.path, self.spec, 1, OWNER)
+        self.assertTrue(GT.is_signed(self.path, self.spec))
+
+
 class TestSheets(unittest.TestCase):
     def test_the_six_templates_name_no_species(self):
         src = open(os.path.join(BODY, "wb", "gatesheets.py")).read() + open(os.path.join(BODY, "wb", "gate.py")).read()

@@ -13,6 +13,13 @@ from wb import hashing as H, store as S
 SCHEMA = "gate-1"
 SHEETS = [("turnaround", "Turnaround"), ("before-after", "Before and after"), ("joins", "Joins"), ("twelve", "The twelve"), ("motion", "Motion"), ("close-up", "Close-up")]
 SHEET_IDS = [i for i, _ in SHEETS]
+# A language file (mb-species/2, not a fixture) also has the language sheet and the eight judgement rows of the language: each is a tick only the reviewer gives, like every judgement row. Selecting one shows the language sheet.
+# OWED to the copywriter: the wording is the language's own (the design's list of rows); the row names on screen are hers to settle.
+LANGUAGE = ("language", "Language")
+JUDGEMENTS = [("odd-with-a-thought", "Odd, with a thought behind the eyes"), ("nothing-acted", "Nothing acted"), ("no-real-animal", "Never a real animal you can name"), ("clean-silhouette", "Clean silhouette"),
+              ("own-species-face", "Faces read as their own species"), ("anatomy-makes-sense", "Anatomy makes sense"), ("nothing-sad", "Nothing sad, sick or scary"), ("no-seams", "No seams")]
+LABELS = dict(SHEETS + [LANGUAGE] + JUDGEMENTS)
+JUDGEMENT_IDS = [i for i, _ in JUDGEMENTS]
 LOCK = threading.RLock()
 
 
@@ -78,8 +85,22 @@ def need_judge(actor):
         refuse(403, "refused: only a reviewer or the owner can tick, send back or sign", "role")
 
 
+def is_language(spec):
+    """A file the language checks apply to: schema mb-species/2, and not a fixture of the registry."""
+    return isinstance(spec, dict) and spec.get("schema") == "mb-species/2" and not is_fixture(spec.get("id"))
+
+
+def is_fixture(species_id):
+    import species_v1 as V1
+    return V1.is_fixture(species_id)
+
+
+def row_ids(spec):
+    return SHEET_IDS + [LANGUAGE[0]] + JUDGEMENT_IDS if is_language(spec) else list(SHEET_IDS)
+
+
 def ticked(r):
-    return sum(1 for i in SHEET_IDS if r["rows"].get(i, {}).get("tick"))
+    return sum(1 for i in r["rows"] if r["rows"][i].get("tick"))
 
 
 def judged(r, spec_hash):
@@ -99,11 +120,11 @@ def public(rec, spec_hash):
     for r in rec["rounds"]:
         rr = copy.deepcopy(r)
         rr["state"] = judged(r, spec_hash)
-        rr["sheets"] = [dict(id=i, label=l, **(r["rows"].get(i) or dict(tick=False))) for i, l in SHEETS]
+        rr["sheets"] = [dict(id=i, label=LABELS.get(i, i), **({"on": LANGUAGE[0]} if i in JUDGEMENT_IDS else {}), **(r["rows"].get(i) or dict(tick=False))) for i in r["rows"]]
         rounds.append(rr)
     cur = rounds[-1] if rounds else None
     return dict(schema=SCHEMA, species=rec["species"], hash=spec_hash, rounds=rounds, current=cur["round"] if cur else None,
-                signed=bool(cur and cur["state"]["signed"]), sheets=[dict(id=i, label=l) for i, l in SHEETS])
+                signed=bool(cur and cur["state"]["signed"]), sheets=[dict(id=i, label=LABELS.get(i, i)) for i in (cur["rows"] if cur else SHEET_IDS)])
 
 
 def current_round(rec):
@@ -121,7 +142,7 @@ def request(species_path, spec, actor):
         if cur and not cur.get("verdict"):
             cur["verdict"] = "superseded"
         n = (cur["round"] if cur else 0) + 1
-        r = dict(round=n, file_hash=h, asked_by=(actor or {}).get("name", "unknown"), asked_at=S.now(), rows={i: dict(tick=False) for i in SHEET_IDS}, note="", reviewer=None, owner=None, verdict=None, voided=None)
+        r = dict(round=n, file_hash=h, asked_by=(actor or {}).get("name", "unknown"), asked_at=S.now(), rows={i: dict(tick=False) for i in row_ids(spec)}, note="", reviewer=None, owner=None, verdict=None, voided=None)
         rec["rounds"].append(r)
         os.makedirs(os.path.dirname(snapshot_path(species_path, n)), exist_ok=True)
         with open(snapshot_path(species_path, n), "w") as fh:
@@ -151,7 +172,7 @@ def tick(species_path, spec, n, row, on, note, actor):
         if row == "note":
             r["note"] = str(note or "")[:2000]
         else:
-            if row not in SHEET_IDS:
+            if row not in r["rows"]:
                 refuse(404, f"no such sheet: {row}", "row")
             if r.get("reviewer"):
                 refuse(409, "the reviewer has signed; the ticks are locked", "row")
@@ -187,8 +208,8 @@ def sign(species_path, spec, n, actor):
         if actor["role"] == "reviewer":
             if r.get("reviewer"):
                 refuse(409, "the reviewer has already signed this round", "sign")
-            if ticked(r) < len(SHEET_IDS):
-                refuse(409, f"{ticked(r)} of {len(SHEET_IDS)} sheets are ticked; the reviewer signs when all are", "sign")
+            if ticked(r) < len(r["rows"]):
+                refuse(409, f"{ticked(r)} of {len(r['rows'])} sheets are ticked; the reviewer signs when all are", "sign")
             r["reviewer"] = stamp
         else:
             if not r.get("reviewer"):

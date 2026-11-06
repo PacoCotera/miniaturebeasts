@@ -1,8 +1,11 @@
 {
- "schema": "mb-species/1",
+ "schema": "mb-species/2",
  "id": "S22",
  "name": "",
  "plan": "quadruped",
+ "family": "trotter",
+ "land": null,
+ "signature": null,
  "plan_version": 1,
  "anchors": {
   "ears": "wide",
@@ -250,12 +253,18 @@
   }
  ],
  "sockets": [],
- "face": {},
+ "face": {
+  "eyes": {
+   "count": 2
+  }
+ },
  "coat": {
   "zones": {},
   "layouts": {},
-  "palettes": {},
-  "material": {}
+  "material": {
+   "family": "fur",
+   "pile": "teddy"
+  }
  },
  "genome": {
   "catalogue": {

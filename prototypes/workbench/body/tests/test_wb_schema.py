@@ -84,7 +84,8 @@ class TestMessages(unittest.TestCase):
 
     def test_more_rules(self):
         self.assertEqual(broken(lambda d: d["anchors"].update(body="wide"))[0][1], "anchors.body: body and face are always tight, got 'wide'")
-        self.assertEqual(broken(lambda d: d.update(schema="mb-species/2")), [("schema", "schema: must be 'mb-species/1', got 'mb-species/2'")])
+        self.assertEqual(broken(lambda d: d.update(schema="mb-species/2")), [("schema", "schema: S20 is a fixture of the language registry and stays mb-species/1")])
+        self.assertEqual(broken(lambda d: d.update(schema="mb-species/3")), [("schema", "schema: must be 'mb-species/1' or 'mb-species/2', got 'mb-species/3'")])
         self.assertEqual(broken(lambda d: d.update(id="Tuliko"))[0][1], "id: 'Tuliko' is not a species id (S and two digits, like S20)")
         self.assertIn("spine.tail.segments: the shares add up to", broken(lambda d: d["spine"]["tail"]["segments"][0].update(share=0.5))[0][1])
         self.assertEqual(broken(lambda d: d["spine"]["ranges"][1].update(length=0.9))[0][0], "spine.ranges.neck.length")
@@ -95,6 +96,71 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(V.label_of("parts.leg.L.chain.1.len"), "Length")
         self.assertEqual(V.stage_of("spine.tail.length"), "shape")
         self.assertEqual(V.stage_of("coat.zones"), "coat")
+
+
+LANG = os.path.join(BODY, "tests", "fixtures", "language_broken")
+
+
+def lang_file(name):
+    with open(os.path.join(LANG, name + ".json")) as fh:
+        return json.load(fh)
+
+
+class TestLanguageSchema(unittest.TestCase):
+    """mb-species/2: the language fields, the refused fields, S20 as a fixture. The six broken files are fixtures of these tests, never species files."""
+    def test_s22_and_the_template_are_valid_language_files_with_no_land_or_signature_yet(self):
+        for f in (os.path.join("S22.json"), os.path.join("templates", "quadruped.json")):
+            d = json.load(open(os.path.join(BODY, "species_v1", f)))
+            self.assertEqual((d["schema"], d["family"], d["land"], d["signature"], d["face"]["eyes"]["count"], d["coat"]["material"]["family"]), ("mb-species/2", "trotter", None, None, 2, "fur"))
+            self.assertEqual(V.validate(d), [])
+
+    def test_the_six_broken_files_each_say_one_thing_naming_the_field(self):
+        want = dict(
+            **{"no-family": [("family", "family: missing (it is required: The build family: it fixes the skeleton. One kind to a family.)")]},
+            **{"unknown-land": [("land", "land: 'moonlands' is not one of mixed, woods, tallwood, thickets, fells, downs, marsh, tarns, meres")]},
+            cheeks=[("face.cheeks", "face.cheeks: cheeks are not a field of mb-species/2: no blush")],
+            **{"two-signatures": [("signature", "signature: a kind has one signature, got 2")]},
+            **{"eye-count-four": [("face.eyes.count", "face.eyes.count: '4' is not one of 2, 3")]},
+            **{"fixture-with-family": [("family", "family: S20 is a fixture of the language registry; a fixture has no family, land or signature")]})
+        self.assertEqual(sorted(os.listdir(LANG)), sorted(n + ".json" for n in want))
+        for name, errs in want.items():
+            self.assertEqual(V.validate(lang_file(name)), errs, name)
+        self.assertFalse(os.path.exists(os.path.join(BODY, "species_v1", "no-family.json")))        # fixtures of the tests, not species files
+
+    def test_eye_kinds_and_free_palettes_are_refused_and_a_land_may_be_set(self):
+        d = lang_file("cheeks")
+        del d["face"]["cheeks"]
+        d["face"]["eyes"]["kinds"] = ["round", "sleepy"]
+        d["coat"]["palettes"] = {"parts": ["coat"]}
+        self.assertEqual([e[0] for e in V.validate(d)], ["face.eyes.kinds", "coat.palettes"])
+        d = lang_file("cheeks")
+        del d["face"]["cheeks"]
+        d["land"], d["signature"] = "woods", dict(type="leaf crest", socket="head-top")
+        self.assertEqual(V.validate(d), [])
+        d["signature"]["socket"] = "face"
+        self.assertEqual([e[0] for e in V.validate(d)], ["signature.socket"])               # a signature is never on the face
+
+    def test_a_kind_the_registry_lists_keeps_its_family_land_eyes_and_coat(self):
+        d = lang_file("cheeks")
+        del d["face"]["cheeks"]
+        d["id"], d["family"], d["land"] = "S15", "shell-carrier", "downs"
+        d["face"]["eyes"]["count"], d["coat"]["material"] = 3, dict(family="skin")
+        self.assertEqual(V.validate(d), [])
+        d["face"]["eyes"]["count"] = 2
+        self.assertEqual(V.validate(d), [("face.eyes.count", "face.eyes.count: S15 has 3 eyes in the registry, got 2")])
+        d["face"]["eyes"]["count"], d["land"] = 3, "marsh"
+        self.assertEqual(V.validate(d), [("land", "land: S15 lives in downs in the registry, got 'marsh'")])
+
+    def test_s20_stays_slash_one_and_the_play_species_are_untouched(self):
+        s20 = json.load(open(os.path.join(BODY, "species_v1", "S20.json")))
+        self.assertEqual((s20["schema"], V.is_fixture("S20"), V.is_fixture("S22")), ("mb-species/1", True, False))
+        self.assertEqual(V.validate(s20), [])
+        for n in ("S71", "S72", "S73"):
+            self.assertEqual(V.validate(json.load(open(os.path.join(BODY, "species_play", n + ".json")))), [], n)
+
+    def test_a_new_species_from_the_template_is_a_language_file(self):
+        t = V.new_from_template("S23", "quadruped")
+        self.assertEqual((t["schema"], t["family"], t["land"], V.validate(t)), ("mb-species/2", "trotter", None, []))
 
 
 class TestPath(unittest.TestCase):

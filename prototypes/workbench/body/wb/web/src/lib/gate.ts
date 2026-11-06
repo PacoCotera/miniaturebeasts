@@ -6,7 +6,7 @@ import { apiPath } from './prefix'
 export type Role = 'maker' | 'reviewer' | 'owner'
 export type Me = { name: string | null; role: Role | null; agent: boolean }
 export type Sign = { name: string; at: string; hash: string }
-export type SheetRow = { id: string; label: string; tick: boolean; by?: string; at?: string; url?: string }
+export type SheetRow = { id: string; label: string; on?: string; tick: boolean; by?: string; at?: string; url?: string }
 export type RoundState = { live: boolean; reviewer_valid: boolean; owner_valid: boolean; signed: boolean; voided: boolean; ticked: number }
 export type Round = { round: number; file_hash: string; asked_by: string; asked_at: string; note: string; reviewer: Sign | null; owner: Sign | null; verdict: string | null; voided: { at: string; by: string; hash: string } | null; state: RoundState; sheets: SheetRow[] }
 export type Gate = { species: string; hash: string; rounds: Round[]; current: number | null; signed: boolean; building: boolean }

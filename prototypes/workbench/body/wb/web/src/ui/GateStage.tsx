@@ -18,7 +18,7 @@ export function GateStage({ url, species, inset = 0 }: { url: StudioUrl; species
   return (
     <main className={s.stage} style={inset ? { paddingBottom: inset + 8 } : undefined}>
       {r && sh && (sh.url && !bad
-        ? <div className={s.plate}><img className={s.img} src={sheetUrl(url.species, r.round, sh.id)} alt={sh.label} onError={() => setBad(true)} /></div>
+        ? <div className={s.plate}><img className={s.img} src={sheetUrl(url.species, r.round, sh.on ?? sh.id)} alt={sh.label} onError={() => setBad(true)} /></div>
         : <p className={s.note}>{W.jobsWait}</p>)}
     </main>
   )

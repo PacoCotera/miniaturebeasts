@@ -1,4 +1,5 @@
-"""The six sheets of a gate round, one template each, the same for every species and plan: Turnaround, Before and after, Joins, The twelve, Motion, Close-up.
+"""The six sheets of a gate round, one template each, the same for every species and plan: Turnaround, Before and after, Joins, The twelve, Motion, Close-up. A language file (mb-species/2, not a fixture) gets a seventh, the Language sheet:
+the kind at 96 beside the wall, the 304 turnaround beside its stand, the 48 silhouette and the land swatch. The wall and the stands are the art desk's pictures, read from `<home>/language/` when they are there (`wall-96.png`, `stand-<id>-*-304x*.png`, `-48x48.png`); a kind with none says so.
 `make(srv, sp, n, outdir)` gets the pictures through the server's own jobs (the clay renders, the plush, the Variety tiles and the clips come from the cache when they are there), then writes one HTML page and one PNG per sheet into
 outdir (`<id>.html`, `<id>.png` and the pictures beside them, `index.json`). A sheet that a species cannot have (no variety sampler, no clip) says so on its page. Pages are real text, 14 px and up (sheetlib).
 Nothing here names a species or its shape."""
@@ -47,6 +48,56 @@ def _page(outdir, sid, title, head, body, width=1400):
     return p
 
 
+def _silhouette(src, dst):
+    """The picture's silhouette as black on clear, from its alpha (or, for a picture with none, from what differs from its corner)."""
+    import numpy as np
+    from wb import pngio
+    a = pngio.read(src)
+    m = a[..., 3] > 8
+    if m.all():
+        m = np.abs(a[..., :3].astype(int) - a[0, 0, :3].astype(int)).sum(-1) > 24
+    out = np.zeros(a.shape, np.uint8)
+    out[..., 3] = np.where(m, 255, 0)
+    pngio.write(dst, out)
+
+
+def _swatch(land):
+    cells = "".join(f"<div class='sw'><i style='background:{html.escape(c['hex'])}'></i><span>{html.escape(role)} · {html.escape(c['name'])} · {html.escape(c['hex'])}</span></div>" for role, c in (("body", land["body"]), ("marking", land["marking"]), ("accent", land["accent"])))
+    return f"<div class='swatch'>{cells}</div>"
+
+
+def _find(folder, pattern):
+    import glob
+    hit = sorted(glob.glob(os.path.join(folder, pattern)))
+    return hit[0] if hit else None
+
+
+def language_sheet(srv, spec, sid, pic, clay32, outdir):
+    """The body of the Language sheet. `pic` is the plush hero's cas key (or None), `clay32` the clay render's."""
+    import species_v1 as V1
+    ref = os.path.join(srv.home, "language")
+    kind = _put(srv, pic or clay32, outdir, "language-kind.png")
+    _silhouette(os.path.join(outdir, kind), os.path.join(outdir, "language-silhouette.png"))
+    land = next((l for l in V1.registry()["lands"] if l["id"] == spec.get("land")), None)
+
+    def ref_cell(pattern, cap, w, name):
+        f = _find(ref, pattern)
+        if f is None:
+            return f"<div class='cell none' style='width:{w}px'><div class='cap'>{html.escape(cap)}: none yet</div></div>"
+        shutil.copyfile(f, os.path.join(outdir, name))
+        return _cell(name, cap, w)
+    wall = ref_cell("wall-96.png", "the wall at 96", 480, "language-wall.png")
+    r96 = f"<div class='cell'><img src='{kind}' width='96' alt='the kind at 96'><div class='cap'>{html.escape(sid)} at 96</div></div>"
+    r304 = f"<div class='cell'><img src='{kind}' width='304' alt='the kind at 304'><div class='cap'>{html.escape(sid)} at 304</div></div>"
+    stand = ref_cell(f"stand-{sid}-*-304x*.png", f"the stand of {sid} at 304", 304, "language-stand.png")
+    s48 = f"<div class='cell'><img src='language-silhouette.png' width='48' alt='silhouette at 48'><div class='cap'>silhouette at 48</div></div>"
+    st48 = ref_cell(f"stand-{sid}-*-48x48.png", f"the stand of {sid} at 48", 48, "language-stand-48.png")
+    land_html = _swatch(land) if land else "<p>No land is set in this file yet, so there is no swatch.</p>"
+    css = "<style>.swatch{display:flex;gap:14px}.sw{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #bbb;padding:6px 10px}.sw i{display:block;width:44px;height:44px;border:1px solid #888}.cell.none{padding:12px}</style>"
+    return (css + f"<h2>At 96, beside the wall</h2><div class='row'>{r96}{wall}</div><h2>At 304, beside its stand</h2><div class='row'>{r304}{stand}</div>"
+            f"<h2>The silhouette at 48</h2><div class='row'>{s48}{st48}</div><h2>The land</h2>{land_html}")
+
+
 def _row(cells, cols=4, w=304):
     return f"<div class='grid' style='grid-template-columns:repeat({cols},{w + 10}px)'>" + "".join(cells) + "</div>"
 
@@ -59,7 +110,7 @@ def make(srv, sp, n, outdir, actor=None, log=print):
     sh = H.hash_of(spec)
     name = spec.get("name") or sp.id
     made = {}
-    labels = dict(GT.SHEETS)
+    labels = GT.LABELS
 
     def page(sid, head, body, width=1400):
         made[sid] = os.path.basename(_page(outdir, sid, f"{name} · {labels[sid]}", head, body, width))
@@ -133,6 +184,9 @@ def make(srv, sp, n, outdir, actor=None, log=print):
     cl = _views(srv, sp, spec, sh, ["clay", "parts"], (32, 180), [608], actor)
     cells = [_cell(_put(srv, cl[(m, a, 608)], outdir, f"close-{m}-{a}.png"), f"{m}, az {a}", 608) for m, a in (("clay", 32), ("clay", 180), ("parts", 32))]
     page("close-up", "The clay at 608 px from the side and from behind, and the parts view.", _row(cells, 3, 608), 2000)
+    if GT.is_language(spec):
+        hero = pic["key"] if plush else None
+        page("language", "The kind at 96 beside the wall, at 304 beside its stand, the silhouette at 48 and the land's colours.", language_sheet(srv, spec, sp.id, hero, clay[("clay", 32, 304)], outdir), 1100)
     with open(os.path.join(outdir, "index.json"), "w") as fh:
         json.dump(dict(round=n, file_hash=sh, sheets=made), fh)
     return made

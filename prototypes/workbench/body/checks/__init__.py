@@ -53,7 +53,7 @@ def run(stage, ctx, only=None):
     """Run the checks of one stage ("file" or "cage") on a Ctx. A check that raises is a row with state "fail" and the error as its measure, never a crash."""
     from . import biped  # noqa: F401  (registers the checks)
     out = []
-    quad = isinstance(ctx.spec, dict) and ctx.spec.get("schema") == "mb-species/1" and ctx.spec.get("plan") == "quadruped"      # a quadruped's own file (the cage builder reads it as it is)
+    quad = isinstance(ctx.spec, dict) and ctx.spec.get("schema") in ("mb-species/1", "mb-species/2") and ctx.spec.get("plan") == "quadruped"      # a quadruped's own file (the cage builder reads it as it is)
     for c in REGISTRY:
         if c.stage != stage or (only and c.id not in only):
             continue

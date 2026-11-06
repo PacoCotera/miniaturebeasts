@@ -3,11 +3,16 @@ Fields that are not listed are rejected, not ignored: that is how forbidden fiel
 and `from_internal(v0)` converts today's S20.json into v1. The two are exact inverses: the v1 file builds the same cage, bit for bit. The mesh topology (ring counts, columns, caps) and the hand-sampled section table are not fields yet: until the plan owns them
 (chunks 21-22) they travel verbatim in `spine.loft`, `parts[].topology` and `legacy`, typed as free objects, so nothing is lost and nothing is ignored.
 What is modelled is what a person or an agent edits: the spine's ranges, the head attachment, the tail (length, root, tip radius, curl), the limbs' chains, the sockets and their joins."""
+import contextvars
 import copy
 import difflib
+import json
+import os
 import re
 
-SCHEMA_ID = "mb-species/1"
+SCHEMA_V1 = "mb-species/1"            # the fixtures (S20) and the play species (S71-S73) stay on /1
+SCHEMA_ID = "mb-species/2"            # every other file: the language fields (family, land, signature, eye count, coat material family) are in, cheeks, eye kinds and free palettes are out
+SCHEMAS = (SCHEMA_V1, SCHEMA_ID)
 # The plans' bands. The plan modules are chunk 26; until then the numbers live here: the owner's where there is one (tail root 0.45, head attachment), the S20 type's own band (about a third either way) where nobody has given one.
 PLANS = {
     "biped": dict(ranges=["head", "neck", "back", "seat", "tail"], range_len=dict(head=(0.7, 1.3), neck=(0.15, 0.4), back=(0.6, 1.2), seat=(0.3, 0.8)), tail_length=(0.6, 1.8), tail_root=(0.1, 0.45), tip_r=(0.02, 0.1),
@@ -40,9 +45,9 @@ def vec3(label, help, stage="shape"):
     return dict(type="vec3", label=label, help=help, stage=stage, unit="H")
 
 
-# ---- the schema: path -> field. Lists name their item fields; `required` lists the keys that must be there.
-SCHEMA = dict(
-    schema=dict(type="enum", values=[SCHEMA_ID], label="Schema", help="The schema this file is written in.", stage="meta"),
+# ---- the /1 schema: path -> field. Lists name their item fields; `required` lists the keys that must be there. /2 is derived from it below.
+SCHEMA_1 = dict(
+    schema=dict(type="enum", values=[SCHEMA_V1], label="Schema", help="The schema this file is written in.", stage="meta"),
     id=text("Species id", "S and two digits, unique on the server. A mibi a player keeps is M and four digits.", pattern=r"S\d\d|M\d{4}"),
     name=text("Name", "The species' name, once it has a cleared one."),
     plan=dict(type="enum", values=list(PLANS), label="Body plan", help="The body plan: it fixes the spine's ranges, the head attachment and the limits.", stage="meta"),
@@ -108,7 +113,71 @@ SCHEMA = dict(
                                                                                             normal_deg=num("Normal angle", "The steepest edge between faces.", rng=(5, 20), unit="°"))),
     legacy=free("Legacy", "Fields the schema does not model yet and carries unchanged: the house, the frame, the mesh quality numbers, the poles, the appendage rules, the part order.", stage="meta"),
 )
-REQUIRED = ["schema", "id", "name", "plan", "plan_version", "anchors", "spine", "skeleton", "parts", "sockets", "face", "coat", "genome", "motion", "legacy"]
+REQUIRED_1 = ["schema", "id", "name", "plan", "plan_version", "anchors", "spine", "skeleton", "parts", "sockets", "face", "coat", "genome", "motion", "legacy"]
+
+
+# ---- the language registry (framework/language.json, generated from framework/language.mjs): the lands, families, vocabularies, kinds and fixtures the /2 fields are checked against
+REGISTRY_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "framework", "language.json")
+_REGISTRY = {}
+
+
+def registry():
+    """The language registry, read once. The studio never types its numbers: the lands, families, kinds and the fixture list come from the file the genome line generates."""
+    if "r" not in _REGISTRY:
+        with open(REGISTRY_PATH) as fh:
+            _REGISTRY["r"] = json.load(fh)
+    return _REGISTRY["r"]
+
+
+def is_fixture(species_id):
+    """A frozen regression file the registry lists (S20): every language check skips it and it stays on /1."""
+    return any(f["id"] == species_id for f in registry()["fixtures"])
+
+
+def registry_kind(species_id):
+    return next((k for k in registry()["kinds"] if k["id"] == species_id), None)
+
+
+# ---- /2: /1 plus the language. OWED to the copywriter: every label and help line below, and every message in `language_errors`; the field names are the plan's (family, land, signature, face.eyes.count, coat.material.family).
+def _schema_2():
+    r = registry()
+    v = r["vocab"]
+    s = copy.deepcopy(SCHEMA_1)
+    s["schema"] = dict(type="enum", values=[SCHEMA_ID], label="Schema", help="The schema this file is written in.", stage="meta")
+    lang = dict(
+        family=dict(type="enum", values=[f["id"] for f in r["families"]], label="Family", help="The build family: it fixes the skeleton. One kind to a family.", stage="meta"),
+        land=dict(type="enum", values=[l["id"] for l in r["lands"]], label="Land", help="The land the colours come from. Empty until the kind is set in one.", stage="meta", nullable=True),
+        signature=dict(type="object", label="Signature", help="The kind's one signature: its type and where it sits. Empty until one is picked.", stage="shape", nullable=True, fields=dict(
+            type=text("Signature type", "What the signature is.", stage="shape"),
+            socket=dict(type="enum", values=v["signatureSockets"], label="Signature socket", help="Where the signature sits. Never on the face.", stage="shape"),
+            count=free("Signature count", "How many, or the band the count varies in.", stage="shape"),
+            curl=free("Signature curl", "How far it bends, or the band the bend varies in.", stage="shape"),
+            accent=dict(type="enum", values=["land", "own"], label="Signature accent", help="Whose colour the signature takes: the land's accent, or the kind's own.", stage="coat")), required=["type", "socket"]),
+    )
+    s = {**{k: s[k] for k in ("schema", "id", "name")}, **lang, **{k: x for k, x in s.items() if k not in ("schema", "id", "name")}}
+    s["face"] = obj("Face", "Eyes and mouth. Cheeks and eye kinds are not in this schema.", dict(
+        eyes=obj("Eyes", "The house eye, and how many.", dict(
+            count=dict(type="enum", values=v["eyeCounts"], label="Eye count", help="Two eyes; three only on Lehten. No locus varies it.", stage="face"),
+            station=num("Eye station", "Where along the head the eyes sit.", stage="face", rng=None), around=num("Eye around", "How far round the head the eyes sit.", stage="face", rng=None, unit=""),
+            r=num("Eye radius", "The eye's radius.", stage="face", rng=None), iris=free("Iris", "The iris: its share of the disc, the pupil, the value.", stage="face"), catch=free("Highlight", "The eye's highlight.", stage="face"),
+            frames=free("Eye frames", "The eye's open, half and closed frames.", stage="face"), default=text("Default eye", "The eye a new individual starts with.", stage="face")),
+            stage="face", required=["count"], refused=dict(kinds="eye kinds are not a field of mb-species/2: every eye is the house eye (set face.eyes.count)")),
+        mouth=free("Mouth", "The mouth and its expressions.", stage="face"), kind=text("Face kind", "How the face is drawn on the body.", stage="face"), on=text("Face part", "The part the face sits on.", stage="face"), island=text("Face island", "The island the face is drawn on.", stage="face")),
+        stage="face", required=["eyes"], refused=dict(cheeks="cheeks are not a field of mb-species/2: no blush"))
+    s["coat"] = obj("Coat", "Zones, layouts and material. Colour comes from the land, not from a palette.", dict(
+        zones=free("Zones", "The coat's zones.", stage="coat"), layouts=free("Layouts", "The coat's layouts.", stage="coat"),
+        material=obj("Material", "The material family and its limits.", dict(
+            family=dict(type="enum", values=v["coatMaterials"], label="Material family", help="What the coat is made of.", stage="coat"),
+            pile=dict(type="enum", values=v["furPiles"], label="Fur pile", help="The kind of fur. Only fur has one.", stage="coat"),
+            limits=free("Material limits", "The material's parameter ranges.", stage="coat"), glow=free("Glow", "The glowing part.", stage="coat")), stage="coat", required=["family"])),
+        stage="coat", required=["material"], refused=dict(palettes="free palettes are not a field of mb-species/2: colour comes from the land"))
+    return s
+
+
+SCHEMA = _schema_2()                    # the current schema: labels, stages and the form read this
+REQUIRED = ["schema", "id", "name", "plan", "family", "land", "signature", "plan_version", "anchors", "spine", "skeleton", "parts", "sockets", "face", "coat", "genome", "motion", "legacy"]
+_SCHEMA_OF = {SCHEMA_V1: (SCHEMA_1, REQUIRED_1), SCHEMA_ID: (SCHEMA, REQUIRED)}
+_CUR = contextvars.ContextVar("species_schema", default=SCHEMA_V1)
 
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------- labels
@@ -228,11 +297,13 @@ def _object(path, v, f, plan, errs):
         if k not in v:
             errs.append((f"{path}.{k}" if path else k, f"{path + '.' if path else ''}{k}: missing (it is required{': ' + fields[k]['help'] if k in fields else ''})"))
     for k, x in v.items():
-        if k in fields:
+        if k in f.get("refused", {}):
+            errs.append((f"{path}.{k}" if path else k, f"{path + '.' if path else ''}{k}: {f['refused'][k]}"))
+        elif k in fields:
             _check(f"{path}.{k}" if path else k, x, fields[k], plan, errs)
         elif not f.get("rest"):
             near = difflib.get_close_matches(k, list(fields), n=1, cutoff=0.6)
-            errs.append((f"{path}.{k}" if path else k, f"{path + '.' if path else ''}{k}: not a field of {SCHEMA_ID}" + (f" (did you mean {path + '.' if path else ''}{near[0]}?)" if near else "") + "; fields that are not listed are rejected"))
+            errs.append((f"{path}.{k}" if path else k, f"{path + '.' if path else ''}{k}: not a field of {_CUR.get()}" + (f" (did you mean {path + '.' if path else ''}{near[0]}?)" if near else "") + "; fields that are not listed are rejected"))
 
 
 def validate(doc):
@@ -240,12 +311,24 @@ def validate(doc):
     errs = []
     if not isinstance(doc, dict):
         return [("", f"the file must be an object, got {_kind(doc)}")]
-    if doc.get("schema") != SCHEMA_ID:
-        return [("schema", f"schema: must be '{SCHEMA_ID}', got {doc.get('schema')!r}")]
+    if doc.get("schema") not in SCHEMAS:
+        return [("schema", f"schema: must be '{SCHEMA_V1}' or '{SCHEMA_ID}', got {doc.get('schema')!r}")]
+    if doc["schema"] == SCHEMA_ID and isinstance(doc.get("id"), str) and is_fixture(doc["id"]):
+        return [("schema", f"schema: {doc['id']} is a fixture of the language registry and stays {SCHEMA_V1}")]
+    if doc["schema"] == SCHEMA_V1 and isinstance(doc.get("id"), str) and is_fixture(doc["id"]):
+        lang = [k for k in ("family", "land", "signature") if k in doc]
+        if lang:
+            return [(lang[0], f"{lang[0]}: {doc['id']} is a fixture of the language registry; a fixture has no family, land or signature")]
+    fields, required = _SCHEMA_OF[doc["schema"]]
+    _CUR.set(doc["schema"])
     plan = _plan(doc)
     if doc.get("plan") not in PLANS:
         errs.append(("plan", f"plan: '{doc.get('plan')}' is not a registered plan (have: {', '.join(PLANS)})"))
-    _object("", doc, dict(fields=SCHEMA, required=REQUIRED), plan, errs)
+    _object("", doc, dict(fields=fields, required=required), plan, errs)
+    if doc["schema"] == SCHEMA_ID:
+        if isinstance(doc.get("signature"), list):
+            errs = [e for e in errs if e[0] != "signature"]
+        errs += language_errors(doc)
     if plan and isinstance(doc.get("spine"), dict):
         rg = doc["spine"].get("ranges")
         if isinstance(rg, list) and all(isinstance(r, dict) for r in rg):
@@ -290,6 +373,32 @@ def validate(doc):
     if isinstance(doc.get("genome"), dict) and not errs:
         import genomeapply as GA
         errs += GA.validate(doc)
+    return errs
+
+
+def language_errors(doc):
+    """What the registry adds to a /2 file: a kind it lists keeps its family, land, eye count and coat material (a template with no land yet may set one); one signature, never on the face. A fixture is skipped.
+    OWED to the copywriter: these messages."""
+    sid = doc.get("id")
+    if not isinstance(sid, str) or is_fixture(sid):
+        return []
+    errs = []
+    sig = doc.get("signature")
+    if isinstance(sig, list):
+        errs.append(("signature", f"signature: a kind has one signature, got {len(sig)}"))
+    k = registry_kind(sid)
+    if k is None:
+        return errs
+    if doc.get("family") != k["family"]:
+        errs.append(("family", f"family: {sid} is the {k['family']} family in the registry, got {doc.get('family')!r}"))
+    if k["land"] is not None and doc.get("land") != k["land"]:
+        errs.append(("land", f"land: {sid} lives in {k['land']} in the registry, got {doc.get('land')!r}"))
+    cnt = ((doc.get("face") or {}).get("eyes") or {}).get("count") if isinstance(doc.get("face"), dict) and isinstance(doc["face"].get("eyes"), dict) else None
+    if cnt in registry()["vocab"]["eyeCounts"] and cnt != k["eyes"]["count"]:
+        errs.append(("face.eyes.count", f"face.eyes.count: {sid} has {k['eyes']['count']} eyes in the registry, got {cnt}"))
+    mat = ((doc.get("coat") or {}).get("material") or {}).get("family") if isinstance(doc.get("coat"), dict) and isinstance(doc["coat"].get("material"), dict) else None
+    if mat in registry()["vocab"]["coatMaterials"] and mat != k["coat"]["material"]:
+        errs.append(("coat.material.family", f"coat.material.family: {sid} is {k['coat']['material']} in the registry, got {mat}"))
     return errs
 
 
@@ -345,7 +454,7 @@ def from_internal(d):
             q["topology"]["extra"] = extra
         parts.append(q)
     sockets = [dict(id=k, spec=v) for k, v in d["sockets"].items()]
-    doc = dict(schema=SCHEMA_ID, id=d["species"], name=d["name"], plan=d["body_plan"], plan_version=1, anchors=d["anchors"],
+    doc = dict(schema=SCHEMA_V1, id=d["species"], name=d["name"], plan=d["body_plan"], plan_version=1, anchors=d["anchors"],
                spine=dict(ranges=[dict(name=k, length=None if k == "tail" else r9(v[1] - v[0])) for k, v in rg.items()], head_attach=dict(a=ha["a"], d=ha["d"], z_under=ha["z_under"]), seat=dict(radius=seat_r), tail=tl, loft=torso),
                skeleton=skel, parts=parts, sockets=sockets, face=d["face"], coat=dict(zones=d["zones"], layouts=d["layouts"], palettes=d["palettes"], material=d["material"]), genome=None, motion=d["motion"], legacy=legacy)
     legacy["genome_v0"] = dict(genes=d["genes"], counts=d["counts"])
@@ -438,7 +547,8 @@ def to_internal(doc, check=True):
 
 
 def is_v1(spec):
-    return isinstance(spec, dict) and spec.get("schema") == SCHEMA_ID
+    """A species file of either schema (/1 for the fixtures and play species, /2 for the rest)."""
+    return isinstance(spec, dict) and spec.get("schema") in SCHEMAS
 
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------- plan templates

@@ -12,6 +12,9 @@ export const W = {
     oneFails: 'One check fails', signAnyway: 'Sign anyway, or send it back.', // st.gate.red (the check's own fail line sits between)
     // OWED to the copywriter (the copywriter's word list has none): the voided line (with who changed the file and whose signatures it voided), the signed-by line, the plural of the red card, each sheet's one judgement sentence, the sheet pages' own sentences,
     // and the earlier-round view's two lines (the read-only note and the way back to the current round).
+    // The language file's Language sheet and its eight judgement rows are named by the server (wb/gate.py) in the language design's own wording, and the sheet's head line, the field labels and help lines of mb-species/2 and the language validator messages are builder-written: all OWED to the copywriter.
+    // OWED, placeholder keys (the words are not written): the line that says the Language sheet has no wall or no stand picture yet, and the heading over the eight judgement rows.
+    owedLanguage: { noReference: 'OWED:gate.language.no-reference', rowsHeading: 'OWED:gate.language.rows-heading' },
     voided: (by: string | null, who: string[]) => `Changed after signing${by ? ` by ${by}` : ''} · ${who.length ? `signatures of ${who.join(' and ')} are void` : 'both signatures are void'}`,
     readOnly: 'An earlier round · look only', backTo: (n: number) => `Back to round ${n}`, signedBy: (who: string, day: string) => `${who} · ${day}`, manyFail: (n: number) => `${n} checks fail`, sentBack: 'Sent back',
   },

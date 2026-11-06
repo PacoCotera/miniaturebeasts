@@ -167,7 +167,7 @@ def cmd_convert(a):
     dst = a.out or a.src.rsplit(".json", 1)[0] + ".v1.json"
     with open(dst, "w") as fh:
         json.dump(doc, fh, indent=1, ensure_ascii=False)
-    out(a, dict(ok=True, src=a.src, out=dst, schema=V1.SCHEMA_ID), f"{a.src} -> {dst} ({V1.SCHEMA_ID})")
+    out(a, dict(ok=True, src=a.src, out=dst, schema=V1.SCHEMA_V1), f"{a.src} -> {dst} ({V1.SCHEMA_V1})")
     return 0
 
 
@@ -181,7 +181,7 @@ def validate_file(a):
     except (OSError, ValueError) as e:
         raise Fail(2, f"{a.file}: {e}")
     errs = V1.validate(doc)
-    out(a, dict(ok=not errs, file=a.file, errors=[dict(field=p, message=m) for p, m in errs]), "\n".join(f"FAIL  {m}" for p, m in errs) or f"{a.file}: valid {V1.SCHEMA_ID}")
+    out(a, dict(ok=not errs, file=a.file, errors=[dict(field=p, message=m) for p, m in errs]), "\n".join(f"FAIL  {m}" for p, m in errs) or f"{a.file}: valid {doc['schema']}")
     return 2 if errs else 0
 
 

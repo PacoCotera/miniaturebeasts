@@ -1464,8 +1464,9 @@ class Server:
         for r in out["rounds"]:
             d = self.gate_sheet_dir(sp, r["round"])
             for sh in r["sheets"]:
-                if os.path.exists(os.path.join(d, sh["id"] + ".png")):
-                    sh["url"] = f"/api/species/{sp.id}/gate/{r['round']}/sheet/{sh['id']}.png"
+                pic = sh.get("on", sh["id"])                                  # a judgement row shows the sheet it judges
+                if os.path.exists(os.path.join(d, pic + ".png")):
+                    sh["url"] = f"/api/species/{sp.id}/gate/{r['round']}/sheet/{pic}.png"
         out["building"] = bool(building and building.is_alive())
         out["actions"] = {}
         return out

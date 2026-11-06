@@ -1,0 +1,301 @@
+{
+ "schema": "mb-species/2",
+ "id": "S23",
+ "name": "",
+ "plan": "quadruped",
+ "family": "trotter",
+ "land": null,
+ "signature": null,
+ "plan_version": 1,
+ "anchors": {
+  "ears": "wide",
+  "tail": "wide",
+  "coat": "wide",
+  "body": "tight",
+  "face": "tight"
+ },
+ "spine": {
+  "ranges": [
+   {
+    "name": "head",
+    "length": 1.25
+   },
+   {
+    "name": "neck",
+    "length": 0.25
+   },
+   {
+    "name": "back",
+    "length": 0.85
+   },
+   {
+    "name": "seat",
+    "length": 0.45
+   },
+   {
+    "name": "tail",
+    "length": null
+   }
+  ],
+  "head_attach": {
+   "a": 0.0,
+   "d": 0.0,
+   "z_under": 0.95
+  },
+  "seat": {
+   "radius": 0.45
+  },
+  "tail": {
+   "length": 1.1,
+   "root": 0.4,
+   "tip_r": 0.06,
+   "root_at": [
+    -1.4,
+    0.0,
+    0.95
+   ],
+   "segments": [
+    {
+     "name": "t1",
+     "share": 0.34,
+     "pitch": 180,
+     "r": [
+      0.18,
+      0.18
+     ]
+    },
+    {
+     "name": "t2",
+     "share": 0.33,
+     "pitch": 165,
+     "r": [
+      0.12,
+      0.12
+     ]
+    },
+    {
+     "name": "t3",
+     "share": 0.33,
+     "pitch": 150,
+     "r": [
+      0.06,
+      0.06
+     ],
+     "role": "end"
+    }
+   ],
+   "fillet": 1.4
+  },
+  "loft": {
+   "label": "trunk",
+   "axis_z": 0.95,
+   "head_profile": {
+    "R_scale": 1.0,
+    "neck_ratio": 0.7,
+    "chest_front": 0.05,
+    "rump_gain": 0.15
+   }
+  }
+ },
+ "skeleton": {
+  "chest_at": 0.06,
+  "pelvis_at": 0.44,
+  "shoulder_off": [
+   0.12,
+   0.5,
+   -0.23
+  ],
+  "hip_off": [
+   0.0,
+   0.46,
+   -0.29
+  ],
+  "note": "the girdles: a chest joint on the spine at 0.06 along the back range and a pelvis joint at 0.44 along the seat range, so the legs follow the trunk when a range moves; each leg's root is its shoulder or hip, an offset from its girdle joint (left side; the right is the mirror image)"
+ },
+ "parts": [
+  {
+   "id": "fore.L",
+   "kind": "limb",
+   "parent": "torso",
+   "label": "limb",
+   "socket": {
+    "join": "soft",
+    "kind": "patch",
+    "col": 6,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.02,
+    "transition": 1,
+    "gap": 0.08,
+    "match": "distance"
+   },
+   "root": {
+    "name": "shoulder",
+    "r": [
+     0.27,
+     0.28
+    ],
+    "role": "mass"
+   },
+   "chain": [
+    {
+     "joint": "elbow",
+     "len": 0.2,
+     "pitch": -92,
+     "r": [
+      0.21,
+      0.22
+     ],
+     "apex": "back"
+    },
+    {
+     "joint": "wrist",
+     "len": 0.24,
+     "pitch": -84,
+     "r": [
+      0.19,
+      0.19
+     ],
+     "apex": "fwd"
+    },
+    {
+     "joint": "sole",
+     "len": 0.2814,
+     "pitch": -90,
+     "r": [
+      0.22,
+      0.25
+     ],
+     "role": "end"
+    }
+   ],
+   "fillet": 1.25,
+   "end": {
+    "kind": "paw",
+    "height": 0.22,
+    "flat": true,
+    "band": 0.14
+   },
+   "topology": {
+    "edge": 0.2
+   }
+  },
+  {
+   "id": "hind.L",
+   "kind": "limb",
+   "parent": "torso",
+   "label": "limb",
+   "socket": {
+    "join": "soft",
+    "kind": "patch",
+    "col": 6,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.02,
+    "transition": 1,
+    "gap": 0.08,
+    "match": "distance"
+   },
+   "root": {
+    "name": "hip",
+    "r": [
+     0.3,
+     0.3
+    ],
+    "role": "mass"
+   },
+   "chain": [
+    {
+     "joint": "knee",
+     "len": 0.22,
+     "pitch": -80,
+     "r": [
+      0.23,
+      0.23
+     ],
+     "apex": "fwd"
+    },
+    {
+     "joint": "hock",
+     "len": 0.24,
+     "pitch": -97,
+     "r": [
+      0.18,
+      0.18
+     ],
+     "apex": "back"
+    },
+    {
+     "joint": "sole",
+     "len": 0.2051,
+     "pitch": -90,
+     "r": [
+      0.22,
+      0.26
+     ],
+     "role": "end"
+    }
+   ],
+   "fillet": 1.25,
+   "end": {
+    "kind": "paw",
+    "height": 0.22,
+    "flat": true,
+    "band": 0.14
+   },
+   "topology": {
+    "edge": 0.2
+   }
+  }
+ ],
+ "sockets": [],
+ "face": {
+  "eyes": {
+   "count": 4
+  }
+ },
+ "coat": {
+  "zones": {},
+  "layouts": {},
+  "material": {
+   "family": "fur",
+   "pile": "teddy"
+  }
+ },
+ "genome": {
+  "catalogue": {
+   "id": "mb-genome-framework",
+   "version": 13,
+   "digest": "8d405a729aeb9973c026c9823b316405d91c6c01402b51870f471b9a1c551fd5"
+  },
+  "chapters": [
+   {
+    "id": "coat",
+    "name": "Coat"
+   },
+   {
+    "id": "face",
+    "name": "Face"
+   },
+   {
+    "id": "shape",
+    "name": "Shape"
+   },
+   {
+    "id": "legs-tail",
+    "name": "Legs & tail"
+   },
+   {
+    "id": "movement",
+    "name": "Movement"
+   }
+  ],
+  "loci": []
+ },
+ "motion": {},
+ "legacy": {}
+}

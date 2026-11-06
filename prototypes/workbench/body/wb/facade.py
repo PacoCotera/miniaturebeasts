@@ -28,7 +28,7 @@ class BuildError(Exception):
 
 def is_quadruped(spec):
     """A v1 file of the quadruped plan: its cage builder reads the file as it is (quadruped.py), not through the biped's converter."""
-    return isinstance(spec, dict) and spec.get("schema") == "mb-species/1" and spec.get("plan") == "quadruped"
+    return isinstance(spec, dict) and spec.get("schema") in ("mb-species/1", "mb-species/2") and spec.get("plan") == "quadruped"
 
 
 def internal(spec):
