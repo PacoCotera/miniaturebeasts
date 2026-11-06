@@ -5,8 +5,8 @@
  "version": 2,
  "glb": {
   "file": "S01-m2.glb",
-  "sha256": "d7e0623330eb8966fb2020f86b6126417ab68ac7a3da306c7271a7affa02be63",
-  "bytes": 669272,
+  "sha256": "e71c0d8a29318b7eaaabf067bae9e37cced26314176327c63526a06bc89b86b7",
+  "bytes": 669312,
   "triangles": 17160
  },
  "family": "trotter",
@@ -36,9 +36,9 @@
  "zones": {
   "size": 1024,
   "shares": {
-   "coat": 0.7773,
-   "cream": 0.1842,
-   "toe pad": 0.0257,
+   "coat": 0.7732,
+   "cream": 0.1881,
+   "toe pad": 0.0258,
    "eye ring": 0.0052,
    "eye disc": 0.0077
   }

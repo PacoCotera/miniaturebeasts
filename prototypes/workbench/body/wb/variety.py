@@ -128,6 +128,19 @@ def _label(g, expressions, locus, look, words=None):
     return f"{str(look).replace('-', ' ').capitalize()} · {e.get('short', locus)}"
 
 
+def mesh_draw(doc, i, seed):
+    """Individual i of a mesh body's sheet: {locus: value}, each blend locus of the file drawn at a t between the band's ends (a seeded draw, so the same sheet comes back). Only the shape loci move a mesh body so far."""
+    import random
+    import genomeapply as GA
+    rng = random.Random(f"{doc.get('id')}:{int(seed)}:{int(i)}")
+    out = {}
+    for e in (doc.get("genome") or {}).get("loci", []):
+        if e.get("op") == "blend" and e.get("band") and e.get("moves"):
+            b = e["band"]
+            out[e["locus"]] = round(GA.value_of(b["form"], b["lo"], b["hi"], rng.random()), 4)
+    return out
+
+
 def sheet(doc, n=None, seed=None, wild_n=1000):
     """The Variety sheet of a file: its individuals (with their looks, loud looks and any broken rule), the looks with how often each shows, and the rules. None for a species with no sampler."""
     import expressions as X, s20genes as GN

@@ -5,6 +5,7 @@ import math
 
 import numpy as np
 
+import meshrig as MR
 import meshsource as MS
 
 C_TRIAL = np.array([[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]])      # the leaf's own frame (the sculpt trial's axes: front -y, left +x) to the studio's (front +x, left +y)
@@ -62,7 +63,14 @@ class MeshBody:
         self.doc = doc
         m = doc["mesh"]
         self.mesh = MS.Mesh(m["source"])
-        self.Vw, self.Fw = MS.weld(self.mesh.V, self.mesh.F)
+        self.rig = MR.of(self.mesh) if self.mesh.glb.skin() is not None else None                       # a sculpt with no skin (a broken one the checks are shown) is built as it is
+        self.keys = {k["id"]: float(k.get("amount", 0.0)) for k in (doc.get("keys") or [])}
+        if self.rig is not None:
+            self.Vw, self.mats, self.scales, self.dz = self.rig.rest(doc.get("rig"), self.keys)         # the sculpt with the file's bone scales and shape keys, the feet on the floor
+            self.Fw = self.rig.F
+        else:
+            self.Vw, self.Fw = MS.weld(self.mesh.V, self.mesh.F)
+            self.mats, self.scales, self.dz = None, {}, 0.0
         self.parts = {"body": 0}
         self.placed = []
         n = signature_count(doc) if count is None else int(count)
@@ -77,16 +85,44 @@ class MeshBody:
             pl = fan_placements(n, float(lay["size_of_body"]) if size is None else float(size), H, lay)
             point = np.array(soc["point"], float)
             for j, (R, off, L) in enumerate(pl):
-                self.placed.append(dict(name=f"{sc['part']}.{j}", part=k, V=point + off + (Vp * L) @ R.T, F=Fp, socket=pe["socket"]))
+                V0 = point + off + (Vp * L) @ R.T
+                self.placed.append(dict(name=f"{sc['part']}.{j}", part=k, V0=V0, V=self._carry_part(V0, soc["bone"], self.mats, self.dz), F=Fp, socket=pe["socket"], bone=soc["bone"]))
             self.parts[sc["part"]] = k
         self.ctx = dict(spec=doc, params=dict(mesh=self.mesh.sc["id"], count=n), body_parts=self.parts, balance=self._balance())
 
+    def _carry_part(self, V0, bone, mats, dz):
+        """A placed part's rest vertices carried with its socket's bone: the bone's joint, rotation and size (a part is rigid on its socket)."""
+        if self.rig is None:
+            return V0
+        b = self.rig.idx(bone)
+        hw, A, _ = mats[b]
+        return hw + (V0 - self.rig.head[b]) @ A.T + np.array([0.0, 0.0, dz])
+
+    def carry(self, P):
+        """Points of the sculpt's rest (a station, a socket) carried to where this body has them."""
+        return self.rig.carry(P, self.mats, self.keys, self.dz) if self.rig is not None else np.atleast_2d(np.asarray(P, float))
+
     def _balance(self):
-        """The centre of the body over the four feet: the vertices' mean in x and y against the feet's box."""
+        """The centre of mass over the soles on the floor (the cage's own numbers: com, hull, margin, inside), and the vertices' mean against the feet's box as the first sculpt chunk kept it."""
+        b = self.rig.balance(self.Vw) if self.rig is not None else {}
         feet = np.array([f["point"][:2] for f in self.mesh.stations()["feet"]], float)
         c = self.Vw[:, :2].mean(0)
-        inside = bool(feet[:, 0].min() <= c[0] <= feet[:, 0].max() and feet[:, 1].min() <= c[1] <= feet[:, 1].max())
-        return dict(inside=inside, centre=[round(float(x), 4) for x in c], feet_box=[[round(float(x), 4) for x in feet.min(0)], [round(float(x), 4) for x in feet.max(0)]])
+        b.update(centre=[round(float(x), 4) for x in c], feet_box=[[round(float(x), 4) for x in feet.min(0)], [round(float(x), 4) for x in feet.max(0)]])
+        return b
+
+    def posed(self, clip, i):
+        """The proxy mesh dict in frame i of a clip of the armature (the walk): the body skinned, the parts carried with their sockets' bones."""
+        if clip not in ("walk",):
+            raise ValueError(f"clip is one of walk (this body's armature has {MR.FRAMES} frames of it)")
+        V, mats, dz = self.rig.walk(i, self.doc.get("rig"), self.keys)
+        Vs, Fs, pt = [V], [self.Fw], [np.zeros(len(V), int)]
+        off = len(V)
+        for p in self.placed:
+            Vs.append(self._carry_part(p["V0"], p["bone"], mats, dz))
+            Fs.append(p["F"] + off)
+            pt.append(np.full(len(p["V0"]), p["part"]))
+            off += len(p["V0"])
+        return dict(V=np.concatenate(Vs), F=np.concatenate(Fs), part=np.concatenate(pt), names={v: k for k, v in self.parts.items()}), mats, dz
 
     def tris(self, with_parts=True):
         """(n, 3, 3) triangles of the body and, when asked, the placed parts."""
@@ -119,12 +155,28 @@ class MeshBody:
         for pe in self.doc["mesh"].get("parts", []):
             h.update(MS.load_json(pe["part"])["glb"]["sha256"].encode())
         h.update(str(self.ctx["params"]).encode())
+        h.update(str(self.doc.get("rig")).encode())
+        h.update(str(self.doc.get("keys")).encode())
         return h.hexdigest()
+
+
+_BODIES = {}
+
+
+def body_of(doc):
+    """The built body of a file, once per sculpt, rig and key setting (the face stations and the frame ask for it as well as the build)."""
+    import json
+    k = json.dumps([doc["mesh"], doc.get("rig"), doc.get("keys"), doc.get("signature")], sort_keys=True)
+    if k not in _BODIES:
+        if len(_BODIES) > 24:
+            _BODIES.clear()
+        _BODIES[k] = MeshBody(doc)
+    return _BODIES[k]
 
 
 def frame(doc, margin=0.10):
     """The camera framing of a sculpt, as the quadruped's frame is: the centre of the figure's extent and a scale on the house's pixels per H (1 at most) so the whole figure fits across a 304 plate with a margin on each side."""
-    b = MeshBody(doc)
+    b = body_of(doc)
     T = b.tris()
     x_lo, x_hi = float(T[..., 0].min()) - 0.1, float(T[..., 0].max()) + 0.1
     z_hi = float(T[..., 2].max())

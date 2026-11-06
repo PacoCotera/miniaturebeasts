@@ -104,13 +104,190 @@
     "name": "Movement"
    }
   ],
-  "loci": []
+  "loci": [
+   {
+    "locus": "form.head",
+    "label": "Head size",
+    "short": "Head size",
+    "chapter": "shape",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.92,
+     "hi": 1.08,
+     "unit": "×"
+    },
+    "type": 1.0,
+    "range": [
+     0.85,
+     1.15
+    ],
+    "bins": [
+     "small",
+     "between",
+     "big"
+    ],
+    "moves": [
+     {
+      "path": "rig.bones[head].len",
+      "op": "scale"
+     },
+     {
+      "path": "rig.bones[head].girth",
+      "op": "scale"
+     }
+    ]
+   },
+   {
+    "locus": "form.torso-girth",
+    "label": "Torso girth",
+    "short": "Torso girth",
+    "chapter": "shape",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.92,
+     "hi": 1.08,
+     "unit": "×"
+    },
+    "type": 1.0,
+    "range": [
+     0.85,
+     1.15
+    ],
+    "bins": [
+     "slim",
+     "between",
+     "round"
+    ],
+    "moves": [
+     {
+      "path": "keys[key.form.torso-girth].amount",
+      "op": "add"
+     }
+    ]
+   },
+   {
+    "locus": "form.torso-length",
+    "label": "Torso length",
+    "short": "Torso length",
+    "chapter": "shape",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.9,
+     "hi": 1.1,
+     "unit": "×"
+    },
+    "type": 1.0,
+    "range": [
+     0.85,
+     1.15
+    ],
+    "bins": [
+     "short",
+     "between",
+     "long"
+    ],
+    "moves": [
+     {
+      "path": "rig.bones[rear].len",
+      "op": "scale"
+     },
+     {
+      "path": "rig.bones[front].len",
+      "op": "scale"
+     }
+    ]
+   },
+   {
+    "locus": "form.leg-length",
+    "label": "Leg length",
+    "short": "Leg length",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.9,
+     "hi": 1.1,
+     "unit": "×"
+    },
+    "type": 1.0,
+    "range": [
+     0.85,
+     1.15
+    ],
+    "bins": [
+     "short",
+     "between",
+     "long"
+    ],
+    "moves": [
+     {
+      "path": "rig.bones[*.upper.*].len",
+      "op": "scale"
+     },
+     {
+      "path": "rig.bones[*.lower.*].len",
+      "op": "scale"
+     }
+    ]
+   },
+   {
+    "locus": "form.leg-girth",
+    "label": "Leg girth",
+    "short": "Leg girth",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.9,
+     "hi": 1.1,
+     "unit": "×"
+    },
+    "type": 1.0,
+    "range": [
+     0.85,
+     1.15
+    ],
+    "bins": [
+     "slim",
+     "between",
+     "sturdy"
+    ],
+    "moves": [
+     {
+      "path": "rig.bones[*.upper.*].girth",
+      "op": "scale"
+     },
+     {
+      "path": "rig.bones[*.lower.*].girth",
+      "op": "scale"
+     }
+    ]
+   }
+  ]
  },
  "motion": {},
  "legacy": {},
  "mesh": {
   "source": "meshes/S01/S01-m2.json",
-  "sha256": "d7e0623330eb8966fb2020f86b6126417ab68ac7a3da306c7271a7affa02be63",
+  "sha256": "e71c0d8a29318b7eaaabf067bae9e37cced26314176327c63526a06bc89b86b7",
   "parts": [
    {
     "part": "parts/P0001/P0001-p2.json",
@@ -119,5 +296,95 @@
     "mirror": false
    }
   ]
- }
+ },
+ "rig": {
+  "bones": [
+   {
+    "id": "rear",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "front",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "head",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "hind.upper.L",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "hind.lower.L",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "hind.paw.L",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "hind.upper.R",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "hind.lower.R",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "hind.paw.R",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "fore.upper.L",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "fore.lower.L",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "fore.paw.L",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "fore.upper.R",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "fore.lower.R",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "fore.paw.R",
+    "len": 1.0,
+    "girth": 1.0
+   },
+   {
+    "id": "socket.crest",
+    "len": 1.0,
+    "girth": 1.0
+   }
+  ]
+ },
+ "keys": [
+  {
+   "id": "key.form.torso-girth",
+   "amount": 0.0
+  }
+ ]
 }

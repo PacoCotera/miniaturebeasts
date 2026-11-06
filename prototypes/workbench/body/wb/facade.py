@@ -334,18 +334,56 @@ def build(spec, genome="type", stage="base"):
                   parts={k: int(v) for k, v in body.parts.items()}, balance=H._norm(body.ctx.get("balance", {})))
 
 
+def mesh_individual(doc, genome):
+    """The file of a mesh body with a genome's values applied (genomeapply moves on rig.bones and keys): `type`; `low:<locus>` and `high:<locus>` (the band's ends); `value:<locus>=<v>` (a value, also past the band: the range's ends);
+    `seed:N` and `seed:N@S` (the Variety sheet's individual N, wb/variety.mesh_draw); `set:<locus>=<v>;<locus>=<v>`. Returns (file, {locus: value})."""
+    import genomeapply as GA
+    if isinstance(genome, dict):
+        values = dict(genome)
+    elif genome in (None, "type"):
+        return doc, {}
+    else:
+        by = {e["locus"]: e for e in (doc.get("genome") or {}).get("loci", [])}
+        kind, _, arg = genome.partition(":")
+        try:
+            if kind in ("low", "high"):
+                b = by[arg]["band"]
+                values = {arg: b["lo" if kind == "low" else "hi"]}
+            elif kind == "value":
+                name, _, v = arg.partition("=")
+                values = {name: float(v)}
+            elif kind == "set":
+                values = {k.partition("=")[0]: float(k.partition("=")[2]) for k in arg.split(";") if k}
+            elif kind == "seed":
+                from wb import variety as VY
+                n, _, sd = arg.partition("@")
+                values = VY.mesh_draw(doc, int(n), int(sd) if sd else VY.settings(doc)["seed"])
+            else:
+                raise KeyError(kind)
+        except (KeyError, ValueError):
+            raise BuildError(f"genome '{genome}': a mesh body builds `type`, `low:<locus>`, `high:<locus>`, `value:<locus>=<v>`, `set:<locus>=<v>;...` and `seed:N` (loci: {', '.join(sorted(by))})", "genome")
+    by = {e["locus"]: e for e in (doc.get("genome") or {}).get("loci", [])}
+    unknown = [k for k in values if k not in by]
+    if unknown:
+        raise BuildError(f"genome: no locus '{unknown[0]}' in the file (loci: {', '.join(sorted(by))})", "genome")
+    d = copy.deepcopy(doc)
+    for k, v in values.items():
+        GA.apply_locus(d, by[k], v)
+    return d, values
+
+
 def build_mesh(doc, genome="type", stage="base"):
-    """The body of a mesh file: its sculpt and the library parts at their sockets (meshbody.py). Its genes come with a later chunk, so only the type builds."""
+    """The body of a mesh file: its sculpt and the library parts at their sockets (meshbody.py), with the genome's moves applied to the file's rig and keys first."""
     import meshbody as MB
-    quad_check_genome(genome)
     t0 = time.perf_counter()
+    doc, values = mesh_individual(doc, genome)
     try:
-        body = MB.MeshBody(doc)
+        body = MB.body_of(doc) if not values else MB.MeshBody(doc)
     except (KeyError, ValueError, OSError, AssertionError, IndexError) as e:
         raise BuildError(f"{type(e).__name__}: {e}", "mesh")
     T = dict(mesh=(time.perf_counter() - t0) * 1000, total=(time.perf_counter() - t0) * 1000)
     V = body.Vw
-    return Result(species=doc.get("id"), stage=stage, body=body, c={}, ind={}, genome_hash=H.hash_of("type"), key=H.hash_of("mesh", H.framework_id(), body.digest(), stage), cage_hash=body.digest(), vertices=len(V), faces=len(body.Fw),
+    return Result(species=doc.get("id"), stage=stage, body=body, c={}, ind=values, genome_hash=H.hash_of("type", sorted(values.items())), key=H.hash_of("mesh", H.framework_id(), body.digest(), stage), cage_hash=body.digest(), vertices=len(V), faces=len(body.Fw),
                   timings_ms={k: round(v, 1) for k, v in T.items()}, calls={}, parts={k: int(v) for k, v in body.parts.items()}, balance=H._norm(body.ctx.get("balance", {})))
 
 

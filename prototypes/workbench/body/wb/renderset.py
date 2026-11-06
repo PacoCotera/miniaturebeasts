@@ -151,7 +151,7 @@ class QuadSubject:
 
 
 class MeshSubject(QuadSubject):
-    """One mesh file built: the sculpt and its parts at their sockets (meshbody.py), drawn as the quadruped is. It stands at rest: its clips come with the rig chunk, so every pose is the rest pose."""
+    """One mesh file built: the sculpt and its parts at their sockets (meshbody.py), drawn as the quadruped is. It stands at rest or plays the walk of its armature (meshrig.py); every other clip is the rest pose."""
     quad = True
     plan = "quadruped"
     mesh_body = True
@@ -169,7 +169,11 @@ class MeshSubject(QuadSubject):
     def posed(self, clip=None, i=0):
         key = (clip, i)
         if key not in self._frames:
-            self._frames[key] = dict(self.mesh, frame=self.frame)
+            if clip == "walk":
+                M, _, _ = self.b.posed("walk", i)
+                self._frames[key] = dict(M, frame=self.frame)
+            else:
+                self._frames[key] = dict(self.mesh, frame=self.frame)
         return self._frames[key]
 
 

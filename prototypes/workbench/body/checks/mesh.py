@@ -241,7 +241,7 @@ def read_scores(doc, body=None, sizes=SIZES):
 def c_read(ctx):
     d = _cache(ctx)
     if "scores" not in d:
-        d["scores"] = read_scores(_doc(ctx))
+        d["scores"] = read_scores({k: v for k, v in _doc(ctx).items() if k not in ("rig", "keys")})              # the stand is the type: an individual's proportions are its genome's, not the sculpt's
     sc = d["scores"]
     if not sc:
         return row("pass", None, READ_MIN, "No stand files named in the sidecar: nothing to match against")

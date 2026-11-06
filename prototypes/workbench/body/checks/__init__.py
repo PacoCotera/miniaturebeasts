@@ -24,7 +24,9 @@ QUAD_CHECKS = ("schema", "express", "ranges", "joins", "head.attach", "head.neck
 
 
 MESH_CHECKS = ("mesh.watertight", "mesh.budget", "mesh.parts", "mesh.relief", "mesh.flat", "mesh.size", "mesh.stamp", "mesh.read")          # a mesh file's own: the sculpt's files judged before the studio builds from them
-MESH_FILE_CHECKS = ("schema",) + MESH_CHECKS + FACE_CHECKS          # what judges a file whose body is a sculpt (no cage, no spine, no limbs to measure)
+MESH_BODY_CHECKS = ("body.mass", "body.band15", "body.twist", "body.twist.clip", "balance", "rig.splay")          # the body checks that read a sculpt's armature (chunk 31): the head and leg shares, the proportion bands, the twist at rest and in the walk, balance over the soles, and the feet under the hips
+MESH_FILE_CHECKS = ("schema",) + MESH_CHECKS + FACE_CHECKS + MESH_BODY_CHECKS          # what judges a file whose body is a sculpt (no cage, no spine, no limbs to measure)
+MESH_ONLY = ("rig.splay",)                                                                  # a check no other plan is asked
 
 
 def check(**kw):
@@ -65,11 +67,11 @@ def run(stage, ctx, only=None):
     for c in REGISTRY:
         if c.stage != stage or (only and c.id not in only):
             continue
-        if c.id in MESH_CHECKS and not sculpt:
+        if (c.id in MESH_CHECKS or c.id in MESH_ONLY) and not sculpt:
             continue                                              # the mesh checks judge a mesh file only
         if sculpt and c.id not in MESH_FILE_CHECKS:
             continue
-        if (c.id in FACE_CHECKS or c.id in BODY_CHECKS) and not lang:
+        if (c.id in FACE_CHECKS or c.id in BODY_CHECKS or c.id in MESH_ONLY) and not lang:
             continue
         if quad and not sculpt and c.id not in QUAD_CHECKS:
             continue                                                  # the biped's measures read the biped's body; the quadruped's own come with its checks

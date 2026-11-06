@@ -182,6 +182,12 @@ def _schema_2():
             part=text("Part", "The part's sidecar, relative to species_v1 (parts/P0001/P0001-p1.json).", stage="shape", pattern=None), sha256=text("Part sha256", "The sha256 of the part's GLB.", stage="shape", pattern=None),
             socket=text("Socket", "The sculpt's socket the part sits on.", stage="shape", pattern=None), mirror=dict(type="enum", values=[True, False], label="Mirror", help="Whether the part is placed as a mirrored pair.", stage="shape")),
             required=["part", "sha256", "socket"])), stage="shape", required=["source", "sha256"])
+    s["rig"] = obj("Rig", "A mesh body's armature at rest: each bone's scale along its length and across it. Loci move these (rig.bones[chest].len). A child bone keeps its own size, so feet stay round.", dict(
+        bones=dict(type="list", label="Bones", help="The sculpt's bones, by the family's names.", stage="shape", id_key="id", item=dict(
+            id=text("Bone", "The bone's name in the family's armature.", stage="shape", pattern=None), len=num("Length", "The bone's scale along its length.", rng=None, unit="×"),
+            girth=num("Girth", "The bone's scale across its length.", rng=None, unit="×")), required=["id"])), stage="shape", required=["bones"])
+    s["keys"] = dict(type="list", label="Shape keys", help="The scripted shape keys of a mesh body (a normal offset masked by bone weights): each key's amount, 0 at the type. A locus moves it (keys[key.form.torso-girth].amount).", stage="shape", id_key="id", item=dict(
+        id=text("Key", "The key's id (key.<locus>).", stage="shape", pattern=None), amount=num("Amount", "How far the key is set: 0 is the sculpt, 1 the key's full reach.", rng=None, unit="")), required=["id"])
     return s
 
 

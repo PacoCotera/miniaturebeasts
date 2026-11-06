@@ -221,16 +221,18 @@ def quad_stations(doc, surf, g=None):
 def _mesh_stations(doc, surf, g):
     import facedecal as FD
     import meshsource as MS
+    import meshbody as MB
     m = MS.Mesh(doc["mesh"]["source"])
     st = m.stations()
+    body = MB.body_of(doc)                                                         # the stations are the sculpt's: they go where the file's bone scales and keys take the skin under them
     out = []
     for e in st["eyes"]:
-        hit = FD.place(surf, np.array(e["point"], float), np.array(e["normal"], float))
+        hit = FD.place(surf, body.carry(e["point"])[0], np.array(e["normal"], float))
         if hit is not None:
             out.append(FD.station("eye", hit[0], hit[1], float(e["radius"]) * float(g.get("eye_size", 1.0)), e["id"]))
     mo = st.get("mouth")
     if mo:
-        hit = FD.place(surf, np.array(mo["point"], float), np.array(mo["normal"], float))
+        hit = FD.place(surf, body.carry(mo["point"])[0], np.array(mo["normal"], float))
         if hit is not None:
             out.append(FD.station("mouth", hit[0], hit[1], float(mo["width"]) * float(g.get("mouth_width", 1.0)), "mouth"))
     return out
