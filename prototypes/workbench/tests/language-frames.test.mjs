@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { LOCI, CATALOGUE, LANGUAGE_FRAME, alleleIds, catalogueHeader, lookConflicts } from "../framework/catalogue.mjs";
+import { LOCI, CATALOGUE, LANGUAGE_FRAME, alleleIds, catalogueHeader, digestAt, lookConflicts } from "../framework/catalogue.mjs";
 import { LANGUAGE, kindOf, exceptionsFor, isExcepted, landOf, hexToOklch } from "../framework/language.mjs";
 import { refuseOpen, SCHEMA_LANGUAGE } from "../framework/species.mjs";
 import {
@@ -28,7 +28,7 @@ test("the generator writes the four anchors as language frames: schema /4, catal
     assert.equal(f.schema, SCHEMA_LANGUAGE); assert.equal(f.frameVersion, LANGUAGE_FRAME);
     assert.equal(f.family, k.family); assert.equal(f.land, k.land);
     assert.equal(f.plan.eyes, 2); assert.ok(!f.loci.some((l) => l.id === "anatomy.eye-count"), "the eye count is a plan switch, never a row");
-    assert.deepEqual(f.catalogue, catalogueHeader(8)); assert.equal(f.catalogue.version, 13); assert.equal(f.catalogue.digest, CATALOGUE.digest);
+    assert.deepEqual(f.catalogue, catalogueHeader(8)); assert.equal(f.catalogue.version, 13); assert.equal(f.catalogue.digest, digestAt(8));
     assert.deepEqual(f.signature.part, { type: k.signature.type, socket: k.signature.socket, accent: k.signature.accent });
     assert.equal(f.viability.constructed, f.viability.sampled); assert.equal(f.viability.crossedBuilt, f.viability.crossed);
   }

@@ -20,8 +20,8 @@ const build = (s) => buildFrame(s, { samples: 12 });
 const refusal = (s) => { try { build(s); return null; } catch (e) { return e.message; } };
 
 test("catalogue 13 is the language pin: six new trunk records, each from frame 8", () => {
-  assert.equal(CATALOGUE.version, 13);
-  assert.equal(CATALOGUE.schema, "mb-catalogue/13");
+  assert.equal(CATALOGUE.version, 14);
+  assert.equal(CATALOGUE.schema, "mb-catalogue/14");
   assert.equal(LANGUAGE_FRAME, 8);
   const fresh = CATALOGUE.loci.filter((l) => l.sinceFrame);
   assert.deepEqual(fresh.filter((l) => l.sinceFrame === 8).map((l) => l.id), ["anatomy.eye-count", "appearance.iris-colour", "appearance.attitude", "signature.size", "signature.count", "signature.curl"]);
@@ -29,7 +29,7 @@ test("catalogue 13 is the language pin: six new trunk records, each from frame 8
   assert.equal(pinOfFrame(7), 12, "a frame older than 8 keeps pin 12");
   assert.equal(pinOfFrame(8), 13);
   assert.deepEqual(catalogueHeader(7), { id: CATALOGUE.id, version: 12, digest: digestAt(7), parent: CATALOGUE.parent }, "frames of 7 or older: pin 12 and its digest");
-  assert.deepEqual(catalogueHeader(8), { id: CATALOGUE.id, version: 13, digest: CATALOGUE.digest, parent: CATALOGUE.parent }, "frames of 8 and later: pin 13 and the full digest");
+  assert.deepEqual(catalogueHeader(8), { id: CATALOGUE.id, version: 13, digest: digestAt(8), parent: CATALOGUE.parent }, "frames of 8 and later: pin 13 and the digest of what frame 8 sees");
   assert.equal(digestAt(7), "98419b59dd1a826d66bbd1b0c17988dec64c51fcc2076e2b18bd72eb987d876c", "pin 12's content is unchanged by pin 13");
   assert.equal(digestAt(6), "2ca450b04bfbcb4ca434b8e14195f111e9f381a27ea7c6c207cb06884f5ec42b");
   assert.notEqual(CATALOGUE.digest, digestAt(7));
@@ -144,7 +144,7 @@ test("a frame of version 8 is schema /4 with family, land and the signature part
   assert.equal(f.land, "marsh");
   assert.deepEqual(f.signature.part, { type: "one coil on the crown", socket: "head-top", accent: "land" });
   assert.equal(f.catalogue.version, 13);
-  assert.equal(f.catalogue.digest, CATALOGUE.digest);
+  assert.equal(f.catalogue.digest, digestAt(8));
   const ids = ["appearance.iris-colour", "appearance.attitude", "signature.size", "signature.count", "signature.curl"];
   for (const id of ids) assert.equal(f.loci.find((l) => l.id === id)?.kind, "locked", `${id}: carried, locked; the generator (chunk 5) opens them`);
   assert.equal(f.viability.constructed, f.viability.sampled);

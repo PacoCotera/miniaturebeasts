@@ -39,9 +39,9 @@ class TestBlock(unittest.TestCase):
         order = [c["id"] for c in g["chapters"]]
         self.assertEqual([e["chapter"] for e in g["loci"]], sorted((e["chapter"] for e in g["loci"]), key=order.index))
 
-    def test_the_block_validates_against_pin_13_and_has_no_own(self):
+    def test_the_block_validates_against_pin_14_and_has_no_own(self):
         g = DOC["genome"]
-        self.assertEqual(GA.pin()["version"], 13)
+        self.assertEqual(GA.pin()["version"], 14)
         self.assertEqual(GA.validate(DOC), [])
         self.assertTrue(all(GA.pin_locus(e["locus"]) is not None for e in g["loci"]))               # every locus is a record of the pin
         self.assertFalse(any(e.get("scope") == "own" or "pin_note" in e or "anchor" in e for e in g["loci"]))

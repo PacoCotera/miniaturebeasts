@@ -44,8 +44,8 @@ const C20 = A3.filter((r) => r[2] === "C20").map((r) => r[1]);
 const NEW = A3.filter((r) => r[2] === "new" || r[2] === "C20").map((r) => r[1]);
 
 test("pin 12 (pin 11 and the Peplos genome), as pin 13 still sees it at frame 7: 227 records, and a content digest that is the SHA-256 of what a genome rests on", () => {
-  assert.equal(CATALOGUE.version, 13); assert.equal(CATALOGUE.schema, "mb-catalogue/13");   // the language pin (tests/pin13.test.mjs) adds records and alleles that start at frame 8
-  assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 7)).length, 179 + 48); assert.equal(CATALOGUE.loci.length, 179 + 48 + 6); assert.equal(VALIDATED.length, 173 + 48 + 6);
+  assert.equal(CATALOGUE.version, 14); assert.equal(CATALOGUE.schema, "mb-catalogue/14");   // the language pin (tests/pin13.test.mjs) adds records and alleles that start at frame 8
+  assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 7)).length, 179 + 48); assert.equal(CATALOGUE.loci.length, 179 + 48 + 7); assert.equal(VALIDATED.length, 173 + 48 + 7);
   assert.match(CATALOGUE.digest, /^[0-9a-f]{64}$/);
   assert.equal(CATALOGUE.digest, digestAt(Infinity)); assert.notEqual(CATALOGUE.digest, digestAt(7), "pin 13 is another content");
   assert.equal(digestAt(7), "98419b59dd1a826d66bbd1b0c17988dec64c51fcc2076e2b18bd72eb987d876c", "pin 12 names this content (pin 11, 2666ebb3e6be79739a49f45aa840a876e87737e27361c01e1be5722d0cd8ada4, was its genome-string content before the Peplos records, and is named only by the S20 body frame): a change to a record, an allele, a pair map or a scope is a new pin");

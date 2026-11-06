@@ -1,4 +1,4 @@
-// The genome framework's catalogue, version 13 (the language pin: iris colour, attitude, the signature's size, count and curl, an eye count that is a plan switch, four more marking layouts at indices 6 to 9, and the records the language retires; every one of them starts at frame 8, so a frame of version 7 or older builds exactly as at pin 12, byte for byte). Version 12 was pin 11's genome-string records, then the Peplos genome: curl antennae, a locked dew tongue; pin 11 stays the content the S20 body frame names): the v1 authoring catalogue6 (114 validated pairs
+// The genome framework's catalogue, version 14 (catalogue 13 plus one record, form.torso-length, body length, which starts at frame 9, so a frame of version 8 or older builds exactly as it did, byte for byte). Version 13 was the language pin: iris colour, attitude, the signature's size, count and curl, an eye count that is a plan switch, four more marking layouts at indices 6 to 9, and the records the language retires; every one of them starts at frame 8, so a frame of version 7 or older builds exactly as at pin 12, byte for byte). Version 12 was pin 11's genome-string records, then the Peplos genome: curl antennae, a locked dew tongue; pin 11 stays the content the S20 body frame names): the v1 authoring catalogue6 (114 validated pairs
 // and six drafts, snapshotted with provenance in catalogue6-data.mjs) plus the records the
 // taxonomy proposal lists as missing for the V1 roster (design/proposals/taxonomy.md §3, "What the
 // catalogue needs": 11 switches · 25 loci + 6 alleles) and the three gaps the species frames list
@@ -131,6 +131,7 @@ const NEW_LOCI_11 = [
 ];
 
 const F6 = { sinceFrame: 6, provenance: { catalogue: "mb-genome-framework@10 (frame version 6)", proposal: "design/proposals/genome-fluffy.md" } };
+const F9 = { sinceFrame: 9, provenance: { catalogue: "mb-genome-framework@14 (frame version 9, body length)", proposal: "the mesh body path, what the genome needs" } };
 const F8 = { sinceFrame: 8, provenance: { catalogue: "mb-genome-framework@13 (frame version 8, the language)", proposal: "the language codification, the language design sections 3 and 4" } };
 const NEW_LOCI = [
   // Mammal look (S04–S08, S10; trunk): fur on tail and ears, a face mask, tail rings, ear tilt. 2 · 4.
@@ -218,6 +219,8 @@ const NEW_LOCI = [
   { id: "signature.size", ...F8, family: "structure", label: "Signature size", scope: "trunk", owner: null, consumer: "rig: the signature part's height over standing height (a fifth to a third; a kind's band is the type +-15%, clamped to 0.20-0.33)", ...mean({ low: 0.2 }, { high: 0.33 }) },
   { id: "signature.count", ...F8, family: "structure", label: "Signature count", scope: "trunk", owner: null, consumer: "rig: how many of the signature part there are (whole numbers; a child of two parents rounds up)", ...pairMap(Object.fromEntries(Array.from({ length: SIGNATURE_COUNT_MAX }, (_, i) => [String(i + 1), i + 1])), wholeMean(SIGNATURE_COUNT_MAX)) },
   { id: "signature.curl", ...F8, family: "structure", label: "Signature curl", scope: "trunk", owner: null, consumer: "rig: turns of bend in one plane, never a twist", ...mean({ straight: 0 }, { coiled: 1.75 }) },
+  // Catalogue 14: body length (the mesh body path). A trunk position like its girth sibling; starts at frame 9, so only a frame made after the language frames can open it. OWED to the copywriter: the three words.
+  { id: "form.torso-length", ...F9, family: "structure", label: "Body length", scope: "trunk", owner: null, consumer: "engine: the torso's length along the spine (on a sculpted body, the chest bone's length); a kind's band is its type +-15%", ...position("short", "between", "long") },
 ];
 
 // Alleles added to v1 records (taxonomy §3: "+ 6 alleles"). A changed record is a new record
@@ -331,7 +334,7 @@ function newLocus(l) {
 export const CATALOGUE = {
   // Pin 8: 7 plus the tiny head alleles (a changed range is a new pin; frames and genomes carry the pin
   // they were built against, and a saved mibi keeps its own). Pin 12 names one content: `digest`, below.
-  id: "mb-genome-framework", version: 13, schema: "mb-catalogue/13",
+  id: "mb-genome-framework", version: 14, schema: "mb-catalogue/14",
   parent: { id: CATALOGUE6.id, version: CATALOGUE6.version, foundationDigest: CATALOGUE6.foundationDigest, source: CATALOGUE6.source },
   families: CATALOGUE6.families,
   loci: [...CATALOGUE6.loci.map(v1Locus), ...NEW_LOCI.map(newLocus)],
@@ -382,8 +385,10 @@ CATALOGUE.digest = digestAt(Infinity);
 // Catalogue 13 is the language's: a frame of version 8 or later names it. A frame of version 7 or older keeps naming pin 12 (its bytes do not move: pin 13 adds only records and alleles
 // that start at frame 8, so digestAt(7) is pin 12's digest).
 export const LANGUAGE_FRAME = 8;
-export const PIN = 13, PIN_BEFORE_LANGUAGE = 12;
-export const pinOfFrame = (frameVersion) => (frameVersion >= LANGUAGE_FRAME ? PIN : PIN_BEFORE_LANGUAGE);
+// Catalogue 14 adds one record that starts at frame 9: a frame of version 8 keeps naming pin 13 and its digest (digestAt(8) is pin 13's digest), a frame of version 7 or older pin 12.
+export const BODY_LENGTH_FRAME = 9;
+export const PIN = 14, PIN_BEFORE_BODY_LENGTH = 13, PIN_BEFORE_LANGUAGE = 12;
+export const pinOfFrame = (frameVersion) => (frameVersion >= BODY_LENGTH_FRAME ? PIN : frameVersion >= LANGUAGE_FRAME ? PIN_BEFORE_BODY_LENGTH : PIN_BEFORE_LANGUAGE);
 export const catalogueHeader = (frameVersion) => ({ id: CATALOGUE.id, version: pinOfFrame(frameVersion), digest: digestAt(frameVersion), parent: CATALOGUE.parent });
 export const VALIDATED = CATALOGUE.loci.filter((l) => l.status === "validated");
 export const DRAFTS = CATALOGUE.loci.filter((l) => l.status !== "validated").map((l) => l.id);

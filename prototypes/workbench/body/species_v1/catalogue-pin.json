@@ -1,8 +1,8 @@
 {
  "id": "mb-genome-framework",
- "version": 13,
- "schema": "mb-catalogue/13",
- "digest": "8d405a729aeb9973c026c9823b316405d91c6c01402b51870f471b9a1c551fd5",
+ "version": 14,
+ "schema": "mb-catalogue/14",
+ "digest": "ae6bf810ca4edc08722a48a7ab56681ec508efbe462283f1a630a941a5b6ee6e",
  "lookPairs": [
   [
    "Ear shape",
@@ -6354,6 +6354,35 @@
     {
      "id": "coiled",
      "value": 1.75
+    }
+   ]
+  },
+  {
+   "id": "form.torso-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Body length",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "long",
+     "value": 1
     }
    ]
   }
