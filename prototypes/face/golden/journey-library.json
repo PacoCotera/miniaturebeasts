@@ -378,12 +378,28 @@
     "back": "Home"
    },
    {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S03"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
+    "subject": "New looks",
+    "back": "Home"
+   },
+   {
     "key": "confirm",
     "said": [
      {
       "t": "intent",
       "screen": "library",
-      "target": "cell.S01",
+      "target": "cell.S03",
       "verb": "confirm"
      }
     ],
@@ -391,7 +407,7 @@
     "state": "sheet",
     "focus": "chapter.coat",
     "ok": "Show Coat",
-    "subject": "Coat, more to find",
+    "subject": "Coat, all found",
     "back": "Library"
    },
    {
@@ -406,14 +422,20 @@
     ],
     "screen": "library",
     "state": "all",
-    "focus": "cell.S01",
-    "ok": "Open Loika",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
     "subject": "New looks",
     "back": "Home"
    },
    {
     "key": "left",
-    "said": [],
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S01"
+     }
+    ],
     "screen": "library",
     "state": "all",
     "focus": "cell.S01",
@@ -518,7 +540,7 @@
     "state": "all",
     "focus": "cell.S04",
     "ok": "Open Hiljan",
-    "subject": "New looks",
+    "subject": "",
     "back": "Home"
    },
    {
@@ -552,7 +574,7 @@
     "state": "all",
     "focus": "cell.S01",
     "ok": "Open Loika",
-    "subject": "New looks",
+    "subject": "",
     "back": "Home"
    },
    {

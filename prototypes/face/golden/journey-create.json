@@ -23,6 +23,26 @@
     "subject": "Four chapters unread"
    },
    {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 1,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "Four chapters unread"
+   },
+   {
     "key": "down",
     "said": [
      {
@@ -34,12 +54,14 @@
     ],
     "screen": "create",
     "create": {
-     "f": 0,
-     "choices": [],
+     "f": 1,
+     "choices": [
+      "body-value"
+     ],
      "grown": false
     },
     "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
     "subject": "Four chapters unread"
    },
    {
@@ -79,6 +101,26 @@
     "subject": "Four chapters unread"
    },
    {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 1,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "Four chapters unread"
+   },
+   {
     "key": "down",
     "said": [
      {
@@ -90,12 +132,14 @@
     ],
     "screen": "create",
     "create": {
-     "f": 0,
-     "choices": [],
+     "f": 1,
+     "choices": [
+      "body-value"
+     ],
      "grown": false
     },
     "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
     "subject": "Four chapters unread"
    }
   ],
@@ -115,7 +159,7 @@
     "ring": "card.incubate",
     "ok": "Incubate",
     "e": 29,
-    "d": 18,
+    "d": 19,
     "s": 41
    },
    {
@@ -130,8 +174,10 @@
     ],
     "screen": "create",
     "create": {
-     "f": 0,
-     "choices": [],
+     "f": 1,
+     "choices": [
+      "body-value"
+     ],
      "grown": true
     },
     "ok": null,
