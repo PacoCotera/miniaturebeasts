@@ -2041,11 +2041,11 @@
    ],
    "band": {
     "form": "lin",
-    "lo": 0.122,
-    "hi": 0.165,
+    "lo": 0.162,
+    "hi": 0.218,
     "unit": "head width"
    },
-   "type": 0.143
+   "type": 0.19
   },
   {
    "id": "form.eye-height",

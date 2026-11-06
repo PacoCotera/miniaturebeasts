@@ -1925,8 +1925,8 @@
           "curious"
         ],
         "attitudeDefault": "content",
-        "size": 0.18,
-        "sizeFromStand": false,
+        "size": 0.16,
+        "sizeFromStand": true,
         "paleRim": false
       },
       "anchor": true

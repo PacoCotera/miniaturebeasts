@@ -257,7 +257,7 @@ test("a body whose part does not touch its owner is reported against the contrac
 
 test("proportions by kind: the species' measures sit in its genome", async () => {
   const { KINDS, proportionPairs, nearestPair } = await import("../framework/proportions.mjs");
-  assert.equal(Object.keys(KINDS).length, 19);
+  assert.equal(Object.keys(KINDS).length, 20);   // S20 Tuliko joined in release 21a
   assert.deepEqual(nearestPair("growth.support-drop-ratio", 0.8), ["long", "short"], "a value between alleles is a mixed pair");
   assert.deepEqual(nearestPair("growth.support-drop-ratio", 1.05), ["medium", "medium"]);
   const cat = frameOf("S04"), catPairs = proportionPairs("S04");

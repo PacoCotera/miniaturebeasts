@@ -17,8 +17,8 @@ const frames = Object.fromEntries(LANGUAGE_KINDS.map((id) => [id, read("frames/l
 const open = (f) => f.loci.filter((l) => l.kind !== "locked");
 const tot = (m) => Object.values(m).reduce((a, b) => a + b, 0);
 
-test("nineteen frames, schema /4 on catalogue 13: family, land, eye count and signature part come from the registry", () => {
-  assert.equal(LANGUAGE_KINDS.length, 19);
+test("twenty frames, schema /4 on catalogue 13: family, land, eye count and signature part come from the registry", () => {
+  assert.equal(LANGUAGE_KINDS.length, 20);
   for (const id of LANGUAGE_KINDS) {
     const f = frames[id], k = kindOf(LANGUAGE, id);
     assert.equal(f.schema, SCHEMA_LANGUAGE, id); assert.equal(f.frameVersion, LANGUAGE_FRAME, id);
@@ -31,7 +31,7 @@ test("nineteen frames, schema /4 on catalogue 13: family, land, eye count and si
     assert.deepEqual(f.signature.part, { type: k.signature.type, socket: k.signature.socket, accent: k.signature.accent }, id);
     assert.equal(f.viability.constructed, f.viability.sampled, id); assert.equal(f.viability.crossedBuilt, f.viability.crossed, id);
   }
-  assert.deepEqual(LANGUAGE_KINDS.filter((id) => frames[id].species.parked), ["S05", "S06", "S07"], "the parked frames stay parked");
+  assert.deepEqual(LANGUAGE_KINDS.filter((id) => frames[id].species.parked || frames[id].species.draft), [], "no frame of version 8 is parked or draft (release 21a: the art exists for all twenty)");
 });
 
 test("a retired record is open nowhere, and a retired part is on only where a signed record covers it", () => {
@@ -71,7 +71,7 @@ test("every frame opens colour, the layouts, iris, attitude and the shape bands 
 
 test("the language is silent on movement, stamina and character, so each kind keeps the traits of those chapters its older frame had", () => {
   let kept = 0;
-  for (const id of LANGUAGE_KINDS.filter((x) => !["S01", "S17", "S18", "S19"].includes(x))) {
+  for (const id of LANGUAGE_KINDS.filter((x) => !["S01", "S17", "S18", "S19", "S20"].includes(x))) {   // S20 has no older frame
     const old = read("frames", `species-${id}.json`), nu = frames[id];
     assert.ok(old.frameVersion === undefined || old.frameVersion < 8, `${id}: the older frame file is untouched`);
     const names = (f, chapters) => f.chapters.filter((c) => chapters.includes(c.id)).flatMap((c) => c.traits.map((t) => t.id));

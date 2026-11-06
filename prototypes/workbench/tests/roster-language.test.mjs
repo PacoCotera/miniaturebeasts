@@ -145,3 +145,11 @@ test("the OWED strings are listed, and describe.mjs names no real animal", async
   assert.ok(!src.includes("resembles"), "describe.mjs does not read resembles");
   assert.ok(src.includes('OWED["describe.type-line"]'));
 });
+
+test("roster.read48: Untuva and Oskol (IoU 0.850) are the one signed exception, a record and never a raised limit", async () => {
+  const { read48, READ48_EXCEPTIONS, READ48_LIMIT, isRead48Exception } = await import("../framework/census.mjs");
+  assert.equal(READ48_LIMIT, 0.85, "the limit is not raised");
+  assert.deepEqual(READ48_EXCEPTIONS.map((e) => [e.a, e.b, e.iou, e.signed]), [["S02", "S13", 0.85, "art desk, 2026-11-06"]]);
+  assert.ok(isRead48Exception("S13", "S02") && !isRead48Exception("S02", "S03"));
+  const r = read48(); assert.equal(r.pass, true, r.messages.join("; "));
+});

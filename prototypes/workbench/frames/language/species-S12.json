@@ -1983,11 +1983,11 @@
    ],
    "band": {
     "form": "lin",
-    "lo": 0.122,
-    "hi": 0.165,
+    "lo": 0.12,
+    "hi": 0.138,
     "unit": "head width"
    },
-   "type": 0.143
+   "type": 0.12
   },
   {
    "id": "form.eye-height",
