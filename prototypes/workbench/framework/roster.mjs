@@ -88,26 +88,42 @@ const row = (code, clan, size, tier, kind, moves, habitat, gate, diet, ability, 
 // orientations (the stamp reader tries them all), and none is a copy of another turned or mirrored.
 // The only source of the glyphs: build-frames.mjs copies them into frames/species-*.json (never edit
 // those) and the pod placeholder's source/glyphs.txt is checked against them.
+// Eight kinds were redrawn to name their signature (approved 2026-11-05 23:26): S04, S05, S06, S08, S11, S12, S13 and S15.
+// The other eight stay. S17's glyph is a working draft and S20 Tuliko has none yet: both are with the owner.
+// GLYPHS is the language's set: the frames of version 8 carry it. A printed stamp is read against the glyph of the frame version
+// it was made on (the stamp registry is append-only), so the frames before the language keep the eight old marks in LEGACY_GLYPHS.
 export const GLYPHS = {
   S01: ["..###", ".#..#", "#..#.", "#.#..", "##..."], // Loika: a leaf, the crest's leaf, on the diagonal
   S02: [".###.", "#...#", "#...#", ".....", "#...."], // Untuva: a cap, open beneath, and a shed fleck drifting off to one side
   S03: ["...##", "...##", "..#..", "..#..", "##..."], // Tuikis: a lit tail that curls
-  S04: ["#..#.", ".#..#", "#..#.", ".#..#", "#..#."], // Hiljan: tabby bands
-  S05: ["##...", ".###.", "....#", ".....", "...#."], // Tepor: the bushy tail's sweep and its pale tip
-  S06: ["###..", "#.#..", "#####", "..#.#", "..###"], // Pesko: two linked rings, the ringed tail
+  S04: ["##.##", ".#.#.", ".###.", ".....", "....."], // Hiljan: two horn-knobs on the crown
+  S05: ["#.#..", ".#.#.", "..#.#", "...#.", "....."], // Tepor: the crown flaps swept back, ribbed
+  S06: ["#.#..", "....#", "####.", "....#", "....."], // Pesko: a ridge of tall beads from crown to tail
   S07: ["#####", "#..#.", "#.#..", "##...", "....."], // Azkon: a pit dug down from the ground line, one wall sheer, one sloped
-  S08: ["#....", "#....", "###..", "..#..", "..###"], // Rupar: the steps of a climb, a fret rising by ledges
+  S08: ["..#.#", "..#.#", "#.#.#", "#....", "....."], // Rupar: the fan of tall slats along the back
   S09: [".#...", "#.#..", "..#.#", "...#.", "....#"], // Belatz: a long soar on one line
   S10: [".#...", "#.#.#", "...#.", ".....", "#####"], // Igara: a ripple over the pond floor
-  S11: [".....", "#.#.#", ".#.#.", "#.#.#", "....."], // Kilpo: the plates of a shell
-  S12: [".#.#.", ".....", "#...#", ".....", ".#.#."], // Peplos: six points about an empty centre, the six fine legs
-  S13: [".....", ".###.", "#...#", "#####", "....."], // Oskol: an armour plate, domed over its base
+  S11: ["#....", ".#..#", ".#.#.", "..#..", ".###."], // Kilpo: antennae with weighted tips
+  S12: [".##..", "#..#.", "#.#..", "....#", "...#."], // Peplos: the curled plume rising between the wings
+  S13: ["....#", "...##", "..###", ".####", "....."], // Oskol: the tall soft cone crest, swept
   S14: [".....", ".##..", "#..##", "....#", "....."], // Usvel: the slow line of a trail
-  S15: ["..#..", ".##..", "..#..", "..##.", "..#.."], // Lehten: a stem with alternate leaves
+  S15: ["#.#.#", ".....", ".###.", "#...#", "#####"], // Lehten: three stacked knobs on the shell top
   S16: ["...##", "..#..", ".#.#.", "#...#", "....."], // Blikur: a branching charge
   S17: ["..##.", ".#..#", ".#...", "#.#..", ".#..."], // Wickle: the plume rising from a stem and curling over (working glyph; the art director draws the mark)
   S18: [".....", "..#..", ".###.", "#####", "#.#.#"], // Drapet: a low dome over a fringe
   S19: [".###.", "#...#", "..#.#", "..###", "....."], // Curlop: a spiral, the curled tail (working glyph)
+};
+
+// The marks the eight redrawn kinds had on the frames before the language (versions 4 to 7), frozen: those frames are in the stamp registry and in saved pods.
+export const LEGACY_GLYPHS = {
+  S04: ["#..#.", ".#..#", "#..#.", ".#..#", "#..#."], // Hiljan: tabby bands
+  S05: ["##...", ".###.", "....#", ".....", "...#."], // Tepor: the bushy tail's sweep and its pale tip
+  S06: ["###..", "#.#..", "#####", "..#.#", "..###"], // Pesko: two linked rings, the ringed tail
+  S08: ["#....", "#....", "###..", "..#..", "..###"], // Rupar: the steps of a climb
+  S11: [".....", "#.#.#", ".#.#.", "#.#.#", "....."], // Kilpo: the plates of a shell
+  S12: [".#.#.", ".....", "#...#", ".....", ".#.#."], // Peplos: six points about an empty centre
+  S13: [".....", ".###.", "#...#", "#####", "....."], // Oskol: an armour plate
+  S15: ["..#..", ".##..", "..#..", "..##.", "..#.."], // Lehten: a stem with alternate leaves
 };
 
 // The routine acts a species is watched doing (the-portrait.md §8): the ids a mibi's habits are drawn from, at the bench (a resident in focus for a minute of its routine) and at the dock
@@ -228,7 +244,7 @@ export function specOf(species) {
     typical: { ...proportions, ...(species.typical ?? {}) },
     neverOpen: [...(GLOW_CLANS.has(species.clan) ? [] : ["glow", "glow-length"]), ...(species.neverOpen ?? [])],
     taxonomy: { ...species.taxonomy, resembles: clan.resembles, clanName: CLAN_NAMES[species.clan] ?? null, clanNumber: clan.number, member, speciesNumber: clan.number * 32 + member, size: species.size },
-    glyph: [...GLYPHS[species.id]],
+    glyph: [...(LEGACY_GLYPHS[species.id] ?? GLYPHS[species.id])],   // the mark of the frames before the language; languageSpec sets the language mark
     habits: [...(HABITS[species.id] ?? [])],
   };
 }

@@ -17,7 +17,7 @@
 import { readFileSync } from "node:fs";
 import { CATALOGUE, LOCI, BODY_PIGMENTS, SECOND_PIGMENTS, alleleIds, resolveCopies, LANGUAGE_FRAME, valueRange } from "./catalogue.mjs";
 import { LANGUAGE, kindOf, landOf, exceptionsFor, isExcepted, hexToOklch, BODY_RANGE } from "./language.mjs";
-import { SPECIES, specOf } from "./roster.mjs";
+import { SPECIES, specOf, GLYPHS } from "./roster.mjs";
 import { buildFrame, sampleIndividual, rng } from "./species.mjs";
 import { planFacts } from "./plans.mjs";
 import { carried, isPartSwitch, SWITCH_TARGETS } from "./guards.mjs";
@@ -275,7 +275,7 @@ export function languageSpec(kindId) {
   if (kindId === "S18") share("anatomy.brow-tuft-presence", ["off", "on"], { on: DEFAULT_SHARE, off: 1 - DEFAULT_SHARE });
   const spec = {
     ...base, frameVersion, features, openSwitches, fixed, typical, open, sealed: {}, bands, clamps, weights, draws, shares,
-    reset: base.reset, family: k.family, land: k.land,
+    reset: base.reset, family: k.family, land: k.land, glyph: [...GLYPHS[kindId]],
     signature: { type: sig.type, socket: sig.socket, accent: sig.accent },
     languageNotes: { droppedSwitches: dropped, irisDropped: iris.dropped.map((d) => d.colour), irisWouldDrop: iris.wouldDrop.map((d) => d.colour) },
   };
