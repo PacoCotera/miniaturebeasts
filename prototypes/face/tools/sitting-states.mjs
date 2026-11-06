@@ -11,7 +11,7 @@ import { boneCanvas } from "./portrait-fixture.mjs";
 import { digestOf } from "../../station/src/portrait-source.mjs";
 
 const PICTURED = await digestOf(boneCanvas());   // the bone canvas's digest (habitat-states.mjs)
-const THREE = ["shake-dry", "calm", "sleep-curled"], POND = ["pond"], FOUR = ["pond", "rock", "wood", "cave"];   // the pod's place is the meadow (seedAdults): the places are the meadow, then the walk
+const THREE = ["sniff", "puff", "sleep-curled"], POND = ["pond"], FOUR = ["pond", "rock", "wood", "cave"];   // the pod's place is the meadow (seedAdults): the places are the meadow, then the walk
 // keys: the presses after Habitat's Portrait ✓ ("pose:<habit>" and "place:<place>" move the ring to that card with the pad, then nothing more; "confirm" is ✓)
 const SCENES = {
   pose: { habits: THREE, walked: POND, keys: [], state: "pose", cur: "card.0" },
@@ -21,17 +21,17 @@ const SCENES = {
   place: { habits: THREE, walked: POND, keys: ["confirm", "place:pond"], state: "place", cur: "card.1" },
   "place-night": { light: "night", habits: THREE, walked: POND, keys: ["confirm", "place:pond"], state: "place", cur: "card.1" },
   "place-five": { habits: THREE, walked: FOUR, keys: ["confirm", "place:cave"], state: "place", cur: "card.4" },
-  confirm: { habits: THREE, walked: POND, keys: ["pose:calm", "confirm", "place:pond", "confirm"], state: "confirm", cur: "room", armed: null },
-  "confirm-armed": { habits: THREE, walked: POND, keys: ["pose:calm", "confirm", "place:pond", "confirm", "confirm"], state: "confirm", cur: "room", armed: "room" },
+  confirm: { habits: THREE, walked: POND, keys: ["pose:sniff", "confirm", "place:pond", "confirm"], state: "confirm", cur: "room", armed: null },
+  "confirm-armed": { habits: THREE, walked: POND, keys: ["pose:sniff", "confirm", "place:pond", "confirm", "confirm"], state: "confirm", cur: "room", armed: "room" },
   portrait: { habits: THREE, walked: POND, portrait: true, keys: [], state: "portrait", cur: "room" },
   "portrait-long-name": { name: "WWWWWWWWWW", habits: THREE, walked: POND, portrait: true, keys: [], state: "portrait", cur: "room" },
 };
 // The world: Dot alone in eight bays, docked, its habits seen and its places been; a sitting held (or, portrayed, calm at the pond with the bone canvas held as its picture); Habitat up close with the ring on Portrait, then ✓
 async function enter(page, sc) {
   await page.evaluate(([spec, digest, fx]) => {
-    const w = window.__world; w.reset(); w.rooms(1); if (spec.juvenile) w.young(1); else w.adults(1);
+    const w = window.__world; w.reset(); w.rooms(1); const k0 = window.__st.ST.mibis.length; window.__st.seedAdults("S02", spec.juvenile ? 77 : 5, 1); for (const q of window.__st.ST.mibis.slice(k0)) { if (spec.juvenile) q.born = window.__st.ST.turn; q.paint = { state: "landed" }; }   // an Untuva: the kind with three painted habits (S01 has the sleep curl only)
     const S = window.__st, st = S.ST, m = st.mibis[0]; m.name = spec.name ?? "Dot"; Object.assign(m, { habits: spec.habits.slice(), walked: spec.walked.slice() });
-    if (spec.portrait) { const r = S.portraitSource(digest, eval(`(${fx})`)()); if (!r.ok) throw new Error("portrait fixture: " + r.error); m.portrait = { state: "delivered", pose: "calm", place: "pond", crate: "sit1", start: 0, at: 0, digest }; }
+    if (spec.portrait) { const r = S.portraitSource(digest, eval(`(${fx})`)()); if (!r.ok) throw new Error("portrait fixture: " + r.error); m.portrait = { state: "delivered", pose: "sniff", place: "pond", crate: "sit1", start: 0, at: 0, digest }; }
     else st.sitting = { source: "dev", key: null, at: 0 };
     S.settings.light = spec.light ?? "day"; S.settings.stationTime = "12:00"; S.UI.idle = false; S.UI.lastInput = performance.now(); S.UI.panel = null; S.UI.hab.namer = null; S.UI.meet = null; S.UI.hab.id = m.id; S.goto("habitat"); S.UI.hab.f = "portrait"; w.persist();
     S.intent({ screen: "habitat", target: "portrait", verb: "confirm" });

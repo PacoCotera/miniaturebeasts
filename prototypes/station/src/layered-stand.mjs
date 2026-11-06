@@ -48,9 +48,11 @@ export function layeredStand(species, stage, place, view = "default", pose = "an
 }
 // The pose a habit shows a stage in: { pose, owed }. The pose the species' habits map the habit to, when that pose is cut for the stage; else the anchor, owed "habit key <habit>" (a species with no layered stand
 // is owed too: its picture is the species' stand-in, as before). Pure: the index's data only.
+export const HABIT_POSE = { "sleep-curled": "curl", puff: "puff", sniff: "sniff", dig: "dig", glow: "glow" };
 export function poseFor(species, stage, habit) {
   const pose = INDEX?.stands?.[species]?.habits?.[habit];
-  if (pose && INDEX.stands[species][stageKey(stage)]?.poses?.[pose]) return { pose, owed: null };
+  if (pose && INDEX?.stands?.[species]?.[stageKey(stage)]?.poses?.[pose]) return { pose, owed: null };
+  if (HABIT_POSE[habit]) return { pose: HABIT_POSE[habit], owed: null };   // release 21c: a habit with a painted pose master (the sleep curl on every kind; S02's puff and sniff, S03's dig and glow)
   return { pose: "anchor", owed: `habit key ${habit}` };
 }
 // The base a mibi's coat calls for: a coat the stand has a painted base for (the version 4 colours, recoloured by the signed ramps), else the stand's own base (charcoal, or a coat it has no ramp for)

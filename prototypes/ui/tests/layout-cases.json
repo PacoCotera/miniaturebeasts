@@ -353,7 +353,7 @@
     "pending": [] },
   { "state": "create/create-grow-150", "card": "create-L6-2", "verdict": "fault", "from": "owner card create-L6-2, marked fault: an empty 120 x 61, 0.51 → 0.25",
     "expect": [
-     { "rule": "L7", "part": "b", "container": "stamp.plate", "node": "stamp.plate", "other": "above / below", "mark": "owner", "why": "carried by the stamp plate's L7b: the same fault is reported once" }
+     { "rule": "L1", "container": "stamp.plate", "node": "stampImage", "other": "bottom", "measured": 61, "mark": "owner", "why": "the same empty 61 px of the stamp plate, now reported by its L1 (stampImage bottom 61, 16 asked) since the 21c retake; it was the plate's L7b before, and the fault is still there" }
     ],
     "clear": [],
     "pending": [] },
@@ -367,7 +367,7 @@
     "pending": [] },
   { "state": "create/create-grow-150", "card": "create-L7-9", "verdict": "fault", "from": "owner card create-L7-9, marked fault: the filled area's centroid off the centre: x +0.01, y -0.34, 0.34 → 0.1",
     "expect": [
-     { "rule": "L7", "part": "b", "container": "stamp.plate", "node": "stamp.plate", "other": "above / below", "mark": "owner", "why": "carried by the stamp plate's L7b: the same fault is reported once" }
+     { "rule": "L1", "container": "stamp.plate", "node": "stampImage", "other": "bottom", "measured": 61, "mark": "owner", "why": "the same empty 61 px of the stamp plate, now reported by its L1 (stampImage bottom 61, 16 asked) since the 21c retake; it was the plate's L7b before, and the fault is still there" }
     ],
     "clear": [],
     "pending": [] },
