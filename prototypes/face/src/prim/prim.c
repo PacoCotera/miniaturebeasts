@@ -451,7 +451,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
     if (g_n >= MAX_OBJ) REFUSE();
     i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].opa = 255; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].born = 1; g_o[i].ringed = want_ring; g_o[i].obj = make(&g_o[i], a, nursery());   /* a clip's child too: made on the nursery and moved into its clip at the end of the frame, so its birth invalidates nothing at the clip's origin */
   }
-  node_t *n = &g_o[i]; lv_obj_t *o = n->obj; n->seen = 1; g_seq[g_nseq++] = id; n->layer = g_layer; n->region = g_region; n->run = g_run; n->hold = g_hold;
+  node_t *n = &g_o[i]; lv_obj_t *o = n->obj; { int dup = n->seen; n->seen = 1; if (!dup) g_seq[g_nseq++] = id; } n->layer = g_layer; n->region = g_region; n->run = g_run; n->hold = g_hold;
   if ((kind == FN_SPRITE || kind == FN_NINE) && a >= 0 && a < MAX_ASSET && g_a[a].layer) n->layer = g_a[a].layer;   /* a picture takes its layer from its asset (lvgl-switch.md §2.1); words choose a layer only for rects, text and composed pictures */
   if (kind == FN_SPRITE) { int opa = g_sopa; g_sopa = 255; if (n->fresh || n->opa != opa) { lv_obj_set_style_image_opa(o, (lv_opa_t)opa, 0); n->opa = opa; } }   /* the opacity is the next sprite node's only */
   int px = x - ox, py = y - oy;

@@ -18,7 +18,7 @@ import { injectPortraitSource } from "./portrait-source.mjs";
 import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
 import * as frameIntents from "./intents/frame.mjs";
-import { onFaceMessage } from "./host.mjs";
+import { onFaceMessage, frameIds as frameMarkIds, picture } from "./host.mjs";
 import { listOf } from "./views/pods-props.mjs";
 import { warmLibraryNext, libraryWaiting } from "./pictures.mjs";
 import { manifest as manifestOf, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
@@ -187,6 +187,9 @@ window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(und
   // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, the ids of the scene's requests that carry an owed habit key,
   // the pictures the scene gave the face that no golden may draw (standIns: the placed masters the masters index flags placeholder or stand-in; builtStandIns: the built pictures registered stand-in), and with `capture` the PNG.
   snapshot: ({ capture = false } = {}) => { const f = CORE.face, out = { hash: f.hash(), errors: CORE.faceErrors.slice(), refused: f.refused(), owed: CORE.lastOwed.slice(), standIns: CORE.lastSent.filter((id) => { const e = assetEntry(id); return !!e?.file && NOT_IN_GOLDENS.includes(e.status); }), builtStandIns: CORE.lastSent.filter((id) => { const e = assetEntry(id); return !!e && !e.file && BUILT_NOT_IN_GOLDENS.includes(e.status); }) }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
+  // The goldens wait on this (tools/goldens.mjs): nothing more is coming to the frame. The top bar's own events (a counter's tick, the turn's flash) have said `done`, every picture mark the frame names is on the face,
+  // and two face frames have been drawn since the props last went out. Deterministic: a state of events, pictures and frame counts, never a time.
+  settled: () => { const f = CORE.face, marks = frameMarkIds().filter((id) => f.handleOf(id, picture) < 0), open = [...CORE.open.keys()], frames = f.frames() - CORE.propsFrame; return { ok: !marks.length && !open.length && frames >= 2 && CORE.lastProps != null, marks, open, frames }; },
   libraryWarm: () => { let n = 0; while (warmLibraryNext(LIB_ENV)) n++; return n; }, libraryWaiting,   // the Library's pictures waiting to be made, made now (the goldens take a scene once they are)
   get msg() { return FX.msg; }, capture: () => vis.toDataURL("image/png"), holding: () => CORE.host.holding(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, frameOf, frameIds, podById, genomesText, podGenome, genomeSha, nameCode,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); const pb = stampArt(fr, p.genome, p.read, side); return { width: pb.w, height: pb.h, data: pb.rgba() }; },

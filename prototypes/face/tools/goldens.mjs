@@ -41,6 +41,7 @@ const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' gold
   settings: { states: settingsStates, prefix: "", note: "The hold ring (frame.json hold) on a calm screen, behind the developer setting realmSleep: at 0, 1000, 2000 and 3000 ms of ✓ held, 150 ms after letting go, and the reduced-motion quarters" },
   idle: { states: idleStates, prefix: "", note: "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk" } };
 const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length ? want : Object.keys(SCREENS);
+const SETTLE = new Set(["pods"]);   // the screens whose states are taken on the real clock with their events over (the others take timed instants on a virtual clock, or have none open)
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
 // The developer switch "Motion sets (stand-ins)": mechanism goldens (not art) that draw the moving sets' stand-in atlases on purpose; the built-stand-in guard skips them and lists what they draw.
 const DEV_SWITCH = new Set(["vivarium-moving-8000ms", "habitat-moment-S01-0", "habitat-moment-S01-450", "habitat-moment-S01-900", "habitat-moment-S01-1350"]);
@@ -49,6 +50,7 @@ for (const screen of run) {
   const { states, prefix, note } = SCREENS[screen], dir = path.join(golden, screen), file = path.join(dir, screen + ".json"), got = {}; const pngs = {};
   const { fails } = await states(async (name, page, fail, opts) => {
     if (opts?.captureOnly) return;   // a capture state (fix 14), not a golden
+    if (SETTLE.has(screen)) { try { await page.waitForFunction(() => window.__st.settled().ok, null, { polling: "raf", timeout: 20000 }); } catch { fail(name + ": the frame did not settle: " + JSON.stringify(await page.evaluate(() => window.__st.settled()))); } }   // every picture mark on the face, the top bar's tick and flash events done, two frames drawn since the props: the top bar is the same run to run
     const a = await page.evaluate(() => window.__st.snapshot({ capture: true }));
     if (logs) { const r = await page.evaluate((paths) => { const p = window.__st.props, lg = window.__st.check().log, get = (o, q) => q.split(".").reduce((v, k) => v?.[k], o), facts = {};
         for (const q of paths) { const v = get(p, q); if (v !== undefined) facts[q] = v; }

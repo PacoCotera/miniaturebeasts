@@ -26,7 +26,7 @@ import { registerAsset } from "../../ui/assets.mjs";
 // defer: the Library's warm, a moment after the props that asked for it; log: the warm's timings; dockElsewhere: the play page's Dock pressed while another device had the keys (read once, then cleared).
 export const hooks = { wake: () => {}, afterSave: () => {}, present: () => {}, defer: (fn) => setTimeout(fn, 30), log: (s) => console.log(s), dockElsewhere: () => false };
 // The loop's state, read by the page's test hooks and the harness: the face, the host, the face's last log, the last props sent (JSON), and what the face and the frames said.
-export const CORE = { face: null, host: null, lastLog: null, lastProps: null, lastOwed: [], lastSent: [], renderErrors: [], said: [], faceErrors: [] };
+export const CORE = { face: null, host: null, lastLog: null, lastProps: null, lastOwed: [], lastSent: [], open: new Map(), propsFrame: 0, renderErrors: [], said: [], faceErrors: [] };
 let lastRoom = null, msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set(), sitHeld = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
 
 // --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
@@ -54,7 +54,8 @@ export async function bootAssets({ test = false } = {}) {
 for (const name of ["energy", "data", "essence", "cross"]) for (const px of [14, 15, 16]) registerAsset({ id: `icon:${name}:${px}`, w: px, h: px, status: "placeholder", until: "the icon set", build: () => ICON[name](px) });   // 14 and 15: the mibi collection's card lines (vivarium.json)
 
 // --- the face ---
-const sendEvent = (m) => { if (CORE.face.send(m) < 0) CORE.faceErrors.push(...CORE.face.errors()); };
+// CORE.open: the events the face has begun and not yet said `done` for, by kind and target; the goldens wait for it to be empty (settled, main.mjs).
+const sendEvent = (m) => { if (CORE.face.send(m) < 0) CORE.faceErrors.push(...CORE.face.errors()); else if (m.t === "event") CORE.open.set(m.kind + ":" + m.target, true); };
 // The handshake's follow-up (lvgl-switch.md §2.1): the palette, then the spec files the page loaded, then the pictures the face never drops (the name plates and the rail tab grounds); then the host.
 // `face`: a face already booted (the harness's), else the page's WebAssembly face from face/dist.
 export async function startFace({ test = false, face = null } = {}) {
@@ -69,6 +70,7 @@ export async function startFace({ test = false, face = null } = {}) {
 // What the face said since the last call: its intents and its focus become the rules (host.mjs), its errors are kept, its log is the checks'.
 export function pump() {
   for (let m; (m = CORE.face.poll());) {
+    if (m.t === "done") CORE.open.delete(m.kind + ":" + m.target);
     if (m.t === "error") { CORE.faceErrors.push(m.what); console.error("face: " + m.what); }
     else if (m.t === "log") CORE.lastLog = m;
     else { if (m.t === "intent" && m.verb === "wake") { FX.wake = clock.now; hooks.wake(); } if (m.t === "intent" || m.t === "focus") CORE.said.push({ t: m.t, screen: m.screen, target: m.target, ...(m.verb ? { verb: m.verb } : {}) }); onFaceMessage(CORE.host, m); }
@@ -112,6 +114,7 @@ export function syncProps() {
     const now = new Set(p.ids.filter((id) => id.startsWith("moving:"))); for (const id of movingHeld) if (!now.has(id) && !movingPrev.has(id)) { FACE.drop(id); movingHeld.delete(id); } for (const id of now) movingHeld.add(id); movingPrev = now;   // a moving atlas neither these props nor the previous screen's ask for is dropped (architecture.md §3: the main.mjs gap)
     const loads = new Set(SPECS.sitting?.regions?.glass?.backdrops ?? []);   // sitting.json regions.glass.load: the place backdrops the place step loads are dropped on leaving the screen
     if (p.msg.screen === "sitting") { for (const id of p.ids) if (loads.has(id)) sitHeld.add(id); } else { for (const id of sitHeld) if (!p.ids.includes(id)) FACE.drop(id); sitHeld.clear(); } }
+  CORE.propsFrame = FACE.frames?.() ?? 0;   // the face frame the props went out at (settled: two frames must follow)
   CORE.lastProps = key;   // set once the props are sent: a throw above leaves it unset, so the next frame tries again (and the error is kept)
 }
 export function render() {
