@@ -89,10 +89,10 @@ const row = (code, clan, size, tier, kind, moves, habitat, gate, diet, ability, 
 // orientations (the stamp reader tries them all), and none is a copy of another turned or mirrored.
 // The only source of the glyphs: build-frames.mjs copies them into frames/species-*.json (never edit
 // those) and the pod placeholder's source/glyphs.txt is checked against them.
-// Eight kinds were redrawn to name their signature (approved 2026-11-05 23:26): S04, S05, S06, S08, S11, S12, S13 and S15.
-// The other eight stay. S17's glyph is a working draft and S20 Tuliko has none yet: both are with the owner.
+// Nine kinds were redrawn to name their signature (approved 2026-11-05 23:26): S04, S05, S06, S08, S11, S12, S13 and S15 (S17 and S20 follow).
+// S17 Wickle (flame curl) and S20 Tuliko (coin crest) were approved 2026-11-06 12:16: all twenty glyphs are final. The other eleven stay.
 // GLYPHS is the language's set: the frames of version 8 carry it. A printed stamp is read against the glyph of the frame version
-// it was made on (the stamp registry is append-only), so the frames before the language keep the eight old marks in LEGACY_GLYPHS.
+// it was made on (the stamp registry is append-only), so the frames before the language keep the nine old marks in LEGACY_GLYPHS.
 export const GLYPHS = {
   S01: ["..###", ".#..#", "#..#.", "#.#..", "##..."], // Loika: a leaf, the crest's leaf, on the diagonal
   S02: [".###.", "#...#", "#...#", ".....", "#...."], // Untuva: a cap, open beneath, and a shed fleck drifting off to one side
@@ -110,9 +110,10 @@ export const GLYPHS = {
   S14: [".....", ".##..", "#..##", "....#", "....."], // Usvel: the slow line of a trail
   S15: ["#.#.#", ".....", ".###.", "#...#", "#####"], // Lehten: three stacked knobs on the shell top
   S16: ["...##", "..#..", ".#.#.", "#...#", "....."], // Blikur: a branching charge
-  S17: ["..##.", ".#..#", ".#...", "#.#..", ".#..."], // Wickle: the plume rising from a stem and curling over (working glyph; the art director draws the mark)
+  S17: ["..##.", ".#..#", "..#..", ".##..", "##..."], // Wickle: the flame curl
   S18: [".....", "..#..", ".###.", "#####", "#.#.#"], // Drapet: a low dome over a fringe
   S19: [".###.", "#...#", "..#.#", "..###", "....."], // Curlop: a spiral, the curled tail (working glyph)
+  S20: [".....", "##.##", "#####", ".....", "....."], // Tuliko: the scalloped coin crest along the back
 };
 
 // The marks the eight redrawn kinds had on the frames before the language (versions 4 to 7), frozen: those frames are in the stamp registry and in saved pods.
@@ -125,6 +126,7 @@ export const LEGACY_GLYPHS = {
   S12: [".#.#.", ".....", "#...#", ".....", ".#.#."], // Peplos: six points about an empty centre
   S13: [".....", ".###.", "#...#", "#####", "....."], // Oskol: an armour plate
   S15: ["..#..", ".##..", "..#..", "..##.", "..#.."], // Lehten: a stem with alternate leaves
+  S17: ["..##.", ".#..#", ".#...", "#.#..", ".#..."], // Wickle: the plume rising from a stem and curling over
 };
 
 // The routine acts a species is watched doing (the-portrait.md §8): the ids a mibi's habits are drawn from, at the bench (a resident in focus for a minute of its routine) and at the dock

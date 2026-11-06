@@ -251,5 +251,5 @@ test("the three species: working names, habitats, own plans' loci, every individ
   assert.deepEqual(PARKED, ["S05", "S06", "S07"]); assert.equal(ACTIVE_SPECIES.length, 16);
   for (const id of PARKED) { assert.equal(frameOf(id).species.parked, true); assert.equal(buildIndividual(frameOf(id), typeSpecimen(frameOf(id))).validation.status, "valid", "a save holding one still builds"); }
   assert.ok(!frames.filter((f) => !PARKED.includes(f.species.id)).some((f) => f.species.parked));
-  assert.equal(new Set(Object.values(GLYPHS).map((g) => g.join(""))).size, 19);
+  assert.equal(new Set(Object.values(GLYPHS).map((g) => g.join(""))).size, 20);
 });

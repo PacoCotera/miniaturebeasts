@@ -10,7 +10,7 @@ import { GLYPHS, LEGACY_GLYPHS, SPECIES, specOf } from "../framework/roster.mjs"
 const here = path.dirname(fileURLToPath(import.meta.url));
 const frameFile = (rel) => JSON.parse(readFileSync(path.resolve(here, "../frames", rel), "utf8"));
 
-// The eight glyphs the owner approved on 2026-11-05 at 23:26 (S04, S05, S06, S08, S11, S12, S13, S15).
+// The glyphs the owner approved: eight on 2026-11-05 at 23:26 (S04, S05, S06, S08, S11, S12, S13, S15) and S17 on 2026-11-06 at 12:16; S20 Tuliko joins them in GLYPHS.
 const APPROVED = {
   S04: ["##.##", ".#.#.", ".###.", ".....", "....."],
   S05: ["#.#..", ".#.#.", "..#.#", "...#.", "....."],
@@ -20,6 +20,7 @@ const APPROVED = {
   S12: [".##..", "#..#.", "#.#..", "....#", "...#."],
   S13: ["....#", "...##", "..###", ".####", "....."],
   S15: ["#.#.#", ".....", ".###.", "#...#", "#####"],
+  S17: ["..##.", ".#..#", "..#..", ".##..", "##..."],
 };
 
 const grid = (rows) => rows.map((r) => [...r].map((c) => (c === "#" ? 1 : 0)));
@@ -29,16 +30,21 @@ const orientations = (g) => { const out = []; let a = g; for (let i = 0; i < 4; 
 const cellsApart = (a, b) => a.flat().reduce((n, v, i) => n + (v !== b.flat()[i] ? 1 : 0), 0);
 const apart = (x, y) => Math.min(...orientations(grid(y)).map((o) => cellsApart(grid(x), o)));
 
-test("the eight approved glyphs are the language set; the other eight stay as they were", () => {
+test("the nine redrawn glyphs are the language set; the others stay as they were", () => {
   for (const [id, rows] of Object.entries(APPROVED)) assert.deepEqual(GLYPHS[id], rows, `${id}: the approved glyph`);
-  assert.deepEqual(Object.keys(LEGACY_GLYPHS).sort(), Object.keys(APPROVED).sort(), "the legacy set is exactly the eight redrawn kinds");
+  assert.deepEqual(Object.keys(LEGACY_GLYPHS).sort(), Object.keys(APPROVED).sort(), "the legacy set is exactly the nine redrawn kinds");
   for (const id of Object.keys(GLYPHS)) if (!APPROVED[id]) assert.equal(LEGACY_GLYPHS[id], undefined, `${id} keeps its mark`);
   for (const id of Object.keys(APPROVED)) assert.notDeepEqual(GLYPHS[id], LEGACY_GLYPHS[id]);
 });
 
-test("the approved glyphs differ pairwise in at least five of 25 cells in all eight orientations (S17's working draft is left out)", () => {
-  const ids = Object.keys(GLYPHS).filter((id) => id !== "S17");   // S17 Wickle's glyph is a draft with the owner; S20 Tuliko has none
-  assert.equal(ids.length, 18);
+test("S20 Tuliko has the approved coin crest, and no frame carries it yet", () => {
+  assert.deepEqual(GLYPHS.S20, [".....", "##.##", "#####", ".....", "....."]);
+  assert.equal(LEGACY_GLYPHS.S20, undefined);
+});
+
+test("the approved glyphs differ pairwise in at least five of 25 cells in all eight orientations (S17 and S20 included: all 20 are final)", () => {
+  const ids = Object.keys(GLYPHS);
+  assert.equal(ids.length, 20);
   let worst = 25;
   for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) {
     const d = apart(GLYPHS[ids[i]], GLYPHS[ids[j]]);
