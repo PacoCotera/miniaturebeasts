@@ -809,7 +809,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   p.key("confirm"); assert.equal(p.S.phase, "patch", "into a place");
   d = render("patch"); assert.ok(d.some(x => x.startsWith("c-sprite-other-32@") && x.endsWith("x1")), "the field partner: the plate at 1×: " + d);
   assert.ok(d.some(x => x.startsWith("c-mini-other-12@")), "the HUD mini in a place");
-  assert.doesNotThrow(() => p.run("ptCtx()")); assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), -1, "never matches a wild species");
+  assert.doesNotThrow(() => p.run("ptCtx()")); assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), 4, "never matches a wild species (the page carries three until 21b)");
   assert.equal(p.run("canDig()"), false); assert.equal(p.run("digPartner()"), null);
   assert.doesNotThrow(() => p.run("onStateChanged(); notesText();"));
   const lines = p.run("FX.notes.map(n => n.text).concat(S.log).join('\\n')");

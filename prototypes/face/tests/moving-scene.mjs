@@ -6,7 +6,7 @@ import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the pro
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station/moving");
+const dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../station/tests/fixtures/moving");   // the moving sets as a fixture: the game ships none (release 21a)
 export const MOVING = Object.fromEntries(readdirSync(dir).filter((f) => /^S\d{2}\.json$/.test(f)).sort().map((f) => [f.slice(0, 3), JSON.parse(readFileSync(path.join(dir, f), "utf8"))]));
 export const sendMoving = (f, json = MOVING) => f.send({ t: "spec", screen: "moving", json });
 const stageOf = (set, stage) => (stage === "elder" ? set.adult : set[stage]);
