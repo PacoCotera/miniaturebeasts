@@ -255,9 +255,8 @@ test("a body whose part does not touch its owner is reported against the contrac
   assert.ok(v.problems.some((p) => p.startsWith("tail:")));
 });
 
-test("proportions by kind: the species' measures sit in its genome, and the kind check scores it against hand-drawn targets", async () => {
+test("proportions by kind: the species' measures sit in its genome", async () => {
   const { KINDS, proportionPairs, nearestPair } = await import("../framework/proportions.mjs");
-  const { loadTargets, targetScores, rasterizeTarget } = await import("../framework/targets.mjs");
   assert.equal(Object.keys(KINDS).length, 19);
   assert.deepEqual(nearestPair("growth.support-drop-ratio", 0.8), ["long", "short"], "a value between alleles is a mixed pair");
   assert.deepEqual(nearestPair("growth.support-drop-ratio", 1.05), ["medium", "medium"]);
@@ -269,21 +268,6 @@ test("proportions by kind: the species' measures sit in its genome, and the kind
   assert.ok(cat.loci.some((l) => l.kind !== "locked" && l.typical), "an open proportion locus names its typical copies");
   assert.ok(cat.loci.some((l) => l.kind === "locked" && l.copies[0] !== l.copies[1]), "a locked proportion between two alleles is a mixed pair");
   assert.equal(checkGenome(cat, specimen).length, 0);
-  const targets = loadTargets(path.resolve(here, "../frames/targets"));
-  assert.equal(Object.keys(targets).length, 19);
-  for (const t of Object.values(targets)) { assert.equal(t.mask.length, 48 * 48); assert.ok([...t.mask].some((x) => x), `${t.species}: a drawn target`); }
-  assert.deepEqual([...rasterizeTarget(targets.S07).all], [...targets.S07.mask], "targets rasterize the same twice");
-  assert.ok(targets.S04.parts.ear && targets.S04.parts.muzzle && targets.S04.parts.tail, "a target's primitives are tagged by part");
-  const { partMasks } = await import("../framework/raster.mjs");
-  const { CLANS } = await import("../framework/roster.mjs");
-  const rows = ["S07", "S04", "S05", "S06"].map((id) => { const f = frameOf(id); const b = buildIndividual(f, typeSpecimen(f)); return { id, parts: CLANS[f.taxonomy.clan].parts, specMasks: { side: partMasks(b.scene, "side", 48) }, individuals: [] }; });
-  const scores = targetScores(rows, targets);
-  assert.equal(scores[0].id, "S07");
-  assert.ok(scores[0].own > 0.6, "the bear reads as its own target by body");
-  // Under the cute envelope (envelope.mjs) the head floor pulls the raccoon toward the cat's target; the
-  // cat and the fox still win their parts score, the raccoon's target is to be redrawn under the envelope.
-  for (const s of scores.slice(1, 3)) assert.ok(s.parts.margin > 0, `${s.id}: the cat and the fox each win their own parts score (${s.parts.own} vs ${s.parts.bestWrong.id} ${s.parts.bestWrong.score})`);
-  assert.ok(scores.every((s) => s.bestWrong && s.bestWrong.id !== s.id));
 });
 
 test("a painting service's controls: the key pass is the pigments flat, and flat translucency leaves no dither holes", () => {

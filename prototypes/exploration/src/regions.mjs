@@ -6,6 +6,7 @@
 //   Region = { id, n, kind: "home" | "season", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
 //              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
 import { MW, MH, GENS, hash } from "./world.mjs";
+import { LANGUAGE } from "../../workbench/framework/language.mjs";
 
 export const REALM_SAVE_V = 9;
 // the fields of a region's own map state: on S while the region is mounted, in regions[i].map when it is not.
@@ -14,6 +15,9 @@ export const MAP_KEYS = ["revealed", "visited", "called", "signs", "pins", "cell
 export const BIOMES_V1 = ["mixed", "woods", "fells", "marsh"];   // the kinds a realm of version 1 draws from
 export const BIOMES = [...BIOMES_V1, "downs", "thickets", "tallwood", "tarns", "meres"];
 export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Cliffs", marsh: "Marsh", downs: "Hills", thickets: "Thickets", tallwood: "Tallwood", tarns: "Highpools", meres: "Lakes" };   // the player's words (the copywriter owns them)
+// The kinds that spawn on each land, from the language registry (a land has one to three kinds; a kind lives on one land; the registry's land ids
+// are these biome ids). The realm's species draw reads this once the roster is the language's; the generators below still draw today's three species by tile land.
+export const BIOME_KINDS = Object.fromEntries(BIOMES.map(b => [b, LANGUAGE.kinds.filter(k => !k.template && k.land === b).map(k => k.id)]));
 // A realm's kind version: 1 draws its slots from the four older kinds, 2 from all nine by rarity. It is written on a new realm; a save without
 // it is version 1 and never changes, so its unopened slots keep their words.
 export const REALM_BIOME_V = 2;
