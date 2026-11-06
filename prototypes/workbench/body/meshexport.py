@@ -53,6 +53,12 @@ def build(body, path, extras):
     bpy.ops.export_scene.gltf(filepath=path, use_selection=True, export_format="GLB", export_materials="NONE", export_image_format="NONE", export_normals=True, export_texcoords=False, export_skins=True,
                               export_animations=False, export_apply=False, export_yup=False, export_extras=False, export_attributes=True)
     bones = [b.name for b in arm.data.bones]
+    jw = body.mesh.glb.joint_world()
+    order = [n for n in bones if n in jw]
+    ix = {n: i for i, n in enumerate(order)}
+    rng = lambda n: "limb" if n.split(".")[0] in ("fore", "hind") else ("head" if n == "head" else ("appendage" if n.startswith("socket") else "back"))
+    overlay = dict(points=[dict(name=n, bone=n, p=[round(float(x), 5) for x in jw[n][0]]) for n in order],
+                   segs=[dict(a=ix[jw[n][1]], b=ix[n], range=rng(n)) for n in order if jw[n][1] in ix], ranges=["head", "back", "limb", "appendage"], pivot=ix.get("head", 0))
     names = ["body"] + [k for k in body.parts if k != "body"]
-    MS.set_extras(path, **dict(extras, parts=names, bones=bones, counts=dict(triangles=int(len(body.Fw) + sum(len(p["F"]) for p in body.placed)), vertices=int(len(body.Vw) + sum(len(p["V"]) for p in body.placed)), parts=len(names)), clips=[]))
+    MS.set_extras(path, **dict(extras, parts=names, bones=overlay, counts=dict(cage_vertices=0, render_vertices=int(len(body.Vw) + sum(len(p["V"]) for p in body.placed)), render_triangles=int(len(body.Fw) + sum(len(p["F"]) for p in body.placed)), level=0), clips=[]))
     return dict(bytes=os.path.getsize(path), clips=[], parts=names, bones=bones)
