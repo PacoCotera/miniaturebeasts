@@ -5604,9 +5604,9 @@ function readOnlyBroken() { RT.readOnly = true; RT.broken = true; document.getEl
 // The device's way out (no page needed): ✓ arms, ✓ again keeps the old save whole under its own key (one per move, never replacing an older one) and starts a new world.
 // Only the page's Reset game erases a save. Any other key is refused with the usual bump and clears the arm.
 const KEPT_KEY = 'mb-save-kept';
-// The release's one-time notice, shown on this device the first time it opens after the reset, then never again (S.resetSeen). Words OWED to the copywriter (placeholder keys:
+// The release's one-time notice, shown on this device the first time it opens after the reset, then never again (S.resetSeen). The copywriter's words of 6 Nov 2026 (keys:
 // reset.notice.companion, reset.button.companion). No numbers, no talk of versions or saves.
-const RESET_TEXT = { lines: ['The land has changed.', 'New mibis live in it now.'], button: 'Explore' };
+const RESET_TEXT = { lines: ['The world has changed.', 'New mibis live in it now.'], button: 'Explore' };
 function drawNotice() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();

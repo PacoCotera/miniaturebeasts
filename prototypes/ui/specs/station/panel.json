@@ -185,12 +185,12 @@
    }
   },
   "reset": {
-   "note": "The release's one-time notice (OWED to the copywriter; placeholder keys reset.notice.station, reset.button.station). One card, no picture, shown once over Home.",
+   "note": "The release's one-time notice (the copywriter's words of 6 Nov 2026: reset.notice.station.title and .line, reset.button.station). One card, no picture, shown once over Home.",
    "title": "The world has changed",
    "cards": {
     "begin": {
      "name": "Begin",
-     "line": "Every mibi is new now, and a new realm is waiting."
+     "line": "New mibis live in it now"
     }
    }
   }

@@ -15,8 +15,8 @@ export const MAGIC = "MBR1";
 export const KIND = "mb-realm-sleep";
 export const FILE_V = 1;
 export const SAVE_V = 10;   // the save version a file is written from and may wake into (the release's reset moved it from 9)
-// The line a refused old file is shown (key wake.refused.old-save). OWED to the copywriter: working words.
-export const OLD_SAVE_LINE = "This realm is from before the change and cannot wake.";
+// The line a refused old file is shown (key wake.refused.old-save; the copywriter's words of 6 Nov 2026).
+export const OLD_SAVE_LINE = "This realm is from the old world. It stays asleep.";
 export const MAX_BYTES = 8 * 1024 * 1024;   // a file over 8 MB is refused, on the way out and on the way in
 
 const hex = async (x) => hexEncode(await sha256(typeof x === "string" ? utf8(x) : x));

@@ -3,7 +3,7 @@
 // (species.mjs), looks in words from describe.mjs, the stamp from the genome stamp's codec. The
 // Station page fetches the frames beside it (the sandbox publishes prototypes/* side by side); the
 // tests read them from disk and call setFrames.
-import { LOCI, resolveCopies, isContinuous, quantize, valueRange, binFor } from "../../workbench/framework/catalogue.mjs";
+import { LOCI, LAYOUT_WORD, resolveCopies, isContinuous, quantize, valueRange, binFor } from "../../workbench/framework/catalogue.mjs";
 import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, FRAME_VERSION } from "../../workbench/framework/species.mjs";
 import { lookOf } from "../../workbench/framework/describe.mjs";
 import { cross, forecast, kinship, directKin, relatedness, identity, SPREAD, blendRange } from "../../workbench/framework/cross.mjs";
@@ -66,7 +66,7 @@ function traitStateOf(frame, trait, genome) {
   if (row?.switch && trait.loci.length > 1 && locus && resolveCopies(locus, genome.loci[first]) === false) {
     const said = trait.loci.slice(1).find((id) => SLEEP_WORDS[id] && genome.loci[id]);   // a sleeping size has its own plain words (the Loika's crest)
     const layout = said ? null : trait.loci.slice(1).map((id) => genome.loci[id]).find((c) => c && typeof c[0] === "string");
-    asleep = said ? ((w) => (w.size === 1 ? [...w][0] : SLEEP_WORDS[said].mixed))(new Set(genome.loci[said].map((c) => SLEEP_WORDS[said][binFor(LOCI.get(said), c)]))) : layout ? [...new Set(layout)].join(" or ") : "what they carry";
+    asleep = said ? ((w) => (w.size === 1 ? [...w][0] : SLEEP_WORDS[said].mixed))(new Set(genome.loci[said].map((c) => SLEEP_WORDS[said][binFor(LOCI.get(said), c)]))) : layout ? [...new Set(layout.map((l) => LAYOUT_WORD[l] ?? l))].join(" or ") : "what they carry";
   }
   const carried = [...new Set([shows, a, b].filter(Boolean))];
   let kind, hides = null, line;
