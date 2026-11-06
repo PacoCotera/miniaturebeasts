@@ -22,9 +22,9 @@
    "land": "woods",
    "frameVersion": 8,
    "file": "species-S01.json",
-   "open": 17,
-   "traits": 16,
-   "carried": 94
+   "open": 19,
+   "traits": 18,
+   "carried": 103
   },
   {
    "id": "S02",
@@ -36,9 +36,9 @@
    "land": "downs",
    "frameVersion": 8,
    "file": "species-S02.json",
-   "open": 18,
-   "traits": 16,
-   "carried": 74
+   "open": 20,
+   "traits": 18,
+   "carried": 80
   },
   {
    "id": "S03",
@@ -52,7 +52,7 @@
    "file": "species-S03.json",
    "open": 27,
    "traits": 24,
-   "carried": 94
+   "carried": 91
   },
   {
    "id": "S04",
@@ -78,9 +78,9 @@
    "land": "woods",
    "frameVersion": 8,
    "file": "species-S05.json",
-   "open": 20,
-   "traits": 18,
-   "carried": 92
+   "open": 18,
+   "traits": 16,
+   "carried": 81
   },
   {
    "id": "S06",
@@ -94,7 +94,7 @@
    "file": "species-S06.json",
    "open": 20,
    "traits": 18,
-   "carried": 94
+   "carried": 90
   },
   {
    "id": "S07",
@@ -106,9 +106,9 @@
    "land": "fells",
    "frameVersion": 8,
    "file": "species-S07.json",
-   "open": 21,
-   "traits": 19,
-   "carried": 78
+   "open": 23,
+   "traits": 21,
+   "carried": 85
   },
   {
    "id": "S08",
@@ -122,7 +122,7 @@
    "file": "species-S08.json",
    "open": 22,
    "traits": 20,
-   "carried": 93
+   "carried": 90
   },
   {
    "id": "S09",
@@ -134,9 +134,9 @@
    "land": "tallwood",
    "frameVersion": 8,
    "file": "species-S09.json",
-   "open": 27,
-   "traits": 24,
-   "carried": 103
+   "open": 25,
+   "traits": 22,
+   "carried": 88
   },
   {
    "id": "S10",
@@ -148,9 +148,9 @@
    "land": "meres",
    "frameVersion": 8,
    "file": "species-S10.json",
-   "open": 21,
-   "traits": 20,
-   "carried": 91
+   "open": 19,
+   "traits": 18,
+   "carried": 82
   },
   {
    "id": "S11",
@@ -178,7 +178,7 @@
    "file": "species-S12.json",
    "open": 16,
    "traits": 15,
-   "carried": 89
+   "carried": 85
   },
   {
    "id": "S13",
@@ -192,7 +192,7 @@
    "file": "species-S13.json",
    "open": 19,
    "traits": 17,
-   "carried": 83
+   "carried": 80
   },
   {
    "id": "S14",
@@ -206,7 +206,7 @@
    "file": "species-S14.json",
    "open": 15,
    "traits": 14,
-   "carried": 72
+   "carried": 67
   },
   {
    "id": "S15",

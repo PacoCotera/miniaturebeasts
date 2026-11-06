@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S15",
-  "resembles": "an upright body, broad below, on two short legs",
   "moves": "walks on its roots",
-  "habitat": "wood",
+  "habitat": "Hills",
   "gate": "sealed chapter",
   "diet": "light and dew",
   "ability": "roots for a turn; a bush grows where it stood",
@@ -80,15 +79,15 @@
   "eyes": 3
  },
  "signature": {
-  "anchor": "jade",
-  "second": null,
-  "feature": "leaves and roots; the walking green",
+  "anchor": "plum",
+  "second": "slate",
+  "feature": "a shell-carrier with three stacked knobs on the shell top",
   "features": {
-   "anatomy.exterior-eye-presence": "on"
+   "anatomy.exterior-eye-presence": "on",
+   "anatomy.shell-presence": "on"
   },
   "finish": {
-   "appearance.leaf-covering": "leafy",
-   "anatomy.contact-terminal-form": "root"
+   "anatomy.contact-terminal-form": "pad"
   },
   "part": {
    "type": "three stacked knobs on the shell top",
@@ -110,12 +109,12 @@
   "shellPattern": "segments",
   "colourPair": [
    {
-    "pigment": "jade",
-    "hex": "#38a878"
+    "pigment": "plum",
+    "hex": "#8F7598"
    },
    {
-    "pigment": "raspberry",
-    "hex": "#d95688"
+    "pigment": "peach",
+    "hex": "#C98E98"
    }
   ]
  },
@@ -522,11 +521,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "jade",
-    "jade"
+    "plum",
+    "plum"
    ],
    "looks": [
-    "jade"
+    "plum"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -1279,11 +1278,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "root",
-    "root"
+    "pad",
+    "pad"
    ],
    "looks": [
-    "root"
+    "pad"
    ],
    "guard": "rig: terminal.form",
    "nature": "look",
@@ -1415,11 +1414,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "bright",
-    "bright"
+    "dim",
+    "dim"
    ],
    "looks": [
-    "bright"
+    "dim"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
    "nature": "doing",
@@ -1437,11 +1436,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
-    "short"
+    "long",
+    "long"
    ],
    "looks": [
-    "short"
+    "long"
    ],
    "guard": "behaviour: how long the glow lasts",
    "nature": "doing",
@@ -2025,11 +2024,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "on",
-    "on"
+    "off",
+    "off"
    ],
    "looks": [
-    "on"
+    "off"
    ],
    "guard": "engine: small fangs (a face family, 2026-11-02 20:27); both copies on to show",
    "nature": "look",
@@ -2915,8 +2914,8 @@
      "high"
     ],
     "appearance.body-palette": [
-     "jade",
-     "jade"
+     "plum",
+     "plum"
     ],
     "appearance.marking-switch": [
      "on",
@@ -3047,8 +3046,8 @@
      "tapered"
     ],
     "anatomy.contact-terminal-form": [
-     "root",
-     "root"
+     "pad",
+     "pad"
     ],
     "cognition.exploration-tendency": [
      "reserved",
@@ -3071,12 +3070,12 @@
      "high"
     ],
     "appearance.emission-brightness": [
-     "bright",
-     "bright"
+     "dim",
+     "dim"
     ],
     "appearance.emission-length": [
-     "short",
-     "short"
+     "long",
+     "long"
     ],
     "appearance.body-hue": [
      "between",
@@ -3171,8 +3170,8 @@
      "off"
     ],
     "anatomy.fang-presence": [
-     "on",
-     "on"
+     "off",
+     "off"
     ],
     "form.head": [
      "between",
@@ -3220,19 +3219,19 @@
   "bounds": {
    "min": [
     -0.7611982848428606,
-    -0.5236458421504641,
-    -0.0022120438579320556
+    -0.5070157335384564,
+    0
    ],
    "max": [
     0.43213999999999997,
-    0.5236458421504638,
-    2.255618513332858
+    0.5070157335384562,
+    2.2512242633328583
    ]
   },
   "counts": {
-   "nodes": 30,
-   "edges": 29,
-   "vertices": 1181
+   "nodes": 21,
+   "edges": 20,
+   "vertices": 1247
   }
  },
  "viability": {
@@ -3351,8 +3350,8 @@
    "high"
   ],
   "appearance.body-palette": [
-   "jade",
-   "jade"
+   "plum",
+   "plum"
   ],
   "appearance.marking-extent": [
    "low",
@@ -3447,8 +3446,8 @@
    "tapered"
   ],
   "anatomy.contact-terminal-form": [
-   "root",
-   "root"
+   "pad",
+   "pad"
   ],
   "appearance.sheen": [
    "matte",
@@ -3463,12 +3462,12 @@
    "high"
   ],
   "appearance.emission-brightness": [
-   "bright",
-   "bright"
+   "dim",
+   "dim"
   ],
   "appearance.emission-length": [
-   "short",
-   "short"
+   "long",
+   "long"
   ],
   "appearance.countershade": [
    "low",
@@ -3547,8 +3546,8 @@
    "off"
   ],
   "anatomy.fang-presence": [
-   "on",
-   "on"
+   "off",
+   "off"
   ],
   "signature.count": [
    "3",

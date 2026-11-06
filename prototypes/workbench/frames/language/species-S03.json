@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S03",
-  "resembles": "a big round head on a slim four-legged body",
   "moves": "scurries, digs",
-  "habitat": "wood, rock field",
+  "habitat": "Cliffs",
   "gate": "opens narrow holes and Night",
   "diet": "dew",
   "ability": "digs narrow burrows; lights fog and Night",
@@ -84,16 +83,15 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "lagoon",
-  "second": "milk-mint",
-  "feature": "a glowing tail and a crest, lagoon; small lights of wood and rock",
+  "anchor": "russet",
+  "second": "cream",
+  "feature": "a hopper with tail swelling into a glowing tip",
   "features": {
    "anatomy.exterior-eye-presence": "on",
-   "anatomy.crown-presence": "on",
    "anatomy.axial-tail-presence": "on"
   },
   "finish": {
-   "anatomy.crown-form": "pointed"
+   "anatomy.contact-terminal-form": "pad"
   },
   "part": {
    "type": "tail swelling into a glowing tip",
@@ -119,12 +117,12 @@
   "shellPattern": "plates",
   "colourPair": [
    {
-    "pigment": "lagoon",
-    "hex": "#269fa5"
+    "pigment": "russet",
+    "hex": "#A79B8B"
    },
    {
-    "pigment": "marigold",
-    "hex": "#e8b83f"
+    "pigment": "cream",
+    "hex": "#C9B160"
    }
   ]
  },
@@ -596,11 +594,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "lagoon",
-    "lagoon"
+    "russet",
+    "russet"
    ],
    "looks": [
-    "lagoon"
+    "russet"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -618,11 +616,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "milk-mint",
-    "milk-mint"
+    "cream",
+    "cream"
    ],
    "looks": [
-    "milk-mint"
+    "cream"
    ],
    "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
    "nature": "look",
@@ -1058,28 +1056,6 @@
    "changedBy": "species"
   },
   {
-   "id": "anatomy.crown-presence",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": true,
-   "consumer": "rig: modules.crownPair",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "rig: modules.crownPair",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
    "id": "anatomy.exterior-eye-presence",
    "family": "sensing-signaling",
    "scope": "trunk",
@@ -1098,28 +1074,6 @@
     "on"
    ],
    "guard": "rig: modules.exteriorEyePair",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "anatomy.crown-form",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: crown.form",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "pointed",
-    "pointed"
-   ],
-   "looks": [
-    "pointed"
-   ],
-   "guard": "rig: crown.form",
    "nature": "look",
    "changedBy": "species"
   },
@@ -1428,28 +1382,6 @@
     "wide"
    ],
    "guard": "rig: eye.anchorYOverHeadRy",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.crown-height-ratio",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: crown.heightOverHeadRz",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "high",
-    "low"
-   ],
-   "looks": [
-    "high"
-   ],
-   "guard": "rig: crown.heightOverHeadRz",
    "nature": "look",
    "changedBy": "species"
   },
@@ -2935,6 +2867,14 @@
    "why": "absent: the plan and clan never have this part"
   },
   {
+   "id": "anatomy.crown-presence",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "anatomy.crown-form",
+   "why": "absent: no head crown owner"
+  },
+  {
    "id": "growth.muzzle-projection-ratio",
    "why": "absent: no head muzzle owner"
   },
@@ -2949,6 +2889,10 @@
   {
    "id": "growth.posterior-width-ratio",
    "why": "absent: no no old posterior owner"
+  },
+  {
+   "id": "growth.crown-height-ratio",
+   "why": "absent: no head crown owner"
   },
   {
    "id": "growth.wing-span-ratio",
@@ -3288,14 +3232,14 @@
   }
  ],
  "counts": {
-  "carried": 94,
-  "trunk": 94,
+  "carried": 91,
+  "trunk": 91,
   "branch": 0,
-  "absent": 109,
-  "locked": 67,
+  "absent": 112,
+  "locked": 64,
   "lockedBy": {
-   "switch": 3,
-   "fixed": 64
+   "switch": 2,
+   "fixed": 62
   },
   "heritableLook": 15,
   "heritableDoing": 11,
@@ -3367,12 +3311,12 @@
      "high"
     ],
     "appearance.body-palette": [
-     "lagoon",
-     "lagoon"
+     "russet",
+     "russet"
     ],
     "appearance.underside-palette": [
-     "milk-mint",
-     "milk-mint"
+     "cream",
+     "cream"
     ],
     "appearance.marking-switch": [
      "on",
@@ -3446,17 +3390,9 @@
      "low",
      "low"
     ],
-    "anatomy.crown-presence": [
-     "on",
-     "on"
-    ],
     "anatomy.exterior-eye-presence": [
      "on",
      "on"
-    ],
-    "anatomy.crown-form": [
-     "pointed",
-     "pointed"
     ],
     "growth.core-half-length": [
      "small",
@@ -3513,10 +3449,6 @@
     "growth.exterior-eye-spacing-ratio": [
      "wide",
      "wide"
-    ],
-    "growth.crown-height-ratio": [
-     "high",
-     "low"
     ],
     "appearance.anatomical-covering-extent": [
      "short",
@@ -3744,7 +3676,7 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Tuikis: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 4 legs, a tail; scales, bands; plantigrade, neck head.",
+  "brief": "Tuikis: 2 body regions (B2), a head, 2 eyes, 4 legs, a tail; scales, bands; plantigrade, neck head.",
   "bounds": {
    "min": [
     -0.6395340506265219,
@@ -3754,13 +3686,13 @@
    "max": [
     1.272593355457663,
     0.46916742928371125,
-    0.9062230683135195
+    0.7949714928139147
    ]
   },
   "counts": {
-   "nodes": 27,
-   "edges": 26,
-   "vertices": 1323
+   "nodes": 25,
+   "edges": 24,
+   "vertices": 1295
   }
  },
  "viability": {
@@ -3901,12 +3833,12 @@
    "high"
   ],
   "appearance.body-palette": [
-   "lagoon",
-   "lagoon"
+   "russet",
+   "russet"
   ],
   "appearance.underside-palette": [
-   "milk-mint",
-   "milk-mint"
+   "cream",
+   "cream"
   ],
   "appearance.marking-extent": [
    "low",
@@ -3936,17 +3868,9 @@
    "low",
    "low"
   ],
-  "anatomy.crown-presence": [
-   "on",
-   "on"
-  ],
   "anatomy.exterior-eye-presence": [
    "on",
    "on"
-  ],
-  "anatomy.crown-form": [
-   "pointed",
-   "pointed"
   ],
   "growth.core-half-length": [
    "small",
@@ -4003,10 +3927,6 @@
   "growth.exterior-eye-spacing-ratio": [
    "wide",
    "wide"
-  ],
-  "growth.crown-height-ratio": [
-   "high",
-   "low"
   ],
   "appearance.anatomical-covering-extent": [
    "short",

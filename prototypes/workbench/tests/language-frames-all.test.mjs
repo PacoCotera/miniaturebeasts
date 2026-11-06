@@ -110,5 +110,7 @@ test("the files are the generator's output (three kinds built again), and the st
     const nu = FRAME_DATA.frames.find((x) => x.id === id && x.version === 8);
     for (const ch of nu.chapters) for (const l of ch.loci) assert.ok(LOCI.has(l.id) && !(LOCI.get(l.id).sinceFrame > 8), `${id}: ${l.id}`);
   }
-  assert.equal(languageSpec("S15").languageNotes.droppedSwitches.includes("anatomy.leaf-presence"), true);
+  // the version 8 features come from family, face and signature, so a retired switch is never listed to be dropped
+  assert.equal("anatomy.leaf-presence" in languageSpec("S15").features, false);
+  assert.deepEqual(languageSpec("S15").languageNotes.droppedSwitches, []);
 });

@@ -13,9 +13,8 @@
  },
  "taxonomy": {
   "code": "S18",
-  "resembles": "a wide low dome under a floor-length skirt of fur",
   "moves": "glides low along the ground",
-  "habitat": "Boulders",
+  "habitat": "Hills",
   "gate": null,
   "diet": "moss",
   "ability": "draft: to be set by the game designer",
@@ -87,13 +86,15 @@
  "signature": {
   "anchor": "periwinkle",
   "second": "slate",
-  "feature": "a skirt of fur to the floor, a small face and brow tassels; the boulder that blinks",
+  "feature": "a mound with the curtain",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.fur-skirt-presence": "on",
    "anatomy.brow-tuft-presence": "on"
   },
-  "finish": {},
+  "finish": {
+   "appearance.fur-reach": "body"
+  },
   "part": {
    "type": "the curtain",
    "socket": "coat",

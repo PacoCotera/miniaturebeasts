@@ -17,9 +17,8 @@
  },
  "taxonomy": {
   "code": "S19",
-  "resembles": "an upright crescent with a curled tail and small hands",
   "moves": "hops, walks",
-  "habitat": "Ferns",
+  "habitat": "Lakes",
   "gate": null,
   "diet": "fruit, leaves",
   "ability": "draft: to be set by the game designer",
@@ -95,17 +94,18 @@
  "signature": {
   "anchor": "lagoon",
   "second": "cream",
-  "feature": "a curled tail and two small three-fingered hands held at the chest; the fiddlehead of the ferns",
+  "feature": "a sitter with coiled tail",
   "features": {
    "anatomy.exterior-eye-presence": "on",
-   "anatomy.muzzle-presence": "on",
    "anatomy.axial-tail-presence": "on",
+   "anatomy.muzzle-presence": "on",
    "anatomy.tail-curl-presence": "on",
    "appearance.belly-field": "on"
   },
   "finish": {
-   "growth.tail-rise": "rear",
    "anatomy.contact-terminal-form": "rounded",
+   "appearance.fur-reach": "body",
+   "growth.tail-rise": "rear",
    "growth.terminal-length-ratio": "broad",
    "growth.terminal-depth-ratio": "high"
   },

@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S08",
-  "resembles": "a light, slim-legged body with big cupped ears",
   "moves": "bounds, climbs",
-  "habitat": "rock field, meadow",
+  "habitat": "Meadows",
   "gate": null,
   "diet": "leaves, fruit",
   "ability": "climbs cliff steps that block other partners",
@@ -84,20 +83,16 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "russet",
-  "second": "butter",
-  "feature": "horns and hooves; climbers of the high rocks",
+  "anchor": "marigold",
+  "second": "cream",
+  "feature": "a digger with fan of tall slats",
   "features": {
    "anatomy.exterior-eye-presence": "on",
-   "anatomy.axial-tail-presence": "on",
-   "anatomy.horn-presence": "on"
+   "anatomy.axial-tail-presence": "on"
   },
   "finish": {
-   "anatomy.contact-terminal-form": "hoof",
-   "growth.support-drop-ratio": "long",
-   "growth.support-radius-ratio": "slender",
-   "growth.axial-tail-length-ratio": "short",
-   "growth.muzzle-projection-ratio": "long"
+   "anatomy.contact-terminal-form": "pad",
+   "appearance.fur-reach": "body"
   },
   "part": {
    "type": "fan of tall slats",
@@ -119,12 +114,12 @@
   "shellPattern": "soft ribs",
   "colourPair": [
    {
-    "pigment": "russet",
-    "hex": "#ae674d"
+    "pigment": "marigold",
+    "hex": "#D4B060"
    },
    {
-    "pigment": "butter",
-    "hex": "#fff0b8"
+    "pigment": "cream",
+    "hex": "#C0663A"
    }
   ]
  },
@@ -538,11 +533,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "russet",
-    "russet"
+    "marigold",
+    "marigold"
    ],
    "looks": [
-    "russet"
+    "marigold"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -560,11 +555,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "butter",
-    "butter"
+    "cream",
+    "cream"
    ],
    "looks": [
-    "butter"
+    "cream"
    ],
    "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
    "nature": "look",
@@ -1403,11 +1398,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "hoof",
-    "hoof"
+    "pad",
+    "pad"
    ],
    "looks": [
-    "hoof"
+    "pad"
    ],
    "guard": "rig: terminal.form",
    "nature": "look",
@@ -1613,75 +1608,6 @@
    "changedBy": "species"
   },
   {
-   "id": "anatomy.horn-presence",
-   "family": "structure",
-   "scope": "branch",
-   "clan": "C08",
-   "switch": true,
-   "consumer": "rig: a pair of horns on the head",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "rig: a pair of horns on the head",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.horn-curl",
-   "family": "structure",
-   "scope": "branch",
-   "clan": "C08",
-   "switch": false,
-   "consumer": "rig: horn bend",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "straight",
-    "straight"
-   ],
-   "looks": [
-    "straight"
-   ],
-   "guard": "rig: horn bend",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "anatomy.horn-branching",
-   "family": "structure",
-   "scope": "branch",
-   "clan": "C08",
-   "switch": false,
-   "consumer": "rig: plain horns or antlers with a tine",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "plain",
-    "plain"
-   ],
-   "looks": [
-    "plain"
-   ],
-   "guard": "rig: plain horns or antlers with a tine",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
    "id": "appearance.sheen",
    "family": "appearance",
    "scope": "trunk",
@@ -1715,11 +1641,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "bright",
-    "bright"
+    "dim",
+    "dim"
    ],
    "looks": [
-    "bright"
+    "dim"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
    "nature": "doing",
@@ -2984,6 +2910,18 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "anatomy.horn-presence",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "growth.horn-curl",
+   "why": "absent: no anatomy.horn-presence on"
+  },
+  {
+   "id": "anatomy.horn-branching",
+   "why": "absent: no anatomy.horn-presence on"
+  },
+  {
    "id": "anatomy.antenna-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -3225,14 +3163,14 @@
   }
  ],
  "counts": {
-  "carried": 93,
+  "carried": 90,
   "trunk": 90,
-  "branch": 3,
-  "absent": 110,
-  "locked": 71,
+  "branch": 0,
+  "absent": 113,
+  "locked": 68,
   "lockedBy": {
-   "switch": 3,
-   "fixed": 68
+   "switch": 2,
+   "fixed": 66
   },
   "heritableLook": 15,
   "heritableDoing": 6,
@@ -3304,12 +3242,12 @@
      "low"
     ],
     "appearance.body-palette": [
-     "russet",
-     "russet"
+     "marigold",
+     "marigold"
     ],
     "appearance.underside-palette": [
-     "butter",
-     "butter"
+     "cream",
+     "cream"
     ],
     "appearance.marking-switch": [
      "on",
@@ -3456,8 +3394,8 @@
      "ovoid"
     ],
     "anatomy.contact-terminal-form": [
-     "hoof",
-     "hoof"
+     "pad",
+     "pad"
     ],
     "appearance.fur-length": [
      "long",
@@ -3495,25 +3433,13 @@
      "body",
      "body"
     ],
-    "anatomy.horn-presence": [
-     "on",
-     "on"
-    ],
-    "growth.horn-curl": [
-     "straight",
-     "straight"
-    ],
-    "anatomy.horn-branching": [
-     "plain",
-     "plain"
-    ],
     "appearance.sheen": [
      "matte",
      "matte"
     ],
     "appearance.emission-brightness": [
-     "bright",
-     "bright"
+     "dim",
+     "dim"
     ],
     "appearance.emission-length": [
      "long",
@@ -3681,19 +3607,19 @@
   "bounds": {
    "min": [
     -0.9153588518296973,
-    -0.44430661689001505,
-    -0.07178453333333334
+    -0.473045864890015,
+    0
    ],
    "max": [
     1.0207618665927094,
-    0.44430661689001505,
-    3.3782805170927555
+    0.473045864890015,
+    2.7554842182801424
    ]
   },
   "counts": {
-   "nodes": 27,
-   "edges": 26,
-   "vertices": 1367
+   "nodes": 25,
+   "edges": 24,
+   "vertices": 1271
   }
  },
  "viability": {
@@ -3818,12 +3744,12 @@
    "low"
   ],
   "appearance.body-palette": [
-   "russet",
-   "russet"
+   "marigold",
+   "marigold"
   ],
   "appearance.underside-palette": [
-   "butter",
-   "butter"
+   "cream",
+   "cream"
   ],
   "appearance.marking-extent": [
    "low",
@@ -3942,8 +3868,8 @@
    "ovoid"
   ],
   "anatomy.contact-terminal-form": [
-   "hoof",
-   "hoof"
+   "pad",
+   "pad"
   ],
   "appearance.fur-length": [
    "long",
@@ -3977,25 +3903,13 @@
    "body",
    "body"
   ],
-  "anatomy.horn-presence": [
-   "on",
-   "on"
-  ],
-  "growth.horn-curl": [
-   "straight",
-   "straight"
-  ],
-  "anatomy.horn-branching": [
-   "plain",
-   "plain"
-  ],
   "appearance.sheen": [
    "matte",
    "matte"
   ],
   "appearance.emission-brightness": [
-   "bright",
-   "bright"
+   "dim",
+   "dim"
   ],
   "appearance.emission-length": [
    "long",

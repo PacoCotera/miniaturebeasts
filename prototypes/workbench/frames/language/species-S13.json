@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S13",
-  "resembles": "a low domed body on six legs",
   "moves": "crawls",
-  "habitat": "rock field, cave",
+  "habitat": "Highpools",
   "gate": null,
   "diet": "moss",
   "ability": "burrows under stones for buried finds",
@@ -87,18 +86,13 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "charcoal",
+  "anchor": "ash",
   "second": "slate",
-  "feature": "plates and wing cases; armoured crawlers",
+  "feature": "a six-arm with tall soft cone crest",
   "features": {
-   "anatomy.exterior-eye-presence": "on",
-   "anatomy.antenna-presence": "on"
+   "anatomy.exterior-eye-presence": "on"
   },
-  "finish": {
-   "anatomy.antenna-form": "thread",
-   "anatomy.contact-terminal-form": "wedge",
-   "appearance.anatomical-scale-size": "coarse"
-  },
+  "finish": {},
   "part": {
    "type": "tall soft cone crest",
    "socket": "head-top",
@@ -119,12 +113,12 @@
   "shellPattern": "plates",
   "colourPair": [
    {
-    "pigment": "charcoal",
-    "hex": "#465459"
+    "pigment": "ash",
+    "hex": "#6F87A1"
    },
    {
-    "pigment": "jade",
-    "hex": "#38a878"
+    "pigment": "ice",
+    "hex": "#9CC3C2"
    }
   ]
  },
@@ -486,11 +480,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "charcoal",
-    "charcoal"
+    "ash",
+    "ash"
    ],
    "looks": [
-    "charcoal"
+    "ash"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -1394,11 +1388,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "wedge",
-    "wedge"
+    "rounded",
+    "rounded"
    ],
    "looks": [
-    "wedge"
+    "rounded"
    ],
    "guard": "rig: terminal.form",
    "nature": "look",
@@ -1450,72 +1444,6 @@
    "changedBy": "breeding"
   },
   {
-   "id": "anatomy.antenna-presence",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": true,
-   "consumer": "rig: antenna pair on the head",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "rig: antenna pair on the head",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.antenna-length-ratio",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: antenna length over head depth",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "long",
-    "long"
-   ],
-   "looks": [
-    "long"
-   ],
-   "guard": "rig: antenna length over head depth",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "anatomy.antenna-form",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: thread, club or fern-tip curl",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "thread",
-    "thread"
-   ],
-   "looks": [
-    "thread"
-   ],
-   "guard": "rig: thread, club or fern-tip curl",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
    "id": "appearance.sheen",
    "family": "appearance",
    "scope": "trunk",
@@ -1549,11 +1477,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "dim",
-    "dim"
+    "bright",
+    "bright"
    ],
    "looks": [
-    "dim"
+    "bright"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
    "nature": "doing",
@@ -1887,11 +1815,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "belly",
-    "belly"
+    "forehead",
+    "forehead"
    ],
    "looks": [
-    "belly"
+    "forehead"
    ],
    "guard": "engine: where the emblem sits; asleep with no emblem",
    "nature": "look",
@@ -2159,11 +2087,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "on",
-    "on"
+    "off",
+    "off"
    ],
    "looks": [
-    "on"
+    "off"
    ],
    "guard": "engine: small fangs (a face family, 2026-11-02 20:27); both copies on to show",
    "nature": "look",
@@ -2683,6 +2611,18 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "anatomy.antenna-presence",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "growth.antenna-length-ratio",
+   "why": "absent: no anatomy.antenna-presence on"
+  },
+  {
+   "id": "anatomy.antenna-form",
+   "why": "absent: no anatomy.antenna-presence on"
+  },
+  {
    "id": "anatomy.wing-case-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -2944,14 +2884,14 @@
   }
  ],
  "counts": {
-  "carried": 83,
-  "trunk": 83,
+  "carried": 80,
+  "trunk": 80,
   "branch": 0,
-  "absent": 120,
-  "locked": 64,
+  "absent": 123,
+  "locked": 61,
   "lockedBy": {
-   "switch": 2,
-   "fixed": 62
+   "switch": 1,
+   "fixed": 60
   },
   "heritableLook": 13,
   "heritableDoing": 5,
@@ -3023,8 +2963,8 @@
      "high"
     ],
     "appearance.body-palette": [
-     "charcoal",
-     "charcoal"
+     "ash",
+     "ash"
     ],
     "appearance.underside-palette": [
      "slate",
@@ -3183,8 +3123,8 @@
      "barrel"
     ],
     "anatomy.contact-terminal-form": [
-     "wedge",
-     "wedge"
+     "rounded",
+     "rounded"
     ],
     "cognition.exploration-tendency": [
      "seeking",
@@ -3194,25 +3134,13 @@
      "low",
      "high"
     ],
-    "anatomy.antenna-presence": [
-     "on",
-     "on"
-    ],
-    "growth.antenna-length-ratio": [
-     "long",
-     "long"
-    ],
-    "anatomy.antenna-form": [
-     "thread",
-     "thread"
-    ],
     "appearance.sheen": [
      "matte",
      "matte"
     ],
     "appearance.emission-brightness": [
-     "dim",
-     "dim"
+     "bright",
+     "bright"
     ],
     "appearance.emission-length": [
      "long",
@@ -3267,8 +3195,8 @@
      "none"
     ],
     "appearance.emblem-place": [
-     "belly",
-     "belly"
+     "forehead",
+     "forehead"
     ],
     "appearance.emblem-size": [
      "between",
@@ -3311,8 +3239,8 @@
      "off"
     ],
     "anatomy.fang-presence": [
-     "on",
-     "on"
+     "off",
+     "off"
     ],
     "form.head": [
      "between",
@@ -3356,23 +3284,23 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Oskol: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs; scales, bands; splayed, neck head.",
+  "brief": "Oskol: 3 body regions (B3), a head, 2 eyes, 6 legs; scales, bands; splayed, neck head.",
   "bounds": {
    "min": [
-    -0.8645154432116151,
+    -0.5170855379940943,
     -0.6195004763043483,
     0
    ],
    "max": [
     0.9410663252029945,
     0.6195004763043483,
-    0.9364704270216465
+    0.590995064905636
    ]
   },
   "counts": {
-   "nodes": 39,
-   "edges": 38,
-   "vertices": 1389
+   "nodes": 33,
+   "edges": 32,
+   "vertices": 1525
   }
  },
  "viability": {
@@ -3479,8 +3407,8 @@
    "high"
   ],
   "appearance.body-palette": [
-   "charcoal",
-   "charcoal"
+   "ash",
+   "ash"
   ],
   "appearance.underside-palette": [
    "slate",
@@ -3615,32 +3543,20 @@
    "barrel"
   ],
   "anatomy.contact-terminal-form": [
-   "wedge",
-   "wedge"
+   "rounded",
+   "rounded"
   ],
   "cognition.exploration-tendency": [
    "seeking",
    "seeking"
-  ],
-  "anatomy.antenna-presence": [
-   "on",
-   "on"
-  ],
-  "growth.antenna-length-ratio": [
-   "long",
-   "long"
-  ],
-  "anatomy.antenna-form": [
-   "thread",
-   "thread"
   ],
   "appearance.sheen": [
    "matte",
    "matte"
   ],
   "appearance.emission-brightness": [
-   "dim",
-   "dim"
+   "bright",
+   "bright"
   ],
   "appearance.emission-length": [
    "long",
@@ -3687,8 +3603,8 @@
    "none"
   ],
   "appearance.emblem-place": [
-   "belly",
-   "belly"
+   "forehead",
+   "forehead"
   ],
   "appearance.emblem-size": [
    "between",
@@ -3723,8 +3639,8 @@
    "off"
   ],
   "anatomy.fang-presence": [
-   "on",
-   "on"
+   "off",
+   "off"
   ],
   "signature.count": [
    "1",

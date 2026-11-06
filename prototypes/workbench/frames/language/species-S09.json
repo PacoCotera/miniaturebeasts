@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S09",
-  "resembles": "an upright body on two legs, wings tucked in",
   "moves": "strides, soars",
-  "habitat": "meadow, rock field",
+  "habitat": "Tallwood",
   "gate": "Weather expeditions",
   "diet": "fruit, seeds",
   "ability": "scouts from above: reveals the cells around",
@@ -82,23 +81,15 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "cobalt",
-  "second": "butter",
-  "feature": "a beak and a pointed crest; watchers of the open sky",
+  "anchor": "jade",
+  "second": "slate",
+  "feature": "a flutterer with quill crown",
   "features": {
-   "anatomy.exterior-eye-presence": "on",
-   "anatomy.crown-presence": "on",
-   "appearance.feather-presence": "on",
-   "anatomy.axial-tail-presence": "on"
+   "anatomy.exterior-eye-presence": "on"
   },
   "finish": {
-   "anatomy.crown-form": "pointed",
-   "growth.wing-span-ratio": "short",
-   "growth.wing-chord-ratio": "wide",
-   "appearance.flap-translucency": "opaque",
-   "growth.support-drop-ratio": "long",
-   "growth.support-radius-ratio": "slender",
-   "anatomy.contact-terminal-form": "rounded"
+   "anatomy.contact-terminal-form": "pad",
+   "appearance.fur-reach": "body"
   },
   "part": {
    "type": "quill crown",
@@ -120,12 +111,12 @@
   "shellPattern": "soft ribs",
   "colourPair": [
    {
-    "pigment": "cobalt",
-    "hex": "#4d7ed4"
+    "pigment": "jade",
+    "hex": "#A8B39C"
    },
    {
-    "pigment": "butter",
-    "hex": "#fff0b8"
+    "pigment": "cream",
+    "hex": "#D6CC72"
    }
   ]
  },
@@ -371,40 +362,6 @@
      "nature": "look",
      "shapeable": true,
      "verdict": null
-    },
-    {
-     "id": "tail-length",
-     "name": "Tail length",
-     "loci": [
-      "form.tail-length"
-     ],
-     "looks": [
-      "short",
-      "between short and between",
-      "between short and long",
-      "between between and long",
-      "long"
-     ],
-     "nature": "look",
-     "shapeable": true,
-     "verdict": null
-    },
-    {
-     "id": "tail-girth",
-     "name": "Tail girth",
-     "loci": [
-      "form.tail-girth"
-     ],
-     "looks": [
-      "slim",
-      "between slim and between",
-      "between slim and stout",
-      "between between and stout",
-      "stout"
-     ],
-     "nature": "look",
-     "shapeable": true,
-     "verdict": null
     }
    ]
   },
@@ -602,11 +559,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "cobalt",
-    "cobalt"
+    "jade",
+    "jade"
    ],
    "looks": [
-    "cobalt"
+    "jade"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -624,11 +581,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "butter",
-    "butter"
+    "slate",
+    "slate"
    ],
    "looks": [
-    "butter"
+    "slate"
    ],
    "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
    "nature": "look",
@@ -1064,28 +1021,6 @@
    "changedBy": "species"
   },
   {
-   "id": "anatomy.crown-presence",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": true,
-   "consumer": "rig: modules.crownPair",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "rig: modules.crownPair",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
    "id": "anatomy.exterior-eye-presence",
    "family": "sensing-signaling",
    "scope": "trunk",
@@ -1104,28 +1039,6 @@
     "on"
    ],
    "guard": "rig: modules.exteriorEyePair",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "anatomy.crown-form",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: crown.form",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "pointed",
-    "pointed"
-   ],
-   "looks": [
-    "pointed"
-   ],
-   "guard": "rig: crown.form",
    "nature": "look",
    "changedBy": "species"
   },
@@ -1438,28 +1351,6 @@
    "changedBy": "species"
   },
   {
-   "id": "growth.crown-height-ratio",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: crown.heightOverHeadRz",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "high",
-    "high"
-   ],
-   "looks": [
-    "high"
-   ],
-   "guard": "rig: crown.heightOverHeadRz",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
    "id": "growth.wing-span-ratio",
    "family": "structure",
    "scope": "trunk",
@@ -1647,11 +1538,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "rounded",
-    "rounded"
+    "pad",
+    "pad"
    ],
    "looks": [
-    "rounded"
+    "pad"
    ],
    "guard": "rig: terminal.form",
    "nature": "look",
@@ -1698,94 +1589,6 @@
     "oblique"
    ],
    "guard": "rig: fur.tangentAngleRadians",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "anatomy.axial-tail-presence",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": true,
-   "consumer": "rig: tail.enabled",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "rig: tail.enabled",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.axial-tail-length-ratio",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: tail.lengthOverOwnerRx",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "long",
-    "short"
-   ],
-   "looks": [
-    "long"
-   ],
-   "guard": "rig: tail.lengthOverOwnerRx",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.axial-tail-width-ratio",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: tail.baseRadiusOverOwnerCross",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "broad",
-    "broad"
-   ],
-   "looks": [
-    "broad"
-   ],
-   "guard": "rig: tail.baseRadiusOverOwnerCross",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.axial-tail-bend",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: tail.bendRadians",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "down",
-    "up"
-   ],
-   "looks": [
-    "down"
-   ],
-   "guard": "rig: tail.bendRadians",
    "nature": "look",
    "changedBy": "species"
   },
@@ -1847,82 +1650,13 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "tail",
-    "tail"
+    "body",
+    "body"
    ],
    "looks": [
-    "tail"
+    "body"
    ],
    "guard": "sketch: the fur material on the tail and the ears too",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "appearance.feather-presence",
-   "family": "appearance",
-   "scope": "branch",
-   "clan": "C09",
-   "switch": true,
-   "consumer": "sketch: the fur material drawn as feathers",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "sketch: the fur material drawn as feathers",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "appearance.feather-length",
-   "family": "appearance",
-   "scope": "branch",
-   "clan": "C09",
-   "switch": false,
-   "consumer": "sketch: feather length on body and flaps",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "long",
-    "long"
-   ],
-   "looks": [
-    "long"
-   ],
-   "guard": "sketch: feather length on body and flaps",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.feather-crest",
-   "family": "structure",
-   "scope": "branch",
-   "clan": "C09",
-   "switch": false,
-   "consumer": "rig: the crown drawn as a feather crest, by height",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "tall",
-    "tall"
-   ],
-   "looks": [
-    "tall"
-   ],
-   "guard": "rig: the crown drawn as a feather crest, by height",
    "nature": "look",
    "changedBy": "species"
   },
@@ -1960,11 +1694,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "opaque",
-    "opaque"
+    "clear",
+    "clear"
    ],
    "looks": [
-    "opaque"
+    "clear"
    ],
    "guard": "sketch: thin-surface opacity (the transparency draft, validated for flaps)",
    "nature": "look",
@@ -2004,11 +1738,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "dim",
-    "dim"
+    "bright",
+    "bright"
    ],
    "looks": [
-    "dim"
+    "bright"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
    "nature": "doing",
@@ -2342,11 +2076,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "belly",
-    "belly"
+    "forehead",
+    "forehead"
    ],
    "looks": [
-    "belly"
+    "forehead"
    ],
    "guard": "engine: where the emblem sits; asleep with no emblem",
    "nature": "look",
@@ -2773,146 +2507,6 @@
    "type": 1
   },
   {
-   "id": "form.tail-length",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "engine: tail length",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "legs-tail",
-   "trait": "tail-length",
-   "shapeable": true,
-   "alleles": [
-    "short",
-    "between",
-    "long"
-   ],
-   "looks": [
-    "short",
-    "between short and between",
-    "between short and long",
-    "between between and long",
-    "long"
-   ],
-   "guard": "engine: tail length",
-   "changedBy": "player",
-   "typical": [
-    "between",
-    "between"
-   ],
-   "band": {
-    "form": "mult",
-    "lo": 0.85,
-    "hi": 1.15,
-    "unit": "×"
-   },
-   "type": 1
-  },
-  {
-   "id": "form.tail-girth",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "engine: tail girth (the root, 35 %, and the taper together)",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "legs-tail",
-   "trait": "tail-girth",
-   "shapeable": true,
-   "alleles": [
-    "slim",
-    "between",
-    "stout"
-   ],
-   "looks": [
-    "slim",
-    "between slim and between",
-    "between slim and stout",
-    "between between and stout",
-    "stout"
-   ],
-   "guard": "engine: tail girth (the root, 35 %, and the taper together)",
-   "changedBy": "player",
-   "typical": [
-    "between",
-    "between"
-   ],
-   "band": {
-    "form": "mult",
-    "lo": 0.85,
-    "hi": 1.15,
-    "unit": "×"
-   },
-   "type": 1
-  },
-  {
-   "id": "form.tail-curl",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "engine: the tail's curl (not C19's fiddlehead growth.tail-curl-turn)",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "between",
-    "between"
-   ],
-   "looks": [
-    "between"
-   ],
-   "guard": "engine: the tail's curl (not C19's fiddlehead growth.tail-curl-turn)",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "form.tail-carry",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "engine: how high the tail is carried",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "between",
-    "between"
-   ],
-   "looks": [
-    "between"
-   ],
-   "guard": "engine: how high the tail is carried",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "form.tail-tip-size",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "engine: the tail tip's size",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "between",
-    "between"
-   ],
-   "looks": [
-    "between"
-   ],
-   "guard": "engine: the tail tip's size",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
    "id": "appearance.iris-colour",
    "family": "appearance",
    "scope": "trunk",
@@ -3163,6 +2757,14 @@
    "why": "absent: the plan and clan never have this part"
   },
   {
+   "id": "anatomy.crown-presence",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "anatomy.crown-form",
+   "why": "absent: no head crown owner"
+  },
+  {
    "id": "growth.muzzle-projection-ratio",
    "why": "absent: no head muzzle owner"
   },
@@ -3177,6 +2779,10 @@
   {
    "id": "growth.posterior-width-ratio",
    "why": "absent: no no old posterior owner"
+  },
+  {
+   "id": "growth.crown-height-ratio",
+   "why": "absent: no head crown owner"
   },
   {
    "id": "appearance.anatomical-covering-extent",
@@ -3219,6 +2825,22 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "anatomy.axial-tail-presence",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "growth.axial-tail-length-ratio",
+   "why": "absent: no axial tail"
+  },
+  {
+   "id": "growth.axial-tail-width-ratio",
+   "why": "absent: no axial tail"
+  },
+  {
+   "id": "growth.axial-tail-bend",
+   "why": "absent: no axial tail"
+  },
+  {
    "id": "appearance.face-mask",
    "why": "absent: the plan and clan never have this part"
   },
@@ -3253,6 +2875,18 @@
   {
    "id": "growth.beak-length-ratio",
    "why": "absent: no anatomy.beak-presence on"
+  },
+  {
+   "id": "appearance.feather-presence",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "appearance.feather-length",
+   "why": "absent: no appearance.feather-presence on"
+  },
+  {
+   "id": "growth.feather-crest",
+   "why": "absent: no anatomy.crown-presence on"
   },
   {
    "id": "anatomy.antenna-presence",
@@ -3309,6 +2943,26 @@
   {
    "id": "form.ear-droop",
    "why": "absent: no head-owned ears"
+  },
+  {
+   "id": "form.tail-length",
+   "why": "absent: no axial tail"
+  },
+  {
+   "id": "form.tail-girth",
+   "why": "absent: no axial tail"
+  },
+  {
+   "id": "form.tail-curl",
+   "why": "absent: no axial tail"
+  },
+  {
+   "id": "form.tail-carry",
+   "why": "absent: no axial tail"
+  },
+  {
+   "id": "form.tail-tip-size",
+   "why": "absent: no axial tail"
   },
   {
    "id": "anatomy.horn-presence",
@@ -3480,22 +3134,22 @@
   }
  ],
  "counts": {
-  "carried": 103,
-  "trunk": 100,
-  "branch": 3,
-  "absent": 100,
-  "locked": 76,
+  "carried": 88,
+  "trunk": 88,
+  "branch": 0,
+  "absent": 115,
+  "locked": 63,
   "lockedBy": {
-   "switch": 4,
-   "fixed": 72
+   "switch": 1,
+   "fixed": 62
   },
-  "heritableLook": 15,
+  "heritableLook": 13,
   "heritableDoing": 11,
   "selfChanging": 0,
   "sleeping": 1,
   "sealed": 0,
-  "open": 27,
-  "traits": 24,
+  "open": 25,
+  "traits": 22,
   "byChapter": {
    "Coat": {
     "loci": 4,
@@ -3510,8 +3164,8 @@
     "traits": 4
    },
    "Legs & tail": {
-    "loci": 4,
-    "traits": 4
+    "loci": 2,
+    "traits": 2
    },
    "Movement": {
     "loci": 6,
@@ -3526,8 +3180,8 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 108,
-  "stampBitsPerCopy": 47
+  "fieldGuideLooks": 98,
+  "stampBitsPerCopy": 43
  },
  "notYet": {
   "domains": [
@@ -3559,12 +3213,12 @@
      "low"
     ],
     "appearance.body-palette": [
-     "cobalt",
-     "cobalt"
+     "jade",
+     "jade"
     ],
     "appearance.underside-palette": [
-     "butter",
-     "butter"
+     "slate",
+     "slate"
     ],
     "appearance.marking-switch": [
      "on",
@@ -3638,17 +3292,9 @@
      "high",
      "high"
     ],
-    "anatomy.crown-presence": [
-     "on",
-     "on"
-    ],
     "anatomy.exterior-eye-presence": [
      "on",
      "on"
-    ],
-    "anatomy.crown-form": [
-     "pointed",
-     "pointed"
     ],
     "growth.core-half-length": [
      "large",
@@ -3706,10 +3352,6 @@
      "wide",
      "wide"
     ],
-    "growth.crown-height-ratio": [
-     "high",
-     "high"
-    ],
     "growth.wing-span-ratio": [
      "long",
      "long"
@@ -3743,8 +3385,8 @@
      "barrel"
     ],
     "anatomy.contact-terminal-form": [
-     "rounded",
-     "rounded"
+     "pad",
+     "pad"
     ],
     "appearance.fur-length": [
      "long",
@@ -3753,22 +3395,6 @@
     "appearance.fur-flow": [
      "oblique",
      "oblique"
-    ],
-    "anatomy.axial-tail-presence": [
-     "on",
-     "on"
-    ],
-    "growth.axial-tail-length-ratio": [
-     "long",
-     "short"
-    ],
-    "growth.axial-tail-width-ratio": [
-     "broad",
-     "broad"
-    ],
-    "growth.axial-tail-bend": [
-     "down",
-     "up"
     ],
     "cognition.exploration-tendency": [
      "reserved",
@@ -3779,36 +3405,24 @@
      "high"
     ],
     "appearance.fur-reach": [
-     "tail",
-     "tail"
-    ],
-    "appearance.feather-presence": [
-     "on",
-     "on"
-    ],
-    "appearance.feather-length": [
-     "long",
-     "long"
-    ],
-    "growth.feather-crest": [
-     "tall",
-     "tall"
+     "body",
+     "body"
     ],
     "appearance.flap-marking": [
      "spots",
      "spots"
     ],
     "appearance.flap-translucency": [
-     "opaque",
-     "opaque"
+     "clear",
+     "clear"
     ],
     "appearance.sheen": [
      "matte",
      "matte"
     ],
     "appearance.emission-brightness": [
-     "dim",
-     "dim"
+     "bright",
+     "bright"
     ],
     "appearance.emission-length": [
      "long",
@@ -3863,8 +3477,8 @@
      "none"
     ],
     "appearance.emblem-place": [
-     "belly",
-     "belly"
+     "forehead",
+     "forehead"
     ],
     "appearance.emblem-size": [
      "between",
@@ -3926,26 +3540,6 @@
      "between",
      "between"
     ],
-    "form.tail-length": [
-     "between",
-     "between"
-    ],
-    "form.tail-girth": [
-     "between",
-     "between"
-    ],
-    "form.tail-curl": [
-     "between",
-     "between"
-    ],
-    "form.tail-carry": [
-     "between",
-     "between"
-    ],
-    "form.tail-tip-size": [
-     "between",
-     "between"
-    ],
     "appearance.iris-colour": [
      "hazel",
      "hazel"
@@ -3972,23 +3566,23 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers, bands; upright, neck head.",
+  "brief": "Belatz: 2 body regions (B2), a head, 2 eyes, 2 legs, 2 flaps; fur, bands; upright, neck head.",
   "bounds": {
    "min": [
-    -0.9565261109161566,
-    -0.5155260654715244,
+    -0.9497114189161565,
+    -0.461832742449755,
     0
    ],
    "max": [
-    1.7403798442807814,
-    0.5155260654715244,
-    2.839694052247636
+    0.9477283779810884,
+    0.4352597673278675,
+    2.601845524300212
    ]
   },
   "counts": {
-   "nodes": 21,
-   "edges": 20,
-   "vertices": 907
+   "nodes": 18,
+   "edges": 17,
+   "vertices": 879
   }
  },
  "viability": {
@@ -4074,16 +3668,6 @@
    "between",
    "sturdy"
   ],
-  "form.tail-length": [
-   "short",
-   "between",
-   "long"
-  ],
-  "form.tail-girth": [
-   "slim",
-   "between",
-   "stout"
-  ],
   "movement.membrane-stroke": [
    "low",
    "high"
@@ -4135,12 +3719,12 @@
    "low"
   ],
   "appearance.body-palette": [
-   "cobalt",
-   "cobalt"
+   "jade",
+   "jade"
   ],
   "appearance.underside-palette": [
-   "butter",
-   "butter"
+   "slate",
+   "slate"
   ],
   "appearance.marking-extent": [
    "low",
@@ -4170,17 +3754,9 @@
    "high",
    "high"
   ],
-  "anatomy.crown-presence": [
-   "on",
-   "on"
-  ],
   "anatomy.exterior-eye-presence": [
    "on",
    "on"
-  ],
-  "anatomy.crown-form": [
-   "pointed",
-   "pointed"
   ],
   "growth.core-half-length": [
    "large",
@@ -4238,10 +3814,6 @@
    "wide",
    "wide"
   ],
-  "growth.crown-height-ratio": [
-   "high",
-   "high"
-  ],
   "growth.wing-span-ratio": [
    "long",
    "long"
@@ -4275,8 +3847,8 @@
    "barrel"
   ],
   "anatomy.contact-terminal-form": [
-   "rounded",
-   "rounded"
+   "pad",
+   "pad"
   ],
   "appearance.fur-length": [
    "long",
@@ -4286,53 +3858,25 @@
    "oblique",
    "oblique"
   ],
-  "anatomy.axial-tail-presence": [
-   "on",
-   "on"
-  ],
-  "growth.axial-tail-length-ratio": [
-   "long",
-   "short"
-  ],
-  "growth.axial-tail-width-ratio": [
-   "broad",
-   "broad"
-  ],
-  "growth.axial-tail-bend": [
-   "down",
-   "up"
-  ],
   "appearance.fur-reach": [
-   "tail",
-   "tail"
-  ],
-  "appearance.feather-presence": [
-   "on",
-   "on"
-  ],
-  "appearance.feather-length": [
-   "long",
-   "long"
-  ],
-  "growth.feather-crest": [
-   "tall",
-   "tall"
+   "body",
+   "body"
   ],
   "appearance.flap-marking": [
    "spots",
    "spots"
   ],
   "appearance.flap-translucency": [
-   "opaque",
-   "opaque"
+   "clear",
+   "clear"
   ],
   "appearance.sheen": [
    "matte",
    "matte"
   ],
   "appearance.emission-brightness": [
-   "dim",
-   "dim"
+   "bright",
+   "bright"
   ],
   "appearance.emission-length": [
    "long",
@@ -4379,8 +3923,8 @@
    "none"
   ],
   "appearance.emblem-place": [
-   "belly",
-   "belly"
+   "forehead",
+   "forehead"
   ],
   "appearance.emblem-size": [
    "between",
@@ -4417,18 +3961,6 @@
   "anatomy.fang-presence": [
    "on",
    "on"
-  ],
-  "form.tail-curl": [
-   "between",
-   "between"
-  ],
-  "form.tail-carry": [
-   "between",
-   "between"
-  ],
-  "form.tail-tip-size": [
-   "between",
-   "between"
   ],
   "signature.curl": [
    "straight",

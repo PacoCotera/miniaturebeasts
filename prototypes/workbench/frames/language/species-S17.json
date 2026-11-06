@@ -22,9 +22,8 @@
  },
  "taxonomy": {
   "code": "S17",
-  "resembles": "a tall teardrop of fur with a glowing plume",
   "moves": "sways, rocks along",
-  "habitat": "Reeds",
+  "habitat": "Meadows",
   "gate": null,
   "diet": "dew",
   "ability": "draft: to be set by the game designer",
@@ -93,7 +92,7 @@
  "signature": {
   "anchor": "marigold",
   "second": "cream",
-  "feature": "a plume curling forward from the top to a glowing tip; a candle-flame of fur, in the reeds",
+  "feature": "a roundling with flame curl",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.axial-tail-presence": "on",
@@ -102,6 +101,7 @@
    "anatomy.fur-skirt-presence": "on"
   },
   "finish": {
+   "appearance.fur-reach": "body",
    "growth.tail-rise": "crown",
    "anatomy.region-longitudinal-form": "tapered",
    "anatomy.contact-terminal-form": "rounded",

@@ -395,7 +395,7 @@ function finishFrame(frame, spec) {
   const shell = plan.radial ? "segments" : plan.plan.covering === "fur" ? "soft ribs" : plan.plan.covering === "scales" ? "plates" : "smooth dots";
   const second = spec.pod?.second ?? (pools["appearance.body-palette"] ?? [spec.anchor])[1] ?? spec.second ?? spec.anchor;
   const hexOf = (p) => BODY_PIGMENTS[p] ?? SECOND_PIGMENTS[p] ?? "#888888";
-  frame.pod = { sizeClass: size, proportion: null, shellPattern: shell, colourPair: [{ pigment: spec.anchor, hex: hexOf(spec.anchor) }, { pigment: second, hex: hexOf(second) }] };
+  frame.pod = { sizeClass: size, proportion: null, shellPattern: shell, colourPair: spec.podPair ?? [{ pigment: spec.anchor, hex: hexOf(spec.anchor) }, { pigment: second, hex: hexOf(second) }] };
   delete frame._pools; delete frame._locked; delete frame._traits; delete frame._sealed; delete frame._typical;
   frame.pools = pools; frame.locked = locked;
   frame.sealed = sealed;

@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S11",
-  "resembles": "a high dome on four stumpy legs",
   "moves": "plods, swims slowly",
-  "habitat": "pond edge",
+  "habitat": "Thickets",
   "gate": "beyond fast water",
   "diet": "moss, fruit",
   "ability": "carries one more pod",
@@ -84,18 +83,15 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "jade",
-  "second": "butter",
-  "feature": "a shell; slow keepers of the pond",
+  "anchor": "russet",
+  "second": "slate",
+  "feature": "a two-part crawler with antennae with weighted tips",
   "features": {
    "anatomy.exterior-eye-presence": "on",
-   "anatomy.shell-presence": "on"
+   "anatomy.antenna-presence": "on"
   },
   "finish": {
-   "growth.support-drop-ratio": "short",
-   "growth.support-splay-ratio": "high",
-   "anatomy.contact-terminal-form": "rounded",
-   "appearance.anatomical-scale-size": "coarse"
+   "anatomy.contact-terminal-form": "pad"
   },
   "part": {
    "type": "antennae with weighted tips",
@@ -117,12 +113,12 @@
   "shellPattern": "plates",
   "colourPair": [
    {
-    "pigment": "jade",
-    "hex": "#38a878"
+    "pigment": "russet",
+    "hex": "#7C4C66"
    },
    {
-    "pigment": "russet",
-    "hex": "#ae674d"
+    "pigment": "cream",
+    "hex": "#C9A27A"
    }
   ]
  },
@@ -545,11 +541,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "jade",
-    "jade"
+    "russet",
+    "russet"
    ],
    "looks": [
-    "jade"
+    "russet"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -567,11 +563,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "butter",
-    "butter"
+    "slate",
+    "slate"
    ],
    "looks": [
-    "butter"
+    "slate"
    ],
    "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
    "nature": "look",
@@ -1302,11 +1298,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "broad",
-    "broad"
+    "thin",
+    "thin"
    ],
    "looks": [
-    "broad"
+    "thin"
    ],
    "guard": "rig: region.connectorRadiusRatio",
    "nature": "look",
@@ -1346,11 +1342,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "barrel",
-    "barrel"
+    "tapered",
+    "tapered"
    ],
    "looks": [
-    "barrel"
+    "tapered"
    ],
    "guard": "rig: region.longitudinalForm",
    "nature": "look",
@@ -1368,11 +1364,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "rounded",
-    "rounded"
+    "pad",
+    "pad"
    ],
    "looks": [
-    "rounded"
+    "pad"
    ],
    "guard": "rig: terminal.form",
    "nature": "look",
@@ -1425,12 +1421,11 @@
    "changedBy": "breeding"
   },
   {
-   "id": "anatomy.shell-presence",
+   "id": "anatomy.antenna-presence",
    "family": "structure",
-   "scope": "branch",
-   "clan": "C11",
+   "scope": "trunk",
    "switch": true,
-   "consumer": "rig: a domed shell over the body",
+   "consumer": "rig: antenna pair on the head",
    "kind": "locked",
    "lockReason": "switch",
    "chapter": null,
@@ -1443,53 +1438,51 @@
    "looks": [
     "on"
    ],
-   "guard": "rig: a domed shell over the body",
+   "guard": "rig: antenna pair on the head",
    "nature": "look",
    "changedBy": "species"
   },
   {
-   "id": "growth.shell-dome-ratio",
+   "id": "growth.antenna-length-ratio",
    "family": "structure",
-   "scope": "branch",
-   "clan": "C11",
+   "scope": "trunk",
    "switch": false,
-   "consumer": "rig: dome height over body depth",
+   "consumer": "rig: antenna length over head depth",
    "kind": "locked",
    "lockReason": "fixed",
    "chapter": null,
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "long",
+    "long"
    ],
    "looks": [
-    "high"
+    "long"
    ],
-   "guard": "rig: dome height over body depth",
+   "guard": "rig: antenna length over head depth",
    "nature": "look",
    "changedBy": "species"
   },
   {
-   "id": "appearance.shell-plates",
-   "family": "appearance",
-   "scope": "branch",
-   "clan": "C11",
+   "id": "anatomy.antenna-form",
+   "family": "structure",
+   "scope": "trunk",
    "switch": false,
-   "consumer": "sketch: a plate field on the shell",
+   "consumer": "rig: thread, club or fern-tip curl",
    "kind": "locked",
    "lockReason": "fixed",
    "chapter": null,
    "trait": null,
    "shapeable": false,
    "copies": [
-    "plated",
-    "plated"
+    "thread",
+    "thread"
    ],
    "looks": [
-    "plated"
+    "thread"
    ],
-   "guard": "sketch: a plate field on the shell",
+   "guard": "rig: thread, club or fern-tip curl",
    "nature": "look",
    "changedBy": "species"
   },
@@ -1527,11 +1520,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "dim",
-    "dim"
+    "bright",
+    "bright"
    ],
    "looks": [
-    "dim"
+    "bright"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
    "nature": "doing",
@@ -1549,11 +1542,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "long",
-    "long"
+    "short",
+    "short"
    ],
    "looks": [
-    "long"
+    "short"
    ],
    "guard": "behaviour: how long the glow lasts",
    "nature": "doing",
@@ -2137,11 +2130,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "off",
-    "off"
+    "on",
+    "on"
    ],
    "looks": [
-    "off"
+    "on"
    ],
    "guard": "engine: small fangs (a face family, 2026-11-02 20:27); both copies on to show",
    "nature": "look",
@@ -2680,16 +2673,16 @@
    "why": "absent: no head-owned ears"
   },
   {
-   "id": "anatomy.antenna-presence",
+   "id": "anatomy.shell-presence",
    "why": "absent: the plan and clan never have this part"
   },
   {
-   "id": "growth.antenna-length-ratio",
-   "why": "absent: no anatomy.antenna-presence on"
+   "id": "growth.shell-dome-ratio",
+   "why": "absent: no anatomy.shell-presence on"
   },
   {
-   "id": "anatomy.antenna-form",
-   "why": "absent: no anatomy.antenna-presence on"
+   "id": "appearance.shell-plates",
+   "why": "absent: no anatomy.shell-presence on"
   },
   {
    "id": "appearance.flap-marking",
@@ -2942,8 +2935,8 @@
  ],
  "counts": {
   "carried": 79,
-  "trunk": 76,
-  "branch": 3,
+  "trunk": 79,
+  "branch": 0,
   "absent": 124,
   "locked": 56,
   "lockedBy": {
@@ -3021,12 +3014,12 @@
      "high"
     ],
     "appearance.body-palette": [
-     "jade",
-     "jade"
+     "russet",
+     "russet"
     ],
     "appearance.underside-palette": [
-     "butter",
-     "butter"
+     "slate",
+     "slate"
     ],
     "appearance.marking-switch": [
      "on",
@@ -3153,20 +3146,20 @@
      "coarse"
     ],
     "growth.join-throat-ratio": [
-     "broad",
-     "broad"
+     "thin",
+     "thin"
     ],
     "anatomy.region-cross-exponent": [
      "round",
      "round"
     ],
     "anatomy.region-longitudinal-form": [
-     "barrel",
-     "barrel"
+     "tapered",
+     "tapered"
     ],
     "anatomy.contact-terminal-form": [
-     "rounded",
-     "rounded"
+     "pad",
+     "pad"
     ],
     "cognition.exploration-tendency": [
      "reserved",
@@ -3176,29 +3169,29 @@
      "low",
      "high"
     ],
-    "anatomy.shell-presence": [
+    "anatomy.antenna-presence": [
      "on",
      "on"
     ],
-    "growth.shell-dome-ratio": [
-     "high",
-     "high"
+    "growth.antenna-length-ratio": [
+     "long",
+     "long"
     ],
-    "appearance.shell-plates": [
-     "plated",
-     "plated"
+    "anatomy.antenna-form": [
+     "thread",
+     "thread"
     ],
     "appearance.sheen": [
      "matte",
      "matte"
     ],
     "appearance.emission-brightness": [
-     "dim",
-     "dim"
+     "bright",
+     "bright"
     ],
     "appearance.emission-length": [
-     "long",
-     "long"
+     "short",
+     "short"
     ],
     "appearance.body-hue": [
      "between",
@@ -3293,8 +3286,8 @@
      "off"
     ],
     "anatomy.fang-presence": [
-     "off",
-     "off"
+     "on",
+     "on"
     ],
     "form.head": [
      "between",
@@ -3338,23 +3331,23 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Kilpo: 1 body region (B1), a head, 2 eyes, 4 legs, wing cases; scales, bands; plantigrade, neck head.",
+  "brief": "Kilpo: 1 body region (B1), a head, 2 eyes, two antennae, 4 legs; scales, bands; plantigrade, neck head.",
   "bounds": {
    "min": [
-    -1.2988372696139203,
-    -0.9006614624424765,
+    -1.5702933517095221,
+    -0.909271943183063,
     0
    ],
    "max": [
-    0.8892,
-    0.9006614624424767,
-    1.161437293454867
+    0.7727908,
+    0.909271943183063,
+    1.4464582181687275
    ]
   },
   "counts": {
-   "nodes": 24,
-   "edges": 23,
-   "vertices": 1127
+   "nodes": 29,
+   "edges": 28,
+   "vertices": 1337
   }
  },
  "viability": {
@@ -3478,12 +3471,12 @@
    "high"
   ],
   "appearance.body-palette": [
-   "jade",
-   "jade"
+   "russet",
+   "russet"
   ],
   "appearance.underside-palette": [
-   "butter",
-   "butter"
+   "slate",
+   "slate"
   ],
   "appearance.marking-extent": [
    "low",
@@ -3574,44 +3567,44 @@
    "coarse"
   ],
   "growth.join-throat-ratio": [
-   "broad",
-   "broad"
+   "thin",
+   "thin"
   ],
   "anatomy.region-cross-exponent": [
    "round",
    "round"
   ],
   "anatomy.region-longitudinal-form": [
-   "barrel",
-   "barrel"
+   "tapered",
+   "tapered"
   ],
   "anatomy.contact-terminal-form": [
-   "rounded",
-   "rounded"
+   "pad",
+   "pad"
   ],
-  "anatomy.shell-presence": [
+  "anatomy.antenna-presence": [
    "on",
    "on"
   ],
-  "growth.shell-dome-ratio": [
-   "high",
-   "high"
+  "growth.antenna-length-ratio": [
+   "long",
+   "long"
   ],
-  "appearance.shell-plates": [
-   "plated",
-   "plated"
+  "anatomy.antenna-form": [
+   "thread",
+   "thread"
   ],
   "appearance.sheen": [
    "matte",
    "matte"
   ],
   "appearance.emission-brightness": [
-   "dim",
-   "dim"
+   "bright",
+   "bright"
   ],
   "appearance.emission-length": [
-   "long",
-   "long"
+   "short",
+   "short"
   ],
   "appearance.countershade": [
    "low",
@@ -3690,8 +3683,8 @@
    "off"
   ],
   "anatomy.fang-presence": [
-   "off",
-   "off"
+   "on",
+   "on"
   ],
   "signature.count": [
    "2",

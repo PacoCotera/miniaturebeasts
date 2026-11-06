@@ -14,11 +14,14 @@ export const SPECIES_NAMES = { S01: "Loika", S02: "Untuva", S03: "Tuikis", S04: 
 export const CLAN_NAMES = { C01: "Lophessa", C02: "Kausida", C03: "Stilbera", C04: "Lathreta", C05: "Dasyla", C06: "Prosopa", C07: "Aulaka", C08: "Kremnion", C09: "Aithria", C10: "Kolymba", C11: "Thyreka", C12: "Graptoma", C13: "Lepidos", C14: "Kapnis", C15: "Phyllaxa", C16: "Brontelas" };
 
 import { proportionPairs } from "./proportions.mjs";
-import { LANGUAGE, kindOf, landOf } from "./language.mjs";
+import { LANGUAGE, kindOf, landOf, familyOf, hexToOklch } from "./language.mjs";
+import { BODY_PIGMENTS, SECOND_PIGMENTS } from "./catalogue.mjs";
 
 const sw = (...ids) => Object.fromEntries(ids.map((id) => [id, "on"]));
 const EYES = sw("anatomy.exterior-eye-presence"); // always a face: a pet has eyes (taxonomy §3)
 
+// The clans are the legacy tables of the frames before the language (versions 4 to 7): resembles, anchor, second, feature, features and
+// finish stay as they are because those frames are in the stamp registry. The frames of version 8 take theirs from the registry (languageFields).
 export const CLANS = {
   C01: { number: 1, resembles: "a round body, mostly head, on four short legs", plan: "one|serial|bilateral|contact|zero|one|two|off|skin", extras: { join: "broad" }, anchor: "charcoal", second: "cream", feature: "a leaf crest and a flat face; charcoal, of meadow and pond", features: { ...EYES, ...sw("anatomy.muzzle-presence", "anatomy.crown-presence", "appearance.belly-field") }, finish: { "anatomy.crown-form": "leaf", "growth.crest-leaf-count": "three" } },
   C02: { number: 2, resembles: "a puff with a face and stub feet", plan: "one|serial|radial|none|zero|one|two|on|fur", extras: { join: "broad", wave: true }, anchor: "coral", second: null, feature: "a cap of flaps, coral, radial bodies; soft, round, sleepy", features: { ...EYES, ...sw("anatomy.top-cap-sheet") }, finish: { "appearance.flap-translucency": "opaque" } },
@@ -232,25 +235,70 @@ export const DRAFT = SPECIES.filter((s) => s.draft).map((s) => s.id);
 export const PARKED = SPECIES.filter((s) => s.parked).map((s) => s.id);
 export const ACTIVE_SPECIES = SPECIES.filter((s) => !s.parked);
 
-export function specOf(species) {
+export function specOf(species, { language = false } = {}) {
   const clan = CLANS[species.clan];
   const member = SPECIES.filter((s) => s.clan === species.clan).indexOf(species) + 1;
   // Proportions by kind (proportions.mjs): locked where the trait is closed, the type specimen's
   // typical copies where it is open; the clan finish sits under them, an authored species list above.
   const proportions = proportionPairs(species.id, species.frameVersion ?? 4);   // the frame version the species builds at (the registry's 4 unless it names one): an allele appended later is not its to name
+  const lang = language ? languageFields(species.id, clan, species) : null;
   return {
     ...species,
     ...(clan.borrows ? { borrows: [...clan.borrows] } : {}),
-    plan: { key: clan.plan, extras: clan.extras }, anchor: clan.anchor, second: clan.second, feature: clan.feature,
-    features: { ...clan.features, ...(species.features ?? {}) },
-    fixed: { "growth.core-half-length": species.size, ...clan.finish, ...proportions, ...(species.fixed ?? {}) }, finish: clan.finish,
+    plan: { key: clan.plan, extras: clan.extras }, anchor: lang?.anchor ?? clan.anchor, second: lang ? lang.second : clan.second, feature: lang?.feature ?? clan.feature,
+    features: lang?.features ?? { ...clan.features, ...(species.features ?? {}) },
+    fixed: { "growth.core-half-length": species.size, ...(lang?.finish ?? clan.finish), ...proportions, ...(species.fixed ?? {}) }, finish: lang?.finish ?? clan.finish,
+    ...(lang?.podPair ? { podPair: lang.podPair } : {}),
     typical: { ...proportions, ...(species.typical ?? {}) },
     neverOpen: [...(GLOW_CLANS.has(species.clan) ? [] : ["glow", "glow-length"]), ...(species.neverOpen ?? [])],
-    taxonomy: { ...species.taxonomy, resembles: clan.resembles, clanName: CLAN_NAMES[species.clan] ?? null, clanNumber: clan.number, member, speciesNumber: clan.number * 32 + member, size: species.size },
+    taxonomy: { ...(lang ? withoutResembles({ ...species.taxonomy, habitat: lang.habitat }) : { ...species.taxonomy, resembles: clan.resembles }), clanName: CLAN_NAMES[species.clan] ?? null, clanNumber: clan.number, member, speciesNumber: clan.number * 32 + member, size: species.size },
     glyph: [...(LEGACY_GLYPHS[species.id] ?? GLYPHS[species.id])],   // the mark of the frames before the language; languageSpec sets the language mark
     habits: [...(HABITS[species.id] ?? [])],
     ...landAndFamily(species.id),
   };
+}
+
+// ---- the language's fields of a roster species, for the frames of version 8 ----
+// The frames before the language keep what CLANS and the rows say (resembles, anchor, second, feature, features, finish, habitat,
+// the pod pair): those frames are in the stamp registry and in saves, and stay byte for byte. A frame of version 8 reads these
+// instead, all from the registry: what the kind is made of from its family, face and signature; its colours and its home from its land.
+const withoutResembles = ({ resembles, ...rest }) => rest;
+// Strings the copywriter owes: the frame's feature line and the describe line that used to name a real animal. Working wording until then.
+export const OWED = {
+  "roster.feature": "a {family} with {signature}",
+  "describe.type-line": "It is the type of its kind: {feature}.",
+};
+const FAMILY_PART_SWITCH = { tail: "anatomy.axial-tail-presence", antennae: "anatomy.antenna-presence", shell: "anatomy.shell-presence", coat: "anatomy.fur-skirt-presence" };
+// a floater is a charged body (its record is the family's, not a part)
+const FAMILY_SWITCH = { floater: "physiology.charged-body" };
+const SOCKET_SWITCH = { tail: "anatomy.axial-tail-presence" };
+const nearestPigment = (table, hex) => {
+  const o = hexToOklch(hex);
+  let best = null, bd = Infinity;
+  for (const [id, h] of Object.entries(table)) { const p = hexToOklch(h), d = (p.L - o.L) ** 2 + (p.C - o.C) ** 2 * 4 + (((Math.abs(p.h - o.h) + 180) % 360 - 180) / 180) ** 2 * 0.25; if (d < bd) { bd = d; best = id; } }
+  return best;
+};
+export function languageFields(id, clan, species) {
+  const k = kindOf(LANGUAGE, id);
+  if (!k) return null;
+  const land = landOf(LANGUAGE, k.land), fam = familyOf(LANGUAGE, k.family);
+  const feature = OWED["roster.feature"].replace("{family}", fam.name).replace("{signature}", k.signature.type);
+  const owns = LANGUAGE.exceptions.some((e) => e.kind === id && e.check === "coat.land");   // an anchor keeps its own colours
+  // features: the face (eyes), the parts the family says it has, the socket of the signature; an anchor keeps what its signed exceptions cover
+  const features = { "anatomy.exterior-eye-presence": "on" };
+  for (const p of fam.parts) if (FAMILY_PART_SWITCH[p.part]) features[FAMILY_PART_SWITCH[p.part]] = "on";
+  if (FAMILY_SWITCH[k.family]) features[FAMILY_SWITCH[k.family]] = "on";
+  if (SOCKET_SWITCH[k.signature.socket]) features[SOCKET_SWITCH[k.signature.socket]] = "on";
+  if (k.anchor) Object.assign(features, clan.features, species.features ?? {});
+  // finish: round feet with toe pads on a kind that stands on legs; the fur's reach on a furred coat
+  const finish = {};
+  if (fam.legs > 0) finish["anatomy.contact-terminal-form"] = "pad";
+  if (k.coat.material === "fur") finish["appearance.fur-reach"] = "body";
+  if (k.anchor) Object.assign(finish, clan.finish);
+  const anchor = owns ? clan.anchor : nearestPigment(BODY_PIGMENTS, land.body.hex);
+  const second = owns ? clan.second : nearestPigment(SECOND_PIGMENTS, land.marking.hex);
+  const podPair = owns ? null : [{ pigment: anchor, hex: land.body.hex }, { pigment: nearestPigment(SECOND_PIGMENTS, land.accent.hex), hex: land.accent.hex }];
+  return { feature, features, finish, anchor, second, podPair, habitat: land.word };
 }
 
 // What the registry says of a roster species: its land (the game's biome id), the land's player word and its family. The

@@ -203,7 +203,7 @@ function carriedSet(spec, ids) {
 export function languageSpec(kindId) {
   const species = speciesOf(kindId), k = kindOf(LANGUAGE, kindId);
   if (!species || !k) throw new Error(`${kindId}: not a kind of the roster and the registry`);
-  const base = specOf(species);
+  const base = specOf(species, { language: true });
   const frameVersion = LANGUAGE_FRAME;
   // Closed: a retired switch no exception covers is dropped from the features, never opened (Loika's cream muzzle and
   // Drapet's brow tassels are covered by their records and stay).

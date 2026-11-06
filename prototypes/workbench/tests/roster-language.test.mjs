@@ -118,3 +118,30 @@ test("the kind check is retired: no hand-drawn animal targets remain", () => {
   assert.equal(existsSync(path.resolve(here, "../framework/targets.mjs")), false);
   for (const s of SPECIES) assert.equal(typeof specOf(s).clan, "string");
 });
+
+test("the frames of version 8 take their fields from the registry: no resembles, the land's home and colours, a feature line from family and signature", async () => {
+  const { LANGUAGE, kindOf, landOf, familyOf } = await import("../framework/language.mjs");
+  const { OWED, CLANS } = await import("../framework/roster.mjs");
+  for (const s of SPECIES) {
+    const k = kindOf(LANGUAGE, s.id), land = landOf(LANGUAGE, k.land), f = frameFile(`language/species-${s.id}.json`), old = frameFile(`species-${s.id}.json`);
+    assert.equal(f.taxonomy.resembles, undefined, `${s.id}: v8 names no real animal`);
+    assert.equal(f.taxonomy.habitat, land.word, `${s.id}: the habitat is the land's player word`);
+    assert.equal(f.signature.feature, OWED["roster.feature"].replace("{family}", familyOf(LANGUAGE, k.family).name).replace("{signature}", k.signature.type), `${s.id}: the feature line`);
+    assert.ok(f.signature.features["anatomy.exterior-eye-presence"] === "on", `${s.id}: the face`);
+    if (!k.anchor) {
+      assert.equal(f.pod.colourPair[0].hex, land.body.hex, `${s.id}: the pod's first colour is the land's body`);
+      assert.equal(f.pod.colourPair[1].hex, land.accent.hex, `${s.id}: the pod's second colour is the land's accent`);
+    }
+    // the frames before the language keep every old field
+    assert.equal(old.taxonomy.resembles, CLANS[s.clan].resembles, `${s.id}: the old frame keeps resembles`);
+    assert.equal(old.signature.anchor, CLANS[s.clan].anchor, `${s.id}: the old frame keeps its anchor`);
+  }
+});
+
+test("the OWED strings are listed, and describe.mjs names no real animal", async () => {
+  const { OWED } = await import("../framework/roster.mjs");
+  assert.deepEqual(Object.keys(OWED).sort(), ["describe.type-line", "roster.feature"]);
+  const src = readFileSync(path.resolve(here, "../framework/describe.mjs"), "utf8");
+  assert.ok(!src.includes("resembles"), "describe.mjs does not read resembles");
+  assert.ok(src.includes('OWED["describe.type-line"]'));
+});

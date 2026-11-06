@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S04",
-  "resembles": "a long tail wrapped round four paws",
   "moves": "prowls, pounces",
-  "habitat": "wood, meadow",
+  "habitat": "Tallwood",
   "gate": null,
   "diet": "fruit",
   "ability": "creeps up without startling anything",
@@ -84,21 +83,14 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "russet",
-  "second": "cream",
-  "feature": "upright pointed ears, striped fur; quiet hunters of the grass",
+  "anchor": "jade",
+  "second": "slate",
+  "feature": "a climber with two blunt horn-knobs",
   "features": {
    "anatomy.exterior-eye-presence": "on",
-   "anatomy.axial-tail-presence": "on",
-   "appearance.marking-switch": "on"
+   "anatomy.axial-tail-presence": "on"
   },
   "finish": {
-   "anatomy.auricular-form": "pointed",
-   "anatomy.ear-tilt": "upright",
-   "growth.muzzle-projection-ratio": "short",
-   "growth.axial-tail-length-ratio": "long",
-   "appearance.marking-layout": "bands",
-   "appearance.fur-reach": "body",
    "anatomy.contact-terminal-form": "pad"
   },
   "part": {
@@ -121,12 +113,12 @@
   "shellPattern": "soft ribs",
   "colourPair": [
    {
-    "pigment": "russet",
-    "hex": "#ae674d"
+    "pigment": "jade",
+    "hex": "#A8B39C"
    },
    {
     "pigment": "cream",
-    "hex": "#dfd2ae"
+    "hex": "#D6CC72"
    }
   ]
  },
@@ -471,11 +463,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "russet",
-    "russet"
+    "jade",
+    "jade"
    ],
    "looks": [
-    "russet"
+    "jade"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -493,11 +485,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "cream",
-    "cream"
+    "slate",
+    "slate"
    ],
    "looks": [
-    "cream"
+    "slate"
    ],
    "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
    "nature": "look",
@@ -3191,12 +3183,12 @@
      "low"
     ],
     "appearance.body-palette": [
-     "russet",
-     "russet"
+     "jade",
+     "jade"
     ],
     "appearance.underside-palette": [
-     "cream",
-     "cream"
+     "slate",
+     "slate"
     ],
     "appearance.marking-switch": [
      "on",
@@ -3682,12 +3674,12 @@
    "low"
   ],
   "appearance.body-palette": [
-   "russet",
-   "russet"
+   "jade",
+   "jade"
   ],
   "appearance.underside-palette": [
-   "cream",
-   "cream"
+   "slate",
+   "slate"
   ],
   "appearance.marking-extent": [
    "low",

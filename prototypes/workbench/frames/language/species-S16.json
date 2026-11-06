@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S16",
-  "resembles": "a creature that paddles the air with four flippers",
   "moves": "floats, ripples",
-  "habitat": "meadow, rock field, only in a storm",
+  "habitat": "Highpools",
   "gate": "Charge sealed (storm-glass shard)",
   "diet": "Energy from struck stones",
   "ability": "draws a stray strike to itself",
@@ -75,18 +74,15 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "periwinkle",
-  "second": "ice",
-  "feature": "a body of charge; storm-born",
+  "anchor": "ash",
+  "second": "slate",
+  "feature": "a floater with spark crown",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "physiology.charged-body": "on"
   },
   "finish": {
-   "appearance.sheen": "glossy",
-   "growth.branch-angle": "close",
-   "growth.region-taper": "strong",
-   "appearance.emission-brightness": "bright"
+   "appearance.fur-reach": "body"
   },
   "part": {
    "type": "spark crown",
@@ -108,12 +104,12 @@
   "shellPattern": "smooth dots",
   "colourPair": [
    {
-    "pigment": "periwinkle",
-    "hex": "#8b7dd8"
+    "pigment": "ash",
+    "hex": "#6F87A1"
    },
    {
     "pigment": "ice",
-    "hex": "#d9ecf5"
+    "hex": "#9CC3C2"
    }
   ]
  },
@@ -532,11 +528,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "periwinkle",
-    "periwinkle"
+    "ash",
+    "ash"
    ],
    "looks": [
-    "periwinkle"
+    "ash"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -1179,11 +1175,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "close",
-    "close"
+    "wide",
+    "wide"
    ],
    "looks": [
-    "close"
+    "wide"
    ],
    "guard": "rig: region.branchAngleRadians",
    "nature": "look",
@@ -1223,11 +1219,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "round",
-    "round"
+    "rounded-square",
+    "rounded-square"
    ],
    "looks": [
-    "round"
+    "rounded-square"
    ],
    "guard": "rig: region.crossExponent",
    "nature": "look",
@@ -1452,11 +1448,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "long",
-    "long"
+    "short",
+    "short"
    ],
    "looks": [
-    "long"
+    "short"
    ],
    "guard": "behaviour: how long the glow lasts",
    "nature": "doing",
@@ -1768,11 +1764,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "belly",
-    "belly"
+    "forehead",
+    "forehead"
    ],
    "looks": [
-    "belly"
+    "forehead"
    ],
    "guard": "engine: where the emblem sits; asleep with no emblem",
    "nature": "look",
@@ -2875,8 +2871,8 @@
    "frameVersion": 8,
    "loci": {
     "appearance.body-palette": [
-     "periwinkle",
-     "periwinkle"
+     "ash",
+     "ash"
     ],
     "appearance.marking-switch": [
      "on",
@@ -2987,16 +2983,16 @@
      "strong"
     ],
     "growth.branch-angle": [
-     "close",
-     "close"
+     "wide",
+     "wide"
     ],
     "growth.join-throat-ratio": [
      "thin",
      "thin"
     ],
     "anatomy.region-cross-exponent": [
-     "round",
-     "round"
+     "rounded-square",
+     "rounded-square"
     ],
     "anatomy.region-longitudinal-form": [
      "tapered",
@@ -3035,8 +3031,8 @@
      "bright"
     ],
     "appearance.emission-length": [
-     "long",
-     "long"
+     "short",
+     "short"
     ],
     "appearance.body-hue": [
      "between",
@@ -3087,8 +3083,8 @@
      "none"
     ],
     "appearance.emblem-place": [
-     "belly",
-     "belly"
+     "forehead",
+     "forehead"
     ],
     "appearance.emblem-size": [
      "between",
@@ -3306,8 +3302,8 @@
  },
  "locked": {
   "appearance.body-palette": [
-   "periwinkle",
-   "periwinkle"
+   "ash",
+   "ash"
   ],
   "appearance.marking-extent": [
    "low",
@@ -3382,16 +3378,16 @@
    "strong"
   ],
   "growth.branch-angle": [
-   "close",
-   "close"
+   "wide",
+   "wide"
   ],
   "growth.join-throat-ratio": [
    "thin",
    "thin"
   ],
   "anatomy.region-cross-exponent": [
-   "round",
-   "round"
+   "rounded-square",
+   "rounded-square"
   ],
   "anatomy.region-longitudinal-form": [
    "tapered",
@@ -3410,8 +3406,8 @@
    "bright"
   ],
   "appearance.emission-length": [
-   "long",
-   "long"
+   "short",
+   "short"
   ],
   "appearance.countershade": [
    "low",
@@ -3454,8 +3450,8 @@
    "none"
   ],
   "appearance.emblem-place": [
-   "belly",
-   "belly"
+   "forehead",
+   "forehead"
   ],
   "appearance.emblem-size": [
    "between",

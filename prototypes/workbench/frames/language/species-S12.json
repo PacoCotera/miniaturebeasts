@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S12",
-  "resembles": "a round body on six fine legs, wings up like a sail",
   "moves": "flutters",
-  "habitat": "meadow",
+  "habitat": "Meadows",
   "gate": null,
   "diet": "dew",
   "ability": "finds dew (Essence)",
@@ -90,18 +89,14 @@
  },
  "signature": {
   "anchor": "marigold",
-  "second": "butter",
-  "feature": "patterned flaps; fliers of the flowers",
+  "second": "cream",
+  "feature": "a four-wing with curled plume",
   "features": {
-   "anatomy.exterior-eye-presence": "on",
-   "anatomy.antenna-presence": "on",
-   "anatomy.dew-tongue": "on"
+   "anatomy.exterior-eye-presence": "on"
   },
   "finish": {
-   "anatomy.antenna-form": "curl",
-   "growth.wing-span-ratio": "long",
-   "growth.wing-chord-ratio": "wide",
-   "growth.support-radius-ratio": "fine"
+   "anatomy.contact-terminal-form": "pad",
+   "appearance.fur-reach": "body"
   },
   "part": {
    "type": "curled plume",
@@ -124,11 +119,11 @@
   "colourPair": [
    {
     "pigment": "marigold",
-    "hex": "#e8b83f"
+    "hex": "#D4B060"
    },
    {
-    "pigment": "ice",
-    "hex": "#d9ecf5"
+    "pigment": "cream",
+    "hex": "#C0663A"
    }
   ]
  },
@@ -474,11 +469,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "butter",
-    "butter"
+    "cream",
+    "cream"
    ],
    "looks": [
-    "butter"
+    "cream"
    ],
    "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
    "nature": "look",
@@ -1424,11 +1419,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "root",
-    "root"
+    "pad",
+    "pad"
    ],
    "looks": [
-    "root"
+    "pad"
    ],
    "guard": "rig: terminal.form",
    "nature": "look",
@@ -1446,11 +1441,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "reserved",
-    "reserved"
+    "seeking",
+    "seeking"
    ],
    "looks": [
-    "reserved"
+    "seeking"
    ],
    "guard": "rig: innate.explorationClass",
    "nature": "doing",
@@ -1479,72 +1474,6 @@
    "changedBy": "species"
   },
   {
-   "id": "anatomy.antenna-presence",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": true,
-   "consumer": "rig: antenna pair on the head",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "rig: antenna pair on the head",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.antenna-length-ratio",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: antenna length over head depth",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "long",
-    "long"
-   ],
-   "looks": [
-    "long"
-   ],
-   "guard": "rig: antenna length over head depth",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "anatomy.antenna-form",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: thread, club or fern-tip curl",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "curl",
-    "curl"
-   ],
-   "looks": [
-    "curl"
-   ],
-   "guard": "rig: thread, club or fern-tip curl",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
    "id": "appearance.flap-marking",
    "family": "appearance",
    "scope": "trunk",
@@ -1556,11 +1485,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "bars",
-    "bars"
+    "spots",
+    "spots"
    ],
    "looks": [
-    "bars"
+    "spots"
    ],
    "guard": "sketch: marking field on thin surfaces",
    "nature": "look",
@@ -1578,36 +1507,13 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "opaque",
-    "opaque"
+    "clear",
+    "clear"
    ],
    "looks": [
-    "opaque"
+    "clear"
    ],
    "guard": "sketch: thin-surface opacity (the transparency draft, validated for flaps)",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "anatomy.dew-tongue",
-   "family": "structure",
-   "scope": "branch",
-   "clan": "C12",
-   "switch": true,
-   "consumer": "rig: a coiled tongue under the head",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "rig: a coiled tongue under the head",
    "nature": "look",
    "changedBy": "species"
   },
@@ -1645,11 +1551,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "bright",
-    "bright"
+    "dim",
+    "dim"
    ],
    "looks": [
-    "bright"
+    "dim"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
    "nature": "doing",
@@ -1983,11 +1889,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "forehead",
-    "forehead"
+    "belly",
+    "belly"
    ],
    "looks": [
-    "forehead"
+    "belly"
    ],
    "guard": "engine: where the emblem sits; asleep with no emblem",
    "nature": "look",
@@ -2767,6 +2673,22 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "anatomy.antenna-presence",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "growth.antenna-length-ratio",
+   "why": "absent: no anatomy.antenna-presence on"
+  },
+  {
+   "id": "anatomy.antenna-form",
+   "why": "absent: no anatomy.antenna-presence on"
+  },
+  {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
    "id": "growth.hand-size-ratio",
    "why": "absent: no free front pair (hands)"
   },
@@ -3016,14 +2938,14 @@
   }
  ],
  "counts": {
-  "carried": 89,
-  "trunk": 88,
-  "branch": 1,
-  "absent": 114,
-  "locked": 73,
+  "carried": 85,
+  "trunk": 85,
+  "branch": 0,
+  "absent": 118,
+  "locked": 69,
   "lockedBy": {
-   "switch": 3,
-   "fixed": 70
+   "switch": 1,
+   "fixed": 68
   },
   "heritableLook": 13,
   "heritableDoing": 2,
@@ -3095,8 +3017,8 @@
      "marigold"
     ],
     "appearance.underside-palette": [
-     "butter",
-     "butter"
+     "cream",
+     "cream"
     ],
     "appearance.marking-switch": [
      "on",
@@ -3263,48 +3185,32 @@
      "barrel"
     ],
     "anatomy.contact-terminal-form": [
-     "root",
-     "root"
+     "pad",
+     "pad"
     ],
     "cognition.exploration-tendency": [
-     "reserved",
-     "reserved"
+     "seeking",
+     "seeking"
     ],
     "cognition.arousal-threshold": [
      "low",
      "low"
     ],
-    "anatomy.antenna-presence": [
-     "on",
-     "on"
-    ],
-    "growth.antenna-length-ratio": [
-     "long",
-     "long"
-    ],
-    "anatomy.antenna-form": [
-     "curl",
-     "curl"
-    ],
     "appearance.flap-marking": [
-     "bars",
-     "bars"
+     "spots",
+     "spots"
     ],
     "appearance.flap-translucency": [
-     "opaque",
-     "opaque"
-    ],
-    "anatomy.dew-tongue": [
-     "on",
-     "on"
+     "clear",
+     "clear"
     ],
     "appearance.sheen": [
      "matte",
      "matte"
     ],
     "appearance.emission-brightness": [
-     "bright",
-     "bright"
+     "dim",
+     "dim"
     ],
     "appearance.emission-length": [
      "long",
@@ -3359,8 +3265,8 @@
      "none"
     ],
     "appearance.emblem-place": [
-     "forehead",
-     "forehead"
+     "belly",
+     "belly"
     ],
     "appearance.emblem-size": [
      "between",
@@ -3448,23 +3354,23 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin, bands; splayed, neck head.",
+  "brief": "Peplos: 3 body regions (B3), a head, 2 eyes, 6 legs, 4 flaps; skin, bands; splayed, neck head.",
   "bounds": {
    "min": [
-    -0.8882825453843751,
-    -0.5663359134999252,
-    -0.0022643999822695715
+    -0.5216531355469948,
+    -0.5726943164252786,
+    0
    ],
    "max": [
     1.0079580005805708,
-    0.5663359134999252,
-    1.7391624335321803
+    0.5726943164252786,
+    1.7373399335321802
    ]
   },
   "counts": {
-   "nodes": 91,
-   "edges": 90,
-   "vertices": 3575
+   "nodes": 39,
+   "edges": 38,
+   "vertices": 1733
   }
  },
  "viability": {
@@ -3563,8 +3469,8 @@
    "marigold"
   ],
   "appearance.underside-palette": [
-   "butter",
-   "butter"
+   "cream",
+   "cream"
   ],
   "appearance.marking-extent": [
    "low",
@@ -3715,48 +3621,32 @@
    "barrel"
   ],
   "anatomy.contact-terminal-form": [
-   "root",
-   "root"
+   "pad",
+   "pad"
   ],
   "cognition.exploration-tendency": [
-   "reserved",
-   "reserved"
+   "seeking",
+   "seeking"
   ],
   "cognition.arousal-threshold": [
    "low",
    "low"
   ],
-  "anatomy.antenna-presence": [
-   "on",
-   "on"
-  ],
-  "growth.antenna-length-ratio": [
-   "long",
-   "long"
-  ],
-  "anatomy.antenna-form": [
-   "curl",
-   "curl"
-  ],
   "appearance.flap-marking": [
-   "bars",
-   "bars"
+   "spots",
+   "spots"
   ],
   "appearance.flap-translucency": [
-   "opaque",
-   "opaque"
-  ],
-  "anatomy.dew-tongue": [
-   "on",
-   "on"
+   "clear",
+   "clear"
   ],
   "appearance.sheen": [
    "matte",
    "matte"
   ],
   "appearance.emission-brightness": [
-   "bright",
-   "bright"
+   "dim",
+   "dim"
   ],
   "appearance.emission-length": [
    "long",
@@ -3803,8 +3693,8 @@
    "none"
   ],
   "appearance.emblem-place": [
-   "forehead",
-   "forehead"
+   "belly",
+   "belly"
   ],
   "appearance.emblem-size": [
    "between",

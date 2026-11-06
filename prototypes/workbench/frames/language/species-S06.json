@@ -13,9 +13,8 @@
  },
  "taxonomy": {
   "code": "S06",
-  "resembles": "a four-legged body",
   "moves": "ambles, climbs",
-  "habitat": "pond edge, wood",
+  "habitat": "Thickets",
   "gate": null,
   "diet": "fruit, washed first",
   "ability": "lifts slabs to find what is under them",
@@ -85,20 +84,14 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "charcoal",
+  "anchor": "russet",
   "second": "slate",
-  "feature": "a face mask and a ringed tail; masked tinkerers",
+  "feature": "a bridge with ridge of tall beads",
   "features": {
    "anatomy.exterior-eye-presence": "on",
-   "anatomy.axial-tail-presence": "on",
-   "appearance.face-mask": "on",
-   "appearance.tail-rings": "on"
+   "anatomy.axial-tail-presence": "on"
   },
   "finish": {
-   "anatomy.auricular-form": "rounded",
-   "appearance.face-mask-shape": "band",
-   "growth.tail-ring-count": "four",
-   "appearance.fur-reach": "tail",
    "anatomy.contact-terminal-form": "pad"
   },
   "part": {
@@ -121,12 +114,12 @@
   "shellPattern": "soft ribs",
   "colourPair": [
    {
-    "pigment": "charcoal",
-    "hex": "#465459"
+    "pigment": "russet",
+    "hex": "#7C4C66"
    },
    {
-    "pigment": "marigold",
-    "hex": "#e8b83f"
+    "pigment": "cream",
+    "hex": "#C9A27A"
    }
   ]
  },
@@ -495,11 +488,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "charcoal",
-    "charcoal"
+    "russet",
+    "russet"
    ],
    "looks": [
-    "charcoal"
+    "russet"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -1564,94 +1557,6 @@
     "tail"
    ],
    "guard": "sketch: the fur material on the tail and the ears too",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "appearance.face-mask",
-   "family": "appearance",
-   "scope": "trunk",
-   "switch": true,
-   "consumer": "sketch: a second-pigment field over the eyes",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "sketch: a second-pigment field over the eyes",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "appearance.face-mask-shape",
-   "family": "appearance",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "sketch: a band across the eyes, or stripes down the face",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "band",
-    "band"
-   ],
-   "looks": [
-    "band"
-   ],
-   "guard": "sketch: a band across the eyes, or stripes down the face",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "appearance.tail-rings",
-   "family": "appearance",
-   "scope": "trunk",
-   "switch": true,
-   "consumer": "sketch: second-pigment rings along the tail",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "sketch: second-pigment rings along the tail",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.tail-ring-count",
-   "family": "appearance",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "sketch: rings along the tail (one is a pale tip)",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "four",
-    "four"
-   ],
-   "looks": [
-    "4"
-   ],
-   "guard": "sketch: rings along the tail (one is a pale tip)",
    "nature": "look",
    "changedBy": "species"
   },
@@ -2927,6 +2832,22 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "appearance.face-mask",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "appearance.face-mask-shape",
+   "why": "absent: no appearance.face-mask on"
+  },
+  {
+   "id": "appearance.tail-rings",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "growth.tail-ring-count",
+   "why": "absent: no appearance.tail-rings on"
+  },
+  {
    "id": "anatomy.ear-tilt",
    "why": "absent: no head-owned ears"
   },
@@ -3192,14 +3113,14 @@
   }
  ],
  "counts": {
-  "carried": 94,
-  "trunk": 94,
+  "carried": 90,
+  "trunk": 90,
   "branch": 0,
-  "absent": 109,
-  "locked": 74,
+  "absent": 113,
+  "locked": 70,
   "lockedBy": {
-   "switch": 4,
-   "fixed": 70
+   "switch": 2,
+   "fixed": 68
   },
   "heritableLook": 15,
   "heritableDoing": 4,
@@ -3263,8 +3184,8 @@
      "low"
     ],
     "appearance.body-palette": [
-     "charcoal",
-     "charcoal"
+     "russet",
+     "russet"
     ],
     "appearance.underside-palette": [
      "slate",
@@ -3453,22 +3374,6 @@
     "appearance.fur-reach": [
      "tail",
      "tail"
-    ],
-    "appearance.face-mask": [
-     "on",
-     "on"
-    ],
-    "appearance.face-mask-shape": [
-     "band",
-     "band"
-    ],
-    "appearance.tail-rings": [
-     "on",
-     "on"
-    ],
-    "growth.tail-ring-count": [
-     "four",
-     "four"
     ],
     "appearance.sheen": [
      "matte",
@@ -3772,8 +3677,8 @@
    "low"
   ],
   "appearance.body-palette": [
-   "charcoal",
-   "charcoal"
+   "russet",
+   "russet"
   ],
   "appearance.underside-palette": [
    "slate",
@@ -3938,22 +3843,6 @@
   "appearance.fur-reach": [
    "tail",
    "tail"
-  ],
-  "appearance.face-mask": [
-   "on",
-   "on"
-  ],
-  "appearance.face-mask-shape": [
-   "band",
-   "band"
-  ],
-  "appearance.tail-rings": [
-   "on",
-   "on"
-  ],
-  "growth.tail-ring-count": [
-   "four",
-   "four"
   ],
   "appearance.sheen": [
    "matte",

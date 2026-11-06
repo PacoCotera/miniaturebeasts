@@ -12,9 +12,8 @@
  },
  "taxonomy": {
   "code": "S14",
-  "resembles": "a long soft body gliding on one flat foot",
   "moves": "slides",
-  "habitat": "pond edge, wood; out in fog banks",
+  "habitat": "Marsh",
   "gate": null,
   "diet": "moss",
   "ability": "leaves a sheen trail back to the start",
@@ -74,19 +73,13 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "plum",
-  "second": "butter",
-  "feature": "eye stalks and a sheen; the fog-lovers",
+  "anchor": "jade",
+  "second": "slate",
+  "feature": "a slider with one coil on the crown",
   "features": {
-   "anatomy.exterior-eye-presence": "on",
-   "anatomy.antenna-presence": "on",
-   "anatomy.foot-skirt-presence": "on"
+   "anatomy.exterior-eye-presence": "on"
   },
-  "finish": {
-   "anatomy.antenna-form": "club",
-   "appearance.sheen": "glossy",
-   "development.regional-growth": "anterior"
-  },
+  "finish": {},
   "part": {
    "type": "one coil on the crown",
    "socket": "head-top",
@@ -107,12 +100,12 @@
   "shellPattern": "smooth dots",
   "colourPair": [
    {
-    "pigment": "plum",
-    "hex": "#a967b8"
+    "pigment": "jade",
+    "hex": "#8A8B58"
    },
    {
-    "pigment": "periwinkle",
-    "hex": "#8b7dd8"
+    "pigment": "cream",
+    "hex": "#C8923E"
    }
   ]
  },
@@ -395,11 +388,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "plum",
-    "plum"
+    "jade",
+    "jade"
    ],
    "looks": [
-    "plum"
+    "jade"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -1137,118 +1130,6 @@
    "changedBy": "breeding"
   },
   {
-   "id": "anatomy.antenna-presence",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": true,
-   "consumer": "rig: antenna pair on the head",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "rig: antenna pair on the head",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.antenna-length-ratio",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: antenna length over head depth",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "long",
-    "long"
-   ],
-   "looks": [
-    "long"
-   ],
-   "guard": "rig: antenna length over head depth",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "anatomy.antenna-form",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: thread, club or fern-tip curl",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "club",
-    "club"
-   ],
-   "looks": [
-    "club"
-   ],
-   "guard": "rig: thread, club or fern-tip curl",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "anatomy.foot-skirt-presence",
-   "family": "structure",
-   "scope": "branch",
-   "clan": "C14",
-   "switch": true,
-   "consumer": "rig: a flat skirt under the body",
-   "kind": "locked",
-   "lockReason": "switch",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "on",
-    "on"
-   ],
-   "looks": [
-    "on"
-   ],
-   "guard": "rig: a flat skirt under the body",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
-   "id": "growth.foot-skirt-width-ratio",
-   "family": "structure",
-   "scope": "branch",
-   "clan": "C14",
-   "switch": false,
-   "consumer": "rig: skirt overhang over body width",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "wide",
-    "wide"
-   ],
-   "looks": [
-    "wide"
-   ],
-   "guard": "rig: skirt overhang over body width",
-   "nature": "look",
-   "changedBy": "species"
-  },
-  {
    "id": "appearance.sheen",
    "family": "appearance",
    "scope": "trunk",
@@ -1282,11 +1163,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "dim",
-    "dim"
+    "bright",
+    "bright"
    ],
    "looks": [
-    "dim"
+    "bright"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
    "nature": "doing",
@@ -1620,11 +1501,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "belly",
-    "belly"
+    "forehead",
+    "forehead"
    ],
    "looks": [
-    "belly"
+    "forehead"
    ],
    "guard": "engine: where the emblem sits; asleep with no emblem",
    "nature": "look",
@@ -2386,12 +2267,32 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "anatomy.antenna-presence",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "growth.antenna-length-ratio",
+   "why": "absent: no anatomy.antenna-presence on"
+  },
+  {
+   "id": "anatomy.antenna-form",
+   "why": "absent: no anatomy.antenna-presence on"
+  },
+  {
    "id": "appearance.flap-marking",
    "why": "absent: no thin-surface owner"
   },
   {
    "id": "appearance.flap-translucency",
    "why": "absent: no thin-surface owner"
+  },
+  {
+   "id": "anatomy.foot-skirt-presence",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "growth.foot-skirt-width-ratio",
+   "why": "absent: no anatomy.foot-skirt-presence on"
   },
   {
    "id": "growth.hand-size-ratio",
@@ -2647,14 +2548,14 @@
   }
  ],
  "counts": {
-  "carried": 72,
-  "trunk": 70,
-  "branch": 2,
-  "absent": 131,
-  "locked": 57,
+  "carried": 67,
+  "trunk": 67,
+  "branch": 0,
+  "absent": 136,
+  "locked": 52,
   "lockedBy": {
-   "switch": 3,
-   "fixed": 54
+   "switch": 1,
+   "fixed": 51
   },
   "heritableLook": 11,
   "heritableDoing": 3,
@@ -2718,8 +2619,8 @@
    "frameVersion": 8,
    "loci": {
     "appearance.body-palette": [
-     "plum",
-     "plum"
+     "jade",
+     "jade"
     ],
     "appearance.marking-switch": [
      "on",
@@ -2849,33 +2750,13 @@
      "low",
      "high"
     ],
-    "anatomy.antenna-presence": [
-     "on",
-     "on"
-    ],
-    "growth.antenna-length-ratio": [
-     "long",
-     "long"
-    ],
-    "anatomy.antenna-form": [
-     "club",
-     "club"
-    ],
-    "anatomy.foot-skirt-presence": [
-     "on",
-     "on"
-    ],
-    "growth.foot-skirt-width-ratio": [
-     "wide",
-     "wide"
-    ],
     "appearance.sheen": [
      "matte",
      "matte"
     ],
     "appearance.emission-brightness": [
-     "dim",
-     "dim"
+     "bright",
+     "bright"
     ],
     "appearance.emission-length": [
      "short",
@@ -2930,8 +2811,8 @@
      "none"
     ],
     "appearance.emblem-place": [
-     "belly",
-     "belly"
+     "forehead",
+     "forehead"
     ],
     "appearance.emblem-size": [
      "between",
@@ -3011,23 +2892,23 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Usvel: 3 body regions (B3), a head, 2 eyes, two antennae, a foot skirt; skin, bands; belly, fused head.",
+  "brief": "Usvel: 3 body regions (B3), a head, 2 eyes; skin, bands; belly, fused head.",
   "bounds": {
    "min": [
-    -0.8467725284473898,
-    -0.3170398573749121,
-    -0.007972816776251501
+    -0.45948343450658014,
+    -0.22222350000000002,
+    -0.015233656776251547
    ],
    "max": [
-    0.6887875254660507,
-    0.3170398573749121,
-    1.0926053172897507
+    0.665518418599978,
+    0.22222350000000002,
+    0.7090573949423846
    ]
   },
   "counts": {
-   "nodes": 17,
-   "edges": 16,
-   "vertices": 971
+   "nodes": 8,
+   "edges": 7,
+   "vertices": 573
   }
  },
  "viability": {
@@ -3112,8 +2993,8 @@
  },
  "locked": {
   "appearance.body-palette": [
-   "plum",
-   "plum"
+   "jade",
+   "jade"
   ],
   "appearance.marking-extent": [
    "low",
@@ -3223,33 +3104,13 @@
    "seeking",
    "seeking"
   ],
-  "anatomy.antenna-presence": [
-   "on",
-   "on"
-  ],
-  "growth.antenna-length-ratio": [
-   "long",
-   "long"
-  ],
-  "anatomy.antenna-form": [
-   "club",
-   "club"
-  ],
-  "anatomy.foot-skirt-presence": [
-   "on",
-   "on"
-  ],
-  "growth.foot-skirt-width-ratio": [
-   "wide",
-   "wide"
-  ],
   "appearance.sheen": [
    "matte",
    "matte"
   ],
   "appearance.emission-brightness": [
-   "dim",
-   "dim"
+   "bright",
+   "bright"
   ],
   "appearance.emission-length": [
    "short",
@@ -3296,8 +3157,8 @@
    "none"
   ],
   "appearance.emblem-place": [
-   "belly",
-   "belly"
+   "forehead",
+   "forehead"
   ],
   "appearance.emblem-size": [
    "between",
