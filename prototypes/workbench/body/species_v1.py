@@ -160,7 +160,9 @@ def _schema_2():
             count=dict(type="enum", values=v["eyeCounts"], label="Eye count", help="Two eyes; three only on Lehten. No locus varies it.", stage="face"),
             station=num("Eye station", "Where along the head the eyes sit.", stage="face", rng=None), around=num("Eye around", "How far round the head the eyes sit.", stage="face", rng=None, unit=""),
             r=num("Eye radius", "The eye's radius.", stage="face", rng=None), iris=free("Iris", "The iris: its share of the disc, the pupil, the value.", stage="face"), catch=free("Highlight", "The eye's highlight.", stage="face"),
-            frames=free("Eye frames", "The eye's open, half and closed frames.", stage="face"), default=text("Default eye", "The eye a new individual starts with.", stage="face")),
+            frames=free("Eye frames", "The eye's open, half and closed frames.", stage="face"), default=text("Default eye", "The eye a new individual starts with.", stage="face"),
+            attitude=dict(type="enum", values=v["attitudes"], label="Attitude", help="The quiet look the eyes and mouth share: content, curious, deadpan or knowing.", stage="face"),
+            lid=free("Lid", "How far the lid closes and the shape of its edge.", stage="face")),
             stage="face", required=["count"], refused=dict(kinds="eye kinds are not a field of mb-species/2: every eye is the house eye (set face.eyes.count)")),
         mouth=free("Mouth", "The mouth and its expressions.", stage="face"), kind=text("Face kind", "How the face is drawn on the body.", stage="face"), on=text("Face part", "The part the face sits on.", stage="face"), island=text("Face island", "The island the face is drawn on.", stage="face")),
         stage="face", required=["eyes"], refused=dict(cheeks="cheeks are not a field of mb-species/2: no blush"))

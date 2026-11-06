@@ -182,7 +182,18 @@ class Proxy:
         from wb import clayface as CF
         M = M or subject.posed()
         if getattr(subject, "quad", False):
-            return M                                                       # a quadruped's clay has no face yet
+            doc = F.internal(subject.spec)
+            if not CF.is_decal_file(doc):
+                return M                                                   # a quadruped file with no eye station has no face on its clay
+            if not hasattr(subject, "_decal"):
+                subject._decal = CF.decal_face(doc, dict(V=np.asarray(subject.mesh["V"], float), F=np.asarray(subject.mesh["F"], int)))
+            fv, ff, fl, rgb = subject._decal
+            D = np.asarray(M["V"], float) - np.asarray(subject.mesh["V"], float)
+            R0 = np.asarray(subject.mesh["V"], float)
+            nn = np.array([np.argmin(((R0 - p) ** 2).sum(1)) for p in fv])
+            m = dict(M)
+            m["face_V"], m["face_F"], m["face_L"], m["face_rgb"] = fv + D[nn], ff, fl, rgb
+            return m
         rest = dict(V=np.asarray(M["Vw"], float), F=np.asarray(M["Fw"], int))
         cx = subject.b.ctx
         fv, ff = CF.face_mesh(cx["T"], cx["spec"], dict(subject.r.c.get("coat") or {}), rest)

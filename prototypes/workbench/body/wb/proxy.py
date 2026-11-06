@@ -88,6 +88,7 @@ class ProxyRenderer:
         fm = bpy.data.materials.new("face")
         fm.diffuse_color = (0.045, 0.04, 0.05, 1.0)
         self.mats["face"] = fm
+        self.face_mats = {}
         self.body = self.wire = self.face = None
         self.mesh = None
         self.mesh_key = None
@@ -151,7 +152,19 @@ class ProxyRenderer:
             fme = bpy.data.meshes.new("face")
             fme.from_pydata(np.asarray(mesh["face_V"], float).tolist(), [], [list(map(int, p)) for p in mesh["face_F"]])
             fme.update()
-            fme.materials.append(self.mats["face"])
+            fl = mesh.get("face_L")
+            if fl is not None and len(fl):                       # the house decal: one material per layer (disc, iris, pupil, highlight, mouth), the polygon's layer picks it
+                rgb = mesh["face_rgb"]
+                for k, col in enumerate(rgb):
+                    key = tuple(round(float(c), 4) for c in col)
+                    if key not in self.face_mats:
+                        fm = bpy.data.materials.new(f"face-{len(self.face_mats)}")
+                        fm.diffuse_color = (*key, 1.0)
+                        self.face_mats[key] = fm
+                    fme.materials.append(self.face_mats[key])
+                fme.polygons.foreach_set("material_index", np.asarray(fl, int))
+            else:
+                fme.materials.append(self.mats["face"])
             self.face = bpy.data.objects.new("face", fme)
             self.sc.collection.objects.link(self.face)
         self.mesh = dict(V=V, F=F, part=part, frame=mesh.get("frame"))

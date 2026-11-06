@@ -254,8 +254,39 @@
  ],
  "sockets": [],
  "face": {
+  "kind": "decal",
+  "on": "head",
   "eyes": {
-   "count": 2
+   "count": 2,
+   "station": 0.08,
+   "around": 0.33,
+   "r": 0.0906,
+   "iris": {
+    "share": 0.74,
+    "pupil": 0.45,
+    "colour": "hazel"
+   },
+   "catch": [
+    {
+     "at": [
+      -0.38,
+      0.4
+     ],
+     "r": 0.2
+    }
+   ],
+   "attitude": "content",
+   "frames": [
+    "open",
+    "closed"
+   ]
+  },
+  "mouth": {
+   "station": 0.047,
+   "around": 1.0,
+   "width": 0.2,
+   "shape": "curve",
+   "rest": "closed"
   }
  },
  "coat": {

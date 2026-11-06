@@ -37,12 +37,12 @@ def run_cage(spec):
 class TestRegistry(unittest.TestCase):
     def test_twelve_checks_with_the_owners_words(self):
         metas = {m["id"]: m for m in CH.metas()}
-        self.assertEqual(len(metas), 19)                              # thirteen of the file and cage stages (chunk 9 adds the expressions check), the extremes stage's limits (chunk 8), and the rig and coat checks (chunk 23)
-        self.assertEqual([m for m in metas if metas[m]["stage"] == "extremes"], ["limits"])
+        self.assertEqual(len(metas), 29)                              # (chunk 4 adds the ten face checks of the language) thirteen of the file and cage stages (chunk 9 adds the expressions check), the extremes stage's limits (chunk 8), and the rig and coat checks (chunk 23)
+        self.assertEqual([m for m in metas if metas[m]["stage"] == "extremes"], ["limits", "face.size"])
         for i, (name, fail) in WORDS.items():
             self.assertEqual((metas[i]["name"], metas[i]["fail"]), (name, fail), i)
         for m in metas.values():
-            self.assertRegex(m["rule"]["date"], r"^2026-11-0[124]( \d\d:\d\d)?$")
+            self.assertRegex(m["rule"]["date"], r"^2026-11-0[1245]( \d\d:\d\d)?$")
             self.assertGreater(len(m["rule"]["words"]), 40, m["id"])
             self.assertIn(m["stage"], ("file", "cage", "rig", "coat", "extremes"))
         self.assertEqual({m["id"] for m in metas.values() if m["play"]}, {"head.neck", "tail.taper", "tail.size", "balance"})        # the copywriter's word list 5.2: the limit sentences
