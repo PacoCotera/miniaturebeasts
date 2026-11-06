@@ -87,7 +87,7 @@ export const PLANS = ["quadruped", "biped", "mass", "legless", "hexapod", "radia
 // ---- what a family declares for the studio (chunk 6, shrunk by the mesh-path design): its path, its armature layout, its template and its bands ----
 // Path: how the kind's body is made. mesh = one sculpt is the body; hybrid = sculpted parts on a procedural rig; cage = the studio's plan builds
 // the body (the design's "procedural": Drapet's hair curtain and Blikur's puff are the body). Trotter's kind is a sculpt; its TEMPLATE is the cage
-// (S22), which stays the cage trotter. The art desk's per-kind table (arch-mesh-path.md section 2) is the source.
+// (S22), which stays the cage trotter. The art desk's per-kind table (the mesh-path design, section 2) is the source.
 const FAMILY_PATH = {
   trotter: "mesh", "shoulder-heavy": "mesh", hopper: "mesh", digger: "mesh", loaf: "mesh", bridge: "mesh", sitter: "mesh", waddler: "mesh", roundling: "mesh",
   mound: "cage", swimmer: "hybrid", climber: "hybrid", flutterer: "hybrid", "four-wing": "hybrid", glider: "hybrid", "two-part crawler": "mesh", floater: "cage",
@@ -119,7 +119,7 @@ const ARMATURE_ROWS = [
 ];
 // A family with a template can be started from in New. Only the trotter has one so far (S22 became templates/trotter.json); the rest show "not yet".
 const FAMILY_TEMPLATE = { trotter: "templates/trotter.json" };
-// Bands every template accepts (codify.md section 3, rule 3): the head at least 30% of the standing height, the neck 0-0.2 H (0 allowed: the head may
+// Bands every template accepts (the language design, section 3, rule 3): the head at least 30% of the standing height, the neck 0-0.2 H (0 allowed: the head may
 // merge into the body), the legs at most a third of the standing height. Legless and mass families have no legs to measure. The design says "tighter where
 // the stand says" and gives no per-family numbers yet: the art desk's stands decide those.
 const FAMILY_BANDS = { headShareMin: 0.30, neck: [0, 0.2], legShareMax: 1 / 3 };

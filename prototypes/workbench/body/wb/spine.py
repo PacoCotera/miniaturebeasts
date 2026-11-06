@@ -5,7 +5,7 @@
   knobs   each profile knob: where its handle sits now, the axis a drag moves it along and `gain`, the value a handle moving 1 H along that axis changes by;
   outline the loft's derived section table as two polylines (the back and the front edge), for the thin profile line;
   built   whether the plan has a cage builder yet (both have: the quadruped's bare base is quadruped.py).
-A plan is one function that returns (path points, knobs, outline); `PLANS` below is the table of the plan modules' spine views (plans/)."""
+A plan is one function that returns (path points, knobs, outline); `PLANS` below is the table of the plan modules' spine views (the plan modules)."""
 import copy
 import math
 import os
@@ -42,7 +42,7 @@ def camera(az=90.0, centre=CENTRE, ppH=None):
     return dict(az=az, el=EL, w=w, h=h, ppH=ppH or house, centre=list(centre), right=[round(float(x), 6) for x in right], up=[round(float(x), 6) for x in up])
 
 
-# ---- the plans own their spine views (plans/biped.py, plans/quadruped.py); the names stay here for the callers that had them
+# ---- the plans own their spine views (the biped and quadruped plan modules); the names stay here for the callers that had them
 from plans import MODULES as _PLAN_MODULES                                     # noqa: E402
 from plans.biped import BIPED_KNOBS, biped_knobs, biped_path, _edge          # noqa: E402,F401
 from plans.quadruped import quad_knobs                                       # noqa: E402,F401

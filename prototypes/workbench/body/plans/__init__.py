@@ -6,7 +6,7 @@ import copy
 from . import biped, quadruped
 
 MODULES = {"biped": biped, "quadruped": quadruped}
-NECK = (0.0, 0.2)                    # the language's neck band on every plan (codify.md section 3)
+NECK = (0.0, 0.2)                    # the language's neck band on every plan (the language design, section 3)
 LEGACY_NECK = (0.15, 0.4)            # what a /1 file was written against
 
 

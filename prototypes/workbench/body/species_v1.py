@@ -13,8 +13,8 @@ import re
 SCHEMA_V1 = "mb-species/1"            # the fixtures (S20) and the play species (S71-S73) stay on /1
 SCHEMA_ID = "mb-species/2"            # every other file: the language fields (family, land, signature, eye count, coat material family) are in, cheeks, eye kinds and free palettes are out
 SCHEMAS = (SCHEMA_V1, SCHEMA_ID)
-# The plans' bands (plans/): the owner's where there is one (tail root 0.45, head attachment), the language's neck band 0-0.2 H, the S20 type's own band (about a third either way) where nobody has given one.
-import plans as _plans                                        # the plan plug-ins own their bands (plans/biped.py, plans/quadruped.py)
+# The plans' bands: the owner's where there is one (tail root 0.45, head attachment), the language's neck band 0-0.2 H, the S20 type's own band (about a third either way) where nobody has given one.
+import plans as _plans                                        # the plan plug-ins own their bands (the biped and quadruped plan modules)
 PLANS = {name: mod.BANDS for name, mod in _plans.MODULES.items()}
 
 
