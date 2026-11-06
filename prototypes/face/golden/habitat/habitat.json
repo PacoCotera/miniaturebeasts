@@ -2,87 +2,87 @@
  "_note": "One mibi up close: rest, the meet (and its placeholder), out with the Companion, the card, a plate focused, the Companion module (a request waiting, away), Cross, Portrait, the Wild gate armed, a tile focused, a full room's eight places, moving up close (a chip focused; a full room's plate), a young mibi's Return card, a bonded juvenile's held Return plate, the four lights and the namer over it (opened, typed, the accents page, a refusal, empty, full): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "habitat-rest": {
-   "hash": "99b387b4",
+   "hash": "0e63e3ac",
    "png": "habitat-rest.png"
   },
   "habitat-meet": {
-   "hash": "427590b4",
+   "hash": "54889654",
    "png": "habitat-meet.png"
   },
   "habitat-out": {
-   "hash": "8d3e62b8",
+   "hash": "32be4e34",
    "png": "habitat-out.png"
   },
   "habitat-card": {
-   "hash": "92116add",
+   "hash": "45c631c5",
    "png": "habitat-card.png"
   },
   "habitat-plate": {
-   "hash": "9c9d70eb",
+   "hash": "c7b22ef7",
    "png": "habitat-plate.png"
   },
   "habitat-door": {
-   "hash": "2aba377d",
+   "hash": "8721fca1",
    "png": "habitat-door.png"
   },
   "habitat-door-away": {
-   "hash": "5be8edf2",
+   "hash": "88a60426",
    "png": "habitat-door-away.png"
   },
   "habitat-cross": {
-   "hash": "5eae86bd",
+   "hash": "b5eb4fb9",
    "png": "habitat-cross.png"
   },
   "habitat-portrait": {
-   "hash": "afd267f8",
+   "hash": "2a54a544",
    "png": "habitat-portrait.png"
   },
   "habitat-portrait-painting": {
-   "hash": "6a071c2e",
+   "hash": "2d35b57a",
    "png": "habitat-portrait-painting.png"
   },
   "habitat-portrait-portrayed": {
-   "hash": "46d205c0",
+   "hash": "edf386c4",
    "png": "habitat-portrait-portrayed.png"
   },
   "habitat-portrait-pictured": {
-   "hash": "86aa7152",
+   "hash": "f15e15fe",
    "png": "habitat-portrait-pictured.png"
   },
   "habitat-young-night": {
-   "hash": "479ed14c",
+   "hash": "014600bc",
    "png": "habitat-young-night.png"
   },
   "habitat-panel-wild": {
-   "hash": "bfb439f0",
+   "hash": "6c393a1a",
    "png": "habitat-panel-wild.png"
   },
   "habitat-tile": {
-   "hash": "29dbcd61",
+   "hash": "518a7559",
    "png": "habitat-tile.png"
   },
   "habitat-eight": {
-   "hash": "777c9d4c",
+   "hash": "56e19898",
    "png": "habitat-eight.png"
   },
   "habitat-wild-young-card": {
-   "hash": "c24c1e03",
+   "hash": "88ae30d1",
    "png": "habitat-wild-young-card.png"
   },
   "habitat-docked-dawn": {
-   "hash": "f3f12eb1",
+   "hash": "ea187a3d",
    "png": "habitat-docked-dawn.png"
   },
   "habitat-docked-day": {
-   "hash": "31d54cc7",
+   "hash": "f3684eef",
    "png": "habitat-docked-day.png"
   },
   "habitat-docked-dusk": {
-   "hash": "63da57a3",
+   "hash": "2ba46613",
    "png": "habitat-docked-dusk.png"
   },
   "habitat-docked-night": {
-   "hash": "f67be9ef",
+   "hash": "4aeb3f37",
    "png": "habitat-docked-night.png"
   },
   "habitat-namer": {
@@ -110,7 +110,7 @@
    "png": "habitat-namer-full.png"
   },
   "habitat-wild-bonded-pressed": {
-   "hash": "fc0cf9cf",
+   "hash": "143a9a8f",
    "png": "habitat-wild-bonded-pressed.png"
   }
  }

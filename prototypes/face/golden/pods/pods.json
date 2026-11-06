@@ -10,11 +10,11 @@
    "png": "pods-inventory-one-sealed-pod.png"
   },
   "inventory, twelve pods": {
-   "hash": "b6289c1b",
+   "hash": "c7c4b8c3",
    "png": "pods-inventory-twelve-pods.png"
   },
   "inventory, the panel's first button": {
-   "hash": "790edb75",
+   "hash": "320dab95",
    "png": "pods-inventory-the-panel-s-first-button.png"
   },
   "inventory, sorted by species": {
@@ -58,23 +58,23 @@
    "png": "pods-read-loika-fresh-coat-in-hand.png"
   },
   "read, Face open, unread": {
-   "hash": "c1becd32",
+   "hash": "b5264087",
    "png": "pods-read-face-open-unread.png"
   },
   "read, Coat read, Face in hand": {
-   "hash": "33467e4b",
+   "hash": "7598bdbe",
    "png": "pods-read-coat-read-face-in-hand.png"
   },
   "read, Face after the read": {
-   "hash": "92936abc",
+   "hash": "947929cd",
    "png": "pods-read-face-after-the-read.png"
   },
   "read, the Crown detail": {
-   "hash": "b13aac25",
+   "hash": "9f3deb7a",
    "png": "pods-read-the-crown-detail.png"
   },
   "read, Movement in hand, the sprout": {
-   "hash": "ea48ad81",
+   "hash": "82808793",
    "png": "pods-read-movement-in-hand-the-sprout.png"
   },
   "read, not enough Data": {
@@ -82,11 +82,11 @@
    "png": "pods-read-not-enough-data.png"
   },
   "read, Tuikis, Shape in hand": {
-   "hash": "7abd774d",
+   "hash": "54ecf544",
    "png": "pods-read-tuikis-shape-in-hand.png"
   },
   "read, a sealed chapter, the pod's reason": {
-   "hash": "2810f041",
+   "hash": "0822e64e",
    "png": "pods-read-a-sealed-chapter-the-pod-s-reason.png"
   },
   "read, a sealed pod, Identify": {
@@ -102,11 +102,11 @@
    "png": "pods-read-the-stamp-view.png"
   },
   "compare": {
-   "hash": "4a69435e",
+   "hash": "eb378ee6",
    "png": "pods-compare.png"
   },
   "compare, the next chapter the same": {
-   "hash": "404d5827",
+   "hash": "c012ccaf",
    "png": "pods-compare-the-next-chapter-the-same.png"
   },
   "compare, nothing read on both": {
@@ -114,7 +114,7 @@
    "png": "pods-compare-nothing-read-on-both.png"
   },
   "compare, a kin's unread lane glints": {
-   "hash": "ed624431",
+   "hash": "df3fb599",
    "png": "pods-compare-a-kin-s-unread-lane-glints.png"
   }
  }
