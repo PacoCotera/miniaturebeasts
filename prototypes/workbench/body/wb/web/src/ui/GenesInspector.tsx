@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { checkEnds, getToken, patchSpecies, type Species } from '../lib/api'
+import { checkEnds, patchSpecies, type Species } from '../lib/api'
+import { useCanEdit } from '../lib/gate'
 import { bandOf, binIndex, copyRule, endLine, endMeasure, endsOf, fixPointer, proofEnd, modifierLine, selectedLocus, unitOf, unitText, wakeLine } from '../lib/genes'
 import type { StudioUrl } from '../lib/url'
 import { lookName, shortWord } from '../lib/variety'
@@ -11,6 +12,7 @@ import s from './GenesInspector.module.css'
 // The gene's inspector (studio-ui 4.3): the range bar, the limits and the type, the looks, how the copies show (locked on a shared trait), then a card for each end that fails with the fix it computed.
 // Chapter 9 adds how often each look shows, the looks with rules (age, needs), a live "Add a modifier" and the genome string.
 export function GenesInspector({ species, url, go }: { species: Species; url: StudioUrl; go: (p: Partial<StudioUrl>) => void }) {
+  const canEdit = useCanEdit()
   const qc = useQueryClient()
   const [busy, setBusy] = useState(false)
   const g = species.file.genome
@@ -70,7 +72,7 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
       {!ext?.ends || !ext.fresh ? (
         <div className={s.measure}>
           <p className={s.help}>{ext?.running ? 'Building both ends…' : ext?.ends ? 'Measured on an older file.' : 'The ends have not been built yet.'}</p>
-          <button className={s.act} onClick={measure} disabled={busy || ext?.running || !getToken()}>Check both ends</button>
+          <button className={s.act} onClick={measure} disabled={busy || ext?.running || !canEdit}>Check both ends</button>
         </div>
       ) : null}
       {bad.length > 0 && (
@@ -80,7 +82,7 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
               <div className={s.head}><i className={s.dot} /><b>{endLine(l, e)}</b></div>
               <p className={s.measureLine}>{endMeasure(e)}</p>
               <div className={s.acts}>
-                {e.fix && <button onClick={() => setLimit(e)} disabled={busy || !getToken() || !ext?.fresh}>Set limit to {unitText(e.fix.value, '')}</button>}
+                {e.fix && <button onClick={() => setLimit(e)} disabled={busy || !canEdit || !ext?.fresh}>Set limit to {unitText(e.fix.value, '')}</button>}
                 {e.proof && <button onClick={() => go({ proof: shown?.id === e.id ? 'none' : e.id })} disabled={!e.proof.ready} aria-pressed={shown?.id === e.id}>{!e.proof.ready ? 'Making the proof…' : shown?.id === e.id ? 'Hide proof' : 'Show proof'}</button>}
               </div>
             </div>

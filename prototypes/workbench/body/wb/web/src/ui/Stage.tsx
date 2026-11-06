@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Species } from '../lib/api'
-import { renderViews, getToken, casUrl } from '../lib/api'
+import { useCanEdit } from '../lib/gate'
+import { renderViews, casUrl } from '../lib/api'
 import { useFrames } from '../lib/frames'
 import { useJobs } from '../lib/events'
 import { useUI } from '../lib/store'
@@ -22,6 +23,7 @@ const FOOT = 52 // the plate's own band under the figure, where the view bar flo
 const STRIP_W = 92, STRIP_H = Math.round(STRIP_W / RATIO)
 
 export function Stage({ url, species, go, inset = 0 }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>, replace?: boolean) => void; inset?: number }) {
+  const canEdit = useCanEdit()
   const ref = useRef<HTMLElement>(null)
   const [box, setBox] = useState({ w: 0, h: 0 })
   useEffect(() => {
@@ -59,13 +61,13 @@ export function Stage({ url, species, go, inset = 0 }: { url: StudioUrl; species
   const progress = jobs.some((j) => j.state === 'running') ? (jobs.find((j) => j.state === 'running' && j.progress != null)?.progress ?? 'indeterminate') : null
   const showBefore = before && hero?.before && !proof
   const src = proof ? casUrl(proof.key) : showBefore ? hero.before : hero?.src ?? null
-  const ready = (v: View) => !!species?.views.some((x) => x.mode === v && x.az === url.az && x.ready) || !!getToken()
+  const ready = (v: View) => !!species?.views.some((x) => x.mode === v && x.az === url.az && x.ready) || canEdit
   const pick = (v: View) => {
     go({ view: v })
-    if (!species?.views.some((x) => x.mode === v && x.ready) && getToken()) void renderViews(url.species, v)
+    if (!species?.views.some((x) => x.mode === v && x.ready) && canEdit) void renderViews(url.species, v)
   }
   const onSpine = !!species && url.az === 90 && url.view === 'clay' && !proof && !showBefore
-  const editable = !!getToken() && !(species && leaseFrom(species.lease, species.history))
+  const editable = canEdit && !(species && leaseFrom(species.lease, species.history))
   return (
     <main className={s.stage} ref={ref} style={inset ? { paddingBottom: inset + 8, justifyContent: 'flex-start' } : undefined}>
       <div className={s.hero}>

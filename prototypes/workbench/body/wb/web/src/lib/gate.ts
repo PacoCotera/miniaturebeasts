@@ -12,6 +12,14 @@ export type Round = { round: number; file_hash: string; asked_by: string; asked_
 export type Gate = { species: string; hash: string; rounds: Round[]; current: number | null; signed: boolean; building: boolean }
 
 export const meOne = () => queryOptions({ queryKey: ['me', getToken()], queryFn: () => call<Me>('GET', '/api/me'), staleTime: 60_000 })
+
+// Edit rights come from who the server says you are: the site login (the proxy's user, the owner) or a page token. Neither is read only. The server still decides every write.
+export const canEditAs = (me: Me | undefined, token: string | null): boolean => !!token || (!!me && !!me.name && me.role !== null && !me.agent)
+export function useCanEdit(): boolean {
+  const token = getToken()
+  const me = useQuery({ ...meOne(), enabled: !token }).data
+  return canEditAs(me, token)
+}
 export const gateOne = (id: string) => queryOptions({ queryKey: ['gate', id], queryFn: () => call<Gate>('GET', `/api/species/${encodeURIComponent(id)}/gate`), staleTime: 5_000, refetchInterval: (q) => (q.state.data?.building ? 3000 : false) })
 export const sheetUrl = (id: string, n: number, sheet: string) => apiPath(`/api/species/${encodeURIComponent(id)}/gate/${n}/sheet/${sheet}.png`)
 

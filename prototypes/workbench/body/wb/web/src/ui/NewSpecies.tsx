@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { speciesList, getToken } from '../lib/api'
+import { speciesList } from '../lib/api'
+import { useCanEdit } from '../lib/gate'
 import { createSpecies, familiesOne, isReady, isSculpt, nextId, pathWord, validId, type FamilyCard } from '../lib/families'
 import { useUI } from '../lib/store'
 import { W } from '../lib/words'
@@ -9,6 +10,7 @@ import s from './NewSpecies.module.css'
 
 // New species: the body plan cards are family cards. A family with a template can be started from; the others say "not yet", and "From a sculpt" waits for the mesh body source.
 export function NewSpecies({ go }: { go: (p: { species: string; sel: null }) => void }) {
+  const canEdit = useCanEdit()
   const { newOpen, setNew } = useUI()
   const fam = useQuery({ ...familiesOne(), enabled: newOpen })
   const list = useQuery({ ...speciesList(), enabled: newOpen })
@@ -20,7 +22,7 @@ export function NewSpecies({ go }: { go: (p: { species: string; sel: null }) => 
   const cards = fam.data ?? []
   const sid = id ?? nextId((list.data ?? []).map((r) => r.id))
   const chosen = cards.find((c) => c.id === pick)
-  const can = !!getToken() && !!chosen && isReady(chosen) && validId(sid) && !busy
+  const can = canEdit && !!chosen && isReady(chosen) && validId(sid) && !busy
   const make = async () => {
     if (!chosen) return
     setBusy(true); setErr(null)
@@ -45,7 +47,7 @@ export function NewSpecies({ go }: { go: (p: { species: string; sel: null }) => 
               <input className={s.id} value={sid} onChange={(e) => setId(e.target.value.toUpperCase())} spellCheck={false} aria-invalid={!validId(sid)} />
             </label>
             {err && <span className={s.err} role="alert">{err}</span>}
-            {!getToken() && <span className={s.hint}>{W.readOnly} · {W.tokenTip}</span>}
+            {!canEdit && <span className={s.hint}>{W.readOnly} · {W.tokenTip}</span>}
             <button className={s.primary} disabled={!can} onClick={() => void make()}>{W.owedNew.create}</button>
           </footer>
         </Dialog.Content>

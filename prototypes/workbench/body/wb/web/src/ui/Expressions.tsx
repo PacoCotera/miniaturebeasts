@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { freqOne, getToken, patchSpecies, stringOne, type Species } from '../lib/api'
+import { freqOne, patchSpecies, stringOne, type Species } from '../lib/api'
+import { useCanEdit } from '../lib/gate'
 import { ageLine, barSegments, expressionsOf, GROUPS, grouped, isModifier, labelOf, modifierLine, modifiersOf, needLine, newModifier, orderLine, pct, STAGES, stageWord, type Genome, type Locus, type Stage } from '../lib/genes'
 import { lookName, shortWord } from '../lib/variety'
 import s from './Expressions.module.css'
@@ -84,6 +85,7 @@ export function ExpressionRules({ species, l }: { species: Species; l: Locus }) 
 
 // "Add a modifier" (owner ruling 1): a gene of this species that changes how a shared locus shows. A pair map is given a new first look; a switch the other copy rule. It is added to the file like any edit, and inherited like any gene.
 export function ModifierBox({ species, l }: { species: Species; l: Locus }) {
+  const canEdit = useCanEdit()
   const qc = useQueryClient()
   const g = species.file.genome as Genome
   const q = useFreq(species)
@@ -120,10 +122,10 @@ export function ModifierBox({ species, l }: { species: Species; l: Locus }) {
         <div key={m.locus} className={s.x}>
           <div className={s.xh}><b>{m.label}</b><span className={s.tag}>modifier · carried by {pct(q.data?.loci[m.locus]?.wild.on ?? m.weight! * 100 * 1.75)} of wild</span></div>
           <p className={s.rule}>A mibi with one copy shows it so: {modifierLine(g, m)}.</p>
-          <button className={s.link} onClick={() => remove(m.locus)} disabled={busy || !getToken()}>Remove the modifier</button>
+          <button className={s.link} onClick={() => remove(m.locus)} disabled={busy || !canEdit}>Remove the modifier</button>
         </div>
       ))}
-      {can && !open && <button className={s.btn} onClick={() => setOpen(true)} disabled={!getToken()} title="A modifier is a gene of this species that changes how a shared trait shows. A cross that carries it behaves like this species; one without it follows the catalogue.">Add a modifier</button>}
+      {can && !open && <button className={s.btn} onClick={() => setOpen(true)} disabled={!canEdit} title="A modifier is a gene of this species that changes how a shared trait shows. A cross that carries it behaves like this species; one without it follows the catalogue.">Add a modifier</button>}
       {can && open && (
         <div className={s.form}>
           {l.op === 'pair-map' ? (
@@ -139,7 +141,7 @@ export function ModifierBox({ species, l }: { species: Species; l: Locus }) {
         </div>
       )}
       {err && <p className={s.err} role="alert">{err}</p>}
-      {!getToken() && can && !open && <p className={s.note}>Sign in to add a modifier.</p>}
+      {!canEdit && can && !open && <p className={s.note}>Sign in to add a modifier.</p>}
     </div>
   )
 }

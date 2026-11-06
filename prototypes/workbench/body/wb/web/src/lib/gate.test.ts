@@ -1,9 +1,26 @@
 import { describe, expect, it } from 'vitest'
-import { allTicked, canJudge, current, isEarlier, isOpen, pickSheet, shown, turn, voidedNames, type Gate, type Round } from './gate'
+import { allTicked, canEditAs, canJudge, current, isEarlier, isOpen, pickSheet, shown, turn, voidedNames, type Gate, type Round } from './gate'
 import { W } from './words'
 
 const sheets = ['turnaround', 'before-after', 'joins', 'twelve', 'motion', 'close-up'].map((id, i) => ({ id, label: id, tick: i < 2 }))
 const round = (over: Partial<Round> = {}): Round => ({ round: 3, file_hash: 'ab', asked_by: 'dev', asked_at: '2026-11-05T10:00:00', note: '', reviewer: null, owner: null, verdict: null, voided: null, sheets, state: { live: true, reviewer_valid: false, owner_valid: false, signed: false, voided: false, ticked: 2 }, ...over })
+
+describe('who may edit', () => {
+  it('the site login (the owner by /api/me) edits with no token', () => {
+    expect(canEditAs({ name: 'paco', role: 'owner', agent: false }, null)).toBe(true)
+    expect(canEditAs({ name: 'r', role: 'reviewer', agent: false }, null)).toBe(true)
+    expect(canEditAs({ name: 'm', role: 'maker', agent: false }, null)).toBe(true)
+  })
+  it('a page token edits whatever /api/me says or has not said yet', () => {
+    expect(canEditAs(undefined, 'tok')).toBe(true)
+    expect(canEditAs({ name: null, role: null, agent: false }, 'tok')).toBe(true)
+  })
+  it('neither a token nor a known person is read only', () => {
+    expect(canEditAs(undefined, null)).toBe(false)
+    expect(canEditAs({ name: null, role: null, agent: false }, null)).toBe(false)
+    expect(canEditAs({ name: 'a', role: 'owner', agent: true }, null)).toBe(false)
+  })
+})
 
 describe('the gate screen rules', () => {
   it('only a reviewer or the owner that is not an agent can judge', () => {

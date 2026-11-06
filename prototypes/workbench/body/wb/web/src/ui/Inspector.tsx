@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getToken, type Species } from '../lib/api'
+import { type Species } from '../lib/api'
+import { useCanEdit } from '../lib/gate'
 import { formsOne, getAt, toysOne } from '../lib/forms'
 import { Field } from './Field'
 import { checkMetas, needsYou, partsOf, ORDER } from '../lib/checks'
@@ -18,6 +19,7 @@ import s from './Inspector.module.css'
 // Shows only the selection. With nothing selected: the species overview (st.insp.empty). The version ("v5 draft") is not in the file yet, so it is left out.
 // Under it, one card for each check the selection touches (all that need you when nothing is selected), then a quiet count of the passes (st.card.passes).
 export function Inspector({ species, id, sheet, open, url, go, genes }: { species: Species | undefined; id: string; sheet: boolean; open: boolean; url: StudioUrl; go: (p: Partial<StudioUrl>) => void; genes?: ReactNode }) {
+  const canEdit = useCanEdit()
   const lease = species ? leaseFrom(species.lease, species.history) : null
   const last = species?.history[species.history.length - 1]
   const name = species?.file.name || `${id} · no name yet`
@@ -30,7 +32,7 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
   const row = url.sel ? forms?.outline.find((r) => r.id === url.sel) : undefined
   const selLabel = part?.label ?? row?.label ?? partLabel(url.sel)
   const selKind = row ? (row.kind === 'range' ? 'spine range' : row.kind === 'part' && row.under ? `on the ${row.under}` : null) : ['head', 'neck', 'back', 'seat', 'tail'].includes(url.sel ?? '') ? 'spine range' : null
-  const editable = !!getToken() && !lease
+  const editable = canEdit && !lease
   const asPlayer = useUI((u) => u.player)
   const setPlayer = useUI((u) => u.setPlayer)
   const toysQ = useQuery({ ...toysOne(id, species?.hash ?? ''), enabled: !!species && !genes && asPlayer && !!part?.play }).data
@@ -54,7 +56,7 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
           </Popover.Root>
         )}</div>
       {!url.sel && line && <p className={s.line}>{line}</p>}
-      {url.sel && species && !getToken() && <p className={s.line} title={W.tokenTip}>{W.readOnly}</p>}
+      {url.sel && species && !canEdit && <p className={s.line} title={W.tokenTip}>{W.readOnly}</p>}
       {species && showToy && toy && <PlayPanel toys={toy} sentences={toysQ?.sentences} hold={toysQ?.hold} species={species.file.name} />}
       {species && part && !showToy && part.fields.some((d) => getAt(species.file, d.ptr) !== undefined) && (
         <div className={s.fields}>{part.fields.filter((d) => getAt(species.file, d.ptr) !== undefined).map((d) => <Field key={d.id} species={species} id={id} desc={d} editable={editable} rows={rows} metas={byId} />)}</div>

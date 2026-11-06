@@ -13,12 +13,13 @@ import { failingEnds } from '../lib/genes'
 import { useUI } from '../lib/store'
 import { usePortraitSheet } from '../lib/useStudio'
 import { nextSeed, runSheet, varietyOne } from '../lib/variety'
-import { getToken, postJob } from '../lib/api'
+import { postJob } from '../lib/api'
 import { goldenJob, goldensOne } from '../lib/goldens'
-import { allTicked, canJudge, current, gateOne, isEarlier, meOne, shown, turn, useGateActions, isOpen } from '../lib/gate'
+import { allTicked, canJudge, current, gateOne, isEarlier, meOne, shown, turn, useCanEdit, useGateActions, isOpen } from '../lib/gate'
 import s from './TopBar.module.css'
 
 export function TopBar({ url, species, go }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>) => void }) {
+  const canEdit = useCanEdit()
   const list = useQuery(speciesList())
   const thumb = useFrames(species, 'clay')[32]?.src
   const name = species?.file.name || `${url.species} · no name yet`
@@ -75,12 +76,12 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
         <LeaseAvatar species={species} />
         {sheet && <button className={s.iconbtn} onClick={toggleInsp} aria-label="Inspector"><span className={s.panelIcon} /></button>}
         <button className={s.quiet} disabled>{W.play}</button>
-        {url.mode === 'goldens' && (ask ? <button className={s.primary} disabled>{W.gold.ask}</button> : <button className={s.primary} onClick={makeGoldens} disabled={!getToken() || !species}>{W.gold.make}</button>)}
-        {url.mode === 'gate' && species && !!getToken() && !looking && (!isOpen(round) && !judge
+        {url.mode === 'goldens' && (ask ? <button className={s.primary} disabled>{W.gold.ask}</button> : <button className={s.primary} onClick={makeGoldens} disabled={!canEdit || !species}>{W.gold.make}</button>)}
+        {url.mode === 'gate' && species && canEdit && !looking && (!isOpen(round) && !judge
           ? <button className={s.primary} onClick={() => void act.ask()} disabled={act.busy}>{W.gate.ask}</button>
           : round && judge && t === 'reviewer' && me?.role === 'reviewer' ? <button className={s.primary} onClick={() => void act.sign(round.round)} disabled={act.busy || !allTicked(round)}>{W.gate.sign(round.round)}</button>
           : round && judge && t === 'owner' && me?.role === 'owner' ? <button className={s.primary} onClick={() => void signAndRelease()} disabled={act.busy}>{W.gate.release}</button> : null)}
-        {url.mode === 'variety' && <button className={s.primary} onClick={newSheet} disabled={!getToken() || !species}>{W.newSheet}</button>}
+        {url.mode === 'variety' && <button className={s.primary} onClick={newSheet} disabled={!canEdit || !species}>{W.newSheet}</button>}
       </div>
     </header>
   )
