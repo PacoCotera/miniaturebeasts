@@ -30,7 +30,7 @@ FACE = dict(
     row_tol=0.02,                            # pair mirrored, row level, within 2% of the head's width
     lid_max=0.35,                            # the knowing lid closes at most 35%, straight edge
     mouth_span=0.6,                          # the mouth's width at most 0.6 of the eye span
-    iris_dl=0.15,                            # iris value differs from the body's by at least 0.15 L
+    iris_pupil_dl=0.30,                      # the iris against the pupil, and the pupil against the face zone: at least 0.30 L each (signed values in the registry's eye block)
 )
 FLUSH_FIELDS = ("rim", "rims", "socket", "sockets", "bulge", "ring", "rings", "sunken", "dome")          # a flush eye has none of these
 BAD_FRAMES = ("sleepy", "droopy", "sad", "tired", "angry", "scared")
@@ -504,22 +504,51 @@ def _oklab_L(rgb):
     return float(0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s)
 
 
-@check(id="face.iris", name="Iris colour", fail="Iris too close to the body's colour", stage="coat", version=1, part=["head"], fields=["face.eyes.iris.colour", "land"],
-       rule=R("2026-11-05 21:18", "The iris colour varies, and it always reads against the coat: the iris is at least 0.15 lighter or darker than the body, at both ends of the land's body range."),
-       limit=dict(text="iris differs from the body by at least 0.15 in lightness (L)", value=FACE["iris_dl"]), az=0)
-def c_iris(ctx):
-    import facedecal as FD
+ZONES = {"S01": ("cream ring", "#DFD2AE"),          # a kind whose eyes sit in a fixed pale ring: the ring is the face zone the pupil is judged in (Loika's cream)
+         "S17": ("own colour (marigold)", "#E8B83F"), "S18": ("own colour (periwinkle)", "#8B7DD8"), "S19": ("own colour (lagoon)", "#269FA5")}          # a kind with its own body colour (its coat.land record): that colour is the zone
+
+
+def _oklab_L_hex(h):
+    h = h.lstrip("#")
+    return _oklab_L([int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4)])
+
+
+def iris_judgement(kind_id, colour, land_id):
+    """The signed iris rule for one kind and colour: the iris against the pupil, and the pupil against the face zone (the kind's body colour, or its fixed ring), each at least 0.30 L in OKLab.
+    A kind that carries the pale eye rim passes the second through the rim. Returns a dict, or None when the kind has no land to read a body colour from."""
     import species_v1 as V1
+    eye = V1.registry()["eye"]
+    land = next((l for l in V1.registry()["lands"] if l["id"] == land_id), None)
+    k = V1.registry_kind(kind_id) or {}
+    if land is None and kind_id not in ZONES:
+        return None
+    pupil = _oklab_L_hex(eye["pupilHex"])
+    iris = _oklab_L_hex(eye["irisSwatch"].get(colour, eye["irisSwatch"]["hazel"]))
+    if kind_id in ZONES:
+        zone_name, zone_L = ZONES[kind_id][0], _oklab_L_hex(ZONES[kind_id][1])
+    else:
+        zone_name, zone_L = land["body"]["name"], float(land["body"]["oklch"]["L"])
+    rim = bool((k.get("eyes") or {}).get("paleRim"))
+    rim_L = float(eye["paleRim"]["L"])
+    d_iris, d_zone, d_rim = abs(iris - pupil), abs(zone_L - pupil), abs(rim_L - pupil)
+    zone_ok = d_zone >= FACE["iris_pupil_dl"] - 1e-9 or (rim and d_rim >= FACE["iris_pupil_dl"] - 1e-9)
+    return dict(kind=kind_id, colour=colour, iris_L=iris, pupil_L=pupil, zone=zone_name, zone_L=zone_L, d_iris=d_iris, d_zone=d_zone, rim=rim, d_rim=d_rim if rim else None,
+                iris_ok=d_iris >= FACE["iris_pupil_dl"] - 1e-9, zone_ok=zone_ok, ok=(d_iris >= FACE["iris_pupil_dl"] - 1e-9) and zone_ok)
+
+
+@check(id="face.iris", name="Iris colour", fail="Iris or pupil too close to what is behind it", stage="coat", version=2, part=["head"], fields=["face.eyes.iris.colour", "land"],
+       rule=R("2026-11-06 16:20", "The iris colour varies, and it always reads: the iris is at least 0.30 lighter or darker than the pupil, and the pupil at least 0.30 from the face zone it sits in (the kind's body colour, or Loika's cream ring); a kind with the pale eye rim passes the second through its rim."),
+       limit=dict(text="iris against pupil, and pupil against the face zone, each at least 0.30 in lightness (OKLab L)", value=FACE["iris_pupil_dl"]), az=0)
+def c_iris(ctx):
     doc = _doc(ctx)
-    land = next((l for l in V1.registry()["lands"] if l["id"] == doc.get("land")), None)
-    if land is None:
-        return _skip(ctx, "face.iris", "No land yet: the iris is judged against the body when the kind is set in one")
     name = (_eyes(ctx).get("iris") or {}).get("colour", "hazel")
-    Li = _oklab_L(FD.IRIS_RGB.get(name, FD.IRIS_RGB["hazel"]))
-    Lb, span = float(land["body"]["oklch"]["L"]), float(land["bodyRange"]["lightness"])
-    d = min(abs(Li - (Lb - span)), abs(Li - Lb), abs(Li - (Lb + span)))
-    inside = (Lb - span) <= Li <= (Lb + span)
-    bad = inside or d < FACE["iris_dl"] - 1e-9
-    why = f"{name.capitalize()} iris L {Li:.2f}, body L {Lb - span:.2f}-{Lb + span:.2f}: closest {d:.2f}, limit {FACE['iris_dl']}"
-    bars = [("Iris against body", f"{d:.2f} L", d / (FACE["iris_dl"] * 2), PR.RED if bad else PR.SAGE, 0.5, "at least 0.15")]
-    return verdict(ctx, "face.iris", bad, f2(d), FACE["iris_dl"], why, _proof(ctx, 0, PR.RED if bad else PR.SAGE, _eye_points(ctx), _band(bars=bars)), dict(iris_L=Li, body_L=Lb))
+    j = iris_judgement(doc.get("id"), name, doc.get("land"))
+    if j is None:
+        return _skip(ctx, "face.iris", "No land yet: the iris is judged against the body when the kind is set in one")
+    bad = not j["ok"]
+    worst = min(j["d_iris"], j["d_zone"] if not (j["rim"] and j["zone_ok"]) else max(j["d_zone"], j["d_rim"]))
+    through = " (through the pale rim)" if j["rim"] and j["d_zone"] < FACE["iris_pupil_dl"] - 1e-9 and j["zone_ok"] else ""
+    why = f"{name.capitalize()} iris L {j['iris_L']:.2f} against pupil {j['pupil_L']:.2f}: {j['d_iris']:.2f}; pupil against {j['zone']} L {j['zone_L']:.2f}: {j['d_zone']:.2f}{through}; limit {FACE['iris_pupil_dl']}"
+    bars = [("Iris against pupil", f"{j['d_iris']:.2f} L", j["d_iris"] / (FACE["iris_pupil_dl"] * 2), PR.RED if not j["iris_ok"] else PR.SAGE, 0.5, "at least 0.30"),
+            ("Pupil against face zone", f"{j['d_zone']:.2f} L", j["d_zone"] / (FACE["iris_pupil_dl"] * 2), PR.RED if not j["zone_ok"] else PR.SAGE, 0.5, "at least 0.30")]
+    return verdict(ctx, "face.iris", bad, f2(worst), FACE["iris_pupil_dl"], why, _proof(ctx, 0, PR.RED if bad else PR.SAGE, _eye_points(ctx), _band(bars=bars)), dict(iris_L=j["iris_L"], zone_L=j["zone_L"], judgement=j))

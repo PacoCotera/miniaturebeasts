@@ -168,15 +168,46 @@ class TestOtherChecks(Base):
         r = [x for x in CH.run("cage", cx2) if x["id"] == "face.row"][0]
         self.assertEqual(r["state"], "fail")
 
-    def test_iris_against_the_land_body(self):
+    def test_iris_against_the_pupil_and_the_pupil_against_the_face_zone(self):
         d = self.changed(lambda x: x.update(land="woods"))
-        self.assertIn(self.rows(d)["face.iris"]["state"], ("pass", "fail"))
-        for name in ("honey", "slate"):
-            r = self.rows(self.changed(lambda x, n=name: (x.update(land="woods"), x["face"]["eyes"]["iris"].update(colour=n))))["face.iris"]
-            self.assertIn("iris L", r["measure"])
-        dark = self.rows(self.changed(lambda x: (x.update(land="woods"), x["face"]["eyes"]["iris"].update(colour="olive"))))["face.iris"]
+        r = self.rows(d)["face.iris"]
+        self.assertEqual(r["state"], "pass")
+        self.assertIn("against pupil", r["measure"])
+        self.assertIn("pupil against", r["measure"])
+        dark = self.rows(self.changed(lambda x: (x.update(land="woods"), x["face"]["eyes"]["iris"].update(colour="violet"))))["face.iris"]
         light = self.rows(self.changed(lambda x: (x.update(land="woods"), x["face"]["eyes"]["iris"].update(colour="honey"))))["face.iris"]
-        self.assertNotEqual((dark["state"], round(dark["value"], 2)), (light["state"], round(light["value"], 2)))
+        self.assertEqual((dark["state"], light["state"]), ("pass", "pass"))
+        self.assertGreaterEqual(light["extra"]["judgement"]["d_iris"], dark["extra"]["judgement"]["d_iris"])
+
+    def test_the_signed_rule_for_the_twenty_kinds(self):
+        import species_v1 as V1
+        from checks import face as FC
+        bad = []
+        for k in V1.registry()["kinds"]:
+            if k["id"] == "S22":
+                continue
+            for c in k["eyes"]["irisPool"]:
+                j = FC.iris_judgement(k["id"], c, k["land"])
+                self.assertGreaterEqual(j["d_iris"], 0.30, (k["id"], c))
+                if not j["ok"]:
+                    bad.append((k["id"], c))
+                if j["rim"] and j["d_zone"] < 0.30:
+                    self.assertTrue(j["zone_ok"], (k["id"], c))            # the four pale-rim kinds pass through the rim
+        self.assertEqual({b[0] for b in bad}, set())
+        self.assertEqual(FC.iris_judgement("S01", "amber", "woods")["zone"], "cream ring")
+
+    def test_an_iris_too_close_to_the_pupil_is_red(self):
+        import species_v1 as V1
+        from checks import face as FC
+        j = FC.iris_judgement("S02", "hazel", "downs")
+        reg = V1.registry()["eye"]
+        orig = dict(reg["irisSwatch"])
+        try:
+            reg["irisSwatch"]["hazel"] = "#3A3440"
+            self.assertFalse(FC.iris_judgement("S02", "hazel", "downs")["iris_ok"])
+        finally:
+            reg["irisSwatch"].update(orig)
+        self.assertTrue(j["ok"])
 
     def test_a_template_with_no_land_is_not_judged_on_iris(self):
         self.assertIn("No land yet", self.rows(self.doc)["face.iris"]["measure"])
