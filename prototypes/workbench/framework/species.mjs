@@ -352,6 +352,9 @@ function finishFrame(frame, spec) {
       row.changedBy = changedByOf(row, { id: t.id, shapeable });
       if (spec.legacy?.[id]) row.legacy = [...spec.legacy[id]];   // alleles a living line may still carry from an earlier frame version: legal, never drawn for a new pod
       if (typical[id]) row.typical = typical[id];
+      // A language frame states what a position stands for in this kind (`band`, with the value at the type) or the limits a value record is held to (`clamp`): schema /4, the same fields /3 gives the body engine.
+      if (spec.bands?.[id]) { const { type, ...band } = spec.bands[id]; row.band = band; if (type !== undefined) row.type = type; }
+      if (spec.clamps?.[id]) row.clamp = { ...spec.clamps[id] };
     } else {
       row.kind = "locked"; row.lockReason = isPartSwitch(id) ? "switch" : "fixed"; row.chapter = null; row.trait = null; row.shapeable = false;
       row.copies = locked[id]; row.looks = looksFor(locus, [locked[id][0]]); row.guard = locus.consumer;

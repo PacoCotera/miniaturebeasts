@@ -16,7 +16,8 @@ import { plainRender } from "../framework/plain.mjs";
 import { fitCamera, frameCamera } from "../framework/raster.mjs";
 
 const framesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../frames");
-const loika = JSON.parse(readFileSync(path.join(framesDir, "species-S01.json"), "utf8"));
+import { formFramePath } from "./form-frames.mjs";
+const loika = JSON.parse(readFileSync(formFramePath("species-S01.json"), "utf8"));   // version 6, the file in frames/v6 (S01 is a language frame, version 8, now)
 const sha = (b) => createHash("sha256").update(b).digest("hex").slice(0, 16);
 const LEN = "growth.auricular-length-ratio", EARS = ["anatomy.auricular-presence", "anatomy.auricular-form", LEN, "anatomy.ear-tilt", "growth.auricular-width-ratio", "growth.auricular-set-ratio"];
 const row = (f, id) => f.loci.find((l) => l.id === id);

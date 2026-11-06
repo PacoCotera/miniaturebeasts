@@ -13,7 +13,8 @@ import { validateBody } from "../framework/validate.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const framesDir = path.resolve(here, "../frames");
-const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
+import { loadFormFrames } from "./form-frames.mjs";
+const frames = loadFormFrames();   // the form frames: S01 and S17-S19 from their version-6 files (they are language frames, version 8, now)
 const frameOf = (id) => frames.find((f) => f.species.id === id);
 
 test("catalogue 13 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {

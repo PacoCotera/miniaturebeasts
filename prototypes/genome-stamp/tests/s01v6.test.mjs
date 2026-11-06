@@ -105,7 +105,7 @@ const V6_PODS = {
 test("S01 version 5 is the frame it was, and so is every other frame: the snapshot only gained 1.6, at the end", () => {
   const frames = FRAME_DATA.frames, keys = frames.map((f) => `${f.species}.${f.version}`), n = Object.keys(BEFORE).length;
   assert.deepEqual(keys.slice(0, n), Object.keys(BEFORE), "every earlier frame is in the same place");
-  assert.deepEqual(keys.slice(n), ["1.6", "20.1", "10.5", "12.5"], "and the Loika's version 6 follows the last of them, then the Tuliko, then the Igara and the Peplos at 5");
+  assert.deepEqual(keys.slice(n), ["1.6", "20.1", "10.5", "12.5", "1.8", "17.8", "18.8", "19.8"], "and the Loika's version 6 follows the last of them, then the Tuliko, then the Igara and the Peplos at 5, then the four language frames at 8");
   for (const f of frames.slice(0, n)) assert.equal(sha(JSON.stringify(f)), BEFORE[`${f.species}.${f.version}`], `${f.id} ${f.species}.${f.version} is unchanged`);
   assert.ok(!frameFor(1, 5).heritable.some((l) => l.id === LEN), "version 5 carries no ear length open");
 });
@@ -121,7 +121,7 @@ test("the version-5 pods of seeds 1 to 12: their strings decode and write back t
 });
 
 test("the Loika at version 6 is the newest and adds exactly the ear length to the heritable loci, in the Face chapter, with the AD's three alleles and the catalogue's step grid", () => {
-  const f6 = byName("S01"), f5 = frameFor(1, 5);
+  const f6 = byName("S01", 6), f5 = frameFor(1, 5);
   assert.equal(f6.version, 6); assert.equal(frameFor(1, 6), f6);
   const ids6 = f6.heritable.map((l) => l.id), ids5 = f5.heritable.map((l) => l.id);
   assert.deepEqual(ids6.filter((id) => !ids5.includes(id)), [LEN], "one locus added");
@@ -138,7 +138,7 @@ test("the Loika at version 6 is the newest and adds exactly the ear length to th
 });
 
 test("the version-6 pods of seeds 1 to 12: every string carries the ears, decodes and writes back the same, and the stamp codes read back", () => {
-  const f = byName("S01");
+  const f = byName("S01", 6);
   for (const [seed, [str, code]] of Object.entries(V6_PODS)) {
     const d = decodeGenomeString(str); assert.ok(d.ok, d.detail); assert.equal(d.frame, f); assert.match(str, /^G1-S1v6-/);
     const ears = d.genome.copies[LEN]; assert.ok(Array.isArray(ears) && ears.length === 2, `seed ${seed} carries the ear length`);
@@ -161,7 +161,7 @@ function genomeOf(frame, seed) {
 }
 
 test("a version-6 round trip through the string codec and the stamp codec with the ears at each end, mixed and on a step", () => {
-  const f = byName("S01"), l = f.heritable.find((x) => x.id === LEN), readAll = 2 ** f.chapters.length - 1;
+  const f = byName("S01", 6), l = f.heritable.find((x) => x.id === LEN), readAll = 2 ** f.chapters.length - 1;
   for (const ears of [["small", "small"], ["short", "short"], ["medium", "medium"], ["small", "medium"], [stepValue(l, 3), stepValue(l, 3)], [stepValue(l, 0), "medium"]]) {
     const g = genomeOf(f, 41); g.copies[LEN] = ears;
     const s = genomeString(f, g), d = decodeGenomeString(s);
@@ -178,7 +178,7 @@ test("a version-6 round trip through the string codec and the stamp codec with t
 });
 
 test("a version-6 string is not a version-5 or version-4 string: each decodes against its own frame only", () => {
-  const f6 = byName("S01"), f5 = frameFor(1, 5), f4 = frameFor(1, 4);
+  const f6 = byName("S01", 6), f5 = frameFor(1, 5), f4 = frameFor(1, 4);
   for (const f of [f4, f5, f6]) { const s = genomeString(f, genomeOf(f, 9)); assert.equal(decodeGenomeString(s).frame, f); assert.match(s, new RegExp(`^G1-S1v${f.version}-`)); }
-  assert.equal(FRAMES_LIST.filter((x) => x.species === 1).map((x) => x.version).join(), "2,3,4,5,6");
+  assert.equal(FRAMES_LIST.filter((x) => x.species === 1).map((x) => x.version).join(), "2,3,4,5,6,8");
 });

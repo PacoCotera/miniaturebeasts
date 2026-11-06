@@ -14,6 +14,7 @@ import { buildFrame } from "../framework/species.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const framesDir = path.resolve(here, "../frames");
+import { formFramePath } from "./form-frames.mjs";
 const sha16 = (s) => createHash("sha256").update(s).digest("hex").slice(0, 16);
 
 // The 54 records of the proposal's table A.3, in the frame's ring order (Coat, Face, Shape, Legs & tail, Movement): [Chunk 7 locus, record, how the record stands].
@@ -199,9 +200,11 @@ const PIN12_FRAME_FILES = {
 test("every S01 to S19 frame is byte for byte the merge baseline, names pin 12 with the digest of its own version, and lists nothing a later frame version adds", () => {
   const files = readdirSync(framesDir).filter((f) => f.endsWith(".json")).sort();
   assert.deepEqual(files, Object.keys(PIN12_FRAME_FILES).sort(), "the registry holds S01 to S19 and the index, no more");
-  for (const f of files) assert.equal(sha16(readFileSync(path.join(framesDir, f))), PIN12_FRAME_FILES[f], `${f} is unchanged`);
+  // S01, S17, S18 and S19 are language frames now (version 8, chapter 5): their version-6 files sit in frames/v6, byte for byte, and are the ones compared here.
+  // The index changed on purpose (it names the language pin and marks those four), so its hash is not held.
+  for (const f of files.filter((x) => x !== "index.json")) assert.equal(sha16(readFileSync(formFramePath(f))), PIN12_FRAME_FILES[f], `${f} is unchanged`);
   for (const f of files.filter((x) => x.startsWith("species-"))) {
-    const d = JSON.parse(readFileSync(path.join(framesDir, f), "utf8"));
+    const d = JSON.parse(readFileSync(formFramePath(f), "utf8"));
     const fv = d.frameVersion ?? 4;
     assert.equal(d.catalogue.version, 12, `${d.species.id} names pin 12`); assert.equal(d.catalogue.digest, digestAt(fv), `${d.species.id}: the digest of the content its frame version ${fv} sees`);
     for (const l of d.loci) assert.ok(!(LOCI.get(l.id).sinceFrame > fv), `${d.species.id} lists ${l.id}`);

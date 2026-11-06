@@ -11,7 +11,8 @@ import { buildIndividual, sampleIndividual, typeSpecimen, checkGenome, rng, fram
 import { cross, shedPod } from "../framework/cross.mjs";
 
 const framesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../frames");
-const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
+import { loadFormFrames } from "./form-frames.mjs";
+const frames = loadFormFrames();   // the form frames: S01 and S17-S19 from their version-6 files (they are language frames, version 8, now)
 const loika = frames.find((f) => f.species.id === "S01");
 const SWITCH = "anatomy.crown-presence", HEIGHT = "growth.crown-height-ratio", LEAVES = "growth.crest-leaf-count", FORM = "anatomy.crown-form", PARAMS = [HEIGHT, LEAVES, FORM];
 const row = (id) => loika.loci.find((l) => l.id === id);

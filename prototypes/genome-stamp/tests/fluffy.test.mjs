@@ -122,8 +122,8 @@ test("the registry is append-only: every frame it held before frame version 6 is
   const frames = FRAME_DATA.frames, before = Object.keys(FRAME_DIGESTS);
   assert.deepEqual(frames.slice(0, before.length).map((f) => `${f.species}.${f.version}`), before, "the earlier frames come first, in their order");
   frames.slice(0, before.length).forEach((f) => assert.equal(sha(JSON.stringify(f)), FRAME_DIGESTS[`${f.species}.${f.version}`], `${f.id} ${f.species}.${f.version} is unchanged`));
-  assert.deepEqual(frames.slice(before.length).map((f) => `${f.id}.${f.version}`), ["S17.6", "S18.6", "S19.6", "S01.5", "S01.6", "S20.1", "S10.5", "S12.5"], "Wickle, Drapet and Curlop, appended at frame version 6, then the Loika at frame versions 5 and 6, then the Tuliko at version 1, then the Igara and the Peplos at version 5 from the merge of the game line (a frame never moves)");
-  assert.deepEqual(frames.slice(before.length).map((f) => f.name), ["Wickle", "Drapet", "Curlop", "Loika", "Loika", "Tuliko", "Igara", "Peplos"]);
+  assert.deepEqual(frames.slice(before.length).map((f) => `${f.id}.${f.version}`), ["S17.6", "S18.6", "S19.6", "S01.5", "S01.6", "S20.1", "S10.5", "S12.5", "S01.8", "S17.8", "S18.8", "S19.8"], "Wickle, Drapet and Curlop, appended at frame version 6, then the Loika at frame versions 5 and 6, then the Tuliko at version 1, then the Igara and the Peplos at version 5 from the merge of the game line, then the four language frames at version 8 (the Loika, Wickle, Drapet, Curlop; a frame never moves)");
+  assert.deepEqual(frames.slice(before.length).map((f) => f.name), ["Wickle", "Drapet", "Curlop", "Loika", "Loika", "Tuliko", "Igara", "Peplos", "Loika", "Wickle", "Drapet", "Curlop"]);
 });
 
 test("every S01-S16 stamp encodes to the same bytes as before and decodes to the same genome", () => {
@@ -141,7 +141,7 @@ test("every S01-S16 stamp encodes to the same bytes as before and decodes to the
 
 test("the fluffy frames stamp and decode: a genome of each round-trips, and the newest frame is the encoder's default", () => {
   for (const [id, n] of [["S17", 17], ["S18", 18], ["S19", 19]]) {
-    const f = byName(id); assert.equal(f.version, 6); assert.equal(f.species, n); assert.equal(frameFor(n, 6), f);
+    const f = byName(id, 6); assert.equal(f.version, 6); assert.equal(f.species, n); assert.equal(frameFor(n, 6), f); assert.equal(byName(id).version, 8, `${id}: the newest is the language frame (version 8), the encoder's default`);
     for (const seed of [1, 2, 3]) {
       const g = individual(f, seed, { read: f.chapters.filter((c) => !c.sealed).map((c) => c.name) });
       const { L, cells } = encodeCells(f, g), bits = L.msgCells.map(([r, c]) => cells.get(r * L.N + c)?.v ?? 0), back = parseMessage(bits, L.N, {});
@@ -150,6 +150,6 @@ test("the fluffy frames stamp and decode: a genome of each round-trips, and the 
   }
   const fluffy = ["anatomy.tail-curl-presence", "growth.tail-curl-turn", "growth.fur-skirt-flare", "growth.brow-tuft-length"];
   const open = (f) => new Set(f.heritable.map((l) => l.id));
-  assert.ok(open(byName("S17")).has("growth.tail-curl-turn") && open(byName("S18")).has("growth.fur-skirt-flare") && open(byName("S18")).has("growth.brow-tuft-length") && open(byName("S19")).has("growth.tail-curl-turn"));
+  assert.ok(open(byName("S17", 6)).has("growth.tail-curl-turn") && open(byName("S18", 6)).has("growth.fur-skirt-flare") && open(byName("S18", 6)).has("growth.brow-tuft-length") && open(byName("S19", 6)).has("growth.tail-curl-turn"));
   for (const f of FRAMES_LIST.filter((x) => !x.synthetic && x.species <= 16)) for (const id of fluffy) assert.ok(!open(f).has(id), `${f.id}: no fluffy locus`);
 });

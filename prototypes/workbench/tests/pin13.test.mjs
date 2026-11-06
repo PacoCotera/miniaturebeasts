@@ -14,7 +14,8 @@ import { FRAME_DATA } from "../../genome-stamp/src/frames-data.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const framesDir = path.resolve(here, "../frames");
-const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
+import { loadFormFrames } from "./form-frames.mjs";
+const frames = loadFormFrames();   // the form frames: S01 and S17-S19 from their version-6 files (they are language frames, version 8, now)
 const spec = (id, extra = {}) => ({ ...specOf(SPECIES.find((s) => s.id === id)), frameVersion: LANGUAGE_FRAME, ...extra });
 const build = (s) => buildFrame(s, { samples: 12 });
 const refusal = (s) => { try { build(s); return null; } catch (e) { return e.message; } };

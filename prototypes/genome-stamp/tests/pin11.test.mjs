@@ -32,7 +32,11 @@ test("a stamp frame that opens the marking layout keeps its two alleles and its 
   assert.equal(LOCI.get("appearance.marking-layout").alleles.filter((a) => !(a.sinceFrame > 7)).length, 6); assert.equal(LOCI.get("appearance.marking-layout").alleles.length, 10, "catalogue 13 holds four more, from frame 8");
   const opens = FRAMES_LIST.filter((f) => f.species !== 20 && f.heritable.some((l) => l.id === "appearance.marking-layout"));
   assert.ok(opens.length >= 3, "the Loika and its kin open it");
-  for (const f of opens) { const l = f.heritable.find((x) => x.id === "appearance.marking-layout"); assert.deepEqual(l.alleles, ["bands", "patches"], `${f.id} ${f.species}.${f.version}`); assert.equal(l.bits, 1); }
+  for (const f of opens) {
+    const l = f.heritable.find((x) => x.id === "appearance.marking-layout");
+    if (f.version >= 8) { assert.equal(l.alleles.length, 10, `${f.id} ${f.species}.${f.version}: a language frame sees all ten layouts`); assert.equal(l.bits, 4); continue; }
+    assert.deepEqual(l.alleles, ["bands", "patches"], `${f.id} ${f.species}.${f.version}`); assert.equal(l.bits, 1);
+  }
   for (const f of FRAMES_LIST) for (const [id, idx] of f.locked) if (id === "appearance.marking-layout") assert.ok(idx <= 1, `${f.id}: a locked layout is bands or patches`);
 });
 

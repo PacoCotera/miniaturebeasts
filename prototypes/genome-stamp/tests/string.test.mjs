@@ -91,9 +91,9 @@ test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for
     const open = `G1-S${f.species}v${f.version}-`.length;
     return [open + Math.ceil(lo / 5) + 2, open + Math.ceil(hi / 5) + 2];
   };
-  assert.deepEqual(range(frameFor(1, 4)), [23, 26]); assert.deepEqual(range(frameFor(1, 5)), [25, 30], "the Loika at version 5 carries the crown's size, leaf count and form: two to four characters more"); assert.deepEqual(range(byName("S01")), [27, 33], "and at version 6 the ear length, one more blended locus: two to three characters more"); assert.deepEqual(range(byName("S03")), [68, 109]); assert.deepEqual(range(byName("S09")), [64, 101]); assert.deepEqual(range(tulikoFrame()), [81, 129]);
+  assert.deepEqual(range(frameFor(1, 4)), [23, 26]); assert.deepEqual(range(frameFor(1, 5)), [25, 30], "the Loika at version 5 carries the crown's size, leaf count and form: two to four characters more"); assert.deepEqual(range(byName("S01", 6)), [27, 33], "and at version 6 the ear length, one more blended locus: two to three characters more"); assert.deepEqual(range(byName("S01")), [38, 53], "and at version 8, the language frame: its seventeen open loci, eleven to twenty characters more"); assert.deepEqual(range(byName("S03")), [68, 109]); assert.deepEqual(range(byName("S09")), [64, 101]); assert.deepEqual(range(tulikoFrame()), [81, 129]);
   // and the extremes are reached: all blends equal, none equal
-  for (const f of [frameFor(1, 4), frameFor(1, 5), byName("S01"), byName("S03"), byName("S09"), tulikoFrame()]) {
+  for (const f of [frameFor(1, 4), frameFor(1, 5), byName("S01", 6), byName("S01"), byName("S03"), byName("S09"), tulikoFrame()]) {
     const [lo, hi] = range(f), eq = { copies: {} }, ne = { copies: {} };
     for (const l of f.heritable) { const p = l.pool ?? l.alleles; eq.copies[l.id] = [p[0], p[0]]; ne.copies[l.id] = l.values ? [l.alleles[0], l.alleles.at(-1)] : [p[0], p[0]]; }
     assert.equal(genomeString(f, eq).length, lo, `${f.id} shortest`); assert.equal(genomeString(f, ne).length, hi, `${f.id} longest`);
@@ -102,7 +102,7 @@ test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for
 
 // --- every frame in the registry --------------------------------------------------------------------------------------------------------------------
 test("a round trip for every frame in the registry (the real ones at every version, the legacy frames and the two synthetic test frames): string, decode, the same copies, and the same string again", () => {
-  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 1 + 1 + 3 + 1 + 2 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis and the Loika at 5, the Loika at 6, S17 to S19 at 6, the Tuliko at 1, the Igara and the Peplos at 5, the three legacy frames and the two synthetic frames");
+  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 1 + 1 + 3 + 1 + 2 + 4 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis and the Loika at 5, the Loika at 6, S17 to S19 at 6, the Tuliko at 1, the Igara and the Peplos at 5, the Loika, Wickle, Drapet and Curlop at 8, the three legacy frames and the two synthetic frames");
   let n = 0;
   for (const f of FRAMES_LIST) {
     for (const seed of [1, 2, 3, 4, 5]) {

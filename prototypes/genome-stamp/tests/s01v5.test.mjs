@@ -91,7 +91,7 @@ const V4_PODS = {
 test("S01 version 4 is the frame it was, and so is every other frame: the snapshot only gained 1.5 and 1.6, at the end", () => {
   const frames = FRAME_DATA.frames, keys = frames.map((f) => `${f.species}.${f.version}`);
   assert.deepEqual(keys.slice(0, Object.keys(BEFORE).length), Object.keys(BEFORE), "every earlier frame is in the same place");
-  assert.deepEqual(keys.slice(Object.keys(BEFORE).length), ["1.5", "1.6", "20.1", "10.5", "12.5"], "and the Loika's versions 5 and 6 follow the last of them, then the Tuliko, then the Igara and the Peplos at 5");
+  assert.deepEqual(keys.slice(Object.keys(BEFORE).length), ["1.5", "1.6", "20.1", "10.5", "12.5", "1.8", "17.8", "18.8", "19.8"], "and the Loika's versions 5 and 6 follow the last of them, then the Tuliko, then the Igara and the Peplos at 5, then the four language frames at 8");
   for (const f of frames.slice(0, Object.keys(BEFORE).length)) assert.equal(sha(JSON.stringify(f)), BEFORE[`${f.species}.${f.version}`], `${f.id} ${f.species}.${f.version} is unchanged`);
   assert.ok(frameFor(1, 4).heritable.some((l) => l.id === "anatomy.crown-presence"), "version 4 keeps the crown switch open");
   assert.ok(!frameFor(1, 4).heritable.some((l) => l.id === "growth.crown-height-ratio"), "and carries no crown size");
@@ -110,7 +110,7 @@ test("the version-4 pods of seeds 1 to 12: their strings decode and write back t
 
 test("the Loika at version 5 adds exactly the crown's size, leaf count and form to the heritable loci, in the Face chapter, with the catalogue's whole range", () => {
   const f5 = frameFor(1, 5), f4 = frameFor(1, 4);
-  assert.equal(f5.version, 5); assert.equal(byName("S01").version, 6, "the newest is version 6 (s01v6.test.mjs)");
+  assert.equal(f5.version, 5); assert.equal(byName("S01", 6).version, 6, "version 6 is carried (s01v6.test.mjs); the newest is the language frame, version 8 (language-frames test)");
   const ids5 = f5.heritable.map((l) => l.id), ids4 = f4.heritable.map((l) => l.id);
   assert.deepEqual(ids5.filter((id) => !ids4.includes(id)).sort(), CROWN.slice(1).sort(), "three loci added");
   assert.deepEqual(ids4.filter((id) => !ids5.includes(id)), [], "none taken away: the crown switch stays a heritable switch");
@@ -156,5 +156,5 @@ test("a version-5 string is not a version-4 string: each decodes against its own
   assert.equal(decodeGenomeString(s5).frame, f5);
   const g4 = genomeOf(f4, 5), s4 = genomeString(f4, g4);
   assert.equal(decodeGenomeString(s4).frame, f4); assert.match(s4, /^G1-S1v4-/);
-  assert.equal(FRAMES_LIST.filter((x) => x.species === 1).map((x) => x.version).join(), "2,3,4,5,6");
+  assert.equal(FRAMES_LIST.filter((x) => x.species === 1).map((x) => x.version).join(), "2,3,4,5,6,8");
 });

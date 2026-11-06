@@ -37,8 +37,8 @@ test("the registry carries the sixteen species of the workbench at frame version
     assert.equal(old.borderSeed, f.borderSeed, `${f.id}: the border is the species'`);
     assert.deepEqual(old.heritable.map((l) => l.id), f.heritable.map((l) => l.id), `${f.id}: same loci`);
   }
-  assert.equal(byName("S01").version, 6, "the encoder's default frame is the newest: the Loika at version 6 (the ears); version 5 (the crown's parameters carried) and version 4, the fine-tuned Loika (T-20261016-200), are carried beside it");
-  assert.equal(byName("S01", 5).version, 5); assert.equal(byName("S01", 4).version, 4);
+  assert.equal(byName("S01").version, 8, "the encoder's default frame is the newest: the Loika at version 8, the language frame; version 6 (the ears), version 5 (the crown's parameters carried) and version 4, the fine-tuned Loika (T-20261016-200), are carried beside it");
+  assert.equal(byName("S01", 6).version, 6); assert.equal(byName("S01", 5).version, 5); assert.equal(byName("S01", 4).version, 4);
   assert.equal(byName("S01", 3).version, 3, "and the Loika's version 3 is carried, so every version-3 print still decodes");
   const l3 = frameFor(1, 3).heritable.map((l) => l.id), l4 = frameFor(1, 4).heritable.map((l) => l.id);
   assert.ok(l3.every((id) => l4.includes(id)), "version 4 keeps every version-3 heritable locus and adds Colour and the marking layout");
@@ -103,7 +103,7 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   const rows = [];
   for (const id of ROSTER) {
     const f = byName(id), wf = stationFrame(id);
-    assert.equal(f.version, id === "S01" ? 6 : id === "S03" || id === "S10" || id === "S12" ? 5 : 4);
+    assert.equal(f.version, id === "S01" ? 8 : id === "S03" || id === "S10" || id === "S12" ? 5 : 4);
     const blended = f.heritable.filter((l) => l.values);
     for (const l of blended) {
       assert.ok(l.alleles.length + BLEND_STEPS + 1 <= 2 ** STEP_BITS, `${l.id}: its names and steps fit ${STEP_BITS} bits`);
@@ -120,7 +120,7 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   for (const r of rows) t.diagnostic(`${r.id} ${r.name}: ${r.open} open, ${r.blended} blended, ${r.bits[0]} -> ${r.bits[1]} bits, ${r.before.join("/")} -> ${r.after.join("/")}`);
   // pinned so a change of the step or the frames shows here
   assert.deepEqual(Object.fromEntries(rows.map((r) => [r.id, r.after.join("/")])), {
-    S01: "25/29", S02: "29/33", S03: "37/37", S04: "25/29", S05: "29/29", S06: "29/33", S07: "33/33", S08: "29/33",
+    S01: "29/33", S02: "29/33", S03: "37/37", S04: "25/29", S05: "29/29", S06: "29/33", S07: "33/33", S08: "29/33",
     S09: "37/37", S10: "29/33", S11: "33/33", S12: "25/25", S13: "29/33", S14: "25/29", S15: "33/33", S16: "33/33",
   });
 });
@@ -163,10 +163,10 @@ test("C1: a genome missing a heritable locus is refused by the stamp, naming tha
   const fr = stationFrame("S01"), g = podGenome(fr, 77);
   const ok = stampGenome(fr, g, ["coat"]);
   assert.ok(!ok.refused); assert.deepEqual(ok.read, ["Coat"]);
-  const lack = structuredClone(g); delete lack.loci["anatomy.crown-presence"]; delete lack.loci["movement.cycle-rate"];
+  const lack = structuredClone(g); delete lack.loci["appearance.iris-colour"]; delete lack.loci["movement.cycle-rate"];   // the Loika's crest switch is locked on at version 8, so the lacking record is the iris colour
   const r = stampGenome(fr, lack, ["coat"]);
-  assert.equal(r.refused, true); assert.deepEqual(r.missing.sort(), ["anatomy.crown-presence", "movement.cycle-rate"]);
-  assert.match(r.reason, /anatomy\.crown-presence/);
+  assert.equal(r.refused, true); assert.deepEqual(r.missing.sort(), ["appearance.iris-colour", "movement.cycle-rate"]);
+  assert.match(r.reason, /appearance\.iris-colour/);
   assert.equal(r.copies, undefined, "nothing stamped");
   assert.equal(stationStampCode(fr, lack, ["coat"]), null, "no code for a refused genome");
 });
