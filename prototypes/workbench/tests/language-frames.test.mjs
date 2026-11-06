@@ -119,8 +119,24 @@ test("face.iris (b): the pupil against its face zone is reported per kind, and T
   const z = (id) => pupilZoneContrast(id);
   assert.equal(z("S01").zone, "cream ring"); assert.ok(z("S01").pass);
   for (const id of ["S17", "S18", "S19"]) assert.ok(z(id).pass, id);
-  assert.ok(!z("S06").pass && !z("S11").pass && !z("S10").pass, "Pesko and Kilpo (Thickets), Igara (Meres)");
+  assert.ok(!z("S06").plainPass && !z("S11").plainPass && !z("S10").plainPass, "Pesko and Kilpo (Thickets), Igara (Meres) fall under 0.30 without a rim");
   assert.ok(z("S02").pass && z("S08").pass, "Downs and Meadows pass");
+});
+
+test("the pale eye rim (art desk 11:00): Pesko, Kilpo, Igara and Tepor carry it, and the pupil passes against the zone through it; nobody else does", () => {
+  for (const id of ["S05", "S06", "S10", "S11"]) { const t = pupilZoneContrast(id); assert.ok(kindOf(LANGUAGE, id).eyes.paleRim, id); assert.ok(t.pass && t.passBand && t.rim && t.dLRim >= 0.3, id); }
+  assert.deepEqual(LANGUAGE.kinds.filter((k) => k.eyes.paleRim).map((k) => k.id), ["S05", "S06", "S10", "S11"]);
+  assert.ok(LANGUAGE.eye.paleRim.share === 0.08 && LANGUAGE.eye.paleRim.colour === "coat.pale");
+});
+
+test("the registry's eye block: size band 0.12-0.24 and house 0.18, every kind's default inside it, the signed iris lightness, the house decal numbers", () => {
+  const e = LANGUAGE.eye;
+  assert.deepEqual(e.size.band, [0.12, 0.24]); assert.equal(e.size.house, 0.18); assert.equal(e.size.genomeVar, 0.15); assert.equal(e.size.spacingVar, 0.15);
+  for (const k of LANGUAGE.kinds) assert.ok(k.eyes.size >= 0.12 && k.eyes.size <= 0.24, k.id);
+  assert.equal(kindOf(LANGUAGE, "S12").eyes.size, 0.12); assert.equal(kindOf(LANGUAGE, "S01").eyes.size, 0.23); assert.equal(kindOf(LANGUAGE, "S19").eyes.size, 0.23);
+  for (const [c, L] of Object.entries(e.irisL)) assert.ok(Math.abs(hexToOklch(e.irisSwatch[c]).L - L) <= 0.02, c);
+  assert.deepEqual([e.decal.irisShare, e.decal.pupilShare, e.decal.catchShare, e.decal.rim], [0.85, 0.70, 0.25, "#1E1A24"]);
+  assert.deepEqual(e.decal.small, { dropIrisBelow: 96, minDiscPx: { 96: 3, 48: 2 }, highlightPx: 1 });
 });
 
 test("wild shares: the stand's own look on 60 percent, the others evenly, the layouts by the asked shares; weights are on the rows and sum to 1", () => {

@@ -36,10 +36,11 @@ def main():
         spec, genome = req["spec"], req.get("genome", "type")
         ck = K.cage_key(spec, genome)
         summ = cas.get_json(ck)
-        if summ is not None and cas.has(ck, "npz") and "face_L" in np.load(cas.path(ck, "npz")).files:
+        from wb import clayface as CF0
+        if summ is not None and cas.has(ck, "npz") and "face_L" in np.load(cas.path(ck, "npz")).files and ("face_small" in np.load(cas.path(ck, "npz")).files or not CF0.is_decal_file(F.internal(spec))):
             z = np.load(cas.path(ck, "npz"))
             names = json.loads(str(z["names"]))
-            return ck, summ, dict(V=z["V"], F=z["F"], part=z["part"], names={int(k): v for k, v in names.items()}, face_V=z["face_V"], face_F=json.loads(str(z["face_F"])), face_L=z["face_L"], face_rgb=json.loads(str(z["face_rgb"])), **({"frame": json.loads(str(z["frame"]))} if "frame" in z.files else {})), True
+            return ck, summ, dict(V=z["V"], F=z["F"], part=z["part"], names={int(k): v for k, v in names.items()}, face_V=z["face_V"], face_F=json.loads(str(z["face_F"])), face_L=z["face_L"], face_rgb=json.loads(str(z["face_rgb"])), face_small=(json.loads(str(z["face_small"])) if "face_small" in z.files else None), **({"frame": json.loads(str(z["frame"]))} if "frame" in z.files else {})), True
         t = time.perf_counter()
         r = F.build(spec, genome, "base")
         last.update(ck=ck, r=r)
@@ -56,7 +57,9 @@ def main():
             import quadruped as QD
             m["frame"] = QD.frame(cx["spec"])
             if CF.is_decal_file(cx["spec"]):
-                m["face_V"], fF, m["face_L"], m["face_rgb"] = CF.decal_face(cx["spec"], m)
+                sets = CF.decal_faces(cx["spec"], m)
+                m["face_V"], fF, m["face_L"], m["face_rgb"] = sets["full"]
+                m["face_small"] = {k: dict(V=np.asarray(v[0]).tolist(), F=[list(map(int, q)) for q in v[1]], L=np.asarray(v[2]).tolist(), rgb=[list(map(float, c)) for c in v[3]]) for k, v in sets.items() if k != "full"}
                 fF = [list(map(int, q)) for q in fF]
             else:
                 m["face_V"], fF = np.zeros((0, 3)), []
@@ -65,7 +68,7 @@ def main():
         m["face_F"] = fF
         tmp = cas.tmp("npz")
         with open(tmp, "wb") as fh:
-            np.savez(fh, V=m["V"], F=m["F"], part=m["part"], names=json.dumps({str(k): v for k, v in m["names"].items()}), face_V=m["face_V"], face_F=json.dumps(fF), face_L=m["face_L"], face_rgb=json.dumps(m["face_rgb"]), **({"frame": json.dumps(m["frame"])} if m.get("frame") else {}))
+            np.savez(fh, V=m["V"], F=m["F"], part=m["part"], names=json.dumps({str(k): v for k, v in m["names"].items()}), face_V=m["face_V"], face_F=json.dumps(fF), face_L=m["face_L"], face_rgb=json.dumps(m["face_rgb"]), **({"face_small": json.dumps(m["face_small"])} if m.get("face_small") else {}), **({"frame": json.dumps(m["frame"])} if m.get("frame") else {}))
         cas.adopt(tmp, ck, "npz")
         cas.put_json(ck, summ)
         return ck, summ, m, False

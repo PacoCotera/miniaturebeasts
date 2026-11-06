@@ -98,6 +98,34 @@ export const IRIS_COLOURS = ["amber", "honey", "olive", "moss", "hazel", "teal",
 export const ATTITUDES = ["content", "curious", "deadpan", "knowing"]; // order: content > curious > deadpan > knowing
 export const EYE_COUNTS = [2, 3];
 
+// ---- the house eye (art desk, chunk 4 rulings 2026-11-06 10:57 and 11:00): numbers the face checks and the decal read ----
+// Size: the eye's diameter over the head's width, inside 0.12-0.24, house default 0.18; a kind's own default comes from its stand
+// (measured on the 304 stands by eye, head width taken as the visible head: the art desk names Peplos about 0.12, Loika and Curlop
+// about 0.23); the genome moves it by up to 15 percent but never out of the band. Spacing moves by up to 15 percent.
+export const IRIS_L_SIGNED = Object.freeze({ amber: 0.64, honey: 0.74, copper: 0.57, olive: 0.62, moss: 0.59, hazel: 0.59, teal: 0.59, slate: 0.57, violet: 0.56 });
+export const IRIS_SWATCH = Object.freeze({ amber: "#C27A1E", honey: "#D2A040", copper: "#B0602E", olive: "#848C3A", moss: "#5F8C4E", hazel: "#9C7442", teal: "#2E8E8A", slate: "#62799A", violet: "#7E62B0" });
+export const PUPIL_HEX = "#1E1A24", HIGHLIGHT_HEX = "#FFFFFF";
+export const EYE = Object.freeze({
+  size: Object.freeze({ band: [0.12, 0.24], house: 0.18, genomeVar: 0.15, spacingVar: 0.15 }),
+  decal: Object.freeze({
+    irisShare: 0.85, pupilShare: 0.70,             // iris 85% of the eye disc, pupil 70% of the iris
+    rim: PUPIL_HEX,                                // the thin dark rim round the iris: the disc's own colour (15% of its radius)
+    catchShare: 0.25, catchAt: [-0.30, 0.32],      // one highlight about 25% of the pupil, upper left (centre in iris radii, viewer's right and up)
+    small: Object.freeze({ dropIrisBelow: 96, minDiscPx: { 96: 3, 48: 2 }, highlightPx: 1 }),   // below 96 px the eye is a dark disc with its highlight
+  }),
+  irisL: IRIS_L_SIGNED, irisSwatch: IRIS_SWATCH, pupilHex: PUPIL_HEX, pupilL: 0.23, highlightHex: HIGHLIGHT_HEX,
+  // A thin pale eye rim, about 8% of the eye diameter, in coat.pale (chunk 8 owns coat.pale; until then it is the body's hue, one third
+  // of its chroma, at lightness 0.90). Not a face patch and not an exception: any kind may carry it.
+  paleRim: Object.freeze({ share: 0.08, colour: "coat.pale", L: 0.90, chromaShare: 0.3 }),
+});
+// Each kind's eye diameter default (over head width), from its stand; null = no stand measured, the house default is used.
+const EYE_SIZE_DEFAULTS = {
+  S01: 0.23, S02: 0.16, S03: 0.14, S04: 0.19, S05: 0.18, S06: 0.14, S07: 0.17, S08: 0.12, S09: 0.12, S10: 0.15, S11: 0.18, S12: 0.12, S13: 0.12,
+  S14: 0.17, S15: null, S16: 0.12, S17: null, S18: null, S19: 0.23, S20: 0.17, S22: 0.18,
+};
+// The kinds that carry the pale eye rim by default: their pupil sits too close in lightness to the face zone without it.
+const EYE_RIM_KINDS = ["S05", "S06", "S10", "S11"];
+
 // ---- kinds (the language design sections 1, 2, 4, 5) ----
 // [id, name, family, land, material, pile, signature type, socket, count, curl, accent, anchor]
 // count and curl: null (none), a number (fixed) or [lo, hi, type]; proposals the art desk signs at chunk 13.
@@ -159,6 +187,9 @@ for (const k of KINDS) {
   const [iris, att] = POOLS[k.id] ?? [null, null];
   k.eyes.irisPool = iris; k.eyes.irisDefault = iris ? iris[0] : null;
   k.eyes.attitudePool = att; k.eyes.attitudeDefault = att ? "content" : null;
+  k.eyes.size = EYE_SIZE_DEFAULTS[k.id] ?? EYE.size.house;
+  k.eyes.sizeFromStand = EYE_SIZE_DEFAULTS[k.id] != null;
+  k.eyes.paleRim = EYE_RIM_KINDS.includes(k.id);
 }
 Object.freeze(KINDS);
 
@@ -231,6 +262,7 @@ export const LANGUAGE = {
   families: FAMILIES,
   vocab: { signatureSockets: SIGNATURE_SOCKETS, coatMaterials: COAT_MATERIALS, furPiles: FUR_PILES, irisColours: IRIS_COLOURS, attitudes: ATTITUDES, eyeCounts: EYE_COUNTS },
   kinds: KINDS,
+  eye: EYE,
   exceptions: EXCEPTIONS,
   fixtures: FIXTURES,
 };
@@ -270,6 +302,16 @@ export function checkEyes(reg) {
   if (three.length > 1) msgs.push(`${three.map((k) => k.id).join(" and ")} are three-eyed; one kind at most`);
   for (const k of three) if (k.id !== "S15") msgs.push(`${k.id} is three-eyed; only S15 Lehten may be`);
   if (!three.some((k) => k.id === "S15")) msgs.push("S15 Lehten must be the three-eyed kind");
+  const sz = reg.eye?.size;
+  if (!sz) msgs.push("the registry has no eye size band");
+  else {
+    for (const k of reg.kinds) if (!(k.eyes.size >= sz.band[0] && k.eyes.size <= sz.band[1])) msgs.push(`${k.id}: eye default ${k.eyes.size} is outside ${sz.band[0]}-${sz.band[1]} of the head's width`);
+    for (const [c, L] of Object.entries(reg.eye?.irisL ?? {})) {
+      const got = hexToOklch(reg.eye.irisSwatch[c]).L;
+      if (Math.abs(got - L) > 0.02) msgs.push(`iris ${c}: swatch lightness ${got} is more than 0.02 from the signed ${L}`);
+    }
+  }
+  for (const k of reg.kinds) if (typeof k.eyes.paleRim !== "boolean") msgs.push(`${k.id}: pale eye rim is a yes or no`);
   return res("roster.eyes", "red", msgs);
 }
 export function checkLands(reg) {

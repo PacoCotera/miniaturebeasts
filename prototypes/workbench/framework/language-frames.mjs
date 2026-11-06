@@ -16,7 +16,8 @@
 // frame as it was; the stamp registry keeps the older versions of these four).
 import { readFileSync } from "node:fs";
 import { CATALOGUE, LOCI, BODY_PIGMENTS, SECOND_PIGMENTS, alleleIds, resolveCopies, LANGUAGE_FRAME, valueRange } from "./catalogue.mjs";
-import { LANGUAGE, kindOf, landOf, exceptionsFor, isExcepted, hexToOklch, BODY_RANGE } from "./language.mjs";
+import { LANGUAGE, kindOf, landOf, exceptionsFor, isExcepted, hexToOklch, BODY_RANGE, IRIS_SWATCH, PUPIL_HEX, HIGHLIGHT_HEX } from "./language.mjs";
+export { IRIS_SWATCH, PUPIL_HEX, HIGHLIGHT_HEX };
 import { SPECIES, specOf, GLYPHS } from "./roster.mjs";
 import { buildFrame, sampleIndividual, rng } from "./species.mjs";
 import { planFacts } from "./plans.mjs";
@@ -39,8 +40,6 @@ export const SIGNATURE_SIZE_TYPE = 0.265;             // the middle of that rang
 // The nine iris colours, one value each for every kind, signed by the art desk (chunk 5 rulings, 09:27), and the house eye's
 // pupil and highlight. An iris that fails (a) is dropped from a pool, and a drop is reported, never silent.
 export const IRIS_VALUES_SIGNED = true;
-export const IRIS_SWATCH = { amber: "#C27A1E", honey: "#D2A040", copper: "#B0602E", olive: "#848C3A", moss: "#5F8C4E", hazel: "#9C7442", teal: "#2E8E8A", slate: "#62799A", violet: "#7E62B0" };
-export const PUPIL_HEX = "#1E1A24", HIGHLIGHT_HEX = "#FFFFFF";
 
 // How often each look shows in wild draws (art desk, chunk 5 rulings): the stand's own look on 60 percent, every other
 // option on the rest evenly and never under 5. The coat layouts have their own shares. The catalogue's layouts are bands,
@@ -122,8 +121,13 @@ export function pupilZoneContrast(kindId) {
   const body = bodyColourOf(kindId), pupil = hexToOklch(PUPIL_HEX).L;
   const zone = kindId === "S01" ? { name: "cream ring", L: hexToOklch(SECOND_PIGMENTS.cream).L } : { name: body.name, L: body.oklch.L };
   const atType = Math.abs(zone.L - pupil), darkest = Math.abs(zone.L - (kindId === "S01" ? 0 : BODY_RANGE.lightness) - pupil);
-  return { kind: kindId, zone: zone.name, zoneL: r3(zone.L), pupilL: r3(pupil), dLType: r3(atType), dLDarkest: r3(darkest), pass: atType >= PUPIL_ZONE_CONTRAST, passBand: darkest >= PUPIL_ZONE_CONTRAST };
+  // The thin pale eye rim (art desk 11:00): the check passes when the pupil is 0.30 L or more from the zone, OR the kind carries the
+  // rim and the rim is 0.30 L or more from the pupil. The rim is coat.pale (registry eye.rim), not a face patch and not an exception.
+  const rimL = LANGUAGE.eye.paleRim.L, carries = !!k0(kindId).eyes.paleRim;
+  const plain = atType >= PUPIL_ZONE_CONTRAST, rimPass = carries && Math.abs(rimL - pupil) >= PUPIL_ZONE_CONTRAST;
+  return { kind: kindId, zone: zone.name, zoneL: r3(zone.L), pupilL: r3(pupil), dLType: r3(atType), dLDarkest: r3(darkest), plainPass: plain, rim: carries, rimL: carries ? r3(rimL) : null, dLRim: carries ? r3(Math.abs(rimL - pupil)) : null, pass: plain || rimPass, passBand: darkest >= PUPIL_ZONE_CONTRAST || rimPass };
 }
+const k0 = (id) => kindOf(LANGUAGE, id);
 // The pool the frame opens: the registry's pool less any colour that fails the contrast check. The default (the first)
 // must pass, or the frame is not written. `dropped` is reported, never silent.
 export function irisPoolOf(kindId) {

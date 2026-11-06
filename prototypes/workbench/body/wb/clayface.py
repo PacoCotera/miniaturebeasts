@@ -203,14 +203,37 @@ def decal_look(doc):
     m = f.get("mouth") or {}
     if m.get("rest", "closed") != "closed" or m.get("open"):
         look["mouth_open"] = 0.3
+    if e.get("pale_rim"):                                                    # the thin pale eye rim in coat.pale: a flat ring, not a raised rim (that is `rim`, which face.flush refuses)
+        look["pale_rim"] = True
+        look["rim_rgb"] = FD.pale_rgb(_body_rgb(doc))
     return look
 
 
-def decal_face(doc, mesh, g=None, stations=None):
-    """(V, F, L, rgb) of the house face of a quadruped file on its proxy mesh: the decal's polygons, the layer of each and the layers' colours."""
+def _body_rgb(doc):
+    """The kind's body colour (its land's), or a warm neutral for a file with no land yet: what coat.pale is made from."""
+    import species_v1 as V1
+    land = next((l for l in V1.registry()["lands"] if l["id"] == doc.get("land")), None)
+    if land is None:
+        return (0.80, 0.68, 0.58)
+    h = land["body"]["hex"]
+    return tuple(int(h[i:i + 2], 16) / 255.0 for i in (1, 3, 5))
+
+
+def decal_face(doc, mesh, g=None, stations=None, canvas=None):
+    """(V, F, L, rgb) of the house face of a quadruped file on its proxy mesh: the decal's polygons, the layer of each and the layers' colours. `canvas`: the picture's width in px, to draw the small-size rule's eye (None: the full eye)."""
     import facedecal as FD
+    import quadruped as Q
     surf = FD.Surface(mesh["V"], mesh["F"])
     st = stations if stations is not None else quad_stations(doc, surf, g)
     look = decal_look(doc)
-    V, F, L = FD.build(surf, st, look)
+    ppH = FD.PPH_PER_PX * canvas * float(Q.frame(doc)["scale"]) if canvas else None
+    V, F, L = FD.build(surf, st, look, canvas, ppH)
     return V, F, L, FD.layer_rgb(look)
+
+
+def decal_faces(doc, mesh, g=None, stations=None):
+    """The decal for every size class of the small-size rule: {"full": ..., "p96": ..., "p48": ...}, each (V, F, L, rgb), the stations placed once."""
+    import facedecal as FD
+    surf = FD.Surface(mesh["V"], mesh["F"])
+    st = stations if stations is not None else quad_stations(doc, surf, g)
+    return {"full": decal_face(doc, mesh, g, st), "p96": decal_face(doc, mesh, g, st, 96), "p48": decal_face(doc, mesh, g, st, 48)}

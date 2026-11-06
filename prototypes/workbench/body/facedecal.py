@@ -1,18 +1,32 @@
 """The house mibi eye and the mouth as projected decals, placed at stations.
 A station is a point on the body's skin, the skin's normal there and a size: an eye station (the eye's radius) or a mouth station (the mouth's width). The decal is drawn flat on the tangent plane of its station and every point is cast onto the skin along the normal, then lifted a few mm:
 so it lies on any surface it is handed, a plan's cage today and a sculpted mesh body later. Nothing here knows how a body is built: a surface is a mesh (V, F), and a station comes from whatever knows the body (clayface.py derives them from a cage's file).
-The house eye (language: the family mark): a pale disc, an iris of at least 70% of it, a dark pupil of 40-50% of the iris and one highlight at the upper left, flush with the skin (no rim, no socket, no bulge).
-Decal layers: disc, iris, pupil, catch, mouth, cheek. `build` returns the polygons of every layer with the layer of each polygon (the clay renderer colours them)."""
+The house eye (language, art desk 2026-11-06): a dark glossy disc with a thin dark rim (#1E1A24), the iris a ring inside it (85% of the disc), the pupil 70% of the iris, and one highlight at the upper left about 25% of the pupil, flush with the skin (no raised rim, no socket, no bulge). A kind that carries the pale eye rim has a thin flat ring in coat.pale round the disc (about 8% of the eye's diameter).
+Small-size rule: below 96 px the iris is dropped (the eye is the dark disc and its highlight); the disc is never under 3 px across at 96 and 2 px at 48, the highlight never under 1 px. The numbers are the registry's (framework/language.json, `eye`), read once.
+Decal layers: disc, iris, pupil, catch, mouth, cheek, rim (the pale ring). `build` returns the polygons of every layer with the layer of each polygon (the clay renderer colours them); `canvas` and `ppH` say how big it is drawn so the small-size rule can apply."""
 import math
 
 import numpy as np
 
-HOUSE = dict(iris=0.74, pupil=0.45, catch_at=(-0.38, 0.40), catch_r=0.20)      # iris share of the disc radius; pupil share of the iris radius; the highlight's centre and radius, in iris radii, viewer's right and up
-LAYERS = ("disc", "iris", "pupil", "catch", "mouth", "cheek")
-LIFT = dict(disc=0.0030, iris=0.0036, pupil=0.0042, catch=0.0048, mouth=0.0040, cheek=0.0030)      # H over the skin: the layers stack without fighting, the whole decal under 0.005 H
-RGB = dict(disc=(0.97, 0.95, 0.88), pupil=(0.05, 0.045, 0.055), catch=(1.0, 1.0, 1.0), mouth=(0.42, 0.15, 0.17), cheek=(0.92, 0.50, 0.56))
-IRIS_RGB = dict(amber=(0.80, 0.52, 0.12), honey=(0.84, 0.66, 0.25), olive=(0.45, 0.48, 0.18), moss=(0.30, 0.46, 0.22), hazel=(0.52, 0.36, 0.18),
-                teal=(0.16, 0.50, 0.52), slate=(0.34, 0.40, 0.48), violet=(0.46, 0.32, 0.62), copper=(0.70, 0.38, 0.20))
+
+def _hex(h):
+    return tuple(int(h[i:i + 2], 16) / 255.0 for i in (1, 3, 5))
+
+
+def _eye_registry():
+    import species_v1 as V1
+    return V1.registry()["eye"]
+
+
+_E = _eye_registry()
+HOUSE = dict(iris=_E["decal"]["irisShare"], pupil=_E["decal"]["pupilShare"], catch_at=tuple(_E["decal"]["catchAt"]), catch_share=_E["decal"]["catchShare"])      # iris share of the disc radius; pupil share of the iris radius; the highlight's centre (in iris radii, viewer's right and up) and its radius as a share of the pupil's
+SMALL = dict(_E["decal"]["small"])                                            # dropIrisBelow, minDiscPx {size: px}, highlightPx
+PPH_PER_PX = 95.0 / 304.0                                                      # the house's pixels per H over the canvas width (proxy.SIZES: 304 wide is 95 per H, 96 is 30, 48 is 15), before a plan's own frame scale
+RIM_SHARE =_E["paleRim"]["share"]                                             # the pale eye rim's width over the eye's diameter
+LAYERS = ("disc", "iris", "pupil", "catch", "mouth", "cheek", "rim")
+LIFT = dict(disc=0.0030, iris=0.0036, pupil=0.0042, catch=0.0048, mouth=0.0040, cheek=0.0030, rim=0.0026)      # H over the skin: the layers stack without fighting, the whole decal under 0.005 H
+RGB = dict(disc=_hex(_E["decal"]["rim"]), pupil=_hex(_E["pupilHex"]), catch=_hex(_E["highlightHex"]), mouth=(0.42, 0.15, 0.17), cheek=(0.92, 0.50, 0.56), rim=(0.92, 0.88, 0.82))
+IRIS_RGB = {k: _hex(v) for k, v in _E["irisSwatch"].items()}                   # the art desk's signed irises (OKLab L amber 0.64 ... violet 0.56)
 ATTITUDE_LID = dict(content=0.0, curious=0.0, deadpan=0.0, knowing=0.30)         # how far the lid closes (share of the eye's height): only the knowing lid shows, and it stays under 35%
 REACH = 0.3
 
@@ -137,16 +151,37 @@ class Decal:
         return np.array(self.V, float).reshape(-1, 3), self.F, np.array(self.L, int)
 
 
+def small_class(canvas):
+    """The small-size rule's class of a canvas width in px: 'full' from 304 up, 'p96' from 96 up (the iris stays, the disc is at least 3 px), 'p48' below 96 (the iris is dropped, the disc at least 2 px). None is full."""
+    if canvas is None or canvas >= 304:
+        return "full"
+    return "p96" if canvas >= SMALL["dropIrisBelow"] else "p48"
+
+
 def eye_layers(surf, st, look, dec, near):
-    """The house eye at an eye station: disc, iris, pupil and the highlight, the lid's straight edge cutting the top of every layer when the look closes it."""
+    """The house eye at an eye station: the dark disc (its edge is the thin dark rim), the iris ring, the pupil and the highlight, the lid's straight edge cutting the top of every layer when the look closes it; the pale eye rim under the disc for a kind that carries it. Below 96 px the iris and pupil are dropped and the disc and highlight keep their minimum pixels."""
     R = st["size"]
     house = dict(HOUSE, **(look.get("house") or {}))
+    cls = small_class(look.get("canvas"))
+    ppH = look.get("ppH")
+    if ppH and cls != "full":
+        R = max(R, 0.5 * SMALL["minDiscPx"][str(96 if cls == "p96" else 48)] / ppH)
     lid = float(look.get("lid", 0.0))
     zc = R * (1.0 - 2.0 * lid)
     ri = R * house["iris"]
     rp = ri * house["pupil"]
     cx, cz = house["catch_at"][0] * ri, house["catch_at"][1] * ri
-    for layer, rad, c, nr, na in (("disc", R, (0.0, 0.0), 5, 28), ("iris", ri, (0.0, 0.0), 4, 28), ("pupil", rp, (0.0, 0.0), 3, 24), ("catch", house["catch_r"] * ri, (cx, cz), 2, 16)):
+    rc = house["catch_share"] * rp
+    if ppH and cls != "full":
+        rc = max(rc, 0.5 * SMALL["highlightPx"] / ppH)
+    layers = []
+    if look.get("pale_rim"):
+        layers.append(("rim", R * (1.0 + 2.0 * RIM_SHARE), (0.0, 0.0), 5, 28))
+    layers.append(("disc", R, (0.0, 0.0), 5, 28))
+    if cls != "p48":
+        layers += [("iris", ri, (0.0, 0.0), 4, 28), ("pupil", rp, (0.0, 0.0), 3, 24)]
+    layers.append(("catch", rc, (cx, cz), 2, 16))
+    for layer, rad, c, nr, na in layers:
         p2 = [(x, min(z, zc)) for x, z in _pts(rad, c[0], c[1], nr, na)]
         dec.add(layer, project(surf, st, p2, LIFT[layer], near), _disc_faces(0, nr, na))
 
@@ -169,9 +204,9 @@ def cheek_layer(surf, st, look, dec, near):
     dec.add("cheek", project(surf, st, _pts(r, 0.0, 0.0, 3, 20), LIFT["cheek"], near), _disc_faces(0, 3, 20))
 
 
-def build(surf, stations, look=None):
-    """The decal's polygons: (V, F, L) with the layer index (into LAYERS) of every polygon. `look`: lid (share closed), curve (the mouth's bend), cheeks (dict r: only a file that still carries a blush), house (overrides of HOUSE)."""
-    look = look or {}
+def build(surf, stations, look=None, canvas=None, ppH=None):
+    """The decal's polygons: (V, F, L) with the layer index (into LAYERS) of every polygon. `look`: lid (share closed), curve (the mouth's bend), cheeks (dict r: only a file that still carries a blush), house (overrides of HOUSE), pale_rim (the kind carries the pale eye rim). `canvas` (the picture's width in px) and `ppH` (its pixels per H) switch on the small-size rule; None draws the full eye."""
+    look = dict(look or {}, canvas=canvas, ppH=ppH)
     dec = Decal()
     for st in stations:
         near = surf.near(st["point"], 3.0 * st["size"] + 0.25)
@@ -183,7 +218,27 @@ def layer_rgb(look=None):
     """The colour of each layer (LAYERS order): the iris from the look's name or rgb."""
     look = look or {}
     iris = look.get("iris_rgb") or IRIS_RGB.get(look.get("iris"), IRIS_RGB["hazel"])
-    return [RGB["disc"], iris, RGB["pupil"], RGB["catch"], RGB["mouth"], RGB["cheek"]]
+    return [RGB["disc"], iris, RGB["pupil"], RGB["catch"], RGB["mouth"], RGB["cheek"], look.get("rim_rgb") or RGB["rim"]]
+
+
+def _oklab_to_rgb(L, a, b):
+    l_, m_, s_ = L + 0.3963377774 * a + 0.2158037573 * b, L - 0.1055613458 * a - 0.0638541728 * b, L - 0.0894841775 * a - 1.2914855480 * b
+    l, m, s = l_ ** 3, m_ ** 3, s_ ** 3
+    lin = np.array([4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s])
+    lin = np.clip(lin, 0.0, 1.0)
+    c = np.where(lin <= 0.0031308, 12.92 * lin, 1.055 * lin ** (1 / 2.4) - 0.055)
+    return tuple(float(x) for x in np.clip(c, 0.0, 1.0))
+
+
+def pale_rgb(body_rgb):
+    """coat.pale for the eye rim: the body's hue at lightness 0.90 with a third of its chroma (the registry's `eye.paleRim`), as sRGB 0-1. Chunk 8 owns coat.pale; until then this is the rim's colour."""
+    pr = _E["paleRim"]
+    c = np.asarray(body_rgb, float)
+    lin = np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+    l, m, s = (np.cbrt(np.array(w) @ lin) for w in ([0.4122214708, 0.5363325363, 0.0514459929], [0.2119034982, 0.6806995451, 0.1073969566], [0.0883024619, 0.2817188376, 0.6299787005]))
+    a = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s
+    b = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
+    return _oklab_to_rgb(pr["L"], pr["chromaShare"] * a, pr["chromaShare"] * b)
 
 
 def max_lift(surf, V):

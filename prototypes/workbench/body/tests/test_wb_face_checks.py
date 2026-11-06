@@ -150,8 +150,11 @@ class TestOtherChecks(Base):
                                + ([dict(locus="form.eye-spacing", band=dict(form="off", lo=spacing[0], hi=spacing[1]))] if spacing else []))
         ok = self.rows(self.changed(lambda d: loci(d, (0.85, 1.15), (-0.03, 0.03))))["face.size"]
         self.assertEqual(ok["state"], "pass", ok["measure"])
-        big = self.rows(self.changed(lambda d: loci(d, (0.85, 1.4))))["face.size"]
+        big = self.rows(self.changed(lambda d: loci(d, (0.85, 1.7))))["face.size"]
         self.assertEqual((big["state"], big["extra"]["size"]), ("fail", "big"))
+        far = self.rows(self.changed(lambda d: loci(d, (0.85, 1.4))))["face.size"]            # inside the band 0.12-0.24 but more than 15% from the type: the genome moves the eye by 15% at most
+        self.assertEqual(far["state"], "fail")
+        self.assertIn("limit 15%", far["measure"])
         wide = self.rows(self.changed(lambda d: loci(d, (1.0, 1.0), (-0.03, 0.2))))["face.size"]
         self.assertEqual(wide["state"], "fail")
         self.assertIn("type's gap", wide["measure"])
@@ -183,7 +186,7 @@ class TestExceptions(Base):
     """An anchor's record covers one check by name; every other check applies in full."""
 
     def test_a_signed_record_turns_that_one_check_amber(self):
-        d = self.changed(lambda x: (x.update(id="S17"), x["face"]["eyes"].update(r=x["face"]["eyes"]["r"] * 1.6)))
+        d = self.changed(lambda x: (x.update(id="S17"), x["face"]["eyes"].update(r=x["face"]["eyes"]["r"] * 2.0)))
         rows = self.rows(d)
         self.assertEqual(rows["face.size"]["state"], "warn")
         self.assertIn("Wickle's long-fur face", rows["face.size"]["measure"])
@@ -192,16 +195,16 @@ class TestExceptions(Base):
     def test_the_same_record_does_not_cover_another_check(self):
         d = self.changed(lambda x: (x.update(id="S17"), x["face"]["eyes"].update(count=3)))
         self.assertEqual(self.rows(d)["face.count"]["state"], "fail")
-        d = self.changed(lambda x: (x.update(id="S01"), x["face"]["eyes"].update(rim=0.02, r=x["face"]["eyes"]["r"] * 1.6), x["face"]["mouth"].update(rest="open")))
+        d = self.changed(lambda x: (x.update(id="S01"), x["face"]["eyes"].update(rim=0.02, r=x["face"]["eyes"]["r"] * 2.0), x["face"]["mouth"].update(rest="open")))
         rows = self.rows(d)
         self.assertEqual((rows["face.flush"]["state"], rows["face.size"]["state"], rows["face.mouth"]["state"]), ("warn", "warn", "fail"))
 
     def test_a_kind_with_no_record_gets_none(self):
-        d = self.changed(lambda x: (x.update(id="S02"), x["face"]["eyes"].update(r=x["face"]["eyes"]["r"] * 1.6)))
+        d = self.changed(lambda x: (x.update(id="S02"), x["face"]["eyes"].update(r=x["face"]["eyes"]["r"] * 2.0)))
         self.assertEqual(self.rows(d)["face.size"]["state"], "fail")
 
     def test_the_file_may_carry_its_own_signed_waiver(self):
-        d = self.changed(lambda x: (x["face"]["eyes"].update(r=x["face"]["eyes"]["r"] * 1.6), x.update(waivers=[dict(check="face.size", reason="test", by="art desk", date="2026-11-06", until="repaint")])))
+        d = self.changed(lambda x: (x["face"]["eyes"].update(r=x["face"]["eyes"]["r"] * 2.0), x.update(waivers=[dict(check="face.size", reason="test", by="art desk", date="2026-11-06", until="repaint")])))
         self.assertEqual(self.rows(d)["face.size"]["state"], "warn")
 
 
@@ -233,7 +236,7 @@ class TestDecalIsPlanAgnostic(unittest.TestCase):
         hit = FD.place(s, np.array([0.9, 0.0, -0.4]), np.array([0.9, 0.0, -0.4]))
         st.append(FD.station("mouth", hit[0], hit[1], 0.3, "mouth"))
         Vd, Fd, L = FD.build(s, st, dict(lid=0.0))
-        self.assertEqual(set(L.tolist()), {0, 1, 2, 3, 4})
+        self.assertEqual(set(L.tolist()), {0, 1, 2, 3, 4})                 # disc, iris, pupil, highlight, mouth
         off = np.abs(np.linalg.norm(Vd, axis=1) - 1.0)
         self.assertLess(off.max(), 0.01 + 0.0035)                  # the sphere's facets sit a little inside it; the decal is lifted 0.003-0.005
         self.assertGreater(off.min(), -1)
@@ -249,13 +252,53 @@ class TestDecalIsPlanAgnostic(unittest.TestCase):
         top = Vd[:, 2].max()
         self.assertAlmostEqual(top, 0.2 * (1 - 0.6), delta=0.02)
 
+    def eye_on_sphere(self, size=0.2, **look):
+        V, Fq = self.sphere()
+        s = FD.Surface(V, Fq)
+        p = np.array([1.0, 0.0, 0.0])
+        hit = FD.place(s, p, p)
+        return s, [FD.station("eye", hit[0], hit[1], size, "eye")], look
+
     def test_the_house_eye_proportions(self):
-        self.assertGreaterEqual(FD.HOUSE["iris"], 0.70)
-        self.assertTrue(0.40 <= FD.HOUSE["pupil"] <= 0.50)
+        self.assertEqual((FD.HOUSE["iris"], FD.HOUSE["pupil"], FD.HOUSE["catch_share"]), (0.85, 0.70, 0.25))      # iris 85% of the disc, pupil 70% of the iris, highlight about 25% of the pupil
         self.assertEqual(len([l for l in FD.LAYERS if l == "catch"]), 1)
         self.assertLess(FD.HOUSE["catch_at"][0], 0)                  # upper left
         self.assertGreater(FD.HOUSE["catch_at"][1], 0)
         self.assertEqual(max(FD.LIFT.values()) < 0.01, True)
+        self.assertEqual(FD.RGB["disc"], tuple(int("1E1A24"[i:i + 2], 16) / 255.0 for i in (0, 2, 4)))             # the thin dark rim is the disc's colour
+
+    def test_the_eye_is_a_dark_disc_with_an_iris_ring_pupil_and_one_highlight(self):
+        s, st, look = self.eye_on_sphere(0.2)
+        Vd, Fd, L = FD.build(s, st, dict(lid=0.0))
+        layers = {FD.LAYERS[k] for k in set(L.tolist())}
+        self.assertEqual(layers, {"disc", "iris", "pupil", "catch"})
+        rad = lambda name: float(np.linalg.norm(np.array([Vd[f][1:] for i, f_ in enumerate(Fd) if FD.LAYERS[L[i]] == name for f in f_]), axis=1).max())
+        self.assertAlmostEqual(rad("iris") / rad("disc"), 0.85, delta=0.03)
+        self.assertAlmostEqual(rad("pupil") / rad("iris"), 0.70, delta=0.03)
+
+    def test_small_sizes_drop_the_iris_and_keep_a_disc_and_a_highlight(self):
+        for canvas, minpx in ((96, 3), (48, 2)):
+            ppH = FD.PPH_PER_PX * canvas
+            s, st, _ = self.eye_on_sphere(0.5 * 1.0 / ppH)           # an eye of one pixel across: the rule lifts it to the minimum
+            Vd, Fd, L = FD.build(s, st, {}, canvas, ppH)
+            names = {FD.LAYERS[k] for k in set(L.tolist())}
+            self.assertEqual(names, {"disc", "iris", "pupil", "catch"} if canvas == 96 else {"disc", "catch"}, canvas)
+            disc = np.array([Vd[f][1:] for i, f_ in enumerate(Fd) if FD.LAYERS[L[i]] == "disc" for f in f_])
+            self.assertGreaterEqual(2 * np.linalg.norm(disc, axis=1).max() * ppH, minpx - 0.1, canvas)
+            hl = np.array([Vd[f][1:] for i, f_ in enumerate(Fd) if FD.LAYERS[L[i]] == "catch" for f in f_])
+            self.assertGreaterEqual(float(np.ptp(hl[:, 0])) * ppH, 0.9, canvas)             # the highlight is at least 1 px
+        self.assertEqual({FD.small_class(c) for c in (608, 304)}, {"full"})
+        self.assertEqual((FD.small_class(96), FD.small_class(95), FD.small_class(48)), ("p96", "p48", "p48"))
+
+    def test_the_pale_eye_rim_is_a_flat_ring_in_coat_pale_round_the_disc(self):
+        s, st, _ = self.eye_on_sphere(0.2)
+        Vd, Fd, L = FD.build(s, st, dict(lid=0.0, pale_rim=True))
+        self.assertIn(FD.LAYERS.index("rim"), set(L.tolist()))
+        rad = lambda name: float(np.linalg.norm(np.array([Vd[f][1:] for i, f_ in enumerate(Fd) if FD.LAYERS[L[i]] == name for f in f_]), axis=1).max())
+        self.assertAlmostEqual((rad("rim") - rad("disc")) / (2 * rad("disc")), 0.08, delta=0.01)      # about 8% of the eye's diameter
+        self.assertLess(FD.max_lift(s, Vd).max(), 0.01)
+        rgb = FD.pale_rgb((0.63, 0.38, 0.24))
+        self.assertGreater(min(rgb), 0.5)                                                          # pale: lightness 0.90
 
 
 if __name__ == "__main__":

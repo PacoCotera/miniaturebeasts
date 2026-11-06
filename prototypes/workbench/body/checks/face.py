@@ -11,14 +11,22 @@ from . import check, row
 from . import proof as PR
 from .biped import R, f2
 
+def _house():
+    import species_v1 as V1
+    return V1.registry()["eye"]
+
+
+_EYE = _house()
+_SZ, _DC = _EYE["size"], _EYE["decal"]
 FACE = dict(
     eye_count=(2, 3),                        # the registry's counts: two, three on S15 only (codify 3)
     front_deg=40.0,                          # every eye's normal within 40 degrees of the facing direction
     on_body=0.01,                            # the decal stands off the skin at most 0.01 H
-    iris_share=0.70,                         # the house eye: iris at least 70% of the disc ...
-    pupil_share=(0.40, 0.50),                # ... pupil 40-50% of the iris ...
-    size=(0.12, 0.17),                       # eye diameter over the head's width, at both ends of form.eye-size
-    spacing=0.15,                            # form.eye-spacing: the type's gap +- 15%
+    iris_share=(_DC["irisShare"] - 0.05, _DC["irisShare"] + 0.05),         # the house eye (registry `eye.decal`, art desk 2026-11-06): iris 85% of the disc, give or take 5 points ...
+    pupil_share=(_DC["pupilShare"] - 0.05, _DC["pupilShare"] + 0.05),      # ... pupil 70% of the iris, give or take 5 points ...
+    size=tuple(_SZ["band"]),                 # eye diameter over the head's width, at both ends of form.eye-size: the registry's band, 0.12-0.24
+    genome_var=_SZ["genomeVar"],             # form.eye-size moves the eye by at most 15%, inside the band
+    spacing=_SZ["spacingVar"],               # form.eye-spacing: the type's gap +- 15%
     row_tol=0.02,                            # pair mirrored, row level, within 2% of the head's width
     lid_max=0.35,                            # the knowing lid closes at most 35%, straight edge
     mouth_span=0.6,                          # the mouth's width at most 0.6 of the eye span
@@ -293,8 +301,8 @@ def max_off(ctx, V):
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------ 4 face.flush
 @check(id="face.flush", name="Flush eyes", fail="An eye has a rim or a bulge", stage="file", version=1, part=["head"], fields=["face.eyes.iris", "face.eyes.catch"],
-       rule=R("2026-11-05 21:18", "The eyes lie flush: no sockets, no rims of skin, no bulges. The house mibi eye is mostly iris (at least 70% of the disc), a dark pupil of 40 to 50% of the iris, and one highlight at the upper left."),
-       limit=dict(text="no rim, socket or bulge · iris at least 0.70 · pupil 0.40-0.50 · one highlight", value=None), az=0)
+       rule=R("2026-11-06 10:45", "The eyes lie flush: no sockets, no raised rims of skin, no bulges. The house mibi eye is a dark glossy disc with a thin dark rim, the iris 85% of the disc, the pupil 70% of the iris, and one highlight at the upper left about 25% of the pupil. A thin flat pale ring in coat.pale (the pale eye rim) is not a raised rim."),
+       limit=dict(text="no raised rim, socket or bulge · iris 0.85 of the disc (0.80-0.90) · pupil 0.70 of the iris (0.65-0.75) · one highlight", value=None), az=0)
 def c_flush(ctx):
     e = _eyes(ctx)
     probs = []
@@ -307,16 +315,16 @@ def c_flush(ctx):
         probs.append(f"{n_catch} highlights, one wanted")
     iris = e.get("iris") if isinstance(e.get("iris"), dict) else {}
     share, pupil = iris.get("share"), iris.get("pupil")
-    if share is not None and share < FACE["iris_share"] - 1e-9:
-        probs.append(f"iris {share:.2f} of the disc, at least {FACE['iris_share']:.2f}")
+    if share is not None and not (FACE["iris_share"][0] - 1e-9 <= share <= FACE["iris_share"][1] + 1e-9):
+        probs.append(f"iris {share:.2f} of the disc, between {FACE['iris_share'][0]:.2f} and {FACE['iris_share'][1]:.2f}")
     if pupil is not None and not (FACE["pupil_share"][0] - 1e-9 <= pupil <= FACE["pupil_share"][1] + 1e-9):
         probs.append(f"pupil {pupil:.2f} of the iris, between {FACE['pupil_share'][0]:.2f} and {FACE['pupil_share'][1]:.2f}")
     bad = bool(probs)
     why = "The eye " + "; ".join(probs) if probs else f"House eye: iris {share if share is not None else 'default'}, pupil {pupil if pupil is not None else 'default'}, one highlight, nothing raised"
-    sh = float(share) if share is not None else 0.74
-    bars = [("Iris of the disc", f"{sh:.2f}", sh / 1.0, PR.RED if sh < FACE["iris_share"] else PR.SAGE, FACE["iris_share"], "at least 0.70")]
+    sh = float(share) if share is not None else _DC["irisShare"]
+    bars = [("Iris of the disc", f"{sh:.2f}", sh / 1.0, PR.RED if not (FACE["iris_share"][0] - 1e-9 <= sh <= FACE["iris_share"][1] + 1e-9) else PR.SAGE, _DC["irisShare"], "house 0.85")]
     lines = [("Raised: " + (", ".join(extra_f) if extra_f else "nothing"), PR.RED if extra_f else PR.INK), (f"Highlights: {n_catch}", PR.RED if n_catch != 1 else PR.INK)]
-    return verdict(ctx, "face.flush", bad, f2(sh), FACE["iris_share"], why, _proof(ctx, 0, PR.RED if bad else PR.SAGE, _eye_points(ctx), _band(lines=lines, bars=bars)), dict(fields=extra_f, catch=n_catch))
+    return verdict(ctx, "face.flush", bad, f2(sh), list(FACE["iris_share"]), why, _proof(ctx, 0, PR.RED if bad else PR.SAGE, _eye_points(ctx), _band(lines=lines, bars=bars)), dict(fields=extra_f, catch=n_catch))
 
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------ 5 face.size
@@ -338,8 +346,8 @@ def _ends(doc, name):
 
 
 @check(id="face.size", name="Eye size", fail="Eyes too {size} for the head", stage="extremes", version=1, part=["head"], fields=["face.eyes.r", "genome.loci.form.eye-size", "genome.loci.form.eye-spacing"],
-       rule=R("2026-11-05 21:18", "The eyes are about a seventh of the head's width. Eye size and spacing may vary a little (a seventh give or take 15%, and the type's gap give or take 15%), and at both ends of both bands the eye stays between 0.12 and 0.17 of the head's width."),
-       limit=dict(text="eye diameter 0.12-0.17 of the head's width at both ends of form.eye-size · spacing within 15% of the type's gap", value=list(FACE["size"])), az=0)
+       rule=R("2026-11-06 10:45", "The eye's diameter is 0.12 to 0.24 of the head's width, house default 0.18, and each kind's own default comes from its stand. The genome moves it by at most 15% (never out of that band), and the type's gap by at most 15%."),
+       limit=dict(text="eye diameter 0.12-0.24 of the head's width at both ends of form.eye-size · form.eye-size within 15% of the type · spacing within 15% of the type's gap", value=list(FACE["size"])), az=0)
 def c_size(ctx):
     doc = _doc(ctx)
     ratio = eye_ratio(doc)
@@ -357,17 +365,18 @@ def c_size(ctx):
             g = 2.0 * abs(float(CF.quad_guess(doc, {"eye_spacing": off})[0][0][0][1]))
             gaps.append((end, g / gap0 - 1.0))
     badgap = [(n, d) for n, d in gaps if abs(d) > FACE["spacing"] + 1e-9]
-    bad = bool(out or badgap)
+    badvar = [(n, m - 1.0) for n, m in (("low", lo), ("high", hi)) if abs(m - 1.0) > FACE["genome_var"] + 1e-9]       # the genome moves the eye by at most 15%
+    bad = bool(out or badgap or badvar)
     one = lo == hi                                                          # no band on the file: the type is the only size
     where = "" if one else " at the " + "/".join(n for n, _ in out) + " end"
     probs = ([f"are {out[0][1]:.3f} of the head's width{where}, between {FACE['size'][0]} and {FACE['size'][1]}"] if one and out else
-             [f"at the {n} end are {v:.3f} of the head's width, between {FACE['size'][0]} and {FACE['size'][1]}" for n, v in out]) + [f"at the {n} end sit {d * 100:+.0f}% from the type's gap, limit 15%" for n, d in badgap]
+             [f"at the {n} end are {v:.3f} of the head's width, between {FACE['size'][0]} and {FACE['size'][1]}" for n, v in out]) + [f"at the {n} end sit {d * 100:+.0f}% from the type's gap, limit 15%" for n, d in badgap] + [f"the {n} end of form.eye-size moves the eye {d * 100:+.0f}% from the type, limit 15%" for n, d in badvar]
     why = ("Eyes " + "; ".join(probs)) if probs else ("Eye " + (f"type {ratio:.3f}" if one else ", ".join(f"{n} {v:.3f}" for n, v in ends)) + " of the head's width")
-    worst = max(ends, key=lambda t: abs(t[1] - 0.145))[1]
+    worst = max(ends, key=lambda t: abs(t[1] - 0.18))[1]
     top = FACE["size"][1] * 1.4
     vs = [v for _, v in ends]
     span_txt = f"{min(vs):.3f}-{max(vs):.3f}" if max(vs) - min(vs) > 5e-4 else f"{vs[1]:.3f}"
-    bars = [("Eye over head width", span_txt, worst / top, PR.RED if out else PR.SAGE, FACE["size"][1] / top, "limit 0.12-0.17")]
+    bars = [("Eye over head width", span_txt, worst / top, PR.RED if out or badvar else PR.SAGE, FACE["size"][1] / top, "limit 0.12-0.24")]
     lines = [("Spacing " + (", ".join(f"{n} {d * 100:+.0f}%" for n, d in gaps) + " of the gap, limit 15%" if gaps else "at the type's gap"), PR.RED if badgap else PR.INK)]
     return verdict(ctx, "face.size", bad, f2(worst), list(FACE["size"]), why, _proof(ctx, 0, PR.RED if bad else PR.SAGE, _eye_points(ctx), _band(lines=lines, bars=bars)),
                    dict(size="big" if worst > FACE["size"][1] else "small", ends=[(n, f2(v)) for n, v in ends], spacing=[(n, f2(d)) for n, d in gaps]))

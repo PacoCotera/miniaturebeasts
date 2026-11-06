@@ -15,11 +15,20 @@ import bpy
 from mathutils import Matrix
 
 SIZES = {608: (608, 624, 190.0), 304: (304, 312, 95.0), 96: (96, 88, 30.0), 48: (48, 48, 15.0)}          # 608 is the hero's: the 304 framing at twice the pixels
+FACE_CANVAS = {}                                                    # a private size id's final canvas width in px, where it is drawn bigger and reduced (wb/renderset.py)
+
+
+def face_class(size):
+    """The small-size rule's class of a render size: full from 304 wide, p96 from 96, p48 below. A supersampled size counts at its final width."""
+    w = FACE_CANVAS.get(size, SIZES[size][0])
+    return "full" if w >= 304 else ("p96" if w >= 96 else "p48")
+
+
 AZ = (0, 32, 90, 180)
 MODES = ("clay", "normal", "parts", "wire")
 EL = 10.0
 CENTRE = np.array([-0.35, 0.0, 1.3])
-LOOK = "proxy-2"                     # the look version in every frame key: change it when the proxy's look changes
+LOOK = "proxy-3"                     # the look version in every frame key: change it when the proxy's look changes
 BG = (0.93, 0.92, 0.90)
 CLAY = (0.66, 0.62, 0.58)
 WIRE = (0.08, 0.22, 0.66)
@@ -90,6 +99,7 @@ class ProxyRenderer:
         self.mats["face"] = fm
         self.face_mats = {}
         self.body = self.wire = self.face = None
+        self.faces = {}
         self.mesh = None
         self.mesh_key = None
 
@@ -143,18 +153,21 @@ class ProxyRenderer:
         self.wire.data = me
         self.wire.material_slots[0].link = "OBJECT"
         self.wire.material_slots[0].material = self.mats["wire"]
-        if self.face is not None:
-            old_f = self.face.data
-            bpy.data.objects.remove(self.face)
+        for old in list(self.faces.values()):
+            old_f = old.data
+            bpy.data.objects.remove(old)
             bpy.data.meshes.remove(old_f)
-            self.face = None
-        if mesh.get("face_V") is not None and len(mesh["face_V"]):          # the clay's face: flat dark eyes and mouth (wb/clayface.py), seen in the clay view only
-            fme = bpy.data.meshes.new("face")
-            fme.from_pydata(np.asarray(mesh["face_V"], float).tolist(), [], [list(map(int, p)) for p in mesh["face_F"]])
+        self.faces, self.face = {}, None
+        sets = {"full": (mesh.get("face_V"), mesh.get("face_F"), mesh.get("face_L"), mesh.get("face_rgb"))}
+        for cls, d in (mesh.get("face_small") or {}).items():              # the small-size rule's eyes (below 96 px the iris is dropped; wb/clayface.decal_faces): one set per size class
+            sets[cls] = (np.asarray(d["V"], float).reshape(-1, 3), d["F"], np.asarray(d["L"], int), d["rgb"])
+        for cls, (fv, ff, fl, rgb) in sets.items():
+            if fv is None or not len(fv):                          # the clay's face: flat dark eyes and mouth (wb/clayface.py), seen in the clay view only
+                continue
+            fme = bpy.data.meshes.new("face-" + cls)
+            fme.from_pydata(np.asarray(fv, float).tolist(), [], [list(map(int, p)) for p in ff])
             fme.update()
-            fl = mesh.get("face_L")
-            if fl is not None and len(fl):                       # the house decal: one material per layer (disc, iris, pupil, highlight, mouth), the polygon's layer picks it
-                rgb = mesh["face_rgb"]
+            if fl is not None and len(fl):                       # the house decal: one material per layer (disc, iris, pupil, highlight, mouth, rim), the polygon's layer picks it
                 for k, col in enumerate(rgb):
                     key = tuple(round(float(c), 4) for c in col)
                     if key not in self.face_mats:
@@ -165,8 +178,10 @@ class ProxyRenderer:
                 fme.polygons.foreach_set("material_index", np.asarray(fl, int))
             else:
                 fme.materials.append(self.mats["face"])
-            self.face = bpy.data.objects.new("face", fme)
-            self.sc.collection.objects.link(self.face)
+            ob = bpy.data.objects.new("face-" + cls, fme)
+            self.sc.collection.objects.link(ob)
+            self.faces[cls] = ob
+        self.face = self.faces.get("full")
         self.mesh = dict(V=V, F=F, part=part, frame=mesh.get("frame"))
         from gltf_out import vertex_normals
         self.mesh["N"] = vertex_normals(V, F)
@@ -199,8 +214,9 @@ class ProxyRenderer:
         sh = self.sc.display.shading
         me = self.body.data
         self.wire.hide_render = mode != "wire"
-        if self.face is not None:
-            self.face.hide_render = mode != "clay"
+        cls = face_class(size)
+        for k, ob in self.faces.items():                             # the face of this size's class only (a plan with no small-size sets draws its one face at every size)
+            ob.hide_render = mode != "clay" or k != (cls if cls in self.faces else "full")
         if mode == "normal":
             N = self.mesh["N"]
             col = np.clip(0.5 + 0.5 * np.stack([N @ right, N @ up, -(N @ fwd)], 1), 0, 1)

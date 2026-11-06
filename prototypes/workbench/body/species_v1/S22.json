@@ -262,17 +262,17 @@
    "around": 0.33,
    "r": 0.0906,
    "iris": {
-    "share": 0.74,
-    "pupil": 0.45,
+    "share": 0.85,
+    "pupil": 0.70,
     "colour": "hazel"
    },
    "catch": [
     {
      "at": [
-      -0.38,
-      0.4
+      -0.30,
+      0.32
      ],
-     "r": 0.2
+     "r": 0.25
     }
    ],
    "attitude": "content",

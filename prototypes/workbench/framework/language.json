@@ -859,7 +859,10 @@
           "content",
           "curious"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.23,
+        "sizeFromStand": true,
+        "paleRim": false
       },
       "anchor": true
     },
@@ -895,7 +898,10 @@
           "content",
           "deadpan"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.16,
+        "sizeFromStand": true,
+        "paleRim": false
       }
     },
     {
@@ -929,7 +935,10 @@
           "content",
           "curious"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.14,
+        "sizeFromStand": true,
+        "paleRim": false
       },
       "coatNote": "speckled suede, short and close with a slight nap",
       "coatPattern": {
@@ -966,7 +975,10 @@
           "curious",
           "knowing"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.19,
+        "sizeFromStand": true,
+        "paleRim": false
       }
     },
     {
@@ -1001,7 +1013,10 @@
           "curious",
           "deadpan"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.18,
+        "sizeFromStand": true,
+        "paleRim": true
       },
       "coatNote": "leathery"
     },
@@ -1037,7 +1052,10 @@
           "content",
           "deadpan"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.14,
+        "sizeFromStand": true,
+        "paleRim": true
       },
       "coatNote": "smooth matte velvet-suede; the beads are the signature only"
     },
@@ -1073,7 +1091,10 @@
           "deadpan",
           "knowing"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.17,
+        "sizeFromStand": true,
+        "paleRim": false
       },
       "chestFur": "fluffy",
       "coatNote": "short plush fur; the fluffy chest in the body colour; no plates",
@@ -1115,7 +1136,10 @@
           "curious",
           "knowing"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.12,
+        "sizeFromStand": true,
+        "paleRim": false
       }
     },
     {
@@ -1151,7 +1175,10 @@
           "curious",
           "knowing"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.12,
+        "sizeFromStand": true,
+        "paleRim": false
       }
     },
     {
@@ -1185,7 +1212,10 @@
           "content",
           "curious"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.15,
+        "sizeFromStand": true,
+        "paleRim": true
       },
       "waterKind": true
     },
@@ -1221,7 +1251,10 @@
           "curious",
           "deadpan"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.18,
+        "sizeFromStand": true,
+        "paleRim": true
       }
     },
     {
@@ -1255,7 +1288,10 @@
           "content",
           "curious"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.12,
+        "sizeFromStand": true,
+        "paleRim": false
       },
       "coatNote": "the head is merged into the body"
     },
@@ -1290,7 +1326,10 @@
           "content",
           "curious"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.12,
+        "sizeFromStand": true,
+        "paleRim": false
       },
       "coatNote": "matte floor; not a satin glaze"
     },
@@ -1325,7 +1364,10 @@
           "content",
           "deadpan"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.17,
+        "sizeFromStand": true,
+        "paleRim": false
       }
     },
     {
@@ -1356,7 +1398,10 @@
           "content",
           "knowing"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.18,
+        "sizeFromStand": false,
+        "paleRim": false
       },
       "coatNote": "body and the dome shell in skin, shell in deep heather"
     },
@@ -1392,7 +1437,10 @@
           "content",
           "curious"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.12,
+        "sizeFromStand": true,
+        "paleRim": false
       }
     },
     {
@@ -1425,7 +1473,10 @@
           "content",
           "curious"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.18,
+        "sizeFromStand": false,
+        "paleRim": false
       },
       "anchor": true
     },
@@ -1456,7 +1507,10 @@
           "content",
           "deadpan"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.18,
+        "sizeFromStand": false,
+        "paleRim": false
       },
       "anchor": true
     },
@@ -1490,7 +1544,10 @@
           "content",
           "knowing"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.23,
+        "sizeFromStand": true,
+        "paleRim": false
       },
       "anchor": true
     },
@@ -1526,7 +1583,10 @@
           "content",
           "curious"
         ],
-        "attitudeDefault": "content"
+        "attitudeDefault": "content",
+        "size": 0.17,
+        "sizeFromStand": true,
+        "paleRim": false
       }
     },
     {
@@ -1550,11 +1610,74 @@
         "irisPool": null,
         "irisDefault": null,
         "attitudePool": null,
-        "attitudeDefault": null
+        "attitudeDefault": null,
+        "size": 0.18,
+        "sizeFromStand": true,
+        "paleRim": false
       },
       "template": true
     }
   ],
+  "eye": {
+    "size": {
+      "band": [
+        0.12,
+        0.24
+      ],
+      "house": 0.18,
+      "genomeVar": 0.15,
+      "spacingVar": 0.15
+    },
+    "decal": {
+      "irisShare": 0.85,
+      "pupilShare": 0.7,
+      "rim": "#1E1A24",
+      "catchShare": 0.25,
+      "catchAt": [
+        -0.3,
+        0.32
+      ],
+      "small": {
+        "dropIrisBelow": 96,
+        "minDiscPx": {
+          "48": 2,
+          "96": 3
+        },
+        "highlightPx": 1
+      }
+    },
+    "irisL": {
+      "amber": 0.64,
+      "honey": 0.74,
+      "copper": 0.57,
+      "olive": 0.62,
+      "moss": 0.59,
+      "hazel": 0.59,
+      "teal": 0.59,
+      "slate": 0.57,
+      "violet": 0.56
+    },
+    "irisSwatch": {
+      "amber": "#C27A1E",
+      "honey": "#D2A040",
+      "copper": "#B0602E",
+      "olive": "#848C3A",
+      "moss": "#5F8C4E",
+      "hazel": "#9C7442",
+      "teal": "#2E8E8A",
+      "slate": "#62799A",
+      "violet": "#7E62B0"
+    },
+    "pupilHex": "#1E1A24",
+    "pupilL": 0.23,
+    "highlightHex": "#FFFFFF",
+    "paleRim": {
+      "share": 0.08,
+      "colour": "coat.pale",
+      "L": 0.9,
+      "chromaShare": 0.3
+    }
+  },
   "exceptions": [
     {
       "kind": "S01",

@@ -176,6 +176,7 @@ class Proxy:
             P.SIZES[self.ids[(w, h)]] = (w, h, ppH)
             self.ids[((w, h), SUPER)] = 200000 + w * 1000 + h              # and one at the supersample factor
             P.SIZES[self.ids[((w, h), SUPER)]] = (w * SUPER, h * SUPER, ppH * SUPER)
+            P.FACE_CANVAS[self.ids[((w, h), SUPER)]] = w                   # the small-size rule judges the final width, not the supersampled one
 
     def _clay_mesh(self, subject, M=None):
         """The clay in the stand pose, as the plush and the silhouette are: the posed shipped mesh, with the face (flat eyes and mouth) placed on its rest surface and carried with the pose by the displacement of the nearest vertex."""
@@ -186,13 +187,18 @@ class Proxy:
             if not CF.is_decal_file(doc):
                 return M                                                   # a quadruped file with no eye station has no face on its clay
             if not hasattr(subject, "_decal"):
-                subject._decal = CF.decal_face(doc, dict(V=np.asarray(subject.mesh["V"], float), F=np.asarray(subject.mesh["F"], int)))
-            fv, ff, fl, rgb = subject._decal
-            D = np.asarray(M["V"], float) - np.asarray(subject.mesh["V"], float)
+                subject._decal = CF.decal_faces(doc, dict(V=np.asarray(subject.mesh["V"], float), F=np.asarray(subject.mesh["F"], int)))
             R0 = np.asarray(subject.mesh["V"], float)
-            nn = np.array([np.argmin(((R0 - p) ** 2).sum(1)) for p in fv])
+            D = np.asarray(M["V"], float) - R0
             m = dict(M)
-            m["face_V"], m["face_F"], m["face_L"], m["face_rgb"] = fv + D[nn], ff, fl, rgb
+            small = {}
+            for cls, (fv, ff, fl, rgb) in subject._decal.items():            # every size class of the face is carried with the pose by the displacement of the nearest vertex
+                nn = np.array([np.argmin(((R0 - p) ** 2).sum(1)) for p in fv])
+                if cls == "full":
+                    m["face_V"], m["face_F"], m["face_L"], m["face_rgb"] = fv + D[nn], ff, fl, rgb
+                else:
+                    small[cls] = dict(V=(fv + D[nn]).tolist(), F=[list(map(int, q)) for q in ff], L=np.asarray(fl).tolist(), rgb=[list(map(float, c)) for c in rgb])
+            m["face_small"] = small
             return m
         rest = dict(V=np.asarray(M["Vw"], float), F=np.asarray(M["Fw"], int))
         cx = subject.b.ctx
