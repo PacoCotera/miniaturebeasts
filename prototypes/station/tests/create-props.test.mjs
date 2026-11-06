@@ -2,6 +2,7 @@
 // measure and no layout rule, fits the 32 KiB props budget with the frame beside it, spells the trait line, the context, the notice and the price from create.json's strings and the rules, puts the roll's pictures in the order of the spec
 // (as the pod is, only the first copy, only the second), counts the leaves the bud will take, and follows the founder's picture through the rolls.
 //   node --test prototypes/station/tests/
+// PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -14,7 +15,7 @@ import { createBuild as createBuildUnchecked, reviewTraits, founderPicture, crea
 const createBuild = lineCased(createBuildUnchecked, "create");   // every body it builds goes through assertLineCase (report mode)
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
-setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("create.json"), pods = J("pods.json"), schema = J("create.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000, SPECIES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => f.slice(8, 11)).filter((id) => frameOf(id));   // a draft species is not loaded (genome.mjs setFrames)
 

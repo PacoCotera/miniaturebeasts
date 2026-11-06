@@ -10,7 +10,7 @@
 
 // The approved names (design/proposals/species-names.md): one per species, one per clan. The clan
 // name doubles as the genus on the tome's clan plate, so S01 is Lophessa loika.
-export const SPECIES_NAMES = { S01: "Loika", S02: "Untuva", S03: "Tuikis", S04: "Hiljan", S05: "Tepor", S06: "Pesko", S07: "Azkon", S08: "Rupar", S09: "Belatz", S10: "Igara", S11: "Kilpo", S12: "Peplos", S13: "Oskol", S14: "Usvel", S15: "Lehten", S16: "Blikur", S17: "Wickle", S18: "Drapet", S19: "Curlop" }; // S17–S19 are working names (the owner, 2026-10-30); the copywriter names them, and the clans C17–C19
+export const SPECIES_NAMES = { S01: "Loika", S02: "Untuva", S03: "Tuikis", S04: "Hiljan", S05: "Tepor", S06: "Pesko", S07: "Azkon", S08: "Rupar", S09: "Belatz", S10: "Igara", S11: "Kilpo", S12: "Peplos", S13: "Oskol", S14: "Usvel", S15: "Lehten", S16: "Blikur", S17: "Wickle", S18: "Drapet", S19: "Curlop", S20: "Tuliko" }; // S17–S19 are working names (the owner, 2026-10-30); the copywriter names them, and the clans C17–C19
 export const CLAN_NAMES = { C01: "Lophessa", C02: "Kausida", C03: "Stilbera", C04: "Lathreta", C05: "Dasyla", C06: "Prosopa", C07: "Aulaka", C08: "Kremnion", C09: "Aithria", C10: "Kolymba", C11: "Thyreka", C12: "Graptoma", C13: "Lepidos", C14: "Kapnis", C15: "Phyllaxa", C16: "Brontelas" };
 
 import { proportionPairs } from "./proportions.mjs";
@@ -50,6 +50,9 @@ export const CLANS = {
   // body engine, and its frame arrives with the workbench's chunk 9 and ticket G3. No `plan`, so nothing here can build a species: the page's new-species list skips it
   // (`engine: "body"`), and the clan name is the copywriter's (CLAN_NAMES has none yet).
   C20: { number: 20, engine: "body", resembles: "a small upright biped with a lantern at the end of its tail", feature: "a lantern tail tip that glows like a firefly" },
+  // C21, the glider Tuliko's clan in the game (release 21a): a clan on the four-legged plan with a flat steering tail, so the language frame of S20 (version 8) can be built by the form engine. The studio's body-engine Tuliko
+  // (C20, key S20.1) is untouched. The membrane is not modelled in the genome body (the game draws paintings; the body only validates). The legacy fields below are read by no frame: a frame of version 8 takes its own from the registry.
+  C21: { number: 21, resembles: "a small four-legged glider", plan: "two|serial|bilateral|contact|zero|one|two|off|scales", extras: { join: "narrow", wave: true }, anchor: "jade", second: "butter", feature: "a coin crest along the back", features: { ...EYES, ...sw("anatomy.axial-tail-presence") }, finish: {} },
 };
 
 // The three authored frames, as frames.py defines them (open traits, pools, fixed values).
@@ -134,6 +137,8 @@ export const LEGACY_GLYPHS = {
 
 // The routine acts a species is watched doing (the-portrait.md §8): the ids a mibi's habits are drawn from, at the bench (a resident in focus for a minute of its routine) and at the dock
 // (what the mibi with the player did on the walk). The first three species; a later one gets its list with its frame.
+// A frame of version 8 lists "sleep-curled" for every kind (all twenty have an asleep painting); the three above keep theirs (DEFAULT_HABITS, languageSpec).
+export const DEFAULT_HABITS = ["sleep-curled"];
 export const HABITS = {
   S01: ["shake-dry", "calm", "sleep-curled"],   // Loika
   S02: ["sniff", "puff", "sleep-curled"],        // Untuva
@@ -222,6 +227,15 @@ export const SPECIES = [
     pools: { "growth.tail-curl-turn": ["curled", "tight"] } }, // the tight half of the curl: a straight tail on an upright biped with hands at the chest reads as a kangaroo or a small theropod
 ];
 
+// Kinds that have a frame of version 8 only (release 21a): the form registry (build-frames, frames/species-*.json, the 19 rows above) never builds them, so no frame before the language moves.
+// S20 Tuliko, the glider: the form row the language frame is built from (the studio's body-engine Tuliko, key S20.1, is a separate fixture). Its movement, stamina and character traits are the shared vocabulary's, as the fluffy kinds'.
+export const LANGUAGE_ONLY = [
+  { ...row("S20", "C21", "small", "mid", "a small four-legged glider", "scurries, glides", "Tallwood", null, "fruit, leaves", "draft: to be set by the game designer", "draft: curious, content"),
+    summary: "A small four-legged glider: a low scaled body, skin between its legs that opens to glide, a flat steering tail and a scalloped coin crest along its back.",
+    frameVersion: 8, sealed: {}, alwaysOpen: [], neverOpen: [] },
+];
+export const ALL_SPECIES = [...SPECIES, ...LANGUAGE_ONLY];
+
 // Generated species open Glow only where the plan draws an emission (a bulb or a charged body);
 // elsewhere emission is a carried trunk locus the species fixes.
 const GLOW_CLANS = new Set(["C03", "C16"]);
@@ -237,7 +251,7 @@ export const ACTIVE_SPECIES = SPECIES.filter((s) => !s.parked);
 
 export function specOf(species, { language = false } = {}) {
   const clan = CLANS[species.clan];
-  const member = SPECIES.filter((s) => s.clan === species.clan).indexOf(species) + 1;
+  const member = ALL_SPECIES.filter((s) => s.clan === species.clan).indexOf(species) + 1;
   // Proportions by kind (proportions.mjs): locked where the trait is closed, the type specimen's
   // typical copies where it is open; the clan finish sits under them, an authored species list above.
   const proportions = proportionPairs(species.id, species.frameVersion ?? 4);   // the frame version the species builds at (the registry's 4 unless it names one): an allele appended later is not its to name

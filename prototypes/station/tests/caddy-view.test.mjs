@@ -14,7 +14,7 @@ import { G, UI, SPECS } from "../src/game.mjs";
 import { createHost, onFaceMessage } from "../src/host.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), fdir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), fdir = path.resolve(here, "../../workbench/frames/language");
 const measure = createMeasure(JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")));   // the real measurer (Inter 20 and 28)
 
 test("each state's two lines (§5)", () => {

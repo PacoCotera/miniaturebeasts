@@ -15,18 +15,18 @@
 // Frames are append-only: this file writes version 8 and nothing older (build-frames keeps every other
 // frame as it was; the stamp registry keeps the older versions of these four).
 import { readFileSync } from "node:fs";
-import { CATALOGUE, LOCI, BODY_PIGMENTS, SECOND_PIGMENTS, alleleIds, resolveCopies, LANGUAGE_FRAME, valueRange } from "./catalogue.mjs";
+import { CATALOGUE, LOCI, BODY_PIGMENTS, SECOND_PIGMENTS, alleleIds, resolveCopies, LANGUAGE_FRAME, valueRange, copyValue } from "./catalogue.mjs";
 import { LANGUAGE, kindOf, landOf, exceptionsFor, isExcepted, hexToOklch, BODY_RANGE, IRIS_SWATCH, PUPIL_HEX, HIGHLIGHT_HEX } from "./language.mjs";
 export { IRIS_SWATCH, PUPIL_HEX, HIGHLIGHT_HEX };
-import { SPECIES, specOf, GLYPHS } from "./roster.mjs";
+import { ALL_SPECIES, specOf, GLYPHS, HABITS, DEFAULT_HABITS } from "./roster.mjs";
 import { buildFrame, sampleIndividual, rng } from "./species.mjs";
 import { planFacts } from "./plans.mjs";
 import { carried, isPartSwitch, SWITCH_TARGETS } from "./guards.mjs";
 
-// The kinds this generator writes: the four anchors (chunk 5) and the other fifteen (chunk 7), nineteen in all. S20 is a
+// The kinds this generator writes: the four anchors (chunk 5), the other fifteen (chunk 7) and S20 Tuliko, the glider (release 21a): twenty in all. The studio's body-engine S20 (key S20.1) is a
 // fixture and S22 a template, so neither has a language frame.
 export const LANGUAGE_ANCHORS = ["S01", "S17", "S18", "S19"];
-export const LANGUAGE_KINDS = Array.from({ length: 19 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`);
+export const LANGUAGE_KINDS = Array.from({ length: 20 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`);
 
 // ---- the house numbers (the language design sections 3, 4 and 6) ----
 export const EYE_SIZE_BAND = [0.122, 0.165];          // head width times this: a seventh, 15 percent either way
@@ -48,6 +48,8 @@ export const IRIS_VALUES_SIGNED = true;
 export const DEFAULT_SHARE = 0.6, MIN_SHARE = 0.05;
 export const LAYOUT_SHARES = { plain: 0.35, "back-spots": 0.20, saddle: 0.15, gradient: 0.12, bands: 0.10, patches: 0.08 };
 export const LAYOUT_POOL = ["bands", "patches", "saddle", "gradient", "back-spots"];
+// The Markings trait reads the layout, not the switch (release 21a): plain (the switch off), then the five layouts. Words OWED to the copywriter.
+export const MARKINGS_LOOKS = ["plain", "back spots", "saddle", "gradient", "bands", "patches"];
 
 // Records locked at a neutral value in every language frame (the value is the one the language allows).
 const NEUTRAL = {
@@ -67,6 +69,7 @@ const KEEP = {
   S17: [{ trait: "stride" }, { trait: "turning" }, { trait: "curiosity" }],
   S18: [{ trait: "pace" }, { trait: "weave" }, { trait: "stride" }, { trait: "curiosity" }, { trait: "nerve" }],
   S19: [{ trait: "stride" }, { trait: "pace" }, { trait: "thrift" }, { trait: "nerve" }, { trait: "curiosity" }],
+  S20: [{ trait: "stride" }, { trait: "pace" }, { trait: "turning" }, { trait: "nerve" }, { trait: "curiosity" }],   // the glider has no older frame to keep from: the shared vocabulary's traits
 };
 // The records an anchor's frame fixes by hand (its type), beyond the roster's proportions.
 const FIXED = {
@@ -97,7 +100,7 @@ function keepOf(kindId) {
 }
 
 const r2 = (x) => Math.round(x * 100) / 100, r3 = (x) => Math.round(x * 1000) / 1000;
-const speciesOf = (id) => SPECIES.find((s) => s.id === id);
+const speciesOf = (id) => ALL_SPECIES.find((s) => s.id === id);
 
 // ---- the body colour a kind's bands are centred on: the land's, or the anchor's own where coat.land is excepted ----
 export function bodyColourOf(kindId) {
@@ -235,7 +238,7 @@ export function languageSpec(kindId) {
   const trait = (chapter, id, name, loci, pool = {}, extra = {}) => open.push({ chapter, id, name, loci, ...(Object.keys(pool).length ? { pool } : {}), ...extra });
   trait("coat", "body-hue", "Body hue", ["appearance.body-hue"]);
   trait("coat", "body-value", "Coat value", ["appearance.body-value"]);
-  trait("coat", "markings", "Markings", ["appearance.marking-switch", "appearance.marking-layout"], { "appearance.marking-switch": ["on", "off"], "appearance.marking-layout": [...LAYOUT_POOL] });
+  trait("coat", "markings", "Markings", ["appearance.marking-switch", "appearance.marking-layout"], { "appearance.marking-switch": ["on", "off"], "appearance.marking-layout": [...LAYOUT_POOL] }, { looks: [...MARKINGS_LOOKS] });
   trait("face", "iris", "Iris", ["appearance.iris-colour"], { "appearance.iris-colour": [...iris.kept] });
   trait("face", "attitude", "Attitude", ["appearance.attitude"], { "appearance.attitude": [...k.eyes.attitudePool] });
   if (bands["form.eye-size"]) trait("face", "eye-size", "Eye size", ["form.eye-size"]);
@@ -284,6 +287,9 @@ export function languageSpec(kindId) {
     languageNotes: { droppedSwitches: dropped, irisDropped: iris.dropped.map((d) => d.colour), irisWouldDrop: iris.wouldDrop.map((d) => d.colour) },
   };
   delete spec.legacy; delete spec.alwaysOpen;
+  // Release 21a: no frame of version 8 is draft or parked (the art exists for all twenty), and every kind lists its asleep habit; the three first kinds keep theirs.
+  delete spec.draft; delete spec.parked;
+  spec.habits = [...(HABITS[kindId] ?? DEFAULT_HABITS)];
   if (kindId === "S01") { spec.features = { ...spec.features, "anatomy.crown-presence": "on" }; spec.openSwitches = spec.openSwitches.filter((id) => id !== "anatomy.crown-presence"); }
   return spec;
 }
@@ -311,6 +317,13 @@ export function buildLanguageFrame(kindId, options = {}) {
   const spec = languageSpec(kindId);
   const frame = buildFrame(spec, { samples: options.samples ?? 200 });
   frame.taxonomy.seed = spec.seed; frame.taxonomy.lockedByCheck = []; frame.taxonomy.attemptsRejected = [];
+  // A blended trait of the language (a band: hue, value, eye size and spacing, the shape records, the signature's size) is read in the words of its pool's alleles, one look a named step ("small", "between", "big"),
+  // never the pair labels the catalogue falls back to ("between small and big"): those run past the Pods' six words in the game. Words OWED to the copywriter. The kept movement, stamina and character traits keep their own.
+  for (const ch of frame.chapters) for (const t of ch.traits) {
+    if (t.loci.length !== 1 || LOCI.get(t.loci[0])?.operator !== "copy-mean" || !t.looks.some((l) => l.startsWith("between "))) continue;
+    const locus = LOCI.get(t.loci[0]), pool = frame.pools[t.loci[0]];
+    t.looks = [...pool].sort((a, b) => copyValue(locus, a) - copyValue(locus, b));
+  }
   return frame;
 }
 

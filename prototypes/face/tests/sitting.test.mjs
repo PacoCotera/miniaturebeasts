@@ -17,16 +17,16 @@ import { setFrames } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import * as T from "../../station/src/sitting.mjs";
 import { sittingBuild } from "../../station/src/views/sitting-props.mjs";
-import { loadStandLayersFs, loadStandLooksFs } from "../../station/tools/stand-layers-fs.mjs";
+import { loadStandSizesFs } from "../../station/tools/stand-layers-fs.mjs";
 import { injectPortraitSource, dropPortraitSources } from "../../station/src/portrait-source.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("sitting"), habitat = J("habitat");
-const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours, framesDir = path.resolve(here, "../../workbench/frames");
+const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours, framesDir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const R = spec.regions, T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, DIGEST = "0123456789abcdef0011223344556677";
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-before(() => { loadStandLooksFs(); loadStandLayersFs(); });
+before(() => { loadStandSizesFs(); });
 
 // ---- scenes: the state through the rules, the props through the view ----
 function scene(o = {}) {

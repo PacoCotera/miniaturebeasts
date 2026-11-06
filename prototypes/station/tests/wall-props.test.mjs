@@ -12,7 +12,7 @@ import { wallBuild, orderOf, tickOf, stepOf, SORTS, markOf } from "../src/views/
 import { loadStandSizesFs } from "../tools/stand-layers-fs.mjs";
 loadStandSizesFs();
 
-const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("vivarium.json"), frameSpec = J("frame.json"), home = J("home.json"), pods = J("pods.json"), schema = J("vivarium.props.json");
 const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };

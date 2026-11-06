@@ -59,6 +59,11 @@ export function binLooks(frame, trait) {
   if (locus.operator === "partition-map" && looks.length === pool.length + 1) {
     return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; return c[0] === c[1] ? looks[pool.indexOf(c[0])] ?? null : looks[pool.length]; } };
   }
+  // The language's Markings (frame version 8): the trait reads the layout, "plain" when the switch is off; a pair that mixes bands and patches shows both (a cross's look, no pool names it).
+  if (locus.operator === "recessive-enable" && trait.loci.length > 1 && looks[0] === "plain" && /layout/.test(trait.loci[1]) && looks.length === (frame.pools?.[trait.loci[1]]?.length ?? -2) + 1) {
+    const lay = LOCI.get(trait.loci[1]);
+    return { looks, of: (g) => { const on = bins(g, id), l = bins(g, trait.loci[1]); if (on.length !== 2 || l.length !== 2) return null; if (!resolveCopies(locus, on)) return looks[0]; const shown = String(resolveCopies(lay, l)).replace(/-/g, " "); return looks.includes(shown) ? shown : shown === "bands and patches" ? shown : null; } };
+  }
   if (locus.operator === "recessive-enable" && trait.loci.length > 1 && looks.length === 4 && /layout/.test(trait.loci[1])) {
     const lay = LOCI.get(trait.loci[1]);
     return { looks, of: (g) => { const on = bins(g, id), l = bins(g, trait.loci[1]); if (on.length !== 2 || l.length !== 2) return null; if (!resolveCopies(locus, on)) return looks[0]; return { bands: looks[1], patches: looks[2], "bands-and-patches": looks[3] }[resolveCopies(lay, l)] ?? null; } };

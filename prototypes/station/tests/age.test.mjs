@@ -9,7 +9,7 @@ import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { ageTurns, stageNote, turnsFor, turnsUntil, yoursLine } from "../src/age-words.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const MIN = 60000, T0 = Date.UTC(2026, 9, 1, 15);

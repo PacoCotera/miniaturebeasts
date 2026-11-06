@@ -12,6 +12,7 @@ import { fill, spell, capLine } from "./words.mjs";
 import { ageTurns, stageNote, turnsFor, turnsUntil, yoursLine } from "../age-words.mjs";
 import { req as collector, slot as slotOf, sheet as sheetReqs, disc as discReq, quiet as quietReq, canLight, lineageFar as lineageFarReq, lineageMini as lineageMiniReq, rackPod as rackPodReq, stamp as stampReq } from "./requests.mjs";
 import { faceId } from "../face-pictures.mjs";
+import { formCell } from "../../../ui/specs/derive.mjs";
 import { speciesFacts, sheetFacts, printed } from "../library-sheet.mjs";
 import { createMeasure, measureRole, clipTo, wrapCount } from "../../../ui/specs/measure.mjs";
 import { sittingsOf } from "../sitting.mjs";
@@ -29,17 +30,17 @@ export function subjectOf(strings, n, anyMet) {
 const cellPicture = (id, status, found, shut) => `library-cell-${id}-${keyToken(JSON.stringify([status, status === "found" ? Object.keys(found).sort().map((t) => [t, found[t]]) : [], status === "found" ? shut : []]))}`;
 
 export function libraryBuild(m, spec, frame) {
-  const { st, settings, ui } = m, L = spec.l1, C = L.cell, requests = [], later = [], req = collector(requests, true), slot = slotOf(req, "its master (library.json l1)"), made = m.ready ?? (() => true);
+  const { st, settings, ui } = m, L = spec.l1, requests = [], later = [], req = collector(requests, true), slot = slotOf(req, "its master (library.json l1)"), made = m.ready ?? (() => true);
   const ids = frameIds();
   if (!L.grid.forms[String(ids.length)]) throw new Error(`Level 1 is built for the catalogue sizes library.json l1.grid.forms holds (${Object.keys(L.grid.forms).join(", ")}), not ${ids.length}: another size comes back to UI/UX`);
-  const ground = slot(L.stage.master, L.stage.rect.slice(2));
+  const C = formCell(L, ids.length), ground = slot(L.stage.master, L.stage.rect.slice(2));
   slot(C.seed.slice, C.seed.rect.slice(2)); slot(C.wish.slice, C.wish.rect.slice(2)); req({ kind: "star", id: C.glint.slice });   // the pictures every cell may name; the seed is also the hidden parts' slot
   let fresh = 0;
   const cells = ids.map((id) => {
     const status = Lib.speciesStatus(st, id), known = status !== "unmet", fr = frameOf(id);
     if (!known) return { id, status, name: "", picture: "", mark: "", face: "", wish: false, glint: false };
     const inp = specimenInput(st, id, settings), found = status === "found" ? inp.found : {}, shut = status === "found" ? inp.shut : [];
-    const pic = cellPicture(id, status, found, shut), [pw, ph] = C.picture.rect.slice(2), cr = { kind: "librarycell", id: pic, species: id, status, found, shut, size: [pw, ph], ground: C.picture.ground[status] };
+    const pic = cellPicture(id, status, found, shut), [pw, ph] = C.picture.rect.slice(2), cr = { kind: "librarycell", id: pic, species: id, status, found, shut, size: [pw, ph], ground: C.picture.ground[status], ...(C.generator ? { gen: { ...C.generator } } : {}) };
     if (made(pic)) req(cr); else later.push(cr);   // a cell picture not yet made: the cell draws its quiet ground until it is (the Library 2 gate's F5)
     const mark = slot(C.mark.slice.replace("{SNN}", id), C.mark.rect.slice(2));
     const n = status === "found" ? newLooksOf(st, id, settings).size : 0; fresh += n;

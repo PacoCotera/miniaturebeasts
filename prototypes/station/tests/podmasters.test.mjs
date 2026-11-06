@@ -31,7 +31,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), specsDir = path.resol
 const P = J("home.json").regions.rackPod, chips = J("cross.json").colours.pigmentChips, patterns = J("pods.json").podLayers.patterns, L = P.layers, [W, H] = P.size;
 const masterDir = path.resolve(here, "../../ui/assets/masters/pods"), loaded = [];
 const place = (id, status = "master") => { const p = decodePNG(readFileSync(path.join(masterDir, id + ".png"))); placeMaster({ id, w: p.width, h: p.height, file: "pods/" + id + ".png", hash: "ab", status }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); loaded.push(id); return p; };
-const frames = readdirSync(path.resolve(here, "../../workbench/frames")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames", f), "utf8")));
+const frames = readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames/language", f), "utf8")));
 test("the rack pod: 24×32, each pixel the fill of the last layer on, transparent off the body, on the palette, for S01 to S16 and the unknown pod", () => {
   const masks = {}; for (const l of ["body", "light", "shade", "accent", "outline"]) masks[l] = place(`home-rack-pod-${l}-24x32`).data;
   for (const n of ["dots", "ribs", "segments", "plates", "bands", "stripes"]) masks["pattern-" + n] = place(`home-rack-pod-pattern-${n}-24x32`).data;
@@ -55,7 +55,8 @@ test("the rack pod: 24×32, each pixel the fill of the last layer on, transparen
       if (px[o + 3]) assert.ok(palette.has([px[o], px[o + 1], px[o + 2]].join()), `${name} pixel ${i} is on the palette`);
     }
     if (!frame) { assert.equal(patName, null, "the unknown pod has no pattern"); assert.equal(crownOn.length, 0, "the unknown pod has no crown"); }
-    else assert.ok(crownOn.length > 0 && crownOn.some((i) => !on1(masks.body, i)), name + ": the crown is drawn, and stands above the body");
+    else if (crown("")) assert.ok(crownOn.length > 0 && crownOn.some((i) => !on1(masks.body, i)), name + ": the crown is drawn, and stands above the body");   // S20 Tuliko is clan C21 (release 21a): no pod crown is placed for it yet (the art desk owes it), so its pod is drawn without one
+    else assert.equal(clan, "C21", name + ": only the glider Tuliko lacks a placed crown"), assert.equal(crownOn.length, 0);
     if (glowChip) assert.ok(crownOn.some((i) => px.slice(i * 4, i * 4 + 3).join() === fill["crown-glow"].join()), name + ": the lit part is " + glowChip);
     const outlines = new Set(); for (let i = 0; i < W * H; i++) if (on1(masks.outline, i) && !crownOn.includes(i)) outlines.add(px.slice(i * 4, i * 4 + 3).join()); assert.ok(outlines.size <= 1 || patName, name + ": the outline is one colour (a pattern may be drawn under it only)");
   }

@@ -102,21 +102,12 @@
   "tickBudget": 148000,
   "rest": {
    "windowS": 1800,
-   "nocturnal": [
-    "S03",
-    "S04",
-    "S06",
-    "S16"
-   ],
+   "nocturnal": [],
    "early": {
     "stages": [
      "elder"
     ],
-    "species": [
-     "S09",
-     "S11",
-     "S12"
-    ]
+    "species": []
    },
    "settle": {
     "diurnal": "20:00",

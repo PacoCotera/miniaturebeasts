@@ -246,7 +246,6 @@
    "land": "mixed",
    "frameVersion": 8,
    "file": "species-S17.json",
-   "draft": true,
    "open": 19,
    "traits": 17,
    "carried": 92
@@ -261,7 +260,6 @@
    "land": "downs",
    "frameVersion": 8,
    "file": "species-S18.json",
-   "draft": true,
    "open": 21,
    "traits": 17,
    "carried": 83
@@ -276,10 +274,23 @@
    "land": "meres",
    "frameVersion": 8,
    "file": "species-S19.json",
-   "draft": true,
    "open": 21,
    "traits": 19,
    "carried": 97
+  },
+  {
+   "id": "S20",
+   "name": "Tuliko",
+   "clan": "C21",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "family": "glider",
+   "land": "tallwood",
+   "frameVersion": 8,
+   "file": "species-S20.json",
+   "open": 22,
+   "traits": 20,
+   "carried": 91
   }
  ]
 }

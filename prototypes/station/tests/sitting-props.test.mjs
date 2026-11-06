@@ -13,7 +13,7 @@ import { setFrames, frameOf } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as T from "../src/sitting.mjs";
 import { poseFor, layeredStand, standFigure } from "../src/layered-stand.mjs";
-import { loadStandLayersFs, loadStandLooksFs, unloadStands } from "../tools/stand-layers-fs.mjs";
+import { loadStandSizesFs, unloadStands } from "../tools/stand-layers-fs.mjs";
 import { sittingBuild as sittingBuildUnchecked, portraitOffered } from "../src/views/sitting-props.mjs";
 const sittingBuild = lineCased(sittingBuildUnchecked, "sitting");   // every body it builds goes through assertLineCase (report mode)
 import { lightAt } from "../src/views/home-props.mjs";
@@ -21,7 +21,7 @@ import { injectPortraitSource, dropPortraitSources, portraitOpening, portraitSou
 import { registerPictures } from "../src/pictures.mjs";
 import { asset as assetOf, assetEntry, dropAsset, manifest } from "../../ui/assets.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("sitting.json"), habitat = J("habitat.json"), frameSpec = J("frame.json"), schema = J("sitting.props.json"), Sg = spec.strings;
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
@@ -61,7 +61,7 @@ const portray = (w, pose, place, digest = DIGEST) => { w.mb.portrait = { state: 
 const mibiReqs = (b) => b.requests.filter((r) => r.kind === "mibi");
 const wipe = () => { for (const e of manifest()) if (/^(mibi:|portrait:|stamp:)/.test(e.id)) dropAsset(e.id); };
 
-before(() => { loadStandLooksFs(); loadStandLayersFs(); });
+before(() => { loadStandSizesFs(); });
 after(() => { wipe(); dropPortraitSources(); unloadStands(); });
 
 // every state of one mibi: the steps walked with its first habit and its first place
@@ -131,42 +131,11 @@ test("the regions by state: the glass, the gilt, the heading, the cards, the cho
   assert.deepEqual(b.begin.line, { ok: null, subject: "", back: null, need: null });
 });
 
-test("the resident: the focused card's habit on the pose step in the hour's light, the chosen pose ungraded after; its figure is the picture's own", () => {
-  const w = dot({ habits: ["sleep-curled", "shake-dry"] }), light = lightAt(23, frameSpec.light);   // 23:30
-  assert.notEqual(light, "day");
-  const pose = build(w, { step: "pose", focus: "card.1" }, light).props.regions.resident;   // card.1: sleep-curled (the frame's order: shake-dry, calm, sleep-curled)
-  assert.equal(pose.pose, "sleep-curled"); assert.ok(pose.picture.endsWith(":" + light), "the pose step: the hour's light, as Habitat");
-  for (const s of ["place", "confirm", "begin"]) {
-    const r = build(w, { step: s, pose: "sleep-curled", place: "wood" }, light).props.regions.resident;
-    assert.ok(!/:(dawn|dusk|night)$/.test(r.picture), `${s} at 23:30: the resident's id has no light suffix (ungraded)`); assert.equal(r.pose, "sleep-curled");
-    assert.equal(r.picture, pose.picture.slice(0, -(light.length + 1)), "the same composition, ungraded");
-  }
-  assert.deepEqual(pose.figure, standFigure(layeredStand("S01", "adult", [304, 312], "habitat", "curl"), mibiReqs(build(w, { step: "pose", focus: "card.1" }, light)).find((r) => r.size[0] === 304).looks), "the curl's own figure");
-  assert.deepEqual([pose.figure[2], pose.figure[3]], [129, 95], "the adult curl at the Habitat factor (the re-signed key, its painted contact shadow out)");
-  const juv = build(dot({ juvenile: true }), { step: "place", pose: "sleep-curled" }).props.regions.resident; assert.equal(juv.stage, "juvenile"); assert.deepEqual([juv.figure[2], juv.figure[3]], [103, 79], "the juvenile curl");
-  assert.equal(build(dot({ species: "S02" }), { step: "pose" }).props.regions.resident.figure, null, "S02 has no layered stand: no figure");
-  const t = build(w, { step: "pose", focus: "card.0" }).props.regions.resident; assert.equal(t.pose, "shake-dry");
-  assert.deepEqual(t.figure, standFigure(layeredStand("S01", "adult", [304, 312], "habitat", "shake"), mibiReqs(build(w, { step: "pose", focus: "card.0" })).find((r) => r.size[0] === 304).looks), "shake-dry draws its signed key: the shake's own figure");
-});
+// retired (release 21a): the resident: the focused card's habit on the pose step... needs the layered stands of S01 (poses, curl, shake, calm), which were retired with the earlier paintings
 
-test("every mibi picture is mibiReq with poseFor's pose: a card's three requests (card 96, thumb 48, window 304 × 312) share one pose and one set of looks", () => {
-  for (const [species, habit] of [["S01", "sleep-curled"], ["S01", "shake-dry"], ["S02", "sniff"]]) {
-    const w = dot({ species, habits: [habit] }), b = build(w, { step: "confirm", pose: habit, place: "wood" }), rs = mibiReqs(b), p = poseFor(species, "adult", habit);
-    assert.deepEqual(rs.map((r) => r.size.join("x")).sort(), ["304x312", "48x48", "96x96"], "the chosen card, the step's thumb and the window"); assert.equal(new Set(rs.map((r) => r.id)).size, 3);
-    for (const r of rs) { assert.equal(r.pose, p.pose === "anchor" ? undefined : p.pose); assert.deepEqual(r.looks, rs[0].looks); assert.equal(r.owed, p.owed ?? undefined); assert.equal(r.light, undefined, "day: ungraded"); }
-    assert.deepEqual(rs.map((r) => r.view).sort(), species === "S02" ? [undefined, undefined, undefined] : ["default", "default", "habitat"]);
-  }
-});
+// retired (release 21a): every mibi picture is mibiReq with poseFor's pose... needs the layered stands of S01 (poses, curl, shake, calm), which were retired with the earlier paintings
 
-test("owed habit keys: Dot with sleep-curled alone owes nothing; with shake-dry, whose key is cut, nothing is owed and its three requests carry the shake; an S02's every pose is owed", () => {
-  const curl = dot(); for (const b of Object.values(states(curl, "sleep-curled", "wood"))) for (const r of b.requests) assert.equal(r.owed, undefined, r.id);
-  const both = dot({ habits: ["sleep-curled", "shake-dry"] }), pose = build(both, { step: "pose" }), cards = mibiReqs(pose).filter((r) => r.size[0] === 96);
-  assert.deepEqual(cards.map((r) => [r.pose, r.owed ?? null]), [["shake", null], ["curl", null]], "neither card is owed");
-  const sd = build(both, { step: "confirm", pose: "shake-dry", place: "wood" }); assert.deepEqual(mibiReqs(sd).map((r) => [r.pose, r.owed]), [["shake", undefined], ["shake", undefined], ["shake", undefined]], "card, thumb and window");
-  const s02 = dot({ species: "S02", habits: ["sleep-curled", "sniff", "puff"] });
-  for (const b of [build(s02, { step: "pose" }), build(s02, { step: "confirm", pose: "puff", place: "wood" })]) { const rs = mibiReqs(b); assert.ok(rs.length >= 3); for (const r of rs) assert.match(r.owed, /^habit key /); }
-  assert.deepEqual(mibiReqs(build(s02, { step: "pose" })).filter((r) => r.size[0] === 96).map((r) => r.owed), ["habit key sniff", "habit key puff", "habit key sleep-curled"], "the S02 frame's order");
-});
+// retired (release 21a): owed habit keys: Dot with sleep-curled alone... needs the layered stands of S01 (poses, curl, shake, calm), which were retired with the earlier paintings
 
 test("the places in the frame's order: the pod's place first, then the order walked to; a bred mibi only the places it walked to", () => {
   const w = dot({ walked: ["cave", "rock", "wood"] }); assert.deepEqual(build(w, { step: "place", pose: "sleep-curled" }).props.regions.cards.items.map((c) => c.place), ["meadow", "cave", "rock", "wood"]);

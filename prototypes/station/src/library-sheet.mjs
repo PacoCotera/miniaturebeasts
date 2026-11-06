@@ -26,7 +26,7 @@ const TAU = Math.PI * 2;
 export const FORM = { cx: 348, cy: 286, ruler: 156, tick: 160, dot: 164, keep: 168, max: 0.94, reach: 152, nodeR: 5.5, ss: 2 };
 // The finish of the sheet's form: the approved Loika sheet's numbers (grain 4, vignette 0.22 over the 1024 x 600 screen, bloom 0.8; the met pencil study takes no bloom and no halation). It adds the form's light to the ground; the ground itself passes through (formOnGround).
 export const FINISH = { grain: 4, vignette: 0.22, bloom: 0.8, screen: [1024, 600] };
-const LEGACY = (sid) => (sid === "S01" ? { markings: ["plain"] } : {});   // specimen.mjs model's legacy looks: shown once found, never a slot
+const LEGACY = (sid) => ({});   // specimen.mjs model's legacy looks: shown once found, never a slot. None now: no frame of version 8 keeps a look only for inheritance (the Loika's plain is a look of its Markings)
 
 // A frame with its sealed flags set to the chapters still shut (the found looks never hold a shut chapter's).
 const withShut = (frame, shut = []) => ({ ...frame, chapters: frame.chapters.map((ch) => ({ ...ch, sealed: shut.includes(ch.id) })) });

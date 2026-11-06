@@ -18,7 +18,7 @@ import { createMeasure } from "../../ui/specs/measure.mjs";
 import { listPitch } from "../../ui/specs/derive.mjs";
 import { validate } from "./habitat-props.test.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 // The Grow this founder? panel (T-195 r2 sections 2 and 3: Grow it, Grow and watch, Grow keep reading, the arrival and fork jump modes) is retired with its fixture (T-20261016-222): Create's Incubate opens the Incubate | Keep shaping panel (build spec 6a).
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), panelSpec = J("panel.json"), frameSpec = J("frame.json"), podsSpec = J("pods.json"), createSpec = J("create.json"), schema = J("panel.props.json"), incSchema = J("panel.incubate.props.json"), hnSchema = J("panel.hatchnow.props.json"), incubatorSpec = J("incubator.json");

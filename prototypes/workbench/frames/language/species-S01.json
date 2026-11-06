@@ -146,9 +146,7 @@
      ],
      "looks": [
       "low",
-      "between low and between",
-      "between low and high",
-      "between between and high",
+      "between",
       "high"
      ],
      "nature": "look",
@@ -163,9 +161,7 @@
      ],
      "looks": [
       "dark",
-      "between dark and between",
-      "between dark and light",
-      "between between and light",
+      "between",
       "light"
      ],
      "nature": "look",
@@ -180,9 +176,12 @@
       "appearance.marking-layout"
      ],
      "looks": [
-      "on",
-      "off/on",
-      "off"
+      "plain",
+      "back spots",
+      "saddle",
+      "gradient",
+      "bands",
+      "patches"
      ],
      "nature": "look",
      "shapeable": true,
@@ -232,9 +231,7 @@
      ],
      "looks": [
       "close",
-      "between close and between",
-      "between close and wide",
-      "between between and wide",
+      "between",
       "wide"
      ],
      "nature": "look",
@@ -286,7 +283,6 @@
      ],
      "looks": [
       "low",
-      "between low and high",
       "high"
      ],
      "nature": "look",
@@ -318,9 +314,7 @@
      ],
      "looks": [
       "small",
-      "between small and between",
-      "between small and big",
-      "between between and big",
+      "between",
       "big"
      ],
      "nature": "look",
@@ -335,9 +329,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and round",
-      "between between and round",
+      "between",
       "round"
      ],
      "nature": "look",
@@ -359,9 +351,7 @@
      ],
      "looks": [
       "short",
-      "between short and between",
-      "between short and long",
-      "between between and long",
+      "between",
       "long"
      ],
      "nature": "look",
@@ -376,9 +366,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and sturdy",
-      "between between and sturdy",
+      "between",
       "sturdy"
      ],
      "nature": "look",
@@ -393,9 +381,7 @@
      ],
      "looks": [
       "short",
-      "between short and between",
-      "between short and long",
-      "between between and long",
+      "between",
       "long"
      ],
      "nature": "look",
@@ -410,9 +396,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and stout",
-      "between between and stout",
+      "between",
       "stout"
      ],
      "nature": "look",

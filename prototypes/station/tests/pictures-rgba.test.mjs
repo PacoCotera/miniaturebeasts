@@ -41,9 +41,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setMoving, compose, cellsOf, atlasIsMaster, playable, registerMoving, movingIds } from "../src/moving.mjs";
 import { placeMaster, assetEntry } from "../../ui/assets.mjs";
-const MV = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station/moving"), sets = {};
-for (const id of JSON.parse(readFileSync(path.join(MV, "index.json"), "utf8")).sets) sets[id] = JSON.parse(readFileSync(path.join(MV, id + ".json"), "utf8"));
-setMoving(sets);
+import { movingFixture } from "./fixtures/moving.mjs";
+setMoving(movingFixture());   // the moving sets of S01 and S05 as a fixture: the game ships none (release 21a)
 // a stand whose every pixel says where it is (x, y), so a shift or a mirror is read exactly
 const coded = (w, h) => { const d = new Uint8ClampedArray(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) d.set([x & 255, y & 255, 77, 255], (y * w + x) * 4); return { w, h, rgba: () => d }; };
 const src = { stand: (sp, st, w, h) => coded(w, h), nap: () => coded(96, 88) };
@@ -237,7 +236,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
 
 // ---- Fix 1b part 3: an adult without its signed stand is its species' juvenile stand (stands.mjs, views) ----
 {
-  const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station"), mastersDir = path.resolve(here, "../../ui/assets/masters");
+  const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station"), mastersDir = path.resolve(here, "../../ui/assets/masters");
   setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
   const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), home = J("home.json"), frameSpec = J("frame.json"), viv = J("vivarium.json"), hab = J("habitat.json");
   const index = JSON.parse(readFileSync(path.join(mastersDir, "index.json"), "utf8")).masters;
@@ -439,7 +438,7 @@ test("no golden's states file (face/tools/*-states.mjs) imports the Portrait tes
 
 test("Create founder A (interim): with the species' placed adult master the founder is that one flat picture, clear when everything is read, and the same calm treatment over it otherwise (ghost: alpha unchanged, no hue); never the rig", () => {
   const w = 304, h = 312, d = new Uint8ClampedArray(w * h * 4); for (let y = 40; y < 290; y++) for (let x = 60; x < 250; x++) { const i = (y * w + x) * 4; d[i] = 40 + (x % 90); d[i + 1] = 120 + (y % 60); d[i + 2] = 60; d[i + 3] = 255; }
-  const painted = { w, h, rgba: () => d }, fr = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/species-S01.json"), "utf8")), g = typeSpecimen(fr), all = fr.chapters.map((c) => c.id);
+  const painted = { w, h, rgba: () => d }, fr = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language/species-S01.json"), "utf8")), g = typeSpecimen(fr), all = fr.chapters.map((c) => c.id);
   const clear = founderArt(fr, g, all, w, h, painted), rig = founderArt(fr, g, all, w, h);
   assert.deepEqual([...clear.rgba()], [...d], "clear: the painted picture as it is, to the pixel"); assert.notDeepEqual([...clear.rgba()], [...rig.rgba()], "and not the rig");
   const ghost = founderArt(fr, g, [], w, h, painted), a = (p) => [...p.rgba()].filter((_, i) => i % 4 === 3);
