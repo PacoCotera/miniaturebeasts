@@ -122,8 +122,8 @@ test("the registry is append-only: every frame it held before frame version 6 is
   const frames = FRAME_DATA.frames, before = Object.keys(FRAME_DIGESTS);
   assert.deepEqual(frames.slice(0, before.length).map((f) => `${f.species}.${f.version}`), before, "the earlier frames come first, in their order");
   frames.slice(0, before.length).forEach((f) => assert.equal(sha(JSON.stringify(f)), FRAME_DIGESTS[`${f.species}.${f.version}`], `${f.id} ${f.species}.${f.version} is unchanged`));
-  assert.deepEqual(frames.slice(before.length).map((f) => `${f.id}.${f.version}`), ["S17.6", "S18.6", "S19.6", "S01.5", "S01.6", "S20.1"], "Wickle, Drapet and Curlop, appended at frame version 6, then the Loika at frame versions 5 and 6, then the Tuliko at version 1 (appended last: a frame never moves)");
-  assert.deepEqual(frames.slice(before.length).map((f) => f.name), ["Wickle", "Drapet", "Curlop", "Loika", "Loika", "Tuliko"]);
+  assert.deepEqual(frames.slice(before.length).map((f) => `${f.id}.${f.version}`), ["S17.6", "S18.6", "S19.6", "S01.5", "S01.6", "S20.1", "S10.5", "S12.5"], "Wickle, Drapet and Curlop, appended at frame version 6, then the Loika at frame versions 5 and 6, then the Tuliko at version 1, then the Igara and the Peplos at version 5 from the merge of the game line (a frame never moves)");
+  assert.deepEqual(frames.slice(before.length).map((f) => f.name), ["Wickle", "Drapet", "Curlop", "Loika", "Loika", "Tuliko", "Igara", "Peplos"]);
 });
 
 test("every S01-S16 stamp encodes to the same bytes as before and decodes to the same genome", () => {

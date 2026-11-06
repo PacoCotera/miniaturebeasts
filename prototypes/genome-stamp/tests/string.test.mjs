@@ -102,7 +102,7 @@ test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for
 
 // --- every frame in the registry --------------------------------------------------------------------------------------------------------------------
 test("a round trip for every frame in the registry (the real ones at every version, the legacy frames and the two synthetic test frames): string, decode, the same copies, and the same string again", () => {
-  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 1 + 1 + 3 + 1 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis and the Loika at 5, the Loika at 6, S17 to S19 at 6, the Tuliko at 1, the three legacy frames and the two synthetic frames");
+  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 1 + 1 + 3 + 1 + 2 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis and the Loika at 5, the Loika at 6, S17 to S19 at 6, the Tuliko at 1, the Igara and the Peplos at 5, the three legacy frames and the two synthetic frames");
   let n = 0;
   for (const f of FRAMES_LIST) {
     for (const seed of [1, 2, 3, 4, 5]) {

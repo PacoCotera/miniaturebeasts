@@ -18,9 +18,10 @@ const FRAME_FILE = JSON.parse(readFileSync(new URL("../../workbench/body/frames/
 
 // tests/s20-before.json: sha256 (first 16 hex) of stampCode + "|" + genomeString for individual(frame, 7) with every open chapter read, per frame (key species.version), taken before S20 joined
 
-test("S20 is the last frame of the registry; every frame before it is the same bytes as before", () => {
-  const frames = FRAME_DATA.frames;
-  assert.equal(`${frames.at(-1).species}.${frames.at(-1).version}`, "20.1"); assert.equal(frames.at(-1).id, "S20"); assert.equal(frames.at(-1).name, "Tuliko");
+test("S20 is the last frame of the registry but the Igara and the Peplos at version 5 (appended at the merge of the game line); every frame before it is the same bytes as before", () => {
+  const frames = FRAME_DATA.frames, s20 = frames.at(-3);
+  assert.deepEqual(frames.slice(-2).map((f) => `${f.species}.${f.version}`), ["10.5", "12.5"]);
+  assert.equal(`${s20.species}.${s20.version}`, "20.1"); assert.equal(s20.id, "S20"); assert.equal(s20.name, "Tuliko");
   assert.equal(frames.filter((f) => f.species === 20).length, 1);
   assert.equal(frames.length, FRAMES_LIST.filter((f) => !f.synthetic).length);
 });
@@ -28,7 +29,7 @@ test("S20 is the last frame of the registry; every frame before it is the same b
 test("every other frame stamps, codes and strings to the same bytes as before S20 joined", () => {
   const got = {};
   for (const f of FRAMES_LIST) {
-    if (f.species === 20) continue;
+    if (f.species === 20 || !((`${f.species}.${f.version}`) in BEFORE_DIGESTS)) continue;   // the Igara and the Peplos at 5 came with the merge
     const g = individual(f, 7, { read: f.chapters.filter((c) => !c.sealed).map((c) => c.name) });
     got[`${f.species}.${f.version}`] = sha(stampCode(f, g) + "|" + genomeString(f, g));
   }

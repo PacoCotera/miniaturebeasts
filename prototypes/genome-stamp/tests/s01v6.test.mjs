@@ -105,7 +105,7 @@ const V6_PODS = {
 test("S01 version 5 is the frame it was, and so is every other frame: the snapshot only gained 1.6, at the end", () => {
   const frames = FRAME_DATA.frames, keys = frames.map((f) => `${f.species}.${f.version}`), n = Object.keys(BEFORE).length;
   assert.deepEqual(keys.slice(0, n), Object.keys(BEFORE), "every earlier frame is in the same place");
-  assert.deepEqual(keys.slice(n), ["1.6", "20.1"], "and the Loika's version 6 follows the last of them, then the Tuliko");
+  assert.deepEqual(keys.slice(n), ["1.6", "20.1", "10.5", "12.5"], "and the Loika's version 6 follows the last of them, then the Tuliko, then the Igara and the Peplos at 5");
   for (const f of frames.slice(0, n)) assert.equal(sha(JSON.stringify(f)), BEFORE[`${f.species}.${f.version}`], `${f.id} ${f.species}.${f.version} is unchanged`);
   assert.ok(!frameFor(1, 5).heritable.some((l) => l.id === LEN), "version 5 carries no ear length open");
 });
