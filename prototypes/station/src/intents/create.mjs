@@ -4,6 +4,7 @@ import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { reviewTraits, createPod, founderPicture } from "../views/create-props.mjs";
 import { capLine } from "../views/words.mjs";
+import { openInventory, openRoom } from "./pods.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // The screen's own state names the pod (h.ui.create.podId); its frame is the species'. Nothing else is on the wire: { screen, target, verb }.
@@ -25,7 +26,7 @@ export function intent(h, target, verb) {
     if (block && block.key === "short") { h.say(spec.strings.notices.shortFrom[block.from].replace("{icons}", block.short)); return; }   // refused as before: the plate, and the panel does not open (build spec 6a.1)
     openIncubatePanel(h);   // the 180 ms dither (16 levels) from Create to the Incubate | Keep shaping panel; nothing is spent until its ✓ Incubate
   }
-  else if (verb === "back") { h.ui.create = null; h.ui.pods.cur = p.id; h.ui.pods.view = "overview"; h.ui.pods.focus.set("pod"); h.goto("pods"); }
+  else if (verb === "back") { h.ui.create = null; if (h.ui.createFrom === "room") openRoom(h, h.ui.pods.roomFrom ?? "home"); else openInventory(h, { from: "home", pod: p.id }); }   // Create's ← comes back to where Grow it was pressed: the reading room, or the inventory on this pod's card
 }
 // Create opens on a pod: nothing chosen, the first read trait.
 export function openCreate(h, p) { h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; h.goto("create"); }
@@ -52,9 +53,7 @@ export function incubateNow(h) {
 
 // Pods' collection, the ring on the next pod: the one now at the grown pod's place in the rack (the last when it was the last), else nothing.
 export function toPods(h, place) {
-  const t = h.st.tray, i = Math.min(place, t.length - 1), p = h.ui.pods; p.view = "collection"; p.focusView = null; p.cmp = null;
-  if (i >= 0) { p.cur = t[i].id; p.focus.set("place." + i); } else { p.cur = null; p.focus.set(null); }
-  h.goto("pods");
+  openInventory(h, { from: "home" });   // the inventory, the ring where it was left (the grown pod has left it)
 }
 // The Incubator, the incubate moment (incubator.json events.incubate: dusk, sealed, then the dither to growing); ← there reads Home. Also Cross's Cross them.
 export function toIncubator(h) {

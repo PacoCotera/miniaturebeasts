@@ -25,7 +25,7 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000, R = homeSpec.regions;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12, realmSleep: true }, T0 = 1_000_000, R = homeSpec.regions;
 
 // ---- scenes: the state through the rules, the props through the view ----
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: T0 }; return st; };
@@ -91,7 +91,7 @@ const SCENES = {
 for (const [name, o] of Object.entries(SCENES)) {
   test(`Home, ${name}: draws without an error or a refusal inside the budgets, with no region leaving home.json's rectangle`, { skip }, async () => {
     const b = scene(o), f = await start(b); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
-    const lg = logOf(f); assert.deepEqual(departures(lg, homeSpec, frameSpec, b.props.focus.cur), []);
+    const lg = logOf(f); assert.deepEqual(departures(lg, homeSpec, frameSpec, b.props.focus.cur, b.props), []);
     const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects (the table holds 1,024; at most 400 on a screen)`);
     assert.ok(JSON.stringify(b.props).length < 32 * 1024, "props under 32 KiB");
   });
@@ -108,13 +108,21 @@ test("the departure check bites: a station's lamp, the line and the panel of a b
 
 // ---- the keys ----
 test("the pad is home.json's graph on the boxes the words drew: every vector of the spec is played on the face, and the focus is said on the frame of the key", { skip }, async () => {
-  assert.equal(homeSpec.focus.vectors.length, 28, "seven places, four keys each");
+  assert.equal(homeSpec.focus.vectors.length, 32, "eight places, four keys each");
   for (const v of homeSpec.focus.vectors) {
     const f = await start(scene({ adults: 2, focus: v.from === "room" ? null : v.from }), { motion: false }), before = f.hash(), out = key(f, v.key);   /* reduced motion: the Library's glints and breathing are time, and a key that moves nothing must change no pixel */
     if (v.to === v.from) { assert.deepEqual(out, [], `${v.from} ${v.key} stays`); assert.equal(f.hash(), before, `${v.from} ${v.key}: nothing redrawn`); }
     else { assert.equal(out.length, 1, `${v.from} ${v.key}`); assert.deepEqual([out[0].t, out[0].screen, out[0].target], ["focus", "home", v.to], `${v.from} ${v.key}`); assert.notEqual(f.hash(), before, `${v.from} ${v.key}: the ring moves in the same frame`); }
   }
 });
+test("with the developer setting realmSleep off there is no Settings knob: no tab drawn, Companion ▲ is the Vivarium, and Home is station-gate's pixel for pixel round the tab", { skip }, async () => {
+  const off = (o) => { const b = scene(o); return b; };
+  const mk = scene({ adults: 2, focus: "companion" }), props = JSON.parse(JSON.stringify(mk)); props.props.focus.targets = props.props.focus.targets.filter((t) => t.id !== "settings"); Object.assign(props, { st: mk.st, sv: mk.sv });
+  const f = await start(props, { motion: false }), lg = logOf(f);
+  assert.equal((lg.regions ?? []).filter((r) => r.id === "settings").length, 0, "no knob drawn");
+  const [m] = key(f, "up"); assert.deepEqual([m.t, m.target], ["focus", "vivarium"], "Companion ▲ lands on the Vivarium"); void off;
+});
+
 test("✓ on the focus says an intent on its target (on the room, on 'room'); the room keys say theirs; ← says nothing: Home is the top", { skip }, async () => {
   const f = await start(scene({ adults: 2 }));
   let [m] = key(f, "confirm"); assert.deepEqual([m.t, m.screen, m.target, m.verb], ["intent", "home", "room", "confirm"]);
@@ -255,7 +263,7 @@ test("the Vivarium's readout: each part only when non-zero, 'all on a trip' when
 test("the needs hold in the spec's order and clear when acted on: crates, the bud, a portrait, a new mibi to meet, new or glinting pods, pods waiting for a well, a pod that could be incubated", { skip }, async () => {
   const b = scene({ adults: 3, crates: 2, bud: 1e8 / 60000, portrait: true, unseen: true, waiting: true, ui: { meet: 1 } });
   const keys = (x) => homeNeeds(x.st, x.sv, settings, x.ui ?? { meet: 1 }, Date.now() + 1000).map((n) => n.key); assert.deepEqual(keys(b), ["crates", "budReady", "portrait", "meet", "newPods", "waitingPods"]);
-  assert.deepEqual(homeSpec.strings.line.order, ["crates", "full", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
+  assert.deepEqual(homeSpec.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
   assert.deepEqual(b.props.regions.line, { needs: ["Open the Bay", "The bud is ready"] }, "at most two");
   b.sv.bay = []; assert.deepEqual(keys(b).slice(0, 2), ["budReady", "portrait"], "the crates are gone once opened");
 });
@@ -533,12 +541,14 @@ test("the budgets of section 7 with the Library's module: at most 400 objects an
 });
 
 // ---- R3 (the rooms design): Home draws the pieces of the room that fall in its window (the painting less (40, 116)), clipped by the glass ----
-test("R3: Home draws the room's pieces that fall in its window, at the painting's coordinates less (40, 116): Roots' sorrel tuft, not the stone or the mister that lie right of it", { skip }, async () => {
+test("R3: Home draws the room's pieces that fall in its window, at the painting's coordinates less (40, 116): Roots' sorrel tuft, and since the collection v2 crops the stone, the mister and its mist moved into it", { skip }, async () => {
   const fnv = (q) => { let h = 2166136261; for (const c of q) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
   const b = scene({ adults: 3 }), f = await start(b), sizeOfId = (id) => id.match(/(\d+)x(\d+)$/).slice(1).map(Number);
   assert.equal(b.props.regions.room.id, "roots"); assert.equal(b.props.regions.glass.picture, b.props.regions.room.base);
   for (const id of Object.values(b.props.regions.room.pieces)) f.handleOf(id, withPolicy((i) => standIn(i, sizeOfId(id)))); resend(f, b);
   const lg = logOf(f), pieces = lg.nodes.filter((n) => n[3] === "room");
-  assert.deepEqual(pieces.map((n) => n[0]), [fnv("p.roots-sorrel-1")], "only the sorrel tuft falls in the window"); assert.deepEqual(pieces[0].slice(4, 8), [78, 380, 96, 46], "(118, 496) less (40, 116)");
+  const at = Object.fromEntries(pieces.map((n) => [n[0], n.slice(4, 8)]));
+  assert.deepEqual(pieces.map((n) => n[0]).sort(), ["p.roots-mister", "p.roots-mist-2", "p.roots-sorrel-1", "p.roots-stone-2"].map(fnv).sort(), "the sorrel tuft, the stone, the mister and its mist fall in the window (the collection v2 design §4: the moved pieces move on Home too)");
+  assert.deepEqual(at[fnv("p.roots-sorrel-1")], [78, 380, 96, 46], "(118, 496) less (40, 116)"); assert.deepEqual(at[fnv("p.roots-stone-2")], [552, 383, 68, 41], "(592, 499) less (40, 116), whole in Home's window (x 628), 8 px clear"); assert.deepEqual(at[fnv("p.roots-mister")], [570, 207, 50, 34], "(610, 323) less (40, 116), whole, 8 px clear");
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });

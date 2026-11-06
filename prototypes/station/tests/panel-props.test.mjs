@@ -68,7 +68,7 @@ test("the Incubate panel's geometry (panel.json incubate): two bezels 490 x 506 
   const I = panelSpec.incubate, [l, r] = [I.bezels.incubate, I.bezels.keep];
   assert.deepEqual([l, r], [[16, 46, 490, 506], [518, 46, 490, 506]]); assert.equal(r[0] - (l[0] + l[2]), 12);
   assert.deepEqual([I.windows.left, I.windows.right], [[24, 76, 474, 468], [526, 76, 474, 468]]); for (const [b, w] of [[l, I.windows.left], [r, I.windows.right]]) assert.deepEqual([w[0] - b[0], w[1] - b[1], b[2] - w[2], b[1] + b[3] - (w[1] + w[3])], [8, 30, 16, 8], "8 in, 30 under the top, 8 at the foot");
-  assert.deepEqual([I.header.h, I.header.baseline, I.header.x, I.price.right, I.price.pod.size, I.price.pod.top, I.price.gap, I.bezels.radius, I.windows.radius], [30, 21, 12, 12, [16, 20], 5, 12, 10, 6]);
+  assert.deepEqual([I.header.h, I.header.baseline, I.header.x, I.price.right, I.price.pod.size, I.price.pod.top, I.price.gap, I.bezels.radius, I.windows.radius], [30, 21, 12, 8, [16, 20], 5, 12, 10, 6]);
   const { h } = open(); const v = incView(h), Sg = createSpec.strings.panel;
   assert.deepEqual([v.overlay.regions.verbs.incubate, v.overlay.regions.verbs.keep, Sg.back], ["Incubate", "Keep shaping", "Back"]);
   const need = measure("Incubate", 16) + 12 + measure(v.overlay.regions.price.replace(/[⚡❀◆]/g, "xx"), 16) + 16 + 12 + 12; assert.ok(need <= 490, `the left header needs about ${need} of 490`);
@@ -112,16 +112,16 @@ function wildHost(kind) {
 }
 const rc0 = (v) => v.overlay.regions.cards[0];
 const wview = (h) => panelBuild({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: "arrival" }, panelSpec, frameSpec, podsSpec);
-for (const [kind, gain] of [["mibi", S.PRICE.wildMibi], ["pod", S.PRICE.wild]]) {
-  test(`the Return panel (${kind}): the gain from the rules, the fact in the text colour, the question as the title, the ring opens on Return, no destination mark, the scene stands in the glow's place`, () => {
+for (const kind of ["mibi", "pod"]) {
+  test(`the Return panel (${kind}): no gain (letting go pays nothing), the fact in the text colour, the question as the title, the ring opens on Return, no destination mark, the scene stands in the glow's place`, () => {
     const h = wildHost(kind), v = wview(h), [ret, keep] = v.cards, names = h.st.mibis.map((m) => m.name);
     assert.deepEqual(validate(v.overlay, schema, schema), [], "the overlay validates against panel.props.json");
     assert.equal(v.overlay.regions.title, kind === "mibi" ? `Return ${names[0]}?` : "Return this pod?");
     assert.deepEqual([ret.id, keep.id], ["return", "keep"]);
-    assert.equal(ret.cost, S.gainText(gain)); assert.equal(ret.gain, true); assert.equal(ret.loss, false); assert.equal(ret.line, kind === "mibi" ? `${names[0]}'s pod waits in the wild` : `It goes back to the ${S.PLACE_WORD[h.st.tray[0].g] || "wild"}`); assert.equal(ret.name, kind === "mibi" ? `Return ${names[0]}` : "Return it"); assert.equal(ret.mark, "", "the subject stays in the room: no destination mark");
+    assert.equal(ret.cost, "", "letting go pays nothing"); assert.equal(ret.gain, false); assert.equal(ret.loss, false); assert.equal(ret.line, kind === "mibi" ? `${names[0]}'s pod waits in the wild` : `It goes back to the ${S.PLACE_WORD[h.st.tray[0].g] || "wild"}`); assert.equal(ret.name, kind === "mibi" ? `Return ${names[0]}` : "Return it"); assert.equal(ret.mark, "", "the subject stays in the room: no destination mark");
     assert.equal(keep.cost, ""); assert.equal(keep.mark, ""); assert.equal(keep.line, kind === "mibi" ? `${names[0]} stays at home` : "It stays in its nest"); assert.equal(keep.name, kind === "mibi" ? `Keep ${names[0]}` : "Keep it");
     assert.deepEqual(v.overlay.regions.cards.map((c) => c.line), [ret.line, keep.line], "each card line in sentence case, as drawn");
-    if (kind === "mibi") { h.st.mibis[0].born = h.st.turn; const y = wview(h).cards[0]; assert.equal(y.line, `${names[0]}'s pod comes once grown`, "C13c: a young mibi's Return says when its pod comes"); assert.equal(y.name, `Return ${names[0]}`, "the same card otherwise"); assert.equal(y.cost, S.gainText(gain)); h.st.mibis[0].born = 0; }
+    if (kind === "mibi") { h.st.mibis[0].born = h.st.turn; const y = wview(h).cards[0]; assert.equal(y.line, `${names[0]}'s pod comes once grown`, "C13c: a young mibi's Return says when its pod comes"); assert.equal(y.name, `Return ${names[0]}`, "the same card otherwise"); assert.equal(y.cost, ""); h.st.mibis[0].born = 0; }
     assert.deepEqual([v.overlay.regions.art.housing, rc0(v).art.well, rc0(v).art.focused], ["", "", ""], "the housing and the card wells are the drawn slate pane: no master asked for");
     assert.equal(v.overlay.focus.cur, "card.return", "the ring opens on Return, on the left");
     assert.equal(v.line.ok, ret.name);
@@ -129,9 +129,9 @@ for (const [kind, gain] of [["mibi", S.PRICE.wildMibi], ["pod", S.PRICE.wild]]) 
     for (const c of [ret, keep]) assert.ok(measure(c.name, 20) <= P.limits[2].text, c.name);
     assert.ok(!JSON.stringify(panelSpec.strings[kind === "mibi" ? "wildMibi" : "wildPod"]).match(/[❀\d]/), "no figure in the strings: the gain is the rules'");
   });
-  test(`the Return panel (${kind}): the focused Return card puts the gain on the bottom line, and no notice stands under the panel`, () => {
+  test(`the Return panel (${kind}): the focused Return card puts no price on the bottom line, and no notice stands under the panel`, () => {
     const h = wildHost(kind); h.ui.panel.focus = "card.return"; const v = wview(h);
-    assert.equal(v.line.ok, kind === "mibi" ? `Return ${h.st.mibis[0].name}` : "Return it"); assert.equal(v.line.need, "", "not null: the host fills no need() under an open panel"); assert.equal(v.line.price, S.gainText(gain)); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel"); assert.ok(wview(h).cards[0].line, "the fact is on the card");
+    assert.equal(v.line.ok, kind === "mibi" ? `Return ${h.st.mibis[0].name}` : "Return it"); assert.equal(v.line.need, "", "not null: the host fills no need() under an open panel"); assert.ok(!v.line.price, "no gain on the line"); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel"); assert.ok(wview(h).cards[0].line, "the fact is on the card");
   });
 }
 

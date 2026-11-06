@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Writes prototypes/face/tests/vectors/metrics.json: the width of every Station string at 16, 20 and 28 px, and in Medium 16 (font "16m"), from the metrics table (ui/specs/measure.mjs over dist/metrics.json, made by face_metrics).
+// Writes prototypes/face/tests/vectors/metrics.json: the width of every Station string at 16, 20 and 28 px, and in Medium 16 (font "16m"), and of the mibi collection's strings at 14 and 15 px, from the metrics table (ui/specs/measure.mjs over dist/metrics.json, made by face_metrics).
 // face_test measures the same strings with lv_text_get_width on each build (native x86-64, aarch64 under qemu), so the fonts give the same widths everywhere.
 //   node prototypes/face/tools/make-metrics-vectors.mjs          (writes; needs dist/metrics.json, from build.sh)     --check   (fails when the file is not current)
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
@@ -18,6 +18,10 @@ for (const n of [0, 1, 7, 9, 10, 12, 99, 100, 120, 999, 1000, 99999]) strings.ad
 for (const s of ["A", "AV", "To", "Tj", "WA", "Ty", "ff", "fi", "r.", "Yo", "LT", "P,", "1.5", "Ünï", "naïve", "Legs & Tail", "Home ← Pods", "T12", " ", "a b  c"]) strings.add(s);
 const pieces = new Set(); for (const s of strings) for (const p of s.split(/[⚡◆❀✕]/)) if (p && p.length <= 48 && !/[\n\r\t]/.test(p)) pieces.add(p);
 const cases = []; for (const px of [16, 20, 28]) for (const t of [...pieces].sort()) cases.push({ px, text: t, width: measure(t, px) });
+{ const viv = new Set(), add = (v) => { if (typeof v === "string") { viv.add(v); for (const part of v.split(/[{}]/)) viv.add(part); } else if (Array.isArray(v)) v.forEach(add); else if (v && typeof v === "object") Object.values(v).forEach(add); };   // 14 and 15 px: the mibi collection's strings (vivarium.json), the only spec that sets them
+  add(JSON.parse(readFileSync(path.join(specs, "vivarium.json"), "utf8")).strings); for (const s of ["A", "AV", "Ünï", "Legs & Tail", "1", "12", "full"]) viv.add(s);
+  const vp = new Set(); for (const s of viv) for (const p of s.split(/[⚡◆❀✕]/)) if (p && p.length <= 48 && !/[\n\r\t]/.test(p)) vp.add(p);
+  for (const px of [14, 15]) for (const t of [...vp].sort()) cases.push({ px, text: t, width: measure(t, px) }); }
 for (const t of [...pieces].sort()) cases.push({ font: "16m", text: t, width: measure(t, "16m") });   // Medium 16, by its font key
 const text = JSON.stringify({ note: "Made by tools/make-metrics-vectors.mjs: each case is a string, a size and its width from the metrics table; the face must measure the same.", cases }).replace(/\},\{"(px|font)"/g, "},\n{\"$1\"") + "\n";
 if (process.argv.includes("--check")) { if (readFileSync(out, "utf8") !== text) { console.error("tests/vectors/metrics.json is not current: run tools/make-metrics-vectors.mjs"); process.exit(1); } console.log(`metrics vectors current: ${cases.length} cases`); }

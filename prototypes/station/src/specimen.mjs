@@ -18,7 +18,7 @@ const PAL = { bone: '#f1ebdf', fog: '#c6c4d8', mist: '#8d8aa6', frost: '#eaeff6'
   gold: '#d89b14', yellow: '#ffd441', pine: '#173b2d', soil: '#4b3023', ink: '#1a1725' };
 // ground: a deep moss night, mixed from pine, soil and ink, a module of its own
 const BG = [24, 32, 28];
-const ACCENT = PAL.gold;                   // new here: the four-point glint (gold, lit centre yellow)
+const ACCENT = PAL.gold;                   // new here: the dew gleam
 const CH_HUE = { coat: '#bf9157', face: '#98d85c', movement: '#e6c98c', stamina: '#5bb9f3',
                  shape: '#c9b3d9', 'legs-tail': '#d9c38a', character: '#e59aa5', glow: '#e8e08a', charge: '#9fd6d0' };
 // Look colours: the pigments are the catalogue's own; other traits use their chapter's ramp.
@@ -30,6 +30,7 @@ const RAMPS = {
   crown: ['#ffd4bf', '#98d85c'],                                // blush, sprout
   'eye-rings': ['#a87bf3', '#bab6d4', '#dbc0ff'],               // lilac, rockL, lavender
   drive: ['#bf9157', '#e6c98c', '#ffa67c'],                     // clay, sand, peach
+  ears: ['#1f9d8f', '#45d8be', '#adf6e0'],                      // teal, aqua, mint
   efficiency: ['#3084d8', '#5bb9f3', '#a9e6ff'],                // river, sky, ice
 };
 
@@ -207,6 +208,7 @@ export function pictogram(ctx, trait, look, x, y, s, col, lw) {
       ctx.beginPath(); ctx.arc(x, y + 0.45 * s, 0.6 * s, Math.PI, TAU); ctx.stroke();
       if (look === 'leaf crest') { L(0, -0.15, 0, -0.7); L(0, -0.15, -0.35, -0.6); L(0, -0.15, 0.35, -0.6); } break;
     case 'eye-rings': { const k = trait.slotsIdx ?? 0; const r = [0.25, 0.42, 0.6][['thin rings', 'between', 'wide pale rings'].indexOf(look)] ?? 0.4; C(0, 0, r); if (look === 'wide pale rings') C(0, 0, r * 0.55); break; }
+    case 'ears': { const e = [0.18, 0.25, 0.32][['small ears', 'between', 'larger ears'].indexOf(look)] ?? 0.25; ctx.beginPath(); ctx.arc(x, y + 0.45 * s, 0.6 * s, Math.PI, TAU); ctx.stroke(); C(-(0.46 + 0.38 * e), 0.06 - 0.32 * e, e, 1); C(0.46 + 0.38 * e, 0.06 - 0.32 * e, e, 1); break; }
     case 'drive':
       if (look === 'steady') wave(0.18, 1.0); else if (look === 'between') wave(0.32, 2.0); else wave(0.55, 3, true); break;
     case 'efficiency': { const nb = ['thrifty', 'between', 'ordinary'].indexOf(look) + 1; for (let b = 0; b < 3; b++) { if (b < nb) L(-0.45 + b * 0.45, 0.55, -0.45 + b * 0.45, 0.55 - 0.35 - b * 0.3); else C(-0.45 + b * 0.45, 0.5, 0.06, 1); } break; }
@@ -231,10 +233,13 @@ function drawNode(ctx, g, trait, s, [x, y], opts) {
   ctx.globalCompositeOperation = 'lighter';
 }
 
-export function glint(ctx, x, y, r) {   // the palette's four-point glint: gold, lit centre yellow
+// The glint: the dew gleam, a lit dew bead (ice above, sky below, edged in sea) with one level white gleam through its upper half and two level arms.
+const DEW = { 16: ["................","................","................","................","................","......eeee......",".....eeiiee.....","rRSSiwwwwwwiSSRr",".....esiise.....",".....eessee.....","......eeee......","................","................","................","................","................"] };
+const DEW_KEY = { e: [30, 81, 150, 0.85], s: [91, 185, 243, 1], i: [169, 230, 255, 1], w: [255, 255, 255, 1], S: [91, 185, 243, 0.9], R: [48, 132, 216, 0.75], r: [48, 132, 216, 0.45] };
+export function glint(ctx, x, y, r) {   // the dew gleam, 2r wide, centred on (x, y)
   ctx.save(); ctx.globalCompositeOperation = 'source-over';
-  const star = (rr, w) => { ctx.beginPath(); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4 - Math.PI / 2, q = i % 2 ? rr * w : rr; i ? ctx.lineTo(x + q * Math.cos(a), y + q * Math.sin(a)) : ctx.moveTo(x + q * Math.cos(a), y + q * Math.sin(a)); } ctx.closePath(); ctx.fill(); };
-  ctx.fillStyle = PAL.gold; star(r, 0.3); ctx.fillStyle = PAL.yellow; star(r * 0.5, 0.35);
+  const rows = DEW[16], c = 2 * r / 16;
+  rows.forEach((row, j) => { for (let i = 0; i < 16; i++) { const k = DEW_KEY[row[i]]; if (!k) continue; ctx.fillStyle = `rgba(${k[0]},${k[1]},${k[2]},${k[3]})`; ctx.fillRect(x - r + i * c, y - r + j * c, c, c); } });
   ctx.restore();
 }
 

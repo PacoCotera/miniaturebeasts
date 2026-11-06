@@ -8,7 +8,7 @@ Stage 0 of [art-pipeline.md](../../design/proposals/art-pipeline.md) §2 is clos
 
 **How a frame becomes a specimen.** A species frame (`frames/species-S??.json`, `framework/species.mjs`) is built species first from the roster (`roster.mjs`: 16 clans with a plan, a signature and its defining parts; 16 species with a size, a tier, a seed, open traits by tier or by hand): the plan's switches say which trunk loci the body can carry, the clan adds its branch, everything else is absent; the signature and the species' measures lock their loci (a locked locus may hold a mixed pair), the open traits get pools and the type specimen's typical copies; two probes mark sleeping parts; 200 random individuals must build or the seed moves. The type specimen is the frame's default genome; any genome is resolved against its frame (`resolve.mjs`) into values the rig reads, built, validated, and rendered by the deterministic rasterizer (`raster.mjs`) at the 48 px tile, the Companion and the Station sizes, same genome same bytes, with a manifest in the cache format (`sketch/`). The page (`index.html`) edits a frame at the level a designer thinks in and re-renders at once.
 
-**The census gates** (`census.mjs`, run on the registry: 3,200 random individuals, all building). Two gates on the 48 px silhouette. The plan gate: every pair of plans' type specimens at a shape distance of at least 0.22 (1 − IoU in the same box; closest S02 and S07 at 0.35), so no plan collapses into another's family. The kind check: each species' side silhouette against the hand-drawn target of what it resembles (`frames/targets/`), the whole body's IoU as the coarse gate and, as the gate that decides, the clan's defining parts measured on the silhouette split by part against the target's tagged parts; a species passes when its parts score beats every wrong kind's target by 0.05, one pixel of one part on a 48 px head. All sixteen pass; cat, fox and raccoon each win their own.
+**The census gates** (`census.mjs`, run on the registry: 3,200 random individuals, all building). One gate on the 48 px silhouette. The plan gate: every pair of plans' type specimens at a shape distance of at least 0.22 (1 − IoU in the same box; closest S02 and S07 at 0.35), so no plan collapses into another's family. The roster's own check, `roster.read48`, is on the stands (below).
 
 **Left for stage 1** (written when the plates were the plan; see "the control-image spec" below for what a generation service receives). The sketch stops at form and slots: smooth volumes, flat pigment fields, index and marking passes, no craft. Stage 1 takes a species' type specimen and reference set (`sketch/cli.mjs --set N`) and makes the plates the masters draw from: the turnaround at Station and Companion scale with the slot map as the colour key and the marking masks as fields, the 48 px tile as the test every plate must still pass. Three things the rig cannot say are stage 1's to decide: the materials (fur, feathers, scales, the leaf mantle, sheen and the charged body are slot facts and silhouette modifiers here, not surfaces), the face (eyes are fixed inks, the mask a field; expression is a drawing), and the pose (every body stands in its reference pose; the state machine's states exist, its transitions do not). Also open: markings, mask and rings are fields the kind check does not weigh, so a plate's pattern is judged by eye; the behaviour loci are carried and weighed nowhere; and the targets are one person's thumbnails, so a target can be wrong as easily as a body.
 
@@ -76,17 +76,16 @@ Everything in the brief fitted the catalogue as records with owners and consumer
 | `resolve.mjs` | A frame and a genome become values and facts: the pan-genome resolver |
 | `geometry.mjs`, `rig.mjs` | The finite solids and the parametric body |
 | `validate.mjs` | Every body against the compositional contract: facet roots, attachment witnesses inside owner and part, bounds. Reported, never repaired |
-| `raster.mjs` | The deterministic rasterizer: orthographic views, a depth buffer, one light, the passes, the 48 px mask and the shape distance, the silhouette split by part class for the kind check |
+| `raster.mjs` | The deterministic rasterizer: orthographic views, a depth buffer, one light, the passes, the 48 px mask and the shape distance |
 | `species.mjs` | Species first: frames, individuals, shaping, the type specimen, whole-genome checks (a continuous copy may be a number within the pool's range), a frame back into an editable spec. A locked locus may hold a mixed pair (a proportion between two alleles); an open locus may name the species' `typical` copies, which the type specimen takes |
 | `cross.mjs` | The cross as decided (the-cross.md): `cross(frame, a, b, {rng, spread, penalty, strength, kinship, lookup})`, `children` (N children built and validated whole, rejections counted), `forecast` (quarters for switches, a range for blends, firm where the parents agree), `kinship` (pedigree, three generations, through a lookup of genomes by digest), `identity` and `relatedness`; the dials for the spread (0–25 %) and the penalty form (none, A, B, C, AB) |
 | `proportions.mjs` | Proportions by kind: the measures an artist takes on the animal each species resembles, the rig ratios they ask for, and the copy pairs that carry them (`KINDS`, `rigTargets`, `nearestPair`, `proportionPairs`) |
 | `envelope.mjs` | The cute envelope: eight rules that hold for every species and every open locus value, each with its reason, applied as clamps and derived ratios in the rig (E1–E7) and as pool bounds in the frames (E8), so no genome expression leaves the shape a pet reads as. Tested on the worst cases with `grow/extremes.mjs` |
 | `plain.mjs` | The plain placeholder (plain-renderer.md, technique C, reduced): the rasterizer's gbuffer pass finished by a deterministic post-process (ramps, outline from the index, contact shades, markings as patches, a grain, a cast shadow; the 48 ramps with Bayer on the Companion and the token). The offline look while a Grow painting is pending; no face, no materials. The sheet under `plain/` |
 | `../grow/` | The Grow painting service: a genome in, the Station-size painted set out (portrait and side, Gemini over the control passes), checked for structure (every part present where the part map puts it, the paint within a tolerance band of the drawn body), proportion (each large part's extent against the drawn one, within 15 %) and slots, with one named retry; the painter owns the volume, so the silhouette is reported, not gated; the Companion and the token derived, files laid out by genome hash, every call logged with its cost. `grow/controls.mjs` (Node: the controls with the `key` pass and flat translucency, the plain placeholder; the shaded control is sent blurred so its facets cannot be copied) and `grow/service.py` (Python: the calls, the checks, the derived sizes, the sheets) |
-| `targets.mjs` | The hand-drawn 48 px targets under `frames/targets/` (side view, facing right, a few primitives on a 100×100 canvas, each tagged with its part), rasterized and fitted like a body's silhouette, whole and per part; the part measures, the parts score and the kind check's verdicts |
 | `roster.mjs` | The 16 clans with their signatures and the 16 species, with the approved names beside the codes (`SPECIES_NAMES`, `CLAN_NAMES`; the frame carries `species.name` and `taxonomy.clanName`); S01–S03 carry the authored frames of frames.py |
 | `build-frames.mjs` | Writes the frame registry `frames/` (schema `mb-species-frame/2`: taxonomy header, plan facts, signature, chapters and traits with verdicts, the carried loci by kind with typical copies where named, the absent loci with reasons, pools, locked copies, counts, pod, the type specimen's brief and bounds, viability) |
-| `census.mjs` | The silhouette census and the kind check below |
+| `census.mjs` | The silhouette census and `roster.read48`, the twenty stands' 48 px read check (`framework/stands48.json`, written by `tools/stands48.mjs`) |
 
 ## The structural sketch (`sketch/`) and the control-image spec
 
@@ -114,7 +113,7 @@ One directory, named by the genome digest (`<species>-<8 hex>`, the type specime
 | `slots` | 4 × companion, station, large | black | One flat colour per pigment slot, the second half of a split slot at 0.7 brightness; the colour of every slot is in `manifest.sketch.slots` (`slot`, `pigments`, `flat`, `secondHalf`). The colour key |
 | `index` | 4 × companion, station, large | black | One flat colour per part (head, muzzle, each ear, each leg, tail, flaps, shell, cases, leaves, body regions), stable across views for one body. The part key |
 | `markings-<field>` | 4 × companion, station, large, one per field in `manifest.sketch.markingFields` | black | White where the field lies: `coat` (bands, patches), `flaps`, `cap`, `mask`, `rings`, `shell`, `belly`. Masks for the pattern pass |
-| `silhouette` | 4 × tile, companion, station | white | Black where the body is, translucency ignored. The shape the kind check measures |
+| `silhouette` | 4 × tile, companion, station | white | Black where the body is, translucency ignored. The shape the census measures |
 | `key` (Grow controls only) | portrait, side × every size | `#f6f3ec` | The same body with every slot flat in its own pigment, unshaded, the eye inks as inks. The colour key the painting service receives in place of the slot map: the slot map's label colours leaked into the paint in the first Grow run (a blue bird with a red torso), the pigments do not |
 
 Rules a service may rely on: integer-exact rasterization, no anti-aliasing, no alpha; a translucent flap and a charged body's phase are an ordered 4×4 Bayer dither in the shaded, slot and index passes and solid in the silhouette (the Grow controls render with `translucency: "flat"` instead: every pass solid, the shaded pass tinting a translucent flap halfway to the ground, because a dither paints as glass); the same genome gives the same bytes on Node and in the browser, and `--verify` proves it by rendering twice and comparing every SHA-256; the sketch hash in the manifest changes when any output does. Pixels carry structure and slots only: no material, no face beyond the fixed eyes, no pose but the reference pose. Those are the generation's to add, with the genome and the frame as the brief.
@@ -142,7 +141,7 @@ Deterministic by genome hash: a reference set's members come from the stream `rn
 cd prototypes/workbench
 npm test                                   # node --test tests/*.test.mjs: catalogue, plans, frames, resolver, crosses (blends, the forecast against ten thousand crosses, kinship and the penalty), bytes, contract, proportions and targets, the key pass, sketch, digest (16 tests)
 node framework/build-frames.mjs --check    # the registry is current (200 random individuals per species, about 35 s)
-node framework/census.mjs                  # the census gate and the kind check; writes framework/census.json, census.md, img/silhouettes-48.png (and 2×) and img/targets-48.png (about 60 s)
+node framework/census.mjs                  # the census gate; writes framework/census.json, census.md and img/silhouettes-48.png (and 2×) (about 60 s)
 node sketch/cli.mjs --all                  # every species' type specimen sketched under out/sketch/ (about 10 s)
 node sketch/cli.mjs --species S03 --verify # one sketch set rendered twice and compared byte for byte
 node sketch/cli.mjs --species S05 --set 8  # a reference set under out/reference/; --digest <id> brings one member back
@@ -201,39 +200,11 @@ Shape distance between type specimens; `*` marks a pair on the same plan, which 
 
 Closest pair of plans: S02 Untuva and S07 Azkon at 0.36. No pair of plans below the margin. Species sharing a plan are not gated; the closest are S04 Hiljan and S05 Tepor at 0.48.. No plan collapses into another's silhouette family. The spread within a species is widest where its open traits move the most body: S03 Tuikis opens Head and head lift swings the neck's rise; S08 Rupar and S09 Belatz open legs and neck on long-legged, long-necked bodies. `framework/census.md` and `census.json` are the current run.
 
-### Reads as its kind
+### The roster's read check (`roster.read48`)
 
-The second check of the census: each species' type specimen, as its 48 px side silhouette, against the hand-drawn target of the animal it resembles (`frames/targets/`), two ways.
+The census above gates the form engine's plans. The roster's own check is on the twenty kinds' stands: `read48` in `census.mjs` reads `framework/stands48.json`, the 48 px silhouette of each kind's adult stand (written by `tools/stands48.mjs` from the approved game set's 48 px cuts), and fails when any two kinds overlap by IoU 0.85 or more. A kind's target is its own stand and every other kind's stand is a wrong one; until a kind is built in the studio the stand is what the check measures. Twenty stands, 190 pairs, all under the limit; the closest are S13 Oskol and S16 Blikur at 0.83 and S02 Untuva and S15 Lehten at 0.82.
 
-- **The coarse gate**, whole-body IoU: against its own target and the best wrong one; a body IoU marked · is under the gate (own must beat the best wrong by 0.04). It tells a bear from a puffball and nothing finer.
-- **The parts score**: the clan's defining parts (`roster.mjs` `CLANS[].parts`: a cat's ears, muzzle, tail and head; a bird's beak, legs, crest and tail; a beetle's antennae, legs and wing cases) measured on the rendered silhouette, split by part (`raster.mjs` `partMasks`), against the same measures on the target's tagged primitives: muzzle length and bulk over the head, ear height and set over the head, tail length, bulk and carry over the body, leg length and bulk, crest height and bulk, antenna height, the size of flaps, shell, skirt and leaves, body aspect. Each part scores 1 − mean |difference| / 0.4, floored at zero, zero when either side lacks the part; the parts score is the mean over the clan's parts. A species passes when its parts score beats the score against every wrong kind's target by **0.05**. Why 0.05: with four parts, 0.05 of the mean is 0.2 of one part, which is a mean measure difference of 0.08 of the head's height, one pixel of one part on a 12–16 px head at 48 px. That is the resolution of the measurement; a smaller margin would be noise, a larger one would ask the silhouette to carry what only a drawing can.
-
-"Individuals own" is the share of its 200 random individuals whose parts score is nearest their own target.
-
-![The kind check: per species the target, the type specimen's side silhouette and their overlay](img/targets-48.png)
-
-*Per species, left to right: the hand-drawn target, the type specimen's side silhouette, and the overlay (dark where both, red where only the body, blue where only the target). 2×.*
-
-| Species | Body IoU own | best wrong | Parts measured | Parts own | best wrong kind | Parts margin | Individuals own | Verdict |
-| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |
-| S01 Loika | 0.59 | S02 0.45 | crest, leg, head, body | 0.92 | S09 0.80 | +0.12 | 76% | reads |
-| S02 Untuva | 0.80 | S07 0.66 | flap, head | 0.75 | S09 0.68 | +0.07 | 62% | reads |
-| S03 Tuikis | 0.44 | S14 0.39 | tail, crest, leg | 0.73 | S09 0.51 | +0.22 | 83% | reads |
-| S04 Hiljan | 0.45 · | S05 0.52 | ear, muzzle, tail, head | 0.89 | S06 0.81 | +0.08 | 100% | reads |
-| S05 Tepor | 0.42 | S06 0.36 | muzzle, ear, tail | 0.82 | S06 0.63 | +0.18 | 100% | reads |
-| S06 Pesko | 0.42 · | S10 0.43 | muzzle, ear, tail | 0.85 | S04 0.79 | +0.06 | 83% | reads |
-| S07 Azkon | 0.74 | S01 0.66 | muzzle, ear, leg, tail | 0.91 | S06 0.68 | +0.23 | 97% | reads |
-| S08 Rupar | 0.36 · | S09 0.41 | crest, leg, muzzle | 0.69 | S09 0.56 | +0.13 | 27% | reads |
-| S09 Belatz | 0.46 | S06 0.38 | muzzle, leg, crest, tail | 0.64 | S06 0.52 | +0.11 | 58% | reads |
-| S10 Igara | 0.55 · | S03 0.54 | tail, leg, muzzle | 0.84 | S06 0.78 | +0.06 | 12% | reads |
-| S11 Kilpo | 0.38 · | S13 0.63 | shell, leg, head | 0.76 | S13 0.67 | +0.09 | 64% | reads |
-| S12 Peplos | 0.32 · | S14 0.43 | flap, antenna, leg | 0.56 | S09 0.38 | +0.18 | 100% | reads |
-| S13 Oskol | 0.45 · | S14 0.61 | antenna, leg, shell | 0.70 | S11 0.55 | +0.14 | 85% | reads |
-| S14 Usvel | 0.48 | S09 0.38 | antenna, skirt, body | 0.55 | S02 0.27 | +0.28 | 100% | reads |
-| S15 Lehten | 0.56 · | S02 0.56 | leaf, leg, body | 0.49 | S01 0.35 | +0.14 | 78% | reads |
-| S16 Blikur | 0.43 | S15 0.35 | body, head | 0.89 | S15 0.63 | +0.25 | 100% | reads |
-
-All sixteen read as their kind by parts; eight by the coarse gate alone (the gate stays, reported beside: it says a cat is not a bear, and the parts say it is not a fox). The narrowest margins are S04 Hiljan against the raccoon target and S06 Pesko against the cat's, 0.06–0.08, which is what two clans that share a plan and differ by ears, muzzle and tail should show at 48 px; the widest are the kinds with a part no other has (the slug's skirt, the wisp's standing body, the bear's no-tail).
+This replaces the earlier kind check, which scored each species against a hand-drawn silhouette of the animal it resembled (`targets.mjs`, `frames/targets/`, retired).
 
 ## Proportions and parts by kind
 
@@ -247,7 +218,7 @@ The lead's review of the volume rig: the turtle, the slug and the bear read; S04
 
 **S09 on one pair.** `taxonomy/plans.json` now lists the one-pair plans (`onePairPlans`: 18 keys, built by this rig, since v1's resolver has no one-pair allele and the taxonomy's census runs through v1), C09's plan is `two|serial|bilateral|contact|zero|one|one|on|fur` (B2·L2·flaps), and taxonomy.py's roster row says the same. The pair roots under the body's middle, posture upright.
 
-**The kind check** (`targets.mjs`, `frames/targets/`). Sixteen hand-drawn targets, one per species: the animal of the "resembles" line blocked in from ellipses, capsules, polygons and domes on a 100×100 canvas, side view facing right, the way a thumbnail is drawn, every primitive tagged with the part it draws (body, head, muzzle, ear, tail, leg, crest, antenna, flap, shell, skirt, leaf) and a note saying what was drawn. The census rasterizes each into the 48 px box exactly as it fits a body's silhouette, whole and per part, and reports the coarse gate and the parts score above. The first pass of this milestone scored whole-body IoU only and could not tell a cat from a fox from a raccoon (their targets overlap each other at 0.60–0.65); the parts score is the lead's answer to that, and it separates the three.
+**The kind check** (retired). It scored each species against a hand-drawn target of the animal it resembled; `roster.read48` on the stands replaced it, and `targets.mjs`, `frames/targets/` and the clans' `parts` lists went with it.
 
 **More measures the parts asked for** (`proportions.mjs`): fur reach (a brush on the fox and the raccoon, as the type specimen's typical copies, since the trait is open), tail carry, stance, waist, mass, body form, crest height, back line, horn curl, wings and antennae; and one more allele in the catalogue, **tall** on `growth.auricular-length-ratio` (1.4), because the fox's signature ear clears the head by two thirds of its height and the long allele (1.0) cannot. Catalogue 8 carries 47 new records and 9 added alleles.
 
@@ -263,4 +234,8 @@ The lead's review of the volume rig: the turtle, the slug and the bear read; S04
 
 ## What this does not claim
 
-The sketch stops at form and slots: smooth volumes, flat fields, no craft. All sixteen pass the kind check by parts and eight the coarse gate; the targets are mine, drawn from one line each, and a target can be wrong as easily as a body. The parts score measures what a silhouette carries; markings, the mask and the rings are pigment fields the slot passes show and this check does not weigh. Feathers, the leaf mantle and sheen are labels and slot facts for the masters, not drawn materials. Behaviour loci are carried and weighed nowhere yet; the state machine's states come from the plan, its transitions do not exist. Nothing here is art, and nothing here changes a gene.
+The sketch stops at form and slots: smooth volumes, flat fields, no craft. The parts score measures what a silhouette carries; markings, the mask and the rings are pigment fields the slot passes show and this check does not weigh. Feathers, the leaf mantle and sheen are labels and slot facts for the masters, not drawn materials. Behaviour loci are carried and weighed nowhere yet; the state machine's states come from the plan, its transitions do not exist. Nothing here is art, and nothing here changes a gene.
+
+## The language registry
+
+`framework/language.mjs` holds the mibi visual language as data: the nine lands (three colours as hex and OKLCH, body range, body-to-marking offset, chroma cap), the twenty families, the twenty kinds and the studio quad, the anchors' per-check signed exception records, the fixtures, and the roster rules as functions (one kind per family, simple masses at most a third, five or more four-legged families, only S15 three-eyed, every land one to three kinds, every kind complete). `tools/language-json.mjs` generates `framework/language.json` from it (`--check` fails when stale); edit the module, never the JSON. A value change is a registry version. Tests: `tests/language.test.mjs`.

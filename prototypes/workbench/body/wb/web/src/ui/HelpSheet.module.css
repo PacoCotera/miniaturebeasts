@@ -1,0 +1,6 @@
+.scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 40; }
+.sheet { position: fixed; left: 50%; top: 80px; transform: translateX(-50%); width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 160px); overflow: auto; background: var(--raised); border-radius: var(--r-3); box-shadow: var(--shadow-2); border: 1px solid var(--line); z-index: 41; padding: var(--s-4) var(--s-5); }
+.keys { display: grid; }
+.row { display: grid; grid-template-columns: 140px 1fr; gap: var(--s-4); padding: 8px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.row:last-child { border-bottom: none; }
+dd { color: var(--text-2); font-size: var(--t-14); }

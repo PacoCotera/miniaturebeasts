@@ -76,10 +76,10 @@ test("a ring shape the loader does not know is refused: only oval, footprint, ta
   const J = () => JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/pods.json"), "utf8"));
   const bad = [["dashed", "dashed"], ["a round", "round"], ["a negative rect", { rect: -1 }], ["a circle of no r", { circle: { r: 0, centre: [1, 2] } }], ["a circle with no centre", { circle: { r: 5 } }], ["an extra key on the shape", { rect: 6, glow: 1 }],
     ["an extra key on the circle", { circle: { centre: [1, 2], r: 3, outside: 4 } }], ["a number", 7], ["a bare object", { radius: 5 }], ["a negative chip", { rect: 0, chip: -1 }], ["a circle of nothing", { circle: "ring" }]];
-  for (const [what, shape] of bad) { const f = await boot(), j = J(); j.targets.kin.shape = shape; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, what); assert.match(f.errors().join(), /targets\.kin\.shape/, what); }
-  { const f = await boot(), j = J(); j.targets.kin.ring = "round"; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, "the old ring key"); assert.match(f.errors().join(), /targets\.kin: `ring` is replaced by `shape`/); }
-  { const f = await boot(), j = J(); j.targets.kin.ground = "gilt"; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, "a ground of gilt"); assert.match(f.errors().join(), /ground/); }
-  for (const shape of ["oval", "footprint", "tab", { rect: 0 }, { rect: 6, chip: 4 }, { circle: "box" }, { circle: { centre: [96, 112], r: 88 } }]) { const f = await boot(), j = J(); j.targets.kin.shape = shape; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), 0, JSON.stringify(shape) + ": " + f.errors().join()); }
+  for (const [what, shape] of bad) { const f = await boot(), j = J(); j.targets.card.shape = shape; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, what); assert.match(f.errors().join(), /targets\.card\.shape/, what); }
+  { const f = await boot(), j = J(); j.targets.card.ring = "round"; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, "the old ring key"); assert.match(f.errors().join(), /targets\.card: `ring` is replaced by `shape`/); }
+  { const f = await boot(), j = J(); j.targets.card.ground = "gilt"; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, "a ground of gilt"); assert.match(f.errors().join(), /ground/); }
+  for (const shape of ["oval", "footprint", "tab", { rect: 0 }, { rect: 6, chip: 4 }, { circle: "box" }, { circle: { centre: [96, 112], r: 88 } }]) { const f = await boot(), j = J(); j.targets.card.shape = shape; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), 0, JSON.stringify(shape) + ": " + f.errors().join()); }
 });
 
 test("an asset carries its layer policy and status, and is refused without a valid pair; a sprite takes its layer from its asset, a rect from its word", { skip }, async () => {
@@ -337,7 +337,7 @@ test("the rooms spec (R3): the generated file loads; each of the data guards the
     ["guard 3: a join end off its level", (r) => { r.joins[0].ends[0] = [720, 300]; }, /guard 3: .*end 0 \(720, 300\) is not on the level bank/],
     ["guard 3: a join end outside its level's span", (r) => { r.joins[0].ends[1] = [30, 440]; r.joins[0].lower = "bank"; }, /guard 3: .*end 1 \(30, 440\) is not on the level bank/],
     ["guard 6: more than six occluders", (r) => { for (let i = 0; i < 5; i++) r.pieces.push({ ...r.pieces[1], id: "x" + i }); }, /guard 6: .* 8 occluders \(at most 6\)/],
-    ["guard 6: the occluders over 15 % of the window", (r) => { r.pieces[0].rect = [0, 380, 1000, 100]; }, /guard 6: .*over 15 % of the window \(450560 px\)/],
+    ["guard 6: the occluders over 15 % of the window", (r) => { r.pieces[0].rect = [0, 380, 1000, 100]; }, /guard 6: .*over 15 % of the window \(324736 px\)/],
     ["the first level is not main", (r) => { r.levels[0].id = "floor"; r.pieces.forEach((p) => { if (p.level) p.level = "floor"; }); }, /levels.0 is floor, not main/],
     ["a piece kind that is not known", (r) => { r.pieces[3].kind = "fitting"; }, /kind is occluder or back, not fitting/],
   ];

@@ -46,7 +46,7 @@ None of them read as Miniature Lives.
 
 <img src="plates/02a-palette.png" width="1024" alt="Plate 02a: the palette by role">
 
-The exact values are in `prototypes/ui/palettes/station.json` (68 colours: the Companion's 48, then the instrument's 14). Each colour has one role, given below; a colour is never used outside its role.
+The exact values are in `prototypes/ui/palettes/station.json` (92 colours: the Companion's 48, then the instrument's; then the four of the wood plate of the paper-and-wood rooms and the reading screen's twenty). Each colour has one role, given below; a colour is never used outside its role.
 
 | Layer | Role | Colour | Value |
 | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ The exact values are in `prototypes/ui/palettes/station.json` (68 colours: the C
 Body type needs 4.5 : 1 or more, so:
 - `mist` sits only on `ground` or `bar`; on a `panel` the quiet line is `fog`;
 - `red` is never type;
-- loss words are `coral` on `ground`.
+- loss words are `coral` on `ground`; a loss heading (20 px and up) may be `coral` on `panel` (4.4 : 1); loss body text stays `coral` on `ground`.
 
 **Painted art.** Painted art (the vivarium, creatures, pods, scenes, the housing) carries its own full colour. Its device parts stay in the housing family (sage, sand, rubber), and its life is the saturated Miniature Lives colour.
 
@@ -150,6 +150,7 @@ Every component is a part of the machine, named as a thing. A generic box fails.
 | **Pod** | the player's pod, everywhere it appears | its species' own shell, painted once per species from the one pod renderer, the same picture on Pods, Create, the Incubator, Cargo and the panels; only its place's dust or moss varies. Never a generic egg | sealed, identified, candled (lit from below), cracking | 03b (don't) |
 | **Badge** | a place, a species or a find | painted, 32 × 32 at least (48, 64 and 96 where the screen gives room), with its one word under it at 16 px | known; unknown (frost) | 04d |
 | **Progress** | the machine's own measure of time or growth | a ring or track in `mint` on a `tealD` track, 8 to 10 px thick; the chapters as lit studs. No digits and no percentage: the ring alone says how far. The one minute count is the Incubator's, in its bottom line's context ("ready in about 8 min"), nowhere else | growing (k of n); ready (full, its lamp lit) | 02c |
+| **Progress: the hold ring** | how long ✓ has been held | The hold ring: 96 px, an 8 px band, `mint` on a `tealD` track, at a holding plate's centre; it fills clockwise from twelve o'clock while ✓ is held (3000 ms), empties when ✓ is let go (300 ms; a cut with reduced motion), and stays full once complete. No glyph or figure inside. | filling; full | 02c |
 | **Genome marks** | the genes | sizes only: the genome screen's tiers, 48, 40, 32 or 24 px, and no other; 48 is the largest. On a sparse species (S01: 4 rows, 1–2 genes) the spare room goes to the founder and to the rows' part crops, not to bigger genes. What each mark means is the register in [§10, Marks](#marks-one-meaning-each-on-both-devices), the one list; each state is its own silhouette that reads in four-gray. Provisional until the genome concept is chosen (T-20261016-166) | every register state | 04e |
 | **Stamp** | the genome code | the label 120 × 120 drawn on the display, with its text id beside it at 16 px tabular in `bone`. Never a plaque or a white card, and never the brightest thing | — | 03a (don't) |
 | **Lamps** | small status lights | 8 × 8 (the link: `mint` docked, `stone` away) and 12 × 12 (`amber`: needs you) | lit, unlit | — |

@@ -289,7 +289,7 @@
      "h": 16
     }
    ],
-   "hash": "f44abd1c"
+   "hash": "6744c5c7"
   },
   {
    "state": "overview",
@@ -438,7 +438,7 @@
      "h": 16
     }
    ],
-   "hash": "2c02b21e"
+   "hash": "106a7171"
   },
   {
    "state": "overview",
@@ -586,7 +586,7 @@
      "h": 16
     }
    ],
-   "hash": "92168520"
+   "hash": "97968a69"
   },
   {
    "state": "overview",
@@ -735,7 +735,7 @@
      "h": 16
     }
    ],
-   "hash": "20cec8f0"
+   "hash": "106a7171"
   },
   {
    "state": "overview",
@@ -1006,7 +1006,7 @@
      "h": 16
     }
    ],
-   "hash": "b63b441a"
+   "hash": "97968a69"
   },
   {
    "state": "overview",
@@ -1276,7 +1276,7 @@
      "h": 16
     }
    ],
-   "hash": "7e730fa3"
+   "hash": "d30394fa"
   },
   {
    "state": "overview",
@@ -1568,7 +1568,7 @@
      "h": 16
     }
    ],
-   "hash": "3fb7f0da"
+   "hash": "42061e65"
   },
   {
    "state": "overview",
@@ -1834,7 +1834,7 @@
      "h": 16
     }
    ],
-   "hash": "90843ae5"
+   "hash": "fb253326"
   },
   {
    "state": "overview",
@@ -2119,7 +2119,7 @@
      "h": 16
     }
    ],
-   "hash": "9dcb8bc3"
+   "hash": "b894dc40"
   },
   {
    "state": "overview",
@@ -2418,7 +2418,7 @@
      "h": 16
     }
    ],
-   "hash": "04c2b015"
+   "hash": "92f71b68"
   },
   {
    "state": "overview",
@@ -2700,7 +2700,7 @@
      "h": 16
     }
    ],
-   "hash": "22cdf65e"
+   "hash": "3c46d1f2"
   },
   {
    "state": "overview",
@@ -3001,7 +3001,7 @@
      "h": 16
     }
    ],
-   "hash": "342603b4"
+   "hash": "b5798108"
   },
   {
    "state": "overview",
@@ -3276,7 +3276,7 @@
      "h": 16
     }
    ],
-   "hash": "90843ae5"
+   "hash": "fb253326"
   },
   {
    "state": "chapter",
@@ -3523,7 +3523,7 @@
      "h": 16
     }
    ],
-   "hash": "3a3ff5cf"
+   "hash": "92045a38"
   },
   {
    "state": "chapter",
@@ -3813,7 +3813,7 @@
      "h": 16
     }
    ],
-   "hash": "2d6d28de"
+   "hash": "5d383991"
   },
   {
    "state": "chapter",
@@ -4092,7 +4092,7 @@
      "h": 16
     }
    ],
-   "hash": "09acd227"
+   "hash": "94153302"
   },
   {
    "state": "chapter",
@@ -4437,7 +4437,7 @@
      "h": 16
     }
    ],
-   "hash": "09d74579"
+   "hash": "aa5b121b"
   },
   {
    "state": "chapter",
@@ -4772,7 +4772,7 @@
      "h": 16
     }
    ],
-   "hash": "ffd83692"
+   "hash": "6389907e"
   },
   {
    "state": "chapter",
@@ -5043,7 +5043,7 @@
      "h": 16
     }
    ],
-   "hash": "48d62e12"
+   "hash": "d6051a19"
   },
   {
    "state": "chapter",
@@ -5304,730 +5304,7 @@
      "h": 16
     }
    ],
-   "hash": "a7e8f44a"
-  },
-  {
-   "state": "compare",
-   "name": "S01: compare, 99 and 99 read",
-   "props": {
-    "t": "props",
-    "screen": "pods",
-    "state": "compare",
-    "regions": {
-     "bench": {
-      "room": [
-       "room-bench-stage-compare:1024x522",
-       "room-bench-stage-collection:1024x522",
-       "room-bench-stage:1024x522"
-      ]
-     },
-     "rail": {
-      "focused": null,
-      "open": 1,
-      "tabs": [
-       {
-        "id": "coat",
-        "word": "Coat",
-        "state": "read",
-        "pips": 1,
-        "filled": 1,
-        "glint": false,
-        "emblem": "emblem:coat:read:24"
-       },
-       {
-        "id": "face",
-        "word": "Face",
-        "state": "read",
-        "pips": 2,
-        "filled": 2,
-        "glint": false,
-        "emblem": "emblem:face:read:24"
-       },
-       {
-        "id": "movement",
-        "word": "Movement",
-        "state": "read",
-        "pips": 1,
-        "filled": 1,
-        "glint": false,
-        "emblem": "emblem:movement:read:24"
-       },
-       {
-        "id": "stamina",
-        "word": "Stamina",
-        "state": "read",
-        "pips": 1,
-        "filled": 1,
-        "glint": false,
-        "emblem": "emblem:stamina:read:24"
-       }
-      ],
-      "star": "star:12",
-      "current": 1
-     },
-     "pageA": {
-      "region": "compareA",
-      "chapter": "face",
-      "frame": {
-       "cols": 2,
-       "rows": 1
-      },
-      "heading": {
-       "pod": "pod:S01:i:40x48"
-      },
-      "cells": [
-       {
-        "name": "Crown",
-        "lines": [
-         "leaf crest · hides bare head"
-        ],
-        "glyphs": [],
-        "diff": false,
-        "isNew": true,
-        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
-       },
-       {
-        "name": "Eyes",
-        "lines": [
-         "wide pale rings to thin rings"
-        ],
-        "glyphs": [],
-        "diff": false,
-        "isNew": true,
-        "crop": "trait-S01-eyes-between-128x160:128x160"
-       }
-      ],
-      "differs": "frame-lamp-12-amber:12x12",
-      "count": 2,
-      "sealedFind": null,
-      "sealedPicture": null,
-      "newMark": null,
-      "overflow": false,
-      "pane": "page-pane-256x440"
-     },
-     "pageB": {
-      "region": "compareB",
-      "chapter": "face",
-      "frame": {
-       "cols": 2,
-       "rows": 1
-      },
-      "heading": {
-       "pod": "pod:S01:i:40x48"
-      },
-      "cells": [
-       {
-        "name": "Crown",
-        "lines": [
-         "leaf crest · hides bare head"
-        ],
-        "glyphs": [],
-        "diff": false,
-        "isNew": false,
-        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
-       },
-       {
-        "name": "Eyes",
-        "lines": [
-         "wide pale rings to thin rings"
-        ],
-        "glyphs": [],
-        "diff": false,
-        "isNew": false,
-        "crop": "trait-S01-eyes-between-128x160:128x160"
-       }
-      ],
-      "differs": "frame-lamp-12-amber:12x12",
-      "count": 2,
-      "sealedFind": null,
-      "sealedPicture": null,
-      "newMark": null,
-      "overflow": false,
-      "pane": "page-pane-256x440"
-     }
-    },
-    "focus": {
-     "cur": null,
-     "armed": false,
-     "targets": [],
-     "resolve": {
-      "rail.last": "rail.0",
-      "rail.open": "rail.0",
-      "kin.first": null
-     }
-    },
-    "frame": {
-     "top": {
-      "screen": "pods",
-      "title": "Pods",
-      "turn": 12,
-      "turnFlash": false,
-      "materials": {
-       "e": 99,
-       "d": 991,
-       "s": 99
-      },
-      "flash": {},
-      "companion": {
-       "docked": true,
-       "withMibi": null
-      }
-     },
-     "line": {
-      "back": "Loika",
-      "subject": "two Loika pods",
-      "need": "no read trait differs"
-     },
-     "plate": {
-      "text": ""
-     }
-    }
-   },
-   "pictures": [
-    {
-     "id": "room-bench-stage-compare:1024x522",
-     "w": 1024,
-     "h": 522
-    },
-    {
-     "id": "rail-tab-fill-read-full-152x40",
-     "w": 152,
-     "h": 40
-    },
-    {
-     "id": "emblem:coat:read:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "rail-tab-fill-open-full-152x40",
-     "w": 152,
-     "h": 40
-    },
-    {
-     "id": "emblem:face:read:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "emblem:movement:read:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "emblem:stamina:read:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "pod:S01:i:40x48",
-     "w": 40,
-     "h": 48
-    },
-    {
-     "id": "trait-S01-crown-leaf-crest-128x160:128x160",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "icon:energy:16",
-     "w": 16,
-     "h": 16
-    },
-    {
-     "id": "icon:data:16",
-     "w": 16,
-     "h": 16
-    },
-    {
-     "id": "icon:essence:16",
-     "w": 16,
-     "h": 16
-    }
-   ],
-   "hash": "6d7a07b6"
-  },
-  {
-   "state": "compare",
-   "name": "S01: compare, 99 and 1 read",
-   "props": {
-    "t": "props",
-    "screen": "pods",
-    "state": "compare",
-    "regions": {
-     "bench": {
-      "room": [
-       "room-bench-stage-compare:1024x522",
-       "room-bench-stage-collection:1024x522",
-       "room-bench-stage:1024x522"
-      ]
-     },
-     "rail": {
-      "focused": null,
-      "open": 1,
-      "tabs": [
-       {
-        "id": "coat",
-        "word": "Coat",
-        "state": "read",
-        "pips": 1,
-        "filled": 1,
-        "glint": false,
-        "emblem": "emblem:coat:read:24"
-       },
-       {
-        "id": "face",
-        "word": "Face",
-        "state": "unread",
-        "pips": 2,
-        "filled": 0,
-        "glint": false,
-        "emblem": "emblem:face:unread:24"
-       },
-       {
-        "id": "movement",
-        "word": "Movement",
-        "state": "unread",
-        "pips": 1,
-        "filled": 0,
-        "glint": false,
-        "emblem": "emblem:movement:unread:24"
-       },
-       {
-        "id": "stamina",
-        "word": "Stamina",
-        "state": "unread",
-        "pips": 1,
-        "filled": 0,
-        "glint": false,
-        "emblem": "emblem:stamina:unread:24"
-       }
-      ],
-      "star": "star:12",
-      "current": 1
-     },
-     "pageA": {
-      "region": "compareA",
-      "chapter": "face",
-      "frame": {
-       "cols": 2,
-       "rows": 1
-      },
-      "heading": {
-       "pod": "pod:S01:i:40x48"
-      },
-      "cells": [
-       {
-        "name": "Crown",
-        "lines": [
-         "leaf crest · hides bare head"
-        ],
-        "glyphs": [],
-        "diff": false,
-        "isNew": true,
-        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
-       },
-       {
-        "name": "Eyes",
-        "lines": [
-         "wide pale rings to thin rings"
-        ],
-        "glyphs": [],
-        "diff": false,
-        "isNew": true,
-        "crop": "trait-S01-eyes-between-128x160:128x160"
-       }
-      ],
-      "differs": "frame-lamp-12-amber:12x12",
-      "count": 2,
-      "sealedFind": null,
-      "sealedPicture": null,
-      "newMark": null,
-      "overflow": false,
-      "pane": "page-pane-256x440"
-     },
-     "pageB": {
-      "region": "compareB",
-      "chapter": "face",
-      "frame": {
-       "cols": 2,
-       "rows": 1
-      },
-      "heading": {
-       "pod": "pod:S01:i:40x48"
-      },
-      "cells": [
-       {
-        "name": "Crown",
-        "lines": [],
-        "glyphs": [],
-        "diff": false,
-        "isNew": false,
-        "frost": true
-       },
-       {
-        "name": "Eyes",
-        "lines": [],
-        "glyphs": [],
-        "diff": false,
-        "isNew": false,
-        "frost": true
-       }
-      ],
-      "differs": "frame-lamp-12-amber:12x12",
-      "count": 2,
-      "sealedFind": null,
-      "sealedPicture": null,
-      "newMark": null,
-      "overflow": false,
-      "pane": "page-pane-256x440"
-     }
-    },
-    "focus": {
-     "cur": null,
-     "armed": false,
-     "targets": [],
-     "resolve": {
-      "rail.last": "rail.0",
-      "rail.open": "rail.0",
-      "kin.first": null
-     }
-    },
-    "frame": {
-     "top": {
-      "screen": "pods",
-      "title": "Pods",
-      "turn": 12,
-      "turnFlash": false,
-      "materials": {
-       "e": 99,
-       "d": 994,
-       "s": 99
-      },
-      "flash": {},
-      "companion": {
-       "docked": true,
-       "withMibi": null
-      }
-     },
-     "line": {
-      "back": "Loika",
-      "subject": "two Loika pods",
-      "need": "no read trait differs"
-     },
-     "plate": {
-      "text": ""
-     }
-    }
-   },
-   "pictures": [
-    {
-     "id": "room-bench-stage-compare:1024x522",
-     "w": 1024,
-     "h": 522
-    },
-    {
-     "id": "rail-tab-fill-read-full-152x40",
-     "w": 152,
-     "h": 40
-    },
-    {
-     "id": "emblem:coat:read:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "rail-tab-fill-open-full-152x40",
-     "w": 152,
-     "h": 40
-    },
-    {
-     "id": "emblem:face:unread:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "rail-tab-fill-unread-full-152x40",
-     "w": 152,
-     "h": 40
-    },
-    {
-     "id": "emblem:movement:unread:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "emblem:stamina:unread:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "pod:S01:i:40x48",
-     "w": 40,
-     "h": 48
-    },
-    {
-     "id": "trait-S01-crown-leaf-crest-128x160:128x160",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "icon:energy:16",
-     "w": 16,
-     "h": 16
-    },
-    {
-     "id": "icon:data:16",
-     "w": 16,
-     "h": 16
-    },
-    {
-     "id": "icon:essence:16",
-     "w": 16,
-     "h": 16
-    }
-   ],
-   "hash": "7089efe0"
-  },
-  {
-   "state": "compare",
-   "name": "S04: compare, 3 and 99 read",
-   "props": {
-    "t": "props",
-    "screen": "pods",
-    "state": "compare",
-    "regions": {
-     "bench": {
-      "room": [
-       "room-bench-stage-compare:1024x522",
-       "room-bench-stage-collection:1024x522",
-       "room-bench-stage:1024x522"
-      ]
-     },
-     "rail": {
-      "focused": null,
-      "open": 1,
-      "tabs": [
-       {
-        "id": "coat",
-        "word": "Coat",
-        "state": "read",
-        "pips": 1,
-        "filled": 1,
-        "glint": false,
-        "emblem": "emblem:coat:read:24"
-       },
-       {
-        "id": "face",
-        "word": "Face",
-        "state": "read",
-        "pips": 1,
-        "filled": 1,
-        "glint": false,
-        "emblem": "emblem:face:read:24"
-       },
-       {
-        "id": "shape",
-        "word": "Shape",
-        "state": "read",
-        "pips": 1,
-        "filled": 1,
-        "glint": false,
-        "emblem": "emblem:shape:read:24"
-       },
-       {
-        "id": "movement",
-        "word": "Movement",
-        "state": "unread",
-        "pips": 1,
-        "filled": 0,
-        "glint": false,
-        "emblem": "emblem:movement:unread:24"
-       },
-       {
-        "id": "stamina",
-        "word": "Stamina",
-        "state": "unread",
-        "pips": 1,
-        "filled": 0,
-        "glint": false,
-        "emblem": "emblem:stamina:unread:24"
-       }
-      ],
-      "star": "star:12",
-      "current": 1
-     },
-     "pageA": {
-      "region": "compareA",
-      "chapter": "face",
-      "frame": {
-       "cols": 1,
-       "rows": 1
-      },
-      "heading": {
-       "pod": "pod:S04:i:40x48"
-      },
-      "cells": [
-       {
-        "name": "Eyes",
-        "lines": [
-         "only small, close"
-        ],
-        "glyphs": [],
-        "diff": false,
-        "isNew": true,
-        "crop": "trait-S04-eyes-small-close-128x160:128x160"
-       }
-      ],
-      "differs": "frame-lamp-12-amber:12x12",
-      "count": 1,
-      "sealedFind": null,
-      "sealedPicture": null,
-      "newMark": null,
-      "overflow": false,
-      "pane": "page-pane-256x440"
-     },
-     "pageB": {
-      "region": "compareB",
-      "chapter": "face",
-      "frame": {
-       "cols": 1,
-       "rows": 1
-      },
-      "heading": {
-       "pod": "pod:S04:i:40x48"
-      },
-      "cells": [
-       {
-        "name": "Eyes",
-        "lines": [
-         "only small, close"
-        ],
-        "glyphs": [],
-        "diff": false,
-        "isNew": false,
-        "crop": "trait-S04-eyes-small-close-128x160:128x160"
-       }
-      ],
-      "differs": "frame-lamp-12-amber:12x12",
-      "count": 1,
-      "sealedFind": null,
-      "sealedPicture": null,
-      "newMark": null,
-      "overflow": false,
-      "pane": "page-pane-256x440"
-     }
-    },
-    "focus": {
-     "cur": null,
-     "armed": false,
-     "targets": [],
-     "resolve": {
-      "rail.last": "rail.0",
-      "rail.open": "rail.0",
-      "kin.first": null
-     }
-    },
-    "frame": {
-     "top": {
-      "screen": "pods",
-      "title": "Pods",
-      "turn": 12,
-      "turnFlash": false,
-      "materials": {
-       "e": 99,
-       "d": 992,
-       "s": 99
-      },
-      "flash": {},
-      "companion": {
-       "docked": true,
-       "withMibi": null
-      }
-     },
-     "line": {
-      "back": "Hiljan",
-      "subject": "two Hiljan pods",
-      "need": "no read trait differs"
-     },
-     "plate": {
-      "text": ""
-     }
-    }
-   },
-   "pictures": [
-    {
-     "id": "room-bench-stage-compare:1024x522",
-     "w": 1024,
-     "h": 522
-    },
-    {
-     "id": "rail-tab-fill-read-full-152x40",
-     "w": 152,
-     "h": 40
-    },
-    {
-     "id": "emblem:coat:read:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "rail-tab-fill-open-full-152x40",
-     "w": 152,
-     "h": 40
-    },
-    {
-     "id": "emblem:face:read:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "emblem:shape:read:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "rail-tab-fill-unread-full-152x40",
-     "w": 152,
-     "h": 40
-    },
-    {
-     "id": "emblem:movement:unread:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "emblem:stamina:unread:24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "pod:S04:i:40x48",
-     "w": 40,
-     "h": 48
-    },
-    {
-     "id": "trait-S04-eyes-small-close-128x160:128x160",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "icon:energy:16",
-     "w": 16,
-     "h": 16
-    },
-    {
-     "id": "icon:data:16",
-     "w": 16,
-     "h": 16
-    },
-    {
-     "id": "icon:essence:16",
-     "w": 16,
-     "h": 16
-    }
-   ],
-   "hash": "60b9b12d"
+   "hash": "6957a657"
   },
   {
    "state": "overview",
@@ -6318,7 +5595,7 @@
      "h": 16
     }
    ],
-   "hash": "cb2a76fb"
+   "hash": "877d3e8f"
   },
   {
    "state": "collection",
@@ -6484,7 +5761,7 @@
      "h": 16
     }
    ],
-   "hash": "98ba887f"
+   "hash": "7c1f8327"
   },
   {
    "state": "collection",
@@ -6606,7 +5883,7 @@
      "h": 16
     }
    ],
-   "hash": "94c07cae"
+   "hash": "61fd1d97"
   },
   {
    "state": "collection",
@@ -6763,7 +6040,7 @@
      "h": 16
     }
    ],
-   "hash": "69b2188b"
+   "hash": "1fd76482"
   },
   {
    "state": "collection",
@@ -6972,7 +6249,7 @@
      "h": 16
     }
    ],
-   "hash": "78d2f065"
+   "hash": "713c54f0"
   },
   {
    "state": "collection",
@@ -7131,7 +6408,1123 @@
      "h": 16
     }
    ],
-   "hash": "bf3ce5eb"
+   "hash": "b359a7bd"
+  },
+  {
+   "state": "compare",
+   "name": "S01: compare from the bench, both read, the ring on this pod's Take",
+   "props": {
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "compare": {
+      "bench": "reading-bench-1024x520",
+      "sides": [
+       {
+        "pod": "pod:S01:i:40x48",
+        "title": "Loika",
+        "which": "on the bench",
+        "rail": {
+         "pic": "readrail:S01:00000000:small",
+         "inset": "reading-inset-24x24",
+         "hand": 0,
+         "nudge": 0,
+         "lanes": [
+          {
+           "id": "c0",
+           "n": 2,
+           "state": "read",
+           "marks": [
+            "differs"
+           ]
+          },
+          {
+           "id": "c1",
+           "n": 2,
+           "state": "unread",
+           "marks": [
+            "glint"
+           ]
+          },
+          {
+           "id": "c2",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c3",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          }
+         ],
+         "marks": {
+          "glint": "reading-glint-12x12",
+          "star": "reading-star-12x12",
+          "differs": "reading-differs-12x12"
+         }
+        },
+        "goal": "",
+        "chapter": "Coat",
+        "count": "1 of 4",
+        "rows": [
+         {
+          "name": "Colour",
+          "look": "only charcoal",
+          "picture": "mibi:S01~ec8c611f:adult:36x36",
+          "differs": true
+         },
+         {
+          "name": "Markings",
+          "look": "only patches",
+          "picture": "mibi:S01~1278dff6:adult:36x36",
+          "differs": true
+         }
+        ],
+        "sealed": "",
+        "differs": "differs",
+        "take": "Take to the reading room"
+       },
+       {
+        "pod": "pod:S01:i:40x48",
+        "title": "Loika",
+        "which": "its kin · ▶ another",
+        "rail": {
+         "pic": "readrail:S01:00000000:small",
+         "inset": "reading-inset-24x24",
+         "hand": 0,
+         "nudge": 0,
+         "lanes": [
+          {
+           "id": "c0",
+           "n": 2,
+           "state": "read",
+           "marks": []
+          },
+          {
+           "id": "c1",
+           "n": 2,
+           "state": "unread",
+           "marks": [
+            "glint"
+           ]
+          },
+          {
+           "id": "c2",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c3",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          }
+         ],
+         "marks": {
+          "glint": "reading-glint-12x12",
+          "star": "reading-star-12x12",
+          "differs": "reading-differs-12x12"
+         }
+        },
+        "goal": "",
+        "chapter": "Coat",
+        "count": "1 of 4",
+        "rows": [
+         {
+          "name": "Colour",
+          "look": "charcoal to russet",
+          "picture": "mibi:S01~960de094:adult:36x36",
+          "differs": true
+         },
+         {
+          "name": "Markings",
+          "look": "stripes to patches",
+          "picture": "mibi:S01~7cf4b289:adult:36x36",
+          "differs": true
+         }
+        ],
+        "sealed": "",
+        "differs": "differs",
+        "take": "Take to the reading room"
+       }
+      ]
+     }
+    },
+    "focus": {
+     "cur": "takeA",
+     "targets": [
+      {
+       "id": "takeA",
+       "group": "takeA"
+      },
+      {
+       "id": "takeB",
+       "group": "takeB"
+      }
+     ],
+     "resolve": {}
+    },
+    "motion": true,
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 4,
+      "turnFlash": false,
+      "materials": {
+       "e": 9,
+       "d": 9,
+       "s": 9
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Bench",
+      "need": "they differ here",
+      "ok": "Take this Loika to the reading room",
+      "subject": "two Loika pods"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "reading-bench-1024x520",
+     "w": 1024,
+     "h": 520
+    },
+    {
+     "id": "mibi:S01~ec8c611f:adult:36x36",
+     "w": 36,
+     "h": 36
+    },
+    {
+     "id": "mibi:S01~1278dff6:adult:36x36",
+     "w": 36,
+     "h": 36
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "mibi:S01~960de094:adult:36x36",
+     "w": 36,
+     "h": 36
+    },
+    {
+     "id": "mibi:S01~7cf4b289:adult:36x36",
+     "w": 36,
+     "h": 36
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "frame-companion-outline-16x24",
+     "w": 16,
+     "h": 24
+    },
+    {
+     "id": "frame-companion-solid-16x24",
+     "w": 16,
+     "h": 24
+    },
+    {
+     "id": "readrail:S01:00000000:small",
+     "w": 272,
+     "h": 40
+    },
+    {
+     "id": "reading-inset-24x24",
+     "w": 24,
+     "h": 24,
+     "slice": [
+      6,
+      6,
+      6,
+      6
+     ],
+     "tile": 4
+    },
+    {
+     "id": "reading-glint-12x12",
+     "w": 12,
+     "h": 12
+    },
+    {
+     "id": "reading-star-12x12",
+     "w": 12,
+     "h": 12
+    },
+    {
+     "id": "reading-differs-12x12",
+     "w": 12,
+     "h": 12
+    }
+   ],
+   "hash": "28fe1ef5"
+  },
+  {
+   "state": "compare",
+   "name": "S01: compare, the kin's page unread, the ring on the kin's Take",
+   "props": {
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "compare": {
+      "bench": "reading-bench-1024x520",
+      "sides": [
+       {
+        "pod": "pod:S01:i:40x48",
+        "title": "Loika",
+        "which": "on the bench",
+        "rail": {
+         "pic": "readrail:S01:00000000:small",
+         "inset": "reading-inset-24x24",
+         "hand": 1,
+         "nudge": 0,
+         "lanes": [
+          {
+           "id": "c0",
+           "n": 2,
+           "state": "read",
+           "marks": [
+            "differs"
+           ]
+          },
+          {
+           "id": "c1",
+           "n": 2,
+           "state": "unread",
+           "marks": [
+            "glint"
+           ]
+          },
+          {
+           "id": "c2",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c3",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          }
+         ],
+         "marks": {
+          "glint": "reading-glint-12x12",
+          "star": "reading-star-12x12",
+          "differs": "reading-differs-12x12"
+         }
+        },
+        "goal": "",
+        "chapter": "Face",
+        "count": "2 of 4",
+        "rows": [
+         {
+          "name": "Crown",
+          "look": "leaf crest · hides bare head",
+          "picture": "",
+          "differs": false
+         },
+         {
+          "name": "Eyes",
+          "look": "only thin rings",
+          "picture": "",
+          "differs": false
+         }
+        ],
+        "sealed": "",
+        "differs": "differs",
+        "take": "Take to the reading room"
+       },
+       {
+        "pod": "pod:S01:i:40x48",
+        "title": "Loika",
+        "which": "its kin · ▶ another",
+        "rail": {
+         "pic": "readrail:S01:00000000:small",
+         "inset": "reading-inset-24x24",
+         "hand": 1,
+         "nudge": 0,
+         "lanes": [
+          {
+           "id": "c0",
+           "n": 2,
+           "state": "read",
+           "marks": []
+          },
+          {
+           "id": "c1",
+           "n": 2,
+           "state": "unread",
+           "marks": [
+            "glint"
+           ]
+          },
+          {
+           "id": "c2",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c3",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          }
+         ],
+         "marks": {
+          "glint": "reading-glint-12x12",
+          "star": "reading-star-12x12",
+          "differs": "reading-differs-12x12"
+         }
+        },
+        "goal": "",
+        "chapter": "Face",
+        "count": "2 of 4",
+        "rows": [
+         {
+          "name": "Crown",
+          "look": "not read yet",
+          "picture": "",
+          "differs": false
+         },
+         {
+          "name": "Eyes",
+          "look": "not read yet",
+          "picture": "",
+          "differs": false
+         }
+        ],
+        "sealed": "",
+        "differs": "differs",
+        "take": "Take to the reading room"
+       }
+      ]
+     }
+    },
+    "focus": {
+     "cur": "takeB",
+     "targets": [
+      {
+       "id": "takeA",
+       "group": "takeA"
+      },
+      {
+       "id": "takeB",
+       "group": "takeB"
+      }
+     ],
+     "resolve": {}
+    },
+    "motion": true,
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 4,
+      "turnFlash": false,
+      "materials": {
+       "e": 9,
+       "d": 9,
+       "s": 9
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Bench",
+      "need": "they differ in another chapter",
+      "ok": "Take this Loika to the reading room",
+      "subject": "two Loika pods"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "reading-bench-1024x520",
+     "w": 1024,
+     "h": 520
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "frame-companion-outline-16x24",
+     "w": 16,
+     "h": 24
+    },
+    {
+     "id": "frame-companion-solid-16x24",
+     "w": 16,
+     "h": 24
+    },
+    {
+     "id": "readrail:S01:00000000:small",
+     "w": 272,
+     "h": 40
+    },
+    {
+     "id": "reading-inset-24x24",
+     "w": 24,
+     "h": 24,
+     "slice": [
+      6,
+      6,
+      6,
+      6
+     ],
+     "tile": 4
+    },
+    {
+     "id": "reading-glint-12x12",
+     "w": 12,
+     "h": 12
+    },
+    {
+     "id": "reading-star-12x12",
+     "w": 12,
+     "h": 12
+    },
+    {
+     "id": "reading-differs-12x12",
+     "w": 12,
+     "h": 12
+    }
+   ],
+   "hash": "1b862767"
+  },
+  {
+   "state": "compare",
+   "name": "S02: compare from a card, a sealed chapter",
+   "props": {
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "compare": {
+      "bench": "reading-bench-1024x520",
+      "sides": [
+       {
+        "pod": "pod:S02:i:40x48",
+        "title": "Untuva",
+        "which": "this pod",
+        "rail": {
+         "pic": "readrail:S02:00000000:small",
+         "inset": "reading-inset-24x24",
+         "hand": 3,
+         "nudge": 0,
+         "lanes": [
+          {
+           "id": "c0",
+           "n": 2,
+           "state": "read",
+           "marks": [
+            "differs"
+           ]
+          },
+          {
+           "id": "c1",
+           "n": 2,
+           "state": "unread",
+           "marks": [
+            "glint"
+           ]
+          },
+          {
+           "id": "c2",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c3",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          }
+         ],
+         "marks": {
+          "glint": "reading-glint-12x12",
+          "star": "reading-star-12x12",
+          "differs": "reading-differs-12x12"
+         }
+        },
+        "goal": "",
+        "chapter": "Character",
+        "count": "4 of 4",
+        "rows": [],
+        "sealed": "sealed · opens with a find",
+        "differs": "differs",
+        "take": "Take to the reading room"
+       },
+       {
+        "pod": "pod:S02:i:40x48",
+        "title": "Untuva",
+        "which": "its kin",
+        "rail": {
+         "pic": "readrail:S02:00000000:small",
+         "inset": "reading-inset-24x24",
+         "hand": 3,
+         "nudge": 0,
+         "lanes": [
+          {
+           "id": "c0",
+           "n": 2,
+           "state": "read",
+           "marks": []
+          },
+          {
+           "id": "c1",
+           "n": 2,
+           "state": "unread",
+           "marks": [
+            "glint"
+           ]
+          },
+          {
+           "id": "c2",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c3",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          }
+         ],
+         "marks": {
+          "glint": "reading-glint-12x12",
+          "star": "reading-star-12x12",
+          "differs": "reading-differs-12x12"
+         }
+        },
+        "goal": "",
+        "chapter": "Character",
+        "count": "4 of 4",
+        "rows": [],
+        "sealed": "sealed · opens with a find",
+        "differs": "differs",
+        "take": "Take to the reading room"
+       }
+      ]
+     }
+    },
+    "focus": {
+     "cur": "takeA",
+     "targets": [
+      {
+       "id": "takeA",
+       "group": "takeA"
+      },
+      {
+       "id": "takeB",
+       "group": "takeB"
+      }
+     ],
+     "resolve": {}
+    },
+    "motion": true,
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 4,
+      "turnFlash": false,
+      "materials": {
+       "e": 9,
+       "d": 9,
+       "s": 9
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Pods",
+      "need": "they differ in another chapter",
+      "ok": "Take this Untuva to the reading room",
+      "subject": "two Untuva pods"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "reading-bench-1024x520",
+     "w": 1024,
+     "h": 520
+    },
+    {
+     "id": "pod:S02:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "frame-companion-outline-16x24",
+     "w": 16,
+     "h": 24
+    },
+    {
+     "id": "frame-companion-solid-16x24",
+     "w": 16,
+     "h": 24
+    },
+    {
+     "id": "readrail:S02:00000000:small",
+     "w": 272,
+     "h": 40
+    },
+    {
+     "id": "reading-inset-24x24",
+     "w": 24,
+     "h": 24,
+     "slice": [
+      6,
+      6,
+      6,
+      6
+     ],
+     "tile": 4
+    },
+    {
+     "id": "reading-glint-12x12",
+     "w": 12,
+     "h": 12
+    },
+    {
+     "id": "reading-star-12x12",
+     "w": 12,
+     "h": 12
+    },
+    {
+     "id": "reading-differs-12x12",
+     "w": 12,
+     "h": 12
+    }
+   ],
+   "hash": "ac924c55"
+  },
+  {
+   "state": "compare",
+   "name": "S09: compare, six traits on the page",
+   "props": {
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "compare": {
+      "bench": "reading-bench-1024x520",
+      "sides": [
+       {
+        "pod": "pod:S09:i:40x48",
+        "title": "Belatz",
+        "which": "this pod",
+        "rail": {
+         "pic": "readrail:S09:00000000:small",
+         "inset": "reading-inset-24x24",
+         "hand": 0,
+         "nudge": 0,
+         "lanes": [
+          {
+           "id": "c0",
+           "n": 6,
+           "state": "read",
+           "marks": [
+            "differs"
+           ]
+          },
+          {
+           "id": "c1",
+           "n": 2,
+           "state": "unread",
+           "marks": [
+            "glint"
+           ]
+          },
+          {
+           "id": "c2",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c3",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c4",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c5",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c6",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          }
+         ],
+         "marks": {
+          "glint": "reading-glint-12x12",
+          "star": "reading-star-12x12",
+          "differs": "reading-differs-12x12"
+         }
+        },
+        "goal": "",
+        "chapter": "Coat",
+        "count": "1 of 7",
+        "rows": [
+         {
+          "name": "Colour",
+          "look": "only periwinkle",
+          "picture": "mibi:S09~7ed513d6:adult:36x36",
+          "differs": true
+         },
+         {
+          "name": "Fluff",
+          "look": "only short, straight",
+          "picture": "",
+          "differs": true
+         },
+         {
+          "name": "Sheen",
+          "look": "only glossy",
+          "picture": "",
+          "differs": true
+         },
+         {
+          "name": "Feathers",
+          "look": "short to long",
+          "picture": "",
+          "differs": true
+         },
+         {
+          "name": "Tufts",
+          "look": "tail · hides body only",
+          "picture": "",
+          "differs": true
+         },
+         {
+          "name": "Trim",
+          "look": "cream to butter",
+          "picture": "",
+          "differs": true
+         }
+        ],
+        "sealed": "",
+        "differs": "differs",
+        "take": "Take to the reading room"
+       },
+       {
+        "pod": "pod:S09:i:40x48",
+        "title": "Belatz",
+        "which": "its kin",
+        "rail": {
+         "pic": "readrail:S09:00000000:small",
+         "inset": "reading-inset-24x24",
+         "hand": 0,
+         "nudge": 0,
+         "lanes": [
+          {
+           "id": "c0",
+           "n": 6,
+           "state": "read",
+           "marks": []
+          },
+          {
+           "id": "c1",
+           "n": 2,
+           "state": "unread",
+           "marks": [
+            "glint"
+           ]
+          },
+          {
+           "id": "c2",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c3",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c4",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c5",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          },
+          {
+           "id": "c6",
+           "n": 1,
+           "state": "unread",
+           "marks": []
+          }
+         ],
+         "marks": {
+          "glint": "reading-glint-12x12",
+          "star": "reading-star-12x12",
+          "differs": "reading-differs-12x12"
+         }
+        },
+        "goal": "",
+        "chapter": "Coat",
+        "count": "1 of 7",
+        "rows": [
+         {
+          "name": "Colour",
+          "look": "only cobalt",
+          "picture": "mibi:S09~ba6f77f7:adult:36x36",
+          "differs": true
+         },
+         {
+          "name": "Fluff",
+          "look": "only long, swept",
+          "picture": "",
+          "differs": true
+         },
+         {
+          "name": "Sheen",
+          "look": "glossy to matte",
+          "picture": "",
+          "differs": true
+         },
+         {
+          "name": "Feathers",
+          "look": "only long",
+          "picture": "",
+          "differs": true
+         },
+         {
+          "name": "Tufts",
+          "look": "tail and ears · hides body only",
+          "picture": "",
+          "differs": true
+         },
+         {
+          "name": "Trim",
+          "look": "ice to cream",
+          "picture": "",
+          "differs": true
+         }
+        ],
+        "sealed": "",
+        "differs": "differs",
+        "take": "Take to the reading room"
+       }
+      ]
+     }
+    },
+    "focus": {
+     "cur": "takeA",
+     "targets": [
+      {
+       "id": "takeA",
+       "group": "takeA"
+      },
+      {
+       "id": "takeB",
+       "group": "takeB"
+      }
+     ],
+     "resolve": {}
+    },
+    "motion": true,
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 4,
+      "turnFlash": false,
+      "materials": {
+       "e": 9,
+       "d": 9,
+       "s": 9
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Pods",
+      "need": "they differ here",
+      "ok": "Take this Belatz to the reading room",
+      "subject": "two Belatz pods"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "reading-bench-1024x520",
+     "w": 1024,
+     "h": 520
+    },
+    {
+     "id": "mibi:S09~7ed513d6:adult:36x36",
+     "w": 36,
+     "h": 36
+    },
+    {
+     "id": "pod:S09:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "mibi:S09~ba6f77f7:adult:36x36",
+     "w": 36,
+     "h": 36
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "frame-companion-outline-16x24",
+     "w": 16,
+     "h": 24
+    },
+    {
+     "id": "frame-companion-solid-16x24",
+     "w": 16,
+     "h": 24
+    },
+    {
+     "id": "readrail:S09:00000000:small",
+     "w": 272,
+     "h": 40
+    },
+    {
+     "id": "reading-inset-24x24",
+     "w": 24,
+     "h": 24,
+     "slice": [
+      6,
+      6,
+      6,
+      6
+     ],
+     "tile": 4
+    },
+    {
+     "id": "reading-glint-12x12",
+     "w": 12,
+     "h": 12
+    },
+    {
+     "id": "reading-star-12x12",
+     "w": 12,
+     "h": 12
+    },
+    {
+     "id": "reading-differs-12x12",
+     "w": 12,
+     "h": 12
+    }
+   ],
+   "hash": "4309a7c9"
   }
  ]
 }

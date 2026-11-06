@@ -49,7 +49,7 @@
    "rect": [296, 88, 432, 104], "build": "roll", "inStates": ["shape"], "grow": "every roll node kept with no size from t 0; the pictures stay requested (fix 5 Create C7)", "composition": ["sprite: a picture per look", "sprite: notch up", "sprite: notch down"],
    "forms": {
     "roll": { "pictures": [[304, 104, 128, 72], [448, 104, 128, 72], [592, 104, 128, 72]], "order": ["as the pod is", "only the first copy", "only the second copy"], "orderNote": "the trait state's hiddenChoice gives which copy is the hidden look where it applies; any choice but the first costs 1 ◆ and 1 minute, \"only the shown look\" too (game designer, 2026-10-09 13:27)", "notches": true },
-    "single": { "pictures": [[448, 104, 128, 72]], "notches": false, "when": "a doing (Tuikis Claws: \"breed to change\"), a trait the pod carries one look of, or a trait that cannot be shaped" }
+    "single": { "pictures": [[448, 104, 128, 72]], "notches": false, "when": "a doing (Tuikis Claws: \"cross to change\"), a trait the pod carries one look of, or a trait that cannot be shaped" }
    },
    "picture": { "size": [128, 72], "gap": 16, "ground": "colours.roll.ground", "asset": "roll-{species}-{trait}-{look}-128x72; a doing: roll-{species}-{trait}-128x72, one per trait, the same for every value (Pods P7)", "placed": "a place whose picture is not a placed master draws nothing: no ground, no ring, no clash edge, no notches (Every state composed 2–4; Pods P2)", "recut": "derived.roll pictures (art director, 2026-10-09 13:28)", "partInside": [16, 9, 96, 54] },
    "chosen": "the picture of the trait's choice (0, 1 or 2); single: the one picture",
@@ -167,11 +167,11 @@
    "only": "{Trait}: {look}",
    "sameLook": "{Trait}: {look}, hides nothing",
    "asleep": "{Trait}: {shows}, {sleeping} asleep",
-   "doing": "{Trait}: breed to change",
+   "doing": "{Trait}: cross to change",
    "oneLook": "{Trait}: one look in this pod",
    "clash": "✕ {Trait}: won't grow like this",
    "none": "it grows as the pod is",
-   "examples": ["Markings: pale", "Claws: breed to change", "✕ Eyes: won't grow like this"]
+   "examples": ["Markings: pale", "Claws: cross to change", "✕ Eyes: won't grow like this"]
   },
   "surprise": { "one": "{Chapter} unread", "more": "{n in words} chapters unread", "budget": "208 px at 16 px, the context zone" },
   "founder": "{a/an} {Species}, fully known",

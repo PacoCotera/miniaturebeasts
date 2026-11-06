@@ -1,5 +1,5 @@
 // Create in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `create-nothingRead`, `create-shape` (a trait read, as the pod is), `create-shape-changed`
-// (a rolled look: the tag, the diamond pip), `create-shape-clash` (the red edge, the ✕ in the line and on the pip, no ✓ cap), `create-shape-doing` (breed to change, the breed mark), `create-shape-onelook`, `create-shape-short` (the dimmed ✓,
+// (a rolled look: the tag, the diamond pip), `create-shape-clash` (the red edge, the ✕ in the line and on the pip, no ✓ cap), `create-shape-doing` (cross to change, the breed mark), `create-shape-onelook`, `create-shape-short` (the dimmed ✓,
 // the short figure amber), `create-shape-busy` (a bud in the small chamber, Grow blocked), `create-shape-first` (the first founder: five leaves), `create-full` (the Vivarium is full: Grow held, its notice), and with motion on at exact instants of the face's clock: the roll's dither
 // halfway (`create-roll-100`) and the grow event (`create-grow-150` the stamp printing, `create-grow` at 450 ms the pod travelling behind the work tray, `create-grow-end` at 890 ms, the travel over and the jump still to come; `create-grow-nothing`, Grow from nothing read 20 ms in: a cut, the whole stamp from the first frame).
 // Each point is reached by the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
@@ -9,7 +9,7 @@ import { WORLD } from "./home-states.mjs";
 // the helpers the scenes call, in the page: a pod with `n` chapters read, Create opened on it
 const CREATE = () => ({
   fresh() { const st = window.__st.ST; st.e = 9; st.d = 4; st.s = 6; st.firstMibi = false; st.bud = null; this.persist(); },
-  shape(species, gs, n) { const S = window.__st; S.seedPod(species, gs); const p = S.ST.tray.at(-1); S.readSome(p.id, n); S.openCreate(p.id); return p.id; },
+  shape(species, gs, n) { const S = window.__st; if (species === "S01" && n > 0) S.ST.d += 1; /* the Loika's Face costs one Data more (three traits), so its scenes start with one more */ S.seedPod(species, gs); const p = S.ST.tray.at(-1); S.readSome(p.id, n); S.openCreate(p.id); return p.id; },
   at(f) { window.__st.UI.create.f = f; },
 });
 // species, genome seed, chapters read, the trait the ring starts on, what else the scene sets (in the page)
@@ -18,7 +18,7 @@ const SCENES = {
   "shape":         { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); } },
   "shape-changed": { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); } },
   "shape-clash":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); const c = window.__st.UI.create; c.clash = [Object.keys(c.choices)[0]]; } },   // no frame in the registry clashes today: the mark is taken as the rules would set it
-  "shape-doing":   { want: "shape", set: (w) => { w.shape("S01", 3, 4); w.at(3); } },
+  "shape-doing":   { want: "shape", set: (w) => { w.shape("S01", 3, 4); w.at(4); } },   // Eyes: the Face chapter now holds Crown, Ears, Eyes, so the ring starts one trait later
   "shape-onelook": { want: "shape", set: (w) => { w.shape("S01", 4, 4); w.at(0); } },
   "shape-short":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); const st = window.__st.ST; st.s = 1; st.e = 9; w.persist(); } },
   "shape-busy":    { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.bud(false); } },

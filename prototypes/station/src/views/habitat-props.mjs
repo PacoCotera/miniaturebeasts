@@ -47,10 +47,11 @@ export function modulesOf(m, shown, Sg, sittingSpec = null) {
   const crossWhy = out ? travel : crossState === "young" ? Sg.crossLater : crossState === "alone" ? fill(Sg.noPartner, { Species: S.spName(shown) }) : crossState === "away" ? Sg.crossAway : !doorOpen("cross") ? Sg.shut.cross : null;
   if (crossWhy) rows.cross = held(fill(Sg.cross, named), crossWhy, out ? plateT : [capLine(crossWhy)]);
   // Wild: in the order of the rule (state.returnMibiBlock): bonded, with you, going at the next dock; a young mibi is not held (the rooms words C12a)
-  const wildBlock = S.returnMibiBlock(st, sv, shown), price = S.gainText(S.PRICE.wildMibi);
+  const wildBlock = S.returnMibiBlock(st, sv, shown), price = "";   // a release pays nothing (owner 2026-10-28 23:16)
   if (wildBlock === "a bonded mibi stays") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.bonded, Sg.wildPlates.bonded.map((l) => fill(l, named)).concat(stage === "juvenile" ? [fill(Sg.wildPlates.bondedYoung, named)] : []), { price });
   else if (wildBlock === "already with you") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.withYou[where], plateT, { price });
-  else if (wildBlock) rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.waiting, Sg.wildPlates.waiting.map((l) => fill(l, named)), { price });
+  else if (wildBlock) { const k = wildBlock === "your last mibi at home stays" ? "last" : wildBlock.startsWith("tucked away") ? "tucked" : wildBlock.startsWith("back in") ? "coming" : "waiting";   // the put-away rules: the last at home stays; tucked away or on its way back, it cannot be returned
+    rows.wild = held(fill(Sg.wild, named), k === "coming" ? wildBlock : Sg.wildBlocks[k], Sg.wildPlates[k].map((l) => fill(l, { ...named, n: S.backIn(st, shown) })), { price }); }
   return { out, stage, dKind, pst, sitting, look, partners, pickable, crossState, wildBlock, rows };
 }
 
@@ -148,7 +149,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
   targets.push({ id: "cross", group: "low", enabled: crossState === "adult" && doorOpen("cross") });
   targets.push({ id: "wild", group: "low", enabled: !wildBlock });   // "already with you" while carried
   for (const t of tiles) if (t.state !== "free") targets.push({ id: "tile." + t.id, group: "tile", enabled: true });
-  for (const c of chips) targets.push({ id: "room." + c.id, group: "room", enabled: c.id === "new" ? S.roomPrice(st, settings) !== null : +c.id !== roomOf && !S.moveBlock(st, shown, +c.id, settings) });   // the chips last: the rooms, then the new-room chip; a chip is enabled when ✓ does something live
+  for (const c of chips) targets.push({ id: "room." + c.id, group: "room", enabled: c.id === "new" ? S.roomPrice(st, settings) !== null : false });   // a room's chip is no move target (the move mode retired)   // the chips last: the rooms, then the new-room chip; a chip is enabled when ✓ does something live
   const has = (id) => targets.some((t) => t.id === id), cur = m.focus && has(m.focus) ? m.focus : out ? "name" : "resident";
   const focus = { cur, targets, resolve: { "tile.shown": "tile." + sid, "room.shown": "room." + roomOf } };
 
@@ -169,7 +170,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
     else { const c = cost(p), short = c > st.d ? S.shortIcons(st, 0, c, 0) : ""; line = { ok: fill(Sg.read, { Chapter }), price: c ? "◆ " + c : "", ...(short ? { dim: true, short } : {}), subject: fill(Sg.plateUnread, { Chapter }), back: Sg.back, need: !short && c && frame ? warnWords(st, m.sv, settings, frame, { d: c }, { key: "read", mibi: shown }) : null }; }
   } else if (id === "door" || id === "portrait" || id === "cross" || id === "wild") {
     // a held row (the house rule): the verb stays, dimmed, and the context gives the reason; otherwise the live rows
-    const hr = rows[id], price = S.gainText(S.PRICE.wildMibi), now = docked;
+    const hr = rows[id], now = docked;
     if (hr) line = { ok: hr.ok, ...(hr.price ? { price: hr.price } : {}), dim: true, subject: hr.subject };
     else if (id === "door") line = dKind === "take" ? { ok: fill(Sg.take, named), subject: now ? Sg.takeNow : Sg.takeNext }
       : dKind === "bring" ? { ok: fill(Sg.bring, named), subject: now ? Sg.bringNow : Sg.bringNext }   // live while docked; away with the mibi out it is a held row
@@ -177,7 +178,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
       : { ok: null, subject: Sg.bringNext };
     else if (id === "portrait") line = look ? { ok: sittingSpec.strings.lookPortrait, subject: Sg.portrayed } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext };   // bottomLine.portrait.portrayed: ✓ strings.lookPortrait only while the picture is held
     else if (id === "cross") line = { ok: fill(Sg.cross, named), subject: fill(Sg.partners, { "n in words": spell(Math.min(pickable.length, 11)), Species: species }) };
-    else line = { ok: fill(Sg.wild, named), price, subject: Sg.wildContext };
+    else line = { ok: fill(Sg.wild, named), subject: Sg.wildContext };
     line = { ...line, back: Sg.back, need: null };
   } else if (id.startsWith("room.")) {   // a chip (R6, the rooms screens 1b, the rooms words C5): moves the mibi up close; the new-room chip as the whole's
     if (id === "room.new") {
@@ -185,14 +186,9 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
       line = { ok: Sg.newRoom.action, price: S.priceText(p, 0, 0), subject: Sg.newRoom.context, back: Sg.back, need: null };
       if (block) { const icons = S.shortIcons(st, p, 0, 0); line.dim = true; line.short = icons; line.need = fill(pods.strings.needMoreFrom[S.shortFrom(st, p, 0, 0)], { icons }); }
     } else {
-      const i = +id.slice(5), Room = S.ROOM_NAMES[i], free = S.ROOM - S.inRoom(st, i).length;
-      line = i === roomOf ? { ok: null, subject: Sg.chips.own }
-        : out ? { ok: fill(Sg.chips.move, named), dim: true, subject: travelContext }   // held while carried (heldRule)
-        : free === 0 ? { ok: fill(Sg.chips.move, named), dim: true, subject: fill(Sg.chips.noPlace, { Room }) }
-        : { ok: fill(Sg.chips.move, named), subject: free === 1 ? fill(Sg.chips.oneFree, { Room }) : fill(Sg.chips.placesFree, { Room, n: spell(free) }) };
-      line = { ...line, back: Sg.back, need: null };
+      line = { ok: null, subject: "", back: Sg.back, need: null };   // the collection v2 design §1: the move mode retires (a mibi moves in the Vivarium, picked up and set down); a room's chip has no ✓ cap
     }
   }
-  const top = S.roomCount(st, settings) >= 2 ? { readout: { text: S.ROOM_NAMES[roomOf], mark: null } } : {};   // the crumb, as the Vivarium's whole: the room of the mibi up close
+  const top = S.roomCount(st, settings) >= 2 ? { readout: { text: S.roomName(st, roomOf), mark: null } } : {};   // the crumb, as the Vivarium's whole: the room of the mibi up close
   return { props: { state, regions, focus }, line, requests, shown, top, held: rows };
 }

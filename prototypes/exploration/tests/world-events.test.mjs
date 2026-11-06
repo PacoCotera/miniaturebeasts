@@ -3,32 +3,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import vm from "node:vm";
+import { makePage } from "./page-harness.mjs";
 import * as W from "../src/world.mjs";
-import * as A from "../src/atlas.mjs";
-import * as V from "../src/view.mjs";
 
-const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
-const MODS = { world: W, view: V, atlas: A };
-const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
-const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
-const SCRIPT = MODULE.replace(IMPORT_RE, "");
 
 // The page in a sandbox: every DOM and canvas call lands on an inert stub; localStorage is `store`.
-function page(store = {}) {
-  const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
-    apply: () => any, construct: () => any, set: () => true });
-  const clock = { t: 1000, timers: [] };
-  const ctx = { console, URLSearchParams, Date, fetch: () => new Promise(() => {}), document: any, location: any, navigator: any,
-    matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
-    performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
-    localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
-  const run = src => vm.runInContext(src, ctx);
-  return { run, ctx };
-}
+const page = (store = {}) => makePage({ store });
 
 const KINDS = ["grown", "elder", "lampLow", "lampOut", "herd", "storm", "fruit", "stirring", "young", "quiet"];
 const PLACES = ["meadow", "pond", "rock", "wood", "shallows", "cliff"];

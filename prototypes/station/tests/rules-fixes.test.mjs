@@ -114,50 +114,40 @@ test("N6 the three callers draw as drawName does", () => {
   const ref = S.freshSt("w1", 1, T0); assert.deepEqual(names, names.map(() => S.drawName(ref)), "the same sequence"); assert.equal(new Set(names.map(S.nameKey)).size, names.length);
 });
 
-// ---- 4. the bench Data trickle ----
-import { watchFrame, compareAfterKey, habitatShown } from "../src/trickle.mjs";
-const NOON = new Date(2026, 9, 9, 12, 0).getTime(), sv0 = { with: null, wid: "w1", seed: 7 };
-const watchFor = (st, m, ms, s = settings, now = NOON) => { let r, left = ms; while (left > 0) { const dt = Math.min(250, left); r = S.benchWatch(st, sv0, m, dt, s, now); left -= dt; } return r; };
+// ---- 4. Data for a habit seen the first time ----
+import { watchFrame, habitatShown } from "../src/trickle.mjs";
+const sv0 = { with: null, wid: "w1", seed: 7 };
+const watchFor = (st, m, ms, s = settings) => { let r, left = ms; while (left > 0) { const dt = Math.min(250, left); r = S.benchWatch(st, sv0, m, dt, s); left -= dt; } return r; };
 const bench = () => { const st = fresh(); S.seedAdults(st, "S01", 3, 2, settings); st.d = 0; return st; };
-test("T1 a minute earns +1 Data once a resident a day: 59,999 ms nothing, 60,000 earns, a second minute nothing", () => {
-  const st = bench(), [m] = st.mibis; let r = watchFor(st, m, 59999); assert.equal(r.earned, 0); assert.equal(st.d, 0);
-  r = S.benchWatch(st, sv0, m, 1, settings, NOON); assert.equal(r.earned, 1); assert.equal(st.d, 1); assert.match(st.log.at(-1), /Bench · watched Dot · \+1 Data/);
-  r = watchFor(st, m, 60000); assert.equal(r.earned, 0); assert.equal(st.d, 1); assert.deepEqual(S.benchToday(st, NOON, settings), { d: 1, cap: 2, full: false });
+test("T1 a minute records the first unseen habit and pays 1 Data: 59,999 ms nothing, 60,000 pays, the next minute pays for the next habit", () => {
+  const st = bench(), [m] = st.mibis, fr = frameOf("S01"); m.habits = []; let r = watchFor(st, m, 59999); assert.equal(r.earned, 0); assert.equal(st.d, 0); assert.deepEqual(m.habits, []);
+  r = S.benchWatch(st, sv0, m, 1, settings); assert.equal(r.earned, 1); assert.equal(st.d, 1); assert.deepEqual(m.habits, [fr.habits[0]], "the first unseen, in frame order"); assert.match(st.log.at(-1), /is seen: /);
+  r = watchFor(st, m, 59000); assert.equal(r.earned, 0); assert.equal(st.d, 1); r = watchFor(st, m, 1000); assert.equal(r.earned, 1); assert.equal(st.d, 2); assert.deepEqual(m.habits, [fr.habits[0], fr.habits[2]], "calm is skipped: it is felt in the field");
 });
-test("T2 a minute split over two visits earns; T3 a released or with-you resident earns nothing; T4 dt is clamped to 250 ms", () => {
-  const st = bench(), [a, b] = st.mibis; watchFor(st, a, 30000); watchFor(st, b, 1000); assert.equal(st.d, 0); assert.equal(watchFor(st, a, 30000).earned, 1, "30 s and 30 s");
-  const s2 = bench(), [c, d] = s2.mibis; d.released = true; assert.equal(watchFor(s2, d, 120000).earned, 0); const sv = { with: c.id }; let e = 0; for (let i = 0; i < 400; i++) e += S.benchWatch(s2, sv, c, 250, settings, NOON).earned; assert.equal(e, 0);
-  const s3 = bench(); S.benchWatch(s3, sv0, s3.mibis[0], 10000, settings, NOON); assert.equal(s3.bench.watchMs[s3.mibis[0].id], 250);
+test("T2 a first sighting at home pays once: a habit already seen pays nothing again; a refused habit pays nothing; the dock's recording pays nothing here", () => {
+  const st = bench(); S.seedAdults(st, "S01", 4, 2, settings); st.d = 0; const [m] = st.mibis, fr = frameOf("S01"); m.habits = []; const h = fr.habits[0];
+  assert.equal(S.seeAtHome(st, m, h).ok, true); assert.equal(st.d, 1); assert.equal(S.seeAtHome(st, m, h).ok, false); assert.equal(st.d, 1);
+  assert.equal(S.seeAtHome(st, m, "no-such-habit").ok, false); assert.equal(st.d, 1); assert.equal(S.watchResident(st, m, h, 60000).ok, false); assert.equal(st.d, 1);
+  const other = st.mibis[1]; other.habits = []; assert.equal(S.watchResident(st, other, h, 60000).ok, true); assert.equal(st.d, 2, "each mibi is paid for its own first sighting");
+  const dock = st.mibis[2]; dock.habits = []; assert.equal(S.recordHabit(st, dock, h).ok, true); assert.equal(st.d, 2, "a habit the Companion saw on a walk is in the walk's yield");
 });
-test("T5 and T6 a compare: state 0 nothing, state 1 +1, B × A the same day nothing; a pair with nothing read on both earns nothing", () => {
-  const st = bench(), [a, b] = st.mibis, mk = (x, y, state) => ({ st, sv: sv0, settings, cross: { aId: x.id, bId: y.id, state }, now: NOON });
-  assert.equal(compareAfterKey(mk(a, b, 0)), null); assert.equal(st.d, 0); assert.equal(compareAfterKey(mk(a, b, 1)).earned, 1); assert.equal(st.d, 1); assert.match(st.log.at(-1), /Bench · compared/);
-  assert.equal(compareAfterKey(mk(b, a, 1)).earned, 0, "B × A is the same pair"); assert.equal(compareAfterKey(mk(a, b, 2)).earned, 0); assert.equal(st.d, 1);
-  const s2 = bench(), [c, d] = s2.mibis; c.read = ["coat"]; d.read = ["face"]; assert.equal(S.benchCompare(s2, sv0, c, d, settings, NOON).earned, 0, "nothing read on both"); d.read = ["coat"]; assert.equal(S.benchCompare(s2, sv0, c, d, settings, NOON).earned, 1);
+test("T3 a released or with-you resident earns nothing; dt is clamped to 250 ms; a minute split over two visits earns; with every habit seen nothing is earned", () => {
+  const st = bench(), [a, b] = st.mibis; a.habits = []; b.habits = []; watchFor(st, a, 30000); watchFor(st, b, 1000); assert.equal(st.d, 0); assert.equal(watchFor(st, a, 30000).earned, 1, "30 s and 30 s");
+  const s2 = bench(), [c, d] = s2.mibis; d.released = true; assert.equal(watchFor(s2, d, 120000).earned, 0); const sv = { with: c.id }; let e = 0; for (let i = 0; i < 400; i++) e += S.benchWatch(s2, sv, c, 250, settings).earned; assert.equal(e, 0);
+  const s3 = bench(), [f] = s3.mibis; f.habits = []; S.benchWatch(s3, sv0, f, 10000, settings); for (let i = 0; i < 238; i++) S.benchWatch(s3, sv0, f, 250, settings); assert.equal(s3.d, 0, "239 steps of 250 ms is under a minute"); assert.equal(S.benchWatch(s3, sv0, f, 250, settings).earned, 1);
+  const fr = frameOf("S01"), s4 = bench(), [g] = s4.mibis; g.habits = [...fr.habits]; assert.equal(watchFor(s4, g, 120000).earned, 0); assert.equal(s4.d, 0);
+  const s5 = bench(), [k] = s5.mibis; k.habits = []; for (let i = 0; i < 10; i++) watchFor(s5, k, 60000); assert.ok(!k.habits.includes("calm"), "calm is felt in the field, never watched"); assert.equal(s5.d, k.habits.length);
 });
-test("T7 the cap stops a third earn, and then nothing is earned; T9 a cap of 0 is off", () => {
-  const st = bench(); S.seedAdults(st, "S01", 4, 2, settings); const [a, b, c] = st.mibis; assert.equal(watchFor(st, a, 60000).earned, 1); assert.equal(S.benchCompare(st, sv0, a, b, settings, NOON).earned, 1);
-  assert.deepEqual(S.benchToday(st, NOON, settings), { d: 2, cap: 2, full: true }); assert.equal(watchFor(st, c, 60000).earned, 0); assert.equal(st.d, 2);
-  const off = bench(), s0 = { ...settings, trickleCap: 0 }; assert.equal(watchFor(off, off.mibis[0], 120000, s0).earned, 0); assert.equal(off.d, 0); assert.equal(S.benchCompare(off, sv0, off.mibis[0], off.mibis[1], s0, NOON).earned, 0);
-});
-test("T8 the day is the local date: 23:59 then 00:00 resets; moving the clock back keeps the ledger", () => {
-  const st = bench(), [a] = st.mibis, late = new Date(2026, 9, 9, 23, 59).getTime(), next = new Date(2026, 9, 10, 0, 0).getTime();
-  watchFor(st, a, 60000, settings, late); assert.equal(st.bench.d, 1); assert.equal(S.benchToday(st, late, settings).d, 1);
-  assert.equal(S.benchToday(st, next, settings).d, 0, "a new day"); assert.equal(st.bench.day, "2026-10-10");
-  assert.equal(watchFor(st, a, 60000, settings, next).earned, 1, "earns again on the new day");
-  assert.equal(S.benchToday(st, late, settings).d, 1, "an earlier date keeps the ledger"); assert.equal(st.bench.day, "2026-10-10");
-});
-test("T10 to T12 the watch records the first unseen habit at the minute; with every habit seen it still earns; a full cap still records it", () => {
-  const st = bench(), [a] = st.mibis, fr = frameOf("S01"); assert.ok(fr.habits.length >= 2); a.habits = [];
-  watchFor(st, a, 59000); assert.deepEqual(a.habits, []); const r = watchFor(st, a, 1000); assert.equal(r.earned, 1); assert.deepEqual(a.habits, [fr.habits[0]], "the first unseen, in frame order");
-  const s2 = bench(), [b] = s2.mibis; b.habits = [...fr.habits]; assert.equal(watchFor(s2, b, 60000).earned, 1); assert.deepEqual(b.habits, fr.habits, "all seen: nothing to record");
-  const s3 = bench(); s3.bench = { day: "2026-10-09", d: 2, watchMs: {}, watched: [], compared: [] }; const [c] = s3.mibis; c.habits = [fr.habits[0]]; const f = watchFor(s3, c, 60000); assert.equal(f.earned, 0); assert.equal(s3.d, 0); assert.deepEqual(c.habits, [fr.habits[0], fr.habits[2]], "a full cap still records the habit");
+test("T4 an old save with the day ledger loads clean: the ledger and trickleCap go, nothing else moves", () => {
+  const st = bench(); st.bench = { day: "2026-10-09", d: 2, watchMs: { 1: 5 }, watched: [1], compared: ["1-2"] }; st.d = 7; const before = JSON.parse(JSON.stringify({ ...st, bench: undefined }));
+  const out = S.normalize(S.migrate(JSON.parse(JSON.stringify(st)))); assert.ok(!("bench" in out)); assert.deepEqual(JSON.parse(JSON.stringify(out)), JSON.parse(JSON.stringify(S.normalize(JSON.parse(JSON.stringify(before))))));
+  assert.equal(out.d, 7); assert.ok(!("trickleCap" in S.DEFAULT_SETTINGS));
 });
 test("the frame hook watches only the shown resident, on Habitat, awake; Idle and other screens accumulate nothing", () => {
-  const st = bench(), [a, b] = st.mibis, base = { st, sv: sv0, settings, habId: a.id, dt: 250, now: NOON };
+  const st = bench(), [a, b] = st.mibis, base = { st, sv: sv0, settings, habId: a.id, dt: 250 }; a.habits = [];
   assert.equal(habitatShown(st, sv0, null).id, a.id); assert.equal(habitatShown(st, sv0, b.id).id, b.id); assert.equal(habitatShown(st, { with: a.id }, null).id, b.id, "the first not with you");
-  assert.equal(watchFrame({ ...base, screen: "home", idle: false }), null); assert.equal(watchFrame({ ...base, habId: null, screen: "habitat", idle: false }), null, "no mibi chosen up close: the fallback is never watched"); assert.equal(watchFrame({ ...base, habId: a.id, sv: { carried: [a.id] }, screen: "habitat", idle: false }), null, "a carried mibi is never watched"); assert.equal(watchFrame({ ...base, screen: "habitat", idle: true }), null); assert.equal(st.bench, undefined);
-  for (let i = 0; i < 240; i++) watchFrame({ ...base, screen: "habitat", idle: false }); assert.equal(st.d, 1); assert.deepEqual(Object.keys(st.bench.watchMs), [String(a.id)]);
+  assert.equal(watchFrame({ ...base, screen: "home", idle: false }), null); assert.equal(watchFrame({ ...base, habId: null, screen: "habitat", idle: false }), null, "no mibi chosen up close: the fallback is never watched"); assert.equal(watchFrame({ ...base, habId: a.id, sv: { carried: [a.id] }, screen: "habitat", idle: false }), null, "a carried mibi is never watched"); assert.equal(watchFrame({ ...base, screen: "habitat", idle: true }), null); assert.equal(st.d, 0);
+  for (let i = 0; i < 240; i++) watchFrame({ ...base, screen: "habitat", idle: false }); assert.equal(st.d, 1); assert.equal(a.habits.length, 1);
 });
 
 // ---- 5. who may cross: adults and elders, never a juvenile ----
@@ -172,10 +162,10 @@ test("each stage at the cross: a juvenile is barred, an adult and an elder may c
 });
 
 // ---- 7. twelve mibis a vivarium ----
-test("the rooms clamp to 4 (1 at least), whatever the setting or the save holds", () => {
+test("the rooms clamp to the ceiling of ten (1 at least), whatever the setting or the save holds", () => {
   const st = fresh();
-  for (const [rooms, want] of [[1, 1], [2, 2], [4, 4], [20, 4], [99, 4]]) assert.equal(S.roomCount(st, { ...settings, rooms }), want, "rooms " + rooms);
-  assert.equal(S.roomCount(st, { ...settings, rooms: null }), 1, "no setting and no save: one room"); st.rooms = 30; assert.equal(S.roomCount(st, { ...settings, rooms: 0 }), 4, "a save that holds more than 4"); st.rooms = 3; assert.equal(S.roomCount(st, settings), 3, "the save\'s rooms");
+  for (const [rooms, want] of [[1, 1], [2, 2], [4, 4], [10, 10], [20, 10], [99, 10]]) assert.equal(S.roomCount(st, { ...settings, rooms }), want, "rooms " + rooms);
+  assert.equal(S.roomCount(st, { ...settings, rooms: null }), 1, "no setting and no save: one room"); st.rooms = 30; assert.equal(S.roomCount(st, { ...settings, rooms: 0 }), 10, "a save that holds more than ten"); st.rooms = 3; assert.equal(S.roomCount(st, settings), 3, "the save\'s rooms");
 });
 test("the forms: gains read '❀ +1', spends '⚡ −1 ❀ −2' with a true minus on the figure", () => {
   assert.equal(S.gainText(2), "❀ +2"); assert.equal(S.spendText(1, 0, 2), "⚡ −1 ❀ −2"); assert.equal(S.spendText(0, 3, 0), "◆ −3"); assert.equal(S.spendText(0, 0, 0), "free");

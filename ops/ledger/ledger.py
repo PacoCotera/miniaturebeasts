@@ -125,6 +125,51 @@ def total(since=None, tool=None, ledger=None):
     return out
 
 
+DAY_LINE_MXN = 250.0      # the game's image line per Mexico City day (owner, 2026-11-04)
+MXN_PER_USD = 20.0
+WORST_CASE_USD = 0.24     # one image request at its dearest (the 4K price)
+BOOK_TOOL = "book/tools/gemini-gen.py"   # the book keeps its own daily line
+
+
+def mexico_city_day(now=None):
+    """The America/Mexico_City calendar day (YYYY-MM-DD) of a UTC datetime, today when none is given."""
+    from zoneinfo import ZoneInfo
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    return now.astimezone(ZoneInfo("America/Mexico_City")).date().isoformat()
+
+
+def day_mxn(day=None, skip_tools=(BOOK_TOOL,), ledger=None):
+    """The ledger's call lines of one Mexico City day in pesos (cost times the pesos-per-dollar rate), leaving out the
+    named tools. Stops, like require_ledger(), when the ledger is missing."""
+    d = ledger or require_ledger()
+    day = day or mexico_city_day()
+    t = 0.0
+    for path in sorted(glob.glob(os.path.join(d, "calls", "*.jsonl"))):
+        with open(path) as f:
+            for raw in f:
+                if not raw.strip():
+                    continue
+                line = json.loads(raw)
+                if line.get("tool") in skip_tools:
+                    continue
+                at = datetime.datetime.strptime(line["at"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.timezone.utc)
+                if mexico_city_day(at) == day:
+                    t += float(line.get("costUSD") or 0) * MXN_PER_USD
+    return t
+
+
+def require_day_line(worst_usd=WORST_CASE_USD, cap_mxn=DAY_LINE_MXN, now=None, skip_tools=(BOOK_TOOL,)):
+    """Call before a paid image call: stops the tool when today's lines plus this call's worst case would pass
+    the day line. Returns the day's running total in pesos."""
+    require_ledger()
+    day = mexico_city_day(now)
+    total = day_mxn(day, skip_tools)
+    if total + worst_usd * MXN_PER_USD > cap_mxn + 1e-9:
+        raise LedgerError(f"No call made: today's image spending ({total:.2f} pesos) plus this call's most it could cost "
+                          f"({worst_usd * MXN_PER_USD:.2f} pesos) would pass the {cap_mxn:.0f} peso day line.")
+    return total
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="The paid-call ledger (MB_LEDGER).")
     sub = ap.add_subparsers(dest="cmd", required=True)

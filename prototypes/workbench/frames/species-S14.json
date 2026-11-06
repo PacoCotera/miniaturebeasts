@@ -9,7 +9,7 @@
  },
  "taxonomy": {
   "code": "S14",
-  "resembles": "a slug",
+  "resembles": "a long soft body gliding on one flat foot",
   "moves": "slides",
   "habitat": "pond edge, wood; out in fog banks",
   "gate": null,
@@ -40,7 +40,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -969,7 +970,7 @@
    "family": "structure",
    "scope": "trunk",
    "switch": false,
-   "consumer": "rig: thread, club or feather tip",
+   "consumer": "rig: thread, club or fern-tip curl",
    "kind": "locked",
    "lockReason": "fixed",
    "chapter": null,
@@ -982,7 +983,7 @@
    "looks": [
     "club"
    ],
-   "guard": "rig: thread, club or feather tip",
+   "guard": "rig: thread, club or fern-tip curl",
    "nature": "look",
    "changedBy": "species"
   },
@@ -1454,6 +1455,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.leaf-presence",
    "why": "absent: a C15 branch locus"
   },
@@ -1526,7 +1531,7 @@
   "carried": 35,
   "trunk": 33,
   "branch": 2,
-  "absent": 105,
+  "absent": 106,
   "locked": 24,
   "lockedBy": {
    "switch": 3,

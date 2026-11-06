@@ -116,11 +116,11 @@ test("Cross: a face a partner (an adult or an elder of the species), a partner o
   m[0].born = w.st.turn; dock(w.st); b = build(w, sv0(), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "young"); assert.equal(b.line.subject, "crosses once adult"); assert.deepEqual(b.props.regions.cross.faces, []); assert.deepEqual([b.line.ok, b.line.dim, b.props.regions.cross.held], [`Cross ${m[0].name}`, true, true], "a young mibi's Cross is held before it is focused");
 });
 
-test("Wild: shut (no armed state), its context from the rules (a young, a bonded, a carried mibi stays) and the price ❀ +2 on the line", () => {
+test("Wild: shut (no armed state), its context from the rules (a young, a bonded, a carried mibi stays) and no price on the line: a release pays nothing", () => {
   const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0();
-  let b = build(w, sv, { focus: "wild" }); assert.equal(b.props.regions.wild.state, "shut"); assert.equal(b.line.ok, `Return ${m[0].name}`); assert.equal(b.line.price, "❀ +2"); assert.equal(b.line.subject, "leaves a pod of its line", "C13a"); assert.equal(b.props.regions.wild.held, false);
+  let b = build(w, sv, { focus: "wild" }); assert.equal(b.props.regions.wild.state, "shut"); assert.equal(b.line.ok, `Return ${m[0].name}`); assert.equal(b.line.price, undefined, "a release pays nothing"); assert.equal(b.line.subject, "leaves a pod of its line", "C13a"); assert.equal(b.props.regions.wild.held, false);
   m[0].born = w.st.turn; b = build(w, sv, { focus: "wild" }); assert.deepEqual([b.props.regions.wild.state, b.props.regions.wild.held, b.line.ok, b.line.dim], ["shut", false, `Return ${m[0].name}`, undefined], "C12a: a young mibi may be returned: not held");
-  m[0].born = w.st.turn - 99; m[0].bonded = true; b = build(w, sv, { focus: "wild" }); assert.deepEqual([b.props.regions.wild.state, b.props.regions.wild.held, b.line.ok, b.line.dim, b.line.price, b.line.subject], ["held", true, `Return ${m[0].name}`, true, "❀ +2", "a bonded mibi stays"], "the verb stays, dimmed"); assert.equal(b.props.focus.targets.find((t) => t.id === "wild").enabled, false);
+  m[0].born = w.st.turn - 99; m[0].bonded = true; b = build(w, sv, { focus: "wild" }); assert.deepEqual([b.props.regions.wild.state, b.props.regions.wild.held, b.line.ok, b.line.dim, b.line.price, b.line.subject], ["held", true, `Return ${m[0].name}`, true, undefined, "a bonded mibi stays"], "the verb stays, dimmed"); assert.equal(b.props.focus.targets.find((t) => t.id === "wild").enabled, false);
 });
 
 test("Portrait: none, held, its portrait on the way, portrayed; the context names why it cannot sit", () => {
@@ -249,42 +249,13 @@ function hostFor(w, sv, id) {
 }
 const press = (h, target) => INTENTS.habitat.intent(h, target, "confirm");
 
-test("R6 the chips up close (the rooms screens 1b, the rooms words C5): the ring on a chip does not change the room shown; its own room has no action, a room with space offers ✓ Move {name} here with the room's count, a full room the same verb dimmed, the new-room chip is the whole's", () => {
-  const w = world(3); dock(w.st); const m = mibis(w, 15), sv = sv0();   // Roots 8 (full), Reeds 7, Boulders empty
-  assert.deepEqual([S.inRoom(w.st, 0).length, S.inRoom(w.st, 1).length, S.inRoom(w.st, 2).length], [8, 7, 0]);
-  const at = (mb, chip) => build(w, sv, { habId: mb.id, focus: "room." + chip }), reeds = m[8], roots = m[0];
-  let b = at(roots, 0); assert.deepEqual([b.line.ok, b.line.subject, b.line.dim], [null, "its home room", undefined], "its own room: no action"); assert.equal(b.props.regions.glass.picture, roomIds(0, "day").near, "the ring on a chip does not change the room shown");
-  b = at(roots, 1); assert.deepEqual([b.line.ok, b.line.subject, b.line.dim], [`Move ${roots.name} here`, "Reeds: one place free", undefined], "a room with space: one place free"); assert.equal(b.props.regions.glass.picture, roomIds(0, "day").near);
-  b = at(roots, 2); assert.deepEqual([b.line.ok, b.line.subject, b.line.dim], [`Move ${roots.name} here`, "Boulders: eight places free", undefined]);
-  b = at(reeds, 0); assert.deepEqual([b.line.ok, b.line.subject, b.line.dim], [`Move ${reeds.name} here`, "Roots: no place free", true], "a full room: the same verb, dimmed"); assert.equal(b.props.focus.targets.find((t) => t.id === "room.0").enabled, false);
-  b = at(reeds, 2); assert.equal(b.line.subject, "Boulders: eight places free"); assert.equal(b.props.focus.targets.find((t) => t.id === "room.2").enabled, true);
-  assert.deepEqual(b.props.regions.rooms.items.map((c) => [c.id, c.state]), [["0", "room"], ["1", "shown"], ["2", "room"], ["new", "new"]], "the mibi's own room one step up");
-  assert.equal(b.props.regions.tiles.items.filter((x) => x.state !== "free").length, 7, "the places pane is the mibi's own room's");
-  b = at(roots, "new"); assert.deepEqual([b.line.ok, b.line.price, b.line.subject, b.line.dim], ["Add a room", S.priceText(S.roomPrice(w.st, w.settings), 0, 0), "eight more places", undefined], "the new-room chip, as the whole's");
-  w.st.e = 0; b = at(roots, "new"); assert.equal(b.line.dim, true); assert.ok(b.line.short, "short of Energy: the dimmed cap and the short icons"); w.st.e = 99;
-  for (const x of at(roots, 1).props.focus.targets) assert.ok(["resident", "name", "species", "family", "plate", "top", "low", "tile", "room"].includes(x.group));
-  w.st.dock.docked = false; const away = sv0({ carried: [roots.id] });   // a carried mibi's Move is held (heldRule): the verb dimmed, the traveller context
-  b = build(w, away, { habId: roots.id, focus: "room.2" }); assert.deepEqual([b.line.ok, b.line.dim, b.line.subject], [`Move ${roots.name} here`, true, "out exploring"]);
-});
-
-test("R6 ✓ Move {name} here moves the mibi (the near painting cross-dithers 200 ms, the places pane cuts to the new room, the ring stays on the chip, the plate says where); a full room's ✓ plays the rooms words C7; the new-room chip opens Add a room?", () => {
-  const w = world(3); dock(w.st); const m = mibis(w, 15), sv = sv0(), roots = m[0], reeds = m[8];
-  let h = hostFor(w, sv, reeds.id); h.ui.hab.f = "room.0";
-  press(h, "room.0"); assert.deepEqual(h.said, ["The Roots room is full\nMove one of its mibis out"], "C7: two lines, the room named"); assert.equal(reeds.room, 1, "nothing moved"); assert.deepEqual(h.played, []);
-  h = hostFor(w, sv, reeds.id); press(h, "room.1"); assert.deepEqual([h.said, reeds.room], [[], 1], "its home room: nothing");
-  h = hostFor(w, sv, roots.id); h.ui.hab.f = "room.2"; press(h, "room.2");
-  assert.deepEqual([roots.room, roots.slot, S.inRoom(w.st, 2).map((x) => x.id)], [2, 0, [roots.id]]); assert.deepEqual(h.said, [`${roots.name} moves to the Boulders room`], "C6");
-  assert.deepEqual(h.played.map((e) => [e.kind, e.target, e.from, e.ms, e.hold]), [["dither", "glass", roomIds(0, "day").near, 200, 0]], "the near painting from the old room's view, 200 ms"); assert.equal(h.ui.hab.prevRoom, roomIds(0, "day").near); h.timers[0].fn(); assert.equal(h.ui.hab.prevRoom, null);
-  assert.equal(h.ui.hab.f, "room.2", "the ring stays on the chip"); assert.equal(w.st.face.room, 2);
-  const b = build(w, sv, { habId: roots.id, focus: h.ui.hab.f }); assert.deepEqual([b.line.ok, b.line.subject], [null, "its home room"], "now its home room"); assert.equal(b.props.regions.glass.picture, roomIds(2, "day").near, "the places pane and the painting are the new room's"); assert.deepEqual(b.props.regions.tiles.items.filter((x) => x.state !== "free").map((x) => x.id), [String(roots.id)]); assert.deepEqual(b.top, { readout: { text: "Boulders", mark: null } });
-  assert.ok(S.moveBlock(w.st, roots, 2, w.settings)?.key === "own");
+test("the collection v2 design §1: one mibi up close keeps everything but its move mode: the ring on a room's chip does not change the room shown and offers nothing (no ✓ cap, no places free); ✓ on it moves nothing; the new-room chip is the whole's (the Add a room? panel)", () => {
+  const w = world(3); dock(w.st); const m = mibis(w, 15), sv = sv0(), roots = m[0], reeds = m[8];   // Roots 8 (full), Reeds 7, Boulders empty
+  const at = (mb, chip) => build(w, sv, { habId: mb.id, focus: "room." + chip });
+  for (const [mb, chip] of [[roots, 0], [roots, 1], [roots, 2], [reeds, 0]]) { const b = at(mb, chip); assert.deepEqual([b.line.ok, b.line.subject], [null, ""], `${mb.name} on room ${chip}: no move`); assert.equal(b.props.regions.glass.picture, roomIds(mb.room, "day").near, "the ring on a chip does not change the room shown"); assert.equal(b.props.focus.targets.find((t) => t.id === "room." + chip).enabled, false, "no move target"); }
+  let b = at(roots, "new"); assert.deepEqual([b.line.ok, b.line.price, b.line.subject, b.line.dim], ["Add a room", S.priceText(S.roomPrice(w.st, w.settings), 0, 0), "eight more places", undefined], "the new-room chip, as the whole's");
+  let h = hostFor(w, sv, roots.id); h.ui.hab.f = "room.2"; press(h, "room.2"); assert.deepEqual([roots.room, h.said, h.played], [0, [], []], "✓ on a room's chip: nothing moves, nothing said");
   h = hostFor(w, sv, roots.id); press(h, "room.new"); assert.deepEqual([h.ui.panel?.screen, h.ui.panel?.id], ["habitat", "addRoom"], "the Add a room? panel opens over one mibi up close");
-  // after buying: the ring stays on the place, now the new room's chip, and ✓ Move {name} here is offered
-  const v = { st: S.freshSt("w1", 3, T0), settings: cfg(null) }; S.normalize(v.st); v.st.e = 99; v.st.d = 99; v.st.s = 99; v.st.firstMibi = false; dock(v.st); const k = mibis(v, 8);
-  h = hostFor(v, sv0(), k[0].id); h.ui.hab.f = "room.new"; press(h, "room.new"); assert.equal(h.ui.panel.id, "addRoom");
-  INTENTS.panel.intent(h, "card.add", "confirm"); assert.deepEqual([v.st.rooms, h.ui.panel, h.ui.hab.f, h.said.length], [2, null, "room.1", 1], "the room is bought, the ring stays on the place");
-  const c = build(v, sv0(), { habId: k[0].id, focus: h.ui.hab.f }); assert.deepEqual([c.line.ok, c.line.subject], [`Move ${k[0].name} here`, "Reeds: eight places free"], "✓ Move {name} here is offered");
-  press(h, "room.1"); assert.equal(k[0].room, 1);
 });
 
 test("R6 the house rule on one mibi up close: a held module is drawn held before it is focused (props held), focused its verb stays dimmed with the reason, ✓ plays its plate and never stays silent", () => {
@@ -311,7 +282,7 @@ test("R6 the Return with its pod: the Wild context (C13a), the Return card's lin
   const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0();
   assert.equal(build(w, sv, { focus: "wild" }).line.subject, "leaves a pod of its line");
   const card = (id) => { const ui = { panel: { screen: "habitat", id: "wildMibi", focus: "" }, hab: { id } }; return panelBuild({ st: w.st, sv, settings: w.settings, ui, jump: "arrival" }, panelSpec, frameSpec, podsSpec).cards.find((c) => c.id === "return"); };
-  assert.equal(card(m[0].id).line, `${m[0].name}'s pod waits in the wild`); m[1].born = w.st.turn; assert.equal(card(m[1].id).line, `${m[1].name}'s pod comes once grown`); assert.equal(card(m[1].id).name, `Return ${m[1].name}`); assert.equal(card(m[1].id).cost, "❀ +2", "the same card otherwise");
+  assert.equal(card(m[0].id).line, `${m[0].name}'s pod waits in the wild`); m[1].born = w.st.turn; assert.equal(card(m[1].id).line, `${m[1].name}'s pod comes once grown`); assert.equal(card(m[1].id).name, `Return ${m[1].name}`); assert.equal(card(m[1].id).cost, "", "the same card otherwise: no gain");
   let h = hostFor(w, sv, m[0].id); returnNow(h); assert.deepEqual(h.said, [`${m[0].name} goes back to the meadow\nLook for its pod in two turns`], "C13d");
   h = hostFor(w, sv, m[1].id); returnNow(h); assert.deepEqual(h.said, [`${m[1].name} goes back to the meadow\n${m[1].name} grows up in its place\nbefore it leaves a pod`], "C13e"); assert.ok(m[1].released);
   assert.equal(w.st.sheds.length, 2, "both leave a shed record"); assert.equal(spec.strings.wildBlocks.young, undefined, "C12a: the young row retires");

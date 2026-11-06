@@ -6,7 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import vm from "node:vm";
+import { loadPage, fakeCanvas, PAGE, MODULE, SCRIPT } from "./page-harness.mjs";
 import { blank } from "../../face/tools/blank.mjs";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
@@ -18,33 +18,11 @@ const MODULE_SRC = readFileSync(new URL("../src/world.mjs", import.meta.url), "u
 const VIEW_SRC = readFileSync(new URL("../src/view.mjs", import.meta.url), "utf8");
 const ATLAS_SRC = readFileSync(new URL("../src/atlas.mjs", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
-const API = { hash: W.hash, L: W.L, genWorld: s => W.genWorld(s, 1), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells };
+const LIFE = { roster: W.ROSTER, genLife: (G, seed) => W.genLife(G, seed, W.ROSTER) };   // the roster column
+const API = { hash: W.hash, L: W.L, genWorld: s => W.genWorld(s, 1), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells, ...LIFE };
 const vectorOf = seed => VECTORS.gens["1"].seeds.find(s => s.seed === seed);
 
 // The page in a sandbox, as in freeze.test.mjs: the module script with its import bound to the real module's exports.
-const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
-const MODS = { world: W, view: V, atlas: A };
-const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
-const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
-const SCRIPT = MODULE.replace(IMPORT_RE, "");
-// A canvas that keeps palette indices (-1 transparent): fillRect, drawImage (2, 4 and 8 arguments, nearest), image data; clips are ignored.
-function fakeCanvas(look) {
-  const t = { width: 0, height: 0 }; let p = null;
-  const buf = () => { if (!p || p.length !== t.width * t.height) p = new Int16Array(t.width * t.height).fill(-1); return p; };
-  const put = (x, y, v) => { x = Math.floor(x); y = Math.floor(y); if (x >= 0 && y >= 0 && x < t.width && y < t.height) buf()[y * t.width + x] = v; };
-  const ctx = { fillStyle: "", imageSmoothingEnabled: false, save() {}, restore() {}, beginPath() {}, rect() {}, clip() {}, setTransform() {},
-    fillRect(x, y, w, h) { const v = look.hex(this.fillStyle); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) put(x + i, y + j, v); },
-    drawImage(src, ...a) { const sp = src.px(); let [sx, sy, sw, sh] = [0, 0, src.width, src.height], dx, dy, dw, dh;
-      if (a.length === 2) [dx, dy, dw, dh] = [a[0], a[1], sw, sh]; else if (a.length === 4) [dx, dy, dw, dh] = a; else [sx, sy, sw, sh, dx, dy, dw, dh] = a;
-      for (let j = 0; j < dh; j++) for (let i = 0; i < dw; i++) { const v = sp[(sy + Math.floor(j * sh / dh)) * src.width + sx + Math.floor(i * sw / dw)]; if (v >= 0) put(dx + i, dy + j, v); } },
-    createImageData: (w, h) => ({ width: w, height: h, data: new Uint8ClampedArray(w * h * 4) }),
-    putImageData(id, x, y) { for (let j = 0; j < id.height; j++) for (let i = 0; i < id.width; i++) { const o = (j * id.width + i) * 4; put(x + i, y + j, id.data[o + 3] ? look.rgb(id.data[o], id.data[o + 1], id.data[o + 2]) : -1); } },
-    getImageData(x, y, w, h) { const d = new Uint8ClampedArray(w * h * 4); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const v = buf()[(y + j) * t.width + x + i];
-      if (v >= 0) { const c = look.rgbOf(v), o = (j * w + i) * 4; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = 255; } } return { width: w, height: h, data: d }; } };
-  return Object.assign(t, { getContext: () => ctx, px: buf, style: {}, toDataURL: () => "" });
-}
 // `search` is the page's query string; the page's elements record their listeners (els[id].on.click). opts.canvas: canvases are
 // fakeCanvas, so a drawing can be read back (p.run("scr").px()). opts.script: a variant of the page script.
 function page(store = {}, search, opts = {}) {
@@ -59,8 +37,7 @@ function page(store = {}, search, opts = {}) {
     matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx);
-  run = src => vm.runInContext(src, ctx); run(opts.script || SCRIPT);
+  run = loadPage(ctx, opts.script || SCRIPT);
   return { run, store, els, ctx, clock, KEY: run("SAVE_KEY") };
 }
 const withoutMemo = w => { const o = { ...w }; delete o.beacons; delete o.depots; return o; };
@@ -96,12 +73,22 @@ test("purity, by source: no page state, DOM, storage, clock, randomness, drawing
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
 });
 
-test("unknown generators are refused; the page plays generators 1 and 2, and new worlds take generator 2", () => {
-  assert.throws(() => W.genWorld(1, 3), RangeError);
+test("unknown generators are refused; the page plays generators 1, 2, 3 and 4 (biomes), and new worlds take generator 3", () => {
+  assert.throws(() => W.genWorld(1, 5), RangeError);
   assert.throws(() => W.genWorld(1, 0), RangeError);
-  assert.deepEqual(W.GENS, [1, 2]);
+  assert.deepEqual(W.GENS, [1, 2, 3, 4]);
   assert.equal(W.genWorld(1, 2).gen, 2);
-  assert.equal(W.NEW_GEN, 2);
+  assert.equal(W.genWorld(1, 3).gen, 3); assert.equal(W.genWorld(1, 4).gen, 4);
+  assert.equal(W.NEW_GEN, 3);
+});
+
+test("generator 3 is generator 2's ground: the same land, edges, places and set pieces, with only gen different", () => {
+  for (const seed of [1, 7, 42, 99]) {
+    const a = W.genWorld(seed, 2), b = W.genWorld(seed, 3);
+    assert.deepEqual(Object.keys(b), Object.keys(a)); assert.equal(b.gen, 3);
+    assert.deepEqual(worldDigest(API2, { ...b, gen: 2 }), worldDigest(API2, a));
+    for (const key of [String(a.spawns[0]), "c" + a.gate]) assert.deepEqual(placeDigest(API2, W.genPlace(b, seed, key), 2), placeDigest(API2, W.genPlace(a, seed, key), 2), key);
+  }
 });
 
 test("a save without gen loads as generator 1 and is saved without gen", () => {
@@ -111,22 +98,35 @@ test("a save without gen loads as generator 1 and is saved without gen", () => {
   assert.equal(p.run("load()"), true);
   assert.deepEqual(worldDigest(API, p.run("G")), worldDigest(API, W.genWorld(fx.seed, 1)));
   p.run("save()");
-  assert.equal("gen" in JSON.parse(p.store[p.KEY]), false);
+  const v9 = JSON.parse(p.store[p.KEY]);
+  assert.equal("gen" in v9, false, "v9 has no gen at the top");
+  assert.equal(v9.regions[0].gen, 1, "region 1 is generator 1");
+  assert.equal(v9.regions[0].seed, fx.seed); assert.equal(v9.seed, fx.seed);
 });
 
-test("a new world writes gen 2, and its world and first place match generator 2's vectors", () => {
+test("a new world writes gen 3, and its world and first place match generator 3's vectors", () => {
   const p = page();
   p.run("newWorld(42)");
+  assert.equal(p.run("S.gen"), 3);
+  const v9 = JSON.parse(p.store[p.KEY]); assert.equal(v9.v, 9); assert.equal(v9.seed, 42); assert.equal(v9.regions[0].seed, 42); assert.equal(v9.regions[0].gen, 3); assert.equal("gen" in v9, false);
+  const want = VECTORS.gens["3"].seeds.find(s => s.seed === 42), G = p.run("G");
+  assert.deepEqual(Object.assign(worldDigest(API3, G), { beacons: [...W.beaconCells(G, 42)], depots: [...W.depotCells(G, 42)] }), want.world);
+  assert.deepEqual(placeDigest(API3, p.run("layout(String(G.spawns[0]))"), 2), want.places[0]);
+});
+
+test("a world of generator 2 (asked for by a test; players have them in saves) writes gen 2, and its world and first place match generator 2's vectors", () => {
+  const p = page();
+  p.run("newWorld(42, 2)");
   assert.equal(p.run("S.gen"), 2);
-  assert.match(p.store[p.KEY], /"seed":42,"gen":2,/);
+  assert.equal(JSON.parse(p.store[p.KEY]).regions[0].gen, 2);
   const want = VECTORS.gens["2"].seeds.find(s => s.seed === 42), G = p.run("G");
   assert.deepEqual(Object.assign(worldDigest(API2, G), { beacons: [...W.beaconCells(G, 42)], depots: [...W.depotCells(G, 42)] }), want.world);
   assert.equal(want.places[0].key, String(G.spawns[0]));
   assert.deepEqual(placeDigest(API2, p.run("layout(String(G.spawns[0]))"), 2), want.places[0]);
 });
 
-test("a save from a newer generator (gen 3) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
-  const raw = JSON.stringify(Object.assign(FIXTURE(), { gen: 3 })), writes = [];
+test("a save from a newer generator (gen 5) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
+  const raw = JSON.stringify(Object.assign(FIXTURE(), { gen: 5 })), writes = [];
   const old = { "mb-exploration-v1": "{}", "mb-exploration-v6": "{}" };   // the saves before v7 stay too: read-only boot removes nothing
   const store = new Proxy({ "mb-save-v8": raw, ...old }, { set: (o, k, v) => { writes.push(k); o[k] = v; return true; }, deleteProperty: (o, k) => { writes.push(k); delete o[k]; return true; } });
   const p = page(store);
@@ -147,7 +147,7 @@ test("a save from a newer generator (gen 3) is read-only: load() says 'newer', b
   assert.deepEqual(writes, [], "nothing was written");
   assert.doesNotThrow(() => p.els.copyNotes.on.click(), "Copy notes is a no-op while read-only");
   assert.deepEqual(writes, [], "Copy notes wrote nothing");
-  for (const gen of [3, 0, "1"]) { const q = page({ "mb-save-v8": JSON.stringify(Object.assign(FIXTURE(), { gen })) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
+  for (const gen of [5, 0, "1"]) { const q = page({ "mb-save-v8": JSON.stringify(Object.assign(FIXTURE(), { gen })) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
 });
 
 test("the Station's save reader adopts the save and keeps gen as it is (absent, 1, 2)", async () => {
@@ -157,19 +157,20 @@ test("the Station's save reader adopts the save and keeps gen as it is (absent, 
   const noSt = o => { const c = { ...o }; delete c.st; return c; };
   for (const gen of [undefined, 1, 2]) {
     const fx = FIXTURE(); if (gen !== undefined) fx.gen = gen;
-    store["mb-save-v8"] = JSON.stringify(fx);
+    store[game.saveKey()] = JSON.stringify(fx);   // the active Companion's save
     game.load();
     assert.equal(game.G.sv.wid, fx.wid, `gen ${gen}: adopted`);
     assert.ok(state.hasWorld(game.G.sv), `gen ${gen}: a world`);
     assert.equal(game.G.st.wid, fx.wid, `gen ${gen}: no fresh Station`);
     game.save();
-    assert.deepEqual(noSt(JSON.parse(store["mb-save-v8"])), noSt(fx), `gen ${gen}: the Companion's part as written`);
+    assert.deepEqual(noSt(JSON.parse(store[game.saveKey()])), noSt(fx), `gen ${gen}: the Companion's part as written`);
   }
 });
 
 // ---- generator 2 ----
 const { L, T, T_BLOCK, MW, MH, PW, PH, EDGE, TERR } = W;
-const API2 = { gen: 2, hash: W.hash, L, EDGE, genWorld: s => W.genWorld(s, 2), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells };
+const API2 = { gen: 2, hash: W.hash, L, EDGE, genWorld: s => W.genWorld(s, 2), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells, ...LIFE };
+const API3 = { ...API2, gen: 3, genWorld: s => W.genWorld(s, 3) };
 const vector2Of = seed => VECTORS.gens["2"].seeds.find(s => s.seed === seed);
 const NC = MW * MH, onMap = (x, y) => x >= 0 && y >= 0 && x < MW && y < MH;
 const SIDE4 = [["up", 0, -1], ["down", 0, 1], ["left", -1, 0], ["right", 1, 0]];
@@ -183,6 +184,28 @@ test("golden: generator 2 matches its vectors, field by field (16 seeds)", () =>
     assert.deepEqual(got.places.map(p => p.key), want.places.map(p => p.key), `seed ${want.seed}, place keys`);
     want.places.forEach((wp, i) => { for (const k of Object.keys(wp)) assert.deepEqual(got.places[i][k], wp[k], `seed ${want.seed}, place ${wp.key}, ${k}`); });
     assert.deepEqual(got, want, `seed ${want.seed}`);
+  }
+});
+
+test("golden: generator 3 matches its vectors, field by field, roster column included (16 seeds)", () => {
+  const seeds = VECTORS.gens["3"].seeds;
+  assert.deepEqual(seeds.map(s => s.seed), SEEDS);
+  for (const want of seeds) {
+    const got = seedDigest(API3, want.seed);
+    for (const k of Object.keys(want.world)) assert.deepEqual(got.world[k], want.world[k], `seed ${want.seed}, world, ${k}`);
+    assert.deepEqual(got.roster, want.roster, `seed ${want.seed}, roster`);
+    assert.deepEqual(got, want, `seed ${want.seed}`);
+    // the herd floor in the column: every species 2 herds or more
+    assert.ok(want.roster.every(r => r.herds >= W.HERD.FLOOR && r.creatures >= 3), `seed ${want.seed}: the floor`);
+  }
+  // generator 3 stands on generator 2's ground: its world and places are the same digests, gen apart
+  for (const [a, b] of VECTORS.gens["2"].seeds.map((s, i) => [s, seeds[i]])) { assert.deepEqual({ ...b.world, gen: 2 }, a.world); assert.deepEqual(b.places, a.places); }
+});
+
+test("golden: the roster column of generators 1 and 2 is their life as it always was, one column per species in slot order", () => {
+  for (const gen of ["1", "2"]) for (const want of VECTORS.gens[gen].seeds) {
+    assert.deepEqual(want.roster.map(r => r.name), W.ROSTER.map(r => r.name));
+    assert.deepEqual(seedDigest(gen === "1" ? API : API2, want.seed).roster, want.roster, `gen ${gen} seed ${want.seed}`);
   }
 });
 
@@ -563,8 +586,8 @@ test("canStepIn on hand-built worlds", () => {
 // A new (generator 2) world on a vector seed, calm, with an expedition set out at `cell` (map in view).
 function g2At(seed, cell) {
   const p = page();
-  p.run(`TEST.calm = true; newWorld(${seed}); startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.range = 4; FX.lockUntil = 0;`);
-  assert.equal(p.run("S.gen"), 2, "a new world takes generator 2");
+  p.run(`TEST.calm = true; newWorld(${seed}, 2); startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.range = 4; FX.lockUntil = 0;`);
+  assert.equal(p.run("S.gen"), 2, "generator 2 play");
   return p;
 }
 // Every edge of a generator 2 world: a (the cell the step starts from), dir, kind, facing (the way the drop faces) and up (into the higher cell).
@@ -665,12 +688,12 @@ test("generator 2 play: Ahead names the edge, the edge word alone comes before h
   assert.ok(ctx[0].includes("Ahead: " + o.run("landWord(S.exp.pos + 1)")), ctx[0]); assert.equal(ctx.length, 5, "no edge word");
 });
 
-test("generator 2 play: a save without gen is generator 1, canStep is passable everywhere it reaches; new worlds take generator 2 whatever the address says", () => {
+test("generator 2 play: a save without gen is generator 1, canStep is passable everywhere it reaches; new worlds take the newest generator whatever the address says", () => {
   const fx = FIXTURE(), p = page({ "mb-save-v8": JSON.stringify(fx) });
-  assert.equal(p.run("S.gen"), undefined); assert.equal(p.run("G.gen"), undefined);
+  assert.equal(p.run("S.gen"), 1, "region 1 is generator 1"); assert.equal(p.run("G.gen"), undefined);
   for (let c = 0; c < NC; c++) for (const [dir, dx, dy] of SIDE4) { const x = c % MW + dx, y = ((c / MW) | 0) + dy; if (!onMap(x, y)) continue;
     assert.equal(p.run(`canStep(${c}, ${JSON.stringify(dir)})`), p.run(`passable(${y * MW + x})`), `${c} ${dir}`); }
-  for (const q of ["?gen=1", "?gen=2", "?gen=3", "?seed=5&gen=1"]) { const r = page({}, q); r.run("newWorld(5)"); assert.equal(r.run("S.gen"), 2, q); assert.equal(r.run("G.gen"), 2, q); }
+  for (const q of ["?gen=1", "?gen=2", "?gen=3", "?gen=4", "?seed=5&gen=1"]) { const r = page({}, q); r.run("newWorld(5)"); assert.equal(r.run("S.gen"), 3, q); assert.equal(r.run("G.gen"), 3, q); }
 });
 
 test("generator 2 play: stairs and aprons take no pods, creatures or slabs; places draw every piece on the palette", () => {
@@ -718,13 +741,13 @@ test("generator 2 play: the side tail draws no ink on its high-side column; a pl
 const fnSrc = name => { const i = PAGE.indexOf("\nfunction " + name + "("); assert.ok(i >= 0, name); return PAGE.slice(i, PAGE.indexOf("\nfunction ", i + 1)); };
 const fnv = a => { let h = 2166136261; for (const v of a) { h ^= v & 0xffff; h = Math.imul(h, 16777619) >>> 0; } return h; };
 // main's generator 1 map, captured from main's page with this harness (seed 7 saved without gen, no pods, creatures or signs, every cell seen, the gate and the mouth visited)
-const MAIN_G1 = { mapCv: 2730365212, frame: 3568652280 };   // main 5e287081
+const MAIN_G1 = { mapCv: 3936681958, frame: 2163068169 };   // main 5e287081, with the round water corners
 // a save written without gen, as every save before generators: a world started, then saved with its gen dropped
-const g1Save = () => { const m = page(); m.run("newWorld(7); delete S.gen; save();"); assert.ok(!("gen" in JSON.parse(m.store[m.KEY]))); return { [m.KEY]: m.store[m.KEY] }; };
+const g1Save = () => { const m = page(); m.run("newWorld(7)"); const o = JSON.parse(m.store[m.KEY]); o.regions[0].gen = 1; return { [m.KEY]: JSON.stringify(o), "mb-companion-A": m.store["mb-companion-A"] }; };   // v9 names the generator in the region: gen 1
 // one page per generator, shared by the tests below (each sets the state it reads), so the map and fog are built once
 let G1P = null, G2P = null;
 const g1Page = () => G1P || (G1P = page(g1Save(), undefined, { canvas: true }));
-const g2Page = () => { if (!G2P) { G2P = page({}, undefined, { canvas: true }); G2P.run("newWorld(1)"); } return G2P; };
+const g2Page = () => { if (!G2P) { G2P = page({}, undefined, { canvas: true }); G2P.run("newWorld(1, 2)"); } return G2P; };
 const g1Map = () => { const p = g1Page();
   p.run("S.exp = null; S.phase = 'setup'; S.pins = []; S.opened = {}; S.pods = []; S.cr = []; S.signs = {}; S.skulls = {}; for (let c = 0; c < MW * MH; c++) { S.revealed[c] = 1; S.visited[c] = c === G.gate || c === G.mouth ? 1 : 0; } mapCv = null; scr.px().fill(-1); drawMap('view', 0);");
   return p; };
@@ -770,7 +793,7 @@ test("M3: generator 2's burrow hole draws on the gate cell's face each frame, th
 
 test("M3: generator 1's map and its burrow hole are unchanged, pixel for pixel against main", () => {
   const p = g1Map();
-  assert.equal(p.run("G.gen"), undefined);
+  assert.equal(p.run("G.gen"), undefined); assert.equal(p.run("S.gen"), 1);
   assert.equal(fnv(p.run("mapCv").px()), MAIN_G1.mapCv, "the baked map, hole included");
   assert.equal(fnv(p.run("scr").px()), MAIN_G1.frame, "the drawn full map");
   assert.equal(p.run("ART.has('g2hole')"), false, "no per-frame hole on generator 1");
@@ -780,7 +803,7 @@ test("M3: the gen-1 hint shows on a generator 1 save between expeditions, never 
   const sandIn = (p, setup) => { p.run(`${setup}; ensureMap(); scr.px().fill(-1); drawSetup(0);`); const f = p.run("scr").px(), W_ = p.run("SCR_W"), sand = p.run("C.sand"); let n = 0, x1 = 0;
     for (let y = 462; y < 482; y++) for (let x = 136; x < 442; x++) if (f[y * W_ + x] === sand) { n++; x1 = Math.max(x1, x); } return { n, x1 }; };
   const g1 = g1Page();
-  assert.equal(g1.run("S.gen"), undefined);
+  assert.equal(g1.run("S.gen"), 1);
   const hint = "Flat world · New world has stairs", w = g1.run(`textW(${JSON.stringify(hint)}, 2)`);
   assert.ok(w <= 306, "fits 306 at 2×");
   const shown = sandIn(g1, "S.exp = null; S.phase = 'setup'; FX.msg = ''");
@@ -825,7 +848,7 @@ function synthFill(q) {
   return px;
 }
 function page48(seed = 7, levelTone = ["dark", "none", "light"], over) {
-  const p = page({}, undefined, { canvas: true }); p.run("newWorld(" + seed + ")");
+  const p = page({}, undefined, { canvas: true }); p.run("newWorld(" + seed + ", 2)");
   const RGB = p.run("RGB.slice(0, 48)"), core = p.run("({ names: PALETTE.slice(0, 48).map(q => q[0]), dark: DARK.slice(0, 48), light: LIGHT.slice(0, 48), dark2: DARK2.slice(0, 48), fog: FOGLUT.slice(0, 48), fade: FADE.slice(0, 48) })");
   const table = A.paletteTable(RGB, core, synthPalette(p, over)); assert.equal(table.errors, undefined, String(table.errors));
   p.ctx.__syn = { list: VECTORS.atlas.catalogue.map(q => Object.assign({}, q, { px: synthFill(q) })), table, levelTone };
@@ -1008,8 +1031,8 @@ function place48g1(seed, cell, x, y) {
 test("golden frames: 32 px stays byte-identical to main (the cave, a place with no atlas, the reach view)", () => {
   const frame = (p, setup) => { p.run(setup); for (let i = 0; i < 3; i++) { p.clock.t += 16; p.run(`scr.px().fill(-1); RT.key = null; render(${p.clock.t})`); } return fnv(p.run("scr").px()); };
   const p = page({}, undefined, { canvas: true });
-  assert.equal(frame(p, "TEST.calm = true; newWorld(7); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; S.exp.pos = G.gate; enterCave();"), MAIN_FRAMES.cave, "the cave"); assert.equal(p.run("RT.ts"), 32);
-  assert.equal(frame(p, "TEST.calm = true; newWorld(7); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14;"), MAIN_FRAMES.place32, "a place with no atlas"); assert.equal(p.run("RT.ts"), 32);
+  assert.equal(frame(p, "TEST.calm = true; newWorld(7, 2); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; S.exp.pos = G.gate; enterCave();"), MAIN_FRAMES.cave, "the cave"); assert.equal(p.run("RT.ts"), 32);
+  assert.equal(frame(p, "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14;"), MAIN_FRAMES.place32, "a place with no atlas"); assert.equal(p.run("RT.ts"), 32);
   assert.equal(frame(p, "S.exp.patch = null; S.phase = 'map';"), MAIN_FRAMES.map, "the reach view");
 });
 test("golden frames at 48: a place with a south face and a stair, a generator 1 place, the pawn in a place corner", () => {
@@ -1304,7 +1327,7 @@ for (const ts of [32, 48]) {
     const pod = "S.pods.push({ k: S.exp.patch.key, x: 22, y: 13, h: 1, g: 0, sp: 0, id: 'tp' });";
     const a = cuePlace(ts), b = cuePlace(ts, { script: strip });
     for (const p of [a, b]) p.run(pod + " callPlace();");
-    const sOf = p => p.run("JSON.stringify(Object.assign({}, S, { wid: 0 }))");   // the world id is drawn from the clock
+    const sOf = p => p.run("JSON.stringify(Object.assign({}, S, { wid: 0, began: 0, regions: S.regions.map(r => ({ ...r, opened: 0 })) }))");   // the world id and the realm's start are drawn from the clock
     assert.equal(sOf(a), sOf(b), "S as without the cue");
     const cue = js(a, "FX.cue"), mine = t => t.id === "f22,13";
     assert.deepEqual([cue.key, cue.at, cue.until, cue.r], [a.run("S.exp.patch.key"), 5000, 3, 11]);

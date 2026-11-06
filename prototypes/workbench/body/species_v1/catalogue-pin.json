@@ -1,0 +1,6390 @@
+{
+ "id": "mb-genome-framework",
+ "version": 14,
+ "schema": "mb-catalogue/14",
+ "digest": "ae6bf810ca4edc08722a48a7ab56681ec508efbe462283f1a630a941a5b6ee6e",
+ "lookPairs": [
+  [
+   "Ear shape",
+   "anatomy.auricular-form",
+   "form.ear-kind"
+  ],
+  [
+   "Ear droop",
+   "anatomy.ear-tilt",
+   "form.ear-droop"
+  ],
+  [
+   "Ear width",
+   "growth.auricular-width-ratio",
+   "form.ear-width"
+  ],
+  [
+   "Eye size",
+   "growth.exterior-eye-size-ratio",
+   "form.eye-size"
+  ],
+  [
+   "Eye height",
+   "growth.exterior-eye-height-ratio",
+   "form.eye-height"
+  ],
+  [
+   "Eye spacing",
+   "growth.exterior-eye-spacing-ratio",
+   "form.eye-spacing"
+  ],
+  [
+   "Cream reach",
+   "growth.belly-field-extent",
+   "appearance.cream-extent"
+  ],
+  [
+   "Signature count",
+   "signature.count",
+   "growth.crest-leaf-count"
+  ],
+  [
+   "Signature size",
+   "signature.size",
+   "growth.feather-crest"
+  ],
+  [
+   "Signature size",
+   "signature.size",
+   "form.tail-tip-size"
+  ],
+  [
+   "Signature curl",
+   "signature.curl",
+   "growth.tail-curl-turn"
+  ],
+  [
+   "Signature curl",
+   "signature.curl",
+   "form.tail-curl"
+  ]
+ ],
+ "loci": [
+  {
+   "id": "development.axial-repeat",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "development-longevity",
+   "label": "axial repeat",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "single",
+     "value": 1
+    },
+    {
+     "id": "chain",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "id": "development.symmetry",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "development-longevity",
+   "label": "symmetry",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "bilateral"
+    },
+    {
+     "id": "radial"
+    }
+   ]
+  },
+  {
+   "id": "development.attachment-repeat",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "development-longevity",
+   "label": "attachment repeat",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "none",
+     "value": 0
+    },
+    {
+     "id": "multiple",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "development.articulated-chain",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "development-longevity",
+   "label": "articulated chain",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "unlinked",
+     "value": 0
+    },
+    {
+     "id": "linked",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "id": "development.membrane-rooting",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "development-longevity",
+   "label": "membrane rooting",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "development.fin-rooting",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "development-longevity",
+   "label": "fin rooting",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "development.axial-deformation",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "development-longevity",
+   "label": "axial deformation",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "development.volume-network",
+   "operator": "not-implemented",
+   "scope": "trunk",
+   "clan": null,
+   "family": "development-longevity",
+   "label": "volume network",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "candidate"
+    }
+   ]
+  },
+  {
+   "id": "structure.body-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "body length",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 1
+    },
+    {
+     "id": "high",
+     "value": 1.8
+    }
+   ]
+  },
+  {
+   "id": "structure.body-width",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "body width",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.4
+    },
+    {
+     "id": "high",
+     "value": 0.9
+    }
+   ]
+  },
+  {
+   "id": "structure.body-height",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "body height",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.3
+    },
+    {
+     "id": "high",
+     "value": 0.7
+    }
+   ]
+  },
+  {
+   "id": "structure.body-taper",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "body taper",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.1
+    },
+    {
+     "id": "high",
+     "value": 0.6
+    }
+   ]
+  },
+  {
+   "id": "structure.axial-spacing",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "axial spacing",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.axial-repeat"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.15
+    },
+    {
+     "id": "high",
+     "value": 0.3
+    }
+   ]
+  },
+  {
+   "id": "structure.attachment-position",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "attachment position",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.attachment-repeat"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.2
+    },
+    {
+     "id": "high",
+     "value": 0.7
+    }
+   ]
+  },
+  {
+   "id": "structure.proximal-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "proximal length",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.articulated-chain"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.3
+    },
+    {
+     "id": "high",
+     "value": 0.65
+    }
+   ]
+  },
+  {
+   "id": "structure.distal-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "distal length",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.articulated-chain"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.2
+    },
+    {
+     "id": "high",
+     "value": 0.5
+    }
+   ]
+  },
+  {
+   "id": "structure.joint-range",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "joint range",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.articulated-chain"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.4
+    },
+    {
+     "id": "high",
+     "value": 1.2
+    }
+   ]
+  },
+  {
+   "id": "structure.contact-width",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "contact width",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.articulated-chain"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.1
+    },
+    {
+     "id": "high",
+     "value": 0.25
+    }
+   ]
+  },
+  {
+   "id": "structure.membrane-span",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "membrane span",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.membrane-rooting"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 1
+    },
+    {
+     "id": "high",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "id": "structure.membrane-flexibility",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "membrane flexibility",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.membrane-rooting"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.2
+    },
+    {
+     "id": "high",
+     "value": 0.7
+    }
+   ]
+  },
+  {
+   "id": "structure.fin-span",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "fin span",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.fin-rooting"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.2
+    },
+    {
+     "id": "high",
+     "value": 0.6
+    }
+   ]
+  },
+  {
+   "id": "structure.material-density",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "material density",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1.2
+    }
+   ]
+  },
+  {
+   "id": "appearance.body-palette",
+   "operator": "partition-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "body palette",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "charcoal"
+    },
+    {
+     "id": "russet"
+    },
+    {
+     "id": "jade"
+    },
+    {
+     "id": "lagoon"
+    },
+    {
+     "id": "cobalt"
+    },
+    {
+     "id": "periwinkle"
+    },
+    {
+     "id": "plum"
+    },
+    {
+     "id": "raspberry"
+    },
+    {
+     "id": "coral"
+    },
+    {
+     "id": "marigold"
+    },
+    {
+     "id": "ash"
+    }
+   ]
+  },
+  {
+   "id": "appearance.underside-palette",
+   "operator": "partition-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "underside palette",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.symmetry"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "cream"
+    },
+    {
+     "id": "slate"
+    },
+    {
+     "id": "milk-mint"
+    },
+    {
+     "id": "ice"
+    },
+    {
+     "id": "butter"
+    },
+    {
+     "id": "peach"
+    }
+   ]
+  },
+  {
+   "id": "appearance.marking-switch",
+   "operator": "recessive-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "marking switch",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "appearance.marking-layout",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "marking layout",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "appearance.marking-switch"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "bands"
+    },
+    {
+     "id": "patches"
+    },
+    {
+     "id": "masked"
+    },
+    {
+     "id": "points"
+    },
+    {
+     "id": "spotted"
+    },
+    {
+     "id": "capped"
+    },
+    {
+     "id": "saddle"
+    },
+    {
+     "id": "brindle"
+    },
+    {
+     "id": "gradient"
+    },
+    {
+     "id": "back-spots"
+    }
+   ]
+  },
+  {
+   "id": "appearance.marking-extent",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "marking extent",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "appearance.marking-switch"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.15
+    },
+    {
+     "id": "high",
+     "value": 0.5
+    }
+   ]
+  },
+  {
+   "id": "appearance.marking-scale",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "marking scale",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "appearance.marking-switch"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.06
+    },
+    {
+     "id": "high",
+     "value": 0.14
+    }
+   ]
+  },
+  {
+   "id": "appearance.marking-orientation",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "marking orientation",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "appearance.marking-switch"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "high",
+     "value": 1.57
+    }
+   ]
+  },
+  {
+   "id": "appearance.marking-contrast",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "marking contrast",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "appearance.marking-switch"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.3
+    },
+    {
+     "id": "high",
+     "value": 0.8
+    }
+   ]
+  },
+  {
+   "id": "appearance.surface-texture",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "surface texture",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "smooth"
+    },
+    {
+     "id": "ridged"
+    }
+   ]
+  },
+  {
+   "id": "appearance.transparency",
+   "operator": "not-implemented",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "transparency",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "candidate"
+    }
+   ]
+  },
+  {
+   "id": "movement.contact-phase",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "contact phase",
+   "nature": "doing",
+   "owner": null,
+   "requires": [
+    "development.articulated-chain"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.25
+    },
+    {
+     "id": "high",
+     "value": 0.75
+    }
+   ]
+  },
+  {
+   "id": "movement.cycle-rate",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "cycle rate",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.6
+    },
+    {
+     "id": "high",
+     "value": 1.4
+    }
+   ]
+  },
+  {
+   "id": "movement.stride-preference",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "stride preference",
+   "nature": "doing",
+   "owner": null,
+   "requires": [
+    "structure.proximal-length",
+    "structure.joint-range"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.2
+    },
+    {
+     "id": "high",
+     "value": 0.5
+    }
+   ]
+  },
+  {
+   "id": "movement.turn-control",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "turn control",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.3
+    },
+    {
+     "id": "high",
+     "value": 0.8
+    }
+   ]
+  },
+  {
+   "id": "movement.axial-amplitude",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "axial amplitude",
+   "nature": "doing",
+   "owner": null,
+   "requires": [
+    "development.axial-deformation"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.08
+    },
+    {
+     "id": "high",
+     "value": 0.22
+    }
+   ]
+  },
+  {
+   "id": "movement.axial-phase",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "axial phase",
+   "nature": "doing",
+   "owner": null,
+   "requires": [
+    "development.axial-deformation"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.4
+    },
+    {
+     "id": "high",
+     "value": 1.2
+    }
+   ]
+  },
+  {
+   "id": "movement.membrane-stroke",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "membrane stroke",
+   "nature": "doing",
+   "owner": null,
+   "requires": [
+    "development.membrane-rooting"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.3
+    },
+    {
+     "id": "high",
+     "value": 0.8
+    }
+   ]
+  },
+  {
+   "id": "movement.membrane-coordination",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "membrane coordination",
+   "nature": "doing",
+   "owner": null,
+   "requires": [
+    "development.membrane-rooting"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "movement.fin-steering",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "fin steering",
+   "nature": "doing",
+   "owner": null,
+   "requires": [
+    "development.fin-rooting"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.2
+    },
+    {
+     "id": "high",
+     "value": 0.7
+    }
+   ]
+  },
+  {
+   "id": "movement.burst-recruitment",
+   "operator": "not-implemented",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "burst recruitment",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "candidate"
+    }
+   ]
+  },
+  {
+   "id": "energy.actuator-capacity",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "energy-nutrition",
+   "label": "actuator capacity",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.6
+    },
+    {
+     "id": "high",
+     "value": 1.5
+    }
+   ]
+  },
+  {
+   "id": "energy.reserve-capacity",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "energy-nutrition",
+   "label": "reserve capacity",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 1
+    },
+    {
+     "id": "high",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "id": "energy.action-efficiency",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "energy-nutrition",
+   "label": "Matched-action cost factor",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.6
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "energy.recovery-profile",
+   "operator": "not-implemented",
+   "scope": "trunk",
+   "clan": null,
+   "family": "energy-nutrition",
+   "label": "recovery profile",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "candidate"
+    }
+   ]
+  },
+  {
+   "id": "energy.uptake-profile",
+   "operator": "not-implemented",
+   "scope": "trunk",
+   "clan": null,
+   "family": "energy-nutrition",
+   "label": "uptake profile",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "candidate"
+    }
+   ]
+  },
+  {
+   "id": "energy.rest-response",
+   "operator": "not-implemented",
+   "scope": "trunk",
+   "clan": null,
+   "family": "energy-nutrition",
+   "label": "rest response",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "candidate"
+    }
+   ]
+  },
+  {
+   "id": "structure.ocular-pair",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "ocular pair",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.axial-repeat",
+    "structure.body-length",
+    "structure.body-width",
+    "structure.body-taper",
+    "structure.axial-spacing"
+   ],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "absent"
+    },
+    {
+     "id": "paired"
+    }
+   ]
+  },
+  {
+   "id": "structure.ocular-placement",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "ocular placement",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.axial-repeat",
+    "structure.body-length",
+    "structure.body-width",
+    "structure.body-taper",
+    "structure.axial-spacing",
+    "structure.ocular-pair",
+    "development.regional-growth",
+    "structure.join-neck-ratio"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.35
+    },
+    {
+     "id": "high",
+     "value": 0.65
+    }
+   ]
+  },
+  {
+   "id": "structure.ocular-size",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "ocular size",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.axial-repeat",
+    "structure.body-length",
+    "structure.body-width",
+    "structure.body-taper",
+    "structure.axial-spacing",
+    "structure.ocular-pair",
+    "development.regional-growth",
+    "structure.join-neck-ratio"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.18
+    },
+    {
+     "id": "high",
+     "value": 0.24
+    }
+   ]
+  },
+  {
+   "id": "appearance.covering-kind",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "covering kind",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "skin"
+    },
+    {
+     "id": "scales"
+    }
+   ]
+  },
+  {
+   "id": "appearance.covering-extent",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "covering extent",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "appearance.covering-kind",
+    "development.axial-repeat",
+    "structure.body-length",
+    "structure.body-taper",
+    "structure.axial-spacing",
+    "development.regional-growth",
+    "structure.join-neck-ratio"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.35
+    },
+    {
+     "id": "high",
+     "value": 0.75
+    }
+   ]
+  },
+  {
+   "id": "appearance.covering-scale",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "covering scale",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "appearance.covering-kind",
+    "structure.body-width",
+    "development.regional-growth",
+    "structure.join-neck-ratio"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.06
+    },
+    {
+     "id": "high",
+     "value": 0.12
+    }
+   ]
+  },
+  {
+   "id": "development.regional-growth",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "development-longevity",
+   "label": "Regional growth",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.axial-repeat",
+    "structure.body-length",
+    "structure.body-width",
+    "structure.body-taper"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "even"
+    },
+    {
+     "id": "central"
+    },
+    {
+     "id": "anterior"
+    }
+   ]
+  },
+  {
+   "id": "structure.join-neck-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Join neck ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [
+    "development.axial-repeat",
+    "development.regional-growth",
+    "structure.body-width",
+    "structure.body-taper",
+    "structure.axial-spacing"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.65
+    },
+    {
+     "id": "high",
+     "value": 0.95
+    }
+   ]
+  },
+  {
+   "id": "anatomy.posterior-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "posterior presence",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.muzzle-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "muzzle presence",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.crown-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "crown presence",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.wing-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "wing presence",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.exterior-eye-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "sensing-signaling",
+   "label": "exterior eye presence",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.support-pair-count",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "support pair count",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "two",
+     "value": 2
+    },
+    {
+     "id": "three",
+     "value": 3
+    },
+    {
+     "id": "one",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "anatomy.crown-form",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "crown form",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "rounded"
+    },
+    {
+     "id": "pointed"
+    },
+    {
+     "id": "leaf"
+    }
+   ]
+  },
+  {
+   "id": "growth.core-half-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "core half length",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0.45
+    },
+    {
+     "id": "medium",
+     "value": 0.62
+    },
+    {
+     "id": "large",
+     "value": 0.76
+    },
+    {
+     "id": "huge",
+     "value": 0.92
+    }
+   ]
+  },
+  {
+   "id": "growth.core-width-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "core width ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.31
+    },
+    {
+     "id": "high",
+     "value": 0.55
+    },
+    {
+     "id": "wide",
+     "value": 0.65
+    }
+   ]
+  },
+  {
+   "id": "growth.core-depth-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "core depth ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.36
+    },
+    {
+     "id": "high",
+     "value": 0.61
+    },
+    {
+     "id": "deep",
+     "value": 0.7
+    }
+   ]
+  },
+  {
+   "id": "growth.head-length-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "head length ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0.3
+    },
+    {
+     "id": "medium",
+     "value": 0.36
+    },
+    {
+     "id": "large",
+     "value": 0.55
+    },
+    {
+     "id": "tiny",
+     "value": 0.22
+    }
+   ]
+  },
+  {
+   "id": "growth.head-width-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "head width ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.31
+    },
+    {
+     "id": "high",
+     "value": 0.53
+    },
+    {
+     "id": "tiny",
+     "value": 0.25
+    }
+   ]
+  },
+  {
+   "id": "growth.head-depth-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "head depth ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.36
+    },
+    {
+     "id": "high",
+     "value": 0.55
+    },
+    {
+     "id": "tiny",
+     "value": 0.25
+    }
+   ]
+  },
+  {
+   "id": "growth.head-lift-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "head lift ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 0.72
+    }
+   ]
+  },
+  {
+   "id": "growth.muzzle-projection-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "muzzle projection ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.58
+    },
+    {
+     "id": "long",
+     "value": 1.24
+    },
+    {
+     "id": "stub",
+     "value": 0.32
+    }
+   ]
+  },
+  {
+   "id": "growth.muzzle-width-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "muzzle width ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.62
+    },
+    {
+     "id": "high",
+     "value": 0.69
+    },
+    {
+     "id": "full",
+     "value": 0.85
+    }
+   ]
+  },
+  {
+   "id": "growth.support-drop-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "support drop ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.35
+    },
+    {
+     "id": "medium",
+     "value": 1.05
+    },
+    {
+     "id": "long",
+     "value": 1.25
+    }
+   ]
+  },
+  {
+   "id": "growth.support-splay-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "support splay ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.07
+    },
+    {
+     "id": "high",
+     "value": 0.7
+    }
+   ]
+  },
+  {
+   "id": "growth.support-radius-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "support radius ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "fine",
+     "value": 0.05
+    },
+    {
+     "id": "slender",
+     "value": 0.11
+    },
+    {
+     "id": "stout",
+     "value": 0.2
+    }
+   ]
+  },
+  {
+   "id": "growth.terminal-length-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "terminal length ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0.09
+    },
+    {
+     "id": "narrow",
+     "value": 0.18
+    },
+    {
+     "id": "broad",
+     "value": 0.33
+    }
+   ]
+  },
+  {
+   "id": "growth.terminal-depth-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "terminal depth ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0.06
+    },
+    {
+     "id": "low",
+     "value": 0.105
+    },
+    {
+     "id": "high",
+     "value": 0.155
+    }
+   ]
+  },
+  {
+   "id": "growth.posterior-length-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "posterior length ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.45
+    },
+    {
+     "id": "long",
+     "value": 0.95
+    }
+   ]
+  },
+  {
+   "id": "growth.posterior-width-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "posterior width ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.45
+    },
+    {
+     "id": "high",
+     "value": 0.9
+    }
+   ]
+  },
+  {
+   "id": "growth.exterior-eye-size-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "exterior eye size ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0.24
+    },
+    {
+     "id": "large",
+     "value": 0.32
+    },
+    {
+     "id": "huge",
+     "value": 0.44
+    }
+   ]
+  },
+  {
+   "id": "growth.exterior-eye-spacing-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "exterior eye spacing ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "close",
+     "value": 0.4
+    },
+    {
+     "id": "wide",
+     "value": 0.55
+    }
+   ]
+  },
+  {
+   "id": "growth.crown-height-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "crown height ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.45
+    },
+    {
+     "id": "high",
+     "value": 1.05
+    }
+   ]
+  },
+  {
+   "id": "growth.wing-span-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "wing span ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.8
+    },
+    {
+     "id": "long",
+     "value": 1.5
+    }
+   ]
+  },
+  {
+   "id": "growth.wing-chord-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "wing chord ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "narrow",
+     "value": 0.45
+    },
+    {
+     "id": "wide",
+     "value": 0.85
+    }
+   ]
+  },
+  {
+   "id": "growth.wing-sweep-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "wing sweep ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "high",
+     "value": 0.35
+    }
+   ]
+  },
+  {
+   "id": "appearance.anatomical-covering",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "anatomical covering",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "skin"
+    },
+    {
+     "id": "scales"
+    }
+   ]
+  },
+  {
+   "id": "appearance.anatomical-covering-extent",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "anatomical covering extent",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.35
+    },
+    {
+     "id": "long",
+     "value": 0.7
+    }
+   ]
+  },
+  {
+   "id": "appearance.anatomical-scale-size",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "anatomical scale size",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "fine",
+     "value": 0.12
+    },
+    {
+     "id": "coarse",
+     "value": 0.2
+    }
+   ]
+  },
+  {
+   "id": "organization.region-depth",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "region depth",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "one",
+     "value": 1
+    },
+    {
+     "id": "two",
+     "value": 2
+    },
+    {
+     "id": "three",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "organization.region-layout",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "region layout",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "serial"
+    },
+    {
+     "id": "fan"
+    }
+   ]
+  },
+  {
+   "id": "organization.body-symmetry",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "body symmetry",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "bilateral"
+    },
+    {
+     "id": "radial"
+    }
+   ]
+  },
+  {
+   "id": "organization.region-join",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "region join",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "broad"
+    },
+    {
+     "id": "narrow"
+    }
+   ]
+  },
+  {
+   "id": "organization.head-module",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "head module",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "plain"
+    },
+    {
+     "id": "head"
+    }
+   ]
+  },
+  {
+   "id": "organization.appendage-role",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "appendage role",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "none"
+    },
+    {
+     "id": "free"
+    },
+    {
+     "id": "contact"
+    }
+   ]
+  },
+  {
+   "id": "organization.appendage-groups",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "appendage groups",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "zero",
+     "value": 0
+    },
+    {
+     "id": "one",
+     "value": 1
+    },
+    {
+     "id": "two",
+     "value": 2
+    },
+    {
+     "id": "three",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "organization.free-link-count",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "free link count",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "one",
+     "value": 1
+    },
+    {
+     "id": "two",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "id": "growth.region-bend",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "region bend",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "down",
+     "value": -0.55
+    },
+    {
+     "id": "up",
+     "value": 0.55
+    }
+   ]
+  },
+  {
+   "id": "growth.region-taper",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "region taper",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "strong",
+     "value": 0.45
+    },
+    {
+     "id": "gentle",
+     "value": 0.85
+    }
+   ]
+  },
+  {
+   "id": "growth.branch-angle",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "branch angle",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "close",
+     "value": 0.5
+    },
+    {
+     "id": "wide",
+     "value": 1.1
+    }
+   ]
+  },
+  {
+   "id": "growth.join-throat-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "join throat ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "thin",
+     "value": 0.3
+    },
+    {
+     "id": "broad",
+     "value": 0.75
+    }
+   ]
+  },
+  {
+   "id": "growth.free-proximal-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "free proximal ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.45
+    },
+    {
+     "id": "long",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "growth.free-distal-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "free distal ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.35
+    },
+    {
+     "id": "long",
+     "value": 0.75
+    }
+   ]
+  },
+  {
+   "id": "growth.free-radius-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "free radius ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "fine",
+     "value": 0.06
+    },
+    {
+     "id": "thick",
+     "value": 0.14
+    }
+   ]
+  },
+  {
+   "id": "growth.radial-cross-radius",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "radial cross radius",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "slender",
+     "value": 0.31
+    },
+    {
+     "id": "broad",
+     "value": 0.55
+    }
+   ]
+  },
+  {
+   "id": "anatomy.region-cross-exponent",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "region cross exponent",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "round",
+     "value": 2
+    },
+    {
+     "id": "rounded-square",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "id": "anatomy.region-longitudinal-form",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "region longitudinal form",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "ovoid"
+    },
+    {
+     "id": "barrel"
+    },
+    {
+     "id": "tapered"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.contact-terminal-form",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "contact terminal form",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "rounded"
+    },
+    {
+     "id": "pad"
+    },
+    {
+     "id": "wedge"
+    },
+    {
+     "id": "hoof"
+    },
+    {
+     "id": "webbed"
+    },
+    {
+     "id": "root"
+    }
+   ]
+  },
+  {
+   "id": "appearance.fur-presence",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "fur presence",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "appearance.fur-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "fur length",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.15
+    },
+    {
+     "id": "long",
+     "value": 0.3
+    }
+   ]
+  },
+  {
+   "id": "appearance.fur-flow",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "fur flow",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "axial",
+     "value": 0
+    },
+    {
+     "id": "oblique",
+     "value": 0.45
+    }
+   ]
+  },
+  {
+   "id": "anatomy.auricular-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "auricular presence",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.auricular-form",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "auricular form",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "rounded"
+    },
+    {
+     "id": "pointed"
+    }
+   ]
+  },
+  {
+   "id": "growth.auricular-length-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "auricular length ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.6
+    },
+    {
+     "id": "long",
+     "value": 1
+    },
+    {
+     "id": "tall",
+     "value": 1.4
+    },
+    {
+     "id": "small",
+     "value": 0.45
+    },
+    {
+     "id": "medium",
+     "value": 0.75
+    }
+   ]
+  },
+  {
+   "id": "anatomy.axial-tail-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "axial tail presence",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.axial-tail-length-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "axial tail length ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.75
+    },
+    {
+     "id": "long",
+     "value": 1.75
+    }
+   ]
+  },
+  {
+   "id": "growth.axial-tail-width-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "axial tail width ratio",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "fine",
+     "value": 0.08
+    },
+    {
+     "id": "broad",
+     "value": 0.16
+    }
+   ]
+  },
+  {
+   "id": "growth.axial-tail-bend",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "axial tail bend",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "down",
+     "value": -0.6
+    },
+    {
+     "id": "up",
+     "value": 0.6
+    }
+   ]
+  },
+  {
+   "id": "cognition.innate-profile-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "cognition-tendencies",
+   "label": "Optional innate profile",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "cognition.exploration-tendency",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "cognition-tendencies",
+   "label": "Exploration tendency",
+   "nature": "doing",
+   "owner": null,
+   "requires": [
+    "cognition.innate-profile-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "reserved"
+    },
+    {
+     "id": "seeking"
+    }
+   ]
+  },
+  {
+   "id": "cognition.arousal-threshold",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "cognition-tendencies",
+   "label": "Reference cue threshold",
+   "nature": "doing",
+   "owner": null,
+   "requires": [
+    "cognition.innate-profile-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.25
+    },
+    {
+     "id": "high",
+     "value": 0.75
+    }
+   ]
+  },
+  {
+   "id": "appearance.fur-reach",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Fur reach",
+   "nature": "look",
+   "owner": "fur",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "body"
+    },
+    {
+     "id": "tail"
+    },
+    {
+     "id": "ears"
+    }
+   ]
+  },
+  {
+   "id": "appearance.face-mask",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Face mask",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "appearance.face-mask-shape",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Mask shape",
+   "nature": "look",
+   "owner": "appearance.face-mask",
+   "requires": [
+    "appearance.face-mask"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "band"
+    },
+    {
+     "id": "stripes"
+    }
+   ]
+  },
+  {
+   "id": "appearance.tail-rings",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Tail rings",
+   "nature": "look",
+   "owner": "tail",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.tail-ring-count",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Ring count",
+   "nature": "look",
+   "owner": "appearance.tail-rings",
+   "requires": [
+    "appearance.tail-rings"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "one",
+     "value": 1
+    },
+    {
+     "id": "four",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "id": "anatomy.ear-tilt",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Ear tilt",
+   "nature": "look",
+   "owner": "ears",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "upright"
+    },
+    {
+     "id": "drooping"
+    }
+   ]
+  },
+  {
+   "id": "growth.auricular-set-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Ear set",
+   "nature": "look",
+   "owner": "ears",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "side",
+     "value": 0.78
+    },
+    {
+     "id": "crown",
+     "value": 0.42
+    }
+   ]
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Ear width",
+   "nature": "look",
+   "owner": "ears",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "narrow",
+     "value": 0.42
+    },
+    {
+     "id": "broad",
+     "value": 0.8
+    }
+   ]
+  },
+  {
+   "id": "anatomy.horn-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C08",
+   "family": "structure",
+   "label": "Horns",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.horn-curl",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C08",
+   "family": "structure",
+   "label": "Horn curl",
+   "nature": "look",
+   "owner": "anatomy.horn-presence",
+   "requires": [
+    "anatomy.horn-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "straight",
+     "value": 0.2
+    },
+    {
+     "id": "curled",
+     "value": 1.4
+    }
+   ]
+  },
+  {
+   "id": "anatomy.horn-branching",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C08",
+   "family": "structure",
+   "label": "Horn branching",
+   "nature": "look",
+   "owner": "anatomy.horn-presence",
+   "requires": [
+    "anatomy.horn-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "plain"
+    },
+    {
+     "id": "antler"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.beak-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C09",
+   "family": "structure",
+   "label": "Beak",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.beak-length-ratio",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C09",
+   "family": "structure",
+   "label": "Beak length",
+   "nature": "look",
+   "owner": "anatomy.beak-presence",
+   "requires": [
+    "anatomy.beak-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.5
+    },
+    {
+     "id": "long",
+     "value": 1.1
+    }
+   ]
+  },
+  {
+   "id": "appearance.feather-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C09",
+   "family": "appearance",
+   "label": "Feathers",
+   "nature": "look",
+   "owner": "fur",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "appearance.feather-length",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C09",
+   "family": "appearance",
+   "label": "Feather length",
+   "nature": "look",
+   "owner": "appearance.feather-presence",
+   "requires": [
+    "appearance.feather-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.2
+    },
+    {
+     "id": "long",
+     "value": 0.45
+    }
+   ]
+  },
+  {
+   "id": "growth.feather-crest",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C09",
+   "family": "structure",
+   "label": "Feather crest",
+   "nature": "look",
+   "owner": "anatomy.crown-presence",
+   "requires": [
+    "anatomy.crown-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.6
+    },
+    {
+     "id": "tall",
+     "value": 1.4
+    }
+   ]
+  },
+  {
+   "id": "anatomy.shell-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C11",
+   "family": "structure",
+   "label": "Shell",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.shell-dome-ratio",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C11",
+   "family": "structure",
+   "label": "Shell dome",
+   "nature": "look",
+   "owner": "anatomy.shell-presence",
+   "requires": [
+    "anatomy.shell-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.6
+    },
+    {
+     "id": "high",
+     "value": 1.1
+    }
+   ]
+  },
+  {
+   "id": "appearance.shell-plates",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C11",
+   "family": "appearance",
+   "label": "Shell plates",
+   "nature": "look",
+   "owner": "anatomy.shell-presence",
+   "requires": [
+    "anatomy.shell-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "smooth"
+    },
+    {
+     "id": "plated"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.antenna-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Antennae",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.antenna-length-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Antenna length",
+   "nature": "look",
+   "owner": "anatomy.antenna-presence",
+   "requires": [
+    "anatomy.antenna-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.7
+    },
+    {
+     "id": "long",
+     "value": 1.5
+    }
+   ]
+  },
+  {
+   "id": "anatomy.antenna-form",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Antenna form",
+   "nature": "look",
+   "owner": "anatomy.antenna-presence",
+   "requires": [
+    "anatomy.antenna-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "thread"
+    },
+    {
+     "id": "club"
+    },
+    {
+     "id": "curl"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.wing-case-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C13",
+   "family": "structure",
+   "label": "Wing cases",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.wing-case-extent",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C13",
+   "family": "structure",
+   "label": "Wing-case extent",
+   "nature": "look",
+   "owner": "anatomy.wing-case-presence",
+   "requires": [
+    "anatomy.wing-case-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.5
+    },
+    {
+     "id": "long",
+     "value": 0.9
+    }
+   ]
+  },
+  {
+   "id": "anatomy.wing-case-seam",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C13",
+   "family": "structure",
+   "label": "Wing-case seam",
+   "nature": "look",
+   "owner": "anatomy.wing-case-presence",
+   "requires": [
+    "anatomy.wing-case-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "closed"
+    },
+    {
+     "id": "parted"
+    }
+   ]
+  },
+  {
+   "id": "appearance.flap-marking",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Flap markings",
+   "nature": "look",
+   "owner": "flaps",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "plain"
+    },
+    {
+     "id": "spots"
+    },
+    {
+     "id": "bars"
+    }
+   ]
+  },
+  {
+   "id": "appearance.flap-translucency",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Flap translucency",
+   "nature": "look",
+   "owner": "flaps",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "opaque",
+     "value": 0
+    },
+    {
+     "id": "clear",
+     "value": 0.6
+    }
+   ]
+  },
+  {
+   "id": "anatomy.dew-tongue",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C12",
+   "family": "structure",
+   "label": "Dew tongue",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.foot-skirt-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C14",
+   "family": "structure",
+   "label": "Foot skirt",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.foot-skirt-width-ratio",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C14",
+   "family": "structure",
+   "label": "Skirt width",
+   "nature": "look",
+   "owner": "anatomy.foot-skirt-presence",
+   "requires": [
+    "anatomy.foot-skirt-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "narrow",
+     "value": 0.15
+    },
+    {
+     "id": "wide",
+     "value": 0.4
+    }
+   ]
+  },
+  {
+   "id": "appearance.sheen",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Sheen",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "matte",
+     "value": 0
+    },
+    {
+     "id": "glossy",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "anatomy.leaf-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C15",
+   "family": "structure",
+   "label": "Leaves",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.leaf-count",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C15",
+   "family": "structure",
+   "label": "Leaf count",
+   "nature": "look",
+   "owner": "anatomy.leaf-presence",
+   "requires": [
+    "anatomy.leaf-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "few",
+     "value": 2
+    },
+    {
+     "id": "many",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "id": "growth.leaf-length-ratio",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C15",
+   "family": "structure",
+   "label": "Leaf length",
+   "nature": "look",
+   "owner": "anatomy.leaf-presence",
+   "requires": [
+    "anatomy.leaf-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.8
+    },
+    {
+     "id": "long",
+     "value": 1.6
+    }
+   ]
+  },
+  {
+   "id": "appearance.leaf-covering",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C15",
+   "family": "appearance",
+   "label": "Leaf covering",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "bare"
+    },
+    {
+     "id": "leafy"
+    }
+   ]
+  },
+  {
+   "id": "energy.light-feeding",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C15",
+   "family": "energy-nutrition",
+   "label": "Light feeding",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.4
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "physiology.charged-body",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C16",
+   "family": "fantastic-physiology",
+   "label": "Charged body",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "physiology.charge",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C16",
+   "family": "fantastic-physiology",
+   "label": "Charge",
+   "nature": "doing",
+   "owner": "physiology.charged-body",
+   "requires": [
+    "physiology.charged-body"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.3
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "physiology.phase",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C16",
+   "family": "fantastic-physiology",
+   "label": "Phase",
+   "nature": "doing",
+   "owner": "physiology.charged-body",
+   "requires": [
+    "physiology.charged-body"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "solid",
+     "value": 0.2
+    },
+    {
+     "id": "faint",
+     "value": 0.7
+    }
+   ]
+  },
+  {
+   "id": "physiology.pull",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C16",
+   "family": "fantastic-physiology",
+   "label": "Pull",
+   "nature": "doing",
+   "owner": "physiology.charged-body",
+   "requires": [
+    "physiology.charged-body"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "weak",
+     "value": 0.3
+    },
+    {
+     "id": "strong",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.emission-brightness",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "Glow brightness",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "dim",
+     "value": 0.4
+    },
+    {
+     "id": "bright",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.emission-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "mechanics-movement",
+   "label": "Glow length",
+   "nature": "doing",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.3
+    },
+    {
+     "id": "long",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "anatomy.tail-tip-bulb",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C03",
+   "family": "structure",
+   "label": "Tail-tip bulb",
+   "nature": "look",
+   "owner": "tail",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.top-cap-sheet",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C02",
+   "family": "structure",
+   "label": "Top cap sheet",
+   "nature": "look",
+   "owner": "flaps",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "appearance.cap-palette",
+   "operator": "partition-map",
+   "scope": "branch",
+   "clan": "C02",
+   "family": "appearance",
+   "label": "Cap colour",
+   "nature": "look",
+   "owner": "anatomy.top-cap-sheet",
+   "requires": [
+    "anatomy.top-cap-sheet"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "coral"
+    },
+    {
+     "id": "raspberry"
+    },
+    {
+     "id": "marigold"
+    },
+    {
+     "id": "plum"
+    }
+   ]
+  },
+  {
+   "id": "appearance.cap-spots",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C02",
+   "family": "appearance",
+   "label": "Cap spots",
+   "nature": "look",
+   "owner": "anatomy.top-cap-sheet",
+   "requires": [
+    "anatomy.top-cap-sheet"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "none"
+    },
+    {
+     "id": "spots"
+    }
+   ]
+  },
+  {
+   "id": "appearance.belly-field",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C01",
+   "family": "appearance",
+   "label": "Belly field",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.crest-leaf-count",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C01",
+   "family": "structure",
+   "label": "Crest leaves",
+   "nature": "look",
+   "owner": "anatomy.crown-presence",
+   "requires": [
+    "anatomy.crown-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "two",
+     "value": 2
+    },
+    {
+     "id": "three",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "growth.belly-field-extent",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C01",
+   "family": "appearance",
+   "label": "Belly reach",
+   "nature": "look",
+   "owner": "appearance.belly-field",
+   "requires": [
+    "appearance.belly-field"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.33
+    },
+    {
+     "id": "high",
+     "value": 0.5
+    }
+   ]
+  },
+  {
+   "id": "growth.exterior-eye-height-ratio",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C01",
+   "family": "structure",
+   "label": "Eye height",
+   "nature": "look",
+   "owner": "anatomy.exterior-eye-presence",
+   "requires": [
+    "anatomy.exterior-eye-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "middle",
+     "value": 0
+    },
+    {
+     "id": "high",
+     "value": 0.2
+    }
+   ]
+  },
+  {
+   "id": "anatomy.tail-curl-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C19",
+   "family": "structure",
+   "label": "Tail curl",
+   "nature": "look",
+   "owner": "tail",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.tail-curl-turn",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C19",
+   "family": "structure",
+   "label": "Curl turn",
+   "nature": "look",
+   "owner": "anatomy.tail-curl-presence",
+   "requires": [
+    "anatomy.tail-curl-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "loose",
+     "value": 1.2
+    },
+    {
+     "id": "curled",
+     "value": 2.4
+    },
+    {
+     "id": "tight",
+     "value": 3.6
+    }
+   ]
+  },
+  {
+   "id": "growth.tail-rise",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C19",
+   "family": "structure",
+   "label": "Tail root",
+   "nature": "look",
+   "owner": "anatomy.tail-curl-presence",
+   "requires": [
+    "anatomy.tail-curl-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "rear",
+     "value": 0
+    },
+    {
+     "id": "crown",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "anatomy.fur-skirt-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C18",
+   "family": "structure",
+   "label": "Fur skirt",
+   "nature": "look",
+   "owner": "fur",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.fur-skirt-drop",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C18",
+   "family": "structure",
+   "label": "Skirt drop",
+   "nature": "look",
+   "owner": "anatomy.fur-skirt-presence",
+   "requires": [
+    "anatomy.fur-skirt-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "knee",
+     "value": 0.6
+    },
+    {
+     "id": "floor",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "growth.fur-skirt-flare",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C18",
+   "family": "structure",
+   "label": "Skirt flare",
+   "nature": "look",
+   "owner": "anatomy.fur-skirt-presence",
+   "requires": [
+    "anatomy.fur-skirt-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "close",
+     "value": 0.1
+    },
+    {
+     "id": "wide",
+     "value": 0.5
+    }
+   ]
+  },
+  {
+   "id": "anatomy.brow-tuft-presence",
+   "operator": "dominant-enable",
+   "scope": "branch",
+   "clan": "C18",
+   "family": "structure",
+   "label": "Brow tufts",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "growth.brow-tuft-length",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C18",
+   "family": "structure",
+   "label": "Brow tuft length",
+   "nature": "look",
+   "owner": "anatomy.brow-tuft-presence",
+   "requires": [
+    "anatomy.brow-tuft-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0.4
+    },
+    {
+     "id": "long",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "growth.hand-size-ratio",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Hand size",
+   "nature": "look",
+   "owner": "arms",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0.7
+    },
+    {
+     "id": "plump",
+     "value": 1.3
+    }
+   ]
+  },
+  {
+   "id": "appearance.body-hue",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Body hue",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.body-value",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Coat value",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "dark",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "light",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.countershade",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Countershade",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.surface-grain",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Skin grain",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "fine",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "coarse",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.fleck",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Fleck",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.cream-extent",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Cream reach",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.pattern-kind",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Pattern",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "none"
+    },
+    {
+     "id": "spots"
+    },
+    {
+     "id": "labyrinth"
+    },
+    {
+     "id": "rings"
+    }
+   ]
+  },
+  {
+   "id": "appearance.pattern-scale",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Pattern scale",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": {
+    "appearance.pattern-kind": [
+     "spots",
+     "labyrinth",
+     "rings"
+    ]
+   },
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "large",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.pattern-contrast",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Pattern contrast",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": {
+    "appearance.pattern-kind": [
+     "spots",
+     "labyrinth",
+     "rings"
+    ]
+   },
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.marking-rosette",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Rosette",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": {
+    "appearance.marking-layout": [
+     "spotted"
+    ]
+   },
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.band-count",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Band count",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": {
+    "appearance.marking-layout": [
+     "bands",
+     "bands-and-patches"
+    ],
+    "appearance.glow-pattern": [
+     "belly-arcs"
+    ]
+   },
+   "alleles": [
+    {
+     "id": "few",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "many",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.emblem",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Emblem",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "none"
+    },
+    {
+     "id": "heart"
+    },
+    {
+     "id": "star"
+    }
+   ]
+  },
+  {
+   "id": "appearance.emblem-place",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Emblem place",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": {
+    "appearance.emblem": [
+     "heart",
+     "star"
+    ]
+   },
+   "alleles": [
+    {
+     "id": "forehead"
+    },
+    {
+     "id": "belly"
+    }
+   ]
+  },
+  {
+   "id": "appearance.emblem-size",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Emblem size",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": {
+    "appearance.emblem": [
+     "heart",
+     "star"
+    ]
+   },
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "large",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.freckle-density",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Freckle density",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "sparse",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "dense",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.freckle-glow",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C20",
+   "family": "appearance",
+   "label": "Freckle glow",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.emission-hue",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Glow hue",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.lantern-bleed",
+   "operator": "copy-mean",
+   "scope": "branch",
+   "clan": "C20",
+   "family": "appearance",
+   "label": "Lantern bleed",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": {
+    "anatomy.tail-tip-form": [
+     "lantern"
+    ]
+   },
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.glow-pattern",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C20",
+   "family": "appearance",
+   "label": "Glow pattern",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "none"
+    },
+    {
+     "id": "belly-arcs"
+    }
+   ]
+  },
+  {
+   "id": "form.eye-size",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Eye size",
+   "nature": "look",
+   "owner": "anatomy.exterior-eye-presence",
+   "requires": [
+    "anatomy.exterior-eye-presence"
+   ],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "large",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.eye-height",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Eye height",
+   "nature": "look",
+   "owner": "anatomy.exterior-eye-presence",
+   "requires": [
+    "anatomy.exterior-eye-presence"
+   ],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.eye-spacing",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Eye spacing",
+   "nature": "look",
+   "owner": "anatomy.exterior-eye-presence",
+   "requires": [
+    "anatomy.exterior-eye-presence"
+   ],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "close",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "wide",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.mouth-width",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Mouth width",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "narrow",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "wide",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.mouth-height",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Mouth height",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.mouth-rest",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Mouth at rest",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "content"
+    },
+    {
+     "id": "open"
+    },
+    {
+     "id": "smile"
+    }
+   ]
+  },
+  {
+   "id": "appearance.blush",
+   "operator": "recessive-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Blush",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.fang-presence",
+   "operator": "recessive-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Fangs",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "anatomy.whisker-presence",
+   "operator": "dominant-enable",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Whiskers",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": "part",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "form.whisker-count",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Whisker count",
+   "nature": "look",
+   "owner": "anatomy.whisker-presence",
+   "requires": [
+    "anatomy.whisker-presence"
+   ],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "few",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "many",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.whisker-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Whisker length",
+   "nature": "look",
+   "owner": "anatomy.whisker-presence",
+   "requires": [
+    "anatomy.whisker-presence"
+   ],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "long",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.whisker-droop",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Whisker droop",
+   "nature": "look",
+   "owner": "anatomy.whisker-presence",
+   "requires": [
+    "anatomy.whisker-presence"
+   ],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "level",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "drooping",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.whisker-curl",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Whisker curl",
+   "nature": "look",
+   "owner": "anatomy.whisker-presence",
+   "requires": [
+    "anatomy.whisker-presence"
+   ],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "straight",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "curled",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "appearance.whisker-glow",
+   "operator": "recessive-enable",
+   "scope": "branch",
+   "clan": "C20",
+   "family": "appearance",
+   "label": "Whisker glow",
+   "nature": "look",
+   "owner": "anatomy.whisker-presence",
+   "requires": [
+    "anatomy.whisker-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "off"
+    },
+    {
+     "id": "on"
+    }
+   ]
+  },
+  {
+   "id": "form.ear-kind",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Ear shape",
+   "nature": "look",
+   "owner": "ears",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "prick"
+    },
+    {
+     "id": "lop"
+    },
+    {
+     "id": "nub"
+    }
+   ]
+  },
+  {
+   "id": "form.ear-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Ear length",
+   "nature": "look",
+   "owner": "ears",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "long",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.ear-width",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Ear width",
+   "nature": "look",
+   "owner": "ears",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "slim",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "broad",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.ear-splay",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Ear splay",
+   "nature": "look",
+   "owner": "ears",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "high",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.ear-droop",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Ear droop",
+   "nature": "look",
+   "owner": "ears",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "upright",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "drooping",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.head",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Head size",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "big",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.torso-girth",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Torso girth",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "slim",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "round",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.leg-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Leg length",
+   "nature": "look",
+   "owner": "contact",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "long",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.leg-girth",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Leg girth",
+   "nature": "look",
+   "owner": "contact",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "slim",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "sturdy",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.tail-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Tail length",
+   "nature": "look",
+   "owner": "tail",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "long",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.tail-girth",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Tail girth",
+   "nature": "look",
+   "owner": "tail",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "slim",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "stout",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.tail-curl",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Tail curl",
+   "nature": "look",
+   "owner": "tail",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "straight",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "curled",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "form.tail-carry",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Tail carriage",
+   "nature": "look",
+   "owner": "tail",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "raised",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "anatomy.tail-tip-form",
+   "operator": "pair-map",
+   "scope": "branch",
+   "clan": "C20",
+   "family": "structure",
+   "label": "Tail tip",
+   "nature": "look",
+   "owner": "tail",
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "lantern"
+    },
+    {
+     "id": "tuft"
+    },
+    {
+     "id": "plain"
+    }
+   ]
+  },
+  {
+   "id": "form.tail-tip-size",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Tip size",
+   "nature": "look",
+   "owner": "tail",
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "small",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "large",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "anatomy.eye-count",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Eye count",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "two",
+     "value": 2
+    },
+    {
+     "id": "three",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "appearance.iris-colour",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Iris colour",
+   "nature": "look",
+   "owner": "anatomy.exterior-eye-presence",
+   "requires": [
+    "anatomy.exterior-eye-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "amber"
+    },
+    {
+     "id": "honey"
+    },
+    {
+     "id": "olive"
+    },
+    {
+     "id": "moss"
+    },
+    {
+     "id": "hazel"
+    },
+    {
+     "id": "teal"
+    },
+    {
+     "id": "slate"
+    },
+    {
+     "id": "violet"
+    },
+    {
+     "id": "copper"
+    }
+   ]
+  },
+  {
+   "id": "appearance.attitude",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Attitude",
+   "nature": "look",
+   "owner": "anatomy.exterior-eye-presence",
+   "requires": [
+    "anatomy.exterior-eye-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "content"
+    },
+    {
+     "id": "curious"
+    },
+    {
+     "id": "deadpan"
+    },
+    {
+     "id": "knowing"
+    }
+   ]
+  },
+  {
+   "id": "signature.size",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Signature size",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.2
+    },
+    {
+     "id": "high",
+     "value": 0.33
+    }
+   ]
+  },
+  {
+   "id": "signature.count",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Signature count",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "1",
+     "value": 1
+    },
+    {
+     "id": "2",
+     "value": 2
+    },
+    {
+     "id": "3",
+     "value": 3
+    },
+    {
+     "id": "4",
+     "value": 4
+    },
+    {
+     "id": "5",
+     "value": 5
+    },
+    {
+     "id": "6",
+     "value": 6
+    },
+    {
+     "id": "7",
+     "value": 7
+    },
+    {
+     "id": "8",
+     "value": 8
+    },
+    {
+     "id": "9",
+     "value": 9
+    },
+    {
+     "id": "10",
+     "value": 10
+    },
+    {
+     "id": "11",
+     "value": 11
+    },
+    {
+     "id": "12",
+     "value": 12
+    },
+    {
+     "id": "13",
+     "value": 13
+    }
+   ]
+  },
+  {
+   "id": "signature.curl",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Signature curl",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "straight",
+     "value": 0
+    },
+    {
+     "id": "coiled",
+     "value": 1.75
+    }
+   ]
+  },
+  {
+   "id": "form.torso-length",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Body length",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": "position",
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "short",
+     "value": 0
+    },
+    {
+     "id": "between",
+     "value": 0.5
+    },
+    {
+     "id": "long",
+     "value": 1
+    }
+   ]
+  }
+ ]
+}

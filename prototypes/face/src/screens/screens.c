@@ -5,6 +5,7 @@
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
+#include "../anim/hold.h"
 #include "../layout/layout.h"
 #include "moving.h"
 #include "room.h"
@@ -15,6 +16,7 @@
 static void not_built(void) {
   char c[24], s[V_STR];
   kit_stage("frame", "regions.stage.rect", v_scol("frame", "colours.stageGround"), "notBuilt.stage", "notBuilt.stage", NULL, NULL);
+  if (spec_len("props", "frame.hold") >= 0) return;   /* a frame that holds draws the ring on clear ground: the line would run through it */
   spec_str("frame", "notBuilt.strings.line", s, sizeof s);
   int px = spec_int("frame", "notBuilt.regions.line.px", 20);
   spec_str("frame", "notBuilt.colours.line", c, sizeof c);
@@ -33,10 +35,12 @@ static void build_idleLine(void) {
 static int is_not_built(void) { char st[24]; spec_str("props", "state", st, sizeof st); return strcmp(st, "notBuilt") == 0; }
 /* Which screens the face draws with words. */
 static void frame_words(void) {
+  hold_arm(spec_len("props", "frame.hold") >= 0 && !spec_bool("props", "idle", 0));   /* the frame carries a hold: the face keeps ✓ down for the ring (anim/hold.c) */
   if (spec_bool("props", "idle", 0)) return;                 /* Idle is the whole 1024x600: no top bar, no bottom line, no plate */
   if (spec_len("props", "frame.top") >= 0) word_topBar();
   if (spec_len("props", "frame.line") >= 0) word_bottomLine();
   if (spec_len("props", "frame.plate") >= 0) word_messagePlate();
+  if (spec_len("props", "frame.hold") >= 0) word_holdRing();
 }
 /* The screen change (180 ms): a Bayer dither of `void` laid over the stage and cleared in 16 levels, whole pixels, no opacity (§2.7). Level L = 16 - floor(16 t / ms); a pixel is covered where BAYER[(y & 3) * 4 + (x & 3)] < L. */
 static void stage_dither(void) {
@@ -139,6 +143,7 @@ static void draw(void) {
     else if (strcmp(screen, "library.family") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_family_words(); }
     else if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { home_hidden(); bench_words(); }
     else if (strcmp(screen, "sitting") == 0 && spec_has("sitting") && spec_len("props", "regions") >= 0) { home_hidden(); sitting_words(); }
+    else if (strcmp(screen, "settings") == 0 && spec_has("settings") && spec_len("props", "regions") >= 0) { home_hidden(); settings_words(); }
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
     else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); if (!incubate_open()) create_words(); }
     else if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { home_hidden(); if (!hatchnow_open()) incubator_words(); }
@@ -201,6 +206,7 @@ void screens_key(int code) {
   if (strcmp(screen, "library.family") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { library_family_key(code); return; }
   if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { bench_key(code); return; }
   if (strcmp(screen, "sitting") == 0 && spec_has("sitting") && spec_len("props", "regions") >= 0) { sitting_key(code); return; }
+  if (strcmp(screen, "settings") == 0 && spec_has("settings") && spec_len("props", "regions") >= 0) { settings_key(code); return; }
   if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { cargo_key(code); return; }
   if (strcmp(screen, "create") == 0 && spec_has("create") && spec_len("props", "regions") >= 0) { create_key(code); return; }
   if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { incubator_key(code); return; }
@@ -223,10 +229,12 @@ void screens_key_graph(int code, const char *spec, const char *graph_path, scree
   int glen; const char *graph = spec_raw(spec, graph_path, &glen); char err[200];
   focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
   focus_resolve_t r[16]; int nr = 0;
+  if (opts->own) nr = opts->own(t, n, cur, r, 8);
   if (opts->resolve) for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 16; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
   int roomAt[4]; if (opts->room_at) v_srect(spec, opts->room_at, roomAt);
   char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, opts->room_at ? roomAt : NULL, to, sizeof to); focus_graph_free(g);
   if (step) { if (opts->steps) screens_say("intent", cur, dir == FOCUS_UP ? "step:up" : dir == FOCUS_DOWN ? "step:down" : dir == FOCUS_LEFT ? "step:left" : "step:right"); return; }
+  if (opts->stuck) *opts->stuck = strcmp(to, cur) == 0 ? dir + 1 : 0;
   if (strcmp(to, cur) == 0) return;
   v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);   /* the ring moves on the frame of the key: the words are drawn again at once */
 }

@@ -1,5 +1,7 @@
 # Exploration, round 2: purpose, stakes and progress
 
+> Night inside the world is the Shade, a place and never a time.
+
 All seven points below stand
 (materials, prices, Shield, breaking keeps pods, Call, reach and hold, fog bank).
 The numbers stay open to tuning after play.

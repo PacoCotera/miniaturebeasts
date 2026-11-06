@@ -1,0 +1,264 @@
+{
+ "S01": {
+  "frame": {
+   "id": "S01-chunk1",
+   "species": "S01",
+   "name": "Loika",
+   "plan": "A",
+   "kinds": {
+    "head": "bean",
+    "eye": "round",
+    "muzzle": "button",
+    "nose": "mound",
+    "mouth": "smile"
+   },
+   "t": {
+    "form.head": 0.13,
+    "form.head-width": 0.633,
+    "form.head-depth": 0.8,
+    "form.cheek": 0.04,
+    "form.eye-size": 0.312,
+    "form.eye-height": 0.59,
+    "form.eye-spacing": 0.87,
+    "form.pupil": 0.5,
+    "form.lid": 0.0,
+    "form.eye-ring": 0.92,
+    "form.muzzle": 0.766,
+    "form.muzzle-width": 0.812,
+    "form.muzzle-height": 0.55,
+    "form.nose": 0.776,
+    "form.nose-drop": 0.62,
+    "form.mouth-width": 0.37,
+    "form.mouth-upturn": 0.8,
+    "form.mouth-gap": 0.78,
+    "form.carriage": 0.63
+   },
+   "pool": {
+    "form.eye-size": [
+     0.2,
+     1.0
+    ]
+   },
+   "notes": "chunk 1 type specimen: t read from the master through the house bands, then set by eye beside it; values the master has outside a band are at the band's end"
+  },
+  "look": {
+   "body": [
+    58,
+    53,
+    58
+   ],
+   "cream": [224, 205, 190],
+   "nose": [
+    58,
+    53,
+    58
+   ],
+   "noseInk": 0,
+   "mouth": [
+    22,
+    17,
+    20
+   ],
+   "mouthInk": 1.0,
+   "iris": [
+    104,
+    46,
+    8
+   ],
+   "irisTop": [
+    44,
+    19,
+    5
+   ],
+   "irisLow": [
+    246,
+    152,
+    30
+   ],
+   "pupil": [
+    14,
+    10,
+    10
+   ],
+   "ring": [
+    240,
+    228,
+    214
+   ],
+   "catchLight": [
+    255,
+    255,
+    255
+   ],
+   "leaf": [
+    104,
+    122,
+    46
+   ],
+   "toe": [
+    238,
+    226,
+    214
+   ],
+   "creamHead": {},
+   "creamBody": {
+    "down": 0.8,
+    "front": 0.7,
+    "t0": 0.29,
+    "t1": 0.31,
+    "x0": -0.5,
+    "x1": -0.49,
+    "x2": 0.3,
+    "x3": 0.31,
+    "z0": 0.535,
+    "z1": 0.545,
+    "y0": 0.34,
+    "y1": 0.35,
+    "n0": 0.93,
+    "n1": 0.96
+   },
+   "leafRib": [
+    168,
+    178,
+    92
+   ]
+  },
+  "pose": {
+   "seed": "S01",
+   "side": 1,
+   "pick": {
+    "body-yaw": 0.93,
+    "face-yaw": 0.53,
+    "roll": 0.0
+   }
+  },
+  "rig": {}
+ },
+ "S14": {
+  "frame": {
+   "id": "S14-chunk1",
+   "species": "S14",
+   "name": "Usvel, the snail",
+   "plan": "D",
+   "kinds": {
+    "head": "round",
+    "eye": "round",
+    "muzzle": "none",
+    "nose": "bump",
+    "mouth": "smile"
+   },
+   "t": {
+    "form.head": 0.4,
+    "form.head-width": 0.0,
+    "form.head-depth": 0.6,
+    "form.cheek": 0.0,
+    "form.eye-size": 0.48,
+    "form.eye-height": 0.18,
+    "form.eye-spacing": 0.39,
+    "form.pupil": 0.5,
+    "form.lid": 0.475,
+    "form.eye-ring": 0.65,
+    "form.nose": 0.0,
+    "form.nose-drop": 0.8,
+    "form.mouth-width": 0.55,
+    "form.mouth-upturn": 0.5,
+    "form.mouth-gap": 0.5,
+    "form.carriage": 0.33,
+    "form.body-length": 0.55,
+    "form.rise": 0.75,
+    "form.skirt": 0.5,
+    "form.antenna": 0.65
+   },
+   "pool": {
+    "form.eye-size": [
+     0.2,
+     1.0
+    ]
+   },
+   "notes": "chunk 1 type specimen: t read from the master through the house bands, then set by eye beside it; values the master has outside a band are at the band's end"
+  },
+  "look": {
+   "body": [
+    168,
+    160,
+    232
+   ],
+   "cream": [
+    170,
+    160,
+    200
+   ],
+   "nose": [
+    176,
+    150,
+    196
+   ],
+   "noseInk": 0,
+   "mouth": [
+    88,
+    66,
+    120
+   ],
+   "mouthInk": 1.0,
+   "iris": [
+    34,
+    34,
+    56
+   ],
+   "irisTop": [
+    16,
+    16,
+    30
+   ],
+   "irisLow": [
+    86,
+    80,
+    120
+   ],
+   "pupil": [
+    14,
+    12,
+    24
+   ],
+   "ring": [
+    214,
+    206,
+    236
+   ],
+   "catchLight": [
+    255,
+    255,
+    255
+   ],
+   "leaf": [
+    118,
+    128,
+    56
+   ],
+   "toe": [
+    226,
+    200,
+    165
+   ],
+   "skirt": [
+    166,
+    158,
+    226
+   ],
+   "lid": [
+    150,
+    142,
+    206
+   ]
+  },
+  "pose": {
+   "seed": "S14",
+   "side": -1,
+   "pick": {
+    "body-yaw": 0.85,
+    "face-yaw": 0.55
+   }
+  },
+  "rig": {}
+ }
+}

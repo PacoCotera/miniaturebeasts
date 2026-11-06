@@ -328,12 +328,12 @@
      }
     ],
     "screen": "vivarium",
-    "state": "rest",
-    "ring": "resident.10",
-    "ok": "Look at Burr",
+    "state": "wall",
+    "ring": "cell.10",
+    "ok": "Open Burr",
     "price": null,
-    "subject": "A young Loika",
-    "back": "Home"
+    "subject": "Burr · Roots 8 of 8",
+    "back": "Vivarium"
    },
    {
     "key": "confirm",
@@ -341,7 +341,25 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.10",
+      "target": "cell.10",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "state": "wall",
+    "ring": "plate.0",
+    "ok": "Look at Burr",
+    "price": null,
+    "subject": "Burr · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.0",
       "verb": "confirm"
      }
     ],
@@ -594,7 +612,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Burr",
-    "price": "❀ +2",
+    "price": null,
     "subject": "Leaves a pod of its line",
     "back": "Vivarium"
    },
@@ -612,7 +630,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Burr",
-    "price": "❀ +2",
+    "price": null,
     "subject": "",
     "back": "Back"
    },
@@ -623,7 +641,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Burr",
-    "price": "❀ +2",
+    "price": null,
     "subject": "",
     "back": "Back"
    },
@@ -648,7 +666,7 @@
    {
     "gate": "juvenile",
     "released": true,
-    "essence": 2
+    "essence": 0
    },
    {
     "key": "down",
@@ -850,7 +868,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Tuft",
-    "price": "❀ +2",
+    "price": null,
     "subject": "Leaves a pod of its line",
     "back": "Vivarium"
    },
@@ -868,7 +886,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Tuft",
-    "price": "❀ +2",
+    "price": null,
     "subject": "",
     "back": "Back"
    },
@@ -879,7 +897,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Tuft",
-    "price": "❀ +2",
+    "price": null,
     "subject": "",
     "back": "Back"
    },
@@ -904,7 +922,7 @@
    {
     "gate": "adult",
     "released": true,
-    "essence": 2
+    "essence": 0
    }
   ],
   "vivarium-trickle": [
@@ -927,241 +945,369 @@
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.2",
-    "ok": "Look at Moss",
-    "subject": "A young Loika",
-    "back": "Home"
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "tile.2"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "tile.2",
-    "ok": "Look at Moss",
-    "subject": "A young Loika",
-    "back": "Home"
+    "view": "wall",
+    "focus": "cell.1",
+    "ok": "Open Dot",
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
    },
    {
     "key": "up",
     "said": [
      {
-      "t": "focus",
+      "t": "intent",
       "screen": "vivarium",
-      "target": "resident.2"
+      "target": "cell.1",
+      "verb": "step:up"
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.2",
-    "ok": "Look at Moss",
-    "subject": "A young Loika",
-    "back": "Home"
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "tile.2"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "tile.2",
-    "ok": "Look at Moss",
-    "subject": "A young Loika",
-    "back": "Home"
+    "view": "wall",
+    "focus": "sort.room",
+    "ok": null,
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
    },
    {
     "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "tile.9"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "tile.9",
-    "ok": "Look at Sorrel",
-    "subject": "A young Loika",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "tile.2"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "tile.2",
-    "ok": "Look at Moss",
-    "subject": "A young Loika",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "tile.1"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "Ready to go exploring",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "room.0"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "room.0",
-    "ok": null,
-    "subject": "This room is full",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [],
-    "screen": "vivarium",
-    "focus": "room.0",
-    "ok": null,
-    "subject": "This room is full",
-    "back": "Home"
-   },
-   {
-    "key": "down",
-    "said": [],
-    "screen": "vivarium",
-    "focus": "room.0",
-    "ok": null,
-    "subject": "This room is full",
-    "back": "Home"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "room.1"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "room.1",
-    "ok": null,
-    "subject": "Six places free",
-    "back": "Home"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "room.new"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "room.new",
-    "ok": "Add a room",
-    "subject": "Eight more places",
-    "back": "Home"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "tile.13"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "tile.13",
-    "ok": "Look at Lori",
-    "subject": "An adult Loika",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "room.1"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "room.1",
-    "ok": null,
-    "subject": "Six places free",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "room.0"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "room.0",
-    "ok": null,
-    "subject": "This room is full",
-    "back": "Home"
-   },
-   {
-    "key": "habitat",
     "said": [
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "room.0",
-      "verb": "room:habitat"
+      "target": "sort.room",
+      "verb": "step:right"
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.2",
-    "ok": "Look at Moss",
-    "subject": "A young Loika",
-    "back": "Home"
-   }
-  ],
-  "vivarium-whole": [
+    "view": "wall",
+    "focus": "sort.kind",
+    "ok": null,
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "sort.kind",
+      "verb": "step:left"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "sort.room",
+    "ok": null,
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "sort.room",
+      "verb": "step:left"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "rail.all",
+    "ok": null,
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "rail.all",
+      "verb": "step:down"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "rail.0",
+    "ok": null,
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "rail.0",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "cell.1",
+    "ok": "Open Dot",
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   },
    {
     "key": "confirm",
     "said": [
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.2",
+      "target": "cell.1",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "plate.0",
+    "ok": "Look at Dot",
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.0",
+      "verb": "step:left"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "cell.1",
+    "ok": "Open Dot",
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "cell.1",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "plate.0",
+    "ok": "Look at Dot",
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.0",
+      "verb": "step:left"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "cell.1",
+    "ok": "Open Dot",
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "cell.1",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "cell.12",
+    "ok": "Open Kari",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "cell.12",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "plate.0",
+    "ok": "Look at Kari",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.0",
+      "verb": "step:down"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "plate.1",
+    "ok": "Move Kari to",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.1",
+      "verb": "step:down"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "plate.2",
+    "ok": "Take Kari along",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.2",
+      "verb": "step:down"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "plate.3",
+    "ok": "Tuck Kari away ⚡2",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.3",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "cell.1",
+    "ok": "Open Dot",
+    "subject": "Dot · Roots 7 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "cell.1",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "view": null,
+    "focus": "vivarium",
+    "ok": null,
+    "subject": null,
+    "back": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "vivarium",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "cell.1",
+    "ok": "Open Dot",
+    "subject": "Dot · Roots 8 of 8",
+    "back": "Vivarium"
+   }
+  ],
+  "vivarium-whole": [
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "cell.1",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "cell.12",
+    "ok": "Open Kari",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "cell.12",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "wall",
+    "focus": "plate.0",
+    "ok": "Look at Kari",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.0",
       "verb": "confirm"
      }
     ],
     "screen": "habitat",
+    "view": null,
     "focus": "vivarium",
-    "ok": "Greet Moss",
-    "subject": "A young Loika",
+    "ok": "Greet Kari",
+    "subject": "An adult Loika",
     "back": "Vivarium"
    },
    {
@@ -1182,10 +1328,11 @@
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.2",
-    "ok": "Look at Moss",
-    "subject": "A young Loika",
-    "back": "Home"
+    "view": "wall",
+    "focus": "cell.12",
+    "ok": "Open Kari",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
    },
    {
     "key": "back",
@@ -1193,11 +1340,12 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.2",
+      "target": "cell.12",
       "verb": "back"
      }
     ],
     "screen": "home",
+    "view": null,
     "focus": "vivarium",
     "ok": null,
     "subject": null,
@@ -1207,15 +1355,17 @@
     "key": "dock",
     "said": [],
     "screen": "vivarium",
-    "focus": "resident.2",
-    "ok": "Look at Moss",
-    "subject": "A young Loika",
-    "back": "Home"
+    "view": "wall",
+    "focus": "cell.12",
+    "ok": "Open Kari",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
    },
    {
     "key": "dock",
     "said": [],
     "screen": "cargo",
+    "view": null,
     "focus": "vivarium",
     "ok": null,
     "subject": "The bay is empty",
@@ -1232,10 +1382,11 @@
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.2",
-    "ok": "Look at Moss",
-    "subject": "A young Loika",
-    "back": "Home"
+    "view": "wall",
+    "focus": "cell.12",
+    "ok": "Open Kari",
+    "subject": "Kari · Roots 8 of 8",
+    "back": "Vivarium"
    }
   ]
  }

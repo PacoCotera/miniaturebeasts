@@ -5,11 +5,12 @@
   "name": "Tepor",
   "plural": "Tepor",
   "order": 5,
-  "summary": ""
+  "summary": "",
+  "parked": true
  },
  "taxonomy": {
   "code": "S05",
-  "resembles": "a fox",
+  "resembles": "a four-legged body with a tail just as big",
   "moves": "trots",
   "habitat": "meadow, wood edge",
   "gate": null,
@@ -41,7 +42,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -1866,6 +1868,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -1946,7 +1952,7 @@
   "carried": 57,
   "trunk": 57,
   "branch": 0,
-  "absent": 83,
+  "absent": 84,
   "locked": 44,
   "lockedBy": {
    "switch": 5,

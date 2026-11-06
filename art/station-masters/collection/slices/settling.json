@@ -1,0 +1,162 @@
+{
+ "room-roots-rail-settling-dawn-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-roots-rail-dawn-164x40.png",
+  "factor": 0.55,
+  "sha256": "e67fdf83a7b7119683083c3e37827ffac29e97e8d81e67d26f29b7f1b09b2929"
+ },
+ "room-roots-rail-settling-day-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-roots-rail-day-164x40.png",
+  "factor": 0.55,
+  "sha256": "591be93d96fa2082a8f714212ba7f3b977ab63d5c9286403e5259336dabcac6d"
+ },
+ "room-roots-rail-settling-dusk-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-roots-rail-dusk-164x40.png",
+  "factor": 0.55,
+  "sha256": "084cebdbf55788a0d2f6a26e59b8b84d838094f2832b36c558938f97a083bc95"
+ },
+ "room-roots-rail-settling-night-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-roots-rail-night-164x40.png",
+  "factor": 0.55,
+  "sha256": "445a0265b2e7ac0fa9b56d3c522d9bd97f69e97e9ac4a3ac84eea588dad97b5a"
+ },
+ "room-reeds-rail-settling-dawn-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-reeds-rail-dawn-164x40.png",
+  "factor": 0.55,
+  "sha256": "2f9771ea3f10585f201e389c6a6bb607e920e8f42132a3c49385ead41d4b5c0f"
+ },
+ "room-reeds-rail-settling-day-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-reeds-rail-day-164x40.png",
+  "factor": 0.55,
+  "sha256": "5f776f3701ce86eb8a0085443f7097054c80bb3f4224f70795b625189ee60b70"
+ },
+ "room-reeds-rail-settling-dusk-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-reeds-rail-dusk-164x40.png",
+  "factor": 0.55,
+  "sha256": "b56de6ddd7803a36a9868b402d49e976241980922f80bd2f0f387af4cb18f8c4"
+ },
+ "room-reeds-rail-settling-night-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-reeds-rail-night-164x40.png",
+  "factor": 0.55,
+  "sha256": "5a166d420ff84f040f3b7b747de024cc7ff245072432c54f1b76341f31b7f26a"
+ },
+ "room-boulders-rail-settling-dawn-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-boulders-rail-dawn-164x40.png",
+  "factor": 0.55,
+  "sha256": "e64ce3c06fed68375d50cc06d6464969051dc06bb7dd3fcd7819c1a9f07dc76e"
+ },
+ "room-boulders-rail-settling-day-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-boulders-rail-day-164x40.png",
+  "factor": 0.55,
+  "sha256": "970afc878927b6fc731e333798bc545481d907fb48aa2480efbcadb90daa90a1"
+ },
+ "room-boulders-rail-settling-dusk-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-boulders-rail-dusk-164x40.png",
+  "factor": 0.55,
+  "sha256": "8e36d9cb51aea1a37835c8cb2132c266acf0b53723a1bdba9769f3bc0b633076"
+ },
+ "room-boulders-rail-settling-night-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-boulders-rail-night-164x40.png",
+  "factor": 0.55,
+  "sha256": "8b6e0e6bec06882339cced0f89b096ff027f5a38c252e4f4d31ac1b734902015"
+ },
+ "room-ferns-rail-settling-dawn-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-ferns-rail-dawn-164x40.png",
+  "factor": 0.55,
+  "sha256": "bfa9daa8e4b81c5fddd2da282be52eec17f32fb000a091da2dec4251d40e3991"
+ },
+ "room-ferns-rail-settling-day-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-ferns-rail-day-164x40.png",
+  "factor": 0.55,
+  "sha256": "c24c795fdc34deb05bf037f1a47696ebd023b125e7ec2aa2b4a70aaf43b68a30"
+ },
+ "room-ferns-rail-settling-dusk-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-ferns-rail-dusk-164x40.png",
+  "factor": 0.55,
+  "sha256": "e28941e3e3cc0c63a0c393815eaa26c0f3b67fabf583d25c03996ee1c8dfbd2b"
+ },
+ "room-ferns-rail-settling-night-164x40": {
+  "size": [
+   164,
+   40
+  ],
+  "src": "source/settle_cuts.py",
+  "from": "room-ferns-rail-night-164x40.png",
+  "factor": 0.55,
+  "sha256": "b286fed14775e3536b30fc187543a99e81378b990f6b9166cf0be1f0d2bf89ec"
+ }
+}

@@ -17,4 +17,43 @@ The Station page hands over a genome only for the portrait at the sitting (`POST
 
 **Run it.** `node prototypes/caddy/server.mjs` with `CADDY_PORT` (8787), `CADDY_DATA` (the data directory), `CADDY_PAINTER`, `CADDY_CEILING_USD`, `CADDY_GROW_CAP`, `CADDY_MOCK_DELAY`, and for the real painter `GEMINI_API_KEY` and `MB_LEDGER` (the paid-call ledger). `CADDY_CEILING_USD` and `GEMINI_API_KEY` come from a root-only environment file on the sandbox server, never in the repository ([ops/sandbox/install.sh](../../ops/sandbox/install.sh): the unit, the environment file, the proxy route `/caddy-api/*`, Python 3 with Pillow; `deploy.sh` restarts the unit after switching the release). Operator details are in the project's internal operations doc. The calibration batch for the Untuva and the Tuikis stays mock until it is reviewed.
 
-**Tests.** `node --test prototypes/caddy/tests/*.test.mjs`: refuses a wrong genome, deduplicates by hash and world, serves a stored set and never repaints it, survives a restart (a job caught painting goes again), honours the daily limit and the world's cap (a capped job waits for the next day), retries a failed painter at one, five and thirty minutes and then fails, waits with the painter off. The Station's journey (`prototypes/station/tools/journey.mjs`) runs this service in mock mode beside its static server: the hand-off at Grow, the painting landing at the next fresh draw and not before, the service stopped and restarted with the genome waiting in the outbox under "waiting for a signal".
+## The dock
+
+The Caddy's two cradles live here too, one record per world (`dock.mjs`): each cradle is `{ state, seats, seq, at }`, `seated` or `lifted`, and the record holds the face state the service knows (whose Companion the cradle last held, since when, and whether a write was refused). A seat and a lift are states, not toggles: a repeat changes nothing, and `seats` and `seq` only rise. Every change is written to `dock/<world>.json` under the data directory (written beside, then renamed over the old file) before anyone is told; a write that cannot be stored changes nothing and answers 503 with the face's fault set, cleared by the next stored write. A world with nothing seated and no seat for 30 days is removed by the service itself, hourly.
+
+| Call | Does |
+| --- | --- |
+| `POST /caddy-api/v1/dock/seat` `{ world, cradle, seated, companion? }` | the cradle's hall sensor (the play page's Dock control stands in for it): `cradle` is `companion` or `station`, `seated` true or false, `companion` `{ id, name }` the Companion that seats itself; 200 `{ changed, snapshot }`, 400 on a wrong world, cradle or seated, 503 when it could not be stored |
+| `GET /caddy-api/v1/dock?world=` | the world's snapshot `{ world, seq, cradles, face }` (both cradles empty for a world never seen); without `world`, every world's counts |
+| `GET /caddy-api/v1/dock/events?world=` | a server-sent stream: `snapshot` first, then `dock` (a cradle changed) and `face` events as they happen, and a `heartbeat` every 5 s; a world hears its own events only |
+
+`/status` gains the dock's counts (worlds, seated, faults). The face itself is drawn by `face.mjs` (a pure function of the state, shared with the play page) in the panel's two inks; `node prototypes/caddy/tools/render-face.mjs --out <dir>` renders each state at 1×.
+
+**Tests.** `node --test prototypes/caddy/tests/*.test.mjs`: refuses a wrong genome, deduplicates by hash and world, serves a stored set and never repaints it, survives a restart (a job caught painting goes again), honours the daily limit and the world's cap (a capped job waits for the next day), retries a failed painter at one, five and thirty minutes and then fails, waits with the painter off; the dock's cradles are states with rising seats and seq, kept across a restart, one file per world, streamed snapshot first, never seen by another world, a refused write changing nothing, the 30-day sweep (`dock.test.mjs`); the face's states, slots, inks, lamps and refresh rules (`face.test.mjs`). The Station's journey (`prototypes/station/tools/journey.mjs`) runs this service in mock mode beside its static server: the hand-off at Grow, the painting landing at the next fresh draw and not before, the service stopped and restarted with the genome waiting in the outbox under "waiting for a signal".
+
+## The identity and the recovery print
+
+At its first start (no `identity.json` in the data directory) the Caddy draws a recovery seed, keeps it in memory only and queues one print of it (`recovery-print.mjs`: a 384-dot, 1-bit PNG). A restart before the print is taken forgets the seed and makes a new one. `POST /caddy-api/v1/print/taken` writes `identity.json` (`{ v, caddy, recovery: { kid, pub }, printedAt }`, the public key and key id only) and drops the seed.
+
+| Call | Does |
+| --- | --- |
+| `GET /caddy-api/v1/identity` | `{ caddy, recovery: { kid, pub } \| null }`; `recovery` is null until the print is taken |
+| `GET /caddy-api/v1/print/pending` | the waiting print as a PNG (its id in `x-print`); 404 once taken |
+| `POST /caddy-api/v1/print/taken` `{ print? }` | 200 and the identity written; 409 when `print` is not the waiting print's id; repeating it changes nothing |
+
+The play page shows the waiting print once, in a strip under the Caddy's screen with an "I have it" button. Tests: `caddy/tests/identity.test.mjs` (the seed is in no file in the data directory, byte-scanned) and the print's golden `caddy/golden/recovery-print.png` (`MB_WRITE_GOLDEN=1` renews it).
+
+## Realms asleep
+
+The card keeps every sleep file of a realm put to sleep (`realms.mjs`): `realms/asleep/<wid>.<sha8>.mbr` (a realm woken and put to sleep again keeps both), `realms/ledger.jsonl` (a line for each `kept`, `committed`, `woken`, `dropped` and `cleared`) and `realms/index.json` (the headers; rebuilt from the files when missing, damaged or out of step with them). A file is checked in memory first, written beside under another name and renamed over, read back and checked again; a bad one is 400 and nothing is written. The shared `sleepfile.mjs` does the checking and the ledger reading.
+
+| Call | Does |
+| --- | --- |
+| `PUT /caddy-api/v1/realms/asleep/<wid>` (the file as the body) | 200 `{ sha }` once kept; 400 for a file that does not verify or is for another realm; 409 for a file already woken; 413 over 8 MB; 503 when it cannot be stored |
+| `POST /caddy-api/v1/realms/commit` `{ wid, sha }` | `committed`; idempotent; 404 when the file is not kept here |
+| `DELETE /caddy-api/v1/realms/asleep/<wid>?sha=` | a rollback: only a file that is kept and not committed (409 once committed) |
+| `GET /caddy-api/v1/realms/asleep[?companion=]` | `{ asleep, face, realms }`: the headers newest first, each with its `sha` and `state`; reads no file. `asleep` counts the committed files, `face` is the last clear `{ wid, sha, at }` or null |
+| `GET /caddy-api/v1/realm?world=` | the world's records for a sleep file: `{ caddy: { dock, jobs, prints } }` |
+| `POST /caddy-api/v1/realm/clear` `{ wid, sha }` | only when that sha is committed for that wid (409 otherwise): drops `dock/<wid>.json`, cancels the world's jobs, notes the clear; idempotent |
+
+`/status` gains `realms: { asleep, files }`. Tests: `caddy/tests/realms.test.mjs`.

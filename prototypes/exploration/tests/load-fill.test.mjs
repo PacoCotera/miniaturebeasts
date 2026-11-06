@@ -5,44 +5,20 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import vm from "node:vm";
-import * as W from "../src/world.mjs";
-import * as V from "../src/view.mjs";
-import * as A from "../src/atlas.mjs";
+import { makePage, PAGE } from "./page-harness.mjs";
 
-const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-const MODS = { world: W, view: V, atlas: A };
-const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
-const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
-const SCRIPT = MODULE.replace(IMPORT_RE, "");
 const SCHEMA = readFileSync(new URL("../../station/tests/fixtures/save-v8-schema1.json", import.meta.url), "utf8");
 
 // The page in a sandbox: every DOM and canvas call lands on an inert stub, except that an element keeps what is set on it
 // (els[id].hidden); localStorage is `store`, its writes counted; requestAnimationFrame calls are counted.
-function page(store = {}) {
-  const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
-    apply: () => any, construct: () => any, set: () => true });
-  const els = {}, elStub = () => new Proxy({}, { get: (t, k) => k in t ? t[k] : any, set: (t, k, v) => { t[k] = v; return true; } });
-  const document = new Proxy(any, { get: (t, k) => k === "getElementById" ? id => els[id] || (els[id] = elStub()) : any });
-  const clock = { t: 1000, timers: [] }, writes = [], errors = [], raf = { n: 0 };
-  const ctx = { console: { log() {}, warn() {}, error: e => errors.push(e) }, URLSearchParams, Date, fetch: () => new Promise(() => {}), document, location: any, navigator: any,
-    matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => ++raf.n, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
-    performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
-    localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { writes.push(k); store[k] = String(v); }, removeItem: k => { writes.push(k); delete store[k]; } } };
-  ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
-  const run = src => vm.runInContext(src, ctx);
-  const p = { ctx, run, store, writes, errors, els, raf, KEY: run("SAVE_KEY"),
-    pass(ms) { const end = clock.t + ms; for (;;) { clock.timers.sort((a, b) => a.at - b.at); const n = clock.timers[0]; if (!n || n.at > end) break; clock.timers.shift(); clock.t = n.at; n.f(); } clock.t = end; } };
-  return p;
-}
+const page = (store = {}) => makePage({ store, console: "collect", els: true, raf: "count" });
 // A saved new world (seed 7), as the page writes it.
 function newSave() { const p = page(); p.run("newWorld(7)"); return p.store[p.KEY]; }
 const plain = x => JSON.parse(JSON.stringify(x));
 
 test("the Station's schema fixture loads through load() and drawSetup draws once with no throw", () => {
   const p = page({ "mb-save-v8": SCHEMA });
-  assert.equal(p.KEY, "mb-save-v8");
+  assert.match(p.KEY, /^mb-save-v8@c[0-9a-z]{12}$/, "the save moved under the Companion's own key"); assert.equal(p.store["mb-save-v8"], undefined, "and the shared key is gone");
   assert.equal(p.run("RT.readOnly"), undefined, "the fixture is not read-only");
   assert.equal(p.run("S.seed"), 123456, "the fixture's world was adopted");
   assert.equal(p.run("S.phase"), "setup");
@@ -55,7 +31,7 @@ test("a full new-world save is byte-unchanged by the fill", () => {
   const raw = newSave(), p = page({ "mb-save-v8": raw });
   assert.equal(p.store[p.KEY], raw, "the boot wrote it back unchanged");
   p.store[p.KEY] = raw; assert.equal(p.run("load()"), true);
-  assert.equal(p.run("JSON.stringify(S)"), raw);
+  assert.equal(p.run("JSON.stringify(serialize(S))"), raw);
 });
 
 test("a save missing several fields gains exactly the new world's values for them, and nothing else changes", () => {
@@ -72,11 +48,40 @@ test("a save missing several fields gains exactly the new world's values for the
   assert.doesNotThrow(() => p.run("drawSetup(0)"));
 });
 
-test("a save without gen is not given one: it stays generator 1", () => {
-  const o = JSON.parse(newSave()); delete o.gen;
-  const p = page({ "mb-save-v8": JSON.stringify(o) });
-  assert.equal(p.run("Object.hasOwn(S, 'gen')"), false);
-  assert.equal(Object.hasOwn(JSON.parse(p.store[p.KEY]), "gen"), false);
+// the v8 form of a v9 save: the map back at the top level (what the page wrote before v9)
+function asV8(o) { const r = o.regions[0], v8 = { ...o, v: 8, seed: r.seed, gen: r.gen, ...r.map, ui: { ...o.ui, ...(r.map.lastPos !== undefined ? { lastPos: r.map.lastPos } : {}) } }; for (const k of ["began", "here", "regions"]) delete v8[k]; delete v8.lastPos; return v8; }
+
+test("a v8 save without gen is not given one: it stays generator 1, in region 1", () => {
+  const v8 = asV8(JSON.parse(newSave())); delete v8.gen;
+  const p = page({ "mb-save-v8": JSON.stringify(v8) });
+  assert.equal(p.run("RT.readOnly"), undefined);
+  assert.equal(p.run("S.regions[0].gen"), 1, "region 1 is generator 1");
+  assert.equal(Object.hasOwn(JSON.parse(p.store[p.KEY]), "gen"), false, "no gen at the top of the v9 save");
+  assert.equal(JSON.parse(p.store[p.KEY]).regions[0].gen, 1);
+});
+
+test("a v8 save: its bytes are copied to <key>.pre9 first, then it opens as a v9 realm of one region", () => {
+  const raw = JSON.stringify(asV8(JSON.parse(newSave()))), p = page({ "mb-save-v8": raw });
+  assert.equal(p.store[p.KEY + ".pre9"], raw, "the v8 bytes, untouched");
+  const v9 = JSON.parse(p.store[p.KEY]); assert.equal(v9.v, 9); assert.equal(v9.regions.length, 1); assert.equal(v9.here, "g1");
+  assert.equal(p.run("S.v"), 9);
+});
+
+test("a v8 save whose copy cannot be made opens read-only and is never written or migrated", () => {
+  const raw = JSON.stringify(asV8(JSON.parse(newSave())));
+  const store = new Proxy({ "mb-save-v8": raw }, { set: (t, k, v) => { if (!String(k).endsWith(".pre9")) t[k] = v; return true; } });   // storage that drops the copy
+  const p = makePage({ store, console: "collect", els: true, raf: "count" });
+  assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("RT.broken"), true);
+  assert.equal(store["mb-save-v8"], raw, "the v8 bytes stay where they were"); assert.equal(p.writes.filter(k => k === "mb-save-v8" || k === p.KEY).length, 0);
+});
+
+test("a v9 save with a region of a generator this page does not know, and a v10 save, open read-only and are never written", () => {
+  for (const mod of [o => { o.regions[0].gen = 99; }, o => { o.v = 10; }]) {
+    const o = JSON.parse(newSave()); mod(o); const raw = JSON.stringify(o), p = page({ "mb-save-v8": raw });
+    assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("RT.broken"), undefined);
+    assert.equal(p.store[p.KEY] ?? p.store["mb-save-v8"], raw, "kept as stored");
+    assert.equal(p.writes.filter(k => !k.startsWith("mb-companion")).length, 0, "nothing written but the Companion's own identity");
+  }
 });
 
 test("a save forced to throw (ui present but null, kept as it is) opens read-only and is never written back", () => {

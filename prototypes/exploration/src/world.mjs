@@ -1,8 +1,8 @@
 // The seeded world of the Companion: the map, the places and the RNG. Pure: it never reads the page's state, the DOM,
 // storage, the clock or Math.random, and never draws. Generator 1 is frozen; a new generator is added beside it, never in its place.
 
-export const NEW_GEN = 2;          // the generator newWorld gives a new world (old saves keep theirs)
-export const GENS = [1, 2];        // the generators the page can play
+export const NEW_GEN = 3;          // the generator newWorld gives a new world (old saves keep theirs)
+export const GENS = [1, 2, 3, 4];  // the generators the page can play
 
 export const MW = 16, MH = 20;                       // world map, cells
 export const PW = 28, PH = 32;
@@ -54,8 +54,10 @@ export const cdist = (a, b) => man(cxy(a), cxy(b));
 
 export function passableIn(G, c) { const l = G.land[c]; return (l !== L.WATER || G.ford[c] === 1) && l !== L.CLIFF; }
 
-export function genWorld(seed, gen = 1) {
+export function genWorld(seed, gen = 1, biome = 'mixed') {
+  if (gen === 4) return genWorld4(seed, biome);
   if (gen === 2) return genWorld2(seed);
+  if (gen === 3) return { ...genWorld2(seed), gen: 3 };   // generator 3: generator 2's ground, and the herd floor in its life (genLife3)
   if (gen !== 1) throw new RangeError('unknown world generator: ' + gen);
   const passable = c => passableIn(G, c);
   const R = makeRng(hash(seed, 'world'));
@@ -377,7 +379,7 @@ export function genCave(seed, cell) {
 }
 
 export function genPlace(G, seed, key) {
-  if (G.gen === 2) return key[0] === 'c' ? genCave2(seed, +key.slice(1)) : genPatch2(G, seed, +key);
+  if (G.gen >= 2) return key[0] === 'c' ? genCave2(seed, +key.slice(1)) : genPatch2(G, seed, +key);
   return key[0] === 'c' ? genCave(seed, +key.slice(1)) : genPatch(G, seed, +key);
 }
 
@@ -407,7 +409,7 @@ export function noiseQ(s, x, y, P) {
   const ix = (x / P) | 0, iy = (y / P) | 0, fx = (((x % P) * 32768) / P) | 0, fy = (((y % P) * 32768) / P) | 0;
   const v = (i, j) => hash(s, i, j) >>> 17, sx = sm(fx), sy = sm(fy);
   return lerpQ(lerpQ(v(ix, iy), v(ix + 1, iy), sx), lerpQ(v(ix, iy + 1), v(ix + 1, iy + 1), sx), sy); }
-const n2 = (s, x, y) => ((2 * noiseQ(hash(s, 1), x, y, G2.P1) + noiseQ(hash(s, 2), x, y, G2.P2)) / 3) | 0;   // two octaves, lattices 8 and 4
+const n2 = (s, x, y, P1 = G2.P1, P2 = G2.P2) => ((2 * noiseQ(hash(s, 1), x, y, P1) + noiseQ(hash(s, 2), x, y, P2)) / 3) | 0;   // two octaves, lattices 8 and 4
 // noiseQ over a place's tiles (0 <= x < PW, 0 <= y < PH) with each lattice value hashed once: the same numbers as noiseQ(s, x, y, P).
 function noiseTab(s, P) {
   const gw = (((PW - 1) / P) | 0) + 2, gh = (((PH - 1) / P) | 0) + 2, g = new Int32Array(gw * gh);
@@ -434,36 +436,138 @@ const nearWater = (land, c) => { const x = c % MW, y = (c / MW) | 0;
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (onMapXY(x + dx, y + dy) && land[(y + dy) * MW + x + dx] === L.WATER) return true;
   return false; };
 
+// A biome's river setting (generator 4): B.river = { axis, lo, hi, turnP, iy, n, ford } -- 'ns', 'we' or 'pick' (north or west, by the
+// biome's own stream), the band the water stays in, the percent chance of a bend a step, the along-axis rows the island may take, the
+// channels (the second and later each on a stream of their own; with a span, each channel covers that many rows and they meet in the rows they share) and the ford lines. It draws on streams of its own, so generators 2 and 3
+// never see it.
+function g4Course(sub, J) {
+  const RV = makeRng(sub('rv4')), axis = J.axis === 'pick' ? (RV.int(2) ? 'ns' : 'we') : J.axis;
+  const len = axis === 'ns' ? MH : MW, cross = axis === 'ns' ? MW : MH, cell = (t, a) => axis === 'ns' ? t * MW + a : a * MW + t;
+  const chans = [], water = [];
+  const nc = J.n || 1;
+  for (let k = 0; k < nc; k++) {   // with a span, the channels each cover that many rows, the first from the start and the last to the end, and the ones between spread out: they meet in the rows they share
+    const R = makeRng(sub('rc' + k)), pos = new Int32Array(len), from = J.span && nc > 1 ? ((k * (len - J.span) / (nc - 1)) | 0) : 0, to = J.span && nc > 1 ? from + J.span - 1 : len - 1;
+    let p = J.lo + R.int(J.hi - J.lo + 1);
+    for (let t = from; t <= to; t++) {
+      if (t > from && R.int(100) < J.turnP) { const np = clamp(p + (R.int(2) ? 1 : -1), J.lo, J.hi); if (np !== p) { water.push(cell(t - 1, np)); p = np; } }
+      pos[t] = p; water.push(cell(t, p));
+    }
+    chans.push({ pos, from, to });
+  }
+  // the island sits on the channel that covers its row and the two rows each side
+  const lo = J.iy[0], hi = Math.min(J.iy[1], len - 3), ok = [];
+  for (let t = lo; t <= hi; t++) { const j = chans.findIndex(ch => ch.from <= t - 2 && ch.to >= t + 2); if (j >= 0) ok.push([t, j]); }
+  const [it, ch] = ok[RV.int(ok.length)], main = chans[ch].pos;
+  return { axis, len, cross, cell, chans, water, RV, it, ix: main[it], main };
+}
+
+// A biome's height (stage 2): the noise on its lattices and a slope. The slope rises toward the mountain edge, or, for a valley, on both
+// sides of the river by the cell's distance from it (rxs, the river's column in each row).
+function g4Height(sub, B, rxs) {
+  const H = new Int32Array(NC), sH = sub('h'), orient = sub('orient') & 3;
+  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { const xr = (orient & 1) ? MW - 1 - x : x;
+    H[y * MW + x] = n2(sH, x, y, B.hP1, B.hP2) + (B.valley ? ((B.rampQ * Math.abs(x - rxs[y]) / 8) | 0) : ((B.rampQ * xr / 15) | 0)); }
+  return H;
+}
+
 // Stage 1: base land, today's meadow made integer.
-function g2Land(sub) {
+// B is a biome's ground (generator 4, BIOME_GROUND); without one this is generator 2's land to the bit.
+function g2Land(sub, B) {
   const at = (x, y) => y * MW + x;
   const land = new Uint8Array(NC), ford = new Uint8Array(NC), island = new Uint8Array(NC);
   const m = new Int32Array(NC), r = new Int32Array(NC), sM = sub('m'), sR = sub('r'), all = [];
-  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { m[at(x, y)] = n2(sM, x, y); r[at(x, y)] = n2(sR, x, y); }
+  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { m[at(x, y)] = n2(sM, x, y, B ? B.mP1 : undefined, B ? B.mP2 : undefined); r[at(x, y)] = n2(sR, x, y); }
   for (let c = 0; c < NC; c++) all.push(c);
-  for (const c of rankTop(m, all, G2.WOOD_N)) land[c] = L.WOOD;
-  for (const c of rankTop(r, all.filter(c => land[c] !== L.WOOD), G2.ROCK_N)) land[c] = L.ROCK;
-  const R = makeRng(sub('river')), rxs = new Int32Array(MH);
-  let rx = 9 + R.int(3);
-  for (let y = 0; y < MH; y++) {
-    if (y > 0 && R.int(100) < 45) { const nx = clamp(rx + (R.int(2) ? 1 : -1), 8, 13); if (nx !== rx) { land[at(nx, y - 1)] = L.WATER; rx = nx; } }
-    land[at(rx, y)] = L.WATER; rxs[y] = rx;
+  const C = B && B.river ? g4Course(sub, B.river) : null, H = C ? g4Height(sub, B, C.chans[0].pos) : null;   // a biome's height is made here: its rock may stand on the high ground
+  if (H && B.woodLow) for (let c = 0; c < NC; c++) m[c] -= (H[c] * B.woodLow) >> 3;   // wood prefers the low ground
+  for (const c of rankTop(m, all, B ? B.wood : G2.WOOD_N)) land[c] = L.WOOD;
+  if (H && B.rockHigh) for (let c = 0; c < NC; c++) r[c] += H[c];
+  for (const c of rankTop(r, all.filter(c => land[c] !== L.WOOD), B ? B.rock : G2.ROCK_N)) land[c] = L.ROCK;
+  const R = makeRng(sub('river'));
+  const smallLakes = RL => {   // a biome's small lakes of one or two cells
+    for (let k = 0, tries = 0; k < B.lakes && tries < 400; tries++) {
+      const x = 1 + RL.int(MW - 2), y = 1 + RL.int(MH - 2), c = at(x, y), two = RL.int(100) < B.lakeTwo, dx = RL.int(2), c2 = dx ? c + 1 : c + MW;
+      const free = d => land[d] !== L.WATER && !island[d] && !ford[d] && land[d] !== L.CLIFF && (!B.lakeSep || NB8.every(([ox, oy]) => { const X = d % MW + ox, Y = ((d / MW) | 0) + oy; return !onMapXY(X, Y) || land[Y * MW + X] !== L.WATER; }));
+      if (!free(c) || (two && (!free(c2) || (dx && x + 1 >= MW - 1) || (!dx && y + 1 >= MH - 1)))) continue;
+      land[c] = L.WATER; if (two) land[c2] = L.WATER; k++;
+    }
+  };
+  if (B && B.river) {   // the biome's own course, island row and fords
+    const J = B.river, { RV, it, ix } = C, pos0 = C.main;
+    for (const c of C.water) land[c] = L.WATER;
+    for (let t = it - 1; t <= it + 1; t++) for (let a = ix - 1; a <= ix + 2; a++) land[C.cell(t, clamp(a, 0, C.cross - 1))] = L.WATER;
+    land[C.cell(it - 1, pos0[it - 2])] = L.WATER; land[C.cell(it + 1, pos0[it + 2])] = L.WATER;
+    land[C.cell(it, ix)] = L.MEADOW; land[C.cell(it, ix + 1)] = RV.int(2) ? L.WOOD : L.MEADOW;
+    island[C.cell(it, ix)] = 1; island[C.cell(it, ix + 1)] = 1;
+    // a ford line is a whole row (or column) of the water; it keeps two lines clear of the island
+    const fordLine = a => { for (let b = 0; b < C.cross; b++) { const c = C.cell(a, b); if (land[c] === L.WATER) ford[c] = 1; } };
+    const clear = a => { a = clamp(a, 1, C.len - 2); while (Math.abs(a - it) <= 2) a += a >= it ? 1 : -1; return clamp(a, 1, C.len - 2); };
+    for (let k = 0; k < J.ford; k++) fordLine(clear((J.ford > 1 ? 1 + ((k * (C.len - 5) / (J.ford - 1)) | 0) : (C.len >> 1) - 1) + RV.int(3)));
+    const RF = makeRng(sub('fords'));
+    for (let k = 0; k < B.fords; k++) fordLine(clear(4 + 3 * k + RF.int(2)));
+    const lx = 1 + RV.int(5), ly = 12 + RV.int(6); if (J.lake !== 0) land[at(lx, ly)] = L.WATER;   // generator 2's one-cell lake, unless the biome has none
+    smallLakes(makeRng(sub('lakes')));
+    if (B.pools) {   // grown pools: each from a seed cell on the low ground or two cells from the water, by 4-neighbour steps that prefer the cell with the most of its own pool on its sides (twice) and around it
+      const RP = makeRng(sub('pools')), inner = c => { const x = c % MW, y = (c / MW) | 0; return x >= 1 && y >= 1 && x < MW - 1 && y < MH - 1; };
+      const nb8 = c => NB8.map(([dx, dy]) => [c % MW + dx, ((c / MW) | 0) + dy]).filter(([x, y]) => onMapXY(x, y)).map(([x, y]) => y * MW + x);
+      const dry = []; for (let c = 0; c < NC; c++) if (inner(c) && land[c] !== L.WATER && !island[c]) dry.push(c);
+      const lowest = new Set(dry.slice().sort((a, b) => H[a] - H[b] || a - b).slice(0, (dry.length / 4) | 0));
+      const bare = (c, own) => land[c] !== L.WATER ? true : own.has(c);   // a cell whose water, if any, is its own pool's
+      const okCell = (c, own) => inner(c) && land[c] !== L.WATER && !island[c] && !ford[c] && nb8(c).every(d => bare(d, own));
+      // a straight run of 3 or more cells, one wide: each cell has no pool cell above and below (or left and right) of it
+      const bar = P => { const has = (x, y) => P.has(y * MW + x);
+        for (const c of P) { const x = c % MW, y = (c / MW) | 0;
+          if (has(x + 1, y) && has(x + 2, y) && [0, 1, 2].every(i => !has(x + i, y - 1) && !has(x + i, y + 1))) return true;
+          if (has(x, y + 1) && has(x, y + 2) && [0, 1, 2].every(i => !has(x - 1, y + i) && !has(x + 1, y + i))) return true; }
+        return false; };
+      const nb4 = c => NB8.filter((_, i) => i % 2 === 0).map(([dx, dy]) => [c % MW + dx, ((c / MW) | 0) + dy]).filter(([x, y]) => onMapXY(x, y)).map(([x, y]) => y * MW + x);
+      // a cross or a T: a cell with 3 or more pool sides, two of whose side cells have only the one pool side of their own
+      const fork = P => { for (const c of P) { const sd = nb4(c).filter(d => P.has(d)); if (sd.length >= 3 && sd.filter(d => nb4(d).filter(e => P.has(e)).length === 1).length >= 2) return true; } return false; };
+      for (let k = 0, tries = 0; k < B.pools && tries < 400; tries++) {
+        const none = new Set(), seeds = dry.filter(c => okCell(c, none) && (lowest.has(c) || nb8(c).some(d => nb8(d).some(e => land[e] === L.WATER))));
+        if (!seeds.length) break;
+        const P = new Set([seeds[RP.int(seeds.length)]]), size = B.poolMin + RP.int(B.poolMax - B.poolMin + 1);
+        while (P.size < size) {
+          const score = new Map();
+          for (const c of P) for (const d of nb4(c)) if (!P.has(d) && okCell(d, P) && !score.has(d)) score.set(d, 2 * nb4(d).filter(e => P.has(e)).length + nb8(d).filter(e => P.has(e)).length);
+          if (!score.size) break;
+          const best = Math.max(...score.values()), top = [...score].filter(([, v]) => v === best).map(([d]) => d).sort((a, b) => a - b);
+          P.add(top[RP.int(top.length)]);
+        }
+        if (P.size < B.poolMin || bar(P) || fork(P)) continue;
+        for (const c of P) land[c] = L.WATER;
+        k++;
+      }
+    }
+  } else {
+    const rxs = new Int32Array(MH);
+    let rx = 9 + R.int(3);
+    for (let y = 0; y < MH; y++) {
+      if (y > 0 && R.int(100) < 45) { const nx = clamp(rx + (R.int(2) ? 1 : -1), 8, 13); if (nx !== rx) { land[at(nx, y - 1)] = L.WATER; rx = nx; } }
+      land[at(rx, y)] = L.WATER; rxs[y] = rx;
+    }
+    const iy = 11 + R.int(3), ix = rxs[iy];
+    for (let y = iy - 1; y <= iy + 1; y++) for (let x = ix - 1; x <= ix + 2; x++) land[at(clamp(x, 0, MW - 1), y)] = L.WATER;
+    land[at(rxs[iy - 2], iy - 1)] = L.WATER; land[at(rxs[iy + 2], iy + 1)] = L.WATER;
+    land[at(ix, iy)] = L.MEADOW; land[at(ix + 1, iy)] = R.int(2) ? L.WOOD : L.MEADOW;
+    island[at(ix, iy)] = 1; island[at(ix + 1, iy)] = 1;
+    for (const fy of [1 + R.int(3), 16 + R.int(3)]) for (let x = 0; x < MW; x++) if (land[at(x, fy)] === L.WATER) ford[at(x, fy)] = 1;
+    const lx = 1 + R.int(5), ly = 12 + R.int(6);
+    land[at(lx, ly)] = L.WATER;
+    if (B) {   // a biome's own streams, so nothing above moves: more fords, then small lakes
+      const RF = makeRng(sub('fords')), RL = makeRng(sub('lakes'));
+      for (let k = 0; k < B.fords; k++) { const fy = 4 + 3 * k + RF.int(2); for (let x = 0; x < MW; x++) if (land[at(x, fy)] === L.WATER) ford[at(x, fy)] = 1; }
+      smallLakes(RL);
+    }
   }
-  const iy = 11 + R.int(3), ix = rxs[iy];
-  for (let y = iy - 1; y <= iy + 1; y++) for (let x = ix - 1; x <= ix + 2; x++) land[at(clamp(x, 0, MW - 1), y)] = L.WATER;
-  land[at(rxs[iy - 2], iy - 1)] = L.WATER; land[at(rxs[iy + 2], iy + 1)] = L.WATER;
-  land[at(ix, iy)] = L.MEADOW; land[at(ix + 1, iy)] = R.int(2) ? L.WOOD : L.MEADOW;
-  island[at(ix, iy)] = 1; island[at(ix + 1, iy)] = 1;
-  for (const fy of [1 + R.int(3), 16 + R.int(3)]) for (let x = 0; x < MW; x++) if (land[at(x, fy)] === L.WATER) ford[at(x, fy)] = 1;
-  const lx = 1 + R.int(5), ly = 12 + R.int(6);
-  land[at(lx, ly)] = L.WATER;
+  const wetRing = B && B.ring8 ? NB8 : SIDES.map(([, dx, dy]) => [dx, dy]);
   for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) {
     const c = at(x, y); if (land[c] === L.WATER || island[c]) continue;
     let wet = false;
-    for (const [, dx, dy] of SIDES) { const X = x + dx, Y = y + dy; if (onMapXY(X, Y) && land[at(X, Y)] === L.WATER && !ford[at(X, Y)]) wet = true; }
-    if (wet && (land[c] === L.MEADOW || R.int(100) < 35)) land[c] = L.POND;
+    for (const [dx, dy] of wetRing) { const X = x + dx, Y = y + dy; if (onMapXY(X, Y) && land[at(X, Y)] === L.WATER && !ford[at(X, Y)]) wet = true; }
+    if (wet && (land[c] === L.MEADOW || R.int(100) < (B ? B.pondP : 35))) land[c] = L.POND;
   }
-  return { land, ford, island };
+  return { land, ford, island, H };
 }
 
 // The exact closure: two raster passes, so that every pair of 8-neighbours differs by at most 1. It only lowers cells.
@@ -500,11 +604,11 @@ function g2Zones(Gp, lv) {
   return { id, cells, lvOf, n: cells.length };
 }
 // Stage 3 step 5: a small zone whose bordering zones all have one level takes it (not upward beside water). Up to 4 rounds.
-function g2SmallZones(Gp, lv) {
+function g2SmallZones(Gp, lv, zoneMin = G2.ZONE_MIN) {
   for (let round = 0; round < 4; round++) {
     const Z = g2Zones(Gp, lv); let changed = false;
     for (let z = 0; z < Z.n; z++) {
-      if (Z.cells[z].length >= G2.ZONE_MIN) continue;
+      if (Z.cells[z].length >= zoneMin) continue;
       let to = -1, mixed = false, wet = false;
       for (const c of Z.cells[z]) { const x = c % MW, y = (c / MW) | 0; if (nearWater(Gp.land, c)) wet = true;
         for (const [, dx, dy] of SIDES) { const X = x + dx, Y = y + dy; if (!onMapXY(X, Y)) continue; const o = Z.id[Y * MW + X];
@@ -541,25 +645,25 @@ function g2ReachCount(Gp, c0, r) {
 }
 
 // One attempt t (0–7; 8 is the fallback). Returns the world, or null when a set piece has no cell.
-function g2Attempt(seed, t) {
-  const s0 = hash(seed, 'g2', t), sub = k => hash(s0, k), fallback = t === G2.TRIES;
-  const { land, ford, island } = g2Land(sub);
+function g2Attempt(seed, t, B) {
+  const s0 = B && B.name ? hash(seed, 'g4', B.name, t) : hash(seed, 'g2', t), sub = k => hash(s0, k), fallback = t === G2.TRIES;
+  const { land, ford, island, H: H4 } = g2Land(sub, B);
   const orient = hash(s0, 'orient') & 3, lv = new Uint8Array(NC), edge = new Uint8Array(2 * NC);
   const Gp = { land, ford, island, edge };
   let Z = null;
   if (!fallback) {
     // Stage 2: height, rising toward the mountain edge (east, or west when orient bit 0 is set).
-    const H = new Int32Array(NC), sH = sub('h');
-    for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { const xr = (orient & 1) ? MW - 1 - x : x; H[y * MW + x] = n2(sH, x, y) + ((G2.RAMP_Q * xr / 15) | 0); }
+    const H = H4 || new Int32Array(NC), sH = sub('h');
+    if (!H4) for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { const xr = (orient & 1) ? MW - 1 - x : x; H[y * MW + x] = n2(sH, x, y) + ((G2.RAMP_Q * xr / 15) | 0); }
     // Stage 3: levels by rank, the water ring, the closure, saddles, small zones.
     const dry = []; for (let c = 0; c < NC; c++) if (land[c] !== L.WATER) dry.push(c);
     dry.sort((a, b) => H[a] - H[b] || a - b);
-    const q0 = (dry.length * G2.LV_PCT[0] / 100) | 0, q1 = (dry.length * (G2.LV_PCT[0] + G2.LV_PCT[1]) / 100) | 0;
+    const lvp = B ? B.lv : G2.LV_PCT, q0 = (dry.length * lvp[0] / 100) | 0, q1 = (dry.length * (lvp[0] + lvp[1]) / 100) | 0;
     dry.forEach((c, i) => { lv[c] = i < q0 ? 0 : i < q1 ? 1 : 2; });
     for (let c = 0; c < NC; c++) if (nearWater(land, c)) lv[c] = 0;
     g2Close(lv);
     g2Saddles(lv);
-    g2SmallZones(Gp, lv);
+    g2SmallZones(Gp, lv, B ? B.zoneMin : G2.ZONE_MIN);
     Z = g2Zones(Gp, lv);
   } else {
     // The fallback: every level 0, one mouth cell raised to 1.
@@ -582,6 +686,15 @@ function g2Attempt(seed, t) {
     const up = new Int16Array(Z.n); for (let z = 0; z < Z.n; z++) up[z] = z;
     const find = z => { while (up[z] !== z) z = up[z]; return z; };
     for (const e of cand) { const ra = find(Z.id[e.a]), rb = find(Z.id[e.b]); if (ra === rb) continue; up[ra < rb ? rb : ra] = ra < rb ? ra : rb; edge[e.i] = EDGE.RAMP; }
+    if (B && B.extraStairs) {   // a biome's own stairs besides the spanning tree's: extraStairs percent as many again, on cliff edges, each clear of a stair beside it on the same wall
+      let have = 0; for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) have++;
+      const along = i => (i & 1) ? [i - 2, i + 2] : [i - 2 * MW, i + 2 * MW];
+      for (let k = 0, want = ((have * B.extraStairs + 50) / 100) | 0; k < want;) {
+        const pick = cand.filter(e => edge[e.i] === EDGE.CLIFF && land[e.a] !== L.WATER && land[e.b] !== L.WATER && along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP))
+          .sort((p, q) => hash(s0, 'xramp', p.i) - hash(s0, 'xramp', q.i) || p.i - q.i)[0];
+        if (!pick) break; edge[pick.i] = EDGE.RAMP; k++;
+      }
+    }
   }
   const cross = [];
   for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) cross.push({ c: i >> 1, side: (i & 1) ? 's' : 'e', kind: 'ramp' });
@@ -840,17 +953,110 @@ export function genPatch2(G, seed, cell) {
   }
   const walk = (x, y) => inb(x, y) && !T_BLOCK[tiles[I(x, y)]] && free(I(x, y));
   // 6. Overhangs, boulders, trees.
+  const fellsRock = G.biome === 'fells' && land === L.ROCK, footN = fellsRock && cy > 0 && G.level[cell - MW] > G.level[cell];
+  // Under a stair from a cliff (the north one first, then south, west, east), the other half of the stones falls as a fan below the stair, opening away from the cliff: a row is the stair's foot row plus the smallest of three rolls over the place's depth, and the stones are single tiles, alternately on the two sides of the stair's columns, within the fan's width.
+  const fanSt = fellsRock ? ['up', 'down', 'left', 'right'].map(dn => stairs.find(st => st.dir === dn && st.role === 'lo')).find(Boolean) || null : null;
+  // On a Fells stair place no overhang stands within 5 columns and 6 rows of the stair's entry or on its screen, and none lies on a path that step 9 will carve (a cut overhang reads as two pillars).
+  const ovBar = new Set(), pathCells = new Set();   // pathCells: the tiles step 9 will carve, which clear any stone on them
+  if (fanSt) {
+    for (let dy = -6; dy <= 6; dy++) for (let dx = -5; dx <= 5; dx++) if (inb(fanSt.entry.x + dx, fanSt.entry.y + dy)) ovBar.add(I(fanSt.entry.x + dx, fanSt.entry.y + dy));
+    const cx0 = Math.max(0, Math.min(PW * 48 - 450, fanSt.entry.x * 48 + 24 - 225)), cy0 = Math.max(0, Math.min(PH * 48 - 532, fanSt.entry.y * 48 + 24 - 266));   // the stair's screen (450 x 532, the camera clamped to the place): no overhang on it either
+    for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) { const sx = x * 48 + 24 - cx0, sy = y * 48 + 24 - cy0; if (sx >= 0 && sx < 450 && sy >= 0 && sy < 532) ovBar.add(I(x, y)); }
+    const mark = (x0, y0, x1, y1) => { for (let y = Math.min(y0, y1); y <= Math.max(y0, y1); y++) { ovBar.add(I(x0, y)); pathCells.add(I(x0, y)); } for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) { ovBar.add(I(x, y1)); pathCells.add(I(x, y1)); } };
+    for (const st of stairs) { const k = st.s, p = st.dir === 'up' ? { x: k, y: 3 } : st.dir === 'down' ? { x: k, y: PH - 4 } : st.dir === 'left' ? { x: 3, y: k } : { x: PW - 4, y: k };
+      mark(st.entry.x, st.entry.y, p.x, p.y); mark(p.x, p.y, 14, p.y); mark(14, p.y, 14, PH - 3); }
+  }
   const ovN = Math.max(G.glow.includes(cell) ? 1 : 0, land === L.ROCK ? 2 : land === L.MEADOW ? 1 : R.int(100) < 45 ? 1 : 0);
   for (let k = 0, tries = 0; k < ovN && tries < 400; tries++) {
     const ox = 2 + R.int(PW - 7), oy = 2 + R.int(PH - 8); let okO = true;
     for (let dy = 0; dy <= 3 && okO; dy++) for (let dx = -1; dx <= 3; dx++) if (!walk(ox + dx, oy + dy)) { okO = false; break; }
+    if (okO && fanSt) for (let dy = 0; dy <= 2 && okO; dy++) for (let dx = 0; dx < 3; dx++) if (ovBar.has(I(ox + dx, oy + dy))) { okO = false; break; }
     if (!okO) continue;
     for (let dx = 0; dx < 3; dx++) { setT(ox + dx, oy, T.ROCK); setT(ox + dx, oy + 1, T.ROCK); shelter[I(ox + dx, oy + 2)] = 1; occ[I(ox + dx, oy + 2)] = 1; }
     feats.push({ id: 'o' + k, kind: 'o', x: ox, y: oy }); k++;
   }
-  const rockN = land === L.ROCK ? 6 + R.int(4) : R.int(2) + (land === L.MEADOW ? 1 : 0);
-  for (let k = 0; k < rockN; k++) { const x = 2 + R.int(PW - 4), y = 2 + R.int(PH - 4), s = R.int(100) < 45 ? 1 : 0;
+  // Generator 4's Fells: a rock place has four times the stone placements (eight times on a stair place), half of them gathered at the foot of a cliff on the stair's side (north when there is a cliff but no stair).
+  const rockN = land === L.ROCK ? (6 + R.int(4)) * (fellsRock ? (fanSt ? 8 : 7) : 1) : R.int(2) + (land === L.MEADOW ? 1 : 0);
+  const fdir = fanSt ? fanSt.dir : footN ? 'up' : null, fvert = fdir === 'up' || fdir === 'down', fspan = fvert ? PW : PH, fext = fvert ? PH : PW;
+  const fxy = (k, d) => ({ x: fdir === 'left' ? d : fdir === 'right' ? PW - 1 - d : k, y: fdir === 'up' ? d : fdir === 'down' ? PH - 1 - d : k });
+  const edDepth = fanSt ? (fdir === 'up' ? fanSt.entry.y : fdir === 'down' ? PH - 1 - fanSt.entry.y : fdir === 'left' ? fanSt.entry.x : PW - 1 - fanSt.entry.x) : 0;
+  // the stair's screen (450 x 532, the camera centred on the entry and clamped to the place), as the columns (rows, for a west or east stair) across the stair it shows
+  const scrX0 = fanSt ? Math.max(0, Math.min(PW * 48 - 450, fanSt.entry.x * 48 + 24 - 225)) : 0, scrY0 = fanSt ? Math.max(0, Math.min(PH * 48 - 532, fanSt.entry.y * 48 + 24 - 266)) : 0;
+  const onScr = (x, y) => { const sx = x * 48 + 24 - scrX0, sy = y * 48 + 24 - scrY0; return sx >= 0 && sx < 450 && sy >= 0 && sy < 532; };
+  const acrossOn = k => fvert ? onScr(k, fanSt.entry.y) : onScr(fanSt.entry.x, k);
+  let fanN = 0, footN2 = 0, onCount = 0; const rowCnt = new Map();
+  // A fan stone's column: in the walk-in (the first 3 rows below the stair) the fan keeps clear of the stair's columns; past it, the left half reaches from s - w to s and the right half from s + 1 to s + 1 + w, the stair's own columns included (w is the fan's width at that row).
+  const fanCol = (side, dd) => { const w = 1 + dd - edDepth; return dd >= edDepth + 3 ? (side ? fanSt.s + 1 + R.int(w + 1) : fanSt.s - R.int(w + 1)) : (side ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w)); };
+  const fanOn = [];   // the fan stones placed on the screen, last last: the backstop lifts the last one when the screen is full
+  const depthOf = (x, y) => fdir === 'up' ? y : fdir === 'down' ? PH - 1 - y : fdir === 'left' ? x : PW - 1 - x; const footSide = [0, 0];
+  // the foot-row stones of a stair place alternate sides of the stair's columns too, each at a random column of its side (a side with fewer than 3 columns of room is skipped), so neither side of the screen is bare
+  const footLo = fanSt ? 2 : 0, footHi = fanSt ? fspan - 3 : 0, roomL = fanSt ? fanSt.s - footLo : 0, roomR = fanSt ? footHi - (fanSt.s + 2) + 1 : 0;
+  // No stone of a Fells rock place makes a straight run of 3 or more on one row or one column, inside any group (a run reads laid even with a stone hanging off its end): such a stone takes its next roll, and is dropped after 4. Carved-path tiles count as clear and overhang tiles are left out.
+  const ovTiles = new Set(); for (const f of feats) if (f.kind === 'o') for (let dx = 0; dx < 3; dx++) for (let dy = 0; dy < 2; dy++) ovTiles.add(I(f.x + dx, f.y + dy));
+  const lineBad = (x, y) => { const i0 = I(x, y); if (tiles[i0] === T.ROCK) return false;
+    if (pathCells.has(i0)) return true;   // a stone on the path is carved away: roll again
+    const rock = (u, v) => inb(u, v) && tiles[I(u, v)] === T.ROCK && !ovTiles.has(I(u, v)) && !pathCells.has(I(u, v));
+    let h = 1, w = 1; for (let u = x - 1; rock(u, y); u--) h++; for (let u = x + 1; rock(u, y); u++) h++; for (let v = y - 1; rock(x, v); v--) w++; for (let v = y + 1; rock(x, v); v++) w++;
+    return h >= 3 || w >= 3; };
+  for (let k = 0; k < rockN; k++) {
+    const footRow = footN || fanSt ? k % 2 : 0, fan = fanSt && !footRow;
+    let kk, dd, s = 0;
+    if (fanSt) {
+      let side;
+      if (fan) { side = fanN++ % 2 ? 1 : 0; }
+      else { side = footN2++ % 2 ? (roomR < 3 ? 0 : 1) : (roomL >= 3 ? 0 : 1); }
+      if (!fan) footSide[side]++;
+      for (let tr = 0; tr < 4; tr++) {
+        if (fan) { dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3); kk = fanCol(side, dd); }
+        else { const lo = side ? fanSt.s + 2 : footLo, len = side ? roomR : roomL, vis = [];   // the first 3 foot-row stones of a side fall in its columns on the screen
+          if (footSide[side] <= 3) for (let c = lo; c < lo + len; c++) if (acrossOn(c)) vis.push(c);
+          kk = footSide[side] <= 3 && vis.length ? vis[R.int(vis.length)] : lo + R.int(len); dd = 2 + R.int(3); }
+        const { x, y } = fxy(kk, dd);
+        if (!walk(x, y)) break;
+        if (lineBad(x, y)) continue;
+        if (onScr(x, y) && tiles[I(x, y)] !== T.ROCK) { if (onCount >= 20) break; if ((rowCnt.get(fvert ? y : x) || 0) >= 4) continue; onCount++; rowCnt.set(fvert ? y : x, (rowCnt.get(fvert ? y : x) || 0) + 1); }   // the 21st stone on the stair's screen is skipped, and a 5th in a row (a column, for a west or east stair) rolls again
+        if (fan && onScr(x, y) && tiles[I(x, y)] !== T.ROCK) fanOn.push({ x, y, prev: tiles[I(x, y)] });
+        setT(x, y, T.ROCK); break;
+      }
+      continue;
+    }
+    else if (fellsRock) {   // a plain Fells rock place: 55% single tiles and 45% small heaps (a tile and 1 to 3 of its 8 neighbours), no tile making a straight run of 3 and none completing a full 2 x 2
+      const heap = R.int(100) >= 55, fullAt = (X, Y) => { const rk = (u, v) => (tiles[I(u, v)] === T.ROCK && !ovTiles.has(I(u, v))) || (u === X && v === Y);
+        for (const [ax, ay] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) if (rk(X + ax, Y + ay) && rk(X + ax + 1, Y + ay) && rk(X + ax, Y + ay + 1) && rk(X + ax + 1, Y + ay + 1)) return true; return false; };
+      let sx = -1, sy = -1;
+      for (let tr = 0; tr < 4; tr++) {
+        kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4);
+        const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd };
+        if (!walk(x, y)) break;
+        if (tiles[I(x, y)] === T.ROCK || lineBad(x, y) || fullAt(x, y)) continue;
+        setT(x, y, T.ROCK); sx = x; sy = y; break;
+      }
+      if (heap && sx >= 0) { const nb = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]], take = 1 + R.int(3);
+        for (let j = 0, got = 0; j < nb.length && got < take; j++) { const m = j + R.int(nb.length - j), t = nb[m]; nb[m] = nb[j]; nb[j] = t;
+          const X = sx + t[0], Y = sy + t[1]; if (!walk(X, Y) || tiles[I(X, Y)] === T.ROCK || lineBad(X, Y) || fullAt(X, Y)) continue; setT(X, Y, T.ROCK); got++; } }
+      continue; }
+    else { kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4); s = R.int(100) < 45 && !footRow ? 1 : 0; }   // a foot-row stone is a single tile
+    const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd };
     for (let dy = -s; dy <= s; dy++) for (let dx = -s; dx <= s; dx++) if (walk(x + dx, y + dy) && (s === 0 || R.int(100) < 80)) setT(x + dx, y + dy, T.ROCK); }
+  // A stair screen that ends with fewer than 10 stones gets fan stones on the screen until it holds 10, each under the same line rule.
+  for (let tr = 0; fanSt && onCount < 10 && tr < 120; tr++) {
+    const side = fanN++ % 2 ? 1 : 0, dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3), kk = fanCol(side, dd), { x, y } = fxy(kk, dd);
+    if (!inb(x, y) || !onScr(x, y) || !walk(x, y) || tiles[I(x, y)] === T.ROCK || (rowCnt.get(fvert ? y : x) || 0) >= 4 || lineBad(x, y)) continue;
+    setT(x, y, T.ROCK); onCount++; rowCnt.set(fvert ? y : x, (rowCnt.get(fvert ? y : x) || 0) + 1);
+  }
+  // The backstop: the 4 columns s - 1 to s + 2 hold a stone 5 or more rows out on the screen; if not, one more fan stone goes there (the last fan stone on a full screen is lifted first).
+  if (fanSt) {
+    const inBand = (x, y) => { const k = fvert ? x : y; return k >= fanSt.s - 1 && k <= fanSt.s + 2; };
+    let has = false; for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) if (tiles[I(x, y)] === T.ROCK && !ovTiles.has(I(x, y)) && onScr(x, y) && depthOf(x, y) >= 5 && inBand(x, y)) has = true;
+    if (!has) {
+      if (onCount >= 20 && fanOn.length) { const f = fanOn.pop(); tiles[I(f.x, f.y)] = f.prev; onCount--; rowCnt.set(fvert ? f.y : f.x, rowCnt.get(fvert ? f.y : f.x) - 1); }
+      for (let tr = 0; tr < 120; tr++) {
+        const kk = fanSt.s - 1 + R.int(4), dd = 5 + R.int(fext - 8), { x, y } = fxy(kk, dd);
+        if (!inb(x, y) || !onScr(x, y) || !walk(x, y) || tiles[I(x, y)] === T.ROCK || (rowCnt.get(fvert ? y : x) || 0) >= 4 || lineBad(x, y)) continue;
+        setT(x, y, T.ROCK); onCount++; rowCnt.set(fvert ? y : x, (rowCnt.get(fvert ? y : x) || 0) + 1); break;
+      }
+    }
+  }
   const treeN = land === L.WOOD ? 11 + R.int(5) : land === L.MEADOW ? 1 + R.int(2) : R.int(2);
   for (let k = 0, tries = 0; k < treeN && tries < 200; tries++) {
     const x = 2 + R.int(PW - 4), y = 2 + R.int(PH - 4); let okT = true;
@@ -943,3 +1149,182 @@ export function genCave2(seed, cell) {
   return lay;
 }
 // ---- end generator 2 ----
+
+// ---- life: the creatures and the world's buried pods ----
+// The roster, in species-id order (an id is a slot: new species are appended, never inserted). `hab` is the lands a species lives on;
+// `nest` marks the species that holds the glow cells and the cave under the cliff. The page's SPECIES rows take their `hab` from here.
+export const ROSTER = [
+  { name: 'Loika', hab: [L.MEADOW, L.POND] },
+  { name: 'Tuikis', hab: [L.WOOD, L.ROCK], nest: true },
+  { name: 'Untuva', hab: [L.WOOD, L.MEADOW, L.POND] },
+];
+export const groundName = (land, cave) => cave ? 'cave' : ['meadow', 'pond', 'rock', 'wood', 'pond', 'rock'][land];
+// A realm is a pure function of (seed, generator, roster); it reads G only, never a save. Generators 1 and 2 keep their life as it was
+// (genLife12, frozen); generator 3 has the herd floor (genLife3).
+export function genLife(G, seed, roster = ROSTER) {
+  return G.gen >= 4 ? genLife3(G, seed, roster, G.biome) : G.gen >= 3 ? genLife3(G, seed, roster) : genLife12(G, seed, roster);
+}
+
+// Generators 1 and 2: each cell draws from its habitat's pool, so a species can be missing from a realm. Frozen: saves and vectors depend on it.
+function genLife12(G, seed, roster) {
+  const cr = [], pods = []; let id = 1;
+  const add = (sp, c, cv) => { cr.push({ id, sp, c, cv: cv ? 1 : 0, b: Math.round(rnd(seed, 'bold', id) * 100) / 100, s: 0 }); id++; };
+  for (let c = 0; c < MW * MH; c++) {
+    const l = G.land[c]; if (!passableIn(G, c) || l === L.WATER) continue;
+    const pool = roster.map((_, i) => i).filter(s => roster[s].hab.includes(l)); if (!pool.length) continue;
+    const r = rnd(seed, 'pop', c); let n = 0;
+    if (G.spawns.includes(c)) n = 4 + Math.floor(rnd(seed, 'pn', c) * 3);
+    else if (r < .3) n = 4 + Math.floor(rnd(seed, 'pn', c) * 5);
+    else if (r < .55) n = 1 + (rnd(seed, 'pm', c) < .5 ? 1 : 0);
+    const a = pool[Math.floor(rnd(seed, 'pa', c) * pool.length)], b = pool[Math.floor(rnd(seed, 'pb', c) * pool.length)];
+    for (let i = 0; i < n; i++) add(i % 3 === 2 ? b : a, c, 0);
+  }
+  for (const c of G.glow) { const have = cr.filter(w => w.c === c && w.sp === 1).length; for (let i = have; i < 3; i++) add(1, c, 0); }
+  for (let i = 0; i < 2; i++) add(1, G.gate, 0);
+  for (let i = 0; i < 4; i++) add(1, G.gate, 1);   // Tuikis nest under the cliff
+  const R = makeRng(hash(seed, 'pods'));
+  const homes = R.shuffle([...new Set(cr.filter(w => !w.cv && !G.spawns.includes(w.c) && G.comp[w.c]).map(w => w.c))]);
+  for (let i = 0; i < Math.min(7, homes.length); i++) {
+    const c = homes[i], here = cr.filter(w => w.c === c);
+    pods.push({ id: 'w' + i, k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' });
+  }
+  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' }); // a Loika sheltered here once
+  return { cr, pods };
+}
+
+// Generator 3 (integer only): every species has its own seed stream, so a species added to the roster never moves another's herds, its
+// ids or its pods. Each species draws its herds over its own habitat; then the floor tops it up to at least HERD.FLOOR herds of
+// HERD.SIZE or more on the reachable component, placed by construction, never rerolled: herd k comes from hash(seed, 'herd', species, k).
+export const HERD = { SIZE: 3, FLOOR: 2, PODS: 2 };   // a herd is 3 or more in one cell (the sweep's tracks threshold); 2 buried pods a species
+export function genLife3(G, seed, roster, biome) {
+  const N = MW * MH, pct = (...a) => hash(seed, ...a) % 100, cr = [], pods = [];
+  roster.forEach((r, sp) => {
+    const live = c => passableIn(G, c) && G.land[c] !== L.WATER && r.hab.includes(G.land[c]), n = new Array(N).fill(0);
+    for (let c = 0; c < N; c++) {
+      if (!live(c)) continue;
+      if (G.spawns.includes(c)) { if (pct('spawn', sp, c) < 70) n[c] = 4 + pct('pn', sp, c) % 3; continue; }
+      const q = pct('pop', sp, c);
+      if (q < 15) n[c] = 4 + pct('pn', sp, c) % 5; else if (q < 35) n[c] = 1 + pct('pm', sp, c) % 2;
+    }
+    if (r.nest) { for (const c of G.glow) n[c] = Math.max(n[c], 3); if (G.gate >= 0) n[G.gate] += 2; }
+    const herd = c => G.comp[c] === 1 && n[c] >= HERD.SIZE;
+    let have = 0; const open = [];
+    for (let c = 0; c < N; c++) { if (herd(c)) have++; else if (live(c) && G.comp[c] === 1) open.push(c); }
+    for (let k = 0; have < HERD.FLOOR && open.length; k++, have++) {
+      const R = makeRng(hash(seed, 'herd', sp, k)), c = open.splice(R.int(open.length), 1)[0];
+      n[c] = Math.max(n[c], HERD.SIZE + R.int(3));
+    }
+    // Generator 4: a biome's habitat herds doubled. A species that lives on the biome's land gets as many more herds there as it has
+    // (at least the floor's), on its own stream, placed by construction on the reachable component.
+    const hl = BIOME_HABITAT[biome];
+    if (hl !== undefined && r.hab.includes(hl)) {
+      let there = 0; const room = [];
+      for (let c = 0; c < N; c++) if (G.land[c] === hl && live(c) && G.comp[c] === 1) { if (n[c] >= HERD.SIZE) there++; else room.push(c); }
+      for (let k = 0, more = Math.max(there, HERD.FLOOR); k < more && room.length; k++) {
+        const R = makeRng(hash(seed, 'herd4', sp, k)), c = room.splice(R.int(room.length), 1)[0];
+        n[c] = HERD.SIZE + R.int(3);
+      }
+    }
+    let i = 0; const mine = (c, cv) => cr.push({ id: 0, sp, c, cv, b: pct('bold', sp, i++) / 100, s: 0 });
+    for (let c = 0; c < N; c++) for (let j = 0; j < n[c]; j++) mine(c, 0);
+    if (r.nest && G.gate >= 0) for (let j = 0; j < 4; j++) mine(G.gate, 1);   // the nest under the cliff
+    const R = makeRng(hash(seed, 'pods', sp));
+    const homes = R.shuffle([...new Set(cr.filter(w => w.sp === sp && !w.cv && !G.spawns.includes(w.c) && G.comp[w.c]).map(w => w.c))]);
+    for (let j = 0; j < Math.min(HERD.PODS, homes.length); j++) {
+      const c = homes[j];
+      pods.push({ id: 'w' + sp + 'p' + j, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' });
+    }
+  });
+  cr.forEach((w, i) => { w.id = i + 1; });
+  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' });   // a Loika sheltered here once
+  return { cr, pods };
+}
+
+// ---- generator 4 (integer only): biomes ----
+// Generator 2's ground with a land-weight table per biome, and generator 3's life with the biome's habitat herds doubled. `mixed` is
+// generator 3's ground to the bit. Every other biome re-weights generator 2's own stages (BIOME_GROUND) and draws on its own seed streams.
+// No cell is L.CLIFF here, as in generator 2: a cliff is an edge between levels, so the Fells' cliffs are their doubled height changes.
+export const BIOMES = ['mixed', 'woods', 'fells', 'marsh'];   // the four of realm version 1: their worlds never change
+export const BIOMES_R1 = ['downs', 'thickets', 'tallwood', 'tarns', 'meres'];   // the five of realm version 2
+export const ALL_BIOMES = [...BIOMES, ...BIOMES_R1];
+//   river: the river setting (g4Course); mP1, mP2: the wood noise lattices (generator 2: 8, 4; Woods ranks on a coarser noise for one body of forest);
+//   wood, rock: how many cells the noise ranks take for each land (generator 2: 80 and 48); fords: extra ford rows (generator 2 has 2 rows);
+//   lakes, lakeTwo: extra small lakes and the percent of them with a second cell; pondP, ring8: the pond edge (generator 2: 35 percent, 4 sides);
+//   hP1, hP2, rampQ, lv, zoneMin: the height noise lattices, the slope toward the mountain edge, the level shares by rank and the smallest zone kept
+//   (generator 2: 8, 4, 16384, 15 45 40, 4). Fells: a valley (the slope rises on both sides of the river by its distance from it, rampQ at 8 cells),
+//   the rock ranked on the high ground (rockHigh), lakeSep: no two small lakes touch (Tarns), the wood on the low (woodLow), a few small tarns, and extraStairs: that percent of stairs again on cliff
+//   edges besides the spanning tree's, so the walls stay long and the stairs are twice generator 2's. Marsh: its ground is low, so its ranks put most of it on the top level.
+const RIVER_G2 = { axis: 'ns', lo: 8, hi: 13, turnP: 45, iy: [3, 16], n: 1, ford: 2 };   // generator 2's river band, with the island row drawn from 3 to 16
+export const BIOME_GROUND = {
+  mixed: null,
+  woods: { name: 'woods', river: { axis: 'pick', lo: 2, hi: 13, turnP: 60, iy: [3, 16], n: 1, ford: 1 }, mP1: 16, mP2: 8, wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
+  fells: { name: 'fells', river: { axis: 'ns', lo: 5, hi: 10, turnP: 15, iy: [3, 16], n: 1, ford: 2, lake: 0 }, valley: true, rockHigh: true, woodLow: 6, extraStairs: 110, wood: 66, rock: 128, fords: 0, lakes: 5, lakeTwo: 80, pondP: 0, ring8: false, hP1: 8, hP2: 4, rampQ: 24576, lv: [20, 35, 45], zoneMin: 4 },
+  marsh: { name: 'marsh', river: { axis: 'ns', lo: 2, hi: 13, turnP: 40, iy: [3, 16], n: 2, span: 11, ford: 2, lake: 0 }, pools: 6, poolMin: 3, poolMax: 6, wood: 78, rock: 44, fords: 2, lakes: 0, lakeTwo: 0, pondP: 50, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
+  downs: { name: 'downs', river: { axis: 'ns', lo: 4, hi: 11, turnP: 30, iy: [3, 16], n: 1, ford: 2 }, mP1: 8, mP2: 4, wood: 36, rock: 20, fords: 0, lakes: 1, lakeTwo: 0, pondP: 25, ring8: false, hP1: 16, hP2: 8, rampQ: 8192, lv: [30, 40, 30], zoneMin: 4, extraStairs: 80 },
+  thickets: { name: 'thickets', river: { axis: 'pick', lo: 3, hi: 12, turnP: 50, iy: [3, 16], n: 1, ford: 1 }, mP1: 1, mP2: 1, wood: 137, rock: 24, fords: 0, lakes: 0, lakeTwo: 0, pondP: 35, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
+  tallwood: { name: 'tallwood', river: { axis: 'pick', lo: 2, hi: 13, turnP: 40, iy: [3, 16], n: 1, ford: 1 }, mP1: 24, mP2: 12, wood: 180, rock: 30, fords: 0, lakes: 1, lakeTwo: 0, pondP: 40, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
+  tarns: { name: 'tarns', river: { axis: 'ns', lo: 5, hi: 10, turnP: 15, iy: [3, 16], n: 1, ford: 2, lake: 0 }, rockHigh: true, lakeSep: true, woodLow: 4, extraStairs: 60, wood: 30, rock: 170, fords: 0, lakes: 9, lakeTwo: 70, pondP: 30, ring8: false, hP1: 8, hP2: 4, rampQ: 12288, lv: [10, 30, 60], zoneMin: 4 },
+  meres: { name: 'meres', river: { axis: 'ns', lo: 2, hi: 13, turnP: 30, iy: [3, 16], n: 1, ford: 2, lake: 0 }, pools: 3, poolMin: 8, poolMax: 12, wood: 50, rock: 16, fords: 1, lakes: 0, lakeTwo: 0, pondP: 70, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
+};
+export const WALK_MIN = 260;   // a biome world holds at least this many walkable cells on its reachable component
+// The land a biome's habitat herds stand on: a species whose habitat holds it has its herds there doubled.
+export const BIOME_HABITAT = { woods: L.WOOD, fells: L.ROCK, marsh: L.POND, downs: L.MEADOW, thickets: L.WOOD, tallwood: L.WOOD, tarns: L.ROCK, meres: L.POND };
+
+function walkCells(G) { let n = 0; for (let c = 0; c < NC; c++) n += G.comp[c]; return n; }
+export function genWorld4(seed, biome = 'mixed') {
+  if (!ALL_BIOMES.includes(biome)) throw new RangeError('unknown biome: ' + biome);
+  const B = BIOME_GROUND[biome];
+  const done = G => ({ ...G, gen: 4, biome, shade: shadeCells(G, seed, biome) });
+  for (let t = 0; t < G2.TRIES; t++) { const G = g2Attempt(seed, t, B); if (G && !g2Check(G, false).length && walkCells(G) >= WALK_MIN) return done(G); }
+  const G = g2Attempt(seed, G2.TRIES, B);
+  if (G && !g2Check(G, true).length) return done(G);
+  throw new RangeError('generator 4: no valid ' + biome + ' world for seed ' + seed);
+}
+// The Shade (deep wood under a closed canopy): one in three of a Woods world's reachable wood places, the most enclosed first (a wood place
+// with the most wood around it), ties by a hash and then the lower cell. Other biomes have none.
+function shadeCells(G, seed, biome) {
+  const shade = new Uint8Array(NC);
+  if (biome !== 'woods') return shade;
+  const wood = [];
+  for (let c = 0; c < NC; c++) if (G.land[c] === L.WOOD && G.comp[c] && !G.island[c]) {
+    const x = c % MW, y = (c / MW) | 0; let n = 0;
+    for (const [dx, dy] of NB8) if (onMapXY(x + dx, y + dy) && G.land[(y + dy) * MW + x + dx] === L.WOOD) n++;
+    wood.push({ c, n, k: hash(seed, 'shade', c) });
+  }
+  wood.sort((a, b) => b.n - a.n || a.k - b.k || a.c - b.c);
+  for (let i = 0, k = (wood.length / 3) | 0; i < k; i++) shade[wood[i].c] = 1;
+  return shade;
+}
+// ---- end generator 4 ----
+
+// ---- tree kinds (generator 4 and later) ----
+// Every trunk in a place has a kind, drawn from its region kind's list by the hash of the seed, the place and the tile, so it never changes.
+//   Meadows ('mixed'): round-crown, one trunk in three a fruit tree; a wood place in a Meadows region draws from the Woods' list.
+//   Woods and Tallwood: broadleaf, one trunk in six a hollow trunk. Hills: round-crown. The Shade (a place in G.shade): its column.
+//   Cliffs, Marsh, Thickets, Highpools and Lakes have no kind yet: their trunks stay the built tree. Generators 1 to 3 stay as they were.
+// A fruit tree carries a bush's shake ('b' feature) and a hollow trunk carries a hole ('n' feature), on the trunk's own tile; the tile and every
+// other feature of the place are untouched, so a place a save has walked keeps all it had. Called on a finished layout.
+export function treeKindAt(G, seed, lay, i) {
+  if (!G || (G.gen || 1) < 4 || lay.cave) return null;
+  const biome = G.biome || 'mixed', h = hash(seed, 'tree', lay.key, i) % 6;
+  if (G.shade && G.shade[lay.cell]) return 'shade';
+  if (biome === 'woods' || biome === 'tallwood' || (biome === 'mixed' && lay.land === L.WOOD)) return h === 0 ? 'hollow' : 'broad';
+  if (biome === 'mixed') return h < 2 ? 'fruit' : 'round';
+  if (biome === 'downs') return 'round';
+  return null;
+}
+export function placeTrees(G, seed, lay) {
+  if (lay.trees) return lay;
+  lay.trees = {};
+  for (let i = 0; i < PW * PH; i++) {
+    if (lay.tiles[i] !== T.TRUNK) continue;
+    const kind = treeKindAt(G, seed, lay, i); if (!kind) continue;
+    const x = i % PW, y = (i / PW) | 0, t = { kind, seed: 1 + hash(seed, 'trs', lay.key, i) % 3 };
+    const fk = kind === 'fruit' ? 'b' : kind === 'hollow' ? 'n' : null;
+    if (fk && Object.values(DIRS).some(([dx, dy]) => { const X = x + dx, Y = y + dy; return X >= 0 && Y >= 0 && X < PW && Y < PH && lay.reach[Y * PW + X]; })) {
+      const f = { id: 't' + fk + i, kind: fk, x, y, tree: kind }; lay.feats.push(f); t.fid = f.id;
+    }
+    lay.trees[i] = t;
+  }
+  return lay;
+}

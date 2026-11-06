@@ -1,0 +1,3 @@
+.app { height: 100%; display: grid; grid-template-rows: 52px 1fr; overflow: hidden; position: relative; }
+.work { display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr) var(--insp-w); grid-template-rows: minmax(0, 1fr); min-height: 0; position: relative; transition: grid-template-columns var(--m-mid) var(--ease); }
+.work > aside { overflow: hidden; }

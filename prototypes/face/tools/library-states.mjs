@@ -70,7 +70,7 @@ const L3 = {
   "l3-close-fits": { which: "small", entry: "Reed", zoom: "close", ring: "Reed", back: "Loika", inset: false, ok: "Compare from Reed" },
   "l3-close-founder": { which: "full", entry: "Bean", zoom: "close", ring: "Bean", back: "Family", inset: true, ok: "Compare from Bean", parents: ["Meadow pod"] },
   "l3-close-shedpod": { which: "full", entry: "Thistle", zoom: "close", ring: "Thistle", back: "Family", inset: true, ok: "Compare from Thistle", parents: ["Ivy's line"] },
-  "l3-compare-dot-moss": { which: "full", entry: "Moss", keys: ["up", "confirm", "down"], zoom: "compare", ring: "Moss", held: "Dot", cam: [12, 105], back: "Done", ok: "Compare from Moss", subject: "Compared with Dot", fact: "Same Crown, Eyes and Drive", lit: [1, 2] },
+  "l3-compare-dot-moss": { which: "full", entry: "Moss", keys: ["up", "confirm", "down"], zoom: "compare", ring: "Moss", held: "Dot", cam: [12, 105], back: "Done", ok: "Compare from Moss", subject: "Compared with Dot", fact: "Same Crown, Ears, Eyes and more", lit: [1, 2, 3] },
   "l3-compare-on-held": { which: "full", entry: "Moss", keys: ["confirm", "down", "right", "up"], zoom: "compare", ring: "Moss", held: "Moss", onHeld: true, back: "Done", ok: "Look at Moss", subject: "Holding Moss", fact: "", lit: [] },
   "l3-compare-none": { which: "full", entry: "Nettle", keys: ["confirm", "right"], zoom: "compare", ring: "Yarrow", held: "Nettle", back: "Done", ok: "Compare from Yarrow", subject: "Compared with Nettle", fact: "No read look in common", lit: [] },
 };
@@ -112,7 +112,7 @@ async function enter(page, sc, prewarm = false) {
   await page.evaluate(([setSrc, l1, via, prewarm, mid, arg]) => {
     const w = window.__world, S = window.__st; S.UI.lib.pending = null; w.reset(); const st = S.ST;   // the last scene's visit is dropped unrecorded
     const bare = () => { st.knownIds = []; st.metIds = []; st.guide = {}; st.readOnce = {}; st.wish = {}; st.face = {}; st.moments = {}; }, seen = () => { st.libSeen = JSON.parse(JSON.stringify(st.guide)); };
-    eval(`(${setSrc})`)(w, bare, seen, mid, arg); S.UI.idle = false; S.settings.light = "day"; S.UI.lib.l1 = l1;
+    eval(`(${setSrc})`)(w, bare, seen, mid, arg); S.UI.idle = false; S.UI.lastInput = performance.now(); S.settings.light = "day"; S.UI.lib.l1 = l1;
     if (prewarm) S.goto("library"); else if (via) { S.UI.home.f = via === "bezel" ? "library" : "room"; S.goto("home"); } else S.goto("library");
   }, [sc.set.toString(), sc.l1 ?? null, sc.via ?? null, prewarm, MID_S01, sc.arg]);
 }

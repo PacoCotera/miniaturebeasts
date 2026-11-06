@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds the Station's face: `build.sh wasm` (the sandbox's WebAssembly module into dist/), `build.sh native` (the Linux
-# build, run once headless: it prints the framebuffer hash and writes dist/native.hash), `build.sh all` (both).
+# build, run once headless: it prints the framebuffer hash and writes dist/native.hash; and dist/face_pipe, the face behind a pipe for the headless playtest harness), `build.sh all` (both).
 # The Emscripten SDK is pinned in emsdk.version; set EMSDK to its directory (CI installs it, see .github/workflows/site.yml)
 # or have emcc on the PATH. Prints the build time and the sizes it produced.
 set -euo pipefail
@@ -25,9 +25,10 @@ fi
 if [[ "$what" == native || "$what" == all ]]; then
   t0=$(now)
   run cmake -S "$here" -B "$bld/native" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-O2"
-  run cmake --build "$bld/native" --target face_native face_test face_metrics
+  run cmake --build "$bld/native" --target face_native face_test face_metrics face_pipe
   t1=$(now)
   "$bld/native/face_test" "$here/tests/vectors" "$here/../ui/specs/station" | tail -3   # the vectors on the C modules; a failure stops the build
+  cp "$bld/native/face_pipe" "$here/dist/face_pipe"   # prototypes/playtest's native face
   "$bld/native/face_metrics" "$here/dist/metrics.json"   # the compiled fonts' advances and kerning, for ui/specs/measure.mjs
   node "$here/tools/bake-images.mjs" --out "$here/dist/images" >/dev/null && node "$here/tools/bake-images.mjs" --out "$here/dist/images" --check >/dev/null   # the placed masters as LVGL binaries (the same bytes on both faces), checked against the masters' index
   out="$("$bld/native/face_native" ${FACE_PPM:+"$FACE_PPM"})"

@@ -3,7 +3,7 @@
 //   1. the hatch (the Incubator, 0–6.6 s); 2. a day in the Vivarium: Pip, young Pip, the S05 juvenile and nine more S01, 60 s, with focus and the acknowledge, then Greet up close; 3. dusk to night: the Station time stepped
 //   19:58 → 21:00 at a minute per 2 s, everyone curling at their minute, then a dawn wake 05:58 → 07:00; 4. the night on Idle with Pip alone, 6 min 10 s. (Beat 5 is the Companion lead's.)
 // The world is thrown away at the end: this browser's own save is kept aside (sessionStorage) and put back by endScene.
-import { G, UI, SPECS, save, load, saveSettings, stationClock } from "./game.mjs";
+import { G, UI, SPECS, save, load, saveSettings, stationClock, saveKey } from "./game.mjs";
 import * as S from "./state.mjs";
 import { frameOf, podGenome } from "./genome.mjs";
 
@@ -15,7 +15,7 @@ function world(make) {
   const st = S.freshSt("motion-proof", 3, Date.now()); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: Date.now() };
   const sv = { v: S.SAVE_V, seed: 7, wid: "motion-proof", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3, st };
   make(st); for (const m of st.mibis) m.paint = { state: "landed" };
-  try { localStorage.setItem(S.SAVE_KEY, JSON.stringify(sv)); } catch { /* in memory */ }
+  try { localStorage.setItem(saveKey(), JSON.stringify(sv)); } catch { /* in memory */ }
   G.sv = sv; G.st = st;
 }
 const named = (m, name) => { m.name = name; return m; };
@@ -51,7 +51,7 @@ export function beats() {
 }
 export const SCENE_MS = 320000 + 370000;
 export function startScene(h, now) {
-  try { if (!sessionStorage.getItem(BACKUP)) sessionStorage.setItem(BACKUP, localStorage.getItem(S.SAVE_KEY) ?? ""); } catch { /* no storage: the world is in memory */ }
+  try { if (!sessionStorage.getItem(BACKUP)) sessionStorage.setItem(BACKUP, localStorage.getItem(saveKey()) ?? ""); } catch { /* no storage: the world is in memory */ }
   scene = { t0: now, steps: beats(), i: 0, h, settings: { ...G.settings } };
   return "the motion proof plays (about 11 min 30 s): the hatch, a day in the Vivarium, dusk to night and dawn, the night on Idle; End the scene brings this browser's world back";
 }
@@ -66,7 +66,7 @@ export function sceneTick(now) {
 export function endScene(h) {
   if (!scene && !sessionStorage.getItem(BACKUP)) return "no scene plays";
   const kept = scene?.settings; scene = null; stationClock.scene = null;
-  try { const b = sessionStorage.getItem(BACKUP); if (b != null) { if (b) localStorage.setItem(S.SAVE_KEY, b); else localStorage.removeItem(S.SAVE_KEY); sessionStorage.removeItem(BACKUP); } } catch { /* in memory */ }
+  try { const b = sessionStorage.getItem(BACKUP); if (b != null) { if (b) localStorage.setItem(saveKey(), b); else localStorage.removeItem(saveKey()); sessionStorage.removeItem(BACKUP); } } catch { /* in memory */ }
   if (kept) saveSettings({ motionSets: kept.motionSets ?? false, stationTime: kept.stationTime ?? null, light: kept.light ?? null });
   load(); UI.idle = false; UI.home.f = "room"; h.goto("home");
   return "the scene is over: this browser's world is back";
