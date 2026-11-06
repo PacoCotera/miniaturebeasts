@@ -840,8 +840,8 @@
         "type": "leaf crest",
         "socket": "head-top",
         "count": [
-          2,
-          3,
+          1,
+          5,
           3
         ],
         "curl": null,
@@ -1656,6 +1656,22 @@
       "until": "repaint"
     },
     {
+      "kind": "S17",
+      "check": "sig.one",
+      "reason": "Wickle's tail-tip ball beside its flame curl, kept at the art desk's ruling 2026-11-06",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint",
+      "scope": "tail-tip-ball",
+      "ball": {
+        "part": "a glowing ball at the tip of the tail",
+        "onlyKind": "S17"
+      },
+      "covers": [
+        "anatomy.tail-tip-bulb"
+      ]
+    },
+    {
       "kind": "S18",
       "check": "coat.land",
       "reason": "Drapet's own colours and long-hair face",
@@ -1748,6 +1764,24 @@
       "by": "art desk",
       "date": "2026-11-06",
       "until": "repaint"
+    },
+    {
+      "kind": "S19",
+      "check": "face.clear",
+      "reason": "Curlop's muzzle, kept at the art desk's ruling 2026-11-06",
+      "by": "art desk",
+      "date": "2026-11-06",
+      "until": "repaint",
+      "scope": "muzzle",
+      "muzzle": {
+        "part": "the stub snout",
+        "onlyKind": "S19"
+      },
+      "covers": [
+        "anatomy.muzzle-presence",
+        "growth.muzzle-projection-ratio",
+        "growth.muzzle-width-ratio"
+      ]
     }
   ],
   "fixtures": [

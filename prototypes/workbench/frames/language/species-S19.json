@@ -98,6 +98,7 @@
   "feature": "a curled tail and two small three-fingered hands held at the chest; the fiddlehead of the ferns",
   "features": {
    "anatomy.exterior-eye-presence": "on",
+   "anatomy.muzzle-presence": "on",
    "anatomy.axial-tail-presence": "on",
    "anatomy.tail-curl-presence": "on",
    "appearance.belly-field": "on"
@@ -185,7 +186,9 @@
       "appearance.marking-layout"
      ],
      "looks": [
-      "on"
+      "on",
+      "off/on",
+      "off"
      ],
      "nature": "look",
      "shapeable": true,
@@ -568,13 +571,20 @@
    "trait": "markings",
    "shapeable": true,
    "alleles": [
-    "on"
+    "on",
+    "off"
    ],
    "looks": [
-    "on"
+    "on",
+    "off/on",
+    "off"
    ],
    "guard": "sketch: the marking field",
-   "changedBy": "player"
+   "changedBy": "player",
+   "weights": {
+    "on": 0.8062,
+    "off": 0.1938
+   }
   },
   {
    "id": "appearance.marking-layout",
@@ -591,7 +601,6 @@
     "bands",
     "patches",
     "saddle",
-    "brindle",
     "gradient",
     "back-spots"
    ],
@@ -599,7 +608,6 @@
     "bands",
     "bands-and-patches",
     "saddle",
-    "brindle",
     "gradient",
     "back-spots",
     "patches"
@@ -609,7 +617,15 @@
    "typical": [
     "bands",
     "bands"
-   ]
+   ],
+   "weights": {
+    "bands": 0.1538,
+    "patches": 0.1231,
+    "saddle": 0.2308,
+    "gradient": 0.1846,
+    "back-spots": 0.3077
+   },
+   "draw": "alike"
   },
   {
    "id": "appearance.marking-extent",
@@ -880,6 +896,28 @@
    "changedBy": "breeding"
   },
   {
+   "id": "anatomy.muzzle-presence",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": true,
+   "consumer": "rig: modules.muzzleAndJaw",
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "on",
+    "on"
+   ],
+   "looks": [
+    "on"
+   ],
+   "guard": "rig: modules.muzzleAndJaw",
+   "nature": "look",
+   "changedBy": "species"
+  },
+  {
    "id": "anatomy.exterior-eye-presence",
    "family": "sensing-signaling",
    "scope": "trunk",
@@ -1052,6 +1090,50 @@
     "high"
    ],
    "guard": "rig: head.centerLiftOverCoreRx",
+   "nature": "look",
+   "changedBy": "species"
+  },
+  {
+   "id": "growth.muzzle-projection-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: muzzle.rxOverHeadRx",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "rig: muzzle.rxOverHeadRx",
+   "nature": "look",
+   "changedBy": "species"
+  },
+  {
+   "id": "growth.muzzle-width-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: muzzle.ryOverHeadRy",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "rig: muzzle.ryOverHeadRy",
    "nature": "look",
    "changedBy": "species"
   },
@@ -2629,7 +2711,11 @@
    "typical": [
     "hazel",
     "hazel"
-   ]
+   ],
+   "weights": {
+    "hazel": 0.3675,
+    "teal": 0.6325
+   }
   },
   {
    "id": "appearance.attitude",
@@ -2655,7 +2741,11 @@
    "typical": [
     "content",
     "content"
-   ]
+   ],
+   "weights": {
+    "content": 0.3675,
+    "knowing": 0.6325
+   }
   },
   {
    "id": "signature.size",
@@ -2836,24 +2926,12 @@
    "why": "absent: no catalogue applicability 'axial'"
   },
   {
-   "id": "anatomy.muzzle-presence",
-   "why": "absent: the plan and clan never have this part"
-  },
-  {
    "id": "anatomy.crown-presence",
    "why": "absent: the plan and clan never have this part"
   },
   {
    "id": "anatomy.crown-form",
    "why": "absent: no head crown owner"
-  },
-  {
-   "id": "growth.muzzle-projection-ratio",
-   "why": "absent: no head muzzle owner"
-  },
-  {
-   "id": "growth.muzzle-width-ratio",
-   "why": "absent: no head muzzle owner"
   },
   {
    "id": "growth.posterior-length-ratio",
@@ -3177,14 +3255,14 @@
   }
  ],
  "counts": {
-  "carried": 94,
-  "trunk": 89,
+  "carried": 97,
+  "trunk": 92,
   "branch": 5,
-  "absent": 109,
-  "locked": 73,
+  "absent": 106,
+  "locked": 76,
   "lockedBy": {
-   "switch": 4,
-   "fixed": 69
+   "switch": 5,
+   "fixed": 71
   },
   "heritableLook": 14,
   "heritableDoing": 6,
@@ -3223,7 +3301,7 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 81,
+  "fieldGuideLooks": 82,
   "stampBitsPerCopy": 37
  },
  "notYet": {
@@ -3320,6 +3398,10 @@
      "low",
      "high"
     ],
+    "anatomy.muzzle-presence": [
+     "on",
+     "on"
+    ],
     "anatomy.exterior-eye-presence": [
      "on",
      "on"
@@ -3349,6 +3431,14 @@
      "low"
     ],
     "growth.head-lift-ratio": [
+     "high",
+     "high"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "short",
+     "short"
+    ],
+    "growth.muzzle-width-ratio": [
      "high",
      "high"
     ],
@@ -3634,10 +3724,10 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Curlop: 1 body region (B1), a head, 2 eyes, 2 legs, a tail; fur, bands; upright, fused head.",
+  "brief": "Curlop: 1 body region (B1), a head, a snout, 2 eyes, 2 legs, a tail; fur, bands; upright, fused head.",
   "bounds": {
    "min": [
-    -0.7165313314563936,
+    -0.9013409314563935,
     -0.40105710137238787,
     0
    ],
@@ -3648,16 +3738,16 @@
    ]
   },
   "counts": {
-   "nodes": 29,
-   "edges": 28,
-   "vertices": 1505
+   "nodes": 31,
+   "edges": 30,
+   "vertices": 1639
   }
  },
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 192,
-  "crossedBuilt": 192,
+  "crossed": 190,
+  "crossedBuilt": 190,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },
@@ -3673,13 +3763,13 @@
    "light"
   ],
   "appearance.marking-switch": [
-   "on"
+   "on",
+   "off"
   ],
   "appearance.marking-layout": [
    "bands",
    "patches",
    "saddle",
-   "brindle",
    "gradient",
    "back-spots"
   ],
@@ -3804,6 +3894,10 @@
    "low",
    "low"
   ],
+  "anatomy.muzzle-presence": [
+   "on",
+   "on"
+  ],
   "anatomy.exterior-eye-presence": [
    "on",
    "on"
@@ -3833,6 +3927,14 @@
    "low"
   ],
   "growth.head-lift-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.muzzle-projection-ratio": [
+   "short",
+   "short"
+  ],
+  "growth.muzzle-width-ratio": [
    "high",
    "high"
   ],

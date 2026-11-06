@@ -9,7 +9,7 @@ import { LOCI, CATALOGUE, LANGUAGE_FRAME, alleleIds, catalogueHeader, digestAt, 
 import { LANGUAGE, kindOf, exceptionsFor, isExcepted, landOf, hexToOklch } from "../framework/language.mjs";
 import { refuseOpen, SCHEMA_LANGUAGE } from "../framework/species.mjs";
 import {
-  LANGUAGE_ANCHORS, LANGUAGE_KINDS, LAYOUT_POOL, IRIS_VALUES_SIGNED, buildLanguageFrame, languageSpec, irisPoolOf, irisContrast, bodyColourOf, wildLookCounts, bandsOf,
+  LANGUAGE_ANCHORS, LANGUAGE_KINDS, LAYOUT_POOL, LAYOUT_SHARES, IRIS_VALUES_SIGNED, IRIS_SWATCH, PUPIL_HEX, HIGHLIGHT_HEX, buildLanguageFrame, languageSpec, irisPoolOf, irisContrast, pupilZoneContrast, fitWeights, bodyColourOf, wildLookCounts, bandsOf,
 } from "../framework/language-frames.mjs";
 import { FRAME_DATA } from "../../genome-stamp/src/frames-data.mjs";
 
@@ -68,11 +68,11 @@ test("a retired record is never open unless an exception covers it; the anchors 
   const loika = frames.S01.loci, curlop = frames.S19.loci;
   assert.equal(loika.find((l) => l.id === "anatomy.muzzle-presence")?.copies[0], "on", "Loika's cream muzzle sits inside its excepted coat.pale");
   assert.equal(loika.find((l) => l.id === "appearance.belly-field")?.copies[0], "on");
-  assert.ok(!curlop.some((l) => l.id === "anatomy.muzzle-presence"), "Curlop's muzzle is closed: no record covers it");
+  assert.equal(curlop.find((l) => l.id === "anatomy.muzzle-presence")?.copies[0], "on", "Curlop's muzzle sits under its scoped face.clear record (art desk, chunk 5 rulings)");
   assert.equal(curlop.find((l) => l.id === "appearance.belly-field")?.copies[0], "on", "Curlop's coat.pale record covers its belly field");
-  assert.ok(frames.S17.loci.every((l) => l.id !== "anatomy.tail-tip-bulb"), "Wickle's separate tip ball is retired and no record covers it");
-  assert.ok(languageSpec("S19").languageNotes.droppedSwitches.includes("anatomy.muzzle-presence"));
-  assert.deepEqual(languageSpec("S01").languageNotes.droppedSwitches, []);
+  assert.equal(frames.S17.loci.find((l) => l.id === "anatomy.tail-tip-bulb")?.copies[0], "on", "Wickle's tail-tip ball sits under its scoped sig.one record");
+  assert.ok(!frames.S18.loci.some((l) => l.id === "anatomy.tail-tip-bulb" || l.id === "anatomy.muzzle-presence"), "no other anchor keeps a ball or a muzzle");
+  for (const id of LANGUAGE_ANCHORS) assert.deepEqual(languageSpec(id).languageNotes.droppedSwitches, [], `${id}: its records cover everything it keeps`);
   const emblem = (f) => f.loci.find((l) => l.id === "appearance.emblem")?.copies ?? null;
   for (const id of LANGUAGE_ANCHORS) { assert.deepEqual(emblem(frames[id]), ["none", "none"]); assert.deepEqual(frames[id].loci.find((l) => l.id === "appearance.blush")?.copies, ["off", "off"]); }
 });
@@ -96,8 +96,11 @@ test("exception records decide what an anchor keeps, per check: eye size, ears, 
   assert.ok(exceptionsFor(LANGUAGE, "S01", "coat.pale").length === 1 && exceptionsFor(LANGUAGE, "S17", "face.clear").length === 0);
 });
 
-test("iris and attitude pools are the registry's; the contrast check reports against unsigned swatches and never cuts a pool on them", () => {
-  assert.equal(IRIS_VALUES_SIGNED, false);
+test("iris and attitude pools are the registry's; the signed iris values pass against the pupil, so no pool is cut", () => {
+  assert.equal(IRIS_VALUES_SIGNED, true);
+  assert.deepEqual(IRIS_SWATCH, { amber: "#C27A1E", honey: "#D2A040", copper: "#B0602E", olive: "#848C3A", moss: "#5F8C4E", hazel: "#9C7442", teal: "#2E8E8A", slate: "#62799A", violet: "#7E62B0" });
+  assert.equal(PUPIL_HEX, "#1E1A24"); assert.equal(HIGHLIGHT_HEX, "#FFFFFF");
+  for (const c of Object.keys(IRIS_SWATCH)) { const t = irisContrast("S01", c); assert.ok(t.pass && t.dL >= 0.33 && t.dL <= 0.51, `${c}: ${t.dL}`); }
   for (const id of LANGUAGE_ANCHORS) {
     const k = kindOf(LANGUAGE, id), f = frames[id];
     const iris = f.loci.find((l) => l.id === "appearance.iris-colour"), att = f.loci.find((l) => l.id === "appearance.attitude");
@@ -107,14 +110,64 @@ test("iris and attitude pools are the registry's; the contrast check reports aga
     assert.ok(att.alleles.includes("content"));
   }
   const p = irisPoolOf("S17");
-  assert.deepEqual(p.kept, ["amber", "honey"]); assert.deepEqual(p.dropped, []); assert.equal(p.wouldDrop.length, 2, "the report names what a signed value would drop");
-  assert.equal(irisContrast("S01", "amber").pass, true);
-  assert.ok(Math.abs(irisContrast("S01", "amber").dL - Math.abs(hexToOklch("#E0A030").L - bodyColourOf("S01").oklch.L)) < 1e-3);
+  assert.deepEqual(p.kept, ["amber", "honey"]); assert.deepEqual(p.dropped, []); assert.deepEqual(p.wouldDrop, []);
+  assert.ok(Math.abs(irisContrast("S01", "amber").dL - Math.abs(hexToOklch("#C27A1E").L - hexToOklch("#1E1A24").L)) < 1e-3, "(a) is the iris against the pupil");
+  for (const id of ["S01", "S17", "S18", "S19"]) assert.deepEqual(irisPoolOf(id).kept, kindOf(LANGUAGE, id).eyes.irisPool, id);
+});
+
+test("face.iris (b): the pupil against its face zone is reported per kind, and Thickets and Meres fall under 0.30 on their land body colour", () => {
+  const z = (id) => pupilZoneContrast(id);
+  assert.equal(z("S01").zone, "cream ring"); assert.ok(z("S01").pass);
+  for (const id of ["S17", "S18", "S19"]) assert.ok(z(id).pass, id);
+  assert.ok(!z("S06").pass && !z("S11").pass && !z("S10").pass, "Pesko and Kilpo (Thickets), Igara (Meres)");
+  assert.ok(z("S02").pass && z("S08").pass, "Downs and Meadows pass");
+});
+
+test("wild shares: the stand's own look on 60 percent, the others evenly, the layouts by the asked shares; weights are on the rows and sum to 1", () => {
+  for (const id of LANGUAGE_ANCHORS) {
+    const f = frames[id], k = kindOf(LANGUAGE, id);
+    for (const l of f.loci.filter((x) => x.weights)) { assert.ok(Math.abs(Object.values(l.weights).reduce((a, b) => a + b, 0) - 1) < 1e-3, `${id} ${l.id}`); assert.deepEqual(Object.keys(l.weights).sort(), [...l.alleles].sort()); }
+    const c = wildLookCounts(f, 4000, "shares");
+    const iris = c["appearance.iris-colour"], tot = (m) => Object.values(m).reduce((a, b) => a + b, 0);
+    assert.ok(Math.abs(iris[k.eyes.irisDefault] / tot(iris) - 0.6) < 0.04, `${id}: default iris near 60 percent`);
+    for (const [a, n] of Object.entries(iris)) if (a !== k.eyes.irisDefault) assert.ok(n / tot(iris) > 0.05, `${id}: iris ${a} over 5 percent`);
+    const att = c["appearance.attitude"]; assert.ok(Math.abs(att.content / tot(att) - 0.6) < 0.04, `${id}: content near 60 percent`);
+    const lay = c["appearance.marking-layout"];
+    assert.ok(Math.abs(lay.plain / tot(lay) - 0.35) < 0.04, `${id}: plain near 35 percent`);
+    for (const name of ["back-spots", "saddle", "gradient", "bands", "patches"]) assert.ok(lay[name] / tot(lay) > 0.05, `${id}: ${name} over 5 percent`);
+    assert.ok(!lay.brindle, "brindle has no share and is not in the pool");
+  }
+  const leaves = languageSpec("S01").shares["signature.count"].shown;
+  assert.ok(Math.abs(leaves["3"] - 0.6) < 0.01, "Loika: three leaves on 60 percent"); for (const n of ["1", "2", "4", "5"]) assert.ok(Math.abs(leaves[n] - 0.1) < 0.02, `Loika: ${n} leaves share the rest`);
+  const tas = wildLookCounts(frames.S18, 4000, "tassels")["anatomy.brow-tuft-presence"];
+  assert.ok(Math.abs(tas.true / (tas.true + tas.false) - 0.6) < 0.04, "Drapet's tassels on 60 percent");
+  assert.deepEqual(LAYOUT_SHARES, { plain: 0.35, "back-spots": 0.20, saddle: 0.15, gradient: 0.12, bands: 0.10, patches: 0.08 });
+});
+
+test("fitWeights makes the shown look come out as asked for a first-ranked pair, and reports a mixed look it cannot avoid", () => {
+  const f = fitWeights("appearance.iris-colour", ["amber", "teal", "slate"], { amber: 0.6, teal: 0.2, slate: 0.2 });
+  assert.ok(Math.abs(f.shown.amber - 0.6) < 0.01 && Math.abs(f.shown.teal - 0.2) < 0.01 && Math.abs(f.shown.slate - 0.2) < 0.01);
+  const g = fitWeights("appearance.marking-layout", ["bands", "patches", "saddle"], { bands: 0.3, patches: 0.3, saddle: 0.4 });
+  assert.ok(g.shown["bands-and-patches"] > 0, "bands with patches shows the mixed look, which is why layouts are drawn alike");
+});
+
+test("layouts and counts are drawn alike: two copies of one allele, so the shown shares are the asked ones and a wild coat never shows bands-and-patches", () => {
+  for (const id of LANGUAGE_ANCHORS) {
+    const f = frames[id];
+    assert.equal(f.loci.find((l) => l.id === "appearance.marking-layout").draw, "alike", id);
+    assert.equal(f.loci.find((l) => l.id === "appearance.iris-colour").draw, undefined, `${id}: iris keeps independent copies, with hidden carriers`);
+    const lay = wildLookCounts(f, 4000, "alike")["appearance.marking-layout"], tot = Object.values(lay).reduce((a, b) => a + b, 0);
+    assert.ok(!lay["bands-and-patches"], `${id}: no mixed layout in the wild`);
+    for (const [name, want] of Object.entries(LAYOUT_SHARES)) assert.ok(Math.abs((lay[name] ?? 0) / tot - want) < 0.03, `${id}: ${name} near ${want}`);
+  }
+  const s = languageSpec("S01");
+  assert.equal(s.draws["signature.count"], "alike");
+  for (const [n, want] of Object.entries({ 1: 0.1, 2: 0.1, 3: 0.6, 4: 0.1, 5: 0.1 })) assert.ok(Math.abs(s.shares["signature.count"].shown[n] - want) < 0.001, `Loika ${n} leaves`);
 });
 
 test("signature loci and bands: Loika's count band, the curls, the curtain's size; the other records closed", () => {
   const f1 = frames.S01, f17 = frames.S17, f18 = frames.S18, f19 = frames.S19;
-  assert.deepEqual(f1.loci.find((l) => l.id === "signature.count").alleles, ["2", "3"], "Loika's two to three leaves");
+  assert.deepEqual(f1.loci.find((l) => l.id === "signature.count").alleles, ["1", "2", "3", "4", "5"], "Loika's one to five leaves, three the stand's own");
   assert.deepEqual(f1.loci.find((l) => l.id === "signature.count").typical, ["3", "3"]);
   assert.ok(!openIds(f1).includes("signature.curl") && f1.loci.find((l) => l.id === "signature.curl").copies[0] === "straight");
   assert.deepEqual(f17.loci.find((l) => l.id === "signature.curl").clamp, { lo: 0.25, hi: 0.6, unit: "turns" });
@@ -136,7 +189,7 @@ test("one look, one record: no frame opens both records of a pair; the signature
 });
 
 test("layouts: six per kind from the language's own set, no pet layouts; shape bands within 15 percent; eye spacing in its band", () => {
-  assert.equal(LAYOUT_POOL.length, 6);
+  assert.equal(LAYOUT_POOL.length, 5, "five layouts and plain (the marking switch off) are the six options");
   for (const pet of ["points", "masked"]) assert.ok(!LAYOUT_POOL.includes(pet));
   for (const id of LANGUAGE_ANCHORS) {
     const f = frames[id];

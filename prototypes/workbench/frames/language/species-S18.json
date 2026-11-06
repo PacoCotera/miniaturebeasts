@@ -171,7 +171,9 @@
       "appearance.marking-layout"
      ],
      "looks": [
-      "on"
+      "on",
+      "off/on",
+      "off"
      ],
      "nature": "look",
      "shapeable": true,
@@ -515,13 +517,20 @@
    "trait": "markings",
    "shapeable": true,
    "alleles": [
-    "on"
+    "on",
+    "off"
    ],
    "looks": [
-    "on"
+    "on",
+    "off/on",
+    "off"
    ],
    "guard": "sketch: the marking field",
-   "changedBy": "player"
+   "changedBy": "player",
+   "weights": {
+    "on": 0.8062,
+    "off": 0.1938
+   }
   },
   {
    "id": "appearance.marking-layout",
@@ -538,7 +547,6 @@
     "bands",
     "patches",
     "saddle",
-    "brindle",
     "gradient",
     "back-spots"
    ],
@@ -546,7 +554,6 @@
     "bands",
     "bands-and-patches",
     "saddle",
-    "brindle",
     "gradient",
     "back-spots",
     "patches"
@@ -556,7 +563,15 @@
    "typical": [
     "bands",
     "bands"
-   ]
+   ],
+   "weights": {
+    "bands": 0.1538,
+    "patches": 0.1231,
+    "saddle": 0.2308,
+    "gradient": 0.1846,
+    "back-spots": 0.3077
+   },
+   "draw": "alike"
   },
   {
    "id": "appearance.marking-extent",
@@ -1536,7 +1551,11 @@
     "on"
    ],
    "guard": "rig: a tuft of fur over each eye",
-   "changedBy": "player"
+   "changedBy": "player",
+   "weights": {
+    "off": 0.6325,
+    "on": 0.3675
+   }
   },
   {
    "id": "growth.brow-tuft-length",
@@ -2320,7 +2339,11 @@
    "typical": [
     "violet",
     "violet"
-   ]
+   ],
+   "weights": {
+    "violet": 0.7746,
+    "slate": 0.2254
+   }
   },
   {
    "id": "appearance.attitude",
@@ -2346,7 +2369,11 @@
    "typical": [
     "content",
     "content"
-   ]
+   ],
+   "weights": {
+    "content": 0.3675,
+    "deadpan": 0.6325
+   }
   },
   {
    "id": "signature.size",
@@ -2948,7 +2975,7 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 77,
+  "fieldGuideLooks": 78,
   "stampBitsPerCopy": 35
  },
  "notYet": {
@@ -3337,8 +3364,8 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 195,
-  "crossedBuilt": 195,
+  "crossed": 193,
+  "crossedBuilt": 193,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },
@@ -3354,13 +3381,13 @@
    "light"
   ],
   "appearance.marking-switch": [
-   "on"
+   "on",
+   "off"
   ],
   "appearance.marking-layout": [
    "bands",
    "patches",
    "saddle",
-   "brindle",
    "gradient",
    "back-spots"
   ],

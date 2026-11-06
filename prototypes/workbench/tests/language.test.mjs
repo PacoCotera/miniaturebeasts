@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { refuseOpen } from "../framework/species.mjs";
 import {
   LANGUAGE, validateRegistry, checkFamilyOnce, checkMasses, checkQuads, checkEyes, checkLands, checkComplete, checkCoats, checkExceptions,
   hexToOklch, isExcepted, exceptionsFor, kindOf, roster,
@@ -152,9 +153,22 @@ test("Loika's cream muzzle sits inside its excepted coat.pale, and only there", 
   const e = exceptionsFor(LANGUAGE, "S01", "coat.pale")[0];
   assert.equal(e.muzzle.colour, "cream"); assert.equal(e.muzzle.inside, "coat.pale");
   assert.ok(e.covers.includes("anatomy.muzzle-presence"));
-  assert.equal(LANGUAGE.exceptions.filter((x) => x.covers).length, 1);
+  assert.equal(LANGUAGE.exceptions.filter((x) => x.covers).length, 3, "Loika's muzzle, Wickle's tail-tip ball and Curlop's muzzle");
   const bad = clone(); kindOf(bad, "S17"); bad.exceptions.find((x) => x.kind === "S17" && x.check === "coat.pale").covers = ["anatomy.muzzle-presence"];
   assert.equal(checkExceptions(bad).pass, false);
+});
+
+test("Wickle's tail-tip ball and Curlop's muzzle are scoped, signed records that cover those records and nothing else", () => {
+  const ball = exceptionsFor(LANGUAGE, "S17", "sig.one")[0], muzzle = exceptionsFor(LANGUAGE, "S19", "face.clear")[0];
+  assert.equal(ball.scope, "tail-tip-ball"); assert.deepEqual(ball.covers, ["anatomy.tail-tip-bulb"]); assert.equal(ball.by, "art desk");
+  assert.equal(muzzle.scope, "muzzle"); assert.deepEqual(muzzle.covers, ["anatomy.muzzle-presence", "growth.muzzle-projection-ratio", "growth.muzzle-width-ratio"]); assert.equal(muzzle.by, "art desk");
+  assert.equal(refuseOpen("S17", "anatomy.tail-tip-bulb"), null); assert.equal(refuseOpen("S19", "anatomy.muzzle-presence"), null);
+  assert.match(refuseOpen("S19", "anatomy.tail-tip-bulb") ?? "", /retired/, "Curlop has no ball");
+  assert.match(refuseOpen("S17", "anatomy.muzzle-presence") ?? "", /retired/, "Wickle has no muzzle");
+  const bad = clone(); bad.exceptions.find((x) => x.kind === "S17" && x.check === "sig.one").covers = ["anatomy.muzzle-presence"];
+  assert.equal(checkExceptions(bad).pass, false);
+  const other = clone(); other.exceptions.find((x) => x.kind === "S18" && x.check === "coat.pale").covers = ["anatomy.tail-tip-bulb"];
+  assert.equal(checkExceptions(other).pass, false);
 });
 
 test("anchors carry per-check records; no kind is exempt as a whole", () => {
@@ -164,7 +178,7 @@ test("anchors carry per-check records; no kind is exempt as a whole", () => {
   assert.equal(isExcepted(LANGUAGE, "S01", "coat.material"), false);
   assert.equal(isExcepted(LANGUAGE, "S17", "sig.size"), false);
   assert.equal(isExcepted(LANGUAGE, "S02", "face.size"), false);
-  assert.deepEqual(exceptionsFor(LANGUAGE, "S19").map((e) => e.check).sort(), ["coat.land", "coat.pale", "face.size", "sig.accent"]);
+  assert.deepEqual(exceptionsFor(LANGUAGE, "S19").map((e) => e.check).sort(), ["coat.land", "coat.pale", "face.clear", "face.size", "sig.accent"]);
   for (const e of LANGUAGE.exceptions) { assert.equal(e.by, "art desk"); assert.ok(e.reason && e.date && e.until); }
   assert.ok(!LANGUAGE.kinds.some((k) => "exempt" in k || "waiver" in k));
 });

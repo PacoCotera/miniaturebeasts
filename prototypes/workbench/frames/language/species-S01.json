@@ -179,7 +179,9 @@
       "appearance.marking-layout"
      ],
      "looks": [
-      "on"
+      "on",
+      "off/on",
+      "off"
      ],
      "nature": "look",
      "shapeable": true,
@@ -297,8 +299,11 @@
       "signature.count"
      ],
      "looks": [
+      "1",
       "2",
-      "3"
+      "3",
+      "4",
+      "5"
      ],
      "nature": "look",
      "shapeable": true,
@@ -505,13 +510,20 @@
    "trait": "markings",
    "shapeable": true,
    "alleles": [
-    "on"
+    "on",
+    "off"
    ],
    "looks": [
-    "on"
+    "on",
+    "off/on",
+    "off"
    ],
    "guard": "sketch: the marking field",
-   "changedBy": "player"
+   "changedBy": "player",
+   "weights": {
+    "on": 0.8062,
+    "off": 0.1938
+   }
   },
   {
    "id": "appearance.marking-layout",
@@ -528,7 +540,6 @@
     "bands",
     "patches",
     "saddle",
-    "brindle",
     "gradient",
     "back-spots"
    ],
@@ -536,7 +547,6 @@
     "bands",
     "bands-and-patches",
     "saddle",
-    "brindle",
     "gradient",
     "back-spots",
     "patches"
@@ -546,7 +556,15 @@
    "typical": [
     "bands",
     "bands"
-   ]
+   ],
+   "weights": {
+    "bands": 0.1538,
+    "patches": 0.1231,
+    "saddle": 0.2308,
+    "gradient": 0.1846,
+    "back-spots": 0.3077
+   },
+   "draw": "alike"
   },
   {
    "id": "appearance.marking-extent",
@@ -2546,7 +2564,12 @@
    "typical": [
     "amber",
     "amber"
-   ]
+   ],
+   "weights": {
+    "amber": 0.3676,
+    "honey": 0.1852,
+    "copper": 0.4472
+   }
   },
   {
    "id": "appearance.attitude",
@@ -2572,7 +2595,11 @@
    "typical": [
     "content",
     "content"
-   ]
+   ],
+   "weights": {
+    "content": 0.3675,
+    "curious": 0.6325
+   }
   },
   {
    "id": "signature.size",
@@ -2616,19 +2643,33 @@
    "trait": "signature-count",
    "shapeable": true,
    "alleles": [
+    "1",
     "2",
-    "3"
+    "3",
+    "4",
+    "5"
    ],
    "looks": [
+    "1",
     "2",
-    "3"
+    "3",
+    "4",
+    "5"
    ],
    "guard": "rig: how many of the signature part there are (whole numbers; a child of two parents rounds up)",
    "changedBy": "player",
    "typical": [
     "3",
     "3"
-   ]
+   ],
+   "weights": {
+    "1": 0.1,
+    "2": 0.1,
+    "3": 0.6,
+    "4": 0.1,
+    "5": 0.1
+   },
+   "draw": "alike"
   },
   {
    "id": "signature.curl",
@@ -3134,7 +3175,7 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 67,
+  "fieldGuideLooks": 71,
   "stampBitsPerCopy": 37
  },
  "notYet": {
@@ -3572,8 +3613,8 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 194,
-  "crossedBuilt": 194,
+  "crossed": 195,
+  "crossedBuilt": 195,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },
@@ -3589,13 +3630,13 @@
    "light"
   ],
   "appearance.marking-switch": [
-   "on"
+   "on",
+   "off"
   ],
   "appearance.marking-layout": [
    "bands",
    "patches",
    "saddle",
-   "brindle",
    "gradient",
    "back-spots"
   ],
@@ -3627,8 +3668,11 @@
    "high"
   ],
   "signature.count": [
+   "1",
    "2",
-   "3"
+   "3",
+   "4",
+   "5"
   ],
   "form.head": [
    "small",

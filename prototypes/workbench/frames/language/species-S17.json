@@ -98,6 +98,7 @@
    "anatomy.exterior-eye-presence": "on",
    "anatomy.axial-tail-presence": "on",
    "anatomy.tail-curl-presence": "on",
+   "anatomy.tail-tip-bulb": "on",
    "anatomy.fur-skirt-presence": "on"
   },
   "finish": {
@@ -184,7 +185,9 @@
       "appearance.marking-layout"
      ],
      "looks": [
-      "on"
+      "on",
+      "off/on",
+      "off"
      ],
      "nature": "look",
      "shapeable": true,
@@ -530,13 +533,20 @@
    "trait": "markings",
    "shapeable": true,
    "alleles": [
-    "on"
+    "on",
+    "off"
    ],
    "looks": [
-    "on"
+    "on",
+    "off/on",
+    "off"
    ],
    "guard": "sketch: the marking field",
-   "changedBy": "player"
+   "changedBy": "player",
+   "weights": {
+    "on": 0.8062,
+    "off": 0.1938
+   }
   },
   {
    "id": "appearance.marking-layout",
@@ -553,7 +563,6 @@
     "bands",
     "patches",
     "saddle",
-    "brindle",
     "gradient",
     "back-spots"
    ],
@@ -561,7 +570,6 @@
     "bands",
     "bands-and-patches",
     "saddle",
-    "brindle",
     "gradient",
     "back-spots",
     "patches"
@@ -571,7 +579,15 @@
    "typical": [
     "bands",
     "bands"
-   ]
+   ],
+   "weights": {
+    "bands": 0.1538,
+    "patches": 0.1231,
+    "saddle": 0.2308,
+    "gradient": 0.1846,
+    "back-spots": 0.3077
+   },
+   "draw": "alike"
   },
   {
    "id": "appearance.marking-extent",
@@ -1499,6 +1515,29 @@
    ],
    "guard": "behaviour: how long the glow lasts",
    "nature": "doing",
+   "changedBy": "species"
+  },
+  {
+   "id": "anatomy.tail-tip-bulb",
+   "family": "structure",
+   "scope": "branch",
+   "clan": "C03",
+   "switch": true,
+   "consumer": "rig: a bulb at the tail tip that carries the emission slot",
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "on",
+    "on"
+   ],
+   "looks": [
+    "on"
+   ],
+   "guard": "rig: a bulb at the tail tip that carries the emission slot",
+   "nature": "look",
    "changedBy": "species"
   },
   {
@@ -2524,7 +2563,11 @@
    "typical": [
     "amber",
     "amber"
-   ]
+   ],
+   "weights": {
+    "amber": 0.3675,
+    "honey": 0.6325
+   }
   },
   {
    "id": "appearance.attitude",
@@ -2550,7 +2593,11 @@
    "typical": [
     "content",
     "content"
-   ]
+   ],
+   "weights": {
+    "content": 0.3675,
+    "curious": 0.6325
+   }
   },
   {
    "id": "signature.size",
@@ -2875,10 +2922,6 @@
    "why": "absent: no thin-surface owner"
   },
   {
-   "id": "anatomy.tail-tip-bulb",
-   "why": "absent: the plan and clan never have this part"
-  },
-  {
    "id": "growth.hand-size-ratio",
    "why": "absent: no free front pair (hands)"
   },
@@ -3084,13 +3127,13 @@
   }
  ],
  "counts": {
-  "carried": 91,
+  "carried": 92,
   "trunk": 85,
-  "branch": 6,
-  "absent": 112,
-  "locked": 72,
+  "branch": 7,
+  "absent": 111,
+  "locked": 73,
   "lockedBy": {
-   "switch": 4,
+   "switch": 5,
    "fixed": 68
   },
   "heritableLook": 14,
@@ -3126,7 +3169,7 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 75,
+  "fieldGuideLooks": 76,
   "stampBitsPerCopy": 35
  },
  "notYet": {
@@ -3343,6 +3386,10 @@
      "long",
      "long"
     ],
+    "anatomy.tail-tip-bulb": [
+     "on",
+     "on"
+    ],
     "anatomy.tail-curl-presence": [
      "on",
      "on"
@@ -3525,30 +3572,30 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Wickle: 1 body region (B1), a head, 2 eyes, 2 legs, a tail; fur, bands; upright, fused head.",
+  "brief": "Wickle: 1 body region (B1), a head, 2 eyes, 2 legs, a tail with a glowing bulb; fur, bands; upright, fused head.",
   "bounds": {
    "min": [
-    -0.7365648942974691,
+    -0.7861574017385821,
     -0.44757777759000517,
     0
    ],
    "max": [
     0.4517507519199279,
     0.44757777759000517,
-    2.19981351313592
+    2.2529604152315823
    ]
   },
   "counts": {
-   "nodes": 16,
-   "edges": 15,
-   "vertices": 869
+   "nodes": 17,
+   "edges": 16,
+   "vertices": 936
   }
  },
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 191,
-  "crossedBuilt": 191,
+  "crossed": 193,
+  "crossedBuilt": 193,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },
@@ -3564,13 +3611,13 @@
    "light"
   ],
   "appearance.marking-switch": [
-   "on"
+   "on",
+   "off"
   ],
   "appearance.marking-layout": [
    "bands",
    "patches",
    "saddle",
-   "brindle",
    "gradient",
    "back-spots"
   ],
@@ -3806,6 +3853,10 @@
   "appearance.emission-length": [
    "long",
    "long"
+  ],
+  "anatomy.tail-tip-bulb": [
+   "on",
+   "on"
   ],
   "anatomy.tail-curl-presence": [
    "on",

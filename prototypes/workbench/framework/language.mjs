@@ -105,7 +105,7 @@ export const EYE_COUNTS = [2, 3];
 const K = (id, name, family, land, material, pile, sig, socket, count, curl, accent = "land", extra = {}) =>
   ({ id, name, family, land, coat: { material, pile }, signature: { type: sig, socket, count, curl, accent }, eyes: { count: 2 }, ...extra });
 export const KINDS = [
-  K("S01", "Loika", "trotter", "woods", "felt", null, "leaf crest", "head-top", [2, 3, 3], null, "own", { anchor: true }),
+  K("S01", "Loika", "trotter", "woods", "felt", null, "leaf crest", "head-top", [1, 5, 3], null, "own", { anchor: true }),   // one to five leaves, three the stand's own (art desk, chunk 5 rulings: the trial grew one to five)
   K("S02", "Untuva", "loaf", "downs", "fur", "fleece", "felt lobe fan", "head-top", [4, 7, 5], null),
   K("S03", "Tuikis", "hopper", "fells", "suede", null, "tail swelling into a glowing tip", "tail", null, [0, 0.15], "land", { coatNote: "speckled suede, short and close with a slight nap", coatPattern: { scale: "fine", spotMax: 1 / 12 } }),
   K("S04", "Hiljan", "climber", "tallwood", "velvet", null, "two blunt horn-knobs", "head-top", 2, null),
@@ -186,6 +186,11 @@ export const EXCEPTIONS = [
   ex("S17", "sig.accent", "Wickle's own flame colour"),
   ex("S17", "coat.pale", "Wickle's own pale areas"),
   ex("S17", "face.size", "Wickle's long-fur face"),
+  // Wickle's tail-tip ball (art desk, chunk 5 rulings 2026-11-06): the glowing ball at the tip of the plume stays in the v8 frame.
+  ex("S17", "sig.one", "Wickle's tail-tip ball beside its flame curl, kept at the art desk's ruling 2026-11-06", {
+    scope: "tail-tip-ball", ball: { part: "a glowing ball at the tip of the tail", onlyKind: "S17" },
+    covers: ["anatomy.tail-tip-bulb"],
+  }),
   ex("S18", "coat.land", "Drapet's own colours and long-hair face"),
   ex("S18", "sig.accent", "Drapet's own curtain colour"),
   ex("S18", "coat.pale", "Drapet's own pale areas"),
@@ -204,6 +209,11 @@ export const EXCEPTIONS = [
   ex("S19", "sig.accent", "Curlop's own tail colour"),
   ex("S19", "coat.pale", "Curlop's own pale areas"),
   ex("S19", "face.size", "Curlop's long-fur face"),
+  // Curlop's muzzle (art desk, chunk 5 rulings 2026-11-06): its stub snout stays in the v8 frame, as Loika's does.
+  ex("S19", "face.clear", "Curlop's muzzle, kept at the art desk's ruling 2026-11-06", {
+    scope: "muzzle", muzzle: { part: "the stub snout", onlyKind: "S19" },
+    covers: ["anatomy.muzzle-presence", "growth.muzzle-projection-ratio", "growth.muzzle-width-ratio"],
+  }),
 ];
 
 // ---- fixtures: frozen regression files; every language check skips them ----
@@ -303,6 +313,9 @@ export function checkCoats(reg) {
   for (const [key, ks] of by(roster(reg), (k) => `${keyOfCoat(k)} in ${k.land}`)) if (ks.length > 1) msgs.push(`${ks.map((k) => k.id).join(" and ")} share ${key}`);
   return res("roster.coats", "amber", msgs);
 }
+// The retired records an exception may let its kind keep: one record each, Loika's cream muzzle, Wickle's tail-tip ball and Curlop's muzzle.
+const MUZZLE_RECORDS = ["anatomy.muzzle-presence", "growth.muzzle-projection-ratio", "growth.muzzle-width-ratio"];
+const COVERS_ALLOWED = { "S01/coat.pale": MUZZLE_RECORDS, "S17/sig.one": ["anatomy.tail-tip-bulb"], "S19/face.clear": MUZZLE_RECORDS };
 // Exceptions: one kind, one check each; only anchors; never a blanket; signed by the art desk.
 export function checkExceptions(reg) {
   const msgs = [];
@@ -322,7 +335,10 @@ export function checkExceptions(reg) {
       if (e.kind !== "S18" || t.onlyKind !== "S18") msgs.push(`${e.kind}: the tassels record is Drapet only`);
       if (t.count?.[0] !== 0 || t.count?.[1] > 5 || t.length?.[0] !== 0 || t.length?.[1] > 0.15 || t.hang !== "down" || t.standUp || t.curl || t.brows || t.horns || !t.eyesClear) msgs.push(`${e.kind}: tassels are 0-5 locks, 0-0.15 body height, hanging, never brows or horns, eyes always clear`);
     }
-    if (e.covers && (e.kind !== "S01" || e.check !== "coat.pale")) msgs.push(`${e.kind} ${e.check}: only Loika's coat.pale covers retired records`);
+    if (e.covers) {
+      const allowed = COVERS_ALLOWED[`${e.kind}/${e.check}`];
+      if (!allowed || e.covers.length !== allowed.length || !allowed.every((id) => e.covers.includes(id))) msgs.push(`${e.kind} ${e.check}: covers ${JSON.stringify(e.covers)}; only Loika's coat.pale (its muzzle), Wickle's sig.one (its tail-tip ball) and Curlop's face.clear (its muzzle) cover retired records, and only those`);
+    }
     if (e.ears && (e.kind !== "S01" || e.ears.pointed !== false || e.ears.shape !== "round" || e.ears.onlyKind !== "S01")) msgs.push(`${e.kind}: the ears record is Loika only, round, never pointed`);
   }
   for (const k of reg.kinds) if (k.anchor && !reg.exceptions.some((e) => e.kind === k.id)) msgs.push(`${k.id}: anchor with no exception record`);

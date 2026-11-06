@@ -51,6 +51,8 @@ export function rng(seed) {
   };
 }
 const pick = (r, list) => list[Math.floor(r() * list.length)];
+// One draw from a pool by shares (a frame row's `weights`); the last allele takes any rounding left over.
+const pickWeighted = (r, list, weights) => { let x = r(); for (const a of list) { x -= weights[a] ?? 0; if (x < 0) return a; } return list[list.length - 1]; };
 
 // The shared trait vocabulary (taxonomy §6): chapter, trait id, name, loci, looks.
 export const VOCAB = [
@@ -355,6 +357,8 @@ function finishFrame(frame, spec) {
       // A language frame states what a position stands for in this kind (`band`, with the value at the type) or the limits a value record is held to (`clamp`): schema /4, the same fields /3 gives the body engine.
       if (spec.bands?.[id]) { const { type, ...band } = spec.bands[id]; row.band = band; if (type !== undefined) row.type = type; }
       if (spec.clamps?.[id]) row.clamp = { ...spec.clamps[id] };
+      // A language frame may say how often each allele of the pool is drawn for a wild individual (`weights`: allele to a share of the draw, summing to 1); a row without it draws every allele with the same chance; `draw: "alike"` gives a wild individual two copies of one allele.
+      if (spec.weights?.[id]) { row.weights = { ...spec.weights[id] }; if (spec.draws?.[id]) row.draw = spec.draws[id]; }
     } else {
       row.kind = "locked"; row.lockReason = isPartSwitch(id) ? "switch" : "fixed"; row.chapter = null; row.trait = null; row.shapeable = false;
       row.copies = locked[id]; row.looks = looksFor(locus, [locked[id][0]]); row.guard = locus.consumer;
@@ -418,7 +422,7 @@ export function typeSpecimen(frame) {
 }
 export function sampleIndividual(frame, r, origin = { kind: "random" }) {
   const loci = {};
-  for (const l of frame.loci) loci[l.id] = l.kind === "locked" ? [...l.copies] : [pick(r, l.alleles), pick(r, l.alleles)];
+  for (const l of frame.loci) loci[l.id] = l.kind === "locked" ? [...l.copies] : l.weights ? (l.draw === "alike" ? (() => { const a = pickWeighted(r, l.alleles, l.weights); return [a, a]; })() : [pickWeighted(r, l.alleles, l.weights), pickWeighted(r, l.alleles, l.weights)]) : [pick(r, l.alleles), pick(r, l.alleles)];
   return { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin };
 }
 // The cross (the-cross.md, decided 2026-10-08) lives in cross.mjs: blends for continuous loci,

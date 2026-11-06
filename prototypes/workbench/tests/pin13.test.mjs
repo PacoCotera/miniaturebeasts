@@ -110,7 +110,8 @@ test("every covered record is covered by a record the registry really holds, and
   assert.equal(refuseOpen("S17", "appearance.underside-palette"), null, "Wickle's pale areas");
   assert.match(refuseOpen("S02", "appearance.belly-field"), /would take coat\.pale/);
   assert.equal(refuseOpen("S01", "anatomy.muzzle-presence"), null, "Loika's cream muzzle sits inside its excepted coat.pale (art desk, chunk 5)");
-  assert.match(refuseOpen("S19", "anatomy.muzzle-presence"), /no exception record of S19 covers it/, "no other anchor exception covers a muzzle");
+  assert.equal(refuseOpen("S19", "anatomy.muzzle-presence"), null, "Curlop's muzzle sits under its own face.clear record (art desk, chunk 5 rulings)");
+  assert.match(refuseOpen("S18", "anatomy.muzzle-presence"), /no exception record of S18 covers it/, "no other anchor exception covers a muzzle");
   assert.equal(refuseOpen("S02", "appearance.marking-layout"), null, "a live record is never refused");
 });
 
