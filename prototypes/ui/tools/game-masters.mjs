@@ -1,4 +1,4 @@
-// The twenty kinds' game art, placed as masters (release 21c; arch-release.md section 4). Sources are the art desk's hand-off (work/handoff.md: the kept 304x312 cuts, each with its 96x88 and 48x48 beside it)
+// The twenty kinds' game art, placed as masters (release 21c). Sources are the art desk's hand-off (work/handoff.md: the kept 304x312 cuts, each with its 96x88 and 48x48 beside it)
 // and its tool pass (work/tool/SNN-name/: the 144x152 adult, the 104x112 juvenile, halos, bud, face, marks, plate, the trait chips). Nothing is written in the art desk's folder.
 //   - the adult stand, asleep, and every pose are placed as delivered; the juvenile of each pair is rescaled so its figure is 0.8 of its adult's figure height at the same size, standing on the adult's feet row
 //   - the chips are renamed: trait-SNN-coat-<layout> -> trait-SNN-markings-<layout> (spots -> back-spots); trait-SNN-signature-<small|stand|large> -> trait-SNN-signature-size-<...>

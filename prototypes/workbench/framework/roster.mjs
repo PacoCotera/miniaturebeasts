@@ -277,7 +277,7 @@ export function specOf(species, { language = false } = {}) {
 // the pod pair): those frames are in the stamp registry and in saves, and stay byte for byte. A frame of version 8 reads these
 // instead, all from the registry: what the kind is made of from its family, face and signature; its colours and its home from its land.
 const withoutResembles = ({ resembles, ...rest }) => rest;
-// The copywriter's words (words-release.md, 6 Nov 2026) for the frame's feature line and the describe line that used to name a real animal. A signature type that opens with "the" drops it after "its".
+// The copywriter's words (6 Nov 2026) for the frame's feature line and the describe line that used to name a real animal. A signature type that opens with "the" drops it after "its".
 export const OWED = {
   "roster.feature": "a {family} body, with its {signature}",
   "describe.type-line": "It looks just as its species should: {feature}.",
