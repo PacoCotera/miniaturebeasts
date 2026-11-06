@@ -8,7 +8,7 @@ import { WORLD } from "./home-states.mjs";
 
 // the helpers the scenes call, in the page: a pod with `n` chapters read, Create opened on it
 const CREATE = () => ({
-  fresh() { const st = window.__st.ST; st.e = 9; st.d = 4; st.s = 6; st.firstMibi = false; st.bud = null; this.persist(); },
+  fresh() { const st = window.__st.ST; st.e = 9; st.d = 5; st.s = 6; st.firstMibi = false; st.bud = null; this.persist(); },
   shape(species, gs, n) { const S = window.__st; S.seedPod(species, gs); const p = S.ST.tray.at(-1); S.readSome(p.id, n); S.openCreate(p.id); return p.id; },
   at(f) { window.__st.UI.create.f = f; },
 });
@@ -18,7 +18,7 @@ const SCENES = {
   "shape":         { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); } },
   "shape-changed": { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); } },
   "shape-clash":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); const c = window.__st.UI.create; c.clash = [Object.keys(c.choices)[0]]; } },   // no frame in the registry clashes today: the mark is taken as the rules would set it
-  "shape-doing":   { want: "shape", set: (w) => { w.shape("S01", 3, 4); w.at(3); } },
+  "shape-doing":   { want: "shape", set: (w) => { w.shape("S01", 3, 4); w.at(4); } },   // Eyes: the Face chapter now holds Crown, Ears, Eyes, so the ring starts one trait later
   "shape-onelook": { want: "shape", set: (w) => { w.shape("S01", 4, 4); w.at(0); } },
   "shape-short":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); const st = window.__st.ST; st.s = 1; st.e = 9; w.persist(); } },
   "shape-busy":    { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.bud(false); } },

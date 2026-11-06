@@ -70,7 +70,7 @@ const L3 = {
   "l3-close-fits": { which: "small", entry: "Reed", zoom: "close", ring: "Reed", back: "Loika", inset: false, ok: "Compare from Reed" },
   "l3-close-founder": { which: "full", entry: "Bean", zoom: "close", ring: "Bean", back: "Family", inset: true, ok: "Compare from Bean", parents: ["Meadow pod"] },
   "l3-close-shedpod": { which: "full", entry: "Thistle", zoom: "close", ring: "Thistle", back: "Family", inset: true, ok: "Compare from Thistle", parents: ["Ivy's line"] },
-  "l3-compare-dot-moss": { which: "full", entry: "Moss", keys: ["up", "confirm", "down"], zoom: "compare", ring: "Moss", held: "Dot", cam: [12, 105], back: "Done", ok: "Compare from Moss", subject: "Compared with Dot", fact: "Same Crown, Eyes and Drive", lit: [1, 2] },
+  "l3-compare-dot-moss": { which: "full", entry: "Moss", keys: ["up", "confirm", "down"], zoom: "compare", ring: "Moss", held: "Dot", cam: [12, 105], back: "Done", ok: "Compare from Moss", subject: "Compared with Dot", fact: "Same Crown, Ears, Eyes and more", lit: [1, 2, 3] },
   "l3-compare-on-held": { which: "full", entry: "Moss", keys: ["confirm", "down", "right", "up"], zoom: "compare", ring: "Moss", held: "Moss", onHeld: true, back: "Done", ok: "Look at Moss", subject: "Holding Moss", fact: "", lit: [] },
   "l3-compare-none": { which: "full", entry: "Nettle", keys: ["confirm", "right"], zoom: "compare", ring: "Yarrow", held: "Nettle", back: "Done", ok: "Compare from Yarrow", subject: "Compared with Nettle", fact: "No read look in common", lit: [] },
 };
