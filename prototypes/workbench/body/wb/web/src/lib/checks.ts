@@ -12,7 +12,7 @@ export const checkMetas = () => queryOptions({ queryKey: ['checks-meta'], queryF
 
 export const needsYou = (rows: CheckRow[]) => rows.filter((r) => r.state === 'fail' || r.state === 'warn')
 
-// words.md st.att: {n} to fix (fails); {n} need a look (warnings only); both together: {n} need you.
+// the copywriter's word list st.att: {n} to fix (fails); {n} need a look (warnings only); both together: {n} need you.
 export function pillWords(rows: CheckRow[]): { text: string; kind: 'fail' | 'warn'; n: number } | null {
   const f = rows.filter((r) => r.state === 'fail').length, w = rows.filter((r) => r.state === 'warn').length, n = f + w
   if (!n) return null
@@ -21,7 +21,7 @@ export function pillWords(rows: CheckRow[]): { text: string; kind: 'fail' | 'war
   return { text: n === 1 ? '1 needs you' : `${n} need you`, kind: 'fail', n }
 }
 
-// The fail line (words.md 5.12): the row's own, with its placeholders filled by the check, else the check's, placeholders dropped.
+// The fail line (the copywriter's word list 5.12): the row's own, with its placeholders filled by the check, else the check's, placeholders dropped.
 export const failLine = (r: CheckRow, m?: CheckMeta) => (r.extra?.fail ?? (m?.fail ?? r.id).replace(/\s*\{[^}]+\}\s*/g, ' ')).trim()
 export const partsOf = (r: CheckRow, m?: CheckMeta) => r.extra?.parts ?? m?.part ?? []
 export const dotted = (ptr: string) => ptr.split('/').filter(Boolean).join('.')
@@ -40,7 +40,7 @@ export function lastMover(history: Entry[], field: string, file: unknown): Entry
 export const ORDER = { fail: 0, warn: 1, pass: 2 } as const
 export const fmtVal = (v: number | string | null) => (v === null || v === undefined ? '–' : typeof v === 'number' ? (Number.isInteger(v) ? v.toLocaleString('en-US') : String(Math.round(v * 1e4) / 1e4)) : v)
 
-// The Value and Limit columns on the count checks: "0 against 0" says nothing, so those rows say what was measured (words.md ck.col.*). Every other row shows its number as it is.
+// The Value and Limit columns on the count checks: "0 against 0" says nothing, so those rows say what was measured (the copywriter's word list ck.col.*). Every other row shows its number as it is.
 export function shownValue(r: Pick<CheckRow, 'id' | 'value'> & { extra?: CheckRow['extra'] }): string {
   if (r.extra?.shown) return r.extra.shown.value
   if (r.id === 'tail.taper' && typeof r.value === 'number') return r.value > 0.01 ? `bump ${fmtVal(r.value)} H` : 'no bump'

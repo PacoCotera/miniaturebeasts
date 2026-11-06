@@ -1,4 +1,4 @@
-// Composes proof pictures: node proof.cjs JOBS.json -- [{html, png, w, h}] -> one PNG per job, from one browser start. Playwright is the one on the VM (PLAYWRIGHT_BROWSERS_PATH=/home/mb/pw156/browsers).
+// Composes proof pictures: node proof.cjs JOBS.json -- [{html, png, w, h}] -> one PNG per job, from one browser start. Playwright is the one installed for the studio (set PLAYWRIGHT_BROWSERS_PATH to its browsers folder).
 const { chromium } = require('/home/mb/pw156/node_modules/playwright')
 const fs = require('fs')
 ;(async () => {

@@ -1,4 +1,4 @@
-// The whole view lives in the URL: /studio/S20/shape?sel=tail&az=32&view=clay&drawer=checks&proof=tail.size (studio-ui.md 2). Variety adds `sel` = a look (locus=look), `ind` = a tile, `seed` = the sheet's seed (the file's own when absent) and `cmp=1` = the run before beside it. Gate adds `rd` = an earlier round, read-only (absent = the current round). Goldens uses `sel` = a golden's id (output/variant) and `gv` = split, side or diff. `proof` is the check whose picture is on the stage.
+// The whole view lives in the URL: /studio/S20/shape?sel=tail&az=32&view=clay&drawer=checks&proof=tail.size (the studio interface design 2). Variety adds `sel` = a look (locus=look), `ind` = a tile, `seed` = the sheet's seed (the file's own when absent) and `cmp=1` = the run before beside it. Gate adds `rd` = an earlier round, read-only (absent = the current round). Goldens uses `sel` = a golden's id (output/variant) and `gv` = split, side or diff. `proof` is the check whose picture is on the stage.
 export const MODES = ['shape', 'genes', 'variety', 'goldens', 'gate'] as const
 export type Mode = (typeof MODES)[number]
 export const AZS = [0, 32, 90, 180] as const

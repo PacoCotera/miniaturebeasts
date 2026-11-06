@@ -63,7 +63,7 @@ export const endDot = (x: ExtremesState | null | undefined, e: { genome: string 
   return !hit ? null : !x?.fresh ? 'stale' : hit.state === 'fail' ? 'fail' : 'pass'
 }
 
-// words.md ck.limits: "{trait} fails at its {low/high} end"; the measure goes under it, and the fix it computed (the highest passing value).
+// the copywriter's word list ck.limits: "{trait} fails at its {low/high} end"; the measure goes under it, and the fix it computed (the highest passing value).
 export const endLine = (l: Locus, e: End) => (e.end === 'low' || e.end === 'high' ? `${l.label} fails at its ${e.end} end` : `${l.label} fails with ${e.value}`)
 export const endMeasure = (e: End) => {
   const f = e.fails[0]
@@ -78,7 +78,7 @@ export function fixPointer(g: Genome, fix: { path: string }): string | null {
   return i < 0 ? null : `/genome/loci/${i}/${m![2]}/${m![3]}`
 }
 
-// How the catalogue says two copies show (words.md: One is enough, Needs both, Mixes).
+// How the catalogue says two copies show (the copywriter's word list: One is enough, Needs both, Mixes).
 export const COPY_RULE: Record<string, string> = { 'copy-mean': 'Mixes', 'pair-map': 'Needs both', 'dominant-enable': 'One is enough', 'partition-map': 'Mixes' }
 export const copyRule = (l: Locus) => (l.op === 'switch' && l.operator === 'recessive-enable' ? 'Needs both' : COPY_RULE[l.operator ?? (l.op === 'pair-map' ? 'pair-map' : l.op === 'switch' ? 'dominant-enable' : 'copy-mean')])
 
@@ -108,7 +108,7 @@ export function stageView(l: Locus): StageView {
 }
 
 // A sleeping record is carried and crossed all the same; only its drawing waits. At the type it is asleep unless the switch it needs is on, or the shown look of a record it names is one of the looks that wake it
-// (a record that is itself asleep shows nothing and wakes nothing). Studio voice; no string for this is in words.md yet (listed for the copywriter in the W7 notes).
+// (a record that is itself asleep shows nothing and wakes nothing). Studio voice; no string for this is in the copywriter's word list yet (listed for the copywriter in the W7 notes).
 const lookWord = (a: string) => a.replace(/-/g, ' ')
 export const labelOf = (g: Genome, id: string) => locusById(g, id)?.label ?? id
 export function isAsleep(g: Genome, l: Locus, seen: string[] = []): boolean {
@@ -140,7 +140,7 @@ export type Freq = { species: string; n: { wild: number; sheet: number; cross: n
 export const GROUPS = [{ id: 'wild', word: 'Wild' }, { id: 'sheet', word: 'Sheet' }, { id: 'cross', word: 'Cross' }] as const
 export const pct = (v: number) => (v >= 10 || Number.isInteger(v) ? String(Math.round(v)) : v.toFixed(1)) + '%'
 
-// words.md: an age is "from age · grown". The stage ids are the game's (juvenile, adult, elder); the words are the player's.
+// the copywriter's word list: an age is "from age · grown". The stage ids are the game's (juvenile, adult, elder); the words are the player's.
 export const stageWord = (s: Stage) => STAGES.find((x) => x.id === s)!.word.toLowerCase()
 export const ageLine = (x: Expression) => (x.age ? `From age · ${stageWord(x.age.from)}` : null)
 export const needLine = (g: Genome, x: Expression) =>

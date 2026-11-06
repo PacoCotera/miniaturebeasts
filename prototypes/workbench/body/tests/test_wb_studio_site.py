@@ -35,7 +35,7 @@ class T(unittest.TestCase):
     def setUpClass(cls):
         shutil.rmtree(SCRATCH, ignore_errors=True)
         cls.near, cls.near_url = mk("near", "127.0.0.1")        # the test client is the trusted proxy
-        cls.far, cls.far_url = mk("far", "10.10.10.20")          # the test client is some other peer
+        cls.far, cls.far_url = mk("far", "192.0.2.20")          # the test client is some other peer
         cls.none, cls.none_url = mk("none", None)               # no trusted proxy at all
 
     @classmethod

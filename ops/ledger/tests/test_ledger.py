@@ -90,13 +90,13 @@ class LedgerTest(unittest.TestCase):
     NOW = __import__("datetime").datetime(2026, 11, 4, 18, 0, tzinfo=__import__("datetime").timezone.utc)  # noon in Mexico City
 
     def test_day_line_under(self):
-        self.put("grow/service.py paint", "2026-11-04T17:00:00Z", 5.0)  # 100 MXN
+        self.put("grow/service.py paint", "2026-11-04T17:00:00Z", 5.0)  # 100 pesos
         self.assertAlmostEqual(ledger.require_day_line(now=self.NOW), 100.0)
 
     def test_day_line_at_the_line(self):
-        self.put("grow/service.py paint", "2026-11-04T17:00:00Z", 12.26)  # 245.2 MXN, plus the 4.8 worst case: exactly 250
+        self.put("grow/service.py paint", "2026-11-04T17:00:00Z", 12.26)  # 245.2 pesos, plus the 4.8 worst case: exactly 250
         self.assertAlmostEqual(ledger.require_day_line(now=self.NOW), 245.2)
-        self.put("grow/service.py paint", "2026-11-04T17:20:00Z", 0.01)   # 0.2 MXN more passes the line
+        self.put("grow/service.py paint", "2026-11-04T17:20:00Z", 0.01)   # 0.2 pesos more passes the line
         with self.assertRaises(SystemExit) as c:
             ledger.require_day_line(now=self.NOW)
         self.assertIn("250 MXN day line", str(c.exception))

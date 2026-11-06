@@ -37,7 +37,7 @@ def dial(id, field, options, default, label=None):
     return dict(id=id, kind="choice", locus=f"play.{field}", options=options, label=label or id, cage=False, virtual=True, default=default)
 
 
-# The surface of a plan: each toy's id, its name in play (the copywriter's: words.md pl.toy.*), its kind, the parts of the body it moves (the checks of those parts are the ones that can stop it) and its axes.
+# The surface of a plan: each toy's id, its name in play (the copywriter's: the copywriter's word list pl.toy.*), its kind, the parts of the body it moves (the checks of those parts are the ones that can stop it) and its axes.
 # The quadruped's is alike (spec 2.3): the same toys on the same named ranges, against the genes its file carries (a toy whose genes the file does not have is left out).
 _TOYS = [
     dict(id="body", label="Body", kind="slider", parts=["head", "neck", "back", "arms", "legs"], axes=[rng("size", "form.torso-girth", 7)]),
@@ -51,14 +51,14 @@ _TOYS = [
 ]
 SURFACE = {"biped": _TOYS, "quadruped": _TOYS}
 BUILT = {"biped": True, "quadruped": False}            # whether the plan has a cage builder yet (the quadruped's is chunks 17-20)
-# The words play says when a check stops a toy: the copywriter's (words.md "Play sentences (chunk 13)", ids pl.limit.*), one per check, true for every toy the check reaches and both ends of the toy. A few have a sentence for one toy, in TOY_WORDS.
+# The words play says when a check stops a toy: the copywriter's (the copywriter's word list "Play sentences (chunk 13)", ids pl.limit.*), one per check, true for every toy the check reaches and both ends of the toy. A few have a sentence for one toy, in TOY_WORDS.
 # A check's own `play` sentence and the file's `play.words` come first. "loud" and "body" and "ears" belong to checks that are still to come.
 WORDS = {"joins": "Then I wouldn't fit together any more!", "head.attach": "Then my head wouldn't sit straight!", "limbs": "My arms and legs need somewhere to hold on!",
          "head.size": "Then my head and my body wouldn't match!"}
 TOY_WORDS = {("joins", "body"): "Then my arms and legs wouldn't fit on!", ("joins", "ears"): "Then my ears wouldn't fit on my head!", ("joins", "tail"): "Then my tail wouldn't fit on right!",
              ("head.attach", "ears"): "With ears like these, my head wouldn't sit straight!", ("limbs", "tail"): "My legs need somewhere to hold on!"}
 PLACEHOLDER = dict(body="Any rounder and I'd roll away!", ears="Big ears! Any bigger and I couldn't see.", loud="Ooh, that's more sparkle than I can carry!", default="That's as far as I can go!")
-HOLD = "Hmm, that shape didn't work. Try another?"       # a build fails (words.md pl.wait.fail), also a placeholder
+HOLD = "Hmm, that shape didn't work. Try another?"       # a build fails (the copywriter's word list pl.wait.fail), also a placeholder
 
 
 # ---------------------------------------------------------------------------------------------------------------------------- the file's loci and the plan's toys
@@ -796,7 +796,7 @@ def gated_looks(doc, copies, stage):
 
 
 def how_often(share, aged):
-    """The word under a look of the family strip: often, sometimes, rarely, or when grown for a look that waits for an age (words.md pl.family.rows)."""
+    """The word under a look of the family strip: often, sometimes, rarely, or when grown for a look that waits for an age (the copywriter's word list pl.family.rows)."""
     return "grown" if aged else ("often" if share >= 50 else "sometimes" if share >= 15 else "rarely")
 
 
@@ -868,7 +868,7 @@ def direct_kin(x, y, lookup=lambda i: None, depth=KIN_DEPTH):
 
 
 class KinError(ValueError):
-    """Two mibis that are direct kin: the sentence is the studio's (words.md st.cross.kin.no), `rel` is kept apart for agents and the CLI."""
+    """Two mibis that are direct kin: the sentence is the studio's (the copywriter's word list st.cross.kin.no), `rel` is kept apart for agents and the CLI."""
     def __init__(self, sentence, rel):
         super().__init__(sentence)
         self.rel = rel
@@ -905,7 +905,7 @@ def pods_with(doc, mate_doc, lookup, round_no=0, dial=None, n=POD_COUNT):
 
 
 # ---- keeping a pod: the pod becomes its own species file in the player's space, a mibi of its own
-# The namer is the game's (words.md pl.name.*): its list is es-pets-1 in play/src/names.mjs, its refusals are station/namer.json strings.refuse, and its rules are state.mjs nameProblem and peekNames.
+# The namer is the game's (the copywriter's word list pl.name.*): its list is es-pets-1 in play/src/names.mjs, its refusals are station/namer.json strings.refuse, and its rules are state.mjs nameProblem and peekNames.
 _GAME = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))                  # prototypes/
 NAME_MAX = 10
 SEPARATORS = " -\u2019"

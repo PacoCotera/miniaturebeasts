@@ -1,4 +1,4 @@
-// The Loika at frame version 6 (art director, 2026-11-03, ad-ears.md): every Loika has ears, round, upright, set on the side and as wide as 0.8 of their length; the length is heritable (small 0.45,
+// The Loika at frame version 6 (art director): every Loika has ears, round, upright, set on the side and as wide as 0.8 of their length; the length is heritable (small 0.45,
 // short 0.60 the type, medium 0.75 of the head's half height). The ear switch is the head's, locked on, not heritable. Versions 4 and 5 stay exactly what they were: their frames are rebuilt here
 // from the roster and match the bytes the registry held, and their renders match the hashes taken before the change. A cross between two different frame versions is refused, never a crash.
 //   node --test tests/s01v6.test.mjs

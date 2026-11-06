@@ -109,9 +109,9 @@ class TestPatch(unittest.TestCase):
             cli.resolve_path(self.DOC, "a.q")
 
 
-def run_cli(*argv, token="wb-local-maker"):
+def run_cli(*argv, bearer="wb-local-maker"):
     out, err = io.StringIO(), io.StringIO()
-    os.environ["WB_TOKEN"] = token or ""
+    os.environ["WB_TOKEN"] = bearer or ""
     with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
         code = cli.main(list(argv))
     return code, out.getvalue(), err.getvalue()
@@ -160,9 +160,9 @@ class TestServer(unittest.TestCase):
         self.assertEqual((code, json.loads(out)["field"]), (2, "genome"))
         code, out, _ = run_cli("render", "S20x", "--wait", "--timeout", "0.5", "--json")           # no worker: it stays queued
         self.assertEqual((code, json.loads(out)["exit"]), (3, 3))
-        code, _, err = run_cli("set", "S20x", "name", '"x"', token="")
+        code, _, err = run_cli("set", "S20x", "name", '"x"', bearer="")
         self.assertEqual(code, 4)
-        code, _, _ = run_cli("set", "S20x", "name", '"x"', token="not-a-token")
+        code, _, _ = run_cli("set", "S20x", "name", '"x"', bearer="not-a-token")
         self.assertEqual(code, 4)
 
     def test_b_a_maker_cannot_reach_the_gate(self):
@@ -174,7 +174,7 @@ class TestServer(unittest.TestCase):
         self.assertEqual(code, 0)
 
     def test_c_the_undo_log_has_the_token_and_the_actor(self):
-        run_cli("set", "S20x", "parts.tail.joints.t3.len", "0.25", token="wb-local-agent")
+        run_cli("set", "S20x", "parts.tail.joints.t3.len", "0.25", bearer="wb-local-agent")
         h = S.Species("S20x", self.file).history(50)
         e = [x for x in h if x["path"] == "/parts/tail/joints/3/len"][-1]
         self.assertEqual((e["actor"], e["role"], e["agent"], e["via"], e["old"], e["new"]), ("agent-1", "maker", True, "api", 0.2, 0.25))
@@ -239,7 +239,7 @@ class TestServer(unittest.TestCase):
                             return
         t = threading.Thread(target=reader, daemon=True); t.start()
         time.sleep(0.4)
-        run_cli("set", "S20x", "parts.tail.joints.t5.len", "0.21", token="wb-local-agent")
+        run_cli("set", "S20x", "parts.tail.joints.t5.len", "0.21", bearer="wb-local-agent")
         t.join(5)
         self.assertIn("edited", got)
 

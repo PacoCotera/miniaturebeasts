@@ -1,4 +1,4 @@
-// The Loika at frame version 6 (art director, 2026-11-03, ad-ears.md): every Loika has ears, their length heritable (small 0.45, short 0.60 the type, medium 0.75 of the head's half height); the
+// The Loika at frame version 6 (art director): every Loika has ears, their length heritable (small 0.45, short 0.60 the type, medium 0.75 of the head's half height); the
 // ear switch, form, tilt, width and set are locked. Frames are append-only, so every frame before it is exactly what it was: the snapshot's bytes (including the Loika's version 5), and the strings and
 // stamp codes of the version-5 pods of seeds 1 to 12 (written before the change).   node --test tests/s01v6.test.mjs
 import { test } from "node:test";

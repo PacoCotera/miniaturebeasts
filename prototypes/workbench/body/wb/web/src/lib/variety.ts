@@ -14,7 +14,7 @@ export const varietyOne = (id: string, hash: string, seed: number | null) =>
   queryOptions({ queryKey: ['variety', id, hash, seed], queryFn: () => call<Variety>('GET', `/api/species/${encodeURIComponent(id)}/variety${seed === null ? '' : `?seed=${seed}`}`), staleTime: 30_000 })
 export const runSheet = (id: string, seed: number | null) => postJob(id, 'variety', seed === null ? {} : { seed })
 
-// words.md st.var.fail: "No. 7: {the rule's own fail words}"; the same line is the Checks drawer's ck.ember row.
+// the copywriter's word list st.var.fail: "No. 7: {the rule's own fail words}"; the same line is the Checks drawer's ck.ember row.
 export const failLine = (n: number, f: VFail) => `No. ${n}: ${f.words}`
 // The Shows line's short words ("pointy over nub over floppy"): the file's own words for each look, else the id spelled out.
 export const shortWord = (words: Record<string, Record<string, [string, string]>> | undefined, locus: string, look: string) => words?.[locus]?.[look]?.[1] ?? look.replace(/-/g, ' ')

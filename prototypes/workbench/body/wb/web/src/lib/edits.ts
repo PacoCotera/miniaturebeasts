@@ -17,7 +17,7 @@ export function newEntries(seen: Set<string> | null, history: Entry[]): Entry[] 
   return seen === null ? [] : history.filter((e) => !seen.has(entryKey(e)))
 }
 
-// The undo log's pointer -> the words of the part and the field. words.md names the parts (body, leg, ear, arm, tail) and has "length" for len;
+// The undo log's pointer -> the words of the part and the field. the copywriter's word list names the parts (body, leg, ear, arm, tail) and has "length" for len;
 // the rest follow the same plain vocabulary. Until the species file has a schema (chunk 6) with a label on every field this is the whole mapping; with one,
 // `labels` (dotted path -> label, from the server) wins.
 const PART: Record<string, string> = { torso: 'body', 'leg.L': 'leg', 'leg.R': 'leg', 'arm.L': 'arm', 'arm.R': 'arm', 'ear.L': 'ear', 'ear.R': 'ear', tail: 'tail', crown: 'crown', face: 'face' }
@@ -54,7 +54,7 @@ export function labelOf(path: string, labels: Record<string, string>): string | 
   return null
 }
 
-// What a toast calls the field: the schema's label when the file has one for it (with the part and joint it sits in: "leg ankle length"); else the part and field words from words.md.
+// What a toast calls the field: the schema's label when the file has one for it (with the part and joint it sits in: "leg ankle length"); else the part and field words from the copywriter's word list.
 export function fieldLabel(path: string, labels?: Record<string, string>, file?: unknown): string {
   const locus = file ? locusLabel(path, file) : null
   if (locus) return locus

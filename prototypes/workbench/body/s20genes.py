@@ -164,7 +164,7 @@ GENES = {
     "coat.rosette": ("lin", 0.0, 1.0, "coat"), "coat.bands": ("int", 3, 7, "coat"), "coat.mark-size": ("lin", 0.07, 0.12, "coat"),
     # the hue gene replaces the three fixed palettes (pass 2): the body hue in degrees, and the firefly glow hue (70-90 on every individual)
     "face.whisker-count": ("int", 0, 3, "face"), "face.whisker-length": ("lin", 0.2, 0.45, "face"), "face.whisker-droop": ("lin", 0.1, 0.5, "face"), "face.whisker-curl": ("lin", 0.0, 0.6, "face"),
-    "appearance.body-hue": ("lin", 180.0, 360.0, "coat"), "appearance.glow-hue": ("lin", 60.0, 100.0, "coat"),            # the AD's bands of 2 Nov (ad-hue.md): teal to violet to red, the type 270; lemon to lime to green, the type 80
+    "appearance.body-hue": ("lin", 180.0, 360.0, "coat"), "appearance.glow-hue": ("lin", 60.0, 100.0, "coat"),            # the AD's bands of 2 Nov (the art director's hue bands): teal to violet to red, the type 270; lemon to lime to green, the type 80
 }
 # pair-map loci: alleles with draw weights, and the dominance order the phenotype follows (the first dominant allele of the pair shows)
 PAIRS = {
@@ -403,7 +403,7 @@ def to_grid(t, G=None):
     return t
 
 
-HUE_STEP = {2: 44, 3: 47, 4: 59, 5: 53, 6: 12, 7: 36, 8: 25, 9: 0, 10: 4, 11: 17, 12: 20}       # ad-hue.md: the twelve's effective hues on the new band, as steps of 59 (59 and 0 are the bins high and low)
+HUE_STEP = {2: 44, 3: 47, 4: 59, 5: 53, 6: 12, 7: 36, 8: 25, 9: 0, 10: 4, 11: 17, 12: 20}       # the art director's hue bands: the twelve's effective hues on the new band, as steps of 59 (59 and 0 are the bins high and low)
 
 EARS = ["lop", "nub", "prick"]
 TIPS = ["lantern", "lantern", "tuft", "lantern", "lantern", "plain", "lantern", "lantern", "tuft", "lantern", "lantern"]

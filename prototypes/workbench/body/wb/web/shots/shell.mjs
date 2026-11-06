@@ -1,6 +1,6 @@
-// The studio's look has goldens of its own (studio-ui.md 6). Shots the built app (../static/app) in both themes at 1440x900 and at the tablet 1180x820,
+// The studio's look has goldens of its own (the studio interface design 6). Shots the built app (../static/app) in both themes at 1440x900 and at the tablet 1180x820,
 // with the API stubbed, so no Blender is needed, and compares each with shots/golden/*.png. `node shots/shell.mjs --update` remakes the goldens.
-// Playwright is the one on the VM: PLAYWRIGHT_BROWSERS_PATH=/home/mb/pw156/browsers node shots/shell.mjs
+// Playwright is the one installed for the studio: PLAYWRIGHT_BROWSERS_PATH=<its browsers folder> node shots/shell.mjs
 import { createRequire } from 'node:module'
 import { createServer } from 'node:http'
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'node:fs'

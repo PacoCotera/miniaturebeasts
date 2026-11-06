@@ -139,7 +139,7 @@ def mexico_city_day(now=None):
 
 
 def day_mxn(day=None, skip_tools=(BOOK_TOOL,), ledger=None):
-    """The ledger's call lines of one Mexico City day in MXN (cost times 20 MXN per USD), leaving out the
+    """The ledger's call lines of one Mexico City day in pesos (cost times the pesos-per-dollar rate), leaving out the
     named tools. Stops, like require_ledger(), when the ledger is missing."""
     d = ledger or require_ledger()
     day = day or mexico_city_day()
@@ -160,7 +160,7 @@ def day_mxn(day=None, skip_tools=(BOOK_TOOL,), ledger=None):
 
 def require_day_line(worst_usd=WORST_CASE_USD, cap_mxn=DAY_LINE_MXN, now=None, skip_tools=(BOOK_TOOL,)):
     """Call before a paid image call: stops the tool when today's lines plus this call's worst case would pass
-    the day line. Returns the day's running total in MXN."""
+    the day line. Returns the day's running total in pesos."""
     require_ledger()
     day = mexico_city_day(now)
     total = day_mxn(day, skip_tools)

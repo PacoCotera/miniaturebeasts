@@ -6,7 +6,7 @@ import { useRail } from './useStudio'
 // A slider is an input too, but it takes no letters: the keys stay the app's while it has the focus.
 const typing = (t: EventTarget | null) => t instanceof HTMLElement && !(t instanceof HTMLInputElement && t.type === 'range') && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))
 
-// The keys of studio-ui.md 4.5 that exist so far, plus T for the theme (the design names no key for it).
+// The keys of the studio interface design 4.5 that exist so far, plus T for the theme (the design names no key for it).
 export type CheckKeys = { toggleDrawer: () => void; history: () => void; file: () => void; undo: () => void; redo: () => void; proof: () => void; field: () => void; escape: () => boolean }
 export function useKeys(url: StudioUrl, go: (p: Partial<StudioUrl>, replace?: boolean) => void, availableViews: (v: string) => boolean, ck?: CheckKeys) {
   const ui = useUI()

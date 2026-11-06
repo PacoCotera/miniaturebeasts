@@ -1,4 +1,4 @@
-"""Workbench chunk 5: the check registry (the 12 checks of the file and cage stages with words.md's names and fail lines and the owner's words), their measures on S20 and on a copy with a tail 1.6 times as long,
+"""Workbench chunk 5: the check registry (the 12 checks of the file and cage stages with the copywriter's word list's names and fail lines and the owner's words), their measures on S20 and on a copy with a tail 1.6 times as long,
 the proof pictures as SVG (well formed, every label 15 px or more), and a real job through the server: rows, the cache, the proof PNGs, the same counts for the pill and the drawer."""
 import copy, json, os, sys, shutil, unittest, xml.etree.ElementTree as ET
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -9,7 +9,7 @@ from wb import facade as F, server as SV, store as S
 BODY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = json.load(open(os.path.join(BODY, "tests", "fixtures", "wb_s20_baseline.json")))
 SCRATCH = os.path.join(BODY, "scratch", "t_checks")
-# words.md 5.12: id -> (name, fail line)
+# the copywriter's word list 5.12: id -> (name, fail line)
 WORDS = {"ranges": ("Spine ranges", "Spine ranges don't match the plan"), "joins": ("Joins", "{part} join is half-blended"), "head.attach": ("Head on the spine", "Head sits off the end of the spine"),
          "head.neck": ("Head, neck and chest", "Neck band too wide"), "tail.taper": ("Tail taper", "Tail bulges on the way down"), "tail.size": ("Tail size", "Tail too big for the body"), "balance": ("Balance", "Tips over at {end}"),
          "limbs": ("Shoulders and hips", "{limb} floats off its girdle"), "verts": ("Vertex budget", "{n} vertices, over 3,500"), "normals": ("Smooth normals", "Sharp crease in {part}"), "mesh": ("Mesh quality", "Thin or bent faces in the {range}"),
@@ -45,7 +45,7 @@ class TestRegistry(unittest.TestCase):
             self.assertRegex(m["rule"]["date"], r"^2026-11-0[124]( \d\d:\d\d)?$")
             self.assertGreater(len(m["rule"]["words"]), 40, m["id"])
             self.assertIn(m["stage"], ("file", "cage", "rig", "coat", "extremes"))
-        self.assertEqual({m["id"] for m in metas.values() if m["play"]}, {"head.neck", "tail.taper", "tail.size", "balance"})        # words.md 5.2: the limit sentences
+        self.assertEqual({m["id"] for m in metas.values() if m["play"]}, {"head.neck", "tail.taper", "tail.size", "balance"})        # the copywriter's word list 5.2: the limit sentences
 
     def test_file_stage_on_s20(self):
         rows = CH.run("file", CX.Ctx(s20()))

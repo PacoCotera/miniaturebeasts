@@ -1,4 +1,4 @@
-// Every on-screen string, from words.md (ids in the comments) or, where words.md has none, from studio-ui.md (marked "ui").
+// Every on-screen string, from the copywriter's word list (ids in the comments) or, where the copywriter's word list has none, from the studio interface design (marked "ui").
 export const W = {
   modes: ['Shape', 'Genes', 'Variety', 'Goldens', 'Gate'], // st.modes
   play: 'Open in play', // st.play
@@ -10,7 +10,7 @@ export const W = {
     order: 'Sign in order', reviewer: 'Reviewer', owner: 'Owner', you: 'you', afterYou: 'after you', export: 'Export', forReview: 'For review', releaseRow: 'Release', afterBoth: 'after both signatures', sendBack: 'Send back', seeIt: 'See it', // mocks/studio/06-gate
     ticked: (k: number, n: number) => `${k} of ${n} ticked`, // st.inbox.round
     oneFails: 'One check fails', signAnyway: 'Sign anyway, or send it back.', // st.gate.red (the check's own fail line sits between)
-    // OWED to the copywriter (words.md has none): the voided line (with who changed the file and whose signatures it voided), the signed-by line, the plural of the red card, each sheet's one judgement sentence, the sheet pages' own sentences,
+    // OWED to the copywriter (the copywriter's word list has none): the voided line (with who changed the file and whose signatures it voided), the signed-by line, the plural of the red card, each sheet's one judgement sentence, the sheet pages' own sentences,
     // and the earlier-round view's two lines (the read-only note and the way back to the current round).
     voided: (by: string | null, who: string[]) => `Changed after signing${by ? ` by ${by}` : ''} · ${who.length ? `signatures of ${who.join(' and ')} are void` : 'both signatures are void'}`,
     readOnly: 'An earlier round · look only', backTo: (n: number) => `Back to round ${n}`, signedBy: (who: string, day: string) => `${who} · ${day}`, manyFail: (n: number) => `${n} checks fail`, sentBack: 'Sent back',
@@ -53,7 +53,7 @@ export const KEYS: [string, string][] = [
   ['D', '(Goldens) diff view'],
 ]
 
-// Play's strings, from words.md section 5.1 and 5.2 (ids in the comments). Play says "mibi" (words.md section 1). Strings play needs that words.md does not have are marked OWED and are the lead's list to the copywriter.
+// Play's strings, from the copywriter's word list section 5.1 and 5.2 (ids in the comments). Play says "mibi" (the copywriter's word list section 1). Strings play needs that the copywriter's word list does not have are marked OWED and are the lead's list to the copywriter.
 export const P = {
   title: 'Pick a mibi', // pl.open.title
   sub: 'Then squish it, paint it and make pods.', // pl.open.sub
@@ -83,14 +83,14 @@ export const P = {
     return (bands.find(([to]) => h < to) ?? [0, 'Red'])[1]
   },
   noBench: 'The mibis are still waking up. Try again soon.', // pl.wait.nobench
-  // The toys' questions (words.md "Toy labels"): on screen only where a toy has two sliders; a screen reader hears every axis. Chips, paint pots and a toy's only slider carry no label on screen.
+  // The toys' questions (the copywriter's word list "Toy labels"): on screen only where a toy has two sliders; a screen reader hears every axis. Chips, paint pots and a toy's only slider carry no label on screen.
   axis: {
     'body.size': { on: null, sr: 'How round?' }, 'ears.size': { on: 'How big?', sr: 'How big?' }, 'tail.length': { on: 'How long?', sr: 'How long?' }, 'tail.curl': { on: 'How curly?', sr: 'How curly?' },
     'ears.kind': { on: null, sr: 'Ear shape' }, 'tail.tip': { on: null, sr: 'Tail tip' }, 'paint.hue': { on: null, sr: 'Colour' }, 'pattern.kind': { on: null, sr: 'Pattern' },
   } as Record<string, { on: string | null; sr: string }>,
   count: (n: number) => (n === 0 ? 'none yet' : n === 1 ? '1 kept' : `${n} kept`), // pl.open.count (read after "My mibis"; the screen shows the number)
   podsSub: (plural: string) => `young ${plural}`, // pl.pods.sub
-  // P3, pods (words.md 5.3 and 5.4; ids in the comments).
+  // P3, pods (the copywriter's word list 5.3 and 5.4; ids in the comments).
   go: 'Make pods', // pl.shape.go
   podsTitle: (name: string) => `${name}'s pods`, // pl.pods.title
   again: 'More pods', // pl.pods.again (the egg is the picture beside it)
