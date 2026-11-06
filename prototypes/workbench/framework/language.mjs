@@ -167,7 +167,7 @@ export const EYE = Object.freeze({
 // Each kind's eye diameter default (over head width), from its stand; null = no stand measured, the house default is used.
 const EYE_SIZE_DEFAULTS = {
   S01: 0.23, S02: 0.16, S03: 0.14, S04: 0.19, S05: 0.18, S06: 0.14, S07: 0.17, S08: 0.12, S09: 0.12, S10: 0.15, S11: 0.18, S12: 0.12, S13: 0.12,
-  S14: 0.17, S15: null, S16: 0.12, S17: null, S18: null, S19: 0.23, S20: 0.17, S22: 0.18,
+  S14: 0.17, S15: null, S16: 0.12, S17: 0.16, S18: null, S19: 0.23, S20: 0.17, S22: 0.18,
 };
 // The kinds that carry the pale eye rim by default: their pupil sits too close in lightness to the face zone without it.
 const EYE_RIM_KINDS = ["S05", "S06", "S10", "S11"];

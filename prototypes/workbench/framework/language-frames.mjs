@@ -29,7 +29,7 @@ export const LANGUAGE_ANCHORS = ["S01", "S17", "S18", "S19"];
 export const LANGUAGE_KINDS = Array.from({ length: 20 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`);
 
 // ---- the house numbers (the language design sections 3, 4 and 6) ----
-export const EYE_SIZE_BAND = [0.122, 0.165];          // head width times this: a seventh, 15 percent either way
+export const EYE_SIZE_BAND = [0.122, 0.165];          // the earlier band (kept as the fallback): the frames now carry the registry's band, see bandsOf
 export const EYE_SIZE_TYPE = 1 / 7;
 export const SHAPE_BAND = [0.85, 1.15];               // proportions about 15 percent
 export const IRIS_PUPIL_CONTRAST = 0.30;              // face.iris (a): the iris differs from the pupil by at least this much lightness
@@ -182,7 +182,8 @@ export function bandsOf(kindId) {
     "appearance.body-value": { form: "lin", lo: r3(c.L - BODY_RANGE.lightness), hi: r3(c.L + BODY_RANGE.lightness), unit: "L", type: r3(c.L) },
     "form.eye-spacing": { form: "mult", lo: SHAPE_BAND[0], hi: SHAPE_BAND[1], unit: "×", type: 1 },
   };
-  if (!isExcepted(LANGUAGE, kindId, "face.size")) bands["form.eye-size"] = { form: "lin", lo: EYE_SIZE_BAND[0], hi: EYE_SIZE_BAND[1], unit: "head width", type: r3(EYE_SIZE_TYPE) };
+  // the registry's eye block: the band 0.12 to 0.24 of the head's width, the kind's own default (its stand, else the house default) 15 percent either way inside it
+  if (!isExcepted(LANGUAGE, kindId, "face.size")) { const E = LANGUAGE.eye.size, d = k.eyes.size ?? E.house; bands["form.eye-size"] = { form: "lin", lo: r3(Math.max(E.band[0], d * (1 - E.genomeVar))), hi: r3(Math.min(E.band[1], d * (1 + E.genomeVar))), unit: "head width", type: r3(d) }; }
   for (const id of ["form.head", "form.torso-girth", "form.leg-length", "form.leg-girth", "form.tail-length", "form.tail-girth"]) bands[id] = { form: "mult", lo: SHAPE_BAND[0], hi: SHAPE_BAND[1], unit: "×", type: 1 };
   const clamps = {};
   const sig = k.signature;
