@@ -679,7 +679,9 @@ test("the Library's Level 1: sixteen cells of 152 on a 6 by 3 grid centred on th
   const lib = rd("../specs/station/library.json"), L = lib.l1, C = L.cell, F = L.grid.forms["16"], { listPitch } = await import("../specs/derive.mjs");
   assert.deepEqual(L.states, ["all"]); assert.equal(L.initial, "all"); assert.deepEqual(L.stage.rect, frame.regions.stage.rect, "the stage is the frame's"); assert.equal(L.stage.ground, "libGround");
   // the form: its kit fields are its cols, rows, cell, gap and origin; the grid centred on the stage, 16 px from its sides
-  assert.deepEqual([F.upTo, F.first, F.pitch, F.grid], [16, [...F.origin, F.cell, F.cell], [F.cell + F.gap, F.cell + F.gap], [F.cols, F.rows]]); assert.deepEqual(Object.keys(L.grid.forms), ["16"], "one form: the whole catalogue");
+  assert.deepEqual([F.upTo, F.first, F.pitch, F.grid], [16, [...F.origin, F.cell, F.cell], [F.cell + F.gap, F.cell + F.gap], [F.cols, F.rows]]); assert.deepEqual(Object.keys(L.grid.forms), ["16", "20"], "a form for the catalogue of sixteen and one for twenty (release 21a)");
+  { const G = L.grid.forms["20"], P = G.parts; assert.deepEqual([G.upTo, G.first, G.pitch, G.grid, G.cell, G.gap, G.origin], [20, [16, 57, 128, 152], [144, 168], [7, 3], [128, 152], 16, [16, 57]], "UI/UX signed form: seven by three, cells 128 by 152"); assert.deepEqual(P.bezel.rect, [0, 0, 128, 152]); assert.deepEqual(P.picture.rect, [6, 6, 116, 114]); assert.deepEqual([P.name.x, P.name.clip, P.face.rect, P.wish.rect, P.wish.alone, P.glint.centre, P.seed.rect, P.lip.at, P.lip.len], [22, 58, [104, 130, 18, 18], [86, 133, 12, 12], [110, 133, 12, 12], [116, 12], [52, 64, 24, 24], [6, 152], 116]); assert.deepEqual(P.generator, { w: 116, h: 114, cx: 58, cy: 58, rad: 54 });
+    const cells20 = Array.from({ length: 20 }, (_, i) => listPitch(G, 20, i)); cells20.forEach((r, i) => assert.deepEqual(r, [16 + 144 * (i % 7), 57 + 168 * Math.floor(i / 7), 128, 152], "20: cell " + i)); assert.ok(cells20.every((r) => inside([r[0], r[1], 128, 153], L.stage.rect)), "all twenty inside the stage, lips too"); }
   const S = L.stage.rect, gh = F.rows * F.cell + (F.rows - 1) * F.gap; assert.equal(F.origin[1], S[1] + (S[3] - gh) / 2, "centred on the stage"); assert.equal(F.origin[0], 16);
   const cells = Array.from({ length: 16 }, (_, i) => listPitch(F, 16, i));
   cells.forEach((r, i) => { assert.deepEqual(r, [16 + 168 * (i % 6), 57 + 168 * Math.floor(i / 6), 152, 152], "cell " + i); assert.ok(inside([r[0], r[1], 152, 153], S), "inside the stage, its lip too"); });
@@ -843,8 +845,8 @@ test("the Probe stands upright in three columns on the floor; each outer margin 
 
 test("fix 14: a moving set's contact shadow is as wide as its creature cell, at every stage (the shadow's footprint rides on the walk and close atlases in the cell's coordinates)", () => {
   let n = 0;
-  for (const f of readdirSync(new URL("../specs/station/moving/", import.meta.url)).filter((f) => /^S\d{2}\.json$/.test(f))) {
-    const set = rd("../specs/station/moving/" + f);
+  for (const f of readdirSync(new URL("../../station/tests/fixtures/moving/", import.meta.url)).filter((f) => /^S\d{2}\.json$/.test(f))) {
+    const set = rd("../../station/tests/fixtures/moving/" + f);   // the sets as a fixture: the game ships none (release 21a)
     for (const stage of ["juvenile", "adult"]) { const s = set[stage]; if (!s?.walk) continue; assert.equal(s.shadow.walk[0], s.walk.size[0], `${f} ${stage}: shadow.walk is the walk cell's width`); assert.equal(s.shadow.close[0], s.close.size[0], `${f} ${stage}: shadow.close is the close cell's width`); n++; }
   }
   assert.ok(n >= 3, "the sets were found: " + n);
