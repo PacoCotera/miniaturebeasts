@@ -420,7 +420,26 @@
       "gait": "four-beat walk",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "plain four-legged build; the studio's template"
+      "fix": "plain four-legged build; the studio's template",
+      "path": "mesh",
+      "armature": {
+        "layout": "quadruped",
+        "version": 1,
+        "spine": 3,
+        "legs": 4,
+        "legBones": 3,
+        "tail": 3,
+        "sockets": []
+      },
+      "template": "templates/trotter.json",
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 2,
@@ -438,7 +457,26 @@
       "gait": "heavy walk",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "forelegs thicker; the fluffy chest is a coat zone, not a part"
+      "fix": "forelegs thicker; the fluffy chest is a coat zone, not a part",
+      "path": "mesh",
+      "armature": {
+        "layout": "quadruped",
+        "version": 1,
+        "spine": 3,
+        "legs": 4,
+        "legBones": 3,
+        "tail": 2,
+        "sockets": []
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 3,
@@ -456,7 +494,26 @@
       "gait": "hop",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "short folded hind legs under a round egg-shaped mass; front soles on the ground"
+      "fix": "short folded hind legs under a round egg-shaped mass; front soles on the ground",
+      "path": "mesh",
+      "armature": {
+        "layout": "quadruped-pitched",
+        "version": 1,
+        "spine": 3,
+        "legs": 4,
+        "legBones": 3,
+        "tail": 2,
+        "sockets": []
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 4,
@@ -474,7 +531,26 @@
       "gait": "walk; dig idle",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "spade forepaws"
+      "fix": "spade forepaws",
+      "path": "mesh",
+      "armature": {
+        "layout": "quadruped",
+        "version": 1,
+        "spine": 3,
+        "legs": 4,
+        "legBones": 3,
+        "tail": 1,
+        "sockets": []
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 5,
@@ -492,7 +568,26 @@
       "gait": "short-step walk",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "very short legs under a long barrel"
+      "fix": "very short legs under a long barrel",
+      "path": "mesh",
+      "armature": {
+        "layout": "quadruped",
+        "version": 1,
+        "spine": 2,
+        "legs": 4,
+        "legBones": 2,
+        "tail": 1,
+        "sockets": []
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 6,
@@ -510,7 +605,26 @@
       "gait": "low walk",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "long low body, legs at the corners"
+      "fix": "long low body, legs at the corners",
+      "path": "mesh",
+      "armature": {
+        "layout": "quadruped",
+        "version": 1,
+        "spine": 4,
+        "legs": 4,
+        "legBones": 3,
+        "tail": 4,
+        "sockets": []
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 7,
@@ -532,7 +646,32 @@
       "gait": "sit-shuffle",
       "simpleMass": false,
       "fourLegged": false,
-      "fix": "the tail is a support; hands at the chest"
+      "fix": "the tail is a support; hands at the chest",
+      "path": "mesh",
+      "armature": {
+        "layout": "biped",
+        "version": 1,
+        "spine": 3,
+        "legs": 2,
+        "legBones": 3,
+        "tail": 4,
+        "sockets": [
+          {
+            "bone": "hand",
+            "layout": "pair",
+            "mirror": true
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 8,
@@ -550,7 +689,32 @@
       "gait": "waddle",
       "simpleMass": false,
       "fourLegged": false,
-      "fix": "two short legs, small arms"
+      "fix": "two short legs, small arms",
+      "path": "mesh",
+      "armature": {
+        "layout": "biped",
+        "version": 1,
+        "spine": 3,
+        "legs": 2,
+        "legBones": 3,
+        "tail": 0,
+        "sockets": [
+          {
+            "bone": "arm",
+            "layout": "pair",
+            "mirror": true
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 9,
@@ -563,7 +727,26 @@
       "gait": "bounce-walk",
       "simpleMass": true,
       "fourLegged": false,
-      "fix": "one round mass on tiny feet"
+      "fix": "one round mass on tiny feet",
+      "path": "mesh",
+      "armature": {
+        "layout": "mass",
+        "version": 1,
+        "spine": 1,
+        "legs": 2,
+        "legBones": 1,
+        "tail": 0,
+        "sockets": []
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0
+      }
     },
     {
       "n": 10,
@@ -581,7 +764,26 @@
       "gait": "shuffle, curtain sway",
       "simpleMass": true,
       "fourLegged": false,
-      "fix": "the coat is the body"
+      "fix": "the coat is the body",
+      "path": "cage",
+      "armature": {
+        "layout": "mass",
+        "version": 1,
+        "spine": 1,
+        "legs": 0,
+        "legBones": 0,
+        "tail": 0,
+        "sockets": []
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0
+      }
     },
     {
       "n": 11,
@@ -603,7 +805,32 @@
       "gait": "swim undulation",
       "simpleMass": true,
       "fourLegged": false,
-      "fix": "no legs; fins only here"
+      "fix": "no legs; fins only here",
+      "path": "hybrid",
+      "armature": {
+        "layout": "legless",
+        "version": 1,
+        "spine": 6,
+        "legs": 0,
+        "legBones": 0,
+        "tail": 3,
+        "sockets": [
+          {
+            "bone": "fin",
+            "layout": "pair",
+            "mirror": true
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0
+      }
     },
     {
       "n": 12,
@@ -625,7 +852,32 @@
       "gait": "walk; grip idle",
       "simpleMass": false,
       "fourLegged": false,
-      "fix": "grip hands, prehensile tail"
+      "fix": "grip hands, prehensile tail",
+      "path": "hybrid",
+      "armature": {
+        "layout": "biped",
+        "version": 1,
+        "spine": 3,
+        "legs": 2,
+        "legBones": 3,
+        "tail": 5,
+        "sockets": [
+          {
+            "bone": "hand",
+            "layout": "pair",
+            "mirror": true
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 13,
@@ -643,7 +895,32 @@
       "gait": "flutter",
       "simpleMass": false,
       "fourLegged": false,
-      "fix": "one wing pair big enough to lift"
+      "fix": "one wing pair big enough to lift",
+      "path": "hybrid",
+      "armature": {
+        "layout": "biped",
+        "version": 1,
+        "spine": 3,
+        "legs": 2,
+        "legBones": 3,
+        "tail": 0,
+        "sockets": [
+          {
+            "bone": "wing",
+            "layout": "pair",
+            "mirror": true
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 14,
@@ -661,7 +938,37 @@
       "gait": "flutter (two pairs)",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "two wing pairs on the back"
+      "fix": "two wing pairs on the back",
+      "path": "hybrid",
+      "armature": {
+        "layout": "quadruped",
+        "version": 1,
+        "spine": 3,
+        "legs": 4,
+        "legBones": 2,
+        "tail": 0,
+        "sockets": [
+          {
+            "bone": "wing_front",
+            "layout": "pair",
+            "mirror": true
+          },
+          {
+            "bone": "wing_hind",
+            "layout": "pair",
+            "mirror": true
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 15,
@@ -683,7 +990,32 @@
       "gait": "walk; glide pose",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "skin membranes leg to leg, flat steering tail"
+      "fix": "skin membranes leg to leg, flat steering tail",
+      "path": "hybrid",
+      "armature": {
+        "layout": "quadruped",
+        "version": 1,
+        "spine": 3,
+        "legs": 4,
+        "legBones": 3,
+        "tail": 2,
+        "sockets": [
+          {
+            "bone": "membrane",
+            "layout": "pair",
+            "mirror": true
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 16,
@@ -701,7 +1033,32 @@
       "gait": "six-leg walk",
       "simpleMass": false,
       "fourLegged": false,
-      "fix": "two body parts, never three"
+      "fix": "two body parts, never three",
+      "path": "mesh",
+      "armature": {
+        "layout": "hexapod",
+        "version": 1,
+        "spine": 2,
+        "legs": 6,
+        "legBones": 3,
+        "tail": 0,
+        "sockets": [
+          {
+            "bone": "antenna",
+            "layout": "pair",
+            "mirror": true
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 17,
@@ -723,7 +1080,32 @@
       "gait": "bob",
       "simpleMass": true,
       "fourLegged": false,
-      "fix": "floats; shadow below"
+      "fix": "floats; shadow below",
+      "path": "cage",
+      "armature": {
+        "layout": "mass",
+        "version": 1,
+        "spine": 1,
+        "legs": 0,
+        "legBones": 0,
+        "tail": 0,
+        "sockets": [
+          {
+            "bone": "nub",
+            "layout": "pair",
+            "mirror": true
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0
+      }
     },
     {
       "n": 18,
@@ -741,7 +1123,32 @@
       "gait": "slow walk",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "a dome shell, never a spiral"
+      "fix": "a dome shell, never a spiral",
+      "path": "mesh",
+      "armature": {
+        "layout": "quadruped",
+        "version": 1,
+        "spine": 3,
+        "legs": 4,
+        "legBones": 3,
+        "tail": 1,
+        "sockets": [
+          {
+            "bone": "shell",
+            "layout": "single",
+            "mirror": false
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0.3333333333333333
+      }
     },
     {
       "n": 19,
@@ -754,7 +1161,26 @@
       "gait": "slide wave",
       "simpleMass": true,
       "fourLegged": false,
-      "fix": "one body with the foot as its underside, no limbs; the coil is its signature"
+      "fix": "one body with the foot as its underside, no limbs; the coil is its signature",
+      "path": "mesh",
+      "armature": {
+        "layout": "legless",
+        "version": 1,
+        "spine": 4,
+        "legs": 0,
+        "legBones": 0,
+        "tail": 0,
+        "sockets": []
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0
+      }
     },
     {
       "n": 20,
@@ -772,7 +1198,32 @@
       "gait": "six-arm walk",
       "simpleMass": false,
       "fourLegged": false,
-      "fix": "six soft arms, no suckers"
+      "fix": "six soft arms, no suckers",
+      "path": "hybrid",
+      "armature": {
+        "layout": "radial",
+        "version": 1,
+        "spine": 1,
+        "legs": 0,
+        "legBones": 0,
+        "tail": 0,
+        "sockets": [
+          {
+            "bone": "arm",
+            "layout": "fan",
+            "mirror": false
+          }
+        ]
+      },
+      "template": null,
+      "bands": {
+        "headShareMin": 0.3,
+        "neck": [
+          0,
+          0.2
+        ],
+        "legShareMax": 0
+      }
     }
   ],
   "vocab": {

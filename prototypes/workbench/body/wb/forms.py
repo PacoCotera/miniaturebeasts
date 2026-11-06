@@ -36,7 +36,7 @@ def _has(doc, m):
 
 def outline(doc):
     """The rows of the parts outline: {id, label, kind: range | part | section, under, sw}. Ids are the ones the checks name (head, tail, ears, arms, legs)."""
-    plan = V1.PLANS.get(doc.get("plan")) or V1.PLANS["biped"]
+    plan = V1.plan_for(doc) or V1.PLANS["biped"]
     rows = []
     names = [r.get("name") for r in (doc.get("spine") or {}).get("ranges") or [] if isinstance(r, dict)] or plan["ranges"]
     nest = NESTED.get(doc.get("plan"), NESTED["biped"])
@@ -75,7 +75,7 @@ def short_label(label, part_label):
 
 def _field(doc, part_label, ptr, dotted, schema_path, label=None, rng=None):
     spec = spec_at(schema_path)
-    plan = V1.PLANS.get(doc.get("plan")) or V1.PLANS["biped"]
+    plan = V1.plan_for(doc) or V1.PLANS["biped"]
     full = label or spec["label"]
     out = dict(id=dotted, ptr=ptr, label=short_label(full, part_label), full=full, help=spec.get("help", ""), type=spec["type"], unit=spec.get("unit") or "")
     if spec["type"] in ("number", "int"):
@@ -89,7 +89,7 @@ def _field(doc, part_label, ptr, dotted, schema_path, label=None, rng=None):
 
 def fields_of(doc, part):
     """The fields the inspector shows for a part of the outline, in the order they read: [{id, ptr, label, full, help, type, unit, range, step}]. A part the file does not have, or one with nothing modelled yet, has none."""
-    plan = V1.PLANS.get(doc.get("plan")) or V1.PLANS["biped"]
+    plan = V1.plan_for(doc) or V1.PLANS["biped"]
     sp = doc.get("spine") or {}
     ranges = [r.get("name") for r in sp.get("ranges") or [] if isinstance(r, dict)]
     lab = part.capitalize()

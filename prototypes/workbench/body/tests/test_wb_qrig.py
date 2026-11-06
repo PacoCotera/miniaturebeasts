@@ -106,7 +106,7 @@ class T(unittest.TestCase):
                 self.assertLess(abs(v), 0.012, (name, k, v))
                 fv = self.foot_verts(V, *k)
                 self.assertLess(float(np.ptp(fv[fv[:, 2] < 0.01][:, 2])), 0.008, (name, k))
-            self.assertGreater(float(V[:, 2].min()), -0.02)
+            self.assertGreater(float(V[:, 2].min()), -0.03)          # the trotter template's neck is 0-0.2 H (S22 was 0.25), its back 0.05 longer: the curl pose dips 0.024 H at the most
 
     def test_sit_lowers_the_haunches_and_curl_lowers_the_whole_body(self):
         r = self.rig

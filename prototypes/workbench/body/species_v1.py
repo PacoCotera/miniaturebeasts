@@ -13,15 +13,17 @@ import re
 SCHEMA_V1 = "mb-species/1"            # the fixtures (S20) and the play species (S71-S73) stay on /1
 SCHEMA_ID = "mb-species/2"            # every other file: the language fields (family, land, signature, eye count, coat material family) are in, cheeks, eye kinds and free palettes are out
 SCHEMAS = (SCHEMA_V1, SCHEMA_ID)
-# The plans' bands. The plan modules are chunk 26; until then the numbers live here: the owner's where there is one (tail root 0.45, head attachment), the S20 type's own band (about a third either way) where nobody has given one.
-PLANS = {
-    "biped": dict(ranges=["head", "neck", "back", "seat", "tail"], range_len=dict(head=(0.7, 1.3), neck=(0.15, 0.4), back=(0.6, 1.2), seat=(0.3, 0.8)), tail_length=(0.6, 1.8), tail_root=(0.1, 0.45), tip_r=(0.02, 0.1),
-                  attach="underside", a=(0.2, 0.6), d=(0.0, 0.3), seat_radius=(0.4, 0.7), limb_joints=3,
-                  prof_R_scale=(0.8, 1.2), prof_neck_ratio=(0.50, 0.80), prof_chest_front=(0.0, 0.12), prof_rump_gain=(0.0, 0.6)),
-    "quadruped": dict(ranges=["head", "neck", "back", "seat", "tail"], range_len=dict(head=(0.7, 1.3), neck=(0.15, 0.4), back=(0.6, 1.8), seat=(0.3, 0.8)), tail_length=(0.6, 2.4), tail_root=(0.1, 0.8), tip_r=(0.02, 0.15),
-                      attach="back", a=(0.0, 0.0), d=(0.0, 0.0), seat_radius=(0.4, 0.9), limb_joints=3,
-                      prof_R_scale=(0.8, 1.2), prof_neck_ratio=(0.50, 0.80), prof_chest_front=(0.0, 0.12), prof_rump_gain=(0.0, 0.3)),
-}
+# The plans' bands (plans/): the owner's where there is one (tail root 0.45, head attachment), the language's neck band 0-0.2 H, the S20 type's own band (about a third either way) where nobody has given one.
+import plans as _plans                                        # the plan plug-ins own their bands (plans/biped.py, plans/quadruped.py)
+PLANS = {name: mod.BANDS for name, mod in _plans.MODULES.items()}
+
+
+def plan_for(doc):
+    """The plan's bands for this file: the plan's own for a /2 file, the older neck band (0.15-0.4 H) for a /1 file (the fixture and the play species were made before the language), or None when the plan is not registered."""
+    plan = PLANS.get(doc.get("plan")) if isinstance(doc, dict) else None
+    return _plans.bands_for(plan, doc.get("schema")) if plan else None
+
+
 STAGES = ("shape", "face", "coat", "motion", "meta")
 
 
@@ -225,7 +227,7 @@ def _kind(v):
 
 
 def _plan(doc):
-    return PLANS.get(doc.get("plan")) if isinstance(doc, dict) else None
+    return plan_for(doc)
 
 
 def _range(f, plan):
@@ -287,7 +289,7 @@ def _check(path, v, f, plan, errs):
 
 
 def doc_plan_name(plan):
-    return next((k for k, v in PLANS.items() if v is plan), "plan")
+    return plan.get("name", "plan") if isinstance(plan, dict) else "plan"
 
 
 def _object(path, v, f, plan, errs):
@@ -554,26 +556,25 @@ def is_v1(spec):
 
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------- plan templates
-TEMPLATES = {"quadruped": "templates/quadruped.json"}          # a plan's template: a bare base that passes every check (the biped's is S20 itself until its plan module, chunk 26)
-
-
 def template(plan):
-    """The plan's template file as it is stored, or None when the plan has none yet."""
-    rel = TEMPLATES.get(plan)
-    if rel is None:
-        return None
-    import json
-    import os
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "species_v1", rel)) as fh:
-        return json.load(fh)
+    """The first template of a family on this plan, as it is stored (the trotter's for the quadruped), or None when the plan has no family template yet."""
+    from families import registry as FR
+    for f in FR.with_template():
+        if f["plan"] == plan:
+            return FR.template_doc(f["id"])
+    return None
 
 
 def new_from_template(species_id, plan):
-    """A new species file from the plan's template: the same bare base with its own id and no name yet. Raises ValueError with the words to say when it cannot."""
-    if not re.fullmatch(r"S\d\d", str(species_id)):
-        raise ValueError(f"'{species_id}' is not a species id. An id is S and two digits, like S23.")
+    """A new species file from the plan's first template. Kept for the callers that name a plan; New and `wb new --family` name a family (families/registry.py)."""
+    from families import registry as FR
     doc = template(plan)
     if doc is None:
         raise ValueError(f"The {plan} plan has no template yet.")
-    doc["id"], doc["name"] = species_id, ""
-    return doc
+    return FR.new_species(species_id, doc["family"])
+
+
+def new_from_family(species_id, family):
+    """A new species file from the family's template; raises ValueError with the words to say when it cannot."""
+    from families import registry as FR
+    return FR.new_species(species_id, family)

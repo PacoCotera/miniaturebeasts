@@ -243,9 +243,29 @@ class TestServer(unittest.TestCase):
         t.join(5)
         self.assertIn("edited", got)
 
+    def test_h2_new_species_from_a_family_card(self):
+        def post(body, bearer="wb-local-maker"):
+            req = urllib.request.Request(os.environ["WB_URL"] + "/api/species", method="POST", data=json.dumps(body).encode(), headers={"Authorization": "Bearer " + bearer})
+            return urllib.request.urlopen(req)
+        with self.assertRaises(urllib.error.HTTPError) as cm:
+            post({"id": "S23", "family": "hopper"}, "")
+        self.assertEqual(cm.exception.code, 401)
+        with self.assertRaises(urllib.error.HTTPError) as cm:
+            post({"id": "S23", "family": "hopper"})
+        self.assertEqual(cm.exception.code, 400)                                                  # "not yet": no template
+        r = post({"id": "S23", "family": "trotter"})
+        self.assertEqual(r.status, 201)
+        self.assertEqual(json.load(open(os.path.join(self.sp, "S23.json")))["family"], "trotter")
+        self.assertIn("S23", self.srv.species)
+        with self.assertRaises(urllib.error.HTTPError) as cm:
+            post({"id": "S23", "family": "trotter"})
+        self.assertEqual(cm.exception.code, 409)                                                  # never over a file
+
     def test_h_registries_and_unbuilt_kinds(self):
-        for p in ("plans", "families", "styles"):
+        for p in ("plans", "styles"):
             self.assertEqual(json.load(urllib.request.urlopen(os.environ["WB_URL"] + "/api/" + p)), [])
+        fams = json.load(urllib.request.urlopen(os.environ["WB_URL"] + "/api/families"))          # one card per family, then "from a sculpt": only the trotter is ready
+        self.assertEqual((len(fams), [c["id"] for c in fams if c["state"] == "ready"], fams[-1]["id"], fams[-1]["state"]), (21, ["trotter"], "sculpt", "not yet"))
         with self.assertRaises(S.ApiError):
             self.srv.submit("S20x", "variety", {}, None)
         with self.assertRaises(S.ApiError):

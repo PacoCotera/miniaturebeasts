@@ -92,7 +92,7 @@ def c_ranges(ctx):
         for r in ctx.doc["spine"]["ranges"]:
             end = at + (r["length"] if r["length"] is not None else float(ctx.doc["spine"]["tail"]["length"]))
             rg[r["name"]], at = [at, end], end
-        plan = dict(BIPED, ranges=V1.PLANS["quadruped"]["ranges"], range_len=V1.PLANS["quadruped"]["range_len"])
+        plan = dict(BIPED, ranges=V1.PLANS["quadruped"]["ranges"], range_len=V1.plan_for(ctx.doc)["range_len"])
     else:
         rg = ctx.spec["parts"]["torso"]["spine"]["ranges"]
     names = list(rg)

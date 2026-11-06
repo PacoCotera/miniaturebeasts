@@ -2,6 +2,9 @@
 export const W = {
   modes: ['Shape', 'Genes', 'Variety', 'Goldens', 'Gate'], // st.modes
   play: 'Open in play', // st.play
+  notYet: 'Not yet', // the design's own word on a family card with no template, and on "From a sculpt" until the mesh body source (chunk 30)
+  // OWED to the copywriter (the design gives the cards, not the words): the New species sheet's title, the id field's label, the create button and the line on a card whose family has a template.
+  owedNew: { title: 'OWED:new.title', id: 'OWED:new.id', create: 'OWED:new.create', template: 'OWED:new.template' },
   newSheet: 'New sheet', // st.var.new
   gold: { make: 'Make goldens', ask: 'Ask for a look-change round', draft: 'Draft golden · remake freely', golden: 'Golden', now: 'Now', views: ['Split', 'Side by side', 'Diff'], state: 'State', moved: 'Pixels moved', because: 'Because of', from: 'Golden made from', file: 'File', framework: 'Framework', lookdev: 'Look-dev', by: 'Made by' }, // st.gold.* and mocks/studio/05-goldens
   gate: {

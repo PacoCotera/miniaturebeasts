@@ -196,16 +196,18 @@ def cmd_validate(a):
 
 
 def cmd_new(a):
-    """wb new S23 --plan quadruped --from template: a new species file from the plan's template (offline), then the bare base's checks, one line each. Writes ID.json in --out (the current folder)."""
+    """wb new S23 --family trotter: a new species file from the family's template (offline), then the bare base's checks, one line each. Writes ID.json in --out (the current folder). --plan quadruped takes the first family template on that plan."""
     sys.path.insert(0, BODY)
     import species_v1 as V1
     from wb import store as S
     if a.source != "template":
         raise Fail(2, f"--from {a.source}: only `template` for now. To start from a species or a mibi, use New species in the studio.", "from")
     try:
-        doc = V1.new_from_template(a.species, a.plan)
+        if not a.family and not a.plan:
+            raise Fail(2, "Name the family to start from: wb new S23 --family trotter.", "family")
+        doc = V1.new_from_family(a.species, a.family) if a.family else V1.new_from_template(a.species, a.plan)
     except ValueError as e:
-        raise Fail(2, str(e), "plan" if "plan" in str(e) else "species")
+        raise Fail(2, str(e), "family" if a.family else ("plan" if "plan" in str(e) else "species"))
     path = os.path.join(a.out or ".", f"{a.species}.json")
     if os.path.exists(path):
         raise Fail(2, f"{path} is already there. wb new never writes over a file.", "species")
@@ -221,8 +223,22 @@ def cmd_new(a):
     bad = [r for r in (rows or []) if r["state"] != "pass"]
     fix = ", ".join(r["id"] for r in bad)
     last = [] if rows is None else [f"All {len(rows)} checks pass." if not bad else f"{len(bad)} to fix: {fix}. `wb check {a.species}` shows the proofs."]
-    lines = [f"{path} \u00b7 new species from the {a.plan} template"] + ([f"{'PASS' if r['state'] == 'pass' else r['state'].upper():5} {r['id']:11} {r['measure']}" for r in rows] + last if rows is not None else [f"Checks not run: numpy is missing here. Run `wb check {a.species}` on a server."])
-    out(a, dict(ok=not bad, file=path, plan=a.plan, rows=[dict(id=r["id"], state=r["state"], value=r["value"], limit=r["limit"], measure=r["measure"]) for r in rows or []]), "\n".join(lines))
+    lines = [f"{path} \u00b7 new species from the {doc["family"]} family's template"] + ([f"{'PASS' if r['state'] == 'pass' else r['state'].upper():5} {r['id']:11} {r['measure']}" for r in rows] + last if rows is not None else [f"Checks not run: numpy is missing here. Run `wb check {a.species}` on a server."])
+    out(a, dict(ok=not bad, file=path, family=doc["family"], plan=doc["plan"], rows=[dict(id=r["id"], state=r["state"], value=r["value"], limit=r["limit"], measure=r["measure"]) for r in rows or []]), "\n".join(lines))
+    return 1 if bad else 0
+
+
+def cmd_roster(a):
+    """wb roster: the roster stage's rows (the registry's roster rules and roster.read48 on the stands), one line each. Exits 1 when a red rule fails."""
+    sys.path.insert(0, BODY)
+    from checks import roster as RO
+    try:
+        rows = RO.rows(a.stands or None)
+    except RuntimeError as e:
+        raise Fail(2, str(e), "roster")
+    lines = [f"{RO.state(r).upper():5} {r['id']:20} " + ("; ".join(r["messages"]) if r["messages"] else "ok") for r in rows]
+    bad = [r for r in rows if RO.state(r) == "fail"]
+    out(a, dict(ok=not bad, rows=rows), "\n".join(lines))
     return 1 if bad else 0
 
 
@@ -654,13 +670,14 @@ def main(argv=None):
         p.add_argument("--timeout", type=float, default=300.0)
         if genome:
             p.add_argument("--genome", default="type")
-    p = sub.add_parser("new"); p.add_argument("species", help="the new species' id: S and two digits"); p.add_argument("--plan", required=True, choices=("biped", "quadruped")); p.add_argument("--from", dest="source", default="template"); p.add_argument("--out", default=""); p.add_argument("--json", action="store_true"); p.set_defaults(f=cmd_new)
+    p = sub.add_parser("new"); p.add_argument("species", help="the new species' id: S and two digits"); p.add_argument("--family", default=""); p.add_argument("--plan", default="", choices=("", "biped", "quadruped")); p.add_argument("--from", dest="source", default="template"); p.add_argument("--out", default=""); p.add_argument("--json", action="store_true"); p.set_defaults(f=cmd_new)
     p = sub.add_parser("build"); p.add_argument("species"); common(p); p.set_defaults(f=cmd_build)
     p = sub.add_parser("render"); p.add_argument("species"); common(p)
     p.add_argument("--mode", default="clay"); p.add_argument("--az", default="0,32,90,180"); p.add_argument("--size", default="304"); p.add_argument("--sheet", action="store_true"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_render)
     p = sub.add_parser("set"); p.add_argument("species"); p.add_argument("path"); p.add_argument("value"); common(p, genome=False); p.set_defaults(f=cmd_set)
     p = sub.add_parser("validate"); p.add_argument("species", nargs="?", default=""); p.add_argument("--file", default=""); common(p, genome=False); p.set_defaults(f=cmd_validate)
     p = sub.add_parser("convert"); p.add_argument("src"); p.add_argument("--out", default=""); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_convert)
+    p = sub.add_parser("roster"); p.add_argument("--stands", default="", help="the folder of the art desk's stands (default: MB_STANDS_DIR or the roster-concepts job)"); p.add_argument("--json", action="store_true"); p.set_defaults(f=cmd_roster)
     p = sub.add_parser("check"); p.add_argument("species"); common(p); p.add_argument("--stage", default="all", choices=STAGES); p.add_argument("--locus", action="append", default=[], help="extremes only: build just this locus (repeat for more)"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_check)
     p = sub.add_parser("freq"); p.add_argument("species", nargs="?", default=""); p.add_argument("--file", default=""); p.add_argument("-n", type=int, default=1000, help="wild draws"); p.add_argument("--locus", action="append", default=[], help="also print this locus's looks"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_freq)
     p = sub.add_parser("variety"); p.add_argument("species"); p.add_argument("--n", type=int, default=None); p.add_argument("--seed", type=int, default=None); p.add_argument("--no-tiles", action="store_true"); p.add_argument("--sheet", default="", help="write the sheet (HTML and PNG) into this folder"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_variety)

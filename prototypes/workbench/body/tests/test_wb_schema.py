@@ -109,7 +109,7 @@ def lang_file(name):
 class TestLanguageSchema(unittest.TestCase):
     """mb-species/2: the language fields, the refused fields, S20 as a fixture. The six broken files are fixtures of these tests, never species files."""
     def test_s22_and_the_template_are_valid_language_files_with_no_land_or_signature_yet(self):
-        for f in (os.path.join("S22.json"), os.path.join("templates", "quadruped.json")):
+        for f in (os.path.join("S22.json"), os.path.join("templates", "trotter.json")):
             d = json.load(open(os.path.join(BODY, "species_v1", f)))
             self.assertEqual((d["schema"], d["family"], d["land"], d["signature"], d["face"]["eyes"]["count"], d["coat"]["material"]["family"]), ("mb-species/2", "trotter", None, None, 2, "fur"))
             self.assertEqual(V.validate(d), [])

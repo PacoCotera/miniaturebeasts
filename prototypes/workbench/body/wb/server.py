@@ -328,6 +328,26 @@ class Server:
             return []
         return [dict(mode=m, az=a, size=z, key=k, ready=self.cas.has(k, "png")) for (m, a, z), k in zip(K_VIEWS, K.frames(ck, K_VIEWS))]
 
+    def create_species(self, sid, family, actor):
+        """New species from a family's template (families/registry.py): a file of its own in the first species folder, never over one. Only a family with a template can be started from."""
+        import species_v1 as V1
+        if sid in self.species:
+            raise ApiError(409, f"{sid} is already there. A new species never writes over a file.", "species")
+        try:
+            doc = V1.new_from_family(sid, family)
+        except ValueError as e:
+            raise ApiError(400, str(e), "family" if "family" in str(e) else "species")
+        errs = V1.validate(doc)
+        if errs:
+            raise ApiError(400, errs[0][1], errs[0][0])
+        d = self.species_dirs[0]
+        path = os.path.join(d, f"{sid}.json")
+        if os.path.exists(path):
+            raise ApiError(409, f"{path} is already there. A new species never writes over a file.", "species")
+        S.write_spec(path, doc)
+        self.scan()
+        return dict(id=sid, family=family, path=path, hash=self.species[sid].hash)
+
     def patch_species(self, sid, ops, actor, via="api"):
         sp = self.get_species(sid)
         with sp.lock:
@@ -1711,7 +1731,16 @@ def make_handler(srv):
                 return self.send_json(dict(jobs=srv.queue.counts(), cache_bytes=srv.cas.size(), framework=H.framework_id(), workers=len(srv.workers)))
             if p == "/api/checks":
                 return self.send_json(CH.metas())
-            if p in ("/api/plans", "/api/families", "/api/styles"):
+            if p == "/api/families":
+                from families import registry as FR
+                return self.send_json(FR.cards())
+            if p == "/api/roster":
+                from checks import roster as RO
+                try:
+                    return self.send_json([dict(r, state=RO.state(r)) for r in RO.rows()])
+                except RuntimeError as e:
+                    raise ApiError(500, str(e), "roster")
+            if p in ("/api/plans", "/api/styles"):
                 return self.send_json([])
             if p == "/events":
                 return self.events(q.get("species", [None])[0])
@@ -1785,6 +1814,10 @@ def make_handler(srv):
         # -- POST
         def post(self):
             p = self.route_path()
+            if p == "/api/species":
+                actor = self.actor(need=True)
+                b = self.body() or {}
+                return self.send_json(srv.create_species(str(b.get("id", "")), str(b.get("family", "")), actor), 201)
             m = re.fullmatch(r"/api/species/([^/]+)/jobs", p)
             if m:
                 actor = self.actor(need=True)

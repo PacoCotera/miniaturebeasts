@@ -227,7 +227,7 @@ class TestLegs(unittest.TestCase):
         self.assertLess(b["margin"], Q.balance(self.body)["margin"])
 
     def test_the_legs_follow_the_ranges(self):
-        for name, e in (("head", 0.9), ("neck", 0.35), ("back", 1.4), ("seat", 0.6)):
+        for name, e in (("head", 0.9), ("neck", 0.15), ("back", 1.4), ("seat", 0.6)):
             d = with_range(S22, name, e)
             self.assertEqual(V1.validate(d), [], (name, e))
             b = Q.build(d)
@@ -307,7 +307,7 @@ class TestFacade(unittest.TestCase):
         k = F.cage_key(S22, "type")
         self.assertEqual(r.key, k)
         self.assertEqual(K.cage_key(S22, "type"), k)
-        self.assertNotEqual(F.cage_key(with_range(S22, "neck", 0.3), "type"), k)
+        self.assertNotEqual(F.cage_key(with_range(S22, "neck", 0.15), "type"), k)
         self.assertEqual(F.cage_key(with_(S22, name="Other"), "type"), k)                       # a name moves no cage
 
     def test_the_quadruped_has_no_genes_yet(self):
@@ -366,7 +366,7 @@ class TestChecks(unittest.TestCase):
         from checks import run as crun
         from checks.ctx import Ctx
         rows = {r["id"]: r for r in crun("file", Ctx(S22, doc=S22))}
-        self.assertEqual(sorted(rows), sorted(["express", "ranges", "schema", "face.count", "face.flush", "face.lid", "face.mouth", "face.clear"]))          # S22 is a /2 file: the language's file-stage face checks judge it too
+        self.assertEqual(sorted(rows), sorted(["express", "ranges", "schema", "face.count", "face.flush", "face.lid", "face.mouth", "face.clear", "body.band15", "body.feet", "body.pairs"]))          # S22 is a /2 file: the language's file-stage face checks judge it too
         self.assertEqual((rows["schema"]["state"], rows["ranges"]["state"]), ("pass", "pass"))
         bad = crun("file", Ctx(with_range(S22, "neck", 0.9), doc=with_range(S22, "neck", 0.9)))
         self.assertEqual({r["id"]: r["state"] for r in bad}["ranges"], "fail")
@@ -377,7 +377,7 @@ class TestChecks(unittest.TestCase):
         r = F.build(S22)
         m = F.proxy_mesh(r.body, 1)
         rows = crun("cage", Ctx(S22, r.body, dict(r.summary(), vertices_l1=len(m["V"])), m, doc=S22))
-        self.assertEqual([x["id"] for x in rows], ["joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh", "face.front", "face.on-body", "face.row"])
+        self.assertEqual([x["id"] for x in rows], ["joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh", "face.front", "face.on-body", "face.row", "body.mass", "body.twist"])
         self.assertEqual({x["state"] for x in rows}, {"pass"})
 
 
@@ -405,7 +405,7 @@ class TestPlanChecks(unittest.TestCase):
         cls.base = rows_of(S22)
 
     def test_the_bare_base_is_green_on_every_check_the_quadruped_has(self):
-        self.assertEqual(sorted(self.base), sorted(["schema", "express", "ranges", "joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh", "midline", "breath", "waddle", "face.count", "face.front", "face.on-body", "face.flush", "face.row", "face.lid", "face.mouth", "face.clear", "face.iris"]))
+        self.assertEqual(sorted(self.base), sorted(["schema", "express", "ranges", "joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh", "midline", "breath", "waddle", "face.count", "face.front", "face.on-body", "face.flush", "face.row", "face.lid", "face.mouth", "face.clear", "face.iris", "body.mass", "body.band15", "body.feet", "body.pairs", "body.twist", "body.twist.clip"]))
         self.assertEqual({k: v["state"] for k, v in self.base.items()}, {k: "pass" for k in self.base})
 
     def test_the_template_is_the_bare_base_with_its_own_id_and_passes_every_check(self):
@@ -432,10 +432,10 @@ class TestPlanChecks(unittest.TestCase):
         try:
             buf = io.StringIO()
             with contextlib.redirect_stdout(buf):
-                rc = cli.main(["new", "S23", "--plan", "quadruped", "--from", "template", "--out", out])
+                rc = cli.main(["new", "S23", "--family", "trotter", "--from", "template", "--out", out])
             self.assertEqual(rc, 0, buf.getvalue())
             self.assertEqual(json.load(open(os.path.join(out, "S23.json")))["id"], "S23")
-            self.assertEqual(buf.getvalue().count("PASS"), 25)          # the sixteen of the plan and the nine face checks of the language
+            self.assertEqual(buf.getvalue().count("PASS"), 31)          # the plan's checks, the face checks and the body checks of the language that the file and cage stages run
             err = io.StringIO()
             with contextlib.redirect_stderr(err):
                 rc = cli.main(["new", "S23", "--plan", "quadruped", "--from", "template", "--out", out])
@@ -474,9 +474,9 @@ class TestPlanChecks(unittest.TestCase):
         self.assertEqual(mid["state"], "pass")
 
     def test_a_file_may_only_tighten_the_tails_limit(self):
-        r = rows_of(broken(**{"limits": {"tail_side_area": 0.1, "balance_margin": 0.3}, "spine.tail.length": 1.4, "spine.tail.root": 0.6, "spine.tail.tip_r": 0.1}))
+        r = rows_of(broken(**{"limits": {"tail_side_area": 0.1, "balance_margin": 0.4}, "spine.tail.length": 1.4, "spine.tail.root": 0.6, "spine.tail.tip_r": 0.1}))
         self.assertEqual((r["tail.size"]["state"], r["tail.size"]["limit"]), ("fail", 0.1))
-        self.assertEqual((r["balance"]["state"], r["balance"]["limit"]), ("fail", 0.3))
+        self.assertEqual((r["balance"]["state"], r["balance"]["limit"]), ("fail", 0.4))
 
     def test_a_tight_bend_on_a_heavy_short_tail_fails_the_mesh_in_the_tail_range_and_the_caps_are_not_judged(self):
         r = rows_of(broken(**{"spine.tail.length": 1.1, "spine.tail.root": 0.8, "spine.tail.tip_r": 0.15, "spine.tail.fillet": 0.5, "spine.tail.segments.1.pitch": 150, "spine.tail.segments.2.pitch": 120}))["mesh"]
@@ -573,7 +573,7 @@ class TestRender(unittest.TestCase):
         j = self.srv.submit("S22", "check", dict(stage="all"), None)
         self.srv.wait(j, 120)
         self.assertEqual(j.state, "done", j.error)
-        self.assertEqual({r["id"]: r["state"] for r in j.result["rows"]}, dict(schema="pass", express="pass", ranges="pass", **{"joins": "pass", "head.attach": "pass", "head.neck": "pass", "tail.taper": "pass", "tail.size": "pass", "balance": "pass", "limbs": "pass"}, verts="pass", normals="pass", mesh="pass", midline="pass", breath="pass", waddle="pass", **{k: "pass" for k in ["face.count", "face.front", "face.on-body", "face.flush", "face.row", "face.lid", "face.mouth", "face.clear", "face.iris"]}))
+        self.assertEqual({r["id"]: r["state"] for r in j.result["rows"]}, dict(schema="pass", express="pass", ranges="pass", **{"joins": "pass", "head.attach": "pass", "head.neck": "pass", "tail.taper": "pass", "tail.size": "pass", "balance": "pass", "limbs": "pass"}, verts="pass", normals="pass", mesh="pass", midline="pass", breath="pass", waddle="pass", **{k: "pass" for k in ["face.count", "face.front", "face.on-body", "face.flush", "face.row", "face.lid", "face.mouth", "face.clear", "face.iris", "body.mass", "body.band15", "body.feet", "body.pairs", "body.twist", "body.twist.clip"]}))
 
 
 if __name__ == "__main__":

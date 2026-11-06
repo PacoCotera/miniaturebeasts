@@ -20,6 +20,7 @@ import { GateInspector } from '../ui/GateInspector'
 import { Inspector } from '../ui/Inspector'
 import { Palette } from '../ui/Palette'
 import { HelpSheet } from '../ui/HelpSheet'
+import { NewSpecies } from '../ui/NewSpecies'
 import { Toasts } from '../ui/Toasts'
 import { ChecksDrawer } from '../ui/ChecksDrawer'
 import { FileDrawer, HistoryDrawer, SectionDrawer } from '../ui/Drawers'
@@ -66,6 +67,7 @@ export default function StudioPage() {
       />
       <Palette url={url} />
       <HelpSheet />
+      <NewSpecies go={go} />
     </>
   )
 }

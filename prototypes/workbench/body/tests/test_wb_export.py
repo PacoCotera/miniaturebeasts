@@ -16,7 +16,7 @@ sys.path.insert(0, BODY)
 from wb import export as EX, facade as F, server as SV, store as S, jobs as J
 
 S20 = os.path.join(BODY, "species_v1", "S20.json")
-QUAD = os.path.join(BODY, "species_v1", "templates", "quadruped.json")
+QUAD = os.path.join(BODY, "species_v1", "templates", "trotter.json")
 SCRATCH = os.path.join(BODY, "scratch", "t_export")
 
 

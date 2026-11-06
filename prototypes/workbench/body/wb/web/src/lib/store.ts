@@ -15,6 +15,7 @@ type UI = {
   navOpen: boolean; inspOpen: boolean; toggleNav: () => void; toggleInsp: () => void; setInsp: (v: boolean) => void
   paletteOpen: boolean; setPalette: (v: boolean) => void
   helpOpen: boolean; setHelp: (v: boolean) => void
+  newOpen: boolean; setNew: (v: boolean) => void
   before: boolean; setBefore: (v: boolean) => void
   player: boolean; setPlayer: (v: boolean) => void
   drawerH: number; setDrawerH: (h: number) => void
@@ -30,6 +31,7 @@ export const useUI = create<UI>((set) => ({
   setInsp: (inspOpen) => set({ inspOpen }),
   paletteOpen: false, setPalette: (paletteOpen) => set({ paletteOpen }),
   helpOpen: false, setHelp: (helpOpen) => set({ helpOpen }),
+  newOpen: false, setNew: (newOpen) => set({ newOpen }),
   before: false, setBefore: (before) => set({ before }),
   player: new URLSearchParams(window.location.search).get('player') === '1', setPlayer: (player) => set({ player }),
   drawerH: Number(localStorage.getItem('wb.drawerH')) || 320, setDrawerH: (h) => { const drawerH = Math.round(Math.min(Math.max(h, 180), window.innerHeight - 200)); localStorage.setItem('wb.drawerH', String(drawerH)); set({ drawerH }) },

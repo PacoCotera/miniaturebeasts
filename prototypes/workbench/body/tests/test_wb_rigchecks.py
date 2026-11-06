@@ -37,7 +37,7 @@ class TestOnTheTypes(unittest.TestCase):
             self.assertTrue(r["proof"]["svg"].startswith("<svg") or "svg" in r["proof"], i)
 
     def test_the_quadruped_has_the_rig_rows_and_no_coat_yet(self):
-        self.assertEqual(sorted(self.s22), ["breath", "face.iris", "midline", "waddle"])          # the coat stage has no coat check for the quadruped yet, only the language's iris check
+        self.assertEqual(sorted(self.s22), ["body.twist.clip", "breath", "face.iris", "midline", "waddle"])          # the coat stage has no coat check for the quadruped yet, only the language's iris check
         for i, r in self.s22.items():
             self.assertEqual(r["state"], "pass", (i, r["measure"]))
 

@@ -24,6 +24,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
   const name = species?.file.name || `${url.species} · no name yet`
   const sheet = usePortraitSheet()
   const toggleInsp = useUI((u) => u.toggleInsp)
+  const setNew = useUI((u) => u.setNew)
   const qc = useQueryClient()
   // Variety's one primary action: a new sheet draws the next seed, so every tile is new.
   const newSheet = async () => {
@@ -63,6 +64,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
                 </Link>
               </Popover.Close>
             ))}
+            <Popover.Close asChild><button className={s.menuRow} onClick={() => setNew(true)}><span>{W.owedNew.title}</span></button></Popover.Close>
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>

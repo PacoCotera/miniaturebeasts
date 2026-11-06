@@ -84,11 +84,57 @@ const FAMILY_ROWS = [
   [20, "six-arm", "radial", 0, "six soft arms, no suckers", [["arms", "six, soft"]], "six-arm walk", false, "six soft arms, no suckers"],
 ];
 export const PLANS = ["quadruped", "biped", "mass", "legless", "hexapod", "radial"];
-export const FAMILIES = FAMILY_ROWS.map(([n, id, plan, legs, contact, parts, gait, simpleMass, fix]) => ({
-  n, id, name: id, plan, legs, contact,
-  parts: parts.map(([part, job]) => ({ part, job })),
-  gait, simpleMass, fourLegged: plan === "quadruped", fix,
-}));
+// ---- what a family declares for the studio (chunk 6, shrunk by the mesh-path design): its path, its armature layout, its template and its bands ----
+// Path: how the kind's body is made. mesh = one sculpt is the body; hybrid = sculpted parts on a procedural rig; cage = the studio's plan builds
+// the body (the design's "procedural": Drapet's hair curtain and Blikur's puff are the body). Trotter's kind is a sculpt; its TEMPLATE is the cage
+// (S22), which stays the cage trotter. The art desk's per-kind table (arch-mesh-path.md section 2) is the source.
+const FAMILY_PATH = {
+  trotter: "mesh", "shoulder-heavy": "mesh", hopper: "mesh", digger: "mesh", loaf: "mesh", bridge: "mesh", sitter: "mesh", waddler: "mesh", roundling: "mesh",
+  mound: "cage", swimmer: "hybrid", climber: "hybrid", flutterer: "hybrid", "four-wing": "hybrid", glider: "hybrid", "two-part crawler": "mesh", floater: "cage",
+  "shell-carrier": "mesh", slider: "mesh", "six-arm": "hybrid",
+};
+// Armature layout: [family, layout name, spine bones, legs, bones in a leg chain, tail bones, parts on their own socket bones as [bone, layout, mirrors]].
+// Layouts are the sockets' own words: pair, row, fan or single; bone names are the family registry's, the importer fits them to a sculpt.
+const ARMATURE_ROWS = [
+  ["trotter", "quadruped", 3, 4, 3, 3, []],
+  ["shoulder-heavy", "quadruped", 3, 4, 3, 2, []],
+  ["hopper", "quadruped-pitched", 3, 4, 3, 2, []],
+  ["digger", "quadruped", 3, 4, 3, 1, []],
+  ["loaf", "quadruped", 2, 4, 2, 1, []],
+  ["bridge", "quadruped", 4, 4, 3, 4, []],
+  ["sitter", "biped", 3, 2, 3, 4, [["hand", "pair", true]]],
+  ["waddler", "biped", 3, 2, 3, 0, [["arm", "pair", true]]],
+  ["roundling", "mass", 1, 2, 1, 0, []],
+  ["mound", "mass", 1, 0, 0, 0, []],
+  ["swimmer", "legless", 6, 0, 0, 3, [["fin", "pair", true]]],
+  ["climber", "biped", 3, 2, 3, 5, [["hand", "pair", true]]],
+  ["flutterer", "biped", 3, 2, 3, 0, [["wing", "pair", true]]],
+  ["four-wing", "quadruped", 3, 4, 2, 0, [["wing_front", "pair", true], ["wing_hind", "pair", true]]],
+  ["glider", "quadruped", 3, 4, 3, 2, [["membrane", "pair", true]]],
+  ["two-part crawler", "hexapod", 2, 6, 3, 0, [["antenna", "pair", true]]],
+  ["floater", "mass", 1, 0, 0, 0, [["nub", "pair", true]]],
+  ["shell-carrier", "quadruped", 3, 4, 3, 1, [["shell", "single", false]]],
+  ["slider", "legless", 4, 0, 0, 0, []],
+  ["six-arm", "radial", 1, 0, 0, 0, [["arm", "fan", false]]],
+];
+// A family with a template can be started from in New. Only the trotter has one so far (S22 became templates/trotter.json); the rest show "not yet".
+const FAMILY_TEMPLATE = { trotter: "templates/trotter.json" };
+// Bands every template accepts (codify.md section 3, rule 3): the head at least 30% of the standing height, the neck 0-0.2 H (0 allowed: the head may
+// merge into the body), the legs at most a third of the standing height. Legless and mass families have no legs to measure. The design says "tighter where
+// the stand says" and gives no per-family numbers yet: the art desk's stands decide those.
+const FAMILY_BANDS = { headShareMin: 0.30, neck: [0, 0.2], legShareMax: 1 / 3 };
+export const FAMILIES = FAMILY_ROWS.map(([n, id, plan, legs, contact, parts, gait, simpleMass, fix]) => {
+  const a = ARMATURE_ROWS.find((r) => r[0] === id);
+  return {
+    n, id, name: id, plan, legs, contact,
+    parts: parts.map(([part, job]) => ({ part, job })),
+    gait, simpleMass, fourLegged: plan === "quadruped", fix,
+    path: FAMILY_PATH[id],
+    armature: { layout: a[1], version: 1, spine: a[2], legs: a[3], legBones: a[4], tail: a[5], sockets: a[6].map(([bone, layout, mirror]) => ({ bone, layout, mirror })) },
+    template: FAMILY_TEMPLATE[id] ?? null,
+    bands: { ...FAMILY_BANDS, legShareMax: legs === 0 ? 0 : FAMILY_BANDS.legShareMax },
+  };
+});
 
 // ---- vocabularies ----
 export const SIGNATURE_SOCKETS = ["head-top", "back-line", "tail", "neck", "coat"];
@@ -347,6 +393,13 @@ export function checkComplete(reg) {
     if (pool == null || att == null) msgs.push(`${k.id}: iris and attitude pools are set for every kind`);
   }
   if (new Set(reg.kinds.map((k) => k.id)).size !== reg.kinds.length) msgs.push("duplicate kind id");
+  for (const f of reg.families) {
+    if (!["mesh", "hybrid", "cage"].includes(f.path)) msgs.push(`${f.id}: path ${JSON.stringify(f.path)} is not mesh, hybrid or cage`);
+    if (!f.armature?.layout || !Array.isArray(f.armature.sockets)) msgs.push(`${f.id}: no armature layout`);
+    if (!reg.plans.includes(f.plan)) msgs.push(`${f.id}: plan ${JSON.stringify(f.plan)} is not one of the six`);
+    if (!f.bands || !(f.bands.headShareMin > 0) || f.bands.neck?.[0] !== 0 || f.bands.neck?.[1] > 0.2) msgs.push(`${f.id}: bands need a head share and a neck of 0-0.2 H at most`);
+    if (f.template !== null && typeof f.template !== "string") msgs.push(`${f.id}: template is a file name or null`);
+  }
   return res("roster.complete", "red", msgs);
 }
 // Amber: no two kinds share material kind (with pile) and land.
