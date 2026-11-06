@@ -22,7 +22,7 @@ const open = (f) => f.loci.filter((l) => l.kind !== "locked");
 const openIds = (f) => open(f).map((l) => l.id);
 
 test("the generator writes the four anchors as language frames: schema /4, catalogue 13, family, land, eye count, signature part", () => {
-  assert.deepEqual(LANGUAGE_KINDS, ["S01", "S17", "S18", "S19"]);
+  assert.deepEqual(LANGUAGE_KINDS, Array.from({ length: 19 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`), "the nineteen kinds; S20 is a fixture and S22 a template");
   for (const id of LANGUAGE_ANCHORS) {
     const f = frames[id], k = kindOf(LANGUAGE, id);
     assert.equal(f.schema, SCHEMA_LANGUAGE); assert.equal(f.frameVersion, LANGUAGE_FRAME);
@@ -42,7 +42,7 @@ test("the files on disk are the generator's output, in frames/language, and the 
     assert.equal(formFile(id).frameVersion, 6, `${id}: the old frame file is still version 6, byte for byte as it was`);
     assert.equal(formFile(id).schema, "mb-species-frame/2");
   }
-  assert.deepEqual(index.species.map((s) => s.id), ["S01", "S17", "S18", "S19"], "the language index names exactly the four");
+  assert.deepEqual(index.species.map((s) => s.id), LANGUAGE_KINDS, "the language index names exactly the nineteen");
   assert.equal(index.catalogue.version, 13); assert.ok(index.species.every((s) => s.frameVersion === 8 && s.family && s.land));
   const main = JSON.parse(readFileSync(path.resolve(here, "../frames/index.json"), "utf8"));
   assert.equal(main.catalogue.version, 12); assert.ok(!("language" in main), "the form index is as it was");

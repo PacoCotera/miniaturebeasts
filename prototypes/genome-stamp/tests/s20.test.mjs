@@ -18,9 +18,9 @@ const FRAME_FILE = JSON.parse(readFileSync(new URL("../../workbench/body/frames/
 
 // tests/s20-before.json: sha256 (first 16 hex) of stampCode + "|" + genomeString for individual(frame, 7) with every open chapter read, per frame (key species.version), taken before S20 joined
 
-test("S20 is the last frame of the registry but the Igara and the Peplos at version 5 (appended at the merge of the game line) and the four language frames at version 8; every frame before it is the same bytes as before", () => {
-  const frames = FRAME_DATA.frames, s20 = frames.at(-7);
-  assert.deepEqual(frames.slice(-6).map((f) => `${f.species}.${f.version}`), ["10.5", "12.5", "1.8", "17.8", "18.8", "19.8"], "then the four language frames at version 8 (chapter 5), appended after the Igara and the Peplos");
+test("S20 is the last frame of the registry but the Igara and the Peplos at version 5 (appended at the merge of the game line) and the nineteen language frames at version 8; every frame before it is the same bytes as before", () => {
+  const frames = FRAME_DATA.frames, s20 = frames.at(-22);
+  assert.deepEqual(frames.slice(-21).map((f) => `${f.species}.${f.version}`), ["10.5", "12.5", "1.8", "17.8", "18.8", "19.8", ...Array.from({ length: 15 }, (_, i) => `${i + 2}.8`)], "then the nineteen language frames at version 8 (chapters 5 and 7), appended after the Igara and the Peplos");
   assert.equal(`${s20.species}.${s20.version}`, "20.1"); assert.equal(s20.id, "S20"); assert.equal(s20.name, "Tuliko");
   assert.equal(frames.filter((f) => f.species === 20).length, 1);
   assert.equal(frames.length, FRAMES_LIST.filter((f) => !f.synthetic).length);

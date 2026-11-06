@@ -25,7 +25,7 @@ import { carried, isPartSwitch, SWITCH_TARGETS } from "./guards.mjs";
 // The kinds this generator writes: the four anchors (chunk 5) and the other fifteen (chunk 7), nineteen in all. S20 is a
 // fixture and S22 a template, so neither has a language frame.
 export const LANGUAGE_ANCHORS = ["S01", "S17", "S18", "S19"];
-export const LANGUAGE_KINDS = [...LANGUAGE_ANCHORS];
+export const LANGUAGE_KINDS = Array.from({ length: 19 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`);
 
 // ---- the house numbers (the language design sections 3, 4 and 6) ----
 export const EYE_SIZE_BAND = [0.122, 0.165];          // head width times this: a seventh, 15 percent either way

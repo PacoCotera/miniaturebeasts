@@ -91,9 +91,9 @@ test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for
     const open = `G1-S${f.species}v${f.version}-`.length;
     return [open + Math.ceil(lo / 5) + 2, open + Math.ceil(hi / 5) + 2];
   };
-  assert.deepEqual(range(frameFor(1, 4)), [23, 26]); assert.deepEqual(range(frameFor(1, 5)), [25, 30], "the Loika at version 5 carries the crown's size, leaf count and form: two to four characters more"); assert.deepEqual(range(byName("S01", 6)), [27, 33], "and at version 6 the ear length, one more blended locus: two to three characters more"); assert.deepEqual(range(byName("S01")), [38, 53], "and at version 8, the language frame: its seventeen open loci, eleven to twenty characters more"); assert.deepEqual(range(byName("S03")), [68, 109]); assert.deepEqual(range(byName("S09")), [64, 101]); assert.deepEqual(range(tulikoFrame()), [81, 129]);
+  assert.deepEqual(range(frameFor(1, 4)), [23, 26]); assert.deepEqual(range(frameFor(1, 5)), [25, 30], "the Loika at version 5 carries the crown's size, leaf count and form: two to four characters more"); assert.deepEqual(range(byName("S01", 6)), [27, 33], "and at version 6 the ear length, one more blended locus: two to three characters more"); assert.deepEqual(range(byName("S01")), [38, 53], "and at version 8, the language frame: its seventeen open loci, eleven to twenty characters more"); assert.deepEqual(range(byName("S03", 5)), [68, 109]); assert.deepEqual(range(byName("S09", 4)), [64, 101]); assert.deepEqual(range(tulikoFrame()), [81, 129]);
   // and the extremes are reached: all blends equal, none equal
-  for (const f of [frameFor(1, 4), frameFor(1, 5), byName("S01", 6), byName("S01"), byName("S03"), byName("S09"), tulikoFrame()]) {
+  for (const f of [frameFor(1, 4), frameFor(1, 5), byName("S01", 6), byName("S01"), byName("S03", 5), byName("S09", 4), tulikoFrame()]) {
     const [lo, hi] = range(f), eq = { copies: {} }, ne = { copies: {} };
     for (const l of f.heritable) { const p = l.pool ?? l.alleles; eq.copies[l.id] = [p[0], p[0]]; ne.copies[l.id] = l.values ? [l.alleles[0], l.alleles.at(-1)] : [p[0], p[0]]; }
     assert.equal(genomeString(f, eq).length, lo, `${f.id} shortest`); assert.equal(genomeString(f, ne).length, hi, `${f.id} longest`);
@@ -102,7 +102,7 @@ test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for
 
 // --- every frame in the registry --------------------------------------------------------------------------------------------------------------------
 test("a round trip for every frame in the registry (the real ones at every version, the legacy frames and the two synthetic test frames): string, decode, the same copies, and the same string again", () => {
-  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 1 + 1 + 3 + 1 + 2 + 4 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis and the Loika at 5, the Loika at 6, S17 to S19 at 6, the Tuliko at 1, the Igara and the Peplos at 5, the Loika, Wickle, Drapet and Curlop at 8, the three legacy frames and the two synthetic frames");
+  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 1 + 1 + 3 + 1 + 2 + 19 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis and the Loika at 5, the Loika at 6, S17 to S19 at 6, the Tuliko at 1, the Igara and the Peplos at 5, the nineteen kinds at 8, the three legacy frames and the two synthetic frames");
   let n = 0;
   for (const f of FRAMES_LIST) {
     for (const seed of [1, 2, 3, 4, 5]) {
@@ -121,7 +121,7 @@ test("a round trip for every frame in the registry (the real ones at every versi
 });
 
 test("the string is a spelling of what the stamp code holds: a string and a read mask make the stamp code, and a stamp code with every chapter read makes the string", () => {
-  for (const f of [LOIKA(), byName("S03"), byName("S09"), byName("S17")]) {
+  for (const f of [LOIKA(), byName("S03", 5), byName("S09", 4), byName("S17")]) {
     const open = f.chapters.filter((c) => !c.sealed).map((c) => c.name), readMask = open.length ? f.chapters.reduce((m, c, i) => (c.sealed ? m : m + 2 ** i), 0) : 0;
     const g = genomeOf(f, 99 + f.species), s = genomeString(f, g), d = decodeGenomeString(s);
     // string -> stamp code (the open chapters read; a sealed chapter is in the string and not in the code)
@@ -150,7 +150,7 @@ test("a changed character is refused, in every position of the body and the chec
 
 test("two swapped neighbours are refused, in the body and in the check, wherever the two characters differ", () => {
   let swaps = 0;
-  for (const f of [LOIKA(), byName("S03"), byName("S09"), tulikoFrame()]) {
+  for (const f of [LOIKA(), byName("S03", 5), byName("S09", 4), tulikoFrame()]) {
     for (const seed of [1, 2, 3]) {
       const g = f.id === "S20" && seed === 1 ? tulikoType(f) : genomeOf(f, seed + 40), s = genomeString(f, g), o = opening(s), b = body(s);
       for (let i = 0; i + 1 < b.length; i++) {
@@ -266,7 +266,7 @@ test("the synthetic test frames stand at species 4094 and 4095, so S21 and S22 s
 });
 
 test("no unread chapter and no sealed chapter goes missing: the string holds every heritable locus of the frame, sealed chapters too, and only those", () => {
-  const f = byName("S09");          // the Belatz has a sealed chapter
+  const f = byName("S09", 4);          // the Belatz has a sealed chapter
   assert.ok(f.chapters.some((c) => c.sealed));
   const g = genomeOf(f, 3), d = decodeGenomeString(genomeString(f, g));
   assert.deepEqual(Object.keys(d.genome.copies), f.heritable.map((l) => l.id));
@@ -283,7 +283,7 @@ test("inspect.html reads both: a genome string (every chapter, and the stamp cod
   globalThis.location = { search: "" };
   await import("../inspect.mjs");
   const run = (text) => { els.code.value = text; els.read.handler(); return els.out.textContent; };
-  const f = byName("S09"), g = genomeOf(f, 11), s = genomeString(f, g);
+  const f = byName("S09", 4), g = genomeOf(f, 11), s = genomeString(f, g);
   const shown = run(s);
   assert.match(shown, /^Belatz, species 9, frame version 4, genome string format G1/);
   for (const ch of f.chapters) assert.ok(shown.includes(ch.sealed ? `${ch.name} (sealed)` : ch.name), `chapter ${ch.name}`);
