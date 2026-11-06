@@ -131,7 +131,7 @@ const NEW_LOCI_11 = [
 ];
 
 const F6 = { sinceFrame: 6, provenance: { catalogue: "mb-genome-framework@10 (frame version 6)", proposal: "design/proposals/genome-fluffy.md" } };
-const F8 = { sinceFrame: 8, provenance: { catalogue: "mb-genome-framework@13 (frame version 8, the language)", proposal: "T-20261105-language-codify, codify.md sections 3 and 4" } };
+const F8 = { sinceFrame: 8, provenance: { catalogue: "mb-genome-framework@13 (frame version 8, the language)", proposal: "the language codification, the language design sections 3 and 4" } };
 const NEW_LOCI = [
   // Mammal look (S04–S08, S10; trunk): fur on tail and ears, a face mask, tail rings, ear tilt. 2 · 4.
   { id: "appearance.fur-reach", family: "appearance", label: "Fur reach", scope: "trunk", owner: "fur", consumer: "sketch: the fur material on the tail and the ears too", ...pairMap({ body: "body", tail: "body-and-tail", ears: "body-ears-and-tail" }, dominance(["ears", "tail", "body"])) },
@@ -211,7 +211,7 @@ const NEW_LOCI = [
   { id: "growth.brow-tuft-length", ...F6, family: "structure", label: "Brow tuft length", scope: "branch", clan: "C18", owner: "anatomy.brow-tuft-presence", consumer: "rig: tuft length over head height; at long the tip stops above the eye's upper rim", ...mean({ short: 0.4 }, { long: 1 }) },
   { id: "growth.hand-size-ratio", ...F6, family: "structure", label: "Hand size", scope: "trunk", owner: "arms", consumer: "rig: the hand's size over the arm's thickness (a palm and three fingers); fixed per species", ...mean({ small: 0.7 }, { plump: 1.3 }) },
   ...NEW_LOCI_11,
-  // Catalogue 13, the language (codify.md sections 3 and 4). Each record starts at frame 8: a frame of an older version never carries it.
+  // Catalogue 13, the language (the language design sections 3 and 4). Each record starts at frame 8: a frame of an older version never carries it.
   { id: "anatomy.eye-count", ...F8, family: "structure", label: "Eye count", scope: "trunk", owner: "head", consumer: "rig: how many eyes the face has (a plan switch: two, or three for the shell-carrier; locked, never in a pool, never crossed)", ...pairMap({ two: 2, three: 3 }, dominance(["three", "two"])) },
   { id: "appearance.iris-colour", ...F8, family: "appearance", label: "Iris colour", scope: "trunk", owner: "anatomy.exterior-eye-presence", consumer: "sketch: the iris of the eye, first-ranked shows", ...pairMap(Object.fromEntries(IRIS_COLOURS.map((c) => [c, c])), dominance(IRIS_COLOURS)) },
   { id: "appearance.attitude", ...F8, family: "appearance", label: "Attitude", scope: "trunk", owner: "anatomy.exterior-eye-presence", consumer: "sketch: the gaze, the lid and the curve of the smile together", ...pairMap(Object.fromEntries(ATTITUDES.map((c) => [c, c])), dominance(ATTITUDES)) },
@@ -268,10 +268,10 @@ const NEW_CONSUMERS = {
   "appearance.surface-texture": "sketch: fine ridges as a surface grain",
 };
 
-// Catalogue 13 retires records the language contradicts (gaps.md section 1). Retire, never delete: an older frame keeps
+// Catalogue 13 retires records the language contradicts (the language design section 1). Retire, never delete: an older frame keeps
 // the record byte for byte and an old genome still decodes. A retired record is refused when a frame of version 8 or later
 // would open it (species.mjs buildFrame), unless one of the kind's signed per-check exception records (language.mjs
-// EXCEPTIONS, codify.md section 9) covers it: `coveredBy` names that check and, where an exception is scoped, its scope.
+// EXCEPTIONS, the language design section 9) covers it: `coveredBy` names that check and, where an exception is scoped, its scope.
 export const RETIRED_MARK = "language 2026-11-05";
 const PALE = { check: "coat.pale" }, EARS = { check: "face.clear", scope: "ears" };
 const RETIRED = {
@@ -355,7 +355,7 @@ export const LOOK_PAIRS = [
   ["Ear shape", "anatomy.auricular-form", "form.ear-kind"], ["Ear droop", "anatomy.ear-tilt", "form.ear-droop"], ["Ear width", "growth.auricular-width-ratio", "form.ear-width"],
   ["Eye size", "growth.exterior-eye-size-ratio", "form.eye-size"], ["Eye height", "growth.exterior-eye-height-ratio", "form.eye-height"], ["Eye spacing", "growth.exterior-eye-spacing-ratio", "form.eye-spacing"],
   ["Cream reach", "growth.belly-field-extent", "appearance.cream-extent"],
-  // Catalogue 13: the signature's generic records beside the older per-kind ones (codify.md section 4): a frame opens one of each pair, never both.
+  // Catalogue 13: the signature's generic records beside the older per-kind ones (the language design section 4): a frame opens one of each pair, never both.
   ["Signature count", "signature.count", "growth.crest-leaf-count"],
   ["Signature size", "signature.size", "growth.feather-crest"], ["Signature size", "signature.size", "form.tail-tip-size"],
   ["Signature curl", "signature.curl", "growth.tail-curl-turn"], ["Signature curl", "signature.curl", "form.tail-curl"],

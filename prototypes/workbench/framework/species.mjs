@@ -140,7 +140,7 @@ const vocabTrait = (id) => { const t = VOCAB.find((v) => v[1] === id); if (!t) t
 // --- the frame -------------------------------------------------------------------------------------
 
 // A record a frame of version 8 or later may not open: eye presence (a plan switch from frame 8) and every retired
-// record that none of the kind's signed per-check exception records covers (codify.md section 9). null when it may.
+// record that none of the kind's signed per-check exception records covers (the language design section 9). null when it may.
 export function refuseOpen(kindId, id) {
   const locus = LOCI.get(id);
   if (id === "anatomy.exterior-eye-presence") return "eyes are always on: a plan switch from frame 8, locked, never open";

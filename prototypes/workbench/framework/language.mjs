@@ -1,6 +1,6 @@
 // The mibi visual language as data: the registry the studio, the frames and the game read, so
 // nobody types the numbers twice. Owner-approved 2026-11-05 21:18; codified in iwq
-// T-20261105-language-codify (codify.md sections 1-5 and 9). `language.json` is generated from this
+// the language codification (the language design sections 1-5 and 9). `language.json` is generated from this
 // file by tools/language-json.mjs; edit here, never there. A change to a value is a registry version.
 //
 // Data first (LANDS, FAMILIES, KINDS, EXCEPTIONS, FIXTURES), then the validators: the roster rules
@@ -27,7 +27,7 @@ export function hexToOklch(hex) {
 }
 const hueStep = (from, to) => { let d = ((to - from + 540) % 360) - 180; return Math.round(d * 100) / 100; };
 
-// ---- lands (codify.md section 2). Ids are the game's biome ids (regions.mjs BIOMES). ----
+// ---- lands (the language design section 2). Ids are the game's biome ids (regions.mjs BIOMES). ----
 // [id, art name, player word, [body hex, name], [marking hex, name], [accent hex, name]]
 const LAND_ROWS = [
   ["mixed", "Meadows", "Meadows", ["#D4B060", "straw gold"], ["#A87E36", "honey ochre"], ["#C0663A", "burnt orange"]],
@@ -59,7 +59,7 @@ export const LANDS = LAND_ROWS.map(([id, art, word, body, marking, accent]) => {
   };
 });
 
-// ---- families (codify.md section 1): a skeleton and what each part is for ----
+// ---- families (the language design section 1): a skeleton and what each part is for ----
 // [n, id, plan, legs, contact, parts-with-a-job, gait clip, simple mass, the language's fix]
 const FAMILY_ROWS = [
   [1, "trotter", "quadruped", 4, "four feet", [["tail", "balance"]], "four-beat walk", false, "plain four-legged build; the studio's template"],
@@ -98,7 +98,7 @@ export const IRIS_COLOURS = ["amber", "honey", "olive", "moss", "hazel", "teal",
 export const ATTITUDES = ["content", "curious", "deadpan", "knowing"]; // order: content > curious > deadpan > knowing
 export const EYE_COUNTS = [2, 3];
 
-// ---- kinds (codify.md sections 1, 2, 4, 5) ----
+// ---- kinds (the language design sections 1, 2, 4, 5) ----
 // [id, name, family, land, material, pile, signature type, socket, count, curl, accent, anchor]
 // count and curl: null (none), a number (fixed) or [lo, hi, type]; proposals the art desk signs at chunk 13.
 // accent: "land" or "own" (anchors keep their own colours until repainted).
@@ -134,7 +134,7 @@ KINDS.find((k) => k.id === "S15").eyes.count = 3;
 for (const k of KINDS) { k.eyes.irisPool = null; k.eyes.attitudePool = null; }
 Object.freeze(KINDS);
 
-// ---- per-check signed exception records (codify.md section 9, owner 2026-11-05 22:33) ----
+// ---- per-check signed exception records (the language design section 9, owner 2026-11-05 22:33) ----
 // One record names one kind and one check. Never a blanket flag. `by` is the art desk; a maker or
 // agent token cannot write one. Read as spec 8.2 `waivers` entries (check, reason, by, date, until).
 const ex = (kind, check, reason, extra = {}) => ({ kind, check, reason, by: "art desk", date: "2026-11-06", until: "repaint", ...extra });

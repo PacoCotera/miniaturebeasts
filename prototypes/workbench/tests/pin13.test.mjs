@@ -1,4 +1,4 @@
-// Catalogue 13, the language pin (T-20261105-language-codify chunk 2): the new records, the appended layouts, eye count as a plan
+// Catalogue 13, the language pin (the language codification chunk 2): the new records, the appended layouts, eye count as a plan
 // switch, the retired mark and the refusals, the frame of version 8 and later, and every older frame byte for byte.
 import { test } from "node:test";
 import assert from "node:assert/strict";
