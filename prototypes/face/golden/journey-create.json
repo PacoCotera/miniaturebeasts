@@ -20,7 +20,7 @@
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "Two chapters unread"
+    "subject": "Four chapters unread"
    },
    {
     "key": "down",
@@ -35,14 +35,12 @@
     "screen": "create",
     "create": {
      "f": 0,
-     "choices": [
-      "colour"
-     ],
+     "choices": [],
      "grown": false
     },
     "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
-    "subject": "Two chapters unread"
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "Four chapters unread"
    },
    {
     "key": "research",
@@ -56,7 +54,7 @@
     ],
     "screen": "pods",
     "create": null,
-    "ok": "Open Stamina",
+    "ok": "Open Shape",
     "price": null,
     "subject": ""
    },
@@ -78,7 +76,7 @@
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "Two chapters unread"
+    "subject": "Four chapters unread"
    },
    {
     "key": "down",
@@ -93,14 +91,12 @@
     "screen": "create",
     "create": {
      "f": 0,
-     "choices": [
-      "colour"
-     ],
+     "choices": [],
      "grown": false
     },
     "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
-    "subject": "Two chapters unread"
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "Four chapters unread"
    }
   ],
   "create-grow": [
@@ -119,7 +115,7 @@
     "ring": "card.incubate",
     "ok": "Incubate",
     "e": 29,
-    "d": 19,
+    "d": 18,
     "s": 41
    },
    {
@@ -135,9 +131,7 @@
     "screen": "create",
     "create": {
      "f": 0,
-     "choices": [
-      "colour"
-     ],
+     "choices": [],
      "grown": true
     },
     "ok": null,
