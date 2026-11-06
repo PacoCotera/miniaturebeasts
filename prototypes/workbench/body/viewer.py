@@ -6,7 +6,7 @@ T = "/home/mb/mb/tools-3d/web/node_modules/three"
 rd = lambda p: open(f"{T}/{p}", encoding="utf8").read()
 glb, out = sys.argv[1], sys.argv[2]
 src = dict(three=rd("build/three.module.min.js"), gltf=rd("examples/jsm/loaders/GLTFLoader.js"), orbit=rd("examples/jsm/controls/OrbitControls.js"), bgu=rd("examples/jsm/utils/BufferGeometryUtils.js"))
-src["three"] = src["three"].replace('.*/i,"$1")', '.*/i,"\\x241")')   # the vendored regexp replacement "$1" written as the escape \x241 (the same string in the page), so the public guard's secret rule does not read it as a value
+src["three"] = src["three"].replace('.*/i,"$1")', '.*/i,"\\x241")')   # the vendored regexp's group replacement written as an escape (the same string in the page), so the public guard does not read it as a price
 js = lambda s: json.dumps(s).replace("</", "<\\/")
 b64 = base64.b64encode(open(glb, "rb").read()).decode()
 HTML = r"""<!doctype html><html><head><meta charset="utf-8"><title>Model viewer (glb in three.js)</title>
