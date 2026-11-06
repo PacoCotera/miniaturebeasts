@@ -682,7 +682,7 @@ test("a type specimen's sentence is the feature line, and names no real animal",
   for (const id of ["S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16"]) {
     const f = frameOf(id), g = typeSpecimen(f);
     const { text } = describeGenome(f, g, buildIndividual(f, g).scene, { typeSpecimen: true });
-    assert.ok(text.includes(` It is the type of its kind: ${f.signature.feature}.`), `${id}: ${text.match(/It is the type of its kind[^.]*\./)?.[0]}`);
+    assert.ok(text.includes(` It looks just as its species should: ${f.signature.feature}.`), `${id}: ${text.match(/It looks just as its species should[^.]*\./)?.[0]}`);
     assert.ok(!text.includes(CLANS[f.taxonomy.clan].resembles), `${id}: the line does not carry the old animal text`);
   }
 });

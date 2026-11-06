@@ -1015,7 +1015,7 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
 const MAIN_FRAMES = { cave: 1205165258, place32: 1284530620, map: 3135324483 };   // main 92b58bf8 (unchanged by the later main commits), captured from its own page with this harness
-const GOLDEN48 = { faceStair: 2997770219, gen1: 414766699, corner: 1650250194 };   // re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
+const GOLDEN48 = { faceStair: 2933509176, gen1: 414766699, corner: 1650250194 };   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y) {
   const p = page48(seed);
   p.run(`layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; G = genWorld(${seed}, 1); S = worldFields(${seed}, 1); const life = genLife(${seed}); S.cr = life.cr; S.pods = life.pods; indexCreatures();
