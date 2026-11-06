@@ -6,6 +6,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { FRAMES_LIST, byName, frameFor } from "../src/frames.mjs";
+// The Station still loads the form frames, so a species's frame "as it was" is its newest one before the language frames (version 8).
+const newestBefore8 = (id) => FRAMES_LIST.filter((f) => f.id === id && f.version < 8).sort((a, b) => b.version - a.version)[0];
 import { stampGeometry, rasterize } from "../src/stamp.mjs";
 import { decode } from "../src/decode.mjs";
 import { individual } from "./cases.mjs";
@@ -37,7 +39,8 @@ test("the registry carries the sixteen species of the workbench at frame version
     assert.equal(old.borderSeed, f.borderSeed, `${f.id}: the border is the species'`);
     assert.deepEqual(old.heritable.map((l) => l.id), f.heritable.map((l) => l.id), `${f.id}: same loci`);
   }
-  assert.equal(byName("S01").version, 4, "the encoder's default frame is the newest: the Loika fine-tuned at version 4 (T-20261016-200)");
+  assert.equal(byName("S01").version, 8, "the encoder's default frame is the newest: the Loika at version 8, the language frame; version 6 (the ears), version 5 (the crown's parameters carried) and version 4, the fine-tuned Loika (T-20261016-200), are carried beside it");
+  assert.equal(byName("S01", 6).version, 6); assert.equal(byName("S01", 5).version, 5); assert.equal(byName("S01", 4).version, 4);
   assert.equal(byName("S01", 3).version, 3, "and the Loika's version 3 is carried, so every version-3 print still decodes");
   const l3 = frameFor(1, 3).heritable.map((l) => l.id), l4 = frameFor(1, 4).heritable.map((l) => l.id);
   assert.ok(l3.every((id) => l4.includes(id)), "version 4 keeps every version-3 heritable locus and adds Colour and the marking layout");
@@ -46,8 +49,11 @@ test("the registry carries the sixteen species of the workbench at frame version
   const s03v5 = frameFor(3, 5), claws = s03v5.heritable.find((l) => l.id === "anatomy.contact-terminal-form");
   assert.deepEqual(claws.pool, ["rounded", "pad", "wedge"], "the Tuikis at version 5: its claws drawn from the three digging forms (T-20261016-194)");
   assert.equal(claws.alleles.length, 6, "the copy still indexes the catalogue's six forms, so a legacy hoof, webbed or root copy stamps and reads");
-  assert.deepEqual(FRAMES_LIST.filter((f) => f.version === 5).map((f) => f.id), ["S03"]);
-  assert.equal(byName("S03").version, 5); assert.equal(byName("S03", 4).version, 4);
+  assert.deepEqual(FRAMES_LIST.filter((f) => f.version === 5).map((f) => f.id).sort(), ["S01", "S03", "S10", "S12"], "the Loika, the Tuikis, the Igara and the Peplos are at version 5");
+  assert.deepEqual(FRAMES_LIST.filter((f) => f.version === 6 && f.species <= 16).map((f) => f.id), ["S01"]);
+  assert.equal(newestBefore8("S12").version, 5); assert.equal(byName("S12", 4).version, 4); assert.equal(byName("S12").version, 8);
+  assert.equal(newestBefore8("S10").version, 5); assert.equal(byName("S10", 4).version, 4); assert.equal(byName("S10").version, 8);
+  assert.equal(newestBefore8("S03").version, 5); assert.equal(byName("S03", 4).version, 4); assert.equal(byName("S03").version, 8);
   for (const f of v4) if (f.id !== "S01") { const old = frameFor(f.species, 3); assert.deepEqual(old.heritable.map((l) => [l.id, l.bits]), f.heritable.map((l) => [l.id, l.bits]), `${f.id}: same loci and bits at v4`); }
   assert.equal(byName("S01", 2).version, 2);
   assert.deepEqual(legacy.map((f) => f.id), ["hopper", "puffcap", "glowtail"]);
@@ -98,8 +104,8 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   assert.equal(CATALOGUE_STEPS, BLEND_STEPS, "the workbench and the codec share one step");
   const rows = [];
   for (const id of ROSTER) {
-    const f = byName(id), wf = stationFrame(id);
-    assert.equal(f.version, id === "S03" ? 5 : 4);
+    const f = newestBefore8(id), wf = stationFrame(id);   // the Station still loads the form frames: the Loika at 6 (the language frame, 8, is the stamp's newest and waits for the game art swap)
+    assert.equal(f.version, id === "S01" ? 6 : id === "S03" || id === "S10" || id === "S12" ? 5 : 4);
     const blended = f.heritable.filter((l) => l.values);
     for (const l of blended) {
       assert.ok(l.alleles.length + BLEND_STEPS + 1 <= 2 ** STEP_BITS, `${l.id}: its names and steps fit ${STEP_BITS} bits`);
@@ -116,14 +122,14 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   for (const r of rows) t.diagnostic(`${r.id} ${r.name}: ${r.open} open, ${r.blended} blended, ${r.bits[0]} -> ${r.bits[1]} bits, ${r.before.join("/")} -> ${r.after.join("/")}`);
   // pinned so a change of the step or the frames shows here
   assert.deepEqual(Object.fromEntries(rows.map((r) => [r.id, r.after.join("/")])), {
-    S01: "25/25", S02: "29/33", S03: "37/37", S04: "25/29", S05: "29/29", S06: "29/33", S07: "33/33", S08: "29/33",
+    S01: "25/29", S02: "29/33", S03: "37/37", S04: "25/29", S05: "29/29", S06: "29/33", S07: "33/33", S08: "29/33",
     S09: "37/37", S10: "29/33", S11: "33/33", S12: "25/25", S13: "29/33", S14: "25/29", S15: "33/33", S16: "33/33",
   });
 });
 
 test("C5: the round trip is exact for every blended locus of S01 to S16 at the step's ends and middle", () => {
   for (const id of ROSTER) {
-    const f = byName(id), blended = f.heritable.filter((l) => l.values);
+    const f = newestBefore8(id), blended = f.heritable.filter((l) => l.values);
     for (const k of [0, Math.floor(BLEND_STEPS / 2), BLEND_STEPS]) {
       const copies = {};
       for (const l of f.heritable) copies[l.id] = l.values ? [stepValue(l, k), stepValue(l, BLEND_STEPS - k)] : [l.pool[0], l.pool.at(-1)];
@@ -148,7 +154,7 @@ test("C5: the round trip is exact for every blended locus of S01 to S16 at the s
     }
   }
   // and through an image: a Tuikis with blends, rasterised and scanned
-  const f = byName("S03"), copies = {};
+  const f = newestBefore8("S03"), copies = {};
   for (const l of f.heritable) copies[l.id] = l.values ? [stepValue(l, 17), stepValue(l, 17)] : [l.pool[0], l.pool.at(-1)];
   const g = { species: 3, version: f.version, read: f.chapters.filter((c) => !c.sealed).map((c) => c.name), copies };
   const d = decode(rasterize(stampGeometry(g), 300));
@@ -243,4 +249,22 @@ test("C6: the stamp code is the stamp's own bytes as text: it round-trips for ev
   het.loci["appearance.marking-switch"] = ["off", "on"];
   const d1 = decodeStampCode(stationStampCode(f1, het, ["coat"]));
   assert.deepEqual(d1.genome.copies["appearance.marking-switch"], ["off", "on"]);
+});
+
+test("a Peplos born now has a stamp code at frame 5; an old frame-4 Peplos still reads back as frame 4", () => {
+  const fr = stationFrame("S12"), all = fr.chapters.map((c) => c.id);
+  assert.equal(fr.frameVersion, 5);
+  const now = podGenome(fr, 11), code = stationStampCode(fr, now, all);
+  assert.ok(code, "a new Peplos has a stamp code (it was null before frame 5 was carried)");
+  const d = decodeStampCode(code);
+  assert.ok(d.ok, d.detail); assert.equal(d.genome.species, 12); assert.equal(d.genome.version, 5);
+  const old = { ...podGenome(fr, 12), frameVersion: 4 }, oldCode = stationStampCode(fr, old, all);
+  assert.ok(oldCode, "a frame-4 Peplos still stamps");
+  const o = decodeStampCode(oldCode);
+  assert.ok(o.ok, o.detail); assert.equal(o.genome.species, 12); assert.equal(o.genome.version, 4);
+  const sg4 = stampGenome(fr, old, all), sg5 = stampGenome(fr, now, all);
+  assert.equal(Object.keys(sg4.copies).length, frameFor(12, 4).heritable.length);
+  assert.equal(Object.keys(sg5.copies).length, frameFor(12, 5).heritable.length);
+  for (const [id, c] of Object.entries(sg4.copies)) assert.deepEqual(o.genome.copies[id], c, `${id}: the frame-4 copies read back as written`);
+  for (const [id, c] of Object.entries(sg5.copies)) assert.deepEqual(d.genome.copies[id], c, `${id}: the frame-5 copies read back as written`);
 });

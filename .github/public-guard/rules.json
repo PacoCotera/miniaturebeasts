@@ -166,8 +166,8 @@
    "applies": "text",
    "patterns": [
     [
-     "/tmp/claude-\\d+",
-     ""
+     "L3RtcC9jbGF1ZGUtXGQr",
+     "b"
     ],
     [
      "scratchpad/",
@@ -182,8 +182,8 @@
      ""
     ],
     [
-     "claude\\.ai/code/session",
-     ""
+     "Y2xhdWRlXC5haS9jb2RlL3Nlc3Npb24=",
+     "b"
     ],
     [
      "\\bcodex\\b",
@@ -196,6 +196,18 @@
     [
      "\\bSol High\\b",
      ""
+    ],
+    [
+     "KGdlbmVyYXRlZHx3cml0dGVufG1hZGV8YnVpbHR8Y3JlYXRlZHxhdXRob3JlZCkgKHdpdGh8YnkpIFxbPyhjbGF1ZGV8YW50aHJvcGljKQ==",
+     "ib"
+    ],
+    [
+     "Y28tYXV0aG9yZWQtYnk6",
+     "ib"
+    ],
+    [
+     "bm9yZXBseUBhbnRocm9waWNcLmNvbQ==",
+     "ib"
     ]
    ]
   },
@@ -312,8 +324,8 @@
    ],
    "patterns": [
     [
-     "Claude",
-     ""
+     "Q2xhdWRl",
+     "b"
     ]
    ]
   },
@@ -437,11 +449,23 @@
    "value": "genus (2026-10-09)",
    "rule": "process-label",
    "reason": "the date a name clearance search was run, a record not a decision label"
+  },
+  {
+   "path": "prototypes/workbench/body/wb/web/package-lock.json",
+   "value": "css-tokenizer",
+   "rule": "secret-value",
+   "reason": "a dependency name in the lockfile (the package css-tokenizer), not a secret"
+  },
+  {
+   "path": "prototypes/workbench/body/wb/web/package-lock.json",
+   "value": "js-tokens",
+   "rule": "secret-value",
+   "reason": "a dependency name in the lockfile (the package js-tokens), not a secret"
   }
  ],
  "commitTrailers": [
   "Co-Authored-By:",
-  "Claude-Session:",
+  "b:Q2xhdWRlLVNlc3Npb246",
   "Generated with"
  ]
 }

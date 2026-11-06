@@ -1,0 +1,26 @@
+{
+ "find-reed-bundle-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "src": "source/find_pictures.py",
+  "sha256": "fe5dbc4bdbf140672ffa334733fc1a935cd0e5277449efb2f6daaf64d3826222"
+ },
+ "find-moss-stone-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "src": "source/find_pictures.py",
+  "sha256": "99b99180a7450e2c1ce6e1e1d205e10a54bc1b9e08c3ad9c4308ded93c047d44"
+ },
+ "find-fern-crown-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "src": "source/find_pictures.py",
+  "sha256": "1dc6a5e64e8cd6fd8868af1cc8303ec434d3b3138417bce7e9e33b652a7b686c"
+ }
+}

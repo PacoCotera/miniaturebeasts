@@ -184,13 +184,13 @@ for (const [name, o] of [["a Loika bud", { species: "S01" }], ["a second species
 }
 test("the Hatch now | Wait panel: Hatch now's price is the Essence it costs, right-aligned in its header; Wait has none", { skip }, async () => {
   const b = panelScene({ kind: "hatchnow" }), f = await startPanel(b), lg = logOf(f), price = lg.type.filter((t) => t.region === "panelPrice"); assert.equal(price.length, 1, JSON.stringify(price)); assert.match(price[0].text ?? "", /^\s*\d+$/, "the figure; the icon before it is a picture");
-  const l = BEZ[0], pr = region(lg, "panelPrice", "type").rect; assert.ok(Math.abs(pr[0] + pr[2] - (l[0] + l[2] - 12)) <= 1, `ends at the bezel's right less 12: ${pr}`);
+  const l = BEZ[0], pr = region(lg, "panelPrice", "type").rect; assert.ok(Math.abs(pr[0] + pr[2] - (l[0] + l[2] - 8)) <= 1, `ends at the bezel's right less 8 (the room edge): ${pr}`);
   assert.ok(pr[1] >= l[1] && pr[1] + pr[3] <= l[1] + 30, "in the 30 px header");
 });
-test("the Hatch now | Wait panel's readout: 'ready in about {n} min' is in Wait's header, Inter 16, fog, right-aligned 12 in from the bezel's right on the baseline of the verbs; the window carries no text; at least 4.5:1 on the panel fill", { skip }, async () => {
+test("the Hatch now | Wait panel's readout: 'ready in about {n} min' is in Wait's header, Inter 16, fog, right-aligned 8 in from the bezel's right on the baseline of the verbs; the window carries no text; at least 4.5:1 on the panel fill", { skip }, async () => {
   const b = panelScene({ kind: "hatchnow" }), f = await startPanel(b), lg = logOf(f), cap = lg.type.filter((t) => t.region === "panelCaption"); assert.equal(cap.length, 1);
   const n = b.props.overlay.regions.caption; assert.match(n, /^ready in about \d+ min$/); assert.equal(cap[0].text, n); assert.equal(cap[0].px, 16);
-  const [x, y, w, h] = region(lg, "panelCaption").rect, B = BEZ[1]; assert.ok(Math.abs(x + w - (B[0] + B[2] - 12)) <= 1, `right-aligned: ends ${x + w}`); assert.ok(y >= B[1] && y + h <= B[1] + 30, "in the 30 px header");
+  const [x, y, w, h] = region(lg, "panelCaption").rect, B = BEZ[1]; assert.ok(Math.abs(x + w - (B[0] + B[2] - 8)) <= 1, `right-aligned: ends ${x + w}`); assert.ok(y >= B[1] && y + h <= B[1] + 30, "in the 30 px header");
   const verb = region(lg, "panelHeader").rect; assert.ok(y + h >= verb[1] && y <= verb[1] + verb[3] + 2, "on the verbs' line");
   assert.equal(lg.type.filter((t) => /\bmin\b/.test(t.text ?? "")).length, 1, "the one readout"); assert.ok(!lg.type.some((t) => t.region === "panelCaption" && t.rect && t.rect[1] > 76), "none in the window");
   const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }, L = (c) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]), fog = rgbOf("fog"), fill = rgbOf("panel");

@@ -131,7 +131,7 @@
    "cards": {
     "add": {
      "name": "Add the room",
-     "line": "Eight more places to live"
+     "line": "{Room} settles in {n} {turn|turns}"
     },
     "keep": {
      "name": "Not now",
@@ -214,7 +214,7 @@
    "note": "the spec says Inter 15 medium; the face has Inter 16, 20 and 28 (open question in the T-20261016-222 report)"
   },
   "price": {
-   "right": 12,
+   "right": 8,
    "gap": 12,
    "px": 16,
    "colour": "price",
@@ -331,7 +331,7 @@
   },
   "caption": {
    "role": "quiet",
-   "note": "'ready in about {n} min', Inter 16, fog on the bezel's panel fill, right-aligned in Wait's header (12 in from the bezel's right, the baseline as the verbs'), mirroring Hatch now's price; the window carries no text"
+   "note": "'ready in about {n} min', Inter 16, fog on the bezel's panel fill, right-aligned in Wait's header (8 in from the bezel's right, the baseline as the verbs'), mirroring Hatch now's price; the window carries no text"
   }
  }
 }

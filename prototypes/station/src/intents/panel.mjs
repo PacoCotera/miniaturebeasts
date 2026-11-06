@@ -5,9 +5,8 @@ import * as S from "../state.mjs";
 import { panelBuild, cardsOf, initialFocus } from "../views/panel-props.mjs";
 import { incubateNow, keepShaping } from "./create.mjs";
 import { returnNow } from "./habitat.mjs";
-import { returnPodNow } from "./pods.mjs";
 import { fitNow } from "./bench.mjs";
-import { addRoomNow } from "./vivarium.mjs";
+import { addRoomNow, returnFromCard } from "./vivarium.mjs";
 import { growNow } from "./incubator.mjs";
 import { later, openFromArrival } from "./arrival.mjs";
 
@@ -43,6 +42,6 @@ export function intent(h, target, verb) {
   else if (card.act === "growNow") growNow(h);
   else if (card.act === "open") openFromArrival(h);
   else if (card.act === "later") later(h);
-  else if (card.act === "return") (ui.screen === "habitat" ? returnNow : returnPodNow)(h);   // Keep is the way out: the panel closes, the screen is as before
+  else if (card.act === "return") (ui.screen === "vivarium" ? returnFromCard : returnNow)(h);   // only a mibi's release opens a panel: letting a pod go asks on the button's own face   // Keep is the way out: the panel closes, the screen is as before
 }
 export { panelBuild };

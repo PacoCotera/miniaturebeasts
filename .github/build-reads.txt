@@ -6,6 +6,7 @@ art/companion-48/species/
 art/companion-48/terrain/
 art/device-buttons/caps/
 art/station-masters/pods/motion/proof/
+design/proposals/genome-fluffy.md
 design/proposals/taxonomy.md
 design/proposals/ui-kit.md
 design/style-guide/station-layouts.md

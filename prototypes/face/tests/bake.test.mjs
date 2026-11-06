@@ -2,11 +2,11 @@
 //   node --test prototypes/face/tests/bake.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { bakeImage, readHeader, bakeAll, checkBaked, HEADER } from "../tools/bake-images.mjs";
+import { withBakeDirs } from "../tools/bake-tmp.mjs";
 import { decodePNG } from "../../ui/png.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), masters = path.resolve(here, "../../ui/assets/masters");
@@ -17,8 +17,7 @@ test("an image: the header, the pixels as B G R A, straight alpha", () => {
   assert.deepEqual([...b.subarray(HEADER, HEADER + 8)], [0, 0, 255, 255, 0, 255, 0, 128], "B, G, R, A in memory; the alpha is not applied to the colour");
   assert.throws(() => bakeImage(0, 1, new Uint8Array(0))); assert.throws(() => bakeImage(2, 2, new Uint8Array(4))); assert.throws(() => bakeImage(70000, 1, new Uint8Array(280000)));
 });
-test("every placed master bakes to its size and pixels, deterministically, and the baked files match the masters' index", () => {
-  const a = mkdtempSync(path.join(tmpdir(), "bake-a-")), b = mkdtempSync(path.join(tmpdir(), "bake-b-"));
+test("every placed master bakes to its size and pixels, deterministically, and the baked files match the masters' index", () => withBakeDirs(["bake-a-", "bake-b-"], (a, b) => {
   const first = bakeAll({ masters, out: a }), second = bakeAll({ masters, out: b }), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters;
   assert.equal(Object.keys(first).length, Object.keys(index).length); assert.ok(Object.keys(first).length > 10);
   assert.deepEqual(first, second, "the same masters bake to the same bytes");
@@ -28,14 +27,14 @@ test("every placed master bakes to its size and pixels, deterministically, and t
     const pic = decodePNG(readFileSync(path.join(masters, index[id].file))), bin = readFileSync(path.join(a, first[id].file));
     for (let i = 0; i < pic.width * pic.height; i++) { const o = HEADER + i * 4; assert.deepEqual([bin[o + 2], bin[o + 1], bin[o], bin[o + 3]], [...pic.data.subarray(i * 4, i * 4 + 4)], `${id} pixel ${i}`); }
   }
-});
-test("a baked file that is changed, a master that is replaced and one that is not baked are found", () => {
-  const out = mkdtempSync(path.join(tmpdir(), "bake-c-")), images = bakeAll({ masters, out }), id = Object.keys(images)[0];
+}));
+test("a baked file that is changed, a master that is replaced and one that is not baked are found", () => withBakeDirs(["bake-c-"], (out) => {
+  const images = bakeAll({ masters, out }), id = Object.keys(images)[0];
   writeFileSync(path.join(out, images[id].file), Buffer.concat([readFileSync(path.join(out, images[id].file)).subarray(0, HEADER), Buffer.alloc(images[id].w * images[id].h * 4, 7)]));
   assert.ok(checkBaked({ masters, out }).some((p) => p.startsWith(id) && /hash/.test(p)));
   const idx = JSON.parse(readFileSync(path.join(out, "images.json"), "utf8")); delete idx.images[Object.keys(images)[1]]; writeFileSync(path.join(out, "images.json"), JSON.stringify(idx));
   assert.ok(checkBaked({ masters, out }).some((p) => /not baked/.test(p)));
-});
+}));
 
 test("the PNG reader takes an indexed master (1, 2, 4 and 8 bits, with its alpha table)", async () => {
   const { deflateSync } = await import("node:zlib"), { crc32 } = await import("node:zlib");

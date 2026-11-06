@@ -8,6 +8,7 @@
 #include "vocab/words.h"
 #include "screens/screens.h"
 #include "anim/anim.h"
+#include "anim/hold.h"
 #include "vocab/vocab.h"
 #include "platform/platform.h"
 #include "lvgl.h"
@@ -74,7 +75,7 @@ void face_frame(uint32_t ms) {
   static uint32_t last; static int started;
   if (!started) { started = 1; last = ms; }
   lv_tick_inc(ms - last); last = ms;
-  { int playing = anim_active(); anim_tick(ms); if (playing || anim_active() || screens_tick(ms)) screens_redraw(); }   /* an event plays: the words are drawn again at this frame's time */
+  { int playing = anim_active(); anim_tick(ms); int held = hold_tick(ms); if (held || playing || anim_active() || screens_tick(ms)) screens_redraw(); }   /* an event plays: the words are drawn again at this frame's time */
   g_ndirty = 0;
   double t0 = platform_now_ms();
   lv_timer_handler();
@@ -91,6 +92,9 @@ uint32_t face_hash(void) {
   return h;
 }
 void face_key(int code, int down) {
+  if (down && code == 10 && hold_down()) return;   /* ✓ with a hold armed is the hold's: it says nothing now (anim/hold.c) */
+  if (!down && code == 10 && hold_active()) { hold_up(); return; }
+  if (down && hold_active()) hold_cancel();   /* any other key ends a hold in progress, and then acts */
   if (down) screens_key(code);   /* the words' screens move the ring and say so (focus, intent) */
   int nt = (g_kt + 1) % KEYQ; if (nt == g_kh) return;
   g_keys[g_kt].code = code; g_keys[g_kt].down = down; g_kt = nt; if (down) { g_kcount++; g_klast = code; }

@@ -9,7 +9,7 @@
  },
  "taxonomy": {
   "code": "S16",
-  "resembles": "a wisp of lightning",
+  "resembles": "a creature that paddles the air with four flippers",
   "moves": "floats, ripples",
   "habitat": "meadow, rock field, only in a storm",
   "gate": "Charge sealed (storm-glass shard)",
@@ -41,7 +41,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -102,8 +103,8 @@
     "hex": "#8b7dd8"
    },
    {
-    "pigment": "cobalt",
-    "hex": "#4d7ed4"
+    "pigment": "ice",
+    "hex": "#d9ecf5"
    }
   ]
  },
@@ -1669,6 +1670,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -1733,7 +1738,7 @@
   "carried": 35,
   "trunk": 31,
   "branch": 4,
-  "absent": 105,
+  "absent": 106,
   "locked": 11,
   "lockedBy": {
    "switch": 2,

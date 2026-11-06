@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // The Station's journey (station-build.md §5), headless: serves prototypes/ as the sandbox does, loads a v8 fixture save, and plays the Station on the LVGL face (the page in test mode, ?test):
-// the fixture migrated, a Loika crate seeded, Dock, the crates opened through the developer hook, Pods by keys and intents (identify, read, compare, return), Create, Grow, the bud, the mibi and the
+// the fixture migrated, a Loika crate seeded, Dock, the crates opened through the developer hook, Pods by keys and intents (the inventory, the reading room: identify, read, compare, let go), Create, Grow, the bud, the mibi and the
 // Cross through the intents of the screens the face does not draw yet (M2 to M4: the rules, not the screens; Grow and Cross paint nothing, so no call reaches the Caddy service), every not-built screen's room keys and ←, Idle's wake, the save round trip.
 // Fails on any page error, any error the face sent, any canvas text call or any request outside the page's origin. Screenshots go to img/; each point records what tools/checks.mjs reads.
 // The milestones whose screens are not on the face are listed from journey-pending/ on every run.
@@ -107,10 +107,10 @@ const intent = (m, ms = 120) => page.evaluate((m) => window.__st.intent(m), m).t
 const expect = (cond, what) => { if (!cond) fail(what); };
 const adultIds = () => page.evaluate(() => window.__st.ST.mibis.filter((m) => window.__st.isAdult(m)).map((m) => m.id));   // the page's own rule (settings.adultTurns included)
 const ui = () => page.evaluate(() => { const u = window.__st.UI; return { screen: u.screen, view: u.pods.view, cmp: !!u.pods.cmp, lib: u.lib.l1, hab: u.hab.f, habId: u.hab.id, home: u.home.f, viv: u.viv.f, idle: u.idle, msg: window.__st.msg }; });
-// The type through the face: every string it set is one of the face's Inter fonts (16, Medium 16 as 1016, 20 or 28), nothing refused, no error sent.
+// The type through the face: every string it set is one of the face's Inter fonts (15, 16, Medium 16 as 1016, Medium 18, 20 or 28), nothing refused, no error sent.
 const assertFace = async (when) => {
-  const c = await page.evaluate(() => window.__st.check()), bad = (c.log?.type ?? []).filter((r) => ![16, 1016, 20, 28].includes(r.px) || !r.text);
-  for (const r of bad.slice(0, 3)) fail(`type (${when}): "${r.text}" at ${r.px} px, not Inter at 16, Medium 16 (1016), 20 or 28`);
+  const c = await page.evaluate(() => window.__st.check()), bad = (c.log?.type ?? []).filter((r) => ![15, 16, 1016, 18, 20, 28].includes(r.px) || !r.text);
+  for (const r of bad.slice(0, 3)) fail(`type (${when}): "${r.text}" at ${r.px} px, not Inter at 15, 16, Medium 16 (1016), Medium 18, 20 or 28`);
   if (c.refused) fail(`face (${when}): ${c.refused} nodes refused`); if (c.errors.length) fail(`face (${when}): ${c.errors.slice(0, 3).join("; ")}`);
   const ov = await page.evaluate(() => window.__st.face.invOverflows()); if (ov) fail(`face (${when}): LVGL's invalid-area buffer overflowed ${ov} time${ov > 1 ? "s" : ""}: a frame redrew the whole screen`);
   console.log(`face (${when}): ${(c.log?.type ?? []).length} strings, ${bad.length} off-spec, ${c.refused} refused, ${c.errors.length} errors, ${ov} invalid-area overflows`);
@@ -158,7 +158,7 @@ await hpress("back", 600);   // ← is Later: the dither back to Home, as it was
 { const p = await props(); cur.push({ arrival: true, bay: p.regions.bay, companion: p.regions.companion, line: p.regions.line, plate: await page.evaluate(() => window.__st.msg) }); }
 await page.waitForTimeout(900); await frameShot("home-docked", true);
 // Cargo (the Bay, T-20261016-216; home-bay): ✓ on the Bay station opens Cargo with two sealed crates in two berths; ← is Home with the ring on the Bay station; ✓ Open them all opens both, one at a time, with input held until the last crate ends + 20 ms (the pad does nothing;
-// ✓ is Skip, ← and a room key end the current crate as a cut), the end shows what arrived, and its ✓ lands on Pods' collection with the ring on the newest pod; ← there reads Home. The holds are on the host's clock: the step waits them out.
+// ✓ is Skip, ← and a room key end the current crate as a cut), the end shows what arrived, and its ✓ lands on Pods' inventory with the ring on the newest pod's card; ← there reads Home. The holds are on the host's clock: the step waits them out.
 { stepOf("home-bay");
   let u = await hpress("down", 200); expect(u.home === "pods", "home-bay: ▼ from the room is Pods: " + JSON.stringify(u));
   for (const want of ["incubator", "companion", "bay"]) { u = await hpress("right", 200); expect(u.home === want, `home-bay: ▶ walks the console to ${want}: ` + JSON.stringify(u)); }
@@ -181,8 +181,10 @@ await page.waitForTimeout(900); await frameShot("home-docked", true);
   expect(s.accepted.includes("xw2n9c-5") && s.accepted.filter((id) => id.startsWith("dev-")).length === 1 && s.tray.length === 4, "home-bay: both crates accepted once, four pods in the wells: " + s.tray.length);
   { cur.push({ end: true, wells: p.regions.hatch.wells.map((w) => w.from), ok: l.ok }); }
   u = await hpress("confirm", 600); const newest = s.tray.at(-1);
-  expect(u.screen === "pods" && u.view === "collection" && (await page.evaluate(() => window.__st.UI.pods.cur)) === newest.id, "home-bay: ✓ on the end lands on Pods' collection with the ring on the newest pod: " + JSON.stringify(u));
-  u = await hpress("back", 500); expect(u.screen === "home", "home-bay: ← from the collection is Home: " + JSON.stringify(u));
+  expect(u.screen === "pods" && u.view === "inventory" && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === newest.id, "home-bay: ✓ on the end lands on Pods' inventory with the ring on the newest pod's card: " + JSON.stringify(u));
+  for (let k = 0; k < 4; k++) { await page.evaluate((k) => window.__st.podsAt({ view: "inventory", focus: "card." + k }), k); await page.waitForTimeout(200); }   // the ring along the four cards: each new mark goes as the ring lands on it
+  await page.waitForTimeout(300); expect((await st()).tray.every((p) => p.idd || p.seen), "home-bay: the ring has been on every card, so every pod is seen");
+  u = await hpress("back", 500); expect(u.screen === "home", "home-bay: ← from the inventory is Home: " + JSON.stringify(u));
   await page.evaluate(() => window.__st.openBay()); s = await st(); expect(s.tray.length === 4, "home-bay: an accepted crate never reopens");
   expect(!(await page.evaluate(() => window.__st.holding())), "home-bay: nothing is held after the end"); }
 // Home's steps on the face (home-pad, home-rack, home-lamp, home-rest-hold; home-dock-arrival is above): the focus the face says and the intents are
@@ -215,9 +217,9 @@ await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => 
   u = await hpress("confirm", 500); expect(u.screen === "vivarium", "home-rack: ✓ on the Vivarium bezel opens the Vivarium's whole: " + JSON.stringify(u));
   u = await hpress("back", 500); expect(u.screen === "home" && u.home === "vivarium", "home-rack: ← from the whole is Home with the ring on the Vivarium bezel: " + JSON.stringify(u));
   await page.evaluate(() => { window.__st.UI.home.f = "pods"; window.__st.goto("home"); }); await page.waitForTimeout(300);
-  u = await hpress("confirm", 400); expect(u.screen === "pods" && u.view === "collection", "home-rack: ✓ on the Pods station opens the collection: " + JSON.stringify(u));
-  const need = (await st()).tray.find((p) => !p.idd) ?? (await st()).tray[0]; expect((await page.evaluate(() => window.__st.UI.pods.cur)) === need.id, "home-rack: the ring is on the pod that most needs the player");
-  u = await hpress("back", 400); expect(u.screen === "home" && u.home === "pods", "home-rack: ← from the collection is Home: " + JSON.stringify(u)); }
+  u = await hpress("confirm", 400); expect(u.screen === "pods" && u.view === "inventory", "home-rack: ✓ on the Pods station with a bare bench opens the inventory: " + JSON.stringify(u));
+  expect(/^card\.\d+$/.test(await page.evaluate(() => window.__st.UI.pods.focus.cur)), "home-rack: the ring is on a card");
+  u = await hpress("back", 400); expect(u.screen === "home" && u.home === "pods", "home-rack: ← from the inventory is Home: " + JSON.stringify(u)); }
 { stepOf("home-lamp");
   await page.evaluate(() => { window.__st.UI.home.f = "room"; window.__st.goto("home"); }); await page.waitForTimeout(300);
   const e = (await st()).e; let u = await hpress("home", 700); expect(u.idle === true && u.screen === "home", "home-lamp: the Home key at rest rests the screen: Idle plays: " + JSON.stringify(u));
@@ -247,171 +249,141 @@ await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => 
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(trace)])) if (JSON.stringify(want[id]) !== JSON.stringify(trace[id])) fail(`journey-home.json: step ${id} differs from the golden: ${JSON.stringify(trace[id]).slice(0, 300)}`); }
   console.log(`home steps: ${Object.entries(trace).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
 await page.emulateMedia({ reducedMotion: "no-preference" }); await page.evaluate(() => { window.__st.goto("pods"); window.__st.goto("home"); }); await page.waitForTimeout(300);
-// 3. Pods: identify the new Loika pod
+// 3. Pods: the Research key with a bare bench opens the inventory; ✓ on the new Loika's card puts it on the bench and opens the reading screen on Identify (the key)
 await press("research", 200);
-{ const u = await ui(); expect(u.screen === "pods" && u.view === "collection", "Research opens the collection: " + JSON.stringify(u)); }
+{ const u = await ui(); expect(u.screen === "pods" && u.view === "inventory", "Research with a bare bench opens the inventory: " + JSON.stringify(u)); }
 const loika = s.tray.find((p) => p.id.startsWith("xw2n9c-5")), loika2 = s.tray.find((p) => p.id.startsWith("dev-"));
-await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika.id); await page.waitForTimeout(250);
+const focusNow = () => page.evaluate(() => window.__st.UI.pods.focus.cur), viewNow = () => page.evaluate(() => window.__st.UI.pods.view), atNow = () => page.evaluate(() => window.__st.UI.pods.at);
+const podsAt = (o, ms = 300) => page.evaluate((o) => window.__st.podsAt(o), o).then(() => page.waitForTimeout(ms));
+// the inventory's panel on a pod with the ring on one of its buttons (take, grow, freshen, compare, letGo): Grow it, Compare and Let it go live on the panel (the reading screen v2 carries only the read)
+const ACTS = ["take", "grow", "freshen", "compare", "letGo"];
+const toBand = async (podId, id) => { await podsAt({ view: "inventory", card: podId }); const k = ACTS.indexOf(id); expect(k >= 0 && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === podId, `the panel offers ${id}`); await podsAt({ view: "inventory", focus: "act." + k }); };
+const letGoAll = async (podId) => { await toBand(podId, "letGo"); await press("confirm", 300); if ((await page.evaluate(() => window.__st.UI.pods.ask)) === podId) await press("confirm", 400); };
+await podsAt({ view: "inventory", card: loika.id });
+expect((await focusNow()).startsWith("card.") && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === loika.id, "the ring on the Loika's card, the panel on it");
+await press("confirm", 500);
+{ const u = await ui(); expect(u.view === "room" && (await focusNow()) === "key" && (await page.evaluate(() => window.__st.ST.readingPod)) === loika.id && (await props()).state === "read", "✓ on a card puts the pod on the bench and opens the reading screen, the ring on Identify: " + JSON.stringify([u, await focusNow()])); }
 const e0 = s.e, dId0 = s.d;
-let l = await line(); expect(/Identify/.test(l.ok) && l.price === "◆ 1", "identify costs ◆ 1: " + JSON.stringify(l));
-await press("confirm", 2200);
+let l = await line(); expect(l.ok === "Identify" && l.price === "◆ 1", "identify costs ◆ 1: " + JSON.stringify(l));
+await press("confirm", 500);
 s = await st(); const pl = s.tray.find((p) => p.id === loika.id);
 expect(pl.idd === 1 && s.d === dId0 - 1 && s.e === e0, "identified for ◆ 1, no Energy");
+expect((await focusNow()) === "rail" && (await atNow()) === "rail", "Identify moves the ring onto the rail: " + (await focusNow()));
 await frameShot("page-identified");
-// Identify leaves the Library where it was; ✓ on an identified pod opens Create, whatever has been read: the line reads "Create from this pod", dimmed by what stops it; Create is built (nothing read: the founder frosted), and ← names the pod
-{ l = await line(); expect(l.ok === "Create from this pod", "✓ on an identified pod names Create: " + JSON.stringify(l)); await press("confirm", 400);
+// Grow it on an identified pod (the panel's button) opens Create whatever has been read (nothing read: the founder frosted), its way back names the pod, and ← comes back to the inventory on its card
+{ await toBand(loika.id, "grow"); l = await line(); expect(l.ok === "Grow it", "the panel's Grow it: " + JSON.stringify(l)); await press("confirm", 400);
   const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, create: window.__st.UI.create?.podId }));
-  expect(at.screen === "create" && at.create === loika.id, "✓ on an identified pod opens Create on it: " + JSON.stringify(at));
+  expect(at.screen === "create" && at.create === loika.id, "✓ Grow it opens Create on the pod: " + JSON.stringify(at));
   { const p = await props(); expect(p.state === "nothingRead" && p.frame.line.back === "Loika" && p.frame.line.ok === "Incubate", "Create opens on nothing read and its way back names the pod: " + JSON.stringify([p.state, p.frame.line])); }
-  await press("back", 400); const to = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));
-  expect(to.screen === "pods" && to.view === "overview", "← from Create is the pod's overview: " + JSON.stringify(to));
-  await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page.waitForTimeout(300); }
-// 4. read Coat (the fixture spent the free read): 1 Data; then Face: 2 Data; a second Loika's Face costs 1
-await press("up", 300);
-l = await line(); expect(/Turn to Coat/.test(l.ok) && !l.price, "on the overview a tab opens its page, free: " + JSON.stringify(l));
-await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.pods.view)) === "chapter", "✓ on a tab opens the chapter page");
-l = await line(); expect(/Read Coat/.test(l.ok) && l.price === "◆ 2", "Coat costs 2 Data (its two traits, Colour and Markings): " + JSON.stringify(l));
-const d0 = s.d;
-await press("confirm", 2400);
+  await press("back", 400); const to = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create, card: window.__st.UI.pods.panelPod }));
+  expect(to.screen === "pods" && to.view === "inventory" && to.card === loika.id, "← from Create is the inventory on the pod's card, where Grow it was pressed: " + JSON.stringify(to)); }
+// 4. read Coat (the fixture spent the free read): ✓ on the rail opens the chapter and never spends, the ring on the key; Read Coat ◆ 2 is the one press that spends; then Face ◆ 3; a second Loika's Face costs 1
+await podsAt({ view: "room", bench: loika.id, lane: 0, at: "rail", focus: "rail" });
+const d0 = (await st()).d;
+await press("confirm", 300); expect((await focusNow()) === "key" && (await atNow()) === "right" && (await st()).d === d0, "✓ on an unread lane opens the chapter, the ring on its key, nothing spent");
+l = await line(); expect(l.ok === "Read Coat" && l.price === "◆ 2", "Coat costs 2 Data (its two traits, Colour and Markings): " + JSON.stringify(l));
+await press("confirm", 200); expect(!!(await page.evaluate(() => window.__st.UI.pods.reading)) || (await focusNow()) === "plate.0", "the read runs (800 ms, any key cuts it)");
+await page.waitForTimeout(900);
 s = await st(); expect(s.tray.find((p) => p.id === loika.id).read.includes("coat") && s.d === d0 - 2, "Coat read for 2 Data");
 expect(s.tray.find((p) => p.id === loika.id).first !== undefined, "the first-shown looks are saved on the pod at read time");
-await press("right", 300);
-l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 2", "Face costs 2 Data: " + JSON.stringify(l));
-await press("confirm", 2400);
-s = await st(); expect(s.d === d0 - 4, "Face read for 2 Data");
+expect((await focusNow()) === "plate.0" && !(await page.evaluate(() => window.__st.UI.pods.reading)), "the read ends with the ring on the first plate");
+await podsAt({ view: "room", bench: loika.id, lane: 1, at: "rail", focus: "rail" }); await press("confirm", 300);
+l = await line(); expect(l.ok === "Read Face" && l.price === "◆ 3", "Face costs 3 Data (Crown, Ears, Eyes): " + JSON.stringify(l));
+await press("confirm", 900);
+s = await st(); expect(s.d === d0 - 5, "Face read for 3 Data");
+await podsAt({ view: "room", bench: loika.id, lane: 1, at: "right", plate: 0, focus: "plate.0" });
 await frameShot("page-read");
 // the art layer is on the palette exactly (pass 2 of the face's test mode); the type is the face's own
 { const r = await page.evaluate(() => window.__st.snapshot()); expect(r.pass1 === 0 && r.pass2 === 0, "chrome and art read 0 off-palette pixels: " + JSON.stringify([r.pass1, r.pass2])); }
-// the drawn stamp decodes to the pod's genome
+// the detail: ✓ on a read plate opens it, ← comes back with the ring on its plate
+await press("confirm", 300); expect((await atNow()) === "detail", "✓ on a plate opens the detail"); await frameShot("pods-trait"); await press("back", 300); expect((await atNow()) === "right" && (await focusNow()) === "plate.0", "← closes the detail, the ring on its plate");
+// the stamp the pod carries decodes to the pod's genome
 const img = await page.evaluate((id) => { const r = window.__st.stampRGBA(id, 200); return { width: r.width, height: r.height, data: Array.from(r.data) }; }, loika.id);
 const sg = await page.evaluate((id) => window.__st.stampGenome(id), loika.id);
 const dec = decode({ width: img.width, height: img.height, data: new Uint8ClampedArray(img.data) });
 expect(dec.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, dec.stamps[0].genome), "the drawn stamp decodes to the genome");
 expect(dec.stamps.length === 1 && dec.stamps[0].genome.read.join() === "Coat,Face", "the stamp's mask: Coat and Face read");
-await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page.waitForTimeout(400);   // the stamp is on the overview
-// and the stamp as the face shows it on its 120 label, read back from the frame's pixels, decodes too
-{ const cap = decodePNG(Buffer.from((await page.evaluate(() => window.__st.capture())).split(",")[1], "base64")), L = await page.evaluate(() => window.__st.specs().pods.regions.overview.stamp.rect), data = new Uint8ClampedArray(L[2] * L[3] * 4);
-  for (let y = 0; y < L[3]; y++) for (let x = 0; x < L[2]; x++) for (let k = 0; k < 4; k++) data[(y * L[2] + x) * 4 + k] = cap.data[((L[1] + y) * 1024 + L[0] + x) * 4 + k];
-  const onScreen = decode({ width: L[2], height: L[3], data });
-  expect(onScreen.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, onScreen.stamps[0].genome), "the stamp on its 120 label, as the face drew it, decodes to the genome"); }
-// the second Loika: identify (◆ 1), its Face costs 1 (half of two, rounded up)
-await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id); await page.waitForTimeout(300);
-await press("confirm", 2200);
-await page.evaluate((id) => window.__st.podsGo(id, "rail.1"), loika2.id); await page.waitForTimeout(300);   // to its Face on the page
-l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 1", "a second Loika's Face costs 1: the lower number, no word, on the bottom line: " + JSON.stringify(l));
-await press("confirm", 2400);
-// 5. Compare: from the second Loika's pod, → to its kin, ✓
+// the second Loika: identify (◆ 1), its Face costs 2 (half of three, rounded up)
+await podsAt({ view: "room", bench: loika2.id, focus: "key" }); await press("confirm", 500);
+await podsAt({ view: "room", bench: loika2.id, lane: 1, at: "rail", focus: "rail" }); await press("confirm", 300);
+l = await line(); expect(l.ok === "Read Face" && l.price === "◆ 2", "a second Loika's Face costs 2: " + JSON.stringify(l));
+await press("confirm", 900);
+// 5. Compare: from the second Loika's card, the panel's Compare, ✓; ← lands back on the card's Compare
 s = await st();
-await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika2.id); await page.waitForTimeout(300); await press("right", 300); await press("right", 300);   // the pod's overview: → to its figure, → to its kin
+await toBand(loika2.id, "compare");
 l = await line(); expect(l.ok === "Compare", "compare offered on another Loika pod: " + JSON.stringify(l));
 await press("confirm", 400); await frameShot("page-compare");
-l = await line(); expect(l.back === "Loika", "Compare's way back names the pod: " + JSON.stringify(l));
-expect(/Two Loika pods/.test(l.subject), "compare open: " + JSON.stringify(l));
+l = await line(); expect(l.back === "Pods", "Compare's way back is the inventory: " + JSON.stringify(l));
+expect((["They differ here", "No read trait differs", "Nothing read on both yet"].includes(l.subject) || /^They differ in \S/.test(l.subject || "")) && !l.need, "compare open: the line is one of the four cases, in the subject slot (\"Two Loika pods\" retired, UI/UX 2026-10-30): " + JSON.stringify(l));
 await press("back", 300);
-{ const f0 = await page.evaluate(() => window.__st.UI.pods.focus.cur); expect(/^kin\.\d+$/.test(f0), "← from Compare lands on the kin that opened it: " + f0); }
-// P. Pods on the face: the pod by its size class, the rail as the species has chapters, the page by trait count, the focus graph through the keys, the holds of Identify and a read, Compare, the hatch armed, the empty rack
-const focusNow = () => page.evaluate(() => window.__st.UI.pods.focus.cur);
-// Home's rack is not built: the collection is opened by the Research key, and ← goes up to Home
-await press("research", 300);
-{ const u = await ui(); expect(u.screen === "pods" && u.view === "collection", "Research opens the collection: " + JSON.stringify(u));
-  await press("back", 300); expect((await page.evaluate(() => window.__st.UI.screen)) === "home", "← from the collection is Home"); await press("research", 300); }
+expect((await viewNow()) === "inventory" && !(await page.evaluate(() => window.__st.UI.pods.cmp)), "← from Compare lands back on the inventory: " + (await focusNow()));
+// P. Pods on the face: the inventory's sorts, the tray, Find, letting go (paying nothing, asking once for the only pod of its species), a sealed chapter, the empty tray
+await podsAt({ view: "room", bench: loika2.id, at: "rail", focus: "rail" });
+await press("research", 300); expect((await viewNow()) === "inventory", "the Research key on the reading screen turns to the inventory");
+await press("back", 300); expect((await page.evaluate(() => window.__st.UI.screen)) === "home", "← from the inventory is Home"); await press("research", 300); expect((await viewNow()) === "room", "the Research key with a pod on the bench opens the reading screen");
 await page.evaluate(() => { window.__st.seedCrate("S02", 1, 515); window.__st.seedCrate("S09", 1, 909); window.__st.openBay(); }); await page.waitForTimeout(300);
-s = await st(); expect(s.tray.length === 6, "six pods in the wells: " + s.tray.length);
-const untuva = s.tray.find((p) => p.species === "S02"), coatSix = s.tray.find((p) => p.species === "S09"), tuikisPod = s.tray.find((p) => p.species === "S03");
-await page.evaluate((id) => { window.__st.podsGo(id, "pod", undefined, 0); }, untuva.id);
-await page.waitForTimeout(500);
-l = await line(); expect(l.ok === "Identify" && l.price === "◆ 1", "an unidentified pod offers Identify: " + JSON.stringify(l));
-await frameShot("pods-unidentified");
-// Identify holds input for its seal: a key pressed meanwhile is consumed; the ring stays on the pod
-await press("confirm", 500); expect(await page.evaluate(() => window.__st.holding()), "Identify holds input"); await frameShot("pods-identifying");
-await page.evaluate(() => window.__st.press("left")); await page.waitForTimeout(100); expect((await focusNow()) === "pod", "a key during the seal is consumed");
-await page.waitForTimeout(2000);
-s = await st(); expect(s.tray.find((p) => p.id === untuva.id).idd === 1, "the Untuva is identified");
-// the focus graph through the keys on the overview: ▲ to the rail's last chapter looked at, ▶ steps the chapters, ▼ to the pod, → to the hatch (this pod has no kin), ◀ back to the pod; ← up to the collection with the ring on this pod, ✓ down again
-const walk = async (keys, want, what) => { for (const k of keys) await press(k, 100); const got = await focusNow(); expect(got === want, what + ": " + got + " not " + want); };
-const viewNow = () => page.evaluate(() => window.__st.UI.pods.view);
-await walk(["up"], "rail.0", "▲ from the pod to the rail's last chapter looked at");
-await walk(["right", "right"], "rail.2", "▶ steps the chapters"); await walk(["down"], "pod", "▼ from the rail to the pod"); await walk(["up"], "rail.2", "▲ again: the last chapter looked at"); await walk(["down"], "pod", "▼ back to the pod");
-await walk(["right"], "figure", "▶ from the identified pod to its figure"); l = await line(); expect(l.ok === "Open the guide" && l.subject === "Every Untuva" && !l.price, "the figure: ✓ Open the guide, every Untuva, free: " + JSON.stringify(l));
-{ const ring = await page.evaluate(() => window.__st.check().log.regions.find((q) => q.id === "focus")?.rect ?? null); expect(ring && ring[1] + ring[3] <= 404, "the figure's footprint ring ends no lower than y 404, above the caption's text (UI/UX): " + JSON.stringify(ring)); console.log("# pods figure ring " + JSON.stringify(ring)); }
-await walk(["right"], "hatch", "▶ from the figure to the hatch when the pod has no kin"); await walk(["left"], "figure", "◀ from the hatch to the figure"); await walk(["left"], "pod", "◀ from the figure to the pod");
-// "Open the guide" on the figure: the Library's Level 2 of the pod's species; ← there is Level 1 with the ring on it; the Research key back to the pod
-await walk(["right"], "figure", "▶ to the figure again"); await press("confirm", 400);
-{ const g = await page.evaluate(() => ({ screen: window.__st.UI.screen, readout: window.__st.props?.frame?.top?.readout?.text, back: window.__st.props?.frame?.line?.back })); expect(g.screen === "library.species" && g.readout === "Untuva" && g.back === "Library", "✓ on the figure opens Level 2 of the Untuva: " + JSON.stringify(g)); }
-await press("back", 400); { const g = await page.evaluate(() => ({ screen: window.__st.UI.screen, cur: window.__st.props?.focus?.cur })); expect(g.screen === "library" && g.cur === "cell.S02", "← from the guide's Level 2 is Level 1 on the Untuva: " + JSON.stringify(g)); }
-await press("research", 300); await page.evaluate((id) => window.__st.podsGo(id, "pod"), untuva.id); await page.waitForTimeout(300);
-const idx = s.tray.findIndex((p) => p.id === untuva.id);
-await walk(["back"], "place." + idx, "← up to the collection, the ring on this pod"); expect((await viewNow()) === "collection", "← from the overview is the collection");
-await frameShot("pods-collection");
-await walk(["confirm"], "pod", "✓ on a place opens its overview"); expect((await viewNow()) === "overview", "the overview");
-// a sealed chapter (the Untuva's Character): no ✓ cap, the subject "Character is sealed", the slats on its page
-await page.evaluate((id) => { window.__st.skipRead(id); window.__st.podsGo(id, "rail.3"); }, untuva.id); await page.waitForTimeout(500);
-l = await line(); expect(!l.ok && l.subject === "Character is sealed", "a sealed chapter has no ✓ cap: " + JSON.stringify(l)); await frameShot("pods-sealed");
-// the Tuikis: eight chapters; the Coat has four traits
-await page.evaluate((id) => { window.__st.skipRead(id); window.__st.podsGo(id, "rail.0"); }, tuikisPod.id); await page.waitForTimeout(500); await frameShot("pods-eight-chapters");
-// the Large pod with six Coat traits, read whole by the developer
-await page.evaluate((id) => { window.__st.skipRead(id); window.__st.podsGo(id, "rail.0"); }, coatSix.id); await page.waitForTimeout(500); await frameShot("pods-six-traits");
-for (const [i, name] of [[1, "pods-belatz-face"], [3, "pods-belatz-legs-tail"]]) { await page.evaluate(([id, n]) => window.__st.podsGo(id, "rail." + n), [coatSix.id, i]); await page.waitForTimeout(500); await frameShot(name); }   // the Belatz pages with the studio's crops
-// the rack is full: a new crate's pod waits for a well
-await page.evaluate(() => window.__st.seedCrate("S01", 1, 31337)); await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(300);
-s = await st(); expect(s.waiting.length === 1, "the rack is full: the new pod waits for a well");
-await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, coatSix.id); await page.waitForTimeout(400);
-// the hatch: ✓ opens the Return panel (the ring on Return), ← and Keep spend nothing, ✓ on Return returns
-l = await line(); expect(l.ok === "Return to the wild" && l.price === "❀ +1", "the hatch offers the return: " + JSON.stringify(l));
-await press("confirm", 300); l = await line(); expect(l.ok === "Return it" && !!(await props()).overlay, "the Return panel opens with the ring on Return: " + JSON.stringify(l)); await frameShot("pods-panel-release");
-await press("back", 300); l = await line(); expect(l.ok === "Return to the wild" && !(await props()).overlay, "← closes the panel, nothing spent: " + JSON.stringify(l)); await page.evaluate((id) => window.__st.podsGo(id, "hatch"), coatSix.id); await page.waitForTimeout(300);
-const sBefore = (await st()).s; await press("confirm", 200); await press("right", 200); await press("confirm", 300); expect((await st()).s === sBefore && (await st()).tray.some((p) => p.id === coatSix.id), "Keep spends nothing"); await page.evaluate((id) => window.__st.podsGo(id, "hatch"), coatSix.id); await page.waitForTimeout(300); await press("confirm", 200); await press("left", 200); await press("confirm", 400); s = await st();
-expect(s.s === sBefore + 1 && !s.tray.some((p) => p.id === coatSix.id), "the second ✓ returned the pod for +1 Essence: " + JSON.stringify({ s: s.s, sBefore, still: s.tray.some((p) => p.id === coatSix.id), line: await line(), view: await viewNow(), f: await focusNow() }));
-// the same for the Untuva, which leaves the rack as it was; the waiting pod takes the well
-await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, untuva.id); await page.waitForTimeout(400); await press("confirm", 200); await press("left", 200); await press("confirm", 400);
-s = await st(); expect(!s.tray.some((p) => p.id === untuva.id), "the Untuva returned");
-const extra = s.tray.find((p) => p.species === "S01" && !p.idd && p.id !== loika.id && p.id !== loika2.id);
-expect(!!extra, "the pod that waited for a well entered the rack when one freed"); {   // not skipped when absent: the read-holds-input assertion must run
-  await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, extra.id); await page.waitForTimeout(300); await press("confirm", 2200); await page.evaluate((id) => { window.__st.podsGo(id, "rail.0"); }, extra.id); await page.waitForTimeout(400); await press("confirm", 300);
-  expect(await page.evaluate(() => window.__st.holding()), "a read holds input"); await page.waitForTimeout(2200);
-  await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, extra.id); await page.waitForTimeout(400); await press("confirm", 200); await press("left", 200); await press("confirm", 400); }
-s = await st(); expect(s.tray.length === 4, "the rack is back to its four pods: " + s.tray.length);
-// P2. Compare with one, two, four and six traits; then the empty rack. Each pair is a fresh crate of two pods, read whole by the developer, compared, and given back through the hatch.
+s = await st(); expect(s.tray.length === 6 && s.waiting.length === 0, "no rack: the new pods come home, nothing waits: " + s.tray.length);
+const untuva = s.tray.find((p) => p.species === "S02"), coatSix = s.tray.find((p) => p.species === "S09");
+await podsAt({ view: "inventory", focus: "card.0", sort: "use" }); await frameShot("pods-inventory");
+await podsAt({ view: "inventory", focus: "sort" }); await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.pods.sort)) === "species" && (await focusNow()) === "sort", "✓ on Sort cycles to species, the ring stays");
+await press("right", 200); await press("confirm", 300); expect((await viewNow()) === "filter", "▶ Filter ✓ opens the tray"); await frameShot("pods-tray");
+await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.pods.chips.length)) === 1, "✓ in the tray toggles a chip");
+await press("back", 300); expect((await viewNow()) === "inventory" && (await focusNow()) === "filter", "← closes the tray in one press, the filter kept");
+await podsAt({ view: "inventory", focus: "find", chips: [], sort: "use" }); await press("confirm", 300); expect((await viewNow()) === "find", "✓ on Find opens it"); await frameShot("pods-find"); await press("back", 300); expect((await viewNow()) === "inventory" && (await focusNow()) === "find", "← closes Find with nothing changed");
+// a sealed pod on the reading screen; a sealed chapter's lane (the Untuva's Character) gives no ✓: the ring stays on the rail, the right frame says it opens with a find
+await podsAt({ view: "room", bench: untuva.id, focus: "key" }); await frameShot("pods-unidentified"); await press("confirm", 500); s = await st(); expect(s.tray.find((p) => p.id === untuva.id).idd === 1, "the Untuva is identified");
+await page.evaluate((id) => window.__st.skipRead(id), untuva.id); await podsAt({ view: "room", bench: untuva.id, lane: 3, at: "rail", focus: "rail" });
+await press("confirm", 300); { const r = (await props()).regions.read; expect((await focusNow()) === "rail" && (await atNow()) === "rail" && r.right?.form === "sealed" && /opens with a find/i.test(r.right.plates?.[0]?.kind ?? ""), "a sealed lane stays and its frame says it opens with a find: " + JSON.stringify([await focusNow(), r.right?.form, r.right?.plates?.[0]?.kind])); } await frameShot("pods-sealed");
+await page.evaluate((id) => window.__st.skipRead(id), coatSix.id); await podsAt({ view: "room", bench: coatSix.id, lane: 0, at: "right", plate: 0, focus: "plate.0" }); await frameShot("pods-six-traits");
+// letting go from the panel: the only Belatz asks once on the button's own face, a second ✓ lets it go and pays nothing
+{ const sBefore = (await st()).s, eBefore = (await st()).e;
+  await toBand(coatSix.id, "letGo");
+  await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.pods.ask)) === coatSix.id && (await st()).tray.some((p) => p.id === coatSix.id), "the only Belatz asks once"); await frameShot("pods-let-go-asks");
+  await press("confirm", 400); s = await st(); expect(s.s === sBefore && s.e === eBefore && !s.tray.some((p) => p.id === coatSix.id), "the second ✓ let the pod go, paying nothing: " + JSON.stringify({ s: s.s, sBefore })); }
+// and the pod on the bench: let go from its card, the bench is bare
+await letGoAll(untuva.id);
+s = await st(); expect(!s.tray.some((p) => p.id === untuva.id) && s.readingPod !== untuva.id, "the Untuva let go: it leaves the bench");
+expect(s.tray.length === 4, "four pods: " + s.tray.length);
+// P2. Compare with one, two, four and six traits; each pair a fresh crate of two pods, read whole by the developer, compared from the inventory, and let go after
 const compareShot = async (species, seed, ci, name, grid) => {
   await page.evaluate(([sp, sd]) => { window.__st.seedCrate(sp, 2, sd); window.__st.openBay(); }, [species, seed]); await page.waitForTimeout(300);
   const pair = (await st()).tray.filter((p) => p.species === species && !p.idd);
-  expect(pair.length === 2, `two ${species} pods in the wells: ` + pair.length);
+  expect(pair.length === 2, `two ${species} pods: ` + pair.length);
   for (const p of pair) await page.evaluate((id) => window.__st.skipRead(id), p.id);
-  await page.evaluate(([a, b, c]) => { const u = window.__st.UI.pods; u.cur = a; u.view = "overview"; u.cmp = { a, b, ci: c }; }, [pair[0].id, pair[1].id, ci]); await page.waitForTimeout(500);
-  const cl = await line(), cells = await page.evaluate(() => window.__st.props.regions.pageA?.cells?.length ?? -1);
-  expect(cells === grid, `${name}: ${grid} traits on Compare's page: ${cells}`);
-  expect(["They differ here", "They differ in another chapter", "No read trait differs"].includes(cl.need), `${name}: Compare's need line is one of the spec's strings: ` + JSON.stringify(cl));
-  expect(!/\d/.test(cl.subject || "") && !/well \d/.test(cl.subject || ""), `${name}: no digits in the line`);
+  await toBand(pair[0].id, "compare"); await press("confirm", 300);
+  for (let i = 0; i < ci; i++) await press("down", 150);
+  const cl = await line(), cells = await page.evaluate(() => window.__st.props.regions.compare?.sides?.[0]?.rows?.length ?? -1);
+  expect(cells === grid, `${name}: ${grid} traits on Compare's papers: ${cells}`);
+  expect(["They differ here", "No read trait differs", "Nothing read on both yet"].includes(cl.subject) || /^They differ in \S/.test(cl.subject || ""), `${name}: Compare's line (the subject slot) is one of the four cases (UI/UX 2026-10-30): ` + JSON.stringify(cl));
+  expect(!cl.need, `${name}: Compare's line is not a need`);
+  expect(!/\d/.test(cl.subject || ""), `${name}: no digits in the line`);
   const differs = await page.evaluate(([a, b]) => window.__st.compareDiff(a, b).length, [pair[0].id, pair[1].id]);
   await frameShot(name);
-  await page.evaluate(() => { window.__st.UI.pods.cmp = null; });
-  for (const p of pair) { await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, p.id); await page.waitForTimeout(400); await press("confirm", 200); await press("left", 200); await press("confirm", 400); }
-  expect(!(await st()).tray.some((p) => pair.some((q) => q.id === p.id)), `${name}: the pair went back through the hatch`);
+  await press("back", 300);
+  for (const p of pair) await letGoAll(p.id);
+  expect(!(await st()).tray.some((p) => pair.some((q) => q.id === p.id)), `${name}: the pair was let go`);
   return differs;
 };
 const needs = [await compareShot("S04", 4101, 0, "pods-compare-one", 1), await compareShot("S09", 4102, 3, "pods-compare-two", 2), await compareShot("S03", 4103, 0, "pods-compare-four", 4), await compareShot("S09", 4104, 0, "pods-compare-six", 6)];
 expect(needs.some((n) => n > 0), "at least one Compare pair has a trait that differs (the data; the build marks none): " + needs.join(" | "));
-{   // the empty rack (docked, the bay empty): the cradle under the beam and nothing else; the wells are put back after
-  await page.evaluate(() => { const g = window.__st.ST; window.__keep = { tray: g.tray, waiting: g.waiting }; g.tray = []; g.waiting = []; window.__st.UI.pods.cur = null; window.__st.UI.pods.cmp = null; }); await page.waitForTimeout(500);
-  const el = await line(); expect(el.subject === "The case is empty" && el.need === "Take the Companion exploring", "the empty case's lines: " + JSON.stringify(el));
-  await frameShot("pods-empty-rack");
-  await page.evaluate(() => window.__st.seedCrate("S04", 1, 9090)); await page.waitForTimeout(400);   // docked, a crate waiting in the bay
-  const crateLine = await line(); expect(crateLine.need === "Open the crates first", "the empty rack with a crate in the bay: " + JSON.stringify(crateLine));
-  await page.evaluate(() => { window.__st.ST.devBay.length = 0; });   // the crate is taken away again, unopened
-  await page.evaluate(() => { const g = window.__st.ST; g.tray = window.__keep.tray; g.waiting = window.__keep.waiting; window.__st.UI.pods.cur = null; }); await page.waitForTimeout(300);
+{   // the empty tray: the inventory says so and Sort says why it does nothing; the pods are put back after
+  await page.evaluate(() => { const g = window.__st.ST; window.__keep = { tray: g.tray, bench: g.readingPod }; g.tray = []; g.readingPod = null; }); await podsAt({ view: "inventory", focus: "sort" }, 500);
+  const el = await line(); expect(el.subject === "No pods yet" && !el.need, "the empty tray's line (not a need: the quiet middle slot, review round 2 G6): " + JSON.stringify(el));
+  await frameShot("pods-empty");
+  await page.evaluate(() => { const g = window.__st.ST; g.tray = window.__keep.tray; g.readingPod = window.__keep.bench; }); await podsAt({ view: "inventory", focus: "card.0" });
 }
 s = await st();
-// 6. return the Tuikis to the wild: +1 Essence, the Companion's record
+// 6. let the Tuikis go: no Essence, the Companion's record
 const tuikis = s.tray.find((p) => p.species === "S03");
-await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, tuikis.id); await page.waitForTimeout(400);
 const s0 = s.s;
-await press("confirm", 200); await press("left", 200); await press("confirm", 400);
-s = await st(); expect(s.s === s0 + 1 && !s.tray.some((p) => p.id === tuikis.id) && s.returned.at(-1).id === tuikis.id, "returned for +1 Essence");
-// R1. Create (slot R, journey-create.json): ✓ on the read Loika opens Create on the face; ◀ ▶ walk the read traits, ▲ ▼ roll a look (+1 Data), the line reads the price and the leaves; a room key drops the unpaid choices; ✓ Grows: the stamp prints, the
+if (tuikis) { await letGoAll(tuikis.id);
+  s = await st(); expect(s.s === s0 && !s.tray.some((p) => p.id === tuikis.id) && s.returned.at(-1).id === tuikis.id, "let go, paying nothing"); }
+else fail("no Tuikis pod to let go");
+// R1. Create (slot R, journey-create.json): Grow it on the read Loika opens Create on the face; ◀ ▶ walk the read traits, ▲ ▼ roll a look (+1 Data), the line reads the price and the leaves; a room key drops the unpaid choices; ✓ Grows: the stamp prints, the
 // code appears, the pod travels, input held 1080 ms, then the Incubator (a jump: ← there reads Home)
 await press("research", 300);
-await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika.id); await page.waitForTimeout(400);
-l = await line(); expect(l.ok === "Create from this pod", "a read pod offers Create: " + JSON.stringify(l));
+await toBand(loika.id, "grow");
+l = await line(); expect(l.ok === "Grow it", "a read pod offers Grow it: " + JSON.stringify(l));
 const cui = () => page.evaluate(() => { const c = window.__st.UI.create; return c ? { f: c.f, choices: Object.keys(c.choices), grown: !!c.grown } : null; });
 const hpressC = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(); cur.push({ key: k, said: m, screen: u.screen, create: await cui(), ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); return u; };
 stepOf("create-walk");
@@ -429,9 +401,10 @@ await hpressC("down", 300);
   expect(p.regions.roll.chosen === 1 && p.regions.traitLine.changed && p.frame.line.price === "⚡ 2 ❀ 4 ◆ 1 ⧗ 21", "▼ rolls the look: the tag, the price with ◆ 1 and the wait ⧗ 21: " + JSON.stringify([p.regions.roll.chosen, p.regions.traitLine, p.frame.line.price])); }
 { const crPod = await page.evaluate(() => window.__st.UI.create.podId);   // a room key on Create forgets the unpaid choices; coming back starts fresh
   expect((await page.evaluate(() => Object.keys(window.__st.UI.create.choices).length)) === 1, "a choice is made and unpaid");
+  await page.evaluate((id) => { window.__st.ST.readingPod = id; }, crPod);   // the pod being grown is on the bench, so the Research key's first face is the reading screen
   await hpressC("research", 400); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));
-  expect(at.screen === "pods" && at.view === "collection" && at.create === null, "a room key on Create drops the unpaid choices and opens the room's top: " + JSON.stringify(at));
-  await page.evaluate((id) => window.__st.podsGo(id, "pod"), crPod); await page.waitForTimeout(400); await hpressC("confirm", 500);
+  expect(at.screen === "pods" && at.view === "room" && at.create === null, "a room key on Create drops the unpaid choices and opens the reading screen on the bench's pod: " + JSON.stringify(at));
+  await toBand(crPod, "grow"); await hpressC("confirm", 500);
   expect((await page.evaluate(() => window.__st.UI.screen === "create" && Object.keys(window.__st.UI.create.choices).length === 0)), "back on Create it starts fresh");
   for (let i = 0; i < rollIndex; i++) await hpressC("right", 60);
   await hpressC("down", 300); }
@@ -513,35 +486,35 @@ const nint = async (target, verb = "confirm", ms = 150) => { await said(); await
   { const p = await props(); expect(!p.overlay && p.regions.nameTag.text === "Moss" && p.focus.cur === "name", "vivarium-namer: the name stands (Moss, as the rest of the journey knows it), the ring on the name: " + JSON.stringify([!!p.overlay, p.regions.nameTag.text, p.focus.cur])); }
   await toHome( 300); }
 await toHome( 400);
-// the empty Incubator offers ✓ Choose a pod (a pod in the rack and a place free): a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod
+// the empty Incubator offers ✓ Choose a pod (a pod in the rack and a place free): a jump to Pods' inventory sorted by use with the ring on the first card
 stepOf("incubator-empty");
 await page.evaluate(() => { window.__st.seedPod("S01", 4); window.__st.goto("incubator"); }); await page.waitForTimeout(600);
 { const p = await props(), st2 = await st(); cur.push({ state: p.state, ok: p.frame.line.ok ?? null, subject: p.frame.line.subject ?? null });
   expect(p.state === "empty" && p.frame.line.ok === "Choose a pod" && p.frame.line.subject === "Ready for a new bud" && p.frame.line.back === "Home" && st2.tray.length >= 1, "the empty Incubator offers ✓ Choose a pod: " + JSON.stringify([p.state, p.frame.line])); await frameShot("page-incubator-empty", true); }
 await hpressI("confirm", 600);
-{ const at = await page.evaluate(() => { const u = window.__st.UI, g = window.__st.ST, i = g.tray.findIndex((q) => q.idd), q = g.tray[i >= 0 ? i : 0]; return { screen: u.screen, view: u.pods.view, cur: u.pods.cur, want: q.id }; }); cur.push(at);
-  expect(at.screen === "pods" && at.view === "collection" && at.cur === at.want, "✓ Choose a pod jumps to Pods' collection on the first identified pod, else the first: " + JSON.stringify(at)); }
+{ const at = await page.evaluate(() => { const u = window.__st.UI; return { screen: u.screen, view: u.pods.view, sort: u.pods.sort, focus: u.pods.focus.cur }; }); cur.push(at);
+  expect(at.screen === "pods" && at.view === "inventory" && at.sort === "use" && at.focus === "card.0", "✓ Choose a pod jumps to Pods' inventory sorted by use, the ring on the first card: " + JSON.stringify(at)); }
 await hpressI("back", 400);
-{ const u = await ui(); cur.push({ back: u.screen }); expect(u.screen === "home", "← on Pods' collection (a jump from the Incubator) goes Home: " + u.screen); }
+{ const u = await ui(); cur.push({ back: u.screen }); expect(u.screen === "home", "← on Pods' inventory (a jump from the Incubator) goes Home: " + u.screen); }
 // The Incubator's journey on the face, held to prototypes/face/golden/journey-incubator.json (gate check 5): the keys and what the face said, the screen and the choices after each
 { const file = path.resolve(here, "../../face/golden/journey-incubator.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("incubator-"))), json = JSON.stringify({ _note: "The Incubator's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-incubator.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
   console.log(`incubator steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
-// fill the room: Grow is refused before payment; return a mibi frees a place for +2 Essence
+// fill the room: Grow is refused before payment; return a mibi frees a place (no Essence)
 await page.evaluate(() => window.__st.seedAdults("S01", 77, 6));
 s = await st(); expect(s.mibis.filter((m) => !m.released).length === 8, "eight places taken");
 { const e2 = s.e, r = await page.evaluate((id) => { const p = window.__st.podById(id); return { msg: window.__st.grow(id, {}).msg ?? "", paid: window.__st.ST.bud }; }, loika2.id);
   expect(/the Vivarium is full/.test(r.msg) && !r.paid && (await st()).e === e2, "a full vivarium refuses before payment, nothing paid, nothing grown: " + JSON.stringify(r)); }
 const adult = s.mibis.find((m) => m.name !== "Moss" && m.name !== "Dot");
 const s2 = (await st()).s; await page.evaluate((id) => window.__st.returnMibi(id), adult.id);   // the rule, to free a place for what follows; the gate by keys is vivarium-card
-s = await st(); expect(s.s === s2 + 2 && s.mibis.find((m) => m.id === adult.id).released && s.releases.at(-1).id === adult.id, "returned for +2 Essence and released");
+s = await st(); expect(s.s === s2 && s.mibis.find((m) => m.id === adult.id).released && s.releases.at(-1).id === adult.id, "returned, paying no Essence, and released");
 await toHome( 200);
 // 13. Grow with the service down: it works as it always does and paints nothing, so nothing waits and nothing is queued
 caddyUp = false;
 await page.evaluate(() => window.__st.addMaterials(10, 10, 10));
 await press("research", 300);
-await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id); await page.waitForTimeout(300);
+await toBand(loika2.id, "grow");
 await press("confirm", 400); await press("confirm", 400); await press("confirm", 2900);   // Create, the Incubate | Keep shaping panel, its ✓ Incubate: the grow event (1080 ms, the jump at 900), then the Incubator's incubate moment holds input to 1380 ms
 s = await st(); expect(s.bud && s.outbox.length === 0, "Grow paints nothing: the outbox stays empty");
 await page.evaluate(() => window.__st.skipBud("ready")); await intent({ screen: "incubator", target: "", verb: "confirm" }, 300); await page.waitForTimeout(3200);
@@ -551,7 +524,7 @@ s = await st(); const adults = await adultIds(), adult2 = s.mibis.find((m) => !m
 await page.evaluate((id) => window.__st.returnMibi(id), adult2.id);   // the rule, to free a place
 s = await st(); expect(s.mibis.find((m) => m.id === adult2.id).released, "a second adult returned to free a place");
 const dot = s.mibis.find((m) => m.name === "Dot"), adult3 = s.mibis.find((m) => !m.released && m.id !== dot.id && adults.includes(m.id));
-const carriedBefore = await page.evaluate((id) => { const S = window.__st, was = JSON.stringify([S.SV.carried ?? null, S.SV.with ?? null]); S.SV.carried = (S.SV.carried ?? []).filter((x) => x !== id); if (S.SV.with === id) S.SV.with = null; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); return was; }, dot.id);   // R4b: no breeding while a mibi is carried, so Dot is brought home first (the Companion's part is put back before the save is read back)
+const carriedBefore = await page.evaluate((id) => { const S = window.__st, was = JSON.stringify([S.SV.carried ?? null, S.SV.with ?? null]); S.SV.carried = (S.SV.carried ?? []).filter((x) => x !== id); if (S.SV.with === id) S.SV.with = null; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); return was; }, dot.id);   // R4b: no breeding while a mibi is carried, so Dot is brought home first (the Companion's part is put back before the save is read back)
 await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; window.__st.goto("habitat"); }, dot.id); await page.waitForTimeout(300);
 await intent({ screen: "habitat", target: "cross", verb: "confirm" }, 300);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "habitat", "✓ on the shut Cross module stays up close (doorOpen(cross) false until slot 7)");
@@ -560,19 +533,19 @@ await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitF
 expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "the Cross screen, reached through the test hook (openCross), not a press (not built)");
 await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300);
 const fc = await page.evaluate(([a, b]) => window.__st.forecastOf(a, b), [dot.id, adult3.id]);
-expect(fc.traits.filter((t) => t.kind === "switch").length === 3 && fc.traits.filter((t) => t.kind === "blend").length === 3, "four seeds for colour, markings and crown, a range for eye rings, drive and efficiency");
+expect(fc.traits.filter((t) => t.kind === "switch").length === 3 && fc.traits.filter((t) => t.kind === "blend").length === 4, "four seeds for colour, markings and crown, a range for eye rings, ears, drive and efficiency");
 expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length === 4), "four seeds each");
 { await press("research", 300); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, cross: window.__st.UI.cross }));
   expect(at.screen === "pods" && at.cross === null, "a room key on Cross drops the unpaid choices: " + JSON.stringify(at));
   await page.evaluate((id) => { window.__st.UI.hab.id = id; }, dot.id); await press("habitat", 300);
-  expect((await ui()).screen === "vivarium" && (await page.evaluate(() => window.__st.props?.focus?.cur)) === "resident." + dot.id, "the Vivarium key opens the whole with the ring on the mibi last seen up close, its resident");
+  expect((await ui()).screen === "vivarium" && (await page.evaluate(() => window.__st.props?.focus?.cur)) === "cell." + dot.id, "the Vivarium key opens the Wall with the ring on the mibi last seen up close, its portrait");
   await page.evaluate(() => window.__st.goto("habitat")); await page.waitForTimeout(300);
   await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitForTimeout(300); await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300); }
 { const e3 = (await st()).e, s3 = (await st()).s, r = await page.evaluate(([a, b]) => window.__st.doCross(a, b), [dot.id, adult3.id]);
   await page.waitForTimeout(400); s = await st();
   expect(s.bud && s.bud.kind === "cross" && s.bud.parents.length === 2 && s.bud.parents[0].id === dot.id, "the child grows in the bud with its real parents");
   expect(s.e === e3 - 2 && s.s === s3 - 4, "paid 2 ⚡ 4 ❀"); }
-await page.evaluate((was) => { const S = window.__st, [c, w] = JSON.parse(was); if (c === null) delete S.SV.carried; else S.SV.carried = c; if (w === null) delete S.SV.with; else S.SV.with = w; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); }, carriedBefore);   // the Companion's part as it was (see M4): Dot goes with the Companion again
+await page.evaluate((was) => { const S = window.__st, [c, w] = JSON.parse(was); if (c === null) delete S.SV.carried; else S.SV.carried = c; if (w === null) delete S.SV.with; else S.SV.with = w; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); }, carriedBefore);   // the Companion's part as it was (see M4): Dot goes with the Companion again
 await page.evaluate(() => window.__st.skipBud("ready"));
 { const k = await page.evaluate(() => { const b = window.__st.ST.bud, fr = window.__st.frameOf(b.species || b.sp); return { known: fr.chapters.map((c) => c.id).filter((c) => window.__st.budKnown(c)), read: b.read || [] }; });
   expect(JSON.stringify([...k.known].sort()) === JSON.stringify([...k.read].sort()), "the cross bud's known chapters are exactly its B.read (the unread ones stay '?') before Open: " + JSON.stringify(k)); }
@@ -587,8 +560,10 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
   await page.evaluate((id) => { const U = window.__st.UI; U.hab.id = id; U.meet = null; U.viv.f = null; window.__st.goto("home"); }, child.id); await page.waitForTimeout(300);   // the child's meet ended with a first press, off this step
   const hp = async (k, ms = 250) => { await said(); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 5000 }).catch(() => {}); await press(k, ms);   // a key pressed in a hold is dropped: wait the hold out first (a slower runner holds longer)
     const m = await said(), u = await ui(), p = await props(), l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, state: p.state, ring: p.focus?.cur ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null, back: l.back ?? null }); return { u, p }; };
-  let r = await hp("habitat", 500); expect(r.u.screen === "vivarium" && r.p.focus.cur === "resident." + child.id, "vivarium-card: the Vivarium key opens the whole with the ring on the mibi last seen up close: " + JSON.stringify([r.u.screen, r.p.focus.cur]));
-  r = await hp("confirm", 700); expect(r.u.screen === "habitat" && r.p.state === "rest" && r.p.focus.cur === "resident" && r.u.habId === child.id, "vivarium-card: ✓ on its resident looks at it up close: " + JSON.stringify([r.u.screen, r.p.state, r.p.focus.cur]));
+  let r = await hp("habitat", 500); expect(r.u.screen === "vivarium" && r.p.focus.cur === "cell." + child.id, "vivarium-card: the Vivarium key opens the Wall with the ring on the mibi last seen up close: " + JSON.stringify([r.u.screen, r.p.focus.cur]));
+  r = await hp("confirm", 300);   // ✓ on a portrait opens its card on the first live plate (Look), in one press
+  expect(r.p.focus.cur === "plate.0" && r.p.regions.card.id === String(child.id) && /^Look at /.test(r.p.frame.line.ok ?? ""), "vivarium-card: ✓ to its card's Look plate: " + JSON.stringify([r.p.focus.cur, r.p.regions.card.id, r.p.frame.line.ok]));
+  r = await hp("confirm", 700); expect(r.u.screen === "habitat" && r.p.state === "rest" && r.p.focus.cur === "resident" && r.u.habId === child.id, "vivarium-card: ✓ Look looks at it up close: " + JSON.stringify([r.u.screen, r.p.state, r.p.focus.cur]));
   r = await hp("right", 200); r = await hp("right", 200); expect(r.p.focus.cur === "species" && r.p.frame.line.ok === "Open the guide" && /^Every /.test(r.p.frame.line.subject), "vivarium-card: ▶ ▶ is the species word: ✓ Open the guide, every {Species}: " + JSON.stringify([r.p.focus.cur, r.p.frame.line]));
   r = await hp("down", 200); expect(r.p.focus.cur === "family" && r.p.frame.line.ok === "See the family", "vivarium-card: ▼ from the species word is the story's origin lines: ✓ See the family: " + JSON.stringify([r.p.focus.cur, r.p.frame.line]));
   r = await hp("down", 200); for (let i = 0; i < chIndex; i++) r = await hp("right", 200);
@@ -597,7 +572,7 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
   expect(s.mibis.find((m) => m.id === child.id).read.length === child.read.length + 1 && s.d <= d3 && r.p.regions.plates.items[chIndex].state === "read", "vivarium-card: ✓ read the child's chapter, its plate turns read: " + JSON.stringify([s.d, d3, r.p.regions.plates.items[chIndex].state]));
   r = await hp("left", 200); expect(r.p.focus.cur !== "plate." + chIndex || chIndex === 0, "vivarium-card: ◀ walks back along the plates");
   // the door and the gate by keys, the ring walking on from where it is (the pad's graph: plates ▼ door ▼ cross ▶ wild ▼ tiles). The door asks for the resident to go with the Companion (the request is cleared after, the step leaves the world as it found it);
-  // the gate: on the juvenile, as on an adult, ✓ opens the Return panel and ✓ on Return returns it for +2 Essence (the young gate is gone).
+  // the gate: on the juvenile, as on an adult, ✓ opens the Return panel and ✓ on Return returns it, paying nothing (the young gate is gone).
   const toward = async (target, route) => { for (let i = 0; i < 14; i++) { const c = (await props()).focus?.cur; if (c === target) return c; const k = route(c); if (!k) break; await hp(k, 220); } return (await props()).focus?.cur; };
   const toWild = (c) => c === "wild" ? null : c === "resident" || c === "name" ? "right" : c === "species" || c === "family" ? "down" : /^plate\./.test(c) ? "down" : c === "door" ? "down" : c === "cross" || c === "portrait" ? "right" : /^tile\./.test(c) ? "up" : null;
   { const c = await toward("door", (c) => (/^plate\./.test(c) ? "down" : c === "species" || c === "family" ? "down" : c === "resident" || c === "name" ? "right" : null)); r = { p: await props() }; expect(c === "door" && /^(Take|Bring)/.test(r.p.frame.line.ok ?? ""), "vivarium-card: the pad reaches the Companion module, ✓ Take it with you: " + JSON.stringify([c, r.p.frame.line])); cur.push({ walk: "door", ring: c, ok: r.p.frame.line.ok });
@@ -606,7 +581,7 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
   { const c = await toward("wild", toWild); expect(c === "wild", "vivarium-card: the pad walks on to the Wild gate: " + c);
     const was = await st(); expect(!(await adultIds()).includes(child.id), "vivarium-card: the child is a juvenile");
     r = await hp("confirm", 500); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.return", "vivarium-card: ✓ on the Wild gate opens the Return panel on a juvenile, the ring on Return: " + JSON.stringify([r.p.overlay?.focus, r.p.frame.line])); r = await hp("left", 300); r = await hp("confirm", 800); const now = await st();
-    expect(now.s === was.s + 2 && now.mibis.find((m) => m.id === child.id).released, "vivarium-card: the Return card returns the juvenile for +2 Essence: " + JSON.stringify([now.s, was.s]));
+    expect(now.s === was.s && now.mibis.find((m) => m.id === child.id).released, "vivarium-card: the Return card returns the juvenile, paying nothing: " + JSON.stringify([now.s, was.s]));
     cur.push({ gate: "juvenile", released: true, essence: now.s - was.s }); }
   { const adultNow = await adultIds(), was = await st(), away = await sv().then((v) => [...(v.carried ?? []), ...(v.with != null ? [v.with] : [])]), adultM = was.mibis.find((m) => !m.released && !m.bonded && m.id !== child.id && adultNow.includes(m.id) && !away.includes(m.id) && !(was.carryReqs ?? []).some((x) => x.id === m.id));   // one the rules let go: not bonded, not carried, no request waiting
     expect(!!adultM, "vivarium-card: an adult is at home to return");
@@ -614,16 +589,18 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
     expect(c === tileKey, "vivarium-card: ▼ then ◀ ▶ along the strip lands on the adult's tile: " + c);
     await hp("up", 300); const w = await toward("wild", toWild); expect(w === "wild", "vivarium-card: the pad walks back to the Wild gate with the adult shown: " + w);
     r = await hp("confirm", 500); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.return", "vivarium-card: ✓ on the Wild gate opens the Return panel, the ring on Return: " + JSON.stringify([r.p.overlay?.focus, r.p.frame.line])); r = await hp("left", 300); r = await hp("confirm", 800); const now = await st();
-    expect(now.s === was.s + 2 && now.mibis.find((m) => m.id === adultM.id).released, "vivarium-card: the Return card returns the adult for +2 Essence: " + JSON.stringify([now.s, was.s]));
+    expect(now.s === was.s && now.mibis.find((m) => m.id === adultM.id).released, "vivarium-card: the Return card returns the adult, paying nothing: " + JSON.stringify([now.s, was.s]));
     cur.push({ gate: "adult", released: true, essence: now.s - was.s }); }
   await toHome( 300); }
-// the bench trickle's watch: a resident on the Vivarium for the dev timer's 5 s earns +1 Data once (after the dev panel's New bench day)
-{ stepOf("vivarium-trickle"); await page.evaluate(() => { window.__st.settings.watchMs = 5000; window.__st.settings.trickleCap = 2; window.__st.ST.bench = null; });   // a new bench day (the dev button's reset)
-  const watched = await page.evaluate(() => { const st = window.__st.ST, sv = window.__st.SV, c = sv.carried ?? (sv.with != null ? [sv.with] : []), m = st.mibis.find((x) => !x.released && !c.includes(x.id) && !(st.bench?.watched || []).includes(x.id)); window.__st.UI.hab.id = m.id; window.__st.UI.viv.f = null; window.__st.goto("home"); return m.id; });
-  await said(); await press("habitat", 500); await press("confirm", 700); { const u = await ui(), p = await props(); cur.push({ screen: u.screen, state: p.state, ring: p.focus?.cur ?? null, habId: u.habId }); expect(u.screen === "habitat" && u.habId === watched && p.state === "rest", "vivarium-trickle: the Vivarium key, then ✓ on its resident: up close on the mibi to watch: " + JSON.stringify([u.screen, u.habId, p.state])); }
+// from the room view, the card's Look plate by keys: ▼ from the ring's mibi to its card's first live plate (Look), ✓ (the card reach rule; ✓ on a mibi picks it up)
+const toLook = async () => { await press("confirm", 300); await press("confirm", 700); };   // ✓ on the portrait opens the card on Look, ✓ looks
+// the habit watch: a resident on the Vivarium for the dev timer's 5 s sees its first unseen habit and earns +1 Data
+{ stepOf("vivarium-trickle"); await page.evaluate(() => { window.__st.settings.watchMs = 5000; window.__st.ST.d = window.__st.ST.d | 0; });
+  const watched = await page.evaluate(() => { const st = window.__st.ST, sv = window.__st.SV, c = sv.carried ?? (sv.with != null ? [sv.with] : []), m = st.mibis.find((x) => !x.released && !c.includes(x.id) && (x.habits || []).length < 2); window.__st.UI.hab.id = m.id; window.__st.UI.viv.f = null; window.__st.goto("home"); return m.id; });
+  await said(); await press("habitat", 500); await toLook(); { const u = await ui(), p = await props(); cur.push({ screen: u.screen, state: p.state, ring: p.focus?.cur ?? null, habId: u.habId }); expect(u.screen === "habitat" && u.habId === watched && p.state === "rest", "vivarium-trickle: the Vivarium key, then ✓ Look on its card: up close on the mibi to watch: " + JSON.stringify([u.screen, u.habId, p.state])); }
   const dW = (await st()).d; await page.waitForTimeout(5800); const after = await st();
-  expect(after.d === dW + 1 && after.bench.watched.includes(watched), "a resident watched for 5 s on the Vivarium earns +1 Data once: " + JSON.stringify([dW, after.d, after.bench]));
-  await page.waitForTimeout(1500); expect((await st()).d === after.d, "and no more from the same resident that day"); }
+  expect(after.d === dW + 1 && after.mibis.find((x) => x.id === watched).habits.length >= 1, "a resident watched for 5 s on the Vivarium sees a habit and earns +1 Data: " + JSON.stringify([dW, after.d]));
+  await page.waitForTimeout(1500); expect((await st()).d === after.d, "and no more until the next minute of watching"); }
 // siblings: kinship a quarter, the forecast narrowed
 await page.evaluate(() => { window.__st.settings.rooms = 2; });   // room for the siblings and their parents, and a place for their child
 const sib = await page.evaluate(() => window.__st.seedSiblings("S01", 4242));
@@ -632,44 +609,47 @@ expect((await page.evaluate(([a, b]) => window.__st.kinshipOf(a, b), [sib.mibis[
 await toHome( 200);
 
 await page.emulateMedia({ reducedMotion: "reduce" });   // the pad and the focus are deterministic: the residents stand at their start
-// The Vivarium's whole on the face (slot V, first PR: vivarium-pad, vivarium-whole): Home's panel opens the whole with the ring on the mibi last seen up close (its resident, else its tile); the pad moves by vivarium.json focus.graph (a resident
-// to its neighbours ahead, ▼ to its tile, ◀ ▶ along the tiles, ▲ back to its resident); the Vivarium key is the way in again; ✓ looks at that mibi up close (not built yet, titled Vivarium); ← from up close is the whole with the ring on that mibi, ← from the
-// the whole is Home with the ring on the panel. The focus the face says and the intents are held to prototypes/face/golden/journey-vivarium.json (lvgl-switch.md §4, gate check 5).
-const vpress = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), p = await props(), l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, focus: u.screen === "vivarium" ? p.focus.cur : u.home, ok: l.ok ?? null, subject: l.subject ?? null, back: l.back ?? null }); return { u, p, ring: p.focus?.cur }; };
+// The Wall on the face (the mibi collection's inventory page: vivarium-pad, vivarium-whole): Home's panel opens the Wall with the ring on the first mibi; the keys are the host's steps (views/wall-walk.mjs): ▲ to the active sort, ▶ along the toolbar,
+// ◀ from Room to the lit rail row, ▼ down the rail (each row refilters), ▶ into the wall, ✓ on a portrait to the card's first live plate (Look), ◀ back to the mibi, ▼ to the plate of Tuck away and ✓ (it is tucked away for its Energy); ← is Home with the ring on the panel.
+// Up close is the card's Look plate, ← from up close is the Wall with the ring on that mibi. The focus the face says and the intents are held to prototypes/face/golden/journey-vivarium.json (lvgl-switch.md §4, gate check 5). The world is put back as it was after the pad.
+const vpress = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), p = await props(), l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, view: u.screen === "vivarium" ? p.view : null, focus: u.screen === "vivarium" ? p.focus.cur : u.home, ok: l.ok ?? null, subject: l.subject ?? null, back: l.back ?? null }); return { u, p, ring: p.focus?.cur }; };
+const vuntil = async (k, done, n = 12, ms = 200) => { let r = null; for (let i = 0; i < n; i++) { r = await vpress(k, ms); if (done(r)) break; } return r; };
 { stepOf("vivarium-pad");
+  const snap = await page.evaluate(() => { const S = window.__st, st = S.ST; return JSON.stringify({ e: st.e, d: st.d, s: st.s, room: st.face.room, tuckSeq: st.tuckSeq ?? 0, mibis: st.mibis.map((m) => ({ id: m.id, room: m.room, slot: m.slot, bay: m.bay, tucked: m.tucked ?? null, roomSince: m.roomSince ?? null })) }); });
   await page.evaluate(() => { const U = window.__st.UI; U.hab.id = null; U.home.f = "vivarium"; window.__st.goto("home"); }); await page.waitForTimeout(400);
-  let r = await vpress("confirm", 500); const ids = r.p.regions.residents.map((x) => x.id), sl = r.p.regions.bed.sleepers.map((x) => x.id), tiles = r.p.regions.tiles.items;
-  expect(r.u.screen === "vivarium" && r.p.state === "rest" && r.p.frame.top.title === "Vivarium", "vivarium-pad: Home's panel opens the whole: " + JSON.stringify([r.u.screen, r.p.state, r.p.frame?.top?.title]));
-  expect(r.ring === r.p.focus.targets.find((t) => t.group === "resident").id && r.p.frame.line.back === "Home" && /^Look at /.test(r.p.frame.line.ok), "vivarium-pad: none seen up close yet: the ring is on the first resident in place order, ✓ Look at it, ← Home: " + JSON.stringify([r.ring, r.p.frame.line]));
-  expect(tiles.length === 8 && tiles.filter((t) => t.state !== "free").length === (await st()).mibis.filter((m) => !m.released && m.room === 0).length, "vivarium-pad: a tile a place, a housed mibi's tile each in the room shown: " + JSON.stringify(tiles.map((t) => t.state)));
-  const on = r.ring, mid = on.slice(on.indexOf(".") + 1);
-  r = await vpress("down", 200); expect(r.ring === "tile." + mid, "vivarium-pad: ▼ from a resident is its own tile: " + r.ring);
-  r = await vpress("up", 200); expect(r.ring === "resident." + mid, "vivarium-pad: ▲ from a tile is its resident: " + r.ring);
-  r = await vpress("down", 200); r = await vpress("right", 200); const t1 = r.ring; r = await vpress("left", 200);
-  expect(t1.startsWith("tile.") && t1 !== "tile." + mid && r.ring === "tile." + mid, "vivarium-pad: ◀ ▶ walk the tiles in place order: " + JSON.stringify([t1, r.ring]));
-  r = await vpress("left", 200); for (let i = 0; i < 8 && r.ring.startsWith("tile."); i++) r = await vpress("left", 200); const end = r.ring; r = await vpress("left", 200); expect(end === "room.0" && r.ring === end && r.p.frame.line.ok === null, "vivarium-pad: ◀ from the first place is the chip of the room shown, and the chips stop at the first: " + JSON.stringify([end, r.ring]));
-  r = await vpress("down", 200); expect(r.ring === end && r.u.screen === "vivarium", "vivarium-pad: ▼ from a chip does nothing: " + r.ring);
-  r = await vpress("right", 200); const c1 = r.ring; r = await vpress("right", 200); const c2 = r.ring, shown = r.p.regions.room.id; r = await vpress("right", 200);
-  expect(c1 === "room.1" && c2 === "room.new" && shown === "reeds" && r.ring.startsWith("tile.") && r.p.regions.room.id === "reeds", "vivarium-pad: ▶ goes chip to chip (the ring on a chip shows that room), then from the right end to the first place of the room shown: " + JSON.stringify([c1, c2, shown, r.ring]));
-  r = await vpress("left", 200); const back1 = r.ring; r = await vpress("left", 200); expect(back1 === "room.1" && r.ring === "room.0" && r.p.regions.room.id === "roots", "vivarium-pad: ◀ from the first place is the room shown's chip, and the first chip shows the first room again: " + JSON.stringify([back1, r.ring, r.p.regions.room.id]));
-  r = await vpress("habitat", 400); expect(r.u.screen === "vivarium" && r.ring === on, "vivarium-pad: the Vivarium key on the whole puts the ring back on the mibi last seen, its resident (none seen: the first): " + JSON.stringify([r.u.screen, r.ring, on]));
-  { const first = r.p.focus.targets.find((t) => t.group === "tile").id; await page.evaluate((id) => { window.__st.UI.viv.f = id; }, first); await page.waitForTimeout(300); const pp = await props(); r = { p: pp }; expect(pp.focus.cur === first && pp.frame.line.ok.startsWith("Look at "), "vivarium-pad: the ring on a tile says Look at its mibi: " + JSON.stringify(pp.frame.line)); await page.evaluate((id) => { window.__st.UI.viv.f = id; }, on); await page.waitForTimeout(300); }
-  await frameShot("page-vivarium", true); }
+  let r = await vpress("confirm", 500);
+  expect(r.u.screen === "vivarium" && r.p.view === "wall" && r.p.state === "wall" && r.p.frame.top.title === "Vivarium", "vivarium-pad: Home's panel opens the Wall: " + JSON.stringify([r.u.screen, r.p.view, r.p.state, r.p.frame?.top?.title]));
+  expect(/^cell\./.test(r.ring) && r.p.frame.line.back === "Vivarium" && /^Open /.test(r.p.frame.line.ok) && !!r.p.frame.line.subject, "vivarium-pad: none seen up close yet: the ring on the first portrait, ✓ Open it, ← the Vivarium: " + JSON.stringify([r.ring, r.p.frame.line]));
+  expect(r.p.regions.rail.rows.map((x) => x.kind).join() === "all,room,room,tucked,add" && r.p.regions.wall.size[0] === 100, "vivarium-pad: the rail is All, the rooms, Tucked away and Add a room; twelve are drawn at 100/304: " + JSON.stringify(r.p.regions.rail.rows.map((x) => x.kind)));
+  const first = r.ring;
+  r = await vpress("up", 200); expect(r.ring === "sort.room", "vivarium-pad: ▲ from the first row is the active sort: " + r.ring);
+  r = await vpress("right", 200); expect(r.ring === "sort.kind", "vivarium-pad: ▶ along the toolbar: " + r.ring);
+  r = await vpress("left", 200); r = await vpress("left", 200); expect(r.ring === "rail.all", "vivarium-pad: ◀ from Room is the lit rail row: " + r.ring);
+  r = await vpress("down", 300); expect(r.ring === "rail.0" && r.p.regions.rail.rows.find((x) => x.id === "0").lit, "vivarium-pad: ▼ on the rail refilters at once, the row is lit: " + JSON.stringify([r.ring]));
+  r = await vpress("right", 300); expect(/^cell\./.test(r.ring), "vivarium-pad: ▶ from a rail row is the wall: " + r.ring);
+  r = await vpress("confirm", 300); expect(r.ring === "plate.0" && /^Look at /.test(r.p.frame.line.ok ?? ""), "vivarium-pad: ✓ on a portrait is the card's first live plate, Look: " + JSON.stringify([r.ring, r.p.frame.line.ok]));
+  r = await vpress("left", 200); expect(/^cell\./.test(r.ring) && r.p.regions.card.id === r.ring.slice(5), "vivarium-pad: ◀ from a plate is the card's mibi: " + r.ring);
+  let mid = r.ring.slice(5); for (let i = 0; i < 10; i++) { r = await vpress("confirm", 300); if (r.p.regions.card.plates[3] && !r.p.regions.card.plates[3].held) break; r = await vpress("left", 200); r = await vpress("right", 200); mid = r.ring.slice(5); }   // a portrait whose card has Tuck away live (a traveller's is held)
+  r = await vuntil("down", (q) => /^Tuck /.test(q.p.frame.line.ok ?? "") || q.ring === "plate.5", 6);
+  { const e0 = (await st()).e; expect(/^Tuck /.test(r.p.frame.line.ok ?? "") && String(r.p.regions.card.id) === mid, "vivarium-pad: the card's Tuck away plate: " + JSON.stringify(r.p.frame.line)); r = await vpress("confirm", 500); const m = (await st()).mibis.find((x) => String(x.id) === mid);
+    expect(!!m.tucked && (await st()).e < e0, "vivarium-pad: ✓ tucks it away for its Energy: " + JSON.stringify([m.tucked, e0, (await st()).e])); }
+  await frameShot("page-vivarium", true);
+  r = await vpress("back", 500); expect(r.u.screen === "home" && r.u.home === "vivarium", "vivarium-pad: ← is Home with the ring on the panel: " + JSON.stringify([r.u.screen, r.u.home]));
+  await page.evaluate((j) => { const S = window.__st, st = S.ST, o = JSON.parse(j); Object.assign(st, { e: o.e, d: o.d, s: o.s, tuckSeq: o.tuckSeq }); st.face.room = o.room; for (const q of o.mibis) { const m = st.mibis.find((x) => x.id === q.id); if (m) { m.room = q.room; m.slot = q.slot; m.bay = q.bay; if (q.tucked) m.tucked = q.tucked; else delete m.tucked; if (q.roomSince != null) m.roomSince = q.roomSince; else delete m.roomSince; } } }, snap);
+  await page.evaluate(() => { const U = window.__st.UI; U.home.f = "vivarium"; window.__st.goto("home"); }); await page.waitForTimeout(300);
+  r = await vpress("confirm", 500); expect(r.u.screen === "vivarium" && r.p.view === "wall" && r.p.regions.wall.cells.length > 0, "vivarium-pad: the world put back, the Wall again: " + JSON.stringify([r.p.view]));
+  void first; }
 { stepOf("vivarium-whole");
-  let r = await vpress("confirm", 700); const mid = (await ui()).habId;
-  expect(r.u.screen === "habitat" && mid != null, "vivarium-whole: ✓ on a resident looks at that mibi up close: " + JSON.stringify([r.u.screen, mid]));
-  { const p = await props(); cur.push({ screen: p.screen, state: p.state, ring: p.focus.cur, title: p.frame.top.title, back: p.frame.line.back }); expect(p.screen === "habitat" && p.state === "rest" && p.focus.cur === "resident" && p.frame.top.title === "Vivarium" && p.frame.line.back === "Vivarium", "vivarium-whole: up close is the mibi, titled Vivarium, ← reads Vivarium: " + JSON.stringify([p.state, p.focus.cur, p.frame.top.title, p.frame.line.back])); await frameShot("page-habitat", true); }
-  r = await vpress("back", 700); expect(r.u.screen === "vivarium" && (r.ring === "resident." + mid || r.ring === "tile." + mid), "vivarium-whole: ← from up close is the whole with the ring on that mibi: " + JSON.stringify([r.u.screen, r.ring, mid]));
-  r = await vpress("back", 500); expect(r.u.screen === "home" && r.u.home === "vivarium", "vivarium-whole: ← from the whole is Home with the ring on the panel: " + JSON.stringify([r.u.screen, r.u.home]));
+  let r = await vpress("right", 200); r = await vpress("confirm", 200); expect(r.ring === "plate.0" && /^Look at /.test(r.p.frame.line.ok ?? ""), "vivarium-whole: ✓ to the card's Look: " + JSON.stringify([r.ring, r.p.frame.line]));
+  r = await vpress("confirm", 700); const mid = (await ui()).habId;
+  expect(r.u.screen === "habitat" && mid != null, "vivarium-whole: ✓ Look looks at that mibi up close: " + JSON.stringify([r.u.screen, mid]));
+  { const p = await props(); cur.push({ screen: p.screen, state: p.state, ring: p.focus.cur, title: p.frame.top.title, back: p.frame.line.back }); expect(p.screen === "habitat" && p.state === "rest" && p.focus.cur === "resident" && p.frame.top.title === "Vivarium" && p.frame.line.back === "Vivarium", "vivarium-whole: up close is the habitat's own screen: " + JSON.stringify([p.screen, p.state, p.focus.cur, p.frame.line.back])); }
+  await frameShot("page-habitat", true);
+  r = await vpress("back", 700); expect(r.u.screen === "vivarium" && r.ring === "cell." + mid, "vivarium-whole: ← from up close is the Wall with the ring on that mibi: " + JSON.stringify([r.u.screen, r.ring, mid]));
+  r = await vpress("back", 500); expect(r.u.screen === "home" && r.u.home === "vivarium", "vivarium-whole: ← from the Wall is Home with the ring on the panel: " + JSON.stringify([r.u.screen, r.u.home]));
   await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitForTimeout(500);
-  { const dk = JSON.stringify((await st()).dock); r = await vpress("dock", 500); expect(JSON.stringify((await st()).dock) !== dk && r.u.screen === "vivarium", "vivarium-whole: the Dock key lifts the Companion on the whole, on the frame of the key: " + JSON.stringify([r.u.screen, (await st()).dock])); }
-  { const p = await props(); expect(["empty", "resting"].includes(p.regions.bed.state) && p.regions.tiles.items.some((t) => t.state === "out" && t.where === "away") && !("mark" in p.regions.bed), "vivarium-whole: away, the bed draws no Companion's mark and the carried mibis' tiles the outline glyph with the thumbnail: " + JSON.stringify([p.regions.bed.state, p.regions.tiles.items.map((t) => t.state)]));
-    const out = p.focus.targets.find((t) => t.id.startsWith("tile.") && p.regions.tiles.items.find((x) => "tile." + x.id === t.id)?.state === "out"); { const res = p.focus.targets.find((t) => t.id.startsWith("resident.")); if (res) { await page.evaluate((id) => { window.__st.UI.viv.f = id; }, res.id); await page.waitForTimeout(400); } }   // the ring on the first resident, so this capture shows what page-mibi-out (the ring on the out tile) does not
-    await frameShot("page-vivarium-away", true);
-    if (out) { await page.evaluate((id) => { window.__st.UI.viv.f = id; }, out.id); await page.waitForTimeout(400); expect((await props()).frame.line.subject === "Out exploring", "vivarium-whole: an out mibi's tile is a target (out exploring)"); await frameShot("page-mibi-out", true); }
-    { const was = await page.evaluate(() => window.__st.settings.light ?? null); await page.evaluate(() => { window.__st.settings.light = "night"; window.__st.UI.viv.f = window.__st.UI.viv.f; }); await page.waitForTimeout(700);   // the darkest light, still away: the out glyph on the carried tiles
-      const pn = await props(); expect(String(pn.regions.window.picture).includes("night") && ["empty", "resting"].includes(pn.regions.bed.state) && pn.regions.tiles.items.some((t) => t.state === "out"), "vivarium-whole: away at night, the out glyph in the darkest light: " + JSON.stringify([pn.regions.window.picture, pn.regions.bed.state]));
-      await frameShot("page-vivarium-away-night", true); await page.evaluate((l) => { window.__st.settings.light = l; }, was); await page.waitForTimeout(400); } }
+  { const dk = JSON.stringify((await st()).dock); r = await vpress("dock", 500); expect(JSON.stringify((await st()).dock) !== dk && r.u.screen === "vivarium", "vivarium-whole: the Dock key lifts the Companion on the Wall, on the frame of the key: " + JSON.stringify([r.u.screen, (await st()).dock]));
+    { const p = await props(), away = await sv().then((v) => (v.carried ?? []).map(String)); expect(away.length === 0 || p.regions.wall.cells.filter((c) => away.includes(c.id)).every((c) => /mark-companion-outline/.test(c.mark)), "vivarium-whole: away, a traveller keeps its place on the Wall with the Companion's outline mark"); await frameShot("page-vivarium-away", true); } }
   r = await vpress("dock", 500); expect((await st()).dock.docked && r.u.screen === "cargo" && (await props()).state === "arrival", "vivarium-whole: the Dock key docks again and the arrival plays over the Vivarium: " + r.u.screen);
   r = await vpress("confirm", 600); expect(r.u.screen === "vivarium" && (await st()).dock.docked, "vivarium-whole: an empty trip has no choice: ✓ skips the show and it closes, the Vivarium as it was: " + r.u.screen); }
 { const file = path.resolve(here, "../../face/golden/journey-vivarium.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("vivarium-"))), json = JSON.stringify({ _note: "The Vivarium's whole, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
@@ -714,7 +694,7 @@ const benchIdle = () => page.waitForFunction(() => !window.__st.holding(), null,
   await frameShot("page-bench-away", true);
   r = await bpress("research", 500); expect(r.u.screen === "pods", "probe-bench: the Research key opens Pods: " + r.u.screen);
   await page.evaluate((snapJson) => { const S = window.__st, o = JSON.parse(snapJson); Object.assign(S.ST, { e: o.e, d: o.d, s: o.s, probe: o.probe, mendFull: o.mendFull, dock: o.dock }); S.UI.home.f = "room"; S.UI.bench = { f: null, arm: 0, install: false }; S.goto("home"); }, snap); await page.emulateMedia({ reducedMotion: "reduce" }); await page.waitForTimeout(400); }
-  await page.evaluate(() => { const S = window.__st; delete S.SV.carried; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); });   // the Companion's part as the fixture has it: Dot goes with it again (see the start of the sitting)
+  await page.evaluate(() => { const S = window.__st; delete S.SV.carried; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); });   // the Companion's part as the fixture has it: Dot goes with it again (see the start of the sitting)
 { const file = path.resolve(here, "../../face/golden/journey-bench.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("probe-"))), json = JSON.stringify({ _note: "The Probe bench, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and the focus and intents the face said, the screen, the state, the ring, the line and the counters after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) { const a = want[id] ?? [], b = steps[id] ?? [], i = [...Array(Math.max(a.length, b.length)).keys()].find((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k])); fail(`journey-bench.json: step ${id} differs from the golden at action ${i} (golden ${a.length} actions, now ${b.length}): golden ${JSON.stringify(a[i])?.slice(0, 400)} · now ${JSON.stringify(b[i])?.slice(0, 400)}`); }; }
@@ -734,7 +714,7 @@ const benchIdle = () => page.waitForFunction(() => !window.__st.holding(), null,
   await page.emulateMedia({ reducedMotion: "reduce" });
   const snap = await page.evaluate(() => { const S = window.__st, st = S.ST, c = S.SV.carried ?? [], m = st.mibis.find((x) => !x.released && !c.includes(x.id) && !x.portrait); return JSON.stringify({ id: m.id, habits: m.habits, walked: m.walked, from: m.from, portrait: m.portrait, sitting: st.sitting, crates: st.sittingCrates, dock: st.dock, habId: S.UI.hab.id, habF: S.UI.hab.f }); });
   const M = JSON.parse(snap).id, enter = (o = {}) => page.evaluate(([id, o]) => { const S = window.__st, st = S.ST, m = st.mibis.find((x) => x.id === id); Object.assign(m, { habits: ["shake-dry", "calm", "sleep-curled"], walked: ["pond"], from: { ...(m.from || {}), g: "meadow", how: "pod" } }); if (o.held) st.sitting = { source: "dev", key: null, at: 0 }; st.dock = { docked: true, at: 1 }; S.UI.idle = false; S.UI.hab.id = id; S.goto("habitat"); S.UI.hab.f = "portrait"; }, [M, o]);
-  await page.evaluate(() => { const S = window.__st; S.SV.carried = []; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); });   // R4b: a carried mibi sits for nobody, so the Companion carries no one for the sitting (put back after it)
+  await page.evaluate(() => { const S = window.__st; S.SV.carried = []; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); });   // R4b: a carried mibi sits for nobody, so the Companion carries no one for the sitting (put back after it)
   await enter({ held: true }); await page.waitForTimeout(500);
   const name = await page.evaluate((id) => window.__st.ST.mibis.find((x) => x.id === id).name, M);
   { const p = await props(); expect(p.screen === "habitat" && p.focus.cur === "portrait" && p.frame.line.ok === `Portray ${name}`, "sitting-walk: Habitat's Portrait module, a sitting held: ✓ Portray " + name + ": " + JSON.stringify([p.screen, p.focus.cur, p.frame.line])); }
@@ -766,6 +746,36 @@ const benchIdle = () => page.waitForFunction(() => !window.__st.holding(), null,
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) { const a = want[id] ?? [], b = steps[id] ?? [], i = [...Array(Math.max(a.length, b.length)).keys()].find((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k])); fail(`journey-sitting.json: step ${id} differs from the golden at action ${i} (golden ${a.length} actions, now ${b.length}): golden ${JSON.stringify(a[i])?.slice(0, 400)} · now ${JSON.stringify(b[i])?.slice(0, 400)}`); }; }
   console.log(`sitting steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
+// Settings on the face (settings.json, behind the developer setting realmSleep): Home's Companion ▲ is the Settings knob (the line "Go to Settings", docked or away) only while the developer setting is on, else it is the Vivarium; ✓ opens Settings with the ring on the
+// first row; ▼ walks the four rows (the detail follows the ring; the sleep row is dimmed and says why when the Companion is lifted); ✓ does nothing on any row yet; ← is Home with the ring on the knob; the knob's ▼ is the Companion (its ▲ the Vivarium is in the focus vectors).
+// The focus the face says and the intents are held to prototypes/face/golden/journey-settings.json. The world is put back as it was after the step.
+{ const gpress = async (k, ms = 250) => { await said(); await press(k, ms); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 15000 }); await page.waitForTimeout(120);
+    const m = await said(), u = await ui(), p = await props(), l = p.frame?.line ?? {};
+    cur.push({ key: k, said: m, screen: u.screen, state: p.state ?? null, focus: u.screen === "settings" ? p.focus.cur : u.home, ok: l.ok ?? null, subject: l.subject ?? null, back: l.back ?? null, line: p.regions?.line ?? null, sleepDim: u.screen === "settings" ? p.regions.sleep.dim : null });
+    return { u, p, l, ring: u.screen === "settings" ? p.focus.cur : u.home }; };
+  stepOf("settings-walk");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const snap = await page.evaluate(() => { const S = window.__st; return JSON.stringify({ rs: S.settings.realmSleep, dock: S.ST.dock, map: localStorage.getItem("mb-station-companions"), sv: { v: S.SV.v, began: S.SV.began, regions: S.SV.regions } }); });
+  await page.evaluate(() => { const S = window.__st, map = JSON.parse(localStorage.getItem("mb-station-companions")), me = map.known.find((k) => k.id === map.active); me.pub = "A".repeat(43); delete me.pubMismatch; localStorage.setItem("mb-station-companions", JSON.stringify(map)); S.SV.v = 9; S.SV.began = Date.UTC(2026, 10, 4, 12); S.SV.regions = [{ id: "g1" }, { id: "g2" }]; S.settings.realmSleep = false; S.ST.dock = { docked: true, at: 1 }; S.UI.idle = false; S.UI.home.f = "companion"; S.goto("home"); }); await page.waitForTimeout(400);
+  let r = await gpress("up", 200); expect(r.ring === "vivarium" && r.p.regions.line.verb === "Go to the Vivarium", "settings-walk: with the developer setting off there is no knob: Companion ▲ is the Vivarium: " + JSON.stringify([r.ring, r.p.regions.line]));
+  await page.evaluate(() => { window.__st.settings.realmSleep = true; window.__st.UI.home.f = "companion"; window.__st.goto("home"); }); await page.waitForTimeout(400);
+  r = await gpress("up", 200); expect(r.ring === "settings" && r.p.regions.line.verb === "Go to Settings", "settings-walk: with it on, Companion ▲ is the Settings knob, the line says Go to Settings: " + JSON.stringify([r.ring, r.p.regions.line]));
+  r = await gpress("down", 200); expect(r.ring === "companion", "settings-walk: the knob's ▼ is the Companion: " + r.ring);
+  await page.evaluate(() => { window.__st.settings.realmSleep = true; });
+  r = await gpress("up", 200); r = await gpress("confirm", 500); expect(r.u.screen === "settings" && r.p.state === "settings" && r.ring === "realm" && r.l.back === "Home", "settings-walk: ✓ on the knob opens Settings, the ring on the first row, ← Home: " + JSON.stringify([r.u.screen, r.ring, r.l]));
+  r = await gpress("down"); expect(r.ring === "companion" && r.p.regions.detail.key === "companion", "settings-walk: ▼ is Your Companion, its detail: " + JSON.stringify([r.ring, r.p.regions.detail.key]));
+  r = await gpress("down"); r = await gpress("down"); expect(r.ring === "sleep" && r.p.regions.sleep.dim === false && r.l.ok === null, "settings-walk: ▼ ▼ is Put this realm to sleep, docked and keyed: not dimmed, no ✓ yet: " + JSON.stringify([r.ring, r.p.regions.sleep, r.l]));
+  r = await gpress("confirm"); expect(r.u.screen === "settings" && r.ring === "sleep", "settings-walk: ✓ does nothing on a row yet: " + JSON.stringify([r.u.screen, r.ring]));
+  r = await gpress("down"); expect(r.ring === "sleep", "settings-walk: ▼ stops on the last row: " + r.ring);
+  await page.evaluate(() => { window.__st.ST.dock = { docked: false, at: 1 }; }); await page.waitForTimeout(300);
+  { const p = await props(); cur.push({ lifted: true, focus: p.focus.cur, sleep: p.regions.sleep, detail: p.regions.detail.blocks.filter((b) => b.kind === "notice") }); expect(p.regions.sleep.dim === true && p.regions.detail.blocks.some((b) => b.kind === "notice" && b.text === "Dock your Companion · it signs the realm"), "settings-walk: lifted, the sleep row is dimmed and says why: " + JSON.stringify(p.regions.sleep)); }
+  r = await gpress("back", 500); expect(r.u.screen === "home" && r.ring === "settings", "settings-walk: ← is Home with the ring on the Settings knob: " + JSON.stringify([r.u.screen, r.ring]));
+  await page.evaluate((snapJson) => { const S = window.__st, o = JSON.parse(snapJson); S.settings.realmSleep = o.rs; S.ST.dock = o.dock; if (o.map == null) localStorage.removeItem("mb-station-companions"); else localStorage.setItem("mb-station-companions", o.map); S.SV.v = o.sv.v; if (o.sv.began === undefined) delete S.SV.began; else S.SV.began = o.sv.began; if (o.sv.regions === undefined) delete S.SV.regions; else S.SV.regions = o.sv.regions; S.UI.home.f = "room"; S.goto("home"); }, snap); await page.waitForTimeout(300);
+}
+{ const file = path.resolve(here, "../../face/golden/journey-settings.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("settings-"))), json = JSON.stringify({ _note: "Settings, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and the focus and intents the face said, the screen, the ring and the line after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
+  if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
+  else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-settings.json: step ${id} differs from the golden`); }
+  console.log(`settings steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
 // 7. every screen but Home, Cargo and Pods is not built: its room keys, ← and the first press on Idle work, with today's keys
 const NAV = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/frame.json"), "utf8")).navigation.screens;
 const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlace = (pl) => ({ probe: "bench" }[pl.split(".")[0]] || pl.split(".")[0]);
@@ -799,11 +809,11 @@ const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlac
   await press("research", 300); const f0 = await focusNow(); await page.evaluate(() => { window.__st.UI.idle = true; }); await page.waitForTimeout(400); await press("right", 400);
   expect(!(await ui()).idle && (await focusNow()) === f0 && (await ui()).screen === "pods", "on Pods the first press on Idle wakes and the ring stays: " + JSON.stringify([await ui(), f0, await focusNow()]));
 }
-await page.evaluate(() => { const S = window.__st; if (Array.isArray(S.SV.carried) && !S.SV.carried.length) delete S.SV.carried; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); });   // R4b: the sections above that un-carried Dot left an empty carried list: the Companion's part is as the fixture has it
-const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("mb-save-v8")));
+await page.evaluate(() => { const S = window.__st; if (Array.isArray(S.SV.carried) && !S.SV.carried.length) delete S.SV.carried; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); });   // R4b: the sections above that un-carried Dot left an empty carried list: the Companion's part is as the fixture has it
+const stored = await page.evaluate(() => JSON.parse(localStorage.getItem(window.__st.saveKey)));
 expect(stored.st.schema === 4 && stored.st.tray.length === (await st()).tray.length && stored.st.mibis.length === (await st()).mibis.length && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
 // 8. the CI smoke's presses, from a fresh world with no save
-await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
+await page.evaluate(() => { localStorage.removeItem(window.__st.saveKey); });
 
 await assertFace("the journey");
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
@@ -814,8 +824,8 @@ await page.keyboard.press("KeyD"); await page.waitForTimeout(250);
 expect(/no world yet/.test(await page.evaluate(() => window.__st.msg)), "docking without a world says so");
 for (const k of ["KeyR", "ArrowRight", "Enter", "KeyL", "KeyB", "KeyD", "KeyH"]) { await page.keyboard.press(k); await page.waitForTimeout(200); }
 await page.waitForTimeout(300); await hold(); await stepClock(1200); await frameShot("page-fresh", true); await release();   // the last screen change's dither and any arrival are over: the 1024×600 frame itself
-await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitForTimeout(500); await frameShot("page-vivarium-empty", true);   // a fresh world's whole: nobody lives here yet, the places free
-{ const p = await props(); expect(p.screen === "vivarium" && p.state === "empty" && p.frame.line.subject === "Nobody lives here yet" && !p.frame.line.ok && p.focus.cur === "room", "page-vivarium-empty: a fresh world's whole is empty, the ring on nothing, no ✓ cap: " + JSON.stringify([p.state, p.frame.line, p.focus.cur])); }
+await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitForTimeout(500); await frameShot("page-vivarium-empty", true);   // a fresh world's room view: No mibis yet
+{ const p = await props(); expect(p.screen === "vivarium" && p.state === "none" && p.regions.card.state !== "mibi" && p.frame.line.ok === "Go to the Incubator" && p.focus.cur === "plate.0", "page-vivarium-empty: a fresh world's Wall is empty: No mibis yet, the ring on the card's one plate, ✓ Go to the Incubator (the collection v2 design §9): " + JSON.stringify([p.state, p.frame.line, p.focus.cur])); }
 // The Library's Level 1 on the face (library.json l1): a fresh world first (Home's Library bezel opens Level 1: sixteen unmet cells, no target and no ring, ✓ does nothing, the subject says no species is seen yet), then a world with found,
 // met and unmet cells: the pad walks l1.focus.graph over the met and found cells only, ✓ on a cell opens its species (Level 2, not built yet: ← Library), ← there is Level 1 with the ring on that species, ← on Level 1 is Home with the ring
 // on the Library bezel and records the visit as seen, the Library key lands where the ring was left, and the card's species word up close opens Level 1 on its species.
@@ -839,9 +849,12 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   await loop("confirm", "any key skips the show to the choice", () => window.__st.props?.overlay?.form === "strip");
   await loop("confirm", "✓ Open now on the strip opens the crate and the end shows (T-50 cut 1; the opening holds input)", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "end");
   await loop("confirm", "✓ on the end lands on Pods", () => window.__st.UI.screen === "pods");
-  await loop("confirm", "✓ on the new pod opens its overview", () => window.__st.props?.state === "overview");
-  await loop("confirm", "✓ Identify", () => window.__st.props?.frame?.line?.ok === "Create from this pod");
-  await loop("confirm", "✓ Create from this pod opens Create", () => window.__st.UI.screen === "create");
+  await loop("confirm", "✓ on the new pod's card opens the reading screen on it, the ring on the key", () => window.__st.props?.state === "read" && window.__st.UI.pods.focus.cur === "key");
+  await loop("confirm", "✓ Identify, the ring on the rail", () => window.__st.UI.pods.focus.cur === "rail");
+  await loop("back", "← leaves in one press: the inventory on this pod's card", () => window.__st.UI.pods.view === "inventory" && (window.__st.UI.pods.focus.cur ?? "").startsWith("card."));
+  { const id = await page.evaluate(() => window.__st.UI.pods.panelPod); await podsAt({ view: "inventory", card: id }); await podsAt({ view: "inventory", focus: "act.1" }); }
+  { const l = await line(); expect(l.ok === "Grow it", "the ring on the panel's Grow it: " + JSON.stringify(l)); }
+  await loop("confirm", "✓ Grow it opens Create", () => window.__st.UI.screen === "create");
   await loop("confirm", "✓ Incubate opens the Incubate | Keep shaping panel", () => window.__st.props?.overlay?.form === "incubate");
   await loop("confirm", "✓ Incubate in the panel (the grow event, then the Incubator's incubate moment)", () => window.__st.UI.screen === "incubator");
   await loop("confirm", "✓ Hatch now (the bar, the door, the hatch, then the meet)", () => window.__st.UI.screen === "habitat");

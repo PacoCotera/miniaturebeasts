@@ -1,9 +1,18 @@
 {
  "note": "The layout check's case corpus (ui/tests/layout-cases.test.mjs): golden states with the findings the check must make on them (expect: the known faults it reproduces, each with its source in the validation of the check, ✓m measured in the prototype, ✓e expected from the audit's numbers), the findings it must not make (clear: the findings the owner cleared), and what waits for data (pending: ✓d, once UI/UX declares it, or a ✓e the check does not reproduce). The owner's review of 2026-10-26 is the last 98 cases, one a card (card, verdict): a fault expects its own kind, or the finding that now carries the same fault; a fine clears its kind, by a rule, by a spec's data or by a frame.json exception; not sure is as the tune left it. They match by kind (rule, part, node, other, container), not by measure: the goldens moved (Q1, TY1.1) since the review. Each state's fixture log is ui/tests/layout-cases/<screen>/<state>.json; layout-check.mjs <logs> --refresh-cases takes them again after a retake. An expect matches a finding with that rule (and part, node, other as a prefix, container, measured: a number or [min, max]).",
  "frozen": {
+  "create/create-shape-doing": {"from": "8d54ccb96", "hash": "a17d1c7f", "why": "the owner's cards create-L3-13 and create-L4-5 were marked on this picture; the Loika's Face chapter now holds Crown, Ears and Eyes, which changed the roll's geometry in this state, so the cards stay on the picture they were marked on until the owner looks at the new one"},
   "vivarium/vivarium-docked-r4": {"from": "961525c3", "hash": "4cf367cb", "why": "owner card vivarium-L8-1 was marked on this picture; R4b (the owner: travellers are not drawn) changed the live vivarium-docked, so the card stays on the picture it was marked on", "golden": "retired at R4b (T-20261027-323): git show 961525c3:prototypes/face/golden/vivarium/vivarium-docked.png"},
   "vivarium/vivarium-twelve": {"from": "961525c3", "hash": "bb53921f", "why": "the owner's and UI/UX's marks were made on these residents' places; the walk on levels (R4) moved the starts", "golden": "retired at R5 (T-20261027-318): vivarium-twelve became vivarium-eight; the card stays on the picture it was marked on, git show 961525c3:prototypes/face/golden/vivarium/vivarium-twelve.png"},
-  "vivarium/vivarium-walk-8000ms": {"from": "961525c3", "hash": "c6628872", "why": "the owner's and UI/UX's marks were made on these residents' places; the walk on levels (R4) moved the starts"}
+  "vivarium/vivarium-walk-8000ms": {"from": "961525c3", "hash": "c6628872", "why": "the owner's and UI/UX's marks were made on these residents' places; the walk on levels (R4) moved the starts"},
+  "pods/chapter page, a doing": {"from": "a9da62a9", "hash": "bd8b6c06", "why": "the owner's and UI/UX's marks were made on this state of the old Pods screen; the pod inventory and the reading room retired it, so the cards stay on the picture they were marked on", "golden": "retired with the old Pods screen: git show a9da62a9:prototypes/face/golden/pods/pods-chapter-page-a-doing.png"},
+  "pods/chapter page, sealed": {"from": "a9da62a9", "hash": "51cfa311", "why": "the owner's and UI/UX's marks were made on this state of the old Pods screen; the pod inventory and the reading room retired it, so the cards stay on the picture they were marked on", "golden": "retired with the old Pods screen: git show a9da62a9:prototypes/face/golden/pods/pods-chapter-page-sealed.png"},
+  "pods/collection": {"from": "a9da62a9", "hash": "371940e6", "why": "the owner's and UI/UX's marks were made on this state of the old Pods screen; the pod inventory and the reading room retired it, so the cards stay on the picture they were marked on", "golden": "retired with the old Pods screen: git show a9da62a9:prototypes/face/golden/pods/pods-collection.png"},
+  "pods/overview, hatch focused": {"from": "a9da62a9", "hash": "e1aaea61", "why": "the owner's and UI/UX's marks were made on this state of the old Pods screen; the pod inventory and the reading room retired it, so the cards stay on the picture they were marked on", "golden": "retired with the old Pods screen: git show a9da62a9:prototypes/face/golden/pods/pods-overview-hatch-focused.png"},
+  "pods/overview, identified, pod focused": {"from": "a9da62a9", "hash": "e9766b43", "why": "the owner's and UI/UX's marks were made on this state of the old Pods screen; the pod inventory and the reading room retired it, so the cards stay on the picture they were marked on", "golden": "retired with the old Pods screen: git show a9da62a9:prototypes/face/golden/pods/pods-overview-identified-pod-focused.png"},
+  "pods/overview, identify warns": {"from": "a9da62a9", "hash": "d144b720", "why": "the owner's and UI/UX's marks were made on this state of the old Pods screen; the pod inventory and the reading room retired it, so the cards stay on the picture they were marked on", "golden": "retired with the old Pods screen: git show a9da62a9:prototypes/face/golden/pods/pods-overview-identify-warns.png"},
+  "pods/panel, release": {"from": "a9da62a9", "hash": "d50fd1dc", "why": "the owner's and UI/UX's marks were made on this state of the old Pods screen; the pod inventory and the reading room retired it, so the cards stay on the picture they were marked on", "golden": "retired with the old Pods screen: git show a9da62a9:prototypes/face/golden/pods/pods-panel-release.png"},
+  "pods/compare": {"from": "a9da62a9", "hash": "7ecc44f3", "why": "owner card pods-L5-7 was marked on this picture; Compare now opens from the reading room and its frame changed (the way back reads Bench), so the card stays on the picture it was marked on", "golden": "retaken with the reading room: git show a9da62a9:prototypes/face/golden/pods/pods-compare.png"}
  },
  "cases": [
   { "state": "pods/overview, identified, pod focused", "from": "owner, Pods overview",
@@ -23,7 +32,7 @@
     "expect": [
      { "rule": "L1", "container": "panelSnapshot", "node": "snapshot chamber", "other": "bottom", "measured": 6, "mark": "✓m", "why": "6 below, through the snapshot's source nodes (log addition 3)" },
      { "rule": "L7", "part": "a", "container": "panelSnapshot", "measured": [0.2, 0.35], "mark": "✓m", "why": "the empty top of the window: the centroid 0.27 below the centre (the slack 116 above, 6 below is one finding, carried by L1 bottom 6 and this)" },
-     { "rule": "L11", "node": "panelPrice", "measured": 17, "mark": "✓e", "why": "unlabelled marks: the Incubate header's pod mark ends the price run with no word" }
+     { "rule": "L11", "node": "panelPrice", "measured": 18, "mark": "✓e", "why": "unlabelled marks: the Incubate header's pod mark ends the price run with no word" }
     ],
     "clear": [],
     "pending": [] },
@@ -112,7 +121,7 @@
     ] },
   { "state": "cargo/cargo-bay-waiting-many", "from": "the UX audit: Cargo",
     "expect": [
-     { "rule": "L4", "node": "waiting.pod", "other": "waitingMore", "mark": "✓e", "why": "\"+2\" over the third pod" }
+     { "rule": "L4", "node": "waiting.pod#3", "other": "waitingMore", "mark": "✓e", "why": "\"+2\" over the third pod" }
     ],
     "clear": [],
     "pending": [] },
@@ -153,10 +162,8 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "vivarium/vivarium-docked", "from": "the UI/UX layout sweep and the art direction audit: the Vivarium",
-    "expect": [
-     { "rule": "L1", "node": "rooms", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the panes 10 over the bottom line, as the strip was (UI/UX, the R4b-1 read: both panes end at 552, the bottom line starts at 562); the check reports the pair once, on the rooms pane" }
-    ],
+  { "state": "vivarium/vivarium-docked", "from": "the UI/UX layout sweep and the art direction audit: the Vivarium (its rooms and places panes over the bottom line retired with the strip by the collection v2 design: the chip row is above the window)",
+    "expect": [],
     "clear": [],
     "pending": [
      { "what": "the strip that vanishes, L9", "needs": "vivarium.json layout.slots (✓d)" }
@@ -338,11 +345,11 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "create/create-confirm-keep", "card": "create-L5-4", "verdict": "fault", "from": "owner card create-L5-4, marked fault: almost aligned: right edges 494 and 498, 4 → 0",
-    "expect": [
-     { "rule": "L5", "part": "b", "container": "opening", "node": "panelPrice#3", "other": "panelRoom", "mark": "owner", "why": "marked a fault by the owner: almost aligned: right edges 494 and 498, 4 → 0 in the reviewed run" }
+  { "state": "create/create-confirm-keep", "card": "create-L5-4", "verdict": "fault", "fixed": "price run inset 8", "from": "owner card create-L5-4, marked fault: almost aligned: right edges 494 and 498, 4 → 0",
+    "expect": [],
+    "clear": [
+     { "rule": "L5", "part": "b", "container": "opening", "node": "panelPrice#3", "other": "panelRoom", "mark": "owner", "why": "fixed: the price run's right inset is 8 (panel.json incubate.price.right), so its right edge sits on the room's edge, 498 and 498" }
     ],
-    "clear": [],
     "pending": [] },
   { "state": "create/create-grow-150", "card": "create-L6-2", "verdict": "fault", "from": "owner card create-L6-2, marked fault: an empty 120 x 61, 0.51 → 0.25",
     "expect": [
@@ -700,17 +707,18 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L1-10", "verdict": "fault", "from": "owner card vivarium-L1-10, marked fault: loose, 806 → 16",
-    "expect": [
-     { "rule": "L7", "part": "b", "container": "window", "node": "window", "other": "left / right", "mark": "owner", "why": "carried by vivarium-L7-11: the same fault is reported once" }
+  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L1-10", "verdict": "fault", "fixed": "collection v2 9179403a", "from": "owner card vivarium-L1-10, marked fault: loose, 806 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "b", "node": "window", "other": "left / right", "mark": "owner", "why": "fixed by the collection v2 build: Roots' bed at the window's centre, the empty room reads centred" }
     ],
-    "clear": [],
     "pending": [] },
-  { "state": "vivarium/vivarium-docked", "card": "vivarium-L10-1", "verdict": "fault", "from": "owner card vivarium-L10-1, marked fault: the window cuts the picture's solid ink, 0 → 1",
-    "expect": [
-     { "rule": "L10", "part": "a", "container": "opening", "node": "window", "other": "its picture", "mark": "owner", "why": "marked a fault by the owner: the window cuts the picture's solid ink, 0 → 1 in the reviewed run" }
+  { "state": "vivarium/vivarium-docked", "card": "vivarium-L10-1", "verdict": "fault", "ruled": "2026-10-29 14:38", "from": "owner card vivarium-L10-1, marked fault: the window cuts the picture's solid ink, 0 → 1",
+    "expect": [],
+    "clear": [
+     { "rule": "L10", "part": "a", "node": "window", "other": "its picture", "mark": "owner", "why": "ruled by the owner 2026-10-29 14:38: the room view's window may cut plain background; cleared by the owner's exception in frame.json only while L10c finds nothing on the frame" },
+     { "rule": "L10", "part": "c", "mark": "owner", "why": "the 14:38 rule itself: the window edge cuts no mibi, no bed, no piece or join and no key prop on this frame" }
     ],
-    "clear": [],
     "pending": [] },
   { "state": "vivarium/vivarium-away", "card": "vivarium-L11-1", "verdict": "fault", "fixed": "Q1 ad4962df", "from": "owner card vivarium-L11-1, marked fault: a lone mark: no text within 8 px on its rows, 20 → 24",
     "expect": [],
@@ -761,11 +769,11 @@
      { "rule": "L6", "container": "window", "node": "window", "mark": "owner", "why": "cleared: the window's painting is a painted fill (vivarium.json layout.painted, region window)" }
     ],
     "pending": [] },
-  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L7-11", "verdict": "fault", "from": "owner card vivarium-L7-11, marked fault: slack 806 left, 54 right, 752 → 4",
-    "expect": [
-     { "rule": "L7", "part": "b", "container": "window", "node": "window", "other": "left / right", "mark": "owner", "why": "marked a fault by the owner: slack 806 left, 54 right, 752 → 4 in the reviewed run" }
+  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L7-11", "verdict": "fault", "fixed": "collection v2 9179403a", "from": "owner card vivarium-L7-11, marked fault: slack 806 left, 54 right, 752 → 4",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "b", "node": "window", "other": "left / right", "mark": "owner", "why": "fixed by the collection v2 build: Roots' bed at the window's centre, the slack even on both sides" }
     ],
-    "clear": [],
     "pending": [] },
   { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L7-9", "verdict": "fine", "from": "owner card vivarium-L7-9, marked fine: the filled area's centroid off the centre: x +0.73, y +0.84, 0.84 → 0.1",
     "expect": [],

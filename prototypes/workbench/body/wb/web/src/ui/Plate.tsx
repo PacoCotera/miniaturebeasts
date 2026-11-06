@@ -1,0 +1,33 @@
+import { useEffect, useState, type ReactNode } from 'react'
+import s from './Plate.module.css'
+
+type Props = { src: string | null; kind: 'plush' | 'clay'; width: number; height: number; stale?: boolean; progress?: number | 'indeterminate' | null; tag?: string; tagKind?: 'proof'; footer?: number; zoom?: { s: number; ox: number; oy: number }; alt?: string; className?: string; children?: ReactNode; onPointerDown?: () => void; onPointerEnter?: () => void; onPointerLeave?: () => void }
+
+// One render on its backdrop. A new picture is decoded off-screen first, then crossfaded in over 320 ms, so the last good picture never blanks.
+export function Plate({ src, kind, width, height, stale, progress, tag, tagKind, footer = 0, zoom, alt = '', className, children, onPointerDown, onPointerEnter, onPointerLeave }: Props) {
+  const [cur, setCur] = useState<string | null>(src)
+  const [next, setNext] = useState<string | null>(null)
+  useEffect(() => {
+    if (!src || src === cur) return
+    let dead = false
+    const img = new Image()
+    img.src = src
+    img.decode().catch(() => undefined).then(() => { if (!dead) setNext(src) })
+    return () => { dead = true }
+  }, [src, cur])
+  useEffect(() => {
+    if (!next) return
+    const t = setTimeout(() => { setCur(next); setNext(null) }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 330)
+    return () => clearTimeout(t)
+  }, [next])
+  const zs = zoom ? { transform: `scale(${zoom.s})`, transformOrigin: `${zoom.ox}% ${zoom.oy}%` } : undefined
+  return (
+    <div className={`${s.plate} ${kind === 'clay' ? s.clay : ''} ${stale ? s.stale : ''} ${className ?? ''}`} style={{ width, height, ...(footer ? { ['--foot' as string]: `${footer}px` } : {}) }} onPointerDown={onPointerDown} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave}>
+      {cur && <img className={s.img} style={{ ...(footer ? { bottom: footer, height: `calc(100% - ${footer}px)` } : {}), ...zs }} src={cur} alt={alt} draggable={false} />}
+      {next && <img className={`${s.img} ${s.incoming}`} style={{ ...(footer ? { bottom: footer, height: `calc(100% - ${footer}px)` } : {}), ...zs }} src={next} alt="" draggable={false} />}
+      {progress != null && <div className={s.progress} style={progress === 'indeterminate' ? undefined : { width: `${Math.round(progress * 100)}%` }} data-indeterminate={progress === 'indeterminate' || undefined} />}
+      {tag && <span className={`${s.tag} ${tagKind === 'proof' ? s.proofTag : ''}`}>{tag}</span>}
+      {children}
+    </div>
+  )
+}

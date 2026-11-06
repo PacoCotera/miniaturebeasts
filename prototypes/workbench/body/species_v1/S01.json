@@ -1,0 +1,126 @@
+{
+ "schema": "mb-species/2",
+ "id": "S01",
+ "name": "Loika",
+ "plan": "quadruped",
+ "family": "trotter",
+ "land": "woods",
+ "signature": {
+  "type": "leaf crest",
+  "socket": "head-top",
+  "count": [
+   1,
+   5,
+   3
+  ],
+  "curl": null,
+  "accent": "own"
+ },
+ "plan_version": 1,
+ "anchors": {
+  "ears": "wide",
+  "tail": "wide",
+  "coat": "wide",
+  "body": "tight",
+  "face": "tight"
+ },
+ "sockets": [],
+ "face": {
+  "eyes": {
+   "count": 2,
+   "iris": {
+    "share": 0.85,
+    "pupil": 0.7,
+    "colour": "amber"
+   },
+   "catch": [
+    {
+     "at": [
+      -0.3,
+      0.32
+     ],
+     "r": 0.25
+    }
+   ],
+   "attitude": "content",
+   "frames": [
+    "open",
+    "closed"
+   ],
+   "ring": {
+    "colour": "cream ring",
+    "share": 1.3,
+    "zone": 3
+   }
+  },
+  "mouth": {
+   "width": 0.2,
+   "shape": "curve",
+   "rest": "closed"
+  }
+ },
+ "coat": {
+  "zones": {
+   "cream": {
+    "zone": 1,
+    "where": "chest, throat and muzzle"
+   },
+   "toe pad": {
+    "zone": 2,
+    "where": "the soles"
+   },
+   "eye ring": {
+    "zone": 3,
+    "where": "round each eye"
+   }
+  },
+  "layouts": {},
+  "material": {
+   "family": "felt"
+  }
+ },
+ "genome": {
+  "catalogue": {
+   "id": "mb-genome-framework",
+   "version": 14,
+   "digest": "ae6bf810ca4edc08722a48a7ab56681ec508efbe462283f1a630a941a5b6ee6e"
+  },
+  "chapters": [
+   {
+    "id": "coat",
+    "name": "Coat"
+   },
+   {
+    "id": "face",
+    "name": "Face"
+   },
+   {
+    "id": "shape",
+    "name": "Shape"
+   },
+   {
+    "id": "legs-tail",
+    "name": "Legs & tail"
+   },
+   {
+    "id": "movement",
+    "name": "Movement"
+   }
+  ],
+  "loci": []
+ },
+ "motion": {},
+ "legacy": {},
+ "mesh": {
+  "source": "meshes/S01/S01-m1.json",
+  "sha256": "97b02e7822e9e35d8ec513017a3737453fb09b5968c3aca753a35f5bf87d78a0",
+  "parts": [
+   {
+    "part": "parts/P0001/P0001-p1.json",
+    "sha256": "e74213f8d5d060f5e92d041e460239d9a439cafd8072ebe19315a2759413212e",
+    "socket": "crest",
+    "mirror": false
+   }
+  ]
+ }
+}

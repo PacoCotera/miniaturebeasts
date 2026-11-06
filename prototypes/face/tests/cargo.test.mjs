@@ -234,12 +234,10 @@ test("a pod swaps size where it lands by two dither nodes on one level clock: at
   at(s + 181); const c16 = census(); assert.deepEqual(c16, { tr: 0, pd: 1920, other: 0 }, "level 16: the plain stored pod"); assert.equal(nb(f, "t.pod.0.o"), null, "the out node is dropped"); assert.equal(nb(f, "t.pod.0.i"), null); assert.deepEqual(nb(f, `hatch.pod.${p.well}`), box, "the plain sprite at the stored pod's box (the well's centre − (20, 26))");
   assert.ok(nb(f, `hatch.lit.${p.well}`), "the well is lit"); assert.deepEqual(nb(f, `hatch.lit.${p.well}`), [cx[0] - 32, cx[1] - 32, 64, 64], "a 64 × 64 box centred on the well"); assert.deepEqual(f.errors(), []);
 });
-test("a pod with no free well goes to the mat: it travels to the row's next place (that place − (24, 64)) and swaps there; the line says a pod waits for a well", { skip }, async () => {
-  const { b, f, at, rg } = await opening({ crates: 1, open: true, podsEach: 2, pods: 5, waiting: 1 }); const c = rg.crates[0];
-  assert.deepEqual(c.pods.map((p) => [p.well, p.mat]), [[5, -1], [-1, 1]], "one free well: the first pod takes it, the second goes behind the pod already waiting");
-  at(1700 + 300 + 100);
-  at(1700 + 300 + 599); const end = nb(f, "t.pod.1.t"), place = [108, 434]; assert.ok(Math.abs(end[0] - (place[0] - 24)) <= 2 && Math.abs(end[1] - (place[1] - 64)) <= 2, `the travel ends at the place minus (24, 64): ${end}`);
-  at(2000 + 600 + 181); assert.deepEqual(nb(f, "waiting.pod.1"), [108, 434, 40, 48], "stored on the mat, the second place of two"); assert.deepEqual(nb(f, "waiting.shadow.1"), [104, 474, 48, 14]); assert.deepEqual(nb(f, "waiting.pod.0"), [60, 434, 40, 48], "the older pod at the left of two");
+test("no rack (the pods design): every pod of the run comes home to a well of the hatch, which shows the newest six at home; none goes to the mat", { skip }, async () => {
+  const { f, at, rg } = await opening({ crates: 1, open: true, podsEach: 2, pods: 5 }); const c = rg.crates[0];
+  assert.deepEqual(c.pods.map((p) => [p.well, p.mat]), [[4, -1], [5, -1]], "seven at home: the wells show the newest six, and the run's two land in the last two");
+  at(2000 + 600 + 181); assert.equal(nb(f, "waiting.pod.0"), null, "the mat stays empty"); assert.equal(nb(f, "waiting.pod.1"), null);
 });
 test("a find goes after the pods, 300 apart, to the next place of the strip (36 + 20 i, 384) and swaps to 16 × 16 by the dither; it is on the strip when it has landed", { skip }, async () => {
   const { b, f, at, rg } = await opening({ crates: 1, open: true, podsEach: 1, finds: ["pearl", "shard"] }); at(1700 + 300 - 10); assert.equal(nb(f, "t.find.0.t"), null, "the find waits for the pod's 300");

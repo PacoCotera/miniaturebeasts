@@ -9,7 +9,7 @@
  },
  "taxonomy": {
   "code": "S09",
-  "resembles": "a big bird",
+  "resembles": "an upright body on two legs, wings tucked in",
   "moves": "strides, soars",
   "habitat": "meadow, rock field",
   "gate": "Weather expeditions",
@@ -43,7 +43,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -79,7 +80,7 @@
  "signature": {
   "anchor": "cobalt",
   "second": "butter",
-  "feature": "wings and a beak; big birds of open sky",
+  "feature": "a beak and a pointed crest; watchers of the open sky",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.beak-presence": "on",
@@ -89,7 +90,7 @@
   },
   "finish": {
    "anatomy.crown-form": "pointed",
-   "growth.wing-span-ratio": "long",
+   "growth.wing-span-ratio": "short",
    "growth.wing-chord-ratio": "wide",
    "appearance.flap-translucency": "opaque",
    "growth.support-drop-ratio": "long",
@@ -115,8 +116,8 @@
     "hex": "#4d7ed4"
    },
    {
-    "pigment": "lagoon",
-    "hex": "#269fa5"
+    "pigment": "butter",
+    "hex": "#fff0b8"
    }
   ]
  },
@@ -2303,6 +2304,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -2383,7 +2388,7 @@
   "carried": 61,
   "trunk": 56,
   "branch": 5,
-  "absent": 79,
+  "absent": 80,
   "locked": 25,
   "lockedBy": {
    "switch": 5,

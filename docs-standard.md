@@ -94,6 +94,14 @@ The game's words are used exactly, and capitalised as here: **mibi** (plural
 | hull | Shield |
 | rides (a mibi in the Companion) | with you; on an expedition, partner |
 | outing | expedition |
+| night, dusk, dawn (inside the world) | the Shade; the afternoon. Home keeps its day and night |
+| hunt, hunter, prey | stalk, pounce on (a leaf, a fruit) |
+| send the Probe out | go in with the Probe |
+| never (of mutation or capture) | not now |
+| shelter under a tree (in words or pictures) | an overhang, a cave, a lit outpost |
+| a light that keeps land awake | a lamp is for the explorer; it reveals no land |
+
+What arrives at a turn arrives asleep, under the veil. Fog banks hide; they never put land back to sleep.
 
 The [design glossary](design/README.md#words-used-here) defines every word. A new word is added
 there before it is used, and only after its name check.

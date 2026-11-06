@@ -9,7 +9,7 @@
  },
  "taxonomy": {
   "code": "S08",
-  "resembles": "a goat or deer",
+  "resembles": "a light, slim-legged body with big cupped ears",
   "moves": "bounds, climbs",
   "habitat": "rock field, meadow",
   "gate": null,
@@ -41,7 +41,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -115,8 +116,8 @@
     "hex": "#ae674d"
    },
    {
-    "pigment": "charcoal",
-    "hex": "#465459"
+    "pigment": "butter",
+    "hex": "#fff0b8"
    }
   ]
  },
@@ -2025,6 +2026,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -2105,7 +2110,7 @@
   "carried": 58,
   "trunk": 55,
   "branch": 3,
-  "absent": 82,
+  "absent": 83,
   "locked": 36,
   "lockedBy": {
    "switch": 5,

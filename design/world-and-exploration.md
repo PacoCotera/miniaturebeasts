@@ -2,7 +2,7 @@
 
 Exploration is where curiosity starts. It supplies the pods every mibi comes from,
 the materials the Station needs, and the places a grown partner helps the player
-reach. The player sends the Companion's **Probe** out on **expeditions** across a
+reach. The explorer walks in on **expeditions**, the **Probe** in hand, across a
 large, foggy world, goes down into the places they choose, and acts on creatures,
 stones and weather to see what changes.
 
@@ -49,6 +49,7 @@ the Station the pod is identified and hatches; then the world turns once.
   place's border, spends nothing: the pawn bumps and the line says "Steep edge ·
   look for stairs" (**Built**). Facing an edge, the map line names it first:
   "Ahead: steep edge", "Ahead: stairs up", "Ahead: stairs down" (**Built**).
+- **Every realm holds every species**: at least two herds of three in each species' habitat; a missing species surfaces at the next turn.
 - **Generated once, then permanent.** Each world is generated from a seed when
   the save starts and then persists: land, landmarks and obstacles change only by
   events and the player (**Decided**). Storage is the seed plus changes; places
@@ -60,9 +61,11 @@ the Station the pod is identified and hatches; then the world turns once.
 - **Nothing refills; new things arrive** (**Decided**). Every find has its own
   identity; once taken it is gone. A pushed slab stays pushed, a shaken bush stays
   bare (**Built**).
-- **The arrival guard.** New things, warm stones included, arrive only away from
-  where the player just was: never in a place entered on the expedition that just
-  ended (**Decided**; **Built** for warm stones).
+- **The arrival guard.** Every new thing, pods included, arrives away from where
+  the player just was. Pods, young, blooms and the pod a let-go mibi leaves arrive
+  more than 4 steps from every cell the last expedition walked. Warm stones
+  arrive outside every place it entered; the let-go pod is a
+  new thing too. Storm marks are the storm's, not arrivals.
 - **The turn clock** ("T7") counts world turns from 1 (**Decided**) and flashes
   when the world turns (**Built**).
 - **Fog lifts through progression**: walking, research, partners, items, Probe
@@ -92,7 +95,7 @@ the Station the pod is identified and hatches; then the world turns once.
   partner and starts at the burrow (**Built**).
 - **The field clock counts actions, not seconds.** The world moves only when the
   player moves or acts; no timers and no time sinks in the field (**Decided**).
-  No day/night cycle and no day-part light (**Decided**).
+  No day/night cycle and no day-part light. Night is a place, the Shade, never a time; the vivarium at home keeps its own days and nights.
 - **End expedition** works only on the expedition's start cell (a flag on the
   map) or a lit outpost in reach. Elsewhere it is dimmed and the line names the
   nearest place to end it. On the map it gives the distance, "Start · about 2
@@ -321,8 +324,9 @@ at 20 carried; Essence never turns into Energy (**Built**).
 - **Research "studies"**: what a study is and what it reveals (today a 2 Data
   placeholder at the Station).
 - **The swimmer**: the taxonomy gives the fast-water gate to S10 (Igara); the Companion does not play a swimmer ability yet.
-- **Night and Waterside** expedition types (Night needs a glowing partner, uses
-  short sight and nocturnal routines); the rest of the three to five V1 types and
+- **Shade and Waterside** expedition types (the Shade is deep wood and caves the
+  afternoon light misses; it needs a glowing partner, short sight and shade
+  routines); the rest of the three to five V1 types and
   about ten kinds of event.
 - **Items, mods and Probe tier 3**; a clearer look for charged stones; bonded
   care on the active mibi screen (no needs or meters until care is designed).

@@ -5,11 +5,12 @@
   "name": "Pesko",
   "plural": "Pesko",
   "order": 6,
-  "summary": ""
+  "summary": "",
+  "parked": true
  },
  "taxonomy": {
   "code": "S06",
-  "resembles": "a raccoon",
+  "resembles": "a four-legged body",
   "moves": "ambles, climbs",
   "habitat": "pond edge, wood",
   "gate": null,
@@ -41,7 +42,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -1910,6 +1912,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -1990,7 +1996,7 @@
   "carried": 59,
   "trunk": 59,
   "branch": 0,
-  "absent": 81,
+  "absent": 82,
   "locked": 44,
   "lockedBy": {
    "switch": 6,

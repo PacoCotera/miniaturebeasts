@@ -7,12 +7,13 @@ import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset,
 import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
 import { gradedOf, grade } from "./light-grade.mjs";
-import { layeredStand, composeStand, standPictureId, standVariant, fitDown, curlPicture, curlOfStand, traitTile } from "./layered-stand.mjs";
+import { juvenileMirrored, mirrorPic } from "./facing.mjs";
+import { layeredStand, composeStand, standPictureId, standVariant, fitDown, curlPicture, curlOfStand, traitTile, factorPicture, variantPixels } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
 import { portraitSource, portraitOpening } from "./portrait-source.mjs";
-import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
+import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackCrownIds, rackPatternId, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
-import { emblemArt, ICON, beamArt, mibiArt, founderArt, speciesArt } from "./art.mjs";
+import { emblemArt, dewArt, ICON, beamArt, mibiArt, founderArt, speciesArt } from "./art.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
@@ -22,6 +23,7 @@ import { renderCell } from "./specimen.mjs";
 import { sheetPicture, renderDisc, sheetKept, keptPictures, warmPaper } from "./library-sheet.mjs";
 import { facePicture } from "./face-pictures.mjs";
 import { farPicture, miniPicture } from "./lineage-pictures.mjs";
+import { registerReading } from "./reading-pictures.mjs";
 
 const SHEET_IDS = {};   // the Level 2 sheet's current entry of each kind (library-sheet.mjs keeps its pictures)
 const LINEAGE_IDS = {};   // Level 3's current entry of each kind (lineagefar, lineagemini); a newer one supersedes it
@@ -42,7 +44,7 @@ function podPicture(species, state, [bw, bh], env) {
   const cls = podClass([bw, bh]);
   if (cls && layersPlaced(layerClass(cls))) {
     const frame = species ? env.frameOf(species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
-    return podFromLayers(layerClass(cls), pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, state === "sealed");
+    return podFromLayers(layerClass(cls), pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, state === "sealed", frame?.taxonomy?.clan ?? null);
   }
   return new PB(bw, bh);
 }
@@ -53,7 +55,7 @@ const placePB = (place, size = 16) => { const pb = new PB(size, size), c = C[PLA
 const kinRingPB = (size, band) => { const pb = new PB(size, size), R = size / 2; for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) { const d = Math.hypot(x + 0.5 - R, y + 0.5 - R); if (d <= R && d > R - band) pb.set(x, y, C.hairline); } return pb; };
 const growPB = () => { const pb = new PB(16, 16); pb.rect(7, 6, 2, 9, C.leaf); pb.poly([[7, 8], [1, 3], [7, 5]], C.sprout); pb.poly([[9, 6], [15, 1], [9, 3]], C.sprout); pb.outline(() => C.ink); return pb; };
 const waitingPB = () => { const pb = new PB(24, 24); for (const x of [6, 12, 18]) { pb.ell(x, 12, 3, 4, C.mist); } pb.outline(() => C.slate); return pb; };
-const starPB = () => { const pb = new PB(12, 12), r = 6; pb.poly([[r, 0], [r + 1.7, r - 1.7], [12, r], [r + 1.7, r + 1.7], [r, 12], [r - 1.7, r + 1.7], [0, r], [r - 1.7, r - 1.7]], C.cream); pb.rect(5, 5, 2, 2, C.white); pb.outline(() => C.gold); return pb; };
+const starPB = () => dewArt(12);
 // The stamp on its label: cells of whole pixels, cell = floor(104 / (N + 2)) and at least 2, drawn with its quiet margin, centred on the 120 label.
 export function stampPicture(frame, genome, readIds) {
   const sg = stampGenome(frame, genome, readIds); if (!sg) return null;
@@ -70,8 +72,9 @@ const putOrMaster = (id, masterId, w, h, until, build, extra = {}, pixelsOf = ma
 
 // The sources of a moving set's stand-in cells (Station M1 §1.5): the placed juvenile stand-in at the size, or for an adult Pip's placed stand (the adult plan), else the rig of the species' type specimen at that size; the 96 × 88 juvenile stand-in for the curl.
 const placedPic = (id, w, h, light = "day") => { const m = masterAt(id, w, h); return m ? assetOf(gradedOf(id, light)) : null; };   // a placed master takes the scene's light (fix 7); the rig is never graded
+const walkPic = (id, w, h, light) => { const p = placedPic(id, w, h, light); return p && juvenileMirrored(id) ? mirrorPic(p) : p; };   // the Home walk turns by its set's native side: a mirrored young's stand is taken back to the master's own way
 export const movingSource = (env) => ({
-  stand: (species, stage, w, h, light) => placedPic(`mibi-${stage === "juvenile" ? "juvenile" : "adult"}-${species}-${w}x${h}`, w, h, light) ?? speciesArt(env.frameOf(species), w, h, "three-quarter"),
+  stand: (species, stage, w, h, light) => walkPic(`mibi-${stage === "juvenile" ? "juvenile" : "adult"}-${species}-${w}x${h}`, w, h, light) ?? speciesArt(env.frameOf(species), w, h, "three-quarter"),
   nap: (species, light) => placedPic(`mibi-juvenile-${species}-96x88`, 96, 88, light) ?? speciesArt(env.frameOf(species), 96, 88, "three-quarter"),
 });
 // A layered stand (layered-stand.mjs): the base with the layers the mibi's drawn looks call for, composed here in the logic process once and kept by id like the stamp; the face is given the pixels 1:1 and never a layer.
@@ -91,15 +94,15 @@ export function registerPictures(reqs, env) {
       case "pod": if (!r.species && r.state === "sealed" && podClass(r.size) && masterAt(`pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1])) { putOrMaster(r.id, `pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1]); break; } { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { status: podStatus(layerClass(podClass(r.size))) } : {}); break; }
       case "rackpod": {   // the Home rack pod: the signed 24×32 layers recoloured by the species' pair (home.json regions.rackPod.layers); an empty picture until the base layers are placed
         const P = SPECS.home.regions.rackPod; if (!r.size || r.size[0] !== P.size[0] || r.size[1] !== P.size[1]) throw new Error(`rackpod ${r.id}: size ${r.size} is not the spec's ${P.size}`); const L = P.layers, patterns = SPECS.pods.podLayers.patterns, frame = r.species ? env.frameOf(r.species) : null, placed = rackLayersPlaced(L), pid = rackPatternId(frame, L, patterns);
-        put(r.id, P.size[0], P.size[1], "the rack pod's layers (the home hand masters)", () => (placed ? rackPodFromLayers(frame, L, SPECS.cross.colours.pigmentChips, patterns, P.size) : new PB(P.size[0], P.size[1])), placed ? { status: leastFinal([...rackBase(L), ...(pid ? [pid] : [])]) } : {}); break;
+        put(r.id, P.size[0], P.size[1], "the rack pod's layers (the home hand masters)", () => (placed ? rackPodFromLayers(frame, L, SPECS.cross.colours.pigmentChips, patterns, P.size) : new PB(P.size[0], P.size[1])), placed ? { status: leastFinal([...rackBase(L), ...rackCrownIds(frame, L), ...(pid ? [pid] : [])]) } : {}); break;
       }
       case "podpart": {   // a piece of a pod from its signed layers at their own size (the opened pod's bowl and cap, pod-opened-*), recoloured by the species' pair, never scaled (T-20261016-222)
         const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
-        put(r.id, r.size[0], r.size[1], "the opened pod's layers", () => (layersPlaced(r.cls) ? podFromLayers(r.cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false) : new PB(r.size[0], r.size[1])), layersPlaced(r.cls) ? { status: podStatus(r.cls) } : {}); break;
+        put(r.id, r.size[0], r.size[1], "the opened pod's layers", () => (layersPlaced(r.cls) ? podFromLayers(r.cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false, frame?.taxonomy?.clan ?? null) : new PB(r.size[0], r.size[1])), layersPlaced(r.cls) ? { status: podStatus(r.cls) } : {}); break;
       }
       case "podicon": {   // the founder's pod in the Incubate panel's price (build spec 6a.2): the renderer's collection pod (88 x 112) reduced once to 16 x 20 in the logic process
         const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR(), [w, h] = r.size;
-        put(r.id, w, h, "the collection pod's layers", () => { if (!layersPlaced("collection")) return new PB(w, h); const big = podFromLayers("collection", pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false), px = fitDown(big.rgba(), big.w, big.h, w, h); return { w, h, rgba: () => px }; }); break;
+        put(r.id, w, h, "the collection pod's layers", () => { if (!layersPlaced("collection")) return new PB(w, h); const big = podFromLayers("collection", pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false, frame?.taxonomy?.clan ?? null), px = fitDown(big.rgba(), big.w, big.h, w, h); return { w, h, rgba: () => px }; }); break;
       }
       case "relit": {   // a figure lit to the capsule's roof lamp, with its shadow and the moss blades in front of its feet, one picture (relight.mjs), made in the logic process; parts: [{ id, over?: [id] }], bg: { id, at: [x, y] } or null
         const ok = r.parts.every((p) => isFilled(p.id) || hasAsset(p.id));
@@ -133,7 +136,7 @@ export function registerPictures(reqs, env) {
       case "stampplate": put(r.id, r.size, r.size, "the stamp label's plate (the stampCase look)", () => labelPlate(r.size, RGB[C.bone], RGB[C.hairline], r.k)); break;   // the plate of the 120 label, dimmed by K × WARM with its hairline edge (stamplook.mjs)
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const fr = env.frameOf(r.species), g = r.bud ? env.budGenome() : r.mibi != null ? env.mibiGenome(r.mibi) : (() => { const p = env.podById(r.pod); return r.choices ? env.founderGenome(p, r.choices) : p.genome; })(); const pic = stampPicture(fr, g, r.read).build(); return r.k ? dimPicture(pic, r.k) : pic; }); break;   // with a k the stamp is dimmed in linear light when it is rasterised (stamplook.mjs)
       case "founder": { const painted = placedPic(`mibi-adult-${r.species}-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1]);   // Create founder A (interim): the species' painted adult, one flat picture, in place of the rig render
-        put(r.id, r.size[0], r.size[1], "the founder's painting (the species' painted adult where it is placed, else the stylised rig pass; the calm unknown where a chapter is unread: unknown.mjs)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return founderArt(fr, g, r.read, r.size[0], r.size[1], painted); }, painted ? { status: "master" } : STAND_IN); break; }   // the rig pass (no painted adult) is a stand-in   // the placeholder rig; the signed treatment (ghost, veil) on the painted layer, clear on the art layer
+        put(r.id, r.size[0], r.size[1], "the founder's painting (the species' painted adult where it is placed, else the stylised rig pass; the calm unknown where a chapter is unread: unknown.mjs)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return founderArt(fr, g, r.read, r.size[0], r.size[1], painted, !!r.whole); }, painted ? { status: "master" } : STAND_IN); break; }   // the rig pass (no painted adult) is a stand-in   // the placeholder rig; the signed treatment (ghost, veil) on the painted layer, clear on the art layer
       case "crop": {   // a window of a placed master, 1:1 (never scaled): the master's pixels at `at`, `size` wide and high, transparent where the window passes the master's edge; a master not placed leaves the labelled stand-in
         const m = masterAt(r.master, r.of[0], r.of[1]), [w, h] = r.size, [x0, y0] = r.at; if (hasAsset(r.id)) break;
         if (!m) { put(r.id, w, h, r.until, () => { const pb = new PB(w, h); pb.rect(0, 0, w, h, C.stone); return pb; }); break; }
@@ -157,7 +160,19 @@ export function registerPictures(reqs, env) {
         if (!src) registerSlot({ id: r.id, w: 40, h: 30, until: "the sitting's portrait (derived on the Station from its opening)" }); else registerAsset({ id: r.id, w: 40, h: 30, status: "derived", build: () => src });
         break;
       }
-      case "mibi": { if (r.looks) { registerLayered(r); break; } const [w, h] = r.size, young = r.stage === "juvenile"; putOrMaster(r.id, young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan); an adult without one is asked as its species' juvenile stand (stands.mjs, station-layouts.md Composed states rule 5), and only a species with no juvenile stand reaches the rig here, shown as a stand-in", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter"), {}, gradedOf(young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, r.light ?? "day")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed; else the view has asked for mibi-juvenile-SXX at the place's size (stands.mjs); else the rig at the adult's own size      case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas: composed from its placed masters or §1.5's stand-ins
+      case "mibi": { if (r.looks) { registerLayered(r); break; }
+        if (r.factor && r.master) {   // a factor view (the mibi collection): the species' signed 304 x 312 stand reduced by one factor (layered-stand.mjs factorPicture), derived from signed pixels; a light grades it as it grades a master
+          const day = r.id.replace(/:(dawn|dusk|night)$/, ""); if (!hasAsset(day)) { const [w, h] = r.size; registerAsset({ id: day, w, h, status: "derived", until: null, build: () => factorPicture(assetOf(r.master), r.factor, r.size, day) }); }
+          if (r.id !== day && !hasAsset(r.id)) registerAsset({ id: r.id, w: r.size[0], h: r.size[1], status: "derived", until: null, build: () => grade(assetOf(day), r.light ?? "day") });
+          break; } const [w, h] = r.size, young = r.stage === "juvenile"; putOrMaster(r.id, young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan); an adult without one is asked as its species' juvenile stand (stands.mjs, station-layouts.md Composed states rule 5), and only a species with no juvenile stand reaches the rig here, shown as a stand-in", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter"), {}, gradedOf(young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, r.light ?? "day")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed; else the view has asked for mibi-juvenile-SXX at the place's size (stands.mjs); else the rig at the adult's own size      case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas: composed from its placed masters or §1.5's stand-ins
+      case "mibiv": {   // a mibi in a state the collection marks on the figure (dark, cold, outline: layered-stand.mjs variantPixels), made from its picture's pixels once
+        registerPictures([r.base], env); if (hasAsset(r.id)) break; const b = assetOf(r.base.id); if (!b) break; const st = assetEntry(r.base.id)?.status === "placeholder" ? "placeholder" : "derived";
+        registerAsset({ id: r.id, w: b.w, h: b.h, status: st, until: st === "placeholder" ? LAYER_UNTIL : null, build: () => { let px = null; return { w: b.w, h: b.h, rgba: () => px ?? (px = variantPixels(assetOf(r.base.id).rgba(), b.w, b.h, r.variant, (n) => RGB[C[n]])) }; } });
+        break; }
+      case "dim": {   // a room's house tile not bought: its placed tile darkened x 0.55 (the collection v2 design, G1), made from the tile's pixels once; an empty slot until the tile is placed
+        if (hasAsset(r.id)) break; const b = hasAsset(r.master) ? assetOf(r.master) : null; if (!b) { registerSlot({ id: r.id, w: r.size[0], h: r.size[1], until: "the house tile (placed with the rooms)" }); break; }
+        registerAsset({ id: r.id, w: b.w, h: b.h, status: "derived", until: null, build: () => { let px = null; return { w: b.w, h: b.h, rgba: () => px ?? (px = variantPixels(assetOf(r.master).rgba(), b.w, b.h, "dark", (n) => RGB[C[n]])) }; } });
+        break; }
       case "curl": {   // a sleeper's curl at the stand's scale: a layered species' composed curl pose, else the 304 curl master reduced by the standing figure's factor, with its own shadow (layered-stand.mjs curlPicture), composed once here; a light grades it as it grades a stand
         const lay = r.looks && layeredStand(r.species, r.stage, [304, 312], r.view, "curl"), src = lay ? curlOfStand(lay, r.looks) : assetOf(r.master), pic = curlPicture(src, r.species, r.stage, r.factor, r.view, lay ? `${standVariant(lay, r.looks).key}|${r.stage}` : r.master);
         if (!hasAsset(r.day)) registerAsset({ id: r.day, w: pic.w, h: pic.h, status: "derived", until: null, build: () => pic });
@@ -198,6 +213,7 @@ export function registerPictures(reqs, env) {
           const p = r.kind === "lineagefar" ? farPicture(r.input, SPECS.library, { rgb, ground: sheetGround() }) : miniPicture(r.input, SPECS.library, { rgb }); console.log(`# lineage ${r.id}: rendered in ${p.ms.toFixed(1)} ms`); return (data = p.rgba); } }; } });
         break;
       }
+      case "readchamber": case "readrail": case "readdisc": case "readgather": case "readstamp": case "readplate": registerReading(r, env); break;   // the reading screen v2's composed pictures (reading-pictures.mjs)
       default: throw new Error("unknown picture kind " + r.kind);
     }
   }
@@ -244,4 +260,4 @@ export const warmLibraryPaper = () => warmPaper();
 export const clearLibraryCells = () => { CELLS.clear(); WARM.length = 0; ASKED.clear(); };
 
 // The material icons the text runs draw (16 px).
-export const iconRequests = () => [...["energy", "data", "essence", "cross"].map((name) => ({ kind: "icon", id: `icon:${name}:16`, name, px: 16 })), { kind: "slot", id: "icon-cross-16", master: "icon-cross-16", size: [16, 16], until: "the cross icon master (the clash line's ✕)" }];   // the clash line's ✕ is the master icon-cross-16 (painted), not the stand-in sprite
+export const iconRequests = () => [...["energy", "data", "essence", "cross"].flatMap((name) => [14, 15, 16].map((px) => ({ kind: "icon", id: `icon:${name}:${px}`, name, px }))), { kind: "slot", id: "icon-cross-16", master: "icon-cross-16", size: [16, 16], until: "the cross icon master (the clash line's ✕)" }];   // 14 and 15 px: the mibi collection's card lines; the clash line's ✕ is the master icon-cross-16 (painted), not the stand-in sprite

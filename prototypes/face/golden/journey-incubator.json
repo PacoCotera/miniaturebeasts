@@ -112,16 +112,16 @@
      }
     ],
     "screen": "pods",
-    "state": "collection",
-    "ok": "Look at this pod",
+    "state": "inventory",
+    "ok": "Take to the reading room",
     "price": null,
-    "subject": "Loika is partly read"
+    "subject": ""
    },
    {
     "screen": "pods",
-    "view": "collection",
-    "cur": "dev-1-39u:p0",
-    "want": "dev-1-39u:p0"
+    "view": "inventory",
+    "sort": "use",
+    "focus": "card.0"
    },
    {
     "key": "back",
@@ -129,7 +129,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "place.0",
+      "target": "card.0",
       "verb": "back"
      }
     ],

@@ -1,0 +1,6 @@
+#!/bin/sh
+# mb-login's start, run by its unit: the current release's login when the release carries one (so it rolls back with the release),
+# else the copy install.sh put beside this file (a release from before the login).
+f="${MB_ROOT:?the unit sets MB_ROOT}/current/ops/sandbox/login/mb_login.py"
+[ -f "$f" ] || f="$(dirname "$0")/mb_login.py"
+exec /usr/bin/python3 "$f"

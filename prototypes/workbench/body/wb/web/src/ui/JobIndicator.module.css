@@ -1,0 +1,8 @@
+.jobs { display: flex; align-items: center; gap: 6px; color: var(--text-3); font-size: var(--t-14); padding: 6px 4px; border-radius: var(--r-1); }
+.ring { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line-2); border-top-color: var(--text-2); animation: spin 0.9s linear infinite; flex: none; }
+.ring[data-waiting] { animation: none; border-top-color: var(--line-2); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pop { background: var(--raised); border: 1px solid var(--line); border-radius: var(--r-2); box-shadow: var(--shadow-2); padding: var(--s-3); min-width: 200px; font-size: var(--t-14); z-index: 30; display: grid; gap: var(--s-2); }
+.row { display: flex; align-items: center; gap: var(--s-2); }
+.t { margin-left: auto; color: var(--text-3); }
+.wait { color: var(--text-2); }

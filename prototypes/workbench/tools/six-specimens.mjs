@@ -30,7 +30,7 @@ frames.forEach((frame, i) => {
     blit(tile, x + TILE * ZOOM + GAP, y + H + GAP);
     blit(render(scene, cameras[view].tile, "silhouette"), x + TILE * ZOOM + GAP + TILE + GAP, y + H + GAP);
   });
-  console.log(`${frame.species.id} ${frame.taxonomy.resembles}`);
+  console.log(`${frame.species.id} ${frame.signature.feature}`);
 });
 writeFileSync(path.resolve(here, "../img/six-specimens.png"), encodePNG(out));
 console.log("wrote img/six-specimens.png");

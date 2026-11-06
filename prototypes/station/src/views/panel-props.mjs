@@ -36,7 +36,7 @@ export function incubateBuild(m, spec, frame, pods, createSpec) {
   const line = { ok: cur === "card.keep" ? Sg.keep : Sg.incubate, subject: "", need: "", back: Sg.back };   // the verb of the focused bezel; the price stands in the panel's header, not here
   return { overlay: { id: "panel", state: "open", form: "incubate", regions, focus: { cur, targets: [{ id: "card.incubate", enabled: true }, { id: "card.keep", enabled: true }] } }, line, requests, cards: incubateCards() };
 }
-// The cards of the Return panels (§1.6): Return it (the gain from the rules, its fact in the text colour, the subject on its place's scene) and Keep (the subject as it is, and what that means). The cost of the act is a gain, ❀ +2 for a mibi and ❀ +1 for a pod.
+// The cards of the Return panels (§1.6): Return it (the gain from the rules, its fact in the text colour, the subject on its place's scene) and Keep (the subject as it is, and what that means). Letting go pays nothing (owner 2026-10-28 20:42, 23:16): the card names what happens (the pod of its line), no gain.
 // Neither card carries a destination mark: the subject stays in the room either way.
 export const WILD = [144, 152], WILD_POD = [88, 112];
 export function wildCards(m, spec, frame, requests) {
@@ -52,7 +52,7 @@ export function wildCards(m, spec, frame, requests) {
     picture = req({ kind: "pod", id: `pod:${sp ?? "-"}:${subject.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state, size });
   }
   return [
-    { id: "return", act: "return", room: null, picture, pictureSize: size, mark: "", name: releaseName, cost: S.gainText(mibi ? S.PRICE.wildMibi : S.PRICE.wild), gain: true, short: "", line: fact, loss: false, dim: false, outcome: "wild" },
+    { id: "return", act: "return", room: null, picture, pictureSize: size, mark: "", name: releaseName, cost: "", gain: false, short: "", line: fact, loss: false, dim: false, outcome: "wild" },
     { id: "keep", act: "keep", room: null, picture, pictureSize: size, mark: "", name: keepName, cost: "", gain: false, short: "", line: keepLine, loss: false, dim: false },
   ];
 }
@@ -73,10 +73,10 @@ export const ROOM_PREVIEW = [348, 160];
 // The preview of the room to add: a 1:1 cut (the crop request) of the room's own Idle painting of the light, rooms.json rooms.<id>.preview { from, rect }; the card has no stage and no pedestal
 const previewOf = (req, pv, light, room) => { const master = withLight(pv.from, light), id = `room-${room}-preview-${light}-${pv.rect[2]}x${pv.rect[3]}`, of = master.match(/-(\d+)x(\d+)$/).slice(1).map(Number); return req({ kind: "crop", id, master, of, at: pv.rect.slice(0, 2), size: pv.rect.slice(2), until: "the room's Idle painting it is cut from (rooms.json rooms.<id>.preview)" }); };
 export function addRoomCards(m, spec, frame, requests) {
-  const { st, settings } = m, Sg = spec.strings.addRoom, req = reqOf(requests), next = S.roomCount(st, settings), p = S.roomPrice(st, settings) ?? 0, pv = next < S.ROOMS_MAX ? roomData(next).preview : null;   // { from: the room's Idle painting, rect: the cut }
+  const { st, settings } = m, Sg = spec.strings.addRoom, req = reqOf(requests), next = S.roomCount(st, settings), th = S.nextTheme(st, settings), ti = S.ROOM_THEMES.indexOf(th), p = S.roomPrice(st, settings) ?? 0, pv = ti >= 0 ? roomData(ti).preview : null;   // { from: the room's Idle painting, rect: the cut }
   const short = S.canPay(st, p, 0, 0) ? "" : S.shortIcons(st, p, 0, 0);
   return [
-    { id: "add", act: "addRoom", room: null, picture: pv ? previewOf(req, pv, m.light ?? "day", roomName(next)) : "", pictureSize: ROOM_PREVIEW, bare: true, mark: "", name: Sg.cards.add.name, cost: S.priceText(p, 0, 0), gain: false, short, line: Sg.cards.add.line, loss: false, dim: !!short },
+    { id: "add", act: "addRoom", room: null, picture: pv ? previewOf(req, pv, m.light ?? "day", roomName(ti)) : "", pictureSize: ROOM_PREVIEW, bare: true, mark: "", name: Sg.cards.add.name, cost: S.priceText(p, 0, 0), gain: false, short, line: fill(Sg.cards.add.line, { Room: th ? S.ROOM_NAMES[ti] : "", n: S.settleTurns((st.rooms || 1) + 1, th, S.roomRules(settings)) }), loss: false, dim: !!short },
     { id: "keep", act: "keep", room: null, picture: "", pictureSize: ROOM_PREVIEW, mark: "", name: Sg.cards.keep.name, cost: "", gain: false, short: "", line: Sg.cards.keep.line, loss: false, dim: false },
   ];
 }

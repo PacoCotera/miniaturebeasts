@@ -9,7 +9,7 @@
  },
  "taxonomy": {
   "code": "S13",
-  "resembles": "a beetle",
+  "resembles": "a low domed body on six legs",
   "moves": "crawls",
   "habitat": "rock field, cave",
   "gate": null,
@@ -40,7 +40,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -114,8 +115,8 @@
     "hex": "#465459"
    },
    {
-    "pigment": "marigold",
-    "hex": "#e8b83f"
+    "pigment": "jade",
+    "hex": "#38a878"
    }
   ]
  },
@@ -1298,7 +1299,7 @@
    "family": "structure",
    "scope": "trunk",
    "switch": false,
-   "consumer": "rig: thread, club or feather tip",
+   "consumer": "rig: thread, club or fern-tip curl",
    "kind": "locked",
    "lockReason": "fixed",
    "chapter": null,
@@ -1311,7 +1312,7 @@
    "looks": [
     "thread"
    ],
-   "guard": "rig: thread, club or feather tip",
+   "guard": "rig: thread, club or fern-tip curl",
    "nature": "look",
    "changedBy": "species"
   },
@@ -1750,6 +1751,10 @@
    "why": "absent: a C11 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -1830,7 +1835,7 @@
   "carried": 47,
   "trunk": 44,
   "branch": 3,
-  "absent": 93,
+  "absent": 94,
   "locked": 29,
   "lockedBy": {
    "switch": 3,

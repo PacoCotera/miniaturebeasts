@@ -5,7 +5,7 @@
 // must give the same hashes (B4b). `--logs <dir>` also writes, per state, <dir>/<screen>/<png name>.json: the face's log (its nodes, type entries and snapshot) and the props facts the specs' layout.facts
 // name, from the frame the hash is taken of, for the layout check (tools/layout-check.mjs); nothing is written into the tree. A state that draws a placed picture the masters index flags placeholder or stand-in is
 // refused; so is one that draws a built picture registered stand-in (the code drawing a creature, an item, a light or an effect itself), except the developer switch's mechanism goldens (DEV_SWITCH), which are listed.
-//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/goldens.mjs [--check] [--logs <dir>] [pods|home|cargo|idle]
+//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/goldens.mjs [--check | --long-names] [--logs <dir>] [pods|home|cargo|idle]
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,12 +21,14 @@ import { habitatStates } from "./habitat-states.mjs";
 import { libraryStates } from "./library-states.mjs";
 import { benchStates } from "./bench-states.mjs";
 import { sittingStates } from "./sitting-states.mjs";
+import { settingsStates } from "./settings-states.mjs";
 
-const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), check = process.argv.includes("--check");
+const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), longNames = process.argv.includes("--long-names"), check = process.argv.includes("--check") || longNames;   // --long-names: the states drawn again with the longest names of the live list (station-page.mjs), for the layout check's long-names pass only: nothing written, no hash compared (the hashes are not the goldens')
+if (longNames) { process.env.LONG_NAMES = "1"; if (!process.argv.includes("--logs")) { console.error("--long-names needs --logs <dir>"); process.exit(2); } }
 const logsAt = process.argv.indexOf("--logs"), logs = logsAt > 0 ? path.resolve(process.argv[logsAt + 1] ?? "") : null;
 if (logsAt > 0 && !process.argv[logsAt + 1]) { console.error("--logs needs a directory"); process.exit(2); }
 // the props paths of the generated pictures' layout facts (each spec's layout.facts), read from the props of the frame the log is taken of
-const FACT_PATHS = (() => { const dir = path.resolve(golden, "../../ui/specs/station"), out = new Set(); for (const f of readdirSync(dir).filter((f) => f.endsWith(".json"))) { try { for (const q of JSON.parse(readFileSync(path.join(dir, f), "utf8")).layout?.facts ?? []) out.add(q.path); } catch { /* not a spec */ } } return [...out]; })();
+const FACT_PATHS = (() => { const dir = path.resolve(golden, "../../ui/specs/station"), out = new Set(); for (const f of readdirSync(dir).filter((f) => f.endsWith(".json"))) { try { const L = JSON.parse(readFileSync(path.join(dir, f), "utf8")).layout; for (const q of L?.facts ?? []) out.add(q.path); for (const q of L?.given ?? []) out.add(q); } catch { /* not a spec */ } } return [...out]; })();   // layout.given: the props facts the check reads of the frame itself (a room view's `view` and its window's edge data, L10c)
 const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' goldens" }, home: { states: homeStates, prefix: "", note: "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones)" },
   cargo: { states: cargoStates, prefix: "", note: "Cargo's goldens: the bay (one to three crates, empty, shut, pods waiting), each step of one crate's opening, the frame after ✓ Skip, the report" },
   create: { states: createStates, prefix: "", note: "Create's goldens: nothing read, the shape (as the pod is, changed, a clash, a doing, one look, short, busy, the first founder), the roll's dither halfway and the grow event at three instants" },
@@ -36,8 +38,10 @@ const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' gold
   library: { states: libraryStates, prefix: "", note: "The Library. Level 1: only the Loika met, a mid-game catalogue (the wish alone on a found species and beside the Loika's face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock). Level 2: the Loika at mid, its Coat lit with its page, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat lit complete, the Blikur and the Loika late (colour chips). Level 3, far: a Loika lineage of two blocks (the ring on Moss) and of one (on Dot); close: on Moss, links leaving every edge, a tree that fits the view, a pan's three steps (motion on, virtual clock) and FAR to CLOSE at the dither's midpoint" },
   bench: { states: benchStates, prefix: "", note: "The Probe bench: docked with the ring on the plates, the upgrade armed, the Probe away, and the upgrade fitted" },
   sitting: { states: sittingStates, prefix: "", note: "The sitting (S01 adult Dot, noon, reduced motion unless timed): the pose step (three habits, the curl, one habit, a juvenile), the place step (two places, at night, five places), the confirm step (at rest, armed), begin at 150 ms (motion on, virtual clock), the portrait (the bone canvas at 528×392) and a long name" },
+  settings: { states: settingsStates, prefix: "", note: "The hold ring (frame.json hold) on a calm screen, behind the developer setting realmSleep: at 0, 1000, 2000 and 3000 ms of ✓ held, 150 ms after letting go, and the reduced-motion quarters" },
   idle: { states: idleStates, prefix: "", note: "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk" } };
 const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length ? want : Object.keys(SCREENS);
+const SETTLE = new Set(["pods"]);   // the screens whose states are taken on the real clock with their events over (the others take timed instants on a virtual clock, or have none open)
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
 // The developer switch "Motion sets (stand-ins)": mechanism goldens (not art) that draw the moving sets' stand-in atlases on purpose; the built-stand-in guard skips them and lists what they draw.
 const DEV_SWITCH = new Set(["vivarium-moving-8000ms", "habitat-moment-S01-0", "habitat-moment-S01-450", "habitat-moment-S01-900", "habitat-moment-S01-1350"]);
@@ -46,6 +50,7 @@ for (const screen of run) {
   const { states, prefix, note } = SCREENS[screen], dir = path.join(golden, screen), file = path.join(dir, screen + ".json"), got = {}; const pngs = {};
   const { fails } = await states(async (name, page, fail, opts) => {
     if (opts?.captureOnly) return;   // a capture state (fix 14), not a golden
+    if (SETTLE.has(screen)) { try { await page.waitForFunction(() => window.__st.settled().ok, null, { polling: "raf", timeout: 20000 }); } catch { fail(name + ": the frame did not settle: " + JSON.stringify(await page.evaluate(() => window.__st.settled()))); } }   // every picture mark on the face, the top bar's tick and flash events done, two frames drawn since the props: the top bar is the same run to run
     const a = await page.evaluate(() => window.__st.snapshot({ capture: true }));
     if (logs) { const r = await page.evaluate((paths) => { const p = window.__st.props, lg = window.__st.check().log, get = (o, q) => q.split(".").reduce((v, k) => v?.[k], o), facts = {};
         for (const q of paths) { const v = get(p, q); if (v !== undefined) facts[q] = v; }
@@ -67,6 +72,7 @@ for (const screen of run) {
     if (diff) fails.push(`create-roll-100 must equal create-shape-changed below the top bar on the rig: every roll is a cut (fix 5 Create C8); ${diff} bytes differ`);
   }
   if (!check) { if (!fails.length) { writeFileSync(file, JSON.stringify({ _note: note + ": the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.", states: got }, null, 1) + "\n"); console.log("wrote " + Object.keys(got).length + " goldens to " + dir); } }
+  else if (longNames) { /* the long-names pass compares nothing */ }
   else if (!existsSync(file)) fails.push("no goldens at " + file);
   else { const have = JSON.parse(readFileSync(file, "utf8")).states; for (const [n, g] of Object.entries(have)) if (!got[n]) { fails.push(n + " was not drawn"); console.error("FAIL " + n + " was not drawn"); } else if (got[n].hash !== g.hash) { fails.push(n); console.error(`FAIL ${n}: ${got[n].hash}, golden ${g.hash}`); } for (const n of Object.keys(got)) if (!have[n]) { fails.push(n); console.error("FAIL " + n + " has no golden"); } }
   console.log(`${screen}: ` + (fails.length ? fails.length + " failure(s)" : check ? "goldens match" : "goldens taken")); failed += fails.length;

@@ -44,16 +44,7 @@ test("a spec whose name plate has no series, or min or max off the round, is ref
   }
   assert.equal((await boot()).rc, 0);
 });
-test("a plate that is not on the face is an error and a refused node; with the series sent, every name finds its plate, a long one clamped", { skip }, async () => {
-  const c = cases.find((x) => x.state === "overview" && /unidentified pod, the pod focused/.test(x.name)), pics = c.pictures.filter((p) => !/^plate-name-/.test(p.id));
-  let { f } = await boot(); for (const p of pics) f.handleOf(p.id, withPolicy((id) => flat(id, p.w, p.h)));
-  assert.equal(f.props(c.props), 0); frames(f); assert.ok(f.errors().some((e) => /name plate plate-name-\d+x24 is not on the face/.test(e))); assert.ok(logOf(f).refused >= 1);
-  ({ f } = await boot()); for (const p of pics) f.handleOf(p.id, withPolicy((id) => flat(id, p.w, p.h))); f.pin(pinnedPictures(pods, frame), withPolicy((id) => { const p = pinnedPictures(pods, frame).find((q) => q.id === id); return flat(id, p.w, p.h); }));
-  const props = JSON.parse(JSON.stringify(c.props)); props.regions.specimen.name = "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa Bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
-  assert.equal(f.props(props), 0); frames(f); assert.deepEqual(f.errors(), []); const lg = logOf(f);
-  assert.ok(lg.regions.some((r) => r.id === "name" && r.layer === "painted" && r.rect[2] === 224), "the long name takes the widest plate, 224");
-  assert.ok(lg.pictures <= 200, `${lg.pictures} pictures after the preload`);
-});
+// (a plate missing on the face, and the long name clamped to the widest plate, were drawn on Pods' old overview; Pods draws no name plate now, and Create's tag carries the plate series: create.test.mjs)
 test("the pinned pictures are never dropped to make room", { skip }, async () => {
   const { f } = await boot(), set = pinnedPictures(pods, frame); f.pin(set, withPolicy((id) => { const p = set.find((q) => q.id === id); return flat(id, p.w, p.h); }));
   const env = { rgb: () => [0, 0, 0], cap: () => 12, picture: () => flat("x", 4, 4), slice: () => null, tile: () => 0 };

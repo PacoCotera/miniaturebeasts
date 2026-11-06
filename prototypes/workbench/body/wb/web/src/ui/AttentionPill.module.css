@@ -1,0 +1,6 @@
+.pill { display: inline-flex; align-items: center; gap: 8px; font: 500 var(--t-14)/1 var(--font); padding: 9px 14px; border-radius: var(--r-pill); border: 1px solid var(--line-2); color: var(--text); background: var(--raised); white-space: nowrap; }
+.pill[data-pulse]:not([data-pulse="0"]) { animation: pulse 900ms var(--ease) 1; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--attn-dot); flex: none; }
+.pill[data-kind=fail] .dot { background: var(--fail); }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--fail) 55%, transparent); } 100% { box-shadow: 0 0 0 12px transparent; } }
+@media (prefers-reduced-motion: reduce) { .pill[data-pulse] { animation: none; } }

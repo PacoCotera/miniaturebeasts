@@ -33,7 +33,7 @@ async function enter(page, sc) {
     const S = window.__st, st = S.ST, m = st.mibis[0]; m.name = spec.name ?? "Dot"; Object.assign(m, { habits: spec.habits.slice(), walked: spec.walked.slice() });
     if (spec.portrait) { const r = S.portraitSource(digest, eval(`(${fx})`)()); if (!r.ok) throw new Error("portrait fixture: " + r.error); m.portrait = { state: "delivered", pose: "calm", place: "pond", crate: "sit1", start: 0, at: 0, digest }; }
     else st.sitting = { source: "dev", key: null, at: 0 };
-    S.settings.light = spec.light ?? "day"; S.settings.stationTime = "12:00"; S.UI.idle = false; S.UI.panel = null; S.UI.hab.namer = null; S.UI.meet = null; S.UI.hab.id = m.id; S.goto("habitat"); S.UI.hab.f = "portrait"; w.persist();
+    S.settings.light = spec.light ?? "day"; S.settings.stationTime = "12:00"; S.UI.idle = false; S.UI.lastInput = performance.now(); S.UI.panel = null; S.UI.hab.namer = null; S.UI.meet = null; S.UI.hab.id = m.id; S.goto("habitat"); S.UI.hab.f = "portrait"; w.persist();
     S.intent({ screen: "habitat", target: "portrait", verb: "confirm" });
   }, [{ juvenile: !!sc.juvenile, name: sc.name ?? null, habits: sc.habits, walked: sc.walked, portrait: !!sc.portrait, light: sc.light ?? null }, PICTURED, boneCanvas.toString()]);
 }

@@ -4,47 +4,14 @@
 // so the rules run as the page runs them. The Station's dock is its own dockKey (prototypes/station/src/state.mjs).
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import vm from "node:vm";
+import { makePage } from "./page-harness.mjs";
 import { freshSt, dockKey } from "../../station/src/state.mjs";
 import * as W from "../src/world.mjs";
-import * as A from "../src/atlas.mjs";
-import * as V from "../src/view.mjs";
 import { syntheticPieces, SYNTH_TONE } from "../tools/world-vectors.mjs";
 
-const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
-const MODS = { world: W, view: V, atlas: A };
-const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
-const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
-const SCRIPT = MODULE.replace(IMPORT_RE, "");
 
 // The page in a sandbox: every DOM and canvas call lands on an inert stub; localStorage is `store`.
-function page(store = {}) {
-  const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
-    apply: () => any, construct: () => any, set: () => true });
-  const clock = { t: 1000, timers: [] };
-  const ctx = { console, URLSearchParams, Date, fetch: () => new Promise(() => {}), document: any, location: any, navigator: any,
-    matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
-    performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
-    localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
-  const run = src => vm.runInContext(src, ctx);
-  const KEY = run("SAVE_KEY");
-  const p = {
-    ctx, run, clock, store, KEY,
-    get S() { return run("S"); },
-    // real time passes: the timers due run in order
-    pass(ms) { const end = clock.t + ms; for (;;) { clock.timers.sort((a, b) => a.at - b.at); const n = clock.timers[0]; if (!n || n.at > end) break; clock.timers.shift(); clock.t = n.at; n.f(); } clock.t = end; },
-    // one key press, after any input lock has run out
-    key(k, n = 1) { for (let i = 0; i < n; i++) { p.pass(400); run("act(" + JSON.stringify(k) + ")"); } },
-    sv: () => JSON.parse(store[KEY]),
-    // the Station writes its part of the shared save, and the Companion reads it (the page's storage event calls save())
-    writeSt(st) { const o = JSON.parse(store[KEY]); o.st = JSON.parse(JSON.stringify(st)); store[KEY] = JSON.stringify(o); run("save()"); },
-  };
-  return p;
-}
+const page = (store = {}) => makePage({ store });
 // The field, as ruling 6 hashes it: S.exp without its Shield, and the world the expedition can change.
 const FIELD = "JSON.stringify((() => { const e = Object.assign({}, S.exp); delete e.shield; return [e, S.pods, S.veil, S.svy, S.pins, S.cells, S.opened, S.cr, S.revealed, S.totalActions, S.turn]; })())";
 const field = p => p.run(FIELD);
@@ -463,7 +430,7 @@ test("unusable stored bytes boot to the can't-be-shown screen and stay byte for 
 test("a save that throws while it loads is kept; a newer version goes to the newer screen; a v7 save never moves over bytes; an empty store starts at once", () => {
   const throws = JSON.stringify({ v: 8, seed: 1, cr: [], mibis: [], gen: 2, bay: 5, st: { wid: 1 }, pods: null, trips: {}, carried: 7, found: 3, exp: 4 });
   const q = page({ "mb-save-v8": throws }); if (q.run("RT.broken")) assert.equal(q.store["mb-save-v8"], throws);
-  const n = page({ "mb-save-v8": JSON.stringify({ v: 9, seed: 1, cr: [], mibis: [] }) }); assert.equal(n.run("RT.readOnly"), true); assert.equal(n.run("!!RT.broken"), false);
+  const n = page({ "mb-save-v8": JSON.stringify({ v: 10, seed: 1, cr: [], mibis: [] }) }); assert.equal(n.run("RT.readOnly"), true); assert.equal(n.run("!!RT.broken"), false);
   const v7 = JSON.stringify({ v: 7, seed: 3 }), b = page({ "mb-save-v8": "{not json", "mb-exploration-v7": v7 });
   assert.equal(b.run("RT.broken"), true); assert.equal(b.store["mb-save-v8"], "{not json"); assert.equal(b.store["mb-exploration-v7"], v7, "the v7 save is not migrated over it");
   const e = page({});
@@ -488,7 +455,7 @@ test("a v8 save that throws while it loads leaves every stored key untouched", (
 });
 
 test("a newer save: ✓ reloads in one press, no arm, no new world; the save is never written or moved", () => {
-  const old = JSON.stringify({ v: 9, seed: 5, cr: [], mibis: [] });
+  const old = JSON.stringify({ v: 10, seed: 5, cr: [], mibis: [] });
   const p = page({ "mb-save-v8": old });
   assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("!!RT.broken"), false);
   p.run("globalThis.__rl = 0; location = { reload: () => { __rl++; } };");

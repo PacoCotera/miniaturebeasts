@@ -3,7 +3,7 @@
 export const milestone = "slot 7 (Cross with the splice)";
 export const steps = [
   { id: "cross-open", what: `✓ on the cross mark opens Cross on its overview: the pair, "a × b · species", the forecast of four seeds for each switch and a range for each blend; ✓ "Cross them" at 2 Energy 4 Essence` },
-  { id: "cross-splice", what: "▼ opens the first chapter under the rail, ▲ goes back, ◀ ▶ keep the state; the first compare of a pair on the Cross earns +1 Data (the bench trickle), ▲ ▼ again earns nothing" },
+  { id: "cross-splice", what: "▼ opens the first chapter under the rail, ▲ goes back, ◀ ▶ keep the state; comparing a pair on the Cross earns nothing" },
   { id: "cross-siblings", what: "siblings at kinship a quarter: the notice says close kin and the forecast narrows" },
   { id: "cross-room-key", what: "a room key on Cross drops the unpaid choices; coming back starts fresh" },
 ]

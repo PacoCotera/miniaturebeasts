@@ -17,14 +17,29 @@ export function composePod(layers, A, B, w, h, { sealed = false } = {}) {
   }
   return out;
 }
+// Straight-alpha "over": src laid on dst (both RGBA, same size), returns dst.
+export function overRGBA(dst, src) {
+  for (let o = 0; o < dst.length; o += 4) {
+    const sa = src[o + 3] / 255; if (!sa) continue;
+    const da = dst[o + 3] / 255, ra = sa + da * (1 - sa);
+    for (let c = 0; c < 3; c++) dst[o + c] = Math.round((src[o + c] * sa + dst[o + c] * da * (1 - sa)) / (ra || 1));
+    dst[o + 3] = Math.round(ra * 255);
+  }
+  return dst;
+}
+// A clan's crown over a composed pod (the crown layers are the pod class's size): the crown is composePod's shade x mask in the second colour B (where the mask is clear it is the contact shadow, black at the shade's alpha), the glow (C03, C20) laid over it, the whole laid over the pod.
+export function composeCrown(pod, { shade, mask, glow }, B, w, h) {
+  const clear = new Uint8ClampedArray(w * h * 4), crown = composePod({ shade, body: clear, accent: mask }, B, B, w, h);
+  if (glow) overRGBA(crown, glow);
+  return overRGBA(pod, crown);
+}
 // The rack pod from its 1-bit layer masks (24×32, a layer's `on` pixels are the ones with alpha): each layer's on pixels take its fill ([r, g, b]) in `order`, later over earlier; alpha 255 where `body`
 // is on, 0 elsewhere. Pure on RGBA arrays of one size; a layer with no mask draws nothing.
-export function composeRackPod(masks, order, fills, w, h) {
-  const out = new Uint8ClampedArray(w * h * 4), body = masks.body;
+export function composeRackPod(masks, order, fills, w, h, unclipped = []) {
+  const out = new Uint8ClampedArray(w * h * 4), body = masks.body, free = order.filter((l) => unclipped.includes(l));   // a layer in `unclipped` (the clan's crown) is drawn wherever it is on, the body or not
   for (let i = 0; i < w * h; i++) {
-    const o = i * 4; if (!body || !body[o + 3]) continue;
-    for (const l of order) { const m = masks[l], f = fills[l]; if (m && f && m[o + 3]) { out[o] = f[0]; out[o + 1] = f[1]; out[o + 2] = f[2]; } }
-    out[o + 3] = 255;
+    const o = i * 4, onBody = !!(body && body[o + 3]);
+    for (const l of order) { const m = masks[l], f = fills[l]; if (m && f && m[o + 3] && (onBody || free.includes(l))) { out[o] = f[0]; out[o + 1] = f[1]; out[o + 2] = f[2]; out[o + 3] = 255; } }
   }
   return out;
 }

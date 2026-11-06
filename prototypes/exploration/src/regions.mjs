@@ -1,0 +1,226 @@
+// Regions: a realm is many maps. A region is today's world (16 x 20 cells) with its own seed, generator and biome; the realm keeps
+// everything else. Pure functions on plain objects, no page, no storage but an adapter.
+// The page keeps reading S.seed, S.revealed, S.pods and the rest; the region in use is
+// mounted onto S, and unmounted before anything is written.
+//   save v9 on disk: { v: 9, seed (= regions[0].seed), began, here, regions: [Region …], …the realm's fields… }
+//   Region = { id, n, kind: "home" | "season", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
+//              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
+import { MW, MH, GENS, hash } from "./world.mjs";
+import { LANGUAGE } from "../../workbench/framework/language.mjs";
+
+export const REALM_SAVE_V = 9;
+// the fields of a region's own map state: on S while the region is mounted, in regions[i].map when it is not.
+// lastPos lives in S.ui.lastPos on the page (the last start flag of the inset) and moves with the region.
+export const MAP_KEYS = ["revealed", "visited", "called", "signs", "pins", "cells", "pods", "cr", "veil", "svy", "svyF", "opened", "skulls", "lastStorm", "lastEntered", "lastTrail", "lastPos"];
+export const BIOMES_V1 = ["mixed", "woods", "fells", "marsh"];   // the kinds a realm of version 1 draws from
+export const BIOMES = [...BIOMES_V1, "downs", "thickets", "tallwood", "tarns", "meres"];
+export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Cliffs", marsh: "Marsh", downs: "Hills", thickets: "Thickets", tallwood: "Tallwood", tarns: "Highpools", meres: "Lakes" };   // the player's words (the copywriter owns them)
+// The kinds that spawn on each land, from the language registry (a land has one to three kinds; a kind lives on one land; the registry's land ids
+// are these biome ids). The realm's species draw reads this once the roster is the language's; the generators below still draw today's three species by tile land.
+export const BIOME_KINDS = Object.fromEntries(BIOMES.map(b => [b, LANGUAGE.kinds.filter(k => !k.template && k.land === b).map(k => k.id)]));
+// A realm's kind version: 1 draws its slots from the four older kinds, 2 from all nine by rarity. It is written on a new realm; a save without
+// it is version 1 and never changes, so its unopened slots keep their words.
+export const REALM_BIOME_V = 2;
+export const biomeVersion = realm => realm && realm.biomeV != null ? realm.biomeV : 1;
+// Common 6: Meadows, Woods, Hills, Cliffs, Marsh. Uncommon 3: Thickets, Tallwood, Highpools, Lakes.
+export const BIOME_WEIGHT = { mixed: 6, woods: 6, downs: 6, fells: 6, marsh: 6, thickets: 3, tallwood: 3, tarns: 3, meres: 3 };
+export const ATLAS = 5, CENTER = [2, 2], MAX_HOME = 25, REGION_EVERY = 140;
+const GOOD_CLOCK = Date.UTC(2026, 0, 1);   // a time before this is a clock that was never set
+
+export const regionId = n => "g" + n;
+// Region 1 keeps the realm's seed, so its map stays the same cell for cell. Region n takes a seed of its own (a seasonal region takes the event's).
+export const regionSeed = (seed1, n) => n === 1 ? seed1 : hash(seed1, "region", n);
+
+// ---- a region's map state ----
+// A new region's map, as a new world starts it (the page's worldFields, map part). Fields the page creates only when needed
+// (svyF, skulls, lastEntered, lastTrail, lastPos) are absent until then.
+export function blankMap() {
+  return { revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), called: {}, signs: {}, pins: [], cells: {}, pods: [], cr: [], veil: {}, svy: {}, opened: {}, lastStorm: null };
+}
+// the counts the atlas and the opening rule read: "explored" is visited and called (the page's explored(c)); "seen" is revealed
+export function exploredCount(map) { let n = 0; for (let c = 0; c < MW * MH; c++) if (map.visited && map.visited[c] && map.called && map.called[c]) n++; return n; }
+export function seenCount(map) { let n = 0; for (let c = 0; c < MW * MH; c++) if (map.revealed && map.revealed[c]) n++; return n; }
+
+export function regionRecord(o) {
+  const n = o.n, kind = o.kind || "home";
+  if (!Number.isInteger(n) || n < 1) throw new Error("a region needs n, from 1");
+  if (kind !== "home" && kind !== "season") throw new Error("region kind " + kind);
+  const biome = o.biome || "mixed"; if (!BIOMES.includes(biome)) throw new Error("region biome " + biome);
+  if (kind === "home" && !(Array.isArray(o.slot) && o.slot.length === 2)) throw new Error("a home region needs a slot");
+  if (typeof o.seed !== "number") throw new Error("a region needs a seed");
+  if (!Number.isInteger(o.gen)) throw new Error("a region needs a generator");
+  const map = o.map || blankMap();
+  return { id: o.id || regionId(n), n, kind, biome, slot: kind === "home" ? o.slot.slice() : null, ev: o.ev ?? null, name: o.name ?? null, seed: o.seed, gen: o.gen,
+    opened: o.opened, openedTurn: o.openedTurn ?? 0, turnSeen: o.turnSeen ?? o.openedTurn ?? 0, closes: o.closes ?? null, closed: !!o.closed,
+    exploredN: o.exploredN ?? exploredCount(map), seenN: o.seenN ?? seenCount(map), map };
+}
+
+// Pod ids in region n >= 2 carry the region ("g2.w0"), so two regions never hold the same id. Region 1 keeps its ids. The input is not changed.
+export function prefixPods(pods, n) {
+  return n === 1 ? pods.slice() : pods.map(p => ({ ...p, id: "g" + n + "." + p.id }));
+}
+
+// ---- the atlas: 5 x 5 slots, region 1 at the centre ----
+const NEIGHBOURS = [[2, 1], [3, 2], [2, 3], [1, 2]];   // north, east, south, west of region 1
+// The groups, and which groups touch: a slot draws from its inner neighbours' groups and the groups that border them. Green borders both;
+// Highlands and Waters do not touch each other (until the Cold and the Warm exist).
+export const BIOME_GROUP = { mixed: "green", woods: "green", downs: "green", thickets: "green", tallwood: "green", fells: "highlands", tarns: "highlands", marsh: "waters", meres: "waters" };
+const GROUP_TOUCH = { green: ["green", "highlands", "waters"], highlands: ["highlands", "green"], waters: ["waters", "green"] };
+const ringOf = (ax, ay) => Math.abs(ax - CENTER[0]) + Math.abs(ay - CENTER[1]);   // steps from region 1: ring 1 is the four slots around it
+const pickWeighted = (kinds, h) => { let r = h % kinds.reduce((a, b) => a + BIOME_WEIGHT[b], 0); for (const b of kinds) { if (r < BIOME_WEIGHT[b]) return b; r -= BIOME_WEIGHT[b]; } };
+// A slot's biome is fixed by the realm seed. The four slots around region 1 hold Woods, Fells and Marsh and one repeat of the three
+// (which one, and where, comes from the seed), so the first choice always offers all three.
+// Version 1: slots further out take any of the four older kinds. Version 2: all 25 slots are assigned ring by ring outward from the centre; a slot
+// draws a group, equally among the groups every inner neighbour (the slots beside it one ring nearer) allows (Green when no group is allowed by all of
+// them), then a kind inside that group by rarity. That depends on the seed alone, so it is the same whatever order the regions open in.
+const slotCache = new Map();
+function realmSlots(seed) {
+  if (slotCache.has(seed)) return slotCache.get(seed);
+  const grid = new Map(), cells = [];
+  for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) cells.push([ax, ay]);
+  cells.sort((a, b) => ringOf(...a) - ringOf(...b) || a[1] - b[1] || a[0] - b[0]);
+  for (const [ax, ay] of cells) {
+    const d = ringOf(ax, ay), key = ax + "," + ay;
+    if (d === 0) { grid.set(key, "mixed"); continue; }
+    if (d === 1) { grid.set(key, ring1(seed, ax, ay)); continue; }
+    let ok = null;
+    for (const [dx, dy] of [[0, -1], [1, 0], [0, 1], [-1, 0]]) {
+      const x = ax + dx, y = ay + dy; if (x < 0 || y < 0 || x >= ATLAS || y >= ATLAS || ringOf(x, y) !== d - 1) continue;
+      const allow = GROUP_TOUCH[BIOME_GROUP[grid.get(x + "," + y)]]; ok = ok ? ok.filter(g => allow.includes(g)) : allow.slice();
+    }
+    const groups = ok && ok.length ? ok : ["green"];
+    const group = groups[hash(seed, "slot", ax, ay) % groups.length];   // the group first, equally among those allowed; then the kind by rarity inside it
+    grid.set(key, pickWeighted(BIOMES.filter(b => BIOME_GROUP[b] === group), hash(seed, "slot", "kind", ax, ay)));
+  }
+  if (slotCache.size > 64) slotCache.clear();
+  slotCache.set(seed, grid); return grid;
+}
+function ring1(seed, ax, ay) {
+  const i = NEIGHBOURS.findIndex(([x, y]) => x === ax && y === ay);
+  const three = ["woods", "fells", "marsh"], items = [...three, three[hash(seed, "slot", "repeat") % 3]];
+  const order = [0, 1, 2, 3].sort((a, b) => hash(seed, "slot", "order", a) - hash(seed, "slot", "order", b) || a - b);
+  return items[order[i]];
+}
+export function slotBiome(seed, ax, ay, version = 1) {
+  if (ax === CENTER[0] && ay === CENTER[1]) return "mixed";
+  if (ringOf(ax, ay) === 1) return ring1(seed, ax, ay);
+  if (version < 2) return BIOMES_V1[hash(seed, "slot", ax, ay) % BIOMES_V1.length];
+  return realmSlots(seed).get(ax + "," + ay);
+}
+// The generator a realm opens a new home region with: version 2 realms use generator 4 (the region's kind shapes its world); version 1 realms keep generator 3.
+// A region keeps the generator and kind it was opened with, in its record.
+export const openGen = realm => biomeVersion(realm) >= 2 ? 4 : 3;
+// A new home region's record for a free slot: the slot's kind (by the realm's kind version), the realm's generator rule, its own seed.
+export function openHome(realm, slot, { n = realm.regions.length + 1, opened = Date.now(), openedTurn = realm.turn || 0 } = {}) {
+  const seed1 = realm.regions[0].seed;
+  return regionRecord({ n, kind: "home", biome: slotBiome(seed1, slot[0], slot[1], biomeVersion(realm)), slot, seed: regionSeed(seed1, n), gen: openGen(realm), opened, openedTurn });
+}
+const homes = regions => regions.filter(r => r.kind === "home" && r.slot);
+// The slots a new region can open in: free, inside the 5 x 5, and sharing an edge with an open home region. Row by row.
+export function freeSlots(regions) {
+  const taken = new Set(homes(regions).map(r => r.slot.join(",")));
+  const out = new Map();
+  for (const r of homes(regions)) for (const [dx, dy] of [[0, -1], [1, 0], [0, 1], [-1, 0]]) {
+    const x = r.slot[0] + dx, y = r.slot[1] + dy, k = x + "," + y;
+    if (x >= 0 && y >= 0 && x < ATLAS && y < ATLAS && !taken.has(k)) out.set(k, [x, y]);
+  }
+  return [...out.values()].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+}
+const isMounted = S => Array.isArray(S.visited);
+// Explored cells of one region: live for the region that is mounted, cached (at its last unmount) for the others.
+const exploredOf = (S, r) => r.id === S.here && isMounted(S) ? exploredCount(S) : r.exploredN;
+// The rule: a realm with n home regions can open the next when 140 x n cells are explored across them, up to 25 regions. Seasonal regions do not count.
+export function canOpen(S, every = REGION_EVERY) {
+  const hs = homes(S.regions), n = hs.length;
+  if (n >= MAX_HOME || !freeSlots(S.regions).length) return false;
+  return hs.reduce((a, r) => a + exploredOf(S, r), 0) >= every * n;
+}
+export const exploredAcross = S => homes(S.regions).reduce((a, r) => a + exploredOf(S, r), 0);
+
+// A home region is named by its side of region 1 and its biome: "the Meadows", "North Woods", and "Far East Cliffs" for the second on a side.
+// A seasonal region has the event's own name. A home region off the four axes has no name yet: the copywriter owes the words.
+const SIDE = { "0,-1": "North", "1,0": "East", "0,1": "South", "-1,0": "West" };
+export function regionName(region, realm) {
+  if (region.kind === "season") return region.name ?? null;
+  if (region.n === 1 || (region.slot[0] === CENTER[0] && region.slot[1] === CENTER[1])) return "the " + BIOME_NAME[region.biome];
+  const dx = region.slot[0] - CENTER[0], dy = region.slot[1] - CENTER[1];
+  if (dx && dy) return null;
+  const side = SIDE[Math.sign(dx) + "," + Math.sign(dy)], far = Math.abs(dx + dy) >= 2;
+  return (far ? "Far " : "") + side + " " + BIOME_NAME[region.biome];
+}
+
+// ---- mount and unmount ----
+export const regionById = (S, id) => { const r = S.regions.find(x => x.id === id); if (!r) throw new Error("no region " + id); return r; };
+// Puts the region on S: its map fields, its seed and generator, its last start. A key the region lacks is removed from S.
+export function mount(S, id) {
+  const R = regionById(S, id);
+  for (const k of MAP_KEYS) { if (k === "lastPos") continue; if (Object.hasOwn(R.map, k)) S[k] = R.map[k]; else delete S[k]; }
+  S.seed = R.seed; S.gen = R.gen; S.here = id;
+  if (S.ui && typeof S.ui === "object") { if (Object.hasOwn(R.map, "lastPos")) S.ui.lastPos = R.map.lastPos; else delete S.ui.lastPos; }
+  return R;
+}
+// Takes the fields back into the region that is mounted (a reassigned array is caught this way) and refreshes its counts.
+export function unmount(S) {
+  const R = regionById(S, S.here);
+  for (const k of MAP_KEYS) { if (k === "lastPos") continue; if (S[k] !== undefined) R.map[k] = S[k]; else delete R.map[k]; }
+  if (S.ui && typeof S.ui === "object" && S.ui.lastPos !== undefined) R.map.lastPos = S.ui.lastPos; else delete R.map.lastPos;
+  R.exploredN = exploredCount(R.map); R.seenN = seenCount(R.map);
+  return R;
+}
+// What goes to disk: the realm, with every region's map in its record. The mounted fields, `gen` and the mounted last start stay out.
+// The seed written is the realm's: regions[0].seed. S is unmounted (so the regions are current) and left as it is.
+export function serialize(S) {
+  unmount(S);
+  const o = {};
+  for (const k of Object.keys(S)) { if (MAP_KEYS.includes(k) || k === "gen") continue; o[k] = S[k]; }
+  o.seed = S.regions[0].seed;
+  if (S.ui && typeof S.ui === "object") { const ui = { ...S.ui }; delete ui.lastPos; o.ui = ui; }
+  return o;
+}
+
+// ---- save v8 to v9 ----
+// The earliest real time the save holds (the Station's start, a mibi's `since`, a crate), else `now`.
+function beganOf(s, now) {
+  const t = [];
+  const add = v => { if (Number.isFinite(v) && v >= GOOD_CLOCK) t.push(v); };
+  if (s.st && typeof s.st === "object") { add(s.st.at); for (const m of s.st.mibis || []) add(m && m.since); }
+  for (const m of s.mibis || []) add(m && m.since);
+  for (const c of s.bay || []) add(c && c.at);
+  return t.length ? Math.min(...t) : now;
+}
+// v8 -> v9, forward only, pure (the input is not changed). The save is as load() has filled it, so a new world's map fields are there;
+// a field it still lacks stays absent in the region. Region 1 is the save's world: its seed and generator, its map state, its place at the
+// centre of the atlas. Crates, the hold and an expedition under way carry no region: none means region 1.
+export function migrate8(v8, { now = Date.now() } = {}) {
+  if (!v8 || typeof v8 !== "object" || v8.v !== 8) throw new Error("migrate8 takes a v8 save");
+  const s = JSON.parse(JSON.stringify(v8));
+  const map = {};
+  for (const k of MAP_KEYS) if (k !== "lastPos" && Object.hasOwn(s, k)) { map[k] = s[k]; delete s[k]; }
+  if (s.ui && typeof s.ui === "object" && Object.hasOwn(s.ui, "lastPos")) { map.lastPos = s.ui.lastPos; delete s.ui.lastPos; }
+  const gen = s.gen == null ? 1 : s.gen; delete s.gen;
+  const began = beganOf(s, now);
+  const g1 = regionRecord({ id: "g1", n: 1, kind: "home", biome: "mixed", slot: CENTER, seed: s.seed, gen, opened: began, openedTurn: 0, turnSeen: s.turn || 0, map });
+  return { ...s, v: REALM_SAVE_V, began, here: "g1", regions: [g1] };
+}
+
+// 'ok' for a save this page can play, 'newer' for one from a newer page (a newer save version, or a region whose generator this page does not know:
+// the whole realm is then read-only and never written), 'broken' for anything else.
+export function realmStatus(s, gens = GENS) {
+  if (!s || typeof s !== "object" || Array.isArray(s)) return "broken";
+  if (typeof s.v === "number" && s.v > REALM_SAVE_V) return "newer";
+  if (typeof s.biomeV === "number" && s.biomeV > REALM_BIOME_V) return "newer";
+  if (s.v !== REALM_SAVE_V || !Array.isArray(s.regions) || !s.regions.length || !s.regions.every(r => r && r.map && typeof r.map === "object")) return "broken";
+  return s.regions.every(r => gens.includes(r.gen)) ? "ok" : "newer";
+}
+
+// The page's copy of the v8 bytes: written once, untouched, before the first v9 write, and kept until the next save version. `store` is a
+// localStorage-like adapter (getItem, setItem). Returns true when the copy is in place and equal to `raw`; false when it could not be made
+// (the save is then opened read-only, and never migrated). A copy already there is kept: it is the oldest v8 bytes.
+export function keepPre9(store, key, raw) {
+  const k = key + ".pre9";
+  try {
+    if (store.getItem(k) != null) return true;
+    store.setItem(k, raw);
+    return store.getItem(k) === raw;
+  } catch (e) { return false; }
+}

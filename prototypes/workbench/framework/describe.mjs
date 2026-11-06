@@ -4,6 +4,7 @@
 // text in every call as its own logged field (grow/service.py); the field guide can say the same.
 import { LOCI, resolveCopies, binFor, copyValue } from "./catalogue.mjs";
 import { brief } from "./species.mjs";
+import { OWED } from "./roster.mjs";
 
 // The trait's look for a genome, aligned with the frame's trait looks as catalogue.looksFor orders
 // them (one label per distinct pair of the pool, or per distinct resolved value when the trait names
@@ -95,7 +96,7 @@ const PROPORTION_WORDS = {
   "growth.muzzle-projection-ratio": { short: "a short muzzle", long: "a long muzzle" },
   "growth.beak-length-ratio": { short: "a short beak", long: "a long beak" },
   "growth.exterior-eye-size-ratio": { small: "small eyes", large: "big eyes" },
-  "growth.auricular-length-ratio": { short: "short ears", long: "long ears", tall: "tall ears" },
+  "growth.auricular-length-ratio": { small: "small ears", short: "short ears", medium: "larger ears", long: "long ears", tall: "tall ears" },
   "growth.antenna-length-ratio": { short: "short antennae", long: "long antennae" },
   "growth.crown-height-ratio": { low: "a low crest", high: "a tall crest" },
   "growth.feather-crest": { low: "a low feather crest", tall: "a tall feather crest" },
@@ -137,9 +138,9 @@ export function describeGenome(frame, genome, scene, { typeSpecimen = false } = 
   const posture = plan.limbSet === "legs" ? (plan.posture === "upright" ? "standing upright on its two legs, weight on its broad feet, body held level" : plan.posture === "splayed" ? "standing low on splayed legs, weight on all its feet, belly just off the ground" : "standing square on all its legs, weight settled on its feet, body resting between them")
     : plan.limbSet === "rays" ? "standing on its rays, weight on their tips" : plan.limbSet === "feelers" ? (plan.ground === "feeler tips" ? "poised on its feeler tips" : "resting on its belly, feelers trailing") : plan.ground === "afloat" ? "floating, fins spread" : "resting on its belly";
   let text = `A juvenile ${name}: ${caption}`;
-  if (typeSpecimen) text += ` It is the type of its kind, ${frame.taxonomy.resembles}: ${frame.signature.feature}.`;
+  if (typeSpecimen) text += ` ${OWED["describe.type-line"].replace("{feature}", frame.signature.feature)}`;   // no animal named: the feature line says what it is made of (OWED to the copywriter)
   for (const ch of chapters) text += ` ${ch.name}: ${ch.looks.map((l) => `${l.name.toLowerCase()} ${l.look.startsWith("between ") ? "between" : l.look}`).join("; ")}.`;
   if (proportions.length) text += ` Proportions: ${proportions.join(", ")}.`;
-  text += ` Posture: ${posture}, still, looking at the viewer.`;
+  text += ` Posture: ${posture}${plan.armSet ? ", two small hands held together at the chest" : ""}, still, looking at the viewer.`;
   return { chapters, proportions, caption, posture, text };
 }

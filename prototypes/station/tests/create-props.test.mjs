@@ -16,7 +16,7 @@ const createBuild = lineCased(createBuildUnchecked, "create");   // every body i
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("create.json"), pods = J("pods.json"), schema = J("create.props.json");
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000, SPECIES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => f.slice(8, 11));
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000, SPECIES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => f.slice(8, 11)).filter((id) => frameOf(id));   // a draft species is not loaded (genome.mjs setFrames)
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
@@ -92,7 +92,7 @@ test("the trait line: as the pod is, only <look> with the tag, one look, doing w
     list.forEach(({ t }, f) => {
       m.cr.f = f; m.cr.choices = {}; m.cr.clash = []; const opts = S.rollOptions(m.p, t.id), own = traitState(fr, t, m.p.genome); let L = m.build().props.regions.traitLine;
       const words = (s) => s.replace(/^✕ /, "").split(/\s+/).length;
-      if (t.nature === "doing") { assert.equal(L.text, `${t.name}: breed to change`); assert.equal(L.doing, true); assert.equal(L.changed, false); }
+      if (t.nature === "doing") { assert.equal(L.text, `${t.name}: cross to change`); assert.equal(L.doing, true); assert.equal(L.changed, false); }
       else if (opts.length <= 1) assert.equal(L.text, `${t.name}: one look in this pod`);
       else if (own.kind === "asleep") assert.equal(L.text, `${t.name}: ${own.shows}, ${own.asleep} asleep`);
       else assert.equal(L.text, `${t.name}: as the pod is`);
@@ -158,10 +158,10 @@ test("regions.pod.dome is the relit pod of the capsule: relit:<species>:pod:day:
 // ---- fix 5, Create (the gate): the same look, the sealed contexts, the right slot, the case ----
 test("fix 5: the trait line names the same look only when all four hold (S01 Crown: the pod's leaf crest hides bare head, the crest chosen); a hidden look chosen, a blend and any trait the pod does not hide never take it", () => {
   const fr = frameOf("S01"), crown = fr.chapters.flatMap((c) => c.traits).find((t) => t.name === "Crown");
-  for (const gs of [13, 4]) {   // the Loika at frame version 4 (T-20261016-200): gs 13: the hidden copy is choice 1; gs 4: choice 2
+  for (const gs of [13, 4]) {   // gs 13: the hidden copy is choice 1; gs 4: choice 2
     const m = make("S01", gs, fr.chapters.length), list = reviewTraits(m.p, fr), f = list.findIndex(({ t }) => t === crown), own = traitState(fr, crown, m.p.genome); assert.equal(own.kind, "hides"); m.cr.f = f;
     const keep = own.hiddenChoice === 1 ? 2 : 1; m.cr.choices = { [crown.id]: keep }; let L = m.build().props.regions.traitLine; assert.equal(L.text, "Crown: leaf crest, hides nothing"); assert.equal(L.changed, true);
-    m.cr.choices = { [crown.id]: own.hiddenChoice }; L = m.build().props.regions.traitLine; assert.equal(L.text, "Crown: bare head", "the hidden look chosen: the plain form"); assert.equal(L.changed, true);
+    m.cr.choices = { [crown.id]: own.hiddenChoice }; L = m.build().props.regions.traitLine; assert.match(L.text, /^Crown: bare head, (low crest|tall crest|crest) asleep$/, "the hidden look chosen: the plain form, with the crest it still carries asleep (frame version 5)"); assert.equal(L.changed, true);
   }
   for (const id of SPECIES) { const fr2 = frameOf(id), m = make(id, 3, fr2.chapters.length); reviewTraits(m.p, fr2).forEach(({ t }, f) => { const own = traitState(fr2, t, m.p.genome); if (own.kind === "hides" || S.rollOptions(m.p, t.id).length <= 1 || t.nature === "doing") return; m.cr.f = f; m.cr.choices = { [t.id]: 1 }; const L = m.build().props.regions.traitLine; assert.ok(!/hides nothing/.test(L.text), `${id} ${t.name} (${own.kind}): "${L.text}"`); assert.equal(L.changed, true); }); }
 });

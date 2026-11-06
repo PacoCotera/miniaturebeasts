@@ -289,9 +289,9 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
     const g = kind === TERR.SHADOW || mac ? lay.base : GRASSY.includes(t) ? T.GRASS : t === T.DARK ? T.DARK : t === T.SAND ? T.SAND : WETT(t) ? -1 : lay.base;   // terrain pieces and shore macros sit on the place's base
     if (g === T.SAND) { const p = pick(cat.sand, hash(seed, 'sd', key, x, y)); if (p) L.push(cellLayer(p, 0, 0)); }
     else if (g !== -1) { const p = cat.lawn[lawnIdx(i)]; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone })); if (g === T.DARK) tile.dark = 1; }
-    const sandGround = g === T.SAND && (t === T.SAND || t === T.REEDS);
+    const sandGround = g === T.SAND && (t === T.SAND || t === T.REEDS || (t === T.ROCK && lay.scree));   // on a scree place a stone on grass sits on a small scree skirt with round corners
     if (sandGround && rules.sandShore) {   // the sand shore: quarters toward other ground (water counts as sand; off the place too)
-      const sandish = (xx, yy) => { const n = at(xx, yy); return n === -1 || WETT(n) || n === T.SAND || (n === T.REEDS && lay.base === T.SAND); };
+      const sandish = (xx, yy) => { const n = at(xx, yy); return n === -1 || WETT(n) || n === T.SAND || (n === T.REEDS && lay.base === T.SAND) || (n === T.ROCK && lay.scree); };   // on a scree place a stone stands on the scree: no grass rim toward it
       let sm = 0; [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]].forEach(([dx, dy], b) => { if (!sandish(x + dx, y + dy)) sm |= 1 << b; });
       const st = QUADS.map(q => shoreState(sm, q)), ps = QUADS.map((q, k) => pick(cat.sandShore[q][st[k]], 0));
       if (st.some(v => v !== 'fill') && ps.every(Boolean)) QUADS.forEach((q, k) => L.push(quarterLayer(ps[k], q, 0, 0, waterTone)));
@@ -308,7 +308,10 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
     if (t === T.TALL) for (let k = 0; k < 2; k++) { const p = pick(cat.decal.tall, hash(seed, 'td', key, x, y, k));
       if (p) { const l = atLayer(p, hash(seed, 'tx', key, x, y, k) % (49 - Math.min(p.w, 48)), hash(seed, 'ty', key, x, y, k) % (49 - Math.min(p.h, 48))); if (l) L.push(Object.assign(l, { tone: lawnTone })); } }
     else if (t === T.FLOWERS) { const p = pick(cat.prop.flowers, hash(seed, 'pf', key, x, y)); if (p) { const l = atLayer(p, (TS48 - p.w) >> 1, TS48 - p.h); if (l) L.push(l); } }
-    else if (t === T.ROCK) { const p = pick(cat.prop.boulder.filter(q => q.w <= TS48 && q.h <= TS48), hash(seed, 'pb', key, x, y)); if (p) { const l = atLayer(p, (TS48 - p.w) >> 1, TS48 - p.h); if (l) L.push(l); } }
+    else if (t === T.ROCK) { const p = pick(cat.prop.boulder.filter(q => q.w <= TS48 && q.h <= TS48), hash(seed, 'pb', key, x, y));
+      if (p) {   // on a scree place a stone with no stone to its left or right stands off the tile centre, by up to 6 px across and 3 px up
+        const lone = lay.scree && at(x - 1, y) !== T.ROCK && at(x + 1, y) !== T.ROCK, heap = lay.scree && !lone, h = lone || heap ? hash(seed, 'bx', key, x, y) : 0;   // a stone beside a stone moves too, by half the range
+        const l = atLayer(p, ((TS48 - p.w) >> 1) + (lone ? (h % 13) - 6 : heap ? (h % 7) - 3 : 0), TS48 - p.h - (lone ? (h % 7) - 3 : heap ? (h % 5) - 2 : 0)); if (l) L.push(l); } }
     else if (t === T.REEDS) { const p = pick(cat.prop.reeds, hash(seed, 'pr', key, x, y)), on = !rules.reedStagger || (hash(seed, 'rk', key, x, y) & 1), off = rules.reedStagger ? (hash(seed, 'rx', key, x, y) % 17) - 8 : 0;
       if (p && on) sprites.push({ id: p.name, tx: x, ty: y, x: x * TS48 + (TS48 >> 1) - (p.w >> 1) + off, y: y * TS48 + TS48 - p.h, sortY: y * TS48 + 2 }); }
     else if (t === T.TRUNK) L.push({ stand: 'trunk', dx: 8, dy: 16 });

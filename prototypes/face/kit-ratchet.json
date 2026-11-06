@@ -17,7 +17,10 @@
     "pods": 0,
     "room": 0,
     "screens": 1,
-    "sitting": 0
+    "settings": 0,
+    "sitting": 0,
+    "vivarium": 0,
+    "wall": 0
   },
   "text": {
     "bench": 0,
@@ -37,10 +40,21 @@
     "pods": 0,
     "room": 0,
     "screens": 2,
-    "sitting": 4
+    "settings": 0,
+    "sitting": 4,
+    "vivarium": 0,
+    "wall": 0
   },
   "screenSpecific": [
-    { "file": "home_frame.c", "what": "the bay's berths (home.json regions.bay.picture)", "ruling": "K5 gate 2b" },
-    { "file": "library_family.c", "what": "the tree's links (tree.links.0..3, tree.path)", "ruling": "T-20261023-294: screen-specific until FAR is drawn live; then it becomes a station kit_links" }
+    {
+      "file": "home_frame.c",
+      "what": "the bay's berths (home.json regions.bay.picture)",
+      "ruling": "K5 gate 2b"
+    },
+    {
+      "file": "library_family.c",
+      "what": "the tree's links (tree.links.0..3, tree.path)",
+      "ruling": "T-20261023-294: screen-specific until FAR is drawn live; then it becomes a station kit_links"
+    }
   ]
 }

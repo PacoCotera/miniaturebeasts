@@ -9,7 +9,7 @@
  },
  "taxonomy": {
   "code": "S15",
-  "resembles": "a walking plant",
+  "resembles": "an upright body, broad below, on two short legs",
   "moves": "walks on its roots",
   "habitat": "wood",
   "gate": "sealed chapter",
@@ -40,7 +40,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -105,8 +106,8 @@
     "hex": "#38a878"
    },
    {
-    "pigment": "russet",
-    "hex": "#ae674d"
+    "pigment": "raspberry",
+    "hex": "#d95688"
    }
   ]
  },
@@ -1747,6 +1748,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -1807,7 +1812,7 @@
   "carried": 39,
   "trunk": 34,
   "branch": 5,
-  "absent": 101,
+  "absent": 102,
   "locked": 13,
   "lockedBy": {
    "switch": 2,

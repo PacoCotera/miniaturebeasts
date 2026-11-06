@@ -12,12 +12,16 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { SPECIES, specOf } from "./roster.mjs";
 import { buildFrame } from "./species.mjs";
+import { catalogueHeader, LANGUAGE_FRAME } from "./catalogue.mjs";
+import { LANGUAGE_KINDS, buildLanguageFrame } from "./language-frames.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const out = path.resolve(here, "../frames");
+const langOut = path.join(out, "language");   // the language frames (version 8) are new files beside the registry: no older frame file is rewritten
 const check = process.argv.includes("--check");
 const samples = Number(process.env.FRAME_SAMPLES ?? 200);
 mkdirSync(out, { recursive: true });
+mkdirSync(langOut, { recursive: true });
 
 export function buildRegistry({ log = () => {} } = {}) {
   const frames = [];
@@ -45,10 +49,24 @@ export function buildRegistry({ log = () => {} } = {}) {
   return frames;
 }
 
+// The language frames (language-frames.mjs): each kind written from the registry as a frame of version 8, in frames/language/ with its own index.
+export function buildLanguageRegistry({ log = () => {} } = {}) {
+  return LANGUAGE_KINDS.map((id) => {
+    const frame = buildLanguageFrame(id, { samples });
+    const c = frame.counts;
+    log(`${frame.species.name.padEnd(9)} ${frame.plan.code.padEnd(14)} language frame ${frame.frameVersion}: carried ${c.carried}, open ${c.open} in ${c.traits} traits, built ${frame.viability.constructed} of ${frame.viability.sampled}`);
+    return frame;
+  });
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const frames = buildRegistry({ log: console.log });
-  const index = { schema: "mb-frame-registry/1", catalogue: frames[0].catalogue, species: frames.map((f) => ({ id: f.species.id, name: f.species.name, clan: f.taxonomy.clan, plan: f.plan.code, rig: f.plan.rig, tier: f.taxonomy.tier, file: `species-${f.species.id}.json`, open: f.counts.open, traits: f.counts.traits, carried: f.counts.carried })) };
+  const index = { schema: "mb-frame-registry/1", catalogue: frames[0].catalogue, species: frames.map((f) => ({ id: f.species.id, name: f.species.name, clan: f.taxonomy.clan, plan: f.plan.code, rig: f.plan.rig, tier: f.taxonomy.tier, file: `species-${f.species.id}.json`, ...(f.species.parked ? { parked: true } : {}), ...(f.species.draft ? { draft: true } : {}), open: f.counts.open, traits: f.counts.traits, carried: f.counts.carried })) };
   const files = [["index.json", JSON.stringify(index, null, 1) + "\n"], ...frames.map((f) => [`species-${f.species.id}.json`, JSON.stringify(f, null, 1) + "\n"])];
+  const lang = buildLanguageRegistry({ log: console.log });
+  const langIndex = { schema: "mb-frame-registry/1", catalogue: catalogueHeader(LANGUAGE_FRAME), species: lang.map((f) => ({ id: f.species.id, name: f.species.name, clan: f.taxonomy.clan, plan: f.plan.code, rig: f.plan.rig, family: f.family, land: f.land, frameVersion: f.frameVersion, file: `species-${f.species.id}.json`, ...(f.species.draft ? { draft: true } : {}), open: f.counts.open, traits: f.counts.traits, carried: f.counts.carried })) };
+  const langFiles = [["language/index.json", JSON.stringify(langIndex, null, 1) + "\n"], ...lang.map((f) => [`language/species-${f.species.id}.json`, JSON.stringify(f, null, 1) + "\n"])];
+  files.push(...langFiles);
   let stale = 0;
   for (const [name, text] of files) {
     const p = path.join(out, name);

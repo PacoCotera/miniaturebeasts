@@ -4,8 +4,10 @@ import { openBay } from "./cargo.mjs";
 import { homeNeeds, librarySpecies } from "../views/home-props.mjs";
 import { intent as incubatorIntent } from "./incubator.mjs";
 import { openAt } from "./library.mjs";
+import { openInventory, researchKey } from "./pods.mjs";
 
-export const toPods = (h, id = null) => { const p = id != null && S.podById(h.st, id) ? S.podById(h.st, id) : S.neediestPod(h.st); if (p) h.ui.pods.cur = p.id; h.ui.pods.view = "collection"; h.ui.pods.focus.set(null); h.goto("pods"); };
+// Pods from Home and the Bay: the inventory, the ring on the pod named (the newest from the Bay), else where it was left; Home's Pods station is the Research key's two faces.
+export const toPods = (h, id = null) => openInventory(h, { from: "home", pod: id != null && S.podById(h.st, id) ? id : null });
 const toVivarium = (h, id) => { const ui = h.ui; if (id != null && S.mibiById(h.st, id)) ui.hab.id = id; ui.hab.f = "resident"; h.goto("habitat"); };   // the ring on the resident; a new mibi opens in its meet (ui.meet), ended by the first press there
 const toLibrary = (h) => openAt(h, librarySpecies(h.st, h.settings));   // Level 1 with the ring on Home's species: the one its Library module is for
 // The room's ✓: what needs the player (the notice's own action).
@@ -17,7 +19,7 @@ export function doNeed(h, nd) {
   else if (nd.act === "pods") toPods(h);
   else if (nd.act === "vivarium") { h.goto("vivarium"); const first = S.inRoom(h.st, h.st.face?.room ?? 0)[0]; h.ui.viv.f = nd.ring === "room.new" ? "room.new" : first ? "resident." + first.id : null; }   // the full need: ✓ Add a room puts the ring on the new-room chip, ✓ Make room on the first resident of the room shown (home.json strings.needs.full)
 }
-// ✓ on a target of Home: room | vivarium | library | pods | incubator | companion | bay. A bezel opens full screen, a station opens its room; the Companion opens the Probe bench while docked and does nothing away (the line says it is on a trip).
+// ✓ on a target of Home: room | vivarium | library | pods | incubator | companion | bay | settings. A bezel opens full screen, a station opens its room; the Companion opens the Probe bench while docked and does nothing away (the line says it is on a trip).
 // `back` does nothing on Home (the top).
 export function intent(h, target, verb) {
   if (verb !== "confirm") return;
@@ -25,10 +27,11 @@ export function intent(h, target, verb) {
   if (target === "room") doNeed(h, homeNeeds(h.st, h.sv, h.settings, ui, h.now())[0]);   // at rest ✓ does the first need in the line, and nothing when there is none
   else if (target === "vivarium") h.goto("vivarium");   // the Vivarium's whole: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.homePanel)
   else if (target === "library") toLibrary(h);
-  else if (target === "pods") toPods(h);
+  else if (target === "pods") researchKey(h);
   else if (target === "incubator") h.goto("incubator");
   else if (target === "companion") { if (S.docked(h.st)) { ui.bench.f = null; h.goto("bench"); } }
   else if (target === "bay") h.goto("cargo");
+  else if (target === "settings") { if (h.settings.realmSleep) h.goto("settings"); }   // the Settings knob: behind the developer setting realmSleep until the screen is signed
 }
 // The Home room key pressed at rest: the Station rests (events.rest: the ring is already gone, then the 180 ms dither to Idle, which holds 380); with reduced motion it is a cut and Idle shows on the frame of the key.
 export function rest(h) {

@@ -5,37 +5,11 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import vm from "node:vm";
+import { makePage } from "./page-harness.mjs";
 import * as W from "../src/world.mjs";
-import * as A from "../src/atlas.mjs";
-import * as V from "../src/view.mjs";
 
-const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
-const MODS = { world: W, view: V, atlas: A };
-const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
-const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
-const SCRIPT = MODULE.replace(IMPORT_RE, "");
 
-function page(store = {}) {
-  const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
-    apply: () => any, construct: () => any, set: () => true });
-  const clock = { t: 1000, timers: [] };
-  const ctx = { console, URLSearchParams, Date, fetch: () => new Promise(() => {}), document: any, location: any, navigator: any,
-    matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
-    performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
-    localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
-  const run = src => vm.runInContext(src, ctx);
-  const p = {
-    run, store,
-    get S() { return run("S"); },
-    pass(ms) { const end = clock.t + ms; for (;;) { clock.timers.sort((a, b) => a.at - b.at); const n = clock.timers[0]; if (!n || n.at > end) break; clock.timers.shift(); clock.t = n.at; n.f(); } clock.t = end; },
-    key(k) { p.pass(400); run("act(" + JSON.stringify(k) + ")"); },
-  };
-  return p;
-}
+const page = (store = {}) => makePage({ store });
 const plain = x => JSON.parse(JSON.stringify(x));
 const buried = p => p.h === 1 && p.bur === 1;
 const SEEDS = Array.from({ length: 1000 }, (_, i) => i + 1);
@@ -136,7 +110,9 @@ test("4. the world is unchanged: genLife's output and generator 2's frozen vecto
   for (const s of SEEDS) h.update(JSON.stringify(life(s)) + "\n");
   assert.equal(h.digest("hex"), GENLIFE_DIGEST);
   const v = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
-  assert.equal(createHash("sha256").update(JSON.stringify({ format: v.format, hash: v.hash, capturedFrom: v.capturedFrom, gens: v.gens })).digest("hex"), VECTORS_SHA);
+  // generators 1 and 2 as pinned, without the roster column that came later; generator 3 is beside them, not among them
+  const old = Object.fromEntries(["1", "2"].map(g => [g, { ...v.gens[g], seeds: v.gens[g].seeds.map(({ roster, ...rest }) => rest) }]));
+  assert.equal(createHash("sha256").update(JSON.stringify({ format: v.format, hash: v.hash, capturedFrom: v.capturedFrom, gens: old })).digest("hex"), VECTORS_SHA);
 });
 
 // ---- test 5 ----

@@ -24,11 +24,11 @@ export function rampOf(A) {
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 export const bay = (x, y) => BAYER[(y & 3) * 4 + (x & 3)];
 // The nearest palette colour to an RGB triple (cached), for rendered images on their way into a buffer.
-const NEAR = new Map();
+const NEAR = new Map(), UNSNAPPED = new Set((stationPalette.unsnapped ?? []).map((n) => C[n]));   // role colours a snapped picture never lands on (station.json unsnapped)
 export function nearest(r, g, b) {
   const k = (r << 16) | (g << 8) | b; let v = NEAR.get(k); if (v != null) return v;
   let best = 0, bd = Infinity;
-  for (let i = 0; i < RGB.length; i++) { const p = RGB[i], d = (p[0] - r) ** 2 + (p[1] - g) ** 2 + (p[2] - b) ** 2 * 0.8; if (d < bd) { bd = d; best = i; } }
+  for (let i = 0; i < RGB.length; i++) { if (UNSNAPPED.has(i)) continue; const p = RGB[i], d = (p[0] - r) ** 2 + (p[1] - g) ** 2 + (p[2] - b) ** 2 * 0.8; if (d < bd) { bd = d; best = i; } }
   NEAR.set(k, best); return best;
 }
 export const nearestHex = (h) => nearest(parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16));

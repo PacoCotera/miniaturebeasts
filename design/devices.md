@@ -81,6 +81,7 @@ The Caddy's reference panel is the [Waveshare 5.79inch e-Paper](https://www.wave
 - **Refresh.** Full about 3.5-4 s, with a flash; partial about 0.8 s. A full refresh after about 5 partials, and at least once a day. The picture stays with no power.
 - **No front light.** None exists for this panel; the cradle lamps carry the dock in the dark.
 - **Driver.** No ESP-IDF component exists; the vendor's [C driver](https://github.com/waveshareteam/e-Paper/blob/master/RaspberryPi_JetsonNano/c/lib/e-Paper/EPD_5in79.c) is ported behind an ESP-IDF SPI master and LVGL 9's flush.
+- **Colour to gray (panel and printer).** Colour pictures (mibis, portraits) are converted with Luma (Rec. 601 weights, which keep differently coloured parts apart), then dithered with Atkinson: to the four grays for the panel's full refresh, and to one bit for the panel's partial refresh and the 58 mm thermal printer. Desaturation is the fallback if Luma loses parts on the real panel. Checked again on the real panel and on a real print at gate 2.
 
 **Not measured:** these are vendor figures ([manual](https://files.waveshare.com/wiki/5.79inch-e-Paper-Module/5.79-inch-e-Paper-user-manual.pdf), [wiki and FAQ](https://www.waveshare.com/wiki/5.79inch_e-Paper_Module_Manual)). The four-gray full refresh time, ghosting after 5 and 10 partials, and the gray values at 15, 25 and 35 °C are measured at gate 2.
 

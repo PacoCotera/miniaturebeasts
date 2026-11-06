@@ -1,0 +1,150 @@
+{
+ "round": 0,
+ "diff": "some",
+ "grow": "juvenile",
+ "name": "Pemmi",
+ "species": "Tuliko",
+ "plural": "Tulikos",
+ "pods": [
+  {
+   "i": 0,
+   "tries": 0,
+   "genome": "pod:stub0",
+   "gated": [],
+   "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+   "ready": true,
+   "job": null
+  },
+  {
+   "i": 1,
+   "tries": 0,
+   "genome": "pod:stub1",
+   "gated": [],
+   "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+   "ready": true,
+   "job": null
+  },
+  {
+   "i": 2,
+   "tries": 0,
+   "genome": "pod:stub2",
+   "gated": [],
+   "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+   "ready": true,
+   "job": null
+  },
+  {
+   "i": 3,
+   "tries": 0,
+   "genome": "pod:stub3",
+   "gated": [],
+   "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+   "ready": true,
+   "job": null
+  },
+  {
+   "i": 4,
+   "tries": 0,
+   "genome": "pod:stub4",
+   "gated": [],
+   "key": null,
+   "ready": false,
+   "job": "j4"
+  },
+  {
+   "i": 5,
+   "tries": 0,
+   "genome": "pod:stub5",
+   "gated": [],
+   "key": null,
+   "ready": false,
+   "job": "j5"
+  }
+ ],
+ "grow_ends": [
+  {
+   "stage": "juvenile",
+   "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+   "ready": true,
+   "job": null
+  },
+  {
+   "stage": "elder",
+   "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+   "ready": true,
+   "job": null
+  }
+ ],
+ "family": [
+  {
+   "id": "whiskers",
+   "label": "Whiskers",
+   "locus": "anatomy.whisker-presence",
+   "look": "on",
+   "how": "grown",
+   "share": 9.1,
+   "pic": {
+    "ready": true,
+    "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+    "job": null
+   }
+  },
+  {
+   "id": "lantern-tail",
+   "label": "Lantern tail",
+   "locus": "anatomy.tail-tip-form",
+   "look": "lantern",
+   "how": "often",
+   "share": 93.9,
+   "pic": {
+    "ready": true,
+    "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+    "job": null
+   }
+  },
+  {
+   "id": "appearance.pattern-kind=spots",
+   "label": "Dot pattern",
+   "locus": "appearance.pattern-kind",
+   "look": "spots",
+   "how": "sometimes",
+   "share": 25.5,
+   "toy": "pattern",
+   "axis": "kind",
+   "pic": {
+    "ready": true,
+    "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+    "job": null
+   }
+  },
+  {
+   "id": "form.ear-kind=nub",
+   "label": "Nub ears",
+   "locus": "form.ear-kind",
+   "look": "nub",
+   "how": "sometimes",
+   "share": 23.5,
+   "toy": "ears",
+   "axis": "kind",
+   "pic": {
+    "ready": true,
+    "key": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+    "job": null
+   }
+  }
+ ],
+ "names": [
+  "Tita",
+  "Kenya",
+  "Simba",
+  "Nina",
+  "Arya",
+  "Wero",
+  "Jax",
+  "Totopo",
+  "Churro",
+  "Luna",
+  "Solovino",
+  "Lucky"
+ ]
+}

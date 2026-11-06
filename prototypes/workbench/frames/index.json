@@ -2,7 +2,8 @@
  "schema": "mb-frame-registry/1",
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "2ca450b04bfbcb4ca434b8e14195f111e9f381a27ea7c6c207cb06884f5ec42b",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -19,9 +20,9 @@
    "rig": "B1",
    "tier": "starter",
    "file": "species-S01.json",
-   "open": 7,
-   "traits": 6,
-   "carried": 50
+   "open": 11,
+   "traits": 7,
+   "carried": 56
   },
   {
    "id": "S02",
@@ -67,6 +68,7 @@
    "rig": "B2",
    "tier": "early",
    "file": "species-S05.json",
+   "parked": true,
    "open": 13,
    "traits": 9,
    "carried": 57
@@ -79,6 +81,7 @@
    "rig": "B2",
    "tier": "early",
    "file": "species-S06.json",
+   "parked": true,
    "open": 15,
    "traits": 10,
    "carried": 59
@@ -91,6 +94,7 @@
    "rig": "B1",
    "tier": "mid",
    "file": "species-S07.json",
+   "parked": true,
    "open": 26,
    "traits": 17,
    "carried": 48
@@ -153,7 +157,7 @@
    "file": "species-S12.json",
    "open": 7,
    "traits": 7,
-   "carried": 49
+   "carried": 50
   },
   {
    "id": "S13",
@@ -202,6 +206,45 @@
    "open": 24,
    "traits": 18,
    "carried": 35
+  },
+  {
+   "id": "S17",
+   "name": "Wickle",
+   "clan": "C17",
+   "plan": "B1·L2",
+   "rig": "B1",
+   "tier": "early",
+   "file": "species-S17.json",
+   "draft": true,
+   "open": 16,
+   "traits": 10,
+   "carried": 48
+  },
+  {
+   "id": "S18",
+   "name": "Drapet",
+   "clan": "C18",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "tier": "mid",
+   "file": "species-S18.json",
+   "draft": true,
+   "open": 20,
+   "traits": 15,
+   "carried": 44
+  },
+  {
+   "id": "S19",
+   "name": "Curlop",
+   "clan": "C19",
+   "plan": "B1·L2·arms",
+   "rig": "B1",
+   "tier": "mid",
+   "file": "species-S19.json",
+   "draft": true,
+   "open": 20,
+   "traits": 14,
+   "carried": 53
   }
  ]
 }

@@ -24,6 +24,6 @@ test("the spatial rule: along more than 4 px, 5·along + 11·across on doubled c
 
 test("the graphs the spec files carry are sound: one per Pods state, and Home's", () => {
   const spec = (f) => JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station", f), "utf8")), pods = spec("pods.json").focus;
-  for (const st of ["collection", "overview", "chapter"]) assert.equal(graphProblem(pods[st]), null, "pods " + st);
+  for (const st of ["inventory", "filter", "find", "read", "compare"]) assert.equal(graphProblem(pods[st]), null, "pods " + st);
   assert.equal(graphProblem(spec("home.json").focus.graph), null, "home");
 });

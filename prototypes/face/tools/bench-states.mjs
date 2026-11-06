@@ -16,7 +16,7 @@ const SCENES = {
 };
 async function enter(page, sc) {
   await page.evaluate(([setSrc, spec]) => {
-    const w = window.__world; w.reset(); eval(`(${setSrc})`)(); const S = window.__st; S.UI.idle = false; S.settings.light = "day"; S.goto("bench"); Object.assign(S.UI.bench, spec.ui); S.UI.panel = spec.panel ? { screen: "bench", id: "fitUpgrade", focus: "" } : null;   // ✓ on the slot has opened the panel
+    const w = window.__world; w.reset(); eval(`(${setSrc})`)(); const S = window.__st; S.UI.idle = false; S.UI.lastInput = performance.now(); S.settings.light = "day"; S.goto("bench"); Object.assign(S.UI.bench, spec.ui); S.UI.panel = spec.panel ? { screen: "bench", id: "fitUpgrade", focus: "" } : null;   // ✓ on the slot has opened the panel
   }, [sc.set.toString(), { ui: sc.ui, panel: !!sc.panel }]);
 }
 export async function benchStates(visit) {

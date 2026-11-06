@@ -23,7 +23,7 @@
  "bottomLine": {
   "action": "✓ Cross them, then the cross's price (state.crossCost), icon before figure as on every Station screen: ⚡ 2 ❀ 4",
   "context": { "overview": "{a} × {b} · {species}", "chapter": "{chapter} · {a} × {b}" },
-  "notice": "the first missing read, in ring order: \"read {parent}'s {chapter}\", or \"read both parents' {chapter}\" when both lack it; when nothing is missing, the kinship word (state.kinshipWord) if the kinship is above 0; otherwise none. A refusal (state.crossBlock) takes the notice and the ✓ cap goes",
+  "notice": "the first missing read, in ring order: \"read {parent}'s {chapter}\", or \"read both parents' {chapter}\" when both lack it; when nothing is missing, the kinship word (state.kinshipWord) if the kinship is above 0; otherwise none. A refusal (state.crossBlock) takes the notice and the ✓ cap goes; a family pair (direct kin, owner 2026-11-03) is one, with the line \"family · find a partner on a walk\" and no seeds drawn",
   "back": "{name}"
  },
  "regions": {
@@ -42,7 +42,7 @@
    "type": { "name": { "px": 20, "weight": 500, "colour": "bone", "b": "right-aligned to 952" }, "line": { "px": 16, "colour": "mist" }, "words": { "px": 16, "colour": "bone", "text": "the child to be" } },
    "portrait": "the parent's painted set at 48×48, rendered at its size (paintedArt), else its placeholder rendered at 48 (mibiArt); never scaled up",
    "ghost": "the child to be, ghostArt at 48×48: never a promise",
-   "kinPill": "a hugging plate: `amber` fill, 8 px pad, 24 tall (w 0 = hug), the kinship word in 16 px `ink`; shown at every kinship, 0 included (\"wild founders · kinship 0\")",
+   "kinPill": "a hugging plate: `amber` fill, 8 px pad, 24 tall (w 0 = hug), the kinship word in 16 px `ink`; shown at every kinship, 0 included (\"no kin in common\")",
    "away": "a parent out with the Companion: its portrait dimmed by the `stone` veil and its line \"away with you\"; it can still be picked (the-cross.md §3)"
   },
   "overview": {

@@ -33,7 +33,7 @@ test("identify: ◆1 each, no Energy and no free first one (owner 2026-10-11 15:
 
 test("read: the first read ever is free, then 1 Data a trait; a read chapter is free to look at again", () => {
   const pod = by(/^read /).filter((s) => s.name.endsWith(" on " + podA.id));
-  assert.equal(pod[0].d, 0, "the first read ever is free"); assert.equal(pod[1].d, -2, "Face is two traits");
+  assert.equal(pod[0].d, 0, "the first read ever is free"); assert.equal(pod[1].d, -3, "Face is three traits (Crown, Ears and Eyes since frame version 6)");
   assert.ok(S.read(st, podA, J.chapters[0], P.settings).again, "a read chapter is free to look at again");
 });
 
@@ -110,10 +110,10 @@ test("the journey holds from other worlds: five seeds, every step accepted, the 
   }
 });
 
-test("the bench trickle, opted in: a watched minute and a compared pair earn +1 Data each inside the day's cap; off, the journey is as it was", () => {
+test("the habit watch, opted in: a watched minute pays +1 Data for a habit not yet seen; off, the journey is as it was", () => {
   const on = playJourney({ seed: 4242, bench: true }).P, off = playJourney({ seed: 4242 }).P;
-  const rows = on.steps.filter((x) => /^(watch|compare) /.test(x.name)); assert.equal(rows.length, 2);
+  const rows = on.steps.filter((x) => /^watch /.test(x.name)); assert.equal(rows.length, 1);
   assert.ok(rows.every((x) => x.ok && x.d <= 1 && x.d >= 0), "at most +1 Data a row");
-  assert.equal(off.steps.filter((x) => /^(watch|compare) /.test(x.name)).length, 0);
+  assert.equal(off.steps.filter((x) => /^watch /.test(x.name)).length, 0);
   assert.ok(on.steps.every((x) => x.ok && x.stock.every((v) => v >= 0)));
 });

@@ -208,7 +208,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
         <li>Go down into a place and Call in each quarter. Watch the overview: its quarters lose their dots as you survey them.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
-        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data, and sometimes a pod. An expedition that fills a dot brings home 2 / 4 / 6 / 8 Data by the highest tier it entered (meadow and pond edge 2, wood and rock field 6, the cave 8), none if the Probe breaks: moments bring it in early, the rest arrives when you end the expedition.</li>
+        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it: each creature pays 1 Data for feeding it and 1 for a settle, once a trip, shown on its line before you act, up to 8 a trip (sometimes a pod too). An expedition that fills a dot also brings home 2 / 4 / 6 / 8 Data by the highest tier it entered (meadow and pond edge 2, wood and rock field 6, the cave 8), none if the Probe breaks, when you end the expedition.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then <b>Open the crates</b> in its developer panel (the Station's Cargo is not built yet), and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
@@ -253,9 +253,13 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
+import { makeSleeper } from "./src/sleeper.mjs";
+import { mapHooks } from "./src/mapkinds.mjs";
+import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -301,9 +305,31 @@ const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H 
 const HUD_T = 3;   // the HUD's padding above (and below) its 26 px of contents
 const CELL = 26, MAP_X = 17, MAP_Y = VIEW_Y + 6;   // map 416×520 px, its 4 px frame on rows 34–561
 const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'shallows', 'cliff'];
-// Save format v8: one key shared with the Station page (prototypes/station). The Companion owns every top-level field
+// Save format v8, shared with the Station page (prototypes/station). The Companion owns every top-level field
 // except `st`, which the Station owns; each page re-reads the stored save before writing and keeps the other's part.
-const SAVE_KEY = 'mb-save-v8', SAVE_V = 8, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
+// The Companion is the player's identity: the save lives under this Companion's own key, mb-save-v8@<its id>
+// (station/src/companions.mjs holds the Station's side and the same rules). The id is made once per Companion, a stable
+// random id kept under mb-companion-<slot> (the play page's second Companion is slot B, ?companion=B), and stored with
+// the first write. The single shared save of earlier builds (LEGACY_KEY) moves under Companion A's key with its first
+// write once it has loaded; bytes this page cannot load stay where they are and open read-only, as before.
+const LEGACY_KEY = 'mb-save-v8', SAVE_V = 9, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
+let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
+let SAVE_KEY = keyOfCompanion(COMPANION.id);
+function keyOfCompanion(id) { return 'mb-save-v8@' + id; }
+function companionIdentity() {
+  let slot = 'A'; try { if (new URLSearchParams(location.search).get('companion') === 'B') slot = 'B'; } catch (e) { }
+  try { const had = JSON.parse(localStorage.getItem('mb-companion-' + slot) || 'null'); if (had && /^c[0-9a-z]{12}$/.test(had.id)) { companionKept = true; return had; } } catch (e) { }
+  const b = new Uint8Array(12); try { crypto.getRandomValues(b); } catch (e) { for (let i = 0; i < 12; i++) b[i] = Math.floor(Math.random() * 256); }
+  let id = 'c'; for (const x of b) id += '0123456789abcdefghijklmnopqrstuvwxyz'[x % 36];
+  return { id, name: 'Companion ' + slot, slot, at: Date.now() };
+}
+// The id is kept with the Companion's first write (never by a read-only boot). Made meanwhile by the Station page (one origin in the sandbox): that one is taken.
+function keepCompanion() {
+  if (companionKept) return; companionKept = true;
+  try { const key = 'mb-companion-' + COMPANION.slot, had = JSON.parse(localStorage.getItem(key) || 'null');
+    if (had && /^c[0-9a-z]{12}$/.test(had.id)) { if (had.id !== COMPANION.id && SAVE_KEY === keyOfCompanion(COMPANION.id)) SAVE_KEY = keyOfCompanion(had.id); COMPANION = had; }
+    else localStorage.setItem(key, JSON.stringify(COMPANION)); } catch (e) { }
+}
 const BAY = 3;   // the sealed bay holds three consignments, one per expedition
 // Probe tiers: range in cells from the expedition's start, pods carried, shield bars. Sweep is one ring at both.
 const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shield: 4 } };
@@ -339,16 +365,24 @@ const SIGHT_FOG = 4, SIGHT_GLOW = 6;
 // Three wild species. notice = [creep, walk] distance in tiles at which they notice you.
 // how = the shed trigger; ab = what a partner of this species can do.
 const SPECIES = [
-  { name: 'Loika', plural: 'Loikas', hab: [L.MEADOW, L.POND], notice: [2, 5], flee: 2, eats: true, shedP: .65, how: 'shake',
-    ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared Loika', learn: 'Loikas shed when they shake dry.',
+  { name: 'Loika', plural: 'Loikas', hab: ROSTER[0].hab, notice: [2, 5], flee: 2, eats: true, shedP: .1, how: 'shake',
+    ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared Loika', learn: 'Loikas sometimes shed when they shake dry, more often for someone they trust.',
     col: { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' } },
-  { name: 'Tuikis', plural: 'Tuikis', hab: [L.WOOD, L.ROCK], notice: [2, 4], flee: 2, eats: false, shedP: .6, how: 'calm',
-    ab: 'dig', abText: 'digs narrow burrows', born: 'a small burrower', learn: 'Tuikis shed when they feel safe by their burrow.', learnCurl: 'Tuikis shed when they curl up out of the rain.',
+  { name: 'Tuikis', plural: 'Tuikis', hab: ROSTER[1].hab, notice: [2, 4], flee: 2, eats: false, shedP: .1, how: 'calm',
+    ab: 'dig', abText: 'digs narrow burrows', born: 'a small burrower', learn: 'Tuikis sometimes shed when they feel safe by their burrow, more often for someone they trust.', learnCurl: 'Tuikis sometimes shed when they curl up out of the rain, more often for someone they trust.',
     col: { body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' } },
-  { name: 'Untuva', plural: 'Untuvas', hab: [L.WOOD, L.MEADOW, L.POND], notice: [1, 3], flee: 1, eats: true, shedP: .75, how: 'meal',
-    ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas shed after a full meal.',
+  { name: 'Untuva', plural: 'Untuvas', hab: ROSTER[2].hab, notice: [1, 3], flee: 1, eats: true, shedP: .1, how: 'meal',
+    ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas sometimes shed after a full meal, more often for someone they trust.',
     col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' } },
 ];
+// Shedding is rare unless the creature is special: shedP is a plain creature's chance at its moment; a creature
+// fed or settled this expedition sheds at SHED_BOND; one of a species not yet known always does; at most SHED_MAX pods from creature
+// moments an expedition (a returned line's pod is apart). Tune.
+const SHED_BOND = .5, SHED_MAX = 1;
+// Why a shed pod is special, as the Companion's line says it (the pod carries the key as `why`; a plain pod carries none).
+// A bond pod names its act: fed, or settled with you (a Tuikis does not eat).
+const WHY_WORD = { new: 'a new species', bond: 'you fed it' }, WHY_SETTLE = 'it settled with you';
+const whyOf = p => p.why ? { why: p.why } : {};   // a pod keeps its why wherever it is copied
 // A species the Companion has no entry for (a Station species beyond the three): no habitat, no diet, no ability, no art.
 const SP_OTHER = Object.freeze({ other: true, name: null, plural: null, hab: [], notice: [2, 4], flee: 2, eats: false, shedP: 0, how: null,
   ab: null, abText: null, born: null, learn: null, col: null });
@@ -381,32 +415,8 @@ function canStep(a, dir) { return canStepIn(G, a, dir); }   // a step from cell 
 function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
 
 
-function genLife(seed) {
-  const cr = [], pods = []; let id = 1;
-  const add = (sp, c, cv) => { cr.push({ id, sp, c, cv: cv ? 1 : 0, b: Math.round(rnd(seed, 'bold', id) * 100) / 100, s: 0 }); id++; };
-  for (let c = 0; c < MW * MH; c++) {
-    const l = G.land[c]; if (!passable(c) || l === L.WATER) continue;
-    const pool = SPECIES.map((_, i) => i).filter(s => spOf(s).hab.includes(l)); if (!pool.length) continue;
-    const r = rnd(seed, 'pop', c); let n = 0;
-    if (G.spawns.includes(c)) n = 4 + Math.floor(rnd(seed, 'pn', c) * 3);
-    else if (r < .3) n = 4 + Math.floor(rnd(seed, 'pn', c) * 5);
-    else if (r < .55) n = 1 + (rnd(seed, 'pm', c) < .5 ? 1 : 0);
-    const a = pool[Math.floor(rnd(seed, 'pa', c) * pool.length)], b = pool[Math.floor(rnd(seed, 'pb', c) * pool.length)];
-    for (let i = 0; i < n; i++) add(i % 3 === 2 ? b : a, c, 0);
-  }
-  for (const c of G.glow) { const have = cr.filter(w => w.c === c && w.sp === 1).length; for (let i = have; i < 3; i++) add(1, c, 0); }
-  for (let i = 0; i < 2; i++) add(1, G.gate, 0);
-  for (let i = 0; i < 4; i++) add(1, G.gate, 1);   // Tuikis nest under the cliff
-  const R = makeRng(hash(seed, 'pods'));
-  const homes = R.shuffle([...new Set(cr.filter(w => !w.cv && !G.spawns.includes(w.c) && G.comp[w.c]).map(w => w.c))]);
-  for (let i = 0; i < Math.min(7, homes.length); i++) {
-    const c = homes[i], here = cr.filter(w => w.c === c);
-    pods.push({ id: 'w' + i, k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' });
-  }
-  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' }); // a Loika sheltered here once
-  return { cr, pods };
-}
-function groundName(land, cave) { return cave ? 'cave' : ['meadow', 'pond', 'rock', 'wood', 'pond', 'rock'][land]; }
+// The world's creatures and buried pods: src/world.mjs, by the world's generator (the herd floor is generator 3's).
+function genLife(seed) { return genLifeIn(G, seed, ROSTER); }
 // The first expedition of a new world finds two buried pods in tier 1 reach of the start glint (design/world-and-exploration.md,
 // Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
 // a Tuikis's, at the reach's edge while the reach holds fewer than 2. Pure: reads G, never S, and never mutates `pods`;
@@ -445,7 +455,7 @@ function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state 
 const layoutCache = new Map();
 function layout(key) {
   let lay = layoutCache.get(key);
-  if (!lay) { lay = genPlace(G, S.seed, key); layoutCache.set(key, lay); }
+  if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
 
@@ -833,27 +843,61 @@ function carryApply(S, st) {
 const tierOf = () => TIER[S.tier] || TIER[1];
 
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
-// A new world's fields, before its life is placed: newWorld starts from them, and load() fills from them what a save lacks.
-function worldFields(seed, gen) {
+// A new world's fields, before its life is placed: newRealm starts from them, and load() fills from them what a save lacks.
+// They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk (v9) keeps each region's map in regions[].map.
+function worldFields(seed, gen, wid) {
   return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
-    bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
+    bay: [], hold: null, wid: wid || 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
     exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
 }
-function newWorld(seed) {
+// The world on S becomes a realm of one region, the Meadows (g1), mounted: the save of one map, read as the realm it is (migrate8, pure).
+function realmOf(flat) { const r = migrate8({ ...flat, v: 8 }, { now: Date.now() }); mount(r, 'g1'); return r; }
+function newRealm(seed, gen = NEW_GEN, wid) {   // a new realm takes the newest generator (a test may ask for an older one); a realm that follows a sleep is given its wid
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
-  const gen = NEW_GEN;
   G = genWorld(seed, gen);
-  S = worldFields(seed, gen);
+  S = worldFields(seed, gen, wid);
   const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
+  S = realmOf(S); S.biomeV = REALM_BIOME_V;   // a new realm draws the newest kinds; a save without biomeV is version 1
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
+const newWorld = newRealm;   // the name the tests and the page's buttons call
+// The region in use, put on S (its map, its seed and generator), with the page's caches for the old one cleared. A region other than the one in hand is
+// reached through inRegion, which puts the hand back.
+function mountRegion(id) {
+  unmount(S); const R = mount(S, id);
+  layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; RT.mp = null; RT.key = null; mapCv = null;
+  G = genWorld(R.seed, R.gen, R.biome); indexCreatures();   // the region's own kind (generators before 4 have none)
+  catchUp(R);
+}
+// A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
+// storm or trail, and no line written. Older turns are let go (the world is permanent, not a ledger). With one region, turnSeen is always S.turn.
+const CATCH_UP = 3;
+function catchUp(R) {
+  if (!(R.turnSeen < S.turn)) return;
+  const last = { trail: [], entered: S.lastEntered || [] }, far = c => awayFromLast(c, last);
+  for (let t = Math.max(R.turnSeen, S.turn - CATCH_UP); t < S.turn; t++) regionTurn(R, t, { trail: [], storm: [] }, far);
+  R.turnSeen = S.turn;
+}
+function inRegion(id, fn) {
+  if (id === S.here) return fn();
+  const was = S.here; mountRegion(id);
+  try { return fn(); } finally { mountRegion(was); }
+}
+// A new home region in a free slot: its kind and generator by the realm's rule (src/regions.mjs openHome), its own life; the hand is put back.
+function openRegion(slot) {
+  const rec = openHome(S, slot); S.regions.push(rec);
+  inRegion(rec.id, () => { const life = genLife(S.seed); S.cr = life.cr; S.pods = prefixPods(life.pods, rec.n); indexCreatures(); });
+  return rec.id;
+}
+// Crates and the expedition under way name their region; none means region 1, so a realm of one region writes nothing new.
+const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
 // The Station's part as last stored, if it belongs to this world.
-function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
+function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && (o.v === 8 || o.v === SAVE_V) && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
 function save() {
-  if (window.__mbResetting || RT.readOnly || RT.bootHold) return;   // a reset is reloading, the save is read-only, or the loaded save has not drawn yet: nothing may write it
+  if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
   if (fieldFrozen() && FX.shieldAtDock == null) FX.shieldAtDock = S.exp.shield;   // the Shield as docked, before the cradle mends it
@@ -861,7 +905,9 @@ function save() {
   if (!fieldFrozen() && FX.shieldAtDock != null) {   // Lift (or the expedition ended): the bars the cradle mended flash once
     if (S.exp && S.exp.shield > FX.shieldAtDock) FX.shieldFlash = { from: FX.shieldAtDock, at: NOW };
     FX.shieldAtDock = null; FX.dockSaid = 0; }
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep playing in memory */ }
+  if (typeof keepCompanion === 'function') keepCompanion();
+  const moving = typeof legacyTo === 'string' ? legacyTo : null;   // the shared save of earlier builds, moving under this Companion's key with this write
+  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } } catch (e) { /* storage unavailable: keep playing in memory */ }
   if (typeof onStateChanged === 'function') onStateChanged();
 }
 // v7 → v8, the same structural move on both pages: the old Station store becomes the Station's part, mibis move to
@@ -874,7 +920,7 @@ function migrate7(o) {
   st.mibis = (o.mibis || []).map(m => ({ id: m.id, name: m.name, sp: m.sp, gs: hash(o.seed, 'mibi7', m.id), born: m.born || 0, from: { n: m.from || 0, g: '', how: '' }, mem: m.mem || null, outings: 0, notches: 0, bonded: false }));
   st.nextMibi = st.mibis.reduce((a, m) => Math.max(a, m.id), 0) + 1; st.nameN = st.mibis.length; st.freeId = (o.found || []).includes('freeid'); st.firstMibi = !st.mibis.length;
   const s = Object.assign({}, o); delete s.home; delete s.report;
-  s.v = SAVE_V; s.wid = wid; s.bay = []; s.hold = null; s.walkTurn = -1; s.withSeen = 0; s.probeSeen = 0; s.retSeen = []; s.dockSeen = 0; s.st = st;
+  s.v = 8; s.wid = wid; s.bay = []; s.hold = null; s.walkTurn = -1; s.withSeen = 0; s.probeSeen = 0; s.retSeen = []; s.dockSeen = 0; s.st = st;
   if (s.exp && s.exp.cargo) s.exp.cargo.pods.forEach((p, i) => { if (p.gs == null) p.gs = hash(o.seed, 'gs7c', String(p.id), i, p.sp); });   // pods in flight get their own genomes
   if (s.phase === 'station') s.phase = 'setup';
   return s;
@@ -888,19 +934,28 @@ function idsIn(o, out = new Set()) {
 // What the stored save is: nothing (a new world), a save to load (true), a save from a newer page ('newer'), or bytes this page cannot use ('broken').
 // Bytes the page did not load are never written over: both read-only states keep them, and nothing older is removed (the v7 save moves only into an empty slot).
 function load() {
-  const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { return false; }   // storage unavailable: a new world in memory
+  const own = SAVE_KEY;
+  if (raw == null && COMPANION.slot === 'A') { let old = null; try { old = localStorage.getItem(LEGACY_KEY); } catch (e) { } if (old != null) { SAVE_KEY = LEGACY_KEY; raw = old; } }   // the shared save of earlier builds: read where it is
+  const r = (() => {
+  const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   try {
     let s = null;
     if (!raw) {   // an empty slot: a v7 save moves in
-      try { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } localStorage.removeItem(V7_KEY); } } catch (e) { s = null; }
+      try { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); raw = JSON.stringify(s); localStorage.setItem(SAVE_KEY, raw); } localStorage.removeItem(V7_KEY); } } catch (e) { s = null; }
       if (!s) { dropOld(); return false; }
     } else s = JSON.parse(raw);
     if (!s || typeof s !== 'object' || Array.isArray(s)) return 'broken';
     if (typeof s.v === 'number' && s.v > SAVE_V) return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
-    if (s.v !== SAVE_V) return 'broken';
+    if (s.v === SAVE_V) {   // v9: a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet) starts a new world, as in v8
+      if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; }
+      const rs = realmStatus(s, GENS); if (rs !== 'ok') return rs;   // 'newer': a region of a generator this page does not know, kept as stored
+      mount(s, s.here);
+    } else if (s.v !== 8) return 'broken';
     if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { if (s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; } return 'broken'; }   // a Station-only save: a new world starts (and a fresh Station with it)
     const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
+    // a v8 save is copied byte for byte beside itself (<key>.pre9) before it is read as a realm; if the copy cannot be made the save opens read-only
+    if (s.v === 8 && !keepPre9(localStorage, own, raw)) return 'broken';
     S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
@@ -910,11 +965,16 @@ function load() {
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = genWorld(S.seed, gen);
-    if (noPods) S.pods = genLife(S.seed).pods.filter(p => !held(p.id));
+    layoutCache.clear(); G = genWorld(S.seed, gen, S.v === SAVE_V ? S.regions.find(r => r.id === S.here).biome : 'mixed');   // the mounted region's kind
+    if (S.v === 8) S = realmOf(S);   // v8 → v9, after the fill: one region, the world the save held
+    if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
   } catch (e) { S = null; return 'broken'; }   // it would not load: kept as it is
+  })();
+  if (SAVE_KEY === LEGACY_KEY && r === true) legacyTo = own;   // loaded: its first write goes under this Companion's key and the old key goes (a read-only save is never moved)
+  else if (SAVE_KEY === LEGACY_KEY && r === false) SAVE_KEY = own;   // nothing it could play: the new world is this Companion's own
+  return r;
 }
 // ---- The Station, as the Companion sees it: only through the shared save, and only what the dock carries ----
 const stPart = () => S && S.st && S.st.wid === S.wid ? S.st : null;
@@ -955,7 +1015,9 @@ function syncStation() {
   // pods returned to the wild wait while an expedition runs (retSeen stays unmarked), so no place changes under a docked field
   if (!S.exp) for (const r of st.returned || []) { if (S.retSeen.includes(r.id)) continue; S.retSeen.push(r.id); if (S.retSeen.length > 60) S.retSeen.shift();
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
-    S.pods.push({ id: 'r' + (S.nextId++), k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground' }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }
+    const rg = S.regions.some(q => q.id === r.rg) ? r.rg : 'g1';   // a returned pod goes back to its own region (none named: region 1)
+    const id = 'r' + (S.nextId++);   // the realm counts the ids, whichever region the pod lands in
+    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }); }
 }
 
 // Feature state helpers: the layout says what is there; S.cells says what the player changed.
@@ -972,12 +1034,20 @@ function stoneWarm(key, f) {
   const s = fs(key, f.id); if (s.wt === S.turn) return 0;
   return s.ws === S.turn || !!(S.exp && S.exp.warm && S.exp.warm.includes(key + ':' + f.id)) ? 1 : 0;
 }
+// The arrival guard (design/world-and-exploration.md, "The arrival guard"): every new thing arrives away from where the
+// last expedition was, and every arrival asks this one helper. `last` is what that expedition left, { trail, entered }
+// (a world turn passes its own; the default is the save's). 'steps': more than ARRIVE_GAP steps (Manhattan) from every
+// cell it walked: pods, young, blooms. 'places': outside every place it entered: warm stones.
+const ARRIVE_GAP = 4;
+const lastWalked = () => ({ trail: S.lastTrail ? S.lastTrail.cells : [], entered: S.lastEntered || [] });
+function awayFromLast(c, last = lastWalked(), mode = 'steps') {
+  return mode === 'places' ? !(last.entered || []).includes(c) : (last.trail || []).every(t => cdist(t, c) > ARRIVE_GAP);
+}
 // Pick this turn's warm stones in reach (3–5, seeded), and veil the 3×3 around each again so a surveyed place
 // doesn't show them on arrival: a Call finds them.
 function chooseWarm(ex) {
-  const cand = [];
-  const away = new Set(S.lastEntered || []);   // new warmth arrives away from where you just were: never in a place you entered last expedition
-  for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER || away.has(c)) continue; const key = String(c);
+  const cand = [], last = lastWalked();   // new warmth arrives away from where you just were: never in a place you entered last expedition
+  for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER || !awayFromLast(c, last, 'places')) continue; const key = String(c);
     for (const f of layout(key).feats) if (f.kind === 'k' && stormCharge(key, f) <= 0 && fs(key, f.id).wt !== S.turn) cand.push({ c, key, f, r: rnd(S.seed, 'warm', S.turn, key, f.id) + WARM_NEAR * cdist(c, ex.start) }); }
   cand.sort((a, b) => a.r - b.r);
   const n = WARM_MIN + hash(S.seed, 'warmN', S.turn) % (WARM_MAX - WARM_MIN + 1);
@@ -985,7 +1055,7 @@ function chooseWarm(ex) {
   for (const o of cand.slice(0, n)) if (S.veil[o.key]) { veilAround(o.key, o.f.x, o.f.y, 1); updateSurvey(o.c); }
 }
 function stoneCharge(key, f) { const ch = stormCharge(key, f); return ch > 0 ? ch : stoneWarm(key, f); }
-function bushFull(key, f) { return !fs(key, f.id).bare; }
+function bushFull(key, f) { return f.tree ? !!fs(key, f.id).ripe : !fs(key, f.id).bare; }   // a fruit tree starts bare and ripens at a bloom; a bush starts full
 function podTag(sp) { return S.known.includes(sp) ? spOf(sp).name : 'unknown species'; }
 function addPin(c, k) { if (!S.pins.some(p => p.c === c && p.k === k)) { S.pins.push({ c, k }); logEv('Pin · ' + PIN_TEXT[k]); return true; } return false; }
 function ownPin(c) { return S.pins.find(p => p.c === c && p.k === 'own') || null; }
@@ -1003,9 +1073,9 @@ function cellSigns(c) {
   const gt = c === G.gate && !S.opened[G.gate] && S.pods.some(p => p.k === 'c' + c) ? 1 : 0;   // the cave below holds a pod
   return { tr, b, k, pd, d: c === G.deep && !S.deepRead ? 1 : 0, g: gt };
 }
-function recordSigns(c) {
+function recordSigns(c, turn = S.turn) {
   const s = cellSigns(c);
-  if (s.tr.length || s.b || s.k || s.d || s.g || s.pd) S.signs[c] = Object.assign({ t: S.turn }, s); else delete S.signs[c];
+  if (s.tr.length || s.b || s.k || s.d || s.g || s.pd) S.signs[c] = Object.assign({ t: turn }, s); else delete S.signs[c];
 }
 function revealCell(c) { if (!S.revealed[c]) { S.revealed[c] = 1; if (S.exp) S.exp.stats.rev++; } recordSigns(c); }
 // ---------- Survey: every place starts under a veil that Call lifts (lightning too, 3×3 around a struck stone) ----------
@@ -1237,12 +1307,12 @@ function revealAround(c, r) { const p = cxy(c); r = r || 1; for (let dy = -r; dy
 // warm stone. When there is none, the sun warms one stone close to a place's way in near the start (no sign;
 // the survey finds it). Warm stones usually cover this on their own.
 function ensureCharge(ex) {
-  const stones = []; let have = 0, away = new Set(S.lastEntered || []);
+  const stones = [], last = lastWalked(); let have = 0;
   for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER) continue; const key = String(c);
     const a = cxy(ex.start), b = cxy(c), dx = Math.sign(b.x - a.x), dy = Math.sign(b.y - a.y);
     const lay = layout(key), doors = c === ex.start ? [{ x: PW / 2, y: PH - 3 }] : [];
     if (dx) doors.push({ x: dx > 0 ? 0 : PW - 1, y: PH / 2 }); if (dy) doors.push({ x: PW / 2, y: dy > 0 ? 0 : PH - 1 });
-    for (const f of lay.feats) if (f.kind === 'k') { if (stoneCharge(key, f) > 0) have++; if (!away.has(c)) stones.push({ c, key, f, d: cdist(c, ex.start), w: Math.min(...doors.map(q => man(f, q))) }); } }
+    for (const f of lay.feats) if (f.kind === 'k') { if (stoneCharge(key, f) > 0) have++; if (awayFromLast(c, last, 'places')) stones.push({ c, key, f, d: cdist(c, ex.start), w: Math.min(...doors.map(q => man(f, q))) }); } }
   ex.stats.srcAtStart = have; ex.stats.preCharged = 0;
   if (have) return;
   stones.sort((a, b) => (a.w > 12) - (b.w > 12) || a.d - b.d || a.w - b.w || a.c - b.c);
@@ -1259,7 +1329,7 @@ function startExpedition(type, cell) {
   const pm = partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // no partner: the first mibi with you rides in the Companion (always a juvenile)
   const storm = stormOn && !TEST.calm ? stormFor(cell) : null;
   if (storm && S.expN === 1) storm.x -= 2 * storm.dir;   // the first storm comes a little later, so a new player can drain a stone first
-  S.exp = { type, n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range, hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
+  S.exp = { type, ...rgField(), n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range, hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
     cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold) } : { e: 0, d: 0, s: 0, pods: [] }, carry: null, storm,
     fog: fogOn ? { x: 2.5 + R.int(11), y: 3.5 + R.int(13), r: 2.4, dx: (R.f() - .5) * .16, dy: (R.f() - .5) * .16, at: type === 'deep' ? 0 : 14 + R.int(16) } : null,
     stormCells: {}, mstrike: null, stray: null, live: {}, patch: null,
@@ -1416,8 +1486,8 @@ function ensureLive(key) {
     const s = freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
     if (!s) continue;
     live.cr.push({ id: w.id, sp: w.sp, x: s.x, y: s.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1,
-      // the guaranteed early burrowers are always ready in the first two expeditions
-      ready: (w.sp === 1 && ex.n <= 2 && G.glow.includes(w.c)) || rnd(S.seed, 'ready', w.id, ex.n) < spOf(w.sp).shedP });
+      // the guaranteed early burrowers are always ready in the first two expeditions; a species not yet known always is
+      ready: (w.sp === 1 && ex.n <= 2 && G.glow.includes(w.c)) || !S.known.includes(w.sp) || rnd(S.seed, 'ready', w.id, ex.n) < spOf(w.sp).shedP });
   }
   return live;
 }
@@ -1577,7 +1647,7 @@ function patchAction() {
   if (o && o.type === 'feat') {
     const ft = o.f;
     switch (ft.kind) {
-      case 'b': if (bushFull(key, ft)) return { label: 'Shake the bush', run: () => shakeBush(ft) }; break;
+      case 'b': if (bushFull(key, ft)) return { label: ft.tree ? 'Shake the tree' : 'Shake the bush', run: () => shakeBush(ft) }; break;
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
       case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : 'Collect dew', run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
@@ -1628,7 +1698,7 @@ function eatersHere(live) {
   return 'watch who comes for it';
 }
 function shakeBush(f) {
-  const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, { bare: 1 });
+  const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, f.tree ? { ripe: 0 } : { bare: 1 });
   const p = freeAround(key, f.x, f.y, S.exp.patch); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
   if (p) fxMsg('A fruit drops · ' + eatersHere(live), 2);
   advance('patch', { noise: 'act', ring: { x: f.x, y: f.y, r: 2 } });
@@ -1640,11 +1710,15 @@ function pickUp(fr) {
 }
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
 function pressFruit() {
-  const ex = S.exp, P = ex.patch; ex.carry = null;
+  const ex = S.exp, P = ex.patch;
+  if (CAP - ex.cargo.s < 2) { fxMsg('Not enough room for Essence · the fruit stays in your hands', 2); return; }   // pressing would waste the fruit
+  ex.carry = null;
   const got = addMat('s', 2, P.x, P.y); fxSign('press');
   advance('patch', { noise: 'act' });
 }
-function takeTuft(tf) { const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxSign('tuft'); advance('patch', { noise: 'act' }); }
+function takeTuft(tf) {
+  if (S.exp.cargo.s >= CAP) { fxMsg('Essence full · the tuft stays where it is', 2); return; }   // a full hold takes nothing and no turn passes
+  const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxSign('tuft'); advance('patch', { noise: 'act' }); }
 function pushSlab(f) {
   const ex = S.exp, key = ex.patch.key, pos = featPos(key, f), [dx, dy] = DIRS[ex.patch.dir], tx = pos.x + dx, ty = pos.y + dy;
   if (tx < 1 || ty < 1 || tx >= PW - 1 || ty >= PH - 1 || occupant(key, tx, ty) || podAt(key, tx, ty, true) || NOSTAND(layout(key).tiles[ty * PW + tx])) { fxMsg('The slab won’t budge that way'); FX.bumpAt = NOW; return; }
@@ -1665,9 +1739,14 @@ function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), 
     if (tx < 1 || ty < 1 || tx >= PW - 1 || ty >= PH - 1 || sx < 0 || sy < 0 || sx >= PW || sy >= PH) return false;
     if (occupant(key, tx, ty) || podAt(key, tx, ty, true) || NOSTAND(lay.tiles[ty * PW + tx])) return false;
     const o = occupant(key, sx, sy, 'player'); return !o || o.type === 'pt' || o.type === 'cr' || (P && P.key === key && P.x === sx && P.y === sy); }); }
-function takeDew(f) { const ex = S.exp; setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); advance('patch', { noise: 'act' }); }
+function takeDew(f) {
+  const ex = S.exp;
+  if (ex.cargo.s >= CAP) { fxMsg('Essence full · the cup keeps its dew', 2); return; }   // a full hold takes nothing: the cup stays full and no turn passes
+  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); advance('patch', { noise: 'act' }); }
 function takeCharge(f) {
-  const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f), got = addMat('e', ch, f.x, f.y);
+  const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f);
+  if (ex.cargo.e >= CAP) { fxMsg('Energy full · the stone keeps its charge', 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
+  const got = addMat('e', ch, f.x, f.y);
   if (storm > 0) setFS(key, f.id, { ch: ch - got, wt: S.turn }); else { setFS(key, f.id, { wt: S.turn }); ex.stats.warm = (ex.stats.warm || 0) + got; fxSign('warm'); }
   advance('patch', { noise: 'act' });
 }
@@ -1712,8 +1791,8 @@ function takePod(p, leave) {
   const out = full ? ex.cargo.pods.splice(leave, 1)[0] : null;
   S.pods = S.pods.filter(q => q !== p);
   // the genome seed is fixed the first time a pod is taken: the Station reads its genome from it
-  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key, ...shedOf(p) });
-  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...shedOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
+  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key, ...shedOf(p), ...whyOf(p) });
+  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
@@ -1724,20 +1803,24 @@ function takePod(p, leave) {
 function calmRadius(X) { return X.ptElder ? 8 : 4; }
 function calmedBy(c, X) { return !!X.pt && cheb(c, X.pt) <= calmRadius(X) && (X.ptAb === 'calm' || X.ptSp === c.sp); }
 function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? spOf(ex.pt.sp).ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder) }; }
-// Data is a record of creatures doing things: a moment you cause brings +1, +2 the first time ever for that species and
-// moment; once per creature per expedition. Moments bring the expedition's Data in early, up to its yield (2 / 4 / 6 / 8
-// by the tier of the place) and never past it; whatever the moments did not bring arrives when the expedition ends.
+// Data is a record of creatures doing things: every act on a
+// creature pays 1 Data, for certain, once per creature per act per expedition, and the player sees it before doing it (the
+// facing line). Acts built today: feeding (eat) and settling (settle). Watch, follow and play are not built. No act pays by
+// chance and there is no first-time bonus. Creature Data is capped per expedition (CREATURE_CEIL, shown as it fills); it is
+// counted apart from the field yield, which still arrives when the expedition ends.
+const ACT_DATA = 1;
+const CREATURE_CEIL = 8;
+const actDone = (ex, c, kind) => !!(ex.momented && ex.momented[c.id + ':' + kind]);
+const creatureRoom = ex => Math.max(0, CREATURE_CEIL - (ex.dAct || 0));
+const actOpen = (ex, c, kind) => !actDone(ex, c, kind) && creatureRoom(ex) > 0;
 function awardMoment(c, kind, X) {
-  const ex = S.exp; if (ex.momented[c.id]) return; ex.momented[c.id] = 1;
-  // +2 the first time ever for this species and moment, and for the first moment with each species on an expedition
-  const fk = c.sp + ':' + kind, first = !S.firsts[fk]; S.firsts[fk] = 1;
-  ex.spMom = ex.spMom || {}; const firstHere = !ex.spMom[c.sp]; ex.spMom[c.sp] = 1;
-  const left = Math.max(0, walkYield(ex) - (ex.dField || 0)), got = left ? addMat('d', Math.min(first || firstHere ? 2 : 1, left), c.x, c.y) : 0;
-  ex.dField = (ex.dField || 0) + got;
-  ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (left ? '' : ' (the expedition’s yield is in)'));
-  const who = S.known.includes(c.sp) ? aAn(spName(c.sp)) : 'this creature', verb = { eat: 'eat', settle: 'settle' }[kind];
-  if (!got) { fxMsg((kind === 'eat' ? 'The ' + spName(c.sp) + ' ate your fruit' : 'The ' + spName(c.sp) + ' settled') + ' · the Data is all in', 2); return; }
-  fxMsg(first ? '+' + got + ' Data · first time you saw ' + who + ' ' + verb : '+' + got + ' Data · ' + (kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled'), 2);
+  const ex = S.exp; if (actDone(ex, c, kind)) return; ex.momented[c.id + ':' + kind] = 1;
+  const room = creatureRoom(ex), got = room ? addMat('d', Math.min(ACT_DATA, room), c.x, c.y) : 0;
+  ex.dAct = (ex.dAct || 0) + got;
+  ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (creatureRoom(ex) ? '' : ' (Data for this trip: full)'));
+  const what = kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled';
+  if (!got) { fxMsg(cap(what) + ' · Data for this trip: full', 2); return; }
+  fxMsg('+' + got + ' Data · ' + what + (creatureRoom(ex) ? '' : ' · Data for this trip: full'), 2);
 }
 function offer(c) {
   const ex = S.exp, live = curLive(), X = ptCtx(), lay = curLay();
@@ -1941,6 +2024,7 @@ function pickStrike(X) {
 function canStand(X, x, y, who) { return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * PW + x]); }
 function stepToward(X, who, tgt, n) {
   for (let k = 0; k < (n || 1); k++) {
+    if (tgt.tree && man(who, tgt) <= 1) return;   // a hollow trunk is entered from beside it: stop there, the next tick goes in
     let best = null, bd = man(who, tgt);
     const ds = Object.values(DIRS).slice(); const r = hash(S.seed, 'st', who.id || 0, S.exp.actions, k) % 4;
     for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy;
@@ -1980,13 +2064,16 @@ function nearestHole(X, c, maxD) {
 }
 // Flight: a Tuikis dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
 function hideOrFlee(X, c) {
-  if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = { x: h.x, y: h.y }; return; } }
+  if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = h.tree ? { x: h.x, y: h.y, tree: 1 } : { x: h.x, y: h.y }; return; } }
   c.st = 'flee'; c.t = 2;
 }
-// Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once.
+// Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once,
+// at most SHED_MAX moment pods an expedition. A creature not ready but fed or settled this expedition may still shed, on its own seeded roll.
+const bonded = c => actDone(S.exp, c, 'eat') || actDone(S.exp, c, 'settle');
+const shedReady = c => c.ready || (bonded(c) && rnd(S.seed, 'bond', c.id, S.exp.n) < SHED_BOND);
 function shedAllowed(c, X) {
   const w = crById.get(c.id);
-  if (!c.ready || !w || w.s === S.exp.n) return false;
+  if (!w || w.s === S.exp.n || S.exp.stats.sheds >= SHED_MAX || !shedReady(c)) return false;
   if (c.st === 'shake' || c.st === 'curl') return !X.live.stormShed[c.sp];
   if (c.st === 'glow') return !X.live.calmShed;
   return true;
@@ -2007,13 +2094,14 @@ function shedPod(c, X) {
   if (how === 'calm') X.live.calmShed = 1;
   const p = freeAround(X.key, c.x, c.y, null) || { x: c.x, y: c.y };
   const id = 'p' + (S.nextId++);
-  S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how });
+  const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
+  S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
   const w = crById.get(c.id); if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
   fxGlint(p.x, p.y, 200);
   const verb = { shake: 'shook dry', calm: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal' }[how];
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
-  else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose', 1);
+  else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
 }
 // A Loika shaking dry leaves a tuft of fur on the ground (Essence), once per Loika per expedition.
 function dropTuft(c, X) {
@@ -2207,7 +2295,7 @@ function dropPods(ex, rep) {
   const free = []; for (let i = 0; i < PW * PH; i++) if (lay.reach[i] && !taken.has(i)) free.push(i);
   rep.dropped = ex.cargo.pods.length; rep.at = cxy(cell);
   for (const pod of ex.cargo.pods) { const i = free.length ? free.splice(R.int(free.length), 1)[0] : lay.spawnPt.y * PW + lay.spawnPt.x;   // no free tile: the entry tile, stacked
-    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, ...(pod.species ? { species: pod.species } : {}), h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs, ...shedOf(pod) }); }
+    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, ...(pod.species ? { species: pod.species } : {}), h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs, ...shedOf(pod), ...whyOf(pod) }); }
   if (rep.dropped) (S.skulls = S.skulls || {})[cell] = key;   // which place holds the pods (the cave sits under the gate cell)
   logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
   ex.cargo.pods = [];
@@ -2225,8 +2313,8 @@ function endExpedition(reason) {
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.surveyed, of: rc.total };
   if (explored && !broke) {   // the field yield: the expedition earns its tier's Data; moments brought part of it in early, the rest arrives now
     const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
-    rep.yield = { tier, data: want, moments: ex.moments.length, early: ex.dField - got, late: got };
-    logEv('Field yield · ' + want + ' Data · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · ' + (ex.dField - got) + ' from moments, ' + got + ' at the expedition\'s end'); }
+    rep.yield = { tier, data: want + (ex.dAct || 0), moments: ex.moments.length, early: ex.dAct || 0, late: got };
+    logEv('Field yield · ' + want + ' Data field yield · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · plus ' + (ex.dAct || 0) + ' from creature acts'); }
   for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
   if (ex.carry === 'fruit') ex.carry = null;
   if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
@@ -2245,8 +2333,8 @@ function endExpedition(reason) {
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
-    else { const c = { id: 'x' + S.wid + '-' + ex.n, n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q) })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
+    else { const c = { id: 'x' + S.wid + '-' + ex.n, ...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
@@ -2321,21 +2409,33 @@ function placeKind(cells) {
 const placePhrase = cells => PLACE_PHRASE[placeKind(cells)];
 // The land most of some cells lie on, as a kind (a new pod's place, a bloom's centre): any of the six lands.
 function mainLand(cells) { const n = PLACE_KIND.map(() => 0); for (const c of cells) if (G.land[c] >= 0 && G.land[c] < n.length) n[G.land[c]]++; return PLACE_KIND[n.indexOf(Math.max(...n))]; }
+// The world turns once per expedition ended: the region the Companion is in turns (regionTurn), then the realm (realmTurn), and the region has seen the turn.
+// A region that was away is not turned meanwhile; mounting it catches it up (catchUp).
 function worldTurn(pending) {
-  const R = makeRng(hash(S.seed, 'turn', S.turn)), trail = pending.trail;
-  const farFromPlayer = c => trail.every(t => cdist(t, c) > 4);
+  const last = { trail: pending.trail, entered: S.lastEntered || [] }, here = regionById(S, S.here);
+  const farFromPlayer = c => awayFromLast(c, last);
+  const turned = regionTurn(here, S.turn, pending, farFromPlayer), out = realmTurn(turned, pending);
+  here.turnSeen = S.turn;
+  return out;
+}
+// What touches the map, for region R (the one mounted) at turn t: creatures roam, the storm leaves marks, a bloom, arrivals and young, and a species the region
+// lacks surfaces. It draws on hash(R.seed, 'turn', t), which for region 1 is the world's own hash, and writes no line and no log; it hands back what the
+// realm turn's lines are made of. farFromPlayer is the arrival guard for where the player last walked.
+function regionTurn(R, t, pending, farFromPlayer) {
+  if (R.id !== S.here) throw new Error('regionTurn: region ' + R.id + ' is not mounted');
+  const rng = makeRng(hash(R.seed, 'turn', t));
   const mv = [0, 1, 2].map(() => ({ dx: 0, dy: 0, n: 0 }));
   let charged = [], bushes = 0, bloom = -1; const newPods = [], young = [];
   // Creatures roam within their habitat.
   for (const w of S.cr) {
-    if (w.cv) { if (R.chance(.12)) w.cv = 0; continue; }
-    if (w.sp === 1 && w.c === G.gate) { if (R.chance(.3)) w.cv = 1; continue; }
-    if (!R.chance(.45)) continue;
+    if (w.cv) { if (rng.chance(.12)) w.cv = 0; continue; }
+    if (w.sp === 1 && w.c === G.gate) { if (rng.chance(.3)) w.cv = 1; continue; }
+    if (!rng.chance(.45)) continue;
     const p = cxy(w.c), opts = [];
     for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
       const c = y * MW + x; if (canStep(w.c, dir) && G.land[c] !== L.WATER && G.island[c] === G.island[w.c]) opts.push(c); }
     const good = opts.filter(c => spOf(w.sp).hab.includes(G.land[c]));
-    const pick = (good.length && R.chance(.8)) ? R.pick(good) : opts.length ? R.pick(opts) : -1;
+    const pick = (good.length && rng.chance(.8)) ? rng.pick(good) : opts.length ? rng.pick(opts) : -1;
     if (pick >= 0) { const q = cxy(pick); mv[w.sp].dx += q.x - p.x; mv[w.sp].dy += q.y - p.y; mv[w.sp].n++; w.c = pick; }
   }
   // The storm leaves marks: struck stones hold charge, rain fills leaf cups.
@@ -2344,31 +2444,52 @@ function worldTurn(pending) {
     const key = String(c), lay = layout(key); let hit = false;
     for (const f of lay.feats) {
       // fresh charge is hidden again: the quarter it lies in goes back under the veil
-      if (f.kind === 'k' && R.chance(.6)) { setFS(key, f.id, { ch: Math.max(2, stormCharge(key, f)) }); reveil(c, qOf(f.x, f.y)); hit = true; }
+      if (f.kind === 'k' && rng.chance(.6)) { setFS(key, f.id, { ch: Math.max(2, stormCharge(key, f)) }); reveil(c, qOf(f.x, f.y)); hit = true; }
       if (f.kind === 'u') setFS(key, f.id, { full: true });
     }
     if (hit) charged.push(c);
   }
   // A bloom passes through somewhere the player wasn't; bare bushes bear fruit again.
   const far = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && farFromPlayer(c)) far.push(c);
-  if (far.length) { const ctr = R.pick(far); bloom = ctr;
+  if (far.length) { const ctr = rng.pick(far); bloom = ctr;
     for (let c = 0; c < MW * MH; c++) { if (cdist(c, ctr) > 3) continue; const key = String(c), cs = S.cells[key]; if (!cs) continue;
-      for (const id in cs) if (cs[id].bare) { delete cs[id].bare; bushes++; } } }
+      for (const id in cs) if (cs[id].bare) { delete cs[id].bare; bushes++; } }
+    if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || cdist(c, ctr) > 3) continue; const key = String(c);   // fruit trees in the bloom's reach ripen too (silently: the line counts bushes)
+      for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); } }
   // New arrivals, away from where the player just was.
   const occupied = [...new Set(S.cr.filter(w => !w.cv && G.comp[w.c] && farFromPlayer(w.c)).map(w => w.c))];
-  const nPods = 2 + R.int(2);
-  for (let i = 0; i < nPods && occupied.length; i++) { const c = R.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
-    S.pods.push({ id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); newPods.push(c); reveil(c); }
+  const nPods = 2 + rng.int(2);
+  for (let i = 0; i < nPods && occupied.length; i++) { const c = rng.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
+    S.pods.push({ id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: rng.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); newPods.push(c); reveil(c); }
   const families = occupied.filter(c => [0, 1, 2].some(sp => S.cr.filter(w => w.c === c && w.sp === sp && !w.cv).length >= 2));
-  const nYoung = 1 + R.int(2);
+  const nYoung = 1 + rng.int(2);
   let nextCr = S.cr.reduce((m, w) => Math.max(m, w.id), 0) + 1;
-  for (let i = 0; i < nYoung && families.length; i++) { const c = R.pick(families), here = S.cr.filter(w => w.c === c && !w.cv);
+  for (let i = 0; i < nYoung && families.length; i++) { const c = rng.pick(families), here = S.cr.filter(w => w.c === c && !w.cv);
     const counts = [0, 1, 2].map(sp => here.filter(w => w.sp === sp).length), sp = counts.indexOf(Math.max(...counts));
     S.cr.push({ id: nextCr, sp, c, cv: 0, b: Math.round(rnd(S.seed, 'bold', nextCr) * 100) / 100, s: 0, young: 1 }); nextCr++; young.push({ sp, c }); }
-  S.turn++; S.expN++;
+  for (const c of newPods) if (S.revealed[c]) recordSigns(c, t + 1);   // a sign carries the turn that has just been made
+  surfaceMissing(R, t, farFromPlayer);
   indexCreatures();
+  return { mv, charged, bushes, bloom, newPods, young };
+}
+// A species with no creature in this region at all (an old save from before every realm held every species, or a species released since) surfaces as one
+// herd of three or more on the reachable ground of its habitat, away from where the player last walked, and nothing is said. It draws on a stream of its own,
+// so the turn's other draws never move; a region that holds every species draws nothing.
+function surfaceMissing(R, t, farFromPlayer) {
+  ROSTER.forEach((r, sp) => {
+    if (S.cr.some(w => w.sp === sp && !w.cv)) return;
+    const ok = [], rg = makeRng(hash(R.seed, 'surface', t, sp));
+    for (let c = 0; c < MW * MH; c++) if (G.comp[c] === 1 && passable(c) && G.land[c] !== L.WATER && r.hab.includes(G.land[c]) && farFromPlayer(c)) ok.push(c);
+    if (!ok.length) return;   // nowhere away from the trail this turn: it waits for the next
+    const c = rg.pick(ok), n = HERD.SIZE + rg.int(3); let id = S.cr.reduce((m, w) => Math.max(m, w.id), 0) + 1;
+    for (let i = 0; i < n; i++, id++) S.cr.push({ id, sp, c, cv: 0, b: Math.round(rnd(R.seed, 'bold', id) * 100) / 100, s: 0 });
+  });
+}
+// The turn of the realm: the counters, the mibi clock, the outposts and the lines a player cares about. It runs with the region the Companion is in mounted.
+function realmTurn(turned, pending) {
+  const { mv, charged, bushes, bloom, newPods, young } = turned;
+  S.turn++; S.expN++;
   const grown = liveMibis().filter(grownNow), aged = liveMibis().filter(agedNow);   // the clock: never a bonded juvenile (it grows through care); elder from grownTurn when it has one
-  for (const c of newPods) if (S.revealed[c]) recordSigns(c);
   // Two or three plain lines a player would care about, each beside the record of what happened (specs/world-events.md): [kind, place, who, n]. The Companion decides which; the Station draws them.
   const lines = [], ev = [], say = (line, e) => { lines.push(line); ev.push(e); };
   for (const m of grown) say((!isCarried(m) ? CARE_TEXT.clockGrownHome : partnerMibi() === m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(m.name), ['grown', null, m.id, !isCarried(m) ? 0 : partnerMibi() === m ? 1 : 2]);
@@ -2390,7 +2511,7 @@ function worldTurn(pending) {
   if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' were born ' + placePhrase([y0.c]) + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
   if (!lines.length) say('A quiet turn. Little changed.', ['quiet', null, null, 0]);
   logEv('World turn ' + wTurn());
-  return { lines: lines.slice(0, 3), ev: ev.slice(0, 3) };   // the same three, in the same order
+  return { lines: lines.slice(0, 3), ev: ev.slice(0, 3), arrived: { pods: newPods, young: young.map(y => y.c), bloom } };   // the same three, in the same order; `arrived` names the cells the guard placed things in
 }
 
 // ===================== 10. Pixel graphics core =====================
@@ -2405,17 +2526,31 @@ const LEVEL_LIGHT = LIGHT.map((l, c) => [C.orange, C.amber, C.white].includes(l)
 const DARK2 = DARK.map(i => DARK[i]);
 const LIGHT_GRASS = PALETTE.map((_, i) => i), DARK_GRASS = PALETTE.map((_, i) => i);   // the level tone's grass-only steps: identity until a biome palette marks its grass
 const TINT = LEVEL_LIGHT.map((l, c) => c === C.lime ? c : l);   // the level tint's step: LEVEL_LIGHT capped at lime, so green never steps on to cream
+const SHADE_LUT = DARK.slice(); SHADE_LUT[C.pine] = C.pine;   // the Shade's step: one value darker, the tuft bases stay pine so the green never goes black
 function tintLevel(pb, x0, y0, w, h, lv) { for (let k = 0; k < lv; k++) for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const v = pb.get(x, y); if (v >= 0) pb.set(x, y, TINT[v]); } }
 function nearestPal(r, g, b) { let best = 0, bd = 1e9; RGB.forEach(([R, G2, B], i) => { const d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } }); return best; }
 function mixLUT(target, t) { const [tr, tg, tb] = RGB[C[target]]; return RGB.map(([r, g, b]) => nearestPal(r + (tr - r) * t, g + (tg - g) * t, b + (tb - b) * t)); }
 const FOGLUT = mixLUT('bone', .62),   // fog whitens and washes out: pale, low contrast
      FADE = mixLUT('stone', .5);
+FOGLUT[C.sprout] = C.fog; FOGLUT[C.lime] = C.fog;   // the lightest grass fogs to fog, as grass does: it never grows brighter asleep than woken (the palette's place fog says the same)
+// The Shade's asleep wash, one table: every colour mixed .48 toward bone, then the nearest of the 48 core colours; a cool colour that lands there
+// (sky, ice, river, aqua, mint) becomes mist, so a glow cap or water never shines through the Shade. Built and tested; nothing draws through it yet
+// (the Shade place and its teal trees draw through it; it needs the Shade's moss ground, or the wash turns the green floor to sprout).
+const SHADE_WASH = [];
+function buildShadeWash() {
+  const [tr, tg, tb] = RGB[C.bone], cool = [C.sky, C.ice, C.river, C.aqua, C.mint]; SHADE_WASH.length = 0;
+  for (const [r, g, b] of RGB) { const q = nearestCore(r + (tr - r) * .48, g + (tg - g) * .48, b + (tb - b) * .48); SHADE_WASH.push(cool.includes(q) ? C.mist : q); }
+}
+function nearestCore(r, g, b) { let best = 0, bd = 1e9; for (let i = 0; i < PALETTE.length; i++) { const [R, G2, B] = RGB[i], d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } } return best; }
+buildShadeWash();
 // Lookup tables a frame may use: 0 none, 1 dark (storm, dim cave), 2 darker (dark cave), 3 fog, 4 faded sign.
 const REMAP = [null, DARK, DARK2, FOGLUT, FADE];
 // The place view's own set at 48 px: a biome palette may override the storm, fog and fade tables (they default to the core's).
 const PLACE_STORM = DARK.slice(), PLACE_FOG = FOGLUT.slice(), PLACE_FADE = FADE.slice();
 const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE];
-REMAP.id = 0; REMAP_PLACE.id = 1;
+// The Shade place's set: the same, with its own fog table (the wash) and its own id, so no canvas cache mixes the two.
+const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE];
+REMAP.id = 0; REMAP_PLACE.id = 1; REMAP_SHADE.id = 11;
 const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
 const lite = (c, n) => { for (let i = 0; i < (n || 1); i++) c = LIGHT[c]; return c; };
 
@@ -2664,16 +2799,13 @@ function playerArt(dir, pose, fr) {
 function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) o.p[y * pb.w + x] = pb.p[y * pb.w + pb.w - 1 - x]; return o; }
 
 // ---------- Small items and features ----------
-// Pods: shell colour from the ground, a subtle mark from the species, and a dark outline so they read on grass and in shade.
-function podArt(shell, s, sp) {
-  return art('pod' + shell + (s || 1) + ':' + (sp ?? -1), () => {
+// Pods: shell colour from the ground and a dark outline so they read on grass and in shade. An unread pod shows nothing of its kind.
+function podArt(shell, s) {
+  return art('pod' + shell + (s || 1), () => {
     s = s || 1; const pb = new PB(16 * s, 20 * s), c = C[shell], P = (x, y, w, h, col) => pb.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), col);
     pb.ell(8 * s, 10.5 * s, 5.8 * s, 7.8 * s, c, { sh: [lite(c), shade(c)] });
     for (let i = -4; i <= 4; i++) P(8 + i, 12 + (Math.abs(i) > 3 ? 0 : 1), 1, 1, shade(c));
     P(5, 6, 1, 2, C.white);
-    if (sp === 0) { P(7, 4, 1, 3, C.plum); P(10, 4, 1, 3, C.plum); }               // Loika: two ear stripes
-    else if (sp === 1) { P(7, 3, 3, 3, C.gold); P(8, 4, 1, 1, C.cream); }        // Tuikis: a glowing dot
-    else if (sp === 2) { P(6, 8, 2, 1, C.red); P(9, 5, 2, 1, C.red); P(11, 9, 1, 2, C.red); } // Untuva: cap spots
     pb.outline(() => C.ink); return pb;
   });
 }
@@ -3044,6 +3176,7 @@ function atlasInstall(list, table, levelTone) {
     LIGHT_GRASS[i] = table.lightGrass[i]; DARK_GRASS[i] = table.darkGrass[i]; }
   for (let i = 0; i < RGB.length; i++) { PLACE_STORM[i] = table && table.placeStorm ? table.placeStorm[i] : DARK[i]; PLACE_FOG[i] = table && table.placeFog ? table.placeFog[i] : FOGLUT[i]; PLACE_FADE[i] = table && table.placeFade ? table.placeFade[i] : FADE[i]; }
   PLACE_STORM.length = PLACE_FOG.length = PLACE_FADE.length = RGB.length;
+  buildShadeWash();   // the wash over every colour now in play
   ART48.pieces = new Map(list.map(p => [p.name, p])); ART48.cat = catalogue(list, levelTone); ART48.ready = coreSet(ART48.cat); ART48.ver++;
   for (const k of [...ART.keys()]) if (k.startsWith('g48|') || k.startsWith('p48|')) ART.delete(k); ART48.g48 = 0;
   EDGE_TILE.clear();   // the edge canvases repeat their keys when a layer signature repeats; the place set (set.id 1) is fixed for the page's life, so a reinstall starts clean
@@ -3057,19 +3190,48 @@ function layers48(lay, fr) {
 function placeTs(lay) { return !lay.cave && ART48.ready && layers48(lay, 0).ok ? 48 : 32; }
 const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP;
 const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.' + base + '@' + l.dx + ',' + l.dy : l.id + ':' + l.sx + ',' + l.sy + ',' + l.w + ',' + l.h + '@' + l.dx + ',' + l.dy + (l.tone ? '~' + l.tone : '')).join(';');
-function tile48Key(lay, i, fr) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : ''); }
+// A trunk's tree kind and crop, and the Shade's moss, are part of a 48 px tile's key; sl is the asleep variant (the tile's light is the fog table).
+const treeCrop = (lay, t) => t.kind === 'fruit' && t.fid && fs(lay.key, t.fid).ripe ? 'fruit' : 'bare';
+function treeSig(lay, i, sl) { const t = lay.trees && lay.trees[i]; return (t ? '|r3' + t.kind + t.seed + treeCrop(lay, t) + (sl ? 'z' : '') : '') + (lay.shade ? '|m' : ''); }
+function tile48Key(lay, i, fr, sl) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : '') + treeSig(lay, i, sl); }
+// The tree kinds' sprites (trees48.mjs) as PBs: the trunk stand with its foot-shadow mask, the canopy whole and thinned. One build per kind, seed, crop and state.
+function treeSet(t, crop, sl) {
+  return art('r3|' + t.kind + t.seed + crop + (sl ? 'z' : ''), () => { const s = treeSprites(t.kind, { asleep: !!sl, crop, seed: t.seed }, C, DARK), tr = new PB(32, 32), cn = [0, 1].map(chk => { const pb = new PB(88, 76); pb.p.set(s.canopy.p);
+      if (chk) for (let y = 0; y < 76; y++) for (let x = 0; x < 88; x++) if ((x + y) % 2) pb.p[y * 88 + x] = -1; return pb; });
+    tr.p.set(s.trunk.p); return { trunk: tr, shadow: s.trunk.shadow, canopy: cn }; });
+}
+const treeCanopy = (lay, i, chk, sl) => { const t = lay.trees && lay.trees[i]; return t ? treeSet(t, treeCrop(lay, t), sl).canopy[chk] : null; };
+let SHADE_MOSS = null; const shadeMoss = () => SHADE_MOSS || (SHADE_MOSS = shadeMossLut(RGB, C));
+// The Fells' two colour steps at 48 px, found by colour so they follow the palette file: the earth family to greys, and the stair's treads up and risers down.
+const FELLS_STEPS = {
+  scree: [['#c2a376', '#a4999f'], ['#a68d65', '#7a717e'], ['#a78f4c', '#828176'], ['#cbbc56', '#a4999f'], ['#9a734b', '#7a717e'], ['#8a7456', '#635967'], ['#857541', '#5c564b'], ['#7a583d', '#635967'], ['#e6c98c', '#a4999f'], ['#bf9157', '#7a717e']],
+  stair: [['#a4999f', '#dbeee5'], ['#828176', '#a4999f'], ['#7a717e', '#828176'], ['#49414d', '#332c38'], ['#332c38', '#18211a'], ['#635967', '#49414d'], ['#3e3248', '#18211a']],
+};
+const fellsLutCache = {};
+function fellsLut(kind) {
+  const k = kind + ':' + ART48.ver; if (fellsLutCache[k]) return fellsLutCache[k];
+  const lut = PALETTE.map((_, i) => i); for (let i = lut.length; i < HEX.length; i++) lut[i] = i;
+  for (const [a, b] of FELLS_STEPS[kind]) { const x = HEX.indexOf(a), y = HEX.indexOf(b); if (x >= 0 && y >= 0) lut[x] = y; }
+  return (fellsLutCache[k] = lut);
+}
 // A 48 px tile composed as an indexed PB: each layer's opaque pixels through its level tone (grass colours only), the 32 px stand-ins, then the dark of
 // a wood place. Identical tiles share one buffer (and one canvas per light level).
-function tile48(lay, i, fr) {
-  const key = tile48Key(lay, i, fr); let pb = ART.get(key); if (pb) return pb;
+function tile48(lay, i, fr, sl) {
+  const key = tile48Key(lay, i, fr, sl); let pb = ART.get(key); if (pb) return pb;
   if (ART48.g48 > 4000) { for (const k of [...ART.keys()]) if (k.startsWith('g48|')) ART.delete(k); ART48.g48 = 0; }
   const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; pb = new PB(48, 48);
   for (const l of t.layers) {
-    if (l.stand) { const s32 = stand32(l.stand, lay.base); for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }
-    const pc = ART48.pieces.get(l.id), lut = l.tone === 'light' ? LIGHT_GRASS : l.tone === 'dark' ? DARK_GRASS : null; if (!pc) continue;   // the level tone moves grass only
+    if (l.stand) { const tr = lay.trees && lay.trees[i], ts32 = tr ? treeSet(tr, treeCrop(lay, tr), sl) : null, s32 = ts32 ? ts32.trunk : stand32(l.stand, lay.base);
+      if (ts32) for (let k = 0; k < 1024; k++) { const q = (l.dy + (k >> 5)) * 48 + l.dx + (k & 31); if (ts32.shadow[k] && pb.p[q] >= 0) pb.p[q] = DARK[pb.p[q]]; }   // the tree's foot shadow on the ground
+      for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }
+    const pc = ART48.pieces.get(l.id); if (!pc) continue;
+    let lut = l.tone === 'light' ? LIGHT_GRASS : l.tone === 'dark' ? DARK_GRASS : null;   // the level tone moves grass only
+    if (lay.scree && /^meadow\/(ground\/sand|shore\/sand-|stair\/(foot|landing|apron-top))/.test(l.id)) lut = fellsLut('scree');   // the Fells' rock ground: grey scree for the brown earth
+    else if (lay.fells && /^meadow\/stair\/(wide|side|top)/.test(l.id)) lut = fellsLut('stair');   // a Fells stair: lighter treads, darker risers
     for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) { let c = pc.px[(l.sy + y) * pc.w + l.sx + x]; if (c < 0) continue; if (lut) c = lut[c]; pb.p[(l.dy + y) * 48 + l.dx + x] = c; }
   }
   if (t.dark) for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = DARK[pb.p[k]];
+  if (lay.shade) { const mo = shadeMoss(); for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = mo[pb.p[k]]; }   // the Shade's ground: cool moss, so its wash never reads as sprout
   ART.set(key, pb); ART48.g48++; return pb;
 }
 // The 32 px code stand-ins a 48 px tile carries (registered in CARE_ASSETS): today's trunk and stepping stone, without their ground.
@@ -3085,12 +3247,14 @@ function blit48(id, x, y, rm) { const pc = ART48.pieces.get(id); if (!pc) return
   blit(art('p48|' + id, () => { const pb = new PB(pc.w, pc.h); pb.p.set(pc.px); return pb; }), x, y, rm); }
 
 // ---------- World map terrain (416×520), built once per world as one indexed image ----------
+const MAPK = mapHooks();
 function buildMapPB() {
   const pb = new PB(MW * CELL, MH * CELL);
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = x * CELL, py = y * CELL, l = G.land[c], h = hash(G.seed, 'mc', c), R = makeRng(h);
     const sp = (n, cols) => { for (let i = 0; i < n; i++) pb.set(px + R.int(CELL), py + R.int(CELL), R.pick(cols)); };
-    switch (l) {
+    const own = MAPK.cell(pb, G, c, px, py, l, R, C);   // Tarns, Thickets and Tallwood draw their own cells; every other map is drawn as below
+    if (!own) switch (l) {
       case L.MEADOW: pb.rect(px, py, CELL, CELL, C.grass); sp(26, [C.sprout, C.leaf, C.leaf]);
         for (let i = 0; i < 3; i++) { const tx = px + 2 + R.int(CELL - 4), ty = py + 3 + R.int(CELL - 5); pb.rect(tx, ty, 1, 2, C.leaf); pb.set(tx, ty - 1, C.lime); }
         if (R.chance(.45)) { const fx = px + 4 + R.int(CELL - 8), fy = py + 4 + R.int(CELL - 8), fc = R.pick([C.pink, C.cream, C.white]); pb.set(fx - 1, fy, fc); pb.set(fx + 1, fy, fc); pb.set(fx, fy - 1, fc); pb.set(fx, fy + 1, fc); pb.set(fx, fy, C.amber); }
@@ -3115,20 +3279,33 @@ function buildMapPB() {
         if (y > 0 && G.land[c - MW] !== L.CLIFF) { pb.rect(px, py, CELL, 3, C.grass); pb.rect(px, py + 3, CELL, 1, C.sand); }
         break;
     }
-    if (G.level) tintLevel(pb, px, py, CELL, CELL, G.level[c]);   // generator 2: the level tint, baked with the ground (the marks never are)
+    if (G.level && own !== 'flat') tintLevel(pb, px, py, CELL, CELL, G.level[c]);   // generator 2: the level tint, baked with the ground (the marks never are)
+    if (G.shade && G.shade[c] && !MAPK.ownsShade(G)) for (let yy = py; yy < py + CELL; yy++) for (let xx = px; xx < px + CELL; xx++) { const v = pb.get(xx, yy); if (v >= 0) pb.set(xx, yy, SHADE_LUT[v]); }   // generator 4: the Shade, one value darker than wood
   }
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = x * CELL, py = y * CELL, l = G.land[c];
-    if (l === L.WATER) { // foam along every shore
+    if (l === L.WATER) { // foam along every shore (Tarns: a pale stone rim)
+      const FOAM = MAPK.foam(G, c, C) || C.ice;
       const land = (X, Y) => X >= 0 && Y >= 0 && X < MW && Y < MH && G.land[Y * MW + X] !== L.WATER;
-      if (land(x, y - 1)) pb.rect(px, py, CELL, 2, C.ice); if (land(x, y + 1)) pb.rect(px, py + CELL - 2, CELL, 2, C.ice);
-      if (land(x - 1, y)) pb.rect(px, py, 2, CELL, C.ice); if (land(x + 1, y)) pb.rect(px + CELL - 2, py, 2, CELL, C.ice);
+      if (land(x, y - 1)) pb.rect(px, py, CELL, 2, FOAM); if (land(x, y + 1)) pb.rect(px, py + CELL - 2, CELL, 2, FOAM);
+      if (land(x - 1, y)) pb.rect(px, py, 2, CELL, FOAM); if (land(x + 1, y)) pb.rect(px + CELL - 2, py, 2, CELL, FOAM);
+      for (const sy of [1, -1]) for (const sx of [1, -1]) {   // every generation: every outward corner (both side neighbours land) is cut as a 7 px quarter disc of the ground across it, with the 2 px foam along the arc
+        if (!land(x, y - sy) || !land(x - sx, y)) continue;
+        const cx = sx > 0 ? px : px + CELL, cy = sy > 0 ? py : py + CELL, diag = land(x - sx, y - sy), cut = [];
+        for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { const d = Math.hypot(i + .5, j + .5), X = sx > 0 ? cx + i : cx - 1 - i, Y = sy > 0 ? cy + j : cy - 1 - j;
+          if (d >= 9) continue;
+          if (d >= 7) { cut.push([X, Y, FOAM]); continue; }
+          const mx = sx > 0 ? cx - 1 - i : cx + i, my = sy > 0 ? cy - 1 - j : cy + j;   // the pixel mirrored through the corner point, else mirrored across the nearer side
+          cut.push([X, Y, diag ? pb.get(mx, my) : i < j ? pb.get(mx, Y) : pb.get(X, my)]); }
+        for (const [X, Y, v] of cut) pb.set(X, Y, v);
+      }
     }
     if (l === L.CLIFF && y + 1 < MH && G.land[c + MW] !== L.CLIFF) { // the shadow a cliff throws on the cell below
       pb.rect(px, py + CELL, CELL, 2, C.soil); for (let i = 0; i < CELL; i++) if (i % 2 === 0) pb.set(px + i, py + CELL + 2, C.soil);
     }
     if (c === G.mouth && !G.gen) { pb.ell(px + 13, py + CELL, 7, 15, C.bark, { clip: (X, Y) => Y < py + CELL }); pb.ell(px + 13, py + CELL + 1, 5, 13, C.void, { clip: (X, Y) => Y < py + CELL }); }
   }
+  MAPK.post(pb, G, { C, CELL, MW, MH, L, TINT });
   return pb;
 }
 // Fog: one continuous cloud layer for the whole map (dithered noise), shown only over unseen cells.
@@ -3224,7 +3401,7 @@ function tween(o, tx, ty, dur) {
   o.x = o.fx + (o.tx - o.fx) * k; o.y = o.fy + (o.ty - o.fy) * k;
   o.rx = Math.round(o.x); o.ry = Math.round(o.y); return o;   // rx, ry: the whole-pixel position the camera and the map pawn read; x, y stay exact (a retarget starts from them, and the floored overlays take them)
 }
-const RT = { key: null, ts: 32, remap: REMAP, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
+const RT = { sleepLock: false, key: null, ts: 32, remap: REMAP, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
 const bgArt = () => art('bg', () => { const pb = new PB(64, 64); pb.rect(0, 0, 64, 64, C.night); for (let i = 0; i < 64; i += 8) for (let j = 0; j < 64; j += 8) if (((i + j) / 8) % 2 === 0) pb.set(i + 3, j + 3, C.slate); return pb; });
 function viewBg(col) {
   if (col != null) { R(0, VIEW_Y, SCR_W, VIEW_H, col); return; }
@@ -3420,9 +3597,22 @@ const EDGE_MARK = {
 };
 // One cell's marks, as an overlay at the cell's own size: -1 where nothing is drawn. sides: [dir, kind, the neighbour is higher].
 // ground(x, y) is the cell's own ground (null in fog); parity is the screen parity of the cell's origin, for the shadow's checkerboard.
-function edgeMarkPB(cs, sides, ground, parity) {
+function edgeMarkPB(cs, sides, ground, parity, heavy) {
   const P = EDGE_MARK[cs], pb = new PB(cs, cs), lit = new Uint8Array(cs * cs), dk = new Uint8Array(cs * cs);
   const cur = (x, y) => { const v = pb.get(x, y); return v >= 0 ? v : ground(x, y); };
+  if (heavy) {   // the Fells on the full map: a cliff is a dark face of 4 px on the low side, a stair a light notch across it; the high side keeps its lip
+    const F = 4, span = a => a >= P.s0 && a < P.s0 + P.w, face = [C.ink, C.slate, C.slate, C.night], notch = [C.stone, C.rockL, C.stone, C.rockL];
+    const put = (dir, d, a, col) => { const x = dir === 'left' ? d : dir === 'right' ? cs - 1 - d : a, y = dir === 'up' ? d : dir === 'down' ? cs - 1 - d : a; pb.set(x, y, col); };
+    for (const [dir, kind, hi] of sides) { if (!hi) continue;
+      for (let a = 0; a < cs; a++) for (let d = 0; d < F; d++) put(dir, d, a, kind === EDGE.RAMP && span(a) ? notch[d] : face[d]); }
+    if (ground) for (const [dir, kind, hi] of sides) { if (hi) continue;
+      const ramp = kind === EDGE.RAMP, px = (x, y) => { const i = y * cs + x; if (lit[i]) return; lit[i] = 1; const v = ground(x, y); if (v >= 0) pb.set(x, y, TINT[v]); };
+      if (dir === 'up') for (let y = 0; y < P.lip; y++) for (let x = 0; x < cs; x++) { if (ramp && span(x)) continue; px(x, y); }
+      else if (dir === 'down') for (let y = cs - P.lip; y < cs; y++) for (let x = 0; x < cs; x++) { if (ramp && span(x)) continue; px(x, y); }
+      else if (dir === 'left') for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = 0; x < P.lip; x++) px(x, y); }
+      else for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = cs - P.lip; x < cs; x++) px(x, y); } }
+    return pb;
+  }
   const span = a => a >= P.s0 && a < P.s0 + P.w;
   const wedge = (x0, y0, w, h, dOf, aOf) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const d = dOf(x, y), a = aOf(x, y) - P.s0;
     pb.set(x, y, a < P.wall || a >= P.w - P.wall || d % P.p === P.p - 1 ? C.stone : C.rockL); } };
@@ -3463,10 +3653,11 @@ function drawEdgeMarks(q) {
       sides.push([dir, kind, G.level[n] > G.level[c]]); }
     if (!sides.length) continue;
     const fog = !S.revealed[c], parity = (x + y) & 1, rm = fog ? 3 : q.map ? q.rmOf(c) : (!S.visited[c] ? 4 : (ex.storm && stormCovers(c % MW)) ? 1 : 0);
-    const key = 'em' + cs + ':' + c + ':' + sides.map(sd => sd[0][0] + sd[1]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed + ':' + (S.gen || 1);
+    const heavy = q.map && G.biome === 'fells';   // generator 4's Fells, on the full map only
+    const key = 'em' + cs + ':' + c + ':' + sides.map(sd => sd[0][0] + sd[1]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed + ':' + (S.gen || 1) + (heavy ? ':F' : '');
     const pb = art(key, () => {
       const gp = fog ? null : q.map ? mapPB : landPatchPB(c, cs, 0), gx = q.map ? (c % MW) * CELL : 0, gy = q.map ? ((c / MW) | 0) * CELL : 0;
-      return edgeMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity); });
+      return edgeMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity, heavy); });
     blit(pb, x, y, rm);
   }
 }
@@ -3673,14 +3864,14 @@ function drawPatch(t) {
   else if (RT.ts === 32 && (!RT.pl || NOW - RT.pl.at >= RT.pl.dur) && placeTs(lay) === 48) { RT.ts = 48; RT.cr.clear(); RT.pt = null; RT.pl = null; }   // the art arrived: switch with no slide running
   const fr = motion() ? Math.floor(t * 2) % 2 : 0;
   const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, o = sprOff(ts);
-  if (ts === 48) RT.remap = REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
+  if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
   const c0 = camAt(v, RT.pl.rx, RT.pl.ry), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // centred, clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
-  const tileFor = (i) => ts === 48 ? tile48(lay, i, fr) : tilePB(lay, i, fr), keyFor = (i) => ts === 48 ? tile48Key(lay, i, fr) : tileKey(lay, i, fr);
+  const tileFor = (i, sl) => ts === 48 ? tile48(lay, i, fr, sl) : tilePB(lay, i, fr), keyFor = (i) => ts === 48 ? tile48Key(lay, i, fr) : tileKey(lay, i, fr);
   RT.plScr = { x: W(PX(RT.pl)) + (ts >> 1), y: H(PY(RT.pl)) + (ts >> 1) };
   const raining = !lay.cave && stormRain(lay.cell % MW), overcast = !lay.cave && stormCovers(lay.cell % MW), fogged = !lay.cave && inFog(lay.cell);
   let darkW = 0, darkLeft = true;
@@ -3741,7 +3932,7 @@ function drawPatch(t) {
       if (darkW && L0 === 0) { const side = tileLight(tx - 1, ty) === 1 ? 'W' : tileLight(tx + 1, ty) === 1 ? 'E' : null;
         if (side) { g.drawImage(edge48('S' + key + '|' + side + (uv ? '' : 'v'), pb, (x, y) => stormStep(side === 'W' ? x : 47 - x, x, y),
           (c, x, y) => uv ? c : veilPx(c, x, y), (c, x, y) => uv ? set[1][c] : veilPx(set[1][c], x, y)), W(tx * ts), H(ty * ts)); continue; } }
-      g.drawImage(pb.canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts)); continue;
+      g.drawImage((L0 === 3 ? tileFor(i, true) : pb).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts)); continue;
     }
     if (fogged && L0 !== 3) { const fk = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y), u = fk(tx, ty - 1), r = fk(tx + 1, ty), d = fk(tx, ty + 1), l = fk(tx - 1, ty);
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
@@ -3751,11 +3942,12 @@ function drawPatch(t) {
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
       if (!u && !l && vk(tx - 1, ty - 1)) m |= 16; if (!u && !r && vk(tx + 1, ty - 1)) m |= 32; if (!d && !r && vk(tx + 1, ty + 1)) m |= 64; if (!d && !l && vk(tx - 1, ty + 1)) m |= 128;
       if (m) { g.drawImage(veilEdgeTile(keyFor(i), tileFor(i), L0, m), W(tx * ts), H(ty * ts)); continue; } }
-    g.drawImage(tileFor(i).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
+    g.drawImage(tileFor(i, L0 === 3).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
   }
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
   // ground decals
   for (const f of lay.feats) {
+    if (f.tree) continue;   // a tree's feature is drawn by its tree
     const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue; const rm = spriteRm(f.x, f.y);
     if (!'gxim'.includes(f.kind) && !see(f.x, f.y)) continue;   // landmarks always show; the rest wait for the survey
     if (f.kind === 's' && fs(P.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(W(x + 8 + (k % 4) * 5) + o.x, H(y + 18 + (k >> 2) * 4) + o.y, 3, 1); }
@@ -3769,7 +3961,9 @@ function drawPatch(t) {
   }
   // y-sorted sprites
   const items = [];
-  for (const f of lay.feats) { if (!'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
+  for (const f of lay.feats) if (f.tree === 'hollow' && see(f.x, f.y) && live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1))   // a shy one in a hollow trunk: the hole's one glint, in the trunk's opening
+    items.push({ y: f.y * ts + 2, d: () => blit(art('hglint', () => { const pb = new PB(2, 2); pb.rect(0, 0, 2, 2, C.yellow); return pb; }), SX(f.x * ts) + 15, SY(f.y * ts) + 22, spriteRm(f.x, f.y)) });
+  for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     const rm = spriteRm(p.x, p.y); let a;
     if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
@@ -3806,7 +4000,7 @@ function drawPatch(t) {
   for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK) {
     const x = i % PW, y = (i / PW) | 0; if (!vis2(x * ts, y * ts)) continue;
     const under = tokens.some(o => cheb(o, { x, y }) <= 1);
-    overlay(canopyArt(under ? 1 : 0), W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
+    overlay((ts === 48 && treeCanopy(lay, i, under ? 1 : 0, !lightAt && tileLight(x, y) === 3)) || canopyArt(under ? 1 : 0), W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
   }
   for (const f of lay.feats) if (f.kind === 'o') { const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue;
     const under = tokens.some(o => o.y === f.y + 2 && o.x >= f.x && o.x <= f.x + 2);
@@ -3815,7 +4009,7 @@ function drawPatch(t) {
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     // a find your Call or partner turned up stays outlined until you take it
     if (p.out) { const o2 = fr ? 0 : 1; for (let k = 2; k < ts - 2; k += 4) { R(W(x + k), H(y + 1 + o2), 2, 2, C.cream); R(W(x + k), H(y + ts - 3 - o2), 2, 2, C.cream); R(W(x + 1 + o2), H(y + k), 2, 2, C.cream); R(W(x + ts - 3 - o2), H(y + k), 2, 2, C.cream); } }
-    blit(podArt(POD_SHELL[p.g] || 'bone', 1, p.sp), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), spriteRm(p.x, p.y)); }
+    blit(podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), spriteRm(p.x, p.y)); }
   // what Confirm will act on
   const act = patchAction();
   if (act.run && act !== NOTHING) { const f = frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
@@ -3994,7 +4188,7 @@ function shieldBars(x, y, n, max, w, h) {
   for (let i = 0; i < max; i++) { const bx = x + i * (w + 3); if (i < n) { R(bx, y, w, h, C.bone); R(bx, y + h - 2, w, 2, C.fog); } else { R(bx, y, w, h, C.stone); R(bx + 1, y + 1, w - 2, h - 2, C.ink); } }
 }
 function podSlot(x, y, pod) {
-  if (pod) blit(podArt(POD_SHELL[pod.g] || 'bone', 1, pod.sp), x, y);
+  if (pod) blit(podArt(POD_SHELL[pod.g] || 'bone', 1), x, y);
   else dashedRect(x, y, 16, 20, C.stone);   // an empty slot: a free place, never an oval that reads as a zero
 }
 // Device status, far right of every top bar: battery and connectivity. Static placeholders for now.
@@ -4216,17 +4410,17 @@ function placeLightFn(P, lay) {   // the place's own light for a tile (fog beyon
 function warnPicPlace(x0, y0, a) {
   const ex = S.exp, P = ex.patch, lay = layout(a.key), live = ex.live[a.key] || { fr: [], tf: [], cr: [] }, { ts, light, inS, see } = placeLightFn(P, lay), o = sprOff(ts), keepRm = RT.remap;   // at 48 the card shows the cell's sprite box (columns 8–39, rows 16–47 of the cell: everything shifted up and left by sprOff, (8, 16)) in the place's own tables
   const i = a.y * PW + a.x, L = light(a.x, a.y), uv = unveiled(a.key, a.x, a.y), ox = a.x * ts, oy = a.y * ts, X = sx => x0 + sx - ox - o.x, Y = sy => y0 + sy - oy - o.y;
-  g.save(); g.beginPath(); g.rect(x0, y0, 32, 32); g.clip(); if (ts === 48) RT.remap = REMAP_PLACE;
-  g.drawImage((ts === 48 ? tile48(lay, i, 0) : tilePB(lay, i, 0)).canvas(L, false, false, L !== 3 && !uv), x0 - o.x, y0 - o.y);
+  g.save(); g.beginPath(); g.rect(x0, y0, 32, 32); g.clip(); if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;
+  g.drawImage((ts === 48 ? tile48(lay, i, 0, L === 3) : tilePB(lay, i, 0)).canvas(L, false, false, L !== 3 && !uv), x0 - o.x, y0 - o.y);
   const here = (x, y) => x === a.x && y === a.y;
-  for (const f of lay.feats) { if (!here(f.x, f.y) || (!'gxim'.includes(f.kind) && !see(f.x, f.y))) continue;   // ground marks
+  for (const f of lay.feats) { if (f.tree || !here(f.x, f.y) || (!'gxim'.includes(f.kind) && !see(f.x, f.y))) continue;   // ground marks
     if (f.kind === 'n') blit(holeArt(live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1) ? 1 : 0), x0, y0);
     else if (f.kind === 'e') blit(NEST(), x0, y0); else if (f.kind === 'm') blit(mushArt(0), x0, y0);
     else if (f.kind === 'd') blit(CRACK(), x0, y0); else if (f.kind === 'x') blit(exitArt(0), x0, y0);
     else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), x0, y0);
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), x0 + 9, y0 + 8, L); }
     else if (f.kind === 's' && fs(a.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(x0 + 8 + (k % 4) * 5, y0 + 18 + (k >> 2) * 4, 3, 1); } }
-  for (const f of lay.feats) { if (!'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
+  for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
     let art;
     if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
     else if (f.kind === 'u') art = cupArt(cupFull(a.key, f), lay.cave);
@@ -4239,10 +4433,10 @@ function warnPicPlace(x0, y0, a) {
   const over = (pb, sx, sy, tx, ty) => { if (sx >= ox + ts || sx + pb.w <= ox || sy >= oy + ts || sy + pb.h <= oy) return; const rm = light(tx, ty);
     g.drawImage(pb.canvas(rm, false, false, rm !== 3 && !unveiled(a.key, tx, ty)), Math.round(X(sx)), Math.round(Y(sy))); };
   for (let k = 0; k < PW * PH; k++) if (lay.tiles[k] === T.TRUNK) { const tx = k % PW, ty = (k / PW) | 0, under = tokens.some(q => cheb(q, { x: tx, y: ty }) <= 1);
-    over(canopyArt(under ? 1 : 0), tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
+    over((ts === 48 && treeCanopy(lay, k, under ? 1 : 0, light(tx, ty) === 3)) || canopyArt(under ? 1 : 0), tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
   for (const f of lay.feats) if (f.kind === 'o') { const under = tokens.some(q => q.y === f.y + 2 && q.x >= f.x && q.x <= f.x + 2);
     over(roofArt(under ? 1 : 0), f.x * ts + ((3 * ts - 104) >> 1), (f.y + 2) * ts - 10, f.x + 1, f.y); }
-  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1, q.sp), x0 + 8, y0 + 8);
+  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1), x0 + 8, y0 + 8);
   RT.remap = keepRm;
   g.restore();
   R(x0, y0, 32, 2, C.yellow); R(x0, y0 + 30, 32, 2, C.yellow); R(x0, y0, 2, 32, C.yellow); R(x0 + 30, y0, 2, 32, C.yellow);
@@ -4260,7 +4454,7 @@ const PIC = {
   warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 1), x, y)),
   charged: (x, y) => onGrass(x, y, () => blit(stoneArt(1, false, 0), x, y)),
   shelter: (x, y) => cen(SHELTER(), x, y),
-  pod: (x, y, p) => cen(podArt(POD_SHELL[p && p.g] || 'bone', 1, p && p.sp), x, y),
+  pod: (x, y, p) => cen(podArt(POD_SHELL[p && p.g] || 'bone', 1), x, y),
   full: (x, y, ps) => { podSlot(x, y + 6, (ps && ps[0]) || { g: 'meadow' }); podSlot(x + 16, y + 6, (ps && ps[1]) || { g: 'pond' }); },
   bank: (x, y) => cen2('crate', crateArt(), x, y),
   fog: (x, y) => ditherFill(x, y, 32, 32, 'fog', 8),
@@ -4473,7 +4667,7 @@ function drawMats(c, y) {
 // The pods held: each a pod at 2× in a 122×52 slot, with its species beside it when known; an empty slot is a dashed outline.
 function drawPods(pods, n, y) {
   for (let i = 0; i < n; i++) { const p = pods[i], x = 24 + i * 130; panel(x, y, 122, 52, C.ink, C.slate);
-    if (p) { blit(podArt(POD_SHELL[p.g] || 'bone', 2, p.sp), x + 8, y + 6); text(clipText(S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown', 122 - 46 - 4, 2), x + 46, y + 19, C.bone); }
+    if (p) { blit(podArt(POD_SHELL[p.g] || 'bone', 2), x + 8, y + 6); text(clipText(S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown', 122 - 46 - 4, 2), x + 46, y + 19, C.bone); }
     else dashedRect(x + 8, y + 6, 32, 40, C.stone); }
 }
 // A crate in the bay (read-only): its expedition number and its contents as icons.
@@ -4828,7 +5022,7 @@ function drawSealed(t) {
   text(clipText(dk ? (S.bay.length ? DOCK_TEXT.sealed : DOCK_TEXT.sealedEmpty) : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
   if (!r.waited) drawTurnLines(r, y);
 }
-function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' moment' + (q.moments === 1 ? '' : 's'); }
+function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' creature act' + (q.moments === 1 ? '' : 's'); }
 // The world lines under Expedition ended: worldTurn's order, three at most, each wrapped at 390 px (20 px a wrapped line, 6 between
 // lines). A line draws only while its foot, y + 20 × (wrapped lines − 1) + 17, stays on or above row 476 (8 px over 484, the
 // message box's highest top); the first that fails ends the list, silently. `wrap` splits one line into its wrapped parts.
@@ -4912,6 +5106,13 @@ function noteSigns() {
   if (fogActive()) { const p = cxy(S.exp.pos); let near = false; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && inFog(y * MW + x)) near = true; }
     if (near) fxSign('fog'); }
 }
+// The Data an act on this creature will pay, said before it is done: "+1 Data" while its act is open, "Data for this trip: full"
+// once the ceiling is reached, nothing once the act is paid. An unidentified creature says nothing (no act leaks).
+function actTag(c) {
+  const ex = S.exp, sp = c.sp, kind = !S.known.includes(sp) || !ex ? null : spOf(sp).eats ? 'eat' : sp === 1 ? 'settle' : null;
+  if (!kind || actDone(ex, c, kind)) return '';
+  return actOpen(ex, c, kind) ? ' · +' + ACT_DATA + ' Data' : ' · Data for this trip: full';
+}
 function dietLine(sp, long) {
   if (!S.known.includes(sp)) return 'Unknown creature · watch what it does';
   const nm = spOf(sp).name;
@@ -4945,7 +5146,7 @@ function lineBase() {
       // the survey state in words, drawn one step brighter (after the \x01 mark); the kinds drop first, then the place name, then the count
       const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = LAND_NAME[lay.land] + ' · ';
       let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay.cell, true)];
-      if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
+      if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
       if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep', fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
@@ -5219,6 +5420,33 @@ window.addEventListener('blur', () => { stopRepeat(); document.querySelectorAll(
 // ===================== 17. Page: fit, build footer, observer =====================
 const fitEl = document.getElementById('deviceFit');
 const EMBED = document.documentElement.classList.contains('embed');
+// ?embed on the play page: this Companion tells the page who it is and what it carries (its id and name, its world, the crates in its bay), and answers
+// the Caddy's seat with that word for the seat's number (the page's stand-in for the hold). The developer's "Companion silent" holds the answer back.
+const SHELL = EMBED && window.parent && window.parent !== window ? window.parent : null;
+let shellSeat = 0, shellSilent = false, shellSaid = '';
+// Putting a realm to sleep, the Companion's side (src/sleeper.mjs): its signing key (made once, at the first boot, kept in IndexedDB and never exported), its public key
+// in `mb-companion-<slot>` and in what it tells the shell, and the answers to the Station's `mb-sleep` requests. Nothing here is on a screen.
+let KEY_STORE = null;   // a test hands in a store for the key pairs here; the page uses IndexedDB
+const LS = { getItem: k => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v), removeItem: k => localStorage.removeItem(k) };
+const SLEEP = makeSleeper({ store: LS, rt: RT, keyStore: () => KEY_STORE, companion: () => COMPANION, wid: () => S.wid, saveKey: () => SAVE_KEY, save,
+  newRealm: (seed, wid) => { newRealm(seed, NEW_GEN, wid); RT.mp = null; RT.key = null; mapCv = null; transition(); },
+  onPub: pub => { if (COMPANION.pub !== pub) { COMPANION = { ...COMPANION, pub }; tellShell(true); } } });
+function tellShell(force) {
+  if (!SHELL || shellSilent) return;
+  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, seat: shellSeat };
+  const k = JSON.stringify(m); if (!force && k === shellSaid) return; shellSaid = k;
+  try { SHELL.postMessage(m, location.origin); } catch (e) { }
+}
+if (SHELL) {
+  window.addEventListener('message', e => {
+    if (e.origin !== location.origin || e.source !== SHELL) return; const m = e.data || {};
+    if (m.t === 'mb-seat' && !shellSilent) { shellSeat = m.seat | 0; SLEEP.seat(true); tellShell(true); }
+    else if (m.t === 'mb-lift') SLEEP.seat(false);   // the cradle is empty: no request is answered (and an unsigned lock lets go)
+    else if (m.t === 'mb-sleep' && !shellSilent) SLEEP.handle(m).then(a => { try { SHELL.postMessage({ t: 'mb-sleep-ack', nonce: m.nonce, op: m.op, ...a }, location.origin); } catch (e) { } });
+    else if (m.t === 'mb-silent') { shellSilent = !!m.on; if (!shellSilent) tellShell(true); }
+  });
+  const beat = () => { tellShell(false); setTimeout(beat, 250); }; beat();
+}
 // Scale the depicted device to the window. When the screen would land close to a whole number of
 // physical pixels per device pixel, snap to it so the pixel grid stays even.
 function fit() {
@@ -5264,8 +5492,8 @@ showDevStep();
 // What this expedition yields: its tier, the Data it earns, how much the moments have brought in so far.
 function yieldText() {
   const ex = S.exp, r = S.report;
-  if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data this expedition · ' + (ex.dField || 0) + ' in from ' + ex.moments.length + ' moment' + (ex.moments.length === 1 ? '' : 's') + ', ' + Math.max(0, walkYield(ex) - (ex.dField || 0)) + ' at the expedition\'s end' : 'no place entered yet') + ' | ladder ' + dataLadder(); }
-  if (S.phase === 'sealed' && r && r.yield) return 'last expedition: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' moment' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' at the expedition\'s end | ladder ' + dataLadder();
+  if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data at the expedition\'s end · ' + (ex.dAct || 0) + ' of ' + CREATURE_CEIL + ' in from ' + ex.moments.length + ' creature act' + (ex.moments.length === 1 ? '' : 's') : 'no place entered yet') + ' | ladder ' + dataLadder(); }
+  if (S.phase === 'sealed' && r && r.yield) return 'last expedition: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' creature act' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' at the expedition\'s end | ladder ' + dataLadder();
   return 'ladder ' + dataLadder() + ' by tier (starter / early / mid / late)';
 }
 (function buildPalette() {
@@ -5391,7 +5619,7 @@ for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
   btn.addEventListener('click', () => { ask.hidden = false; yes.focus(); });
   no.addEventListener('click', back);
-  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
+  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
     window.__mbResetting = true; location.reload(); }); }
 // The Station page wrote the shared save: take its part (dock, accepted crates, mibis, the Probe) and keep ours.
 // A reset there (the save erased) reloads this page too.
@@ -5407,13 +5635,15 @@ if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break');
   if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
   catch (e) { console.error(e); readOnlyBroken(); } }
 else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';
+SLEEP.holdAtBoot();   // a sleep still pending keeps this page from writing
 RT.bootHold = false; save();
+if (!RT.readOnly) SLEEP.start().catch(() => { });   // the key at the first boot (and its pub), and a committed sleep finished
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
 try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(true); } catch (e) { }   // ?dev=1 opens the Observer, the page's developer panel
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { get S() { return S; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, canStep, edgeKind, TEST,
   capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,

@@ -9,8 +9,9 @@
 #define JSMN_STRICT
 #include "../vendor/jsmn.h"
 #include "../spec/jnum.h"
+#include "../anim/hold.h"
 
-extern const lv_font_t face_inter_16, face_inter_16m, face_inter_20, face_inter_28;
+extern const lv_font_t face_inter_14, face_inter_15, face_inter_16, face_inter_16m, face_inter_18, face_inter_20, face_inter_28;
 #define MAX_OBJ 1024            /* the table is larger than the 400-object budget so a breach is measured, not refused (lvgl-switch.md §2.2) */
 #define MAX_ASSET 256
 #define MAX_SRC 16         /* face-owned sources for nine-slices (the focus rings, the bezels: the Library's three cell bezels with the rest), after the host's pictures in the same table; kept for the session, so every screen's together */
@@ -18,6 +19,7 @@ extern const lv_font_t face_inter_16, face_inter_16m, face_inter_20, face_inter_
 #define OPS_CAP (128 * 1024)
 #define NINE_PARTS 9
 #define RING_PARTS 8
+#define DROP_UNION 32   /* a frame that drops this many nodes or more says their boxes as one area first (drop_union) */
 static const int RING_JK[RING_PARTS][2] = { { 0, 0 }, { 0, 2 }, { 2, 0 }, { 2, 2 }, { 0, 1 }, { 2, 1 }, { 1, 0 }, { 1, 2 } };   /* the corners first, then the edges: top, bottom, left, right (row j, column k of the nine) */
 typedef struct {
   uint32_t id, parent;          /* parent: the id of the clip this node sits in, 0 at the root */
@@ -70,6 +72,10 @@ char *prim_ops(void) { return g_ops; }
 int prim_ops_size(void) { return (int)sizeof g_ops; }
 int prim_text_size(void) { return (int)sizeof g_text; }
 int prim_count(void) { return g_n; }
+/* the dry run (prim.h): nodes counted, never sent, so a word can say how many nodes a clip opened before them holds */
+static int g_dry, g_dry_n;
+void prim_dry(int on) { g_dry = on; g_dry_n = 0; }
+int prim_dry_count(void) { return g_dry_n; }
 int prim_unknown(void) { return g_unknown; }
 void prim_refuse(void) { g_unknown++; }
 int prim_asset_limit(void) { return MAX_ASSET; }
@@ -82,8 +88,8 @@ int prim_painted_at(int x, int y) {
   return 0;
 }
 int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET + MAX_SRC + 1; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
-/* the font of a code (prim.h PRIM_FONT_*): the four the face holds, NULL for any other */
-static const lv_font_t *font_of(int code) { return code == PRIM_FONT_R16 ? &face_inter_16 : code == PRIM_FONT_M16 ? &face_inter_16m : code == PRIM_FONT_M20 ? &face_inter_20 : code == PRIM_FONT_SB28 ? &face_inter_28 : NULL; }
+/* the font of a code (prim.h PRIM_FONT_*): the seven the face holds, NULL for any other */
+static const lv_font_t *font_of(int code) { return code == PRIM_FONT_R14 ? &face_inter_14 : code == PRIM_FONT_R16 ? &face_inter_16 : code == PRIM_FONT_M16 ? &face_inter_16m : code == PRIM_FONT_M20 ? &face_inter_20 : code == PRIM_FONT_SB28 ? &face_inter_28 : code == PRIM_FONT_R15 ? &face_inter_15 : code == PRIM_FONT_M18 ? &face_inter_18 : NULL; }
 int prim_font_px(int code) { return font_of(code) ? code % 1000 : 0; }
 int prim_measure(int code) {
   const lv_font_t *f = font_of(code); if (!f) return -1;
@@ -143,6 +149,9 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       if (!COL(6)) return -1; int x = A(0), y = A(1), len = A(2), on = A(4), off = A(5), vert = ops[tok[j + 3].start] == 'v';
       if (on <= 0 || off < 0) return -1;
       for (int k = 0; k < len; k++) if (k % (on + off) < on) put(px, w, h, x + (vert ? 0 : k), y + (vert ? k : 0), rgb);
+    } else if (nl == 4 && strncmp(name, "veil", 4) == 0 && tok[i].size == 7) {   /* ["veil", x, y, w, h, alpha, colour]: a flat box in `colour` at `alpha` (0 to 255) over what lies under the picture */
+      if (!COL(5)) return -1; int x = A(0), y = A(1), vw = A(2), vh = A(3), al = A(4); if (al < 0 || al > 255) return -1;
+      for (int yy = 0; yy < vh; yy++) for (int xx = 0; xx < vw; xx++) { int X = x + xx, Y = y + yy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; uint8_t *q = px + (Y * w + X) * 4; q[0] = (uint8_t)rgb; q[1] = (uint8_t)(rgb >> 8); q[2] = (uint8_t)(rgb >> 16); q[3] = (uint8_t)al; }
     } else if (nl == 3 && strncmp(name, "dot", 3) == 0 && tok[i].size == 4) {  g_dashdot = 1;
       if (!COL(2)) return -1; put(px, w, h, A(0), A(1), rgb);
     } else if (nl == 7 && strncmp(name, "lattice", 7) == 0 && tok[i].size == 8) {
@@ -172,6 +181,28 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
       if (hasf) { if (ring_mask(mask, bw, bh, 4000, radius, 0) < 0) { free(mask); return -1; } for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, fillc); }
       if (hase) { if (ring_mask(mask, bw, bh, 1, radius, 0) < 0) { free(mask); return -1; } for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, edgec); }
+      free(mask);
+    } else if (nl == 3 && strncmp(name, "arc", 3) == 0 && tok[i].size == 8) {   /* ["arc", x, y, w, h, width, fill, colour]: the part of an ellipse ring `width` thick that a clockwise sweep from twelve o'clock covers, fill thousandths of a turn (0 to 1000); integers only (hold_sin), not a focus ring */
+      if (!COL(6)) return -1;
+      int x = A(0), y = A(1), bw = A(2), bh = A(3), width = A(4), fill = A(5);
+      if (g_bad || width < 1 || width > 4096 || fill < 0 || fill > 1000 || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
+      uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
+      if (ring_mask(mask, bw, bh, width, 0, 1) < 0) { free(mask); return -1; }
+      int mirror = fill > 500, k = mirror ? 1000 - fill : fill; int64_t ux = hold_sin(k), uy = -(int64_t)hold_cos(k);   /* the sweep's end direction (screen y down); past a half turn the part left out is the mirror of the sweep of 1000 - fill */
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) {
+        int64_t X = 2 * xx + 1 - bw, Y = 2 * yy + 1 - bh; if (mirror) X = -X;
+        int in = fill >= 1000 || (fill > 0 && (X > 0 || (X == 0 && Y < 0)) && X * uy - Y * ux >= 0);
+        if (mirror && fill < 1000) in = !in;
+        if (in) put(px, w, h, x + xx, y + yy, rgb);
+      }
+      free(mask);
+    } else if (nl == 4 && strncmp(name, "oval", 4) == 0 && tok[i].size == 6) {   /* ["oval", x, y, w, h, colour]: a 1 px ellipse outline inside the box (the collection's drop spots); not a focus ring, so it sets no ring flag */
+      if (!COL(4)) return -1;
+      int x = A(0), y = A(1), bw = A(2), bh = A(3);
+      if (g_bad || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
+      uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
+      if (ring_mask(mask, bw, bh, 1, 0, 1) < 0) { free(mask); return -1; }
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
       free(mask);
     } else if (nl == 8 && strncmp(name, "rcorners", 8) == 0 && tok[i].size == 7) {   /* ["rcorners", x, y, w, h, radius, colour]: the corners of a w x h box that lie outside its rounded shape, in colour (a square picture seated in a rounded window) */
       if (!COL(5)) return -1;
@@ -397,6 +428,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   /* the clip's bookkeeping comes first: a node sent while a clip is open counts against it whether or not it is drawn, so a refused child never leaves the next root node inside the clip;
      a refused clip refuses the children it announced. A clip does not hold a clip. */
   uint32_t parent = 0; lv_obj_t *pobj = lv_screen_active(); int ox = 0, oy = 0, in_clip = 0;
+  if (g_dry) { g_dry_n++; if (kind == FN_TEXT) { g_trole[0] = 0; g_tground[0] = 0; } if (kind == FN_SPRITE) g_sopa = 255; return; }   /* the dry run: counted, never sent */
 #define REFUSE() do { g_unknown++; if (kind == FN_CLIP && !in_clip) { g_clip_left = a > 0 ? a : 0; g_clip_id = 0; } if (kind == FN_TEXT) { g_trole[0] = 0; g_tground[0] = 0; } if (kind == FN_SPRITE) g_sopa = 255; return; } while (0)
   if (g_clip_left > 0) {
     in_clip = 1; g_clip_left--;
@@ -419,7 +451,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
     if (g_n >= MAX_OBJ) REFUSE();
     i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].opa = 255; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].born = 1; g_o[i].ringed = want_ring; g_o[i].obj = make(&g_o[i], a, nursery());   /* a clip's child too: made on the nursery and moved into its clip at the end of the frame, so its birth invalidates nothing at the clip's origin */
   }
-  node_t *n = &g_o[i]; lv_obj_t *o = n->obj; n->seen = 1; g_seq[g_nseq++] = id; n->layer = g_layer; n->region = g_region; n->run = g_run; n->hold = g_hold;
+  node_t *n = &g_o[i]; lv_obj_t *o = n->obj; { int dup = n->seen; n->seen = 1; if (!dup) g_seq[g_nseq++] = id; } n->layer = g_layer; n->region = g_region; n->run = g_run; n->hold = g_hold;
   if ((kind == FN_SPRITE || kind == FN_NINE) && a >= 0 && a < MAX_ASSET && g_a[a].layer) n->layer = g_a[a].layer;   /* a picture takes its layer from its asset (lvgl-switch.md §2.1); words choose a layer only for rects, text and composed pictures */
   if (kind == FN_SPRITE) { int opa = g_sopa; g_sopa = 255; if (n->fresh || n->opa != opa) { lv_obj_set_style_image_opa(o, (lv_opa_t)opa, 0); n->opa = opa; } }   /* the opacity is the next sprite node's only */
   int px = x - ox, py = y - oy;
@@ -485,7 +517,20 @@ static void move_to(lv_obj_t *obj, int32_t idx) {
   par->spec_attr->children[idx] = obj;
   lv_obj_send_event(par, LV_EVENT_CHILD_CHANGED, NULL);
 }
+void prim_invalidate(int x, int y, int w, int h) { if (w <= 0 || h <= 0) return; lv_area_t a = { x, y, x + w - 1, y + h - 1 }; lv_obj_invalidate_area(lv_screen_active(), &a); }
+/* the boxes of the nodes this frame drops, as one area, said before they go: a screen that leaves (all its nodes dropped at once) is one area, not one an object, so LVGL's list of
+   invalid areas does not overflow into a whole-screen redraw; a frame that drops a few keeps their own boxes */
+static void drop_union(void) {
+  int nd = 0, x1 = 1 << 20, y1 = 1 << 20, x2 = -1, y2 = -1;
+  for (int i = 0; i < g_n; i++) if (!g_o[i].seen) {
+    int parts = g_o[i].ringed ? RING_PARTS : 1;
+    for (int k = 0; k < parts; k++) { lv_area_t a; lv_obj_get_coords(g_o[i].ringed ? g_o[i].rp[k] : g_o[i].obj, &a); if (a.x2 < a.x1 || a.y2 < a.y1) continue; if (a.x1 < x1) x1 = a.x1; if (a.y1 < y1) y1 = a.y1; if (a.x2 > x2) x2 = a.x2; if (a.y2 > y2) y2 = a.y2; }
+    nd++;
+  }
+  if (nd >= DROP_UNION && x2 >= x1 && y2 >= y1) { lv_area_t u = { x1, y1, x2, y2 }; lv_obj_invalidate_area(lv_screen_active(), &u); }
+}
 void prim_end(void) {
+  drop_union();
   for (int again = 1; again;) { again = 0; for (int i = 0; i < g_n; i++) if (!g_o[i].seen) { drop(i); again = 1; break; } }
   { int any = 0; for (int i = 0; i < g_n; i++) if (g_o[i].born) any = 1;   /* the new root nodes have their places and sizes: they join the screen, and only now is anything invalidated */
     if (any) { lv_obj_update_layout(nursery()); for (int i = 0; i < g_n; i++) if (g_o[i].born) { node_t *c = g_o[i].parent ? find_node(g_o[i].parent) : NULL; if (g_o[i].ringed) { for (int k = 0; k < RING_PARTS; k++) lv_obj_set_parent(g_o[i].rp[k], lv_screen_active()); } else { lv_obj_set_parent(g_o[i].obj, c ? c->obj : lv_screen_active()); if (c) lv_obj_set_pos(g_o[i].obj, g_o[i].x, g_o[i].y); } g_o[i].born = 0; } } }

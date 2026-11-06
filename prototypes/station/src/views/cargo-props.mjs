@@ -40,7 +40,7 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
     const dock = {}, crates = walkCrates(st, sv, docked).slice(0, R.dockCrates.max);
     dock.bay = { state: "open", open: slot(R.dockBay.slices.open, R.dockBay.rect.slice(2), "the signed bay (cargo.json bay)"), door: "" };
     dock.crates = { places: crates.map(() => ph(`crate-sealed-${R.dockCrates.crate.join("x")}`, R.dockCrates.crate)), shadow: slot(R.dockCrates.shadow.slice, R.dockCrates.shadow.size) };
-    const podSize = R.dockRack.pod.size, slots = R.dockRack.wells.slots, rackN = Math.min(S.rackSize(settings), slots);
+    const podSize = R.dockRack.pod.size, slots = R.dockRack.wells.slots, rackN = slots;   // the hatch shows the first pods at home in its wells (no rack: the inventory holds every pod)
     dock.rack = { insert: slot(R.dockRack.slice, R.dockRack.rect.slice(2)), wells: Array.from({ length: slots }, (_, i) => { const q = i < rackN ? st.tray[i] : null; return { pod: q ? podPic(q, podSize) : "" }; }) };
     props.regions = { dockBay: dock.bay, dockCrates: dock.crates, dockRack: dock.rack, arrival: arrivalRegion(m, spec, ph, slot, req) };
     const a = c.arrival, n = a.crates;
@@ -78,8 +78,9 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
   regions.hatch = { shut: pic(H.slices.shut), open: pic(H.slices.open), frame: pic(H.frame.slice), ring: pic(H.ring.slice), lit: pic(H.wells.lit.slice), wells: [] };
   regions.waiting = { mat: pic(W.mat.slice), shadow: slot(W.pods.shadow.slice, W.pods.shadow.size), pods: [] };
   const fromOf = (q) => { if (!run) return null; for (let k = 0; k < run.items.length; k++) { const j = run.items[k].pods.findIndex((p) => p.id === q.id); if (j >= 0) return { crate: k, order: j }; } return null; };
-  const trayOf = state === "bay" ? st.tray : run.plan.sim.tray, waitOf = state === "bay" ? st.waiting : run.plan.sim.waiting, rack = Math.min(S.rackSize(settings), H.wells.centres.length);
-  if (state !== "bay") regions.hatch.wells = H.wells.centres.map((_, i) => { const q = i < rack ? trayOf[i] : null; return { pod: q ? podPic(q, wellSize) : "", from: q ? fromOf(q) : null }; });
+  const trayOf = state === "bay" ? st.tray : run.plan.sim.tray, waitOf = state === "bay" ? st.waiting : run.plan.sim.waiting, rack = H.wells.centres.length;
+  const off = state === "bay" ? 0 : Math.max(0, trayOf.length - rack);   // no rack: the hatch's wells show the newest pods at home, so every pod the run brings lands in a well it can be seen in
+  if (state !== "bay") regions.hatch.wells = H.wells.centres.map((_, i) => { const q = trayOf[off + i] ?? null; return { pod: q ? podPic(q, wellSize) : "", from: q ? fromOf(q) : null }; });
   regions.waiting.pods = waitOf.map((q) => ({ pod: podPic(q, wellSize), from: fromOf(q) }));
 
   // ---- the opening: the contents of each crate, the times (build spec 4, 8.3) ----
@@ -91,7 +92,7 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
       return {
         kind: it.kind, berth,
         mats: it.mats.map((mt) => ({ name: mt.name, amount: "+" + mt.amount, big: pic(`cargo-${mt.name}-72x96`), small: pic(`cargo-${mt.name}-48x64`) })),
-        pods: it.pods.map((p) => ({ big: podPic(p.rec, bigSize), small: podPic(p.rec, wellSize), well: p.well, mat: p.mat, isNew: !!p.isNew })),
+        pods: it.pods.map((p) => ({ big: podPic(p.rec, bigSize), small: podPic(p.rec, wellSize), well: p.well >= 0 ? Math.max(0, p.well - off) : -1, mat: p.mat, isNew: !!p.isNew })),
         finds: fs,
         portrait: it.kind === "sitting" ? { frame: props.sittingCrate.frame, picture: props.sittingCrate.picture } : null,
       };

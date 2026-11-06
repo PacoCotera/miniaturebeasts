@@ -18,6 +18,7 @@ import { mibiPictureOf } from "../src/views/home-props.mjs";
 import { idleBuild } from "../src/views/idle-props.mjs";
 import { habitatBuild } from "../src/views/habitat-props.mjs";
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
+import { setStandSizes } from "../src/layered-stand.mjs";
 
 test("a palette buffer is RGBA: its colours from the palette, opaque, a clear cell 0,0,0,0", () => {
   const pb = new PB(3, 1); pb.set(1, 0, C.amber); const d = pb.rgba();
@@ -146,8 +147,8 @@ const lumOf = (img, [x, y, w, h]) => { const out = []; for (let j = y; j < y + h
 const mean = (a) => a.reduce((s, v) => s + v, 0) / a.length;
 const pct = (a, p) => { const s = [...a].sort((u, v) => u - v), r = (s.length - 1) * (p / 100), lo = Math.floor(r), hi = Math.ceil(r); return s[lo] + (s[hi] - s[lo]) * (r - lo); };   // linear interpolation, as numpy.percentile
 const srgbMean = (img, [x, y, w, h]) => { let t = 0; for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) { const k = (j * img.width + i) * 4; t += img.data[k] + img.data[k + 1] + img.data[k + 2]; } return t / (w * h * 3); };
+// (Pods' reading room shows no stamp label: its stamp is a small code-drawn case and the stamp block retires there)
 const LABELS = {   // screen: [golden, the label's rect, the main object's rect (the pod, the founder, the bud, the resident), the stamp's case on it]
-  pods: ["pods/pods-overview-identified-pod-focused.png", [804, 400, 120, 120], [184, 216, 144, 176]],
   create: ["create/create-shape.png", [804, 336, 120, 120], [360, 240, 304, 312]],   // the slot moved up 64 with the case (fix 5 Create)
   incubator: ["incubator/incubator-growing.png", [92, 200, 120, 120], [436, 255, 152, 160]],   // T-20261016-222: the label on the left wall, the sealed pod in the capsule
   habitat: ["habitat/habitat-card.png", [872, 64, 120, 120], [144, 80, 304, 312]],
@@ -290,9 +291,10 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
       const h = habitatBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, habId: a.id, meetId: null, armed: false }, hab, frameSpec, home);
       const near = h.requests.find((r) => r.id === h.props.regions.resident.picture); assert.deepEqual([near.stage, near.size], ["juvenile", [304, 312]]);
       assert.equal(mibiPictureOf(w.st, a, [304, 312], settings).id, h.props.regions.resident.picture, "the host's swap dither names the same fallback picture (host.mjs habitatFocus)");
-      const v = vivariumBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, seen: null }, viv, frameSpec, home);
-      const tile = (m) => v.requests.find((r) => r.id === v.props.regions.tiles.items.find((t) => t.id === String(m.id)).picture);
-      assert.deepEqual([tile(a).stage, tile(a).size], ["juvenile", [48, 48]]); assert.deepEqual([tile(pip).stage, tile(pip).size], ["adult", [48, 48]]);
+      setStandSizes(JSON.parse(readFileSync(new URL("../../ui/specs/station/stand-sizes.json", import.meta.url), "utf8")));   // the factor views' table (stand-sizes.json), as the page loads it
+      let v; try { v = vivariumBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, seen: null }, viv, frameSpec, home); } finally { setStandSizes(null); }   // the room view's walkers at 96/304 (the collection v2 design)
+      const tile = (m) => v.requests.find((r) => r.id === v.props.regions.residents.find((t) => t.id === String(m.id)).picture);
+      assert.deepEqual([tile(a).stage, tile(a).size], ["juvenile", [96, 99]]); assert.deepEqual([tile(pip).stage, tile(pip).size], ["adult", [96, 99]]);
     }));
   });
 }

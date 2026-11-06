@@ -352,7 +352,7 @@ def template(fields, reasons=None):
 def gemini_call(parts, record, model=None):
     key = os.environ.get("GEMINI_API_KEY")
     if not key: raise RuntimeError("GEMINI_API_KEY is not in the environment")
-    ledger.require_ledger(); ledger.price("google", model or GEMINI_MODEL)  # every paid call is logged at a known price: without the ledger the tool stops here, before the call
+    ledger.require_ledger(); ledger.require_day_line(); ledger.price("google", model or GEMINI_MODEL)  # the game's day line, then every paid call is logged at a known price: without the ledger the tool stops here, before the call
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model or GEMINI_MODEL}:generateContent"
     body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": "1:1", "imageSize": "1K"}}}
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"x-goog-api-key": key, "Content-Type": "application/json"}, method="POST")

@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { findings } from "../specs/layout.mjs";
+import { findings, overruns } from "../specs/layout.mjs";
 import { specFor } from "../../face/tools/layout-check.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), J = (f) => JSON.parse(readFileSync(f, "utf8"));
@@ -27,6 +27,20 @@ for (const c of cases) test(`${c.state} (${c.from})`, () => {
   for (const e of c.expect) assert.ok(fs.some((f) => matches(f, e)), `${c.state}: expected ${e.rule}${e.part ?? ""} ${e.node ?? ""} ${e.other ?? ""} ${JSON.stringify(e.measured ?? "")} (${e.why}); found:\n  ${fs.filter((f) => f.rule === e.rule).map(say).join("\n  ")}`);
   for (const e of c.clear) assert.ok(!fs.some((f) => matches(f, e)), `${c.state}: cleared by the owner, but found: ${fs.filter((f) => matches(f, e)).map(say).join("; ")}`);
 });
+// the collection v2 design §4: the proof that L10c bites. Three broken room-view frames (layout-cases/vivarium/broken/) each give exactly one L10c finding; the frozen logs carry no `view` fact and give none.
+const BROKEN = path.join(here, "layout-cases", "vivarium", "broken");
+test("L10c bites: each broken room-view fixture gives exactly one L10c finding; the frozen logs give none", () => {
+  const want = { "reeds-crop-230.json": ["reeds-boulder", "left"], "boulders-rear-stone.json": ["boulders-rear-stone", "right"], "loika-foot-16.json": ["resident", "left"] };
+  assert.deepEqual(readdirSync(BROKEN).filter((f) => f.endsWith(".json")).sort(), Object.keys(want).sort(), "the three broken fixtures");
+  for (const [f, [node, other]] of Object.entries(want)) {
+    const rec = J(path.join(BROKEN, f)), { spec } = specFor(rec), cuts = findings(rec.log, spec, frame, rec.screen, rec.state, { facts: rec.facts }).filter((x) => x.rule === "L10" && x.part === "c");
+    assert.deepEqual(cuts.map((x) => [x.node, x.other]), [[node, other]], `${f}: ${rec.why}`);
+  }
+  for (const f of readdirSync(path.join(here, "layout-cases", "vivarium", "frozen"))) {
+    const rec = J(path.join(here, "layout-cases", "vivarium", "frozen", f)), { spec } = specFor(rec);
+    assert.deepEqual(findings(rec.log, spec, frame, rec.screen, rec.state, { facts: rec.facts ?? {} }).filter((x) => x.rule === "L10" && x.part === "c"), [], `frozen ${f}: no view fact, no L10c`);
+  }
+});
 test("the corpus: every ✓m of the spec's validation has a case", () => {
   const marks = cases.flatMap((c) => c.expect.filter((e) => e.mark === "✓m")); assert.ok(marks.length >= 25, marks.length + " ✓m expects");
   for (const c of cases) assert.ok(Array.isArray(c.clear) && Array.isArray(c.pending), c.state);
@@ -37,23 +51,36 @@ const owner = cases.filter((c) => c.card), by = (v) => owner.filter((c) => c.ver
 test("the owner's review: 98 cards, one case each: a fault expects (its own kind, or the finding that carries it), a fine clears, a not-sure card is as the tune left it", () => {
   assert.equal(owner.length, 98); assert.equal(new Set(owner.map((c) => c.card)).size, 98, "one case a card");
   assert.deepEqual([by("fault").length, by("fine").length, by("unsure").length, by("unmarked").length], [53, 22, 21, 2]);
-  for (const c of by("fault")) assert.ok(c.expect.length || c.fixed || c.pending.length, `${c.card}: a fault expects a finding, or names the commit that fixed it, or is pending`);
-  assert.deepEqual(by("fault").filter((c) => c.fixed).map((c) => c.card), ["vivarium-L11-1"], "exactly one fault is fixed (by Q1)");
+  for (const c of by("fault")) assert.ok(c.expect.length || c.fixed || c.ruled || c.pending.length, `${c.card}: a fault expects a finding, or names the commit that fixed it, or the owner's ruling that replaced it, or is pending`);
+  assert.deepEqual(by("fault").filter((c) => c.fixed).map((c) => c.card).sort(), ["create-L5-4", "vivarium-L1-10", "vivarium-L11-1", "vivarium-L7-11"], "four faults are fixed (create-L5-4 by the price run's 8 px inset; L11-1 by Q1; L1-10 and L7-11 by the collection v2 build: the bed centred)");
+  assert.deepEqual(by("fault").filter((c) => c.ruled).map((c) => [c.card, c.ruled]), [["vivarium-L10-1", "2026-10-29 14:38"]], "one fault is ruled (the window edge rule)");
   for (const c of by("fine")) assert.ok(c.clear.length && !c.expect.length, `${c.card}: a fine clears its kind`);
   for (const c of [...by("unsure"), ...by("unmarked")]) assert.ok(c.expect.length || c.clear.length, `${c.card}: as the tune left it`);
-  for (const id of ["sitting-L5-8", "vivarium-L10-1", "vivarium-L3-15"]) assert.ok(owner.find((c) => c.card === id).expect.length, `${id}: the owner's faults that the tune first cleared fire under their own kind`);
+  for (const id of ["sitting-L5-8", "vivarium-L3-15"]) assert.ok(owner.find((c) => c.card === id).expect.length, `${id}: the owner's faults that the tune first cleared fire under their own kind`);
+  { const c = owner.find((q) => q.card === "vivarium-L10-1"); assert.ok(c.clear.some((e) => e.rule === "L10" && e.part === "c" && e.node == null), "vivarium-L10-1: L10c is checked on it and finds nothing (the broken fixtures each find one)"); }
   assert.equal(by("unsure").filter((c) => c.expect.length && !c.clear.length).length, 8, "the not-sure cards that fire: 8");
   assert.equal(by("unsure").filter((c) => c.clear.length).length, 13, "and those that clear: 13");
 });
 test("the owner's exceptions: each fine card whose kind the rule still finds is cleared by its frame.json exception, and by nothing else", () => {
   const bare = JSON.parse(JSON.stringify(frame)); bare.layout.exceptions = [];
-  for (const e of frame.layout.exceptions.filter((x) => x.by === "owner")) {   // UI/UX's exceptions (R5 Q6) have no owner card: layout-check proves each is used
+  for (const e of frame.layout.exceptions.filter((x) => x.by === "owner" && !x.unless)) {   // a conditional one (when / unless: the 14:38 window edge rule) has a ruled fault card, below   // UI/UX's exceptions (R5 Q6) have no owner card: layout-check proves each is used
     const c = by("fine").find((q) => q.clear.some((x) => x.node === e.node && x.rule === e.rule && (e.other == null || [e.other].flat().includes(x.other))) && q.state.startsWith(e.screen + "/"));
     assert.ok(c, `${e.screen} ${e.rule} ${e.node}: a fine card of the owner's`);
     const [screen, ...rest] = c.state.split("/"), rec = J(fixtureOf(c.state)), { spec } = specFor(rec), run = (f) => findings(rec.log, spec, f, rec.screen, rec.state, { facts: rec.facts ?? {} });
-    const ex = (f) => f.rule === e.rule && f.node === e.node && (e.other == null || [e.other].flat().includes(f.other));
+    const strip = (n) => String(n).replace(/#\d+$/, ""), ex = (f) => f.rule === e.rule && ((f.node === e.node && (e.other == null || [e.other].flat().includes(f.other))) || (f.rule === "L3" && f.part === "a" && e.other != null && [e.other].flat().includes(strip(f.node)) && strip(f.other) === e.node));   // L3a is a pair: either way round
     assert.ok(run(bare).some(ex), `${c.card}: without its exception the finding is made`); assert.ok(!run(frame).some(ex), `${c.card}: with it, it is not`);
   }
+});
+
+test("the owner's conditional exception (the window edge rule, 2026-10-29 14:38): on the ruled card's room-view frame it clears L10a, while L10c finds nothing there; a frame with an L10c finding keeps its L10a", () => {
+  const e = frame.layout.exceptions.find((x) => x.by === "owner" && x.unless); assert.ok(e, "the exception"); assert.deepEqual([e.screen, e.rule, e.node, e.other, e.when, e.unless], ["vivarium", "L10", "window", "its picture", { view: "room" }, { rule: "L10", part: "c" }]);
+  const c = owner.find((q) => q.card === "vivarium-L10-1"), rec = J(fixtureOf(c.state)), { spec } = specFor(rec), bare = JSON.parse(JSON.stringify(frame)); bare.layout.exceptions = bare.layout.exceptions.filter((x) => x !== e && !(x.unless));
+  const run = (f, facts = rec.facts ?? {}) => findings(rec.log, spec, f, rec.screen, rec.state, { facts }), a = (f) => f.rule === "L10" && f.part === "a" && f.node === "window";
+  assert.equal(rec.facts?.view, "room", "the frame carries the room view's fact");
+  if (run(bare).some(a)) assert.ok(!run(frame).some(a), "cleared with it");
+  assert.ok(!run(frame).some((f) => f.rule === "L10" && f.part === "c"), "L10c finds nothing on the ruled frame");
+  for (const f of readdirSync(BROKEN).filter((x) => x.endsWith(".json"))) { const r2 = J(path.join(BROKEN, f)), s2 = specFor(r2).spec, run2 = (fr) => findings(r2.log, s2, fr, r2.screen, r2.state, { facts: r2.facts ?? {} });
+    if (run2(bare).some(a)) assert.ok(run2(frame).some(a), `${f}: L10c finds a cut, so the exception does not clear its L10a`); }
 });
 
 // R4b (UI/UX, the R4b layout read Overlaps): the focus set is drawn above the walkers (vivarium.json regions.resident.order, home.json regions.resident.order): a walker may pass in front of the focused one by depth and is drawn under it, and walkers do not avoid it.
@@ -71,4 +98,13 @@ test("the focus set is drawn after every other resident: ring, then the focused 
     }
   }
   assert.ok(n >= 3, n + " logs read");
+});
+
+test("the text fit: no fixture log (the frozen ones too) has a text whose ink lies outside the plate it is drawn on", () => {
+  let n = 0;
+  for (const screen of readdirSync(path.join(here, "layout-cases"))) for (const dir of [path.join(here, "layout-cases", screen), path.join(here, "layout-cases", screen, "frozen")]) {
+    if (!existsSync(dir)) continue;
+    for (const f of readdirSync(dir).filter((x) => x.endsWith(".json"))) { const o = overruns(J(path.join(dir, f)).log); n++; assert.deepEqual(o.map((x) => `${x.node} ${x.measured} px past the ${x.side} of ${x.container.id}`), [], `${screen}/${f}`); }
+  }
+  assert.ok(n >= 50, n + " logs read");
 });

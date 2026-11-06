@@ -9,7 +9,7 @@
  },
  "taxonomy": {
   "code": "S02",
-  "resembles": "a puffball under a cap",
+  "resembles": "a puff with a face and stub feet",
   "moves": "waddles",
   "habitat": "wood, meadow, pond",
   "gate": "Character sealed (a crystal)",
@@ -41,7 +41,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -1668,6 +1669,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -1736,7 +1741,7 @@
   "carried": 43,
   "trunk": 40,
   "branch": 3,
-  "absent": 97,
+  "absent": 98,
   "locked": 22,
   "lockedBy": {
    "switch": 2,
