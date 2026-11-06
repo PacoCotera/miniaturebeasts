@@ -7,6 +7,7 @@
 //               extended below to hold it, and the whole is reduced once by the figure's factor. It is not a look, so it has no trait; `figure` (the drawn bbox of the figure alone, ink alpha >= 128) never includes it.
 // Layers are applied in `order`. Everything is derived down from the close stand, never scaled up (tools/make-stand-layers.py cuts every size).
 import { standKey, keyToken } from "./looks.mjs";
+import { placedAt } from "./stands.mjs";
 
 // The art is cut once, at the close stand's 304×312. The figure is composed at the size a place wants HERE, in the logic process (the face never scales). The picture is the place's own size, because the face places a picture 1:1
 // in its slot: the figure is fitted into the config's figure box by the one factor that fits, bottom-centred in the picture, transparent around it, so its feet stay on the picture's foot. The figure box is a parameter of the picture
@@ -46,14 +47,16 @@ export function layeredStand(species, stage, place, view = "default", pose = "an
   if (sc > 1 || (fig[2] - fig[0] + 1) * sc > place[0] + 0.5 || (fig[3] - fig[1] + 1) * sc > place[1] + 0.5) return null;
   return { ...stand, figure };
 }
-// The pose a habit shows a stage in: { pose, owed }. The pose the species' habits map the habit to, when that pose is cut for the stage; else the anchor, owed "habit key <habit>" (a species with no layered stand
-// is owed too: its picture is the species' stand-in, as before). Pure: the index's data only.
+// The pose a habit shows a stage in: { pose, owed }. The pose the species' habits map the habit to, when that pose is cut for the stage; else the curl (owed is always null now). Pure: the index's data and the placed masters only.
 export const HABIT_POSE = { "sleep-curled": "curl", puff: "puff", sniff: "sniff", dig: "dig", glow: "glow" };
 export function poseFor(species, stage, habit) {
   const pose = INDEX?.stands?.[species]?.habits?.[habit];
   if (pose && INDEX?.stands?.[species]?.[stageKey(stage)]?.poses?.[pose]) return { pose, owed: null };
-  if (HABIT_POSE[habit]) return { pose: HABIT_POSE[habit], owed: null };   // release 21c: a habit with a painted pose master (the sleep curl on every kind; S02's puff and sniff, S03's dig and glow)
-  return { pose: "anchor", owed: `habit key ${habit}` };
+  // release 21d (art desk R21c-4): a habit shows its own pose when that pose master is placed for the kind and stage (S02's puff and sniff, S03's dig and glow); every other habit shows the curl, which every kind has.
+  // Nothing is owed any more: no request carries an owed habit key and no word of it reaches a player.
+  const own = HABIT_POSE[habit], ms = stage === "juvenile" ? "juvenile" : "adult";
+  if (own && own !== "curl" && placedAt(`mibi-${ms}-${species}-${own}-304x312`, 304, 312)) return { pose: own, owed: null };
+  return { pose: "curl", owed: null };
 }
 // The base a mibi's coat calls for: a coat the stand has a painted base for (the version 4 colours, recoloured by the signed ramps), else the stand's own base (charcoal, or a coat it has no ramp for)
 export const baseFor = (stand, looks) => stand.bases[looks.colour] ?? stand.base;

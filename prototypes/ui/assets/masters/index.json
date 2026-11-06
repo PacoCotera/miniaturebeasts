@@ -1,7 +1,7 @@
 {
  "schema": "mb-masters/1",
  "juvenileFacing": {
-  "note": "Which way each species' adult and juvenile stands face as the masters are painted, and whether the juvenile is drawn mirrored so the young faces the opposite way from its adult (owner, 1 Nov 2026). The master files are never edited: the loader (station/src/masters.mjs) reads each mibi-juvenile-SNN-* master of a mirrored species with its rows reversed, so every stand, sleeper and thumbnail of the young shows mirrored. The Home walk reads the unmirrored stand (its facing comes from the set's native side). Redone 6 Nov 2026 (release 21c) from the twenty kinds' new paintings, measured by eye on the placed 96x88 masters: every kind faces the same way as its young, and the young of all twenty is painted facing the way its adult does, so all twenty are drawn mirrored; S12, S17 and S18 are near front views and are called by the turn of the head.",
+  "note": "Which way each species' adult and juvenile stands face as the masters are painted, and whether the juvenile is drawn mirrored so the young faces the opposite way from its adult (owner, 1 Nov 2026). The master files are never edited: the loader (station/src/masters.mjs) reads each mibi-juvenile-SNN-* master of a mirrored species with its rows reversed, so every stand, sleeper and thumbnail of the young shows mirrored. The Home walk reads the unmirrored stand (its facing comes from the set's native side). Redone 6 Nov 2026 (release 21c) from the twenty kinds' new paintings, measured by eye on the placed 96x88 masters: every kind faces the same way as its young, and the young of all twenty is painted facing the way its adult does, so all twenty are drawn mirrored; S12, S17 and S18 are near front views and are called by the turn of the head. Pesko S06 was painted facing left; its adult and young are placed mirrored (tools/game-masters.mjs FLIPPED), so it faces right like the rest.",
   "species": {
    "S01": {
     "adult": "left",
@@ -29,8 +29,8 @@
     "mirror": true
    },
    "S06": {
-    "adult": "left",
-    "juvenile": "left",
+    "adult": "right",
+    "juvenile": "right",
     "mirror": true
    },
    "S07": {
@@ -395,7 +395,7 @@
    "file": "pods/bud-shape-S06-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "87269d614bf457ec5f8ed76d8309393d23b4f89aece79faa444be948b6f92ed9",
+   "sha256": "d1bd440a31d76298aee7e803f8e9c4746c32ad914bd71d624c870a09de33ed50",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S06-pesko/bud-shape-S06-112x112.png"
   },
@@ -3390,7 +3390,7 @@
    "file": "pods/mibi-adult-S06-144x152.png",
    "w": 144,
    "h": 152,
-   "sha256": "18f93ac1f7e23c95e94ac6034fa8da9068fc9507ab4fb0719c1f9eeabe544fde",
+   "sha256": "b32aedf050d7848d3c92ec99bd46e9352e0ec3676dff6daafc3677bf12539f70",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S06-pesko/mibi-adult-S06-144x152.png"
   },
@@ -3398,7 +3398,7 @@
    "file": "pods/mibi-adult-S06-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "09e048644964b056560968ded8a892abed9c98bc0e7c8d6bf80b776370cc5418",
+   "sha256": "5ef59f21d7ec2d2038ef72c6d15299f6ddf86d4ec43766c6bfcfe4c363348eb9",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/boards/visual-language/stands/stand-S06-pesko-304x312.png"
   },
@@ -3406,7 +3406,7 @@
    "file": "pods/mibi-adult-S06-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "12951491983c766022ea87c6d833466d11fc922c25a8f09dc3051f6b8a013ed5",
+   "sha256": "e7683ad098d83a3916942bf6d7891e23daae8c430e5e7eb2a71daf4a6a7e30b4",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/boards/visual-language/stands/stand-S06-pesko-48x48.png"
   },
@@ -3414,7 +3414,7 @@
    "file": "pods/mibi-adult-S06-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "1159de6af1680d2e2b5c3a81219c0cdef96ceeaf4eeef80a9876d4b4f93e4ee3",
+   "sha256": "8d34da9150e7b7b9c58ba43f1bf8285fa347c6f15d3f88a4e5ea66fd0990e623",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/boards/visual-language/stands/stand-S06-pesko-96x88.png"
   },
@@ -3422,7 +3422,7 @@
    "file": "pods/mibi-adult-S06-curl-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "25ff8ea5074b31e7ce03c2021f91808010be06959a63f3dcf97e35e2f2386b7e",
+   "sha256": "de7ee88c516580fe027d98386baefaeb98479b2ee6f71fac5a42d1be2a898192",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g4-S06-pesko-asleep-304x312.png"
   },
@@ -4078,7 +4078,7 @@
    "file": "pods/mibi-halo-S06-128x160-clear.png",
    "w": 128,
    "h": 160,
-   "sha256": "065bb6026bee9718064b84d4eb2ef5dcbd7e4db73427e8cf0938cbc3a650256b",
+   "sha256": "4cb6e475c58f1d36a75eaf69896db1d75a5e9de1dd54ba9c7e684400ffbd89e0",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S06-pesko/mibi-halo-S06-128x160-clear.png"
   },
@@ -4086,7 +4086,7 @@
    "file": "pods/mibi-halo-S06-128x160-mist.png",
    "w": 128,
    "h": 160,
-   "sha256": "26dfaab45c7b021033d1f44fb7fa4d95583e37fbb67ce78f382080f712821b70",
+   "sha256": "cd47eab2b68386889b761d49a38475e6386a25683bfa99b3aa37c13012ae528a",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S06-pesko/mibi-halo-S06-128x160-mist.png"
   },
@@ -4550,7 +4550,7 @@
    "file": "pods/mibi-juvenile-S06-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "262cb3eaa5d094ae2cc96bd86641d4f7246cf53a4b3232b944517f8b355fa611",
+   "sha256": "8bd4158bea1818f288c40baa8ad899915d6b2eb0c6018720ec09caef20dd7a6c",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S06-pesko/mibi-juvenile-S06-104x112.png"
   },
@@ -4558,7 +4558,7 @@
    "file": "pods/mibi-juvenile-S06-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "d61108f6346c0b8324d2052097f93928c25e39dd18ef3931f6a3123f31c25217",
+   "sha256": "271693a1fb99e4a4c52492a9f46772f0e344ddf4ab5ae9b77154be16adc33118",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g4-S06-pesko-juv-r2-304x312.png"
   },
@@ -4566,7 +4566,7 @@
    "file": "pods/mibi-juvenile-S06-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "72d4c204fef6788e1d45db42528d9c1e74c40dc67be9e0dd79551ffe08f27608",
+   "sha256": "39e6549f289cf779d76f0eb4eb2d216b8a62f6ade5be5cb3e886771eaefbdf75",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g4-S06-pesko-juv-r2-48x48.png"
   },
@@ -4574,7 +4574,7 @@
    "file": "pods/mibi-juvenile-S06-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "515144e212dfdee71752d07cc8fdcdcbb46d2ca721c4538a201911b13eea6008",
+   "sha256": "42e989aabbb4e19f7c58c997ce90ca8affcdc2050dca02049acb1cc823875363",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g4-S06-pesko-juv-r2-96x88.png"
   },
@@ -4582,7 +4582,7 @@
    "file": "pods/mibi-juvenile-S06-curl-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "9f44c2bd3e53dfcea0faadc86ea23c4137d520aef19a7e73aa5cc5d81d6b8152",
+   "sha256": "706cafa338dccd567b611ef8e2e6019c9fd597ea3b08df6391acb330579347b2",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g4-S06-pesko-juvasleep-304x312.png"
   },
@@ -12231,7 +12231,7 @@
    "file": "pods/spread-plate-S06-80x96.png",
    "w": 80,
    "h": 96,
-   "sha256": "dd2b7d7b1a9c2f22be848c8831efbc9651ee924eb11565e66b98ece8fbae49c2",
+   "sha256": "9c0d66a2294217a31bdff3e173f3854c13564a7ab586a1de1dc10e6baa02f1a9",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S06-pesko/spread-plate-S06-80x96.png"
   },
