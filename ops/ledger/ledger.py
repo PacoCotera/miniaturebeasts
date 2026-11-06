@@ -165,8 +165,8 @@ def require_day_line(worst_usd=WORST_CASE_USD, cap_mxn=DAY_LINE_MXN, now=None, s
     day = mexico_city_day(now)
     total = day_mxn(day, skip_tools)
     if total + worst_usd * MXN_PER_USD > cap_mxn + 1e-9:
-        raise LedgerError(f"No call made: today's image spending ({total:.2f} MXN) plus this call's most it could cost "
-                          f"({worst_usd * MXN_PER_USD:.2f} MXN) would pass the {cap_mxn:.0f} MXN day line.")
+        raise LedgerError(f"No call made: today's image spending ({total:.2f} pesos) plus this call's most it could cost "
+                          f"({worst_usd * MXN_PER_USD:.2f} pesos) would pass the {cap_mxn:.0f} peso day line.")
     return total
 
 

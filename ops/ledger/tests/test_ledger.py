@@ -99,7 +99,7 @@ class LedgerTest(unittest.TestCase):
         self.put("grow/service.py paint", "2026-11-04T17:20:00Z", 0.01)   # 0.2 pesos more passes the line
         with self.assertRaises(SystemExit) as c:
             ledger.require_day_line(now=self.NOW)
-        self.assertIn("250 MXN day line", str(c.exception))
+        self.assertIn("250 peso day line", str(c.exception))
 
     def test_day_line_leaves_out_the_book_and_other_days(self):
         self.put(ledger.BOOK_TOOL, "2026-11-04T17:00:00Z", 50.0)
