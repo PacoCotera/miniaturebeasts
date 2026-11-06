@@ -1,0 +1,70 @@
+{
+ "schema": "mb-part/1",
+ "id": "P0001-p2",
+ "part": "P0001",
+ "version": 2,
+ "glb": {
+  "file": "P0001-p2.glb",
+  "sha256": "e74213f8d5d060f5e92d041e460239d9a439cafd8072ebe19315a2759413212e",
+  "bytes": 48320,
+  "triangles": 2016
+ },
+ "type": "leaf",
+ "motion": "rigid",
+ "bones": 0,
+ "root_joint": "hinge",
+ "frame": {
+  "root": [
+   0,
+   0,
+   0
+  ],
+  "length_axis": "z",
+  "span_axis": "x",
+  "chord_axis": "y",
+  "length": 1.0,
+  "width": 0.6773,
+  "thickness": 0.2961
+ },
+ "sockets": [
+  "crest"
+ ],
+ "pile": {
+  "class": "felt",
+  "shells": 10,
+  "length": 0.006
+ },
+ "layouts": {
+  "fan": {
+   "step_deg": {
+    "1": 0,
+    "2": 30,
+    "3": 40,
+    "4": 30,
+    "5": 26
+   },
+   "tilt_back_deg": -4,
+   "side_back_deg": 0,
+   "twist_deg": 20,
+   "base_r": 0.22,
+   "stagger": 0.1,
+   "sink": 0.25,
+   "centre_scale": 0.92,
+   "size_of_body": 0.34
+  }
+ },
+ "provenance": {
+  "source": "cut from the Loika sculpt clean (leaf1 of the trial asset), written out unit length with the root at the origin",
+  "trial": "loika-3d trial, crest.py",
+  "cleaned_by": "art desk",
+  "measured": {
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "pieces": 1
+  }
+ },
+ "approved": {
+  "art_desk": "2026-11-06 leaf crest approved with the Loika trial",
+  "gate": null
+ }
+}

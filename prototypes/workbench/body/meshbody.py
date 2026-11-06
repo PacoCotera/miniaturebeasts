@@ -26,7 +26,7 @@ def rz(a):
 
 
 def fan_placements(count, size_of_body, body_h, layout):
-    """The placements of `count` units of a fan on a socket: [(R (3x3), offset (3,), scale)] in the studio frame, relative to the socket point. The unit's length is the crest's height over the cosine of the tilt and what is left after the sink; the middle unit is the tallest.
+    """The placements of `count` units of a fan on a socket: [(R (3x3), offset (3,), scale)] in the studio frame, relative to the socket point. The unit's length is the crest's height over the cosine of the tilt and what is left after the sink; the middle unit is the tallest unless the layout's `centre_scale` (default 1) makes it shorter.
     The layout is the part's own (its sidecar's `layouts.fan`)."""
     n = int(count)
     tilt = math.radians(layout["tilt_back_deg"])
@@ -38,8 +38,9 @@ def fan_placements(count, size_of_body, body_h, layout):
         k = i - (n - 1) / 2
         ang = k * step
         R = rx(-tilt - math.radians(layout["side_back_deg"]) * min(1.0, abs(k))) @ ry(ang) @ rz(math.radians(layout["twist_deg"]) * float(np.sign(k)))
-        off = np.array([math.sin(ang) * layout["base_r"] * L, abs(k) * layout["stagger"] * L, -sink * L])
-        out.append((C_TRIAL @ R, C_TRIAL @ off, L))
+        Lk = L * (float(layout.get("centre_scale", 1.0)) if k == 0 else 1.0)
+        off = np.array([math.sin(ang) * layout["base_r"] * L, abs(k) * layout["stagger"] * L, -sink * Lk])
+        out.append((C_TRIAL @ R, C_TRIAL @ off, Lk))
     return out
 
 

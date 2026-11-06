@@ -1,4 +1,4 @@
-"""Chunk 30: the mesh body source. Loika's S01-m1 is built by the studio from a signed sculpt: the file's mesh block and its either-or rule, the eight mesh checks (green on Loika, each red on the broken sculpt that names it),
+"""Chunk 30: the mesh body source. Loika's S01-m2 is built by the studio from a signed sculpt: the file's mesh block and its either-or rule, the eight mesh checks (green on Loika, each red on the broken sculpt that names it),
 the built body (sculpt and leaf part at the crest socket), the face decal at the sidecar's stations, the export GLB with the mesh in its stamp, and the importer's fit. Under the bpy venv (the import and the export need Blender)."""
 import copy, json, os, shutil, sys, tempfile, unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -68,11 +68,11 @@ def write_glb(path, V, F_, uv=None, texture=False, pad=0, extra_piece=None):
 
 
 class Sculpts(unittest.TestCase):
-    """A scratch copy of S01-m1's sidecar next to a broken GLB, and the file that names it."""
+    """A scratch copy of S01-m2's sidecar next to a broken GLB, and the file that names it."""
     @classmethod
     def setUpClass(cls):
         cls.dir = tempfile.mkdtemp(prefix="mesh30-")
-        cls.m = MS.Mesh("meshes/S01/S01-m1.json")
+        cls.m = MS.Mesh("meshes/S01/S01-m2.json")
 
     @classmethod
     def tearDownClass(cls):
@@ -81,14 +81,14 @@ class Sculpts(unittest.TestCase):
     def doc_for(self, name, V, F_, pin=None, **kw):
         d = os.path.join(self.dir, name)
         os.makedirs(d, exist_ok=True)
-        glb = os.path.join(d, "S01-m1.glb")
+        glb = os.path.join(d, "S01-m2.glb")
         write_glb(glb, V, F_, **kw)
         sc = copy.deepcopy(self.m.sc)
-        sc["glb"].update(file="S01-m1.glb", sha256=MS.sha256_file(glb), bytes=os.path.getsize(glb))
+        sc["glb"].update(file="S01-m2.glb", sha256=MS.sha256_file(glb), bytes=os.path.getsize(glb))
         sc["read"]["stand"] = {"files": {k: os.path.join(os.path.dirname(self.m.path), v) for k, v in self.m.sc["read"]["stand"]["files"].items()}}
-        MS.write_json(os.path.join(d, "S01-m1.json"), sc)
+        MS.write_json(os.path.join(d, "S01-m2.json"), sc)
         doc = s01()
-        doc["mesh"]["source"] = os.path.join(d, "S01-m1.json")
+        doc["mesh"]["source"] = os.path.join(d, "S01-m2.json")
         doc["mesh"]["sha256"] = pin or sc["glb"]["sha256"]
         return doc
 
@@ -165,11 +165,11 @@ class Loika(unittest.TestCase):
         s22 = json.load(open(os.path.join(BODY, "species_v1", "S22.json")))
         self.assertFalse([r for r in CH.run("file", CX.Ctx(s22, doc=s22)) if r["id"].startswith("mesh.")])
 
-    def test_loikas_exception_is_amber_and_only_that(self):
-        self.assertEqual(self.by["face.flush"]["state"], "warn")
-        self.assertIn("art desk", self.by["face.flush"]["measure"])
-        red = sorted(i for i, r in self.by.items() if r["state"] == "fail")
-        self.assertEqual(red, ["face.front"])                                            # the sculpt's eyes sit 43 degrees off the front, limit 40: an open finding
+    def test_loika_needs_no_exception_and_every_check_passes(self):
+        self.assertEqual(self.by["face.flush"]["state"], "pass")
+        self.assertEqual(self.by["face.front"]["state"], "pass")
+        bad = sorted(i for i, r in self.by.items() if r["state"] != "pass")
+        self.assertEqual(bad, [])                                                         # the eyes sit 35 and 36 degrees off the front, the ring is a zone, not a rim
 
     def test_the_read_scores_are_the_sidecars(self):
         sc = MS.load_json(self.doc["mesh"]["source"])["read"]["scores"]
@@ -191,7 +191,7 @@ class Loika(unittest.TestCase):
         self.assertEqual(meta["values"]["1"], "cream")
 
     def test_the_leaf_is_a_library_part(self):
-        sc = MS.load_json("parts/P0001/P0001-p1.json")
+        sc = MS.load_json("parts/P0001/P0001-p2.json")
         self.assertEqual(sc["schema"], "mb-part/1")
         self.assertEqual(MS.sidecar_problems(sc, "part"), [])
         g = os.path.join(MS.part_dir_of("P0001"), sc["glb"]["file"])
@@ -211,7 +211,7 @@ class Loika(unittest.TestCase):
         for p in b.placed:
             self.assertAlmostEqual(float(p["V"][:, 0].mean()), top[0], delta=0.5)
             self.assertGreater(float(p["V"][:, 2].max()), top[2])
-        self.assertIn("mesh S01-m1 " + b.mesh.sha[:8], b.stamp())
+        self.assertIn("mesh S01-m2 " + b.mesh.sha[:8], b.stamp())
         two = F.build(dict(self.doc, signature=dict(self.doc["signature"], count=5))).body
         self.assertEqual(len(two.placed), 5)
 
@@ -231,7 +231,7 @@ class Loika(unittest.TestCase):
 class Fit(unittest.TestCase):
     def test_four_feet_and_a_socket_on_the_head_from_the_mesh_alone(self):
         import meshimport as MI
-        m = MS.Mesh("meshes/S01/S01-m1.json")
+        m = MS.Mesh("meshes/S01/S01-m2.json")
         bones, meas, soc = MI.fit(m.V, "trotter", ("crest",))
         self.assertEqual(sorted(k for k in meas["feet"]), ["foot.fore.L", "foot.fore.R", "foot.hind.L", "foot.hind.R"])
         self.assertEqual(sorted(bones), sorted(MS.armature_bones("trotter", False, ("crest",))))
@@ -239,7 +239,7 @@ class Fit(unittest.TestCase):
         self.assertAlmostEqual(soc["crest"][2], meas["height"], delta=0.01)
 
     def test_weights_sum_to_one_and_a_sole_is_rigid(self):
-        m = MS.Mesh("meshes/S01/S01-m1.json")
+        m = MS.Mesh("meshes/S01/S01-m2.json")
         names, J, W = m.glb.skin()
         self.assertEqual(sorted(names), sorted(m.sc["armature"]["bones"]))
         self.assertTrue(np.allclose(W.sum(1), 1.0, atol=1e-3))
@@ -252,7 +252,7 @@ class Fit(unittest.TestCase):
 
 class Reliefs(unittest.TestCase):
     def test_a_stripe_is_found_and_the_smooth_sculpt_has_none(self):
-        m = MS.Mesh("meshes/S01/S01-m1.json")
+        m = MS.Mesh("meshes/S01/S01-m2.json")
         self.assertEqual(MS.relief_features(m.V, m.F), [])
         N = MS.vertex_normals(m.V, m.F)
         V = m.V.copy()
@@ -268,11 +268,11 @@ class Export(unittest.TestCase):
         d = tempfile.mkdtemp(prefix="mesh30-exp-")
         try:
             man = EX.make(os.path.join(BODY, "species_v1", "S01.json"), d, stands=False, log=lambda *_: None)
-            sha8 = MS.Mesh("meshes/S01/S01-m1.json").sha[:8]
-            self.assertIn("mesh S01-m1 " + sha8, man["build"])
-            self.assertIn("part P0001-p1", man["build"])
+            sha8 = MS.Mesh("meshes/S01/S01-m2.json").sha[:8]
+            self.assertIn("mesh S01-m2 " + sha8, man["build"])
+            self.assertIn("part P0001-p2", man["build"])
             g = MS.Glb(os.path.join(d, "S01.glb"))
-            self.assertIn("mesh S01-m1 " + sha8, g.json["asset"]["extras"]["build"])
+            self.assertIn("mesh S01-m2 " + sha8, g.json["asset"]["extras"]["build"])
             self.assertEqual(g.json["asset"]["extras"]["parts"], ["body", "P0001"])
             self.assertTrue(os.path.isfile(os.path.join(d, "viewer.html")))
             self.assertEqual(len(g.json["skins"]), 1)

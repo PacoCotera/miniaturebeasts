@@ -1,0 +1,210 @@
+{
+ "schema": "mb-mesh/1",
+ "id": "S01-m2",
+ "species": "S01",
+ "version": 2,
+ "glb": {
+  "file": "S01-m2.glb",
+  "sha256": "d7e0623330eb8966fb2020f86b6126417ab68ac7a3da306c7271a7affa02be63",
+  "bytes": 669272,
+  "triangles": 17160
+ },
+ "family": "trotter",
+ "armature": {
+  "version": 1,
+  "bones": [
+   "rear",
+   "front",
+   "head",
+   "hind.upper.L",
+   "hind.lower.L",
+   "hind.paw.L",
+   "hind.upper.R",
+   "hind.lower.R",
+   "hind.paw.R",
+   "fore.upper.L",
+   "fore.lower.L",
+   "fore.paw.L",
+   "fore.upper.R",
+   "fore.lower.R",
+   "fore.paw.R",
+   "socket.crest"
+  ],
+  "tail": false,
+  "auto_weights_empty": 4
+ },
+ "zones": {
+  "size": 1024,
+  "shares": {
+   "coat": 0.7773,
+   "cream": 0.1842,
+   "toe pad": 0.0257,
+   "eye ring": 0.0052,
+   "eye disc": 0.0077
+  }
+ },
+ "stations": {
+  "eyes": [
+   {
+    "id": "eye.L",
+    "point": [
+     1.39553,
+     0.3,
+     1.655
+    ],
+    "normal": [
+     0.80696,
+     0.46063,
+     0.36964
+    ],
+    "radius": 0.19939
+   },
+   {
+    "id": "eye.R",
+    "point": [
+     1.40069,
+     -0.3,
+     1.655
+    ],
+    "normal": [
+     0.81872,
+     -0.49116,
+     0.29741
+    ],
+    "radius": 0.19939
+   }
+  ],
+  "mouth": {
+   "point": [
+    1.56064,
+    0.0,
+    1.33749
+   ],
+   "normal": [
+    0.95093,
+    -0.02487,
+    -0.30839
+   ],
+   "width": 0.2946
+  },
+  "sockets": [
+   {
+    "id": "crest",
+    "bone": "socket.crest",
+    "point": [
+     0.64097,
+     0.0,
+     2.22291
+    ],
+    "frame": {
+     "up": [
+      0,
+      0,
+      1
+     ],
+     "forward": [
+      1,
+      0,
+      0
+     ]
+    },
+    "layout": "fan",
+    "mirror": false
+   }
+  ],
+  "feet": [
+   {
+    "id": "foot.hind.L",
+    "point": [
+     -0.66679,
+     0.93029,
+     0.0
+    ]
+   },
+   {
+    "id": "foot.hind.R",
+    "point": [
+     -0.67685,
+     -0.93258,
+     0.0
+    ]
+   },
+   {
+    "id": "foot.fore.L",
+    "point": [
+     0.78736,
+     0.53208,
+     0.0
+    ]
+   },
+   {
+    "id": "foot.fore.R",
+    "point": [
+     0.81011,
+     -0.51428,
+     0.0
+    ]
+   }
+  ]
+ },
+ "bands": {
+  "standing_height": 2.22291,
+  "length": 3.15485,
+  "head_width": 1.73382,
+  "leg_length": 0.71133,
+  "leg_share": 0.32,
+  "head_share": 0.1646,
+  "axis_z": 0.73708
+ },
+ "scale": {
+  "to_H": 2.9722,
+  "rot_z": 90.0
+ },
+ "read": {
+  "stand": {
+   "file": "stand/stand-304x312.png",
+   "sha256": "de66a71e4d7e3047dc135d646eea24f586ae122b91c556b68b2445821b620ef5",
+   "files": {
+    "304": "stand/stand-304x312.png",
+    "96": "stand/stand-96x88.png",
+    "48": "stand/stand-48x48.png"
+   }
+  },
+  "view": {
+   "az": 35.0,
+   "el": 4.0
+  },
+  "scores": {
+   "304": 0.833,
+   "96": 0.831,
+   "48": 0.826
+  }
+ },
+ "provenance": {
+  "stand": {
+   "file": "stand-S01-loika-304x312.png",
+   "sha256": "de66a71e4d7e3047dc135d646eea24f586ae122b91c556b68b2445821b620ef5",
+   "painter": "art desk, the felt repaint stand-S01-loika-a"
+  },
+  "model": "tripo3d/h3.1/image-to-3d",
+  "request_id": "01a1afd0-0229-76b3-9377-79a461e55a16",
+  "cost_usd": 0.6,
+  "raw": {
+   "file": "tripoh31-loika.blend",
+   "sha256": "f0fc115a48be4ef9ac06f9dcfce601a72c9a0894b22b67abfa677bfba69c7fa6"
+  },
+  "cleaned_by": "art desk",
+  "clean_passes": 3,
+  "clean_kit": "loika-3d trial tools (body.py, crest.py, paint.py)",
+  "cleaned_glb": {
+   "file": "loika-clean.glb",
+   "sha256": "5bba70d5afd2441f25bfbdbfb33bbc109a2514af819cc2aae32c712d7e296f16"
+  },
+  "picked_by": "art desk",
+  "review": [
+   "2026-11-06 art desk, silhouette match 0.858 / 0.854 / 0.823 at 304 / 96 / 48",
+   "colour and pile dropped: the coat painter and the material library supply them",
+   "2026-11-06 art desk ruling: no eye exception; the eyes slid in along the head, the pair closer, the eye ring and disc repainted in the zone map at the new stations (sculpt unchanged from S01-m1)"
+  ]
+ }
+}

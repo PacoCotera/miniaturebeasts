@@ -46,12 +46,7 @@
    "frames": [
     "open",
     "closed"
-   ],
-   "ring": {
-    "colour": "cream ring",
-    "share": 1.3,
-    "zone": 3
-   }
+   ]
   },
   "mouth": {
    "width": 0.2,
@@ -71,7 +66,9 @@
    },
    "eye ring": {
     "zone": 3,
-    "where": "round each eye"
+    "where": "round each eye",
+    "colour": "cream ring",
+    "share": 1.3
    }
   },
   "layouts": {},
@@ -112,11 +109,11 @@
  "motion": {},
  "legacy": {},
  "mesh": {
-  "source": "meshes/S01/S01-m1.json",
-  "sha256": "97b02e7822e9e35d8ec513017a3737453fb09b5968c3aca753a35f5bf87d78a0",
+  "source": "meshes/S01/S01-m2.json",
+  "sha256": "d7e0623330eb8966fb2020f86b6126417ab68ac7a3da306c7271a7affa02be63",
   "parts": [
    {
-    "part": "parts/P0001/P0001-p1.json",
+    "part": "parts/P0001/P0001-p2.json",
     "sha256": "e74213f8d5d060f5e92d041e460239d9a439cafd8072ebe19315a2759413212e",
     "socket": "crest",
     "mirror": false
