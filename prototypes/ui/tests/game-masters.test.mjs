@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { checkJuveniles, pairsOf, figureBox, rescaleJuvenile, retired, RATIO } from "../tools/game-masters.mjs";
+import { checkJuveniles, pairsOf, figureBox, rescaleJuvenile, retired, flipPic, FLIPPED, RATIO } from "../tools/game-masters.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../assets/masters"), index = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")), M = index.masters;
 const KINDS = Array.from({ length: 20 }, (_, i) => "S" + String(i + 1).padStart(2, "0"));
@@ -30,4 +30,9 @@ test("each kind has its chips under the new names and none of the earlier trait 
 test("juvenileFacing covers the twenty", () => {
   assert.deepEqual(Object.keys(index.juvenileFacing.species).sort(), KINDS);
   for (const v of Object.values(index.juvenileFacing.species)) assert.equal(v.mirror, v.adult === v.juvenile);
+});
+test("Pesko is placed mirrored so the roster faces right: flipPic reverses each row, and the table says S06 faces right", () => {
+  const p = { w: 3, h: 1, data: Uint8Array.from([1, 1, 1, 255, 2, 2, 2, 255, 3, 3, 3, 255]) }, f = flipPic(p);
+  assert.deepEqual([...f.data], [3, 3, 3, 255, 2, 2, 2, 255, 1, 1, 1, 255]); assert.deepEqual([...FLIPPED], ["S06"]);
+  assert.equal(index.juvenileFacing.species.S06.adult, "right");
 });
