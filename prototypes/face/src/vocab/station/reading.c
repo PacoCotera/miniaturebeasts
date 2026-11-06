@@ -216,7 +216,7 @@ void word_reading(void) {
       if (!reading || dlev >= 16) { if (strcmp(form, "detail") == 0) v_say_in("read.cap.d", t, sk(R ".right.layouts.detail.caption", 0) - 80, 160, sk(R ".right.layouts.detail.caption", 1), V_ANCHOR_BASE, "glass.caption", "glass"); else { int c = cap_centre(t, "glass.caption", cx, pxl, pw); v_say_in(v_fmt("read.cap.%d", i), t, c - 100, 200, cy + v_si(S, v_fmt("%s.capDy", L), 70), V_ANCHOR_BASE, "glass.caption", "glass"); } }
       snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.carried.caption", B)));
       if (*t && (!reading || clev >= 16)) { int bx = strcmp(form, "detail") == 0 ? sk(R ".right.layouts.detail.carriedCaption", 0) : ccx + 6, by = strcmp(form, "detail") == 0 ? sk(R ".right.layouts.detail.carriedCaption", 1) : cy + v_si(S, v_fmt("%s.cap2Dy", L), 87);
-        int w = v_role_width(t, "glass.faint"); if (strcmp(form, "detail") != 0) bx = cap_centre(t, "glass.faint", bx, pxl + 16, pw - 16); v_say_in(v_fmt("read.cap2.%d", i), t, bx - 100, 200, by, V_ANCHOR_BASE, "glass.faint", "glass");
+        int w = v_role_width(t, "glass.faint"); if (strcmp(form, "detail") != 0) bx = v_si(S, v_fmt("%s.cap2Text", L), 0) ? tx + 10 + w / 2 : cap_centre(t, "glass.faint", bx, pxl + 16, pw - 16);   /* cap2Text: the carried caption stands in the text column under the kind line, never under the pictures where it met the shown caption (four traits, 8 px apart) */ v_say_in(v_fmt("read.cap2.%d", i), t, bx - 100, 200, by, V_ANCHOR_BASE, "glass.faint", "glass");
         snprintf(a, sizeof a, "%s", v_pstr(P ".right.moon")); v_name("read.moon"); pic_c(v_fmt("read.moon.%d", i), a, bx - w / 2 - 7, by - 4); }
     }
   }

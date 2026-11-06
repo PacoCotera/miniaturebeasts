@@ -4,7 +4,7 @@
 import * as S from "../state.mjs";
 import { frameOf, genomeDigest } from "../genome.mjs";
 import { movingIds, playable, movingFigure } from "../moving.mjs";
-import { standLook } from "../stands.mjs";
+import { standLook, placedAt } from "../stands.mjs";
 import { asset as assetOf } from "../../../ui/assets.mjs";
 import { drawnLooks } from "../looks.mjs";
 import { layeredStand, standPictureId, standFigure, standVariant, curlFactor, curlPicture, curlOfStand, viewFigureHeight, viewFactor, factorPlace, factorPicture } from "../layered-stand.mjs";
@@ -38,12 +38,20 @@ const poseName = (pose) => (typeof pose === "string" ? pose : pose?.pose ?? "anc
 export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "default", pose = "anchor") => {
   const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
   if (stand) { const looks = drawnLooks(frameOf(sp), mb); return { id: standPictureId(stand, looks, light), stage: grown, size: [...stand.size], looks }; }
+  const pf = poseFit(sp, grown, size, poseName(pose)); if (pf) return { id: pf.id + (light === "day" ? "" : ":" + light), stage: pf.stage, size: [...size], factor: pf.f, master: pf.master };
   const fac = factorOf(sp, grown, size, view); if (fac) return { id: fac.id + (light === "day" ? "" : ":" + light), stage: fac.stage, size: [...size], factor: fac.f, master: fac.master };
   const { stage, size: drawn } = lookOf(st, mb, size, settings);
   return { id: mibiPictureId(genomeDigest(mb.genome), stage, drawn, light), stage, size: drawn };
 };
 // A species with no layered stand in a factor view (the mibi collection's: vivarium, vivariumHouse, vivariumCard; stand-sizes.json `factor`): its stage's signed 304 x 312 stand reduced once by the view's factor, bottom-centred
 // in the factor's place (96 x 99, 48 x 50, 144 x 148), never upscaled, never fitted per mibi: { id, stage, f, master }, or null (not a factor view at its place, or no 304 master placed). An elder takes the adult's.
+// A pose picture of a kind with no layered stand (release 21c): the pose master (304 x 312: sleep-curled, puff, sniff, dig, glow) fitted into the place, bottom-centred, by the one factor that fits and never up; { id, stage, f, master } or null
+function poseFit(sp, stage, size, pose) {
+  if (!pose || pose === "anchor") return null;
+  const ms = stage === "juvenile" ? "juvenile" : "adult", master = `mibi-${ms}-${sp}-${pose}-304x312`; if (!placedAt(master, 304, 312)) return null;
+  const f = Math.min(1, size[0] / 304, size[1] / 312);
+  return { id: `mibi:${sp}~${keyToken(`pose|${master}|${size[0]}x${size[1]}`)}:${ms}:${size[0]}x${size[1]}`, stage: ms, f, master };
+}
 function factorOf(sp, stage, size, view) {
   const f = viewFactor(view), fp = factorPlace(view); if (!f || !fp || fp[0] !== size[0] || fp[1] !== size[1]) return null;
   const ls = standLook(sp, stage === "elder" ? "adult" : stage, [304, 312]); if (ls.step === 3 || ls.size.join("x") !== "304x312") return null;   // an adult with no stand of its own is its species' juvenile stand (stands.mjs, rule 5)
@@ -59,7 +67,7 @@ export function mibiVariantReq(req, base, variant) {
 // A standing mibi's figure, [dx, dy, W, H]: the drawn bbox of its composed figure in its picture, or null when the picture is not a layered stand
 export const figureOf = (st, mb, size, settings, view = "default", pose = "anchor") => {
   const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
-  if (!stand) { const fac = factorOf(sp, grown, size, view); return fac ? factorPicture(assetOf(fac.master), fac.f, size, fac.id).figure : null; }   // a factor view's reduced master: the ink of the same reduction
+  if (!stand) { const fac = poseFit(sp, grown, size, poseName(pose)) ?? factorOf(sp, grown, size, view); return fac ? factorPicture(assetOf(fac.master), fac.f, size, fac.id).figure : null; }   // a factor view's reduced master: the ink of the same reduction
   return standFigure(stand, drawnLooks(frameOf(sp), mb));
 };
 // A sleeper's curl at the stand's scale (the owner's full-size ruling), with its own shadow: { id, figure, request }, or null when no curl master is placed. A species with a layered stand composes its `curl` pose in the mibi's own looks at the
