@@ -31,6 +31,11 @@ def is_quadruped(spec):
     return isinstance(spec, dict) and spec.get("schema") in ("mb-species/1", "mb-species/2") and spec.get("plan") == "quadruped"
 
 
+def is_mesh(spec):
+    """A /2 file whose body is a signed sculpt (its `mesh` block), built by meshbody.py and never by a cage builder."""
+    return isinstance(spec, dict) and spec.get("schema") == "mb-species/2" and isinstance(spec.get("mesh"), dict)
+
+
 def internal(spec):
     """The species file as the cage builder reads it. A v1 file (mb-species/1) is converted (species_v1.to_internal); a file in today's shape is used as it is. A v1 file that is not valid is a build error naming its field.
     A quadruped's file is read as it is."""
@@ -40,7 +45,7 @@ def internal(spec):
     errs = V1.validate(spec)
     if errs:
         raise BuildError(errs[0][1], errs[0][0])
-    return spec if is_quadruped(spec) else V1.to_internal(spec)
+    return spec if (is_quadruped(spec) or is_mesh(spec)) else V1.to_internal(spec)
 
 
 def quad_check_genome(genome):
@@ -291,6 +296,8 @@ def build(spec, genome="type", stage="base"):
     spec = internal(spec)
     if stage not in STAGES:
         raise BuildError(f"stage '{stage}': one of {', '.join(STAGES)}", "stage")
+    if is_mesh(spec):
+        return build_mesh(spec, genome, stage)
     if is_quadruped(spec):
         return build_quadruped(spec, genome, stage)
     T = {}
@@ -327,6 +334,21 @@ def build(spec, genome="type", stage="base"):
                   parts={k: int(v) for k, v in body.parts.items()}, balance=H._norm(body.ctx.get("balance", {})))
 
 
+def build_mesh(doc, genome="type", stage="base"):
+    """The body of a mesh file: its sculpt and the library parts at their sockets (meshbody.py). Its genes come with a later chunk, so only the type builds."""
+    import meshbody as MB
+    quad_check_genome(genome)
+    t0 = time.perf_counter()
+    try:
+        body = MB.MeshBody(doc)
+    except (KeyError, ValueError, OSError, AssertionError, IndexError) as e:
+        raise BuildError(f"{type(e).__name__}: {e}", "mesh")
+    T = dict(mesh=(time.perf_counter() - t0) * 1000, total=(time.perf_counter() - t0) * 1000)
+    V = body.Vw
+    return Result(species=doc.get("id"), stage=stage, body=body, c={}, ind={}, genome_hash=H.hash_of("type"), key=H.hash_of("mesh", H.framework_id(), body.digest(), stage), cage_hash=body.digest(), vertices=len(V), faces=len(body.Fw),
+                  timings_ms={k: round(v, 1) for k, v in T.items()}, calls={}, parts={k: int(v) for k, v in body.parts.items()}, balance=H._norm(body.ctx.get("balance", {})))
+
+
 def build_quadruped(doc, genome="type", stage="base"):
     """The quadruped's cage (quadruped.py): the horizontal spine in the plan's ranges, the girdles and four legs, and its balance over the four soles. Its genes come with a later chunk."""
     import quadruped as Q
@@ -359,7 +381,10 @@ def check_rows(doc, stages=("file", "cage", "rig", "coat")):
     if any(s_ in stages for s_ in ("cage", "rig", "coat")):
         r = build(doc, "type", "base")
         mesh = proxy_mesh(r.body, 1)
-        if is_quadruped(spec):
+        if is_mesh(spec):
+            import meshbody as MB
+            mesh["frame"] = MB.frame(spec)
+        elif is_quadruped(spec):
             import quadruped as Q
             mesh["frame"] = Q.frame(spec)
         cx = Ctx(spec, r.body, dict(vertices_l1=len(mesh["V"])), mesh, doc=doc)
@@ -377,6 +402,8 @@ def _field_of(msg):
 
 def proxy_mesh(body, level=1):
     """The proxy mesh: the cage subdivided to `level`, with the part of each vertex. Returns dict(V, F, part, names)."""
+    if getattr(body, "mesh_body", False):
+        return body.proxy(with_parts=False)                    # a sculpt's surface is the file's own: the face decal is drawn on the body, not on its parts
     import subdiv as SD
     Vf, Ff, attr, fp, cr, mir = body.full()
     V, F, _, at, fpp = SD.subdivide_body(body, Vf, Ff, cr, attr, fp, levels=level)

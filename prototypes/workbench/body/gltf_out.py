@@ -27,7 +27,7 @@ def quat_from_matrix(R):
 def vertex_normals(V, F):
     F = np.array(F, int)
     n = np.zeros_like(V)
-    for a, b, c in ((0, 1, 2), (0, 2, 3)):
+    for a, b, c in (((0, 1, 2), (0, 2, 3)) if F.shape[1] == 4 else ((0, 1, 2),)):          # quads, or triangles (a sculpt)
         fn = np.cross(V[F[:, b]] - V[F[:, a]], V[F[:, c]] - V[F[:, a]])
         for k in (a, b, c):
             np.add.at(n, F[:, k], fn)

@@ -12,7 +12,7 @@ def _tris(mesh):
     k = id(mesh["V"])
     if k not in _TRI:
         V, F = np.asarray(mesh["V"], float), np.asarray(mesh["F"], int)
-        T = np.vstack([F[:, [0, 1, 2]], F[:, [0, 2, 3]]])
+        T = np.vstack([F[:, [0, 1, 2]], F[:, [0, 2, 3]]]) if F.shape[1] == 4 else F
         _TRI.clear()
         _TRI[k] = (V[T[:, 0]], V[T[:, 1]] - V[T[:, 0]], V[T[:, 2]] - V[T[:, 0]])
     return _TRI[k]
@@ -107,8 +107,35 @@ def face_mesh(G, spec, g, mesh=None):
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------- the house eye as a decal at stations (mb-species/2)
 # The decal code (facedecal.py) takes stations and a mesh and knows nothing of cages. What follows is the cage's side: it reads the file's face (eyes.station, around, r; mouth.station, around, width) and the quadruped plan's section table and says where the stations are.
 # A quadruped's eye station is a share of the head's length back from the nose and a place round the ring (0 on the back, 0.5 on the side, 1 under the belly); its radius r is in H. The eyes of a pair are mirrored; a third eye sits on the midline at the pair's height, and a count other than two or three is a level row.
+def is_mesh(spec):
+    """A file whose body is a sculpt: its eye and mouth stations come from the sculpt's sidecar, not from the file."""
+    return isinstance(spec, dict) and isinstance(spec.get("mesh"), dict)
+
+
 def is_decal_file(spec):
+    if is_mesh(spec):
+        return spec.get("schema") == "mb-species/2" and isinstance((spec.get("face") or {}).get("eyes"), dict)
     return isinstance(spec, dict) and spec.get("schema") == "mb-species/2" and spec.get("plan") == "quadruped" and isinstance((spec.get("face") or {}).get("eyes"), dict) and "station" in spec["face"]["eyes"]
+
+
+def frame_scale(doc):
+    if is_mesh(doc):
+        import meshbody as MB
+        return float(MB.frame(doc)["scale"])
+    import quadruped as Q
+    return float(Q.frame(doc)["scale"])
+
+
+def mesh_guess(doc, g=None):
+    """quad_guess for a sculpt: the stations as the sidecar names them (a pair of eyes mirrored, the mouth), the head's width."""
+    import meshsource as MS
+    g = g or {}
+    m = MS.Mesh(doc["mesh"]["source"])
+    st = m.stations()
+    eyes = [(np.array(e["point"], float), np.array(e["normal"], float)) for e in st["eyes"]]
+    mo = st.get("mouth")
+    mouth = (np.array(mo["point"], float), np.array(mo["normal"], float)) if mo else None
+    return eyes, mouth, float(m.sc["bands"]["head_width"])
 
 
 def _ring_point(doc, p, u, a):
@@ -129,6 +156,8 @@ def _ring_normal(doc, p, u, a, d=1e-3):
 
 def quad_guess(doc, g=None):
     """The stations as the file puts them, before they meet the skin: (eyes [(point, normal)], mouth (point, normal), head width). No mesh needed: the file-stage checks read their positions from here. g: eye_size (a multiplier) and eye_spacing (H along the ring), from the creature's genes."""
+    if is_mesh(doc):
+        return mesh_guess(doc, g)
     import quadruped as Q
     g = g or {}
     p = Q.params(doc)
@@ -162,6 +191,8 @@ def quad_stations(doc, surf, g=None):
     g = g or {}
     eyes, mouth, _ = quad_guess(doc, g)
     f = doc["face"]
+    if is_mesh(doc):
+        return _mesh_stations(doc, surf, g)
     r = float(f["eyes"]["r"]) * float(g.get("eye_size", 1.0))
     out = []
     for k, (P, n) in enumerate(eyes):
@@ -184,6 +215,24 @@ def quad_stations(doc, surf, g=None):
             hit = FD.place(surf, Q_ + 0.0 * st["normal"], st["normal"])
             if hit is not None:
                 out.append(FD.station("cheek", hit[0], hit[1], float(ch["r"]), "cheek." + st["id"]))
+    return out
+
+
+def _mesh_stations(doc, surf, g):
+    import facedecal as FD
+    import meshsource as MS
+    m = MS.Mesh(doc["mesh"]["source"])
+    st = m.stations()
+    out = []
+    for e in st["eyes"]:
+        hit = FD.place(surf, np.array(e["point"], float), np.array(e["normal"], float))
+        if hit is not None:
+            out.append(FD.station("eye", hit[0], hit[1], float(e["radius"]) * float(g.get("eye_size", 1.0)), e["id"]))
+    mo = st.get("mouth")
+    if mo:
+        hit = FD.place(surf, np.array(mo["point"], float), np.array(mo["normal"], float))
+        if hit is not None:
+            out.append(FD.station("mouth", hit[0], hit[1], float(mo["width"]) * float(g.get("mouth_width", 1.0)), "mouth"))
     return out
 
 
@@ -222,11 +271,10 @@ def _body_rgb(doc):
 def decal_face(doc, mesh, g=None, stations=None, canvas=None):
     """(V, F, L, rgb) of the house face of a quadruped file on its proxy mesh: the decal's polygons, the layer of each and the layers' colours. `canvas`: the picture's width in px, to draw the small-size rule's eye (None: the full eye)."""
     import facedecal as FD
-    import quadruped as Q
     surf = FD.Surface(mesh["V"], mesh["F"])
     st = stations if stations is not None else quad_stations(doc, surf, g)
     look = decal_look(doc)
-    ppH = FD.PPH_PER_PX * canvas * float(Q.frame(doc)["scale"]) if canvas else None
+    ppH = FD.PPH_PER_PX * canvas * frame_scale(doc) if canvas else None
     V, F, L = FD.build(surf, st, look, canvas, ppH)
     return V, F, L, FD.layer_rgb(look)
 

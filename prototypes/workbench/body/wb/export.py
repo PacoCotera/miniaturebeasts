@@ -81,6 +81,9 @@ def stamp_of(file_hash):
 
 def write_glb(subject, path, extras):
     """The glb of a subject by its plan. The biped's writer reads the cage body, its rig and the baked coat; the quadruped's reads the cage, its rig and the render's own mesh (it has no coat yet)."""
+    if getattr(subject, "mesh_body", False):
+        import meshexport
+        return meshexport.build(subject.b, path, extras)
     if getattr(subject, "quad", False):
         import qglb
         return qglb.build(subject.b, subject.rig, subject.mesh, path, extras=extras)
@@ -115,6 +118,8 @@ def make(species_path, outdir, release=False, stands=True, log=print):
     try:
         subject = RSET.make_subject(spec, "type", scratch)
         stamp = stamp_of(file_hash)
+        if getattr(subject, "mesh_body", False):
+            stamp += " · " + subject.b.stamp()                                  # the sculpt and each part by id and sha, so a changed one is seen in the stamp
         creature = subject.c or dict(plan=getattr(subject, "plan", None), params=subject.b.ctx["params"])         # the type, every number resolved (the quadruped's is its plan's resolved parameters: it has no coat yet)
         extras = dict(species=dict(id=sid, name=spec.get("name") or sid), build=stamp, review=dict(failing=[r["measure"] for r in fails], waived=[w.get("check") for w in (spec.get("waivers") or [])], checks=len(rows)),
                       digest=hashlib.sha256(json.dumps(creature, sort_keys=True, default=str).encode()).hexdigest()[:16])

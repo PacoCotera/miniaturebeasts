@@ -164,7 +164,7 @@ def _schema_2():
             r=num("Eye radius", "The eye's radius.", stage="face", rng=None), iris=free("Iris", "The iris: its share of the disc, the pupil, the value.", stage="face"), catch=free("Highlight", "The eye's highlight.", stage="face"),
             frames=free("Eye frames", "The eye's open, half and closed frames.", stage="face"), default=text("Default eye", "The eye a new individual starts with.", stage="face"),
             attitude=dict(type="enum", values=v["attitudes"], label="Attitude", help="The quiet look the eyes and mouth share: content, curious, deadpan or knowing.", stage="face"),
-            lid=free("Lid", "How far the lid closes and the shape of its edge.", stage="face")),
+            lid=free("Lid", "How far the lid closes and the shape of its edge.", stage="face"), ring=free("Eye ring", "A pale ring round the eye that a kind keeps as its own (a signed record covers it; no other kind has one).", stage="face")),
             stage="face", required=["count"], refused=dict(kinds="eye kinds are not a field of mb-species/2: every eye is the house eye (set face.eyes.count)")),
         mouth=free("Mouth", "The mouth and its expressions.", stage="face"), kind=text("Face kind", "How the face is drawn on the body.", stage="face"), on=text("Face part", "The part the face sits on.", stage="face"), island=text("Face island", "The island the face is drawn on.", stage="face")),
         stage="face", required=["eyes"], refused=dict(cheeks="cheeks are not a field of mb-species/2: no blush"))
@@ -175,11 +175,20 @@ def _schema_2():
             pile=dict(type="enum", values=v["furPiles"], label="Fur pile", help="The kind of fur. Only fur has one.", stage="coat"),
             limits=free("Material limits", "The material's parameter ranges.", stage="coat"), glow=free("Glow", "The glowing part.", stage="coat")), stage="coat", required=["family"])),
         stage="coat", required=["material"], refused=dict(palettes="free palettes are not a field of mb-species/2: colour comes from the land"))
+    s["mesh"] = obj("Mesh body", "The body as a signed sculpt instead of a cage: the sculpt's sidecar and the sha256 of its GLB, and the library parts that sit on it. A file has either the cage fields (spine, skeleton, parts) or this, never both.", dict(
+        source=text("Sculpt", "The sculpt's sidecar, relative to species_v1 (meshes/S01/S01-m1.json).", stage="shape", pattern=None),
+        sha256=text("Sculpt sha256", "The sha256 of the sculpt's GLB: a changed sculpt is a changed file.", stage="shape", pattern=None),
+        parts=dict(type="list", label="Mesh parts", help="The library parts placed on the sculpt, each at a socket.", stage="shape", id_key="part", item=dict(
+            part=text("Part", "The part's sidecar, relative to species_v1 (parts/P0001/P0001-p1.json).", stage="shape", pattern=None), sha256=text("Part sha256", "The sha256 of the part's GLB.", stage="shape", pattern=None),
+            socket=text("Socket", "The sculpt's socket the part sits on.", stage="shape", pattern=None), mirror=dict(type="enum", values=[True, False], label="Mirror", help="Whether the part is placed as a mirrored pair.", stage="shape")),
+            required=["part", "sha256", "socket"])), stage="shape", required=["source", "sha256"])
     return s
 
 
 SCHEMA = _schema_2()                    # the current schema: labels, stages and the form read this
 REQUIRED = ["schema", "id", "name", "plan", "family", "land", "signature", "plan_version", "anchors", "spine", "skeleton", "parts", "sockets", "face", "coat", "genome", "motion", "legacy"]
+CAGE_FIELDS = ("spine", "skeleton", "parts")
+REQUIRED_MESH = [k for k in REQUIRED if k not in CAGE_FIELDS] + ["mesh"]          # a mesh file has no cage fields
 _SCHEMA_OF = {SCHEMA_V1: (SCHEMA_1, REQUIRED_1), SCHEMA_ID: (SCHEMA, REQUIRED)}
 _CUR = contextvars.ContextVar("species_schema", default=SCHEMA_V1)
 
@@ -324,6 +333,11 @@ def validate(doc):
         if lang:
             return [(lang[0], f"{lang[0]}: {doc['id']} is a fixture of the language registry; a fixture has no family, land or signature")]
     fields, required = _SCHEMA_OF[doc["schema"]]
+    if doc["schema"] == SCHEMA_ID and "mesh" in doc:
+        required = REQUIRED_MESH
+        both = [k for k in CAGE_FIELDS if k in doc]
+        if both:
+            return [(both[0], f"{both[0]}: a file has either the cage fields (spine, skeleton, parts) or mesh, never both; this one has mesh and {', '.join(both)}")]
     _CUR.set(doc["schema"])
     plan = _plan(doc)
     if doc.get("plan") not in PLANS:

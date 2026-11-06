@@ -144,8 +144,11 @@ def _px(ctx, az):
         return None
     import quadruped as Q
     fr = (ctx.mesh or {}).get("frame") if isinstance(ctx.mesh, dict) else None
+    if fr is None and isinstance(_doc(ctx).get("mesh"), dict):
+        import meshbody as MB
+        fr = MB.frame(_doc(ctx))
     fr = fr or Q.frame(ctx.doc)
-    return QD.proj(ctx, az), PR.PPH * float(fr["scale"])
+    return PR.projector(az, 10.0, centre=fr["centre"], ppH=PR.PPH * float(fr["scale"])), PR.PPH * float(fr["scale"])
 
 
 def _eye_points(ctx):
@@ -334,6 +337,9 @@ def eye_ratio(doc):
     if not CF.is_decal_file(doc):
         return None
     eyes, _, W = CF.quad_guess(doc)
+    if CF.is_mesh(doc):
+        import meshsource as MS
+        return 2.0 * float(MS.Mesh(doc["mesh"]["source"]).stations()["eyes"][0]["radius"]) / W
     return 2.0 * float(doc["face"]["eyes"]["r"]) / W
 
 

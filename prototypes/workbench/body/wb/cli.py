@@ -661,6 +661,24 @@ def cmd_step(a):
     return 0
 
 
+def cmd_mesh(a):
+    """wb mesh import SCULPT --species S01 --family trotter --object NAME [--version N] [--out DIR] [--scale F] [--rot-z DEG] [--albedo PNG] [--stand-dir DIR]: a cleaned sculpt becomes a signed mesh source (the family armature fitted from the mesh,
+    weights with the family's rules, the sidecar with the sha pinned). Needs Blender's python (WB_BPY). `wb mesh check SPECIES.json` runs the eight mesh checks on a file with a mesh block."""
+    import subprocess
+    py = os.environ.get("WB_BPY") or sys.executable
+    if a.action == "check":
+        rc = subprocess.run([py, "-m", "wb.meshcheck", a.sculpt], cwd=BODY).returncode
+        return 0 if rc == 0 else 1
+    cmd = [py, os.path.join(BODY, "meshimport.py"), a.sculpt, "--species", a.species, "--family", a.family, "--object", a.object, "--version", str(a.version), "--out", a.out or "", "--scale", str(a.scale), "--rot-z", str(a.rot_z)]
+    for k in ("albedo", "provenance"):
+        if getattr(a, k):
+            cmd += [f"--{k}", getattr(a, k)]
+    rc = subprocess.run(cmd, cwd=BODY).returncode
+    if rc != 0:
+        raise Fail(2, f"the import failed ({rc}); set WB_BPY to the Blender python")
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="wb")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -671,6 +689,7 @@ def main(argv=None):
         if genome:
             p.add_argument("--genome", default="type")
     p = sub.add_parser("new"); p.add_argument("species", help="the new species' id: S and two digits"); p.add_argument("--family", default=""); p.add_argument("--plan", default="", choices=("", "biped", "quadruped")); p.add_argument("--from", dest="source", default="template"); p.add_argument("--out", default=""); p.add_argument("--json", action="store_true"); p.set_defaults(f=cmd_new)
+    p = sub.add_parser("mesh"); p.add_argument("action", choices=("import", "check")); p.add_argument("sculpt", help="import: the cleaned sculpt (GLB or blend); check: the species file"); p.add_argument("--species", default=""); p.add_argument("--family", default="trotter"); p.add_argument("--object", default="body"); p.add_argument("--version", type=int, default=1); p.add_argument("--out", default=""); p.add_argument("--scale", type=float, default=1.0); p.add_argument("--rot-z", type=float, default=0.0); p.add_argument("--albedo", default=""); p.add_argument("--provenance", default="", help="a JSON file with the provenance lines"); p.set_defaults(f=cmd_mesh)
     p = sub.add_parser("build"); p.add_argument("species"); common(p); p.set_defaults(f=cmd_build)
     p = sub.add_parser("render"); p.add_argument("species"); common(p)
     p.add_argument("--mode", default="clay"); p.add_argument("--az", default="0,32,90,180"); p.add_argument("--size", default="304"); p.add_argument("--sheet", action="store_true"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_render)

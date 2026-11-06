@@ -150,8 +150,33 @@ class QuadSubject:
         return M or self.posed()
 
 
+class MeshSubject(QuadSubject):
+    """One mesh file built: the sculpt and its parts at their sockets (meshbody.py), drawn as the quadruped is. It stands at rest: its clips come with the rig chunk, so every pose is the rest pose."""
+    quad = True
+    plan = "quadruped"
+    mesh_body = True
+
+    def __init__(self, spec, genome, scratch):
+        import meshbody as MB
+        self.spec, self.genome, self.scratch = spec, genome, scratch
+        self.r = F.build(spec, genome, "base")
+        self.b, self.c = self.r.body, self.r.c
+        self.rig = None
+        self.mesh = self.b.proxy(with_parts=True)
+        self.frame = MB.frame(F.internal(spec))
+        self._frames = {}
+
+    def posed(self, clip=None, i=0):
+        key = (clip, i)
+        if key not in self._frames:
+            self._frames[key] = dict(self.mesh, frame=self.frame)
+        return self._frames[key]
+
+
 def make_subject(spec, genome, scratch):
     from wb import clips as CL
+    if F.is_mesh(spec):
+        return MeshSubject(spec, genome, scratch)
     return (QuadSubject if CL.plan_of(spec) == "quadruped" else Subject)(spec, genome, scratch)
 
 

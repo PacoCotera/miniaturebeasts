@@ -37,7 +37,7 @@ def run_cage(spec):
 class TestRegistry(unittest.TestCase):
     def test_twelve_checks_with_the_owners_words(self):
         metas = {m["id"]: m for m in CH.metas()}
-        self.assertEqual(len(metas), 35)                              # (chunk 4 adds the ten face checks of the language, chunk 6 the six body checks) thirteen of the file and cage stages (chunk 9 adds the expressions check), the extremes stage's limits (chunk 8), and the rig and coat checks (chunk 23)
+        self.assertEqual(len(metas), 43)                              # (chunk 4 adds the ten face checks of the language, chunk 6 the six body checks, chunk 30 the eight mesh checks) thirteen of the file and cage stages (chunk 9 adds the expressions check), the extremes stage's limits (chunk 8), and the rig and coat checks (chunk 23)
         self.assertEqual([m for m in metas if metas[m]["stage"] == "extremes"], ["limits", "face.size"])
         for i, (name, fail) in WORDS.items():
             self.assertEqual((metas[i]["name"], metas[i]["fail"]), (name, fail), i)

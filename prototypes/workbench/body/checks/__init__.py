@@ -23,6 +23,10 @@ BODY_CHECKS = ("body.mass", "body.band15", "body.feet", "body.pairs", "body.twis
 QUAD_CHECKS = ("schema", "express", "ranges", "joins", "head.attach", "head.neck", "tail.taper", "tail.size", "balance", "limbs", "verts", "normals", "mesh", "midline", "breath", "waddle") + FACE_CHECKS + BODY_CHECKS          # what judges a quadruped's bare base: its file, its ranges, the head, neck and chest, the tail, balance over four soles, the vertex count and the mesh by range
 
 
+MESH_CHECKS = ("mesh.watertight", "mesh.budget", "mesh.parts", "mesh.relief", "mesh.flat", "mesh.size", "mesh.stamp", "mesh.read")          # a mesh file's own: the sculpt's files judged before the studio builds from them
+MESH_FILE_CHECKS = ("schema",) + MESH_CHECKS + FACE_CHECKS          # what judges a file whose body is a sculpt (no cage, no spine, no limbs to measure)
+
+
 def check(**kw):
     def deco(fn):
         REGISTRY.append(Check(fn=fn, **kw))
@@ -41,7 +45,7 @@ def stages(stage):
 
 def version_id(stage="all"):
     """A hash of the ids and versions of the checks a stage runs: part of every result's cache key."""
-    from . import biped, face, body  # noqa: F401  (the registry fills when the checks are imported: a key made before that would differ from one made after)
+    from . import biped, face, body, mesh  # noqa: F401  (the registry fills when the checks are imported: a key made before that would differ from one made after)
     s = [(c.id, c.version, c.stage) for c in REGISTRY if c.stage in stages(stage)]
     return hashlib.sha256(json.dumps([VERSION_SALT, s]).encode()).hexdigest()[:12]
 
@@ -53,16 +57,21 @@ def row(state, value, limit, measure, proof=None, extra=None):
 
 def run(stage, ctx, only=None):
     """Run the checks of one stage ("file" or "cage") on a Ctx. A check that raises is a row with state "fail" and the error as its measure, never a crash."""
-    from . import biped, face, body  # noqa: F401  (registers the checks)
+    from . import biped, face, body, mesh  # noqa: F401  (registers the checks)
     out = []
     lang = isinstance(ctx.doc, dict) and ctx.doc.get("schema") == "mb-species/2"            # the language checks judge a /2 file; the fixture and the older files are skipped
     quad = isinstance(ctx.spec, dict) and ctx.spec.get("schema") in ("mb-species/1", "mb-species/2") and ctx.spec.get("plan") == "quadruped"      # a quadruped's own file (the cage builder reads it as it is)
+    sculpt = isinstance(ctx.doc, dict) and isinstance(ctx.doc.get("mesh"), dict)
     for c in REGISTRY:
         if c.stage != stage or (only and c.id not in only):
             continue
+        if c.id in MESH_CHECKS and not sculpt:
+            continue                                              # the mesh checks judge a mesh file only
+        if sculpt and c.id not in MESH_FILE_CHECKS:
+            continue
         if (c.id in FACE_CHECKS or c.id in BODY_CHECKS) and not lang:
             continue
-        if quad and c.id not in QUAD_CHECKS:
+        if quad and not sculpt and c.id not in QUAD_CHECKS:
             continue                                                  # the biped's measures read the biped's body; the quadruped's own come with its checks
         try:
             r = c.fn(ctx)
@@ -74,5 +83,5 @@ def run(stage, ctx, only=None):
 
 
 def metas():
-    from . import biped, face, body  # noqa: F401
+    from . import biped, face, body, mesh  # noqa: F401
     return [c.meta() for c in REGISTRY]
