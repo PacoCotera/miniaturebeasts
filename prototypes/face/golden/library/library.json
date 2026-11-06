@@ -6,23 +6,23 @@
    "png": "library-l1-first.png"
   },
   "library-l1-mid": {
-   "hash": "34f73093",
+   "hash": "ddb1babe",
    "png": "library-l1-mid.png"
   },
   "library-l1-new": {
-   "hash": "b2729a54",
+   "hash": "89f7384f",
    "png": "library-l1-new.png"
   },
   "library-l1-roomkey": {
-   "hash": "76bf659b",
+   "hash": "526d1c3e",
    "png": "library-l1-roomkey.png"
   },
   "library-l2-loika-mid": {
-   "hash": "2412ab5c",
+   "hash": "206799ff",
    "png": "library-l2-loika-mid.png"
   },
   "library-l2-coat-lit": {
-   "hash": "498513c3",
+   "hash": "21d4add0",
    "png": "library-l2-coat-lit.png"
   },
   "library-l2-met-only": {
@@ -30,39 +30,39 @@
    "png": "library-l2-met-only.png"
   },
   "library-l2-new": {
-   "hash": "3aa18c72",
+   "hash": "f87e2851",
    "png": "library-l2-new.png"
   },
   "library-l2-wish-uncarried": {
-   "hash": "53a693b1",
+   "hash": "d43ec032",
    "png": "library-l2-wish-uncarried.png"
   },
   "library-l2-shut": {
-   "hash": "085073a3",
+   "hash": "d24bb07b",
    "png": "library-l2-shut.png"
   },
   "library-l2-hiljan": {
-   "hash": "fd94eb5d",
+   "hash": "008eec6d",
    "png": "library-l2-hiljan.png"
   },
   "library-l2-kilpo": {
-   "hash": "e3273a5c",
+   "hash": "6ed739c4",
    "png": "library-l2-kilpo.png"
   },
   "library-l2-belatz": {
-   "hash": "860f2edb",
+   "hash": "f1b0cde2",
    "png": "library-l2-belatz.png"
   },
   "library-l2-belatz-coat-lit-complete": {
-   "hash": "0b875226",
+   "hash": "49e920a9",
    "png": "library-l2-belatz-coat-lit-complete.png"
   },
   "library-l2-blikur": {
-   "hash": "6cd31105",
+   "hash": "8eeec35d",
    "png": "library-l2-blikur.png"
   },
   "library-l2-loika-late": {
-   "hash": "7af76509",
+   "hash": "96583b1b",
    "png": "library-l2-loika-late.png"
   },
   "library-l3-far": {
@@ -110,7 +110,7 @@
    "png": "library-l3-compare-none.png"
   },
   "library-l1-dither": {
-   "hash": "7a0c489b",
+   "hash": "71176aef",
    "png": "library-l1-dither.png"
   },
   "library-l3-pan-step-1": {
