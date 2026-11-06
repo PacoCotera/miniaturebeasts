@@ -8,8 +8,8 @@ import { WORLD } from "./home-states.mjs";
 
 // the helpers the scenes call, in the page: a pod with `n` chapters read, Create opened on it
 const CREATE = () => ({
-  fresh() { const st = window.__st.ST; st.e = 9; st.d = 5; st.s = 6; st.firstMibi = false; st.bud = null; this.persist(); },
-  shape(species, gs, n) { const S = window.__st; S.seedPod(species, gs); const p = S.ST.tray.at(-1); S.readSome(p.id, n); S.openCreate(p.id); return p.id; },
+  fresh() { const st = window.__st.ST; st.e = 9; st.d = 4; st.s = 6; st.firstMibi = false; st.bud = null; this.persist(); },
+  shape(species, gs, n) { const S = window.__st; if (species === "S01" && n > 0) S.ST.d += 1; /* the Loika's Face costs one Data more (three traits), so its scenes start with one more */ S.seedPod(species, gs); const p = S.ST.tray.at(-1); S.readSome(p.id, n); S.openCreate(p.id); return p.id; },
   at(f) { window.__st.UI.create.f = f; },
 });
 // species, genome seed, chapters read, the trait the ring starts on, what else the scene sets (in the page)
