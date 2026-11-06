@@ -80,7 +80,7 @@ const FAMILY_ROWS = [
   [16, "two-part crawler", "hexapod", 6, "six legs on two rounded body parts", [["antennae", "allowed"]], "six-leg walk", false, "two body parts, never three"],
   [17, "floater", "mass", 0, "none: floats, shadow below", [["puff edge", "soft edge"], ["nub arms", "small"]], "bob", true, "floats; shadow below"],
   [18, "shell-carrier", "quadruped", 4, "four legs", [["shell", "dome, never a spiral"]], "slow walk", false, "a dome shell, never a spiral"],
-  [19, "slider", "legless", 0, "one foot rim", [], "slide wave", false, "one foot rim, no legs"],
+  [19, "slider", "legless", 0, "one foot rim", [], "slide wave", true, "one body with the foot as its underside, no limbs; the coil is its signature"],
   [20, "six-arm", "radial", 0, "six soft arms, no suckers", [["arms", "six, soft"]], "six-arm walk", false, "six soft arms, no suckers"],
 ];
 export const PLANS = ["quadruped", "biped", "mass", "legless", "hexapod", "radial"];
@@ -93,7 +93,7 @@ export const FAMILIES = FAMILY_ROWS.map(([n, id, plan, legs, contact, parts, gai
 // ---- vocabularies ----
 export const SIGNATURE_SOCKETS = ["head-top", "back-line", "tail", "neck", "coat"];
 export const COAT_MATERIALS = ["felt", "velvet", "suede", "skin", "chitin", "stone", "scale", "fur", "glass"];
-export const FUR_PILES = ["teddy", "fluffy", "fleece", "long", "long hair", "down", "cloud"];
+export const FUR_PILES = ["teddy", "fluffy", "fleece", "long", "long hair", "down", "cloud", "plush"];
 export const IRIS_COLOURS = ["amber", "honey", "olive", "moss", "hazel", "teal", "slate", "violet", "copper"];
 export const ATTITUDES = ["content", "curious", "deadpan", "knowing"]; // order: content > curious > deadpan > knowing
 export const EYE_COUNTS = [2, 3];
@@ -107,11 +107,11 @@ const K = (id, name, family, land, material, pile, sig, socket, count, curl, acc
 export const KINDS = [
   K("S01", "Loika", "trotter", "woods", "felt", null, "leaf crest", "head-top", [2, 3, 3], null, "own", { anchor: true }),
   K("S02", "Untuva", "loaf", "downs", "fur", "fleece", "felt lobe fan", "head-top", [4, 7, 5], null),
-  K("S03", "Tuikis", "hopper", "fells", "suede", null, "tail swelling into a glowing tip", "tail", null, [0, 0.15], "land", { coatNote: "speckled" }),
+  K("S03", "Tuikis", "hopper", "fells", "suede", null, "tail swelling into a glowing tip", "tail", null, [0, 0.15], "land", { coatNote: "speckled suede, short and close with a slight nap", coatPattern: { scale: "fine", spotMax: 1 / 12 } }),
   K("S04", "Hiljan", "climber", "tallwood", "velvet", null, "two blunt horn-knobs", "head-top", 2, null),
   K("S05", "Tepor", "waddler", "woods", "suede", null, "two ribbed crown flaps swept back", "head-top", 2, [0, 0.15], "land", { coatNote: "leathery" }),
   K("S06", "Pesko", "bridge", "thickets", "velvet", null, "ridge of tall beads", "back-line", [6, 10, 8], null, "land", { coatNote: "smooth matte velvet-suede; the beads are the signature only" }),
-  K("S07", "Azkon", "shoulder-heavy", "fells", "suede", null, "hooked tail ending in a knob", "tail", null, [0.3, 0.5], "land", { chestFur: "fluffy", coatNote: "grey suede, no plates" }),
+  K("S07", "Azkon", "shoulder-heavy", "fells", "fur", "plush", "hooked tail ending in a knob", "tail", null, [0.3, 0.5], "land", { chestFur: "fluffy", coatNote: "short plush fur; the fluffy chest in the body colour; no plates", coatPattern: { scale: "big", patchMin: 1 / 6 } }),
   K("S08", "Rupar", "digger", "mixed", "fur", "fluffy", "fan of tall slats", "back-line", [5, 9, 7], null),
   K("S09", "Belatz", "flutterer", "tallwood", "fur", "down", "quill crown", "head-top", [7, 13, 9], null),
   K("S10", "Igara", "swimmer", "meres", "glass", null, "tip curling over like a wave", "back-line", null, [0.25, 0.5], "land", { waterKind: true }),
@@ -129,9 +129,37 @@ export const KINDS = [
 ];
 // Lehten is the only three-eyed kind; nothing varies eye count (owner 2026-11-05 22:33).
 KINDS.find((k) => k.id === "S15").eyes.count = 3;
-// Iris and attitude pools are the art desk's per kind; the design gives no per-kind lists yet, so each
-// kind carries null (unset). A set pool is 3-4 iris colours (default first) and 1+ attitudes.
-for (const k of KINDS) { k.eyes.irisPool = null; k.eyes.attitudePool = null; }
+// Iris and attitude pools, per kind (the art desk, 2026-11-05). The first iris listed is the stand's own
+// default; every attitude pool holds content, which is the default. The anchors' pools are narrow on
+// purpose: their faces are exceptions, so they vary little. The face.iris contrast check may drop a
+// colour from a pool (see irisContrast and droppedIris below); a drop is reported, never silent.
+const POOLS = {
+  S01: [["amber", "honey", "copper"], ["content", "curious"]],
+  S02: [["teal", "moss", "slate"], ["content", "deadpan"]],
+  S03: [["copper", "hazel", "amber"], ["content", "curious"]],
+  S04: [["slate", "violet", "hazel"], ["content", "curious", "knowing"]],
+  S05: [["slate", "olive", "honey"], ["content", "curious", "deadpan"]],
+  S06: [["copper", "honey", "amber"], ["content", "deadpan"]],
+  S07: [["olive", "hazel", "honey"], ["content", "deadpan", "knowing"]],
+  S08: [["teal", "slate", "violet"], ["content", "curious", "knowing"]],
+  S09: [["hazel", "copper", "amber"], ["content", "curious", "knowing"]],
+  S10: [["violet", "copper", "honey"], ["content", "curious"]],
+  S11: [["violet", "honey", "moss"], ["content", "curious", "deadpan"]],
+  S12: [["copper", "violet", "slate"], ["content", "curious"]],
+  S13: [["hazel", "copper", "honey"], ["content", "curious"]],
+  S14: [["hazel", "copper", "violet"], ["content", "deadpan"]],
+  S15: [["olive", "moss", "honey"], ["content", "knowing"]],
+  S16: [["slate", "teal", "honey"], ["content", "curious"]],
+  S17: [["amber", "honey"], ["content", "curious"]],
+  S18: [["violet", "slate"], ["content", "deadpan"]],
+  S19: [["hazel", "teal"], ["content", "knowing"]],
+  S20: [["slate", "hazel", "violet"], ["content", "curious"]],
+};
+for (const k of KINDS) {
+  const [iris, att] = POOLS[k.id] ?? [null, null];
+  k.eyes.irisPool = iris; k.eyes.irisDefault = iris ? iris[0] : null;
+  k.eyes.attitudePool = att; k.eyes.attitudeDefault = att ? "content" : null;
+}
 Object.freeze(KINDS);
 
 // ---- per-check signed exception records (the language design section 9, owner 2026-11-05 22:33) ----
@@ -141,7 +169,12 @@ const ex = (kind, check, reason, extra = {}) => ({ kind, check, reason, by: "art
 export const EXCEPTIONS = [
   ex("S01", "face.size", "Loika's big ringed eyes, kept at the owner's 21:15 approval"),
   ex("S01", "face.flush", "Loika's ringed eyes: the rims stay"),
-  ex("S01", "coat.pale", "Loika's cream chest, kept at the owner's 21:15 approval"),
+  // The cream muzzle (the stub snout that is the whole lower face, cream like the chest) is part of this
+  // excepted coat.pale (art desk, 2026-11-05): `covers` lists the retired records the exception lets Loika's frame keep.
+  ex("S01", "coat.pale", "Loika's cream chest and cream muzzle, kept at the owner's 21:15 approval", {
+    muzzle: { colour: "cream", part: "the stub snout, the whole lower face", inside: "coat.pale" },
+    covers: ["anatomy.muzzle-presence", "growth.muzzle-projection-ratio", "growth.muzzle-width-ratio"],
+  }),
   ex("S01", "coat.land", "Loika's black coat, not Woods russet"),
   ex("S01", "sig.accent", "Loika's leaf-green leaves, not the Woods accent"),
   // The owner's ruling: Loika keeps its ears, a bounded record, never a pointed ear.
@@ -157,7 +190,16 @@ export const EXCEPTIONS = [
   ex("S18", "sig.accent", "Drapet's own curtain colour"),
   ex("S18", "coat.pale", "Drapet's own pale areas"),
   ex("S18", "face.size", "Drapet's long-hair face"),
-  ex("S18", "face.clear", "Drapet's brow tufts, kept at the owner's ruling 2026-11-05 22:33", { scope: "brow-tufts" }),
+  // Drapet's brow tassels (art desk, 2026-11-05): locks of the curtain itself, never brows or horns.
+  ex("S18", "face.clear", "Drapet's brow tassels, kept at the owner's ruling 2026-11-05 22:33", {
+    scope: "brow-tufts",
+    tassels: {
+      made: "locks of the curtain itself, the same hair and the same colour",
+      count: [0, 5], length: [0, 0.15], lengthUnit: "body height",
+      hang: "down", standUp: false, curl: false, brows: false, horns: false,
+      stopsAt: "the top of the eyes", eyesClear: true, presenceMayBeOff: true, onlyKind: "S18",
+    },
+  }),
   ex("S19", "coat.land", "Curlop's own colours and long-fur face"),
   ex("S19", "sig.accent", "Curlop's own tail colour"),
   ex("S19", "coat.pale", "Curlop's own pale areas"),
@@ -243,10 +285,14 @@ export function checkComplete(reg) {
     if (!k.signature?.type) msgs.push(`${k.id}: no signature type`);
     if (!SIGNATURE_SOCKETS.includes(k.signature?.socket)) msgs.push(`${k.id}: signature socket ${JSON.stringify(k.signature?.socket)} is not in the list`);
     if (k.signature?.socket === "face") msgs.push(`${k.id}: a signature is never on the face`);
-    const pool = k.eyes?.irisPool;
-    if (pool != null && (pool.length < 3 || pool.length > 4 || pool.some((c) => !IRIS_COLOURS.includes(c)))) msgs.push(`${k.id}: iris pool must be 3-4 of the nine colours`);
+    // The anchors' pools are narrow on purpose (two colours); every other kind has three or four. The first is the default.
+    const pool = k.eyes?.irisPool, lo = k.anchor ? 2 : 3;
+    if (pool != null && (pool.length < lo || pool.length > 4 || pool.some((c) => !IRIS_COLOURS.includes(c)) || new Set(pool).size !== pool.length)) msgs.push(`${k.id}: iris pool must be ${lo}-4 of the nine colours`);
+    if (pool != null && k.eyes.irisDefault !== pool[0]) msgs.push(`${k.id}: the iris default is the first of the pool`);
     const att = k.eyes?.attitudePool;
-    if (att != null && (att.length < 1 || att.some((a) => !ATTITUDES.includes(a)))) msgs.push(`${k.id}: attitude pool must hold content, curious, deadpan or knowing`);
+    if (att != null && (att.length < 1 || att.some((a) => !ATTITUDES.includes(a)) || new Set(att).size !== att.length)) msgs.push(`${k.id}: attitude pool must hold content, curious, deadpan or knowing`);
+    if (att != null && (!att.includes("content") || k.eyes.attitudeDefault !== "content")) msgs.push(`${k.id}: content is in every attitude pool and is the default`);
+    if (pool == null || att == null) msgs.push(`${k.id}: iris and attitude pools are set for every kind`);
   }
   if (new Set(reg.kinds.map((k) => k.id)).size !== reg.kinds.length) msgs.push("duplicate kind id");
   return res("roster.complete", "red", msgs);
@@ -271,6 +317,12 @@ export function checkExceptions(reg) {
     const key = `${e.kind}/${e.check}/${e.scope ?? ""}`;
     if (seen.has(key)) msgs.push(`${key}: duplicate record`);
     seen.add(key);
+    if (e.tassels) {
+      const t = e.tassels;
+      if (e.kind !== "S18" || t.onlyKind !== "S18") msgs.push(`${e.kind}: the tassels record is Drapet only`);
+      if (t.count?.[0] !== 0 || t.count?.[1] > 5 || t.length?.[0] !== 0 || t.length?.[1] > 0.15 || t.hang !== "down" || t.standUp || t.curl || t.brows || t.horns || !t.eyesClear) msgs.push(`${e.kind}: tassels are 0-5 locks, 0-0.15 body height, hanging, never brows or horns, eyes always clear`);
+    }
+    if (e.covers && (e.kind !== "S01" || e.check !== "coat.pale")) msgs.push(`${e.kind} ${e.check}: only Loika's coat.pale covers retired records`);
     if (e.ears && (e.kind !== "S01" || e.ears.pointed !== false || e.ears.shape !== "round" || e.ears.onlyKind !== "S01")) msgs.push(`${e.kind}: the ears record is Loika only, round, never pointed`);
   }
   for (const k of reg.kinds) if (k.anchor && !reg.exceptions.some((e) => e.kind === k.id)) msgs.push(`${k.id}: anchor with no exception record`);

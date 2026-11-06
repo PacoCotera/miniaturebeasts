@@ -49,9 +49,11 @@ test("only Lehten has three eyes; Belatz has two; nothing varies eye count", () 
   assert.equal(kindOf(LANGUAGE, "S09").eyes.count, 2);
 });
 
-test("four-legged families number nine; simple masses are four of twenty", () => {
+test("four-legged families number nine; simple masses are five of twenty: Wickle, Drapet, Blikur, Usvel, Igara", () => {
   assert.equal(LANGUAGE.families.filter((f) => f.fourLegged).length, 9);
-  assert.equal(LANGUAGE.families.filter((f) => f.simpleMass).length, 4);
+  assert.equal(LANGUAGE.families.filter((f) => f.simpleMass).length, 5);
+  assert.deepEqual(roster(LANGUAGE).filter((k) => LANGUAGE.families.find((f) => f.id === k.family).simpleMass).map((k) => k.name).sort(), ["Blikur", "Drapet", "Igara", "Usvel", "Wickle"]);
+  assert.equal(checkMasses(LANGUAGE).pass, true, "five of twenty is inside the one-third cap");
 });
 
 test("failing copy: two kinds on one family", () => {
@@ -101,11 +103,58 @@ test("the studio quad and the old Tuliko are not kinds: roster rules skip them",
   assert.equal(LANGUAGE.fixtures[0].frozen, true);
 });
 
-test("roster.coats is amber: Fells has two suede kinds", () => {
+test("roster.coats passes: Tuikis is speckled suede, Azkon short plush fur; the stands stay in Fells", () => {
   const r = checkCoats(LANGUAGE);
   assert.equal(r.level, "amber");
-  assert.deepEqual(r.messages.length, 1);
-  assert.match(r.messages[0], /S03 and S07 share suede in fells/);
+  assert.deepEqual(r.messages, []);
+  const tuikis = kindOf(LANGUAGE, "S03"), azkon = kindOf(LANGUAGE, "S07");
+  assert.equal(tuikis.land, "fells"); assert.equal(azkon.land, "fells");
+  assert.deepEqual(tuikis.coat, { material: "suede", pile: null });
+  assert.deepEqual(azkon.coat, { material: "fur", pile: "plush" });
+  assert.equal(azkon.chestFur, "fluffy");
+  assert.ok(tuikis.coatPattern.spotMax <= 1 / 12 && tuikis.coatPattern.scale === "fine", "fine speckle only: spots at most 1/12 of the body length");
+  assert.ok(azkon.coatPattern.patchMin >= 1 / 6 && azkon.coatPattern.scale === "big", "big patches only: at least 1/6 of the body length");
+  const same = clone(); kindOf(same, "S07").coat = { material: "suede", pile: null };
+  assert.equal(checkCoats(same).messages.length, 1, "two suede kinds in one land is still amber");
+});
+
+test("iris and attitude pools are the art desk's table: the first iris is the default, content is in every pool and the default", () => {
+  const want = {
+    S01: ["amber,honey,copper", "content,curious"], S02: ["teal,moss,slate", "content,deadpan"], S03: ["copper,hazel,amber", "content,curious"], S04: ["slate,violet,hazel", "content,curious,knowing"],
+    S05: ["slate,olive,honey", "content,curious,deadpan"], S06: ["copper,honey,amber", "content,deadpan"], S07: ["olive,hazel,honey", "content,deadpan,knowing"], S08: ["teal,slate,violet", "content,curious,knowing"],
+    S09: ["hazel,copper,amber", "content,curious,knowing"], S10: ["violet,copper,honey", "content,curious"], S11: ["violet,honey,moss", "content,curious,deadpan"], S12: ["copper,violet,slate", "content,curious"],
+    S13: ["hazel,copper,honey", "content,curious"], S14: ["hazel,copper,violet", "content,deadpan"], S15: ["olive,moss,honey", "content,knowing"], S16: ["slate,teal,honey", "content,curious"],
+    S17: ["amber,honey", "content,curious"], S18: ["violet,slate", "content,deadpan"], S19: ["hazel,teal", "content,knowing"], S20: ["slate,hazel,violet", "content,curious"],
+  };
+  for (const [id, [iris, att]] of Object.entries(want)) {
+    const k = kindOf(LANGUAGE, id);
+    assert.equal(k.eyes.irisPool.join(","), iris, id); assert.equal(k.eyes.attitudePool.join(","), att, id);
+    assert.equal(k.eyes.irisDefault, k.eyes.irisPool[0], id); assert.equal(k.eyes.attitudeDefault, "content", id);
+  }
+  const bad = clone(); kindOf(bad, "S02").eyes.attitudePool = ["curious", "deadpan"];
+  assert.equal(checkComplete(bad).pass, false);
+  const narrow = clone(); kindOf(narrow, "S02").eyes.irisPool = ["teal", "moss"];
+  assert.equal(checkComplete(narrow).pass, false, "only an anchor's pool may be as narrow as two");
+});
+
+test("Drapet's brow tassels: locks of the curtain, 0-5, 0-0.15 body height, hanging, never brows or horns, eyes clear, presence may be off", () => {
+  const e = exceptionsFor(LANGUAGE, "S18", "face.clear").find((x) => x.scope === "brow-tufts");
+  assert.deepEqual(e.tassels.count, [0, 5]); assert.deepEqual(e.tassels.length, [0, 0.15]); assert.equal(e.tassels.lengthUnit, "body height");
+  assert.equal(e.tassels.hang, "down"); assert.equal(e.tassels.standUp, false); assert.equal(e.tassels.curl, false);
+  assert.equal(e.tassels.brows, false); assert.equal(e.tassels.horns, false); assert.equal(e.tassels.eyesClear, true); assert.equal(e.tassels.presenceMayBeOff, true);
+  assert.match(e.tassels.made, /curtain itself.*same hair.*same colour/);
+  assert.equal(LANGUAGE.exceptions.filter((x) => x.tassels).length, 1);
+  const bad = clone(); bad.exceptions.find((x) => x.tassels).tassels.standUp = true;
+  assert.equal(checkExceptions(bad).pass, false);
+});
+
+test("Loika's cream muzzle sits inside its excepted coat.pale, and only there", () => {
+  const e = exceptionsFor(LANGUAGE, "S01", "coat.pale")[0];
+  assert.equal(e.muzzle.colour, "cream"); assert.equal(e.muzzle.inside, "coat.pale");
+  assert.ok(e.covers.includes("anatomy.muzzle-presence"));
+  assert.equal(LANGUAGE.exceptions.filter((x) => x.covers).length, 1);
+  const bad = clone(); kindOf(bad, "S17"); bad.exceptions.find((x) => x.kind === "S17" && x.check === "coat.pale").covers = ["anatomy.muzzle-presence"];
+  assert.equal(checkExceptions(bad).pass, false);
 });
 
 test("anchors carry per-check records; no kind is exempt as a whole", () => {

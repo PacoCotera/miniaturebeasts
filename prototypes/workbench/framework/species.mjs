@@ -147,6 +147,7 @@ export function refuseOpen(kindId, id) {
   if (id === "anatomy.eye-count") return "eye count is a plan switch: a fact of the kind (two, or three for Lehten), locked, never open";
   if (!locus?.retired) return null;
   const c = locus.retiredCoveredBy;
+  if (LANGUAGE.exceptions.some((e) => e.kind === kindId && e.covers?.includes(id))) return null;   // a record that names the retired records it lets the kind keep (Loika's cream muzzle, inside coat.pale)
   if (c && LANGUAGE.exceptions.some((e) => e.kind === kindId && e.check === c.check && (!c.scope || e.scope === c.scope))) return null;
   return `retired (${locus.retired}: ${locus.retiredWhy}); no exception record of ${kindId} covers it${c ? ` (it would take ${c.check}${c.scope ? ` scope ${c.scope}` : ""})` : ""}`;
 }

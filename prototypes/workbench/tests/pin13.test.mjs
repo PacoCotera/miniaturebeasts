@@ -96,7 +96,7 @@ test("the retired mark: each record keeps its body, says why, and names the chec
   assert.deepEqual(covers["appearance.belly-field"], { check: "coat.pale" });
   assert.deepEqual(covers["anatomy.auricular-presence"], { check: "face.clear", scope: "ears" });
   assert.deepEqual(covers["appearance.body-palette"], { check: "coat.land" });
-  assert.equal(LOCI.get("anatomy.muzzle-presence").retiredCoveredBy, null, "no exception covers a muzzle");
+  assert.equal(LOCI.get("anatomy.muzzle-presence").retiredCoveredBy, null, "the catalogue names no check for a muzzle; only Loika's own record covers it");
   assert.ok(!LOCI.get("anatomy.shell-presence").retired, "the shell-carrier keeps its dome shell");
 });
 
@@ -109,7 +109,8 @@ test("every covered record is covered by a record the registry really holds, and
   assert.equal(refuseOpen("S01", "appearance.belly-field"), null, "Loika keeps its belly field under coat.pale");
   assert.equal(refuseOpen("S17", "appearance.underside-palette"), null, "Wickle's pale areas");
   assert.match(refuseOpen("S02", "appearance.belly-field"), /would take coat\.pale/);
-  assert.match(refuseOpen("S01", "anatomy.muzzle-presence"), /no exception record of S01 covers it/, "no anchor exception covers a muzzle");
+  assert.equal(refuseOpen("S01", "anatomy.muzzle-presence"), null, "Loika's cream muzzle sits inside its excepted coat.pale (art desk, chunk 5)");
+  assert.match(refuseOpen("S19", "anatomy.muzzle-presence"), /no exception record of S19 covers it/, "no other anchor exception covers a muzzle");
   assert.equal(refuseOpen("S02", "appearance.marking-layout"), null, "a live record is never refused");
 });
 

@@ -752,9 +752,9 @@
       "contact": "one foot rim",
       "parts": [],
       "gait": "slide wave",
-      "simpleMass": false,
+      "simpleMass": true,
       "fourLegged": false,
-      "fix": "one foot rim, no legs"
+      "fix": "one body with the foot as its underside, no limbs; the coil is its signature"
     },
     {
       "n": 20,
@@ -801,7 +801,8 @@
       "long",
       "long hair",
       "down",
-      "cloud"
+      "cloud",
+      "plush"
     ],
     "irisColours": [
       "amber",
@@ -848,8 +849,17 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "amber",
+          "honey",
+          "copper"
+        ],
+        "irisDefault": "amber",
+        "attitudePool": [
+          "content",
+          "curious"
+        ],
+        "attitudeDefault": "content"
       },
       "anchor": true
     },
@@ -875,8 +885,17 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "teal",
+          "moss",
+          "slate"
+        ],
+        "irisDefault": "teal",
+        "attitudePool": [
+          "content",
+          "deadpan"
+        ],
+        "attitudeDefault": "content"
       }
     },
     {
@@ -900,10 +919,23 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "copper",
+          "hazel",
+          "amber"
+        ],
+        "irisDefault": "copper",
+        "attitudePool": [
+          "content",
+          "curious"
+        ],
+        "attitudeDefault": "content"
       },
-      "coatNote": "speckled"
+      "coatNote": "speckled suede, short and close with a slight nap",
+      "coatPattern": {
+        "scale": "fine",
+        "spotMax": 0.08333333333333333
+      }
     },
     {
       "id": "S04",
@@ -923,8 +955,18 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "slate",
+          "violet",
+          "hazel"
+        ],
+        "irisDefault": "slate",
+        "attitudePool": [
+          "content",
+          "curious",
+          "knowing"
+        ],
+        "attitudeDefault": "content"
       }
     },
     {
@@ -948,8 +990,18 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "slate",
+          "olive",
+          "honey"
+        ],
+        "irisDefault": "slate",
+        "attitudePool": [
+          "content",
+          "curious",
+          "deadpan"
+        ],
+        "attitudeDefault": "content"
       },
       "coatNote": "leathery"
     },
@@ -975,8 +1027,17 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "copper",
+          "honey",
+          "amber"
+        ],
+        "irisDefault": "copper",
+        "attitudePool": [
+          "content",
+          "deadpan"
+        ],
+        "attitudeDefault": "content"
       },
       "coatNote": "smooth matte velvet-suede; the beads are the signature only"
     },
@@ -986,8 +1047,8 @@
       "family": "shoulder-heavy",
       "land": "fells",
       "coat": {
-        "material": "suede",
-        "pile": null
+        "material": "fur",
+        "pile": "plush"
       },
       "signature": {
         "type": "hooked tail ending in a knob",
@@ -1001,11 +1062,25 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "olive",
+          "hazel",
+          "honey"
+        ],
+        "irisDefault": "olive",
+        "attitudePool": [
+          "content",
+          "deadpan",
+          "knowing"
+        ],
+        "attitudeDefault": "content"
       },
       "chestFur": "fluffy",
-      "coatNote": "grey suede, no plates"
+      "coatNote": "short plush fur; the fluffy chest in the body colour; no plates",
+      "coatPattern": {
+        "scale": "big",
+        "patchMin": 0.16666666666666666
+      }
     },
     {
       "id": "S08",
@@ -1029,8 +1104,18 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "teal",
+          "slate",
+          "violet"
+        ],
+        "irisDefault": "teal",
+        "attitudePool": [
+          "content",
+          "curious",
+          "knowing"
+        ],
+        "attitudeDefault": "content"
       }
     },
     {
@@ -1055,8 +1140,18 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "hazel",
+          "copper",
+          "amber"
+        ],
+        "irisDefault": "hazel",
+        "attitudePool": [
+          "content",
+          "curious",
+          "knowing"
+        ],
+        "attitudeDefault": "content"
       }
     },
     {
@@ -1080,8 +1175,17 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "violet",
+          "copper",
+          "honey"
+        ],
+        "irisDefault": "violet",
+        "attitudePool": [
+          "content",
+          "curious"
+        ],
+        "attitudeDefault": "content"
       },
       "waterKind": true
     },
@@ -1106,8 +1210,18 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "violet",
+          "honey",
+          "moss"
+        ],
+        "irisDefault": "violet",
+        "attitudePool": [
+          "content",
+          "curious",
+          "deadpan"
+        ],
+        "attitudeDefault": "content"
       }
     },
     {
@@ -1131,8 +1245,17 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "copper",
+          "violet",
+          "slate"
+        ],
+        "irisDefault": "copper",
+        "attitudePool": [
+          "content",
+          "curious"
+        ],
+        "attitudeDefault": "content"
       },
       "coatNote": "the head is merged into the body"
     },
@@ -1157,8 +1280,17 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "hazel",
+          "copper",
+          "honey"
+        ],
+        "irisDefault": "hazel",
+        "attitudePool": [
+          "content",
+          "curious"
+        ],
+        "attitudeDefault": "content"
       },
       "coatNote": "matte floor; not a satin glaze"
     },
@@ -1183,8 +1315,17 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "hazel",
+          "copper",
+          "violet"
+        ],
+        "irisDefault": "hazel",
+        "attitudePool": [
+          "content",
+          "deadpan"
+        ],
+        "attitudeDefault": "content"
       }
     },
     {
@@ -1205,8 +1346,17 @@
       },
       "eyes": {
         "count": 3,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "olive",
+          "moss",
+          "honey"
+        ],
+        "irisDefault": "olive",
+        "attitudePool": [
+          "content",
+          "knowing"
+        ],
+        "attitudeDefault": "content"
       },
       "coatNote": "body and the dome shell in skin, shell in deep heather"
     },
@@ -1232,8 +1382,17 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "slate",
+          "teal",
+          "honey"
+        ],
+        "irisDefault": "slate",
+        "attitudePool": [
+          "content",
+          "curious"
+        ],
+        "attitudeDefault": "content"
       }
     },
     {
@@ -1257,8 +1416,16 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "amber",
+          "honey"
+        ],
+        "irisDefault": "amber",
+        "attitudePool": [
+          "content",
+          "curious"
+        ],
+        "attitudeDefault": "content"
       },
       "anchor": true
     },
@@ -1280,8 +1447,16 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "violet",
+          "slate"
+        ],
+        "irisDefault": "violet",
+        "attitudePool": [
+          "content",
+          "deadpan"
+        ],
+        "attitudeDefault": "content"
       },
       "anchor": true
     },
@@ -1306,8 +1481,16 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "hazel",
+          "teal"
+        ],
+        "irisDefault": "hazel",
+        "attitudePool": [
+          "content",
+          "knowing"
+        ],
+        "attitudeDefault": "content"
       },
       "anchor": true
     },
@@ -1333,8 +1516,17 @@
       },
       "eyes": {
         "count": 2,
-        "irisPool": null,
-        "attitudePool": null
+        "irisPool": [
+          "slate",
+          "hazel",
+          "violet"
+        ],
+        "irisDefault": "slate",
+        "attitudePool": [
+          "content",
+          "curious"
+        ],
+        "attitudeDefault": "content"
       }
     },
     {
@@ -1356,7 +1548,9 @@
       "eyes": {
         "count": 2,
         "irisPool": null,
-        "attitudePool": null
+        "irisDefault": null,
+        "attitudePool": null,
+        "attitudeDefault": null
       },
       "template": true
     }
@@ -1381,10 +1575,20 @@
     {
       "kind": "S01",
       "check": "coat.pale",
-      "reason": "Loika's cream chest, kept at the owner's 21:15 approval",
+      "reason": "Loika's cream chest and cream muzzle, kept at the owner's 21:15 approval",
       "by": "art desk",
       "date": "2026-11-06",
-      "until": "repaint"
+      "until": "repaint",
+      "muzzle": {
+        "colour": "cream",
+        "part": "the stub snout, the whole lower face",
+        "inside": "coat.pale"
+      },
+      "covers": [
+        "anatomy.muzzle-presence",
+        "growth.muzzle-projection-ratio",
+        "growth.muzzle-width-ratio"
+      ]
     },
     {
       "kind": "S01",
@@ -1486,11 +1690,32 @@
     {
       "kind": "S18",
       "check": "face.clear",
-      "reason": "Drapet's brow tufts, kept at the owner's ruling 2026-11-05 22:33",
+      "reason": "Drapet's brow tassels, kept at the owner's ruling 2026-11-05 22:33",
       "by": "art desk",
       "date": "2026-11-06",
       "until": "repaint",
-      "scope": "brow-tufts"
+      "scope": "brow-tufts",
+      "tassels": {
+        "made": "locks of the curtain itself, the same hair and the same colour",
+        "count": [
+          0,
+          5
+        ],
+        "length": [
+          0,
+          0.15
+        ],
+        "lengthUnit": "body height",
+        "hang": "down",
+        "standUp": false,
+        "curl": false,
+        "brows": false,
+        "horns": false,
+        "stopsAt": "the top of the eyes",
+        "eyesClear": true,
+        "presenceMayBeOff": true,
+        "onlyKind": "S18"
+      }
     },
     {
       "kind": "S19",
