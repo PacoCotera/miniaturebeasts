@@ -1,0 +1,11 @@
+.viewport { position: absolute; left: calc(var(--nav-w, 232px) + var(--s-4)); bottom: 20px; display: flex; flex-direction: column; gap: var(--s-2); list-style: none; z-index: 20; outline: none; max-width: 420px; }
+.toast { display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 12px; border-radius: var(--r-2); background: var(--raised); box-shadow: var(--shadow-2); font-size: var(--t-14); border: 1px solid var(--line); }
+.toast[data-state=open] { animation: in var(--m-mid) var(--ease); }
+.toast[data-state=closed] { animation: out var(--m-mid) var(--ease) forwards; }
+@keyframes in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes out { to { opacity: 0; } }
+.avatar { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 600; background: var(--sunken); color: var(--text-2); border: 1px solid var(--line); flex: none; }
+.avatar[data-agent] { background: color-mix(in srgb, var(--special) 22%, var(--raised)); color: var(--text); border-color: var(--special); }
+.text b { font-weight: 600; }
+.undo { color: var(--text-2); margin-left: 8px; font-weight: 500; font-size: var(--t-14); }
+.undo:hover { color: var(--text); }

@@ -1,0 +1,18 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S18",
+ "name": "Drapet",
+ "resembles": "a wide low dome under a floor-length skirt of fur",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a wide low tent of fur resting on the ground, the hem a long fringe on the floor, a small face peeking out low at the front (traced from stand-B-drapet-304x312)",
+ "shapes": [
+  {"polygon":[[4.8,84.9],[7.1,64.1],[16,41.7],[30.4,25.6],[48.1,19.9],[65.7,27.2],[78.5,44.9],[87.2,64.1],[92.9,84],[93.6,92.9],[48.1,97.8],[3.2,93.6]],"part":"body"},
+  {"polygon":[[5.8,69.9],[91.7,69.9],[94.2,93.6],[48.1,98.1],[2.6,93.9]],"part":"skirt"},
+  {"ellipse":[69.2,59.6,10.6,9.9],"part":"head"}
+ ]
+}

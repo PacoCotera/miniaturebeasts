@@ -277,7 +277,7 @@ await frameShot("page-identified");
   { const p = await props(); expect(p.state === "nothingRead" && p.frame.line.back === "Loika" && p.frame.line.ok === "Incubate", "Create opens on nothing read and its way back names the pod: " + JSON.stringify([p.state, p.frame.line])); }
   await press("back", 400); const to = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create, card: window.__st.UI.pods.panelPod }));
   expect(to.screen === "pods" && to.view === "inventory" && to.card === loika.id, "← from Create is the inventory on the pod's card, where Grow it was pressed: " + JSON.stringify(to)); }
-// 4. read Coat (the fixture spent the free read): ✓ on the rail opens the chapter and never spends, the ring on the key; Read Coat ◆ 2 is the one press that spends; then Face ◆ 2; a second Loika's Face costs 1
+// 4. read Coat (the fixture spent the free read): ✓ on the rail opens the chapter and never spends, the ring on the key; Read Coat ◆ 2 is the one press that spends; then Face ◆ 3; a second Loika's Face costs 1
 await podsAt({ view: "room", bench: loika.id, lane: 0, at: "rail", focus: "rail" });
 const d0 = (await st()).d;
 await press("confirm", 300); expect((await focusNow()) === "key" && (await atNow()) === "right" && (await st()).d === d0, "✓ on an unread lane opens the chapter, the ring on its key, nothing spent");
@@ -288,9 +288,9 @@ s = await st(); expect(s.tray.find((p) => p.id === loika.id).read.includes("coat
 expect(s.tray.find((p) => p.id === loika.id).first !== undefined, "the first-shown looks are saved on the pod at read time");
 expect((await focusNow()) === "plate.0" && !(await page.evaluate(() => window.__st.UI.pods.reading)), "the read ends with the ring on the first plate");
 await podsAt({ view: "room", bench: loika.id, lane: 1, at: "rail", focus: "rail" }); await press("confirm", 300);
-l = await line(); expect(l.ok === "Read Face" && l.price === "◆ 2", "Face costs 2 Data: " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Read Face" && l.price === "◆ 3", "Face costs 3 Data (Crown, Ears, Eyes): " + JSON.stringify(l));
 await press("confirm", 900);
-s = await st(); expect(s.d === d0 - 4, "Face read for 2 Data");
+s = await st(); expect(s.d === d0 - 5, "Face read for 3 Data");
 await podsAt({ view: "room", bench: loika.id, lane: 1, at: "right", plate: 0, focus: "plate.0" });
 await frameShot("page-read");
 // the art layer is on the palette exactly (pass 2 of the face's test mode); the type is the face's own
@@ -303,10 +303,10 @@ const sg = await page.evaluate((id) => window.__st.stampGenome(id), loika.id);
 const dec = decode({ width: img.width, height: img.height, data: new Uint8ClampedArray(img.data) });
 expect(dec.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, dec.stamps[0].genome), "the drawn stamp decodes to the genome");
 expect(dec.stamps.length === 1 && dec.stamps[0].genome.read.join() === "Coat,Face", "the stamp's mask: Coat and Face read");
-// the second Loika: identify (◆ 1), its Face costs 1 (half of two, rounded up)
+// the second Loika: identify (◆ 1), its Face costs 2 (half of three, rounded up)
 await podsAt({ view: "room", bench: loika2.id, focus: "key" }); await press("confirm", 500);
 await podsAt({ view: "room", bench: loika2.id, lane: 1, at: "rail", focus: "rail" }); await press("confirm", 300);
-l = await line(); expect(l.ok === "Read Face" && l.price === "◆ 1", "a second Loika's Face costs 1: " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Read Face" && l.price === "◆ 2", "a second Loika's Face costs 2: " + JSON.stringify(l));
 await press("confirm", 900);
 // 5. Compare: from the second Loika's card, the panel's Compare, ✓; ← lands back on the card's Compare
 s = await st();
@@ -533,7 +533,7 @@ await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitF
 expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "the Cross screen, reached through the test hook (openCross), not a press (not built)");
 await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300);
 const fc = await page.evaluate(([a, b]) => window.__st.forecastOf(a, b), [dot.id, adult3.id]);
-expect(fc.traits.filter((t) => t.kind === "switch").length === 3 && fc.traits.filter((t) => t.kind === "blend").length === 3, "four seeds for colour, markings and crown, a range for eye rings, drive and efficiency");
+expect(fc.traits.filter((t) => t.kind === "switch").length === 3 && fc.traits.filter((t) => t.kind === "blend").length === 4, "four seeds for colour, markings and crown, a range for eye rings, ears, drive and efficiency");
 expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length === 4), "four seeds each");
 { await press("research", 300); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, cross: window.__st.UI.cross }));
   expect(at.screen === "pods" && at.cross === null, "a room key on Cross drops the unpaid choices: " + JSON.stringify(at));

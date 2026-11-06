@@ -95,7 +95,7 @@ const PROPORTION_WORDS = {
   "growth.muzzle-projection-ratio": { short: "a short muzzle", long: "a long muzzle" },
   "growth.beak-length-ratio": { short: "a short beak", long: "a long beak" },
   "growth.exterior-eye-size-ratio": { small: "small eyes", large: "big eyes" },
-  "growth.auricular-length-ratio": { short: "short ears", long: "long ears", tall: "tall ears" },
+  "growth.auricular-length-ratio": { small: "small ears", short: "short ears", medium: "larger ears", long: "long ears", tall: "tall ears" },
   "growth.antenna-length-ratio": { short: "short antennae", long: "long antennae" },
   "growth.crown-height-ratio": { low: "a low crest", high: "a tall crest" },
   "growth.feather-crest": { low: "a low feather crest", tall: "a tall feather crest" },
@@ -140,6 +140,6 @@ export function describeGenome(frame, genome, scene, { typeSpecimen = false } = 
   if (typeSpecimen) text += ` It is the type of its kind, ${frame.taxonomy.resembles}: ${frame.signature.feature}.`;
   for (const ch of chapters) text += ` ${ch.name}: ${ch.looks.map((l) => `${l.name.toLowerCase()} ${l.look.startsWith("between ") ? "between" : l.look}`).join("; ")}.`;
   if (proportions.length) text += ` Proportions: ${proportions.join(", ")}.`;
-  text += ` Posture: ${posture}, still, looking at the viewer.`;
+  text += ` Posture: ${posture}${plan.armSet ? ", two small hands held together at the chest" : ""}, still, looking at the viewer.`;
   return { chapters, proportions, caption, posture, text };
 }

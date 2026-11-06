@@ -82,7 +82,9 @@ test("the port's bytes are the golden: the digest of each signed state's picture
 // The frozen specimen3.js reference now follows the dew gleam for its glint (owner pick 2026-11-03); the rest of it is as the art director signed it.
 const require = createRequire(import.meta.url); let chromium = null;
 try { ({ chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright")); } catch { chromium = null; }
-const ORIGINAL = readFileSync(path.join(fx, "specimen3.js"), "utf8"), HOOK = "if (s.fresh) acc.push(p); }", PATCHED = ORIGINAL.replace(HOOK, "if (s.fresh) acc.push(p); if (opts.onBead) opts.onBead(p, t, s); }");   // the one edit the port makes, the bead's centre
+const ORIGINAL = readFileSync(path.join(fx, "specimen3.js"), "utf8"), HOOK = "if (s.fresh) acc.push(p); }", PATCHED = ORIGINAL.replace(HOOK, "if (s.fresh) acc.push(p); if (opts.onBead) opts.onBead(p, t, s); }")
+  .replace("  efficiency: ['#3084d8'", "  ears: ['#1f9d8f', '#45d8be', '#adf6e0'],\n  efficiency: ['#3084d8'")
+  .replace("    case 'drive':", "    case 'ears': { const e = [0.18, 0.25, 0.32][['small ears', 'between', 'larger ears'].indexOf(look)] ?? 0.25; ctx.beginPath(); ctx.arc(x, y + 0.45 * s, 0.6 * s, Math.PI, TAU); ctx.stroke(); C(-(0.46 + 0.38 * e), 0.06 - 0.32 * e, e, 1); C(0.46 + 0.38 * e, 0.06 - 0.32 * e, e, 1); break; }\n    case 'drive':");   // the one edit the port makes, the bead's centre
 const PAGE = (HARN) => `${PATCHED}\nexport const run = ${HARN};`;
 // the harness, as specimen.mjs's: the form on a 2x canvas, finished at 2x, reduced by 2 x 2
 const HARNESS_SRC = `(frame, state, H) => { const ss = H.ss, W = H.w * ss, Ht = H.h * ss, m = layout(model(frame, state)), beads = [];

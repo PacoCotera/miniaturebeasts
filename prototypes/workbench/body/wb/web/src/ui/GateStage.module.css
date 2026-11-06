@@ -1,0 +1,4 @@
+.stage { display: block; padding: var(--s-5); min-width: 0; min-height: 0; overflow: auto; background: var(--bg); }
+.plate { width: max-content; margin: 0 auto; border-radius: var(--r-3); background: #fff; box-shadow: var(--shadow-1), inset 0 0 0 1px var(--plate-edge); overflow: hidden; }
+.img { display: block; max-width: none; }
+.note { margin: 0; color: var(--text-2); font-size: var(--t-14); }

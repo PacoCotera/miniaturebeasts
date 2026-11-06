@@ -33,9 +33,10 @@
 // The forecast shows quarters for switches (the four pairings of the parents' copies, resolved) and
 // a range for blends (the parents' shown values widened by the spread, clamped, as bins), never a
 // promise; a trait where both parents hold the same copies is known for sure before any read.
-import { LOCI, resolveCopies, isContinuous, copyValue, binFor, valueRange, quantize, samePair } from "./catalogue.mjs";
-import { genomeDigest, frameVersionOf, buildIndividual } from "./species.mjs";
+import { LOCI, resolveCopies, isContinuous, copyValue, binFor, valueRange, quantize, offStepEnds, samePair } from "./catalogue.mjs";
+import { genomeDigest, frameVersionOf, buildIndividual, FRAME_VERSION } from "./species.mjs";
 import { isDoing } from "./guards.mjs";
+import { resolveIndividual } from "./resolve.mjs";
 
 export const SPREAD = 0.10;                     // the nudge: up to this share of the locus range either way (decided)
 export const PENALTY = "AB";                    // the decided form: B (what hides surfaces) with A (the narrowing spread)
@@ -168,9 +169,20 @@ export function relatedness(frame, a, b, lookup = () => null) {
 // --- the cross ----------------------------------------------------------------------------------------
 // The same individual (by id; a bare genome is its own individual) is not a pair; two individuals
 // whose genomes are equal are. A locked pair is compared in either order (samePair, as checkGenome).
+// Two mibi born on different frame versions of a species are not crossed (their genomes carry different loci, and a frame change is not an upgrade of the older one): a plain refusal that
+// names the versions. So is a genome that lacks a locus the frame carries (a copy is never invented), whatever its version; it never reaches the draw.
+const versionOf = (g) => g.frameVersion ?? FRAME_VERSION;
+function missingLoci(frame, g) { return frame.loci.filter((l) => !Array.isArray(g.loci?.[l.id]) || g.loci[l.id].length !== 2).map((l) => l.id); }
+function refuseMissing(frame, g, who) {
+  const missing = missingLoci(frame, g);
+  if (missing.length) throw new Error(`${frame.species.name} ${who} was born on frame version ${versionOf(g)}, which lacks ${missing.length === 1 ? missing[0] : `${missing.length} loci (${missing.slice(0, 3).join(", ")}${missing.length > 3 ? ", ..." : ""})`} of version ${frameVersionOf(frame)}: it cannot be bred with this frame`);
+}
+export const versionRefusal = (frame, a, b) => (versionOf(a) !== versionOf(b) ? `${frame.species.name} born on frame version ${versionOf(a)} cannot be crossed with one born on version ${versionOf(b)}: a cross needs two of the same version` : null);
 function refuse(frame, x, y, lookup = () => null) {
   const a = genomeOf(x), b = genomeOf(y);
   if (a.species !== frame.species.id || b.species !== frame.species.id) throw new Error("a cross needs two of the same species");
+  const split = versionRefusal(frame, a, b); if (split) throw new Error(split);
+  refuseMissing(frame, a, "the first parent"); refuseMissing(frame, b, "the second parent");
   if (x === y || (idOf(x) != null && idOf(x) === idOf(y)) || (idOf(x) == null && idOf(y) == null && a === b)) throw new Error("one mibi is not a pair");
   for (const l of frame.loci) if (l.kind === "locked" && (!samePair(a.loci[l.id], l.copies) || !samePair(b.loci[l.id], l.copies))) throw new Error(`${l.id}: a parent's locked copy differs from the frame (not this species)`);
   const kin = directKin(x, y, lookup);
@@ -206,7 +218,8 @@ function drawLoci(frame, a, b, k, opts) {
       let v = mid + (rng() - 0.5) * (vb - va) * narrow + (rng() * 2 - 1) * spread * (chi - clo) * narrow;
       if (weaken && isDoing(l.id)) v -= weaken * (v - lo); // C: a doing moves toward its weak end, the low end of the pool
       v = quantize(locus, clamp(v, lo, hi), [lo, hi]); // on the blend step, inside the pool
-      loci[l.id] = [v, v];
+      const end = offStepEnds(locus, [lo, hi]).includes(v) ? l.alleles.find((id) => copyValue(locus, id) === v) : undefined;
+      loci[l.id] = end ? [end, end] : [v, v]; // a copy landed on a pool's off-step end is that allele, by name
       continue;
     }
     const pair = [a.loci[l.id][rng() < 0.5 ? 0 : 1], b.loci[l.id][rng() < 0.5 ? 0 : 1]];
@@ -236,6 +249,7 @@ export function shedPod(frame, x, opts = {}) {
   const { rng = Math.random, spread = SPREAD, penalty = PENALTY, strength = 1, kinship = SELF_KINSHIP } = opts;
   const a = genomeOf(x);
   if (a.species !== frame.species.id) throw new Error("a shed pod is of its parent's species");
+  refuseMissing(frame, a, "the parent");
   for (const l of frame.loci) if (l.kind === "locked" && !samePair(a.loci[l.id], l.copies)) throw new Error(`${l.id}: the parent's locked copy differs from the frame (not this species)`);
   const parentKey = valuesKey(frame, a), d = genomeDigest(a), id = idOf(x);
   for (let i = 0; i < SHED_TRIES; i++) {
@@ -272,15 +286,27 @@ export function children(frame, a, b, n, opts = {}) {
 // child can land in, as values and as bins; `firm` when every locus of the trait is certain (the
 // chapters a child is known in at birth); `sure` when the look the child shows is certain whatever it
 // hides or sleeps: one look at weight 1 for a switch, one bin for a blend (never for a sealed trait).
+// A sleeping record (one the frame marks `sleeping`: it sleeps by its owner switch or by a look, `wakesWhen`) is still in its trait, crossed like any other, and the forecast says so:
+// `asleep` maps each such record of the trait to whether it sleeps in [the mother, the father] as they stand, so the breeder sees a sleeping record as carried, not as missing.
 export function forecast(frame, x, y, opts = {}) {
   const { spread = SPREAD, penalty = PENALTY, strength = 1, lookup = () => null } = opts;
   const a = genomeOf(x), b = genomeOf(y);
+  const split = versionRefusal(frame, a, b); if (split) throw new Error(split);
+  refuseMissing(frame, a, "the first parent"); refuseMissing(frame, b, "the second parent");
   const kin = directKin(x, y, lookup);
   if (kin) throw new Error(`direct kin (${kin.rel}): family does not cross`);
   const k = clamp(opts.kinship ?? kinship(x, y, lookup), 0, 0.5);
   const narrow = penalty.includes("A") ? Math.max(0, 1 - 4 * k * strength) : 1;
   const surface = penalty.includes("B") ? clamp(2 * k * strength, 0, 1) : 0;
   const traits = [];
+  const asleepIn = (g) => Object.fromEntries(resolveIndividual(frame, g).facts.map((f) => [f.id, f.state === "asleep"]));
+  let sleepA = null, sleepB = null;
+  const asleepOf = (t) => {
+    const ids = t.loci.filter((id) => frame.loci.find((l) => l.id === id)?.kind === "sleeping");
+    if (!ids.length) return {};
+    sleepA ??= asleepIn(a); sleepB ??= asleepIn(b);
+    return { asleep: Object.fromEntries(ids.map((id) => [id, [sleepA[id], sleepB[id]]])) };
+  };
   for (const ch of frame.chapters) for (const t of ch.traits) {
     const lead = t.loci.find((id) => !isContinuous(LOCI.get(id))) ?? t.loci[0];
     const locus = LOCI.get(lead), row = frame.loci.find((l) => l.id === lead);
@@ -292,7 +318,7 @@ export function forecast(frame, x, y, opts = {}) {
       const w = spread * (chi - clo) * narrow, mid = (va + vb) / 2, half = Math.abs(vb - va) / 2 * narrow;
       const range = [quantize(locus, clamp(mid - half - w, lo, hi), [lo, hi]), quantize(locus, clamp(mid + half + w, lo, hi), [lo, hi])]; // on the step, as the child is
       const bins = [...new Set([binFor(locus, range[0]), binFor(locus, (range[0] + range[1]) / 2), binFor(locus, range[1])])];
-      traits.push({ ...base, kind: "blend", parents: [round6(va), round6(vb)], range, bins, firm: false, sure: bins.length === 1 });
+      traits.push({ ...base, kind: "blend", parents: [round6(va), round6(vb)], range, bins, firm: false, sure: bins.length === 1, ...asleepOf(t) });
       continue;
     }
     // the four pairings, each a quarter; under B a carrier pairing turns homozygous hidden with chance 2k
@@ -314,7 +340,7 @@ export function forecast(frame, x, y, opts = {}) {
     });
     // the sleeping parts ride with the switch: what each seed would wear comes from the other loci of the trait
     const sleeping = t.loci.filter((id) => id !== lead);
-    traits.push({ ...base, kind: "switch", seeds, looks, firm, sure: Object.keys(looks).length === 1, sleeping });
+    traits.push({ ...base, kind: "switch", seeds, looks, firm, sure: Object.keys(looks).length === 1, sleeping, ...asleepOf(t) });
   }
   return { kinship: round6(k), spread, penalty, strength, traits };
 }

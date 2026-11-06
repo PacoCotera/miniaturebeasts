@@ -1,0 +1,4613 @@
+{
+ "schema": "mb-species/1",
+ "id": "S73",
+ "name": "Tuliko",
+ "plan": "biped",
+ "plan_version": 1,
+ "anchors": {
+  "ears": "wide",
+  "tail": "wide",
+  "coat": "wide",
+  "body": "tight",
+  "face": "tight"
+ },
+ "spine": {
+  "ranges": [
+   {
+    "name": "head",
+    "length": 0.93
+   },
+   {
+    "name": "neck",
+    "length": 0.25
+   },
+   {
+    "name": "back",
+    "length": 0.87
+   },
+   {
+    "name": "seat",
+    "length": 0.5
+   },
+   {
+    "name": "tail",
+    "length": null
+   }
+  ],
+  "head_attach": {
+   "a": 0.45,
+   "d": 0.05,
+   "z_under": 1.27
+  },
+  "seat": {
+   "radius": 0.55
+  },
+  "tail": {
+   "length": 1.25,
+   "root": 0.272727273,
+   "tip_r": 0.045,
+   "root_at": [
+    -0.42,
+    0.0,
+    0.72
+   ],
+   "segments": [
+    {
+     "name": "t1",
+     "share": 0.24,
+     "pitch": 180,
+     "r": [
+      0.1317,
+      0.1317
+     ]
+    },
+    {
+     "name": "t2",
+     "share": 0.168,
+     "pitch": 138,
+     "r": [
+      0.1126,
+      0.1126
+     ]
+    },
+    {
+     "name": "t3",
+     "share": 0.16,
+     "pitch": 100,
+     "r": [
+      0.0943,
+      0.0943
+     ]
+    },
+    {
+     "name": "t4",
+     "share": 0.144,
+     "pitch": 164,
+     "r": [
+      0.0779,
+      0.0779
+     ]
+    },
+    {
+     "name": "t5",
+     "share": 0.132,
+     "pitch": 210,
+     "r": [
+      0.0628,
+      0.0628
+     ]
+    },
+    {
+     "name": "tip",
+     "share": 0.156,
+     "pitch": 275,
+     "r": [
+      0.045,
+      0.045
+     ],
+     "role": "end"
+    }
+   ],
+   "fillet": 1.4,
+   "curl": {
+    "turns": 0.375,
+    "spread": "linear over bends 1-5",
+    "clip": "room rule (A s3.3 step 1): the curl gene is clipped, never the radius"
+   },
+   "taper": {
+    "note": "pass 3: the tail reads as ONE tube, gently thinning from the rump to the curl: a linear taper r = end + (root - end)(1 - u) over the arc fraction u of the joints (root radius at most 1.3 x the mid-tail radius; the old 0.25 / 0.17 / 0.15 / 0.115 steps read as a funnel, a pinch and a swelling); the lantern bulb is the tip family's own profile on the last 0.26 H",
+    "root": 0.15,
+    "end": 0.045,
+    "p": 1.0
+   },
+   "end": {
+    "kind": "dome",
+    "cap": "half-grid-1x2",
+    "tip_ring": 0.6
+   },
+   "note": "the tail range of the spine: a shepherd's crook. The stem rises behind the back, the hook turns away from the body and the bulb (the tip family's radius profile on the last 0.26 H) hangs, its tip axis within 30 degrees of straight down. Pass 3: the root sits at z 0.72 (was 0.66) and the first segment runs level (180 degrees, was 195 down-back), with a fuller rump (head_profile.rump_gain) and a tighter bend radius at the seat (spine.body_r), so the tail leaves the upper back and the lower back is rounder; a straight ramp from the seat's bottom to the tail's underside still remains in profile (the loft's bend rings), see the pass 3 report."
+  },
+  "loft": {
+   "label": "trunk",
+   "ring": 16,
+   "edge": 0.14,
+   "path": {
+    "plane": "xz",
+    "fillet": 1.25,
+    "key": "z",
+    "N": "back",
+    "joints": [
+     {
+      "name": "seat",
+      "at": [
+       0.0,
+       0.18
+      ]
+     },
+     {
+      "name": "belly",
+      "at": [
+       0.0,
+       0.72
+      ]
+     },
+     {
+      "name": "waist",
+      "at": [
+       0.0,
+       1.17
+      ]
+     },
+     {
+      "name": "K",
+      "at": [
+       0.0,
+       1.68
+      ]
+     },
+     {
+      "name": "crown",
+      "at": [
+       0.0,
+       2.2
+      ]
+     }
+    ]
+   },
+   "section": {
+    "kind": "egg",
+    "exp": 2.0,
+    "axes": [
+     "back",
+     "side",
+     "front"
+    ],
+    "stations": [
+     [
+      0.18,
+      [
+       0.0358,
+       0.04,
+       0.0362
+      ]
+     ],
+     [
+      0.185,
+      [
+       0.0745,
+       0.0832,
+       0.0753
+      ]
+     ],
+     [
+      0.19,
+      [
+       0.1051,
+       0.1174,
+       0.1063
+      ]
+     ],
+     [
+      0.2,
+      [
+       0.1479,
+       0.1652,
+       0.1495
+      ]
+     ],
+     [
+      0.215,
+      [
+       0.1941,
+       0.2169,
+       0.1963
+      ]
+     ],
+     [
+      0.23,
+      [
+       0.2308,
+       0.2572,
+       0.2327
+      ]
+     ],
+     [
+      0.25,
+      [
+       0.2755,
+       0.3011,
+       0.2725
+      ]
+     ],
+     [
+      0.28,
+      [
+       0.3414,
+       0.354,
+       0.3204
+      ]
+     ],
+     [
+      0.32,
+      [
+       0.4306,
+       0.4094,
+       0.3705
+      ]
+     ],
+     [
+      0.36,
+      [
+       0.5121,
+       0.4533,
+       0.4103
+      ]
+     ],
+     [
+      0.4,
+      [
+       0.5687,
+       0.4888,
+       0.4424
+      ]
+     ],
+     [
+      0.44,
+      [
+       0.6022,
+       0.5176,
+       0.4684
+      ]
+     ],
+     [
+      0.48,
+      [
+       0.6292,
+       0.5407,
+       0.4894
+      ]
+     ],
+     [
+      0.52,
+      [
+       0.6506,
+       0.5592,
+       0.506
+      ]
+     ],
+     [
+      0.56,
+      [
+       0.6545,
+       0.5741,
+       0.5195
+      ]
+     ],
+     [
+      0.6,
+      [
+       0.6343,
+       0.5859,
+       0.5302
+      ]
+     ],
+     [
+      0.64,
+      [
+       0.6009,
+       0.5943,
+       0.5378
+      ]
+     ],
+     [
+      0.68,
+      [
+       0.5657,
+       0.5992,
+       0.5424
+      ]
+     ],
+     [
+      0.72,
+      [
+       0.5416,
+       0.601,
+       0.5439
+      ]
+     ],
+     [
+      0.76,
+      [
+       0.537,
+       0.6001,
+       0.5473
+      ]
+     ],
+     [
+      0.8,
+      [
+       0.5334,
+       0.5959,
+       0.5528
+      ]
+     ],
+     [
+      0.84,
+      [
+       0.5266,
+       0.5884,
+       0.5549
+      ]
+     ],
+     [
+      0.88,
+      [
+       0.5166,
+       0.5773,
+       0.5485
+      ]
+     ],
+     [
+      0.92,
+      [
+       0.5042,
+       0.5633,
+       0.5353
+      ]
+     ],
+     [
+      0.96,
+      [
+       0.489,
+       0.5464,
+       0.5192
+      ]
+     ],
+     [
+      1.0,
+      [
+       0.471,
+       0.5263,
+       0.5001
+      ]
+     ],
+     [
+      1.04,
+      [
+       0.4461,
+       0.4984,
+       0.4511
+      ]
+     ],
+     [
+      1.08,
+      [
+       0.4244,
+       0.4742,
+       0.4291
+      ]
+     ],
+     [
+      1.12,
+      [
+       0.4073,
+       0.4551,
+       0.4119
+      ]
+     ],
+     [
+      1.16,
+      [
+       0.3961,
+       0.4426,
+       0.4006
+      ]
+     ],
+     [
+      1.2,
+      [
+       0.3921,
+       0.4381,
+       0.3965
+      ]
+     ],
+     [
+      1.24,
+      [
+       0.3948,
+       0.4411,
+       0.3992
+      ]
+     ],
+     [
+      1.28,
+      [
+       0.4128,
+       0.4612,
+       0.4174
+      ]
+     ],
+     [
+      1.32,
+      [
+       0.4376,
+       0.4908,
+       0.4442
+      ]
+     ],
+     [
+      1.36,
+      [
+       0.4614,
+       0.5223,
+       0.4727
+      ]
+     ],
+     [
+      1.4,
+      [
+       0.482,
+       0.5518,
+       0.4994
+      ]
+     ],
+     [
+      1.44,
+      [
+       0.499,
+       0.5779,
+       0.523
+      ]
+     ],
+     [
+      1.48,
+      [
+       0.5132,
+       0.6,
+       0.543
+      ]
+     ],
+     [
+      1.52,
+      [
+       0.5254,
+       0.6179,
+       0.5609
+      ]
+     ],
+     [
+      1.56,
+      [
+       0.5369,
+       0.6318,
+       0.5852
+      ]
+     ],
+     [
+      1.6,
+      [
+       0.5456,
+       0.6416,
+       0.614
+      ]
+     ],
+     [
+      1.64,
+      [
+       0.5509,
+       0.6474,
+       0.6431
+      ]
+     ],
+     [
+      1.68,
+      [
+       0.5526,
+       0.6494,
+       0.6687
+      ]
+     ],
+     [
+      1.72,
+      [
+       0.5507,
+       0.6473,
+       0.6867
+      ]
+     ],
+     [
+      1.76,
+      [
+       0.5452,
+       0.641,
+       0.6928
+      ]
+     ],
+     [
+      1.8,
+      [
+       0.5359,
+       0.6304,
+       0.6848
+      ]
+     ],
+     [
+      1.84,
+      [
+       0.5245,
+       0.6152,
+       0.6711
+      ]
+     ],
+     [
+      1.88,
+      [
+       0.51,
+       0.5952,
+       0.6529
+      ]
+     ],
+     [
+      1.92,
+      [
+       0.4919,
+       0.5697,
+       0.6299
+      ]
+     ],
+     [
+      1.96,
+      [
+       0.4685,
+       0.538,
+       0.6011
+      ]
+     ],
+     [
+      2.0,
+      [
+       0.4385,
+       0.499,
+       0.5659
+      ]
+     ],
+     [
+      2.04,
+      [
+       0.3994,
+       0.4507,
+       0.5178
+      ]
+     ],
+     [
+      2.08,
+      [
+       0.3583,
+       0.4015,
+       0.4451
+      ]
+     ],
+     [
+      2.14,
+      [
+       0.265,
+       0.2961,
+       0.2918
+      ]
+     ],
+     [
+      2.16,
+      [
+       0.2186,
+       0.2442,
+       0.2304
+      ]
+     ],
+     [
+      2.175,
+      [
+       0.1741,
+       0.1945,
+       0.1785
+      ]
+     ],
+     [
+      2.185,
+      [
+       0.1355,
+       0.1514,
+       0.1373
+      ]
+     ],
+     [
+      2.193,
+      [
+       0.0929,
+       0.1038,
+       0.094
+      ]
+     ],
+     [
+      2.2,
+      [
+       0.0358,
+       0.04,
+       0.0362
+      ]
+     ]
+    ],
+    "source": "sampled from two soft lobes (superellipse p 2.2, body z .68 h .50 down .64 up R .59; head z 1.68 h .60 down .52 up R .635) joined by a smooth union (n 4); back .895 and front .905 of the side radius",
+    "stations_base": [
+     [
+      0.18,
+      [
+       0.0358,
+       0.04,
+       0.0362
+      ]
+     ],
+     [
+      0.185,
+      [
+       0.0745,
+       0.0832,
+       0.0753
+      ]
+     ],
+     [
+      0.19,
+      [
+       0.1051,
+       0.1174,
+       0.1063
+      ]
+     ],
+     [
+      0.2,
+      [
+       0.1479,
+       0.1652,
+       0.1495
+      ]
+     ],
+     [
+      0.215,
+      [
+       0.1941,
+       0.2169,
+       0.1963
+      ]
+     ],
+     [
+      0.23,
+      [
+       0.2302,
+       0.2572,
+       0.2327
+      ]
+     ],
+     [
+      0.25,
+      [
+       0.2695,
+       0.3011,
+       0.2725
+      ]
+     ],
+     [
+      0.28,
+      [
+       0.3168,
+       0.354,
+       0.3204
+      ]
+     ],
+     [
+      0.32,
+      [
+       0.3665,
+       0.4094,
+       0.3705
+      ]
+     ],
+     [
+      0.36,
+      [
+       0.4057,
+       0.4533,
+       0.4103
+      ]
+     ],
+     [
+      0.4,
+      [
+       0.4375,
+       0.4888,
+       0.4424
+      ]
+     ],
+     [
+      0.44,
+      [
+       0.4632,
+       0.5176,
+       0.4684
+      ]
+     ],
+     [
+      0.48,
+      [
+       0.484,
+       0.5407,
+       0.4894
+      ]
+     ],
+     [
+      0.52,
+      [
+       0.5003,
+       0.559,
+       0.5059
+      ]
+     ],
+     [
+      0.56,
+      [
+       0.5126,
+       0.5728,
+       0.5183
+      ]
+     ],
+     [
+      0.6,
+      [
+       0.5212,
+       0.5824,
+       0.5271
+      ]
+     ],
+     [
+      0.64,
+      [
+       0.5264,
+       0.5881,
+       0.5322
+      ]
+     ],
+     [
+      0.68,
+      [
+       0.5281,
+       0.59,
+       0.534
+      ]
+     ],
+     [
+      0.72,
+      [
+       0.527,
+       0.5888,
+       0.5329
+      ]
+     ],
+     [
+      0.76,
+      [
+       0.5239,
+       0.5854,
+       0.5298
+      ]
+     ],
+     [
+      0.8,
+      [
+       0.5187,
+       0.5795,
+       0.5245
+      ]
+     ],
+     [
+      0.84,
+      [
+       0.5113,
+       0.5713,
+       0.517
+      ]
+     ],
+     [
+      0.88,
+      [
+       0.5016,
+       0.5605,
+       0.5072
+      ]
+     ],
+     [
+      0.92,
+      [
+       0.4895,
+       0.5469,
+       0.495
+      ]
+     ],
+     [
+      0.96,
+      [
+       0.4748,
+       0.5305,
+       0.4801
+      ]
+     ],
+     [
+      1.0,
+      [
+       0.4573,
+       0.511,
+       0.4624
+      ]
+     ],
+     [
+      1.04,
+      [
+       0.4366,
+       0.4878,
+       0.4415
+      ]
+     ],
+     [
+      1.08,
+      [
+       0.4122,
+       0.4606,
+       0.4168
+      ]
+     ],
+     [
+      1.12,
+      [
+       0.3909,
+       0.4368,
+       0.3953
+      ]
+     ],
+     [
+      1.16,
+      [
+       0.3822,
+       0.4271,
+       0.3865
+      ]
+     ],
+     [
+      1.2,
+      [
+       0.3873,
+       0.4327,
+       0.3916
+      ]
+     ],
+     [
+      1.24,
+      [
+       0.4037,
+       0.4511,
+       0.4082
+      ]
+     ],
+     [
+      1.28,
+      [
+       0.4273,
+       0.4774,
+       0.4321
+      ]
+     ],
+     [
+      1.32,
+      [
+       0.4547,
+       0.508,
+       0.4597
+      ]
+     ],
+     [
+      1.36,
+      [
+       0.4807,
+       0.5371,
+       0.4861
+      ]
+     ],
+     [
+      1.4,
+      [
+       0.5026,
+       0.5616,
+       0.5083
+      ]
+     ],
+     [
+      1.44,
+      [
+       0.5209,
+       0.582,
+       0.5267
+      ]
+     ],
+     [
+      1.48,
+      [
+       0.5358,
+       0.5987,
+       0.5418
+      ]
+     ],
+     [
+      1.52,
+      [
+       0.5477,
+       0.612,
+       0.5539
+      ]
+     ],
+     [
+      1.56,
+      [
+       0.5568,
+       0.6222,
+       0.5631
+      ]
+     ],
+     [
+      1.6,
+      [
+       0.5633,
+       0.6293,
+       0.5695
+      ]
+     ],
+     [
+      1.64,
+      [
+       0.5671,
+       0.6336,
+       0.5734
+      ]
+     ],
+     [
+      1.68,
+      [
+       0.5683,
+       0.635,
+       0.5747
+      ]
+     ],
+     [
+      1.72,
+      [
+       0.5666,
+       0.6331,
+       0.573
+      ]
+     ],
+     [
+      1.76,
+      [
+       0.5616,
+       0.6274,
+       0.5678
+      ]
+     ],
+     [
+      1.8,
+      [
+       0.553,
+       0.6179,
+       0.5592
+      ]
+     ],
+     [
+      1.84,
+      [
+       0.5408,
+       0.6042,
+       0.5468
+      ]
+     ],
+     [
+      1.88,
+      [
+       0.5246,
+       0.5862,
+       0.5305
+      ]
+     ],
+     [
+      1.92,
+      [
+       0.5042,
+       0.5633,
+       0.5098
+      ]
+     ],
+     [
+      1.96,
+      [
+       0.4789,
+       0.5351,
+       0.4842
+      ]
+     ],
+     [
+      2.0,
+      [
+       0.448,
+       0.5005,
+       0.453
+      ]
+     ],
+     [
+      2.04,
+      [
+       0.4101,
+       0.4582,
+       0.4147
+      ]
+     ],
+     [
+      2.08,
+      [
+       0.3631,
+       0.4057,
+       0.3672
+      ]
+     ],
+     [
+      2.14,
+      [
+       0.265,
+       0.2961,
+       0.268
+      ]
+     ],
+     [
+      2.16,
+      [
+       0.2186,
+       0.2442,
+       0.221
+      ]
+     ],
+     [
+      2.175,
+      [
+       0.1741,
+       0.1945,
+       0.176
+      ]
+     ],
+     [
+      2.185,
+      [
+       0.1355,
+       0.1514,
+       0.137
+      ]
+     ],
+     [
+      2.193,
+      [
+       0.0929,
+       0.1038,
+       0.094
+      ]
+     ],
+     [
+      2.2,
+      [
+       0.0358,
+       0.04,
+       0.0362
+      ]
+     ]
+    ]
+   },
+   "rings_z": [
+    1.24,
+    1.32,
+    1.4,
+    1.49,
+    1.58,
+    1.68,
+    1.8,
+    1.93,
+    2.04,
+    2.12
+   ],
+   "regions": {
+    "body": [
+     0.18,
+     1.17
+    ],
+    "head": [
+     1.17,
+     2.2
+    ],
+    "K": [
+     0.0,
+     0.0,
+     1.68
+    ]
+   },
+   "masses": [
+    {
+     "name": "belly",
+     "z": 0.65,
+     "around": 0.95,
+     "rho": 0.6,
+     "ds": [
+      0.45,
+      0.45
+     ],
+     "da": 0.55
+    },
+    {
+     "name": "cheek",
+     "z": 1.48,
+     "around": 0.78,
+     "rho": 0.61,
+     "ds": [
+      0.3,
+      0.3
+     ],
+     "da": 0.34
+    },
+    {
+     "name": "nose",
+     "z": 1.52,
+     "around": 1.0,
+     "rho": 0.592,
+     "ds": [
+      0.12,
+      0.12
+     ],
+     "da": 0.22
+    }
+   ],
+   "column_keys": {
+    "leg": {
+     "u": 1.45,
+     "col": 6,
+     "around": 0.73
+    },
+    "ear": {
+     "station": 1.93,
+     "col": 3,
+     "around": 0.36
+    },
+    "arm": {
+     "u": 1.22,
+     "col": 6,
+     "around": 0.73
+    }
+   },
+   "caps": {
+    "crown": "grid-2x4",
+    "tip": "grid-2x4",
+    "cap_profile": "section"
+   },
+   "column_layouts": {
+    "body": [
+     0,
+     0.12,
+     0.24,
+     0.36,
+     0.48,
+     0.6,
+     0.73,
+     0.865,
+     1.0
+    ],
+    "head": [
+     0,
+     0.12,
+     0.24,
+     0.36,
+     0.49,
+     0.62,
+     0.745,
+     0.87,
+     1.0
+    ],
+    "blend": [
+     0.72,
+     1.5
+    ]
+   },
+   "spine": {
+    "note": "one path and one loft from the crown through the head, neck, back and seat to the lantern stalk; neck, back, seat and tail are named arc-length ranges on it (labels for the genes, the rig and the Parts colours), not parts. The sections are cast from the path onto the smooth union of the gourd lobes and the tail's radius profile. The spine leans back from the waist through the seat in two gentle bends (joints with fillets) and leaves the back of the seat as the tail. Pass 3: the tail's body union fillet k is 0.12 (was 0.14): short, so the join adds no volume (no knob under the root); with the thin tube the root flows out of the seat without a funnel. Pass 3: the named ranges follow the head's attachment: the head range ends at the spine's end (the head's underside, z 1.27), the neck range is the concave band under it (z 1.27 to 1.02), then back and seat. Pass 3 diagnosis of the 'ramp' in profile: between the last full body ring and the first tail-circle ring (0.16 H apart, blended over 0.30) the loft shrinks from the rump's size to the tail's, one straight cone from the seat's bottom to the tail root; rings every 0.08 H near the root with a 0.16 blend (root_blend, root_ring_gap) let the buttock bulge before it turns into the tail. The knob under the root was the first tail-circle ring: its underside vertex is a blend between the thin tail circle and the far cast surface of the rump (a corner in the cage); the root_smooth pass relaxes the rings round the root.",
+    "body": [
+     [
+      0.0,
+      2.2
+     ],
+     [
+      0.0,
+      1.68
+     ],
+     [
+      0.0,
+      1.17
+     ],
+     [
+      -0.16,
+      0.9
+     ]
+    ],
+    "body_r": [
+     0.4,
+     0.4,
+     0.35,
+     0.3
+    ],
+    "fillet": 1.25,
+    "union_k": 0.12,
+    "ring_gap": 0.16,
+    "cap_depth": 0.8,
+    "bend_n": 0,
+    "ring_gap_tip": 0.06,
+    "thin": {
+     "enabled": true,
+     "note": "V5, on since V8: the stalk between the tip and the cut that stations keeps (the root's s minus 0.5 H) is lofted on 8 columns (5 half columns) instead of 16: a ring is thin when its radius is under r_max and it lies more than after_bulb behind the tip's end; one all-quad band (3 quads for each 4 columns) turns 16 into 8 at each end",
+     "r_max": 0.13,
+     "after_bulb": 0.03,
+     "ratio_max": 1.3,
+     "gap_min": 0.045,
+     "end": 0.6
+    },
+    "relax_back": {
+     "step": 0.25,
+     "note": "V10: the tangential relax (6 steps of 0.5 along the surface toward the mean of the neighbours) takes this gentler step on the back's vertices (the range's u between its ends). The smoothing evens the edge lengths along the loft but widens the spread of a ring's edges; with the stalk on 8 columns it moved nine wild genomes' back from 10.0-10.9 round against the limit 10 (the type's 7.83). At 0.25 those nine are at 9.0-9.6; the neck, which needs the full step (at 0.35 everywhere it fails along), is untouched"
+    },
+    "root_blend": 0.16,
+    "root_ring_gap": 0.11,
+    "root_smooth": {
+     "before": 0.15,
+     "after": 0.25,
+     "iters": 20,
+     "hops": 4,
+     "radius": 0.3
+    },
+    "root_flare": {
+     "E": 1.6,
+     "from": 0.5,
+     "to": 0.05
+    }
+   },
+   "junction_keep_above": 1.16,
+   "head_profile": {
+    "note": "headshape.py: the head ball's lower half, the neck band and the shoulders (the table section.stations is rebuilt from section.stations_base by these numbers). d is the FRONT growth as a fraction of the head's depth (the face window opens at the equator so the jaw stays round); the back radius gives up only a quarter of it (back_share), so the skull stays a full dome behind the neck. The head's centre ends up about 0.05 of its depth forward of the spine axis. Pass 4: the cause of the band of flattened curvature round the head at the eye line was the head's two halves: the lower half a superellipse of exponent 2.4 (flat sides about the equator, curvature falling to half) and the upper half the base table, which left the equator at a slope (a kink at z 1.68: second difference -1.25, -10.6, +6.6). Both halves are now ellipses about the same equator (p 2.0, p_up 2.0), so the curvature runs -1.9, -2.1, -2.6 through it.",
+    "R_scale": 0.965,
+    "chest_gain": 0.03,
+    "d": 0.1,
+    "back_share": 0.25,
+    "shift_lo_front": [
+     1.5,
+     1.78
+    ],
+    "shift_hi_front": [
+     2.02,
+     2.19
+    ],
+    "neck_ratio": 0.715,
+    "rump_gain": 0.3,
+    "chest_front": 0.05,
+    "p": 2.0,
+    "p_up": 2.0
+   },
+   "junction_radius": 0.3
+  }
+ },
+ "skeleton": {
+  "note": "the skeleton's girdles (rig.py): a chest joint on the spine at the top of the back range, a short clavicle to each shoulder joint (the arm's root joint, where its hard-join shell sits); a pelvis joint in the seat range, a short hip bone to each hip joint (the leg's root joint)",
+  "chest": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "pelvis": [
+   0.0,
+   0.0,
+   0.5
+  ],
+  "shoulder": [
+   0.243,
+   0.286,
+   1.033
+  ],
+  "hip": "leg.L.joints[0].at"
+ },
+ "parts": [
+  {
+   "id": "leg.L",
+   "kind": "limb",
+   "parent": "torso",
+   "label": "limb",
+   "socket": {
+    "kind": "patch",
+    "col": 5,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.02,
+    "transition": 1,
+    "match": "distance",
+    "u": 1.45,
+    "gap": 0.05,
+    "join": "soft"
+   },
+   "fillet": 1.25,
+   "end": {
+    "kind": "bead-foot",
+    "height": 0.12,
+    "flat": true,
+    "toes": 3,
+    "toe": 0.1,
+    "toe-mid": 1.1,
+    "turn": 10,
+    "band": 0.12
+   },
+   "plane": {
+    "yaw": 90
+   },
+   "note": "Pass 3: the column is 0.20 + 0.12 + 0.165 = 0.485 H, knee -94 and ankle -86 degrees so the column is not exactly straight (a straight column degenerates the floor solver), exactly the hip's height: the old 0.55 put the sole 0.07 H below the floor and the floor solver raised the hip and leaned the last segment 10 degrees (leg 4.2 degrees off vertical, hip-to-sole 0.55 H).",
+   "root": {
+    "name": "hip",
+    "at": [
+     0.1,
+     0.36,
+     0.48
+    ],
+    "r": [
+     0.25,
+     0.26
+    ],
+    "role": "mass"
+   },
+   "chain": [
+    {
+     "joint": "knee",
+     "len": 0.2,
+     "pitch": -94,
+     "r": [
+      0.23,
+      0.24
+     ],
+     "apex": "fwd"
+    },
+    {
+     "joint": "ankle",
+     "len": 0.12,
+     "pitch": -86,
+     "r": [
+      0.22,
+      0.23
+     ],
+     "apex": "back"
+    },
+    {
+     "joint": "sole",
+     "len": 0.165,
+     "pitch": -90,
+     "r": [
+      0.22,
+      0.26
+     ],
+     "role": "end"
+    }
+   ],
+   "topology": {
+    "ring": 8,
+    "edge": 0.1
+   }
+  },
+  {
+   "id": "ear.L",
+   "kind": "appendage",
+   "parent": "torso",
+   "label": "appendage",
+   "socket": {
+    "kind": "patch",
+    "station": 1.93,
+    "col": 3,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.005,
+    "transition": 3,
+    "join": "hard",
+    "flare": 0.25,
+    "bury": 0.05,
+    "note": "pass 3: the ears use the HARD join (a closed shell sunk 0.05 H, tagged as a crease, keeping its cup and its inner-ear colour). A SOFT ear join fails the footprint rule (0.65-0.92 against the needed 1.5-1.8, a pinch): it needs a wider socket patch on the loft (future framework work), so the type does not use it."
+   },
+   "families": {
+    "prick": {
+     "plane": {
+      "yaw": 106
+     },
+     "joints": [
+      {
+       "name": "root",
+       "at": [
+        -0.16,
+        0.42,
+        1.84
+       ],
+       "r": [
+        0.12,
+        0.3
+       ],
+       "role": "mass"
+      },
+      {
+       "name": "base",
+       "len": 0.26,
+       "pitch": 60,
+       "r": [
+        0.09,
+        0.21
+       ]
+      },
+      {
+       "name": "tip",
+       "len": 0.24,
+       "pitch": 70,
+       "r": [
+        0.03,
+        0.05
+       ],
+       "role": "end"
+      }
+     ],
+     "cup": 0.05
+    },
+    "lop": {
+     "plane": {
+      "yaw": 100
+     },
+     "joints": [
+      {
+       "name": "root",
+       "at": [
+        -0.12,
+        0.56,
+        1.8
+       ],
+       "r": [
+        0.06,
+        0.18
+       ],
+       "role": "mass"
+      },
+      {
+       "name": "fold",
+       "len": 0.18,
+       "pitch": -20,
+       "r": [
+        0.06,
+        0.22
+       ]
+      },
+      {
+       "name": "drop",
+       "len": 0.22,
+       "pitch": -40,
+       "r": [
+        0.05,
+        0.2
+       ]
+      },
+      {
+       "name": "tip",
+       "len": 0.18,
+       "pitch": -70,
+       "r": [
+        0.04,
+        0.12
+       ],
+       "role": "end"
+      }
+     ],
+     "cup": 0.04
+    },
+    "nub": {
+     "plane": {
+      "yaw": 95
+     },
+     "joints": [
+      {
+       "name": "root",
+       "at": [
+        -0.2,
+        0.38,
+        1.86
+       ],
+       "r": [
+        0.11,
+        0.22
+       ],
+       "role": "mass"
+      },
+      {
+       "name": "cup",
+       "len": 0.3,
+       "pitch": 50,
+       "r": [
+        0.1,
+        0.2
+       ]
+      },
+      {
+       "name": "tip",
+       "len": 0.12,
+       "pitch": 65,
+       "r": [
+        0.08,
+        0.14
+       ],
+       "role": "end"
+      }
+     ],
+     "cup": 0.04
+    },
+    "frond": {
+     "sit": true,
+     "tubes": [
+      {
+       "yaw": 80,
+       "pitch": 25,
+       "len": 0.3,
+       "r": [
+        0.08,
+        0.06,
+        0.04
+       ],
+       "curl": -40
+      },
+      {
+       "yaw": 105,
+       "pitch": 38,
+       "len": 0.34,
+       "r": [
+        0.08,
+        0.06,
+        0.04
+       ],
+       "curl": -50
+      },
+      {
+       "yaw": 130,
+       "pitch": 30,
+       "len": 0.3,
+       "r": [
+        0.08,
+        0.06,
+        0.04
+       ],
+       "curl": -40
+      }
+     ],
+     "ring": 6,
+     "sink": 0.3,
+     "tip": "ball",
+     "tip_r": 0.05
+    }
+   },
+   "default": "prick",
+   "mirror": "lateral",
+   "family": "@body.ear-family",
+   "fillet": 1.6,
+   "end": {
+    "kind": "dome",
+    "cap": "grid-2x2",
+    "tip_ring": 0.6,
+    "tip_ring_rows": 1
+   },
+   "topology": {
+    "ring": 8,
+    "edge": 0.1
+   }
+  },
+  {
+   "id": "arm.L",
+   "kind": "appendage",
+   "parent": "torso",
+   "label": "appendage",
+   "socket": {
+    "kind": "patch",
+    "u": 1.22,
+    "col": 6,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.01,
+    "flare": 0.15,
+    "gap": 0.04,
+    "inside_frac": 0.3,
+    "join": "hard",
+    "bury": 0.05
+   },
+   "families": {
+    "nub": {
+     "plane": {
+      "yaw": 30
+     },
+     "joints": [
+      {
+       "name": "root",
+       "at": [
+        0.243,
+        0.286,
+        1.033
+       ],
+       "r": [
+        0.08,
+        0.0615
+       ],
+       "role": "mass"
+      },
+      {
+       "name": "sock",
+       "len": 0.12,
+       "pitch": -10,
+       "r": [
+        0.08,
+        0.0615
+       ]
+      },
+      {
+       "name": "upper",
+       "len": 0.21,
+       "pitch": -56,
+       "r": [
+        0.088,
+        0.068
+       ]
+      },
+      {
+       "name": "tip",
+       "len": 0.21,
+       "pitch": -54.5,
+       "r": [
+        0.097,
+        0.0745
+       ],
+       "role": "end"
+      }
+     ],
+     "note": "pass 4: a mitten, 0.34 H from the skin to the tip (measured along the arm's own path), 0.17 H across at the root and 0.176 at the palm (width : depth 1.3 : 1, the wide side along the flank), a rounded end; pitched 31 degrees forward of vertical and turned out 17 degrees; the hard-join shell's root joint (the shoulder) sits inside the chest 0.17 H under the neck band, the first segment runs almost level out to the skin and the visible arm runs along the straight tail of the path",
+     "visible_len": 0.312,
+     "measured_len": 0.34
+    }
+   },
+   "default": "nub",
+   "mirror": "lateral",
+   "fillet": 1.4,
+   "end": {
+    "kind": "dome",
+    "cap": "grid-2x2",
+    "tip_ring": 0.6,
+    "tip_ring_rows": 1
+   },
+   "topology": {
+    "ring": 8,
+    "edge": 0.1
+   }
+  }
+ ],
+ "sockets": [
+  {
+   "id": "ear.L",
+   "spec": {
+    "on": "torso",
+    "station": 1.93,
+    "around": 0.36,
+    "families": [
+     "prick",
+     "lop",
+     "nub",
+     "frond"
+    ],
+    "default": "prick",
+    "required": true
+   }
+  },
+  {
+   "id": "tail.tip",
+   "spec": {
+    "on": "tail",
+    "at": "end",
+    "frame": "path-tangent",
+    "families": [
+     "plain",
+     "tuft",
+     "lantern"
+    ],
+    "default": "lantern",
+    "min_tail": {
+     "note": "a large tip may not come within its own size of the seat (V3c): the tail length gene, a multiplier, is held at least base + slope x (tip radius - from_radius), never above cap; the type's lantern (radius 0.10) is not held",
+     "base": 0.8,
+     "from_radius": 0.105,
+     "slope": 9.0,
+     "cap": 1.0
+    },
+    "shapes": {
+     "plain": {
+      "kind": "profile",
+      "len": 0.14,
+      "width": 0.13,
+      "u_m": 0.55
+     },
+     "tuft": {
+      "kind": "profile",
+      "len": 0.26,
+      "width": 0.22,
+      "u_m": 0.5,
+      "ring0": 0.04,
+      "ring_turn_max": 20,
+      "max_size": 1.1
+     },
+     "lantern": {
+      "kind": "profile",
+      "len": 0.26,
+      "width": 0.2,
+      "u_m": 0.5,
+      "emission": "glow"
+     }
+    }
+   }
+  },
+  {
+   "id": "crown",
+   "spec": {
+    "on": "torso",
+    "cap": "crown",
+    "frame": "cap-normal",
+    "families": [
+     "none",
+     "cowlick"
+    ],
+    "default": "none",
+    "shapes": {
+     "cowlick": {
+      "kind": "tube",
+      "ring": 6,
+      "len": 0.3,
+      "r": [
+       0.06,
+       0.04,
+       0.02
+      ],
+      "pitch": 70,
+      "curl": -220,
+      "sink": 0.3
+     }
+    }
+   }
+  }
+ ],
+ "face": {
+  "kind": "decal",
+  "on": "torso",
+  "island": "loft",
+  "eyes": {
+   "station": 1.68,
+   "around": 0.83,
+   "r": 0.15,
+   "kinds": [
+    "round",
+    "sleepy"
+   ],
+   "default": "round",
+   "iris": {
+    "ring": 0.74,
+    "pupil": 0.46,
+    "value": 0.7
+   },
+   "catch": [
+    {
+     "at": [
+      -0.35,
+      0.4
+     ],
+     "r": 0.3
+    },
+    {
+     "at": [
+      0.38,
+      -0.36
+     ],
+     "r": 0.12
+    }
+   ],
+   "frames": [
+    "open",
+    "half",
+    "closed"
+   ]
+  },
+  "mouth": {
+   "station": 1.52,
+   "around": 1.0,
+   "width": 0.2,
+   "expressions": [
+    "content",
+    "smile",
+    "o",
+    "flat"
+   ],
+   "default": "smile"
+  },
+  "cheeks": {
+   "station": 1.56,
+   "around": 0.72,
+   "r": 0.075,
+   "alpha": 0.3
+  }
+ },
+ "coat": {
+  "zones": {
+   "belly": {
+    "part": "torso",
+    "around_min": 0.7,
+    "z": [
+     0.26,
+     1.1
+    ],
+    "soft": 0.06,
+    "type": {
+     "on": true,
+     "reach": 0.3
+    }
+   },
+   "face": {
+    "part": "torso",
+    "centre": {
+     "station": 1.48,
+     "around": 1.0
+    },
+    "r": [
+     0.16,
+     0.3
+    ],
+    "soft": 0.05,
+    "type": {
+     "on": false
+    }
+   },
+   "ear-inner": {
+    "part": "ear",
+    "side": "front",
+    "inset": 0.025,
+    "soft": 0.03,
+    "type": {
+     "on": true
+    }
+   },
+   "points": {
+    "ends": [
+     "tail tip",
+     "feet"
+    ],
+    "reach": 0.22,
+    "type": {
+     "on": false,
+     "strength": 0.6
+    }
+   },
+   "socks": {
+    "part": "leg",
+    "from_sole": 0.16,
+    "soft": 0.04,
+    "type": {
+     "on": false
+    }
+   },
+   "tail-bands": {
+    "part": "tail",
+    "lambda": 0.3,
+    "c": 0.35,
+    "type": {
+     "on": false
+    }
+   },
+   "spots": {
+    "host": "torso back (around <= 0.5)",
+    "size": [
+     0.07,
+     0.14
+    ],
+    "density": 0.5,
+    "source": "voronoi",
+    "type": {
+     "on": false
+    }
+   },
+   "cap": {
+    "part": "torso",
+    "z_min": 1.96,
+    "soft": 0.08,
+    "type": {
+     "on": false
+    }
+   },
+   "rd": {
+    "z_max": [
+     1.05,
+     1.18
+    ],
+    "front_clear": [
+     0.35,
+     0.55
+    ],
+    "cap": 0.55,
+    "repeat": 2,
+    "value": 0.75
+   }
+  },
+  "layouts": {
+   "plain": [
+    "belly",
+    "ear-inner"
+   ],
+   "masked": [
+    "belly",
+    "ear-inner",
+    "face"
+   ],
+   "points": [
+    "belly",
+    "ear-inner",
+    "points"
+   ],
+   "banded": [
+    "belly",
+    "ear-inner",
+    "tail-bands",
+    "socks"
+   ],
+   "spotted": [
+    "belly",
+    "ear-inner",
+    "spots"
+   ],
+   "capped": [
+    "belly",
+    "ear-inner",
+    "cap",
+    "socks"
+   ]
+  },
+  "palettes": {
+   "parts": [
+    "coat",
+    "belly",
+    "ear-inner",
+    "pad",
+    "mark",
+    "nose",
+    "glow"
+   ],
+   "accents": {
+    "eye": [
+     34,
+     26,
+     40
+    ],
+    "catch": [
+     255,
+     255,
+     255
+    ],
+    "mouth": [
+     60,
+     30,
+     44
+    ],
+    "blush": [
+     255,
+     140,
+     150
+    ]
+   },
+   "note": "the three fixed palettes are gone: the body palette is a function of the hue gene (s20coat.palette_from_hue): coat, belly (cream, or a deep plum in the 10-35 degree window), ear-inner, pad, mark, nose and the firefly glow (hue 70-90 on every palette)"
+  },
+  "material": {
+   "family": "velvet",
+   "limits": {
+    "grain": [
+     0.25,
+     0.45
+    ],
+    "fleck": [
+     0.8,
+     1.6
+    ],
+    "flow": [
+     2.0,
+     3.0
+    ],
+    "sheen": [
+     0.2,
+     0.4
+    ],
+    "roughness": [
+     0.6,
+     0.72
+    ],
+    "fuzz": [
+     0.5,
+     0.6
+    ]
+   },
+   "glow": {
+    "part": "glow",
+    "emission": [
+     0.6,
+     1.0
+    ],
+    "pulse": {
+     "period": 2.4,
+     "range": [
+      0.8,
+      1.0
+     ]
+    }
+   }
+  }
+ },
+ "genome": {
+  "catalogue": {
+   "id": "mb-genome-framework",
+   "version": 12,
+   "digest": "98419b59dd1a826d66bbd1b0c17988dec64c51fcc2076e2b18bd72eb987d876c"
+  },
+  "clan": "C20",
+  "borrows": [
+   "anatomy.brow-tuft-presence"
+  ],
+  "chapters": [
+   {
+    "id": "coat",
+    "name": "Coat"
+   },
+   {
+    "id": "face",
+    "name": "Face"
+   },
+   {
+    "id": "shape",
+    "name": "Shape"
+   },
+   {
+    "id": "legs-tail",
+    "name": "Legs & tail"
+   },
+   {
+    "id": "movement",
+    "name": "Movement"
+   }
+  ],
+  "loci": [
+   {
+    "locus": "appearance.body-hue",
+    "label": "Body hue",
+    "short": "Hue",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 180.0,
+     "hi": 360.0,
+     "unit": "\u00b0"
+    },
+    "type": 270.0,
+    "range": [
+     150.0,
+     375.0
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.body-value",
+    "label": "Coat value",
+    "short": "Value",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.8,
+     "hi": 1.2,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.6,
+     1.4
+    ],
+    "bins": [
+     "dark",
+     "between",
+     "light"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.countershade",
+    "label": "Countershade",
+    "short": "Countershade",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.1,
+     "hi": 0.5,
+     "unit": ""
+    },
+    "type": 0.3,
+    "range": [
+     -0.1,
+     0.7
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.surface-grain",
+    "label": "Skin grain",
+    "short": "Grain",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.25,
+     "hi": 0.45,
+     "unit": ""
+    },
+    "type": 0.35,
+    "range": [
+     0.15,
+     0.55
+    ],
+    "bins": [
+     "fine",
+     "between",
+     "coarse"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.sheen",
+    "label": "Sheen",
+    "short": "Sheen",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "absolute": {
+     "form": "lin",
+     "lo": 0.2,
+     "hi": 0.4,
+     "unit": ""
+    },
+    "type": 0.305085,
+    "range": [
+     0.1,
+     0.5
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.fleck",
+    "label": "Fleck",
+    "short": "Fleck",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.2,
+     "hi": 0.8,
+     "unit": ""
+    },
+    "type": 0.5,
+    "range": [
+     -0.1,
+     1.1
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.cream-extent",
+    "label": "Cream reach",
+    "short": "Cream reach",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -0.1,
+     "hi": 0.12,
+     "unit": "H"
+    },
+    "type": 0.0,
+    "range": [
+     -0.21,
+     0.23
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.marking-switch",
+    "label": "Marking switch",
+    "short": "Marks",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "switch",
+    "operator": "recessive-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.75,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record: off is the `plain` look (marks need both copies)"
+   },
+   {
+    "locus": "appearance.marking-layout",
+    "label": "Marking layout",
+    "short": "Layout",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "appearance.marking-switch"
+    ],
+    "op": "pair-map",
+    "limits": [
+     "masked",
+     "points",
+     "bands",
+     "spotted",
+     "capped"
+    ],
+    "weights": [
+     0.2,
+     0.2,
+     0.2,
+     0.2,
+     0.2
+    ],
+    "order": [
+     "masked",
+     "points",
+     "bands",
+     "spotted",
+     "capped"
+    ],
+    "type": "bands",
+    "loud": "pattern",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.pattern-kind",
+    "label": "Pattern",
+    "short": "Pattern",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "none",
+     "spots",
+     "labyrinth",
+     "rings"
+    ],
+    "weights": [
+     0.4,
+     0.25,
+     0.2,
+     0.15
+    ],
+    "order": [
+     "none",
+     "spots",
+     "labyrinth",
+     "rings"
+    ],
+    "type": "none",
+    "loud": "pattern",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.pattern-scale",
+    "label": "Pattern scale",
+    "short": "Pattern scale",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.pattern-kind": [
+      "spots",
+      "labyrinth",
+      "rings"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.8,
+     "hi": 1.3,
+     "unit": ""
+    },
+    "type": 1.05,
+    "range": [
+     0.55,
+     1.55
+    ],
+    "bins": [
+     "small",
+     "between",
+     "large"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.pattern-contrast",
+    "label": "Pattern contrast",
+    "short": "Pattern contrast",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.pattern-kind": [
+      "spots",
+      "labyrinth",
+      "rings"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.6,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.8,
+    "range": [
+     0.4,
+     1.2
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.marking-rosette",
+    "label": "Rosette",
+    "short": "Rosette",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.marking-layout": [
+      "spotted"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.0,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.0,
+    "range": [
+     -0.5,
+     1.5
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.band-count",
+    "label": "Band count",
+    "short": "Band count",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.marking-layout": [
+      "bands",
+      "bands-and-patches"
+     ],
+     "appearance.glow-pattern": [
+      "belly-arcs"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "int",
+     "lo": 3,
+     "hi": 7,
+     "unit": ""
+    },
+    "type": 5,
+    "range": [
+     1.0,
+     9.0
+    ],
+    "bins": [
+     "few",
+     "between",
+     "many"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emblem",
+    "label": "Emblem",
+    "short": "Emblem",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "none",
+     "heart",
+     "star"
+    ],
+    "weights": [
+     0.5,
+     0.25,
+     0.25
+    ],
+    "order": [
+     "none",
+     "heart",
+     "star"
+    ],
+    "type": "none",
+    "loud": "emblem",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emblem-place",
+    "label": "Emblem place",
+    "short": "Emblem place",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.emblem": [
+      "heart",
+      "star"
+     ]
+    },
+    "op": "pair-map",
+    "limits": [
+     "forehead",
+     "belly"
+    ],
+    "weights": [
+     0.7,
+     0.3
+    ],
+    "order": [
+     "forehead",
+     "belly"
+    ],
+    "type": "forehead",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emblem-size",
+    "label": "Emblem size",
+    "short": "Emblem size",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.emblem": [
+      "heart",
+      "star"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.07,
+     "hi": 0.12,
+     "unit": ""
+    },
+    "type": 0.095,
+    "range": [
+     0.045,
+     0.145
+    ],
+    "bins": [
+     "small",
+     "between",
+     "large"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.freckle-density",
+    "label": "Freckle density",
+    "short": "Freckle density",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.1,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.55,
+    "range": [
+     -0.35,
+     1.45
+    ],
+    "bins": [
+     "sparse",
+     "between",
+     "dense"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.freckle-glow",
+    "label": "Freckle glow",
+    "short": "Freckle glow",
+    "chapter": "coat",
+    "scope": "branch",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.5,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.898305,
+    "range": [
+     0.25,
+     1.25
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emission-brightness",
+    "label": "Glow brightness",
+    "short": "Glow brightness",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-doing",
+    "shapeable": true,
+    "op": "blend",
+    "absolute": {
+     "form": "lin",
+     "lo": 0.6,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.918644,
+    "range": [
+     0.4,
+     1.2
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emission-hue",
+    "label": "Glow hue",
+    "short": "Glow hue",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 60.0,
+     "hi": 100.0,
+     "unit": "\u00b0"
+    },
+    "type": 80.0,
+    "range": [
+     40.0,
+     120.0
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.lantern-bleed",
+    "label": "Lantern bleed",
+    "short": "Lantern bleed",
+    "chapter": "coat",
+    "scope": "branch",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "anatomy.tail-tip-form": [
+      "lantern"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.3,
+     "hi": 0.9,
+     "unit": ""
+    },
+    "type": 0.6,
+    "range": [
+     -0.0,
+     1.2
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.glow-pattern",
+    "label": "Glow pattern",
+    "short": "Glow pattern",
+    "chapter": "coat",
+    "scope": "branch",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "none",
+     "belly-arcs"
+    ],
+    "weights": [
+     0.6,
+     0.4
+    ],
+    "order": [
+     "none",
+     "belly-arcs"
+    ],
+    "type": "none",
+    "loud": "glow",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.eye-size",
+    "label": "Eye size",
+    "short": "Eye size",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.92,
+     "hi": 1.1,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.83,
+     1.19
+    ],
+    "bins": [
+     "small",
+     "between",
+     "large"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "form.eye-height",
+    "label": "Eye height",
+    "short": "Eye height",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -0.03,
+     "hi": 0.03,
+     "unit": "H"
+    },
+    "type": 0.0,
+    "range": [
+     -0.06,
+     0.06
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "form.eye-spacing",
+    "label": "Eye spacing",
+    "short": "Eye spacing",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -0.03,
+     "hi": 0.03,
+     "unit": "H"
+    },
+    "type": 0.0,
+    "range": [
+     -0.06,
+     0.06
+    ],
+    "bins": [
+     "close",
+     "between",
+     "wide"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "form.mouth-width",
+    "label": "Mouth width",
+    "short": "Mouth width",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.9,
+     "hi": 1.12,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.79,
+     1.23
+    ],
+    "bins": [
+     "narrow",
+     "between",
+     "wide"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "form.mouth-height",
+    "label": "Mouth height",
+    "short": "Mouth height",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -0.02,
+     "hi": 0.02,
+     "unit": "H"
+    },
+    "type": 0.0,
+    "range": [
+     -0.04,
+     0.04
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "appearance.mouth-rest",
+    "label": "Mouth at rest",
+    "short": "Mouth at rest",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "content",
+     "open",
+     "smile"
+    ],
+    "weights": [
+     0.2,
+     0.2,
+     0.6
+    ],
+    "order": [
+     "smile",
+     "content",
+     "open"
+    ],
+    "type": "smile",
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "appearance.blush",
+    "label": "Blush",
+    "short": "Blush",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "switch",
+    "operator": "recessive-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.3,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "anatomy.fang-presence",
+    "label": "Fangs",
+    "short": "Fangs",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "switch",
+    "operator": "recessive-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.25,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "anatomy.whisker-presence",
+    "label": "Whiskers",
+    "short": "Whiskers",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "switch",
+    "operator": "dominant-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.051317,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "note": "Whiskers are rare (owner, 3 Nov 2026): this weight is the chance each copy is on; with one copy enough to show them (dominant-enable), 0.051317 makes about 10 percent of the sampler's draws show whiskers. To change the share p, set the weight to 1 - sqrt(1 - p).",
+    "moves": [],
+    "consumer": "the whisker appendages (a count of none is the switch off; the sampler's engine turns a count of 1 into 2 a side)"
+   },
+   {
+    "locus": "form.whisker-count",
+    "label": "Whisker count",
+    "short": "Whisker count",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "blend",
+    "band": {
+     "form": "int",
+     "lo": 0,
+     "hi": 3,
+     "unit": ""
+    },
+    "type": 0,
+    "range": [
+     -1.5,
+     4.5
+    ],
+    "bins": [
+     "few",
+     "between",
+     "many"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.whisker-length",
+    "label": "Whisker length",
+    "short": "Whisker length",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.2,
+     "hi": 0.45,
+     "unit": "H"
+    },
+    "type": 0.325,
+    "range": [
+     0.075,
+     0.575
+    ],
+    "bins": [
+     "short",
+     "between",
+     "long"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.whisker-droop",
+    "label": "Whisker droop",
+    "short": "Whisker droop",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.1,
+     "hi": 0.5,
+     "unit": ""
+    },
+    "type": 0.3,
+    "range": [
+     -0.1,
+     0.7
+    ],
+    "bins": [
+     "level",
+     "between",
+     "drooping"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.whisker-curl",
+    "label": "Whisker curl",
+    "short": "Whisker curl",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.0,
+     "hi": 0.6,
+     "unit": ""
+    },
+    "type": 0.3,
+    "range": [
+     -0.3,
+     0.9
+    ],
+    "bins": [
+     "straight",
+     "between",
+     "curled"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.whisker-glow",
+    "label": "Whisker glow",
+    "short": "Whisker glow",
+    "chapter": "face",
+    "scope": "branch",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "switch",
+    "operator": "recessive-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.15,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "anatomy.brow-tuft-presence",
+    "label": "Brow tufts",
+    "short": "Brow tufts",
+    "chapter": "face",
+    "scope": "branch",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "borrowed": "C18",
+    "op": "switch",
+    "operator": "dominant-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.25,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "loud": "brow",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.ear-kind",
+    "label": "Ear shape",
+    "short": "Ear shape",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "prick",
+     "lop",
+     "nub"
+    ],
+    "weights": [
+     0.4,
+     0.3,
+     0.3
+    ],
+    "order": [
+     "prick",
+     "nub",
+     "lop"
+    ],
+    "type": "prick",
+    "moves": [
+     {
+      "path": "parts[ear.L].default",
+      "op": "set"
+     }
+    ]
+   },
+   {
+    "locus": "form.ear-length",
+    "label": "Ear length",
+    "short": "Ear length",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.8,
+     "hi": 1.3,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.6,
+     1.5
+    ],
+    "bins": [
+     "short",
+     "between",
+     "long"
+    ],
+    "moves": [
+     {
+      "path": "parts[ear.L].families.*.joints[1:].len",
+      "op": "scale"
+     },
+     {
+      "path": "parts[ear.L].families.*.tubes[*].len",
+      "op": "scale",
+      "max": 0.35
+     }
+    ]
+   },
+   {
+    "locus": "form.ear-width",
+    "label": "Ear width",
+    "short": "Ear width",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.85,
+     "hi": 1.2,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.675,
+     1.375
+    ],
+    "bins": [
+     "slim",
+     "between",
+     "broad"
+    ],
+    "moves": [
+     {
+      "path": "parts[ear.L].families.*.joints[*].r",
+      "op": "scale"
+     }
+    ]
+   },
+   {
+    "locus": "form.ear-splay",
+    "label": "Ear splay",
+    "short": "Ear splay",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -20.0,
+     "hi": 20.0,
+     "unit": "\u00b0"
+    },
+    "type": 0.0,
+    "range": [
+     -40.0,
+     40.0
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [
+     {
+      "path": "parts[ear.L].families.*.plane.yaw",
+      "op": "add"
+     },
+     {
+      "path": "parts[ear.L].families.*.tubes[*].yaw",
+      "op": "add"
+     }
+    ]
+   },
+   {
+    "locus": "form.ear-droop",
+    "label": "Ear droop",
+    "short": "Ear droop",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -15.0,
+     "hi": 15.0,
+     "unit": "\u00b0"
+    },
+    "type": 0.0,
+    "range": [
+     -30.0,
+     30.0
+    ],
+    "bins": [
+     "upright",
+     "between",
+     "drooping"
+    ],
+    "moves": [
+     {
+      "path": "parts[ear.L].families.*.joints[1:].pitch",
+      "op": "add",
+      "share": -1.0
+     }
+    ]
+   },
+   {
+    "locus": "form.head",
+    "label": "Head size",
+    "short": "Head size",
+    "chapter": "shape",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.96,
+     "hi": 1.05,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.915,
+     1.095
+    ],
+    "bins": [
+     "small",
+     "between",
+     "big"
+    ],
+    "moves": [
+     {
+      "path": "spine.loft.section.stations[*].1",
+      "op": "scale",
+      "where": {
+       "item": 0,
+       "op": ">",
+       "ref": "spine.loft.regions.body.1"
+      },
+      "above": 0.05
+     },
+     {
+      "path": "spine.loft.masses[*].rho",
+      "op": "scale",
+      "where": {
+       "item": "z",
+       "op": ">",
+       "ref": "spine.loft.regions.body.1"
+      }
+     }
+    ]
+   },
+   {
+    "locus": "form.torso-girth",
+    "label": "Torso girth",
+    "short": "Torso girth",
+    "chapter": "shape",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.95,
+     "hi": 1.06,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.895,
+     1.115
+    ],
+    "bins": [
+     "slim",
+     "between",
+     "round"
+    ],
+    "moves": [
+     {
+      "path": "spine.loft.section.stations[*].1",
+      "op": "scale",
+      "where": {
+       "item": 0,
+       "op": "<=",
+       "ref": "spine.loft.regions.body.1"
+      },
+      "above": 0.05
+     },
+     {
+      "path": "spine.loft.masses[*].rho",
+      "op": "scale",
+      "where": {
+       "item": "z",
+       "op": "<=",
+       "ref": "spine.loft.regions.body.1"
+      }
+     }
+    ]
+   },
+   {
+    "locus": "form.leg-length",
+    "label": "Leg length",
+    "short": "Leg length",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.9,
+     "hi": 1.1,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.8,
+     1.2
+    ],
+    "bins": [
+     "short",
+     "between",
+     "long"
+    ],
+    "moves": [
+     {
+      "path": "parts[leg.L].chain[*].len",
+      "op": "scale"
+     }
+    ]
+   },
+   {
+    "locus": "form.leg-girth",
+    "label": "Leg girth",
+    "short": "Leg girth",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.94,
+     "hi": 1.08,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.87,
+     1.15
+    ],
+    "bins": [
+     "slim",
+     "between",
+     "sturdy"
+    ],
+    "moves": [
+     {
+      "path": "parts[leg.L].chain[*].r",
+      "op": "scale"
+     }
+    ]
+   },
+   {
+    "locus": "form.tail-length",
+    "label": "Tail length",
+    "short": "Tail length",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.8,
+     "hi": 1.3,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.5,
+     2.0
+    ],
+    "bins": [
+     "short",
+     "between",
+     "long"
+    ],
+    "moves": [
+     {
+      "path": "spine.tail.segments[1:5].len",
+      "op": "scale"
+     }
+    ]
+   },
+   {
+    "locus": "form.tail-girth",
+    "label": "Tail girth",
+    "short": "Tail girth",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.8,
+     "hi": 1.2,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.6,
+     1.4
+    ],
+    "bins": [
+     "slim",
+     "between",
+     "stout"
+    ],
+    "moves": [
+     {
+      "path": "spine.tail.root_r",
+      "op": "scale",
+      "share": 0.35
+     },
+     {
+      "path": "spine.tail.segments[*].r",
+      "op": "scale",
+      "share": [
+       0.4583333333333333,
+       0.5666666666666667,
+       0.675,
+       0.7833333333333333,
+       0.8916666666666666,
+       1.0
+      ]
+     },
+     {
+      "path": "spine.tail.tip_r",
+      "op": "scale"
+     }
+    ]
+   },
+   {
+    "locus": "form.tail-curl",
+    "label": "Tail curl",
+    "short": "Tail curl",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -0.03,
+     "hi": 0.2,
+     "unit": "turns"
+    },
+    "type": 0.0,
+    "range": [
+     -0.145,
+     0.315
+    ],
+    "bins": [
+     "straight",
+     "between",
+     "curled"
+    ],
+    "moves": [
+     {
+      "path": "spine.tail.segments[3:5].len",
+      "op": "scale",
+      "share": 2.5
+     }
+    ]
+   },
+   {
+    "locus": "form.tail-carry",
+    "label": "Tail carriage",
+    "short": "Tail carriage",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -12.0,
+     "hi": 12.0,
+     "unit": "\u00b0"
+    },
+    "type": 0.0,
+    "range": [
+     -24.0,
+     24.0
+    ],
+    "bins": [
+     "low",
+     "between",
+     "raised"
+    ],
+    "moves": [
+     {
+      "path": "spine.tail.segments[1:].pitch",
+      "op": "add",
+      "share": -1.0
+     }
+    ]
+   },
+   {
+    "locus": "anatomy.tail-tip-form",
+    "label": "Tail tip",
+    "short": "Tip",
+    "chapter": "legs-tail",
+    "scope": "branch",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "lantern",
+     "tuft",
+     "plain"
+    ],
+    "weights": [
+     0.75,
+     0.2,
+     0.05
+    ],
+    "order": [
+     "lantern",
+     "tuft",
+     "plain"
+    ],
+    "type": "lantern",
+    "moves": [],
+    "consumer": "the tail-tip family builder (it reads the look from the creature)"
+   },
+   {
+    "locus": "form.tail-tip-size",
+    "label": "Tip size",
+    "short": "Tip size",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.85,
+     "hi": 1.2,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.675,
+     1.375
+    ],
+    "bins": [
+     "small",
+     "between",
+     "large"
+    ],
+    "moves": [],
+    "consumer": "the tail-tip family builder (it reads the size from the creature)"
+   },
+   {
+    "locus": "movement.cycle-rate",
+    "label": "Cycle rate",
+    "short": "Cycle rate",
+    "chapter": "movement",
+    "scope": "trunk",
+    "kind": "heritable-doing",
+    "shapeable": true,
+    "op": "blend",
+    "absolute": {
+     "form": "mult",
+     "lo": 0.85,
+     "hi": 1.15,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.7,
+     1.3
+    ],
+    "moves": [],
+    "consumer": "the rig's clips (motion periods are divided by it)"
+   }
+  ]
+ },
+ "motion": {
+  "walk": {
+   "kind": "waddle",
+   "period": 0.9,
+   "duty": 0.55,
+   "lift": 0.03,
+   "roll": 7,
+   "yaw": 4,
+   "tail_sway": 6,
+   "swing": 0.04,
+   "note": "pass 2: the swing (hip travel) 0.07 -> 0.04 H and the lift 0.06 -> 0.03 H, the foot's toe-up 10 -> 3 degrees: at the file's first values the ankle folded at the front on the swinging leg for most individuals"
+  },
+  "breathe": {
+   "period": 3.0,
+   "amp": 0.02,
+   "band": [
+    0.3,
+    0.9
+   ]
+  },
+  "blink": {
+   "interval": [
+    3.0,
+    6.0
+   ],
+   "frames": [
+    "open",
+    "half",
+    "closed",
+    "half"
+   ]
+  },
+  "ear_sway": {
+   "amp": 5,
+   "lag": 0.15
+  },
+  "stand": {
+   "tail_yaw": 30,
+   "tail_yaw_per_curl_turn": 40,
+   "tail_yaw_max": 45,
+   "toward": "the camera's side",
+   "head_tilt": 6,
+   "note": "bone rotations after the Mirror (body-spec s5): the lantern shows beside the body in the house view"
+  },
+  "tail_idle": {
+   "amp": 8,
+   "period": 2.2
+  },
+  "glow_pulse": {
+   "period": 2.4,
+   "range": [
+    0.8,
+    1.0
+   ]
+  }
+ },
+ "legacy": {
+  "frame": "house",
+  "unit": "H",
+  "house": {
+   "file": "form/house/house-1.json",
+   "commit": "fix9",
+   "uses": [
+    "light",
+    "solver.camera",
+    "sprite sizes",
+    "mesh thresholds"
+   ],
+   "specimen": null
+  },
+  "plan_code": "G",
+  "poles": [
+   {
+    "where": "leg socket corners",
+    "valence": 5,
+    "per_half": 4
+   },
+   {
+    "where": "stalk cap corners (the grid cap on the loft's first ring)",
+    "valence": 3,
+    "per_half": 2
+   },
+   {
+    "where": "crown cap corners",
+    "valence": 3,
+    "per_half": 2
+   },
+   {
+    "where": "foot sole caps",
+    "valence": 3,
+    "per_half": 4
+   },
+   {
+    "where": "toe bead bases",
+    "valence": 5,
+    "per_half": 12
+   },
+   {
+    "where": "ear tip caps",
+    "valence": 3,
+    "per_half": 4
+   },
+   {
+    "where": "arm tip caps",
+    "valence": 3,
+    "per_half": 4
+   }
+  ],
+  "mesh_quality": {
+   "valence_poles": "listed",
+   "ring_ratio_max": 1.5,
+   "limit_err_max": 0.004,
+   "edge_ratio_max": 2.0,
+   "edge_ratio_face_max": 2.5,
+   "area_ratio_max": 2.5,
+   "nonplanar_max": 0.1,
+   "ring_aspect": {
+    "limb": [
+     0.6,
+     1.6
+    ],
+    "ear": [
+     0.6,
+     1.7
+    ]
+   }
+  },
+  "appendages": {
+   "note": "face attachment families (appendages.py): each is a set of small closed shells on the face, genome-driven (presence, count, size, curve, colour) with an `age` input where the family has one; a species lists the families it allows",
+   "allowed": [
+    "whisker",
+    "fang"
+   ],
+   "whisker": {
+    "per_side": [
+     0,
+     3
+    ],
+    "length": [
+     0.2,
+     0.45
+    ],
+    "droop": [
+     0.1,
+     0.5
+    ],
+    "curl": [
+     0.0,
+     0.6
+    ],
+    "glow_tips": "rare (about 1 in 7)",
+    "subdiv_offset": -1
+   },
+   "fang": {
+    "presence": "about 1 in 4",
+    "count": [
+     1,
+     2
+    ],
+    "length": 0.06,
+    "subdiv_offset": -1
+   },
+   "horn": "framework only (tests and a bare-base render); not on Tuliko",
+   "tusk": "framework only (tests and a bare-base render); not on Tuliko",
+   "join": "hard"
+  },
+  "join_rule": "every socket declares its join: 'soft' (the appendage grows out of the parent's skin: footprint 1.5-1.8 x its width, a concave fillet over at least 3 loops, no pinch, no ridge, lip or notch; the normal test passes at the root) or 'hard' (a separate closed shell sunk at least 0.03 H into the parent: no blending, a clean intersection line, tagged as a crease). Nothing in between. Tuliko: legs and arms soft, ears hard (a soft ear needs a wider socket patch: future framework work); the face attachment families (whiskers, fangs, horns, tusks) hard.",
+  "all_part_order": [
+   "torso",
+   "leg.L",
+   "ear.L",
+   "tail",
+   "arm.L"
+  ],
+  "top_order": [
+   "schema",
+   "species",
+   "name",
+   "plan",
+   "frame",
+   "unit",
+   "house",
+   "anchors",
+   "parts",
+   "sockets",
+   "face",
+   "zones",
+   "layouts",
+   "palettes",
+   "material",
+   "genes",
+   "counts",
+   "motion",
+   "poles",
+   "mesh_quality",
+   "appendages",
+   "join_rule",
+   "body_plan"
+  ],
+  "torso_parent": null,
+  "torso_kind": "loft",
+  "tail_label": "tail",
+  "tail_kind": "spine-range",
+  "tail_parent": null,
+  "tail_root_joint": {
+   "name": "root",
+   "role": "mass"
+  },
+  "tail_extra": {},
+  "tail_root_r": [
+   0.15,
+   0.15
+  ],
+  "genome_v0": {
+   "genes": [
+    {
+     "locus": "body.torso-length",
+     "kind": "mult",
+     "band": [
+      0.95,
+      1.05
+     ],
+     "moves": [
+      "torso.stations[z <= 1.17].z",
+      "torso.masses[belly, seat].z",
+      "leg.L.joints[0].at.z",
+      "tail.joints[0].at.z"
+     ],
+     "note": "body height; the head rides on it",
+     "anchor": "body"
+    },
+    {
+     "locus": "body.torso-girth",
+     "kind": "mult",
+     "band": [
+      0.95,
+      1.06
+     ],
+     "moves": [
+      "torso.stations[z <= 1.17].axes",
+      "torso.masses[belly, seat].rho"
+     ],
+     "anchor": "body"
+    },
+    {
+     "locus": "body.head-size",
+     "kind": "mult",
+     "band": [
+      0.96,
+      1.05
+     ],
+     "moves": [
+      "torso.stations[z > 1.17] about K",
+      "torso.masses[cheek]",
+      "ear.L.joints[0].at",
+      "face.*.station about K"
+     ],
+     "note": "the head stays wider than the body (mass order)",
+     "anchor": "body"
+    },
+    {
+     "locus": "body.limb-length",
+     "kind": "mult",
+     "band": [
+      0.9,
+      1.1
+     ],
+     "moves": [
+      "leg.L.joints[1:].len"
+     ],
+     "anchor": "body"
+    },
+    {
+     "locus": "body.limb-girth",
+     "kind": "mult",
+     "band": [
+      0.94,
+      1.08
+     ],
+     "moves": [
+      "leg.L.joints[1:].r"
+     ],
+     "anchor": "body"
+    },
+    {
+     "locus": "growth.exterior-eye-size-ratio",
+     "kind": "mult",
+     "band": [
+      0.92,
+      1.1
+     ],
+     "moves": [
+      "face.eyes.r"
+     ],
+     "anchor": "face"
+    },
+    {
+     "locus": "growth.exterior-eye-height-ratio",
+     "kind": "off",
+     "band": [
+      -0.03,
+      0.03
+     ],
+     "moves": [
+      "face.eyes.station"
+     ],
+     "anchor": "face"
+    },
+    {
+     "locus": "growth.exterior-eye-spacing-ratio",
+     "kind": "off",
+     "band": [
+      -0.03,
+      0.03
+     ],
+     "moves": [
+      "face.eyes.around"
+     ],
+     "anchor": "face"
+    },
+    {
+     "locus": "face.mouth-width",
+     "kind": "mult",
+     "band": [
+      0.9,
+      1.12
+     ],
+     "moves": [
+      "face.mouth.width"
+     ],
+     "anchor": "face"
+    },
+    {
+     "locus": "face.mouth-height",
+     "kind": "off",
+     "band": [
+      -0.02,
+      0.02
+     ],
+     "moves": [
+      "face.mouth.station"
+     ],
+     "anchor": "face"
+    },
+    {
+     "locus": "face.blush",
+     "kind": "switch",
+     "moves": [
+      "face.cheeks.on"
+     ],
+     "map": {
+      "off": false,
+      "on": true
+     },
+     "anchor": "face"
+    },
+    {
+     "locus": "body.ear-family",
+     "kind": "pair-map",
+     "alleles": [
+      "prick",
+      "lop",
+      "nub",
+      "frond"
+     ],
+     "dominance": [
+      "prick",
+      "nub",
+      "lop",
+      "frond"
+     ],
+     "moves": [
+      "sockets.ear.L.family"
+     ],
+     "anchor": "ears"
+    },
+    {
+     "locus": "body.ear-length",
+     "kind": "mult",
+     "band": [
+      0.8,
+      1.3
+     ],
+     "moves": [
+      "ear.L.families.*.joints[1:].len",
+      "ear.L.families.frond.tubes[*].len"
+     ],
+     "clip": "frond <= 0.35 H (sitting rule)",
+     "anchor": "ears"
+    },
+    {
+     "locus": "body.ear-girth",
+     "kind": "mult",
+     "band": [
+      0.85,
+      1.2
+     ],
+     "moves": [
+      "ear.L.families.*.joints[*].r"
+     ],
+     "anchor": "ears"
+    },
+    {
+     "locus": "body.ear-splay",
+     "kind": "off",
+     "band": [
+      -20,
+      20
+     ],
+     "moves": [
+      "ear.L.families.*.plane.yaw"
+     ],
+     "note": "degrees; outside the face cone at every value",
+     "anchor": "ears"
+    },
+    {
+     "locus": "body.ear-droop",
+     "kind": "off",
+     "band": [
+      -15,
+      15
+     ],
+     "moves": [
+      "ear.L.families.*.joints[1:].pitch"
+     ],
+     "note": "degrees, added to every pitch below the root",
+     "anchor": "ears"
+    },
+    {
+     "locus": "body.tail-length",
+     "kind": "mult",
+     "band": [
+      0.7,
+      1.6
+     ],
+     "moves": [
+      "tail.joints[1:].len"
+     ],
+     "anchor": "tail"
+    },
+    {
+     "locus": "body.tail-girth",
+     "kind": "mult",
+     "band": [
+      0.8,
+      1.3
+     ],
+     "moves": [
+      "tail.joints[*].r"
+     ],
+     "anchor": "tail"
+    },
+    {
+     "locus": "body.tail-curl",
+     "kind": "off",
+     "band": [
+      -0.15,
+      0.45
+     ],
+     "moves": [
+      "tail.joints[k].pitch -= turns * 360 * (k - 1) / 5, k = 1..6"
+     ],
+     "clip": "room rule per bend; logged",
+     "anchor": "tail"
+    },
+    {
+     "locus": "body.tail-lift",
+     "kind": "off",
+     "band": [
+      -20,
+      20
+     ],
+     "moves": [
+      "tail.joints[1:].pitch"
+     ],
+     "note": "degrees, the whole tail swung about its root; + raises it (every pitch below the root decreases by the value)",
+     "anchor": "tail"
+    },
+    {
+     "locus": "body.tail-tip",
+     "kind": "pair-map",
+     "alleles": [
+      "plain",
+      "tuft",
+      "lantern"
+     ],
+     "dominance": [
+      "lantern",
+      "tuft",
+      "plain"
+     ],
+     "moves": [
+      "sockets.tail.tip.family"
+     ],
+     "anchor": "tail"
+    },
+    {
+     "locus": "body.tip-size",
+     "kind": "mult",
+     "band": [
+      0.8,
+      1.3
+     ],
+     "moves": [
+      "sockets.tail.tip.shapes.*.r"
+     ],
+     "anchor": "tail"
+    },
+    {
+     "locus": "appearance.body-palette",
+     "kind": "pair-map",
+     "alleles": [
+      "dusk",
+      "lagoon",
+      "ember"
+     ],
+     "moves": [
+      "palette"
+     ],
+     "anchor": "coat"
+    },
+    {
+     "locus": "appearance.coat-value",
+     "kind": "mult",
+     "band": [
+      0.8,
+      1.2
+     ],
+     "moves": [
+      "palette.coat",
+      "palette.mark"
+     ],
+     "anchor": "coat"
+    },
+    {
+     "locus": "appearance.marking-switch",
+     "kind": "switch",
+     "moves": [
+      "layout"
+     ],
+     "map": {
+      "off": "plain",
+      "on": "@appearance.marking-layout"
+     },
+     "anchor": "coat"
+    },
+    {
+     "locus": "appearance.marking-layout",
+     "kind": "pair-map",
+     "alleles": [
+      "masked",
+      "points",
+      "banded",
+      "spotted",
+      "capped"
+     ],
+     "moves": [
+      "layout"
+     ],
+     "anchor": "coat"
+    },
+    {
+     "locus": "appearance.bib-reach",
+     "kind": "off",
+     "band": [
+      -0.1,
+      0.12
+     ],
+     "moves": [
+      "zones.belly.reach"
+     ],
+     "anchor": "coat"
+    },
+    {
+     "locus": "appearance.glow",
+     "kind": "lin",
+     "band": [
+      0.6,
+      1.0
+     ],
+     "moves": [
+      "material.glow.emission"
+     ],
+     "anchor": "coat"
+    },
+    {
+     "locus": "skin.grain",
+     "kind": "lin",
+     "band": [
+      0.25,
+      0.45
+     ],
+     "moves": [
+      "material.grain"
+     ],
+     "anchor": "coat"
+    },
+    {
+     "locus": "skin.sheen",
+     "kind": "lin",
+     "band": [
+      0.2,
+      0.4
+     ],
+     "moves": [
+      "material.sheen"
+     ],
+     "anchor": "coat"
+    },
+    {
+     "locus": "anatomy.crown-presence",
+     "kind": "switch",
+     "moves": [
+      "sockets.crown.family"
+     ],
+     "map": {
+      "off": "none",
+      "on": "cowlick"
+     },
+     "anchor": "coat"
+    },
+    {
+     "locus": "movement.cycle-rate",
+     "kind": "mult",
+     "band": [
+      0.85,
+      1.15
+     ],
+     "moves": [
+      "motion.*.period (divided)"
+     ],
+     "anchor": "face"
+    }
+   ],
+   "counts": {
+    "limb": 2,
+    "ear": 2,
+    "tail": [
+     1,
+     1
+    ],
+    "arm": 2,
+    "crown": [
+     0,
+     1
+    ]
+   }
+  },
+  "head_attach_extra": {
+   "note": "body-plan head attachment (framework rule, 2 Nov): biped = the spine ends on the head's underside, `a` of the head's depth in from the back, and the head's centre lies `d` of its depth forward of the spine axis; quadruped and serpentine = the spine enters the back of the head on its own axis. The head turns about the spine's end. Pass 3 pick (head-attach-grid): a 0.45, d 0.08 -- d 0 reads as a blob on the chest, d 0.15 pushes a wedge-shaped muzzle past the chest; a only moves the pivot of the nod (the loft axis stays vertical)."
+  },
+  "tail_range_end": 99.0
+ },
+ "expressions": [
+  {
+   "id": "lantern-tail",
+   "label": "Lantern tail",
+   "locus": "anatomy.tail-tip-form",
+   "look": "lantern"
+  },
+  {
+   "id": "whiskers",
+   "label": "Whiskers",
+   "locus": "anatomy.whisker-presence",
+   "look": "on",
+   "age": {
+    "from": "adult",
+    "grow": 0.5
+   },
+   "art": [
+    "adult",
+    "elder"
+   ]
+  }
+ ],
+ "variety": {
+  "n": 12,
+  "seed": 2026,
+  "cycle": [
+   "form.ear-kind",
+   "anatomy.tail-tip-form",
+   "appearance.marking-layout",
+   "appearance.pattern-kind",
+   "appearance.glow-pattern"
+  ],
+  "hue_wheel": true,
+  "max_loud": 2,
+  "species_rules": [
+   {
+    "id": "ember",
+    "label": "Ember rule",
+    "when": [
+     {
+      "field": "hue",
+      "in": [
+       10,
+       35
+      ]
+     }
+    ],
+    "then": [
+     {
+      "any": [
+       {
+        "field": "belly",
+        "is": "dark"
+       },
+       {
+        "field": "tip",
+        "not": "lantern"
+       }
+      ]
+     }
+    ],
+    "fail": "lantern on a warm coat with a light belly"
+   }
+  ],
+  "look_words": {
+   "form.ear-kind": {
+    "prick": [
+     "Pointy ears",
+     "pointy",
+     "Pointy ears"
+    ],
+    "lop": [
+     "Floppy ears",
+     "floppy",
+     "Floppy ears"
+    ],
+    "nub": [
+     "Nub ears",
+     "nub",
+     "Nub ears"
+    ]
+   },
+   "anatomy.tail-tip-form": {
+    "lantern": [
+     "Lantern tail",
+     "lantern",
+     "Lantern tails"
+    ],
+    "tuft": [
+     "Tuft tip",
+     "tuft",
+     "Tuft tips"
+    ],
+    "plain": [
+     "Plain tip",
+     "plain",
+     "Plain tips"
+    ]
+   },
+   "appearance.marking-layout": {
+    "masked": [
+     "Pale muzzle",
+     "muzzle",
+     "Pale muzzles"
+    ],
+    "points": [
+     "Dark points",
+     "points",
+     "Dark points"
+    ],
+    "bands": [
+     "Tail bands",
+     "bands",
+     "Tail bands"
+    ],
+    "patches": [
+     "Patches",
+     "patches",
+     "Patches"
+    ],
+    "spotted": [
+     "Spotted back",
+     "spotted",
+     "Spotted backs"
+    ],
+    "capped": [
+     "Head cap",
+     "cap",
+     "Head caps"
+    ]
+   },
+   "appearance.pattern-kind": {
+    "spots": [
+     "Dot pattern",
+     "dots",
+     "Dotted coats"
+    ],
+    "labyrinth": [
+     "Maze pattern",
+     "maze",
+     "Maze coats"
+    ],
+    "rings": [
+     "Ring pattern",
+     "rings",
+     "Ringed coats"
+    ]
+   },
+   "appearance.glow-pattern": {
+    "belly-arcs": [
+     "Belly arcs",
+     "belly arcs",
+     "Belly arcs"
+    ]
+   }
+  },
+  "trait_words": {
+   "form.ear-kind": "Ear shape",
+   "anatomy.tail-tip-form": "Tail tip",
+   "appearance.marking-layout": "Markings",
+   "appearance.pattern-kind": "Pattern",
+   "appearance.glow-pattern": "Glow pattern"
+  }
+ },
+ "renders": {
+  "base": "game-v1",
+  "add": {}
+ },
+ "play": {
+  "starter": true,
+  "name": "Tomtom",
+  "state": {
+   "appearance.body-hue": 180.0,
+   "form.torso-girth": 0.986667,
+   "form.ear-kind": "prick",
+   "form.ear-length": 0.966667,
+   "form.tail-length": 0.966667,
+   "form.tail-curl": 0.0275,
+   "anatomy.tail-tip-form": "plain",
+   "appearance.pattern-kind": "spots"
+  }
+ }
+}

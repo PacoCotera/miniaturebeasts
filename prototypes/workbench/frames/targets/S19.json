@@ -1,0 +1,25 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S19",
+ "name": "Curlop",
+ "resembles": "an upright crescent with a curled tail and small hands",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "an upright plump body, a round head end high at the front, a long tail sweeping low behind and curling up at its tip, two stout hind feet, two small hands held at the chest (traced from stand-E-curlop-304x312)",
+ "shapes": [
+  {"polygon":[[32.1,22.4],[51.3,8],[72.1,11.2],[88.1,22.4],[89.7,38.5],[81.7,54.5],[76.3,75.3],[73.7,89.7],[60.9,92.9],[41.7,91.3],[30.4,80.1],[24,60.9],[24,38.5]],"part":"body"},
+  {"ellipse":[72.1,28.2,18.6,17.3],"part":"head"},
+  {"capsule":[35.3,84,18.6,91,8.3,6.4],"part":"tail"},
+  {"capsule":[18.6,91,8.3,82.1,6.4,4.8],"part":"tail"},
+  {"capsule":[8.3,82.1,13.5,67.9,4.8,3.5],"part":"tail"},
+  {"capsule":[13.5,67.9,21.2,68.6,3.5,2.9],"part":"tail"},
+  {"ellipse":[66.7,94.2,9.6,4.5],"part":"leg"},
+  {"ellipse":[48.1,93.6,8.3,3.8],"part":"leg"},
+  {"capsule":[71.2,54.5,80.1,63.5,4.5,4.2],"part":"arm"},
+  {"ellipse":[80.1,62.8,5.4,4.8],"part":"arm"}
+ ]
+}

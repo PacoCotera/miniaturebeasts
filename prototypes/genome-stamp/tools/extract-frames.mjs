@@ -3,6 +3,7 @@
 //   - the current frames, from the workbench registry (prototypes/workbench/frames/*.json,
 //     mb-species-frame/2 on catalogue mb-genome-framework@10): species number = the species' order
 //     (S01 = 1 … S16 = 16), frame version = the registry's frame version;
+//   - the body-engine species (mb-species-frame/3, prototypes/workbench/body/frames/species-S*.json: S20, the Tuliko, version 1), appended after them;
 //   - every frame already in the snapshot that the registry no longer builds at that version (the
 //     legacy frames, species 11–13, version 1, on catalogue 6; the sixteen at frame version 2), kept
 //     as they are so an old print decodes for as long as its frame is carried. A frame already in
@@ -11,9 +12,10 @@
 // A locus packs a copy as its index among the catalogue's alleles (ceil(log2 n) bits); a continuous
 // locus also carries its alleles' values, so a blended copy (a number, the cross) is stamped as its
 // bin, the nearest named allele.
-//   node tools/extract-frames.mjs
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { CATALOGUE as WORKBENCH, LOCI } from "../../workbench/framework/catalogue.mjs";
+//   node tools/extract-frames.mjs            # write
+//   node tools/extract-frames.mjs --check    # fail if the snapshot would change (exit 1), writing nothing
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
+import { CATALOGUE as WORKBENCH, LOCI, lookConflicts } from "../../workbench/framework/catalogue.mjs";
 import { FRAME_VERSION } from "../../workbench/framework/species.mjs";
 
 const registryUrl = new URL("../../workbench/frames/", import.meta.url);
@@ -22,14 +24,35 @@ let carried = [];
 const snapshot = new URL("../src/frames-data.mjs", import.meta.url);
 if (existsSync(snapshot)) carried = (await import(snapshot.href)).FRAME_DATA.frames; // any error here (a truncated snapshot) stops the tool: never rewrite from a partial read
 // else first run: nothing to carry
-const frames = index.species.map((s) => {
-  const d = JSON.parse(readFileSync(new URL(s.file, registryUrl), "utf8"));
+// The body-engine species (mb-species-frame/3, written by the workbench frame writer) sit in prototypes/workbench/body/frames/, apart from the form engine's registry, whose tests read every
+// species file there. Each is appended after the registry's own species. Its frame is read at catalogue frame version 7 (CATALOGUE_FRAME: pin 11's alleles carry sinceFrame 7), not at its own
+// version 1, since a species' frame version counts its own changes and the catalogue's alleles a frame sees are those of the pin it is written on.
+const bodyUrl = new URL("../../workbench/body/frames/", import.meta.url);
+const CATALOGUE_FRAME = 7;
+const bodyFiles = existsSync(bodyUrl) ? readdirSync(bodyUrl).filter((f) => /^species-S\d+\.json$/.test(f)).sort() : [];
+const sources = [...index.species.map((s) => ({ url: new URL(s.file, registryUrl), body: false })), ...bodyFiles.map((f) => ({ url: new URL(f, bodyUrl), body: true }))];
+const frames = sources.map(({ url, body }) => {
+  const d = JSON.parse(readFileSync(url, "utf8"));
+  if (body && d.schema !== "mb-species-frame/3") throw new Error(`${d.species.id}: a body frame is mb-species-frame/3, not ${d.schema}`);
   const byId = new Map(d.loci.map((l) => [l.id, l]));
+  // One look, one record (catalogue LOOK_PAIRS): a frame that opens both records of a pair is not carried
+  const twice = lookConflicts(d.loci.filter((l) => l.kind !== "locked").map((l) => l.id));
+  if (twice.length) throw new Error(`${d.species.id}: opens two records for one look: ${twice.map((c) => `${c.look} (${c.ids.join(" and ")})`).join("; ")}`);
+  const version = d.frameVersion ?? FRAME_VERSION;
   const locusOf = (id) => {
     const cat = LOCI.get(id), row = byId.get(id);
-    const alleles = cat.alleles.map((a) => a.id);
-    const numeric = cat.operator === "copy-mean" && cat.alleles.every((a) => typeof a.value === "number");
-    return { id, trait: row.trait, alleles, ...(numeric ? { values: cat.alleles.map((a) => a.value) } : {}), pool: row.alleles, copies: 2 };
+    // the alleles this frame's version knows (pin 11 appends alleles with a later `sinceFrame`; they are not in an older frame, so its bit widths never move)
+    let known = cat.alleles.filter((a) => !(a.sinceFrame > (body ? CATALOGUE_FRAME : version)));
+    const numeric = cat.operator === "copy-mean" && known.every((a) => typeof a.value === "number");
+    // A blended copy is 6 bits: 59 + 1 steps leave 4 codes for names. A record with more names than that (the ear length at frame version 6: short, long, tall, small, medium) names only
+    // what the species can carry (its pool) and the two ends of the catalogue's range, which keep the step grid the catalogue's; in catalogue order. A frame that fits is untouched.
+    if (numeric && known.length + 60 > 64) {
+      const lo = Math.min(...known.map((a) => a.value)), hi = Math.max(...known.map((a) => a.value));
+      known = known.filter((a) => row.alleles.includes(a.id) || a.value === lo || a.value === hi);
+      if (known.length + 60 > 64) throw new Error(`${d.species.id}: ${id} has ${known.length} names to keep beside the 60 steps of a blended copy (4 at most)`);
+    }
+    const alleles = known.map((a) => a.id);
+    return { id, trait: row.trait, alleles, ...(numeric ? { values: known.map((a) => a.value) } : {}), pool: row.alleles, copies: 2 };
   };
   return {
     species: d.species.order, version: d.frameVersion ?? FRAME_VERSION, id: d.species.id, name: d.species.name, glyph: d.glyph,
@@ -45,13 +68,21 @@ for (const f of frames) {
   if (old && JSON.stringify(old) !== JSON.stringify(f)) throw new Error(`frame ${keyOf(f)} (${f.id}) is already in the registry with different content: the registry is append-only, bump the frame version`);
 }
 const fresh = new Set(frames.map(keyOf));
-const all = [...carried.filter((f) => !fresh.has(keyOf(f))), ...frames];
+// Append-only means in place, too: a frame already in the snapshot keeps its position (it was checked above to be the same bytes), a frame the registry builds that the snapshot lacks is
+// appended after the last one, in registry order, and a carried frame the registry no longer builds stays where it was.
+const held = new Set(carried.map(keyOf));
+const all = [...carried, ...frames.filter((f) => !held.has(keyOf(f)))];
 const dup = all.map((f) => `${f.species}.${f.version}`).filter((k, i, a) => a.indexOf(k) !== i);
 if (dup.length) throw new Error(`frame keys collide: ${dup.join(", ")}`);
 const outKeys = new Set(all.map(keyOf));
 const lost = carried.map(keyOf).filter((k) => !outKeys.has(k));
 if (lost.length) throw new Error(`the snapshot would lose frames: ${lost.join(", ")}`);
 const text = "// Generated by tools/extract-frames.mjs from prototypes/workbench/frames/*.json (the legacy frames carried over). Do not edit. Append-only: older frames are carried beside the current ones.\n" +
-  `export const FRAME_DATA = ${JSON.stringify({ catalogue: { id: WORKBENCH.id, version: WORKBENCH.version, schema: index.catalogue, frameVersion: FRAME_VERSION }, legacyCatalogue: { id: "genomic-compositional-source-experiment", version: 6, digest: "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb" }, frames: all })};\n`;
+  `export const FRAME_DATA = ${JSON.stringify({ catalogue: { id: WORKBENCH.id, version: index.catalogue.version, schema: index.catalogue, frameVersion: FRAME_VERSION }, legacyCatalogue: { id: "genomic-compositional-source-experiment", version: 6, digest: "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb" }, frames: all })};\n`;
+if (process.argv.includes("--check")) {
+  if (!existsSync(snapshot) || readFileSync(snapshot, "utf8") !== text) { console.error("src/frames-data.mjs is stale: run tools/extract-frames.mjs"); process.exit(1); }
+  console.log("ok: the snapshot is current");
+  process.exit(0);
+}
 writeFileSync(new URL("../src/frames-data.mjs", import.meta.url), text);
 console.log(all.map((f) => `${f.id} ${f.name} ${f.species}.${f.version}: ${f.chapters.reduce((s, c) => s + c.loci.length, 0)} open, ${f.locked.length} locked${f.legacy ? " (legacy)" : ""}`).join("\n"));

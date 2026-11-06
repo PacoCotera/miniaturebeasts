@@ -43,6 +43,7 @@
  "catalogue": {
   "id": "mb-genome-framework",
   "version": 12,
+  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,

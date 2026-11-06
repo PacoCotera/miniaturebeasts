@@ -14,8 +14,9 @@
 // both meshes (sharedWitness), as the contract requires. A guard never rejects into a narrower
 // survivor set: anything the plan carries is built; what cannot be built throws, and validate.mjs
 // reports it. Nothing is repaired.
+import { bell } from "./geometry.mjs";
 import { add, sub, mul, unit, norm, dot, cross, IDENTITY, localVector, worldPoint, localPoint, frameAlong, rotateFrameZ, lerp, newNode, ringSolid, ellipsoid, segment, sheet, sweep, surfaceAlong, addFace, envelope, sharedWitness, rootOn, longitudinalWeight, inflate } from "./geometry.mjs";
-import { clampRegionLength, clampHead, clampEye, clampMuzzle, clampLeg, clampFoot, BEAK_CAP, MUZZLE_DEPTH_FLOOR, SAIL_HEIGHT, SAIL_HEIGHT_CAP, HIND_TOP, HIND_OUT, HIND_WIDTH, HIND_TILT, HIND_SPLAY } from "./envelope.mjs"; // the cute envelope: rules E1–E7
+import { clampRegionLength, clampHead, clampEye, clampMuzzle, clampLeg, UPRIGHT_DROP_FLOOR, clampFoot, BEAK_CAP, MUZZLE_DEPTH_FLOOR, SAIL_HEIGHT, SAIL_HEIGHT_CAP, HIND_TOP, HIND_OUT, HIND_WIDTH, HIND_TILT, HIND_SPLAY } from "./envelope.mjs"; // the cute envelope: rules E1–E7
 
 const EYE_RIM = "#f1eddc", PUPIL = "#273036"; // v1 fixed inks (COMPOSITIONAL_CONTENT.surfaces.fixedEyes)
 
@@ -63,7 +64,12 @@ export function buildBody(resolved) {
   // Radial: the plant's bulb, its fan arms leaves rising from the top, its rays root legs below.
   // Bilateral: the wisp's vertical ribbon, its fan arms two streamers zigzagging down.
   const standing = !!plan.extras?.stand && plan.fan;
-  const baseRadii = standing
+  // An upright body (plan extra `upright`, genome-fluffy.md): one region standing on its length axis, its height the size class, its
+  // front-to-back the depth ratio, its width the width ratio. A teardrop (form tapered) is thick at the foot and thin at the top.
+  const upright = !!plan.extras?.upright && !radial && !plan.fan && depth === 1;
+  const baseRadii = upright
+    ? [GIRTH * (v["core.rzOverRx"] ?? 0.5) * L, GIRTH * (v["core.ryOverRx"] ?? 0.45) * L, L]
+    : standing
     ? (radial ? [0.85 * L, 0.85 * L, 1.2 * L] : [0.4 * L, 0.2 * L, 1.45 * L])
     : radial
     ? [L, L, 2 * (v["region.radialCrossRadiusOverAnchorRx"] ?? 0.45) * L] // a dome: round in plan, height from roundness
@@ -78,7 +84,7 @@ export function buildBody(resolved) {
     const radii = baseRadii.map((r, i) => r * s * (i === 0 ? along : 1));
     // A region is never a disc: its length is at least 0.85 of its larger cross radius (a wide
     // three-region body is a long one, not three wheels on an axle).
-    if (!radial && !plan.fan) clampRegionLength(radii); // E1: never a disc, never a log
+    if (!radial && !plan.fan && !upright) clampRegionLength(radii); // E1: never a disc, never a log
     return radii;
   };
   function primary(id, center, radii, frame, upright = radial) {
@@ -92,7 +98,7 @@ export function buildBody(resolved) {
     node.part = id;
     return node;
   }
-  const root = push(primary("region-0", [0, 0, 0], regionRadii(0), IDENTITY, radial || standing), null);
+  const root = push(primary("region-0", [0, 0, 0], regionRadii(0), IDENTITY, radial || standing || upright), null);
   regions.push(root);
   const arms = plan.fan ? (radial ? 3 : 2) : 1;
   for (let arm = 0; arm < arms; arm++) {
@@ -132,9 +138,9 @@ export function buildBody(resolved) {
   // Head lift sets the neck's rise (level at a low lift, steeply up at a high one: a deer, a bird); the
   // neck ratio sets its length over the join's extent, up to about two head lengths.
   const rise = Math.max(0, Math.min(1, ((v["head.centerLiftOverCoreRx"] ?? 0.5) - 0.5) / 0.22));
-  const headDir = standing && !radial ? unit([-0.25, 0, 1]) : join === "narrow" ? unit([-1, 0, 0.15 + 1.6 * rise * rise]) : unit([-(L + 0.8 * headR[0]), 0, lift * (1 + 1.5 * rise)]); // a standing ribbon carries its head on top; a fused head with a high lift sits up on the body
+  const headDir = upright ? unit([-1, 0, 0.3 + 2.5 * ((v["head.centerLiftOverCoreRx"] ?? 0.5) - 0.5)]) : standing && !radial ? unit([-0.25, 0, 1]) : join === "narrow" ? unit([-1, 0, 0.15 + 1.6 * rise * rise]) : unit([-(L + 0.8 * headR[0]), 0, lift * (1 + 1.5 * rise)]); // a standing ribbon carries its head on top; a fused head with a high lift sits up on the body
   const pe = extentAlong(root, headDir, envOf), he = extentAlong(head, mul(headDir, -1), envOf);
-  const neckLength = join === "narrow" ? (0.3 + 1.6 * ((v["structure.join-neck-ratio"] ?? 0.8) - 0.65) / 0.3) * Math.min(pe, he) : -0.25 * Math.min(pe, he);
+  const neckLength = join === "narrow" ? (0.3 + 1.6 * ((v["structure.join-neck-ratio"] ?? 0.8) - 0.65) / 0.3) * Math.min(pe, he) : (upright || v["furSkirt.enabled"] ? -0.55 : -0.25) * Math.min(pe, he); // an upright body or a skirted one wears its face sunk into the front
   moveNode(head, mul(headDir, pe + he + neckLength));
   envelopes.delete(head.id);
   const headCenter = head.center;
@@ -225,19 +231,39 @@ export function buildBody(resolved) {
     const drooping = v["anatomy.ear-tilt"] === "drooping";
     // Ear set: the root's lateral offset over the head's half width; a side-set ear leans outward.
     const set = v["growth.auricular-set-ratio"] ?? 0.62;
-    const dir = unit([0, side * set, Math.sqrt(Math.max(0.1, 1 - set * set))]);
+    // From frame version 6 the ear roots low and behind the crest's side leaves (+x is back), as in the book, turned 35 degrees and with a body (art director and UI/UX sign-off); older frames keep the root level with them.
+    const v6 = (resolved.frameVersion ?? 0) >= 6;
+    const dir = v6 ? unit([0.5, side * set, 0.15]) : unit([0, side * set, Math.sqrt(Math.max(0.1, 1 - set * set))]);
     const rt = rootOn(head, headCenter, dir, 0.08 * length, envOf(head));
     const lean = 0.1 + 0.4 * Math.max(0, Math.min(1, (set - 0.42) / 0.36));
     const upAxis = drooping ? unit([-0.1, side * 0.95, -0.4]) : unit([-0.15, side * lean, 1]);
     // The ear plane sits at 45° between facing forward and facing out, as a cupped ear does, so the
     // ear shows its width from the side as well as from the front.
-    const across = unit(cross(upAxis, unit([-0.7, side * 0.7, 0])));
+    const across = unit(cross(upAxis, v6 ? unit([-0.819, side * 0.574, 0]) : unit([-0.7, side * 0.7, 0])));
     const pointed = v["ears.form"] === "pointed";
     const outline = pointed ? [[-0.12, 0], [-0.5, 0.38], [-0.36, 0.75], [0, 1], [0.36, 0.75], [0.5, 0.38], [0.12, 0]] : [[-0.12, 0], [-0.5, 0.32], [-0.48, 0.73], [-0.24, 0.96], [0.24, 0.96], [0.48, 0.73], [0.5, 0.32], [0.12, 0]];
     const corners = outline.map(([a, b]) => add(rt.inner, add(mul(across, a * width), mul(upAxis, b * length))));
     const ear = newNode(`ear-${side < 0 ? "L" : "R"}`, "auricular-sheet", head.id, "body"); ear.part = "ear";
-    sheet(ear, corners, cross(across, upAxis), 0.03 * length);
+    sheet(ear, corners, cross(across, upAxis), (v6 ? 0.22 : 0.03) * length);
     push(ear, head, rt.inner);
+  }
+  if (v["browTufts.enabled"]) for (const side of [-1, 1]) {
+    // A tuft of fur over each eye (genome-fluffy.md (d)): a tapered tassel from the brow that arches forward and falls over the eye, its tip stopping above the eye's rim.
+    const len = (v["growth.brow-tuft-length"] ?? 0.7) * headR[2], r = 0.2 * Math.min(headR[1], headR[2]);
+    const dir = unit([-0.62, side * 0.4, 0.68]);
+    const rt = rootOn(head, headCenter, dir, 0.1 * r, envOf(head));
+    // The guard of the eyes: a tuft's tip stops above the eye's upper rim (a tenth of the head's half height over it), so the eyes and the blinks stay readable;
+    // a tuft rooted below that line arches up to it first.
+    const eyeTop = Math.max(-Infinity, ...nodes.filter((n) => n.role === "ocular-rim").flatMap((n) => n.mesh.vertices.map((p) => p[2]))), clear = eyeTop + 0.1 * headR[2];
+    const joint = add(rt.surface, [-0.25 * len, side * 0.3 * len, 0.2 * len]);
+    joint[2] = Math.max(joint[2], clear);
+    const end = add(joint, [-0.3 * len, side * 0.45 * len, Math.max(-0.8 * len, Math.min(0, clear - joint[2]))]);
+    const t1 = newNode(`brow-${side < 0 ? "L" : "R"}-1`, "brow-tuft", head.id, "body"); segment(t1, rt.inner, joint, r, 0.8 * r); t1.part = "brow";
+    push(t1, head, rt.witness);
+    const jn = newNode(`brow-${side < 0 ? "L" : "R"}-joint`, "chain-joint", t1.id, "body"); jn.center = joint; ellipsoid(jn, [0.8 * r, 0.8 * r, 0.8 * r]); jn.part = "brow";
+    push(jn, t1);
+    const t2 = newNode(`brow-${side < 0 ? "L" : "R"}-2`, "brow-tuft", jn.id, "body"); segment(t2, joint, end, 0.8 * r, 0.3 * r); t2.part = "brow";
+    push(t2, jn);
   }
   if (v["antennae.enabled"]) for (const side of [-1, 1]) {
     const length = 1.6 * v["growth.antenna-length-ratio"] * headR[2], formA = v["anatomy.antenna-form"]; // over the head's half height, so a long antenna clears the head by its height
@@ -283,16 +309,17 @@ export function buildBody(resolved) {
   };
   if (plan.limbSet === "legs") {
     // Leg girth: 1.6 times v1's ratio; E5 keeps the radius and the drop inside the envelope.
-    const { radius, drop } = clampLeg(1.6 * v["support.proximalRadiusOverCoreRx"] * L, v["support.rootToEndDropOverCoreRx"] * L, root.radii);
+    const { radius, drop } = clampLeg(1.6 * v["support.proximalRadiusOverCoreRx"] * L, v["support.rootToEndDropOverCoreRx"] * L, upright ? [root.radii[0], root.radii[1], root.radii[0]] : root.radii, upright ? UPRIGHT_DROP_FLOOR : undefined); // an upright body's depth is its front-to-back, not its height, and it may stand on stubs
     const spread = v["support.outwardEndOffsetOverCoreRx"] * L;
     const stationCount = plan.stations.length;
     plan.stations.forEach((station, g) => {
       const owner = serialRegions[Math.min(station.region, serialRegions.length - 1)];
       const front = stationCount === 1 ? false : g < stationCount / 2; // fore legs bend forward at the knee, hind legs back
       for (const side of [-1, 1]) {
-        const u = Math.max(-0.75, Math.min(0.75, station.u + stationShift));
+        const u = Math.max(-0.75, Math.min(0.75, station.u + stationShift)) * (v["furSkirt.enabled"] ? 0.5 : 1); // under a fur skirt the legs stand nearer the middle
         // Legs leave the body low on its flank (-0.3 of the depth), under it rather than beside it.
-        const rt = rootOn(owner, worldPoint(owner, [u * owner.radii[0], 0, -0.3 * owner.radii[2]]), localVector(owner.frame, [0, side, -0.35]), 0.5 * radius, envOf(owner));
+        // A body in a fur skirt keeps its legs tucked under the belly, inside the skirt's footprint (genome-fluffy.md (c)): rooted lower and nearer the midline.
+        const rt = rootOn(owner, worldPoint(owner, [u * owner.radii[0], 0, (upright ? -0.62 : -0.3) * owner.radii[2]]), localVector(owner.frame, v["furSkirt.enabled"] ? [0, 0.55 * side, -1] : [0, side, -0.35]), 0.5 * radius, envOf(owner));
         let joint, end;
         if (plan.posture === "upright") {
           joint = add(rt.surface, [0.02 * L, side * 0.25 * spread, -0.55 * drop]);
@@ -361,6 +388,37 @@ export function buildBody(resolved) {
         if (plan.posture === "stilts") contactPoints.push(last.end);
       }
     });
+  }
+
+  if (plan.armSet === "arms") {
+    // A free front pair with hands (genome-fluffy.md (a)). The links and the thickness are measured against the body's cross radius (on an upright body the
+    // smaller of its front-to-back and side-to-side radii, not its height) and drawn with fixed volume conventions, as PAW is for feet: the short, short, thick
+    // arms of the Curlop read as the stand's short plump arms whatever the body's height. The rest pose is a rig rule: the shoulder just below the chin,
+    // the elbow straight down at the side, the forearm folded in, the three-fingered hands meeting at the chest midline below the face.
+    const ARM = { upper: 1.22, lower: 1.57, plump: 1.5 };
+    const owner = serialRegions[0];
+    const across = upright ? Math.min(owner.radii[0], owner.radii[1]) : Math.min(owner.radii[1], owner.radii[2]);
+    const upper = ARM.upper * v["appendage.proximalOverAnchorRx"] * across, lower = ARM.lower * (v["appendage.distalOverAnchorRx"] ?? 0.5) * across, radius = ARM.plump * v["appendage.freeRadiusOverAnchorRx"] * across;
+    const hr = (v["growth.hand-size-ratio"] ?? 1) * 1.15 * radius;
+    const shoulderZ = headCenter[2] - headR[2] - 0.45 * across;
+    const chestX = envOf(owner).rayHit([owner.center[0], 0, shoulderZ], [-1, 0, 0]).position[0] - 0.12 * across; // the belly's front (the fur grows a little past it)
+    for (const side of [-1, 1]) {
+      const rt = rootOn(owner, [owner.center[0], 0, shoulderZ], [-1, side * 0.7, 0], 0.5 * radius, envOf(owner)); // on the chest, a third of the way round from the front
+      const joint = add(rt.surface, mul(unit([-0.15, side * 0.15, -1]), upper));
+      // The forearm folds toward the midline in front of the chest; the hands stop where they meet (never crossed) and the rest of its length reaches forward.
+      const aim = unit(sub([chestX, side * 0.55 * hr, joint[2] + 0.2 * lower], joint));
+      let end = add(joint, mul(aim, lower));
+      if (side * end[1] < 0.55 * hr) { const y = side * 0.55 * hr, dz = end[2] - joint[2], dy = y - joint[1]; end = [joint[0] - Math.sqrt(Math.max(0, lower * lower - dy * dy - dz * dz)), y, end[2]]; }
+      const id = `arm-0-${side < 0 ? "L" : "R"}`;
+      const dist = chain(id, owner, rt, joint, end, radius, "arm-0", 0.9, 0.8);
+      const palm = newNode(`${id}-hand`, "hand", dist.id, "second"); palm.part = "arm-0"; palm.center = add(end, [-0.25 * hr, 0, 0]); ellipsoid(palm, [1.05 * hr, 0.9 * hr, 0.8 * hr]);
+      push(palm, dist);
+      for (const f of [-1, 0, 1]) { // three fingers fanned out from the palm's front
+        const finger = newNode(`${id}-finger-${f + 1}`, "finger", palm.id, "second"); finger.part = "arm-0";
+        finger.center = add(palm.center, [-0.85 * hr, f * 0.5 * hr, -0.22 * hr - 0.1 * hr * Math.abs(f)]); ellipsoid(finger, [0.5 * hr, 0.3 * hr, 0.3 * hr]);
+        push(finger, palm);
+      }
+    }
   }
 
   // --- flaps: wings, fins, a cap or petals ---------------------------------------------------
@@ -523,16 +581,52 @@ export function buildBody(resolved) {
     contactPoints.push([skirt.center[0], 0, skirt.center[2] - skirt.radii[2]]);
   }
 
+  let furSkirt = null;
+  if (v["furSkirt.enabled"]) {
+    // A skirt of fur (genome-fluffy.md (c)): a flared bell from the waist toward the floor. Drop 1 is floor length: the hem rests on the ground
+    // and its footprint covers every leg end, or the build says so (validate.mjs). Drop under 0.95 is a skirt that leaves the legs showing.
+    const drop = v["growth.fur-skirt-drop"] ?? 1, flare = v["growth.fur-skirt-flare"] ?? 0.3;
+    const xs = serialRegions.flatMap((r) => [r.center[0] - r.radii[0], r.center[0] + r.radii[0]]);
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2, hx = (Math.max(...xs) - Math.min(...xs)) / 2, hy = Math.max(...serialRegions.map((r) => r.radii[1]));
+    const waist = root.center[2] + 0.05 * root.radii[2];
+    const floorZ = contactPoints.length ? Math.min(...contactPoints.map((p) => p[2])) : Math.min(...serialRegions.map((r) => r.center[2] - r.radii[2]));
+    const bottom = waist - drop * (waist - floorZ);
+    if (waist - bottom < 0.05 * L) throw new Error("fur skirt has no length (the body stands on its waist)");
+    // The skirt is the body's own footprint with the flare, falling out from the body's half-width at the waist to the hem. Every leg part from the hem up lies
+    // inside it: the whole bell grows (in proportion) until it does, with a tenth to spare (the bell is a 12-sided polygon, a hair inside its ellipse).
+    const belt = Math.sqrt(Math.max(0.05, 1 - ((waist - root.center[2]) / root.radii[2]) ** 2)); // the body's own half-width at the waist: the skirt starts at it and falls out from there
+    const legPoints = nodes.filter((n) => n.part?.startsWith("leg-")).flatMap((n) => n.mesh.vertices).filter((p) => p[2] < waist && p[2] >= bottom - 1e-9 && !envOf(root).contains(p)); // a leg part inside the body is hidden by it
+    const profile = (grow) => (z) => { const u = (waist - z) / (waist - bottom), e = u ** 0.6; return { z, rx: lerp(belt * hx, hx * (1 + flare) * grow, e), ry: lerp(belt * hy, hy * (1 + flare) * grow, e) }; };
+    const covers = (at) => legPoints.every((p) => { const r = at(p[2]); return ((p[0] - cx) / r.rx) ** 2 + (p[1] / r.ry) ** 2 <= 1 / 1.1 ** 2; });
+    let grow = 1;
+    while (!covers(profile(grow)) && grow < 4) grow *= 1.04;
+    const at = profile(grow);
+    const rings = [0, 0.3, 0.6, 1].map((u) => at(waist - u * (waist - bottom)));
+    const skirt = newNode("fur-skirt", "fur-skirt", root.id, "body"); skirt.part = "skirt";
+    bell(skirt, cx, 0, rings, 0.06 * (waist - bottom));
+    const lo = Math.max(skirt.center[2] - skirt.radii[2], root.center[2] - 0.9 * root.radii[2]), hi = Math.min(root.center[2] + 0.9 * root.radii[2], waist - 0.05 * (waist - bottom));
+    const underRoot = Math.min(root.center[2] + 0.9 * root.radii[2], waist);
+    push(skirt, root, [root.center[0], 0, Math.min(underRoot, Math.max(lo, waist - 0.02 * L))]);
+    contactPoints.push([cx, 0, bottom]);
+    furSkirt = { drop, floorLength: drop >= 0.95, hidesLegs: covers(at) };
+  }
+
   // --- tail ------------------------------------------------------------------------------------
   if (v["tail.enabled"]) {
     const owner = plan.fan ? root : serialRegions[plan.tailRegion];
     const bushy = v["covering.furEnabled"] && (v["appearance.fur-reach"] ?? "body") !== "body";
     // Tail length over the body's L (v1's owner region was L long; a shared-length region is not).
     const length = v["tail.lengthOverOwnerRx"] * L, baseR = (bushy ? 2.2 : 2.1) * v["tail.baseRadiusOverOwnerCross"] * Math.min(owner.radii[1], owner.radii[2]);
-    const dirW = radial ? unit([1, 0, -0.2]) : unit(add(owner.frame[0], [0, 0, 0.15]));
-    const rt = rootOn(owner, owner.center, dirW, 0.3 * baseR, envOf(owner));
+    // A curled tail (genome-fluffy.md (b)): rooted at the rear, or at the crown as a plume (growth.tail-rise 0 … 1), turning through
+    // growth.tail-curl-turn radians with the curvature growing toward the tip; in the body's own plane, toward the front for a plume.
+    const curled = !!v["tailCurl.enabled"], rise = curled ? v["growth.tail-rise"] ?? 0 : 0;
+    const rearDir = upright ? [1, 0, -0.1] : [1, 0, 0.15];
+    const dirW = curled ? unit(add(mul(unit(rearDir), 1 - rise), [0, 0, rise])) : radial ? unit([1, 0, -0.2]) : unit(add(owner.frame[0], [0, 0, 0.15]));
+    const tailFrom = curled && upright ? add(owner.center, [0, 0, -0.55 * (1 - rise) * owner.radii[2]]) : owner.center; // an upright body's tail leaves low on the back
+    const rt = rootOn(owner, tailFrom, dirW, 0.3 * baseR, envOf(owner));
     const tail = newNode("tail", "axial-tail", owner.id, "body"); tail.part = "tail";
-    sweep(tail, rt.inner, radial ? IDENTITY : frameAlong(dirW), length, baseR, 1.4 * v["tail.bendRadians"] /* carried up means up: 1.4 times the locus bend */, 6, v["tailBulb.enabled"] ? 0.35 : bushy ? 0.5 : 0.3);
+    const tailFrame = curled ? [dirW, [0, 1, 0], cross(dirW, [0, 1, 0])] : radial ? IDENTITY : frameAlong(dirW);
+    sweep(tail, rt.inner, tailFrame, length, baseR, 1.4 * v["tail.bendRadians"] /* carried up means up: 1.4 times the locus bend */, curled ? 12 : 6, v["tailBulb.enabled"] ? 0.35 : bushy ? 0.5 : 0.3, curled ? v["growth.tail-curl-turn"] : 0);
     push(tail, owner, add(rt.inner, mul(tail.stations[0].tangent, 0.12 * baseR))); // just inside the first station, still inside the owner
     if (v["tailBulb.enabled"]) {
       const bulb = newNode("tail-bulb", "tail-bulb", tail.id, "emission"); bulb.part = "tail";
@@ -589,7 +683,7 @@ export function buildBody(resolved) {
   const tailRings = v["tailRings.enabled"] ? v["growth.tail-ring-count"] ?? 1 : 0;
   const shellPlates = !!v["shell.enabled"] && v["appearance.shell-plates"] === "plated";
   if (v["charged.enabled"]) for (const node of nodes) if (node.role === "primary-region" || node.role === "region-connector" || node.role === "typed-head") node.opacity = 1 - (v["physiology.phase"] ?? 0.4);
-  return { status: "constructed", plan: { key: plan.key, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, states: plan.states }, nodes, edges, bounds, slots, covering, markings, flapMarking, capSpots, mask, tailRings, shellPlates, belly: !!v["belly.enabled"], bellyExtent: v["growth.belly-field-extent"] ?? 0.33, L };
+  return { status: "constructed", furSkirt, plan: { key: plan.key, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, ...(plan.armSet ? { armSet: plan.armSet } : {}), posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, states: plan.states }, nodes, edges, bounds, slots, covering, markings, flapMarking, capSpots, mask, tailRings, shellPlates, belly: !!v["belly.enabled"], bellyExtent: v["growth.belly-field-extent"] ?? 0.33, L };
 }
 
 // --- helpers ----------------------------------------------------------------------------------------

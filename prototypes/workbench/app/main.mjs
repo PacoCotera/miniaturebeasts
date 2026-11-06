@@ -13,6 +13,8 @@ import { sketchIndividual, manifest, speciesCameras, registryCameras, SKETCHER_V
 import { encodePNG, zip, sha256, download } from "./zip.mjs";
 
 const $ = (id) => document.getElementById(id);
+// A record's alleles as the species being edited sees them (a record appended at a later frame version is not offered to an older frame).
+const ids = (id) => alleleIds(id, state.spec?.frameVersion ?? FRAME_VERSION);
 const el = (tag, attrs = {}, ...children) => {
   const node = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) { if (k === "class") node.className = v; else if (k.startsWith("on")) node.addEventListener(k.slice(2), v); else if (v !== null && v !== undefined) node.setAttribute(k, v); }
@@ -44,7 +46,7 @@ async function load() {
   } catch { /* storage unavailable: drafts are session-only */ }
   const sel = $("species");
   sel.replaceChildren(...Object.keys(state.specs).map((id) => el("option", { value: id }, labelOf(state.specs[id], state.edited[id]))));
-  for (const [id, clan] of Object.entries(CLANS)) $("new-clan").append(el("option", { value: id }, `${clanLabel(id)}: ${clan.resembles} (${planFacts(clan.plan, clan.extras).code})`));
+  for (const [id, clan] of Object.entries(CLANS).filter(([, c]) => c.engine !== "body")) $("new-clan").append(el("option", { value: id }, `${clanLabel(id)}: ${clan.resembles} (${planFacts(clan.plan, clan.extras).code})`));
   state.registryCameras = registryCameras(frames);
   status(`catalogue ${CATALOGUE.id}@${CATALOGUE.version} · ${CATALOGUE.loci.length} loci · ${frames.length} frames`);
   selectSpecies(frames[0].species.id);
@@ -99,7 +101,7 @@ function renderEditor() {
     el("div", {}, el("b", {}, labelOf(spec)), ` · ${f.taxonomy.resembles ?? ""} · clan ${clanLabel(spec.clan)} · ${f.plan.code} (rig ${f.plan.rig}, ${f.plan.limbSet ?? "no limbs"}${f.plan.posture ? ", " + f.plan.posture : ""}, ${f.plan.head} head) · ${f.taxonomy.tier}`),
     el("div", { class: "row" }, "Plan: ", planSelect("segments", ["one", "two", "three"]), planSelect("layout", ["serial", "fan"]), planSelect("symmetry", ["bilateral", "radial"]), planSelect("limbs", ["none", "contact", "free"]), p.limbs === "contact" ? planSelect("pairs", ["one", "two", "three"]) : "", planSelect("flaps", ["off", "on"]), planSelect("covering", ["skin", "scales", "fur"])),
     el("div", { class: "row" }, el("label", {}, el("input", { type: "checkbox", checked: spec.plan.extras.join === "narrow" ? "" : null, onchange: (e) => { spec.plan.extras.join = e.target.checked ? "narrow" : "broad"; commit(); } }), " neck (narrow join)"), extra("wave", "body wave"), extra("fins", "flaps as fins"), extra("float", "afloat"), extra("stand", "standing fan")),
-    el("div", {}, `Signature: ${spec.feature ?? ""} · anchor `, el("select", { onchange: (e) => { spec.anchor = e.target.value; spec.fixed["appearance.body-palette"] = e.target.value; commit(); } }, alleleIds("appearance.body-palette").map((a) => el("option", { value: a, selected: spec.anchor === a ? "" : null }, a))), spec.second ? [" · second ", el("select", { onchange: (e) => { spec.second = e.target.value; spec.fixed["appearance.underside-palette"] = e.target.value; commit(); } }, alleleIds("appearance.underside-palette").map((a) => el("option", { value: a, selected: spec.second === a ? "" : null }, a)))] : ""),
+    el("div", {}, `Signature: ${spec.feature ?? ""} · anchor `, el("select", { onchange: (e) => { spec.anchor = e.target.value; spec.fixed["appearance.body-palette"] = e.target.value; commit(); } }, ids("appearance.body-palette").map((a) => el("option", { value: a, selected: spec.anchor === a ? "" : null }, a))), spec.second ? [" · second ", el("select", { onchange: (e) => { spec.second = e.target.value; spec.fixed["appearance.underside-palette"] = e.target.value; commit(); } }, ids("appearance.underside-palette").map((a) => el("option", { value: a, selected: spec.second === a ? "" : null }, a)))] : ""),
     el("div", {}, `Carried ${f.counts.carried} (trunk ${f.counts.trunk}, branch ${f.counts.branch}) · open ${f.counts.open} in ${f.counts.traits} traits · sleeping ${f.counts.sleeping} · sealed ${f.counts.sealed} · absent ${f.counts.absent} · stamp ${f.counts.stampBitsPerCopy} bits a copy`, state.edited[spec.id] ? [" · ", el("button", { class: "small", onclick: () => { const orig = state.registry.find((r) => r.species.id === spec.id); if (!orig) return; delete state.edited[spec.id]; try { const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); delete saved[spec.id]; localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch { /* fine */ } state.specs[spec.id] = specFromFrame(orig); [...$("species").options].find((o) => o.value === spec.id).textContent = labelOf(state.specs[spec.id]); selectSpecies(spec.id); log(`${spec.id}: edits discarded`); } }, "Discard edits")] : ""),
   );
   const chaptersNode = $("chapters");
@@ -126,10 +128,10 @@ function renderEditor() {
         const lociBox = el("div", { class: "loci" });
         for (const id of t.loci) {
           const row = lociOf[id], locus = LOCI.get(id);
-          const pool = t.pool?.[id] ?? alleleIds(id);
+          const pool = t.pool?.[id] ?? ids(id);
           const copies = state.individuals[state.current]?.genome.loci[id] ?? [pool[0], pool[0]];
           lociBox.append(el("div", { class: "locus" }, el("code", {}, id), el("span", { class: "muted" }, `${locus.operator} · ${row?.kind ?? ""} · ${row?.guard ?? ""}`),
-            el("span", {}, "pool: ", ...alleleIds(id).map((a) => el("label", { class: pool.includes(a) ? "" : "off" }, el("input", { type: "checkbox", checked: pool.includes(a) ? "" : null, onchange: (e) => { const next = e.target.checked ? [...pool, a] : pool.filter((x) => x !== a); if (!next.length) { e.target.checked = true; return; } t.pool = { ...(t.pool ?? {}), [id]: alleleIds(id).filter((x) => next.includes(x)) }; commit(); } }), a))),
+            el("span", {}, "pool: ", ...ids(id).map((a) => el("label", { class: pool.includes(a) ? "" : "off" }, el("input", { type: "checkbox", checked: pool.includes(a) ? "" : null, onchange: (e) => { const next = e.target.checked ? [...pool, a] : pool.filter((x) => x !== a); if (!next.length) { e.target.checked = true; return; } t.pool = { ...(t.pool ?? {}), [id]: ids(id).filter((x) => next.includes(x)) }; commit(); } }), a))),
             el("span", {}, "copies: ", ...[0, 1].map((k) => el("select", { onchange: (e) => { const ind = state.individuals[state.current]; ind.genome = structuredClone(ind.genome); ind.genome.loci[id][k] = e.target.value; ind.built = null; renderAll(); } }, pool.map((a) => el("option", { value: a, selected: copies[k] === a ? "" : null }, a)))))));
         }
         node.append(lociBox);
@@ -143,7 +145,7 @@ function renderEditor() {
   lockedNode.replaceChildren();
   const locked = f.loci.filter((l) => l.kind === "locked");
   for (const l of locked) {
-    const options = alleleIds(l.id);
+    const options = ids(l.id);
     lockedNode.append(el("div", { class: "locus" }, el("code", {}, l.id), el("select", { onchange: (e) => { spec.fixed[l.id] = e.target.value; if (PART_SWITCHES.has(l.id)) spec.features[l.id] = e.target.value; commit(); } }, options.map((a) => el("option", { value: a, selected: l.copies[0] === a ? "" : null }, a))),
       el("button", { class: "small", onclick: () => openLocus(l.id) }, "Open")));
   }
@@ -164,7 +166,7 @@ function dropInapplicable() { /* buildFrame rejects open traits the plan cannot 
 }
 function lockTrait(t) {
   const ind = state.individuals[state.current]?.genome;
-  for (const id of t.loci) { const copy = ind?.loci[id]?.[0] ?? (t.pool?.[id] ?? alleleIds(id))[0]; state.spec.fixed[id] = copy; if (PART_SWITCHES.has(id)) state.spec.features[id] = copy; }
+  for (const id of t.loci) { const copy = ind?.loci[id]?.[0] ?? (t.pool?.[id] ?? ids(id))[0]; state.spec.fixed[id] = copy; if (PART_SWITCHES.has(id)) state.spec.features[id] = copy; }
   state.spec.open = state.spec.open.filter((x) => x !== t);
   state.spec.openSwitches = (state.spec.openSwitches ?? []).filter((id) => !t.loci.includes(id));
   if (state.selectedTrait === t.id) state.selectedTrait = null;
@@ -174,14 +176,14 @@ function lockTrait(t) {
 function openLocus(id) {
   const locus = LOCI.get(id);
   const chapter = chapterFor(id);
-  const trait = { chapter, id: id.split(".").pop(), name: locus.label ?? id, loci: [id], looks: alleleIds(id), pool: { [id]: alleleIds(id) }, shapeable: locus.nature === "look", override: null, verdict: null };
+  const trait = { chapter, id: id.split(".").pop(), name: locus.label ?? id, loci: [id], looks: ids(id), pool: { [id]: ids(id) }, shapeable: locus.nature === "look", override: null, verdict: null };
   if (state.spec.open.some((t) => t.id === trait.id)) trait.id += "-2";
   delete state.spec.fixed[id];
   if (PART_SWITCHES.has(id)) { state.spec.openSwitches = [...(state.spec.openSwitches ?? []), id]; delete state.spec.features[id]; }
   state.spec.open.push(trait);
   state.selectedTrait = trait.id;
   log(`${id}: opened as the trait "${trait.name}" in ${CHAPTER_NAMES[chapter]}`);
-  if (!commit()) { state.spec.open = state.spec.open.filter((t) => t !== trait); state.spec.fixed[id] = alleleIds(id)[0]; commit(); }
+  if (!commit()) { state.spec.open = state.spec.open.filter((t) => t !== trait); state.spec.fixed[id] = ids(id)[0]; commit(); }
 }
 function setVerdict(t, v) {
   const note = prompt(`Verdict for ${t.name}: ${VERDICTS.find(([k]) => k === v)[1]}. A note?`, t.verdict?.note ?? "") ?? "";
@@ -303,7 +305,7 @@ function startCompare() {
   const r = rng(`${state.frame.species.id}:compare:${t.id}`);
   const rows = Array.from({ length: n }, () => sampleIndividual(state.frame, r));
   // Looks: for one locus, every pair from its pool; for several, the first, the mixed extremes and the last.
-  const pools = t.loci.map((id) => t.pool?.[id] ?? alleleIds(id));
+  const pools = t.loci.map((id) => t.pool?.[id] ?? ids(id));
   let looks;
   if (t.loci.length === 1) { looks = []; for (let i = 0; i < pools[0].length; i++) for (let j = i; j < pools[0].length; j++) looks.push({ label: i === j ? pools[0][i] : `${pools[0][i]} / ${pools[0][j]}`, copies: { [t.loci[0]]: [pools[0][i], pools[0][j]] } }); }
   else looks = [["first", (p) => [p[0], p[0]]], ["mixed", (p) => [p[0], p.at(-1)]], ["last", (p) => [p.at(-1), p.at(-1)]]].map(([label, pick]) => ({ label, copies: Object.fromEntries(t.loci.map((id, k) => [id, pick(pools[k])])) }));

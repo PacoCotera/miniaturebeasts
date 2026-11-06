@@ -43,7 +43,7 @@ describe("drawnLooks(frame, mibi)", () => {
         else assert.equal(got[t.id], traitState(fr, t, m.genome).shows, `pod ${gs} ${t.id}`);
       }
     }
-    assert.deepEqual(Object.keys(drawnLooks(fr, mibi(1))).sort(), ["colour", "crown", "eye-rings", "markings"], "the Loika's four look traits");
+    assert.deepEqual(Object.keys(drawnLooks(fr, mibi(1))).sort(), ["colour", "crown", "ears", "eye-rings", "markings"], "the Loika's five look traits (the ears since frame version 6; the stand has no ear layer)");
   });
 
   test("an unread chapter draws the species' common look, never this mibi's own", () => {

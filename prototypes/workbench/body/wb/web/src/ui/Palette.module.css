@@ -1,0 +1,10 @@
+.scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 40; }
+.palette { position: fixed; left: 50%; top: 120px; width: min(640px, calc(100vw - 32px)); transform: translateX(-50%); background: var(--raised); border-radius: var(--r-3); box-shadow: var(--shadow-2); border: 1px solid var(--line); z-index: 41; overflow: hidden; }
+.input { width: 100%; font: 400 var(--t-20) var(--font); padding: 18px 20px; border: none; border-bottom: 1px solid var(--line); background: transparent; color: var(--text); outline: none; }
+.list { padding: var(--s-2); max-height: 380px; overflow: auto; }
+.list [cmdk-group-heading] { font-size: var(--t-14); color: var(--text-3); padding: 10px 12px 4px; }
+.item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--r-1); cursor: pointer; }
+.item[data-selected=true] { background: var(--sel); }
+.k { margin-left: auto; color: var(--text-3); font-size: var(--t-14); }
+.foot { border-top: 1px solid var(--line); padding: 10px 20px; font-size: var(--t-14); color: var(--text-3); display: flex; gap: 18px; }
+.every { margin-left: auto; }

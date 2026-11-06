@@ -21,7 +21,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.reso
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("pods.json"), frameSpec = J("frame.json"), schema = J("pods.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
-const SPECIES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => f.slice(8, 11));
+const SPECIES = readdirSync(framesDir).filter((f) => f.startsWith("species-") && !JSON.parse(readFileSync(path.join(framesDir, f), "utf8")).species.draft).map((f) => f.slice(8, 11));   // a draft species is not loaded
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
@@ -187,7 +187,7 @@ test("the reading screen (ux-reading-v2.md): the ground, the chamber of its plac
   const s = body(model(st, { view: "room" }, "key")); assert.equal(s.props.state, "read"); assert.equal(s.props.regions.read.right.form, "identify"); assert.deepEqual(s.props.focus.targets.map((t) => t.id), ["key"]); assert.equal(s.line.ok, "Identify");
   ident(st); const rb = body(model(st, { view: "room", lane: 0 }, "rail")), r = rb.props.regions.read, chamberOf = (b) => b.requests.find((q) => q.id === b.props.regions.read.chamber);
   assert.deepEqual([r.base, r.glyph, r.name], ["reading-ground-1024x522", "reading-podline-26x32", "Loika"]); { const q = chamberOf(rb); assert.deepEqual([q.place, q.hand, q.part, q.outline, q.read], ["overview", "coat", "coat", true, []], "the overview, Coat tinted and outlined"); }
-  assert.deepEqual(r.rail.lanes.map((l) => [l.id, l.n, l.state]), [["coat", 2, "unread"], ["face", 2, "unread"], ["movement", 1, "unread"], ["stamina", 1, "unread"]]); assert.equal(r.rail.hand, 0); assert.equal(r.rail.trait, -1);
+  assert.deepEqual(r.rail.lanes.map((l) => [l.id, l.n, l.state]), [["coat", 2, "unread"], ["face", 3, "unread"], ["movement", 1, "unread"], ["stamina", 1, "unread"]]); assert.equal(r.rail.hand, 0); assert.equal(r.rail.trait, -1);
   assert.equal(r.right.form, "unread"); assert.equal(r.right.plates.length, 2); assert.equal(r.right.key.price, "2"); assert.equal(r.right.chapter.name, "Coat");
   assert.equal(chamberOf(body(model(st, { view: "room", lane: 1, at: "right" }, "key"))).place, "close", "Face open: the close place");
   const mb = body(model(st, { view: "room", lane: 2 }, "rail")), mv = mb.props.regions.read; assert.equal(mv.right.beside.text, "free when it grows", "the sprout beside the key of the chapter growing teaches"); assert.deepEqual([chamberOf(mb).hand, chamberOf(mb).part], ["movement", "legs"], "Movement: the legs");

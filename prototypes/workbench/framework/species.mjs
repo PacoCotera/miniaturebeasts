@@ -6,7 +6,7 @@
 // else by seed and opens its traits by tier. Individuals vary only at the open loci, from the
 // species' pools. The three authored frames (the files hopper, puffcap and glowtail in frames.py, here S01, S02
 // and S03: Loika, Untuva and Tuikis) keep their open traits and fixed values.
-import { CATALOGUE, LOCI, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, isContinuous, valueRange, samePair } from "./catalogue.mjs";
+import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, isContinuous, valueRange, samePair, lookConflicts } from "./catalogue.mjs";
 import { poolBound } from "./envelope.mjs";
 import { cross } from "./cross.mjs";
 import { planFacts } from "./plans.mjs";
@@ -62,6 +62,7 @@ export const VOCAB = [
   ["coat", "cap-spots", "Flecks", ["appearance.cap-spots"], ["bare", "spots"]],
   ["coat", "leaf-covering", "Leaf covering", ["appearance.leaf-covering"], ["bare", "leafy"]],
   ["coat", "fur-reach", "Tufts", ["appearance.fur-reach"], ["body only", "tail", "tail and ears"]],
+  ["coat", "fur-hang", "Hang", ["growth.fur-skirt-flare"], ["close", "between", "wide"]],   // frame version 6 (genome-fluffy.md): working words, for the copywriter; the drop is fixed per species, no trait opens it
   ["coat", "mask", "Mask", ["appearance.face-mask-shape"], ["a band", "stripes"]],
   ["coat", "rings", "Tail rings", ["growth.tail-ring-count"], ["a pale tip", "two rings", "four rings"]],
   ["coat", "feathers", "Feathers", ["appearance.feather-length"], ["short", "between", "long"]],
@@ -71,9 +72,10 @@ export const VOCAB = [
   ["face", "crown", "Crown", ["growth.crown-height-ratio"], ["low", "between", "tall"]],
   ["face", "ears", "Ears", ["anatomy.auricular-form", "growth.auricular-length-ratio"], ["short, round", "between", "long, pointed"]],
   ["face", "head", "Head", ["growth.head-length-ratio", "growth.head-width-ratio", "growth.head-depth-ratio", "growth.head-lift-ratio"], ["small, low", "between", "big, raised"]],
-  ["face", "antennae", "Antennae", ["growth.antenna-length-ratio", "anatomy.antenna-form"], ["short threads", "between", "long feathers"]],
+  ["face", "antennae", "Antennae", ["growth.antenna-length-ratio", "anatomy.antenna-form"], ["short threads", "between", "long curls"]],
   ["face", "ear-tilt", "Ears", ["anatomy.ear-tilt"], ["upright", "drooping"]],
   ["face", "horns", "Horns", ["growth.horn-curl", "anatomy.horn-branching"], ["straight", "between", "curled antlers"]],
+  ["face", "brow-tufts", "Brows", ["growth.brow-tuft-length"], ["short tassels", "between", "long tassels"]],   // the switch itself is opened only by an authored trait (a species that has tassels keeps them)
   ["face", "beak", "Beak", ["growth.beak-length-ratio"], ["short", "between", "long"]],
   ["face", "feather-crest", "Crest", ["growth.feather-crest"], ["low", "between", "tall"]],
   ["shape", "size", "Size", ["growth.core-half-length"], ["small", "between", "large"]],
@@ -93,6 +95,7 @@ export const VOCAB = [
   ["legs-tail", "feelers", "Feelers", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.free-radius-ratio"], ["short, fine", "between", "long, thick"]],
   ["legs-tail", "rays", "Rays", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.support-radius-ratio"], ["short, fine", "between", "long, stout"]],
   ["legs-tail", "tail", "Tail", ["growth.axial-tail-length-ratio", "growth.axial-tail-width-ratio"], ["short, thin", "between", "long, thick"]],
+  ["legs-tail", "tail-curl-turn", "Curl", ["growth.tail-curl-turn"], ["loose", "between", "tight"]],
   ["legs-tail", "tail-curl", "Carriage", ["growth.axial-tail-bend"], ["hangs", "straight", "curls up"]],
   ["movement", "pace", "Pace", ["movement.cycle-rate"], ["steady", "between", "quick"]],
   ["movement", "turning", "Turning", ["movement.turn-control"], ["wide turns", "between", "tight turns"]],
@@ -145,7 +148,11 @@ export function buildFrame(spec, options = {}) {
   for (const [id, state] of Object.entries(switchesOn)) if (state === "on") vAll[SWITCH_TARGETS[id]] = true;
   for (const id of [...authoredOpenLoci, ...(spec.openSwitches ?? [])]) if (isPartSwitch(id)) vAll[SWITCH_TARGETS[id]] = true;
   // Loci the all-on probe carries, from trunk and the clan's branch.
-  const inScope = VALIDATED.filter((l) => l.scope === "trunk" || l.clan === spec.clan);
+  const version = spec.frameVersion ?? FRAME_VERSION; // a frame lists no absent line for a record newer than itself (genome-fluffy.md)
+  // A species may borrow branch records of another clan (spec `borrows`, genome-fluffy.md): the record keeps its own clan, the species lists it.
+  const borrowed = new Set(spec.borrows ?? []);
+  for (const id of borrowed) { const l = LOCI.get(id); if (!l || l.scope !== "branch" || l.clan === spec.clan) throw new Error(`${spec.id}: borrows ${id}, which is not a branch record of another clan`); }
+  const inScope = VALIDATED.filter((l) => (l.sinceFrame ?? 0) <= version && (inClan(l, spec.clan) || borrowed.has(l.id)));
   const carriedIds = [], absent = [];
   const probeOn = (id) => carried(id, vAll);
   for (const l of inScope) {
@@ -154,7 +161,7 @@ export function buildFrame(spec, options = {}) {
     const [on, why] = probeOn(l.id);
     if (on) carriedIds.push(l.id); else absent.push({ id: l.id, why });
   }
-  for (const l of VALIDATED) if (l.scope === "branch" && l.clan !== spec.clan) absent.push({ id: l.id, why: `absent: a ${l.clan} branch locus` });
+  for (const l of VALIDATED) if (l.scope === "branch" && !inClan(l, spec.clan) && !borrowed.has(l.id) && (l.sinceFrame ?? 0) <= version) absent.push({ id: l.id, why: `absent: a ${l.clan} branch locus` });
   const r = rng(`${spec.clan}:${spec.id}:${spec.seed ?? 1}`);
   // Fixed values: clan finish and species facts; the rest by seed.
   const fixed = { ...spec.fixed };
@@ -194,8 +201,8 @@ export function buildFrame(spec, options = {}) {
   const colourPool = [spec.anchor, ...[1, -1, 2].map((d) => WHEEL[(k + d + WHEEL.length) % WHEEL.length])].slice(0, 1 + Math.floor(r() * 3) + 1);
   const pools = {};
   for (const t of traits) for (const id of t.loci) {
-    const all = alleleIds(id);
-    pools[id] = t.pool?.[id] ?? (id === "appearance.body-palette" ? colourPool : id === "appearance.underside-palette" ? [fixed["appearance.underside-palette"], ...shuffle(r, SECONDS.filter((p) => p !== fixed["appearance.underside-palette"])).slice(0, 2)] : poolBound(id, all, { clan: spec.clan, limbSet: plan.limbSet })); // E8
+    const all = alleleIds(id, version);
+    pools[id] = t.pool?.[id] ?? spec.pools?.[id] ?? (id === "appearance.body-palette" ? colourPool : id === "appearance.underside-palette" ? [fixed["appearance.underside-palette"], ...shuffle(r, SECONDS.filter((p) => p !== fixed["appearance.underside-palette"])).slice(0, 2)] : poolBound(id, all, { clan: spec.clan, limbSet: plan.limbSet })); // E8
     if (!pools[id].every((a) => all.includes(a))) throw new Error(`${spec.id}: pool of ${id} is not in the catalogue`);
   }
   const openIds = Object.keys(pools);
@@ -208,11 +215,11 @@ export function buildFrame(spec, options = {}) {
     if (a === undefined) {
       if (isPartSwitch(id)) a = switchesOn[id] ?? "off";
       else if (id === "appearance.cap-palette") a = spec.anchor in BODY_PIGMENTS ? ["coral", "raspberry", "marigold", "plum"][Math.floor(r() * 4)] : "coral";
-      else a = pick(r, alleleIds(id));
+      else a = pick(r, alleleIds(id, version));
       if (spec.reset?.[id] !== undefined) a = spec.reset[id];   // the seeded roll is still taken, so no other locked copy moves; the species' value replaces what it rolled
     }
     const pair = Array.isArray(a) ? [...a].sort() : [a, a];
-    if (pair.length !== 2 || !pair.every((x) => alleleIds(id).includes(x))) throw new Error(`${spec.id}: ${id} cannot be ${JSON.stringify(a)}`);
+    if (pair.length !== 2 || !pair.every((x) => alleleIds(id, version).includes(x))) throw new Error(`${spec.id}: ${id} cannot be ${JSON.stringify(a)}`);
     locked[id] = pair;
   }
   // Typical copies of the type specimen at open loci (the species' proportions where the trait is open).
@@ -225,10 +232,10 @@ export function buildFrame(spec, options = {}) {
   const frame = {
     ...(spec.frameVersion ? { frameVersion: spec.frameVersion } : {}),
     schema: SCHEMA,
-    species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "" },
+    species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "", ...(spec.parked ? { parked: true } : {}), ...(spec.draft ? { draft: true } : {}), ...(spec.borrows?.length ? { borrows: [...spec.borrows] } : {}) },
     taxonomy: { ...spec.taxonomy, clan: spec.clan, planKey: spec.plan.key, planCode: plan.code, rig: plan.rig, tier: spec.tier ?? "authored", seed: spec.seed ?? null, states: plan.states },
-    catalogue: { id: CATALOGUE.id, version: CATALOGUE.version, parent: CATALOGUE.parent },
-    plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float, stand: !!spec.plan.extras?.stand, flapPairs: plan.extras.flapPairs, flapRest: plan.extras.flapRest }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations },
+    catalogue: catalogueHeader(version),
+    plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float, stand: !!spec.plan.extras?.stand, flapPairs: plan.extras.flapPairs, flapRest: plan.extras.flapRest, ...(plan.extras.upright ? { upright: true } : {}) }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations, ...(plan.armSet ? { armSet: plan.armSet, armStations: plan.armStations } : {}) },
     signature: { anchor: spec.anchor, second: spec.second ?? null, feature: spec.feature, features: switchesOn, finish: spec.finish ?? {} },
     glyph: spec.glyph, habits: [...(spec.habits ?? [])], pod: null, chapters: [], loci: [], absent, counts: null, notYet: null, typeSpecimen: null, viability: null,
     _pools: pools, _locked: locked, _traits: traits, _sealed: spec.sealed ?? {}, _typical: typical,
@@ -307,9 +314,10 @@ function finishFrame(frame, spec) {
       const [onNow] = ownerOn(id, vOn), [offNow] = ownerOn(id, vOff);
       if (!onNow) throw new Error(`${frame.species.id}: open locus ${id} is switched off by the frame (an invisible trait)`);
       const shapeable = SELF_CHANGING[t.id] ? false : t.shapeable ?? nature === "look";
-      const kind = t.chapter in sealed ? "sealed" : !offNow && !isPartSwitch(id) ? "sleeping" : `heritable-${nature}`;
+      const kind = t.chapter in sealed ? "sealed" : (!offNow && !isPartSwitch(id)) || locus.wakesWhen ? "sleeping" : `heritable-${nature}`;
       row.kind = kind; row.nature = nature; row.chapter = t.chapter; row.trait = t.id; row.shapeable = shapeable; row.alleles = pools[id]; row.looks = looksFor(locus, pools[id]);
-      row.guard = kind === "sleeping" ? `asleep in any individual whose ${t.loci.find((x) => isPartSwitch(x)) ?? "owner switch"} is off; drawn when it is on` : locus.consumer;
+      row.guard = kind === "sleeping" ? (locus.wakesWhen ? `asleep unless the shown look is one of: ${Object.entries(locus.wakesWhen).map(([k, looks]) => `${k} ${looks.join(" or ")}`).join("; ")}` : `asleep in any individual whose ${t.loci.find((x) => isPartSwitch(x)) ?? "owner switch"} is off; drawn when it is on`) : locus.consumer;
+      if (locus.wakesWhen) row.wakesWhen = locus.wakesWhen;
       row.changedBy = changedByOf(row, { id: t.id, shapeable });
       if (spec.legacy?.[id]) row.legacy = [...spec.legacy[id]];   // alleles a living line may still carry from an earlier frame version: legal, never drawn for a new pod
       if (typical[id]) row.typical = typical[id];
@@ -321,6 +329,9 @@ function finishFrame(frame, spec) {
     rows.push(row);
   }
   frame.loci = rows;
+  // One look, one record: a frame opens at most one record of each pair the catalogue lists (LOOK_PAIRS).
+  const conflicts = lookConflicts(rows.filter((r) => r.kind !== "locked").map((r) => r.id));
+  if (conflicts.length) throw new Error(`${frame.species.id}: opens two records for one look: ${conflicts.map((c) => `${c.look} (${c.ids.join(" and ")})`).join("; ")}`);
   const chapters = [];
   for (const ch of RING) {
     const ts = traits.filter((t) => t.chapter === ch);
@@ -337,7 +348,7 @@ function finishFrame(frame, spec) {
     open: count((x) => x.kind !== "locked"), traits: traits.length,
     byChapter: Object.fromEntries(chapters.map((c) => [c.name, { loci: c.traits.reduce((s, t) => s + t.loci.length, 0), traits: c.traits.length }])),
     fieldGuideLooks: rows.filter((x) => x.kind !== "locked").reduce((s, x) => s + x.looks.length, 0),
-    stampBitsPerCopy: rows.filter((x) => x.kind !== "locked").reduce((s, x) => s + Math.max(1, Math.ceil(Math.log2(alleleIds(x.id).length))), 0),
+    stampBitsPerCopy: rows.filter((x) => x.kind !== "locked").reduce((s, x) => s + Math.max(1, Math.ceil(Math.log2(alleleIds(x.id, frameVersionOf(frame)).length))), 0),
   };
   const fams = new Set(rows.map((x) => x.family));
   frame.notYet = { domains: CATALOGUE.families.map((f) => f.id).filter((f) => !fams.has(f)), drafts: DRAFTS.filter((d) => !["appearance.transparency", "energy.uptake-profile"].includes(d)), closedDrafts: { "appearance.transparency": "flap translucency (appearance.flap-translucency)", "energy.uptake-profile": "light feeding (energy.light-feeding)" }, pending: spec.pending ?? [] };
@@ -353,10 +364,6 @@ function finishFrame(frame, spec) {
 }
 
 // --- individuals ---------------------------------------------------------------------------------
-// Catalogue 12 retired the feather antenna: a saved genome that carries it reads as curl (the one place an old copy is mapped).
-export const readGenome = (g) => g?.loci?.["anatomy.antenna-form"]?.includes("feather") ? { ...g, loci: { ...g.loci, "anatomy.antenna-form": g.loci["anatomy.antenna-form"].map((a) => (a === "feather" ? "curl" : a)) } } : g;
-// 11 was never a pin on this line (it is the genome-string pin on the studio line); anything stamped 11 in the short window before the bump to 12 reads as 12.
-export const readPin = (v) => (v === 11 ? 12 : v);
 export const openLoci = (frame) => frame.loci.filter((l) => l.kind !== "locked");
 
 // The type specimen is the plan's default body: every open part switch on, every open locus at the
@@ -417,6 +424,7 @@ export function buildIndividual(frame, genome, opts = {}) {
   const resolved = resolveIndividual(frame, genome);
   if (opts.pose) resolved.pose = opts.pose; // "sleep" or "curl": a sail's flaps lie flat like a roof
   resolved.species = frame.species.id; // the kind, for the envelope's caps by kind
+  resolved.frameVersion = frameVersionOf(frame); // a drawing change that must not move older frames reads it (the ear's root at frame version 6)
   const scene = buildBody(resolved);
   const validation = validateBody(scene);
   return { resolved, scene, validation };
@@ -467,6 +475,7 @@ export function specFromFrame(frame) {
     anchor: frame.signature.anchor, second: frame.signature.second, feature: frame.signature.feature,
     features: { ...frame.signature.features }, finish: { ...frame.signature.finish }, fixed: locked, openSwitches,
     open: frame.chapters.flatMap((ch) => ch.traits.map((t) => ({ chapter: ch.id, id: t.id, name: t.name, loci: [...t.loci], looks: [...t.looks], pool: Object.fromEntries(t.loci.map((id) => [id, [...frame.pools[id]]])), shapeable: t.shapeable, override: t.override ?? null, verdict: t.verdict ?? null }))),
+    ...(frame.species.borrows ? { borrows: [...frame.species.borrows] } : {}),
     sealed: { ...frame.sealed }, glyph: frame.glyph, pod: frame.pod ? { second: frame.pod.colourPair[1].pigment } : null, pending: frame.notYet?.pending ?? [],
   };
 }
