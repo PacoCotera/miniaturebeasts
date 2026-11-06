@@ -15,7 +15,7 @@
 // Frames are append-only: this file writes version 8 and nothing older (build-frames keeps every other
 // frame as it was; the stamp registry keeps the older versions of these four).
 import { readFileSync } from "node:fs";
-import { CATALOGUE, LOCI, BODY_PIGMENTS, SECOND_PIGMENTS, alleleIds, resolveCopies, LANGUAGE_FRAME, valueRange, copyValue } from "./catalogue.mjs";
+import { LAYOUT_WORD, CATALOGUE, LOCI, BODY_PIGMENTS, SECOND_PIGMENTS, alleleIds, resolveCopies, LANGUAGE_FRAME, valueRange, copyValue } from "./catalogue.mjs";
 import { LANGUAGE, kindOf, landOf, exceptionsFor, isExcepted, hexToOklch, BODY_RANGE, IRIS_SWATCH, PUPIL_HEX, HIGHLIGHT_HEX } from "./language.mjs";
 export { IRIS_SWATCH, PUPIL_HEX, HIGHLIGHT_HEX };
 import { ALL_SPECIES, specOf, GLYPHS, HABITS, DEFAULT_HABITS } from "./roster.mjs";
@@ -49,7 +49,9 @@ export const DEFAULT_SHARE = 0.6, MIN_SHARE = 0.05;
 export const LAYOUT_SHARES = { plain: 0.35, "back-spots": 0.20, saddle: 0.15, gradient: 0.12, bands: 0.10, patches: 0.08 };
 export const LAYOUT_POOL = ["bands", "patches", "saddle", "gradient", "back-spots"];
 // The Markings trait reads the layout, not the switch (release 21a): plain (the switch off), then the five layouts. Words OWED to the copywriter.
-export const MARKINGS_LOOKS = ["plain", "back spots", "saddle", "gradient", "bands", "patches"];
+export const MARKINGS_LOOKS = ["plain", "back-spots", "saddle", "gradient", "bands", "patches"].map((l) => LAYOUT_WORD[l]);
+// Tint's two ends by land: the way the colour moves 12 degrees either side of the land's own (the copywriter, 6 Nov 2026)
+export const TINT_ENDS = { mixed: ["redder", "yellower"], woods: ["redder", "yellower"], tallwood: ["yellower", "greener"], thickets: ["bluer", "redder"], fells: ["redder", "yellower"], downs: ["bluer", "pinker"], marsh: ["yellower", "greener"], tarns: ["greener", "bluer"], meres: ["greener", "bluer"] };
 
 // Records locked at a neutral value in every language frame (the value is the one the language allows).
 const NEUTRAL = {
@@ -237,8 +239,8 @@ export function languageSpec(kindId) {
   const countBand = Array.isArray(sig.count) ? sig.count : null;
   const open = [];
   const trait = (chapter, id, name, loci, pool = {}, extra = {}) => open.push({ chapter, id, name, loci, ...(Object.keys(pool).length ? { pool } : {}), ...extra });
-  trait("coat", "body-hue", "Body hue", ["appearance.body-hue"]);
-  trait("coat", "body-value", "Coat value", ["appearance.body-value"]);
+  trait("coat", "body-hue", "Tint", ["appearance.body-hue"]);
+  trait("coat", "body-value", "Shade", ["appearance.body-value"]);
   trait("coat", "markings", "Markings", ["appearance.marking-switch", "appearance.marking-layout"], { "appearance.marking-switch": ["on", "off"], "appearance.marking-layout": [...LAYOUT_POOL] }, { looks: [...MARKINGS_LOOKS] });
   trait("face", "iris", "Iris", ["appearance.iris-colour"], { "appearance.iris-colour": [...iris.kept] });
   trait("face", "attitude", "Attitude", ["appearance.attitude"], { "appearance.attitude": [...k.eyes.attitudePool] });
@@ -246,7 +248,7 @@ export function languageSpec(kindId) {
   if (bands["form.eye-spacing"]) trait("face", "eye-spacing", "Eye spacing", ["form.eye-spacing"]);
   if (isExcepted(LANGUAGE, kindId, "face.size") && kindId === "S01") trait("face", "eye-rings", "Eyes", ["growth.exterior-eye-size-ratio"], { "growth.exterior-eye-size-ratio": ["large", "huge"] }, { looks: ["thin rings", "between", "wide pale rings"] });
   if (kindId === "S01") trait("face", "ears", "Ears", ["growth.auricular-length-ratio"], { "growth.auricular-length-ratio": ["small", "short", "medium"] }, { looks: ["small ears", "between", "larger ears"] });
-  if (kindId === "S18") trait("face", "brow-tassels", "Brow tassels", ["anatomy.brow-tuft-presence", "growth.brow-tuft-length"]);
+  if (kindId === "S18") trait("face", "brow-tassels", "Tassels", ["anatomy.brow-tuft-presence", "growth.brow-tuft-length"]);
   if (clamps["signature.size"]) trait("shape", "signature-size", "Signature size", ["signature.size"]);
   if (countBand) trait("shape", "signature-count", "Signature count", ["signature.count"], { "signature.count": alleleIds("signature.count").filter((a) => Number(a) >= countBand[0] && Number(a) <= countBand[1]) });
   if (clamps["signature.curl"]) trait("legs-tail", "signature-curl", "Signature curl", ["signature.curl"]);
@@ -324,6 +326,9 @@ export function buildLanguageFrame(kindId, options = {}) {
     if (t.loci.length !== 1 || LOCI.get(t.loci[0])?.operator !== "copy-mean" || !t.looks.some((l) => l.startsWith("between "))) continue;
     const locus = LOCI.get(t.loci[0]), pool = frame.pools[t.loci[0]];
     t.looks = [...pool].sort((a, b) => copyValue(locus, a) - copyValue(locus, b));
+    // the copywriter's step words (6 Nov 2026): Tint's ends name the way the colour moves in this land; Signature size reads small and big
+    if (t.id === "body-hue") { const ends = TINT_ENDS[kindOf(LANGUAGE, kindId).land]; if (!ends) throw new Error(`${kindId}: no Tint words for its land`); t.looks = t.looks.map((l) => (l === "low" ? ends[0] : l === "high" ? ends[1] : l)); }
+    if (t.id === "signature-size") t.looks = t.looks.map((l) => (l === "low" ? "small" : l === "high" ? "big" : l));
   }
   return frame;
 }

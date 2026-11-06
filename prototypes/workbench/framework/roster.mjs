@@ -277,11 +277,12 @@ export function specOf(species, { language = false } = {}) {
 // the pod pair): those frames are in the stamp registry and in saves, and stay byte for byte. A frame of version 8 reads these
 // instead, all from the registry: what the kind is made of from its family, face and signature; its colours and its home from its land.
 const withoutResembles = ({ resembles, ...rest }) => rest;
-// Strings the copywriter owes: the frame's feature line and the describe line that used to name a real animal. Working wording until then.
+// The copywriter's words (words-release.md, 6 Nov 2026) for the frame's feature line and the describe line that used to name a real animal. A signature type that opens with "the" drops it after "its".
 export const OWED = {
-  "roster.feature": "a {family} with {signature}",
-  "describe.type-line": "It is the type of its kind: {feature}.",
+  "roster.feature": "a {family} body, with its {signature}",
+  "describe.type-line": "It looks just as its species should: {feature}.",
 };
+export const featureOf = (fam, k) => OWED["roster.feature"].replace("{family}", fam.name).replace("{signature}", k.signature.type.replace(/^the /, ""));
 const FAMILY_PART_SWITCH = { tail: "anatomy.axial-tail-presence", antennae: "anatomy.antenna-presence", shell: "anatomy.shell-presence", coat: "anatomy.fur-skirt-presence" };
 // a floater is a charged body (its record is the family's, not a part)
 const FAMILY_SWITCH = { floater: "physiology.charged-body" };
@@ -296,7 +297,7 @@ export function languageFields(id, clan, species) {
   const k = kindOf(LANGUAGE, id);
   if (!k) return null;
   const land = landOf(LANGUAGE, k.land), fam = familyOf(LANGUAGE, k.family);
-  const feature = OWED["roster.feature"].replace("{family}", fam.name).replace("{signature}", k.signature.type);
+  const feature = featureOf(fam, k);
   const owns = LANGUAGE.exceptions.some((e) => e.kind === id && e.check === "coat.land");   // an anchor keeps its own colours
   // features: the face (eyes), the parts the family says it has, the socket of the signature; an anchor keeps what its signed exceptions cover
   const features = { "anatomy.exterior-eye-presence": "on" };

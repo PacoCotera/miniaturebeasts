@@ -43,7 +43,7 @@ test("the Station loads all twenty, in the species list the saves use (the first
 
 test("every kind draws a pod that builds, and every kind's Markings trait names the six looks of the layout", async () => {
   setFrames(FRAMES);
-  const { traitState } = await import("../src/genome.mjs"), six = ["plain", "back spots", "saddle", "gradient", "bands", "patches"];
+  const { traitState } = await import("../src/genome.mjs"), six = ["plain", "spotted", "saddle", "shaded", "bands", "patches"];
   for (const id of IDS) {
     const fr = frameOf(id), g = podGenome(fr, 11); assert.equal(buildIndividual(fr, g).validation.status, "valid", id);
     const m = fr.chapters.flatMap((c) => c.traits).find((t) => t.id === "markings");
@@ -59,7 +59,23 @@ test("an Untuva with the saddle layout and the marking switch on reads Markings 
   const withLoci = (on, layout) => ({ ...g, loci: { ...g.loci, "appearance.marking-switch": [on, on], "appearance.marking-layout": [layout, layout] } });
   assert.equal(traitState(fr, m, withLoci("on", "saddle")).shows, "saddle");
   assert.equal(traitState(fr, m, withLoci("off", "saddle")).shows, "plain");
-  for (const [layout, word] of [["back-spots", "back spots"], ["gradient", "gradient"], ["bands", "bands"], ["patches", "patches"]]) assert.equal(traitState(fr, m, withLoci("on", layout)).shows, word);
+  for (const [layout, word] of [["back-spots", "spotted"], ["gradient", "shaded"], ["bands", "bands"], ["patches", "patches"]]) assert.equal(traitState(fr, m, withLoci("on", layout)).shows, word);
+});
+
+test("the copywriter's words: Tint, Shade and Tassels are one word; Tint's ends follow the land; the asleep Markings line says spotted and shaded, never the raw ids", async () => {
+  setFrames(FRAMES);
+  const { traitState } = await import("../src/genome.mjs");
+  for (const id of IDS) {
+    const fr = frameOf(id), all = fr.chapters.flatMap((c) => c.traits), t = (x) => all.find((q) => q.id === x);
+    assert.equal(t("body-hue").name, "Tint"); assert.equal(t("body-value").name, "Shade");
+    assert.deepEqual(t("body-hue").looks.filter((l) => l !== "between").length, 2, `${id}: Tint has two ends and a middle`);
+    assert.ok(!t("body-hue").looks.some((l) => l === "low" || l === "high"), `${id}: no bare low or high`);
+    if (t("signature-size")) assert.ok(t("signature-size").looks.every((l) => ["small", "between", "big"].includes(l)), `${id}: ${t("signature-size").looks}`);
+    if (id === "S18") assert.equal(t("brow-tassels").name, "Tassels");
+  }
+  const fr = frameOf("S02"), m = fr.chapters.flatMap((c) => c.traits).find((q) => q.id === "markings"), g = podGenome(fr, 3);
+  const asleep = traitState(fr, m, { ...g, loci: { ...g.loci, "appearance.marking-switch": ["off", "off"], "appearance.marking-layout": ["back-spots", "gradient"] } });
+  assert.equal(asleep.asleep, "spotted or shaded");
 });
 
 test("Tuliko's frame is its own (key 20.8): the stamp reads it back and the form frames' S20 fixture key is not the Station's", () => {

@@ -121,12 +121,12 @@ test("the kind check is retired: no hand-drawn animal targets remain", () => {
 
 test("the frames of version 8 take their fields from the registry: no resembles, the land's home and colours, a feature line from family and signature", async () => {
   const { LANGUAGE, kindOf, landOf, familyOf } = await import("../framework/language.mjs");
-  const { OWED, CLANS } = await import("../framework/roster.mjs");
+  const { OWED, CLANS, featureOf } = await import("../framework/roster.mjs");
   for (const s of SPECIES) {
     const k = kindOf(LANGUAGE, s.id), land = landOf(LANGUAGE, k.land), f = frameFile(`language/species-${s.id}.json`), old = frameFile(`species-${s.id}.json`);
     assert.equal(f.taxonomy.resembles, undefined, `${s.id}: v8 names no real animal`);
     assert.equal(f.taxonomy.habitat, land.word, `${s.id}: the habitat is the land's player word`);
-    assert.equal(f.signature.feature, OWED["roster.feature"].replace("{family}", familyOf(LANGUAGE, k.family).name).replace("{signature}", k.signature.type), `${s.id}: the feature line`);
+    assert.equal(f.signature.feature, featureOf(familyOf(LANGUAGE, k.family), k), `${s.id}: the feature line`);
     assert.ok(f.signature.features["anatomy.exterior-eye-presence"] === "on", `${s.id}: the face`);
     if (!k.anchor) {
       assert.equal(f.pod.colourPair[0].hex, land.body.hex, `${s.id}: the pod's first colour is the land's body`);

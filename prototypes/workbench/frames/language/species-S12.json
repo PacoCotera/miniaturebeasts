@@ -90,7 +90,7 @@
  "signature": {
   "anchor": "marigold",
   "second": "cream",
-  "feature": "a four-wing with curled plume",
+  "feature": "a four-wing body, with its curled plume",
   "features": {
    "anatomy.exterior-eye-presence": "on"
   },
@@ -137,14 +137,14 @@
    "traits": [
     {
      "id": "body-hue",
-     "name": "Body hue",
+     "name": "Tint",
      "loci": [
       "appearance.body-hue"
      ],
      "looks": [
-      "low",
+      "redder",
       "between",
-      "high"
+      "yellower"
      ],
      "nature": "look",
      "shapeable": true,
@@ -152,7 +152,7 @@
     },
     {
      "id": "body-value",
-     "name": "Coat value",
+     "name": "Shade",
      "loci": [
       "appearance.body-value"
      ],
@@ -174,9 +174,9 @@
      ],
      "looks": [
       "plain",
-      "back spots",
+      "spotted",
       "saddle",
-      "gradient",
+      "shaded",
       "bands",
       "patches"
      ],
@@ -264,8 +264,8 @@
       "signature.size"
      ],
      "looks": [
-      "low",
-      "high"
+      "small",
+      "big"
      ],
      "nature": "look",
      "shapeable": true,

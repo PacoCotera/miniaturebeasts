@@ -85,7 +85,7 @@
  "signature": {
   "anchor": "russet",
   "second": "slate",
-  "feature": "a two-part crawler with antennae with weighted tips",
+  "feature": "a two-part crawler body, with its antennae with weighted tips",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.antenna-presence": "on"
@@ -132,14 +132,14 @@
    "traits": [
     {
      "id": "body-hue",
-     "name": "Body hue",
+     "name": "Tint",
      "loci": [
       "appearance.body-hue"
      ],
      "looks": [
-      "low",
+      "bluer",
       "between",
-      "high"
+      "redder"
      ],
      "nature": "look",
      "shapeable": true,
@@ -147,7 +147,7 @@
     },
     {
      "id": "body-value",
-     "name": "Coat value",
+     "name": "Shade",
      "loci": [
       "appearance.body-value"
      ],
@@ -169,9 +169,9 @@
      ],
      "looks": [
       "plain",
-      "back spots",
+      "spotted",
       "saddle",
-      "gradient",
+      "shaded",
       "bands",
       "patches"
      ],
@@ -260,8 +260,8 @@
       "signature.size"
      ],
      "looks": [
-      "low",
-      "high"
+      "small",
+      "big"
      ],
      "nature": "look",
      "shapeable": true,

@@ -190,11 +190,11 @@ test("the Hatch now | Wait panel's pictures: the hatched look (the opened pod, t
 test("the Hatch now | Wait panel when short of Essence: Hatch now is dimmed with the short icon, the ring opens on Wait (the Incubator itself refuses before it opens)", () => {
   const h = growNowHost({ s: 1 }), v = gview(h); assert.deepEqual([v.cards[0].dim, v.cards[0].short], [true, "❀"]); assert.equal(v.overlay.focus.cur, "card.wait");
 });
-test("the reset notice (panel.json reset, words OWED to the copywriter): one card with no picture, the props validate, the line is the card's, no number or talk of versions, ✓ closes it and spends nothing", () => {
+test("the reset notice (panel.json reset, the copywriter's words): one card with no picture, the props validate, the line is the card's, no number or talk of versions, ✓ closes it and spends nothing", () => {
   const st = world(), h = host(st); h.ui.screen = "home"; openPanel(h, "home", "reset");
   assert.deepEqual([h.ui.panel.screen, h.ui.panel.id, h.ui.panel.focus], ["home", "reset", "card.begin"]);
   const v = view(h); assert.deepEqual(validate(v.overlay, schema, schema), [], "the overlay validates against panel.props.json");
-  assert.equal(v.cards.length, 1); assert.equal(v.overlay.regions.title, "The world has changed"); assert.equal(v.cards[0].name, "Begin"); assert.equal(v.line.ok, "Begin");
+  assert.equal(v.cards.length, 1); assert.equal(v.overlay.regions.title, "The world has changed"); assert.equal(v.cards[0].name, "Begin"); assert.equal(v.cards[0].line, "New mibis live in it now"); assert.equal(v.line.ok, "Begin");
   assert.ok(v.cards[0].bare && !v.cards[0].picture, "no picture, no art of its own");
   assert.ok(![v.overlay.regions.title, v.cards[0].name, v.cards[0].line].some((t) => /\d|save|version/i.test(t)), "no numbers, no talk of versions or saves");
   const e0 = st.e; INTENTS.panel.intent(h, "card.begin", "confirm"); assert.equal(h.ui.panel, null, "closed"); assert.equal(st.e, e0, "nothing spent");

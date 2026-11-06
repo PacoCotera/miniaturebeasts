@@ -75,6 +75,8 @@ const renable = () => ({ operator: "recessive-enable", alleles: [{ id: "off", la
 const MARKING_ORDER = ["masked", "points", "bands", "patches", "spotted", "capped"];
 // Catalogue 13's four layouts, appended after capped (indices 6 to 9); in a pair they win over every older layout.
 const LANGUAGE_LAYOUTS = ["saddle", "brindle", "gradient", "back-spots"];
+// the marking layouts of the genome in the player's one word each (the copywriter, 6 Nov 2026): the Markings looks, and what the asleep line says for a layout a coat carries but does not show
+export const LAYOUT_WORD = { plain: "plain", "back-spots": "spotted", saddle: "saddle", gradient: "shaded", bands: "bands", patches: "patches" };
 const NEW_LOCI_11 = [
   // Coat (appearance). A record that draws only for certain looks carries `wakesWhen: { locus: [looks] }`: it is awake when the SHOWN look of any named locus is one of the listed
   // looks, asleep otherwise (a sleeping record is still carried and crossed, copy by copy; only the drawing skips it). It names the shown look, never a copy.

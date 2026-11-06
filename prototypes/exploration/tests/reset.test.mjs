@@ -48,7 +48,7 @@ test("1. a v9 save: after load the old bytes are in <key>.pre10, the save is v10
   assert.notEqual(now.seed, old.seed, "a new world"); assert.equal(old.mibis.length, 2, "(the old one had mibis)");
   assert.equal(p.store["mb-save-v8"], undefined, "the shared key is not left behind to be reset again");
   assert.equal(p.run("RT.notice"), true, "the notice is up");
-  const t = said(p); assert.ok(t.includes("The land has changed.") && t.includes("New mibis live in it now.") && t.includes("Explore"), t.join("|"));
+  const t = said(p); assert.ok(t.includes("The world has changed.") && t.includes("New mibis live in it now.") && t.includes("Explore"), t.join("|"));
   assert.ok(!t.some((s) => /\d|save|version/i.test(s)), "no numbers, no talk of versions or saves: " + t.join("|"));
   p.key("up"); assert.equal(p.run("RT.notice"), true, "only its button goes on");
   p.key("confirm"); assert.equal(p.run("RT.notice"), false); assert.equal(JSON.parse(p.store[p.KEY]).resetSeen, 1);
