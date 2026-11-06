@@ -41,7 +41,7 @@ const ACCESSOR = () => PAGE.match(/^const SP_OTHER = [^]*?\n(?=\/\/)/m)[0] + ["s
 const ST = await import("../../station/src/state.mjs");
 ST.useNameList("en-short-1");   // the tests below show the archived English names (T-20261027-322)
 const station = (...names) => names.every(n => typeof ST[n] === "function") ? false : "the Station's side (" + names.join(", ") + ") has not landed on main";
-{ const { setFrames } = await import("../../station/src/genome.mjs"), dir = new URL("../../workbench/frames/", import.meta.url).pathname;
+{ const { setFrames } = await import("../../station/src/genome.mjs"), dir = new URL("../../workbench/frames/language/", import.meta.url).pathname;
   setFrames(readdirSync(dir).filter(f => f.startsWith("species-")).map(f => JSON.parse(readFileSync(path.join(dir, f), "utf8")))); }
 
 // A clock the sandbox reads through `new Date()`: day "YYYY-MM-DD" at noon local time.
@@ -745,7 +745,7 @@ test("the Lead card's context: docked with no one carried reads 'no one with you
 
 // ---- X1: a Station species the Companion does not know (design/proposals/station-build.md §2.3, spName) ----
 // The whole page script in a sandbox (as freeze.test.mjs runs it), with the Station's real code and frames: seedAdults S05 and S10
-// (sp -1 on the Station: a species beyond the Companion's three), then dockKey, then the Companion reads the save.
+// (sp 4 and 9 on the Station: species beyond the Companion's three, until the release's second chunk gives the page its twenty), then dockKey, then the Companion reads the save.
 const X1 = await (async () => {
   const { frameOf } = await import("../../station/src/genome.mjs");
   const page = (store = {}) => { const p = makePage({ store }); p.putSt = st => { const o = JSON.parse(store[p.KEY]); o.st = JSON.parse(JSON.stringify(st)); store[p.KEY] = JSON.stringify(o); }; return p; };
@@ -767,11 +767,11 @@ const X1 = await (async () => {
 const COMPANION_NEW = ["mibis", "dockSeen", "log"];
 const without = (o, keys) => { const c = JSON.parse(JSON.stringify(o)); for (const k of keys) delete c[k]; return JSON.stringify(c); };
 
-test("X1 1: a save holding S05 and S10 mibis (sp -1) loads: save() does not throw, and a page built from the result boots", () => {
+test("X1 1: a save holding S05 and S10 mibis (sp 4 and 9, beyond the page's three until 21b) loads: save() does not throw, and a page built from the result boots", () => {
   const { p } = X1.docked();
-  assert.deepEqual(plain(p.sv().st.mibis.map(m => [m.name, m.sp, m.species])), [["Dot", -1, "S05"], ["Moss", -1, "S05"], ["Bean", -1, "S10"], ["Fig", -1, "S10"]], "the Station's real seeds");
+  assert.deepEqual(plain(p.sv().st.mibis.map(m => [m.name, m.sp, m.species])), [["Dot", 4, "S05"], ["Moss", 4, "S05"], ["Bean", 9, "S10"], ["Fig", 9, "S10"]], "the Station's real seeds");
   assert.doesNotThrow(() => p.run("save()"));
-  assert.deepEqual(plain(p.S.mibis.map(m => [m.id, m.name, m.sp, m.species])), [[1, "Dot", -1, "S05"], [2, "Moss", -1, "S05"], [3, "Bean", -1, "S10"], [4, "Fig", -1, "S10"]], "no mibi hidden or dropped");
+  assert.deepEqual(plain(p.S.mibis.map(m => [m.id, m.name, m.sp, m.species])), [[1, "Dot", 4, "S05"], [2, "Moss", 4, "S05"], [3, "Bean", 9, "S10"], [4, "Fig", 9, "S10"]], "no mibi hidden or dropped");
   let q; assert.doesNotThrow(() => { q = X1.page({ ...p.store }); });
   assert.equal(q.S.mibis.length, 4);
 });
@@ -803,7 +803,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   assert.match(p.run("FX.notes.map(n => n.text).join('\\n') + S.log.join('\\n')"), /Dot walks the path/, "the Walk line takes walkedOther");
   p.run("S.carried = [1, 3]; S.phase = 'setup';");
   p.key("confirm"); p.key("confirm"); assert.ok(p.S.exp, "an expedition started with Dot leading");
-  assert.equal(p.run("S.exp.pt && S.exp.pt.sp"), -1);
+  assert.equal(p.run("S.exp.pt && S.exp.pt.sp"), 4);
   assert.equal(p.run("canDig()"), false);
   d = render("map"); assert.ok(d.some(x => x.startsWith("c-mini-other-12@")), "the HUD mini is its plate: " + d);
   p.key("confirm"); assert.equal(p.S.phase, "patch", "into a place");
@@ -824,13 +824,13 @@ test("X1 3: the dock changes only the Companion's mibis, dockSeen and log; the S
   // the dock's own fields, with no mibi at all (the Probe's mend: probeSeen, shield), move as before; the four mibis add only `mibis`, `dockSeen` and `log`
   const c = X1.docked({ seed: false }); c.p.run("save()"); const own = moved(JSON.parse(c.before), c.p.sv());
   assert.deepEqual(own, ["dockSeen", "probeSeen", "shield"], "the dock without mibis");
-  const keys = [...new Set(COMPANION_NEW.concat(own))];
+  const keys = [...new Set(COMPANION_NEW.concat(own, ["known"]))];   // S05 and S10 are species 4 and 9 of the twenty now: the dock also moves the Companion's `known` list
   assert.deepEqual(moved(a, b), keys.slice().sort(), "the four mibis add only mibis and log to what the dock moves");
   assert.equal(without(b, keys), without(a, keys), "nothing else in the save moved");
   assert.equal(JSON.stringify(b.st), JSON.stringify(a.st), "st is what the Station wrote");
   assert.deepEqual(a.mibis, []); assert.equal(b.mibis.length, 4); assert.equal(b.dockSeen, 1);
   for (const m of b.mibis) for (const k of ["id", "name", "sp", "born", "from", "species", "spName"]) assert.ok(k in m, m.name + " has " + k);
-  assert.deepEqual(plain(b.mibis.map(m => [m.sp, m.species, m.spName])), [[-1, "S05", "Tepor"], [-1, "S05", "Tepor"], [-1, "S10", "Igara"], [-1, "S10", "Igara"]], "sp copied as given");
+  assert.deepEqual(plain(b.mibis.map(m => [m.sp, m.species, m.spName])), [[4, "S05", "Tepor"], [4, "S05", "Tepor"], [9, "S10", "Igara"], [9, "S10", "Igara"]], "sp copied as given");
   assert.ok(b.log.some(l => /Dot \(Tepor\) is home at the Station/.test(l)));
 });
 

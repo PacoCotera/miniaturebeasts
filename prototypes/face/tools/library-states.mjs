@@ -74,7 +74,7 @@ const L3 = {
   "l3-compare-on-held": { which: "full", entry: "Moss", keys: ["confirm", "down", "right", "up"], zoom: "compare", ring: "Moss", held: "Moss", onHeld: true, back: "Done", ok: "Look at Moss", subject: "Holding Moss", fact: "", lit: [] },
   "l3-compare-none": { which: "full", entry: "Nettle", keys: ["confirm", "right"], zoom: "compare", ring: "Yarrow", held: "Nettle", back: "Done", ok: "Compare from Yarrow", subject: "Compared with Nettle", fact: "No read look in common", lit: [] },
 };
-const FRAMES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames");
+const FRAMES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language");
 function lineageSave(which) {
   setFrames(readdirSync(FRAMES).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(FRAMES, f), "utf8"))));
   const st = S.freshSt("w1", 3, 0); st.mibis = []; st.nextMibi = 1; st.bud = null; st.turn = 0; const by = buildLineage(st, which, { turn: 0 });

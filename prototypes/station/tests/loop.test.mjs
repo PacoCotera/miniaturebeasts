@@ -2,6 +2,7 @@
 // with you, and the first dock at which it comes home gives the welcome sitting, begun at once so its wait runs while the second founder grows, two adults are crossed and the child is read;
 // the crate opens when its wait is over. It calls only the rules, never the drawing, and asserts every price against the decided economy (research-economy.md §2, §5;
 // research-loop.md §4, §5; the-cross.md; the-portrait.md §8). It runs in CI with the other Station tests.   node --test prototypes/station/tests/
+// PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { playJourney, MIN, WALK, WALK_MS } from "../tools/headless.mjs";

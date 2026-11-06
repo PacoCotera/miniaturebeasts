@@ -22,18 +22,14 @@ export function recommendedLane(st, p, settings = S.DEFAULT_SETTINGS) {
   const pick = unread.find(([c]) => S.glint(st, p, c.id) && c.traits.some((t) => goal.has(t.id))) ?? unread.find(([c]) => S.glint(st, p, c.id)) ?? unread.find(([, i]) => i !== sp) ?? unread[0];
   return pick ? pick[1] : 0;
 }
-// The part of the body a chapter reads (the cut tool's masks): Coat the body, Face the head (with its own crest once read), Movement and Legs the legs; the others have no part and draw none
-export function partOf(species, ch, read) {
-  const id = ch.id; if (species === "S01") return id === "coat" ? "coat" : id === "face" ? (read.includes("face") ? "face" : "head") : id === "movement" ? "legs" : "";
-  if (species === "S03") return id === "coat" ? "coat" : id === "face" ? "face" : id === "shape" ? "shape" : id === "legs-tail" || id === "movement" ? "legs" : "";
-  return "";
-}
+// The part of the body a chapter reads (the cut tool's masks): none now. The S01 and S03 cuts were retired in release 21a, so no kind has part masks and every chapter reads the whole body (the runtime scan).
+export function partOf(species, ch, read) { return ""; }
 // The place the specimen stands at: Face (the head) close when its chapter is open, the detail of a head trait closer; the body chapters keep the overview
 export function placeOf(ch, at) { const head = ch && ch.id === "face"; if (at === "detail") return head ? "detail" : "overview"; if (at === "right" && head) return "close"; return "overview"; }
 // The chamber's picture id for a pod, a place, what is read and the chapter in hand (one picture of one size for every place)
 export function chamberReq(req, p, place, read, hand, outline) {
   const sid = S.speciesOf(p), fr = frameOf(sid), ch = fr.chapters.find((c) => c.id === hand) ?? null, part = ch ? partOf(sid, ch, read) : "";
-  const tints = sid === "S03" ? read.map((c) => { const x = fr.chapters.find((y) => y.id === c); return x ? [partOf(sid, x, read), c] : null; }).filter((t) => t && t[0]) : [];
+  const tints = [];
   const key = `${read.slice().sort().join("+") || "-"}:${hand || "-"}:${part || "-"}:${outline ? "o" : "t"}`;
   return req({ kind: "readchamber", id: `readchamber:${p.id}:${place}:${railHash(key)}`, species: sid, pod: p.id, place, read: [...read], hand: hand || "", outline: !!outline, part, tints });
 }

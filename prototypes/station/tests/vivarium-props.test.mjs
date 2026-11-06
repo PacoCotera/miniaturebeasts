@@ -2,6 +2,7 @@
 // holds no rectangle, fits the props budget; the room view's walkers at one scale, the chip row, the card and its plates.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import { movingFixture } from "./fixtures/moving.mjs";
 import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -12,7 +13,7 @@ import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { vivariumBuild as vivariumBuildUnchecked } from "../src/views/vivarium-props.mjs";
 const vivariumBuild = lineCased(vivariumBuildUnchecked, "vivarium");   // every body it builds goes through assertLineCase (report mode)
-import { loadStandLayersFs, loadStandLooksFs, loadStandSizesFs, unloadStands as unloadAll } from "../tools/stand-layers-fs.mjs";
+import { loadStandSizesFs, unloadStands as unloadAll } from "../tools/stand-layers-fs.mjs";
 const unloadStands = () => { unloadAll(); loadStandSizesFs(); };   // the factor views' table (stand-sizes.json) stays loaded, as on the page
 loadStandSizesFs();
 import { placeMaster, dropAsset } from "../../ui/assets.mjs";
@@ -22,7 +23,7 @@ import { decodePNG } from "../../ui/png.mjs";
 import { G, UI, SPECS } from "../src/game.mjs";
 import { createHost, onFaceMessage, screenProps, showRoom } from "../src/host.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("vivarium.json"), frameSpec = J("frame.json"), home = J("home.json"), schema = J("vivarium.props.json");
 const T0 = 1_000_000, cfg = (rooms) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", rooms });
@@ -81,18 +82,7 @@ test("the Vivarium's props validate against vivarium.props.json in every scene a
   }
 });
 
-test("one scale (§3): every figure of a view at that view's one factor, never fitted per mibi, never upscaled: the room view 96 x 99, the card 144 x 148; a juvenile is smaller than its adult", () => {
-  loadStandLooksFs(); loadStandLayersFs();
-  try {
-    const w = roomsWorld(1); inRoom(w, 0, 2); const j = inRoom(w, 0, 1)[0]; j.born = w.st.turn;
-    const room = build(w, sv0()), sizes = (b, re) => b.requests.filter((r) => r.kind === "mibi" && re.test(r.id)).map((r) => r.size.join("x"));
-    assert.ok(room.props.regions.residents.every((p) => /:96x99(:|$)/.test(p.picture)), room.props.regions.residents.map((p) => p.picture).join(" "));
-    assert.match(room.props.regions.card.picture, /:144x148(:|$)/);
-    const fig = (id) => room.props.regions.residents.find((p) => p.id === String(id)).figure;
-    assert.ok(fig(j.id)[3] < fig(w.st.mibis[0].id)[3], "the juvenile's ink is shorter than its adult's at the one factor");
-    assert.ok(sizes(room, /./).every((s) => ["96x99", "144x148", "96x103", "96x102", "96x101", "96x100"].includes(s) || /^96x\d+$/.test(s)), sizes(room, /./).join(" "));
-  } finally { unloadStands(); }
-});
+// retired (release 21a): one scale (§3): every figure of a view... needs the layered stand of S01 (its figure scale, curls and rest places), retired
 
 test("the room view: the room shown's present mibis walk at 96/304 (a seed each, in house order); a carried mibi (docked or away) is never drawn; the bed at the window's centre (Roots only); the window is the room's own painting with the edge's facts", () => {
   const S0 = scenes();
@@ -178,7 +168,7 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult:, 
 
 // ---- the moving sets at one scale: at the room view's factor the moving sets' atlases (cut at the world size) do not play ----
 import { setMoving } from "../src/moving.mjs";
-{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
+setMoving(movingFixture());   // the moving sets of S01 and S05 as a fixture: the game ships none (release 21a)
 test("the room view's residents carry no moving set at its factor (vivarium.json notes.scale), and their rest still follows the Station time", () => {
   const { w, sv } = scenes().docked, rules = spec.rules.rest;
   for (const [time, want] of [[23 * 3600, "asleep"], [12 * 3600, "awake"]]) { const b = build(w, sv, { time, restRules: rules, motionSets: true }); assert.deepEqual(validate(b.props, schema), []); assert.ok(b.props.regions.residents.every((r) => !r.moving && r.rest === want), JSON.stringify(b.props.regions.residents.map((r) => [r.rest, !!r.moving]))); assert.ok(!b.requests.some((q) => q.kind === "moving")); }
@@ -191,20 +181,7 @@ test("fix 7: the room view's residents take the scene's light (id suffix and req
     for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light); assert.equal(got.length, day.length); for (const r of got) assert.ok(r.light === light && r.id.endsWith(":" + light), r.id); } }
 });
 
-test("residents carry their figure, sleepers the curl at 96/304 and its figure; the keep-out is the bed's span from the tallest curl's top, derived (make-keepout.mjs), and every drop spot of Roots is off it", () => {
-  const masters = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters, placed = [];
-  loadStandLooksFs(); loadStandLayersFs();
-  try {
-    for (const id of ["mibi-adult-S01-curl-304x312", "mibi-juvenile-S01-curl-304x312", "mibi-adult-S01-304x312", "mibi-juvenile-S01-304x312"]) { const e = index[id]; if (!e) continue; const p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
-    const w = world(); dock(w.st); mibis(w, 3); S.seedAdults(w.st, "S01", 9, 5, w.settings); for (const x of w.st.mibis) x.paint = { state: "landed" };
-    const b = build(w, sv0()), R = b.props.regions;
-    for (const r of R.residents) { assert.ok(Array.isArray(r.figure) && r.figure.length === 4 && r.figure.every(Number.isInteger), "a walker carries its figure [dx, dy, W, H]"); assert.ok(r.figure[2] > 0 && r.figure[3] > 0 && r.figure[1] + r.figure[3] <= 99); }
-    assert.equal(R.bed.sleepers.length, 3); assert.equal(R.bed.state, "resting"); for (const sl of R.bed.sleepers) assert.ok(sl.figure, "a sleeper carries the curl's figure");
-    const K = spec.regions.resident.walk.keepOut; assert.deepEqual(K, keepOutOf(spec, measureCurls()), "keepOut is derived from the measured curls, never typed");
-    assert.deepEqual([K[0], K[2]], [spec.regions.bed.rect[0], spec.regions.bed.rect[2]], "the bed's span"); assert.equal(K[1] + K[3], spec.regions.window.foot[1]);
-    const rooms = J("rooms.json"); for (const [x, y] of rooms.rooms.roots.drops) { const fx = x, feet = y - 8; assert.ok(!(fx >= K[0] && fx < K[0] + K[2] && feet > K[1]), `drop (${x}, ${y}) is off the keep-out`); }
-  } finally { for (const id of placed) dropAsset(id); unloadStands(); }
-});
+// retired (release 21a): residents carry their figure, sleepers the curl... needs the layered stand of S01 (its figure scale, curls and rest places), retired
 
 // ---- the host: the ring on a chip shows its view (st.face.room is the rules' one home for the room shown), the swap's dither, the way in, the flip ----
 for (const k of ["frame", "pods", "home", "vivarium", "habitat", "panel"]) SPECS[k] = J(k + ".json");
@@ -241,18 +218,7 @@ test("✓ Look opens one mibi up close and ← comes back to the ring on it; ✓
 });
 
 // ---- R4b: where the resters rest (vivarium.json rules.show.where, the owner's cats) ----
-test("R4b rest places: Roots' resters take the bed in rest order, drawn as sleepers; in a room with no bed they curl or go out (at most two curls); a mibi brought in from the house view is pinned shown, the ring alone wakes no rester", () => {
-  const masters = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters, placed = [];
-  loadStandLooksFs(); loadStandLayersFs();
-  try {
-    for (const id of ["mibi-adult-S01-curl-304x312", "mibi-juvenile-S01-curl-304x312", "mibi-adult-S01-304x312", "mibi-juvenile-S01-304x312"]) { const e = index[id]; if (!e) continue; const p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
-    const mk = (room) => { const w = world(2); dock(w.st); mibis(w, 8); w.st.mibis.forEach((m, i) => { m.room = room; m.slot = i; m.bay = room * 8 + i; m.born = w.st.turn - 100; }); w.st.face.room = room; return w; };
-    { const w = mk(0), b = build(w, sv0()).props.regions, rest = b.residents.filter((p) => !p.shown); assert.equal(rest.length, 3); assert.ok(rest.every((p) => p.restAt === "bed")); assert.equal(b.bed.sleepers.length, 3); }
-    { const w = mk(1), b = build(w, sv0()).props.regions, rest = b.residents.filter((p) => !p.shown); assert.equal(rest.length, 3); assert.ok(!("bed" in b)); assert.ok(rest.every((p) => ["curl", "out"].includes(p.restAt))); assert.ok(rest.filter((p) => p.restAt === "curl").length <= 2);
-      const r0 = rest[0].id; assert.equal(build(w, sv0(), { focus: "resident." + r0, pin: r0 }).props.regions.residents.find((p) => p.id === r0).shown, true, "brought in from the house view (pin): it walks in");
-      assert.equal(build(w, sv0(), { focus: "resident." + r0 }).props.regions.residents.find((p) => p.id === r0).shown, false, "the ring alone on a rester does not wake it (the room is not reshuffled under the ring)"); }
-  } finally { for (const id of placed) dropAsset(id); unloadStands(); }
-});
+// retired (release 21a): R4b rest places: Roots' resters take the bed... needs the layered stand of S01 (its figure scale, curls and rest places), retired
 
 test("R4b a traveller home: it is fresh (roomSince = now pins it among the five), marked enter: edge while the walk runs, and is a resident again (no longer on the Companion)", () => {
   const w = world(); dock(w.st); const m = mibis(w, 8), now = T0 + 12 * 3600 * 1000, sv = sv0({ carried: [m[0].id] });

@@ -29,7 +29,7 @@ import { setFrames } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import { setMoving } from "../../station/src/moving.mjs";
 import { withPolicy } from "./node-scene.mjs";
-const framesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames");
+const framesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 setMoving(MOVING);
 export const T0 = 1_000_000;

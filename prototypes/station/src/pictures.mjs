@@ -230,7 +230,7 @@ const sheetGround = () => (masterAt("library-ground-1024x522", 1024, 522) ? { w:
 function cellPixels(r, env, say = (s) => console.log(s)) {
   const have = CELLS.get(r.id); if (have) return have;
   const frame = env.frameOf(r.species), fr = r.shut?.length ? { ...frame, chapters: frame.chapters.map((ch) => ({ ...ch, sealed: r.shut.includes(ch.id) })) } : frame;
-  const p = renderCell(fr, { [r.species]: r.found ?? {} }, { pencil: r.status === "met", ground: RGB[C[r.ground]] }); say(`# library cell ${r.id}: ${r.status}, rendered in ${p.ms.toFixed(0)} ms (${r.size[0]} x ${r.size[1]})`);
+  const p = renderCell(fr, { [r.species]: r.found ?? {} }, { pencil: r.status === "met", ground: RGB[C[r.ground]], gen: r.gen ?? null }); say(`# library cell ${r.id}: ${r.status}, rendered in ${p.ms.toFixed(0)} ms (${r.size[0]} x ${r.size[1]})`);
   CELLS.set(r.id, p.rgba); return p.rgba;
 }
 // Whether a Library picture is made: a cell's pixels, or a sheet, lit variant, page or quiet stand-in library-sheet.mjs keeps.

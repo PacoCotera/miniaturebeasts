@@ -8,7 +8,7 @@ import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 S.useNameList("en-short-1");
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 // a Station of n adult Loikas in room 0 (more than eight fill the next rooms), the given rooms bought and the Energy held

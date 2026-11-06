@@ -8,7 +8,7 @@ import { setFrames, frameOf, podGenome } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import { podsProps } from "../../station/src/views/pods-props.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../workbench/frames/language");
 const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), podsSpec = J("pods"), frameSpec = J("frame");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };

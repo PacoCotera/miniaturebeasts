@@ -9,7 +9,7 @@ import * as S from "../src/state.mjs";
 import { platesOf, partnersOf } from "../src/views/vivarium-props.mjs";
 import { openCross } from "../src/intents/habitat.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 3 }, spec = JSON.parse(readFileSync(path.join(specs, "vivarium.json"), "utf8"));
 const sv = { v: 8, seed: 7, wid: "w1", turn: 4, bay: [], mibis: [], trips: [], carried: [], carrySeen: 0, carryRefused: [], tier: 1, shield: 3 };

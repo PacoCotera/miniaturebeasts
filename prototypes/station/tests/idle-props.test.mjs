@@ -3,6 +3,7 @@
 // (only while away); none, empty; six words or fewer, no digits.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import { movingFixture } from "./fixtures/moving.mjs";
 import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -15,7 +16,7 @@ import { idleBuild as idleBuildUnchecked, idleLine } from "../src/views/idle-pro
 const idleBuild = lineCased(idleBuildUnchecked, "idle");   // every body it builds goes through assertLineCase (report mode)
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), frame = J("frame.json"), home = J("home.json"), vivSpec = J("vivarium.json"), schema = J("idle.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
@@ -93,7 +94,7 @@ test("the line's one fact comes from the rule (state.mjs idleKey) and its order 
 
 // ---- Station M1 §2.6: Idle's residents with moving sets fit idle.props.json ----
 import { setMoving } from "../src/moving.mjs";
-{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
+setMoving(movingFixture());   // the moving sets of S01 and S05 as a fixture: the game ships none (release 21a)
 test("Idle's residents with moving sets fit idle.props.json: moving and rest; the bed's sleepers their nap set", () => {
   const st = world(); adults(st, 4); const sv = sv0({ carried: [st.mibis[0].id] }), rules = J("vivarium.json").rules.rest;
   const b = idleBuild({ st, sv, settings, docked: true, light: "night", time: 23 * 3600, restRules: rules, motionSets: true }, frame);

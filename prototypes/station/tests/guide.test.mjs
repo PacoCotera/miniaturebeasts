@@ -7,12 +7,13 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, chapterLooks } from "../src/genome.mjs";
+import { withSeals } from "./fixtures/sealed.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
 import { guideModel, guideInit, guideMove } from "../src/guide.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");
-setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language");
+setFrames(withSeals(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8")))));
 const specs = (f) => JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station", f), "utf8"));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const world = (id = "S09", n = 2, seed = 11) => { const st = S.freshSt("w1", 3, 1); S.normalize(st); const r = S.seedAdults(st, id, seed, n, settings); return { st, ms: r.mibis, fr: frameOf(id), id }; };

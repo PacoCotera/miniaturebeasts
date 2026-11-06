@@ -3,6 +3,7 @@
 // rules on what the room's ✓ does. The living window's shared selectors (residents' seeds, rest, light, picture ids), which Idle and the Vivarium's whole use, are tested through Idle's view beneath.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import { movingFixture } from "./fixtures/moving.mjs";
 import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -17,7 +18,7 @@ const homeBuild = lineCased(homeBuildUnchecked, "home");   // every body it buil
 import { idleBuild } from "../src/views/idle-props.mjs";
 import { goalWords } from "../src/views/goal-words.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("home.json"), frameSpec = J("frame.json"), schema = J("home.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
@@ -41,7 +42,7 @@ const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e =
 const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, ...over });
 const pod = (st, id, gs = 5, identified = true) => { S.seedPodFromGenome(st, podGenome(frameOf(id), gs), settings, T0); const p = st.tray[st.tray.length - 1]; if (identified) S.skipIdentify(st, p); return p; };
 const crate = (n, turn = 0) => ({ id: "c" + n, n, turn, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] });
-const RULES = J("vivarium.json").rules;   // rules.show: who is shown and who rests (R4b)
+const RULES = { ...J("vivarium.json").rules, rest: { ...J("vivarium.json").rules.rest, nocturnal: ["S03", "S04", "S06", "S16"], early: { ...J("vivarium.json").rules.rest.early, species: ["S09", "S11", "S12"] } } };   // the nocturnal and early lists are empty in the game until the game designer sets them (release 21a); these cases are the rules, with the lists as they were   // rules.show: who is shown and who rests (R4b)
 const build = (st, sv, over = {}) => homeBuild({ st, sv, settings, docked: S.docked(st), ui: {}, focus: null, time: 12 * 3600 + 41 * 60, date: { y: 2026, m: 9, d: 17 }, now: Date.now(), place: "", rules: RULES, ...over }, spec, frameSpec);
 const dock = (st, d = true) => { st.dock = { docked: d, at: T0 }; };
 const portrait = (st) => st.sittingCrates.push({ id: "sit1", mibiId: st.mibis[0].id, pose: "stand", place: "meadow", start: 0, source: "x", painted: true, opened: false });
@@ -216,8 +217,8 @@ test("a picture id is keyed by the genome, not the mibi id: two worlds with the 
 
 import { restOf } from "../src/views/home-props.mjs";
 import { setMoving } from "../src/moving.mjs";
-{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
-const REST = J("vivarium.json").rules.rest, hm = (h, m = 0, s = 0) => h * 3600 + m * 60 + s;
+setMoving(movingFixture());   // the moving sets of S01 and S05 as a fixture: the game ships none (release 21a)
+const REST = RULES.rest, hm = (h, m = 0, s = 0) => h * 3600 + m * 60 + s;
 test("restOf (R1): the worked example: four diurnal residents settle across the 20:00 window one at a time (J1 20:01:40, J2 20:07:30, A1 20:15:50, A2 20:22:55) and wake at the same offsets from 06:00", () => {
   const here = [{ id: "J1", seed: 100, species: "S01", stage: "juvenile" }, { id: "J2", seed: 900, species: "S01", stage: "juvenile" }, { id: "A1", seed: 50, species: "S01", stage: "adult" }, { id: "A2", seed: 7000, species: "S01", stage: "adult" }];
   const flips = { J1: hm(20, 1, 40), J2: hm(20, 7, 30), A1: hm(20, 15, 50), A2: hm(20, 22, 55) };

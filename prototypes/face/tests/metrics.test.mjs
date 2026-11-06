@@ -12,7 +12,7 @@ import { installScene } from "./node-scene.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")) && existsSync(path.join(dist, "metrics.json")), skip = !built && "face not built (prototypes/face/build.sh)";
-const specs = path.resolve(here, "../../ui/specs/station"), frames = path.resolve(here, "../../workbench/frames");
+const specs = path.resolve(here, "../../ui/specs/station"), frames = path.resolve(here, "../../workbench/frames/language");
 
 // every string a spec file holds, and the names of every species, chapter and trait
 const strings = new Set();

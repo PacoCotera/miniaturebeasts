@@ -2,6 +2,7 @@
 // 32 KiB props budget with the frame beside it. Then what each state says: the count, the worth line, the sorts, the filter and Find, the freshness words, the panel's held buttons, the selectors the
 // host answers for the ring, the reading room's index, page forms and band.
 //   node --test prototypes/station/tests/pods-props.test.mjs
+// PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -18,7 +19,7 @@ S.useNameList("en-short-1");
 const podsProps = lineCased(podsPropsUnchecked, "pods");
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
-setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("pods.json"), frameSpec = J("frame.json"), schema = J("pods.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const SPECIES = readdirSync(framesDir).filter((f) => f.startsWith("species-") && !JSON.parse(readFileSync(path.join(framesDir, f), "utf8")).species.draft).map((f) => f.slice(8, 11));   // a draft species is not loaded
@@ -186,11 +187,11 @@ test("the reading screen (ux-reading-v2.md): the ground, the chamber of its plac
   const st = home(2); S.putOnBench(st, st.tray[0]);
   const s = body(model(st, { view: "room" }, "key")); assert.equal(s.props.state, "read"); assert.equal(s.props.regions.read.right.form, "identify"); assert.deepEqual(s.props.focus.targets.map((t) => t.id), ["key"]); assert.equal(s.line.ok, "Identify");
   ident(st); const rb = body(model(st, { view: "room", lane: 0 }, "rail")), r = rb.props.regions.read, chamberOf = (b) => b.requests.find((q) => q.id === b.props.regions.read.chamber);
-  assert.deepEqual([r.base, r.glyph, r.name], ["reading-ground-1024x522", "reading-podline-26x32", "Loika"]); { const q = chamberOf(rb); assert.deepEqual([q.place, q.hand, q.part, q.outline, q.read], ["overview", "coat", "coat", true, []], "the overview, Coat tinted and outlined"); }
+  assert.deepEqual([r.base, r.glyph, r.name], ["reading-ground-1024x522", "reading-podline-26x32", "Loika"]); { const q = chamberOf(rb); assert.deepEqual([q.place, q.hand, q.part, q.outline, q.read], ["overview", "coat", "", true, []], "the overview, Coat tinted and outlined (no part masks: the S01 and S03 cuts are retired, release 21a)"); }
   assert.deepEqual(r.rail.lanes.map((l) => [l.id, l.n, l.state]), [["coat", 2, "unread"], ["face", 3, "unread"], ["movement", 1, "unread"], ["stamina", 1, "unread"]]); assert.equal(r.rail.hand, 0); assert.equal(r.rail.trait, -1);
   assert.equal(r.right.form, "unread"); assert.equal(r.right.plates.length, 2); assert.equal(r.right.key.price, "2"); assert.equal(r.right.chapter.name, "Coat");
   assert.equal(chamberOf(body(model(st, { view: "room", lane: 1, at: "right" }, "key"))).place, "close", "Face open: the close place");
-  const mb = body(model(st, { view: "room", lane: 2 }, "rail")), mv = mb.props.regions.read; assert.equal(mv.right.beside.text, "free when it grows", "the sprout beside the key of the chapter growing teaches"); assert.deepEqual([chamberOf(mb).hand, chamberOf(mb).part], ["movement", "legs"], "Movement: the legs");
+  const mb = body(model(st, { view: "room", lane: 2 }, "rail")), mv = mb.props.regions.read; assert.equal(mv.right.beside.text, "free when it grows", "the sprout beside the key of the chapter growing teaches"); assert.deepEqual([chamberOf(mb).hand, chamberOf(mb).part], ["movement", ""], "Movement: the whole body (no part masks since release 21a)");
   st.d = 1; const short = body(model(st, { view: "room", lane: 0, at: "right" }, "key")); assert.equal(short.props.regions.read.right.key.state, "dim"); assert.deepEqual([short.line.ok, short.line.need], [null, "needs ◆ 2 · you have ◆ 1"], "the reason in the need role, never a greyed verb"); assert.equal(short.props.regions.read.right.beside.text, "Data comes as your mibis grow");
   st.d = 40; read(st, 0, 1); const rd = body(model(st, { view: "room", lane: 0, at: "right", plate: 0 }, "plate.0"));
   assert.equal(rd.props.regions.read.right.form, "read"); assert.ok(rd.props.regions.read.right.plates.every((p) => p.shown.caption && p.kind), "the read form: captions and kind lines"); assert.equal(rd.line.ok, "Closer look at Colour");

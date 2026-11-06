@@ -26,7 +26,6 @@ const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 // the places of §2.3: the picture's top left on the screen and its scale; the Tuikis' overview at 0.98
 export const PLACES = { overview: { at: [163, 112], s: 0.94 }, close: { at: [142, 112], s: 1.16 }, detail: { at: [114, 84], s: 1.3 } };
-const TUIKIS = { overview: { at: [167, 118], s: 0.98 }, close: { at: [151, 112], s: 1.16 }, detail: { at: [118, 84], s: 1.3 } };
 export const CHAMBER = { at: [30, 70], size: [548, 356], fade: 22 };
 
 // ---- the layers ----
@@ -34,8 +33,9 @@ const placed = (id) => { const e = assetEntry(id); return !!e && !!e.file && e.s
 const pixels = (id) => (placed(id) ? assetOf(id).rgba() : null);
 const CACHE = new Map();
 function alphaOf(id) { const k = "a:" + id; if (CACHE.has(k)) return CACHE.get(k); const e = assetEntry(id), px = pixels(id); if (!px) return null; const a = new Float32Array(e.w * e.h); for (let i = 0; i < a.length; i++) a[i] = px[i * 4 + 3] / 255; CACHE.set(k, a); return a; }
-// The species' cut layers (the cut tool's): the plain body, the scan, the rim, the face frame and the part masks with their lines; null for a species the tool did not cut
-const CUT = { S01: { w: 304, h: 312, parts: ["coat", "face", "head", "legs"] }, S03: { w: 291, h: 291, parts: ["coat", "face", "shape", "legs"] } };
+// The species' cut layers (the cut tool's): the plain body, the scan, the rim, the face frame and the part masks with their lines; null for a species the tool did not cut.
+// None is cut now (release 21a retired the S01 and S03 cuts with the earlier paintings): every kind takes the runtime scan of its 304 painting.
+const CUT = {};
 export const hasCut = (species) => !!CUT[species] && placed(`reading-scan-${species}-${CUT[species].w}x${CUT[species].h}`);
 function cutLayers(species) {
   const c = CUT[species]; if (!c || !hasCut(species)) return null; const sz = `${c.w}x${c.h}`, m = {}, l = {};
@@ -98,8 +98,8 @@ export function chamberPicture(r, env) {
   const [W, H] = CHAMBER.size, light = r.place === "overview" ? "overview" : "close", bgId = `reading-chamber-${light}-548x356`, bg = pixels(bgId);
   const out = bg ? paneOf(bg, W, H) : new Pane(W, H); if (!bg) for (let i = 0; i < W * H; i++) { out.c.set([6 / 255, 24 / 255, 30 / 255], i * 3); out.a[i] = 1; }
   const fr = env.frameOf(r.species), pod = env.podById(r.pod); if (!fr || !pod) return out.rgba();
-  const cut = cutLayers(r.species), paint = paintOf(fr, pod), tuikis = r.species === "S03";
-  const sw = cut ? cut.w : 304, sh = cut ? cut.h : 312, P = (tuikis ? TUIKIS : PLACES)[r.place] ?? PLACES.overview, s = P.s, tw = Math.round(sw * s), th = Math.round(sh * s);
+  const cut = cutLayers(r.species), paint = paintOf(fr, pod);
+  const sw = cut ? cut.w : 304, sh = cut ? cut.h : 312, P = PLACES[r.place] ?? PLACES.overview, s = P.s, tw = Math.round(sw * s), th = Math.round(sh * s);
   const ox = P.at[0] - CHAMBER.at[0], oy = P.at[1] - CHAMBER.at[1];
   // the planes at the source size: the body, the paint's alpha, the scan, the rim and the part masks; then what is painted (the read look chapters' parts) and what is still unread
   const N = sw * sh, read = new Set(r.read ?? []);
@@ -123,7 +123,7 @@ export function chamberPicture(r, env) {
   const paintS = paint ? resample(paint.rgba, paint.w, paint.h, tw, th) : null;
   const pane = new Pane(W, H), at = (x, y) => (y + oy) * W + (x + ox), inPane = (x, y) => x + ox >= 0 && y + oy >= 0 && x + ox < W && y + oy < H;
   // 1. the contact shadow: an ellipse under the feet
-  { const [ex, ey, ew, eh, a0] = tuikis ? [30, sh - 36, sw - 60, 36, 0.6] : [20, sh - 34, sw - 30, 40, 0.75];
+  { const [ex, ey, ew, eh, a0] = [20, sh - 34, sw - 30, 40, 0.75];
     for (let y = Math.floor(ey * s); y < Math.ceil((ey + eh) * s); y++) for (let x = Math.floor(ex * s); x < Math.ceil((ex + ew) * s); x++) { if (!inPane(x, y)) continue;
       const u = ((x + 0.5) / s - (ex + ew / 2)) / (ew / 2), v = ((y + 0.5) / s - (ey + eh / 2)) / (eh / 2), d = Math.hypot(u, v); if (d > 1) continue; pane.put(at(x, y), [2 / 255, 8 / 255, 10 / 255], a0 * clamp01(1 - d / Math.SQRT2 / 0.7)); } }
   // 2. the floor reflection: the painted parts flipped under the feet at 10 %, fading over 30 % of the height
@@ -140,8 +140,8 @@ export function chamberPicture(r, env) {
   // 4. the unread parts: the dark glass volume, then the mint scan through them
   for (let y = 0; y < th; y++) for (let x = 0; x < tw; x++) { if (!inPane(x, y)) continue; const j = y * tw + x, u = unreadS[j] * bodyS[j]; if (u <= 0) continue;
     const d = Math.hypot((x / tw - 0.45) / (0.55 * Math.SQRT2), (y / th - 0.35) / (0.65 * Math.SQRT2)), c = grad([[0, [20, 62, 66, 0.92]], [0.7, [6, 24, 28, 0.94]]], d); pane.put(at(x, y), [c[0] / 255, c[1] / 255, c[2] / 255], c[3] * u); }
-  for (let y = 0; y < th; y++) { const c = grad([[0, [184, 240, 224]], [tuikis ? 0.6 : 0.5, [...MINT]], [1, [92, 201, 176]]], y / th);
-    for (let x = 0; x < tw; x++) { if (!inPane(x, y)) continue; const j = y * tw + x, a = scanS[j] * unreadS[j] * (tuikis ? 0.72 : 0.78); if (a > 0) pane.put(at(x, y), [c[0] / 255, c[1] / 255, c[2] / 255], a); } }
+  for (let y = 0; y < th; y++) { const c = grad([[0, [184, 240, 224]], [0.5, [...MINT]], [1, [92, 201, 176]]], y / th);
+    for (let x = 0; x < tw; x++) { if (!inPane(x, y)) continue; const j = y * tw + x, a = scanS[j] * unreadS[j] * 0.78; if (a > 0) pane.put(at(x, y), [c[0] / 255, c[1] / 255, c[2] / 255], a); } }
   // 5. a species with no paint shows its read parts as their chapter's tint on the scan (the Tuikis: 22 % screen)
   for (const [part, ch] of r.tints ?? []) { const m = masks[part] ? S(masks[part]) : null; if (!m) continue; const c = hex(CH[ch] ?? "#cccccc").map((v) => v / 255);
     for (let j = 0; j < tw * th; j++) { const x = j % tw, y = (j / tw) | 0; if (inPane(x, y) && m[j] > 0) pane.put(at(x, y), c, 0.22 * m[j], "screen"); } }

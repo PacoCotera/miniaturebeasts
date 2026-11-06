@@ -26,7 +26,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(h
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("library"), home = J("home");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const metrics = built ? JSON.parse(readFileSync(path.resolve(here, "../dist/metrics.json"), "utf8")) : null;
-setFrames(readdirSync(path.resolve(here, "../../workbench/frames")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames", f), "utf8"))));
+setFrames(readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames/language", f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 };
 const SINCE = new Date(2026, 9, 4, 12).getTime(), NOW = new Date(2026, 9, 17, 12).getTime();   // every mibi has been the player's for 13 days on the day the Library is built
 const world = (which = "full") => { const st = S.freshSt("w1", 3, 1e6); S.normalize(st); st.turn = 20; const by = buildLineage(st, which, { turn: 20 }); for (const m of st.mibis) m.since = SINCE; return { st, by }; };

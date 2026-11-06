@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf } from "../src/genome.mjs";
 import { discPicture } from "../src/reading-pictures.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const env = { frameOf };
 const unread = (species, chapter, trait, d, look) => { const px = discPicture({ d, species, chapter, trait, look, q: true, ghost: true }, env), P = d + 8; return { px, P }; };
