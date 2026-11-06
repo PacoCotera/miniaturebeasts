@@ -28,8 +28,8 @@ test("S17 to S19 (frame version 6) are the same bytes, stamp to the same message
 });
 
 // (S20 reads the catalogue at frame version 7, which holds all six alleles: it is left out.)
-test("a stamp frame that opens the marking layout keeps its two alleles and its one bit, though the catalogue now holds six", () => {
-  assert.equal(LOCI.get("appearance.marking-layout").alleles.length, 6);
+test("a stamp frame that opens the marking layout keeps its two alleles and its one bit, though the catalogue now holds ten", () => {
+  assert.equal(LOCI.get("appearance.marking-layout").alleles.filter((a) => !(a.sinceFrame > 7)).length, 6); assert.equal(LOCI.get("appearance.marking-layout").alleles.length, 10, "catalogue 13 holds four more, from frame 8");
   const opens = FRAMES_LIST.filter((f) => f.species !== 20 && f.heritable.some((l) => l.id === "appearance.marking-layout"));
   assert.ok(opens.length >= 3, "the Loika and its kin open it");
   for (const f of opens) { const l = f.heritable.find((x) => x.id === "appearance.marking-layout"); assert.deepEqual(l.alleles, ["bands", "patches"], `${f.id} ${f.species}.${f.version}`); assert.equal(l.bits, 1); }

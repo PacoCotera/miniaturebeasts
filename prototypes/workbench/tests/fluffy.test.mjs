@@ -223,7 +223,7 @@ test("backward compatibility: no old frame lists or carries a new record, the re
   }
   for (const id of ["S17", "S18", "S19"]) { assert.equal(frameVersionOf(frameOf(id)), 6); assert.equal(frameOf(id).catalogue.version, 12); }
   assert.equal(LOCI.get("anatomy.tail-tip-bulb").clan, "C03", "the C03 record is exactly as it was");
-  assert.deepEqual(Object.keys(LOCI.get("anatomy.tail-tip-bulb")).sort(), ["alleles", "applicability", "bounds", "clan", "consumer", "family", "id", "label", "nature", "operator", "owner", "provenance", "requires", "scope", "status", "switch", "target", "units", "version"].sort());
+  assert.deepEqual(Object.keys(LOCI.get("anatomy.tail-tip-bulb")).sort(), ["alleles", "applicability", "bounds", "clan", "consumer", "family", "id", "label", "nature", "operator", "owner", "provenance", "requires", "retired", "retiredCoveredBy", "retiredWhy", "scope", "status", "switch", "target", "units", "version"].sort());   // catalogue 13 marks the record retired, and changes nothing else
   assert.deepEqual(LOCI.get("growth.axial-tail-bend").alleles.map((a) => a.id), ["down", "up"], "no allele added to an old locus");
   assert.deepEqual(LOCI.get("appearance.fur-length").alleles.map((a) => a.value), [0.15, 0.3]);
   assert.ok(["anatomy.tail-curl-presence", "anatomy.fur-skirt-presence", "anatomy.brow-tuft-presence"].every((id) => PART_SWITCHES.has(id)));

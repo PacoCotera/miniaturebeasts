@@ -83,3 +83,29 @@ Every Loika has ears, and the size of the ears is heritable. Frame version 6 of 
 In the stamp registry the record has five alleles beside the 60 steps of a blended copy, one past the four names six bits hold. `extract-frames.mjs` keeps the species' pool and the two ends of the catalogue's range for such a record (`short`, `tall`, `small`, `medium`), which keeps the step grid the catalogue's (0.45 to 1.4). Frame 1.6 is appended; 1.4 and 1.5 are the bytes they were.
 
 A cross between two Loikas born on different frame versions is refused with its reason (`cross.mjs`: "born on frame version 4 cannot be bred with one born on version 5"), as is a genome that lacks a locus of the frame (a version-4 or version-5 genome under the version-6 frame). The Station's Cross refuses the pair before cost ("born on different frame versions"). There is no upgrade step: an earlier ruling that a house change may redraw every living mibi concerns the house style, not frame versions.
+
+## Schema /4: language frames (frame version 8 and later, catalogue 13)
+
+A frame of `frameVersion` 8 or later is a **language frame**. Its schema is `mb-species-frame/4` (the code's `SCHEMA_LANGUAGE`), a superset of /3: it may carry `engine` and `band` exactly as /3 defines them, and adds the header fields below. Every older form frame stays as it was built: schema /2, catalogue pin 12 with the digest of its own version, its own alleles. A frame studio-made on the body engine after the language (chunk 20) writes version 9 or later with `engine: "body"` into the same index, under this same schema.
+
+| Header field | Meaning |
+| --- | --- |
+| `schema` | `"mb-species-frame/4"` |
+| `family` | The build family (registry `families`, for example `trotter`, `loaf`, `slider`) |
+| `land` | The land that fixes the colours (registry `lands`, the game's biome id, for example `marsh`) |
+| `signature.part` | The one signature: `type`, `socket` (head-top, back-line, tail, neck, coat) and `accent` (`land` or `own`). The older `signature` fields (`anchor`, `second`, `feature`, `features`, `finish`) stay beside it |
+| `plan.eyes` | The eye count, 2 or 3 (a plan switch, see below). Never a locus row |
+| `catalogue` | `{ id, version: 13, digest, parent }`: the digest is `digestAt(frameVersion)`, the content the frame sees. A frame of version 7 or older names pin 12 and its digest, byte for byte as before (`catalogueHeader`, `pinOfFrame`) |
+
+Catalogue 13 adds, each with `sinceFrame: 8` (a frame older than 8 never carries them, and `digestAt(7)` is still pin 12's digest):
+
+- `anatomy.eye-count` (two, three): a **plan switch**. Locked, never in a pool, never crossed, never a row. A frame says its count in `plan.eyes`, and it must equal the registry's (`language.json`): Lehten three, every other kind two.
+- `appearance.iris-colour` (amber, honey, olive, moss, hazel, teal, slate, violet, copper) and `appearance.attitude` (content, curious, deadpan, knowing): pair maps in which the first-ranked allele shows.
+- `signature.size` (0.20 to 0.33 of standing height), `signature.count` (whole numbers 1 to 13; a child of two copies is their mean rounded up) and `signature.curl` (0 to 1.75 turns).
+- Four alleles appended to `appearance.marking-layout` at **indices 6 to 9**, after the Tuliko's four at 2 to 5: `saddle`, `brindle`, `gradient`, `back-spots`. They have `sinceFrame: 8`, so an older frame's allele list, its stamp bits and its random draws are those it was built with. In a pair with an older layout the language layout shows; among the four, back-spots over gradient over brindle over saddle; a pair of older layouts is untouched.
+
+`LOOK_PAIRS` gains the signature pairs: a frame opens `signature.count` or `growth.crest-leaf-count`, never both, and likewise `signature.size` with `growth.feather-crest` or `form.tail-tip-size`, and `signature.curl` with `growth.tail-curl-turn` or `form.tail-curl`.
+
+`anatomy.exterior-eye-presence` is a plan switch for frames of version 8 and later: always on, never open.
+
+A record the language contradicts is **retired**: `retired: "language 2026-11-05"`, with `retiredWhy` and `retiredCoveredBy` (the check a signed exception record would name, or `null`). Nothing is deleted; an older frame keeps the record byte for byte. `buildFrame` refuses to open a retired record in a frame of version 8 or later, and refuses to switch a retired part on, unless one of the kind's signed per-check exception records covers it (the anchors' records, codify.md section 9: for example Loika's `face.clear` record with scope `ears` covers its ears, and `coat.pale` covers the belly field and the underside palette). A generated frame skips such traits instead of failing.

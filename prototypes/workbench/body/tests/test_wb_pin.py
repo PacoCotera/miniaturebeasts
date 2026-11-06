@@ -1,5 +1,5 @@
 """The catalogue pin the studio checks species files against (species_v1/catalogue-pin.json) is the one framework/catalogue.mjs writes today: `node wb/make_pin.mjs --check`
-passes on the committed file, fails on a stale one and writes nothing, and the pin names catalogue 12."""
+passes on the committed file, fails on a stale one and writes nothing, and the pin names catalogue 13."""
 import json
 import os
 import shutil
@@ -28,10 +28,10 @@ class TestPin(unittest.TestCase):
     def tearDownClass(cls):
         shutil.rmtree(SCRATCH, ignore_errors=True)
 
-    def test_the_committed_pin_is_current_and_names_catalogue_12(self):
+    def test_the_committed_pin_is_current_and_names_catalogue_13(self):
         r = check()
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertEqual(json.load(open(PIN))["version"], 12)
+        self.assertEqual(json.load(open(PIN))["version"], 13)
 
     def test_a_stale_pin_fails_and_nothing_is_written(self):
         stale = os.path.join(SCRATCH, "stale.json")

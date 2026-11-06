@@ -1,4 +1,4 @@
-// The genome framework's catalogue, version 12 (pin 11's genome-string records, then the Peplos genome: curl antennae, a locked dew tongue; pin 11 stays the content the S20 body frame names): the v1 authoring catalogue6 (114 validated pairs
+// The genome framework's catalogue, version 13 (the language pin: iris colour, attitude, the signature's size, count and curl, an eye count that is a plan switch, four more marking layouts at indices 6 to 9, and the records the language retires; every one of them starts at frame 8, so a frame of version 7 or older builds exactly as at pin 12, byte for byte). Version 12 was pin 11's genome-string records, then the Peplos genome: curl antennae, a locked dew tongue; pin 11 stays the content the S20 body frame names): the v1 authoring catalogue6 (114 validated pairs
 // and six drafts, snapshotted with provenance in catalogue6-data.mjs) plus the records the
 // taxonomy proposal lists as missing for the V1 roster (design/proposals/taxonomy.md §3, "What the
 // catalogue needs": 11 switches · 25 loci + 6 alleles) and the three gaps the species frames list
@@ -21,6 +21,7 @@ export const PLAN_SWITCHES = new Set([
   "anatomy.posterior-presence", "anatomy.wing-presence", "anatomy.support-pair-count",
   "appearance.fur-presence", "appearance.anatomical-covering", "appearance.covering-kind",
   "structure.ocular-pair", "cognition.innate-profile-presence",
+  "anatomy.eye-count",   // catalogue 13: two or three, a fact of the kind (Lehten has three); no locus may vary it
 ]);
 // Part switches turn one small part on or off; a species may open one (frames.py PART_SWITCHES,
 // plus the new presence switches below).
@@ -46,6 +47,12 @@ const pairMap = (alleles, map) => ({ operator: "pair-map", alleles: Object.entri
 const enable = () => ({ operator: "dominant-enable", alleles: [{ id: "off", label: "off", value: false }, { id: "on", label: "on", value: true }] });
 // A complete unordered pair map from a dominance order (first wins over later).
 const dominance = (order) => { const map = {}; for (const a of order) for (const b of order) map[[a, b].sort().join("|")] = order.indexOf(a) <= order.indexOf(b) ? a : b; return map; };
+// Catalogue 13 vocabularies. Kept equal to framework/language.mjs by tests/pin13.test.mjs (this file imports nothing of the language registry).
+const IRIS_COLOURS = ["amber", "honey", "olive", "moss", "hazel", "teal", "slate", "violet", "copper"];
+const ATTITUDES = ["content", "curious", "deadpan", "knowing"];   // order: content > curious > deadpan > knowing
+export const SIGNATURE_COUNT_MAX = 13;   // the highest count on the roster's bands (Belatz's quill crown, 7-13)
+// A complete pair map over the whole numbers 1..n: the child of two copies is their mean rounded up.
+const wholeMean = (n) => { const map = {}; for (let a = 1; a <= n; a++) for (let b = 1; b <= n; b++) map[[String(a), String(b)].sort().join("|")] = Math.ceil((a + b) / 2); return map; };
 
 // New records. `scope` is trunk or branch (with its clan); `owner` is what must be on: a part
 // switch, "head", "flaps", "contact" (contact chains), "tail", "ears", "fur", or null (any body);
@@ -66,6 +73,8 @@ const position = (lo, mid, hi) => ({ operator: "copy-mean", measure: "position",
 const renable = () => ({ operator: "recessive-enable", alleles: [{ id: "off", label: "off", value: false }, { id: "on", label: "on", value: true }] });
 // Tuliko's marking layout alleles, appended after bands and patches so every older copy keeps its index (and a frame of version 6 or older its bit width).
 const MARKING_ORDER = ["masked", "points", "bands", "patches", "spotted", "capped"];
+// Catalogue 13's four layouts, appended after capped (indices 6 to 9); in a pair they win over every older layout.
+const LANGUAGE_LAYOUTS = ["saddle", "brindle", "gradient", "back-spots"];
 const NEW_LOCI_11 = [
   // Coat (appearance). A record that draws only for certain looks carries `wakesWhen: { locus: [looks] }`: it is awake when the SHOWN look of any named locus is one of the listed
   // looks, asleep otherwise (a sleeping record is still carried and crossed, copy by copy; only the drawing skips it). It names the shown look, never a copy.
@@ -122,6 +131,7 @@ const NEW_LOCI_11 = [
 ];
 
 const F6 = { sinceFrame: 6, provenance: { catalogue: "mb-genome-framework@10 (frame version 6)", proposal: "design/proposals/genome-fluffy.md" } };
+const F8 = { sinceFrame: 8, provenance: { catalogue: "mb-genome-framework@13 (frame version 8, the language)", proposal: "T-20261105-language-codify, codify.md sections 3 and 4" } };
 const NEW_LOCI = [
   // Mammal look (S04–S08, S10; trunk): fur on tail and ears, a face mask, tail rings, ear tilt. 2 · 4.
   { id: "appearance.fur-reach", family: "appearance", label: "Fur reach", scope: "trunk", owner: "fur", consumer: "sketch: the fur material on the tail and the ears too", ...pairMap({ body: "body", tail: "body-and-tail", ears: "body-ears-and-tail" }, dominance(["ears", "tail", "body"])) },
@@ -201,6 +211,13 @@ const NEW_LOCI = [
   { id: "growth.brow-tuft-length", ...F6, family: "structure", label: "Brow tuft length", scope: "branch", clan: "C18", owner: "anatomy.brow-tuft-presence", consumer: "rig: tuft length over head height; at long the tip stops above the eye's upper rim", ...mean({ short: 0.4 }, { long: 1 }) },
   { id: "growth.hand-size-ratio", ...F6, family: "structure", label: "Hand size", scope: "trunk", owner: "arms", consumer: "rig: the hand's size over the arm's thickness (a palm and three fingers); fixed per species", ...mean({ small: 0.7 }, { plump: 1.3 }) },
   ...NEW_LOCI_11,
+  // Catalogue 13, the language (codify.md sections 3 and 4). Each record starts at frame 8: a frame of an older version never carries it.
+  { id: "anatomy.eye-count", ...F8, family: "structure", label: "Eye count", scope: "trunk", owner: "head", consumer: "rig: how many eyes the face has (a plan switch: two, or three for the shell-carrier; locked, never in a pool, never crossed)", ...pairMap({ two: 2, three: 3 }, dominance(["three", "two"])) },
+  { id: "appearance.iris-colour", ...F8, family: "appearance", label: "Iris colour", scope: "trunk", owner: "anatomy.exterior-eye-presence", consumer: "sketch: the iris of the eye, first-ranked shows", ...pairMap(Object.fromEntries(IRIS_COLOURS.map((c) => [c, c])), dominance(IRIS_COLOURS)) },
+  { id: "appearance.attitude", ...F8, family: "appearance", label: "Attitude", scope: "trunk", owner: "anatomy.exterior-eye-presence", consumer: "sketch: the gaze, the lid and the curve of the smile together", ...pairMap(Object.fromEntries(ATTITUDES.map((c) => [c, c])), dominance(ATTITUDES)) },
+  { id: "signature.size", ...F8, family: "structure", label: "Signature size", scope: "trunk", owner: null, consumer: "rig: the signature part's height over standing height (a fifth to a third; a kind's band is the type +-15%, clamped to 0.20-0.33)", ...mean({ low: 0.2 }, { high: 0.33 }) },
+  { id: "signature.count", ...F8, family: "structure", label: "Signature count", scope: "trunk", owner: null, consumer: "rig: how many of the signature part there are (whole numbers; a child of two parents rounds up)", ...pairMap(Object.fromEntries(Array.from({ length: SIGNATURE_COUNT_MAX }, (_, i) => [String(i + 1), i + 1])), wholeMean(SIGNATURE_COUNT_MAX)) },
+  { id: "signature.curl", ...F8, family: "structure", label: "Signature curl", scope: "trunk", owner: null, consumer: "rig: turns of bend in one plane, never a twist", ...mean({ straight: 0 }, { coiled: 1.75 }) },
 ];
 
 // Alleles added to v1 records (taxonomy §3: "+ 6 alleles"). A changed record is a new record
@@ -226,7 +243,7 @@ const ADDED_ALLELES = {
   // Catalogue 11 (frame version 7): the Tuliko's four marking layouts, appended after bands and patches. The record's version moves; bands|patches stays co-dominant; a pair with a new
   // layout follows the order masked > points > bands > patches > spotted > capped (the Tuliko's order, with patches placed beside bands: the proposal is silent on patches).
   // Each new allele is known only from frame version 7 (`sinceFrame`), so an older frame keeps its two alleles and its one bit.
-  "appearance.marking-layout": { alleles: ["masked", "points", "spotted", "capped"].map((id) => ({ id, label: id, value: id, sinceFrame: 7 })), pairMap: (map) => ({ ...dominance(MARKING_ORDER), ...map }), since: 11, why: "the Tuliko's four layouts (masked, points, spotted, capped) beside bands and patches; the plain look is the marking switch off" },
+  "appearance.marking-layout": { alleles: [...["masked", "points", "spotted", "capped"].map((id) => ({ id, label: id, value: id, sinceFrame: 7 })), ...LANGUAGE_LAYOUTS.map((id) => ({ id, label: id, value: id, sinceFrame: 8 }))], pairMap: (map) => ({ ...dominance([...[...LANGUAGE_LAYOUTS].reverse(), ...MARKING_ORDER]), ...map }), since: 11, why: "the Tuliko's four layouts (masked, points, spotted, capped) beside bands and patches, then (catalogue 13, frame 8) the language's saddle, brindle, gradient and back-spots at indices 6 to 9; a pair with a language layout shows the language layout (back-spots over gradient over brindle over saddle), a pair of older layouts is untouched; the plain look is the marking switch off" },
   "anatomy.crown-form": { alleles: [{ id: "leaf", label: "leaf", value: "leaf" }], pairMap: (map) => ({ ...map, "leaf|leaf": "leaf", "leaf|pointed": "leaf", "leaf|rounded": "leaf" }), since: 9, why: "Pip's crest is three leaf sheets, not spikes" },
 };
 
@@ -251,6 +268,42 @@ const NEW_CONSUMERS = {
   "appearance.surface-texture": "sketch: fine ridges as a surface grain",
 };
 
+// Catalogue 13 retires records the language contradicts (gaps.md section 1). Retire, never delete: an older frame keeps
+// the record byte for byte and an old genome still decodes. A retired record is refused when a frame of version 8 or later
+// would open it (species.mjs buildFrame), unless one of the kind's signed per-check exception records (language.mjs
+// EXCEPTIONS, codify.md section 9) covers it: `coveredBy` names that check and, where an exception is scoped, its scope.
+export const RETIRED_MARK = "language 2026-11-05";
+const PALE = { check: "coat.pale" }, EARS = { check: "face.clear", scope: "ears" };
+const RETIRED = {
+  "appearance.body-palette": ["named body colours, clan-style; colour comes from the land", { check: "coat.land" }],
+  "appearance.underside-palette": ["a pale underside; the language has no pale belly", PALE],
+  "appearance.cap-palette": ["the cap's own colours; the accent is the land's", null],
+  "appearance.belly-field": ["a cream belly field; no pale belly", PALE],
+  "growth.belly-field-extent": ["how far up the cream belly field reaches; no pale belly", PALE],
+  "anatomy.muzzle-presence": ["a snout; no animal muzzle or pet nose", null],
+  "growth.muzzle-projection-ratio": ["snout length; no animal muzzle", null],
+  "growth.muzzle-width-ratio": ["snout width; no animal muzzle", null],
+  "anatomy.beak-presence": ["a beak; no beak", null],
+  "growth.beak-length-ratio": ["beak length; no beak", null],
+  "anatomy.auricular-presence": ["ears; no pet ears", EARS],
+  "anatomy.auricular-form": ["ear shape; no pet ears", EARS],
+  "growth.auricular-length-ratio": ["ear length; no pet ears", EARS],
+  "growth.auricular-set-ratio": ["ear set; no pet ears", EARS],
+  "growth.auricular-width-ratio": ["ear width; no pet ears", EARS],
+  "anatomy.ear-tilt": ["ear tilt; no pet ears", EARS],
+  "anatomy.leaf-presence": ["the walking plant; the leaf crest is the one plant accent", null],
+  "growth.leaf-count": ["leaves on the body; plants are not a body", null],
+  "growth.leaf-length-ratio": ["leaf length on the body; plants are not a body", null],
+  "appearance.leaf-covering": ["a leafy mantle; plants are not a body", null],
+  "energy.light-feeding": ["feeding on light, the walking plant's; no plant kinds", null],
+  "anatomy.wing-case-presence": ["beetle wing cases; no beetle kinds", null],
+  "growth.wing-case-extent": ["wing-case length; no beetle kinds", null],
+  "anatomy.wing-case-seam": ["wing-case seam; no beetle kinds", null],
+  "anatomy.tail-tip-bulb": ["a separate ball on the tail; the tail swells into its tip", null],
+};
+for (const id of Object.keys(RETIRED)) if (!NEW_LOCI.some((l) => l.id === id) && !CATALOGUE6.loci.some((l) => l.id === id)) throw new Error(`retired record ${id} is not in the catalogue`);
+
+const retiredFields = (id) => ({ retired: RETIRED_MARK, retiredWhy: RETIRED[id][0], retiredCoveredBy: RETIRED[id][1] });
 function v1Locus(l) {
   const family = canonicalFamily(l.family);
   const status = l.status === "validated" ? "validated" : "draft";
@@ -258,6 +311,7 @@ function v1Locus(l) {
   const added = ADDED_ALLELES[l.id];
   return {
     ...l, family, status, scope: "trunk", switch: sw, target: l.target ?? V1_TARGETS[l.id] ?? null,
+    ...(RETIRED[l.id] ? retiredFields(l.id) : {}),
     ...(added ? { alleles: [...l.alleles, ...added.alleles], pairMap: typeof added.pairMap === "function" ? added.pairMap(l.pairMap) : added.pairMap ?? l.pairMap, version: l.version + 1, addedAlleles: { ids: added.alleles.map((a) => a.id), why: added.why, since: added.since ?? 7 } } : {}),
     nature: DOING_FAMILIES.has(family) ? "doing" : "look",
     consumer: NEW_CONSUMERS[l.id] ?? (l.target ? `rig: ${l.target}` : DOING_FAMILIES.has(family) ? "behaviour: carried, weighed by the state machine" : null),
@@ -267,7 +321,8 @@ function v1Locus(l) {
 function newLocus(l) {
   return {
     status: "validated", version: 1, units: null, requires: l.owner && l.owner.includes(".") ? [l.owner] : [], applicability: null, bounds: null, target: null,
-    ...l, switch: PART_SWITCHES.has(l.id) ? "part" : null,
+    ...l, switch: PLAN_SWITCHES.has(l.id) ? "plan" : PART_SWITCHES.has(l.id) ? "part" : null,
+    ...(RETIRED[l.id] ? retiredFields(l.id) : {}),
     nature: DOING_FAMILIES.has(l.family) ? "doing" : "look",
     provenance: l.provenance ?? { catalogue: "mb-genome-framework@7", proposal: "design/proposals/taxonomy.md §3 and species-frames.md §7" },
   };
@@ -276,7 +331,7 @@ function newLocus(l) {
 export const CATALOGUE = {
   // Pin 8: 7 plus the tiny head alleles (a changed range is a new pin; frames and genomes carry the pin
   // they were built against, and a saved mibi keeps its own). Pin 12 names one content: `digest`, below.
-  id: "mb-genome-framework", version: 12, schema: "mb-catalogue/12",
+  id: "mb-genome-framework", version: 13, schema: "mb-catalogue/13",
   parent: { id: CATALOGUE6.id, version: CATALOGUE6.version, foundationDigest: CATALOGUE6.foundationDigest, source: CATALOGUE6.source },
   families: CATALOGUE6.families,
   loci: [...CATALOGUE6.loci.map(v1Locus), ...NEW_LOCI.map(newLocus)],
@@ -300,6 +355,10 @@ export const LOOK_PAIRS = [
   ["Ear shape", "anatomy.auricular-form", "form.ear-kind"], ["Ear droop", "anatomy.ear-tilt", "form.ear-droop"], ["Ear width", "growth.auricular-width-ratio", "form.ear-width"],
   ["Eye size", "growth.exterior-eye-size-ratio", "form.eye-size"], ["Eye height", "growth.exterior-eye-height-ratio", "form.eye-height"], ["Eye spacing", "growth.exterior-eye-spacing-ratio", "form.eye-spacing"],
   ["Cream reach", "growth.belly-field-extent", "appearance.cream-extent"],
+  // Catalogue 13: the signature's generic records beside the older per-kind ones (codify.md section 4): a frame opens one of each pair, never both.
+  ["Signature count", "signature.count", "growth.crest-leaf-count"],
+  ["Signature size", "signature.size", "growth.feather-crest"], ["Signature size", "signature.size", "form.tail-tip-size"],
+  ["Signature curl", "signature.curl", "growth.tail-curl-turn"], ["Signature curl", "signature.curl", "form.tail-curl"],
 ];
 for (const [, a, b] of LOOK_PAIRS) if (!LOCI.has(a) || !LOCI.has(b)) throw new Error(`look pair ${a} / ${b}: not both records`);
 // The pairs a set of opened records breaks: [{ look, ids }] (empty when the frame is sound).
@@ -320,8 +379,12 @@ export const digestAt = (frameVersion) => sha256hex(CATALOGUE.loci.filter((l) =>
 CATALOGUE.digest = digestAt(Infinity);
 // The header a form frame records: every frame built here names pin 12 and the digest of the content its own version sees (digestAt). Pins 10 and 11 are history: pin 11 is named
 // only by the S20 body frame's frozen file.
-export const PIN = 12;
-export const catalogueHeader = (frameVersion) => ({ id: CATALOGUE.id, version: PIN, digest: digestAt(frameVersion), parent: CATALOGUE.parent });
+// Catalogue 13 is the language's: a frame of version 8 or later names it. A frame of version 7 or older keeps naming pin 12 (its bytes do not move: pin 13 adds only records and alleles
+// that start at frame 8, so digestAt(7) is pin 12's digest).
+export const LANGUAGE_FRAME = 8;
+export const PIN = 13, PIN_BEFORE_LANGUAGE = 12;
+export const pinOfFrame = (frameVersion) => (frameVersion >= LANGUAGE_FRAME ? PIN : PIN_BEFORE_LANGUAGE);
+export const catalogueHeader = (frameVersion) => ({ id: CATALOGUE.id, version: pinOfFrame(frameVersion), digest: digestAt(frameVersion), parent: CATALOGUE.parent });
 export const VALIDATED = CATALOGUE.loci.filter((l) => l.status === "validated");
 export const DRAFTS = CATALOGUE.loci.filter((l) => l.status !== "validated").map((l) => l.id);
 export const V1_DEFAULTS = CATALOGUE6.defaults;

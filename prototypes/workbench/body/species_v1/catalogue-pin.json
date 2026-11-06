@@ -1,8 +1,8 @@
 {
  "id": "mb-genome-framework",
- "version": 12,
- "schema": "mb-catalogue/12",
- "digest": "98419b59dd1a826d66bbd1b0c17988dec64c51fcc2076e2b18bd72eb987d876c",
+ "version": 13,
+ "schema": "mb-catalogue/13",
+ "digest": "8d405a729aeb9973c026c9823b316405d91c6c01402b51870f471b9a1c551fd5",
  "lookPairs": [
   [
    "Ear shape",
@@ -38,6 +38,31 @@
    "Cream reach",
    "growth.belly-field-extent",
    "appearance.cream-extent"
+  ],
+  [
+   "Signature count",
+   "signature.count",
+   "growth.crest-leaf-count"
+  ],
+  [
+   "Signature size",
+   "signature.size",
+   "growth.feather-crest"
+  ],
+  [
+   "Signature size",
+   "signature.size",
+   "form.tail-tip-size"
+  ],
+  [
+   "Signature curl",
+   "signature.curl",
+   "growth.tail-curl-turn"
+  ],
+  [
+   "Signature curl",
+   "signature.curl",
+   "form.tail-curl"
   ]
  ],
  "loci": [
@@ -740,6 +765,18 @@
     },
     {
      "id": "capped"
+    },
+    {
+     "id": "saddle"
+    },
+    {
+     "id": "brindle"
+    },
+    {
+     "id": "gradient"
+    },
+    {
+     "id": "back-spots"
     }
    ]
   },
@@ -6096,6 +6133,227 @@
     {
      "id": "large",
      "value": 1
+    }
+   ]
+  },
+  {
+   "id": "anatomy.eye-count",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Eye count",
+   "nature": "look",
+   "owner": "head",
+   "requires": [],
+   "switch": "plan",
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "two",
+     "value": 2
+    },
+    {
+     "id": "three",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "appearance.iris-colour",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Iris colour",
+   "nature": "look",
+   "owner": "anatomy.exterior-eye-presence",
+   "requires": [
+    "anatomy.exterior-eye-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "amber"
+    },
+    {
+     "id": "honey"
+    },
+    {
+     "id": "olive"
+    },
+    {
+     "id": "moss"
+    },
+    {
+     "id": "hazel"
+    },
+    {
+     "id": "teal"
+    },
+    {
+     "id": "slate"
+    },
+    {
+     "id": "violet"
+    },
+    {
+     "id": "copper"
+    }
+   ]
+  },
+  {
+   "id": "appearance.attitude",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "appearance",
+   "label": "Attitude",
+   "nature": "look",
+   "owner": "anatomy.exterior-eye-presence",
+   "requires": [
+    "anatomy.exterior-eye-presence"
+   ],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "content"
+    },
+    {
+     "id": "curious"
+    },
+    {
+     "id": "deadpan"
+    },
+    {
+     "id": "knowing"
+    }
+   ]
+  },
+  {
+   "id": "signature.size",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Signature size",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "low",
+     "value": 0.2
+    },
+    {
+     "id": "high",
+     "value": 0.33
+    }
+   ]
+  },
+  {
+   "id": "signature.count",
+   "operator": "pair-map",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Signature count",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "1",
+     "value": 1
+    },
+    {
+     "id": "2",
+     "value": 2
+    },
+    {
+     "id": "3",
+     "value": 3
+    },
+    {
+     "id": "4",
+     "value": 4
+    },
+    {
+     "id": "5",
+     "value": 5
+    },
+    {
+     "id": "6",
+     "value": 6
+    },
+    {
+     "id": "7",
+     "value": 7
+    },
+    {
+     "id": "8",
+     "value": 8
+    },
+    {
+     "id": "9",
+     "value": 9
+    },
+    {
+     "id": "10",
+     "value": 10
+    },
+    {
+     "id": "11",
+     "value": 11
+    },
+    {
+     "id": "12",
+     "value": 12
+    },
+    {
+     "id": "13",
+     "value": 13
+    }
+   ]
+  },
+  {
+   "id": "signature.curl",
+   "operator": "copy-mean",
+   "scope": "trunk",
+   "clan": null,
+   "family": "structure",
+   "label": "Signature curl",
+   "nature": "look",
+   "owner": null,
+   "requires": [],
+   "switch": null,
+   "measure": null,
+   "sleepsWhen": null,
+   "wakesWhen": null,
+   "alleles": [
+    {
+     "id": "straight",
+     "value": 0
+    },
+    {
+     "id": "coiled",
+     "value": 1.75
     }
    ]
   }

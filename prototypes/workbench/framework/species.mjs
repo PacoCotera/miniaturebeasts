@@ -6,16 +6,20 @@
 // else by seed and opens its traits by tier. Individuals vary only at the open loci, from the
 // species' pools. The three authored frames (the files hopper, puffcap and glowtail in frames.py, here S01, S02
 // and S03: Loika, Untuva and Tuikis) keep their open traits and fixed values.
-import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, isContinuous, valueRange, samePair, lookConflicts } from "./catalogue.mjs";
+import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, LANGUAGE_FRAME, isContinuous, valueRange, samePair, lookConflicts } from "./catalogue.mjs";
 import { poolBound } from "./envelope.mjs";
 import { cross } from "./cross.mjs";
 import { planFacts } from "./plans.mjs";
 import { carried, ownerOn, isDoing, isPartSwitch, SWITCH_TARGETS } from "./guards.mjs";
 import { resolveIndividual } from "./resolve.mjs";
+import { LANGUAGE, kindOf, EYE_COUNTS } from "./language.mjs";
 import { buildBody } from "./rig.mjs";
 import { validateBody } from "./validate.mjs";
 
 export const SCHEMA = "mb-species-frame/2";
+// Frames of version 8 and later (the language) carry the header `family`, `land`, `signature.part` and `plan.eyes` besides everything /3 has (`engine`, `band`): schema /4,
+// a superset of /3 (design/proposals/species-frames/frames-schema.md). /2 is the schema of every older form frame, which stays as it was.
+export const SCHEMA_LANGUAGE = "mb-species-frame/4";
 // The frame version a genome is built against: 2 since catalogue 8 (the tiny head alleles); 3 since the
 // sixteen species glyphs were redrawn as abstract marks (2026-10-08, the owner's decision; the stamp
 // carries a glyph, so a changed glyph is a new frame). A saved mibi keeps the version it was born with.
@@ -135,6 +139,18 @@ const vocabTrait = (id) => { const t = VOCAB.find((v) => v[1] === id); if (!t) t
 
 // --- the frame -------------------------------------------------------------------------------------
 
+// A record a frame of version 8 or later may not open: eye presence (a plan switch from frame 8) and every retired
+// record that none of the kind's signed per-check exception records covers (codify.md section 9). null when it may.
+export function refuseOpen(kindId, id) {
+  const locus = LOCI.get(id);
+  if (id === "anatomy.exterior-eye-presence") return "eyes are always on: a plan switch from frame 8, locked, never open";
+  if (id === "anatomy.eye-count") return "eye count is a plan switch: a fact of the kind (two, or three for Lehten), locked, never open";
+  if (!locus?.retired) return null;
+  const c = locus.retiredCoveredBy;
+  if (c && LANGUAGE.exceptions.some((e) => e.kind === kindId && e.check === c.check && (!c.scope || e.scope === c.scope))) return null;
+  return `retired (${locus.retired}: ${locus.retiredWhy}); no exception record of ${kindId} covers it${c ? ` (it would take ${c.check}${c.scope ? ` scope ${c.scope}` : ""})` : ""}`;
+}
+
 // `spec`: { id, name, plural, order, summary, taxonomy:{...}, plan:{key, extras}, clan, features:{switch: "on"},
 //   fixed:{locus: allele}, open:[{trait, pool?, looks?, shapeable?, override?}] | null (generate by tier),
 //   tier, seed, sealed:{chapter: find}, pod, glyph, pending:[] }
@@ -144,6 +160,18 @@ export function buildFrame(spec, options = {}) {
   // Which part switches the species has: the clan's features (on) plus any the species opens.
   const authoredOpenLoci = spec.open ? spec.open.flatMap((o) => o.trait ? vocabTrait(o.trait).loci : o.loci) : [];
   const switchesOn = { ...spec.features };
+  // The language (frame version 8 and later): eyes are a plan switch (always on, a fixed count), and a retired record is never opened without a signed exception.
+  const language = (spec.frameVersion ?? FRAME_VERSION) >= LANGUAGE_FRAME;
+  const reg = kindOf(LANGUAGE, spec.id) ?? null;
+  const eyes = spec.eyes ?? reg?.eyes.count ?? 2;
+  if (language && !EYE_COUNTS.includes(eyes)) throw new Error(`${spec.id}: eye count ${eyes} (a plan switch: two, or three for the one kind that has three)`);
+  if (language && reg && reg.eyes.count !== eyes) throw new Error(`${spec.id}: eye count ${eyes}, but the registry says ${reg.eyes.count}; nothing varies it`);
+  if (language) {
+    for (const id of [...authoredOpenLoci, ...(spec.openSwitches ?? [])]) { const why = refuseOpen(spec.id, id); if (why) throw new Error(`${spec.id}: refuses to open ${id}: ${why}`); }
+    for (const [id, state] of Object.entries(switchesOn)) if (state === "on" && id !== "anatomy.exterior-eye-presence") { const why = refuseOpen(spec.id, id); if (why) throw new Error(`${spec.id}: refuses to switch on ${id}: ${why}`); }
+    if (switchesOn["anatomy.exterior-eye-presence"] === "off") throw new Error(`${spec.id}: refuses to switch off anatomy.exterior-eye-presence: ${refuseOpen(spec.id, "anatomy.exterior-eye-presence")}`);
+    switchesOn["anatomy.exterior-eye-presence"] = "on";
+  }
   const vAll = { ...plan.values };
   for (const [id, state] of Object.entries(switchesOn)) if (state === "on") vAll[SWITCH_TARGETS[id]] = true;
   for (const id of [...authoredOpenLoci, ...(spec.openSwitches ?? [])]) if (isPartSwitch(id)) vAll[SWITCH_TARGETS[id]] = true;
@@ -172,7 +200,7 @@ export function buildFrame(spec, options = {}) {
   if (!open) {
     // Only traits the plan can show, never the size class, never a locus the clan's signature fixes.
     const signature = new Set(Object.keys(spec.finish ?? {}));
-    const applicable = VOCAB.map((t) => vocabTrait(t[1])).filter((t) => t.loci.every((id) => carriedIds.includes(id) && !signature.has(id)) && t.id !== "size" && !(spec.lockTraits ?? []).includes(t.id) && !(spec.neverOpen ?? []).includes(t.id));
+    const applicable = VOCAB.map((t) => vocabTrait(t[1])).filter((t) => t.loci.every((id) => carriedIds.includes(id) && !signature.has(id)) && t.id !== "size" && !(spec.lockTraits ?? []).includes(t.id) && !(spec.neverOpen ?? []).includes(t.id) && (!language || t.loci.every((id) => !refuseOpen(spec.id, id))));
     const [lo, hi] = TIERS[spec.tier];
     const n = Math.min(applicable.length, lo + Math.floor(r() * (hi - lo + 1)));
     const looks = applicable.filter((t) => !["movement", "stamina", "character", "glow", "charge"].includes(t.chapter));
@@ -231,15 +259,17 @@ export function buildFrame(spec, options = {}) {
   }
   const frame = {
     ...(spec.frameVersion ? { frameVersion: spec.frameVersion } : {}),
-    schema: SCHEMA,
+    schema: language ? SCHEMA_LANGUAGE : SCHEMA,
+    ...(language ? { family: spec.family ?? reg?.family ?? null, land: spec.land ?? reg?.land ?? null } : {}),
     species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "", ...(spec.parked ? { parked: true } : {}), ...(spec.draft ? { draft: true } : {}), ...(spec.borrows?.length ? { borrows: [...spec.borrows] } : {}) },
     taxonomy: { ...spec.taxonomy, clan: spec.clan, planKey: spec.plan.key, planCode: plan.code, rig: plan.rig, tier: spec.tier ?? "authored", seed: spec.seed ?? null, states: plan.states },
     catalogue: catalogueHeader(version),
     plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float, stand: !!spec.plan.extras?.stand, flapPairs: plan.extras.flapPairs, flapRest: plan.extras.flapRest, ...(plan.extras.upright ? { upright: true } : {}) }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations, ...(plan.armSet ? { armSet: plan.armSet, armStations: plan.armStations } : {}) },
-    signature: { anchor: spec.anchor, second: spec.second ?? null, feature: spec.feature, features: switchesOn, finish: spec.finish ?? {} },
+    signature: { anchor: spec.anchor, second: spec.second ?? null, feature: spec.feature, features: switchesOn, finish: spec.finish ?? {}, ...(language ? { part: spec.signature ?? (reg?.signature ? { type: reg.signature.type, socket: reg.signature.socket, accent: reg.signature.accent } : null) } : {}) },
     glyph: spec.glyph, habits: [...(spec.habits ?? [])], pod: null, chapters: [], loci: [], absent, counts: null, notYet: null, typeSpecimen: null, viability: null,
     _pools: pools, _locked: locked, _traits: traits, _sealed: spec.sealed ?? {}, _typical: typical,
   };
+  if (language) frame.plan.eyes = eyes;   // the plan switch anatomy.eye-count: a fact of the frame, never a locus
   finishFrame(frame, spec);
   // Checks (frames.py: every open look is drawn; 200 random individuals build).
   const specimen = typeSpecimen(frame);

@@ -43,12 +43,12 @@ const NAMED = ["appearance.marking-switch", "appearance.marking-layout", "appear
 const C20 = A3.filter((r) => r[2] === "C20").map((r) => r[1]);
 const NEW = A3.filter((r) => r[2] === "new" || r[2] === "C20").map((r) => r[1]);
 
-test("pin 12 (pin 11 and the Peplos genome): version 12, 227 records, and a content digest that is the SHA-256 of what a genome rests on", () => {
-  assert.equal(CATALOGUE.version, 12); assert.equal(CATALOGUE.schema, "mb-catalogue/12");
-  assert.equal(CATALOGUE.loci.length, 179 + 48); assert.equal(VALIDATED.length, 173 + 48);
+test("pin 12 (pin 11 and the Peplos genome), as pin 13 still sees it at frame 7: 227 records, and a content digest that is the SHA-256 of what a genome rests on", () => {
+  assert.equal(CATALOGUE.version, 13); assert.equal(CATALOGUE.schema, "mb-catalogue/13");   // the language pin (tests/pin13.test.mjs) adds records and alleles that start at frame 8
+  assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 7)).length, 179 + 48); assert.equal(CATALOGUE.loci.length, 179 + 48 + 6); assert.equal(VALIDATED.length, 173 + 48 + 6);
   assert.match(CATALOGUE.digest, /^[0-9a-f]{64}$/);
-  assert.equal(CATALOGUE.digest, digestAt(7)); assert.equal(CATALOGUE.digest, digestAt(Infinity));
-  assert.equal(CATALOGUE.digest, "98419b59dd1a826d66bbd1b0c17988dec64c51fcc2076e2b18bd72eb987d876c", "pin 12 names this content (pin 11, 2666ebb3e6be79739a49f45aa840a876e87737e27361c01e1be5722d0cd8ada4, was its genome-string content before the Peplos records, and is named only by the S20 body frame): a change to a record, an allele, a pair map or a scope is a new pin");
+  assert.equal(CATALOGUE.digest, digestAt(Infinity)); assert.notEqual(CATALOGUE.digest, digestAt(7), "pin 13 is another content");
+  assert.equal(digestAt(7), "98419b59dd1a826d66bbd1b0c17988dec64c51fcc2076e2b18bd72eb987d876c", "pin 12 names this content (pin 11, 2666ebb3e6be79739a49f45aa840a876e87737e27361c01e1be5722d0cd8ada4, was its genome-string content before the Peplos records, and is named only by the S20 body frame): a change to a record, an allele, a pair map or a scope is a new pin");
   assert.equal(digestAt(6), "2ca450b04bfbcb4ca434b8e14195f111e9f381a27ea7c6c207cb06884f5ec42b", "the 179 records a frame of version 6 or older sees: pin 10's 178 on the build branches plus the dew tongue, with the antenna form's curl in place of feather, digested the same way (retaken once at the merge onto catalogue 12)");
   assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 6)).length, 179);
   assert.notEqual(digestAt(6), digestAt(7));
@@ -170,8 +170,8 @@ test("owners: the three eye records ride the eye switch, form.head needs a head,
 
 test("the marking layout gains masked, points, spotted and capped after bands and patches; an older copy keeps its index, bands with patches stays co-dominant", () => {
   const l = LOCI.get("appearance.marking-layout");
-  assert.deepEqual(l.alleles.map((a) => a.id), ["bands", "patches", "masked", "points", "spotted", "capped"], "appended, so every older copy keeps its index");
-  assert.deepEqual(l.alleles.slice(0, 2).map((a) => a.sinceFrame), [undefined, undefined]); assert.deepEqual(l.alleles.slice(2).map((a) => a.sinceFrame), [7, 7, 7, 7]);
+  assert.deepEqual(l.alleles.slice(0, 6).map((a) => a.id), ["bands", "patches", "masked", "points", "spotted", "capped"], "appended, so every older copy keeps its index (catalogue 13 appends four more at 6 to 9)");
+  assert.deepEqual(l.alleles.slice(0, 2).map((a) => a.sinceFrame), [undefined, undefined]); assert.deepEqual(l.alleles.slice(2, 6).map((a) => a.sinceFrame), [7, 7, 7, 7]);
   assert.equal(resolveCopies(l, ["bands", "bands"]), "bands"); assert.equal(resolveCopies(l, ["patches", "patches"]), "patches"); assert.equal(resolveCopies(l, ["bands", "patches"]), "bands-and-patches");
   const order = ["masked", "points", "bands", "patches", "spotted", "capped"];
   for (let i = 0; i < order.length; i++) for (let j = i + 1; j < order.length; j++) {
@@ -212,9 +212,9 @@ test("every S01 to S19 frame is byte for byte the merge baseline, names pin 12 w
 
 test("a frame of version 7 names pin 12 and its digest, carries the generic records of an open clan, and lists C20's records as another clan's branch loci", () => {
   assert.deepEqual(catalogueHeader(6), { id: CATALOGUE.id, version: 12, digest: digestAt(6), parent: CATALOGUE.parent });
-  assert.equal(catalogueHeader(7).version, 12); assert.equal(catalogueHeader(7).digest, CATALOGUE.digest);
+  assert.equal(catalogueHeader(7).version, 12); assert.equal(catalogueHeader(7).digest, digestAt(7));
   const frame = buildFrame({ ...specOf(SPECIES.find((s) => s.id === "S04")), frameVersion: 7, openSwitches: ["anatomy.whisker-presence"] }, { samples: 5 });
-  assert.equal(frame.catalogue.version, 12); assert.equal(frame.catalogue.digest, CATALOGUE.digest);
+  assert.equal(frame.catalogue.version, 12); assert.equal(frame.catalogue.digest, digestAt(7));
   assert.equal(frame.viability.constructed, frame.viability.sampled);
   for (const id of ["form.ear-kind", "form.whisker-count", "appearance.blush", "form.tail-length"]) assert.ok(frame.loci.some((l) => l.id === id), `${id} is open to a C04 species at version 7`);
   for (const id of C20) { assert.ok(!frame.loci.some((l) => l.id === id), `${id} is not carried by a C04 species`); assert.ok(frame.absent.some((a) => a.id === id && /branch locus/.test(a.why)), `${id} is an absent branch locus there`); }
