@@ -23,12 +23,13 @@ function __add(sp, x, y, o) {
   const c = Object.assign({ id, sp, x, y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: .2, face: 1, ready: true }, o || {}); live.cr.push(c); return c; }
 `;
 
-export function fixture({ partner = null, seed = 3, canvas = false, known = ALL_KNOWN } = {}) {
+export function fixture({ partner = null, rider = null, seed = 3, canvas = false, known = ALL_KNOWN, gate = false } = {}) {
   const p = makePage({ console: "silent", els: true, raf: 1, canvas });
   const run = p.run;
   run(`newWorld(${seed}); TEST.calm = true; S.known = ${JSON.stringify(known)};`);
   if (partner != null) run(`S.mibis = [${JSON.stringify(mibi(1, "Pip", partner))}]; S.carried = [1]; S.lead = 1;`);
-  run("startExpedition('weather', G.spawns[0]); enterPatch(); S.exp.n = 5; S.exp.fog = null; S.exp.storm = null; S.exp.stats.sheds = 0;");
+  if (rider != null) run(`S.mibis = [${JSON.stringify({ ...mibi(1, "Pip", rider), grownTurn: null })}]; S.carried = [1]; S.lead = 1;`);   // a juvenile: it rides, it is no partner
+  run(`startExpedition('weather', ${gate ? "G.gate" : "G.spawns[0]"}); enterPatch(); S.exp.n = 5; S.exp.fog = null; S.exp.storm = null; S.exp.stats.sheds = 0;`);
   run("curLive().cr.length = 0; S.cr.length = 0; indexCreatures();");
   run(HELPERS);
   const f = {
