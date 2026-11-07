@@ -4977,12 +4977,13 @@ function drawLine(o) {
 // the one to leave framed; Ground: the pod you face.
 function drawSwap() {
   const sw = swapState(); if (!sw) return;
-  const y0 = SCR_H - LINE_H - 104, n = sw.held.length, X0 = 92, cw = Math.floor((SCR_W - 12 - X0) / n);
+  // release 22 (E2): the columns start right after the longer row label and each text line gets all the width its column has, so a tier-2 hold's three pods keep their longest line whole
+  const y0 = SCR_H - LINE_H - 104, n = sw.held.length, X0 = 16 + Math.max(textW('Hold', 1), textW('Ground', 1)) + 10, cw = Math.floor((SCR_W - 12 - X0) / n), tw = cw - 24;
   panel(6, y0, SCR_W - 12, 98, C.ink, C.amber);
-  text('Hold', 16, y0 + 12, C.mist);
+  text('Hold', 16, y0 + 15, C.mist, 1);
   sw.held.forEach((p, i) => { const x = X0 + i * cw; if (i === sw.sel) { panel(x - 4, y0 + 4, cw - 4, 46, C.night); brackets(x - 6, y0 + 2, cw, 50, C.amber); }
-    podSlot(x, y0 + 8, p); text(clipText(podName(p), cw - 30, 2), x + 20, y0 + 8, i === sw.sel ? C.bone : C.fog); text(clipText(podTagOf(p, true), cw - 30, 2), x + 20, y0 + 28, C.mist); });
-  text('Ground', 16, y0 + 62, C.mist);
+    podSlot(x, y0 + 8, p); text(clipText(podName(p, true), tw, 2), x + 20, y0 + 8, i === sw.sel ? C.bone : C.fog); text(clipText(podTagOf(p, true), tw, 2), x + 20, y0 + 28, C.mist); });
+  text('Ground', 16, y0 + 65, C.mist, 1);
   podSlot(X0, y0 + 58, sw.p); text(clipText(podName(sw.p) + ' · ' + podTagOf(sw.p), SCR_W - X0 - 40, 2), X0 + 20, y0 + 58, C.bone);
   text(clipText('leave ' + podName(sw.held[sw.sel], true) + ' here, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
 }
