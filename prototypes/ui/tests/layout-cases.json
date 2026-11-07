@@ -32,7 +32,7 @@
     "expect": [
      { "rule": "L1", "container": "panelSnapshot", "node": "snapshot chamber", "other": "bottom", "measured": 6, "mark": "✓m", "why": "6 below, through the snapshot's source nodes (log addition 3)" },
      { "rule": "L7", "part": "a", "container": "panelSnapshot", "measured": [0.2, 0.35], "mark": "✓m", "why": "the empty top of the window: the centroid 0.27 below the centre (the slack 116 above, 6 below is one finding, carried by L1 bottom 6 and this)" },
-     { "rule": "L11", "node": "panelPrice", "measured": 18, "mark": "✓e", "why": "unlabelled marks: the Incubate header's pod mark ends the price run with no word" }
+     { "rule": "L11", "node": "panelPrice", "measured": 14, "mark": "✓e", "why": "unlabelled marks: the Incubate header's pod mark ends the price run with no word" }
     ],
     "clear": [],
     "pending": [] },
