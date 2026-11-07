@@ -52,8 +52,14 @@ test("stone-sense (Tepor): you end an action within 1 tile of a warm or charged 
 
 test("bank-dig (Rupar): the walk's first bank dig", () => {
   const f = fixture({ partner: 7 });
-  f.run("digBank(0, S.exp.pos, S.exp.pos)"); assert.deepEqual(done(f), ["bank-dig"]);
-  f.run("S.mibis[0].habitsDone = []; digBank(1, S.exp.pos, S.exp.pos)"); assert.deepEqual(done(f), [], "once a walk");
+  f.run("G.level[0] = 1; G.level[1] = 2");   // cell 1 is a level above cell 0
+  f.run("digBank(0, 0, 1)"); assert.deepEqual(done(f), ["bank-dig"], "a dig up");
+  f.run("S.mibis[0].habitsDone = []; digBank(1, 0, 1)"); assert.deepEqual(done(f), [], "once a walk");
+  const g = fixture({ partner: 7 }); g.run("G.level[0] = 1; G.level[1] = 2");
+  g.run("digBank(0, 1, 0)"); assert.deepEqual(done(g), [], "a dig down is the ability only"); assert.equal(g.run("S.exp.dug.length"), 1, "the bank is dug");
+  assert.ok(!g.msgs().some(m => /dug a way up the bank/.test(m)));
+  g.run("digBank(1, 0, 1)"); assert.deepEqual(done(g), ["bank-dig"], "a later dig up still learns it");
+  assert.ok(g.msgs().some(m => m.endsWith(" dug a way up the bank")), g.msgs().join(" | "));
 });
 
 test("dew-find (Peplos): you take dew from a full cup", () => {
@@ -104,7 +110,7 @@ const ST = await import("../../station/src/state.mjs");
 { const { setFrames } = await import("../../station/src/genome.mjs"), dir = new URL("../../workbench/frames/language/", import.meta.url).pathname;
   setFrames(readdirSync(dir).filter(f => f.startsWith("species-")).map(f => JSON.parse(readFileSync(path.join(dir, f), "utf8")))); }
 
-test("end to end: the Wickle sits by a lit beacon on a walk; End expedition; the Station's dock records beacon-sit on its mibi, with the plate's log line", () => {
+test("end to end: the Wickle sits by a lit beacon on a walk; End expedition; the Station's dock records beacon-sit on its mibi, with the plate's log line", async () => {
   const p = makePage({ console: "silent", els: true, raf: 1 }), run = p.run;
   run("newWorld(3, 4); TEST.calm = true; save();");
   const st = ST.normalize(ST.freshSt(p.S.wid, p.S.turn));
@@ -120,12 +126,14 @@ test("end to end: the Wickle sits by a lit beacon on a walk; End expedition; the
   // the walk
   run("S.known = [16]; startExpedition('weather', G.spawns[0]); enterPatch(); S.exp.fog = null; S.exp.storm = null; S.exp.stats.calls = 1;");
   assert.equal(run("S.exp.pt.sp"), 16);
+  run("var __habLines = []; (() => { const real = fxMsg; fxMsg = (t, p) => { __habLines.push(t); return real(t, p); }; })();");
   const s = JSON.parse(run("JSON.stringify(curLay().spawnPt)")), P = plain(run("S.exp.patch"));
   const spot = JSON.parse(run(`(() => { const lay = curLay(), key = S.exp.patch.key; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = S.exp.patch.x + dx, y = S.exp.patch.y + dy;
     if ((dx || dy) && x > 0 && y > 0 && x < PW - 1 && y < PH - 1 && lay.reach[y * PW + x] && !NOSTAND(lay.tiles[y * PW + x]) && !occupant(key, x, y)) return JSON.stringify({ x, y }); } return 'null'; })()`));
   run(`curLay().feats.push({ kind: 'j', id: 'jx', x: ${spot.x}, y: ${spot.y} }); setFS(curLay().key, 'jx', { up: 1 })`);
   run("advance('patch', { noise: 'wait' })");
   assert.deepEqual(plain(run("S.mibis[0].habitsDone")), ["beacon-sit"], "the Companion's mibi did it");
+  assert.ok(plain(run("__habLines")).includes(wk.name + " sits by the beacon a while"), "the Companion line, once: " + JSON.stringify(plain(run("__habLines"))));
   run("endExpedition('done')");
   assert.equal(run("S.exp"), null, "the walk ended");
   assert.equal(run("S.mibis[0].outings"), 1); assert.deepEqual(plain(run("S.mibis[0].habitsDone")), ["beacon-sit"], "never cleared");
@@ -134,6 +142,13 @@ test("end to end: the Wickle sits by a lit beacon on a walk; End expedition; the
   const lines0 = st.log.length;
   const r = ST.dockKey(st, sv); assert.ok(r.docked); assert.deepEqual(plain(r.home), [wk.id]);
   assert.ok(wk.habits.includes("beacon-sit"), "the Station mibi has beacon-sit");
+  assert.deepEqual(plain(r.habits), [{ id: wk.id, habit: "beacon-sit" }], "the dock says which habit was recorded, once");
+  // after the show, the home watch's plate, over no new words
+  const { habitPlates } = await import("../../station/src/intents/arrival.mjs"), said = [];
+  const HAB = JSON.parse(readFileSync(new URL("../../ui/specs/station/habitat.json", import.meta.url), "utf8"));
+  const a = { habits: r.habits }; habitPlates({ st, specs: { habitat: HAB }, say: t => said.push(t) }, a);
+  assert.deepEqual(said, [wk.name + " is seen sitting by a beacon"]); assert.deepEqual(a.habits, [], "spent");
+  habitPlates({ st, specs: { habitat: HAB }, say: t => said.push(t) }, a); assert.equal(said.length, 1, "once");
   const line = st.log.slice(lines0).find(l => l.includes(wk.name) && l.includes("beacon"));
   assert.ok(line, "its log line: " + JSON.stringify(st.log.slice(lines0)));
   // the dock again, and a lift and redock, change nothing

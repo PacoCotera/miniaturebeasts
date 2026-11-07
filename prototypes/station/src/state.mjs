@@ -364,7 +364,7 @@ export function payMend(st, settings = DEFAULT_SETTINGS) {
 }
 // The care the Companion earned, taken in at the dock and whenever the Station reads the save while docked. Max / OR only, so a repeated dock, a lift and redock and a reload change nothing; the Station never sets `bonded`
 // itself and never writes a care field the Companion has not sent. Returns the ids of the mibis whose outings went up (they came home from a walk).
-export function mergeCare(st, sv) {
+export function mergeCare(st, sv, seen = null) {   // seen: if given, each habit recorded for the first time is pushed to it as { id, habit } (the dock's plates)
   const home = [];
   for (const m of (sv && sv.mibis) || []) {
     const q = mibiById(st, m.id); if (!q) continue;
@@ -374,7 +374,7 @@ export function mergeCare(st, sv) {
     if (m.bondCare != null) q.bondCare = q.bondCare == null ? m.bondCare : Math.max(q.bondCare, m.bondCare);
     if (m.grownTurn != null) q.grownTurn = q.grownTurn == null ? m.grownTurn : Math.max(q.grownTurn, m.grownTurn);
     q.bonded = !!q.bonded || !!m.bonded;
-    if (q.outings > was) { home.push(q.id); for (const h of m.habitsDone || []) recordHabit(st, q, h); }
+    if (q.outings > was) { home.push(q.id); for (const h of m.habitsDone || []) { const r = recordHabit(st, q, h); if (r.ok && seen) seen.push({ id: q.id, habit: h }); } }
   }
   for (const rec of (sv && Array.isArray(sv.trips)) ? sv.trips : []) for (const id of tripCarried(rec)) { const q = mibiById(st, id); if (q) for (const p of rec.places || []) recordWalk(st, q, p); }   // a set insert: the whole list every time is idempotent
   return home;
@@ -390,10 +390,10 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   st.probe = { shield: sh, smax: pr.smax, tier: pr.tier, seq: (st.probe ? st.probe.seq : 0) + 1 };
   const paid = st.mendFull ? payMend(st, settings) : 0;
   // what came home with the Companion: the care it earned (mergeCare), the habits it did and the places it entered on the way
-  const home = mergeCare(st, sv);
+  const habits = [], home = mergeCare(st, sv, habits);
   const n = bayCrates(st, sv).length;
   logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
-  return { ok: true, docked: true, home, dried, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
+  return { ok: true, docked: true, home, habits, dried, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
 }
 // The world's events a crate carries (the Companion's `world.ev`, specs/world-events.md): [kind, place, who, n]. The kinds the Companion says; a kind or a shape this Station does not know is skipped, never an error.
 export const WORLD_EV_KINDS = ["grown", "elder", "lampLow", "lampOut", "shift", "herd", "storm", "fruit", "stirring", "young", "quiet"];

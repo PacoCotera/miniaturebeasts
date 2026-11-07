@@ -1667,7 +1667,7 @@ function noteSure(a, dir, c) {
 function digBank(ei, a, c) {
   const ex = S.exp, name = ex.pt.name;
   if (ex.pt.elder && ex.bankProg !== ei + 1) { ex.bankProg = ei + 1; fxMsg(name + ' is digging · slow but sure', 1); advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined); return false; }
-  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); fieldHabit('bank-dig');
+  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); if (G.level[c] > G.level[a]) fieldHabit('bank-dig');   // the habit is the dig up a bank (the book's pose); a dig down is the ability only
   const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; }
   logEv(name + ' dug a way ' + (G.level[c] > G.level[a] ? 'up' : 'down') + ' the bank');
   advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined);
@@ -1818,12 +1818,17 @@ function eatersHere(live) {
 // The Hiljan's grab: a fruit a shaken bush just dropped goes to the nearest wild Hiljan within 4 tiles of it that is not fleeing, hidden or eating, at once and with no back-off. A fruit you put down is no grab.
 // L2b: a field habit the partner did on this walk, for the Station's dock: it joins the partner mibi's `habitsDone` (a set, never cleared; the Station records each once at the dock).
 // Only the walk's partner counts (a rider never), only when its kind lists the habit (FIELD), and a habit fires once a walk.
+// The line the habit shows the first time it fires in a walk (the Loika's calm has its own line already). The copywriter's words, 11-07.
+const HABIT_LINE = {
+  tiptoe: n => n + ' tiptoes softly', 'stone-sense': n => n + ' feels the stone for warmth', 'beacon-sit': n => n + ' sits by the beacon a while',
+  'dew-find': n => n + ' found the dew first', 'hop-down': n => n + ' hops down the slope', dig: n => n + ' dug the burrow out wide enough', 'bank-dig': n => n + ' dug a way up the bank' };
 function fieldHabit(key) {
   const ex = S.exp, pt = ex && ex.pt; if (!pt || FIELD[pt.sp] !== key) return false;
   const m = mibiById(pt.id); if (!m) return false;
   ex.habits = ex.habits || {}; if (ex.habits[key]) return false; ex.habits[key] = 1;
   if (!Array.isArray(m.habitsDone)) m.habitsDone = [];
   if (!m.habitsDone.includes(key)) m.habitsDone.push(key);
+  if (HABIT_LINE[key]) fxMsg(HABIT_LINE[key](pt.name), 0);   // once a walk, quiet: it never pushes out a more telling line
   return true;
 }
 // The field habits that read the end of an action (a creep up to a wild mibi, a warm stone, a lit beacon).

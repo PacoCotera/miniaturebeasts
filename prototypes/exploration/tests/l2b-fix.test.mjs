@@ -151,3 +151,14 @@ test("F8: the Station words the six new hows (found line and the short how)", as
   const src = readFileSync(new URL("../../station/src/views/pods-props.mjs", import.meta.url), "utf8");
   for (const [k, v] of Object.entries({ grab: "a grab for fruit", warm: "by a warm stone", dig: "in a fresh hole", fog: "in a fog bank", still: "keeping still", air: "airing out" })) assert.ok(src.includes(`${k}: "${v}"`), k);
 });
+
+test("F9: each field habit shows its line once a walk, with the partner's name; the Loika's calm adds none", () => {
+  const want = { 3: ["tiptoe", "tiptoes softly"], 4: ["stone-sense", "feels the stone for warmth"], 11: ["dew-find", "found the dew first"], 16: ["beacon-sit", "sits by the beacon a while"],
+    19: ["hop-down", "hops down the slope"], 1: ["dig", "dug the burrow out wide enough"], 7: ["bank-dig", "dug a way up the bank"] };
+  for (const [sp, [key, words]] of Object.entries(want)) {
+    const f = fixture({ partner: +sp }), name = f.run("S.exp.pt.name");
+    f.run(`fieldHabit('${key}')`); assert.ok(f.msgs().includes(name + " " + words), key + ": " + f.msgs().join(" | "));
+    f.clearMsgs(); f.run(`fieldHabit('${key}')`); assert.deepEqual(f.msgs(), [], key + " once a walk");
+  }
+  const l = fixture({ partner: 0 }); l.run(`fieldHabit('calm')`); assert.deepEqual(l.msgs(), []);
+});
