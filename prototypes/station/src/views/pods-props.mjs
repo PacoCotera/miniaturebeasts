@@ -140,70 +140,97 @@ export function podsBuild(m, spec) {
   return inventoryView(view, m, spec, req);
 }
 
-// the top `h` rows of a placed master, 1:1 (never scaled): the cabinet's cut foot
-const crop = (req, master, of, h) => req({ kind: "crop", id: `${master}:top:${h}`, master, of, at: [0, 0], size: [of[0], h], until: "the master's top rows" });
-
-// ---- the inventory ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ---- the inventory as a calm pod picker (the pods picker's design B, owner ruling 2026-11-07) ------------------------------------------------------------------------------------------
+// Big pods with their names, one small mark each (goal star, drying drop, new dot), the verb line above them and the focused pod's history on one line. The caller sets the verb (ui.verb; `ui.fixed` when it is the
+// only one offered: the Incubator's Grow, the bench's Bring), ◀ ▶ on the verb line choose another and the grid answers live: the pods that cannot take it fade and the bottom line says why. Let go is a held ✓.
+export const VERBS = ["read", "grow", "freshen", "compare", "letgo"];
+const ACT = { read: 0, bring: 0, grow: 1, freshen: 2, compare: 3, letgo: 4 };   // the verb's button in panelActs
+// Whether a pod can take a verb now, and why not: { can, why, word } (word is the button's own words: its price, its reason).
+export function takeOf(m, spec, verb, p) {
+  const { st, ui } = m, acts = panelActs({ ...m, ui: { ...ui, ask: null } }, spec, p), a = acts[ACT[verb]] ?? acts[0], held = ui.hold ? S.podById(st, ui.hold) : null;
+  if (verb === "compare" && held) { const kin = p.id === held.id || (p.idd && held.idd && S.canCompare(st, held, p)); return { can: kin, why: kin ? "" : fill(spec.strings.inv.picker.notKin, { Species: S.cap(S.spName(held)) }), word: a.word }; }
+  if (verb === "read" || verb === "bring" || verb === "letgo") return { can: true, why: "", word: a.word };
+  return { can: !a.dim, why: a.dim ? (a.foot ?? a.word).replace(/^[^·]*· /, "") : "", word: a.word };   // the reason alone ("the incubator is busy", "already fresh"): the verb is on the line above and the middle slot is narrow
+}
+// The verbs the line offers, in order: the caller's alone when it fixed one (the Incubator's Grow, the bench's Bring); else Read, Freshen, Compare (while a species has two pods) and Let go.
+export function verbsOf(m, spec) {
+  const { st, ui, settings } = m; if (!st.tray.length) return [];
+  if (ui.fixed) return [ui.verb ?? "read"];
+  const out = ["read"];
+  out.push("freshen");   // always on the line (the pods that are fresh fade and say so); Grow is the green key's, and the Incubator's alone
+  if (st.tray.some((p) => p.idd && st.tray.some((q) => q !== p && S.canCompare(st, p, q)))) out.push("compare");
+  out.push("letgo"); return out;
+}
+// The hold Let go asks: { ms, why } (a pod carrying the goal, or the only one of its species, fills slower and says why).
+export function letGoHold(st, spec, p) {
+  const H = spec.strings.inv.picker, g = S.letGoGuard(st, p); if (!g) return { ms: 0, why: "" };
+  return { ms: spec.hold?.slowMs ?? 6000, why: g === "goal" ? H.holdGoal : fill(H.holdOnly, { Species: S.cap(S.spName(p)) }) };
+}
+const dryMark = (st, p) => (S.dryingSoon(st, p) ? "drying" : "");
 function inventoryView(view, m, spec, req) {
-  const { st, settings, ui } = m, Sg = spec.strings.inv, R = spec.regions.inventory, focus = m.focus ?? null;
-  const list = listOf(st, spec, ui, settings), husks = S.unshownHusks(st).slice(0, 3), rows = rowsOf(list, spec, ui.sort);
-  if (husks.length) rows.unshift({ label: null, items: [], husks });   // a dried pod shows once as the painted husk in its niche, a row at the head of the list
-  const cards = []; let k = 0;
-  rows.forEach((r, ri) => r.items.forEach((e, ci) => { cards.push({ k: k++, row: ri, col: ci, e }); }));
-  const target = (id) => cards.find((c) => "card." + c.k === id) ?? null;
-  // the ring's card (or the panel's: the card the ring last left); the first row on screen keeps one row of context above the ring where it can, and the last row ends on a bare plank
-  const curCard = target(focus) ?? (ui.panelPod ? cards.find((c) => c.e.p.id === ui.panelPod) : null) ?? cards[0] ?? null;
-  const maxFirst = Math.max(0, rows.length - 2);
-  let first = clamp(ui.first ?? 0, 0, maxFirst);
-  if (focus && focus.startsWith("card.") && curCard) { if (curCard.row < first || curCard.row > first + 1) first = clamp(curCard.row - 1, 0, maxFirst); }
+  const { st, settings, ui } = m, Sg = spec.strings.inv, PK = Sg.picker, R = spec.regions.inventory.picker, focus = m.focus ?? null, across = R.grid.across, vis = R.grid.rows;
+  const list = listOf(st, spec, ui, settings), husks = S.unshownHusks(st).slice(0, 3), none = !st.tray.length;
+  const cards = list.map((e, k) => ({ k, row: Math.floor(k / across), col: k % across, e })), rowsN = Math.ceil(cards.length / across);
+  const verbs = verbsOf(m, spec), verb = verbs.includes(ui.verb) ? ui.verb : verbs[0] ?? "read", can = (c) => takeOf(m, spec, verb, c.e.p);
+  const curCard = cards.find((c) => "card." + c.k === focus) ?? (ui.panelPod ? cards.find((c) => c.e.p.id === ui.panelPod) : null) ?? cards[0] ?? null;
+  const maxFirst = Math.max(0, rowsN - vis); let first = clamp(ui.first ?? 0, 0, maxFirst);
+  if (focus && focus.startsWith("card.") && curCard && (curCard.row < first || curCard.row > first + vis - 1)) first = clamp(curCard.row - 1, 0, maxFirst);
   view.first = first; view.panelPod = curCard ? curCard.e.p.id : null;
-  const shown = cards.filter((c) => c.row >= first - 1 && c.row <= first + 2);
-  const card = (c) => {
-    const p = c.e.p, tag = c.e.tags[0], fresh = freshOf(st, p, spec), bar = miniRail(p, settings);
-    return { k: c.k, row: c.row - first, col: c.col, niche: req({ kind: "slot", id: "pod-niche-88x88", master: "pod-niche-88x88", size: [88, 88], until: "the niche master (pass 142)" }),
-      shadow: req({ kind: "slot", id: "pod-niche-shadow-88x88", master: "pod-niche-shadow-88x88", size: [88, 88], until: "the niche's pod shadow (pass 142)" }), pod: podPic(req, st, p, R.cabinet.card.pod.slice(2)),
-      star: S.podGoal(st, p), isNew: !p.seen, rail: bar.lanes, lock: bar.lock, fresh: { left: fresh.left, life: fresh.life, amber: fresh.amber, bench: fresh.bench },
-      name: p.idd ? S.cap(S.spName(p)) : "", worth: tag.text, line: fresh.amber ? fresh.words : shortOrigin(p, spec), amber: fresh.amber };
-  };
-  const husk = (r, i, row) => ({ k: -1 - i, row: row - first, col: i, niche: req({ kind: "slot", id: "pod-niche-husk-88x88", master: "pod-niche-husk-88x88", size: [88, 88], until: "the husk niche (pass 142)" }), husk: true,
-    shadow: "", pod: "", star: false, isNew: false, rail: [], lock: false, fresh: { left: 0, life: S.POD_LIFE, amber: true, bench: false }, name: r.idd ? S.cap(frameOf(r.species)?.species.name ?? "") : "", worth: Sg.driedLabel, line: "", amber: false });
-  const cab = {
-    strip: req({ kind: "slot", id: R.cabinet.strip.id, master: R.cabinet.strip.id, size: R.cabinet.strip.size, until: "the cabinet strip (pass 142)" }),
-    lantern: req({ kind: "slot", id: R.cabinet.lantern.id, master: R.cabinet.lantern.id, size: R.cabinet.lantern.rect.slice(2), until: "the lantern (pass 143)" }),
-    fern: req({ kind: "slot", id: R.cabinet.fern.id, master: R.cabinet.fern.id, size: R.cabinet.fern.rect.slice(2), until: "the fern (pass 143)" }),
-    leafOn: true,
-    rows: rows.slice(Math.max(0, first - 1), first + 3).map((r, i) => ({ row: Math.max(0, first - 1) + i - first, label: r.label ? fill(Sg.speciesLabel, { Species: r.label === "-" ? Sg.sealedPod : S.cap(frameOf(r.label)?.species.name ?? ""), n: list.filter((e) => (e.p.idd ? S.speciesOf(e.p) : "-") === r.label).length }) : "" })),
-    cards: [...(husks.length && first <= 1 ? husks.map((r, i) => husk(r, i, 0)) : []), ...shown.map(card)],
-    stripPeek: "", nichePeek: "", empty: "", bare: !st.tray.length && !husks.length ? req({ kind: "slot", id: "pod-niche-88x88", master: "pod-niche-88x88", size: [88, 88], until: "the niche master (pass 142)" }) : "",
-  };
-  // the cabinet's foot: the band of the strip cut by the cabinet's bottom edge and, on a row that peeks, its niches' rims, each the top rows of its master (a crop, 1:1)
-  { const C = R.cabinet, T = C.strip.size[1], LAB = C.speciesLabel.h, VIEW = C.rect[3], ny = C.card.niche[1], nh = C.card.niche[3]; let y = 0, r = first;
-    while (y < VIEW) { const lab = rows[r]?.label ? LAB : 0; y += lab; if (y >= VIEW) break; const rem = VIEW - y; if (rem < T) { cab.stripPeek = crop(req, C.strip.id, C.strip.size, rem); const v = rem - ny; if (rows[r] && v > 0 && v < nh) cab.nichePeek = crop(req, "pod-niche-88x88", [88, 88], v); break; } y += T; r++; } }
-  if (!st.tray.length && !husks.length) cab.empty = Sg.none;
-  else if (!list.length && st.tray.length) cab.empty = Sg.noMatch;
-  // the scroll rail: the share shown and where, in thousandths, only when the cabinet scrolls
-  const total = rows.length, seen = 2;
-  view.rail = total > seen ? { share: Math.round((1000 * seen) / total), from: Math.round((1000 * first) / total) } : null;
-  // the tool row
-  const drying = st.tray.filter((p) => S.dryingSoon(st, p)).length, none = !st.tray.length;
-  const chipWord = (c) => (READING.includes(c) ? spec.strings.inv.tray[c] : MARKS.includes(c) ? spec.strings.inv.tray[c] : S.cap(frameOf(c)?.species.name ?? c));
-  const chips = (ui.chips ?? []).map((c) => ({ id: c, word: chipWord(c) })).concat(ui.word ? [{ id: "word", word: ui.word.word }] : []);
+  const nav = !ui.fixed && verbs.length > 1, shown = cards.filter((c) => c.row >= first - 1 && c.row <= first + vis);
+  const ASK = !!m.answer, answerOf = (p, goal, foc) => { const kind = goal ? "goal" : dryMark(st, p) || (!p.seen ? "new" : ""); return { dim: ASK && !kind && !foc, bubble: ASK && kind ? PK["answer" + S.cap(kind)] : "", bubbleKind: ASK ? kind : "" }; };   // Call: the pods that need you undim and say so, the others dim
+  const card = (c) => { const p = c.e.p, goal = S.podGoal(st, p);
+    return { k: c.k, row: c.row - first, col: c.col, pod: podPic(req, st, p, R.grid.pod.slice(2)), name: p.idd ? S.cap(S.spName(p)) : Sg.sealedPod, sealed: !p.idd, mark: goal ? "star" : dryMark(st, p) || (!p.seen ? "new" : ""), fade: !can(c).can, held: ui.hold === p.id, ...answerOf(p, goal, focus === "card." + c.k) }; };
+  // the tool row: Sort, Filter and Find, quiet, at the top right
+  const drying = st.tray.filter((p) => S.dryingSoon(st, p)).length;
+  const tools = { sort: none ? Sg.nothingToSort : Sg.sorts[ui.sort ?? "use"], filter: none ? Sg.nothingToFilter : drying ? fill(Sg.filterDrying, { n: drying }) : Sg.filter, filterAmber: !none && drying > 0, find: none ? Sg.nothingToFind : Sg.find, dim: none };
+  // the detail line: the focused pod's history; on the verb line what the verb does and how many pods can take it; right: the freshness when it dries, else a flash, what dried out, the filter or the count
+  const chips = (ui.chips ?? []).map((c) => (READING.includes(c) || MARKS.includes(c) ? Sg.tray[c] : S.cap(frameOf(c)?.species.name ?? c))).concat(ui.word ? [ui.word.word] : []);
   const speciesN = new Set(st.tray.filter((p) => p.idd).map((p) => S.speciesOf(p))).size;
   const countAll = st.tray.length === 1 ? Sg.countOne : speciesN === 1 ? fill(Sg.countOneSpecies, { n: st.tray.length }) : fill(Sg.count, { n: st.tray.length, s: speciesN });
-  const filtered = chips.length ? fill(Sg.filtered, { k: list.length, n: st.tray.length, what: chips.map((c) => c.word).join(", ") }) : null;
+  const filtered = chips.length ? fill(Sg.filtered, { k: list.length, n: st.tray.length, what: chips.join(", ") }) : null;
   const flash = ui.flash && ui.flash.until > (m.now ?? 0) ? ui.flash.text : husks.length ? (husks.length === 1 ? fill(Sg.dried, { n: 1 }) : fill(Sg.driedMany, { n: husks.length })) : "";
-  view.tools = {
-    sort: none ? Sg.nothingToSort : fill(Sg.sort, { how: Sg.sorts[ui.sort ?? "use"] }), filter: none ? Sg.nothingToFilter : drying ? fill(Sg.filterDrying, { n: drying }) : Sg.filter, filterAmber: !none && drying > 0,
-    find: none ? Sg.nothingToFind : Sg.find, dim: none, chips: chips.map((c) => c.word), count: flash || filtered || (none ? "" : countAll),
-  };
-  view.cabinet = cab; view.list = list; view.cards = cards;
-  // the panel: the focused card in full, and its actions
-  view.panel = panelOf(m, spec, req, curCard?.e.p ?? null, focus);
-  if (!curCard) view.panel.message = !st.tray.length && !husks.length ? Sg.panelNone : !list.length && st.tray.length ? Sg.panelNoMatch : [];   // the bare panel says why it is bare, centred (review round 2)
-  view.line = lineOf(m, spec, view, focus, curCard);
-  view.targets = inventoryTargets(view, shown, st, ui);
-  view.resolve = inventoryResolve(view, cards, shown, focus, curCard, first);
+  const detail = { left: "", right: flash || filtered || (none ? "" : countAll), amber: false };
+  if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = fill(PK.help, { Verb: PK.verbs[verb] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
+  else if (curCard && !(focus === "sort" || focus === "filter" || focus === "find")) {
+    const p = curCard.e.p, f = freshOf(st, p, spec); detail.left = [curCard.e.tags[0].text, S.podOrigin(p)].join(" · ");
+    if (f.amber && !flash) { detail.right = f.words; detail.amber = true; }
+  }
+  // the picker: what the face draws (props name what, never where)
+  const total = rowsN;
+  view.picker = { answer: ASK, verbs: nav || ui.fixed ? verbs.map((v) => ({ id: v, word: PK.verbs[v === "bring" ? "bring" : v], on: v === verb })) : [], heading: ui.fixed ? (ui.verb === "bring" ? PK.chooseBring : PK.choose) : "", tools,
+    grid: { cards: shown.map(card), first }, rail: total > vis ? { share: Math.round((1000 * vis) / total), from: Math.round((1000 * first) / total) } : null, detail,
+    empty: none && !husks.length ? Sg.panelNone : !list.length && !none ? PK.noMatch : [] };
+  view.line = lineOf(m, spec, view, focus, curCard, verb, can); if (ui.from === "incubator" && !ui.choosing) view.line.backWide = true;   // "Incubator" is wider than the way back's slot: the line asks for the wide one
+  // the targets: the verbs (browse), Sort, Filter and Find, the cards on screen
+  const t = [];
+  if (nav) verbs.forEach((v, i) => t.push({ id: "verb." + v, group: "verb", index: i }));
+  if (!none) for (const id of ["sort", "filter", "find"]) t.push({ id, group: id });   // no pods: no verbs, no tools, no ring (the empty seat and its two lines)
+  if (!none) for (const c of shown) t.push({ id: "card." + c.k, group: "card", index: c.k });
+  view.targets = t;
+  view.resolve = inventoryResolve(cards, focus, curCard, first, vis, across, nav ? verb : null, can);
+  view.hold = holdOf(m, spec, curCard, verb, focus, list);
+  view.cards = cards; view.list = list;
   return view;
+}
+// The hold the frame asks for: Let go with the ring on a pod (ms; the bench pod too), else none.
+function holdOf(m, spec, curCard, verb, focus, list) {
+  if (m.ui.view === "filter") { if (focus !== "tchip.3.2") return null; const group = list.map((e) => e.p).filter((q) => !S.onBench(m.st, q)); return group.length ? { ms: group.some((q) => S.letGoGuard(m.st, q)) ? spec.hold?.slowMs ?? 6000 : 0, why: "" } : null; }   // Let these go: the bulk is held too, slower when one carries the goal or is the only of its species
+  if (m.ui.view && m.ui.view !== "inventory") return null;
+  if (verb !== "letgo" || !curCard || !focus || !focus.startsWith("card.")) return null;
+  const g = letGoHold(m.st, spec, curCard.e.p); return { ms: g.ms, why: g.why };
+}
+// The host's answers to the graph's selectors for the ring where it is (pods.json focus.inventory.selectors).
+function inventoryResolve(cards, focus, curCard, first, vis, across, verb, can) {
+  const at = (row, col) => cards.find((x) => x.row === row && x.col === col), top = cards.filter((c) => c.row === first), under = (col) => { const c = top.find((x) => x.col === col) ?? top.at(-1); return c ? "card." + c.k : null; };
+  const able = cards.filter((c) => c.row >= first).find((c) => can(c).can) ?? cards.find((c) => can(c).can) ?? cards[0], r = { "verb.down": able ? "card." + able.k : null, "sort.down": under(0), "filter.down": under(2), "find.down": under(4) };
+  const c = cards.find((x) => "card." + x.k === focus);
+  if (c) {
+    const left = at(c.row, c.col - 1), right = at(c.row, c.col + 1), up = at(c.row - 1, c.col), down = at(c.row + 1, c.col) ?? cards.filter((x) => x.row === c.row + 1).at(-1);
+    r["card.left"] = left ? "card." + left.k : focus; r["card.right"] = right ? "card." + right.k : focus;
+    r["card.up"] = up ? "card." + up.k : c.row > 0 ? "card." + cards.filter((x) => x.row === c.row - 1).at(-1).k : verb ? "verb." + verb : ["sort", "sort", "filter", "filter", "find"][c.col] ?? "find";   // ▲ from the top row: the verb that is on, or a tool when the caller fixed the verb
+    r["card.down"] = down ? "card." + down.k : focus;
+  } else { r["card.left"] = r["card.right"] = r["card.up"] = r["card.down"] = curCard ? "card." + curCard.k : null; }
+  void vis; return r;
 }
 // the price of what is short, icon and figure ("❀ 2", "⚡ 3 ❀ 2"): a held Grow it says how much on its face
 const shortPrice = (st, c) => [c.e > st.e ? "⚡ " + c.e : "", c.s > st.s ? "❀ " + c.s : ""].filter(Boolean).join(" ");
@@ -220,41 +247,6 @@ export function panelActs(m, spec, p) {
   const letGo = guard ? { word: guard === "goal" ? B.letGoGoal : fill(B.letGoOnly, { Species: S.cap(S.spName(p)) }), dim: false, ask: true } : { word: B.letGo, dim: false };
   return [{ id: "take", word: take, dim: false }, { id: "grow", ...grow }, { id: "freshen", ...fresh }, { id: "compare", ...cmp }, { id: "letGo", ...letGo }];
 }
-function panelOf(m, spec, req, p, focus) {
-  const { st, settings } = m, Sg = spec.strings.inv;
-  if (!p) return { name: "", worth: [], rail: null, originPicture: "", origin: [], fresh: { words: "", amber: false, bench: false }, acts: [], message: [] };
-  const tags = worthTags(st, p, spec, undefined, settings), fresh = freshOf(st, p, spec);
-  const out = { name: p.idd ? S.cap(S.spName(p)) : Sg.sealedPod, worth: tags.map((t) => t.text), rail: miniRailProps(req, st, p, settings),   // a sealed pod says "sealed" once, in its worth tag (review round 2)
-    originPicture: PLACE_KEYS.includes(p.g) ? req({ kind: "place", id: `place:${p.g}:48`, place: p.g, size: 48 }) : "", origin: [S.podOrigin(p)],
-    fresh: { words: fresh.words, amber: fresh.amber, bench: fresh.bench }, acts: panelActs(m, spec, p).map((a) => ({ word: a.word, dim: a.dim, ask: !!a.ask })), message: [] };
-  Object.defineProperty(out, "feet", { value: panelActs(m, spec, p).map((a) => a.foot ?? a.word), enumerable: false });   // the foot's words of each button (not sent to the face)
-  return out;
-}
-function inventoryTargets(view, shown, st, ui) {
-  const t = [];
-  if (!st.tray.length) { t.push({ id: "sort", group: "sort", enabled: false }, { id: "filter", group: "filter", enabled: false }, { id: "find", group: "find", enabled: false }); return t; }
-  t.push({ id: "sort", group: "sort" }, { id: "filter", group: "filter" }, { id: "find", group: "find" });
-  view.tools.chips.forEach((_, i) => t.push({ id: "chip." + i, group: "chip", index: i }));
-  for (const c of shown) t.push({ id: "card." + c.k, group: "card", index: c.k });
-  view.panel.acts.forEach((a, i) => t.push({ id: "act." + i, group: "act", index: i, enabled: !a.dim }));
-  return t;
-}
-// The host's answers to the graph's selectors for the ring where it is (pods.json focus.inventory.selectors).
-function inventoryResolve(view, cards, shown, focus, curCard, first) {
-  const r = { "card.back": curCard ? "card." + curCard.k : null, "chip.first": view.tools.chips.length ? "chip.0" : null };
-  const topRow = shown.filter((c) => c.row === first), under = (col) => { const c = topRow.find((x) => x.col === col) ?? topRow.at(-1); return c ? "card." + c.k : null; };
-  r["sort.down"] = under(0) ?? "sort"; r["filter.down"] = under(1) ?? "filter"; r["find.down"] = under(2) ?? "find";
-  const c = cards.find((x) => "card." + x.k === focus);
-  if (c) {
-    const at = (row, col) => cards.find((x) => x.row === row && x.col === col);
-    const left = at(c.row, c.col - 1), right = at(c.row, c.col + 1), up = at(c.row - 1, c.col) ?? (c.row > 0 ? cards.filter((x) => x.row === c.row - 1).at(-1) : null), down = at(c.row + 1, c.col) ?? cards.filter((x) => x.row === c.row + 1).at(-1);
-    r["card.left"] = left ? "card." + left.k : focus;
-    r["card.right"] = right ? "card." + right.k : c.col === 2 ? "act.0" : focus;   // ▶ from the right-hand column goes to the panel's first button
-    r["card.up"] = up ? "card." + up.k : ["sort", "filter", "find"][c.col] ?? "find";   // ▲ from the top row: the tool above it
-    r["card.down"] = down ? "card." + down.k : focus;
-  } else { r["card.left"] = r["card.right"] = r["card.up"] = r["card.down"] = curCard ? "card." + curCard.k : null; }
-  return r;
-}
 
 // ---- the filter tray and Find (the pod inventory's design) -------------------------------------------------------------------------------------------------------------------------------------
 export function trayOf(m, spec) {
@@ -269,7 +261,7 @@ export function trayOf(m, spec) {
     { head: T.reading, chips: READING.map((r) => chip(r, T[r], count((p) => readingOf(p, settings) === r))) },
     { head: T.marks, chips: MARKS.map((k) => chip(k, T[k], count((p) => marksOf(st, p).includes(k)))) },
     { head: T.species, chips: species.map((sp) => chip(sp, S.cap(frameOf(sp).species.name), count((p) => p.idd && S.speciesOf(p) === sp))) },
-    { head: "", chips: [{ id: "clear", word: T.clear, lit: false, dim: !chips.length && !ui.word }, { id: "freshenThese", word: fresh, lit: false, dim: !plan.n }, { id: "letThese", word: ui.ask === "letThese" ? (carries ? fill(T.letTheseAsk, { n: group.length }) : fill(T.letTheseAskPlain, { n: group.length })) : fill(T.letThese, { n: group.length }), lit: false, dim: !group.length }] },
+    { head: "", chips: [{ id: "clear", word: T.clear, lit: false, dim: !chips.length && !ui.word }, { id: "freshenThese", word: fresh, lit: false, dim: !plan.n }, { id: "letThese", word: fill(T.letThese, { n: group.length }), lit: false, dim: !group.length }] },
   ];
 }
 export function findOf(m, spec) {
@@ -293,15 +285,23 @@ export function recommendedRow(st, p, settings = S.DEFAULT_SETTINGS) {
 
 // ---- the bottom line (frame.json bottomLine): left the verb of what has the ring (or its reason when held), middle the one need line, right where ← goes ---------------------------------------------
 const back = (m, spec) => { const u = m.ui; if (u.choosing) return spec.strings.inv.foot.backRoom; return u.from === "create" ? spec.strings.inv.foot.backCreate : u.from === "incubator" ? spec.strings.inv.foot.backIncubator : spec.strings.inv.foot.back; };
-function lineOf(m, spec, view, focus, curCard) {
-  const B = back(m, spec), Sg = spec.strings.inv;
-  if (!m.st.tray.length) return { ok: null, back: B, subject: Sg.none.split(" · ")[0], need: "" };   // not a need: the quiet middle slot, fog with no dot (review round 2, G6)
-  if (focus && focus.startsWith("act.")) { const i = +focus.slice(4), a = view.panel.acts[i], w = view.panel.feet?.[i] ?? a?.word; return a ? (a.dim ? { ok: null, back: B, subject: "", need: w } : { ok: w, back: B, subject: "", need: "" }) : { back: B }; }
-  if (focus === "sort") return { ok: view.tools.sort, back: B, subject: "", need: "" };
-  if (focus === "filter") return { ok: view.tools.filter, back: B, subject: "", need: "" };
-  if (focus === "find") return { ok: view.tools.find, back: B, subject: "", need: "" };
-  if (focus && focus.startsWith("chip.")) return { ok: "Remove " + (view.tools.chips[+focus.slice(5)] ?? ""), back: B, subject: "", need: "" };
-  return { ok: curCard ? spec.strings.room.choose : null, back: B, subject: "", need: curCard && S.dryingSoon(m.st, curCard.e.p) ? freshOf(m.st, curCard.e.p, spec).words : "" };
+// The inventory's line: what ✓ does on the ring (the verb on the pod: its button's own words; a pod that cannot take the verb says why in the middle, no ✓), on the verb line it goes down to the pods, on Sort, Filter and Find as before.
+function lineOf(m, spec, view, focus, curCard, verb, can) {
+  const B = back(m, spec), Sg = spec.strings.inv, PK = Sg.picker, T = view.picker.tools, sub = m.ui.waits && verb === "letgo" ? PK.waits : "";
+  if (!m.st.tray.length) return { ok: null, back: B, subject: Sg.none.split(" · ")[0], need: "" };   // not a need: the quiet middle slot, fog with no dot
+  if (focus && focus.startsWith("verb.")) return { ok: PK.verbs[verb], back: B, subject: PK.down, need: "" };
+  if (focus === "sort") return { ok: fill(Sg.sort, { how: T.sort }), back: B, subject: "", need: "" };
+  if (focus === "filter") return { ok: T.filter, back: B, subject: "", need: "" };
+  if (focus === "find") return { ok: T.find, back: B, subject: "", need: "" };
+  if (focus && focus.startsWith("tchip.")) return { ok: focus === "tchip.3.2" ? PK.holdThese : null, back: B, subject: "", need: "" };
+  if (focus && /^(recent|letter|word)\./.test(focus)) return { ok: null, back: B, subject: "", need: "" };
+  if (!curCard) return { ok: null, back: B, subject: "", need: "" };
+  const p = curCard.e.p, t = can({ e: { p } }), held = m.ui.hold ? S.podById(m.st, m.ui.hold) : null;
+  if (verb === "compare" && held) return p.id === held.id ? { ok: null, back: B, subject: PK.pickKin, need: "" } : t.can ? { ok: PK.compareWith, back: B, subject: "", need: "" } : { ok: null, back: B, subject: t.why, need: "" };
+  if (!t.can) return { ok: null, back: B, subject: t.why, need: "" };
+  if (verb === "letgo") { const g = letGoHold(m.st, spec, p); return { ok: g.ms ? PK.holdSlow : PK.hold, back: B, subject: g.why || sub, need: "" }; }
+  if (verb === "compare") return { ok: PK.compareThis, back: B, subject: sub, need: "" };
+  return { ok: panelActs({ ...m, ui: { ...m.ui, ask: null } }, spec, p)[ACT[verb]].word, back: B, subject: sub, need: "" };
 }
 // the rail of a pod: one tab a chapter (Create's, with its pips; Compare's is its own); `open` is the open tab (-1 for none)
 export function railOf(m, spec, cur, chapters, req, open, focused, withPips = false) {
@@ -359,7 +359,7 @@ export function podsProps(m, spec, frame) {
   if (v.mode === "compare") regions.compare = v.compare;
   else if (v.mode === "read") regions.read = v.read;
   else {
-    regions.inv = { tools: v.tools, cabinet: v.cabinet, rail: v.rail, panel: v.panel };
+    regions.inv = v.picker;
     if (m.ui.view === "filter") regions.tray = { rows: trayOf(m, spec) };
     if (m.ui.view === "find") regions.find = findOf(m, spec);
   }
@@ -369,7 +369,7 @@ export function podsProps(m, spec, frame) {
   if (state === "find") { const f = regions.find; targets = [...f.recent.map((_, i) => ({ id: "recent." + i, group: "recent", index: i })), ...f.letters.map((_, i) => ({ id: "letter." + i, group: "letter", index: i })), ...f.words.slice(0, 16).map((_, i) => ({ id: "word." + i, group: "word", index: i }))]; resolve = findResolve(f, m.focus); }
   if (state === "find") { const f = regions.find, w = /^word\.(\d+)$/.exec(m.focus ?? ""), r = /^recent\.(\d+)$/.exec(m.focus ?? ""), word = w ? f.words[+w[1]]?.word : r ? f.recent[+r[1]] : null; v.line = { ...v.line, ok: word ? fill(spec.strings.inv.filterBy, { word }) : null, need: "", subject: "" }; }   // Find's foot: what ✓ does on the word (review round 2)
   const cur = v.mode === "compare" ? (m.focus === "takeB" ? "takeB" : "takeA") : m.focus ?? null;
-  return { mode: state, cur: v.cur ?? null, empty: v.empty, broken: !!v.broken, first: v.first ?? 0, panelPod: v.panelPod ?? null, props: { state, regions, focus: { cur, targets, resolve } }, line: v.line, requests: v.requests, list: v.list ? v.list.map((e) => e.p.id) : null, cards: v.cards ? v.cards.map((c) => c.e.p.id) : null };
+  return { mode: state, cur: v.cur ?? null, empty: v.empty, broken: !!v.broken, first: v.first ?? 0, hold: v.hold ?? null, panelPod: v.panelPod ?? null, props: { state, regions, focus: { cur, targets, resolve } }, line: v.line, requests: v.requests, list: v.list ? v.list.map((e) => e.p.id) : null, cards: v.cards ? v.cards.map((c) => c.e.p.id) : null };
 }
 function trayResolve(rows, focus) {
   const at = /^tchip\.(\d+)\.(\d+)$/.exec(focus ?? ""), r = {}; if (!at) return r; const ri = +at[1], ci = +at[2];

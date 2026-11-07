@@ -124,14 +124,14 @@ for (const kind of ["mibi", "pod"]) {
     if (kind === "mibi") { h.st.mibis[0].born = h.st.turn; const y = wview(h).cards[0]; assert.equal(y.line, `${names[0]}'s pod comes once grown`, "C13c: a young mibi's Return says when its pod comes"); assert.equal(y.name, `Return ${names[0]}`, "the same card otherwise"); assert.equal(y.cost, ""); h.st.mibis[0].born = 0; }
     assert.deepEqual([v.overlay.regions.art.housing, rc0(v).art.well, rc0(v).art.focused], ["", "", ""], "the housing and the card wells are the drawn slate pane: no master asked for");
     assert.equal(v.overlay.focus.cur, "card.return", "the ring opens on Return, on the left");
-    assert.equal(v.line.ok, ret.name);
+    assert.equal(v.line.ok, panelSpec.strings.holdReturn, "the Return card is a held ✓: the line says so"); assert.ok(ret.name);
     const rc = v.overlay.regions.cards; assert.match(rc[0].art.scene, /^panel-scene-wild-\d+x152$/); assert.equal(rc[0].art.glow, ""); assert.equal(rc[1].art.scene, undefined, "Keep keeps the glow"); assert.ok(rc[1].art.glow);
     for (const c of [ret, keep]) assert.ok(measure(c.name, 20) <= P.limits[2].text, c.name);
     assert.ok(!JSON.stringify(panelSpec.strings[kind === "mibi" ? "wildMibi" : "wildPod"]).match(/[❀\d]/), "no figure in the strings: the gain is the rules'");
   });
   test(`the Return panel (${kind}): the focused Return card puts no price on the bottom line, and no notice stands under the panel`, () => {
     const h = wildHost(kind); h.ui.panel.focus = "card.return"; const v = wview(h);
-    assert.equal(v.line.ok, kind === "mibi" ? `Return ${h.st.mibis[0].name}` : "Return it"); assert.equal(v.line.need, "", "not null: the host fills no need() under an open panel"); assert.ok(!v.line.price, "no gain on the line"); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel"); assert.ok(wview(h).cards[0].line, "the fact is on the card");
+    assert.equal(v.line.ok, "Hold ✓ to return it to the wild", "the Return card is a held ✓: the line says so"); assert.equal(v.line.need, "", "not null: the host fills no need() under an open panel"); assert.ok(!v.line.price, "no gain on the line"); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel"); assert.ok(wview(h).cards[0].line, "the fact is on the card");
   });
 }
 

@@ -192,8 +192,27 @@ void word_bottomLine(void) {
     int room0 = bw[2] - spec_int(F, "regions.back.cap.0", 16) - v_si(F, "regions.back.capGap", 0), w = v_role_width(s, br_), wide = v_si(F, "regions.back.wide.room", room0);
     if (w > room0) back_extra = (w < wide ? w : wide) - room0;
   }
+  /* the colour keys' cues (frame.json regions.cues; props frame.line.keys [{ room, word }]): the carries the ring offers, each the key's room icon and a word, standing in the notice's zone and replacing it while they show */
+  int kn = spec_len(P, "frame.line.keys"); if (kn > 4) kn = 4;
+  if (kn > 0) {
+    int right = v_si(F, "regions.cues.right", 904) - back_extra, left = v_si(F, "regions.cues.left", 632), mk = spec_int(F, "regions.cues.mark.0", 24), mg = v_si(F, "regions.cues.markGap", 4), gap = v_si(F, "regions.cues.gap", 16), cy = v_si(F, "regions.cues.y", 570), ch = v_si(F, "regions.cues.h", 24);
+    char role[24]; snprintf(role, sizeof role, "%s", v_sstr(F, "regions.cues.role")); int w[4], total = 0, n = kn;
+    for (int i = 0; i < kn; i++) { snprintf(a, sizeof a, "frame.line.keys.%d.word", i); spec_str(P, a, s, sizeof s); w[i] = mk + mg + v_role_width(s, role); }
+    for (; n > 0; n--) { total = 0; for (int i = 0; i < n; i++) total += w[i] + (i ? gap : 0); if (right - total >= left) break; }   /* a cue that would pass the zone is dropped, the last first */
+    int x = right - total;
+    for (int i = 0; i < n; i++) {
+      char key[48], word[V_STR], room[24], id[40]; snprintf(key, sizeof key, "frame.line.keys.%d", i);
+      snprintf(a, sizeof a, "%s.word", key); spec_str(P, a, word, sizeof word); snprintf(a, sizeof a, "%s.room", key); spec_str(P, a, room, sizeof room);
+      snprintf(a, sizeof a, "regions.marks.room.%s", room); snprintf(b, sizeof b, "%s", v_sstr(F, a));
+      snprintf(id, sizeof id, "line.cue.%d", i); v_inline(id); v_region("cues", LAYER_ART);
+      int mr[4] = { x, cy + (ch - mk) / 2, mk, mk }; if (*b) mark(v_fmt("%s.mark", id), b, mr);
+      v_region("cues", LAYER_TYPE); v_say_run(v_fmt("%s.word", id), word, x + mk + mg, v_role_cap_in(cy, ch, role), role, lg, V_ALIGN_LEFT); v_inline_end();
+      x += w[i] + gap;
+    }
+  }
   /* the notice: the sentence right-aligned to 904 with its lamp 4 px to its left */
-  if (spec_str(P, "frame.line.need", s, sizeof s) > 0) {
+  if (kn > 0) { /* the cues stand in the notice's zone */ }
+  else if (spec_str(P, "frame.line.need", s, sizeof s) > 0) {
     int nr[4]; v_srect(F, "regions.need.rect", nr); int right = v_si(F, "regions.need.right", 0) - back_extra; snprintf(c, 24, "%s", v_sstr(F, "regions.need.role"));
     v_inline("line.need"); v_region("need", LAYER_TYPE); v_run_t run = v_say_run("line.need", s, right, v_role_cap_in(nr[1], nr[3], c), c, lg, V_ALIGN_RIGHT);
     int lw = spec_int(F, "regions.need.lamp.0", 12), lh = spec_int(F, "regions.need.lamp.1", 12);
@@ -243,4 +262,51 @@ void word_messagePlate(void) {
   snprintf(c, 24, "%s", v_scol(F, "colours.plate")); snprintf(c2, 24, "%s", v_scol(F, "colours.plateEdge")); kit_panel("plate", rc[0], rc[1], rc[2], rc[3], c, c2, NULL, 0);
   v_region("plate", LAYER_TYPE); l = buf;
   for (int i = 0; i < n; i++) { char id[24]; snprintf(id, sizeof id, "plate.l%d", i); v_say_run(id, l, centre, rc[1] + lead / 2 + i * line, prole, pg, V_ALIGN_CENTRE); l += strlen(l) + 1; }
+}
+
+/* ---- Call's answer (frame.json regions.answer; props frame.answer { keys [{ room, word }], ok, back, call }): the stage dimmed, then a tag over each key. A screen that draws its own answer (props regions.inv.answer: Pods' picker)
+   adds no dim here. Each tag is a dark plate with a 2 px ring in the key's colour; the colour keys' and ←'s tags carry a notch pointing down at the key. ---- */
+static void ans_dim(void) {
+  static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
+  int r[4], level = v_si(F, "regions.answer.dimLevels", 5); v_srect(F, "regions.stage.rect", r); if (level <= 0) return;
+  static char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
+  for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
+  snprintf(ops + n, sizeof ops - (size_t)n, "],\"void\"]]"); v_region("answer.dim", LAYER_CHROME); v_composed("answer.dim", r[0], r[1], r[2], r[3], ops);
+}
+/* a plate x, y, w, h with a 2 px ring in `ring` and, when `notch` > 0, a triangle of that height under its centre */
+static void ans_plate(const char *id, int x, int y, int w, int h, int notch, const char *ring) {
+  static char ops[1200]; char plate[24]; snprintf(plate, sizeof plate, "%s", v_sstr(F, "regions.answer.plate"));
+  int n = snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,8,\"%s\",\"%s\"],[\"rrect\",1,1,%d,%d,7,\"\",\"%s\"]", w, h, plate, ring, w - 2, h - 2, ring);
+  for (int r = 0; r < notch; r++) { int len = 2 * (notch - r) - 1; n += snprintf(ops + n, sizeof ops - (size_t)n, ",[\"h\",%d,%d,%d,\"%s\"]", w / 2 - (notch - r - 1), h + r, len, ring); }
+  snprintf(ops + n, sizeof ops - (size_t)n, "]"); v_region("answer.plate", LAYER_CHROME); v_composed(id, x, y, w, h + notch, ops);
+}
+/* a tag's content: the cap (a mark picture, else nothing) at the left, then the word fitted to the room that is left; `arrow` ends the tag */
+static void ans_tag(const char *id, int x, int y, int w, int h, const char *mark, int msz, const char *word, const char *arrow) {
+  int pad = v_si(F, "regions.answer.pad", 10), gap = v_si(F, "regions.answer.capGap", 8), cx = x + pad; char role[24]; snprintf(role, sizeof role, "%s", v_sstr(F, "regions.answer.role"));
+  if (*mark) { int mr[4] = { cx + (24 - msz) / 2, y + (h - msz) / 2, msz, msz }; v_region("answer.cap", LAYER_ART); v_sprite(v_fmt("%s.cap", id), mark, mr[0], mr[1], mr[2], mr[3]); }
+  cx += 24 + gap; int room = x + w - pad - cx - (*arrow ? 20 : 0); char t[V_STR], c[V_STR]; snprintf(t, sizeof t, "%s", word);
+  v_role_clip(t, room > 8 ? room : 8, role, c, sizeof c);
+  v_region("answer.word", LAYER_TYPE); v_say_run(v_fmt("%s.word", id), c, cx, v_role_cap_in(y, h, role), role, "ground", V_ALIGN_LEFT);
+  if (*arrow) v_say_run(v_fmt("%s.arrow", id), arrow, x + w - pad, v_role_cap_in(y, h, role), role, "ground", V_ALIGN_RIGHT);
+}
+void word_answer(void) {
+  if (spec_len(P, "frame.answer.keys") < 4) return;
+  if (!spec_bool(P, "regions.inv.answer", 0)) ans_dim();
+  int top = v_si(F, "regions.answer.top", 508), h = v_si(F, "regions.answer.h", 40), w = v_si(F, "regions.answer.w", 150), notch = v_si(F, "regions.answer.notch", 9), pad = v_si(F, "regions.answer.pad", 10), gap = v_si(F, "regions.answer.capGap", 8);
+  char role[24], a[96], word[V_STR], room[24], ring[24]; snprintf(role, sizeof role, "%s", v_sstr(F, "regions.answer.role"));
+  for (int i = 0; i < 4; i++) {
+    snprintf(a, sizeof a, "frame.answer.keys.%d.word", i); spec_str(P, a, word, sizeof word); snprintf(a, sizeof a, "frame.answer.keys.%d.room", i); spec_str(P, a, room, sizeof room);
+    snprintf(a, sizeof a, "regions.answer.keyColours.%d", i); snprintf(ring, sizeof ring, "%s", v_sstr(F, a)); int cx = v_si(F, v_fmt("regions.answer.keysX.%d", i), 0), x = cx - w / 2;
+    snprintf(a, sizeof a, "regions.marks.room.%s", room); char mark[96]; snprintf(mark, sizeof mark, "%s", v_sstr(F, a));
+    char id[24]; snprintf(id, sizeof id, "ans.k.%d", i); ans_plate(id, x, top, w, h, notch, ring); ans_tag(id, x, top, w, h, mark, 24, word, "");
+  }
+  char t[V_STR];   /* ←: over its key, with a notch; ✓ and Call: right-aligned to 1008 at their rows, an arrow at the end */
+  if (spec_str(P, "frame.answer.back", t, sizeof t) > 0 && *t) { int x = v_si(F, "regions.answer.backX", 928) - w / 2; snprintf(ring, sizeof ring, "%s", v_sstr(F, "regions.answer.backColour")); ans_plate("ans.back", x, top, w, h, notch, ring); ans_tag("ans.back", x, top, w, h, v_sstr(F, "regions.marks.capBack"), 16, t, ""); }
+  for (int k = 0; k < 2; k++) {
+    const char *key = k ? "call" : "ok", *reg = k ? "regions.answer.call" : "regions.answer.confirm"; snprintf(a, sizeof a, "frame.answer.%s", key); if (spec_str(P, a, t, sizeof t) <= 0 || !*t) continue;
+    int tw = pad + 24 + gap + v_role_width(t, role) + 8 + 16 + pad, y = v_si(F, v_fmt("%s.y", reg), 0), right = v_si(F, v_fmt("%s.right", reg), 1008), x = right - tw;
+    snprintf(ring, sizeof ring, "%s", v_sstr(F, k ? "regions.answer.callColour" : "regions.answer.confirmColour")); ans_plate(k ? "ans.call" : "ans.ok", x, y, tw, h, 0, ring);
+    ans_tag(k ? "ans.call" : "ans.ok", x, y, tw, h, k ? "" : v_sstr(F, "regions.marks.capConfirm"), 16, t, k ? "\xe2\x86\x91" : "\xe2\x86\x92");
+    if (k) { static char d[300]; snprintf(d, sizeof d, "[[\"rrect\",0,0,24,24,12,\"%s\",\"\"],[\"dot\",8,12,\"white\"],[\"v\",12,9,7,\"white\"],[\"v\",15,7,11,\"white\"]]", ring); v_region("answer.cap", LAYER_CHROME); v_composed("ans.call.disc", x + pad, y + (h - 24) / 2, 24, 24, d); }
+  }
 }

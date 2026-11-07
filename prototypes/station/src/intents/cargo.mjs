@@ -6,7 +6,7 @@
 import * as S from "../state.mjs";
 import * as T from "../sitting.mjs";
 import { readyList, planRun, timesOf, fitCount, stepTimes } from "../cargo-run.mjs";
-import { toPods } from "./home.mjs";
+import { toPods, toPodsWaiting } from "./home.mjs";
 import { endPortrait } from "../views/cargo-props.mjs";
 import { skipShow } from "./arrival.mjs";
 
@@ -118,11 +118,11 @@ export function intent(h, target, verb) {
     const pm = verb === "confirm" && h.specs.cargo.strings.end?.confirm ? endPortrait(h.st, run, h.specs.sitting) : null;   // keys.confirm.end: ✓ See the portrait first (the sitting's state portrait), else Look at the pods
     closeEnd(h);
     if (pm && h.enterSitting && h.enterSitting(pm, { state: "portrait", from: "cargo" })) return;
-    if (verb === "confirm" && (came || waiting)) toPods(h, newest);
+    if (verb === "confirm" && (came || waiting)) { if (came) toPods(h, newest); else toPodsWaiting(h); }
     else if (verb === "back") { h.ui.home.f = "bay"; h.goto("home"); }
     return;
   }
   if (verb === "back") { h.ui.home.f = "bay"; h.goto("home"); return; }   // ← Home, the ring on the Bay module
   if (verb === "confirm" && readyCount(h)) return openBay(h);
-  if (verb === "confirm" && h.st.waiting.length) toPods(h);   // nothing to open and a pod waits on the mat: ✓ Look at the pods, as the end's
+  if (verb === "confirm" && h.st.waiting.length) toPodsWaiting(h);   // nothing to open and a pod waits on the mat: ✓ Look at the pods, as the end's
 }

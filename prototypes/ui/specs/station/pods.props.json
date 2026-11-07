@@ -1,5 +1,5 @@
 {
- "$comment": "The props of Pods (the pod inventory, its filter tray and Find, the reading room and its trait overlay, Compare) (lvgl-switch.md §2.1): what views/pods-props.mjs gives the face, beside the frame's. Props name what, never where: strings, states, counts, asset ids, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from pods.json and the palette). An asset id names a picture the host has made ready (the view's `requests` list them); a picture the face does not hold draws nothing. Checked by prototypes/station/tests/pods-props.test.mjs (a JSON-Schema subset: type, properties, required, additionalProperties, items, enum, oneOf).",
+ "$comment": "The props of Pods (the pod picker, its filter tray and Find, the reading room and its trait overlay, Compare) (lvgl-switch.md §2.1): what views/pods-props.mjs gives the face, beside the frame's. Props name what, never where: strings, states, counts, asset ids, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from pods.json and the palette). An asset id names a picture the host has made ready (the view's `requests` list them); a picture the face does not hold draws nothing. Checked by prototypes/station/tests/pods-props.test.mjs (a JSON-Schema subset: type, properties, required, additionalProperties, items, enum, oneOf).",
  "$defs": {
   "id": { "type": "string" },
   "idOrNull": { "type": ["string", "null"] },
@@ -120,79 +120,19 @@
       "rows": { "type": "array", "maxItems": 6, "items": { "type": "object", "required": ["name", "look", "picture", "differs"], "additionalProperties": false, "properties": { "name": { "type": "string" }, "look": { "type": "string" }, "picture": { "type": "string" }, "differs": { "type": "boolean" } } } } } } } } },
     "inv": {
      "type": "object",
-     "required": ["tools", "cabinet", "rail", "panel"],
+     "required": ["answer", "verbs", "heading", "tools", "grid", "rail", "detail", "empty"],
      "additionalProperties": false,
      "properties": {
-      "tools": {
-       "type": "object",
-       "required": ["sort", "filter", "filterAmber", "find", "dim", "chips", "count"],
-       "additionalProperties": false,
-       "properties": {
-        "sort": {"type": "string"},
-        "filter": {"type": "string"},
-        "filterAmber": {"type": "boolean"},
-        "find": {"type": "string"},
-        "dim": {"type": "boolean"},
-        "chips": {"type": "array", "items": {"type": "string"}},
-        "count": {"type": "string"}
-       }
-      },
-      "cabinet": {
-       "type": "object",
-       "required": ["strip", "lantern", "fern", "leafOn", "rows", "cards", "empty", "bare"],
-       "additionalProperties": false,
-       "properties": {
-        "strip": {"type": "string"},
-        "lantern": {"type": "string"},
-        "fern": {"type": "string"},
-        "leafOn": {"type": "boolean"},
-        "rows": {
-         "type": "array",
-         "items": {
-          "type": "object",
-          "required": ["row", "label"],
-          "additionalProperties": false,
-          "properties": {"row": {"type": "integer"}, "label": {"type": "string"}}
-         }
-        },
-        "cards": {"type": "array", "items": {"$ref": "card"}},
-        "stripPeek": {"type": "string"},
-        "nichePeek": {"type": "string"},
-        "empty": {"type": "string"},
-        "bare": {"type": "string"}
-       }
-      },
-      "rail": {
-       "oneOf": [
-        {"type": "null"},
-        {
-         "type": "object",
-         "required": ["share", "from"],
-         "additionalProperties": false,
-         "properties": {"share": {"type": "integer"}, "from": {"type": "integer"}}
-        }
-       ]
-      },
-      "panel": {
-       "type": "object",
-       "required": ["name", "worth", "rail", "originPicture", "origin", "fresh", "acts"],
-       "additionalProperties": false,
-       "properties": {
-        "name": {"type": "string"},
-        "worth": {"type": "array", "items": {"type": "string"}},
-        "rail": {"oneOf": [{"type": "null"}, {"type": "object", "required": ["pic", "inset", "lanes", "marks"], "additionalProperties": false, "properties": {"pic": {"type": "string"}, "inset": {"type": "string"}, "hand": {"type": "integer"}, "nudge": {"type": "integer"}, "lanes": {"type": "array", "items": {"type": "object", "required": ["id", "n", "state", "marks"], "additionalProperties": false, "properties": {"id": {"type": "string"}, "n": {"type": "integer"}, "state": {"enum": ["read", "unread", "sealed"]}, "marks": {"type": "array", "items": {"enum": ["glint", "goal", "differs"]}}}}}, "marks": {"type": "object"}}}]},
-        "originPicture": {"type": "string"},
-        "origin": {"type": "array", "items": {"type": "string"}},
-        "fresh": {
-         "type": "object",
-         "required": ["words", "amber", "bench"],
-         "additionalProperties": false,
-         "properties": {"words": {"type": "string"}, "amber": {"type": "boolean"}, "bench": {"type": "boolean"}}
-        },
-        "acts": {"type": "array", "items": {"$ref": "act"}},
-        "message": {"type": "array", "items": {"type": "string"}, "$comment": "a bare panel's two lines, centred (no pods; no pod matches): the first in the panel's body, the second quiet under it"}
-       }
-      }
+      "answer": { "type": "boolean", "$comment": "Call's answer is on: the pods that need you carry a bubble and the others are dimmed (card.dim, card.bubble)" },
+      "verbs": { "type": "array", "items": { "type": "object", "required": ["id", "word", "on"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "on": { "type": "boolean" } } }, "$comment": "the verb line, in order: the caller's verb alone when it fixed one, else those on offer (none with no pods); `on` is the verb the picker is on" },
+      "heading": { "type": "string", "$comment": "the caller's heading beside the lone verb (Choose a pod); empty when the verbs are the player's to choose" },
+      "tools": { "type": "object", "required": ["sort", "filter", "filterAmber", "find", "dim"], "additionalProperties": false, "properties": { "sort": { "type": "string" }, "filter": { "type": "string" }, "filterAmber": { "type": "boolean" }, "find": { "type": "string" }, "dim": { "type": "boolean" } } },
+      "grid": { "type": "object", "required": ["cards", "first"], "additionalProperties": false, "properties": {
+       "cards": { "type": "array", "items": { "type": "object", "required": ["k", "row", "col", "pod", "name", "sealed", "mark", "fade", "held", "dim", "bubble", "bubbleKind"], "additionalProperties": false, "properties": { "k": { "type": "integer" }, "row": { "type": "integer" }, "col": { "type": "integer" }, "pod": { "type": "string" }, "name": { "type": "string" }, "sealed": { "type": "boolean" }, "mark": { "enum": ["", "star", "drying", "new"] }, "fade": { "type": "boolean" }, "held": { "type": "boolean" }, "dim": { "type": "boolean" }, "bubble": { "type": "string" }, "bubbleKind": { "enum": ["", "goal", "drying", "new"] } } }, "$comment": "the pods of the rows from the one above the first on screen to the one under the second, row counted from the first row on screen; a pod that cannot take the verb is `fade`; the pod held for Compare is `held`" },
+       "first": { "type": "integer" } } },
+      "rail": { "oneOf": [{ "type": "null" }, { "type": "object", "required": ["share", "from"], "additionalProperties": false, "properties": { "share": { "type": "integer" }, "from": { "type": "integer" } } }] },
+      "detail": { "type": "object", "required": ["left", "right", "amber"], "additionalProperties": false, "properties": { "left": { "type": "string" }, "right": { "type": "string" }, "amber": { "type": "boolean" } } },
+      "empty": { "type": "array", "items": { "type": "string" }, "$comment": "no pods, or none matching: the title and the quiet line under it; empty otherwise" }
      }
     },
     "tray": {
