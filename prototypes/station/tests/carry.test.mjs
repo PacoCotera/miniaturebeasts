@@ -100,6 +100,10 @@ test("← names the jump back while a carry is live: Pods after green from Pods,
   const p = pod(st, "S01", ["coat"], 3), c = host(st); openCreate(c, p); key(c, "research"); assert.equal(originWord(c), S.cap(S.spName(p)), "Create's: the pod's label");
   key(c, "research"); assert.equal(originWord(c), null, "a second tap ended the carry");
 });
+test("the Incubator's picker (verb Grow, fixed): green is what ✓ says, so no cue; in the browse picker the green cue stays", () => {
+  const h = inPods(0); h.ui.pods.verb = "grow"; h.ui.pods.fixed = true; h.ui.pods.from = "incubator"; assert.equal(cuesOf(h).some((c) => c.key === "habitat"), false); assert.equal(carryPlan(h, "habitat").act, "grow", "the key still carries");
+  const g = inPods(0); assert.equal(cuesOf(g).some((c) => c.key === "habitat"), true);
+});
 test("no cue for a carry that equals ✓: blue on a pod in the collection under Read, green on a mibi in the Vivarium; the key still carries; under another verb the blue cue returns", () => {
   const h = inPods(0); assert.equal(cuesOf(h).some((c) => c.key === "research"), false); assert.equal(carryPlan(h, "research").act, "read", "but the key still carries");
   h.ui.pods.verb = "freshen"; assert.equal(cuesOf(h).some((c) => c.key === "research"), true, "✓ freshens now: the blue cue says Read");

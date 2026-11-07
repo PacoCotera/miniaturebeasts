@@ -80,6 +80,7 @@ export function carryPlan(m, key) {
 export function sameAsConfirm(m, plan) {
   if (plan.act === "read") return m.ui.screen === "pods" && (m.ui.pods.verb ?? "read") === "read" && !m.ui.pods.fixed;
   if (plan.act === "close") return m.ui.screen === "vivarium";
+  if (plan.act === "grow") return m.ui.screen === "pods" && m.ui.pods.verb === "grow";   // the Incubator's picker: ✓ is Grow it
   return false;
 }
 // The bottom line's cues: [{ key, room, word }] in key order, one for each live carry that is not what ✓ says. A carry that was just made shows none for its own key (a second tap is the room's top).

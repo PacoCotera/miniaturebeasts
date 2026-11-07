@@ -100,7 +100,7 @@ export function podsBody() {
   let body = podsProps(model(), SPECS.pods, SPECS.frame);
   if (!p.cmp && !body.props.focus.targets.some((t) => t.id === F.cur)) { F.cur = null; F.ensure(body.props.focus.targets, body.props.focus.targets[0]?.id ?? null); body = podsProps(model(), SPECS.pods, SPECS.frame); }
   if (body.mode !== "compare" && (body.first !== (p.first ?? 0) || body.panelPod !== (p.panelPod ?? null))) { p.first = body.first; p.panelPod = body.panelPod; body = podsProps(model(), SPECS.pods, SPECS.frame); }
-  { const q = body.mode === "inventory" && String(F.cur ?? "").startsWith("card.") ? S.podById(G.st, body.panelPod) : null; if (q && !q.seen) { q.seen = 1; save(); body = podsProps(model(), SPECS.pods, SPECS.frame); } }   // a card's new mark goes when the ring first lands on it
+  { const q = body.mode === "inventory" && String(F.cur ?? "").startsWith("card.") ? S.podById(G.st, body.panelPod) : null; if (q && !q.seen && !UI.answer) { q.seen = 1; save(); body = podsProps(model(), SPECS.pods, SPECS.frame); } }   // a card's new mark goes when the ring first lands on it
   if (UI.panel && UI.panel.screen === "pods") UI.panel = null;
   holdNow = body.hold ? { ms: body.hold.ms } : null;   // Let go (and the tray's Let these go) hold the ✓ on a ring with the pod under it: the frame carries the hold and the face keeps ✓ down for the ring
   if (body.mode === "room" || body.mode === "trait") body.top = { readout: { text: SPECS.pods.strings.room.crumb, mark: null } };

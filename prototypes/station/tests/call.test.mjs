@@ -59,6 +59,8 @@ test("Pods under Call: the pods that need you (goal, drying, new) carry a bubble
   const st = world(); const a = pod(st, "S01", 3), b = pod(st, "S02", 4); a.seen = 1; b.seen = 0; st.turn = 0;
   const m = (answer) => ({ st, settings, docked: true, crates: 0, now: 5000, ui: { view: "inventory", sort: "use", chips: [], word: null, first: 0, focus: { cur: null } }, focus: "card.0", answer });
   const off = podsProps(m(false), J("pods"), J("frame")).props.regions.inv; assert.equal(off.answer, false); assert.ok(off.grid.cards.every((c) => !c.dim && c.bubble === ""));
-  const on = podsProps(m(true), J("pods"), J("frame")).props.regions.inv; assert.equal(on.answer, true);
+  const on0 = podsProps(m(true), J("pods"), J("frame")).props.regions.inv, newK = on0.grid.cards.find((c) => c.mark === "new").k, on = podsProps({ ...m(true), focus: "card." + newK }, J("pods"), J("frame")).props.regions.inv; assert.equal(on.answer, true);
+  const ringed = podsProps(m(true), J("pods"), J("frame")), fc = ringed.props.regions.inv.grid.cards.find((c) => "card." + c.k === "card.0"); assert.equal(fc.dim, false, "the ringed pod is always bright");
+  const kept = podsProps({ ...m(true), focus: "card." + on.grid.cards.find((c) => c.mark === "new").k }, J("pods"), J("frame")).props.regions.inv.grid.cards.find((c) => c.mark === "new"); assert.deepEqual([kept.dim, kept.bubble], [false, "new"], "a new pod keeps its bubble under the ring");
   const nw = on.grid.cards.find((c) => c.mark === "new"), none = on.grid.cards.find((c) => c.mark === ""); assert.deepEqual([nw.bubble, nw.dim, nw.bubbleKind], ["new", false, "new"]); assert.deepEqual([none.bubble, none.dim], ["", true]);
 });

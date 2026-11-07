@@ -177,9 +177,9 @@ function inventoryView(view, m, spec, req) {
   if (focus && focus.startsWith("card.") && curCard && (curCard.row < first || curCard.row > first + vis - 1)) first = clamp(curCard.row - 1, 0, maxFirst);
   view.first = first; view.panelPod = curCard ? curCard.e.p.id : null;
   const nav = !ui.fixed && verbs.length > 1, shown = cards.filter((c) => c.row >= first - 1 && c.row <= first + vis);
-  const ASK = !!m.answer, answerOf = (p, goal) => { const kind = goal ? "goal" : dryMark(st, p) || (!p.seen ? "new" : ""); return { dim: ASK && !kind, bubble: ASK && kind ? PK["answer" + S.cap(kind)] : "", bubbleKind: ASK ? kind : "" }; };   // Call: the pods that need you undim and say so, the others dim
+  const ASK = !!m.answer, answerOf = (p, goal, foc) => { const kind = goal ? "goal" : dryMark(st, p) || (!p.seen ? "new" : ""); return { dim: ASK && !kind && !foc, bubble: ASK && kind ? PK["answer" + S.cap(kind)] : "", bubbleKind: ASK ? kind : "" }; };   // Call: the pods that need you undim and say so, the others dim
   const card = (c) => { const p = c.e.p, goal = S.podGoal(st, p);
-    return { k: c.k, row: c.row - first, col: c.col, pod: podPic(req, st, p, R.grid.pod.slice(2)), name: p.idd ? S.cap(S.spName(p)) : Sg.sealedPod, sealed: !p.idd, mark: goal ? "star" : dryMark(st, p) || (!p.seen ? "new" : ""), fade: !can(c).can, held: ui.hold === p.id, ...answerOf(p, goal) }; };
+    return { k: c.k, row: c.row - first, col: c.col, pod: podPic(req, st, p, R.grid.pod.slice(2)), name: p.idd ? S.cap(S.spName(p)) : Sg.sealedPod, sealed: !p.idd, mark: goal ? "star" : dryMark(st, p) || (!p.seen ? "new" : ""), fade: !can(c).can, held: ui.hold === p.id, ...answerOf(p, goal, focus === "card." + c.k) }; };
   // the tool row: Sort, Filter and Find, quiet, at the top right
   const drying = st.tray.filter((p) => S.dryingSoon(st, p)).length;
   const tools = { sort: none ? Sg.nothingToSort : Sg.sorts[ui.sort ?? "use"], filter: none ? Sg.nothingToFilter : drying ? fill(Sg.filterDrying, { n: drying }) : Sg.filter, filterAmber: !none && drying > 0, find: none ? Sg.nothingToFind : Sg.find, dim: none };
@@ -200,7 +200,7 @@ function inventoryView(view, m, spec, req) {
   view.picker = { answer: ASK, verbs: nav || ui.fixed ? verbs.map((v) => ({ id: v, word: PK.verbs[v === "bring" ? "bring" : v], on: v === verb })) : [], heading: ui.fixed ? (ui.verb === "bring" ? PK.chooseBring : PK.choose) : "", tools,
     grid: { cards: shown.map(card), first }, rail: total > vis ? { share: Math.round((1000 * vis) / total), from: Math.round((1000 * first) / total) } : null, detail,
     empty: none && !husks.length ? Sg.panelNone : !list.length && !none ? PK.noMatch : [] };
-  view.line = lineOf(m, spec, view, focus, curCard, verb, can);
+  view.line = lineOf(m, spec, view, focus, curCard, verb, can); if (ui.from === "incubator" && !ui.choosing) view.line.backWide = true;   // "Incubator" is wider than the way back's slot: the line asks for the wide one
   // the targets: the verbs (browse), Sort, Filter and Find, the cards on screen
   const t = [];
   if (nav) verbs.forEach((v, i) => t.push({ id: "verb." + v, group: "verb", index: i }));

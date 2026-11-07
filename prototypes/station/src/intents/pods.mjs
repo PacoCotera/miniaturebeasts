@@ -127,7 +127,7 @@ export function focus(h, target) {
   const p = pods(h); p.focus.set(target);
   if (p.view === "inventory" && target.startsWith("verb.") && !p.fixed) { p.verb = target.slice(5); p.hold = null; }
   if (p.view === "inventory" && target.startsWith("card.")) {
-    const q = podAt(h, target); if (q) { p.panelPod = q.id; if (!q.seen) { q.seen = 1; h.save(); } }
+    const q = podAt(h, target); if (q) { p.panelPod = q.id; if (!q.seen && !h.ui.answer) { q.seen = 1; h.save(); } }
     // the 200 ms scroll: when the ring's card moves the first row on screen, the rows slide there (a cut with reduced motion: the face ends the event at once)
     const before = p.first ?? 0, v = podsBuild({ st: h.st, settings: h.settings, ui: p, focus: target, now: h.now ? h.now() : 0 }, spec(h));
     if (v.first != null && v.first !== before) { p.first = v.first; if (h.play) h.play({ kind: "wipe", target: "cabinet", ms: SCROLL_MS, from: before, to: v.first, hold: 0 }); }
