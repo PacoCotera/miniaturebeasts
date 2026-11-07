@@ -22,11 +22,11 @@
    "png": "idle-away.png"
   },
   "idle-none": {
-   "hash": "b42278e2",
+   "hash": "f03d42d4",
    "png": "idle-none.png"
   },
   "idle-empty": {
-   "hash": "04b09d4d",
+   "hash": "946bcc4b",
    "png": "idle-empty.png"
   },
   "idle-meet-reeds": {
@@ -34,11 +34,11 @@
    "png": "idle-meet-reeds.png"
   },
   "idle-room-boulders-night": {
-   "hash": "41e754f0",
+   "hash": "aa88fb16",
    "png": "idle-room-boulders-night.png"
   },
   "idle-walk-8000ms": {
-   "hash": "6fb2a0e8",
+   "hash": "f7df08fe",
    "png": "idle-walk-8000ms.png"
   },
   "idle-night-pip-60000ms": {

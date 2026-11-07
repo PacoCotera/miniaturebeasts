@@ -115,11 +115,13 @@ static void wk_init(wk_t *k, const char *id, unsigned seed, int w, int h, int st
   unsigned r = wr(k); int nl = room_levels(), lv = nl > 1 && r % (unsigned)g_lvin == 0 && raised_ok(id) ? 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)) : 0;   /* one draw: the level (1 start in lvin, while the raised cap allows) */
   if (!lv_open(lv, w)) lv = 0;   /* a level no one can climb to in the room view: main */
   int x = 32, feet = 300, ok = 0;
-  for (int i = 0; i < 8 && !ok; i++) { unsigned a = wr(k), b = wr(k); lvl_draw(lv, a, b, w, WIDE, WIDE, &x, &feet); ok = gok(lv, x, feet, w, 0) && !start_heap(x, feet, w, h); }
-  if (!ok && g_stw > 0) {   /* eight draws met a heap: thirty-two more, and the one with the most room round it (never every one on main's leftmost point) */
-    int have = 0, bg = 0, bx = 0, bf = 0;
-    for (int i = 0; i < 32; i++) { unsigned a = wr(k), b = wr(k); int cx, cf; lvl_draw(lv, a, b, w, WIDE, WIDE, &cx, &cf); if (!gok(lv, cx, cf, w, 0)) continue; int g = heap_gap(id, cx, cf, w, h); if (!have || g > bg) { have = 1; bg = g; bx = cx; bf = cf; } }
+  if (g_stw > 0) {   /* the rule is on (Home, Idle, the Vivarium): of twenty-four draws the start with the most room round it, so the household spreads as it is placed and never opens on a heap (the figure's own width on the ground line) */
+    int have = 0, bg = 0, be = 0, bx = 0, bf = 0;
+    int rows = g_rlo > -(1 << 19) && g_rhi > g_rlo ? 64 : 0;   /* with a known feet band (Home) sixty-four more draws on four evenly spaced rows, the band's two edges among them: two depth rows are room for five where one row is not */
+    for (int i = 0; i < 24 + rows; i++) { unsigned a = wr(k), b = wr(k); int cx, cf; if (i < 24) lvl_draw(lv, a, b, w, WIDE, WIDE, &cx, &cf); else { int row = g_rlo + (g_rhi - g_rlo) * ((i - 24) % 4) / 3; lvl_draw(lv, a, b, w, WIDE, row, row, &cx, &cf); } if (!gok(lv, cx, cf, w, 0)) continue; int g = heap_gap(id, cx, cf, w, h), e = rows ? iabs(cf - (g_rlo + g_rhi) / 2) : 0; if (g > 60) g = 60;   /* room beyond 60 px is plenty: among those the start nearer the band's front or back edge, so the household stands in two depth rows */
+      if (!have || g > bg || (g == bg && e > be)) { have = 1; bg = g; be = e; bx = cx; bf = cf; } }
     if (have) { x = bx; feet = bf; ok = 1; } }
+  else for (int i = 0; i < 8 && !ok; i++) { unsigned a = wr(k), b = wr(k); lvl_draw(lv, a, b, w, WIDE, WIDE, &x, &feet); ok = gok(lv, x, feet, w, 0) && !start_heap(x, feet, w, h); }
   if (!ok) { lv = 0; lvl_draw(0, 0, 0, w, g_xlo, g_xlo, g_rlo, g_rhi, &x, &feet); }   /* all eight failed: main's leftmost point at its top */
   k->lv = k->tlv = lv; k->x = x; k->feet = feet; k->facing = (int)(wr(k) & 1u); k->idle = 25 + (int)(wr(k) % 38u); k->walking = 0;
 }
