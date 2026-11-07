@@ -7,15 +7,17 @@ import { existsSync } from "node:fs";
 import { fixture, plain } from "./walk-fixture.mjs";
 
 const DESK = "/home/mb/mb/mibi-art/art-jobs/2026-11-06-field-tokens/work/tokens.mjs";
+const FRAMES = "/home/mb/mb/mibi-art/art-jobs/2026-11-07-step-frames/work/frames.mjs";
 const STEPPERS = [0, 1, 3, 4, 7, 11, 16, 19];
 const px = (f, src) => f.run(`Array.from(${src}.p).join()`);
 
 // A moving fixture: a Hiljan (sp 3) and a Tuliko partner (sp 19), each told to take a step one tile, drawn at `ms` after the step began.
 // opts.off forces the step wiring off (what the page did before this ticket).
-function moving({ off = false, inject = false, motion = true, st = "idle" } = {}) {
+function moving({ off = false, inject = false, motion = true, st = "idle", empty = false } = {}) {
   const f = fixture({ partner: 19, canvas: true });
   const at = f.spot(3, 4), id = f.add(3, at.x, at.y);
   f.run(`RM.matches = ${!motion}; S.phase = 'patch'; var __b = []; (() => { const real = creatureArt; creatureArt = (sp, pose, fr, ...r) => { if (pose === 'step') __b.push(sp + ':' + fr); return real(sp, pose, fr, ...r); }; })();`);
+  if (empty) f.run("for (const sp of [0, 1, 3, 4, 7, 11, 16, 19]) STEP_ART[sp] = { adult: ['', ''], juvenile: ['', ''] }");
   if (off) f.run("stepHalf = () => -1");
   if (inject) f.run(`STEP_ART[3].adult = ['C1024', 'E1024']; STEP_ART[19].adult = ['F1024', 'G1024'];`);
   f.run("NOW = 1000; render(1.0)");   // the tweens settle where they are
@@ -25,10 +27,12 @@ function moving({ off = false, inject = false, motion = true, st = "idle" } = {}
   return { f, id, draw, used: (arts, sp, fr) => f.run(`__b.includes('${sp}:${fr}')`) };
 }
 
-test("STEP_ART: in page species order, for sp 0, 1, 3, 4, 7, 11, 16, 19 only, all empty today", () => {
+test("STEP_ART: in page species order, for sp 0, 1, 3, 4, 7, 11, 16, 19 only, the desk frames", async () => {
   const f = fixture();
   assert.deepEqual(plain(f.run("Object.keys(STEP_ART).map(Number)")), STEPPERS);
-  for (const sp of STEPPERS) assert.deepEqual(plain(f.run(`STEP_ART[${sp}]`)), { adult: ["", ""], juvenile: ["", ""] });
+  const D = await import(FRAMES), SP = [0, 1, 3, 4, 7, 11, 16, 19];
+  SP.forEach((sp, i) => assert.deepEqual(plain(f.run(`STEP_ART[${sp}]`)), { adult: [D.STEP_ART[i].idle, D.STEP_ART[i].step], juvenile: [D.JUVENILE_STEP_ART[i].idle, D.JUVENILE_STEP_ART[i].step] }, D.STEP_ORDER[i]));
+  for (const sp of SP) { assert.ok(f.run(`STEP_ART[${sp}].adult.every(Boolean) && STEP_ART[${sp}].juvenile.every(Boolean)`)); assert.equal(px(f, `tokenOf(${sp}, "step", 0)`), px(f, `tokenOf(${sp}, "idle", 0)`), "frame A is the signed idle"); }
   assert.equal(f.run("STEP_ART.length"), 20, "absent for the rest, not a short table");
 });
 
@@ -51,7 +55,7 @@ test("with a fixture entry, tokenOf returns that age's frames; one empty frame, 
 
 test("with STEP_ART empty every frame drawn is identical to the page without the step wiring, on a moving fixture (both halves of the tween, and after it)", () => {
   for (const ms of [0, 40, 100, 160, 400]) {
-    const a = moving(), b = moving({ off: true });
+    const a = moving({ empty: true }), b = moving({ empty: true, off: true });
     a.draw(ms); b.draw(ms);
     const pa = a.f.run("Array.from(scr.px())"), pb = b.f.run("Array.from(scr.px())"), bad = pa.reduce((n, v, i) => n + (v !== pb[i] ? 1 : 0), 0);
     assert.equal(bad, 0, `${bad} pixels differ at ${ms} ms`);
