@@ -120,7 +120,7 @@
  "masters": {
   "note": "every master the sitting names, at the size it is shown; none is drawn by the build",
   "list": ["sitting-backdrop-meadow-544x408", "sitting-backdrop-pond-544x408", "sitting-backdrop-rock-544x408", "sitting-backdrop-wood-544x408", "sitting-backdrop-cave-544x408", "sitting-gilt-560x424", "sitting-gilt-lit-560x424", "place-{place}-96x96", "place-{place}-48x48", "sitting-frame-portrait-48x40", "spread-gilt-corner-16x16", "plate-device-416x424", "plate-device-992x64", "plate-well-120x120", "plate-well-152x48", "plate-well-152x48-shown", "crate-sitting-48x40", "crate-sitting-256x176", "room-vivarium-stage-habitat 1024×522 (Habitat's)"],
-  "placeholders": {"rule": "a habit with no pose master of its own for the kind shows the curl (release 21d); nothing is owed and no key or word of it reaches a player", "today": ["every habit outside S02's puff and sniff and S03's dig and glow shows the curl"]}
+  "placeholders": {"rule": "a habit with no pose master of its own for the kind shows the curl (release 21d); nothing is owed and no key or word of it reaches a player", "today": ["every habit outside S01's shake-dry and calm, S02's puff and sniff and S03's dig and glow shows the curl"]}
  },
  "strings": {
   "title": "Sitting",

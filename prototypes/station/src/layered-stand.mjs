@@ -48,7 +48,7 @@ export function layeredStand(species, stage, place, view = "default", pose = "an
   return { ...stand, figure };
 }
 // The pose a habit shows a stage in: { pose, owed }. The pose the species' habits map the habit to, when that pose is cut for the stage; else the curl (owed is always null now). Pure: the index's data and the placed masters only.
-export const HABIT_POSE = { "sleep-curled": "curl", puff: "puff", sniff: "sniff", dig: "dig", glow: "glow" };
+export const HABIT_POSE = { "sleep-curled": "curl", puff: "puff", sniff: "sniff", dig: "dig", glow: "glow", "shake-dry": "shake", calm: "calm" };
 export function poseFor(species, stage, habit) {
   const pose = INDEX?.stands?.[species]?.habits?.[habit];
   if (pose && INDEX?.stands?.[species]?.[stageKey(stage)]?.poses?.[pose]) return { pose, owed: null };

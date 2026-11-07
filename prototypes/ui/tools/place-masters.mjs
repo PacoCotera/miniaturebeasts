@@ -249,7 +249,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.log(`masters: ${Object.keys(readIndex().masters).length} placed, ${p.length} problems`); process.exit(p.length ? 1 : 0);
   }
   if (arg("game")) {   // the twenty kinds' art from the art desk's game-art work folder (game-masters.mjs): masters with the juveniles at 0.8, the chips renamed, the earlier art removed
-    const r = placeGame({ work: path.resolve(arg("game")), root: dest, dryRun: flag("dry") });
+    const r = placeGame({ work: path.resolve(arg("game")), root: dest, dryRun: flag("dry"), only: arg("only") ? new RegExp(arg("only")) : null });   // --only <regex on the master id>: just those, nothing retired
     console.log(`${flag("dry") ? "would place" : "placed"} ${r.placed} masters, removed ${r.removed.length}`);
     for (const q of r.report) if (Math.abs(q.before - 0.8) > 0.03) console.log(`rescaled ${q.kind} ${q.what} ${q.size}: ${q.before.toFixed(3)} -> ${q.after.toFixed(3)}`);
     process.exit(0);

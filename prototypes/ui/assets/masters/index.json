@@ -3186,6 +3186,14 @@
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/boards/visual-language/stands/stand-S01-loika-96x88.png"
   },
+  "mibi-adult-S01-calm-304x312": {
+   "file": "pods/mibi-adult-S01-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "76be0f0f006851c5f4331941f22374532850c92cac45c0c1baa65121f16c6eeb",
+   "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g6-S01-loika-calm-304x312.png"
+  },
   "mibi-adult-S01-curl-304x312": {
    "file": "pods/mibi-adult-S01-curl-304x312.png",
    "w": 304,
@@ -3193,6 +3201,14 @@
    "sha256": "88fab8e705b28a6f9ce50070f5be1c838c3feec0a486ad8ee4349d514b24f5a1",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-asleep-304x312.png"
+  },
+  "mibi-adult-S01-shake-304x312": {
+   "file": "pods/mibi-adult-S01-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "236f09da7d56a7b5f3da40c568396237a8672680f8527a3acf28817cf240de79",
+   "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g6-S01-loika-shake-304x312.png"
   },
   "mibi-adult-S02-144x152": {
    "file": "pods/mibi-adult-S02-144x152.png",
@@ -4346,6 +4362,14 @@
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-juv-v2-r2-96x88.png"
   },
+  "mibi-juvenile-S01-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "d45047590effd2fd84853cc0ceb2e89319e3fc7fb9eefc469e91994f426e6c91",
+   "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g6-S01-loika-juvcalm-304x312.png"
+  },
   "mibi-juvenile-S01-curl-304x312": {
    "file": "pods/mibi-juvenile-S01-curl-304x312.png",
    "w": 304,
@@ -4353,6 +4377,14 @@
    "sha256": "bf8c1db886d06f282a5f0d1b7943d0643cda6b8027e4548e01549e0b1c36bcb4",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-juvasleep-v2-304x312.png"
+  },
+  "mibi-juvenile-S01-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c4a253635334eb05442053c964b07d71ca5506baca5111e18741beb2a25946a1",
+   "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g6-S01-loika-juvshake-304x312.png"
   },
   "mibi-juvenile-S02-104x112": {
    "file": "pods/mibi-juvenile-S02-104x112.png",

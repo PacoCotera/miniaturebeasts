@@ -104,7 +104,7 @@ export function planGame({ work, mbRoot = "/home/mb/mb" }) {
     const d = dirs[k]; if (!d) throw new Error(k + " has no tool folder");
     pair(k, "stand", "adult (stand)", "juvenile", `mibi-adult-${k}-{size}`, `mibi-juvenile-${k}-{size}`, SIZES);
     pair(k, "asleep", "asleep", "juvenile asleep", `mibi-adult-${k}-curl-{size}`, `mibi-juvenile-${k}-curl-{size}`, ["304x312"]);
-    for (const [name, a, j] of [["puff", "puff", "juvenile puff"], ["sniff", "sniff", "juvenile sniff"], ["dig", "dig", "juvenile dig"], ["glow", "glow", "juvenile glow"]])
+    for (const [name, a, j] of [["puff", "puff", "juvenile puff"], ["sniff", "sniff", "juvenile sniff"], ["dig", "dig", "juvenile dig"], ["glow", "glow", "juvenile glow"], ["shake", "shake-dry", "juvenile shake-dry"], ["calm", "calm", "juvenile calm"]])
       if (rows[k][a]) pair(k, name, a, j, `mibi-adult-${k}-${name}-{size}`, `mibi-juvenile-${k}-${name}-{size}`, ["304x312"]);
     // the tool pass: as delivered, except the 104x112 young, checked against the 144x152 adult and rescaled where it is off by more than 3 %
     const t = (f) => path.join(tool, d, f), rel = (f) => path.relative(mbRoot, t(f));
@@ -124,9 +124,10 @@ export function planGame({ work, mbRoot = "/home/mb/mb" }) {
 // the ids the earlier art made that the release retires (the kinds the hand-off covers are replaced by id; these have no successor)
 export const retired = (id, kinds) => /^trait-S\d\d-/.test(id) || /^roll-S01-/.test(id) || /^reading-[a-z-]+-S0[13]-/.test(id) || id === "mibi-juvenile-S01-176x128" || (kinds.some((k) => id.includes("-" + k + "-")) && /^(mibi-(adult|juvenile)|mibi-halo|bud-shape|spread-plate|face|mark-species|species-mark)-/.test(id));
 
-export function placeGame({ work, root, dryRun = false, by = "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)" }) {
-  const { ops, report, kinds } = planGame({ work }), idxFile = path.join(root, "index.json"), index = JSON.parse(readFileSync(idxFile, "utf8")), removed = [];
-  for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith("pods/") && retired(id, kinds)) { removed.push(id); if (!dryRun) rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }
+// `only` (a RegExp on the master id): place just those masters and retire nothing (a later hand-off row added to a placement already made)
+export function placeGame({ work, root, dryRun = false, only = null, by = "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)" }) {
+  const plan = planGame({ work }), { report, kinds } = plan, ops = only ? plan.ops.filter((o) => only.test(o.id)) : plan.ops, idxFile = path.join(root, "index.json"), index = JSON.parse(readFileSync(idxFile, "utf8")), removed = [];
+  if (!only) for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith("pods/") && retired(id, kinds)) { removed.push(id); if (!dryRun) rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }
   for (const o of ops) {
     const [w, h] = dimsOf(o.buf), file = `pods/${o.id}.png`;
     index.masters[o.id] = { file, w, h, sha256: sha(o.buf), signed: by, from: o.from };
