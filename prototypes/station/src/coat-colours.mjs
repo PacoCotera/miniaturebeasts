@@ -5,7 +5,7 @@
 // Pure: no frame, no state.
 export const CREAM = "#dfd2ae";
 export const LOIKA_COAT = {   // coat_main, [dark, between, light]
-  redder: ["#482a1e", "#864d2b", "#a26b4f"], between: ["#2e2a2d", "#585e67", "#8e98a4"], yellower: ["#3e301f", "#72583b", "#9f805a"],
+  redder: ["#482a1e", "#864d2b", "#a26b4f"], between: ["#2e2a2d", "#615c5f", "#989397"], yellower: ["#3e301f", "#72583b", "#9f805a"],
 };
 export const LAND_BODY = {   // [hex, L, C, h] of the land's body colour
   mixed: ["#D4B060", 0.773, 0.108, 85.6], woods: ["#A0603E", 0.553, 0.096, 47.9], tallwood: ["#A8B39C", 0.752, 0.034, 128.1], thickets: ["#7C4C66", 0.48, 0.074, 346.6], fells: ["#A79B8B", 0.695, 0.027, 75.2],
