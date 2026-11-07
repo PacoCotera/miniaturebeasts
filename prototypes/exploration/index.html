@@ -2029,7 +2029,12 @@ function waitSnap(scope) {
   return o;
 }
 function fogNear() { if (!fogActive()) return false; const p = cxy(S.exp.pos); for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && inFog(y * MW + x)) return true; } return false; }
-const ROUTINE = [['grazes again', 'graze again'], ['pokes about again', 'poke about again'], ['potters about again', 'potter about again']];
+const ROUTINE = [['grazes again', 'graze again'], ['pokes about again', 'poke about again'], ['potters about again', 'potter about again'],
+  ['climbs about again', 'climb about again'], ['waddles about again', 'waddle about again'], ['noses about again', 'nose about again'], ['lumbers about again', 'lumber about again'],
+  ['pushes on again', 'push on again'], ['strides about again', 'stride about again'], ['is at play again', 'are at play again'], ['plods on again', 'plod on again'],
+  ['flutters about again', 'flutter about again'], ['picks its way about again', 'pick their way about again'], ['slides along again', 'slide along again'], ['walks on again', 'walk on again'],
+  ['floats about again', 'float about again'], ['sways along again', 'sway along again'], ['glides about again', 'glide about again'], ['hops about again', 'hop about again'],
+  ['rambles about again', 'ramble about again']], ROUTINE_ANY = ['is at ease again', 'are at ease again'];
 const VERB = { view: ['comes into view', 'come into view'], ate: ['finished its meal', 'finished their meals'], eat: ['is eating', 'are eating'], seek: ['heads for the fruit', 'head for the fruit'],
   run: ['runs off', 'run off'], cover: ['heads for cover', 'head for cover'], settle: ['settles a little more', 'settle a little more'], wander: ['wanders', 'wander'],
   hole: ['ducks into a hole', 'duck into holes'], gone: ['moves out of sight', 'move out of sight'] };
@@ -2057,7 +2062,7 @@ function waitChanges(a, b, scope) {
     else if (n.calm > o.calm && n.calm >= 2) add(n.sp, 'settle');
     else if (n.x !== o.x || n.y !== o.y) add(n.sp, 'wander'); }
   for (const [id, o] of a.cr) if (!b.cr.has(id)) { const c = curLive().cr.find(q => q.id === id); add(o.sp, c && c.hide ? 'hole' : 'gone'); }
-  const crs = [...ev.entries()].map(([k, n]) => { const [sp, v] = k.split('|'), s = +sp, known = S.known.includes(s), vb = v === 'routine' ? ROUTINE[s] : VERB[v];
+  const crs = [...ev.entries()].map(([k, n]) => { const [sp, v] = k.split('|'), s = +sp, known = S.known.includes(s), vb = v === 'routine' ? (ROUTINE[s] || ROUTINE_ANY) : VERB[v];
     const who = n > 1 ? numWord(n) + ' ' + (known ? spOf(s).plural : 'creatures') : (v === 'view' ? aAn(spName(s)) : 'the ' + spName(s));
     return { t: who + ' ' + vb[n > 1 ? 1 : 0], w: v === 'wander' ? 1 : 0 }; }).sort((x, y) => x.w - y.w).map(o => o.t);
   return out.concat(crs.slice(0, 2));
@@ -2077,7 +2082,7 @@ function routineStep(a) {
   const ex = S.exp, P = ex.patch, live = curLive(); if (!live) return;
   const vis = live.cr.filter(c => !c.hide && inSight(c.x, c.y) && a.cr.has(c.id));
   if (!vis.length || vis.some(c => { const o = a.cr.get(c.id); return o.x !== c.x || o.y !== c.y; })) return;
-  const idle = vis.filter(c => c.st === 'idle'); if (!idle.length) return;
+  const idle = vis.filter(c => c.st === 'idle' && !((spOf(c.sp).settle && c.calm >= 1) || c.warm >= 1)); if (!idle.length) return;
   const c = idle[ex.actions % idle.length], opts = Object.values(DIRS).map(([dx, dy]) => ({ x: c.x + dx, y: c.y + dy })).filter(q => q.x >= 0 && q.y >= 0 && q.x < PW && q.y < PH && !occupant(P.key, q.x, q.y) && !(q.x === P.x && q.y === P.y));
   if (!opts.length) return; opts.sort((p, q) => man(p, P) - man(q, P)); const q = man(opts[0], P) > 1 ? opts[0] : opts[opts.length - 1];
   if (q.x !== c.x) c.face = Math.sign(q.x - c.x); c.x = q.x; c.y = q.y;
