@@ -260,7 +260,7 @@ import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10,
 import { makeSleeper } from "./src/sleeper.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
-import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, stepFrames } from "./src/walk-data.mjs";
+import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames } from "./src/walk-data.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -2216,7 +2216,7 @@ function nearestHole(X, c, maxD) {
 // Flight: a Tuikis dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
 function hideOrFlee(X, c) {
   if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = h.tree ? { x: h.x, y: h.y, tree: 1 } : { x: h.x, y: h.y }; return; } }
-  c.st = 'flee'; c.t = 2;
+  const run = fleeTiles(spOf(c.sp)); c.st = 'flee'; c.fl = run; c.t = Math.ceil(run / 2);   // the kind's own run, two tiles an action
 }
 // Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once,
 // at most SHED_MAX moment pods an expedition. A creature not ready but fed or settled this expedition may still shed, on its own seeded roll.
@@ -2300,7 +2300,7 @@ function creatureTick(c, X) {
     else fxMsg(short, 0); }
   c.cue = calm && walking && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
   if (calm) notice -= 2;
-  const threat = X.moved && c.st !== 'eat' && (walking ? d <= notice : (!X.fog && d <= 1 && !calm && !curious));
+  const threat = X.moved && c.st !== 'eat' && (walking ? d <= notice : (!X.fog && d <= creepRange(sp) && !calm && !curious));
   const sheltered = !!X.lay.shelter[c.y * PW + c.x];
   if (c.st === 'shake' || c.st === 'full' || c.st === 'glow') {
     if (c.st === 'shake' && c.sp === 0) dropTuft(c, X);   // the Loika's tuft; the Tuliko airing its scales leaves none
@@ -2335,10 +2335,10 @@ function creatureTick(c, X) {
   }
   // Act on the current state.
   switch (c.st) {
-    case 'flee': stepAway(X, c, P, c.t >= 2 ? 2 : 1); if (--c.t <= 0) { c.st = 'watch'; c.t = 3; } break;
+    case 'flee': { const n = Math.min(2, c.fl == null ? (c.t >= 2 ? 2 : 1) : c.fl); stepAway(X, c, P, n); if (c.fl != null) c.fl -= n; } if (--c.t <= 0) { c.st = 'watch'; c.t = 3; } break;
     case 'watch': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (!threat && --c.t <= 0) c.st = 'idle'; break;   // back to routine after 3 quiet actions
     case 'dive': {
-      const h = c.tgt; if (!h) { c.st = 'flee'; c.t = 2; break; }
+      const h = c.tgt; if (!h) { c.st = 'flee'; c.t = 2; c.fl = null; break; }
       if (man(c, h) <= 1) { c.x = h.x; c.y = h.y; c.hide = X.raining ? 6 : 4; c.st = 'hidden'; }
       else stepToward(X, c, h, 2);
       break; }

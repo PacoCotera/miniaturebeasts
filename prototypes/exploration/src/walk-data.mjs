@@ -43,5 +43,10 @@ export function noticeRange(row, { curious = false, fog = false, calm = false } 
   let n = row.notice[1]; if (curious) n--; if (fog) n -= 2; if (calm) n -= 2; return n;
 }
 
+// A creeping step is noticed within this many tiles: the row's creep notice less one (the shared row's 2 is today's 1 tile), never under 1.
+export const creepRange = row => Math.max(1, row.notice[0] - 1);
+// A run covers flee + 1 tiles (the shared row's 2 is today's 3), at most 2 tiles an action.
+export const fleeTiles = row => row.flee + 1;
+
 // The 2-frame step slot's shape check: both frames of an age non-empty means the step is drawn.
 export const stepFrames = (art, juv) => { const e = art && art[juv ? 'juvenile' : 'adult']; return e && e[0] && e[1] ? e : null; };

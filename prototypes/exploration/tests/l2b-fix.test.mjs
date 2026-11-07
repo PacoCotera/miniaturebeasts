@@ -51,3 +51,26 @@ test("B2: eleven Waits beside a Wickle, a Peplos in fog and a Tepor on its stone
   const ta = t.spot(1, 1, s), tid = t.add(4, ta.x, ta.y);
   waitsUntilPod(t, tid, ta, "the Tepor"); assert.deepEqual(podsHow(t), ["warm"], t.msgs().join(" | "));
 });
+
+// tiles a kind covers in a flight: hideOrFlee, then the field clock until it stops running
+function fleeRun(sp) {
+  const f = fixture({ partner: null }), at = f.spot(4, 5), id = f.add(sp, at.x, at.y);
+  f.run(`hideOrFlee({ lay: curLay() }, curLive().cr[0])`); let n = 0, prev = f.cr(id);
+  for (let i = 0; i < 4 && f.cr(id).st === "flee"; i++) { f.tick(); const c = f.cr(id); n += Math.abs(c.x - prev.x) + Math.abs(c.y - prev.y); prev = c; }
+  return n;
+}
+
+test("the tuned flee: a flighty Peplos runs further than a plucky Rupar; the shared row runs as before (3 tiles)", () => {
+  assert.equal(fleeRun(11), 4, "Peplos, flee 3"); assert.equal(fleeRun(7), 2, "Rupar, flee 1");
+  assert.equal(fleeRun(0), 3, "Loika, flee 2 as before"); assert.equal(fleeRun(25), 3, "an untuned kind as before");
+});
+
+test("the tuned creep notice: creeping at 2 tiles alerts a Peplos, not a Rupar or a Loika; at 1 tile all three", () => {
+  for (const [sp, d, alert] of [[11, 2, true], [7, 2, false], [0, 2, false], [11, 1, true], [7, 1, true], [0, 1, true]]) {
+    const f = fixture({ partner: null }), P = f.P(), at = f.spot(d, d), id = f.add(sp, at.x, at.y);
+    f.moveYou(at.x, at.y); const q = f.spot(d, d, at); f.moveYou(q.x, q.y);
+    const dist = Math.max(Math.abs(q.x - at.x), Math.abs(q.y - at.y)); assert.equal(dist, d);
+    f.tick({ noise: "creep", moved: true });
+    assert.equal(["alert", "flee"].includes(f.cr(id).st), alert, "sp " + sp + " at " + d + ": " + f.cr(id).st);
+  }
+});
