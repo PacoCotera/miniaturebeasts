@@ -3436,7 +3436,8 @@ L2.bankBlock = (ts, dir, type, dug, seed) => art('l2bank|' + ts + dir + type + d
   // the other three: a band of exposed earth along the place's edge, as thick as the drop shows from here
   const toXY = L2.blockXY(dir, S), put = (a, d, c) => { const [x, y] = toXY(a, d); pb.set(x, y, c); };
   const lit = dir === 'right' ? .55 : dir === 'left' ? .05 : dir === 'down' ? .3 : .15;
-  const band = type === 'side' ? (ts === 48 ? 28 : 14) : type === 'foot' ? Math.round(7 * u) : dir === 'up' ? Math.round(9 * u) : Math.round(12 * u);
+  const band = type === 'side' ? (ts === 48 ? 72 : 48) :   // L4b (E1): a side wall is a tile and a half deep, so the bank's face shows as a wall on the edge of the view, not a 28 px strip (it was 28 / 14)
+ type === 'foot' ? Math.round(7 * u) : dir === 'up' ? Math.round(9 * u) : Math.round(12 * u);
   const ragged = a => Math.round(L2.noise(seed + 4, a, 0, 4 * u) * 3 * u);
   if (type === 'foot') for (let d = 0; d < Math.round(16 * u); d++) for (let a = 0; a < S; a++) if (((a + d) & 1) && d >= band && L2.bay(a, d) < .65 - (d - band) / (16 * u)) put(a, d, C.forest);   // the shade the higher ground throws
   // the earth itself (in a temporary buffer, so its texture keeps its own grain in any orientation)
