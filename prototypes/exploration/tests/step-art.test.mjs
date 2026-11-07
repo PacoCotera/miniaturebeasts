@@ -27,9 +27,10 @@ function moving({ off = false, inject = false, motion = true, st = "idle", empty
   return { f, id, draw, used: (arts, sp, fr) => f.run(`__b.includes('${sp}:${fr}')`) };
 }
 
-test("STEP_ART: in page species order, for sp 0, 1, 3, 4, 7, 11, 16, 19 only, the desk frames", async () => {
+test("STEP_ART: in page species order, for sp 0, 1, 3, 4, 7, 11, 16, 19 only, the desk frames", async (t) => {
   const f = fixture();
   assert.deepEqual(plain(f.run("Object.keys(STEP_ART).map(Number)")), STEPPERS);
+  if (!existsSync(FRAMES)) return t.skip("the desk's step frames are not here: " + FRAMES);
   const D = await import(FRAMES), SP = [0, 1, 3, 4, 7, 11, 16, 19];
   SP.forEach((sp, i) => assert.deepEqual(plain(f.run(`STEP_ART[${sp}]`)), { adult: [D.STEP_ART[i].idle, D.STEP_ART[i].step], juvenile: [D.JUVENILE_STEP_ART[i].idle, D.JUVENILE_STEP_ART[i].step] }, D.STEP_ORDER[i]));
   for (const sp of SP) { assert.ok(f.run(`STEP_ART[${sp}].adult.every(Boolean) && STEP_ART[${sp}].juvenile.every(Boolean)`)); assert.equal(px(f, `tokenOf(${sp}, "step", 0)`), px(f, `tokenOf(${sp}, "idle", 0)`), "frame A is the signed idle"); }
