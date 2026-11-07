@@ -561,7 +561,7 @@ const SIGN_LINE = {
   untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
 // the first sighting of each map sign: its Probe name (the line on the card is the same one)
 const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
-  beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'Muddy water or loose scree · a rambler can cross it', bank: 'Earth bank · needs a digger', deep: 'Deep ? · tier 2 Probe reads it' };   // soft: no copywriter name line (cw round 2 gave the pin, the name and the help only), so the help line stands here
+  beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · tier 2 Probe reads it' };   // soft: no copywriter name line (cw round 2 gave the pin, the name and the help only), so the sign's name stands here
 const SIGN_TILE_OF = { pod: 'pod', t: 'tracks', b: 'beat', k: 'bolt', kw: 'hollow', beacon: 'beacon', skull: 'skull', depot: 'outpost', burrow: 'gate', water: 'gate', soft: 'gate', bank: 'gate', deep: 'gate' };
 const SIGN = {};
 { const add = (id, key, pri, tile, pic, line, o) => { SIGN[id] = Object.assign({ id, key, also: [], pri, tile, pic, line: typeof line === 'function' ? line : () => line }, o); };
@@ -1661,7 +1661,7 @@ function digBank(ei, a, c) {
   const ex = S.exp, name = ex.pt.name;
   if (ex.pt.elder && ex.bankProg !== ei + 1) { ex.bankProg = ei + 1; fxMsg(name + ' is digging · slow but sure', 1); advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined); return false; }
   ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei);
-  const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; }
+  const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; }
   logEv(name + ' dug a way ' + (G.level[c] > G.level[a] ? 'up' : 'down') + ' the bank');
   advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined);
   return true;
@@ -3424,7 +3424,7 @@ function layers48(lay, fr) {
 }
 // The tile size a place draws at: 48 when the meadow set is in and the place can be built from it; caves stay at 32.
 function placeTs(lay) { return !lay.cave && ART48.ready && layers48(lay, 0).ok ? 48 : 32; }
-const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP;
+const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP || t === T.WADE;
 const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.' + base + '@' + l.dx + ',' + l.dy : l.id + ':' + l.sx + ',' + l.sy + ',' + l.w + ',' + l.h + '@' + l.dx + ',' + l.dy + (l.tone ? '~' + l.tone : '')).join(';');
 // A trunk's tree kind and crop, and the Shade's moss, are part of a 48 px tile's key; sl is the asleep variant (the tile's light is the fog table).
 const treeCrop = (lay, t) => t.kind === 'fruit' && t.fid && fs(lay.key, t.fid).ripe ? 'fruit' : 'bare';
@@ -3476,6 +3476,10 @@ function stand32(kind, base) {
     if (kind === 'trunk') { pb.ell(16, 26, 10, 4, base === T.SAND ? C.clay : C.forest);
       pb.rect(11, 6, 10, 21, C.bark); pb.rect(11, 6, 3, 21, C.clay); pb.rect(18, 6, 3, 21, C.soil); pb.rect(8, 25, 4, 2, C.bark); pb.rect(20, 25, 4, 2, C.soil); pb.rect(14, 12, 1, 4, C.soil); }
     else if (kind === 'step') { pb.ell(16, 17, 11, 7.5, C.rock); pb.ell(15.5, 15.5, 10, 6, C.rockL, { sh: [C.white, C.rockL] }); pb.set(20, 13, C.fog); }
+    else if (kind === 'wade') { for (let i = 0; i < 7; i++) pb.ell(5 + (i * 9) % 23, 6 + (i * 11) % 21, 5 + i % 3, 2 + i % 3, i % 3 ? C.clay : C.bark); for (let i = 0; i < 3; i++) pb.rect(3 + i * 4, 6 + i * 9, 8, 1, C.sky); }   // mud over the water: a soft brown smear and ripples
+    else if (kind === 'scree') { for (let i = 0; i < 40; i++) { const y = 1 + (i * 7) % 28, sp = 4 + (y >> 1), x = 16 - sp + (i * 13) % (sp * 2 + 1); pb.rect(x, y, 3, 2, i % 3 ? C.slate : C.stone); pb.rect(x, y, 3, 1, C.rockL); } }   // a fan of loose pebbles
+    else if (kind === 'bank' || kind === 'bankdug') { pb.ell(16, 20, 15, 9, C.clay); pb.ell(16, 18, 14, 7, C.sand); for (let i = 0; i < 7; i++) pb.set(3 + (i * 5) % 26, 24 + i % 7, C.clay);
+      if (kind === 'bankdug') for (let k = 0; k < 3; k++) pb.rect(13, 7 + k * 7, 6, 2, C.bark); }   // a rounded earth lip with crumbs; dug: three footholds
     return pb; });
 }
 // A whole meadow piece as a sprite (the reeds, taller than a cell).

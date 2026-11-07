@@ -97,7 +97,7 @@ test("a new world writes gen 5, and its ground and first place are generator 4's
   p.run("newWorld(42)");
   assert.equal(p.run("S.gen"), 5);
   const v10 = JSON.parse(p.store[p.KEY]); assert.equal(v10.v, 10); assert.equal(v10.seed, 42); assert.equal(v10.regions[0].seed, 42); assert.equal(v10.regions[0].gen, 5); assert.equal("gen" in v10, false);
-  const want = VECTORS.gens["4"].biomes.mixed.seeds.find(s => s.seed === 42), G = p.run("G");
+  const want = VECTORS.gens["4"].biomes.mixed.seeds.find(s => s.seed === 42), G = (({ soft, banks, ...w }) => w)(p.run("G"));   // the page attaches G.soft and G.banks after mounting; the world itself is the vector
   assert.equal(G.gen, 5);
   const ground = { ...G, gen: 4 };   // generator 5's ground is generator 4's, tagged 5: the vector hashes it as generator 4
   assert.deepEqual(Object.assign(worldDigest(API4, ground), { beacons: [...W.beaconCells(G, 42)], depots: [...W.depotCells(G, 42)] }), want.world);
@@ -109,10 +109,10 @@ test("a world of generator 2 (asked for by a test; players have them in saves) w
   p.run("newWorld(42, 2)");
   assert.equal(p.run("S.gen"), 2);
   assert.equal(JSON.parse(p.store[p.KEY]).regions[0].gen, 2);
-  const want = VECTORS.gens["2"].seeds.find(s => s.seed === 42), G = p.run("G");
+  const want = VECTORS.gens["2"].seeds.find(s => s.seed === 42), G = (({ soft, banks, ...w }) => w)(p.run("G"));
   assert.deepEqual(Object.assign(worldDigest(API2, G), { beacons: [...W.beaconCells(G, 42)], depots: [...W.depotCells(G, 42)] }), want.world);
   assert.equal(want.places[0].key, String(G.spawns[0]));
-  assert.deepEqual(placeDigest(API2, p.run("layout(String(G.spawns[0]))"), 2), want.places[0]);
+  assert.deepEqual(placeDigest(API2, p.run("G.soft = null; G.banks = null; layoutCache.clear(); layout(String(G.spawns[0]))"), 2), want.places[0]);
 });
 
 test("a save from a generator the page does not play (a newer one, or 1 to 4) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
@@ -653,7 +653,7 @@ test("generator 2 play: leaving a place by a stair crosses; beside it on the sha
 });
 
 test("generator 2 play: the map refuses a steep edge (bump, message, no action) and crosses a stair (one action)", () => {
-  const seed = SEEDS[0], G = W.genWorld(seed, 2), cliff = edgesOf(G).find(e => e.kind === EDGE.CLIFF && G.comp[e.a] && G.comp[e.b]);
+  const seed = SEEDS[0], G = W.genWorld(seed, 2), cliff = edgesOf(G).find(e => e.kind === EDGE.CLIFF && G.comp[e.a] && G.comp[e.b] && !W.bankEdges(G)[W.edgeIndex(e.a, e.dir)] && !W.softGround(G, seed).scree[W.edgeIndex(e.a, e.dir)]);   // a plain cliff edge: banks and scree have their own refusals
   const p = g2At(seed, cliff.a); p.run("FX.notes = []; FX.msg = '';"); const b0 = p.run("FX.bumpAt");
   p.run(`act(${JSON.stringify(cliff.dir)})`);
   assert.equal(p.run("S.exp.pos"), cliff.a); assert.equal(p.run("S.exp.actions"), 0, "0 actions spent");
@@ -1014,7 +1014,7 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // ---- golden frames: FNV of the 450×600 screen ----
 // The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
-const MAIN_FRAMES = { cave: 1205165258, place32: 1284530620, map: 3135324483 };   // main 92b58bf8 (unchanged by the later main commits), captured from its own page with this harness
+const MAIN_FRAMES = { cave: 1205165258, place32: 1284530620, map: 2923937570 };   // cave and place32 are main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
 const GOLDEN48 = { faceStair: 2933509176, gen1: 414766699, corner: 1650250194 };   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y) {
   const p = page48(seed);
@@ -1497,7 +1497,7 @@ test("the send hint in a place names the way, never a count, at all seven sites;
   p.run("S.exp.saidDone = 0; reachCounts = () => ({ total: 9, surveyed: 9, full: 9, gated: 1 }); FX.notes = []; checkExplored();");
   assert.equal(p.run("FX.msg"), `Everything in reach is explored · the cave waits for a Tuikis · head back ${dir} to the ${name === "Start" ? "start" : "outpost"}`);
   p.run("S.exp.saidDone = 0; reachCounts = () => ({ total: 9, surveyed: 9, full: 9, gated: 2 }); FX.notes = []; checkExplored();");
-  assert.match(p.run("FX.msg"), /^Everything in reach is explored · caves need a digger · /); assert.doesNotMatch(p.run("FX.msg"), DIG);
+  assert.match(p.run("FX.msg"), /^Everything in reach is explored · the caves wait for a Tuikis · /); assert.doesNotMatch(p.run("FX.msg"), DIG);
   assert.ok(p.run("wrapText(FX.msg, 400, 2).length") <= 3, "fits the box");
   // leave with ← then ✓: over the reach view every site counts again, with the same name
   p.run("S.phase = 'patch'; FX.lockUntil = 0; openMenu(); S.ui.menuSel = 0; act('confirm');"); assert.equal(p.run("S.phase"), "map"); assert.equal(p.run("S.exp.patch"), null);
