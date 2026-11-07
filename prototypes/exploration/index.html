@@ -3162,6 +3162,316 @@ const DROP = () => art('drop', () => { const pb = new PB(5, 7); pb.set(2, 0, C.i
 function sparkArt(big) { return art('spark' + big, () => { const r = big ? 6 : 4, pb = new PB(r * 2 + 1, r * 2 + 1);
   pb.rect(r, 0, 1, r * 2 + 1, C.cream); pb.rect(0, r, r * 2 + 1, 1, C.cream); pb.rect(r - 1, r - 1, 3, 3, C.white); if (big) { pb.set(r - 2, r - 2, C.cream); pb.set(r + 2, r - 2, C.cream); pb.set(r - 2, r + 2, C.cream); pb.set(r + 2, r + 2, C.cream); } return pb; }); }
 
+// ---------- L2 terrain pieces (art desk, signed 2026-11-07): mud, earth banks, scree; the place wade, the map marks ----------
+const L2 = {};
+L2.n = (s, x, y) => (hash(s, x, y) % 1024) / 1024;
+// value noise, smooth; px: optional period in cells along x (seamless tiles)
+L2.noise = (s, x, y, sc, px) => { const fx = x / sc, fy = y / sc, ix = Math.floor(fx), iy = Math.floor(fy), tx = fx - ix, ty = fy - iy, sx = tx * tx * (3 - 2 * tx), sy = ty * ty * (3 - 2 * ty);
+  const w = i => px ? ((i % px) + px) % px : i, a = L2.n(s, w(ix), iy), b = L2.n(s, w(ix + 1), iy), c = L2.n(s, w(ix), iy + 1), d = L2.n(s, w(ix + 1), iy + 1);
+  const top = a + (b - a) * sx, bot = c + (d - c) * sx; return top + (bot - top) * sy; };
+L2.bay = (x, y) => (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16;
+L2.DIRS = ['up', 'right', 'down', 'left'];
+L2.SH = 999;   // a cast shadow on the ground under the piece: drawn as that ground pixel, one step darker (L2.under)
+L2.under = (c, g) => c === L2.SH ? (g >= 0 ? DARK[g] : -1) : c;
+
+// ---------- muddy water: brown water, low contrast, soft dithered edges; ripples like the river's, in clay ----------
+// box (x0, y0, w, h) in pb; soft = { n, e, s, w }: px of falloff on that side (0: the mud runs on to the next tile); period: x period of the noise in px
+// o: { seed, fr, period (x period of the cloud, px: seamless tiles), rip (ripples), rv (ripple variant), ox, oy (the noise origin: continuous over cells), sc (cloud size) }
+// The water stays in it: the mud covers about three pixels in four, so the river's own colour speckles through and the cell still reads as water.
+L2.mud = (pb, x0, y0, w, h, soft, o) => {
+  const seed = o.seed, ox = o.ox || 0, oy = o.oy || 0, sc0 = o.sc || Math.max(5, Math.min(w, h) / 3);
+  const per = o.period ? Math.max(1, Math.round(o.period / sc0)) : 0, sc = per ? o.period / per : sc0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const X = x0 + x, Y = y0 + y, b = L2.bay(X, Y);
+    let a = 1;
+    const wob = (L2.noise(seed + 3, ox + x, 0, sc, per) - .5) * 1.3, wob2 = (L2.noise(seed + 4, ox + x, 0, sc, per) - .5) * 1.3;   // the plume's top and bottom wander
+    if (soft.n) a = Math.min(a, (y + .5) / soft.n - wob); if (soft.s) a = Math.min(a, (h - y - .5) / soft.s - wob2);
+    if (soft.w) a = Math.min(a, (x + .5) / soft.w); if (soft.e) a = Math.min(a, (w - x - .5) / soft.e);
+    const nz = L2.noise(seed, ox + x, oy + y, sc, per), cl = L2.noise(seed + 11, ox + x, oy + y, sc * .7, per ? per * 2 : 0);
+    if (a < 1) a = a * 1.25 + (nz - .5) * .6;   // a ragged, dithered edge, never a straight one
+    const cover = Math.min(a, 1) * (o.cover || .72) * (.7 + nz * .45);   // how much of the pixel is mud: the water always speckles through
+    if (cover <= b) continue;
+    pb.set(X, Y, cl > .66 && b < .5 ? C.clay : C.bark);   // clay clouds in the brown, low contrast
+  }
+  const R = makeRng(hash(seed, 'rip', o.rv || 0)), n = o.rip || 1, L = Math.max(3, Math.round(Math.min(w, 48) / 7));
+  for (let i = 0; i < n; i++) { const y = Math.round(h * (.3 + .4 * (i + R.f()) / n)), x = ((Math.round(w * R.f() * .7) + (o.fr || 0) * 2) % Math.max(1, w - L - 3));
+    for (let k = 0; k < L; k++) { const X = x0 + x + k, Y = y0 + y; if (pb.get(X, Y) >= 0) pb.set(X, Y, C.sand); }   // the river's ripple, in the light of muddy water
+    for (let k = 0; k < (L >> 1); k++) { const X = x0 + x + L + k, Y = y0 + y - 1; if (pb.get(X, Y) >= 0) pb.set(X, Y, C.clay); } }
+};
+
+// ---------- stones (scree): an irregular rounded stone, lit from the top left, with its cast shadow ----------
+L2.stone = (pb, cx, cy, r, seed, big) => {
+  const rx = r * (1 + (L2.n(seed, 1, 0) - .5) * .5), ry = r * (.72 + L2.n(seed, 2, 0) * .2), rot = (L2.n(seed, 3, 0) - .5) * .8;
+  const ins = (x, y) => { const px = x + .5 - cx, py = y + .5 - cy, ca = Math.cos(rot), sa = Math.sin(rot), u = (px * ca + py * sa) / rx, v = (-px * sa + py * ca) / ry, ang = Math.atan2(v, u);
+    return u * u + v * v <= 1 - .18 * L2.n(seed, Math.round((ang + 3.2) * 2), 7); };
+  const R = Math.ceil(Math.max(rx, ry)) + 2, pts = [];
+  for (let y = Math.floor(cy - R); y <= Math.ceil(cy + R); y++) for (let x = Math.floor(cx - R); x <= Math.ceil(cx + R); x++) if (ins(x, y)) pts.push([x, y]);
+  if (!pts.length) pts.push([Math.round(cx), Math.round(cy)]);
+  const on = new Set(pts.map(([x, y]) => x + ',' + y)), has = (x, y) => on.has(x + ',' + y);
+  const done = new Set(), shade = (x, y) => { const v = pb.get(x, y), k = x + ',' + y; if (v === L2.SH || has(x, y) || done.has(k)) return; done.add(k); pb.set(x, y, v >= 0 ? DARK[v] : L2.SH); };   // cast shadow, down-right: what it falls on, one step darker
+  for (const [x, y] of pts) { if (!has(x + 1, y + 1)) shade(x + 1, y + 1); if (r > 2.5 && ((x + y) & 1)) shade(x + 2, y + 1); }
+  for (const [x, y] of pts) {
+    const px = x + .5 - cx, py = y + .5 - cy, edge = !has(x - 1, y) || !has(x + 1, y) || !has(x, y - 1) || !has(x, y + 1), l = (-px * .7 - py * .8) / Math.max(1, r);
+    let c = l > .45 ? C.rockL : l > -.35 ? C.rock : C.stone;
+    if (edge && (!has(x + 1, y) || !has(x, y + 1)) && r > 1.5) c = C.slate;   // the dark side's outline
+    else if (edge && r > 1.5 && c === C.rock && l > .1) c = C.rockL;
+    pb.set(x, y, c);
+  }
+  if (big && r > 3.5) { pb.set(Math.round(cx - r * .35), Math.round(cy - ry * .45), C.fog); const fx = Math.round(cx + r * .1), fy = Math.round(cy + ry * .1); if (has(fx, fy)) pb.set(fx, fy, C.stone); }
+};
+// Stones scattered by dart throwing (never in rows): dens(a, d) in 0..1 over the box W x H in canonical coordinates
+// (a along the edge, d away from it), mapped to the screen by toXY; sizes grow downslope (the big ones roll farthest).
+L2.scatter = (pb, W, H, toXY, dens, rmin, rmax, seed, n, bigDown) => {
+  const R = makeRng(seed), list = [];
+  for (let t = 0; t < n * 40 && list.length < n; t++) {
+    const a = R.f() * W, d = R.f() * H, p = dens(a, d); if (R.f() > p) continue;
+    const down = bigDown ? bigDown(a, d) : .5, r = rmin + (rmax - rmin) * Math.pow(R.f(), 1.6) * (.45 + down * .9);
+    if (list.some(s => Math.hypot(s.a - a, s.d - d) < (s.r + r) * .82)) continue;
+    list.push({ a, d, r, s: R.int(1 << 20) });
+  }
+  const pts = list.map(s => { const [x, y] = toXY(s.a, s.d); return { x, y, r: s.r, s: s.s }; }).sort((p, q) => p.y - q.y);
+  for (const p of pts) L2.stone(pb, p.x, p.y, p.r, p.s, true);
+};
+
+// ---------- earth: the bank's face texture (bark body, clay lit ledges, soil cracks, roots, pebbles) ----------
+// fills the rows y0..y1 of the box x0..x0+w with earth; lit: 0..1 bias to clay (a face turned to the light); seed
+L2.earth = (pb, x0, y0, w, h, lit, seed, unit) => {
+  const u = unit || 1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const X = x0 + x, Y = y0 + y, t = y / Math.max(1, h - 1);
+    const n1 = L2.noise(seed, x, y * 1.8, 7 * u), n2 = L2.noise(seed + 5, x, y, 3 * u), b = L2.bay(X, Y);
+    const crack = Math.abs(L2.noise(seed + 9, x, y * 3.2, 9 * u) - .5) < .035 + .01 * u;   // wavy, broken seams (never ruled lines)
+    const v = n1 * .7 + n2 * .3 + lit * .16 - t * .28 + (b - .5) * .12;
+    pb.set(X, Y, crack ? C.soil : v > .68 ? C.clay : v > .33 ? C.bark : C.soil);
+  }
+};
+L2.roots = (pb, x0, y0, w, h, seed, n, th) => {
+  const R = makeRng(hash(seed, 'roots'));
+  for (let i = 0; i < n; i++) { let x = x0 + 2 + R.int(Math.max(1, w - 4)); const len = Math.round(h * (.25 + R.f() * .35));
+    for (let y = 0; y < len; y++) { if (R.chance(.22)) x += R.chance(.5) ? 1 : -1; pb.rect(x, y0 + y, th, 1, C.soil); if (th > 1 && R.chance(.3)) pb.set(x, y0 + y, C.bark); } }
+};
+L2.pebbles = (pb, x0, y0, w, h, seed, n, r) => { const R = makeRng(hash(seed, 'peb'));
+  for (let i = 0; i < n; i++) L2.stone(pb, x0 + r + R.f() * (w - 2 * r), y0 + r + R.f() * (h - 2 * r), r * (.7 + R.f() * .5), R.int(1 << 20), false); };
+// grass lip: a band of grass along the top of a face (y0..y0+L), its underside dripping down unevenly; tufts in sprout
+L2.lip = (pb, x0, y0, w, L, drip, seed) => {
+  for (let x = 0; x < w; x++) { const X = x0 + x, dl = Math.round(L2.noise(seed, x, 0, 3) * drip * 1.5 + (L2.n(seed, x, 4) > .8 ? drip * .6 : 0)), bot = y0 + L + dl;
+    for (let Y = y0; Y < bot; Y++) { const t = (Y - y0) / Math.max(1, bot - y0);
+      pb.set(X, Y, Y === bot - 1 ? C.leaf : t < .25 && L2.n(seed, X, Y) > .55 ? C.sprout : L2.n(seed + 1, X, Y) > .86 ? C.leaf : C.grass); }
+    pb.set(X, bot, C.forest);   // the shade under the lip
+    if (L2.n(seed + 2, x, 0) > .8) pb.set(X, y0, C.lime); }
+};
+// grass tufts standing on a line (the foot of a face): blades up from y
+L2.tufts = (pb, x0, y, w, seed, h) => { for (let x = 0; x < w; x++) { const r = L2.n(seed, x, 9); if (r < .45) continue; const l = 1 + Math.round(r * (h - 1));
+  for (let k = 0; k < l; k++) pb.set(x0 + x, y - k, k === l - 1 ? (r > .8 ? C.sprout : C.grass) : C.leaf); } };
+// a foothold cut into earth: the dark back wall above, the lit tread below, crumbs under it
+L2.notch = (pb, cx, cy, w, h) => { const x0 = Math.round(cx - w / 2), y0 = Math.round(cy - h / 2);   // a scooped hole: rounded top, dark inside, a lit tread
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const u = (x + .5 - w / 2) / (w / 2), v = (y + .5) / h; if (v < .5 && u * u + ((.5 - v) * 2) ** 2 > 1.05) continue;
+    pb.set(x0 + x, y0 + y, y >= h - 2 ? (y === h - 1 ? C.sand : C.clay) : v < .45 ? C.ink : C.soil); }
+  pb.rect(x0 - 1, y0 + h - 1, 1, 1, C.clay); pb.rect(x0 + w, y0 + h - 1, 1, 1, C.bark);
+  pb.set(x0 + 1, y0 + h, C.clay); pb.set(x0 + w - 2, y0 + h + 1, C.clay); pb.set(x0 + (w >> 1), y0 + h + 2, C.bark); };
+
+// ---------- the place pieces: one block of 2 x 2 tiles in screen orientation, cut per tile ----------
+// type: 'face' (the high ground to the north: a south-facing face), 'side' (high ground east or west), 'lip' (this place is the high
+// side), 'foot' (high ground to the south: the face turned away). dir: the crossing's side of the place.
+L2.blockXY = (dir, S) => dir === 'up' ? (a, d) => [a, d] : dir === 'down' ? (a, d) => [a, S - 1 - d] : dir === 'left' ? (a, d) => [d, a] : (a, d) => [S - 1 - d, a];
+L2.bankBlock = (ts, dir, type, dug, seed) => art('l2bank|' + ts + dir + type + dug + seed, () => {
+  const S = 2 * ts, pb = new PB(S, S), u = ts / 32, R = makeRng(hash(seed, 'bank'));
+  if (type === 'face') {   // a south-facing earth face, the height of the rock face beside it: lip, earth, roots, foot tufts
+    const L = Math.round(6 * u), foot = S - Math.round(7 * u);   // the foot where the meadow's rock faces end theirs; the lawn below
+    L2.earth(pb, 0, L, S, foot - L, .3, seed, u);
+    L2.roots(pb, 0, L, S, foot - L, seed, 3, u > 1 ? 2 : 1);
+    L2.pebbles(pb, 0, L + 6 * u, S, foot - L - 10 * u, seed, Math.round(3 * u), 1.6 * u);
+    pb.rect(0, foot - 1, S, 1, C.soil);
+    for (let y = L; y < foot; y++) { pb.set(0, y, C.soil); pb.set(S - 1, y, C.soil); if (L2.n(seed, y, 11) > .6) pb.set(1, y, C.soil); if (L2.n(seed, y, 12) > .6) pb.set(S - 2, y, C.soil); }   // the joins to the rock beside it
+    for (let x = 0; x < S; x++) if (L2.n(seed, x, 13) > .7) pb.set(x, foot, L2.n(seed, x, 14) > .5 ? C.bark : C.clay);   // crumbs at the foot
+    L2.lip(pb, 0, 0, S, L, Math.round(3 * u), seed);
+    L2.tufts(pb, 0, foot + Math.round(2 * u), S, seed + 3, Math.round(4 * u));
+    if (dug) { const w = Math.round(9 * u), h = Math.round(6 * u); [[.4, .74], [.56, .54], [.42, .34]].forEach(([fx, fy]) => L2.notch(pb, S * fx, S * fy, w, h)); }
+    return pb; }
+  // the other three: a band of exposed earth along the place's edge, as thick as the drop shows from here
+  const toXY = L2.blockXY(dir, S), put = (a, d, c) => { const [x, y] = toXY(a, d); pb.set(x, y, c); };
+  const lit = dir === 'right' ? .55 : dir === 'left' ? .05 : dir === 'down' ? .3 : .15;
+  const band = type === 'side' ? (ts === 48 ? 28 : 14) : type === 'foot' ? Math.round(7 * u) : dir === 'up' ? Math.round(9 * u) : Math.round(12 * u);
+  const ragged = a => Math.round(L2.noise(seed + 4, a, 0, 4 * u) * 3 * u);
+  if (type === 'foot') for (let d = 0; d < Math.round(16 * u); d++) for (let a = 0; a < S; a++) if (((a + d) & 1) && d >= band && L2.bay(a, d) < .65 - (d - band) / (16 * u)) put(a, d, C.forest);   // the shade the higher ground throws
+  // the earth itself (in a temporary buffer, so its texture keeps its own grain in any orientation)
+  const tmp = new PB(S, band + 4 * u); L2.earth(tmp, 0, 0, S, tmp.h, lit, seed, u);
+  for (let a = 0; a < S; a++) { const e = band + ragged(a);
+    for (let d = 0; d < e; d++) { let c = tmp.get(a, Math.min(tmp.h - 1, e - 1 - d)); if (d === 0) c = C.soil; put(a, d, c); }
+    // the grass rim on the high side of the earth (or, for a side wall, its top edge at the place's edge)
+    if (type === 'lip' || type === 'foot') { put(a, e, L2.n(seed, a, 1) > .6 ? C.sprout : C.grass); if (L2.n(seed, a, 2) > .55) put(a, e - 1, C.leaf); if (L2.n(seed, a, 3) > .8) put(a, e + 1, C.leaf); }
+    else { put(a, 0, L2.n(seed, a, 1) > .5 ? C.grass : C.leaf); if (L2.n(seed, a, 2) > .6) put(a, 1, C.leaf);
+      put(a, e, C.soil); if (L2.n(seed, a, 5) > .7) put(a, e + 1, C.bark); }   // the side wall's foot, crumbs past it
+  }
+  // roots hanging over the earth from the grass, and crumbs fallen past the band
+  for (let i = 0; i < Math.round(4 * u); i++) { const a = 3 + R.int(S - 6), d0 = type === 'lip' || type === 'foot' ? band - 1 : 2; let aa = a;
+    for (let k = 0; k < Math.round(band * .5); k++) { if (R.chance(.25)) aa += R.chance(.5) ? 1 : -1; put(aa, type === 'lip' || type === 'foot' ? d0 - k : d0 + k, C.soil); } }
+  for (let i = 0; i < Math.round(9 * u); i++) { const a = R.int(S), d = band + 2 + R.int(Math.round(10 * u)); put(a, d, R.chance(.5) ? C.clay : C.bark); if (R.chance(.3)) put(a + 1, d, C.bark); }
+  if (type === 'side') { const tmp2 = new PB(S, S); L2.pebbles(tmp2, 0, 0, S, band, seed + 6, Math.round(3 * u), 1.5 * u);
+    for (let a = 0; a < S; a++) for (let d = 2; d < band - 1; d++) { const c = tmp2.get(a, d); if (c >= 0) put(a, d, c); } }
+  if (dug) { const w = Math.round(6 * u), h = Math.round(4 * u);
+    [[.3, .5], [.52, .45], [.74, .55]].forEach(([fa, fd]) => { const a = Math.round(S * fa), d = Math.round(band * fd);
+      const [x, y] = toXY(a, d); const vert = dir === 'left' || dir === 'right'; L2.notch(pb, x, y, vert ? h + 1 : w, vert ? w - 1 : h); }); }
+  return pb;
+});
+L2.screeBlock = (ts, dir, type, seed) => art('l2scree|' + ts + dir + type + seed, () => {
+  const S = 2 * ts, pb = new PB(S, S), u = ts / 32, toXY = L2.blockXY(dir, S);
+  // canonical: a along the edge, d inward from the place's edge (0..S). The fan widens downslope: from the edge when the place is low, toward it when high.
+  const lowHere = type !== 'lip', src = d => lowHere ? d / S : 1 - d / S;   // 0 at the source (the high side), 1 downslope
+  const dens = (a, d) => { const t = src(d), half = S * (.24 + .3 * t), off = Math.abs(a - S / 2);
+    if (off > half) return 0; const base = type === 'face' ? 1 - t * .55 : type === 'lip' ? (d < S * .45 ? .95 - d / S : .2 * (1 - d / S)) : 1 - t * .8;
+    return Math.max(0, base) * (1 - Math.pow(off / half, 3) * .7); };
+  L2.scatter(pb, S, S, (a, d) => toXY(a, d), dens, 1.3 * u, 6 * u, hash(seed, 'scree'), Math.round(30 * u * u), (a, d) => src(d));
+  // pebbles and grit between the stones
+  const R = makeRng(hash(seed, 'grit'));
+  for (let i = 0; i < Math.round(60 * u * u); i++) { const a = R.f() * S, d = R.f() * S; if (R.f() > dens(a, d) * .9) continue; const [x, y] = toXY(Math.round(a), Math.round(d)); if (pb.get(x, y) >= 0) continue; pb.set(x, y, R.chance(.6) ? C.rock : C.stone); if (R.chance(.4) && pb.get(x + 1, y + 1) < 0) pb.set(x + 1, y + 1, L2.SH); }
+  return pb;
+});
+// nb: 4 chars n,e,s,w: 'w' wade, 'o' open water, 'l' land; rv: a ripple variant; ox: the tile's x in the place (px) so the cloud runs on
+// unbroken from tile to tile (no ox: a cloud that repeats every tile, seamless, for the 32 px tiles that carry no position)
+L2.wade = (ts, nb, fr, rv, ox, period) => art('l2wade|' + ts + nb + fr + ':' + (rv || 0) + ':' + (ox == null ? 'p' : ox) + ':' + (period || 0), () => {
+  const pb = new PB(ts, ts), u = ts / 32, f = Math.round(ts * .5), shore = Math.round((ts === 48 ? 7 : 2) * u);
+  const soft = { n: nb[0] === 'o' ? f : 0, e: nb[1] === 'l' ? 3 * u : 0, s: nb[2] === 'o' ? f : 0, w: nb[3] === 'l' ? 3 * u : 0 };
+  const x0 = nb[3] === 'l' ? shore : 0, x1 = nb[1] === 'l' ? ts - shore : ts;
+  L2.murk(pb, x0, x1 - x0, ts, soft, { seed: hash('l2wade', ts), fr, period: ox == null ? ts : period || 0, ox: (ox || 0) + x0 });
+  return pb;
+});
+// The place's muddy water: the same river, brown-clouded. At most about half of the water is mud (the river shows through every other
+// pixel at the cloud's heart, far more toward its edges), the top and bottom fray into the water with no outline, and the river's own
+// ripple lines (sky, its 2 frames) run across the mud and on into the clear water.
+L2.murk = (pb, x0, w, h, soft, o) => {
+  const seed = o.seed, ox = o.ox || 0, sc0 = h / 2.2, per = o.period ? Math.max(1, Math.round(o.period / sc0)) : 0, sc = per ? o.period / per : sc0;
+  const n = (s, x, y, k) => L2.noise(seed + s, ox + x, y, sc * k, per ? Math.max(1, Math.round(per / k)) : 0);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const X = x0 + x, b = L2.bay(X, y);
+    let a = 1;   // 0 at the frayed edge, 1 at the heart of the cloud
+    if (soft.n) a = Math.min(a, (y + .5) / soft.n + (n(3, x, 0, 1) - .5) * .9);
+    if (soft.s) a = Math.min(a, (h - y - .5) / soft.s + (n(4, x, 0, 1) - .5) * .9);
+    if (soft.w) a = Math.min(a, (x + .5) / soft.w); if (soft.e) a = Math.min(a, (w - x - .5) / soft.e);
+    a = Math.max(0, Math.min(1, a * 1.5));   // a broad heart, a long frayed fall-off
+    const cl = n(0, x, y, .6), cover = a * a * (3 - 2 * a) * (.46 + cl * .3);   // a smooth rise; the cloud thicker and thinner in drifts, never over ~.6
+    if (cover <= b) continue;
+    pb.set(X, y, n(11, x, y, .45) > .78 && b < .3 ? C.clay : C.bark);   // a rare lighter swirl, never a clump
+  }
+  const R = makeRng(hash(seed, 'rip', ox)), fr = o.fr || 0, rows = h >= 48 ? [.3, .66] : [.4, .72];   // the river's ripples: a 6 px line and a 3 px step up, moving 2 px a frame
+  rows.forEach(fy => { const y = Math.round(h * fy) + R.int(5) - 2, x = x0 + ((R.int(Math.max(1, w - 10)) + fr * 2) % Math.max(1, w - 9)), on = R.chance(.75);
+    if (on) { pb.rect(x, y, 6, 1, C.sky); pb.rect(x + 6, y - 1, 3, 1, C.sky); } });   // not every tile carries both, so the row never ticks like a ruler
+};
+// The tile's place in its crossing, packed into the 32 px mask (bit 0 dug; bits 1-2 the side; bit 3 the neighbour higher; bit 4 d; bit 5 k).
+L2.tileMask = (lay, x, y) => { const q = crossingAt(lay, x, y); if (!q) return lay.bankDug ? 1 : 0;
+  const d = q.dir === 'left' ? x : q.dir === 'right' ? PW - 1 - x : q.dir === 'up' ? y : PH - 1 - y, k = (q.dir === 'up' || q.dir === 'down' ? x : y) - q.s;
+  const n = stepCell(lay.cell, q.dir), hi = n >= 0 && G.level[n] > G.level[lay.cell];
+  return (lay.bankDug ? 1 : 0) | L2.DIRS.indexOf(q.dir) << 1 | (hi ? 8 : 0) | d << 4 | k << 5; };
+L2.unpack = m => { const dir = L2.DIRS[(m >> 1) & 3], hi = !!(m & 8); return { dug: m & 1, dir, hi, d: (m >> 4) & 1, k: (m >> 5) & 1, type: !hi ? 'lip' : dir === 'up' ? 'face' : dir === 'down' ? 'foot' : 'side' }; };
+L2.cut = (blk, ts, dir, d, k) => { const [bx, by] = dir === 'up' ? [k, d] : dir === 'down' ? [k, 1 - d] : dir === 'left' ? [d, k] : [1 - d, k], out = new PB(ts, ts);
+  for (let y = 0; y < ts; y++) for (let x = 0; x < ts; x++) out.p[y * ts + x] = blk.p[(by * ts + y) * blk.w + bx * ts + x]; return out; };
+L2.piece = (ts, t, m, fr, nb, rv, ox) => {
+  if (t === T.WADE) return L2.wade(ts, nb, fr, rv, ox);
+  const o = L2.unpack(m), blk = t === T.BANK ? L2.bankBlock(ts, o.dir, o.type, o.dug, 7) : L2.screeBlock(ts, o.dir, o.type, 7);
+  return art('l2cut|' + ts + t + m + o.type, () => L2.cut(blk, ts, o.dir, o.d, o.k)); };
+// buildTile, after the ground: case T.WADE: L2.tile32(pb, t, base, mask, fr, v); break;  (and the same for T.SCREE, T.BANK)
+L2.tile32 = (pb, t, base, mask, fr, v) => {
+  if (t === T.WADE) {   // the river's water, its foam where it meets land, the mud across it
+    pb.rect(0, 0, 32, 32, C.river);
+    const nb = ['o', mask & 2 ? 'l' : 'w', 'o', mask & 8 ? 'l' : 'w'].join('');
+    pb.blit(L2.wade(32, nb, fr, v, (v & 3) * 32, 128), 0, 0);   // v = x & 3 (tileKeys): the cloud runs on over four tiles, then repeats
+    if (mask & 8) { pb.rect(0, 0, 2, 32, C.ice); for (let y = 0; y < 32; y += 3) pb.set(2, y + fr, C.sky); }
+    if (mask & 2) { pb.rect(30, 0, 2, 32, C.ice); for (let y = 1; y < 32; y += 3) pb.set(29, y + fr, C.sky); }
+    return; }
+  if (t === T.SCREE) groundInto(pb, T.SAND, hash('tile', t, base));
+  else groundInto(pb, base === T.DARK ? T.DARK : T.GRASS, hash('tile', t, base));
+  { const pc = L2.piece(32, t, mask, fr); for (let k = 0; k < 1024; k++) { const c = pc.p[k]; if (c >= 0) pb.p[k] = L2.under(c, pb.p[k]); } }
+};
+// 48 px: the piece over the whole tile, and the key suffix that tells the tiles of a crossing apart
+L2.nb48 = (lay, i) => { const x = i % PW, y = (i / PW) | 0, at = (X, Y) => X < 0 || Y < 0 || X >= PW || Y >= PH ? -1 : lay.tiles[Y * PW + X];
+  return [[0, -1], [1, 0], [0, 1], [-1, 0]].map(([dx, dy]) => { const n = at(x + dx, y + dy); return n === T.WADE ? 'w' : n === -1 || WET48(n) ? 'o' : 'l'; }).join(''); };
+L2.key48 = (lay, i, fr) => { const t = lay.tiles[i]; if (t === T.WADE) return '|L2w' + L2.nb48(lay, i) + fr + ':' + (i % PW);
+  if (t === T.BANK || t === T.SCREE) return '|L2' + L2.tileMask(lay, i % PW, (i / PW) | 0); return ''; };
+L2.place48 = (lay, i, fr) => { const t = lay.tiles[i]; return L2.piece(48, t, t === T.WADE ? 0 : L2.tileMask(lay, i % PW, (i / PW) | 0), fr, t === T.WADE ? L2.nb48(lay, i) : '', i % 3, (i % PW) * 48); };
+// tile48, once the tile's layers are in pb: the piece over them. A dark wood place darkens ground (mud, scree, a bank's rim), never a wall:
+// a bank's face or side wall stays in the light the rock faces beside it keep.
+L2.overlay48 = (pb, lay, i, fr, dark) => { const t = lay.tiles[i]; if (t !== T.WADE && t !== T.SCREE && t !== T.BANK) return;
+  const pc = L2.place48(lay, i, fr), o = t === T.BANK ? L2.unpack(L2.tileMask(lay, i % PW, (i / PW) | 0)) : null, dk = dark && !(o && (o.type === 'face' || o.type === 'side'));
+  for (let k = 0; k < 48 * 48; k++) { const c = pc.p[k]; if (c < 0) continue; const v = L2.under(c, pb.p[k]); if (v >= 0) pb.p[k] = dk && c !== L2.SH ? DARK[v] : v; } };
+
+// ---------- icons (16 x 12): the map's signs and pins ----------
+const L2_ICON = {
+  mud: () => art('i-mud', () => { const pb = new PB(16, 12);   // a puddle of muddy water: a mud rim, brown water with the blue showing through, a ripple
+    pb.ell(8, 6.4, 7.6, 4.8, C.soil); pb.ell(8, 6.2, 6.8, 4, C.bark); const w = new PB(16, 12); w.ell(8, 6.3, 5.6, 3.1, C.river);
+    for (let k = 0; k < 192; k++) if (w.p[k] >= 0) pb.p[k] = L2.bay(k % 16, k >> 4) < .6 ? C.bark : C.river;
+    pb.rect(4, 5, 3, 1, C.sky); pb.rect(7, 4, 2, 1, C.sky); pb.rect(9, 7, 3, 1, C.sand); pb.set(3, 3, C.clay); pb.set(4, 2, C.clay); return pb; }),
+  bankLip: dug => art('i-bank' + dug, () => { const pb = new PB(16, 12);   // a little earth bank: grass on top, the earth face, crumbs at its foot
+    pb.rect(1, 4, 14, 7, C.bark); pb.rect(1, 4, 14, 2, C.clay); pb.rect(0, 2, 16, 2, C.grass); pb.rect(0, 2, 16, 1, C.sprout);
+    for (const x of [1, 4, 5, 9, 12, 14]) pb.set(x, 4, C.leaf); for (const x of [3, 8, 11]) pb.set(x, 7, C.soil);
+    pb.rect(1, 10, 14, 1, C.soil); pb.set(0, 11, C.bark); pb.set(15, 11, C.clay); pb.set(6, 11, C.bark);
+    if (dug) for (const [x, y] of [[4, 8], [7, 6], [10, 8]]) { pb.rect(x, y, 2, 1, C.soil); pb.rect(x, y + 1, 2, 1, C.sand); }
+    pb.outline(() => C.soil); return pb; }),
+  scree: () => art('i-scree', () => { const pb = new PB(16, 12);   // a heap of loose stones, mixed sizes
+    for (const [x, y, r, s] of [[8, 4, 2.4, 3], [4.5, 7.5, 2.2, 5], [11, 7.6, 2.6, 8], [7.5, 9, 1.8, 2], [2.4, 10, 1.3, 4], [13.6, 10.2, 1.2, 6], [10, 3.6, 1.2, 9]]) L2.stone(pb, x, y, r, hash('icon', s), false);
+    for (let k = 0; k < pb.p.length; k++) if (pb.p[k] === L2.SH) pb.p[k] = C.stone;
+    return pb; }),
+};
+
+// ---------- the map and the reach view (26, 48, 72 px cells): replaces drawSoftMarks ----------
+// An earth bank sits where a cliff mark would, with the cliff's weight, in earth: a south-facing drop shows its face (soil, lit clay, a
+// grassy lip dripping over it, crumbs at the foot); the other drops a soil line with an earth strip. Dug: footholds cut into it.
+// A scree edge: loose stones over the edge line, a fan wider on the low side. A wade: its water clouded brown with mud.
+L2.MARK = { 26: { face: 4, lip: 1, th: 2, shadow: 2, fan: 8, r: [1.1, 2.3] }, 48: { face: 8, lip: 2, th: 3, shadow: 3, fan: 12, r: [1.2, 3.0] }, 72: { face: 12, lip: 2, th: 4, shadow: 4, fan: 17, r: [1.4, 4.0] } };
+function softMarkPB(cs, sides, ground, parity, c) {
+  const P = L2.MARK[cs] || L2.MARK[26], pb = new PB(cs, cs), cur = (x, y) => { const v = pb.get(x, y); return v >= 0 ? v : ground ? ground(x, y) : -1; };
+  const at = (dir, a, d) => dir === 'up' ? [a, d] : dir === 'down' ? [a, cs - 1 - d] : dir === 'left' ? [d, a] : [cs - 1 - d, a];   // a along the edge, d into this cell
+  const put = (dir, a, d, col) => { const [x, y] = at(dir, a, d); pb.set(x, y, col); };
+  const lipPx = (dir, a, d) => { const [x, y] = at(dir, a, d), v = cur(x, y); if (v >= 0) pb.set(x, y, TINT[v]); };
+  for (const [dir, kind, hi, dug, ei] of sides) {
+    const s = hash('l2m', ei);
+    if (kind === 'bank') {
+      if (hi && dir === 'up') {   // the face, in the lower cell's top rows
+        const F = P.face;
+        for (let a = 0; a < cs; a++) { const n = L2.n(s, a, 0), drop = L2.n(s, a, 1) > .7 ? 1 : 0;
+          for (let d = 0; d < F + drop; d++) { const t = d / F, v = L2.noise(s, a, d * 2, 3) + (L2.bay(a, d) - .5) * .2;
+            put(dir, a, d, d === 0 ? C.soil : d >= F - 1 ? (d === F - 1 ? C.soil : C.bark) : v - t * .35 > .48 ? C.clay : C.bark); }
+          if (n > .62) put(dir, a, 0, C.leaf); if (n > .9) put(dir, a, 1, C.leaf);   // grass from the lip hanging over
+          if (L2.n(s, a, 2) > .8 && F > 4) put(dir, a, F >> 1, C.soil); }
+        if (cs >= 48) for (let k = 0; k < cs / 24; k++) { const a = 3 + (hash(s, 'r', k) % (cs - 6)); for (let d = 1; d < F * .6; d++) put(dir, a + ((d >> 2) & 1), d, C.soil); }   // roots
+        for (let a = 0; a < cs; a += 1) if (L2.n(s, a, 3) > .78) put(dir, a, F + 1 + (L2.n(s, a, 4) > .6 ? 1 : 0), L2.n(s, a, 5) > .5 ? C.bark : C.clay);   // crumbs
+        if (dug) { const w = cs >= 72 ? 5 : cs >= 48 ? 4 : 2, ih = cs >= 48 ? 2 : 1; [-1, 0, 1].forEach(k => { const a = (cs >> 1) + k * Math.max(4, cs >> 3) - (w >> 1), d = 1 + ((k + 1) % 2) * Math.max(1, F >> 2);
+          for (let i = 0; i < w; i++) { for (let j = 0; j < ih; j++) put(dir, a + i, d + j, (i === 0 || i === w - 1) && j === 0 && w > 2 ? C.soil : C.ink); put(dir, a + i, d + ih, C.sand); if (F > 4) put(dir, a + i, d + ih + 1, C.clay); } }); }
+      } else if (hi) {   // a soil seam where the cliff has its ink, a lit earth strip beside it
+        for (let a = 0; a < cs; a++) { put(dir, a, 0, L2.n(s, a, 0) > .75 ? C.bark : C.soil);   // the earth's dark seam, where a cliff has its ink
+          for (let d = 1; d < P.th; d++) put(dir, a, d, L2.n(s, a, d) > .82 ? C.bark : C.clay);   // the bank's earth, lit: the line a cliff never has
+          if (L2.n(s, a, 6) > .45) put(dir, a, P.th, L2.n(s, a, 11) > .5 ? C.bark : C.clay);   // a ragged foot
+          if (L2.n(s, a, 8) > .86) put(dir, a, P.th + P.shadow - 1 + (L2.n(s, a, 9) > .5 ? 1 : 0), L2.n(s, a, 10) > .5 ? C.clay : C.bark); }   // crumbs
+        if (dir === 'left' && ground) for (let a = 0; a < cs; a++) for (let d = P.th; d < P.th + P.shadow; d++) { const [x, y] = at(dir, a, d); if ((x + y + parity) & 1) continue; const v = cur(x, y); if (v >= 0) pb.set(x, y, DARK[v]); }
+        if (dug) { const w = cs >= 48 ? 3 : 2; [-1, 0, 1].forEach(k => { const a = (cs >> 1) + k * Math.max(4, cs >> 3);
+          for (let i = 0; i < w; i++) put(dir, a + i, i ? P.th - 1 : 0, C.ink); for (let d = 0; d < P.th + 1; d++) put(dir, a + w, d, C.sand); }); }
+      } else {   // the high side: the cliff's lit lip, with a grass tuft or two over the earth
+        for (let a = 0; a < cs; a++) { for (let d = 0; d < P.lip; d++) lipPx(dir, a, d); if (L2.n(s, a, 7) > .75) put(dir, a, 0, C.sprout); }
+        if (dug && dir !== 'down') [-1, 0, 1].forEach(k => { const a = (cs >> 1) + k * Math.max(4, cs >> 3); put(dir, a, 0, C.bark); put(dir, a + 1, 0, C.bark); });
+      }
+    } else {   // scree: no edge line; stones heaped over it, the fan wider on the low side
+      const R = makeRng(hash(s, 'fan')), F = hi && dir === 'up' ? P.face : 0, list = [];
+      const n = Math.round(cs * (hi ? (dir === 'up' ? 1.5 : 1.2) : .35));
+      for (let t = 0; t < n * 30 && list.length < n; t++) { const a = R.f() * cs, d = hi ? Math.pow(R.f(), 1.5) * (P.fan + F) : R.f() * (P.lip + 1.5);
+        const r = P.r[0] + (P.r[1] - P.r[0]) * Math.pow(R.f(), 2) * (hi ? .6 + .7 * d / (P.fan + F) : .5);
+        if (list.some(q => Math.hypot(q.a - a, q.d - d) < (q.r + r) * .85)) continue; list.push({ a, d, r, k: R.int(1 << 20) }); }
+      const pts = list.map(q => { const [x, y] = at(dir, q.a, q.d); return { x, y, r: q.r, k: q.k }; }).sort((p, q) => p.y - q.y);
+      for (const p of pts) { if (p.r < 1.8 || cs < 48) { const X = Math.round(p.x), Y = Math.round(p.y), w = p.r > 2.1 ? 3 : p.r > 1.15 ? 2 : 1, h = p.r > 1.45 ? 2 : 1;   // a chip: lit top-left, its shadow on the ground
+          for (const [sx, sy] of [[w, h], [w, h - 1], [w - 1, h]]) { const g = cur(X + sx, Y + sy); if (g >= 0 && g !== C.rock && g !== C.rockL) pb.set(X + sx, Y + sy, DARK[g]); }
+          pb.rect(X, Y, w, h, C.rock); pb.set(X, Y, L2.n(p.k, 0, 0) > .35 ? C.rockL : C.rock); if (w > 1 && h > 1) pb.set(X + w - 1, Y + 1, C.stone); if (w > 2) pb.set(X + 1, Y, C.rockL); }
+        else L2.stone(pb, p.x, p.y, p.r, p.k, cs >= 48); }
+    }
+  }
+  for (let k = 0; k < cs * cs; k++) if (pb.p[k] === L2.SH) pb.p[k] = L2.under(L2.SH, ground ? ground(k % cs, (k / cs) | 0) : -1);   // cast shadows onto the cell's own ground
+  return pb;
+}
+function wadeMarkPB(cs, nb, c) {   // nb: n,e,s,w each 'w' wade, 'o' open water, 'l' land (the foam stays); the cloud is continuous from cell to cell
+  const pb = new PB(cs, cs), inset = cs === 26 ? 2 : Math.round(cs * .06), f = Math.round(cs * .35), p = cxy(c);
+  const x0 = nb[3] === 'l' ? inset : 0, x1 = nb[1] === 'l' ? cs - inset : cs, y0 = nb[0] === 'l' ? inset : 0, y1 = nb[2] === 'l' ? cs - inset : cs;
+  L2.mud(pb, x0, y0, x1 - x0, y1 - y0, { n: nb[0] === 'o' ? f : nb[0] === 'l' ? 2 : 0, s: nb[2] === 'o' ? f : nb[2] === 'l' ? 2 : 0, e: nb[1] === 'l' ? 2 : 0, w: nb[3] === 'l' ? 2 : 0 },
+    { seed: hash('l2wm', S.seed), ox: p.x * cs + x0, oy: p.y * cs + y0, rip: cs >= 48 ? 2 : 1, rv: c, sc: cs / 3, cover: cs >= 48 ? .6 : .72 });
+  return pb;
+}
+
 // ---------- Icons (HUD, map signs, menus) ----------
 const ICON = {
   energy: () => art('i-energy', () => { const pb = new PB(14, 14); pb.poly([[7, 0], [13.5, 7], [7, 14], [.5, 7]], C.amber); pb.poly([[7, 0], [13.5, 7], [7, 7]], C.yellow); pb.poly([[.5, 7], [7, 14], [7, 7]], C.orange); return pb; }),
@@ -3200,9 +3510,7 @@ const ICON = {
   start: () => art('i-start', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 5.4, 5.4, C.bone, { clip: (x, y) => Math.hypot(x + .5 - 5.5, y + .5 - 5.5) > 3.8 }); return pb; }),
   arrow: (dir) => art('i-arr' + dir, () => { const pb = new PB(9, 13); pb.poly([[0, 0], [9, 6.5], [0, 13]], C.yellow); pb.outline(() => C.rust); return dir < 0 ? flipPB(pb) : pb; }),
   tri: () => art('i-tri', () => { const pb = new PB(8, 12); pb.poly([[0, 0], [8, 6], [0, 12]], C.orange); return pb; }),
-  mud: () => art('i-mud', () => { const pb = new PB(16, 12); pb.ell(8, 6, 7.5, 4.5, C.clay); pb.ell(7, 5, 5, 2.5, C.bark); for (const [x, y] of [[3, 9], [11, 2], [13, 8]]) pb.set(x, y, C.sand); return pb; }),   // stand-in (c-map-soft-26): a soft mud smear, never the ford's line of marks
-  bankLip: dug => art('i-bank' + dug, () => { const pb = new PB(16, 12); pb.ell(8, 9, 7.5, 4.5, C.clay); pb.ell(8, 8, 6.5, 3, C.sand); for (const [x, y] of [[2, 11], [6, 11], [12, 11]]) pb.set(x, y, C.clay); if (dug) for (let k = 0; k < 3; k++) pb.rect(7, 2 + k * 3, 3, 1, C.bark); return pb; }),   // stand-in: a rounded earth lip with crumbs; dug: a short column of footholds
-  scree: () => art('i-scree', () => { const pb = new PB(16, 12); for (let i = 0; i < 12; i++) { const y = 1 + (i * 5) % 10, sp = 2 + (y >> 1), x = 8 - sp + (i * 7) % (sp * 2 + 1); pb.rect(x, y, 2, 1, i % 3 ? C.rock : C.rockL); } return pb; }),   // stand-in: a fan of pebbles, wider downhill
+  ...L2_ICON,   // mud, bankLip, scree: the map's signs and pins
   wave: () => art('i-wave',() => { const pb = new PB(16, 12); for (const y0 of [3, 8]) for (let x = 0; x < 16; x++) pb.set(x, y0 + Math.round(Math.sin(x * .8) * 1.4), C.sky); return pb; }),
   burrow: (lit) => art('i-burrow' + lit, () => { const pb = new PB(16, 14); pb.ell(8, 12, 7.5, 9, lit ? C.clay : C.stone, { clip: (x, y) => y < 13 }); pb.ell(8, 13, 4, 7, lit ? C.void : C.night, { clip: (x, y) => y < 13 }); pb.rect(0, 13, 16, 1, lit ? C.bark : C.slate); if (lit) pb.rect(7, 10, 2, 2, C.yellow); return pb; }),
   mini: (sp, juv) => miniArt(sp, juv),
@@ -3255,21 +3563,7 @@ function buildTile(t, base, v, mask, fr, terr) {
       if (mask & 2) { pb.rect(30, 0, 2, 32, foam); for (let y = 1; y < 32; y += 3) pb.set(29, y + fr, f2); }
       if (t === T.STEP) { pb.ell(16, 17, 11, 7.5, C.rock); pb.ell(15.5, 15.5, 10, 6, C.rockL, { sh: [C.white, C.rockL] }); pb.set(20, 13, C.fog); }
       break; }
-    case T.WADE: {   // stand-in: muddy water, a soft brown smear with ripples (never the ford's stepping marks)
-      pb.rect(0, 0, 32, 32, C.river);
-      for (let i = 0; i < 9; i++) pb.ell(4 + R.int(24), 5 + R.int(22), 4 + R.int(5), 2 + R.int(3), R.pick([C.clay, C.bark, C.sand]));
-      for (let i = 0; i < 3; i++) { const y = 6 + i * 9 + R.int(3), x = 3 + R.int(14) + fr * 2; pb.rect(x, y, 8, 1, C.sky); }
-      break; }
-    case T.SCREE: {   // stand-in: a fan of loose pebbles, wider downslope, over bare ground
-      groundInto(pb, T.SAND, h);
-      for (let i = 0; i < 26; i++) { const y = 3 + R.int(26), spread = 3 + (y >> 1), x = 16 - spread + R.int(spread * 2 + 1), c = R.pick([C.rock, C.stone, C.rockL, C.fog]); pb.rect(x, y, 2, 2, c); pb.set(x, y, C.rockL); }
-      break; }
-    case T.BANK: {   // stand-in: a rounded earth lip with crumbs, no hatching; the footholds are painted by the dug mark (m & 1)
-      groundInto(pb, base === T.DARK ? T.DARK : T.GRASS, h);
-      pb.ell(16, 20, 15, 9, C.clay); pb.ell(16, 18, 14, 7, C.sand, { sh: [C.cream, C.sand] });
-      for (let i = 0; i < 7; i++) pb.set(3 + R.int(26), 24 + R.int(7), C.clay);
-      if (mask & 1) for (let k = 0; k < 3; k++) pb.rect(13, 7 + k * 7, 6, 2, C.bark);
-      break; }
+    case T.WADE: case T.SCREE: case T.BANK: L2.tile32(pb, t, base, mask, fr, v); break;   // the 32 px places (the art desk's pieces)
     case T.REEDS: groundInto(pb, base === T.CFLOOR ? T.GRASS : base, h);
       { const px = 4 + R.int(14), py = 18 + R.int(8); pb.ell(px + 6, py, 7, 2.5, C.river); pb.rect(px + 3, py - 1, 4, 1, C.sky); }
       for (let i = 0; i < 6; i++) { const x = 2 + R.int(28), y = 26 + R.int(5), l = 12 + R.int(7); pb.rect(x, y - l, 1, l, C.leaf); pb.set(x + 1, y - l + 3, C.grass); pb.rect(x, y - l - 3, 1, 3, C.bark); pb.set(x, y - l - 3, C.clay); }
@@ -3354,17 +3648,17 @@ function buildTerrTile(t, base, v, m, fr, bv, bm) {
 function tileKeys(lay) {
   if (lay.tk) return lay.tk;
   const tk = new Array(PW * PH), at = (x, y) => (x < 0 || y < 0 || x >= PW || y >= PH) ? -1 : lay.tiles[y * PW + x];
-  const wet = t => t === T.WATER || t === T.STEP || t === T.DEEP || t === -1;
+  const wet = t => t === T.WADE || t === T.WATER || t === T.STEP || t === T.DEEP || t === -1;
   for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
     const t = at(x, y), v = hash(lay.key, x, y) % 4; let m = 0;
     const nb = [at(x, y - 1), at(x + 1, y), at(x, y + 1), at(x - 1, y)];
-    if (t === T.BANK && lay.bankDug) m |= 1;   // a bank dug this walk shows its footholds
-    if (t === T.WATER || t === T.STEP || t === T.DEEP) nb.forEach((n, i) => { if (!wet(n) && !(t === T.DEEP && n === T.ISLE)) m |= 1 << i; });
+    if (t === T.BANK || t === T.SCREE) m = L2.tileMask(lay, x, y);   // the tile's place in its crossing, and whether it is dug
+    if (t === T.WATER || t === T.STEP || t === T.DEEP || t === T.WADE) nb.forEach((n, i) => { if (!wet(n) && !(t === T.DEEP && n === T.ISLE)) m |= 1 << i; });
     else if (t === T.ROCK) nb.forEach((n, i) => { if (n === T.ROCK) m |= 1 << i; });
     else if (t === T.CLIFF) { if (nb[0] !== T.CLIFF && nb[0] !== -1) m |= 1; if (nb[2] !== T.CLIFF && nb[2] !== -1) m |= 4; }
     else if (t === T.CWALL) { if (nb[2] === T.CFLOOR) m |= 4; }
     else if (t === T.ISLE) { if (nb[2] === T.DEEP) m |= 4; }
-    tk[y * PW + x] = { t, v: (t === T.GRASS || t === T.DARK || t === T.SAND || t === T.CFLOOR || t === T.TALL) ? v : v & 1, m, anim: t === T.WATER || t === T.STEP || t === T.DEEP };
+    tk[y * PW + x] = { t, v: t === T.WADE ? x & 3 : (t === T.GRASS || t === T.DARK || t === T.SAND || t === T.CFLOOR || t === T.TALL) ? v : v & 1, m, anim: t === T.WATER || t === T.STEP || t === T.DEEP || t === T.WADE };
     const i = y * PW + x; if (lay.terr && lay.terr[i]) { const b = tk[i]; tk[i] = { t, v: lay.terr[i], m: lay.tmask[i], anim: false, terr: true }; if (lay.terr[i] === TERR.SHADOW) { tk[i].bv = b.v; tk[i].bm = b.m; } }   // generator 2: the piece kind and its mask; SHADOW keeps the tile's own variant and mask
   }
   return (lay.tk = tk);
@@ -3437,7 +3731,7 @@ const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.'
 // A trunk's tree kind and crop, and the Shade's moss, are part of a 48 px tile's key; sl is the asleep variant (the tile's light is the fog table).
 const treeCrop = (lay, t) => t.kind === 'fruit' && t.fid && fs(lay.key, t.fid).ripe ? 'fruit' : 'bare';
 function treeSig(lay, i, sl) { const t = lay.trees && lay.trees[i]; return (t ? '|r3' + t.kind + t.seed + treeCrop(lay, t) + (sl ? 'z' : '') : '') + (lay.shade ? '|m' : ''); }
-function tile48Key(lay, i, fr, sl) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : '') + treeSig(lay, i, sl); }
+function tile48Key(lay, i, fr, sl) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : '') + treeSig(lay, i, sl) + L2.key48(lay, i, fr); }
 // The tree kinds' sprites (trees48.mjs) as PBs: the trunk stand with its foot-shadow mask, the canopy whole and thinned. One build per kind, seed, crop and state.
 function treeSet(t, crop, sl) {
   return art('r3|' + t.kind + t.seed + crop + (sl ? 'z' : ''), () => { const s = treeSprites(t.kind, { asleep: !!sl, crop, seed: t.seed }, C, DARK), tr = new PB(32, 32), cn = [0, 1].map(chk => { const pb = new PB(88, 76); pb.p.set(s.canopy.p);
@@ -3476,18 +3770,15 @@ function tile48(lay, i, fr, sl) {
   }
   if (t.dark) for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = DARK[pb.p[k]];
   if (lay.shade) { const mo = shadeMoss(); for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = mo[pb.p[k]]; }   // the Shade's ground: cool moss, so its wash never reads as sprout
+  L2.overlay48(pb, lay, i, fr, t.dark);   // a wade, bank or scree tile: the art desk's 48 px piece over the whole tile
   ART.set(key, pb); ART48.g48++; return pb;
 }
-// The 32 px code stand-ins a 48 px tile carries (registered in CARE_ASSETS): today's trunk and stepping stone, without their ground.
+// The 32 px code stand-ins a 48 px tile carries (registered in CARE_ASSETS): today's trunk and stepping stone, without their ground. 'wade', 'scree', 'bank' and 'bankdug' draw nothing here: the 48 px pieces (L2.overlay48) cover the tile.
 function stand32(kind, base) {
   return art('st32|' + kind + '|' + base, () => { const pb = new PB(32, 32);
     if (kind === 'trunk') { pb.ell(16, 26, 10, 4, base === T.SAND ? C.clay : C.forest);
       pb.rect(11, 6, 10, 21, C.bark); pb.rect(11, 6, 3, 21, C.clay); pb.rect(18, 6, 3, 21, C.soil); pb.rect(8, 25, 4, 2, C.bark); pb.rect(20, 25, 4, 2, C.soil); pb.rect(14, 12, 1, 4, C.soil); }
     else if (kind === 'step') { pb.ell(16, 17, 11, 7.5, C.rock); pb.ell(15.5, 15.5, 10, 6, C.rockL, { sh: [C.white, C.rockL] }); pb.set(20, 13, C.fog); }
-    else if (kind === 'wade') { for (let i = 0; i < 7; i++) pb.ell(5 + (i * 9) % 23, 6 + (i * 11) % 21, 5 + i % 3, 2 + i % 3, i % 3 ? C.clay : C.bark); for (let i = 0; i < 3; i++) pb.rect(3 + i * 4, 6 + i * 9, 8, 1, C.sky); }   // mud over the water: a soft brown smear and ripples
-    else if (kind === 'scree') { for (let i = 0; i < 40; i++) { const y = 1 + (i * 7) % 28, sp = 4 + (y >> 1), x = 16 - sp + (i * 13) % (sp * 2 + 1); pb.rect(x, y, 3, 2, i % 3 ? C.slate : C.stone); pb.rect(x, y, 3, 1, C.rockL); } }   // a fan of loose pebbles
-    else if (kind === 'bank' || kind === 'bankdug') { pb.ell(16, 20, 15, 9, C.clay); pb.ell(16, 18, 14, 7, C.sand); for (let i = 0; i < 7; i++) pb.set(3 + (i * 5) % 26, 24 + i % 7, C.clay);
-      if (kind === 'bankdug') for (let k = 0; k < 3; k++) pb.rect(13, 7 + k * 7, 6, 2, C.bark); }   // a rounded earth lip with crumbs; dug: three footholds
     return pb; });
 }
 // A whole meadow piece as a sprite (the reeds, taller than a cell).
@@ -3915,32 +4206,30 @@ function drawEdgeMarks(q) {
   }
   drawSoftMarks(q, cells, pawn);
 }
-// Soft ground and earth banks on the map and reach view (stand-ins, art list c-map-soft-26): drawn in code each frame, after the cliff and stair marks.
-// A wade is a soft brown mud smear on its water cell (never the ford's marks); a scree edge a fan of pebbles spilling over the line (dots, wider on the low side);
-// an earth bank a rounded, scalloped earth lip with crumbs (no ink line, no rock); a bank dug this walk shows a short column of footholds.
+// Soft ground and earth banks on the map and reach view (art list c-map-soft-26): the art desk's marks (softMarkPB, wadeMarkPB), drawn after the cliff and stair marks.
 const softEdge = i => !!((G.soft && G.soft.scree[i]) || (G.banks && G.banks[i]));
 function drawSoftMarks(q, cells, pawn) {
   if (!G.soft && !G.banks) return;
-  const cs = q.cs, th = cs >= 72 ? 4 : cs >= 48 ? 3 : 2, dug = S.exp && S.exp.dug || [], seen = (c, n) => (S.revealed[c] && S.revealed[n]) || c === pawn || n === pawn;
+  const cs = q.cs, dug = S.exp && S.exp.dug || [], seen = (c, n) => (S.revealed[c] && S.revealed[n]) || c === pawn || n === pawn, ex = S.exp;
+  const rmFor = c => q.map ? q.rmOf(c) : (!S.visited[c] ? 4 : (ex && ex.storm && stormCovers(c % MW)) ? 1 : 0);
   for (const [c, x, y] of cells) {
-    if (G.soft && G.soft.wade[c] && S.revealed[c] && !G.island[c]) blit(ICON.mud(), x + ((cs - 16) >> 1), y + ((cs - 12) >> 1));
-    for (const dir of ['right', 'down']) { const X = c % MW + (dir === 'right' ? 1 : 0), Y = ((c / MW) | 0) + (dir === 'down' ? 1 : 0); if (X >= MW || Y >= MH) continue;
-      const n = Y * MW + X, ei = edgeIndex(c, dir); if (edgeKind(c, dir) !== EDGE.CLIFF || !softEdge(ei) || !seen(c, n)) continue;
-      const scree = !!(G.soft && G.soft.scree[ei]), horiz = dir === 'down', bx = horiz ? x : x + cs, by = horiz ? y + cs : y, lowFirst = G.level[c] < G.level[n];
-      for (let a = 0; a < cs; a += scree ? 2 : 1) {
-        const px = horiz ? bx + a : bx, py = horiz ? by : by + a;
-        if (scree) { const h1 = hash(ei, a, 3), spread = 1 + (h1 % (th + 2)), side = (h1 >> 4) & 1 ? 1 : -1, lowSign = lowFirst ? -1 : 1, d = side * (side === lowSign ? spread : Math.max(1, spread >> 1));   // the fan is wider on the low side
-          R(horiz ? px : px + d, horiz ? py + d : py, 1, 1, h1 & 8 ? C.rockL : C.stone); if ((h1 & 3) === 0) R(horiz ? px : px + d + 1, horiz ? py + d + 1 : py, 1, 1, C.rock); }
-        else { const off = Math.round(Math.sin(a * 6.28 / (cs / 3)) * (th >> 1)), p0 = horiz ? py - th + off : px - th + off;   // the scalloped lip
-          if (horiz) { R(px, p0, 1, th, C.clay); R(px, p0 - 1, 1, 1, C.sand); } else { R(p0, py, th, 1, C.clay); R(p0 - 1, py, 1, 1, C.sand); }
-          if (hash(ei, a, 5) % 9 === 0) R(horiz ? px : px + th, horiz ? py + th : py, 1, 1, C.clay); } }   // crumbs
-      if (!scree && dug.includes(ei)) for (let k = -1; k <= 1; k++) { const a = (cs >> 1) + k * Math.max(3, cs >> 3); if (horiz) R(bx + a, by - th - 1, 2, th + 2, C.bark); else R(bx - th - 1, by + a, th + 2, 2, C.bark); }   // footholds
-    }
+    if (G.soft && G.soft.wade[c] && S.revealed[c] && !G.island[c]) {
+      const nb = ['up', 'right', 'down', 'left'].map(dir => { const n = stepCell(c, dir); return n < 0 ? 'o' : G.soft.wade[n] ? 'w' : G.land[n] === L.WATER ? 'o' : 'l'; }).join('');
+      blit(art('l2wm' + cs + nb + c, () => wadeMarkPB(cs, nb, c)), x, y, rmFor(c)); }
+    const sides = [];
+    for (const dir of L2.DIRS) { const n = stepCell(c, dir); if (n < 0) continue; const ei = edgeIndex(c, dir);
+      if (edgeKind(c, dir) !== EDGE.CLIFF || !softEdge(ei) || !seen(c, n)) continue;
+      sides.push([dir, G.soft && G.soft.scree[ei] ? 'scree' : 'bank', G.level[n] > G.level[c], dug.includes(ei) ? 1 : 0, ei]); }
+    if (!sides.length) continue;
+    const fog = !S.revealed[c], parity = (x + y) & 1, key = 'l2sm' + cs + ':' + c + ':' + sides.map(s => s[0][0] + s[1][0] + (s[2] ? 1 : 0) + s[3]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed;
+    const pb = art(key, () => { const gp = fog ? null : q.map ? mapPB : landPatchPB(c, cs, 0), gx = q.map ? (c % MW) * CELL : 0, gy = q.map ? ((c / MW) | 0) * CELL : 0;
+      return softMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity, c); });
+    blit(pb, x, y, fog ? 3 : rmFor(c));
   }
-  // Tuliko's extra ring: small round dots on the cells one ring past the Probe's own range, each a 2 px round dot of the coin pattern
-  const ex = S.exp; if (ex && canSure()) { const s0 = cxy(ex.start), r = ex.range;   // on the full map and on the reach view the player walks on
+  // Tuliko's extra ring: on the cells one ring past the Probe's own range, a light lattice of gold dots (the coin crest's), under everything else
+  if (ex && canSure() && q.map) { const s0 = cxy(ex.start), r = ex.range, sp = cs >= 48 ? 8 : 6;
     for (const [c, x, y] of cells) { const p = cxy(c); if (Math.max(Math.abs(p.x - s0.x), Math.abs(p.y - s0.y)) !== r || !S.revealed[c]) continue;
-      for (let k = 3; k < cs - 2; k += 6) { R(x + k, y + 3, 2, 2, C.gold); R(x + k, y + cs - 5, 2, 2, C.gold); R(x + 3, y + k, 2, 2, C.gold); R(x + cs - 5, y + k, 2, 2, C.gold); } } }
+      for (let j = 0, yy = 3; yy < cs - 2; yy += sp >> 1, j++) for (let xx = 3 + (j & 1) * (sp >> 1); xx < cs - 2; xx += sp) R(x + xx, y + yy, 1, 1, C.gold); } }
 }
 function drawInset(x, y, t, u) {
   const ex = S.exp; u = u || 6; ensureMap(); const W = MW * u, H = MH * u, d = Math.max(2, u - 2), o = Math.floor((u - d) / 2);
