@@ -1,4 +1,5 @@
 import gains from './coatGain.json'
+import cells from './coatCells.json'
 
 // The coat of the live viewport: the same table as the 2D game (art desk R21-COAT-V8, tools/palette-S01-v8.json): coat = the mibi's Tint x Shade cell (coat_main), markings = the coat moved in lightness, cream and the leaf crest fixed.
 // Land colours never drive the Loika. Values copied from the palette file; the studio does not read it at run time.
@@ -39,7 +40,7 @@ export function markingOf(coatHex: string, dark: boolean): string {
   return linearToHex(linearOfOklab([L + (dark ? 0.08 : -0.1), a, b]))
 }
 
-export type CoatLook = { loika?: boolean; tint?: string | null; shade?: string | null; iris?: string | null }
+export type CoatLook = { loika?: boolean; tint?: string | null; shade?: string | null; iris?: string | null; eyes?: string | null }
 
 /** The target hex of every zone of a Loika. `cell` is the mibi's Tint-Shade cell; a file without them gets the painted master and amber. */
 export function loikaTargets(look: CoatLook) {
@@ -55,3 +56,11 @@ export function albedoOf(zone: ZoneName, hex: string): [number, number, number] 
   const g = (gains as Record<string, number[]>)[zone] ?? [1, 1, 1]
   return hexToLinear(hex).map((v, i) => Math.min(1, v * g[i])) as [number, number, number]
 }
+
+// The coat's own tuning per Tint-Shade cell (shots/coatcells.mjs measures it): the albedo gain that lands the cell's median, and the exponent of the spread curve that gives it the master's spread scaled to its own median without clipping (p95 L at most 0.92).
+export type Tune = { gain: number[]; gamma: number }
+export const DEFAULT_GAMMA = 1.85
+export function coatTune(look: CoatLook & { tune?: Tune | null }, cell: string): Tune {
+  return look.tune ?? (cells as Record<string, Tune>)[cell] ?? { gain: (gains as Record<string, number[]>).coat, gamma: DEFAULT_GAMMA }
+}
+export const SPREAD = { p5: 0.17 / 0.29, p95: 0.47 / 0.29, p95Cap: 0.92 } // the master's L ratios to its median, and the highest p95 any cell may have

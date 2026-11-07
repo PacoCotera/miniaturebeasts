@@ -12,6 +12,11 @@ const { chromium } = require('playwright')
 const [base, refsDir, ...rest] = process.argv.slice(2)
 const calibrate = rest.includes('--calibrate')
 const tableOut = rest.includes('--table') ? rest[rest.indexOf('--table') + 1] : null
+const flag = (n) => (rest.includes(n) ? rest[rest.indexOf(n) + 1] : null)
+const cell = flag('--cell') ?? 'between-dark' // the coat cell to draw (Tint-Shade); the default is what the file without Tint and Shade gets
+const tune = flag('--tune') // a coat tuning {gain, gamma} to try in place of the table's (shots/coatcells.mjs)
+const jsonOut = flag('--json')
+const COATS = { 'redder-dark': '#482a1e', 'redder-between': '#864d2b', 'redder-light': '#a26b4f', 'between-dark': '#2e2a2d', 'between-between': '#585e67', 'between-light': '#8e98a4', 'yellower-dark': '#3e301f', 'yellower-between': '#72583b', 'yellower-light': '#9f805a' }
 const refs = JSON.parse(readFileSync(join(refsDir, 'refs.json'), 'utf8'))
 const ZONES = { coat: 0, cream: 1, toe: 2, ring: 3, iris: 4, crest: 8 } // the ids of the zones view (materials.ts ZONE_ID)
 
@@ -21,7 +26,7 @@ await ctx.addInitScript((r) => { window.__parity = r }, refs)
 const page = await ctx.newPage()
 page.on('pageerror', (e) => console.log('PAGEERR', String(e)))
 async function draw(look) {
-  await page.goto(`${base}/studio/${refs.species}/parity?variant=type&az=32&look=${look}`)
+  await page.goto(`${base}/studio/${refs.species}/parity?variant=type&az=32&look=${look}&cell=${cell}${tune ? '&tune=' + encodeURIComponent(tune) : ''}`)
   await page.waitForSelector('canvas[data-ready="1"]', { timeout: 60000 })
   await page.waitForTimeout(300)
   return page.evaluate(() => document.querySelector('canvas').toDataURL('image/png'))
@@ -75,7 +80,11 @@ const res = await blank.evaluate(async ({ urls, ZONES }) => {
     const ch = [0, 1, 2].map((c) => med(z.px.map((p) => lin(p[c]))))
     const labs = z.px.map((p) => lab(lin(p[0]), lin(p[1]), lin(p[2])))
     const Ls = labs.map((l) => l[0])
-    rep[name] = { n: z.n, medLinear: ch, medL: med(Ls), p5: pct(Ls, 0.05), p95: pct(Ls, 0.95), medA: med(labs.map((l) => l[1])), medB: med(labs.map((l) => l[2])) }
+    const p95L = pct(Ls, 0.95)
+    const top = labs.filter((l) => l[0] >= p95L)
+    const c95 = top.reduce((a, l) => a + Math.hypot(l[1], l[2]), 0) / top.length // the chroma of the lightest twentieth: where a highlight goes peach or warm-white
+    const clip = z.px.filter((p) => p[0] >= 254 || p[1] >= 254 || p[2] >= 254).length / z.n
+    rep[name] = { n: z.n, medLinear: ch, medL: med(Ls), p5: pct(Ls, 0.05), p95: p95L, c95, clip, medA: med(labs.map((l) => l[1])), medB: med(labs.map((l) => l[2])) }
   }
   return rep
 }, { urls, ZONES })
@@ -96,12 +105,12 @@ if (calibrate) {
 }
 
 // the check
-const hex = { coat: '#2e2a2d', cream: '#a98b6d', toe: '#a98b6d', ring: '#a98b6d', iris: '#c47a2c', crest: '#757944' }
+const hex = { coat: COATS[cell], cream: '#a98b6d', toe: '#a98b6d', ring: '#a98b6d', iris: '#c47a2c', crest: '#757944' }
 const lin = (v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
 const labOf = (h) => { const [r, g, b] = [1, 3, 5].map((i) => lin(parseInt(h.slice(i, i + 2), 16) / 255)); const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b), m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b), s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b); return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s] }
 const Lof = (h) => labOf(h)[0]
 // the coat's spread (art desk, R5b): the painted master's coat runs L p5 0.17, median 0.29, p95 0.47; any cell keeps the same ratios to its own median
-const SPREAD = { p5: 0.17 / 0.29, p95: 0.47 / 0.29 }
+const SPREAD = { p5: 0.17 / 0.29, p95: 0.47 / 0.29 } // and p95 never above 0.92 (a light cell must not clip)
 const gam = (v) => Math.round(255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055)).toString(16).padStart(2, '0')
 const rows = []
 let worst = 0
@@ -112,8 +121,8 @@ for (const z of Object.keys(ZONES)) {
   const row = { zone: z, pixels: r.n, rendered: r.n ? '#' + r.medLinear.map(gam).join('') : '-', target: hex[z], dL: Number.isNaN(dL) ? null : Number(dL.toFixed(4)) }
   if (r.n) {
     const t = labOf(hex[z])
-    Object.assign(row, { p5: Number(r.p5.toFixed(4)), p95: Number(r.p95.toFixed(4)), dA: Number((r.medA - t[1]).toFixed(4)), dB: Number((r.medB - t[2]).toFixed(4)) })
-    if (z === 'coat') Object.assign(row, { p5Target: Number((t[0] * SPREAD.p5).toFixed(4)), p95Target: Number((t[0] * SPREAD.p95).toFixed(4)) })
+    Object.assign(row, { p5: Number(r.p5.toFixed(4)), p95: Number(r.p95.toFixed(4)), c95: Number(r.c95.toFixed(4)), clip: Number(r.clip.toFixed(4)), median: Number(r.medL.toFixed(4)), dA: Number((r.medA - t[1]).toFixed(4)), dB: Number((r.medB - t[2]).toFixed(4)) })
+    if (z === 'coat') { const p95T = Math.min(t[0] * SPREAD.p95, 0.92); const k = Math.min(1, (p95T - t[0]) / (t[0] * (SPREAD.p95 - 1))); Object.assign(row, { p5Target: Number((t[0] - t[0] * (1 - SPREAD.p5) * k).toFixed(4)), p95Target: Number(p95T.toFixed(4)) }) } // a cell whose p95 the cap holds down has its p5 brought in by the same share
   }
   rows.push(row)
 }
@@ -129,6 +138,7 @@ if (rest.includes('--refine')) { // one correction on the white-render gains for
   process.exit(0)
 }
 console.log(JSON.stringify({ look: targets.look, rows, worst }, null, 1))
+if (jsonOut) writeFileSync(jsonOut, JSON.stringify({ cell, rows, worst }, null, 1))
 if (tableOut) writeFileSync(tableOut, JSON.stringify({ rows, worst }, null, 1))
 const bad = rows.filter((r) => r.dL === null || Math.abs(r.dL) > 0.02)
 if (bad.length) { console.log('FAIL: zones off by more than 0.02 L:', bad.map((r) => r.zone).join(', ')); process.exit(1) }
@@ -137,5 +147,9 @@ const spreadBad = Math.abs(coat.p5 - coat.p5Target) > 0.04 || Math.abs(coat.p95 
 if (spreadBad) { console.log(`FAIL: coat spread p5 ${coat.p5} (want ${coat.p5Target}), p95 ${coat.p95} (want ${coat.p95Target}), tolerance 0.04`) }
 const abBad = rows.filter((r) => ['cream', 'toe', 'ring'].includes(r.zone) && (Math.abs(r.dA) > 0.01 || Math.abs(r.dB) > 0.01))
 if (abBad.length) console.log('FAIL: cream a/b off by more than 0.01:', abBad.map((r) => `${r.zone} dA ${r.dA} dB ${r.dB}`).join('; '))
-if (spreadBad || abBad.length) process.exit(1)
+const chromaBad = rows.filter((r) => ['cream', 'toe', 'ring'].includes(r.zone) && r.c95 > 0.04)
+if (chromaBad.length) console.log('FAIL: highlight chroma of cream above 0.04:', chromaBad.map((r) => r.zone + ' ' + r.c95).join('; '))
+const capBad = coat.p95 > 0.92
+if (capBad) console.log('FAIL: coat p95 above 0.92:', coat.p95)
+if (spreadBad || abBad.length || chromaBad.length || capBad) process.exit(1)
 console.log('ok: every zone within 0.02 L, worst', worst.toFixed(4))

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { albedoOf, hexToLinear, loikaTargets, PUPIL, RIM, type ZoneName } from './coat'
+import { albedoOf, coatTune, DEFAULT_GAMMA, hexToLinear, loikaTargets, PUPIL, RIM, type ZoneName } from './coat'
 // the part of a loaded GLTF the zone map needs (drei's useGLTF gives more)
 export type Gltf = { parser: { json: unknown; getDependency(type: string, index: number): Promise<unknown> } }
 import type { EyeStation, Studio } from './studio'
@@ -37,7 +37,7 @@ export const RING_OVER_IRIS: Record<string, number> = { thin: 0.2, between: 0.35
 export const ringOver = (eyes?: string | null) => RING_OVER_IRIS[eyes ?? ''] ?? RING_OVER_IRIS.between
 export const ringOuter = (eyes?: string | null) => IRIS_R * (1 + ringOver(eyes)) // outer radius of the ring in decal units
 const EYE_GLSL = `
-// level: 0 nothing, 1 the decal (flat colour col), 2 the coat put back over the zone map's ring where the decal's ring is thinner
+// level: 0 nothing, 1 the decal (flat colour col), 3 the ring (the decal lit with the head's light, as the muzzle is), 2 the coat put back over the zone map's ring where the decal's ring is thinner
 vec3 houseEye(vec3 base, out float hit, out vec3 col) {
   hit = 0.0;
   col = base;
@@ -52,13 +52,15 @@ vec3 houseEye(vec3 base, out float hit, out vec3 col) {
     if (r > ringOut + 0.03) continue;
     vec3 up = normalize(vec3(0.0, 1.0, 0.0) - eyeN[i] * eyeN[i].y);
     vec3 back = normalize(vec3(-1.0, 0.0, 0.0) + eyeN[i] * eyeN[i].x);
+    bool lit = false;
     col = ringCol;
-    if (r > ringOut - 0.04) col = rimCol;
+    if (r > ringOut - 0.04) { col = rimCol; lit = fillCoat > 0.5; }
     else if (r < ${PUPIL_R.toFixed(2)}) col = pupilCol;
     else if (r < ${IRIS_R.toFixed(2)}) col = irisCol;
-    if (length(t - up * 0.40 * eyeR - back * 0.30 * eyeR) < 0.17 * eyeR) col = hiCol;
+    else lit = true;
+    if (length(t - up * 0.40 * eyeR - back * 0.30 * eyeR) < 0.17 * eyeR) { col = hiCol; lit = false; }
     base = col;
-    hit = 1.0;
+    hit = lit ? 3.0 : 1.0;
   }
   return base;
 }`
@@ -79,14 +81,21 @@ function withEyes(sh: THREE.WebGLProgramParametersWithUniforms, eyes: EyeStation
 
 // The coat's spread (art desk, R5b): the painted master's coat runs L p5 0.17, median 0.29, p95 0.47, fur sheen on the lit side and deep shade in the creases. The light alone gives a narrower coat, so the coat's own pixels
 // (those the zone map paints with the coat) are put through a contrast curve about the coat's median, per channel: the median stays where the landing put it, the lit side brightens and the shade deepens in the coat's own hue (nothing white, nothing blue).
-// The same exponent for every cell: its spread is the master's ratios to its own median.
-export const COAT_GAMMA = 1.85
+// The exponent is the cell's own (coatCells.json): its spread is the master's ratios to its own median, with p95 held at or under 0.92 so a light cell does not clip.
+// The cream zones (muzzle, chest, belly, toe pads, the lit eye ring) ease their chroma from L 0.6 (fully by 0.9), so a highlight goes warm-white, not peach.
 const CURVE_GLSL = `
 if (coatGamma > 1.0) {
   float w = 1.0 - smoothstep(0.0, 0.03, distance(diffuseColor.rgb, coatAlb));
   vec3 c0 = gl_FragColor.rgb;
   vec3 c1 = pow(max(c0, vec3(1e-5)) / coatMed, vec3(coatGamma)) * coatMed;
   gl_FragColor.rgb = mix(c0, c1, w);
+}
+{
+  float dc = min(distance(diffuseColor.rgb, creamA[0]), min(distance(diffuseColor.rgb, creamA[1]), distance(diffuseColor.rgb, creamA[2])));
+  float wc = 1.0 - smoothstep(0.0, 0.03, dc);
+  float Y = dot(gl_FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+  float Lq = pow(max(Y, 0.0), 1.0 / 3.0);
+  gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(Y), smoothstep(0.6, 0.9, Lq) * 0.95 * wc);
 }`
 
 export const IRIS: Record<string, string> = { amber: '#c47a2c', brown: '#5a3a22', green: '#5f8f4a', blue: '#4f7fb0', grey: '#8a8f99', black: '#26242c' }
@@ -100,7 +109,7 @@ export const WHITE = 0.35 // the albedo of the light-measuring render: a grey th
 export const ZONE_ID = { coat: 0, cream: 1, toe: 2, ring: 3, iris: 4, pupil: 5, rim: 6, hi: 7, crest: 8 } as const
 export const idGrey = (i: number) => (i + 1) * 25
 
-export type Palette = { zones: Lin[]; eye: Record<keyof EyeCols, Lin>; crest: Lin; med?: Lin } // med: the coat hex, linear: where the contrast curve pivots (the Loika only)
+export type Palette = { zones: Lin[]; eye: Record<keyof EyeCols, Lin>; crest: Lin; med?: Lin; gamma?: number; cream?: Lin[] } // med: the coat hex, linear, where the spread curve pivots; gamma: its exponent; cream: the albedos of the cream zones (the Loika only)
 export type PaletteMode = 'coat' | 'white' | 'ids'
 
 /** The coat's colours, linear. For the Loika: the zone table of the art desk (coat = the mibi's Tint x Shade cell; cream on muzzle, chest and belly, the toe pads and the eye ring; sage crest; the Iris trait), each set to the albedo that lands its rendered median on the hex.
@@ -114,7 +123,10 @@ export function coatPalette(look: Studio['look'], mode: PaletteMode = 'coat'): P
   if (look.loika) {
     const t = loikaTargets(look)
     const a = (z: ZoneName, h: string) => albedoOf(z, h)
-    return { zones: [a('coat', t.coat), a('cream', t.cream), a('toe', t.toe), a('ring', t.ring), a('iris', t.iris)], eye: { ring: hexToLinear(t.ring), iris: hexToLinear(t.iris), pupil: hexToLinear(PUPIL), rim: hexToLinear(t.ring), hi: HI }, crest: a("crest", t.crest), med: hexToLinear(t.coat) }
+    const tn = coatTune(look, t.cell)
+    const coat = hexToLinear(t.coat).map((v, i) => Math.min(1, v * tn.gain[i])) as Lin
+    // the ring is lit with the head's light, as the muzzle is (the iris, pupil and catch light are flat); the cream albedos are what the ease of chroma recognises
+    return { zones: [coat, a('cream', t.cream), a('toe', t.toe), a('ring', t.ring), a('iris', t.iris)], eye: { ring: a('ring', t.ring), iris: hexToLinear(t.iris), pupil: hexToLinear(PUPIL), rim: a('ring', t.ring), hi: HI }, crest: a('crest', t.crest), med: hexToLinear(t.coat), gamma: tn.gamma, cream: [a('cream', t.cream), a('toe', t.toe), a('ring', t.ring)] }
   }
   const land = look.land ?? { body: '#9a8f86', marking: '#5e5560', accent: '#e2d3b4' }
   const iris = hexToLinear(IRIS[look.iris ?? ''] ?? IRIS.amber)
@@ -163,6 +175,7 @@ export function makeMaterials(opts: { eyes: EyeStation[]; zone: THREE.Texture | 
   const cols = (p: Palette): EyeCols => ({ ring: colourOf(p.eye.ring), iris: colourOf(p.eye.iris), pupil: colourOf(p.eye.pupil), rim: colourOf(p.eye.rim), hi: colourOf(p.eye.hi) })
   const clayCols = cols(pal)
   clayCols.rim.set(RIM) // the clay's eye has its thin dark rim
+  if (opts.look.loika) clayCols.ring.set(loikaTargets(opts.look).ring) // flat in the clay: the hex itself
   const ringOut = ringOuter(opts.look.eyes)
   const clay = (eyes: boolean) => {
     const m = new THREE.MeshMatcapMaterial({ matcap: mc, color: '#f2f2f2', polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
@@ -183,9 +196,10 @@ export function makeMaterials(opts: { eyes: EyeStation[]; zone: THREE.Texture | 
       m.onBeforeCompile = (sh) => {
         withEyes(sh, opts.eyes, cols(p), { ringOut, fillCoat: true, coatAlb: colourOf(p.zones[0]) })
         sh.uniforms.coatMed = { value: colourOf(p.med ?? [1, 1, 1]) }
-        sh.uniforms.coatGamma = { value: p.med ? COAT_GAMMA : 1 }
+        sh.uniforms.coatGamma = { value: p.med ? p.gamma ?? DEFAULT_GAMMA : 1 }
+        sh.uniforms.creamA = { value: (p.cream ?? [[-9, -9, -9], [-9, -9, -9], [-9, -9, -9]]).map(colourOf) }
         sh.fragmentShader = sh.fragmentShader
-          .replace('#include <common>', '#include <common>\nuniform vec3 coatMed;\nuniform float coatGamma;')
+          .replace('#include <common>', '#include <common>\nuniform vec3 coatMed;\nuniform float coatGamma;\nuniform vec3 creamA[3];')
           .replace('#include <map_fragment>', '#include <map_fragment>\nfloat eyeHit; vec3 eyeCol; diffuseColor.rgb = houseEye(diffuseColor.rgb, eyeHit, eyeCol);')
           .replace('#include <opaque_fragment>', `#include <opaque_fragment>\n${CURVE_GLSL}\nif (eyeHit > 0.5 && eyeHit < 1.5) gl_FragColor.rgb = eyeCol;`)
       }

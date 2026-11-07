@@ -9,6 +9,6 @@ export type EyeStation = { id: string; point: [number, number, number]; normal: 
 export type SocketStation = { id: string; bone: string; point: [number, number, number]; layout: string; mirror?: boolean }
 export type StudioSculpt = StudioGlb & { height: number; stations: { eyes: EyeStation[]; sockets: SocketStation[] } }
 export type StudioPart = Partial<StudioGlb> & { socket?: string; mirror?: boolean; layouts?: Record<string, FanLayout> }
-export type Studio = { sculpt: StudioSculpt | null; parts: StudioPart[]; look: { land: { body: string; marking: string; accent: string } | null; iris: string | null; eyes?: string | null; loika?: boolean; tint?: string | null; shade?: string | null } }
+export type Studio = { sculpt: StudioSculpt | null; parts: StudioPart[]; look: { land: { body: string; marking: string; accent: string } | null; iris: string | null; eyes?: string | null; loika?: boolean; tint?: string | null; shade?: string | null; tune?: { gain: number[]; gamma: number } | null } }
 
 export const studioOne = (id: string) => queryOptions({ queryKey: ['studio', id], queryFn: () => call<Studio>('GET', `/api/species/${encodeURIComponent(id)}/studio`), staleTime: 5 * 60_000 })

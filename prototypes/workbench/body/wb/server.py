@@ -376,6 +376,18 @@ class Server:
         import meshsource as MS
         return MS.mesh_problem((sp.spec or {}).get("mesh"))
 
+    def eye_rings(self, sp):
+        """The ring look of the eyes (thin / between / wide) from the trait 'eye-rings' on locus growth.exterior-eye-size-ratio, read through the look reader the cards use (expressions.looks_of). None when the file has no such locus: the studio then draws between."""
+        import expressions as X
+        try:
+            g = (sp.spec or {}).get("genome") or {}
+            if not any(e.get("locus") == "growth.exterior-eye-size-ratio" for e in g.get("loci", [])):
+                return None
+            look = str(X.looks_of(g, X.type_copies(g)).get("growth.exterior-eye-size-ratio") or "")
+        except (KeyError, ValueError, TypeError):
+            return None
+        return "thin" if "thin" in look else "wide" if "wide" in look else "between" if look else None
+
     def studio_files(self, sp):
         """What the browser draws a mesh file from: the studio GLB of the sculpt and of each part, by the sha pinned in the sidecar, served at /cas/<sha>.glb. None for a cage file or when a sidecar has no studio GLB yet."""
         import meshsource as MS
@@ -408,7 +420,7 @@ class Server:
         land = next((x for x in V1.registry()["lands"] if x["id"] == (sp.spec or {}).get("land")), None)
         iris = (((sp.spec or {}).get("face") or {}).get("eyes") or {}).get("iris", {}).get("colour")
         coat = (sp.spec or {}).get("coat") or {}                      # the mibi's own Tint and Shade, when a file carries them (the file for the kind does not yet)
-        look = dict(land={k: land[k]["hex"] for k in ("body", "marking", "accent")} if land else None, iris=iris, loika=(sp.spec or {}).get("id") == "S01", tint=coat.get("tint"), shade=coat.get("shade"), eyes=((((sp.spec or {}).get("face") or {}).get("eyes") or {}).get("rings")))  # the Eyes trait (thin / between / wide), when a file carries it
+        look = dict(land={k: land[k]["hex"] for k in ("body", "marking", "accent")} if land else None, iris=iris, loika=(sp.spec or {}).get("id") == "S01", tint=coat.get("tint"), shade=coat.get("shade"), eyes=self.eye_rings(sp))  # the Eyes trait (thin / between / wide), when a file carries it
         return dict(sculpt=body, parts=parts, look=look)
 
     def current_views(self, sp):
