@@ -1,0 +1,149 @@
+{
+ "_note": "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "states": {
+  "home-fresh": {
+   "hash": "624f60ef",
+   "png": "home-fresh.png"
+  },
+  "home-rest-goal": {
+   "hash": "d0d071ce",
+   "png": "home-rest-goal.png"
+  },
+  "home-rest-needs": {
+   "hash": "1b3009f4",
+   "png": "home-rest-needs.png"
+  },
+  "home-focus-vivarium": {
+   "hash": "701f3330",
+   "png": "home-focus-vivarium.png"
+  },
+  "home-focus-library": {
+   "hash": "f4d192f8",
+   "png": "home-focus-library.png"
+  },
+  "home-focus-pods": {
+   "hash": "7791ed33",
+   "png": "home-focus-pods.png"
+  },
+  "home-focus-incubator": {
+   "hash": "c9a82381",
+   "png": "home-focus-incubator.png"
+  },
+  "home-focus-companion": {
+   "hash": "bfc7328b",
+   "png": "home-focus-companion.png"
+  },
+  "home-focus-companion-away": {
+   "hash": "cdbe6a1d",
+   "png": "home-focus-companion-away.png"
+  },
+  "home-focus-bay": {
+   "hash": "edb3c9fc",
+   "png": "home-focus-bay.png"
+  },
+  "home-focus-companion-nosleep": {
+   "hash": "76127052",
+   "png": "home-focus-companion-nosleep.png"
+  },
+  "home-focus-settings": {
+   "hash": "664fbd0d",
+   "png": "home-focus-settings.png"
+  },
+  "home-vivarium-all-home": {
+   "hash": "52b9f3a4",
+   "png": "home-vivarium-all-home.png"
+  },
+  "home-vivarium-some-away": {
+   "hash": "6be07f27",
+   "png": "home-vivarium-some-away.png"
+  },
+  "home-window-dawn": {
+   "hash": "551c21da",
+   "png": "home-window-dawn.png"
+  },
+  "home-window-dusk": {
+   "hash": "cb4fc266",
+   "png": "home-window-dusk.png"
+  },
+  "home-window-night": {
+   "hash": "58b5c909",
+   "png": "home-window-night.png"
+  },
+  "home-window-five-of-eight": {
+   "hash": "06f9e32e",
+   "png": "home-window-five-of-eight.png"
+  },
+  "home-room-reeds": {
+   "hash": "e441a2c2",
+   "png": "home-room-reeds.png"
+  },
+  "home-event-tag": {
+   "hash": "46423f90",
+   "png": "home-event-tag.png"
+  },
+  "home-vivarium-none-home": {
+   "hash": "d9fa4822",
+   "png": "home-vivarium-none-home.png"
+  },
+  "home-incubator-empty": {
+   "hash": "5ca9de81",
+   "png": "home-incubator-empty.png"
+  },
+  "home-incubator-can": {
+   "hash": "b0aa58ab",
+   "png": "home-incubator-can.png"
+  },
+  "home-incubator-growing": {
+   "hash": "0270520a",
+   "png": "home-incubator-growing.png"
+  },
+  "home-incubator-half": {
+   "hash": "245f2059",
+   "png": "home-incubator-half.png"
+  },
+  "home-incubator-ready": {
+   "hash": "90291906",
+   "png": "home-incubator-ready.png"
+  },
+  "home-bay-waiting": {
+   "hash": "2356d834",
+   "png": "home-bay-waiting.png"
+  },
+  "home-bay-portrait": {
+   "hash": "e28886a7",
+   "png": "home-bay-portrait.png"
+  },
+  "home-companion-docked": {
+   "hash": "694a40f1",
+   "png": "home-companion-docked.png"
+  },
+  "home-companion-away": {
+   "hash": "abd22371",
+   "png": "home-companion-away.png"
+  },
+  "home-pods-empty": {
+   "hash": "5ca9de81",
+   "png": "home-pods-empty.png"
+  },
+  "home-pods-full": {
+   "hash": "6f5476f1",
+   "png": "home-pods-full.png"
+  },
+  "home-library-0-new": {
+   "hash": "8fc22f41",
+   "png": "home-library-0-new.png"
+  },
+  "home-library-3-new": {
+   "hash": "cc063640",
+   "png": "home-library-3-new.png"
+  },
+  "home-library-focused": {
+   "hash": "d91a8250",
+   "png": "home-library-focused.png"
+  },
+  "home-full-bud": {
+   "hash": "e6163c91",
+   "png": "home-full-bud.png"
+  }
+ }
+}

@@ -1,0 +1,135 @@
+// A v10 save that passes load()'s guard never throws: load() fills every field a new world has and the save lacks, from
+// the new world's own values (worldFields), and a save that still cannot draw its screen opens read-only and is never
+// written. The whole page script is read out of index.html and run in a sandbox with the browser stubbed, as in
+// freeze.test.mjs, so the boot runs as the page runs it.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { makePage, PAGE } from "./page-harness.mjs";
+import { migrate8 } from "../src/regions.mjs";
+
+const SCHEMA_V8 = readFileSync(new URL("../../station/tests/fixtures/save-v8-schema1.json", import.meta.url), "utf8");   // the Station's schema fixture: a flat v8 save
+const FLAT = Object.assign(JSON.parse(SCHEMA_V8), { gen: 5 }), flat = () => JSON.parse(JSON.stringify(FLAT));   // its world as generator 5: since the release's reset every world is
+const real = o => JSON.stringify(migrate8({ ...o, v: 8 }, { now: 1793664000000 }));   // the same save as the v10 realm the page plays (a flat v8 save is reset, not read: reset.test.mjs)
+const SCHEMA = real(FLAT);
+
+// The page in a sandbox: every DOM and canvas call lands on an inert stub, except that an element keeps what is set on it
+// (els[id].hidden); localStorage is `store`, its writes counted; requestAnimationFrame calls are counted.
+const page = (store = {}) => makePage({ store, console: "collect", els: true, raf: "count" });
+// A saved new world (seed 7), as the page writes it.
+function newSave() { const p = page(); p.run("newWorld(7)"); return p.store[p.KEY]; }
+const plain = x => JSON.parse(JSON.stringify(x));
+
+test("the Station's schema fixture loads through load() and drawSetup draws once with no throw", () => {
+  const p = page({ "mb-save-v8": SCHEMA });
+  assert.match(p.KEY, /^mb-save-v8@c[0-9a-z]{12}$/, "the save moved under the Companion's own key"); assert.equal(p.store["mb-save-v8"], undefined, "and the shared key is gone");
+  assert.equal(p.run("RT.readOnly"), undefined, "the fixture is not read-only");
+  assert.equal(p.run("S.seed"), 123456, "the fixture's world was adopted");
+  assert.equal(p.run("S.phase"), "setup");
+  assert.doesNotThrow(() => p.run("drawSetup(0)"));
+  assert.deepEqual(plain(p.run("S.ui")), plain(p.run("worldFields(1, 1).ui")), "ui is the new world's");
+  assert.deepEqual(p.errors, [], "nothing was logged");
+});
+
+test("a full new-world save is byte-unchanged by the fill", () => {
+  const raw = newSave(), p = page({ "mb-save-v8": raw });
+  assert.equal(p.store[p.KEY], raw, "the boot wrote it back unchanged");
+  p.store[p.KEY] = raw; assert.equal(p.run("load()"), true);
+  assert.equal(p.run("JSON.stringify(serialize(S))"), raw);
+});
+
+test("a save missing several fields gains exactly the new world's values for them, and nothing else changes", () => {
+  const raw = newSave(), o = JSON.parse(raw);
+  const gone = ["ui", "phase", "revealed", "visited", "signs", "pins", "cells", "veil", "firsts", "opened", "log", "hist", "exp", "report", "nextId", "totalActions", "lastStorm", "deepRead", "probeSeen"];
+  o.ui.sel = 1; o.turn = 3; o.expN = 4;   // present fields that differ from a new world's
+  const kept = Object.assign({}, o); for (const k of gone) delete o[k];
+  const p = page({ "mb-save-v8": JSON.stringify(o) });
+  assert.equal(p.run("RT.readOnly"), undefined);
+  const S = plain(p.run("S")), nw = plain(p.run("worldFields(7, 2)"));
+  for (const k of gone) assert.deepEqual(S[k], nw[k], k + " is the new world's");
+  for (const k of Object.keys(kept)) if (!gone.includes(k)) assert.deepEqual(S[k], kept[k], k + " is kept as saved");
+  assert.equal(S.revealed.length, p.run("MW * MH")); assert.ok(S.revealed.every(v => v === 0) && S.visited.every(v => v === 0));
+  assert.doesNotThrow(() => p.run("drawSetup(0)"));
+});
+
+test("a v10 save with a region of a generator this page does not know, and a v11 save, open read-only and are never written", () => {
+  for (const mod of [o => { o.regions[0].gen = 99; }, o => { o.v = 11; }]) {
+    const o = JSON.parse(newSave()); mod(o); const raw = JSON.stringify(o), p = page({ "mb-save-v8": raw });
+    assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("RT.broken"), undefined);
+    assert.equal(p.store[p.KEY] ?? p.store["mb-save-v8"], raw, "kept as stored");
+    assert.equal(p.writes.filter(k => !k.startsWith("mb-companion")).length, 0, "nothing written but the Companion's own identity");
+  }
+});
+
+test("a save forced to throw (ui present but null, kept as it is) opens read-only and is never written back", () => {
+  const o = flat(); o.ui = null; const raw = real(o);
+  const p = page({ "mb-save-v8": raw });
+  assert.equal(p.run("RT.readOnly"), true);
+  assert.equal(p.run("S.ui"), null, "the wrong-typed field is not fixed");
+  assert.equal(p.errors.length, 1, "the failed draw was logged once");
+  assert.doesNotThrow(() => p.run("render(0)"), "the read-only screen draws");
+  for (const k of ["confirm", "back", "down", "up", "left", "right"]) p.run("act(" + JSON.stringify(k) + ")");
+  p.run("save()"); p.pass(5000);
+  assert.equal(p.store[p.KEY], raw, "the save is byte-unchanged");
+  assert.deepEqual(p.writes.filter(k => k === p.KEY), [], "nothing wrote the save");
+});
+
+// The line drawn on the read-only screen: every text() call of one render.
+function drawnText(p) { p.run("var __said = []; { const t0 = text; text = (s, ...a) => { __said.push(s); return t0(s, ...a); }; render(0); text = t0; }"); return plain(p.run("__said")); }
+const BROKEN_LINE = "This save can’t be shown · kept untouched", NEWER_LINE = "Newer save · untouched · reload plays it", PAGE_LINE = "Reset game erases this save and starts fresh";
+
+test("nextId: missing, it is 1 + the highest r/p/b/n pod id held anywhere in the save; a valid one is kept, an invalid one is counted", () => {
+  const p = page(), o = flat();
+  o.pods = [{ id: "b7", k: "4", x: -1, y: -1, sp: 0, h: 1, bur: 1, g: "meadow", how: "ground" }];
+  o.exp = { cargo: { pods: [{ id: "n12", sp: 1 }] } }; delete o.nextId;
+  const at = x => { p.store[p.KEY] = real(x); assert.equal(p.run("load()"), true); return p.run("S.nextId"); };
+  assert.equal(at(o), 13);
+  assert.equal(at(Object.assign({}, o, { nextId: 3 })), 3, "a valid nextId is kept, even lower");
+  for (const bad of [0, -2, 1.5, "9", null]) assert.equal(at(Object.assign({}, o, { nextId: bad })), 13, "nextId " + JSON.stringify(bad) + " is counted");
+  assert.equal(at(Object.assign({}, o, { pods: [], exp: null, bay: [] })), 1, "no pod ids: 1");
+});
+
+test("pods: missing, the world's life is regenerated, minus any id the save already holds; a present list, even empty, is kept", () => {
+  const p = page(), o = flat(); delete o.pods;
+  o.bay[0].pods.push({ id: "w0p0", sp: 0, g: "meadow", how: "ground", gs: 5 });   // a world pod already taken
+  p.store[p.KEY] = real(o); assert.equal(p.run("load()"), true);
+  const life = plain(p.run("genLife(123456).pods")), got = plain(p.run("S.pods"));
+  assert.ok(life.some(q => q.id === "w0p0"));
+  assert.deepEqual(got, life.filter(q => q.id !== "w0p0"));
+  assert.equal(p.run("S.nextId"), 1, "generated ids are not r/p/b/n: nextId 1");
+  p.store[p.KEY] = SCHEMA; assert.equal(p.run("load()"), true);
+  assert.deepEqual(plain(p.run("S.pods")), [], "the fixture's empty pods is kept");
+});
+
+test("a loaded save whose break throws (endExpedition) opens read-only, is byte-identical, and the frames still run", () => {
+  const o = flat(); o.exp = { shield: 0, n: 1 }; const raw = real(o);
+  const p = page({ "mb-save-v8": raw });
+  assert.equal(p.run("RT.readOnly"), true);
+  assert.equal(p.errors.length, 1, "the throw was logged once"); assert.match(String(p.errors[0].stack), /at endExpedition/, "it was the break that threw");
+  p.pass(5000); p.run("save()");
+  assert.equal(p.store[p.KEY], raw); assert.deepEqual(p.writes.filter(k => k === p.KEY), []);
+  assert.ok(p.raf.n >= 1, "requestAnimationFrame was called");
+});
+
+test("the read-only line: a broken save says it is kept untouched, with the page line beside Reset game; a newer page's save keeps its own line", () => {
+  assert.match(PAGE, new RegExp('<button class="btn" id="resetGame" type="button">Reset game</button></div>\\s*<p class="obs-note" id="resetNote" hidden>' + PAGE_LINE + "</p>"));
+  const o = flat(); o.ui = null;
+  const b = page({ "mb-save-v8": real(o) });
+  assert.equal(b.run("RT.readOnly"), true);
+  const said = drawnText(b); assert.ok(said.includes(BROKEN_LINE)); assert.ok(!said.includes(NEWER_LINE));
+  assert.equal(b.els.resetNote.hidden, false, "the page line shows");
+  const n = page({ "mb-save-v8": real(Object.assign(flat(), { gen: 99 })) });
+  assert.equal(n.run("RT.readOnly"), true); assert.equal(n.run("S"), null);
+  const saidN = drawnText(n); assert.ok(saidN.includes(NEWER_LINE)); assert.ok(!saidN.includes(BROKEN_LINE));
+  assert.notEqual(n.els.resetNote && n.els.resetNote.hidden, false, "no page line for a newer page's save");
+  const ok = page({ "mb-save-v8": SCHEMA }); assert.notEqual(ok.els.resetNote && ok.els.resetNote.hidden, false, "none for a save that draws");
+});
+
+test("pods: a world pod the save already holds, as itself (w1p0 in the cargo) or in the Station's crate form (c9:w0p1 in st.pods), is not regenerated", () => {
+  const p = page(), o = flat(); delete o.pods;
+  o.exp = { cargo: { pods: [{ id: "w1p0", sp: 0 }] } }; o.st.pods = [{ id: "c9:w0p1", sp: 1 }];
+  p.store[p.KEY] = real(o); assert.equal(p.run("load()"), true);
+  const life = plain(p.run("genLife(123456).pods")), got = plain(p.run("S.pods"));
+  assert.ok(life.some(q => q.id === "w1p0") && life.some(q => q.id === "w0p1"));
+  assert.deepEqual(got, life.filter(q => q.id !== "w1p0" && q.id !== "w0p1"));
+});

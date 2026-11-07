@@ -1,0 +1,326 @@
+{
+ "species": "S09",
+ "painting": {
+  "view": "portrait",
+  "size": [
+   600,
+   620
+  ],
+  "margin": 0.06,
+  "genome": "the frame's typeSpecimen"
+ },
+ "bodyBox": [
+  94,
+  37,
+  412,
+  546
+ ],
+ "note": "boxes are [x, y, w, h] in pixels of the painting; `whole` marks a trait with no part of its own (its box is null: use bodyBox)",
+ "parts": {
+  "region-0": [
+   203,
+   305,
+   164,
+   153
+  ],
+  "region-1": [
+   292,
+   292,
+   128,
+   119
+  ],
+  "neck": [
+   165,
+   199,
+   156,
+   181
+  ],
+  "head": [
+   119,
+   112,
+   158,
+   168
+  ],
+  "beak": [
+   94,
+   202,
+   89,
+   85
+  ],
+  "eye": [
+   116,
+   167,
+   89,
+   60
+  ],
+  "crown": [
+   138,
+   37,
+   162,
+   125
+  ],
+  "leg-0": [
+   254,
+   362,
+   159,
+   221
+  ],
+  "flap": [
+   239,
+   304,
+   213,
+   90
+  ],
+  "tail": [
+   368,
+   251,
+   138,
+   98
+  ]
+ },
+ "traits": {
+  "colour": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "fluff": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "sheen": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "feathers": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "fur-reach": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "second-colour": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "head": {
+   "chapter": "face",
+   "parts": [
+    "head"
+   ],
+   "box": [
+    119,
+    112,
+    158,
+    168
+   ],
+   "whole": false
+  },
+  "beak": {
+   "chapter": "face",
+   "parts": [
+    "head",
+    "beak"
+   ],
+   "box": [
+    94,
+    112,
+    183,
+    175
+   ],
+   "whole": false
+  },
+  "feather-crest": {
+   "chapter": "face",
+   "parts": [
+    "head",
+    "crown"
+   ],
+   "box": [
+    119,
+    37,
+    181,
+    243
+   ],
+   "whole": false
+  },
+  "crown": {
+   "chapter": "face",
+   "parts": [
+    "head",
+    "crown"
+   ],
+   "box": [
+    119,
+    37,
+    181,
+    243
+   ],
+   "whole": false
+  },
+  "eyes": {
+   "chapter": "face",
+   "parts": [
+    "head",
+    "eye"
+   ],
+   "box": [
+    116,
+    112,
+    161,
+    168
+   ],
+   "whole": false
+  },
+  "waist": {
+   "chapter": "shape",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "back-line": {
+   "chapter": "shape",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "hind-body": {
+   "chapter": "shape",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "body": {
+   "chapter": "shape",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "build": {
+   "chapter": "shape",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "tail-curl": {
+   "chapter": "legs-tail",
+   "parts": [
+    "tail"
+   ],
+   "box": [
+    368,
+    251,
+    138,
+    98
+   ],
+   "whole": false
+  },
+  "tail": {
+   "chapter": "legs-tail",
+   "parts": [
+    "tail"
+   ],
+   "box": [
+    368,
+    251,
+    138,
+    98
+   ],
+   "whole": false
+  },
+  "flap": {
+   "chapter": "movement",
+   "parts": [
+    "flap"
+   ],
+   "box": [
+    239,
+    304,
+    213,
+    90
+   ],
+   "whole": false
+  },
+  "turning": {
+   "chapter": "movement",
+   "parts": [
+    "leg-0"
+   ],
+   "box": [
+    254,
+    362,
+    159,
+    221
+   ],
+   "whole": false
+  },
+  "pace": {
+   "chapter": "movement",
+   "parts": [
+    "leg-0"
+   ],
+   "box": [
+    254,
+    362,
+    159,
+    221
+   ],
+   "whole": false
+  },
+  "stride": {
+   "chapter": "movement",
+   "parts": [
+    "leg-0"
+   ],
+   "box": [
+    254,
+    362,
+    159,
+    221
+   ],
+   "whole": false
+  },
+  "strength": {
+   "chapter": "stamina",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "thrift": {
+   "chapter": "stamina",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "reserve": {
+   "chapter": "stamina",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "curiosity": {
+   "chapter": "character",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "nerve": {
+   "chapter": "character",
+   "parts": [],
+   "box": null,
+   "whole": true
+  }
+ }
+}

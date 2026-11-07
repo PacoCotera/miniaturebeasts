@@ -1,0 +1,16 @@
+.title { margin-top: var(--s-3); }
+.title b { font-size: var(--t-20); font-weight: 600; }
+.kind { margin-left: 10px; color: var(--text-3); font-size: var(--t-14); overflow-wrap: anywhere; }
+.help { margin: 0; color: var(--text-2); font-size: var(--t-14); }
+.field { display: grid; grid-template-columns: auto 1fr; align-items: baseline; column-gap: var(--s-3); padding: 7px 0 9px; }
+.field label { color: var(--text-2); }
+.v { font-variant-numeric: tabular-nums; text-align: right; }
+.v code { font-family: var(--mono); font-size: var(--t-14); }
+.quiet { margin: 0; font-size: var(--t-14); color: var(--text-3); font-variant-numeric: tabular-nums; }
+.h { margin: var(--s-4) 0 0; font-size: var(--t-14); font-weight: 500; color: var(--text-3); }
+.dot { display: inline-block; width: 9px; height: 9px; margin-right: 8px; border-radius: 50%; background: var(--pass-dot); }
+.dot[data-kind=changed] { background: var(--attn-dot); }
+.dot[data-kind=missing] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
+.dot[data-kind=stale] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
+.draft { display: flex; align-items: center; gap: 8px; margin: var(--s-3) 0 0; font-size: var(--t-14); color: var(--text-3); }
+.draft i { width: 9px; height: 9px; border-radius: 50%; background: var(--line-2); }

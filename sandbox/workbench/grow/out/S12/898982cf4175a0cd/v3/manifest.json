@@ -1,0 +1,394 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 3,
+ "controlVariant": "blurred",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "70bc72fd-8c4f-440a-8324-17fbc5f9caba",
+     "status": "ok",
+     "seconds": 11.5,
+     "checks": {
+      "silhouetteIoU": 0.948,
+      "silhouetteIoUInPlace": 0.961,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.994
+       },
+       "antenna": {
+        "span": 0.984,
+        "coverage": 0.987
+       },
+       "leg-0": {
+        "span": 0.665,
+        "coverage": 0.997
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.943,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.262,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.24,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.469,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.756,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#da6a5d",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.97,
+        "median": "#e88566",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.94,
+        "median": "#fdd4c0",
+        "nearest": "#ffd7c5",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.875,
+        "median": "#ffd7c3",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.003,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.911,
+      "passed": true
+     },
+     "responseId": "lRLHarDREKvUjMcPvOS4oAg",
+     "checksAsRun": {
+      "silhouetteIoU": 0.948,
+      "silhouetteIoUInPlace": 0.961,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 0.994,
+       "antenna": 0.987,
+       "leg-0": 0.997,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 1.0
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.262,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.24,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.469,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.756,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#da6a5d",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.97,
+        "median": "#e88566",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.94,
+        "median": "#fdd4c0",
+        "nearest": "#ffd7c5",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.875,
+        "median": "#ffd7c3",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.003,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.911,
+      "passed": true
+     }
+    }
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:19:17Z"
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "1c0cb381-2c32-448f-9dca-7910d8bb513c",
+     "status": "ok",
+     "seconds": 12.8,
+     "checks": {
+      "silhouetteIoU": 0.893,
+      "silhouetteIoUInPlace": 0.891,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.998
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-1": {
+        "span": 0.984,
+        "coverage": 1.0
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 1.0,
+        "coverage": 0.999
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.199,
+        "painted": 0.242,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.197,
+        "painted": 0.234,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.549,
+        "painted": 0.589,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.891,
+        "median": "#e98268",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.905,
+        "median": "#e7856a",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body#2@region-0": {
+        "agreement": 1.0,
+        "median": "#d15b75",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body#2@head": {
+        "agreement": 1.0,
+        "median": "#bc4e6a",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.88,
+        "median": "#f6decf",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.003,
+      "missing": 0.0,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.9,
+      "passed": true
+     },
+     "responseId": "qBLHao-OJYOS39IPgd636Qc",
+     "checksAsRun": {
+      "silhouetteIoU": 0.893,
+      "silhouetteIoUInPlace": 0.891,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 0.998,
+       "antenna": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 0.999
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.199,
+        "painted": 0.242,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.197,
+        "painted": 0.234,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.549,
+        "painted": 0.589,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.891,
+        "median": "#e98268",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.905,
+        "median": "#e7856a",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body#2@region-0": {
+        "agreement": 1.0,
+        "median": "#d15b75",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body#2@head": {
+        "agreement": 1.0,
+        "median": "#bc4e6a",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.88,
+        "median": "#f6decf",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.003,
+      "missing": 0.0,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.9,
+      "passed": true
+     }
+    }
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:19:31Z"
+  }
+ },
+ "species": "S12",
+ "name": "Peplos",
+ "level": "individual",
+ "genomeDigest": "S12-70f7ef63",
+ "genomeSha256": "898982cf4175a0cd546bd532a65072fbf2de94622a676681431be02b484b2b9c",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Coat: colour coral and raspberry; translucency between; flap markings bars; second colour peach. Shape: hind body between. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Peplos)",
+  "name": "species/S12/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T03:48:36Z",
+ "outputs": {
+  "station-portrait-600x620.png": "fda1f88a7e13ef6cd7046911960626f6fe441d3474d3d5fb985f3ce6f96557c5",
+  "station-portrait-300x310.png": "ef26577095aa3071dd77696d9cce967407cc995e821919269e29f897633afcb1",
+  "station-side-600x620.png": "38b2ef01f2f2a21107026603db7b22e634edb9624a106534e1c39dd34a1f2443",
+  "station-side-300x310.png": "4cb99d12a6c5c9eb4b3cd46cb3756f52527c967e9d16a6b666618997b70e7316",
+  "companion-280x300.png": "1b4e6f85a010ebef90c7b6dfa414f7edfc9789a1b8b8aa320c0a2a5dfec8f7d2",
+  "token-48.png": "189560e4314ae13be2c5a4baccb2d10c0152969cc878faf38b8ab7544f152402"
+ },
+ "calls": 2,
+ "seconds": 24.3,
+ "finishedAt": "2026-10-08T03:49:26Z",
+ "rechecked": "2026-10-08T04:19:31Z",
+ "checksVersion": "mb-grow-checks/3"
+}

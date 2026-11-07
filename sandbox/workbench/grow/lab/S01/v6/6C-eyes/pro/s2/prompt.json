@@ -1,0 +1,155 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "6C-eyes",
+  "name": "Eyes as the heart of the face",
+  "change": "Step 2, eye words only: the eye is drawn as Pip's is, with a lid line and a second glint, at its drawn size.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "Step 2, eye words only: the eye is drawn as Pip's is, with a lid line and a second glint, at its drawn size.",
+ "step1": {
+  "shared": "v5's drawing"
+ },
+ "step2": {
+  "callId": "52a273a5-36dd-4eea-a9c4-f38293f77b47",
+  "status": "ok",
+  "seconds": 15.9,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.774,
+   "silhouetteIoUInPlace": 0.569,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.986
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.996
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.996
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.963
+    },
+    "crown": {
+     "span": 0.698,
+     "coverage": 0.308
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.679
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.978
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.775,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.53,
+     "ok": false
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.337,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.484,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.69,
+     "ok": false
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.363,
+     "ok": false
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.036,
+     "median": "#2d2e3a",
+     "nearest": "#273036",
+     "ok": false
+    },
+    "body@head": {
+     "agreement": 0.334,
+     "median": "#4c5542",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@region-0": {
+     "agreement": 0.041,
+     "median": "#272730",
+     "nearest": "#273036",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.248,
+     "median": "#634e4b",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "second@leg-1": {
+     "agreement": 0.021,
+     "median": "#2a2f3d",
+     "nearest": "#273036",
+     "ok": false
+    },
+    "leaf@crown": {
+     "agreement": 0.815,
+     "median": "#7ca149",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.497,
+     "median": "#a57a5a",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.367,
+     "median": "#6b534b",
+     "nearest": "#465459",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "the proportions are off: the region-0 is larger than drawn (0.77 of the body against 0.56), the head is larger than drawn (0.53 of the body against 0.35), the leg-0 is larger than drawn (0.69 of the body against 0.53), the leg-1 is larger than drawn (0.36 of the body against 0.24)",
+    "a pigment slot is painted in another slot's colour: the body slot on the region-0 (painted #2d2e3a, the colour of pupil), the second slot on the region-0 (painted #272730, the colour of pupil), the second slot on the leg-0 (painted #634e4b, the colour of body), the second slot on the leg-1 (painted #2a2f3d, the colour of pupil), the belly slot on the muzzle (painted #6b534b, the colour of body)"
+   ],
+   "outside": 0.003,
+   "missing": 0.016,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.24,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

@@ -1,0 +1,36 @@
+{
+ "stationCallSeconds": 9.3,
+ "geminiCalls": 12,
+ "rdCalls": 3,
+ "tokenPainted": true,
+ "cutoffs": {
+  "A. everything at size": {
+   "calls": 3,
+   "note": "Station main and side painted, token painted at size (Companion derived here: painting at size needs a 280 px model)",
+   "callsPerMibi": 9,
+   "callsPerMibiWithRetries": 10.8,
+   "callsPerKitYear40": 432.0
+  },
+  "B. down to the Companion": {
+   "calls": 2,
+   "note": "Station main and side painted; Companion derived; token generic",
+   "callsPerMibi": 6,
+   "callsPerMibiWithRetries": 7.2,
+   "callsPerKitYear40": 288.0
+  },
+  "C. Station main only": {
+   "calls": 1,
+   "note": "Station main painted; Companion derived; side plain; token generic",
+   "callsPerMibi": 3,
+   "callsPerMibiWithRetries": 3.6,
+   "callsPerKitYear40": 144.0
+  },
+  "D. adult only": {
+   "calls": 0.333,
+   "note": "one call a mibi",
+   "callsPerMibi": 1.0,
+   "callsPerMibiWithRetries": 1.2,
+   "callsPerKitYear40": 48.0
+  }
+ }
+}

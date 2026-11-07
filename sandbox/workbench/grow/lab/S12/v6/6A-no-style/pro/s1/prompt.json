@@ -1,0 +1,165 @@
+{
+ "species": "S12",
+ "variant": {
+  "id": "6A-no-style",
+  "name": "No style statement",
+  "change": "Step 2, the style paragraph removed: measures what the explicit style statement buys over v5's adjectives.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Step 2, the style paragraph removed: measures what the explicit style statement buys over v5's adjectives.",
+ "step1": {
+  "shared": "v5's drawing"
+ },
+ "step2": {
+  "callId": "999f3f46-692c-41c8-94a1-bd28ac01b552",
+  "status": "ok",
+  "seconds": 18.3,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.601,
+   "silhouetteIoUInPlace": 0.658,
+   "parts": {
+    "region-0": {
+     "span": 0.95,
+     "coverage": 0.948
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.99
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 0.991
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.997
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "antenna": {
+     "span": 1.0,
+     "coverage": 0.413
+    },
+    "leg-0": {
+     "span": 0.678,
+     "coverage": 0.797
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.97
+    },
+    "leg-2": {
+     "span": 1.0,
+     "coverage": 0.791
+    },
+    "flap": {
+     "span": 0.967,
+     "coverage": 0.665
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.274,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.211,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.297,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.528,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.262,
+     "ok": true
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.287,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.533,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.883,
+     "median": "#c4882e",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.615,
+     "median": "#cda762",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.892,
+     "median": "#cc8d23",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.142,
+     "median": "#d8c799",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.096,
+     "median": "#cbae7a",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-2": {
+     "agreement": 0.021,
+     "median": "#e3dfd7",
+     "nearest": "#f1eddc",
+     "ok": false
+    },
+    "second@flap": {
+     "agreement": 0.631,
+     "median": "#eadcb0",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the second slot on the leg-2 (painted #e3dfd7, the colour of eyeRim)"
+   ],
+   "outside": 0.051,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.644,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

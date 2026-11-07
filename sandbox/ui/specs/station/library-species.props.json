@@ -1,0 +1,45 @@
+{
+ "$comment": "The props of the Library's Level 2 (library.json l2, the screen library.species): what views/library-props.mjs speciesBuild gives the face, beside the frame's. Props name what, never where: picture ids, names, flags and the focus targets by id; the only positions are the generator's facts (library-sheet.mjs sheetFacts) in sheet coordinates (the open plates, the glint centres) or page coordinates (the lit chapter's found-look discs), to which the face adds the sheet's or the page's origin from library.json. No colour, no spec rect.",
+ "$defs": {
+  "rect": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "integer" } },
+  "point": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "integer" } },
+  "plate": { "type": "object", "required": ["id", "rect"], "additionalProperties": false, "properties": { "id": { "type": "string", "pattern": "^chapter\\.[a-z-]+$" }, "rect": { "$ref": "rect" } } },
+  "disc": { "type": "object", "required": ["id", "rect"], "additionalProperties": false, "properties": { "id": { "type": "string", "pattern": "^look\\.[a-z-]+\\.[a-z ,-]+$" }, "rect": { "$ref": "rect" } } },
+  "piece": { "type": "object", "required": ["trait", "disc", "word", "carried"], "additionalProperties": false, "properties": {
+   "trait": { "type": "string", "pattern": "^[a-z-]+$" }, "disc": { "type": "string", "pattern": "^look-disc-open-16$|^look-disc-S[0-9]{2}-[a-z-]+-[a-z ,-]+-16$" }, "word": { "type": "string" }, "carried": { "type": "boolean" } } },
+  "face": { "type": "object", "required": ["id", "picture", "name", "released"], "additionalProperties": false, "properties": {
+   "id": { "type": "integer" }, "picture": { "type": "string", "pattern": "^face:[0-9]+:64(:faded)?$" }, "name": { "type": "string" }, "released": { "type": "boolean" } } },
+  "family": { "type": "object", "required": ["id", "picture", "name", "where"], "additionalProperties": false, "properties": {
+   "id": { "type": "integer" }, "picture": { "type": "string", "pattern": "^face:[0-9]+:56(:faded)?$" }, "name": { "type": "string" }, "where": { "enum": ["home", "trip", "wild"] } } },
+  "target": { "type": "object", "required": ["id", "group", "enabled"], "additionalProperties": false, "properties": {
+   "id": { "type": "string", "pattern": "^chapter\\.[a-z-]+$|^look\\.[a-z-]+\\.[a-z ,-]+$|^wish$|^face$|^family\\.[0-9]+$" }, "group": { "enum": ["chapter", "shelf", "look"] }, "enabled": { "const": true } } }
+ },
+ "type": "object",
+ "required": ["state", "regions", "focus"],
+ "additionalProperties": false,
+ "properties": {
+  "state": { "enum": ["sheet", "lit"] },
+  "regions": {
+   "type": "object",
+   "required": ["stage", "sheet", "shelf", "page"],
+   "additionalProperties": false,
+   "properties": {
+    "stage": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "type": "string" } } } },
+    "sheet": { "type": "object", "required": ["picture", "met", "glints", "plates"], "additionalProperties": false, "properties": {
+     "picture": { "type": "string", "pattern": "^library-(sheet|quiet)-S[0-9]{2}-[0-9a-f]{8}(-lit-[a-z-]+)?$" }, "met": { "type": "boolean" },
+     "glints": { "type": "array", "maxItems": 8, "items": { "$ref": "point" } }, "plates": { "type": "array", "maxItems": 8, "items": { "$ref": "plate" } } } },
+    "shelf": { "type": "object", "required": ["shown", "wish", "face", "sittings", "families"], "additionalProperties": false, "properties": {
+     "shown": { "type": "boolean" }, "wish": { "type": "array", "maxItems": 4, "items": { "$ref": "piece" } }, "face": { "$ref": "face", "nullable": true },
+     "sittings": { "type": "integer" }, "families": { "type": "array", "maxItems": 8, "items": { "$ref": "family" } } } },
+    "page": { "type": "object", "required": ["picture", "chapter", "discs"], "additionalProperties": false, "properties": {
+     "picture": { "type": "string", "pattern": "^$|^library-page-S[0-9]{2}-[a-z-]+-[0-9a-f]{8}$" }, "chapter": { "type": "string" }, "discs": { "type": "array", "items": { "$ref": "disc" } } } }
+   }
+  },
+  "focus": {
+   "type": "object",
+   "required": ["cur", "targets"],
+   "additionalProperties": false,
+   "properties": { "cur": { "type": "string" }, "targets": { "type": "array", "maxItems": 64, "items": { "$ref": "target" } } }
+  }
+ }
+}

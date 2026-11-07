@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#172e25">
+<title>Miniature Beasts</title>
+<meta name="description" content="A creature game you can hold: find pods in the fog on the Companion, read them at the Station, and breed mibis no one has seen, with genes that really work and odds that never lie. Open source, made in public.">
+<link rel="canonical" href="https://miniaturebeasts.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23172e25'/%3E%3Cpath d='M16 6c-6 0-9 8-9 13a9 9 0 0 0 18 0c0-5-3-13-9-13z' fill='%23dcdf9b'/%3E%3Ccircle cx='12.5' cy='18' r='1.8' fill='%23ee9b58'/%3E%3Ccircle cx='19' cy='22' r='1.8' fill='%23ee9b58'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Miniature Beasts">
+<meta property="og:url" content="https://miniaturebeasts.com/">
+<meta property="og:title" content="Miniature Beasts: one for the field, one for home">
+<meta property="og:description" content="Find pods in the fog. Read them at home. Breed mibis no one has seen. A creature game you can hold, open source and made in public.">
+<meta property="og:image" content="https://miniaturebeasts.com/assets/social-preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Concept picture of the loop: the Companion held in a foggy meadow, seated in the Caddy on a table by the garden door, and the Station at home in lamp light.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="image" href="assets/hero-kit-v2.webp" fetchpriority="high">
+<style>
+:root {
+  color-scheme: light;
+  --forest: #172e25;
+  --paper: #f5f2e9;
+  --sage: #dce3c5;
+  --panel: #e6e8dd;
+  --ink: #222e26;
+  --muted: #56664f;
+  --on-dark: #e5eadd;
+  --lime: #dcdf9b;
+  --orange: #ee9b58;
+  --line: #c9cec2;
+
+  /* The four type sizes. No others. */
+  --fs-display: clamp(2.75rem, 5.6vw, 5rem);
+  --fs-section: clamp(2rem, 3.6vw, 3.25rem);
+  --fs-body: 1.0625rem;
+  --fs-caption: 0.8125rem;
+
+  --content: 1200px;
+  --gutter: 32px;
+  --pad: 120px;
+  --radius: 14px;
+  --p: 150px; /* family-tree portrait */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  scroll-behavior: smooth;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-size: var(--fs-body); line-height: 1.5; overflow-x: clip; }
+h1, h2, p, figure, ul, ol, dl, dd { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+img { display: block; width: 100%; height: auto; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+
+h1 { font-size: var(--fs-display); font-weight: 800; line-height: .96; letter-spacing: -.03em; }
+h1 span { color: var(--lime); }
+h2, .wordmark-lg { font-size: var(--fs-section); font-weight: 800; line-height: 1.02; letter-spacing: -.02em; }
+.eyebrow, .label { font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; line-height: 1.5; }
+.eyebrow { margin-bottom: 12px; color: var(--muted); }
+.lede { margin-top: 16px; max-width: 30em; text-wrap: balance; }
+h2 { text-wrap: balance; }
+figcaption, .caption { font-size: var(--fs-caption); line-height: 1.5; color: var(--muted); }
+figcaption { padding-top: 10px; }
+figcaption .label, .caption .label { margin-right: .4em; color: var(--ink); }
+
+.wrap { max-width: calc(var(--content) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
+.section { padding: var(--pad) 0; }
+.head { text-align: center; display: grid; justify-items: center; }
+.head .lede { margin-inline: auto; }
+.shot img, .grid img { border-radius: var(--radius); }
+
+/* An honest tag on a picture */
+.tagged { position: relative; }
+.tag { position: absolute; left: 12px; top: 12px; z-index: 1; background: rgb(245 242 233 / .94); color: var(--ink);
+  font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; line-height: 1; padding: 6px 9px; border-radius: 999px; }
+
+/* Buttons and nav */
+.button { display: inline-block; font: inherit; font-weight: 700; line-height: 1.2; padding: 14px 22px; border-radius: 999px; text-decoration: none; }
+.button.primary { background: var(--orange); color: var(--forest); }
+.button.ghost { box-shadow: inset 0 0 0 1.5px var(--on-dark); color: var(--on-dark); padding: 10px 18px; }
+.button:hover { filter: brightness(1.06); }
+.link { font-weight: 700; }
+.skip { position: absolute; left: 16px; top: -100px; z-index: 5; background: var(--paper); color: var(--ink); padding: 12px; font-weight: 700; }
+.skip:focus { top: 16px; }
+
+/* Hero */
+.top { background: var(--forest); color: var(--on-dark); }
+.masthead { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 24px; padding-bottom: 24px; }
+.wordmark { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; text-decoration: none; }
+.masthead nav { display: flex; align-items: center; gap: 28px; font-weight: 700; }
+.masthead nav a:not(.button) { text-decoration: none; }
+.masthead nav a:not(.button):hover { text-decoration: underline; }
+.hero { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px 48px; align-items: end; padding-top: 56px; padding-bottom: 48px; }
+.hero .eyebrow { color: var(--lime); }
+.hero .lede { margin-top: 0; font-size: 1.25rem; line-height: 1.4; }
+.hero .button { margin-top: 24px; }
+.hero-art { position: relative; margin-bottom: -160px; }
+.hero-art img { border-radius: var(--radius); box-shadow: 0 30px 60px -30px rgb(0 0 0 / .55); }
+.hero-art figcaption { color: var(--muted); }
+.after-hero { padding-top: 200px; }
+
+/* How it plays: the loop as pictures */
+.how { background: var(--sage); }
+.loop { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; margin-top: 56px; counter-reset: step; }
+.loop li { counter-increment: step; }
+.loop img { border-radius: var(--radius); aspect-ratio: 4 / 3; object-fit: cover; }
+.loop .step { display: flex; align-items: baseline; gap: 10px; margin-top: 14px; }
+.loop .step::before { content: counter(step); font-weight: 800; color: var(--muted); }
+.loop .name { font-weight: 800; font-size: 1.25rem; }
+.loop .words { display: block; margin-top: 2px; }
+.dev { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.dev::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.dev.companion { --c: #c9b79c; } .dev.caddy { --c: #8a8f86; } .dev.station { --c: #6f8f6a; }
+/* The key art: the loop as one painting */
+.keyart { margin-top: 48px; }
+.keyart img { border-radius: var(--radius); box-shadow: 0 24px 48px -28px rgb(34 46 38 / .5); }
+.zones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 14px; text-align: center; }
+.zones li { font-weight: 800; }
+.zones .dev { display: flex; justify-content: center; margin-top: 2px; }
+.keyart figcaption { text-align: center; }
+/* The Caddy's e-paper panel, as the build draws it, in a drawn bezel */
+.epaper { display: block; background: #e9e6dc; border: 4px solid #4a4c48; border-radius: 6px; overflow: hidden; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .08); }
+.epaper img { mix-blend-mode: multiply; border-radius: 0 !important; aspect-ratio: auto !important; }
+.dockcard { aspect-ratio: 4 / 3; border-radius: var(--radius); background: linear-gradient(160deg, #e2dacd, #c9bfb0); display: grid; place-items: center; padding: 0 9%; }
+.dockcard .epaper { width: 100%; box-shadow: 0 8px 18px -10px rgb(0 0 0 / .45); }
+.again { margin-top: 40px; text-align: center; font-weight: 800; font-size: 1.25rem; }
+.again svg { width: 28px; height: 28px; vertical-align: -7px; margin-right: 8px; }
+
+/* Facts */
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 72px; }
+.facts div { background: var(--paper); border-radius: var(--radius); padding: 24px; display: grid; gap: 8px; align-content: start; justify-items: start; }
+.facts .glyph { height: 34px; display: flex; align-items: center; }
+.facts dt { font-size: 2rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+.facts dd { color: var(--muted); font-size: var(--fs-caption); }
+.seeds { display: flex; gap: 5px; }
+.seeds b { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.seeds b.on { background: var(--orange); box-shadow: inset 0 0 0 1.5px #b9682a; }
+.mini-young { width: 136px; height: 34px; background: url(assets/species-young.webp) 0 0 / 272px 68px no-repeat; }
+
+/* Full-bleed pictures */
+.bleed { margin-top: 56px; }
+.bleed img { width: 100%; aspect-ratio: 16 / 9; max-height: 820px; object-fit: cover; }
+.bleed figcaption { max-width: calc(var(--content) + 2 * var(--gutter)); margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter); }
+.bleed + .grid { margin-top: 32px; }
+
+/* Caddy */
+.caddy-band { background: var(--panel); }
+.caddy-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 48px; margin-top: 48px; align-items: center; }
+.caddy-grid .shot { margin-top: 0; }
+.panels ol { display: grid; gap: 16px; }
+.panels li { display: grid; grid-template-columns: 5.5em minmax(0, 1fr); gap: 14px; align-items: center; }
+.panels .when { font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); text-align: right; }
+
+/* Grids of screens */
+.grid { display: grid; gap: 24px; margin-top: 48px; }
+.grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.grid.four img { border-radius: 10px; }
+.shot { margin-top: 48px; }
+.dark { background: var(--forest); color: var(--on-dark); }
+.dark .eyebrow { color: var(--lime); }
+.dark figcaption, .dark .caption { color: rgb(229 234 221 / .75); }
+.dark figcaption .label { color: var(--on-dark); }
+
+/* Breeding: sage band, family tree */
+.breeding { background: var(--sage); }
+.tree { --gap: 56px; --conn: 32px; width: min(100%, calc(4 * (var(--p) + var(--gap)))); margin: 48px auto 0;
+  display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); grid-template-rows: auto var(--conn) auto var(--conn) auto auto; }
+.kin { text-align: center; position: relative; z-index: 1; }
+.kin img { width: var(--p); margin: 0 auto; }
+.kin figcaption { padding-top: 2px; color: var(--ink); }
+.kin.ring img { border-radius: 50%; box-shadow: 0 0 0 2px var(--orange); }
+.join { position: relative; pointer-events: none; }
+.join::before { content: ""; position: absolute; left: calc(var(--p) / 2); right: calc(var(--p) / 2); top: calc(var(--p) / 2 - 1px); border-top: 2px solid var(--ink); }
+.join::after { content: ""; position: absolute; left: calc(50% - 1px); top: calc(var(--p) / 2); bottom: 0; border-left: 2px solid var(--ink); }
+.kids { border: 2px solid var(--ink); border-bottom: 0; margin: 0 -1px; }
+.note { align-self: center; padding-left: 12px; color: var(--ink); }
+.tree-cap { margin-top: 32px; text-align: center; }
+.odds-stamp { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 24px; margin-top: 72px; align-items: stretch; }
+.odds-stamp > figure { display: flex; flex-direction: column; }
+.stamp-card { flex: 1; background: var(--paper); border-radius: var(--radius); display: grid; place-items: center; padding: 32px 16px; }
+/* The stamp as a postage stamp: perforated paper, its own frame inside */
+.postage { filter: drop-shadow(0 10px 14px rgb(34 46 38 / .22)); transform: rotate(-4deg); }
+.postage > div {
+  width: 236px; padding: 14px 14px 10px; background: #fbf8f0;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle at 7px 7px, transparent 4.5px, #000 5px) -7px -7px / 14px 14px round;
+          mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle at 7px 7px, transparent 4.5px, #000 5px) -7px -7px / 14px 14px round;
+}
+.postage img { width: 208px; }
+.postage p { display: flex; justify-content: space-between; font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #2b2a27; padding: 8px 2px 0; }
+.species { margin-top: 72px; text-align: center; }
+.species img { max-width: 960px; margin: 16px auto 0; }
+
+/* Life */
+.life img { max-width: 900px; margin: 0 auto; }
+.stages { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; max-width: 900px; margin: 8px auto 0; font-weight: 700; }
+.life figcaption { text-align: center; }
+
+/* Now, next, later */
+.ahead { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 48px; }
+.ahead li { border-top: 2px solid var(--ink); padding-top: 12px; font-weight: 700; font-size: 1.25rem; line-height: 1.3; }
+.ahead .label { display: block; color: var(--muted); margin-bottom: 6px; font-size: var(--fs-caption); }
+.more { margin-top: 32px; text-align: center; }
+
+/* FAQ */
+.faq-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 24px 48px; align-items: start; }
+.faq { background: var(--panel); border-radius: var(--radius); padding: 8px 24px; }
+.faq details + details { border-top: 1px solid var(--line); }
+.faq summary { font-weight: 700; cursor: pointer; padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-weight: 400; }
+.faq details[open] summary::after { content: "−"; }
+.faq details p { padding-bottom: 16px; max-width: 36em; }
+
+/* Play and footer */
+.end { background: var(--forest); color: var(--on-dark); }
+.end .section { padding-bottom: 64px; }
+.play { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 48px; align-items: center; }
+.play .eyebrow { color: var(--lime); }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 32px; }
+.play figure { max-width: 300px; justify-self: end; width: 100%; }
+.play img { border-radius: var(--radius); }
+.end figcaption, .end .caption { color: rgb(229 234 221 / .75); }
+.end figcaption .label { color: var(--on-dark); }
+footer { padding-bottom: 32px; }
+.foot { border-top: 1px solid rgb(229 234 221 / .2); padding-top: 48px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 16px 32px; }
+.wordmark-lg { text-transform: uppercase; text-decoration: none; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 28px; font-weight: 700; }
+.foot nav a { text-decoration: none; }
+.foot nav a:hover { text-decoration: underline; }
+.foot-lines { margin-top: 24px; }
+.build { text-align: right; margin-top: 24px; color: rgb(229 234 221 / .6); }
+
+/* Phone */
+@media (max-width: 760px) {
+  :root { --gutter: 16px; --pad: 72px; --p: 76px; }
+  .masthead nav a:not(.button) { display: none; }
+  .hero, .faq-grid, .play, .odds-stamp { grid-template-columns: 1fr; }
+  .hero { padding-top: 24px; padding-bottom: 32px; }
+  .hero .lede { font-size: var(--fs-body); }
+  .hero-art { margin-bottom: -64px; margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); }
+  .hero-art img { border-radius: 0; }
+  .hero-art figcaption { padding-left: var(--gutter); }
+  .after-hero { padding-top: 104px; }
+  .loop { grid-template-columns: 1fr 1fr; gap: 28px 12px; margin-top: 40px; }
+  .loop img { border-radius: 10px; }
+  .loop .name { font-size: var(--fs-body); }
+  .loop .words { font-size: var(--fs-caption); }
+  .tag { left: 8px; top: 8px; padding: 5px 7px; font-size: .6875rem; }
+  .facts { grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 48px; }
+  .facts div { padding: 16px; }
+  .facts dt { font-size: 1.5rem; }
+  .mini-young { width: 120px; height: 30px; background-size: 240px 60px; }
+  .bleed { margin-top: 40px; }
+  .bleed img { aspect-ratio: 4 / 3; }
+  .grid { margin-top: 32px; gap: 20px; }
+  .grid.three, .grid.two { grid-template-columns: 1fr; }
+  .grid.four { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .shot { margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); margin-top: 32px; }
+  .shot img { border-radius: 0; }
+  .shot figcaption { padding-left: var(--gutter); padding-right: var(--gutter); }
+  .tree { --gap: 12px; --conn: 20px; }
+  .note { grid-column: 1 / -1 !important; grid-row: 6 !important; text-align: center; padding: 12px 0 0; }
+  .odds-stamp, .species { margin-top: 48px; }
+  .ahead { grid-template-columns: 1fr; gap: 16px; }
+  .keyart { margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); margin-top: 32px; }
+  .keyart img { border-radius: 0; }
+  .zones { font-size: var(--fs-caption); padding: 0 var(--gutter); }
+  .keyart figcaption { padding-left: var(--gutter); padding-right: var(--gutter); }
+  .caddy-grid { grid-template-columns: 1fr; margin-top: 32px; }
+  .panels li { grid-template-columns: 1fr; gap: 6px; }
+  .panels .when { text-align: left; }
+  .epaper { border-width: 3px; }
+  .ahead li { font-size: var(--fs-body); }
+  .play figure { justify-self: start; max-width: 240px; }
+  .build { text-align: left; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="top">
+  <header class="wrap masthead">
+    <a class="wordmark" href="#main">Miniature Beasts</a>
+    <nav aria-label="Main">
+      <a href="#how">How it plays</a>
+      <a href="#caddy">Caddy</a>
+      <a href="#station">Station</a>
+      <a href="#vivarium">Vivarium</a>
+      <a href="#breeding">Breeding</a>
+      <a class="button ghost" href="sandbox/exploration/">Play</a>
+    </nav>
+  </header>
+
+  <section class="wrap hero" aria-labelledby="hero-title">
+    <div>
+      <p class="eyebrow">A creature game you can hold</p>
+      <h1 id="hero-title">One for the field.<br><span>One for home.</span></h1>
+    </div>
+    <div>
+      <p class="lede">Find pods in the fog. Read them at home. Breed mibis no one has seen.</p>
+      <a class="button primary" href="sandbox/exploration/">Play the field test</a>
+    </div>
+  </section>
+  <div class="wrap">
+    <figure class="hero-art">
+      <img src="assets/hero-kit-v2.webp" width="1536" height="1024" fetchpriority="high"
+        alt="Concept render of the kit on a wooden table, with early screens: the sage Station showing two Pips side by side, plain and pale-marked, and the cream Companion showing Pip in a pixel-art clearing, both seated in the Caddy, whose e-ink panel reads Pip, adult Loika, at home, with a blank strip of paper at its printer slot.">
+      <figcaption><span class="label">Concept</span>The kit: Station, Companion and Caddy. The screens are early designs, not the build.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<main id="main">
+  <section class="section how after-hero" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">How it plays</p>
+        <h2 id="how-title">Go out. Come home.<br>Make something new.</h2>
+      </div>
+      <figure class="keyart">
+        <img src="assets/key-art-loop.webp" srcset="assets/key-art-loop-800.webp 800w, assets/key-art-loop.webp 1600w" sizes="(max-width: 1264px) 100vw, 1200px" width="1600" height="893" loading="lazy"
+          alt="Concept picture of the loop, read left to right: in a foggy meadow two hands hold the Companion, its screen a fogged pixel map, a green pod glinting in the grass below; through the open garden door, on a wooden table, a hand seats the Companion, Pip on its screen, into the Caddy's softly lit cradle; along the same table in lamp light the sage Station shows an adult Loika and a juvenile in a mossy room.">
+        <ol class="zones"><li>The field<span class="dev companion">Companion</span></li><li>The dock<span class="dev caddy">Caddy</span></li><li>Home<span class="dev station">Station</span></li></ol>
+        <figcaption><span class="label">Concept</span>The loop in one picture</figcaption>
+      </figure>
+      <ol class="loop">
+        <li><figure class="tagged"><span class="tag">Concept</span><img src="assets/loop-explore.webp" width="640" height="480" loading="lazy" alt="The Companion in two hands outdoors, its screen a fogged pixel map with a small revealed patch, paw prints and a rain band."></figure>
+          <p class="step"><span class="name">Explore</span></p><span class="words">Every step lifts the fog.</span><span class="dev companion">Companion</span></li>
+        <li><figure class="tagged"><span class="tag">Concept</span><img src="assets/loop-find.webp" width="640" height="480" loading="lazy" alt="The Companion in a garden, its screen showing Pip beside the explorer in a meadow, near a glinting patch of soil, with the line Dig here."></figure>
+          <p class="step"><span class="name">Find a pod</span></p><span class="words">Your partner digs it up.</span><span class="dev companion">Companion</span></li>
+        <li><figure class="tagged"><span class="tag">In the build</span><div class="dockcard"><span class="epaper"><img src="assets/panel-dock-step.webp" width="480" height="180" loading="lazy" alt="The Caddy's e-paper panel as the build draws it, close up: Companion home, two crates, with a small crate mark for each, open them at the Station."></span></div></figure>
+          <p class="step"><span class="name">Dock</span></p><span class="words">Your crates cross home.</span><span class="dev caddy">Caddy</span></li>
+        <li><figure class="tagged"><span class="tag">In design</span><img src="assets/loop-read.webp" width="640" height="480" loading="lazy" alt="A Loika in full colour in a dark scanning chamber, a rail of four gene tags below it."></figure>
+          <p class="step"><span class="name">Read</span></p><span class="words">Uncover its genes.</span><span class="dev station">Station</span></li>
+        <li><figure class="tagged"><span class="tag">In the build</span><img src="assets/loop-grow.webp" width="640" height="480" loading="lazy" alt="A spotted Loika bud on moss inside a tall glass incubator lit from above."></figure>
+          <p class="step"><span class="name">Grow</span></p><span class="words">Hatch it, or shape it first.</span><span class="dev station">Station</span></li>
+        <li><figure class="tagged"><span class="tag">Concept</span><img src="assets/loop-breed.webp" width="640" height="480" loading="lazy" alt="Two Loika parents, a russet one and a long-eared charcoal one, joined by a line to their one child, russet with cream pale islands."></figure>
+          <p class="step"><span class="name">Breed</span></p><span class="words">Two parents, one child.</span><span class="dev station">Station</span></li>
+      </ol>
+      <p class="again"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M26 16a10 10 0 1 1-3-7.1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M24 3v7h-7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>Then out again.</p>
+
+      <dl class="facts" aria-label="A few of the numbers">
+        <div><span class="glyph"><span class="seeds" role="img" aria-label="Eight seeds, one lit"><b class="on"></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span></span><dt>1 in 8</dt><dd>Odds, always in eighths</dd></div>
+        <div><span class="glyph"><svg width="28" height="34" viewBox="0 0 28 34" aria-hidden="true"><path d="M14 2C6 2 2 13 2 21a12 12 0 0 0 24 0C26 13 22 2 14 2z" fill="#6f8f6a"/><circle cx="9" cy="17" r="2" fill="#ee9b58"/><circle cx="17" cy="24" r="2" fill="#ee9b58"/><circle cx="19" cy="14" r="1.6" fill="#ee9b58"/></svg></span><dt>1 child</dt><dd>From every cross</dd></div>
+        <div><span class="glyph"><span class="mini-young" role="img" aria-label="Four young mibis of different species"></span></span><dt>16 species</dt><dd>Each with its own genome</dd></div>
+        <div><span class="glyph"><svg width="44" height="34" viewBox="0 0 44 34" aria-hidden="true"><path d="M22 17c-5-7-16-7-16 0s11 7 16 0c5-7 16-7 16 0s-11 7-16 0z" fill="none" stroke="#222e26" stroke-width="3.5"/></svg></span><dt>No limit</dt><dd>On the pods you keep at home</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" id="companion" aria-labelledby="companion-title">
+    <div class="wrap head">
+      <p class="eyebrow">Companion</p>
+      <h2 id="companion-title">Walk into the fog.</h2>
+      <p class="lede">Creatures react to you, and some leave a pod behind.</p>
+    </div>
+    <figure class="bleed">
+      <img src="assets/companion-map-hands.webp" width="1536" height="1024" loading="lazy" style="object-position:50% 40%"
+        alt="Two hands hold the Companion outdoors, thumbs on the pad and Confirm; its screen shows a fogged pixel map with a small revealed patch, paw prints, a stream, a rain band at the left and the line Go down.">
+      <figcaption><span class="label">Concept</span>The Companion out on the map</figcaption>
+    </figure>
+  </section>
+
+  <section class="section caddy-band" id="caddy" aria-labelledby="caddy-title">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Caddy</p>
+        <h2 id="caddy-title">Where the two meet.</h2>
+        <p class="lede">Seat the Companion and its crates cross to the Station. The panel says what came home.</p>
+      </div>
+      <div class="caddy-grid">
+        <figure class="shot">
+          <img src="assets/caddy-printer.webp" width="720" height="765" loading="lazy" alt="Close up of the stone Caddy on a wooden table, the Companion seated in its cradle above; beside the Print and Feed keys a white card curls from the printer slot, printed with Pip and its name.">
+          <figcaption><span class="label">Concept</span>The cradle and the printer. Printed cards come later.</figcaption>
+        </figure>
+        <figure class="panels">
+          <ol aria-label="The panel through a trip">
+            <li><span class="when">Away</span><span class="epaper"><img src="assets/panel-lifted-exploring.webp" width="792" height="272" loading="lazy" alt="The panel reads: Companion out, with Moss, since 14:05, beside an empty cradle and the energy, Data and Essence counts."></span></li>
+            <li><span class="when">Docked</span><span class="epaper"><img src="assets/panel-docked-crates.webp" width="792" height="272" loading="lazy" alt="The panel reads: Companion home, two crates, with a crate mark for each, open them at the Station, beside the Companion standing in its cradle."></span></li>
+            <li><span class="when">Opened</span><span class="epaper"><img src="assets/panel-opened.webp" width="792" height="272" loading="lazy" alt="The panel reads: two crates home, three new pods, Fig goes along, with the counts risen."></span></li>
+          </ol>
+          <figcaption><span class="label">In the build</span>Its e-paper panel, as the build draws it</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark" id="station" aria-labelledby="station-title">
+    <div class="wrap head">
+      <p class="eyebrow">Station</p>
+      <h2 id="station-title">This is home.<br>Take your time.</h2>
+      <p class="lede">Every pod you bring back has a place, and nothing is forced on you.</p>
+    </div>
+    <figure class="bleed">
+      <img src="assets/station-research-hands-2026-10.webp" width="1536" height="1024" loading="lazy" style="object-position:50% 45%"
+        alt="Two hands hold the sage Station at a wooden table in lamp light; its screen shows a sealed green pod in a padded cradle under a pool of light, with Pip at the right.">
+      <figcaption><span class="label">Concept</span>The Station at home, with an early screen</figcaption>
+    </figure>
+    <div class="wrap">
+      <div class="grid three">
+        <figure><img src="assets/station-home-2026-10.webp" width="1024" height="600" loading="lazy" alt="The Station's Home screen: a window onto Roots, the bluebell room, with two Loika by a burrow under old roots, the Loika genome as a ring of fine branches beside it, and the Pods, Incubator, Companion and Bay below."><figcaption><span class="label">In the build</span>Home</figcaption></figure>
+        <figure><img src="assets/bay-design.webp" width="1024" height="600" loading="lazy" alt="A painted Bay: a warm room with a small window and a peg rail, wooden crates on a long bench, one opened with two pods in straw, and a parcel tagged Fig's portrait."><figcaption><span class="label">In design</span>The Bay: each crate a walk</figcaption></figure>
+        <figure><img src="assets/pods-inventory.webp" width="1024" height="600" loading="lazy" alt="The Pods screen: a warm wooden cabinet of niches, each holding a pod with a small bar of read blocks under it and a card naming its species and where it was found."><figcaption><span class="label">Being built</span>Every pod, kept</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="reading" aria-labelledby="reading-title">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Reading</p>
+        <h2 id="reading-title">Read a pod.<br>See what it’s made of.</h2>
+        <p class="lede">Each read uncovers a chapter of its genes.</p>
+      </div>
+      <div class="grid two">
+        <figure><img src="assets/reading-fresh.webp" width="1024" height="600" loading="lazy" alt="The reading screen for a fresh pod: a Loika drawn as a glowing scan outline in a dark chamber, four gene tags on a rail below it, and at the right its Coat chapter, two unread traits and a button priced 2 Data."><figcaption><span class="label">In design</span>Unread: a scan outline</figcaption></figure>
+        <figure><img src="assets/reading-tuikis.webp" width="1024" height="600" loading="lazy" alt="The reading screen for a Tuikis: a cat-like scan outline above a longer rail of eight gene tags, two filled in colour, and at the right its Shape chapter with three traits."><figcaption><span class="label">In design</span>A bigger genome: eight chapters</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="vivarium" aria-labelledby="viv-title" style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Vivarium</p>
+        <h2 id="viv-title">Rooms full of mibis.</h2>
+        <p class="lede">Watch them wander and slip behind the stones.</p>
+      </div>
+      <figure class="shot">
+        <img src="assets/station-room-boulders.webp" width="1024" height="600" loading="lazy" alt="The Vivarium's Boulders room: a shrine garden on a mossy island with an autumn maple, mossy standing stones, a pond and a small lantern, six Loika on the grass and the terraces.">
+        <figcaption><span class="label">In the build</span>Boulders, with six Loika at home</figcaption>
+      </figure>
+      <div class="grid four" role="group" aria-label="The four rooms">
+        <figure><img src="assets/room-roots.webp" width="576" height="320" loading="lazy" alt="Roots: a tree's mossy roots around a dark hollow, bluebells in soft light behind."><figcaption>Roots</figcaption></figure>
+        <figure><img src="assets/room-boulders.webp" width="576" height="320" loading="lazy" alt="Boulders: mossy standing stones, a maple turning gold and a stone-edged pond."><figcaption>Boulders</figcaption></figure>
+        <figure><img src="assets/room-ferns.webp" width="576" height="320" loading="lazy" alt="Ferns: green ferns on a mossy log in a misty clearing."><figcaption>Ferns</figcaption></figure>
+        <figure><img src="assets/room-reeds.webp" width="576" height="320" loading="lazy" alt="Reeds: tall blue-green reeds along a damp winding path under pale mist."><figcaption>Reeds</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section breeding" id="breeding" aria-labelledby="breeding-title">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Breeding</p>
+        <h2 id="breeding-title">One cross. One child.<br>True odds.</h2>
+        <p class="lede">The odds come from the parents alone. Wishing never changes them.</p>
+      </div>
+      <div class="tree" role="group" aria-label="An imagined family of three generations">
+        <figure class="kin" style="grid-area:1/1/2/3"><img src="assets/tree-pip.webp" width="320" height="320" loading="lazy" alt="Pip: charcoal coat, plain, three leaves, short ears."><figcaption class="label">Pip</figcaption></figure>
+        <figure class="kin" style="grid-area:1/3/2/5"><img src="assets/tree-rust.webp" width="320" height="320" loading="lazy" alt="Rust: russet coat, plain, three leaves, round ears."><figcaption class="label">Rust</figcaption></figure>
+        <figure class="kin" style="grid-area:1/5/2/7"><img src="assets/tree-sable.webp" width="320" height="320" loading="lazy" alt="Sable: charcoal coat with cream pale islands, long ears."><figcaption class="label">Sable</figcaption></figure>
+        <figure class="kin" style="grid-area:1/7/2/9"><img src="assets/tree-bramble.webp" width="320" height="320" loading="lazy" alt="Bramble: charcoal, plain, five-leaf crown, large."><figcaption class="label">Bramble</figcaption></figure>
+        <div class="join" style="grid-area:1/2/3/4" aria-hidden="true"></div>
+        <div class="join" style="grid-area:1/6/3/8" aria-hidden="true"></div>
+        <figure class="kin" style="grid-area:3/2/4/4"><img src="assets/tree-ember.webp" width="320" height="320" loading="lazy" alt="Ember, child of Pip and Rust: russet, plain, three leaves, short ears."><figcaption class="label">Ember</figcaption></figure>
+        <figure class="kin" style="grid-area:3/6/4/8"><img src="assets/tree-thistle.webp" width="320" height="320" loading="lazy" alt="Thistle, child of Sable and Bramble: charcoal, plain, five leaves, long ears, small."><figcaption class="label">Thistle</figcaption></figure>
+        <div class="join" style="grid-area:3/3/4/7" aria-hidden="true"></div>
+        <div class="kids" style="grid-area:4/4/5/6" aria-hidden="true"></div>
+        <figure class="kin" style="grid-area:5/3/6/5"><img src="assets/tree-moss.webp" width="320" height="320" loading="lazy" alt="Moss, child of Ember and Thistle: russet, plain, curled leaves, large."><figcaption class="label">Moss</figcaption></figure>
+        <figure class="kin ring" style="grid-area:5/5/6/7"><img src="assets/tree-dapple.webp" width="320" height="320" loading="lazy" alt="Dapple, child of Ember and Thistle: russet with cream pale islands, long ears, five leaves."><figcaption class="label">Dapple</figcaption></figure>
+        <p class="caption note" style="grid-area:5/7/6/9">Pale islands, back from grandmother Sable.</p>
+      </div>
+      <p class="caption tree-cap"><span class="label">Concept</span>An imagined family of Loika</p>
+
+      <div class="odds-stamp">
+        <figure><img src="assets/reading-odds.webp" width="1024" height="600" loading="lazy" style="border-radius:var(--radius)" alt="A Loika's Crown chapter, and its chances paired with Fig: bare head 1 in 4, two of eight seeds lit, and leaf crest 3 in 4, six of eight seeds lit."><figcaption><span class="label">In design</span>Chances with Fig, in eighths</figcaption></figure>
+        <figure>
+          <div class="stamp-card">
+            <div class="postage"><div><img src="assets/stamp-pip-520.webp" width="520" height="520" loading="lazy" alt="Pip's genome stamp as a postage stamp: a perforated cream stamp holding a square of black cells inside a solid frame and a ring of dots, a small block of coloured cells at the top."><p aria-hidden="true"><span>Loika</span><span>Pip</span></p></div></div>
+          </div>
+          <figcaption><span class="label">In the build</span>Every mibi’s stamp holds its genome</figcaption>
+        </figure>
+      </div>
+
+      <figure class="species">
+        <h3 class="label" style="margin:0">Sixteen species</h3>
+        <img src="assets/species-young.webp" width="1200" height="300" loading="lazy" alt="Sixteen young mibis in two rows: Loika, Untuva, Tuikis, Hiljan, Tepor, Pesko, Azkon, Rupar, Belatz, Igara, Kilpo, Peplos, Oskol, Usvel, Lehten and Blikur.">
+        <figcaption><span class="label">Station art</span>Each one young; their finished looks are still being made</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section life" id="life" aria-labelledby="life-title">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Life</p>
+        <h2 id="life-title">Raise them for life.</h2>
+        <p class="lede">Juvenile, adult, elder. They never decline.</p>
+      </div>
+      <figure class="shot">
+        <img src="assets/pip-life-stages.webp" width="1200" height="512" loading="lazy" alt="Three Pips side by side: a small round juvenile with bright leaf buds, an adult, and a heavier elder with broad deep-green leaves and a small moss patch on its back.">
+        <ol class="stages" aria-label="Life stages"><li>Juvenile</li><li>Adult</li><li>Elder</li></ol>
+        <figcaption><span class="label">Concept</span>Pip, a whole life</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="ahead" aria-labelledby="ahead-title" style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Where it’s going</p>
+        <h2 id="ahead-title">One loop first.<br>Then the real thing.</h2>
+      </div>
+      <ol class="ahead">
+        <li><span class="label">Now</span>One playable loop across the three devices</li>
+        <li><span class="label">Next</span>The game on emulated hardware</li>
+        <li><span class="label">Later</span>New maps from the Station, and seasonal ones</li>
+      </ol>
+      <p class="more"><a class="link" href="roadmap/">See the whole roadmap</a></p>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="faq-title" style="padding-top:0">
+    <div class="wrap faq-grid">
+      <h2 id="faq-title">A few fair questions.</h2>
+      <div class="faq">
+        <details><summary>Is it real?</summary><p>The field test and the Station build run in your browser today. Every picture says what it is: in the build, being built, in design, Station art, rough playable, or concept. No device exists yet.</p></details>
+        <details><summary>When can I get one?</summary><p>No date and no price yet. The <a href="roadmap/">roadmap</a> shows what comes next.</p></details>
+        <details><summary>Can I build one myself?</summary><p>Not yet. The boards and cases will be open hardware, and the software is open source already.</p></details>
+        <details><summary>Is anything for sale in the game?</summary><p>No supplies, no speed, no luck. The kit plays fully on its own, with no account and no internet.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="end">
+  <section class="section" id="play" aria-labelledby="play-title">
+    <div class="wrap play">
+      <div>
+        <p class="eyebrow">Play and source</p>
+        <h2 id="play-title">Play it today.<br>Read every rule.</h2>
+        <div class="actions">
+          <a class="button primary" href="sandbox/exploration/">Play the field test</a>
+          <a class="link" href="sandbox/station/">Station build</a>
+          <a class="link" href="sandbox/workbench/">Species workbench</a>
+        </div>
+        <div class="actions">
+          <a class="link" href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/play-manual.md">Read every rule</a>
+          <a class="link" href="https://github.com/PacoCotera/miniaturebeasts">Source on GitHub</a>
+        </div>
+      </div>
+      <figure>
+        <img src="assets/field-test-2026-10.webp" width="520" height="852" loading="lazy"
+          alt="Screenshot of the field test in a Companion frame: a small revealed patch of green meadow and grey stone on a dark fogged map, the orange explorer near the top left, lightning bolts on two cells, a flag and a beacon.">
+        <figcaption><span class="label">Rough playable</span>The field test</figcaption>
+      </figure>
+    </div>
+  </section>
+  <footer class="wrap">
+    <div class="foot">
+      <a class="wordmark-lg" href="#main">Miniature Beasts</a>
+      <nav aria-label="Footer">
+        <a href="https://github.com/PacoCotera/miniaturebeasts">GitHub</a>
+        <a href="roadmap/">Roadmap</a>
+        <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/LICENSING.md">Licensing</a>
+      </nav>
+    </div>
+    <div class="foot-lines">
+      <p class="caption">A project by Dirty Pawz Press · Mexico City</p>
+      <p class="caption">Software AGPL-3.0 · Hardware CERN-OHL-S-2.0 · Documentation and art CC BY-SA 4.0</p>
+    </div>
+    <p class="caption build" id="build">© 2026 Dirty Pawz Press · local</p>
+  </footer>
+</div>
+<script type="module">
+  // the build footer: the one line every page shows, from the module the sandbox pages share (the text stays as written above when it cannot load)
+  import('./sandbox/play/src/footer.mjs').then(m => m.mountFooter(document.getElementById('build'), {buildUrl: 'build.json'})).catch(() => {});
+</script>
+</body>
+</html>

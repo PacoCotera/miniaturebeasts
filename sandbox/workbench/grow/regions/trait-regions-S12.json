@@ -1,0 +1,147 @@
+{
+ "species": "S12",
+ "painting": {
+  "view": "portrait",
+  "size": [
+   600,
+   620
+  ],
+  "margin": 0.06,
+  "genome": "the frame's typeSpecimen"
+ },
+ "bodyBox": [
+  36,
+  156,
+  528,
+  308
+ ],
+ "note": "boxes are [x, y, w, h] in pixels of the painting; `whole` marks a trait with no part of its own (its box is null: use bodyBox)",
+ "parts": {
+  "region-0": [
+   225,
+   234,
+   148,
+   163
+  ],
+  "region-1": [
+   316,
+   254,
+   115,
+   115
+  ],
+  "region-2": [
+   378,
+   286,
+   95,
+   100
+  ],
+  "neck": [
+   236,
+   301,
+   46,
+   39
+  ],
+  "head": [
+   161,
+   255,
+   126,
+   145
+  ],
+  "eye": [
+   156,
+   294,
+   87,
+   60
+  ],
+  "antenna": [
+   36,
+   156,
+   200,
+   142
+  ],
+  "leg-0": [
+   124,
+   297,
+   325,
+   167
+  ],
+  "leg-1": [
+   207,
+   292,
+   304,
+   157
+  ],
+  "leg-2": [
+   274,
+   307,
+   290,
+   150
+  ],
+  "flap": [
+   336,
+   248,
+   166,
+   88
+  ]
+ },
+ "traits": {
+  "colour": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "translucency": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "flap-markings": {
+   "chapter": "coat",
+   "parts": [
+    "flap"
+   ],
+   "box": [
+    336,
+    248,
+    166,
+    88
+   ],
+   "whole": false
+  },
+  "second-colour": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "hind-body": {
+   "chapter": "shape",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "turning": {
+   "chapter": "movement",
+   "parts": [
+    "leg-0",
+    "leg-1",
+    "leg-2"
+   ],
+   "box": [
+    124,
+    292,
+    440,
+    172
+   ],
+   "whole": false
+  },
+  "strength": {
+   "chapter": "stamina",
+   "parts": [],
+   "box": null,
+   "whole": true
+  }
+ }
+}

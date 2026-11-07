@@ -1,0 +1,5 @@
+.modes { display: flex; justify-content: center; gap: var(--s-1); }
+.modes a { color: var(--text-2); text-decoration: none; padding: 6px 14px; border-radius: var(--r-pill); font-weight: 500; transition: background var(--m-fast) var(--ease); }
+.modes a:hover { color: var(--text); }
+.modes a.on { color: var(--text); background: var(--sel); }
+@media (max-width: 1279px) { .modes a { padding: 10px 14px; } }

@@ -1,0 +1,52 @@
+[
+ {
+  "id": "v6",
+  "name": "v6 baseline",
+  "change": "The v6 art direction (1B with 1G's coat paragraph folded in, the style statement, the light paragraph, the colour key as the authority on colour) and the v6 Loika notes.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "step1": "{artDirection1}\n\n{species}\n\n{description}",
+  "step2": "{artDirection2}\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "6A-no-style",
+  "name": "No style statement",
+  "change": "Step 2, the style paragraph removed: measures what the explicit style statement buys over v5's adjectives.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "step2": "Image 1 is this young creature drawn in HiBit: structure, proportion, pose and colour placement only, not the finish. Image 2 is the species reference: match its surface, light, eyes and charm, never its shape, feet or wings. Image 3 is the colour key, the authority on colour.\n\nLight: one warm key from the top left, soft highlights on crown, cheek and shoulder; a cool fill; underside and far side in cool shadow; gentle occlusion where parts meet. No outlines: edges turn by light, with a faint warm rim.\n\nEvery area keeps the one colour Image 3 gives it, unbroken, shaded only by the light. Limbs rounded and jointed, feet padded and carrying the weight. Eyes keep their drawn place and size: a large glossy iris filling the ring, a bright catch light upper left. Care for the surface the species notes name.\n\nChange only the rendering. Edges may soften a few pixels as the volume asks; every part keeps its place, proportion, pose and gaze. Add nothing.\n\nNot: clay or plastic sheen, hair-by-hair strands, noise, cast shadow, halo, scene, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "6B-contact-shadow",
+  "name": "Contact shadow",
+  "change": "Step 2, the cast shadow ban becomes a small soft contact shadow under the feet: tests whether grounding the creature, as Pip is grounded, adds weight without failing the band check.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "step2": "Image 1 is this young creature drawn in HiBit: structure, proportion, pose and colour placement only, not the finish. Image 2 is the species reference: match its surface, light, eyes and charm, never its shape, feet or wings. Image 3 is the colour key, the authority on colour.\n\nStyle: a stylised animated-film character, like a soft vinyl collectible: full, rounded volumes; matte, soft-touch surfaces whose texture is felt, not drawn; saturated, playful colour.\n\nLight: one warm key from the top left, soft highlights on crown, cheek and shoulder; a cool fill; underside and far side in cool shadow; gentle occlusion where parts meet. No outlines: edges turn by light, with a faint warm rim.\n\nEvery area keeps the one colour Image 3 gives it, unbroken, shaded only by the light. Limbs rounded and jointed, feet padded and carrying the weight. Eyes keep their drawn place and size: a large glossy iris filling the ring, a bright catch light upper left. Care for the surface the species notes name.\n\nChange only the rendering. Edges may soften a few pixels as the volume asks; every part keeps its place, proportion, pose and gaze. Add nothing.\n\nNot: clay or plastic sheen, hair-by-hair strands, noise, halo, scene, text. Only a small, soft contact shadow under the feet. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "6C-eyes",
+  "name": "Eyes as the heart of the face",
+  "change": "Step 2, eye words only: the eye is drawn as Pip's is, with a lid line and a second glint, at its drawn size.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "step2": "Image 1 is this young creature drawn in HiBit: structure, proportion, pose and colour placement only, not the finish. Image 2 is the species reference: match its surface, light, eyes and charm, never its shape, feet or wings. Image 3 is the colour key, the authority on colour.\n\nStyle: a stylised animated-film character, like a soft vinyl collectible: full, rounded volumes; matte, soft-touch surfaces whose texture is felt, not drawn; saturated, playful colour.\n\nLight: one warm key from the top left, soft highlights on crown, cheek and shoulder; a cool fill; underside and far side in cool shadow; gentle occlusion where parts meet. No outlines: edges turn by light, with a faint warm rim.\n\nEvery area keeps the one colour Image 3 gives it, unbroken, shaded only by the light. Limbs rounded and jointed, feet padded and carrying the weight. Eyes keep their drawn place and size and are the heart of the face: a large glossy iris and dark pupil filling the ring, a soft lid line above, a bright catch light upper left and a small glint below. Care for the surface the species notes name.\n\nChange only the rendering. Edges may soften a few pixels as the volume asks; every part keeps its place, proportion, pose and gaze. Add nothing.\n\nNot: clay or plastic sheen, hair-by-hair strands, noise, cast shadow, halo, scene, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ }
+]

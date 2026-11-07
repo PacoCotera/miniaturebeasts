@@ -1,0 +1,1126 @@
+{
+ "schemaVersion": 1,
+ "level": "individual",
+ "id": "S09-bb2b96cc",
+ "version": 1,
+ "species": "S09",
+ "clan": "C09",
+ "plan": "B2·L2·flaps",
+ "rig": "B2",
+ "genome": {
+  "structure.attachment-position": [
+   "low",
+   "low"
+  ],
+  "appearance.body-palette": [
+   "lagoon",
+   "periwinkle"
+  ],
+  "appearance.underside-palette": [
+   "ice",
+   "butter"
+  ],
+  "appearance.surface-texture": [
+   "ridged",
+   "ridged"
+  ],
+  "movement.contact-phase": [
+   "high",
+   "high"
+  ],
+  "movement.cycle-rate": [
+   "low",
+   "high"
+  ],
+  "movement.stride-preference": [
+   "high",
+   "high"
+  ],
+  "movement.turn-control": [
+   "high",
+   "low"
+  ],
+  "movement.membrane-stroke": [
+   "low",
+   "high"
+  ],
+  "movement.membrane-coordination": [
+   "low",
+   "low"
+  ],
+  "energy.actuator-capacity": [
+   "high",
+   "high"
+  ],
+  "energy.reserve-capacity": [
+   "low",
+   "high"
+  ],
+  "energy.action-efficiency": [
+   "high",
+   "high"
+  ],
+  "development.regional-growth": [
+   "central",
+   "central"
+  ],
+  "structure.join-neck-ratio": [
+   "high",
+   "high"
+  ],
+  "anatomy.crown-presence": [
+   "on",
+   "on"
+  ],
+  "anatomy.exterior-eye-presence": [
+   "on",
+   "on"
+  ],
+  "anatomy.crown-form": [
+   "pointed",
+   "pointed"
+  ],
+  "growth.core-half-length": [
+   "large",
+   "large"
+  ],
+  "growth.core-width-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.core-depth-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.head-length-ratio": [
+   "medium",
+   "large"
+  ],
+  "growth.head-width-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.head-depth-ratio": [
+   "low",
+   "high"
+  ],
+  "growth.head-lift-ratio": [
+   "low",
+   "high"
+  ],
+  "growth.support-drop-ratio": [
+   "long",
+   "long"
+  ],
+  "growth.support-splay-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.support-radius-ratio": [
+   "fine",
+   "slender"
+  ],
+  "growth.terminal-length-ratio": [
+   "broad",
+   "broad"
+  ],
+  "growth.terminal-depth-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.exterior-eye-size-ratio": [
+   "large",
+   "small"
+  ],
+  "growth.exterior-eye-spacing-ratio": [
+   "wide",
+   "close"
+  ],
+  "growth.crown-height-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.wing-span-ratio": [
+   "long",
+   "long"
+  ],
+  "growth.wing-chord-ratio": [
+   "wide",
+   "wide"
+  ],
+  "growth.wing-sweep-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.region-bend": [
+   "down",
+   "down"
+  ],
+  "growth.region-taper": [
+   "strong",
+   "strong"
+  ],
+  "growth.join-throat-ratio": [
+   "broad",
+   "broad"
+  ],
+  "anatomy.region-cross-exponent": [
+   "rounded-square",
+   "rounded-square"
+  ],
+  "anatomy.region-longitudinal-form": [
+   "tapered",
+   "tapered"
+  ],
+  "anatomy.contact-terminal-form": [
+   "wedge",
+   "wedge"
+  ],
+  "appearance.fur-length": [
+   "long",
+   "long"
+  ],
+  "appearance.fur-flow": [
+   "axial",
+   "oblique"
+  ],
+  "anatomy.axial-tail-presence": [
+   "on",
+   "on"
+  ],
+  "growth.axial-tail-length-ratio": [
+   "long",
+   "long"
+  ],
+  "growth.axial-tail-width-ratio": [
+   "broad",
+   "fine"
+  ],
+  "growth.axial-tail-bend": [
+   "down",
+   "up"
+  ],
+  "cognition.exploration-tendency": [
+   "reserved",
+   "reserved"
+  ],
+  "cognition.arousal-threshold": [
+   "low",
+   "high"
+  ],
+  "appearance.fur-reach": [
+   "ears",
+   "ears"
+  ],
+  "anatomy.beak-presence": [
+   "on",
+   "on"
+  ],
+  "growth.beak-length-ratio": [
+   "short",
+   "short"
+  ],
+  "appearance.feather-presence": [
+   "on",
+   "on"
+  ],
+  "appearance.feather-length": [
+   "short",
+   "long"
+  ],
+  "growth.feather-crest": [
+   "low",
+   "tall"
+  ],
+  "appearance.flap-marking": [
+   "spots",
+   "spots"
+  ],
+  "appearance.flap-translucency": [
+   "opaque",
+   "opaque"
+  ],
+  "appearance.sheen": [
+   "matte",
+   "glossy"
+  ],
+  "appearance.emission-brightness": [
+   "bright",
+   "bright"
+  ],
+  "appearance.emission-length": [
+   "long",
+   "long"
+  ]
+ },
+ "genomeDigest": "S09-bb2b96cc",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "sketch": {
+  "sketcherVersion": "mb-sketch/1",
+  "hash": "d48aa61801d4d3180af2b46ebff1ec8574338359883d3e4f3811ade1d88a188e",
+  "caption": "Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head.",
+  "views": [
+   "front",
+   "side",
+   "three-quarter",
+   "top"
+  ],
+  "sizes": {
+   "tile": [
+    48,
+    48
+   ],
+   "companion": [
+    280,
+    300
+   ],
+   "station": [
+    300,
+    310
+   ],
+   "large": [
+    600,
+    620
+   ]
+  },
+  "slots": [
+   {
+    "slot": "body",
+    "pigments": [
+     "#269fa5",
+     "#8b7dd8"
+    ],
+    "flat": [
+     220,
+     80,
+     60
+    ],
+    "secondHalf": [
+     154,
+     56,
+     42
+    ]
+   },
+   {
+    "slot": "second",
+    "pigments": [
+     "#fff0b8",
+     "#d9ecf5"
+    ],
+    "flat": [
+     60,
+     140,
+     220
+    ],
+    "secondHalf": [
+     42,
+     98,
+     154
+    ]
+   },
+   {
+    "slot": "eyeRim",
+    "pigments": [
+     "#f1eddc"
+    ],
+    "flat": [
+     240,
+     230,
+     200
+    ],
+    "secondHalf": null
+   },
+   {
+    "slot": "pupil",
+    "pigments": [
+     "#273036"
+    ],
+    "flat": [
+     40,
+     40,
+     50
+    ],
+    "secondHalf": null
+   }
+  ],
+  "markingFields": [
+   "flaps"
+  ],
+  "bounds": {
+   "min": [
+    -2.06520693381936,
+    -1.0506760053979998,
+    0
+   ],
+   "max": [
+    2.141474511838523,
+    1.0506760053979995,
+    2.890631146845891
+   ]
+  },
+  "states": [
+   "idle",
+   "settle",
+   "sleep",
+   "eat",
+   "flee",
+   "scurry",
+   "walk",
+   "flutter",
+   "glide"
+  ]
+ },
+ "outputs": [
+  {
+   "file": "shaded.front.companion.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "80d7974584cb7e43d07fe0008a73f3922cd3a568b719fc1095cd60d7bd93b6db",
+   "clipped": false
+  },
+  {
+   "file": "slots.front.companion.png",
+   "pass": "slots",
+   "field": null,
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "ec8dda143b6d5cb84fdc341af721fc1fa55c3a166a1447a2de792c978c237f2c",
+   "clipped": false
+  },
+  {
+   "file": "index.front.companion.png",
+   "pass": "index",
+   "field": null,
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "524eb74593568cee7f94650c3654c63ed0c9e1ac369f681798cc730d782e74b9",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.front.companion.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "f0d5b84c755fbebe12cbbfea328eeb64731d38ed1cae6d3defdc2ffd00a73588",
+   "clipped": false
+  },
+  {
+   "file": "shaded.front.station.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "6dca586959ce12c008a8c22397561b41d70208acd2f2b75a513cff4a314e8c3b",
+   "clipped": false
+  },
+  {
+   "file": "slots.front.station.png",
+   "pass": "slots",
+   "field": null,
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "a2fe056f2b30e9f8dffc3e19804706e1447f9afafe1e0c1810fd67c8b854a6bf",
+   "clipped": false
+  },
+  {
+   "file": "index.front.station.png",
+   "pass": "index",
+   "field": null,
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "9590f2e089ee44d3fa8271fd66bb1ab59e5254d3dd3177af51ecec1105a4b254",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.front.station.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "024909da1e937c9035b24cdfb458fb42d951bb8c59a78ea837b727fd7f098303",
+   "clipped": false
+  },
+  {
+   "file": "shaded.front.large.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "front",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "e11f1b3d617659aaee843a085edafdfcc9c4aabc9c2ebed9b169c3385e448ade",
+   "clipped": false
+  },
+  {
+   "file": "slots.front.large.png",
+   "pass": "slots",
+   "field": null,
+   "view": "front",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "3b6eeef2d0581ffb102a8dd55acd60368089ea52486a8404636802c90c3f27c5",
+   "clipped": false
+  },
+  {
+   "file": "index.front.large.png",
+   "pass": "index",
+   "field": null,
+   "view": "front",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "8ebf5a40c95bc201b7f21f4bc43cfb0ff81ae5b7f6653a7bf11989d35be9639b",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.front.large.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "front",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "9b9d74458c1702a9c6adb97975b265dcd1700005bece2ed53684bd323fd376b3",
+   "clipped": false
+  },
+  {
+   "file": "shaded.side.companion.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "a42c306e107a313235796cfc1d9b68539b070043aff20a068c92bbd137c2d743",
+   "clipped": false
+  },
+  {
+   "file": "slots.side.companion.png",
+   "pass": "slots",
+   "field": null,
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "53d876491369f3bfcac4dc11c6a426802d6d08fcddd73d028cb8ae6b6bcac91c",
+   "clipped": false
+  },
+  {
+   "file": "index.side.companion.png",
+   "pass": "index",
+   "field": null,
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "f365a6fcb6aa93ab595e3126407e8651c52987208d5effdd6d68a30762edd5c6",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.side.companion.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "0e8c81db471dea5ea7283f8eec2987b45b26bcbdff5395e8767b5028c8ce5b15",
+   "clipped": false
+  },
+  {
+   "file": "shaded.side.station.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "9a8cd4983d347c3d243532332476bc14f65ca5e17335b60d981989b474039fab",
+   "clipped": false
+  },
+  {
+   "file": "slots.side.station.png",
+   "pass": "slots",
+   "field": null,
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "f220082bc8562098c5a3d2c01dd03ebb59508107dc8d848e26089520b63f9253",
+   "clipped": false
+  },
+  {
+   "file": "index.side.station.png",
+   "pass": "index",
+   "field": null,
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "a07b5d1c42453b2a1eef46fbee2555b535c9cdcefd6fa7e25dfe3edb24056175",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.side.station.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "f20e322d7345151b21581d1a3d6e75c0f3d09ef5d2303f319fe5d0b5c82a5b29",
+   "clipped": false
+  },
+  {
+   "file": "shaded.side.large.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "side",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "d58ae980c98345b17b9a093aa61ac7fa154cfd244d24550b0da2d28406e9b3f2",
+   "clipped": false
+  },
+  {
+   "file": "slots.side.large.png",
+   "pass": "slots",
+   "field": null,
+   "view": "side",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "32210db997b164df9c386b05cc886b4a85bf8f44891ca4691ae6972c5a57c50d",
+   "clipped": false
+  },
+  {
+   "file": "index.side.large.png",
+   "pass": "index",
+   "field": null,
+   "view": "side",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "c28e06deb618f7dfcfb4266dc40dfcbc849bad01650fa868c7b53947f5935c74",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.side.large.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "side",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "c1b04842ae72ea83fefcbc625ce71183a26505fa4b05eb4557f4bfa8d9bd58d2",
+   "clipped": false
+  },
+  {
+   "file": "shaded.three-quarter.companion.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "7349d3d96d3e7373e8e50ac00b84620fabae6710faaf36f5eb26bfe2228e8db8",
+   "clipped": false
+  },
+  {
+   "file": "slots.three-quarter.companion.png",
+   "pass": "slots",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "db75935c29144789d15637bee5dce2f0ee0df1fc762bb3b36c8a56abab61855e",
+   "clipped": false
+  },
+  {
+   "file": "index.three-quarter.companion.png",
+   "pass": "index",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "17a86da039955a719d856d05e67f49c9be9642c8e0262cc28ea36b52054147c7",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.three-quarter.companion.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "b6eecb095eae833e652c0a6f727d367dc17eb57d7fcf13428a16f4b4c3dc8337",
+   "clipped": false
+  },
+  {
+   "file": "shaded.three-quarter.station.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "0abe597ef2bc772d8e7d500c840a722e1c213fd82e7469a20db3e06c0ff86df9",
+   "clipped": false
+  },
+  {
+   "file": "slots.three-quarter.station.png",
+   "pass": "slots",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "3d5b245efbd50ab85876931c50ef3cdf39aa7fe247af53487e2f609f78894b48",
+   "clipped": false
+  },
+  {
+   "file": "index.three-quarter.station.png",
+   "pass": "index",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "72c073f3e48a3e33fbd67949fb12256362b59614edbf57406a9993733060913d",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.three-quarter.station.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "5126752081fe3c4f0478f1cfe50fb8022cf007fdf93c0cd9baa1647ae4cb1906",
+   "clipped": false
+  },
+  {
+   "file": "shaded.three-quarter.large.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "1c499efc92cef2332660cca916eccded062da6c5324b08d5bd4e085f4e04311b",
+   "clipped": false
+  },
+  {
+   "file": "slots.three-quarter.large.png",
+   "pass": "slots",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "648d2c1456dd8778bc2f32a6efbbe309804c29c9fb2148f4b0de9bb2e0ed154f",
+   "clipped": false
+  },
+  {
+   "file": "index.three-quarter.large.png",
+   "pass": "index",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "606fb5a3d923ff7f4ed8f694e766b94e75582c4de356ee2a0a0634846ad0b480",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.three-quarter.large.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "three-quarter",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "8fbd4b05ac80f970f1c1d9cae6d2bf515d02c9ad9e4040b3cdcdd6e81b73e938",
+   "clipped": false
+  },
+  {
+   "file": "shaded.top.companion.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "7373cee979704894d51d4838449a4e129eed97b467f71eb2c369b8cad9c1b180",
+   "clipped": false
+  },
+  {
+   "file": "slots.top.companion.png",
+   "pass": "slots",
+   "field": null,
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "d4e217b9a557e56c7ceadb3e49012445cae3bad03262a64ea7f9e58bbaa0b4a6",
+   "clipped": false
+  },
+  {
+   "file": "index.top.companion.png",
+   "pass": "index",
+   "field": null,
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "0cb66cae15db72996b76d84efb300807839888ded9179e67fd690b314dcad285",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.top.companion.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "f276b87538cfcf66b849820d4975015b9c8e4f79da70813cab04dd9dc2a5a482",
+   "clipped": false
+  },
+  {
+   "file": "shaded.top.station.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "ba8b49429dade22d60f65d80fae48deb17e7cfe630fe09de297497e09284173d",
+   "clipped": false
+  },
+  {
+   "file": "slots.top.station.png",
+   "pass": "slots",
+   "field": null,
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "02fe6de39c2cbea52d753749c81591b5663eab399427a12d4fc676a502ac6b25",
+   "clipped": false
+  },
+  {
+   "file": "index.top.station.png",
+   "pass": "index",
+   "field": null,
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "efe76a73bc71d2d001e0f1a8c72232a8b6464ab2ae990e26d02c520261172451",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.top.station.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "c06415a21bb1fcd1b9575e5a610267068aa6ec3ca2c14f2cc256fac99cb57830",
+   "clipped": false
+  },
+  {
+   "file": "shaded.top.large.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "top",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "ba210e7620ee3d54ba9dee09207b994b597e6e8df51c7ca86b4a6c75a4c9df94",
+   "clipped": false
+  },
+  {
+   "file": "slots.top.large.png",
+   "pass": "slots",
+   "field": null,
+   "view": "top",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "b73b7f37bdba1c821f8ba68df32545bdafe2edf1234cd7d9ced3dc142cb60c9b",
+   "clipped": false
+  },
+  {
+   "file": "index.top.large.png",
+   "pass": "index",
+   "field": null,
+   "view": "top",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "0d2935345c214b3601eddc65e5a1f936524e07b5eff296f6cc7289cf66cc45c4",
+   "clipped": false
+  },
+  {
+   "file": "markings-flaps.top.large.png",
+   "pass": "markings",
+   "field": "flaps",
+   "view": "top",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "b277f16501ceebaf32b129209da59d93671c30302cfd69dde2fea11cd1003b86",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.front.tile.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "front",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "4da68252effe90285b116e407ba234920f31af96d4aebb08f99251507eaa6c49",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.front.companion.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "906cc36d451f67e81feb97a9fc7cb0f806076a1db535c63ba3f062e54922a5dc",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.front.station.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "6a71626d3eeee8d031943bf3c3fef8a07d3cdb3ebb8c20d07167552d5e83ae4a",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.side.tile.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "side",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "fcadf166f143f4b4cbe36ee443b4d0b13c89ce488c26fdcadc23da7ef8004a17",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.side.companion.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "d1576738002bfb62ed3c8b9716c81f4393ce4d50dda1610e93b938ed639410d6",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.side.station.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "a5d895c61dcaae95bd984ce6e55c1afb70c5c0b8f05a56a7d78f52ed203eeeea",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.three-quarter.tile.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "f4ef20655b5e697d227984b8e68e941b53df4deb1f618c9dcb25dc818860ed19",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.three-quarter.companion.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "76f96819354c0f8419262875b37af0c491a11bc3d5ec773ad12b564dbf924f42",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.three-quarter.station.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "4ca4ece2b85309900b4520bf644fa6ee4ac208cb3c435540587c8d42adca0342",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.top.tile.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "top",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "152ef013d7f1f81cd587ff1e47dc86db0a95cfa56a50ec9c99cc8978d39772b7",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.top.companion.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "a0f78efad6aae1ded870a73f246b668c0ae34231910d9a762f9d3693b1c31942",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.top.station.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "4ac0f1559e4c65221936e1984a98176c4b201b8cbbdeeb0e5e6ab07edb0a4879",
+   "clipped": false
+  },
+  {
+   "file": "shaded.three-quarter.tile.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "c0542c10fbfbdde71281c23633dab3f7560804c8af47f7825896c70fa93aa690",
+   "clipped": false
+  }
+ ],
+ "prompt": null,
+ "references": [],
+ "model": null,
+ "critique": null,
+ "signoff": null,
+ "supersedes": null,
+ "licence": "CC-BY-SA-4.0 (project-held rights); deterministic render, not a generated image",
+ "generated": false,
+ "genomeSha256": "e6ce67f233ad191f86d477075c9feaab6d3159b0cc56657ddc8b70280ce33250"
+}

@@ -1,0 +1,302 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "1G-markings-positive",
+  "name": "Plain coat said positively",
+  "change": "Step 1, markings words only: the markings paragraph says what the coat is instead of naming the patches it must not have, since naming them may prime them.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3.1-flash-image",
+ "sample": 2,
+ "changed": "Step 1, markings words only: the markings paragraph says what the coat is instead of naming the patches it must not have, since naming them may prime them.",
+ "step1": {
+  "callId": "55936129-1726-4e90-a038-29830f528b6a",
+  "status": "ok",
+  "seconds": 9.4,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.683,
+   "silhouetteIoUInPlace": 0.714,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 0.992
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.966
+    },
+    "beak": {
+     "span": 0.831,
+     "coverage": 0.96
+    },
+    "crown": {
+     "span": 0.587,
+     "coverage": 0.049
+    },
+    "leg-0": {
+     "span": 0.994,
+     "coverage": 0.686
+    },
+    "flap": {
+     "span": 0.933,
+     "coverage": 0.291
+    },
+    "tail": {
+     "span": 0.912,
+     "coverage": 0.966
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.355,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.28,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.357,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.385,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.231,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.387,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.615,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.868,
+     "median": "#355ba6",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.032,
+     "median": "#f7de92",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@neck": {
+     "agreement": 0.997,
+     "median": "#4977cc",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.984,
+     "median": "#4a78cd",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.76,
+     "median": "#345296",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.756,
+     "median": "#b39273",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.342,
+     "median": "#5a86ac",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "a part is missing or moved from where the part map puts it: crown (painted along 59% of its length)",
+    "a pigment slot is painted in another slot's colour: the body slot on the region-1 (painted #f7de92, the colour of second), the second slot on the flap (painted #5a86ac, the colour of body)"
+   ],
+   "outside": 0.013,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.834,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "bf7e3609-12ad-4e90-9e7c-a59244124612",
+  "status": "ok",
+  "seconds": 9.1,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.688,
+   "silhouetteIoUInPlace": 0.715,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 0.993
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.961
+    },
+    "beak": {
+     "span": 0.831,
+     "coverage": 0.958
+    },
+    "crown": {
+     "span": 0.58,
+     "coverage": 0.054
+    },
+    "leg-0": {
+     "span": 1.0,
+     "coverage": 0.688
+    },
+    "flap": {
+     "span": 0.93,
+     "coverage": 0.289
+    },
+    "tail": {
+     "span": 0.922,
+     "coverage": 0.972
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.35,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.28,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.356,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.384,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.23,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.388,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.608,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.872,
+     "median": "#3e5283",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.031,
+     "median": "#eacd81",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@neck": {
+     "agreement": 0.985,
+     "median": "#486aaf",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.956,
+     "median": "#517abb",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.821,
+     "median": "#756594",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.741,
+     "median": "#a07263",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.342,
+     "median": "#6f97b1",
+     "nearest": "#4d7ed4",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "a part is missing or moved from where the part map puts it: crown (painted along 58% of its length)",
+    "a pigment slot is painted in another slot's colour: the body slot on the region-1 (painted #eacd81, the colour of second)"
+   ],
+   "outside": 0.011,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.821,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

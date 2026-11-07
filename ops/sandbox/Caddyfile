@@ -1,0 +1,54 @@
+# The sandbox web server's whole configuration. It ships in every release; deploy.sh checks it with `caddy validate`
+# before a release goes live and installs it at /etc/caddy/Caddyfile (a release without this file leaves the installed one alone).
+#   /studio/login and /studio/logout   the login (login/mb_login.py, unit mb-login) on 127.0.0.1:8791
+#   every other /studio path           only with a session: the login's /check says yes (and names the user), then the studio
+#                                      on the private bridge answers; the studio sees X-Studio-User only from here, never the
+#                                      browser's cookies, and none of its answers may be kept by a shared cache
+#   /caddy-api/*                       the Caddy service; /sandbox/*, /play/* and the site: the release, static
+# Two values come from the web server's environment (install.sh writes them to a file the Caddy unit and deploy.sh both read): MB_ROOT, the
+# directory that holds releases/ and current, and MB_STUDIO, the studio's host:port on the private bridge.
+# `encode` stays off the studio so nothing buffers its event stream; `route` keeps the header strip ahead of the check.
+:80 {
+	@studio path /studio /studio/*
+
+	handle /studio/login* {
+		reverse_proxy 127.0.0.1:8791
+	}
+	handle /studio/logout {
+		reverse_proxy 127.0.0.1:8791
+	}
+	handle @studio {
+		route {
+			request_header -X-Studio-User
+			forward_auth 127.0.0.1:8791 {
+				uri /check
+				copy_headers X-Studio-User
+			}
+			header X-Robots-Tag noindex
+			# no shared cache keeps a studio answer (the CDN caches some file types by default and would serve them without the login):
+			# "private" goes in front of whatever the studio says, or "private, no-cache" when it says nothing
+			header ?Cache-Control "private, no-cache"
+			header {
+				Cache-Control "^(private, *)?" "private, "
+				defer
+			}
+			# the session cookie stays here; the studio can set none on the site
+			reverse_proxy {$MB_STUDIO} {
+				flush_interval -1
+				header_up -Cookie
+				header_down -Set-Cookie
+			}
+		}
+	}
+	handle /caddy-api/* {
+		reverse_proxy localhost:8787
+	}
+	handle {
+		root * {$MB_ROOT}/current
+		encode gzip
+		header /build.json Cache-Control "no-store"
+		header /sandbox/* Cache-Control "no-cache"
+		header /play/* Cache-Control "no-cache"
+		file_server
+	}
+}

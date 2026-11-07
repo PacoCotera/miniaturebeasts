@@ -1,0 +1,217 @@
+{
+ "$comment": "The props of the Probe bench (lvgl-switch.md §2.1, §4 P; bench.json): what views/bench-props.mjs gives the face, beside the frame's. Props name what, never where: the state, the tier's whole plates, the switch's and the slot's states and lamps, picture ids and the focus targets by id; no rectangle, no colour, no top-level tier (the words place everything from bench.json: the plates' places by the tier, the part by the slot's state). The fixed pictures (the plates, the knob, the socket, the part, the adds) are bench.json's, read by the face and listed in the view's requests.",
+ "type": "object",
+ "required": [
+  "state",
+  "regions",
+  "focus"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "state": {
+   "enum": [
+    "docked",
+    "away"
+   ]
+  },
+  "regions": {
+   "type": "object",
+   "required": [
+    "bench",
+    "cradle",
+    "strip",
+    "switch",
+    "slot"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "bench": {
+     "type": "object",
+     "required": [
+      "room"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "room": {
+       "type": "array",
+       "minItems": 1,
+       "maxItems": 1,
+       "items": {
+        "type": "string",
+        "minLength": 1
+       }
+      }
+     }
+    },
+    "cradle": {
+     "type": "object",
+     "required": [
+      "picture"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "type": "string",
+       "minLength": 1
+      }
+     }
+    },
+    "strip": {
+     "type": "object",
+     "required": [
+      "picture",
+      "tier"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "type": "string",
+       "minLength": 1
+      },
+      "tier": {
+       "enum": [
+        1,
+        2
+       ]
+      }
+     }
+    },
+    "plates": {
+     "type": "object",
+     "required": [
+      "tier",
+      "whole"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "tier": {
+       "enum": [
+        1,
+        2
+       ]
+      },
+      "whole": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 4
+      }
+     }
+    },
+    "switch": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "lamp",
+      "count",
+      "whole"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "off",
+        "on"
+       ]
+      },
+      "lamp": {
+       "enum": [
+        "off",
+        "well"
+       ]
+      },
+      "count": {
+       "enum": [
+        3,
+        4
+       ]
+      },
+      "whole": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 4
+      }
+     }
+    },
+    "slot": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "lamp"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "dim",
+        "ready",
+        "fitted"
+       ]
+      },
+      "lamp": {
+       "enum": [
+        "off",
+        "well"
+       ]
+      }
+     }
+    }
+   }
+  },
+  "focus": {
+   "type": "object",
+   "required": [
+    "cur",
+    "targets"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "cur": {
+     "enum": [
+      "plates",
+      "switch",
+      "slot"
+     ]
+    },
+    "targets": {
+     "type": "array",
+     "maxItems": 3,
+     "items": {
+      "type": "object",
+      "required": [
+       "id",
+       "group",
+       "enabled"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "id": {
+        "enum": [
+         "plates",
+         "switch",
+         "slot"
+        ]
+       },
+       "group": {
+        "enum": [
+         "plates",
+         "module"
+        ]
+       },
+       "enabled": {
+        "type": "boolean"
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

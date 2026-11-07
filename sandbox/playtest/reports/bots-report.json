@@ -1,0 +1,8021 @@
+{
+ "meta": {
+  "games": 20,
+  "turns": 30,
+  "presses": 60,
+  "economy": "strict",
+  "face": "native",
+  "seed0": 1,
+  "policies": [
+   "random",
+   "greedy",
+   "hoarder",
+   "speedrunner"
+  ],
+  "turnMinutes": 20,
+  "trips": "stub",
+  "stub": "stub trips: Energy 2-4, Data 4-12, Essence 1-3, 1-3 pods of Loika/Tuikis/Untuva a trip (assumed, not measured)"
+ },
+ "policies": {
+  "random": {
+   "policy": "random",
+   "games": 20,
+   "finished": 20,
+   "crashed": [],
+   "presses": {
+    "min": 1800,
+    "median": 1800,
+    "max": 1800
+   },
+   "hatched": {
+    "min": 6,
+    "median": 8,
+    "max": 9
+   },
+   "firstHatch": {
+    "reached": 20,
+    "of": 20,
+    "turn": {
+     "min": 1,
+     "median": 3.5,
+     "max": 10
+    },
+    "minutes": {
+     "min": 0,
+     "median": 50,
+     "max": 180
+    },
+    "presses": {
+     "min": 26,
+     "median": 187,
+     "max": 558
+    }
+   },
+   "firstElder": {
+    "reached": 20,
+    "of": 20,
+    "turn": {
+     "min": 19,
+     "median": 21.5,
+     "max": 28
+    },
+    "minutes": {
+     "min": 380,
+     "median": 430,
+     "max": 560
+    },
+    "presses": {
+     "min": 1140,
+     "median": 1290,
+     "max": 1680
+    }
+   },
+   "energy": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 1.65,
+      "min": 0,
+      "max": 4
+     },
+     {
+      "turn": 2,
+      "mean": 5.15,
+      "min": 3,
+      "max": 8
+     },
+     {
+      "turn": 3,
+      "mean": 7.3,
+      "min": 3,
+      "max": 11
+     },
+     {
+      "turn": 4,
+      "mean": 10.3,
+      "min": 7,
+      "max": 15
+     },
+     {
+      "turn": 5,
+      "mean": 12.05,
+      "min": 8,
+      "max": 17
+     },
+     {
+      "turn": 6,
+      "mean": 13.95,
+      "min": 9,
+      "max": 19
+     },
+     {
+      "turn": 7,
+      "mean": 15.45,
+      "min": 11,
+      "max": 23
+     },
+     {
+      "turn": 8,
+      "mean": 17.4,
+      "min": 11,
+      "max": 26
+     },
+     {
+      "turn": 9,
+      "mean": 20,
+      "min": 14,
+      "max": 26
+     },
+     {
+      "turn": 10,
+      "mean": 22.5,
+      "min": 16,
+      "max": 28
+     },
+     {
+      "turn": 11,
+      "mean": 24.45,
+      "min": 18,
+      "max": 28
+     },
+     {
+      "turn": 12,
+      "mean": 26.9,
+      "min": 20,
+      "max": 34
+     },
+     {
+      "turn": 13,
+      "mean": 28.55,
+      "min": 20,
+      "max": 35
+     },
+     {
+      "turn": 14,
+      "mean": 31.95,
+      "min": 23,
+      "max": 36
+     },
+     {
+      "turn": 15,
+      "mean": 33.65,
+      "min": 26,
+      "max": 40
+     },
+     {
+      "turn": 16,
+      "mean": 36.2,
+      "min": 30,
+      "max": 42
+     },
+     {
+      "turn": 17,
+      "mean": 38.1,
+      "min": 30,
+      "max": 46
+     },
+     {
+      "turn": 18,
+      "mean": 40.45,
+      "min": 32,
+      "max": 49
+     },
+     {
+      "turn": 19,
+      "mean": 43.35,
+      "min": 34,
+      "max": 52
+     },
+     {
+      "turn": 20,
+      "mean": 46.65,
+      "min": 38,
+      "max": 56
+     },
+     {
+      "turn": 21,
+      "mean": 48.3,
+      "min": 38,
+      "max": 56
+     },
+     {
+      "turn": 22,
+      "mean": 50.55,
+      "min": 42,
+      "max": 59
+     },
+     {
+      "turn": 23,
+      "mean": 52.95,
+      "min": 45,
+      "max": 63
+     },
+     {
+      "turn": 24,
+      "mean": 55.3,
+      "min": 45,
+      "max": 64
+     },
+     {
+      "turn": 25,
+      "mean": 57.3,
+      "min": 48,
+      "max": 66
+     },
+     {
+      "turn": 26,
+      "mean": 60.15,
+      "min": 49,
+      "max": 69
+     },
+     {
+      "turn": 27,
+      "mean": 61.55,
+      "min": 51,
+      "max": 72
+     },
+     {
+      "turn": 28,
+      "mean": 64,
+      "min": 54,
+      "max": 74
+     },
+     {
+      "turn": 29,
+      "mean": 65.15,
+      "min": 48,
+      "max": 76
+     },
+     {
+      "turn": 30,
+      "mean": 67.5,
+      "min": 52,
+      "max": 80
+     }
+    ],
+    "peak": 80,
+    "shareOver20": 0.71
+   },
+   "data": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 5.45,
+      "min": 0,
+      "max": 12
+     },
+     {
+      "turn": 2,
+      "mean": 16.1,
+      "min": 8,
+      "max": 22
+     },
+     {
+      "turn": 3,
+      "mean": 20.5,
+      "min": 14,
+      "max": 29
+     },
+     {
+      "turn": 4,
+      "mean": 28.5,
+      "min": 16,
+      "max": 37
+     },
+     {
+      "turn": 5,
+      "mean": 34,
+      "min": 21,
+      "max": 46
+     },
+     {
+      "turn": 6,
+      "mean": 42.15,
+      "min": 28,
+      "max": 52
+     },
+     {
+      "turn": 7,
+      "mean": 47.55,
+      "min": 36,
+      "max": 58
+     },
+     {
+      "turn": 8,
+      "mean": 53.8,
+      "min": 36,
+      "max": 68
+     },
+     {
+      "turn": 9,
+      "mean": 63.65,
+      "min": 46,
+      "max": 78
+     },
+     {
+      "turn": 10,
+      "mean": 71.8,
+      "min": 60,
+      "max": 84
+     },
+     {
+      "turn": 11,
+      "mean": 77.05,
+      "min": 60,
+      "max": 87
+     },
+     {
+      "turn": 12,
+      "mean": 84.35,
+      "min": 67,
+      "max": 96
+     },
+     {
+      "turn": 13,
+      "mean": 88.4,
+      "min": 75,
+      "max": 103
+     },
+     {
+      "turn": 14,
+      "mean": 98.8,
+      "min": 78,
+      "max": 115
+     },
+     {
+      "turn": 15,
+      "mean": 105.1,
+      "min": 76,
+      "max": 122
+     },
+     {
+      "turn": 16,
+      "mean": 112.3,
+      "min": 87,
+      "max": 131
+     },
+     {
+      "turn": 17,
+      "mean": 117.6,
+      "min": 96,
+      "max": 138
+     },
+     {
+      "turn": 18,
+      "mean": 124.5,
+      "min": 94,
+      "max": 141
+     },
+     {
+      "turn": 19,
+      "mean": 133.55,
+      "min": 117,
+      "max": 158
+     },
+     {
+      "turn": 20,
+      "mean": 142.25,
+      "min": 125,
+      "max": 161
+     },
+     {
+      "turn": 21,
+      "mean": 147.45,
+      "min": 124,
+      "max": 165
+     },
+     {
+      "turn": 22,
+      "mean": 153.2,
+      "min": 123,
+      "max": 177
+     },
+     {
+      "turn": 23,
+      "mean": 160.55,
+      "min": 143,
+      "max": 186
+     },
+     {
+      "turn": 24,
+      "mean": 167.85,
+      "min": 148,
+      "max": 198
+     },
+     {
+      "turn": 25,
+      "mean": 173.95,
+      "min": 149,
+      "max": 208
+     },
+     {
+      "turn": 26,
+      "mean": 182.35,
+      "min": 163,
+      "max": 208
+     },
+     {
+      "turn": 27,
+      "mean": 189.65,
+      "min": 167,
+      "max": 225
+     },
+     {
+      "turn": 28,
+      "mean": 196.85,
+      "min": 167,
+      "max": 225
+     },
+     {
+      "turn": 29,
+      "mean": 203.9,
+      "min": 180,
+      "max": 237
+     },
+     {
+      "turn": 30,
+      "mean": 210.45,
+      "min": 189,
+      "max": 247
+     }
+    ],
+    "peak": 247,
+    "shareOver20": 0.917
+   },
+   "essence": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 1.05,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 2,
+      "mean": 3.1,
+      "min": 1,
+      "max": 6
+     },
+     {
+      "turn": 3,
+      "mean": 4.65,
+      "min": 1,
+      "max": 9
+     },
+     {
+      "turn": 4,
+      "mean": 6.8,
+      "min": 3,
+      "max": 11
+     },
+     {
+      "turn": 5,
+      "mean": 6.75,
+      "min": 2,
+      "max": 12
+     },
+     {
+      "turn": 6,
+      "mean": 7.55,
+      "min": 1,
+      "max": 12
+     },
+     {
+      "turn": 7,
+      "mean": 7.55,
+      "min": 2,
+      "max": 13
+     },
+     {
+      "turn": 8,
+      "mean": 7.85,
+      "min": 1,
+      "max": 14
+     },
+     {
+      "turn": 9,
+      "mean": 8.4,
+      "min": 1,
+      "max": 16
+     },
+     {
+      "turn": 10,
+      "mean": 8.7,
+      "min": 0,
+      "max": 17
+     },
+     {
+      "turn": 11,
+      "mean": 8.8,
+      "min": 3,
+      "max": 17
+     },
+     {
+      "turn": 12,
+      "mean": 9.95,
+      "min": 1,
+      "max": 19
+     },
+     {
+      "turn": 13,
+      "mean": 10.25,
+      "min": 0,
+      "max": 20
+     },
+     {
+      "turn": 14,
+      "mean": 9.9,
+      "min": 2,
+      "max": 22
+     },
+     {
+      "turn": 15,
+      "mean": 9.9,
+      "min": 2,
+      "max": 25
+     },
+     {
+      "turn": 16,
+      "mean": 9.8,
+      "min": 1,
+      "max": 18
+     },
+     {
+      "turn": 17,
+      "mean": 9.8,
+      "min": 0,
+      "max": 22
+     },
+     {
+      "turn": 18,
+      "mean": 9.95,
+      "min": 0,
+      "max": 23
+     },
+     {
+      "turn": 19,
+      "mean": 11.05,
+      "min": 2,
+      "max": 25
+     },
+     {
+      "turn": 20,
+      "mean": 12.55,
+      "min": 4,
+      "max": 27
+     },
+     {
+      "turn": 21,
+      "mean": 11.55,
+      "min": 2,
+      "max": 26
+     },
+     {
+      "turn": 22,
+      "mean": 12.35,
+      "min": 3,
+      "max": 22
+     },
+     {
+      "turn": 23,
+      "mean": 13,
+      "min": 2,
+      "max": 27
+     },
+     {
+      "turn": 24,
+      "mean": 13.85,
+      "min": 2,
+      "max": 24
+     },
+     {
+      "turn": 25,
+      "mean": 13,
+      "min": 3,
+      "max": 25
+     },
+     {
+      "turn": 26,
+      "mean": 13.8,
+      "min": 0,
+      "max": 25
+     },
+     {
+      "turn": 27,
+      "mean": 14.45,
+      "min": 3,
+      "max": 27
+     },
+     {
+      "turn": 28,
+      "mean": 15.3,
+      "min": 4,
+      "max": 29
+     },
+     {
+      "turn": 29,
+      "mean": 16.4,
+      "min": 0,
+      "max": 32
+     },
+     {
+      "turn": 30,
+      "mean": 16.05,
+      "min": 2,
+      "max": 33
+     }
+    ],
+    "peak": 33,
+    "shareOver20": 0.098
+   },
+   "pods": {
+    "received": 1243,
+    "neverRead": 1170,
+    "neverReadShare": 0.941,
+    "grown": 166,
+    "letGo": 23,
+    "heldAtEnd": {
+     "min": 41,
+     "median": 52.5,
+     "max": 60
+    },
+    "heldPeak": 60
+   },
+   "stuck": {
+    "games": 20,
+    "total": 270,
+    "byKind": {
+     "same-hash": 270
+    },
+    "byPlace": {
+     "home.home": 20,
+     "vivarium.empty": 63,
+     "library.all": 3,
+     "habitat.rest": 81,
+     "create.nothingRead": 59,
+     "pods.chapter": 15,
+     "library.species.sheet": 1,
+     "library.family.compare": 2,
+     "cargo.bay": 2,
+     "library.species.lit": 1,
+     "incubator.growing": 6,
+     "pods.collection": 2,
+     "create.shape": 5,
+     "pods.overview": 3,
+     "pods.compare": 4,
+     "vivarium.rest": 2,
+     "bench.docked": 1
+    },
+    "softLocks": []
+   },
+   "screens": {
+    "reached": [
+     "bench",
+     "cargo",
+     "cargo.arrival",
+     "cargo.bay",
+     "cargo.end",
+     "cargo.opening",
+     "create",
+     "habitat",
+     "home",
+     "incubator",
+     "library",
+     "library.all",
+     "library.family",
+     "library.species",
+     "pods",
+     "pods.chapter",
+     "pods.collection",
+     "pods.compare",
+     "pods.overview",
+     "vivarium"
+    ],
+    "neverReached": [
+     "sitting"
+    ]
+   }
+  },
+  "greedy": {
+   "policy": "greedy",
+   "games": 20,
+   "finished": 20,
+   "crashed": [],
+   "presses": {
+    "min": 1432,
+    "median": 1460,
+    "max": 1466
+   },
+   "hatched": {
+    "min": 8,
+    "median": 8,
+    "max": 8
+   },
+   "firstHatch": {
+    "reached": 20,
+    "of": 20,
+    "turn": {
+     "min": 1,
+     "median": 2,
+     "max": 2
+    },
+    "minutes": {
+     "min": 0,
+     "median": 25,
+     "max": 25
+    },
+    "presses": {
+     "min": 16,
+     "median": 35,
+     "max": 49
+    }
+   },
+   "firstElder": {
+    "reached": 20,
+    "of": 20,
+    "turn": {
+     "min": 19,
+     "median": 20,
+     "max": 20
+    },
+    "minutes": {
+     "min": 520,
+     "median": 545,
+     "max": 545
+    },
+    "presses": {
+     "min": 801,
+     "median": 857,
+     "max": 863
+    }
+   },
+   "energy": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 0.85,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 2,
+      "mean": 3.95,
+      "min": 2,
+      "max": 6
+     },
+     {
+      "turn": 3,
+      "mean": 5.4,
+      "min": 3,
+      "max": 9
+     },
+     {
+      "turn": 4,
+      "mean": 8.1,
+      "min": 6,
+      "max": 11
+     },
+     {
+      "turn": 5,
+      "mean": 9.35,
+      "min": 6,
+      "max": 13
+     },
+     {
+      "turn": 6,
+      "mean": 11.65,
+      "min": 8,
+      "max": 15
+     },
+     {
+      "turn": 7,
+      "mean": 13.3,
+      "min": 8,
+      "max": 19
+     },
+     {
+      "turn": 8,
+      "mean": 15.85,
+      "min": 10,
+      "max": 19
+     },
+     {
+      "turn": 9,
+      "mean": 17.35,
+      "min": 12,
+      "max": 22
+     },
+     {
+      "turn": 10,
+      "mean": 19.75,
+      "min": 16,
+      "max": 24
+     },
+     {
+      "turn": 11,
+      "mean": 21.5,
+      "min": 18,
+      "max": 26
+     },
+     {
+      "turn": 12,
+      "mean": 23.75,
+      "min": 20,
+      "max": 28
+     },
+     {
+      "turn": 13,
+      "mean": 25.35,
+      "min": 21,
+      "max": 31
+     },
+     {
+      "turn": 14,
+      "mean": 27.65,
+      "min": 23,
+      "max": 31
+     },
+     {
+      "turn": 15,
+      "mean": 29.2,
+      "min": 24,
+      "max": 34
+     },
+     {
+      "turn": 16,
+      "mean": 31.4,
+      "min": 26,
+      "max": 35
+     },
+     {
+      "turn": 17,
+      "mean": 34.45,
+      "min": 30,
+      "max": 38
+     },
+     {
+      "turn": 18,
+      "mean": 37.2,
+      "min": 33,
+      "max": 41
+     },
+     {
+      "turn": 19,
+      "mean": 40.2,
+      "min": 36,
+      "max": 44
+     },
+     {
+      "turn": 20,
+      "mean": 43.35,
+      "min": 38,
+      "max": 48
+     },
+     {
+      "turn": 21,
+      "mean": 46.45,
+      "min": 41,
+      "max": 50
+     },
+     {
+      "turn": 22,
+      "mean": 49.25,
+      "min": 43,
+      "max": 53
+     },
+     {
+      "turn": 23,
+      "mean": 52.25,
+      "min": 46,
+      "max": 57
+     },
+     {
+      "turn": 24,
+      "mean": 55.2,
+      "min": 48,
+      "max": 59
+     },
+     {
+      "turn": 25,
+      "mean": 58.2,
+      "min": 52,
+      "max": 63
+     },
+     {
+      "turn": 26,
+      "mean": 61.2,
+      "min": 56,
+      "max": 65
+     },
+     {
+      "turn": 27,
+      "mean": 64.25,
+      "min": 59,
+      "max": 68
+     },
+     {
+      "turn": 28,
+      "mean": 67,
+      "min": 61,
+      "max": 72
+     },
+     {
+      "turn": 29,
+      "mean": 69.95,
+      "min": 65,
+      "max": 76
+     },
+     {
+      "turn": 30,
+      "mean": 73.25,
+      "min": 69,
+      "max": 80
+     }
+    ],
+    "peak": 80,
+    "shareOver20": 0.67
+   },
+   "data": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 7.5,
+      "min": 3,
+      "max": 11
+     },
+     {
+      "turn": 2,
+      "mean": 4.7,
+      "min": 0,
+      "max": 12
+     },
+     {
+      "turn": 3,
+      "mean": 11.8,
+      "min": 4,
+      "max": 24
+     },
+     {
+      "turn": 4,
+      "mean": 11.25,
+      "min": 0,
+      "max": 23
+     },
+     {
+      "turn": 5,
+      "mean": 16.95,
+      "min": 7,
+      "max": 31
+     },
+     {
+      "turn": 6,
+      "mean": 17.9,
+      "min": 5,
+      "max": 35
+     },
+     {
+      "turn": 7,
+      "mean": 24.7,
+      "min": 9,
+      "max": 40
+     },
+     {
+      "turn": 8,
+      "mean": 27.5,
+      "min": 11,
+      "max": 46
+     },
+     {
+      "turn": 9,
+      "mean": 35.25,
+      "min": 22,
+      "max": 53
+     },
+     {
+      "turn": 10,
+      "mean": 37.65,
+      "min": 23,
+      "max": 57
+     },
+     {
+      "turn": 11,
+      "mean": 42.65,
+      "min": 31,
+      "max": 61
+     },
+     {
+      "turn": 12,
+      "mean": 46.1,
+      "min": 32,
+      "max": 68
+     },
+     {
+      "turn": 13,
+      "mean": 50.9,
+      "min": 36,
+      "max": 73
+     },
+     {
+      "turn": 14,
+      "mean": 53.45,
+      "min": 33,
+      "max": 74
+     },
+     {
+      "turn": 15,
+      "mean": 60,
+      "min": 41,
+      "max": 80
+     },
+     {
+      "turn": 16,
+      "mean": 63.8,
+      "min": 42,
+      "max": 89
+     },
+     {
+      "turn": 17,
+      "mean": 68.9,
+      "min": 47,
+      "max": 95
+     },
+     {
+      "turn": 18,
+      "mean": 76.7,
+      "min": 57,
+      "max": 102
+     },
+     {
+      "turn": 19,
+      "mean": 84,
+      "min": 66,
+      "max": 114
+     },
+     {
+      "turn": 20,
+      "mean": 91.45,
+      "min": 72,
+      "max": 118
+     },
+     {
+      "turn": 21,
+      "mean": 98.8,
+      "min": 82,
+      "max": 130
+     },
+     {
+      "turn": 22,
+      "mean": 106.55,
+      "min": 88,
+      "max": 135
+     },
+     {
+      "turn": 23,
+      "mean": 114.4,
+      "min": 92,
+      "max": 144
+     },
+     {
+      "turn": 24,
+      "mean": 122.75,
+      "min": 100,
+      "max": 156
+     },
+     {
+      "turn": 25,
+      "mean": 130.9,
+      "min": 109,
+      "max": 166
+     },
+     {
+      "turn": 26,
+      "mean": 138.9,
+      "min": 115,
+      "max": 174
+     },
+     {
+      "turn": 27,
+      "mean": 146.1,
+      "min": 125,
+      "max": 183
+     },
+     {
+      "turn": 28,
+      "mean": 154,
+      "min": 133,
+      "max": 188
+     },
+     {
+      "turn": 29,
+      "mean": 161.15,
+      "min": 140,
+      "max": 195
+     },
+     {
+      "turn": 30,
+      "mean": 168.75,
+      "min": 146,
+      "max": 205
+     }
+    ],
+    "peak": 205,
+    "shareOver20": 0.812
+   },
+   "essence": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 0.95,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 2,
+      "mean": 2.75,
+      "min": 1,
+      "max": 5
+     },
+     {
+      "turn": 3,
+      "mean": 1.7,
+      "min": 0,
+      "max": 4
+     },
+     {
+      "turn": 4,
+      "mean": 3,
+      "min": 1,
+      "max": 7
+     },
+     {
+      "turn": 5,
+      "mean": 1.8,
+      "min": 0,
+      "max": 5
+     },
+     {
+      "turn": 6,
+      "mean": 2.95,
+      "min": 0,
+      "max": 6
+     },
+     {
+      "turn": 7,
+      "mean": 1.95,
+      "min": 0,
+      "max": 4
+     },
+     {
+      "turn": 8,
+      "mean": 3,
+      "min": 0,
+      "max": 6
+     },
+     {
+      "turn": 9,
+      "mean": 2.3,
+      "min": 0,
+      "max": 5
+     },
+     {
+      "turn": 10,
+      "mean": 3.45,
+      "min": 0,
+      "max": 8
+     },
+     {
+      "turn": 11,
+      "mean": 2.9,
+      "min": 0,
+      "max": 7
+     },
+     {
+      "turn": 12,
+      "mean": 4.1,
+      "min": 1,
+      "max": 9
+     },
+     {
+      "turn": 13,
+      "mean": 3.15,
+      "min": 0,
+      "max": 7
+     },
+     {
+      "turn": 14,
+      "mean": 4.05,
+      "min": 1,
+      "max": 9
+     },
+     {
+      "turn": 15,
+      "mean": 3.3,
+      "min": 0,
+      "max": 8
+     },
+     {
+      "turn": 16,
+      "mean": 3.8,
+      "min": 0,
+      "max": 10
+     },
+     {
+      "turn": 17,
+      "mean": 5.75,
+      "min": 1,
+      "max": 11
+     },
+     {
+      "turn": 18,
+      "mean": 7.3,
+      "min": 1,
+      "max": 13
+     },
+     {
+      "turn": 19,
+      "mean": 9.25,
+      "min": 4,
+      "max": 16
+     },
+     {
+      "turn": 20,
+      "mean": 11.2,
+      "min": 5,
+      "max": 19
+     },
+     {
+      "turn": 21,
+      "mean": 13.45,
+      "min": 7,
+      "max": 22
+     },
+     {
+      "turn": 22,
+      "mean": 15.5,
+      "min": 9,
+      "max": 24
+     },
+     {
+      "turn": 23,
+      "mean": 17.8,
+      "min": 11,
+      "max": 27
+     },
+     {
+      "turn": 24,
+      "mean": 19.55,
+      "min": 13,
+      "max": 29
+     },
+     {
+      "turn": 25,
+      "mean": 21.55,
+      "min": 15,
+      "max": 31
+     },
+     {
+      "turn": 26,
+      "mean": 23.4,
+      "min": 16,
+      "max": 33
+     },
+     {
+      "turn": 27,
+      "mean": 25.45,
+      "min": 17,
+      "max": 36
+     },
+     {
+      "turn": 28,
+      "mean": 27.4,
+      "min": 20,
+      "max": 37
+     },
+     {
+      "turn": 29,
+      "mean": 29.6,
+      "min": 21,
+      "max": 40
+     },
+     {
+      "turn": 30,
+      "mean": 31.5,
+      "min": 23,
+      "max": 42
+     }
+    ],
+    "peak": 42,
+    "shareOver20": 0.198
+   },
+   "pods": {
+    "received": 1251,
+    "neverRead": 1091,
+    "neverReadShare": 0.872,
+    "grown": 160,
+    "letGo": 0,
+    "heldAtEnd": {
+     "min": 45,
+     "median": 55.5,
+     "max": 63
+    },
+    "heldPeak": 63
+   },
+   "stuck": {
+    "games": 0,
+    "total": 0,
+    "byKind": {},
+    "byPlace": {},
+    "softLocks": []
+   },
+   "screens": {
+    "reached": [
+     "cargo",
+     "cargo.arrival",
+     "cargo.end",
+     "cargo.opening",
+     "create",
+     "habitat",
+     "home",
+     "incubator",
+     "pods",
+     "pods.chapter",
+     "pods.collection",
+     "pods.overview"
+    ],
+    "neverReached": [
+     "vivarium",
+     "library",
+     "library.species",
+     "library.family",
+     "bench",
+     "sitting"
+    ]
+   }
+  },
+  "hoarder": {
+   "policy": "hoarder",
+   "games": 20,
+   "finished": 20,
+   "crashed": [],
+   "presses": {
+    "min": 210,
+    "median": 210,
+    "max": 210
+   },
+   "hatched": {
+    "min": 0,
+    "median": 0,
+    "max": 0
+   },
+   "firstHatch": {
+    "reached": 0,
+    "of": 20,
+    "turn": null,
+    "minutes": null,
+    "presses": null
+   },
+   "firstElder": {
+    "reached": 0,
+    "of": 20,
+    "turn": null,
+    "minutes": null,
+    "presses": null
+   },
+   "energy": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 2.85,
+      "min": 2,
+      "max": 4
+     },
+     {
+      "turn": 2,
+      "mean": 5.95,
+      "min": 4,
+      "max": 8
+     },
+     {
+      "turn": 3,
+      "mean": 9.1,
+      "min": 7,
+      "max": 11
+     },
+     {
+      "turn": 4,
+      "mean": 12.1,
+      "min": 10,
+      "max": 15
+     },
+     {
+      "turn": 5,
+      "mean": 14.85,
+      "min": 12,
+      "max": 17
+     },
+     {
+      "turn": 6,
+      "mean": 17.55,
+      "min": 14,
+      "max": 21
+     },
+     {
+      "turn": 7,
+      "mean": 20.7,
+      "min": 16,
+      "max": 25
+     },
+     {
+      "turn": 8,
+      "mean": 23.65,
+      "min": 18,
+      "max": 27
+     },
+     {
+      "turn": 9,
+      "mean": 26.55,
+      "min": 22,
+      "max": 30
+     },
+     {
+      "turn": 10,
+      "mean": 29.45,
+      "min": 26,
+      "max": 34
+     },
+     {
+      "turn": 11,
+      "mean": 32.6,
+      "min": 30,
+      "max": 36
+     },
+     {
+      "turn": 12,
+      "mean": 35.35,
+      "min": 32,
+      "max": 40
+     },
+     {
+      "turn": 13,
+      "mean": 38.45,
+      "min": 35,
+      "max": 43
+     },
+     {
+      "turn": 14,
+      "mean": 41.25,
+      "min": 37,
+      "max": 45
+     },
+     {
+      "turn": 15,
+      "mean": 44.1,
+      "min": 40,
+      "max": 48
+     },
+     {
+      "turn": 16,
+      "mean": 47,
+      "min": 42,
+      "max": 50
+     },
+     {
+      "turn": 17,
+      "mean": 50.25,
+      "min": 46,
+      "max": 54
+     },
+     {
+      "turn": 18,
+      "mean": 53.2,
+      "min": 49,
+      "max": 57
+     },
+     {
+      "turn": 19,
+      "mean": 56.2,
+      "min": 52,
+      "max": 60
+     },
+     {
+      "turn": 20,
+      "mean": 59.35,
+      "min": 54,
+      "max": 64
+     },
+     {
+      "turn": 21,
+      "mean": 62.45,
+      "min": 57,
+      "max": 66
+     },
+     {
+      "turn": 22,
+      "mean": 65.25,
+      "min": 59,
+      "max": 69
+     },
+     {
+      "turn": 23,
+      "mean": 68.25,
+      "min": 62,
+      "max": 73
+     },
+     {
+      "turn": 24,
+      "mean": 71.2,
+      "min": 64,
+      "max": 75
+     },
+     {
+      "turn": 25,
+      "mean": 74.2,
+      "min": 68,
+      "max": 79
+     },
+     {
+      "turn": 26,
+      "mean": 77.2,
+      "min": 72,
+      "max": 81
+     },
+     {
+      "turn": 27,
+      "mean": 80.25,
+      "min": 75,
+      "max": 84
+     },
+     {
+      "turn": 28,
+      "mean": 83,
+      "min": 77,
+      "max": 88
+     },
+     {
+      "turn": 29,
+      "mean": 85.95,
+      "min": 81,
+      "max": 92
+     },
+     {
+      "turn": 30,
+      "mean": 89.25,
+      "min": 85,
+      "max": 96
+     }
+    ],
+    "peak": 96,
+    "shareOver20": 0.785
+   },
+   "data": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 8.5,
+      "min": 4,
+      "max": 12
+     },
+     {
+      "turn": 2,
+      "mean": 18,
+      "min": 10,
+      "max": 24
+     },
+     {
+      "turn": 3,
+      "mean": 25.25,
+      "min": 18,
+      "max": 33
+     },
+     {
+      "turn": 4,
+      "mean": 33.65,
+      "min": 22,
+      "max": 41
+     },
+     {
+      "turn": 5,
+      "mean": 41.65,
+      "min": 28,
+      "max": 49
+     },
+     {
+      "turn": 6,
+      "mean": 50,
+      "min": 35,
+      "max": 59
+     },
+     {
+      "turn": 7,
+      "mean": 58.1,
+      "min": 47,
+      "max": 68
+     },
+     {
+      "turn": 8,
+      "mean": 66,
+      "min": 53,
+      "max": 79
+     },
+     {
+      "turn": 9,
+      "mean": 75.25,
+      "min": 63,
+      "max": 86
+     },
+     {
+      "turn": 10,
+      "mean": 83.4,
+      "min": 69,
+      "max": 94
+     },
+     {
+      "turn": 11,
+      "mean": 90.35,
+      "min": 73,
+      "max": 100
+     },
+     {
+      "turn": 12,
+      "mean": 98.8,
+      "min": 79,
+      "max": 111
+     },
+     {
+      "turn": 13,
+      "mean": 105.55,
+      "min": 85,
+      "max": 120
+     },
+     {
+      "turn": 14,
+      "mean": 113.65,
+      "min": 95,
+      "max": 130
+     },
+     {
+      "turn": 15,
+      "mean": 122.05,
+      "min": 100,
+      "max": 141
+     },
+     {
+      "turn": 16,
+      "mean": 129.55,
+      "min": 107,
+      "max": 150
+     },
+     {
+      "turn": 17,
+      "mean": 137.15,
+      "min": 117,
+      "max": 156
+     },
+     {
+      "turn": 18,
+      "mean": 145.4,
+      "min": 125,
+      "max": 168
+     },
+     {
+      "turn": 19,
+      "mean": 153.35,
+      "min": 135,
+      "max": 180
+     },
+     {
+      "turn": 20,
+      "mean": 160.8,
+      "min": 142,
+      "max": 184
+     },
+     {
+      "turn": 21,
+      "mean": 168.15,
+      "min": 149,
+      "max": 196
+     },
+     {
+      "turn": 22,
+      "mean": 175.9,
+      "min": 159,
+      "max": 201
+     },
+     {
+      "turn": 23,
+      "mean": 183.75,
+      "min": 167,
+      "max": 210
+     },
+     {
+      "turn": 24,
+      "mean": 192.1,
+      "min": 174,
+      "max": 222
+     },
+     {
+      "turn": 25,
+      "mean": 200.25,
+      "min": 183,
+      "max": 232
+     },
+     {
+      "turn": 26,
+      "mean": 208.25,
+      "min": 187,
+      "max": 240
+     },
+     {
+      "turn": 27,
+      "mean": 215.45,
+      "min": 191,
+      "max": 249
+     },
+     {
+      "turn": 28,
+      "mean": 223.35,
+      "min": 201,
+      "max": 254
+     },
+     {
+      "turn": 29,
+      "mean": 230.5,
+      "min": 206,
+      "max": 261
+     },
+     {
+      "turn": 30,
+      "mean": 238.1,
+      "min": 211,
+      "max": 271
+     }
+    ],
+    "peak": 271,
+    "shareOver20": 0.935
+   },
+   "essence": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 1.7,
+      "min": 1,
+      "max": 3
+     },
+     {
+      "turn": 2,
+      "mean": 3.5,
+      "min": 2,
+      "max": 6
+     },
+     {
+      "turn": 3,
+      "mean": 5.85,
+      "min": 3,
+      "max": 9
+     },
+     {
+      "turn": 4,
+      "mean": 7.75,
+      "min": 5,
+      "max": 11
+     },
+     {
+      "turn": 5,
+      "mean": 9.55,
+      "min": 7,
+      "max": 13
+     },
+     {
+      "turn": 6,
+      "mean": 11.5,
+      "min": 8,
+      "max": 15
+     },
+     {
+      "turn": 7,
+      "mean": 13.5,
+      "min": 11,
+      "max": 18
+     },
+     {
+      "turn": 8,
+      "mean": 15.35,
+      "min": 12,
+      "max": 19
+     },
+     {
+      "turn": 9,
+      "mean": 17.45,
+      "min": 13,
+      "max": 22
+     },
+     {
+      "turn": 10,
+      "mean": 19.6,
+      "min": 15,
+      "max": 25
+     },
+     {
+      "turn": 11,
+      "mean": 21.85,
+      "min": 16,
+      "max": 28
+     },
+     {
+      "turn": 12,
+      "mean": 24.05,
+      "min": 18,
+      "max": 30
+     },
+     {
+      "turn": 13,
+      "mean": 26.1,
+      "min": 21,
+      "max": 33
+     },
+     {
+      "turn": 14,
+      "mean": 28,
+      "min": 22,
+      "max": 34
+     },
+     {
+      "turn": 15,
+      "mean": 29.85,
+      "min": 23,
+      "max": 37
+     },
+     {
+      "turn": 16,
+      "mean": 31.75,
+      "min": 25,
+      "max": 39
+     },
+     {
+      "turn": 17,
+      "mean": 34.1,
+      "min": 27,
+      "max": 42
+     },
+     {
+      "turn": 18,
+      "mean": 36.05,
+      "min": 30,
+      "max": 44
+     },
+     {
+      "turn": 19,
+      "mean": 38,
+      "min": 32,
+      "max": 47
+     },
+     {
+      "turn": 20,
+      "mean": 39.95,
+      "min": 34,
+      "max": 50
+     },
+     {
+      "turn": 21,
+      "mean": 42.2,
+      "min": 35,
+      "max": 53
+     },
+     {
+      "turn": 22,
+      "mean": 44.25,
+      "min": 37,
+      "max": 55
+     },
+     {
+      "turn": 23,
+      "mean": 46.55,
+      "min": 39,
+      "max": 58
+     },
+     {
+      "turn": 24,
+      "mean": 48.3,
+      "min": 41,
+      "max": 60
+     },
+     {
+      "turn": 25,
+      "mean": 50.3,
+      "min": 43,
+      "max": 62
+     },
+     {
+      "turn": 26,
+      "mean": 52.15,
+      "min": 44,
+      "max": 64
+     },
+     {
+      "turn": 27,
+      "mean": 54.2,
+      "min": 45,
+      "max": 67
+     },
+     {
+      "turn": 28,
+      "mean": 56.15,
+      "min": 48,
+      "max": 68
+     },
+     {
+      "turn": 29,
+      "mean": 58.35,
+      "min": 49,
+      "max": 71
+     },
+     {
+      "turn": 30,
+      "mean": 60.25,
+      "min": 51,
+      "max": 73
+     }
+    ],
+    "peak": 73,
+    "shareOver20": 0.663
+   },
+   "pods": {
+    "received": 1251,
+    "neverRead": 1251,
+    "neverReadShare": 1,
+    "grown": 0,
+    "letGo": 0,
+    "heldAtEnd": {
+     "min": 53,
+     "median": 63.5,
+     "max": 71
+    },
+    "heldPeak": 71
+   },
+   "stuck": {
+    "games": 0,
+    "total": 0,
+    "byKind": {},
+    "byPlace": {},
+    "softLocks": []
+   },
+   "screens": {
+    "reached": [
+     "cargo",
+     "cargo.arrival",
+     "cargo.end",
+     "cargo.opening",
+     "home",
+     "library",
+     "library.all",
+     "pods",
+     "pods.collection",
+     "vivarium"
+    ],
+    "neverReached": [
+     "create",
+     "incubator",
+     "habitat",
+     "library.species",
+     "library.family",
+     "bench",
+     "sitting"
+    ]
+   }
+  },
+  "speedrunner": {
+   "policy": "speedrunner",
+   "games": 20,
+   "finished": 20,
+   "crashed": [],
+   "presses": {
+    "min": 135,
+    "median": 149,
+    "max": 163
+   },
+   "hatched": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "firstHatch": {
+    "reached": 20,
+    "of": 20,
+    "turn": {
+     "min": 1,
+     "median": 2,
+     "max": 2
+    },
+    "minutes": {
+     "min": 0,
+     "median": 25,
+     "max": 25
+    },
+    "presses": {
+     "min": 16,
+     "median": 34,
+     "max": 48
+    }
+   },
+   "firstElder": {
+    "reached": 20,
+    "of": 20,
+    "turn": {
+     "min": 19,
+     "median": 20,
+     "max": 20
+    },
+    "minutes": {
+     "min": 380,
+     "median": 405,
+     "max": 405
+    },
+    "presses": {
+     "min": 91,
+     "median": 109,
+     "max": 123
+    }
+   },
+   "energy": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 0.85,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 2,
+      "mean": 3.95,
+      "min": 2,
+      "max": 6
+     },
+     {
+      "turn": 3,
+      "mean": 7.1,
+      "min": 5,
+      "max": 9
+     },
+     {
+      "turn": 4,
+      "mean": 10.1,
+      "min": 8,
+      "max": 13
+     },
+     {
+      "turn": 5,
+      "mean": 12.85,
+      "min": 10,
+      "max": 15
+     },
+     {
+      "turn": 6,
+      "mean": 15.55,
+      "min": 12,
+      "max": 19
+     },
+     {
+      "turn": 7,
+      "mean": 18.7,
+      "min": 14,
+      "max": 23
+     },
+     {
+      "turn": 8,
+      "mean": 21.65,
+      "min": 16,
+      "max": 25
+     },
+     {
+      "turn": 9,
+      "mean": 24.55,
+      "min": 20,
+      "max": 28
+     },
+     {
+      "turn": 10,
+      "mean": 27.45,
+      "min": 24,
+      "max": 32
+     },
+     {
+      "turn": 11,
+      "mean": 30.6,
+      "min": 28,
+      "max": 34
+     },
+     {
+      "turn": 12,
+      "mean": 33.35,
+      "min": 30,
+      "max": 38
+     },
+     {
+      "turn": 13,
+      "mean": 36.45,
+      "min": 33,
+      "max": 41
+     },
+     {
+      "turn": 14,
+      "mean": 39.25,
+      "min": 35,
+      "max": 43
+     },
+     {
+      "turn": 15,
+      "mean": 42.1,
+      "min": 38,
+      "max": 46
+     },
+     {
+      "turn": 16,
+      "mean": 45,
+      "min": 40,
+      "max": 48
+     },
+     {
+      "turn": 17,
+      "mean": 48.25,
+      "min": 44,
+      "max": 52
+     },
+     {
+      "turn": 18,
+      "mean": 51.2,
+      "min": 47,
+      "max": 55
+     },
+     {
+      "turn": 19,
+      "mean": 54.2,
+      "min": 50,
+      "max": 58
+     },
+     {
+      "turn": 20,
+      "mean": 57.35,
+      "min": 52,
+      "max": 62
+     },
+     {
+      "turn": 21,
+      "mean": 60.45,
+      "min": 55,
+      "max": 64
+     },
+     {
+      "turn": 22,
+      "mean": 63.25,
+      "min": 57,
+      "max": 67
+     },
+     {
+      "turn": 23,
+      "mean": 66.25,
+      "min": 60,
+      "max": 71
+     },
+     {
+      "turn": 24,
+      "mean": 69.2,
+      "min": 62,
+      "max": 73
+     },
+     {
+      "turn": 25,
+      "mean": 72.2,
+      "min": 66,
+      "max": 77
+     },
+     {
+      "turn": 26,
+      "mean": 75.2,
+      "min": 70,
+      "max": 79
+     },
+     {
+      "turn": 27,
+      "mean": 78.25,
+      "min": 73,
+      "max": 82
+     },
+     {
+      "turn": 28,
+      "mean": 81,
+      "min": 75,
+      "max": 86
+     },
+     {
+      "turn": 29,
+      "mean": 83.95,
+      "min": 79,
+      "max": 90
+     },
+     {
+      "turn": 30,
+      "mean": 87.25,
+      "min": 83,
+      "max": 94
+     }
+    ],
+    "peak": 94,
+    "shareOver20": 0.762
+   },
+   "data": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 7.5,
+      "min": 3,
+      "max": 11
+     },
+     {
+      "turn": 2,
+      "mean": 15,
+      "min": 7,
+      "max": 21
+     },
+     {
+      "turn": 3,
+      "mean": 22.25,
+      "min": 15,
+      "max": 29
+     },
+     {
+      "turn": 4,
+      "mean": 30.65,
+      "min": 19,
+      "max": 37
+     },
+     {
+      "turn": 5,
+      "mean": 38.65,
+      "min": 25,
+      "max": 45
+     },
+     {
+      "turn": 6,
+      "mean": 47,
+      "min": 32,
+      "max": 53
+     },
+     {
+      "turn": 7,
+      "mean": 55.1,
+      "min": 44,
+      "max": 63
+     },
+     {
+      "turn": 8,
+      "mean": 63,
+      "min": 50,
+      "max": 75
+     },
+     {
+      "turn": 9,
+      "mean": 72.25,
+      "min": 60,
+      "max": 84
+     },
+     {
+      "turn": 10,
+      "mean": 80.4,
+      "min": 66,
+      "max": 92
+     },
+     {
+      "turn": 11,
+      "mean": 87.35,
+      "min": 70,
+      "max": 96
+     },
+     {
+      "turn": 12,
+      "mean": 95.8,
+      "min": 76,
+      "max": 107
+     },
+     {
+      "turn": 13,
+      "mean": 102.55,
+      "min": 82,
+      "max": 118
+     },
+     {
+      "turn": 14,
+      "mean": 110.65,
+      "min": 92,
+      "max": 124
+     },
+     {
+      "turn": 15,
+      "mean": 119.05,
+      "min": 99,
+      "max": 135
+     },
+     {
+      "turn": 16,
+      "mean": 126.55,
+      "min": 106,
+      "max": 144
+     },
+     {
+      "turn": 17,
+      "mean": 134.15,
+      "min": 116,
+      "max": 150
+     },
+     {
+      "turn": 18,
+      "mean": 142.4,
+      "min": 124,
+      "max": 162
+     },
+     {
+      "turn": 19,
+      "mean": 150.35,
+      "min": 134,
+      "max": 174
+     },
+     {
+      "turn": 20,
+      "mean": 157.8,
+      "min": 141,
+      "max": 178
+     },
+     {
+      "turn": 21,
+      "mean": 165.15,
+      "min": 148,
+      "max": 190
+     },
+     {
+      "turn": 22,
+      "mean": 172.9,
+      "min": 158,
+      "max": 195
+     },
+     {
+      "turn": 23,
+      "mean": 180.75,
+      "min": 165,
+      "max": 204
+     },
+     {
+      "turn": 24,
+      "mean": 189.1,
+      "min": 173,
+      "max": 216
+     },
+     {
+      "turn": 25,
+      "mean": 197.25,
+      "min": 182,
+      "max": 226
+     },
+     {
+      "turn": 26,
+      "mean": 205.25,
+      "min": 186,
+      "max": 234
+     },
+     {
+      "turn": 27,
+      "mean": 212.45,
+      "min": 190,
+      "max": 243
+     },
+     {
+      "turn": 28,
+      "mean": 220.35,
+      "min": 200,
+      "max": 248
+     },
+     {
+      "turn": 29,
+      "mean": 227.5,
+      "min": 205,
+      "max": 255
+     },
+     {
+      "turn": 30,
+      "mean": 235.1,
+      "min": 210,
+      "max": 265
+     }
+    ],
+    "peak": 265,
+    "shareOver20": 0.925
+   },
+   "essence": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 0.95,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 2,
+      "mean": 2.75,
+      "min": 1,
+      "max": 5
+     },
+     {
+      "turn": 3,
+      "mean": 5.1,
+      "min": 3,
+      "max": 8
+     },
+     {
+      "turn": 4,
+      "mean": 7,
+      "min": 5,
+      "max": 11
+     },
+     {
+      "turn": 5,
+      "mean": 8.8,
+      "min": 6,
+      "max": 13
+     },
+     {
+      "turn": 6,
+      "mean": 10.75,
+      "min": 7,
+      "max": 14
+     },
+     {
+      "turn": 7,
+      "mean": 12.75,
+      "min": 9,
+      "max": 16
+     },
+     {
+      "turn": 8,
+      "mean": 14.6,
+      "min": 11,
+      "max": 18
+     },
+     {
+      "turn": 9,
+      "mean": 16.7,
+      "min": 13,
+      "max": 21
+     },
+     {
+      "turn": 10,
+      "mean": 18.85,
+      "min": 14,
+      "max": 24
+     },
+     {
+      "turn": 11,
+      "mean": 21.1,
+      "min": 16,
+      "max": 27
+     },
+     {
+      "turn": 12,
+      "mean": 23.3,
+      "min": 18,
+      "max": 29
+     },
+     {
+      "turn": 13,
+      "mean": 25.35,
+      "min": 20,
+      "max": 31
+     },
+     {
+      "turn": 14,
+      "mean": 27.25,
+      "min": 21,
+      "max": 33
+     },
+     {
+      "turn": 15,
+      "mean": 29.1,
+      "min": 23,
+      "max": 36
+     },
+     {
+      "turn": 16,
+      "mean": 31,
+      "min": 24,
+      "max": 38
+     },
+     {
+      "turn": 17,
+      "mean": 33.35,
+      "min": 27,
+      "max": 39
+     },
+     {
+      "turn": 18,
+      "mean": 35.3,
+      "min": 29,
+      "max": 41
+     },
+     {
+      "turn": 19,
+      "mean": 37.25,
+      "min": 32,
+      "max": 44
+     },
+     {
+      "turn": 20,
+      "mean": 39.2,
+      "min": 33,
+      "max": 47
+     },
+     {
+      "turn": 21,
+      "mean": 41.45,
+      "min": 35,
+      "max": 50
+     },
+     {
+      "turn": 22,
+      "mean": 43.5,
+      "min": 37,
+      "max": 52
+     },
+     {
+      "turn": 23,
+      "mean": 45.8,
+      "min": 39,
+      "max": 55
+     },
+     {
+      "turn": 24,
+      "mean": 47.55,
+      "min": 41,
+      "max": 57
+     },
+     {
+      "turn": 25,
+      "mean": 49.55,
+      "min": 43,
+      "max": 59
+     },
+     {
+      "turn": 26,
+      "mean": 51.4,
+      "min": 44,
+      "max": 61
+     },
+     {
+      "turn": 27,
+      "mean": 53.45,
+      "min": 45,
+      "max": 64
+     },
+     {
+      "turn": 28,
+      "mean": 55.4,
+      "min": 48,
+      "max": 65
+     },
+     {
+      "turn": 29,
+      "mean": 57.6,
+      "min": 49,
+      "max": 68
+     },
+     {
+      "turn": 30,
+      "mean": 59.5,
+      "min": 51,
+      "max": 70
+     }
+    ],
+    "peak": 70,
+    "shareOver20": 0.653
+   },
+   "pods": {
+    "received": 1251,
+    "neverRead": 1251,
+    "neverReadShare": 1,
+    "grown": 20,
+    "letGo": 0,
+    "heldAtEnd": {
+     "min": 52,
+     "median": 62.5,
+     "max": 70
+    },
+    "heldPeak": 70
+   },
+   "stuck": {
+    "games": 0,
+    "total": 0,
+    "byKind": {},
+    "byPlace": {},
+    "softLocks": []
+   },
+   "screens": {
+    "reached": [
+     "cargo",
+     "cargo.arrival",
+     "cargo.end",
+     "cargo.opening",
+     "create",
+     "habitat",
+     "home",
+     "incubator",
+     "pods",
+     "pods.collection",
+     "pods.overview"
+    ],
+    "neverReached": [
+     "vivarium",
+     "library",
+     "library.species",
+     "library.family",
+     "bench",
+     "sitting"
+    ]
+   }
+  }
+ },
+ "screensNeverReached": [
+  "sitting"
+ ],
+ "games": [
+  {
+   "policy": "random",
+   "seed": 1,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 4,
+    "press": 203,
+    "minutes": 60
+   },
+   "firstElder": {
+    "turn": 22,
+    "press": 1320,
+    "minutes": 440
+   },
+   "screens": {
+    "cargo": 65,
+    "cargo.arrival": 25,
+    "cargo.end": 7,
+    "pods": 452,
+    "pods.collection": 264,
+    "pods.overview": 170,
+    "library.species": 108,
+    "library": 104,
+    "library.all": 104,
+    "home": 306,
+    "cargo.bay": 13,
+    "vivarium": 164,
+    "incubator": 24,
+    "cargo.opening": 20,
+    "create": 146,
+    "habitat": 350,
+    "pods.chapter": 18,
+    "library.family": 60,
+    "bench": 21
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 36
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 44
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 56
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 86
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 133
+    },
+    {
+     "turn": 5,
+     "kind": "same-hash",
+     "screen": "library",
+     "state": "all",
+     "presses": 249
+    },
+    {
+     "turn": 12,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 700
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 796
+    },
+    {
+     "turn": 16,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 933
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 997
+    },
+    {
+     "turn": 18,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1032
+    },
+    {
+     "turn": 25,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1496
+    },
+    {
+     "turn": 26,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1523
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 58,
+    "neverRead": 54,
+    "heldEnd": 50
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 2,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 10,
+    "press": 558,
+    "minutes": 180
+   },
+   "firstElder": {
+    "turn": 28,
+    "press": 1680,
+    "minutes": 560
+   },
+   "screens": {
+    "cargo": 74,
+    "cargo.arrival": 31,
+    "home": 234,
+    "library": 153,
+    "library.all": 153,
+    "vivarium": 189,
+    "cargo.opening": 19,
+    "cargo.bay": 17,
+    "library.species": 295,
+    "pods": 498,
+    "pods.collection": 221,
+    "pods.overview": 212,
+    "bench": 13,
+    "incubator": 14,
+    "create": 138,
+    "cargo.end": 7,
+    "pods.chapter": 65,
+    "habitat": 178,
+    "library.family": 14
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 10
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 37
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 165
+    },
+    {
+     "turn": 4,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 207
+    },
+    {
+     "turn": 5,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 247
+    },
+    {
+     "turn": 6,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 358
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 382
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 449
+    },
+    {
+     "turn": 9,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 512
+    },
+    {
+     "turn": 12,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 692
+    },
+    {
+     "turn": 16,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 918
+    },
+    {
+     "turn": 18,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1079
+    },
+    {
+     "turn": 19,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 1130
+    },
+    {
+     "turn": 23,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1346
+    },
+    {
+     "turn": 27,
+     "kind": "same-hash",
+     "screen": "library.species",
+     "state": "sheet",
+     "presses": 1583
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1736
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 6,
+    "letGo": 1,
+    "received": 65,
+    "neverRead": 57,
+    "heldEnd": 58
+   },
+   "hatched": 6,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 3,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 5,
+    "press": 253,
+    "minutes": 80
+   },
+   "firstElder": {
+    "turn": 23,
+    "press": 1380,
+    "minutes": 460
+   },
+   "screens": {
+    "library": 106,
+    "library.all": 106,
+    "home": 256,
+    "pods": 476,
+    "pods.collection": 239,
+    "bench": 2,
+    "vivarium": 187,
+    "cargo": 52,
+    "cargo.end": 8,
+    "pods.overview": 213,
+    "create": 109,
+    "library.species": 195,
+    "incubator": 25,
+    "cargo.arrival": 25,
+    "habitat": 366,
+    "cargo.opening": 15,
+    "cargo.bay": 4,
+    "pods.chapter": 24,
+    "library.family": 26
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 35
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 55
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 391
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 409
+    },
+    {
+     "turn": 10,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 585
+    },
+    {
+     "turn": 11,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 630
+    },
+    {
+     "turn": 12,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 689
+    },
+    {
+     "turn": 18,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1054
+    },
+    {
+     "turn": 25,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1456
+    },
+    {
+     "turn": 25,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 1486
+    },
+    {
+     "turn": 26,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1522
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 1,
+    "received": 59,
+    "neverRead": 56,
+    "heldEnd": 50
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 4,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 3,
+    "press": 177,
+    "minutes": 40
+   },
+   "firstElder": {
+    "turn": 21,
+    "press": 1260,
+    "minutes": 420
+   },
+   "screens": {
+    "home": 275,
+    "library": 122,
+    "library.all": 122,
+    "pods": 401,
+    "pods.collection": 212,
+    "vivarium": 218,
+    "cargo": 61,
+    "cargo.arrival": 29,
+    "cargo.end": 7,
+    "pods.overview": 151,
+    "library.species": 244,
+    "cargo.opening": 20,
+    "cargo.bay": 5,
+    "create": 71,
+    "pods.chapter": 38,
+    "incubator": 26,
+    "habitat": 345,
+    "library.family": 37
+   },
+   "stuck": [
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 75
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 82
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 104
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 131
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 158
+    },
+    {
+     "turn": 10,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 577
+    },
+    {
+     "turn": 13,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 737
+    },
+    {
+     "turn": 15,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 897
+    },
+    {
+     "turn": 16,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 945
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "library.family",
+     "state": "compare",
+     "presses": 1019
+    },
+    {
+     "turn": 18,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1073
+    },
+    {
+     "turn": 25,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1474
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 1794
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 3,
+    "received": 64,
+    "neverRead": 62,
+    "heldEnd": 53
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 5,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 5,
+    "press": 298,
+    "minutes": 80
+   },
+   "firstElder": {
+    "turn": 23,
+    "press": 1380,
+    "minutes": 460
+   },
+   "screens": {
+    "home": 252,
+    "cargo": 58,
+    "cargo.opening": 17,
+    "cargo.bay": 10,
+    "pods": 409,
+    "pods.collection": 206,
+    "pods.overview": 170,
+    "library.species": 225,
+    "library": 141,
+    "library.all": 141,
+    "vivarium": 213,
+    "cargo.arrival": 25,
+    "create": 88,
+    "cargo.end": 6,
+    "pods.chapter": 32,
+    "incubator": 34,
+    "habitat": 327,
+    "pods.compare": 1,
+    "library.family": 53
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "cargo",
+     "state": "bay",
+     "presses": 10
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 43
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 107
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 119
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 138
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 162
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 411
+    },
+    {
+     "turn": 16,
+     "kind": "same-hash",
+     "screen": "library.species",
+     "state": "lit",
+     "presses": 922
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "incubator",
+     "state": "growing",
+     "presses": 1002
+    },
+    {
+     "turn": 28,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1644
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 1800
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 10,
+    "letGo": 0,
+    "received": 61,
+    "neverRead": 56,
+    "heldEnd": 51
+   },
+   "hatched": 9,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 6,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 3,
+    "press": 152,
+    "minutes": 40
+   },
+   "firstElder": {
+    "turn": 21,
+    "press": 1260,
+    "minutes": 420
+   },
+   "screens": {
+    "vivarium": 205,
+    "library": 111,
+    "library.all": 111,
+    "home": 275,
+    "pods": 489,
+    "pods.collection": 259,
+    "cargo": 69,
+    "cargo.arrival": 32,
+    "cargo.opening": 18,
+    "library.species": 166,
+    "cargo.bay": 12,
+    "pods.overview": 200,
+    "create": 176,
+    "incubator": 43,
+    "pods.chapter": 30,
+    "habitat": 242,
+    "cargo.end": 7,
+    "library.family": 15,
+    "bench": 9
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 47
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 131
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 149
+    },
+    {
+     "turn": 4,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "collection",
+     "presses": 210
+    },
+    {
+     "turn": 4,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 231
+    },
+    {
+     "turn": 11,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 642
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "shape",
+     "presses": 804
+    },
+    {
+     "turn": 16,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 927
+    },
+    {
+     "turn": 16,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "overview",
+     "presses": 955
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "incubator",
+     "state": "growing",
+     "presses": 1004
+    },
+    {
+     "turn": 20,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1151
+    },
+    {
+     "turn": 22,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1318
+    },
+    {
+     "turn": 23,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1338
+    },
+    {
+     "turn": 24,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1431
+    },
+    {
+     "turn": 25,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1486
+    },
+    {
+     "turn": 26,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1540
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 1715
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 9,
+    "letGo": 1,
+    "received": 64,
+    "neverRead": 62,
+    "heldEnd": 54
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 7,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 3,
+    "press": 145,
+    "minutes": 40
+   },
+   "firstElder": {
+    "turn": 21,
+    "press": 1260,
+    "minutes": 420
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 28,
+    "cargo.opening": 20,
+    "home": 196,
+    "cargo.bay": 6,
+    "pods": 430,
+    "pods.collection": 180,
+    "pods.overview": 194,
+    "vivarium": 189,
+    "create": 145,
+    "library": 152,
+    "library.all": 152,
+    "library.species": 257,
+    "incubator": 28,
+    "habitat": 332,
+    "pods.chapter": 56,
+    "cargo.end": 6,
+    "library.family": 11
+   },
+   "stuck": [
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 93
+    },
+    {
+     "turn": 5,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 276
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 476
+    },
+    {
+     "turn": 13,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 767
+    },
+    {
+     "turn": 22,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1278
+    },
+    {
+     "turn": 25,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1474
+    },
+    {
+     "turn": 27,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1580
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 1774
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 2,
+    "received": 66,
+    "neverRead": 60,
+    "heldEnd": 56
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 8,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 2,
+    "press": 75,
+    "minutes": 20
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 1200,
+    "minutes": 400
+   },
+   "screens": {
+    "pods": 482,
+    "pods.collection": 242,
+    "vivarium": 165,
+    "home": 265,
+    "library": 160,
+    "library.all": 160,
+    "cargo": 59,
+    "cargo.bay": 6,
+    "cargo.opening": 15,
+    "pods.overview": 191,
+    "create": 94,
+    "pods.chapter": 49,
+    "library.species": 188,
+    "cargo.arrival": 26,
+    "incubator": 15,
+    "habitat": 305,
+    "cargo.end": 12,
+    "library.family": 67
+   },
+   "stuck": [
+    {
+     "turn": 4,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 237
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 414
+    },
+    {
+     "turn": 9,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 516
+    },
+    {
+     "turn": 9,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 539
+    },
+    {
+     "turn": 11,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 647
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 810
+    },
+    {
+     "turn": 18,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1037
+    },
+    {
+     "turn": 22,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1290
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1719
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 7,
+    "letGo": 1,
+    "received": 63,
+    "neverRead": 59,
+    "heldEnd": 55
+   },
+   "hatched": 6,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 9,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 8,
+    "press": 445,
+    "minutes": 140
+   },
+   "firstElder": {
+    "turn": 26,
+    "press": 1560,
+    "minutes": 520
+   },
+   "screens": {
+    "cargo": 66,
+    "cargo.arrival": 31,
+    "pods": 497,
+    "pods.collection": 229,
+    "home": 329,
+    "library": 129,
+    "library.all": 129,
+    "vivarium": 211,
+    "incubator": 24,
+    "cargo.end": 10,
+    "pods.overview": 201,
+    "create": 109,
+    "library.species": 218,
+    "cargo.opening": 17,
+    "cargo.bay": 8,
+    "bench": 20,
+    "pods.chapter": 57,
+    "habitat": 168,
+    "library.family": 29,
+    "pods.compare": 10
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 16
+    },
+    {
+     "turn": 5,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 295
+    },
+    {
+     "turn": 6,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 343
+    },
+    {
+     "turn": 6,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 355
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 442
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 834
+    },
+    {
+     "turn": 16,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 928
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "compare",
+     "presses": 1000
+    },
+    {
+     "turn": 18,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1077
+    },
+    {
+     "turn": 19,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 1097
+    },
+    {
+     "turn": 22,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1275
+    },
+    {
+     "turn": 27,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1608
+    },
+    {
+     "turn": 28,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 1680
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1733
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 4,
+    "received": 53,
+    "neverRead": 51,
+    "heldEnd": 41
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 10,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 5,
+    "press": 282,
+    "minutes": 80
+   },
+   "firstElder": {
+    "turn": 23,
+    "press": 1380,
+    "minutes": 460
+   },
+   "screens": {
+    "home": 238,
+    "cargo": 65,
+    "cargo.opening": 17,
+    "pods": 453,
+    "pods.collection": 204,
+    "pods.overview": 192,
+    "library": 146,
+    "library.all": 146,
+    "cargo.bay": 10,
+    "library.species": 218,
+    "cargo.arrival": 31,
+    "vivarium": 193,
+    "bench": 5,
+    "cargo.end": 7,
+    "create": 154,
+    "incubator": 19,
+    "pods.chapter": 56,
+    "habitat": 257,
+    "pods.compare": 1,
+    "library.family": 52
+   },
+   "stuck": [
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 111
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 118
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 176
+    },
+    {
+     "turn": 12,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 685
+    },
+    {
+     "turn": 23,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1371
+    },
+    {
+     "turn": 26,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1524
+    },
+    {
+     "turn": 28,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 1636
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1728
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1774
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 1797
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 10,
+    "letGo": 1,
+    "received": 65,
+    "neverRead": 60,
+    "heldEnd": 54
+   },
+   "hatched": 9,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 11,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 2,
+    "press": 69,
+    "minutes": 20
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 1200,
+    "minutes": 400
+   },
+   "screens": {
+    "cargo": 49,
+    "cargo.arrival": 25,
+    "home": 227,
+    "cargo.opening": 13,
+    "pods": 475,
+    "pods.collection": 222,
+    "vivarium": 226,
+    "incubator": 17,
+    "pods.overview": 188,
+    "create": 118,
+    "library": 135,
+    "library.all": 135,
+    "library.species": 253,
+    "habitat": 285,
+    "pods.chapter": 59,
+    "cargo.end": 9,
+    "cargo.bay": 2,
+    "bench": 3,
+    "library.family": 12,
+    "pods.compare": 6
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 38
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 54
+    },
+    {
+     "turn": 6,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 330
+    },
+    {
+     "turn": 11,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 632
+    },
+    {
+     "turn": 15,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 863
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "library",
+     "state": "all",
+     "presses": 981
+    },
+    {
+     "turn": 18,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1047
+    },
+    {
+     "turn": 19,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1117
+    },
+    {
+     "turn": 23,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "compare",
+     "presses": 1336
+    },
+    {
+     "turn": 25,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1474
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1713
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1797
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 9,
+    "letGo": 0,
+    "received": 69,
+    "neverRead": 65,
+    "heldEnd": 60
+   },
+   "hatched": 9,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 12,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 5,
+    "press": 273,
+    "minutes": 80
+   },
+   "firstElder": {
+    "turn": 23,
+    "press": 1380,
+    "minutes": 460
+   },
+   "screens": {
+    "cargo": 57,
+    "cargo.arrival": 26,
+    "cargo.opening": 20,
+    "pods": 437,
+    "pods.collection": 218,
+    "home": 249,
+    "vivarium": 175,
+    "library": 166,
+    "library.all": 166,
+    "library.species": 270,
+    "pods.overview": 184,
+    "create": 86,
+    "cargo.end": 6,
+    "pods.chapter": 35,
+    "incubator": 20,
+    "habitat": 281,
+    "cargo.bay": 5,
+    "library.family": 59
+   },
+   "stuck": [
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 76
+    },
+    {
+     "turn": 4,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 226
+    },
+    {
+     "turn": 5,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 266
+    },
+    {
+     "turn": 6,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 358
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "incubator",
+     "state": "growing",
+     "presses": 409
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 463
+    },
+    {
+     "turn": 12,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 716
+    },
+    {
+     "turn": 13,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 774
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 824
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1011
+    },
+    {
+     "turn": 19,
+     "kind": "same-hash",
+     "screen": "library",
+     "state": "all",
+     "presses": 1109
+    },
+    {
+     "turn": 27,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "rest",
+     "presses": 1606
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1731
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 1,
+    "received": 64,
+    "neverRead": 60,
+    "heldEnd": 55
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 13,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 4,
+    "press": 197,
+    "minutes": 60
+   },
+   "firstElder": {
+    "turn": 22,
+    "press": 1320,
+    "minutes": 440
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 9,
+    "home": 291,
+    "pods": 308,
+    "pods.collection": 160,
+    "pods.overview": 138,
+    "create": 156,
+    "vivarium": 233,
+    "library": 139,
+    "library.all": 139,
+    "library.species": 258,
+    "cargo.opening": 18,
+    "incubator": 16,
+    "habitat": 310,
+    "library.family": 22,
+    "pods.chapter": 10,
+    "cargo.bay": 3,
+    "bench": 7
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 12
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 25
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 37
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 117
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 146
+    },
+    {
+     "turn": 4,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 196
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 415
+    },
+    {
+     "turn": 13,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 764
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 992
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1001
+    },
+    {
+     "turn": 18,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1059
+    },
+    {
+     "turn": 19,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1104
+    },
+    {
+     "turn": 21,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1233
+    },
+    {
+     "turn": 22,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1280
+    },
+    {
+     "turn": 23,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1379
+    },
+    {
+     "turn": 24,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "shape",
+     "presses": 1391
+    },
+    {
+     "turn": 24,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1404
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1771
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1784
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 68,
+    "neverRead": 67,
+    "heldEnd": 60
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 14,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 1,
+    "press": 55,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 1140,
+    "minutes": 380
+   },
+   "screens": {
+    "cargo": 65,
+    "cargo.arrival": 33,
+    "cargo.end": 8,
+    "pods": 487,
+    "pods.collection": 252,
+    "library": 107,
+    "library.all": 107,
+    "library.species": 126,
+    "home": 259,
+    "vivarium": 189,
+    "incubator": 29,
+    "pods.overview": 192,
+    "create": 142,
+    "habitat": 339,
+    "cargo.opening": 18,
+    "library.family": 57,
+    "pods.chapter": 43,
+    "cargo.bay": 6
+   },
+   "stuck": [
+    {
+     "turn": 4,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 232
+    },
+    {
+     "turn": 5,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 253
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "incubator",
+     "state": "growing",
+     "presses": 442
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 788
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 811
+    },
+    {
+     "turn": 16,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 915
+    },
+    {
+     "turn": 17,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 977
+    },
+    {
+     "turn": 18,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1047
+    },
+    {
+     "turn": 19,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1130
+    },
+    {
+     "turn": 20,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1182
+    },
+    {
+     "turn": 22,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1316
+    },
+    {
+     "turn": 23,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1365
+    },
+    {
+     "turn": 27,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 1572
+    },
+    {
+     "turn": 28,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "shape",
+     "presses": 1633
+    },
+    {
+     "turn": 28,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1653
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1691
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1736
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 1791
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 9,
+    "letGo": 1,
+    "received": 62,
+    "neverRead": 60,
+    "heldEnd": 52
+   },
+   "hatched": 9,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 15,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 3,
+    "press": 130,
+    "minutes": 40
+   },
+   "firstElder": {
+    "turn": 21,
+    "press": 1260,
+    "minutes": 420
+   },
+   "screens": {
+    "cargo": 55,
+    "cargo.arrival": 26,
+    "home": 330,
+    "pods": 480,
+    "pods.collection": 248,
+    "vivarium": 138,
+    "library": 157,
+    "library.all": 157,
+    "cargo.opening": 14,
+    "pods.overview": 184,
+    "library.species": 227,
+    "cargo.end": 12,
+    "create": 137,
+    "incubator": 16,
+    "habitat": 223,
+    "pods.chapter": 46,
+    "library.family": 20,
+    "bench": 17,
+    "pods.compare": 2,
+    "cargo.bay": 3
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 16
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 55
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 105
+    },
+    {
+     "turn": 4,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 196
+    },
+    {
+     "turn": 5,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 251
+    },
+    {
+     "turn": 5,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 281
+    },
+    {
+     "turn": 6,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 341
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 401
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 411
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 439
+    },
+    {
+     "turn": 10,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 574
+    },
+    {
+     "turn": 13,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 740
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 831
+    },
+    {
+     "turn": 21,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1220
+    },
+    {
+     "turn": 25,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1492
+    },
+    {
+     "turn": 26,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1526
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1731
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1779
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1793
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 2,
+    "received": 58,
+    "neverRead": 55,
+    "heldEnd": 48
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 16,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 1,
+    "press": 26,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 1140,
+    "minutes": 380
+   },
+   "screens": {
+    "library": 176,
+    "library.all": 176,
+    "pods": 405,
+    "pods.collection": 200,
+    "home": 267,
+    "cargo": 60,
+    "cargo.opening": 11,
+    "pods.overview": 166,
+    "create": 96,
+    "incubator": 18,
+    "habitat": 293,
+    "vivarium": 193,
+    "cargo.arrival": 31,
+    "library.species": 209,
+    "cargo.bay": 9,
+    "pods.chapter": 33,
+    "cargo.end": 9,
+    "bench": 11,
+    "library.family": 72,
+    "pods.compare": 6
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 12
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "cargo",
+     "state": "bay",
+     "presses": 95
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 114
+    },
+    {
+     "turn": 6,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 340
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 447
+    },
+    {
+     "turn": 11,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 648
+    },
+    {
+     "turn": 13,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 767
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "incubator",
+     "state": "growing",
+     "presses": 834
+    },
+    {
+     "turn": 20,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1166
+    },
+    {
+     "turn": 27,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "shape",
+     "presses": 1594
+    },
+    {
+     "turn": 27,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 1604
+    },
+    {
+     "turn": 28,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "compare",
+     "presses": 1635
+    },
+    {
+     "turn": 29,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 1731
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "collection",
+     "presses": 1747
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "library.family",
+     "state": "compare",
+     "presses": 1761
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 68,
+    "neverRead": 64,
+    "heldEnd": 60
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 17,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 2,
+    "press": 96,
+    "minutes": 20
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 1200,
+    "minutes": 400
+   },
+   "screens": {
+    "cargo": 71,
+    "cargo.arrival": 32,
+    "cargo.opening": 11,
+    "pods": 412,
+    "pods.collection": 202,
+    "pods.overview": 171,
+    "vivarium": 182,
+    "home": 234,
+    "library": 150,
+    "library.all": 150,
+    "create": 123,
+    "incubator": 17,
+    "cargo.end": 13,
+    "library.species": 311,
+    "habitat": 276,
+    "cargo.bay": 15,
+    "pods.chapter": 33,
+    "pods.compare": 6,
+    "library.family": 21,
+    "bench": 3
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 19
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 114
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 119
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 180
+    },
+    {
+     "turn": 6,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 321
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 476
+    },
+    {
+     "turn": 9,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 533
+    },
+    {
+     "turn": 10,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 552
+    },
+    {
+     "turn": 11,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "compare",
+     "presses": 615
+    },
+    {
+     "turn": 13,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "overview",
+     "presses": 767
+    },
+    {
+     "turn": 13,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 780
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 832
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 1,
+    "received": 61,
+    "neverRead": 58,
+    "heldEnd": 52
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 18,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 4,
+    "press": 199,
+    "minutes": 60
+   },
+   "firstElder": {
+    "turn": 22,
+    "press": 1320,
+    "minutes": 440
+   },
+   "screens": {
+    "cargo": 59,
+    "cargo.arrival": 28,
+    "home": 265,
+    "vivarium": 232,
+    "library": 107,
+    "library.all": 107,
+    "pods": 417,
+    "pods.collection": 219,
+    "cargo.end": 13,
+    "pods.overview": 172,
+    "create": 126,
+    "pods.chapter": 26,
+    "cargo.opening": 13,
+    "incubator": 24,
+    "habitat": 332,
+    "library.species": 184,
+    "cargo.bay": 5,
+    "library.family": 40,
+    "bench": 14
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 7
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 16
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 21
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 35
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 69
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 82
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 100
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 113
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 118
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 145
+    },
+    {
+     "turn": 4,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 217
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 369
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 448
+    },
+    {
+     "turn": 9,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 504
+    },
+    {
+     "turn": 11,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 648
+    },
+    {
+     "turn": 12,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 717
+    },
+    {
+     "turn": 21,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1252
+    },
+    {
+     "turn": 23,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1344
+    },
+    {
+     "turn": 27,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "overview",
+     "presses": 1590
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1751
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 1,
+    "received": 61,
+    "neverRead": 57,
+    "heldEnd": 52
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 19,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 2,
+    "press": 77,
+    "minutes": 20
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 1200,
+    "minutes": 400
+   },
+   "screens": {
+    "vivarium": 253,
+    "home": 268,
+    "library": 148,
+    "library.all": 148,
+    "cargo": 59,
+    "cargo.end": 10,
+    "pods": 374,
+    "pods.collection": 203,
+    "pods.overview": 152,
+    "create": 98,
+    "incubator": 21,
+    "cargo.arrival": 29,
+    "habitat": 368,
+    "library.species": 173,
+    "cargo.opening": 15,
+    "bench": 7,
+    "library.family": 31,
+    "pods.chapter": 19,
+    "cargo.bay": 5
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 6
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 76
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "bench",
+     "state": "docked",
+     "presses": 134
+    },
+    {
+     "turn": 7,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 378
+    },
+    {
+     "turn": 8,
+     "kind": "same-hash",
+     "screen": "pods",
+     "state": "chapter",
+     "presses": 436
+    },
+    {
+     "turn": 14,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 831
+    },
+    {
+     "turn": 22,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1286
+    },
+    {
+     "turn": 30,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "shape",
+     "presses": 1754
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 1,
+    "received": 57,
+    "neverRead": 55,
+    "heldEnd": 48
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "random",
+   "seed": 20,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1800,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 4,
+    "press": 228,
+    "minutes": 60
+   },
+   "firstElder": {
+    "turn": 22,
+    "press": 1320,
+    "minutes": 440
+   },
+   "screens": {
+    "cargo": 66,
+    "cargo.arrival": 33,
+    "cargo.opening": 15,
+    "pods": 470,
+    "pods.collection": 246,
+    "pods.overview": 190,
+    "home": 320,
+    "vivarium": 163,
+    "create": 99,
+    "bench": 2,
+    "library.species": 306,
+    "pods.chapter": 25,
+    "library": 123,
+    "library.all": 123,
+    "pods.compare": 9,
+    "incubator": 39,
+    "habitat": 197,
+    "cargo.end": 11,
+    "library.family": 15,
+    "cargo.bay": 7
+   },
+   "stuck": [
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 19
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "home",
+     "state": "home",
+     "presses": 24
+    },
+    {
+     "turn": 1,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 34
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 79
+    },
+    {
+     "turn": 2,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 115
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 152
+    },
+    {
+     "turn": 3,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "empty",
+     "presses": 176
+    },
+    {
+     "turn": 6,
+     "kind": "same-hash",
+     "screen": "vivarium",
+     "state": "rest",
+     "presses": 318
+    },
+    {
+     "turn": 15,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 888
+    },
+    {
+     "turn": 19,
+     "kind": "same-hash",
+     "screen": "create",
+     "state": "nothingRead",
+     "presses": 1106
+    },
+    {
+     "turn": 22,
+     "kind": "same-hash",
+     "screen": "habitat",
+     "state": "rest",
+     "presses": 1279
+    },
+    {
+     "turn": 25,
+     "kind": "same-hash",
+     "screen": "incubator",
+     "state": "growing",
+     "presses": 1476
+    }
+   ],
+   "softLock": null,
+   "pods": {
+    "grown": 10,
+    "letGo": 2,
+    "received": 57,
+    "neverRead": 52,
+    "heldEnd": 45
+   },
+   "hatched": 9,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 1,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1463,
+   "minutes": 740,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 803,
+    "minutes": 520
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 984,
+    "pods.collection": 455,
+    "home": 158,
+    "pods.overview": 439,
+    "create": 192,
+    "incubator": 45,
+    "habitat": 24,
+    "cargo.opening": 20,
+    "pods.chapter": 90
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 58,
+    "neverRead": 50,
+    "heldEnd": 50
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 2,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1461,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 49,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 861,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 21,
+    "pods": 989,
+    "pods.collection": 469,
+    "home": 158,
+    "pods.overview": 435,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 85,
+    "cargo.end": 9
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 65,
+    "neverRead": 57,
+    "heldEnd": 57
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 3,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1466,
+   "minutes": 740,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 806,
+    "minutes": 520
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 23,
+    "pods": 989,
+    "pods.collection": 460,
+    "home": 158,
+    "pods.overview": 440,
+    "create": 190,
+    "incubator": 45,
+    "habitat": 24,
+    "pods.chapter": 89,
+    "cargo.end": 7
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 59,
+    "neverRead": 51,
+    "heldEnd": 51
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 4,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1461,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 35,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 861,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 989,
+    "pods.collection": 450,
+    "home": 158,
+    "pods.overview": 447,
+    "create": 184,
+    "incubator": 46,
+    "cargo.opening": 20,
+    "habitat": 24,
+    "pods.chapter": 92
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 64,
+    "neverRead": 56,
+    "heldEnd": 56
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 5,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1459,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 35,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 859,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 986,
+    "pods.collection": 477,
+    "home": 159,
+    "pods.overview": 432,
+    "create": 184,
+    "incubator": 46,
+    "cargo.end": 11,
+    "habitat": 24,
+    "pods.chapter": 77
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 63,
+    "neverRead": 55,
+    "heldEnd": 55
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 6,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1459,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 35,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 859,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 987,
+    "pods.collection": 467,
+    "home": 158,
+    "pods.overview": 435,
+    "create": 184,
+    "incubator": 46,
+    "cargo.opening": 20,
+    "habitat": 24,
+    "pods.chapter": 85
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 66,
+    "neverRead": 58,
+    "heldEnd": 58
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 7,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1456,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 39,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 856,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 22,
+    "pods": 984,
+    "pods.collection": 501,
+    "home": 158,
+    "pods.overview": 402,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 81,
+    "cargo.end": 8
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 66,
+    "neverRead": 58,
+    "heldEnd": 58
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 8,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1462,
+   "minutes": 740,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 802,
+    "minutes": 520
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 18,
+    "pods": 981,
+    "pods.collection": 466,
+    "home": 158,
+    "pods.overview": 432,
+    "create": 194,
+    "incubator": 45,
+    "habitat": 24,
+    "pods.chapter": 83,
+    "cargo.end": 12
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 64,
+    "neverRead": 56,
+    "heldEnd": 56
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 9,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1432,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 31,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 832,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 23,
+    "pods": 959,
+    "pods.collection": 467,
+    "home": 159,
+    "pods.overview": 415,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 77,
+    "cargo.end": 7
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 53,
+    "neverRead": 45,
+    "heldEnd": 45
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 10,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1461,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 49,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 861,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 989,
+    "pods.collection": 462,
+    "home": 158,
+    "pods.overview": 439,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 88,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 65,
+    "neverRead": 57,
+    "heldEnd": 57
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 11,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1449,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 31,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 849,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 27,
+    "pods": 976,
+    "pods.collection": 414,
+    "home": 159,
+    "pods.overview": 466,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 96,
+    "cargo.end": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 69,
+    "neverRead": 61,
+    "heldEnd": 61
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 12,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1460,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 49,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 860,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 22,
+    "pods": 988,
+    "pods.collection": 467,
+    "home": 158,
+    "pods.overview": 435,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 86,
+    "cargo.end": 8
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 64,
+    "neverRead": 56,
+    "heldEnd": 56
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 13,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1458,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 39,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 858,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 986,
+    "pods.collection": 450,
+    "home": 158,
+    "pods.overview": 446,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 90,
+    "cargo.opening": 20
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 68,
+    "neverRead": 60,
+    "heldEnd": 60
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 14,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1461,
+   "minutes": 740,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 801,
+    "minutes": 520
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 982,
+    "pods.collection": 457,
+    "home": 158,
+    "pods.overview": 437,
+    "create": 192,
+    "incubator": 45,
+    "habitat": 24,
+    "cargo.opening": 20,
+    "pods.chapter": 88
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 62,
+    "neverRead": 54,
+    "heldEnd": 54
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 15,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1457,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 35,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 857,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 12,
+    "pods": 985,
+    "pods.collection": 476,
+    "home": 158,
+    "pods.overview": 428,
+    "create": 184,
+    "incubator": 46,
+    "cargo.opening": 18,
+    "habitat": 24,
+    "pods.chapter": 81
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 58,
+    "neverRead": 50,
+    "heldEnd": 50
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 16,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1463,
+   "minutes": 740,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 803,
+    "minutes": 520
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 982,
+    "pods.collection": 488,
+    "home": 158,
+    "pods.overview": 418,
+    "create": 194,
+    "incubator": 45,
+    "habitat": 24,
+    "pods.chapter": 76,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 71,
+    "neverRead": 63,
+    "heldEnd": 63
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 17,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1460,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 35,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 860,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 17,
+    "pods": 988,
+    "pods.collection": 448,
+    "home": 158,
+    "pods.overview": 443,
+    "create": 184,
+    "incubator": 46,
+    "cargo.end": 13,
+    "habitat": 24,
+    "pods.chapter": 97
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 61,
+    "neverRead": 53,
+    "heldEnd": 53
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 18,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1457,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 39,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 857,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 21,
+    "pods": 985,
+    "pods.collection": 478,
+    "home": 158,
+    "pods.overview": 427,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 80,
+    "cargo.end": 9
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 61,
+    "neverRead": 53,
+    "heldEnd": 53
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 19,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1463,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 39,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 863,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 11,
+    "pods": 991,
+    "pods.collection": 456,
+    "home": 158,
+    "pods.overview": 442,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 93,
+    "cargo.opening": 19
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 57,
+    "neverRead": 49,
+    "heldEnd": 49
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "greedy",
+   "seed": 20,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 1436,
+   "minutes": 745,
+   "firstHatch": {
+    "turn": 2,
+    "press": 31,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 836,
+    "minutes": 545
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 963,
+    "pods.collection": 431,
+    "home": 159,
+    "pods.overview": 438,
+    "create": 184,
+    "incubator": 46,
+    "habitat": 24,
+    "pods.chapter": 94,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 8,
+    "letGo": 0,
+    "received": 57,
+    "neverRead": 49,
+    "heldEnd": 49
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 1,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.opening": 20
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 58,
+    "neverRead": 58,
+    "heldEnd": 58
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 2,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 21,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 9
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 65,
+    "neverRead": 65,
+    "heldEnd": 65
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 3,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 23,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 7
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 59,
+    "neverRead": 59,
+    "heldEnd": 59
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 4,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.opening": 20
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 64,
+    "neverRead": 64,
+    "heldEnd": 64
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 5,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 63,
+    "neverRead": 63,
+    "heldEnd": 63
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 6,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.opening": 20
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 66,
+    "neverRead": 66,
+    "heldEnd": 66
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 7,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 22,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 8
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 66,
+    "neverRead": 66,
+    "heldEnd": 66
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 8,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 18,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 12
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 64,
+    "neverRead": 64,
+    "heldEnd": 64
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 9,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 23,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 7
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 53,
+    "neverRead": 53,
+    "heldEnd": 53
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 10,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 65,
+    "neverRead": 65,
+    "heldEnd": 65
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 11,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 27,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 69,
+    "neverRead": 69,
+    "heldEnd": 69
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 12,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 22,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 8
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 64,
+    "neverRead": 64,
+    "heldEnd": 64
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 13,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.opening": 20
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 68,
+    "neverRead": 68,
+    "heldEnd": 68
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 14,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.opening": 20
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 62,
+    "neverRead": 62,
+    "heldEnd": 62
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 15,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 12,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.opening": 18
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 58,
+    "neverRead": 58,
+    "heldEnd": 58
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 16,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 71,
+    "neverRead": 71,
+    "heldEnd": 71
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 17,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 17,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 13
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 61,
+    "neverRead": 61,
+    "heldEnd": 61
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 18,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 21,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 9
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 61,
+    "neverRead": 61,
+    "heldEnd": 61
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 19,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 11,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.opening": 19
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 57,
+    "neverRead": 57,
+    "heldEnd": 57
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "hoarder",
+   "seed": 20,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 210,
+   "minutes": 600,
+   "firstHatch": null,
+   "firstElder": null,
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 60,
+    "pods.collection": 60,
+    "library": 30,
+    "library.all": 30,
+    "vivarium": 30,
+    "home": 30,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 0,
+    "letGo": 0,
+    "received": 57,
+    "neverRead": 57,
+    "heldEnd": 57
+   },
+   "hatched": 0,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 1,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 135,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 91,
+    "minutes": 380
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 33,
+    "pods.collection": 31,
+    "home": 35,
+    "pods.overview": 2,
+    "create": 2,
+    "incubator": 2,
+    "habitat": 3,
+    "cargo.opening": 20
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 58,
+    "neverRead": 58,
+    "heldEnd": 57
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 2,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 163,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 48,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 123,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 21,
+    "pods": 55,
+    "pods.collection": 43,
+    "home": 39,
+    "pods.overview": 12,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.end": 9
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 65,
+    "neverRead": 65,
+    "heldEnd": 64
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 3,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 135,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 91,
+    "minutes": 380
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 23,
+    "pods": 33,
+    "pods.collection": 31,
+    "home": 35,
+    "pods.overview": 2,
+    "create": 2,
+    "incubator": 2,
+    "habitat": 3,
+    "cargo.end": 7
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 59,
+    "neverRead": 59,
+    "heldEnd": 58
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 4,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 149,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 34,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 109,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 41,
+    "pods.collection": 35,
+    "home": 39,
+    "pods.overview": 6,
+    "create": 2,
+    "incubator": 4,
+    "cargo.opening": 20,
+    "habitat": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 64,
+    "neverRead": 64,
+    "heldEnd": 63
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 5,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 149,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 34,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 109,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 41,
+    "pods.collection": 35,
+    "home": 39,
+    "pods.overview": 6,
+    "create": 2,
+    "incubator": 4,
+    "cargo.end": 11,
+    "habitat": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 63,
+    "neverRead": 63,
+    "heldEnd": 62
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 6,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 149,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 34,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 109,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 41,
+    "pods.collection": 35,
+    "home": 39,
+    "pods.overview": 6,
+    "create": 2,
+    "incubator": 4,
+    "cargo.opening": 20,
+    "habitat": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 66,
+    "neverRead": 66,
+    "heldEnd": 65
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 7,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 153,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 38,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 113,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 22,
+    "pods": 45,
+    "pods.collection": 37,
+    "home": 39,
+    "pods.overview": 8,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.end": 8
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 66,
+    "neverRead": 66,
+    "heldEnd": 65
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 8,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 135,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 91,
+    "minutes": 380
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 18,
+    "pods": 33,
+    "pods.collection": 31,
+    "home": 35,
+    "pods.overview": 2,
+    "create": 2,
+    "incubator": 2,
+    "habitat": 3,
+    "cargo.end": 12
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 64,
+    "neverRead": 64,
+    "heldEnd": 63
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 9,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 145,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 30,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 105,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 23,
+    "pods": 37,
+    "pods.collection": 33,
+    "home": 39,
+    "pods.overview": 4,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.end": 7
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 53,
+    "neverRead": 53,
+    "heldEnd": 52
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 10,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 163,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 48,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 123,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 55,
+    "pods.collection": 43,
+    "home": 39,
+    "pods.overview": 12,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 65,
+    "neverRead": 65,
+    "heldEnd": 64
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 11,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 145,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 30,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 105,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 27,
+    "pods": 37,
+    "pods.collection": 33,
+    "home": 39,
+    "pods.overview": 4,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.end": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 69,
+    "neverRead": 69,
+    "heldEnd": 68
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 12,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 163,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 48,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 123,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 22,
+    "pods": 55,
+    "pods.collection": 43,
+    "home": 39,
+    "pods.overview": 12,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.end": 8
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 64,
+    "neverRead": 64,
+    "heldEnd": 63
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 13,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 153,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 38,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 113,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 45,
+    "pods.collection": 37,
+    "home": 39,
+    "pods.overview": 8,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.opening": 20
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 68,
+    "neverRead": 68,
+    "heldEnd": 67
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 14,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 135,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 91,
+    "minutes": 380
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 10,
+    "pods": 33,
+    "pods.collection": 31,
+    "home": 35,
+    "pods.overview": 2,
+    "create": 2,
+    "incubator": 2,
+    "habitat": 3,
+    "cargo.opening": 20
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 62,
+    "neverRead": 62,
+    "heldEnd": 61
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 15,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 149,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 34,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 109,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 12,
+    "pods": 41,
+    "pods.collection": 35,
+    "home": 39,
+    "pods.overview": 6,
+    "create": 2,
+    "incubator": 4,
+    "cargo.opening": 18,
+    "habitat": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 58,
+    "neverRead": 58,
+    "heldEnd": 57
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 16,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 135,
+   "minutes": 600,
+   "firstHatch": {
+    "turn": 1,
+    "press": 16,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 19,
+    "press": 91,
+    "minutes": 380
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 33,
+    "pods.collection": 31,
+    "home": 35,
+    "pods.overview": 2,
+    "create": 2,
+    "incubator": 2,
+    "habitat": 3,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 71,
+    "neverRead": 71,
+    "heldEnd": 70
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 17,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 149,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 34,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 109,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 17,
+    "pods": 41,
+    "pods.collection": 35,
+    "home": 39,
+    "pods.overview": 6,
+    "create": 2,
+    "incubator": 4,
+    "cargo.end": 13,
+    "habitat": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 61,
+    "neverRead": 61,
+    "heldEnd": 60
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 18,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 153,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 38,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 113,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 21,
+    "pods": 45,
+    "pods.collection": 37,
+    "home": 39,
+    "pods.overview": 8,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.end": 9
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 61,
+    "neverRead": 61,
+    "heldEnd": 60
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 19,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 153,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 38,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 113,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.end": 11,
+    "pods": 45,
+    "pods.collection": 37,
+    "home": 39,
+    "pods.overview": 8,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.opening": 19
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 57,
+    "neverRead": 57,
+    "heldEnd": 56
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 20,
+   "turns": 30,
+   "economy": "strict",
+   "presses": 145,
+   "minutes": 605,
+   "firstHatch": {
+    "turn": 2,
+    "press": 30,
+    "minutes": 25
+   },
+   "firstElder": {
+    "turn": 20,
+    "press": 105,
+    "minutes": 405
+   },
+   "screens": {
+    "cargo": 60,
+    "cargo.arrival": 30,
+    "cargo.opening": 19,
+    "pods": 37,
+    "pods.collection": 33,
+    "home": 39,
+    "pods.overview": 4,
+    "create": 2,
+    "incubator": 4,
+    "habitat": 3,
+    "cargo.end": 11
+   },
+   "stuck": [],
+   "softLock": null,
+   "pods": {
+    "grown": 1,
+    "letGo": 0,
+    "received": 57,
+    "neverRead": 57,
+    "heldEnd": 56
+   },
+   "hatched": 1,
+   "end": "done",
+   "finished": 30
+  }
+ ],
+ "notMeasurable": [
+  {
+   "what": "Crosses beyond the first: crosses a trip, refusals by reason, the forecast against the draw, the line over time, samples",
+   "why": "breeding (the breeding design) is not built; the game has one cross from a pod (bot runs 3, 4, 5)"
+  },
+  {
+   "what": "The house and the manager: free places by turn, bonded share, tuck-away and bring-out",
+   "why": "the manager is not built (bot run 6)"
+  },
+  {
+   "what": "Pods in by source and out by exit (grown, let go, dried), turns held, Freshen",
+   "why": "the new Pods screens are not built; only grown and let go through today's screens are counted (bot run 2)"
+  },
+  {
+   "what": "Data per trip by source and the Watch share, trips that hit the ceiling",
+   "why": "the Companion is a stub, so the acts that pay Data are not played (bot run 1)"
+  },
+  {
+   "what": "Holdings with no cap: the time each pile is held and what the Companion's hold of 20 would have lost",
+   "why": "the Station already holds more than 20 (the report counts the share of turns over 20); how long each pile stays and what the Companion's own hold of 20 costs are not measured (bot run 7)"
+  }
+ ]
+}

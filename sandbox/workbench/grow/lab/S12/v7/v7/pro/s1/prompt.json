@@ -1,0 +1,320 @@
+{
+ "species": "S12",
+ "variant": {
+  "id": "v7",
+  "name": "v7 baseline: the house rendering",
+  "change": "The v7 house rendering in both steps (one light, one shading model, value-only contour, the house eye, the background and contact-shadow rule, two or three surface touches, the vinyl finish, one framing rule), the species notes cut to what differs, and no species reference image in either step: the drawing and the colour key only.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "The v7 house rendering in both steps (one light, one shading model, value-only contour, the house eye, the background and contact-shadow rule, two or three surface touches, the vinyl finish, one framing rule), the species notes cut to what differs, and no species reference image in either step: the drawing and the colour key only.",
+ "subject": {
+  "member": "type-specimen",
+  "genomeDigest": "S12-94f298de",
+  "controls": "out/S12/2af58fb73ac5cbbd"
+ },
+ "step1": {
+  "callId": "d57f0d79-261b-4b8d-8f88-e9b7e32291b9",
+  "status": "ok",
+  "seconds": 77.2,
+  "imageOrder": [
+   "index",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.439,
+   "silhouetteIoUInPlace": 0.395,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.722
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.422
+    },
+    "eye": {
+     "span": 0.206,
+     "coverage": 0.265
+    },
+    "antenna": {
+     "span": 0.456,
+     "coverage": 0.059
+    },
+    "leg-0": {
+     "span": 0.427,
+     "coverage": 0.307
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.815
+    },
+    "leg-2": {
+     "span": 0.96,
+     "coverage": 0.624
+    },
+    "flap": {
+     "span": 0.667,
+     "coverage": 0.674
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.45,
+     "ok": false
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.369,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.42,
+     "ok": false
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.369,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.39,
+     "ok": false
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.402,
+     "ok": false
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.556,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.734,
+     "median": "#eeb641",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.603,
+     "median": "#d0985e",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.699,
+     "median": "#de9e42",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.019,
+     "median": "#d2902e",
+     "nearest": "#e8b83f",
+     "ok": false
+    },
+    "second@leg-1": {
+     "agreement": 0.029,
+     "median": "#d27c2b",
+     "nearest": "#e8b83f",
+     "ok": false
+    },
+    "second@leg-2": {
+     "agreement": 0.028,
+     "median": "#e89b33",
+     "nearest": "#e8b83f",
+     "ok": false
+    },
+    "second@flap": {
+     "agreement": 0.386,
+     "median": "#edc571",
+     "nearest": "#e8b83f",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (16% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: eye (painted along 21% of its length), antenna (painted along 46% of its length), leg-0 (painted along 43% of its length)",
+    "the proportions are off: the region-0 is larger than drawn (0.45 of the body against 0.24), the region-1 is larger than drawn (0.37 of the body against 0.17), the head is larger than drawn (0.42 of the body against 0.22), the leg-1 is larger than drawn (0.39 of the body against 0.18), the leg-2 is larger than drawn (0.40 of the body against 0.21)",
+    "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #d2902e, the colour of body), the second slot on the leg-1 (painted #d27c2b, the colour of body), the second slot on the leg-2 (painted #e89b33, the colour of body)"
+   ],
+   "outside": 0.163,
+   "missing": 0.049,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.477,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "2fd3f631-1187-4b61-8f85-55823738891c",
+  "status": "ok",
+  "seconds": 19.6,
+  "imageOrder": [
+   "drawing",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.351,
+   "silhouetteIoUInPlace": 0.255,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.995
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.156
+    },
+    "eye": {
+     "span": 0.0,
+     "coverage": 0.0
+    },
+    "antenna": {
+     "span": 0.102,
+     "coverage": 0.0
+    },
+    "leg-0": {
+     "span": 0.427,
+     "coverage": 0.507
+    },
+    "leg-1": {
+     "span": 0.921,
+     "coverage": 0.5
+    },
+    "leg-2": {
+     "span": 0.703,
+     "coverage": 0.14
+    },
+    "flap": {
+     "span": 0.423,
+     "coverage": 0.311
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.7,
+     "ok": false
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.537,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.643,
+     "ok": false
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.537,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.52,
+     "ok": false
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.449,
+     "ok": false
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.546,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.535,
+     "median": "#d4b268",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.514,
+     "median": "#d4b16b",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.849,
+     "median": "#d59b44",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.175,
+     "median": "#d5ad54",
+     "nearest": "#e8b83f",
+     "ok": false
+    },
+    "second@leg-1": {
+     "agreement": 0.268,
+     "median": "#c19857",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-2": {
+     "agreement": 0.026,
+     "median": "#da9933",
+     "nearest": "#e8b83f",
+     "ok": false
+    },
+    "second@flap": {
+     "agreement": 0.129,
+     "median": "#e6bd5c",
+     "nearest": "#e8b83f",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (15% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: eye (painted along 0% of its length), antenna (painted along 10% of its length), leg-0 (painted along 43% of its length), flap (painted along 42% of its length)",
+    "the proportions are off: the region-0 is larger than drawn (0.70 of the body against 0.24), the region-1 is larger than drawn (0.54 of the body against 0.17), the head is larger than drawn (0.64 of the body against 0.22), the leg-1 is larger than drawn (0.52 of the body against 0.18), the leg-2 is larger than drawn (0.45 of the body against 0.21)",
+    "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #d5ad54, the colour of body), the second slot on the leg-2 (painted #da9933, the colour of body), the second slot on the flap (painted #e6bd5c, the colour of body)"
+   ],
+   "outside": 0.146,
+   "missing": 0.068,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.416,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

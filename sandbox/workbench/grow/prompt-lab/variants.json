@@ -1,0 +1,146 @@
+[
+ {
+  "id": "v4",
+  "name": "v4 as sent",
+  "change": "The reference row: the v4 step 1 and step 2 fields as the lab fills them (controls, the raw description, the Loika's generate words; the v4 transfer words). Images as in v4: step 1 key, index, concept board; step 2 drawing, reference.",
+  "imageOrder1": [
+   "key",
+   "index",
+   "board"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "reference"
+  ],
+  "step1": "{controls}\n\nThe creature: {description}\n\n{generate}",
+  "step2": "{transfer}"
+ },
+ {
+  "id": "v5",
+  "name": "v5 baseline",
+  "change": "The v5 art direction, species notes and description template.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "step1": "{artDirection1}\n\n{species}\n\n{description}",
+  "step2": "{artDirection2}\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "1A-surface",
+  "name": "Surface words",
+  "change": "Step 1, surface words only: the one-line surface instruction becomes an emphatic one.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "step1": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. None named means a plain coat: no pale patches, spots, bands or rings. Only areas Image 3 shows pale are pale.\n\nHiBit pixel art on a 280×300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living limbs that taper and bend softly inside their drawn place, never boxes, posts or unfinished 3D shapes. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Put special care into the surface, which is the creature's beauty: render the surface the species notes name, in the drawing and as the painting will carry it, so it catches the light from the top left and reads bright, never dull. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "1B-anti-artefact",
+  "name": "Anti-artefact words",
+  "change": "Step 1, anti-artefact words only: the limbs sentence names living anatomy and the artefacts to avoid.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "step1": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. None named means a plain coat: no pale patches, spots, bands or rings. Only areas Image 3 shows pale are pale.\n\nHiBit pixel art on a 280×300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living anatomy: each leg has a rounded thigh, a soft joint and a foot shaped as the species notes say, inside its drawn place; wings are feathers or dusted membranes with curved edges and rounded tips, never panels. No stumps, cylinders, posts, blocks, wedges or flat-sided shapes anywhere, no facets or bevels: every edge curves. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "1C-posture",
+  "name": "Posture words",
+  "change": "Step 1, posture words only: weight and life replace the feet sentence.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "step1": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. None named means a plain coat: no pale patches, spots, bands or rings. Only areas Image 3 shows pale are pale.\n\nHiBit pixel art on a 280×300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living limbs that taper and bend softly inside their drawn place, never boxes, posts or unfinished 3D shapes. The creature is alive and at ease: its weight sinks into its planted feet, the toes spreading a little under the load, the head lifted with interest; a living pet mid-breath, never a statue or a model on a stand. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "1D-eyes",
+  "name": "Eye words",
+  "change": "Step 1, eye words only.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "step1": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. None named means a plain coat: no pale patches, spots, bands or rings. Only areas Image 3 shows pale are pale.\n\nHiBit pixel art on a 280×300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living limbs that taper and bend softly inside their drawn place, never boxes, posts or unfinished 3D shapes. Feet planted with weight. Eyes keep their drawn size but are the life of the face: round, dark and glossy, set in their rings, each with a big bright catch light at the upper left and a small second glint below. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "1E-negative",
+  "name": "Long negative list",
+  "change": "Step 1, the negative list only: every artefact seen on the v4 sheets, named.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "step1": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. None named means a plain coat: no pale patches, spots, bands or rings. Only areas Image 3 shows pale are pale.\n\nHiBit pixel art on a 280×300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living limbs that taper and bend softly inside their drawn place, never boxes, posts or unfinished 3D shapes. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNever: boxes, cubes, blocks, cylinders, posts, pegs, wedges, slabs, planks or flat boards; low-poly facets, bevels, grey untextured 3D, a mannequin or unfinished model look; pale patches, spots, rings, bands or colours the description does not name; a wing re-laid, turned or moved; dither spray, noise, blur; scene, ground, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "1F-key-second",
+  "name": "Colour key as Image 2",
+  "change": "Step 1, the colour key moves to Image 2 and the reference to Image 3, with the role and markings sentences renumbered; it tests whether seeing the key straight after the part map stops invented pale patches.",
+  "images": "index-key",
+  "imageOrder1": [
+   "index",
+   "key",
+   "reference"
+  ],
+  "step1": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the colour key: the pigment of each area. Image 3 is the species reference: material and finish only, never its shape, feet or wings.\n\nMarkings: only those the description names, where Image 2 shows them. None named means a plain coat: no pale patches, spots, bands or rings. Only areas Image 2 shows pale are pale.\n\nHiBit pixel art on a 280×300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living limbs that taper and bend softly inside their drawn place, never boxes, posts or unfinished 3D shapes. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "1G-markings-positive",
+  "name": "Plain coat said positively",
+  "change": "Step 1, markings words only: the markings paragraph says what the coat is instead of naming the patches it must not have, since naming them may prime them.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "step1": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. Every area keeps the one colour Image 3 gives it, unbroken from edge to edge, shaded only by the light; the pale areas are exactly those of Image 3, no more and no larger.\n\nHiBit pixel art on a 280×300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living limbs that taper and bend softly inside their drawn place, never boxes, posts or unfinished 3D shapes. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "2A-surface",
+  "name": "Surface words",
+  "change": "Step 2, surface words only: the one-line surface instruction becomes an emphatic one.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "step2": "Image 1 is this young creature drawn in HiBit. It gives structure, proportion, pose and the place of every colour and marking only. It is never a rendering reference: its pixel steps and flat clusters are not the finish. Image 2 is the species reference: match its material, finish and light, not its shape, feet or wings. Image 3 is the colour key, as labels for where each pigment lies.\n\nPaint the same creature in the rich Miniature Lives finish: smooth, rounded, softly modelled volumes, one key light from the top left, warm highlights, cool shadows, saturated playful colour, never dull. Limbs are living limbs, rounded and jointed, never boxes or unfinished 3D. Feet are planted with weight. Eyes keep their drawn size and read large, wet and lit. Put special care into the surface, which is the creature's beauty: paint the surface the species notes name so that it catches the light, every feather, hair or wing scale too fine to count but felt, bright and never dull.\n\nChange only the rendering. Keep the silhouette, every part and its place, the proportions, the pose, the gaze, each pigment in its area, and only the markings the description names; add nothing.\n\nNot: boxes, blocks, facets, planks, flat boards, clay or plastic sheen, photographic fur noise, glitter, invented markings, extra parts, scene, cast shadow, halo, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ },
+ {
+  "id": "2B-field-order",
+  "name": "Description first",
+  "change": "Step 2, field order only: species notes and description before the art direction; no words change.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "step2": "{species}\n\n{description}\n\n{artDirection2}"
+ },
+ {
+  "id": "2C-reference",
+  "name": "Stronger reference",
+  "change": "Step 2, reference strength wording only: Image 2 sets the finish more strongly and is barred from shape more explicitly.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "step2": "Image 1 is this young creature drawn in HiBit. It gives structure, proportion, pose and the place of every colour and marking only. It is never a rendering reference: its pixel steps and flat clusters are not the finish. Image 2 is the species reference and sets the finish: paint the surface as Image 2 paints its own, its fur, feathers or skin, its sheen and its light, as closely as you can. Take nothing else from it: not its shape, its pose, its feet, its legs or its wings. Image 3 is the colour key, as labels for where each pigment lies.\n\nPaint the same creature in the rich Miniature Lives finish: smooth, rounded, softly modelled volumes, one key light from the top left, warm highlights, cool shadows, saturated playful colour, never dull. Limbs are living limbs, rounded and jointed, never boxes or unfinished 3D. Feet are planted with weight. Eyes keep their drawn size and read large, wet and lit. Give the surface the species notes name real care.\n\nChange only the rendering. Keep the silhouette, every part and its place, the proportions, the pose, the gaze, each pigment in its area, and only the markings the description names; add nothing.\n\nNot: boxes, blocks, facets, planks, flat boards, clay or plastic sheen, photographic fur noise, glitter, invented markings, extra parts, scene, cast shadow, halo, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\n{species}\n\n{description}"
+ }
+]

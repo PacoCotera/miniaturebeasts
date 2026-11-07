@@ -1,0 +1,222 @@
+{
+ "screen": "settings",
+ "layout": {
+  "stage": "field",
+  "opening": [0, 40, 1024, 522],
+  "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening; painted, columns, groups, slots and bleed are UI/UX's with the AD"
+ },
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md",
+ "frame": "frame.json",
+ "status": "Settings: a whole-stage screen opened from Home's Settings knob, titled Settings with Home's mark, its way back Home. Four rows on the left, the focused row's detail on the right. The fourth row puts the realm to sleep; its plates (step 1 and the hold) are the next ticket's.",
+ "note": "The one home of Settings' numbers. Rectangles are [x, y, w, h] at 1x on 1024 x 600 and every picture is drawn 1:1. The panels, edges and bevels are the face's own rect primitives, palette-exact; the words are the frame's type roles. Behind the developer setting realmSleep until the screen is signed.",
+ "states": ["settings"],
+ "initial": "settings",
+ "stateRule": "Settings has one state. The sleep row's reason changes its words and its look (dimmed), never the layout",
+ "regions": {
+  "stage": {
+   "rect": [0, 40, 1024, 522],
+   "component": "frame",
+   "part": "stage",
+   "fill": "frame.json colours.stageGround",
+   "note": "the ground under the rows and the detail, between the top bar and the bottom line"
+  },
+  "row": {
+   "component": "panel",
+   "build": "bezel",
+   "size": [400, 72],
+   "radius": 8,
+   "fill": "panel",
+   "edge": "hairline",
+   "bevel": "bevel",
+   "title": {
+    "at": [16, 10],
+    "role": "heading",
+    "variants": {
+     "sleep": "heading.loss",
+     "dim": "heading.dim"
+    }
+   },
+   "sub": {
+    "at": [16, 42],
+    "role": "quiet"
+   },
+   "ground": "panel",
+   "note": "each row 400 x 72 at x 48 from y 72 on an 88 px pitch; the fourth row is below a dashed separator"
+  },
+  "realm": {
+   "rect": [48, 72, 400, 72],
+   "component": "panel",
+   "build": "row"
+  },
+  "companion": {
+   "rect": [48, 160, 400, 72],
+   "component": "panel",
+   "build": "row"
+  },
+  "sleeping": {
+   "rect": [48, 248, 400, 72],
+   "component": "panel",
+   "build": "row"
+  },
+  "sleep": {
+   "rect": [48, 336, 400, 72],
+   "component": "panel",
+   "build": "row"
+  },
+  "separator": {
+   "rect": [48, 327, 400, 1],
+   "component": "panel",
+   "build": "hairline",
+   "dash": [4, 4],
+   "colour": "bevel",
+   "note": "the dashed rule between the three rows that only read and the one that acts"
+  },
+  "detail": {
+   "rect": [480, 72, 496, 432],
+   "component": "panel",
+   "build": "bezel",
+   "radius": 8,
+   "fill": "panel",
+   "edge": "hairline",
+   "bevel": "bevel",
+   "pad": 24,
+   "title": {
+    "y": 20,
+    "role": "name",
+    "variants": {
+     "sleep": "name.loss"
+    }
+   },
+   "flow": {
+    "top": 72,
+    "gap": 16,
+    "width": 448,
+    "para": "body",
+    "facts": "body.facts",
+    "label": "quiet",
+    "notice": "notice",
+    "labelGap": 4
+   },
+   "foot": {
+    "bottom": 20,
+    "role": "quiet"
+   },
+   "ground": "panel",
+   "note": "the focused row's detail: its title, then its blocks flowing down (paragraphs, facts, a label, a notice), then its foot line at the bottom"
+  }
+ },
+ "focus": {
+  "initial": "realm",
+  "graph": {
+   "fallback": "none",
+   "realm": {"up": "none", "down": "companion", "left": "none", "right": "none"},
+   "companion": {"up": "realm", "down": "sleeping", "left": "none", "right": "none"},
+   "sleeping": {"up": "companion", "down": "sleep", "left": "none", "right": "none"},
+   "sleep": {"up": "sleeping", "down": "none", "left": "none", "right": "none"}
+  },
+  "targets": {
+   "realm": {"group": "realm", "shape": {"rect": 8}, "box": "regions.realm.rect", "lift": 0},
+   "companion": {"group": "companion", "shape": {"rect": 8}, "box": "regions.companion.rect", "lift": 0},
+   "sleeping": {"group": "sleeping", "shape": {"rect": 8}, "box": "regions.sleeping.rect", "lift": 0},
+   "sleep": {"group": "sleep", "shape": {"rect": 8}, "box": "regions.sleep.rect", "lift": 0}
+  },
+  "vectors": [
+   {"from": "realm", "key": "up", "to": "realm"},
+   {"from": "realm", "key": "down", "to": "companion"},
+   {"from": "realm", "key": "left", "to": "realm"},
+   {"from": "realm", "key": "right", "to": "realm"},
+   {"from": "companion", "key": "up", "to": "realm"},
+   {"from": "companion", "key": "down", "to": "sleeping"},
+   {"from": "companion", "key": "left", "to": "companion"},
+   {"from": "companion", "key": "right", "to": "companion"},
+   {"from": "sleeping", "key": "up", "to": "companion"},
+   {"from": "sleeping", "key": "down", "to": "sleep"},
+   {"from": "sleeping", "key": "left", "to": "sleeping"},
+   {"from": "sleeping", "key": "right", "to": "sleeping"},
+   {"from": "sleep", "key": "up", "to": "sleeping"},
+   {"from": "sleep", "key": "down", "to": "sleep"},
+   {"from": "sleep", "key": "left", "to": "sleep"},
+   {"from": "sleep", "key": "right", "to": "sleep"}
+  ]
+ },
+ "keys": {
+  "pad": "focus.graph: ▲ ▼ between the four rows",
+  "confirm": "nothing yet on any row: the plates that Put this realm to sleep opens are the next ticket's",
+  "back": "Home, the ring on the Settings knob",
+  "room": "as everywhere (frame.json navigation.roomKeys)"
+ },
+ "bottomLine": {
+  "ok": null,
+  "subject": "the focused row's name",
+  "back": "strings.back"
+ },
+ "strings": {
+  "title": "Settings",
+  "back": "Home",
+  "rows": {
+   "realm": {
+    "title": "Your realm",
+    "sub": "Began {began}",
+    "subNoDate": "Your Station's realm"
+   },
+   "companion": {
+    "title": "Your Companion",
+    "sub": "{name} · {state}",
+    "subNone": "None docked yet"
+   },
+   "sleeping": {
+    "title": "Sleeping realms",
+    "none": "None yet",
+    "count": "{n} kept"
+   },
+   "sleep": {
+    "title": "Put this realm to sleep",
+    "sub": "Kept on the Caddy · a new realm begins"
+   }
+  },
+  "state": {
+   "docked": "docked",
+   "away": "lifted"
+  },
+  "detail": {
+   "realm": {
+    "title": "Your realm",
+    "facts": "Began {began} · {regions} · {mibis} · world turn {turn}",
+    "factsNoDate": "{regions} · {mibis} · world turn {turn}"
+   },
+   "companion": {
+    "title": "Your Companion",
+    "facts": "{name} · {state} · with this realm since {since}",
+    "factsNone": "No Companion has docked at this Station yet",
+    "sinceNone": "its first dock"
+   },
+   "sleeping": {
+    "title": "Sleeping realms",
+    "none": "None yet",
+    "count": "{n} sleeping, newest first"
+   },
+   "sleep": {
+    "title": "Put this realm to sleep",
+    "paras": ["Your whole realm sleeps: its regions, mibis, pods, the Library, Data, Energy and Essence. It is kept on the Caddy, signed by your Companion.", "Then your Station, Caddy and Companion start a new realm in the Meadows."],
+    "label": "This realm",
+    "facts": ["Began {began} · world turn {turn}", "{regions} · {mibis} · {pods}"],
+    "factsNoDate": ["World turn {turn}", "{regions} · {mibis} · {pods}"],
+    "foot": "Two steps: see what sleeps, then hold ✓ for 3 seconds."
+   }
+  },
+  "reasons": {
+   "not docked": "Dock your Companion · it signs the realm",
+   "no key": "This Companion has no key this Station trusts",
+   "no save": "This realm is not saved in a form that can sleep"
+  },
+  "units": {
+   "regions": "{n} {region|regions}",
+   "mibis": "{n} {mibi|mibis}",
+   "pods": "{n} {pod|pods}"
+  }
+ },
+ "colours": {
+  "ground": "ground"
+ }
+}

@@ -1,0 +1,76 @@
+{
+ "model": "gemini-3-pro-image",
+ "promptVersion": 5,
+ "controlVariant": "twostep",
+ "variantTrials": {
+  "crisp": {
+   "individuals": 6,
+   "calls": 7,
+   "callsPerIndividual": 1.17,
+   "firstAttemptPassRate": 0.833,
+   "plainServed": 0,
+   "retries": 1
+  },
+  "lowres": {
+   "individuals": 6,
+   "calls": 10,
+   "callsPerIndividual": 1.67,
+   "firstAttemptPassRate": 0.333,
+   "plainServed": 1,
+   "retries": 4
+  },
+  "twostep": {
+   "individuals": 24,
+   "calls": 57,
+   "callsPerIndividual": 2.38,
+   "firstAttemptPassRate": 0.417,
+   "plainServed": 12,
+   "retries": 28
+  }
+ },
+ "callsAllVersions": 513,
+ "calls": 70,
+ "callsOk": 70,
+ "callSecondsMean": 20.9,
+ "individuals": 18,
+ "bySpecies": {
+  "S01": {
+   "individuals": 6,
+   "calls": 14,
+   "callsPerIndividual": 2.33,
+   "secondsPerIndividual": 48.4,
+   "plainServed": 1,
+   "retries": 3,
+   "firstAttemptPassRate": 0.5
+  },
+  "S09": {
+   "individuals": 6,
+   "calls": 12,
+   "callsPerIndividual": 2.0,
+   "secondsPerIndividual": 41.5,
+   "plainServed": 1,
+   "retries": 1,
+   "firstAttemptPassRate": 0.833
+  },
+  "S12": {
+   "individuals": 6,
+   "calls": 13,
+   "callsPerIndividual": 2.17,
+   "secondsPerIndividual": 46.8,
+   "plainServed": 5,
+   "retries": 6,
+   "firstAttemptPassRate": 0.0
+  }
+ },
+ "callsPerIndividualMean": 2.17,
+ "secondsPerIndividualMean": 45.6,
+ "callsPerMibiThreeStages": 6.51,
+ "callsPerKitYear40": 260.4,
+ "views": [
+  "portrait"
+ ],
+ "retries": 10,
+ "plainServed": 7,
+ "firstAttemptPassRate": 0.444,
+ "paintedRate": 0.611
+}

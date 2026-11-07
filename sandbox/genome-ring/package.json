@@ -1,0 +1,15 @@
+{
+  "name": "genome-ring",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Genome ring prototype: encoder, decoder and printability/scanability tests",
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node tests/run.mjs",
+    "test:quick": "node tests/run.mjs --quick",
+    "build": "node tools/print-sheet.mjs && node tools/build-scan.mjs && node tools/illustrate.mjs",
+    "catalogue": "node tools/extract-catalogue.mjs"
+  }
+}

@@ -1,0 +1,84 @@
+// The placed masters (prototypes/ui/assets/masters/index.json, written by ui/tools/place-masters.mjs): each signed master replaces its
+// stand-in by id and size, with no code change. Fetched beside the page, decoded to pictures, checked against the index (size and SHA-256)
+// and placed in the manifest before any screen registers its stand-ins. A master that does not match its index is refused loudly.
+import { placeMaster } from "../../ui/assets.mjs";
+import { setJuvenileFacing, juvenileMirrored, mirrorPic } from "./facing.mjs";
+import { decodePNGAsync, canvasRound } from "../../ui/png.mjs";
+
+// The one decoder of the masters, on the page and headless alike (ui/png.mjs): inflated at load, the pixels made when a picture first asks, through the 8-bit premultiplied
+// round trip the browser's canvas gave them (canvasRound), so every picture is the one the goldens were drawn with.
+const decodeRGBA = async (bytes) => { const png = await decodePNGAsync(bytes); let px = null; return { w: png.width, h: png.height, rgba: () => px || (px = canvasRound(png.rgba())) }; };
+const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+// The rooms' pictures (index file rooms/room-<room>-...) load lazily: at boot every other master and the shown room's pictures, then the other rooms in the background (the room after the shown one first); ensureRoom(room) puts a room's pictures
+// at the front of the queue and resolves when they are placed. Test mode (opts.all) loads everything at boot. Which room a master belongs to is read from its file path in the index.
+const ROOM_FILE = /^rooms\/room-([a-z0-9]+)-/;
+const realDecode = decodeRGBA;
+export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode = realDecode, place = placeMaster, concurrency = 16 } = {}) {
+  // at most `concurrency` masters in flight: hundreds of concurrent fetches and decodes can fail with net::ERR_INSUFFICIENT_RESOURCES (measured on Chromium 141)
+  let later = [], items = [], rooms = new Map(), queue = [], active = 0, order = [], base = null;
+  const roomName = (r) => (typeof r === "number" ? order[r] : r);
+  const run = async (it) => {
+    const e = it.e, r = await fx(new URL(e.file, base), { cache: "no-store" });
+    if (!r.ok) throw new Error(`master ${it.id}: ${e.file} is missing`);
+    const bytes = await r.arrayBuffer(), sha = hex(await crypto.subtle.digest("SHA-256", bytes));
+    if (sha !== e.sha256) throw new Error(`master ${it.id}: ${e.file} does not match the index (sha256 ${sha.slice(0, 12)}…)`);
+    let bmp = await decode(bytes); if (juvenileMirrored(it.id)) bmp = mirrorPic(bmp);   // the young of a flagged species faces the opposite way from its adult: drawn mirrored, the file untouched
+    place({ id: it.id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }, { w: bmp.w, h: bmp.h, rgba: bmp.rgba }); it.placed = true;
+  };
+  const pump = () => {
+    while (active < concurrency && queue.length) {
+      const it = queue.shift(); active++;
+      run(it).then(it.resolve, (err) => { const no = it.reject; if (isNet(err)) fresh(it); no(err); }).finally(() => { active--; pump(); });
+    }
+  };
+  // a fetch that never answered (the page went away, the network dropped: fetch's TypeError) is not a refused picture: the item goes back to waiting, and the room's promise is dropped, so the next ensureRoom fetches it again
+  const isNet = (err) => err instanceof TypeError;
+  const fresh = (it) => { it.queued = false; it.done = new Promise((ok, no) => { it.resolve = ok; it.reject = no; }); it.done.catch(() => {}); if (it.room) rooms.delete(it.room); };
+  const enqueue = (list) => { for (const it of list) if (!it.queued) { it.queued = true; queue.push(it); } pump(); };
+  const settled = (list) => Promise.all(list.map((it) => it.done));
+  const roomPromise = (name) => { if (!rooms.has(name)) rooms.set(name, settled(roomItems(name)).then(() => {})); return rooms.get(name); };
+  const roomItems = (name) => items.filter((it) => it.room === name);
+  const loader = {
+    // fetches the index and the boot set (every master that is not a room picture, plus the pictures of opts.room), and returns (the other rooms wait for background())
+    async load(url, { room = null, all = false, order: ord = [] } = {}) {
+      base = url; order = ord;
+      const res = await fx(new URL("index.json", base), { cache: "no-store" });
+      if (!res.ok) return { placed: 0 };
+      const index = await res.json(), ids = Object.keys(index.masters ?? {});
+      setJuvenileFacing(index.juvenileFacing ?? null);
+      items = ids.map((id) => {
+        const e = index.masters[id], f = e.file.startsWith("rooms/") ? ROOM_FILE.exec(e.file) : null;
+        if (e.file.startsWith("rooms/") && !f) throw new Error(`master ${id}: ${e.file} names no room (rooms/room-<room>-...)`);
+        const it = { id, e, room: f ? f[1] : null, queued: false }; it.done = new Promise((ok, no) => { it.resolve = ok; it.reject = no; }); it.done.catch(() => {}); return it;
+      });
+      const names = [...new Set(items.map((it) => it.room).filter(Boolean))], shown = roomName(room);
+      const rest = (shown != null && order.includes(shown) ? [...order.slice(order.indexOf(shown) + 1), ...order.slice(0, order.indexOf(shown))] : order).concat(names.filter((n) => !order.includes(n))).filter((n) => n !== shown && names.includes(n));
+      const boot = all ? items : items.filter((it) => !it.room || it.room === shown);
+      enqueue(boot); await settled(boot);
+      later = all ? [] : rest;
+      return { placed: ids.length };
+    },
+    // a promise that resolves when every picture of the room is placed, the room's waiting pictures moved to the front of the queue (the shown room's first); the same promise each time; a refused picture rejects it
+    ensureRoom(r) {
+      const name = roomName(r), mine = roomItems(name);
+      if (!mine.length) return items.length ? Promise.reject(new Error(`no room ${JSON.stringify(r)} in the masters index`)) : Promise.resolve();
+      const waiting = mine.filter((it) => queue.includes(it));
+      if (waiting.length) queue = [...waiting, ...queue.filter((it) => !waiting.includes(it))];
+      enqueue(mine); return roomPromise(name);
+    },
+    // the other rooms, in the background, the room after the shown one first (the page calls it once the first screen is up, so the boot set is the only thing fetched before it)
+    background() {
+      enqueue(later.flatMap(roomItems));
+      for (const n of later) roomPromise(n).catch((e) => { if (isNet(e)) { console.warn(`room ${n}: a picture did not arrive (${e.message}); it is fetched again when the room is shown`); return; } console.error(e); if (typeof reportError === "function") reportError(e); });   // a refused picture is loud (the console and the page's error event); a fetch that never answered is not
+    },
+    // true when the room's pictures are all placed (or the loader holds none for it): the host draws the room at once
+    roomLoaded(r) { const name = roomName(r); return !items.some((it) => it.room === name && !it.placed); },
+  };
+  return loader;
+}
+let current = null;
+export async function loadMasters(base, opts = {}) { current = createMasterLoader(opts.loader); return current.load(base, opts); }
+export const loadRoomsInBackground = () => current?.background();
+export const ensureRoom = (room) => (current ? current.ensureRoom(room) : Promise.resolve());
+export const roomLoaded = (room) => (current ? current.roomLoaded(room) : true);
+
