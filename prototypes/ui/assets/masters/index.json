@@ -3186,53 +3186,461 @@
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/boards/visual-language/stands/stand-S01-loika-96x88.png"
   },
-  "mibi-adult-S01-ash-304x312": {
-   "file": "pods/mibi-adult-S01-ash-304x312.png",
+  "mibi-adult-S01-between-between-304x312": {
+   "file": "pods/mibi-adult-S01-between-between-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "d68dbe48f72d3e32d495649d416e22c62a8124edaaa8268f091bd8e96039c8e4",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-between-between-304x312.png"
+  },
+  "mibi-adult-S01-between-between-48x48": {
+   "file": "pods/mibi-adult-S01-between-between-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "8be9afe338842c1b1631d8a31aded160d08cc954fad65dbfcfcc31791eb2f5cb",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-between-between-48x48.png"
+  },
+  "mibi-adult-S01-between-between-96x88": {
+   "file": "pods/mibi-adult-S01-between-between-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "872b2c8c3a397cf92391045a4a6868eff37468ca34ca198dffb5fe2cbfd26b2c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-between-between-96x88.png"
+  },
+  "mibi-adult-S01-between-between-calm-304x312": {
+   "file": "pods/mibi-adult-S01-between-between-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "6e7b8b57ba59171b82fec110eb1bdbeb063494957748838c8b8c2b0988a3d358",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-between-between-304x312.png"
+  },
+  "mibi-adult-S01-between-between-curl-304x312": {
+   "file": "pods/mibi-adult-S01-between-between-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "cbd21e2bac9990b162491284309a861d869f3fe1a36072e54b037b6c71ef9d9e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-between-between-304x312.png"
+  },
+  "mibi-adult-S01-between-between-lay-bands-304x312": {
+   "file": "pods/mibi-adult-S01-between-between-lay-bands-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "60df2f70772d6021afb3797996d109a9251dea86bbd295724b78a5587f42ea71",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-between-between-304x312.png"
+  },
+  "mibi-adult-S01-between-between-lay-bands-48x48": {
+   "file": "pods/mibi-adult-S01-between-between-lay-bands-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "41b13e564c7890a64095685a69c5d9ba2a6fe4f568384b8ac9c066ab5b7b1b24",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-between-between-48x48.png"
+  },
+  "mibi-adult-S01-between-between-lay-bands-96x88": {
+   "file": "pods/mibi-adult-S01-between-between-lay-bands-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "7759ed4864528c7d66e9922e952e5b1370bf88a3ce8bf1aabe2b02d372477c29",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-between-between-96x88.png"
+  },
+  "mibi-adult-S01-between-between-lay-gradient-304x312": {
+   "file": "pods/mibi-adult-S01-between-between-lay-gradient-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "1b7e959f78950e0e94bb8c017e4ce0fdbe7a8bb81dcbb958e3fc7f33e69cb474",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-between-between-304x312.png"
+  },
+  "mibi-adult-S01-between-between-lay-gradient-48x48": {
+   "file": "pods/mibi-adult-S01-between-between-lay-gradient-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "41d615a37cc5af7fdd66a38e98ebcd4192b4f0e845b1451e87fa552a9da951ca",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-between-between-48x48.png"
+  },
+  "mibi-adult-S01-between-between-lay-gradient-96x88": {
+   "file": "pods/mibi-adult-S01-between-between-lay-gradient-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "374913b26097be311ae04525ab07ad56b9bcba5c31e1305d8fe8d440b39cd2cc",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-between-between-96x88.png"
+  },
+  "mibi-adult-S01-between-between-lay-patches-304x312": {
+   "file": "pods/mibi-adult-S01-between-between-lay-patches-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "715626c82f1d164e35d44e1d7f9f5faf31aec3c283846884649379a751844da0",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-between-between-304x312.png"
+  },
+  "mibi-adult-S01-between-between-lay-patches-48x48": {
+   "file": "pods/mibi-adult-S01-between-between-lay-patches-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "b0cb57d99c36a4f205045436f0e92fcdd68a226082f2648f908084e95dac7fdd",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-between-between-48x48.png"
+  },
+  "mibi-adult-S01-between-between-lay-patches-96x88": {
+   "file": "pods/mibi-adult-S01-between-between-lay-patches-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "e1a203c920ba2e066e871299af707f1033f5427bb7aa930a137f03aaa1f6a1e2",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-between-between-96x88.png"
+  },
+  "mibi-adult-S01-between-between-lay-saddle-304x312": {
+   "file": "pods/mibi-adult-S01-between-between-lay-saddle-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "d1d1b2bc1070a3fa16f319cc63486cdd350fd66a0bbee0dd3d61302dc5dfbd72",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-between-between-304x312.png"
+  },
+  "mibi-adult-S01-between-between-lay-saddle-48x48": {
+   "file": "pods/mibi-adult-S01-between-between-lay-saddle-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "8a6296bac6af10fd0ecebcd5bb19a52cde5e17789b85c6989f11dd4575c0e974",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-between-between-48x48.png"
+  },
+  "mibi-adult-S01-between-between-lay-saddle-96x88": {
+   "file": "pods/mibi-adult-S01-between-between-lay-saddle-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "ac1b2fd9adc897d8d538185abe46e3577c83b9ef5e1e903c62b9a106c216c32a",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-between-between-96x88.png"
+  },
+  "mibi-adult-S01-between-between-lay-spots-304x312": {
+   "file": "pods/mibi-adult-S01-between-between-lay-spots-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "953ad033aa31feb0fd93ee06afac9e063a4ac6a2fd263059ed5a6f7b7d999589",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-between-between-304x312.png"
+  },
+  "mibi-adult-S01-between-between-lay-spots-48x48": {
+   "file": "pods/mibi-adult-S01-between-between-lay-spots-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "1c858a607795eba71ce3051eb44daf4676ce57e2f890f139ba111e920be40b37",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-between-between-48x48.png"
+  },
+  "mibi-adult-S01-between-between-lay-spots-96x88": {
+   "file": "pods/mibi-adult-S01-between-between-lay-spots-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "00613017d524a701b80edc4b1e3d93faf6d605798f2dd4dbc87a6f4618bbb963",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-between-between-96x88.png"
+  },
+  "mibi-adult-S01-between-between-shake-304x312": {
+   "file": "pods/mibi-adult-S01-between-between-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "9ce02aeaff8a0151266b5c557e9e5f239105281c4dfa0c6e50ad05ddcdf821cb",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-between-between-304x312.png"
+  },
+  "mibi-adult-S01-between-dark-lay-bands-304x312": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-bands-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "24aff1708d1d028946fb36cdff27a9951675394e91dade84811c76444ba29e8c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-between-dark-304x312.png"
+  },
+  "mibi-adult-S01-between-dark-lay-bands-48x48": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-bands-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "15b43917af74de61188d1e0255931f85e6434f055edd9d71fba3d7b44e3ee371",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-between-dark-48x48.png"
+  },
+  "mibi-adult-S01-between-dark-lay-bands-96x88": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-bands-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "1a05cb7c7bead7259d9dcbcf66ae959811013c67d70083bb7373f470c76c9588",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-between-dark-96x88.png"
+  },
+  "mibi-adult-S01-between-dark-lay-gradient-304x312": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-gradient-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "976f1d9c7c07702c58365c66a7627b1902190528fc8cafc6ec54d713448b2d12",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-between-dark-304x312.png"
+  },
+  "mibi-adult-S01-between-dark-lay-gradient-48x48": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-gradient-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "543e09e61c05c6a4c54c6c5636e2499693e7544aa5b5a9d823f2570c76544c4c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-between-dark-48x48.png"
+  },
+  "mibi-adult-S01-between-dark-lay-gradient-96x88": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-gradient-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "cc835fcf8a4097f15d0b0b40a710e8a7c83e85468c325c52ddf586d1acca098f",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-between-dark-96x88.png"
+  },
+  "mibi-adult-S01-between-dark-lay-patches-304x312": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-patches-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "0df40e256990ad8d1124cd97d49545c44d9093d2da62ceec3bfbd1eb2b0de702",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-between-dark-304x312.png"
+  },
+  "mibi-adult-S01-between-dark-lay-patches-48x48": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-patches-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "fd2d737b133e8323bde37219060f02716010283e4e5727243d5c452a1102703d",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-between-dark-48x48.png"
+  },
+  "mibi-adult-S01-between-dark-lay-patches-96x88": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-patches-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "12180ca58b728012e1820b23aeee0c8428bcbc7286b1f6a0e8a002bf7fbc7243",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-between-dark-96x88.png"
+  },
+  "mibi-adult-S01-between-dark-lay-saddle-304x312": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-saddle-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "88ffe61b9ea63005c90aff465ca944cc54d8f245a79425df4d60fdcaf468ad6c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-between-dark-304x312.png"
+  },
+  "mibi-adult-S01-between-dark-lay-saddle-48x48": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-saddle-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "0d722bcbf1239522be022e9dd8cffc0b3b6efb329c73f8c2066fa70edbb37b6e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-between-dark-48x48.png"
+  },
+  "mibi-adult-S01-between-dark-lay-saddle-96x88": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-saddle-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "0a07acf2a8b25e1d037639b890cb3f144521f8c0f4fd30d898dffaaf6df80800",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-between-dark-96x88.png"
+  },
+  "mibi-adult-S01-between-dark-lay-spots-304x312": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-spots-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "fde513c38b2131c41220bb3ba3a267522232fa44834ebc291a37c14a2fc97db8",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-between-dark-304x312.png"
+  },
+  "mibi-adult-S01-between-dark-lay-spots-48x48": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-spots-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "094e513805a92f63a558a3da32f995b6bec3c212f270606ff7b4bcff3b549120",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-between-dark-48x48.png"
+  },
+  "mibi-adult-S01-between-dark-lay-spots-96x88": {
+   "file": "pods/mibi-adult-S01-between-dark-lay-spots-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "6fc7ccf5fc7e5e61649355a0dad0d2ec492f9c3262702b3d936e8e5d268465fe",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-between-dark-96x88.png"
+  },
+  "mibi-adult-S01-between-light-304x312": {
+   "file": "pods/mibi-adult-S01-between-light-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "35d028d993a2758270d01755567363817036966a08d204a13f0180149f49471c",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-ash-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-between-light-304x312.png"
   },
-  "mibi-adult-S01-ash-48x48": {
-   "file": "pods/mibi-adult-S01-ash-48x48.png",
+  "mibi-adult-S01-between-light-48x48": {
+   "file": "pods/mibi-adult-S01-between-light-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "59a18583bc5da13d08d41fb65f06de2ce2706e12fa8d0fa491a08ca86fc37ba7",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-ash-48x48.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-between-light-48x48.png"
   },
-  "mibi-adult-S01-ash-96x88": {
-   "file": "pods/mibi-adult-S01-ash-96x88.png",
+  "mibi-adult-S01-between-light-96x88": {
+   "file": "pods/mibi-adult-S01-between-light-96x88.png",
    "w": 96,
    "h": 88,
    "sha256": "3ec3e745db4664317ffa9fcfaa404a8144941138bf6efe3d3161822b00bed17a",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-ash-96x88.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-between-light-96x88.png"
   },
-  "mibi-adult-S01-ash-calm-304x312": {
-   "file": "pods/mibi-adult-S01-ash-calm-304x312.png",
+  "mibi-adult-S01-between-light-calm-304x312": {
+   "file": "pods/mibi-adult-S01-between-light-calm-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "408da94cc3b5cc5aa2a97d75de6e1f94b8a49942f247108d81644e592416677f",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-ash-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-between-light-304x312.png"
   },
-  "mibi-adult-S01-ash-curl-304x312": {
-   "file": "pods/mibi-adult-S01-ash-curl-304x312.png",
+  "mibi-adult-S01-between-light-curl-304x312": {
+   "file": "pods/mibi-adult-S01-between-light-curl-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "cab3a7cb94083e9a8d0e64424a7910ccc1a7305c7cbcc1ac9b1f988c6b873370",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-ash-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-between-light-304x312.png"
   },
-  "mibi-adult-S01-ash-shake-304x312": {
-   "file": "pods/mibi-adult-S01-ash-shake-304x312.png",
+  "mibi-adult-S01-between-light-lay-bands-304x312": {
+   "file": "pods/mibi-adult-S01-between-light-lay-bands-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "78cab081395040eacd55ddd5421942842ad6bade3ed0101fbab8432657bb51af",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-between-light-304x312.png"
+  },
+  "mibi-adult-S01-between-light-lay-bands-48x48": {
+   "file": "pods/mibi-adult-S01-between-light-lay-bands-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "768d0c7deb7055b6a89030010c8f12249bcc2850ffc24c9e1b86d34fa1882c9c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-between-light-48x48.png"
+  },
+  "mibi-adult-S01-between-light-lay-bands-96x88": {
+   "file": "pods/mibi-adult-S01-between-light-lay-bands-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "3ec7d2ff6a7fab46884da4d92f6fe14add56568ce2e5ff898f8ede4c7f7ecf96",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-between-light-96x88.png"
+  },
+  "mibi-adult-S01-between-light-lay-gradient-304x312": {
+   "file": "pods/mibi-adult-S01-between-light-lay-gradient-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "43b5b2b8f4d158473e34130c29fb0eadc3a06497a7c13ca9a1a454c363ae7f71",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-between-light-304x312.png"
+  },
+  "mibi-adult-S01-between-light-lay-gradient-48x48": {
+   "file": "pods/mibi-adult-S01-between-light-lay-gradient-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "8ae7236509c172d3ebd4276645f9f127f44f228c7bcdeb54642adc2ffab731d0",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-between-light-48x48.png"
+  },
+  "mibi-adult-S01-between-light-lay-gradient-96x88": {
+   "file": "pods/mibi-adult-S01-between-light-lay-gradient-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "dfea62421a0925d5d5db0970057eca344a554d30df79375e521de5d50d0f2c0f",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-between-light-96x88.png"
+  },
+  "mibi-adult-S01-between-light-lay-patches-304x312": {
+   "file": "pods/mibi-adult-S01-between-light-lay-patches-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e0b555a5c52e8d5897b118f4fb18b19f8fbb2b75fba931528c8098c1272c1636",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-between-light-304x312.png"
+  },
+  "mibi-adult-S01-between-light-lay-patches-48x48": {
+   "file": "pods/mibi-adult-S01-between-light-lay-patches-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "cd3884b1d4e479e30d4f5f704c08d95967ec3afcfedc9a07990cc68b2711dd82",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-between-light-48x48.png"
+  },
+  "mibi-adult-S01-between-light-lay-patches-96x88": {
+   "file": "pods/mibi-adult-S01-between-light-lay-patches-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "8201540694969cf70e83be55bec1deaf5673304a7d8fe47b8b30275fdb720f44",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-between-light-96x88.png"
+  },
+  "mibi-adult-S01-between-light-lay-saddle-304x312": {
+   "file": "pods/mibi-adult-S01-between-light-lay-saddle-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "eadd2a835d87e01b075cf98eefade6021978ee86591c7744ba4e3458ae6d8803",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-between-light-304x312.png"
+  },
+  "mibi-adult-S01-between-light-lay-saddle-48x48": {
+   "file": "pods/mibi-adult-S01-between-light-lay-saddle-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "b5d7ea8d485a8184aad7742fbca81529bff5aec94291b3c487e23de70c3f705e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-between-light-48x48.png"
+  },
+  "mibi-adult-S01-between-light-lay-saddle-96x88": {
+   "file": "pods/mibi-adult-S01-between-light-lay-saddle-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "dbdaf6c8efd0ed6e2067048669c20d232f03a5eed9648e0d107a3f068db221b9",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-between-light-96x88.png"
+  },
+  "mibi-adult-S01-between-light-lay-spots-304x312": {
+   "file": "pods/mibi-adult-S01-between-light-lay-spots-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "35a10acedf92a81dfa11b7e5c6ade4acf3a322f62b16e8a242ecd79ae1a91a5d",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-between-light-304x312.png"
+  },
+  "mibi-adult-S01-between-light-lay-spots-48x48": {
+   "file": "pods/mibi-adult-S01-between-light-lay-spots-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "81891840d1dddc9b23dd827351f904dae69afc4beef33e53f71b48774575439b",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-between-light-48x48.png"
+  },
+  "mibi-adult-S01-between-light-lay-spots-96x88": {
+   "file": "pods/mibi-adult-S01-between-light-lay-spots-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "1a4c38d9c07abee44fb83a497e946ba1eaeed908486050f6c5f7c549a1e3e653",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-between-light-96x88.png"
+  },
+  "mibi-adult-S01-between-light-shake-304x312": {
+   "file": "pods/mibi-adult-S01-between-light-shake-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "af9d4c317ef90a1b8a4f8c7e074e26933707c6cbc868a8917607f119272275ce",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-ash-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-between-light-304x312.png"
   },
   "mibi-adult-S01-calm-304x312": {
    "file": "pods/mibi-adult-S01-calm-304x312.png",
@@ -3250,53 +3658,509 @@
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-asleep-304x312.png"
   },
-  "mibi-adult-S01-russet-304x312": {
-   "file": "pods/mibi-adult-S01-russet-304x312.png",
+  "mibi-adult-S01-redder-between-304x312": {
+   "file": "pods/mibi-adult-S01-redder-between-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "1f1879508b6e63617c402ee7179c30765c7aafed528fdd50fa1a23754ab4622e",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-russet-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-redder-between-304x312.png"
   },
-  "mibi-adult-S01-russet-48x48": {
-   "file": "pods/mibi-adult-S01-russet-48x48.png",
+  "mibi-adult-S01-redder-between-48x48": {
+   "file": "pods/mibi-adult-S01-redder-between-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "bddb740884126a2c28d26f780609f8c6959511bc88bcbaad8707a85fdb09ee9d",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-russet-48x48.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-redder-between-48x48.png"
   },
-  "mibi-adult-S01-russet-96x88": {
-   "file": "pods/mibi-adult-S01-russet-96x88.png",
+  "mibi-adult-S01-redder-between-96x88": {
+   "file": "pods/mibi-adult-S01-redder-between-96x88.png",
    "w": 96,
    "h": 88,
    "sha256": "2a0121df946c3015515f88a6159923940200e7927bffe1064dc07ed634e612ad",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-russet-96x88.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-redder-between-96x88.png"
   },
-  "mibi-adult-S01-russet-calm-304x312": {
-   "file": "pods/mibi-adult-S01-russet-calm-304x312.png",
+  "mibi-adult-S01-redder-between-calm-304x312": {
+   "file": "pods/mibi-adult-S01-redder-between-calm-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "f70556f8106c596100c7a1cc272f8f0278c0e94cb19e8edfaff20027d52c5aab",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-russet-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-redder-between-304x312.png"
   },
-  "mibi-adult-S01-russet-curl-304x312": {
-   "file": "pods/mibi-adult-S01-russet-curl-304x312.png",
+  "mibi-adult-S01-redder-between-curl-304x312": {
+   "file": "pods/mibi-adult-S01-redder-between-curl-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "a9c805c3447bcb84b570d3f323387514160aa8a3f25f723e61c82eecfbdc7551",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-russet-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-redder-between-304x312.png"
   },
-  "mibi-adult-S01-russet-shake-304x312": {
-   "file": "pods/mibi-adult-S01-russet-shake-304x312.png",
+  "mibi-adult-S01-redder-between-lay-bands-304x312": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-bands-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "bed35c66112a46eaf1174fe6ce2a847b13893e865b7815035cdabaf42e1a4764",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-redder-between-304x312.png"
+  },
+  "mibi-adult-S01-redder-between-lay-bands-48x48": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-bands-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "22f318d38b2ae4d2b55468f121410d7764f0f25e12b5e465389eb483196c6712",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-redder-between-48x48.png"
+  },
+  "mibi-adult-S01-redder-between-lay-bands-96x88": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-bands-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "587028509299399b18d23de8760ee24b53d6e5d3a9f066959e4008f319c8f46e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-redder-between-96x88.png"
+  },
+  "mibi-adult-S01-redder-between-lay-gradient-304x312": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-gradient-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "43a1cca4968d4957da4b4b7846f6c5a76f23630bc06f4f677b07664c7f36a9df",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-redder-between-304x312.png"
+  },
+  "mibi-adult-S01-redder-between-lay-gradient-48x48": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-gradient-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "aa32c5a10f68bc3cb01ec0df4a7a80f57d004ee7740b233e42b29166f6619a74",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-redder-between-48x48.png"
+  },
+  "mibi-adult-S01-redder-between-lay-gradient-96x88": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-gradient-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "b67588b19772f62eaab5a1b5a5679dc306e2b908b71125404c3d71ec00509b2c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-redder-between-96x88.png"
+  },
+  "mibi-adult-S01-redder-between-lay-patches-304x312": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-patches-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "24919dd2f0ca67f3b920bcaf40d173b60cf45bb6039288bc9051728099aa217c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-redder-between-304x312.png"
+  },
+  "mibi-adult-S01-redder-between-lay-patches-48x48": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-patches-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "b42e5d983e9aee88038696463bde6156a0dea62e13fef5911eb8a4c06279a912",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-redder-between-48x48.png"
+  },
+  "mibi-adult-S01-redder-between-lay-patches-96x88": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-patches-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "437b1839c163fe9e3682656188e9552efa49f8562b1ea6bc83f89469431f9a74",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-redder-between-96x88.png"
+  },
+  "mibi-adult-S01-redder-between-lay-saddle-304x312": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-saddle-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e8dd9ed4859162910d0d6939932db4cd5afa214735fa5e211ef188c4f259e6f7",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-redder-between-304x312.png"
+  },
+  "mibi-adult-S01-redder-between-lay-saddle-48x48": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-saddle-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "8008535c8fd73ffc0cf7b829b399788928249b838b9d130e6d67de9ba157da5f",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-redder-between-48x48.png"
+  },
+  "mibi-adult-S01-redder-between-lay-saddle-96x88": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-saddle-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "741143c8be7917c8f74e45dffeaceec21318db065e1fa97c7cb41f257a3e1c1e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-redder-between-96x88.png"
+  },
+  "mibi-adult-S01-redder-between-lay-spots-304x312": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-spots-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "00640f7789027e20b364d98da9bf837d6179928bedf761744fa568f3ce8e4b15",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-redder-between-304x312.png"
+  },
+  "mibi-adult-S01-redder-between-lay-spots-48x48": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-spots-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "c1837ae04ff81b66235b55a13f3508038b03a7bdaec39e37073f720bd49b8c7f",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-redder-between-48x48.png"
+  },
+  "mibi-adult-S01-redder-between-lay-spots-96x88": {
+   "file": "pods/mibi-adult-S01-redder-between-lay-spots-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "ebf9e81d77509679c911a1a5491e31023212c0260290702b10470de1691b6014",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-redder-between-96x88.png"
+  },
+  "mibi-adult-S01-redder-between-shake-304x312": {
+   "file": "pods/mibi-adult-S01-redder-between-shake-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "331d6b31798909ea233d3c961806e3fe889ba63457769da5a1213e1ee0722a1d",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-russet-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-redder-between-304x312.png"
+  },
+  "mibi-adult-S01-redder-dark-304x312": {
+   "file": "pods/mibi-adult-S01-redder-dark-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e594544280c5447f45be80f0c21c1852569725d7d79777d54c273b5daeeedd0b",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-redder-dark-304x312.png"
+  },
+  "mibi-adult-S01-redder-dark-48x48": {
+   "file": "pods/mibi-adult-S01-redder-dark-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "000b1907bb4205d0cd873a30a694bc39f1ee89ccb6db040cc297370513b5c500",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-redder-dark-48x48.png"
+  },
+  "mibi-adult-S01-redder-dark-96x88": {
+   "file": "pods/mibi-adult-S01-redder-dark-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "ae07d74e1f2ca35a6b51d34ee4b9493c05b2eb405343156d019535eaa58e62f3",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-redder-dark-96x88.png"
+  },
+  "mibi-adult-S01-redder-dark-calm-304x312": {
+   "file": "pods/mibi-adult-S01-redder-dark-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e9832c02432c66a37b2306cebd4f198df52c30d7769f24c22fa596cfb21cfa9c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-redder-dark-304x312.png"
+  },
+  "mibi-adult-S01-redder-dark-curl-304x312": {
+   "file": "pods/mibi-adult-S01-redder-dark-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "bbbda16b7e1a315694c64a03be2b5d6efa08bf0bc97ccabeb63efa225e4cd20e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-redder-dark-304x312.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-bands-304x312": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-bands-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "8ec231ca5293c270a8079a413de8e4db769be1f9273134ed92777234b50eeee0",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-redder-dark-304x312.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-bands-48x48": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-bands-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "bcd1e43db720b1f8746cc332debb6d88bf1339127950e3d350d25159f7614071",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-redder-dark-48x48.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-bands-96x88": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-bands-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "2540428849d46926b07ab518308276c27186561943fdad80b65300357b330c57",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-redder-dark-96x88.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-gradient-304x312": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-gradient-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "51d7e8a1d7cf7344d442670297191e59663456af4adf33c5b087a7574732d89e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-redder-dark-304x312.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-gradient-48x48": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-gradient-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "53d610097eba1d8ae69f93f637b7bd61515c342d657dfe296b6db592be499089",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-redder-dark-48x48.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-gradient-96x88": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-gradient-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "f56c46cb5ab8c6f94dcbf52998f087936c0a97d5519d12deac6f58144c6240e2",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-redder-dark-96x88.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-patches-304x312": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-patches-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "16786a69bc0e08ae7b79e42525c3c77617c1db4d79520546c917acacb45c3179",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-redder-dark-304x312.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-patches-48x48": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-patches-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "221bc281548de577ac35aaa64aeeafce8b88a34a6bf941917dd631c390ad0113",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-redder-dark-48x48.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-patches-96x88": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-patches-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "da6d5a5f3f4f93c582ebaa5cc5440795a919ffaca51d3fc5aa645debabad0017",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-redder-dark-96x88.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-saddle-304x312": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-saddle-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "47a1d9173455d66488749bdf8f44040b8794cf6bd48dbb15e7b41a7fcc82d14a",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-redder-dark-304x312.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-saddle-48x48": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-saddle-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "e7e24da1a507212498916592949ad7be7489ea19bad24f2b8e0c50f4ad49cc17",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-redder-dark-48x48.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-saddle-96x88": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-saddle-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "d18105bb9083bc41f065e879215108cea3cc357a9adf728ad5a0448c5dc60420",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-redder-dark-96x88.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-spots-304x312": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-spots-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "a958a09eff7bd6176842cdbf637bdc33d8eebf8d211a3ca616be837f0cd19df0",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-redder-dark-304x312.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-spots-48x48": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-spots-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "c9fd6596b753050aa66a3298c673a85c8bdf0a0450015e8d87cd3d8037af5262",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-redder-dark-48x48.png"
+  },
+  "mibi-adult-S01-redder-dark-lay-spots-96x88": {
+   "file": "pods/mibi-adult-S01-redder-dark-lay-spots-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "8e1b6c8d61fde2174f9a38c16e142e0e1591a9ef3cde3d52ecbfd1cfb17753c6",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-redder-dark-96x88.png"
+  },
+  "mibi-adult-S01-redder-dark-shake-304x312": {
+   "file": "pods/mibi-adult-S01-redder-dark-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "07d53a4d386ae481832607015dccb11fa96f1793e88b76441734ed7dd2af59c4",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-redder-dark-304x312.png"
+  },
+  "mibi-adult-S01-redder-light-304x312": {
+   "file": "pods/mibi-adult-S01-redder-light-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "0fa30268a58aa4e37555894c80db1f71bd7c5cdd8b3e8997dfd83ad8ccf1606b",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-redder-light-304x312.png"
+  },
+  "mibi-adult-S01-redder-light-48x48": {
+   "file": "pods/mibi-adult-S01-redder-light-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "c7452b71ab14353c7a3248db23bfa0ad8b176c400d3ef3b81d986a0a18f79dd6",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-redder-light-48x48.png"
+  },
+  "mibi-adult-S01-redder-light-96x88": {
+   "file": "pods/mibi-adult-S01-redder-light-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "a7b914cf2ada48e0953a402f5c8321dbcae699e4011ef936734e4c351dd5f11f",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-redder-light-96x88.png"
+  },
+  "mibi-adult-S01-redder-light-calm-304x312": {
+   "file": "pods/mibi-adult-S01-redder-light-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b0bbfbf98deab9182664de312bc7a3b006f82f3f127f335957d378b1f40e77bb",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-redder-light-304x312.png"
+  },
+  "mibi-adult-S01-redder-light-curl-304x312": {
+   "file": "pods/mibi-adult-S01-redder-light-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c2cbd9acc767563a012977851d9e4f3f9bf5021ad83795998dc4897284fb92f4",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-redder-light-304x312.png"
+  },
+  "mibi-adult-S01-redder-light-lay-bands-304x312": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-bands-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "3e8380fb9b084946b93ead2338cfcc2e6fb9ee237373c0a112a191ac90b65665",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-redder-light-304x312.png"
+  },
+  "mibi-adult-S01-redder-light-lay-bands-48x48": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-bands-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "8cc3a017e7f29fdb2cd34a823795d4fb7031cedab21b239c1934941e173542de",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-redder-light-48x48.png"
+  },
+  "mibi-adult-S01-redder-light-lay-bands-96x88": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-bands-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "f3926e6746affae8f3155e16b4875a84b1bcfa283ce1c9b34d829ae7d4f73ab9",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-redder-light-96x88.png"
+  },
+  "mibi-adult-S01-redder-light-lay-gradient-304x312": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-gradient-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "d0e57320467365a2466dd514a1a55b00184610e9af6f69f7dcb269e674adbd54",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-redder-light-304x312.png"
+  },
+  "mibi-adult-S01-redder-light-lay-gradient-48x48": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-gradient-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "ecd1d088ef3e06ca1ba6339b6ad8c37aeb7f1531c33b9874dc4c19fb8b1196d3",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-redder-light-48x48.png"
+  },
+  "mibi-adult-S01-redder-light-lay-gradient-96x88": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-gradient-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "793c53b2d849d84d529f248a10ec73e381191a25aa428cb33066b271976b0ed0",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-redder-light-96x88.png"
+  },
+  "mibi-adult-S01-redder-light-lay-patches-304x312": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-patches-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "544fc412233081264bde321907ded9ca5c344b02887495c8792d888013b3b8ff",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-redder-light-304x312.png"
+  },
+  "mibi-adult-S01-redder-light-lay-patches-48x48": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-patches-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "1c68b8310eb99c26c9b45a97e3770c8180dcfd612ac83a4162c6c619a3b9b534",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-redder-light-48x48.png"
+  },
+  "mibi-adult-S01-redder-light-lay-patches-96x88": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-patches-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "21a02ee649876ce742cf9206ed9c060a00acd7f3f597f8c506b968f78fda443c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-redder-light-96x88.png"
+  },
+  "mibi-adult-S01-redder-light-lay-saddle-304x312": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-saddle-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "d757a2bb8551e9c313fd433e9739fdf7ae7b60818cf94973786718cf2e1d4fe3",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-redder-light-304x312.png"
+  },
+  "mibi-adult-S01-redder-light-lay-saddle-48x48": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-saddle-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "6c35d9579490be43ee42c61a0817b9ba15ba5a0aa24d0f987fa6945900b1a17f",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-redder-light-48x48.png"
+  },
+  "mibi-adult-S01-redder-light-lay-saddle-96x88": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-saddle-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "58f33ef725b3b758e4f65d467d6dbf474d3aa482f4e976d6539d2552b4e4f549",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-redder-light-96x88.png"
+  },
+  "mibi-adult-S01-redder-light-lay-spots-304x312": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-spots-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "de99d73e846fe025832cd9be0bd2066cd17fa8481af8bf5e61d870e388ad52c8",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-redder-light-304x312.png"
+  },
+  "mibi-adult-S01-redder-light-lay-spots-48x48": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-spots-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "a126ec32702308f60707fcefae796091a8bcc4dcbf0ad8fd225d5bb22527e5df",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-redder-light-48x48.png"
+  },
+  "mibi-adult-S01-redder-light-lay-spots-96x88": {
+   "file": "pods/mibi-adult-S01-redder-light-lay-spots-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "b11432082c8f0727bb40039ef3f5a1a18b55745f2d94f6ea43fd39ba0e2f32da",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-redder-light-96x88.png"
+  },
+  "mibi-adult-S01-redder-light-shake-304x312": {
+   "file": "pods/mibi-adult-S01-redder-light-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c3ae01415dbea4a6eba3766cf34ceb1f60cdf776029b4122ec66507a1ee60cc2",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-redder-light-304x312.png"
   },
   "mibi-adult-S01-shake-304x312": {
    "file": "pods/mibi-adult-S01-shake-304x312.png",
@@ -3305,6 +4169,510 @@
    "sha256": "236f09da7d56a7b5f3da40c568396237a8672680f8527a3acf28817cf240de79",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g6-S01-loika-shake-304x312.png"
+  },
+  "mibi-adult-S01-yellower-between-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-between-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e8679c25607ff193c27f2d9358180a7914d803f16773bd7654e476180d74fd71",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-yellower-between-304x312.png"
+  },
+  "mibi-adult-S01-yellower-between-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-between-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "f6c87d3ae312d5586dca2982cc662dd0c077d254826edf1e791cddd10f63bbd9",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-yellower-between-48x48.png"
+  },
+  "mibi-adult-S01-yellower-between-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-between-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "28097da99539ca09d6d09383e2bf79f386356b43cbabfd0c9c7d0d2fcd6f706b",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-yellower-between-96x88.png"
+  },
+  "mibi-adult-S01-yellower-between-calm-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-between-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b6012116a17104ee83e7412b0d2bf79c1c0cf1c445272c0d9fd74f3013257f25",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-yellower-between-304x312.png"
+  },
+  "mibi-adult-S01-yellower-between-curl-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-between-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "1fd2f610c15af4feaa4eb4830f8f62e9bd4e685e555a88a2eb114ca0ab932e9a",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-yellower-between-304x312.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-bands-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-bands-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "597706a67d401c703ec8ad2464d5c36a2894ad0504faf37830d739670f31cf68",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-yellower-between-304x312.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-bands-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-bands-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "eb9d8408ee84500545b5f9142b4d0d27bd4c060adebccc6b2717083ce4ae88dd",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-yellower-between-48x48.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-bands-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-bands-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "a7c7550494a3b35450714c06c80f5a0747eff9c355e2ba7ad273a72d979b0c56",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-yellower-between-96x88.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-gradient-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-gradient-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "9a500325bc592efe41e33a0b2abba8a8fde588ddafb754b6944c682e85956601",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-yellower-between-304x312.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-gradient-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-gradient-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "2935444e4b1ed88f35981cf601c22dc6b8205428995355315a671ff9a83d3941",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-yellower-between-48x48.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-gradient-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-gradient-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "7fb68f23f70b3fd450abbcc8e7ead738e3c1d83b8ed74f537c5df2e31470562a",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-yellower-between-96x88.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-patches-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-patches-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "1d75354f6b7d627a9f3f69d7dae01bae4d896d33356db1fc118105b7e57b3361",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-yellower-between-304x312.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-patches-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-patches-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "e134349bf3ee313b82ecb358d5ab14e8ae314eee313dcf24e4182d0e1b09c7df",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-yellower-between-48x48.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-patches-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-patches-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "26e882b5934b78f015f9d17c5b9091a543ced9068b42b4653f51a577e83ef15e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-yellower-between-96x88.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-saddle-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-saddle-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b4fe3f9d122c979cca020273d32d1726109d2893a1b36b1d6a2bf9c60f6d788c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-yellower-between-304x312.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-saddle-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-saddle-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "141795b62b6528e5112ef1392169db83768d49934f66499a9ec496de69e928f2",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-yellower-between-48x48.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-saddle-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-saddle-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "0ee7cbb079f98ab902213e41770754b8f27b4357db031fb2b7abb252c50a1fa6",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-yellower-between-96x88.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-spots-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-spots-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "6880fc19a1d2b69763ae076325adf3145da9be910af231dde7a3ba792f42803b",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-yellower-between-304x312.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-spots-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-spots-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "153f3b15dd09c649be7dbb9c242582867c2cbeb4c7cc5fc778fd45cbc9fa079d",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-yellower-between-48x48.png"
+  },
+  "mibi-adult-S01-yellower-between-lay-spots-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-between-lay-spots-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "38dfc1d217419bf18bce20bc5ec0f3aed6ab61fd3eaaff4e76d7fa426acf0521",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-yellower-between-96x88.png"
+  },
+  "mibi-adult-S01-yellower-between-shake-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-between-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "ba9600322382060f1bce20466ffbbb4703437ddb51531fe30f6eb8b58d59b5ab",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-yellower-between-304x312.png"
+  },
+  "mibi-adult-S01-yellower-dark-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-dark-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b9814872e78373f92d1ae86dfb6fb264456f6e40b745cf5e868839b56ed82648",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-yellower-dark-304x312.png"
+  },
+  "mibi-adult-S01-yellower-dark-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-dark-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "2df84e5fc4d346ba01c13e266f013e902d50afbc81be822d60b71385b9ffa3be",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-yellower-dark-48x48.png"
+  },
+  "mibi-adult-S01-yellower-dark-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-dark-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "c8e1f4a3f81084d5362c4251a4d218d089b7a003eb6d81e0145ff8d74d222188",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-yellower-dark-96x88.png"
+  },
+  "mibi-adult-S01-yellower-dark-calm-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-dark-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "d8c51b962f5dd20052ead93840702d719a22b5a323ef01de4d333bc3b13b1507",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-yellower-dark-304x312.png"
+  },
+  "mibi-adult-S01-yellower-dark-curl-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-dark-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "904dc9510d85844116bbe214297da5158fff1e070a2eeeb1f550b272eb427399",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-yellower-dark-304x312.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-bands-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-bands-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "ee425560e7e838688cfa0d8974848dd9b402c5df2bc20dad9ea86c5985234929",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-yellower-dark-304x312.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-bands-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-bands-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "9485b64e958644e0ca170955ff755cf8703de65061b09cf4fb1afa180504c3b9",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-yellower-dark-48x48.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-bands-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-bands-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "a2fa48798728ac90b15081faea4b0f662b7d35f0e40f4dcf1735f4e2555290e7",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-yellower-dark-96x88.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-gradient-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-gradient-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "ff5daa0aa3ec7ab086659f0d21645576acabfbb274ad809d30470988c0d36d8c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-yellower-dark-304x312.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-gradient-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-gradient-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "9f95487b0910a970ad06718bffde02468b6483cf66ec211b025a9a154eb53b32",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-yellower-dark-48x48.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-gradient-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-gradient-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "aea5f0954d0d8bf692f7c0ee515aca024fe82a78e3b00726f9a1a5aa413d6814",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-yellower-dark-96x88.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-patches-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-patches-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "7cb31bba8c4252362219449a0aea8caf19fec4993b5fd9e94a938f9b09a857fe",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-yellower-dark-304x312.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-patches-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-patches-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "8b38003e5bb3892534e250b6ed95554da21db12e59bc2dd9586e9b25c3f4128a",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-yellower-dark-48x48.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-patches-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-patches-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "49b9ecd6bda276a191ebfd9421575417c96ebd7e55af052ac5e896ba7560a76d",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-yellower-dark-96x88.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-saddle-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-saddle-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "f9637dbd46fddb1ce327267e0f165ccb50957d8f4f30afaa0b06690845bc16f5",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-yellower-dark-304x312.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-saddle-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-saddle-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "23d40ad4387c54f29d4bd18c1777e35a6ea8ae110804e45c35d276acf65d7140",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-yellower-dark-48x48.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-saddle-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-saddle-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "29af6e6d41fc984dcd4ffa14d7f949e60227a732107902a459e887ce18e16404",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-yellower-dark-96x88.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-spots-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-spots-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "5a0ea0bb897a812584ade73c86b5afe11c42605795b7a8b5bf7bd29ae3de5c55",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-yellower-dark-304x312.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-spots-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-spots-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "7b5ebebeccce876ac9320df9a9dfa262a129748a452238a87faad9ca15d8d4cd",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-yellower-dark-48x48.png"
+  },
+  "mibi-adult-S01-yellower-dark-lay-spots-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-dark-lay-spots-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "de000616fd161a90bb8708f538cd3e8ce8ed9d528e8bfcf29d761ea7e3dbf565",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-yellower-dark-96x88.png"
+  },
+  "mibi-adult-S01-yellower-dark-shake-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-dark-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "2ebc14ecc9a4869272a305d71546cb7a53dab82a533b3449087f93a7bc3218aa",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-yellower-dark-304x312.png"
+  },
+  "mibi-adult-S01-yellower-light-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-light-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "13fe903dca79a5741406cce1501556fe9afed0e46a0d73d3e07a0212c1ba2f50",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-yellower-light-304x312.png"
+  },
+  "mibi-adult-S01-yellower-light-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-light-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "58245ca86ca4e84636d896146ff6b138f7391d2e6aa7ac125df426fff00efe75",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-yellower-light-48x48.png"
+  },
+  "mibi-adult-S01-yellower-light-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-light-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "d6cb135e3838fe2670ba43c8c5259b8e3a1a0f2d367a3c042901dec03fd12fec",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-yellower-light-96x88.png"
+  },
+  "mibi-adult-S01-yellower-light-calm-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-light-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "78c88dab290d2df8b49ec0e0cefe035593bdb8f5f57b370244ede6d4b003c03b",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-yellower-light-304x312.png"
+  },
+  "mibi-adult-S01-yellower-light-curl-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-light-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "725988e07d028893fd394d4b503f785c38b1ac868206821f05e56d15d7e64764",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-yellower-light-304x312.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-bands-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-bands-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "bab961e94f96dd4f99e1f0ae56e8b834a41c95561fe9c1a2a2ae4c86a16c58cd",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-yellower-light-304x312.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-bands-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-bands-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "9578b5b25744850dc94b20b4422443d0f9e819943333d32d7f4cbe10c90b4408",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-yellower-light-48x48.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-bands-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-bands-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "d74a4bcbbcd73798b3664b84194c081f0bfdfa5fc5b9204ca949007e2a1ba9e1",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-bands-yellower-light-96x88.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-gradient-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-gradient-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "9ddd8d27996b6cf4e8c08a3f3797d28b25e4304d1f7ceb8f34abf384ade64577",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-yellower-light-304x312.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-gradient-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-gradient-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "6d47b01fd7c3f4afa06bf52ae7830283c1c425e59100551083822e52819b901a",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-yellower-light-48x48.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-gradient-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-gradient-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "eb4d47b24c7047794fec38eebcaf67d9b58d1d8c4c5da9c52f39f65b1350f1a6",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-gradient-yellower-light-96x88.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-patches-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-patches-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "08fadf8e552fe92e07c14c5b193bb04160ec55e1ab4a761e650dbb6a8f5088d0",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-yellower-light-304x312.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-patches-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-patches-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "b1b47a0de9afbe62d4e35cb3e4faa8771d1c8d7bd3343d62544c00561b1b2f82",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-yellower-light-48x48.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-patches-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-patches-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "eef8daf0409537fe571cff66768424bea5d88602e1cbf23eb7014331a2f6e3b4",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-patches-yellower-light-96x88.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-saddle-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-saddle-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "53e11e78e7415a60ada1ba6e29fb5a577ede109f9837f9b3b0f1d8f6fd681b24",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-yellower-light-304x312.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-saddle-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-saddle-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "9ff1dd7c33cf0ea9c7084a59334c7071de40d4318aa7849d748d2cc832c94103",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-yellower-light-48x48.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-saddle-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-saddle-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "d975127e94eccaaed938239337a7ea30b40132cd831e3d8769f64400382d5649",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-saddle-yellower-light-96x88.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-spots-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-spots-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "63d538652c9aaddf08f35a48e1f25fb2bc1ed33f2c194dc819e8e420fbc8c0d7",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-yellower-light-304x312.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-spots-48x48": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-spots-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "a84f4ee29aae82769b88238745b264b5e2167f11f018ff4bd00fe6e7400134e7",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-yellower-light-48x48.png"
+  },
+  "mibi-adult-S01-yellower-light-lay-spots-96x88": {
+   "file": "pods/mibi-adult-S01-yellower-light-lay-spots-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "cdc8701d6310c1ed5b4042239e8d89c8aa37e87a674d89f7c9234dbbd360cd9d",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/lay-spots-yellower-light-96x88.png"
+  },
+  "mibi-adult-S01-yellower-light-shake-304x312": {
+   "file": "pods/mibi-adult-S01-yellower-light-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "8440ff3a5ff07716a7bd78dd5cbd41341ccff0999def098239204caa871fd1ff",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-yellower-light-304x312.png"
   },
   "mibi-adult-S02-144x152": {
    "file": "pods/mibi-adult-S02-144x152.png",
@@ -4458,53 +5826,101 @@
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-juv-v2-r2-96x88.png"
   },
-  "mibi-juvenile-S01-ash-304x312": {
-   "file": "pods/mibi-juvenile-S01-ash-304x312.png",
+  "mibi-juvenile-S01-between-between-304x312": {
+   "file": "pods/mibi-juvenile-S01-between-between-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c0450a707aed94ad72970f90d968b58abcf61c44f43eda23cc3088519331d265",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-between-between-304x312.png"
+  },
+  "mibi-juvenile-S01-between-between-48x48": {
+   "file": "pods/mibi-juvenile-S01-between-between-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "e5cbfda7eefa1418fe2f60beafca1d55c033db238f4b95032be12020618e8dff",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-between-between-48x48.png"
+  },
+  "mibi-juvenile-S01-between-between-96x88": {
+   "file": "pods/mibi-juvenile-S01-between-between-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "4e72198922d96927df3a42d0b8b557b2787cd0a3f6e787858ce264719cf43c9c",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-between-between-96x88.png"
+  },
+  "mibi-juvenile-S01-between-between-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-between-between-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "0dab015977f381b12dc7669b326ceee3667abc96021b706c8ebbf976b2d2b3c6",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-between-between-304x312.png"
+  },
+  "mibi-juvenile-S01-between-between-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-between-between-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "43b0789e95bfd61083de7a5246d6bd0a3284b6a3fbc262d125cb8a8e5a0a1392",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-between-between-304x312.png"
+  },
+  "mibi-juvenile-S01-between-between-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-between-between-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "8bb16affe1e2c42291722084f2f19431d4461ea8504371eb6f0abf23b67693bf",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-between-between-304x312.png"
+  },
+  "mibi-juvenile-S01-between-light-304x312": {
+   "file": "pods/mibi-juvenile-S01-between-light-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "e44745e5b9bbdac9e73a8bc4bfb0e83d6498d29f25fadb55aca6b87c89547a64",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-ash-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-between-light-304x312.png"
   },
-  "mibi-juvenile-S01-ash-48x48": {
-   "file": "pods/mibi-juvenile-S01-ash-48x48.png",
+  "mibi-juvenile-S01-between-light-48x48": {
+   "file": "pods/mibi-juvenile-S01-between-light-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "9449f7d3ca220518bbe84720b62d017e47a4584ef33ae7b22417da95cd738206",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-ash-48x48.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-between-light-48x48.png"
   },
-  "mibi-juvenile-S01-ash-96x88": {
-   "file": "pods/mibi-juvenile-S01-ash-96x88.png",
+  "mibi-juvenile-S01-between-light-96x88": {
+   "file": "pods/mibi-juvenile-S01-between-light-96x88.png",
    "w": 96,
    "h": 88,
    "sha256": "ef990d0b06fc22af104b84c559af4231c80f9577d339a8942e5ce0d0fe772128",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-ash-96x88.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-between-light-96x88.png"
   },
-  "mibi-juvenile-S01-ash-calm-304x312": {
-   "file": "pods/mibi-juvenile-S01-ash-calm-304x312.png",
+  "mibi-juvenile-S01-between-light-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-between-light-calm-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "43ca7b9671294fb3162ca5a51be1ed1db72e27c51d2a079e633abcb80ad88581",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-ash-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-between-light-304x312.png"
   },
-  "mibi-juvenile-S01-ash-curl-304x312": {
-   "file": "pods/mibi-juvenile-S01-ash-curl-304x312.png",
+  "mibi-juvenile-S01-between-light-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-between-light-curl-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "0eac9dec535084ee13df6bbec04d3b68067042e2956f1353f36c32ec266ec2d1",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-ash-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-between-light-304x312.png"
   },
-  "mibi-juvenile-S01-ash-shake-304x312": {
-   "file": "pods/mibi-juvenile-S01-ash-shake-304x312.png",
+  "mibi-juvenile-S01-between-light-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-between-light-shake-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "4e49464f495001deb67b631c0b2595dcc48e1d16c8e5ae6c92602b15105bad3f",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-ash-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-between-light-304x312.png"
   },
   "mibi-juvenile-S01-calm-304x312": {
    "file": "pods/mibi-juvenile-S01-calm-304x312.png",
@@ -4522,53 +5938,149 @@
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-juvasleep-v2-304x312.png"
   },
-  "mibi-juvenile-S01-russet-304x312": {
-   "file": "pods/mibi-juvenile-S01-russet-304x312.png",
+  "mibi-juvenile-S01-redder-between-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-between-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "dd275916c5af5d0231c2b563954c6febe09105c27e8de644fd16bfdcd8a18e72",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-russet-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-redder-between-304x312.png"
   },
-  "mibi-juvenile-S01-russet-48x48": {
-   "file": "pods/mibi-juvenile-S01-russet-48x48.png",
+  "mibi-juvenile-S01-redder-between-48x48": {
+   "file": "pods/mibi-juvenile-S01-redder-between-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "62481a33b2e6a0a01754f9b830f1135446f62389f4723f258b17763c89517633",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-russet-48x48.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-redder-between-48x48.png"
   },
-  "mibi-juvenile-S01-russet-96x88": {
-   "file": "pods/mibi-juvenile-S01-russet-96x88.png",
+  "mibi-juvenile-S01-redder-between-96x88": {
+   "file": "pods/mibi-juvenile-S01-redder-between-96x88.png",
    "w": 96,
    "h": 88,
    "sha256": "80444a02c55ce1c4f0245aee3c95a703ed6028218c4f2337dbdb1128dea7da24",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-russet-96x88.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-redder-between-96x88.png"
   },
-  "mibi-juvenile-S01-russet-calm-304x312": {
-   "file": "pods/mibi-juvenile-S01-russet-calm-304x312.png",
+  "mibi-juvenile-S01-redder-between-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-between-calm-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "e06dc5d65a2c8cf41f52bd2f7484aa7af72e56340813e347fd498429fe43e747",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-russet-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-redder-between-304x312.png"
   },
-  "mibi-juvenile-S01-russet-curl-304x312": {
-   "file": "pods/mibi-juvenile-S01-russet-curl-304x312.png",
+  "mibi-juvenile-S01-redder-between-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-between-curl-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "f2e9bd361abcd1c7e48c0707c8a8d3c153964d0ffa12d59206f8045a327369ae",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-russet-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-redder-between-304x312.png"
   },
-  "mibi-juvenile-S01-russet-shake-304x312": {
-   "file": "pods/mibi-juvenile-S01-russet-shake-304x312.png",
+  "mibi-juvenile-S01-redder-between-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-between-shake-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "c1ca5eace2fc7e96b3197c209df783f3bf714156a12f998f0a63ea6a82a839d3",
-   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
-   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-russet-304x312.png"
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-redder-between-304x312.png"
+  },
+  "mibi-juvenile-S01-redder-dark-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-dark-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "aaf087129d6a3580aca009e07b9cd61858d722226f8daa8841d3cf128792876f",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-redder-dark-304x312.png"
+  },
+  "mibi-juvenile-S01-redder-dark-48x48": {
+   "file": "pods/mibi-juvenile-S01-redder-dark-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "979cc5763f20fea9c21660d911270dcbcf4508584242422da3611908f3462c29",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-redder-dark-48x48.png"
+  },
+  "mibi-juvenile-S01-redder-dark-96x88": {
+   "file": "pods/mibi-juvenile-S01-redder-dark-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "a11b8cefd469b2e7534e1af8db56bb6aad0aedf22261b88fa66f9eea83a9d423",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-redder-dark-96x88.png"
+  },
+  "mibi-juvenile-S01-redder-dark-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-dark-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e280c2bcbd7d42cbc5ce007e1d873ebcdac0c7978e9c4dffd455902becaafdf7",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-redder-dark-304x312.png"
+  },
+  "mibi-juvenile-S01-redder-dark-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-dark-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "76ba29015804c8803061819ab3e5d7e628b276d67389123c8dede9609d2cc5f8",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-redder-dark-304x312.png"
+  },
+  "mibi-juvenile-S01-redder-dark-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-dark-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "31bdd043ae191ccd4d17001fd107b2f890b502d737b3dac5482e78cdaecad00a",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-redder-dark-304x312.png"
+  },
+  "mibi-juvenile-S01-redder-light-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-light-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "4675a2f08c0c43919663fb0c266dafba60bc71ff0f34ae26ac56301ba1341fa7",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-redder-light-304x312.png"
+  },
+  "mibi-juvenile-S01-redder-light-48x48": {
+   "file": "pods/mibi-juvenile-S01-redder-light-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "76700de6d79e7dea07e1ddc94d5f23a20dcdea804b026b14ec108df85e00375b",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-redder-light-48x48.png"
+  },
+  "mibi-juvenile-S01-redder-light-96x88": {
+   "file": "pods/mibi-juvenile-S01-redder-light-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "9090a60b39f21aed3b98c79983db107b3f1b22b189d5606d42dd8d60da1ed544",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-redder-light-96x88.png"
+  },
+  "mibi-juvenile-S01-redder-light-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-light-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "a065b1a7f521a7d39a014d91dab5527fa8afe79f58f69231cb567310e276dd7e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-redder-light-304x312.png"
+  },
+  "mibi-juvenile-S01-redder-light-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-light-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c6a85e423d442eaad889a0e87cf110c90ac18bea9321a924e6e9b531ca30e5d3",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-redder-light-304x312.png"
+  },
+  "mibi-juvenile-S01-redder-light-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-redder-light-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "96f89d43ba128dc862ba5b1f73f9e17430ed1a89448642247e1d99c954257838",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-redder-light-304x312.png"
   },
   "mibi-juvenile-S01-shake-304x312": {
    "file": "pods/mibi-juvenile-S01-shake-304x312.png",
@@ -4577,6 +6089,150 @@
    "sha256": "c4a253635334eb05442053c964b07d71ca5506baca5111e18741beb2a25946a1",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g6-S01-loika-juvshake-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-between-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-between-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b798ab9fdd759f1ab1e006010195489e09bd13b45da48f8205dbb55fafea4fb4",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-yellower-between-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-between-48x48": {
+   "file": "pods/mibi-juvenile-S01-yellower-between-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "05b094378a017703111d36d31e3eaf6d1878d4da7f2ba77b84e29b5caf5f0b88",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-yellower-between-48x48.png"
+  },
+  "mibi-juvenile-S01-yellower-between-96x88": {
+   "file": "pods/mibi-juvenile-S01-yellower-between-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "9c9f9fbdfe5dead6d1e1b8d0ea5741ca7407b19b68f5b63eb30c94bf43d2d3e4",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-yellower-between-96x88.png"
+  },
+  "mibi-juvenile-S01-yellower-between-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-between-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "d5fe441a6977027a04c0434e1ed09ce047e523df6ab3c860d7b889ce85038d8f",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-yellower-between-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-between-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-between-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c28dfd4a98f6378970eb45ac0c05c43cb8b316514f18cacc33cb40370c981b15",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-yellower-between-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-between-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-between-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "46f220d5a73fde7a8d6eaf6d79c9a7d756c239a63402ca2e5142dae244961732",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-yellower-between-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-dark-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-dark-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "2450516512bc4a60e9d7421e7038213d2daeb1f56396994525606110df641e98",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-yellower-dark-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-dark-48x48": {
+   "file": "pods/mibi-juvenile-S01-yellower-dark-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "a933dcfac8c1be997d9090335388e974649d2830b2d1351e7b978f96506e4345",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-yellower-dark-48x48.png"
+  },
+  "mibi-juvenile-S01-yellower-dark-96x88": {
+   "file": "pods/mibi-juvenile-S01-yellower-dark-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "f3da29c3f15011ecd5547eb8ebb38e1a378315798bf4de267f628e28504c9023",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-yellower-dark-96x88.png"
+  },
+  "mibi-juvenile-S01-yellower-dark-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-dark-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "0401f0ed1357f2bc4997ea2ceb64205aac328a63195e835a6d4ac9667527cd92",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-yellower-dark-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-dark-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-dark-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "bd1290b17c9ecf3df98d6ebd92c48dcd7b75eff331b254ba96aa013de1be6411",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-yellower-dark-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-dark-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-dark-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "094a3168f1fa53c11f53227de3e092960dbe7d045b27614fb573ba7cebb6b1e1",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-yellower-dark-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-light-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-light-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "371685943c4ee35eb1a3e6fb22536da12c0784479599de5fadefc4cc9d1f1363",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-yellower-light-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-light-48x48": {
+   "file": "pods/mibi-juvenile-S01-yellower-light-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "efd6a1e8568f07ade87044c65b2014fe7f54a42f83dc5c6b61ee4f00ba5fe77e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-yellower-light-48x48.png"
+  },
+  "mibi-juvenile-S01-yellower-light-96x88": {
+   "file": "pods/mibi-juvenile-S01-yellower-light-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "ea17e58120fe0472d7880a91cf3efb3f289e6e7c7c72ce3885bc7a8a14c5618e",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-yellower-light-96x88.png"
+  },
+  "mibi-juvenile-S01-yellower-light-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-light-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "90b40ec72c62e3622278f09aa0a5c5ca95cfe7dd49ca926ae488d3600e9da8e6",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-yellower-light-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-light-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-light-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "1152eb4aea2a0486e91322ac8d78173779a45b6f7c83d2495be454e1efe7f964",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-yellower-light-304x312.png"
+  },
+  "mibi-juvenile-S01-yellower-light-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-yellower-light-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "a7a65f3e48f8cdda9b21f7d41eba1923145c358645646591f0b3bdd84cce9b5f",
+   "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-yellower-light-304x312.png"
   },
   "mibi-juvenile-S02-104x112": {
    "file": "pods/mibi-juvenile-S02-104x112.png",

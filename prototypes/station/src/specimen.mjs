@@ -3,6 +3,7 @@
 // the two canvases `finish` makes come from createCanvas, `drawForm` reports each bead's centre, and the harness at the foot (the art director's, build spec 4.2) makes the picture, its bead centres and its four breathing levels.
 // Bump RECIPE whenever this file changes what it draws: it is in the picture's cache id.
 import { createCanvas } from './paint2d.mjs';
+import { coatColours } from './coat-colours.mjs';
 import { IRIS_SWATCH } from '../../workbench/framework/language.mjs';   // the house iris table: the Iris trait's looks are drawn in it, for every kind
 
 // Library specimen generator, v3 rules (frame-driven body). Home's Library module is this render (build spec section 4.2).
@@ -44,6 +45,7 @@ export function lookColours(trait, look, idx) {
   const parts = look.split(' and ');
   if (look === 'two side by side' && trait.pod) return trait.pod;              // the species' own pair
   if (trait.id === 'iris' && IRIS_SWATCH[look]) return [IRIS_SWATCH[look]];   // the Iris trait: the house iris colour of the look (amber #C27A1E), never the Face chapter's green ramp
+  if (trait.id === 'body-hue') { const c = coatColours(trait.sid, look); if (c) return c; }   // the Tint trait: the coat colour of the look (coat-colours.mjs), never the chapter's one tan
   if (parts.every((p) => PIGMENT[p])) return parts.map((p) => PIGMENT[p]);
   const hue = CH_HUE[trait.chapterId] || '#cccccc';
   const ramp = (trait.sid === 'S01' || !trait.sid) && RAMPS[trait.id] ? RAMPS[trait.id] : [mix(hue, '#000000', 0.12), mix(hue, PAL.bone, 0.3), mix(hue, PAL.bone, 0.6)];

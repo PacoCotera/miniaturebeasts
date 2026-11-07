@@ -4,7 +4,7 @@
 import * as S from "../state.mjs";
 import { frameOf, genomeDigest } from "../genome.mjs";
 import { movingIds, playable, movingFigure } from "../moving.mjs";
-import { standLook, placedAt, coatOf, coatMaster, COAT_LOOKS } from "../stands.mjs";
+import { standLook, placedAt, coatOf, coatMaster, COAT_TRAITS } from "../stands.mjs";
 import { asset as assetOf, manifest } from "../../../ui/assets.mjs";
 import { drawnLooks } from "../looks.mjs";
 import { layeredStand, standPictureId, standFigure, standVariant, curlFactor, curlPicture, curlOfStand, viewFigureHeight, viewFactor, factorPlace, factorPicture, inkBox } from "../layered-stand.mjs";
@@ -36,7 +36,7 @@ export const lookOf = (st, mb, size, settings) => standLook(S.speciesOf(mb), S.m
 // A pose (layered-stand.mjs poseFor) is the pose's name, or poseFor's { pose, owed } itself; the anchor by default. A pose that is not the anchor is part of the stand's variant, so of the id.
 const poseName = (pose) => (typeof pose === "string" ? pose : pose?.pose ?? "anchor");
 // the coat a mibi is drawn in (stands.mjs coatOf), or null for the painted coat; the kinds with no coat trait never read the looks
-const coatFor = (sp, mb) => (COAT_LOOKS[sp] ? coatOf(sp, drawnLooks(frameOf(sp), mb)) : null);
+const coatFor = (sp, mb) => (COAT_TRAITS[sp] ? coatOf(sp, drawnLooks(frameOf(sp), mb)) : null);
 export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "default", pose = "anchor", k = 1) => {
   const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
   if (stand) { const looks = drawnLooks(frameOf(sp), mb); return { id: standPictureId(stand, looks, light), stage: grown, size: [...stand.size], looks }; }
@@ -61,7 +61,7 @@ function poseFit(sp, stage, size, pose, k = 1, coat = null) {
 const KIND_SCALE = new Map();
 export function sittingKindScale(sp, win, cap = [0.55, 0.65]) {
   const key = `${sp}|${win}|${cap}`; if (KIND_SCALE.has(key)) return KIND_SCALE.get(key);
-  let k = 1; const re = new RegExp(`^mibi-(?:adult|juvenile)-${sp}(?:-[a-z0-9-]+)?-304x312$`);
+  let k = 1; const re = new RegExp(`^mibi-(?:(?:adult|juvenile)-${sp}(?:-(?:curl|shake|calm|puff|sniff|dig|glow))?|adult-${sp}-between-dark-lay-[a-z]+)-304x312$`);   // the painted pictures and the marked ones (every coat leaves the alpha alone, so one coat stands for all)
   for (const e of manifest()) { if (!re.test(e.id) || !placedAt(e.id, 304, 312)) continue; const a = assetOf(e.id), box = inkBox(a.rgba(), a.w, a.h); if (box) k = Math.min(k, cap[0] * win[0] / box[2], cap[1] * win[1] / box[3]); }
   k = Math.floor(k * 1000) / 1000; KIND_SCALE.set(key, k); return k;
 }

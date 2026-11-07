@@ -9,6 +9,7 @@
 //   - links: 1 px mist, a faded parent's stone, drawn first; the nodes over them.
 // Every pixel is the ground's, a palette token's or a dot's body colour: no anti-aliasing, no master.
 import { lookColours } from "./specimen.mjs";
+import { coatColours } from "./coat-colours.mjs";
 import { traitState } from "./genome.mjs";
 import { farGeometry, miniGeometry } from "./lineage.mjs";
 export { farGeometry, miniGeometry };
@@ -17,6 +18,12 @@ const hexRGB = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
 // The read, shown body colour of mibi `m` (its Colour trait's shown look, as hex: one, or two for a two-tone), or null when its Coat is unread or the colour is locked (the species has no Colour trait, or its loci are locked).
 export function bodyColour(frame, m) {
   if (!frame || !m?.genome) return null;
+  const tint = frame.chapters.flatMap((c) => c.traits.map((t) => [c, t])).find(([, t]) => t.id === "body-hue");   // version 8: the coat is Tint x Shade (coat-colours.mjs), as the card names them
+  if (tint) {
+    const [c, t] = tint, sh = c.traits.find((x) => x.id === "body-value"); if (c.sealed || !(m.read ?? []).includes(c.id)) return null;
+    const look = traitState(frame, t, m.genome).shows, shade = sh ? traitState(frame, sh, m.genome).shows : "between"; if (!look) return null;
+    return coatColours(frame.species.id, look, shade ?? "between");
+  }
   const ch = frame.chapters.find((c) => c.traits.some((t) => t.id === "colour")), t = ch?.traits.find((x) => x.id === "colour"); if (!t) return null;
   if (t.loci.every((id) => frame.loci.find((l) => l.id === id)?.kind === "locked")) return null;
   if (ch.sealed || !(m.read ?? []).includes(ch.id)) return null;
