@@ -80,8 +80,8 @@ test("the keys: ▶ ◀ move between pods and stop at an edge, ▲ from the top 
   show(f, build(st, {}, "card.4")); f.key("right"); assert.deepEqual(said(f), [], "the right edge: the ring stays, nothing said");
   show(f, build(st, {}, "card.2")); f.key("down"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["card.7"], "the row under");
   show(f, build(st, {}, "card.1")); f.key("up"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.read"], "▲ from the top row: the verb that is on");
-  show(f, build(st, {}, "verb.read")); f.key("right"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.grow"], "the next verb");
-  show(f, build(st, { verb: "grow" }, "verb.grow")); f.key("down"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["card.0"], "down to the first pod that can take the verb");
+  show(f, build(st, {}, "verb.read")); f.key("right"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.freshen"], "the next verb");
+  show(f, build(st, { verb: "freshen" }, "verb.freshen")); f.key("down"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["card.0"], "down to the first pod that can take the verb");
   show(f, build(st, { verb: "letgo" }, "verb.letgo")); f.key("right"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["sort"], "the verb line goes on to Sort, Filter and Find");
   show(f, build(st, {}, "sort")); f.key("left"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.letgo"]);
   show(f, build(st, {}, "card.0")); f.key("left"); assert.deepEqual(said(f), [], "the left edge: the ring stays, nothing said");

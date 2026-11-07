@@ -48,7 +48,7 @@ test("every way into Pods sets the caller's verb: Home and the Research key Read
 });
 test("the verb the ring chooses on the verb line is the grid's: ◀ ▶ on it (the face says `focus`) change the verb and let any held pod go; ✓ on it goes down to the first pod that can take it; a fixed verb cannot be changed", () => {
   const st = world(); pod(st, "S01", 5, false); pod(st, "S01", 6); pod(st, "S02", 7); const h = mk(st); h.ui.screen = "pods"; openInventory(h, { from: "home" });
-  INTENTS.pods.focus(h, "verb.grow"); assert.equal(h.ui.pods.verb, "grow"); INTENTS.pods.intent(h, "verb.grow", "confirm"); assert.equal(h.ui.pods.focus.cur, "card.0", "down to the pods");
+  INTENTS.pods.focus(h, "verb.freshen"); assert.equal(h.ui.pods.verb, "freshen"); INTENTS.pods.intent(h, "verb.freshen", "confirm"); assert.equal(h.ui.pods.focus.cur, "card.0", "down to the pods");
   INTENTS.pods.focus(h, "verb.read"); assert.equal(h.ui.pods.verb, "read");
   openInventory(h, { from: "incubator" }); INTENTS.pods.focus(h, "verb.read"); assert.equal(h.ui.pods.verb, "grow", "the Incubator's verb is fixed");
 });

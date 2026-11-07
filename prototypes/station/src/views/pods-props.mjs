@@ -152,13 +152,12 @@ export function takeOf(m, spec, verb, p) {
   if (verb === "read" || verb === "bring" || verb === "letgo") return { can: true, why: "", word: a.word };
   return { can: !a.dim, why: a.dim ? (a.foot ?? a.word).replace(/^[^·]*· /, "") : "", word: a.word };   // the reason alone ("the incubator is busy", "already fresh"): the verb is on the line above and the middle slot is narrow
 }
-// The verbs the line offers, in order: the caller's alone when it fixed one; else Read, Grow (not while the incubator is busy or the Vivarium is full), Freshen (while a pod is not fresh), Compare (while a species has two pods) and Let go.
+// The verbs the line offers, in order: the caller's alone when it fixed one (the Incubator's Grow, the bench's Bring); else Read, Freshen, Compare (while a species has two pods) and Let go.
 export function verbsOf(m, spec) {
   const { st, ui, settings } = m; if (!st.tray.length) return [];
   if (ui.fixed) return [ui.verb ?? "read"];
   const out = ["read"];
-  if (!st.bud && !S.vivFull(st, settings) && st.tray.some((p) => p.idd)) out.push("grow");
-  if (st.tray.some((p) => !S.onBench(st, p) && S.freshenCost(st, p, settings))) out.push("freshen");
+  out.push("freshen");   // always on the line (the pods that are fresh fade and say so); Grow is the green key's, and the Incubator's alone
   if (st.tray.some((p) => p.idd && st.tray.some((q) => q !== p && S.canCompare(st, p, q)))) out.push("compare");
   out.push("letgo"); return out;
 }

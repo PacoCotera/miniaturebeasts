@@ -2,67 +2,67 @@
  "_note": "Pods' goldens: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "inventory, no pods": {
-   "hash": "6cf5676b",
+   "hash": "224192cb",
    "png": "pods-inventory-no-pods.png"
   },
   "inventory, one sealed pod": {
-   "hash": "d006e99f",
+   "hash": "fd4b3f79",
    "png": "pods-inventory-one-sealed-pod.png"
   },
   "inventory, twelve pods": {
-   "hash": "655b46ff",
+   "hash": "4c296297",
    "png": "pods-inventory-twelve-pods.png"
   },
   "inventory, the verb line": {
-   "hash": "8ea04c51",
+   "hash": "126ca571",
    "png": "pods-inventory-the-verb-line.png"
   },
   "inventory, sorted by species": {
-   "hash": "c7a8af07",
+   "hash": "4ec020e2",
    "png": "pods-inventory-sorted-by-species.png"
   },
   "inventory, filtered": {
-   "hash": "ede90b6d",
+   "hash": "30852120",
    "png": "pods-inventory-filtered.png"
   },
   "inventory, the filter tray": {
-   "hash": "db61dcdb",
+   "hash": "f605cdf7",
    "png": "pods-inventory-the-filter-tray.png"
   },
   "inventory, no matches": {
-   "hash": "0f9dfc53",
+   "hash": "4fded557",
    "png": "pods-inventory-no-matches.png"
   },
   "inventory, find": {
-   "hash": "8a994919",
+   "hash": "12e74e85",
    "png": "pods-inventory-find.png"
   },
   "inventory, drying": {
-   "hash": "47f74e0a",
+   "hash": "151a3e2f",
    "png": "pods-inventory-drying.png"
   },
-  "inventory, Grow: the sealed pods fade": {
-   "hash": "c18b0007",
-   "png": "pods-inventory-grow-the-sealed-pods-fade.png"
+  "inventory, Freshen: the pod on the bench fades": {
+   "hash": "3005f45b",
+   "png": "pods-inventory-freshen-the-pod-on-the-bench-fades.png"
   },
   "inventory, a pod dried": {
-   "hash": "00149ab3",
+   "hash": "783a83c6",
    "png": "pods-inventory-a-pod-dried.png"
   },
   "inventory, let go, the hold ring on the pod": {
-   "hash": "60829b42",
+   "hash": "a43971ff",
    "png": "pods-inventory-let-go-the-hold-ring-on-the-pod.png"
   },
   "inventory, from the Incubator: Grow, the only verb": {
-   "hash": "5c957f45",
+   "hash": "cd745a88",
    "png": "pods-inventory-from-the-incubator-grow-the-only-verb.png"
   },
   "inventory, Compare: a pod held, its kin bright": {
-   "hash": "6d9840ef",
+   "hash": "d34c1760",
    "png": "pods-inventory-compare-a-pod-held-its-kin-bright.png"
   },
   "inventory, forty pods": {
-   "hash": "495d357c",
+   "hash": "a88bcb9d",
    "png": "pods-inventory-forty-pods.png"
   },
   "read, Loika fresh, Coat in hand": {

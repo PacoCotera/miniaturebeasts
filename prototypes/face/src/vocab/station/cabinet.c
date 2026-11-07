@@ -236,10 +236,25 @@ static void picker_mark(const char *id, const char *kind, int x, int y) {
     snprintf(ops, sizeof ops, "[[\"rrect\",0,0,12,12,6,\"%s\",\"\"]]", v_scol(S, I K ".marks.new.fill")); v_region("card.mark", LAYER_CHROME); v_composed(id, x + 5, y + 5, 12, 12, ops);
   }
 }
+/* a pod's soft contact shadow, whole pixels: an ellipse of w x h in `outer` whose edge is dithered (every other pixel of a row's end), a darker one of 70 % of it in `inner` at its centre; rows by integer arithmetic so every build draws the same */
+static int isqrt(int v) { int r = 0; while ((r + 1) * (r + 1) <= v) r++; return r; }
+static void seat_ops(char *ops, size_t cap, int w, int h, const char *outer, const char *inner) {
+  int n = snprintf(ops, cap, "[");
+  for (int pass = 0; pass < 2; pass++) {
+    int sw = pass ? w * 7 / 10 : w, sh = pass ? h * 7 / 10 : h, ox = (w - sw) / 2, oy = (h - sh) / 2; const char *c = pass ? inner : outer;
+    for (int y = 0; y < sh; y++) {
+      int dy = 2 * y + 1 - sh, hw = isqrt(sw * sw * (sh * sh - dy * dy) / (4 * sh * sh)), x0 = ox + sw / 2 - hw, len = 2 * hw; if (len < 1) continue;
+      int edge = !pass && len > 4 && (y & 1);   /* the dithered edge: a row's end pixels only on every other row */
+      if (edge) n += snprintf(ops + n, cap - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", n > 1 ? "," : "", x0 + 1, oy + y, len - 2, c);
+      else n += snprintf(ops + n, cap - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", n > 1 ? "," : "", x0, oy + y, len, c);
+    }
+  }
+  snprintf(ops + n, cap - (size_t)n, "]");
+}
 static void picker_cells(void) {
   int cell[2] = { v_sk(S, I K ".grid.cell", 0), v_sk(S, I K ".grid.cell", 1) }, nm[4], mk[4], pd[4], st[4], rad = v_si(S, I K ".grid.radius", 8);
   v_srect(S, I K ".grid.name", nm); v_srect(S, I K ".grid.mark", mk); v_srect(S, I K ".grid.pod", pd); v_srect(S, I K ".ground.seat.rect", st);
-  char fillc[24], seatc[24], heldc[24], veilc[24], ops[600]; snprintf(fillc, sizeof fillc, "%s", v_scol(S, I K ".grid.cellFill")); snprintf(seatc, sizeof seatc, "%s", v_scol(S, I K ".ground.seat.fill")); snprintf(heldc, sizeof heldc, "%s", v_scol(S, I K ".grid.held")); snprintf(veilc, sizeof veilc, "%s", v_scol(S, I K ".grid.veil.colour"));
+  char fillc[24], seatc[24], seatin[24], heldc[24], veilc[24], ops[600]; snprintf(fillc, sizeof fillc, "%s", v_scol(S, I K ".grid.cellFill")); snprintf(seatc, sizeof seatc, "%s", v_scol(S, I K ".ground.seat.fill")); snprintf(seatin, sizeof seatin, "%s", v_scol(S, I K ".ground.seat.inner")); snprintf(heldc, sizeof heldc, "%s", v_scol(S, I K ".grid.held")); snprintf(veilc, sizeof veilc, "%s", v_scol(S, I K ".grid.veil.colour"));
   int level = v_si(S, I K ".grid.veil.levels", 10); char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   for (int i = 0, n = v_plen(P ".grid.cards"); i < n; i++) {
     int b[4], whole = inv_card_box(i, b); char Cb[64]; snprintf(Cb, sizeof Cb, "%s", v_fmt(P ".grid.cards.%d", i)); int k = v_pint(v_fmt("%s.k", Cb), 0);
@@ -249,7 +264,7 @@ static void picker_cells(void) {
     int sealed = v_pbool(v_fmt("%s.sealed", Cb), 0), fade = v_pbool(v_fmt("%s.fade", Cb), 0), held = v_pbool(v_fmt("%s.held", Cb), 0); char id[32]; snprintf(id, sizeof id, "card.%d", k);
     v_region("card.cell", LAYER_CHROME);
     if (strcmp(cur, id) == 0) { snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", cell[0], cell[1], rad, fillc); v_composed(v_fmt("%s.fill", id), b[0], b[1], cell[0], cell[1], ops); }
-    snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", st[2], st[3], st[3] / 2, seatc); v_composed(v_fmt("%s.seat", id), b[0] + st[0], b[1] + st[1], st[2], st[3], ops);
+    { static char sb[4096]; seat_ops(sb, sizeof sb, st[2], st[3], seatc, seatin); v_composed(v_fmt("%s.seat", id), b[0] + st[0], b[1] + st[1], st[2], st[3], sb); }
     v_name("card.pod"); v_slot(v_fmt("%s.pod", id), pod, NULL, b[0] + pd[0], b[1] + pd[1], pd[2], pd[3], *pod != 0);
     { char mark[16]; snprintf(mark, sizeof mark, "%s", v_pstr(v_fmt("%s.mark", Cb))); if (*mark) picker_mark(v_fmt("%s.mark", id), mark, b[0] + mk[0], b[1] + mk[1]); }
     v_region("card.words", LAYER_TYPE); inv_say(v_fmt("%s.name", id), name, b[0] + nm[0], b[1] + nm[1], nm[2], nm[3], sealed ? v_sstr(S, I K ".grid.sealedRole") : v_sstr(S, I K ".grid.nameRole"), "panel", V_ALIGN_CENTRE);
@@ -294,8 +309,8 @@ static void picker_grid(void) {
   }
 }
 static void picker_empty(void) {
-  int n = v_plen(P ".empty"); if (n < 1) return; int st[4], t[4], l[4]; v_srect(S, I K ".empty.seat", st); v_srect(S, I K ".empty.title", t); v_srect(S, I K ".empty.line", l); char ops[160];
-  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", st[2], st[3], st[3] / 2, v_scol(S, I K ".ground.seat.fill")); v_region("empty.seat", LAYER_CHROME); v_composed("empty.seat", st[0], st[1], st[2], st[3], ops);
+  int n = v_plen(P ".empty"); if (n < 1) return; int st[4], t[4], l[4]; v_srect(S, I K ".empty.seat", st); v_srect(S, I K ".empty.title", t); v_srect(S, I K ".empty.line", l);
+  { static char sb[4096]; char o[24], in[24]; snprintf(o, sizeof o, "%s", v_scol(S, I K ".ground.seat.fill")); snprintf(in, sizeof in, "%s", v_scol(S, I K ".ground.seat.inner")); seat_ops(sb, sizeof sb, st[2], st[3], o, in); v_region("empty.seat", LAYER_CHROME); v_composed("empty.seat", st[0], st[1], st[2], st[3], sb); }
   v_region("empty.words", LAYER_TYPE); { char s[V_STR]; snprintf(s, sizeof s, "%s", v_pstr(P ".empty.0")); inv_say("empty.title", s, t[0], t[1], t[2], t[3], v_sstr(S, I K ".empty.titleRole"), "panel", V_ALIGN_CENTRE);
     if (n > 1) { snprintf(s, sizeof s, "%s", v_pstr(P ".empty.1")); inv_say("empty.line", s, l[0], l[1], l[2], l[3], v_sstr(S, I K ".empty.lineRole"), "panel", V_ALIGN_CENTRE); } }
 }

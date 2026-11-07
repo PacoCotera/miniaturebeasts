@@ -258,7 +258,7 @@ const focusNow = () => page.evaluate(() => window.__st.UI.pods.focus.cur), viewN
 const podsAt = (o, ms = 300) => page.evaluate((o) => window.__st.podsAt(o), o).then(() => page.waitForTimeout(ms));
 // the picker's verbs (the pods picker's design B): Read, Grow, Freshen, Compare and Let go are verbs on the verb line (the reading screen v2 carries only the read); the ring on a pod under a verb, ✓ does it in one press, Let go is a held ✓ (the face's hold ring)
 const ACTS = { take: "read", grow: "grow", freshen: "freshen", compare: "compare", letGo: "letgo" };
-const toBand = async (podId, id) => { const verb = ACTS[id]; await podsAt({ view: "inventory", card: podId, verb, hold: null }); expect(verb && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === podId, `the picker offers ${id}`); };
+const toBand = async (podId, id) => { const verb = ACTS[id]; await podsAt({ view: "inventory", card: podId, verb, fixed: verb === "grow", hold: null }); expect(verb && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === podId, `the picker offers ${id}`); };
 const holdConfirm = async (ms) => { await page.evaluate(() => window.__st.act("confirm")); await page.waitForTimeout(ms); await page.evaluate(() => window.__st.release("confirm")); await page.waitForTimeout(400); };
 const letGoAll = async (podId) => { await toBand(podId, "letGo"); await holdConfirm(6500); };
 await podsAt({ view: "inventory", card: loika.id, verb: "read" });
