@@ -76,10 +76,16 @@ export function carryPlan(m, key) {
   }
   return null;
 }
-// The bottom line's cues: [{ key, room, word }] in key order, one for each live carry. A carry that was just made shows none for its own key (a second tap is the room's top).
+// A carry that does what ✓ already says needs no cue (the controls scheme): blue on a pod in the collection under Read (✓ is "Take to the reading room"), green on a mibi in the Vivarium (✓ goes up close). The key still carries.
+export function sameAsConfirm(m, plan) {
+  if (plan.act === "read") return m.ui.screen === "pods" && (m.ui.pods.verb ?? "read") === "read" && !m.ui.pods.fixed;
+  if (plan.act === "close") return m.ui.screen === "vivarium";
+  return false;
+}
+// The bottom line's cues: [{ key, room, word }] in key order, one for each live carry that is not what ✓ says. A carry that was just made shows none for its own key (a second tap is the room's top).
 export function cuesOf(m) {
   if (m.ui.idle || m.ui.panel || m.ui.hab?.namer) return [];
-  const out = []; for (const key of KEYS) { if (m.ui.carry?.key === key) continue; const c = carryPlan(m, key); if (c) out.push({ key, room: ROOM_MARK[key], word: c.word }); }
+  const out = []; for (const key of KEYS) { if (m.ui.carry?.key === key) continue; const c = carryPlan(m, key); if (c && !sameAsConfirm(m, c)) out.push({ key, room: ROOM_MARK[key], word: c.word }); }
   return out;
 }
 

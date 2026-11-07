@@ -89,7 +89,14 @@ test("yellow is always Home, a carry never spends, and ✓ on the destination en
   press(g, "back"); assert.equal(g.went.at(-1), "pods"); const k = inPods(0); key(k, "library"); assert.ok(k.ui.carry); press(k, "confirm", "chapter.coat"); assert.equal(k.ui.carry, null, "✓ ends it"); press(k, "back"); press(k, "back"); assert.equal(k.went.at(-1), "library", "today's ←: clears the lit chapter, then up to Level 1");
 });
 test("the cues: one a live carry, in key order, each the key's room icon; none on Idle, over a panel or on screens without a ring subject", () => {
-  const h = inPods(0); assert.deepEqual(cuesOf(h).map((c) => [c.key, c.room]), [["research", "research"], ["habitat", "vivarium"], ["library", "library"]]);
+  const h = inPods(0); assert.deepEqual(cuesOf(h).map((c) => [c.key, c.room]), [["habitat", "vivarium"], ["library", "library"]], "blue on a pod in the collection is what ✓ says: no cue");
   h.ui.panel = { id: "x" }; assert.deepEqual(cuesOf(h), []); h.ui.panel = null; h.ui.idle = true; assert.deepEqual(cuesOf(h), []); h.ui.idle = false; h.ui.screen = "home"; assert.deepEqual(cuesOf(h), []);
   void INTENTS;
+});
+test("no cue for a carry that equals ✓: blue on a pod in the collection under Read, green on a mibi in the Vivarium; the key still carries; under another verb the blue cue returns", () => {
+  const h = inPods(0); assert.equal(cuesOf(h).some((c) => c.key === "research"), false); assert.equal(carryPlan(h, "research").act, "read", "but the key still carries");
+  h.ui.pods.verb = "freshen"; assert.equal(cuesOf(h).some((c) => c.key === "research"), true, "✓ freshens now: the blue cue says Read");
+  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); const [m] = st.mibis, v = host(st); v.ui.screen = "vivarium"; v.ui.viv.f = "resident." + m.id;
+  assert.equal(cuesOf(v).some((c) => c.key === "habitat"), false, "no green cue in the Vivarium"); assert.equal(carryPlan(v, "habitat").act, "close"); key(v, "habitat"); assert.deepEqual([v.went.at(-1), v.ui.hab.id], ["habitat", m.id], "and it still goes up close");
+  const l = host(st); l.ui.screen = "library"; l.ui.lib.l1 = "S01"; assert.equal(cuesOf(l).some((c) => c.key === "habitat"), true, "Visit from the Library is not what ✓ says");
 });
