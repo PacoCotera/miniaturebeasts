@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { decodePNG, encodePNG } from "../png.mjs";
+import { HABITS } from "../../workbench/framework/roster.mjs";
 
 export const RATIO = 0.8, ALPHA = 128;   // a juvenile's figure height over its adult's; the alpha at which a figure's box is measured (a contact shadow is fainter)
 export const SIZES = ["304x312", "96x88", "48x48"];
@@ -16,12 +17,15 @@ export const CHIP_SIZES = ["104x64", "104x96", "104x160", "128x160", "144x176"];
 const sha = (b) => createHash("sha256").update(b).digest("hex");
 const pic = (f) => { const im = decodePNG(readFileSync(f)); return { w: im.width, h: im.height, data: im.data }; };
 
+// Every habit pose the kinds list (roster HABITS), but sleep-curled (the curl is placed above): [master id part, hand-off row, juvenile row]. S01's shake-dry keeps the id "shake".
+export const POSES = [...new Set(Object.values(HABITS).flat())].filter((h) => h !== "sleep-curled").map((h) => [h === "shake-dry" ? "shake" : h, h, "juvenile " + h]);
 // The hand-off's rows, per kind: { S01: { "adult (stand)": "<path from /home/mb/mb/>", ... } }
+// A redo row ("fan-tilt (sun-sprawl redo, batch B)", the art desk's signed one) takes the plain key and, coming after the earlier row, replaces it.
 export function parseHandoff(text) {
   const rows = {}; let kind = null;
   for (const l of text.split("\n")) {
     const h = l.match(/^## (S\d\d) /); if (h) { kind = h[1]; rows[kind] = {}; continue; }
-    const r = kind && l.match(/^\| ([^|]+) \| `[^`]*` \| `([^`]+)` \|/); if (r) rows[kind][r[1].trim().replace(/ \(the stand\)$/, "")] = r[2];
+    const r = kind && l.match(/^\| ([^|]+) \| `[^`]*` \| `([^`]+)` \|/); if (r) rows[kind][r[1].trim().replace(/ \(the stand\)$/, "").replace(/ \(sun-sprawl redo, batch B\)$/, "")] = r[2];
   }
   return rows;
 }
@@ -104,7 +108,7 @@ export function planGame({ work, mbRoot = "/home/mb/mb" }) {
     const d = dirs[k]; if (!d) throw new Error(k + " has no tool folder");
     pair(k, "stand", "adult (stand)", "juvenile", `mibi-adult-${k}-{size}`, `mibi-juvenile-${k}-{size}`, SIZES);
     pair(k, "asleep", "asleep", "juvenile asleep", `mibi-adult-${k}-curl-{size}`, `mibi-juvenile-${k}-curl-{size}`, ["304x312"]);
-    for (const [name, a, j] of [["puff", "puff", "juvenile puff"], ["sniff", "sniff", "juvenile sniff"], ["dig", "dig", "juvenile dig"], ["glow", "glow", "juvenile glow"], ["shake", "shake-dry", "juvenile shake-dry"], ["calm", "calm", "juvenile calm"]])
+    for (const [name, a, j] of POSES)
       if (rows[k][a]) pair(k, name, a, j, `mibi-adult-${k}-${name}-{size}`, `mibi-juvenile-${k}-${name}-{size}`, ["304x312"]);
     // the tool pass: as delivered, except the 104x112 young, checked against the 144x152 adult and rescaled where it is off by more than 3 %
     const t = (f) => path.join(tool, d, f), rel = (f) => path.relative(mbRoot, t(f));
