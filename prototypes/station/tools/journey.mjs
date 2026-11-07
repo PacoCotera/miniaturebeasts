@@ -256,13 +256,14 @@ await press("research", 200);
 const loika = s.tray.find((p) => p.id.startsWith("xw2n9c-5")), loika2 = s.tray.find((p) => p.id.startsWith("dev-"));
 const focusNow = () => page.evaluate(() => window.__st.UI.pods.focus.cur), viewNow = () => page.evaluate(() => window.__st.UI.pods.view), atNow = () => page.evaluate(() => window.__st.UI.pods.at);
 const podsAt = (o, ms = 300) => page.evaluate((o) => window.__st.podsAt(o), o).then(() => page.waitForTimeout(ms));
-// the inventory's panel on a pod with the ring on one of its buttons (take, grow, freshen, compare, letGo): Grow it, Compare and Let it go live on the panel (the reading screen v2 carries only the read)
-const ACTS = ["take", "grow", "freshen", "compare", "letGo"];
-const toBand = async (podId, id) => { await podsAt({ view: "inventory", card: podId }); const k = ACTS.indexOf(id); expect(k >= 0 && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === podId, `the panel offers ${id}`); await podsAt({ view: "inventory", focus: "act." + k }); };
-const letGoAll = async (podId) => { await toBand(podId, "letGo"); await press("confirm", 300); if ((await page.evaluate(() => window.__st.UI.pods.ask)) === podId) await press("confirm", 400); };
-await podsAt({ view: "inventory", card: loika.id });
-expect((await focusNow()).startsWith("card.") && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === loika.id, "the ring on the Loika's card, the panel on it");
-await press("confirm", 300); expect((await focusNow()) === "act.0", "✓ on a card selects the pod: the ring on the panel (Take to the reading room)"); await press("confirm", 500);
+// the picker's verbs (the pods picker's design B): Read, Grow, Freshen, Compare and Let go are verbs on the verb line (the reading screen v2 carries only the read); the ring on a pod under a verb, ✓ does it in one press, Let go is a held ✓ (the face's hold ring)
+const ACTS = { take: "read", grow: "grow", freshen: "freshen", compare: "compare", letGo: "letgo" };
+const toBand = async (podId, id) => { const verb = ACTS[id]; await podsAt({ view: "inventory", card: podId, verb, hold: null }); expect(verb && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === podId, `the picker offers ${id}`); };
+const holdConfirm = async (ms) => { await page.evaluate(() => window.__st.act("confirm")); await page.waitForTimeout(ms); await page.evaluate(() => window.__st.release("confirm")); await page.waitForTimeout(400); };
+const letGoAll = async (podId) => { await toBand(podId, "letGo"); await holdConfirm(6500); };
+await podsAt({ view: "inventory", card: loika.id, verb: "read" });
+expect((await focusNow()).startsWith("card.") && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === loika.id, "the ring on the Loika's card, the picker on Read");
+await press("confirm", 500);
 { const u = await ui(); expect(u.view === "room" && (await focusNow()) === "key" && (await page.evaluate(() => window.__st.ST.readingPod)) === loika.id && (await props()).state === "read", "✓ on a card puts the pod on the bench and opens the reading screen, the ring on Identify: " + JSON.stringify([u, await focusNow()])); }
 const e0 = s.e, dId0 = s.d;
 let l = await line(); expect(l.ok === "Identify" && l.price === "◆ 1", "identify costs ◆ 1: " + JSON.stringify(l));
@@ -314,7 +315,8 @@ await press("confirm", 900);
 // 5. Compare: from the second Loika's card, the panel's Compare, ✓; ← lands back on the card's Compare
 s = await st();
 await toBand(loika2.id, "compare");
-l = await line(); expect(l.ok === "Compare", "compare offered on another Loika pod: " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Compare with this", "compare offered on another Loika pod: " + JSON.stringify(l));
+await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.pods.hold)) === loika2.id, "✓ holds the pod for Compare"); await podsAt({ view: "inventory", card: loika.id, verb: "compare", hold: loika2.id }); l = await line(); expect(l.ok === "Compare with this one", "a kin of the held pod: " + JSON.stringify(l));
 await press("confirm", 400); await frameShot("page-compare");
 l = await line(); expect(l.back === "Pods", "Compare's way back is the inventory: " + JSON.stringify(l));
 expect((["They differ here", "No read trait differs", "Nothing read on both yet"].includes(l.subject) || /^They differ in \S/.test(l.subject || "")) && !l.need, "compare open: the line is one of the four cases, in the subject slot (\"Two Loika pods\" retired, UI/UX 2026-10-30): " + JSON.stringify(l));
@@ -338,11 +340,11 @@ await podsAt({ view: "room", bench: untuva.id, focus: "key" }); await frameShot(
 await page.evaluate((id) => window.__st.skipRead(id), untuva.id); await podsAt({ view: "room", bench: untuva.id, lane: 3, at: "rail", focus: "rail" });
 await press("confirm", 300); { const r = (await props()).regions.read; expect((await focusNow()) === "plate.0" && r.right?.form === "read", "a lane of the Untuva (the frames of version 8 seal no chapter, so the lane opens like any other: the ring goes to its first plate): " + JSON.stringify([await focusNow(), r.right?.form, r.right?.plates?.[0]?.kind])); } await frameShot("pods-sealed");
 await page.evaluate((id) => window.__st.skipRead(id), coatSix.id); await podsAt({ view: "room", bench: coatSix.id, lane: 0, at: "right", plate: 0, focus: "plate.0" }); await frameShot("pods-six-traits");
-// letting go from the panel: the only Belatz asks once on the button's own face, a second ✓ lets it go and pays nothing
+// letting go: Let go is a held ✓ (the face's hold ring): a short or double ✓ lets nothing go; held to the end (6 s for the only Belatz) it lets the pod go and pays nothing
 { const sBefore = (await st()).s, eBefore = (await st()).e;
   await toBand(coatSix.id, "letGo");
-  await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.pods.ask)) === coatSix.id && (await st()).tray.some((p) => p.id === coatSix.id), "the only Belatz asks once"); await frameShot("pods-let-go-asks");
-  await press("confirm", 400); s = await st(); expect(s.s === sBefore && s.e === eBefore && !s.tray.some((p) => p.id === coatSix.id), "the second ✓ let the pod go, paying nothing: " + JSON.stringify({ s: s.s, sBefore })); }
+  await press("confirm", 300); await press("confirm", 300); expect((await st()).tray.some((p) => p.id === coatSix.id), "a short ✓ and a quick double ✓ never let the pod go"); await frameShot("pods-let-go-hold");
+  await holdConfirm(6500); s = await st(); expect(s.s === sBefore && s.e === eBefore && !s.tray.some((p) => p.id === coatSix.id), "the held ✓ (6 s: it is the only Belatz) let the pod go, paying nothing: " + JSON.stringify({ s: s.s, sBefore })); }
 // and the pod on the bench: let go from its card, the bench is bare
 await letGoAll(untuva.id);
 s = await st(); expect(!s.tray.some((p) => p.id === untuva.id) && s.readingPod !== untuva.id, "the Untuva let go: it leaves the bench");
@@ -353,7 +355,7 @@ const compareShot = async (species, seed, ci, name, grid) => {
   const pair = (await st()).tray.filter((p) => p.species === species && !p.idd);
   expect(pair.length === 2, `two ${species} pods: ` + pair.length);
   for (const p of pair) await page.evaluate((id) => window.__st.skipRead(id), p.id);
-  await toBand(pair[0].id, "compare"); await press("confirm", 300);
+  await toBand(pair[0].id, "compare"); await press("confirm", 300); await podsAt({ view: "inventory", card: pair[1].id, verb: "compare", hold: pair[0].id }); await press("confirm", 300);
   for (let i = 0; i < ci; i++) await press("down", 150);
   const cl = await line(), cells = await page.evaluate(() => window.__st.props.regions.compare?.sides?.[0]?.rows?.length ?? -1);
   expect(cells === grid, `${name}: ${grid} traits on Compare's papers: ${cells}`);
@@ -851,11 +853,10 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   await loop("confirm", "any key skips the show to the choice", () => window.__st.props?.overlay?.form === "strip");
   await loop("confirm", "✓ Open now on the strip opens the crate and the end shows (T-50 cut 1; the opening holds input)", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "end");
   await loop("confirm", "✓ on the end lands on Pods", () => window.__st.UI.screen === "pods");
-  await loop("confirm", "✓ on the new pod's card selects it, the ring on the panel", () => window.__st.UI.pods.focus.cur === "act.0");
-  await loop("confirm", "✓ Take to the reading room opens the reading screen on it, the ring on the key", () => window.__st.props?.state === "read" && window.__st.UI.pods.focus.cur === "key");
+  await loop("confirm", "✓ on the new pod's card opens the reading screen on it in one press (Read, the caller's verb), the ring on the key", () => window.__st.props?.state === "read" && window.__st.UI.pods.focus.cur === "key");
   await loop("confirm", "✓ Identify, the ring on the rail", () => window.__st.UI.pods.focus.cur === "rail");
   await loop("back", "← leaves in one press: the inventory on this pod's card", () => window.__st.UI.pods.view === "inventory" && (window.__st.UI.pods.focus.cur ?? "").startsWith("card."));
-  { const id = await page.evaluate(() => window.__st.UI.pods.panelPod); await podsAt({ view: "inventory", card: id }); await podsAt({ view: "inventory", focus: "act.1" }); }
+  { const id = await page.evaluate(() => window.__st.UI.pods.panelPod); await podsAt({ view: "inventory", card: id, verb: "grow" }); }
   { const l = await line(); expect(l.ok === "Grow it", "the ring on the panel's Grow it: " + JSON.stringify(l)); }
   await loop("confirm", "✓ Grow it opens Create", () => window.__st.UI.screen === "create");
   await loop("confirm", "✓ Incubate opens the Incubate | Keep shaping panel", () => window.__st.props?.overlay?.form === "incubate");
