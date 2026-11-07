@@ -39,6 +39,20 @@ test("a many-mibi scene's adult is smaller than a single-mibi scene's; a large k
   assert.ok(Math.abs(targetHeight("S02", "vivarium") - 0.24 * 472 * 1.2) < 1e-9, "S02 is large");
   assert.ok(Math.abs(targetHeight("S03", "home") - 0.24 * 362 * 0.8) < 1e-9, "S03 is small");
 });
+test("release 22 C: for the eight first kinds the kind keeps one ratio (its drawn figure over its table height) in the Habitat and the Sitting (the habitat scene), Vivarium, Home and Idle, adult and young", () => {
+  const FIRST = ["S01", "S05", "S08", "S12", "S17", "S03", "S04", "S20"];   // Loika, Tepor, Rupar, Peplos, Wickle, Tuikis, Hiljan, Tuliko
+  for (const sp of FIRST) {
+    assert.ok(KINDS.includes(sp), sp + " has a frame");
+    const a = standInk(sp, "adult"), j = standInk(sp, "juvenile"), ratios = [];
+    for (const sc of Object.keys(SCENES)) {
+      ratios.push(["adult", sceneFactor(sp, "adult", sc) * a / targetHeight(sp, sc)]);
+      ratios.push(["young", sceneFactor(sp, "juvenile", sc) * j / (YOUNG * targetHeight(sp, sc))]);
+    }
+    const first = ratios[0][1];
+    assert.ok(first > 0 && first <= 1 + 1e-3, `${sp}: the ratio is in (0, 1]`);
+    for (const [who, r] of ratios) assert.ok(Math.abs(r - first) < 3e-3, `${sp} ${who}: ratio ${r} against ${first}`);
+  }
+});
 test("the cap: every pose of the kind at the habitat's factor is inside 0.55 of the glass's width and 0.65 of its height", () => {
   for (const sp of KINDS) {
     const k = sittingKindScale(sp, GLASS), f = sceneFactor(sp, "adult", "habitat"); assert.ok(f <= k + 1e-3, `${sp}: factor ${f} over the cap ${k}`);
