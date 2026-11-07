@@ -394,6 +394,13 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
   return { ok: true, docked: true, home, dried, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
 }
+// The world's events a crate carries (the Companion's `world.ev`, specs/world-events.md): [kind, place, who, n]. The kinds the Companion says; a kind or a shape this Station does not know is skipped, never an error.
+export const WORLD_EV_KINDS = ["grown", "elder", "lampLow", "lampOut", "shift", "herd", "storm", "fruit", "stirring", "young", "quiet"];
+export function readWorldEv(c) {
+  const ev = c && c.world && Array.isArray(c.world.ev) ? c.world.ev : [];
+  return ev.filter((e) => Array.isArray(e) && e.length === 4 && WORLD_EV_KINDS.includes(e[0]) && (e[1] === null || typeof e[1] === "string") && (e[2] === null || Number.isInteger(e[2])) && Number.isInteger(e[3]))
+    .map(([kind, place, who, n]) => ({ kind, place, who, n }));
+}
 // Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept).
 export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) { return openCrates(st, sv, settings, now, bayCrates(st, sv)); }
 // The same for the crates named (a run opens them one at a time, T-20261016-216: the crates not yet opened stay sealed in the bay when the player leaves).
@@ -417,7 +424,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
     const before = st.turn; st.turn = Math.max(st.turn, c.turn | 0); const dried = dryPods(st);
     const paid = st.mendFull && st.probe ? payMend(st, settings) : 0;
     const gained = { e: (c.e | 0) + top.e, d: (c.d | 0) + top.d, s: (c.s | 0) + top.s };   // what the crate brought, the top-up with it; the plates it paid for cost `spent` Energy
-    plays.push({ c, ids, skipped, dried, paid, spent: paid * price(PRICE.mend, settings), gained, turnFrom: before, turnTo: st.turn, top });
+    plays.push({ c, ids, skipped, events: readWorldEv(c), dried, paid, spent: paid * price(PRICE.mend, settings), gained, turnFrom: before, turnTo: st.turn, top });
     logEv(st, "Crate " + c.n + " opened · " + plural(ids.length, "pod") + " · +" + gained.e + " Energy +" + gained.d + " Data +" + gained.s + " Essence" + (skipped.length ? " · not opened, no species: " + skipped.join(", ") : ""));
   }
   st.devBay = st.devBay.filter((c) => !st.accepted.includes(c.id));
