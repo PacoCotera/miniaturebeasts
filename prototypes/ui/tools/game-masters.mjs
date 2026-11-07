@@ -126,7 +126,7 @@ export function planGame({ work, mbRoot = "/home/mb/mb" }) {
   return { ops, report, kinds: Object.keys(rows) };
 }
 // the ids the earlier art made that the release retires (the kinds the hand-off covers are replaced by id; these have no successor)
-export const retired = (id, kinds) => /^trait-S\d\d-/.test(id) || /^roll-S01-/.test(id) || /^reading-[a-z-]+-S0[13]-/.test(id) || id === "mibi-juvenile-S01-176x128" || (kinds.some((k) => id.includes("-" + k + "-")) && /^(mibi-(adult|juvenile)|mibi-halo|bud-shape|spread-plate|face|mark-species|species-mark)-/.test(id));
+export const retired = (id, kinds) => /^trait-S\d\d-/.test(id) || /^roll-S01-(?!eyes-)/.test(id) || /^reading-[a-z-]+-S0[13]-/.test(id) || id === "mibi-juvenile-S01-176x128" || (kinds.some((k) => id.includes("-" + k + "-")) && /^(mibi-(adult|juvenile)|mibi-halo|bud-shape|spread-plate|face|mark-species|species-mark)-/.test(id));
 
 // `only` (a RegExp on the master id): place just those masters and retire nothing (a later hand-off row added to a placement already made)
 export function placeGame({ work, root, dryRun = false, only = null, by = "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)" }) {

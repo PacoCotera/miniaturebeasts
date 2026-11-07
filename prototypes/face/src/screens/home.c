@@ -815,7 +815,7 @@ static int tag_top(const ent_t *e, const char *glass, int usual, int usual2, int
   /* release 22b (0a): a label belongs under its own figure; if no clear spot is right under it, it shifts sideways along the ground line, and only then goes over a head (a heavy penalty) */
   int under = fr[1] + fr[3] + gap, undc = under; if (undc + h > gy + gh - 2) undc = gy + gh - 2 - h;
   int cy[8] = { usual, usual2, under, undc, fr[1] + fr[3] + gap + h, fr[1] - h - gap, fr[1] + fr[3] - h, fr[1] - h - gap - h };
-  static const int pen[8] = { 0, 30, 2, 4, 40, 60, 80, 90 };
+  static const int pen[8] = { 0, 30, 8, 10, 40, 60, 80, 90 };
   int cxs[5] = { cx, fr[0] - w / 2 - gap, fr[0] + fr[2] + w / 2 + gap, fr[0] - w - w / 2 - gap, fr[0] + fr[2] + w + w / 2 + gap };   /* centred, then to the left of the figure, then to the right, then one label further each way */
   int best = 1 << 30, by = -1000, bx = cx;
   for (int j = 0; j < 5; j++) for (int k = 0; k < 8; k++) {

@@ -146,7 +146,7 @@ test("F8: the Station words the six new hows (found line and the short how)", as
   const lines = how => podOriginLines({ g: "meadow", how, idd: false });
   assert.deepEqual(lines("grab").slice(1), ["after a grab for fruit."]);
   assert.deepEqual(lines("dig").slice(1), ["in a fresh hole."]); assert.deepEqual(lines("fog").slice(1), ["in a fog bank."]);
-  assert.match(lines("warm")[1], /^as a creature warmed up\.$/); assert.match(lines("still")[1], /^as a creature settled\.$/); assert.match(lines("air")[1], /^as a creature aired out\.$/);
+  assert.match(lines("warm")[1], /^as a wild mibi warmed up\.$/); assert.match(lines("still")[1], /^as a wild mibi settled\.$/); assert.match(lines("air")[1], /^as a wild mibi aired out\.$/);
   const { readFileSync } = await import("node:fs");
   const src = readFileSync(new URL("../../station/src/views/pods-props.mjs", import.meta.url), "utf8");
   for (const [k, v] of Object.entries({ grab: "a grab for fruit", warm: "by a warm stone", dig: "in a fresh hole", fog: "in a fog bank", still: "keeping still", air: "airing out" })) assert.ok(src.includes(`${k}: "${v}"`), k);

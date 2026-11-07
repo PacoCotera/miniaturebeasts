@@ -29,7 +29,7 @@ const SCENES = {
   "confirm-S02":   { want: "shape", panel: true, set: (w) => { w.shape("S02", 3, 3); w.at(0); } },   // a second species
   "shape-first":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.ST.firstMibi = true; } },
   "full":          { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.rooms(1); w.adults(6); } },   // R6: the Vivarium is full (one room, eight places taken): Grow is held, the notice The Vivarium is full says why, the verb and the price in mist
-  "shape-doing":   { want: "shape", set: (w) => { w.shape("S01", 3, 6, 14); w.at(5); } },   // Eyes: 21h, the Coat now holds three looks (Tint, Shade, Markings) and a chapter read costs its traits in Data, so the scene is given the Data to read all six chapters (the first four in 21g had Data for the Coat alone), then the ring on Eyes (Coat 0-2, Crown 3, Ears 4, Eyes 5)
+  "shape-doing":   { want: "shape", set: (w) => { w.shape("S01", 3, 6, 14); w.at(6); } },   // Eyes: 21h, the Coat now holds three looks (Tint, Shade, Markings) and a chapter read costs its traits in Data, so the scene is given the Data to read all six chapters (the first four in 21g had Data for the Coat alone), then the ring on Eyes (Coat 0-2, Crown 3, Ears 4, Eyes 5)
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${CREATE.toString()})`]);
 // the timed points: the scene, the key or intent that starts the event, and the instant after it

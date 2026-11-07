@@ -26086,6 +26086,30 @@
    "sha256": "bca9aa8fe1d050fad68d52a63fd3fc5803a194482e055ff2fae21b05cdd062e2",
    "signed": "art director, Pods room verdict (README fa105365)"
   },
+  "roll-S01-eyes-between-128x72": {
+   "file": "pods/roll-S01-eyes-between-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "402a18d6083342680ea8690755dd5eb38d532a8edfb1ee556e1c2e929ac5bc2f",
+   "signed": "art lead, Create Face-tab eye chip (to-lead 2026-11-07 08:55, mibi-art b51deec77)",
+   "from": "mibi-art/art-jobs/2026-11-07-roll-eyes/out/roll-S01-eyes-between-128x72.png"
+  },
+  "roll-S01-eyes-thin-rings-128x72": {
+   "file": "pods/roll-S01-eyes-thin-rings-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "8ba708f80d2baa49fa2c53f4be185a107b93eff7a2edaaec6ec6e22485920026",
+   "signed": "art lead, Create Face-tab eye chip (to-lead 2026-11-07 08:55, mibi-art b51deec77)",
+   "from": "mibi-art/art-jobs/2026-11-07-roll-eyes/out/roll-S01-eyes-thin-rings-128x72.png"
+  },
+  "roll-S01-eyes-wide-pale-rings-128x72": {
+   "file": "pods/roll-S01-eyes-wide-pale-rings-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "3d37665a30faa05b1e3f588d59ef09b6ea9206e2f04aebf4635b1b5808f1a4e8",
+   "signed": "art lead, Create Face-tab eye chip (to-lead 2026-11-07 08:55, mibi-art b51deec77)",
+   "from": "mibi-art/art-jobs/2026-11-07-roll-eyes/out/roll-S01-eyes-wide-pale-rings-128x72.png"
+  },
   "room-bench-stage": {
    "file": "pods/room-bench-stage.png",
    "w": 1024,

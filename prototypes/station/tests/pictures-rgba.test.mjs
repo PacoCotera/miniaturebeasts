@@ -268,7 +268,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
       const st = world(); S.seedAdults(st, "S04", 5, 1, settings); S.seedAdults(st, "S03", 9, 1, settings); const [s4, s3] = st.mibis;
       const b = idleBuild({ st, sv: sv0(), settings, docked: true, light: "day" }, frameSpec), R = b.props.regions;
       const res = (m) => R.residents.find((r) => r.id === String(m.id));
-      assert.equal(res(s3).stage, "adult"); assert.equal(res(s3).picture, `mibi:${genomeDigest(s3.genome)}:adult:144x152`);
+      assert.equal(res(s3).stage, "adult"); assert.match(res(s3).picture, new RegExp(`^mibi:${genomeDigest(s3.genome)}(~[a-z+-]+)?:adult:144x152$`), "its own stand, in its coat (release 22b)");
       const r4 = b.requests.find((r) => r.id === `mibi:${genomeDigest(s4.genome)}:juvenile:104x112`); assert.ok(r4, "the resident asks for the juvenile standing, at 104×112"); assert.deepEqual([r4.size, r4.stage, r4.species], [[104, 112], "juvenile", "S04"]);
       assert.equal(res(s4).stage, "juvenile"); assert.deepEqual(R.bed.sleepers, []);
       const w = world(); S.seedAdults(w, "S04", 5, 1, settings); const m = w.mibis[0];

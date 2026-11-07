@@ -242,14 +242,14 @@ function roomOn(room, lv, fx, feet, w, relaxed = false) { const l = ROOMS[room].
 const onJoin = (room, fx, feet) => ROOMS[room].joins.some((j) => fx + CX(room) >= j.rect[0] - 1 && fx + CX(room) <= j.rect[0] + j.rect[2] + 1 && feet - DY >= j.rect[1] - 1 && feet - DY <= j.rect[1] + j.rect[3] + 1);
 const feetOf = (rect, fig = FIG) => ({ fx: rect[0] + fig[0] + Math.floor(fig[2] / 2), feetY: rect[1] + fig[1] + fig[3] - 1 });
 const withFigure = (b, fig = FIG) => { for (const r of b.props.regions.residents) r.figure = fig; return b; };
-test("the ring is (W + 10) × (fh + 10) on the figure's feet with no lift, the tag top is feetY + 16 and sits over the figure (feetY − H − 32) past the window's foot; the focus target is the figure box", { skip }, async () => {
+test("the ring is (W + 10) × (fh + 10) on the figure's feet with no lift, the tag top is feetY + 16 and, past the window's foot, stands at the window's lower margin under the figure; the focus target is the figure box", { skip }, async () => {
   let flipped = 0, below = 0; const [W, H] = [FIG[2], FIG[3]], fh = Math.min(16, Math.max(6, 2 * Math.floor((W + 6) / 12)));
   for (let seed = 1; seed <= 40; seed++) {
     const b = withFigure(scene({ adults: 1, focus: "resident.#0" })); b.props.regions.residents[0].seed = seed * 104729;
     const f = await start(b, { motion: false, node: true }), lg = logOf(f) ?? (frames(f), logOf(f)), pic = boxOf(f, "g." + b.st.mibis[0].id);
     const { fx, feetY } = feetOf(pic), ring = rg(lg, "focus")[0].rect, tag = rg(lg, "nameTag", "chrome")[0].rect;
     assert.deepEqual(ring, [fx - Math.floor(W / 2) - 5, feetY - (fh + 10) / 2, W + 10, fh + 10], `seed ${seed}: the ring on F`);
-    if (feetY + 16 + tag[3] > WIN[1] + WIN[3] - 8) { flipped++; assert.equal(tag[1], feetY - H - 32, `seed ${seed}: the tag over the figure`); } else { below++; assert.equal(tag[1], feetY + 16, `seed ${seed}: the tag top`); }
+    if (feetY + 16 + tag[3] > WIN[1] + WIN[3] - 8) { flipped++; assert.equal(tag[1], WIN[1] + WIN[3] - 2 - tag[3], `seed ${seed}: the tag under the figure, held inside the window (release 22b: never up onto another figure)`); } else { below++; assert.equal(tag[1], feetY + 16, `seed ${seed}: the tag top`); }
   }
   assert.ok(flipped > 0 && below > 0, `both tag places drawn: ${flipped} over, ${below} below`);
 });
