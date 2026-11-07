@@ -8,7 +8,8 @@
 //     mibi-adult-<kind>-<coat>-<lay-spots|lay-gradient|lay-bands|lay-saddle|lay-patches>-<size> (the painted set has no marked picture, so all nine coats are placed, between-dark too);
 //   - the check: every coat x picture x size the manifest names exists in the desk's folder (none missing, or this exits 1), and the painted proof holds.
 // A kind is picked up when the desk has a v8 manifest for it (tools/cfg/<kind>/kind-v8.json) and outputs.
-//   node prototypes/ui/tools/coat-masters.mjs [--desk <desk folder>] [--dry] [--check]
+// A kind the game has not placed yet (no coat masters in the index) is skipped, and said so; --kind S03 reads (and places) a named kind whole.
+//   node prototypes/ui/tools/coat-masters.mjs [--desk <desk folder>] [--kind S03] [--dry] [--check]
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, unlinkSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -47,10 +48,14 @@ const encode = (p) => encodePNG(p.w, p.h, p.data);
 const same = (a, b) => a.w === b.w && a.h === b.h && Buffer.compare(Buffer.from(a.data), Buffer.from(b.data)) === 0;
 
 // what the desk's outputs make: { ops: [{ id, buf, from }], painted: [{ id, ok }], recoloured: [picture ids], waiting: [..], missing: [file paths], cells: n, kinds }
+// A kind is PLACED when the masters already hold its coats (a coat id: tint, shade, then the size or picture). The desk paints kind by kind: with no `only`, a kind the game
+// has not placed is skipped, listed in `skipped` ("not placed, skipped"), so a kind the desk is still painting never breaks the check. `only` names any kind and reads it whole.
+export const placedKinds = (index) => new Set(Object.keys(index.masters).map((id) => (/^mibi-(?:adult|juvenile)-(S\d\d)-[a-z]+-(?:dark|between|light)-/.exec(id) || [])[1]).filter(Boolean));
 export function planCoats({ desk = DESK, index, only = null }) {
-  const ops = [], painted = [], recoloured = new Set(), waiting = new Set(), missing = [], kinds = [], grids = {}, cfgDir = path.join(desk, "tools/cfg"); let cells = 0;
-  if (!existsSync(cfgDir)) return { ops, painted, recoloured: [], waiting: [], missing, cells, kinds, grids: {} };
+  const ops = [], painted = [], recoloured = new Set(), waiting = new Set(), missing = [], kinds = [], skipped = [], grids = {}, cfgDir = path.join(desk, "tools/cfg"), placed = placedKinds(index); let cells = 0;
+  if (!existsSync(cfgDir)) return { ops, painted, recoloured: [], waiting: [], missing, cells, kinds, skipped, grids: {} };
   for (const k of readdirSync(cfgDir).filter((d) => /^S\d\d$/.test(d) && (!only || d === only) && existsSync(path.join(cfgDir, d, "kind-v8.json")))) {
+    if (!only && !placed.has(k)) { skipped.push(k); continue; }
     const man = JSON.parse(readFileSync(path.join(cfgDir, k, "kind-v8.json"), "utf8")), have = new Set(man.pictures.map((p) => p.id)), out = (id, coat, size) => path.join(desk, "work/out", k, `${id}-${coat}-${size}.png`);
     const fl = FLIPPED.has(k) || FLIPPED_ADULT.has(k), fj = FLIPPED.has(k);
     const { coats: COATS, painted: PAINTED } = coatGrid(desk, k);
@@ -97,12 +102,12 @@ export function planCoats({ desk = DESK, index, only = null }) {
     const known = (id) => PAIRS.some((p) => p[0] === id || p[1] === id) || LATER.includes(id) || Object.values(MARKED).includes(id);
     for (const id of have) if (!known(id)) waiting.add(`${k} ${id} (no placement row)`);
   }
-  return { ops, painted, recoloured: [...recoloured], waiting: [...waiting], missing, cells, kinds, grids };
+  return { ops, painted, recoloured: [...recoloured], waiting: [...waiting], missing, cells, kinds, skipped, grids };
 }
 // the masters the retired names (21f: charcoal, russet, ash) put in the index and on disk are taken out when the grid is placed
 const retiredCoat = (id) => /^mibi-(adult|juvenile)-S\d\d-(russet|ash)-/.test(id);
-export function placeCoats({ desk = DESK, root = dest, dryRun = false } = {}) {
-  const idxFile = path.join(root, "index.json"), index = JSON.parse(readFileSync(idxFile, "utf8")), plan = planCoats({ desk, index }), removed = Object.keys(index.masters).filter(retiredCoat);
+export function placeCoats({ desk = DESK, root = dest, dryRun = false, only = null } = {}) {
+  const idxFile = path.join(root, "index.json"), index = JSON.parse(readFileSync(idxFile, "utf8")), plan = planCoats({ desk, index, only }), removed = Object.keys(index.masters).filter(retiredCoat);
   if (plan.missing.length) return { ...plan, removed: [] };   // the grid is whole or nothing is placed
   for (const o of plan.ops) {
     const file = `pods/${o.id}.png`, [w, h] = [o.buf.readUInt32BE(16), o.buf.readUInt32BE(20)];
@@ -116,10 +121,11 @@ export function placeCoats({ desk = DESK, root = dest, dryRun = false } = {}) {
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const arg = (k) => { const i = process.argv.indexOf("--" + k); return i > 0 ? process.argv[i + 1] : null; }, dry = process.argv.includes("--dry") || process.argv.includes("--check");
-  const r = placeCoats({ desk: arg("desk") ?? DESK, dryRun: dry }), bad = r.painted.filter((c) => !c.ok);
+  const r = placeCoats({ desk: arg("desk") ?? DESK, dryRun: dry, only: arg("kind") }), bad = r.painted.filter((c) => !c.ok);
   console.log(`${dry ? "would place" : "placed"} ${r.ops.length} coat masters for ${r.kinds.join(", ")}; ${r.cells} desk cells read, ${r.missing.length} missing; painted master proven against ${r.painted.length} placed masters, ${bad.length} differ; ${r.removed.length} retired names taken out`);
   console.log("recoloured: " + r.recoloured.sort().join(", "));
   console.log("waiting: " + r.waiting.sort().join(", "));
+  for (const k of r.skipped) console.log(k + ": not placed, skipped");
   for (const m of r.missing) console.error("FAIL missing desk cell: " + m);
   for (const b of bad) console.error("FAIL painted master differs from the desk's between-dark: " + b.id);
   process.exit(bad.length || r.missing.length ? 1 : 0);

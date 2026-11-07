@@ -2,7 +2,8 @@
 //   node --test prototypes/station/tests/coat-masters.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { coatOf, coatMaster, COAT_TRAITS, MARKED_PICTURE } from "../src/stands.mjs";
@@ -77,6 +78,13 @@ test("S20: its painted cell (between-between) is proven against the placed maste
   }
   assert.ok(plan.ops.some((o) => o.id === "mibi-adult-S20-between-dark-304x312"), "between-dark is a coat of its own for S20, placed");
   assert.ok(!plan.ops.some((o) => /S20-redder/.test(o.id)), "no S01 Tint for S20");
+});
+test("a kind the game has not placed is skipped (the desk may still be painting it); a named kind is read whole", () => {
+  const desk = mkdtempSync(path.join(os.tmpdir(), "coat-desk-")), cfg = path.join(desk, "tools/cfg/S09");
+  mkdirSync(cfg, { recursive: true }); writeFileSync(path.join(cfg, "kind-v8.json"), JSON.stringify({ pictures: [{ id: "stand" }], coats: [] }));   // no palette, no cells: unfinished
+  const plan = planCoats({ desk, index });
+  assert.deepEqual(plan.kinds, []); assert.deepEqual(plan.skipped, ["S09"]); assert.deepEqual(plan.missing, []); assert.deepEqual(plan.painted, []);
+  assert.throws(() => planCoats({ desk, index, only: "S09" }), "a named kind is read whole, so an unfinished one is refused");
 });
 test("the Home window's baked 144x152 adult and 104x112 young are placed in all eight coats beside the painted master, at the painted master's size", () => {
   for (const coat of COATS.filter((c) => c !== PAINTED)) for (const [stage, size] of [["adult", "144x152"], ["juvenile", "104x112"]]) {
