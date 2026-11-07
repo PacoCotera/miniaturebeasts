@@ -9,6 +9,14 @@ import { fileURLToPath } from "node:url";
 import { placeMaster } from "../../ui/assets.mjs";
 import { decodePNG } from "../../ui/png.mjs";
 import { poseFor, inkBox } from "../src/layered-stand.mjs";
+import * as S from "../src/state.mjs";
+import { offer } from "../src/sitting.mjs";
+import { setFrames } from "../src/genome.mjs";
+import { withSeals } from "./fixtures/sealed.mjs";
+import { readdirSync } from "node:fs";
+const framesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language");
+setFrames(withSeals(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")))));
+import "./fixtures/place-poses.mjs";
 import { sittingKindScale } from "../src/views/home-props.mjs";
 import { assetEntry, asset } from "../../ui/assets.mjs";
 
@@ -24,6 +32,17 @@ test("a habit with no pose of the kind shows the curl, never the stand; Loika's 
   }
   assert.equal(poseFor("S02", "adult", "sniff").pose, "sniff", "an Untuva's own pose");
   assert.equal(poseFor("S02", "adult", "shake-dry").pose, "curl", "an Untuva has no shake: the curl");
+});
+test("the Sitting's picker leaves out a habit with no picture of its own: Pesko has no 'Counting its spines' card, Rupar keeps its own poses, every kind keeps the curl", () => {
+  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", sittingWait: "hours" };
+  const st = S.freshSt("w1", 3, 1000000); S.normalize(st);
+  const one = (sp, habits) => { S.seedAdults(st, sp, 7, 1, settings); const m = st.mibis[st.mibis.length - 1]; m.habits = habits.slice(); return m; };
+  const pesko = one("S06", ["spine-count", "slab-lift", "sleep-curled"]);
+  assert.deepEqual(offer(st, pesko, null).poses, ["sleep-curled"], "Pesko has no spine-count or slab-lift picture: only the curl it truly has");
+  const rupar = one("S08", ["fan-tilt", "bank-dig", "sleep-curled"]);
+  assert.deepEqual(offer(st, rupar, null).poses, ["fan-tilt", "bank-dig", "sleep-curled"], "Rupar's own poses are offered");
+  const loika = one("S01", ["shake-dry", "calm", "sleep-curled"]);
+  assert.deepEqual(offer(st, loika, null).poses, ["shake-dry", "calm", "sleep-curled"]);
 });
 test("the kind scale: every placed pose and marked picture of the kind, drawn at the scale, is at most 0.55 of the glass's width and 0.65 of its height", () => {
   for (const sp of ["S01", "S02", "S03"]) {
