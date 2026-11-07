@@ -304,7 +304,7 @@ const LIGHT_OF = { void: 'ink', ink: 'night', night: 'slate', slate: 'stone', st
 const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H = SCR_H - HUD_H - LINE_H; // view 450×532
 const HUD_T = 3;   // the HUD's padding above (and below) its 26 px of contents
 const CELL = 26, MAP_X = 17, MAP_Y = VIEW_Y + 6;   // map 416×520 px, its 4 px frame on rows 34–561
-const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'ford', 'cliff'];   // [4] is a walkable water cell, which is always a ford
+const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'ford', 'cliff'];   // [4] is a walkable water cell: a ford (a wade is "muddy water" where it is named, landWord and the place line)
 // Save format v8, shared with the Station page (prototypes/station). The Companion owns every top-level field
 // except `st`, which the Station owns; each page re-reads the stored save before writing and keeps the other's part.
 // The Companion is the player's identity: the save lives under this Companion's own key, mb-save-v8@<its id>
@@ -682,7 +682,7 @@ const CARE_TEXT = {
   takeAlong: 'take mibis along', whenDocked: 'when docked',
   // a mibi of a species the Companion has no entry for (X1): the copywriter's signed strings (2026-10-11 14:42)
   spOther: 'a Station species', abOther: 'no field ability yet', tendMomentOther: 'settles',
-  walkedOther: (n, mem) => n + ' walks the ' + (mem || 'path'),
+  walkedOther: (n, mem) => mem === 'mud' ? n + ' crosses the mud' : n + ' walks the ' + (mem || 'path'),
   // the juvenile that rides in the Companion on an expedition (X26): the copywriter's signed strings (2026-10-11 15:04)
   riderTime: 'grows in time in the Companion', riderCare: 'grows with care in the Companion',
   riderSetOut: n => n + ' rides along until it’s grown', riderMenu: n => n + ' rides along',
@@ -1044,7 +1044,7 @@ function syncStation() {
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
     const rg = S.regions.some(q => q.id === r.rg) ? r.rg : 'g1';   // a returned pod goes back to its own region (none named: region 1)
     const id = 'r' + (S.nextId++);   // the realm counts the ids, whichever region the pod lands in
-    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); reveil(+key); logEv('A returned pod is back ' + (G.land[+key] === L.WATER ? 'at' : 'in') + ' the ' + LAND_NAME[G.land[+key]]); }); }
+    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); reveil(+key); logEv('A returned pod is back ' + (G.soft && G.soft.wade[+key] ? 'in the muddy water' : (G.land[+key] === L.WATER ? 'at' : 'in') + ' the ' + LAND_NAME[G.land[+key]])); }); }
 }
 
 // Feature state helpers: the layout says what is there; S.cells says what the player changed.
@@ -2414,9 +2414,10 @@ function endExpedition(reason) {
   const broke = reason === 'break'; S.ui.lastPos = ex.pos;
   const explored = exploredAny(ex), rc = reachCounts();
   let notch = null;   // a notch earned is named on Expedition ended as its own row of the outcome block (and logged), never with a count, never a world line
-  { const n = {}; for (const c of new Set(ex.trail)) if (S.visited[c] && passable(c)) n[G.land[c]] = (n[G.land[c]] || 0) + 1;   // every mibi with you remembers where you went most
-    const best = Object.keys(n).sort((a, b) => n[b] - n[a] || a - b)[0];
-    for (const w of carriedMibis()) { if (best != null) w.mem = LAND_NAME[best];
+  { const n = {}, mud = c => !!(G.soft && G.soft.wade[c]);   // a wade the partner crossed counts as 'mud', apart from a ford (both are L.WATER)
+    for (const c of new Set(ex.trail)) if (S.visited[c] && (passable(c) || mud(c))) { const k = mud(c) ? 'mud' : G.land[c]; n[k] = (n[k] || 0) + 1; }   // every mibi with you remembers where you went most
+    const best = Object.keys(n).sort((a, b) => n[b] - n[a] || (a === 'mud' ? 1 : b === 'mud' ? -1 : a - b))[0];
+    for (const w of carriedMibis()) { if (best != null) w.mem = best === 'mud' ? 'mud' : LAND_NAME[best];
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
       if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notch = { id: w.id, name: w.name, sp: w.sp }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.surveyed, of: rc.total };
@@ -5417,7 +5418,7 @@ function lineBase() {
       // facing a creature you can see, the line names it and its diet before you offer anything
       const P = S.exp.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
       // the survey state in words, drawn one step brighter (after the \x01 mark); the kinds drop first, then the place name, then the count
-      const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = LAND_NAME[lay.land] + ' · ';
+      const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = (G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land]) + ' · ';
       let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay.cell, true)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
       if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep', fieldFrozen()); }
