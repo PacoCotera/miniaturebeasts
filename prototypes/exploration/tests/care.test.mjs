@@ -236,7 +236,7 @@ function ending(S, ex, reason = "home") {
   vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
 }
 test("an expedition: an outing to every carried mibi, notches to the bonded partner only, no care; the trip carries `carried`", () => {
-  const ex = n => ({ n, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { calls: 1 }, stormCells: {}, entered: [0], met: [], moments: [], abUsed: true, tripPlaces: ["meadow"] });
+  const ex = n => ({ n, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { hearts: 1 }, stormCells: {}, entered: [0], met: [], moments: [], abUsed: true, tripPlaces: ["meadow"] });
   const S = save({ carried: [1, 2, 3], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [] });
   S.exp = Object.assign(ex(5), { pt: { id: 1 } });
   ending(S, S.exp);
@@ -254,7 +254,7 @@ test("an expedition: an outing to every carried mibi, notches to the bonded part
   assert.deepEqual(plain(rec.carried), [1, 2, 3], "a copy"); assert.deepEqual(plain(t.tripRecord({ n: 3 }).carried), []);
 });
 // ---- The notch rule (ruling 17:33): only on an expedition that explored something; a break keeps it ----
-const notchExp = (calls, o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { calls }, stormCells: {}, entered: [0], met: [], moments: [],
+const notchExp = (calls, o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { calls, hearts: calls }, stormCells: {}, entered: [0], met: [], moments: [],
   abUsed: 1, pt: { id: 1 }, tripPlaces: ["meadow"] }, o);
 const notchSave = () => save({ carried: [1], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [] });
 const NOTCH_LINE = "Dot gains a skill notch";
@@ -701,7 +701,7 @@ test("End expedition after a break: 'Docking mends the Probe for free.'", () => 
 });
 test("Cargo's preview predicts End: the hold plus the yield still to come, always a seal when an explored walk has room", () => {
   const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealedWords", "numWord", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
-    vm.createContext({ S: { exp: { cargo, stats: { calls: 1 }, shield: 3, smax: 3, dField }, bay }, BAY: 3, CAP: 20, walkYield: () => yld, NUM_WORD: ["no", "one", "two", "three"] }));
+    vm.createContext({ S: { exp: { cargo, stats: { hearts: 1 }, shield: 3, smax: 3, dField }, bay }, BAY: 3, CAP: 20, walkYield: () => yld, NUM_WORD: ["no", "one", "two", "three"] }));
   assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), ["Seals the supplies · crate 1 of 3", "The Station opens it when you dock"], "an empty hold still seals the walk's Data");
   assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods + supplies · crate 1 of 3", "pods only in the hold: pods and supplies");
   assert.equal(run({ e: 1, d: 2, s: 0, pods: [1] }, [{}])[0], "Seals one pod + supplies · crate 2 of 3");
@@ -879,7 +879,7 @@ test("X1 7: a returned S05 pod keeps its species and genome seed through every r
   assert.deepEqual(plain(back()), [{ sp: -1, species: "S05", gs: 12345 }, { sp: 0 }], "the field pod is the same individual; an older record keeps today's bytes (no species, no gs)");
   assert.ok(ST.dockKey(st, p.sv()).lifted); p.putSt(st); p.run("save()");
   p.run("S.phase = 'setup'"); p.key("confirm"); p.key("confirm"); assert.ok(p.S.exp); p.key("confirm"); assert.equal(p.S.phase, "patch");
-  p.key("call"); p.pass(2000);   // one Call: the place counts as explored, so the expedition seals a crate
+  p.run("TEST.findHeart()"); p.pass(2000);   // the heart is found: the place counts as explored, so the expedition seals a crate
   const pod = "S.pods.find(q => q.species === 'S05')", held = () => p.run("S.exp.cargo.pods.map(q => ({ id: q.id, species: q.species, gs: q.gs }))");
   // take
   p.run(`takePod(${pod})`); assert.deepEqual(plain(held()).map(q => [q.species, q.gs]), [["S05", 12345]], "take");
@@ -1025,7 +1025,7 @@ test("X26 §5.5: one set-out message names the rider, once per expedition; no Di
 });
 
 test("X26 §5.6: endExpedition gives the rider +1 outing and its mem, no notch; the trip's partner is null and carried holds Dot", () => {
-  const p = X26.world([dot({ bonded: true })], [1]); p.setOut(); p.key("confirm"); p.key("call"); p.pass(2000);
+  const p = X26.world([dot({ bonded: true })], [1]); p.setOut(); p.key("confirm"); p.run("TEST.findHeart()"); p.pass(2000);
   p.run("S.exp.abUsed = 1; endExpedition('sent');");
   const m = p.S.mibis[0]; assert.equal(m.outings, 1); assert.ok(m.mem, "its memory: " + m.mem); assert.equal(m.notches, 0, "no notch");
   const tr = p.S.trips.at(-1); assert.equal(tr.partner, null); assert.deepEqual(plain(tr.carried), [1]);

@@ -181,6 +181,17 @@ The words and the layout are those of [`companion-screens.md`](../../design/styl
 - **The active mibi screen** (the active mibi screen, ✓ Visit on Mibis): the token art at 8× (256×256, pixel for pixel) on a stage, a slow two-frame idle (still under reduced motion), name, stage chip, species and ability, and the status line. Page dots below (the mibis with you ringed in amber); ◀ ▶ when there are others.
 - **The words** are one table at the top of the care code (`CARE_TEXT`), the approved strings of the screens spec.
 
+## Hearts (walk slice, C9)
+
+Every generator 5 place has one thing worth finding, picked once (`pickHeart` in `src/hearts.mjs`, kept in the place's feature state): the most enclosed walkable tile reachable from the entry, 8 to 24 steps from it. "Heart" is a design word; no player string says it (every word is in `HEART_TEXT`). Kind by place type: meadow a **spring** (a one-cell spring in the grass), pond and wood a pod (**slow beat**), rock a **struck stone**; a place without the thing to anchor to falls back to a spring. Generator 5 pods mostly have no tile yet, so springs are the common kind; the moment kind waits for the composed places.
+
+- **Found** = the heart's tile is unveiled and you are within 4 tiles. It fires once: the field yield is paid then (the expedition's tier, topped up, as before), the reach dot fills (`S.called` now means "heart found"), and the line says what it was. A Call alone pays nothing and fills no dot; a found place stays found.
+- **Tells** show through the veil within 6 tiles: the spring's shimmer (two-frame glints on the last tiles of the way and a ring on the spring), the slow beat (a ring that swells), the stone's bolt. A Call that reaches the heart makes its tell answer for 3 actions (faster, brighter). Tells stop when the heart is found.
+- **Call** lifts a round of 7 tiles in a place (4 in a fog bank, 6 with a glowing partner; the cave keeps 11). Its report leads with the heart and its direction ("Water glints in the grass, north-east · a pod north", or "Meadow · found · a pod north, fruit west", "Meadow · found · nothing left to take"). It never says "surveyed".
+- **The bottom line** leads its middle with the heart's state: `meadow · found · 2 to take: pod · fruit`, or the tell (`a slow beat`), or `something here to find`; the place type goes first, then the kinds, then the count; the state never.
+- **The spring** pays 3 Essence once, when you step onto it (no trickle; nothing refills).
+- Tests: `tests/hearts.test.mjs`; stills `tests/golden/tell-*.png`. Test hook: `TEST.findHeart()` finds the current place's heart as walking up to it would.
+
 ## Pods and the swap
 
 - The first expedition of a new world finds two buried pods in reach of the start glint: a Loika's next to it and, when needed, a Tuikis's at the edge of the reach (firstPods).

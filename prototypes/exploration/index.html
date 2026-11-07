@@ -258,6 +258,7 @@ import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep,
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
+import { pickHeart, heartPath, heartSeen, tellShows, HEART_TEXT, HEART_FOUND_R, TELL_R, ANSWER_ACTIONS, SPRING_ESSENCE, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW } from "./src/hearts.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames } from "./src/walk-data.mjs";
@@ -359,7 +360,8 @@ const JUVENILE_TURNS = 2, ELDER_TURNS = 16;     // young for 2 world turns; elde
 // 6 to 8 in the Probe's reach (was 3 to 5; tuned 2026-10-09, 6 to 8 after the first measure, so a calm walk earns about 3 Energy, research-economy.md §9), chosen when the expedition sets out. Each still holds +1, never more.
 const WARM_MIN = 6, WARM_MAX = 8, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
 // Survey: Call lifts the veil CALL_R tiles around you (CALL_R_FOG in a fog bank); a quarter of 14×16 tiles counts at SURVEY_AT.
-const CALL_R = 11, CALL_R_FOG = 6,   // the Call's range: a round 11 tiles (6 in a fog bank); its ring IS the unveil
+const CALL_R = CALL_R_PLACE, CALL_R_FOG = CALL_R_FOG_PLACE,   // the Call's range in a place: a round 7 tiles (4 in a fog bank, 6 with a glowing partner); its ring IS the unveil
+      CALL_R_CAVE = 11,   // the cave behind the burrow keeps today's Call
       QW = PW / 2, QH = PH / 2, SURVEY_AT = 0.75;
 // Sight inside a fog bank, in tiles (a glowing partner widens it).
 const SIGHT_FOG = 4, SIGHT_GLOW = 6;
@@ -419,7 +421,9 @@ const numWord = n => NUM_WORD[n] || String(n);
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 
 // ===================== 3. World generation =====================
-const TEST = { calm: false };   // test hook only: start expeditions without a storm, for measuring calm Energy
+const TEST = { calm: false,   // test hook only: start expeditions without a storm, for measuring calm Energy
+  // test hook only: the place's heart is found, as by walking up to it (the explorer's tile is restored); what a test that once made a Call to count the place explored now does
+  findHeart() { const P = S.exp.patch, h = heartOf(P.key); if (!h || !h.path.length) return false; const end = h.path[h.path.length - 1], sx = P.x, sy = P.y; P.x = end.x; P.y = end.y; walkLift(); P.x = sx; P.y = sy; return heartFound(layout(P.key).cell); } };
 let G = null;     // static world generated from the seed (never saved)
 let S = null;     // everything that changes (saved)
 
@@ -1178,6 +1182,7 @@ function walkLift() {
     for (const [dx, dy] of Object.values(DIRS)) { const X = x + dx, Y = y + dy, k = Y * PW + X;
       if (X < 0 || Y < 0 || X >= PW || Y >= PH || seen.has(k) || (X - P.x) ** 2 + (Y - P.y) ** 2 > (WALK_R + .3) ** 2) continue; seen.add(k); q.push([X, Y]); } }
   updateSurvey(c); if (svyFull(c) === 15 && before !== 15) logEv('Surveyed a place (walking)');
+  checkHeart();
 }
 function veilAround(key, cx, cy, r) {
   const v = S.veil[key]; if (!v) return; const x0 = Math.max(0, cx - r), x1 = Math.min(PW - 1, cx + r), bits = ((1 << (x1 + 1)) - 1) & ~((1 << x0) - 1);
@@ -1187,7 +1192,7 @@ function veilAround(key, cx, cy, r) {
 // empties that cell's reach dot (it needs a Call again).
 function reveil(c, q) {
   const key = String(c), v = S.veil[key]; if (!v) return;
-  if (q == null) { delete S.veil[key]; if (S.called) delete S.called[c]; }
+  if (q == null) delete S.veil[key];   // a found place stays found (S.called is the heart's mark)
   else { const x0 = q & 1 ? QW : 0, y0 = q & 2 ? QH : 0, bits = (((1 << QW) - 1) << x0) >>> 0; for (let y = y0; y < y0 + QH; y++) v[y] = (v[y] & ~bits) >>> 0; }
   updateSurvey(c);
 }
@@ -1201,7 +1206,64 @@ function surveyed(c) { return svyFull(c) === 15; }
 function veiledWhere(c) { const key = String(c), lay = layout(key), sv = surveyable(lay); let n = 0, sx = 0, sy = 0;
   for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) if (sv[y * PW + x] && !unveiled(key, x, y)) { n++; sx += x; sy += y; }
   if (!n) return null; const dx = sx / n - (PW - 1) / 2, dy = sy / n - (PH - 1) / 2; return { n, dir: dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy)) || 1) || 'in the middle' }; }
+// A place is explored when its heart is found (S.called keeps that mark; "called at least once" retired): the reach dot fills then.
 function explored(c) { return !!S.visited[c] && !!(S.called && S.called[c]); }
+// ---------- Hearts (walk slice W§2-W§3; "heart" is a design word, no player string says it) ----------
+// One heart per place, picked once and kept in the place's feature state (so it is the same after a reload, whatever has been taken since).
+const heartFound = c => !!(S.called && S.called[c]);
+function heartOf(key) {
+  if (key[0] === 'c' || (G.gen || 1) < 5) return null;   // the older generators are frozen: no hearts there (they are played only by tests)
+  const lay = layout(key); if (lay.heart !== undefined) return lay.heart;
+  const st = fs(key, 'heart'); let h = null;
+  if (st.kind) h = { x: st.x, y: st.y, kind: st.kind, reachBy: null, ...heartPath(lay, st.x, st.y) };
+  else { const anchors = { pods: S.pods.filter(p => p.k === key && p.x >= 0).map(p => ({ x: p.x, y: p.y })), stones: lay.feats.filter(f => f.kind === 'k').map(f => ({ x: f.x, y: f.y })) };
+    h = pickHeart(lay, S.seed, anchors); if (h) setFS(key, 'heart', { x: h.x, y: h.y, kind: h.kind }); }
+  return (lay.heart = h);
+}
+const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
+const placeLand = lay => cap1(G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land]);
+function heartDir(P, h) { const dx = h.x - P.x, dy = h.y - P.y; return Math.max(Math.abs(dx), Math.abs(dy)) <= 1 ? null : dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))); }
+// Found = unveiled and within 4 tiles. Paid once: the field yield (the expedition's tier, topped up) and the dot fills. Checked after every lift.
+function checkHeart() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
+  const lay = layout(P.key), c = lay.cell; if (heartFound(c)) return;
+  const h = heartOf(P.key); if (!h || !heartSeen(h, P, (x, y) => unveiled(P.key, x, y))) return;
+  (S.called = S.called || {})[c] = 1; ex.stats.hearts = (ex.stats.hearts || 0) + 1;
+  const want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top, h.x, h.y) : 0; ex.dField = (ex.dField || 0) + got;
+  logEv('Found a place · ' + h.kind + (got ? ' · +' + got + ' Data' : ''));
+  fxMsg(HEART_TEXT.foundMsg[h.kind] + (got ? ' · +' + got + ' Data' : ''), 3);
+}
+// The spring pays once, when you step onto it: Essence, never refilled.
+function springStep() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
+  const h = heartOf(P.key); if (!h || h.kind !== 'spring' || P.x !== h.x || P.y !== h.y || fs(P.key, 'heart').drunk) return;
+  if (ex.cargo.s >= CAP) { fxMsg(HEART_TEXT.spring.full, 2); return; }
+  setFS(P.key, 'heart', { drunk: 1 }); const got = addMat('s', SPRING_ESSENCE, h.x, h.y); fxMsg(HEART_TEXT.spring.drink(got), 2); logEv('Drank at a spring · +' + got + ' Essence');
+}
+// The place's line in the bottom line: "found · 2 to take: pod · fruit", "found · nothing left to take", "a slow beat", "something here to find".
+function heartLine(lay, P, noKinds) {
+  const st = heartState(lay, P); if (!st.found) return st.short;
+  const c = lay.cell, n = leftTotal(c); if (!n) return st.short + ' · ' + HEART_TEXT.left;
+  return st.short + ' · ' + HEART_TEXT.leftN(n) + (noKinds ? '' : ': ' + takeKinds(c).join(' · '));
+}
+// The Call's report leads with the heart, then what is there to take, each with its direction:
+//   not found: "A slow beat, south-west · a pod north";  found: "Meadow · found · a pod north, fruit west"  or  "Meadow · found · nothing left to take".
+function callReport(lay, P, tellIn) {
+  const h = heartOf(lay.key), left = leftPhrase(lay.cell, P, 44);
+  if (!h) return left || HEART_TEXT.left;   // a frozen older generator has no heart: just what is there to take
+  if (heartFound(lay.cell)) return placeLand(lay) + ' · ' + HEART_TEXT.found + ' · ' + (left || HEART_TEXT.left);
+  let lead = HEART_TEXT.farther;
+  if (h && tellIn) { const dir = heartDir(P, h) || HEART_TEXT.hereWord, stoneQuiet = h.kind === 'stone' && !lay.feats.some(f => f.kind === 'k' && f.x === h.x && f.y === h.y && stormCharge(lay.key, f) > 0);
+    lead = HEART_TEXT.call[stoneQuiet ? 'quiet' : h.kind](dir); }
+  return lead + (left ? ' · ' + left : '');
+}
+// The state in words for the bottom line and the Call's report, never "surveyed": found, or the tell if it is in sight or was called, or that there is something to find.
+function heartState(lay, P) {
+  const c = lay.cell, h = heartOf(lay.key); if (!h) return { short: HEART_TEXT.found, found: true };
+  if (heartFound(c)) return { short: HEART_TEXT.found, found: true };
+  const known = tellShows(h, P) || unveiled(lay.key, h.x, h.y);
+  return { short: known ? HEART_TEXT.tell[h.kind] : HEART_TEXT.unknown, found: false };
+}
 function surveyWord(c) { return ['not surveyed', 'a quarter surveyed', 'half surveyed', 'three quarters surveyed', 'surveyed'][qCount(svyFull(c))]; }
 // What can still be taken in a place, counting only what you can see (unveiled): the pips on the map and
 // the tail of a Call's report ("1 dew, 1 fruit left").
@@ -1289,7 +1351,7 @@ function checkExplored() {
 // The place's survey state for the line: "surveyed 2/4 · 3 to take", "surveyed · nothing to take", "not surveyed".
 // A place only counts as finished when a Call was made there (walking never hears what is buried) and no pod lies buried.
 const buriedIn = c => S.pods.filter(p => p.k === String(c) && p.h).length;
-const placeDone = c => surveyed(c) && explored(c) && !buriedIn(c);
+const placeDone = c => explored(c) && !buriedIn(c);   // the heart is found and no pod lies buried
 const TAKE_WORD = { pod: 'pod', charge: 'charge', warm: 'warm stone', dew: 'dew', fruit: 'fruit', tuft: 'tuft', beacon: 'beacon' };
 function takeKinds(c) { const n = leftCounts(c); return Object.keys(TAKE_WORD).filter(k => n[k]).map(k => TAKE_WORD[k]); }
 function placeState(c, short, noKinds) {
@@ -1581,7 +1643,7 @@ function enterPatch() {
   S.phase = 'patch'; recordSigns(ex.pos); transition();
   meet('quarters');
   if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
-  else if (surveyed(ex.pos)) nothingNew();
+  else if (heartFound(ex.pos)) nothingNew();
   fxHint('backplace', '← opens the menu · Leave is first', 2);
   save();
 }
@@ -1628,7 +1690,7 @@ function patchStep(dir, mode) {
     else if (o.type !== 'tile' && o.type !== 'cr' && !unveiled(key, x, y)) fxMsg('Something is there under the veil · ))) Call to see');
     return;
   }
-  P.x = x; P.y = y; walkLift();
+  P.x = x; P.y = y; walkLift(); springStep();
   advance('patch', { noise: mode, moved: true });
 }
 // The refusal at a steep edge (a cliff between two levels), on the map, in the reach view and at a place's border.
@@ -1996,7 +2058,7 @@ function offer(c) {
 // It reports how much of the place is surveyed and what is still there to take.
 function callPlace() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive();
-  const fogged = !lay.cave && inFog(lay.cell), glow = ex.pt && ex.pt.sp === 1, muffled = fogged && !glow, reach = muffled ? CALL_R_FOG : CALL_R;
+  const fogged = !lay.cave && inFog(lay.cell), glow = ex.pt && ex.pt.sp === 1, muffled = fogged && !glow, reach = lay.cave ? CALL_R_CAVE : fogged ? (glow ? CALL_R_FOG_GLOW : CALL_R_FOG) : CALL_R;
   let found = 0; const cue = [];   // the finds this Call lights, for their edge tabs
   for (const p of S.pods) if (p.k === key && p.h && p.x >= 0 && inCall(P, p.x, p.y, reach)) { p.h = 0; p.out = 1; fxGlint(p.x, p.y, 350); cue.push({ x: p.x, y: p.y }); found++; }
   for (const f of lay.feats) {
@@ -2007,11 +2069,13 @@ function callPlace() {
   }
   const before = lay.cave ? 0 : svyFull(lay.cell);
   let lifted = null;
-  if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); updateSurvey(lay.cell); (S.called = S.called || {})[lay.cell] = 1; }
+  if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); updateSurvey(lay.cell); checkHeart(); }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach, key, lifted };   // the ring sweeps out over 300 ms and the veil lifts as it passes
   FX.cue = { key, at: NOW, until: ex.actions + 3, r: reach, finds: cue };   // the finds' edge tabs, for the 3 actions after the Call
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
-  logEv('Call' + (found ? ' · found ' + found : '') + (lay.cave ? '' : ' · ' + surveyWord(lay.cell)));
+  const heart = lay.cave ? null : heartOf(key), wasFound = heart && heartFound(lay.cell), tellIn = heart && !wasFound && inCall(P, heart.x, heart.y, reach);
+  if (tellIn) ex.answerUntil = ex.actions + ANSWER_ACTIONS + 1;   // every tell inside the ring answers for 3 actions (the Call's own action counts)
+  logEv('Call' + (found ? ' · found ' + found : ''));
   // the partner answers: a digger near the burrow digs it
   const g = lay.feats.find(f => f.kind === 'g'), digNow = g && !burrowOpen() && canDig() && cheb(P, g) <= 3;
   ex.ptTagUntil = Math.max(ex.ptTagUntil || 0, ex.actions + 3);   // Called: the partner's name tag shows again
@@ -2019,17 +2083,10 @@ function callPlace() {
   if (!lay.cave) {
     fxSign('call');   // if the entry did not show it, this press does, beside the ring it explains (hazard signs outrank it)
     if (muffled) fxSign('muffled');
-    const m = svyFull(lay.cell), left = leftPhrase(lay.cell, P, 44), lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
+    const lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
     if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); cue.push({ x: lp.x, y: lp.y }); }   // a pod still lying here glints again, so a beat always leads somewhere
-    // never ahead of the picture: "3/4 surveyed · a corner north-east still veiled"
-    const vw = m === 15 ? null : veiledWhere(lay.cell), almost = vw && qCount(S.svy[lay.cell] || 0) > qCount(m);
-    const head = m === 15 ? 'Surveyed' : (m ? qCount(m) + '/4 surveyed' : 'Survey begun') + (almost ? ' · a corner ' + vw.dir + ' still veiled' : m === before ? ' · walk or Call further on' : '');
     for (const q of S.pods) if (q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y)) q.out = 1;   // announced pods keep the dotted outline until taken
-    // a Call that finds Energy says so first: "Energy nearby · a warm stone north"
-    const en = leftPhrase(lay.cell, P, 40, ['charge', 'warm']), rest = leftPhrase(lay.cell, P, 30, ['pod', 'dew', 'fruit', 'tuft', 'beacon']);
-    if (en) { let t = 'Energy nearby · ' + en + ' · ' + head; if (rest && (t + ' · ' + rest).length <= 72) t += ' · ' + rest; fxMsg(t, 2); }
-    else fxMsg(head + ' · ' + (left || (m === 15 ? 'nothing to take' : 'nothing to take yet')), found ? 1 : 2);
-    if (m === 15 && before !== 15) logEv('Surveyed a place');
+    fxMsg(callReport(lay, P, tellIn), found ? 1 : 2);
     checkExplored();
   }
   if (digNow && !ex.ending) dig();
@@ -2453,7 +2510,7 @@ function needText(e, s, d, full) {
   return (full ? 'costs ' + full + ' · ' : '') + 'short ' + parts.join(' + ');
 }
 const holdEmpty = h => !h || (!h.e && !h.d && !h.s && !(h.pods && h.pods.length));
-const exploredAny = ex => (ex.stats.calls || 0) > 0;   // explored this expedition = a Call in some place (earlier trips don't count)
+const exploredAny = ex => (ex.stats.hearts || 0) > 0;   // explored this expedition = a heart found in some place (earlier trips don't count; a Call alone pays nothing)
 // The trips the Station reads at the dock (top-level `trips` in the save): one record per expedition that turned the world,
 // oldest first, the last 40 kept. The expedition gathers its kinds of place (ex.tripPlaces) and whether a storm was over
 // the Probe (ex.tripStorm) as it goes; both are optional, so an expedition saved before them still ends cleanly. `carried` is
@@ -4733,6 +4790,16 @@ function drawPatch(t) {
     // a find your Call or partner turned up stays outlined until you take it
     if (p.out) { const o2 = fr ? 0 : 1; for (let k = 2; k < ts - 2; k += 4) { R(W(x + k), H(y + 1 + o2), 2, 2, C.cream); R(W(x + k), H(y + ts - 3 - o2), 2, 2, C.cream); R(W(x + 1 + o2), H(y + k), 2, 2, C.cream); R(W(x + ts - 3 - o2), H(y + k), 2, 2, C.cream); } }
     blit(podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), spriteRm(p.x, p.y)); }
+  // the heart's tell shows through the veil within 6 tiles; a Call makes it answer for 3 actions; once the heart is found it stops
+  if (!lay.cave) { const hh = heartOf(P.key);
+    if (hh && !heartFound(lay.cell) && tellShows(hh, P)) {
+      const ans = ex.actions < (ex.answerUntil || 0), fa = motion() ? Math.floor(t * (ans ? 4 : 2)) % 2 : 0, hx = hh.x * ts, hy = hh.y * ts;
+      if (hh.kind === 'spring') {   // a line of greener grass along the path and a two-frame glint, brighter when it answers
+        for (const q of hh.clues) if (vis2(q.x * ts, q.y * ts) && T_BLOCK[lay.tiles[q.y * PW + q.x]] === 0) { ditherFill(W(q.x * ts) + 8, H(q.y * ts) + 8, ts - 16, ts - 16, 'mint', ans ? 3 : 1); R(W(q.x * ts) + 14 + fa * 14, H(q.y * ts) + 12 + fa * 8, 3, 3, C.cream); }
+        if (vis2(hx, hy)) { circ(W(hx) + (ts >> 1), H(hy) + (ts >> 1), (ans ? 14 : 10) + fa * 2, ans ? C.mint : C.aqua, true); R(W(hx) + 12 + fa * 16, H(hy) + 10 + fa * 14, 4, 4, C.white); R(W(hx) + 30 - fa * 14, H(hy) + 30 - fa * 8, 3, 3, C.cream); } }
+      else if (hh.kind === 'stone') { if (vis2(hx, hy)) blit(ICON.bolt(fa || ans ? 'cream' : 'yellow'), W(hx) + (ts >> 1) - 6, H(hy) - 8); }   // the bolt over the stone
+      else if (vis2(hx, hy)) circ(W(hx) + (ts >> 1), H(hy) + (ts >> 1), (ans ? 11 : 9) + fa * 3, ans ? C.amber : C.cream, true);   // the slow beat: a ring that swells and falls (faster when it answers)
+    } }
   // what Confirm will act on
   const act = patchAction();
   if (act.run && act !== NOTHING) { const f = frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
@@ -5896,8 +5963,9 @@ function lineBase() {
       // facing a creature you can see, the line names it and its diet before you offer anything
       const P = S.exp.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
       // the survey state in words, drawn one step brighter (after the \x01 mark); the kinds drop first, then the place name, then the count
-      const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = (G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land]) + ' · ';
-      let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay.cell, true)];
+      // the heart's state leads the middle (found, or the tell, or "something here to find"); the place type drops first, the count last, the state never
+      const sv = '\x01' + heartLine(lay, P), svN = '\x01' + heartLine(lay, P, true), land = (G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land]) + ' · ';
+      let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + heartState(lay, P).short];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
       if (S.ui.swap) { const sw = swapState(); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
