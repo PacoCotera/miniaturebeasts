@@ -526,7 +526,6 @@ function composeMsg() {
   for (const x of plain) { if (out.includes(x.text)) continue; if (out && x.once && !plain[0].once) continue;   // a one-time line never joins a plain note: it waits, unspent, for its own action
     const t = out ? out + ' · ' + x.text : x.text;
     if (out && (typeof wrapText !== 'function' || wrapText(t, 400, 2).length > 2)) { if (!x.once) FX.held.push(x); continue; } out = t; }   // shown on the next action instead
-  if (!out && hint) out = hint.text;   // the place's Call hint takes the box only when nothing else is in it, so it never widens or grows another message's box
   FX.msg = out;
 }
 // A control hint says which key does what: it goes to the bottom line's middle for one action, and is spent once the line shows it.
@@ -562,7 +561,7 @@ const SIGN_LINE = {
   pod: 'Pods open at the Station', full: 'Hold full · swap, or head back', bank: 'A break would lose your finds', fog: 'Fog · creatures calm, sight short',
   muffled: 'The fog muffles your Call', fruit: 'Put it down near a creature', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
   tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog',
-  bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still',
+  bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
   untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
 // the first sighting of each map sign: its Probe name (the line on the card is the same one)
 const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
@@ -585,6 +584,7 @@ const SIGN = {};
   add('bubbleNotice', 'mark!', 2, 'bubN', 'bub!', SIGN_LINE.bubbleNotice, { also: ['wary'] });
   add('bubbleCurious', 'mark?', 2, 'bubQ', 'bub?', SIGN_LINE.bubbleCurious);
   add('bubbleFruit', 'markf', 2, 'bubF', 'bubf', SIGN_LINE.bubbleFruit, { also: ['coach'] });
+  add('bubbleSeek', 'markfs', 2, 'bubF', 'bubf', SIGN_LINE.bubbleSeek);
   add('bubbleSettle', 'mark…', 2, 'bubS', 'bub…', SIGN_LINE.bubbleSettle);
   add('warm', 'warmstone', 1, 'warm', 'warm', SIGN_LINE.warm);
   add('tuft', 'tuft', 1, 'tuft', 'tuft', SIGN_LINE.tuft);
@@ -1960,6 +1960,8 @@ function awardMoment(c, kind, X) {
   const room = creatureRoom(ex), got = room ? addMat('d', Math.min(ACT_DATA, room), c.x, c.y) : 0;
   ex.dAct = (ex.dAct || 0) + got;
   ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (creatureRoom(ex) ? '' : ' (Data for this trip: full)'));
+  if (kind === 'eat' && c.grab) {   // the grab line says what happened (pri 1, pushed first); the Data note follows it and does not repeat "ate your fruit"
+    fxMsg(got ? '+' + got + ' Data' + (creatureRoom(ex) ? '' : ' · Data for this trip: full') : 'Data for this trip: full', 1); return; }
   const what = kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled';
   if (!got) { fxMsg(cap(what) + ' · Data for this trip: full', 2); return; }
   fxMsg('+' + got + ' Data · ' + what + (creatureRoom(ex) ? '' : ' · Data for this trip: full'), 2);
@@ -2255,7 +2257,7 @@ function shedPod(c, X) {
   fxGlint(p.x, p.y, 200);
   const verb = { shake: 'shook dry', calm: 'settled', fog: 'settled', still: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal', grab: 'grabbed a falling fruit', warm: 'settled by a warm stone', dig: 'dug a fresh hole', air: 'aired its scales' }[how];
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
-  else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
+  else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why && !(how === 'grab' && why === 'bond') ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
 }
 // A Loika shaking dry leaves a tuft of fur on the ground (Essence), once per Loika per expedition.
 function dropTuft(c, X) {
@@ -2265,10 +2267,11 @@ function dropTuft(c, X) {
 // An eater closes in on fruit quickly from across the view, then slows near it: about 4 quiet actions.
 function seekPace(c, f) { const d = man(c, f); return d > 6 ? 3 : d > 3 ? 2 : 1; }
 // The four bubbles: ! startled · ? curious · fruit (it eats what you carry) · … settling. One at a time, in that order.
-const BUBBLE_SIGN = { '!': 'bubbleNotice', '?': 'bubbleCurious', f: 'bubbleFruit', '…': 'bubbleSettle' };   // each bubble's sign, the first time it shows in view
+const BUBBLE_SIGN = { '!': 'bubbleNotice', '?': 'bubbleCurious', f: 'bubbleFruit', fs: 'bubbleSeek', '…': 'bubbleSettle' };   // 'fs' is the fruit bubble of a creature going for fruit (drawn as 'f')   // each bubble's sign, the first time it shows in view
 function bubbleOf(c, carry) {
   if (c.st === 'alert') return '!';
-  if (c.st === 'approach' || c.st === 'seek') return '?';
+  if (c.st === 'approach') return '?';
+  if (c.st === 'seek') return 'fs';
   if (carry === 'fruit' && spOf(c.sp).eats && S.known.includes(c.sp) && c.st !== 'eat' && c.st !== 'flee') return 'f';
   if (spOf(c.sp).settle && c.calm >= 1 && c.st !== 'glow') return '…';
   return null;
@@ -4687,7 +4690,7 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   blit(a, x + dx, y + dy, rm, (c.face || 1) < 0);
   if (rm === 2) return;
   const b = bubbleOf(c, S.exp && S.exp.carry);
-  if (b) blit(bubbleArt(b), x + 11, y - 9); else if (cue) blit(bubbleArt('~'), x + 11, y - 9);
+  if (b) blit(bubbleArt(b === 'fs' ? 'f' : b), x + 11, y - 9); else if (cue) blit(bubbleArt('~'), x + 11, y - 9);
   if (b === '…') { const n = Math.min(4, Math.floor(c.calm / 2)); // four pips under it fill as it settles (8 quiet actions)
     for (let i = 0; i < 4; i++) { R(x + 2 + i * 7, y + 30, 6, 6, C.ink); R(x + 3 + i * 7, y + 31, 4, 4, i < n ? C.yellow : C.stone); } }
   else if (c.sp === 1 && c.st === 'glow') blit(sparkArt(fr), x + 20, y + 2);
@@ -4728,7 +4731,7 @@ function edgeTabs() {
     const side = corner ? (Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'E' : 'W') : (dy > 0 ? 'S' : 'N')) : e.side;   // at a corner, the larger axis
     all.push({ kind, cx: e.x, cy: e.y, side, tx, ty, d: Math.hypot(tx - P.x, ty - P.y), id }); };
   for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
-    const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?') add(b, c.x, c.y, 'c' + c.id); }
+    const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?' || b === 'fs') add(b === 'fs' ? '?' : b, c.x, c.y, 'c' + c.id); }
   const q = FX.cue;
   if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
     if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
@@ -5927,7 +5930,7 @@ function act(k, mode) {
   if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
   if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
-  if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
+  if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; if (FX.notes.length) composeMsg(); }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
   const isDir = k in DIRS;
   switch (S.phase) {
     case 'setup':
