@@ -75,6 +75,12 @@ export function planCoats({ desk = DESK, index }) {
       if (coat === PAINTED) { const m = index.masters[id]; painted.push({ id, ok: !!m && same(P, pic(path.join(dest, m.file))) }); continue; }
       ops.push({ id, buf: encode(P), from: path.relative("/home/mb/mb", f) }); recoloured.add(`${k} ${pre}-${size}`);
     }
+    // the Library's faces (release 21h2, art desk 21h ART INPUTS A): the head and crest cut from the coated stand, three-quarter view, both eyes (work/out-tool/<kind>/<kind>-faces/face-<coat>-<size>.png, 40 x 40 and 64 x 64), placed as mibi-face-<kind>-<coat>-<size>
+    const faceDir = path.join(desk, "work/out-tool", `${k}-faces`);
+    if (existsSync(faceDir)) for (const coat of COATS) for (const size of ["40x40", "64x64"]) {
+      const f = path.join(faceDir, `face-${coat}-${size}.png`); cells++; if (!existsSync(f)) { missing.push(f); continue; }
+      ops.push({ id: `mibi-face-${k}-${coat}-${size}`, buf: encode(fl ? flipPic(pic(f)) : pic(f)), from: path.relative("/home/mb/mb", f) }); recoloured.add(`${k} face-${size}`);
+    }
     for (const id of LATER) if (have.has(id)) waiting.add(`${k} ${id} (recoloured by the desk, drawn by no scene)`);
     const known = (id) => PAIRS.some((p) => p[0] === id || p[1] === id) || LATER.includes(id) || Object.values(MARKED).includes(id);
     for (const id of have) if (!known(id)) waiting.add(`${k} ${id} (no placement row)`);

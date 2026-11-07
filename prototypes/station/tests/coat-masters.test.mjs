@@ -54,11 +54,14 @@ test("the generator: every cell of the grid exists in the desk's folder, and the
   assert.ok(plan.painted.length >= 12 && plan.painted.every((c) => c.ok), plan.painted.filter((c) => !c.ok).map((c) => c.id).join(", "));
   assert.ok(plan.ops.every((o) => M[o.id] && M[o.id].sha256), "every op is in the index");
   assert.ok(PAIRS.every((p) => p.length === 4));
-  assert.equal(plan.cells, 261);   // 243 + the living windows' 18 baked pictures (adult 144x152, young 104x112, nine coats each)
+  assert.equal(plan.cells, 279);   // 243 + the living windows 18 baked pictures + the Library faces 18 (40 x 40 and 64 x 64, nine coats each)
 });
 test("the Home window's baked 144x152 adult and 104x112 young are placed in all eight coats beside the painted master, at the painted master's size", () => {
   for (const coat of COATS.filter((c) => c !== PAINTED)) for (const [stage, size] of [["adult", "144x152"], ["juvenile", "104x112"]]) {
     const id = `mibi-${stage}-S01-${coat}-${size}`, painted = `mibi-${stage}-S01-${size}`;
     assert.ok(M[id], id + " is placed"); assert.equal(M[id].w, M[painted].w); assert.equal(M[id].h, M[painted].h);
   }
+});
+test("the Library's baked faces (release 21h2) are placed in all nine coats at 40 x 40 and 64 x 64", () => {
+  for (const coat of COATS) for (const s of [40, 64]) { const id = `mibi-face-S01-${coat}-${s}x${s}`; assert.ok(M[id], id + " is placed"); assert.equal(M[id].w, s); assert.equal(M[id].h, s); }
 });

@@ -208,10 +208,12 @@ export function registerPictures(reqs, env) {
         const fstage = r.stage === "elder" ? "adult" : r.stage, mid = `mibi-${fstage === "juvenile" ? "juvenile" : "adult"}-${r.species}-304x312`, aid = `mibi-adult-${r.species}-304x312`;
         const layered = !!spec.windows?.[r.species]?.[fstage] && !!layeredStand(r.species, r.stage, [304, 312], "default");
         const painted = !layered && !!spec.windows?.crop?.[r.species] && placedAt(mid, 304, 312) && placedAt(aid, 304, 312);   // release 21d: every face is cut from the kind's painted stand through the art desk's window
-        const stand = layered || painted;
+        const bakedId = [w <= 40 ? 40 : 64].map((s) => `mibi-face-${r.species}-${fcoat || "between-dark"}-${s}x${s}`)[0], baked = placedAt(bakedId, bakedId.endsWith("40x40") ? 40 : 64, bakedId.endsWith("40x40") ? 40 : 64);   // the desk's baked face in the coat (release 21h2): 40 x 40 at 40 and below, 64 x 64 above (a size between is reduced from the 64)
+        const stand = layered || painted || baked;
         registerAsset({ id: r.id, w, h, status: stand ? "derived" : "stand-in", until: stand ? null : "the kind's painted stand and the art desk's face window", build: () => { let data = null; return { w, h, rgba: () => { if (data) return data;
           const rq = { species: r.species, stage: r.stage, looks: r.looks, size: w, faded: !!r.faded };
-          if (painted) { const pm = assetOf(mid), pa = assetOf(aid), px = (p) => ({ w: p.w, h: p.h, rgba: p.rgba() }); rq.art = (fcoat ? assetOf(coatMaster(mid, r.species, fcoat)) : pm).rgba(); /* the mibi's coat: the window below is the painted stand's, the recolour leaves the alpha alone */ rq.window = windowOf(r.species, fstage, spec, px(pa), px(pm), adultFacing(r.species) === youngFacing(r.species)); }
+          if (baked) { const fa = assetOf(bakedId); rq.faceArt = { w: fa.w, h: fa.h, rgba: fa.rgba() }; }
+          else if (painted) { const pm = assetOf(mid), pa = assetOf(aid), px = (p) => ({ w: p.w, h: p.h, rgba: p.rgba() }); rq.art = (fcoat ? assetOf(coatMaster(mid, r.species, fcoat)) : pm).rgba(); /* the mibi's coat: the window below is the painted stand's, the recolour leaves the alpha alone */ rq.window = windowOf(r.species, fstage, spec, px(pa), px(pm), adultFacing(r.species) === youngFacing(r.species)); }
           const p = facePicture(rq, spec, rgb); console.log(`# face ${r.id}: rendered in ${p.ms.toFixed(0)} ms${p.standIn ? " (the stand-in)" : ""}`); return (data = p.rgba); } }; } });
         break;
       }
