@@ -260,6 +260,7 @@ import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10,
 import { makeSleeper } from "./src/sleeper.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
+import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, stepFrames } from "./src/walk-data.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -378,8 +379,10 @@ const SPECIES = [
 ];
 // The other seventeen kinds (the language frames, by the game's species list): name and plural from the frame, ground from the family, plain defaults the game designer tunes later
 // (notice 2 to 4, flee 2, eats, shed chance 0.1 at a calm moment) and no field ability: their abilities wait for the game designer, so no line about one is shown (ab, abText null).
-for (const k of KIND_INFO.slice(3)) SPECIES.push({ name: k.name, plural: k.plural, hab: k.hab, notice: [2, 4], flee: 2, eats: true, shedP: .1, how: 'calm',
-  ab: null, abText: null, born: null, learn: null, col: { body: 'bone', light: 'bone', shade: 'bone', dark: 'bone' } });
+// L2b: the shared row and the tuned kinds' own are in src/walk-data.mjs (WALK_DEFAULT, WALK); the three built kinds take their new fields from BUILT.
+KIND_INFO.slice(3).forEach((k, i) => SPECIES.push({ name: k.name, plural: k.plural, hab: k.hab, ...walkRow(i + 3),
+  ab: null, abText: null, born: null, learn: null, col: { body: 'bone', light: 'bone', shade: 'bone', dark: 'bone' } }));
+for (const sp of [0, 1, 2]) Object.assign(SPECIES.at(sp), BUILT[sp]);
 // L2c: Rupar (sp 7) digs earth banks, Tuliko (sp 19) crosses mud and scree and walks farther (the Companion's own art for both is still to come, so their colours stay plain)
 Object.assign(SPECIES.at(7), { ab: 'bank', abText: 'digs a way up or down earth banks', abCard: 'digs up or down banks' });
 Object.assign(SPECIES.at(19), { ab: 'sure', abText: 'crosses mud and scree; reaches one ring further', abCard: 'mud and scree · one ring further', abCardShort: 'one ring further' });
@@ -392,7 +395,7 @@ const SHED_BOND = .5, SHED_MAX = 1;
 const WHY_WORD = { new: 'a new species', bond: 'you fed it' }, WHY_SETTLE = 'it settled with you';
 const whyOf = p => p.why ? { why: p.why } : {};   // a pod keeps its why wherever it is copied
 // A species the Companion has no entry for (a Station species beyond the three): no habitat, no diet, no ability, no art.
-const SP_OTHER = Object.freeze({ other: true, name: null, plural: null, hab: [], notice: [2, 4], flee: 2, eats: false, shedP: 0, how: null,
+const SP_OTHER = Object.freeze({ other: true, name: null, plural: null, hab: [], notice: [2, 4], flee: 2, eats: false, shedP: 0, how: null, drinks: false, settle: null, shed: null, wander: .4,
   ab: null, abText: null, born: null, learn: null, col: null });
 // The one lookup into SPECIES: any other value (the Station's sp -1) is SP_OTHER.
 const spOf = sp => (Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? SPECIES[sp] : SP_OTHER);
@@ -839,6 +842,7 @@ function normalizeCare(S, released) {
   if (S.lead === undefined) S.lead = null; if (typeof S.carrySeen !== 'number') S.carrySeen = 0; if (!Array.isArray(S.carryRefused)) S.carryRefused = [];
   for (const m of S.mibis) {
     for (const k of ['care', 'tends', 'outings', 'notches']) if (typeof m[k] !== 'number') m[k] = 0;
+    if (!Array.isArray(m.habitsDone)) m.habitsDone = [];   // the field habits it did on walks: a set, never cleared (the Station records each once at the dock)
     for (const k of ['tendDay', 'grownTurn']) if (m[k] === undefined) m[k] = null;
     if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && S.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; }
   }
@@ -1464,6 +1468,7 @@ function mapStep(dir) {
   const ei = edgeIndex(ex.pos, dir);
   if (canBank() && G.banks && G.banks[ei] && !canStepIn(G, ex.pos, dir, { bank: new Set(ex.dug || []) })) { if (!digBank(ei, ex.pos, c)) return; }   // an earth bank: the first crossing of a walk is the dig
   noteSure(ex.pos, dir, c);
+  if (G.level && G.level[c] < G.level[ex.pos] && (edgeKind(ex.pos, dir) === EDGE.RAMP || softKind(ex.pos, dir) === 'scree')) fieldHabit('hop-down');   // a step down across a stair or a scree edge
   ex.pos = c; ex.lastDir = dir; S.visited[c] = 1; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
   advance('map');
 }
@@ -1662,7 +1667,7 @@ function noteSure(a, dir, c) {
 function digBank(ei, a, c) {
   const ex = S.exp, name = ex.pt.name;
   if (ex.pt.elder && ex.bankProg !== ei + 1) { ex.bankProg = ei + 1; fxMsg(name + ' is digging · slow but sure', 1); advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined); return false; }
-  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei);
+  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); fieldHabit('bank-dig');
   const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; }
   logEv(name + ' dug a way ' + (G.level[c] > G.level[a] ? 'up' : 'down') + ' the bank');
   advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined);
@@ -1810,10 +1815,34 @@ function eatersHere(live) {
   if (sps.every(sp => S.known.includes(sp))) return 'no one here eats fruit';
   return 'watch who comes for it';
 }
+// The Hiljan's grab: a fruit a shaken bush just dropped goes to the nearest wild Hiljan within 4 tiles of it that is not fleeing, hidden or eating, at once and with no back-off. A fruit you put down is no grab.
+// L2b: a field habit the partner did on this walk, for the Station's dock: it joins the partner mibi's `habitsDone` (a set, never cleared; the Station records each once at the dock).
+// Only the walk's partner counts (a rider never), only when its kind lists the habit (FIELD), and a habit fires once a walk.
+function fieldHabit(key) {
+  const ex = S.exp, pt = ex && ex.pt; if (!pt || FIELD[pt.sp] !== key) return false;
+  const m = mibiById(pt.id); if (!m) return false;
+  ex.habits = ex.habits || {}; if (ex.habits[key]) return false; ex.habits[key] = 1;
+  if (!Array.isArray(m.habitsDone)) m.habitsDone = [];
+  if (!m.habitsDone.includes(key)) m.habitsDone.push(key);
+  return true;
+}
+// The field habits that read the end of an action (a creep up to a wild mibi, a warm stone, a lit beacon).
+function endOfActionHabits(X, info) {
+  const ex = S.exp, h = ex.pt && FIELD[ex.pt.sp]; if (!h) return;
+  const { lay, key, P, live } = X;
+  if (h === 'tiptoe') { if (info.moved && info.noise === 'creep' && live.pt && live.cr.some(c => !c.hide && c.st === 'idle' && cheb(c, P) <= 1 && cheb(c, live.pt) <= 2)) fieldHabit(h); }
+  else if (h === 'stone-sense') { if (lay.feats.some(f => f.kind === 'k' && cheb(f, P) <= 1 && stoneCharge(key, f) > 0 && (lay.cave ? stoneSeen(key, f) : unveiled(key, f.x, f.y)))) fieldHabit(h); }
+  else if (h === 'beacon-sit') { if (lay.feats.some(f => f.kind === 'j' && fs(key, f.id).up && cheb(f, P) <= 2)) fieldHabit(h); }
+}
+function grabFruit(live, fr) {
+  let best = null, bd = 1e9;
+  for (const c of live.cr) { if (spOf(c.sp).shed !== 'grab' || c.hide || ['flee', 'dive', 'hidden', 'eat', 'full'].includes(c.st) || cheb(c, fr) > 4) continue; const d = man(c, fr); if (d < bd) { bd = d; best = c; } }
+  if (best) { best.st = 'seek'; best.fid = fr.id; best.grab = 1; }
+}
 function shakeBush(f) {
   const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, f.tree ? { ripe: 0 } : { bare: 1 });
   const p = freeAround(key, f.x, f.y, S.exp.patch); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
-  if (p) fxMsg('A fruit drops · ' + eatersHere(live), 2);
+  if (p) { fxMsg('A fruit drops · ' + eatersHere(live), 2); grabFruit(live, live.fr[live.fr.length - 1]); }
   advance('patch', { noise: 'act', ring: { x: f.x, y: f.y, r: 2 } });
 }
 function pickUp(fr) {
@@ -1855,7 +1884,7 @@ function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), 
 function takeDew(f) {
   const ex = S.exp;
   if (ex.cargo.s >= CAP) { fxMsg('Essence full · the cup keeps its dew', 2); return; }   // a full hold takes nothing: the cup stays full and no turn passes
-  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); advance('patch', { noise: 'act' }); }
+  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); fieldHabit('dew-find'); advance('patch', { noise: 'act' }); }
 function takeCharge(f) {
   const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f);
   if (ex.cargo.e >= CAP) { fxMsg('Energy full · the stone keeps its charge', 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
@@ -1892,7 +1921,7 @@ function lightBeacon(f) {
 // Pods, named for the player: the species if identified, and one tag that tells two pods apart (where it came from).
 function podName(p, short) { return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'unknown' : 'Unknown pod'; }
 function podTagOf(p) {
-  const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', shed: "of {of}'s line" }[p.how];
+  const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', grab: 'shed, grabbing fruit', warm: 'by a warm stone', dig: 'in a fresh hole', fog: 'shed in a fog bank', still: 'shed, keeping still', air: 'shed, airing scales', shed: "of {of}'s line" }[p.how];
   return how ? how.replace('{of}', p.of) : (p.g === 'cave' ? 'cave' : p.bur ? 'from a hole' : 'from the ' + ({ pond: 'pond edge', rock: 'rock field' }[p.g] || p.g));
 }
 // Confirm on a pod with a full hold opens the chooser: pad picks which held pod to leave, ✓ swaps, ← keeps.
@@ -2071,7 +2100,7 @@ function dig() {
   if (live.pt) { live.pt.st = 'dig'; }
   // an elder digs in two actions
   if (ex.pt.elder && !ex.digProg) { ex.digProg = 1; fxMsg(ex.pt.name + ' is digging · slow but sure', 1); advance('patch', { noise: 'act' }); return; }
-  ex.digProg = 0; ex.abUsed = 1;
+  ex.digProg = 0; ex.abUsed = 1; fieldHabit('dig');
   FX.dig = { at: NOW, x: g.x, y: g.y };
   lockInput(DIG_MS + 50);
   ex.burrowDug = 1;   // open for this walk only: the ground shifts back at the world turn (the burrow's pin stays)
@@ -2109,6 +2138,7 @@ function patchTick(info) {
   for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);
+  endOfActionHabits(X, info);
   if (!lay.cave) for (const f of lay.feats) if (f.kind === 'k' && cheb(f, P) <= 3 && unveiled(key, f.x, f.y) && stormCharge(key, f) <= 0 && stoneWarm(key, f) && fs(key, f.id).wseen !== S.turn) setFS(key, f.id, { wseen: S.turn });   // its ring stops blinking once you have been near
   // the four bubbles over creatures, each explained the first time it shows in view
   const inView = live.cr.filter(c => !c.hide && !X.away(c) && inSight(c.x, c.y));
@@ -2191,9 +2221,11 @@ function shedAllowed(c, X) {
   const w = crById.get(c.id);
   if (!w || w.s === S.exp.n || S.exp.stats.sheds >= SHED_MAX || !shedReady(c)) return false;
   if (c.st === 'shake' || c.st === 'curl') return !X.live.stormShed[c.sp];
-  if (c.st === 'glow') return !X.live.calmShed;
+  if (c.st === 'glow') return !momentTaken(c, X);
   return true;
 }
+// A settle moment spent in this place: the Tuikis's once per place per expedition (calmShed), the Tepor's by a warm stone once per place per walk (moShed). Peplos and Wickle have no per-place limit.
+function momentTaken(c, X) { const m = spOf(c.sp).shed; return m === 'calm' ? !!X.live.calmShed : m === 'warm' ? !!(X.live.moShed && X.live.moShed[c.sp]) : false; }
 // Where something happened, in words: a landmark if one is close, else a direction from you.
 function whereWord(X, x, y) {
   const { lay, P } = X, near = (fx, fy, r) => Math.abs(fx - x) <= r && Math.abs(fy - y) <= r;
@@ -2205,9 +2237,10 @@ function whereWord(X, x, y) {
   return 'to the ' + (ns && ew ? ns + '-' + ew : ns || ew || 'side');
 }
 function shedPod(c, X) {
-  const how = c.st === 'shake' ? 'shake' : c.st === 'glow' ? 'calm' : c.st === 'curl' ? 'curl' : 'meal';
-  if (how === 'shake' || how === 'curl') X.live.stormShed[c.sp] = 1;
+  const how = c.st === 'curl' ? 'curl' : spOf(c.sp).shed || 'meal';   // the kind's own moment (a Tuikis curling out of the rain is its curl)
+  if (c.st === 'shake' || c.st === 'curl') X.live.stormShed[c.sp] = 1;
   if (how === 'calm') X.live.calmShed = 1;
+  if (how === 'warm') (X.live.moShed = X.live.moShed || {})[c.sp] = 1;
   const p = freeAround(X.key, c.x, c.y, null) || { x: c.x, y: c.y };
   const id = 'p' + (S.nextId++);
   const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
@@ -2215,7 +2248,7 @@ function shedPod(c, X) {
   const w = crById.get(c.id); if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
   fxGlint(p.x, p.y, 200);
-  const verb = { shake: 'shook dry', calm: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal' }[how];
+  const verb = { shake: 'shook dry', calm: 'settled', fog: 'settled', still: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal', grab: 'grabbed a falling fruit', warm: 'settled by a warm stone', dig: 'dug a fresh hole', air: 'aired its scales' }[how];
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
   else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
 }
@@ -2232,9 +2265,16 @@ function bubbleOf(c, carry) {
   if (c.st === 'alert') return '!';
   if (c.st === 'approach' || c.st === 'seek') return '?';
   if (carry === 'fruit' && spOf(c.sp).eats && S.known.includes(c.sp) && c.st !== 'eat' && c.st !== 'flee') return 'f';
-  if (c.sp === 1 && c.calm >= 1 && c.st !== 'glow') return '…';
+  if (spOf(c.sp).settle && c.calm >= 1 && c.st !== 'glow') return '…';
   return null;
 }
+// Whether this creature can settle where it stands: its kind's `settle` rule (burrow: in the cave or by a hole; any: anywhere in the place; fog: only while the place is in a fog bank).
+function canSettle(c, X) {
+  const s = spOf(c.sp).settle; if (!s) return false;
+  return settlesAt(s, { cave: X.lay.cave, hole: s === 'burrow' && !X.lay.cave && !!nearestHole(X, c, 2), fog: X.fog });
+}
+// A warm stone (kind 'k', warm, not storm-charged) within a tile of the creature, or null.
+function warmStoneNear(X, c) { for (const f of X.lay.feats) if (f.kind === 'k' && cheb(f, c) <= 1 && stormCharge(X.key, f) <= 0 && stoneWarm(X.key, f)) return f; return null; }
 function creatureTick(c, X) {
   const sp = spOf(c.sp), P = X.P;
   if (c.snub) c.snub--;
@@ -2245,10 +2285,10 @@ function creatureTick(c, X) {
   }
   const d = cheb(c, P), calm = calmedBy(c, X), curious = c.b > .55;
   // Walking is noticed within the species' range; creeping only right beside it, and never inside a fog bank.
-  let notice = sp.notice[1]; if (c.b > .6) notice--; if (X.fog) notice -= 2;
+  let notice = noticeRange(sp, { curious: c.b > .6, fog: X.fog });
   const walking = X.moved && X.noise === 'walk';
   if (calm && walking && d <= notice && d > notice - 2 && ['idle', 'seek'].includes(c.st) && !X.live.noted['c' + c.id]) {
-    X.live.noted['c' + c.id] = 1;
+    X.live.noted['c' + c.id] = 1; fieldHabit('calm');
     const short = X.ptName + ' keeps the ' + spName(c.sp) + ' calm';
     // the sign is spent only once it is actually on the screen
     if (!S.found.includes('calmkeep')) fxSign('calmkeep', S.exp.pt && S.exp.pt.sp);
@@ -2258,15 +2298,15 @@ function creatureTick(c, X) {
   const threat = X.moved && c.st !== 'eat' && (walking ? d <= notice : (!X.fog && d <= 1 && !calm && !curious));
   const sheltered = !!X.lay.shelter[c.y * PW + c.x];
   if (c.st === 'shake' || c.st === 'full' || c.st === 'glow') {
-    if (c.st === 'shake') dropTuft(c, X);
-    if (c.st === 'glow') awardMoment(c, 'settle', X);
-    if (shedAllowed(c, X)) shedPod(c, X); c.st = 'idle'; c.wet = 0; c.calm = 0; return; }
+    if (c.st === 'shake' && c.sp === 0) dropTuft(c, X);   // the Loika's tuft; the Tuliko airing its scales leaves none
+    if (c.st === 'glow' && sp.settle) awardMoment(c, 'settle', X);
+    if (shedAllowed(c, X)) shedPod(c, X); c.st = 'idle'; c.wet = 0; c.calm = 0; c.warm = 0; c.grab = 0; return; }
   if (c.st === 'curl' && !X.raining && !X.lay.shelter[c.y * PW + c.x]) { c.st = 'idle'; c.curl = 0; }
   // Sudden things: a strike, a loud act nearby, your Call.
   const startled = (X.strike && cheb(c, X.strike) <= 3) || (X.ring && cheb(c, X.ring) <= X.ring.r && c.b < .75 && !calm && !X.fog);
   if (startled && c.st !== 'eat') hideOrFlee(X, c);
   else if (X.pulse && d <= X.reach && c.st !== 'eat') {
-    if (c.sp === 1 && c.calm >= 2) { c.calm = 0; c.st = 'alert'; c.t = 2; fxMsg('Your call startled the ' + spName(1) + ' · it stopped settling', 2); }
+    if (sp.settle && c.calm >= 2) { c.calm = 0; c.st = 'alert'; c.t = 2; fxMsg('Your call startled the ' + spName(c.sp) + ' · it stopped settling', 2); }
     else if (curious || calm) { c.st = 'approach'; c.t = 3; }
     else { c.st = 'alert'; c.t = 2; c.go = 1; } }   // wary: "!" for one action, then it hides
   // Weather.
@@ -2277,8 +2317,9 @@ function creatureTick(c, X) {
     else if (c.wet && c.sp === 1 && c.st !== 'flee') { c.st = 'curl'; c.curl++;
       if (c.curl >= 3 && shedAllowed(c, X)) { shedPod(c, X); c.curl = -99; } return; }
   } else if (c.wet) {
-    if (c.sp === 0 && !['flee', 'dive'].includes(c.st)) { c.st = 'shake'; return; }
-    if (c.sp !== 0) c.wet = 0;
+    const airs = c.sp === 0 || sp.shed === 'air';   // the Loika shakes dry, the Tuliko airs its scales: the same path, the tuft the Loika's alone
+    if (airs && !['flee', 'dive'].includes(c.st)) { c.st = 'shake'; return; }
+    if (!airs) c.wet = 0;
   }
   if (!X.raining && c.st === 'curl') { c.st = 'idle'; c.curl = 0; }
   if (!X.raining && (c.st === 'shelter' || c.st === 'huddle')) c.st = 'idle';
@@ -2300,38 +2341,45 @@ function creatureTick(c, X) {
     case 'huddle': break;
     case 'approach': if (d > 2) stepToward(X, c, P, 1); if (--c.t <= 0) c.st = 'idle'; break;
     case 'alert': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (--c.t <= 0) { if (c.go) { c.go = 0; hideOrFlee(X, c); } else c.st = 'idle'; } break;
-    case 'eat': if (--c.eat <= 0) c.st = (c.sp === 2 && shedAllowed(c, X)) ? 'full' : 'idle'; break;
+    case 'eat': if (--c.eat <= 0) { const sh = sp.shed; c.st = ((sh === 'meal' || sh === 'dig' || (sh === 'grab' && c.grab)) && shedAllowed(c, X)) ? 'full' : 'idle'; if (c.st === 'idle') c.grab = 0; } break;   // a full Untuva, Rupar (after a meal) or a Hiljan that grabbed
     case 'seek': {
       const f = X.live.fr.find(q => q.id === c.fid), keep = (curious || calm || X.fog) ? 1 : 3;
-      if (!f || cheb(P, f) < keep - 1) { c.st = 'idle'; break; }   // you came too close: it gives up for now
+      if (!f || (!c.grab && cheb(P, f) < keep - 1)) { c.st = 'idle'; c.grab = 0; break; }   // you came too close: it gives up for now (a Hiljan going for a shaken fruit ignores the back-off)
       if (cheb(c, f) <= 1) { X.live.fr = X.live.fr.filter(q => q !== f); c.st = 'eat'; c.eat = 2; if (f.x !== c.x) c.face = Math.sign(f.x - c.x);
         S.exp.stats.putFeeds++;
-        fxMsg(X.away(c) ? 'Something ate the fruit ' + whereWord(X, c.x, c.y) : 'The ' + spName(c.sp) + ' is eating the fruit', 1);
+        fxMsg(X.away(c) ? 'Something ate the fruit ' + whereWord(X, c.x, c.y) : c.grab ? 'All at once, the ' + spName(c.sp) + ' grabs the fruit' : 'The ' + spName(c.sp) + ' is eating the fruit', 1);
         awardMoment(c, 'eat', X); }
       else stepToward(X, c, f, seekPace(c, f));
       break; }
     default: {
       c.st = 'idle';
       if (X.raining && sheltered) { c.st = 'huddle'; break; }
-      // A Tuikis sheds only after a long quiet spell in its cave or by its burrow. A kin or calming
+      // A settler (the Tuikis by its burrow, the Wickle anywhere, the Peplos in a fog bank) sheds only after a long quiet spell. A kin or calming
       // partner lets you wait one tile closer; it never makes the wait shorter.
-      if (c.sp === 1 && (X.lay.cave || nearestHole(X, c, 2))) {
+      if (canSettle(c, X)) {
         const loud = walking, near = !(d >= 3 || (calm && d >= 2)), pulsed = X.pulse && d <= X.reach;
         if (!loud && !near && !pulsed) c.calm++;
-        else { if (c.calm >= 2) fxMsg(pulsed ? 'Your call startled the ' + spName(1) + ' · it stopped settling' : 'The ' + spName(1) + ' looks up · ' + (loud ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
-        if (c.calm === 2 && S.found.includes('mark…') && X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(1) + ' is settling ' + whereWord(X, c.x, c.y), 0);
-        if (c.calm >= 8 && !X.live.calmShed) { c.st = 'glow'; break; }
+        else { if (c.calm >= 2) fxMsg(pulsed ? 'Your call startled the ' + spName(c.sp) + ' · it stopped settling' : 'The ' + spName(c.sp) + ' looks up · ' + (loud ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
+        if (c.calm === 2 && S.found.includes('mark…') && X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(c.sp) + ' is settling ' + whereWord(X, c.x, c.y), 0);
+        if (c.calm >= 8 && !momentTaken(c, X)) { c.st = 'glow'; break; }
+      } else if (sp.settle === 'fog' && c.calm) c.calm = 0;   // the fog drifted off: the Peplos's settle stops with it
+      // A Tepor within a tile of a warm stone, for three quiet actions in a row (you not walking within 3 tiles, no Call reaching it), settles there; once a place a walk.
+      if (sp.shed === 'warm' && !momentTaken(c, X)) {
+        const quiet = warmStoneNear(X, c) && !(walking && d <= 3) && !(X.pulse && d <= X.reach);
+        c.warm = quiet ? (c.warm || 0) + 1 : 0;
+        if (c.warm >= 3) { c.st = 'glow'; break; }
       }
       // Put it down and back off: an eater comes for fruit on the ground once you are 3 tiles from it.
       if (sp.eats && X.live.fr.length) {
         const keep = (curious || calm || X.fog) ? 1 : 3;
         let best = null, bd = 1e9, wanted = null;
         for (const f of X.live.fr) { if (cheb(c, f) > 10) continue; const dd = man(c, f); if (dd >= bd) continue; if (cheb(P, f) >= keep) { bd = dd; best = f; } else wanted = f; }
-        if (best) { c.st = 'seek'; c.fid = best.id; if (cheb(c, best) > 1) stepToward(X, c, best, seekPace(c, best)); break; }
+        if (best) { c.st = 'seek'; c.fid = best.id; c.grab = 0; if (cheb(c, best) > 1) stepToward(X, c, best, seekPace(c, best)); break; }
         if (wanted && man(c, wanted) <= 8 && !X.away(c) ) fxSign('bubbleFruit');
       }
-      if (c.sp === 1 && c.calm >= 2) break;   // settling: stays put
-      if (rnd(S.seed, c.id, S.exp.actions, 'w') < (c.sp === 2 ? .25 : .4)) stepRandom(X, c);
+      if (sp.settle && c.calm >= 2) break;   // settling: stays put
+      if (sp.shed === 'warm' && c.warm >= 1) break;   // a Tepor settling by a warm stone stays on it
+      if (rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
     }
   }
 }
@@ -2972,6 +3020,10 @@ const JUVENILE_ART = [
     mini: '.29C.C.8CJCJC.6CJKJKC.5CQPc3HC.3CPc2CcCcC.3CPc6HC.3CP2H3PC.4CP6C.4CcPCcPC.6C2.C2.4',
   },
 ];
+// The 2-frame step (L2b): per kind an adult and a juvenile pair of 32 px strings in the token format, in page species order, for sp 0, 1, 3, 4, 7, 11, 16, 19 only (absent for the rest).
+// All empty today. The art desk's frames go here and nothing else changes when they do: a kind whose two frames of an age are both non-empty is drawn in them
+// while it is moving (a tween under way and a moving state), the first half of the tween in the first frame, the second in the second. SPECIES_ART and JUVENILE_ART stay the desk's tokens file exactly.
+const STEP_ART = []; for (const sp of [0, 1, 3, 4, 7, 11, 16, 19]) STEP_ART[sp] = { adult: ['', ''], juvenile: ['', ''] };
 function tokenPB(rle, w) {
   const pb = new PB(w, w); let i = 0;
   for (const [, ch, n] of rle.matchAll(/([.A-Za-z])(\d*)/g)) { const k = n ? +n : 1; if (ch !== '.') pb.p.fill(RUN_LETTERS.indexOf(ch), i, i + k); i += k; }
@@ -2981,6 +3033,7 @@ function tokenPB(rle, w) {
 // approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null. juv: the mibi is a
 // juvenile: its own picture where the species has one, else the adult's.
 function tokenOf(sp, pose, fr, juv) {
+  if (pose === 'step') { const e = stepFrames(STEP_ART[sp], juv); if (e) return art('ts' + (juv ? 'j' : '') + sp + (fr ? 1 : 0), () => tokenPB(e[fr ? 1 : 0], 32)); }   // the step's frames, when the desk has painted both
   const t = SPECIES_ART[sp]; if (!t) return sp >= 3 && sp < SPECIES.length ? standIn(32) : null;   // a kind without a token yet (the art release adds them) shows a plain stand-in
   const n = pose === 'approach' ? 'alert' : pose === 'glow' || pose === 'nest' ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
   const j = juv && JUVENILE_ART[sp];
@@ -4554,10 +4607,12 @@ function drawPatch(t) {
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : POSE[c.st] || 'idle';
     // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
     const cue = !!c.cue && ['idle', 'seek'].includes(c.st) && !(c.sp === 1 && c.calm >= 1);
-    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(PX(nr)), SY(PY(nr)), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
+    const half = CR_MOVING.includes(c.st) ? stepHalf(nr) : -1;
+    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(PX(nr)), SY(PY(nr)), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue, half) });
   }
   if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * ts, live.pt.y * ts, ex.pt.elder ? 220 : 150); const rp = RT.pt;
-    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(PX(rp)), SY(PY(rp)), t);
+    const phalf = stepHalf(rp);
+    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(PX(rp)), SY(PY(rp)), t, phalf);
       if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(PX(rp)) + 16, y: SY(PY(rp)), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(PX(rp)) + 11, SY(PY(rp)) - 9); } }); }
   let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
@@ -4614,12 +4669,16 @@ function drawPatch(t) {
       if (pl && Math.max(Math.abs(px + 48 - pl.x) - 48, 0) ** 2 + Math.max(Math.abs(py + 24 - pl.y) - 24, 0) ** 2 < keep * keep) continue; blit(puffArt(i % 2 ? 3 : 2), px, py); } }
   g.restore(); RT.remap = REMAP;
 }
-function drawCreature(c, x, y, pose, t, rm, cue) {
+// Which half of its tween a thing is in while it moves (0 or 1), or -1 when it is not moving: motion on, now inside the tween's duration, the target differing from the start.
+const stepHalf = o => o && motion() && NOW - o.at < o.dur && (o.tx !== o.fx || o.ty !== o.fy) ? ((NOW - o.at) * 2 >= o.dur ? 1 : 0) : -1;
+const CR_MOVING = ['idle', 'seek', 'approach', 'flee', 'watch'];   // the states a creature steps in
+function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   const m = motion(), fr = m ? Math.floor(t * 2.4 + c.id * .37) % 2 : 0;
+  const stepping = stepFr >= 0 && !!stepFrames(STEP_ART[c.sp], false);
   let dx = 0, dy = 0;
   if (pose === 'shake' || c.st === 'full' || pose === 'glow') dx = m ? (Math.floor(t * 16) % 2 ? 1 : -1) : 0;
-  else if (pose === 'idle' || pose === 'nest') dy = fr;
-  const a = creatureArt(c.sp, pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0);
+  else if ((pose === 'idle' || pose === 'nest') && !stepping) dy = fr;
+  const a = stepping ? creatureArt(c.sp, 'step', stepFr) : creatureArt(c.sp, pose === 'shake' && spOf(c.sp).shed === 'air' ? 'idle' : pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0);   // the Tuliko airing its scales is its idle with the shake's jiggle
   blit(a, x + dx, y + dy, rm, (c.face || 1) < 0);
   if (rm === 2) return;
   const b = bubbleOf(c, S.exp && S.exp.carry);
@@ -4630,10 +4689,12 @@ function drawCreature(c, x, y, pose, t, rm, cue) {
   if (c.wet && c.st !== 'shake') blit(DROP(), x + 25, y + 6);
   if (c.st === 'flee') { const f = c.face || 1; for (let i = 0; i < 3; i++) R(f > 0 ? x - 4 : x + 30, y + 14 + i * 4, 6, 1, C.bone); }
 }
-function drawPartner(sp, pt, x, y, t) {
+function drawPartner(sp, pt, x, y, t, stepFr = -1) {
   const m = motion(), fr = m ? Math.floor(t * 2.4) % 2 : 0;
   blit(RING(), x + 2, y + 23);
-  const pose = pt.st === 'sniff' ? 'alert' : 'idle', dy = pt.st === 'dig' ? (m ? Math.floor(t * 12) % 2 * 2 : 0) : pose === 'idle' ? fr : 0;
+  const stepping = stepFr >= 0 && pt.st === 'follow' && !!stepFrames(STEP_ART[sp], false);
+  const pose = pt.st === 'sniff' ? 'alert' : 'idle', dy = pt.st === 'dig' ? (m ? Math.floor(t * 12) % 2 * 2 : 0) : pose === 'idle' && !stepping ? fr : 0;
+  if (stepping) mibiSprite(sp, 'step', stepFr, x, y + dy, 1, (pt.face || 1) < 0); else
   mibiSprite(sp, pose, 0, x, y + dy, 1, (pt.face || 1) < 0);
   const f = pt.face || 1;
   if (pt.st === 'sniff') for (let i = 0; i < 3; i++) R(f > 0 ? x + 30 + i * 3 : x - 2 - i * 3, y + 14 - i * 2 - ((fr + i) % 2), 2, 2, C.bone);
@@ -5691,7 +5752,7 @@ function noteSigns() {
 // The Data an act on this creature will pay, said before it is done: "+1 Data" while its act is open, "Data for this trip: full"
 // once the ceiling is reached, nothing once the act is paid. An unidentified creature says nothing (no act leaks).
 function actTag(c) {
-  const ex = S.exp, sp = c.sp, kind = !S.known.includes(sp) || !ex ? null : spOf(sp).eats ? 'eat' : sp === 1 ? 'settle' : null;
+  const ex = S.exp, sp = c.sp, kind = !S.known.includes(sp) || !ex ? null : spOf(sp).eats ? 'eat' : spOf(sp).settle ? 'settle' : null;
   if (!kind || actDone(ex, c, kind)) return '';
   return actOpen(ex, c, kind) ? ' · +' + ACT_DATA + ' Data' : ' · Data for this trip: full';
 }
@@ -5699,7 +5760,8 @@ function dietLine(sp, long) {
   if (!S.known.includes(sp)) return 'Unknown creature · watch what it does';
   const nm = spOf(sp).name;
   if (spOf(sp).eats) return nm + ' · eats fruit';
-  return nm + ' · doesn’t eat fruit' + (long && sp === 1 ? ' · settles when you keep still' : '');
+  const s = spOf(sp), tail = long && s.settle ? (s.settle === 'fog' ? ' · settles in fog when you keep still' : ' · settles when you keep still') : '';
+  return nm + (s.drinks ? ' · drinks dew' : ' · doesn’t eat fruit') + tail;
 }
 // A control hint, while it is due, leads the middle of the bottom line; the usual words follow if it does not fit.
 function lineFor() {

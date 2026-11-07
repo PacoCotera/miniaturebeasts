@@ -322,8 +322,9 @@ test("normalizeCare: defaults for the additive fields; ids not in S.mibis droppe
   const t = world(S); t.normalizeCare(S);
   assert.deepEqual(plain(S.carried), [1, 2]); assert.equal(S.lead, null); assert.equal(S.carrySeen, 0); assert.deepEqual(plain(S.carryRefused), []);
   assert.deepEqual([S.mibis[0].bondCare, S.mibis[0].grownTurn], [2, 2]); assert.deepEqual([S.mibis[1].bondCare, S.mibis[1].grownTurn], [0, null]);
-  assert.deepEqual(plain(S.mibis[2]), { id: 3, name: "Fig", born: 0, care: 0, tends: 0, outings: 0, notches: 0, tendDay: null, grownTurn: null });
+  assert.deepEqual(plain(S.mibis[2]), { id: 3, name: "Fig", born: 0, care: 0, tends: 0, outings: 0, notches: 0, habitsDone: [], tendDay: null, grownTurn: null });   // L2b: habitsDone, [] by default, the field habits it did on walks
   const once = JSON.stringify(S); t.normalizeCare(S); assert.equal(JSON.stringify(S), once);
+  S.mibis[2].habitsDone.push("beacon-sit"); t.normalizeCare(S); assert.deepEqual(plain(S.mibis[2].habitsDone), ["beacon-sit"], "a set, never cleared by the normalize");
 });
 test("a new world: the carried set, no `with`; SAVE_V is 10 and the storage key keeps its name", () => {
   assert.match(source("worldFields"), /mibis: \[\], carried: \[\], lead: null, carrySeen: 0, carryRefused: \[\]/);
