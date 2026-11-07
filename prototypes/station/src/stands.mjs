@@ -11,7 +11,12 @@ export const placedAt = (id, w, h) => { const m = assetEntry(id); return !!m && 
 // { stage, size, step }: stage "juvenile" with the juvenile's size when step 2 applies, else the asked stage and size (step 1: the adult stand is placed; step 3: the genome stand-in)
 export function standLook(species, stage, size) {
   const [w, h] = size;
-  if (stage === "juvenile") return { stage, size: [w, h], step: placedAt(`mibi-juvenile-${species}-${w}x${h}`, w, h) ? 1 : 3 };
+  if (stage === "juvenile") {
+    if (placedAt(`mibi-juvenile-${species}-${w}x${h}`, w, h)) return { stage, size: [w, h], step: 1 };
+    const [jw, jh] = juvenileSize(size);   // release 21d: a young asked at the adult's 144 x 152 place takes its own 104 x 112 master, 1:1, as an adult with no stand of its size does
+    if ((jw !== w || jh !== h) && placedAt(`mibi-juvenile-${species}-${jw}x${jh}`, jw, jh)) return { stage, size: [jw, jh], step: 2 };
+    return { stage, size: [w, h], step: 3 };
+  }
   if (placedAt(`mibi-adult-${species}-${w}x${h}`, w, h)) return { stage, size: [w, h], step: 1 };
   const [jw, jh] = juvenileSize(size);
   if (placedAt(`mibi-juvenile-${species}-${jw}x${jh}`, jw, jh)) return { stage: "juvenile", size: [jw, jh], step: 2 };

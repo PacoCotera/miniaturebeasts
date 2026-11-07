@@ -8,6 +8,7 @@ import { createPod, founderPicture } from "./create-props.mjs";
 import { frameOf } from "../genome.mjs";
 import { habitatShown } from "../trickle.mjs";
 import { mibiReq } from "./home-props.mjs";
+import { juvenileSize } from "../stands.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { relitJuvenile } from "./hatch-props.mjs";
 import { fill, plural, spell, capLine } from "./words.mjs";
@@ -44,7 +45,7 @@ export function wildCards(m, spec, frame, requests) {
   let subject, keepName, keepLine, picture, size, releaseName, fact;
   if (mibi) {
     subject = habitatShown(st, m.sv, m.ui.hab.id); if (!subject) return [];
-    keepName = fill(Sg.cards.keep.name, { name: subject.name }); keepLine = fill(Sg.cards.keep.line, { name: subject.name }); size = WILD; releaseName = fill(Sg.cards.return.name, { name: subject.name }); fact = fill(S.mibiStage(st, subject, settings) === "juvenile" ? Sg.cards.return.lineYoung : Sg.cards.return.line, { name: subject.name }); picture = mibiReq(req, st, subject, size, settings);   // C13b a grown mibi's pod waits in the wild, C13c a young one's comes once grown
+    keepName = fill(Sg.cards.keep.name, { name: subject.name }); keepLine = fill(Sg.cards.keep.line, { name: subject.name }); size = S.mibiStage(st, subject, settings) === "juvenile" ? juvenileSize(WILD) : WILD; releaseName = fill(Sg.cards.return.name, { name: subject.name }); fact = fill(S.mibiStage(st, subject, settings) === "juvenile" ? Sg.cards.return.lineYoung : Sg.cards.return.line, { name: subject.name }); picture = mibiReq(req, st, subject, size, settings);   // C13b a grown mibi's pod waits in the wild, C13c a young one's comes once grown
   } else {
     subject = st.tray.find((q) => q.id === m.ui.pods.cur); if (!subject) return [];
     keepName = Sg.cards.keep.name; keepLine = Sg.cards.keep.line; size = WILD_POD; releaseName = Sg.cards.return.name; fact = fill(Sg.cards.return.line, { place: S.PLACE_WORD[subject.g] || "wild" });
