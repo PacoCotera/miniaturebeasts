@@ -196,6 +196,40 @@ test("fords: a ford cell is a 'ford' in the map's words, never 'shallows'", () =
   if (f >= 0) assert.equal(p.run(`landWord(${f})`), "ford");
 });
 
+// A place that holds a crossing of the kind (a wade, scree edge or bank edge), entered with the partner along; the screen tile of the first soft tile there.
+const inPlace = (p, kind) => { const cell = J(p, `(() => { for (let c = 0; c < MW * MH; c++) { if (!G.comp[c]) continue; const l = layout(String(c)); if (l.tiles.some(t => t === T.${kind})) return c; } return -1; })()`);
+  if (cell < 0) return null; p.run(`S.exp.start = ${cell}; S.exp.pos = ${cell}; S.exp.range = 4; enterPatch()`); return J(p, `(() => { const l = curLay(); const i = l.tiles.findIndex(t => t === T.${kind}); return [i % PW, (i / PW) | 0]; })()`); };
+const standX = "{ key: S.exp.patch.key, lay: curLay(), live: curLive(), P: S.exp.patch }";
+
+test("in a place the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank, nobody else", () => {
+  let seen = 0;
+  for (const [kind, sp] of [["WADE", 19], ["SCREE", 19], ["BANK", 7]]) for (const seed of [7, 19, 88, 140, 250, 400, 555, 777]) {
+    const p = walk(seed, sp, { tier: 2 }), at = inPlace(p, kind); if (!at) continue; seen++;
+    const [x, y] = at, who = "curLive().pt"; if (!J(p, who)) continue;
+    const open = () => J(p, `canStand(${standX}, ${x}, ${y}, ${who})`);
+    if (kind === "BANK") { assert.ok(!open(), "an undug bank holds nobody"); const q = J(p, `crossingAt(curLay(), ${x}, ${y})`); if (!q) continue; p.run(`S.exp.dug = [${q.ei}]`); }
+    assert.ok(open(), kind + " seed " + seed);
+    const other = walk(seed, 0, { tier: 2 }); inPlace(other, kind); if (J(other, who)) assert.ok(!J(other, `canStand(${standX}, ${x}, ${y}, ${who})`), "a Loika partner stays off it");
+  }
+  assert.ok(seen >= 3, "places with soft tiles seen: " + seen);
+});
+
+test("a walk that dug a bank but explored nothing still turns the world and says the ground shifted", () => {
+  const p = walk(7, 7, { tier: 2 }), { a, dir } = bankStep(p);
+  p.run(`S.exp.start = ${a}; S.exp.pos = ${a}; S.exp.range = 4; mapStep(${JSON.stringify(dir)})`);
+  assert.ok(J(p, "S.exp.dug.length") === 1 && !J(p, "exploredAny(S.exp)"), "dug, nothing explored");
+  const turn = J(p, "S.turn"); p.run("endExpedition('end')");
+  assert.equal(J(p, "S.turn"), turn + 1, "the world turned"); assert.ok(!J(p, "S.report.waited")); assert.ok(J(p, "S.report.lines").some(l => /^The ground shifted/.test(l)), JSON.stringify(J(p, "S.report.lines")));
+});
+
+test("Tuliko's ring is drawn on the reach view; the message box keeps off the soft tiles of a place", () => {
+  const tul = walk(7, 19, { tier: 1 }); tul.run("S.exp.pos = S.exp.start; render(0)");
+  assert.ok(J(tul, "canSure()") && J(tul, "S.exp.range") === 3);
+  const p = walk(7, 19, { tier: 2 }), at = inPlace(p, "SCREE");
+  if (at) { p.run("RT.softScr = null; fxSign('call')"); p.run("render(0)"); const rects = J(p, "RT.softScr"), m = J(p, "msgGeom()");
+    if (m) for (const r of rects) assert.ok(!(r.x < m.x + m.w && r.x + r.w > m.x && r.y < m.y + m.h && r.y + r.h > m.y), "the box covers a soft tile"); }
+});
+
 test("the card fields: abCard and abCardShort, and every changed line fits its slot at the worst-case 8-letter name", () => {
   const p = makePage({}); p.run("newWorld(7)"); const W8 = "Wmwmwmwm";
   const w = (s, f = "textW") => p.run(`${f}(${JSON.stringify(s)}, 2)`), ab = (sp, short) => p.run(`abCardOf(${sp}, ${!!short})`);

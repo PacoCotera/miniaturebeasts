@@ -1609,7 +1609,7 @@ function patchStep(dir, mode) {
   const x = P.x + dx, y = P.y + dy;
   if (x < 0 || y < 0 || x >= PW || y >= PH) { if (mode === 'walk') { stopRepeat(); fxHint('edgehold', 'Edge · tap again to step off', 1); return; } if (!layout(key).cave) crossEdge(dir); return; }
   let o = occupant(key, x, y, 'player');
-  if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); o = null; }   // mud, scree or a dug bank, for the partner that crosses it
+  if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); o = live.pt && live.pt.x === x && live.pt.y === y ? { type: 'pt' } : null; }   // mud, scree or a dug bank, for the partner that crosses it (it may be standing there: you trade places)
   if (o && o.type === 'pt') { live.pt.x = P.x; live.pt.y = P.y; }
   else if (o) {
     FX.bumpAt = NOW;
@@ -2134,7 +2134,10 @@ function pickStrike(X) {
 }
 
 // ===================== 8. Creatures and the partner =====================
-function canStand(X, x, y, who) { return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * PW + x]); }
+function canStand(X, x, y, who) {
+  if (who && who === X.live.pt && x >= 0 && y >= 0 && x < PW && y < PH) { const t = X.lay.tiles[y * PW + x];   // the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank
+    if ((t === T.WADE || t === T.SCREE || t === T.BANK) && softTileOpen(X.lay, t, x, y)) return !X.live.cr.some(c => !c.hide && c.x === x && c.y === y) && !(X.P.x === x && X.P.y === y); }
+  return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * PW + x]); }
 function stepToward(X, who, tgt, n) {
   for (let k = 0; k < (n || 1); k++) {
     if (tgt.tree && man(who, tgt) <= 1) return;   // a hollow trunk is entered from beside it: stop there, the next tick goes in
@@ -2390,7 +2393,7 @@ function sealedWords(h, join, alone) { const n = h.pods ? h.pods.length : 0; ret
 // The Cargo screen's preview of what End expedition will do.
 function sealPreview() {
   const ex = S.exp, out = [];
-  if (!exploredAny(ex)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
+  if (!exploredAny(ex) && !(ex.dug && ex.dug.length)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
   // what End will seal: the hold plus the field yield still to come (End adds it before it seals)
   const h = Object.assign({}, ex.cargo), top = Math.max(0, walkYield(ex) - (ex.dField || 0)); h.d = Math.min(CAP, (h.d || 0) + top);
   if (holdEmpty(h)) { /* nothing to seal (only a save from before places had a tier): no line */ }
@@ -2438,7 +2441,7 @@ function endExpedition(reason) {
     hits: ex.stats.hits, done: ex.saidDone || 0, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length,
     warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: walkTier(ex), dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
-  if (!explored) {   // nothing explored: nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
+  if (!explored && !(ex.dug && ex.dug.length)) {   // nothing explored (and no bank dug: a dug bank shifts back, so that walk turns the world): nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
@@ -3935,7 +3938,7 @@ function drawSoftMarks(q, cells, pawn) {
     }
   }
   // Tuliko's extra ring: small round dots on the cells one ring past the Probe's own range, each a 2 px round dot of the coin pattern
-  const ex = S.exp; if (ex && canSure() && q.map) { const s0 = cxy(ex.start), r = ex.range;
+  const ex = S.exp; if (ex && canSure()) { const s0 = cxy(ex.start), r = ex.range;   // on the full map and on the reach view the player walks on
     for (const [c, x, y] of cells) { const p = cxy(c); if (Math.max(Math.abs(p.x - s0.x), Math.abs(p.y - s0.y)) !== r || !S.revealed[c]) continue;
       for (let k = 3; k < cs - 2; k += 6) { R(x + k, y + 3, 2, 2, C.gold); R(x + k, y + cs - 5, 2, 2, C.gold); R(x + 3, y + k, 2, 2, C.gold); R(x + cs - 5, y + k, 2, 2, C.gold); } } }
 }
@@ -4151,6 +4154,7 @@ function drawPatch(t) {
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
   const tileFor = (i, sl) => ts === 48 ? tile48(lay, i, fr, sl) : tilePB(lay, i, fr), keyFor = (i) => ts === 48 ? tile48Key(lay, i, fr) : tileKey(lay, i, fr);
   RT.plScr = { x: W(PX(RT.pl)) + (ts >> 1), y: H(PY(RT.pl)) + (ts >> 1) };
+  RT.softScr = []; for (let i = 0; i < PW * PH; i++) { const tt = lay.tiles[i]; if (tt === T.WADE || tt === T.SCREE || tt === T.BANK) RT.softScr.push({ x: W((i % PW) * ts), y: H(((i / PW) | 0) * ts), w: ts, h: ts }); }   // the crossing tiles: the message box keeps off them
   const raining = !lay.cave && stormRain(lay.cell % MW), overcast = !lay.cave && stormCovers(lay.cell % MW), fogged = !lay.cave && inFog(lay.cell);
   let darkW = 0, darkLeft = true;
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
@@ -4616,6 +4620,8 @@ function msgGeom() {
   // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
   const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, lit = RT.litScr && sign && sign.sign === 'warn' ? RT.litScr : null,   // a warning card never covers the lit tile
     y = (pl ? pl.y + (RT.ts === 48 ? 24 : 20) > low : RT.focusFoot != null && RT.focusFoot >= low) || (lit && lit.y + lit.h >= low && lit.x < x + w && lit.x + lit.w > x) ? VIEW_Y + 8 : low;
+  const hits = yy => (RT.softScr || []).some(r => r.x < x + w && r.x + r.w > x && r.y < yy + h && r.y + r.h > yy);   // a box never sits on the mud, scree or bank tiles of the place: it takes the other end if that is clear
+  if (hits(y) && !hits(y === low ? VIEW_Y + 8 : low)) return { sign, lines, w, h, x, y: y === low ? VIEW_Y + 8 : low };
   return { sign, lines, w, h, x, y };
 }
 function drawMessage() {
@@ -5466,7 +5472,7 @@ function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
-  trackDock(); RT.plScr = null; RT.litScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
+  trackDock(); RT.plScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
