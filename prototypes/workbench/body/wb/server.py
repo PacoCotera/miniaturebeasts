@@ -355,6 +355,33 @@ class Server:
         except ApiError:
             pass
 
+    def row_error(self, sp):
+        """The species row's error: the file's own, else the sculpt or part its `mesh` block pins that cannot be found by path or by sha (never a blank stage with no word)."""
+        if sp.error:
+            return sp.error
+        import meshsource as MS
+        return MS.mesh_problem((sp.spec or {}).get("mesh"))
+
+    def studio_files(self, sp):
+        """What the browser draws a mesh file from: the studio GLB of the sculpt and of each part, by the sha pinned in the sidecar, served at /cas/<sha>.glb. None for a cage file or when a sidecar has no studio GLB yet."""
+        import meshsource as MS
+        blk = (sp.spec or {}).get("mesh")
+        if not isinstance(blk, dict) or not blk.get("source"):
+            return None
+
+        def one(rel, sha):
+            try:
+                side = MS.load_json(MS.resolve(rel, sha))
+            except (OSError, ValueError):
+                return None
+            st = side.get("studio")
+            if not st or MS.studio_glb(st["sha256"]) is None:
+                return None
+            return dict(id=side["id"], sha256=st["sha256"], bytes=st["bytes"], url=f"/cas/{st['sha256']}.glb", morph_targets=st.get("morph_targets", []), bones=st.get("bones", []))
+        body = one(blk["source"], blk.get("sha256"))
+        parts = [dict(one(pe["part"], pe.get("sha256")) or {}, socket=pe.get("socket"), mirror=bool(pe.get("mirror"))) for pe in blk.get("parts") or [] if pe.get("part")]
+        return dict(sculpt=body, parts=parts)
+
     def current_views(self, sp):
         """The proxy frames of the file as it is now (type genome, 304 for the strip and 608 for the hero): each with its cache key and whether the picture exists yet. A read of the cache, never a job."""
         try:
@@ -1691,11 +1718,11 @@ def make_handler(srv):
             u = urlparse(self.path)
             p, q = strip_prefix(u.path), parse_qs(u.query)
             if p == "/api/species":
-                return self.send_json([dict(id=s.id, name=s.spec.get("name"), path=s.path, hash=s.hash, error=s.error) for s in srv.species.values()], etag=True)
+                return self.send_json([dict(id=s.id, name=s.spec.get("name"), path=s.path, hash=s.hash, error=srv.row_error(s)) for s in srv.species.values()], etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)", p)
             if m:                                                      # the whole answer, kept for the pages that still ask for it; the three routes below are its parts
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()), etag=True)
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=srv.row_error(s), studio=srv.studio_files(s), lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()), etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)/file", p)
             if m:                                                      # the document: tagged with its hash (and the error, when the file on disk does not parse)
                 s = srv.get_species(m.group(1))
@@ -1837,9 +1864,13 @@ def make_handler(srv):
             m = re.fullmatch(r"/cas/([0-9a-f]+)\.(png|json|glb)", p)
             if m:
                 key, ext = m.groups()
-                if not srv.cas.has(key, ext):
+                path = srv.cas.path(key, ext) if srv.cas.has(key, ext) else None
+                if path is None and ext == "glb":                   # a studio GLB is addressed by the sha pinned in its sidecar and found in the code's own species_v1 (or WB_SCULPT_CACHE), never copied into the cache
+                    import meshsource as MS
+                    path = MS.studio_glb(key)
+                if path is None:
                     raise ApiError(404, "not in the cache", "key")
-                with open(srv.cas.path(key, ext), "rb") as fh:
+                with open(path, "rb") as fh:
                     data = fh.read()
                 self.send_response(200)
                 self.send_header("Content-Type", CT[ext])

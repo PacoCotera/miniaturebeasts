@@ -206,5 +206,36 @@
    "colour and pile dropped: the coat painter and the material library supply them",
    "2026-11-06 art desk ruling: no eye exception; the eyes slid in along the head, the pair closer, the eye ring and disc repainted in the zone map at the new stations (sculpt unchanged from S01-m1)"
   ]
+ },
+ "studio": {
+  "schema": "mb-studio-glb/1",
+  "file": "S01-m2.studio.glb",
+  "sha256": "2370fbb65965a0468cae0114656d4692cd9ab53bd1abeadf98f6a54c598c365e",
+  "bytes": 206764,
+  "source_sha256": "e71c0d8a29318b7eaaabf067bae9e37cced26314176327c63526a06bc89b86b7",
+  "bones": [
+   "rear",
+   "front",
+   "fore.upper.L",
+   "fore.lower.L",
+   "fore.paw.L",
+   "fore.upper.R",
+   "fore.lower.R",
+   "fore.paw.R",
+   "head",
+   "socket.crest",
+   "hind.upper.L",
+   "hind.lower.L",
+   "hind.paw.L",
+   "hind.upper.R",
+   "hind.lower.R",
+   "hind.paw.R"
+  ],
+  "morph_targets": [
+   "key.form.torso-girth"
+  ],
+  "weights_empty": 0,
+  "vertices": 10075,
+  "triangles": 17160
  }
 }

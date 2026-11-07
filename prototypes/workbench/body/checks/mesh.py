@@ -31,7 +31,7 @@ def sculpt(ctx):
     d = _cache(ctx)
     if "m" not in d:
         try:
-            d["m"] = MS.Mesh(_doc(ctx)["mesh"]["source"])
+            d["m"] = MS.Mesh(_doc(ctx)["mesh"]["source"], _doc(ctx)["mesh"].get("sha256"))
         except Exception as e:                                      # noqa: BLE001
             d["m"] = e
     if isinstance(d["m"], Exception):
@@ -179,8 +179,9 @@ def c_size(ctx):
     n = os.path.getsize(m.glb_path)
     bad_parts = []
     for pe in _doc(ctx)["mesh"].get("parts", []):
-        sc = MS.load_json(pe["part"])
-        pb = os.path.getsize(os.path.join(os.path.dirname(MS.abspath(pe["part"])), sc["glb"]["file"]))
+        sp = MS.part_path(pe)
+        sc = MS.load_json(sp)
+        pb = os.path.getsize(os.path.join(os.path.dirname(sp), sc["glb"]["file"]))
         if pb > MS.MAX_PART_BYTES:
             bad_parts.append(f"{sc['id']} {pb / 1048576:.2f} MB")
     bad = n > MS.MAX_BYTES or bool(bad_parts)
@@ -204,8 +205,9 @@ def c_stamp(ctx):
     if os.path.getsize(m.glb_path) != m.sc["glb"]["bytes"]:
         probs.append("the sidecar's size is not the file's")
     for pe in doc.get("parts", []):
-        sc = MS.load_json(pe["part"])
-        g = MS.sha256_file(os.path.join(os.path.dirname(MS.abspath(pe["part"])), sc["glb"]["file"]))
+        sp = MS.part_path(pe)
+        sc = MS.load_json(sp)
+        g = MS.sha256_file(os.path.join(os.path.dirname(sp), sc["glb"]["file"]))
         if g != pe.get("sha256") or g != sc["glb"]["sha256"]:
             probs.append(f"part {sc['id']}: the pin, the sidecar and the file are not the same sha")
     bad = bool(probs)

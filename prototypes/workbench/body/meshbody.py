@@ -62,7 +62,7 @@ class MeshBody:
     def __init__(self, doc, count=None, size=None):
         self.doc = doc
         m = doc["mesh"]
-        self.mesh = MS.Mesh(m["source"])
+        self.mesh = MS.Mesh(m["source"], m.get("sha256"))
         self.rig = MR.of(self.mesh) if self.mesh.glb.skin() is not None else None                       # a sculpt with no skin (a broken one the checks are shown) is built as it is
         self.keys = {k["id"]: float(k.get("amount", 0.0)) for k in (doc.get("keys") or [])}
         if self.rig is not None:
@@ -76,8 +76,9 @@ class MeshBody:
         n = signature_count(doc) if count is None else int(count)
         H = float(self.mesh.sc["bands"]["standing_height"])
         for k, pe in enumerate(m.get("parts", []), start=1):
-            sc = MS.load_json(pe["part"])
-            g = MS.Glb(MS.os.path.join(MS.abspath(MS.os.path.dirname(pe["part"])), sc["glb"]["file"]))
+            sp = MS.part_path(pe)
+            sc = MS.load_json(sp)
+            g = MS.Glb(MS.os.path.join(MS.os.path.dirname(sp), sc["glb"]["file"]))
             V, F, _ = g.triangles()
             Vp, Fp = MS.weld(V, F)
             soc = self.mesh.socket(pe["socket"])
@@ -145,7 +146,7 @@ class MeshBody:
         """What the export's build stamp adds: the sculpt and each part by id and the first eight of their sha."""
         out = [f"mesh {self.mesh.sc['id']} {self.mesh.sha[:8]}"]
         for pe in self.doc["mesh"].get("parts", []):
-            sc = MS.load_json(pe["part"])
+            sc = MS.load_json(MS.part_path(pe))
             out.append(f"part {sc['id']} {sc['glb']['sha256'][:8]}")
         return " · ".join(out)
 
@@ -153,7 +154,7 @@ class MeshBody:
         import hashlib
         h = hashlib.sha256(self.mesh.sha.encode())
         for pe in self.doc["mesh"].get("parts", []):
-            h.update(MS.load_json(pe["part"])["glb"]["sha256"].encode())
+            h.update(MS.load_json(MS.part_path(pe))["glb"]["sha256"].encode())
         h.update(str(self.ctx["params"]).encode())
         h.update(str(self.doc.get("rig")).encode())
         h.update(str(self.doc.get("keys")).encode())

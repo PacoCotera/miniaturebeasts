@@ -130,7 +130,7 @@ def mesh_guess(doc, g=None):
     """quad_guess for a sculpt: the stations as the sidecar names them (a pair of eyes mirrored, the mouth), the head's width."""
     import meshsource as MS
     g = g or {}
-    m = MS.Mesh(doc["mesh"]["source"])
+    m = MS.Mesh(doc["mesh"]["source"], doc["mesh"].get("sha256"))
     st = m.stations()
     eyes = [(np.array(e["point"], float), np.array(e["normal"], float)) for e in st["eyes"]]
     mo = st.get("mouth")
@@ -222,7 +222,7 @@ def _mesh_stations(doc, surf, g):
     import facedecal as FD
     import meshsource as MS
     import meshbody as MB
-    m = MS.Mesh(doc["mesh"]["source"])
+    m = MS.Mesh(doc["mesh"]["source"], doc["mesh"].get("sha256"))
     st = m.stations()
     body = MB.body_of(doc)                                                         # the stations are the sculpt's: they go where the file's bone scales and keys take the skin under them
     out = []
