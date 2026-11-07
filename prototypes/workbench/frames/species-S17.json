@@ -25,7 +25,7 @@
   "habitat": "Reeds",
   "gate": null,
   "diet": "dew",
-  "ability": "draft: to be set by the game designer",
+  "ability": null,
   "character": "draft: calm, a little dreamy",
   "clanName": null,
   "clanNumber": 17,
@@ -113,7 +113,11 @@
   "#.#..",
   ".#..."
  ],
- "habits": [],
+ "habits": [
+  "look-up",
+  "beacon-sit",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "medium",
   "proportion": null,

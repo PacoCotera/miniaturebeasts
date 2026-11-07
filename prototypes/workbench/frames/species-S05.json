@@ -109,7 +109,11 @@
   ".....",
   "...#."
  ],
- "habits": [],
+ "habits": [
+  "warm-sit",
+  "stone-sense",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "medium",
   "proportion": null,

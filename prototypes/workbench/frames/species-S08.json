@@ -10,12 +10,12 @@
  "taxonomy": {
   "code": "S08",
   "resembles": "a light, slim-legged body with big cupped ears",
-  "moves": "bounds, climbs",
-  "habitat": "rock field, meadow",
+  "moves": "pushes on ahead, digs",
+  "habitat": "meadow",
   "gate": null,
   "diet": "leaves, fruit",
-  "ability": "climbs cliff steps that block other partners",
-  "character": "sure-footed and proud",
+  "ability": "digs a way up or down earth banks",
+  "character": "plucky and proud",
   "clanName": "Kremnion",
   "clanNumber": 8,
   "member": 1,
@@ -105,7 +105,11 @@
   "..#..",
   "..###"
  ],
- "habits": [],
+ "habits": [
+  "fan-tilt",
+  "bank-dig",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "large",
   "proportion": null,

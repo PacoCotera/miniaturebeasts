@@ -12,12 +12,12 @@
  },
  "taxonomy": {
   "code": "S20",
-  "moves": "scurries, hops",
+  "moves": "walks and walks, hops down slopes",
   "habitat": "Tallwood",
   "gate": null,
   "diet": "fruit, leaves",
-  "ability": "draft: to be set by the game designer",
-  "character": "draft: curious, content",
+  "ability": "crosses mud and scree; walks farther",
+  "character": "easygoing and tireless",
   "clanName": null,
   "clanNumber": 21,
   "member": 1,
@@ -107,6 +107,8 @@
   "....."
  ],
  "habits": [
+  "coin-ruffle",
+  "hop-down",
   "sleep-curled"
  ],
  "pod": {

@@ -72,12 +72,12 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | S01 | Loika | C01 Lophessa | a round frog-hare, Pip (frame file *hopper*) | medium | B1·L4 · skin | hops | meadow, pond edge | starter |
 | S02 | Untuva | C02 Kausida | a puffball under a cap (frame file *puffcap*) | large | R1·flaps · fur | waddles | wood, meadow, pond | early · Character sealed (a crystal) |
-| S03 | Tuikis | C03 Stilbera | a lizard with a lantern tail (frame file *glowtail*) | small | B2·L4 · scales | scurries, digs | wood, rock field | mid · opens narrow holes and the Shade |
-| S04 | Hiljan | C04 Lathreta | a cat | medium | B2·L4 · fur | prowls, pounces on falling leaves and rolling fruit | wood, meadow | starter |
+| S03 | Tuikis | C03 Stilbera | a lizard with a lantern tail (frame file *glowtail*) | small | B2·L4 · scales | scurries, digs | wood, rock field | mid · narrow burrows |
+| S04 | Hiljan | C04 Lathreta | a climber with two blunt horn-knobs and a coiled tail | medium | B2·L4 · fur | climbs, grabs at falling leaves and rolling fruit | wood, meadow | starter |
 | S05 | Tepor | C05 Dasyla | a fox | medium | B2·L4 · fur | trots | meadow, wood edge | early |
-| S06 | Pesko | C06 Prosopa | a raccoon | medium | B2·L4 · fur | ambles, climbs | pond edge, wood | early |
+| S06 | Pesko | C06 Prosopa | a long low body with a ridge of tapered spines | medium | B2·L4 · fur | ambles, climbs | Thickets | early |
 | S07 | Azkon | C07 Aulaka | a badger or small bear | large | B1·L4 · fur | lumbers, digs | rock field, cave | mid · Deep ground |
-| S08 | Rupar | C08 Kremnion | a goat or deer | large | B2·L4 · fur | bounds, climbs | rock field, meadow | mid |
+| S08 | Rupar | C08 Kremnion | a low, broad digger with spade forepaws and slats on its back | large | B2·L4 · fur | pushes on ahead, digs | meadow | mid |
 | S09 | Belatz | C09 Aithria | a big bird | large | B2·L2·flaps · fur (feathers to come) | strides, soars | meadow, rock field | late · Weather expeditions |
 | S10 | Igara | C10 Kolymba | an otter | medium | B3·L4 · fur | swims, slides | pond, fast water | mid · opens fast water |
 | S11 | Kilpo | C11 Thyreka | a turtle | large | B1·L4 · scales | plods, swims slowly | pond edge | late · beyond fast water |
@@ -93,12 +93,12 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 | --- | --- | --- | --- | --- | --- | --- |
 | S01 | Loika | fruit | charcoal, cream belly, orange eyes, three-leaf crest | calms wary creatures | C01 Lophessa: a leaf crest and a flat face; charcoal, of meadow and pond; the friendly garden-pond hoppers | gentle and curious, a little shy |
 | S02 | Untuva | fruit | a round fluff under a cap of three flaps | sniffs out buried pods; sheds after a full meal | C02 Kausida: a cap of flaps, coral, radial bodies; soft, round, sleepy | a sleepy glutton nothing startles |
-| S03 | Tuikis | dew | a gold glow at the tail in shade and fog, a pointed crest | digs narrow burrows; lights fog and the Shade | C03 Stilbera: a glowing tail and a crest, lagoon; small lights of wood and rock | a brave little torchbearer |
+| S03 | Tuikis | dew | a gold glow at the tail in shade and fog, a pointed crest | digs out narrow burrows; lights up fog | C03 Stilbera: a glowing tail and a crest, lagoon; small lights of wood and rock | a brave little torchbearer |
 | S04 | Hiljan | fruit | upright pointed ears, short muzzle, long tail, striped coat | creeps up without startling anything | C04 Lathreta: upright pointed ears, striped fur; quiet stalkers of the grass | aloof at first, then devoted |
 | S05 | Tepor | fruit, seeds | tall ears, long muzzle, bushy tail with a pale tip | senses warm stones (Energy) | C05 Dasyla: tall ears, a long muzzle, a bushy tail; clever wanderers | quick and clever |
-| S06 | Pesko | fruit, washed first | black eye mask, ringed tail, rounded ears, nimble paws | lifts slabs to find what is under them | C06 Prosopa: a face mask and a ringed tail; masked tinkerers | nosy, a cheerful mischief-maker |
+| S06 | Pesko | fruit, washed first | black eye mask, ringed tail, rounded ears, nimble paws | (no ability: slab-lift is a habit pose only) | C06 Prosopa: a face mask and a ringed tail; masked tinkerers | nosy, a cheerful mischief-maker |
 | S07 | Azkon | fruit, roots | stout body, striped face, broad claws, small round ears | digs through to Deep ground | C07 Aulaka: broad claws, a striped face, stout bodies; the diggers | slow, stubborn, protective |
-| S08 | Rupar | leaves, fruit | horns, hooves, long legs | climbs cliff steps that block other partners | C08 Kremnion: horns and hooves; climbers of the high rocks | sure-footed and proud |
+| S08 | Rupar | leaves, fruit | horns, hooves, long legs | digs a way up or down earth banks | C08 Kremnion: horns and hooves; climbers of the high rocks | plucky and proud |
 | S09 | Belatz | fruit, seeds | broad wings, a beak, a crest | scouts from above: reveals the cells around | C09 Aithria: wings and a beak; big birds of open sky | watchful, lordly |
 | S10 | Igara | fruit | sleek long body, webbed paws, thick tail | swims fast water | C10 Kolymba: long sleek bodies and webbed paws; the water players | playful, never still |
 | S11 | Kilpo | moss, fruit | a domed shell, a scaled head | carries one more pod | C11 Thyreka: a shell; slow keepers of the pond | an old soul, patient |
@@ -204,7 +204,7 @@ Per the [art pipeline](art-pipeline.md) v2, *the parts library below is supersed
 - **`research-loop.md`:** §6, pods share a shell pattern and anchor tint per clan; §8's Compare row covers living mibis and other species (§4); the *misty seed* becomes the *sleeping bud* (§5).
 - **Station screens:** the 16-species grid and the Library's hidden silhouettes in `station-screens.md` and the style guide; drops add a page.
 - **The genome stamp:** the 12-bit species field read as clan (7 bits, 128 clans) and member (5 bits, 32 species); the prototype's species 11, 12, 13 become 1·1, 2·1, 3·1. Proposed to the stamp's builders; nothing under `prototypes/` changes here.
-- **`world-and-exploration.md`:** habitats and diets per species by rule; the swimmer gate gets S10; the Shade has S03; Deep ground gets S07; storm passes get S16; S08 climbs cliff steps and S09 scouts, two new partner abilities to design.
+- **`world-and-exploration.md`:** habitats and diets per species by rule; the swimmer gate gets S10; the Shade has S03; Deep ground gets S07; storm passes get S16; S08 digs a way up or down earth banks and S09 scouts, two new partner abilities to design.
 - **`design/style-guide/station-screens.md`, Library:** the shelf groups by clan, a clan plate over its species.
 - **The website** keeps "families" for kin; "clan" never appears there until the game uses it.
 
@@ -213,7 +213,7 @@ Per the [art pipeline](art-pipeline.md) v2, *the parts library below is supersed
 The owner has settled, one line each: the growing genome (§2); the four levels (§3); one roster for every kit; **16 species in V1** as a Station grid with **seasonal drops** about every three months; the first 16 **very different**, with cat-, fox- and raccoon-like mammals, **at most two insect-like** kinds, **more big animals**, and the slug, plant and lightning kind as the strange ones; **hidden silhouettes**; **Compare** on living mibis; the **clean room**; names by the **copywriter**.
 
 1. **The 16 of §3**, with their sizes (4 small, 7 medium, 5 large), clans and gates, and the cuts listed there. *Recommended.*
-2. **The new partner abilities** they imply (S05 senses Energy, S06 lifts slabs, S08 climbs cliff steps, S09 scouts from above, S11 carries one more pod, S16 draws a strike): to design with the exploration tuning. *Recommended as direction.*
+2. **The new partner abilities** they imply (S05 senses Energy, S08 digs a way up or down earth banks, S09 scouts from above, S11 carries one more pod, S16 draws a strike): to design with the exploration tuning. *Recommended as direction.*
 3. **The temperament chapter is called Character** (§5), over Temperament and Humor. *Recommended.*
 4. **The build order and the drop shape** (§3): S01, S02, S03, S04, S05 first; drops of 4 (two cousins, one new clan, at most one new plan). *Recommended.*
 

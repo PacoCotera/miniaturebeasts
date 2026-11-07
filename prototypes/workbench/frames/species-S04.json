@@ -10,7 +10,7 @@
  "taxonomy": {
   "code": "S04",
   "resembles": "a long tail wrapped round four paws",
-  "moves": "prowls, pounces",
+  "moves": "climbs, grabs at falling leaves and rolling fruit",
   "habitat": "wood, meadow",
   "gate": null,
   "diet": "fruit",
@@ -107,7 +107,11 @@
   ".#..#",
   "#..#."
  ],
- "habits": [],
+ "habits": [
+  "knob-balance",
+  "tiptoe",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "medium",
   "proportion": null,

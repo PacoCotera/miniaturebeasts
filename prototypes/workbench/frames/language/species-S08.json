@@ -12,12 +12,12 @@
  },
  "taxonomy": {
   "code": "S08",
-  "moves": "bounds, climbs",
+  "moves": "pushes on ahead, digs",
   "habitat": "Meadows",
   "gate": null,
   "diet": "leaves, fruit",
-  "ability": "climbs cliff steps that block other partners",
-  "character": "sure-footed and proud",
+  "ability": "digs a way up or down earth banks",
+  "character": "plucky and proud",
   "clanName": "Kremnion",
   "clanNumber": 8,
   "member": 1,
@@ -108,6 +108,8 @@
   "....."
  ],
  "habits": [
+  "fan-tilt",
+  "bank-dig",
   "sleep-curled"
  ],
  "pod": {

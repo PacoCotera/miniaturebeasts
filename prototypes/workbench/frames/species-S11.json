@@ -102,7 +102,11 @@
   "#.#.#",
   "....."
  ],
- "habits": [],
+ "habits": [
+  "tip-tap",
+  "pod-carry",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "large",
   "proportion": null,
