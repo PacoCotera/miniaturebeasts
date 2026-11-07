@@ -30,7 +30,7 @@ export async function podsStates(visit) {
     await to({ view: "inventory", focus: "filter", chips: ["S04", "sealed"] }); await at("inventory, no matches", { view: "inventory", focus: "filter" });
     await to({ view: "find", focus: "word.0", find: { letter: "L" } }); await at("inventory, find", { view: "find", focus: "word.0" });
     await scene(TWELVE, { turn: 9, s: 1 }); await to({ view: "inventory", focus: "card.4", verb: "freshen" }); await at("inventory, drying", { view: "inventory", focus: "card.4" });   // twelve turns from turn 1: four left, amber; ❀1 short of the ❀2
-    await to({ view: "inventory", focus: "verb.grow", verb: "grow" }); await at("inventory, Grow: the sealed pods fade", { view: "inventory", focus: "verb.grow" });
+    await scene(TWELVE, { goal: ["S01", 0] }); await to({ view: "inventory", focus: "verb.grow", verb: "grow" }); await at("inventory, Grow: the sealed pods fade", { view: "inventory", focus: "verb.grow" });
     await scene([["S01", 31, 1, 1], ["S02", 32, 1, 0], ["S01", 33, 1, 0], ["S03", 34, 1, 0]], { dried: 2 }); await to({ view: "inventory", focus: "card.0" }); await at("inventory, a pod dried", { view: "inventory", focus: "card.0" });
     await scene([["S01", 41, 1, 1]]); await to({ view: "inventory", focus: "card.0", verb: "letgo" }); await at("inventory, let go, the hold ring on the pod", { view: "inventory", focus: "card.0" });
     await scene(TWELVE); await to({ view: "inventory", focus: "card.0", verb: "grow", fixed: true, from: "incubator", hold: null }); await at("inventory, from the Incubator: Grow, the only verb", { view: "inventory", focus: "card.0" });

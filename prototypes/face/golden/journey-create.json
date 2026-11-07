@@ -8,7 +8,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "act.1",
+      "target": "card.0",
       "verb": "confirm"
      }
     ],
@@ -75,8 +75,52 @@
      }
     ],
     "screen": "pods",
+    "create": {
+     "f": 1,
+     "choices": [
+      "body-value"
+     ],
+     "grown": false
+    },
+    "ok": "Open Coat",
+    "price": null,
+    "subject": ""
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "rail",
+      "verb": "back"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 1,
+     "choices": [
+      "body-value"
+     ],
+     "grown": false
+    },
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
+    "subject": "Four chapters unread"
+   },
+   {
+    "key": "home",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "room:home"
+     }
+    ],
+    "screen": "home",
     "create": null,
-    "ok": "Open Shape",
+    "ok": "Look at the pods",
     "price": null,
     "subject": ""
    },
@@ -86,7 +130,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "act.1",
+      "target": "card.0",
       "verb": "confirm"
      }
     ],

@@ -202,7 +202,7 @@ int inv_verb_rect_id(const char *id, int out[4]) { for (int i = 0, n = v_plen(P 
 int inv_tool_rect(int which, int out[4]) {
   static const char *names[3] = { "sort", "filter", "find" }; int pad = v_si(S, I K ".tools.pad", 8), gap = v_si(S, I K ".tools.gap", 12), x = v_si(S, I K ".tools.right", 984) + pad;
   for (int i = 2; i >= 0; i--) {
-    char w[V_STR]; snprintf(w, sizeof w, "%s", v_pstr(v_fmt(P ".tools.%s", names[i]))); int bw = v_role_width(w, "small.quiet") + 2 * pad; x -= bw;
+    char w[V_STR]; snprintf(w, sizeof w, "%s", v_pstr(v_fmt(P ".tools.%s", names[i]))); int bw = v_role_width(w, v_sstr(S, I K ".tools.role")) + 2 * pad; x -= bw;
     if (i == which) { out[0] = x; out[1] = v_si(S, I K ".tools.y", 50); out[2] = bw; out[3] = v_si(S, I K ".tools.h", 28); return 1; }
     x -= gap;
   }
@@ -249,7 +249,7 @@ static void picker_cells(void) {
     int sealed = v_pbool(v_fmt("%s.sealed", Cb), 0), fade = v_pbool(v_fmt("%s.fade", Cb), 0), held = v_pbool(v_fmt("%s.held", Cb), 0); char id[32]; snprintf(id, sizeof id, "card.%d", k);
     v_region("card.cell", LAYER_CHROME);
     if (strcmp(cur, id) == 0) { snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", cell[0], cell[1], rad, fillc); v_composed(v_fmt("%s.fill", id), b[0], b[1], cell[0], cell[1], ops); }
-    snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,4000,0,\"%s\"]]", st[2], st[3], seatc); v_composed(v_fmt("%s.seat", id), b[0] + st[0], b[1] + st[1], st[2], st[3], ops);
+    snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", st[2], st[3], st[3] / 2, seatc); v_composed(v_fmt("%s.seat", id), b[0] + st[0], b[1] + st[1], st[2], st[3], ops);
     v_name("card.pod"); v_slot(v_fmt("%s.pod", id), pod, NULL, b[0] + pd[0], b[1] + pd[1], pd[2], pd[3], *pod != 0);
     { char mark[16]; snprintf(mark, sizeof mark, "%s", v_pstr(v_fmt("%s.mark", Cb))); if (*mark) picker_mark(v_fmt("%s.mark", id), mark, b[0] + mk[0], b[1] + mk[1]); }
     v_region("card.words", LAYER_TYPE); inv_say(v_fmt("%s.name", id), name, b[0] + nm[0], b[1] + nm[1], nm[2], nm[3], sealed ? v_sstr(S, I K ".grid.sealedRole") : v_sstr(S, I K ".grid.nameRole"), "panel", V_ALIGN_CENTRE);
@@ -273,7 +273,7 @@ static void picker_tools(void) {
   for (int i = 0; i < 3; i++) {
     int r[4]; inv_tool_rect(i, r); char w[V_STR]; snprintf(w, sizeof w, "%s", v_pstr(v_fmt(P ".tools.%s", names[i])));
     v_region(v_fmt("tool.%s", names[i]), LAYER_TYPE); inv_say(v_fmt("tool.%s", names[i]), w, r[0], r[1], r[2], r[3], v_sstr(S, I K ".tools.role"), "panel", V_ALIGN_CENTRE);
-    if (i == 1 && v_pbool(P ".tools.filterAmber", 0)) { int tw = v_role_width(w, "small.quiet"); v_region("tool.filter", LAYER_CHROME); v_rect("tool.filter.u", r[0] + (r[2] - tw) / 2, r[1] + r[3] - 7, tw, 1, "amber"); }   /* the drying count underlined: the warning never lives in colour alone */
+    if (i == 1 && v_pbool(P ".tools.filterAmber", 0)) { int tw = v_role_width(w, v_sstr(S, I K ".tools.role")); v_region("tool.filter", LAYER_CHROME); v_rect("tool.filter.u", r[0] + (r[2] - tw) / 2, r[1] + r[3] - 7, tw, 1, "amber"); }   /* the drying count underlined: the warning never lives in colour alone */
   }
 }
 static void picker_detail(void) {
@@ -295,7 +295,7 @@ static void picker_grid(void) {
 }
 static void picker_empty(void) {
   int n = v_plen(P ".empty"); if (n < 1) return; int st[4], t[4], l[4]; v_srect(S, I K ".empty.seat", st); v_srect(S, I K ".empty.title", t); v_srect(S, I K ".empty.line", l); char ops[160];
-  snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,4000,0,\"%s\"]]", st[2], st[3], v_scol(S, I K ".ground.seat.fill")); v_region("empty.seat", LAYER_CHROME); v_composed("empty.seat", st[0], st[1], st[2], st[3], ops);
+  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", st[2], st[3], st[3] / 2, v_scol(S, I K ".ground.seat.fill")); v_region("empty.seat", LAYER_CHROME); v_composed("empty.seat", st[0], st[1], st[2], st[3], ops);
   v_region("empty.words", LAYER_TYPE); { char s[V_STR]; snprintf(s, sizeof s, "%s", v_pstr(P ".empty.0")); inv_say("empty.title", s, t[0], t[1], t[2], t[3], v_sstr(S, I K ".empty.titleRole"), "panel", V_ALIGN_CENTRE);
     if (n > 1) { snprintf(s, sizeof s, "%s", v_pstr(P ".empty.1")); inv_say("empty.line", s, l[0], l[1], l[2], l[3], v_sstr(S, I K ".empty.lineRole"), "panel", V_ALIGN_CENTRE); } }
 }

@@ -403,11 +403,13 @@ expect((await cui()).f === rollIndex, "◀ ▶ walk the read traits: the ring is
 await hpressC("down", 300);
 { const p = await props(), cost = await page.evaluate(() => window.__st.growCost(window.__st.UI.create.choices)); expect(cost.e === 2 && cost.s === 4 && cost.d === 1, "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(cost));
   expect(p.regions.roll.chosen === 1 && p.regions.traitLine.changed && p.frame.line.price === "⚡ 2 ❀ 4 ◆ 1 ⧗ 21", "▼ rolls the look: the tag, the price with ◆ 1 and the wait ⧗ 21: " + JSON.stringify([p.regions.roll.chosen, p.regions.traitLine, p.frame.line.price])); }
-{ const crPod = await page.evaluate(() => window.__st.UI.create.podId);   // a room key on Create forgets the unpaid choices; coming back starts fresh
+{ const crPod = await page.evaluate(() => window.__st.UI.create.podId);   // a colour key on Create carries the ring's chapter (a peek, ← returns); Home forgets the unpaid choices; coming back starts fresh
   expect((await page.evaluate(() => Object.keys(window.__st.UI.create.choices).length)) === 1, "a choice is made and unpaid");
   await page.evaluate((id) => { window.__st.ST.readingPod = id; }, crPod);   // the pod being grown is on the bench, so the Research key's first face is the reading screen
-  await hpressC("research", 400); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));
-  expect(at.screen === "pods" && at.view === "room" && at.create === null, "a room key on Create drops the unpaid choices and opens the reading screen on the bench's pod: " + JSON.stringify(at));
+  await hpressC("research", 400); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: !!window.__st.UI.create, choices: Object.keys(window.__st.UI.create?.choices ?? {}).length }));
+  expect(at.screen === "pods" && at.view === "room" && at.create && at.choices === 1, "the Research key on Create carries the ring's chapter to the reading room, a peek: the unpaid choice stays: " + JSON.stringify(at));
+  await hpressC("back", 400); { const bk = await page.evaluate(() => ({ screen: window.__st.UI.screen, choices: Object.keys(window.__st.UI.create?.choices ?? {}).length })); expect(bk.screen === "create" && bk.choices === 1, "← after a carry goes back to Create with the choice as it was: " + JSON.stringify(bk)); }
+  await hpressC("home", 400); { const hm = await page.evaluate(() => ({ screen: window.__st.UI.screen, create: window.__st.UI.create })); expect(hm.screen === "home" && hm.create === null, "Home drops the unpaid choices (a room key that carries nothing does as well): " + JSON.stringify(hm)); }
   await toBand(crPod, "grow"); await hpressC("confirm", 500);
   expect((await page.evaluate(() => window.__st.UI.screen === "create" && Object.keys(window.__st.UI.create.choices).length === 0)), "back on Create it starts fresh");
   for (let i = 0; i < rollIndex; i++) await hpressC("right", 60);
@@ -496,8 +498,8 @@ await page.evaluate(() => { window.__st.seedPod("S01", 4); window.__st.goto("inc
 { const p = await props(), st2 = await st(); cur.push({ state: p.state, ok: p.frame.line.ok ?? null, subject: p.frame.line.subject ?? null });
   expect(p.state === "empty" && p.frame.line.ok === "Choose a pod" && p.frame.line.subject === "Ready for a new bud" && p.frame.line.back === "Home" && st2.tray.length >= 1, "the empty Incubator offers ✓ Choose a pod: " + JSON.stringify([p.state, p.frame.line])); await frameShot("page-incubator-empty", true); }
 await hpressI("confirm", 600);
-{ const at = await page.evaluate(() => { const u = window.__st.UI; return { screen: u.screen, view: u.pods.view, sort: u.pods.sort, focus: u.pods.focus.cur }; }); cur.push(at);
-  expect(at.screen === "pods" && at.view === "inventory" && at.sort === "use" && at.focus === "card.0", "✓ Choose a pod jumps to Pods' inventory sorted by use, the ring on the first card: " + JSON.stringify(at)); }
+{ const at = await page.evaluate(() => { const u = window.__st.UI; return { screen: u.screen, view: u.pods.view, sort: u.pods.sort, focus: u.pods.focus.cur, verb: u.pods.verb }; }); cur.push(at);
+  expect(at.screen === "pods" && at.view === "inventory" && at.sort === "use" && /^card\.\d+$/.test(at.focus) && at.verb === "grow", "✓ Choose a pod jumps to Pods' inventory sorted by use, the verb Grow, the ring on the first pod that can grow: " + JSON.stringify(at)); }
 await hpressI("back", 400);
 { const u = await ui(); cur.push({ back: u.screen }); expect(u.screen === "incubator", "← on Pods' inventory (a jump from the Incubator) returns to the Incubator: " + u.screen); }
 // The Incubator's journey on the face, held to prototypes/face/golden/journey-incubator.json (gate check 5): the keys and what the face said, the screen and the choices after each
@@ -584,7 +586,7 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
     await page.evaluate((id) => { const t = window.__st.ST; t.carryReqs = t.carryReqs.filter((x) => x.id !== id); }, child.id); }
   { const c = await toward("wild", toWild); expect(c === "wild", "vivarium-card: the pad walks on to the Wild gate: " + c);
     const was = await st(); expect(!(await adultIds()).includes(child.id), "vivarium-card: the child is a juvenile");
-    r = await hp("confirm", 500); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.return", "vivarium-card: ✓ on the Wild gate opens the Return panel on a juvenile, the ring on Return: " + JSON.stringify([r.p.overlay?.focus, r.p.frame.line])); r = await hp("left", 300); r = await hp("confirm", 800); const now = await st();
+    r = await hp("confirm", 500); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.return", "vivarium-card: ✓ on the Wild gate opens the Return panel on a juvenile, the ring on Return: " + JSON.stringify([r.p.overlay?.focus, r.p.frame.line])); r = await hp("left", 300); r = await hp("confirm", 500); await holdConfirm(3400); const now = await st();
     expect(now.s === was.s && now.mibis.find((m) => m.id === child.id).released, "vivarium-card: the Return card returns the juvenile, paying nothing: " + JSON.stringify([now.s, was.s]));
     cur.push({ gate: "juvenile", released: true, essence: now.s - was.s }); }
   { const adultNow = await adultIds(), was = await st(), away = await sv().then((v) => [...(v.carried ?? []), ...(v.with != null ? [v.with] : [])]), adultM = was.mibis.find((m) => !m.released && !m.bonded && m.id !== child.id && adultNow.includes(m.id) && !away.includes(m.id) && !(was.carryReqs ?? []).some((x) => x.id === m.id));   // one the rules let go: not bonded, not carried, no request waiting
@@ -592,7 +594,7 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
     await hp("down", 300); const tileKey = "tile." + adultM.id; let c = (await props()).focus?.cur; for (const dir of ["right", "left"]) for (let i = 0; i < 14 && c !== tileKey; i++) { await hp(dir, 300); const n = (await props()).focus?.cur; if (n === c) break; c = n; }   // along the strip one way to its end, then the other
     expect(c === tileKey, "vivarium-card: ▼ then ◀ ▶ along the strip lands on the adult's tile: " + c);
     await hp("up", 300); const w = await toward("wild", toWild); expect(w === "wild", "vivarium-card: the pad walks back to the Wild gate with the adult shown: " + w);
-    r = await hp("confirm", 500); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.return", "vivarium-card: ✓ on the Wild gate opens the Return panel, the ring on Return: " + JSON.stringify([r.p.overlay?.focus, r.p.frame.line])); r = await hp("left", 300); r = await hp("confirm", 800); const now = await st();
+    r = await hp("confirm", 500); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.return", "vivarium-card: ✓ on the Wild gate opens the Return panel, the ring on Return: " + JSON.stringify([r.p.overlay?.focus, r.p.frame.line])); r = await hp("left", 300); r = await hp("confirm", 500); await holdConfirm(3400); const now = await st();
     expect(now.s === was.s && now.mibis.find((m) => m.id === adultM.id).released, "vivarium-card: the Return card returns the adult, paying nothing: " + JSON.stringify([now.s, was.s]));
     cur.push({ gate: "adult", released: true, essence: now.s - was.s }); }
   await toHome( 300); }

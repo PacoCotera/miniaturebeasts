@@ -166,7 +166,7 @@ console.log("== ink against the frame spec");
     if (!eq(px(300, 20), rgbOf("bar")) || !eq(px(500, 39), rgbOf("hairline")) || !eq(px(500, 562), rgbOf("hairline")) || !eq(px(500, 563), rgbOf("bevel")) || !eq(px(500, 0), rgbOf("bevel"))) fail(`${s.name}: the signed bars: the top bar is \`bar\` with a \`bevel\` row on top and a \`hairline\` row at the foot, the bottom line a \`hairline\` row then a \`bevel\` row on its top edge`);
     for (const x of F.separators.x) if (!eq(px(x, 580), rgbOf(C.dot))) fail(`${s.name}: no 1 px separator at x ${x}`);
     for (const [name, r] of Object.entries(regions)) {
-      const a = ink(d, r), want = says.has(name); n++;
+      const a = ink(d, r), want = says.has(name) || (name === "need" && says.has("cues")); n++;   // the colour keys' cues stand in the notice's zone (frame.json regions.cues)
       if (!want) { if (a && name !== "materials") fail(`${s.name}: ${name} says nothing here and has ink at ${a}`); continue; }
       if (!a) { fail(`${s.name}: ${name} says something and has no ink in ${r}`); continue; }
       const align = name === "subject" || name === "materials" ? Math.abs(a[0] + a[2] / 2 - F[name].centre) : name === "need" || name === "back" ? Math.abs(a[0] + a[2] - F[name].right) : name === "title" ? Math.abs(a[0] - F.title.text[0]) : Math.abs(a[0] - TX);

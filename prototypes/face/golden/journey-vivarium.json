@@ -629,7 +629,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Return Burr",
+    "ok": "Hold ✓ to return it to the wild",
     "price": null,
     "subject": "",
     "back": "Back"
@@ -640,28 +640,21 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Return Burr",
+    "ok": "Hold ✓ to return it to the wild",
     "price": null,
     "subject": "",
     "back": "Back"
    },
    {
     "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "panel",
-      "target": "card.return",
-      "verb": "confirm"
-     }
-    ],
+    "said": [],
     "screen": "habitat",
-    "state": "out",
-    "ring": "name",
-    "ok": "Rename Dot",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Hold ✓ to return it to the wild",
     "price": null,
-    "subject": "Ready to go exploring",
-    "back": "Vivarium"
+    "subject": "",
+    "back": "Back"
    },
    {
     "gate": "juvenile",
@@ -885,7 +878,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Return Tuft",
+    "ok": "Hold ✓ to return it to the wild",
     "price": null,
     "subject": "",
     "back": "Back"
@@ -896,28 +889,21 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Return Tuft",
+    "ok": "Hold ✓ to return it to the wild",
     "price": null,
     "subject": "",
     "back": "Back"
    },
    {
     "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "panel",
-      "target": "card.return",
-      "verb": "confirm"
-     }
-    ],
+    "said": [],
     "screen": "habitat",
-    "state": "out",
-    "ring": "name",
-    "ok": "Rename Dot",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Hold ✓ to return it to the wild",
     "price": null,
-    "subject": "Ready to go exploring",
-    "back": "Vivarium"
+    "subject": "",
+    "back": "Back"
    },
    {
     "gate": "adult",
