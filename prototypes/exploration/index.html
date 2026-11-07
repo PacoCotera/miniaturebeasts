@@ -419,7 +419,7 @@ let G = null;     // static world generated from the seed (never saved)
 let S = null;     // everything that changes (saved)
 
 // The world with its overlays: soft ground (wades, scree) and earth banks, pure functions of the world and its seed, attached here and never by genWorld (the goldens stay).
-function worldOf(seed, gen, biome) { const g = genWorld(seed, gen, biome); g.soft = softGround(g, seed); g.banks = bankEdges(g); return g; }
+function worldOf(seed, gen, biome) { const g = genWorld(seed, gen, biome); g.soft = softGround(g, seed); g.banks = bankEdges(g, seed); return g; }
 // What the partner can cross (the partner only: a rider has no ability). Tuliko: mud and scree, and a ring more reach; Rupar: earth banks, dug at the first crossing of a walk.
 function abIs(ab) { const pt = S && S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === ab; }
 function canSure() { return abIs('sure'); }

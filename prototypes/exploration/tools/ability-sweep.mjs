@@ -33,7 +33,7 @@ for (const biome of ALL_BIOMES) for (const gen of [2, 3, 4]) {
     worlds++;
     const sg = softGround(G, s * 7919 + 13), nw = sg.wade.reduce((a, b) => a + b, 0), ns = sg.scree.reduce((a, b) => a + b, 0);
     wades += nw; scree += ns; if (nw + ns) soft++;
-    if (bankOpens(G, bankEdges(G))) bank++;
+    if (bankOpens(G, bankEdges(G, s * 7919 + 13))) bank++;
   }
   rows.push({ biome, gen, worlds, soft: Math.round(100 * soft / worlds), bank: Math.round(100 * bank / worlds), wades: +(wades / worlds).toFixed(2), scree: +(scree / worlds).toFixed(2) });
 }

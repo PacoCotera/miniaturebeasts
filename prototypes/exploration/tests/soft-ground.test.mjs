@@ -18,7 +18,7 @@ const todaysCanStep = (G, a, dir) => { const x = a % MW + DIRS[dir][0], y = ((a 
 test("softGround and bankEdges are deterministic per seed, and pure (the world is not touched)", () => {
   for (const [b, s, G] of worlds()) {
     const before = JSON.stringify([...G.land]) + JSON.stringify([...G.edge]);
-    const a = W.softGround(G, s), c = W.softGround(G, s), x = W.bankEdges(G), y = W.bankEdges(G);
+    const a = W.softGround(G, s), c = W.softGround(G, s), x = W.bankEdges(G, s), y = W.bankEdges(G, s);
     assert.deepEqual([...a.wade], [...c.wade]); assert.deepEqual([...a.scree], [...c.scree]); assert.deepEqual([...x], [...y]);
     assert.equal(JSON.stringify([...G.land]) + JSON.stringify([...G.edge]), before, b + s);
   }
@@ -26,7 +26,7 @@ test("softGround and bankEdges are deterministic per seed, and pure (the world i
 
 test("wades are never fords, islands, fast water, nor within one edge of a ramp or ford; scree is a one-level edge with rock; scree and banks are disjoint", () => {
   for (const [b, s, G] of worlds()) {
-    const sg = W.softGround(G, s), bk = W.bankEdges(G);
+    const sg = W.softGround(G, s), bk = W.bankEdges(G, s);
     for (let c = 0; c < NC; c++) if (sg.wade[c]) {
       assert.equal(G.land[c], L.WATER); assert.notEqual(G.ford[c], 1); assert.ok(!G.island[c]);
       for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = c % MW + dx, y = ((c / MW) | 0) + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) assert.ok(!G.island[y * MW + x], "fast water " + b + s); }
@@ -59,7 +59,7 @@ test("every soft feature opens a pocket of POCKET_MIN cells outside G.comp or a 
 
 test("passableIn and canStepIn with no opts equal today's on every cell and edge of generators 1 to 4, with the overlays attached or not", () => {
   for (const gen of [1, 2, 3, 4]) for (const s of [3, 41, 77, 120, 333, 902]) {
-    const G = W.genWorld(s, gen), H = { ...G, soft: W.softGround(G, s), banks: W.bankEdges(G) };
+    const G = W.genWorld(s, gen), H = { ...G, soft: W.softGround(G, s), banks: W.bankEdges(G, s) };
     for (let c = 0; c < NC; c++) { assert.equal(W.passableIn(G, c), todaysPassable(G, c)); assert.equal(W.passableIn(H, c), todaysPassable(G, c)); assert.equal(W.passableIn(H, c, {}), todaysPassable(G, c));
       for (const dir of Object.keys(DIRS)) { assert.equal(W.canStepIn(G, c, dir), todaysCanStep(G, c, dir)); assert.equal(W.canStepIn(H, c, dir), todaysCanStep(G, c, dir)); } }
   }
@@ -68,14 +68,36 @@ test("passableIn and canStepIn with no opts equal today's on every cell and edge
 test("opts: sure opens the wade and the scree edge, bank 'all' or a Set opens banks; a generator 1 world has wades only", () => {
   let wade = 0, scree = 0, bank = 0;
   for (const [b, s, G] of worlds()) {
-    const H = { ...G, soft: W.softGround(G, s), banks: W.bankEdges(G) };
+    const H = { ...G, soft: W.softGround(G, s), banks: W.bankEdges(G, s) };
     for (let c = 0; c < NC; c++) for (const dir of Object.keys(DIRS)) { const d = stepCell(c, dir); if (d < 0) continue; const i = W.edgeIndex(c, dir);
       if (H.soft.scree[i]) { scree++; assert.ok(!W.canStepIn(H, c, dir) && W.canStepIn(H, c, dir, { sure: true }) && !W.canStepIn(H, c, dir, { bank: "all" })); }
       if (H.banks[i]) { bank++; assert.ok(!W.canStepIn(H, c, dir) && W.canStepIn(H, c, dir, { bank: "all" }) && W.canStepIn(H, c, dir, { bank: new Set([i]) }) && !W.canStepIn(H, c, dir, { bank: new Set() }) && !W.canStepIn(H, c, dir, { sure: true })); }
       if (H.soft.wade[d] && H.edge[i] === EDGE.OPEN) { wade++; assert.ok(!W.canStepIn(H, c, dir) && W.canStepIn(H, c, dir, { sure: true })); } }
   }
   assert.ok(wade && scree && bank, [wade, scree, bank].join());
-  const G1 = W.genWorld(11, 1), s1 = W.softGround(G1, 11); assert.equal(s1.scree.reduce((a, v) => a + v, 0), 0); assert.equal(W.bankEdges(G1).reduce((a, v) => a + v, 0), 0);
+  const G1 = W.genWorld(11, 1), s1 = W.softGround(G1, 11); assert.equal(s1.scree.reduce((a, v) => a + v, 0), 0); assert.equal(W.bankEdges(G1, 11).reduce((a, v) => a + v, 0), 0);
+});
+
+test("banks: 3 to 5 per world (fewer only where no candidate qualifies), each opens a pocket or a shortcut of 6 steps or more, over 60 seeds per biome on generator 5 and on 2 to 4", () => {
+  const dist = (G, src) => { const d = new Int16Array(NC).fill(-1), q = [src]; d[src] = 0;
+    for (let h = 0; h < q.length; h++) for (const dir of Object.keys(DIRS)) { const n = stepCell(q[h], dir); if (n < 0 || d[n] >= 0 || G.island[n] || !W.canStepIn(G, q[h], dir)) continue; d[n] = d[q[h]] + 1; q.push(n); } return d; };
+  const opens = (G, i) => { const [a, c] = edgeCells(i), da = dist(G, a);
+    if (da[c] >= 0) return da[c] >= W.SOFT.SHORTCUT_MIN;
+    if (!!G.comp[a] === !!G.comp[c]) return false;
+    const f = G.comp[a] ? dist(G, c) : da; let n = 0; for (let q = 0; q < NC; q++) if (f[q] >= 0 && !G.comp[q]) n++; return n >= W.SOFT.POCKET_MIN; };
+  const report = [];
+  const sweep = (label, gen, biome) => {
+    let worlds = 0, min = 99, max = 0, sum = 0, under = 0;
+    for (let s = 1; s <= 60; s++) { const seed = s * 7919 + 13, G = W.genWorld(seed, gen, biome), bk = W.bankEdges(G, seed); let n = 0;
+      for (let i = 0; i < 2 * NC; i++) if (bk[i]) { n++; assert.ok(opens(G, i), `${label} ${seed} bank ${i} opens nothing`); }
+      assert.ok(n <= W.BANK.MAX, `${label} ${seed}: ${n} banks`); if (n < W.BANK.MIN) under++;
+      worlds++; sum += n; min = Math.min(min, n); max = Math.max(max, n); }
+    report.push(`${label}: worlds ${worlds} banks min ${min} max ${max} mean ${(sum / worlds).toFixed(2)} under-3 ${under}`);
+    assert.ok(under <= worlds / 5, `${label}: ${under} worlds under ${W.BANK.MIN}`); };
+  for (const b of BIOMES) sweep("gen5 " + b, 5, b);
+  for (const g of [2, 3]) sweep("gen" + g + " mixed", g, "mixed");
+  for (const b of BIOMES) sweep("gen4 " + b, 4, b);
+  console.log(report.join("\n"));
 });
 
 // ---- the page ----

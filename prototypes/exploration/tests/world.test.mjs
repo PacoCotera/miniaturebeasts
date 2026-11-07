@@ -653,7 +653,7 @@ test("generator 2 play: leaving a place by a stair crosses; beside it on the sha
 });
 
 test("generator 2 play: the map refuses a steep edge (bump, message, no action) and crosses a stair (one action)", () => {
-  const seed = SEEDS[0], G = W.genWorld(seed, 2), cliff = edgesOf(G).find(e => e.kind === EDGE.CLIFF && G.comp[e.a] && G.comp[e.b] && !W.bankEdges(G)[W.edgeIndex(e.a, e.dir)] && !W.softGround(G, seed).scree[W.edgeIndex(e.a, e.dir)]);   // a plain cliff edge: banks and scree have their own refusals
+  const seed = SEEDS[0], G = W.genWorld(seed, 2), cliff = edgesOf(G).find(e => e.kind === EDGE.CLIFF && G.comp[e.a] && G.comp[e.b] && !W.bankEdges(G, seed)[W.edgeIndex(e.a, e.dir)] && !W.softGround(G, seed).scree[W.edgeIndex(e.a, e.dir)]);   // a plain cliff edge: banks and scree have their own refusals
   const p = g2At(seed, cliff.a); p.run("FX.notes = []; FX.msg = '';"); const b0 = p.run("FX.bumpAt");
   p.run(`act(${JSON.stringify(cliff.dir)})`);
   assert.equal(p.run("S.exp.pos"), cliff.a); assert.equal(p.run("S.exp.actions"), 0, "0 actions spent");

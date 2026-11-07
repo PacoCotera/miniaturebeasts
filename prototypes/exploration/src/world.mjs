@@ -492,13 +492,26 @@ export function softGround(G, seed) {
   }
   return { wade, scree };
 }
-// Earth banks: every one-level cliff edge with soil on both sides (no rock, cliff cell or water), never the gate's. Indexed like G.edge.
-export function bankEdges(G) {
+// Earth banks: a few per world (BANK_MIN to BANK_MAX, fewer where no candidate qualifies), picked the way softGround picks its features. A candidate is a one-level
+// cliff edge with soil on both sides (no rock, cliff cell or water), never the gate's, that opens a pocket or a shortcut of SHORTCUT_MIN steps or more that the
+// plain cliffs and stairs do not. Pockets first, then the larger value; no two banks within two cells of each other. Every other soil cliff stays a cliff. Indexed like G.edge.
+export const BANK = { MIN: 3, MAX: 5, APART: 2 };
+export function bankEdges(G, seed = 0) {
   const bank = new Uint8Array(2 * NC); if (!G.edge || !G.level) return bank;
+  const cands = [];
   for (let i = 0; i < 2 * NC; i++) {
     if (G.edge[i] !== EDGE.CLIFF || !edgeOk(G, i)) continue;
     const [a, b] = edgeCells(i), bad = c => G.land[c] === L.ROCK || G.land[c] === L.CLIFF || G.land[c] === L.WATER;
-    if (Math.abs(G.level[a] - G.level[b]) === 1 && !bad(a) && !bad(b)) bank[i] = 1;
+    if (Math.abs(G.level[a] - G.level[b]) !== 1 || bad(a) || bad(b)) continue;
+    const v = softValue(G, a, b); if (v) cands.push({ i, kind: v.kind, v: v.v, k: hash(seed, 'bank', i) });
+  }
+  cands.sort((p, q) => p.kind - q.kind || q.v - p.v || p.k - q.k || p.i - q.i);
+  const n = BANK.MIN + hash(seed, 'bank', 'n') % (BANK.MAX - BANK.MIN + 1), took = [];
+  for (const c of cands) {
+    if (took.length >= n) break;
+    const cc = edgeCells(c.i);
+    if (took.some(t => edgeCells(t).some(u => cc.some(w => Math.max(Math.abs(u % MW - w % MW), Math.abs(((u / MW) | 0) - ((w / MW) | 0))) <= BANK.APART)))) continue;
+    took.push(c.i); bank[c.i] = 1;
   }
   return bank;
 }
