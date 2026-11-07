@@ -74,7 +74,7 @@
    "png": "library-l3-far-one-family.png"
   },
   "library-l3-close-moss": {
-   "hash": "9ea05ed1",
+   "hash": "9a5f6c37",
    "png": "library-l3-close-moss.png"
   },
   "library-l3-close-stubs": {
@@ -82,7 +82,7 @@
    "png": "library-l3-close-stubs.png"
   },
   "library-l3-close-bud": {
-   "hash": "baaf9d1d",
+   "hash": "1f518ca7",
    "png": "library-l3-close-bud.png"
   },
   "library-l3-close-fits": {
@@ -94,15 +94,15 @@
    "png": "library-l3-close-founder.png"
   },
   "library-l3-close-shedpod": {
-   "hash": "fa3265d5",
+   "hash": "d48c7113",
    "png": "library-l3-close-shedpod.png"
   },
   "library-l3-compare-dot-moss": {
-   "hash": "5a2d0cd9",
+   "hash": "b0c28e0b",
    "png": "library-l3-compare-dot-moss.png"
   },
   "library-l3-compare-on-held": {
-   "hash": "74a69ca6",
+   "hash": "499d86b8",
    "png": "library-l3-compare-on-held.png"
   },
   "library-l3-compare-none": {
@@ -114,7 +114,7 @@
    "png": "library-l1-dither.png"
   },
   "library-l3-pan-step-1": {
-   "hash": "c1922ac3",
+   "hash": "3cef2789",
    "png": "library-l3-pan-step-1.png"
   },
   "library-l3-pan-step-2": {
@@ -126,7 +126,7 @@
    "png": "library-l3-pan-step-3.png"
   },
   "library-l3-zoom-in": {
-   "hash": "31834963",
+   "hash": "897b2e1c",
    "png": "library-l3-zoom-in.png"
   }
  }
