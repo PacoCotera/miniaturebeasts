@@ -799,28 +799,36 @@ static void sleeper_draw(const ent_t *e) {
 /* the focused one's name tag: below the ring at feetY + 16 and, past the window's foot, over the figure at feetY − H − 32 less the lift; a sleeper's, or one asleep in place, is always over its ink, 32 above its top, with no lift */
 /* release 22 (D1): the figure's rectangle as the eye sees it (its ink when asleep in place, else its figure box or picture), and whether a tag rectangle is clear of every other figure */
 static void ent_figrect(const ent_t *e, int r[4]) { const int *b = e->asleep ? e->ink : (e->hasfig ? e->box : e->draw); memcpy(r, b, 4 * sizeof(int)); }
-static int rect_hit(const int a[4], const int b[4]) { return a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3]; }
-static int tag_clear(const ent_t *self, const int r[4]) {
-  int q[4]; ent_figrect(self, q); if (rect_hit(r, q)) return 0;
-  for (int i = 0; i < g_ne; i++) { const ent_t *o = &g_e[i]; if (o == self || o->hidden) continue; ent_figrect(o, q); if (q[2] > 0 && rect_hit(r, q)) return 0; }
-  return 1;
+static int rect_area(const int a[4], const int b[4]) { int w = (a[0] + a[2] < b[0] + b[2] ? a[0] + a[2] : b[0] + b[2]) - (a[0] > b[0] ? a[0] : b[0]), h = (a[1] + a[3] < b[1] + b[3] ? a[1] + a[3] : b[1] + b[3]) - (a[1] > b[1] ? a[1] : b[1]); return w > 0 && h > 0 ? w * h : 0; }
+/* how much of the figures a tag rectangle covers: the others' area, and the tag's own figure counted eightfold (the face stays clear first) */
+static int tag_cover(const ent_t *self, const int r[4]) {
+  int q[4], s; ent_figrect(self, q); s = 8 * rect_area(r, q);
+  for (int i = 0; i < g_ne; i++) { const ent_t *o = &g_e[i]; if (o == self || o->hidden) continue; ent_figrect(o, q); if (q[2] > 0) s += rect_area(r, q); }
+  return s;
 }
 /* the tag's top for a figure, clear of every figure (its own face included): the standing one's usual place when clear, else under its feet, else over its head, else as far as the window allows; -1000 when none is clear */
-static int tag_top(const ent_t *e, const char *glass, int usual) {
+static int tag_top(const ent_t *e, const char *glass, int usual, int *axc) {
   int h = v_si(sp(), hp("regions.nameTag.h"), 24), w = v_role_width(e->name, "nameTag") + 40, gap = 4, fr[4]; ent_figrect(e, fr);
   int gx = v_sk(sp(), v_fmt("%s.rect", glass), 0), gy = v_sk(sp(), v_fmt("%s.rect", glass), 1), gw = v_sk(sp(), v_fmt("%s.rect", glass), 2), gh = v_sk(sp(), v_fmt("%s.rect", glass), 3);
-  int cx = fr[0] + fr[2] / 2, x = cx - w / 2; if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
-  int cand[6] = { usual, fr[1] + fr[3] + gap, fr[1] - h - gap, fr[1] + fr[3] + gap + h, fr[1] - h - gap - h, fr[1] + fr[3] - h };
-  for (int k = 0; k < 6; k++) { int r[4] = { x, cand[k], w, h }; if (cand[k] < gy + 2 || cand[k] + h > gy + gh - 2) continue; if (tag_clear(e, r)) return cand[k]; }
-  return -1000;
+  int cx = fr[0] + fr[2] / 2;
+  int cy[7] = { usual, fr[1] + fr[3] + gap, fr[1] - h - gap, fr[1] + fr[3] + gap + h, fr[1] - h - gap - h, fr[1] + fr[3] / 2 - h / 2, fr[1] + fr[3] - h };
+  int cxs[3] = { cx, fr[0] - w / 2 - gap, fr[0] + fr[2] + w / 2 + gap };   /* centred, then to the left of the figure, then to the right */
+  int best = 1 << 30, by = -1000, bx = cx;
+  for (int j = 0; j < 3; j++) for (int k = 0; k < 7; k++) {
+    int x = cxs[j] - w / 2; if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
+    int r[4] = { x, cy[k], w, h }; if (cy[k] < gy + 2 || cy[k] + h > gy + gh - 2) continue;
+    int dx = x + w / 2 - cx, dy = cy[k] + h / 2 - (fr[1] + fr[3] / 2); if (dx < 0) dx = -dx; if (dy < 0) dy = -dy;
+    int s = 4 * tag_cover(e, r) + (dx + dy) / 4; if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
+  }
+  *axc = bx; return by;
 }
 static void ent_tag(const ent_t *e, const char *glass) {
   int tag[4], below = v_si(sp(), hp("regions.nameTag.below"), 16), over = v_si(sp(), hp("regions.nameTag.over"), 32), lift = v_si(sp(), hp("regions.resident.lift"), 4);
   const char *fill = v_scol(sp(), "colours.nameTag.fill"), *edge = v_scol(sp(), "colours.nameTag.edge");
   if (g_viv || g_idle || g_home) {   /* the crowd scenes: the label stands clear of every figure, its own face and its neighbours' */
     int usual = (e->sleeper || e->curled || e->asleep) ? -1000 : e->box[1] + e->box[3] - 1 + below, fr[4]; ent_figrect(e, fr);
-    int y = tag_top(e, glass, usual);
-    if (y != -1000) { kit_nameTag(sp(), glass, e->name, fr, y, y, KIT_TAG_OVER, 0, fill, edge, NULL, tag); return; }
+    int axc = 0, y = tag_top(e, glass, usual, &axc), anc[4] = { axc - 1, fr[1], 2, fr[3] };
+    if (y != -1000) { kit_nameTag(sp(), glass, e->name, anc, y, y, KIT_TAG_OVER, 0, fill, edge, NULL, tag); return; }
   }
   if (e->sleeper || e->curled) { const int *b = e->hasfig ? e->box : e->draw; kit_nameTag(sp(), glass, e->name, b, 0, b[1] + b[3] / 2 - 12, KIT_TAG_OVER, 0, fill, edge, NULL, tag); }   /* release 21h2 (E): a sleeper's label lies on its own body, never over a neighbour's head (it stood 32 px above the sleeper, on whoever stood behind) */
   else if (e->asleep) kit_nameTag(sp(), glass, e->name, e->ink, 0, e->ink[1] - over, KIT_TAG_OVER, 0, fill, edge, NULL, tag);
