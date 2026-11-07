@@ -103,8 +103,10 @@ if (!isMainThread) {
   md.push("", "Failure modes:", "");
   for (const [k, c] of Object.entries(table).sort()) { const e = topErr(c); if (e) md.push(`- ${k.replaceAll("|", " · ")}: ${e}`); }
   const text = md.join("\n") + "\n";
-  writeFileSync(new URL(`./results${process.env.STAMP_SPECIES ? "-" + process.env.STAMP_SPECIES.toLowerCase().replaceAll(",", "-") : ""}.md`, import.meta.url), text);
-  writeFileSync(new URL(`./results${process.env.STAMP_SPECIES ? "-" + process.env.STAMP_SPECIES.toLowerCase().replaceAll(",", "-") : ""}.json`, import.meta.url), JSON.stringify({ N, NS, table }, null, 1));
+  // S20 and S20-pm now run the rambler (frame 20.8); the v1 history is results-s20-s20-pm.*, so the rambler's runs get their own name (results-s20r-*)
+  const suffix = process.env.STAMP_SPECIES ? "-" + process.env.STAMP_SPECIES.toLowerCase().replaceAll(",", "-").replace(/\bs20\b/g, "s20r") : "";
+  writeFileSync(new URL(`./results${suffix}.md`, import.meta.url), text);
+  writeFileSync(new URL(`./results${suffix}.json`, import.meta.url), JSON.stringify({ N, NS, table }, null, 1));
   console.log(text);
   console.error(`done in ${((Date.now() - t0) / 1000).toFixed(0)} s`);
 }

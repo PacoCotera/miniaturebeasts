@@ -65,6 +65,29 @@ const FRAME_DIGESTS = {
   "15.4": "45fb89afe8687a19",
   "16.4": "000c870efaa0eb96",
 };
+// the same digest for every frame version 8 (id.version), pinned at the bytes they had after the two in-place rewrites (2dbccb018, c34ac4031); a frame never moves
+const V8_FRAME_DIGESTS = {
+  "S01.8": "b1fb02b1f6f1ba2c",
+  "S17.8": "4c760111f7f26b47",
+  "S18.8": "2c9558ddcffc06c1",
+  "S19.8": "e509a8e6b46afe6a",
+  "S02.8": "8ff882bf0077dc5a",
+  "S03.8": "22f83d400b6b4144",
+  "S04.8": "c093d29c63ad8249",
+  "S05.8": "492eb7a48472f9a3",
+  "S06.8": "78e37ad226c33f5b",
+  "S07.8": "cbfd8313bb132c60",
+  "S08.8": "aafe5fd0656ff4db",
+  "S09.8": "b1450c6eb9450052",
+  "S10.8": "dc11164b9e3569dd",
+  "S11.8": "81493823b3d5cfc8",
+  "S12.8": "6234c6520d1d7080",
+  "S13.8": "e5e1f2d6bf86c134",
+  "S14.8": "c09a6bd23db0e748",
+  "S15.8": "46fff7411deaab24",
+  "S16.8": "feb49c2796b7cedb",
+  "S20.8": "06aa847893610da8",
+};
 // sha256 of the stamp's message bits for one genome of each earlier real frame (individual(frame, 7), every open chapter read), as the registry wrote them before frame version 6
 const STAMP_DIGESTS = {
   "1.2": "e0f996136dbcb8bc",
@@ -122,8 +145,14 @@ test("the registry is append-only: every frame it held before frame version 6 is
   const frames = FRAME_DATA.frames, before = Object.keys(FRAME_DIGESTS);
   assert.deepEqual(frames.slice(0, before.length).map((f) => `${f.species}.${f.version}`), before, "the earlier frames come first, in their order");
   frames.slice(0, before.length).forEach((f) => assert.equal(sha(JSON.stringify(f)), FRAME_DIGESTS[`${f.species}.${f.version}`], `${f.id} ${f.species}.${f.version} is unchanged`));
-  assert.deepEqual(frames.slice(before.length).map((f) => `${f.id}.${f.version}`), ["S17.6", "S18.6", "S19.6", "S01.5", "S01.6", "S20.1", "S10.5", "S12.5", "S01.8", "S17.8", "S18.8", "S19.8", "S02.8", "S03.8", "S04.8", "S05.8", "S06.8", "S07.8", "S08.8", "S09.8", "S10.8", "S11.8", "S12.8", "S13.8", "S14.8", "S15.8", "S16.8"], "Wickle, Drapet and Curlop, appended at frame version 6, then the Loika at frame versions 5 and 6, then the Tuliko at version 1, then the Igara and the Peplos at version 5 from the merge of the game line, then the nineteen language frames at version 8 (the anchors, then S02 to S16) (the Loika, Wickle, Drapet, Curlop; a frame never moves)");
-  assert.deepEqual(frames.slice(before.length).map((f) => f.name), ["Wickle", "Drapet", "Curlop", "Loika", "Loika", "Tuliko", "Igara", "Peplos", "Loika", "Wickle", "Drapet", "Curlop", "Untuva", "Tuikis", "Hiljan", "Tepor", "Pesko", "Azkon", "Rupar", "Belatz", "Igara", "Kilpo", "Peplos", "Oskol", "Usvel", "Lehten", "Blikur"]);
+  assert.deepEqual(frames.slice(before.length).map((f) => `${f.id}.${f.version}`), ["S17.6", "S18.6", "S19.6", "S01.5", "S01.6", "S20.1", "S10.5", "S12.5", "S01.8", "S17.8", "S18.8", "S19.8", "S02.8", "S03.8", "S04.8", "S05.8", "S06.8", "S07.8", "S08.8", "S09.8", "S10.8", "S11.8", "S12.8", "S13.8", "S14.8", "S15.8", "S16.8", "S20.8"], "Wickle, Drapet and Curlop, appended at frame version 6, then the Loika at frame versions 5 and 6, then the Tuliko at version 1, then the Igara and the Peplos at version 5 from the merge of the game line, then the nineteen language frames at version 8 (the anchors, then S02 to S16), then the rambler Tuliko at 8 (the Loika, Wickle, Drapet, Curlop; a frame never moves)");
+  assert.deepEqual(frames.slice(before.length).map((f) => f.name), ["Wickle", "Drapet", "Curlop", "Loika", "Loika", "Tuliko", "Igara", "Peplos", "Loika", "Wickle", "Drapet", "Curlop", "Untuva", "Tuikis", "Hiljan", "Tepor", "Pesko", "Azkon", "Rupar", "Belatz", "Igara", "Kilpo", "Peplos", "Oskol", "Usvel", "Lehten", "Blikur", "Tuliko"]);
+});
+
+test("every frame version 8 is pinned: the same bytes as when 20.8 and S01 1.8 went to the book", () => {
+  const v8 = FRAME_DATA.frames.filter((f) => f.version === 8);
+  assert.deepEqual(v8.map((f) => `${f.id}.${f.version}`).sort(), Object.keys(V8_FRAME_DIGESTS).sort(), "every version 8 frame has a pin, and no pin is orphaned");
+  v8.forEach((f) => assert.equal(sha(JSON.stringify(f)), V8_FRAME_DIGESTS[`${f.id}.${f.version}`], `${f.id}.${f.version} is unchanged`));
 });
 
 test("every S01-S16 stamp encodes to the same bytes as before and decodes to the same genome", () => {
