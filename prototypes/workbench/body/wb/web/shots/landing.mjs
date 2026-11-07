@@ -65,14 +65,17 @@ const res = await blank.evaluate(async ({ urls, ZONES }) => {
   const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4 }
   const lab = (r, g, b) => {
     const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b), m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b), s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
-    return 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s
+    return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s]
   }
-  const med = (a) => { const s = [...a].sort((p, q) => p - q); return s[Math.floor(s.length / 2)] }
+  const pct = (a, q) => { const s = [...a].sort((p, r) => p - r); return s[Math.min(s.length - 1, Math.floor(s.length * q))] }
+  const med = (a) => pct(a, 0.5)
   const rep = {}
   for (const [name, z] of Object.entries(out)) {
     if (!z.n) { rep[name] = { n: 0 }; continue }
     const ch = [0, 1, 2].map((c) => med(z.px.map((p) => lin(p[c]))))
-    rep[name] = { n: z.n, medLinear: ch, medL: med(z.px.map((p) => lab(lin(p[0]), lin(p[1]), lin(p[2])))) }
+    const labs = z.px.map((p) => lab(lin(p[0]), lin(p[1]), lin(p[2])))
+    const Ls = labs.map((l) => l[0])
+    rep[name] = { n: z.n, medLinear: ch, medL: med(Ls), p5: pct(Ls, 0.05), p95: pct(Ls, 0.95), medA: med(labs.map((l) => l[1])), medB: med(labs.map((l) => l[2])) }
   }
   return rep
 }, { urls, ZONES })
@@ -95,7 +98,10 @@ if (calibrate) {
 // the check
 const hex = { coat: '#2e2a2d', cream: '#a98b6d', toe: '#a98b6d', ring: '#a98b6d', iris: '#c47a2c', crest: '#757944' }
 const lin = (v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
-const Lof = (h) => { const [r, g, b] = [1, 3, 5].map((i) => lin(parseInt(h.slice(i, i + 2), 16) / 255)); return 0.2104542553 * Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b) + 0.793617785 * Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b) - 0.0040720468 * Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b) }
+const labOf = (h) => { const [r, g, b] = [1, 3, 5].map((i) => lin(parseInt(h.slice(i, i + 2), 16) / 255)); const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b), m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b), s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b); return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s] }
+const Lof = (h) => labOf(h)[0]
+// the coat's spread (art desk, R5b): the painted master's coat runs L p5 0.17, median 0.29, p95 0.47; any cell keeps the same ratios to its own median
+const SPREAD = { p5: 0.17 / 0.29, p95: 0.47 / 0.29 }
 const gam = (v) => Math.round(255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055)).toString(16).padStart(2, '0')
 const rows = []
 let worst = 0
@@ -103,7 +109,13 @@ for (const z of Object.keys(ZONES)) {
   const r = res[z]
   const dL = r.n ? r.medL - Lof(hex[z]) : NaN
   worst = Math.max(worst, Math.abs(dL))
-  rows.push({ zone: z, pixels: r.n, rendered: r.n ? '#' + r.medLinear.map(gam).join('') : '-', target: hex[z], dL: Number.isNaN(dL) ? null : Number(dL.toFixed(4)) })
+  const row = { zone: z, pixels: r.n, rendered: r.n ? '#' + r.medLinear.map(gam).join('') : '-', target: hex[z], dL: Number.isNaN(dL) ? null : Number(dL.toFixed(4)) }
+  if (r.n) {
+    const t = labOf(hex[z])
+    Object.assign(row, { p5: Number(r.p5.toFixed(4)), p95: Number(r.p95.toFixed(4)), dA: Number((r.medA - t[1]).toFixed(4)), dB: Number((r.medB - t[2]).toFixed(4)) })
+    if (z === 'coat') Object.assign(row, { p5Target: Number((t[0] * SPREAD.p5).toFixed(4)), p95Target: Number((t[0] * SPREAD.p95).toFixed(4)) })
+  }
+  rows.push(row)
 }
 if (rest.includes('--refine')) { // one correction on the white-render gains for what the light adds that does not scale with the albedo (the sheen of a dark coat): gain x target / rendered, per channel
   const here = new URL('../src/viewport/coatGain.json', import.meta.url).pathname
@@ -120,4 +132,10 @@ console.log(JSON.stringify({ look: targets.look, rows, worst }, null, 1))
 if (tableOut) writeFileSync(tableOut, JSON.stringify({ rows, worst }, null, 1))
 const bad = rows.filter((r) => r.dL === null || Math.abs(r.dL) > 0.02)
 if (bad.length) { console.log('FAIL: zones off by more than 0.02 L:', bad.map((r) => r.zone).join(', ')); process.exit(1) }
+const coat = rows.find((r) => r.zone === 'coat')
+const spreadBad = Math.abs(coat.p5 - coat.p5Target) > 0.04 || Math.abs(coat.p95 - coat.p95Target) > 0.04
+if (spreadBad) { console.log(`FAIL: coat spread p5 ${coat.p5} (want ${coat.p5Target}), p95 ${coat.p95} (want ${coat.p95Target}), tolerance 0.04`) }
+const abBad = rows.filter((r) => ['cream', 'toe', 'ring'].includes(r.zone) && (Math.abs(r.dA) > 0.01 || Math.abs(r.dB) > 0.01))
+if (abBad.length) console.log('FAIL: cream a/b off by more than 0.01:', abBad.map((r) => `${r.zone} dA ${r.dA} dB ${r.dB}`).join('; '))
+if (spreadBad || abBad.length) process.exit(1)
 console.log('ok: every zone within 0.02 L, worst', worst.toFixed(4))

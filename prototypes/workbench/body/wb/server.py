@@ -408,7 +408,7 @@ class Server:
         land = next((x for x in V1.registry()["lands"] if x["id"] == (sp.spec or {}).get("land")), None)
         iris = (((sp.spec or {}).get("face") or {}).get("eyes") or {}).get("iris", {}).get("colour")
         coat = (sp.spec or {}).get("coat") or {}                      # the mibi's own Tint and Shade, when a file carries them (the file for the kind does not yet)
-        look = dict(land={k: land[k]["hex"] for k in ("body", "marking", "accent")} if land else None, iris=iris, loika=(sp.spec or {}).get("id") == "S01", tint=coat.get("tint"), shade=coat.get("shade"))
+        look = dict(land={k: land[k]["hex"] for k in ("body", "marking", "accent")} if land else None, iris=iris, loika=(sp.spec or {}).get("id") == "S01", tint=coat.get("tint"), shade=coat.get("shade"), eyes=((((sp.spec or {}).get("face") or {}).get("eyes") or {}).get("rings")))  # the Eyes trait (thin / between / wide), when a file carries it
         return dict(sculpt=body, parts=parts, look=look)
 
     def current_views(self, sp):
