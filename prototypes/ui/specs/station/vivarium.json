@@ -299,6 +299,7 @@
      192,
      66
     ],
+    "startWiden": 25,
     "box": "the figure's box x within 8 .. 680 − W (its ink 8 px inside the window: the clamp, the foot point within [cx + 8 + L, cx + 680 − R]), feetY on the room's levels moved to the window (painting − (cx, 8)); a join is taken only when the figure stands whole at both its ends",
     "keepOutRule": "a walker's foot point (F.x, feetY) meets K exactly when K.x <= F.x < K.x + K.w and feetY > K.y: K is the bed's span, from the top of the tallest measured curl on the bed (footY − curlH) to the window's foot, so that no walker stands among the sleepers; derived by station/tools/make-keepout.mjs from the measured curls (and checked), never typed",
     "start": "one draw r: the level (1 start in rules.walk.levelOneIn on a raised level while the raised cap allows), then room_point on it (⌈w/4⌉ inside each end), up to 8 draws, off keepOut; fallback main's leftmost point at its top",

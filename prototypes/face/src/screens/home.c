@@ -33,7 +33,7 @@ static int has(const char *asset) { return asset && *asset && wire_has_asset(ass
 static int g_kx, g_ky, g_kw, g_xlo, g_xhi, g_flo, g_fn;   /* g_kw: the room view's keep-out width (a foot-point rect; Home and Idle keep the box rule, their keep-outs reach the walk's right end) */   /* home.json regions.resident.walk, read at each draw: the keep-out zone's corner, the box.x range 8 px inside the glass, the feet's rows of the spec's own ground band */
 static int g_rlo, g_rhi;   /* the rows the feet may take: Home's own band, or the spec's ground band when no room is chosen; none on the whole and Idle (the room's levels are the feet band there) */
 static int g_lx;   /* the window's left edge (the clip): a rester walks off past it (R4b) */
-static int g_stw;   /* home.json regions.resident.walk.startWiden (Home only, 0 elsewhere): a start whose ink box meets a shown resident's ink box widened this many px each side is drawn again (up to eight draws); R4b-1b */
+static int g_stw;   /* regions.resident.walk.startWiden (Home's home.json, Idle's frame.json idle and the Vivarium's vivarium.json): a start whose ink box meets a shown resident's ink box widened this many px each side is drawn again (up to eight draws); R4b-1b */
 static int g_trmax, g_rdiv, g_lvin, g_spd[3][2], g_nres;   /* vivarium.json rules.travel.max, rules.walk.raisedDiv and .levelOneIn and .speed[stage] = [px, ticks]; the residents shown (the raised cap's N) */
 static void walk_load(void) {
   int bed = *v_pstr("regions.bed.state") != 0;   /* the room has a bed (Roots only, the rooms design): the sleepers' keep-out applies only then */
@@ -49,7 +49,7 @@ static void walk_load(void) {
     g_kx = away ? v_sk(sp(), hp("regions.resident.walk.keepOut"), 0) : 1 << 20; g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1) - 1;
     g_xlo = v_sk(sp(), hp("regions.resident.walk.ground"), 0); g_xhi = g_xlo + v_sk(sp(), hp("regions.resident.walk.ground"), 2);
   }
-  g_stw = g_home ? v_si(sp(), hp("regions.resident.walk.startWiden"), 0) : 0;
+  g_stw = g_home || g_idle || g_viv ? v_si(sp(), hp("regions.resident.walk.startWiden"), 0) : 0;
   g_flo = v_sk(sp(), hp("regions.resident.walk.ground"), 1); g_fn = v_sk(sp(), hp("regions.resident.walk.ground"), 3); g_lx = v_sk(sp(), hp("regions.glass.rect"), 0);
   /* the room of this window: the window's offset from the painting, derived from the specs' own values (the whole: window.rect.y less painting.rows[0]; Home: window.rect.x less painting.cx and window.rect.y less painting.rows[0]; Idle: none) */
   { int dx = 0, dy = 0;
@@ -106,6 +106,7 @@ static int path_ok(int lv, int x0, int f0, int x1, int f1, int w, int relaxed) {
 /* the raised cap and the travelling ceiling read the household (census_*, below the moving residents' type) */
 static int census_raised(const char *skip);   /* the walkers (but `skip`) on a raised level or bound for one */
 static int census_travelling(void);           /* the walkers on a trip */
+static int heap_gap(const char *self, int x, int feet, int fw, int fh);   /* the clear x gap to the nearest shown resident in depth (below the census) */
 static int start_heap(int x, int feet, int fw, int fh);   /* a start at (box x, feet) whose ink box meets a shown resident's widened ink box (home.json regions.resident.walk.start) */
 static int raised_ok(const char *id) { int cap = g_nres / g_rdiv; return census_raised(id) < (cap < 1 ? 1 : cap); }   /* at most max(1, ⌊N / raisedDiv⌋) on the raised levels, N the residents shown */
 static int speed_d(int stage, int n) { return n * g_spd[stage][0] / g_spd[stage][1]; }   /* the distance of n own ticks at the stage's speed */
@@ -115,6 +116,10 @@ static void wk_init(wk_t *k, const char *id, unsigned seed, int w, int h, int st
   if (!lv_open(lv, w)) lv = 0;   /* a level no one can climb to in the room view: main */
   int x = 32, feet = 300, ok = 0;
   for (int i = 0; i < 8 && !ok; i++) { unsigned a = wr(k), b = wr(k); lvl_draw(lv, a, b, w, WIDE, WIDE, &x, &feet); ok = gok(lv, x, feet, w, 0) && !start_heap(x, feet, w, h); }
+  if (!ok && g_stw > 0) {   /* eight draws met a heap: thirty-two more, and the one with the most room round it (never every one on main's leftmost point) */
+    int have = 0, bg = 0, bx = 0, bf = 0;
+    for (int i = 0; i < 32; i++) { unsigned a = wr(k), b = wr(k); int cx, cf; lvl_draw(lv, a, b, w, WIDE, WIDE, &cx, &cf); if (!gok(lv, cx, cf, w, 0)) continue; int g = heap_gap(id, cx, cf, w, h); if (!have || g > bg) { have = 1; bg = g; bx = cx; bf = cf; } }
+    if (have) { x = bx; feet = bf; ok = 1; } }
   if (!ok) { lv = 0; lvl_draw(0, 0, 0, w, g_xlo, g_xlo, g_rlo, g_rhi, &x, &feet); }   /* all eight failed: main's leftmost point at its top */
   k->lv = k->tlv = lv; k->x = x; k->feet = feet; k->facing = (int)(wr(k) & 1u); k->idle = 25 + (int)(wr(k) % 38u); k->walking = 0;
 }
@@ -204,9 +209,11 @@ static void wk_step(wk_t *k) {   /* one step of this resident's own time */
     unsigned r = wr(k); int nl = room_levels(), tlv = k->lv, jn = -1, rt[2][2][2] = { { { 0 } } };   /* one draw: the target level (1 trip in lvin changes level, when a join links the two and the raised cap allows) */
     if (nl > 1 && r % (unsigned)g_lvin == 0) { int to = k->lv ? 0 : 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)); if ((to == 0 || raised_ok(k->id)) && lv_open(to, k->w) && (jn = room_route(k->lv, to, rt)) >= 0) tlv = to; }
     int ax = rt[0][0][0] - k->w / 2, af = rt[0][0][1], bx = rt[1][0][0] - k->w / 2, bf = rt[1][0][1];
-    int wx = k->x, wf = k->feet, ok = 0;   /* idle is over: a waypoint, up to eight tries */
+    int wx = k->x, wf = k->feet, ok = 0, room = g_stw > 0 ? heap_gap(k->id, k->x, k->feet, k->w, k->h) : 0;   /* idle is over: a waypoint, up to eight tries */
+    if (room > g_stw) room = g_stw;   /* a waypoint may not crowd a figure more than where this one stands now (Home and Idle) */
     for (int i = 0; i < 8 && !ok; i++) {
       unsigned a = wr(k), b = wr(k); lvl_draw(tlv, a, b, k->w, WIDE, WIDE, &wx, &wf);
+      if (g_stw > 0 && heap_gap(k->id, wx, wf, k->w, k->h) < room) continue;
       if (tlv == k->lv) ok = (iabs(wx - k->x) > iabs(wf - k->feet) ? iabs(wx - k->x) : iabs(wf - k->feet)) >= 32 && gok(tlv, wx, wf, k->w, 0) && path_ok(tlv, k->x, k->feet, wx, wf, k->w, 0);
       else ok = gok(tlv, wx, wf, k->w, 0) && path_ok(k->lv, k->x, k->feet, ax, af, k->w, 1) && path_ok(tlv, bx, bf, wx, wf, k->w, 1);   /* leg 2 skips the profile and keep-out samples: a join is walkable by definition */
     }
@@ -258,13 +265,17 @@ static int census_raised(const char *skip) { int n = 0;
   return n; }   /* raised from the moment a walker commits to a climb until it ends leg 2 downward (a walker bound for a raised level counts at once, so that two never climb past the cap on one tick) */
 static int mv_travelling(const mv_t *m);
 static int census_travelling(void) { int n = 0; for (int i = 0; i < cen_nw; i++) n += cen_w[i]->walking; for (int i = 0; i < cen_nm; i++) n += mv_travelling(cen_m[i]); return n; }
-static int start_heap(int x, int feet, int fw, int fh) {
-  if (g_stw <= 0) return 0;
-  int ay = feet + 1 - fh;
-  for (int i = 0; i < cen_nw; i++) { const wk_t *o = cen_w[i]; if (!o->sh) continue; int by = o->feet + 1 - o->h; if (x < o->x + o->w + g_stw && o->x - g_stw < x + fw && ay < by + o->h && by < ay + fh) return 1; }
-  for (int i = 0; i < cen_nm; i++) { const mv_t *o = cen_m[i]; if (!o->sh) continue; int by = o->feet + 1 - o->fh; if (x < o->x + o->fw + g_stw && o->x - g_stw < x + fw && ay < by + o->fh && by < ay + fh) return 1; }
-  return 0;
+/* the clear space on the ground line between a figure at (box x, feet) and the nearest shown resident it could overlap in depth (their boxes' feet ranges meet): the gap of the boxes' x ranges, negative when they overlap, 1<<20 with none.
+   A walker is counted where it stands and, on a trip, where it is going. `self` is left out (its own id). Release 21e: the figure's own width at its scale, never a fixed span. */
+static int heap_gap(const char *self, int x, int feet, int fw, int fh) {
+  int best = 1 << 20, ay = feet + 1 - fh;
+#define HEAP_ONE(ox, ofeet, ow, oh) do { int by_ = (ofeet) + 1 - (oh); if (ay < by_ + (oh) && by_ < ay + fh) { int g_ = x < (ox) ? (ox) - (x + fw) : x - ((ox) + (ow)); if (g_ < best) best = g_; } } while (0)
+  for (int i = 0; i < cen_nw; i++) { const wk_t *o = cen_w[i]; if (!o->sh || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->w, o->h); if (o->walking) HEAP_ONE(o->tx, o->tf, o->w, o->h); }
+  for (int i = 0; i < cen_nm; i++) { const mv_t *o = cen_m[i]; if (!o->sh || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->fw, o->fh); }
+#undef HEAP_ONE
+  return best;
 }
+static int start_heap(int x, int feet, int fw, int fh) { return g_stw > 0 && heap_gap("", x, feet, fw, fh) < g_stw; }
 typedef struct { int fig[4], cf[4], cp[2], asleep, ent, w, h; } sg_t;   /* a still's geometry from the props, kept until its walk has stepped */
 static int in_props(const char *id, int nres) { for (int i = 0; i < nres; i++) if (!strcmp(v_pstr(v_fmt("regions.residents.%d.id", i)), id)) return 1; return 0; }
 /* a screen's frame while the residents are built: the household is those kept so far and the ones of the last frame not yet reached (in the props still), so that a resident new to the props reads them all */

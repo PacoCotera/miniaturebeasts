@@ -153,7 +153,9 @@ export function speciesFacts(frame) {
   if (!f) { const m = layout(model(withShut(frame), {})); f = { sForm: formScale(frame), tier: tierOf(frame), plates: platesOf(m).map((p) => ({ chapter: p.ch.id, slot: p.slot, rect: [p.x, p.y, p.w, p.h] })) }; SPECIES.set(id, f); }
   return f;
 }
-const colourTrait = (m) => { for (const ch of m.chapters) for (const t of ch.traits) if (t.id === "colour") return { ch, t }; return null; };
+// The Coat's colour trait: the frames of version 8 name it Tint (`body-hue`; the earlier frames' `colour`), the one trait whose looks are the colours a Coat has been found in
+const COLOUR_IDS = ["colour", "body-hue"];
+const colourTrait = (m) => { for (const ch of m.chapters) for (const t of ch.traits) if (COLOUR_IDS.includes(t.id)) return { ch, t }; return null; };
 // The picture ids and the lit rule are the requests' (views/requests.mjs), made from these species facts.
 export { canLight };
 function modelOf(frame, input) {
