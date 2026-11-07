@@ -42,7 +42,11 @@ export default defineConfig({
   base: '/studio/',
   plugins: [react(), tailwindcss(), buildJson()],
   resolve: { alias: { '@': join(here, 'src') } },
-  build: { outDir: '../static/app', emptyOutDir: true, sourcemap: false, target: 'es2022' },
+  build: {
+    outDir: '../static/app', emptyOutDir: true, sourcemap: false, target: 'es2022',
+    // React and the router are one vendor chunk, loaded by every route and cached across releases.
+    rolldownOptions: { output: { codeSplitting: { groups: [{ name: 'vendor', test: /node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/ }] } } },
+  },
   server: { port: 5173, proxy: { '/studio/api': 'http://127.0.0.1:8765', '/studio/events': 'http://127.0.0.1:8765', '/studio/cas': 'http://127.0.0.1:8765' } },
   test: { environment: 'jsdom', include: ['src/**/*.test.ts', 'src/**/*.test.tsx'] },
 })
