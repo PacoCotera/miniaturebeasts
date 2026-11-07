@@ -8,6 +8,8 @@ export type VInd = { n: number; genome: string; hue: number; loud: string[]; loo
 export type VLook = { id: string; locus: string; look: string; label: string; short: string; trait: string; count: number; who: number[]; age: string | null; wild: number; cross: number; cross_of: number; rule: string | null; order: string[] | null; modifiers: string[] }
 export type VRule = { id: string; label: string; fail: string; broken: number[] }
 export type VRun = { key: string; t: string; spec_hash: string; n: number; seed: number; tiles: { n: number; genome: string; keys: Record<string, string>; fails: string[] }[]; failing: number[] }
+// The sheet's numbers and rules as the page computes them (engine/variety.mjs); the server adds the tiles, the run key and the run before.
+export type SheetNumbers = { n: number; seed: number; file_seed: number; max_loud: number; wild_n: number; individuals: Omit<VInd, 'tiles'>[]; looks: VLook[]; rules: VRule[]; failing: number[] }
 export type Variety = { n: number; seed: number; file_seed: number; max_loud: number; wild_n: number; individuals: VInd[]; looks: VLook[]; rules: VRule[]; failing: number[]; species: string; hash: string; key: string; ran: boolean; previous: VRun | null }
 
 export const varietyOne = (id: string, hash: string, seed: number | null) =>

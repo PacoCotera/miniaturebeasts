@@ -78,8 +78,7 @@ export async function genomePicture(id: string, genome: string, az: number, size
 }
 export const checkEnds = (id: string) => postJob(id, 'check', { stage: 'extremes' })
 
-// Chapter 9: how often each look shows (spec 4.2) and a mibi's genome string. Both are computed on the server from the file alone (no build, no render), keyed by the file's hash so an edit refetches.
-export const freqOne = (id: string, hash: string) => queryOptions({ queryKey: ['freq', id, hash], queryFn: () => call<import('./genes').Freq>('GET', `/api/species/${encodeURIComponent(id)}/freq`), staleTime: 60_000 })
+// Chapter 9: a mibi's genome string, written by the one codec on the server (how often each look shows is computed in the page, lib/freq.ts), keyed by the file's hash so an edit refetches.
 export type GenomeText = { species: string; genome: string; string: string; code: string | null; length: number; version: number }
 export const stringOne = (id: string, hash: string, genome: string) => queryOptions({ queryKey: ['string', id, hash, genome], queryFn: () => call<GenomeText>('GET', `/api/species/${encodeURIComponent(id)}/string?genome=${encodeURIComponent(genome)}`), staleTime: 60_000, retry: false })
 
