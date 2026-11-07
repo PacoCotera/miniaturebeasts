@@ -262,7 +262,7 @@ const toBand = async (podId, id) => { await podsAt({ view: "inventory", card: po
 const letGoAll = async (podId) => { await toBand(podId, "letGo"); await press("confirm", 300); if ((await page.evaluate(() => window.__st.UI.pods.ask)) === podId) await press("confirm", 400); };
 await podsAt({ view: "inventory", card: loika.id });
 expect((await focusNow()).startsWith("card.") && (await page.evaluate(() => window.__st.UI.pods.panelPod)) === loika.id, "the ring on the Loika's card, the panel on it");
-await press("confirm", 500);
+await press("confirm", 300); expect((await focusNow()) === "act.0", "✓ on a card selects the pod: the ring on the panel (Take to the reading room)"); await press("confirm", 500);
 { const u = await ui(); expect(u.view === "room" && (await focusNow()) === "key" && (await page.evaluate(() => window.__st.ST.readingPod)) === loika.id && (await props()).state === "read", "✓ on a card puts the pod on the bench and opens the reading screen, the ring on Identify: " + JSON.stringify([u, await focusNow()])); }
 const e0 = s.e, dId0 = s.d;
 let l = await line(); expect(l.ok === "Identify" && l.price === "◆ 1", "identify costs ◆ 1: " + JSON.stringify(l));
@@ -497,7 +497,7 @@ await hpressI("confirm", 600);
 { const at = await page.evaluate(() => { const u = window.__st.UI; return { screen: u.screen, view: u.pods.view, sort: u.pods.sort, focus: u.pods.focus.cur }; }); cur.push(at);
   expect(at.screen === "pods" && at.view === "inventory" && at.sort === "use" && at.focus === "card.0", "✓ Choose a pod jumps to Pods' inventory sorted by use, the ring on the first card: " + JSON.stringify(at)); }
 await hpressI("back", 400);
-{ const u = await ui(); cur.push({ back: u.screen }); expect(u.screen === "home", "← on Pods' inventory (a jump from the Incubator) goes Home: " + u.screen); }
+{ const u = await ui(); cur.push({ back: u.screen }); expect(u.screen === "incubator", "← on Pods' inventory (a jump from the Incubator) returns to the Incubator: " + u.screen); }
 // The Incubator's journey on the face, held to prototypes/face/golden/journey-incubator.json (gate check 5): the keys and what the face said, the screen and the choices after each
 { const file = path.resolve(here, "../../face/golden/journey-incubator.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("incubator-"))), json = JSON.stringify({ _note: "The Incubator's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
@@ -851,7 +851,8 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   await loop("confirm", "any key skips the show to the choice", () => window.__st.props?.overlay?.form === "strip");
   await loop("confirm", "✓ Open now on the strip opens the crate and the end shows (T-50 cut 1; the opening holds input)", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "end");
   await loop("confirm", "✓ on the end lands on Pods", () => window.__st.UI.screen === "pods");
-  await loop("confirm", "✓ on the new pod's card opens the reading screen on it, the ring on the key", () => window.__st.props?.state === "read" && window.__st.UI.pods.focus.cur === "key");
+  await loop("confirm", "✓ on the new pod's card selects it, the ring on the panel", () => window.__st.UI.pods.focus.cur === "act.0");
+  await loop("confirm", "✓ Take to the reading room opens the reading screen on it, the ring on the key", () => window.__st.props?.state === "read" && window.__st.UI.pods.focus.cur === "key");
   await loop("confirm", "✓ Identify, the ring on the rail", () => window.__st.UI.pods.focus.cur === "rail");
   await loop("back", "← leaves in one press: the inventory on this pod's card", () => window.__st.UI.pods.view === "inventory" && (window.__st.UI.pods.focus.cur ?? "").startsWith("card."));
   { const id = await page.evaluate(() => window.__st.UI.pods.panelPod); await podsAt({ view: "inventory", card: id }); await podsAt({ view: "inventory", focus: "act.1" }); }
