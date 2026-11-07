@@ -136,7 +136,7 @@ test("the stations' words and lamps: Pods, the Incubator in each state, the Comp
 
 test("the Vivarium's readout: the mibis at home and on a trip, each part only when non-zero, 'all on a trip' when nobody is home, nothing with no mibi", () => {
   const sc = scenes(), ro = (x) => build(x.st, x.sv).props.regions.vivarium.readout;
-  assert.equal(ro(sc.empty), ""); assert.equal(ro(sc.crates), "2 at home"); assert.equal(ro(sc.docked), "2 of 4 at home", "docked, the carried two are home too but not in the window: the words say how many are drawn");
+  assert.equal(ro(sc.empty), ""); assert.equal(ro(sc.crates), "2 at home"); assert.equal(ro(sc.docked), "4 at home, 2 in view", "docked, the carried two are home too but not in the window: the words say how many are drawn");
   assert.equal(ro(sc.away), "2 at home \u00b7 1 on a trip"); { const st = world(); dock(st, false); S.seedAdults(st, "S01", 5, 2, settings); assert.equal(ro({ st, sv: sv0({ carried: st.mibis.map((m) => m.id) }) }), "all on a trip"); }
 });
 
@@ -288,7 +288,7 @@ test("the Vivarium window's props (build spec 3): the painting of the light, the
   for (const light of ["dawn", "day", "dusk", "night"]) { const r = W(sc.docked, { light }); assert.equal(r.glass.picture, `room-roots-idle-${light}-1024x568`, "the room's painting the Vivarium uses: no new master"); assert.equal(r.room.base, r.glass.picture); assert.ok(!("bed" in r), "Home has no bed"); }
   assert.equal(W(sc.docked).residents.length, 2, "R4b: docked, the carried two are not drawn on the glass"); assert.equal(W(sc.docked).glass.away, undefined, "docked: no away frame");
   assert.equal(W(sc.away).residents.length, 2, "one of three is out on the trip"); const a = W(sc.away).glass.away; assert.ok(a && /^mibi:/.test(a.picture) && a.figure.length === 4, "the first mibi out, its stand and its figure");
-  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 9, settings); const r = build(st, sv0()).props.regions; assert.equal(r.residents.length, 8, "nine at home, eight in the room shown: all eight are in the props"); assert.equal(r.residents.filter((p) => p.shown).length, 5, "five are shown (rules.show.max, and what fits at 1x)"); assert.match(r.vivarium.readout, /^5 of 9 at home$/, "the readout says the five drawn of the nine at home"); assert.deepEqual(r.residents.filter((p) => p.shown).map((p) => p.id), st.mibis.slice(3, 8).map((m) => String(m.id)), "the same stage and born: the first three by id rest"); }
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 9, settings); const r = build(st, sv0()).props.regions; assert.equal(r.residents.length, 8, "nine at home, eight in the room shown: all eight are in the props"); assert.equal(r.residents.filter((p) => p.shown).length, 5, "five are shown (rules.show.max, and what fits at 1x)"); assert.match(r.vivarium.readout, /^9 at home, 5 in view$/, "the readout says nine at home and the five drawn in view"); assert.deepEqual(r.residents.filter((p) => p.shown).map((p) => p.id), st.mibis.slice(3, 8).map((m) => String(m.id)), "the same stage and born: the first three by id rest"); }
   { const { st, sv } = sc.docked, id = st.mibis[2].id; assert.equal(W({ st, sv }, { ui: { meet: id } }).glass.tag, String(id)); assert.equal(W({ st, sv }).glass.tag, undefined, "no event, no tag"); }
   assert.ok(!("bed" in W(sc.docked)), "the bed leaves Home");
   assert.deepEqual(W(sc.empty).residents, []);

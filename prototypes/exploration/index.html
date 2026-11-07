@@ -1924,7 +1924,8 @@ function lightBeacon(f) {
   fxMsg((n ? 'The beacon lights the land around · ' + n + ' cell' + (n > 1 ? 's' : '') + ' revealed' : 'The beacon burns · nothing new in sight') + ' · −1 Energy', 2);
 }
 // Pods, named for the player: the species if identified, and one tag that tells two pods apart (where it came from).
-function podName(p, short) { return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'unknown' : 'Unknown pod'; }
+function podName(p, short) { return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'Unknown' : 'Unknown pod'; }
+const podInSentence = p => S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown';   // release 22 words: a bare kind name in a sentence reads as a mibi, so a sentence says "the Untuva pod"
 // The hold's column is narrow: the six newest hows have a short form there (the Ground row keeps the full tag).
 const HOW_SHORT = { grab: 'grabbing fruit', warm: 'warm stone', dig: 'in a fresh hole', fog: 'in a fog bank', still: 'keeping still', air: 'airing scales' };
 function podTagOf(p, short) {
@@ -5054,7 +5055,7 @@ function drawSwap() {
     podSlot(x, y0 + 8, p); text(clipText(podName(p, true), tw, 2), x + 20, y0 + 8, i === sw.sel ? C.bone : C.fog); text(clipText(podTagOf(p, true), tw, 2), x + 20, y0 + 28, C.mist); });
   text('Ground', 16, y0 + 65, C.mist, 1);
   podSlot(X0, y0 + 58, sw.p); text(clipText(podName(sw.p) + ' · ' + podTagOf(sw.p), SCR_W - X0 - 40, 2), X0 + 20, y0 + 58, C.bone);
-  text(clipText('leave ' + podName(sw.held[sw.sel], true) + ' here, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
+  text(clipText('leave the ' + podInSentence(sw.held[sw.sel]) + ' pod, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
 }
 // The message box's rect: a sign's card (48 high, the picture and one line), or the plain box (up to three lines).
 // It sits above the bottom line, or at the top of the view when the player stands where it would cover them.
@@ -5885,7 +5886,7 @@ function lineBase() {
       const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = (G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land]) + ' · ';
       let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay.cell, true)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
-      if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep', fieldFrozen()); }
+      if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave the ' + podInSentence(sw.held[sw.sel]) + ' pod' : 'Swap', sw ? 'take the ' + podInSentence(sw.p) + ' pod' : '', 'keep', fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
       return L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim); }

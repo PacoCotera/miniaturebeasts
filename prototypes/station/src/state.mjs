@@ -331,7 +331,7 @@ export const podName = (p) => (p.idd ? spName(p) + " pod" : "unknown pod");
 // The sentence in its two halves, which are the two lines under the pod; a pod with no find has one.
 export function podOriginLines(p) {
   const where = "Found " + (FOUND_WORD[p.g] || "out in the wild"), find = FIND_WORD[p.how];
-  return find ? [where + ",", find.replace("{who}", p.idd ? aAn(spName(p)) : "a creature").replace("{name}", p.of || "a returned mibi") + "."] : [where + "."];
+  return find ? [where + ",", find.replace("{who}", p.idd ? aAn(spName(p)) : "a wild mibi").replace("{name}", p.of || "a returned mibi") + "."] : [where + "."];
 }
 export const podOrigin = (p) => podOriginLines(p).join(" ");
 
