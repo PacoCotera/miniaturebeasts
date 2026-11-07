@@ -7,7 +7,7 @@
  "dock": 0,
  "stopMid": false,
  "presses": 2909,
- "digest": "759f2f51db5df4d404293fe0d09443e214d6fca01d35f39c0096f7a0d576a878",
+ "digest": "c38e79747e88a55327f0d5f244e34b86010afe2306532bc5866d92ced8e08621",
  "steps": [
   {
    "n": 1,
@@ -28,126 +28,126 @@
    "presses": 654,
    "turn": 3,
    "bay": 3,
-   "d": "6e93bc29af0cbc4a"
+   "d": "10b6d1a2e5b41acb"
   },
   {
    "n": 4,
    "presses": 825,
    "turn": 4,
    "bay": 3,
-   "d": "c788d8406351dbd1"
+   "d": "795cd3f8065bba50"
   },
   {
    "n": 5,
    "presses": 990,
    "turn": 5,
    "bay": 3,
-   "d": "1c9a567b803f026e"
+   "d": "d0d0b630f6d0d0c4"
   },
   {
    "n": 6,
    "presses": 1177,
    "turn": 6,
    "bay": 3,
-   "d": "1a1740cd95ff2e1e"
+   "d": "850b1f905f829c03"
   },
   {
    "n": 7,
    "presses": 1292,
    "turn": 7,
    "bay": 3,
-   "d": "a394151589a95903"
+   "d": "cbf298503907b7a5"
   },
   {
    "n": 8,
    "presses": 1445,
    "turn": 8,
    "bay": 3,
-   "d": "3c36ff961654a236"
+   "d": "3d71b1533f55d51d"
   },
   {
    "n": 9,
    "presses": 1467,
    "turn": 9,
    "bay": 3,
-   "d": "a484048b609271df"
+   "d": "8b1f58843a80ed61"
   },
   {
    "n": 10,
    "presses": 1543,
    "turn": 10,
    "bay": 1,
-   "d": "89a41f32e5bc1b74"
+   "d": "2b99c1fc1029aeda"
   },
   {
    "n": 11,
    "presses": 1675,
    "turn": 11,
    "bay": 2,
-   "d": "793bfe6aa9a94a07"
+   "d": "12a1d57603906e0f"
   },
   {
    "n": 12,
    "presses": 1710,
    "turn": 12,
    "bay": 2,
-   "d": "62ad3f270968d9a1"
+   "d": "fc2dfb6b08c14a42"
   },
   {
    "n": 13,
    "presses": 1900,
    "turn": 13,
    "bay": 1,
-   "d": "9c814a5f035f5ae7"
+   "d": "25e4cb5374a7e929"
   },
   {
    "n": 14,
    "presses": 2004,
    "turn": 14,
    "bay": 2,
-   "d": "832f1c9c0952654e"
+   "d": "636abd497e79d741"
   },
   {
    "n": 15,
    "presses": 2160,
    "turn": 15,
    "bay": 3,
-   "d": "a1e7d731c3ed0c9c"
+   "d": "99af64dfc0943ddd"
   },
   {
    "n": 16,
    "presses": 2207,
    "turn": 16,
    "bay": 3,
-   "d": "8c072561f97efa21"
+   "d": "92ea0fafa8e889bf"
   },
   {
    "n": 17,
    "presses": 2288,
    "turn": 17,
    "bay": 1,
-   "d": "5d533748f59fc1c6"
+   "d": "bc030570f338b517"
   },
   {
    "n": 18,
    "presses": 2550,
    "turn": 18,
    "bay": 2,
-   "d": "b2595ffcd5d9bc9d"
+   "d": "39fb85a6bcccc50f"
   },
   {
    "n": 19,
    "presses": 2791,
    "turn": 19,
    "bay": 3,
-   "d": "1e591d65d7edb7dc"
+   "d": "7ca91887fbae5242"
   },
   {
    "n": 20,
    "presses": 2909,
    "turn": 20,
    "bay": 3,
-   "d": "759f2f51db5df4d4"
+   "d": "c38e79747e88a553"
   }
  ],
  "summary": {
