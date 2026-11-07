@@ -19,8 +19,19 @@ import { rescaleJuvenile, flipPic, liftShadow, FLIPPED, FLIPPED_ADULT, GROUNDED,
 const here = path.dirname(fileURLToPath(import.meta.url)), dest = path.resolve(here, "../assets/masters");
 export const DESK = "/home/mb/mb/mibi-art/art-jobs/2026-11-07-coat-recolour";
 export const SIGNED = "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)";
-export const TINTS = ["redder", "between", "yellower"], SHADES = ["dark", "between", "light"], PAINTED = "between-dark";
-export const COATS = TINTS.flatMap((t) => SHADES.map((s) => `${t}-${s}`));
+export const SHADES = ["dark", "between", "light"];
+// a kind's coat grid, read from the desk's palette-<kind>-v8.json as delivered: the Tint looks are the kind's own frame's (in the palette's order, "between" in the middle), the Shade is dark / between / light for every kind,
+// and the painted master is the one cell whose coat_main is marked "painted": true
+export function coatGrid(desk, k) {
+  const pal = JSON.parse(readFileSync(path.join(desk, "tools", `palette-${k}-v8.json`), "utf8")), cells = Object.keys(pal.coats), tints = [];
+  for (const c of cells) { const t = c.slice(0, c.lastIndexOf("-")); if (!tints.includes(t)) tints.push(t); }
+  if (tints.length !== 3 || tints[1] !== "between") throw new Error(`${k}: the palette's Tints are not three looks with "between" in the middle: ${tints}`);
+  const coats = tints.flatMap((t) => SHADES.map((s) => `${t}-${s}`));
+  if (JSON.stringify([...cells].sort()) !== JSON.stringify([...coats].sort())) throw new Error(`${k}: the palette's coats are not Tint x Shade, 3 x 3: ${cells}`);
+  const painted = cells.filter((c) => pal.coats[c].coat_main && pal.coats[c].coat_main.painted === true);
+  if (painted.length !== 1) throw new Error(`${k}: the palette marks ${painted.length} painted cells, not one`);
+  return { tints, coats, painted: painted[0] };
+}
 // the desk's picture ids -> the masters: [adult picture, young picture, master name with {coat}, sizes]. The young is the adult's picture of the same name, rescaled
 export const PAIRS = [
   ["stand", "juv", "{coat}", SIZES], ["asleep", "juvasleep", "{coat}-curl", ["304x312"]],
@@ -36,14 +47,15 @@ const encode = (p) => encodePNG(p.w, p.h, p.data);
 const same = (a, b) => a.w === b.w && a.h === b.h && Buffer.compare(Buffer.from(a.data), Buffer.from(b.data)) === 0;
 
 // what the desk's outputs make: { ops: [{ id, buf, from }], painted: [{ id, ok }], recoloured: [picture ids], waiting: [..], missing: [file paths], cells: n, kinds }
-export function planCoats({ desk = DESK, index }) {
-  const ops = [], painted = [], recoloured = new Set(), waiting = new Set(), missing = [], kinds = [], cfgDir = path.join(desk, "tools/cfg"); let cells = 0;
-  if (!existsSync(cfgDir)) return { ops, painted, recoloured: [], waiting: [], missing, cells, kinds };
-  for (const k of readdirSync(cfgDir).filter((d) => /^S\d\d$/.test(d) && existsSync(path.join(cfgDir, d, "kind-v8.json")))) {
+export function planCoats({ desk = DESK, index, only = null }) {
+  const ops = [], painted = [], recoloured = new Set(), waiting = new Set(), missing = [], kinds = [], grids = {}, cfgDir = path.join(desk, "tools/cfg"); let cells = 0;
+  if (!existsSync(cfgDir)) return { ops, painted, recoloured: [], waiting: [], missing, cells, kinds, grids: {} };
+  for (const k of readdirSync(cfgDir).filter((d) => /^S\d\d$/.test(d) && (!only || d === only) && existsSync(path.join(cfgDir, d, "kind-v8.json")))) {
     const man = JSON.parse(readFileSync(path.join(cfgDir, k, "kind-v8.json"), "utf8")), have = new Set(man.pictures.map((p) => p.id)), out = (id, coat, size) => path.join(desk, "work/out", k, `${id}-${coat}-${size}.png`);
     const fl = FLIPPED.has(k) || FLIPPED_ADULT.has(k), fj = FLIPPED.has(k);
-    if (JSON.stringify([...man.coats].sort()) !== JSON.stringify([...COATS].sort())) throw new Error(`${k}: the desk's coats are not the 3 x 3 grid: ${man.coats}`);
-    kinds.push(k);
+    const { coats: COATS, painted: PAINTED } = coatGrid(desk, k);
+    if (JSON.stringify([...man.coats].sort()) !== JSON.stringify([...COATS].sort())) throw new Error(`${k}: the desk's coats are not the palette's 3 x 3 grid: ${man.coats}`);
+    kinds.push(k); grids[k] = { coats: COATS, painted: PAINTED };
     for (const [aId, jId, name, sizes] of PAIRS) {
       if (!have.has(aId) || !have.has(jId)) { waiting.add(`${k} ${aId}`); continue; }
       for (const coat of COATS) for (const size of sizes) {
@@ -85,7 +97,7 @@ export function planCoats({ desk = DESK, index }) {
     const known = (id) => PAIRS.some((p) => p[0] === id || p[1] === id) || LATER.includes(id) || Object.values(MARKED).includes(id);
     for (const id of have) if (!known(id)) waiting.add(`${k} ${id} (no placement row)`);
   }
-  return { ops, painted, recoloured: [...recoloured], waiting: [...waiting], missing, cells, kinds };
+  return { ops, painted, recoloured: [...recoloured], waiting: [...waiting], missing, cells, kinds, grids };
 }
 // the masters the retired names (21f: charcoal, russet, ash) put in the index and on disk are taken out when the grid is placed
 const retiredCoat = (id) => /^mibi-(adult|juvenile)-S\d\d-(russet|ash)-/.test(id);
