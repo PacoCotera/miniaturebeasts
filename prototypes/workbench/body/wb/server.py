@@ -1646,7 +1646,10 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)", p)
             if m:
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=srv.row_error(s), studio=srv.studio_files(s), lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=srv.row_error(s), lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()))
+            m = re.fullmatch(r"/api/species/([^/]+)/studio", p)
+            if m:
+                return self.send_json(srv.studio_files(srv.get_species(m.group(1))))
             m = re.fullmatch(r"/api/species/([^/]+)/freq", p)
             if m:
                 return self.send_json(srv.freq(srv.get_species(m.group(1)), int(q.get("n", ["1000"])[0])))
