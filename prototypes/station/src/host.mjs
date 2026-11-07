@@ -9,7 +9,7 @@ import * as S from "./state.mjs";
 import { speciesStatus } from "./library.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
-import { cuesOf } from "./carry.mjs";
+import { cuesOf, originWord } from "./carry.mjs";
 import { capLine } from "./views/words.mjs";
 import { homeBuild, mibiPictureOf, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
 import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs";
@@ -312,6 +312,7 @@ export function screenProps(plate) {
   if (screen === "home") return { msg: { screen, ...body.props, frame: withHold({ plate: pl }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;
   { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) line.keys = cues; }   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
+  { const back = originWord({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (back && line.back) line.back = back; }   // after a carry ← goes back to where it started: the way back names that place
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
   return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };

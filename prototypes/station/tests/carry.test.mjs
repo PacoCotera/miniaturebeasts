@@ -13,7 +13,7 @@ import { createFocus } from "../../ui/focus.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { openInventory } from "../src/intents/pods.mjs";
 import { openCreate } from "../src/intents/create.mjs";
-import { cuesOf, carryPlan } from "../src/carry.mjs";
+import { cuesOf, carryPlan, originWord } from "../src/carry.mjs";
 import { listOf } from "../src/views/pods-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -92,6 +92,13 @@ test("the cues: one a live carry, in key order, each the key's room icon; none o
   const h = inPods(0); assert.deepEqual(cuesOf(h).map((c) => [c.key, c.room]), [["habitat", "vivarium"], ["library", "library"]], "blue on a pod in the collection is what ✓ says: no cue");
   h.ui.panel = { id: "x" }; assert.deepEqual(cuesOf(h), []); h.ui.panel = null; h.ui.idle = true; assert.deepEqual(cuesOf(h), []); h.ui.idle = false; h.ui.screen = "home"; assert.deepEqual(cuesOf(h), []);
   void INTENTS;
+});
+test("← names the jump back while a carry is live: Pods after green from Pods, the mibi's name after purple from up close, the pod's after a carry from Create; none once ✓ or a second tap ended it", () => {
+  const h = inPods(0); key(h, "habitat"); assert.equal(h.ui.screen, "create"); assert.equal(originWord(h), "Pods", "Create reached from Pods: ← Pods");
+  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); const [m] = st.mibis, g = host(st); g.ui.screen = "habitat"; g.ui.hab.id = m.id; key(g, "library"); assert.equal(originWord(g), m.name, "the mibi's name");
+  press(g, "back"); assert.equal(originWord(g), null, "back where it started: no carry, the word is the screen's own");
+  const p = pod(st, "S01", ["coat"], 3), c = host(st); openCreate(c, p); key(c, "research"); assert.equal(originWord(c), S.cap(S.spName(p)), "Create's: the pod's label");
+  key(c, "research"); assert.equal(originWord(c), null, "a second tap ended the carry");
 });
 test("no cue for a carry that equals ✓: blue on a pod in the collection under Read, green on a mibi in the Vivarium; the key still carries; under another verb the blue cue returns", () => {
   const h = inPods(0); assert.equal(cuesOf(h).some((c) => c.key === "research"), false); assert.equal(carryPlan(h, "research").act, "read", "but the key still carries");

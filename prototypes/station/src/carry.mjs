@@ -89,6 +89,14 @@ export function cuesOf(m) {
   return out;
 }
 
+// The way back's word while a carry is live (← goes back to where the carry started, not up): the place's own name, its title, or the mibi's or pod's label where the place is one thing (up close, Create).
+export function originWord(m) {
+  const c = m.ui.carry; if (!c || m.ui.screen !== c.to) return null;
+  const from = c.from.screen, T = m.specs?.frame?.strings?.titles ?? {};
+  if (from === "habitat") return S.mibiById(m.st, c.from.hab?.id)?.name ?? T.habitat ?? null;
+  if (from === "create") { const p = m.ui.create && createPod(m.st, m.ui.create); return p ? S.cap(S.spName(p)) : T.create ?? null; }
+  return T[from] ?? null;
+}
 // ---- where a carry started ----
 const plain = (o) => { const r = {}; for (const k of Object.keys(o ?? {})) if (k !== "focus" && k !== "f" && typeof o[k] !== "function") r[k] = structuredClone(o[k]); return r; };
 export function snapshot(h) {
