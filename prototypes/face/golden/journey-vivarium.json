@@ -629,7 +629,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Hold ✓ to return it to the wild",
+    "ok": "Hold to return",
     "price": null,
     "subject": "",
     "back": "Back"
@@ -640,7 +640,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Hold ✓ to return it to the wild",
+    "ok": "Hold to return",
     "price": null,
     "subject": "",
     "back": "Back"
@@ -651,7 +651,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Hold ✓ to return it to the wild",
+    "ok": "Hold to return",
     "price": null,
     "subject": "",
     "back": "Back"
@@ -878,7 +878,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Hold ✓ to return it to the wild",
+    "ok": "Hold to return",
     "price": null,
     "subject": "",
     "back": "Back"
@@ -889,7 +889,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Hold ✓ to return it to the wild",
+    "ok": "Hold to return",
     "price": null,
     "subject": "",
     "back": "Back"
@@ -900,7 +900,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Hold ✓ to return it to the wild",
+    "ok": "Hold to return",
     "price": null,
     "subject": "",
     "back": "Back"
