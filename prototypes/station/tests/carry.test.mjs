@@ -75,7 +75,7 @@ test("a chapter on Create: blue the reading room on that chapter, purple the spe
 });
 test("a species on the Library: green Visit its mibi up close, blue its pods; purple is the Library's top", () => {
   const st = world(); pod(st, "S01", [], 3); S.seedAdults(st, "S01", 5, 2, settings); const [m] = st.mibis, h = host(st); h.ui.screen = "library"; h.ui.lib.l1 = "S01";
-  assert.deepEqual(cuesOf(h).map((c) => [c.key, c.word]), [["habitat", "Visit"], ["research", "Loika pods"]].map(([k, w]) => [k, k === "research" ? w.replace("Loika", S.cap(frameOf("S01").species.name)) : w]));
+  assert.deepEqual(cuesOf(h).map((c) => [c.key, c.word]), [["research", S.cap(frameOf("S01").species.name) + " pods"], ["habitat", "Visit"]], "blue, then green: the order the keys stand in");
   key(h, "habitat"); assert.deepEqual([h.went.at(-1), h.ui.hab.id], ["habitat", m.id]); press(h, "back"); assert.equal(h.went.at(-1), "library");
   key(h, "library"); assert.equal(h.ui.carry, null, "nothing to carry: the top");
 });
@@ -89,7 +89,7 @@ test("yellow is always Home, a carry never spends, and ✓ on the destination en
   press(g, "back"); assert.equal(g.went.at(-1), "pods"); const k = inPods(0); key(k, "library"); assert.ok(k.ui.carry); press(k, "confirm", "chapter.coat"); assert.equal(k.ui.carry, null, "✓ ends it"); press(k, "back"); press(k, "back"); assert.equal(k.went.at(-1), "library", "today's ←: clears the lit chapter, then up to Level 1");
 });
 test("the cues: one a live carry, in key order, each the key's room icon; none on Idle, over a panel or on screens without a ring subject", () => {
-  const h = inPods(0); assert.deepEqual(cuesOf(h).map((c) => [c.key, c.room]), [["habitat", "vivarium"], ["research", "research"], ["library", "library"]]);
+  const h = inPods(0); assert.deepEqual(cuesOf(h).map((c) => [c.key, c.room]), [["research", "research"], ["habitat", "vivarium"], ["library", "library"]]);
   h.ui.panel = { id: "x" }; assert.deepEqual(cuesOf(h), []); h.ui.panel = null; h.ui.idle = true; assert.deepEqual(cuesOf(h), []); h.ui.idle = false; h.ui.screen = "home"; assert.deepEqual(cuesOf(h), []);
   void INTENTS;
 });

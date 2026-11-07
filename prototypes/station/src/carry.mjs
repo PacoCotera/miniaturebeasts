@@ -13,7 +13,7 @@ import { listOf } from "./views/pods-props.mjs";
 import { idOf } from "./views/vivarium-props.mjs";
 import { reviewTraits, createPod } from "./views/create-props.mjs";
 
-export const KEYS = ["habitat", "research", "library"];   // green, blue, purple: the order the cues stand in
+export const KEYS = ["research", "habitat", "library"];   // blue, green, purple: the order the keys stand in on the device (yellow, blue, green, purple: Home, Pods, Vivarium, Library) and the cues after them
 export const ROOM_MARK = { habitat: "vivarium", research: "research", library: "library" };   // the frame's room mark of each key (frame.json regions.marks.room)
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const words = (m) => m.specs?.frame?.strings?.carry ?? {};

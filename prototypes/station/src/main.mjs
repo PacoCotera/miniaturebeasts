@@ -51,7 +51,7 @@ bindKeys(stationEl);
 $("dockCtl").addEventListener("click", (e) => { act("dock"); e.currentTarget.blur(); });
 stationEl.addEventListener("contextmenu", (e) => e.preventDefault());
 ["touchstart", "touchmove", "gesturestart", "dblclick"].forEach((type) => stationEl.addEventListener(type, (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
-const KEYMAP = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Enter: "confirm", NumpadEnter: "confirm", Space: "confirm", Escape: "back", Backspace: "back", KeyH: "home", KeyR: "research", KeyL: "library", KeyB: "habitat", KeyD: "dock" };
+const KEYMAP = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Enter: "confirm", NumpadEnter: "confirm", Space: "confirm", Escape: "back", Backspace: "back", KeyH: "home", KeyR: "research", KeyL: "library", KeyB: "habitat", Digit1: "home", Digit2: "research", Digit3: "habitat", Digit4: "library", KeyD: "dock" };
 const EMBED = document.documentElement.classList.contains("embed");   // ?embed: the screen alone in the play page
 if (EMBED) delete KEYMAP.KeyD;   // on the play page no device key docks: the shell owns Shift+D
 window.addEventListener("keydown", (e) => {

@@ -22,7 +22,7 @@ async function setup(line) {
   const top = { screen: "library", title: "Library", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } };
   assert.equal(f.props({ screen: "library", state: "notBuilt", motion: true, frame: { top, line: { back: "Home", ...line }, plate: { text: "" } } }), 0, f.errors().join("; ")); f.frame(1000); f.frame(1016); return f;
 }
-const KEYS = [{ room: "vivarium", word: "Grow" }, { room: "research", word: "Read" }, { room: "library", word: "Untuva page" }];
+const KEYS = [{ room: "research", word: "Read" }, { room: "vivarium", word: "Grow" }, { room: "library", word: "Untuva page" }];
 
 test("the spec: cues stand in the notice's zone, a 24 px mark and a word in the back's role", () => { assert.equal(C.right, 904); assert.deepEqual(C.mark, [24, 24]); assert.equal(C.role, "back"); });
 
