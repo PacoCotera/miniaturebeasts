@@ -652,6 +652,7 @@ static int ent_load(const char *cur) {
     e->juvenile = strcmp(v_pstr(v_fmt("%s.stage", P)), "juvenile") == 0; e->waiting = v_pbool(v_fmt("%s.waiting", P), 0); e->sleeper = 0; e->seed = (unsigned)v_pint(v_fmt("%s.seed", P), 0); e->mv = -1; e->nap = -1; e->asleep = 0;
     snprintf(e->mark, sizeof e->mark, "%s", v_pstr(v_fmt("%s.mark", P))); e->carried = v_pbool(v_fmt("%s.carried", P), 0);   /* the collection's mark (its master id) and the one in hand (it pauses where it stands) */
     const char *sz = e->juvenile ? "regions.resident.juvenile" : "regions.resident.adult"; int w = v_sk(sp(), hp(sz), 0), h = v_sk(sp(), hp(sz), 1);
+    { int ps0[2], sl0 = wire_asset_slot(e->pic); if (sl0 >= 0 && prim_asset_size(sl0, ps0) == 0 && ps0[0] > 0 && ps0[1] > 0) { w = ps0[0]; h = ps0[1]; } }   /* release 21h2 (R21-SCALE): a picture is its own size, the kind's one scale can need more than the spec's box (a large kind in a many-mibi scene); the spec's box is the size when none is sent */
     /* a moving set (M1 §2.2): { set, walk, shadow } with the set loaded, its stage present at this size and its walk atlas sent; else a still */
     char mset[8], mwalk[96], mshadow[96]; snprintf(mset, sizeof mset, "%s", v_pstr(v_fmt("%s.moving.set", P))); snprintf(mwalk, sizeof mwalk, "%s", v_pstr(v_fmt("%s.moving.walk", P))); snprintf(mshadow, sizeof mshadow, "%s", v_pstr(v_fmt("%s.moving.shadow", P)));
     const char *stg = v_pstr(v_fmt("%s.stage", P)); int stage = !strcmp(stg, "juvenile") ? MV_JUV : !strcmp(stg, "elder") ? MV_ELDER : MV_ADULT;
@@ -695,6 +696,7 @@ static int ent_load(const char *cur) {
     if (v_plen(v_fmt("%s.figure", P)) == 4) { int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("%s.figure.%d", P, q), -1);
       if (f[0] >= 0 && f[1] >= 0 && f[2] > 0 && f[3] > 0 && f[0] + f[2] <= w && f[1] + f[3] <= h) { memcpy(fig, f, sizeof fig); e->hasfig = 1; } }
     wk_t *old = NULL; for (int j = 0; j < g_nw; j++) if (strcmp(g_w[j].id, e->id) == 0 && g_w[j].seed == e->seed && g_w[j].w == fig[2]) old = &g_w[j];
+    if (old && g_home && g_kx < (1 << 19) && bed_k(old->x, old->feet, old->w)) old = NULL;   /* release 21h2 (E): the away frame came up over a figure standing where it is drawn: that figure is placed again, off the frame */
     if (old) kept[nk] = *old; else { census_load(kept, nk, mk, nmk, nres); wk_init(&kept[nk], e->id, e->seed, fig[2], fig[3], !strcmp(stg, "juvenile") ? MV_JUV : !strcmp(stg, "elder") ? MV_ELDER : MV_ADULT, i); }
     wk_t *k = &kept[nk]; k->pi = i; k->cw = curl_ink(P);
     k->sh = ssh; if (!ssh) k->rk = srk ? srk : RK_OUT;   /* R4b: a rester finishes its trip, then rests where restAt says; a shown one comes back; a new rester starts at rest */
@@ -798,7 +800,7 @@ static void sleeper_draw(const ent_t *e) {
 static void ent_tag(const ent_t *e, const char *glass) {
   int tag[4], below = v_si(sp(), hp("regions.nameTag.below"), 16), over = v_si(sp(), hp("regions.nameTag.over"), 32), lift = v_si(sp(), hp("regions.resident.lift"), 4);
   const char *fill = v_scol(sp(), "colours.nameTag.fill"), *edge = v_scol(sp(), "colours.nameTag.edge");
-  if (e->sleeper || e->curled) { const int *b = e->hasfig ? e->box : e->draw; kit_nameTag(sp(), glass, e->name, b, 0, b[1] - over, KIT_TAG_OVER, 0, fill, edge, NULL, tag); }
+  if (e->sleeper || e->curled) { const int *b = e->hasfig ? e->box : e->draw; kit_nameTag(sp(), glass, e->name, b, 0, b[1] + b[3] / 2 - 12, KIT_TAG_OVER, 0, fill, edge, NULL, tag); }   /* release 21h2 (E): a sleeper's label lies on its own body, never over a neighbour's head (it stood 32 px above the sleeper, on whoever stood behind) */
   else if (e->asleep) kit_nameTag(sp(), glass, e->name, e->ink, 0, e->ink[1] - over, KIT_TAG_OVER, 0, fill, edge, NULL, tag);
   else { int feetY = e->box[1] + e->box[3] - 1; kit_nameTag(sp(), glass, e->name, e->box, feetY + below, feetY - e->box[3] - over - lift, KIT_TAG_AUTO, 0, fill, edge, NULL, tag); }
 }

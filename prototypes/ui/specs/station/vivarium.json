@@ -359,7 +359,7 @@
    "sleepers": {
     "max": 2,
     "pose": "nap",
-    "pitch": 96,
+    "pitch": 128,
     "footY": 543,
     "centre": 344,
     "places": {
@@ -367,10 +367,11 @@
       344
      ],
      "2": [
-      296,
-      392
+      280,
+      408
      ]
     },
+    "note21h2": "release 21h2: the curl is drawn at the kind's one scale (R21-SCALE), about 116 px wide for a Loika in a room, so the two places are 128 apart, none hiding the other",
     "note21g": "release 21g: two on the 192 px bed, 96 apart (the curl's ink is at most 96 wide): three at 48 apart hid each other; a third rester takes its own way (a curl elsewhere by the gap rule, or out)",
     "adult": {
      "size": [
