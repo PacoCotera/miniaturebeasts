@@ -212,10 +212,10 @@ static void wk_step(wk_t *k) {   /* one step of this resident's own time */
     if (nl > 1 && r % (unsigned)g_lvin == 0) { int to = k->lv ? 0 : 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)); if ((to == 0 || raised_ok(k->id)) && lv_open(to, k->w) && (jn = room_route(k->lv, to, rt)) >= 0) tlv = to; }
     int ax = rt[0][0][0] - k->w / 2, af = rt[0][0][1], bx = rt[1][0][0] - k->w / 2, bf = rt[1][0][1];
     int wx = k->x, wf = k->feet, ok = 0, room = g_stw > 0 ? heap_gap(k->id, k->x, k->feet, k->w, k->h) : 0;   /* idle is over: a waypoint, up to eight tries */
-    if (room > g_stw) room = g_stw;   /* a waypoint may not crowd a figure more than where this one stands now (Home and Idle) */
+    if (room > 0) room = 0;   /* Idle (a whole window of ground): a waypoint may not put this figure over another's box, or deeper into one than where it stands now. Home's and the Vivarium's smaller windows keep walking as built: walking overlaps stay fine (L4-22) */
     for (int i = 0; i < 8 && !ok; i++) {
       unsigned a = wr(k), b = wr(k); lvl_draw(tlv, a, b, k->w, WIDE, WIDE, &wx, &wf);
-      if (g_stw > 0 && heap_gap(k->id, wx, wf, k->w, k->h) < room) continue;
+      if (g_idle && g_stw > 0 && heap_gap(k->id, wx, wf, k->w, k->h) < room) continue;
       if (tlv == k->lv) ok = (iabs(wx - k->x) > iabs(wf - k->feet) ? iabs(wx - k->x) : iabs(wf - k->feet)) >= 32 && gok(tlv, wx, wf, k->w, 0) && path_ok(tlv, k->x, k->feet, wx, wf, k->w, 0);
       else ok = gok(tlv, wx, wf, k->w, 0) && path_ok(k->lv, k->x, k->feet, ax, af, k->w, 1) && path_ok(tlv, bx, bf, wx, wf, k->w, 1);   /* leg 2 skips the profile and keep-out samples: a join is walkable by definition */
     }
