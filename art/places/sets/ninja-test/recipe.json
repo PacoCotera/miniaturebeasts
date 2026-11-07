@@ -1,0 +1,88 @@
+{
+  "id": "ninja-test",
+  "name": "Ninja Adventure (CC0 test kit)",
+  "ship": "test",
+  "licence": {
+    "spdx": "CC0-1.0",
+    "author": "Pixel-boy & AAA",
+    "source": "https://pixel-boy.itch.io/ninja-adventure-asset-pack",
+    "fetched": "2026-11-07",
+    "archiveSha256": "95a06f4fdcfd1882f061a45ff313b7c905dbe2de1e8512b281d7937df62a7b15",
+    "file": "ninja-adventure/LICENSE.txt"
+  },
+  "sourceTile": 16,
+  "scale": 3,
+  "half": "derived",
+  "corePalette": "art/companion-48/terrain/meadow/meadow-palette.json",
+  "notes": [
+    "Every piece is cut whole from the pack's 13-piece blob sets (4 outer corners, 4 edges, centre, 4 inner corners); the two diagonal tiles are pieced from two inner corners. Nothing is repainted.",
+    "grass|sand: the pack has no grass-and-sand blob, so the pack's grass-and-dirt blob is used with its four dirt colours changed to the sand colours of the sand shore (exact colour map in the recipe, `recolour`).",
+    "The sand full tile is the pack's floor sand (TilesetFloor 0,5); the water sheet's own sand cell (0,5) is a lighter peach that does not match the shore pieces and would show a seam.",
+    "mud|water is the pack's dark swamp shore: brown mud and purple water. Its water is not the blue water of the other pairs; the three never meet (an opaque pair refuses a third terrain at a corner).",
+    "reeds: the pack has no reeds; its bamboo stalk stands in. tall-grass: the pack's swaying plant (four frames) stands in. Both are test stand-ins for the art desk's own."
+  ],
+  "sources": {
+    "water": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetWater.png",
+    "floor": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetFloor.png",
+    "nature": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetNature.png",
+    "ripple": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Animated/Water Ripples/SpriteSheet16x16.png",
+    "rippleSwamp": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Animated/Water Ripples/SpriteSheetPurple.png",
+    "plant": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Animated/Plant/SpriteSheet16x16.png"
+  },
+  "pairs": [
+    {
+      "id": "grass-water", "lower": "water", "upper": "grass", "mode": "opaque",
+      "blob": { "sheet": "water", "cells": { "TL": [0, 6], "T": [1, 6], "TR": [2, 6], "L": [0, 7], "C": [1, 7], "R": [2, 7], "BL": [0, 8], "B": [1, 8], "BR": [2, 8], "inSE": [5, 7], "inSW": [6, 7], "inNE": [5, 8], "inNW": [6, 8] } },
+      "upperFull": { "sheet": "floor", "cells": [[0, 12], [1, 12], [2, 12], [3, 12], [4, 12]] },
+      "lowerFrames": { "sheet": "ripple", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
+    },
+    {
+      "id": "sand-water", "lower": "water", "upper": "sand", "mode": "opaque",
+      "blob": { "sheet": "water", "cells": { "TL": [0, 0], "T": [1, 0], "TR": [2, 0], "L": [0, 1], "C": [1, 1], "R": [2, 1], "BL": [0, 2], "B": [1, 2], "BR": [2, 2], "inSE": [5, 1], "inSW": [6, 1], "inNE": [5, 2], "inNW": [6, 2] } },
+      "upperFull": { "sheet": "floor", "cells": [[0, 5], [1, 5], [2, 5], [3, 5], [4, 5]] },
+      "lowerFrames": { "sheet": "ripple", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
+    },
+    {
+      "id": "grass-sand", "lower": "sand", "upper": "grass", "mode": "opaque",
+      "blob": { "sheet": "floor", "cells": { "TL": [0, 7], "T": [1, 7], "TR": [2, 7], "L": [0, 8], "C": [1, 8], "R": [2, 8], "BL": [0, 9], "B": [1, 9], "BR": [2, 9], "inSE": [5, 8], "inSW": [6, 8], "inNE": [5, 9], "inNW": [6, 9] } },
+      "upperFull": { "sheet": "floor", "cells": [[0, 12], [1, 12], [2, 12], [3, 12], [4, 12]] },
+      "recolour": { "d3865f": "ffad5d", "bd7959": "d78b4a", "e6a578": "ffcb8d", "ad704b": "965340" }
+    },
+    {
+      "id": "grass-path", "lower": "path", "upper": "grass", "mode": "opaque",
+      "blob": { "sheet": "floor", "cells": { "TL": [0, 7], "T": [1, 7], "TR": [2, 7], "L": [0, 8], "C": [1, 8], "R": [2, 8], "BL": [0, 9], "B": [1, 9], "BR": [2, 9], "inSE": [5, 8], "inSW": [6, 8], "inNE": [5, 9], "inNW": [6, 9] } },
+      "upperFull": { "sheet": "floor", "cells": [[0, 12], [1, 12], [2, 12], [3, 12], [4, 12]] }
+    },
+    {
+      "id": "mud-water", "lower": "water", "upper": "mud", "mode": "opaque",
+      "blob": { "sheet": "water", "cells": { "TL": [13, 6], "T": [14, 6], "TR": [15, 6], "L": [13, 7], "C": [14, 7], "R": [15, 7], "BL": [13, 8], "B": [14, 8], "BR": [15, 8], "inSE": [18, 7], "inSW": [19, 7], "inNE": [18, 8], "inNW": [19, 8] } },
+      "upperFull": { "sheet": "water", "cells": [[13, 11]] },
+      "lowerFrames": { "sheet": "rippleSwamp", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
+    }
+  ],
+  "props": {
+    "tree-broad": { "sheet": "nature", "rect": [48, 322, 48, 14], "anchor": [24, 13], "footprint": [[0, 0]], "canopy": "tree-broad-crown" },
+    "tree-autumn": { "sheet": "nature", "rect": [144, 322, 48, 14], "anchor": [24, 13], "footprint": [[0, 0]], "canopy": "tree-autumn-crown" },
+    "bush-big": { "sheet": "nature", "rect": [0, 2, 32, 29], "anchor": [16, 28], "footprint": [[0, 0]] },
+    "bush-round": { "sheet": "nature", "rect": [16, 161, 16, 14], "anchor": [8, 13], "footprint": [[0, 0]] },
+    "bush-small": { "sheet": "nature", "rect": [1, 163, 15, 13], "anchor": [7, 12], "footprint": [[0, 0]] },
+    "stump": { "sheet": "nature", "rect": [1, 134, 30, 23], "anchor": [15, 22], "footprint": [[0, 0]] },
+    "boulder-brown": { "sheet": "nature", "rect": [210, 132, 29, 27], "anchor": [14, 26], "footprint": [[0, 0]] },
+    "boulder-grey": { "sheet": "nature", "rect": [258, 132, 29, 27], "anchor": [14, 26], "footprint": [[0, 0]] },
+    "reeds": { "sheet": "nature", "rect": [176, 128, 16, 46], "anchor": [8, 45], "footprint": [] },
+    "tall-grass": { "sheet": "plant", "rect": [0, 0, 16, 16], "anchor": [8, 15], "footprint": [], "frames": 4, "frameMs": 220 }
+  },
+  "canopy": {
+    "tree-broad-crown": { "sheet": "nature", "rect": [48, 288, 48, 34], "anchor": [24, 47] },
+    "tree-autumn-crown": { "sheet": "nature", "rect": [144, 288, 48, 34], "anchor": [24, 47] }
+  },
+  "decals": {
+    "flower-sun": { "sheet": "nature", "rect": [1, 176, 15, 15], "anchor": [7, 7] },
+    "flower-sun-small": { "sheet": "nature", "rect": [17, 176, 15, 16], "anchor": [7, 8] },
+    "pebbles-a": { "sheet": "nature", "rect": [257, 289, 14, 14], "anchor": [7, 7] },
+    "pebbles-b": { "sheet": "nature", "rect": [273, 289, 15, 13], "anchor": [7, 6] },
+    "pebbles-c": { "sheet": "nature", "rect": [288, 289, 16, 14], "anchor": [8, 7] },
+    "tuft": { "sheet": "nature", "rect": [48, 162, 16, 13], "anchor": [8, 6] },
+    "lily-pad": { "sheet": "water", "rect": [176, 48, 16, 16], "anchor": [8, 8], "key": "71ddee" }
+  }
+}

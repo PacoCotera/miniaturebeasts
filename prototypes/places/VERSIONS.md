@@ -11,7 +11,7 @@ One version of each tool, for everyone. Upgrading any of them is a deliberate ch
 | pngjs | 7.0.0 | `package.json`, `package-lock.json` |
 | ajv | 8.20.0 | `package.json`, `package-lock.json` |
 | esbuild | 0.28.2 | `package.json`, `package-lock.json` |
-| pngquant | not needed (the test kit measures within 208 colours; see `art/places/sets/ninja-test/SOURCE.md`) | |
+| pngquant | **not used**: the test kit measured 39 colours, far inside the 208 (see `art/places/sets/ninja-test/SOURCE.md`). A kit over 208 stops `prepare-set.mjs`; pin pngquant here when one needs it. | |
 
 ```
 ldtk-version: 1.5.3
