@@ -4806,25 +4806,25 @@
    "file": "pods/mibi-adult-S03-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "c82414d1031d966d2b01d7fe0224ab92afe3bc5a706a559f01deaa4531b28780",
+   "sha256": "5d73e7b97737b9b0100e9c12761bf3b106322d149227b69f72ca39d4b144c8c3",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
-   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/stand-S03-recut-304x312.png"
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/stand-S03-34-adult-304x312.png"
   },
   "mibi-adult-S03-48x48": {
    "file": "pods/mibi-adult-S03-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "55d43a6e6cb7b3db7160e10c8a37303804e3280895a0caceda7b07ab10594396",
+   "sha256": "0027308f4a468d2384de31c02bbd6d837c81479082e3532e86880965ff31e1fe",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
-   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/stand-S03-recut-48x48.png"
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/stand-S03-34-adult-48x48.png"
   },
   "mibi-adult-S03-96x88": {
    "file": "pods/mibi-adult-S03-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "6a20449b4b13bb78632bc9ec3262acc661b481df0d8e9968413a618351813b38",
+   "sha256": "f880ab3387fbf64471b7426674d883b060b3c8407cc1e8ace9af51367ddc7bc0",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
-   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/stand-S03-recut-96x88.png"
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/stand-S03-34-adult-96x88.png"
   },
   "mibi-adult-S03-curl-304x312": {
    "file": "pods/mibi-adult-S03-curl-304x312.png",
@@ -6670,25 +6670,25 @@
    "file": "pods/mibi-juvenile-S03-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "02b28820b7c0251acf7ec2a66559be3c2baa5023e9ec34a951b8904bbb33f6f8",
+   "sha256": "63741c11535606722c3790116b5de93afe39a356c5b0b4bd1249817e8e4d6765",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
-   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S03-tuikis-juv-v2-304x312.png"
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/stand-S03-34-juv-304x312.png"
   },
   "mibi-juvenile-S03-48x48": {
    "file": "pods/mibi-juvenile-S03-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "9f1ab9ffedc780daa1dd19a5fa31181df278540d5485b970fcba5edc6278e687",
+   "sha256": "a03faebf531592f4915e1f655e181a669664b31d6e4a80ebc9855d0040eb3c20",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
-   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S03-tuikis-juv-v2-48x48.png"
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/stand-S03-34-juv-48x48.png"
   },
   "mibi-juvenile-S03-96x88": {
    "file": "pods/mibi-juvenile-S03-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "b139c76158f4c174967c0774572cee96516dde489aea4416fe3f82124a8ea378",
+   "sha256": "ef320149d494c9526df5061c63804b173491a153a05e3be1677c930c7a5d41e2",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
-   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S03-tuikis-juv-v2-96x88.png"
+   "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/stand-S03-34-juv-96x88.png"
   },
   "mibi-juvenile-S03-curl-304x312": {
    "file": "pods/mibi-juvenile-S03-curl-304x312.png",
