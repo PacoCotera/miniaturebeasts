@@ -474,7 +474,7 @@ export function softGround(G, seed) {
     for (const dir of SOFT_DIRS) { const d = stepCellOf(c, dir); if (d >= 0 && (G.ford[d] === 1 || (G.edge && G.edge[edgeIndex(c, dir)] === EDGE.RAMP))) bad = true; }
     if (bad) continue;
     const dry = d => d >= 0 && G.land[d] !== L.WATER && G.land[d] !== L.CLIFF && !G.island[d];
-    for (const [d1, d2] of [['left', 'right'], ['up', 'down']]) {
+    for (const [d1, d2] of [['left', 'right']]) {   // west to east only: a place's river runs north to south and its crossing row runs across it
       const a = stepCellOf(c, d1), b = stepCellOf(c, d2); if (!dry(a) || !dry(b)) continue;
       if (G.edge && (G.edge[edgeIndex(c, d1)] !== EDGE.OPEN || G.edge[edgeIndex(c, d2)] !== EDGE.OPEN)) continue;
       const v = softValue(G, a, b); if (v) { wc.push({ i: c, kind: v.kind, v: v.v, k: hash(seed, 'soft', 'w', c) }); break; } }
@@ -1006,6 +1006,19 @@ export function genPatch2(G, seed, cell) {
   // 3. Terrain bands, then stairs; from here on no random placement touches the terrain layer or the ring around a stair.
   g2Bands(G, cell, tiles, terr, tmask);
   const stairs = g2Stairs(G, seed, cell, tiles, terr, tmask);
+  // Soft ground and banks (G.soft, G.banks: attached by the page, absent in every golden): a scree or bank edge gets a crossing two tiles wide through the outer two rows, laid like a stair's.
+  const cross = [];
+  if (G.soft || G.banks) for (const [dir, dx, dy] of SIDES) {
+    if (!onMapXY(cx + dx, cy + dy)) continue;
+    const ei = edgeIndex(cell, dir); if (G.edge[ei] !== EDGE.CLIFF) continue;
+    const kind = G.soft && G.soft.scree[ei] ? 'scree' : G.banks && G.banks[ei] ? 'bank' : null; if (!kind) continue;
+    const vertical = dir === 'up' || dir === 'down', s = stairPos(seed, ei, vertical ? PW : PH);
+    const xy = (k, d) => ({ x: dir === 'left' ? d : dir === 'right' ? PW - 1 - d : k, y: dir === 'up' ? d : dir === 'down' ? PH - 1 - d : k });
+    for (let d = 0; d < 2; d++) for (let k = s; k <= s + 1; k++) { const p = xy(k, d), j = I(p.x, p.y); tiles[j] = kind === 'scree' ? T.SCREE : T.BANK; terr[j] = 0; tmask[j] = 0; }
+    cross.push({ dir, kind, s, ei, entry: xy(s, 2) });
+  }
+  for (const q of cross) for (let d = 0; d < 3; d++) for (let k = q.s - 1; k <= q.s + 2; k++) {
+    const x = q.dir === 'left' ? d : q.dir === 'right' ? PW - 1 - d : k, y = q.dir === 'up' ? d : q.dir === 'down' ? PH - 1 - d : k; if (inb(x, y)) resv[I(x, y)] = 1; }
   for (let i = 0; i < NP; i++) if (terr[i] >= TERR.STAIR) { const x = i % PW, y = (i / PW) | 0;
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (inb(x + dx, y + dy)) resv[I(x + dx, y + dy)] = 1; }
   const free = i => !terr[i] && !resv[i];
@@ -1013,7 +1026,8 @@ export function genPatch2(G, seed, cell) {
   if (isFord) {
     for (let y = 0; y < PH; y++) { const w = (noiseQ(ns + 3, 0, y, 4) - 16384 + 4096) >> 13;
       for (let x = 9 + w; x <= 18 + w; x++) setT(x, y, T.WATER); setT(8 + w, y, T.REEDS); setT(19 + w, y, T.SAND); }
-    for (let x = 0; x < PW; x++) if (tiles[I(x, 16)] === T.WATER) setT(x, 16, T.STEP);
+    const stepT = G.soft && G.soft.wade[cell] === 1 ? T.WADE : T.STEP;   // a wade is mud across the row, never the ford's stones
+    for (let x = 0; x < PW; x++) if (tiles[I(x, 16)] === T.WATER) setT(x, 16, stepT);
   }
   const keep = i => tiles[i] === T.DEEP || tiles[i] === T.ISLE || terr[i] !== 0;
   // 5. Pond.
@@ -1191,6 +1205,7 @@ export function genPatch2(G, seed, cell) {
     for (let i = feats.length - 1; i >= 0; i--) if (cheb(feats[i], p) <= 1 && feats[i].kind !== 'o') feats.splice(i, 1);
     feats.push({ id: 'd', kind: 'd', x: p.x, y: p.y }); }
   const lay = { key: String(cell), cell, cave: false, land, base, tiles, shelter, feats, terr, tmask, stairs };
+  if (cross.length) lay.cross = cross;
   return finishLayout2(lay, spawnPt);
 }
 
