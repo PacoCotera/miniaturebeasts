@@ -123,3 +123,31 @@ test("F4: the held shed line shows after a move, not only after an action that m
   f.run("FX.lockUntil = 0; act('right'); FX.lockUntil = 0");   // a creep: its own note makes no new line; the held one must come
   assert.match(f.run("FX.msg"), /^The Wickle settled · a pod rolled loose/, f.run("FX.msg"));
 });
+
+test("F5: a Peplos out of fog and a Tuikis away from a hole say where they settle; in fog and by a hole the old line stays", () => {
+  const f = fixture({ partner: null }), at = f.spot(2, 3), p = f.add(11, at.x, at.y), t = f.add(1, at.x, at.y);
+  assert.equal(f.run(`watchTail(curLive().cr.find(q => q.id === ${p}))`), "it settles only in fog");
+  assert.equal(f.run(`watchTail(curLive().cr.find(q => q.id === ${t}))`), "it settles by a hole");
+  f.fog(true); assert.equal(f.run(`watchTail(curLive().cr.find(q => q.id === ${p}))`), "keep still and it settles, or Call");
+  f.run(`curLay().feats.push({ kind: 'n', id: 'hx', x: ${at.x}, y: ${at.y} })`);
+  assert.equal(f.run(`watchTail(curLive().cr.find(q => q.id === ${t}))`), "keep still and it settles, or Call");
+  const w = f.add(16, at.x, at.y); assert.equal(f.run(`watchTail(curLive().cr.find(q => q.id === ${w}))`), "keep still and it settles, or Call", "a Wickle settles anywhere");
+});
+
+test("F7: the hold's column gets the short forms of the six newest hows; the Ground row and the older hows keep the full tag", () => {
+  const f = fixture({ partner: null }), tag = (how, short) => f.run(`podTagOf({ how: '${how}', g: 'meadow' }, ${short})`);
+  const want = { grab: ["shed, grabbing fruit", "grabbing fruit"], warm: ["by a warm stone", "warm stone"], dig: ["in a fresh hole", "in a fresh hole"], fog: ["shed in a fog bank", "in a fog bank"], still: ["shed, keeping still", "keeping still"], air: ["shed, airing scales", "airing scales"] };
+  for (const [how, [full, short]] of Object.entries(want)) { assert.equal(tag(how, false), full); assert.equal(tag(how, true), short); }
+  assert.equal(tag("shake", true), "shed, shaking dry"); assert.equal(tag("meal", true), "after a meal");
+});
+
+test("F8: the Station words the six new hows (found line and the short how)", async () => {
+  const { podOriginLines } = await import("../../station/src/state.mjs");
+  const lines = how => podOriginLines({ g: "meadow", how, idd: false });
+  assert.deepEqual(lines("grab").slice(1), ["after a grab for fruit."]);
+  assert.deepEqual(lines("dig").slice(1), ["in a fresh hole."]); assert.deepEqual(lines("fog").slice(1), ["in a fog bank."]);
+  assert.match(lines("warm")[1], /^as a creature warmed up\.$/); assert.match(lines("still")[1], /^as a creature settled\.$/); assert.match(lines("air")[1], /^as a creature aired out\.$/);
+  const { readFileSync } = await import("node:fs");
+  const src = readFileSync(new URL("../../station/src/views/pods-props.mjs", import.meta.url), "utf8");
+  for (const [k, v] of Object.entries({ grab: "a grab for fruit", warm: "by a warm stone", dig: "in a fresh hole", fog: "in a fog bank", still: "keeping still", air: "airing out" })) assert.ok(src.includes(`${k}: "${v}"`), k);
+});

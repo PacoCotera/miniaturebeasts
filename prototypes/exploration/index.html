@@ -1750,7 +1750,7 @@ function patchAction() {
     // never offered to a non-eater: the label says so and pressing spends nothing
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
       const eaters = SPECIES.map((_, i) => i).filter(sp => spOf(sp).eats && S.known.includes(sp)).map(sp => spOf(sp).plural);
-      fxMsg(fruit ? cap(spOf(o.c.sp).plural) + ' don’t eat fruit' + (eaters.length ? ' · ' + eaters.join(' and ') + ' do' : '') : 'The ' + spName(o.c.sp) + ' watches you · keep still and it settles, or Call', 2); } };
+      fxMsg(fruit ? cap(spOf(o.c.sp).plural) + ' don’t eat fruit' + (eaters.length ? ' · ' + eaters.join(' and ') + ' do' : '') : 'The ' + spName(o.c.sp) + ' watches you · ' + watchTail(o.c), 2); } };
     return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) }
       : { label: 'Bring fruit, or Call', run: () => { fxMsg('The ' + spName(o.c.sp) + ' watches you · bring fruit, or Call', 2); FX.bumpAt = NOW; } }; }
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
@@ -1920,7 +1920,10 @@ function lightBeacon(f) {
 }
 // Pods, named for the player: the species if identified, and one tag that tells two pods apart (where it came from).
 function podName(p, short) { return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'unknown' : 'Unknown pod'; }
-function podTagOf(p) {
+// The hold's column is narrow: the six newest hows have a short form there (the Ground row keeps the full tag).
+const HOW_SHORT = { grab: 'grabbing fruit', warm: 'warm stone', dig: 'in a fresh hole', fog: 'in a fog bank', still: 'keeping still', air: 'airing scales' };
+function podTagOf(p, short) {
+  if (short && HOW_SHORT[p.how]) return HOW_SHORT[p.how];
   const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', grab: 'shed, grabbing fruit', warm: 'by a warm stone', dig: 'in a fresh hole', fog: 'shed in a fog bank', still: 'shed, keeping still', air: 'shed, airing scales', shed: "of {of}'s line" }[p.how];
   return how ? how.replace('{of}', p.of) : (p.g === 'cave' ? 'cave' : p.bur ? 'from a hole' : 'from the ' + ({ pond: 'pond edge', rock: 'rock field' }[p.g] || p.g));
 }
@@ -2280,6 +2283,13 @@ function bubbleOf(c, carry) {
 function canSettle(c, X) {
   const s = spOf(c.sp).settle; if (!s) return false;
   return settlesAt(s, { cave: X.lay.cave, hole: s === 'burrow' && !X.lay.cave && !!nearestHole(X, c, 2), fog: X.fog });
+}
+// The ✓ Watch line's tail for a drinker: where it can settle says so when the place is not one (out of fog the Peplos, away from a hole the Tuikis).
+function watchTail(c) {
+  const s = spOf(c.sp).settle, lay = curLay(), X = { lay, live: curLive(), key: S.exp.patch.key, fog: !lay.cave && inFog(lay.cell) };
+  if (s === 'fog' && !canSettle(c, X)) return 'it settles only in fog';
+  if (s === 'burrow' && !canSettle(c, X)) return 'it settles by a hole';
+  return 'keep still and it settles, or Call';
 }
 // A warm stone (kind 'k', warm, not storm-charged) within a tile of the creature, or null.
 function warmStoneNear(X, c) { for (const f of X.lay.feats) if (f.kind === 'k' && cheb(f, c) <= 1 && stormCharge(X.key, f) <= 0 && stoneWarm(X.key, f)) return f; return null; }
@@ -4966,7 +4976,7 @@ function drawSwap() {
   panel(6, y0, SCR_W - 12, 98, C.ink, C.amber);
   text('Hold', 16, y0 + 12, C.mist);
   sw.held.forEach((p, i) => { const x = X0 + i * cw; if (i === sw.sel) { panel(x - 4, y0 + 4, cw - 4, 46, C.night); brackets(x - 6, y0 + 2, cw, 50, C.amber); }
-    podSlot(x, y0 + 8, p); text(clipText(podName(p), cw - 30, 2), x + 20, y0 + 8, i === sw.sel ? C.bone : C.fog); text(clipText(podTagOf(p), cw - 30, 2), x + 20, y0 + 28, C.mist); });
+    podSlot(x, y0 + 8, p); text(clipText(podName(p), cw - 30, 2), x + 20, y0 + 8, i === sw.sel ? C.bone : C.fog); text(clipText(podTagOf(p, true), cw - 30, 2), x + 20, y0 + 28, C.mist); });
   text('Ground', 16, y0 + 62, C.mist);
   podSlot(X0, y0 + 58, sw.p); text(clipText(podName(sw.p) + ' · ' + podTagOf(sw.p), SCR_W - X0 - 40, 2), X0 + 20, y0 + 58, C.bone);
   text(clipText('leave ' + podName(sw.held[sw.sel], true) + ' here, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
