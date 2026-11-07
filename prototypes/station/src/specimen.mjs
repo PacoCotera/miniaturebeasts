@@ -46,6 +46,7 @@ export function lookColours(trait, look, idx) {
   if (look === 'two side by side' && trait.pod) return trait.pod;              // the species' own pair
   if (trait.id === 'iris' && IRIS_SWATCH[look]) return [IRIS_SWATCH[look]];   // the Iris trait: the house iris colour of the look (amber #C27A1E), never the Face chapter's green ramp
   if (trait.id === 'body-hue') { const c = coatColours(trait.sid, look); if (c) return c; }   // the Tint trait: the coat colour of the look (coat-colours.mjs), never the chapter's one tan
+  if (trait.id === 'body-value') { const c = coatColours(trait.sid, 'between', look); if (c) return c; }   // the Shade trait: the coat at its middle Tint, dark to light
   if (parts.every((p) => PIGMENT[p])) return parts.map((p) => PIGMENT[p]);
   const hue = CH_HUE[trait.chapterId] || '#cccccc';
   const ramp = (trait.sid === 'S01' || !trait.sid) && RAMPS[trait.id] ? RAMPS[trait.id] : [mix(hue, '#000000', 0.12), mix(hue, PAL.bone, 0.3), mix(hue, PAL.bone, 0.6)];

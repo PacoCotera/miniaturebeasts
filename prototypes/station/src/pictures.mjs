@@ -22,7 +22,7 @@ import { specimenFor } from "./specimen-cache.mjs";
 import { renderCell } from "./specimen.mjs";
 import { sheetPicture, renderDisc, sheetKept, keptPictures, warmPaper } from "./library-sheet.mjs";
 import { facePicture, windowOf } from "./face-pictures.mjs";
-import { placedAt, coatMaster } from "./stands.mjs";
+import { placedAt, coatMaster, coatOf } from "./stands.mjs";
 import { farPicture, miniPicture } from "./lineage-pictures.mjs";
 import { registerReading } from "./reading-pictures.mjs";
 
@@ -204,14 +204,14 @@ export function registerPictures(reqs, env) {
       }
       case "face": {   // a mibi's face for the Library (library.json faces, face-pictures.mjs): from its layered stand through the species' face window, at its size, on libGround; a labelled stand-in where the species has none; its time printed
         // the id names the mibi and the size, not the stage (the art director, F4): a face drawn at another stage than its entry's (a mibi with no portrait that grew) is a new picture, and the old one goes from the face
-        const [w, h] = r.size; if (hasAsset(r.id) && FACE_STAGE.get(r.id) === r.stage) break; if (hasAsset(r.id)) { dropAsset(r.id); DROPPED.push(r.id); } FACE_STAGE.set(r.id, r.stage); const spec = SPECS.library.faces, rgb = (n) => RGB[C[n]];
+        const [w, h] = r.size; const fcoat = (coatOf(r.species, r.looks) ?? "").split("+")[0], fkey = r.stage + (fcoat ? "|" + fcoat : ""); if (hasAsset(r.id) && FACE_STAGE.get(r.id) === fkey) break; if (hasAsset(r.id)) { dropAsset(r.id); DROPPED.push(r.id); } FACE_STAGE.set(r.id, fkey); const spec = SPECS.library.faces, rgb = (n) => RGB[C[n]];
         const fstage = r.stage === "elder" ? "adult" : r.stage, mid = `mibi-${fstage === "juvenile" ? "juvenile" : "adult"}-${r.species}-304x312`, aid = `mibi-adult-${r.species}-304x312`;
         const layered = !!spec.windows?.[r.species]?.[fstage] && !!layeredStand(r.species, r.stage, [304, 312], "default");
         const painted = !layered && !!spec.windows?.crop?.[r.species] && placedAt(mid, 304, 312) && placedAt(aid, 304, 312);   // release 21d: every face is cut from the kind's painted stand through the art desk's window
         const stand = layered || painted;
         registerAsset({ id: r.id, w, h, status: stand ? "derived" : "stand-in", until: stand ? null : "the kind's painted stand and the art desk's face window", build: () => { let data = null; return { w, h, rgba: () => { if (data) return data;
           const rq = { species: r.species, stage: r.stage, looks: r.looks, size: w, faded: !!r.faded };
-          if (painted) { const pm = assetOf(mid), pa = assetOf(aid), px = (p) => ({ w: p.w, h: p.h, rgba: p.rgba() }); rq.art = pm.rgba(); rq.window = windowOf(r.species, fstage, spec, px(pa), px(pm), adultFacing(r.species) === youngFacing(r.species)); }
+          if (painted) { const pm = assetOf(mid), pa = assetOf(aid), px = (p) => ({ w: p.w, h: p.h, rgba: p.rgba() }); rq.art = (fcoat ? assetOf(coatMaster(mid, r.species, fcoat)) : pm).rgba(); /* the mibi's coat: the window below is the painted stand's, the recolour leaves the alpha alone */ rq.window = windowOf(r.species, fstage, spec, px(pa), px(pm), adultFacing(r.species) === youngFacing(r.species)); }
           const p = facePicture(rq, spec, rgb); console.log(`# face ${r.id}: rendered in ${p.ms.toFixed(0)} ms${p.standIn ? " (the stand-in)" : ""}`); return (data = p.rgba); } }; } });
         break;
       }

@@ -29,5 +29,5 @@ export function coatColours(species, tint, shade = "between") {
   const land = LAND_BODY[LAND_OF[species]]; if (!land) return null;
   if (tint !== "between" && !TARGET_HUE[tint]) return null;
   const [, L, C, h] = land, d = tint === "between" ? 0 : Math.max(-12, Math.min(12, ((TARGET_HUE[tint] - h + 540) % 360) - 180));
-  return [oklchHex(L + (SHADE_L[shade] ?? 0), C, (h + d + 360) % 360)];
+  return [oklchHex(L + (SHADE_L[shade] ?? 0), Math.max(C, 0.055), (h + d + 360) % 360)];   // a land of low chroma (tallwood, fells) is lifted to 0.055 so the three Tints can be told apart on a swatch
 }

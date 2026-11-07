@@ -106,7 +106,7 @@
    "png": "cargo-opening-portrait-travel.png"
   },
   "cargo-arrival-2200": {
-   "hash": "5fee389b",
+   "hash": "92a4c3b1",
    "png": "cargo-arrival-2200.png"
   },
   "cargo-arrival-choice": {
@@ -114,7 +114,7 @@
    "png": "cargo-arrival-choice.png"
   },
   "cargo-arrival-empty-trip": {
-   "hash": "121761ad",
+   "hash": "917e41a4",
    "png": "cargo-arrival-empty-trip.png"
   },
   "cargo-opening-skip": {
