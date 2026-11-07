@@ -330,7 +330,7 @@
   "away": "away",
   "library": {"new": "{n} new", "genome": "{Species} genome"},
   "notes": {"companionAway":"the Companion is on a trip"},
-  "readout": {"home":"{n} at home","trip":"{m} on a trip","allTrip":"all on a trip","sep":" · "},
+  "readout": {"home":"{n} at home","homeSome":"{k} of {n} at home","trip":"{m} on a trip","allTrip":"all on a trip","sep":" · "},
   "stations": {
    "pods": {"empty":"empty","count":"{n} in the case","kinds":"{k} kinds"},
    "incubator": {
