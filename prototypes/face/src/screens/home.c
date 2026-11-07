@@ -802,7 +802,8 @@ static void ent_figrect(const ent_t *e, int r[4]) { const int *b = e->asleep ? e
 static int rect_area(const int a[4], const int b[4]) { int w = (a[0] + a[2] < b[0] + b[2] ? a[0] + a[2] : b[0] + b[2]) - (a[0] > b[0] ? a[0] : b[0]), h = (a[1] + a[3] < b[1] + b[3] ? a[1] + a[3] : b[1] + b[3]) - (a[1] > b[1] ? a[1] : b[1]); return w > 0 && h > 0 ? w * h : 0; }
 /* how much of the figures a tag rectangle covers: the others' area, and the tag's own figure counted eightfold (the face stays clear first) */
 static int tag_cover(const ent_t *self, const int r[4]) {
-  int q[4], s; ent_figrect(self, q); s = 8 * rect_area(r, q);
+  int q[4], s; ent_figrect(self, q); if (q[3] > 20) q[3] -= 14;   /* its own feet and ring may be touched by a label under it (release 22b): only the body and face count */
+  s = 8 * rect_area(r, q);
   for (int i = 0; i < g_ne; i++) { const ent_t *o = &g_e[i]; if (o == self || o->hidden) continue; ent_figrect(o, q); if (q[2] > 0) s += rect_area(r, q); }
   return s;
 }

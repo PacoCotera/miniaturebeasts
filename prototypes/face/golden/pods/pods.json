@@ -6,7 +6,7 @@
    "png": "pods-inventory-no-pods.png"
   },
   "inventory, one sealed pod": {
-   "hash": "cd864d20",
+   "hash": "077f7209",
    "png": "pods-inventory-one-sealed-pod.png"
   },
   "inventory, twelve pods": {
@@ -82,7 +82,7 @@
    "png": "pods-read-not-enough-data.png"
   },
   "read, Tuikis, Shape in hand": {
-   "hash": "78a0cca0",
+   "hash": "9815a425",
    "png": "pods-read-tuikis-shape-in-hand.png"
   },
   "read, a sealed chapter, the pod's reason": {

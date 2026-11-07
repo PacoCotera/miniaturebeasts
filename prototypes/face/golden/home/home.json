@@ -6,11 +6,11 @@
    "png": "home-fresh.png"
   },
   "home-rest-goal": {
-   "hash": "30c6b80c",
+   "hash": "6caa241e",
    "png": "home-rest-goal.png"
   },
   "home-rest-needs": {
-   "hash": "c7f46cba",
+   "hash": "cbaa619c",
    "png": "home-rest-needs.png"
   },
   "home-focus-vivarium": {
@@ -30,7 +30,7 @@
    "png": "home-focus-incubator.png"
   },
   "home-focus-companion": {
-   "hash": "5655e885",
+   "hash": "d0f972c7",
    "png": "home-focus-companion.png"
   },
   "home-focus-companion-away": {
@@ -42,15 +42,15 @@
    "png": "home-focus-bay.png"
   },
   "home-focus-companion-nosleep": {
-   "hash": "9d56d704",
+   "hash": "5583116e",
    "png": "home-focus-companion-nosleep.png"
   },
   "home-focus-settings": {
-   "hash": "c5e95dbb",
+   "hash": "fa22bbbd",
    "png": "home-focus-settings.png"
   },
   "home-vivarium-all-home": {
-   "hash": "14069270",
+   "hash": "f7e307aa",
    "png": "home-vivarium-all-home.png"
   },
   "home-vivarium-some-away": {
@@ -58,19 +58,19 @@
    "png": "home-vivarium-some-away.png"
   },
   "home-window-dawn": {
-   "hash": "6f998106",
+   "hash": "d1f0521c",
    "png": "home-window-dawn.png"
   },
   "home-window-dusk": {
-   "hash": "d23f8d1e",
+   "hash": "666339cc",
    "png": "home-window-dusk.png"
   },
   "home-window-night": {
-   "hash": "1e9d6339",
+   "hash": "44a47ea7",
    "png": "home-window-night.png"
   },
   "home-window-five-of-eight": {
-   "hash": "39f13627",
+   "hash": "b7c9f74d",
    "png": "home-window-five-of-eight.png"
   },
   "home-room-reeds": {
@@ -78,7 +78,7 @@
    "png": "home-room-reeds.png"
   },
   "home-event-tag": {
-   "hash": "46423f90",
+   "hash": "fddfe3e5",
    "png": "home-event-tag.png"
   },
   "home-vivarium-none-home": {
@@ -114,7 +114,7 @@
    "png": "home-bay-portrait.png"
   },
   "home-companion-docked": {
-   "hash": "7b60d063",
+   "hash": "83eb22f9",
    "png": "home-companion-docked.png"
   },
   "home-companion-away": {
@@ -142,7 +142,7 @@
    "png": "home-library-focused.png"
   },
   "home-full-bud": {
-   "hash": "38efb920",
+   "hash": "451b6c4a",
    "png": "home-full-bud.png"
   }
  }
