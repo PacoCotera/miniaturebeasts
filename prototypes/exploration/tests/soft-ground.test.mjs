@@ -197,7 +197,7 @@ test("fords: a ford cell is a 'ford' in the map's words, never 'shallows'", () =
 });
 
 // A place that holds a crossing of the kind (a wade, scree edge or bank edge), entered with the partner along; the screen tile of the first soft tile there.
-const inPlace = (p, kind) => { const cell = J(p, `(() => { for (let c = 0; c < MW * MH; c++) { if (!G.comp[c]) continue; const l = layout(String(c)); if (l.tiles.some(t => t === T.${kind})) return c; } return -1; })()`);
+const inPlace = (p, kind) => { const cell = J(p, `(() => { for (let c = 0; c < MW * MH; c++) { if (!("${kind}" === "WADE" ? G.soft.wade[c] : G.comp[c])) continue; const l = layout(String(c)); if (l.tiles.some(t => t === T.${kind})) return c; } return -1; })()`);
   if (cell < 0) return null; p.run(`S.exp.start = ${cell}; S.exp.pos = ${cell}; S.exp.range = 4; enterPatch()`); return J(p, `(() => { const l = curLay(); const i = l.tiles.findIndex(t => t === T.${kind}); return [i % PW, (i / PW) | 0]; })()`); };
 const standX = "{ key: S.exp.patch.key, lay: curLay(), live: curLive(), P: S.exp.patch }";
 
