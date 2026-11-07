@@ -409,7 +409,7 @@ test("the Vivarium (vivarium.json, the collection v2 design §8): the field, the
   for (const [id, r] of Object.entries(rooms.rooms)) { assert.doesNotMatch(JSON.stringify(r), /-tile-/, id + ": no house tile"); }
   // the room view: the bed is Roots' own moved by (0, 8); the walk's clamp 8 px inside the window; one scale
   const bed = rooms.rooms.roots.bed; assert.deepEqual(R.bed.rect, [bed.rect[0], bed.rect[1] - 8, bed.rect[2], bed.rect[3]]); assert.equal(R.bed.sleepers.footY, bed.foot - 8); assert.equal(R.bed.sleepers.centre, R.bed.rect[0] + R.bed.rect[2] / 2); assert.equal(R.bed.sleepers.centre, 344, "the window's centre");
-  assert.deepEqual(R.bed.sleepers.ink.rects[3], R.bed.sleepers.places[3].map((x) => [x - 48, R.bed.sleepers.footY - 88, 96, 88]));
+  assert.deepEqual(R.bed.sleepers.ink.rects[2], R.bed.sleepers.places[2].map((x) => [x - 48, R.bed.sleepers.footY - 88, 96, 88]));
   assert.deepEqual(R.resident.walk.ground, [8, 88, 672, 472], "the clamp: ink 8 px inside the window"); assert.deepEqual([R.resident.adult, R.resident.juvenile, R.resident.factor], [[96, 99], [96, 99], [96, 304]]); assert.equal(R.resident.lift, 0, "the focused mibi keeps walking: no lift");
   for (const [id, r] of Object.entries(rooms.rooms)) { assert.deepEqual(r.crop.length, 2, id); assert.equal(r.crop[1], 96, id + ": the top edge at y 96"); assert.equal(r.drops.length, 8, id); }
   for (const [id, r] of Object.entries(R)) assert.ok(r.component || r.build || ["chips", "card", "marks"].includes(id), id + " names its word or composition");
