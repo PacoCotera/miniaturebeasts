@@ -4229,7 +4229,7 @@ function drawSoftMarks(q, cells, pawn) {
     blit(pb, x, y, fog ? 3 : rmFor(c));
   }
   // Tuliko's extra ring: on the cells one ring past the Probe's own range, a light lattice of gold dots (the coin crest's), under everything else
-  if (ex && canSure() && q.map) { const s0 = cxy(ex.start), r = ex.range, sp = cs >= 48 ? 8 : 6;
+  if (ex && canSure()) { const s0 = cxy(ex.start), r = ex.range, sp = cs >= 48 ? 8 : 6;   // the full map and the reach view the player walks on
     for (const [c, x, y] of cells) { const p = cxy(c); if (Math.max(Math.abs(p.x - s0.x), Math.abs(p.y - s0.y)) !== r || !S.revealed[c]) continue;
       for (let j = 0, yy = 3; yy < cs - 2; yy += sp >> 1, j++) for (let xx = 3 + (j & 1) * (sp >> 1); xx < cs - 2; xx += sp) R(x + xx, y + yy, 1, 1, C.gold); } }
 }

@@ -225,6 +225,11 @@ test("a walk that dug a bank but explored nothing still turns the world and says
 test("Tuliko's ring is drawn on the reach view; the message box keeps off the soft tiles of a place", () => {
   const tul = walk(7, 19, { tier: 1 }); tul.run("S.exp.pos = S.exp.start; render(0)");
   assert.ok(J(tul, "canSure()") && J(tul, "S.exp.range") === 3);
+  { const goldOf = (sp) => { const q = makePage({ canvas: true });   // the ring's gold dots on the reach view the player walks on: more gold with Tuliko than with a Loika
+      q.run(`newWorld(7); TEST.calm = true; S.turn = 5; S.tier = 1; S.known = [0, 1, 2]; S.mibis = [${JSON.stringify(mibi(1, sp))}]; S.carried = [1]; S.lead = 1; startExpedition('weather', G.spawns[0])`);
+      q.run("for (let c = 0; c < MW * MH; c++) S.revealed[c] = 1; S.phase = 'map'; S.ui.mapFull = false; RT.key = null; render(0)");
+      return q.run("(() => { let n = 0; for (const v of scr.px()) if (v === C.gold) n++; return n; })()"); };
+    assert.ok(goldOf(19) > goldOf(0) + 100, "the ring's gold dots are drawn on the reach view"); }
   const p = walk(7, 19, { tier: 2 }), at = inPlace(p, "SCREE");
   if (at) { p.run("RT.softScr = null; fxSign('call')"); p.run("render(0)"); const rects = J(p, "RT.softScr"), m = J(p, "msgGeom()");
     if (m) for (const r of rects) assert.ok(!(r.x < m.x + m.w && r.x + r.w > m.x && r.y < m.y + m.h && r.y + r.h > m.y), "the box covers a soft tile"); }
