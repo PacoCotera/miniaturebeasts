@@ -128,10 +128,10 @@ class Served(unittest.TestCase):
         self.assertIn("00000000", rows["S99"]["error"])
         self.assertIn("not here", rows["S99"]["error"])
 
-    def test_the_species_answer_names_the_studio_glbs_and_each_is_served_by_its_sha(self):
+    def test_the_studio_answer_names_the_studio_glbs_and_each_is_served_by_its_sha(self):
         a = json.loads(get(self.url + "/api/species/S01")[2])
         self.assertIsNone(a["error"])
-        st = a["studio"]
+        st = json.loads(get(self.url + "/api/species/S01/studio")[2])
         self.assertEqual(st["sculpt"]["morph_targets"], ["key.form.torso-girth"])
         self.assertEqual(len(st["parts"]), 1)
         for one in [st["sculpt"]] + st["parts"]:
@@ -144,7 +144,7 @@ class Served(unittest.TestCase):
             self.assertEqual(hashlib.sha256(body).hexdigest(), one["sha256"])
         self.assertEqual(get(self.url + "/cas/" + "ab" * 32 + ".glb")[0], 404)
         self.assertEqual(get(self.url + "/api/species/S99")[0], 200)
-        self.assertIsNone(json.loads(get(self.url + "/api/species/S99")[2])["studio"]["sculpt"])
+        self.assertIsNone(json.loads(get(self.url + "/api/species/S99/studio")[2])["sculpt"])
 
 
 class ByTheSha(unittest.TestCase):

@@ -1722,7 +1722,7 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)", p)
             if m:                                                      # the whole answer, kept for the pages that still ask for it; the three routes below are its parts
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=srv.row_error(s), studio=srv.studio_files(s), lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()), etag=True)
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=srv.row_error(s), lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()), etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)/file", p)
             if m:                                                      # the document: tagged with its hash (and the error, when the file on disk does not parse)
                 s = srv.get_species(m.group(1))
@@ -1737,6 +1737,9 @@ def make_handler(srv):
             if m:                                                      # the Check ends block (34 KB on Tuliko): asked for by the screens that show it
                 s = srv.get_species(m.group(1))
                 return self.send_json(dict(id=s.id, hash=s.hash, extremes=srv.current_extremes(s)), etag=True)
+            m = re.fullmatch(r"/api/species/([^/]+)/studio", p)
+            if m:
+                return self.send_json(srv.studio_files(srv.get_species(m.group(1))), etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)/freq", p)
             if m:
                 return self.send_json(srv.freq(srv.get_species(m.group(1)), int(q.get("n", ["1000"])[0])))
