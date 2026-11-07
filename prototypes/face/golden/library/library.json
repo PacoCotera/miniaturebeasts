@@ -6,23 +6,23 @@
    "png": "library-l1-first.png"
   },
   "library-l1-mid": {
-   "hash": "67792548",
+   "hash": "68f7c1f0",
    "png": "library-l1-mid.png"
   },
   "library-l1-new": {
-   "hash": "1e600112",
+   "hash": "d371e626",
    "png": "library-l1-new.png"
   },
   "library-l1-roomkey": {
-   "hash": "b32ffe50",
+   "hash": "eebd7d9c",
    "png": "library-l1-roomkey.png"
   },
   "library-l2-loika-mid": {
-   "hash": "cccfd7dd",
+   "hash": "662d1633",
    "png": "library-l2-loika-mid.png"
   },
   "library-l2-coat-lit": {
-   "hash": "a0e3501b",
+   "hash": "8a7b1fa7",
    "png": "library-l2-coat-lit.png"
   },
   "library-l2-met-only": {
@@ -30,11 +30,11 @@
    "png": "library-l2-met-only.png"
   },
   "library-l2-new": {
-   "hash": "f7662063",
+   "hash": "f7aca789",
    "png": "library-l2-new.png"
   },
   "library-l2-wish-uncarried": {
-   "hash": "a55e8923",
+   "hash": "73dbcefd",
    "png": "library-l2-wish-uncarried.png"
   },
   "library-l2-shut": {
@@ -62,71 +62,71 @@
    "png": "library-l2-blikur.png"
   },
   "library-l2-loika-late": {
-   "hash": "319fcd09",
+   "hash": "e0b3e18d",
    "png": "library-l2-loika-late.png"
   },
   "library-l3-far": {
-   "hash": "27a85aa4",
+   "hash": "eec829c8",
    "png": "library-l3-far.png"
   },
   "library-l3-far-one-family": {
-   "hash": "44b51751",
+   "hash": "d246de9d",
    "png": "library-l3-far-one-family.png"
   },
   "library-l3-close-moss": {
-   "hash": "33d96874",
+   "hash": "bea6c5df",
    "png": "library-l3-close-moss.png"
   },
   "library-l3-close-stubs": {
-   "hash": "c838a949",
+   "hash": "2ba3e830",
    "png": "library-l3-close-stubs.png"
   },
   "library-l3-close-bud": {
-   "hash": "cda88e98",
+   "hash": "e69437c4",
    "png": "library-l3-close-bud.png"
   },
   "library-l3-close-fits": {
-   "hash": "7a69a2f2",
+   "hash": "f22c3a8f",
    "png": "library-l3-close-fits.png"
   },
   "library-l3-close-founder": {
-   "hash": "08e0fb19",
+   "hash": "fa63e175",
    "png": "library-l3-close-founder.png"
   },
   "library-l3-close-shedpod": {
-   "hash": "dd0e846d",
+   "hash": "0e6d5bcf",
    "png": "library-l3-close-shedpod.png"
   },
   "library-l3-compare-dot-moss": {
-   "hash": "ae834170",
+   "hash": "67898883",
    "png": "library-l3-compare-dot-moss.png"
   },
   "library-l3-compare-on-held": {
-   "hash": "a30c3da7",
+   "hash": "50af0d20",
    "png": "library-l3-compare-on-held.png"
   },
   "library-l3-compare-none": {
-   "hash": "3f95b5fe",
+   "hash": "358cb8b3",
    "png": "library-l3-compare-none.png"
   },
   "library-l1-dither": {
-   "hash": "b85e8366",
+   "hash": "d8ccc56f",
    "png": "library-l1-dither.png"
   },
   "library-l3-pan-step-1": {
-   "hash": "0d0e6a04",
+   "hash": "b856db6d",
    "png": "library-l3-pan-step-1.png"
   },
   "library-l3-pan-step-2": {
-   "hash": "b7646a39",
+   "hash": "f8de7ad0",
    "png": "library-l3-pan-step-2.png"
   },
   "library-l3-pan-step-3": {
-   "hash": "c838a949",
+   "hash": "2ba3e830",
    "png": "library-l3-pan-step-3.png"
   },
   "library-l3-zoom-in": {
-   "hash": "29ada06d",
+   "hash": "b7e3d536",
    "png": "library-l3-zoom-in.png"
   }
  }
