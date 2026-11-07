@@ -226,5 +226,5 @@ test("clan C20 is in the roster with no generated species and no form plan, and 
   assert.equal(CLANS.C20.number, 20); assert.equal(CLANS.C20.engine, "body"); assert.equal(CLANS.C20.plan, undefined);
   assert.equal(SPECIES.filter((s) => s.clan === "C20").length, 0, "no species of C20 is generated");
   assert.equal(SPECIES.length, 19);
-  assert.equal(Object.entries(CLANS).filter(([, c]) => c.engine !== "body").length, 20, "the nineteen form clans and C21, the glider Tuliko's (release 21a)");
+  assert.equal(Object.entries(CLANS).filter(([, c]) => c.engine !== "body").length, 20, "the nineteen form clans and C21, the rambler Tuliko's (release 21a)");
 });

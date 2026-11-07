@@ -22,7 +22,7 @@ const open = (f) => f.loci.filter((l) => l.kind !== "locked");
 const openIds = (f) => open(f).map((l) => l.id);
 
 test("the generator writes the four anchors as language frames: schema /4, catalogue 13, family, land, eye count, signature part", () => {
-  assert.deepEqual(LANGUAGE_KINDS, Array.from({ length: 20 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`), "the twenty kinds (S20 Tuliko the glider joined in release 21a); the studio's S20 is a fixture and S22 a template");
+  assert.deepEqual(LANGUAGE_KINDS, Array.from({ length: 20 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`), "the twenty kinds (S20 Tuliko the rambler joined in release 21a); the studio's S20 is a fixture and S22 a template");
   for (const id of LANGUAGE_ANCHORS) {
     const f = frames[id], k = kindOf(LANGUAGE, id);
     assert.equal(f.schema, SCHEMA_LANGUAGE); assert.equal(f.frameVersion, LANGUAGE_FRAME);

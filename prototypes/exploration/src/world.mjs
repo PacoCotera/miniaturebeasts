@@ -1308,7 +1308,7 @@ export function genWorld5(seed, biome = 'mixed') { return { ...genWorld4(seed, b
 export const FAMILY_GROUND = {
   trotter: [L.MEADOW, L.WOOD], 'shoulder-heavy': [L.ROCK], hopper: [L.ROCK, L.WOOD], digger: [L.MEADOW], loaf: [L.MEADOW, L.POND], bridge: [L.WOOD, L.MEADOW],
   sitter: [L.POND], waddler: [L.MEADOW, L.WOOD], roundling: [L.MEADOW], mound: [L.MEADOW, L.ROCK], swimmer: [L.POND], climber: [L.WOOD], flutterer: [L.WOOD],
-  'four-wing': [L.MEADOW], glider: [L.WOOD], 'two-part crawler': [L.WOOD], floater: [L.ROCK], 'shell-carrier': [L.MEADOW], slider: [L.POND], 'six-arm': [L.ROCK, L.POND],
+  'four-wing': [L.MEADOW], rambler: [L.WOOD], 'two-part crawler': [L.WOOD], floater: [L.ROCK], 'shell-carrier': [L.MEADOW], slider: [L.POND], 'six-arm': [L.ROCK, L.POND],
 };
 // kinds: [{ id: 'S08', sp (the kind's place in the game's species list), hab: [land…], nest?: true (the glow cells and the cave under the cliff), weight?: 1 (multiplies the herd odds) }]
 export function genLife5(G, seed, kinds) {

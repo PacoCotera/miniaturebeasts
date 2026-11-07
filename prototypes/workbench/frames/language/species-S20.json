@@ -1,18 +1,18 @@
 {
  "frameVersion": 8,
  "schema": "mb-species-frame/4",
- "family": "glider",
+ "family": "rambler",
  "land": "tallwood",
  "species": {
   "id": "S20",
   "name": "Tuliko",
   "plural": "Tuliko",
   "order": 20,
-  "summary": "A small four-legged glider: a low scaled body, skin between its legs that opens to glide, a flat steering tail and a scalloped coin crest along its back."
+  "summary": "A small four-legged rambler: coin scales, a scalloped coin crest along its back, four short legs."
  },
  "taxonomy": {
   "code": "S20",
-  "moves": "scurries, glides",
+  "moves": "scurries, hops",
   "habitat": "Tallwood",
   "gate": null,
   "diet": "fruit, leaves",
@@ -85,7 +85,7 @@
  "signature": {
   "anchor": "jade",
   "second": "slate",
-  "feature": "a glider body, with its scalloped coin crest",
+  "feature": "a rambler body, with its scalloped coin crest",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.axial-tail-presence": "on"

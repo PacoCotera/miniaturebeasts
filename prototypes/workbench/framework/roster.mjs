@@ -50,9 +50,9 @@ export const CLANS = {
   // body engine, and its frame arrives with the workbench's chunk 9 and ticket G3. No `plan`, so nothing here can build a species: the page's new-species list skips it
   // (`engine: "body"`), and the clan name is the copywriter's (CLAN_NAMES has none yet).
   C20: { number: 20, engine: "body", resembles: "a small upright biped with a lantern at the end of its tail", feature: "a lantern tail tip that glows like a firefly" },
-  // C21, the glider Tuliko's clan in the game (release 21a): a clan on the four-legged plan with a flat steering tail, so the language frame of S20 (version 8) can be built by the form engine. The studio's body-engine Tuliko
+  // C21, the rambler Tuliko's clan in the game (release 21a): a clan on the four-legged plan with a tapering tail, so the language frame of S20 (version 8) can be built by the form engine. The studio's body-engine Tuliko
   // (C20, key S20.1) is untouched. The membrane is not modelled in the genome body (the game draws paintings; the body only validates). The legacy fields below are read by no frame: a frame of version 8 takes its own from the registry.
-  C21: { number: 21, resembles: "a small four-legged glider", plan: "two|serial|bilateral|contact|zero|one|two|off|scales", extras: { join: "narrow", wave: true }, anchor: "jade", second: "butter", feature: "a coin crest along the back", features: { ...EYES, ...sw("anatomy.axial-tail-presence") }, finish: {} },
+  C21: { number: 21, resembles: "a small four-legged rambler", plan: "two|serial|bilateral|contact|zero|one|two|off|scales", extras: { join: "narrow", wave: true }, anchor: "jade", second: "butter", feature: "a coin crest along the back", features: { ...EYES, ...sw("anatomy.axial-tail-presence") }, finish: {} },
 };
 
 // The three authored frames, as frames.py defines them (open traits, pools, fixed values).
@@ -228,10 +228,10 @@ export const SPECIES = [
 ];
 
 // Kinds that have a frame of version 8 only (release 21a): the form registry (build-frames, frames/species-*.json, the 19 rows above) never builds them, so no frame before the language moves.
-// S20 Tuliko, the glider: the form row the language frame is built from (the studio's body-engine Tuliko, key S20.1, is a separate fixture). Its movement, stamina and character traits are the shared vocabulary's, as the fluffy kinds'.
+// S20 Tuliko, the rambler: the form row the language frame is built from (the studio's body-engine Tuliko, key S20.1, is a separate fixture). Its movement, stamina and character traits are the shared vocabulary's, as the fluffy kinds'.
 export const LANGUAGE_ONLY = [
-  { ...row("S20", "C21", "small", "mid", "a small four-legged glider", "scurries, glides", "Tallwood", null, "fruit, leaves", "draft: to be set by the game designer", "draft: curious, content"),
-    summary: "A small four-legged glider: a low scaled body, skin between its legs that opens to glide, a flat steering tail and a scalloped coin crest along its back.",
+  { ...row("S20", "C21", "small", "mid", "a small four-legged rambler", "scurries, hops", "Tallwood", null, "fruit, leaves", "draft: to be set by the game designer", "draft: curious, content"),
+    summary: "A small four-legged rambler: coin scales, a scalloped coin crest along its back, four short legs.",
     frameVersion: 8, sealed: {}, alwaysOpen: [], neverOpen: [] },
 ];
 export const ALL_SPECIES = [...SPECIES, ...LANGUAGE_ONLY];

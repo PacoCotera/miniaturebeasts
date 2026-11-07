@@ -76,7 +76,7 @@ const FAMILY_ROWS = [
   [12, "climber", "biped", 2, "two legs", [["hands", "grip"], ["tail", "prehensile"]], "walk; grip idle", false, "grip hands, prehensile tail"],
   [13, "flutterer", "biped", 2, "two legs", [["wings", "one pair, big enough to lift"]], "flutter", false, "one wing pair big enough to lift"],
   [14, "four-wing", "quadruped", 4, "four short legs", [["wings", "two pairs on the back, lift"]], "flutter (two pairs)", false, "two wing pairs on the back"],
-  [15, "glider", "quadruped", 4, "four legs", [["membrane", "skin leg to leg, glide"], ["tail", "flat, steering"]], "walk; glide pose", false, "skin membranes leg to leg, flat steering tail"],
+  [15, "rambler", "quadruped", 4, "four short legs", [["tail", "tapering"]], "walk; hop pose", false, "coin scales, scalloped coin crest along the back, four short legs"],
   [16, "two-part crawler", "hexapod", 6, "six legs on two rounded body parts", [["antennae", "allowed"]], "six-leg walk", false, "two body parts, never three"],
   [17, "floater", "mass", 0, "none: floats, shadow below", [["puff edge", "soft edge"], ["nub arms", "small"]], "bob", true, "floats; shadow below"],
   [18, "shell-carrier", "quadruped", 4, "four legs", [["shell", "dome, never a spiral"]], "slow walk", false, "a dome shell, never a spiral"],
@@ -90,7 +90,7 @@ export const PLANS = ["quadruped", "biped", "mass", "legless", "hexapod", "radia
 // (S22), which stays the cage trotter. The art desk's per-kind table (the mesh-path design, section 2) is the source.
 const FAMILY_PATH = {
   trotter: "mesh", "shoulder-heavy": "mesh", hopper: "mesh", digger: "mesh", loaf: "mesh", bridge: "mesh", sitter: "mesh", waddler: "mesh", roundling: "mesh",
-  mound: "cage", swimmer: "hybrid", climber: "hybrid", flutterer: "hybrid", "four-wing": "hybrid", glider: "hybrid", "two-part crawler": "mesh", floater: "cage",
+  mound: "cage", swimmer: "hybrid", climber: "hybrid", flutterer: "hybrid", "four-wing": "hybrid", rambler: "hybrid", "two-part crawler": "mesh", floater: "cage",
   "shell-carrier": "mesh", slider: "mesh", "six-arm": "hybrid",
 };
 // Armature layout: [family, layout name, spine bones, legs, bones in a leg chain, tail bones, parts on their own socket bones as [bone, layout, mirrors]].
@@ -110,7 +110,7 @@ const ARMATURE_ROWS = [
   ["climber", "biped", 3, 2, 3, 5, [["hand", "pair", true]]],
   ["flutterer", "biped", 3, 2, 3, 0, [["wing", "pair", true]]],
   ["four-wing", "quadruped", 3, 4, 2, 0, [["wing_front", "pair", true], ["wing_hind", "pair", true]]],
-  ["glider", "quadruped", 3, 4, 3, 2, [["membrane", "pair", true]]],
+  ["rambler", "quadruped", 3, 4, 3, 2, []],
   ["two-part crawler", "hexapod", 2, 6, 3, 0, [["antenna", "pair", true]]],
   ["floater", "mass", 1, 0, 0, 0, [["nub", "pair", true]]],
   ["shell-carrier", "quadruped", 3, 4, 3, 1, [["shell", "single", false]]],
@@ -198,7 +198,7 @@ export const KINDS = [
   K("S17", "Wickle", "roundling", "mixed", "fur", "long", "flame curl", "head-top", 1, [0.25, 0.6], "own", { anchor: true }),
   K("S18", "Drapet", "mound", "downs", "fur", "long hair", "the curtain", "coat", null, null, "own", { anchor: true }),
   K("S19", "Curlop", "sitter", "meres", "fur", "long", "coiled tail", "tail", 1, [1.0, 1.75], "own", { anchor: true }),
-  K("S20", "Tuliko", "glider", "tallwood", "scale", null, "scalloped coin crest", "back-line", [5, 8, 6], null),
+  K("S20", "Tuliko", "rambler", "tallwood", "scale", null, "scalloped coin crest", "back-line", [5, 8, 6], null),
   K("S22", "Studio quad", "trotter", null, "fur", "teddy", null, null, null, null, "land", { template: true }),
 ];
 // Lehten is the only three-eyed kind; nothing varies eye count (owner 2026-11-05 22:33).
@@ -295,7 +295,7 @@ export const EXCEPTIONS = [
 
 // ---- fixtures: frozen regression files; every language check skips them ----
 export const FIXTURES = [
-  { id: "S20", name: "old Tuliko", file: "species_v1/S20.json", note: "upright biped regression fixture; schema mb-species/1; its id is reassigned to the glider Tuliko when that kind is built", frozen: true },
+  { id: "S20", name: "old Tuliko", file: "species_v1/S20.json", note: "upright biped regression fixture; schema mb-species/1; its id is reassigned to the rambler Tuliko when that kind is built", frozen: true },
 ];
 
 export const LANGUAGE = {

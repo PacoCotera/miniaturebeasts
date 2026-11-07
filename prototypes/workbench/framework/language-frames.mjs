@@ -23,7 +23,7 @@ import { buildFrame, sampleIndividual, rng } from "./species.mjs";
 import { planFacts } from "./plans.mjs";
 import { carried, isPartSwitch, SWITCH_TARGETS } from "./guards.mjs";
 
-// The kinds this generator writes: the four anchors (chunk 5), the other fifteen (chunk 7) and S20 Tuliko, the glider (release 21a): twenty in all. The studio's body-engine S20 (key S20.1) is a
+// The kinds this generator writes: the four anchors (chunk 5), the other fifteen (chunk 7) and S20 Tuliko, the rambler (release 21a): twenty in all. The studio's body-engine S20 (key S20.1) is a
 // fixture and S22 a template, so neither has a language frame.
 export const LANGUAGE_ANCHORS = ["S01", "S17", "S18", "S19"];
 export const LANGUAGE_KINDS = Array.from({ length: 20 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`);
@@ -71,7 +71,7 @@ const KEEP = {
   S17: [{ trait: "stride" }, { trait: "turning" }, { trait: "curiosity" }],
   S18: [{ trait: "pace" }, { trait: "weave" }, { trait: "stride" }, { trait: "curiosity" }, { trait: "nerve" }],
   S19: [{ trait: "stride" }, { trait: "pace" }, { trait: "thrift" }, { trait: "nerve" }, { trait: "curiosity" }],
-  S20: [{ trait: "stride" }, { trait: "pace" }, { trait: "turning" }, { trait: "nerve" }, { trait: "curiosity" }],   // the glider has no older frame to keep from: the shared vocabulary's traits
+  S20: [{ trait: "stride" }, { trait: "pace" }, { trait: "turning" }, { trait: "nerve" }, { trait: "curiosity" }],   // the rambler has no older frame to keep from: the shared vocabulary's traits
 };
 // The records an anchor's frame fixes by hand (its type), beyond the roster's proportions.
 const FIXED = {

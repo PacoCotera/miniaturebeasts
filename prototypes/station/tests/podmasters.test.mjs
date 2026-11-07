@@ -56,7 +56,7 @@ test("the rack pod: 24×32, each pixel the fill of the last layer on, transparen
     }
     if (!frame) { assert.equal(patName, null, "the unknown pod has no pattern"); assert.equal(crownOn.length, 0, "the unknown pod has no crown"); }
     else if (crown("")) assert.ok(crownOn.length > 0 && crownOn.some((i) => !on1(masks.body, i)), name + ": the crown is drawn, and stands above the body");   // S20 Tuliko is clan C21 (release 21a): no pod crown is placed for it yet (the art desk owes it), so its pod is drawn without one
-    else assert.equal(clan, "C21", name + ": only the glider Tuliko lacks a placed crown"), assert.equal(crownOn.length, 0);
+    else assert.equal(clan, "C21", name + ": only the rambler Tuliko lacks a placed crown"), assert.equal(crownOn.length, 0);
     if (glowChip) assert.ok(crownOn.some((i) => px.slice(i * 4, i * 4 + 3).join() === fill["crown-glow"].join()), name + ": the lit part is " + glowChip);
     const outlines = new Set(); for (let i = 0; i < W * H; i++) if (on1(masks.outline, i) && !crownOn.includes(i)) outlines.add(px.slice(i * 4, i * 4 + 3).join()); assert.ok(outlines.size <= 1 || patName, name + ": the outline is one colour (a pattern may be drawn under it only)");
   }

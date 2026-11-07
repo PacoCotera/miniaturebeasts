@@ -52,7 +52,7 @@ export const KINDS = {
   S17: { resembles: "a tall teardrop of fur with a glowing plume", form: "tapered", fur: "tail", coat: "long", depth: 0.66, width: 0.62, head: 0.4, shape: "round", lift: "mid", eyes: "big", eyeSet: "wide", legs: 0.12, legR: 0.05, stance: "narrow", tail: 0.9, tailR: 0.15, carry: "level", curl: 2.2, skirtDrop: 0.6, skirtFlare: 0.1 },
   S18: { resembles: "a wide low dome under a floor-length skirt of fur", fur: "body", coat: "long", stance: "narrow", depth: 0.85, width: 0.75, head: 0.3, shape: "round", lift: "low", eyes: "big", eyeSet: "wide", legs: 0.3, legR: 0.1, skirtDrop: 1, skirtFlare: 0.1, brow: 1 },
   S19: { resembles: "an upright crescent with a curled tail and small hands", form: "tapered", fur: "tail", coat: "long", stance: "narrow", depth: 0.7, width: 0.6, head: 0.42, shape: "round", lift: "high", legs: 0.2, legR: 0.3, tail: 0.85, tailR: 0.9, carry: "level", curl: 3, muzzle: 0.25, muzzleW: "broad", eyes: "big", eyeSet: "wide", armProx: "short", armDist: "short", armR: "thick", hand: 1 },
-  S20: { resembles: "a small four-legged glider", stance: "wide", waist: "thick", depth: 0.36, width: 0.42, head: 0.34, shape: "round", lift: "low", neck: 0.15, legs: 0.5, legR: 0.14, tail: 0.9, tailR: 0.1, carry: "level", eyes: "big", eyeSet: "wide" },
+  S20: { resembles: "a small four-legged rambler", stance: "wide", waist: "thick", depth: 0.36, width: 0.42, head: 0.34, shape: "round", lift: "low", neck: 0.15, legs: 0.5, legR: 0.14, tail: 0.9, tailR: 0.1, carry: "level", eyes: "big", eyeSet: "wide" },
   S16: { resembles: "a wisp of lightning", mass: "even", waist: "thin", depth: 0.34, width: 0.3, head: 0.32, shape: "long", lift: "mid", neck: 0.3, eyes: "big", eyeSet: "close" },
 };
 
