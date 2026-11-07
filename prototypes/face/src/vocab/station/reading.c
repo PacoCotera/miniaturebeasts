@@ -254,7 +254,7 @@ key:
     if (v_pbool(P ".right.key.pressOnly", 0)) { a[0] = 0; t[0] = 0; }
     if (*a) { v_name("read.beside"); pic_c("read.beside.sprout", a, sk(R ".key.sprout", 0), sk(R ".key.sprout", 1)); v_region("read.words", LAYER_TYPE); say("read.beside", t, sk(R ".key.sproutText", 0), sk(R ".key.sproutText", 1), "glass.quiet", V_ALIGN_LEFT); }
     else if (*t) {   /* the line beside the key, kept inside the glass (release 21g): a line wider than the room to the glass's edge is broken at the last space that fits, the two lines 9 px either side of the line's baseline */
-      int lx = sk(R ".key.line", 0), ly = sk(R ".key.line", 1), room = 960 - lx, cut = -1; char l1[160], l2[160];
+      int lx = sk(R ".key.line", 0), ly = sk(R ".key.line", 1), room = 960 - lx, cut = -1; char l1[V_STR], l2[V_STR];
       v_region("read.words", LAYER_TYPE);
       if (v_role_width(t, "glass.quiet") > room) { snprintf(l1, sizeof l1, "%s", t); for (int q = 0; l1[q]; q++) if (l1[q] == ' ') { l1[q] = 0; if (v_role_width(l1, "glass.quiet") <= room) cut = q; l1[q] = ' '; } }
       if (cut > 0) { snprintf(l1, sizeof l1, "%s", t); l1[cut] = 0; snprintf(l2, sizeof l2, "%s", t + cut + 1); say("read.beside", l1, lx, ly - 9, "glass.quiet", V_ALIGN_LEFT); say("read.beside.2", l2, lx, ly + 9, "glass.quiet", V_ALIGN_LEFT); }
