@@ -3186,6 +3186,54 @@
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/boards/visual-language/stands/stand-S01-loika-96x88.png"
   },
+  "mibi-adult-S01-ash-304x312": {
+   "file": "pods/mibi-adult-S01-ash-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "35d028d993a2758270d01755567363817036966a08d204a13f0180149f49471c",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-ash-304x312.png"
+  },
+  "mibi-adult-S01-ash-48x48": {
+   "file": "pods/mibi-adult-S01-ash-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "59a18583bc5da13d08d41fb65f06de2ce2706e12fa8d0fa491a08ca86fc37ba7",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-ash-48x48.png"
+  },
+  "mibi-adult-S01-ash-96x88": {
+   "file": "pods/mibi-adult-S01-ash-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "3ec3e745db4664317ffa9fcfaa404a8144941138bf6efe3d3161822b00bed17a",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-ash-96x88.png"
+  },
+  "mibi-adult-S01-ash-calm-304x312": {
+   "file": "pods/mibi-adult-S01-ash-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "408da94cc3b5cc5aa2a97d75de6e1f94b8a49942f247108d81644e592416677f",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-ash-304x312.png"
+  },
+  "mibi-adult-S01-ash-curl-304x312": {
+   "file": "pods/mibi-adult-S01-ash-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "cab3a7cb94083e9a8d0e64424a7910ccc1a7305c7cbcc1ac9b1f988c6b873370",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-ash-304x312.png"
+  },
+  "mibi-adult-S01-ash-shake-304x312": {
+   "file": "pods/mibi-adult-S01-ash-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "af9d4c317ef90a1b8a4f8c7e074e26933707c6cbc868a8917607f119272275ce",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-ash-304x312.png"
+  },
   "mibi-adult-S01-calm-304x312": {
    "file": "pods/mibi-adult-S01-calm-304x312.png",
    "w": 304,
@@ -3201,6 +3249,54 @@
    "sha256": "88fab8e705b28a6f9ce50070f5be1c838c3feec0a486ad8ee4349d514b24f5a1",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-asleep-304x312.png"
+  },
+  "mibi-adult-S01-russet-304x312": {
+   "file": "pods/mibi-adult-S01-russet-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "1f1879508b6e63617c402ee7179c30765c7aafed528fdd50fa1a23754ab4622e",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-russet-304x312.png"
+  },
+  "mibi-adult-S01-russet-48x48": {
+   "file": "pods/mibi-adult-S01-russet-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "bddb740884126a2c28d26f780609f8c6959511bc88bcbaad8707a85fdb09ee9d",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-russet-48x48.png"
+  },
+  "mibi-adult-S01-russet-96x88": {
+   "file": "pods/mibi-adult-S01-russet-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "2a0121df946c3015515f88a6159923940200e7927bffe1064dc07ed634e612ad",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/stand-russet-96x88.png"
+  },
+  "mibi-adult-S01-russet-calm-304x312": {
+   "file": "pods/mibi-adult-S01-russet-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "f70556f8106c596100c7a1cc272f8f0278c0e94cb19e8edfaff20027d52c5aab",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/calm-russet-304x312.png"
+  },
+  "mibi-adult-S01-russet-curl-304x312": {
+   "file": "pods/mibi-adult-S01-russet-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "a9c805c3447bcb84b570d3f323387514160aa8a3f25f723e61c82eecfbdc7551",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/asleep-russet-304x312.png"
+  },
+  "mibi-adult-S01-russet-shake-304x312": {
+   "file": "pods/mibi-adult-S01-russet-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "331d6b31798909ea233d3c961806e3fe889ba63457769da5a1213e1ee0722a1d",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/shake-russet-304x312.png"
   },
   "mibi-adult-S01-shake-304x312": {
    "file": "pods/mibi-adult-S01-shake-304x312.png",
@@ -4362,6 +4458,54 @@
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-juv-v2-r2-96x88.png"
   },
+  "mibi-juvenile-S01-ash-304x312": {
+   "file": "pods/mibi-juvenile-S01-ash-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e44745e5b9bbdac9e73a8bc4bfb0e83d6498d29f25fadb55aca6b87c89547a64",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-ash-304x312.png"
+  },
+  "mibi-juvenile-S01-ash-48x48": {
+   "file": "pods/mibi-juvenile-S01-ash-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "9449f7d3ca220518bbe84720b62d017e47a4584ef33ae7b22417da95cd738206",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-ash-48x48.png"
+  },
+  "mibi-juvenile-S01-ash-96x88": {
+   "file": "pods/mibi-juvenile-S01-ash-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "ef990d0b06fc22af104b84c559af4231c80f9577d339a8942e5ce0d0fe772128",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-ash-96x88.png"
+  },
+  "mibi-juvenile-S01-ash-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-ash-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "43ca7b9671294fb3162ca5a51be1ed1db72e27c51d2a079e633abcb80ad88581",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-ash-304x312.png"
+  },
+  "mibi-juvenile-S01-ash-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-ash-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "0eac9dec535084ee13df6bbec04d3b68067042e2956f1353f36c32ec266ec2d1",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-ash-304x312.png"
+  },
+  "mibi-juvenile-S01-ash-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-ash-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "4e49464f495001deb67b631c0b2595dcc48e1d16c8e5ae6c92602b15105bad3f",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-ash-304x312.png"
+  },
   "mibi-juvenile-S01-calm-304x312": {
    "file": "pods/mibi-juvenile-S01-calm-304x312.png",
    "w": 304,
@@ -4377,6 +4521,54 @@
    "sha256": "bf8c1db886d06f282a5f0d1b7943d0643cda6b8027e4548e01549e0b1c36bcb4",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-juvasleep-v2-304x312.png"
+  },
+  "mibi-juvenile-S01-russet-304x312": {
+   "file": "pods/mibi-juvenile-S01-russet-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "dd275916c5af5d0231c2b563954c6febe09105c27e8de644fd16bfdcd8a18e72",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-russet-304x312.png"
+  },
+  "mibi-juvenile-S01-russet-48x48": {
+   "file": "pods/mibi-juvenile-S01-russet-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "62481a33b2e6a0a01754f9b830f1135446f62389f4723f258b17763c89517633",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-russet-48x48.png"
+  },
+  "mibi-juvenile-S01-russet-96x88": {
+   "file": "pods/mibi-juvenile-S01-russet-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "80444a02c55ce1c4f0245aee3c95a703ed6028218c4f2337dbdb1128dea7da24",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juv-russet-96x88.png"
+  },
+  "mibi-juvenile-S01-russet-calm-304x312": {
+   "file": "pods/mibi-juvenile-S01-russet-calm-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e06dc5d65a2c8cf41f52bd2f7484aa7af72e56340813e347fd498429fe43e747",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvcalm-russet-304x312.png"
+  },
+  "mibi-juvenile-S01-russet-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-russet-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "f2e9bd361abcd1c7e48c0707c8a8d3c153964d0ffa12d59206f8045a327369ae",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvasleep-russet-304x312.png"
+  },
+  "mibi-juvenile-S01-russet-shake-304x312": {
+   "file": "pods/mibi-juvenile-S01-russet-shake-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c1ca5eace2fc7e96b3197c209df783f3bf714156a12f998f0a63ea6a82a839d3",
+   "signed": "art lead, coat recolour of 2026-11-06 (mibi-art coat-recolour work, S01 mask set signed 20:34, commit d44bfcf6)",
+   "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out/S01/juvshake-russet-304x312.png"
   },
   "mibi-juvenile-S01-shake-304x312": {
    "file": "pods/mibi-juvenile-S01-shake-304x312.png",

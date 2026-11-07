@@ -8,6 +8,18 @@ const JUVENILE_OF = { "144x152": [104, 112] };
 export const juvenileSize = ([w, h]) => JUVENILE_OF[`${w}x${h}`] ?? [w, h];
 // a placed master of any record status at exactly this size, not a built stand-in (the hook's own test)
 export const placedAt = (id, w, h) => { const m = assetEntry(id); return !!m && m.status !== "empty" && !!m.file && m.w === w && m.h === h; };
+// The coats (release 21f): a kind's painted masters recoloured at build time (ui/tools/coat-masters.mjs) are placed as mibi-<stage>-SNN-<coat>-... beside the painted one (charcoal for Loika), which is the coat the master is painted in.
+// COAT_LOOKS names, per kind, the look trait whose looks are the coats, as { trait, looks: { <look>: <coat> } }. Loika has none yet: the version 8 frame locks its body pigment to charcoal (appearance.body-palette, "fixed"),
+// and its Tint and Value traits are a hue and a value, not a pigment, so no look says russet or ash until the game designer names the trait that does; until then every Loika is drawn in the painted coat.
+export const COAT_LOOKS = {};
+// the coat a mibi's drawn looks (looks.mjs drawnLooks: only a chapter that is read draws) call for, or null (the painted coat): the kind has no coat trait, the chapter is unread, or the look names none
+export const coatOf = (species, looks, table = COAT_LOOKS) => { const t = table[species]; return (t && looks?.[t.trait] != null && t.looks[looks[t.trait]]) || null; };
+// the master of a coat: the id with the coat after the kind (mibi-adult-S01-304x312 -> mibi-adult-S01-russet-304x312), when that master is placed at the id's own size; else the painted master's own id (a picture with no signed mask shows its painted coat)
+export function coatMaster(id, species, coat) {
+  if (!coat) return id;
+  const v = id.replace(`-${species}-`, `-${species}-${coat}-`), m = /-(\d+)x(\d+)$/.exec(v);
+  return m && v !== id && placedAt(v, +m[1], +m[2]) ? v : id;
+}
 // { stage, size, step }: stage "juvenile" with the juvenile's size when step 2 applies, else the asked stage and size (step 1: the adult stand is placed; step 3: the genome stand-in)
 export function standLook(species, stage, size) {
   const [w, h] = size;
