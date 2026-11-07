@@ -858,7 +858,7 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   await loop("confirm", "✓ on the new pod's card opens the reading screen on it in one press (Read, the caller's verb), the ring on the key", () => window.__st.props?.state === "read" && window.__st.UI.pods.focus.cur === "key");
   await loop("confirm", "✓ Identify, the ring on the rail", () => window.__st.UI.pods.focus.cur === "rail");
   await loop("back", "← leaves in one press: the inventory on this pod's card", () => window.__st.UI.pods.view === "inventory" && (window.__st.UI.pods.focus.cur ?? "").startsWith("card."));
-  { const id = await page.evaluate(() => window.__st.UI.pods.panelPod); await podsAt({ view: "inventory", card: id, verb: "grow" }); }
+  { const id = await page.evaluate(() => window.__st.UI.pods.panelPod); await podsAt({ view: "inventory", card: id, verb: "grow", fixed: true }); }
   { const l = await line(); expect(l.ok === "Grow it", "the ring on the panel's Grow it: " + JSON.stringify(l)); }
   await loop("confirm", "✓ Grow it opens Create", () => window.__st.UI.screen === "create");
   await loop("confirm", "✓ Incubate opens the Incubate | Keep shaping panel", () => window.__st.props?.overlay?.form === "incubate");
