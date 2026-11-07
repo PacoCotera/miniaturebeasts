@@ -7,6 +7,7 @@ art/companion-48/terrain/
 art/places/
 art/device-buttons/caps/
 art/station-masters/pods/motion/proof/
+THIRD_PARTY_NOTICES.md
 design/proposals/genome-fluffy.md
 design/proposals/taxonomy.md
 design/proposals/ui-kit.md
