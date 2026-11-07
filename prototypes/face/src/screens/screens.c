@@ -41,6 +41,7 @@ static void frame_words(void) {
   if (spec_len("props", "frame.line") >= 0) word_bottomLine();
   if (spec_len("props", "frame.plate") >= 0) word_messagePlate();
   if (spec_len("props", "frame.hold") >= 0) word_holdRing();
+  if (spec_len("props", "frame.answer.keys") >= 0) word_answer();
 }
 /* The screen change (180 ms): a Bayer dither of `void` laid over the stage and cleared in 16 levels, whole pixels, no opacity (§2.7). Level L = 16 - floor(16 t / ms); a pixel is covered where BAYER[(y & 3) * 4 + (x & 3)] < L. */
 static void stage_dither(void) {

@@ -6,11 +6,11 @@
    "png": "pods-inventory-no-pods.png"
   },
   "inventory, one sealed pod": {
-   "hash": "fd4b3f79",
+   "hash": "4a309099",
    "png": "pods-inventory-one-sealed-pod.png"
   },
   "inventory, twelve pods": {
-   "hash": "4c296297",
+   "hash": "e1a21945",
    "png": "pods-inventory-twelve-pods.png"
   },
   "inventory, the verb line": {
@@ -18,11 +18,11 @@
    "png": "pods-inventory-the-verb-line.png"
   },
   "inventory, sorted by species": {
-   "hash": "4ec020e2",
+   "hash": "2c74bcfc",
    "png": "pods-inventory-sorted-by-species.png"
   },
   "inventory, filtered": {
-   "hash": "30852120",
+   "hash": "8bd2c64e",
    "png": "pods-inventory-filtered.png"
   },
   "inventory, the filter tray": {
@@ -38,7 +38,7 @@
    "png": "pods-inventory-find.png"
   },
   "inventory, drying": {
-   "hash": "151a3e2f",
+   "hash": "bb786249",
    "png": "pods-inventory-drying.png"
   },
   "inventory, Freshen: the pod on the bench fades": {
@@ -46,59 +46,63 @@
    "png": "pods-inventory-freshen-the-pod-on-the-bench-fades.png"
   },
   "inventory, a pod dried": {
-   "hash": "783a83c6",
+   "hash": "73864570",
    "png": "pods-inventory-a-pod-dried.png"
   },
   "inventory, let go, the hold ring on the pod": {
-   "hash": "a43971ff",
+   "hash": "ea880ae5",
    "png": "pods-inventory-let-go-the-hold-ring-on-the-pod.png"
   },
   "inventory, from the Incubator: Grow, the only verb": {
-   "hash": "cd745a88",
+   "hash": "5431a88d",
    "png": "pods-inventory-from-the-incubator-grow-the-only-verb.png"
   },
   "inventory, Compare: a pod held, its kin bright": {
-   "hash": "d34c1760",
+   "hash": "7f99dae5",
    "png": "pods-inventory-compare-a-pod-held-its-kin-bright.png"
   },
+  "inventory, Call: the pods that need you answer, a tag over each key": {
+   "hash": "1a495dfa",
+   "png": "pods-inventory-call-the-pods-that-need-you-answer-a-tag-over-each-key.png"
+  },
   "inventory, forty pods": {
-   "hash": "a88bcb9d",
+   "hash": "2c3390bf",
    "png": "pods-inventory-forty-pods.png"
   },
   "read, Loika fresh, Coat in hand": {
-   "hash": "9b9d1ba3",
+   "hash": "481ba599",
    "png": "pods-read-loika-fresh-coat-in-hand.png"
   },
   "read, Face open, unread": {
-   "hash": "595c2615",
+   "hash": "35b51c9f",
    "png": "pods-read-face-open-unread.png"
   },
   "read, Coat read, Face in hand": {
-   "hash": "84319159",
+   "hash": "a30d143f",
    "png": "pods-read-coat-read-face-in-hand.png"
   },
   "read, Face after the read": {
-   "hash": "4115cf58",
+   "hash": "9819f06a",
    "png": "pods-read-face-after-the-read.png"
   },
   "read, the Crown detail": {
-   "hash": "dd0c63e9",
+   "hash": "21bc99b3",
    "png": "pods-read-the-crown-detail.png"
   },
   "read, Movement in hand, the sprout": {
-   "hash": "205e1bea",
+   "hash": "95dedd4c",
    "png": "pods-read-movement-in-hand-the-sprout.png"
   },
   "read, not enough Data": {
-   "hash": "80078b7c",
+   "hash": "1c35b74a",
    "png": "pods-read-not-enough-data.png"
   },
   "read, Tuikis, Shape in hand": {
-   "hash": "2cb59125",
+   "hash": "aaafc9e7",
    "png": "pods-read-tuikis-shape-in-hand.png"
   },
   "read, a sealed chapter, the pod's reason": {
-   "hash": "73c411cd",
+   "hash": "a83caae3",
    "png": "pods-read-a-sealed-chapter-the-pod-s-reason.png"
   },
   "read, a sealed pod, Identify": {
@@ -106,11 +110,11 @@
    "png": "pods-read-a-sealed-pod-identify.png"
   },
   "read, the stamp moment": {
-   "hash": "18b84620",
+   "hash": "a573788a",
    "png": "pods-read-the-stamp-moment.png"
   },
   "read, the stamp view": {
-   "hash": "fedb4407",
+   "hash": "168fe3bd",
    "png": "pods-read-the-stamp-view.png"
   },
   "compare": {

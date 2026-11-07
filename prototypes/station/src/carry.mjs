@@ -97,6 +97,13 @@ export function originWord(m) {
   if (from === "create") { const p = m.ui.create && createPod(m.st, m.ui.create); return p ? S.cap(S.spName(p)) : T.create ?? null; }
   return T[from] ?? null;
 }
+// Call's answer, as the frame carries it (props frame.answer): a tag over each key in the order they stand on the device (Home, Pods, Vivarium, Library): the key's room mark and what it would do now (the carry's word, else its room's name),
+// then ✓'s and ←'s words from the bottom line and Call's own. The face draws the tags where the keys are (frame.json answer).
+export const KEY_ORDER = ["home", "research", "habitat", "library"];
+export function answerOf(m, line = {}) {
+  const A = m.specs?.frame?.strings?.answer ?? {}, R = A.rooms ?? {};
+  return { keys: KEY_ORDER.map((k) => ({ room: k === "home" ? "home" : ROOM_MARK[k], word: k === "home" ? R.home ?? "Home" : carryPlan(m, k)?.word ?? R[k] ?? k })), ok: line.ok ?? "", back: line.back ?? "", call: A.hide ?? "Hide this" };
+}
 // ---- where a carry started ----
 const plain = (o) => { const r = {}; for (const k of Object.keys(o ?? {})) if (k !== "focus" && k !== "f" && typeof o[k] !== "function") r[k] = structuredClone(o[k]); return r; };
 export function snapshot(h) {

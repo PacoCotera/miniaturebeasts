@@ -46,6 +46,10 @@ function carry(h, key, plan) {
 }
 // ← after a carry: back where it started, the ring and the screen's choices as they were; then ← is what it is today (frame.json navigation: a colour key's carry is a peek).
 export function uncarry(h) { const c = h.ui.carry; h.ui.carry = null; if (c) restore(h, c.from); return true; }
+// The Call key (the controls scheme): things answer. A view state only (ui.answer): never saved, nothing spent, no screen change. The pad still moves the ring and the answer follows it; ← or Call puts it away and does nothing
+// else; ✓ or a colour key puts it away and then acts as usual (answerOff, from dispatch); it fades ANSWER_MS after the last press (idleTick) and with any screen change. `t` is the clock the press came on.
+export const ANSWER_MS = 8000;
+export function call(h, t = h.now()) { const ui = h.ui; if (ui.idle) return false; ui.answer = !ui.answer; ui.answerAt = t; return true; }
 // The Companion's Dock key: it docks or lifts. Docked, the arrival plays (intents/arrival.mjs; specs/station-dock-arrival-spec.md): over the screen the player is on, over Home when the screen slept, or after their next screen change when they are
 // mid-decision (frame.json navigation.dock). A lift never moves the Station's screen; a lift during the arrival ends it, back to the screen it came over.
 export function dock(h, fromIdle = false, keysElsewhere = false) {
@@ -74,12 +78,13 @@ export function sendOff(h) {
 // The idle timer, once a frame: the 60 s count from the later of the last press and the end of a hold, an arrival or Cargo's end; the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its end.
 export function idleTick(h, t, idleMs) {
   const ui = h.ui; if (ui.idle) return;
+  if (ui.answer && (h.arriving() || t - ui.answerAt > ANSWER_MS)) ui.answer = false;   // Call's answer fades 8 s after the last press, and an arrival ends it
   if (ui.resting || ui.entering || h.arriving() || h.holding() || ui.cargo?.state === "end") ui.lastInput = Math.max(ui.lastInput, t);
   else if (t - ui.lastInput > idleMs) enterIdle(h);
 }
 // The idle timer's enter (frame.json idle.enter): the dither closes over the stage for 180 ms with input held, and Idle shows at its end; with reduced motion it is a cut, Idle on this frame, hold 0.
 export function enterIdle(h) {
-  h.ui.hab.namer = null; h.ui.panel = null;   // the namer and a panel close, writing nothing, before Idle starts
+  h.ui.hab.namer = null; h.ui.panel = null; h.ui.answer = false;   // the namer and a panel close, writing nothing, before Idle starts
   const ev = h.specs.frame.idle.enter.transition;
   const motion = h.motion ? h.motion() : true, hold = motion ? h.specs.frame.idle.enter.hold : 0;
   h.play({ kind: "dither", target: "stage", ms: ev.ms, from: 0, to: ev.levels, hold });

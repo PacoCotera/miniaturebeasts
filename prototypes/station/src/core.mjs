@@ -133,13 +133,16 @@ export function tick(t, dt) {
 // A key goes to the face, which moves the ring or says an intent; the intent is the rule call (intents/*). The Dock key is the Caddy's, a world event and not a Station key: the host calls the frame's dock.
 // The Caddy's Dock key, a world event and never a Station key: it wakes Idle (the dither back, held) and docks or lifts. A Dock pressed in a hold is kept by the host and acts when the hold ends (host.mjs).
 export function dockKey() { const H = CORE.host, dockElsewhere = hooks.dockElsewhere(); const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; hooks.wake(); const w = SPECS.frame.idle.wake; H.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: motion() ? w.hold : 0 }); } frameIntents.dock(H, wasIdle, dockElsewhere); }
+// Call (the controls scheme): things answer; free, never a screen change. On Idle it only wakes the screen, as any first key does.
+export function callKey() { const H = CORE.host; if (UI.idle) { UI.idle = false; FX.wake = clock.now; hooks.wake(); const w = SPECS.frame.idle.wake; H.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: motion() ? w.hold : 0 }); return; } frameIntents.call(H, clock.now); }
 export function act(k) {
   const H = CORE.host, FACE = CORE.face;
   if (!G.ready || !FACE) return;
-  clock.now = performance.now(); UI.lastInput = clock.now;
+  clock.now = performance.now(); UI.lastInput = clock.now; if (UI.answer && k !== "call") UI.answerAt = clock.now;   // a press keeps Call's answer up for 8 s more
   if (H.holding()) { if (k !== "dock") { FACE.key(k); pump(); } else H.pendingDock = !H.pendingDock; return; }   // an event holds input: the face says only a room key, which the host keeps (the last one) and dispatches when the hold ends, and drops during Home's rest (host.mjs); a Dock key is kept too (two presses cancel) and acts when the hold ends
   syncProps();
   if (k === "dock") { dockKey(); return; }
+  if (k === "call") { callKey(); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (k !== "back") UI.arrival = null;   // the Incubator's ← returns to Pods only until another key (the arrival mode of the jump flag)
   if (H.keyDown(k)) { pump(); return; }   // ✓ on a plate that holds: the face keeps it down until release

@@ -266,10 +266,15 @@ static void picker_cells(void) {
     if (strcmp(cur, id) == 0) { snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", cell[0], cell[1], rad, fillc); v_composed(v_fmt("%s.fill", id), b[0], b[1], cell[0], cell[1], ops); }
     { static char sb[4096]; seat_ops(sb, sizeof sb, st[2], st[3], seatc, seatin); v_composed(v_fmt("%s.seat", id), b[0] + st[0], b[1] + st[1], st[2], st[3], sb); }
     v_name("card.pod"); v_slot(v_fmt("%s.pod", id), pod, NULL, b[0] + pd[0], b[1] + pd[1], pd[2], pd[3], *pod != 0);
-    { char mark[16]; snprintf(mark, sizeof mark, "%s", v_pstr(v_fmt("%s.mark", Cb))); if (*mark) picker_mark(v_fmt("%s.mark", id), mark, b[0] + mk[0], b[1] + mk[1]); }
+    { char mark[16]; snprintf(mark, sizeof mark, "%s", v_pstr(v_fmt("%s.mark", Cb))); if (*mark && !*v_pstr(v_fmt("%s.bubble", Cb))) picker_mark(v_fmt("%s.mark", id), mark, b[0] + mk[0], b[1] + mk[1]); }
     v_region("card.words", LAYER_TYPE); inv_say(v_fmt("%s.name", id), name, b[0] + nm[0], b[1] + nm[1], nm[2], nm[3], sealed ? v_sstr(S, I K ".grid.sealedRole") : v_sstr(S, I K ".grid.nameRole"), "panel", V_ALIGN_CENTRE);
-    if (fade) { veil_ops(ops, sizeof ops, cell[0], cell[1], level, veilc); v_region("card.veil", LAYER_CHROME); v_composed(v_fmt("%s.veil", id), b[0], b[1], cell[0], cell[1], ops); }
+    int lv = level; { int dim = v_pbool(v_fmt("%s.dim", Cb), 0); if (dim) { fade = 1; lv = v_si(S, I K ".grid.veil.answerLevels", 6); } }   /* Call: the pods that do not need you dim, lighter than a fade */
+    if (fade) { veil_ops(ops, sizeof ops, cell[0], cell[1], lv, veilc); v_region("card.veil", LAYER_CHROME); v_composed(v_fmt("%s.veil", id), b[0], b[1], cell[0], cell[1], ops); }
     if (held) { snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", cell[0], cell[1], rad, heldc); v_region("card.held", LAYER_CHROME); v_composed(v_fmt("%s.held", id), b[0], b[1], cell[0], cell[1], ops); }
+    { char bub[V_STR]; snprintf(bub, sizeof bub, "%s", v_pstr(v_fmt("%s.bubble", Cb)));   /* Call: a pod that needs you says so in a bubble over it, its colour the mark's (the words say it too) */
+      if (*bub) { const char *kind = v_pstr(v_fmt("%s.bubbleKind", Cb)); const char *fillc2 = strcmp(kind, "goal") == 0 ? "gold" : strcmp(kind, "drying") == 0 ? "amber" : "sprout";
+        int bw = v_role_width(bub, "label.open") + 16, bx = b[0] + (cell[0] - bw) / 2; snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,22,11,\"%s\",\"\"]]", bw, fillc2);
+        v_region("card.bubble", LAYER_CHROME); v_composed(v_fmt("%s.bubble", id), bx, b[1] + 2, bw, 22, ops); v_region("card.bubble", LAYER_TYPE); inv_say(v_fmt("%s.bubble.w", id), bub, bx, b[1] + 2, bw, 22, "label.open", "panel", V_ALIGN_CENTRE); } }
   }
 }
 static void picker_verbs(void) {

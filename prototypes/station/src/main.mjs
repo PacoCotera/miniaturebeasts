@@ -51,7 +51,7 @@ bindKeys(stationEl);
 $("dockCtl").addEventListener("click", (e) => { act("dock"); e.currentTarget.blur(); });
 stationEl.addEventListener("contextmenu", (e) => e.preventDefault());
 ["touchstart", "touchmove", "gesturestart", "dblclick"].forEach((type) => stationEl.addEventListener(type, (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
-const KEYMAP = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Enter: "confirm", NumpadEnter: "confirm", Space: "confirm", Escape: "back", Backspace: "back", KeyH: "home", KeyR: "research", KeyL: "library", KeyB: "habitat", Digit1: "home", Digit2: "research", Digit3: "habitat", Digit4: "library", KeyD: "dock" };
+const KEYMAP = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Enter: "confirm", NumpadEnter: "confirm", Space: "confirm", Escape: "back", Backspace: "back", KeyH: "home", KeyR: "research", KeyL: "library", KeyB: "habitat", KeyC: "call", Digit1: "home", Digit2: "research", Digit3: "habitat", Digit4: "library", KeyD: "dock" };
 const EMBED = document.documentElement.classList.contains("embed");   // ?embed: the screen alone in the play page
 if (EMBED) delete KEYMAP.KeyD;   // on the play page no device key docks: the shell owns Shift+D
 window.addEventListener("keydown", (e) => {
@@ -182,6 +182,7 @@ const podsAt = (o = {}) => {
   if ("bench" in o) { if (o.bench == null) st.readingPod = null; else S.putOnBench(st, typeof o.bench === "string" ? S.podById(st, o.bench) : st.tray[o.bench]); }   // a tray index, or a pod id
   if (o.card) { const k = listOf(st, SPECS.pods, u, G.settings).findIndex((e) => e.p.id === o.card); o.focus = k >= 0 ? "card." + k : o.focus; }   // the ring on that pod's card
   if (o.cmp) { const a = S.benchPod(st) ?? st.tray[0], b = st.tray.find((q) => q !== a && S.canCompare(st, a, q)); if (a && b) { u.cmp = { a: a.id, b: b.id, ci: o.ci ?? 0, from: "inventory", card: a.id }; o.focus = "takeA"; } }
+  UI.answer = !!o.answer; UI.answerAt = performance.now();   // Call's answer, for the scene that shows it
   u.from = o.from ?? "home"; u.roomFrom = o.roomFrom ?? "inventory"; u.focus.set(o.focus ?? null); if (UI.screen !== "pods") CORE.host.goto("pods"); save();
 };
 window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(undefined, 12, advance); S.useNameList(l); G.st.mibis.forEach((m, i) => { m.name = l[l.length - 1 - (i % l.length)]; }); G.st.namesUsed = [...new Set([...(G.st.namesUsed ?? []), ...G.st.mibis.map((m) => S.nameKey(m.name))])]; return l; }, renderErrors: CORE.renderErrors, portraitSource: (digest, rgba) => { const r = injectPortraitSource(digest, rgba); if (r.error) CORE.renderErrors.push("portrait " + digest + ": " + r.error); return r; }, faceErrors: CORE.faceErrors, said: () => CORE.said.splice(0), pendingRoom: () => CORE.host.pendingRoom ?? null, get props() { return CORE.lastProps ? JSON.parse(CORE.lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },

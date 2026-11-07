@@ -35,6 +35,7 @@ export async function podsStates(visit) {
     await scene([["S01", 41, 1, 1]]); await to({ view: "inventory", focus: "card.0", verb: "letgo" }); await at("inventory, let go, the hold ring on the pod", { view: "inventory", focus: "card.0" });
     await scene(TWELVE); await to({ view: "inventory", focus: "card.0", verb: "grow", fixed: true, from: "incubator", hold: null }); await at("inventory, from the Incubator: Grow, the only verb", { view: "inventory", focus: "card.0" });
     await to({ view: "inventory", focus: "card.1", verb: "compare", hold: "first", fixed: false, from: "home" }); await at("inventory, Compare: a pod held, its kin bright", { view: "inventory", focus: "card.1" });
+    await scene(TWELVE, { goal: ["S01", 0] }); await to({ view: "inventory", focus: "card.4", answer: true }); await at("inventory, Call: the pods that need you answer, a tag over each key", { view: "inventory", focus: "card.4" });
     await scene(Array.from({ length: 40 }, (_, i) => [["S01", "S02", "S03", "S04"][i % 4], 100 + i, i % 5 ? 1 : 0, i % 3])); await to({ view: "inventory", focus: "card.19", first: 2 }); await at("inventory, forty pods", { view: "inventory", focus: "card.19" });
     // ---- the reading screen v2 (the reading screen spec: the six signed states, then §2.6's and §2.7's) ----
     const R = (o) => ({ view: "room", bench: 0, ...o });

@@ -51,4 +51,5 @@ int frame_material_centre(int i, int out[2]);   /* the centre of a counter's ico
 void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, int away);   /* a face picture's holder ring (art layer, regions.marks.face.ringWidth), until the picture is painted: not a focus mark */
 void word_bottomLine(void);
 void word_messagePlate(void);
+void word_answer(void);   /* Call's answer: the dim and a tag over each key (props frame.answer; common/frame.c) */
 #endif

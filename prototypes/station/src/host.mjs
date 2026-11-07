@@ -9,7 +9,7 @@ import * as S from "./state.mjs";
 import { speciesStatus } from "./library.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
-import { cuesOf, originWord } from "./carry.mjs";
+import { cuesOf, originWord, answerOf } from "./carry.mjs";
 import { capLine } from "./views/words.mjs";
 import { homeBuild, mibiPictureOf, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
 import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs";
@@ -96,7 +96,7 @@ const POD_VIEWS = ["inventory", "filter", "find", "room", "trait"];
 export function podsBody() {
   const p = UI.pods, F = p.focus;
   if (!POD_VIEWS.includes(p.view)) p.view = SPECS.pods.initial;
-  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), crates: S.bayCrates(G.st, G.sv).length, ui: p, focus: F.cur, now: Date.now() });
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), crates: S.bayCrates(G.st, G.sv).length, ui: p, focus: F.cur, now: Date.now(), answer: UI.answer });
   let body = podsProps(model(), SPECS.pods, SPECS.frame);
   if (!p.cmp && !body.props.focus.targets.some((t) => t.id === F.cur)) { F.cur = null; F.ensure(body.props.focus.targets, body.props.focus.targets[0]?.id ?? null); body = podsProps(model(), SPECS.pods, SPECS.frame); }
   if (body.mode !== "compare" && (body.first !== (p.first ?? 0) || body.panelPod !== (p.panelPod ?? null))) { p.first = body.first; p.panelPod = body.panelPod; body = podsProps(model(), SPECS.pods, SPECS.frame); }
@@ -283,6 +283,7 @@ export function enterSitting(h, m, { state = "pose", from = "habitat" } = {}) {
 export let holdNow = null;   // the hold a screen asks for this frame (the pods picker's Let go, the Return card): { ms } (0: the frame's own), set by the screen's body and read by the frame and the keys
 export const holdOn = () => !!((UI.hold && G.settings.realmSleep) || holdNow);
 const withHold = (frame) => (holdOn() ? { ...frame, hold: { on: 1, ...(holdNow?.ms ? { ms: holdNow.ms } : {}) } } : frame);
+const answerPart = (line) => (UI.answer ? { answer: answerOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }, line) } : {});   // Call's answer: a tag over each key (carry.mjs answerOf)
 export function screenProps(plate) {
   holdNow = null;
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
@@ -309,13 +310,13 @@ export function screenProps(plate) {
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   if (screen === "sitting") for (const id of [UI.sit.prev.glass, UI.sit.prev.resident]) if (id) ids.add(id);   // the pictures the window's dithers start from stay on the face until their events end
-  if (screen === "home") return { msg: { screen, ...body.props, frame: withHold({ plate: pl }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
+  if (screen === "home") return { msg: { screen, ...body.props, frame: withHold({ plate: pl, ...answerPart({}) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;
   { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) line.keys = cues; }   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
   { const back = originWord({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (back && line.back) line.back = back; }   // after a carry ← goes back to where it started: the way back names that place
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
-  return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
+  return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl, ...answerPart(line) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
 }
 let shownLight = null;   // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
 const litOf = (reqs) => reqs.filter((r) => r.kind === "mibi" && r.light).map((r) => r.id);   // the graded residents the props name
