@@ -692,7 +692,7 @@ const CARE_TEXT = {
 };
 // Assets the care screens name that have no master yet: registered here, and drawn only as a labelled placeholder (a flat
 // plate at the asset's exact size, outlined, with its name where it fits), never as code-drawn art. A master replaces it by id.
-// The stand-ins (status 'stand-in') are built code-drawn pieces that play until their masters land: the care moments, and
+// The signed entries (status 'signed') are the art desk's pieces, in the game. The stand-ins (status 'stand-in') are built code-drawn pieces that play until their masters land: the care moments, and
 // generator 2's place pieces, each under its TERR name.
 const CARE_ASSETS = [
   { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'placeholder' },
@@ -719,10 +719,10 @@ const CARE_ASSETS = [
   { id: 'c-pawn-32', what: 'the pawn in a 48 px place: today’s code-drawn 32 px sprite, 1:1, bottom-aligned and centred in its cell', until: 'the 48 px pawn', w: 32, h: 32, status: 'stand-in' },
   { id: 'c-trunk-32', what: 'a tree trunk in a 48 px place: the built code-drawn 32 px trunk, with its canopy over it', until: 'the meadow tree prop', w: 32, h: 32, status: 'stand-in' },
   { id: 'c-step-32', what: 'a stepping stone in a 48 px place: the built code-drawn 32 px stone on the water’s quarters', until: 'the ford pieces', w: 32, h: 32, status: 'stand-in' },
-  { id: 'c-wade-32', what: 'a wade in a 48 px place (T.WADE): muddy water, a soft brown smear and ripples, never a line of stepping marks', until: 'the art desk’s wade piece', w: 32, h: 32, status: 'stand-in' },
-  { id: 'c-scree-32', what: 'loose scree on a steep edge in a 48 px place (T.SCREE): a fan of pebbles, apart from the Fells’ walkable scree ground', until: 'the art desk’s scree piece', w: 32, h: 32, status: 'stand-in' },
-  { id: 'c-bank-32', what: 'an earth bank in a 48 px place (T.BANK): a soft earth lip with crumbs, no rock hatching; dug footholds once Rupar has dug it', until: 'the art desk’s bank piece', w: 32, h: 32, status: 'stand-in' },
-  { id: 'c-map-soft-26', what: 'the map’s wade (mud smear), scree edge (pebble fan), bank (rounded earth lip), dug bank (a column of footholds) and the extra range ring (small round dots)', until: 'the art desk’s map pieces', w: 26, h: 26, status: 'stand-in' },
+  { id: 'c-wade-32', what: 'a wade in a place (T.WADE): the river clouded brown with mud, its ripples moving with the 2 frames; the desk’s piece, drawn over the whole 48 px tile (32 px at the fallback size)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
+  { id: 'c-scree-32', what: 'loose scree on a steep edge in a place (T.SCREE): stones heaped over the edge, wider downhill; the desk’s piece, apart from the Fells’ walkable scree ground', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
+  { id: 'c-bank-32', what: 'an earth bank in a place (T.BANK): its face, side and lip in earth, no rock hatching; dug footholds once Rupar has dug it; the desk’s piece', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
+  { id: 'c-map-soft-26', what: 'the map’s and the reach view’s wade (muddy water), scree edge (heaped stones), bank (earth face or lip), dug bank (footholds), their signs and pins, and Tuliko’s extra range ring (a gold lattice)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 26, h: 26, status: 'signed' },
   { id: 'c-canopy-88x76', what: 'a tree canopy over its trunk, in a place at 32 or 48 px', until: 'the meadow tree prop', w: 88, h: 76, status: 'stand-in' },
   { id: 'c-roof-104x22', what: 'the roof on an outcrop, 104 px wide on the 144 px outcrop of a 48 px place', until: 'the meadow outcrop piece', w: 104, h: 22, status: 'stand-in' },
 ];
