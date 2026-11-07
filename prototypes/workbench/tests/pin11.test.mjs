@@ -188,10 +188,10 @@ test("the marking layout gains masked, points, spotted and capped after bands an
 // sha256 (first 16 hex) of each frame file: the baseline taken once at the merge of the studio and game lines (catalogue 12; every form frame rebuilt with its header naming pin 12 and
 // the digest of its own version). Before the merge the studio line held the pin 10 bytes of S02 to S19; the game line had rewritten all sixteen in place. From here a frame file moves only
 // with a new frame version and a stamp key (genome-stamp/tools/extract-frames.mjs --check), except its words (habits, taxonomy moves, habitat, gate, diet, ability, character, resembles and
-// species.parked, which are not genes: architect R1/R2, 2026-11-07; the table was retaken then, S03 to S19 and the index; retaken again 2026-11-07 for the copywriter's roster words, S05, S06, S17).
+// species.parked, which are not genes: architect R1/R2, 2026-11-07; the table was retaken then, S03 to S19 and the index; retaken again 2026-11-07 for the copywriter's roster words, S05, S06, S17, and for the Hiljan and Tepor ability lines, S04, S05).
 const PIN12_FRAME_FILES = {
-  "species-S01.json": "18412b5b642a9a22", "species-S02.json": "945dbed534c5ad02", "species-S03.json": "7ac4061184502a4b", "species-S04.json": "6f3879ffded62c8a",
-  "species-S05.json": "b06320b7283e0cf0", "species-S06.json": "1750ed0180346c19", "species-S07.json": "be89135b8b52eecf", "species-S08.json": "2ab99f4732e2ac0d",
+  "species-S01.json": "18412b5b642a9a22", "species-S02.json": "945dbed534c5ad02", "species-S03.json": "7ac4061184502a4b", "species-S04.json": "a510e9835060832e",
+  "species-S05.json": "9199c63a0a07ceb1", "species-S06.json": "1750ed0180346c19", "species-S07.json": "be89135b8b52eecf", "species-S08.json": "2ab99f4732e2ac0d",
   "species-S09.json": "c0eca214bc2649c9", "species-S10.json": "70b99bc0b8c04733", "species-S11.json": "125473a516f8be50", "species-S12.json": "404dfd949c8d6ab3",
   "species-S13.json": "fbaa7b8c5f05d8b9", "species-S14.json": "865a1da1273a12e2", "species-S15.json": "bcda13c674438753", "species-S16.json": "5760a85cc0f194de",
   "species-S17.json": "4e28abd429af5d39", "species-S18.json": "983f2a85be0a609a", "species-S19.json": "644468ed27b533e3", "index.json": "9a1a6b6380bea6ff",
