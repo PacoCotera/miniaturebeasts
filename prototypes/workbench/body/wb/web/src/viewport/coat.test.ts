@@ -20,7 +20,7 @@ describe('the coat table of the live viewport', () => {
   })
   it('moves a marking +0.08 L on a dark coat and -0.10 L on the rest', () => {
     expect(lightness(markingOf('#2e2a2d', true)) - lightness('#2e2a2d')).toBeCloseTo(0.08, 2)
-    expect(lightness(markingOf('#585e67', false)) - lightness('#585e67')).toBeCloseTo(-0.1, 2)
+    expect(lightness(markingOf('#615c5f', false)) - lightness('#615c5f')).toBeCloseTo(-0.1, 2)
   })
   it('sets the eye ring band over the iris radius by the Eyes trait: thin 0.20, between 0.35, wide 0.50, between when the file has none', () => {
     expect([ringOver('thin'), ringOver('between'), ringOver('wide'), ringOver(null), ringOver('x')]).toEqual([0.2, 0.35, 0.5, 0.35, 0.35])

@@ -10,7 +10,7 @@ const check = rest.includes('--check')
 const here = new URL('./landing.mjs', import.meta.url).pathname
 const tableFile = new URL('../src/viewport/coatCells.json', import.meta.url).pathname
 const CELLS = ['redder-dark', 'redder-between', 'redder-light', 'between-dark', 'between-between', 'between-light', 'yellower-dark', 'yellower-between', 'yellower-light']
-const HEX = { 'redder-dark': '#482a1e', 'redder-between': '#864d2b', 'redder-light': '#a26b4f', 'between-dark': '#2e2a2d', 'between-between': '#585e67', 'between-light': '#8e98a4', 'yellower-dark': '#3e301f', 'yellower-between': '#72583b', 'yellower-light': '#9f805a' }
+const HEX = { 'redder-dark': '#482a1e', 'redder-between': '#864d2b', 'redder-light': '#a26b4f', 'between-dark': '#2e2a2d', 'between-between': '#615c5f', 'between-light': '#989397', 'yellower-dark': '#3e301f', 'yellower-between': '#72583b', 'yellower-light': '#9f805a' }
 const lin = (h, i) => { const v = parseInt(h.slice(1 + 2 * i, 3 + 2 * i), 16) / 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4 }
 const base0 = JSON.parse(readFileSync(new URL('../src/viewport/coatGain.json', import.meta.url), 'utf8')).coat
 const table = check ? JSON.parse(readFileSync(tableFile, 'utf8')) : {}
@@ -48,6 +48,6 @@ for (const cell of CELLS) {
 }
 if (!check) writeFileSync(tableFile, JSON.stringify(table, null, 1) + '\n')
 writeFileSync(out, JSON.stringify(numbers, null, 1))
-const bad = numbers.filter((n) => n.p95 > 0.92 || Math.abs(n.dL) > 0.02 || Math.abs(n.p5 - n.p5Target) > 0.04 || Math.abs(n.p95 - n.p95Target) > 0.04)
-console.log(bad.length ? 'FAIL: ' + bad.map((n) => n.cell).join(', ') : 'ok: all 9 cells within 0.02 L of median, p95 at most 0.92, p5 and p95 within 0.04')
+const bad = numbers.filter((n) => n.p95 > 0.92 || Math.abs(n.dL) > 0.02 || Math.abs(n.p5 - n.p5Target) > 0.04 || Math.abs(n.p95 - n.p95Target) > 0.04 || n.clip >= 0.01)
+console.log(bad.length ? 'FAIL: ' + bad.map((n) => n.cell).join(', ') : 'ok: all 9 cells within 0.02 L of median, p95 at most 0.92, p5 and p95 within 0.04, under 1% of coat pixels with a channel at 0 or 255')
 process.exit(bad.length ? 1 : 0)

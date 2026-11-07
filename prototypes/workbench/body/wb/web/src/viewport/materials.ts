@@ -83,13 +83,39 @@ function withEyes(sh: THREE.WebGLProgramParametersWithUniforms, eyes: EyeStation
 // (those the zone map paints with the coat) are put through a contrast curve about the coat's median, per channel: the median stays where the landing put it, the lit side brightens and the shade deepens in the coat's own hue (nothing white, nothing blue).
 // The exponent is the cell's own (coatCells.json): its spread is the master's ratios to its own median, with p95 held at or under 0.92 so a light cell does not clip.
 // The cream zones (muzzle, chest, belly, toe pads, the lit eye ring) ease their chroma from L 0.6 (fully by 0.9), so a highlight goes warm-white, not peach.
+// The coat's colours stay inside the display's gamut by chroma alone (art desk, R5b): a coat pixel whose lit colour would run a channel to 0 or 255 has its OKLab chroma reduced at the same L until every channel is inside [GAMUT_LO, GAMUT_HI]. L is never moved.
+export const GAMUT_LO = 0.0008, GAMUT_HI = 0.98 // linear: about 3 and 251 of 255 once encoded
+const GAMUT_GLSL = `
+vec3 toLab(vec3 c) {
+  c = max(c, vec3(0.0));
+  float l = pow(0.4122214708 * c.r + 0.5363325363 * c.g + 0.0514459929 * c.b, 1.0 / 3.0);
+  float m = pow(0.2119034982 * c.r + 0.6806995451 * c.g + 0.1073969566 * c.b, 1.0 / 3.0);
+  float s = pow(0.0883024619 * c.r + 0.2817188376 * c.g + 0.6299787005 * c.b, 1.0 / 3.0);
+  return vec3(0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s);
+}
+vec3 fromLab(vec3 q) {
+  float l = q.x + 0.3963377774 * q.y + 0.2158037573 * q.z;
+  float m = q.x - 0.1055613458 * q.y - 0.0638541728 * q.z;
+  float s = q.x - 0.0894841775 * q.y - 1.291485548 * q.z;
+  l = l * l * l; m = m * m * m; s = s * s * s;
+  return vec3(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s);
+}
+bool inGamut(vec3 c) { return all(greaterThanEqual(c, vec3(${GAMUT_LO}))) && all(lessThanEqual(c, vec3(${GAMUT_HI}))); }
+vec3 gamutMap(vec3 c) {
+  if (inGamut(c)) return c;
+  vec3 q = toLab(c);
+  float lo = 0.0, hi = 1.0;
+  for (int i = 0; i < 9; i++) { float mid = 0.5 * (lo + hi); if (inGamut(fromLab(vec3(q.x, q.yz * mid)))) lo = mid; else hi = mid; }
+  return fromLab(vec3(q.x, q.yz * lo));
+}`
 const CURVE_GLSL = `
+float w = 1.0 - smoothstep(0.0, 0.03, distance(diffuseColor.rgb, coatAlb));
 if (coatGamma > 1.0) {
-  float w = 1.0 - smoothstep(0.0, 0.03, distance(diffuseColor.rgb, coatAlb));
   vec3 c0 = gl_FragColor.rgb;
   vec3 c1 = pow(max(c0, vec3(1e-5)) / coatMed, vec3(coatGamma)) * coatMed;
   gl_FragColor.rgb = mix(c0, c1, w);
 }
+gl_FragColor.rgb = mix(gl_FragColor.rgb, gamutMap(gl_FragColor.rgb), w);
 {
   float dc = min(distance(diffuseColor.rgb, creamA[0]), min(distance(diffuseColor.rgb, creamA[1]), distance(diffuseColor.rgb, creamA[2])));
   float wc = 1.0 - smoothstep(0.0, 0.03, dc);
@@ -199,7 +225,7 @@ export function makeMaterials(opts: { eyes: EyeStation[]; zone: THREE.Texture | 
         sh.uniforms.coatGamma = { value: p.med ? p.gamma ?? DEFAULT_GAMMA : 1 }
         sh.uniforms.creamA = { value: (p.cream ?? [[-9, -9, -9], [-9, -9, -9], [-9, -9, -9]]).map(colourOf) }
         sh.fragmentShader = sh.fragmentShader
-          .replace('#include <common>', '#include <common>\nuniform vec3 coatMed;\nuniform float coatGamma;\nuniform vec3 creamA[3];')
+          .replace('#include <common>', `#include <common>\nuniform vec3 coatMed;\nuniform float coatGamma;\nuniform vec3 creamA[3];\n${GAMUT_GLSL}`)
           .replace('#include <map_fragment>', '#include <map_fragment>\nfloat eyeHit; vec3 eyeCol; diffuseColor.rgb = houseEye(diffuseColor.rgb, eyeHit, eyeCol);')
           .replace('#include <opaque_fragment>', `#include <opaque_fragment>\n${CURVE_GLSL}\nif (eyeHit > 0.5 && eyeHit < 1.5) gl_FragColor.rgb = eyeCol;`)
       }

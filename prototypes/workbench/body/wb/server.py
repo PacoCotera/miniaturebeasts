@@ -386,7 +386,7 @@ class Server:
             look = str(X.looks_of(g, X.type_copies(g)).get("growth.exterior-eye-size-ratio") or "")
         except (KeyError, ValueError, TypeError):
             return None
-        return "thin" if "thin" in look else "wide" if "wide" in look else "between" if look else None
+        return {"thin rings": "thin", "between": "between", "wide pale rings": "wide"}.get(look)  # the looks of the trait eye-rings, by their names; absent or unknown: None (the studio draws between)
 
     def studio_files(self, sp):
         """What the browser draws a mesh file from: the studio GLB of the sculpt and of each part, by the sha pinned in the sidecar, served at /cas/<sha>.glb. None for a cage file or when a sidecar has no studio GLB yet."""

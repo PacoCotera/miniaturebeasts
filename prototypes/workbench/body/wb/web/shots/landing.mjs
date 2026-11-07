@@ -16,7 +16,7 @@ const flag = (n) => (rest.includes(n) ? rest[rest.indexOf(n) + 1] : null)
 const cell = flag('--cell') ?? 'between-dark' // the coat cell to draw (Tint-Shade); the default is what the file without Tint and Shade gets
 const tune = flag('--tune') // a coat tuning {gain, gamma} to try in place of the table's (shots/coatcells.mjs)
 const jsonOut = flag('--json')
-const COATS = { 'redder-dark': '#482a1e', 'redder-between': '#864d2b', 'redder-light': '#a26b4f', 'between-dark': '#2e2a2d', 'between-between': '#585e67', 'between-light': '#8e98a4', 'yellower-dark': '#3e301f', 'yellower-between': '#72583b', 'yellower-light': '#9f805a' }
+const COATS = { 'redder-dark': '#482a1e', 'redder-between': '#864d2b', 'redder-light': '#a26b4f', 'between-dark': '#2e2a2d', 'between-between': '#615c5f', 'between-light': '#989397', 'yellower-dark': '#3e301f', 'yellower-between': '#72583b', 'yellower-light': '#9f805a' }
 const refs = JSON.parse(readFileSync(join(refsDir, 'refs.json'), 'utf8'))
 const ZONES = { coat: 0, cream: 1, toe: 2, ring: 3, iris: 4, crest: 8 } // the ids of the zones view (materials.ts ZONE_ID)
 
@@ -83,7 +83,7 @@ const res = await blank.evaluate(async ({ urls, ZONES }) => {
     const p95L = pct(Ls, 0.95)
     const top = labs.filter((l) => l[0] >= p95L)
     const c95 = top.reduce((a, l) => a + Math.hypot(l[1], l[2]), 0) / top.length // the chroma of the lightest twentieth: where a highlight goes peach or warm-white
-    const clip = z.px.filter((p) => p[0] >= 254 || p[1] >= 254 || p[2] >= 254).length / z.n
+    const clip = z.px.filter((p) => p.some((v) => v === 0 || v === 255)).length / z.n
     rep[name] = { n: z.n, medLinear: ch, medL: med(Ls), p5: pct(Ls, 0.05), p95: p95L, c95, clip, medA: med(labs.map((l) => l[1])), medB: med(labs.map((l) => l[2])) }
   }
   return rep
@@ -151,5 +151,7 @@ const chromaBad = rows.filter((r) => ['cream', 'toe', 'ring'].includes(r.zone) &
 if (chromaBad.length) console.log('FAIL: highlight chroma of cream above 0.04:', chromaBad.map((r) => r.zone + ' ' + r.c95).join('; '))
 const capBad = coat.p95 > 0.92
 if (capBad) console.log('FAIL: coat p95 above 0.92:', coat.p95)
-if (spreadBad || abBad.length || chromaBad.length || capBad) process.exit(1)
+const clipBad = coat.clip >= 0.01 // channels at 0 or 255: the coat is gamut-mapped by chroma, never clipped
+if (clipBad) console.log("FAIL: coat pixels with a channel at 0 or 255:", coat.clip)
+if (spreadBad || abBad.length || chromaBad.length || capBad || clipBad) process.exit(1)
 console.log('ok: every zone within 0.02 L, worst', worst.toFixed(4))

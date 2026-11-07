@@ -5,7 +5,7 @@ import cells from './coatCells.json'
 // Land colours never drive the Loika. Values copied from the palette file; the studio does not read it at run time.
 export const COATS: Record<string, string> = {
   'redder-dark': '#482a1e', 'redder-between': '#864d2b', 'redder-light': '#a26b4f',
-  'between-dark': '#2e2a2d', 'between-between': '#585e67', 'between-light': '#8e98a4',
+  'between-dark': '#2e2a2d', 'between-between': '#615c5f', 'between-light': '#989397',
   'yellower-dark': '#3e301f', 'yellower-between': '#72583b', 'yellower-light': '#9f805a',
 }
 export const DEFAULT_CELL = 'between-dark' // the painted master: used while the file carries no Tint and Shade
