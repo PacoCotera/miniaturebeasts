@@ -78,6 +78,84 @@ export function cutBlobToDual16(pieces, base, t) {
   return tiles;
 }
 
+// The other re-cut: each of the tile's four corner cells contributes the quarter of its blob piece that faces the corner. A quarter
+// depends only on the cell and its three neighbours inside the 2x2 (side, side, diagonal), so every tile edge is decided by its two corners
+// alone and tiles meet without a seam. The cost: round shores are squared off at corners, because a piece's curve spans more than a quarter.
+const QUARTER = { BR: ['R', 'B', 'inSE', 8, 8], BL: ['L', 'B', 'inSW', 0, 8], TR: ['R', 'T', 'inNE', 8, 0], TL: ['L', 'T', 'inNW', 0, 0] };
+export function quarterPiece(corner, sideA, sideB, diag) { // a, b, diag: is that neighbour the upper terrain (the blob's "land")?
+  const [h, v, inner] = QUARTER[corner];
+  if (sideA && sideB) return corner;
+  if (sideA) return h;
+  if (sideB) return v;
+  return diag ? inner : 'C';
+}
+export function cutBlobToDual16Quarters(pieces, base, t) {
+  for (const n of BLOB_PIECES) if (!pieces[n]) throw new Error(`blob piece ${n} is missing`);
+  const h = t >> 1;
+  const tiles = [];
+  for (let n = 0; n < 16; n++) {
+    const tl = !!(n & 8), tr = !!(n & 4), bl = !!(n & 2), br = !!(n & 1);
+    const tile = newImage(t, t);
+    paste(tile, base, 0, 0);
+    const quads = [
+      [tl, 'BR', tr, bl, br, 0, 0], [tr, 'BL', tl, br, bl, h, 0],
+      [bl, 'TR', br, tl, tr, 0, h], [br, 'TL', bl, tr, tl, h, h],
+    ];
+    for (const [land, q, a, b, d, px, py] of quads) {
+      if (land) continue; // the upper terrain: the base shows
+      const name = quarterPiece(q, a, b, d);
+      const qx = q === 'BR' || q === 'TR' ? h : 0, qy = q === 'BR' || q === 'BL' ? h : 0;
+      paste(tile, crop(pieces[name], qx, qy, h, h), px, py);
+    }
+    tiles.push(tile);
+  }
+  return tiles;
+}
+
+// Edge stitching. Blob art is drawn for neighbours chosen by eight cells, so re-cut as corner tiles the pieces agree on where a shore
+// leaves a tile only to within a few pixels, and their grass texture runs into the border at different places: the edge-signature proof
+// (seams.mjs) fails. Stitching makes the proof hold by construction: for each tile edge and each of its four corner states the boundary
+// line is taken from the one tile whose shore runs straight through that edge (the half-plane tile), its two end pixels set to the plain
+// colour of the terrain at that corner, and written over the boundary of every tile, frame and variant with that state. The cost is at most a
+// one-pixel line at the border of a tile where its own shore drifted; a set painted for the contract needs none (`stitch` absent).
+const CANON = { // [edge][state] -> the corner-index of the tile that supplies the line (state = first end * 2 + second end, a set bit = upper)
+  N: { 0: 0, 3: 15, 2: 10, 1: 5 }, S: { 0: 0, 3: 15, 2: 10, 1: 5 },
+  W: { 0: 0, 3: 15, 2: 12, 1: 3 }, E: { 0: 0, 3: 15, 2: 12, 1: 3 },
+};
+const EDGE_STATE = {
+  N: (k) => (k & 8 ? 2 : 0) | (k & 4 ? 1 : 0), S: (k) => (k & 2 ? 2 : 0) | (k & 1 ? 1 : 0),
+  W: (k) => (k & 8 ? 2 : 0) | (k & 2 ? 1 : 0), E: (k) => (k & 4 ? 2 : 0) | (k & 1 ? 1 : 0),
+};
+const EDGE_ENDS = { N: ['NW', 'NE'], S: ['SW', 'SE'], W: ['NW', 'SW'], E: ['NE', 'SE'] };
+const cornerXY = (s) => ({ NW: [0, 0], NE: [s - 1, 0], SW: [0, s - 1], SE: [s - 1, s - 1] });
+const edgeXY = (e, s, i) => (e === 'N' ? [i, 0] : e === 'S' ? [i, s - 1] : e === 'W' ? [0, i] : [s - 1, i]);
+const getPx = (img, x, y) => Array.from(img.data.slice((y * img.w + x) * 4, (y * img.w + x) * 4 + 4));
+const putPx = (img, x, y, c) => { img.data.set(c, (y * img.w + x) * 4); };
+
+// tiles: the 16 tiles of frame 0 (read for the canonical lines); members: [{ img, k }] every image to write (all frames' tiles, variants of 15 and 0).
+export function stitchEdges(tiles, members) {
+  const s = tiles[0].w, xy = cornerXY(s);
+  const corner = (name, upper) => { const [x, y] = xy[name]; return getPx(tiles[upper ? 15 : 0], x, y); };
+  const canon = {};
+  for (const e of ['N', 'E', 'S', 'W']) {
+    canon[e] = {};
+    for (const st of [0, 1, 2, 3]) {
+      const src = tiles[CANON[e][st]];
+      const line = Array.from({ length: s }, (_, i) => getPx(src, ...edgeXY(e, s, i)));
+      const [first, second] = EDGE_ENDS[e];
+      line[0] = corner(first, !!(st & 2));
+      line[s - 1] = corner(second, !!(st & 1));
+      canon[e][st] = line;
+    }
+  }
+  for (const { img, k } of members) {
+    for (const e of ['N', 'E', 'S', 'W']) {
+      const line = canon[e][EDGE_STATE[e](k)];
+      for (let i = 0; i < s; i++) putPx(img, ...edgeXY(e, s, i), line[i]);
+    }
+  }
+}
+
 export function gridSheet(tiles, t) {
   const sheet = newImage(4 * t, 4 * t);
   tiles.forEach((tile, i) => paste(sheet, tile, (i % 4) * t, (i >> 2) * t));
@@ -136,16 +214,28 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     const pieces = {};
     for (const n of BLOB_PIECES) { const [c, r] = p.blob.cells[n]; pieces[n] = recolourImage(cell(p.blob.sheet, c, r), p.recolour); }
     const fullCells = p.upperFull.cells.map(([c, r]) => cell(p.upperFull.sheet, c, r));
-    const tiles = cutBlobToDual16(pieces, fullCells[0], t);
+    const cutter = { whole: cutBlobToDual16, quarters: cutBlobToDual16Quarters }[p.cut || 'whole'];
+    if (!cutter) throw new Error(`pair ${p.id}: unknown cut "${p.cut}"`);
+    const tiles = cutter(pieces, fullCells[0], t);
     const frames = p.lowerFrames ? p.lowerFrames.rects : [null];
-    const sheets = frames.map((rect, k) => {
-      const ft = tiles.slice();
+    const frameTiles = frames.map((rect) => {
+      const ft = tiles.map((x) => ({ w: x.w, h: x.h, data: new Uint8Array(x.data) }));
       if (rect) ft[0] = crop(load(p.lowerFrames.sheet), rect[0], rect[1], rect[2], rect[3]);
+      return ft;
+    });
+    const variants = fullCells.map((x) => ({ w: x.w, h: x.h, data: new Uint8Array(x.data) }));
+    if (p.stitch) {
+      const members = [];
+      frameTiles.forEach((ft) => ft.forEach((img, k) => members.push({ img, k })));
+      variants.forEach((img) => members.push({ img, k: 15 }));
+      stitchEdges(frameTiles[0].map((x) => ({ w: x.w, h: x.h, data: new Uint8Array(x.data) })), members);
+    }
+    const sheets = frameTiles.map((ft, k) => {
       const name = k === 0 ? `pair-${p.id}.png` : `pair-${p.id}@${k}.png`;
       images.set(name, gridSheet(ft, t));
       return name;
     });
-    images.set(`pair-${p.id}-full.png`, stripSheet(fullCells, t));
+    images.set(`pair-${p.id}-full.png`, stripSheet(variants, t));
     const entry = { id: p.id, lower: p.lower, upper: p.upper, mode: p.mode, sheets };
     if (p.lowerFrames) entry.frameMs = p.lowerFrames.ms;
     entry.fullSheet = `pair-${p.id}-full.png`;

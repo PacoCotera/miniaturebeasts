@@ -16,8 +16,9 @@
   "corePalette": "art/companion-48/terrain/meadow/meadow-palette.json",
   "notes": [
     "Every piece is cut whole from the pack's 13-piece blob sets (4 outer corners, 4 edges, centre, 4 inner corners); the two diagonal tiles are pieced from two inner corners. Nothing is repainted.",
-    "grass|sand: the pack has no grass-and-sand blob, so the pack's grass-and-dirt blob is used with its four dirt colours changed to the sand colours of the sand shore (exact colour map in the recipe, `recolour`).",
-    "The sand full tile is the pack's floor sand (TilesetFloor 0,5); the water sheet's own sand cell (0,5) is a lighter peach that does not match the shore pieces and would show a seam.",
+    "grass|sand: the pack has no grass-and-sand blob, so the pack's grass-and-dirt blob is used with its dirt colours changed to the plain sand colour of the sand shore (exact colour map in the recipe, `recolour`), so a sand tile looks the same in grass|sand and in sand|water.",
+    "Stitching (`stitch`): blob art is drawn for neighbours chosen by eight cells, so re-cut as corner tiles its pieces agree on where a shore leaves a tile only to within a few pixels and its grass texture runs into the border at different places. For every tile edge and corner state the boundary line is taken from the tile whose shore runs straight through that edge, and written over the border of every tile, frame and variant with that state. The cost is at most a one-pixel line at the border of a tile whose own shore drifted; the seam proof then holds exactly.",
+    "The sand full tile is the water sheet's own sand cell (TilesetWater 0,5), the colour the sand shore pieces run into.",
     "mud|water is the pack's dark swamp shore: brown mud and purple water. Its water is not the blue water of the other pairs; the three never meet (an opaque pair refuses a third terrain at a corner).",
     "reeds: the pack has no reeds; its bamboo stalk stands in. tall-grass: the pack's swaying plant (four frames) stands in. Both are test stand-ins for the art desk's own."
   ],
@@ -31,30 +32,30 @@
   },
   "pairs": [
     {
-      "id": "grass-water", "lower": "water", "upper": "grass", "mode": "opaque",
+      "id": "grass-water", "lower": "water", "upper": "grass", "mode": "opaque", "stitch": true,
       "blob": { "sheet": "water", "cells": { "TL": [0, 6], "T": [1, 6], "TR": [2, 6], "L": [0, 7], "C": [1, 7], "R": [2, 7], "BL": [0, 8], "B": [1, 8], "BR": [2, 8], "inSE": [5, 7], "inSW": [6, 7], "inNE": [5, 8], "inNW": [6, 8] } },
       "upperFull": { "sheet": "floor", "cells": [[0, 12], [1, 12], [2, 12], [3, 12], [4, 12]] },
       "lowerFrames": { "sheet": "ripple", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
     },
     {
-      "id": "sand-water", "lower": "water", "upper": "sand", "mode": "opaque",
+      "id": "sand-water", "lower": "water", "upper": "sand", "mode": "opaque", "stitch": true,
       "blob": { "sheet": "water", "cells": { "TL": [0, 0], "T": [1, 0], "TR": [2, 0], "L": [0, 1], "C": [1, 1], "R": [2, 1], "BL": [0, 2], "B": [1, 2], "BR": [2, 2], "inSE": [5, 1], "inSW": [6, 1], "inNE": [5, 2], "inNW": [6, 2] } },
-      "upperFull": { "sheet": "floor", "cells": [[0, 5], [1, 5], [2, 5], [3, 5], [4, 5]] },
+      "upperFull": { "sheet": "water", "cells": [[0, 5]] },
       "lowerFrames": { "sheet": "ripple", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
     },
     {
-      "id": "grass-sand", "lower": "sand", "upper": "grass", "mode": "opaque",
+      "id": "grass-sand", "lower": "sand", "upper": "grass", "mode": "opaque", "stitch": true,
       "blob": { "sheet": "floor", "cells": { "TL": [0, 7], "T": [1, 7], "TR": [2, 7], "L": [0, 8], "C": [1, 8], "R": [2, 8], "BL": [0, 9], "B": [1, 9], "BR": [2, 9], "inSE": [5, 8], "inSW": [6, 8], "inNE": [5, 9], "inNW": [6, 9] } },
       "upperFull": { "sheet": "floor", "cells": [[0, 12], [1, 12], [2, 12], [3, 12], [4, 12]] },
-      "recolour": { "d3865f": "ffad5d", "bd7959": "d78b4a", "e6a578": "ffcb8d", "ad704b": "965340" }
+      "recolour": { "d3865f": "ffcb8d", "bd7959": "ffcb8d", "e6a578": "ffcb8d", "ad704b": "ffad5d" }
     },
     {
-      "id": "grass-path", "lower": "path", "upper": "grass", "mode": "opaque",
+      "id": "grass-path", "lower": "path", "upper": "grass", "mode": "opaque", "stitch": true,
       "blob": { "sheet": "floor", "cells": { "TL": [0, 7], "T": [1, 7], "TR": [2, 7], "L": [0, 8], "C": [1, 8], "R": [2, 8], "BL": [0, 9], "B": [1, 9], "BR": [2, 9], "inSE": [5, 8], "inSW": [6, 8], "inNE": [5, 9], "inNW": [6, 9] } },
       "upperFull": { "sheet": "floor", "cells": [[0, 12], [1, 12], [2, 12], [3, 12], [4, 12]] }
     },
     {
-      "id": "mud-water", "lower": "water", "upper": "mud", "mode": "opaque",
+      "id": "mud-water", "lower": "water", "upper": "mud", "mode": "opaque", "stitch": true,
       "blob": { "sheet": "water", "cells": { "TL": [13, 6], "T": [14, 6], "TR": [15, 6], "L": [13, 7], "C": [14, 7], "R": [15, 7], "BL": [13, 8], "B": [14, 8], "BR": [15, 8], "inSE": [18, 7], "inSW": [19, 7], "inNE": [18, 8], "inNW": [19, 8] } },
       "upperFull": { "sheet": "water", "cells": [[13, 11]] },
       "lowerFrames": { "sheet": "rippleSwamp", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
