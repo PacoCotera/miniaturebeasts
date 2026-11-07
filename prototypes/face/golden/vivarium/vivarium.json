@@ -206,11 +206,11 @@
    "png": "vivarium-wall-add-short.png"
   },
   "vivarium-docked": {
-   "hash": "21070dd1",
+   "hash": "9a72b143",
    "png": "vivarium-docked.png"
   },
   "vivarium-away": {
-   "hash": "5b3afd56",
+   "hash": "2aa62340",
    "png": "vivarium-away.png"
   },
   "vivarium-empty": {
@@ -234,7 +234,7 @@
    "png": "vivarium-empty-away.png"
   },
   "vivarium-one": {
-   "hash": "985d7e32",
+   "hash": "7f2d1237",
    "png": "vivarium-one.png"
   },
   "vivarium-eight": {
@@ -254,7 +254,7 @@
    "png": "vivarium-forty-reeds.png"
   },
   "vivarium-forty-boulders": {
-   "hash": "8734d3da",
+   "hash": "689e3de7",
    "png": "vivarium-forty-boulders.png"
   },
   "vivarium-forty-ferns": {
@@ -262,23 +262,23 @@
    "png": "vivarium-forty-ferns.png"
   },
   "vivarium-focus-crossed": {
-   "hash": "c240240c",
+   "hash": "3a95e2ad",
    "png": "vivarium-focus-crossed.png"
   },
   "vivarium-docked-dawn": {
-   "hash": "56b279b4",
+   "hash": "b30a7e9d",
    "png": "vivarium-docked-dawn.png"
   },
   "vivarium-docked-day": {
-   "hash": "21070dd1",
+   "hash": "9a72b143",
    "png": "vivarium-docked-day.png"
   },
   "vivarium-docked-dusk": {
-   "hash": "24a0bdb5",
+   "hash": "35ea4e21",
    "png": "vivarium-docked-dusk.png"
   },
   "vivarium-docked-night": {
-   "hash": "80373e80",
+   "hash": "3dc04a3f",
    "png": "vivarium-docked-night.png"
   },
   "vivarium-room-reeds": {
@@ -286,15 +286,15 @@
    "png": "vivarium-room-reeds.png"
   },
   "vivarium-room-boulders": {
-   "hash": "724cc555",
+   "hash": "8e604a8d",
    "png": "vivarium-room-boulders.png"
   },
   "vivarium-room-ferns": {
-   "hash": "223c4ac6",
+   "hash": "bdcf9c1b",
    "png": "vivarium-room-ferns.png"
   },
   "vivarium-level-roots": {
-   "hash": "378b1a75",
+   "hash": "dff7ec02",
    "png": "vivarium-level-roots.png"
   },
   "vivarium-room-new": {
@@ -318,7 +318,7 @@
    "png": "panel-add-room.png"
   },
   "vivarium-coming-out": {
-   "hash": "26eda6ef",
+   "hash": "418ed16c",
    "png": "vivarium-coming-out.png"
   },
   "vivarium-full-bud": {

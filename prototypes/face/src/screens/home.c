@@ -816,9 +816,9 @@ static int tag_top(const ent_t *e, const char *glass, int usual, int usual2, int
   int best = 1 << 30, by = -1000, bx = cx;
   for (int j = 0; j < 3; j++) for (int k = 0; k < 8; k++) {
     int x = cxs[j] - w / 2; if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
-    int r[4] = { x, cy[k], w, h }; if (cy[k] < gy + 2 || cy[k] + h > gy + gh - 2) continue;
+    int r[4] = { x, cy[k], w, h }; if (cy[k] < gy + 2 || cy[k] + h > gy + gh - 8) continue;
     int dx = x + w / 2 - cx, dy = cy[k] + h / 2 - (fr[1] + fr[3] / 2); if (dx < 0) dx = -dx; if (dy < 0) dy = -dy;
-    int s = 4 * tag_cover(e, r) + (dx + dy) / 4 + (k > 1 ? 8 : 0) + (j > 0 ? 24 : 0); if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
+    int s = 4 * tag_cover(e, r) + (dx + dy) / 4 + (k == 1 ? 6 : k > 1 ? 8 : 0) + (j > 0 ? 24 : 0); if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
   }
   *axc = bx; return by;
 }
