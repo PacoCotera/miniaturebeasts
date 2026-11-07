@@ -9,6 +9,7 @@ import { asset as assetOf, manifest } from "../../../ui/assets.mjs";
 import { drawnLooks } from "../looks.mjs";
 import { layeredStand, standPictureId, standFigure, standVariant, curlFactor, curlPicture, curlOfStand, viewFigureHeight, viewFactor, factorPlace, factorPicture, inkBox } from "../layered-stand.mjs";
 import { keyToken } from "../looks.mjs";
+import { sceneFactor, sittingKindScale, SCENE_OF_VIEW } from "../scale.mjs";
 import { goalWords } from "./goal-words.mjs";
 import { readyCrates, bayState } from "../sitting.mjs";
 import { roomRegion, roomData, shownRoom, bedOf } from "./room-props.mjs";
@@ -40,6 +41,7 @@ const coatFor = (sp, mb) => (COAT_TRAITS[sp] ? coatOf(sp, drawnLooks(frameOf(sp)
 export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "default", pose = "anchor", k = 1) => {
   const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
   if (stand) { const looks = drawnLooks(frameOf(sp), mb); return { id: standPictureId(stand, looks, light), stage: grown, size: [...stand.size], looks }; }
+  const sf = sceneFit(sp, grown, size, view, poseName(pose), coatFor(sp, mb)); if (sf) return { id: sf.id + (light === "day" ? "" : ":" + light), stage: sf.stage, size: sf.size, factor: sf.f, master: sf.master };
   const pf = poseFit(sp, grown, size, poseName(pose), k, coatFor(sp, mb)); if (pf) return { id: pf.id + (light === "day" ? "" : ":" + light), stage: pf.stage, size: [...size], factor: pf.f, master: pf.master };
   const fac = factorOf(sp, grown, size, view, coatFor(sp, mb)); if (fac) return { id: fac.id + (light === "day" ? "" : ":" + light), stage: fac.stage, size: [...size], factor: fac.f, master: fac.master };
   const { stage, size: drawn } = lookOf(st, mb, size, settings);
@@ -58,12 +60,16 @@ function poseFit(sp, stage, size, pose, k = 1, coat = null) {
 }
 // The Sitting's one scale per kind (art desk 2026-11-06 19:52): every picture of a kind is drawn at its stand's factor (1 in Habitat, the same 304 x 312 cut), never fitted to the window per pose; the figure's box (the ink of the
 // master, shadow and drops included) is at most `cap` [0.55, 0.65] of the window's width and height, and when any pose of the kind (either stage) would pass it the whole kind is drawn smaller by the one factor that fits the widest/tallest.
-const KIND_SCALE = new Map();
-export function sittingKindScale(sp, win, cap = [0.55, 0.65]) {
-  const key = `${sp}|${win}|${cap}`; if (KIND_SCALE.has(key)) return KIND_SCALE.get(key);
-  let k = 1; const re = new RegExp(`^mibi-(?:(?:adult|juvenile)-${sp}(?:-(?:curl|shake|calm|puff|sniff|dig|glow))?|adult-${sp}-between-dark-lay-[a-z]+)-304x312$`);   // the painted pictures and the marked ones (every coat leaves the alpha alone, so one coat stands for all)
-  for (const e of manifest()) { if (!re.test(e.id) || !placedAt(e.id, 304, 312)) continue; const a = assetOf(e.id), box = inkBox(a.rgba(), a.w, a.h); if (box) k = Math.min(k, cap[0] * win[0] / box[2], cap[1] * win[1] / box[3]); }
-  k = Math.floor(k * 1000) / 1000; KIND_SCALE.set(key, k); return k;
+export { sittingKindScale };   // the cap now lives with the scale table (scale.mjs, release 21h2: R21-SCALE)
+// A mibi in a scene (the Habitat, the Sitting, Home, Idle, the Vivarium's rooms): the kind's 304 x 312 coat picture of the pose (the stand in the coat when the pose has none) reduced by the kind's one scale for the scene (scale.mjs), feet
+// on the ground line, in the place's box (or the smallest that holds it): { id, stage, f, master, size } or null (not a scene view, or no picture placed)
+function sceneFit(sp, stage, size, view, pose, coat = null) {
+  const scene = SCENE_OF_VIEW[view]; if (!scene) return null;
+  const ms = stage === "juvenile" ? "juvenile" : "adult", f = sceneFactor(sp, ms, scene); if (!f) return null;
+  const anchor = !pose || pose === "anchor", of = (name) => coatMaster(name ? `mibi-${ms}-${sp}-${name}-304x312` : `mibi-${ms}-${sp}-304x312`, sp, coat);
+  let master = of(anchor ? "" : pose); if (!placedAt(master, 304, 312)) master = of(""); if (!placedAt(master, 304, 312)) return null;   // a pose with no picture shows the stand in the coat
+  const sz = [Math.max(size[0], Math.ceil(304 * f - 1e-9)), Math.max(size[1], Math.ceil(312 * f - 1e-9))];
+  return { id: `mibi:${sp}~${keyToken(`scene|${master}|${scene}|${f}|${sz.join("x")}`)}:${ms}:${sz[0]}x${sz[1]}`, stage: ms, f, master, size: sz };
 }
 function factorOf(sp, stage, size, view, coat = null) {
   const f = viewFactor(view), fp = factorPlace(view); if (!f || !fp || fp[0] !== size[0] || fp[1] !== size[1]) return null;
@@ -80,12 +86,18 @@ export function mibiVariantReq(req, base, variant) {
 // A standing mibi's figure, [dx, dy, W, H]: the drawn bbox of its composed figure in its picture, or null when the picture is not a layered stand
 export const figureOf = (st, mb, size, settings, view = "default", pose = "anchor", k = 1) => {
   const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
-  if (!stand) { const fac = poseFit(sp, grown, size, poseName(pose), k, coatFor(sp, mb)) ?? factorOf(sp, grown, size, view, coatFor(sp, mb)); return fac ? factorPicture(assetOf(fac.master), fac.f, size, fac.id).figure : null; }   // a factor view's reduced master: the ink of the same reduction
+  if (!stand) { const sf = sceneFit(sp, grown, size, view, poseName(pose), coatFor(sp, mb)); if (sf) return factorPicture(assetOf(sf.master), sf.f, sf.size, sf.id).figure;
+    const fac = poseFit(sp, grown, size, poseName(pose), k, coatFor(sp, mb)) ?? factorOf(sp, grown, size, view, coatFor(sp, mb)); return fac ? factorPicture(assetOf(fac.master), fac.f, size, fac.id).figure : null; }   // a factor view's reduced master: the ink of the same reduction
   return standFigure(stand, drawnLooks(frameOf(sp), mb));
 };
 // A sleeper's curl at the stand's scale (the owner's full-size ruling), with its own shadow: { id, figure, request }, or null when no curl master is placed. A species with a layered stand composes its `curl` pose in the mibi's own looks at the
 // stand's scale; every other species reduces its 304 curl master by the factor its standing picture gets, look.size[0] / 304 × viewH / slot[1] (0.168 adult, 0.122 juvenile). `nap` is the nap pose's ink box, no longer read here.
 export function curlOfMibi(st, mb, nap, slot, settings, light, view) {
+  if (SCENE_OF_VIEW[view]) {   // release 21h2 (R21-SCALE, N): the sleeper is the kind's asleep picture (the 304 coat curl, the young's own) at the kind's factor for the scene, like every pose; the old tiny sleeper sprites are retired
+    const p = mibiPictureOf(st, mb, slot, settings, light, view, "curl"); if (!p.factor) return null;
+    let request = null; mibiReq((q) => { request = q; return q.id; }, st, mb, slot, settings, light, view, "curl");
+    return { id: p.id, figure: figureOf(st, mb, slot, settings, view, "curl"), request };
+  }
   const look = lookOf(st, mb, viewFactor(view) ? [304, 312] : slot, settings); if (look.step === 3) return null;   // a factor view reduces the 304 cut: its stand is the 304's
   const sp = S.speciesOf(mb), ms = look.stage === "juvenile" ? "juvenile" : "adult", master = coatMaster(`mibi-${ms}-${sp}-curl-304x312`, sp, coatFor(sp, mb)), vh = viewFigureHeight(look.stage, view); if (!vh && !viewFactor(view)) return null;
   const lay = layeredStand(sp, look.stage, [304, 312], view, "curl"), looks = lay && drawnLooks(frameOf(sp), mb);

@@ -12,7 +12,7 @@ import { kPct } from "../stamplook.mjs";
 import { poseFor } from "../layered-stand.mjs";
 import { offer, beginBlock, CARRIED_BLOCK } from "../sitting.mjs";
 import { portraitOpening } from "../portrait-source.mjs";
-import { mibiReq, figureOf, sittingKindScale } from "./home-props.mjs";
+import { mibiReq, figureOf } from "./home-props.mjs";
 import { fill } from "./words.mjs";
 import { req as reqOf, slot as slotOf, plateDevice } from "./requests.mjs";
 import { nearOf } from "./room-props.mjs";
@@ -62,8 +62,7 @@ export function sittingBuild(m, spec, habitat) {
   if (portrayed) regions.resident = { id: sid, name: mb.name, stage, picture: "", figure: null, pose: chosenPose };
   else {
     const p = habit ? pose(habit) : "anchor", light = state === "pose" ? m.light : "day";
-    const kScale = sittingKindScale(species, GLASS);   // one scale per kind in every pose (art desk 2026-11-06 19:52), capped at 0.55 of the glass's width and 0.65 of its height
-    regions.resident = { id: sid, name: mb.name, stage, picture: mibiReq(req, st, mb, WINDOW, settings, light, "habitat", p, kScale), figure: figureOf(st, mb, WINDOW, settings, "habitat", p, kScale), pose: habit ?? null };
+    regions.resident = { id: sid, name: mb.name, stage, picture: mibiReq(req, st, mb, WINDOW, settings, light, "habitat", p), figure: figureOf(st, mb, WINDOW, settings, "habitat", p), pose: habit ?? null };
   }
   regions.nameTag = { text: portrayed ? "" : mb.name };
   regions.portrait = { picture: portrayed ? req({ kind: "portrait", id: `portrait:${String(mb.portrait.digest).slice(0, 16)}:528x392`, digest: mb.portrait.digest, size: [528, 392] }) : "" };
