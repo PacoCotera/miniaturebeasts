@@ -811,14 +811,17 @@ static int tag_top(const ent_t *e, const char *glass, int usual, int usual2, int
   int h = v_si(sp(), hp("regions.nameTag.h"), 24), w = v_role_width(e->name, "nameTag") + 40, gap = 4, fr[4]; ent_figrect(e, fr);
   int gx = v_sk(sp(), v_fmt("%s.rect", glass), 0), gy = v_sk(sp(), v_fmt("%s.rect", glass), 1), gw = v_sk(sp(), v_fmt("%s.rect", glass), 2), gh = v_sk(sp(), v_fmt("%s.rect", glass), 3);
   int cx = fr[0] + fr[2] / 2;
-  int cy[8] = { usual, usual2, fr[1] + fr[3] + gap, fr[1] - h - gap, fr[1] + fr[3] + gap + h, fr[1] - h - gap - h, fr[1] + fr[3] / 2 - h / 2, fr[1] + fr[3] - h };
-  int cxs[3] = { cx, fr[0] - w / 2 - gap, fr[0] + fr[2] + w / 2 + gap };   /* centred, then to the left of the figure, then to the right */
+  /* release 22b (0a): a label belongs under its own figure; if no clear spot is right under it, it shifts sideways along the ground line, and only then goes over a head (a heavy penalty) */
+  int under = fr[1] + fr[3] + gap, undc = under; if (undc + h > gy + gh - 2) undc = gy + gh - 2 - h;
+  int cy[8] = { usual, usual2, under, undc, fr[1] + fr[3] + gap + h, fr[1] - h - gap, fr[1] + fr[3] - h, fr[1] - h - gap - h };
+  static const int pen[8] = { 0, 30, 2, 4, 40, 60, 80, 90 };
+  int cxs[5] = { cx, fr[0] - w / 2 - gap, fr[0] + fr[2] + w / 2 + gap, fr[0] - w - w / 2 - gap, fr[0] + fr[2] + w + w / 2 + gap };   /* centred, then to the left of the figure, then to the right, then one label further each way */
   int best = 1 << 30, by = -1000, bx = cx;
-  for (int j = 0; j < 3; j++) for (int k = 0; k < 8; k++) {
+  for (int j = 0; j < 5; j++) for (int k = 0; k < 8; k++) {
     int x = cxs[j] - w / 2; if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
-    int r[4] = { x, cy[k], w, h }; if (cy[k] < gy + 2 || cy[k] + h > gy + gh - 8) continue;
+    int r[4] = { x, cy[k], w, h }; if (cy[k] < gy + 2 || cy[k] + h > gy + gh - (k == 3 ? 2 : 8)) continue;
     int dx = x + w / 2 - cx, dy = cy[k] + h / 2 - (fr[1] + fr[3] / 2); if (dx < 0) dx = -dx; if (dy < 0) dy = -dy;
-    int s = 4 * tag_cover(e, r) + (dx + dy) / 4 + (k == 1 ? 6 : k > 1 ? 8 : 0) + (j > 0 ? 24 : 0); if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
+    int s = 4 * tag_cover(e, r) + (dx + dy) / 4 + pen[k] + (j > 0 ? 24 : 0) + (j > 2 ? 12 : 0); if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
   }
   *axc = bx; return by;
 }

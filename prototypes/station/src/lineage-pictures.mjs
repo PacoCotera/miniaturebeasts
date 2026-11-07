@@ -22,7 +22,7 @@ export function bodyColour(frame, m) {
   if (tint) {
     const [c, t] = tint, sh = c.traits.find((x) => x.id === "body-value"); if (c.sealed || !(m.read ?? []).includes(c.id)) return null;
     const look = traitState(frame, t, m.genome).shows, shade = sh ? traitState(frame, sh, m.genome).shows : "between"; if (!look) return null;
-    return coatColours(frame.species.id, look, shade ?? "between");
+    const cc = coatColours(frame.species.id, look, shade ?? "between"); return cc ? [cc[0]] : null;   // the coat cell alone: the far dot is the coat, never half cream (the cream half drew every node alike on a dark ground)
   }
   const ch = frame.chapters.find((c) => c.traits.some((t) => t.id === "colour")), t = ch?.traits.find((x) => x.id === "colour"); if (!t) return null;
   if (t.loci.every((id) => frame.loci.find((l) => l.id === id)?.kind === "locked")) return null;
@@ -47,7 +47,8 @@ export function farPicture(input, spec, { rgb, ground = null } = {}) {
   const keep = spec.faces.faded.keep, fade = (c, x, y) => { const b = rgb(spec.faces.faded.ground); return c.map((v, i) => Math.round(keep * v + (1 - keep) * b[i])); };
   for (const n of input.nodes) {
     const [bx, by, d] = g.boxes[n.id], f = (c, x, y) => (n.released ? fade(c, x, y) : c);
-    if (n.kind === "mibi" && n.colour) { const cols = n.colour.map(hexRGB); for (let j = 0; j < d; j++) for (let i = 0; i < d; i++) if (inside(i, j, d, d)) put(bx + i, by + j, f(cols[cols.length > 1 && i >= d / 2 ? 1 : 0], bx + i, by + j)); continue; }
+    if (n.kind === "mibi" && n.colour) { const cols = n.colour.map(hexRGB), rim = cols.length === 1 ? cols[0].map((v, i) => Math.round(0.45 * v + 0.55 * [223, 210, 174][i])) : null;   // a coat dot: its own coat cell, with a lightened rim so a dark coat reads on the dark ground
+      for (let j = 0; j < d; j++) for (let i = 0; i < d; i++) if (inside(i, j, d, d)) put(bx + i, by + j, f(rim && ring(i, j, d, d) ? rim : cols[cols.length > 1 && i >= d / 2 ? 1 : 0], bx + i, by + j)); continue; }
     const [ow, oh, oi, oj, col] = n.kind === "mibi" ? [d, d, 0, 0, F.neutral] : [...F.pod.size, ...F.pod.at, n.kind === "bud" ? F.pod.bud : F.pod.colour];
     for (let j = 0; j < oh; j++) for (let i = 0; i < ow; i++) { if (!inside(i, j, ow, oh)) continue; const x = bx + oi + i, y = by + oj + j; put(x, y, ring(i, j, ow, oh) ? f(rgb(col), x, y) : groundAt(x, y)); }   // an outline: the ground inside
   }
