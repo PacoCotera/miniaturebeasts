@@ -467,7 +467,7 @@
     "state": "inventory",
     "focus": "companion",
     "armed": null,
-    "ok": "Take to the reading room",
+    "ok": "Choose a pod",
     "price": null,
     "subject": "",
     "back": "Home",

@@ -6,11 +6,11 @@
    "png": "pods-inventory-no-pods.png"
   },
   "inventory, one sealed pod": {
-   "hash": "077f7209",
+   "hash": "74bc8602",
    "png": "pods-inventory-one-sealed-pod.png"
   },
   "inventory, twelve pods": {
-   "hash": "23e32c2a",
+   "hash": "929b3c01",
    "png": "pods-inventory-twelve-pods.png"
   },
   "inventory, the panel's first button": {
@@ -18,15 +18,15 @@
    "png": "pods-inventory-the-panel-s-first-button.png"
   },
   "inventory, sorted by species": {
-   "hash": "091a4261",
+   "hash": "1392bafa",
    "png": "pods-inventory-sorted-by-species.png"
   },
   "inventory, filtered": {
-   "hash": "c777058c",
+   "hash": "97cc1a0f",
    "png": "pods-inventory-filtered.png"
   },
   "inventory, the filter tray": {
-   "hash": "a5cd0a35",
+   "hash": "1e2e30ee",
    "png": "pods-inventory-the-filter-tray.png"
   },
   "inventory, no matches": {
@@ -42,7 +42,7 @@
    "png": "pods-inventory-drying.png"
   },
   "inventory, a pod dried": {
-   "hash": "99257aea",
+   "hash": "5a9b7d41",
    "png": "pods-inventory-a-pod-dried.png"
   },
   "inventory, let it go asks": {
@@ -50,19 +50,19 @@
    "png": "pods-inventory-let-it-go-asks.png"
   },
   "inventory, forty pods": {
-   "hash": "aca3dbd1",
+   "hash": "da24d0ea",
    "png": "pods-inventory-forty-pods.png"
   },
   "read, Loika fresh, Coat in hand": {
-   "hash": "ae82faac",
+   "hash": "066fa429",
    "png": "pods-read-loika-fresh-coat-in-hand.png"
   },
   "read, Face open, unread": {
-   "hash": "d8908156",
+   "hash": "930c7f7f",
    "png": "pods-read-face-open-unread.png"
   },
   "read, Coat read, Face in hand": {
-   "hash": "4ac05f26",
+   "hash": "cd552dbb",
    "png": "pods-read-coat-read-face-in-hand.png"
   },
   "read, Face after the read": {
@@ -74,15 +74,15 @@
    "png": "pods-read-the-crown-detail.png"
   },
   "read, Movement in hand, the sprout": {
-   "hash": "413e79c1",
+   "hash": "b935b744",
    "png": "pods-read-movement-in-hand-the-sprout.png"
   },
   "read, not enough Data": {
-   "hash": "fdfc9059",
+   "hash": "370b61f2",
    "png": "pods-read-not-enough-data.png"
   },
   "read, Tuikis, Shape in hand": {
-   "hash": "9815a425",
+   "hash": "296872e4",
    "png": "pods-read-tuikis-shape-in-hand.png"
   },
   "read, a sealed chapter, the pod's reason": {
@@ -90,7 +90,7 @@
    "png": "pods-read-a-sealed-chapter-the-pod-s-reason.png"
   },
   "read, a sealed pod, Identify": {
-   "hash": "9514db2d",
+   "hash": "c4883bfc",
    "png": "pods-read-a-sealed-pod-identify.png"
   },
   "read, the stamp moment": {

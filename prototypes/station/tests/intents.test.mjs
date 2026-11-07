@@ -20,6 +20,7 @@ import { setLibrarySpecies } from "../src/views/home-props.mjs";
 import { capLine } from "../src/views/words.mjs";
 import { listOf } from "../src/views/pods-props.mjs";
 import { openInventory } from "../src/intents/pods.mjs";
+import { incubateNow } from "../src/intents/create.mjs";
 import { lineageOf, camFromOffset, panFor } from "../src/lineage.mjs";
 import { buildLineage } from "./fixtures/lineage.mjs";
 
@@ -168,6 +169,19 @@ test("Hatch now with a ready portrait: the notice the bud had is the one that na
   const h = host(world()); h.t = T0; h.specs.incubator = incubatorSpec; h.settings = { ...settings, growNowAbove: 99 }; const st = h.st, p = pod(st, "S01", chapters("S01")); st.tray = [p]; assert.ok(S.grow(st, p, {}, settings, T0).ok); st.bud.start = Date.now();   // need() reads the real clock: a bud still growing
   st.sittingCrates.push({ id: "sit1", mibiId: 1, pose: "calm", place: "wood", start: -1e10, source: "dev", painted: true, opened: false });
   INTENTS.incubator.intent(h, "bud", "confirm"); assert.equal(h.played.at(-1)?.kind, "growNow"); assert.equal(capLine(h.ui.inc.grow.need), "A portrait waits in the Bay", "the portrait is in the snapshot the bar's fill keeps");
+});
+test("the pods catalog: ✓ on a card moves the ring to its panel (act.0); from the Incubator it lands on Grow, which opens Create and grows; ← on a button returns to the card", () => {
+  const st = world(), h = host(st); h.t = T0; h.specs.incubator = incubatorSpec; h.specs.create = createSpec;
+  const a = pod(st, "S01", chapters("S01"), 6); st.tray = [a];
+  openInventory(h, { from: "home" }); INTENTS.pods.intent(h, "card.0", "confirm");
+  assert.deepEqual([h.ui.pods.focus.cur, h.ui.pods.panelPod, h.ui.pods.view], ["act.0", a.id, "inventory"], "✓ on a card: the ring on Take to the reading room, the reading room not yet open");
+  INTENTS.pods.intent(h, "act.0", "back"); assert.deepEqual([h.ui.pods.focus.cur, h.ui.pods.view], ["card.0", "inventory"], "← on a panel button: back on the card");
+  INTENTS.incubator.intent(h, "room", "confirm"); INTENTS.pods.intent(h, "card.0", "confirm"); assert.equal(h.ui.pods.focus.cur, "act.1", "from the Incubator the ring lands on Grow it");
+  INTENTS.pods.intent(h, "act.1", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.create?.podId], ["create", a.id]);
+  INTENTS.create.intent(h, "x", "back"); assert.deepEqual([h.went.at(-1), h.ui.pods.from], ["pods", "incubator"], "Create's ← returns to the choose inventory");
+  INTENTS.pods.intent(h, "card.0", "confirm"); INTENTS.pods.intent(h, "act.1", "confirm"); INTENTS.create.intent(h, "x", "confirm"); assert.equal(h.ui.panel?.id, "incubate");
+  incubateNow(h); assert.ok(st.bud, "the pod is growing in the Incubator");
+  h.went.length = 0; openInventory(h, { from: "incubator" }); INTENTS.pods.intent(h, "card.0", "back"); assert.equal(h.went.at(-1), "incubator", "← from the choose inventory is the Incubator");
 });
 test("the incubator: Choose a pod (empty), Hatch now (growing: pays, ends the wait and hatches in one press, growNow with the bar and the door, then the hatch held 2780 ms with the hand-off at 2600 on the resident), Open (a bud that finished on its own: no price); ← Home on Home's Incubator module", () => {
   const st = world(), h = host(st); h.t = T0; h.specs.incubator = incubatorSpec;
@@ -378,7 +392,7 @@ test("Create ✓ blocked (busy, full, clash): nothing is spent and the message p
 test("Pods ✓ on a card: the pod goes onto the bench and the reading room opens on it (the ring on the recommended row, or Identify); ← is one press back to the inventory on that card, a second ← Home", () => {
   const st = world(), a = pod(st, "S01", [], 5, false), b = pod(st, "S01", [], 6), h = host(st); st.readEver = true;
   openInv(h); INTENTS.pods.focus(h, "card.0"); const first = S.podById(st, h.ui.pods.panelPod); assert.ok(first, "the panel follows the ring's card");
-  INTENTS.pods.intent(h, "card.0", "confirm"); assert.equal(S.benchPod(st), first); assert.equal(h.ui.pods.view, "room"); assert.equal(h.ui.pods.focus.cur, first.idd ? "rail" : "key"); assert.deepEqual(h.played.filter((e) => e.kind === "dither"), [], "a cut in (ux-reading-v2.md §2.6, 1)");
+  INTENTS.pods.intent(h, "card.0", "confirm"); assert.equal(h.ui.pods.focus.cur, "act.0"); INTENTS.pods.intent(h, "act.0", "confirm"); assert.equal(S.benchPod(st), first); assert.equal(h.ui.pods.view, "room"); assert.equal(h.ui.pods.focus.cur, first.idd ? "rail" : "key"); assert.deepEqual(h.played.filter((e) => e.kind === "dither"), [], "a cut in (ux-reading-v2.md §2.6, 1)");
   INTENTS.pods.intent(h, h.ui.pods.focus.cur, "back"); assert.deepEqual([h.ui.pods.view, h.ui.pods.focus.cur, h.went.at(-1)], ["inventory", "card.0", "pods"], "one ← back to the inventory on this pod's card");
   INTENTS.pods.intent(h, "card.0", "back"); assert.equal(h.went.at(-1), "home"); assert.equal(st.tray.length, 2, "nothing spent, nothing lost"); void a; void b;
 });

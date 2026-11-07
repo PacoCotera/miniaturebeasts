@@ -1651,7 +1651,7 @@
    "kinds": {"species": "a species", "look": "a look", "place": "a place", "mibi": "a mibi"},
    "findRow": "{word} · {kind} · {n} pods",
    "findRowOne": "{word} · {kind} · 1 pod",
-   "foot": {"take": "Take to the reading room", "back": "Home", "backRoom": "back to the reading room", "backCreate": "Create"},
+   "foot": {"take": "Take to the reading room", "back": "Home", "backRoom": "back to the reading room", "backCreate": "Create", "backIncubator": "Incubator"},
    "barFirst": "identified · a page read · half read · known in full",
    "places": {"meadow": "pond meadow", "pond": "pond edge", "rock": "rock field", "wood": "wood", "cave": "cave"},
    "origin": {"short": "{place} · {who}", "shortPlace": "{place}"}

@@ -219,7 +219,7 @@ test("the recommended lane: a goal glint, a glint, never the sprout lane while a
 test("the bottom line: the verb of what has the ring, or its reason when held; the way back named; Pods never shows the station's notice", () => {
   const st = mixed(); ident(st); st.s = 0; st.turn = 7;
   const line = (focus, over = {}) => body(model(st, over, focus)).line;
-  assert.deepEqual(line("card.0"), { ok: "Take to the reading room", back: "Home", subject: "", need: "" });
+  assert.deepEqual(line("card.0"), { ok: "Choose a pod", back: "Home", subject: "", need: "" });
   assert.deepEqual(line("act.2"), { ok: null, back: "Home", subject: "", need: "Freshen · needs ❀ 2 · you have ❀ 0" }, "held: the reason in the foot, no greyed verb");
   for (const [name, m] of SCENES) { const l = body(m).line; assert.ok(l && typeof l.need === "string", name + ": the line always has its own need"); }
 });

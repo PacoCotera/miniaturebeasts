@@ -113,7 +113,7 @@
     ],
     "screen": "pods",
     "state": "inventory",
-    "ok": "Take to the reading room",
+    "ok": "Choose a pod",
     "price": null,
     "subject": ""
    },
@@ -133,14 +133,14 @@
       "verb": "back"
      }
     ],
-    "screen": "home",
-    "state": "home",
-    "ok": "Look at the pods",
+    "screen": "incubator",
+    "state": "empty",
+    "ok": "Choose a pod",
     "price": null,
-    "subject": ""
+    "subject": "Ready for a new bud"
    },
    {
-    "back": "home"
+    "back": "incubator"
    }
   ]
  }

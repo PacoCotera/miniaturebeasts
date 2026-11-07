@@ -59,12 +59,19 @@ export function intent(h, target, verb) {
   if (p.view === "find") return findIntent(h, target, verb);
   return inventoryIntent(h, target, verb);
 }
+// Grow it from the inventory: refused with its reason, else Create on the pod (Create's ← returns to the inventory it came from).
+function growFrom(h, q, from) {
+  const p = pods(h), b = S.growBlock(h.st, q, {}, h.settings, []); if (b) return h.say(b);
+  p.lastCard = q.id; h.ui.createFrom = from; return openCreate(h, q);
+}
 function inventoryIntent(h, target, verb) {
   const p = pods(h), st = h.st;
+  if (verb === "back" && target?.startsWith("act.")) { const at = p.panelPod ? cardOf(h, p.panelPod) : null; p.ask = null; if (at) { p.focus.set(at); return; } }   // ← on a panel button: the ring returns to that pod's card
   if (verb === "back") {
     leaveInventory(h); p.ask = null;
     if (p.choosing) { p.choosing = false; p.view = "room"; enterRead(h, S.benchPod(st)); return; }   // ← back to the reading screen with the same pod, nothing changed
     if (p.from === "create" && h.ui.create) return h.goto("create");
+    if (p.from === "incubator") return h.goto("incubator");   // Choose a pod's ← returns to the Incubator
     return h.goto("home");
   }
   if (verb !== "confirm" || !target) return;
@@ -75,11 +82,11 @@ function inventoryIntent(h, target, verb) {
     const i = +target.slice(5), chips = p.chips ?? []; if (i < chips.length) p.chips = chips.filter((_, j) => j !== i); else p.word = null;
     p.first = 0; const n = (p.chips?.length ?? 0) + (p.word ? 1 : 0); p.focus.set(n ? "chip." + Math.min(i, n - 1) : "find"); return;
   }
-  if (target.startsWith("card.")) { const q = podAt(h, target); if (!q) return; p.panelPod = q.id; return toRoom(h, q, p.choosing ? "choosing" : "inventory"); }   // ✓ on a card: the reading room at once
+  if (target.startsWith("card.")) { const q = podAt(h, target); if (!q) return; p.panelPod = q.id; const inc = p.from === "incubator" && !p.choosing; p.focus.set(inc ? "act.1" : "act.0"); if (inc) { const b = S.growBlock(st, q, {}, h.settings, []); if (b) h.say(b); } return; }   // ✓ on a card selects the pod: the ring moves onto its panel (Take to the reading room; from the Incubator, Grow it)
   if (target.startsWith("act.")) {
     const q = S.podById(st, p.panelPod); if (!q) return; const i = +target.slice(4);
     if (i === 0) return toRoom(h, q, p.choosing ? "choosing" : "inventory");
-    if (i === 1) { const b = S.growBlock(st, q, {}, h.settings, []); if (b) return h.say(b); p.lastCard = q.id; h.ui.createFrom = "inventory"; return openCreate(h, q); }
+    if (i === 1) return growFrom(h, q, p.from === "incubator" ? "incubator" : "inventory");
     if (i === 2) { const r = S.freshen(st, q, h.settings); if (!r.ok) return h.say(r.why); h.play({ kind: "tick", target: "s", ms: 300 }); flash(h, fill(spec(h).strings.inv.freshened, { n: r.cost })); h.save(); return; }
     if (i === 3) { const k = q.idd ? st.tray.find((x) => x !== q && S.canCompare(st, q, x)) : null; if (!k) return; p.cmp = { a: q.id, b: k.id, ci: 0, from: "inventory", card: q.id }; p.focus.set("takeA"); return; }
     if (i === 4) return letGo(h, q, target);
