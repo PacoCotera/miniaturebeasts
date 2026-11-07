@@ -555,10 +555,13 @@ function settleOnce() {
 // ===================== Signs: one picture and one line, found again on the Probe =====================
 // key: the once-flag (an old save keeps its flags); also: other flags that count as seen; tile: its place on the Probe (met-order grid).
 // Priority is the old once-line's (a merged sign takes the highest of its lines; every hazard sign is 3, so the hazard order decides). Then the order below.
+// The bag choice at the find (walk slice W§5): every player string of the chooser, so the words can change without code.
+const SWAP_TEXT = { title: 'Your bag is full', sub: 'Keep one of these. The other stays here.', bag: 'In your bag', found: 'Found here', stays: 'stays here',
+  foot: 'The one you leave waits here. The map remembers it.', take: 'Take it', leave: 'Leave it here', leaveCtx: p => 'leave the ' + p + ' pod', kept: 'Left it here', swapTitle: 'Swap the pod' };
 const SIGN_LINE = {
   call: 'Call lifts the veil: finds show', shield: 'Plate lost · no plates, Probe breaks',
   storm: dir => 'More bolts, more strikes · ' + (dir > 0 ? '▶ east' : '◀ west'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
-  pod: 'Pods open at the Station', full: 'Hold full · swap, or head back', bank: 'A break would lose your finds', fog: 'Fog · creatures calm, sight short',
+  pod: 'Pods open at the Station', full: 'Hold full · a new pod is a choice',bank: 'A break would lose your finds', fog: 'Fog · creatures calm, sight short',
   muffled: 'The fog muffles your Call', fruit: 'Put it down near a creature', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
   tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog',
   bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
@@ -619,7 +622,7 @@ const TILES = [
   ['shield', 'Shield · each plate a hit', 'Shield', 'shield', []],
   ['shelter', 'Shelter · never trees', 'Shelter', 'shelter', []],
   ['podsopen', 'Pods · the Station opens', 'Pods', 'pod', []],
-  ['full', 'Full hold · swap or leave', 'Full hold', 'full', []],
+  ['full', 'Full hold · you choose', 'Full hold', 'full', []],
   ['bank', 'Crate · end to seal finds', 'Crate', 'bank', []],
   ['fruit', 'Fruit · set it down', 'Fruit', 'fruit', []],
   ['bubN', 'Noticed · stop or it runs', 'Noticed', 'bub!', []],
@@ -1755,7 +1758,7 @@ function patchAction() {
       : { label: 'Bring fruit, or Call', run: () => { fxMsg('The ' + spName(o.c.sp) + ' watches you · bring fruit, or Call', 2); FX.bumpAt = NOW; } }; }
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
   if (o && o.type === 'tuft') return { label: 'Pick up the tuft', run: () => takeTuft(o.tf) };
-  if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? 'Swap the pod' : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
+  if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? SWAP_TEXT.swapTitle : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
   if (o && o.type === 'pt') return NOTHING;
   if (o && o.type === 'tile' && o.t === T.DEEP) return { label: 'Needs a swimmer', run: swimBump };
   if (o && o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE) && !canSure()) return { label: 'Needs a rambler', run: () => softBump(o.t) };   // says why ✓ does nothing, as deep water does
@@ -5047,15 +5050,25 @@ function drawLine(o) {
 // the one to leave framed; Ground: the pod you face.
 function drawSwap() {
   const sw = swapState(); if (!sw) return;
-  // release 22 (E2): the columns start right after the longer row label and each text line gets all the width its column has, so a tier-2 hold's three pods keep their longest line whole
-  const y0 = SCR_H - LINE_H - 104, n = sw.held.length, X0 = 16 + Math.max(textW('Hold', 1), textW('Ground', 1)) + 10, cw = Math.floor((SCR_W - 12 - X0) / n), tw = cw - 24;
-  panel(6, y0, SCR_W - 12, 98, C.ink, C.amber);
-  text('Hold', 16, y0 + 15, C.mist, 1);
-  sw.held.forEach((p, i) => { const x = X0 + i * cw; if (i === sw.sel) { panel(x - 4, y0 + 4, cw - 4, 46, C.night); brackets(x - 6, y0 + 2, cw, 50, C.amber); }
-    podSlot(x, y0 + 8, p); text(clipText(podName(p, true), tw, 2), x + 20, y0 + 8, i === sw.sel ? C.bone : C.fog); text(clipText(podTagOf(p, true), tw, 2), x + 20, y0 + 28, C.mist); });
-  text('Ground', 16, y0 + 65, C.mist, 1);
-  podSlot(X0, y0 + 58, sw.p); text(clipText(podName(sw.p) + ' · ' + podTagOf(sw.p), SCR_W - X0 - 40, 2), X0 + 20, y0 + 58, C.bone);
-  text(clipText('leave the ' + podInSentence(sw.held[sw.sel]) + ' pod, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
+  // picture first: the pods in your bag on the left (the framed one is the one that stays), the found pod large on the right
+  const T = SWAP_TEXT, n = sw.held.length, y0 = VIEW_Y + 64, cy = y0 + 70, ch = 218, cw = 204, lx = 16, rx = 230;
+  panel(6, y0, SCR_W - 12, 372, C.ink, C.amber);
+  text(T.title, 26, y0 + 14, C.bone); text(T.sub, 26, y0 + 38, C.fog);
+  panel(lx, cy, cw, ch, C.night); panel(rx, cy, cw, ch, C.night);
+  text(T.bag, lx + 10, cy + 10, C.mist, 1); text(T.found, rx + 10, cy + 10, C.mist, 1);
+  const sc = n === 1 ? 3 : 2, sw1 = Math.floor((cw - 8) / n), ts = n === 1 ? 2 : 1, lineH = ts === 2 ? 20 : 12;
+  const slot = (p, x, w, y, on, big, framed) => {   // a pod, its name and where it lay, centred in w
+    blit(podArt(POD_SHELL[p.g] || 'bone', sc), x + w / 2 - 8 * sc, y);
+    let ty = y + 20 * sc + 10; const tw = w - 8;
+    text(clipText(podName(p, !big && n > 1), tw, 2), x + w / 2, ty, on ? C.bone : C.fog, 2, 'center'); ty += 22;
+    for (const l of wrapText(podTagOf(p, n > 1 && !big), tw, ts).slice(0, 2)) { text(l, x + w / 2, ty, C.mist, ts, 'center'); ty += lineH; }
+    if (framed) text(T.stays, x + w / 2, ty + 2, C.amber, 1, 'center'); };
+  sw.held.forEach((p, i) => { const x = lx + 4 + i * sw1, on = i === sw.sel;
+    if (n > 1 && on) { panel(x, cy + 26, sw1, ch - 34, C.ink); }
+    if (on) brackets(x, cy + 26, sw1, ch - 34, C.amber);
+    slot(p, x, sw1, cy + 40, on, false, on); });
+  slot(sw.p, rx + 4, cw - 8, cy + 40, true, true, false);
+  const foot = wrapText(T.foot, 410, 2).slice(0, 2); foot.forEach((l, i) => text(l, 26, cy + ch + 14 + i * 20, C.fog));
 }
 // The message box's rect: a sign's card (48 high, the picture and one line), or the plain box (up to three lines).
 // It sits above the bottom line, or at the top of the view when the player stands where it would cover them.
@@ -5886,7 +5899,7 @@ function lineBase() {
       const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = (G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land]) + ' · ';
       let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay.cell, true)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
-      if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave the ' + podInSentence(sw.held[sw.sel]) + ' pod' : 'Swap', sw ? 'take the ' + podInSentence(sw.p) + ' pod' : '', 'keep', fieldFrozen()); }
+      if (S.ui.swap) { const sw = swapState(); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
       return L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim); }
@@ -6038,7 +6051,7 @@ function act(k, mode) {
         else if (k === 'up' || k === 'down') { }
         else if (k === 'left' || k === 'right') sw.held.length && (S.ui.swap.sel = (sw.sel + (k === 'right' ? 1 : sw.held.length - 1)) % sw.held.length);
         else if (k === 'confirm') { S.ui.swap = null; takePod(sw.p, sw.sel); }
-        else if (k === 'back') { S.ui.swap = null; fxMsg('Kept your pods'); }
+        else if (k === 'back') { S.ui.swap = null; fxMsg(SWAP_TEXT.kept); }
         break; }
       if (isDir) patchStep(k, mode || 'creep');
       else if (k === 'confirm') { const a = patchAction(); if (a.run) a.run(); else { FX.bumpAt = NOW; return; } }   // "Nothing here": no action spent

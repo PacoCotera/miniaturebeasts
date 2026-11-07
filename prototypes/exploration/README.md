@@ -184,7 +184,7 @@ The words and the layout are those of [`companion-screens.md`](../../design/styl
 ## Pods and the swap
 
 - The first expedition of a new world finds two buried pods in reach of the start glint: a Loika's next to it and, when needed, a Tuikis's at the edge of the reach (firstPods).
-- With a full hold, Confirm on a pod ("✓ Swap the pod") opens a two-line chooser over the bottom line: **Hold** lists each pod you carry (shell, "Loika pod" if its species is identified or "Unknown pod", and where it came from: "from a hole", "under rain", "under a slab", "cave", "shed, shaking dry", …), the one to leave framed; **Ground** names the pod you face. Pad left/right picks, ✓ "Leave Loika" (the framed pod; the middle names the one you take, "take Untuva"), ← keeps. Nothing is spent until you swap.
+- With a full hold, Confirm on a pod ("✓ Swap the pod") opens the bag choice, picture first ("Your bag is full · Keep one of these. The other stays here."): **In your bag** shows each pod you carry large (shell, its name, where it came from: "under a slab", "shed, shaking dry", …), the one that would stay framed ("stays here"); **Found here** shows the pod you found, large, with where it lies. Pad left/right moves the frame, ✓ "Take it" (the middle says "leave the Loika pod"), ← "Leave it here" (nothing changes). Nothing is spent until you swap. A full bag never shows a line sending you home. Every word of it is in `SWAP_TEXT`. Stills: `tests/golden/swap-one-pod.png`, `swap-two-pods.png` (`UPDATE_GOLDEN=1` rewrites them).
 - After the swap the dropped pod lies there with its dotted outline, the HUD slot flashes with the new shell, and the line says "Swapped · Loika pod left here".
 
 ## The partner in a place
