@@ -32,6 +32,7 @@ export const W = {
   section: { cols: ['Height', 'Back radius', 'Side radius', 'Front radius'], rows: (n: number) => `${n} ${n === 1 ? 'row' : 'rows'}`, note: 'From the profile knobs · Read only' }, // cw-chunks-21-22
   viewBar: ['Plush', 'Clay', 'Normal', 'Parts', 'Wire'], // ui 3.2 ViewBar
   before: 'Before', // ui 3.2 ViewBar
+  live: { loading: 'Drawing the creature', cage: 'This kind is drawn from the server for now.' }, // R5's own words, drafts for the copywriter's list before R7
   help: { go: 'Go to', do: 'Do', choose: 'choose', run: 'run', everyKey: 'every key' }, // ui mock 10
   held: (who: string, since: string) => `held by ${who} since ${since}`, // spec 6.2
 }
