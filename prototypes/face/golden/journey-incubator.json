@@ -113,7 +113,7 @@
     ],
     "screen": "pods",
     "state": "inventory",
-    "ok": "Choose a pod",
+    "ok": "Grow it",
     "price": null,
     "subject": ""
    },
@@ -121,7 +121,8 @@
     "screen": "pods",
     "view": "inventory",
     "sort": "use",
-    "focus": "card.0"
+    "focus": "card.2",
+    "verb": "grow"
    },
    {
     "key": "back",
@@ -129,7 +130,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "card.0",
+      "target": "card.2",
       "verb": "back"
      }
     ],

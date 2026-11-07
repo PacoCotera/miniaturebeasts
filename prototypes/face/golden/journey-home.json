@@ -269,7 +269,7 @@
     ],
     "screen": "pods",
     "focus": "bay",
-    "ok": "Choose a pod",
+    "ok": "Take to the reading room",
     "subject": "",
     "idle": false
    },
@@ -628,7 +628,7 @@
     ],
     "screen": "pods",
     "focus": "pods",
-    "ok": "Choose a pod",
+    "ok": "Take to the reading room",
     "subject": "",
     "idle": false
    },
@@ -744,7 +744,7 @@
     ],
     "screen": "pods",
     "focus": "room",
-    "ok": "Choose a pod",
+    "ok": "Take to the reading room",
     "subject": "",
     "idle": false
    }
@@ -771,7 +771,7 @@
     "said": [],
     "screen": "pods",
     "focus": "pods",
-    "ok": "Choose a pod",
+    "ok": "Take to the reading room",
     "subject": "",
     "idle": false
    },

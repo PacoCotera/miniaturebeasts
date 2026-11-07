@@ -37,12 +37,12 @@ const TARGETS = {
   library: (state, spec, v) => { const F = spec.l1.grid.forms["16"], out = []; for (let k = 0; k < 16; k++) { const id = "cell.S" + String(k + 1).padStart(2, "0"); if (!(v.unmet ?? []).includes(id)) out.push({ id, rect: listPitch(F, 16, k), group: "cell" }); } return out; },
   // the Probe bench: the plates (docked only), then the switch and the slot, each its region's rectangle; one graph for both states
   bench: (state, spec) => { const R = spec.regions; return [...(state === "away" ? [] : [{ id: "plates", rect: R.plates.rect, group: "plates" }]), { id: "switch", rect: R.switch.rect, group: "module" }, { id: "slot", rect: R.slot.rect, group: "module" }]; },
-  // Pods: the inventory's six cards on screen (the cabinet's first two rows), the panel's five buttons and the three tools; the reading room's four index rows, the band's three buttons and the bottom row
-  "pods-screen": (state, spec) => { const I = spec.regions.inventory, C = I.cabinet, out = [];
+  // Pods: the picker's ten cards on screen (two rows of five), its five verbs and three tools; the reading room's four index rows, the band's three buttons and the bottom row
+  "pods-screen": (state, spec) => { const I = spec.regions.inventory, G = I.picker.grid, out = [];
     if (state === "inventory") {
-      for (let k = 0; k < 6; k++) out.push({ id: "card." + k, rect: [C.rect[0] + C.card.pitch[0] * (k % 3), C.rect[1] + C.card.pitch[1] * Math.floor(k / 3), ...C.card.size], group: "card", index: k });
-      const A = I.panel.actions; for (let i = 0; i < A.n; i++) out.push({ id: "act." + i, rect: [A.first[0], A.first[1] + A.pitch * i, A.first[2], A.first[3]], group: "act", index: i });
-      for (const t of ["sort", "filter", "find"]) out.push({ id: t, rect: I.tools[t], group: t });
+      for (let k = 0; k < 10; k++) out.push({ id: "card." + k, rect: [G.origin[0] + G.pitch[0] * (k % 5), G.origin[1] + G.pitch[1] * Math.floor(k / 5), ...G.cell], group: "card", index: k });
+      ["read", "grow", "freshen", "compare", "letgo"].forEach((v, i) => out.push({ id: "verb." + v, rect: [I.picker.verbs.x + 80 * i, I.picker.verbs.y, 62, I.picker.verbs.h], group: "verb", index: i }));
+      ["sort", "filter", "find"].forEach((t, i) => out.push({ id: t, rect: [820 + 60 * i, I.picker.tools.y, 52, I.picker.tools.h], group: t }));
       return out;
     }
     const R = spec.regions.room;
@@ -57,6 +57,7 @@ for (const screen of screens) {
   const spec = J(screen), F = screen === "library" ? spec.l1.focus : spec.focus;   // Level 1 keeps its focus under `l1`
   for (const v of F.vectors ?? []) {
     if (v.intent && !/^step:/.test(v.intent)) continue;   // ✓ and ← are intents on the target, not moves
+    if (screen === "pods-screen" && v.state !== "inventory") continue;   // the reading room's hand vectors keep the cases focus.json already holds (its spec region is retired)
     const st = screen === "pods-screen" ? { graph: F[v.state] } : v.state && F[v.state]?.graph ? F[v.state] : F, c = { name: `${screen}: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.away ? " (away: " + v.away.join(", ") + ")" : ""}${v.intent ? " says " + v.intent : ""}`, graph: st.graph, targets: TARGETS[screen](v.state, spec, v), from: v.from, key: v.key, to: v.to };
     if (screen === "vivarium") { c.resolve = { ...(F.resolveFor ?? {}), ...(v.resolve ?? {}) }; if (v.from === "room") c.roomAt = F.roomAt; }   // the view's selectors for the ring the vectors start from (views/vivarium-props.mjs and the face's row): the card's first live plate, the lit chip, the card's mibi, the row (a vector may give its own)
     if (screen === "home") { c.roomAt = F.roomAt; c.name = `home: ${v.from} ${v.key} is ${v.to}`; }   // the ring at rest is on the room: its point is roomAt
@@ -72,7 +73,8 @@ for (const screen of screens) {
 // the file is one case a line, escaped to ASCII as it was written
 const esc = (t) => t.replace(/[\u0080-\uffff]/g, (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0")), j = (x) => esc(JSON.stringify(x));
 const text = (all) => `{"_note":${j(V._note)},"cases":[${all.map(j).join(",\n")}],"refusals":[${V.refusals.map(j).join(",\n")}],"sound":[${V.sound.map(j).join(",\n")}]}\n`;
-const keep = V.cases.filter((c) => !screens.some((s) => c.name.startsWith(s + ": ")) && !c.name.startsWith("pods-overview: "))   /* the retired overview's cases go */, next = [...keep, ...cases];
+const mine = (c) => screens.some((s) => c.name.startsWith(s + ": ") && !(s === "pods-screen" && !c.name.startsWith("pods-screen: inventory")));
+const keep = V.cases.filter((c) => !mine(c) && !c.name.startsWith("pods-overview: "))   /* the retired overview's cases go */, next = [...keep, ...cases];
 if (text(V.cases) !== readFileSync(file, "utf8")) { console.error("the formatter does not reproduce focus.json: the file was edited by hand in another form"); process.exit(1); }
-if (check) { const have = V.cases.filter((c) => screens.some((s) => c.name.startsWith(s + ": "))); if (JSON.stringify(have) !== JSON.stringify(cases)) { console.error("focus.json is not current for " + screens.join(", ")); process.exit(1); } console.log(`focus vectors current: ${cases.length} cases for ${screens.join(", ")}`); }
+if (check) { const have = V.cases.filter(mine); if (JSON.stringify(have) !== JSON.stringify(cases)) { console.error("focus.json is not current for " + screens.join(", ")); process.exit(1); } console.log(`focus vectors current: ${cases.length} cases for ${screens.join(", ")}`); }
 else { writeFileSync(file, text(next)); console.log(`wrote ${cases.length} cases for ${screens.join(", ")} (${next.length} in all)`); }

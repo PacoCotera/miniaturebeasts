@@ -29,6 +29,9 @@ div.pad::before{content:""; position:absolute; inset:-10px; border-radius:50%; b
 .k.confirm{border-radius:50%; background:radial-gradient(circle at 40% 30%,#ff8a45,#f0661a 55%,#c94f0d); box-shadow:0 6px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35); display:grid; place-items:center; overflow:hidden}
 .k.confirm::before{content:""; position:absolute; left:5.5%; right:5.5%; top:3.3%; height:20%; border-radius:999px; background:rgba(255,255,255,.27); filter:blur(2px); pointer-events:none}
 .k.confirm svg{position:relative; width:46px; height:46px; stroke:#fff8ef; fill:none; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round}
+.k.call{border-radius:50%; overflow:hidden; background:radial-gradient(circle at 40% 30%,#34b8a8,#1f9d8f 55%,#157a70); box-shadow:0 5px 0 #0f4c50, inset 0 1px 0 rgba(255,255,255,.3); display:grid; place-items:center}
+.k.call svg{position:relative; width:26px; height:26px; stroke:#eafffa; fill:none; stroke-width:3; stroke-linecap:round}
+.k.call.is-down{transform:translateY(3px); box-shadow:0 2px 0 #0f4c50, inset 0 2px 4px rgba(0,0,0,.4)}
 .k.back.is-down{transform:translateY(3px); box-shadow:0 2px 0 #1c1d20, inset 0 0 0 1px #16181a, inset 0 2px 4px rgba(0,0,0,.5)}
 .k.confirm.is-down{transform:translateY(4px); box-shadow:0 2px 0 #8c3608, inset 0 2px 5px rgba(0,0,0,.35)}
 

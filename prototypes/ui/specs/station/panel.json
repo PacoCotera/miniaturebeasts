@@ -93,7 +93,8 @@
  "events": {},
  "strings": {
   "back": "Back",
-  "toRoom": "to {room}",
+  "holdReturn": "Hold ✓ to return it to the wild",
+ "toRoom": "to {room}",
   "rooms": {
    "research": "Research",
    "home": "Home",

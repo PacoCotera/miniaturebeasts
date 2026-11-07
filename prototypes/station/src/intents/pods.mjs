@@ -3,7 +3,7 @@
 //   h.ui.pods: { view: inventory | filter | find | room | trait, sort, chips, word, first, panelPod, from, choosing, ask, flash, spent, done, find, recent, findSeen, ci, trait, cmp, focus, lastCard, roomFrom, firstMove }
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
-import { listOf, trayOf, findOf, compareKin, podsBuild } from "../views/pods-props.mjs";
+import { listOf, trayOf, findOf, compareKin, podsBuild, verbsOf, takeOf } from "../views/pods-props.mjs";
 import { recommendedLane, sealedShut } from "../views/reading-props.mjs";
 import { fill } from "../views/words.mjs";
 import { openCreate } from "./create.mjs";
@@ -21,10 +21,16 @@ const flash = (h, text) => { pods(h).flash = { text, until: h.now() + FLASH_MS }
 // The inventory (Where the ring starts): on the card it was on when the player last left, else the first; `opts.first` puts it on the first card (from Choose a pod, sorted by use).
 export function openInventory(h, opts = {}) {
   const p = pods(h); p.cmp = null; p.view = "inventory"; p.ask = null; p.choosing = !!opts.choosing; p.from = opts.from ?? (p.choosing ? "room" : "home");
+  p.hold = null; p.waits = !!opts.waits;   // the verb is the caller's on every entry (the pods picker's design B): a verb never sticks from one visit to the next; the Incubator's Grow and the bench's Bring are the only one offered
+  p.verb = p.callerVerb = opts.verb ?? (p.choosing ? "bring" : p.from === "incubator" ? "grow" : "read"); p.fixed = p.choosing || p.from === "incubator";
   if (opts.sort) p.sort = opts.sort;
+  if (p.carryFilter && !opts.chips) { p.chips = []; p.word = null; }   // the filter a carry set (blue on a mibi: its kind) lasts until the next way in
+  p.carryFilter = false;
   if (opts.chips) { p.chips = [...opts.chips]; p.word = null; }
-  const at = opts.pod ? cardOf(h, opts.pod) : opts.first ? null : p.lastCard ? cardOf(h, p.lastCard) : null;
+  const n = listOf(h.st, spec(h), p, h.settings).length;
+  let at = opts.pod ? cardOf(h, opts.pod) : opts.last ? (n ? "card." + (n - 1) : null) : opts.first ? null : p.lastCard ? cardOf(h, p.lastCard) : null;
   p.first = 0; p.focus.set(at ?? (h.st.tray.length ? "card.0" : "sort"));
+  if (!at && opts.first && n) p.focus.set(firstAble(h));   // from Choose a pod: the first pod that can take the verb, by use
   h.goto("pods");
 }
 // The reading screen on the pod on the bench (§2.6, 1): a cut in, the bracket on the recommended lane (the key on an unidentified pod).
@@ -42,7 +48,7 @@ export function researchKey(h) {
   return openInventory(h, { from: "home" });
 }
 // A pod onto the bench and the room open on it (✓ on a card, "Take to the reading room", "Bring onto the bench"): the old one goes back to its niche, nothing spent.
-function toRoom(h, q, from = "inventory") {
+export function toRoom(h, q, from = "inventory") {
   const p = pods(h); S.putOnBench(h.st, q); q.seen = 1; p.lastCard = q.id; h.save();
   p.view = "room"; p.ask = null; p.choosing = false; p.from = "inventory"; p.roomFrom = "inventory"; void from;
   enterRead(h, q);   // a cut in (§2.6, 1)
@@ -60,14 +66,19 @@ export function intent(h, target, verb) {
   return inventoryIntent(h, target, verb);
 }
 // Grow it from the inventory: refused with its reason, else Create on the pod (Create's ← returns to the inventory it came from).
-function growFrom(h, q, from) {
+export function growFrom(h, q, from) {
   const p = pods(h), b = S.growBlock(h.st, q, {}, h.settings, []); if (b) return h.say(b);
   p.lastCard = q.id; h.ui.createFrom = from; return openCreate(h, q);
 }
+// The verb the picker is on: the one the caller set or the player chose, else Read when it is not on offer now.
+const mm = (h) => ({ st: h.st, settings: h.settings, ui: pods(h), now: h.now ? h.now() : 0 });
+export const verbNow = (h) => { const p = pods(h), vs = verbsOf(mm(h), spec(h)); return vs.includes(p.verb) ? p.verb : vs[0] ?? "read"; };
+// The ring's first landing under a verb: the first pod that can take it (from the top row on screen), else the first.
+function firstAble(h) { const p = pods(h), m = mm(h), vb = verbNow(h), list = listOf(h.st, spec(h), p, h.settings), i = list.findIndex((e, k) => k >= (p.first ?? 0) * 5 && takeOf(m, spec(h), vb, e.p).can), j = i >= 0 ? i : list.findIndex((e) => takeOf(m, spec(h), vb, e.p).can); return "card." + Math.max(0, j); }
 function inventoryIntent(h, target, verb) {
   const p = pods(h), st = h.st;
-  if (verb === "back" && target?.startsWith("act.")) { const at = p.panelPod ? cardOf(h, p.panelPod) : null; p.ask = null; if (at) { p.focus.set(at); return; } }   // ← on a panel button: the ring returns to that pod's card
   if (verb === "back") {
+    if (p.hold) { p.hold = null; return; }   // ← puts the pod held for Compare back: the ring stays on it
     leaveInventory(h); p.ask = null;
     if (p.choosing) { p.choosing = false; p.view = "room"; enterRead(h, S.benchPod(st)); return; }   // ← back to the reading screen with the same pod, nothing changed
     if (p.from === "create" && h.ui.create) return h.goto("create");
@@ -78,48 +89,62 @@ function inventoryIntent(h, target, verb) {
   if (target === "sort") { if (!st.tray.length) return h.say(spec(h).strings.inv.nothingToSort); const i = SORTS.indexOf(p.sort ?? "use"); p.sort = SORTS[(i + 1) % SORTS.length]; p.first = 0; return; }   // the list returns to its top and the ring stays on Sort
   if (target === "filter") { if (!st.tray.length) return h.say(spec(h).strings.inv.nothingToFilter); p.view = "filter"; p.focus.set("tchip.0.0"); return; }
   if (target === "find") { if (!st.tray.length) return h.say(spec(h).strings.inv.nothingToFind); p.view = "find"; const f = findOf({ st, ui: p }, spec(h)); p.find = { letter: f.letter }; p.focus.set(f.letters.length ? "letter." + Math.max(0, f.letters.findIndex((l) => l.lit)) : "find"); return; }
-  if (target.startsWith("chip.")) {   // ✕ on an active chip removes it
-    const i = +target.slice(5), chips = p.chips ?? []; if (i < chips.length) p.chips = chips.filter((_, j) => j !== i); else p.word = null;
-    p.first = 0; const n = (p.chips?.length ?? 0) + (p.word ? 1 : 0); p.focus.set(n ? "chip." + Math.min(i, n - 1) : "find"); return;
-  }
-  if (target.startsWith("card.")) { const q = podAt(h, target); if (!q) return; p.panelPod = q.id; const inc = p.from === "incubator" && !p.choosing; p.focus.set(inc ? "act.1" : "act.0"); if (inc) { const b = S.growBlock(st, q, {}, h.settings, []); if (b) h.say(b); } return; }   // ✓ on a card selects the pod: the ring moves onto its panel (Take to the reading room; from the Incubator, Grow it)
-  if (target.startsWith("act.")) {
-    const q = S.podById(st, p.panelPod); if (!q) return; const i = +target.slice(4);
-    if (i === 0) return toRoom(h, q, p.choosing ? "choosing" : "inventory");
-    if (i === 1) return growFrom(h, q, p.from === "incubator" ? "incubator" : "inventory");
-    if (i === 2) { const r = S.freshen(st, q, h.settings); if (!r.ok) return h.say(r.why); h.play({ kind: "tick", target: "s", ms: 300 }); flash(h, fill(spec(h).strings.inv.freshened, { n: r.cost })); h.save(); return; }
-    if (i === 3) { const k = q.idd ? st.tray.find((x) => x !== q && S.canCompare(st, q, x)) : null; if (!k) return; p.cmp = { a: q.id, b: k.id, ci: 0, from: "inventory", card: q.id }; p.focus.set("takeA"); return; }
-    if (i === 4) return letGo(h, q, target);
-  }
+  if (target.startsWith("verb.")) { if (!p.fixed) p.verb = target.slice(5); p.hold = null; p.focus.set(firstAble(h)); return; }   // ✓ on the verb line: down to the pods, the ring on the first one that can take it
+  if (target.startsWith("card.")) return doVerb(h, target);
 }
-// Letting a pod go: it pays nothing; a pod that carries the goal, or the only one of its species, asks once on the button's own face and a second ✓ confirms; any move puts the button back.
-function letGo(h, q, target) {
-  const p = pods(h), st = h.st, Sg = spec(h).strings.inv;
-  if (S.letGoGuard(st, q) && p.ask !== q.id) { p.ask = q.id; return; }
-  const list = listOf(st, spec(h), p, h.settings).map((e) => e.p.id), k = list.indexOf(q.id);
-  p.ask = null; S.returnPod(st, q); h.save();
+// ✓ on a pod does the verb in one press (the pods picker's design B): Read and Bring open the reading room, Grow opens Create, Freshen freshens at once, Compare holds the pod and then opens on a kin, Let go asks to be held.
+function doVerb(h, target) {
+  const p = pods(h), st = h.st, q = podAt(h, target); if (!q) return;
+  const vb = verbNow(h), t = takeOf(mm(h), spec(h), vb, q), PK = spec(h).strings.inv.picker; p.panelPod = q.id;
+  if (!t.can) { if (t.why) h.say(t.why); return; }   // a pod that cannot take the verb: the reason on the plate, nothing done
+  if (vb === "read" || vb === "bring") return toRoom(h, q, p.choosing ? "choosing" : "inventory");
+  if (vb === "grow") return growFrom(h, q, p.from === "incubator" ? "incubator" : "inventory");
+  if (vb === "freshen") { const r = S.freshen(st, q, h.settings); if (!r.ok) return h.say(r.why); h.play({ kind: "tick", target: "s", ms: 300 }); flash(h, fill(spec(h).strings.inv.freshened, { n: r.cost })); h.save(); return; }
+  if (vb === "compare") {
+    if (!p.hold) { p.hold = q.id; return; }   // this pod is held: only its kin stay bright
+    if (p.hold === q.id) { p.hold = null; return; }
+    p.cmp = { a: p.hold, b: q.id, ci: 0, from: "inventory", card: p.hold }; p.hold = null; p.focus.set("takeA"); return;
+  }
+  if (vb === "letgo") return h.say(PK.hold);   // a short ✓ never lets go: the hold ring does (held), and the line says so
+}
+// Letting a pod go, once the ✓ has been held to its end (the face's hold ring says `confirm:held`): the pod goes back to the wild, the card closes up and the ring lands on the next one; the verb goes back to the caller's.
+function letGoPod(h, q) {
+  const p = pods(h), st = h.st, Sg = spec(h).strings.inv, list = listOf(st, spec(h), p, h.settings).map((e) => e.p.id), k = list.indexOf(q.id);
+  S.returnPod(st, q); h.save(); p.verb = p.callerVerb ?? "read"; p.hold = null;
   flash(h, q.idd ? fill(Sg.letGone, { Species: S.cap(S.spName(q)) }) : Sg.letGoneSealed);
-  const after = listOf(st, spec(h), p, h.settings); if (!after.length) { p.panelPod = null; p.focus.set(st.tray.length ? "chip.0" : "sort"); return; }
-  const nk = Math.min(k, after.length - 1); p.panelPod = after[nk].p.id; p.focus.set(target.startsWith("act.") ? "card." + nk : target);   // the card closes up, the ring lands on the next card
+  const after = listOf(st, spec(h), p, h.settings); if (!after.length) { p.panelPod = null; p.focus.set(st.tray.length ? "filter" : "sort"); return; }
+  const nk = Math.min(k, after.length - 1); p.panelPod = after[nk].p.id; p.focus.set("card." + nk);
 }
-// The ring moved: a move puts a guard's question back, the panel follows the ring's card, the letter strip redraws on the letter the ring is on.
+// The hold ring is full (frame.json hold; host: confirm:held): what the held ✓ was asking for, on the screen the ring was on.
+export function held(h) {
+  const p = pods(h); if (h.ui.screen !== "pods" || p.cmp) return false;
+  if (p.view === "inventory" && verbNow(h) === "letgo" && /^card\.\d+$/.test(p.focus.cur ?? "")) { const q = podAt(h, p.focus.cur); if (q) letGoPod(h, q); return true; }
+  if (p.view === "filter" && p.focus.cur === "tchip.3.2") { letThese(h); return true; }
+  return false;
+}
+// The ring moved: a move puts a guard's question back, the verb line's move chooses the verb (the grid answers at once), the letter strip redraws on the letter the ring is on.
 export function focus(h, target) {
   const p = pods(h); p.focus.set(target);
-  if (p.ask && p.ask !== "letThese") p.ask = null; else if (p.ask === "letThese" && target !== "tchip.3.2") p.ask = null;
+  if (p.view === "inventory" && target.startsWith("verb.") && !p.fixed) { p.verb = target.slice(5); p.hold = null; }
   if (p.view === "inventory" && target.startsWith("card.")) {
-    const q = podAt(h, target); if (q) { p.panelPod = q.id; if (!q.seen) { q.seen = 1; h.save(); } }
-    // the 200 ms scroll: when the ring's card moves the first row on screen, the cabinet slides there (a cut with reduced motion: the face ends the event at once)
+    const q = podAt(h, target); if (q) { p.panelPod = q.id; if (!q.seen && !h.ui.answer) { q.seen = 1; h.save(); } }
+    // the 200 ms scroll: when the ring's card moves the first row on screen, the rows slide there (a cut with reduced motion: the face ends the event at once)
     const before = p.first ?? 0, v = podsBuild({ st: h.st, settings: h.settings, ui: p, focus: target, now: h.now ? h.now() : 0 }, spec(h));
     if (v.first != null && v.first !== before) { p.first = v.first; if (h.play) h.play({ kind: "wipe", target: "cabinet", ms: SCROLL_MS, from: before, to: v.first, hold: 0 }); }
   }
   if (p.view === "find" && target.startsWith("letter.")) { const f = findOf({ st: h.st, ui: p }, spec(h)), l = f.letters[+target.slice(7)]; if (l) p.find = { letter: l.ch }; }
   if (p.view === "room" && target.startsWith("plate.")) p.plate = +target.slice(6);   // the foot names the plate's trait
 }
+// Let these go (the filter tray's bulk): every pod the filter shows but the bench pod, once the ✓ has been held.
+function letThese(h) {
+  const p = pods(h), st = h.st, group = listOf(st, spec(h), p, h.settings).map((e) => e.p).filter((q) => !S.onBench(st, q)); if (!group.length) return;
+  for (const q of group) S.returnPod(st, q); p.ask = null; h.save(); p.view = "inventory"; p.chips = []; p.word = null; p.first = 0; p.verb = p.callerVerb ?? "read"; p.focus.set(st.tray.length ? "card.0" : "sort");
+}
 
 // ---- the filter tray ----
 function trayIntent(h, target, verb) {
   const p = pods(h), st = h.st;
-  if (verb === "back") { p.view = "inventory"; p.ask = null; p.first = 0; const n = (p.chips?.length ?? 0) + (p.word ? 1 : 0); p.focus.set(n && !listOf(st, spec(h), p, h.settings).length ? "chip." + (n - 1) : "filter"); return; }   // ← closes the tray in one press and keeps the filter; with no pod matching, the ring on the last chip (the one most likely undone)
+  if (verb === "back") { p.view = "inventory"; p.ask = null; p.first = 0; const n = (p.chips?.length ?? 0) + (p.word ? 1 : 0); p.focus.set(!listOf(st, spec(h), p, h.settings).length && n ? "filter" : "filter"); return; }   // ← closes the tray in one press and keeps the filter; with no pod matching, the ring on the last chip (the one most likely undone)
   if (verb !== "confirm") return;
   const at = /^tchip\.(\d+)\.(\d+)$/.exec(target ?? ""); if (!at) return;
   const rows = trayOf({ st, settings: h.settings, ui: p }, spec(h)), chip = rows[+at[1]]?.chips[+at[2]]; if (!chip) return;
@@ -128,8 +153,7 @@ function trayIntent(h, target, verb) {
   if (chip.id === "freshenThese") { const shown = listOf(st, spec(h), p, h.settings).map((e) => e.p).filter((q) => !S.onBench(st, q)); const r = S.freshenAll(st, shown, h.settings); if (r.ok) { h.play({ kind: "tick", target: "s", ms: 300 }); h.save(); } return; }
   if (chip.id === "letThese") {
     const group = listOf(st, spec(h), p, h.settings).map((e) => e.p).filter((q) => !S.onBench(st, q)); if (!group.length) return h.say(spec(h).strings.inv.tray.none);
-    if (p.ask !== "letThese") { p.ask = "letThese"; return; }   // the number first; the second ✓ confirms
-    for (const q of group) S.returnPod(st, q); p.ask = null; h.save(); p.view = "inventory"; p.chips = []; p.word = null; p.first = 0; p.focus.set(st.tray.length ? "card.0" : "sort"); return;
+    return h.say(spec(h).strings.inv.picker.holdThese);   // a short ✓ lets nothing go: the ring does, once the ✓ is held (held)
   }
   const chips = p.chips ?? []; p.chips = chips.includes(chip.id) ? chips.filter((c) => c !== chip.id) : [...chips, chip.id]; p.first = 0;   // ✓ toggles a chip; the cards under the tray re-sort at once
 }
@@ -139,7 +163,7 @@ function findIntent(h, target, verb) {
   if (verb === "back") { p.view = "inventory"; p.focus.set("find"); return; }   // ← closes the panel with nothing changed
   if (verb !== "confirm" || !target) return;
   const f = findOf({ st, ui: p }, spec(h));
-  const pick = (w) => { p.word = { word: w.word, kind: w.kind }; p.recent = [w, ...(p.recent ?? []).filter((r) => !(r.word === w.word && r.kind === w.kind))].slice(0, 4); p.findSeen = true; p.view = "inventory"; p.first = 0; p.focus.set("chip." + (p.chips?.length ?? 0)); };
+  const pick = (w) => { p.word = { word: w.word, kind: w.kind }; p.recent = [w, ...(p.recent ?? []).filter((r) => !(r.word === w.word && r.kind === w.kind))].slice(0, 4); p.findSeen = true; p.view = "inventory"; p.first = 0; p.focus.set("find"); };
   if (target.startsWith("recent.")) { const r = f.recentKeys[+target.slice(7)]; if (r) pick(r); return; }
   if (target.startsWith("letter.")) { const l = f.letters[+target.slice(7)]; if (l) { p.find = { letter: l.ch }; if (f.words.length) p.focus.set("word.0"); } return; }
   if (target.startsWith("word.")) { const w = f.words[+target.slice(5)]; if (w) pick(w); }

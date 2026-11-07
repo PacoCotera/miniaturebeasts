@@ -35,6 +35,7 @@ export function intent(h, target, verb) {
   if (verb !== "confirm") return;
   const cards = cardsOf(model(h), h.specs.panel, h.specs.frame, []), card = cards.find((c) => "card." + c.id === target); if (!card) return;
   if (card.dim) { h.say(fill(h.specs.pods.strings.needMore, { icons: card.short })); return; }   // short of materials: the warn words, nothing spent
+  if (card.act === "return") { h.say(h.specs.panel.strings.holdReturn); return; }   // a release is a held ✓ (the face's hold ring, `held` below): a short or a double ✓ never lets the mibi go
   S.logEv(h.st, "Decision panel · " + h.specs.panel.strings[ui.id].title + " · " + card.name);   // the card pressed, for the owner's own play to be read back
   closePanel(h);
   if (card.act === "fit") fitNow(h);
@@ -43,5 +44,12 @@ export function intent(h, target, verb) {
   else if (card.act === "open") openFromArrival(h);
   else if (card.act === "later") later(h);
   else if (card.act === "return") (ui.screen === "vivarium" ? returnFromCard : returnNow)(h);   // only a mibi's release opens a panel: letting a pod go asks on the button's own face   // Keep is the way out: the panel closes, the screen is as before
+}
+// The hold ring is full on the Return card (frame.json hold; host: confirm:held): the mibi goes back to the wild, as the old second ✓ did. Any other card does nothing here.
+export function held(h) {
+  const ui = h.ui.panel; if (!ui || ui.id === "incubate" || ui.id === "growNow") return false;
+  const card = cardsOf(model(h), h.specs.panel, h.specs.frame, []).find((c) => "card." + c.id === ui.focus); if (!card || card.act !== "return" || card.dim) return false;
+  S.logEv(h.st, "Decision panel · " + h.specs.panel.strings[ui.id].title + " · " + card.name); closePanel(h);
+  (ui.screen === "vivarium" ? returnFromCard : returnNow)(h); return true;
 }
 export { panelBuild };

@@ -68,6 +68,8 @@ body{
 .views .k{flex:none; width:var(--vk); height:var(--vk)}
 .act{display:flex; align-items:flex-end; gap:26px; flex:none; padding-right:6px}
 .k.back{width:var(--bk); height:var(--bk)}
+.k.call{width:calc(var(--bk) * .86); height:calc(var(--bk) * .86)}
+.act .stack{display:flex; flex-direction:column; align-items:center; gap:14px}
 .k.confirm{width:var(--ck); height:var(--ck)}
 @media (max-width: 760px){
   .station{--pk:clamp(44px, 13.3vw, 62px); --vk:var(--pk); --bk:calc(var(--pk) * 1.16); --ck:calc(var(--pk) * 1.74); border-radius:28px; padding:26px 8px 14px}
@@ -165,12 +167,15 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
           </div>
           <div class="views">
             <button class="k home" data-key="home" aria-label="Home"><img src="../ui/assets/masters/shell/shell-key-home-24.png" width="24" height="24" alt=""></button>
-            <button class="k vivarium" data-key="habitat" aria-label="Vivarium"><img src="../ui/assets/masters/shell/shell-key-vivarium-24.png" width="24" height="24" alt=""></button>
             <button class="k research" data-key="research" aria-label="Research"><img src="../ui/assets/masters/shell/shell-key-research-24.png" width="24" height="24" alt=""></button>
+            <button class="k vivarium" data-key="habitat" aria-label="Vivarium"><img src="../ui/assets/masters/shell/shell-key-vivarium-24.png" width="24" height="24" alt=""></button>
             <button class="k library" data-key="library" aria-label="Library"><img src="../ui/assets/masters/shell/shell-key-library-24.png" width="24" height="24" alt=""></button>
           </div>
           <div class="act">
-            <button class="k back" data-key="back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
+            <div class="stack">
+              <button class="k call" data-key="call" aria-label="Call"><svg viewBox="0 0 24 24"><circle cx="7" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 8a6 6 0 010 8M16 5a10 10 0 010 14"/></svg></button>
+              <button class="k back" data-key="back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
+            </div>
             <button class="k confirm" data-key="confirm" aria-label="Confirm"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
           </div>
         </div>

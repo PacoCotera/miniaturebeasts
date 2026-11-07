@@ -8,6 +8,8 @@ import { openInventory, researchKey } from "./pods.mjs";
 
 // Pods from Home and the Bay: the inventory, the ring on the pod named (the newest from the Bay), else where it was left; Home's Pods station is the Research key's two faces.
 export const toPods = (h, id = null) => openInventory(h, { from: "home", pod: id != null && S.podById(h.st, id) ? id : null });
+export const toPodsDrying = (h) => { const q = S.dryingNext(h.st).sort((a, b) => S.turnsLeft(h.st, a) - S.turnsLeft(h.st, b))[0]; openInventory(h, { from: "home", verb: "freshen", pod: q?.id ?? null }); };   // the first pod that dries, Freshen set
+export const toPodsWaiting = (h) => openInventory(h, { from: "home", verb: "letgo", waits: true, sort: "use", last: true });   // the rack is full and a pod waits on the mat: Let go set, the ring on the least useful pod (the end of by use), the line says a pod waits
 const toVivarium = (h, id) => { const ui = h.ui; if (id != null && S.mibiById(h.st, id)) ui.hab.id = id; ui.hab.f = "resident"; h.goto("habitat"); };   // the ring on the resident; a new mibi opens in its meet (ui.meet), ended by the first press there
 const toLibrary = (h) => openAt(h, librarySpecies(h.st, h.settings));   // Level 1 with the ring on Home's species: the one its Library module is for
 // The room's ✓: what needs the player (the notice's own action).
@@ -16,7 +18,7 @@ export function doNeed(h, nd) {
   if (nd.act === "cargo") { h.goto("cargo"); if (nd.key === "crates") openBay(h); }   // the crates need: ✓ Open the bay goes through Cargo on the same key (decision panel spec, cut 1)
   else if (nd.act === "incubator") { h.goto("incubator"); if (nd.key === "budReady") incubatorIntent(h, "room", "confirm"); }   // the bud-ready need: ✓ Open the bud, the hatch on the same key (cut 2); a growing bud only looks
   else if (nd.act === "meet") { toVivarium(h, h.ui.meet); }
-  else if (nd.act === "pods") toPods(h);
+  else if (nd.act === "pods") { if (nd.key === "drying") toPodsDrying(h); else if (nd.key === "waitingPods") toPodsWaiting(h); else toPods(h); }   // the drying need opens on the first drying pod with Freshen set; the pods that wait on the mat with Let go set (the pods picker, the entry table)
   else if (nd.act === "vivarium") { h.goto("vivarium"); const first = S.inRoom(h.st, h.st.face?.room ?? 0)[0]; h.ui.viv.f = nd.ring === "room.new" ? "room.new" : first ? "resident." + first.id : null; }   // the full need: ✓ Add a room puts the ring on the new-room chip, ✓ Make room on the first resident of the room shown (home.json strings.needs.full)
 }
 // ✓ on a target of Home: room | vivarium | library | pods | incubator | companion | bay | settings. A bezel opens full screen, a station opens its room; the Companion opens the Probe bench while docked and does nothing away (the line says it is on a trip).

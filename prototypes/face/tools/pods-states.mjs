@@ -19,20 +19,24 @@ export async function podsStates(visit) {
   const key = async (k) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(250); };
   const TWELVE = [["S01", 11, 1, 2], ["S01", 12, 1, 0], ["S02", 13, 1, 1], ["S01", 14, 0, 0], ["S03", 15, 1, 8], ["S02", 16, 1, 0], ["S04", 17, 1, 0], ["S01", 18, 1, 4], ["S02", 19, 0, 0], ["S03", 20, 1, 0], ["S04", 21, 1, 2], ["S01", 22, 1, 1]];
   try {
-    // ---- the inventory ----
-    await scene([]); await to({ view: "inventory", focus: "sort" }); await at("inventory, no pods", { screen: "pods", view: "inventory", focus: "sort" });
+    // ---- the inventory: the pod picker (the pods picker's design B) ----
+    await scene([]); await to({ view: "inventory", focus: "sort" }); await at("inventory, no pods", { screen: "pods", view: "inventory", focus: null });
     await scene([["S01", 11, 0, 0]]); await to({ view: "inventory", focus: "card.0" }); await at("inventory, one sealed pod", { view: "inventory", focus: "card.0" });
     await scene(TWELVE, { goal: ["S01", 0] }); await to({ view: "inventory", focus: "card.0" }); await at("inventory, twelve pods", { view: "inventory", focus: "card.0" });
-    await to({ view: "inventory", focus: "act.0" }); await at("inventory, the panel's first button", { view: "inventory", focus: "act.0" });
+    await to({ view: "inventory", focus: "verb.read" }); await at("inventory, the verb line", { view: "inventory", focus: "verb.read" });
     await to({ view: "inventory", focus: "card.4", sort: "species" }); await at("inventory, sorted by species", { view: "inventory", focus: "card.4" });
     await to({ view: "inventory", focus: "card.0", chips: ["S02", "unread"] }); await at("inventory, filtered", { view: "inventory", focus: "card.0" });
     await to({ view: "filter", focus: "tchip.2.1", chips: ["S02"] }); await at("inventory, the filter tray", { view: "filter", focus: "tchip.2.1" });
-    await to({ view: "inventory", focus: "chip.1", chips: ["S04", "sealed"] }); await at("inventory, no matches", { view: "inventory", focus: "chip.1" });   // the ring on the last chip, the one most likely undone (review round 2)
+    await to({ view: "inventory", focus: "filter", chips: ["S04", "sealed"] }); await at("inventory, no matches", { view: "inventory", focus: "filter" });
     await to({ view: "find", focus: "word.0", find: { letter: "L" } }); await at("inventory, find", { view: "find", focus: "word.0" });
-    await scene(TWELVE, { turn: 9, s: 1 }); await to({ view: "inventory", focus: "act.2" }); await at("inventory, drying", { view: "inventory", focus: "act.2" });   // twelve turns from turn 1: four left, amber; ❀1 short of the ❀2
+    await scene(TWELVE, { turn: 9, s: 1 }); await to({ view: "inventory", focus: "card.4", verb: "freshen" }); await at("inventory, drying", { view: "inventory", focus: "card.4" });   // twelve turns from turn 1: four left, amber; ❀1 short of the ❀2
+    await scene(TWELVE, { turn: 9, s: 9 }); await to({ view: "inventory", focus: "verb.freshen", verb: "freshen", bench: 0 }); await at("inventory, Freshen: the pod on the bench fades", { view: "inventory", focus: "verb.freshen" });
     await scene([["S01", 31, 1, 1], ["S02", 32, 1, 0], ["S01", 33, 1, 0], ["S03", 34, 1, 0]], { dried: 2 }); await to({ view: "inventory", focus: "card.0" }); await at("inventory, a pod dried", { view: "inventory", focus: "card.0" });
-    await scene([["S01", 41, 1, 1]]); await to({ view: "inventory", focus: "act.4", ask: 0 }); await at("inventory, let it go asks", { view: "inventory", focus: "act.4" });
-    await scene(Array.from({ length: 40 }, (_, i) => [["S01", "S02", "S03", "S04"][i % 4], 100 + i, i % 5 ? 1 : 0, i % 3])); await to({ view: "inventory", focus: "card.19", first: 5 }); await at("inventory, forty pods", { view: "inventory", focus: "card.19" });
+    await scene([["S01", 41, 1, 1]]); await to({ view: "inventory", focus: "card.0", verb: "letgo" }); await at("inventory, let go, the hold ring on the pod", { view: "inventory", focus: "card.0" });
+    await scene(TWELVE); await to({ view: "inventory", focus: "card.0", verb: "grow", fixed: true, from: "incubator", hold: null }); await at("inventory, from the Incubator: Grow, the only verb", { view: "inventory", focus: "card.0" });
+    await to({ view: "inventory", focus: "card.1", verb: "compare", hold: "first", fixed: false, from: "home" }); await at("inventory, Compare: a pod held, its kin bright", { view: "inventory", focus: "card.1" });
+    await scene(TWELVE, { goal: ["S01", 0], unseen: [2, 5] }); await to({ view: "inventory", focus: "card.4", answer: true }); await at("inventory, Call: the pods that need you answer, a tag over each key", { view: "inventory", focus: "card.4" });
+    await scene(Array.from({ length: 40 }, (_, i) => [["S01", "S02", "S03", "S04"][i % 4], 100 + i, i % 5 ? 1 : 0, i % 3])); await to({ view: "inventory", focus: "card.19", first: 2 }); await at("inventory, forty pods", { view: "inventory", focus: "card.19" });
     // ---- the reading screen v2 (the reading screen spec: the six signed states, then §2.6's and §2.7's) ----
     const R = (o) => ({ view: "room", bench: 0, ...o });
     await scene([["S01", 51, 1, 0], ["S01", 52, 1, 0]], { rich: true, e: 11, d: 11, s: 17 }); await to(R({ focus: "rail", lane: 0, at: "rail" })); await at("read, Loika fresh, Coat in hand", { view: "room", focus: "rail" });

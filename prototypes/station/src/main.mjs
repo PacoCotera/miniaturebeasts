@@ -51,7 +51,7 @@ bindKeys(stationEl);
 $("dockCtl").addEventListener("click", (e) => { act("dock"); e.currentTarget.blur(); });
 stationEl.addEventListener("contextmenu", (e) => e.preventDefault());
 ["touchstart", "touchmove", "gesturestart", "dblclick"].forEach((type) => stationEl.addEventListener(type, (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
-const KEYMAP = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Enter: "confirm", NumpadEnter: "confirm", Space: "confirm", Escape: "back", Backspace: "back", KeyH: "home", KeyR: "research", KeyL: "library", KeyB: "habitat", KeyD: "dock" };
+const KEYMAP = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Enter: "confirm", NumpadEnter: "confirm", Space: "confirm", Escape: "back", Backspace: "back", KeyH: "home", KeyR: "research", KeyL: "library", KeyB: "habitat", KeyC: "call", Digit1: "home", Digit2: "research", Digit3: "habitat", Digit4: "library", KeyD: "dock" };
 const EMBED = document.documentElement.classList.contains("embed");   // ?embed: the screen alone in the play page
 if (EMBED) delete KEYMAP.KeyD;   // on the play page no device key docks: the shell owns Shift+D
 window.addEventListener("keydown", (e) => {
@@ -164,9 +164,10 @@ const podsScene = (pods, o = {}) => {
   if (o.seal) { const ch = frameOf(o.seal[0]).chapters.find((c) => c.id === o.seal[1]); if (ch) { ch.sealed = true; sceneSealed = ch; } }
   const st = G.st; st.tray = []; st.waiting = []; st.readingPod = null; st.dried = []; st.wish = {}; st.turn = 0; st.readEver = true; st.firstMibi = false;
   if (o.fresh) { st.guide = {}; st.readOnce = {}; st.libSeen = {}; }   // the species guide as it stood before any read (a glint needs a look not yet seen: scenes carry the guide of the scenes before them)
-  const u = UI.pods; Object.assign(u, { cmp: null, sort: "use", chips: [], word: null, first: 0, ask: null, choosing: false, recent: [], find: null, flash: null, spent: null, panelPod: null, lastCard: null, ci: 0, trait: 0, lane: null, at: "rail", plate: 0, reading: null, moment: null, folding: null, fromChamber: null });
+  const u = UI.pods; Object.assign(u, { cmp: null, sort: "use", chips: [], word: null, first: 0, ask: null, choosing: false, verb: "read", fixed: false, hold: null, waits: false, recent: [], find: null, flash: null, spent: null, panelPod: null, lastCard: null, ci: 0, trait: 0, lane: null, at: "rail", plate: 0, reading: null, moment: null, folding: null, fromChamber: null });
   if (o.rich) st.d = 999;   // every read of the scene paid (the reading screen's scenes); the materials are set after
   pods.forEach(([sp, seed, idd, n], i) => { const p = S.seedPodFromGenome(st, podGenome(frameOf(sp), seed), G.settings, Date.now()).pod; p.g = PLACES[i % 5]; p.how = HOWS[i % 5]; if (idd) S.skipIdentify(st, p); frameOf(sp).chapters.filter((c) => !c.sealed).slice(0, n).forEach((c) => { S.read(st, p, c.id, G.settings); }); p.seen = i % 4 === 3 ? 0 : 1; });
+  for (const i of o.unseen ?? []) if (st.tray[i]) st.tray[i].seen = 0;   // pods the scene has not shown yet (their new mark)
   if (o.goal) { const p = st.tray[o.goal[1]], fr = frameOf(o.goal[0]), ch = fr.chapters.find((c) => p.read.includes(c.id)); if (ch) { const t = ch.traits[0]; st.wish[o.goal[0]] = { [t.id]: S.guideLooks(st, o.goal[0], t.id)[0] }; } }
   if (o.wish) st.wish = JSON.parse(JSON.stringify(o.wish));   // the goal as the Companion holds it: { species: { trait: look } } (the reading screen's signed states set one on Crown)
   for (let k = 0; k < (o.dried ?? 0); k++) st.dried.push({ id: "dried" + k, sp: 0, species: "S01", idd: 1, g: "pond", how: "calm", of: null, read: ["coat"], turn: 0, shown: false });
@@ -176,11 +177,13 @@ const podsScene = (pods, o = {}) => {
 };
 const podsAt = (o = {}) => {
   const u = UI.pods, st = G.st; u.cmp = null; u.view = o.view ?? "inventory";
-  for (const k of ["sort", "chips", "word", "first", "choosing", "find", "ci", "trait", "lane", "at", "plate"]) if (k in o) u[k] = o[k];
+  for (const k of ["sort", "chips", "word", "first", "choosing", "find", "ci", "trait", "lane", "at", "plate", "verb", "fixed", "hold", "waits"]) if (k in o) u[k] = o[k];
   u.ask = o.ask == null ? null : typeof o.ask === "number" ? st.tray[o.ask]?.id ?? null : o.ask;
+  if (u.hold === "first") u.hold = listOf(st, SPECS.pods, { ...u, hold: null }, G.settings)[0]?.p.id ?? null;   // the scene's held pod: the first card's
   if ("bench" in o) { if (o.bench == null) st.readingPod = null; else S.putOnBench(st, typeof o.bench === "string" ? S.podById(st, o.bench) : st.tray[o.bench]); }   // a tray index, or a pod id
   if (o.card) { const k = listOf(st, SPECS.pods, u, G.settings).findIndex((e) => e.p.id === o.card); o.focus = k >= 0 ? "card." + k : o.focus; }   // the ring on that pod's card
   if (o.cmp) { const a = S.benchPod(st) ?? st.tray[0], b = st.tray.find((q) => q !== a && S.canCompare(st, a, q)); if (a && b) { u.cmp = { a: a.id, b: b.id, ci: o.ci ?? 0, from: "inventory", card: a.id }; o.focus = "takeA"; } }
+  UI.answer = !!o.answer; UI.answerAt = performance.now();   // Call's answer, for the scene that shows it
   u.from = o.from ?? "home"; u.roomFrom = o.roomFrom ?? "inventory"; u.focus.set(o.focus ?? null); if (UI.screen !== "pods") CORE.host.goto("pods"); save();
 };
 window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(undefined, 12, advance); S.useNameList(l); G.st.mibis.forEach((m, i) => { m.name = l[l.length - 1 - (i % l.length)]; }); G.st.namesUsed = [...new Set([...(G.st.namesUsed ?? []), ...G.st.mibis.map((m) => S.nameKey(m.name))])]; return l; }, renderErrors: CORE.renderErrors, portraitSource: (digest, rgba) => { const r = injectPortraitSource(digest, rgba); if (r.error) CORE.renderErrors.push("portrait " + digest + ": " + r.error); return r; }, faceErrors: CORE.faceErrors, said: () => CORE.said.splice(0), pendingRoom: () => CORE.host.pendingRoom ?? null, get props() { return CORE.lastProps ? JSON.parse(CORE.lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },

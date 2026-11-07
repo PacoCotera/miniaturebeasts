@@ -15,8 +15,9 @@
 #define S "pods"
 int inv_card_rect_k(int k, int out[4]);
 int inv_card_box(int i, int out[4]);
-int inv_act_rect(int i, int out[4]);
-int inv_chip_rect(int i, int out[4]);
+int inv_verb_rect_id(const char *id, int out[4]);
+int inv_tool_rect(int which, int out[4]);
+int inv_hold_centre(int out[2]);
 int inv_tchip_rect(int row, int col, int out[4]);
 int inv_recent_rect(int i, int out[4]);
 int inv_letter_rect(int i, int out[4]);
@@ -33,10 +34,11 @@ static int is(const char *state, const char *name) { return strcmp(state, name) 
 /* a target's box by its id, as the words drew it */
 static void target_box(const char *id, int r[4]) {
   r[0] = r[1] = r[2] = r[3] = 0; const char *dot = strchr(id, '.'); int k = dot ? atoi(dot + 1) : 0;
-  if (strncmp(id, "card.", 5) == 0) { if (inv_card_rect_k(k, r)) { int cab[4]; v_srect(S, "regions.inventory.cabinet.rect", cab); if (r[1] < cab[1] || r[1] + r[3] > cab[1] + cab[3]) { int keep = r[1]; r[2] = r[3] = 0; r[1] = keep; } } }   /* a card off the screen keeps its place and has no size: the ring is not drawn on it until it scrolls in */
-  else if (strncmp(id, "act.", 4) == 0) inv_act_rect(k, r);
-  else if (strcmp(id, "sort") == 0 || strcmp(id, "filter") == 0 || strcmp(id, "find") == 0) v_srect(S, v_fmt("regions.inventory.tools.%s", id), r);
-  else if (strncmp(id, "chip.", 5) == 0) inv_chip_rect(k, r);
+  if (strncmp(id, "card.", 5) == 0) { if (inv_card_rect_k(k, r)) { int top = v_sk(S, "regions.inventory.picker.grid.origin", 1), py = v_sk(S, "regions.inventory.picker.grid.pitch", 1), rows = v_si(S, "regions.inventory.picker.grid.rows", 2); if (r[1] < top || r[1] + r[3] > top + (rows - 1) * py + r[3]) { int keep = r[1]; r[2] = r[3] = 0; r[1] = keep; } } }   /* a card off the screen keeps its place and has no size: the ring is not drawn on it until it scrolls in */
+  else if (strncmp(id, "verb.", 5) == 0) inv_verb_rect_id(id + 5, r);
+  else if (strcmp(id, "sort") == 0) inv_tool_rect(0, r);
+  else if (strcmp(id, "filter") == 0) inv_tool_rect(1, r);
+  else if (strcmp(id, "find") == 0) inv_tool_rect(2, r);
   else if (strncmp(id, "tchip.", 6) == 0) { int row = atoi(id + 6); const char *c = strchr(id + 6, '.'); inv_tchip_rect(row, c ? atoi(c + 1) : 0, r); }
   else if (strncmp(id, "recent.", 7) == 0) inv_recent_rect(k, r);
   else if (strncmp(id, "letter.", 7) == 0) inv_letter_rect(k, r);
@@ -47,10 +49,10 @@ static void target_box(const char *id, int r[4]) {
 /* the spec's target entry whose ring shape a target wears */
 static const char *target_entry(const char *id) {
   if (strncmp(id, "card.", 5) == 0) return "targets.card";
+  if (strncmp(id, "verb.", 5) == 0) return "targets.verb";
   if (strncmp(id, "take", 4) == 0) return "targets.take";
   if (strncmp(id, "plate.", 6) == 0) return "targets.plate";
   if (strcmp(id, "key") == 0) return "targets.key";
-  if (strncmp(id, "act.", 4) == 0) return "targets.act";
   if (strncmp(id, "tchip.", 6) == 0 || strncmp(id, "recent.", 7) == 0 || strncmp(id, "letter.", 7) == 0 || strncmp(id, "word.", 5) == 0) return "targets.chip";
   return "targets.tool";
 }
@@ -76,7 +78,7 @@ int pods_focus(focus_target_t *out, int cap) {
 /* a change of the whole stage (the state, the cabinet's scroll, the pods shown, the pod on the bench or the chapter open): the stage is said as one area first (prim_invalidate) */
 static void whole_stage(const char *state) {
   static char last[160];
-  char key[160]; snprintf(key, sizeof key, "%s|%d|%d|%d|%s|%d", state, v_pint("regions.inv.cabinet.cards.0.k", -1), v_plen("regions.inv.cabinet.cards"), v_plen("regions.inv.tools.chips"), v_pstr("regions.read.name"), v_pint("regions.read.rail.hand", -1)); if (is(state, "compare")) { snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.0.chapter")); snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.1.pod")); }
+  char key[160]; snprintf(key, sizeof key, "%s|%d|%d|%d|%s|%d", state, v_pint("regions.inv.grid.cards.0.k", -1), v_plen("regions.inv.grid.cards"), v_plen("regions.inv.verbs"), v_pstr("regions.read.name"), v_pint("regions.read.rail.hand", -1)); if (is(state, "compare")) { snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.0.chapter")); snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.1.pod")); }
   if (strcmp(key, last) == 0) return;
   snprintf(last, sizeof last, "%s", key); int r[4]; v_srect("frame", "regions.stage.rect", r); prim_invalidate(r[0], r[1], r[2], r[3]);
 }
@@ -87,10 +89,11 @@ void pods_words(void) {
   if (is(state, "compare")) word_compare();
   else if (is(state, "read")) word_reading();
   else {
-    inv_scroll(1);   /* the 200 ms scroll: the rows and the ring ride the cabinet's wipe */
+    inv_scroll(1);   /* the 200 ms scroll: the rows and the ring ride the grid's wipe */
     word_inventory();
     if (is(state, "filter")) word_inventoryTray();
     if (is(state, "find")) word_inventoryFind();
+    { int c[2]; if (is(state, "inventory") && spec_len("props", "frame.hold") >= 0 && inv_hold_centre(c)) holdring_at(c[0], c[1]); }   /* Let go: the hold ring stands on the pod under the ring, not at the screen's centre */
   }
   focus_ring(state); inv_scroll(0);
 }

@@ -6,13 +6,18 @@ import { roomTop, ROOM_KEYS } from "../nav.mjs";
 import { leaveCargo } from "./cargo.mjs";
 import { arrive, later, endArrival } from "./arrival.mjs";
 import * as home from "./home.mjs";
-import { researchKey } from "./pods.mjs";
+import { researchKey, openInventory, openRoom, growFrom, toRoom } from "./pods.mjs";
+import { openSpecies, openFamily } from "./library.mjs";
+import { frameOf } from "../genome.mjs";
+import { carryPlan, snapshot, restore } from "../carry.mjs";
 
 const SCREEN_OF = { home: "home", research: "pods", library: "library", habitat: "vivarium" };
 // A room key: the unpaid choices of Create, Cross and the sitting are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: Level 1 with the ring on the species it was last on (ui.lib.l1); Vivarium: the whole, the ring per vivarium.json focus.entry.vivariumKey).
 export function roomKey(h, key) {
   if (!roomTop(key)) return false;
-  const ui = h.ui;
+  const ui = h.ui, was = ui.carry; ui.carry = null;
+  const plan = key === "home" || was?.key === key ? null : carryPlan(h, key);   // Home never carries; a second tap of the key just carried is the room's top, as today
+  if (plan) return carry(h, key, plan);
   ui.create = null; ui.cross = null; ui.sit = null; ui.hab.namer = null; ui.panel = null;   // a room key closes the namer and a panel, writing nothing
   leaveCargo(h);    // a room key on Cargo finishes an opening as a cut, or closes the end, and opens its section
   endArrival(h);    // a room key on the arrival is Later, and then it acts
@@ -22,6 +27,29 @@ export function roomKey(h, key) {
   h.goto(SCREEN_OF[key]);
   return true;
 }
+// A colour key that carries (carry.mjs; keymap option 1): the key's room, opened on what the ring was on. A carry is a peek: Create's unpaid choices stay and the screen it started on is kept for ← (uncarry); nothing is spent.
+// The room's other drops stay as a room key's (Cross, the sitting, the namer, a panel, Cargo's opening, the arrival).
+function carry(h, key, plan) {
+  const ui = h.ui, from = snapshot(h);
+  ui.cross = null; ui.sit = null; ui.hab.namer = null; ui.panel = null; leaveCargo(h); endArrival(h);
+  const q = plan.pod != null ? S.podById(h.st, plan.pod) : null, sid = plan.species;
+  if (plan.act === "grow") { ui.createFrom = from.pods.view === "room" ? "room" : "inventory"; growFrom(h, q, ui.createFrom); }
+  else if (plan.act === "read") toRoom(h, q);
+  else if (plan.act === "page") openSpecies(h, sid);
+  else if (plan.act === "close") { ui.hab.id = plan.mibi; ui.hab.f = "resident"; h.goto("habitat"); }
+  else if (plan.act === "pods") { openInventory(h, { from: "home", chips: [sid], first: true }); ui.pods.carryFilter = true; }
+  else if (plan.act === "family") openFamily(h, plan.mibi);
+  else if (plan.act === "readChapter") { S.putOnBench(h.st, q); q.seen = 1; openRoom(h, "home"); const i = frameOf(S.speciesOf(q)).chapters.findIndex((c) => c.id === plan.chapter); if (i >= 0) ui.pods.lane = i; }
+  else if (plan.act === "pageChapter") { if (openSpecies(h, sid)) { const L = ui.lib; L.state = "lit"; L.lit = plan.chapter; L.cur = "chapter." + plan.chapter; L.l2[sid] = L.cur; } }
+  ui.carry = { key, to: ui.screen, from };
+  return true;
+}
+// ← after a carry: back where it started, the ring and the screen's choices as they were; then ← is what it is today (frame.json navigation: a colour key's carry is a peek).
+export function uncarry(h) { const c = h.ui.carry; h.ui.carry = null; if (c) restore(h, c.from); return true; }
+// The Call key (the controls scheme): things answer. A view state only (ui.answer): never saved, nothing spent, no screen change. The pad still moves the ring and the answer follows it; ← or Call puts it away and does nothing
+// else; ✓ or a colour key puts it away and then acts as usual (answerOff, from dispatch); it fades ANSWER_MS after the last press (idleTick) and with any screen change. `t` is the clock the press came on.
+export const ANSWER_MS = 8000;
+export function call(h, t = h.now()) { const ui = h.ui; if (ui.idle) return false; ui.answer = !ui.answer; ui.answerAt = t; return true; }
 // The Companion's Dock key: it docks or lifts. Docked, the arrival plays (intents/arrival.mjs; specs/station-dock-arrival-spec.md): over the screen the player is on, over Home when the screen slept, or after their next screen change when they are
 // mid-decision (frame.json navigation.dock). A lift never moves the Station's screen; a lift during the arrival ends it, back to the screen it came over.
 export function dock(h, fromIdle = false, keysElsewhere = false) {
@@ -50,12 +78,13 @@ export function sendOff(h) {
 // The idle timer, once a frame: the 60 s count from the later of the last press and the end of a hold, an arrival or Cargo's end; the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its end.
 export function idleTick(h, t, idleMs) {
   const ui = h.ui; if (ui.idle) return;
+  if (ui.answer && (h.arriving() || t - ui.answerAt > ANSWER_MS)) ui.answer = false;   // Call's answer fades 8 s after the last press, and an arrival ends it
   if (ui.resting || ui.entering || h.arriving() || h.holding() || ui.cargo?.state === "end") ui.lastInput = Math.max(ui.lastInput, t);
   else if (t - ui.lastInput > idleMs) enterIdle(h);
 }
 // The idle timer's enter (frame.json idle.enter): the dither closes over the stage for 180 ms with input held, and Idle shows at its end; with reduced motion it is a cut, Idle on this frame, hold 0.
 export function enterIdle(h) {
-  h.ui.hab.namer = null; h.ui.panel = null;   // the namer and a panel close, writing nothing, before Idle starts
+  h.ui.hab.namer = null; h.ui.panel = null; h.ui.answer = false;   // the namer and a panel close, writing nothing, before Idle starts
   const ev = h.specs.frame.idle.enter.transition;
   const motion = h.motion ? h.motion() : true, hold = motion ? h.specs.frame.idle.enter.hold : 0;
   h.play({ kind: "dither", target: "stage", ms: ev.ms, from: 0, to: ev.levels, hold });
