@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { NEXT_FLAG, isNext } from './next/url'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { speciesList } from './lib/api'
 import { useUI } from './lib/store'
@@ -9,12 +10,19 @@ const Pick = lazy(() => import('./ui/play/PlayPage').then((m) => ({ default: m.P
 const Shape = lazy(() => import('./ui/play/PlayPage').then((m) => ({ default: m.Shape })))
 const Pods = lazy(() => import('./ui/play/PodsPage').then((m) => ({ default: m.PodsPage })))
 
+const NextShell = lazy(() => import('./next/NextShell')) // the new kit (Tailwind 4, shadcn/ui), only with ?ui=next
+
 const qc = new QueryClient({ defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } } })
 
 function Home() {
   // The studio home (five ways in) is chunk 26. Until then the studio opens on the first species.
   const { data } = useQuery(speciesList())
-  return data?.length ? <Navigate to={`/studio/${data[0].id}/shape`} replace /> : null
+  const { search } = useLocation()
+  return data?.length ? <Navigate to={`/studio/${data[0].id}/shape${isNext(search) ? '?' + NEXT_FLAG : ''}`} replace /> : null
+}
+
+function StudioRoute() {
+  return isNext(useLocation().search) ? <NextShell /> : <StudioPage />
 }
 
 export default function App() {
@@ -27,7 +35,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/studio" element={<Home />} />
-            <Route path="/studio/:species/*" element={<StudioPage />} />
+            <Route path="/studio/:species/*" element={<StudioRoute />} />
             <Route path="/play" element={<Pick />} />
             <Route path="/play/:species" element={<Shape />} />
             <Route path="/play/:species/pods" element={<Pods />} />

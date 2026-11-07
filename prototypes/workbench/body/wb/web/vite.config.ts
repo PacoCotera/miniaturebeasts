@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { createHash } from 'node:crypto'
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
@@ -39,7 +40,8 @@ const buildJson = () => ({
 
 export default defineConfig({
   base: '/studio/',
-  plugins: [react(), buildJson()],
+  plugins: [react(), tailwindcss(), buildJson()],
+  resolve: { alias: { '@': join(here, 'src') } },
   build: { outDir: '../static/app', emptyOutDir: true, sourcemap: false, target: 'es2022' },
   server: { port: 5173, proxy: { '/studio/api': 'http://127.0.0.1:8765', '/studio/events': 'http://127.0.0.1:8765', '/studio/cas': 'http://127.0.0.1:8765' } },
   test: { environment: 'jsdom', include: ['src/**/*.test.ts', 'src/**/*.test.tsx'] },
