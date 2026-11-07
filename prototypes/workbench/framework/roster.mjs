@@ -261,7 +261,7 @@ const GLOW_CLANS = new Set(["C03", "C16"]);
 // a frame whose `species.draft` is set when it loads its frames. The flag comes off with the art.
 export const DRAFT = SPECIES.filter((s) => s.draft).map((s) => s.id);
 
-// Parked (owner, 2026-10-30 12:38): S05 and S07 (S06 Pesko was unparked 2026-11-07, pesko-canon.md) are too close to real animals. A parked species keeps its row, frame, target and glyph, and a save
+// Parked (owner, 2026-10-30 12:38): S05 and S07 (S06 Pesko was unparked 2026-11-07) are too close to real animals. A parked species keeps its row, frame, target and glyph, and a save
 // holding one still loads; the Station's pools draw from the active ones only (`frame.species.parked` carries the flag).
 export const PARKED = SPECIES.filter((s) => s.parked).map((s) => s.id);
 export const ACTIVE_SPECIES = SPECIES.filter((s) => !s.parked);

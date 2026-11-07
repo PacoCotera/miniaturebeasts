@@ -394,7 +394,7 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   for (const [from, key] of [["plate.0", "left"], ["door", "left"], ["tile.5", "up"], ["cross", "left"], ["room.1", "up"]]) assert.equal(focusMove(hab.focus.graph, OUT, from, key, resolve), "name", `out: ${from} ${key} → name`);
   assert.equal(focusMove(hab.focus.graph, OUT, "name", "left", resolve), "name", "out: ◀ from the name stays");
   // nothing on Habitat is amber; no banned word in its strings; the guide's door is frame.json's jump
-  assert.ok(!JSON.stringify(hab.colours).includes("amber"), "no amber up close"); assert.ok(!/outing/.test(JSON.stringify(hab.strings)), "expedition, never outing");
+  assert.ok(!JSON.stringify(hab.colours).includes("amber"), "no amber up close"); assert.ok(!/\bouting/.test(JSON.stringify(hab.strings)), "expedition, never outing");   // the word, not a substring: "scouting from above" is the copywriter's phrase for high-look
   assert.ok(frame.navigation.jumps.some((j) => j.from === "habitat" && j.to === "library.species" && j.action === hab.strings.guide), "the guide's door: the Library's Level 2");
   assert.deepEqual(paletteBad(hab.colours), []);
 });
