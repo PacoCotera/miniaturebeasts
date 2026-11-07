@@ -1,0 +1,104 @@
+{
+ "note": "The rambler Tuliko (S20, frame 20.8) type specimen as the registry stamps it: copies read from prototypes/workbench/frames/language/species-S20.json typeSpecimen. The retired v1 biped is frame 20.1 (s20-twelve.json).",
+ "type": {
+  "frame": "20.8",
+  "open": 22,
+  "copies": {
+   "appearance.body-hue": [
+    "between",
+    "between"
+   ],
+   "appearance.body-value": [
+    "between",
+    "between"
+   ],
+   "appearance.marking-switch": [
+    "on",
+    "on"
+   ],
+   "appearance.marking-layout": [
+    "bands",
+    "bands"
+   ],
+   "appearance.iris-colour": [
+    "slate",
+    "slate"
+   ],
+   "appearance.attitude": [
+    "content",
+    "content"
+   ],
+   "form.eye-size": [
+    "between",
+    "between"
+   ],
+   "form.eye-spacing": [
+    "between",
+    "between"
+   ],
+   "signature.size": [
+    "low",
+    "high"
+   ],
+   "signature.count": [
+    "6",
+    "6"
+   ],
+   "form.head": [
+    "between",
+    "between"
+   ],
+   "form.torso-girth": [
+    "between",
+    "between"
+   ],
+   "form.leg-length": [
+    "between",
+    "between"
+   ],
+   "form.leg-girth": [
+    "between",
+    "between"
+   ],
+   "form.tail-length": [
+    "between",
+    "between"
+   ],
+   "form.tail-girth": [
+    "between",
+    "between"
+   ],
+   "movement.stride-preference": [
+    "low",
+    "high"
+   ],
+   "movement.contact-phase": [
+    "low",
+    "high"
+   ],
+   "movement.cycle-rate": [
+    "low",
+    "high"
+   ],
+   "movement.turn-control": [
+    "low",
+    "high"
+   ],
+   "cognition.arousal-threshold": [
+    "low",
+    "high"
+   ],
+   "cognition.exploration-tendency": [
+    "reserved",
+    "reserved"
+   ]
+  },
+  "string": "G1-S20v8-20A04861R0CR430G02NC30R61GC20080100400G02066",
+  "code": "S20v8-3F-40A0430FXZY94G0940100000000084J910J002G000A00054M195008002002000G03M"
+ },
+ "s01": {
+  "frame": "1.8",
+  "string": "G1-S1v8-200G4861R0004318000J50R61GC30G02008JE",
+  "code": "S1v8-3F-400G4370MFW228008908000100001254040MG00G00020052G180000000002000G0VF"
+ }
+}
