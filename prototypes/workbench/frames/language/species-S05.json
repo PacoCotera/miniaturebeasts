@@ -12,7 +12,7 @@
  },
  "taxonomy": {
   "code": "S05",
-  "moves": "trots",
+  "moves": "waddles, never the same way twice",
   "habitat": "Woods",
   "gate": null,
   "diet": "fruit, seeds",
@@ -106,6 +106,8 @@
   "....."
  ],
  "habits": [
+  "warm-sit",
+  "stone-sense",
   "sleep-curled"
  ],
  "pod": {

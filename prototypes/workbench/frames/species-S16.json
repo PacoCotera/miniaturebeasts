@@ -92,7 +92,11 @@
   "#...#",
   "....."
  ],
- "habits": [],
+ "habits": [
+  "tumble",
+  "catch-strike",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "medium",
   "proportion": null,

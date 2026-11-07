@@ -104,7 +104,11 @@
   "#####",
   "....."
  ],
- "habits": [],
+ "habits": [
+  "arm-stilt",
+  "find-hug",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "small",
   "proportion": null,

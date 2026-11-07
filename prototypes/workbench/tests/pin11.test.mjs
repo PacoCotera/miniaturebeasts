@@ -187,13 +187,14 @@ test("the marking layout gains masked, points, spotted and capped after bands an
 
 // sha256 (first 16 hex) of each frame file: the baseline taken once at the merge of the studio and game lines (catalogue 12; every form frame rebuilt with its header naming pin 12 and
 // the digest of its own version). Before the merge the studio line held the pin 10 bytes of S02 to S19; the game line had rewritten all sixteen in place. From here a frame file moves only
-// with a new frame version and a stamp key (genome-stamp/tools/extract-frames.mjs --check).
+// with a new frame version and a stamp key (genome-stamp/tools/extract-frames.mjs --check), except its words (habits, taxonomy moves, habitat, gate, diet, ability, character, resembles and
+// species.parked, which are not genes: architect R1/R2, 2026-11-07; the table was retaken then, S03 to S19 and the index; retaken again 2026-11-07 for the copywriter's roster words, S05, S06, S17).
 const PIN12_FRAME_FILES = {
-  "species-S01.json": "18412b5b642a9a22", "species-S02.json": "945dbed534c5ad02", "species-S03.json": "34142700d32d8c23", "species-S04.json": "e2f3026580462093",
-  "species-S05.json": "29c83219408effcb", "species-S06.json": "1896809430bdac32", "species-S07.json": "274caf615ed6973c", "species-S08.json": "94b92823b80cc206",
-  "species-S09.json": "0db7f57f0bd83cad", "species-S10.json": "3c8b5bce77b58e28", "species-S11.json": "44c2ceb0cd41aa50", "species-S12.json": "d52a2ec0b4303e9f",
-  "species-S13.json": "3dfb89381196be9b", "species-S14.json": "5c39077cd17cbac0", "species-S15.json": "94c07719cd7e3528", "species-S16.json": "b878c100ea55d0ad",
-  "species-S17.json": "2e2797cecb3e9c7a", "species-S18.json": "ee8db81d4bec0961", "species-S19.json": "21c7b4bfb5396f87", "index.json": "545c0cf83a79d254",
+  "species-S01.json": "18412b5b642a9a22", "species-S02.json": "945dbed534c5ad02", "species-S03.json": "7ac4061184502a4b", "species-S04.json": "6f3879ffded62c8a",
+  "species-S05.json": "b06320b7283e0cf0", "species-S06.json": "1750ed0180346c19", "species-S07.json": "be89135b8b52eecf", "species-S08.json": "2ab99f4732e2ac0d",
+  "species-S09.json": "c0eca214bc2649c9", "species-S10.json": "70b99bc0b8c04733", "species-S11.json": "125473a516f8be50", "species-S12.json": "404dfd949c8d6ab3",
+  "species-S13.json": "fbaa7b8c5f05d8b9", "species-S14.json": "865a1da1273a12e2", "species-S15.json": "bcda13c674438753", "species-S16.json": "5760a85cc0f194de",
+  "species-S17.json": "4e28abd429af5d39", "species-S18.json": "983f2a85be0a609a", "species-S19.json": "644468ed27b533e3", "index.json": "9a1a6b6380bea6ff",
 };
 
 test("every S01 to S19 frame is byte for byte the merge baseline, names pin 12 with the digest of its own version, and lists nothing a later frame version adds", () => {

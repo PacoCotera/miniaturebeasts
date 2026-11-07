@@ -10,6 +10,7 @@ import { shedPod, SELF_KINSHIP, versionRefusal } from "../../workbench/framework
 import { MIBI_NAMES as NAME_LIST_NOW, NAME_LISTS } from "../../play/src/names.mjs";
 import { fill, capLine } from "./views/words.mjs";
 import FRAME from "../../ui/specs/station/frame.json" with { type: "json" };
+import HABITAT from "../../ui/specs/station/habitat.json" with { type: "json" };
 import VIVARIUM from "../../ui/specs/station/vivarium.json" with { type: "json" };
 import ROOM_RULES from "../../ui/specs/station/rooms-rules.json" with { type: "json" };
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
@@ -437,7 +438,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
 // and at the dock for what the mibi with the player did on the walk; a place is recorded once for every place the mibi entered while with the player (`recordWalk`, at the dock).
 export const WATCH_MS = 60000;   // the default of settings.watchMs
 // A habit only seen in the field: the bench's watch never records it (calm is felt, not watched); it is recorded at the dock from the habits the Companion's mibi did (mergeCare).
-export const FIELD_ONLY_HABITS = ["calm"];
+export const FIELD_ONLY_HABITS = ["calm", "tiptoe", "stone-sense", "slab-lift", "break-through", "bank-dig", "high-look", "ride-current", "pod-carry", "dew-find", "find-hug", "fog-lift", "root-down", "catch-strike", "beacon-sit", "wind-stream", "wave-hello", "hop-down"];
 export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
 // The places a mibi has been: where its pod came from, and every place it walked to.
 // A founder keeps its pod's place first, then the walk order; a bred mibi's places are only the ones it walked to (its "from.g" is its parent's).
@@ -446,7 +447,7 @@ export function recordHabit(st, m, habit) {
   if (!m || !habit) return { ok: false };
   const fr = frameFor(m); if (!fr || !(fr.habits || []).includes(habit)) return { ok: false, msg: "not a habit of " + (fr ? fr.species.name : "that species") };
   if (!Array.isArray(m.habits)) m.habits = []; if (m.habits.includes(habit)) return { ok: false, again: true };
-  m.habits.push(habit); logEv(st, m.name + " is seen: " + habit); return { ok: true };
+  m.habits.push(habit); logEv(st, fill(HABITAT.strings.watchPlate, { name: m.name, habit: HABITAT.strings.watchHabits[habit] ?? habit })); return { ok: true };
 }
 export function recordWalk(st, m, place) {
   if (!m || !place) return { ok: false };

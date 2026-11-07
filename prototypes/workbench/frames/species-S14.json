@@ -91,7 +91,11 @@
   "....#",
   "....."
  ],
- "habits": [],
+ "habits": [
+  "stretch-long",
+  "fog-lift",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "small",
   "proportion": null,

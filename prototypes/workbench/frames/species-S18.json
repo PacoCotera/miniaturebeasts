@@ -99,7 +99,11 @@
   "#####",
   "#.#.#"
  ],
- "habits": [],
+ "habits": [
+  "settle-wide",
+  "wind-stream",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "large",
   "proportion": null,

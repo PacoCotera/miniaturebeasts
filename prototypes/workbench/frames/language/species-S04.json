@@ -12,7 +12,7 @@
  },
  "taxonomy": {
   "code": "S04",
-  "moves": "prowls, pounces",
+  "moves": "climbs, grabs at falling leaves and rolling fruit",
   "habitat": "Tallwood",
   "gate": null,
   "diet": "fruit",
@@ -107,6 +107,8 @@
   "....."
  ],
  "habits": [
+  "knob-balance",
+  "tiptoe",
   "sleep-curled"
  ],
  "pod": {

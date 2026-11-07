@@ -10,6 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
+import "./fixtures/place-poses.mjs";
 import * as T from "../src/sitting.mjs";
 import { G, UI, SPECS, FX } from "../src/game.mjs";
 import { dispatch } from "../src/intents/index.mjs";

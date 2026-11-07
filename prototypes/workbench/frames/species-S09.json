@@ -105,7 +105,11 @@
   "...#.",
   "....#"
  ],
- "habits": [],
+ "habits": [
+  "crown-bow",
+  "high-look",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "large",
   "proportion": null,
