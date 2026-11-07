@@ -74,7 +74,7 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 | S02 | Untuva | C02 Kausida | a puffball under a cap (frame file *puffcap*) | large | R1·flaps · fur | waddles | wood, meadow, pond | early · Character sealed (a crystal) |
 | S03 | Tuikis | C03 Stilbera | a lizard with a lantern tail (frame file *glowtail*) | small | B2·L4 · scales | scurries, digs | wood, rock field | mid · narrow burrows |
 | S04 | Hiljan | C04 Lathreta | a climber with two blunt horn-knobs and a coiled tail | medium | B2·L4 · fur | climbs, grabs at falling leaves and rolling fruit | wood, meadow | starter |
-| S05 | Tepor | C05 Dasyla | a fox | medium | B2·L4 · fur | trots | meadow, wood edge | early |
+| S05 | Tepor | C05 Dasyla | a fox | medium | B2·L4 · fur | waddles, never the same way twice | meadow, wood edge | early |
 | S06 | Pesko | C06 Prosopa | a long low body with a ridge of tapered spines | medium | B2·L4 · fur | ambles, climbs | Thickets | early |
 | S07 | Azkon | C07 Aulaka | a badger or small bear | large | B1·L4 · fur | lumbers, digs | rock field, cave | mid · Deep ground |
 | S08 | Rupar | C08 Kremnion | a low, broad digger with spade forepaws and slats on its back | large | B2·L4 · fur | pushes on ahead, digs | meadow | mid |
@@ -96,7 +96,7 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 | S03 | Tuikis | dew | a gold glow at the tail in shade and fog, a pointed crest | digs out narrow burrows; lights up fog | C03 Stilbera: a glowing tail and a crest, lagoon; small lights of wood and rock | a brave little torchbearer |
 | S04 | Hiljan | fruit | upright pointed ears, short muzzle, long tail, striped coat | creeps up without startling anything | C04 Lathreta: upright pointed ears, striped fur; quiet stalkers of the grass | aloof at first, then devoted |
 | S05 | Tepor | fruit, seeds | tall ears, long muzzle, bushy tail with a pale tip | senses warm stones (Energy) | C05 Dasyla: tall ears, a long muzzle, a bushy tail; clever wanderers | quick and clever |
-| S06 | Pesko | fruit, washed first | black eye mask, ringed tail, rounded ears, nimble paws | (no ability: slab-lift is a habit pose only) | C06 Prosopa: a face mask and a ringed tail; masked tinkerers | nosy, a cheerful mischief-maker |
+| S06 | Pesko | fruit, washed first | black eye mask, ringed tail, rounded ears, nimble paws | (no ability: slab-lift is a habit pose only) | C06 Prosopa: a face mask and a ringed tail; masked tinkerers | nosy and cheerful |
 | S07 | Azkon | fruit, roots | stout body, striped face, broad claws, small round ears | digs through to Deep ground | C07 Aulaka: broad claws, a striped face, stout bodies; the diggers | slow, stubborn, protective |
 | S08 | Rupar | leaves, fruit | horns, hooves, long legs | digs a way up or down earth banks | C08 Kremnion: horns and hooves; climbers of the high rocks | plucky and proud |
 | S09 | Belatz | fruit, seeds | broad wings, a beak, a crest | scouts from above: reveals the cells around | C09 Aithria: wings and a beak; big birds of open sky | watchful, lordly |
