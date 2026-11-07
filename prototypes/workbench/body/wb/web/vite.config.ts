@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { createHash } from 'node:crypto'
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
+import { brotliCompressSync, constants, gzipSync } from 'node:zlib'
 
 const here = import.meta.dirname
 
@@ -37,9 +38,30 @@ const buildJson = () => ({
   },
 })
 
+// Precompressed siblings (<file>.br and <file>.gz) for every text asset, so the server sends bytes it never has to compress. woff2 and images are already compressed.
+const COMPRESSIBLE = /\.(js|css|html|svg)$/
+const precompress = () => ({
+  name: 'precompress',
+  closeBundle() {
+    const out = join(here, '../static/app')
+    const walk = (d: string) => {
+      for (const n of readdirSync(d)) {
+        const p = join(d, n)
+        if (statSync(p).isDirectory()) walk(p)
+        else if (COMPRESSIBLE.test(n)) {
+          const raw = readFileSync(p)
+          writeFileSync(p + '.br', brotliCompressSync(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 11, [constants.BROTLI_PARAM_SIZE_HINT]: raw.length } }))
+          writeFileSync(p + '.gz', gzipSync(raw, { level: 9 }))
+        }
+      }
+    }
+    walk(out)
+  },
+})
+
 export default defineConfig({
   base: '/studio/',
-  plugins: [react(), buildJson()],
+  plugins: [react(), buildJson(), precompress()],
   build: { outDir: '../static/app', emptyOutDir: true, sourcemap: false, target: 'es2022' },
   server: { port: 5173, proxy: { '/studio/api': 'http://127.0.0.1:8765', '/studio/events': 'http://127.0.0.1:8765', '/studio/cas': 'http://127.0.0.1:8765' } },
   test: { environment: 'jsdom', include: ['src/**/*.test.ts', 'src/**/*.test.tsx'] },
