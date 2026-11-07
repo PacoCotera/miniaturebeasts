@@ -1871,6 +1871,10 @@ def make_handler(srv):
                 return self.send_json(dict(jobs=srv.queue.counts(), cache_bytes=srv.cas.size(), framework=H.framework_id(), workers=len(srv.workers)))
             if p == "/api/checks":
                 return self.send_json(CH.metas(), etag=True)
+            m = re.fullmatch(r"/api/schema/(mb-species-[12])", p)
+            if m:                                                       # the species file's schema as JSON Schema: the page's zod schema and its field words come from it (R3)
+                from wb import schema_json as SJ
+                return self.send_json(SJ.json_schema(m.group(1)), etag=True)
             if p == "/api/families":
                 from families import registry as FR
                 return self.send_json(FR.cards())

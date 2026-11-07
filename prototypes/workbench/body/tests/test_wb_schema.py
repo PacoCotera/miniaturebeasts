@@ -116,10 +116,10 @@ class TestLanguageSchema(unittest.TestCase):
 
     def test_the_six_broken_files_each_say_one_thing_naming_the_field(self):
         want = dict(
-            **{"no-family": [("family", "family: missing (it is required: The build family: it fixes the skeleton. One kind to a family.)")]},
+            **{"no-family": [("family", "family: missing (it is required: The body this species is built on. It sets the skeleton. One species per body.)")]},
             **{"unknown-land": [("land", "land: 'moonlands' is not one of mixed, woods, tallwood, thickets, fells, downs, marsh, tarns, meres")]},
             cheeks=[("face.cheeks", "face.cheeks: cheeks are not a field of mb-species/2: no blush")],
-            **{"two-signatures": [("signature", "signature: a kind has one signature, got 2")]},
+            **{"two-signatures": [("signature", "A species has one signature; this file has 2")]},
             **{"eye-count-four": [("face.eyes.count", "face.eyes.count: '4' is not one of 2, 3")]},
             **{"fixture-with-family": [("family", "family: S20 is a fixture of the language registry; a fixture has no family, land or signature")]})
         self.assertEqual(sorted(os.listdir(LANG)), sorted(n + ".json" for n in want))
@@ -147,9 +147,9 @@ class TestLanguageSchema(unittest.TestCase):
         d["face"]["eyes"]["count"], d["coat"]["material"] = 3, dict(family="skin")
         self.assertEqual(V.validate(d), [])
         d["face"]["eyes"]["count"] = 2
-        self.assertEqual(V.validate(d), [("face.eyes.count", "face.eyes.count: S15 has 3 eyes in the registry, got 2")])
+        self.assertEqual(V.validate(d), [("face.eyes.count", "S15 has 3 eyes in the roster; this file says 2")])
         d["face"]["eyes"]["count"], d["land"] = 3, "marsh"
-        self.assertEqual(V.validate(d), [("land", "land: S15 lives in downs in the registry, got 'marsh'")])
+        self.assertEqual(V.validate(d), [("land", "S15 lives in the Hills in the roster; this file says Marsh")])
 
     def test_s20_stays_slash_one_and_the_play_species_are_untouched(self):
         s20 = json.load(open(os.path.join(BODY, "species_v1", "S20.json")))

@@ -65,7 +65,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
                 </Link>
               </Popover.Close>
             ))}
-            <Popover.Close asChild><button className={s.menuRow} onClick={() => setNew(true)}><span>{W.owedNew.title}</span></button></Popover.Close>
+            <Popover.Close asChild><button className={s.menuRow} onClick={() => setNew(true)}><span>{W.newSpecies.title}</span></button></Popover.Close>
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>

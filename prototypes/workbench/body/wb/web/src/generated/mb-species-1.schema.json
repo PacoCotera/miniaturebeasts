@@ -1,0 +1,1104 @@
+{
+ "type": "object",
+ "properties": {
+  "schema": {
+   "enum": [
+    "mb-species/1"
+   ],
+   "title": "Schema",
+   "description": "The schema this file is written in.",
+   "x-stage": "meta"
+  },
+  "id": {
+   "type": "string",
+   "pattern": "^(?:S\\d\\d|M\\d{4})$",
+   "title": "Species id",
+   "description": "S and two digits, unique on the server. A mibi a player keeps is M and four digits.",
+   "x-stage": "meta"
+  },
+  "name": {
+   "type": "string",
+   "title": "Name",
+   "description": "The species' name, once it has a cleared one.",
+   "x-stage": "meta"
+  },
+  "plan": {
+   "enum": [
+    "biped",
+    "quadruped"
+   ],
+   "title": "Body plan",
+   "description": "The body plan: it fixes the spine's ranges, the head attachment and the limits.",
+   "x-stage": "meta"
+  },
+  "plan_version": {
+   "type": "integer",
+   "title": "Plan version",
+   "description": "The version of the plan this file was made against.",
+   "x-stage": "meta"
+  },
+  "anchors": {
+   "type": "object",
+   "additionalProperties": {
+    "enum": [
+     "wide",
+     "tight"
+    ]
+   },
+   "x-tight": [
+    "body",
+    "face"
+   ],
+   "title": "Anchors",
+   "description": "How wide each group may vary between individuals. Body and face are always tight.",
+   "x-stage": "meta"
+  },
+  "spine": {
+   "type": "object",
+   "properties": {
+    "ranges": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "name": {
+        "type": "string",
+        "title": "Range",
+        "description": "The range's name.",
+        "x-stage": "shape"
+       },
+       "length": {
+        "title": "Length",
+        "description": "The range's length along the spine; the last range runs to the end.",
+        "x-unit": "H",
+        "x-stage": "shape",
+        "anyOf": [
+         {
+          "type": "number"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "additionalProperties": false
+     },
+     "title": "Ranges",
+     "description": "The spine's named ranges, in the plan's order, with their lengths.",
+     "x-stage": "shape"
+    },
+    "head_attach": {
+     "type": "object",
+     "properties": {
+      "a": {
+       "type": "number",
+       "title": "Head spine reach",
+       "description": "How far in from the back of the head's depth the spine ends.",
+       "x-unit": "× depth",
+       "x-stage": "shape",
+       "x-range": "a"
+      },
+      "d": {
+       "type": "number",
+       "title": "Head overhang",
+       "description": "How far forward of the spine axis the head's centre lies.",
+       "x-unit": "× depth",
+       "x-stage": "shape",
+       "x-range": "d"
+      },
+      "z_under": {
+       "type": "number",
+       "minimum": 0.9,
+       "maximum": 1.5,
+       "title": "Head underside",
+       "description": "The height of the head's underside, where the spine ends.",
+       "x-unit": "H",
+       "x-stage": "shape",
+       "x-range": [
+        0.9,
+        1.5
+       ]
+      }
+     },
+     "additionalProperties": false,
+     "required": [
+      "a",
+      "d",
+      "z_under"
+     ],
+     "title": "Head attachment",
+     "description": "Where the head sits on the spine. The kind is the plan's.",
+     "x-stage": "shape"
+    },
+    "seat": {
+     "type": "object",
+     "properties": {
+      "radius": {
+       "type": "number",
+       "title": "Seat radius",
+       "description": "The seat's radius; the tail's root is measured against it.",
+       "x-unit": "H",
+       "x-stage": "shape",
+       "x-range": "seat_radius"
+      }
+     },
+     "additionalProperties": false,
+     "required": [
+      "radius"
+     ],
+     "title": "Seat",
+     "description": "The seat's size.",
+     "x-stage": "shape"
+    },
+    "tail": {
+     "type": "object",
+     "properties": {
+      "length": {
+       "type": "number",
+       "title": "Tail length",
+       "description": "The tail's length along its path; its segments keep their shares.",
+       "x-unit": "H",
+       "x-stage": "shape",
+       "x-range": "tail_length"
+      },
+      "root": {
+       "type": "number",
+       "title": "Tail root",
+       "description": "The root's radius as a share of the seat's radius.",
+       "x-unit": "× seat",
+       "x-stage": "shape",
+       "x-range": "tail_root"
+      },
+      "tip_r": {
+       "type": "number",
+       "title": "Tail tip radius",
+       "description": "The radius at the stalk's end.",
+       "x-unit": "H",
+       "x-stage": "shape",
+       "x-range": "tip_r"
+      },
+      "root_at": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 3,
+       "maxItems": 3,
+       "title": "Tail root place",
+       "description": "Where the tail leaves the seat.",
+       "x-unit": "H",
+       "x-stage": "shape"
+      },
+      "segments": {
+       "type": "array",
+       "items": {
+        "type": "object",
+        "properties": {
+         "name": {
+          "type": "string",
+          "title": "Segment",
+          "description": "The segment's name.",
+          "x-stage": "shape"
+         },
+         "share": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 0.9,
+          "title": "Share",
+          "description": "The segment's share of the tail's length.",
+          "x-stage": "shape",
+          "x-range": [
+           0.01,
+           0.9
+          ]
+         },
+         "pitch": {
+          "type": "number",
+          "minimum": -720,
+          "maximum": 720,
+          "title": "Bend",
+          "description": "The segment's pitch.",
+          "x-unit": "°",
+          "x-stage": "shape",
+          "x-range": [
+           -720,
+           720
+          ]
+         },
+         "r": {
+          "type": "array",
+          "items": {
+           "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "title": "Radius",
+          "description": "The segment's radius at its start and end.",
+          "x-unit": "H",
+          "x-stage": "shape"
+         },
+         "role": {
+          "type": "string",
+          "title": "Role",
+          "description": "The segment's role.",
+          "x-stage": "shape"
+         }
+        },
+        "additionalProperties": false
+       },
+       "title": "Tail segments",
+       "description": "The tail's bends, root to tip: each keeps a share of the length.",
+       "x-stage": "shape"
+      },
+      "fillet": {
+       "type": "number",
+       "minimum": 0.5,
+       "maximum": 3.0,
+       "title": "Tail roundness",
+       "description": "The path's fillet at the tail's bends.",
+       "x-stage": "shape",
+       "x-range": [
+        0.5,
+        3.0
+       ]
+      },
+      "curl": {
+       "type": "object",
+       "properties": {
+        "turns": {
+         "type": "number",
+         "minimum": -0.5,
+         "maximum": 1.0,
+         "title": "Curl",
+         "description": "Turns of curl at the type.",
+         "x-unit": "turn",
+         "x-stage": "shape",
+         "x-range": [
+          -0.5,
+          1.0
+         ]
+        },
+        "spread": {
+         "type": "string",
+         "title": "Curl spread",
+         "description": "How the curl is spread along the bends.",
+         "x-stage": "shape"
+        },
+        "clip": {
+         "type": "string",
+         "title": "Curl clip",
+         "description": "The room rule that clips it.",
+         "x-stage": "shape"
+        },
+        "note": {
+         "type": "string",
+         "title": "Note",
+         "description": "A note.",
+         "x-stage": "shape"
+        }
+       },
+       "additionalProperties": false,
+       "required": [
+        "turns"
+       ],
+       "title": "Tail curl",
+       "description": "How far the tail curls.",
+       "x-stage": "shape"
+      },
+      "taper": {
+       "title": "Tail taper",
+       "description": "How the tail thins (monotone by construction).",
+       "x-stage": "shape"
+      },
+      "end": {
+       "title": "Tail end",
+       "description": "How the tail's end is capped.",
+       "x-stage": "shape"
+      },
+      "note": {
+       "type": "string",
+       "title": "Note",
+       "description": "A note.",
+       "x-stage": "shape"
+      }
+     },
+     "additionalProperties": false,
+     "required": [
+      "length",
+      "root",
+      "tip_r",
+      "root_at",
+      "segments"
+     ],
+     "title": "Tail",
+     "description": "The tail range of the spine.",
+     "x-stage": "shape"
+    },
+    "loft": {
+     "type": "object",
+     "properties": {
+      "head_profile": {
+       "type": "object",
+       "properties": {
+        "R_scale": {
+         "type": "number",
+         "title": "Head size",
+         "description": "The head ball's size, as a share of the base table's.",
+         "x-unit": "× type",
+         "x-stage": "shape",
+         "x-range": "prof_R_scale"
+        },
+        "neck_ratio": {
+         "type": "number",
+         "title": "Neck width",
+         "description": "The neck band's radius over the head ball's.",
+         "x-unit": "× head",
+         "x-stage": "shape",
+         "x-range": "prof_neck_ratio"
+        },
+        "chest_front": {
+         "type": "number",
+         "title": "Chest swell",
+         "description": "How far the chest's front swells out under the neck band.",
+         "x-unit": "%",
+         "x-stage": "shape",
+         "x-range": "prof_chest_front"
+        },
+        "rump_gain": {
+         "type": "number",
+         "title": "Seat fullness",
+         "description": "How far the back swells at the seat, under the tail.",
+         "x-unit": "%",
+         "x-stage": "shape",
+         "x-range": "prof_rump_gain"
+        }
+       },
+       "additionalProperties": true,
+       "title": "Profile",
+       "description": "The knobs that shape the loft's section table: the head ball, the neck band, the chest and the rump. The table is worked out from these and is never edited.",
+       "x-stage": "shape"
+      }
+     },
+     "additionalProperties": true,
+     "title": "Spine loft",
+     "description": "The loft's profile knobs, and the section table and mesh topology that travel with them (the table is derived from the knobs; the topology is the plan's, until it owns it).",
+     "x-stage": "shape"
+    }
+   },
+   "additionalProperties": false,
+   "required": [
+    "ranges",
+    "head_attach",
+    "seat",
+    "tail",
+    "loft"
+   ],
+   "title": "Spine",
+   "description": "One path and one loft from the crown to the tail tip, named in ranges.",
+   "x-stage": "shape"
+  },
+  "skeleton": {
+   "type": "object",
+   "properties": {
+    "chest": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 3,
+     "maxItems": 3,
+     "title": "Chest joint",
+     "description": "The chest joint, on the back range.",
+     "x-unit": "H",
+     "x-stage": "shape"
+    },
+    "pelvis": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 3,
+     "maxItems": 3,
+     "title": "Pelvis joint",
+     "description": "The pelvis joint, in the seat range.",
+     "x-unit": "H",
+     "x-stage": "shape"
+    },
+    "shoulder": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 3,
+     "maxItems": 3,
+     "title": "Shoulder joint",
+     "description": "Where the arm's shell sits.",
+     "x-unit": "H",
+     "x-stage": "shape"
+    },
+    "hip": {
+     "type": "string",
+     "title": "Hip joint",
+     "description": "Where the leg's root is taken from.",
+     "x-stage": "shape"
+    },
+    "chest_at": {
+     "type": "number",
+     "minimum": 0.0,
+     "maximum": 1.0,
+     "title": "Chest joint on the back",
+     "description": "A quadruped's chest joint: where on the back range it stands, 0 at the neck and 1 at the seat.",
+     "x-stage": "shape",
+     "x-range": [
+      0.0,
+      1.0
+     ]
+    },
+    "pelvis_at": {
+     "type": "number",
+     "minimum": 0.0,
+     "maximum": 1.0,
+     "title": "Pelvis joint on the seat",
+     "description": "A quadruped's pelvis joint: where on the seat range it stands, 0 at the back and 1 at the tail.",
+     "x-stage": "shape",
+     "x-range": [
+      0.0,
+      1.0
+     ]
+    },
+    "shoulder_off": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 3,
+     "maxItems": 3,
+     "title": "Shoulder offset",
+     "description": "A quadruped's shoulder: where the foreleg's root is from the chest joint (x forward, y outward, z up).",
+     "x-unit": "H",
+     "x-stage": "shape"
+    },
+    "hip_off": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 3,
+     "maxItems": 3,
+     "title": "Hip offset",
+     "description": "A quadruped's hip: where the hind leg's root is from the pelvis joint (x forward, y outward, z up).",
+     "x-unit": "H",
+     "x-stage": "shape"
+    },
+    "note": {
+     "type": "string",
+     "title": "Note",
+     "description": "A note.",
+     "x-stage": "shape"
+    }
+   },
+   "additionalProperties": false,
+   "title": "Skeleton",
+   "description": "The girdles that anchor the limbs.",
+   "x-stage": "shape"
+  },
+  "parts": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Part",
+      "description": "The part's id.",
+      "x-stage": "shape"
+     },
+     "kind": {
+      "enum": [
+       "limb",
+       "appendage"
+      ],
+      "title": "Kind",
+      "description": "A limb has a chain of joints; an appendage has families.",
+      "x-stage": "shape"
+     },
+     "parent": {
+      "type": "string",
+      "title": "Parent",
+      "description": "The part it grows from.",
+      "x-stage": "shape"
+     },
+     "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "The part's group.",
+      "x-stage": "shape"
+     },
+     "socket": {
+      "type": "object",
+      "properties": {
+       "join": {
+        "enum": [
+         "hard",
+         "soft"
+        ],
+        "title": "Join",
+        "description": "Hard: a separate shell sunk in. Soft: it grows out of the parent's skin. Nothing in between.",
+        "x-stage": "shape"
+       },
+       "spec": {
+        "title": "Socket details",
+        "description": "Patch, columns, push and the rest of the socket's numbers.",
+        "x-stage": "shape"
+       }
+      },
+      "additionalProperties": true,
+      "required": [
+       "join"
+      ],
+      "title": "Socket",
+      "description": "Where and how the part joins its parent.",
+      "x-stage": "shape"
+     },
+     "root": {
+      "title": "Root joint",
+      "description": "A limb's root joint: where it is, its radius and its role.",
+      "x-stage": "shape"
+     },
+     "chain": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "joint": {
+         "type": "string",
+         "title": "Joint",
+         "description": "The joint's name.",
+         "x-stage": "shape"
+        },
+        "len": {
+         "type": "number",
+         "minimum": 0.0,
+         "maximum": 1.5,
+         "title": "Length",
+         "description": "The segment's length.",
+         "x-unit": "H",
+         "x-stage": "shape",
+         "x-range": [
+          0.0,
+          1.5
+         ]
+        },
+        "pitch": {
+         "type": "number",
+         "minimum": -720,
+         "maximum": 720,
+         "title": "Pitch",
+         "description": "The segment's pitch.",
+         "x-unit": "°",
+         "x-stage": "shape",
+         "x-range": [
+          -720,
+          720
+         ]
+        },
+        "r": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 2,
+         "maxItems": 2,
+         "title": "Radius",
+         "description": "The segment's radius at its start and end.",
+         "x-unit": "H",
+         "x-stage": "shape"
+        },
+        "role": {
+         "type": "string",
+         "title": "Role",
+         "description": "The joint's role.",
+         "x-stage": "shape"
+        },
+        "apex": {
+         "type": "string",
+         "title": "Bend side",
+         "description": "Which way the joint bends (fwd or back).",
+         "x-stage": "shape"
+        }
+       },
+       "additionalProperties": false
+      },
+      "title": "Chain",
+      "description": "A limb's joints after the root, each with its length, pitch and radius.",
+      "x-stage": "shape"
+     },
+     "families": {
+      "title": "Families",
+      "description": "An appendage's families and their joints.",
+      "x-stage": "shape"
+     },
+     "default": {
+      "type": "string",
+      "title": "Default look",
+      "description": "The family a new individual starts with.",
+      "x-stage": "shape"
+     },
+     "mirror": {
+      "type": "string",
+      "title": "Mirror",
+      "description": "lateral or centre.",
+      "x-stage": "shape"
+     },
+     "family": {
+      "type": "string",
+      "title": "Family reference",
+      "description": "A reference into the body plan.",
+      "x-stage": "shape"
+     },
+     "topology": {
+      "title": "Mesh topology",
+      "description": "Rings, edge length and the rest of the part's topology (the plan will own them).",
+      "x-stage": "shape"
+     },
+     "fillet": {
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 3.0,
+      "title": "Roundness",
+      "description": "The path's fillet.",
+      "x-stage": "shape",
+      "x-range": [
+       0.5,
+       3.0
+      ]
+     },
+     "end": {
+      "title": "End",
+      "description": "How the part's end is capped.",
+      "x-stage": "shape"
+     },
+     "plane": {
+      "title": "Plane",
+      "description": "The plane the chain bends in.",
+      "x-stage": "shape"
+     },
+     "note": {
+      "type": "string",
+      "title": "Note",
+      "description": "A note.",
+      "x-stage": "shape"
+     }
+    },
+    "additionalProperties": false,
+    "required": [
+     "id",
+     "kind",
+     "socket"
+    ]
+   },
+   "x-id-key": "id",
+   "title": "Parts",
+   "description": "The limbs and appendages, each on a socket.",
+   "x-stage": "shape"
+  },
+  "sockets": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Socket",
+      "description": "The socket's id.",
+      "x-stage": "shape"
+     },
+     "spec": {
+      "title": "Socket details",
+      "description": "On, station, frame, families, default and shapes.",
+      "x-stage": "shape"
+     }
+    },
+    "additionalProperties": true,
+    "required": [
+     "id"
+    ]
+   },
+   "x-id-key": "id",
+   "title": "Sockets",
+   "description": "Where attachments grow: each declares a join and the families it allows.",
+   "x-stage": "shape"
+  },
+  "face": {
+   "title": "Face",
+   "description": "Eyes, mouth and cheeks.",
+   "x-stage": "face"
+  },
+  "coat": {
+   "type": "object",
+   "properties": {
+    "zones": {
+     "title": "Zones",
+     "description": "The coat's zones.",
+     "x-stage": "coat"
+    },
+    "layouts": {
+     "title": "Layouts",
+     "description": "The coat's layouts.",
+     "x-stage": "coat"
+    },
+    "palettes": {
+     "title": "Palettes",
+     "description": "The coat's palettes.",
+     "x-stage": "coat"
+    },
+    "material": {
+     "title": "Material",
+     "description": "The material family and its limits.",
+     "x-stage": "coat"
+    }
+   },
+   "additionalProperties": false,
+   "title": "Coat",
+   "description": "Zones, layouts, palettes and material.",
+   "x-stage": "coat"
+  },
+  "genome": {
+   "type": "object",
+   "properties": {
+    "catalogue": {
+     "title": "Catalogue pin",
+     "description": "The catalogue this frame is valid against: id, version and content digest.",
+     "x-stage": "meta"
+    },
+    "clan": {
+     "title": "Clan",
+     "description": "The species' clan: its branch records are open to it.",
+     "x-stage": "meta"
+    },
+    "borrows": {
+     "title": "Borrowed records",
+     "description": "Branch records of another clan this species lists.",
+     "x-stage": "meta"
+    },
+    "chapters": {
+     "title": "Chapters",
+     "description": "The chapters the loci are grouped in.",
+     "x-stage": "meta"
+    },
+    "loci": {
+     "title": "Loci",
+     "description": "Each locus: kind, op, limits, type, bins and moves (typed paths into this file).",
+     "x-stage": "meta"
+    }
+   },
+   "additionalProperties": false,
+   "required": [
+    "catalogue",
+    "chapters",
+    "loci"
+   ],
+   "title": "Genome",
+   "description": "The game's species frame: the catalogue pin, the chapters, and each locus with its kind, pool, limits, type and the typed paths it moves.",
+   "x-stage": "meta"
+  },
+  "expressions": {
+   "title": "Expressions",
+   "description": "The looks the species can draw with their rules: the age a look shows from and the other looks it needs (checked in expressions.py; how copies show is the catalogue's, or a modifier gene's).",
+   "x-stage": "meta"
+  },
+  "variety": {
+   "title": "Variety",
+   "description": "The Variety sheet's rules: how many individuals, the seed, the loci whose looks cycle, the most loud looks one individual shows, and the species rules as data: {id, label, when: [conditions], then: [conditions], fail}. A condition is {field, is | not | in: [lo, hi]} or {any: [conditions]}.",
+   "x-stage": "meta"
+  },
+  "renders": {
+   "title": "Renders",
+   "description": "The render set: {base: 'game-v1', add: {name: {size, style, az, pose, age, kind, from, genome}}}. A species adds to the game's set and never removes from it.",
+   "x-stage": "meta"
+  },
+  "play": {
+   "title": "Play",
+   "description": "What play may change: {toys: [{id, label, hide, narrow}], words: {check: sentence}, state: {gene: value}, starter, name}. A species may relabel a toy, hide it or narrow it, never widen it; `state` is the mibi's own setting of each toy and `name` its own name (checked in wb/play.py).",
+   "x-stage": "meta"
+  },
+  "motion": {
+   "title": "Motion",
+   "description": "Walk, breathe, blink and idle clips.",
+   "x-stage": "motion"
+  },
+  "limits": {
+   "type": "object",
+   "properties": {
+    "vertices": {
+     "type": "number",
+     "minimum": 1000,
+     "maximum": 3500,
+     "title": "Vertex budget",
+     "description": "Vertices at subdivision level 1.",
+     "x-stage": "shape",
+     "x-range": [
+      1000,
+      3500
+     ]
+    },
+    "balance_margin": {
+     "type": "number",
+     "minimum": 0.15,
+     "maximum": 0.5,
+     "title": "Balance margin",
+     "description": "Share of the sole in front of the heel.",
+     "x-stage": "shape",
+     "x-range": [
+      0.15,
+      0.5
+     ]
+    },
+    "tail_side_area": {
+     "type": "number",
+     "minimum": 0.02,
+     "maximum": 0.25,
+     "title": "Tail side area",
+     "description": "Tail silhouette over the trunk's.",
+     "x-stage": "shape",
+     "x-range": [
+      0.02,
+      0.25
+     ]
+    },
+    "neck_ratio": {
+     "type": "number",
+     "minimum": 0.3,
+     "maximum": 0.85,
+     "title": "Neck ratio",
+     "description": "Neck over head and chest.",
+     "x-stage": "shape",
+     "x-range": [
+      0.3,
+      0.85
+     ]
+    },
+    "normal_deg": {
+     "type": "number",
+     "minimum": 5,
+     "maximum": 20,
+     "title": "Normal angle",
+     "description": "The steepest edge between faces.",
+     "x-unit": "°",
+     "x-stage": "shape",
+     "x-range": [
+      5,
+      20
+     ]
+    }
+   },
+   "additionalProperties": false,
+   "title": "Limits",
+   "description": "Overrides of the plan's limits. A file may only tighten them, never loosen.",
+   "x-stage": "shape"
+  },
+  "legacy": {
+   "title": "Legacy",
+   "description": "Fields the schema does not model yet and carries unchanged: the house, the frame, the mesh quality numbers, the poles, the appendage rules, the part order.",
+   "x-stage": "meta"
+  }
+ },
+ "additionalProperties": false,
+ "required": [
+  "schema",
+  "id",
+  "name",
+  "plan",
+  "plan_version",
+  "anchors",
+  "sockets",
+  "face",
+  "coat",
+  "genome",
+  "motion",
+  "legacy"
+ ],
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "mb-species/1",
+ "title": "Species file",
+ "description": "A species file, schema mb-species/1.",
+ "x-required": {
+  "cage": [
+   "schema",
+   "id",
+   "name",
+   "plan",
+   "plan_version",
+   "anchors",
+   "spine",
+   "skeleton",
+   "parts",
+   "sockets",
+   "face",
+   "coat",
+   "genome",
+   "motion",
+   "legacy"
+  ],
+  "mesh": [
+   "schema",
+   "id",
+   "name",
+   "plan",
+   "plan_version",
+   "anchors",
+   "spine",
+   "skeleton",
+   "parts",
+   "sockets",
+   "face",
+   "coat",
+   "genome",
+   "motion",
+   "legacy"
+  ]
+ },
+ "x-plans": {
+  "biped": {
+   "range_len": {
+    "head": [
+     0.7,
+     1.3
+    ],
+    "neck": [
+     0.15,
+     0.4
+    ],
+    "back": [
+     0.6,
+     1.2
+    ],
+    "seat": [
+     0.3,
+     0.8
+    ]
+   },
+   "tail_length": [
+    0.6,
+    1.8
+   ],
+   "tail_root": [
+    0.1,
+    0.45
+   ],
+   "tip_r": [
+    0.02,
+    0.1
+   ],
+   "a": [
+    0.2,
+    0.6
+   ],
+   "d": [
+    0.0,
+    0.3
+   ],
+   "seat_radius": [
+    0.4,
+    0.7
+   ],
+   "prof_R_scale": [
+    0.8,
+    1.2
+   ],
+   "prof_neck_ratio": [
+    0.5,
+    0.8
+   ],
+   "prof_chest_front": [
+    0.0,
+    0.12
+   ],
+   "prof_rump_gain": [
+    0.0,
+    0.6
+   ],
+   "name": "biped",
+   "ranges": [
+    "head",
+    "neck",
+    "back",
+    "seat",
+    "tail"
+   ],
+   "limb_joints": 3,
+   "attach": "underside"
+  },
+  "quadruped": {
+   "range_len": {
+    "head": [
+     0.7,
+     1.3
+    ],
+    "neck": [
+     0.15,
+     0.4
+    ],
+    "back": [
+     0.6,
+     1.8
+    ],
+    "seat": [
+     0.3,
+     0.8
+    ]
+   },
+   "tail_length": [
+    0.6,
+    2.4
+   ],
+   "tail_root": [
+    0.1,
+    0.8
+   ],
+   "tip_r": [
+    0.02,
+    0.15
+   ],
+   "a": [
+    0.0,
+    0.0
+   ],
+   "d": [
+    0.0,
+    0.0
+   ],
+   "seat_radius": [
+    0.4,
+    0.9
+   ],
+   "prof_R_scale": [
+    0.8,
+    1.2
+   ],
+   "prof_neck_ratio": [
+    0.5,
+    0.8
+   ],
+   "prof_chest_front": [
+    0.0,
+    0.12
+   ],
+   "prof_rump_gain": [
+    0.0,
+    0.3
+   ],
+   "name": "quadruped",
+   "ranges": [
+    "head",
+    "neck",
+    "back",
+    "seat",
+    "tail"
+   ],
+   "limb_joints": 3,
+   "attach": "back"
+  }
+ }
+}

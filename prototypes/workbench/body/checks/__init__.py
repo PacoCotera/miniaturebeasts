@@ -9,6 +9,8 @@ VERSION_SALT = "checks-12"      # bump to re-measure everything
 
 class Check:
     def __init__(self, id, name, fail, stage, rule, limit, part, fields, fn, version=1, play=None, az=90, mode="clay", sources=()):
+        from wb import words as WD                          # the copywriter's name and fail line, where she has written one (wb/studio-words.json, check.<id>.name|fail)
+        name, fail = WD.get(f"check.{id}.name", name), WD.get(f"check.{id}.fail", fail)
         self.id, self.name, self.fail, self.stage, self.rule, self.limit, self.part, self.fields = id, name, fail, stage, rule, limit, part, list(fields)
         self.fn, self.version, self.play, self.az, self.mode, self.sources = fn, version, play, az, mode, tuple(sources)
 

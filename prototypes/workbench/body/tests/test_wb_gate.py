@@ -150,7 +150,7 @@ class TestLanguageRows(unittest.TestCase):
         self.assertEqual(len(GT.JUDGEMENT_IDS), 8)
         pub = GT.public(GT.read(self.path), GT.file_hash(self.spec))
         rows = pub["rounds"][0]["sheets"]
-        self.assertEqual([x["label"] for x in rows][6:], ["Language", "Odd, with a thought behind the eyes", "Nothing acted", "Never a real animal you can name", "Clean silhouette", "Faces read as their own species", "Anatomy makes sense", "Nothing sad, sick or scary", "No seams"])
+        self.assertEqual([x["label"] for x in rows][6:], ["Language", "Odd, with a thought behind the eyes", "Nothing acted", "No real animal you could name", "Clean silhouette", "A face of its own species", "Anatomy makes sense", "Nothing sad, sick or scary", "No seams"])
         self.assertEqual({x["on"] for x in rows if x["id"] in GT.JUDGEMENT_IDS}, {"language"})
         fix = os.path.join(SCRATCH, "S20t.json")
         S.write_spec(fix, S.read_spec(S20))

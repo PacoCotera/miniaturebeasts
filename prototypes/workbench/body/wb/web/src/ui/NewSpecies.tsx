@@ -38,17 +38,17 @@ export function NewSpecies({ go }: { go: (p: { species: string; sel: null }) => 
       <Dialog.Portal>
         <Dialog.Overlay className={s.scrim} />
         <Dialog.Content className={s.sheet} aria-describedby={undefined}>
-          <Dialog.Title className={s.title}>{W.owedNew.title}</Dialog.Title>
+          <Dialog.Title className={s.title}>{W.newSpecies.title}</Dialog.Title>
           <ul className={s.grid} aria-label="Families">
             {cards.map((c) => <Card key={c.id} c={c} on={pick === c.id} pick={() => setPick(c.id)} />)}
           </ul>
           <footer className={s.foot}>
-            <label className={s.idl}><span>{W.owedNew.id}</span>
+            <label className={s.idl}><span>{W.newSpecies.id}</span>
               <input className={s.id} value={sid} onChange={(e) => setId(e.target.value.toUpperCase())} spellCheck={false} aria-invalid={!validId(sid)} />
             </label>
             {err && <span className={s.err} role="alert">{err}</span>}
             {!canEdit && <span className={s.hint}>{W.readOnly} · {W.tokenTip}</span>}
-            <button className={s.primary} disabled={!can} onClick={() => void make()}>{W.owedNew.create}</button>
+            <button className={s.primary} disabled={!can} onClick={() => void make()}>{W.newSpecies.create}</button>
           </footer>
         </Dialog.Content>
       </Dialog.Portal>
@@ -69,7 +69,7 @@ function Card({ c, on, pick }: { c: FamilyCard; on: boolean; pick: () => void })
         <span className={s.chips}>
           {!sculpt && <i className={s.chip}>{pathWord(ready ? (c.template_path ?? c.path) : c.path)}</i>}
           {!ready && <i className={`${s.chip} ${s.notyet}`}>{W.notYet}</i>}
-          {ready && <i className={`${s.chip} ${s.live}`}>{W.owedNew.template}</i>}
+          {ready && <i className={`${s.chip} ${s.live}`}>{W.newSpecies.template}</i>}
         </span>
       </button>
     </li>
