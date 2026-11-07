@@ -22,6 +22,8 @@ const flash = (h, text) => { pods(h).flash = { text, until: h.now() + FLASH_MS }
 export function openInventory(h, opts = {}) {
   const p = pods(h); p.cmp = null; p.view = "inventory"; p.ask = null; p.choosing = !!opts.choosing; p.from = opts.from ?? (p.choosing ? "room" : "home");
   if (opts.sort) p.sort = opts.sort;
+  if (p.carryFilter && !opts.chips) { p.chips = []; p.word = null; }   // the filter a carry set (blue on a mibi: its kind) lasts until the next way in
+  p.carryFilter = false;
   if (opts.chips) { p.chips = [...opts.chips]; p.word = null; }
   const at = opts.pod ? cardOf(h, opts.pod) : opts.first ? null : p.lastCard ? cardOf(h, p.lastCard) : null;
   p.first = 0; p.focus.set(at ?? (h.st.tray.length ? "card.0" : "sort"));
@@ -42,7 +44,7 @@ export function researchKey(h) {
   return openInventory(h, { from: "home" });
 }
 // A pod onto the bench and the room open on it (✓ on a card, "Take to the reading room", "Bring onto the bench"): the old one goes back to its niche, nothing spent.
-function toRoom(h, q, from = "inventory") {
+export function toRoom(h, q, from = "inventory") {
   const p = pods(h); S.putOnBench(h.st, q); q.seen = 1; p.lastCard = q.id; h.save();
   p.view = "room"; p.ask = null; p.choosing = false; p.from = "inventory"; p.roomFrom = "inventory"; void from;
   enterRead(h, q);   // a cut in (§2.6, 1)
@@ -60,7 +62,7 @@ export function intent(h, target, verb) {
   return inventoryIntent(h, target, verb);
 }
 // Grow it from the inventory: refused with its reason, else Create on the pod (Create's ← returns to the inventory it came from).
-function growFrom(h, q, from) {
+export function growFrom(h, q, from) {
   const p = pods(h), b = S.growBlock(h.st, q, {}, h.settings, []); if (b) return h.say(b);
   p.lastCard = q.id; h.ui.createFrom = from; return openCreate(h, q);
 }

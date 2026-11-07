@@ -192,8 +192,27 @@ void word_bottomLine(void) {
     int room0 = bw[2] - spec_int(F, "regions.back.cap.0", 16) - v_si(F, "regions.back.capGap", 0), w = v_role_width(s, br_), wide = v_si(F, "regions.back.wide.room", room0);
     if (w > room0) back_extra = (w < wide ? w : wide) - room0;
   }
+  /* the colour keys' cues (frame.json regions.cues; props frame.line.keys [{ room, word }]): the carries the ring offers, each the key's room icon and a word, standing in the notice's zone and replacing it while they show */
+  int kn = spec_len(P, "frame.line.keys"); if (kn > 4) kn = 4;
+  if (kn > 0) {
+    int right = v_si(F, "regions.cues.right", 904), left = v_si(F, "regions.cues.left", 632), mk = spec_int(F, "regions.cues.mark.0", 24), mg = v_si(F, "regions.cues.markGap", 4), gap = v_si(F, "regions.cues.gap", 16), cy = v_si(F, "regions.cues.y", 570), ch = v_si(F, "regions.cues.h", 24);
+    char role[24]; snprintf(role, sizeof role, "%s", v_sstr(F, "regions.cues.role")); int w[4], total = 0, n = kn;
+    for (int i = 0; i < kn; i++) { snprintf(a, sizeof a, "frame.line.keys.%d.word", i); spec_str(P, a, s, sizeof s); w[i] = mk + mg + v_role_width(s, role); }
+    for (; n > 0; n--) { total = 0; for (int i = 0; i < n; i++) total += w[i] + (i ? gap : 0); if (right - total >= left) break; }   /* a cue that would pass the zone is dropped, the last first */
+    int x = right - total;
+    for (int i = 0; i < n; i++) {
+      char key[48], word[V_STR], room[24], id[40]; snprintf(key, sizeof key, "frame.line.keys.%d", i);
+      snprintf(a, sizeof a, "%s.word", key); spec_str(P, a, word, sizeof word); snprintf(a, sizeof a, "%s.room", key); spec_str(P, a, room, sizeof room);
+      snprintf(a, sizeof a, "regions.marks.room.%s", room); snprintf(b, sizeof b, "%s", v_sstr(F, a));
+      snprintf(id, sizeof id, "line.cue.%d", i); v_inline(id); v_region("cues", LAYER_ART);
+      int mr[4] = { x, cy + (ch - mk) / 2, mk, mk }; if (*b) mark(v_fmt("%s.mark", id), b, mr);
+      v_region("cues", LAYER_TYPE); v_say_run(v_fmt("%s.word", id), word, x + mk + mg, v_role_cap_in(cy, ch, role), role, lg, V_ALIGN_LEFT); v_inline_end();
+      x += w[i] + gap;
+    }
+  }
   /* the notice: the sentence right-aligned to 904 with its lamp 4 px to its left */
-  if (spec_str(P, "frame.line.need", s, sizeof s) > 0) {
+  if (kn > 0) { /* the cues stand in the notice's zone */ }
+  else if (spec_str(P, "frame.line.need", s, sizeof s) > 0) {
     int nr[4]; v_srect(F, "regions.need.rect", nr); int right = v_si(F, "regions.need.right", 0) - back_extra; snprintf(c, 24, "%s", v_sstr(F, "regions.need.role"));
     v_inline("line.need"); v_region("need", LAYER_TYPE); v_run_t run = v_say_run("line.need", s, right, v_role_cap_in(nr[1], nr[3], c), c, lg, V_ALIGN_RIGHT);
     int lw = spec_int(F, "regions.need.lamp.0", 12), lh = spec_int(F, "regions.need.lamp.1", 12);
