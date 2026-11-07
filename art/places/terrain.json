@@ -1,0 +1,12 @@
+{
+  "formatVersion": 1,
+  "note": "The single home of terrain semantics (arch.md A1.3). The LDtk IntGrid value list must equal this file; the bake checks it. z: draw order, low first, unique. T: the exploration tile the terrain becomes in lay.tiles.",
+  "terrains": [
+    { "id": "deep", "name": "Deep water", "value": 1, "z": 0, "play": "block", "T": "DEEP", "editorColour": "#2c568e" },
+    { "id": "water", "name": "Water", "value": 2, "z": 1, "play": "block", "T": "WATER", "editorColour": "#4f86c6" },
+    { "id": "sand", "name": "Sand", "value": 3, "z": 2, "play": "walk", "T": "SAND", "editorColour": "#e0c98a" },
+    { "id": "mud", "name": "Mud", "value": 4, "z": 3, "play": "wade", "T": "WADE", "editorColour": "#6b5238" },
+    { "id": "path", "name": "Path", "value": 5, "z": 4, "play": "walk", "T": "GRASS", "editorColour": "#b58a55" },
+    { "id": "grass", "name": "Grass", "value": 6, "z": 5, "play": "walk", "T": "GRASS", "editorColour": "#6fa44a" }
+  ]
+}

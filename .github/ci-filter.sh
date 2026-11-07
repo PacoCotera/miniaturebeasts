@@ -22,7 +22,7 @@ while IFS= read -r path; do
       tests=true station=true
       case $path in prototypes/station/*) testpage=true ;; esac ;;
     prototypes/test/*|prototypes/exploration/*|prototypes/play/src/*) tests=true testpage=true ;;
-    prototypes/*) tests=true ;;
+    prototypes/*|art/places/*) tests=true ;;
     *) tests=true station=true testpage=true ;;
   esac
 done <<EOF2
