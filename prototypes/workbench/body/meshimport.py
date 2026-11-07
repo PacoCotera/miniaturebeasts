@@ -1,7 +1,8 @@
 """`wb mesh import`: a cleaned sculpt becomes a signed mesh source (Blender).
 The sculpt is turned to the studio's axes (the creature faces +x, its left is +y, feet on z 0) and scaled to H; the family armature is fitted from the mesh (the four feet are the clusters of the lowest vertices, the spine bones sit on the length
 of the body, the socket sits on the head's height profile); Blender's automatic weights are given the family's rules (a leg's weight fades out above its top, a sole is rigid on its paw bone); the GLB is written with no material, no colour or normal
-texture and the zone map as an index image; the sidecar pins the sha256 and names the stations, bands, the stand match and the provenance. Nothing is rewritten: a new import is a new version."""
+texture and the zone map as an index image; the sidecar pins the sha256 and names the stations, bands, the stand match and the provenance. Nothing is rewritten: a new import is a new version.
+The studio GLB (studio_glb.py: the browser's compressed copy with morph targets for the scripted keys and every vertex weighted) is written beside the sculpt and pinned in the sidecar's `studio` block."""
 import json
 import math
 import os
@@ -239,9 +240,12 @@ def import_sculpt(src, species_id, family, version, out_dir, obj, rot_z=0.0, sca
               stations=st, bands=bands, scale=dict(to_H=scale, rot_z=rot_z), read=dict(stand={}, view=stand_view, scores={}), provenance=provenance or {})
     if stand:
         sc["read"]["stand"] = stand
-    MS.write_json(os.path.join(out_dir, f"{species_id}-m{version}.json"), sc)
+    side = os.path.join(out_dir, f"{species_id}-m{version}.json")
+    MS.write_json(side, sc)
     log(f"{species_id}-m{version}: {tris} triangles, {os.path.getsize(glb)} bytes, {len(names)} bones, {empty} vertices without automatic weights")
-    return sc
+    import studio_glb as SG                                   # the studio GLB the browser draws from, pinned in the sidecar (the signed sculpt above is not rewritten)
+    SG.build_body(side, log=log)
+    return MS.load_json(side)
 
 
 def _zone_from(albedo, uvf, Vf, H, size=1024):

@@ -10,7 +10,7 @@ import * as S from "../src/state.mjs";
 import RULES from "../../ui/specs/station/rooms-rules.json" with { type: "json" };
 S.useNameList("en-short-1");
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 const on = { ...S.DEFAULT_SETTINGS, economy: "decided", roomRules: { needFind: true } }, off = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const world = (turn = 5, e = 99) => { const st = S.freshSt("w1", turn, 1000); S.normalize(st); st.e = e; st.firstMibi = false; return st; };

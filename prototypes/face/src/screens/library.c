@@ -1,4 +1,4 @@
-/* The Library's Level 1 (library.json `l1`): a binding table. The stage (kit_stage: the flat libGround, the ground master over it once sent), then the sixteen cells on `l1.grid` (kit_tiles), each the same ten parts in the same order
+/* The Library's Level 1 (library.json `l1`): a binding table. The stage (kit_stage: the flat libGround, the ground master over it once sent), then the cells on `l1.grid` (the form for the catalogue's size) (kit_tiles), each the same ten parts in the same order
    whatever its state (found, met or unmet): the cell (kit_bezel), the picture, the plate rule (kit_hairline, dashed), the species mark, the name (v_line through v_clip), the face chip, the wish mark, the glint (kit_glint), the seed
    and the lip (kit_hairline). A part the state does not show is a node of no size (the dashed rule keeps its box with no ops, kit_hairline's hidden form; a hidden glint is the star's slot, as a composed node has a size). Every rect, colour and picture id is the spec's; the props name the species,
    their states, names, pictures and flags. The ring (word_focusRing on `l1.focus.targets.cell`) is drawn last; the pad walks `l1.focus.graph` over the met and found cells. The glints fade on the face's own clock, from the frame
@@ -9,12 +9,17 @@
 #include "../anim/anim.h"
 #include "../prim/prim.h"
 #include "../spec/spec.h"
+#include "../layout/layout.h"
 #include <stdio.h>
 #include <string.h>
 
 #define S "library"
-#define CELLS 16
-#define P(part, key) v_fmt("l1.cell.%s.%s", part, key)
+#define MAXCELLS 24
+/* The form the catalogue takes (l1.grid.forms, by the cell count): its `parts` override l1.cell key by key; a key the form does not name is l1.cell's. */
+static char g_form[16];
+static int form_for(int n) { return layout_list_form(S, "l1.grid", n, g_form, sizeof g_form); }
+static const char *pp(const char *part, const char *key) { const char *f = v_fmt("l1.grid.forms.%s.parts.%s.%s", g_form, part, key); int l; if (*g_form && spec_raw(S, f, &l)) return f; return v_fmt("l1.cell.%s.%s", part, key); }
+#define P(part, key) pp(part, key)
 
 /* ---- the glints' clock: from the first frame Level 1 is drawn in; again from the start when another screen shows ---- */
 static uint32_t g_t0; static int g_have, g_level = -1;
@@ -38,7 +43,7 @@ static void cell(int i, const int b[4], void *ctx) {
   snprintf(fill, sizeof fill, "%s", v_scol(S, v_fmt("l1.cell.bezel.%s.fill", st))); snprintf(bevel, sizeof bevel, "%s", v_scol(S, v_fmt("l1.cell.bezel.%s.bevel", st)));
   snprintf(bandFill, sizeof bandFill, "%s", v_scol(S, "l1.cell.bezel.found.band.fill")); snprintf(bandRule, sizeof bandRule, "%s", v_scol(S, "l1.cell.bezel.found.band.rule"));
   kit_band_t band = { v_si(S, "l1.cell.bezel.found.band.side", 1), v_si(S, "l1.cell.bezel.found.band.h", 0), bandFill, bandRule };
-  v_srect(S, "l1.cell.bezel.rect", r); snprintf(id, sizeof id, "cell.%s", sid);
+  v_srect(S, P("bezel", "rect"), r); snprintf(id, sizeof id, "cell.%s", sid);
   v_region("grid", LAYER_CHROME); kit_bezel(id, x + r[0], y + r[1], r[2], r[3], v_si(S, "l1.cell.bezel.radius", 1), fill, NULL, bevel, found ? &band : NULL);
   /* the picture: the specimen as found, the pencil study when met */
   v_srect(S, P("picture", "rect"), r); snprintf(id, sizeof id, "cell.%s.picture", sid);
@@ -73,19 +78,19 @@ static void cell(int i, const int b[4], void *ctx) {
 /* ---- the focus: the met and found cells, each its cell's rect ---- */
 static void no_draw(int i, const int b[4], void *ctx) { (void)i; (void)b; (void)ctx; }
 int library_focus(focus_target_t *out, int cap) {
-  int boxes[CELLS][4], r[4], n = v_plen("focus.targets"), cells = v_plen("regions.cells"); if (n > cap) n = cap;
-  if (cells != CELLS || kit_tiles(S, "l1.grid", CELLS, no_draw, NULL, boxes) < 0) return 0;
-  v_srect(S, "l1.cell.bezel.rect", r);
+  int boxes[MAXCELLS][4], r[4], n = v_plen("focus.targets"), cells = v_plen("regions.cells"); if (n > cap) n = cap;
+  if (cells < 1 || cells > MAXCELLS || form_for(cells) < 0 || kit_tiles(S, "l1.grid", cells, no_draw, NULL, boxes) < 0) return 0;
+  v_srect(S, P("bezel", "rect"), r);
   for (int i = 0; i < n; i++) {
     focus_target_t *t = &out[i]; focus_fill(t, "focus.targets", i, NULL); int box[4] = { 0, 0, 0, 0 };
-    for (int k = 0; k < CELLS; k++) if (strncmp(t->id, "cell.", 5) == 0 && strcmp(t->id + 5, v_pstr(v_fmt("regions.cells.%d.id", k))) == 0) { box[0] = boxes[k][0] + r[0]; box[1] = boxes[k][1] + r[1]; box[2] = r[2]; box[3] = r[3]; }
+    for (int k = 0; k < cells; k++) if (strncmp(t->id, "cell.", 5) == 0 && strcmp(t->id + 5, v_pstr(v_fmt("regions.cells.%d.id", k))) == 0) { box[0] = boxes[k][0] + r[0]; box[1] = boxes[k][1] + r[1]; box[2] = r[2]; box[3] = r[3]; }
     focus_fill(t, "focus.targets", i, box);
   }
   return n;
 }
 static void ring(void) {
   char c[48]; snprintf(c, sizeof c, "%s", v_focus_cur()); if (!*c) return;
-  focus_target_t t[CELLS]; int n = library_focus(t, CELLS);
+  focus_target_t t[MAXCELLS]; int n = library_focus(t, MAXCELLS);
   for (int i = 0; i < n; i++) if (strcmp(t[i].id, c) == 0 && t[i].w > 0) { int box[4] = { t[i].x, t[i].y, t[i].w, t[i].h }; v_region("focus", LAYER_CHROME); word_focusRing("focus", S, "l1.focus.targets.cell", box); return; }
 }
 
@@ -93,8 +98,9 @@ void library_words(void) {
   uint32_t now = anim_now(); if (!g_have) { g_have = 1; g_t0 = now; }
   g_level = kit_glint_level(S, "l1.cell.glint", now - g_t0, v_pbool("motion", 1));
   kit_stage(S, "l1.stage.rect", v_scol(S, "l1.stage.ground"), "stage", "stage.ground", "stage.picture", "regions.stage.picture");
-  if (v_plen("regions.cells") != CELLS) { v_error("library: Level 1 is built for the sixteen species of l1.grid; another catalogue size comes back to UI/UX"); return; }
-  kit_tiles(S, "l1.grid", CELLS, cell, NULL, NULL);
+  int cells = v_plen("regions.cells");
+  if (cells < 1 || cells > MAXCELLS || form_for(cells) < 0) { v_error("library: Level 1 is built for the catalogue sizes of l1.grid.forms; another catalogue size comes back to UI/UX"); return; }
+  kit_tiles(S, "l1.grid", cells, cell, NULL, NULL);
   ring();
 }
 

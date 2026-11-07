@@ -1,0 +1,10 @@
+{
+  "name": "wb-glbpack",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Packs a studio GLB: meshopt compression of the vertex and index buffers (EXT_meshopt_compression). Used by `wb mesh studio` and `wb mesh import`; not part of the studio's browser app.",
+  "dependencies": {
+    "meshoptimizer": "1.3.0"
+  }
+}

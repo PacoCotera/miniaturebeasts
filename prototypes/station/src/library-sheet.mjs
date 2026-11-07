@@ -26,7 +26,7 @@ const TAU = Math.PI * 2;
 export const FORM = { cx: 348, cy: 286, ruler: 156, tick: 160, dot: 164, keep: 168, max: 0.94, reach: 152, nodeR: 5.5, ss: 2 };
 // The finish of the sheet's form: the approved Loika sheet's numbers (grain 4, vignette 0.22 over the 1024 x 600 screen, bloom 0.8; the met pencil study takes no bloom and no halation). It adds the form's light to the ground; the ground itself passes through (formOnGround).
 export const FINISH = { grain: 4, vignette: 0.22, bloom: 0.8, screen: [1024, 600] };
-const LEGACY = (sid) => (sid === "S01" ? { markings: ["plain"] } : {});   // specimen.mjs model's legacy looks: shown once found, never a slot
+const LEGACY = (sid) => ({});   // specimen.mjs model's legacy looks: shown once found, never a slot. None now: no frame of version 8 keeps a look only for inheritance (the Loika's plain is a look of its Markings)
 
 // A frame with its sealed flags set to the chapters still shut (the found looks never hold a shut chapter's).
 const withShut = (frame, shut = []) => ({ ...frame, chapters: frame.chapters.map((ch) => ({ ...ch, sealed: shut.includes(ch.id) })) });
@@ -153,7 +153,9 @@ export function speciesFacts(frame) {
   if (!f) { const m = layout(model(withShut(frame), {})); f = { sForm: formScale(frame), tier: tierOf(frame), plates: platesOf(m).map((p) => ({ chapter: p.ch.id, slot: p.slot, rect: [p.x, p.y, p.w, p.h] })) }; SPECIES.set(id, f); }
   return f;
 }
-const colourTrait = (m) => { for (const ch of m.chapters) for (const t of ch.traits) if (t.id === "colour") return { ch, t }; return null; };
+// The Coat's colour trait: the frames of version 8 name it Tint (`body-hue`; the earlier frames' `colour`), the one trait whose looks are the colours a Coat has been found in
+const COLOUR_IDS = ["colour", "body-hue"];
+const colourTrait = (m) => { for (const ch of m.chapters) for (const t of ch.traits) if (COLOUR_IDS.includes(t.id)) return { ch, t }; return null; };
 // The picture ids and the lit rule are the requests' (views/requests.mjs), made from these species facts.
 export { canLight };
 function modelOf(frame, input) {

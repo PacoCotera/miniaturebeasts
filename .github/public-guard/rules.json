@@ -409,6 +409,12 @@
  ],
  "allowlist": [
   {
+   "pathRe": "^prototypes/workbench/body/wb/static/app/assets/Viewport-[A-Za-z0-9_-]+\\.js$",
+   "value": "10.11.12.13",
+   "rule": "host",
+   "reason": "the byte-to-hex lookup table (...0e.0f.10.11.12.13...) in the bundled 3D library, not an address; the path is a pattern because the bundle's name carries a hash"
+  },
+  {
    "path": "v1/native/tests/test_selected_presenter.py",
    "value": "test-only-password",
    "rule": "secret-value",

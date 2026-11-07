@@ -44,6 +44,107 @@ def abspath(rel):
     return rel if os.path.isabs(rel) else os.path.join(SPECIES_DIR, rel)
 
 
+# ------------------------------------------------------------------------------------------------------------------------------------------------------ finding a sculpt or a part by its sha
+# A species file names its sculpt and parts by path and pins them by sha256. Sculpts and parts are not copied into the owner's species folder: they are found by sha in the code's own
+# species_v1/meshes and species_v1/parts, then in the folders of WB_SCULPT_CACHE (os.pathsep list, each laid out like species_v1). A path that holds a different file than the pin does not count.
+_SHA_MEMO = {}
+_INDEX = {}
+
+
+def _roots():
+    return [SPECIES_DIR] + [d for d in os.environ.get("WB_SCULPT_CACHE", "").split(os.pathsep) if d]
+
+
+def sha256_cached(path):
+    st = os.stat(path)
+    k = (path, st.st_mtime_ns, st.st_size)
+    if k not in _SHA_MEMO:
+        _SHA_MEMO[k] = sha256_file(path)
+    return _SHA_MEMO[k]
+
+
+def _scan():
+    """{sha256 of a source GLB or of its studio GLB: sidecar path} over every root."""
+    idx = {}
+    for root in _roots():
+        for sub in ("meshes", "parts"):
+            for d, _, fs in os.walk(os.path.join(root, sub)):
+                for f in fs:
+                    if not f.endswith(".json"):
+                        continue
+                    try:
+                        with open(os.path.join(d, f)) as fh:
+                            sc = json.load(fh)
+                        if sc.get("schema") in (SCHEMA_MESH, SCHEMA_PART):
+                            for sha in (sc["glb"]["sha256"], (sc.get("studio") or {}).get("sha256")):
+                                if sha:
+                                    idx.setdefault(sha, os.path.join(d, f))
+                    except (OSError, ValueError, KeyError):
+                        pass
+    return idx
+
+
+def find_by_sha(sha, rescan=True):
+    """The sidecar path of the sculpt or part whose GLB (or studio GLB) has this sha256, or None."""
+    p = _INDEX.get(sha)
+    if p is None and rescan:
+        _INDEX.clear()
+        _INDEX.update(_scan())
+        p = _INDEX.get(sha)
+    return p if p and os.path.exists(p) else None
+
+
+def resolve(rel, sha=None):
+    """The sidecar path for a species file's `source`/`part` and the sha it pins: the path itself when it is there (a file that is not the pinned one is the stamp check's to refuse, not ours to swap),
+    else whatever is found by the sha, else the path (the caller meets the missing file)."""
+    p = abspath(rel)
+    if sha is None or os.path.exists(p):
+        return p
+    return find_by_sha(sha) or p
+
+
+def part_path(pe):
+    """The sidecar path of a species file's `mesh.parts[]` entry (found by its pinned sha when the path is not there)."""
+    return resolve(pe["part"], pe.get("sha256"))
+
+
+def mesh_problem(block):
+    """Why the sculpt and parts a species file's `mesh` block pins cannot be found, one line, or None. A missing sha is an error on the species row, never a blank stage."""
+    def hit(rel, sha, what):
+        p = resolve(rel, sha)
+        try:
+            with open(p) as fh:
+                sc = json.load(fh)
+            if not os.path.exists(os.path.join(os.path.dirname(p), sc["glb"]["file"])):
+                raise OSError
+        except (OSError, ValueError, KeyError):
+            return f"{what} {rel} is not here, and no sculpt or part with the pinned sha {str(sha)[:12]} was found"
+        return None
+    if not isinstance(block, dict) or not block.get("source") or not block.get("sha256"):
+        return None
+    why = hit(block["source"], block["sha256"], "sculpt")
+    for pe in block.get("parts") or []:
+        why = why or (hit(pe["part"], pe["sha256"], "part") if pe.get("part") and pe.get("sha256") else None)
+    return why
+
+
+def studio_glb(sha):
+    """The path of a studio GLB (a sculpt's or a part's) by its pinned sha256, or None. The file must hash to the sha it is asked by."""
+    side = find_by_sha(sha)
+    if side is None:
+        return None
+    try:
+        with open(side) as fh:
+            sc = json.load(fh)
+        st = sc.get("studio") or {}
+        if st.get("sha256") != sha:
+            return None
+        p = os.path.join(os.path.dirname(side), st["file"])
+        return p if sha256_cached(p) == sha else None
+    except (OSError, ValueError, KeyError):
+        return None
+
+
 # ------------------------------------------------------------------------------------------------------------------------------------------------------ the GLB
 def zup(P):
     """glTF is Y up; the studio is Z up with the creature facing +x: (x, y, z) of the file is (x, -z, y) here."""
@@ -379,9 +480,9 @@ def sidecar_problems(sc, kind="mesh"):
 
 class Mesh:
     """A sculpt read back: the sidecar, the GLB, its welded surface and its skin."""
-    def __init__(self, sidecar_rel):
+    def __init__(self, sidecar_rel, sha=None):
         self.rel = sidecar_rel
-        self.path = abspath(sidecar_rel)
+        self.path = resolve(sidecar_rel, sha)
         self.dir = os.path.dirname(self.path)
         self.sc = load_json(self.path)
         self.glb_path = os.path.join(self.dir, self.sc["glb"]["file"])

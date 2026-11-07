@@ -8,8 +8,7 @@
   "name": "Drapet",
   "plural": "Drapet",
   "order": 18,
-  "summary": "A wide low dome hidden under a floor-length skirt of long fur, a small flat face peeking out at the front, brow tassels; no ears, no snout, short legs under the skirt that never show.",
-  "draft": true
+  "summary": "A wide low dome hidden under a floor-length skirt of long fur, a small flat face peeking out at the front, brow tassels; no ears, no snout, short legs under the skirt that never show."
  },
  "taxonomy": {
   "code": "S18",
@@ -86,7 +85,7 @@
  "signature": {
   "anchor": "periwinkle",
   "second": "slate",
-  "feature": "a mound with the curtain",
+  "feature": "a mound body, with its curtain",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.fur-skirt-presence": "on",
@@ -108,7 +107,9 @@
   "#####",
   "#.#.#"
  ],
- "habits": [],
+ "habits": [
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "large",
   "proportion": null,
@@ -132,16 +133,14 @@
    "traits": [
     {
      "id": "body-hue",
-     "name": "Body hue",
+     "name": "Tint",
      "loci": [
       "appearance.body-hue"
      ],
      "looks": [
-      "low",
-      "between low and between",
-      "between low and high",
-      "between between and high",
-      "high"
+      "bluer",
+      "between",
+      "pinker"
      ],
      "nature": "look",
      "shapeable": true,
@@ -149,15 +148,13 @@
     },
     {
      "id": "body-value",
-     "name": "Coat value",
+     "name": "Shade",
      "loci": [
       "appearance.body-value"
      ],
      "looks": [
       "dark",
-      "between dark and between",
-      "between dark and light",
-      "between between and light",
+      "between",
       "light"
      ],
      "nature": "look",
@@ -172,9 +169,12 @@
       "appearance.marking-layout"
      ],
      "looks": [
-      "on",
-      "off/on",
-      "off"
+      "plain",
+      "spotted",
+      "saddle",
+      "shaded",
+      "bands",
+      "patches"
      ],
      "nature": "look",
      "shapeable": true,
@@ -223,9 +223,7 @@
      ],
      "looks": [
       "close",
-      "between close and between",
-      "between close and wide",
-      "between between and wide",
+      "between",
       "wide"
      ],
      "nature": "look",
@@ -234,7 +232,7 @@
     },
     {
      "id": "brow-tassels",
-     "name": "Brow tassels",
+     "name": "Tassels",
      "loci": [
       "anatomy.brow-tuft-presence",
       "growth.brow-tuft-length"
@@ -262,9 +260,8 @@
       "signature.size"
      ],
      "looks": [
-      "low",
-      "between low and high",
-      "high"
+      "small",
+      "big"
      ],
      "nature": "look",
      "shapeable": true,
@@ -278,9 +275,7 @@
      ],
      "looks": [
       "small",
-      "between small and between",
-      "between small and big",
-      "between between and big",
+      "between",
       "big"
      ],
      "nature": "look",
@@ -295,9 +290,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and round",
-      "between between and round",
+      "between",
       "round"
      ],
      "nature": "look",
@@ -319,9 +312,7 @@
      ],
      "looks": [
       "short",
-      "between short and between",
-      "between short and long",
-      "between between and long",
+      "between",
       "long"
      ],
      "nature": "look",
@@ -336,9 +327,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and sturdy",
-      "between between and sturdy",
+      "between",
       "sturdy"
      ],
      "nature": "look",

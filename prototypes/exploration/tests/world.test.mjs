@@ -9,6 +9,7 @@ import { createHash } from "node:crypto";
 import { loadPage, fakeCanvas, PAGE, MODULE, SCRIPT } from "./page-harness.mjs";
 import { blank } from "../../face/tools/blank.mjs";
 import * as W from "../src/world.mjs";
+import * as R from "../src/regions.mjs";
 import * as A from "../src/atlas.mjs";
 import * as V from "../src/view.mjs";
 import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, viewOut, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, NO_MACRO, PROOF_GRID, proofStates, fnv as fnvStr } from "../tools/world-vectors.mjs";
@@ -73,13 +74,13 @@ test("purity, by source: no page state, DOM, storage, clock, randomness, drawing
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
 });
 
-test("unknown generators are refused; the page plays generators 1, 2, 3 and 4 (biomes), and new worlds take generator 3", () => {
-  assert.throws(() => W.genWorld(1, 5), RangeError);
+test("unknown generators are refused; the module knows generators 1 to 5, the page plays generator 5 only, and new worlds take generator 5", () => {
+  assert.throws(() => W.genWorld(1, 6), RangeError);
   assert.throws(() => W.genWorld(1, 0), RangeError);
-  assert.deepEqual(W.GENS, [1, 2, 3, 4]);
+  assert.deepEqual(W.GENS, [5]);
   assert.equal(W.genWorld(1, 2).gen, 2);
-  assert.equal(W.genWorld(1, 3).gen, 3); assert.equal(W.genWorld(1, 4).gen, 4);
-  assert.equal(W.NEW_GEN, 3);
+  assert.equal(W.genWorld(1, 3).gen, 3); assert.equal(W.genWorld(1, 4).gen, 4); assert.equal(W.genWorld(1, 5).gen, 5);
+  assert.equal(W.NEW_GEN, 5);
 });
 
 test("generator 3 is generator 2's ground: the same land, edges, places and set pieces, with only gen different", () => {
@@ -91,27 +92,16 @@ test("generator 3 is generator 2's ground: the same land, edges, places and set 
   }
 });
 
-test("a save without gen loads as generator 1 and is saved without gen", () => {
-  const fx = FIXTURE(); assert.equal("gen" in fx, false);
-  const p = page({ "mb-save-v8": JSON.stringify(fx) });
-  p.store[p.KEY] = JSON.stringify(fx);
-  assert.equal(p.run("load()"), true);
-  assert.deepEqual(worldDigest(API, p.run("G")), worldDigest(API, W.genWorld(fx.seed, 1)));
-  p.run("save()");
-  const v9 = JSON.parse(p.store[p.KEY]);
-  assert.equal("gen" in v9, false, "v9 has no gen at the top");
-  assert.equal(v9.regions[0].gen, 1, "region 1 is generator 1");
-  assert.equal(v9.regions[0].seed, fx.seed); assert.equal(v9.seed, fx.seed);
-});
-
-test("a new world writes gen 3, and its world and first place match generator 3's vectors", () => {
+test("a new world writes gen 5, and its ground and first place are generator 4's Meadows, to the bit (the vectors)", () => {
   const p = page();
   p.run("newWorld(42)");
-  assert.equal(p.run("S.gen"), 3);
-  const v9 = JSON.parse(p.store[p.KEY]); assert.equal(v9.v, 9); assert.equal(v9.seed, 42); assert.equal(v9.regions[0].seed, 42); assert.equal(v9.regions[0].gen, 3); assert.equal("gen" in v9, false);
-  const want = VECTORS.gens["3"].seeds.find(s => s.seed === 42), G = p.run("G");
-  assert.deepEqual(Object.assign(worldDigest(API3, G), { beacons: [...W.beaconCells(G, 42)], depots: [...W.depotCells(G, 42)] }), want.world);
-  assert.deepEqual(placeDigest(API3, p.run("layout(String(G.spawns[0]))"), 2), want.places[0]);
+  assert.equal(p.run("S.gen"), 5);
+  const v10 = JSON.parse(p.store[p.KEY]); assert.equal(v10.v, 10); assert.equal(v10.seed, 42); assert.equal(v10.regions[0].seed, 42); assert.equal(v10.regions[0].gen, 5); assert.equal("gen" in v10, false);
+  const want = VECTORS.gens["4"].biomes.mixed.seeds.find(s => s.seed === 42), G = p.run("G");
+  assert.equal(G.gen, 5);
+  const ground = { ...G, gen: 4 };   // generator 5's ground is generator 4's, tagged 5: the vector hashes it as generator 4
+  assert.deepEqual(Object.assign(worldDigest(API4, ground), { beacons: [...W.beaconCells(G, 42)], depots: [...W.depotCells(G, 42)] }), want.world);
+  assert.deepEqual(placeDigest(API4, W.genPlace(ground, 42, String(G.spawns[0])), 2), want.places[0]);   // the generator's own place (the page's layout adds the trees)
 });
 
 test("a world of generator 2 (asked for by a test; players have them in saves) writes gen 2, and its world and first place match generator 2's vectors", () => {
@@ -125,8 +115,9 @@ test("a world of generator 2 (asked for by a test; players have them in saves) w
   assert.deepEqual(placeDigest(API2, p.run("layout(String(G.spawns[0]))"), 2), want.places[0]);
 });
 
-test("a save from a newer generator (gen 5) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
-  const raw = JSON.stringify(Object.assign(FIXTURE(), { gen: 5 })), writes = [];
+test("a save from a generator the page does not play (a newer one, or 1 to 4) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
+  const realm = (o) => JSON.stringify(R.migrate8({ ...o, v: 8 }, { now: 1793664000000 }));   // the fixture as a v10 realm (a flat v8 save is reset: reset.test.mjs)
+  const raw = realm(Object.assign(FIXTURE(), { gen: 6 })), writes = [];
   const old = { "mb-exploration-v1": "{}", "mb-exploration-v6": "{}" };   // the saves before v7 stay too: read-only boot removes nothing
   const store = new Proxy({ "mb-save-v8": raw, ...old }, { set: (o, k, v) => { writes.push(k); o[k] = v; return true; }, deleteProperty: (o, k) => { writes.push(k); delete o[k]; return true; } });
   const p = page(store);
@@ -147,16 +138,16 @@ test("a save from a newer generator (gen 5) is read-only: load() says 'newer', b
   assert.deepEqual(writes, [], "nothing was written");
   assert.doesNotThrow(() => p.els.copyNotes.on.click(), "Copy notes is a no-op while read-only");
   assert.deepEqual(writes, [], "Copy notes wrote nothing");
-  for (const gen of [5, 0, "1"]) { const q = page({ "mb-save-v8": JSON.stringify(Object.assign(FIXTURE(), { gen })) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
+  for (const gen of [6, 0, "1", 1, 2, 3, 4]) { const o = JSON.parse(realm(Object.assign(FIXTURE(), { gen: 6 }))); o.regions[0].gen = gen; const q = page({ "mb-save-v8": JSON.stringify(o) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
 });
 
-test("the Station's save reader adopts the save and keeps gen as it is (absent, 1, 2)", async () => {
+test("the Station's save reader adopts the save and keeps the region's generator as it is (5)", async () => {
   const store = {};
   globalThis.localStorage = { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } };
   const game = await import("../../station/src/game.mjs"), state = await import("../../station/src/state.mjs");
   const noSt = o => { const c = { ...o }; delete c.st; return c; };
-  for (const gen of [undefined, 1, 2]) {
-    const fx = FIXTURE(); if (gen !== undefined) fx.gen = gen;
+  for (const gen of [5]) {
+    const fx = JSON.parse(JSON.stringify(R.migrate8({ ...FIXTURE(), gen }, { now: 1793664000000 })));   // a v10 realm (a flat v8 save is reset: reset.test.mjs)
     store[game.saveKey()] = JSON.stringify(fx);   // the active Companion's save
     game.load();
     assert.equal(game.G.sv.wid, fx.wid, `gen ${gen}: adopted`);
@@ -171,6 +162,7 @@ test("the Station's save reader adopts the save and keeps gen as it is (absent, 
 const { L, T, T_BLOCK, MW, MH, PW, PH, EDGE, TERR } = W;
 const API2 = { gen: 2, hash: W.hash, L, EDGE, genWorld: s => W.genWorld(s, 2), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells, ...LIFE };
 const API3 = { ...API2, gen: 3, genWorld: s => W.genWorld(s, 3) };
+const API4 = { ...API2, gen: 4, genWorld: s => W.genWorld(s, 4, "mixed") };
 const vector2Of = seed => VECTORS.gens["2"].seeds.find(s => s.seed === seed);
 const NC = MW * MH, onMap = (x, y) => x >= 0 && y >= 0 && x < MW && y < MH;
 const SIDE4 = [["up", 0, -1], ["down", 0, 1], ["left", -1, 0], ["right", 1, 0]];
@@ -688,12 +680,12 @@ test("generator 2 play: Ahead names the edge, the edge word alone comes before h
   assert.ok(ctx[0].includes("Ahead: " + o.run("landWord(S.exp.pos + 1)")), ctx[0]); assert.equal(ctx.length, 5, "no edge word");
 });
 
-test("generator 2 play: a save without gen is generator 1, canStep is passable everywhere it reaches; new worlds take the newest generator whatever the address says", () => {
-  const fx = FIXTURE(), p = page({ "mb-save-v8": JSON.stringify(fx) });
+test("generator 2 play: a generator 1 realm (a test page that may open it) has canStep passable everywhere it reaches; new worlds take the newest generator whatever the address says", () => {
+  const p = g1Page();
   assert.equal(p.run("S.gen"), 1, "region 1 is generator 1"); assert.equal(p.run("G.gen"), undefined);
   for (let c = 0; c < NC; c++) for (const [dir, dx, dy] of SIDE4) { const x = c % MW + dx, y = ((c / MW) | 0) + dy; if (!onMap(x, y)) continue;
     assert.equal(p.run(`canStep(${c}, ${JSON.stringify(dir)})`), p.run(`passable(${y * MW + x})`), `${c} ${dir}`); }
-  for (const q of ["?gen=1", "?gen=2", "?gen=3", "?gen=4", "?seed=5&gen=1"]) { const r = page({}, q); r.run("newWorld(5)"); assert.equal(r.run("S.gen"), 3, q); assert.equal(r.run("G.gen"), 3, q); }
+  for (const q of ["?gen=1", "?gen=2", "?gen=3", "?gen=4", "?seed=5&gen=1"]) { const r = page({}, q); r.run("newWorld(5)"); assert.equal(r.run("S.gen"), 5, q); assert.equal(r.run("G.gen"), 5, q); }
 });
 
 test("generator 2 play: stairs and aprons take no pods, creatures or slabs; places draw every piece on the palette", () => {
@@ -746,7 +738,9 @@ const MAIN_G1 = { mapCv: 3936681958, frame: 2163068169 };   // main 5e287081, wi
 const g1Save = () => { const m = page(); m.run("newWorld(7)"); const o = JSON.parse(m.store[m.KEY]); o.regions[0].gen = 1; return { [m.KEY]: JSON.stringify(o), "mb-companion-A": m.store["mb-companion-A"] }; };   // v9 names the generator in the region: gen 1
 // one page per generator, shared by the tests below (each sets the state it reads), so the map and fog are built once
 let G1P = null, G2P = null;
-const g1Page = () => G1P || (G1P = page(g1Save(), undefined, { canvas: true }));
+// A test page may open the generators the page no longer plays (1 to 4: every save since the release is generator 5, and the page reads an earlier one as newer, read-only): the list is widened while the page boots and put back.
+const withOldGens = fn => { const was = [...W.GENS]; W.GENS.splice(0, W.GENS.length, 1, 2, 3, 4, ...was); try { return fn(); } finally { W.GENS.splice(0, W.GENS.length, ...was); } };
+const g1Page = () => G1P || (G1P = withOldGens(() => page(g1Save(), undefined, { canvas: true })));
 const g2Page = () => { if (!G2P) { G2P = page({}, undefined, { canvas: true }); G2P.run("newWorld(1, 2)"); } return G2P; };
 const g1Map = () => { const p = g1Page();
   p.run("S.exp = null; S.phase = 'setup'; S.pins = []; S.opened = {}; S.pods = []; S.cr = []; S.signs = {}; S.skulls = {}; for (let c = 0; c < MW * MH; c++) { S.revealed[c] = 1; S.visited[c] = c === G.gate || c === G.mouth ? 1 : 0; } mapCv = null; scr.px().fill(-1); drawMap('view', 0);");
@@ -1021,7 +1015,7 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
 const MAIN_FRAMES = { cave: 1205165258, place32: 1284530620, map: 3135324483 };   // main 92b58bf8 (unchanged by the later main commits), captured from its own page with this harness
-const GOLDEN48 = { faceStair: 2997770219, gen1: 414766699, corner: 1650250194 };   // re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
+const GOLDEN48 = { faceStair: 2933509176, gen1: 414766699, corner: 1650250194 };   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y) {
   const p = page48(seed);
   p.run(`layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; G = genWorld(${seed}, 1); S = worldFields(${seed}, 1); const life = genLife(${seed}); S.cr = life.cr; S.pods = life.pods; indexCreatures();

@@ -26,6 +26,9 @@ const VIEWS = ["three-quarter", "side"];
 
 // ---- roster.read48: the stands against each other ----
 export const READ48_LIMIT = 0.85; // two kinds whose 48 px silhouettes overlap by this much or more read as one (IoU)
+// Signed exception records of the check, one pair each, never a raised limit (art desk, signed 2026-11-06): Untuva and Oskol read alike at 48 px (IoU 0.850); their signatures and colours tell them apart at 1x.
+export const READ48_EXCEPTIONS = [{ a: "S02", b: "S13", iou: 0.85, signed: "art desk, 2026-11-06", reason: "the signatures and colours tell them apart at 1x" }];
+export const isRead48Exception = (a, b) => READ48_EXCEPTIONS.some((e) => (e.a === a && e.b === b) || (e.a === b && e.b === a));
 export const STANDS48_FILE = path.resolve(here, "stands48.json");
 // { id: { file, mask } } from the stands file written by tools/stands48.mjs
 export function loadStands(file = STANDS48_FILE) {
@@ -39,7 +42,7 @@ export function read48(stands = loadStands(), limit = READ48_LIMIT) {
   const ids = Object.keys(stands).sort(), pairs = [];
   for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) pairs.push({ a: ids[i], b: ids[j], iou: Number(iou(stands[ids[i]].mask, stands[ids[j]].mask).toFixed(3)) });
   pairs.sort((p, q) => q.iou - p.iou);
-  const messages = pairs.filter((p) => p.iou >= limit).map((p) => `${p.a} and ${p.b} overlap ${p.iou.toFixed(2)} at 48 px; under ${limit} needed`);
+  const messages = pairs.filter((p) => p.iou >= limit && !isRead48Exception(p.a, p.b)).map((p) => `${p.a} and ${p.b} overlap ${p.iou.toFixed(2)} at 48 px; under ${limit} needed`);
   return { id: "roster.read48", level: "red", pass: messages.length === 0, messages, limit, pairs };
 }
 

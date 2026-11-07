@@ -3,6 +3,7 @@
 // the layout facts, the requests and the cache (exactly the sheet, one lit variant and one page); the ground passing through exactly, the crop of the finish byte-identical to the whole-screen reference on the eight
 // review states, and each render's time against its target (a sheet or lit variant 1.5 s, a met sheet 1.2 s on the development machine; the test fails only past 3 s).
 //   node --test prototypes/station/tests/library-sheet.test.mjs
+// PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -95,26 +96,8 @@ test("plates are bezel pixels: exactly libPanel, libHead and libWell (b 25) wher
     for (let i = 6; i < w - 6; i++) { assert.deepEqual(at(p, x + i, y + 26), tok("libWell"), "the rule row"); assert.deepEqual(at(p, x + i, y), tok("libPanel"), "row 0 is the panel"); }
     assert.deepEqual(at(p, x + 150, y + 10), tok("libHead")); assert.deepEqual(at(p, x + 150, y + 40), tok("libPanel")); }
 });
-test("the Loika at mid: tier L, its first 20 cells exactly at x 252-663, y 502-518 and the ears' three below them at x 252-308, y 522-538; the colours band named; the layout facts in the picture's coordinates", () => {
-  const p = loikaMid(), f = p.facts, cellsX = [];
-  assert.deepEqual([f.tier, f.sForm, f.colours], ["L", 0.94, "named"]);
-  assert.deepEqual(f.plates.coat, [0, 10, 156, 70]);
-  const bg = at(p, 245 - SX, 510 - SY);
-  for (let x = 248; x < 672; x++) if (at(p, x - SX, 510 - SY).join() !== bg.join()) cellsX.push(x);
-  assert.equal(Math.min(...cellsX), 252); assert.equal(Math.max(...cellsX), 663);
-  assert.notDeepEqual(at(p, 252 - SX, 502 - SY), bg); assert.notDeepEqual(at(p, 252 - SX, 518 - SY), bg); assert.deepEqual(at(p, 252 - SX, 519 - SY), bg);
-  assert.deepEqual(L.tierOf(F.S01).rowsUsed, 2, "23 slot looks: the Ears (frame version 6) are the second row's three cells");
-  const row2 = []; for (let x = 248; x < 672; x++) if (at(p, x - SX, 530 - SY).join() !== bg.join()) row2.push(x);
-  assert.equal(Math.min(...row2), 252); assert.equal(Math.max(...row2), 308); assert.deepEqual(at(p, 315 - SX, 522 - SY), bg, "nothing at (315,522) before the plain is found");
-});
-test("the Loika's legacy 'plain', once found, is its own trailing group at (315,522), 17 x 17; the 23 slot cells do not move; its glint centre (332,522) and the Coat's lit outline", () => {
-  const f = { ...mid.S01, markings: [...(mid.S01.markings || []), "plain"] }, inp = found("S01", f, { fresh: ["markings|plain"] }), a = loikaMid(), b = pic("Loika plain", () => L.renderSheet(F.S01, inp, { lit: "coat" }));
-  const bg = at(a, 245 - SX, 510 - SY);
-  assert.notDeepEqual(at(b, 315 - SX, 522 - SY), bg); assert.notDeepEqual(at(b, 331 - SX, 538 - SY), bg); assert.deepEqual(at(b, 336 - SX, 530 - SY), bg); assert.deepEqual(at(b, 333 - SX, 530 - SY), tok("bone"));
-  assert.deepEqual(at(b, 313 - SX, 530 - SY), tok("bone"), "the lit outline, 1 px out");
-  assert.deepEqual(L.sheetFacts(F.S01, inp).glints, [[332 - SX, 522 - SY]]);
-  assert.equal(L.tierOf(F.S01).id, "L");
-});
+// retired (release 21a): the Loika at mid: tier L, its first 20 cells... was the Loika v6 sheet with the legacy plain as a trailing group; the legacy looks of S01 are retired, so its cells and positions are the generator's (release 21a)
+// retired (release 21a): the Loika's legacy 'plain', once found... was the Loika v6 sheet with the legacy plain as a trailing group; the legacy looks of S01 are retired, so its cells and positions are the generator's (release 21a)
 test("the lit variant: the lit chapter's found cells outlined in bone 1 px out; the other plates' type at 30 % pre-mixed; the plates never dim", () => {
   const a = loikaMid(), b = pic("Loika Coat lit", () => L.renderSheet(F.S01, found("S01", mid.S01), { lit: "coat" }));
   assert.deepEqual(at(b, 250 - SX, 510 - SY), tok("bone"));

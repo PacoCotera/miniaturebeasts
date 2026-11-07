@@ -488,7 +488,7 @@ test("preflight: refused with a plain reason, and nothing is written", async () 
     "no room": (w) => { w.quota = 1000; },
     "no key": (w) => { w.disk.set("mb-station-companions", w.disk.get("mb-station-companions").replace(/"pub":"[^"]+"/, '"pub":"A","pubMismatch":true')); },
     busy: (w) => { w.disk.set(JOURNAL_KEY, JSON.stringify({ v: 1, id: "x", state: "open", wid: OLD, newWid: "wabc", newSeed: 1 })); },
-    "no save": (w) => { w.disk.set(w.saveKey, w.disk.get(w.saveKey).replace('"v":9', '"v":8')); },
+    "no save": (w) => { w.disk.set(w.saveKey, w.disk.get(w.saveKey).replace('"v":10', '"v":9')); },
   };
   for (const [why, setup] of Object.entries(cases)) {
     const w = await W.makeWorld();

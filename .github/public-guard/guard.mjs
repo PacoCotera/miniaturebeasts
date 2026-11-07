@@ -143,7 +143,7 @@ function matches(re, text) {
 
 function allowed(file, rule, line, hit) {
   return RULES.allowlist.some((a) => {
-    if (a.path !== file || a.rule !== rule) return false;
+    if (a.rule !== rule || (a.pathRe ? !new RegExp(a.pathRe).test(file) : a.path !== file)) return false; // `pathRe` for a built file whose name carries a hash
     for (let i = line.indexOf(a.value); i >= 0; i = line.indexOf(a.value, i + 1))
       if (hit.index < i + a.value.length && i < hit.index + hit.text.length) return true;
     return false;
@@ -240,7 +240,7 @@ function report(hits) {
 
 function printAllowlist() {
   console.log(`allowlist (${RULES.allowlist.length} entries):`);
-  for (const a of RULES.allowlist) console.log(`  ${a.path}  ${a.rule}  "${a.value}"  (${a.reason})`);
+  for (const a of RULES.allowlist) console.log(`  ${a.path ?? a.pathRe}  ${a.rule}  "${a.value}"  (${a.reason})`);
 }
 
 function diffMode(base) {
@@ -363,6 +363,9 @@ function selfTest() {
   ok(!processDoc("design/other/x.md", true), "process-label tree mode only under its path list");
   ok(checkProcess("design/proposals/species-names.md", '| Aulaka | 6 | None. Queries "Aulaka" creature, character, game, brand, genus (2026-10-09): no creature | clear |').length === 0, "process-label honours the allowlist");
   covered.add("process-label");
+  const hexTable = "const t=[];0e.0f.10.11.12.13.14.15";
+  ok(checkLine("prototypes/workbench/body/wb/static/app/assets/Viewport-AbC_1-9.js", hexTable).length === 0, "the allowlist's path pattern covers the bundle whatever its hash");
+  ok(checkLine("prototypes/workbench/body/wb/static/app/assets/Other-AbC.js", hexTable).some((h) => h.rule === "host") && checkLine("prototypes/workbench/body/wb/static/app/assets/Viewport-AbC.js", "ssh 10.0.0.5 x").some((h) => h.rule === "host"), "the pattern entry allows only the hex table, only in the viewport bundle");
   ok(checkMessage("Fix\n\nCo-Authored-By: someone").length === 1 && checkMessage("Fix the guard").length === 0, "commit trailers");
   for (const r of RULES.rules) ok(covered.has(r.id), `no fixture for ${r.id}`);
   console.log(bad ? `self-test: ${bad} failed` : `self-test ok: ${FIXTURES.length + 2} fixture pairs, ${RULES.rules.length} rules`);

@@ -256,7 +256,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
@@ -312,7 +312,8 @@ const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'shallows', 'cli
 // random id kept under mb-companion-<slot> (the play page's second Companion is slot B, ?companion=B), and stored with
 // the first write. The single shared save of earlier builds (LEGACY_KEY) moves under Companion A's key with its first
 // write once it has loaded; bytes this page cannot load stay where they are and open read-only, as before.
-const LEGACY_KEY = 'mb-save-v8', SAVE_V = 9, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
+let RESET_CARRY = null;   // set by load() when the save found was reset (or the Station reset first); the new realm takes it (newRealm)
+const LEGACY_KEY = 'mb-save-v8', SAVE_V = 10, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
 let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
 let SAVE_KEY = keyOfCompanion(COMPANION.id);
 function keyOfCompanion(id) { return 'mb-save-v8@' + id; }
@@ -375,6 +376,10 @@ const SPECIES = [
     ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas sometimes shed after a full meal, more often for someone they trust.',
     col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' } },
 ];
+// The other seventeen kinds (the language frames, by the game's species list): name and plural from the frame, ground from the family, plain defaults the game designer tunes later
+// (notice 2 to 4, flee 2, eats, shed chance 0.1 at a calm moment) and no field ability: their abilities wait for the game designer, so no line about one is shown (ab, abText null).
+for (const k of KIND_INFO.slice(3)) SPECIES.push({ name: k.name, plural: k.plural, hab: k.hab, notice: [2, 4], flee: 2, eats: true, shedP: .1, how: 'calm',
+  ab: null, abText: null, born: null, learn: null, col: { body: 'bone', light: 'bone', shade: 'bone', dark: 'bone' } });
 // Shedding is rare unless the creature is special: shedP is a plain creature's chance at its moment; a creature
 // fed or settled this expedition sheds at SHED_BOND; one of a species not yet known always does; at most SHED_MAX pods from creature
 // moments an expedition (a returned line's pod is apart). Tune.
@@ -416,7 +421,9 @@ function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
 
 
 // The world's creatures and buried pods: src/world.mjs, by the world's generator (the herd floor is generator 3's).
-function genLife(seed) { return genLifeIn(G, seed, ROSTER); }
+const hereRegion = () => S.regions.find(r => r.id === S.here);   // the region mounted on S
+const hereKinds = (R = hereRegion()) => regionKinds(R);   // its kinds: the home region's three starters, any other region's land (src/regions.mjs)
+function genLife(seed, region) { return genLifeIn(G, seed, G.gen >= 5 ? hereKinds(region ?? hereRegion()) : ROSTER); }
 // The first expedition of a new world finds two buried pods in tier 1 reach of the start glint (design/world-and-exploration.md,
 // Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
 // a Tuikis's, at the reach's edge while the reach holds fewer than 2. Pure: reads G, never S, and never mutates `pods`;
@@ -858,8 +865,10 @@ function newRealm(seed, gen = NEW_GEN, wid) {   // a new realm takes the newest 
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   G = genWorld(seed, gen);
-  S = worldFields(seed, gen, wid);
-  const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
+  const carry = RESET_CARRY; RESET_CARRY = null;   // a realm that follows the release's reset: it says where it came from, and takes the world id the Station wrote if the Station reset first
+  S = worldFields(seed, gen, wid ?? (carry && carry.wid) ?? undefined);
+  if (carry && carry.resetFrom != null) S.resetFrom = carry.resetFrom;
+  const life = genLife(seed, { n: 1, biome: 'mixed' }); S.cr = life.cr; S.pods = life.pods;   // region 1, the Meadows: the three starters
   S = realmOf(S); S.biomeV = REALM_BIOME_V;   // a new realm draws the newest kinds; a save without biomeV is version 1
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
@@ -895,7 +904,7 @@ function openRegion(slot) {
 // Crates and the expedition under way name their region; none means region 1, so a realm of one region writes nothing new.
 const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
 // The Station's part as last stored, if it belongs to this world.
-function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && (o.v === 8 || o.v === SAVE_V) && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
+function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
 function save() {
   if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
@@ -946,16 +955,21 @@ function load() {
       if (!s) { dropOld(); return false; }
     } else s = JSON.parse(raw);
     if (!s || typeof s !== 'object' || Array.isArray(s)) return 'broken';
-    if (typeof s.v === 'number' && s.v > SAVE_V) return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
-    if (s.v === SAVE_V) {   // v9: a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet) starts a new world, as in v8
-      if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; }
+    const plan = resetPlan(raw, SAVE_V);   // what to do with what is found: play it, reset it (a v8 or v9 save), keep it read-only (newer, unreadable)
+    if (plan.action === 'newer') return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
+    if (plan.action === 'reset') {   // the release's reset: the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
+      if (!keepPre10(localStorage, own, raw)) return 'broken';
+      if (SAVE_KEY === LEGACY_KEY) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) { } }   // the shared old save is kept in the copy: it must not be found and reset again
+      RESET_CARRY = { resetFrom: plan.from }; dropOld(); return false;
+    }
+    if (plan.action !== 'play') return 'broken';
+    if (s.v === SAVE_V) {   // v10: a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet) starts a new world
+      if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { RESET_CARRY = { resetFrom: s.resetFrom ?? null, wid: s.wid ?? null }; dropOld(); return false; }   // the Station reset first: its world id and its part stay
       const rs = realmStatus(s, GENS); if (rs !== 'ok') return rs;   // 'newer': a region of a generator this page does not know, kept as stored
       mount(s, s.here);
-    } else if (s.v !== 8) return 'broken';
+    }
     if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { if (s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; } return 'broken'; }   // a Station-only save: a new world starts (and a fresh Station with it)
     const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
-    // a v8 save is copied byte for byte beside itself (<key>.pre9) before it is read as a realm; if the copy cannot be made the save opens read-only
-    if (s.v === 8 && !keepPre9(localStorage, own, raw)) return 'broken';
     S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
@@ -965,8 +979,7 @@ function load() {
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = genWorld(S.seed, gen, S.v === SAVE_V ? S.regions.find(r => r.id === S.here).biome : 'mixed');   // the mounted region's kind
-    if (S.v === 8) S = realmOf(S);   // v8 → v9, after the fill: one region, the world the save held
+    layoutCache.clear(); G = genWorld(S.seed, gen, S.regions.find(r => r.id === S.here).biome);   // the mounted region's kind
     if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
@@ -1726,7 +1739,7 @@ function pushSlab(f) {
   setFS(key, f.id, { moved: 1, x: tx, y: ty });
   if (first && f.under === 'pod') { // something was hiding under it
     const lay = layout(key), here = S.cr.filter(w => w.c === lay.cell && !!w.cv === lay.cave);
-    const sp = here.length ? here[hash(S.seed, 'slab', key, f.id) % here.length].sp : hash(S.seed, 'slab', key) % 3;
+    const sp = here.length ? here[hash(S.seed, 'slab', key, f.id) % here.length].sp : (k => k[hash(S.seed, 'slab', key) % k.length].sp)(hereKinds());
     S.pods.push({ id: 's:' + key + ':' + f.id, k: key, x: f.x, y: f.y, sp, h: 0, g: groundName(lay.land, lay.cave), how: 'slab' });
     fxGlint(f.x, f.y); logEv('A pod was under the slab');
   }
@@ -1944,7 +1957,7 @@ function probeDeep() {
   if (S.tier >= 2) {
     const lay = curLay(), f = lay.feats.find(q => q.kind === 'd');
     if (!S.deepRead) { S.deepRead = 1; S.pins = S.pins.filter(p => p.k !== 'deep');
-      const sp = hash(S.seed, 'deep') % 3; S.pods.push({ id: 'deep', k: lay.key, x: f.x, y: f.y + 1, sp, h: 0, g: 'cave', how: 'deep' });
+      const sp = (k => k[hash(S.seed, 'deep') % k.length].sp)(hereKinds()); S.pods.push({ id: 'deep', k: lay.key, x: f.x, y: f.y + 1, sp, h: 0, g: 'cave', how: 'deep' });
       fxGlint(f.x, f.y + 1); fxMsg('The Probe reads deep down · a sealed pod rises', 3); logEv('Read the deep ?'); }
     else fxMsg('Nothing more down there');
     recordSigns(lay.cell); advance('patch', { noise: 'act' }); return;
@@ -2424,7 +2437,7 @@ function worldTurn(pending) {
 function regionTurn(R, t, pending, farFromPlayer) {
   if (R.id !== S.here) throw new Error('regionTurn: region ' + R.id + ' is not mounted');
   const rng = makeRng(hash(R.seed, 'turn', t));
-  const mv = [0, 1, 2].map(() => ({ dx: 0, dy: 0, n: 0 }));
+  const mv = SPECIES.map(() => ({ dx: 0, dy: 0, n: 0 })), kinds = hereKinds(R).map(k => k.sp);   // the mounted region's kinds
   let charged = [], bushes = 0, bloom = -1; const newPods = [], young = [];
   // Creatures roam within their habitat.
   for (const w of S.cr) {
@@ -2461,11 +2474,11 @@ function regionTurn(R, t, pending, farFromPlayer) {
   const nPods = 2 + rng.int(2);
   for (let i = 0; i < nPods && occupied.length; i++) { const c = rng.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
     S.pods.push({ id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: rng.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); newPods.push(c); reveil(c); }
-  const families = occupied.filter(c => [0, 1, 2].some(sp => S.cr.filter(w => w.c === c && w.sp === sp && !w.cv).length >= 2));
+  const families = occupied.filter(c => kinds.some(sp => S.cr.filter(w => w.c === c && w.sp === sp && !w.cv).length >= 2));
   const nYoung = 1 + rng.int(2);
   let nextCr = S.cr.reduce((m, w) => Math.max(m, w.id), 0) + 1;
   for (let i = 0; i < nYoung && families.length; i++) { const c = rng.pick(families), here = S.cr.filter(w => w.c === c && !w.cv);
-    const counts = [0, 1, 2].map(sp => here.filter(w => w.sp === sp).length), sp = counts.indexOf(Math.max(...counts));
+    const counts = kinds.map(sp => here.filter(w => w.sp === sp).length), sp = kinds[counts.indexOf(Math.max(...counts))];
     S.cr.push({ id: nextCr, sp, c, cv: 0, b: Math.round(rnd(S.seed, 'bold', nextCr) * 100) / 100, s: 0, young: 1 }); nextCr++; young.push({ sp, c }); }
   for (const c of newPods) if (S.revealed[c]) recordSigns(c, t + 1);   // a sign carries the turn that has just been made
   surfaceMissing(R, t, farFromPlayer);
@@ -2476,7 +2489,8 @@ function regionTurn(R, t, pending, farFromPlayer) {
 // herd of three or more on the reachable ground of its habitat, away from where the player last walked, and nothing is said. It draws on a stream of its own,
 // so the turn's other draws never move; a region that holds every species draws nothing.
 function surfaceMissing(R, t, farFromPlayer) {
-  ROSTER.forEach((r, sp) => {
+  hereKinds(R).forEach(r => {   // the region's own kinds (its land's, or the home region's three starters)
+    const sp = r.sp;
     if (S.cr.some(w => w.sp === sp && !w.cv)) return;
     const ok = [], rg = makeRng(hash(R.seed, 'surface', t, sp));
     for (let c = 0; c < MW * MH; c++) if (G.comp[c] === 1 && passable(c) && G.land[c] !== L.WATER && r.hab.includes(G.land[c]) && farFromPlayer(c)) ok.push(c);
@@ -2497,7 +2511,7 @@ function realmTurn(turned, pending) {
   for (const c of depotCells(S.seed)) { const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
     if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
   // Movement: a species you know first; a direction only when the herd really drifted one way.
-  const moves = [0, 1, 2].filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
+  const moves = hereKinds().map(k => k.sp).filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
     .filter(o => o.dw || o.known).sort((a, b) => (b.known - a.known) || (!!b.dw - !!a.dw) || (mv[b.sp].n - mv[a.sp].n));
   if (moves.length) { const o = moves[0], who = o.known ? 'The ' + spOf(o.sp).plural : 'Unfamiliar creatures';
     say(o.dw ? who + ' moved ' + o.dw + '.' : who + ' spread out.', ['herd', null, o.known ? o.sp : -1, o.dw ? DIR_CODE[o.dw] : 0]); }
@@ -2674,76 +2688,177 @@ function wrapText(str, maxW, s) {
 function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (str.length > 1 && textW(str + '…', s) > maxW) str = str.slice(0, -1); return str + '…'; }
 
 // ---------- Species art: the signed 32 px tokens and 12 px minis, used 1:1 ----------
-// Copied from art/companion-48/species/ (S01 = page species 0, S03 = 1, S02 = 2; the files' sha256 are in the page's test), one
+// Release 21c: the twenty kinds' signed tokens from the art desk (field-tokens work/tokens.mjs, round 2; page species in sp order S01, S03, S02, S04 to S20), one
 // picture per string over the 48 colours in PALETTE order: a letter is a colour (A–Z, a–v: index 0–47), '.' is clear, a number
 // after a letter is the run length (none: 1), read left to right, row by row. Nothing is recoloured, scaled or redrawn here:
 // the token is the signed picture; the cards and the stage show it at a whole number of pixels per pixel (upArt).
 const RUN_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv';
 const SPECIES_ART = [
   { // S01 Loika
-    idle: '.80O3.28OR3O.27OQR3O.2O.19O5Q2R3O2RO.17OQR3OPQ2R2QR3O.16OPQR2P3Q2RPQR2O.16OQPQ3OP2QRPQ2O.18OQP4O2PQPD2B.19OQC3D8B.18BDCD10CB.16BEC3DC2D5CBCB.13B3DC7D5B3.11B2CEDC3Io2CBCD4CIoB.9BE3DC4onAB3D4CnAB.8BD4C5o3C3D4Co2B.7BED4C5DC7JH4B.7BD5C6DC2DC2J5B.7BECD4C10JHJ4B.8BDC2D2C2D3C2DC2J6B.9BDC6D4C3JH2J4B.9BDC7D4CJ2HJ5B.9BD3C5D4CJ8B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7BC5DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BH3B.2BH3BH3B.2BH3CB.8B5.2B9.2B6.5',
-    alert: '.16O3.28OR3O.27OQR3O.3O.17O4.OQ2R3.O2RO.15OQR3.OPQ2R2.QR3O.14OQR3.OPQ2R2.QR3O.14OPQR2.P3Q2R.PQR2O.14OQPQ2.QOP2QR.PQ2O.16OQP2.P2O2PQ.PD2B.18OQC3D8B.18BDCD10CB.16BEC3DC2D5CBCB.13B3DC7D5B3.11B2CEDC3Io2CBCD4CIoB.9BE3DC4onAB3D4CnAB.8BD4C5o3C3D4Co2B.7BED4C5DC7JH4B.7BD5C6DC2DC2J5B.7BECD4C10JHJ4B.8BDC2D2C2D3C2DC2J6B.9BDC6D4C3JH2J4B.9BDC7D4CJ2HJ5B.9BD3C5D4CJ8B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7BC5DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BC3B.2BC3BC3B.2BC4B.8BH3B.2BH3BH3B.2BH3CB.8B5.2B9.2B6.5',
-    flee: '.111O3.28OR3O.28OQR3O.2O.19O5Q2R3O2RO.17OQR3OPQ2R2QR3O.16OPQR2P3Q2RPQR2O.17OQPQ3OP2QRPQ2O.18OQP4O2PQPD2B.18OQ3C3D8B.16BD3CD10CB.14BEC5DC2D5CBCB.11B3DC9D5B3.9B2CEDC5Io2CBCD4CIoB.7BE3DC6onAB3D4CnAB.6BD4C7o3C3D4Co2B.5BED4C7DC7JH4B.5BD5C8DC2DC2J5B.5BECD4C12JHJ4B.6BDC2D2C2D5C2DC2J6B.7BDC6D6C3JH2J4B.7BDC7D6CJ2HJ5B.7BD3C5D6CJ8B.6BD4CDC3D6CJ8CB.5BDCD2C3DC2D5CJ8CB.5BC5DCDC2D5C2J7DB.5BCD2C2BCDC5D2C3K5C3B.4BDC3B3DC3B4DC3B3DC4B.BH3CB.BH3CB.6BH3CB.BH5B15.2B15',
-    huddle: '.367O5.O5.19ORQP2O2RQP2QO.18OQO3RQPO5D2B.16BD3CO5D5CB.14BEC5DC2D5CBCB.11B3DC9D5B3.9B2CEDC9BCD4C3B.7BE3DC6onAB3D4CnAB.6BD4C7o3C3D4Co2B.5BED4C7DC7JH4B.5BD5C8DC2DC2J5B.5BECD4C12JHJ4B.6BDC2D2C2D5C2DC2J6B.7BDC6D6C3JH2J4B.7BDC7D6CJ2HJ5B.7BD3C5D6CJ8B.6BD4CDC3D6CJ8CB.5BDCD2C3DC2D5CJ8CB.5BC5DCDC2D5C2J7DB.5BCD2C2BCDC5D2C3K5C3B.4B28.2',
-    shake0: '.81O3.28OR3O.26OQR3O.2O.19O5Q2R3O2RO.17OQR3OPQ2R2QR3O.16OPQR2P3Q2RPQR2O.15OQPQ3OP2QRPQ2O.15I.2OQP4O2PQPD2BI.14Y.3OQC3D8Y.18BDCD10CB.16BEC3DC2D5CBCB.13B3DC7D5B3.11B2CEDC3Io2CBCD4CIoB.9BE3DC4onAB3D4CnAB.8BD4C5o3C3D4Co2B.7BED4C5DC7JH4B.7ID5C6DC2DC2J5B.2I.4BYCD4C10JHJ4B.3Y.4BDC2D2C2D3C2DC2J6B.9BDC6D4C3JH2J4B.9BDC7D4CJ2HJ5B.9BD3C5D4CJ8B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7IC5DCDC2D3C2J7DB.7YCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BH3B.2BH3BH3B.2BH3CB.8B5.2B9.2B6.6',
-    shake1: '.79O3.28OR3O.28OQR3O.2O.19O5Q2R3O2RO.17OQR3IPQ2R2QR3O.16OPQR2YP2Q2RPQR2O.17OQPQ3OP2QRPQ2O.18OQP4O2PQPD2B.19OQC3D8B.18BDCD10CB.16BEC3DC2D5CBCB.13B3DC7D5B2I.5I.5B2CEDC3Io2CBCD4CIYB.4Y.4BE3DC4onAB3D4CnAB.8BD4C5o3C3D4Co2B.7BED4C5DC7JH4B.7BD5C6DC2DC2J5B.7BECD4C10JHJ4B.8BDC2D2C2D3C2DC2J6B.9BDC6D4C3JH2J4B.9BDC7D4CJ2HJ5B.9BD3C5D4CJ8B.8BD4CDC3D4CJ8CI.7BICD2C3DC2D3CJ8CY.7BYC4DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BH3B.2BH3BH3B.2BH3CB.8B5.2B9.2B6.4',
-    eat0: '.144O3.28OR3O.23O.3OQR3O.2O.18OQO4Q2R3O2RO.17OPR3OPQ2R2QR3O.16OQ2R2P3Q2RPQR2O.17OPQ3OP2QRPQ2O.19QP4O2PQPD2B.19OQC3D8B.17B2DCD10CB.12B5EC3DC2D5CBCB.10BE2CED2C7D5B3.9BD3EDC4Io2CBCD4CIoB.7BED4C5onAB3D4CnAB.7BD5C5o3C3D4Co2B.6BECD4C5DC7JH4B.6BDC2D3C6DC2DC2J5B.7BDC6DC8JHJ4B.2d2.4BDC6D3C2DC2J4C3.3d2.4BD3C5D3C3JH2J4B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7BC5DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BH3B.2BH3BH3B.2BH3CB.8B5.2B9.2B6.5',
-    eat1: '.144O3.28OR3O.23O.3OQR3O.2O.18OQO4Q2R3O2RO.17OPR3OPQ2R2QR3O.16OQ2R2P3Q2RPQR2O.17OPQ3OP2QRPQ2O.19QP4O2PQPD2B.19OQC3D8B.17B2DCD10CB.12B5EC3DC2D5CBCB.10BE2CED2C7D5B3.9BD3EDC4Io2CBCD4CIoB.7BED4C5onAB3D4CnAB.7BD5C5o3C3D4Co2B.6BECD4C5DC7JH4B.6BDC2D3C6DC2DC2J5B.7BDC6DC8JHJ4B.8BDC6D3C2DC2J6B.3d2.4BD3C5D3C3JH2J4B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7BC5DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BH3B.2BH3BH3B.2BH3CB.8B5.2B9.2B6.5',
-    mini: '.18O.9O2RO2.6OQ4RO.5OROD2CB.4B2D4H2B.2BD2CDnAJ2B.2BD2CD2CJ2B.BDC2D2C2JB.2BD5C2DB.2BCD2CDCD2B.3B3DCB4.2',
+    idle: '.49A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3D2C3LD4C3KA2LA.9A2D4C4L2IAD2C2DK2L2A.7AD2C3DC4L2A2D2CD3L3A.6AD2C9L5DC3DK3A.6ADC10L4D2L3K4A.5AC16L5K3A.6AC15L8A.7AC13P2L7A.8AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14',
+    mini: '.18A.10ALA2.7AP2L2A.6APDP2A.5A2DPD2LA.3ADC2ALALA.2AC4DL2A.3AC4L3A.3AC4PLCA.3ADACDPADA.4A.A3.A.3',
   },
   { // S03 Tuikis
-    idle: '.83B.30BcB.30a.4B2.19B4.3a.2Bc2B.17Bc4B3cB2c2acB.16Bc3bc9ZB.15Bc4b6a2c2ZB.6B5.5Bca2b6a2Z2B.7Brq2B.6Bcab2IBb2IBZB.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8Bcb2a5cB.8B2pB2.8Bcba5ZcB.9BpB9.Bcba3Z3B.12Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.15Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB3aZBbaB2.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.12',
-    alert: '.51B.30BcB.30a.4B2.19B4.3a.2Bc2B.17Bc4B3cB2c2acB.16Bc3bc9ZB.15Bc4b6a2c2ZB.6B5.5Bca2b6a2Z2B.7Brq2B.6Bcab2IBb2IBZB.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8BcbB2a2B2cB.8B2pB2.8Bcba5ZcB.9BpB9.Bcba3Z3B.12Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.15Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.12',
-    flee: '.117B.30BcB.30a.4B2.19B4.3a.2Bc2B.15B3c4B3cB2c2acB.14B3c3bc9ZB.13Bc6b6a2c2ZB.4B5.5B3ca2b6a2Z2B.5Brq2B.8Bcab2IBb2IBZB.6Bq2pB.9Bcb2B2baB2ZB.6Bqp2B.10Bcb2a5cB.6B2pB2.10Bcba5ZcB.7BpB11.Bcba3Z3B.10Bc10Bc2ba2Z2B2.12Bcb8c2b2a2ZB.13Bc2b12a2ZB.13Bcb12a3ZB.13Bcb3ab4ab3a3ZB.13Bcb2a8b2a2Z2B.13Bca5Z4a5ZB.14BcaZ2aZ4Ba2Z2aZB.14BbaBaZB5aZBbaB2.14BbaBaZB.3BaZBbaB.14BbaBaZB.5BaZBbaB.12BbaBaZB.7BaZBbaB.11BbaBaZB.7BaZBbaB.11BbaBaZB.7BaZBbaB.10BbaBaZB.9BaZBbaB.9B7.9B7.7',
-    huddle: '.373B.30BcB.30B.4B2.19B4.3B.2Bc2B.15B3c4B3cB2c2acB.14B3c3bc9ZB.13Bc6b6a2c2ZB.4B5.5B3ca2b6a2Z2B.5Brq2B.8Bcab2Z2b2Z3B.6Bq2pB.9Bcb2B2baB2ZB.6Bqp2B.10Bcb2a5cB.6B2pB2.10Bcba5ZcB.7BpB11.Bcba3Z3B.10Bc10Bc2ba2Z2B2.12Bcb8c2b2a2ZB.13Bc2b12a2ZB.13Bcb12a3ZB.13Bcb3ab4ab3a3ZB.13Bcb2a8b2a2Z2B.13Bca5Z4a5ZB.14BcaZ2aZ4Ba2Z2aZB.9',
-    shake0: '.84B.30BcB.30a.4B2.19B4.3a.2Bc2B.17Bc4B3cB2c2acB.16Bc3bc9ZB.15Bc4b6a2c2ZB.4B5.I.3Bca2b6a2ZIB.7Brq2B.Y.4Bcab2IBb2IBZY.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8Bcb2a5cB.8B2pB2.8Bcba5ZcB.9BpB9.Bcba3Z3B.12Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.14IBcb10a3ZB.8I.5YBcb3ab2ab3a3ZB.8Y.6Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB3aZBbaB2.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.14I.2BbaBaZB.BaZBbaB.14Y.2BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.13',
-    shake1: '.82B.30BcB.30a.4B2.19B4.3a.2Bc2B.17Bc3IB3cB2c2acB.16Bc3Yc9ZB.15Bc4b6a2c2ZB.8B5.5Bca2b6a2Z2B.7Brq2B.6Bcab2IBb2IBZB.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8Bcb2a5cB.8B2pB2.8Bcba5ZcB.I.5I.BpB9.Bcba3Z3B.2Y.5Y.3Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.15Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB3aZBbaB2.16BbaBaZB.BaZBbaB.6I.8I.BbaBaZB.BaZBbaB.6Y.8Y.BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.11',
-    eat0: '.147B.30BcB.30a.4B2.19B4.3a.2Bc2B.17Bc4B3cB2c2acB.6B5.5Bc3bc9ZB.6Brq2B.4Bc4b6a2c2ZB.6Bq2pB.5Bca2b6a2Z2B.7Bqp2B.6Bcab2IBb2IBZB.8B2pB2.7Bcb2B2baB2ZB.9BpB9.Bcb2a5cB.11Bc8B2cba5ZB2.12Bcb6c2b2a2ZB.5d2.8Bc2b10a2ZB.5d2.8Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.12',
-    eat1: '.147B.30BcB.30a.4B2.19B4.3a.2Bc2B.17Bc4B3cB2c2acB.6B5.5Bc3bc9ZB.6Brq2B.4Bc4b6a2c2ZB.6Bq2pB.5Bca2b6a2Z2B.7Bqp2B.6Bcab2IBb2IBZB.8B2pB2.7Bcb2B2baB2ZB.9BpB9.Bcb2a5cB.11Bc8B2cba5ZcB.12Bcb6c2b2a2ZB.15Bc2b10a2ZB.5d2.8Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.12',
-    curl: '.401B4.28Bc2B.19B10c2B.17B3c7B5.16B2c3b5ac2B2.16B2c2b8a2cB2.14B2c2b10IBcB2.13Bb13B2aZB.13Bb14a2ZB.13Bb14a2ZB.13Bb14a2ZB.13Bab12a3ZB.13Ba2b10a4ZB.13BZa2b8a4Z2B.13B2Za3b4a5Z2B2.14B2Za10Z2B7.11B2Z2a6Z2a5rq2B.11Ba16q2pB.11B3Z14qp2B.11B21.6',
-    settle: '.339B.30BcB.30a.4B2.19B4.3a.2Bc2B.17Bc4B3cB2c2acB.16Bc3bc9ZB.15Bc4b6a2c2ZB.6B5.5Bca2b6a2Z2B.7Brq2B.6Bcab2IBb2IBZB.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8Bcb2a5cB.8B2pB2.8Bcba5ZcB.9BpB9.Bcba3Z3B.12Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.15Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZBb2.14B16.11',
-    mini: '.5rq.10qp.5B4.2p.B5c2B.2p.Bc2B2cZB3pB2cZB4c6B3.2Bcb3aZB.4Bb2IbaZB.4BabBacZB.4BZa3c2B.4B2Z4B2.5B6.3',
+    idle: '.50N9.22NJ3mJ5N.20NJmK6mKJN.18NJK4mK6JN.16NJKmK9mKN.15NJK14JN.14NK8INKINK3N.14NK8N2KN2K3N.14NLKmK12LN.14NLK9L2K3LN.4N2.8NLK13L2N.3Nq2N.6N3K12L2N.3Nq4N.3N2J3K12L2N.3Nq3pN.2NJ2K2mK12LN.4Nq2p2N.NJK8mK8N.5Np2KN.NJKmK16N.6NL2N.NK7mK11N.7NLJN2K4mK14N.7NL2N2K11mK7N.8NLJNK2mK16N.9NLJLK8mK8LN.10N2L2K3mK10L3N.11NL19N.12NL7mL9N.14NL14N2.15NK3LN2L2N2K3LN.16NK3LN2L2N2K3LN.16NK3LN2L2N2K3LN.16NK3LN.N2.NK3LN.16NK2L2N.4NK2L2N.17N4.6N4.8',
+    mini: '.18N3.8NJ3N.4N.NJK3JN.2NqN2KNKNLN.2NqJNK4LN.3NLNK4N.4NLJL4N.5NL5N.5NL5N.5NKN2KN.7N.2N.4',
   },
   { // S02 Untuva
-    idle: '.178B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.15BJ4K9J2B.15BJ3L12B.14B2N15B.10B4L10IBL3IB2.9BL10M4B2M2NB3.8BL10M10N2LB.6BL9M10N4LB.5BL6M16N2LB.5BL5M17N3B.5BL4M18N3B.4BL4M18N4B.4BL4M18N4B.4BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5BL3N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.5',
-    alert: '.146B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.15BJ4K9J2B.15BJ3L12B.14B2N15B.10B4L10IBL3IB2.9BL10M4B2M2NB3.8BL10M5B2M3B2LB.6BL9M10N4LB.5BL6M16N2LB.5BL5M17N3B.5BL4M18N3B.4BL4M18N4B.4BL4M18N4B.4BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5BL3N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.5',
-    flee: '.210B7.23B2J7B2.20BJ11B2.18J5K5J4B.16BJ3K9J2B.15B2J2L12B2.13B2MN14MB.9B4L11IBL3IB2.8BL11M4B2M2NB3.7BL11M10N2LB.5BL9M11N4LB.4BL6M17N2LB.4BL5M18N3B.4BL4M19N3B.3BL4M19N4B.3BL4M19N4B.3BL4M18N5B.2BL4M19N4B.2BL5M18N5B.2BL5M17N5B.3BL4N2M15N6B.4BL3N2M14N6B.6B4L3N10M2N5B.7B4MN2BMN3B6MN2BMN3B.6BMN2BMN3B.8BMN2BMN3B.4B11.5B11.',
-    huddle: '.338B7.23B2J7B2.20BJ11B2.16BMJ5K5J4B2.13B3J3K9J2B2.9B4L2BJ2L12B2.8BL7N8B2N3B3.7BL11M10N2LB.5BL9M11N4LB.4BL6M17N2LB.4BL5M18N3B.4BL4M19N3B.3BL4M19N4B.3BL4M19N4B.3BL4M18N5B.2BL4M19N4B.2BL5M18N5B.2BL5M17N5B.3BL4N2M15N6B.4BL3N2M14N6B.6B4L3N10M2N5B.7B25.4',
-    shake0: '.179B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.8I.6BJ4K5IK3J2B.8Y.4BMBJ3L6YL5B.12B2M2N13B.10B4L10IBL3IB2.9BL10M4B2M2NB3.8BL10M10N2LB.6BL9M10N4LB.5BL6M16N2LB.5BL5M17N3B.5IL4M18N3I.4BYL3M18N4Y.4BL4M18N4B.4BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5IL3N2M13N6B.6YB4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.6',
-    shake1: '.177B7.23IBJ7B2.20BYJ10B2.17BJ5K5J4B.15BJ4K9J2B.15BJ3L12BMB.14B2N13M2B.10B4L10IBL3IB2.9BL10M4B2M2NIB2.3I.4BL10M10YNLB.2Y.3BL9M10N4LB.5BL6M16N2LB.5BL5M17N3B.5BL4M18N3B.4BL4M18N4B.4BL4M18N4B.4BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N3INB.4BLIL2N2M14N4YNB.5BYL2N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.4',
-    eat0: '.241B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.15BJ4K9J2B.10B.4BJ3L12B.9BLB5N15B.8BL15IBL3IB2.7BL12M4B2M2NB3.6BL12M10N2LB.5BL6ML3M10N4LB.5BL5M17N2LB.4BL4M19N3Bd2.2BL4M19N3Bd2.2BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5BL3N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.6',
-    eat1: '.241B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.15BJ4K9J2B.10B.4BJ3L12B.9BLB5N15B.8BL15IBL3IB2.7BL12M4B2M2NB3.6BL12M10N2LB.5BL6ML3M10N4LB.5BL5M17N2LB.4BL4M19N3B.4BL4M19N3Bd2.2BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5BL3N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.6',
-    mini: '.30B4.7BJ4B.5BJ2K2LJB.B4L5B3L4N5LB2L3M2IMNBNB2L2M3BMNBNBL3M4N3B.B2L2N6B.2BL2N5B.2',
+    idle: '.84C4.27Ct4C3.21C4u3tCt2C.19Ct3Csu2t4C.15C5u2t2u3tst3C.11C3E5u3tu3ts2t2C.9C2E9u3tu2tsut3C.7CE7ut3u2stsus2tst2C.6CvE7u3t2s2uv5st2C.5Cv2E8u3su3v6tC.5Cv2uE3DED2E3u5v7C.5Cu3ED5u2E2u6v7C.3Cu4D6u12v5C.3Cu4D5u14v5C.2Cu4D5u15v4C.2Cu4ED2Eu9EICu4vICvC.2Cu4E4uEu8C2Eu3vC2vC.2CuE12u5D2Eu3v4C.2CE14u11v3C.2CE15u11v2C.3CE14u12vC.3CE17uE2u6C.4CE21u5C.5CE22u2C.6CE2D5E15uC.8CED3CD2E3D2E8C2.10CD2C.C2E4D4CD2E2C.12C2.4CE3DC3.CDEC.20CD3C.4C2.22C3.15',
+    mini: '.31C2.7C3t2C.4C2Eu5C.2CvE3u2v2C.2CuDEu3v2C.2CuE2CuCuC2.2CE4u4C.2CE7C.4C3EDC2.8C2.5',
+  },
+  { // S04 Hiljan
+    idle: '.48Z2.6Z2.21Zq2Z6q2Z.20Zp2H6p2Z.19ZHG10HZ.17ZHG12HZ.16ZG14HZ.15ZG8IZGIZG2Z.15ZG8Z2GZ2G2Z.15ZG14FZ.7Z4.4ZG10E2G2FZ.5Z2H4Z2.2ZG14FZ.4ZH2F4H2Z.ZG14Z.4ZHGFG4FGHZHG14Z.4ZGFG2F2G2F2ZG15Z.4ZF2GFG2FGF2ZG9FG5Z.4ZF2G2FG2FGFZG9FG5Z.4ZF5GFG2Z2G10FG4Z.5ZF6G2Z2G11F3GZ.6ZF7H2G15Z.7Z3F4G17Z.10Z2F2G17Z.12Z2FG15FZ.13ZF2G13F2Z.13ZF17Z.14ZF15Z.16ZF13Z.18ZF4Z2G4FZ.19ZF4Z2G4FZ.19ZF4Z2G4FZ.20Z4.ZG3F2Z.26Z5.7',
+    mini: '.17Z.2Z.7ZqZ2qZ.6ZGH2GZ.5ZHG4HZ.3Z2FZGZGFZ.2ZH2ZG4FZ.2ZF2ZF4Z.3ZF2HF4Z.4Z3F4Z.6ZFZG2Z.7Z.Z2.3',
+  },
+  { // S05 Tepor
+    idle: '.38N.N2.N2.6N3.15NJNLJNLJN6J3N2.12NJLJKLJKLJ3L3m3L2N2.10NLKLK2LK2LKm9L2N.10NLKLK2LK2m12LN.10NL3K2Lm14LN.10N2L3m16LN.11N3m17LN.12Nm9KINmINm2MN.12Nm9KN2mN2mM2N.12Nm10K2mK2M3N.10N3m12M2mM2N.10NL3m15MN.10NLmM4m13N.10NLmM6m7L3m2N.9NLmM7m12N.9Nm2M6m13N.7N2Lm3M4m13MN.6NL2m18M2mMN.5NLM4m18M2N.5NM5m18MN.7N3M3m16M2N.10N2M18N.12NM18N.13NM16N.15N3m5MNM5N.18Nm5MNM5N.18Nm5MNM5N.18Nm4M2NM6N.17Nm4M3N6.19N7.14',
+    mini: '.15N2.2N.6NK2N2KN.4NK2LKLmLN.3NKLKm4LN.3NKmNmNm2N.3N2m5MN.2NL2M6N.3NM7N.4NM5N.5Nm2NM2N.6N2.N2.3',
+  },
+  { // S06 Pesko
+    idle: '.237d.2d.27dKd2Kd.d.22d.dKd2Kd2Kd.d.16d.dKd2KLdKLdKLdKd.14dKd2KLts2ts2ts2tKLd.13dKLts5h5s4td2.11ds2h5sh4s6t2d.9dts2h5s13td.7dts4h3s10lIdsId2.5dts18ld2sd3.5ds20l2sl2td.3dtsh3s17h2sd2.3dts2h3s20t2d.2dh2s26d.2dh3s24hd.2dh4s22h2d.3d2h3s20h3d.5dh2s20h2d.7dh22d.9dh20d.10dh20d.10ds3hdh3d4h3ds3hd.10ds3hdh3d.2dh3ds3hd.10ds2h2d4.4d4s2h2d.11d4.12d4.5',
+    mini: '.40d.d.d.6dKdKdKd.4dtstststd.2dth3dhdhd.2dh8d.3dh7d.3ds2d2s2d.4ds2d2s2d.5d2.2d2.3',
+  },
+  { // S07 Azkon
+    idle: '.99C3.28CGp2C.26CGFCp2C.10C7.8CF2C2mC.7C3G7C2.6CF2C.C.6C2G3F7G2C.5CF2C.6C2G2F12GC.4CF2C.4C2G2F12ICFGC.3CEFC.2C2G2Fm3F5ICF3C2F2C.3CE2C.CG2F2m5F4C2F7C.3CE2C2GF4m5F13C.4CEG2Fm3F2m3F8C2F4C.5CF2m5F18C.5CF2m5F10G7FC.5CF2m5F9G8FC.5CF3m3Fm3F6G8FC.5CF6m5F5G8FC.5CF6m5F5G8EC.5CEF6m3F7G7EC.5CEF17G6EC.5CE2F18G2E2C.7CE23C.7CE22C.9CE20C.10CF3ECE2C4E2C2F3EC.11CF3ECE2C.2CE2C2F3EC.11CF3ECE2C.2CE2C2F3EC.11CF3EC3.4C2.CF3EC.11CF2E2C.9CF2E2C.12C4.11C4.7',
+    mini: '.14C2.9Cp2C.C3.4CFCmCG3C.3CFC2GF3GC.2CEG2FCFCEC.2CEm2E5C.2CEm2E2G2EC.3CE6C.4CF2C2F2C.4CF2C2F2C.5C2.2C2.3',
+  },
+  { // S08 Rupar
+    idle: '.140N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N2.16N.Nm2Nm2Nm2Nm2NmN.14NmN2m2Nm2Nm2Nm2Nm2N.13Nm2Nm2Nm2Nm2Nm2Nm2N.13Nm2NmKJK2JK2JK2Jm2N2.12Nm2JK14J2N2.9NJK5LK5LK7J2N.7NJK9LK5LK6JN.5NJK4LK18IN2.3NJK11LK8INK2N2JN.2NK21N2K5N.2NK28N.2NLK22M2K3N.2NL2K25LN.2NL3K23L2N.3NL3K21L3N.4NL25N.6NL23N.8NL21N.8NK3LNL2N4L2N2K3LN3.9NK3LNL2N.2NL2N2K3LN.11NK3LN3.4N2.NK3LN.11NK3LN.9NK3LN.10NL4N.10NL5N.10N4.12N5.7',
+    mini: '.28N.N.8NmNmN.6NmNmNmN.5NKJKJKJN.3NJL6JN.2NL4NLNLN.2NL8N.3NK2N2K2N.3NL2N2L3N.4N2.2N3.3',
+  },
+  { // S09 Belatz
+    idle: '.82C.28C.CJC.24C.CJC2KC.2C.20CJC2KC2KC.CJC.20CKC2KCKC2KC.22CKHcHcHKC.22CHc7HC.20CHc9HC.18CHc6IC2cIC2.16CHc7C3cC2HC.15Cc8C3c4C.15Cc11Pc3C.15Cc14PC.14C2c14PC.13CH2c14C.13CHc16HC.11CHc18HC.9CHc20HC.8Cc4Q6c12C.8Cc2Q10c10C.7CHcQP10Qc9HC.5CHPc2Q10c10C.6CP3c3Q6c11PC.7C2P2c18P2C.9CP2c16P2C.11CP3c12P3C.13CP16C.15C2P12C2.18Cc2PC4c2PC.21C3.4C3.11',
+    mini: '.16C.C.8CJCJC2.7CHcH2C.5CHc4HC.4CcCcCc2C.3CHc6C.2CHQP2Qc2PC.2CP8C.3CP6C.5CcC2cC.7C.2C.4',
+  },
+  { // S10 Igara
+    idle: '.202B3.28BZ3B.26Bm3Z2B.24Bm2Z4B.24BmZ3B12.15BmZ4a2Z4a5B2.13BZmZ2a2Z3a9B.7B3.3Ba4Z3a11B.5BZ3B.2Ba3Z5a11B.4BZ4B2a2Z4UZ8a6B.3BZ5a2Z3U3Z9a5B.3BZ4a2Z2U4Z11a3Z2B.3BZ3a2Z2U4Z11a3Z2B.3BZ8UZ7bIBZIBZaZ3B.2BZ17bB2ZB2Z5B.2BZ2U2Z14b2Zb2Z5B.3BZUB2Z23B.4B2.B2Z21B.7BZ23B.6BZ4U3Z16B.8BZ3B2Z6U4Z6B.10B3.BZ6U6ZB3.14BZ6B8.17BZ6B.24BZ5B.26B5.17',
+    mini: '.40B.10BZB4.5B2Z2a3B.3BZa3BaBaB.2BZ7aB.2BZ8B.3BZ6B.5BZ2B3.7B2.6',
+  },
+  { // S11 Kilpo
+    idle: '.83d2.7d2.20dp2d.5dp2d.19dpLd.5dpLd.20dsd.4dsd2.21dsd.4dsd.23dsd.2dsd.24dsd.2dsd.17d6.2dsd2sd.10d5.2dt6d.dsd2sd.8d2t5d2ts6tdtst2std2.5dt2s5tds2hs2hs2ds6t2d.3dts8hs2hs2hs2hs8td.2ds9hs3hs2hshs9d.2ds9hs3hs2hshs2lIdsIdsd.2ds9hs4hs2h2s2ld2sd2sd.2ds9hs4hs2h2s3l2sl2sd.2ds9hs8hs5h2s2d.2ds9hs8hs9d.2ds9hs8hs8hd.2dhs8hs8hs7h2d.2dh2s7hs8h9d.4dh8dh8dh7d.6dh7dh8d2s3dh2d.7ds2hdh2d2s2hdh2d.ds2hdh2d.7ds2hdh2d2s2hdh2d.ds2hdh2d.7ds2hdh2d2s2hdh2d.ds2hdh2d.7ds2hd3.ds2hd3.2ds2hd3.8ds2hd.3ds2hd.4ds2hd.10dsh2d.3dsh2d.4dsh2d.11d3.5d3.6d3.7',
+    mini: '.19d.d.8dpdpd.3d2.d2sdsd.2dt2dt2stsd.2ds2hsdsdsd.2dhshs4hd.2dh8d.3dh6d.3dsdsdsdsd.3dsdsdsdsd.4d.d.d.d.3',
+  },
+  { // S12 Peplos
+    idle: '.85M2.11M3.15Mp2M.4M2.3Mp3M2.12Mp3M.3Mp2M.2Mp5M2.2M2.5Mp4M.2Mp3M.2Mp6LM2poM.4Mp4M.MK2p2M.3Mp7Kp3M.2Mp5M2K3p2M.3Mp6LpKp3M2p6oK4pM.4Mp4L2p3Kp2M2p9Kp2M.4Mp13Mp12M.5Mp13Mp8KM2.7Mp4Lp7Kp9M.8Mp10K3p7KpM.9Mp7LpK4p6M2.11Mp6LpK6p3K2M.11Mp8K12M.11ML6K6L2K5M.12ML7K4L2K4LM.12ML9KLINK4INM.11ML11N2K4N2M.11ML13K6M.11ML17K2M.11ML18KM.12ML18M.12ML17M.14ML15M.15ML14M.17ML2ML10M.18M2.ML3M3L2M.22ML3M.2M2.24M3.13',
+    mini: '.26M.4M.M.3MLM4LMpM.2ML3pL2K2M.3ML6M.4ML3KL2M.5ML2KLKM.5MLNLNLM.5ML5M.6M2L2M.9M2.4',
+  },
+  { // S13 Oskol
+    idle: '.50A.30AYA.28AYbA.28AYbaA.26AYb2aA.26AYb2a2A.24AYb3a2A.20A5Yb4a2A.17A2u5V7uA2.13A2u2V13u2A.11Au2VU4V12uA.9AuVU6V7U3V3uA.7AuV3U4V15uA.5AuV11YIA2V2YIA2V3uA.4AV12YA3V2YA3V4A.4AV12YA3V2YA3V4A.4AV13Y3V3Y3V4A.4AV17U2V7A.4AU5V20UA.4AU5V19U2A.4AU3V20U3A.5AU3V18U3A.7AU22A.9AU20A.10A2U18A.10AV5UAU3AU3AV5UA.9AV5UAU3AU3AV5UA.9AV5UA4.A4V5UA.9AV5UA.7AV5UA.9AV4U2A.7AV4U2A.10A6.9A6.6',
+    mini: '.18A.10AYA.8AYbaA.6AuV3uA.4AuV5uA.2AuU3AUAUA.2AU8A.2AU8A.2AV3A2V3A.2AV2UA2V2UA.3A3.2A3.2',
+  },
+  { // S14 Usvel
+    idle: '.83N3.27N2o3N.25Np6N.23Np8N.22Np2M2p5N.21NpM4p4N.20Np2Mp2Mp5N.19Np5Mp5N.19Np10N.20Np6M2p2N.21NpKpM5N.22NpK8N.21NK10N.19NK12N.14N4K14N.10N3L5K4L4K6N.8NL8K2L8K4N.7NL21K3N.5NL16INLINLK3N.4NL4N2L11N2LN2L2K2N.4NL5NL19KN.3NL26KN.3NL27N.3NL26N.3NL2M6L3M12L4N.4N2M3N3L3N3M3N5L4N.6NM3N.NL4N2M3N.3NL4N.7N3.2NL4N.N3.4NL4N.12NL3N.9NL3N.14N3.11N3.5',
+    mini: '.30N2.9NK2N.8NL2KN.7NKLN.6N3K3N.4NL6KN.2NL4NLNLN.2NLNL6N.3N2LN5.6N.7',
+  },
+  { // S15 Lehten
+    idle: '.43d3.24d3.dji2d.d3.18dji2d2i2d3ji2d.17di2d8i2d2.17d4f2e3f2d4.16dfe13fd2.13dfe15f2d.11dfe18d5.6dfe18dv5d.5de18dv7d.4de17dv6Idvd.3de16dv3Idv2d2v2d.2de15dv4d2v6d.2de14dv13d.2de13dv9d2v3d.2de12dv14ud.2de10d2v15ud.2de8d2v17ud.2d9v18ud.3duv25ud.3du2v23u2d.4duv23ud.5du2v21u2d.6du23d.7du23d.8du21d.9dv3udu3d3u3dv3ud2.10dv3udu3d.du3dv3ud.11dv3ud4.3d4v3ud.11dv2u2d.9dv2u2d.12d4.11d4.8',
+    mini: '.15d.d.d.6dididid.5defefed.4dfe5vd.3de5v3d.2de4dudud.2d5u4d.2du8d.3dv2d2v2d.4dv2d2v2d.5d2.2d2.3',
+  },
+  { // S16 Blikur
+    idle: '.104B.5B2.B2.4B2.14BbB.3Bb2Bb2B.2Bb2B.13Bb2B.2Bb2Bb2B.Bb3B.13Bb3B2Fb3F3Bb4B.13Bb4D2b3E3F2b2B.15BbD4b3E2F5B.14BD8uF8B.12BD3U2D4uF9B.10BD2U3D4EuF10B.9BDU5D3Eu2F9B.8BEDU6DE3u2F9B.7BEDU6DE3u2F9B.7BEDU4D2E4u2IBu2F3IB2.7BE2D6E4u2B2u2F3B3.6BE4D5E8uF6B.6BE4D6E7uF6B.6BE5DE2D2E6u2F7B.4BE17u2F7B.4BE16u3F7B.3BE5DE2F2E6u3F9B.2BE4D2E2F2DE4u2F11B.2BE3D3E3D2E3u2F3u2F7B.2BE3D8E3uF3u2EF7B.3BED9E4F3uE3F6B.4BD11E10F4B.6BD11E5D3E3B2.8BD12E2D5EB.11B7D5B8.19B5.14',
+    mini: '.30B.B.7B2bBbB.5BE2uFB.5BD3uF2B.4BD2E3F2B.2BE3BEBFB2.2BE2uE2F3B.2BED2EuEF2B.3BD3EDEB.5B6.3',
+  },
+  { // S17 Wickle
+    idle: '.48m4.27mK4m2.24mK6nm.22mK3o2K2n2m.21mK2o2n2on2m.20mK3o2mn4m.20mK4m2n3m.20mK6m4.21mKoK4m.24mKo2K4m.22mKo2K6m.21mKo2K7m.20mKoK3J2K2Jm.19mo3K2J7m.18mo3K3INJ2INm.17mo4K3N2J2N2Jm.16mo4K5J3K2m.16mo3K4JmJ2mJKm.16mo3K6m2K3m.15m2o4K11m.14m4oK12m.14m4oK2oK9m.14m4oK2oK9m.14m4oKo2K9m.14m7o2K6o2m.15m7o3Ko4m.17m6o7m.18m12om.19m12.22m9.24m3.2m2.12',
+    mini: '.18m2.9mKom.7mKo2m.7mK2m.7mK2J2m.6mNKNKm.6moK3m.5m2oK3m.6m2no2m.7m4.9m2.5',
+  },
+  { // S18 Drapet
+    idle: '.237C6.23C3vuvu3C3.19Cvu5vu5C.17Cv2uv3u4Eu3C.15Cvuvfuv2Eu2Eu2Eu2C.13Cvuvuv2u2Efu3Efu3C.11Cv4fuvEuEfu4fEuEuC.10Cvuvufu2EuEfEu8C.9Cv2uvufEuEuEfEuEuEfEuEuC.8Cv4EfEuEuEfED3EfEuEuC.8Cv3u5EuEfv5fEuEuC.8Cv2u6EuEvICvICvEuEuC.7Cv2u7EuEvC2vC2vEuEu2C.6Cu2EuEfu5Ev3uv3u5C.6Cu2EuEfEu4Efv5fu3EuC.6Cu2EuEfEu4EfEuEu4EuEuC.5Cu5EfEu4EfEuEu3fEuEuEC.4Cu2Eu3fEuEu2EfEu4EfEu2E2C.4Cu2Eu4EuEu2EfEu4EfE5C.3Cu3EuEfuEuEu2EfEu4EfE6C.2Cu5Efu3Eu2EfEu2EuEfE3CEC.3Cu2Eu2EfuC2Eu2EfEu2EuCECE3C.5C2Eu2EfC.CEu2C3uCE3C2E3C.6CEuC3.3CuC.3C.CEC.2CE2C.7C2.7C.7C.4C2.4',
+    mini: '.17C3.7C2v3C.5Cv3u3C.3Cv2uvu2EuC.2Cvu2D3uEC.2Cu3v3uEC.2CuEuCvCuEC.2Cu2EuvuE2C.2CuEu2EuE2C.2CECuCECEC.4C.C.C.C.3',
+  },
+  { // S19 Curlop
+    idle: '.50Z5.24Z3b5Z3.20Zb8c3Z.17Z2a3b5c5Z.15Za4b5c7Z.14Za4b7c6Z.12Za4b9c5Z.12Za4b6IZ2c3IZ2.11Za5b6Z3cJ2Z3.11Za5b6a3J5Z.11Za7b2c4J6Z.10Za9bJ10Z.10Za10J9Z.11Za10b7Z2.13Za7b4Jb3J2Z.13Za7b4J6bZ.12Za7b5J4b3Z.11Za8b6J2b2aZ.7Z4.Za9b4J2a3Z.6Zb4Z2a13J2a2Z.6Zb3a3Za12J5Z.5Zab2a4Za10J7Z.5Za2ba2Z3a10J6Z.6Za3ba14J6Z.6Za3b4a11J5Z.7Za4b3a8b2aJ5Z.8Za11Za2b3a4Z.9Za10Z2a9Z.10Za8Z2a10Z.11Z5aZ6aJ3Z4.17Z.6Z4.11',
+    mini: '.18Z3.8Zb2cZ.6Zab2c2Z.4Za2ZaZbZ.4Za3J3Z.4Za2b2JbZ.3Z2a3b2aZ.2Za5bJ2Z.2Zaba3bJZ.4Za6Z.5Z6.3',
+  },
+  { // S20 Tuliko
+    idle: '.203C2.2C2.2C2.2C2.17CJ2C2J2C2J2C2J2C.15CJ3KJ3KJ3KJ3KC.14CJ3KJ3KJ3KJ3KC.13CK18C.11CQ2PQ2PQ2PQ2Pc7HC.9CQ2PQ2PQ2PQ2PQc8HC.7CPQ2PQ2PQ2PQ2Pc10HC.6CQ2PQ2PQ2PQ2Pc12C.6CPQ2PQ2PQ2Pc14C.6CQ2PQ2PQ2c9ICcICc2C.6CPQ2PQ2c11C2cC2c2C.5CHc24C.3C3c20P2c3C.2CH3c24PC.2CP2c12H11cP2C.2CP4c8H13P2C.4C2P3c6H13P2C.7C2P2c4H13P2C.10CP5H12P2C.12CP17C.13Cc2PCP2C3P2Cc2PC2.14Cc2PC3.3C3c2PC.15Cc2PC.7Cc2PC.16CPC.9CPC.18C.11C.10',
+    mini: '.16C.C.8CJCJC.6CJKJKJC.4CQPQc3HC.3CPQcCcCcHC.2CPc6PC.2CP3H3PC.4CP6C.4Cc2C2c2C.4CcPC2cPC.5C2.2C2.3',
   },
 ];
-// The juvenile pictures (all three species signed), same species order and same format as above: per species idle, alert, huddle, eat0, eat1 (32 px) and mini
+// The juvenile pictures (all twenty kinds signed: idle and mini), same species order and same format as above: per species idle, alert, huddle, eat0, eat1 (32 px) and mini
 // (12 px). A species whose entry is empty has no signed juvenile yet and shows the adult picture (tokenOf, miniArt); when the
 // entry holds a picture, a juvenile never shows the adult's. Poses a juvenile has no picture for (flee, shake, curl, settle)
 // show its own idle; none of them is reachable for a juvenile today.
 const JUVENILE_ART = [
   { // S01 Loika
-    idle: '.270O2.5O2.22OPQO.3OP2O.21O2P2O.OP2O.24OPQOP2O.23B10.20B2ED9B.18BED3IoC3Io2DB.17BD2C2nAC3onACB.16BHJ4o2J3o3CJ2B.14BJ16KB.11B2HJ12C2K2B.10B2EDKJ14KB.10BED3CKJ12KB.10BED2C4J11KB.11BD2C5J12B.10BD8J11KB.10BJ19B.11BJ18KB.11BJ18B.13BJ16KB.13B18.14BHJB2HJB.2BHJB2HJB.14BK2B2K2B.2BK2B2K2B.14B8.2B8.11',
-    alert: '.206O2.5O2.22OP2O.3OQPO.21O2PQO.OQPO.24OP2OQPO.23B10.20B2ED9B.18BED3IoC3Io2DB.17BD2C2nAC3onACB.16BHJ4o2J3o3CJ2B.14BJ16KB.13BJ12C2K2B.14BJ14KB.13B2EKJ12KB.12B2ED3J11KB.12BED3C2J12B.11BED2C4J12B.11BD2C5J12B.10BD8J11KB.10BJ19B.11BJ18KB.11BJ18B.13BJ16KB.13B18.14BHJB2HJB.2BHJB2HJB.14BK2B2K2B.2BK2B2K2B.14B8.2B8.11',
-    huddle: '.366O2.5O2.22OP2O.3OP2O.21O2QPO.OP2O.24OP2OP2O.23B10.20B2ED9B.18BED3IoC3Io2DB.17BD2C2nAC3onACB.16BHJ4o2J3o3CJ2B.14BJ16KB.11B2HJ12C2K2B.10B2EDKJ14KB.10BED3CKJ12KB.10BED2C4J11KB.11BD2C5J12B.10BD8J11KB.10BJ19B.11BJ18KB.11BJ18B.13BJ16KB.13B18.11',
-    eat0: '.335O2.5O2.22OP2O.3OP2O.21O2QPO.OP2O.24OP2OP2O.23B10.20B2ED9B.18BED3IoC3Io2DB.17BD2C2nAC3onACB.13B4HJ4o2J3o3CJ2B.9B2ED2HJ16KB.7BED3CHJ12C5d2.5BED2C3KJ14KB.d2.5BD2C5KJ12KB.8BD8J12B2.9BJ19B.11BJ18KB.11BJ18B.13BJ16KB.13B18.14BHJB2HJB.2BHJB2HJB.14BK2B2K2B.2BK2B2K2B.14B8.2B8.11',
-    eat1: '.335O2.5O2.22OP2O.3OP2O.21O2QPO.OP2O.24OP2OP2O.23B10.20B2ED9B.18BED3IoC3Io2DB.17BD2C2nAC3onACB.13B4HJ4o2J3o3CJ2B.9B2ED2HJ16KB.7BED3CHJ12C2K2B.7BED2C3KJ14KB.d2.5BD2C5KJ12KB.8BD8J12B2.9BJ19B.11BJ18KB.11BJ18B.13BJ16KB.13B18.14BHJB2HJB.2BHJB2HJB.14BK2B2K2B.2BK2B2K2B.14B8.2B8.11',
-    mini: '.41O.O.8OPQPO.6BE2D3B.4BED3nADB.2BED2J6B.BD3J4KB.2BD3J5B.2BKJ4KJKB.3B8.2',
+    idle: '.237A2.28A2L2A2.25AL2QLAQA.24ALQ2PQ2A.23A2P4Q2A.22AD3P6A.20AD9P2A.18AD12A.18AD6L3DCD2A2.15ALD7L3C2D3KIA.12AL2D6L3IAD3KA2.12AL2D2CD2L4A2D2CDK2A.11AL2DC2D2L3C7D3A.10AK2L6D2C8D2A.11AKL6DC10DA.12AL7C11A.13AL7C10A.13ADL6C11A.12ADL6C10A.13ADCL4DC10A.14AC5DC10A.13AC5AD2C4AC4A.13AC4A.AD3CA.AC2A.15A4.2AD3CA.2A2.23A4.12',
+    mini: '.17A.10ALA.8ALPA.7AD4A2.4ALD2PD3A.3ALDPADACA2.3AL2DC4A.3AL3C4A.3AD2PC4A.4ADAPCA2.6A.A2.4',
   },
   { // S03 Tuikis
-    idle: '.245B.12B2.12B2.3a.3B3.5BrqB.10Ba2B3aB3c3B.4BqpB.10Bc2b8c2ZB.4BaB.9Bcab8a2ZB.6B2.9BZab2IBb3IBaZB.6BaB.9BZb2B2b3B2a2ZB.6BaB.9Bb2B2b3B2a2ZB.6BaB2.8Bb9a2ZB.7Ba2B.3B.3Bb8a3ZB.8Bc2B3cB3cb7a2c2ZB.9B2c2b10a6Z2B.10Bb12a5Z2B.11Bb12a2Z4B.11Bcb11a3ZB3.12Baba2b8a3ZB.14Ba14Z2B.13BcaZ3a10ZB.14BZ3B2Z11B.15BbaBaZB3aZB3baB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15B7.B4.B4.8',
-    alert: '.213B.12B2.12B2.3a.3B3.5BrqB.10Ba2B3aB3c3B.4BqpB.10Bc2b8c2ZB.4BaB.9Bcab8a2ZB.6B2.9BZab2IBb3IBaZB.6BaB.9BZb2B2b3B2a2ZB.6BaB.9Bb2B2b3B2a2ZB.6BaB2.8Bb9a2ZB.7Ba2B.3B.3Bb8a3ZB.8Bc2B3cB3cb7a2c2ZB.9B2c2b10a6Z2B.10Bb12a5Z2B.11Bb12a2Z4B.11Bcb11a3ZB3.12Baba2b8a3ZB.14Ba14Z2B.13BcaZ3a10ZB.14BZ3B2Z11B.15BbaBaZB3aZB3baB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15B7.B4.B4.8',
-    huddle: '.407B.10B2.14B2.3a.3B3.3BrqB.12Ba2B3aB3c3B.2BqpB.12Bc2b8c2ZB.2BaB.11Bcab8a2ZB.4B2.11BZab2C2b3C2aZB.4BaB.11BZb2B2b3B2a2ZB.4BaB.11Bb2B2b3B2a2ZB.4BaB2.10Bb9a2ZB.5Ba2B.3B.5Bb8a3ZB.6Bc2B3cB5cb7a2c2ZB.7B2c2b12a6Z2B.8Bb14a5Z2B.9Bb14a2Z4B.9Bcb13a3ZB3.10Baba2b10a3ZB.12Ba16Z2B.11BcaZ3a12ZB.12BZ3B2Z13B.12B20.6',
-    eat0: '.258B2.29BrqB.16B.11BqpB.11B2.3a.3B3.6BaB.10Ba2B3aB3c3B.6B2.10Bc2b8c2ZB.5BaB.8Bcab8a2ZB.7BaB.7BZab2IBb3IBaZB.7BaB2.7BZb2B2b3B2a2ZB.7Ba2B.7Bb2B2b3B2a2ZB.8Bc2B4.3Bb9a2ZB.9B2c2bcB.2Bb8a3ZB.10Bb5B2cb7a2c2ZB.10Bb12a6Z2Bd2.7Bcb12a5Z2B.d2.7Baba2b9a2Z4B.11Ba14Z2B.13BcaZ3a10ZB.14BZ3B2Z11B.15BbaBaZB3aZB3baB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15B7.B4.B4.8',
-    eat1: '.258B2.29BrqB.16B.11BqpB.11B2.3a.3B3.6BaB.10Ba2B3aB3c3B.6B2.10Bc2b8c2ZB.5BaB.8Bcab8a2ZB.7BaB.7BZab2IBb3IBaZB.7BaB2.7BZb2B2b3B2a2ZB.7Ba2B.7Bb2B2b3B2a2ZB.8Bc2B4.3Bb9a2ZB.9B2c2bcB.2Bb8a3ZB.10Bb5B2cb7a2c2ZB.10Bb12a6Z2B.9Bcb12a5Z2B.d2.7Baba2b9a2Z4B.11Ba14Z2B.13BcaZ3a10ZB.14BZ3B2Z11B.15BbaBaZB3aZB3baB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15B7.B4.B4.8',
-    mini: '.19B.8B2.aB2.5Ba2B2a2B.4Bb5aB.4BbIb2BbaB.2Bb2Bb2BbcBp.Bb6c2BaBb6Z2B.2Bb5Z2B.3BbBbBb2ZB.4B8.2',
+    idle: '.243N4.26N2J4N2.23NJ2KmK2J2N.21NJK6mKJN.19NJKmK8JN.18NK6INKINKN.17NJK6N2KN2KJN.6N2.8NK2mK10LN.5Nq2N.7NK9L2KL2N.4Nq3pN.3N4K12L2N.5Np2N.3NJ4K12LN.7NLJN.NJK3mK12N.9NLJN2K9mK7N.10NLJ2K2mK13LN.11N2L2K14L2N.12NL3K3mK8L3N.13NL2K12L2N.15NL14N.17NL12N.18NL12N.18NK2LNL2N2K2LN.19NK2LNL2N2K2LN.19NK2LN3.NK2LN.19NKL2N.3NKL2N.20N3.5N3.10',
+    mini: '.18N3.8NJ3N.6NJK3JN.3N.NKNKNLN.2NqN2K4LN.2NLJNL4N.4NLJL4N.5NL5N.5NKN2KN.6NKN2KN.7N.2N.4',
   },
   { // S02 Untuva
-    idle: '.301B7.22B3JK6B3.17B2JK12B2.14BJK16B.12BJL18B.11BN19B.12BL17B.13BL17B.10B2.BLM7L8NB.9BLMBL2M6L9NB.9BM3L2M6L3IBL2IBNB.9BM3L2M5L4B2L2B2NB.10B3L2M5L4B2L2B2NB.13BLM5L9N2B.13BLM6L5N2LN2B.14BLM5L7N2B.15BLM6L6N2B.16BLM10N2B.17BLM9N3B.18BLN10B.20B11.20BMNBMNB2MNBMNB.18B14.8',
-    alert: '.300B7.22B3JK6B3.17B2JK12B2.14BJK16B.12BJL18B.11B2N18B.13BL17B.13BL17B.10B2.BLM7L8NB.9BLMBL2M6L9NB.9BM3L2M6L3IBL2IBNB.9BM3L2M5L4B2L2B2NB.10B3L2M5L4B2L2B2NB.13BLM5L4B2L2B2NB.13BLM6L8N2B.14BLM5L5N4B.15BLM6L6N2B.16BLM10N2B.17BLM9N3B.18BLN10B.20B11.20BMNBMNB2MNBMNB.18B14.8',
-    huddle: '.551B19.13BL2J4L6J3L2B.10B2.BJ3L12J2B.9BLMBJ2L16B.9BM2J2L18B.8BM2N20B.9B3L2M6L3B2L2B2NB.13BLM6L8N2B.13BLM7L7N2B.14BLM12N2B.15BLM12N2B.16BLM10N2B.17BLM9N3B.18BLN10B.20B11.10',
-    eat0: '.302B7.22B3JK6B3.17B2JK12B2.14BJK16B.12BJL18B.11BN19B.12BL17B.13BL17B.9B2.2BLM6L9NB.8BLMB.BLM5L10NB.8BM2B.BLM5L4IBL2IBNB.8BM2B.BLM4L5B2L2B2NB.9B2.BL2M4L5B2L2B2NB.13BLM4L10N2B.13BLM5L6N2LN2Bd2.12BLM4L6N4B.d2.12BLM5L7N2B.16BLM10N2B.17BLM9N3B.18BLN10B.20B11.19BMNBMNB2MNBMNB.18B14.8',
-    eat1: '.302B7.22B3JK6B3.17B2JK12B2.14BJK16B.12BJL18B.11BN19B.12BL17B.13BL17B.9B2.2BLM6L9NB.8BLMB.BLM5L10NB.8BM2B.BLM5L4IBL2IBNB.8BM2B.BLM4L5B2L2B2NB.9B2.BL2M4L5B2L2B2NB.13BLM4L10N2B.13BLM5L6N2LN2B.14BLM4L8N2B.d2.12BLM5L7N2B.16BLM10N2B.17BLM9N3B.18BLN10B.20B11.19BMNBMNB2MNBMNB.18B14.8',
-    mini: '.51B6.5BJ3K3B.3BL8B.B2.BN7BL2BM2IM2BMB.L2BM2BM2BMB.2B2M5N2B.3B8.2',
+    idle: '.244C.30CuC2.26C2u3tC.20C5u4sutC.16C3E5u2susuC.16CE6u4susuC.14C2E6u5v5C.12CE7u6v6C.11CE3DE3u8v5C.9CuED5u10v5C.8CuED4u13v3C.7Cu2ED4u15vC.7Cu3E3u15ICvC.6Cu2E4uEu7ICu4C2vC.6CuE10u4C2u4v3C.6CE12u9v3C.7CE12u9vC.8CE14uE2u5C.9CE17u3C.10CE18uC.11CED5E12C.13CD3C2E3D3E5C.15C3.2CE3DC3E2C.21CED3C.2C2.23C4.15',
+    mini: '.31C.8C3tC.5C2E2u3C.3CuE2u2v2C.3CuDEu4vC.2CuE2u2EuC2.2CE3CuCu2C.2CE7C.4C3ED2C.8C3.4',
+  },
+  { // S04 Hiljan
+    idle: '.240Z.6Z.23ZqZ6qZ.22ZpH6pZ2.20ZHG8H2Z.18ZHG11HZ.17ZG7IZGIZGHZ.16ZG7Z2GZ2G2Z.16ZG13FZ.9Z4.3ZG9E2G2FZ.8ZH4Z.2ZG13FZ.7ZHGF2GHZ.ZG13Z.7ZHGFG2FGZ2HG13Z.7ZF2GFGFGZ2G7FG6Z.7ZF6GZ2G7FG6Z.8ZF6H2G8F4G2Z.9ZF7G14Z.10Z3F5G12FZ.13Z3F15Z.16ZF14Z.17ZF12Z.19ZF3Z2G4FZ.20ZF3Z2G4FZ.20ZF3Z2G4FZ.21Z3.ZG3F2Z.26Z5.7',
+    mini: '.29Z.2Z.7ZqZ2qZ.6ZGH2GZ.5ZHG4HZ.3Z2FZGZGFZ.2ZHFZF4Z.3ZF2HF4Z.4Z3F4Z.6ZFZG2Z.7Z.Z2.3',
+  },
+  { // S05 Tepor
+    idle: '.169N3.28NJ3N.5N3.18NJKLKJN.3NJ3N.16NJLK2LKJN3JK3JN2.14NLKLK2LmL3m5L2N2.13NL2K2m12L2N.13NL2m15LN.13N2m16LN.13Nm9KINmINm2N.13Nm9KN2mN2mMN.13Nm10K2mK2M2N.12N2m12M5N.11NL2m14M2N.11NLmM3m12MN.11NLmM5m6L3m2N.12Nm2M5m11N.10N2Lm2M4m12N.9NL2m15M2mMN.8NLM3m16M2N.9NM4m14M3N.10N2M18N.13NM16N.15NM14N.17N2m4MNM4N2.19Nm3M2NM5N.19Nm3M3N5.21N6.16',
+    mini: '.27N2.2N.6NK2N2KN.4NKLKL2mLN.4NKmNmNmLN.3N2m5MN.2NL2M6N.3NM7N.4NM5N.5Nm2NM2N.6N2.N2.3',
+  },
+  { // S06 Pesko
+    idle: '.397d.2d.2d.24dKd2Kd2Kd.21d.dKLdKLdKLd.19dKdts2ts2ts2d3.15d2tsts9t3d2.12dt2sh4s10t2d.10dts3h4s7lIdsId2.8dts15ld2sd2td.6dts17l2sl2sd.5dth2s19h3d.5dh4s19h2d.6dh4s17h3d.7d2h2s17h2d.10dh19d.12dh17d.13dh17d.14ds2hdh2d4h2ds2hd.14ds2hd3.4d3s2hd.14dsh2d.8dsh2d.15d3.10d3.7',
+    mini: '.53d.d.7d2KdKd.5dt2ststd.3dth2dhdhtd.2dh8d.3dh6d.4ds2d2s2d.5d2.2d2.3',
+  },
+  { // S07 Azkon
+    idle: '.261C2.10C7.12Cp2C.7C2G7C2.9CGFCmC.4C2G2F7G2C.8CF2C2.3C2G2F11GC.7CF2C.2C2G2Fm3F7ICFC.7CEFC.CG2F2m3F3ICF3C2FGC.6CE2C2GF10C2F7C.6CE2G2F20C.7CE2F2m3F10C2F4C.8C2Fm5F7G7FC.9CFm5F7G7FC.9CF2m3F8G7FC.9CEF13G6EC.9CE2F13G4E2C.9CE3F15E3C.10CE2F15E2C.12CE17C.14CE15C.15CE15C.15CF2ECE2C2E2CF2EC.16CF2ECE2C2E2CF2EC.16CF2EC3.2C3F2EC.16CFE2C.6CFE2C.17C3.8C3.8',
+    mini: '.26C.10CpC.2C3.4CFmC2G3C.3CEC2GF3GC.2CEG2ECECEC.2CEm2E2G2EC.3CE6C.4CF2C2F2C.4CF2C2F2C.5C2.2C2.3',
+  },
+  { // S08 Rupar
+    idle: '.299N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N.19Nm2Nm2Nm2Nm2N2.18Nm2NK2JK2JK2J2N3.14N2K2JLK4LK4J3N2.11NJ2K7LK8J2N.9NJK18INJN.7NJK3LK11INK2N2KJN.6NK16N2K6N.6NK18M2K4N.5N2LK22LN.4NJ2L2K20L2N.5NL4K18L3N.6N2L22N.9NL20N.11NL18N.12NK2LN2L2N2L2N2K2LN2.13NK2LN2L2N2L2N2K2LN.14NK2LN.N2.2N2.NK2LN.13NL4N.7NL4N.14N4.9N4.9',
+    mini: '.40N.N.8NmNmN2.5NJKJKJ2N.3NJL6JN.2NL4NLNLN.3NL7N.3NK2N2K2N.3NL2N2L3N.4N2.2N3.3',
+  },
+  { // S09 Belatz
+    idle: '.305C.28C.CJC.C.24CJC2KC2JC.24CKHcHKC.24CHc5HC.22CHc7HC.20CHc4IC2cIC2.18CHc5C3cC2HC.17Cc6C3c4C.17CPc8Pc2PC.17CPc11PC.16C3c11C.16CH3c11C.15CHc14HC.13CHc16HC.11C2c2Q8c8C.10CH2cQP8Qc7HC.9CP3cQ8c7PC.10CP4c14P2C.11C3P16C.15CP14C.17C2c2C4c2C4.20C2.4C2.13',
+    mini: '.29C.C.8CJCJC.7CcHcHC.5CHCcCcHC.3CHc6C.2CHQP2Qc2PC.2CP8C.3CP6C.5CcC2cC.7C.2C.4',
+  },
+  { // S10 Igara
+    idle: '.362B3.28BmZ2B9.18BmZ3a2Z3a4B2.16BZ2a3Z2a8B.15Ba4Z3a9B.14Ba3Z5a9B.9B4a2Z3UZ8a5B.7BZ2a3Z2U3Z9a4B.7BZ2a3ZU3Z10a3Z2B.7BZ19a2Z2B.6BZ14U3Z7B.6BZ14bIBZIBZ4B.7B3Z11bB2ZB2Z3B.11BZ11b2Zb2Z2aB.11BZ16a3B.10BZ16a3B.12BZB2Z14B.14B.2BZ11B2.18BZ4B7.20BZ3B.28B3.17',
+    mini: '.40B.10BZB4.5B2aZa3B.3BZaZaBaBaB.2BZ8B.3BZ7B.3BZ6B.5B2Z2B2.8B2.5',
+  },
+  { // S11 Kilpo
+    idle: '.337d2.6d2.21dp2d.4dp2d.21d2sd.2dsd2.23dsd4sd.23dtst4std.17d5ts8td.10d6ththtds9td.8dt5dshshshs10d.7dts5hs2hsh2s3lIdsIdsd.6dts6hs2hsh2s3ld2sd2sd.6ds7hs5hs4l2sl2sd.6ds7hs5hs6h2s2d.6ds7hs5hs9hd.6dhs6hs5hs8h2d.6dh2s5hs5h2s6h2d.8dh6dh5dh8d.10dh5dh5d2h6d.11dshdhd.dshdhd.dshdhd.12dshdhd.dshdhd.dshdhd.12dshd2.2dshd2.3dshd.13dshd.3dshd.4dshd.14d2.5d2.6d2.9',
+    mini: '.43d.d.5d.d2pdpd.3dtdt2stsd.2dtshsdsdsd.2dhshs4hd.2dh8d.3dh6d.3dsdsdsdsd.4d.d.d.d.3',
+  },
+  { // S12 Peplos
+    idle: '.275M2.29Mp2M.16M2.9Mp3M.2M2.11MLpM2.7Mp3M.Mp2M.10Mp4M2.5Mp4MKpM.12Mp5M.3M2p5KpM.12Mp6M3K2p6M.13M2p2Lp2MK6p2K2M.12MLM2p6K9M.12Mp2L2p3Lp3oKpK4pM.12Mp2Lp3L2p6K3pM.13MpLp2L4p6K2L2M.13ML13K2L2M.13ML9INL2INLKM.13ML9N2L2N2K2M.13ML16KM.13ML16M.14ML15M.15ML14M.17ML12M.18ML3ML4ML3M.19MLM2L4ML3M.20M.2ML3M4.25M3.14',
+    mini: '.19M.6M2.2MLM2.3ML2M3L2KM.3ML2K2L2M.3ML4KLK2M.3ML5KLM.3ML2NLNLM2.3ML6M.4ML6M.5M2L2M2.8M2.5',
+  },
+  { // S13 Oskol
+    idle: '.338A.30AYA.28AYbA.24A5YbaA2.20A2u5V3u2A.17A2uU4V7uA2.14Au2VU2V10u2A.12AuV6YIA2VYIA2V2A.12AV7YA3VYA3V2A.12AV7YA3VYA3V2A.12AV8Y3V2Y3V2A.12AUV10U2V4UA.12AU3V13U2A.12AU3V12U3A.13AU16A.15AU14A.16A2U12A3.14AV4UAU2AU2AV4UA.13AV4UAU2AU2AV4UA.13AV4UA3.A3V4UA.13AV3U2A.5AV3U2A.14A5.7A5.7',
+    mini: '.30A.10AYA.8AYbA2.6AuV2u2A.4AuV5uA.2AuU3AUAUA.2AU8A.3AU6A.3AV2UA2V2UA.3A3.2A3.2',
+  },
+  { // S14 Usvel
+    idle: '.273N4.27Np4N.25Np5N.25NpM2p3N.24Np6N.24Np5N.25NK6N2.22NK9N.20NK11N.18NK13N.14N3K14N.13NL4K4L6K4N.11NL17K2N.10NL18K2N.9NL14INLINLKN.9NL14N2LN2LKN.8NL22N.8NL22N.8NL2ML5M3LML8N.10NM2N2L3N2M3N3L3N2.11NM2N2L3N2M3N.NL3N.13N2.NL3N.N3.2NL3N.16NL2N.7NL2N.18N2.9N2.9',
+    mini: '.30N2.9NK2N.8NLKN.8NK3N.5N2K5N.3NL6KN.2NL4NLNLN.2NLNLNL4N.3N2LN5.6N.7',
+  },
+  { // S15 Lehten
+    idle: '.301d2.26d2.djid.3d2.19djid2id5jid.18didf2e2f4id2.17dfe12fd4.12dfe13dv4d.10dfe13dv6d.9de13dv5Idvd.7dfe12dv2Idv2d2v2d.6de12dv3d2v5ud.6d2e10dv7d2v2ud.6d2e8d2v12ud.7d9v13ud.7dvuv19u2d.7du3v17u3d.8du21d.10du19d.12du17d.13dv2udu2d3u2dv2ud2.14dv2ud3.3d3v2ud.15dv2ud.7dv2ud.15dvu2d.7dvu2d.16d3.9d3.9',
+    mini: '.27d.d.d.6dididid.5defefed2.3dfe4v3d.2de4dvdud.2d5u4d.2du8d.3du6d.4dv2d2v2d.5d2.2d2.3',
+  },
+  { // S16 Blikur
+    idle: '.233B.3B.2B.3B2.18BbB3bB2EB3b2B.17Bb2DFb2E3F2bB.18BD4bE3F4B.17BD5E3F6B.16BD6EF8B.14BD6Eu2F8B.12BD2U3D2Eu2F9B.11BDU5E3u3F7B.11BDU4E4u2F8B.10BED2UD2E4u3FEF5B.10BE3D3E7IBF4IB2.9BE3D4E6B2F4B3.9BE4D3E4u4F6B.9BE6D2E6uF6B.9BE7DE6uF7B.8BE6D2E6uF7B.8BE6D2E6uF6B.9BE6D2E7F6B.10BED6E8F4B.11BED7E7F4B.12BD8E3D2E2F3B.13BD8ED3E3B2.15B5D3B2D2EB2.22B3.2B3.11',
+    mini: '.16B.2B.7BbB2b.6BE3F2B.5BD2EF3B.3BDUDEuF2B.3BEDE3F3B.2BE3BEBFB2.2BEuDE2uF2B.2BED2E3FB.4BD3E3B.5B6.3',
+  },
+  { // S17 Wickle
+    idle: '.239m3.28mK3m.26mK2mKm.25mK3m2.26mK3m.28mK3m2.25mK6m.23moK7m.21mo2K3J2KJ2m.20mo2K2J6m.19mo3K4J2K2m.19mo3K3INJINKm.17mKo3K3N2KN2Km.17mKm2oK9m.17mKmo2K4m2K4m.16m3K11m.17m3K12m.16m3oK11m.16m3o2moK8m.17m5o3K3o2m.18m6o6m.20m11.22m9.24m8.25m3.2m.13',
+    mini: '.17m2.9mK2m.8mKm2.7mK4m.6moK3m.5moNKNKm.5m2oK4m.4m2KoK3m.5m3o2m.7m4.9m2.5',
+  },
+  { // S18 Drapet
+    idle: '.429C6.23C3uv2u3C3.19Cv4u2vu2E2uC.17Cv3uv2u3EfuEuC.15Cv4fuvEu3fEuEuC.13Cv2uvufEuEuEu7C.12Cv2uvufEuEuED3EuEuC.12Cv3u3EuEuv5uEuC.12Cv2u6EvICvICvEuC.11Cv2u7EvC2vC2vEu2C.10Cu2Eu6Ev3uv3u3C.10Cu2EuEfu3Euv5u2EuC.10Cu2EuEfu3EuEuEu4EuC.9Cu5EfEu2EuEu4EuE3C.8Cu2Eu2EfEu2EuEu3fE5C.8Cu2Eu2EfEu2EuEu2EfE5C.9C2Eu3fEu2C2Eu2EfE3C2.11CEuC4uC.2CuC4E2C.13C2.4C.4C.4C2.7',
+    mini: '.29C3.7C2v3C.5Cv3u3C.3Cv2uD3EuC.2Cvu2v3uEC.2Cu3CvCE2C.2CuEu2vuE2C.2Cu2Eu2EuEC.2CECuCECEC.4C.C.C.C.3',
+  },
+  { // S19 Curlop
+    idle: '.241Z5.25Z2b5Z2.21Z2a2b4c3Z.19Za3b7c2Z.17Za4b7c3Z.16Za3b8c3Z.15Za5b4IZbJ2IZ.15Za6b3Z2J3Z2.15Za6b2c3J4Z.15Za7bJ6Z.15Za8b2c3bZ.16Za9b5Z.16Za7b5J3Z.16Za7b4J2b2Z.12Z4a8b3J2b2Z.11Zb3Za10b2Jb2Z.10Zb2a14cJcZ.11ZabaZ3a10c3Z.10Za4Z2a10bc3Z.10Za3b2a11b3Z.12Za2b2a3Za7baZ.13Za7Z3a7Z.14Za7Z2a7Z.15Z2a3Z2.Za4Z3.18Z3.4Z4.12',
+    mini: '.18Z3.8Zb2cZ.6Zab4Z.4Za2ZaZbZ.4Za3Jc2Z.4Za3bcZ.4Z2a3bcbZ.2Za6c2Z.2Za6bZ.4Za2Za2Z.6Z2.Z2.4',
+  },
+  { // S20 Tuliko
+    idle: '.364C2.C2.C2.23CJ2CJ2CJ2C.21CJ2KJ2KJ2KC.20CK11C3.15C2Q2PQ2PQc5H3C2.12CPQ2PQ2PQc9H2C.10CQPQ2PQ2c13HC.9CPQ2PQc10ICcICcC.9CQPQc12C2cC2cC.8CHc21HC.5C3c18P2c3C.4CH3c21P2C.5CP3c8H11P3C.6C2P2c6H11P2C2.9CP7H10P2C.12CP17C.14Cc2PCP2C2P2Cc2PC2.15Cc2PC3.2C3c2PC.16Cc2PC.6Cc2PC.17CPC.7CPC2.19C.9C.12',
+    mini: '.29C.C.8CJCJC.6CJKJKC.5CQPc3HC.3CPc2CcCcC.3CPc6HC.3CP2H3PC.4CP6C.4CcPCcPC.6C2.C2.4',
   },
 ];
 function tokenPB(rle, w) {
@@ -2755,13 +2870,14 @@ function tokenPB(rle, w) {
 // approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null. juv: the mibi is a
 // juvenile: its own picture where the species has one, else the adult's.
 function tokenOf(sp, pose, fr, juv) {
-  const t = SPECIES_ART[sp]; if (!t) return null;
+  const t = SPECIES_ART[sp]; if (!t) return sp >= 3 && sp < SPECIES.length ? standIn(32) : null;   // a kind without a token yet (the art release adds them) shows a plain stand-in
   const n = pose === 'approach' ? 'alert' : pose === 'glow' || pose === 'nest' ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
   const j = juv && JUVENILE_ART[sp];
   if (j && j.idle) { const k = n !== 'mini' && j[n] ? n : 'idle'; return art('tj' + sp + k, () => tokenPB(j[k], 32)); }
   return t[n] && n !== 'mini' ? art('tk' + sp + n, () => tokenPB(t[n], 32)) : null;
 }
-const miniArt = (sp, juv) => { const j = juv && JUVENILE_ART[sp]; return j && j.mini ? art('tjm' + sp, () => tokenPB(j.mini, 12)) : SPECIES_ART[sp] ? art('tkm' + sp, () => tokenPB(SPECIES_ART[sp].mini, 12)) : null; };
+const miniArt = (sp, juv) => { const j = juv && JUVENILE_ART[sp]; return j && j.mini ? art('tjm' + sp, () => tokenPB(j.mini, 12)) : SPECIES_ART[sp] ? art('tkm' + sp, () => tokenPB(SPECIES_ART[sp].mini, 12)) : sp >= 3 && sp < SPECIES.length ? standIn(12) : null; };
+function standIn(n) { return art('stand' + n, () => { const pb = new PB(n, n), e = Math.max(1, n / 12 | 0); pb.ell(n / 2, n * .6, n * .38, n * .3, C.slate); pb.rect(Math.floor(n * .38), Math.floor(n * .5), e, e, C.bone); pb.rect(Math.floor(n * .58), Math.floor(n * .5), e, e, C.bone); return pb; }); }
 
 // A mibi's picture at s× (1 field, 2 cards): the signed token (an unlisted pose shows the idle), each pixel a whole block above 1×.
 function creatureArt(sp, pose, fr, s, juv) { const t = tokenOf(sp, pose, fr, juv) || tokenOf(sp, 'idle', 0, juv); return (s || 1) === 1 ? t : upArt('tk' + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), t, s); }
@@ -5180,6 +5296,7 @@ function lineBase() {
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
+  if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.plScr = null; RT.litScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
@@ -5269,6 +5386,7 @@ function refuseFrozen() {
 }
 function act(k, mode) {
   if (RT.readOnly) { actReadOnly(k); return; }   // a save that cannot be shown: the one way out is a new world, the old save kept
+  if (RT.notice) { actNotice(k); return; }
   const refused = frozenRefuses(k);
   if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
@@ -5587,6 +5705,20 @@ function readOnlyBroken() { RT.readOnly = true; RT.broken = true; document.getEl
 // The device's way out (no page needed): ✓ arms, ✓ again keeps the old save whole under its own key (one per move, never replacing an older one) and starts a new world.
 // Only the page's Reset game erases a save. Any other key is refused with the usual bump and clears the arm.
 const KEPT_KEY = 'mb-save-kept';
+// The release's one-time notice, shown on this device the first time it opens after the reset, then never again (S.resetSeen). The copywriter's words of 6 Nov 2026 (keys:
+// reset.notice.companion, reset.button.companion). No numbers, no talk of versions or saves.
+const RESET_TEXT = { lines: ['The world has changed.', 'New mibis live in it now.'], button: 'Explore' };
+function drawNotice() {
+  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
+  viewBg();
+  RESET_TEXT.lines.forEach((l, i) => text(l, 225, 279 + i * 24, C.bone, 2, 'center'));
+  drawLine({ ok: RESET_TEXT.button, ctx: '', back: '' });
+}
+function actNotice(k) {
+  NOW = performance.now(); if (NOW < FX.lockUntil) return;
+  if (k !== 'confirm') { FX.bumpAt = NOW; return; }
+  RT.notice = false; S.resetSeen = 1; save();
+}
 function drawNewer() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
@@ -5608,6 +5740,7 @@ function actReadOnly(k) {
   newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition();
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
+if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
@@ -5619,7 +5752,7 @@ for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
   btn.addEventListener('click', () => { ask.hidden = false; yes.focus(); });
   no.addEventListener('click', back);
-  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
+  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', SAVE_KEY + '.pre10', V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
     window.__mbResetting = true; location.reload(); }); }
 // The Station page wrote the shared save: take its part (dock, accepted crates, mibis, the Probe) and keep ours.
 // A reset there (the save erased) reloads this page too.

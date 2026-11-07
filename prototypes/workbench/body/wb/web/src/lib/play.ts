@@ -24,7 +24,7 @@ export type FamilyRow = { id: string; label: string; locus: string; look: string
 export type Pods = { round: number; diff: Dial; grow: Stage; name: string; species: string; plural: string; pods: Pod[]; grow_ends: ({ stage: Stage } & PodPic)[]; family: FamilyRow[]; names: string[] }
 export type Kept = { id: string; name: string; species: string; parents: string[] }
 
-export const picUrl = (key: string) => apiPath(`/cas/${key}.png`)
+export const picUrl = (key: string) => apiPath(`/cas/${key}.webp`)
 const id = (s: string) => encodeURIComponent(s)
 
 export const getStarters = () => call<Starter[]>('GET', '/api/play/starters')

@@ -27,7 +27,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(h
 const slow = skip || (process.env.MB_CI_FAST === "1" && "a long walk proof: run in full locally before every merge");
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("vivarium"), homeSpec = J("home");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
-const framesDir = path.resolve(here, "../../workbench/frames");
+const framesDir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const T0 = 1_000_000, R = spec.regions, ROOMS = J("rooms").rooms, ORDER = J("rooms").order, WIN = R.window.rect;
 

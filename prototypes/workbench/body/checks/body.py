@@ -30,6 +30,12 @@ def family_bands(ctx):
     return (f or {}).get("bands") or dict(headShareMin=0.30, neck=[0.0, 0.2], legShareMax=1 / 3)
 
 
+def _mesh(ctx):
+    """The built body of a sculpt (meshbody.MeshBody) with its armature, or None for any other body."""
+    b = ctx.body
+    return b if getattr(b, "mesh_body", False) and getattr(b, "rig", None) is not None else None
+
+
 def _quad(ctx):
     sp = ctx.spec
     return isinstance(sp, dict) and sp.get("plan") == "quadruped"
@@ -45,6 +51,21 @@ def _skip(why):
        rule=R("2026-11-05 21:18", "Big head, no neck, short legs; never lanky. The family's template bands hold: the head at least 30% of the standing height, the neck 0 to 0.2 H (0 is allowed: the head may merge into the body), the legs at most a third of the standing height."),
        limit=dict(text="head at least 0.30 of the standing height · neck 0-0.2 H · legs at most 1/3 of the standing height (the family's bands)", value=None), az=90)
 def c_mass(ctx):
+    mb = _mesh(ctx)
+    if mb is not None:                                                         # a sculpt: the head's share from the head and crown bones' weights, the legs from the underside of the girdles' skin
+        head, legs, neck = mb.rig.head_share(mb.Vw), mb.rig.leg_share(mb.Vw), 0.0
+        b = family_bands(ctx)
+        probs = []
+        if head < b["headShareMin"] - 1e-9:
+            probs.append(f"head {head:.2f} of the height, at least {b['headShareMin']:.2f}")
+        if legs > b["legShareMax"] + 1e-9:
+            probs.append(f"legs {legs:.2f} of the height, at most {b['legShareMax']:.2f}")
+        bad = bool(probs)
+        why = ("Body: " + "; ".join(probs)) if bad else f"Head {head:.2f} of the height, legs {legs:.2f} of the height"
+        bars = [("Legs over height", f"{legs:.2f}", legs / (b["legShareMax"] * 1.6), PR.RED if legs > b["legShareMax"] else PR.SAGE, 1 / 1.6, f"limit {b['legShareMax']:.2f}"),
+                ("Head over height", f"{head:.2f}", min(1.0, head), PR.RED if head < b["headShareMin"] else PR.SAGE, b["headShareMin"], f"at least {b['headShareMin']:.2f}")]
+        return verdict(ctx, "body.mass", bad, f2(head), dict(head=b["headShareMin"], neck=b["neck"], legs=b["legShareMax"]), why, _proof(ctx, 90, PR.RED if bad else PR.SAGE, [], _band(bars=bars)),
+                       dict(head=head, neck=neck, legs=legs, what="lanky" if bad else "compact", family=_doc(ctx).get("family")))
     if not _quad(ctx):
         return _skip("No mass measure for this plan yet")
     import quadruped as Q
@@ -157,6 +178,12 @@ def _roll_deg(Rm):
        rule=R("2026-11-05 20:05", "No twisted bodies: the spine's and the torso's section frames turn about the spine axis at most 3 degrees, root to tip, at rest and at both ends of every shape locus (the art desk signs the number)."),
        limit=dict(text="section frames twist at most 3° about the spine axis, root to tip", value=TWIST_DEG), az=32)
 def c_twist(ctx):
+    mb = _mesh(ctx)
+    if mb is not None:                                                         # a sculpt: the front block's roll against the rear block's, at rest (the bone scales never turn a block)
+        tw = mb.rig.twist_deg(mb.mats)
+        bad = tw > TWIST_DEG + 1e-9
+        bars = [("Twist root to tip", f"{tw:.2f}\u00b0", tw / (TWIST_DEG * 2), PR.RED if bad else PR.SAGE, 0.5, f"limit {TWIST_DEG:g}\u00b0")]
+        return verdict(ctx, "body.twist", bad, f2(tw), TWIST_DEG, f"The front block rolls {tw:.2f}\u00b0 against the rear block, limit {TWIST_DEG:g}\u00b0", _proof(ctx, 32, PR.RED if bad else PR.SAGE, [], _band(bars=bars)), dict(deg=f"{tw:.1f}", twist=tw))
     if not _quad(ctx):
         return _skip("No twist measure for this plan yet")
     pa = ctx.body.ctx["path"]
@@ -174,6 +201,16 @@ def c_twist(ctx):
        rule=R("2026-11-05 20:05", "No twisted bodies, in every clip: the front block, the rear block and the tail's bones keep their roll about the spine within 3 degrees of one another in every key frame."),
        limit=dict(text="blocks and tail bones within 3° of roll of one another in every key frame of every clip", value=TWIST_DEG), az=32)
 def c_twist_clip(ctx):
+    mb = _mesh(ctx)
+    if mb is not None:                                                         # a sculpt: the walk's twelve keys on the armature
+        import meshrig as MR
+        worst = 0.0
+        for k in range(MR.FRAMES):
+            _, mats, _ = mb.rig.walk(k, mb.doc.get("rig"), mb.keys)
+            worst = max(worst, mb.rig.twist_deg(mats))
+        bad = worst > TWIST_DEG + 1e-9
+        bars = [("Worst roll", f"{worst:.2f}\u00b0", worst / (TWIST_DEG * 2), PR.RED if bad else PR.SAGE, 0.5, f"limit {TWIST_DEG:g}\u00b0")]
+        return verdict(ctx, "body.twist.clip", bad, f2(worst), TWIST_DEG, f"Blocks twist {worst:.2f}\u00b0 of one another at most (in walk), limit {TWIST_DEG:g}\u00b0", _proof(ctx, 32, PR.RED if bad else PR.SAGE, [], _band(bars=bars)), dict(deg=f"{worst:.1f}", clip="walk"))
     if not _quad(ctx):
         return _skip("No twist measure for this plan yet")
     from .rig import _rig
@@ -192,3 +229,29 @@ def c_twist_clip(ctx):
     why = f"Blocks twist {worst:.2f}° of one another at most (in {where}), limit {TWIST_DEG:g}°" if where else "No clip to judge"
     bars = [("Worst roll", f"{worst:.2f}°", worst / (TWIST_DEG * 2), PR.RED if bad else PR.SAGE, 0.5, f"limit {TWIST_DEG:g}°")]
     return verdict(ctx, "body.twist.clip", bad, f2(worst), TWIST_DEG, why, _proof(ctx, 32, PR.RED if bad else PR.SAGE, [], _band(bars=bars)), dict(deg=f"{worst:.1f}", clip=where))
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------ rig.splay
+SPLAY = 0.03                              # the feet stay under their hips: sideways, at most 0.03 H from where the stand has them, in every key of the walk
+
+
+@check(id="rig.splay", name="Feet under the hips", fail="A foot leaves its hip in {clip}", stage="rig", version=1, part=["legs"], fields=["rig.bones", "motion"],
+       rule=R("2026-11-06 12:00", "The feet stay under the hips in every key of every clip: a foot's sideways offset from its hip changes by at most 0.03 H from the stand's. A strong key must not splay a leg."),
+       limit=dict(text="every foot within 0.03 H sideways of where the stand has it under its hip, in every walk key", value=SPLAY), az=0)
+def c_splay(ctx):
+    mb = _mesh(ctx)
+    if mb is None:
+        return _skip("No splay measure for this body")
+    import meshrig as MR
+    keys, worst, at = [], 0.0, 0
+    for k in range(MR.FRAMES):
+        V, mats, _ = mb.rig.walk(k, mb.doc.get("rig"), mb.keys)
+        sp = mb.rig.splay(V, mats)
+        bal = mb.rig.balance(V)
+        keys.append(dict(key=k, splay=round(sp, 4), balance_margin=round(bal["margin"], 3), balance_inside=bal["inside"], feet_down=bal["down"]))
+        if sp > worst:
+            worst, at = sp, k
+    bad = worst > SPLAY + 1e-9
+    why = f"Feet stay within {worst:.3f} H of their hips (key {at} of the walk), limit {SPLAY:g} H"
+    bars = [("Worst splay", f"{worst:.3f} H", worst / (SPLAY * 2), PR.RED if bad else PR.SAGE, 0.5, f"limit {SPLAY:g} H")]
+    return verdict(ctx, "rig.splay", bad, round(worst, 4), SPLAY, why, _proof(ctx, 0, PR.RED if bad else PR.SAGE, [], _band(bars=bars)), dict(clip="walk", keys=keys, worst_key=at))

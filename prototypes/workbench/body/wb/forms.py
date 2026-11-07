@@ -34,8 +34,56 @@ def _has(doc, m):
     return m["key"] in doc
 
 
+# A mesh body (a signed sculpt, no spine, skeleton or parts) is outlined by the bones of its rig: the groups below, each with the bones whose scales it offers, then the shape keys under the body.
+# A group shows only when the file has a bone of it. Coat and Renders stay; Motion is left out (a mesh file has no motion to set).
+MESH_GROUPS = [("head", "Head", ("head",)), ("body", "Body", ("rear", "front")), ("fore", "Front legs", ("fore.",)), ("hind", "Hind legs", ("hind.",))]
+MESH_SECTIONS = [("coat", "Coat"), ("renders", "Renders")]
+BONE_BAND = (0.5, 1.5)
+KEY_BAND = (-1.0, 1.0)
+
+
+def is_mesh(doc):
+    return isinstance(doc, dict) and doc.get("schema") == "mb-species/2" and isinstance(doc.get("mesh"), dict)
+
+
+def _bones_of(doc, prefixes):
+    """[(index, id)] of the rig bones whose id is one of the prefixes (a prefix ending in '.' takes every bone under it)."""
+    bones = (doc.get("rig") or {}).get("bones") or []
+    return [(i, b["id"]) for i, b in enumerate(bones) if isinstance(b, dict) and isinstance(b.get("id"), str) and any(b["id"] == p or (p.endswith(".") and b["id"].startswith(p)) for p in prefixes)]
+
+
+def mesh_outline(doc):
+    rows = []
+    for gid, label, pre in MESH_GROUPS:
+        if _bones_of(doc, pre):
+            rows.append(dict(id=gid, label=label, kind="part", under=None, sw=None))
+    rows += [dict(id=i, label=lab, kind="section", under=None, sw=None) for i, lab in MESH_SECTIONS]
+    return rows
+
+
+def mesh_fields(doc, part):
+    """The fields of a mesh body's group: each of its bones' scale along and across (rig.bones[i].len, .girth), and under the body the file's shape keys (keys[i].amount)."""
+    out = []
+    for gid, label, pre in MESH_GROUPS:
+        if gid != part:
+            continue
+        for i, bid in _bones_of(doc, pre):
+            b = doc["rig"]["bones"][i]
+            for k, word in (("len", "length"), ("girth", "girth")):
+                if k in b:
+                    name = bid.replace("fore.", "").replace("hind.", "").replace(".", " ")
+                    out.append(_field(doc, label, f"/rig/bones/{i}/{k}", f"rig.bones.{bid}.{k}", f"rig.bones[].{k}", label=f"{name.capitalize()} {word}" if name != part else f"{label} {word}", rng=BONE_BAND))
+        if gid == "body":
+            for i, kk in enumerate(doc.get("keys") or []):
+                if isinstance(kk, dict) and "amount" in kk:
+                    out.append(_field(doc, label, f"/keys/{i}/amount", f"keys.{kk['id']}.amount", "keys[].amount", label=f"{str(kk['id']).replace('key.', '').replace('form.', '').replace('-', ' ').capitalize()} key", rng=KEY_BAND))
+    return out
+
+
 def outline(doc):
     """The rows of the parts outline: {id, label, kind: range | part | section, under, sw}. Ids are the ones the checks name (head, tail, ears, arms, legs)."""
+    if is_mesh(doc):
+        return mesh_outline(doc)
     plan = V1.plan_for(doc) or V1.PLANS["biped"]
     rows = []
     names = [r.get("name") for r in (doc.get("spine") or {}).get("ranges") or [] if isinstance(r, dict)] or plan["ranges"]
@@ -89,6 +137,8 @@ def _field(doc, part_label, ptr, dotted, schema_path, label=None, rng=None):
 
 def fields_of(doc, part):
     """The fields the inspector shows for a part of the outline, in the order they read: [{id, ptr, label, full, help, type, unit, range, step}]. A part the file does not have, or one with nothing modelled yet, has none."""
+    if is_mesh(doc):
+        return mesh_fields(doc, part)
     plan = V1.plan_for(doc) or V1.PLANS["biped"]
     sp = doc.get("spine") or {}
     ranges = [r.get("name") for r in sp.get("ranges") or [] if isinstance(r, dict)]

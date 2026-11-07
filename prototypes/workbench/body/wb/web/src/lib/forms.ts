@@ -30,6 +30,9 @@ export const toysOne = (id: string, hash: string) => queryOptions({ queryKey: ['
 
 export const formsOne = (id: string) => queryOptions({ queryKey: ['forms', id], queryFn: () => call<Forms>('GET', `/api/species/${encodeURIComponent(id)}/forms`), staleTime: Infinity })
 
+// A mesh body (a signed sculpt: a `mesh` block, no spine, skeleton or parts). The spine's handles and profile knobs are the cage's, so the stage draws them for a cage file only.
+export const isMesh = (file: unknown): boolean => typeof file === 'object' && file !== null && typeof (file as { mesh?: unknown }).mesh === 'object' && (file as { mesh?: unknown }).mesh !== null
+
 // ---- the file's own value at a pointer, and a copy with another one there (the optimistic write)
 const toks = (ptr: string) => ptr.split('/').slice(1).map((t) => t.replace(/~1/g, '/').replace(/~0/g, '~'))
 export function getAt(file: unknown, ptr: string): unknown {

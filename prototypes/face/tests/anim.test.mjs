@@ -31,7 +31,7 @@ const send = (f, e) => { f.t0 = f.t; assert.equal(f.send({ t: "event", ...e }), 
 const msgs = (f, t) => { const out = []; for (let m; (m = f.poll());) if (!t || m.t === t) out.push(m); return out; };
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg; };
 // the scene: four identified pods in the inventory, the ring on card.0; its pictures are flat stand-ins at the sizes the requests name
-setFrames(readdirSync(path.resolve(here, "../../workbench/frames")).filter((n) => n.startsWith("species-")).map((n) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames", n), "utf8"))));
+setFrames(readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((n) => n.startsWith("species-")).map((n) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames/language", n), "utf8"))));
 const SIZE = { "cabinet-strip-672x228": [672, 228], "pod-niche-88x88": [88, 88], "pod-niche-shadow-88x88": [88, 88], "pod-niche-husk-88x88": [88, 88], "pods-lantern-96x160": [96, 160], "pods-fern-120x200": [120, 200], "reading-bench-1024x520": [1024, 520] };
 const sizeOf = (r) => SIZE[r.id] ?? (r.kind === "emblem" ? [24, 24] : r.kind === "star" ? [12, 12] : Array.isArray(r.size) ? r.size : r.size ? [r.size, r.size] : [16, 16]);
 function inventory() {

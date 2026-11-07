@@ -1,12 +1,16 @@
-@import './tokens.css';
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body, #root { height: 100%; }
-body { background: var(--bg); color: var(--text); font: 400 var(--t-16)/1.45 var(--font); font-feature-settings: "tnum" 1; -webkit-font-smoothing: antialiased; overflow: hidden; }
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-a { color: inherit; }
-:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-code, kbd, .mono { font-family: var(--mono); font-size: 13px; }
-kbd { font: 500 12px var(--font); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line-2); color: var(--text-2); background: var(--panel); }
-.num { font-variant-numeric: tabular-nums; }
-.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+/* The old kit's globals sit in a layer of their own, below Tailwind's (src/next/next.css), so the new kit's utilities are never beaten by the old reset. The old components' own CSS Modules are unlayered and still win in the old UI. */
+@layer legacy, theme, base, components, utilities;
+@import './tokens.css' layer(legacy);
+@layer legacy {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #root { height: 100%; }
+  body { background: var(--bg); color: var(--text); font: 400 var(--t-16)/1.45 var(--font); font-feature-settings: "tnum" 1; -webkit-font-smoothing: antialiased; overflow: hidden; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  code, kbd, .mono { font-family: var(--mono); font-size: 13px; }
+  kbd { font: 500 12px var(--font); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line-2); color: var(--text-2); background: var(--panel); }
+  .num { font-variant-numeric: tabular-nums; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+}

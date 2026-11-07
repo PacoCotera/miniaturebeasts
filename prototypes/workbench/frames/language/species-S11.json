@@ -85,7 +85,7 @@
  "signature": {
   "anchor": "russet",
   "second": "slate",
-  "feature": "a two-part crawler with antennae with weighted tips",
+  "feature": "a two-part crawler body, with its antennae with weighted tips",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.antenna-presence": "on"
@@ -106,7 +106,9 @@
   "..#..",
   ".###."
  ],
- "habits": [],
+ "habits": [
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "large",
   "proportion": null,
@@ -130,16 +132,14 @@
    "traits": [
     {
      "id": "body-hue",
-     "name": "Body hue",
+     "name": "Tint",
      "loci": [
       "appearance.body-hue"
      ],
      "looks": [
-      "low",
-      "between low and between",
-      "between low and high",
-      "between between and high",
-      "high"
+      "bluer",
+      "between",
+      "redder"
      ],
      "nature": "look",
      "shapeable": true,
@@ -147,15 +147,13 @@
     },
     {
      "id": "body-value",
-     "name": "Coat value",
+     "name": "Shade",
      "loci": [
       "appearance.body-value"
      ],
      "looks": [
       "dark",
-      "between dark and between",
-      "between dark and light",
-      "between between and light",
+      "between",
       "light"
      ],
      "nature": "look",
@@ -170,9 +168,12 @@
       "appearance.marking-layout"
      ],
      "looks": [
-      "on",
-      "off/on",
-      "off"
+      "plain",
+      "spotted",
+      "saddle",
+      "shaded",
+      "bands",
+      "patches"
      ],
      "nature": "look",
      "shapeable": true,
@@ -223,9 +224,7 @@
      ],
      "looks": [
       "small",
-      "between small and between",
-      "between small and large",
-      "between between and large",
+      "between",
       "large"
      ],
      "nature": "look",
@@ -240,9 +239,7 @@
      ],
      "looks": [
       "close",
-      "between close and between",
-      "between close and wide",
-      "between between and wide",
+      "between",
       "wide"
      ],
      "nature": "look",
@@ -263,9 +260,8 @@
       "signature.size"
      ],
      "looks": [
-      "low",
-      "between low and high",
-      "high"
+      "small",
+      "big"
      ],
      "nature": "look",
      "shapeable": true,
@@ -279,9 +275,7 @@
      ],
      "looks": [
       "small",
-      "between small and between",
-      "between small and big",
-      "between between and big",
+      "between",
       "big"
      ],
      "nature": "look",
@@ -296,9 +290,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and round",
-      "between between and round",
+      "between",
       "round"
      ],
      "nature": "look",
@@ -320,7 +312,6 @@
      ],
      "looks": [
       "straight",
-      "between straight and coiled",
       "coiled"
      ],
      "nature": "look",
@@ -335,9 +326,7 @@
      ],
      "looks": [
       "short",
-      "between short and between",
-      "between short and long",
-      "between between and long",
+      "between",
       "long"
      ],
      "nature": "look",
@@ -352,9 +341,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and sturdy",
-      "between between and sturdy",
+      "between",
       "sturdy"
      ],
      "nature": "look",
@@ -1965,11 +1952,11 @@
    ],
    "band": {
     "form": "lin",
-    "lo": 0.122,
-    "hi": 0.165,
+    "lo": 0.153,
+    "hi": 0.207,
     "unit": "head width"
    },
-   "type": 0.143
+   "type": 0.18
   },
   {
    "id": "form.eye-height",

@@ -14,7 +14,7 @@ const Lib = await import("../src/library.mjs");
 const game = await import("../src/game.mjs");
 const { newLooksOf, libraryOf, warmLibrary } = await import("../src/views/specimen-props.mjs");
 const { currentLooks } = await import("../../workbench/framework/describe.mjs");
-const here = path.dirname(fileURLToPath(import.meta.url)), fd = path.resolve(here, "../../workbench/frames"), home = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/home.json"), "utf8"));
+const here = path.dirname(fileURLToPath(import.meta.url)), fd = path.resolve(here, "../../workbench/frames/language"), home = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/home.json"), "utf8"));
 setFrames(readdirSync(fd).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fd, f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 };
 function start() {

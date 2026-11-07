@@ -368,6 +368,9 @@ export function founderArt(frame, genome, read, w, h, painted = null, whole = fa
   return art(key, () => {
     const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = painted ?? (ok ? dropSpecks(renderPB(b.scene, camera, "station")) : blobArt(w, h));
     if (t.mode === "clear") return base;
+    // 21h (art desk 21h ART INPUTS): no tint pass touches mibi art. A veil's boxes are the rig's, which do not land on the painted picture's parts, so over a painted adult a veil washed its leaves and eyes grey: the painted picture
+    // (in the coat the choices made where that chapter is read) is shown as it is; only nothing read at all stays the ghost (and the reading room's whole)
+    if (painted && !whole && t.mode === "veil") return base;
     // whole (the reading room): the painted adult is one flat picture: the rig's part boxes do not land on its parts, so while any part is unread the whole painting stays the grey silhouette (as far as read, never a guess)
     if (painted && whole) return treat({ w, h, rgba: () => base.rgba() }, { mode: "ghost" });
     const boxes = t.boxes[0]?.whole ? "body" : !ok ? [] : t.boxes.map(({ parts }) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });

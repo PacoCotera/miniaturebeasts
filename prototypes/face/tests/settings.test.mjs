@@ -18,7 +18,7 @@ import { setFrames } from "../../station/src/genome.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), spec = J("settings"), schema = J("settings.props"), frameSpec = J("frame"), homeSpec = J("home");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
-setFrames(readdirSync(path.resolve(here, "../../workbench/frames")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames", f), "utf8"))));
+setFrames(readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames/language", f), "utf8"))));
 const T0 = 1_000_000, BEGAN = Date.UTC(2026, 10, 4, 12);
 
 function validate(v, sc, at = "$", out = []) {
@@ -40,11 +40,11 @@ function validate(v, sc, at = "$", out = []) {
   return out;
 }
 
-// the state through the rules' own fields, the Companion's part as a v9 save holds it, and the Companion the Station knows
+// the state through the rules' own fields, the Companion's part as a v10 save holds it, and the Companion the Station knows
 function model(o = {}) {
   const st = S.freshSt("w1", o.turn ?? 41, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: o.docked ?? true, at: T0 };
   S.seedAdults(st, "S01", 5, o.mibis ?? 3, { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 });
-  const sv = o.noSave ? { v: 8, seed: 7, wid: "w1", turn: 41 } : { v: 9, wid: "w1", seed: 7, began: o.began === undefined ? BEGAN : o.began, turn: 41, regions: Array.from({ length: o.regions ?? 3 }, (_, i) => ({ id: "g" + (i + 1) })) };
+  const sv = o.noSave ? { v: 8, seed: 7, wid: "w1", turn: 41 } : { v: 10, wid: "w1", seed: 7, began: o.began === undefined ? BEGAN : o.began, turn: 41, regions: Array.from({ length: o.regions ?? 3 }, (_, i) => ({ id: "g" + (i + 1) })) };
   const companion = o.noCompanion ? null : { name: "Companion A", since: BEGAN, keyed: o.keyed ?? true };
   return { st, sv, settings: { ...S.DEFAULT_SETTINGS, realmSleep: true }, docked: o.docked ?? true, companion, sleeping: o.sleeping ?? 0, ui: { f: o.f ?? null } };
 }
@@ -109,7 +109,7 @@ test("the index key the host reads is the sleep sequence's own", () => { assert.
 
 // ---- the intents ----
 function host(o = {}) {
-  const h = { st: S.freshSt("w1", 3, T0), sv: { v: 9, wid: "w1", regions: [{ id: "g1" }] }, settings: { ...S.DEFAULT_SETTINGS, realmSleep: o.realmSleep ?? true }, ui: { screen: "home", home: { f: "room" }, settings: { f: null } }, specs: { home: homeSpec }, went: [] };
+  const h = { st: S.freshSt("w1", 3, T0), sv: { v: 10, wid: "w1", regions: [{ id: "g1" }] }, settings: { ...S.DEFAULT_SETTINGS, realmSleep: o.realmSleep ?? true }, ui: { screen: "home", home: { f: "room" }, settings: { f: null } }, specs: { home: homeSpec }, went: [] };
   h.goto = (s) => { h.went.push(s); h.ui.screen = s; }; h.now = () => T0; h.save = () => {}; h.say = () => {}; h.play = () => {}; h.at = () => {}; h.motion = () => false; return h;
 }
 test("← is Home with the ring on the Settings knob; ✓ does nothing on any row yet; the ring moves are the host's", () => {

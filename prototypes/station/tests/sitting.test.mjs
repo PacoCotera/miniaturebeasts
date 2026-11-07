@@ -6,12 +6,13 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, frameIds, chapterLooks } from "../src/genome.mjs";
+import { withSeals } from "./fixtures/sealed.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
 import * as T from "../src/sitting.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
-setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language");
+setFrames(withSeals(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", sittingWait: "hours" };
 const H = 3600000, T0 = 1000000;
 const sv = (mibis, turn = 4, trips = []) => ({ v: 8, seed: 7, wid: "w1", turn, bay: [], mibis, trips, with: null, tier: 1, shield: 3 });   // the Companion's save part, as a dock reads it

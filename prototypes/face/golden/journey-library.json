@@ -367,6 +367,22 @@
      {
       "t": "focus",
       "screen": "library",
+      "target": "cell.S01"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S01",
+    "ok": "Open Loika",
+    "subject": "New looks",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
       "target": "cell.S03"
      }
     ],

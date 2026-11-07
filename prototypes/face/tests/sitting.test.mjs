@@ -17,16 +17,16 @@ import { setFrames } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import * as T from "../../station/src/sitting.mjs";
 import { sittingBuild } from "../../station/src/views/sitting-props.mjs";
-import { loadStandLayersFs, loadStandLooksFs } from "../../station/tools/stand-layers-fs.mjs";
+import { loadStandSizesFs } from "../../station/tools/stand-layers-fs.mjs";
 import { injectPortraitSource, dropPortraitSources } from "../../station/src/portrait-source.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("sitting"), habitat = J("habitat");
-const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours, framesDir = path.resolve(here, "../../workbench/frames");
+const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours, framesDir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const R = spec.regions, T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, DIGEST = "0123456789abcdef0011223344556677";
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-before(() => { loadStandLooksFs(); loadStandLayersFs(); });
+before(() => { loadStandSizesFs(); });
 
 // ---- scenes: the state through the rules, the props through the view ----
 function scene(o = {}) {
@@ -94,33 +94,9 @@ async function window2({ motion = true, glassFrom = [544, 408] } = {}) {
 }
 const px = (f, x, y) => Array.from(f.pixel(x, y));
 const GLASS_AT = [[40, 100], [41, 101], [42, 102], [43, 103]];
-test("events.backdrop, the \"dither\" form: the glass and the resident cross-dither on one clock, 16 levels over 200 ms (level = floor(16 t / 200)), a pixel new where BAYER < level; at the end the new pictures whole", { skip }, async () => {
-  const { f, b, set } = await window2(), ev = spec.events.backdrop, t = f.t, rx = placed(b.props.regions.resident.figure); assert.equal(ev.resident, "dither");
-  f.send({ t: "event", kind: "dither", target: "glass", from: "t:glass-old", ms: ev.ms, hold: 0 }); f.send({ t: "event", kind: "dither", target: "resident", from: "t:res-old", ms: ev.ms, hold: 0 }); set("t:glass-new", "t:res-new");
-  const RES_AT = [[0, 0], [1, 1], [2, 2], [3, 3]].map(([dx, dy]) => [rx[0] + 150 + dx, rx[1] + 150 + dy]), seen = new Set();
-  for (const ms of [0, 40, 80, 120, 160, 199]) {
-    f.frame(t + ms); const level = Math.floor(16 * ms / ev.ms); seen.add(level);
-    for (const [x, y] of GLASS_AT) assert.deepEqual(px(f, x, y), BAYER[(y & 3) * 4 + (x & 3)] < level ? B : A, `glass at ${ms} ms (level ${level}), ${x},${y}`);
-    for (const [x, y] of RES_AT) assert.deepEqual(px(f, x, y), BAYER[(y & 3) * 4 + (x & 3)] < level ? D : C, `resident at ${ms} ms (level ${level}), ${x},${y}`);
-  }
-  f.frame(t + 200); for (const [x, y] of GLASS_AT) assert.deepEqual(px(f, x, y), B); for (const [x, y] of RES_AT) assert.deepEqual(px(f, x, y), D); assert.deepEqual([...seen], [0, 3, 6, 9, 12, 15]); assert.deepEqual(f.errors(), []);
-});
-test("events.backdrop, the \"cut\" form: the glass dithers while the resident keeps its picture (the host's props) and cuts to the new one at 200 ms", { skip }, async () => {
-  const { f, b, set } = await window2(), ev = spec.events.backdrop, t = f.t, rx = placed(b.props.regions.resident.figure), at = [rx[0] + 150, rx[1] + 150];
-  f.send({ t: "event", kind: "dither", target: "glass", from: "t:glass-old", ms: ev.ms, hold: 0 }); set("t:glass-new", "t:res-old");
-  for (const ms of [40, 120, 199]) { f.frame(t + ms); assert.deepEqual(px(f, at[0], at[1]), C, `the resident's old picture at ${ms} ms`); }
-  set("t:glass-new", "t:res-new"); f.frame(t + 200); assert.deepEqual(px(f, at[0], at[1]), D, "cut at 200"); assert.deepEqual(px(f, 40, 100), B);
-});
-test("the pose step's change to or from the curl: the resident cross-dithers 16 levels over 180 ms (level = floor(16 t / 180)); reduced motion and a glass from of another size are cuts", { skip }, async () => {
-  const { f, b, set } = await window2(), t = f.t, rx = placed(b.props.regions.resident.figure), at = [[rx[0] + 150, rx[1] + 150], [rx[0] + 151, rx[1] + 151], [rx[0] + 152, rx[1] + 150], [rx[0] + 153, rx[1] + 151]];
-  f.send({ t: "event", kind: "dither", target: "resident", from: "t:res-old", ms: 180, hold: 0, cut: true }); set("t:glass-old", "t:res-new");
-  for (const ms of [0, 40, 80, 120, 160, 179]) { f.frame(t + ms); const level = Math.floor(16 * ms / 180); for (const [x, y] of at) assert.deepEqual(px(f, x, y), BAYER[(y & 3) * 4 + (x & 3)] < level ? D : C, `at ${ms} ms (level ${level})`); }
-  f.frame(t + 180); for (const [x, y] of at) assert.deepEqual(px(f, x, y), D, "the curl whole at 180");
-  const r = await window2({ motion: false }); r.f.send({ t: "event", kind: "dither", target: "resident", from: "t:res-old", ms: 180, hold: 0 }); r.f.send({ t: "event", kind: "dither", target: "glass", from: "t:glass-old", ms: 200, hold: 0 }); r.set("t:glass-new", "t:res-new"); r.f.frame(r.f.t + 40);
-  for (const [x, y] of at) assert.deepEqual(px(r.f, x, y), D, "reduced motion: a cut"); for (const [x, y] of GLASS_AT) assert.deepEqual(px(r.f, x, y), B, "reduced motion: the glass cuts");
-  const g = await window2({ glassFrom: [100, 100] }); g.f.send({ t: "event", kind: "dither", target: "glass", from: "t:glass-old", ms: 200, hold: 0 }); g.set("t:glass-new", "t:res-old"); g.f.frame(g.f.t + 100);
-  for (const [x, y] of GLASS_AT) assert.deepEqual(px(g.f, x, y), B, "a from that is not of the glass's size: no dither"); assert.deepEqual(g.f.errors(), []);
-});
+// retired (release 21a): events.backdrop, the \"dither\" form... needs the layered stand's poses of S01, retired
+// retired (release 21a): events.backdrop, the \"cut\" form... needs the layered stand's poses of S01, retired
+// retired (release 21a): the pose step's change to or from the curl... needs the layered stand's poses of S01 (curl, shake, calm), retired with the earlier paintings
 test("events.begin: the lit gilt dithers out to clear over 300 ms (a pixel clear where BAYER < level), the glass showing through", { skip }, async () => {
   const b = scene({ step: "begin" }), f = await start(b, { t0: 1000 }), lit = R.gilt.slices.armed, out = spec.events.begin.steps[0]; assert.equal(b.props.regions.gilt.picture, lit); assert.equal(out.from, lit);
   f.handleOf("t:gilt-lit", withPolicy(() => ({ ...solid(560, 424, D), policy: "painted" }))); f.handleOf("t:glass", withPolicy(() => ({ ...solid(544, 408, B), policy: "painted" })));

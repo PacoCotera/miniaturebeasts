@@ -4,6 +4,7 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { LANGUAGE, roster, validateRegistry } from "./language.mjs";
 import { decodePNG } from "./png.mjs";
+import { isRead48Exception } from "./census.mjs";
 
 export const READ48_MAX_IOU = 0.85;
 export const DEFAULT_STANDS = "/home/mb/mb/iwq/results/T-20261105-roster-concepts";
@@ -33,7 +34,7 @@ export function read48(reg = LANGUAGE, standsDir = process.env.MB_STANDS_DIR ?? 
   const pairs = [];
   for (let i = 0; i < have.length; i++) for (let j = i + 1; j < have.length; j++) pairs.push({ a: have[i], b: have[j], iou: Math.round(iou(masks.get(have[i]), masks.get(have[j])) * 1000) / 1000 });
   pairs.sort((x, y) => y.iou - x.iou);
-  const bad = pairs.filter((p) => p.iou >= READ48_MAX_IOU);
+  const bad = pairs.filter((p) => p.iou >= READ48_MAX_IOU && !isRead48Exception(p.a, p.b));   // the one signed pair (census.mjs READ48_EXCEPTIONS) is not a failure
   const msgs = bad.map((p) => `${p.a} and ${p.b} read alike at 48 px (IoU ${p.iou}, limit under ${READ48_MAX_IOU})`);
   if (!masks.size) msgs.push(`no stands found in ${standsDir}: nothing measured`);
   return { id: "roster.read48", level: "red", pass: msgs.length === 0, messages: msgs, measured: have.length, missing, closest: pairs.slice(0, 3), limit: READ48_MAX_IOU };

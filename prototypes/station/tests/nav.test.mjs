@@ -11,7 +11,7 @@ import * as L from "../src/library.mjs";
 import { setFrames } from "../src/genome.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-setFrames(readdirSync(path.resolve(here, "../../workbench/frames")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames", f), "utf8"))));
+setFrames(readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames/language", f), "utf8"))));
 const nav = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/frame.json"), "utf8")).navigation;
 
 test("the tree: every screen's parent is in the tree, Home alone has none, and ← is the parent whichever way you came", () => {

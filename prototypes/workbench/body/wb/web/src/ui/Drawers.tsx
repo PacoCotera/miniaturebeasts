@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getToken, historyOne, type Entry, type Species } from '../lib/api'
+import { historyOne, type Entry, type Species } from '../lib/api'
+import { useCanEdit } from '../lib/gate'
 import { clock, fieldLabel, fieldValue, initials } from '../lib/edits'
 import { useUI } from '../lib/store'
 import { useRevert } from '../lib/undo'
@@ -45,11 +46,12 @@ export function DrawerFrame({ url, go, label, quiet, children, extra }: { url: S
 
 // History: the undo log with who made each entry, newest first. An undo or a redo is an entry of its own, so the edit and the undo that took it back are both there.
 export function HistoryDrawer({ species, url, go }: { species: Species; url: StudioUrl; go: Go }) {
+  const canEdit = useCanEdit()
   const q = useQuery(historyOne(url.species, species.hash))
   const rev = useRevert(url.species)
   const entries = useMemo(() => (q.data?.entries ?? species.history).slice().reverse(), [q.data, species.history])
   const can = q.data ?? species.undo ?? { undo: false, redo: false }
-  const editable = !!getToken()
+  const editable = canEdit
   return (
     <DrawerFrame url={url} go={go} label="History" quiet={entries.length ? `${entries.length} ${entries.length === 1 ? 'entry' : 'entries'}` : undefined} extra={
       <span className={d.acts}>

@@ -4,6 +4,8 @@ Behind the site's proxy the app lives under /studio/: a leading /studio is strip
 python -m wb.server --home DIR [--species DIR ...] [--static DIR] [--host ADDR] [--port N] [--trusted-proxy ADDR]"""
 import argparse
 import copy
+import gzip
+import hashlib
 import json
 import os
 import queue
@@ -21,14 +23,28 @@ if BODY not in sys.path:
     sys.path.insert(0, BODY)
 
 import checks as CH
-from wb import cas as C, facade as F, hashing as H, jobs as J, keys as K, report as R, store as S
+from wb import cas as C, facade as F, hashing as H, jobs as J, keys as K, report as R, store as S, webp as WP
 from wb.store import ApiError
 
 STATIC_APP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "app")
-CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+CSP = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
 PREFIX = "/studio"
 IMMUTABLE = "private, max-age=31536000, immutable"                  # a picture fetched behind the login must never be kept by a shared cache
-CT = {"woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
+KEEPALIVE_IDLE = 180
+
+
+def accepted_encodings(header):
+    """The content codings an Accept-Encoding header allows (q=0 refuses)."""
+    out = set()
+    for part in (header or "").split(","):
+        name, _, params = part.strip().partition(";")
+        q = re.search(r"q=([0-9.]+)", params)
+        if name and (not q or float(q.group(1) or 0) > 0):
+            out.add(name.strip().lower())
+    return out
+
+
+CT = {"webp": "image/webp", "woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
 
 
 def strip_prefix(path):
@@ -51,6 +67,26 @@ def count_rows(rows):
     """What the pill and the drawer both say, from one place: fails and warnings need you; passes never do."""
     n = lambda st: sum(1 for r in rows if r["state"] == st)
     return dict(total=len(rows), fail=n("fail"), warn=n("warn"), need=n("fail") + n("warn"), passed=n("pass"))
+
+
+SPECIES_SCHEMAS = ("mb-species/", "mb-body/")            # a JSON file in a species folder is a species only when its schema says so (catalogue-pin.json and the like are not)
+GZIP_MIN = 860                                           # under this a gzip frame is no smaller than the answer
+
+
+def is_species_file(path):
+    try:
+        with open(path) as fh:
+            doc = json.load(fh)
+    except (OSError, ValueError):
+        return True                                      # a file that does not parse is shown with its error, as before
+    return isinstance(doc, dict) and str(doc.get("schema", "")).startswith(SPECIES_SCHEMAS)
+
+
+def etag_matches(header, tag):
+    """If-None-Match against one tag: any listed tag (weak or not) or *."""
+    if not header:
+        return False
+    return header.strip() == "*" or tag in [t.strip().removeprefix("W/") for t in header.split(",")]
 
 
 K_VIEWS = [(m, a, z) for z in (304, 608) for m in K.MODES for a in K.AZ]
@@ -229,6 +265,7 @@ class Server:
         self.queue = J.JobQueue()
         self.stopping = False
         self.species = {}
+        self.not_species = {}                                          # path -> mtime of a JSON file in a species folder that is not a species (looked at once, again only when it changes)
         self.started = False
         self.scan()
         self.workers = [ProxyWorker(self, i) for i in range(proxy_workers)]
@@ -262,7 +299,18 @@ class Server:
                     if f.endswith(".json") and not f.endswith(".undo.jsonl"):
                         sid = f[:-5]
                         if sid not in self.species:
-                            self.species[sid] = S.Species(sid, os.path.join(d, f))
+                            path = os.path.join(d, f)
+                            try:
+                                mt = os.stat(path).st_mtime_ns
+                            except OSError:
+                                continue
+                            if self.not_species.get(path) == mt:
+                                continue
+                            if not is_species_file(path):                          # catalogue-pin.json and other data files in the folder
+                                self.not_species[path] = mt
+                                continue
+                            self.not_species.pop(path, None)
+                            self.species[sid] = S.Species(sid, path)
                             if self.started:
                                 self.play_start(self.species[sid])
 
@@ -302,9 +350,10 @@ class Server:
             except Exception as e:
                 print("watcher:", type(e).__name__, e, file=sys.stderr)
 
-    def after_edit(self, sp, actor, paths, via):
+    def after_edit(self, sp, actor, paths, via, edit=None):
+        """`edit`: what an API save did, for the page to apply to its own copy (base hash, the ops without their tests, the log entries, the undo flags); None for a direct file edit, which the page refetches."""
         name = actor["name"] if actor else "file edit"
-        self.hub.emit("edited", sp.id, actor=name, role=actor["role"] if actor else None, agent=bool(actor and actor.get("agent")), via=via, hash=sp.hash, changes=paths)
+        self.hub.emit("edited", sp.id, actor=name, role=actor["role"] if actor else None, agent=bool(actor and actor.get("agent")), via=via, hash=sp.hash, changes=paths, **(edit or {}))
         from wb import gate as GT
         if GT.note_edit(sp.path, sp.hash, name):                  # signatures on the old file no longer count: the round records who voided them
             self.hub.emit("gate", sp.id, voided=True, actor=name)
@@ -319,6 +368,60 @@ class Server:
             self.submit(sp.id, "check", dict(genome="type", stage="all"), dict(name="auto", role="server"))
         except ApiError:
             pass
+
+    def row_error(self, sp):
+        """The species row's error: the file's own, else the sculpt or part its `mesh` block pins that cannot be found by path or by sha (never a blank stage with no word)."""
+        if sp.error:
+            return sp.error
+        import meshsource as MS
+        return MS.mesh_problem((sp.spec or {}).get("mesh"))
+
+    def eye_rings(self, sp):
+        """The ring look of the eyes (thin / between / wide) from the trait 'eye-rings' on locus growth.exterior-eye-size-ratio, read through the look reader the cards use (expressions.looks_of). None when the file has no such locus: the studio then draws between."""
+        import expressions as X
+        try:
+            g = (sp.spec or {}).get("genome") or {}
+            if not any(e.get("locus") == "growth.exterior-eye-size-ratio" for e in g.get("loci", [])):
+                return None
+            look = str(X.looks_of(g, X.type_copies(g)).get("growth.exterior-eye-size-ratio") or "")
+        except (KeyError, ValueError, TypeError):
+            return None
+        return {"thin rings": "thin", "between": "between", "wide pale rings": "wide"}.get(look)  # the looks of the trait eye-rings, by their names; absent or unknown: None (the studio draws between)
+
+    def studio_files(self, sp):
+        """What the browser draws a mesh file from: the studio GLB of the sculpt and of each part, by the sha pinned in the sidecar, served at /cas/<sha>.glb. None for a cage file or when a sidecar has no studio GLB yet."""
+        import meshsource as MS
+        blk = (sp.spec or {}).get("mesh")
+        if not isinstance(blk, dict) or not blk.get("source"):
+            return None
+
+        def one(rel, sha):
+            try:
+                side = MS.load_json(MS.resolve(rel, sha))
+            except (OSError, ValueError):
+                return None
+            st = side.get("studio")
+            if not st or MS.studio_glb(st["sha256"]) is None:
+                return None
+            return dict(id=side["id"], sha256=st["sha256"], bytes=st["bytes"], url=f"/cas/{st['sha256']}.glb", morph_targets=st.get("morph_targets", []), bones=st.get("bones", []), _side=side)
+        body = one(blk["source"], blk.get("sha256"))
+        parts = [dict(one(pe["part"], pe.get("sha256")) or {}, socket=pe.get("socket"), mirror=bool(pe.get("mirror"))) for pe in blk.get("parts") or [] if pe.get("part")]
+        # what the browser needs to pose the body as meshbody.py builds it: the sculpt's standing height, eye stations and sockets (sculpt units, z up), each part's layouts, and the land's colours for the coat preview
+        if body:
+            side = body.pop("_side")
+            stn = side.get("stations") or {}
+            body["height"] = (side.get("bands") or {}).get("standing_height")
+            body["stations"] = dict(eyes=stn.get("eyes", []), sockets=stn.get("sockets", []))
+        for p in parts:
+            side = p.pop("_side", None)
+            if side:
+                p["layouts"] = side.get("layouts", {})
+        import species_v1 as V1
+        land = next((x for x in V1.registry()["lands"] if x["id"] == (sp.spec or {}).get("land")), None)
+        iris = (((sp.spec or {}).get("face") or {}).get("eyes") or {}).get("iris", {}).get("colour")
+        coat = (sp.spec or {}).get("coat") or {}                      # the mibi's own Tint and Shade, when a file carries them (the file for the kind does not yet)
+        look = dict(land={k: land[k]["hex"] for k in ("body", "marking", "accent")} if land else None, iris=iris, loika=(sp.spec or {}).get("id") == "S01", tint=coat.get("tint"), shade=coat.get("shade"), eyes=self.eye_rings(sp))  # the Eyes trait (thin / between / wide), when a file carries it
+        return dict(sculpt=body, parts=parts, look=look)
 
     def current_views(self, sp):
         """The proxy frames of the file as it is now (type genome, 304 for the strip and 608 for the hero): each with its cache key and whether the picture exists yet. A read of the cache, never a job."""
@@ -353,10 +456,16 @@ class Server:
         with sp.lock:
             new = S.apply_patch(sp.spec, ops)
             self.check_file(new, raise_on_fail=True)
+            base = sp.hash
             changes, h = sp.patch(ops, actor, via)
+            entries = sp.history(len(changes)) if changes else []
+            can = sp.can_undo_redo()
+        # what the page needs to follow this save without asking for the file again; a save that moved the derived loft table is not exact in its ops, so the page refetches
+        derived = any(str(op.get("path", "")).startswith(S.KNOBS) for op in ops if op.get("op") != "test")
+        applied = dict(base=base, ops=None if derived else [op for op in ops if op.get("op") != "test"], entries=entries, **can)
         if changes:
-            self.after_edit(sp, actor, [c[0] for c in changes], "api")
-        return dict(hash=h, changed=[dict(path=p, old=o, new=n) for p, o, n in changes], touches=[], validation=dict(ok=True, errors=[]), **sp.can_undo_redo())
+            self.after_edit(sp, actor, [c[0] for c in changes], "api", edit=applied)
+        return dict(applied, hash=h, changed=[dict(path=p, old=o, new=n) for p, o, n in changes], touches=[], validation=dict(ok=True, errors=[]))
 
     def revert(self, sid, kind, actor):
         """Undo or redo the last save through the undo log: it is a save of its own (via 'undo' or 'redo'), made by the actor who asked, so History shows both."""
@@ -379,6 +488,9 @@ class Server:
             if errs:
                 if raise_on_fail:
                     raise ApiError(400, errs[0][1], errs[0][0])
+                return rows
+            if F.is_mesh(spec):                                  # a mesh body has no cage (spine, skeleton, parts): the cage schema and genes do not apply, the species schema above is its file check
+                row("schema", True, "valid", "valid", "The species file must pass the schema.")
                 return rows
             spec = V1.to_internal(spec)
         try:
@@ -1557,6 +1669,8 @@ def G_read(sp):
 def make_handler(srv):
     class H_(BaseHTTPRequestHandler):
         server_version = "wb/1"
+        protocol_version = "HTTP/1.1"          # a browser revalidates an ETag only over HTTP/1.1 (measured); every answer below carries a Content-Length, and the event stream closes its connection
+        timeout = KEEPALIVE_IDLE               # an idle kept-alive connection is closed after three minutes: after the site proxy's two-minute upstream keepalive, so the proxy never reuses a connection we just closed (a rare 502)
 
         def log_message(self, fmt, *a):
             print(f"{S.now()} {self.address_string()} {fmt % a}", file=sys.stderr)
@@ -1578,28 +1692,61 @@ def make_handler(srv):
 
         def body(self):
             n = int(self.headers.get("Content-Length") or 0)
+            self.body_read = True
             try:
                 return json.loads(self.rfile.read(n) or b"null")
             except ValueError:
                 raise ApiError(400, "the body is not JSON", "body")
 
-        def send_json(self, obj, status=200):
+        def send_json(self, obj, status=200, etag=None):
+            """The answer as JSON, gzipped when the page accepts it and the answer is worth it. `etag`: a string to tag the answer with, or True for a tag made of the answer itself;
+            a request that already holds that tag gets a 304 and no body. Tagged answers are `private, no-cache`: the browser keeps them and asks again each time, which costs a header."""
             data = json.dumps(obj).encode()
+            tag = None
+            if etag:
+                tag = '"' + (hashlib.sha1(data).hexdigest()[:32] if etag is True else str(etag)) + '"'
+                if etag_matches(self.headers.get("If-None-Match"), tag):
+                    self.send_response(304)
+                    self.send_header("ETag", tag)
+                    self.send_header("Cache-Control", "private, no-cache")
+                    self.send_header("Vary", "Accept-Encoding")
+                    self.end_headers()
+                    return
+            zipped = len(data) >= GZIP_MIN and "gzip" in (self.headers.get("Accept-Encoding") or "")
+            if zipped:
+                data = gzip.compress(data, 5, mtime=0)
             self.send_response(status)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(data)))
+            if zipped:
+                self.send_header("Content-Encoding", "gzip")
+            self.send_header("Vary", "Accept-Encoding")
+            if tag:
+                self.send_header("ETag", tag)
+                self.send_header("Cache-Control", "private, no-cache")
             self.end_headers()
             self.wfile.write(data)
 
         def guarded(self, fn):
+            self.body_read = False
             try:
                 fn()
             except ApiError as e:
                 self.send_json(dict(error=e.message, field=e.field, **e.extra), e.status)
             except (BrokenPipeError, ConnectionResetError):
-                pass
+                self.close_connection = True
             except Exception as e:
                 self.send_json(dict(error=f"{type(e).__name__}: {e}"), 500)
+            finally:
+                if not self.body_read:                      # a refused call leaves its body unread: on a kept-alive connection it would be taken for the next request
+                    try:
+                        n = int(self.headers.get("Content-Length") or 0)
+                        if 0 < n <= 1 << 24:
+                            self.rfile.read(n)
+                        elif n:
+                            self.close_connection = True
+                    except (OSError, ValueError):
+                        self.close_connection = True
 
         def do_GET(self):
             self.guarded(self.get)
@@ -1615,18 +1762,35 @@ def make_handler(srv):
             u = urlparse(self.path)
             p, q = strip_prefix(u.path), parse_qs(u.query)
             if p == "/api/species":
-                return self.send_json([dict(id=s.id, name=s.spec.get("name"), path=s.path, hash=s.hash, error=s.error) for s in srv.species.values()])
+                return self.send_json([dict(id=s.id, name=s.spec.get("name"), path=s.path, hash=s.hash, error=srv.row_error(s)) for s in srv.species.values()], etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)", p)
-            if m:
+            if m:                                                      # the whole answer, kept for the pages that still ask for it; the three routes below are its parts
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=srv.row_error(s), lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()), etag=True)
+            m = re.fullmatch(r"/api/species/([^/]+)/file", p)
+            if m:                                                      # the document: tagged with its hash (and the error, when the file on disk does not parse)
+                s = srv.get_species(m.group(1))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error), etag=s.hash + ("-" + hashlib.sha1(s.error.encode()).hexdigest()[:8] if s.error else ""))
+            m = re.fullmatch(r"/api/species/([^/]+)/state", p)
+            if m:                                                      # what moves while the file does not: lease, undo flags, the check rows, the render keys
+                s = srv.get_species(m.group(1))
+                ex = srv.current_extremes(s)
+                ex = ex and {k: ex[k] for k in ("fresh", "running", "key", "at")}           # which Check ends result there is, not the result: a page that sees it change asks /extremes
+                return self.send_json(dict(id=s.id, hash=s.hash, error=s.error, lease=None, checks=srv.current_checks(s), extremes=ex, undo=s.can_undo_redo(), views=srv.current_views(s)), etag=True)
+            m = re.fullmatch(r"/api/species/([^/]+)/extremes", p)
+            if m:                                                      # the Check ends block (34 KB on Tuliko): asked for by the screens that show it
+                s = srv.get_species(m.group(1))
+                return self.send_json(dict(id=s.id, hash=s.hash, extremes=srv.current_extremes(s)), etag=True)
+            m = re.fullmatch(r"/api/species/([^/]+)/studio", p)
+            if m:
+                return self.send_json(srv.studio_files(srv.get_species(m.group(1))), etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)/freq", p)
             if m:
                 return self.send_json(srv.freq(srv.get_species(m.group(1)), int(q.get("n", ["1000"])[0])))
             m = re.fullmatch(r"/api/species/([^/]+)/forms", p)
             if m:
                 from wb import forms as FM
-                return self.send_json(FM.forms(srv.get_species(m.group(1)).spec))
+                return self.send_json(FM.forms(srv.get_species(m.group(1)).spec), etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)/toys", p)
             if m:
                 return self.send_json(srv.toys(srv.get_species(m.group(1))))
@@ -1666,7 +1830,10 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)/spine", p)
             if m:
                 from wb import spine as SPN
-                return self.send_json(SPN.spine_view(srv.get_species(m.group(1)).spec))
+                spec = srv.get_species(m.group(1)).spec
+                if F.is_mesh(spec):
+                    raise ApiError(400, "a mesh body has no spine view: its shape is the sculpt, moved by the mesh loci, the bone scales and the keys", "spine")
+                return self.send_json(SPN.spine_view(spec))
             m = re.fullmatch(r"/api/species/([^/]+)/history", p)
             if m:
                 s = srv.get_species(m.group(1))
@@ -1730,7 +1897,11 @@ def make_handler(srv):
             if p == "/api/stats":
                 return self.send_json(dict(jobs=srv.queue.counts(), cache_bytes=srv.cas.size(), framework=H.framework_id(), workers=len(srv.workers)))
             if p == "/api/checks":
-                return self.send_json(CH.metas())
+                return self.send_json(CH.metas(), etag=True)
+            m = re.fullmatch(r"/api/schema/(mb-species-[12])", p)
+            if m:                                                       # the species file's schema as JSON Schema: the page's zod schema and its field words come from it (R3)
+                from wb import schema_json as SJ
+                return self.send_json(SJ.json_schema(m.group(1)), etag=True)
             if p == "/api/families":
                 from families import registry as FR
                 return self.send_json(FR.cards())
@@ -1744,12 +1915,21 @@ def make_handler(srv):
                 return self.send_json([])
             if p == "/events":
                 return self.events(q.get("species", [None])[0])
-            m = re.fullmatch(r"/cas/([0-9a-f]+)\.(png|json|glb)", p)
+            m = re.fullmatch(r"/cas/([0-9a-f]+)\.(png|webp|json|glb)", p)
             if m:
                 key, ext = m.groups()
-                if not srv.cas.has(key, ext):
+                if ext == "webp" and not srv.cas.has(key, "webp") and srv.cas.has(key, "png"):
+                    try:
+                        WP.png_to_webp(srv.cas.path(key, "png"), srv.cas.path(key, "webp"))     # the lossless twin, made on the first ask and kept beside the PNG
+                    except ValueError:
+                        raise ApiError(404, "this picture has no WebP twin (not an 8-bit PNG)", "key")
+                path = srv.cas.path(key, ext) if srv.cas.has(key, ext) else None
+                if path is None and ext == "glb":                   # a studio GLB is addressed by the sha pinned in its sidecar and found in the code's own species_v1 (or WB_SCULPT_CACHE), never copied into the cache; served as is (already compressed), immutable, no gzip
+                    import meshsource as MS
+                    path = MS.studio_glb(key)
+                if path is None:
                     raise ApiError(404, "not in the cache", "key")
-                with open(srv.cas.path(key, ext), "rb") as fh:
+                with open(path, "rb") as fh:
                     data = fh.read()
                 self.send_response(200)
                 self.send_header("Content-Type", CT[ext])
@@ -1770,10 +1950,17 @@ def make_handler(srv):
                 raise ApiError(404, "not found", None)
             if not is_file:
                 full = os.path.join(srv.static, "index.html")
-            with open(full, "rb") as fh:
+            sibs = [(e, full + ext) for e, ext in (("br", ".br"), ("gzip", ".gz")) if os.path.isfile(full + ext)]    # precompressed by the build
+            taken = accepted_encodings(self.headers.get("Accept-Encoding"))
+            enc, path = next(((e, f) for e, f in sibs if e in taken), (None, full))
+            with open(path, "rb") as fh:
                 data = fh.read()
             self.send_response(200)
             self.send_header("Content-Type", CT.get(full.rsplit(".", 1)[-1], "application/octet-stream"))
+            if enc:
+                self.send_header("Content-Encoding", enc)
+            if sibs:
+                self.send_header("Vary", "Accept-Encoding")
             self.send_header("Content-Length", str(len(data)))
             self.send_header("Cache-Control", IMMUTABLE if p.startswith("/assets/") else "no-cache")
             self.send_header("Content-Security-Policy", CSP)
@@ -1785,6 +1972,8 @@ def make_handler(srv):
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")
             self.send_header("Cache-Control", "no-cache")
+            self.send_header("Connection", "close")                    # no length: the stream ends when the connection does
+            self.close_connection = True
             self.end_headers()
             qq = srv.hub.subscribe(species)
             try:

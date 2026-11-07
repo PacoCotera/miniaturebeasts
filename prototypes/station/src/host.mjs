@@ -113,7 +113,11 @@ const living = () => ({ time: timeNow(), now: Date.now(), restRules: SPECS.vivar
 // Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
 export function homeBody(light = lightNow()) {
   const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "", light, restRules: SPECS.vivarium?.rules?.rest, rules: SPECS.vivarium?.rules, arrived: UI.arrived, motionSets: !!G.settings.motionSets });   // place: the save has no place name yet
-  const body = homeBuild(model(), SPECS.home, SPECS.frame);
+  const body = homeBuild(model(), SPECS.home, SPECS.frame), pn = UI.panel;
+  if (pn && pn.screen === "home" && pn.id === "reset") {   // the release's one-time notice rides on Home as the decision panel (one card, its bottom line built from the card)
+    const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
+    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+  } else if (pn && pn.screen === "home") UI.panel = null;
   if (body.props.focus.cur === "room") UI.home.f = "room";
   return body;
 }

@@ -140,6 +140,90 @@ class TestShapeServer(unittest.TestCase):
         self.assertEqual(j["field"], "/spine/tail/length")
 
 
+S01 = json.load(open(os.path.join(BODY, "species_v1", "S01.json")))
+CAGE_PTR = ("/spine", "/skeleton", "/parts")
+
+
+class TestMeshForms(unittest.TestCase):
+    """Loika (S01) is a mesh body: no spine, skeleton or parts. The studio offers it the knobs of its own body only."""
+    def test_the_outline_has_no_spine_range_and_no_cage_part(self):
+        rows = FM.outline(S01)
+        ids = [r["id"] for r in rows]
+        self.assertEqual(ids, ["head", "body", "fore", "hind", "coat", "renders"])
+        self.assertFalse(any(r["kind"] == "range" for r in rows))
+        self.assertFalse({"neck", "back", "seat", "tail", "ears", "crown", "arms", "legs", "tip", "motion"} & set(ids))
+
+    def test_every_field_points_at_a_rig_bone_or_a_key_and_no_field_at_the_cage(self):
+        n = 0
+        for r in FM.outline(S01):
+            for f in FM.fields_of(S01, r["id"]):
+                n += 1
+                self.assertTrue(f["ptr"].startswith(("/rig/bones/", "/keys/")), f["ptr"])
+                self.assertFalse(f["ptr"].startswith(CAGE_PTR))
+                cur = S01
+                for t in f["ptr"].split("/")[1:]:
+                    cur = cur[int(t)] if isinstance(cur, list) else cur[t]
+                self.assertIsInstance(cur, (int, float), f["id"])
+                lo, hi = f["range"]
+                self.assertTrue(lo <= cur <= hi, f["id"])
+        self.assertGreater(n, 10)
+
+    def test_forms_of_a_mesh_file_answers_without_a_plan_range(self):
+        j = FM.forms(S01)
+        self.assertEqual(j["parts"]["head"]["fields"][0]["ptr"], "/rig/bones/2/len")
+        self.assertEqual([f["ptr"] for f in j["parts"]["body"]["fields"]][-1], "/keys/0/amount")
+
+
+class TestMeshServer(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        shutil.rmtree(SCRATCH + "_s01", ignore_errors=True)
+        cls.sp = os.path.join(SCRATCH + "_s01", "species")
+        os.makedirs(cls.sp)
+        cls.file = os.path.join(cls.sp, "S01.json")
+        S.write_spec(cls.file, S01)
+        cls.srv = SV.Server(os.path.join(SCRATCH + "_s01", "home"), [cls.sp], proxy_workers=0)
+        cls.srv.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.srv.stop()
+        shutil.rmtree(SCRATCH + "_s01", ignore_errors=True)
+
+    req = TestShapeServer.req
+
+    def disk(self):
+        return json.load(open(self.file))
+
+    def test_a_bone_scale_a_key_and_a_locus_each_save_and_undo(self):
+        for ptr, val, get in [("/rig/bones/2/len", 1.1, lambda d: d["rig"]["bones"][2]["len"]), ("/keys/0/amount", 0.3, lambda d: d["keys"][0]["amount"]), ("/genome/loci/0/type", 1.05, lambda d: d["genome"]["loci"][0]["type"])]:
+            before = get(self.disk())
+            st, j = self.req("/api/species/S01", "PATCH", [{"op": "test", "path": ptr, "value": before}, {"op": "replace", "path": ptr, "value": val}])
+            self.assertEqual(st, 200, j)
+            self.assertEqual([(c["path"], c["old"], c["new"]) for c in j["changed"]], [(ptr, before, val)])
+            self.assertEqual(get(self.disk()), val)
+            self.assertTrue(j["undo"])
+            st, j = self.req("/api/species/S01/undo", "POST", {})
+            self.assertEqual(st, 200, j)
+            self.assertEqual(get(self.disk()), before)
+
+    def test_a_knob_that_belongs_to_the_cage_is_a_400_with_a_message_never_a_500(self):
+        for op in ({"op": "replace", "path": "/spine/tail/length", "value": 1.0}, {"op": "add", "path": "/skeleton", "value": {}}, {"op": "replace", "path": "/parts/0/fillet", "value": 0.1}):
+            st, j = self.req("/api/species/S01", "PATCH", [op])
+            self.assertEqual(st, 400, j)
+            self.assertIn("sculpt", j["error"])
+        self.assertEqual(self.disk(), json.load(open(os.path.join(BODY, "species_v1", "S01.json"))))
+
+    def test_the_spine_view_is_a_400_for_a_mesh_body(self):
+        st, j = self.req("/api/species/S01/spine")
+        self.assertEqual((st, j["field"]), (400, "spine"))
+
+    def test_the_forms_answer_matches_the_file(self):
+        st, j = self.req("/api/species/S01/forms")
+        self.assertEqual(st, 200)
+        self.assertEqual([r["id"] for r in j["outline"]], ["head", "body", "fore", "hind", "coat", "renders"])
+
+
 if __name__ == "__main__":
     unittest.main()
 

@@ -2,6 +2,7 @@
 // against namer.props.json) in every scene, holds no rectangle, fits the props budget, names the state (rest, meet, out), the card, the plates, the four modules and the strip, and the ring's targets and bottom line by the spec's rules.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import { movingFixture } from "./fixtures/moving.mjs";
 import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -18,7 +19,7 @@ import { roomIds } from "../src/views/room-props.mjs";
 import { capLine } from "../src/views/words.mjs";
 const habitatBuild = lineCased(habitatBuildUnchecked, "habitat");   // every body it builds goes through assertLineCase (report mode)
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), sittingSpec = J("sitting.json"), spec = J("habitat.json"), frameSpec = J("frame.json"), home = J("home.json"), schema = J("habitat.props.json"), namerSchema = J("namer.props.json"), panelSpec = J("panel.json"), podsSpec = J("pods.json");
 const T0 = 1_000_000, cfg = (rooms) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", rooms });
@@ -83,7 +84,7 @@ test("the card: the species line with the stage word, the story (a founder: wher
   assert.equal(card("juvenile").species.text, "your Loika, young");
   const b = card("bonded"); assert.equal(b.heart, "heart-full-24"); assert.equal(b.notches.count, 3, "min(notches, 3)"); assert.equal(b.notches.picture, "notch-skill-16x24");
   const fr = frameOf("S01"); m.from = { ...m.from, of: ["Moss", "Fig"] }; m.mem = "pond"; assert.deepEqual(card("rest").story, ["of Moss", "and Fig", "remembers the pond edge"]); m.from = { g: "meadow" };
-  m.read = [fr.chapters[0].id]; const s = card("rest").stamp; assert.deepEqual([s.size > 0, s.size <= 104, s.asset.startsWith("stamp:") && s.asset.endsWith(":" + s.size + ":k20")], [true, true, true]); assert.ok(s.asset.includes(":" + fr.chapters[0].id + ":"), "only the chapters read");
+  m.read = [fr.chapters[0].id]; const s = card("rest").stamp; assert.deepEqual([s.size > 0, s.size <= 104, s.asset.startsWith("stamp:") && s.asset.endsWith(":" + s.size + ":k20:quiet")], [true, true, true]); assert.ok(s.asset.includes(":" + fr.chapters[0].id + ":"), "only the chapters read");
   assert.ok(S0.rest.w.st.mibis.length && build(S0.rest.w, S0.rest.sv).requests.some((r) => r.kind === "stamp" && r.mibi === m.id), "the stamp is a request by mibi (the hatch's form)");
 });
 
@@ -196,7 +197,7 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
 
 // ---- Station M1 §2.6: one mibi up close with its moving set (close and its shadow), its seed and its rest ----
 import { setMoving } from "../src/moving.mjs";
-{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
+setMoving(movingFixture());   // the moving sets of S01 and S05 as a fixture: the game ships none (release 21a)
 test("up close, the resident's seed, moving (the close atlas and its shadow) and rest fit habitat.props.json", () => {
   for (const name of ["rest", "juvenile"]) { const { w, sv } = scenes()[name], b = build(w, sv, { time: 23 * 3600, restRules: spec.rules?.rest ?? J("vivarium.json").rules.rest, motionSets: true }), r = b.props.regions.resident;
     assert.deepEqual(validate(b.props, schema), [], name); assert.ok(Number.isInteger(r.seed)); assert.match(r.moving.close, /^moving:(juvenile|adult):S01:close:304x312:species$/); assert.match(r.moving.shadow, /:shadow:304x24$/); assert.equal(r.rest, "asleep"); }

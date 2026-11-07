@@ -16,16 +16,16 @@ const L = await import("../src/library-sheet.mjs");
 const { sheet: sheetReqs, quiet: quietReq, req: collector } = await import("../src/views/requests.mjs");
 const { drawnLooks } = await import("../src/looks.mjs");
 const { asset } = await import("../../ui/assets.mjs");
-const { loadStandLayersFs, loadStandLooksFs, loadStandSizesFs, unloadStands } = await import("../tools/stand-layers-fs.mjs");
+const { loadStandSizesFs, unloadStands } = await import("../tools/stand-layers-fs.mjs");
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const lib = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/library.json"), "utf8")); SPECS.library = lib;
 const mid = JSON.parse(readFileSync(path.join(here, "fixtures/specimen/states/mid.json"), "utf8")).S01;
 const env = { frameOf }, said = [], say = (s) => said.push(s);
 const input = (found) => ({ species: "S01", mode: "found", found, shut: [], fresh: [], readOnce: [], sealedOpen: false });
 const reqs = (inp, lit = null) => { const out = []; sheetReqs(collector(out))(lib, inp, L.speciesFacts(frameOf("S01")), lit); return out; };
-before(() => { loadStandLooksFs(); loadStandLayersFs(); loadStandSizesFs(); });
+before(() => { loadStandSizesFs(); });
 after(() => unloadStands());
 
 test("P5: the one-time paper is made on its own, its time printed; a second ask makes nothing", () => {
@@ -70,11 +70,4 @@ test("the quiet stand-in is made at once: the ground, the surfaces, the type and
   assert.ok(differ > 1000, "no form: it differs from the sheet where the form is"); assert.deepEqual(pic.facts.plates, full.facts.plates, "the same facts");
 });
 
-test("F4: a face whose mibi has grown is drawn again under the same id and the old picture leaves the face; a portrayed mibi's face keeps its portrait's stage (the request's)", () => {
-  const fr = frameOf("S01"), m = { id: 41, genome: podGenome(fr, 5), read: fr.chapters.map((c) => c.id) }, looks = drawnLooks(fr, m);
-  const face = (stage) => ({ kind: "face", id: "face:41:64", mibi: 41, species: "S01", stage, looks, size: [64, 64], faded: false });
-  P.droppedPictures(); P.registerPictures([face("juvenile")], env); const young = Buffer.from(asset("face:41:64").rgba());
-  P.registerPictures([face("juvenile")], env); assert.deepEqual(P.droppedPictures(), [], "the same stage: the same picture");
-  P.registerPictures([face("adult")], env); assert.deepEqual(P.droppedPictures(), ["face:41:64"], "grown: the old face leaves the face");
-  const grown = Buffer.from(asset("face:41:64").rgba()); assert.ok(!young.equals(grown), "the grown face is the adult's picture, not the cached juvenile's");
-});
+// retired (release 21a): F4: a face whose mibi has grown is drawn again... needs the layered stand's face window of S01, retired

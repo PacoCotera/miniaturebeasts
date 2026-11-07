@@ -23,7 +23,7 @@ import { listPitch } from "../../ui/specs/derive.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("library");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
-setFrames(readdirSync(path.resolve(here, "../../workbench/frames")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames", f), "utf8"))));
+setFrames(readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames/language", f), "utf8"))));
 const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12, sealedOpen: true };
 const findLooks = (st, id, n) => { let left = n; for (const ch of frameOf(id).chapters) for (const t of ch.traits) for (const l of currentLooks(frameOf(id), t)) { if (left <= 0) return; if (S.guideLooks(st, id, t.id).includes(l)) continue; S.guideAdd(st, id, t.id, [l]); left--; } };
 
@@ -58,18 +58,18 @@ test("Level 1, a mid-game catalogue: every part of every cell is at its place, t
   assert.deepEqual(partDepartures(boxOf(f), spec, b.props), []);
   const c = (id) => b.props.regions.cells.find((x) => x.id === id);
   assert.ok(c("S01").face && c("S03").wish && c("S09").glint && c("S04").status === "met" && c("S06").status === "unmet", "the scene holds a face chip, the wish, a glint, a met and an unmet cell");
-  assert.deepEqual(f.nodeBox("cell.S06.picture").box.slice(2), [0, 0]); assert.deepEqual(f.nodeBox("cell.S06.seed").box, [16 + 168 * 5 + 64, 57 + 64, 24, 24]);
-  assert.deepEqual(f.nodeBox("cell.S01.face").box, [16 + 124, 57 + 130, 18, 18]); assert.deepEqual(f.nodeBox("cell.S03.wish").box, [16 + 168 * 2 + 130, 57 + 133, 12, 12], "the wish alone, with no face chip");
-  assert.deepEqual(f.nodeBox("cell.S09.glint").box, [16 + 168 * 2 + 134, 57 + 168 + 6, 12, 12]); assert.deepEqual(f.nodeBox("cell.S04.rule").box, [16 + 168 * 3 + 10, 57 + 126, 132, 1]);
-  assert.deepEqual(f.nodeBox("cell.S06.lip").box, [16 + 168 * 5 + 6, 57 + 152, 140, 1]); assert.deepEqual(f.nodeBox("cell.S01.lip").box.slice(2), [0, 1]);
+  assert.deepEqual(f.nodeBox("cell.S06.picture").box.slice(2), [0, 0]); assert.deepEqual(f.nodeBox("cell.S06.seed").box, [16 + 144 * 5 + 52, 57 + 64, 24, 24]);
+  assert.deepEqual(f.nodeBox("cell.S01.face").box, [16 + 104, 57 + 130, 18, 18]); assert.deepEqual(f.nodeBox("cell.S03.wish").box, [16 + 144 * 2 + 110, 57 + 133, 12, 12], "the wish alone, with no face chip");
+  assert.deepEqual(f.nodeBox("cell.S09.glint").box, [16 + 144 * 1 + 110, 57 + 168 + 6, 12, 12]); assert.deepEqual(f.nodeBox("cell.S04.rule").box, [16 + 144 * 3 + 6, 57 + 126, 116, 1]);
+  assert.deepEqual(f.nodeBox("cell.S06.lip").box, [16 + 144 * 5 + 6, 57 + 152, 116, 1]); assert.deepEqual(f.nodeBox("cell.S01.lip").box.slice(2), [0, 1]);
   assert.equal(cellParts(spec, c("S01"), 0).length, 11, "the cell's two bezel nodes and its nine parts");
 });
 
 const PATCHES = [
-  ["the picture", (s) => { s.l1.cell.picture.rect[0] += 1; }, "picture"],
-  ["the species mark", (s) => { s.l1.cell.mark.rect[1] += 1; }, "mark"],
-  ["the seed", (s) => { s.l1.cell.seed.rect[0] += 1; }, "seed"],
-  ["the wish mark", (s) => { s.l1.cell.wish.alone[0] += 1; }, "wish"],
+  ["the picture", (s) => { s.l1.grid.forms["20"].parts.picture.rect[0] += 1; }, "picture"],
+  ["the species mark", (s) => { s.l1.grid.forms["20"].parts.mark.rect[1] += 1; }, "mark"],
+  ["the seed", (s) => { s.l1.grid.forms["20"].parts.seed.rect[0] += 1; }, "seed"],
+  ["the wish mark", (s) => { s.l1.grid.forms["20"].parts.wish.alone[0] += 1; }, "wish"],
 ];
 for (const [name, patch, part] of PATCHES) {
   test(`the per-part check fails on a moved part: ${name} one pixel off, the spec sent again, names ${part}`, { skip }, async () => {
@@ -81,7 +81,7 @@ for (const [name, patch, part] of PATCHES) {
 }
 
 test("the pad walks the met and found cells only: every move the face says agrees with ui/focus.mjs on l1.focus.graph; ✓ and ← are intents on the focused cell; the ring is on it", { skip }, async () => {
-  const b = midGame("S01"), f = await start(b), T = b.props.focus.targets.map((t) => { const k = b.props.regions.cells.findIndex((c) => "cell." + c.id === t.id); return { id: t.id, rect: listPitch(spec.l1.grid.forms["16"], 16, k), group: "cell" }; });
+  const b = midGame("S01"), f = await start(b), T = b.props.focus.targets.map((t) => { const k = b.props.regions.cells.findIndex((c) => "cell." + c.id === t.id); return { id: t.id, rect: listPitch(spec.l1.grid.forms["20"], 20, k), group: "cell" }; });
   const key = (k) => { for (; f.poll();); f.send({ t: "key", k }); for (let i = 0; i < 2; i++) f.frame((f.t += 16)); const out = []; for (let m; (m = f.poll());) if (m.t === "focus" || m.t === "intent") out.push(m); return out; };
   assert.ok(!T.some((t) => ["cell.S06", "cell.S08", "cell.S11", "cell.S13", "cell.S15", "cell.S16"].includes(t.id)), "the unmet cells are not targets");
   let moved = 0;

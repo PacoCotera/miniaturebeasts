@@ -8,16 +8,15 @@ import json
 import os
 import threading
 
-from wb import hashing as H, store as S
+from wb import hashing as H, store as S, words as WD
 
 SCHEMA = "gate-1"
 SHEETS = [("turnaround", "Turnaround"), ("before-after", "Before and after"), ("joins", "Joins"), ("twelve", "The twelve"), ("motion", "Motion"), ("close-up", "Close-up")]
 SHEET_IDS = [i for i, _ in SHEETS]
 # A language file (mb-species/2, not a fixture) also has the language sheet and the eight judgement rows of the language: each is a tick only the reviewer gives, like every judgement row. Selecting one shows the language sheet.
-# OWED to the copywriter: the wording is the language's own (the design's list of rows); the row names on screen are hers to settle.
-LANGUAGE = ("language", "Language")
-JUDGEMENTS = [("odd-with-a-thought", "Odd, with a thought behind the eyes"), ("nothing-acted", "Nothing acted"), ("no-real-animal", "Never a real animal you can name"), ("clean-silhouette", "Clean silhouette"),
-              ("own-species-face", "Faces read as their own species"), ("anatomy-makes-sense", "Anatomy makes sense"), ("nothing-sad", "Nothing sad, sick or scary"), ("no-seams", "No seams")]
+# The row names are the copywriter's (wb/studio-words.json, gate.language.*).
+LANGUAGE = ("language", WD.say("gate.language.sheet"))
+JUDGEMENTS = [(i, WD.say(f"gate.language.row.{i}")) for i in ("odd-with-a-thought", "nothing-acted", "no-real-animal", "clean-silhouette", "own-species-face", "anatomy-makes-sense", "nothing-sad", "no-seams")]
 LABELS = dict(SHEETS + [LANGUAGE] + JUDGEMENTS)
 JUDGEMENT_IDS = [i for i, _ in JUDGEMENTS]
 LOCK = threading.RLock()

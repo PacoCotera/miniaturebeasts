@@ -17,7 +17,7 @@ import { assetEntry, placeMaster, dropAsset } from "../../ui/assets.mjs";
 import { policyOf } from "../../ui/asset-policy.mjs";
 import { idleBuild } from "../src/views/idle-props.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("pods.json"), frameSpec = J("frame.json"), schema = J("pods.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };

@@ -9,8 +9,9 @@ import { setFrames, frameOf, speciesIndex } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as T from "../src/sitting.mjs";
 
+// The economy journeys run on the pre-language frames (a fixture: the rules are frame-independent; the form frames stay on disk beside the language frames, release 21a).
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
-export const loadFrames = () => setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+export const loadFrames = () => setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 export const MIN = 60000, WALK_MS = 15 * MIN;   // a walk of 10 to 20 minutes (research-economy.md §1): fifteen
 // A walk's yield at a starter place (research-economy.md §2, §9): Energy 3 calm (tuned 2026-10-09 from 4), Data 2, Essence 3.
 export const WALK = { e: 3, d: 2, s: 3 };

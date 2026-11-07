@@ -7,10 +7,13 @@
 // Each is asserted (screen, state, ring, armed, the heading's text) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
-import { boneCanvas } from "./portrait-fixture.mjs";
+import { readFileSync } from "node:fs";
+import { decodePNG } from "../../ui/png.mjs";
 import { digestOf } from "../../station/src/portrait-source.mjs";
 
-const PICTURED = await digestOf(boneCanvas());   // the bone canvas's digest (habitat-states.mjs)
+// the portrait the painted-and-framed goldens hold (make-sitting-portrait.mjs): the pond's picture, Dot calm on it in its coat at the kind's scale, feet on the ground line, a soft contact shadow
+const PORTRAIT = decodePNG(readFileSync(new URL("./fixtures/sitting-portrait-dot.png", import.meta.url))), RGBA = new Uint8ClampedArray(PORTRAIT.data), RGBA_B64 = Buffer.from(RGBA).toString("base64");
+const PICTURED = await digestOf(RGBA);
 const THREE = ["shake-dry", "calm", "sleep-curled"], POND = ["pond"], FOUR = ["pond", "rock", "wood", "cave"];   // the pod's place is the meadow (seedAdults): the places are the meadow, then the walk
 // keys: the presses after Habitat's Portrait ✓ ("pose:<habit>" and "place:<place>" move the ring to that card with the pad, then nothing more; "confirm" is ✓)
 const SCENES = {
@@ -31,11 +34,11 @@ async function enter(page, sc) {
   await page.evaluate(([spec, digest, fx]) => {
     const w = window.__world; w.reset(); w.rooms(1); if (spec.juvenile) w.young(1); else w.adults(1);
     const S = window.__st, st = S.ST, m = st.mibis[0]; m.name = spec.name ?? "Dot"; Object.assign(m, { habits: spec.habits.slice(), walked: spec.walked.slice() });
-    if (spec.portrait) { const r = S.portraitSource(digest, eval(`(${fx})`)()); if (!r.ok) throw new Error("portrait fixture: " + r.error); m.portrait = { state: "delivered", pose: "calm", place: "pond", crate: "sit1", start: 0, at: 0, digest }; }
+    if (spec.portrait) { const r = S.portraitSource(digest, Uint8ClampedArray.from(atob(fx), (c) => c.charCodeAt(0))); if (!r.ok) throw new Error("portrait fixture: " + r.error); m.portrait = { state: "delivered", pose: "calm", place: "pond", crate: "sit1", start: 0, at: 0, digest }; }
     else st.sitting = { source: "dev", key: null, at: 0 };
     S.settings.light = spec.light ?? "day"; S.settings.stationTime = "12:00"; S.UI.idle = false; S.UI.lastInput = performance.now(); S.UI.panel = null; S.UI.hab.namer = null; S.UI.meet = null; S.UI.hab.id = m.id; S.goto("habitat"); S.UI.hab.f = "portrait"; w.persist();
     S.intent({ screen: "habitat", target: "portrait", verb: "confirm" });
-  }, [{ juvenile: !!sc.juvenile, name: sc.name ?? null, habits: sc.habits, walked: sc.walked, portrait: !!sc.portrait, light: sc.light ?? null }, PICTURED, boneCanvas.toString()]);
+  }, [{ juvenile: !!sc.juvenile, name: sc.name ?? null, habits: sc.habits, walked: sc.walked, portrait: !!sc.portrait, light: sc.light ?? null }, PICTURED, RGBA_B64]);
 }
 // the presses: a card named by its habit or place is reached with the pad from the ring's card (the cards' grid is 3 × 2, focus.pose.graph), one press a frame
 async function press(page, keys, wait) {

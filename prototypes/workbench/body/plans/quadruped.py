@@ -1,4 +1,4 @@
-"""The quadruped plan: a horizontal spine, the head entered from behind on the spine axis (quadruped.py builds it). Its bands, and its spine view: the path is the cage's own, the knobs ride the top edge of the section table where each moves it, and the camera is the plan's own framing. The families on it are the registry's (trotter, shoulder-heavy, hopper, digger, loaf, bridge, four-wing, glider, shell-carrier); the trotter has the one template, S22's."""
+"""The quadruped plan: a horizontal spine, the head entered from behind on the spine axis (quadruped.py builds it). Its bands, and its spine view: the path is the cage's own, the knobs ride the top edge of the section table where each moves it, and the camera is the plan's own framing. The families on it are the registry's (trotter, shoulder-heavy, hopper, digger, loaf, bridge, four-wing, rambler, shell-carrier); the trotter has the one template, S22's."""
 import copy
 
 import numpy as np

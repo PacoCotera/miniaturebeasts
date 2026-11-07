@@ -110,6 +110,23 @@ class T(unittest.TestCase):
         e = [x for x in sp.history(50) if x["path"] == "/parts/tail/joints/3/len"][-1]
         self.assertEqual((e["actor"], e["role"], e["agent"], e["via"]), ("paco", "owner", False, "api"))
 
+    def test_every_write_works_from_the_trusted_proxy_without_a_token_and_is_refused_from_any_other_peer(self):
+        hdr = {"X-Studio-User": "paco"}
+        me = json.loads(call(self.near_url + "/studio/api/me", "GET", hdr)[2])
+        self.assertEqual((me["name"], me["role"], me["agent"]), ("paco", "owner", False))
+        sp = self.near.species["S20"]
+        old = sp.spec["parts"]["tail"]["joints"][3]["len"]
+        ops = [{"op": "replace", "path": "/parts/tail/joints/3/len", "value": round(old + 0.02, 3)}]
+        self.assertEqual(call(self.near_url + "/studio/api/species/S20", "PATCH", hdr, ops)[0], 200)
+        self.assertEqual(call(self.near_url + "/studio/api/species/S20/undo", "POST", hdr, {})[0], 200)
+        self.assertEqual(sp.spec["parts"]["tail"]["joints"][3]["len"], old)
+        self.assertEqual(call(self.near_url + "/studio/api/species/S20/jobs", "POST", hdr, {"kind": "nothing", "args": {}})[0] // 100, 4)   # the job is judged on its kind (a 400), not refused for the missing token (401)
+        self.assertNotEqual(call(self.near_url + "/studio/api/species/S20/jobs", "POST", hdr, {"kind": "nothing", "args": {}})[0], 401)
+        for url in (self.far_url, self.none_url):
+            self.assertEqual(json.loads(call(url + "/studio/api/me", "GET", hdr)[2])["name"], None)
+            for path, method in (("/studio/api/species/S20", "PATCH"), ("/studio/api/species/S20/undo", "POST"), ("/studio/api/species/S20/jobs", "POST"), ("/studio/api/species/S20/play", "POST")):
+                self.assertEqual(call(url + path, method, hdr, [] if method == "PATCH" else {})[0], 401, path)
+
 
 if __name__ == "__main__":
     unittest.main()

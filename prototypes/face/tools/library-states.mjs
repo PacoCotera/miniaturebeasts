@@ -38,24 +38,24 @@ const L1 = {
 // ---- Level 2: the guide as the sheet generator's review states (set directly, or by fillGuide, which leaves a sealed chapter shut below a share of 1) ----
 const LOIKA = (w, bare, seen, mid, extra = {}) => {
   const S = window.__st, st = S.ST; w.adults(2); bare(); const [m] = st.mibis; m.portrait = { state: "delivered" }; st.face = { S01: m.id };
-  st.guide.S01 = JSON.parse(JSON.stringify(mid)); for (const [t, ls] of Object.entries(extra.add ?? {})) st.guide.S01[t] = [...(st.guide.S01[t] ?? []), ...ls];
+  st.knownIds = ["S01"]; S.fillGuide("S01", 0.5); for (const [t, ls] of Object.entries(extra.add ?? {})) st.guide.S01[t] = [...(st.guide.S01[t] ?? []), ...ls];
   seen(); for (const [t, n] of Object.entries(extra.fresh ?? {})) st.libSeen.S01[t] = st.libSeen.S01[t].slice(0, -n);   // the last n found of a trait are new this visit
   if (extra.wish) { st.wish = { S01: { [extra.wish[0]]: extra.wish[1] } }; if (extra.unread) for (const q of st.mibis) q.read = []; }   // a mibi carries a look only in a chapter it has read
 };
 const GUIDE = (w, bare, seen, mid, [id, k]) => { const S = window.__st, st = S.ST; bare(); st.knownIds = [id]; S.fillGuide(id, k); seen(); };
 const L2 = {
-  "l2-loika-mid": { species: "S01", set: LOIKA, expect: { plates: 4, glints: 0, shelf: true, face: true, families: 2 } },
-  "l2-coat-lit": { species: "S01", lit: "coat", set: LOIKA, expect: { plates: 4, glints: 0, shelf: false, page: true } },
+  "l2-loika-mid": { species: "S01", set: LOIKA, expect: { plates: 6, glints: 0, shelf: true, face: true, families: 2 } },
+  "l2-coat-lit": { species: "S01", lit: "coat", set: LOIKA, expect: { plates: 6, glints: 0, shelf: false, page: true } },
   "l2-met-only": { species: "S02", met: true, set: (w, bare) => { const st = window.__st.ST; bare(); st.metIds = ["S02"]; }, expect: { plates: 0, glints: 0, shelf: false, ring: "" } },
-  "l2-new": { species: "S01", set: LOIKA, arg: { fresh: { colour: 2, markings: 1 } }, expect: { plates: 4, glints: 3, shelf: true } },
-  "l2-wish-uncarried": { species: "S01", set: LOIKA, arg: { wish: ["colour", "russet"], unread: true }, expect: { plates: 4, shelf: true, wish: [false] } },
-  "l2-shut": { species: "S02", set: GUIDE, arg: ["S02", 0.5], expect: { plates: 3, shut: ["character"], shelf: true } },
-  "l2-hiljan": { species: "S04", set: GUIDE, arg: ["S04", 1], expect: { plates: 5, shelf: true } },
-  "l2-kilpo": { species: "S11", set: GUIDE, arg: ["S11", 0.6], expect: { plates: 5, shut: ["stamina"], shelf: true } },
-  "l2-belatz": { species: "S09", set: GUIDE, arg: ["S09", 0.5], expect: { plates: 6, shut: ["movement"], shelf: true } },
+  "l2-new": { species: "S01", set: LOIKA, arg: { fresh: { "body-hue": 2, markings: 1 } }, expect: { plates: 6, glints: 3, shelf: true } },
+  "l2-wish-uncarried": { species: "S01", set: LOIKA, arg: { wish: ["body-hue", "redder"], unread: true }, expect: { plates: 6, shelf: true, wish: [false] } },
+  "l2-shut": { species: "S02", set: GUIDE, arg: ["S02", 0.5], expect: { plates: 6, shelf: true } },
+  "l2-hiljan": { species: "S04", set: GUIDE, arg: ["S04", 1], expect: { plates: 6, shelf: true } },
+  "l2-kilpo": { species: "S11", set: GUIDE, arg: ["S11", 0.6], expect: { plates: 7, shelf: true } },
+  "l2-belatz": { species: "S09", set: GUIDE, arg: ["S09", 0.5], expect: { plates: 7, shelf: true } },
   "l2-belatz-coat-lit-complete": { species: "S09", lit: "coat", set: GUIDE, arg: ["S09", 1], expect: { plates: 7, shelf: false, page: true } },
-  "l2-blikur": { species: "S16", set: GUIDE, arg: ["S16", 0.6], expect: { plates: 7, shut: ["charge"], shelf: true } },
-  "l2-loika-late": { species: "S01", set: LOIKA, arg: { add: { colour: ["charcoal and ash", "ash"] } }, expect: { plates: 4, shelf: true } },
+  "l2-blikur": { species: "S16", set: GUIDE, arg: ["S16", 0.6], expect: { plates: 7, shelf: true } },
+  "l2-loika-late": { species: "S01", set: LOIKA, arg: { add: { "body-hue": ["redder", "yellower"] } }, expect: { plates: 6, shelf: true } },
 };
 
 // ---- Level 3: a Loika lineage (station/tests/fixtures/lineage.mjs), built here and put in the page's save; reached by the player's way in (Level 2's family face, ✓ See the family: close, the entry centred in the
@@ -70,11 +70,11 @@ const L3 = {
   "l3-close-fits": { which: "small", entry: "Reed", zoom: "close", ring: "Reed", back: "Loika", inset: false, ok: "Compare from Reed" },
   "l3-close-founder": { which: "full", entry: "Bean", zoom: "close", ring: "Bean", back: "Family", inset: true, ok: "Compare from Bean", parents: ["Meadow pod"] },
   "l3-close-shedpod": { which: "full", entry: "Thistle", zoom: "close", ring: "Thistle", back: "Family", inset: true, ok: "Compare from Thistle", parents: ["Ivy's line"] },
-  "l3-compare-dot-moss": { which: "full", entry: "Moss", keys: ["up", "confirm", "down"], zoom: "compare", ring: "Moss", held: "Dot", cam: [12, 105], back: "Done", ok: "Compare from Moss", subject: "Compared with Dot", fact: "Same Crown, Ears, Eyes and more", lit: [1, 2, 3] },
+  "l3-compare-dot-moss": { which: "full", entry: "Moss", keys: ["up", "confirm", "down"], zoom: "compare", ring: "Moss", held: "Dot", cam: [12, 105], back: "Done", ok: "Compare from Moss", subject: "Compared with Dot", fact: "Same Tint, Shade, Markings and more", lit: [0, 5] },
   "l3-compare-on-held": { which: "full", entry: "Moss", keys: ["confirm", "down", "right", "up"], zoom: "compare", ring: "Moss", held: "Moss", onHeld: true, back: "Done", ok: "Look at Moss", subject: "Holding Moss", fact: "", lit: [] },
-  "l3-compare-none": { which: "full", entry: "Nettle", keys: ["confirm", "right"], zoom: "compare", ring: "Yarrow", held: "Nettle", back: "Done", ok: "Compare from Yarrow", subject: "Compared with Nettle", fact: "No read look in common", lit: [] },
+  "l3-compare-none": { which: "full", entry: "Nettle", keys: ["confirm", "right"], zoom: "compare", ring: "Yarrow", held: "Nettle", back: "Done", ok: "Compare from Yarrow", subject: "Compared with Nettle", fact: "Same Tint, Iris, Attitude and more", lit: [5] },
 };
-const FRAMES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames");
+const FRAMES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language");
 function lineageSave(which) {
   setFrames(readdirSync(FRAMES).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(FRAMES, f), "utf8"))));
   const st = S.freshSt("w1", 3, 0); st.mibis = []; st.nextMibi = 1; st.bud = null; st.turn = 0; const by = buildLineage(st, which, { turn: 0 });
@@ -92,7 +92,7 @@ async function assertL3(page, name, sc, fail) {
     if (sc.cam) must(JSON.stringify(T.cam) === JSON.stringify(sc.cam), `the camera is ${T.cam}, not ${sc.cam}`);
     must(T.slots.length > 0 && T.slots.every((s) => s.picture), "every slot names its picture"); must(T.slots.some((s) => s.id === p.focus.cur), "the ring's node is in a slot");
     must(p.frame.line.ok === sc.ok && p.frame.line.subject === (sc.subject ?? "") && p.frame.line.back === sc.back, "the line " + JSON.stringify(p.frame.line)); must(p.frame.top.readout.text === "Loika family", "the readout");
-    must(sc.bud ? P.rows.name === "Loika bud" && P.rows.portraitSlot && P.rows.portrait === "rackpod:S01" && /^stamp:S01-[0-9a-f]+:[a-z,]*:\d+:k16$/.test(P.rows.stamp.picture) : P.rows.name === sc.ring && /^face:\d+:64(:faded)?$/.test(P.rows.portrait) && /^stamp:S01-[0-9a-f]+:[a-z,]*:\d+:k16$/.test(P.rows.stamp.picture), "the rows of " + sc.ring + " " + JSON.stringify([P.rows.name, P.rows.portrait, P.rows.stamp.picture]));
+    must(sc.bud ? P.rows.name === "Loika bud" && P.rows.portraitSlot && P.rows.portrait === "rackpod:S01" && /^stamp:S01-[0-9a-f]+:[a-z,-]*:\d+:k16$/.test(P.rows.stamp.picture) : P.rows.name === sc.ring && /^face:\d+:64(:faded)?$/.test(P.rows.portrait) && /^stamp:S01-[0-9a-f]+:[a-z,-]*:\d+:k16$/.test(P.rows.stamp.picture), "the rows of " + sc.ring + " " + JSON.stringify([P.rows.name, P.rows.portrait, P.rows.stamp.picture]));
     if (sc.parents) must(JSON.stringify(P.rows.parents.map((q) => q.name)) === JSON.stringify(sc.parents), "the parents " + JSON.stringify(P.rows.parents));
     must(!!P.ov.picture === !!sc.inset && (!sc.inset || /^lineage-mini-S01-[0-9a-f]{8}$/.test(P.ov.picture)), `the overview ${P.ov.picture || "none"}`);
     if (sc.zoom === "compare") {
@@ -125,7 +125,7 @@ async function assertL1(page, name, sc, fail) {
   if (u.screen !== "library" || u.p?.state !== "all") { fail(`library-${name}: on ${u.screen}, ${u.p?.state}`); return; }
   const cells = u.p.regions.cells, ids = (f) => cells.filter(f).map((c) => c.id), E = sc.expect;
   const found = ids((c) => c.status === "found"), met = ids((c) => c.status === "met");
-  if (cells.length !== 16 || JSON.stringify(found) !== JSON.stringify(E.found) || JSON.stringify(met) !== JSON.stringify(E.met)) fail(`library-${name}: the cells are found ${found}, met ${met}; want found ${E.found}, met ${E.met}`);
+  if (cells.length !== 20 || JSON.stringify(found) !== JSON.stringify(E.found) || JSON.stringify(met) !== JSON.stringify(E.met)) fail(`library-${name}: the cells are found ${found}, met ${met}; want found ${E.found}, met ${E.met}`);
   for (const [k, f] of [["wish", (c) => c.wish], ["face", (c) => !!c.face], ["glint", (c) => c.glint]]) if (E[k] && JSON.stringify(ids(f)) !== JSON.stringify(E[k])) fail(`library-${name}: ${k} on ${ids(f)}, want ${E[k]}`);
   if (cells.some((c) => c.status !== "unmet" && !c.picture)) fail(`library-${name}: a cell picture is not made yet`);
   if (sc.cur && u.p.focus.cur !== sc.cur) fail(`library-${name}: the ring is on ${u.p.focus.cur}, not ${sc.cur}`);

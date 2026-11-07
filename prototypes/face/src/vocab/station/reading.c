@@ -216,7 +216,7 @@ void word_reading(void) {
       if (!reading || dlev >= 16) { if (strcmp(form, "detail") == 0) v_say_in("read.cap.d", t, sk(R ".right.layouts.detail.caption", 0) - 80, 160, sk(R ".right.layouts.detail.caption", 1), V_ANCHOR_BASE, "glass.caption", "glass"); else { int c = cap_centre(t, "glass.caption", cx, pxl, pw); v_say_in(v_fmt("read.cap.%d", i), t, c - 100, 200, cy + v_si(S, v_fmt("%s.capDy", L), 70), V_ANCHOR_BASE, "glass.caption", "glass"); } }
       snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.carried.caption", B)));
       if (*t && (!reading || clev >= 16)) { int bx = strcmp(form, "detail") == 0 ? sk(R ".right.layouts.detail.carriedCaption", 0) : ccx + 6, by = strcmp(form, "detail") == 0 ? sk(R ".right.layouts.detail.carriedCaption", 1) : cy + v_si(S, v_fmt("%s.cap2Dy", L), 87);
-        int w = v_role_width(t, "glass.faint"); if (strcmp(form, "detail") != 0) bx = cap_centre(t, "glass.faint", bx, pxl + 16, pw - 16); v_say_in(v_fmt("read.cap2.%d", i), t, bx - 100, 200, by, V_ANCHOR_BASE, "glass.faint", "glass");
+        int w = v_role_width(t, "glass.faint"); if (strcmp(form, "detail") != 0) bx = v_si(S, v_fmt("%s.cap2Text", L), 0) ? tx + 10 + w / 2 : cap_centre(t, "glass.faint", bx, pxl + 16, pw - 16);   /* cap2Text: the carried caption stands in the text column under the kind line, never under the pictures where it met the shown caption (four traits, 8 px apart) */ v_say_in(v_fmt("read.cap2.%d", i), t, bx - 100, 200, by, V_ANCHOR_BASE, "glass.faint", "glass");
         snprintf(a, sizeof a, "%s", v_pstr(P ".right.moon")); v_name("read.moon"); pic_c(v_fmt("read.moon.%d", i), a, bx - w / 2 - 7, by - 4); }
     }
   }
@@ -253,7 +253,13 @@ key:
     snprintf(a, sizeof a, "%s", v_pstr(P ".right.beside.sprout")); snprintf(t, sizeof t, "%s", v_pstr(P ".right.beside.text"));
     if (v_pbool(P ".right.key.pressOnly", 0)) { a[0] = 0; t[0] = 0; }
     if (*a) { v_name("read.beside"); pic_c("read.beside.sprout", a, sk(R ".key.sprout", 0), sk(R ".key.sprout", 1)); v_region("read.words", LAYER_TYPE); say("read.beside", t, sk(R ".key.sproutText", 0), sk(R ".key.sproutText", 1), "glass.quiet", V_ALIGN_LEFT); }
-    else if (*t) { v_region("read.words", LAYER_TYPE); say("read.beside", t, sk(R ".key.line", 0), sk(R ".key.line", 1), "glass.quiet", V_ALIGN_LEFT); }
+    else if (*t) {   /* the line beside the key, kept inside the glass (release 21g): a line wider than the room to the glass's edge is broken at the last space that fits, the two lines 9 px either side of the line's baseline */
+      int lx = sk(R ".key.line", 0), ly = sk(R ".key.line", 1), room = 960 - lx, cut = -1; char l1[V_STR], l2[V_STR];
+      v_region("read.words", LAYER_TYPE);
+      if (v_role_width(t, "glass.quiet") > room) { snprintf(l1, sizeof l1, "%s", t); for (int q = 0; l1[q]; q++) if (l1[q] == ' ') { l1[q] = 0; if (v_role_width(l1, "glass.quiet") <= room) cut = q; l1[q] = ' '; } }
+      if (cut > 0) { snprintf(l1, sizeof l1, "%s", t); l1[cut] = 0; snprintf(l2, sizeof l2, "%s", t + cut + 1); say("read.beside", l1, lx, ly - 9, "glass.quiet", V_ALIGN_LEFT); say("read.beside.2", l2, lx, ly + 9, "glass.quiet", V_ALIGN_LEFT); }
+      else say("read.beside", t, lx, ly, "glass.quiet", V_ALIGN_LEFT);
+    }
   }
 }
 

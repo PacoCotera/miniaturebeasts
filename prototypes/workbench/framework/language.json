@@ -972,25 +972,21 @@
     },
     {
       "n": 15,
-      "id": "glider",
-      "name": "glider",
+      "id": "rambler",
+      "name": "rambler",
       "plan": "quadruped",
       "legs": 4,
-      "contact": "four legs",
+      "contact": "four short legs",
       "parts": [
         {
-          "part": "membrane",
-          "job": "skin leg to leg, glide"
-        },
-        {
           "part": "tail",
-          "job": "flat, steering"
+          "job": "tapering"
         }
       ],
-      "gait": "walk; glide pose",
+      "gait": "walk; hop pose",
       "simpleMass": false,
       "fourLegged": true,
-      "fix": "skin membranes leg to leg, flat steering tail",
+      "fix": "coin scales, scalloped coin crest along the back, four short legs",
       "path": "hybrid",
       "armature": {
         "layout": "quadruped",
@@ -999,13 +995,7 @@
         "legs": 4,
         "legBones": 3,
         "tail": 2,
-        "sockets": [
-          {
-            "bone": "membrane",
-            "layout": "pair",
-            "mirror": true
-          }
-        ]
+        "sockets": []
       },
       "template": null,
       "bands": {
@@ -1925,8 +1915,8 @@
           "curious"
         ],
         "attitudeDefault": "content",
-        "size": 0.18,
-        "sizeFromStand": false,
+        "size": 0.16,
+        "sizeFromStand": true,
         "paleRim": false
       },
       "anchor": true
@@ -2005,7 +1995,7 @@
     {
       "id": "S20",
       "name": "Tuliko",
-      "family": "glider",
+      "family": "rambler",
       "land": "tallwood",
       "coat": {
         "material": "scale",
@@ -2363,7 +2353,7 @@
       "id": "S20",
       "name": "old Tuliko",
       "file": "species_v1/S20.json",
-      "note": "upright biped regression fixture; schema mb-species/1; its id is reassigned to the glider Tuliko when that kind is built",
+      "note": "upright biped regression fixture; schema mb-species/1; its id is reassigned to the rambler Tuliko when that kind is built",
       "frozen": true
     }
   ]

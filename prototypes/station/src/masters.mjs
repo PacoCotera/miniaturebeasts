@@ -2,11 +2,10 @@
 // stand-in by id and size, with no code change. Fetched beside the page, decoded to pictures, checked against the index (size and SHA-256)
 // and placed in the manifest before any screen registers its stand-ins. A master that does not match its index is refused loudly.
 import { placeMaster } from "../../ui/assets.mjs";
-import { setStandLayers } from "./layered-stand.mjs";
 import { setJuvenileFacing, juvenileMirrored, mirrorPic } from "./facing.mjs";
 import { decodePNGAsync, canvasRound } from "../../ui/png.mjs";
 
-// The one decoder of the masters and the stand layers, on the page and headless alike (ui/png.mjs): inflated at load, the pixels made when a picture first asks, through the 8-bit premultiplied
+// The one decoder of the masters, on the page and headless alike (ui/png.mjs): inflated at load, the pixels made when a picture first asks, through the 8-bit premultiplied
 // round trip the browser's canvas gave them (canvasRound), so every picture is the one the goldens were drawn with.
 const decodeRGBA = async (bytes) => { const png = await decodePNGAsync(bytes); let px = null; return { w: png.width, h: png.height, rgba: () => px || (px = canvasRound(png.rgba())) }; };
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -83,21 +82,3 @@ export const loadRoomsInBackground = () => current?.background();
 export const ensureRoom = (room) => (current ? current.ensureRoom(room) : Promise.resolve());
 export const roomLoaded = (room) => (current ? current.roomLoaded(room) : true);
 
-// The layered stands' cut-outs (ui/assets/stands/index.json; layered-stand.mjs): fetched, checked against the index (SHA-256) and decoded with the same decoder, then handed to the logic's stand registry.
-// They are never masters of the manifest and never sent to the face: the host composes each stand from them and the face is given the picture by id.
-export async function loadStandLayers(base) {
-  const res = await fetch(new URL("index.json", base), { cache: "no-store" });
-  if (!res.ok) return { layers: 0 };
-  const index = await res.json(), names = Object.keys(index.files ?? {}), pics = new Map();
-  await Promise.all(names.map(async (name) => {
-    const e = index.files[name], r = await fetch(new URL(e.file, base), { cache: "no-store" });
-    if (!r.ok) throw new Error(`stand layer ${name}: ${e.file} is missing`);
-    const bytes = await r.arrayBuffer(), sha = hex(await crypto.subtle.digest("SHA-256", bytes));
-    if (sha !== e.sha256) throw new Error(`stand layer ${name}: ${e.file} does not match the index (sha256 ${sha.slice(0, 12)}…)`);
-    const pic = await decodeRGBA(bytes);
-    if (pic.w !== e.w || pic.h !== e.h) throw new Error(`stand layer ${name}: the file is ${pic.w}×${pic.h}, the index says ${e.w}×${e.h}`);
-    pics.set(name, pic);
-  }));
-  setStandLayers(index, (f) => pics.get(f));
-  return { layers: names.length };
-}

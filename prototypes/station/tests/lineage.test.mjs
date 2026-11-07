@@ -1,6 +1,7 @@
 // Level 3's lineage (lineage.mjs) and its pictures (lineage-pictures.mjs), library.json l3: the rows (the founders' pods in row 0, a mibi one row below its deeper parent), the blocks (a cross joins two families,
 // blocks in founding order, l3.block.gap apart), the shed-pod child, a released parent, the bud, the parents in the save's order, no reflow after a birth, the selectors in both zooms, FAR's spacing and its refusals,
 // the dots, the pods' ovals and the neutral ring by the art director's pixel rule, and the mini. Nothing here is drawn on the face.   node --test prototypes/station/tests/lineage.test.mjs
+// PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -15,7 +16,7 @@ import { lineageInput } from "../src/views/library-props.mjs";
 import { buildLineage } from "./fixtures/lineage.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
-setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const spec = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/library.json"), "utf8")), L3 = spec.l3, GAP = L3.block.gap, BELOW = nameBelow(L3.close, JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/frame.json"), "utf8")));
 const palette = Object.fromEntries(JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours.map(([n, h]) => [n, [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))]));
 const rgb = (n) => palette[n];

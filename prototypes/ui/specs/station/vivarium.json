@@ -102,21 +102,12 @@
   "tickBudget": 148000,
   "rest": {
    "windowS": 1800,
-   "nocturnal": [
-    "S03",
-    "S04",
-    "S06",
-    "S16"
-   ],
+   "nocturnal": [],
    "early": {
     "stages": [
      "elder"
     ],
-    "species": [
-     "S09",
-     "S11",
-     "S12"
-    ]
+    "species": []
    },
    "settle": {
     "diurnal": "20:00",
@@ -308,6 +299,7 @@
      192,
      66
     ],
+    "startWiden": 25,
     "box": "the figure's box x within 8 .. 680 − W (its ink 8 px inside the window: the clamp, the foot point within [cx + 8 + L, cx + 680 − R]), feetY on the room's levels moved to the window (painting − (cx, 8)); a join is taken only when the figure stands whole at both its ends",
     "keepOutRule": "a walker's foot point (F.x, feetY) meets K exactly when K.x <= F.x < K.x + K.w and feetY > K.y: K is the bed's span, from the top of the tallest measured curl on the bed (footY − curlH) to the window's foot, so that no walker stands among the sleepers; derived by station/tools/make-keepout.mjs from the measured curls (and checked), never typed",
     "start": "one draw r: the level (1 start in rules.walk.levelOneIn on a raised level while the raised cap allows), then room_point on it (⌈w/4⌉ inside each end), up to 8 draws, off keepOut; fallback main's leftmost point at its top",
@@ -365,9 +357,9 @@
    "build": "withYouBed",
    "clip": "window",
    "sleepers": {
-    "max": 3,
+    "max": 2,
     "pose": "nap",
-    "pitch": 48,
+    "pitch": 128,
     "footY": 543,
     "centre": 344,
     "places": {
@@ -375,15 +367,12 @@
       344
      ],
      "2": [
-      320,
-      368
-     ],
-     "3": [
-      296,
-      344,
-      392
+      280,
+      408
      ]
     },
+    "note21h2": "release 21h2: the curl is drawn at the kind's one scale (R21-SCALE), about 116 px wide for a Loika in a room, so the two places are 128 apart, none hiding the other",
+    "note21g": "release 21g: two on the 192 px bed, 96 apart (the curl's ink is at most 96 wide): three at 48 apart hid each other; a third rester takes its own way (a curl elsewhere by the gap rule, or out)",
     "adult": {
      "size": [
       96,
@@ -403,23 +392,17 @@
       96,
       88
      ],
-     "rule": "the nap pose's ink is at most 96 wide and 88 tall, centred on footX and bottom-aligned on footY: at most [footX − 48, 455, 96, 88]; three sit on the 192 px bed (248 to 440)",
+     "rule": "the nap pose's ink is at most 96 wide and 88 tall, centred on footX and bottom-aligned on footY: at most [footX − 48, 455, 96, 88]; two sit on the 192 px bed (248 to 440), side by side",
      "rects": {
-      "3": [
+      "2": [
        [
-        248,
+        232,
         455,
         96,
         88
        ],
        [
-        296,
-        455,
-        96,
-        88
-       ],
-       [
-        344,
+        360,
         455,
         96,
         88

@@ -1,6 +1,7 @@
 // The Station's rules in Node: prices and half price, the first read free, glints, compare, return, the
 // migration on a fixture save (the Companion's part byte-identical), the stamp decoding to the genome.
 //   node --test prototypes/station/tests/
+// PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -16,7 +17,7 @@ import { sameGenome } from "../../genome-stamp/src/codec.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const framesDir = path.resolve(here, "../../workbench/frames");
-setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const fixture = () => JSON.parse(readFileSync(path.join(here, "fixtures/save-v8-schema1.json"), "utf8"));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const crate = (n, pods, extra = {}) => ({ id: "x" + n, n, turn: n, at: 0, e: 3, d: 3, s: 4, pods, met: [], explored: 5, of: 20, lines: [], ...extra });
@@ -226,13 +227,13 @@ test("developer seeds go through the same rules: a seeded crate arrives at the d
   assert.equal(S.seedCrate(st, "S05", 3, 42).ok, true);
   assert.equal(S.bayCrates(st, sv).length, 1);
   S.dockKey(st, sv, settings, 1); S.openBay(st, sv, settings, 1);
-  assert.equal(st.tray.length, 3); assert.equal(st.tray[0].species, "S05"); assert.equal(st.tray[0].sp, -1, "no Companion index for a species it does not carry");
+  assert.equal(st.tray.length, 3); assert.equal(st.tray[0].species, "S05"); assert.equal(st.tray[0].sp, 4, "S05 Tepor is the fifth place of the species list the Companion and the saves use (release 21a: all twenty are carried)");
   assert.equal(S.identify(st, st.tray[0], settings).newSp, true);
-  assert.deepEqual(st.known, [], "the Companion's known list only carries its own species");
+  assert.deepEqual(st.known, [4], "the Companion's known list carries every species of the list");
   const g = podGenome(frameOf("S01"), 9); assert.equal(S.seedPodFromGenome(st, g, settings).ok, true);
   const bad = structuredClone(g); bad.loci["appearance.marking-switch"] = ["maybe", "on"];
   assert.equal(S.seedPodFromGenome(st, bad, settings).ok, false);
-  assert.equal(speciesIndex("S05"), -1);
+  assert.equal(speciesIndex("S05"), 4); assert.equal(speciesIndex("S99"), -1, "a kind that is not in the list has no index");
 });
 
 // --- M2 Grow ---
@@ -575,7 +576,8 @@ test("growBlockKey names what stops Grow in the rules' order (unidentified, busy
 test("the Station keeps an unknown top-level Companion field (gen) through load, save and storageChanged", async () => {
   const mem = new Map(); globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: (k) => { mem.delete(k); } };
   const game = await import("../src/game.mjs"), stored = () => JSON.parse(mem.get(game.saveKey()));
-  mem.set(S.SAVE_KEY, JSON.stringify({ ...fixture(), gen: 2 }));   // the shared save of earlier builds: it moves under the Companion's key at the first load
+  const { migrate8 } = await import("../../exploration/src/regions.mjs");
+  mem.set(game.saveKey(), JSON.stringify({ ...migrate8({ ...fixture(), gen: 5 }, { now: 1793664000000 }), gen: 2 }));   // a v10 realm (a v8 save is reset, not kept) with a Companion field the Station does not know
   game.load(); game.save(); assert.equal(stored().gen, 2, "load then save keeps gen"); assert.equal(mem.has(S.SAVE_KEY), false);
   mem.set(game.saveKey(), JSON.stringify({ ...stored(), gen: 3 }));
   game.storageChanged(); game.save(); assert.equal(stored().gen, 3, "storageChanged then save keeps the Companion's newer gen");
@@ -611,12 +613,12 @@ test("the bench's switch: setMendFull sets whether the dock mends every plate an
   S.setMendFull(st, true); lift(); st.probe.shield = 1; S.dockKey(st, sv, settings, 12); assert.equal(st.probe.shield, 3, "switch on: every plate at its price"); assert.equal(st.e, e0 - 1);
 });
 
-test("a species beyond the Companion's three: each mibi carries its species name in the save (normalize, idempotent)", () => {
+test("a species beyond the Companion's first three: each mibi carries its species and name in the save (normalize, idempotent)", () => {
   const { st } = world([]); S.normalize(st);
   S.seedAdults(st, "S05", 3, 2, settings); S.seedAdults(st, "S10", 4, 2, settings);
   S.normalize(st);
   assert.equal(st.mibis.length, 4);
-  for (const m of st.mibis) { assert.equal(m.sp, -1); assert.equal(m.spName, frameOf(m.species).species.name); }
+  for (const m of st.mibis) { assert.ok(m.sp > 2); assert.equal(m.spName, frameOf(m.species).species.name); }
   assert.deepEqual(st.mibis.map((m) => m.spName), ["Tepor", "Tepor", "Igara", "Igara"]);
   const once = JSON.stringify(st); S.normalize(st); assert.equal(JSON.stringify(st), once, "a second normalize changes nothing");
 });
@@ -624,7 +626,7 @@ test("a species beyond the Companion's three: each mibi carries its species name
 test("a returned pod of a species beyond three keeps its species and opens from a Companion crate", () => {
   const { sv, st } = world([]); S.normalize(st);
   S.seedCrate(st, "S05", 1, 9, 1000); S.dockKey(st, sv, settings, 1000); S.openBay(st, sv, settings, 1000);
-  const p = st.tray[0]; assert.equal(p.species, "S05"); assert.equal(p.sp, -1);
+  const p = st.tray[0]; assert.equal(p.species, "S05"); assert.equal(p.sp, 4);
   S.returnPod(st, p, settings, 1000);
   const r = st.returned.at(-1); assert.equal(r.species, "S05");
   // the Companion's record of it, as index.html seeds, takes and crates it (with species carried, §3)

@@ -16,7 +16,8 @@ const plain = x => JSON.parse(JSON.stringify(x));
 const fnv = a => { let h = 2166136261; for (const v of a) { h ^= v & 0xffff; h = Math.imul(h, 16777619) >>> 0; } return h; };
 
 // the page with a fixture loaded as the page loads it (the fill of what a save lacks included)
-const loaded = name => { const p = makePage({ console: "silent", canvas: true, date: NOW }); p.store[p.KEY] = FIX(name); assert.equal(p.run("load()"), true, name + " loads"); return p; };
+// (a flat v8 save is reset, not read: each fixture is read here as the same realm of generator 5, the only generator a page plays now, as the v10 save the page writes)
+const loaded = name => { const o = JSON.parse(FIX(name)); o.gen = 5; const p = makePage({ console: "silent", canvas: true, date: NOW }); p.store[p.KEY] = JSON.stringify(R.migrate8(o, { now: NOW })); assert.equal(p.run("load()"), true, name + " loads"); return p; };
 // the full map, drawn from S as it stands: the baked map and the frame (the map's own drawing, as the full-map view runs it)
 const picture = p => { p.run("mapCv = null; ensureMap(); scr.px().fill(-1); drawMap('view', 0);"); const frame = Int16Array.from(p.run("scr").px()), baked = Int16Array.from(p.run("mapCv").px());
   assert.ok(frame.some(v => v >= 0), "something is drawn"); return { frame: fnv(frame), baked: fnv(baked) }; };
@@ -31,7 +32,7 @@ for (const name of FIXTURES) {
     const v8 = plain(before), v9 = R.migrate8(v8, { now: NOW });
     assert.deepEqual(v8, before, "migrate8 leaves its input alone");
     assert.equal(R.realmStatus(v9), "ok");
-    assert.equal(v9.v, 9); assert.equal(v9.here, "g1"); assert.equal(v9.regions.length, 1);
+    assert.equal(v9.v, 10); assert.equal(v9.here, "g1"); assert.equal(v9.regions.length, 1);
     for (const k of R.MAP_KEYS) assert.ok(!(k in v9), k + " is in the region, not at the top");
     assert.ok(!("gen" in v9), "gen is the region's"); assert.ok(!v9.ui || !("lastPos" in v9.ui), "and so is the last start");
     // region 1 is the save's world
@@ -92,10 +93,10 @@ test("3. migrate8: what it does with the rest of the save", () => {
 test("4. realmStatus: a newer save or a generator this page does not know makes the realm read-only", () => {
   const v9 = R.migrate8(flat(loaded("played-g1")), { now: NOW });
   assert.equal(R.realmStatus(v9), "ok");
-  assert.equal(R.realmStatus({ ...v9, v: 10 }), "newer");
+  assert.equal(R.realmStatus({ ...v9, v: 11 }), "newer");
   const odd = plain(v9); odd.regions[0].gen = 99; assert.equal(R.realmStatus(odd), "newer");
   const second = plain(v9); second.regions.push(R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 99, opened: NOW })); assert.equal(R.realmStatus(second), "newer", "any region");
-  assert.equal(R.realmStatus(second, [1, 2, 3, 99]), "ok", "a page that knows it");
+  assert.equal(R.realmStatus(second, [5, 99]), "ok", "a page that knows it");
   assert.equal(R.realmStatus({ ...v9, v: 8 }), "broken"); assert.equal(R.realmStatus(null), "broken"); assert.equal(R.realmStatus([]), "broken");
   assert.equal(R.realmStatus({ ...v9, regions: [] }), "broken");
 });
@@ -116,7 +117,7 @@ test("5. keepPre9: the v8 bytes are copied once, untouched, and read back", () =
 // ---- mount and unmount ----
 const realm2 = () => {
   const v9 = R.migrate8(flat(loaded("played-g2")), { now: NOW }), S = plain(v9);
-  const g2 = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: R.regionSeed(S.seed, 2), gen: 3, opened: NOW + 1000, openedTurn: S.turn, turnSeen: S.turn });
+  const g2 = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: R.regionSeed(S.seed, 2), gen: 5, opened: NOW + 1000, openedTurn: S.turn, turnSeen: S.turn });
   S.regions.push(g2); R.mount(S, "g1");
   return S;
 };
@@ -128,7 +129,7 @@ test("6. two regions: each keeps its own map, a reassigned array is caught, S fo
   const g1 = S.regions[0];
   assert.equal(g1.map.pods.length, g1Pods - 1, "the reassigned list is in g1"); assert.equal(g1.map.lastPos, 33); assert.equal(g1.seenN, g1Seen);
   const R2 = R.mount(S, "g2");
-  assert.equal(R2.id, "g2"); assert.equal(S.here, "g2"); assert.equal(S.seed, R2.seed); assert.equal(S.gen, 3); assert.notEqual(S.seed, seed1);
+  assert.equal(R2.id, "g2"); assert.equal(S.here, "g2"); assert.equal(S.seed, R2.seed); assert.equal(S.gen, 5); assert.notEqual(S.seed, seed1);
   assert.equal(S.pods.length, 0, "a new region starts with its own"); assert.equal(S.revealed.filter(Boolean).length, 0); assert.ok(S.ui.lastPos === undefined, "no last start there yet");
   S.revealed[5] = 1; S.revealed[6] = 1; S.visited[5] = 1; S.called[5] = 1; S.pods.push({ id: "g2.w0", k: "5" });
   R.unmount(S);
@@ -206,7 +207,7 @@ test("7b. realm version 2: ring 1 is as in version 1; every kind turns up; a slo
   }
   assert.equal(R.biomeVersion({}), 1); assert.equal(R.biomeVersion({ biomeV: 2 }), 2); assert.equal(R.biomeVersion(null), 1);
   assert.deepEqual(R.BIOME_NAME, { mixed: "Meadows", woods: "Woods", fells: "Cliffs", marsh: "Marsh", downs: "Hills", thickets: "Thickets", tallwood: "Tallwood", tarns: "Highpools", meres: "Lakes" });
-  assert.equal(R.realmStatus({ v: 9, biomeV: 3, regions: [{ map: {}, gen: 3 }] }), "newer");
+  assert.equal(R.realmStatus({ v: 10, biomeV: 3, regions: [{ map: {}, gen: 5 }] }), "newer");
 });
 
 test("7b2. version 2 draws the group first: over seeds 1-200, rings 2-4 are about half Green, Highlands and Waters each at least 20 %, no ring 60 % Green", () => {
@@ -346,14 +347,16 @@ test("11. seeds and ids: region 1 keeps the realm's seed and its pod ids; region
   }
 });
 
-test("11b. generators: 3 is the herd floor, 4 is the biomes; new realms still take 3", () => {
-  assert.equal(W.NEW_GEN, 3); assert.deepEqual(W.GENS, [1, 2, 3, 4]);
+test("11b. generators: 3 is the herd floor, 4 is the biomes, 5 is life by land; new realms take 5 and the page plays only 5", () => {
+  assert.equal(W.NEW_GEN, 5); assert.deepEqual(W.GENS, [5]);
   assert.equal(W.genWorld(7, 3).gen, 3, "generator 3 is the herd floor on generator 2's ground");
-  assert.ok(W.GENS.includes(4), "the page knows the biomes' generator");
-  const second = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 4, opened: 1 });
-  assert.notEqual(R.realmStatus({ v: 9, regions: [second] }), "newer", "a realm that holds a generator 4 region is playable");
-  const later = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 5, opened: 1 });
-  assert.equal(R.realmStatus({ v: 9, regions: [later] }), "newer", "a generator the page does not know is read-only");
+  assert.ok(W.GENS.includes(5), "the page knows the one generator it plays");
+  const second = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 5, opened: 1 });
+  assert.notEqual(R.realmStatus({ v: 10, regions: [second] }), "newer", "a realm that holds a generator 5 region is playable");
+  const later = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 6, opened: 1 });
+  assert.equal(R.realmStatus({ v: 10, regions: [later] }), "newer", "a generator the page does not know (and any earlier one) is read-only");
+  const old = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 4, opened: 1 });
+  assert.equal(R.realmStatus({ v: 10, regions: [old] }), "newer", "generators 1 to 4 are not played any more");
 });
 
 test("12. regionRecord and blankMap: the shape of a record, and a new region's map is a new world's", () => {
@@ -387,6 +390,6 @@ test("0. a new realm is written as version 2 (biomeV 2); a loaded old save stays
   assert.equal(R.REALM_BIOME_V, 2);
   assert.equal(R.biomeVersion(p.S), 2);
   assert.equal(JSON.parse(p.store[p.KEY]).biomeV, 2, "and it is on disk");
-  const q = makePage({ console: "silent", canvas: true, date: NOW }); q.store[q.KEY] = FIX("played-g1"); assert.equal(q.run("load()"), true);
+  const q = loaded("played-g1");   // a played save of the fixtures: it has no biomeV
   assert.equal(q.run("S.biomeV"), undefined);
 });

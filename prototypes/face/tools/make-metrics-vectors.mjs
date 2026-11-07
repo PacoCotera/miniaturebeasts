@@ -9,7 +9,7 @@ import { createMeasure } from "../../ui/specs/measure.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), out = path.resolve(here, "../tests/vectors/metrics.json"), mfile = path.resolve(here, "../dist/metrics.json");
 if (!existsSync(mfile)) { console.error("dist/metrics.json is missing: run build.sh native"); process.exit(process.argv.includes("--check") ? 0 : 2); }
-const measure = createMeasure(JSON.parse(readFileSync(mfile, "utf8"))), specs = path.resolve(here, "../../ui/specs/station"), frames = path.resolve(here, "../../workbench/frames");
+const measure = createMeasure(JSON.parse(readFileSync(mfile, "utf8"))), specs = path.resolve(here, "../../ui/specs/station"), frames = path.resolve(here, "../../workbench/frames/language");
 const strings = new Set();
 const walk = (v) => { if (typeof v === "string") { strings.add(v); for (const part of v.split(/[{}]/)) strings.add(part); } else if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) { strings.add(k); walk(x); } };
 for (const f of readdirSync(specs).filter((f) => f.endsWith(".json") && !f.endsWith(".props.json"))) walk(JSON.parse(readFileSync(path.join(specs, f), "utf8")));

@@ -24,7 +24,7 @@ import { INTENTS } from "../src/intents/index.mjs";
 import { moveFocus } from "../../ui/focus.mjs";
 import { targetBox } from "../../face/tools/library-species-regions.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("library.json"), frameSpec = J("frame.json"), schema = J("library-species.props.json"), Sg = spec.l2.strings;
 const metrics = JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")), measure = createMeasure(metrics);

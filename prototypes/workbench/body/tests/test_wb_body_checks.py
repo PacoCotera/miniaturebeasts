@@ -51,7 +51,7 @@ class TestPlans(unittest.TestCase):
             self.assertIs(V1.PLANS[name], m.BANDS)
             self.assertEqual(m.BANDS["range_len"]["neck"], (0.0, 0.2))
             self.assertTrue(callable(m.spine))
-        self.assertEqual(plans.families_of("quadruped"), ["trotter", "shoulder-heavy", "hopper", "digger", "loaf", "bridge", "four-wing", "glider", "shell-carrier"])
+        self.assertEqual(plans.families_of("quadruped"), ["trotter", "shoulder-heavy", "hopper", "digger", "loaf", "bridge", "four-wing", "rambler", "shell-carrier"])
         self.assertEqual(plans.families_of("biped"), ["sitter", "waddler", "climber", "flutterer"])
 
     def test_a_v1_file_keeps_the_older_neck_band_and_a_v2_file_gets_the_new_one(self):

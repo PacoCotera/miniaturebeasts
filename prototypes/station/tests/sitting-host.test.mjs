@@ -18,15 +18,15 @@ import { newSit } from "../src/intents/sitting.mjs";
 import { capLine } from "../src/views/words.mjs";
 import { measureRole } from "../../ui/specs/measure.mjs";
 import { isBuilt, DROPS_ON_ROOM_KEY } from "../src/nav.mjs";
-import { loadStandLayersFs, loadStandLooksFs } from "../tools/stand-layers-fs.mjs";
+import { loadStandSizesFs } from "../tools/stand-layers-fs.mjs";
 import { injectPortraitSource, dropPortraitSources } from "../src/portrait-source.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 const J = (k) => JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
 for (const k of ["frame", "pods", "home", "cargo", "create", "vivarium", "habitat", "namer", "panel", "sitting"]) SPECS[k] = J(k);
 const SIT = SPECS.sitting, HAB = SPECS.habitat, T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 };
-before(() => { loadStandLooksFs(); loadStandLayersFs(); });
+before(() => { loadStandSizesFs(); });
 
 // Dot (S01 adult) up close at night with a sitting held, its habits seen and its places been; the host on a clock the test moves
 function rig({ motion = true, habits = ["sleep-curled", "shake-dry", "calm"], walked = ["wood", "pond"], held = true, light = "night" } = {}) {
@@ -139,13 +139,7 @@ test("events.backdrop.resident \"cut\": no resident dither; the window keeps the
   } finally { SPECS.sitting = keep; }
 });
 
-test("the pose step: a focus move to or from the curl cross-dithers the resident 16 levels over 180 ms, cut by the next press; a stand-to-stand move is a cut", () => {
-  const { h, mb, focus, dithers, body } = rig(); enterSitting(h, mb); const o = offerOf(mb), at = (i) => "card." + i, curl = o.poses.indexOf("sleep-curled"), stands = o.poses.map((_, i) => i).filter((i) => i !== curl);
-  focus(at(stands[0])); const a = body().props.regions.resident.picture; focus(at(curl)); const e = dithers("resident").at(-1);
-  const P = SIT.events.pose; assert.deepEqual([e.kind, e.target, e.from, e.ms, e.levels, e.cut, e.hold], [P.kind, P.target, a, P.ms, P.levels, true, P.hold]); assert.deepEqual([P.ms, P.levels], [180, 16], "sitting.json events.pose: Habitat's 16 levels over 180 ms");
-  const n = dithers("resident").length; focus(at(stands[0])); assert.equal(dithers("resident").length, n + 1, "from the curl: a dither too");
-  focus(at(stands[1])); assert.equal(dithers("resident").length, n + 1, "stand to stand (shake and calm, or an owed habit's stand): a cut, whatever the picture");
-});
+// retired (release 21a): the pose step: a focus move to or from the curl cross-dithers... needs the layered stands of S01, retired
 
 test("sitting.json focus.vectors that leave the screen or arm: ← from the pose step and from the portrait go to Habitat with the ring on Portrait; ✓ on the confirm step arms the room", () => {
   for (const v of SIT.focus.vectors.filter((x) => x.screen || x.armed)) {
