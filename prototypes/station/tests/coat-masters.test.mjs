@@ -25,7 +25,7 @@ test("coatOf: Tint x Shade name the coat, Markings the awake picture; an unread 
   assert.equal(coatOf("S01", {}), null, "an unread chapter draws no look, so the painted coat");
   assert.equal(coatOf("S02", looks("redder", "dark", "bands")), null, "a kind with no coat traits");
   assert.deepEqual(MARKED_PICTURE, MARKED, "the game and the tool name the same marked pictures");
-  assert.deepEqual(Object.keys(COAT_TRAITS), ["S01"]);
+  assert.deepEqual(Object.keys(COAT_TRAITS), ["S01", "S03", "S04", "S05", "S08", "S12", "S17", "S20"], "the eight first kinds (release 22b)");
 });
 test("coatMaster: the coat's master where it is placed, the marked picture for the adult's awake stand only, else the painted master", () => {
   const painted = "mibi-adult-S01-304x312", marked = "mibi-adult-S01-redder-dark-lay-spots-304x312";

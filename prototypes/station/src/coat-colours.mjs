@@ -7,6 +7,16 @@ export const CREAM = "#dfd2ae";
 export const LOIKA_COAT = {   // coat_main, [dark, between, light]
   redder: ["#482a1e", "#864d2b", "#a26b4f"], between: ["#2e2a2d", "#615c5f", "#989397"], yellower: ["#3e301f", "#72583b", "#9f805a"],
 };
+// the other signed kinds (release 22b): coat_main of each cell as the desk's palette-SNN-v8.json gives it, [dark, between, light] per Tint look of the kind's frame
+export const KIND_COAT = {
+  S03: { redder: ["#654934", "#87715f", "#ab9b8d"], between: ["#604b39", "#827362", "#aa9c8c"], yellower: ["#66492f", "#897251", "#b09b7c"] },
+  S04: { yellower: ["#696f5d", "#929880", "#bcc1aa"], between: ["#676f5f", "#919789", "#bbc0b2"], greener: ["#62715e", "#8b9a86", "#b6c2af"] },
+  S05: { redder: ["#3e2013", "#643e2c", "#896857"], between: ["#3e200d", "#663d25", "#8b674d"], yellower: ["#382409", "#5f421d", "#886a44"] },
+  S08: { redder: ["#86572c", "#b48251", "#d0a070"], between: ["#7c5d32", "#a98851", "#cfaf7b"], yellower: ["#815c0a", "#ad8834", "#d2af67"] },
+  S12: { redder: ["#a86b21", "#d5953a", "#f4bd62"], between: ["#9c7225", "#bda060", "#e1c688"], yellower: ["#9e7108", "#c59e40", "#e6c571"] },
+  S17: { redder: ["#ae6b2c", "#de954d", "#fbbb6e"], between: ["#a66f38", "#cc9d64", "#eac28a"], yellower: ["#aa6f18", "#d89944", "#f6be70"] },
+  S20: { yellower: ["#66644f", "#8f8e76", "#b4b29c"], between: ["#616657", "#8a8f7f", "#aeb4a4"], greener: ["#586859", "#809281", "#a5b7a6"] },
+};
 export const LAND_BODY = {   // [hex, L, C, h] of the land's body colour
   mixed: ["#D4B060", 0.773, 0.108, 85.6], woods: ["#A0603E", 0.553, 0.096, 47.9], tallwood: ["#A8B39C", 0.752, 0.034, 128.1], thickets: ["#7C4C66", 0.48, 0.074, 346.6], fells: ["#A79B8B", 0.695, 0.027, 75.2],
   downs: ["#8F7598", 0.599, 0.06, 317.3], marsh: ["#8A8B58", 0.623, 0.071, 109.3], tarns: ["#6F87A1", 0.614, 0.048, 250.7], meres: ["#2F6E74", 0.5, 0.065, 203.8],
@@ -26,6 +36,7 @@ function oklchHex(L, C, h) {   // OKLCH -> sRGB hex (Ottosson), clamped
 export function coatColours(species, tint, shade = "between") {
   const si = SHADE_I[shade] ?? 1;
   if (species === "S01") { const row = LOIKA_COAT[tint]; return row ? [row[si], CREAM] : null; }
+  if (KIND_COAT[species]) { const row = KIND_COAT[species][tint]; return row ? [row[si]] : null; }
   const land = LAND_BODY[LAND_OF[species]]; if (!land) return null;
   if (tint !== "between" && !TARGET_HUE[tint]) return null;
   const [, L, C, h] = land, d = tint === "between" ? 0 : Math.max(-12, Math.min(12, ((TARGET_HUE[tint] - h + 540) % 360) - 180));

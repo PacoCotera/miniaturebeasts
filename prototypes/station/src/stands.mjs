@@ -10,7 +10,10 @@ export const juvenileSize = ([w, h]) => JUVENILE_OF[`${w}x${h}`] ?? [w, h];
 export const placedAt = (id, w, h) => { const m = assetEntry(id); return !!m && m.status !== "empty" && !!m.file && m.w === w && m.h === h; };
 // The coats (release 21g, art desk ruling R21-COAT-V8): a kind's pictures baked at build time in a Tint x Shade grid (ui/tools/coat-masters.mjs), placed as mibi-<stage>-SNN-<tint>-<shade>-... beside the painted master,
 // which is the between-dark coat. COAT_TRAITS names, per kind, the look traits that make the coat (Tint and Shade) and the Markings; the Markings pick the adult's awake picture (MARKED_PICTURE), in the mibi's coat.
-export const COAT_TRAITS = { S01: { tint: "body-hue", shade: "body-value", marking: "markings" } };
+const COAT_OF_KIND = { tint: "body-hue", shade: "body-value", marking: "markings" };
+export const COAT_TRAITS = Object.fromEntries(["S01", "S03", "S04", "S05", "S08", "S12", "S17", "S20"].map((k) => [k, COAT_OF_KIND]));
+// the cell of each kind's palette marked 'painted': that coat is the painted master (the desk's palette-SNN-v8.json), so a mibi with no read coat shows it
+export const PAINTED_COAT = { S01: "between-dark", S03: "between-between", S04: "between-between", S05: "between-between", S08: "between-between", S12: "between-between", S17: "between-between", S20: "between-between" };
 export const MARKED_PICTURE = { spotted: "lay-spots", saddle: "lay-saddle", shaded: "lay-gradient", bands: "lay-bands", patches: "lay-patches" };   // plain = the stand
 // the coat a mibi's drawn looks (looks.mjs drawnLooks: only a chapter that is read draws) call for, "<tint>-<shade>" or "<tint>-<shade>+<lay picture>", or null (the painted coat): the kind has no coat traits or the chapter is unread
 export const coatOf = (species, looks, table = COAT_TRAITS) => {

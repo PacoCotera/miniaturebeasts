@@ -34,11 +34,12 @@ export function coatGrid(desk, k) {
   return { tints, coats, painted: painted[0] };
 }
 // the desk's picture ids -> the masters: [adult picture, young picture, master name with {coat}, sizes]. The young is the adult's picture of the same name, rescaled
-export const PAIRS = [
-  ["stand", "juv", "{coat}", SIZES], ["asleep", "juvasleep", "{coat}-curl", ["304x312"]],
-  ["shake", "juvshake", "{coat}-shake", ["304x312"]], ["calm", "juvcalm", "{coat}-calm", ["304x312"]],
-  ["puff", "juvpuff", "{coat}-puff", ["304x312"]], ["sniff", "juvsniff", "{coat}-sniff", ["304x312"]], ["dig", "juvdig", "{coat}-dig", ["304x312"]], ["glow", "juvglow", "{coat}-glow", ["304x312"]],
-];
+export const BASE_PAIRS = [["stand", "juv", "{coat}", SIZES], ["asleep", "juvasleep", "{coat}-curl", ["304x312"]]];
+// a kind's pairs: the stand and the asleep, then every habit pose its manifest names with a young twin (release 22b: the kind's own poses, named as the painted pose masters are)
+export const pairsOf = (have) => [...BASE_PAIRS, ...[...have].filter((id) => !/^(juv|lay-|sig-)/.test(id) && !["stand", "asleep"].includes(id) && have.has("juv" + id)).map((id) => [id, "juv" + id, `{coat}-${id}`, ["304x312"]])];
+export const PAIRS = BASE_PAIRS;
+// the kinds whose painted tool-size cut (144 x 152 adult, 104 x 112 young) the desk replaced: the placed masters are the old picture, so the painted cell's cut is placed over them (desk 2026-11-07 06:49: S03 is cut from the new three-quarter stand)
+export const REPLACE_TOOL = new Set(["S03"]);
 // the adult's awake marked pictures (the Markings look -> the desk's picture): adult only, three sizes, in every coat
 export const MARKED = { spotted: "lay-spots", saddle: "lay-saddle", shaded: "lay-gradient", bands: "lay-bands", patches: "lay-patches" };
 export const LATER = ["sig-lo", "sig-hi"];   // recoloured by the desk, drawn by no scene yet
@@ -61,7 +62,7 @@ export function planCoats({ desk = DESK, index, only = null }) {
     const { coats: COATS, painted: PAINTED } = coatGrid(desk, k);
     if (JSON.stringify([...man.coats].sort()) !== JSON.stringify([...COATS].sort())) throw new Error(`${k}: the desk's coats are not the palette's 3 x 3 grid: ${man.coats}`);
     kinds.push(k); grids[k] = { coats: COATS, painted: PAINTED };
-    for (const [aId, jId, name, sizes] of PAIRS) {
+    for (const [aId, jId, name, sizes] of pairsOf(have)) {
       if (!have.has(aId) || !have.has(jId)) { waiting.add(`${k} ${aId}`); continue; }
       for (const coat of COATS) for (const size of sizes) {
         const af = out(aId, coat, size), jf = out(jId, coat, size); cells += 2;
@@ -89,7 +90,7 @@ export function planCoats({ desk = DESK, index, only = null }) {
       const f = path.join(toolDir, `${pre}-${coat}-${size}.png`); cells++; if (!existsSync(f)) { missing.push(f); continue; }
       let P = flip ? flipPic(pic(f)) : pic(f); if (stage === "juvenile" && GROUNDED.has(k)) P = liftShadow(P);
       const id = coat === PAINTED ? `mibi-${stage}-${k}-${size}` : `mibi-${stage}-${k}-${coat}-${size}`;
-      if (coat === PAINTED) { const m = index.masters[id]; painted.push({ id, ok: !!m && same(P, pic(path.join(dest, m.file))) }); continue; }
+      if (coat === PAINTED && !REPLACE_TOOL.has(k)) { const m = index.masters[id]; painted.push({ id, ok: !!m && same(P, pic(path.join(dest, m.file))) }); continue; }
       ops.push({ id, buf: encode(P), from: path.relative("/home/mb/mb", f) }); recoloured.add(`${k} ${pre}-${size}`);
     }
     // the Library's faces (release 21h2, art desk 21h ART INPUTS A): the head and crest cut from the coated stand, three-quarter view, both eyes (work/out-tool/<kind>/<kind>-faces/face-<coat>-<size>.png, 40 x 40 and 64 x 64), placed as mibi-face-<kind>-<coat>-<size>
@@ -99,7 +100,7 @@ export function planCoats({ desk = DESK, index, only = null }) {
       ops.push({ id: `mibi-face-${k}-${coat}-${size}`, buf: encode(fl ? flipPic(pic(f)) : pic(f)), from: path.relative("/home/mb/mb", f) }); recoloured.add(`${k} face-${size}`);
     }
     for (const id of LATER) if (have.has(id)) waiting.add(`${k} ${id} (recoloured by the desk, drawn by no scene)`);
-    const known = (id) => PAIRS.some((p) => p[0] === id || p[1] === id) || LATER.includes(id) || Object.values(MARKED).includes(id);
+    const known = (id) => pairsOf(have).some((p) => p[0] === id || p[1] === id) || LATER.includes(id) || Object.values(MARKED).includes(id) || id === "lay-plain";   // lay-plain is the stand's own layout
     for (const id of have) if (!known(id)) waiting.add(`${k} ${id} (no placement row)`);
   }
   return { ops, painted, recoloured: [...recoloured], waiting: [...waiting], missing, cells, kinds, skipped, grids };
