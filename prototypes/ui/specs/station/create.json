@@ -168,7 +168,7 @@
    "sameLook": "{Trait}: {look}, hides nothing",
    "asleep": "{Trait}: {shows}, {sleeping} asleep",
    "doing": "{Trait}: cross to change",
-   "oneLook": "{Trait}: one look in this pod",
+   "oneLook": "{Trait}: one look only",
    "clash": "✕ {Trait}: won't grow like this",
    "none": "it grows as the pod is",
    "examples": ["Markings: pale", "Claws: cross to change", "✕ Eyes: won't grow like this"]

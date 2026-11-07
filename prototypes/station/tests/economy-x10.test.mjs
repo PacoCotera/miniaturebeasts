@@ -11,7 +11,7 @@ import { traitLooks } from "../../workbench/framework/describe.mjs";
 import * as L from "../src/library.mjs";
 import * as S from "../src/state.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "loose" }, decided = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const crate = (n, pods, extra = {}) => ({ id: "x" + n, n, turn: n, at: 0, e: 2, d: 2, s: 0, pods, met: [], explored: 5, of: 20, lines: [], ...extra });

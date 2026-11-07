@@ -7,6 +7,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, speciesIndex } from "../src/genome.mjs";
+import { withSeals } from "./fixtures/sealed.mjs";
 import * as S from "../src/state.mjs";
 import { arrivalOf, holdsNewSpecies } from "../src/arrival.mjs";
 import { cargoBuild } from "../src/views/cargo-props.mjs";
@@ -16,8 +17,8 @@ import { createMeasure, measureRole } from "../../ui/specs/measure.mjs";
 import { listPitch } from "../../ui/specs/derive.mjs";
 import { validate } from "./habitat-props.test.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
-setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+setFrames(withSeals(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")))));
 const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), cargo = J("cargo"), home = J("home"), frame = J("frame"), panel = J("panel"), pods = J("pods"), schema = J("cargo.props"), A = cargo.regions.arrival;
 const metrics = JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")), measure = createMeasure(metrics), byRole = (role) => measureRole(metrics, frame, role);   // a text role's measure (frame.json type.roles)
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000, words = (t) => t.trim().split(/\s+/).filter(Boolean).length;

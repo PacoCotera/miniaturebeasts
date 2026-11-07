@@ -1,9 +1,9 @@
 // The Station's genome bridge: nothing here is a genome model of the Station's own. The frames come
-// from the workbench registry (../workbench/frames/*.json), individuals from the workbench framework
+// from the workbench registry (../workbench/frames/language/*.json), individuals from the workbench framework
 // (species.mjs), looks in words from describe.mjs, the stamp from the genome stamp's codec. The
 // Station page fetches the frames beside it (the sandbox publishes prototypes/* side by side); the
 // tests read them from disk and call setFrames.
-import { LOCI, resolveCopies, isContinuous, quantize, valueRange, binFor } from "../../workbench/framework/catalogue.mjs";
+import { LOCI, LAYOUT_WORD, resolveCopies, isContinuous, quantize, valueRange, binFor } from "../../workbench/framework/catalogue.mjs";
 import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, FRAME_VERSION } from "../../workbench/framework/species.mjs";
 import { lookOf } from "../../workbench/framework/describe.mjs";
 import { cross, forecast, kinship, directKin, relatedness, identity, SPREAD, blendRange } from "../../workbench/framework/cross.mjs";
@@ -13,14 +13,14 @@ import { stampCode as stampCodeOf, decodeStampCode } from "../../genome-stamp/sr
 
 export { genomeDigest, checkGenome, buildIndividual, shapeTrait, cross, forecast, kinship, directKin, relatedness, identity, SPREAD, decodeStampCode };
 
-// The Companion page's species indexes: 0 is S01 Loika, 1 is S03 Tuikis, 2 is S02 Untuva (station-build.md §2.2).
-export const SP_INDEX = ["S01", "S03", "S02"];
-export const speciesIndex = (id) => SP_INDEX.indexOf(id);           // -1 for a species the Companion does not carry
+// The species indexes the Companion page and the saves use: 0 is S01 Loika, 1 is S03 Tuikis, 2 is S02 Untuva (station-build.md §2.2); the other seventeen are appended, so those three keep their numbers.
+export const SP_INDEX = ["S01", "S03", "S02", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20"];
+export const speciesIndex = (id) => SP_INDEX.indexOf(id);           // -1 for a species the game does not carry
 export const speciesId = (index) => SP_INDEX[index] ?? null;
 
 const FRAMES = new Map();
-// A draft species (frame.species.draft: no art yet) is not loaded: no Library cell, no pool, no pod reads it until the flag comes off.
-export function setFrames(list) { FRAMES.clear(); for (const f of list) if (!f.species.draft) FRAMES.set(f.species.id, f); }
+// Every frame the game loads is a frame of version 8 (workbench/frames/language): none is draft or parked, so all twenty kinds load.
+export function setFrames(list) { FRAMES.clear(); for (const f of list) FRAMES.set(f.species.id, f); }
 export const frameOf = (id) => FRAMES.get(id) ?? null;
 export const frameIds = () => [...FRAMES.keys()].sort();
 export const framesLoaded = () => FRAMES.size > 0;
@@ -66,7 +66,7 @@ function traitStateOf(frame, trait, genome) {
   if (row?.switch && trait.loci.length > 1 && locus && resolveCopies(locus, genome.loci[first]) === false) {
     const said = trait.loci.slice(1).find((id) => SLEEP_WORDS[id] && genome.loci[id]);   // a sleeping size has its own plain words (the Loika's crest)
     const layout = said ? null : trait.loci.slice(1).map((id) => genome.loci[id]).find((c) => c && typeof c[0] === "string");
-    asleep = said ? ((w) => (w.size === 1 ? [...w][0] : SLEEP_WORDS[said].mixed))(new Set(genome.loci[said].map((c) => SLEEP_WORDS[said][binFor(LOCI.get(said), c)]))) : layout ? [...new Set(layout)].join(" or ") : "what they carry";
+    asleep = said ? ((w) => (w.size === 1 ? [...w][0] : SLEEP_WORDS[said].mixed))(new Set(genome.loci[said].map((c) => SLEEP_WORDS[said][binFor(LOCI.get(said), c)]))) : layout ? [...new Set(layout.map((l) => LAYOUT_WORD[l] ?? l))].join(" or ") : "what they carry";
   }
   const carried = [...new Set([shows, a, b].filter(Boolean))];
   let kind, hides = null, line;

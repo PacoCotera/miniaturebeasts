@@ -2,6 +2,7 @@
 // absolute difference at most 2 and at most 24 a channel, every bead centre equal), the same looks give the same bytes and a new look a new id, the drawn form keeps 12 px clear of every edge of the window in each signed state,
 // the four breathing levels, the render time (printed against the 1 s budget of the development machine; the test fails only past 3 s), and the subset: the port calls nothing the canvas does not have.
 //   node --test prototypes/station/tests/specimen.test.mjs        (the oracle needs playwright: PW_DIR=/path/with/node_modules/playwright, else it is skipped)
+// PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";

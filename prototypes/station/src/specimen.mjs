@@ -3,6 +3,8 @@
 // the two canvases `finish` makes come from createCanvas, `drawForm` reports each bead's centre, and the harness at the foot (the art director's, build spec 4.2) makes the picture, its bead centres and its four breathing levels.
 // Bump RECIPE whenever this file changes what it draws: it is in the picture's cache id.
 import { createCanvas } from './paint2d.mjs';
+import { coatColours } from './coat-colours.mjs';
+import { IRIS_SWATCH } from '../../workbench/framework/language.mjs';   // the house iris table: the Iris trait's looks are drawn in it, for every kind
 
 // Library specimen generator, v3 rules (frame-driven body). Home's Library module is this render (build spec section 4.2).
 // Library specimen generator. Pure function of (species frame, discovery state).
@@ -42,6 +44,9 @@ const smooth = (t) => t * t * (3 - 2 * t);
 export function lookColours(trait, look, idx) {
   const parts = look.split(' and ');
   if (look === 'two side by side' && trait.pod) return trait.pod;              // the species' own pair
+  if (trait.id === 'iris' && IRIS_SWATCH[look]) return [IRIS_SWATCH[look]];   // the Iris trait: the house iris colour of the look (amber #C27A1E), never the Face chapter's green ramp
+  if (trait.id === 'body-hue') { const c = coatColours(trait.sid, look); if (c) return c; }   // the Tint trait: the coat colour of the look (coat-colours.mjs), never the chapter's one tan
+  if (trait.id === 'body-value') { const c = coatColours(trait.sid, 'between', look); if (c) return c; }   // the Shade trait: the coat at its middle Tint, dark to light
   if (parts.every((p) => PIGMENT[p])) return parts.map((p) => PIGMENT[p]);
   const hue = CH_HUE[trait.chapterId] || '#cccccc';
   const ramp = (trait.sid === 'S01' || !trait.sid) && RAMPS[trait.id] ? RAMPS[trait.id] : [mix(hue, '#000000', 0.12), mix(hue, PAL.bone, 0.3), mix(hue, PAL.bone, 0.6)];
@@ -53,7 +58,7 @@ export function model(frame, state) {
   const sid = frame.species.id;
   const found = (state[sid]) || {};
   const fresh = (state.newSince && state.newSince[sid]) || {};
-  const legacy = sid === 'S01' ? { markings: ['plain'] } : {};   // legacy looks (engineer's ruling): shown once found, never a slot
+  const legacy = {};   // legacy looks: shown once found, never a slot. None now: the frames of version 8 keep no look only for inheritance (the Loika's plain is a look of its Markings)
   const chapters = frame.chapters.map((ch) => ({
     id: ch.id, name: ch.name, sealed: ch.sealed,
     traits: ch.traits.map((t) => {
@@ -412,10 +417,12 @@ export function renderSpecimen(frame, state, opts = {}) {
 // On the flat ground of its cell (libPanel found, libQuiet met): no grain, no paper, no vignette; the light alone takes the print tone, added to the exact ground, and every pixel nearer than 4 px to the picture's edge is the exact ground.
 export const CELL = { ss: 2, w: 140, h: 114, cx: 70, cy: 58, rad: 54, nodeR: 7, lw: 0.55, bloom: 0.8, pencil: 0.95, edge: 4 };
 // The cell picture of a species: { w, h, rgba (opaque), ms }. state: { <species id>: { <trait>: [looks, in the order found] } } (empty for a met species); pencil: the met study; ground: [r, g, b].
-export function renderCell(frame, state, { pencil = false, ground } = {}) {
-  const t0 = performance.now(), ss = CELL.ss, W = CELL.w * ss, Ht = CELL.h * ss;
-  const m = layout(model(frame, pencil ? {} : state)), s = CELL.rad / m.extent;
-  const g = { cx: CELL.cx * ss, cy: CELL.cy * ss, s: s * ss, lw: Math.max(CELL.lw, s) * ss };
+// `gen`: the form's generator (library.json l1.grid.forms.<n>.parts.generator: w, h, cx, cy, rad) where the catalogue takes a form with its own cell picture; absent, the form of 16's numbers above.
+export function renderCell(frame, state, { pencil = false, ground, gen = null } = {}) {
+  const CELL_ = gen ? { ...CELL, ...gen } : CELL;
+  const t0 = performance.now(), ss = CELL_.ss, W = CELL_.w * ss, Ht = CELL_.h * ss;
+  const m = layout(model(frame, pencil ? {} : state)), s = CELL_.rad / m.extent;
+  const g = { cx: CELL_.cx * ss, cy: CELL_.cy * ss, s: s * ss, lw: Math.max(CELL_.lw, s) * ss };
   const lightC = createCanvas(W, Ht), acc = createCanvas(W, Ht), a = acc.getContext('2d');
   if (pencil) { const lc = lightC.getContext('2d'); lc.globalAlpha = CELL.pencil; drawForm(lc, g, m, { pencil: true }); a.globalCompositeOperation = 'lighter'; a.drawImage(lightC, 0, 0, W, Ht); }
   else {
@@ -424,9 +431,9 @@ export function renderCell(frame, state, { pencil = false, ground } = {}) {
     for (const [px, k] of [[1.2, 0.3], [4, 0.2], [12, 0.12]]) { a.filter = `blur(${px * 2 * ss}px)`; a.globalAlpha = k * CELL.bloom; a.drawImage(lightC, 0, 0, W, Ht); }
     a.filter = `blur(${10 * 2 * ss}px) sepia(1) saturate(3) hue-rotate(-25deg)`; a.globalAlpha = 0.1 * CELL.bloom; a.drawImage(lightC, 0, 0, W, Ht);
   }
-  const L = acc.data, rgba = new Uint8ClampedArray(CELL.w * CELL.h * 4);
-  for (let y = 0; y < CELL.h; y++) for (let x = 0; x < CELL.w; x++) {
-    const o = (y * CELL.w + x) * 4, edge = Math.min(x, y, CELL.w - 1 - x, CELL.h - 1 - y) < CELL.edge;
+  const L = acc.data, rgba = new Uint8ClampedArray(CELL_.w * CELL_.h * 4);
+  for (let y = 0; y < CELL_.h; y++) for (let x = 0; x < CELL_.w; x++) {
+    const o = (y * CELL_.w + x) * 4, edge = Math.min(x, y, CELL_.w - 1 - x, CELL_.h - 1 - y) < CELL_.edge;
     for (let c = 0; c < 3; c++) {
       let t = 0; for (let j = 0; j < ss; j++) for (let i = 0; i < ss; i++) t += L[((y * ss + j) * W + x * ss + i) * 4 + c];
       const v = t / (ss * ss), tone = v / (1 + 0.25 * v) * 1.18;
@@ -434,5 +441,5 @@ export function renderCell(frame, state, { pencil = false, ground } = {}) {
     }
     rgba[o + 3] = 255;
   }
-  return { w: CELL.w, h: CELL.h, rgba, ms: performance.now() - t0 };
+  return { w: CELL_.w, h: CELL_.h, rgba, ms: performance.now() - t0 };
 }

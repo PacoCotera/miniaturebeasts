@@ -6,6 +6,7 @@
  "frame": "frame.json",
  "status": "Home: a top bar that carries the line, two windows (the Vivarium on the left, the Library on the right) and a console of four stations (Pods, Incubator, Companion and Bay) whose order tells the sequence. The windows and the stations' pictures are placeholders until their own pictures land.",
  "note": "The one home of Home's numbers. Rectangles are [x, y, w, h] at 1x on 1024 x 600 and every picture is drawn 1:1. The panels, edges, bevels and ticks are the face's own rect primitives, palette-exact. A text at (x, y) is a line box: its cap top is y + (pitch - cap) / 2, the pitch 20 at 16 px and 28 at 20 px.",
+ "overlays": {"panel": {"spec": "panel.json", "id": "reset", "from": "the first open after the release's reset (the save says resetFrom, the Station part has not shown it): one card with no picture", "closes": "✓ Begin, ← or a room key: the notice closes and is not shown again on this device"}},
  "states": ["home"],
  "initial": "home",
  "stateRule": "Home has one state. Docked or away changes the Companion and Bay stations' words, never the layout",

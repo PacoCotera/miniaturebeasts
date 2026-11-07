@@ -7,6 +7,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf } from "../src/genome.mjs";
+import { withSeals } from "./fixtures/sealed.mjs";
 import * as S from "../src/state.mjs";
 import { fieldGuide } from "../src/library.mjs";
 import { specimenSpecies, newLooksOf, libraryOf, specimenInput, warmLibrary, STARTER } from "../src/views/specimen-props.mjs";
@@ -14,8 +15,8 @@ import { homeBuild, setLibrary } from "../src/views/home-props.mjs";
 import { specimenId, clearSpecimens, renderCount } from "../src/specimen-cache.mjs";
 
 setLibrary(libraryOf);   // the host registers it
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
-setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+setFrames(withSeals(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("home.json"), frameSpec = J("frame.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; return st; };
@@ -40,17 +41,17 @@ test("the species: none found is null (the starter's empty form shows); the only
   for (const id of ["S03", "S04"]) { const t = frameOf(id).chapters[0].traits[0]; a.wish[id] = { [t.id]: t.looks[0] }; }
   a.knownIds = ["S04", "S03"]; assert.equal(pick(a), "S04", "no mibi of either: learnt order"); a.knownIds = ["S03", "S04"]; assert.equal(pick(a), "S03");
 });
-test("the counts: every trait's current looks count, 23 for the Loika at frame version 6 (20 before the ears); a plain look is a found bead once seen and never counts as new", () => {
-  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); assert.equal(total(st, "S01"), 23);
-  S.guideAdd(st, "S01", "markings", ["plain"]); assert.equal(total(st, "S01"), 23, "a legacy look moves nothing");
-  st.libSeen = S.libSnapshot(st); S.guideAdd(st, "S01", "markings", ["plain"]);
-  assert.equal(newLooksOf(st, "S01", settings).size, 0);
+test("the counts: every trait's current looks count, 57 for the Loika at frame version 8; plain is a look of Markings like the others (no look is kept only for inheritance now), a found bead that counts", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); assert.equal(total(st, "S01"), 57);
+  st.libSeen = S.libSnapshot(st); S.guideAdd(st, "S01", "markings", ["plain"]); assert.equal(total(st, "S01"), 57, "plain is one of the six looks of Markings: it is in the count");
+  assert.deepEqual([...newLooksOf(st, "S01", settings)].filter((k) => k === "markings|plain").length <= 1, true);
+  st.libSeen = S.libSnapshot(st); assert.equal(newLooksOf(st, "S01", settings).size, 0);
   warmLibrary(st, settings); const r = libraryOf(st, settings, spec).region; assert.ok(!("new" in r), "nothing new");
   const input = specimenInput(st, "S01", settings); assert.ok(input.found.markings.includes("plain"), "the plain look is in what the specimen draws");
   clearSpecimens(); warmLibrary(st, settings); const pic = libraryOf(st, settings, spec); assert.equal(pic.request.found.markings.includes("plain"), true);
 });
 test("a look is new when it was found since the Library was last opened full screen: opening it again clears them; a save from before the field takes what it knows as seen", () => {
-  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const n0 = newLooksOf(st, "S01", settings).size; assert.ok(n0 > 0 && n0 <= 20, "a fresh Library: every look found is new");
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const n0 = newLooksOf(st, "S01", settings).size; assert.ok(n0 > 0 && n0 <= total(st, "S01"), "a fresh Library: every look found is new");
   st.libSeen = S.libSnapshot(st); assert.equal(newLooksOf(st, "S01", settings).size, 0);
   const t = frameOf("S01").chapters.flatMap((c) => c.traits).find((x) => x.id === "eye-rings"); const unseen = t.looks.find((l) => !S.guideLooks(st, "S01", t.id).includes(l)) ?? null;
   if (unseen) { S.guideAdd(st, "S01", t.id, [unseen]); assert.deepEqual([...newLooksOf(st, "S01", settings)], [`eye-rings|${unseen}`]); }

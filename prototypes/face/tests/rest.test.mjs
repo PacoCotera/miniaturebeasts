@@ -13,13 +13,13 @@ const resters = (sc) => sc.props.regions.residents.map((p, i) => [p, i]).filter(
 
 for (const [name, o, where] of [["moving sets", { adults: 4, juveniles: 3, s05: 1 }, "bed"], ["stills (no curl picture: out)", { adults: 4, juveniles: 3, s05: 1, motionSets: false }, "out"]]) {
   test(`Roots, ${name}: three resters finish their trips and then rest (on the bed, their walkers hiding where they stand and their sleepers drawn; with no curl picture, off the left edge); never hidden mid-trip; at most two travel; five shown`, { skip }, async () => {
-    const sc = movingScene("vivarium", { ...o, focus: "room" }), n = sc.props.regions.residents.length, R = resters(sc); assert.equal(n, 8); assert.equal(R.length, 3); assert.ok(R.every((i) => sc.props.regions.residents[i].restAt === where));
+    const sc = movingScene("vivarium", { ...o, focus: "room" }), n = sc.props.regions.residents.length, R = resters(sc); assert.equal(n, 8); assert.equal(R.length, 3); assert.ok(where === "bed" ? R.filter((i) => sc.props.regions.residents[i].restAt === "bed").length === 2 : R.every((i) => sc.props.regions.residents[i].restAt === where));   // release 21g: two to a bed
     const f = await bootScene(sc), prev = {}; let hidden = false, maxTravel = 0;
     runFrames(f, 90000, { each: () => { const r = rec(f, n); maxTravel = Math.max(maxTravel, r.filter((q) => q.walking).length);
       r.forEach((q, i) => { if (q.hidden) { assert.equal(q.walking, 0, `${i}: hidden mid-trip`); hidden = true; } const p = prev[i]; if (p && (q.rs === RS.finish || q.rs === RS.going) && p.rs !== RS.shown) assert.ok(Math.abs(q.x - p.x) <= 8 && Math.abs(q.feet - p.feet) <= 8, `${i}: a rester leaps (${p.x},${p.feet}) -> (${q.x},${q.feet})`); prev[i] = q; }); } });
-    const r = rec(f, n); assert.equal(r.filter((q) => q.sh).length, 5, "five shown"); for (const i of R) assert.deepEqual([r[i].rs, r[i].rk, r[i].hidden], [RS.rest, RK[where], 1], `${i} rests ${where}`);
+    const r = rec(f, n); assert.equal(r.filter((q) => q.sh).length, 5, "five shown"); for (const [k, i] of R.entries()) { if (where === "bed" && k === 2) { assert.equal(r[i].rs, RS.rest, "the third rester rests off the bed (two to a bed, 21g)"); continue; } assert.deepEqual([r[i].rs, r[i].rk, r[i].hidden], [RS.rest, RK[where], 1], `${i} rests ${where}`); }
     assert.ok(hidden); assert.ok(maxTravel <= SPEC("vivarium").rules.travel.max, `at most ${SPEC("vivarium").rules.travel.max} travel (${maxTravel})`);
-    const nodes = f.nodeNames?.() ?? null; if (nodes) assert.equal(nodes.filter((x) => x === "bed.sleepers").length, 3);
+    const nodes = f.nodeNames?.() ?? null; if (nodes) assert.equal(nodes.filter((x) => x === "bed.sleepers").length, where === "bed" ? 2 : 3);
     assert.deepEqual(f.errors(), []);
   });
 }

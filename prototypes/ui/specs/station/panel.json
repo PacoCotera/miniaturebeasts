@@ -10,7 +10,8 @@
   "pods",
   "bench",
   "incubator",
-  "cargo"
+  "cargo",
+  "home"
  ],
  "spec": "specs/station-decision-panel-spec.md",
  "frame": "frame.json",
@@ -65,6 +66,10 @@
    "opens": "cargo",
    "by": "the Companion's dock: at the show's end (form strip)",
    "form": "strip"
+  },
+  "reset": {
+   "opens": "home",
+   "by": "the first open after the release's reset (the save says resetFrom, the Station part has not shown it): one card, ✓ Begin closes it; shown once on this device"
   },
   "growNow": {
    "opens": "incubator",
@@ -176,6 +181,16 @@
     "wait": {
      "name": "Wait",
      "line": "ready in about {n} min"
+    }
+   }
+  },
+  "reset": {
+   "note": "The release's one-time notice (the copywriter's words of 6 Nov 2026: reset.notice.station.title and .line, reset.button.station). One card, no picture, shown once over Home.",
+   "title": "The world has changed",
+   "cards": {
+    "begin": {
+     "name": "Begin",
+     "line": "New mibis live in it now"
     }
    }
   }

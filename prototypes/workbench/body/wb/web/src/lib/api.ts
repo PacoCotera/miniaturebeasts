@@ -1,6 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 import type { ChecksState } from './checks'
 import type { ExtremesState, Genome } from './genes'
+import type { Edit } from './patch'
 import { PREFIX, apiPath } from './prefix'
 
 export type Entry = { t: string; actor: string; role: string | null; agent: boolean; via: string; op: string; path: string; old: unknown; new: unknown; hash_before: string; hash_after: string }
@@ -53,10 +54,16 @@ export async function call<T>(method: string, path: string, body?: unknown): Pro
 }
 
 export const speciesList = () => queryOptions({ queryKey: ['species-list'], queryFn: () => call<SpeciesRow[]>('GET', '/api/species'), staleTime: 30_000 })
+// The parts of the species answer that move while the file does not (`GET /api/species/<id>/state`, tagged), and the Check ends block (`/extremes`).
+export type SpeciesState = Pick<Species, 'id' | 'hash' | 'error' | 'lease' | 'views' | 'checks'> & { undo: { undo: boolean; redo: boolean }; extremes: Pick<ExtremesState, 'fresh' | 'running' | 'key' | 'at'> | null }
+export const speciesState = (id: string) => call<SpeciesState>('GET', `/api/species/${encodeURIComponent(id)}/state`)
+export const speciesExtremes = (id: string) => call<{ id: string; hash: string; extremes: ExtremesState | null }>('GET', `/api/species/${encodeURIComponent(id)}/extremes`)
 export const speciesOne = (id: string) => queryOptions({ queryKey: ['species', id], queryFn: () => call<Species>('GET', `/api/species/${encodeURIComponent(id)}`), staleTime: Infinity })
-export const patchSpecies = (id: string, ops: unknown[]) => call('PATCH', `/api/species/${encodeURIComponent(id)}`, ops)
+// A save's answer says what it did (the Edit the event stream carries too), so the page follows its own edit without asking for the file again (lib/patch.ts).
+export type SaveAnswer = Edit & { changed: { path: string; old: unknown; new: unknown }[] }
+export const patchSpecies = (id: string, ops: unknown[]) => call<SaveAnswer>('PATCH', `/api/species/${encodeURIComponent(id)}`, ops)
 export const renderViews = (id: string, mode: string) => call('POST', `/api/species/${encodeURIComponent(id)}/jobs`, { kind: 'render', args: { modes: [mode], az: [0, 32, 90, 180], sizes: [304, 608] } })
-export const casUrl = (key: string) => apiPath(`/cas/${key}.png`)
+export const casUrl = (key: string) => apiPath(`/cas/${key}.webp`)
 export type JobAnswer = { id: string; state: string; error?: string; result?: { views?: { mode: string; az: number; size: number; key: string }[] } }
 export const postJob = (id: string, kind: string, args: unknown) => call<JobAnswer>('POST', `/api/species/${encodeURIComponent(id)}/jobs`, { kind, args })
 export const getJob = (jid: string, wait = 20) => call<JobAnswer>('GET', `/api/jobs/${jid}?wait=${wait}`)
@@ -71,12 +78,11 @@ export async function genomePicture(id: string, genome: string, az: number, size
 }
 export const checkEnds = (id: string) => postJob(id, 'check', { stage: 'extremes' })
 
-// Chapter 9: how often each look shows (spec 4.2) and a mibi's genome string. Both are computed on the server from the file alone (no build, no render), keyed by the file's hash so an edit refetches.
-export const freqOne = (id: string, hash: string) => queryOptions({ queryKey: ['freq', id, hash], queryFn: () => call<import('./genes').Freq>('GET', `/api/species/${encodeURIComponent(id)}/freq`), staleTime: 60_000 })
+// Chapter 9: a mibi's genome string, written by the one codec on the server (how often each look shows is computed in the page, lib/freq.ts), keyed by the file's hash so an edit refetches.
 export type GenomeText = { species: string; genome: string; string: string; code: string | null; length: number; version: number }
 export const stringOne = (id: string, hash: string, genome: string) => queryOptions({ queryKey: ['string', id, hash, genome], queryFn: () => call<GenomeText>('GET', `/api/species/${encodeURIComponent(id)}/string?genome=${encodeURIComponent(genome)}`), staleTime: 60_000, retry: false })
 
 // Chapter 21B: the undo log in full (newest last) and undo and redo through it. An undo is a save of its own with the actor who asked, so History shows it beside the edit it took back.
 export type HistoryAnswer = { entries: Entry[]; undo: boolean; redo: boolean }
 export const historyOne = (id: string, hash: string) => queryOptions({ queryKey: ['history', id, hash], queryFn: () => call<HistoryAnswer>('GET', `/api/species/${encodeURIComponent(id)}/history?n=200`), staleTime: Infinity })
-export const revertSpecies = (id: string, kind: 'undo' | 'redo') => call<{ hash: string; changed: { path: string; old: unknown; new: unknown }[]; undo: boolean; redo: boolean }>('POST', `/api/species/${encodeURIComponent(id)}/${kind}`)
+export const revertSpecies = (id: string, kind: 'undo' | 'redo') => call<SaveAnswer>('POST', `/api/species/${encodeURIComponent(id)}/${kind}`)

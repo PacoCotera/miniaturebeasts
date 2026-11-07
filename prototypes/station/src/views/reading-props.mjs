@@ -22,18 +22,14 @@ export function recommendedLane(st, p, settings = S.DEFAULT_SETTINGS) {
   const pick = unread.find(([c]) => S.glint(st, p, c.id) && c.traits.some((t) => goal.has(t.id))) ?? unread.find(([c]) => S.glint(st, p, c.id)) ?? unread.find(([, i]) => i !== sp) ?? unread[0];
   return pick ? pick[1] : 0;
 }
-// The part of the body a chapter reads (the cut tool's masks): Coat the body, Face the head (with its own crest once read), Movement and Legs the legs; the others have no part and draw none
-export function partOf(species, ch, read) {
-  const id = ch.id; if (species === "S01") return id === "coat" ? "coat" : id === "face" ? (read.includes("face") ? "face" : "head") : id === "movement" ? "legs" : "";
-  if (species === "S03") return id === "coat" ? "coat" : id === "face" ? "face" : id === "shape" ? "shape" : id === "legs-tail" || id === "movement" ? "legs" : "";
-  return "";
-}
+// The part of the body a chapter reads (the cut tool's masks): none now. The S01 and S03 cuts were retired in release 21a, so no kind has part masks and every chapter reads the whole body (the runtime scan).
+export function partOf(species, ch, read) { return ""; }
 // The place the specimen stands at: Face (the head) close when its chapter is open, the detail of a head trait closer; the body chapters keep the overview
 export function placeOf(ch, at) { const head = ch && ch.id === "face"; if (at === "detail") return head ? "detail" : "overview"; if (at === "right" && head) return "close"; return "overview"; }
 // The chamber's picture id for a pod, a place, what is read and the chapter in hand (one picture of one size for every place)
 export function chamberReq(req, p, place, read, hand, outline) {
   const sid = S.speciesOf(p), fr = frameOf(sid), ch = fr.chapters.find((c) => c.id === hand) ?? null, part = ch ? partOf(sid, ch, read) : "";
-  const tints = sid === "S03" ? read.map((c) => { const x = fr.chapters.find((y) => y.id === c); return x ? [partOf(sid, x, read), c] : null; }).filter((t) => t && t[0]) : [];
+  const tints = [];
   const key = `${read.slice().sort().join("+") || "-"}:${hand || "-"}:${part || "-"}:${outline ? "o" : "t"}`;
   return req({ kind: "readchamber", id: `readchamber:${p.id}:${place}:${railHash(key)}`, species: sid, pod: p.id, place, read: [...read], hand: hand || "", outline: !!outline, part, tints });
 }
@@ -55,7 +51,7 @@ export function miniRailProps(req, st, p, settings, o = {}) {
   if (o.hand != null) { out.hand = o.hand; out.nudge = o.nudge ?? 0; out.marks.differs = slot(req, "reading-differs-12x12", [12, 12]); }   // Compare's: the bracket and the differs mark
   return out;
 }
-const discReq = (req, sid, t, ch, d, o = {}) => req({ kind: "readdisc", id: `readdisc:${sid}:${railHash(t.id + ":" + (o.q ? "?" : o.glyph ? "g" + o.glyph : o.look ?? "-"))}:${d}${o.veil ? ":v" : ""}${o.alpha ? ":a" : ""}${o.carried ? ":c" : ""}`, species: sid, trait: t.id, chapter: ch.id, d, look: o.look ?? null, q: !!o.q, ghost: !!o.q, carried: !!o.carried, veil: o.veil ?? 0, alpha: o.alpha ?? null, glyph: o.glyph ?? null });
+export const discReq = (req, sid, t, ch, d, o = {}) => req({ kind: "readdisc", id: `readdisc:${sid}:${railHash(t.id + ":" + (o.q ? "?" : o.glyph ? "g" + o.glyph : o.look ?? "-"))}:${d}${o.veil ? ":v" : ""}${o.alpha ? ":a" : ""}${o.carried ? ":c" : ""}`, species: sid, trait: t.id, chapter: ch.id, d, look: o.look ?? null, q: !!o.q, ghost: !!o.q, carried: !!o.carried, veil: o.veil ?? 0, alpha: o.alpha ?? null, glyph: o.glyph ?? null });
 // the template's looks of a trait (the looks the species can take, small and faint, no names): at most three
 const templateOf = (st, fr, t) => { const all = Array.isArray(t.looks) ? t.looks : S.guideLooks(st, fr.species.id, t.id); return (all.length ? all : ["", "", ""]).slice(0, 3); };
 // the sizes of the right frame's discs by layout (§2.5): shown r, carried r, template chip r
@@ -141,7 +137,7 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
   return { ...base, form: "read", plates, chip: o.reading && o.reading.reward ? { n: o.reading.reward, pic: slot(req, "reading-chip-86x32", [86, 32]), diamond: slot(req, "reading-diamond-13x13", [13, 13]) } : null };
 }
 const pair = (s) => [s.shows, s.hides ?? (s.halves ? (s.halves[0] === s.shows ? s.halves[1] : s.halves[0]) : s.shows)];
-const glyphOf = (t) => (/pace|stride|weave|drive|turning|flap/.test(t.id) ? "gait" : /hind|haunch/.test(t.id) ? "haunch" : /build|body|roundness/.test(t.id) ? "build" : /back-line|topline/.test(t.id) ? "topline" : /eye/.test(t.id) ? "eyes" : "bar");
+const glyphOf = (t) => (/^body-(hue|value)$/.test(t.id) ? "bar" : /pace|stride|weave|drive|turning|flap/.test(t.id) ? "gait" : /hind|haunch/.test(t.id) ? "haunch" : /build|body|roundness/.test(t.id) ? "build" : /back-line|topline/.test(t.id) ? "topline" : /eye/.test(t.id) ? "eyes" : "bar");
 const lookIndex = (fr, t, look) => { const all = Array.isArray(t.looks) ? t.looks : []; return Math.max(0, all.indexOf(look)) % 3; };
 // The detail of a read trait (§2.6, 5): the pair large, its captions and kind; with a mate at home, the odds of each look its child can show, eight seeds a row
 function detailOf(m, spec, req, p, fr, ch, ti) {

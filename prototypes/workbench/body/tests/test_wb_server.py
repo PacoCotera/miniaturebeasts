@@ -273,6 +273,137 @@ class TestServer(unittest.TestCase):
         self.assertEqual([m["id"] for m in json.load(urllib.request.urlopen(os.environ["WB_URL"] + "/api/checks"))][:3], ["schema", "express", "ranges"])
 
 
+class TestTransport(unittest.TestCase):
+    """Studio rebuild R0: gzip, ETag and 304 on the reads the page repeats, the split reads of one species, ops in the edited event, and a species folder's data files that are not species."""
+    TAIL = "/parts/tail/joints/3/len"
+
+    @classmethod
+    def setUpClass(cls):
+        scratch = os.path.join(BODY, "scratch", "t_transport")
+        cls.scratch = scratch
+        shutil.rmtree(scratch, ignore_errors=True)
+        cls.sp = os.path.join(scratch, "species")
+        os.makedirs(cls.sp)
+        S.write_spec(os.path.join(cls.sp, "S20x.json"), dict(SPEC, species="S20x"))
+        with open(os.path.join(cls.sp, "catalogue-pin.json"), "w") as fh:
+            json.dump({"schema": "mb-catalogue/14", "pins": []}, fh)
+        with open(os.path.join(cls.sp, "notes.json"), "w") as fh:
+            json.dump([1, 2, 3], fh)
+        cls.srv = SV.Server(os.path.join(scratch, "home"), [cls.sp], proxy_workers=0, trusted_proxy="127.0.0.1")
+        cls.srv.start()
+        cls.url = f"http://127.0.0.1:{cls.srv.port}"
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.srv.stop()
+        shutil.rmtree(cls.scratch, ignore_errors=True)
+
+    def get(self, path, **headers):
+        req = urllib.request.Request(self.url + path, headers=headers)
+        try:
+            r = urllib.request.urlopen(req)
+        except urllib.error.HTTPError as e:
+            r = e
+        return r.status, r.headers, r.read()
+
+    def call(self, method, path, body=None, user="owner"):
+        req = urllib.request.Request(self.url + path, method=method, data=None if body is None else json.dumps(body).encode(), headers={"X-Studio-User": user, "Content-Type": "application/json"})
+        return json.load(urllib.request.urlopen(req))
+
+    def test_a_json_is_gzipped_when_asked_and_plain_when_not(self):
+        st, h, raw = self.get("/api/species/S20x", **{"Accept-Encoding": "gzip"})
+        self.assertEqual((st, h["Content-Encoding"]), (200, "gzip"))
+        self.assertIn("Accept-Encoding", h["Vary"])
+        import gzip
+        plain = json.loads(gzip.decompress(raw))
+        self.assertEqual(plain["id"], "S20x")
+        self.assertLess(len(raw), len(json.dumps(plain)) / 2.5)
+        st, h, raw2 = self.get("/api/species/S20x")
+        self.assertIsNone(h.get("Content-Encoding"))
+        self.assertEqual(json.loads(raw2)["hash"], plain["hash"])
+        st, h, raw3 = self.get("/api/me", **{"Accept-Encoding": "gzip"})              # a tiny answer is not worth a frame
+        self.assertIsNone(h.get("Content-Encoding"))
+
+    def test_b_tagged_reads_answer_304_to_their_own_tag_and_a_new_answer_to_a_new_one(self):
+        sid = "S20x"
+        for path in (f"/api/species/{sid}", f"/api/species/{sid}/forms", "/api/checks", f"/api/species/{sid}/file", f"/api/species/{sid}/state", f"/api/species/{sid}/extremes", "/api/species"):
+            st, h, raw = self.get(path, **{"Accept-Encoding": "gzip"})
+            self.assertEqual(st, 200, path)
+            tag = h["ETag"]
+            self.assertEqual(h["Cache-Control"], "private, no-cache", path)
+            st, h2, body = self.get(path, **{"Accept-Encoding": "gzip", "If-None-Match": tag})
+            self.assertEqual((st, body, h2["ETag"]), (304, b"", tag), path)
+            st, _, _ = self.get(path, **{"If-None-Match": "W/" + tag})                     # a proxy may weaken the tag
+            self.assertEqual(st, 304, path)
+            st, _, _ = self.get(path, **{"If-None-Match": '"not-this-one"'})
+            self.assertEqual(st, 200, path)
+
+    def test_c_the_file_is_tagged_with_its_hash_and_a_save_changes_the_tag(self):
+        st, h, raw = self.get("/api/species/S20x/file")
+        doc = json.loads(raw)
+        self.assertEqual(h["ETag"], '"' + doc["hash"] + '"')
+        self.assertEqual(set(doc), {"id", "path", "hash", "file", "error"})
+        r = self.call("PATCH", "/api/species/S20x", [{"op": "replace", "path": self.TAIL, "value": 0.26}])
+        st, _, _ = self.get("/api/species/S20x/file", **{"If-None-Match": h["ETag"]})
+        self.assertEqual(st, 200)
+        st, h2, _ = self.get("/api/species/S20x/file")
+        self.assertEqual(h2["ETag"], '"' + r["hash"] + '"')
+        state = json.loads(self.get("/api/species/S20x/state")[2])
+        self.assertEqual((state["hash"], sorted(state)), (r["hash"], ["checks", "error", "extremes", "hash", "id", "lease", "undo", "views"]))
+        self.assertEqual(sorted(state["extremes"]), ["at", "fresh", "key", "running"])
+        self.assertIn("ends", json.dumps(json.loads(self.get("/api/species/S20x/extremes")[2])))
+
+    def test_d_the_edited_event_carries_the_ops_and_the_answer_says_what_it_did(self):
+        q = self.srv.hub.subscribe("S20x")
+        try:
+            before = self.srv.species["S20x"].hash
+            ops = [{"op": "test", "path": self.TAIL, "value": json.loads(self.get("/api/species/S20x/file")[2])["file"]["parts"]["tail"]["joints"][3]["len"]}, {"op": "replace", "path": self.TAIL, "value": 0.27}]
+            r = self.call("PATCH", "/api/species/S20x", ops)
+            ev = None
+            while ev is None or ev["type"] != "edited":
+                ev = q.get(timeout=3)
+            self.assertEqual((ev["base"], ev["hash"], ev["actor"], ev["via"]), (before, r["hash"], "owner", "api"))
+            self.assertEqual(ev["ops"], [{"op": "replace", "path": self.TAIL, "value": 0.27}])             # the test op is for the server
+            self.assertEqual([(e["path"], e["new"], e["hash_after"]) for e in ev["entries"]], [(self.TAIL, 0.27, r["hash"])])
+            self.assertTrue(ev["undo"])
+            self.assertEqual((r["base"], r["ops"], r["entries"], r["undo"]), (before, ev["ops"], ev["entries"], True))
+            # undo is a save of its own, with ops the page can apply
+            u = self.call("POST", "/api/species/S20x/undo")
+            ev = None
+            while ev is None or ev["type"] != "edited":
+                ev = q.get(timeout=3)
+            self.assertEqual((u["base"], ev["base"], ev["hash"], ev["via"]), (r["hash"], r["hash"], u["hash"], "api"))
+            self.assertEqual(ev["ops"][-1]["path"], self.TAIL)
+            self.assertTrue(u["redo"])
+        finally:
+            self.srv.hub.unsubscribe(q)
+
+    def test_e_a_save_of_a_derived_table_is_not_exact_in_ops_so_the_page_is_told_to_refetch(self):
+        if not self.srv.species["S20x"].spec.get("spine", {}).get("loft", {}).get("head_profile"):
+            self.skipTest("this file has no loft head profile")
+        knobs = self.srv.species["S20x"].spec["spine"]["loft"]["head_profile"]
+        k = next(k for k, v in knobs.items() if isinstance(v, (int, float)))
+        q = self.srv.hub.subscribe("S20x")
+        try:
+            r = self.call("PATCH", "/api/species/S20x", [{"op": "replace", "path": f"{S.KNOBS}/{k}", "value": knobs[k] * 1.01}])
+            self.assertIsNone(r["ops"])
+            ev = None
+            while ev is None or ev["type"] != "edited":
+                ev = q.get(timeout=3)
+            self.assertIsNone(ev["ops"])
+        finally:
+            self.srv.hub.unsubscribe(q)
+
+    def test_f_a_data_file_in_the_folder_is_not_a_species(self):
+        self.srv.scan()
+        self.assertEqual(sorted(self.srv.species), ["S20x"])
+        self.assertEqual([r["id"] for r in json.loads(self.get("/api/species")[2])], ["S20x"])
+        with open(os.path.join(self.sp, "S77.json"), "w") as fh:                       # a species file, by its schema, joins at the next look
+            json.dump(dict(SPEC, species="S77"), fh)
+        self.srv.scan()
+        self.assertEqual(sorted(self.srv.species), ["S20x", "S77"])
+
+
 class TestKeys(unittest.TestCase):
     def test_modes_and_sizes_match_the_proxy(self):
         import re

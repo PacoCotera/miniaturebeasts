@@ -1,5 +1,6 @@
 // The Library's data (M5): the field guide per species and chapter, "more?", a species unmet, met or found, the face, and the wish.
 //   node --test prototypes/station/tests/
+// PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -12,7 +13,7 @@ import { fourSlots } from "../src/splice.mjs";
 import { traitLooks, currentLooks } from "../../workbench/framework/describe.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
-setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const fresh = () => { const st = S.freshSt("w1", 3, 1000); S.normalize(st); return st; };
 

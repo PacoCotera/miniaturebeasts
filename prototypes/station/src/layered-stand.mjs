@@ -7,6 +7,7 @@
 //               extended below to hold it, and the whole is reduced once by the figure's factor. It is not a look, so it has no trait; `figure` (the drawn bbox of the figure alone, ink alpha >= 128) never includes it.
 // Layers are applied in `order`. Everything is derived down from the close stand, never scaled up (tools/make-stand-layers.py cuts every size).
 import { standKey, keyToken } from "./looks.mjs";
+import { placedAt } from "./stands.mjs";
 
 // The art is cut once, at the close stand's 304×312. The figure is composed at the size a place wants HERE, in the logic process (the face never scales). The picture is the place's own size, because the face places a picture 1:1
 // in its slot: the figure is fitted into the config's figure box by the one factor that fits, bottom-centred in the picture, transparent around it, so its feet stay on the picture's foot. The figure box is a parameter of the picture
@@ -46,12 +47,16 @@ export function layeredStand(species, stage, place, view = "default", pose = "an
   if (sc > 1 || (fig[2] - fig[0] + 1) * sc > place[0] + 0.5 || (fig[3] - fig[1] + 1) * sc > place[1] + 0.5) return null;
   return { ...stand, figure };
 }
-// The pose a habit shows a stage in: { pose, owed }. The pose the species' habits map the habit to, when that pose is cut for the stage; else the anchor, owed "habit key <habit>" (a species with no layered stand
-// is owed too: its picture is the species' stand-in, as before). Pure: the index's data only.
+// The pose a habit shows a stage in: { pose, owed }. The pose the species' habits map the habit to, when that pose is cut for the stage; else the curl (owed is always null now). Pure: the index's data and the placed masters only.
+export const HABIT_POSE = { "sleep-curled": "curl", puff: "puff", sniff: "sniff", dig: "dig", glow: "glow", "shake-dry": "shake", calm: "calm" };
 export function poseFor(species, stage, habit) {
   const pose = INDEX?.stands?.[species]?.habits?.[habit];
-  if (pose && INDEX.stands[species][stageKey(stage)]?.poses?.[pose]) return { pose, owed: null };
-  return { pose: "anchor", owed: `habit key ${habit}` };
+  if (pose && INDEX?.stands?.[species]?.[stageKey(stage)]?.poses?.[pose]) return { pose, owed: null };
+  // release 21d (art desk R21c-4): a habit shows its own pose when that pose master is placed for the kind and stage (S02's puff and sniff, S03's dig and glow); every other habit shows the curl, which every kind has.
+  // Nothing is owed any more: no request carries an owed habit key and no word of it reaches a player.
+  const own = HABIT_POSE[habit], ms = stage === "juvenile" ? "juvenile" : "adult";
+  if (own && own !== "curl" && placedAt(`mibi-${ms}-${species}-${own}-304x312`, 304, 312)) return { pose: own, owed: null };
+  return { pose: "curl", owed: null };
 }
 // The base a mibi's coat calls for: a coat the stand has a painted base for (the version 4 colours, recoloured by the signed ramps), else the stand's own base (charcoal, or a coat it has no ramp for)
 export const baseFor = (stand, looks) => stand.bases[looks.colour] ?? stand.base;
@@ -169,11 +174,20 @@ export const standFigure = (stand, looks) => composed(stand, looks).figure;
 // The Colour tile is the stand in that coat, cropped to head and shoulders; the Markings tile is the plain charcoal stand with that marking layer, cropped to the flank behind the shoulder, where the marks sit. Both are
 // composed here in the logic process from the close art (304×312, at scale 1 as the "default" view draws it) and reduced once to the tile's size; the face is given the pixels 1:1. The window is `w` art pixels wide at (x, y)
 // and as tall as the tile's shape asks; where it passes the art's edge it is transparent. Only the traits in TILE are drawn this way.
-export const TILE = { colour: { w: 210, x: 10, y: 50, plain: ["markings"] }, markings: { w: 150, x: 150, y: 95, plain: ["colour"] } };
-export function traitTile(species, stage, trait, look, size) {
-  const T = TILE[trait], stand = T && layeredStand(species, stage, [304, 312], "default"); if (!stand) return null;
-  const looks = { [trait]: look }; for (const k of T.plain) delete looks[k];
-  const art = composed(stand, looks).px, [cw, ch] = ART_SIZE.split("x").map(Number), [w, h] = size, wh = Math.round(T.w * h / w), win = new Uint8ClampedArray(T.w * wh * 4);
+// Release 21c: the tile is the trait chip of the look shown (the art desk's 128×160 chip: the back of the layout's painting, or the signature's frame, in a feathered window), cropped to a square window of the chip
+// (CHIP_TILE) and reduced once, the same crop and reduction the tile had from the layered stand. Only Markings and Signature size have chips; every other trait keeps its generated disc.
+export const TILE = { markings: { chip: "markings" }, "signature-size": { chip: "signature-size" } };
+export const CHIP_TILE = { chip: [128, 160], w: 88, x: 20, y: 36 };
+const SIG_LOOK = { small: "small", big: "large", between: "stand" }, MARK_LOOK = { plain: "plain", spotted: "back-spots", saddle: "saddle", shaded: "gradient", bands: "bands", patches: "patches" };   // the looks in the copywriter's words to the chips' names
+// the master id of the chip of a look: trait-SNN-markings-back-spots-128x160, trait-SNN-signature-size-small-128x160; null for a trait with no chip
+export function chipId(species, trait, look) {
+  const T = TILE[trait]; if (!T || !look) return null;
+  const word = trait === "markings" ? MARK_LOOK[String(look).trim().toLowerCase()] : SIG_LOOK[String(look).trim().toLowerCase()];
+  return word ? `trait-${species}-${T.chip}-${word}-${CHIP_TILE.chip[0]}x${CHIP_TILE.chip[1]}` : null;
+}
+// chip: { w, h, rgba() } the 128×160 chip's pixels; size [w, h] the tile
+export function traitTile(chip, size) {
+  const T = CHIP_TILE, [cw, ch] = [chip.w, chip.h], art = chip.rgba(), [w, h] = size, wh = Math.round(T.w * h / w), win = new Uint8ClampedArray(T.w * wh * 4);
   for (let y = 0; y < wh; y++) { const sy = T.y + y; if (sy < 0 || sy >= ch) continue; for (let x = 0; x < T.w; x++) { const sx = T.x + x; if (sx < 0 || sx >= cw) continue; win.set(art.subarray((sy * cw + sx) * 4, (sy * cw + sx) * 4 + 4), (y * T.w + x) * 4); } }
   const px = resample(win, T.w, wh, w, h); return { w, h, rgba: () => px };
 }

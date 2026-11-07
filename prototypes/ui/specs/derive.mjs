@@ -124,6 +124,12 @@ export function listForm(L, n) {
   if (!Number.isInteger(n) || n < 0 || !f) throw new Error(`listPitch: ${n} items; no form holds them`);
   return f;
 }
+// The Library's Level 1 cell of the form the catalogue takes (library.json l1): `l1.cell`, with the form's `parts` over it key by key. The form of 16 names no parts, so it is `l1.cell` itself.
+export function formCell(L1, n) {
+  const f = listForm(L1.grid, n), parts = f.parts; if (!parts) return L1.cell;
+  const out = { ...L1.cell }; for (const [part, over] of Object.entries(parts)) out[part] = { ...(L1.cell[part] ?? {}), ...over };
+  return out;
+}
 export function listPitch(L, n, i) {
   const f = listForm(L, n); if (!Number.isInteger(i) || i < 0 || i >= n) throw new Error(`listPitch: item ${i} of ${n}`);
   return pitchRect(f, i);

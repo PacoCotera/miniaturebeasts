@@ -5,7 +5,7 @@ import { footprintRing } from "../../ui/rings.mjs";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 // the moving sets' highest up-close hop (Station M1 §2.4, the animator's closeHop): a resident with a set lifts by it, and its crouch drops 2 px
-const MV = new URL("../../ui/specs/station/moving/", import.meta.url), MOVING_LIFT = Math.max(0, ...JSON.parse(readFileSync(fileURLToPath(new URL("index.json", MV)), "utf8")).sets.flatMap((id) => { const s = JSON.parse(readFileSync(fileURLToPath(new URL(id + ".json", MV)), "utf8")); return [s.juvenile, s.adult, s.elder].flatMap((st) => st?.closeHop?.lift ?? []); }));
+const MV = new URL("../../station/tests/fixtures/moving/", import.meta.url), MOVING_LIFT = Math.max(0, ...["S01", "S05"].flatMap((id) => { const s = JSON.parse(readFileSync(fileURLToPath(new URL(id + ".json", MV)), "utf8")); return [s.juvenile, s.adult, s.elder].flatMap((st) => st?.closeHop?.lift ?? []); }));   // the lift of the moving sets (a fixture: the game ships none, release 21a)
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const grow = (r, k) => [r[0] - k, r[1] - k, r[2] + 2 * k, r[3] + 2 * k];

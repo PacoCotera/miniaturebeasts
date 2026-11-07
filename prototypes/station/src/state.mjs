@@ -15,8 +15,8 @@ import ROOM_RULES from "../../ui/specs/station/rooms-rules.json" with { type: "j
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 4;
-// The save is v9 (a realm of regions, written by the Companion); a v8 save is read as it is. The Station writes only `st`, keeps every other byte, and never writes over a save whose v is above SAVE_V.
-export const SAVE_KEY = "mb-save-v8", SAVE_V = 9, SAVE_VS = [8, 9], V7_KEY = "mb-exploration-v7";
+// The save is v10 (a realm of regions, written by the Companion; the release's reset starts every older save over, game.mjs readStored). The Station writes only `st`, keeps every other byte, and never writes over a save whose v is above SAVE_V.
+export const SAVE_KEY = "mb-save-v8", SAVE_V = 10, SAVE_VS = [10], V7_KEY = "mb-exploration-v7";
 export const OLD_SAVE_KEYS = ["mb-exploration-v1", "mb-exploration-v2", "mb-exploration-v3", "mb-exploration-v4", "mb-exploration-v5", "mb-exploration-v6", V7_KEY];
 export const DEV_KEY = "mb-station-dev";
 // The decided prices (research-economy.md §2).
@@ -73,7 +73,9 @@ export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose"
 
 export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 export const plural = (n, w, p) => n + " " + (n === 1 ? w : p || w + "s");
-export const aAn = (w) => (/^[aeiou]/i.test(w) ? "an " : "a ") + w;
+// The release's one-time notice: a save that came out of the reset (the save says `resetFrom`) and a Station part that has not shown it yet (`st.resetSeen`).
+export const resetNotice = (st, sv) => !!(sv && sv.resetFrom != null && st && !st.resetSeen);
+export const aAn =(w) => (/^[aeiou]/i.test(w) ? "an " : "a ") + w;
 export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 
 // --- the record ------------------------------------------------------------------------------------

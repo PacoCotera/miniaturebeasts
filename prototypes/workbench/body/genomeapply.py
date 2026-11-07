@@ -8,11 +8,12 @@ A locus entry (`genome.loci[]`): one record of the catalogue pin (pin 11; every 
   others:    limits = the allowed alleles (ids of the pin's), type = the type's allele, order = how a pair shows (first-ranked wins), map = a switch's off and on values, `operator` (a switch names the pin's: dominant-enable or recessive-enable), weight
   sleeping:  `requires` (the switch records that must show for the record to draw) and `wakesWhen` {record: [looks]}, as the pin has them; the kind is `sleeping`
   moves:     [{path, op: scale | add | set, share, where?, above?, max?, min?}]  typed paths into the v1 file (below); `consumer` names the reader when a locus moves no path yet
-Paths: `a.b[sel].c`, dotted; a number indexes a list; `*` in place of a key takes every value of an object; `[sel]` selects list items: `*`, `n`, `a:b` (slice), an id (the item's `id`, `name` or `joint`); `@a.b` is never a path segment.
+Paths: `a.b[sel].c`, dotted; a number indexes a list; `*` in place of a key takes every value of an object; `[sel]` selects list items: `*`, `n`, `a:b` (slice), an id (the item's `id`, `name` or `joint`), or a glob of ids (`*.upper.*`); `@a.b` is never a path segment.
 Moves: `scale` multiplies the field (and each number of a list field) by 1 + share * (value / type - 1); `add` adds share * (value - type); `set` writes the value (a switch's map applied). `share` is a number, or one number per selected item.
 `where: {item, op, ref}` keeps the items whose `item` (a key or an index) compares with the number at path `ref`; `above` leaves numbers at or below it alone; `min` and `max` clip the new value.
 Framework rules that follow the moves stay in code (the room rule that clips the tail's curl, the sitting clip), as the spec keeps them in the plan."""
 import copy
+import fnmatch
 import json
 import math
 import os
@@ -139,6 +140,8 @@ def _select(lst, sel):
     if re.fullmatch(r"-?\d*:-?\d*", sel):
         a, b = sel.split(":")
         return list(range(n))[slice(int(a) if a else None, int(b) if b else None)]
+    if any(c in sel for c in "*?"):                                    # a glob of ids: rig.bones[*.upper.*] takes every upper leg bone
+        return [i for i, it in enumerate(lst) if isinstance(_ident(it), str) and fnmatch.fnmatchcase(_ident(it), sel)]
     return [i for i, it in enumerate(lst) if _ident(it) == sel]
 
 

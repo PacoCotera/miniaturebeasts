@@ -85,7 +85,7 @@
  "signature": {
   "anchor": "marigold",
   "second": "cream",
-  "feature": "a digger with fan of tall slats",
+  "feature": "a digger body, with its fan of tall slats",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.axial-tail-presence": "on"
@@ -107,7 +107,9 @@
   "#....",
   "....."
  ],
- "habits": [],
+ "habits": [
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "large",
   "proportion": null,
@@ -131,16 +133,14 @@
    "traits": [
     {
      "id": "body-hue",
-     "name": "Body hue",
+     "name": "Tint",
      "loci": [
       "appearance.body-hue"
      ],
      "looks": [
-      "low",
-      "between low and between",
-      "between low and high",
-      "between between and high",
-      "high"
+      "redder",
+      "between",
+      "yellower"
      ],
      "nature": "look",
      "shapeable": true,
@@ -148,15 +148,13 @@
     },
     {
      "id": "body-value",
-     "name": "Coat value",
+     "name": "Shade",
      "loci": [
       "appearance.body-value"
      ],
      "looks": [
       "dark",
-      "between dark and between",
-      "between dark and light",
-      "between between and light",
+      "between",
       "light"
      ],
      "nature": "look",
@@ -171,9 +169,12 @@
       "appearance.marking-layout"
      ],
      "looks": [
-      "on",
-      "off/on",
-      "off"
+      "plain",
+      "spotted",
+      "saddle",
+      "shaded",
+      "bands",
+      "patches"
      ],
      "nature": "look",
      "shapeable": true,
@@ -224,9 +225,7 @@
      ],
      "looks": [
       "small",
-      "between small and between",
-      "between small and large",
-      "between between and large",
+      "between",
       "large"
      ],
      "nature": "look",
@@ -241,9 +240,7 @@
      ],
      "looks": [
       "close",
-      "between close and between",
-      "between close and wide",
-      "between between and wide",
+      "between",
       "wide"
      ],
      "nature": "look",
@@ -264,9 +261,8 @@
       "signature.size"
      ],
      "looks": [
-      "low",
-      "between low and high",
-      "high"
+      "small",
+      "big"
      ],
      "nature": "look",
      "shapeable": true,
@@ -297,9 +293,7 @@
      ],
      "looks": [
       "small",
-      "between small and between",
-      "between small and big",
-      "between between and big",
+      "between",
       "big"
      ],
      "nature": "look",
@@ -314,9 +308,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and round",
-      "between between and round",
+      "between",
       "round"
      ],
      "nature": "look",
@@ -338,9 +330,7 @@
      ],
      "looks": [
       "short",
-      "between short and between",
-      "between short and long",
-      "between between and long",
+      "between",
       "long"
      ],
      "nature": "look",
@@ -355,9 +345,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and sturdy",
-      "between between and sturdy",
+      "between",
       "sturdy"
      ],
      "nature": "look",
@@ -372,9 +360,7 @@
      ],
      "looks": [
       "short",
-      "between short and between",
-      "between short and long",
-      "between between and long",
+      "between",
       "long"
      ],
      "nature": "look",
@@ -389,9 +375,7 @@
      ],
      "looks": [
       "slim",
-      "between slim and between",
-      "between slim and stout",
-      "between between and stout",
+      "between",
       "stout"
      ],
      "nature": "look",
@@ -2086,11 +2070,11 @@
    ],
    "band": {
     "form": "lin",
-    "lo": 0.122,
-    "hi": 0.165,
+    "lo": 0.12,
+    "hi": 0.138,
     "unit": "head width"
    },
-   "type": 0.143
+   "type": 0.12
   },
   {
    "id": "form.eye-height",

@@ -14,7 +14,7 @@ import * as Lib from "../src/library.mjs";
 import { libraryBuild as libraryBuildUnchecked, subjectOf } from "../src/views/library-props.mjs";
 const libraryBuild = lineCased(libraryBuildUnchecked, "library");   // every body it builds goes through assertLineCase (report mode)
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 const FRAMES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 setFrames(FRAMES);
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("library.json"), frameSpec = J("frame.json"), schema = J("library.props.json"), L = spec.l1;
@@ -43,7 +43,7 @@ const build = (st, ui = { l1: null }) => libraryBuild({ st, settings, ui }, spec
 const cellOf = (b, id) => b.props.regions.cells.find((c) => c.id === id);
 const findLooks = (st, id, n) => { let left = n; for (const ch of frameOf(id).chapters) for (const t of ch.traits) for (const l of currentLooks(frameOf(id), t)) { if (left <= 0) return; if (S.guideLooks(st, id, t.id).includes(l)) continue; S.guideAdd(st, id, t.id, [l]); left--; } };
 
-test("a fresh world: sixteen unmet cells in species order, no target and no ring, no ✓, the subject says no species is seen yet; the readout", () => {
+test("a fresh world: twenty unmet cells in species order, no target and no ring, no ✓, the subject says no species is seen yet; the readout", () => {
   const st = world(), b = build(st);
   assert.deepEqual(validate(b.props, schema), [], "validates"); assert.equal(b.props.state, "all");
   assert.deepEqual(b.props.regions.cells.map((c) => c.id), frameIds(), "every species of the catalogue, in species order");
@@ -69,7 +69,7 @@ test("found, met and unmet cells: the picture, the mark and the name by state; m
   assert.equal(build(st, { l1: "S09" }).props.focus.cur, "cell.S01", "a species that is not a target: the first target");
   assert.equal(build(st, { l1: null }).props.focus.cur, "cell.S01");
   const reqOf = (id) => b.requests.find((r) => r.id === cellOf(b, id).picture);
-  assert.deepEqual([reqOf("S02").kind, reqOf("S02").status, reqOf("S02").ground, reqOf("S02").size], ["librarycell", "found", "libPanel", [140, 114]]);
+  assert.deepEqual([reqOf("S02").kind, reqOf("S02").status, reqOf("S02").ground, reqOf("S02").size], ["librarycell", "found", "libPanel", [116, 114]]);
   assert.deepEqual([reqOf("S01").status, reqOf("S01").ground, reqOf("S01").found], ["met", "libQuiet", {}]);
   assert.notEqual(cellOf(b, "S02").picture, cellOf(build((() => { const s2 = world(); s2.knownIds = ["S02"]; return s2; })()), "S02").picture, "another set of found looks is another picture");
   assert.ok(!/"(rect|x|y|w|h|colour|color|at)":/.test(JSON.stringify(b.props)), "names no rectangle and no colour"); assert.ok(JSON.stringify(b.props).length < 8 * 1024, "props " + JSON.stringify(b.props).length);

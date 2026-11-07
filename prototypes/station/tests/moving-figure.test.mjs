@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { setMoving, atlasFigure, cellsOf, movingIds, compose } from "../src/moving.mjs";
 import { loadStandSizesFs, unloadStands } from "../tools/stand-layers-fs.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), S01 = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/moving/S01.json"), "utf8"));
+const here = path.dirname(fileURLToPath(import.meta.url)), S01 = JSON.parse(readFileSync(path.resolve(here, "fixtures/moving/S01.json"), "utf8"));
 test("the figure of a walk atlas is the union over the grounded cells, without the air frame and the curls", () => {
   setMoving({ S01 });
   try {

@@ -8,9 +8,11 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import * as C from "../src/companions.mjs";
+import { migrate8 } from "../../exploration/src/regions.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const RAW = readFileSync(path.join(here, "fixtures/save-v8-schema1.json"), "utf8");
+const RAW10 = JSON.stringify(migrate8({ ...JSON.parse(RAW), gen: 5 }, { now: 1793664000000 }));   // the same save as the v10 realm a Station plays (a v8 save is reset on load: reset.test.mjs)
 const memStore = (init = {}) => { const m = new Map(Object.entries(init)); return { m, getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => { m.set(k, String(v)); }, removeItem: (k) => { m.delete(k); } }; };
 let n = 0; const rand = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
 
@@ -49,11 +51,11 @@ test("the Station's map: made at its first load with Companion A active; the las
 });
 
 test("docking Companion B switches the Station to B's world; docking A again switches it back, both saves whole", async () => {
-  const st = memStore({ [C.LEGACY_KEY]: RAW }); globalThis.localStorage = st;
+  const st = memStore(); const a0 = C.companionOf(st, "A", { rand }); st.setItem(C.saveKeyOf(a0.id), RAW10); globalThis.localStorage = st;   // Companion A's own save, v10
   const S = await import("../src/state.mjs"), game = await import("../src/game.mjs"), { G } = game;
   game.load(); const wA = G.sv.wid, stA = JSON.stringify(G.st.mibis), keyA = game.saveKey();
-  assert.ok(wA && keyA.startsWith(C.SAVE_PREFIX)); assert.equal(st.getItem(C.LEGACY_KEY), null, "moved at the Station's first load");
-  const b = C.companionOf(st, "B"), svB = { v: 8, seed: 99, wid: "wB99", turn: 2, bay: [], mibis: [], cr: [], carried: [] };
+  assert.ok(wA && keyA.startsWith(C.SAVE_PREFIX)); assert.equal(keyA, C.saveKeyOf(a0.id), "the Station shows Companion A's save");
+  const b = C.companionOf(st, "B"), svB = { v: 10, seed: 99, wid: "wB99", turn: 2, bay: [], mibis: [], cr: [], carried: [] };
   st.setItem(C.saveKeyOf(b.id), JSON.stringify(svB));   // Companion B's own save, as its page writes it: no Station part yet
   G.st.e = 41; game.save();
   assert.equal(game.switchCompanion({ id: b.id, name: b.name }), true);
@@ -64,5 +66,5 @@ test("docking Companion B switches the Station to B's world; docking A again swi
   assert.deepEqual([G.sv.wid, game.saveKey(), G.st.e, JSON.stringify(G.st.mibis)], [wA, keyA, 41, stA], "back to A's world as it was");
   assert.equal(JSON.parse(st.getItem(C.saveKeyOf(b.id))).seed, 99, "B's save is kept");
   assert.equal(game.switchCompanion({ id: a.id, name: a.name }), false, "the same Companion: nothing switches");
-  assert.ok(S.SAVE_V === 9 && S.SAVE_KEY === "mb-save-v8", "v9; the storage key keeps its name");
+  assert.ok(S.SAVE_V === 10 && S.SAVE_KEY === "mb-save-v8", "v10; the storage key keeps its name");
 });

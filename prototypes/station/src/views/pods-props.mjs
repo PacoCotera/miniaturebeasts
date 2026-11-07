@@ -10,7 +10,7 @@ import { frameOf, traitState, traitKind, chapterLooks } from "../genome.mjs";
 import { founderPicture } from "./create-props.mjs";
 import { fill, spell } from "./words.mjs";
 import { req as reqOf, slotAt as slot } from "./requests.mjs";
-import { readView, miniRailProps } from "./reading-props.mjs";
+import { readView, miniRailProps, discReq } from "./reading-props.mjs";
 
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
@@ -329,7 +329,7 @@ function compareView(view, m, spec, req) {
   const fr = A && podFrame(A); if (!A || !B || !fr) return { ...view, mode: "inventory", broken: true };
   const chs = fr.chapters, ci = clamp(c.ci, 0, chs.length - 1), ch = chs[ci], diff = S.compareDiff(st, A, B) || [], kin = compareKin(st, A), sid = S.speciesOf(A), want = st.wish[sid] || {};
   const diffIn = new Set(chs.filter((x) => x.traits.some((t) => diff.includes(t.id))).map((x) => x.id));   // the chapters that hold a trait read on both whose looks differ
-  const tile = (t, look) => (t.id === "colour" || t.id === "markings") && look ? req({ kind: "traittile", id: `mibi:${sid}~${keyToken(`tile:${t.id}=${look}`)}:adult:36x36`, species: sid, trait: t.id, look, size: [36, 36], until: "the trait's crop" }) : "";
+  const tile = (t, look) => /^body-(hue|value)$/.test(t.id) && look ? discReq(req, sid, t, ch, 28, { look }) : (t.id === "markings"|| t.id === "signature-size") && look ? req({ kind: "traittile", id: `mibi:${sid}~${keyToken(`tile:${t.id}=${look}`)}:adult:36x36`, species: sid, trait: t.id, look, size: [36, 36], until: "the trait's crop" }) : "";
   const goalOf = (p) => {   // against the goal: "might give pale patches", "cannot give pale patches", or the chapter that would say
     for (const x of chs) for (const t of x.traits) { const look = want[t.id]; if (!look) continue;
       if (!p.read.includes(x.id)) return fill(Sg.goalUnread, { chapter: headingWord(x, spec), look });

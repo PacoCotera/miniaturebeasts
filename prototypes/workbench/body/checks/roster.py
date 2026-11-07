@@ -13,7 +13,8 @@ def rows(stands_dir=None):
     p = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
     if p.returncode != 0:
         raise RuntimeError(p.stderr.strip() or "roster rows failed")
-    return json.loads(p.stdout)
+    from wb import words as WD                                     # each row carries the copywriter's name and fail line (check.roster.*)
+    return [dict(r, name=WD.get(f"check.{r['id']}.name", r["id"]), fail=WD.get(f"check.{r['id']}.fail", r["id"])) for r in json.loads(p.stdout)]
 
 
 def state(r):

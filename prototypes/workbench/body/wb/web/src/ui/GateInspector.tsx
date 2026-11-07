@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getToken, postJob, type Species } from '../lib/api'
+import { postJob, type Species } from '../lib/api'
 import { checkMetas, failLine, needsYou } from '../lib/checks'
-import { canJudge, day, gateOne, isEarlier, isOpen, meOne, pickSheet, shortHash, shown, turn, useGateActions, useGateError, voidedNames, current, type Round } from '../lib/gate'
+import { canJudge, day, gateOne, isEarlier, isOpen, meOne, pickSheet, shortHash, shown, turn, useCanEdit, useGateActions, useGateError, voidedNames, current, type Round } from '../lib/gate'
 import type { StudioUrl } from '../lib/url'
 import { W } from '../lib/words'
 import s from './GateInspector.module.css'
@@ -20,6 +20,7 @@ function Step({ n, label, who, sign, state, note }: { n: number; label: string; 
 }
 
 export function GateInspector({ species, url, go }: { species: Species; url: StudioUrl; go: (p: Partial<StudioUrl>) => void }) {
+  const canEdit = useCanEdit()
   const q = useQuery({ ...gateOne(url.species) })
   const me = useQuery({ ...meOne() }).data
   const metas = useQuery(checkMetas()).data ?? []
@@ -68,8 +69,8 @@ export function GateInspector({ species, url, go }: { species: Species; url: Stu
       {!earlier && (
         <>
           <h6 className={s.h}>{W.gate.export}</h6>
-          <div className={s.field}><label>{W.gate.forReview}</label><span className={s.v}><button className={s.link} onClick={() => exportJob('review')} disabled={!getToken()}>{W.gate.export}</button></span></div>
-          <div className={s.field}><label>{W.gate.releaseRow}</label><span className={s.v}>{g.signed ? <button className={s.link} onClick={() => exportJob('release')} disabled={!getToken()}>{W.gate.export}</button> : <span className={s.quiet}>{W.gate.afterBoth}</span>}</span></div>
+          <div className={s.field}><label>{W.gate.forReview}</label><span className={s.v}><button className={s.link} onClick={() => exportJob('review')} disabled={!canEdit}>{W.gate.export}</button></span></div>
+          <div className={s.field}><label>{W.gate.releaseRow}</label><span className={s.v}>{g.signed ? <button className={s.link} onClick={() => exportJob('release')} disabled={!canEdit}>{W.gate.export}</button> : <span className={s.quiet}>{W.gate.afterBoth}</span>}</span></div>
         </>
       )}
     </>

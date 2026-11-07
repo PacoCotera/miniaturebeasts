@@ -418,7 +418,7 @@ test("a broken save: ✓ arms, ✓ again keeps the old bytes under its own key a
 
 // ---- load() keeps what it cannot use: the "can't be shown" screen, never a silent new world over the bytes ----
 test("unusable stored bytes boot to the can't-be-shown screen and stay byte for byte; ✓ ✓ keeps them under their own key and starts a new world", () => {
-  for (const bad of ["{not json", "[]", '{"v":8}', '{"v":8,"seed":"x"}', '{"v":3,"seed":1}', "null0"]) {
+  for (const bad of ["{not json", "[]", '{"v":10}', '{"v":10,"seed":"x"}', '{"v":3,"seed":1}', "null0"]) {
     const q = page({ "mb-save-v8": bad });
     assert.equal(q.run("RT.readOnly"), true, bad); assert.equal(q.run("RT.broken"), true, bad); assert.equal(q.store["mb-save-v8"], bad, "boot wrote nothing: " + bad);
     for (const k of ["up", "left", "back", "call", "down"]) { q.key(k); assert.equal(q.store["mb-save-v8"], bad, k); }
@@ -428,9 +428,9 @@ test("unusable stored bytes boot to the can't-be-shown screen and stay byte for 
   }
 });
 test("a save that throws while it loads is kept; a newer version goes to the newer screen; a v7 save never moves over bytes; an empty store starts at once", () => {
-  const throws = JSON.stringify({ v: 8, seed: 1, cr: [], mibis: [], gen: 2, bay: 5, st: { wid: 1 }, pods: null, trips: {}, carried: 7, found: 3, exp: 4 });
+  const throws = JSON.stringify({ v: 10, seed: 1, cr: [], mibis: [], gen: 2, bay: 5, st: { wid: 1 }, pods: null, trips: {}, carried: 7, found: 3, exp: 4 });
   const q = page({ "mb-save-v8": throws }); if (q.run("RT.broken")) assert.equal(q.store["mb-save-v8"], throws);
-  const n = page({ "mb-save-v8": JSON.stringify({ v: 10, seed: 1, cr: [], mibis: [] }) }); assert.equal(n.run("RT.readOnly"), true); assert.equal(n.run("!!RT.broken"), false);
+  const n = page({ "mb-save-v8": JSON.stringify({ v: 11, seed: 1, cr: [], mibis: [] }) }); assert.equal(n.run("RT.readOnly"), true); assert.equal(n.run("!!RT.broken"), false);
   const v7 = JSON.stringify({ v: 7, seed: 3 }), b = page({ "mb-save-v8": "{not json", "mb-exploration-v7": v7 });
   assert.equal(b.run("RT.broken"), true); assert.equal(b.store["mb-save-v8"], "{not json"); assert.equal(b.store["mb-exploration-v7"], v7, "the v7 save is not migrated over it");
   const e = page({});
@@ -442,8 +442,8 @@ test("a save that throws while it loads is kept; a newer version goes to the new
   assert.deepEqual(kept, ["{one", "{two"]);
 });
 
-test("a v8 save that throws while it loads leaves every stored key untouched", () => {
-  const raw = JSON.stringify({ v: 8, seed: 1, cr: [], mibis: [{}], gen: 2, carried: [9], bay: [null], pods: [null] });
+test("a save that throws while it loads leaves every stored key untouched", () => {
+  const base = page({}); base.run("newWorld(1); save()"); const raw = base.store[base.KEY];   // a real v10 realm (a v8 or v9 save is reset instead: reset.test.mjs)
   const writes = [], init = { "mb-save-v8": raw, "mb-exploration-v1": "{}", "mb-exploration-v6": "{}", "mb-exploration-v7": "{}" };
   const store = new Proxy({ ...init }, { set: (o, k, v) => { writes.push("set:" + k); o[k] = v; return true; }, deleteProperty: (o, k) => { writes.push("rm:" + k); delete o[k]; return true; } });
   const p = page(store);
@@ -455,7 +455,7 @@ test("a v8 save that throws while it loads leaves every stored key untouched", (
 });
 
 test("a newer save: ✓ reloads in one press, no arm, no new world; the save is never written or moved", () => {
-  const old = JSON.stringify({ v: 10, seed: 5, cr: [], mibis: [] });
+  const old = JSON.stringify({ v: 11, seed: 5, cr: [], mibis: [] });
   const p = page({ "mb-save-v8": old });
   assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("!!RT.broken"), false);
   p.run("globalThis.__rl = 0; location = { reload: () => { __rl++; } };");

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { casUrl, getToken, type Species } from '../lib/api'
+import { casUrl, type Species } from '../lib/api'
+import { useCanEdit } from '../lib/gate'
 import { lit, litCount, lookOf, previousKey, ready, runSheet, varietyOne, type VInd, type Variety } from '../lib/variety'
 import type { StudioUrl } from '../lib/url'
 import s from './VarietyStage.module.css'
@@ -36,15 +37,16 @@ function Tile({ ind, on, picked, prev, onPick }: { ind: VInd; on: boolean; picke
 export const runClock = (t: string) => { const d = new Date(t.length <= 19 ? t + 'Z' : t); return Number.isNaN(d.getTime()) ? t : d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }) }
 
 export function VarietyStage({ url, species, go, inset = 0 }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>) => void; inset?: number }) {
+  const canEdit = useCanEdit()
   const q = useQuery({ ...varietyOne(url.species, species?.hash ?? '', url.seed), enabled: !!species })
   const v: Variety | undefined = q.data
   const asked = useRef(new Set<string>())
   // A sheet whose tiles are not all in the cache is made as soon as the mode opens (the page may write); the done events refetch the keys.
   useEffect(() => {
-    if (!v || v.ran || !getToken() || asked.current.has(v.key)) return
+    if (!v || v.ran || !canEdit || asked.current.has(v.key)) return
     asked.current.add(v.key)
     void runSheet(url.species, url.seed)
-  }, [v, url.species, url.seed])
+  }, [v, url.species, url.seed, canEdit])
   if (!species || !v) return <main className={s.stage}>{q.isError && <p className={s.note}>{(q.error as Error).message}</p>}</main>
   const look = lookOf(v, url.sel)
   const cmp = url.cmp && !!v.previous

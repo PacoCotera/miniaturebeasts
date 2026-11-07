@@ -9,7 +9,7 @@ import { WORLD } from "./home-states.mjs";
 // the helpers the scenes call, in the page: a pod with `n` chapters read, Create opened on it
 const CREATE = () => ({
   fresh() { const st = window.__st.ST; st.e = 9; st.d = 4; st.s = 6; st.firstMibi = false; st.bud = null; this.persist(); },
-  shape(species, gs, n) { const S = window.__st; if (species === "S01" && n > 0) S.ST.d += 1; /* the Loika's Face costs one Data more (three traits), so its scenes start with one more */ S.seedPod(species, gs); const p = S.ST.tray.at(-1); S.readSome(p.id, n); S.openCreate(p.id); return p.id; },
+  shape(species, gs, n, extra = 0) { const S = window.__st; const d0 = S.ST.d; if (species === "S01" && n > 0) S.ST.d += 1 + extra; /* the Loika's Face costs one Data more (three traits), so its scenes start with one more */ S.seedPod(species, gs); const p = S.ST.tray.at(-1); S.readSome(p.id, n); if (extra) S.ST.d = d0 + 1; /* the extra Data is a loan for the reads: no later scene inherits it */ S.openCreate(p.id); return p.id; },
   at(f) { window.__st.UI.create.f = f; },
 });
 // species, genome seed, chapters read, the trait the ring starts on, what else the scene sets (in the page)
@@ -18,7 +18,6 @@ const SCENES = {
   "shape":         { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); } },
   "shape-changed": { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); } },
   "shape-clash":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); const c = window.__st.UI.create; c.clash = [Object.keys(c.choices)[0]]; } },   // no frame in the registry clashes today: the mark is taken as the rules would set it
-  "shape-doing":   { want: "shape", set: (w) => { w.shape("S01", 3, 4); w.at(4); } },   // Eyes: the Face chapter now holds Crown, Ears, Eyes, so the ring starts one trait later
   "shape-onelook": { want: "shape", set: (w) => { w.shape("S01", 4, 4); w.at(0); } },
   "shape-short":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); const st = window.__st.ST; st.s = 1; st.e = 9; w.persist(); } },
   "shape-busy":    { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.bud(false); } },
@@ -30,6 +29,7 @@ const SCENES = {
   "confirm-S02":   { want: "shape", panel: true, set: (w) => { w.shape("S02", 3, 3); w.at(0); } },   // a second species
   "shape-first":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.ST.firstMibi = true; } },
   "full":          { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.rooms(1); w.adults(6); } },   // R6: the Vivarium is full (one room, eight places taken): Grow is held, the notice The Vivarium is full says why, the verb and the price in mist
+  "shape-doing":   { want: "shape", set: (w) => { w.shape("S01", 3, 6, 14); w.at(5); } },   // Eyes: 21h, the Coat now holds three looks (Tint, Shade, Markings) and a chapter read costs its traits in Data, so the scene is given the Data to read all six chapters (the first four in 21g had Data for the Coat alone), then the ring on Eyes (Coat 0-2, Crown 3, Ears 4, Eyes 5)
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${CREATE.toString()})`]);
 // the timed points: the scene, the key or intent that starts the event, and the instant after it

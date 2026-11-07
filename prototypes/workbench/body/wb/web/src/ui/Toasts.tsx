@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
 import * as Toast from '@radix-ui/react-toast'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { getToken, patchSpecies, speciesOne } from '../lib/api'
+import { patchSpecies, speciesOne } from '../lib/api'
+import { useCanEdit } from '../lib/gate'
 import { entryKey, fieldLabel, fmtValue, initials, isOwn, newEntries } from '../lib/edits'
 import { useUI } from '../lib/store'
 import { W } from '../lib/words'
@@ -9,6 +10,7 @@ import s from './Toasts.module.css'
 
 // Bottom-left toasts for edits made elsewhere: "agent-3 set tail length 1.10 → 1.24 · Undo". Failures never come here.
 export function Toasts({ species }: { species: string }) {
+  const canEdit = useCanEdit()
   const { data } = useQuery(speciesOne(species))
   const seen = useRef<Set<string> | null>(null)
   const { toasts, pushToast, dropToast } = useUI()
@@ -31,7 +33,7 @@ export function Toasts({ species }: { species: string }) {
           <Toast.Description className={s.text}>
             <b>{t.entry.actor}</b> set {fieldLabel(t.entry.path, data?.labels, data?.file)} <span className="num">{fmtValue(t.entry.old)} → {fmtValue(t.entry.new)}</span>
           </Toast.Description>
-          {getToken() && <Toast.Action altText={W.undo} className={s.undo} onClick={() => void undo(t.entry.path, t.entry.old, t.entry.new)}>{W.undo}</Toast.Action>}
+          {canEdit && <Toast.Action altText={W.undo} className={s.undo} onClick={() => void undo(t.entry.path, t.entry.old, t.entry.new)}>{W.undo}</Toast.Action>}
         </Toast.Root>
       ))}
       <Toast.Viewport className={s.viewport} />

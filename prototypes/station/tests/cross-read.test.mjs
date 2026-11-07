@@ -6,11 +6,12 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf } from "../src/genome.mjs";
+import { withSeals } from "./fixtures/sealed.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");
-setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language");
+setFrames(withSeals(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8")))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", sealedOpen: true };
 const world = (seed = 7) => { const st = S.freshSt("w1", 3, 1); S.normalize(st); const r = S.seedAdults(st, "S01", seed, 2, settings); return { st, a: r.mibis[0], b: r.mibis[1] }; };
 // A chapter of the pair whose full forecast has a switch seed with a hidden copy: the thing the leak showed.

@@ -97,6 +97,8 @@ def apply_patch(doc, ops):
         toks = _tokens(ptr)
         if not toks:
             raise ApiError(400, "a patch cannot replace the whole file", ptr)
+        if isinstance(doc.get("mesh"), dict) and toks[0] in ("spine", "skeleton", "parts"):
+            raise ApiError(400, f"{toks[0]}: this body is a sculpt (a mesh file), it has no {toks[0]}; its shape is set by the rig bones, the shape keys and the genome loci", ptr)
         try:
             parent = doc
             for t in toks[:-1]:

@@ -12,14 +12,17 @@ vi.mock('./api', async (orig) => ({ ...(await orig<typeof import('./api')>()), p
 const species = (len: number): Species => ({ id: 'S20', hash: 'h', error: null, lease: null, history: [], views: [], checks: null, file: { spine: { tail: { length: len } } } as unknown as Species['file'] })
 const wrap = (qc: QueryClient) => ({ children }: { children: ReactNode }) => <QueryClientProvider client={qc}>{children}</QueryClientProvider>
 const PTR = '/spine/tail/length'
+// what the server answers to a save: the hash before and after, the ops it applied (without their tests), the log entries, the undo flags
+const answer = (base: string, hash: string, value: number) => ({ base, hash, ops: [{ op: 'replace', path: PTR, value }], entries: [], undo: true, redo: false, changed: [{ path: PTR, old: 1.1, new: value }] })
 
 describe('a field that saves itself', () => {
-  beforeEach(() => { vi.useFakeTimers(); patch.mockReset(); patch.mockResolvedValue({ hash: 'h2' }) })
+  beforeEach(() => { vi.useFakeTimers(); patch.mockReset(); patch.mockResolvedValue(answer('h', 'h2', 1.24)) })
   afterEach(() => { vi.useRealTimers() })
 
   it('shows the new value at once and saves once, 0.6 s after the last change, with a test of the old value', async () => {
     const qc = new QueryClient()
     qc.setQueryData(['species', 'S20'], species(1.1))
+    const inv = vi.spyOn(qc, 'invalidateQueries')
     const { result } = renderHook(() => useField<number>(species(1.1), 'S20', PTR), { wrapper: wrap(qc) })
     expect(result.current.value).toBe(1.1)
     act(() => result.current.set(1.15))
@@ -34,6 +37,8 @@ describe('a field that saves itself', () => {
     expect(patch).toHaveBeenCalledTimes(1)
     expect(patch).toHaveBeenCalledWith('S20', [{ op: 'test', path: PTR, value: 1.1 }, { op: 'replace', path: PTR, value: 1.24 }])
     expect((qc.getQueryData(['species', 'S20']) as Species).file).toEqual({ spine: { tail: { length: 1.24 } } })
+    expect((qc.getQueryData(['species', 'S20']) as Species).hash).toBe('h2')   // the answer's hash, taken with no refetch
+    expect(inv).not.toHaveBeenCalledWith({ queryKey: ['species', 'S20'] })
     expect(result.current.error).toBeNull()
     expect(isOwn({ path: PTR, new: 1.24 })).toBe(true)     // the toast for it is not shown to the hand that made it
   })
@@ -64,7 +69,8 @@ describe('a field that saves itself', () => {
     act(() => result.current.set(1.3))
     await act(async () => { vi.advanceTimersByTime(650) })
     expect(patch).toHaveBeenCalledTimes(1)                  // still waiting for the first
-    await act(async () => { release({ hash: 'h2' }) })
+    patch.mockResolvedValue(answer('h2', 'h3', 1.3))
+    await act(async () => { release(answer('h', 'h2', 1.2)) })
     await act(async () => { vi.advanceTimersByTime(10) })
     expect(patch).toHaveBeenCalledTimes(2)
     expect(patch).toHaveBeenLastCalledWith('S20', [{ op: 'test', path: PTR, value: 1.2 }, { op: 'replace', path: PTR, value: 1.3 }])

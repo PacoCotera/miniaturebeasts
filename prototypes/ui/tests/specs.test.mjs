@@ -409,7 +409,7 @@ test("the Vivarium (vivarium.json, the collection v2 design §8): the field, the
   for (const [id, r] of Object.entries(rooms.rooms)) { assert.doesNotMatch(JSON.stringify(r), /-tile-/, id + ": no house tile"); }
   // the room view: the bed is Roots' own moved by (0, 8); the walk's clamp 8 px inside the window; one scale
   const bed = rooms.rooms.roots.bed; assert.deepEqual(R.bed.rect, [bed.rect[0], bed.rect[1] - 8, bed.rect[2], bed.rect[3]]); assert.equal(R.bed.sleepers.footY, bed.foot - 8); assert.equal(R.bed.sleepers.centre, R.bed.rect[0] + R.bed.rect[2] / 2); assert.equal(R.bed.sleepers.centre, 344, "the window's centre");
-  assert.deepEqual(R.bed.sleepers.ink.rects[3], R.bed.sleepers.places[3].map((x) => [x - 48, R.bed.sleepers.footY - 88, 96, 88]));
+  assert.deepEqual(R.bed.sleepers.ink.rects[2], R.bed.sleepers.places[2].map((x) => [x - 48, R.bed.sleepers.footY - 88, 96, 88]));
   assert.deepEqual(R.resident.walk.ground, [8, 88, 672, 472], "the clamp: ink 8 px inside the window"); assert.deepEqual([R.resident.adult, R.resident.juvenile, R.resident.factor], [[96, 99], [96, 99], [96, 304]]); assert.equal(R.resident.lift, 0, "the focused mibi keeps walking: no lift");
   for (const [id, r] of Object.entries(rooms.rooms)) { assert.deepEqual(r.crop.length, 2, id); assert.equal(r.crop[1], 96, id + ": the top edge at y 96"); assert.equal(r.drops.length, 8, id); }
   for (const [id, r] of Object.entries(R)) assert.ok(r.component || r.build || ["chips", "card", "marks"].includes(id), id + " names its word or composition");
@@ -659,7 +659,7 @@ test("Idle is the room's painting without the frame: one painting, the bed (Root
   const S = R.bed.sleepers; assert.equal(R.bed.rect[1] + R.bed.rect[3], V.foot[1], "the bed on the ground band's foot"); assert.equal(S.centre, R.bed.rect[0] + R.bed.rect[2] / 2); assert.equal(S.footY, R.bed.rect[1] + 40);
   for (const [n, xs] of Object.entries(S.places)) xs.forEach((x, i) => { assert.equal(x, S.centre + S.pitch * (i - (n - 1) / 2)); assert.ok(x - 72 >= 16 && x + 72 <= 1008, "an adult sleeper 16 px inside the screen"); });
   assert.equal(R.bed.markRect, undefined, "R4b: no Companion mark on the bed"); assert.ok(inside(R.resident.walk.ground, V.ground));
-  assert.deepEqual(S.ink.rects[3], S.places[3].map((x) => [x - 48, S.footY - 88, 96, 88])); assert.deepEqual([S.ink.rects[3][0][0], S.ink.rects[3][2][0] + 96], [R.bed.rect[0], R.bed.rect[0] + R.bed.rect[2]]);
+  assert.deepEqual(S.ink.rects[2], S.places[2].map((x) => [x - 48, S.footY - 88, 96, 88]));   // release 21h2: two sleepers, 150 apart, the curl drawn at the kind's scale is wider than 96
   assert.ok(!("asleepMark" in S) && S.mark === null, "no asleep mark");
   assert.deepEqual(I.strings.out, { 1: "{name} is out with the Companion", 2: "Two mibis are with the Companion", 3: "Three mibis are with the Companion" });
   for (const s of [...Object.values(I.strings.crates), I.strings.budReady, I.strings.budGrowing, ...Object.values(I.strings.out)]) { assert.ok(wordsIn(s) <= R.line.words, s); assert.ok(!/\d/.test(s), s); }
@@ -679,7 +679,9 @@ test("the Library's Level 1: sixteen cells of 152 on a 6 by 3 grid centred on th
   const lib = rd("../specs/station/library.json"), L = lib.l1, C = L.cell, F = L.grid.forms["16"], { listPitch } = await import("../specs/derive.mjs");
   assert.deepEqual(L.states, ["all"]); assert.equal(L.initial, "all"); assert.deepEqual(L.stage.rect, frame.regions.stage.rect, "the stage is the frame's"); assert.equal(L.stage.ground, "libGround");
   // the form: its kit fields are its cols, rows, cell, gap and origin; the grid centred on the stage, 16 px from its sides
-  assert.deepEqual([F.upTo, F.first, F.pitch, F.grid], [16, [...F.origin, F.cell, F.cell], [F.cell + F.gap, F.cell + F.gap], [F.cols, F.rows]]); assert.deepEqual(Object.keys(L.grid.forms), ["16"], "one form: the whole catalogue");
+  assert.deepEqual([F.upTo, F.first, F.pitch, F.grid], [16, [...F.origin, F.cell, F.cell], [F.cell + F.gap, F.cell + F.gap], [F.cols, F.rows]]); assert.deepEqual(Object.keys(L.grid.forms), ["16", "20"], "a form for the catalogue of sixteen and one for twenty (release 21a)");
+  { const G = L.grid.forms["20"], P = G.parts; assert.deepEqual([G.upTo, G.first, G.pitch, G.grid, G.cell, G.gap, G.origin], [20, [16, 57, 128, 152], [144, 168], [7, 3], [128, 152], 16, [16, 57]], "UI/UX signed form: seven by three, cells 128 by 152"); assert.deepEqual(P.bezel.rect, [0, 0, 128, 152]); assert.deepEqual(P.picture.rect, [6, 6, 116, 114]); assert.deepEqual([P.name.x, P.name.clip, P.face.rect, P.wish.rect, P.wish.alone, P.glint.centre, P.seed.rect, P.lip.at, P.lip.len], [22, 58, [104, 130, 18, 18], [86, 133, 12, 12], [110, 133, 12, 12], [116, 12], [52, 64, 24, 24], [6, 152], 116]); assert.deepEqual(P.generator, { w: 116, h: 114, cx: 58, cy: 58, rad: 54 });
+    const cells20 = Array.from({ length: 20 }, (_, i) => listPitch(G, 20, i)); cells20.forEach((r, i) => assert.deepEqual(r, [16 + 144 * (i % 7), 57 + 168 * Math.floor(i / 7), 128, 152], "20: cell " + i)); assert.ok(cells20.every((r) => inside([r[0], r[1], 128, 153], L.stage.rect)), "all twenty inside the stage, lips too"); }
   const S = L.stage.rect, gh = F.rows * F.cell + (F.rows - 1) * F.gap; assert.equal(F.origin[1], S[1] + (S[3] - gh) / 2, "centred on the stage"); assert.equal(F.origin[0], 16);
   const cells = Array.from({ length: 16 }, (_, i) => listPitch(F, 16, i));
   cells.forEach((r, i) => { assert.deepEqual(r, [16 + 168 * (i % 6), 57 + 168 * Math.floor(i / 6), 152, 152], "cell " + i); assert.ok(inside([r[0], r[1], 152, 153], S), "inside the stage, its lip too"); });
@@ -843,8 +845,8 @@ test("the Probe stands upright in three columns on the floor; each outer margin 
 
 test("fix 14: a moving set's contact shadow is as wide as its creature cell, at every stage (the shadow's footprint rides on the walk and close atlases in the cell's coordinates)", () => {
   let n = 0;
-  for (const f of readdirSync(new URL("../specs/station/moving/", import.meta.url)).filter((f) => /^S\d{2}\.json$/.test(f))) {
-    const set = rd("../specs/station/moving/" + f);
+  for (const f of readdirSync(new URL("../../station/tests/fixtures/moving/", import.meta.url)).filter((f) => /^S\d{2}\.json$/.test(f))) {
+    const set = rd("../../station/tests/fixtures/moving/" + f);   // the sets as a fixture: the game ships none (release 21a)
     for (const stage of ["juvenile", "adult"]) { const s = set[stage]; if (!s?.walk) continue; assert.equal(s.shadow.walk[0], s.walk.size[0], `${f} ${stage}: shadow.walk is the walk cell's width`); assert.equal(s.shadow.close[0], s.close.size[0], `${f} ${stage}: shadow.close is the close cell's width`); n++; }
   }
   assert.ok(n >= 3, "the sets were found: " + n);

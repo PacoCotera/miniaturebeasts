@@ -1,8 +1,8 @@
 // The seeded world of the Companion: the map, the places and the RNG. Pure: it never reads the page's state, the DOM,
 // storage, the clock or Math.random, and never draws. Generator 1 is frozen; a new generator is added beside it, never in its place.
 
-export const NEW_GEN = 3;          // the generator newWorld gives a new world (old saves keep theirs)
-export const GENS = [1, 2, 3, 4];  // the generators the page can play
+export const NEW_GEN = 5;          // the generator newWorld gives a new world (generators 1 to 4 stay below, frozen, and nothing opens them since the release's reset)
+export const GENS = [5];  // the generators the page can play: since the release's reset every save is generator 5
 
 export const MW = 16, MH = 20;                       // world map, cells
 export const PW = 28, PH = 32;
@@ -55,6 +55,7 @@ export const cdist = (a, b) => man(cxy(a), cxy(b));
 export function passableIn(G, c) { const l = G.land[c]; return (l !== L.WATER || G.ford[c] === 1) && l !== L.CLIFF; }
 
 export function genWorld(seed, gen = 1, biome = 'mixed') {
+  if (gen === 5) return genWorld5(seed, biome);
   if (gen === 4) return genWorld4(seed, biome);
   if (gen === 2) return genWorld2(seed);
   if (gen === 3) return { ...genWorld2(seed), gen: 3 };   // generator 3: generator 2's ground, and the herd floor in its life (genLife3)
@@ -1162,6 +1163,7 @@ export const groundName = (land, cave) => cave ? 'cave' : ['meadow', 'pond', 'ro
 // A realm is a pure function of (seed, generator, roster); it reads G only, never a save. Generators 1 and 2 keep their life as it was
 // (genLife12, frozen); generator 3 has the herd floor (genLife3).
 export function genLife(G, seed, roster = ROSTER) {
+  if (G.gen >= 5) return genLife5(G, seed, roster);
   return G.gen >= 4 ? genLife3(G, seed, roster, G.biome) : G.gen >= 3 ? genLife3(G, seed, roster) : genLife12(G, seed, roster);
 }
 
@@ -1296,6 +1298,56 @@ function shadeCells(G, seed, biome) {
   return shade;
 }
 // ---- end generator 4 ----
+
+// ---- generator 5 (integer only): life by land ----
+// The ground is generator 4's, unchanged (genWorld4, tagged gen 5). The life is the region's kinds: a land's one to three kinds, or the three starters in the home
+// region (regions.mjs regionKinds). Each kind draws on its own seed stream keyed by the species id (hash(seed, 'herd5', 'S08', k)), so adding or moving a kind never
+// moves another's herds. Generators 1 to 4 stay as they are, with their vectors: no save can hold them after the reset, but nothing is deleted.
+export function genWorld5(seed, biome = 'mixed') { return { ...genWorld4(seed, biome), gen: 5 }; }
+// Where in a region each family stands (the tile's ground): one row a family of the language registry.
+export const FAMILY_GROUND = {
+  trotter: [L.MEADOW, L.WOOD], 'shoulder-heavy': [L.ROCK], hopper: [L.ROCK, L.WOOD], digger: [L.MEADOW], loaf: [L.MEADOW, L.POND], bridge: [L.WOOD, L.MEADOW],
+  sitter: [L.POND], waddler: [L.MEADOW, L.WOOD], roundling: [L.MEADOW], mound: [L.MEADOW, L.ROCK], swimmer: [L.POND], climber: [L.WOOD], flutterer: [L.WOOD],
+  'four-wing': [L.MEADOW], rambler: [L.WOOD], 'two-part crawler': [L.WOOD], floater: [L.ROCK], 'shell-carrier': [L.MEADOW], slider: [L.POND], 'six-arm': [L.ROCK, L.POND],
+};
+// kinds: [{ id: 'S08', sp (the kind's place in the game's species list), hab: [land…], nest?: true (the glow cells and the cave under the cliff), weight?: 1 (multiplies the herd odds) }]
+export function genLife5(G, seed, kinds) {
+  const N = MW * MH, pct = (...a) => hash(seed, ...a) % 100, cr = [], pods = [];
+  for (const k of kinds) {
+    const { id, sp } = k, w = k.weight ?? 1, n = new Array(N).fill(0);
+    const walk = c => passableIn(G, c) && G.land[c] !== L.WATER;
+    // a kind whose ground has no walkable cell on the reachable part takes every walkable cell that is not water: it always has somewhere to live
+    const onGround = c => walk(c) && k.hab.includes(G.land[c]), has = (() => { for (let c = 0; c < N; c++) if (G.comp[c] === 1 && onGround(c)) return true; return false; })();
+    const live = has ? onGround : walk;
+    for (let c = 0; c < N; c++) {
+      if (!live(c)) continue;
+      if (G.spawns.includes(c)) { if (pct('spawn5', id, c) < 70) n[c] = 4 + pct('pn5', id, c) % 3; continue; }
+      const q = pct('pop5', id, c);
+      if (q < 15 * w) n[c] = 4 + pct('pn5', id, c) % 5; else if (q < 35 * w) n[c] = 1 + pct('pm5', id, c) % 2;
+    }
+    if (k.nest) { for (const c of G.glow) n[c] = Math.max(n[c], 3); if (G.gate >= 0) n[G.gate] += 2; }
+    const herd = c => G.comp[c] === 1 && n[c] >= HERD.SIZE;
+    let have = 0; const open = [];
+    for (let c = 0; c < N; c++) { if (herd(c)) have++; else if (live(c) && G.comp[c] === 1) open.push(c); }
+    for (let j = 0; have < HERD.FLOOR && open.length; j++, have++) {
+      const R = makeRng(hash(seed, 'herd5', id, j)), c = open.splice(R.int(open.length), 1)[0];
+      n[c] = Math.max(n[c], HERD.SIZE + R.int(3));
+    }
+    let i = 0; const mine = (c, cv) => cr.push({ id: 0, sp, c, cv, b: pct('bold5', id, i++) / 100, s: 0 });
+    for (let c = 0; c < N; c++) for (let j = 0; j < n[c]; j++) mine(c, 0);
+    if (k.nest && G.gate >= 0) for (let j = 0; j < 4; j++) mine(G.gate, 1);   // the nest under the cliff
+    const R = makeRng(hash(seed, 'pods5', id));
+    const homes = R.shuffle([...new Set(cr.filter(x => x.sp === sp && !x.cv && !G.spawns.includes(x.c) && G.comp[x.c]).map(x => x.c))]);
+    for (let j = 0; j < Math.min(HERD.PODS, homes.length); j++) {
+      const c = homes[j];
+      pods.push({ id: 'w' + sp + 'p' + j, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' });
+    }
+  }
+  cr.forEach((x, i) => { x.id = i + 1; });
+  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: kinds.length ? kinds[0].sp : 0, h: 0, bur: 1, g: 'cave', how: 'ground' });   // the cave pod under the cliff takes the region's first kind
+  return { cr, pods };
+}
+// ---- end generator 5 ----
 
 // ---- tree kinds (generator 4 and later) ----
 // Every trunk in a place has a kind, drawn from its region kind's list by the hash of the seed, the place and the tile, so it never changes.

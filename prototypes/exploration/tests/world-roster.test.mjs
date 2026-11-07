@@ -6,6 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import * as W from "../src/world.mjs";
+import { regionKinds } from "../src/regions.mjs";
 
 const SEEDS = Array.from({ length: 1000 }, (_, i) => i);
 const worldOf = {};   // gen -> seed -> G, built once
@@ -21,8 +22,8 @@ const fnv = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^=
 
 test("1. the floor: 1,000 seeds × each generator, every species has at least 2 herds of 3, in its habitat, on the reachable component", () => {
   // Generators 1 and 2 meet it by luck of the draw with today's three species (measured: 0 misses in 1,000 seeds each); generator 3 by construction.
-  assert.deepEqual(W.GENS, [1, 2, 3, 4]);
-  for (const gen of W.GENS) for (const seed of SEEDS) {
+  assert.deepEqual(W.GENS, [5]);   // the page plays generator 5 only; generators 1 to 4 stay in the module, frozen, and keep their floor (the pure checks below)
+  for (const gen of [1, 2, 3, 4]) for (const seed of SEEDS) {
     const G = G_(gen, seed), { cr } = life(gen, seed);
     W.ROSTER.forEach((r, sp) => {
       const own = herds(G, cr, sp);
@@ -71,33 +72,34 @@ test("4. the nest and the glow cells are the Tuikis's, whatever the roster; the 
   }
 });
 
-// The page is the player's: its SPECIES rows take their habitat from the roster, new worlds take generator 3, and its genLife is the module's.
+// The page is the player's: its first three SPECIES rows take their habitat from the roster (the other seventeen from their families' grounds), new worlds are generator 5, and its genLife is the module's.
 const page = (store = {}) => makePage({ store }).run;
-test("5. the page: SPECIES matches the roster slot for slot, and a new world holds the floor", () => {
+test("5. the page: the three starters' SPECIES rows match the roster slot for slot, and a new world holds the floor for them at home", () => {
   const p = page();
-  assert.deepEqual(JSON.parse(JSON.stringify(p("SPECIES.map(s => [s.name, s.hab])"))), W.ROSTER.map(r => [r.name, r.hab]));
+  assert.deepEqual(JSON.parse(JSON.stringify(p("SPECIES.slice(0, 3).map(s => [s.name, s.hab])"))), W.ROSTER.map(r => [r.name, r.hab]));
+  assert.equal(p("SPECIES.length"), 20, "a row for each of the twenty kinds");
   for (const seed of [3, 11, 42]) {
     p(`newWorld(${seed})`);
-    assert.equal(p("S.gen"), 3);
-    const cr = JSON.parse(JSON.stringify(p("S.cr"))), G = G_(3, seed);
+    assert.equal(p("S.gen"), 5);
+    const cr = JSON.parse(JSON.stringify(p("S.cr"))), G = G_(5, seed);
     W.ROSTER.forEach((r, sp) => assert.ok(herds(G, cr, sp).length >= 2, `${r.name} in the page's world ${seed}`));
   }
 });
 
-test("6. old saves load unchanged: a save of each generator keeps its generator and its life, and a save never changes generator", () => {
+test("6. a save keeps its generator and its life through a load, and a region of an earlier generator (1 to 4) is read-only, never played or changed", () => {
   const plain = x => JSON.parse(JSON.stringify(x));
-  for (const gen of [1, 2, 3]) {
-    const store = {}, a = page(store);
-    a(`newWorld(7, ${gen}); save()`);
-    const key = Object.keys(store).find(k => store[k].includes('"seed":7')), saved = JSON.parse(store[key]), g1 = saved.regions[0];
-    assert.equal(g1.gen, gen, "v9 names the generator in the region"); assert.equal("gen" in saved, false);
-    const b = page(store);   // a new page boots by loading the save
-    assert.equal(b("S.gen"), gen); assert.deepEqual(plain(b("S.cr")), g1.map.cr); assert.deepEqual(plain(b("S.pods")), g1.map.pods);
-    assert.equal(b("G.gen"), gen === 1 ? undefined : gen);
-    // a save whose pods are missing is refilled from its own generator's life, never another's
-    const lost = JSON.parse(store[key]); delete lost.regions[0].map.pods; store[key] = JSON.stringify(lost);
-    const c = page(store), mine = W.genLife(W.genWorld(7, gen), 7, W.ROSTER).pods;
-    assert.deepEqual(plain(c("S.pods")), mine.map(p => ({ ...p })), `generator ${gen}: refilled pods`);
-    assert.equal(c("S.gen"), gen);
+  const store = {}, a = page(store);
+  a("newWorld(7); save()");
+  const key = Object.keys(store).find(k => store[k].includes('"seed":7')), saved = JSON.parse(store[key]), g1 = saved.regions[0];
+  assert.equal(g1.gen, 5, "v10 names the generator in the region"); assert.equal("gen" in saved, false);
+  const b = page(store);   // a new page boots by loading the save
+  assert.equal(b("S.gen"), 5); assert.deepEqual(plain(b("S.cr")), g1.map.cr); assert.deepEqual(plain(b("S.pods")), g1.map.pods); assert.equal(b("G.gen"), 5);
+  // a save whose pods are missing is refilled from its own generator's life (the home region's three starters)
+  const lost = JSON.parse(store[key]); delete lost.regions[0].map.pods; store[key] = JSON.stringify(lost);
+  const c = page(store), mine = W.genLife(W.genWorld(7, 5), 7, regionKinds({ n: 1, biome: "mixed" })).pods;
+  assert.deepEqual(plain(c("S.pods")), mine.map(p => ({ ...p })), "refilled pods");
+  for (const gen of [1, 2, 3, 4]) {
+    const old = JSON.parse(store[key]); old.regions[0].gen = gen; const raw = JSON.stringify(old), s2 = { "mb-companion-A": store["mb-companion-A"], [key]: raw }, d = page(s2);
+    assert.equal(d("RT.readOnly"), true, "generator " + gen + ": read-only"); assert.equal(s2[key], raw, "kept as stored");
   }
 });

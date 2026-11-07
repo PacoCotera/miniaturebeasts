@@ -14,6 +14,9 @@ import { parseRecovery, recoveryPub } from "./recovery.mjs";
 export const MAGIC = "MBR1";
 export const KIND = "mb-realm-sleep";
 export const FILE_V = 1;
+export const SAVE_V = 10;   // the save version a file is written from and may wake into (the release's reset moved it from 9)
+// The line a refused old file is shown (key wake.refused.old-save; the copywriter's words of 6 Nov 2026).
+export const OLD_SAVE_LINE = "This realm is from the old world. It stays asleep.";
 export const MAX_BYTES = 8 * 1024 * 1024;   // a file over 8 MB is refused, on the way out and on the way in
 
 const hex = async (x) => hexEncode(await sha256(typeof x === "string" ? utf8(x) : x));
@@ -38,11 +41,11 @@ function summaryOf(save, st) {
   };
 }
 
-// The Station's half: the body, the header and the bytes the Companion signs. `save` is the v9 save as stored (with its `st`); `caddy` is { dock, jobs, prints };
+// The Station's half: the body, the header and the bytes the Companion signs. `save` is the v10 save as stored (with its `st`); `caddy` is { dock, jobs, prints };
 // `companion` is { id, name, pub }; `recovery` is { kid, pub } or null; `slept` is the time in ms. Returns { header, headerLine, bodyLine, signed }.
-// Throws when the save is not a v9 save with its Station part, or the file would be over 8 MB.
+// Throws when the save is not a v10 save with its Station part, or the file would be over 8 MB.
 export async function prepareSleep({ save, caddy, companion, recovery = null, slept }) {
-  if (!isObj(save) || save.v !== 9 || !Array.isArray(save.regions) || !save.regions.length) throw new Error("sleepfile: a v9 save is needed");
+  if (!isObj(save) || save.v !== SAVE_V || !Array.isArray(save.regions) || !save.regions.length) throw new Error("sleepfile: a v10 save is needed");
   if (!isObj(save.st)) throw new Error("sleepfile: the save has no Station part");
   if (typeof save.wid !== "string" || !save.wid) throw new Error("sleepfile: the save has no wid");
   if (!isObj(caddy)) throw new Error("sleepfile: the Caddy part is needed");
@@ -177,10 +180,11 @@ export function ledgerState(ledgers, sha) {
 // In both: the file must verify against header.companion.pub, and a file already woken never wakes again.
 // A challenge that begins with the magic line is refused, so a Companion asked to sign a challenge cannot be made to sign a header.
 // Returns { ok, why }; why is "" when ok, else a verify code, or "no-proof", "challenge", "proof-signature", "recovery-<chars|length|version|check>", "recovery-pub",
-// "ledger-unknown", "ledger-kept", "ledger-dropped", "ledger-woken".
+// "ledger-unknown", "ledger-kept", "ledger-dropped", "ledger-woken", and "old-save" (the file holds a save older than this build plays; its line is OLD_SAVE_LINE).
 export async function wakeCheck(input, { companionSig, challenge, recoveryText, ledgers = [] } = {}) {
   const v = await verifySleepFile(input);
   if (!v.ok) return { ok: false, why: v.why };
+  if (!v.header.save || v.header.save.v !== SAVE_V) return { ok: false, why: "old-save" };   // a realm of an earlier save version (a v9 file stored before the release) never wakes: it would bring back mibis and pods of the earlier species
   const state = ledgerState(ledgers, await fileHash(asBytes(input)));
   if (state === "woken") return { ok: false, why: "ledger-woken" };
   const fails = [];

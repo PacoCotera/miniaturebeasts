@@ -2,6 +2,7 @@
 // run by frame(), never waited for on `done`; during a hold every intent is dropped but a room key, of which the last is kept and dispatched when the hold ends, except in Home's rest, which ends on Idle and drops it.
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
+import { movingFixture } from "./fixtures/moving.mjs";
 import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -14,7 +15,7 @@ import { createHost, onFaceMessage, screenProps } from "../src/host.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
 import { enterIdle, idleTick } from "../src/intents/frame.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 for (const k of ["frame", "pods", "home", "cargo", "create", "vivarium", "habitat", "namer", "panel"]) SPECS[k] = JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
 const rig = ({ motion = true, onDock } = {}) => {
@@ -194,7 +195,7 @@ test("the hatch lands in the meet with the moment played once and no hold; a lat
 // ---- Station M1 §2.5 (the game designer's R2 and R5, UI/UX "Hatch cutting key"): the hatch with a moving set holds to the stand (to the first hop's stand on a save's first hatch), then the first key only lands the meet ----
 import { setMoving } from "../src/moving.mjs";
 SPECS.incubator = JSON.parse(readFileSync(path.join(specs, "incubator.json"), "utf8"));
-{ const ix = JSON.parse(readFileSync(path.join(specs, "moving/index.json"), "utf8")), sets = {}; for (const id of ix.sets) sets[id] = JSON.parse(readFileSync(path.join(specs, `moving/${id}.json`), "utf8")); setMoving(sets); }
+setMoving(movingFixture());   // the moving sets of S01 and S05 as a fixture: the game ships none (release 21a)
 const hatchRig = ({ first = false } = {}) => {
   const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1, motionSets: true }; G.st.firstMibi = first; G.st.e = 99; G.st.d = 99; G.st.s = 99;
   S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), G.settings, Date.now()); const p = G.st.tray[0]; S.skipIdentify(G.st, p); assert.ok(S.grow(G.st, p, {}, G.settings, Date.now()).ok); S.skipBud(G.st, G.settings, "ready");

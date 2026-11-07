@@ -9,7 +9,7 @@ import { createMeasure } from "../../ui/specs/measure.mjs";
 import NAMER from "../../ui/specs/station/namer.json" with { type: "json" };
 
 const here = (p) => new URL(p, import.meta.url);
-const fdir = here("../../workbench/frames/");
+const fdir = here("../../workbench/frames/language/");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(new URL(f, fdir), "utf8"))));
 const first = (g, n) => { const out = []; for (const c of g) { out.push(c); if (out.length >= n) break; } return out; };
 

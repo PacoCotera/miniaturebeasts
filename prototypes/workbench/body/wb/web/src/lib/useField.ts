@@ -4,6 +4,7 @@ import { ApiError, patchSpecies, type Species } from './api'
 import { noteOwn } from './edits'
 import { create } from 'zustand'
 import { AUTOSAVE_MS, getAt, patchFor, setAt } from './forms'
+import { followEdit } from './patch'
 
 // The value being set on a field, shared by every control that shows the same pointer: a handle dragged on the stage and the field in the inspector read one number, so the inspector mirrors the drag as it happens.
 type Live = { live: Record<string, { owner: number; v: unknown }>; put: (ptr: string, owner: number, v: unknown) => void; drop: (ptr: string, owner: number) => void }
@@ -46,9 +47,13 @@ export function useField<T>(species: Species | undefined, id: string, ptr: strin
     // a list is saved as one change for each element that moved: the log's entries are those
     if (Array.isArray(v)) v.forEach((x, i) => noteOwn(`${ptr}/${i}`, x)); else noteOwn(ptr, v)
     try {
-      await patchSpecies(id, patchFor(ptr, saved.current, v))
+      const answer = await patchSpecies(id, patchFor(ptr, saved.current, v))
       saved.current = v
-      qc.setQueryData<Species>(['species', id], (s) => (s ? { ...s, file: setAt(s.file, ptr, v) } : s))
+      // the answer says what the save did: apply it to the copy this page holds, and ask for nothing (the event that follows is the same edit, already taken)
+      if (followEdit(qc, id, answer) === 'refetch') {
+        qc.setQueryData<Species>(['species', id], (s) => (s ? { ...s, file: setAt(s.file, ptr, v) } : s))
+        void qc.invalidateQueries({ queryKey: ['species', id] })
+      }
       if (!next.current) setDraft(null)
     } catch (e) {
       next.current = null

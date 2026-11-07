@@ -2,6 +2,7 @@
 // freshness (12 world turns that move only with expeditions, the bench pausing it, a dried pod a husk shown once with its reads kept and nothing paid), freshening for Essence (1 for 4 turns, up to full),
 // the one guard on letting go, the goal on a pod, and the read bar's four blocks.
 //   node --test prototypes/station/tests/pods-rules.test.mjs
+// PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -14,7 +15,7 @@ S.useNameList("en-short-1");
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const framesDir = path.resolve(here, "../../workbench/frames");
-setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const crate = (n, pods, extra = {}) => ({ id: "x" + n, n, turn: n, at: 0, e: 3, d: 3, s: 4, pods, met: [], explored: 5, of: 20, lines: [], ...extra });
 const pod = (i, gs, sp = 0) => ({ id: "p" + i, sp, g: "pond", how: "calm", gs, k: null });

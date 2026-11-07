@@ -11,7 +11,7 @@ describe('one prefix for the API, the events and the pictures', () => {
   it('is /studio, from the build base', () => {
     expect(PREFIX).toBe('/studio')
     expect(apiPath('/events?species=S20')).toBe('/studio/events?species=S20')
-    expect(casUrl('ab12')).toBe('/studio/cas/ab12.png')
+    expect(casUrl('ab12')).toBe('/studio/cas/ab12.webp')
   })
   it('api calls and the check registry go under it', async () => {
     const f = answer(200, [])

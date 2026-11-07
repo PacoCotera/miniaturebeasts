@@ -7,12 +7,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodePNG } from "../../ui/png.mjs";
 import { curlPicture, layeredStand, scaleOf, viewFigureHeight, viewFactor } from "../src/layered-stand.mjs";
-import { loadStandLayersFs } from "./stand-layers-fs.mjs";
+import { loadStandSizesFs } from "./stand-layers-fs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 export const VIVARIUM_JSON = path.join(ui, "specs/station/vivarium.json");
 export function measureCurls() {
-  loadStandLayersFs();
+  loadStandSizesFs();
   const spec = JSON.parse(readFileSync(VIVARIUM_JSON, "utf8")), R = spec.regions, masters = JSON.parse(readFileSync(path.join(ui, "assets/masters/index.json"), "utf8")).masters, out = {};
   for (const [id, e] of Object.entries(masters)) { const m = /^mibi-(adult|juvenile)-(S\d{2})-curl-304x312$/.exec(id); if (!m) continue;
     const p = decodePNG(readFileSync(path.join(ui, "assets/masters", e.file))), slot = R.resident[m[1]], lay = layeredStand(m[2], m[1], [304, 312], "vivarium", "curl"), vh = viewFigureHeight(m[1], "vivarium");

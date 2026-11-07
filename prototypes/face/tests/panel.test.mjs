@@ -23,7 +23,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(h
 // The Grow this founder? panel and its fixture are retired (T-20261016-222): the card form's one, two and three cards are tested on the Hatch now? panel's cards (and a third made of them), the Incubate | Keep shaping form on its own props.
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), podsSpec = J("pods"), createSpec = J("create"), panelSpec = J("panel"), incSpec = J("incubator");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
-const framesDir = path.resolve(here, "../../workbench/frames");
+const framesDir = path.resolve(here, "../../workbench/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const rgbOf = (name) => { const h = palette.find((c) => c[0] === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000, R = createSpec.regions, EV = createSpec.events;

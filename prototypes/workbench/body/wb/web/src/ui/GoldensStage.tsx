@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { casUrl, getToken, type Species } from '../lib/api'
+import { casUrl, type Species } from '../lib/api'
+import { useCanEdit } from '../lib/gate'
 import { goldenJob, goldensOne, goldenUrl, pick, type GEntry } from '../lib/goldens'
 import { GVIEWS, type GView, type StudioUrl } from '../lib/url'
 import { W } from '../lib/words'
@@ -34,15 +35,16 @@ function Split({ gold, now, h }: { gold: string | null; now: string | null; h: n
 }
 
 export function GoldensStage({ url, species, go, inset = 0 }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>, r?: boolean) => void; inset?: number }) {
+  const canEdit = useCanEdit()
   const q = useQuery({ ...goldensOne(url.species, species?.hash ?? ''), enabled: !!species })
   const g = q.data
   const asked = useRef(new Set<string>())
   // A set whose key has moved is drawn again as soon as the mode opens (the page may write); the done event refetches the states.
   useEffect(() => {
-    if (!g || !g.have || g.totals.stale === 0 || !getToken() || asked.current.has(g.current.key)) return
+    if (!g || !g.have || g.totals.stale === 0 || !canEdit || asked.current.has(g.current.key)) return
     asked.current.add(g.current.key)
     void goldenJob(url.species, 'diff')
-  }, [g, url.species])
+  }, [g, url.species, canEdit])
   if (!species || !g) return <main className={s.stage}>{q.isError && <p className={s.note}>{(q.error as Error).message}</p>}</main>
   const e = pick(g, url.sel)
   if (!e) return <main className={s.stage} />

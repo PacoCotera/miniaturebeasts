@@ -20,7 +20,27 @@
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "Two chapters unread"
+    "subject": "Four chapters unread"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 1,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "Four chapters unread"
    },
    {
     "key": "down",
@@ -34,15 +54,15 @@
     ],
     "screen": "create",
     "create": {
-     "f": 0,
+     "f": 1,
      "choices": [
-      "colour"
+      "body-value"
      ],
      "grown": false
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
-    "subject": "Two chapters unread"
+    "subject": "Four chapters unread"
    },
    {
     "key": "research",
@@ -56,7 +76,7 @@
     ],
     "screen": "pods",
     "create": null,
-    "ok": "Open Stamina",
+    "ok": "Open Shape",
     "price": null,
     "subject": ""
    },
@@ -78,7 +98,27 @@
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "Two chapters unread"
+    "subject": "Four chapters unread"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 1,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "Four chapters unread"
    },
    {
     "key": "down",
@@ -92,15 +132,15 @@
     ],
     "screen": "create",
     "create": {
-     "f": 0,
+     "f": 1,
      "choices": [
-      "colour"
+      "body-value"
      ],
      "grown": false
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
-    "subject": "Two chapters unread"
+    "subject": "Four chapters unread"
    }
   ],
   "create-grow": [
@@ -134,9 +174,9 @@
     ],
     "screen": "create",
     "create": {
-     "f": 0,
+     "f": 1,
      "choices": [
-      "colour"
+      "body-value"
      ],
      "grown": true
     },

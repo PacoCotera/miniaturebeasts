@@ -140,7 +140,7 @@ def registry_kind(species_id):
     return next((k for k in registry()["kinds"] if k["id"] == species_id), None)
 
 
-# ---- /2: /1 plus the language. OWED to the copywriter: every label and help line below, and every message in `language_errors`; the field names are the plan's (family, land, signature, face.eyes.count, coat.material.family).
+# ---- /2: /1 plus the language. The labels and help lines the copywriter changed are laid over it by `_with_words`; the field names are the plan's (family, land, signature, face.eyes.count, coat.material.family).
 def _schema_2():
     r = registry()
     v = r["vocab"]
@@ -182,10 +182,31 @@ def _schema_2():
             part=text("Part", "The part's sidecar, relative to species_v1 (parts/P0001/P0001-p1.json).", stage="shape", pattern=None), sha256=text("Part sha256", "The sha256 of the part's GLB.", stage="shape", pattern=None),
             socket=text("Socket", "The sculpt's socket the part sits on.", stage="shape", pattern=None), mirror=dict(type="enum", values=[True, False], label="Mirror", help="Whether the part is placed as a mirrored pair.", stage="shape")),
             required=["part", "sha256", "socket"])), stage="shape", required=["source", "sha256"])
+    s["rig"] = obj("Rig", "A mesh body's armature at rest: each bone's scale along its length and across it. Loci move these (rig.bones[chest].len). A child bone keeps its own size, so feet stay round.", dict(
+        bones=dict(type="list", label="Bones", help="The sculpt's bones, by the family's names.", stage="shape", id_key="id", item=dict(
+            id=text("Bone", "The bone's name in the family's armature.", stage="shape", pattern=None), len=num("Length", "The bone's scale along its length.", rng=None, unit="×"),
+            girth=num("Girth", "The bone's scale across its length.", rng=None, unit="×")), required=["id"])), stage="shape", required=["bones"])
+    s["keys"] = dict(type="list", label="Shape keys", help="The scripted shape keys of a mesh body (a normal offset masked by bone weights): each key's amount, 0 at the type. A locus moves it (keys[key.form.torso-girth].amount).", stage="shape", id_key="id", item=dict(
+        id=text("Key", "The key's id (key.<locus>).", stage="shape", pattern=None), amount=num("Amount", "How far the key is set: 0 is the sculpt, 1 the key's full reach.", rng=None, unit="")), required=["id"])
+    return _with_words(s)
+
+
+def _with_words(s):
+    """The copywriter's labels and help lines (wb/studio-words.json, keys species.field.<dotted path>.label|help) laid over the schema. A path the schema does not have is a bug in the word list, so it raises."""
+    from wb import words as WD
+    for key, text_ in WD.all_words().items():
+        if not key.startswith("species.field."):
+            continue
+        path, _, what = key[len("species.field."):].rpartition(".")
+        node, fields = None, s
+        for tok in path.split("."):
+            node = fields[tok]
+            fields = node.get("fields", {})
+        node[what] = text_
     return s
 
 
-SCHEMA = _schema_2()                    # the current schema: labels, stages and the form read this
+SCHEMA = _schema_2()                  # the current schema: labels, stages and the form read this
 REQUIRED = ["schema", "id", "name", "plan", "family", "land", "signature", "plan_version", "anchors", "spine", "skeleton", "parts", "sockets", "face", "coat", "genome", "motion", "legacy"]
 CAGE_FIELDS = ("spine", "skeleton", "parts")
 REQUIRED_MESH = [k for k in REQUIRED if k not in CAGE_FIELDS] + ["mesh"]          # a mesh file has no cage fields
@@ -396,27 +417,30 @@ def validate(doc):
 
 def language_errors(doc):
     """What the registry adds to a /2 file: a kind it lists keeps its family, land, eye count and coat material (a template with no land yet may set one); one signature, never on the face. A fixture is skipped.
-    OWED to the copywriter: these messages."""
+    The messages are the copywriter's (wb/studio-words.json, species.lang.*)."""
+    from wb import words as WD
     sid = doc.get("id")
     if not isinstance(sid, str) or is_fixture(sid):
         return []
     errs = []
     sig = doc.get("signature")
     if isinstance(sig, list):
-        errs.append(("signature", f"signature: a kind has one signature, got {len(sig)}"))
+        errs.append(("signature", WD.say("species.lang.signature", n=len(sig))))
     k = registry_kind(sid)
     if k is None:
         return errs
+    fam_name = lambda i: next((f["name"] for f in registry()["families"] if f["id"] == i), None) or ("nothing" if i is None else str(i))
+    land_word = lambda i: next((l["word"] for l in registry()["lands"] if l["id"] == i), None) or ("nothing" if i is None else str(i))
     if doc.get("family") != k["family"]:
-        errs.append(("family", f"family: {sid} is the {k['family']} family in the registry, got {doc.get('family')!r}"))
+        errs.append(("family", WD.say("species.lang.family", id=sid, family=fam_name(k["family"]), got=fam_name(doc.get("family")))))
     if k["land"] is not None and doc.get("land") != k["land"]:
-        errs.append(("land", f"land: {sid} lives in {k['land']} in the registry, got {doc.get('land')!r}"))
+        errs.append(("land", WD.say("species.lang.land", id=sid, land=land_word(k["land"]), got=land_word(doc.get("land")))))
     cnt = ((doc.get("face") or {}).get("eyes") or {}).get("count") if isinstance(doc.get("face"), dict) and isinstance(doc["face"].get("eyes"), dict) else None
     if cnt in registry()["vocab"]["eyeCounts"] and cnt != k["eyes"]["count"]:
-        errs.append(("face.eyes.count", f"face.eyes.count: {sid} has {k['eyes']['count']} eyes in the registry, got {cnt}"))
+        errs.append(("face.eyes.count", WD.say("species.lang.eyes", id=sid, count=k["eyes"]["count"], got=cnt)))
     mat = ((doc.get("coat") or {}).get("material") or {}).get("family") if isinstance(doc.get("coat"), dict) and isinstance(doc["coat"].get("material"), dict) else None
     if mat in registry()["vocab"]["coatMaterials"] and mat != k["coat"]["material"]:
-        errs.append(("coat.material.family", f"coat.material.family: {sid} is {k['coat']['material']} in the registry, got {mat}"))
+        errs.append(("coat.material.family", WD.say("species.lang.coat", id=sid, material=k["coat"]["material"], got=mat)))
     return errs
 
 

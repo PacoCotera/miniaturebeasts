@@ -27,7 +27,7 @@ const json = (res, code, body) => { res.writeHead(code, { "content-type": "appli
 const readRaw = (req, max) => new Promise((resolve, reject) => { const parts = []; let n = 0; req.on("data", (b) => { n += b.length; if (n <= max) parts.push(b); }); req.on("end", () => (n > max ? reject(Object.assign(new Error("too large"), { tooLarge: true })) : resolve(Buffer.concat(parts)))); req.on("error", reject); });   // a body over the limit is read and thrown away, so the answer reaches the sender
 const readBody = (req) => new Promise((resolve, reject) => { let s = ""; req.on("data", (b) => { s += b; if (s.length > 4e6) reject(new Error("too large")); }); req.on("end", () => resolve(s)); req.on("error", reject); });
 function writeJSON(file, obj) { const tmp = file + ".tmp"; writeFileSync(tmp, JSON.stringify(obj, null, 1) + "\n"); renameSync(tmp, file); }
-export function loadFrames(dir = path.resolve(here, "../workbench/frames")) { setFrames(readdirSync(dir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(dir, f), "utf8")))); }
+export function loadFrames(dir = path.resolve(here, "../workbench/frames/language")) { setFrames(readdirSync(dir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(dir, f), "utf8")))); }
 
 export function createApp(opts = {}) {
   const cfg = { ...DEFAULTS, ...opts }, dataDir = path.resolve(cfg.dataDir || path.join(here, "data"));

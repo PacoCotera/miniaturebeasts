@@ -1,10 +1,12 @@
+import STUDIO from '../../../studio-words.json'
+
 // Every on-screen string, from the copywriter's word list (ids in the comments) or, where the copywriter's word list has none, from the studio interface design (marked "ui").
 export const W = {
   modes: ['Shape', 'Genes', 'Variety', 'Goldens', 'Gate'], // st.modes
   play: 'Open in play', // st.play
   notYet: 'Not yet', // the design's own word on a family card with no template, and on "From a sculpt" until the mesh body source (chunk 30)
-  // OWED to the copywriter (the design gives the cards, not the words): the New species sheet's title, the id field's label, the create button and the line on a card whose family has a template.
-  owedNew: { title: 'OWED:new.title', id: 'OWED:new.id', create: 'OWED:new.create', template: 'OWED:new.template' },
+  // The New species sheet's words are the copywriter's (wb/studio-words.json, new.*), the same file the server reads.
+  newSpecies: { title: STUDIO['new.title'], id: STUDIO['new.id'], create: STUDIO['new.create'], template: STUDIO['new.template'] },
   newSheet: 'New sheet', // st.var.new
   gold: { make: 'Make goldens', ask: 'Ask for a look-change round', draft: 'Draft golden · remake freely', golden: 'Golden', now: 'Now', views: ['Split', 'Side by side', 'Diff'], state: 'State', moved: 'Pixels moved', because: 'Because of', from: 'Golden made from', file: 'File', framework: 'Framework', lookdev: 'Look-dev', by: 'Made by' }, // st.gold.* and mocks/studio/05-goldens
   gate: {
@@ -13,13 +15,8 @@ export const W = {
     order: 'Sign in order', reviewer: 'Reviewer', owner: 'Owner', you: 'you', afterYou: 'after you', export: 'Export', forReview: 'For review', releaseRow: 'Release', afterBoth: 'after both signatures', sendBack: 'Send back', seeIt: 'See it', // mocks/studio/06-gate
     ticked: (k: number, n: number) => `${k} of ${n} ticked`, // st.inbox.round
     oneFails: 'One check fails', signAnyway: 'Sign anyway, or send it back.', // st.gate.red (the check's own fail line sits between)
-    // OWED to the copywriter (the copywriter's word list has none): the voided line (with who changed the file and whose signatures it voided), the signed-by line, the plural of the red card, each sheet's one judgement sentence, the sheet pages' own sentences,
-    // and the earlier-round view's two lines (the read-only note and the way back to the current round).
-    // The language file's Language sheet and its eight judgement rows are named by the server (wb/gate.py) in the language design's own wording, and the sheet's head line, the field labels and help lines of mb-species/2 and the language validator messages are builder-written: all OWED to the copywriter.
-    // OWED, placeholder keys (the words are not written): the line that says the Language sheet has no wall or no stand picture yet, and the heading over the eight judgement rows.
-    // OWED, placeholder keys: the names and fail lines of the ten face checks (face.count ... face.iris). The language design gives the rules, not the words: the server (checks/face.py) carries builder-written names and fail lines until the copywriter's come.
-    owedFaceChecks: { 'face.count': { name: 'OWED:check.face.count.name', fail: 'OWED:check.face.count.fail' }, 'face.front': { name: 'OWED:check.face.front.name', fail: 'OWED:check.face.front.fail' }, 'face.on-body': { name: 'OWED:check.face.on-body.name', fail: 'OWED:check.face.on-body.fail' }, 'face.flush': { name: 'OWED:check.face.flush.name', fail: 'OWED:check.face.flush.fail' }, 'face.size': { name: 'OWED:check.face.size.name', fail: 'OWED:check.face.size.fail' }, 'face.row': { name: 'OWED:check.face.row.name', fail: 'OWED:check.face.row.fail' }, 'face.lid': { name: 'OWED:check.face.lid.name', fail: 'OWED:check.face.lid.fail' }, 'face.mouth': { name: 'OWED:check.face.mouth.name', fail: 'OWED:check.face.mouth.fail' }, 'face.clear': { name: 'OWED:check.face.clear.name', fail: 'OWED:check.face.clear.fail' }, 'face.iris': { name: 'OWED:check.face.iris.name', fail: 'OWED:check.face.iris.fail' } },
-    owedLanguage: { noReference: 'OWED:gate.language.no-reference', rowsHeading: 'OWED:gate.language.rows-heading' },
+    // The Language sheet's lines and the check names and fail lines are the copywriter's (wb/studio-words.json: gate.language.*, check.*); `checkWords` below reads a check's pair.
+    language: { noReference: STUDIO['gate.language.no-reference'], rowsHeading: STUDIO['gate.language.rows-heading'] },
     voided: (by: string | null, who: string[]) => `Changed after signing${by ? ` by ${by}` : ''} · ${who.length ? `signatures of ${who.join(' and ')} are void` : 'both signatures are void'}`,
     readOnly: 'An earlier round · look only', backTo: (n: number) => `Back to round ${n}`, signedBy: (who: string, day: string) => `${who} · ${day}`, manyFail: (n: number) => `${n} checks fail`, sentBack: 'Sent back',
   },
@@ -35,8 +32,14 @@ export const W = {
   section: { cols: ['Height', 'Back radius', 'Side radius', 'Front radius'], rows: (n: number) => `${n} ${n === 1 ? 'row' : 'rows'}`, note: 'From the profile knobs · Read only' }, // cw-chunks-21-22
   viewBar: ['Plush', 'Clay', 'Normal', 'Parts', 'Wire'], // ui 3.2 ViewBar
   before: 'Before', // ui 3.2 ViewBar
+  live: { loading: 'Drawing the creature', cage: 'This kind is drawn from the server for now.' }, // R5's own words, drafts for the copywriter's list before R7
   help: { go: 'Go to', do: 'Do', choose: 'choose', run: 'run', everyKey: 'every key' }, // ui mock 10
   held: (who: string, since: string) => `held by ${who} since ${since}`, // spec 6.2
+}
+// A check's name and fail line, the copywriter's, or undefined where she has not written the check's (the server's own then stand).
+export const checkWords = (id: string): { name: string; fail: string } | undefined => {
+  const w = STUDIO as Record<string, string>
+  return w[`check.${id}.name`] ? { name: w[`check.${id}.name`], fail: w[`check.${id}.fail`] } : undefined
 }
 // The job's kind, one word (st.jobs): the proxy renders are clay; plush and glb arrive with their workers.
 export const jobWord = (kind: string) => ({ render: 'clay', variety: 'sheet', golden: 'goldens', export: 'glb' } as Record<string, string>)[kind] ?? kind

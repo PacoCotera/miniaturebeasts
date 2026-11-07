@@ -1,0 +1,863 @@
+{
+ "good": [
+  "S01",
+  "S20",
+  "S22"
+ ],
+ "forms_S01": {
+  "plan": "quadruped",
+  "outline": [
+   {
+    "id": "head",
+    "label": "Head",
+    "kind": "part",
+    "under": null,
+    "sw": null
+   },
+   {
+    "id": "body",
+    "label": "Body",
+    "kind": "part",
+    "under": null,
+    "sw": null
+   },
+   {
+    "id": "fore",
+    "label": "Front legs",
+    "kind": "part",
+    "under": null,
+    "sw": null
+   },
+   {
+    "id": "hind",
+    "label": "Hind legs",
+    "kind": "part",
+    "under": null,
+    "sw": null
+   },
+   {
+    "id": "coat",
+    "label": "Coat",
+    "kind": "section",
+    "under": null,
+    "sw": null
+   },
+   {
+    "id": "renders",
+    "label": "Renders",
+    "kind": "section",
+    "under": null,
+    "sw": null
+   }
+  ],
+  "parts": {
+   "head": {
+    "label": "Head",
+    "kind": "part",
+    "fields": [
+     {
+      "id": "rig.bones.head.len",
+      "ptr": "/rig/bones/2/len",
+      "label": "Length",
+      "full": "Head length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.head.girth",
+      "ptr": "/rig/bones/2/girth",
+      "label": "Girth",
+      "full": "Head girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     }
+    ],
+    "play": null
+   },
+   "body": {
+    "label": "Body",
+    "kind": "part",
+    "fields": [
+     {
+      "id": "rig.bones.rear.len",
+      "ptr": "/rig/bones/0/len",
+      "label": "Rear length",
+      "full": "Rear length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.rear.girth",
+      "ptr": "/rig/bones/0/girth",
+      "label": "Rear girth",
+      "full": "Rear girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.front.len",
+      "ptr": "/rig/bones/1/len",
+      "label": "Front length",
+      "full": "Front length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.front.girth",
+      "ptr": "/rig/bones/1/girth",
+      "label": "Front girth",
+      "full": "Front girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "keys.key.form.torso-girth.amount",
+      "ptr": "/keys/0/amount",
+      "label": "Torso girth key",
+      "full": "Torso girth key",
+      "help": "How far the key is set: 0 is the sculpt, 1 the key's full reach.",
+      "type": "number",
+      "unit": "",
+      "range": [
+       -1.0,
+       1.0
+      ],
+      "step": 0.01
+     }
+    ],
+    "play": null
+   },
+   "fore": {
+    "label": "Front legs",
+    "kind": "part",
+    "fields": [
+     {
+      "id": "rig.bones.fore.upper.L.len",
+      "ptr": "/rig/bones/9/len",
+      "label": "Upper l length",
+      "full": "Upper l length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.upper.L.girth",
+      "ptr": "/rig/bones/9/girth",
+      "label": "Upper l girth",
+      "full": "Upper l girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.lower.L.len",
+      "ptr": "/rig/bones/10/len",
+      "label": "Lower l length",
+      "full": "Lower l length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.lower.L.girth",
+      "ptr": "/rig/bones/10/girth",
+      "label": "Lower l girth",
+      "full": "Lower l girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.paw.L.len",
+      "ptr": "/rig/bones/11/len",
+      "label": "Paw l length",
+      "full": "Paw l length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.paw.L.girth",
+      "ptr": "/rig/bones/11/girth",
+      "label": "Paw l girth",
+      "full": "Paw l girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.upper.R.len",
+      "ptr": "/rig/bones/12/len",
+      "label": "Upper r length",
+      "full": "Upper r length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.upper.R.girth",
+      "ptr": "/rig/bones/12/girth",
+      "label": "Upper r girth",
+      "full": "Upper r girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.lower.R.len",
+      "ptr": "/rig/bones/13/len",
+      "label": "Lower r length",
+      "full": "Lower r length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.lower.R.girth",
+      "ptr": "/rig/bones/13/girth",
+      "label": "Lower r girth",
+      "full": "Lower r girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.paw.R.len",
+      "ptr": "/rig/bones/14/len",
+      "label": "Paw r length",
+      "full": "Paw r length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.fore.paw.R.girth",
+      "ptr": "/rig/bones/14/girth",
+      "label": "Paw r girth",
+      "full": "Paw r girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     }
+    ],
+    "play": null
+   },
+   "hind": {
+    "label": "Hind legs",
+    "kind": "part",
+    "fields": [
+     {
+      "id": "rig.bones.hind.upper.L.len",
+      "ptr": "/rig/bones/3/len",
+      "label": "Upper l length",
+      "full": "Upper l length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.upper.L.girth",
+      "ptr": "/rig/bones/3/girth",
+      "label": "Upper l girth",
+      "full": "Upper l girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.lower.L.len",
+      "ptr": "/rig/bones/4/len",
+      "label": "Lower l length",
+      "full": "Lower l length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.lower.L.girth",
+      "ptr": "/rig/bones/4/girth",
+      "label": "Lower l girth",
+      "full": "Lower l girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.paw.L.len",
+      "ptr": "/rig/bones/5/len",
+      "label": "Paw l length",
+      "full": "Paw l length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.paw.L.girth",
+      "ptr": "/rig/bones/5/girth",
+      "label": "Paw l girth",
+      "full": "Paw l girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.upper.R.len",
+      "ptr": "/rig/bones/6/len",
+      "label": "Upper r length",
+      "full": "Upper r length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.upper.R.girth",
+      "ptr": "/rig/bones/6/girth",
+      "label": "Upper r girth",
+      "full": "Upper r girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.lower.R.len",
+      "ptr": "/rig/bones/7/len",
+      "label": "Lower r length",
+      "full": "Lower r length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.lower.R.girth",
+      "ptr": "/rig/bones/7/girth",
+      "label": "Lower r girth",
+      "full": "Lower r girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.paw.R.len",
+      "ptr": "/rig/bones/8/len",
+      "label": "Paw r length",
+      "full": "Paw r length",
+      "help": "The bone's scale along its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     },
+     {
+      "id": "rig.bones.hind.paw.R.girth",
+      "ptr": "/rig/bones/8/girth",
+      "label": "Paw r girth",
+      "full": "Paw r girth",
+      "help": "The bone's scale across its length.",
+      "type": "number",
+      "unit": "×",
+      "range": [
+       0.5,
+       1.5
+      ],
+      "step": 0.005
+     }
+    ],
+    "play": null
+   },
+   "coat": {
+    "label": "Coat",
+    "kind": "section",
+    "fields": [],
+    "play": null
+   }
+  }
+ },
+ "broken": [
+  {
+   "name": "tail-too-long",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "spine.tail.length",
+     9
+    ]
+   ],
+   "server": [
+    [
+     "spine.tail.length",
+     "spine.tail.length is 9 H; the quadruped plan allows 0.6 to 2.4"
+    ]
+   ]
+  },
+  {
+   "name": "tail-root-low",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "spine.tail.root",
+     0.01
+    ]
+   ],
+   "server": [
+    [
+     "spine.tail.root",
+     "spine.tail.root is 0.01 × seat; the quadruped plan allows 0.1 to 0.8"
+    ]
+   ]
+  },
+  {
+   "name": "unknown-field",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "spine.tail.lenght",
+     1
+    ]
+   ],
+   "server": [
+    [
+     "spine.tail.lenght",
+     "spine.tail.lenght: not a field of mb-species/2 (did you mean spine.tail.length?); fields that are not listed are rejected"
+    ]
+   ]
+  },
+  {
+   "name": "not-a-number",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "spine.seat.radius",
+     "wide"
+    ]
+   ],
+   "server": [
+    [
+     "spine.seat.radius",
+     "spine.seat.radius: must be a number, got text"
+    ]
+   ]
+  },
+  {
+   "name": "bad-enum",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "anchors.body",
+     "loose"
+    ]
+   ],
+   "server": [
+    [
+     "anchors.body",
+     "anchors.body: 'loose' is not wide or tight"
+    ],
+    [
+     "anchors.body",
+     "anchors.body: body and face are always tight, got 'loose'"
+    ]
+   ]
+  },
+  {
+   "name": "missing-coat",
+   "base": "S22",
+   "edits": [
+    [
+     "del",
+     "coat"
+    ]
+   ],
+   "server": [
+    [
+     "coat",
+     "coat: missing (it is required: Zones, layouts and material. Colour comes from the land.)"
+    ]
+   ]
+  },
+  {
+   "name": "refused-cheeks",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "face.cheeks",
+     {
+      "blush": 1
+     }
+    ]
+   ],
+   "server": [
+    [
+     "face.cheeks",
+     "face.cheeks: cheeks are not a field of mb-species/2: no blush"
+    ]
+   ]
+  },
+  {
+   "name": "refused-palettes",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "coat.palettes",
+     {}
+    ]
+   ],
+   "server": [
+    [
+     "coat.palettes",
+     "coat.palettes: free palettes are not a field of mb-species/2: colour comes from the land"
+    ]
+   ]
+  },
+  {
+   "name": "bad-id",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "id",
+     "X1"
+    ]
+   ],
+   "server": [
+    [
+     "id",
+     "id: 'X1' is not a species id (S and two digits, like S20)"
+    ]
+   ]
+  },
+  {
+   "name": "vec3-short",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "skeleton.chest",
+     [
+      1,
+      2
+     ]
+    ]
+   ],
+   "server": [
+    [
+     "skeleton.chest",
+     "skeleton.chest: must be three numbers (x, y, z), got a list"
+    ]
+   ]
+  },
+  {
+   "name": "tail-shares",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "spine.tail.segments.0.share",
+     0.5
+    ],
+    [
+     "set",
+     "spine.tail.segments.1.share",
+     0.5
+    ]
+   ],
+   "server": [
+    [
+     "spine.tail.segments",
+     "spine.tail.segments: the shares add up to 1.33, they must add up to 1"
+    ]
+   ]
+  },
+  {
+   "name": "neck-out-of-band",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "spine.ranges.1.length",
+     2.5
+    ]
+   ],
+   "server": [
+    [
+     "spine.ranges.neck.length",
+     "spine.ranges.neck.length is 2.5 H; the quadruped plan allows 0 to 0.2"
+    ]
+   ]
+  },
+  {
+   "name": "eye-count",
+   "base": "S22",
+   "edits": [
+    [
+     "set",
+     "face.eyes.count",
+     5
+    ]
+   ],
+   "server": [
+    [
+     "face.eyes.count",
+     "face.eyes.count: '5' is not one of 2, 3"
+    ]
+   ]
+  },
+  {
+   "name": "mesh-bone-text",
+   "base": "S01",
+   "edits": [
+    [
+     "set",
+     "rig.bones.0.len",
+     "long"
+    ]
+   ],
+   "server": [
+    [
+     "rig.bones.rear.len",
+     "rig.bones.rear.len: must be a number, got text"
+    ]
+   ]
+  },
+  {
+   "name": "mesh-key-text",
+   "base": "S01",
+   "edits": [
+    [
+     "set",
+     "keys.0.amount",
+     "most"
+    ]
+   ],
+   "server": [
+    [
+     "keys.key.form.torso-girth.amount",
+     "keys.key.form.torso-girth.amount: must be a number, got text"
+    ]
+   ]
+  },
+  {
+   "name": "mesh-and-cage",
+   "base": "S01",
+   "edits": [
+    [
+     "set",
+     "spine",
+     {
+      "ranges": []
+     }
+    ]
+   ],
+   "server": [
+    [
+     "spine",
+     "spine: a file has either the cage fields (spine, skeleton, parts) or mesh, never both; this one has mesh and spine"
+    ]
+   ]
+  },
+  {
+   "name": "mesh-no-sha",
+   "base": "S01",
+   "edits": [
+    [
+     "del",
+     "mesh.sha256"
+    ]
+   ],
+   "server": [
+    [
+     "mesh.sha256",
+     "mesh.sha256: missing (it is required: The sha256 of the sculpt's GLB: a changed sculpt is a changed file.)"
+    ]
+   ]
+  },
+  {
+   "name": "fixture-neck",
+   "base": "S20",
+   "edits": [
+    [
+     "set",
+     "spine.ranges.1.length",
+     0.05
+    ]
+   ],
+   "server": [
+    [
+     "spine.ranges.neck.length",
+     "spine.ranges.neck.length is 0.05 H; the biped plan allows 0.15 to 0.4"
+    ]
+   ]
+  },
+  {
+   "name": "fixture-unknown",
+   "base": "S20",
+   "edits": [
+    [
+     "set",
+     "tail",
+     1
+    ]
+   ],
+   "server": [
+    [
+     "tail",
+     "tail: not a field of mb-species/1; fields that are not listed are rejected"
+    ]
+   ]
+  }
+ ]
+}

@@ -19,6 +19,7 @@ import { nearOf } from "./room-props.mjs";
 
 export const SITTING_STATES = ["pose", "place", "confirm", "begin", "portrait"];
 const STEPS = ["pose", "place", "confirm"];
+const GLASS = [544, 408];   // sitting.json regions.glass.rect
 const WINDOW = [304, 312], CARD = [96, 96], THUMB = [48, 48];
 
 // The portrait state is offered only while the portrait is delivered and its 528×392 opening is held on this device (portrait-source.mjs portraitOpening; sitting.json regions.portrait.until).

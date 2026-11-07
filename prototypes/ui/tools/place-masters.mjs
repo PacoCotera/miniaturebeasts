@@ -9,6 +9,7 @@
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { decodePNG } from "../png.mjs";
+import { placeGame, checkJuveniles } from "./game-masters.mjs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -243,8 +244,15 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   if (flag("check")) {
     const p = existsSync(indexFile) ? check() : [], roomsFile = path.join(specs, "rooms.json"); let notes = [];
     if (existsSync(roomsFile)) { const r = checkRooms(JSON.parse(readFileSync(roomsFile, "utf8")), readIndex(), JSON.parse(readFileSync(path.join(specs, "vivarium.json"), "utf8")).regions.window.rect); p.push(...r.problems); notes = r.notes; }   // the rooms' data guards 1 to 7 (the rooms design)
+    if (existsSync(indexFile)) p.push(...checkJuveniles(dest, readIndex()));   // the 0.8 test on every juvenile and adult pair (release 21c)
     for (const x of p) console.error("FAIL " + x); for (const x of notes) console.log("note " + x);
     console.log(`masters: ${Object.keys(readIndex().masters).length} placed, ${p.length} problems`); process.exit(p.length ? 1 : 0);
+  }
+  if (arg("game")) {   // the twenty kinds' art from the art desk's game-art work folder (game-masters.mjs): masters with the juveniles at 0.8, the chips renamed, the earlier art removed
+    const r = placeGame({ work: path.resolve(arg("game")), root: dest, dryRun: flag("dry"), only: arg("only") ? new RegExp(arg("only")) : null });   // --only <regex on the master id>: just those, nothing retired
+    console.log(`${flag("dry") ? "would place" : "placed"} ${r.placed} masters, removed ${r.removed.length}`);
+    for (const q of r.report) if (Math.abs(q.before - 0.8) > 0.03) console.log(`rescaled ${q.kind} ${q.what} ${q.size}: ${q.before.toFixed(3)} -> ${q.after.toFixed(3)}`);
+    process.exit(0);
   }
   if (arg("rooms")) {
     const r = placeRooms({ manifest: path.resolve(arg("rooms")), dryRun: flag("dry"), commit: arg("source-commit") });   // --source-commit: a copy of the rooms outside its repository (the commit it was made from and what changed it)

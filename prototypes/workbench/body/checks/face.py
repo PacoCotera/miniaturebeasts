@@ -339,7 +339,7 @@ def eye_ratio(doc):
     eyes, _, W = CF.quad_guess(doc)
     if CF.is_mesh(doc):
         import meshsource as MS
-        return 2.0 * float(MS.Mesh(doc["mesh"]["source"]).stations()["eyes"][0]["radius"]) / W
+        return 2.0 * float(MS.Mesh(doc["mesh"]["source"], doc["mesh"].get("sha256")).stations()["eyes"][0]["radius"]) / W
     return 2.0 * float(doc["face"]["eyes"]["r"]) / W
 
 

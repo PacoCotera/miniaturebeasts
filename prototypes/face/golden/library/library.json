@@ -2,131 +2,131 @@
  "_note": "The Library. Level 1: only the Loika met, a mid-game catalogue (the wish alone on a found species and beside the Loika's face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock). Level 2: the Loika at mid, its Coat lit with its page, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat lit complete, the Blikur and the Loika late (colour chips). Level 3, far: a Loika lineage of two blocks (the ring on Moss) and of one (on Dot); close: on Moss, links leaving every edge, a tree that fits the view, a pan's three steps (motion on, virtual clock) and FAR to CLOSE at the dither's midpoint: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "library-l1-first": {
-   "hash": "b99dca9a",
+   "hash": "71797eaf",
    "png": "library-l1-first.png"
   },
   "library-l1-mid": {
-   "hash": "d91b20e2",
+   "hash": "a1401889",
    "png": "library-l1-mid.png"
   },
   "library-l1-new": {
-   "hash": "ed956985",
+   "hash": "d371e626",
    "png": "library-l1-new.png"
   },
   "library-l1-roomkey": {
-   "hash": "015c3922",
+   "hash": "8009f8e1",
    "png": "library-l1-roomkey.png"
   },
   "library-l2-loika-mid": {
-   "hash": "e39b1207",
+   "hash": "5b6b8922",
    "png": "library-l2-loika-mid.png"
   },
   "library-l2-coat-lit": {
-   "hash": "2b66173c",
+   "hash": "8a7b1fa7",
    "png": "library-l2-coat-lit.png"
   },
   "library-l2-met-only": {
-   "hash": "a2aff1b5",
+   "hash": "434773c0",
    "png": "library-l2-met-only.png"
   },
   "library-l2-new": {
-   "hash": "c102de15",
+   "hash": "a821a254",
    "png": "library-l2-new.png"
   },
   "library-l2-wish-uncarried": {
-   "hash": "3f1f22ec",
+   "hash": "f93fe834",
    "png": "library-l2-wish-uncarried.png"
   },
   "library-l2-shut": {
-   "hash": "ee047811",
+   "hash": "f559aa47",
    "png": "library-l2-shut.png"
   },
   "library-l2-hiljan": {
-   "hash": "415dfb48",
+   "hash": "6fe229bf",
    "png": "library-l2-hiljan.png"
   },
   "library-l2-kilpo": {
-   "hash": "2e1483c2",
+   "hash": "646a8264",
    "png": "library-l2-kilpo.png"
   },
   "library-l2-belatz": {
-   "hash": "948450ab",
+   "hash": "ad7dbfe3",
    "png": "library-l2-belatz.png"
   },
   "library-l2-belatz-coat-lit-complete": {
-   "hash": "9d89a300",
+   "hash": "0dfc3b33",
    "png": "library-l2-belatz-coat-lit-complete.png"
   },
   "library-l2-blikur": {
-   "hash": "7e8a33ab",
+   "hash": "3ca1570c",
    "png": "library-l2-blikur.png"
   },
   "library-l2-loika-late": {
-   "hash": "9cf0cc4f",
+   "hash": "4dbfc228",
    "png": "library-l2-loika-late.png"
   },
   "library-l3-far": {
-   "hash": "e0092312",
+   "hash": "eec829c8",
    "png": "library-l3-far.png"
   },
   "library-l3-far-one-family": {
-   "hash": "03016a95",
+   "hash": "d246de9d",
    "png": "library-l3-far-one-family.png"
   },
   "library-l3-close-moss": {
-   "hash": "67365372",
+   "hash": "ce638b52",
    "png": "library-l3-close-moss.png"
   },
   "library-l3-close-stubs": {
-   "hash": "cfc0f4e4",
+   "hash": "6b01b240",
    "png": "library-l3-close-stubs.png"
   },
   "library-l3-close-bud": {
-   "hash": "6e9a752f",
+   "hash": "2f245148",
    "png": "library-l3-close-bud.png"
   },
   "library-l3-close-fits": {
-   "hash": "705a9712",
+   "hash": "113e8adb",
    "png": "library-l3-close-fits.png"
   },
   "library-l3-close-founder": {
-   "hash": "8932ecc3",
+   "hash": "568b4534",
    "png": "library-l3-close-founder.png"
   },
   "library-l3-close-shedpod": {
-   "hash": "f6c08eab",
+   "hash": "6f953b0b",
    "png": "library-l3-close-shedpod.png"
   },
   "library-l3-compare-dot-moss": {
-   "hash": "2df6f283",
+   "hash": "2541e76c",
    "png": "library-l3-compare-dot-moss.png"
   },
   "library-l3-compare-on-held": {
-   "hash": "72ed18b0",
+   "hash": "032c29bf",
    "png": "library-l3-compare-on-held.png"
   },
   "library-l3-compare-none": {
-   "hash": "6ddac75d",
+   "hash": "5fedd341",
    "png": "library-l3-compare-none.png"
   },
   "library-l1-dither": {
-   "hash": "5cc1ecd4",
+   "hash": "9f87c169",
    "png": "library-l1-dither.png"
   },
   "library-l3-pan-step-1": {
-   "hash": "5ec2bcfc",
+   "hash": "9abf401c",
    "png": "library-l3-pan-step-1.png"
   },
   "library-l3-pan-step-2": {
-   "hash": "7ac224f0",
+   "hash": "a5376de8",
    "png": "library-l3-pan-step-2.png"
   },
   "library-l3-pan-step-3": {
-   "hash": "cfc0f4e4",
+   "hash": "6b01b240",
    "png": "library-l3-pan-step-3.png"
   },
   "library-l3-zoom-in": {
-   "hash": "7dc5743e",
+   "hash": "fc595d76",
    "png": "library-l3-zoom-in.png"
   }
  }
