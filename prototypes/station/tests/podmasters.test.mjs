@@ -43,7 +43,7 @@ test("the rack pod: 24×32, each pixel the fill of the last layer on, transparen
   for (const { name, frame } of cases) {
     const pig = (c) => (c && chips[c.pigment]) || "mist", A = frame ? pig(frame.pod.colourPair[0]) : "stone", B = frame ? pig(frame.pod.colourPair[1]) : "fog", ramp = rampOf(A), rampB = rampOf(B), clan = frame?.taxonomy?.clan, glowChip = { C03: "mint", C20: "lime" }[clan];
     const fill = { body: rgb(A), light: rgb(ramp.light), shade: rgb(ramp.shade), accent: rgb(B), pattern: rgb(B), outline: rgb(ramp.outline), crown: rgb(B), "crown-light": rgb(rampB.light), "crown-shade": rgb(rampB.shade), "crown-outline": rgb(ramp.outline), ...(glowChip ? { "crown-glow": rgb(glowChip) } : {}) };
-    const crown = (suffix) => (clan ? crownMasks[`home-rack-pod-crown-${clan}${suffix}`] : null), crownOn = [];
+    const crown = (suffix) => (clan ? crownMasks[`home-rack-pod-crown-${clan === "C21" ? "C20" : clan}${suffix}`] : null), crownOn = [];
     const patName = frame ? patternLayer(frame.pod.shellPattern || "", patterns) : null, pat = patName ? masks["pattern-" + patName] : null;
     const pic = rackPodFromLayers(frame, L, chips, patterns, P.size), px = pic.rgba();
     assert.deepEqual([pic.w, pic.h], [24, 32], name);
@@ -55,9 +55,8 @@ test("the rack pod: 24×32, each pixel the fill of the last layer on, transparen
       if (px[o + 3]) assert.ok(palette.has([px[o], px[o + 1], px[o + 2]].join()), `${name} pixel ${i} is on the palette`);
     }
     if (!frame) { assert.equal(patName, null, "the unknown pod has no pattern"); assert.equal(crownOn.length, 0, "the unknown pod has no crown"); }
-    else if (crown("")) assert.ok(crownOn.length > 0 && crownOn.some((i) => !on1(masks.body, i)), name + ": the crown is drawn, and stands above the body");   // S20 Tuliko is clan C21 (release 21a): no pod crown is placed for it yet (the art desk owes it), so its pod is drawn without one
-    else assert.equal(clan, "C21", name + ": only the rambler Tuliko lacks a placed crown"), assert.equal(crownOn.length, 0);
-    if (glowChip) assert.ok(crownOn.some((i) => px.slice(i * 4, i * 4 + 3).join() === fill["crown-glow"].join()), name + ": the lit part is " + glowChip);
+    else assert.ok(crownOn.length > 0, name + ": the lid is drawn");   // release 22: the lid is a solid low cap, flush on the pod; Tuliko (clan C21) wears the C20 lid
+    if (glowChip && crown("-glow") && crown("-glow").some((v, k) => k % 4 === 3 && v > 0)) assert.ok(crownOn.some((i) => px.slice(i * 4, i * 4 + 3).join() === fill["crown-glow"].join()), name + ": the lit part is " + glowChip);
     const outlines = new Set(); for (let i = 0; i < W * H; i++) if (on1(masks.outline, i) && !crownOn.includes(i)) outlines.add(px.slice(i * 4, i * 4 + 3).join()); assert.ok(outlines.size <= 1 || patName, name + ": the outline is one colour (a pattern may be drawn under it only)");
   }
   for (const id of loaded.splice(0)) dropAsset(id);
@@ -80,7 +79,7 @@ test("the pod's crown: the clan's crown stands over the pod in the second colour
     for (const clan of ["C01", "C03", "C20"]) {
       const crowned = podFromLayers(cls, pair, "", {}, false, clan), c = crowned.rgba(); let changed = 0, above = 0;
       for (let i = 0; i < c.length; i += 4) if (c[i] !== b[i] || c[i + 1] !== b[i + 1] || c[i + 2] !== b[i + 2] || c[i + 3] !== b[i + 3]) { changed++; if (b[i + 3] === 0) above++; }
-      assert.ok(changed > 0 && above > 0, `${cls} ${clan}: the crown is drawn, partly where the pod is clear`);
+      assert.ok(changed > 0, `${cls} ${clan}: the lid is drawn`);
       assert.deepEqual([crowned.w, crowned.h], [bare.w, bare.h], cls + ": the crown keeps the pod's box");
       assert.equal(ids.includes(`pod-${cls}-crown-${clan}-glow`), clan !== "C01", `${cls} ${clan}: only the lit clans carry a glow layer`);
     }
