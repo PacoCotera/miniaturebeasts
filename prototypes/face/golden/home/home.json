@@ -34,7 +34,7 @@
    "png": "home-focus-companion.png"
   },
   "home-focus-companion-away": {
-   "hash": "c316f7f4",
+   "hash": "147e1ca2",
    "png": "home-focus-companion-away.png"
   },
   "home-focus-bay": {
@@ -54,7 +54,7 @@
    "png": "home-vivarium-all-home.png"
   },
   "home-vivarium-some-away": {
-   "hash": "097f514d",
+   "hash": "7ea47a93",
    "png": "home-vivarium-some-away.png"
   },
   "home-window-dawn": {
@@ -82,7 +82,7 @@
    "png": "home-event-tag.png"
   },
   "home-vivarium-none-home": {
-   "hash": "f175f7be",
+   "hash": "2af3ed24",
    "png": "home-vivarium-none-home.png"
   },
   "home-incubator-empty": {
@@ -118,7 +118,7 @@
    "png": "home-companion-docked.png"
   },
   "home-companion-away": {
-   "hash": "cbf5c33c",
+   "hash": "9bb45552",
    "png": "home-companion-away.png"
   },
   "home-pods-empty": {
