@@ -10,139 +10,139 @@
    "png": "home-rest-goal.png"
   },
   "home-rest-needs": {
-   "hash": "b8face67",
+   "hash": "1b3009f4",
    "png": "home-rest-needs.png"
   },
   "home-focus-vivarium": {
-   "hash": "4da4ca3f",
+   "hash": "701f3330",
    "png": "home-focus-vivarium.png"
   },
   "home-focus-library": {
-   "hash": "f5c632ef",
+   "hash": "f4d192f8",
    "png": "home-focus-library.png"
   },
   "home-focus-pods": {
-   "hash": "23b9f268",
+   "hash": "7791ed33",
    "png": "home-focus-pods.png"
   },
   "home-focus-incubator": {
-   "hash": "2aa73972",
+   "hash": "c9a82381",
    "png": "home-focus-incubator.png"
   },
   "home-focus-companion": {
-   "hash": "dc24bac4",
+   "hash": "bfc7328b",
    "png": "home-focus-companion.png"
   },
   "home-focus-companion-away": {
-   "hash": "0ae26451",
+   "hash": "cdbe6a1d",
    "png": "home-focus-companion-away.png"
   },
   "home-focus-bay": {
-   "hash": "ac86479a",
+   "hash": "edb3c9fc",
    "png": "home-focus-bay.png"
   },
   "home-focus-companion-nosleep": {
-   "hash": "3cd1cbe4",
+   "hash": "76127052",
    "png": "home-focus-companion-nosleep.png"
   },
   "home-focus-settings": {
-   "hash": "3f031177",
+   "hash": "664fbd0d",
    "png": "home-focus-settings.png"
   },
   "home-vivarium-all-home": {
-   "hash": "9c6c0d5a",
+   "hash": "52b9f3a4",
    "png": "home-vivarium-all-home.png"
   },
   "home-vivarium-some-away": {
-   "hash": "4d0a3b16",
+   "hash": "6be07f27",
    "png": "home-vivarium-some-away.png"
   },
   "home-window-dawn": {
-   "hash": "c29e079e",
+   "hash": "551c21da",
    "png": "home-window-dawn.png"
   },
   "home-window-dusk": {
-   "hash": "2a089207",
+   "hash": "cb4fc266",
    "png": "home-window-dusk.png"
   },
   "home-window-night": {
-   "hash": "8735dd71",
+   "hash": "58b5c909",
    "png": "home-window-night.png"
   },
   "home-window-five-of-eight": {
-   "hash": "079f7634",
+   "hash": "06f9e32e",
    "png": "home-window-five-of-eight.png"
   },
   "home-room-reeds": {
-   "hash": "89da61f7",
+   "hash": "e441a2c2",
    "png": "home-room-reeds.png"
   },
   "home-event-tag": {
-   "hash": "c5e367ae",
+   "hash": "46423f90",
    "png": "home-event-tag.png"
   },
   "home-vivarium-none-home": {
-   "hash": "11ada720",
+   "hash": "d9fa4822",
    "png": "home-vivarium-none-home.png"
   },
   "home-incubator-empty": {
-   "hash": "7c4a4243",
+   "hash": "5ca9de81",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-can": {
-   "hash": "0245d6d1",
+   "hash": "b0aa58ab",
    "png": "home-incubator-can.png"
   },
   "home-incubator-growing": {
-   "hash": "52dc8e10",
+   "hash": "0270520a",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-half": {
-   "hash": "b0013e73",
+   "hash": "245f2059",
    "png": "home-incubator-half.png"
   },
   "home-incubator-ready": {
-   "hash": "cf703ac4",
+   "hash": "90291906",
    "png": "home-incubator-ready.png"
   },
   "home-bay-waiting": {
-   "hash": "6e92178a",
+   "hash": "2356d834",
    "png": "home-bay-waiting.png"
   },
   "home-bay-portrait": {
-   "hash": "ca710fb1",
+   "hash": "e28886a7",
    "png": "home-bay-portrait.png"
   },
   "home-companion-docked": {
-   "hash": "1478622d",
+   "hash": "694a40f1",
    "png": "home-companion-docked.png"
   },
   "home-companion-away": {
-   "hash": "8dc9815e",
+   "hash": "abd22371",
    "png": "home-companion-away.png"
   },
   "home-pods-empty": {
-   "hash": "7c4a4243",
+   "hash": "5ca9de81",
    "png": "home-pods-empty.png"
   },
   "home-pods-full": {
-   "hash": "7b165cdf",
+   "hash": "6f5476f1",
    "png": "home-pods-full.png"
   },
   "home-library-0-new": {
-   "hash": "760282c8",
+   "hash": "8fc22f41",
    "png": "home-library-0-new.png"
   },
   "home-library-3-new": {
-   "hash": "4aa2e245",
+   "hash": "cc063640",
    "png": "home-library-3-new.png"
   },
   "home-library-focused": {
-   "hash": "e39248dd",
+   "hash": "d91a8250",
    "png": "home-library-focused.png"
   },
   "home-full-bud": {
-   "hash": "6f9dee42",
+   "hash": "e6163c91",
    "png": "home-full-bud.png"
   }
  }

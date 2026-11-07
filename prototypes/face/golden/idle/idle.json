@@ -2,47 +2,47 @@
  "_note": "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "idle-docked": {
-   "hash": "a996e8d9",
+   "hash": "05d6731f",
    "png": "idle-docked.png"
   },
   "idle-docked-dawn": {
-   "hash": "d21da91d",
+   "hash": "d0415ba9",
    "png": "idle-docked-dawn.png"
   },
   "idle-docked-dusk": {
-   "hash": "d2680e42",
+   "hash": "e98ca597",
    "png": "idle-docked-dusk.png"
   },
   "idle-docked-night": {
-   "hash": "18897591",
+   "hash": "b85833d8",
    "png": "idle-docked-night.png"
   },
   "idle-away": {
-   "hash": "4f696a76",
+   "hash": "c8b971c4",
    "png": "idle-away.png"
   },
   "idle-none": {
-   "hash": "9ad06e3d",
+   "hash": "fa004da5",
    "png": "idle-none.png"
   },
   "idle-empty": {
-   "hash": "d391b9ac",
+   "hash": "7f7f4977",
    "png": "idle-empty.png"
   },
   "idle-meet-reeds": {
-   "hash": "916193bb",
+   "hash": "d4af9f24",
    "png": "idle-meet-reeds.png"
   },
   "idle-room-boulders-night": {
-   "hash": "86a5882b",
+   "hash": "b0b3c446",
    "png": "idle-room-boulders-night.png"
   },
   "idle-walk-8000ms": {
-   "hash": "0f3da68a",
+   "hash": "17b131ff",
    "png": "idle-walk-8000ms.png"
   },
   "idle-night-pip-60000ms": {
-   "hash": "4f70ec5e",
+   "hash": "6120c133",
    "png": "idle-night-pip-60000ms.png"
   }
  }

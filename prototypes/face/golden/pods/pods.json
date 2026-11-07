@@ -54,7 +54,7 @@
    "png": "pods-inventory-forty-pods.png"
   },
   "read, Loika fresh, Coat in hand": {
-   "hash": "59bf544c",
+   "hash": "ae82faac",
    "png": "pods-read-loika-fresh-coat-in-hand.png"
   },
   "read, Face open, unread": {
@@ -74,11 +74,11 @@
    "png": "pods-read-the-crown-detail.png"
   },
   "read, Movement in hand, the sprout": {
-   "hash": "f5255c5e",
+   "hash": "413e79c1",
    "png": "pods-read-movement-in-hand-the-sprout.png"
   },
   "read, not enough Data": {
-   "hash": "7148eeb1",
+   "hash": "fdfc9059",
    "png": "pods-read-not-enough-data.png"
   },
   "read, Tuikis, Shape in hand": {
@@ -86,7 +86,7 @@
    "png": "pods-read-tuikis-shape-in-hand.png"
   },
   "read, a sealed chapter, the pod's reason": {
-   "hash": "5fb158f4",
+   "hash": "62f1e34c",
    "png": "pods-read-a-sealed-chapter-the-pod-s-reason.png"
   },
   "read, a sealed pod, Identify": {
@@ -102,7 +102,7 @@
    "png": "pods-read-the-stamp-view.png"
   },
   "compare": {
-   "hash": "cdd5ef9c",
+   "hash": "19f8dcfc",
    "png": "pods-compare.png"
   },
   "compare, the next chapter the same": {
@@ -110,7 +110,7 @@
    "png": "pods-compare-the-next-chapter-the-same.png"
   },
   "compare, nothing read on both": {
-   "hash": "d347b11d",
+   "hash": "c76bf825",
    "png": "pods-compare-nothing-read-on-both.png"
   },
   "compare, a kin's unread lane glints": {
