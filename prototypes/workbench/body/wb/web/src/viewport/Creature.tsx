@@ -28,9 +28,9 @@ type Rigged = { root: THREE.Group; mesh: THREE.SkinnedMesh; bones: THREE.Bone[];
 export type CreatureProps = { file: Record<string, unknown>; studio: Studio; view: ViewMode; az: number; held: number | null; frame?: Frame; flat?: boolean; onMetrics?: (m: Record<string, number>) => void }
 
 const zoneCache = new Map<string, Promise<THREE.Texture | null>>()
-const zoneFor = (gltf: Gltf, sha: string, palette: string[]) => {
-  const k = `${sha}:${palette.join(',')}`
-  if (!zoneCache.has(k)) zoneCache.set(k, zoneTexture(gltf, palette))
+const zoneFor = (gltf: Gltf, sha: string, palette: [number, number, number][], nearest = false) => {
+  const k = `${sha}:${nearest}:${palette.join(',')}`
+  if (!zoneCache.has(k)) zoneCache.set(k, zoneTexture(gltf, palette, nearest))
   return zoneCache.get(k)!
 }
 
@@ -40,8 +40,12 @@ export function Creature({ file, studio, view, az, held, frame, flat, onMetrics 
   const body = useGLTF(apiPath(sculpt.url), false)
   const partGltfs = useGLTF(partDefs.map((p) => apiPath(p.url!)), false) as unknown as { scene: THREE.Object3D }[]
   const partKey = partGltfs.map((g) => g.scene.uuid).join()
-  const palette = useMemo(() => coatPalette(studio.look), [studio.look])
+  const palette = useMemo(() => coatPalette(studio.look).zones, [studio.look])
   const zone = use(zoneFor(body as unknown as Gltf, sculpt.sha256, palette))
+  // the measurements' views (white, ids) need their own maps; the person's views never ask for them
+  const measure = view === 'white' || view === 'zones'
+  const white = measure ? use(zoneFor(body as unknown as Gltf, sculpt.sha256, coatPalette(studio.look, 'white').zones)) : null
+  const ids = measure ? use(zoneFor(body as unknown as Gltf, sculpt.sha256, coatPalette(studio.look, 'ids').zones, true)) : null
   const { camera, invalidate, size } = useThree()
   const controls = useThree((s) => s.controls) as unknown as { target: THREE.Vector3; update(): void } | null
   const t0 = useRef(performance.now())
@@ -65,7 +69,7 @@ export function Creature({ file, studio, view, az, held, frame, flat, onMetrics 
   }, [body.scene])
   useEffect(() => () => rig.mesh.skeleton.dispose(), [rig])
 
-  const mats = useMemo<Mats>(() => makeMaterials({ eyes: sculpt.stations.eyes, zone, look: studio.look }), [sculpt, zone, studio.look])
+  const mats = useMemo<Mats>(() => makeMaterials({ eyes: sculpt.stations.eyes, zone, white, ids, look: studio.look }), [sculpt, zone, white, ids, studio.look])
   useEffect(() => () => { mats.all.forEach((m) => m.dispose()); mats.textures.forEach((t) => t.dispose()) }, [mats])
 
   const insts = useRef<THREE.Mesh[]>([])

@@ -10,17 +10,17 @@ export type ViewportProps = CreatureProps & { className?: string; style?: React.
 export default function Viewport({ className, style, dpr, capture, ...p }: ViewportProps) {
   return (
     <div className={className} style={style}>
-      <Canvas orthographic frameloop="demand" dpr={dpr ?? [1, 2]} gl={{ antialias: true, preserveDrawingBuffer: !!(capture || p.flat) }} camera={{ near: 0.1, far: 100, position: [3, 2, 10], zoom: 100 }} style={{ touchAction: 'none' }}>
+      <Canvas orthographic flat frameloop="demand" dpr={dpr ?? [1, 2]} gl={{ antialias: true, preserveDrawingBuffer: !!(capture || p.flat) }} camera={{ near: 0.1, far: 100, position: [3, 2, 10], zoom: 100 }} style={{ touchAction: 'none' }}>
         {!p.flat && (
           <>
-            <hemisphereLight args={['#fff8ee', '#8a8f99', 1.1]} />
-            <directionalLight position={[3, 6, 4]} intensity={1.6} />
-            <directionalLight position={[-4, 2, -3]} intensity={0.5} />
+            <hemisphereLight args={['#fff8ee', '#a39787', 2.9]} />
+            <directionalLight position={[3, 6, 4]} color="#fff0dc" intensity={3.9} />
+            <directionalLight position={[-4, 2, -3]} color="#f4e8da" intensity={1.3} />
           </>
         )}
         <Suspense fallback={null}>
           <Creature {...p} />
-          {!p.flat && <ContactShadows position={[0, 0.001, 0]} opacity={0.35} scale={8} blur={2.4} far={3} />}
+          {!p.flat && p.view !== 'zones' && p.view !== 'white' && <ContactShadows position={[0, 0.001, 0]} opacity={0.35} scale={8} blur={2.4} far={3} />}
         </Suspense>
         {!p.flat && <OrbitControls makeDefault enablePan={false} enableDamping={false} minZoom={40} maxZoom={600} />}
       </Canvas>
