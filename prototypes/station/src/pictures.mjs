@@ -7,7 +7,7 @@ import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset,
 import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
 import { gradedOf, grade } from "./light-grade.mjs";
-import { juvenileMirrored, mirrorPic } from "./facing.mjs";
+import { juvenileMirrored, mirrorPic, adultFacing, youngFacing } from "./facing.mjs";
 import { layeredStand, composeStand, standPictureId, standVariant, fitDown, curlPicture, curlOfStand, traitTile, chipId, CHIP_TILE, factorPicture, variantPixels } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
 import { portraitSource, portraitOpening } from "./portrait-source.mjs";
@@ -21,7 +21,8 @@ import { relit } from "./relight.mjs";
 import { specimenFor } from "./specimen-cache.mjs";
 import { renderCell } from "./specimen.mjs";
 import { sheetPicture, renderDisc, sheetKept, keptPictures, warmPaper } from "./library-sheet.mjs";
-import { facePicture } from "./face-pictures.mjs";
+import { facePicture, windowOf } from "./face-pictures.mjs";
+import { placedAt } from "./stands.mjs";
 import { farPicture, miniPicture } from "./lineage-pictures.mjs";
 import { registerReading } from "./reading-pictures.mjs";
 
@@ -204,9 +205,14 @@ export function registerPictures(reqs, env) {
       case "face": {   // a mibi's face for the Library (library.json faces, face-pictures.mjs): from its layered stand through the species' face window, at its size, on libGround; a labelled stand-in where the species has none; its time printed
         // the id names the mibi and the size, not the stage (the art director, F4): a face drawn at another stage than its entry's (a mibi with no portrait that grew) is a new picture, and the old one goes from the face
         const [w, h] = r.size; if (hasAsset(r.id) && FACE_STAGE.get(r.id) === r.stage) break; if (hasAsset(r.id)) { dropAsset(r.id); DROPPED.push(r.id); } FACE_STAGE.set(r.id, r.stage); const spec = SPECS.library.faces, rgb = (n) => RGB[C[n]];
-        const stand = !!spec.windows?.[r.species]?.[r.stage === "elder" ? "adult" : r.stage] && !!layeredStand(r.species, r.stage, [304, 312], "default");
-        registerAsset({ id: r.id, w, h, status: stand ? "derived" : "placeholder", until: stand ? null : "the species' layered stand and the art director's face window", build: () => { let data = null; return { w, h, rgba: () => { if (data) return data;
-          const p = facePicture({ species: r.species, stage: r.stage, looks: r.looks, size: w, faded: !!r.faded }, spec, rgb); console.log(`# face ${r.id}: rendered in ${p.ms.toFixed(0)} ms${p.standIn ? " (the stand-in)" : ""}`); return (data = p.rgba); } }; } });
+        const fstage = r.stage === "elder" ? "adult" : r.stage, mid = `mibi-${fstage === "juvenile" ? "juvenile" : "adult"}-${r.species}-304x312`, aid = `mibi-adult-${r.species}-304x312`;
+        const layered = !!spec.windows?.[r.species]?.[fstage] && !!layeredStand(r.species, r.stage, [304, 312], "default");
+        const painted = !layered && !!spec.windows?.crop?.[r.species] && placedAt(mid, 304, 312) && placedAt(aid, 304, 312);   // release 21d: every face is cut from the kind's painted stand through the art desk's window
+        const stand = layered || painted;
+        registerAsset({ id: r.id, w, h, status: stand ? "derived" : "stand-in", until: stand ? null : "the kind's painted stand and the art desk's face window", build: () => { let data = null; return { w, h, rgba: () => { if (data) return data;
+          const rq = { species: r.species, stage: r.stage, looks: r.looks, size: w, faded: !!r.faded };
+          if (painted) { const pm = assetOf(mid), pa = assetOf(aid), px = (p) => ({ w: p.w, h: p.h, rgba: p.rgba() }); rq.art = pm.rgba(); rq.window = windowOf(r.species, fstage, spec, px(pa), px(pm), adultFacing(r.species) === youngFacing(r.species)); }
+          const p = facePicture(rq, spec, rgb); console.log(`# face ${r.id}: rendered in ${p.ms.toFixed(0)} ms${p.standIn ? " (the stand-in)" : ""}`); return (data = p.rgba); } }; } });
         break;
       }
       case "lineagefar": case "lineagemini": {   // Level 3's pictures (lineage-pictures.mjs: the whole lineage at FAR, and the same drawing reduced for CLOSE's inset): made once by id (the digest of what they draw) when the face first

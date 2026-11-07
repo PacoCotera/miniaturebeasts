@@ -360,6 +360,9 @@
   "ticks": { "sizes": [40, 56, 64], "arm": 3, "colour": "fog" },
   "faded": { "keep": 0.38, "ground": "libGround" },
   "rule": "each size is rendered straight from the mibi's own picture (the layered stand's variant for its drawn looks) through the species' face window onto libGround; a 1 px libLine frame, the fog corner ticks at 40, 56 and 64 only; :faded is round(0.38 p + 0.62 libGround) per sRGB channel, frame included; opaque. Never one size faded and scaled to another. A species with no layered stand gets a labelled stand-in",
-  "windows": { "_note": "the art director's face windows, [x, y, side] in the 304 x 312 art's pixels, a square, transparent where it passes the art's edge (the layered stands only)", "retired": "S01 had the one window (adult [16, 6, 184], juvenile [124, 101, 118]); it went with the layered stand in release 21a, so every face is cut from its painted stand" }
+  "windows": { "_note": "the art director's face windows, [x, y, side] in the 304 x 312 art's pixels, a square, transparent where it passes the art's edge (the layered stands only)", "retired": "S01 had the one window (adult [16, 6, 184], juvenile [124, 101, 118]); it went with the layered stand in release 21a, so every face is cut from its painted stand",
+    "crop": { "S01": [81, 150, 150], "S02": [234, 178, 150], "S03": [247, 103, 150], "S04": [242, 78, 96], "S05": [247, 110, 130], "S06": [52, 205, 150], "S07": [251, 111, 120], "S08": [253, 175, 105], "S09": [253, 115, 135], "S10": [240, 192, 145], "S11": [246, 201, 118], "S12": [232, 191, 118], "S13": [229, 165, 140], "S14": [252, 193, 150], "S15": [262, 153, 120], "S16": [229, 152, 138], "S17": [181, 161, 90], "S18": [217, 183, 84], "S19": [243, 89, 116], "S20": [260, 152, 125] },
+    "flipped": ["S01", "S06"],
+    "cropNote": "release 21d: the art desk's face crops of the adult 304 stand as painted (centre x, centre y, side; game-art tool/scripts/faces.py CROP); a kind placed mirrored (flipped) has its centre x turned over; a young's window is carried over by the figure boxes (0.8 of the adult on the same ground)" }
  }
 }

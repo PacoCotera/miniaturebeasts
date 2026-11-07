@@ -1,10 +1,10 @@
 {
  "schema": "mb-masters/1",
  "juvenileFacing": {
-  "note": "Which way each species' adult and juvenile stands face as the masters are painted, and whether the juvenile is drawn mirrored so the young faces the opposite way from its adult (owner, 1 Nov 2026). The master files are never edited: the loader (station/src/masters.mjs) reads each mibi-juvenile-SNN-* master of a mirrored species with its rows reversed, so every stand, sleeper and thumbnail of the young shows mirrored. The Home walk reads the unmirrored stand (its facing comes from the set's native side). Redone 6 Nov 2026 (release 21c) from the twenty kinds' new paintings, measured by eye on the placed 96x88 masters: every kind faces the same way as its young, and the young of all twenty is painted facing the way its adult does, so all twenty are drawn mirrored; S12, S17 and S18 are near front views and are called by the turn of the head. Pesko S06 was painted facing left; its adult and young are placed mirrored (tools/game-masters.mjs FLIPPED), so it faces right like the rest.",
+  "note": "Which way each species' adult and juvenile stands face as the masters are painted, and whether the juvenile is drawn mirrored so the young faces the opposite way from its adult (owner, 1 Nov 2026). The master files are never edited: the loader (station/src/masters.mjs) reads each mibi-juvenile-SNN-* master of a mirrored species with its rows reversed, so every stand, sleeper and thumbnail of the young shows mirrored. The Home walk reads the unmirrored stand (its facing comes from the set's native side). Redone 6 Nov 2026 (release 21c) from the twenty kinds' new paintings, measured by eye on the placed 96x88 masters: every kind faces the same way as its young, and the young of all twenty is painted facing the way its adult does, so all twenty are drawn mirrored; S12, S17 and S18 are near front views and are called by the turn of the head. Pesko S06 was painted facing left; its adult and young are placed mirrored (tools/game-masters.mjs FLIPPED), so it faces right like the rest. Loika S01's adult pictures are placed mirrored too (FLIPPED_ADULT), so the adult faces right; its young is painted facing left and drawn mirrored, so it faces right as it always did (the one kind whose young is not painted the adult's way).",
   "species": {
    "S01": {
-    "adult": "left",
+    "adult": "right",
     "juvenile": "left",
     "mirror": true
    },
@@ -355,7 +355,7 @@
    "file": "pods/bud-shape-S01-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "dcc3e1719a6f1497a173afb04fd0a22d3422717d5d7c0509d94cc92d9e3eb13b",
+   "sha256": "788d906b4ac965f9f32c04f294c154cca27ea99c2d8f7d8d59294709d3133d7f",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S01-loika/bud-shape-S01-112x112.png"
   },
@@ -3158,7 +3158,7 @@
    "file": "pods/mibi-adult-S01-144x152.png",
    "w": 144,
    "h": 152,
-   "sha256": "38afa662dfc3fdf10978219a5ba9e8b1f008ec5d8a5b4b7c490f9b3806d2dc82",
+   "sha256": "0944e0e5c4ce9a6a674522bdae67aee6347d9396fa9e5f246b4537cb1dc19d55",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S01-loika/mibi-adult-S01-144x152.png"
   },
@@ -3166,7 +3166,7 @@
    "file": "pods/mibi-adult-S01-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "de66a71e4d7e3047dc135d646eea24f586ae122b91c556b68b2445821b620ef5",
+   "sha256": "e607fefef8df0b1e962792a3da27b35341d4f2049801a0503537fd0afc741c90",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/boards/visual-language/stands/stand-S01-loika-304x312.png"
   },
@@ -3174,7 +3174,7 @@
    "file": "pods/mibi-adult-S01-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "b6a306f0d24e5d5d38743aa7168b8d154e5ac64cf7fd82482aaff77b49dabcc2",
+   "sha256": "950b310c1a27319de43b54a442b6e360e55b0eaad01fb712a2c3698136b841e0",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/boards/visual-language/stands/stand-S01-loika-48x48.png"
   },
@@ -3182,7 +3182,7 @@
    "file": "pods/mibi-adult-S01-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "34aa581cc8cf129631fad481671959763e45af9ced131382d377486f6335c791",
+   "sha256": "3d9ae582dc143412d6ec2b454cf98e97a52776d45712cf9ea3d0ace7051d4aa8",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/boards/visual-language/stands/stand-S01-loika-96x88.png"
   },
@@ -3190,7 +3190,7 @@
    "file": "pods/mibi-adult-S01-curl-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "6125e7d24cda7bd2bef7f0835ec121c460cff2fe71211d1d70e446ee7f403bc4",
+   "sha256": "88fab8e705b28a6f9ce50070f5be1c838c3feec0a486ad8ee4349d514b24f5a1",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g1-S01-loika-asleep-304x312.png"
   },
@@ -3998,7 +3998,7 @@
    "file": "pods/mibi-halo-S01-128x160-clear.png",
    "w": 128,
    "h": 160,
-   "sha256": "fec0d6bf2b96b84da1f78f812d9677dd8e42dcdd058bff53188db6cdd0e8aa95",
+   "sha256": "ea5d3ad1be16446330dbacdd8b5722b065d7ee83da1302ef263fd1c7ee111309",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S01-loika/mibi-halo-S01-128x160-clear.png"
   },
@@ -4006,7 +4006,7 @@
    "file": "pods/mibi-halo-S01-128x160-mist.png",
    "w": 128,
    "h": 160,
-   "sha256": "6cc0ce7ff549227bc2cd5d458a4219b93917c2be077eaaa6c61ba8025bf912a8",
+   "sha256": "d696946860d723d6d96d6a2e424f9cefcee7101b8017a02213b7a53d02df14a9",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S01-loika/mibi-halo-S01-128x160-mist.png"
   },
@@ -4950,7 +4950,7 @@
    "file": "pods/mibi-juvenile-S16-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "0343a55c61287ef294c9649600e26057678e76c75cd7df235904426cee53f45d",
+   "sha256": "8533caa6202d38383e09f33af1137d644b6fdb00a21bd73b582199e6ca1d5e47",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S16-blikur/mibi-juvenile-S16-104x112.png"
   },
@@ -4958,7 +4958,7 @@
    "file": "pods/mibi-juvenile-S16-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "848516213bbd001af591e7b34cfdb0252efdbd2c952711b0af5bc84eda3532ec",
+   "sha256": "87bb58d6303e2a52279c40576ca141999605d7e90e441736b1e9fb4aee73f3f9",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g5-S16-blikur-juv-304x312.png"
   },
@@ -4966,7 +4966,7 @@
    "file": "pods/mibi-juvenile-S16-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "11a604994a24d736315dcc8d69af09ac5029aff1132a07a370e9e83c12f56ca1",
+   "sha256": "74e5f4ce65f75effe7ef42e852e63293f4a12903f87993a63e1951d0dd1e5ea8",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g5-S16-blikur-juv-48x48.png"
   },
@@ -4974,7 +4974,7 @@
    "file": "pods/mibi-juvenile-S16-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "b21b7878e1d67a8dd23aec177d33e814c61d54b79ceb51c0addac9354a615e65",
+   "sha256": "578dc95ac40791f78dd155ba54afbe3e1b0bf244892951cd43fa34f716f41c2e",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/cut/g5-S16-blikur-juv-96x88.png"
   },
@@ -12191,7 +12191,7 @@
    "file": "pods/spread-plate-S01-80x96.png",
    "w": 80,
    "h": 96,
-   "sha256": "7a15f18d426e5036a0fa9d704f90e105b3cd0396f39f0a951b602b3dfc48b237",
+   "sha256": "023e745d480ad4934decbaa30dc2c7abaa3cc356124567763ac5ee5e625744f4",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S01-loika/spread-plate-S01-80x96.png"
   },

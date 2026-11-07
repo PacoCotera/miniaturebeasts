@@ -68,6 +68,20 @@ const dimsOf = (buf) => [buf.readUInt32BE(16), buf.readUInt32BE(20)];
 // The kinds whose painted figures are turned over as they are placed, so the whole roster faces right (art desk R21c-3: Pesko S06 was painted facing left). Every figure picture of the kind is mirrored
 // (adult, young, asleep, poses, halos, bud, plate); the chips, faces and marks are not figures.
 export const FLIPPED = new Set(["S06"]);
+// Loika S01: only its adult pictures are mirrored (its young already faces right as it is drawn: painted left, drawn mirrored), art desk 2026-11-06.
+export const FLIPPED_ADULT = new Set(["S01"]);
+// Blikur S16's young floats above its shadow in the cut: its contact shadow is lifted to sit right under the feet, in every picture of the young.
+export const GROUNDED = new Set(["S16"]);
+// the picture with every row below the figure (alpha >= ALPHA) moved up so the first shadow row is the row under the feet
+export function liftShadow({ w, h, data }) {
+  let bottom = -1; for (let y = h - 1; y >= 0 && bottom < 0; y--) for (let x = 0; x < w; x++) if (data[(y * w + x) * 4 + 3] >= ALPHA) { bottom = y; break; }
+  let first = -1; for (let y = bottom + 1; y < h && first < 0; y++) for (let x = 0; x < w; x++) if (data[(y * w + x) * 4 + 3] > 0) { first = y; break; }
+  if (bottom < 0 || first < 0 || first - bottom - 1 < 1) return { w, h, data };
+  const gap = first - bottom - 1, o = new Uint8Array(data); o.fill(0, (bottom + 1) * w * 4);
+  for (let y = first; y < h; y++) o.set(data.subarray(y * w * 4, (y + 1) * w * 4), (y - gap) * w * 4);
+  return { w, h, data: o };
+}
+const liftBuf = (buf) => { const im = decodePNG(buf), f = liftShadow({ w: im.width, h: im.height, data: im.data }); return encodePNG(f.w, f.h, f.data); };
 export const flipPic = ({ w, h, data }) => { const o = new Uint8Array(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) o.set(data.subarray((y * w + x) * 4, (y * w + x) * 4 + 4), (y * w + (w - 1 - x)) * 4); return { w, h, data: o }; };
 const flipBuf = (buf) => { const im = decodePNG(buf), f = flipPic({ w: im.width, h: im.height, data: im.data }); return encodePNG(f.w, f.h, f.data); };
 
@@ -80,9 +94,9 @@ export function planGame({ work, mbRoot = "/home/mb/mb" }) {
   const cut = (rel, size) => path.join(mbRoot, rel.replace("304x312.png", size + ".png"));
   const pair = (k, name, adultKey, juvKey, adultId, juvId, sizes, advance) => {   // an adult picture as delivered; its juvenile rescaled to 0.8 of it
     for (const size of sizes) {
-      const af = cut(rows[k][adultKey], size), jf = cut(rows[k][juvKey], size), fl = FLIPPED.has(k), ab = fl ? flipBuf(read(af)) : read(af), A = fl ? flipPic(pic(af)) : pic(af), J = fl ? flipPic(pic(jf)) : pic(jf);
+      const af = cut(rows[k][adultKey], size), jf = cut(rows[k][juvKey], size), fl = FLIPPED.has(k) || FLIPPED_ADULT.has(k), fj = FLIPPED.has(k), ab = fl ? flipBuf(read(af)) : read(af), A = fl ? flipPic(pic(af)) : pic(af), J = fj ? flipPic(pic(jf)) : pic(jf);
       add(adultId.replace("{size}", size), ab, af.replace(mbRoot + "/", ""));
-      const r = rescaleJuvenile(A, J); add(juvId.replace("{size}", size), encodePNG(r.pic.w, r.pic.h, r.pic.data), jf.replace(mbRoot + "/", ""));
+      const r = rescaleJuvenile(A, J), jp = GROUNDED.has(k) ? liftShadow(r.pic) : r.pic; add(juvId.replace("{size}", size), encodePNG(jp.w, jp.h, jp.data), jf.replace(mbRoot + "/", ""));
       report.push({ kind: k, what: name, size, before: r.before, after: r.after, scale: r.scale }); void advance;
     }
   };
@@ -94,11 +108,11 @@ export function planGame({ work, mbRoot = "/home/mb/mb" }) {
       if (rows[k][a]) pair(k, name, a, j, `mibi-adult-${k}-${name}-{size}`, `mibi-juvenile-${k}-${name}-{size}`, ["304x312"]);
     // the tool pass: as delivered, except the 104x112 young, checked against the 144x152 adult and rescaled where it is off by more than 3 %
     const t = (f) => path.join(tool, d, f), rel = (f) => path.relative(mbRoot, t(f));
-    const fl = FLIPPED.has(k), fb = (b) => (fl ? flipBuf(b) : b);
+    const fb = (b) => (FLIPPED.has(k) || FLIPPED_ADULT.has(k) ? flipBuf(b) : b), fbj = (b) => { const m = FLIPPED.has(k) ? flipBuf(b) : b; return GROUNDED.has(k) ? liftBuf(m) : m; };
     const a144 = pic(t(`mibi-adult-${k}-144x152.png`)), j104 = pic(t(`mibi-juvenile-${k}-104x112.png`)), box = figureBox(j104), boxA = figureBox(a144), ratio = (box[3] - box[1] + 1) / (boxA[3] - boxA[1] + 1);
     add(`mibi-adult-${k}-144x152`, fb(read(t(`mibi-adult-${k}-144x152.png`))), rel(`mibi-adult-${k}-144x152.png`));
     // the 104x112 slot cannot hold 0.8 of the 144x152 adult's figure (about 112 px in a 112 px slot): placed as delivered, its measured ratio listed for the lead (never rescaled, never tested)
-    add(`mibi-juvenile-${k}-104x112`, fb(read(t(`mibi-juvenile-${k}-104x112.png`))), rel(`mibi-juvenile-${k}-104x112.png`)); report.push({ kind: k, what: "104x112", size: "104x112", before: ratio, after: ratio, scale: 1, slot: true });
+    add(`mibi-juvenile-${k}-104x112`, fbj(read(t(`mibi-juvenile-${k}-104x112.png`))), rel(`mibi-juvenile-${k}-104x112.png`)); report.push({ kind: k, what: "104x112", size: "104x112", before: ratio, after: ratio, scale: 1, slot: true });
     for (const f of [`mibi-halo-${k}-128x160-clear`, `mibi-halo-${k}-128x160-mist`, `bud-shape-${k}-112x112`, `spread-plate-${k}-80x96`, `face-${k}-24`, `mark-species-${k}-24x24`, `species-mark-${k}-15`, `species-mark-${k}-10`]) add(f, /^(mibi-halo|bud-shape|spread-plate)/.test(f) ? fb(read(t(f + ".png"))) : read(t(f + ".png")), rel(f + ".png"));
     for (const sz of CHIP_SIZES) {
       for (const [lay, to] of Object.entries(LAYOUTS)) add(`trait-${k}-markings-${to}-${sz}`, read(t(`trait-${k}-coat-${lay}-${sz}.png`)), rel(`trait-${k}-coat-${lay}-${sz}.png`));
