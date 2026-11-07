@@ -4670,7 +4670,7 @@ function drawPatch(t) {
   g.restore(); RT.remap = REMAP;
 }
 // Which half of its tween a thing is in while it moves (0 or 1), or -1 when it is not moving: motion on, now inside the tween's duration, the target differing from the start.
-const stepHalf = o => o && motion() && NOW - o.at < o.dur && (o.tx !== o.fx || o.ty !== o.fy) ? ((NOW - o.at) * 2 >= o.dur ? 1 : 0) : -1;
+function stepHalf(o) { return o && motion() && NOW - o.at < o.dur && (o.tx !== o.fx || o.ty !== o.fy) ? ((NOW - o.at) * 2 >= o.dur ? 1 : 0) : -1; }
 const CR_MOVING = ['idle', 'seek', 'approach', 'flee', 'watch'];   // the states a creature steps in
 function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   const m = motion(), fr = m ? Math.floor(t * 2.4 + c.id * .37) % 2 : 0;
