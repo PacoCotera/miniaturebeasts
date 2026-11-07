@@ -63,7 +63,7 @@ export const speciesOne = (id: string) => queryOptions({ queryKey: ['species', i
 export type SaveAnswer = Edit & { changed: { path: string; old: unknown; new: unknown }[] }
 export const patchSpecies = (id: string, ops: unknown[]) => call<SaveAnswer>('PATCH', `/api/species/${encodeURIComponent(id)}`, ops)
 export const renderViews = (id: string, mode: string) => call('POST', `/api/species/${encodeURIComponent(id)}/jobs`, { kind: 'render', args: { modes: [mode], az: [0, 32, 90, 180], sizes: [304, 608] } })
-export const casUrl = (key: string) => apiPath(`/cas/${key}.png`)
+export const casUrl = (key: string) => apiPath(`/cas/${key}.webp`)
 export type JobAnswer = { id: string; state: string; error?: string; result?: { views?: { mode: string; az: number; size: number; key: string }[] } }
 export const postJob = (id: string, kind: string, args: unknown) => call<JobAnswer>('POST', `/api/species/${encodeURIComponent(id)}/jobs`, { kind, args })
 export const getJob = (jid: string, wait = 20) => call<JobAnswer>('GET', `/api/jobs/${jid}?wait=${wait}`)

@@ -23,14 +23,28 @@ if BODY not in sys.path:
     sys.path.insert(0, BODY)
 
 import checks as CH
-from wb import cas as C, facade as F, hashing as H, jobs as J, keys as K, report as R, store as S
+from wb import cas as C, facade as F, hashing as H, jobs as J, keys as K, report as R, store as S, webp as WP
 from wb.store import ApiError
 
 STATIC_APP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "app")
 CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
 PREFIX = "/studio"
 IMMUTABLE = "private, max-age=31536000, immutable"                  # a picture fetched behind the login must never be kept by a shared cache
-CT = {"woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
+KEEPALIVE_IDLE = 180
+
+
+def accepted_encodings(header):
+    """The content codings an Accept-Encoding header allows (q=0 refuses)."""
+    out = set()
+    for part in (header or "").split(","):
+        name, _, params = part.strip().partition(";")
+        q = re.search(r"q=([0-9.]+)", params)
+        if name and (not q or float(q.group(1) or 0) > 0):
+            out.add(name.strip().lower())
+    return out
+
+
+CT = {"webp": "image/webp", "woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
 
 
 def strip_prefix(path):
@@ -1626,7 +1640,7 @@ def make_handler(srv):
     class H_(BaseHTTPRequestHandler):
         server_version = "wb/1"
         protocol_version = "HTTP/1.1"          # a browser revalidates an ETag only over HTTP/1.1 (measured); every answer below carries a Content-Length, and the event stream closes its connection
-        timeout = 120                          # an idle kept-alive connection is closed after two minutes
+        timeout = KEEPALIVE_IDLE               # an idle kept-alive connection is closed after three minutes: after the site proxy's two-minute upstream keepalive, so the proxy never reuses a connection we just closed (a rare 502)
 
         def log_message(self, fmt, *a):
             print(f"{S.now()} {self.address_string()} {fmt % a}", file=sys.stderr)
@@ -1864,11 +1878,16 @@ def make_handler(srv):
                 return self.send_json([])
             if p == "/events":
                 return self.events(q.get("species", [None])[0])
-            m = re.fullmatch(r"/cas/([0-9a-f]+)\.(png|json|glb)", p)
+            m = re.fullmatch(r"/cas/([0-9a-f]+)\.(png|webp|json|glb)", p)
             if m:
                 key, ext = m.groups()
+                if ext == "webp" and not srv.cas.has(key, "webp") and srv.cas.has(key, "png"):
+                    try:
+                        WP.png_to_webp(srv.cas.path(key, "png"), srv.cas.path(key, "webp"))     # the lossless twin, made on the first ask and kept beside the PNG
+                    except ValueError:
+                        raise ApiError(404, "this picture has no WebP twin (not an 8-bit PNG)", "key")
                 path = srv.cas.path(key, ext) if srv.cas.has(key, ext) else None
-                if path is None and ext == "glb":                   # a studio GLB is addressed by the sha pinned in its sidecar and found in the code's own species_v1 (or WB_SCULPT_CACHE), never copied into the cache
+                if path is None and ext == "glb":                   # a studio GLB is addressed by the sha pinned in its sidecar and found in the code's own species_v1 (or WB_SCULPT_CACHE), never copied into the cache; served as is (already compressed), immutable, no gzip
                     import meshsource as MS
                     path = MS.studio_glb(key)
                 if path is None:
@@ -1894,10 +1913,17 @@ def make_handler(srv):
                 raise ApiError(404, "not found", None)
             if not is_file:
                 full = os.path.join(srv.static, "index.html")
-            with open(full, "rb") as fh:
+            sibs = [(e, full + ext) for e, ext in (("br", ".br"), ("gzip", ".gz")) if os.path.isfile(full + ext)]    # precompressed by the build
+            taken = accepted_encodings(self.headers.get("Accept-Encoding"))
+            enc, path = next(((e, f) for e, f in sibs if e in taken), (None, full))
+            with open(path, "rb") as fh:
                 data = fh.read()
             self.send_response(200)
             self.send_header("Content-Type", CT.get(full.rsplit(".", 1)[-1], "application/octet-stream"))
+            if enc:
+                self.send_header("Content-Encoding", enc)
+            if sibs:
+                self.send_header("Vary", "Accept-Encoding")
             self.send_header("Content-Length", str(len(data)))
             self.send_header("Cache-Control", IMMUTABLE if p.startswith("/assets/") else "no-cache")
             self.send_header("Content-Security-Policy", CSP)

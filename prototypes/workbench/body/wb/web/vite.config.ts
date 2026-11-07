@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { createHash } from 'node:crypto'
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
+import { brotliCompressSync, constants, gzipSync } from 'node:zlib'
 
 const here = import.meta.dirname
 
@@ -38,9 +39,30 @@ const buildJson = () => ({
   },
 })
 
+// Precompressed siblings (<file>.br and <file>.gz) for every text asset, so the server sends bytes it never has to compress. woff2 and images are already compressed.
+const COMPRESSIBLE = /\.(js|css|html|svg)$/
+const precompress = () => ({
+  name: 'precompress',
+  closeBundle() {
+    const out = join(here, '../static/app')
+    const walk = (d: string) => {
+      for (const n of readdirSync(d)) {
+        const p = join(d, n)
+        if (statSync(p).isDirectory()) walk(p)
+        else if (COMPRESSIBLE.test(n)) {
+          const raw = readFileSync(p)
+          writeFileSync(p + '.br', brotliCompressSync(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 11, [constants.BROTLI_PARAM_SIZE_HINT]: raw.length } }))
+          writeFileSync(p + '.gz', gzipSync(raw, { level: 9 }))
+        }
+      }
+    }
+    walk(out)
+  },
+})
+
 export default defineConfig({
   base: '/studio/',
-  plugins: [react(), tailwindcss(), buildJson()],
+  plugins: [react(), tailwindcss(), buildJson(), precompress()],
   resolve: { alias: { '@': join(here, 'src') } },
   build: {
     outDir: '../static/app', emptyOutDir: true, sourcemap: false, target: 'es2022',
