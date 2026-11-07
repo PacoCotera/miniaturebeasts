@@ -338,7 +338,7 @@ test("Home's starts (R4b-1b, home.json regions.resident.walk.start): five shown 
   }
 });
 test("the away frame: 64 x 64 at (556, 352), a panel ground and a hairline edge, the first mibi out on a trip at its world size bottom-centred, the caption 'away' in frost centred under it at y 418; with nobody away there is none", { skip }, async () => {
-  const sc = homeScene({ adults: 4, docked: false, carry: [1, 2] }); sc.props.regions.glass.away.figure = [47, 105, 49, 43];   /* an adult's figure as the host measures it: [dx, dy, W, H] in its 144 x 152 picture (the Node test has no layered stand to measure) */
+  const sc = homeScene({ adults: 4, docked: false, carry: [1, 2] }); sc.props.regions.glass.away.figure = [4, 2, 40, 44];   /* the figure as the host measures it: [dx, dy, W, H] in the kind's own 48 x 48 stand (the Node test has no layered stand to measure) (release 21d) */
   const f = await bootScene(sc, { motion: false, dir: node }), fr = homeSpec.regions.away;
   assert.deepEqual([fr.rect, fr.fill, fr.edge, fr.caption.colour, fr.caption.y, fr.caption.centre], [[556, 352, 64, 64], "panel", "hairline", "frost", 418, 588]);
   assert.deepEqual(box(f, "away"), [556, 352, 64, 64]); assert.deepEqual(box(f, "away.et"), [556, 352, 64, 1]); assert.deepEqual(box(f, "away.el"), [556, 352, 1, 64]);
@@ -346,7 +346,7 @@ test("the away frame: 64 x 64 at (556, 352), a panel ground and a hairline edge,
   assert.ok(fg && fg[0] >= 557 && fg[0] + fg[2] <= 619 && fg[1] + fg[3] === 352 + 63, `the figure ${fg}: bottom-centred inside the edge`); assert.equal(Math.abs((fg[0] + fg[2] / 2) - 588) <= 1, true, "centred");
   const cap = box(f, "away.caption"), lg = logOf(f); assert.ok(Math.abs(cap[0] + cap[2] / 2 - 588) <= 1 && cap[1] >= 418 && cap[1] < 418 + 20, `the caption ${cap}`); assert.ok(typeIn(lg, "away").some((t) => t.text === "away" && t.px === 16));
   const none = await bootScene(homeScene({ adults: 4 }), { motion: false, dir: node }); assert.equal(box(none, "away"), null, "docked: no frame");
-  const first = homeScene({ adults: 4, docked: false, carry: [2, 1] }); assert.equal(first.props.regions.glass.away.picture.includes("144x152"), true);
+  const first = homeScene({ adults: 4, docked: false, carry: [2, 1] }); assert.equal(first.props.regions.glass.away.picture.includes("48x48"), true);
 });
 test("the event tag is the house name tag on that mibi only, at feetY + 16 (flipped over the figure past the window's foot), no lift; nobody else has one", { skip }, async () => {
   const sc = homeScene({ adults: 3, juveniles: 1, ui: { meet: 4 } }), f = await bootScene(sc, { motion: false, dir: node }), id = String(sc.st.mibis[3].id), W = sc.props.regions.residents;
