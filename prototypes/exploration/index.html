@@ -2260,6 +2260,7 @@ function shedPod(c, X) {
   const id = 'p' + (S.nextId++);
   const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
   S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
+  if (how === 'dig') (X.live.holes = X.live.holes || []).push({ x: p.x, y: p.y, g: groundName(X.lay.land, X.lay.cave), at: NOW });   // the Rupar's fresh hole stays for the expedition
   const w = crById.get(c.id); if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
   fxGlint(p.x, p.y, 200);
@@ -3199,6 +3200,60 @@ function stoneArt(lit, cave, fr, warm) {
     return pb; });
 }
 function holeArt(glint) { return art('hole' + glint, () => { const pb = new PB(32, 32); pb.ell(16, 19, 10, 6, C.bark, { sh: [C.clay, C.soil] }); pb.ell(16, 20, 7.5, 4, C.void); if (glint) pb.rect(17, 20, 2, 2, C.yellow); return pb; }); }
+// Rupar fresh hole (art desk 2026-11-07, mibi-art 0f21d0919, L2b F10): pasted from the desk's patch.js, drawn with the page's own PB and art(); wired in shedPod, drawPatch and warnPicPlace.
+const HOLE_DX = -4, HOLE_FRESH_MS = 450;
+const HOLE_BARE = { rock: 1, cave: 1 };
+const HOLE_KEY = { K: 'ink', S: 'soil', B: 'bark', C: 'clay', A: 'sand', F: 'forest', L: 'leaf', G: 'grass', P: 'sprout' };
+// rows 12..31 of the piece, one character a pixel ('.' clear); [frame 0 (earth in the air), frame 1 (settled)]
+const HOLE_ROWS = [[
+  '..............................B.........',
+  '.....................................C..',
+  '........................................',
+  '.................................C......',
+  '.................................S......',
+  '........................................',
+  '.....P.G.......GP...................BC..',
+  '.....LGL.......LS.......................',
+  '......SBCACCA.CAACCAC.........AA........',
+  '....BCKKKKKBKKKKKKKKKCC.......ACCA......',
+  '.P.BKKKKKKKSKKKKKKKKKKC.....ACCACB......',
+  'LPGBKKKKKKKKKKKKKKKKKKKC...ACBCCACB.....',
+  '.SBKKKKKKKKKKKKKKKSSSSSCA.ACCSACCAB.....',
+  '..BKKKKKKKSSSSSSSSSSSSCCACCCBACCBCBB....',
+  '..BSSSSSSSSSSSSSSSSSBCCCBBBCCBBCBBBS....',
+  'P..BCASSSSSSSSSSBBBCACBCSSBBSBBSBS......',
+  '.LS.BACAACCACAACACAACBS..SS.SS.S........',
+  '.....BBCBBBBCBBBCBBBB...................',
+  '.......SBSSBBSSBSSB.....................',
+  '........................................',
+], [
+  '........................................',
+  '........................................',
+  '........................................',
+  '........................................',
+  '........................................',
+  '........................................',
+  '.....P.G.......GP.......................',
+  '.....LGL.......LS.......................',
+  '......SBCACCA.CAACCAC.........AA........',
+  '....BCKKKKKBKKKKKKKKKCC.......ACCA......',
+  '.P.BKKKKKKKSKKKKKKKKKKC.....ACCACB..C...',
+  'LPGBKKKKKKKKKKKKKKKKKKKC...ACBCCACB.S...',
+  '.SBKKKKKKKKKKKKKKKSSSSSCA.ACCSACCAB.....',
+  '..BKKKKKKKSSSSSSSSSSSSCCACCCBACCBCBB....',
+  '..BSSSSSSSSSSSSSSSSSBCCCBBBCCBBCBBBS....',
+  'P..BCASSSSSSSSSSBBBCACBCSSBBSBBSBS...CB.',
+  '.LS.BACAACCACAACACAACBS..SS.SS.S........',
+  '.....BBCBBBBCBBBCBBBB...................',
+  '...C...SBSSBBSSBSSB..............B......',
+  '........................................',
+]];
+function freshHoleArt(fr, bare) {
+  return art('fhole' + fr + (bare ? 'b' : ''), () => { const pb = new PB(40, 32);
+    HOLE_ROWS[fr].forEach((r, j) => { for (let i = 0; i < r.length; i++) { const ch = r[i], k = HOLE_KEY[ch]; if (k && !(bare && 'FLGP'.includes(ch))) pb.set(i, 12 + j, C[k]); } });
+    return pb; });
+}
+const holeFrame = h => { const a = NOW - (h.at || 0); return motion() && a >= 0 && a < HOLE_FRESH_MS ? 0 : 1; };
 const NEST = () => art('nest', () => { const pb = new PB(32, 32); pb.ell(16, 20, 8, 5, C.forest);
   for (let i = 0; i < 10; i++) { const a = i * .63; pb.line(16 + Math.cos(a) * 7, 20 + Math.sin(a) * 4.5, 16 + Math.cos(a + .5) * 11, 20 + Math.sin(a + .5) * 6.5, i % 2 ? C.clay : C.bark); } return pb; });
 function mushArt(fr) { return art('mush' + fr, () => { const pb = new PB(32, 32);
@@ -4619,6 +4674,8 @@ function drawPatch(t) {
     else if (f.kind === 'g') blit(burrowArt(!!burrowOpen()), SX(x), SY(y), rm);
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), SX(x) + 9, SY(y) + 8 + fr, tileLight(f.x, f.y)); }
   }
+  for (const h of live.holes || []) { const x = h.x * ts, y = h.y * ts; if (!vis2(x, y) || !see(h.x, h.y)) continue;   // the Rupar's fresh hole, a ground mark
+    blit(freshHoleArt(holeFrame(h), HOLE_BARE[h.g]), SX(x) + HOLE_DX, SY(y), spriteRm(h.x, h.y)); }
   // y-sorted sprites
   const items = [];
   for (const f of lay.feats) if (f.tree === 'hollow' && see(f.x, f.y) && live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1))   // a shy one in a hollow trunk: the hole's one glint, in the trunk's opening
@@ -5092,6 +5149,7 @@ function warnPicPlace(x0, y0, a) {
     else if (f.kind === 'g') blit(burrowArt(!!burrowOpen()), x0, y0);
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), x0 + 9, y0 + 8, L); }
     else if (f.kind === 's' && fs(a.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(x0 + 8 + (k % 4) * 5, y0 + 18 + (k >> 2) * 4, 3, 1); } }
+  for (const h of live.holes || []) if (here(h.x, h.y)) blit(freshHoleArt(1, HOLE_BARE[h.g]), x0 + HOLE_DX, y0);   // the Rupar's fresh hole
   for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
     let art;
     if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
