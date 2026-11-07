@@ -11,7 +11,7 @@ export const LOIKA_COAT = {   // coat_main, [dark, between, light]
 export const KIND_COAT = {
   S03: { redder: ["#654934", "#87715f", "#ab9b8d"], between: ["#604b39", "#827362", "#aa9c8c"], yellower: ["#66492f", "#897251", "#b09b7c"] },
   S04: { yellower: ["#696f5d", "#929880", "#bcc1aa"], between: ["#676f5f", "#919789", "#bbc0b2"], greener: ["#62715e", "#8b9a86", "#b6c2af"] },
-  S05: { redder: ["#3e2013", "#643e2c", "#896857"], between: ["#3e200d", "#663d25", "#8b674d"], yellower: ["#382409", "#5f421d", "#886a44"] },
+  S05: { redder: ["#3e2013", "#643e2c", "#886853"], between: ["#3e200d", "#663d25", "#88694d"], yellower: ["#382409", "#5f421d", "#886a44"] },
   S08: { redder: ["#86572c", "#b48251", "#d0a070"], between: ["#7c5d32", "#a98851", "#cfaf7b"], yellower: ["#815c0a", "#ad8834", "#d2af67"] },
   S12: { redder: ["#a86b21", "#d5953a", "#f4bd62"], between: ["#9c7225", "#bda060", "#e1c688"], yellower: ["#9e7108", "#c59e40", "#e6c571"] },
   S17: { redder: ["#ae6b2c", "#de954d", "#fbbb6e"], between: ["#a66f38", "#cc9d64", "#eac28a"], yellower: ["#aa6f18", "#d89944", "#f6be70"] },
