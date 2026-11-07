@@ -136,13 +136,30 @@ export const LEGACY_GLYPHS = {
 };
 
 // The routine acts a species is watched doing (the-portrait.md §8): the ids a mibi's habits are drawn from, at the bench (a resident in focus for a minute of its routine) and at the dock
-// (what the mibi with the player did on the walk). The first three species; a later one gets its list with its frame.
-// A frame of version 8 lists "sleep-curled" for every kind (all twenty have an asleep painting); the three above keep theirs (DEFAULT_HABITS, languageSpec).
+// (what the mibi with the player did on the walk). Order: the kind's home habit, its field-only habit (state.mjs FIELD_ONLY_HABITS), sleep-curled. Game designer, 2026-11-07 (T-20261107-gd-habits).
+// A kind with no list here gets DEFAULT_HABITS (languageSpec); every kind below lists "sleep-curled" (all twenty have an asleep painting).
 export const DEFAULT_HABITS = ["sleep-curled"];
 export const HABITS = {
-  S01: ["shake-dry", "calm", "sleep-curled"],   // Loika
-  S02: ["sniff", "puff", "sleep-curled"],        // Untuva
-  S03: ["dig", "glow", "sleep-curled"],          // Tuikis
+  S01: ["shake-dry", "calm", "sleep-curled"],          // Loika
+  S02: ["sniff", "puff", "sleep-curled"],              // Untuva
+  S03: ["dig", "glow", "sleep-curled"],                // Tuikis
+  S04: ["knob-balance", "tiptoe", "sleep-curled"],     // Hiljan
+  S05: ["warm-sit", "stone-sense", "sleep-curled"],    // Tepor
+  S06: ["spine-count", "slab-lift", "sleep-curled"],   // Pesko
+  S07: ["stand-broad", "break-through", "sleep-curled"], // Azkon
+  S08: ["fan-tilt", "bank-dig", "sleep-curled"],       // Rupar
+  S09: ["crown-bow", "high-look", "sleep-curled"],     // Belatz
+  S10: ["crest-rise", "ride-current", "sleep-curled"], // Igara
+  S11: ["tip-tap", "pod-carry", "sleep-curled"],       // Kilpo
+  S12: ["plume-bob", "dew-find", "sleep-curled"],      // Peplos
+  S13: ["arm-stilt", "find-hug", "sleep-curled"],      // Oskol
+  S14: ["stretch-long", "fog-lift", "sleep-curled"],   // Usvel
+  S15: ["light-lean", "root-down", "sleep-curled"],    // Lehten
+  S16: ["tumble", "catch-strike", "sleep-curled"],     // Blikur
+  S17: ["look-up", "beacon-sit", "sleep-curled"],      // Wickle
+  S18: ["settle-wide", "wind-stream", "sleep-curled"], // Drapet
+  S19: ["tail-hold", "wave-hello", "sleep-curled"],    // Curlop
+  S20: ["coin-ruffle", "hop-down", "sleep-curled"],    // Tuliko
 };
 
 export const SPECIES = [
@@ -179,7 +196,7 @@ export const SPECIES = [
       { trait: "curiosity" }, { trait: "nerve" },
     ],
     sealed: { character: "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod" }, pod: { second: "marigold" } },
-  { ...row("S03", "C03", "small", "mid", "a lizard with a lantern tail (frame glowtail)", "scurries, digs", "wood, rock field", "opens narrow holes and Night", "dew", "digs narrow burrows; lights fog and Night", "a brave little torchbearer"),
+  { ...row("S03", "C03", "small", "mid", "a lizard with a lantern tail (frame glowtail)", "scurries, digs", "wood, rock field", "narrow burrows", "dew", "digs out narrow burrows; lights up fog", "a brave little torchbearer"),
     summary: "A tailed, scaled burrower: a low two-part body, four short legs, a crest, a long tail that carries the glow.",
     fixed: S03_FIXED, openSwitches: ["appearance.marking-switch"],
     frameVersion: 5,   // the claws narrowed to the three digging forms (the game designer's call (A), T-20261016-194)
@@ -198,11 +215,11 @@ export const SPECIES = [
       { trait: "glow", shapeable: false }, { trait: "glow-length", shapeable: false },
     ],
     sealed: {}, pod: { second: "marigold" } },
-  { ...row("S04", "C04", "medium", "starter", "a cat", "prowls, pounces", "wood, meadow", null, "fruit", "creeps up without startling anything", "aloof at first, then devoted"), sealed: {}, alwaysOpen: ["ears", "tail"], pod: { second: "cream" } },
-  { ...row("S05", "C05", "medium", "early", "a fox", "trots", "meadow, wood edge", null, "fruit, seeds", "senses warm stones (Energy)", "quick and clever"), sealed: {}, alwaysOpen: ["fur-reach", "snout"], parked: true, pod: { second: "coral" } },
-  { ...row("S06", "C06", "medium", "early", "a raccoon", "ambles, climbs", "pond edge, wood", null, "fruit, washed first", "lifts slabs to find what is under them", "nosy, a cheerful mischief-maker"), sealed: {}, alwaysOpen: ["mask", "rings"], parked: true, pod: { second: "marigold" } },
+  { ...row("S04", "C04", "medium", "starter", "a climber with two blunt horn-knobs and a coiled tail", "climbs, grabs at falling leaves and rolling fruit","wood, meadow", null, "fruit", "creeps up without startling anything", "aloof at first, then devoted"), sealed: {}, alwaysOpen: ["ears", "tail"], pod: { second: "cream" } },
+  { ...row("S05", "C05", "medium", "early", "a waddler with two ribbed crown flaps", "trots","meadow, wood edge", null, "fruit, seeds", "senses warm stones (Energy)", "quick and clever"), sealed: {}, alwaysOpen: ["fur-reach", "snout"], parked: true, pod: { second: "coral" } },
+  { ...row("S06", "C06", "medium", "early", "a long low body with a ridge of tapered spines", "ambles, climbs", "Thickets", null, "fruit", null, "nosy, a cheerful mischief-maker"), sealed: {}, alwaysOpen: ["mask", "rings"],pod: { second: "marigold" } },
   { ...row("S07", "C07", "large", "mid", "a badger or small bear", "lumbers, digs", "rock field, cave", "Deep ground", "fruit, roots", "digs through to Deep ground", "slow, stubborn, protective"), sealed: {}, alwaysOpen: ["feet", "mask"], parked: true, pod: { second: "charcoal" } },
-  { ...row("S08", "C08", "large", "mid", "a goat or deer", "bounds, climbs", "rock field, meadow", null, "leaves, fruit", "climbs cliff steps that block other partners", "sure-footed and proud"), sealed: {}, alwaysOpen: ["horns", "legs"], pod: { second: "butter" } },
+  { ...row("S08", "C08", "large", "mid", "a low, broad digger with spade forepaws and slats on its back", "pushes on ahead, digs", "meadow", null, "leaves, fruit", "digs a way up or down earth banks", "plucky and proud"), sealed: {}, alwaysOpen: ["horns", "legs"], pod: { second: "butter" } },
   { ...row("S09", "C09", "large", "late", "a big bird", "strides, soars", "meadow, rock field", "Weather expeditions", "fruit, seeds", "scouts from above: reveals the cells around", "watchful, lordly"), sealed: { movement: "a tide pearl" }, alwaysOpen: ["flaps", "beak", "feathers", "feather-crest"], pod: { second: "butter" } },
   { ...row("S10", "C10", "medium", "mid", "an otter", "swims, slides", "pond, fast water", "opens fast water", "fruit", "swims fast water", "playful, never still"), sealed: {}, alwaysOpen: ["tail", "build"], frameVersion: 5, pod: { second: "peach" } },   // 5: the locked feet are pads, not webbed, and the second colour is peach (version 4 stays in the stamp snapshot with its webbed bytes)
   { ...row("S11", "C11", "large", "late", "a turtle", "plods, swims slowly", "pond edge", "beyond fast water", "moss, fruit", "carries one more pod", "an old soul, patient"), sealed: { stamina: "a storm-glass shard" }, alwaysOpen: ["shell", "shell-plates", "scales"], pod: { second: "russet" } },
@@ -215,7 +232,7 @@ export const SPECIES = [
   { ...row("S16", "C16", "medium", "late", "a wisp of lightning (spectral, energy)", "floats, ripples", "meadow, rock field, only in a storm", "Charge sealed (storm-glass shard)", "Energy from struck stones", "draws a stray strike to itself", "wild and electric, rarely still"), sealed: { charge: "a storm-glass shard" }, alwaysOpen: ["charge", "phase", "pull", "glow"], pod: { second: "ice" } },
   // The fluffy species (owner, 2026-10-30; design/proposals/genome-fluffy.md): draft rows, working names. Moves, gate, diet, ability and character are the genome engineer's
   // placeholders for the game designer to set; nothing of them is read by the rig.
-  { ...row("S17", "C17", "medium", "early", "a tall teardrop of fur with a glowing plume", "sways, rocks along", "Reeds", null, "dew", "draft: to be set by the game designer", "draft: calm, a little dreamy"),
+  { ...row("S17", "C17", "medium", "early", "a tall teardrop of fur with a glowing plume", "sways, rocks along", "Reeds", null, "dew", null, "draft: calm, a little dreamy"),
     summary: "A tall teardrop of fur standing upright on two tiny feet, a cream face, one plume rising from the top and curling forward to a glowing tip (the plume is its tail, rooted on the crown); no arms.",
     frameVersion: 6, draft: true, sealed: {}, alwaysOpen: ["tail-curl-turn", "fur-reach"], neverOpen: ["fur-hang", "legs", "feet", "tail"] }, // the apron, the legs, the feet and the plume's size are fixed: the feet show under a short apron
   { ...row("S18", "C18", "large", "mid", "a wide low dome under a floor-length skirt of fur", "glides low along the ground", "Boulders", null, "moss", "draft: to be set by the game designer", "draft: patient, shy"),
@@ -230,7 +247,7 @@ export const SPECIES = [
 // Kinds that have a frame of version 8 only (release 21a): the form registry (build-frames, frames/species-*.json, the 19 rows above) never builds them, so no frame before the language moves.
 // S20 Tuliko, the rambler: the form row the language frame is built from (the studio's body-engine Tuliko, key S20.1, is a separate fixture). Its movement, stamina and character traits are the shared vocabulary's, as the fluffy kinds'.
 export const LANGUAGE_ONLY = [
-  { ...row("S20", "C21", "small", "mid", "a small four-legged rambler", "scurries, hops", "Tallwood", null, "fruit, leaves", "draft: to be set by the game designer", "draft: curious, content"),
+  { ...row("S20", "C21", "small", "mid", "a small four-legged rambler", "walks and walks, hops down slopes", "Tallwood", null, "fruit, leaves", "crosses mud and scree; walks farther", "easygoing and tireless"),
     summary: "A small four-legged rambler: coin scales, a scalloped coin crest along its back, four short legs.",
     frameVersion: 8, sealed: {}, alwaysOpen: [], neverOpen: [] },
 ];
@@ -244,7 +261,7 @@ const GLOW_CLANS = new Set(["C03", "C16"]);
 // a frame whose `species.draft` is set when it loads its frames. The flag comes off with the art.
 export const DRAFT = SPECIES.filter((s) => s.draft).map((s) => s.id);
 
-// Parked (owner, 2026-10-30 12:38): S05, S06 and S07 are too close to real animals. A parked species keeps its row, frame, target and glyph, and a save
+// Parked (owner, 2026-10-30 12:38): S05 and S07 (S06 Pesko was unparked 2026-11-07, pesko-canon.md) are too close to real animals. A parked species keeps its row, frame, target and glyph, and a save
 // holding one still loads; the Station's pools draw from the active ones only (`frame.species.parked` carries the flag).
 export const PARKED = SPECIES.filter((s) => s.parked).map((s) => s.id);
 export const ACTIVE_SPECIES = SPECIES.filter((s) => !s.parked);

@@ -122,7 +122,7 @@ const watchFor = (st, m, ms, s = settings) => { let r, left = ms; while (left > 
 const bench = () => { const st = fresh(); S.seedAdults(st, "S01", 3, 2, settings); st.d = 0; return st; };
 test("T1 a minute records the first unseen habit and pays 1 Data: 59,999 ms nothing, 60,000 pays, the next minute pays for the next habit", () => {
   const st = bench(), [m] = st.mibis, fr = frameOf("S01"); m.habits = []; let r = watchFor(st, m, 59999); assert.equal(r.earned, 0); assert.equal(st.d, 0); assert.deepEqual(m.habits, []);
-  r = S.benchWatch(st, sv0, m, 1, settings); assert.equal(r.earned, 1); assert.equal(st.d, 1); assert.deepEqual(m.habits, [fr.habits[0]], "the first unseen, in frame order"); assert.match(st.log.at(-1), /is seen: /);
+  r = S.benchWatch(st, sv0, m, 1, settings); assert.equal(r.earned, 1); assert.equal(st.d, 1); assert.deepEqual(m.habits, [fr.habits[0]], "the first unseen, in frame order"); assert.match(st.log.at(-1), new RegExp(`${m.name} is seen shaking itself dry$`)); assert.ok(!st.log.at(-1).includes("is seen:"), "no colon, no key");
   r = watchFor(st, m, 59000); assert.equal(r.earned, 0); assert.equal(st.d, 1); r = watchFor(st, m, 1000); assert.equal(r.earned, 1); assert.equal(st.d, 2); assert.deepEqual(m.habits, [fr.habits[0], fr.habits[2]], "calm is skipped: it is felt in the field");
 });
 test("T2 a first sighting at home pays once: a habit already seen pays nothing again; a refused habit pays nothing; the dock's recording pays nothing here", () => {

@@ -292,6 +292,7 @@ export function languageSpec(kindId) {
   delete spec.legacy; delete spec.alwaysOpen;
   // Release 21a: no frame of version 8 is draft or parked (the art exists for all twenty), and every kind lists its asleep habit; the three first kinds keep theirs.
   delete spec.draft; delete spec.parked;
+  // Words, not genes: habits, the taxonomy words and species.parked are exempt from the v8 freeze (architect R1); frames are rewritten in place, no version 9.
   spec.habits = [...(HABITS[kindId] ?? DEFAULT_HABITS)];
   if (kindId === "S01") { spec.features = { ...spec.features, "anatomy.crown-presence": "on" }; spec.openSwitches = spec.openSwitches.filter((id) => id !== "anatomy.crown-presence"); }
   return spec;
