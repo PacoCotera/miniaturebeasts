@@ -292,7 +292,7 @@ export function recommendedRow(st, p, settings = S.DEFAULT_SETTINGS) {
 }
 
 // ---- the bottom line (frame.json bottomLine): left the verb of what has the ring (or its reason when held), middle the one need line, right where ← goes ---------------------------------------------
-const back = (m, spec) => { const u = m.ui; if (u.choosing) return spec.strings.inv.foot.backRoom; return u.from === "create" ? spec.strings.inv.foot.backCreate : spec.strings.inv.foot.back; };
+const back = (m, spec) => { const u = m.ui; if (u.choosing) return spec.strings.inv.foot.backRoom; return u.from === "create" ? spec.strings.inv.foot.backCreate : u.from === "incubator" ? spec.strings.inv.foot.backIncubator : spec.strings.inv.foot.back; };
 function lineOf(m, spec, view, focus, curCard) {
   const B = back(m, spec), Sg = spec.strings.inv;
   if (!m.st.tray.length) return { ok: null, back: B, subject: Sg.none.split(" · ")[0], need: "" };   // not a need: the quiet middle slot, fog with no dot (review round 2, G6)
@@ -301,8 +301,7 @@ function lineOf(m, spec, view, focus, curCard) {
   if (focus === "filter") return { ok: view.tools.filter, back: B, subject: "", need: "" };
   if (focus === "find") return { ok: view.tools.find, back: B, subject: "", need: "" };
   if (focus && focus.startsWith("chip.")) return { ok: "Remove " + (view.tools.chips[+focus.slice(5)] ?? ""), back: B, subject: "", need: "" };
-  const take = m.ui.choosing ? Sg.buttons.bring : curCard && S.onBench(m.st, curCard.e.p) ? Sg.buttons.open : Sg.foot.take;
-  return { ok: curCard ? take : null, back: B, subject: "", need: curCard && S.dryingSoon(m.st, curCard.e.p) ? freshOf(m.st, curCard.e.p, spec).words : "" };
+  return { ok: curCard ? spec.strings.room.choose : null, back: B, subject: "", need: curCard && S.dryingSoon(m.st, curCard.e.p) ? freshOf(m.st, curCard.e.p, spec).words : "" };
 }
 // the rail of a pod: one tab a chapter (Create's, with its pips; Compare's is its own); `open` is the open tab (-1 for none)
 export function railOf(m, spec, cur, chapters, req, open, focused, withPips = false) {

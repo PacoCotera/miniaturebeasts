@@ -26,7 +26,7 @@ export function intent(h, target, verb) {
     if (block && block.key === "short") { h.say(spec.strings.notices.shortFrom[block.from].replace("{icons}", block.short)); return; }   // refused as before: the plate, and the panel does not open (build spec 6a.1)
     openIncubatePanel(h);   // the 180 ms dither (16 levels) from Create to the Incubate | Keep shaping panel; nothing is spent until its ✓ Incubate
   }
-  else if (verb === "back") { h.ui.create = null; if (h.ui.createFrom === "room") openRoom(h, h.ui.pods.roomFrom ?? "home"); else openInventory(h, { from: "home", pod: p.id }); }   // Create's ← comes back to where Grow it was pressed: the reading room, or the inventory on this pod's card
+  else if (verb === "back") { h.ui.create = null; if (h.ui.createFrom === "room") openRoom(h, h.ui.pods.roomFrom ?? "home"); else openInventory(h, { from: h.ui.createFrom === "incubator" ? "incubator" : "home", pod: p.id }); }   // Create's ← comes back to where Grow it was pressed: the reading room, or the inventory on this pod's card
 }
 // Create opens on a pod: nothing chosen, the first read trait.
 export function openCreate(h, p) { h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; h.goto("create"); }
