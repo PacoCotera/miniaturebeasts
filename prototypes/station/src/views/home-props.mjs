@@ -86,7 +86,9 @@ export function curlOfMibi(st, mb, nap, slot, settings, light, view) {
 export const mibiReq = (req, st, mb, size, settings, light = "day", view = "default", pose = "anchor") => { const p = mibiPictureOf(st, mb, size, settings, light, view, pose), name = poseName(pose), owed = typeof pose === "string" ? null : pose?.owed; return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(p.looks ? { looks: p.looks, view } : {}), ...(p.factor ? { factor: p.factor, master: p.master } : {}), ...(light === "day" ? {} : { light }), ...(name !== "anchor" ? { pose: name } : {}), ...(owed ? { owed } : {}) }); };
 // The request object itself (not only its id), for a variant made from it (mibiVariantReq)
 export const mibiRequest = (st, mb, size, settings, light = "day", view = "default") => { let r = null; mibiReq((q) => { r = q; return q.id; }, st, mb, size, settings, light, view); return r; };
-const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
+// The traveller's tile (home.json away, 64 x 64): the kind's own 48 x 48 stand, placed 1:1 (release 21d; the 144 x 152 stand was clipped to its feet in the tile)
+const AWAY_PLACE = [48, 48];
+const WORD_STAGE =(spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
 // The notice and the action of a need, from strings.needs. A count is spelled to the picture's most; above it the count is dropped.
@@ -256,7 +258,7 @@ function glassOf(m, spec, frame, housed, requests) {
   const region = roomRegion(req, room, light), glass = { picture: region.base };
   if (meet != null && residents.some((p) => p.id === meet)) glass.tag = meet;
   const out = housed.slice().sort((a, b) => a.bay - b.bay).find((mb) => S.isAway(st, sv, mb));
-  if (out) { const size = R.resident[S.mibiStage(st, out, settings) === "juvenile" ? "juvenile" : "adult"], p = mibiPictureOf(st, out, size, settings, light, "home"), fig = figureOf(st, out, size, settings, "home"); glass.away = { picture: mibiReq(req, st, out, size, settings, light, "home"), figure: fig ?? [0, 0, ...p.size] }; }
+  if (out) { const size = AWAY_PLACE, p = mibiPictureOf(st, out, size, settings, light, "home"), fig = figureOf(st, out, size, settings, "home"); glass.away = { picture: mibiReq(req, st, out, size, settings, light, "home"), figure: fig ?? [0, 0, ...p.size] }; }
   return { glass, residents, room: region };
 }
 
