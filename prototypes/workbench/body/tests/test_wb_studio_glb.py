@@ -143,6 +143,13 @@ class Served(unittest.TestCase):
             import hashlib
             self.assertEqual(hashlib.sha256(body).hexdigest(), one["sha256"])
         self.assertEqual(get(self.url + "/cas/" + "ab" * 32 + ".glb")[0], 404)
+        self.assertNotIn("_side", st["sculpt"])
+        self.assertAlmostEqual(st["sculpt"]["height"], 2.22291, places=4)                       # what the page poses the body from (R5)
+        self.assertEqual(len(st["sculpt"]["stations"]["eyes"]), 2)
+        self.assertEqual(st["sculpt"]["stations"]["sockets"][0]["bone"], "socket.crest")
+        self.assertEqual(st["parts"][0]["layouts"]["fan"]["step_deg"]["3"], 40)
+        self.assertEqual(st["look"]["land"]["body"], "#A0603E")
+        self.assertEqual(st["look"]["iris"], "amber")
         self.assertEqual(get(self.url + "/api/species/S99")[0], 200)
         self.assertIsNone(json.loads(get(self.url + "/api/species/S99/studio")[2])["sculpt"])
 

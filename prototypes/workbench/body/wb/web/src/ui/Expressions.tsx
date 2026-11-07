@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { freqOne, patchSpecies, stringOne, type Species } from '../lib/api'
+import { patchSpecies, stringOne, type Species } from '../lib/api'
+import { useFreq } from '../lib/freq'
 import { useCanEdit } from '../lib/gate'
 import { ageLine, barSegments, expressionsOf, GROUPS, grouped, isModifier, labelOf, modifierLine, modifiersOf, needLine, newModifier, orderLine, pct, STAGES, stageWord, type Genome, type Locus, type Stage } from '../lib/genes'
 import { lookName, shortWord } from '../lib/variety'
 import s from './Expressions.module.css'
 
 // Chapter 9 in the Genes inspector: how often each look shows (wild, this sheet, a cross), the expressions of the locus with their rules, a modifier gene on a shared locus, and the genome string of the selected mibi.
-// Counts come from the file alone (no build, no render): `GET /api/species/<id>/freq`.
-const useFreq = (sp: Species) => useQuery(freqOne(sp.id, sp.hash))
+// Counts come from the file alone, computed in the page (lib/freq.ts, the engine): no request, no build, no render.
 const BAR_TONE = ['t0', 't1', 't2', 't3', 't4', 't5']
 
 export function HowOften({ species, l }: { species: Species; l: Locus }) {

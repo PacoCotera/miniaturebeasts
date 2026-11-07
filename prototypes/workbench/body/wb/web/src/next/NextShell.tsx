@@ -16,6 +16,7 @@ import { useUI } from '../lib/store'
 import { MODES } from '../lib/url'
 import { useRail, useStudioUrl } from '../lib/useStudio'
 import { W } from '../lib/words'
+import { LivePlate } from '../viewport/LivePlate'
 import { NextPalette } from './NextPalette'
 import { FieldsPane, PartsPane, firstPart } from './Panes'
 import { nextUrl } from './url'
@@ -105,9 +106,8 @@ export default function NextShell() {
           <PartsPane forms={forms.data} sel={sel} rail={rail} onSelect={(id) => navigate(nextUrl({ ...url, sel: id }), { replace: true })} />
         </aside>
         <main className="relative min-w-0 flex-1 bg-background p-4">
-          <div className="flex h-full items-center justify-center rounded-2xl bg-plate">
-            <p className="text-sm text-faint">The live creature will stand here.</p>
-          </div>
+          <LivePlate speciesId={url.species} file={species.data?.file as Record<string, unknown> | undefined} view={url.view} az={url.az}
+            onView={(view) => navigate(nextUrl({ ...url, view }), { replace: true })} onAz={(az) => navigate(nextUrl({ ...url, az }), { replace: true })} />
         </main>
         <aside className={cn('flex shrink-0 flex-col gap-2 overflow-hidden border-l bg-card p-5', rail ? 'w-[340px]' : 'w-[372px]')} aria-label="Inspector">
           <FieldsPane file={(species.data?.file ?? {}) as Record<string, unknown>} forms={forms.data} sel={sel} />

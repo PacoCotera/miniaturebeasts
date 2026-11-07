@@ -27,7 +27,7 @@ from wb import cas as C, facade as F, hashing as H, jobs as J, keys as K, report
 from wb.store import ApiError
 
 STATIC_APP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "app")
-CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+CSP = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
 PREFIX = "/studio"
 IMMUTABLE = "private, max-age=31536000, immutable"                  # a picture fetched behind the login must never be kept by a shared cache
 KEEPALIVE_IDLE = 180
@@ -376,6 +376,18 @@ class Server:
         import meshsource as MS
         return MS.mesh_problem((sp.spec or {}).get("mesh"))
 
+    def eye_rings(self, sp):
+        """The ring look of the eyes (thin / between / wide) from the trait 'eye-rings' on locus growth.exterior-eye-size-ratio, read through the look reader the cards use (expressions.looks_of). None when the file has no such locus: the studio then draws between."""
+        import expressions as X
+        try:
+            g = (sp.spec or {}).get("genome") or {}
+            if not any(e.get("locus") == "growth.exterior-eye-size-ratio" for e in g.get("loci", [])):
+                return None
+            look = str(X.looks_of(g, X.type_copies(g)).get("growth.exterior-eye-size-ratio") or "")
+        except (KeyError, ValueError, TypeError):
+            return None
+        return {"thin rings": "thin", "between": "between", "wide pale rings": "wide"}.get(look)  # the looks of the trait eye-rings, by their names; absent or unknown: None (the studio draws between)
+
     def studio_files(self, sp):
         """What the browser draws a mesh file from: the studio GLB of the sculpt and of each part, by the sha pinned in the sidecar, served at /cas/<sha>.glb. None for a cage file or when a sidecar has no studio GLB yet."""
         import meshsource as MS
@@ -391,10 +403,25 @@ class Server:
             st = side.get("studio")
             if not st or MS.studio_glb(st["sha256"]) is None:
                 return None
-            return dict(id=side["id"], sha256=st["sha256"], bytes=st["bytes"], url=f"/cas/{st['sha256']}.glb", morph_targets=st.get("morph_targets", []), bones=st.get("bones", []))
+            return dict(id=side["id"], sha256=st["sha256"], bytes=st["bytes"], url=f"/cas/{st['sha256']}.glb", morph_targets=st.get("morph_targets", []), bones=st.get("bones", []), _side=side)
         body = one(blk["source"], blk.get("sha256"))
         parts = [dict(one(pe["part"], pe.get("sha256")) or {}, socket=pe.get("socket"), mirror=bool(pe.get("mirror"))) for pe in blk.get("parts") or [] if pe.get("part")]
-        return dict(sculpt=body, parts=parts)
+        # what the browser needs to pose the body as meshbody.py builds it: the sculpt's standing height, eye stations and sockets (sculpt units, z up), each part's layouts, and the land's colours for the coat preview
+        if body:
+            side = body.pop("_side")
+            stn = side.get("stations") or {}
+            body["height"] = (side.get("bands") or {}).get("standing_height")
+            body["stations"] = dict(eyes=stn.get("eyes", []), sockets=stn.get("sockets", []))
+        for p in parts:
+            side = p.pop("_side", None)
+            if side:
+                p["layouts"] = side.get("layouts", {})
+        import species_v1 as V1
+        land = next((x for x in V1.registry()["lands"] if x["id"] == (sp.spec or {}).get("land")), None)
+        iris = (((sp.spec or {}).get("face") or {}).get("eyes") or {}).get("iris", {}).get("colour")
+        coat = (sp.spec or {}).get("coat") or {}                      # the mibi's own Tint and Shade, when a file carries them (the file for the kind does not yet)
+        look = dict(land={k: land[k]["hex"] for k in ("body", "marking", "accent")} if land else None, iris=iris, loika=(sp.spec or {}).get("id") == "S01", tint=coat.get("tint"), shade=coat.get("shade"), eyes=self.eye_rings(sp))  # the Eyes trait (thin / between / wide), when a file carries it
+        return dict(sculpt=body, parts=parts, look=look)
 
     def current_views(self, sp):
         """The proxy frames of the file as it is now (type genome, 304 for the strip and 608 for the hero): each with its cache key and whether the picture exists yet. A read of the cache, never a job."""

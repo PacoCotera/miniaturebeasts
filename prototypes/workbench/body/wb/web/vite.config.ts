@@ -63,12 +63,13 @@ const precompress = () => ({
 export default defineConfig({
   base: '/studio/',
   plugins: [react(), tailwindcss(), buildJson(), precompress()],
-  resolve: { alias: { '@': join(here, 'src') } },
+  // `@framework` is the game's own genome framework (prototypes/workbench/framework): the studio bundles the same files play runs, not a copy.
+  resolve: { alias: { '@': join(here, 'src'), '@framework': join(here, '../../../framework') } },
   build: {
     outDir: '../static/app', emptyOutDir: true, sourcemap: false, target: 'es2022',
     // React and the router are one vendor chunk, loaded by every route and cached across releases.
     rolldownOptions: { output: { codeSplitting: { groups: [{ name: 'vendor', test: /node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/ }] } } },
   },
-  server: { port: 5173, proxy: { '/studio/api': 'http://127.0.0.1:8765', '/studio/events': 'http://127.0.0.1:8765', '/studio/cas': 'http://127.0.0.1:8765' } },
+  server: { port: 5173, fs: { allow: [join(here, '../../..')] }, proxy: { '/studio/api': 'http://127.0.0.1:8765', '/studio/events': 'http://127.0.0.1:8765', '/studio/cas': 'http://127.0.0.1:8765' } },
   test: { environment: 'jsdom', include: ['src/**/*.test.ts', 'src/**/*.test.tsx'] },
 })

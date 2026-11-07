@@ -32,14 +32,12 @@ const extremes = { fresh: true, running: false, key: 'k', rows: [], ends: [end('
 
 const s20file = JSON.parse(readFileSync(join(here, '../../../species_v1/S20.json'), 'utf8'))
 const demoFile = JSON.parse(readFileSync(join(here, 'fixture/demo-file.json'), 'utf8'))
-const freqS20 = JSON.parse(readFileSync(join(here, 'fixture/freq-s20.json'), 'utf8'))
 const varietyS20 = JSON.parse(readFileSync(join(here, 'fixture/variety-s20.json'), 'utf8'))
 const goldensSame = JSON.parse(readFileSync(join(here, 'fixture/goldens-same.json'), 'utf8'))
 const goldensChanged = JSON.parse(readFileSync(join(here, 'fixture/goldens-changed.json'), 'utf8'))
 const formsS20 = JSON.parse(readFileSync(join(here, 'fixture/forms-s20.json'), 'utf8'))
 const toysS21 = JSON.parse(readFileSync(join(here, 'fixture/toys-s21.json'), 'utf8'))
 const spineS20 = JSON.parse(readFileSync(join(here, 'fixture/spine-s20.json'), 'utf8'))
-const freqDemo = JSON.parse(readFileSync(join(here, 'fixture/freq-demo.json'), 'utf8'))
 const metasShape = metas.map((m) => (m.id === 'tail.size' ? { ...m, fields: ['spine.tail.length', 'spine.tail.root', 'spine.tail.tip_r'] } : m))
 const shapeFile = structuredClone(s20file)
 shapeFile.spine.tail.length = 1.24
@@ -129,7 +127,8 @@ for (const c of cases) {
   await page.route('**/api/species', (r) => r.fulfill({ json: [{ id: 'S20', name: 'Tuliko', hash: 'h', error: null }] }))
   await page.route('**/api/species/S20', (r) => { const j = species(c.ready, c.checks); if (c.shape) { j.file = shapeFile; j.checks = checks }
     if (c.genes) { j.file.genome = c.demo ? demoFile.genome : genome; j.file.expressions = c.demo ? demoFile.expressions : s20file.expressions; j.extremes = extremes }; r.fulfill({ json: j }) })
-  await page.route('**/api/species/S20/freq*', (r) => r.fulfill({ json: c.demo ? freqDemo : freqS20 }))
+  // how often each look shows is computed in the page (R6): a call to /freq or /variety from the genes screen is a failure
+  await page.route('**/api/species/S20/freq*', (r) => { fail(`${c.name}: the page asked the server for /freq`); r.fulfill({ status: 500, json: {} }) })
   await page.route('**/api/species/S20/string*', (r) => r.fulfill({ json: { species: 'S20', genome: 'type', string: TYPE_STRING, code: null, length: TYPE_STRING.length, version: 1, hash: 'h' } }))
   await page.route('**/api/species/S20/jobs', (r) => r.fulfill({ json: { id: 'j1', state: 'done', result: { views: [{ mode: 'clay', az: 32, size: 304, key: 'clayend'.padEnd(64, '0') }] } } }))
   await page.route('**/api/species/S20/variety*', (r) => r.fulfill({ json: varietyS20 }))

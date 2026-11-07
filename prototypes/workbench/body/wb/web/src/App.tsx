@@ -12,6 +12,8 @@ const Pods = lazy(() => import('./ui/play/PodsPage').then((m) => ({ default: m.P
 
 const NextShell = lazy(() => import('./next/NextShell')) // the new kit (Tailwind 4, shadcn/ui), only with ?ui=next
 
+const ParityPage = lazy(() => import('./viewport/ParityPage')) // the R5 parity gate's page (shots/parity.mjs), not linked from anywhere
+
 const qc = new QueryClient({ defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } } })
 
 function Home() {
@@ -35,6 +37,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/studio" element={<Home />} />
+            <Route path="/studio/:species/parity" element={<ParityPage />} />
             <Route path="/studio/:species/*" element={<StudioRoute />} />
             <Route path="/play" element={<Pick />} />
             <Route path="/play/:species" element={<Shape />} />
