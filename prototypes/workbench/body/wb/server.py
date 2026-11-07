@@ -4,6 +4,8 @@ Behind the site's proxy the app lives under /studio/: a leading /studio is strip
 python -m wb.server --home DIR [--species DIR ...] [--static DIR] [--host ADDR] [--port N] [--trusted-proxy ADDR]"""
 import argparse
 import copy
+import gzip
+import hashlib
 import json
 import os
 import queue
@@ -51,6 +53,26 @@ def count_rows(rows):
     """What the pill and the drawer both say, from one place: fails and warnings need you; passes never do."""
     n = lambda st: sum(1 for r in rows if r["state"] == st)
     return dict(total=len(rows), fail=n("fail"), warn=n("warn"), need=n("fail") + n("warn"), passed=n("pass"))
+
+
+SPECIES_SCHEMAS = ("mb-species/", "mb-body/")            # a JSON file in a species folder is a species only when its schema says so (catalogue-pin.json and the like are not)
+GZIP_MIN = 860                                           # under this a gzip frame is no smaller than the answer
+
+
+def is_species_file(path):
+    try:
+        with open(path) as fh:
+            doc = json.load(fh)
+    except (OSError, ValueError):
+        return True                                      # a file that does not parse is shown with its error, as before
+    return isinstance(doc, dict) and str(doc.get("schema", "")).startswith(SPECIES_SCHEMAS)
+
+
+def etag_matches(header, tag):
+    """If-None-Match against one tag: any listed tag (weak or not) or *."""
+    if not header:
+        return False
+    return header.strip() == "*" or tag in [t.strip().removeprefix("W/") for t in header.split(",")]
 
 
 K_VIEWS = [(m, a, z) for z in (304, 608) for m in K.MODES for a in K.AZ]
@@ -229,6 +251,7 @@ class Server:
         self.queue = J.JobQueue()
         self.stopping = False
         self.species = {}
+        self.not_species = {}                                          # path -> mtime of a JSON file in a species folder that is not a species (looked at once, again only when it changes)
         self.started = False
         self.scan()
         self.workers = [ProxyWorker(self, i) for i in range(proxy_workers)]
@@ -262,7 +285,18 @@ class Server:
                     if f.endswith(".json") and not f.endswith(".undo.jsonl"):
                         sid = f[:-5]
                         if sid not in self.species:
-                            self.species[sid] = S.Species(sid, os.path.join(d, f))
+                            path = os.path.join(d, f)
+                            try:
+                                mt = os.stat(path).st_mtime_ns
+                            except OSError:
+                                continue
+                            if self.not_species.get(path) == mt:
+                                continue
+                            if not is_species_file(path):                          # catalogue-pin.json and other data files in the folder
+                                self.not_species[path] = mt
+                                continue
+                            self.not_species.pop(path, None)
+                            self.species[sid] = S.Species(sid, path)
                             if self.started:
                                 self.play_start(self.species[sid])
 
@@ -302,9 +336,10 @@ class Server:
             except Exception as e:
                 print("watcher:", type(e).__name__, e, file=sys.stderr)
 
-    def after_edit(self, sp, actor, paths, via):
+    def after_edit(self, sp, actor, paths, via, edit=None):
+        """`edit`: what an API save did, for the page to apply to its own copy (base hash, the ops without their tests, the log entries, the undo flags); None for a direct file edit, which the page refetches."""
         name = actor["name"] if actor else "file edit"
-        self.hub.emit("edited", sp.id, actor=name, role=actor["role"] if actor else None, agent=bool(actor and actor.get("agent")), via=via, hash=sp.hash, changes=paths)
+        self.hub.emit("edited", sp.id, actor=name, role=actor["role"] if actor else None, agent=bool(actor and actor.get("agent")), via=via, hash=sp.hash, changes=paths, **(edit or {}))
         from wb import gate as GT
         if GT.note_edit(sp.path, sp.hash, name):                  # signatures on the old file no longer count: the round records who voided them
             self.hub.emit("gate", sp.id, voided=True, actor=name)
@@ -353,10 +388,16 @@ class Server:
         with sp.lock:
             new = S.apply_patch(sp.spec, ops)
             self.check_file(new, raise_on_fail=True)
+            base = sp.hash
             changes, h = sp.patch(ops, actor, via)
+            entries = sp.history(len(changes)) if changes else []
+            can = sp.can_undo_redo()
+        # what the page needs to follow this save without asking for the file again; a save that moved the derived loft table is not exact in its ops, so the page refetches
+        derived = any(str(op.get("path", "")).startswith(S.KNOBS) for op in ops if op.get("op") != "test")
+        applied = dict(base=base, ops=None if derived else [op for op in ops if op.get("op") != "test"], entries=entries, **can)
         if changes:
-            self.after_edit(sp, actor, [c[0] for c in changes], "api")
-        return dict(hash=h, changed=[dict(path=p, old=o, new=n) for p, o, n in changes], touches=[], validation=dict(ok=True, errors=[]), **sp.can_undo_redo())
+            self.after_edit(sp, actor, [c[0] for c in changes], "api", edit=applied)
+        return dict(applied, hash=h, changed=[dict(path=p, old=o, new=n) for p, o, n in changes], touches=[], validation=dict(ok=True, errors=[]))
 
     def revert(self, sid, kind, actor):
         """Undo or redo the last save through the undo log: it is a save of its own (via 'undo' or 'redo'), made by the actor who asked, so History shows both."""
@@ -1557,6 +1598,8 @@ def G_read(sp):
 def make_handler(srv):
     class H_(BaseHTTPRequestHandler):
         server_version = "wb/1"
+        protocol_version = "HTTP/1.1"          # a browser revalidates an ETag only over HTTP/1.1 (measured); every answer below carries a Content-Length, and the event stream closes its connection
+        timeout = 120                          # an idle kept-alive connection is closed after two minutes
 
         def log_message(self, fmt, *a):
             print(f"{S.now()} {self.address_string()} {fmt % a}", file=sys.stderr)
@@ -1578,28 +1621,61 @@ def make_handler(srv):
 
         def body(self):
             n = int(self.headers.get("Content-Length") or 0)
+            self.body_read = True
             try:
                 return json.loads(self.rfile.read(n) or b"null")
             except ValueError:
                 raise ApiError(400, "the body is not JSON", "body")
 
-        def send_json(self, obj, status=200):
+        def send_json(self, obj, status=200, etag=None):
+            """The answer as JSON, gzipped when the page accepts it and the answer is worth it. `etag`: a string to tag the answer with, or True for a tag made of the answer itself;
+            a request that already holds that tag gets a 304 and no body. Tagged answers are `private, no-cache`: the browser keeps them and asks again each time, which costs a header."""
             data = json.dumps(obj).encode()
+            tag = None
+            if etag:
+                tag = '"' + (hashlib.sha1(data).hexdigest()[:32] if etag is True else str(etag)) + '"'
+                if etag_matches(self.headers.get("If-None-Match"), tag):
+                    self.send_response(304)
+                    self.send_header("ETag", tag)
+                    self.send_header("Cache-Control", "private, no-cache")
+                    self.send_header("Vary", "Accept-Encoding")
+                    self.end_headers()
+                    return
+            zipped = len(data) >= GZIP_MIN and "gzip" in (self.headers.get("Accept-Encoding") or "")
+            if zipped:
+                data = gzip.compress(data, 5, mtime=0)
             self.send_response(status)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(data)))
+            if zipped:
+                self.send_header("Content-Encoding", "gzip")
+            self.send_header("Vary", "Accept-Encoding")
+            if tag:
+                self.send_header("ETag", tag)
+                self.send_header("Cache-Control", "private, no-cache")
             self.end_headers()
             self.wfile.write(data)
 
         def guarded(self, fn):
+            self.body_read = False
             try:
                 fn()
             except ApiError as e:
                 self.send_json(dict(error=e.message, field=e.field, **e.extra), e.status)
             except (BrokenPipeError, ConnectionResetError):
-                pass
+                self.close_connection = True
             except Exception as e:
                 self.send_json(dict(error=f"{type(e).__name__}: {e}"), 500)
+            finally:
+                if not self.body_read:                      # a refused call leaves its body unread: on a kept-alive connection it would be taken for the next request
+                    try:
+                        n = int(self.headers.get("Content-Length") or 0)
+                        if 0 < n <= 1 << 24:
+                            self.rfile.read(n)
+                        elif n:
+                            self.close_connection = True
+                    except (OSError, ValueError):
+                        self.close_connection = True
 
         def do_GET(self):
             self.guarded(self.get)
@@ -1615,18 +1691,32 @@ def make_handler(srv):
             u = urlparse(self.path)
             p, q = strip_prefix(u.path), parse_qs(u.query)
             if p == "/api/species":
-                return self.send_json([dict(id=s.id, name=s.spec.get("name"), path=s.path, hash=s.hash, error=s.error) for s in srv.species.values()])
+                return self.send_json([dict(id=s.id, name=s.spec.get("name"), path=s.path, hash=s.hash, error=s.error) for s in srv.species.values()], etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)", p)
-            if m:
+            if m:                                                      # the whole answer, kept for the pages that still ask for it; the three routes below are its parts
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), undo=s.can_undo_redo(), views=srv.current_views(s), labels=V1_labels()), etag=True)
+            m = re.fullmatch(r"/api/species/([^/]+)/file", p)
+            if m:                                                      # the document: tagged with its hash (and the error, when the file on disk does not parse)
+                s = srv.get_species(m.group(1))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error), etag=s.hash + ("-" + hashlib.sha1(s.error.encode()).hexdigest()[:8] if s.error else ""))
+            m = re.fullmatch(r"/api/species/([^/]+)/state", p)
+            if m:                                                      # what moves while the file does not: lease, undo flags, the check rows, the render keys
+                s = srv.get_species(m.group(1))
+                ex = srv.current_extremes(s)
+                ex = ex and {k: ex[k] for k in ("fresh", "running", "key", "at")}           # which Check ends result there is, not the result: a page that sees it change asks /extremes
+                return self.send_json(dict(id=s.id, hash=s.hash, error=s.error, lease=None, checks=srv.current_checks(s), extremes=ex, undo=s.can_undo_redo(), views=srv.current_views(s)), etag=True)
+            m = re.fullmatch(r"/api/species/([^/]+)/extremes", p)
+            if m:                                                      # the Check ends block (34 KB on Tuliko): asked for by the screens that show it
+                s = srv.get_species(m.group(1))
+                return self.send_json(dict(id=s.id, hash=s.hash, extremes=srv.current_extremes(s)), etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)/freq", p)
             if m:
                 return self.send_json(srv.freq(srv.get_species(m.group(1)), int(q.get("n", ["1000"])[0])))
             m = re.fullmatch(r"/api/species/([^/]+)/forms", p)
             if m:
                 from wb import forms as FM
-                return self.send_json(FM.forms(srv.get_species(m.group(1)).spec))
+                return self.send_json(FM.forms(srv.get_species(m.group(1)).spec), etag=True)
             m = re.fullmatch(r"/api/species/([^/]+)/toys", p)
             if m:
                 return self.send_json(srv.toys(srv.get_species(m.group(1))))
@@ -1730,7 +1820,7 @@ def make_handler(srv):
             if p == "/api/stats":
                 return self.send_json(dict(jobs=srv.queue.counts(), cache_bytes=srv.cas.size(), framework=H.framework_id(), workers=len(srv.workers)))
             if p == "/api/checks":
-                return self.send_json(CH.metas())
+                return self.send_json(CH.metas(), etag=True)
             if p == "/api/families":
                 from families import registry as FR
                 return self.send_json(FR.cards())
@@ -1785,6 +1875,8 @@ def make_handler(srv):
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")
             self.send_header("Cache-Control", "no-cache")
+            self.send_header("Connection", "close")                    # no length: the stream ends when the connection does
+            self.close_connection = True
             self.end_headers()
             qq = srv.hub.subscribe(species)
             try:
