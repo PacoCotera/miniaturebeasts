@@ -1495,7 +1495,7 @@ test("the send hint in a place names the way, never a count, at all seven sites;
   assert.doesNotMatch(inPlace.headBackHold, DIG);
   // the explored message (headBack's other site) and its caves, through checkExplored
   p.run("S.exp.saidDone = 0; reachCounts = () => ({ total: 9, surveyed: 9, full: 9, gated: 1 }); FX.notes = []; checkExplored();");
-  assert.equal(p.run("FX.msg"), `Everything in reach is explored · a cave needs a digger · head back ${dir} to the ${name === "Start" ? "start" : "outpost"}`);
+  assert.equal(p.run("FX.msg"), `Everything in reach is explored · the cave waits for a Tuikis · head back ${dir} to the ${name === "Start" ? "start" : "outpost"}`);
   p.run("S.exp.saidDone = 0; reachCounts = () => ({ total: 9, surveyed: 9, full: 9, gated: 2 }); FX.notes = []; checkExplored();");
   assert.match(p.run("FX.msg"), /^Everything in reach is explored · caves need a digger · /); assert.doesNotMatch(p.run("FX.msg"), DIG);
   assert.ok(p.run("wrapText(FX.msg, 400, 2).length") <= 3, "fits the box");

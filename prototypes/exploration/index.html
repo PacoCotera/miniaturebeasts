@@ -381,8 +381,8 @@ const SPECIES = [
 for (const k of KIND_INFO.slice(3)) SPECIES.push({ name: k.name, plural: k.plural, hab: k.hab, notice: [2, 4], flee: 2, eats: true, shedP: .1, how: 'calm',
   ab: null, abText: null, born: null, learn: null, col: { body: 'bone', light: 'bone', shade: 'bone', dark: 'bone' } });
 // L2c: Rupar (sp 7) digs earth banks, Tuliko (sp 19) crosses mud and scree and walks farther (the Companion's own art for both is still to come, so their colours stay plain)
-SPECIES[7].ab = 'bank'; SPECIES[7].abText = 'digs a way up or down earth banks';
-SPECIES[19].ab = 'sure'; SPECIES[19].abText = 'crosses mud and scree; walks farther';
+Object.assign(SPECIES.at(7), { ab: 'bank', abText: 'digs a way up or down earth banks' });
+Object.assign(SPECIES.at(19), { ab: 'sure', abText: 'crosses mud and scree; walks farther' });
 // Shedding is rare unless the creature is special: shedP is a plain creature's chance at its moment; a creature
 // fed or settled this expedition sheds at SHED_BOND; one of a species not yet known always does; at most SHED_MAX pods from creature
 // moments an expedition (a returned line's pod is apart). Tune.

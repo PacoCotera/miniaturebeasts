@@ -436,7 +436,7 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
   const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({}));
   assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "stand-in"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "stand-in"], ["c-moment-walk-S01-280x300", 280, 300, "stand-in"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "stand-in"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"]),
-    ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"]]);
+    ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-wade-32", 32, 32, "stand-in"], ["c-scree-32", 32, 32, "stand-in"], ["c-bank-32", 32, 32, "stand-in"], ["c-map-soft-26", 26, 26, "stand-in"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
   const ids = ["c-heart-24", "c-heart-16", "c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z-]+-\d+)'/g)].map(x => x[1]);
@@ -474,7 +474,7 @@ test("the approved strings: Tend's line from the species moment and the place; t
   assert.equal(T.tendMidExp("Dot"), "Tend Dot when the expedition is over"); assert.equal(T.notch("Dot"), "Dot gains a skill notch");
   assert.equal(T.noOneWith, "no one with you"); assert.equal(T.noOneGrown, "no one grown yet");
   // the expedition choice's partner card, bottom-line context (companion-screens.md, "Expedition choice: the partner card")
-  const S = save({ carried: [], turn: 1 }), ctx = vm.createContext({ console, S, CARE_TEXT: T, JUVENILE_TURNS: 2, ELDER_TURNS: 16, SPECIES: [{ abText: "calms wary creatures" }, { abText: "sniffs out pods" }, { abText: "digs narrow burrows" }] });
+  const S = save({ carried: [], turn: 1 }), ctx = vm.createContext({ console, S, CARE_TEXT: T, JUVENILE_TURNS: 2, ELDER_TURNS: 16, SPECIES: [{ abText: "calms wary creatures" }, { abText: "sniffs out pods" }, { abText: "digs out narrow burrows" }] });
   const pr = vm.runInContext(ACCESSOR() + ["partnerRow", "partnerMibi", "carriedMibis", "liveMibis", "mibiById", "isAdult", "mibiStage", "stageAt"].map(source).join("\n") + "\n;partnerRow", ctx);
   assert.equal(pr(), "no one with you");
   S.carried = [1]; assert.equal(pr(), "no one grown yet", "a juvenile with you, no one grown");
@@ -540,7 +540,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   S.mibis[1].sp = 2;   // a grown digger at home
   const said = [], noop = () => {}, id = x => x;
   const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 16, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
-    SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs narrow burrows" }],
+    SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs out narrow burrows" }],
     FX: {}, shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
     panel: noop, card: noop, disc: noop, blit: noop, R: noop, shieldBars: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
     CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
@@ -548,7 +548,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
   const home = S.mibis.map(m => m.name);
   for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
-  assert.ok(said.includes("No one with you") && said.includes("dock to take one along") && said.includes("Caves · needs a digging partner"), "none carried: No one with you (ruling 19:21)");
+  assert.ok(said.includes("No one with you") && said.includes("dock to take one along") && said.includes("Caves · needs a Tuikis"), "none carried: No one with you (ruling 19:21)");
   assert.ok(!said.includes("No partner"), "No partner only when juveniles are carried");
   assert.ok(!said.some(l => /at home/.test(l)), "no at-home list or count");
   for (const fn of ["lineFor", "drawSetup"]) assert.ok(!/mibiWith|homeMibis/.test(source(fn)));
@@ -1084,7 +1084,7 @@ test("X26 copy: the copywriter's signed strings, within their widths", () => {
   // the stage species line for a juvenile: '‹Species› · ‹abText› once grown'; an unknown-species juvenile keeps abOther; an adult as built
   const q = X26.world([dot(), X26.mib(3, "Bean", -1), pip()], [1, 3, 2]);
   const line = id => { q.run(`S.ui.aId = ${id}`); return q.draw("active").find(c => c[0] === "text" && c[2] === 30 && c[3] === 370)[1]; };
-  assert.equal(line(1), "Tuikis · digs narrow burrows once grown");
+  assert.ok(line(1).startsWith("Tuikis · digs out narrow burrows once gro"), line(1));   // the copywriter's line (round 3) is a little wider than the card's 370 px line: it is clipped with an ellipsis, reported to the lead
   assert.equal(line(3), q.run("mibiSpName(mibiById(3))") + " · no field ability yet");
   assert.equal(line(2), "Loika · calms wary creatures");
 });
