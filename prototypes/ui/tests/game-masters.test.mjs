@@ -30,8 +30,7 @@ test("each kind has its chips under the new names and none of the earlier trait 
 });
 test("juvenileFacing covers the twenty", () => {
   assert.deepEqual(Object.keys(index.juvenileFacing.species).sort(), KINDS);
-  for (const [k, v] of Object.entries(index.juvenileFacing.species)) { assert.equal(v.adult, "right", k + ": every adult faces right"); assert.equal(v.mirror, true, k); if (k !== "S01") assert.equal(v.juvenile, "right", k + ": the young is painted the adult's way and drawn mirrored"); }
-  assert.equal(index.juvenileFacing.species.S01.juvenile, "left", "Loika's young is painted facing left and drawn mirrored: it faces right");
+  for (const [k, v] of Object.entries(index.juvenileFacing.species)) { assert.equal(v.adult, "right", k + ": every adult faces right"); assert.equal(v.mirror, true, k); assert.equal(v.juvenile, "right", k + ": the young is painted facing right and drawn mirrored"); }
 });
 test("Pesko is placed mirrored so the roster faces right: flipPic reverses each row, and the table says S06 faces right", () => {
   const p = { w: 3, h: 1, data: Uint8Array.from([1, 1, 1, 255, 2, 2, 2, 255, 3, 3, 3, 255]) }, f = flipPic(p);

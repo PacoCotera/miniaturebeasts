@@ -68,7 +68,7 @@ const dimsOf = (buf) => [buf.readUInt32BE(16), buf.readUInt32BE(20)];
 // The kinds whose painted figures are turned over as they are placed, so the whole roster faces right (art desk R21c-3: Pesko S06 was painted facing left). Every figure picture of the kind is mirrored
 // (adult, young, asleep, poses, halos, bud, plate); the chips, faces and marks are not figures.
 export const FLIPPED = new Set(["S06"]);
-// Loika S01: only its adult pictures are mirrored (its young already faces right as it is drawn: painted left, drawn mirrored), art desk 2026-11-06.
+// Loika S01: only its adult pictures are mirrored (its young is painted facing right already), art desk 2026-11-06.
 export const FLIPPED_ADULT = new Set(["S01"]);
 // Blikur S16's young floats above its shadow in the cut: its contact shadow is lifted to sit right under the feet, in every picture of the young.
 export const GROUNDED = new Set(["S16"]);
