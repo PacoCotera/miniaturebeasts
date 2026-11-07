@@ -1160,7 +1160,7 @@ test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest 
 // SPECIES_ART and JUVENILE_ART hold, in page species order (S01, S03, S02, S04 to S20), per kind an adult and a juvenile idle token (32 px) and a mini (12 px), from the art desk's field-tokens round 2.
 // A pose a kind has no picture for shows its idle (creatureArt); a juvenile never shows the adult's. The kinds are twenty; nothing is a stand-in.
 const KINDS20 = ["S01", "S03", "S02", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20"];
-const RUN48 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv";
+const RUN48 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy";   // the 51 colours (the name stays): the first 48, then the sage three w, x, y
 const heightOf = px => { let top = -1, low = -1; const w = Math.sqrt(px.length); px.forEach((v, i) => { if (v >= 0) { if (top < 0) top = i / w | 0; low = i / w | 0; } }); return { top, low, h: low - top + 1 }; };
 const tokenPx = (p, s, w) => Array.from(p.run(`Array.from(tokenPB(${JSON.stringify(s)}, ${w}).p)`));
 const px = (p, expr) => { const a = p.run(expr); return a && Array.from(a.p).join(); };
@@ -1188,8 +1188,13 @@ test("species art: the page's tables are the art desk's signed tokens (when the 
   const f = "/home/mb/mb/mibi-art/art-jobs/2026-11-06-field-tokens/work/tokens.mjs";
   if (!existsSync(f)) return;
   const T = await import(f), p = X1.page();
-  assert.deepEqual(plain(p.run("SPECIES_ART")), JSON.parse(JSON.stringify(T.SPECIES_ART)));
-  assert.deepEqual(plain(p.run("JUVENILE_ART")), JSON.parse(JSON.stringify(T.JUVENILE_ART)));
+  // the signed round-2 tokens, with the sage S04 (page species 3) and S20 (19) rows laid over them (the desk's tokens-sage-rows.mjs, 2026-11-07)
+  const sageF = "/home/mb/mb/mibi-art/art-jobs/2026-11-07-step-frames/work/tokens-sage-rows.mjs";
+  if (!existsSync(sageF)) return;
+  const R = (await import(sageF)).SAGE_ROWS, adult = JSON.parse(JSON.stringify(T.SPECIES_ART)), young = JSON.parse(JSON.stringify(T.JUVENILE_ART));
+  for (const [sp, k] of [[3, "S04"], [19, "S20"]]) { Object.assign(adult[sp], R[k + "-adult"]); Object.assign(young[sp], R[k + "-young"]); }
+  assert.deepEqual(plain(p.run("SPECIES_ART")), adult);
+  assert.deepEqual(plain(p.run("JUVENILE_ART")), young);
   assert.deepEqual(T.ORDER, KINDS20);
 });
 
