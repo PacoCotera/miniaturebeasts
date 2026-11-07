@@ -227,6 +227,9 @@ def cage_inputs(spec, ind):
 
 def cage_key(spec, genome, stage="base"):
     spec = internal(spec)
+    if is_mesh(spec):                                      # a mesh body has no cage: its key is the sculpt and parts it pins, the rig and keys the genome leaves, and the genome's values
+        doc, values = mesh_individual(spec, genome)
+        return H.hash_of("mesh-cage", H.framework_id(), dict(mesh=doc.get("mesh"), rig=doc.get("rig"), keys=doc.get("keys")), sorted(values.items()), stage)
     if is_quadruped(spec):
         quad_check_genome(genome)
         return H.hash_of("cage", H.framework_id(), dict(plan=spec["plan"], spine=spec["spine"], skeleton=spec.get("skeleton"), parts=spec.get("parts")), stage)

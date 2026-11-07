@@ -462,6 +462,9 @@ class Server:
                 if raise_on_fail:
                     raise ApiError(400, errs[0][1], errs[0][0])
                 return rows
+            if F.is_mesh(spec):                                  # a mesh body has no cage (spine, skeleton, parts): the cage schema and genes do not apply, the species schema above is its file check
+                row("schema", True, "valid", "valid", "The species file must pass the schema.")
+                return rows
             spec = V1.to_internal(spec)
         try:
             SC.validate(copy.deepcopy(spec))
@@ -1800,7 +1803,10 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)/spine", p)
             if m:
                 from wb import spine as SPN
-                return self.send_json(SPN.spine_view(srv.get_species(m.group(1)).spec))
+                spec = srv.get_species(m.group(1)).spec
+                if F.is_mesh(spec):
+                    raise ApiError(400, "a mesh body has no spine view: its shape is the sculpt, moved by the mesh loci, the bone scales and the keys", "spine")
+                return self.send_json(SPN.spine_view(spec))
             m = re.fullmatch(r"/api/species/([^/]+)/history", p)
             if m:
                 s = srv.get_species(m.group(1))

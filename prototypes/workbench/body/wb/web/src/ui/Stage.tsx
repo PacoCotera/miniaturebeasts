@@ -11,6 +11,7 @@ import { Plate } from './Plate'
 import { ViewBar } from './ViewBar'
 import { AngleStrip } from './AngleStrip'
 import { SpineOverlay } from './SpineOverlay'
+import { isMesh } from '../lib/forms'
 import { leaseFrom } from '../lib/edits'
 import { W } from '../lib/words'
 import s from './Stage.module.css'
@@ -66,7 +67,7 @@ export function Stage({ url, species, go, inset = 0 }: { url: StudioUrl; species
     go({ view: v })
     if (!species?.views.some((x) => x.mode === v && x.ready) && canEdit) void renderViews(url.species, v)
   }
-  const onSpine = !!species && url.az === 90 && url.view === 'clay' && !proof && !showBefore
+  const onSpine = !!species && !isMesh(species.file) && url.az === 90 && url.view === 'clay' && !proof && !showBefore
   const editable = canEdit && !(species && leaseFrom(species.lease, species.history))
   return (
     <main className={s.stage} ref={ref} style={inset ? { paddingBottom: inset + 8, justifyContent: 'flex-start' } : undefined}>

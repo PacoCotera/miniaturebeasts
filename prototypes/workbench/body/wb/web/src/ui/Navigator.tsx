@@ -37,7 +37,7 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
             const st = r.kind === 'section' ? null : stateOfPart(rows, metas, r.id)
             return (
               <li key={r.id} className={r.kind === 'section' && outline[i - 1]?.kind !== 'section' ? s.gap : undefined}>
-                <button className={`${s.row} ${r.kind === 'part' ? s.child : ''} ${url.sel === r.id ? s.sel : ''}`} onClick={() => go({ sel: url.sel === r.id ? null : r.id })} aria-pressed={url.sel === r.id} title={r.label}>
+                <button className={`${s.row} ${r.kind === 'part' && r.under ? s.child : ''} ${url.sel === r.id ? s.sel : ''}`} onClick={() => go({ sel: url.sel === r.id ? null : r.id })} aria-pressed={url.sel === r.id} title={r.label}>
                   {r.kind === 'range' && <span className={s.sw} style={r.sw ? { background: r.sw } : undefined} />}
                   <span className={s.mono}>{r.label.slice(0, 2)}</span>
                   <span className={s.label}>{r.label}</span>
