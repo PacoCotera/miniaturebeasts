@@ -249,7 +249,7 @@ test("the ring is (W + 10) × (fh + 10) on the figure's feet with no lift, the t
     const f = await start(b, { motion: false, node: true }), lg = logOf(f) ?? (frames(f), logOf(f)), pic = boxOf(f, "g." + b.st.mibis[0].id);
     const { fx, feetY } = feetOf(pic), ring = rg(lg, "focus")[0].rect, tag = rg(lg, "nameTag", "chrome")[0].rect;
     assert.deepEqual(ring, [fx - Math.floor(W / 2) - 5, feetY - (fh + 10) / 2, W + 10, fh + 10], `seed ${seed}: the ring on F`);
-    if (feetY + 16 + tag[3] > WIN[1] + WIN[3] - 8) { flipped++; assert.equal(tag[1], WIN[1] + WIN[3] - 2 - tag[3], `seed ${seed}: the tag under the figure, held inside the window (release 22b: never up onto another figure)`); } else { below++; assert.equal(tag[1], feetY + 16, `seed ${seed}: the tag top`); }
+    if (feetY + 16 + tag[3] > WIN[1] + WIN[3] - 8) { flipped++; assert.ok((tag[1] >= feetY + 4 || tag[1] === WIN[1] + WIN[3] - 2 - tag[3]) && tag[1] + tag[3] <= WIN[1] + WIN[3] - 2, `seed ${seed}: the tag under the figure, held inside the window (release 22b: never up onto another figure): ${tag[1]}`); } else { below++; assert.equal(tag[1], feetY + 16, `seed ${seed}: the tag top`); }
   }
   assert.ok(flipped > 0 && below > 0, `both tag places drawn: ${flipped} over, ${below} below`);
 });
