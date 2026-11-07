@@ -7,7 +7,7 @@ import vm from "node:vm";
 
 export const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 export const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-export const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
+export const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/([\w-]+)\.mjs";$/gm;
 // [module, exported name, name on the page] for every imported name
 export const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
 export const SCRIPT = MODULE.replace(IMPORT_RE, "");

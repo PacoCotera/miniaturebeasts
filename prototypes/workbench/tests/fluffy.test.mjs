@@ -248,7 +248,7 @@ test("the three species: working names, habitats, own plans' loci, every individ
   assert.deepEqual(["C17", "C18", "C19"].map((c) => CLANS[c].number), [17, 18, 19]);
   for (const id of ["S17", "S18", "S19"]) { const f = frameOf(id); assert.equal(f.viability.constructed, f.viability.sampled); assert.equal(f.viability.crossedBuilt, f.viability.crossed); }
   const r = rng("fluffy"); for (const id of ["S17", "S18", "S19"]) for (let i = 0; i < 5; i++) assert.equal(buildIndividual(frameOf(id), sampleIndividual(frameOf(id), r)).validation.status, "valid");
-  assert.deepEqual(PARKED, ["S05", "S06", "S07"]); assert.equal(ACTIVE_SPECIES.length, 16);
+  assert.deepEqual(PARKED, ["S05", "S07"]); assert.equal(ACTIVE_SPECIES.length, 17);
   for (const id of PARKED) { assert.equal(frameOf(id).species.parked, true); assert.equal(buildIndividual(frameOf(id), typeSpecimen(frameOf(id))).validation.status, "valid", "a save holding one still builds"); }
   assert.ok(!frames.filter((f) => !PARKED.includes(f.species.id)).some((f) => f.species.parked));
   assert.equal(new Set(Object.values(GLYPHS).map((g) => g.join(""))).size, 20);

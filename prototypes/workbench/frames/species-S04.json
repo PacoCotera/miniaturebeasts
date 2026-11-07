@@ -10,11 +10,11 @@
  "taxonomy": {
   "code": "S04",
   "resembles": "a long tail wrapped round four paws",
-  "moves": "prowls, pounces",
+  "moves": "climbs, grabs at falling leaves and rolling fruit",
   "habitat": "wood, meadow",
   "gate": null,
   "diet": "fruit",
-  "ability": "creeps up without startling anything",
+  "ability": "walks so softly it startles nothing",
   "character": "aloof at first, then devoted",
   "clanName": "Lathreta",
   "clanNumber": 4,
@@ -107,7 +107,11 @@
   ".#..#",
   "#..#."
  ],
- "habits": [],
+ "habits": [
+  "knob-balance",
+  "tiptoe",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "medium",
   "proportion": null,

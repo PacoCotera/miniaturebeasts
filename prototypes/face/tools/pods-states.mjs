@@ -45,7 +45,7 @@ export async function podsStates(visit) {
     // Data below the price (M1): the key dim, the reason in the foot, "Data comes as your mibis grow" beside it
     await scene([["S01", 55, 1, 0], ["S01", 52, 1, 1]], { rich: true, d: 0 }); await to(R({ focus: "key", lane: 0, at: "right" })); await at("read, not enough Data", { view: "room", focus: "key" });
     await scene([["S03", 61, 1, 2], ["S03", 62, 1, 1]], { rich: true, e: 11, d: 11, s: 17 }); await to(R({ focus: "rail", lane: 2, at: "rail" })); await at("read, Tuikis, Shape in hand", { view: "room", focus: "rail" });
-    await scene([["S02", 71, 1, 3], ["S02", 72, 1, 1]], { rich: true, why: "a new species" }); await to(R({ focus: "rail", lane: 5, at: "rail" })); await at("read, a sealed chapter, the pod's reason", { view: "room", focus: "rail" });
+    await scene([["S02", 71, 1, 3], ["S02", 72, 1, 1]], { rich: true, why: "a new species", seal: ["S02", "character"] }); await to(R({ focus: "rail", lane: 5, at: "rail" })); await at("read, a sealed chapter, the pod's reason", { view: "room", focus: "rail" });
     await scene([["S01", 81, 0, 0]]); await to(R({ focus: "key" })); await at("read, a sealed pod, Identify", { view: "room", focus: "key" });
     await scene([["S01", 91, 1, 0]], { firstRead: true }); await to(R({ focus: "key", lane: 0, at: "right" })); await key("confirm"); await page.waitForTimeout(2600); await at("read, the stamp moment", { view: "room", focus: "hold" });
     await key("back"); await page.waitForTimeout(600); await to(R({ focus: "rail", lane: 0, at: "rail" })); await key("up"); await page.waitForTimeout(800); await at("read, the stamp view", { view: "room", focus: "stamp" });

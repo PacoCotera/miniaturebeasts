@@ -212,10 +212,10 @@ static void wk_step(wk_t *k) {   /* one step of this resident's own time */
     if (nl > 1 && r % (unsigned)g_lvin == 0) { int to = k->lv ? 0 : 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)); if ((to == 0 || raised_ok(k->id)) && lv_open(to, k->w) && (jn = room_route(k->lv, to, rt)) >= 0) tlv = to; }
     int ax = rt[0][0][0] - k->w / 2, af = rt[0][0][1], bx = rt[1][0][0] - k->w / 2, bf = rt[1][0][1];
     int wx = k->x, wf = k->feet, ok = 0, room = g_stw > 0 ? heap_gap(k->id, k->x, k->feet, k->w, k->h) : 0;   /* idle is over: a waypoint, up to eight tries */
-    if (room > 0) room = 0;   /* Idle (a whole window of ground): a waypoint may not put this figure over another's box, or deeper into one than where it stands now. Home's and the Vivarium's smaller windows keep walking as built: walking overlaps stay fine (L4-22) */
+    { int third = -(k->w / 3); if (room > third) room = third; }   /* release 22 (D2): a waypoint may put this figure behind another's (L4-22, the owner's fine) but never more than a third of its width over it, nor deeper than where it stands now */
     for (int i = 0; i < 8 && !ok; i++) {
       unsigned a = wr(k), b = wr(k); lvl_draw(tlv, a, b, k->w, WIDE, WIDE, &wx, &wf);
-      if (g_idle && g_stw > 0 && heap_gap(k->id, wx, wf, k->w, k->h) < room) continue;
+      if (g_stw > 0 && heap_gap(k->id, wx, wf, k->w, k->h) < room) continue;
       if (tlv == k->lv) ok = (iabs(wx - k->x) > iabs(wf - k->feet) ? iabs(wx - k->x) : iabs(wf - k->feet)) >= 32 && gok(tlv, wx, wf, k->w, 0) && path_ok(tlv, k->x, k->feet, wx, wf, k->w, 0);
       else ok = gok(tlv, wx, wf, k->w, 0) && path_ok(k->lv, k->x, k->feet, ax, af, k->w, 1) && path_ok(tlv, bx, bf, wx, wf, k->w, 1);   /* leg 2 skips the profile and keep-out samples: a join is walkable by definition */
     }
@@ -673,7 +673,7 @@ static int ent_load(const char *cur) {
       else if (!ssh && m->rs == RS_SHOWN) m->rs = RS_FINISH;
       else if (ssh && m->rs != RS_SHOWN) { mv_return(m); if (!motion && m->x < g_xlo) { int tx, tf; edge_point(m->fw, &tx, &tf); m->x = tx; m->feet = tf; } }
       if (!motion && !ssh && (m->rs == RS_FINISH || m->rs == RS_GOING)) mv_rest_at(m);   /* with motion off a flip is a cut */
-      e->hidden = m->rs == RS_REST && m->rk != RK_CURL;
+      e->hidden = (m->rs == RS_REST && m->rk != RK_CURL) || m->x < g_xlo;
       if (!motion) {   /* motion off: stand, or curl when asleep, in the facing it has; no travel, no step, no dither; flips are cuts */
         int x = m->x, f = m->feet, fc = m->facing; if (m->want) mv_to_asleep(m, 0); else mv_to_rest(m, 0);
         m->x = x; m->feet = f; m->facing = fc; m->cell = moving_walk_cell(MS, m->want ? "curl" : "stand"); m->wander = 0; m->pending_stir = 0;
@@ -717,7 +717,7 @@ static int ent_load(const char *cur) {
     const wk_t *k = &g_w[q]; const sg_t *z = &sg[q]; ent_t *e = &g_e[z->ent];
     e->box[0] = k->x; e->box[1] = k->feet + (e->hasfig ? 1 : 0) - z->fig[3];   /* no figure: the picture's bottom edge is the feet, as it was */ e->box[2] = z->fig[2]; e->box[3] = z->fig[3];   /* the figure box: the focus target */
     e->draw[0] = k->x - z->fig[0]; e->draw[1] = e->box[1] - z->fig[1]; e->draw[2] = z->w; e->draw[3] = z->h; memcpy(e->sbox, e->draw, sizeof e->sbox);
-    e->hidden = k->rs == RS_REST && k->rk != RK_CURL;
+    e->hidden = (k->rs == RS_REST && k->rk != RK_CURL) || k->x < g_xlo;   /* release 22 (D2): a figure that has crossed the frame edge on its way out or in is not drawn cut by it */
     if (z->asleep) { int fx = k->x + z->fig[2] / 2, x0 = fx - z->cf[2] / 2;   /* the curl on the same feet point: its own figure's box, ring and tag; no lift */
       e->hasfig = 1; e->curled = 1; e->box[0] = x0; e->box[1] = k->feet + 1 - z->cf[3]; e->box[2] = z->cf[2]; e->box[3] = z->cf[3]; e->draw[0] = x0 - z->cf[0]; e->draw[1] = e->box[1] - z->cf[1]; e->draw[2] = z->cp[0]; e->draw[3] = z->cp[1]; }
   }
@@ -797,9 +797,43 @@ static void sleeper_draw(const ent_t *e) {
 }
 
 /* the focused one's name tag: below the ring at feetY + 16 and, past the window's foot, over the figure at feetY − H − 32 less the lift; a sleeper's, or one asleep in place, is always over its ink, 32 above its top, with no lift */
+/* release 22 (D1): the figure's rectangle as the eye sees it (its ink when asleep in place, else its figure box or picture), and whether a tag rectangle is clear of every other figure */
+static void ent_figrect(const ent_t *e, int r[4]) { const int *b = e->asleep ? e->ink : (e->hasfig ? e->box : e->draw); memcpy(r, b, 4 * sizeof(int)); }
+static int rect_area(const int a[4], const int b[4]) { int w = (a[0] + a[2] < b[0] + b[2] ? a[0] + a[2] : b[0] + b[2]) - (a[0] > b[0] ? a[0] : b[0]), h = (a[1] + a[3] < b[1] + b[3] ? a[1] + a[3] : b[1] + b[3]) - (a[1] > b[1] ? a[1] : b[1]); return w > 0 && h > 0 ? w * h : 0; }
+/* how much of the figures a tag rectangle covers: the others' area, and the tag's own figure counted eightfold (the face stays clear first) */
+static int tag_cover(const ent_t *self, const int r[4]) {
+  int q[4], s; ent_figrect(self, q); if (q[3] > 20) q[3] -= 14;   /* its own feet and ring may be touched by a label under it (release 22b): only the body and face count */
+  s = 8 * rect_area(r, q);
+  for (int i = 0; i < g_ne; i++) { const ent_t *o = &g_e[i]; if (o == self || o->hidden) continue; ent_figrect(o, q); if (q[2] > 0) s += rect_area(r, q); }
+  return s;
+}
+/* the tag's top for a figure, clear of every figure (its own face included): the standing one's usual place when clear, else under its feet, else over its head, else as far as the window allows; -1000 when none is clear */
+static int tag_top(const ent_t *e, const char *glass, int usual, int usual2, int *axc) {
+  int h = v_si(sp(), hp("regions.nameTag.h"), 24), w = v_role_width(e->name, "nameTag") + 40, gap = 4, fr[4]; ent_figrect(e, fr);
+  int gx = v_sk(sp(), v_fmt("%s.rect", glass), 0), gy = v_sk(sp(), v_fmt("%s.rect", glass), 1), gw = v_sk(sp(), v_fmt("%s.rect", glass), 2), gh = v_sk(sp(), v_fmt("%s.rect", glass), 3);
+  int cx = fr[0] + fr[2] / 2;
+  /* release 22b (0a): a label belongs under its own figure; if no clear spot is right under it, it shifts sideways along the ground line, and only then goes over a head (a heavy penalty) */
+  int under = fr[1] + fr[3] + gap, undc = under; if (undc + h > gy + gh - 2) undc = gy + gh - 2 - h;
+  int cy[8] = { usual, usual2, under, undc, fr[1] + fr[3] + gap + h, fr[1] - h - gap, fr[1] + fr[3] - h, fr[1] - h - gap - h };
+  static const int pen[8] = { 0, 30, 8, 10, 40, 60, 80, 90 };
+  int cxs[5] = { cx, fr[0] - w / 2 - gap, fr[0] + fr[2] + w / 2 + gap, fr[0] - w - w / 2 - gap, fr[0] + fr[2] + w + w / 2 + gap };   /* centred, then to the left of the figure, then to the right, then one label further each way */
+  int best = 1 << 30, by = -1000, bx = cx;
+  for (int j = 0; j < 5; j++) for (int k = 0; k < 8; k++) {
+    int x = cxs[j] - w / 2; if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
+    int r[4] = { x, cy[k], w, h }; if (cy[k] < gy + 2 || cy[k] + h > gy + gh - (k == 3 ? 2 : 8)) continue;
+    int dx = x + w / 2 - cx, dy = cy[k] + h / 2 - (fr[1] + fr[3] / 2); if (dx < 0) dx = -dx; if (dy < 0) dy = -dy;
+    int s = 4 * tag_cover(e, r) + (dx + dy) / 4 + pen[k] + (j > 0 ? 24 : 0) + (j > 2 ? 12 : 0); if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
+  }
+  *axc = bx; return by;
+}
 static void ent_tag(const ent_t *e, const char *glass) {
   int tag[4], below = v_si(sp(), hp("regions.nameTag.below"), 16), over = v_si(sp(), hp("regions.nameTag.over"), 32), lift = v_si(sp(), hp("regions.resident.lift"), 4);
   const char *fill = v_scol(sp(), "colours.nameTag.fill"), *edge = v_scol(sp(), "colours.nameTag.edge");
+  if (g_viv || g_idle || g_home) {   /* the crowd scenes: the label stands clear of every figure, its own face and its neighbours' */
+    int usual = (e->sleeper || e->curled || e->asleep) ? -1000 : e->box[1] + e->box[3] - 1 + below, fr[4]; ent_figrect(e, fr);
+    int axc = 0, usual2 = (e->sleeper || e->curled || e->asleep) ? -1000 : e->box[1] - 1 - over - lift, y = tag_top(e, glass, usual, usual2, &axc), anc[4] = { axc - 1, fr[1], 2, fr[3] };
+    if (y != -1000) { kit_nameTag(sp(), glass, e->name, anc, y, y, KIT_TAG_OVER, 0, fill, edge, NULL, tag); return; }
+  }
   if (e->sleeper || e->curled) { const int *b = e->hasfig ? e->box : e->draw; kit_nameTag(sp(), glass, e->name, b, 0, b[1] + b[3] / 2 - 12, KIT_TAG_OVER, 0, fill, edge, NULL, tag); }   /* release 21h2 (E): a sleeper's label lies on its own body, never over a neighbour's head (it stood 32 px above the sleeper, on whoever stood behind) */
   else if (e->asleep) kit_nameTag(sp(), glass, e->name, e->ink, 0, e->ink[1] - over, KIT_TAG_OVER, 0, fill, edge, NULL, tag);
   else { int feetY = e->box[1] + e->box[3] - 1; kit_nameTag(sp(), glass, e->name, e->box, feetY + below, feetY - e->box[3] - over - lift, KIT_TAG_AUTO, 0, fill, edge, NULL, tag); }

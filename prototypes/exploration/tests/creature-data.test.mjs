@@ -75,7 +75,7 @@ test("nothing is left to chance: the act code reads no random source", () => {
 });
 
 test("the Data is shown in advance on the creature's line: open, full, paid, and nothing for an unknown creature", () => {
-  const t = trip({ S: { known: [0, 1], exp: { cargo: { e: 0, d: 0, s: 0, pods: [] }, moments: [], momented: {} } }, spOf: sp => ({ eats: sp === 0 }) });
+  const t = trip({ S: { known: [0, 1], exp: { cargo: { e: 0, d: 0, s: 0, pods: [] }, moments: [], momented: {} } }, spOf: sp => ({ eats: sp === 0, settle: sp === 1 ? "burrow" : null }) });   // L2b: a settler is a kind with a `settle` rule (the Tuikis's is its burrow)
   const names = ["actTag"], tag = vm.runInContext(source("actTag") + ";actTag", t.ctx);
   assert.equal(tag(cr(1, 0)), " · +1 Data", "an eater: the feed is open");
   assert.equal(tag(cr(2, 1)), " · +1 Data", "a Tuikis: the settle is open");

@@ -68,7 +68,7 @@ Chapters are whole-column blocks, so a frame can need a size more than its bit c
 
 **Every species, and up to about 150 open loci, stays readable at 20 mm on the Caddy**, at 100% at both 20 mm and 16 mm; the 37×37 stamps need 16 mm at the farther photo distance (see below).
 
-The Tuliko (S20, 54 open loci) is 37×37, and 41×41 with a postmark. `STAMP_SPECIES=S20,S20-pm node tests/run.mjs` runs the harness on it and writes `tests/results-s20-s20-pm.md`: 0 false accepts in 6110 decodes, and both sizes read 100% at 30, 20 and 16 mm on the Caddy at 9 and 6 px/mm (the 41×41 stamp at 12 mm: 80% at 9 px/mm, 0% at 6; at 14 mm: 100% / 0%).
+The registry carries two Tuliko. The current one is the rambler, frame 20.8 (22 open loci; its type individual is in `tests/s20r-type.json`, tested by `tests/s20r.test.mjs`). The retired v1 biped is frame 20.1, kept so old prints decode, and its numbers follow (history). The v1 Tuliko (S20, 54 open loci) is 37×37, and 41×41 with a postmark. `tests/results-s20-s20-pm.md` holds the harness run on it (taken when it was the only S20; `STAMP_SPECIES=S20` now runs the rambler and writes `tests/results-s20r*.md` / `.json`, never over this file): 0 false accepts in 6110 decodes, and both sizes read 100% at 30, 20 and 16 mm on the Caddy at 9 and 6 px/mm (the 41×41 stamp at 12 mm: 80% at 9 px/mm, 0% at 6; at 14 mm: 100% / 0%).
 
 ## Results
 

@@ -15,6 +15,7 @@
 import { frameOf } from "./genome.mjs";
 import { mibiById, speciesOf, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, noteCarried, mibiStage, dockKey, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
+import { poseFor, HABIT_POSE } from "./layered-stand.mjs";
 import { parentsOf, crossDepth, walkMemo } from "./lineage.mjs";
 
 // What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
@@ -146,9 +147,11 @@ export function mergeHome(st, sv, now = Date.now()) {
 // The offer on Habitat: the mibi, the poses it can take (habits seen), the places (where it has been).
 // Poses are offered in the species frame's habit order, not the order they were seen.
 const inFrameOrder = (m, hs) => { const order = frameFor(m)?.habits || []; const at = (h) => { const i = order.indexOf(h); return i < 0 ? order.length : i; }; return hs.slice().sort((a, b) => at(a) - at(b)); };
+// A habit whose pose falls back to the curl (no picture of its own for the kind and stage) is left out, so no card is a second curl or a sleeping picture under a habit's label; sleep-curled is the curl itself.
+const hasOwnPose = (st, m, h) => HABIT_POSE[h] === "curl" || poseFor(speciesOf(m), mibiStage(st, m), h).pose !== "curl";
 export function offer(st, m, sv) {
   const block = st.sitting ? portraitBlock(st, m, sv) : "no sitting held";
-  return { held: !!st.sitting, mibi: m ? m.id : null, poses: m ? inFrameOrder(m, habitsOf(m)) : [], places: m ? placesOf(m) : [], block, portrayed: !!(m && m.portrait) };
+  return { held: !!st.sitting, mibi: m ? m.id : null, poses: m ? inFrameOrder(m, habitsOf(m)).filter((h) => hasOwnPose(st, m, h)) : [], places: m ? placesOf(m) : [], block, portrayed: !!(m && m.portrait) };
 }
 export function beginBlock(st, m, pose, place, sv) {
   if (!st.sitting) return "no sitting held";

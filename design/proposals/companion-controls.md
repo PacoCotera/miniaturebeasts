@@ -126,7 +126,7 @@ Confirm, where the palm would press it while gripping.
 Expedition 1, Weather, no partner, 0 Energy.
 | # | Press | Screen shows afterwards |
 | --- | --- | --- |
-| – | (start) | Weather and Deep ground (dimmed, needs a digger). Line: "✓ Choose Weather   ← menu" |
+| – | (start) | Weather and Deep ground (dimmed, needs a Tuikis). Line: "✓ Choose Weather   ← menu" |
 | 1 | Confirm | Fogged map with glints. Line: "✓ Start here   meadow · slow beat   ← back" |
 | 2 | Pad right | Next glint. Line: "✓ Start here   wood · tracks   ← back" |
 | 3 | Confirm | Map, 3×3 revealed. Message: "Walk with the pad · ✓ goes down · ← Wait and Send home". Line: "✓ Go down   wood · tracks   ← Wait · Send home". HUD: `))) pin 1⚡` dimmed |

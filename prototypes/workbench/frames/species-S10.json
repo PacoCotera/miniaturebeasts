@@ -106,7 +106,11 @@
   ".....",
   "#####"
  ],
- "habits": [],
+ "habits": [
+  "crest-rise",
+  "ride-current",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "medium",
   "proportion": null,

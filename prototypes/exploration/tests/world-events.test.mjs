@@ -10,7 +10,7 @@ import * as W from "../src/world.mjs";
 // The page in a sandbox: every DOM and canvas call lands on an inert stub; localStorage is `store`.
 const page = (store = {}) => makePage({ store });
 
-const KINDS = ["grown", "elder", "lampLow", "lampOut", "herd", "storm", "fruit", "stirring", "young", "quiet"];
+const KINDS = ["grown", "elder", "lampLow", "lampOut", "shift", "herd", "storm", "fruit", "stirring", "young", "quiet"];
 const PLACES = ["meadow", "pond", "rock", "wood", "shallows", "cliff"];
 const SEED = 7;
 const fresh = (turn, setup = "") => { const p = page(); p.run(`newWorld(${SEED}); S.turn = ${turn}; S.cr = S.cr.slice(0, 0); ${setup}`); return p; };   // no creatures: nothing roams, arrives or is born unless a test says so
@@ -69,7 +69,7 @@ test("storm: the main land of the charged cells, n 1 when the storm reached a ne
 });
 
 test("every turn: at most three events, valid shapes, one for each line and in the lines' order; the Companion's own lines stay as they were", () => {
-  const LINE = [["grown", /is grown/], ["elder", /is an elder now/], ["lampLow", /burns low\.$/], ["lampOut", /has gone out\.$/], ["herd", /(moved [a-z-]+|spread out)\.$/], ["storm", /storm (charged|reached) stones/], ["fruit", /^Fruit is back/], ["stirring", /^Something new is stirring/], ["young", /^Young /], ["quiet", /^A quiet turn/]];
+  const LINE = [["grown", /is grown/], ["elder", /is an elder now/], ["lampLow", /burns low\.$/], ["lampOut", /has gone out\.$/], ["shift", /^The ground shifted, and the /], ["herd", /(moved [a-z-]+|spread out)\.$/], ["storm", /storm (charged|reached) stones/], ["fruit", /^Fruit is back/], ["stirring", /^Something new is stirring/], ["young", /^Young /], ["quiet", /^A quiet turn/]];
   const seen = new Set(); let capped = false;
   for (let t = 0; t < 80; t++) {
     const p = page(); p.run(`newWorld(${SEED}); S.turn = ${t}; S.mibis = ${JSON.stringify([1, 2, 3, 4].slice(0, [0, 1, 2, 4][t % 4]).map(i => mibi(i, { born: t + 1 - 2 })))};`); const r = turnOf(p);   // none, one, two, or four growing up at once: more events than the three kept
@@ -84,5 +84,5 @@ test("the crate carries world { v: 1, turn, ev } beside its lines; a crate seale
   const src = readFileSync(new URL("../index.html", import.meta.url), "utf8");
   assert.match(src, /lines: worldLines\.slice\(\), world: \{ v: 1, turn: S\.turn, ev: turned\.ev \}/);
   assert.match(src, /rep\.lines = worldLines\.slice\(\)/, "the Companion's own report keeps its lines");
-  assert.equal(KINDS.length, 10);
+  assert.equal(KINDS.length, 11);
 });

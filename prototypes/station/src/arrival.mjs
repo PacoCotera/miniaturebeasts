@@ -16,5 +16,6 @@ export function arrivalOf(st, sv, r, max = 3) {
     crates: crates.length, shown, newCrates: crates.slice(0, shown).map((c) => holdsNewSpecies(st, c)),
     plates: { max: pr ? pr.smax : 0, whole: pr ? Math.max(0, pr.shield - mended) : 0, mended },
     broke: !!(r && r.mend && r.mend.broke), back, leaving,
+    habits: ((r && r.habits) || []).filter((q) => { const m = S.mibiById(st, q.id); return m && !m.released; }),   // the field habits recorded at this dock, once each, for the plate after the show
   };
 }

@@ -24,7 +24,7 @@ test("the rescale makes a pixel-exact ratio on a synthetic pair and keeps the fe
 test("each kind has its chips under the new names and none of the earlier trait chips, rolls or reading pictures of S01 and S03 remain", () => {
   for (const k of KINDS) for (const l of ["plain", "back-spots", "saddle", "gradient", "bands", "patches"]) for (const s of ["104x64", "104x96", "104x160", "128x160", "144x176"]) assert.ok(M[`trait-${k}-markings-${l}-${s}`], `trait-${k}-markings-${l}-${s}`);
   for (const k of KINDS) for (const l of ["small", "stand", "large"]) assert.ok(M[`trait-${k}-signature-size-${l}-128x160`], `${k} ${l}`);
-  assert.ok(!Object.keys(M).some((id) => /^(roll-S01-|reading-[a-z-]+-S0[13]-)/.test(id) || id === "mibi-juvenile-S01-176x128" || /^trait-S\d\d-(coat|signature-(small|stand|large))/.test(id)));
+  assert.ok(!Object.keys(M).some((id) => /^(roll-S01-(?!eyes-)|reading-[a-z-]+-S0[13]-)/.test(id) || id === "mibi-juvenile-S01-176x128" || /^trait-S\d\d-(coat|signature-(small|stand|large))/.test(id)));
   assert.ok(Object.keys(M).filter((id) => /^trait-S\d\d-/.test(id)).every((id) => /^trait-S\d\d-(markings|signature-size)-/.test(id)));
   assert.equal(retired("roll-S01-drive-128x72", KINDS), true);
 });

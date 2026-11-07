@@ -11,6 +11,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
+import "./fixtures/place-poses.mjs";
 import * as T from "../src/sitting.mjs";
 import { poseFor, layeredStand, standFigure } from "../src/layered-stand.mjs";
 import { loadStandSizesFs, unloadStands } from "../tools/stand-layers-fs.mjs";

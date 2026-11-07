@@ -12,11 +12,11 @@
  },
  "taxonomy": {
   "code": "S05",
-  "moves": "trots",
+  "moves": "waddles, never the same way twice",
   "habitat": "Woods",
   "gate": null,
   "diet": "fruit, seeds",
-  "ability": "senses warm stones (Energy)",
+  "ability": "feels stones for warmth",
   "character": "quick and clever",
   "clanName": "Dasyla",
   "clanNumber": 5,
@@ -106,6 +106,8 @@
   "....."
  ],
  "habits": [
+  "warm-sit",
+  "stone-sense",
   "sleep-curled"
  ],
  "pod": {

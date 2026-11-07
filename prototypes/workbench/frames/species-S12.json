@@ -108,7 +108,11 @@
   ".....",
   ".#.#."
  ],
- "habits": [],
+ "habits": [
+  "plume-bob",
+  "dew-find",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "small",
   "proportion": null,
