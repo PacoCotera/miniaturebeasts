@@ -9,6 +9,7 @@ import { railLanes, railLayout } from "../reading-rail.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const slot = (req, id, size, until) => req({ kind: "slot", id, master: id, size, until: until ?? "the reading screen's cut (the reading screen spec §3)" });
+const dataIcon = (req, px) => req({ kind: "icon", id: `icon:data:${px}`, name: "data", px });   // the Data diamond is the icon set's (the top bar's blue), never a baked colour
 const podFrame = (p) => frameOf(S.speciesOf(p));
 export const sealedShut = (ch, settings) => !!ch.sealed && !settings.sealedOpen;
 const isDoings = (ch) => ch.traits.every((t) => t.nature === "doing");
@@ -73,7 +74,7 @@ export function readView(view, m, spec, req) {
   if (!p.idd) {
     out.chamber = slot(req, "reading-chamber-overview-548x356", [548, 356]); const c = S.identifyCost(st, settings), short = st.d < c;
     out.right = { form: "identify", chapter: { id: "", name: Sg.identifyHead, marks: [], tick: false, lock: false }, plates: [{ trait: "", kind: Sg.identifyLine, shown: { pic: req({ kind: "pod", id: `pod:-:s:88x112`, species: null, state: "sealed", size: [88, 112] }), caption: "" } }],
-      key: { price: String(c), state: short ? "dim" : "lit", pic: slot(req, `reading-key-${short ? "dim" : "lit"}-104x49`, [104, 49]), diamond: slot(req, "reading-diamond-16x16", [16, 16]) }, beside: { sprout: "", text: short ? Sg.dataGrows : "" }, chip: null, mate: null, plate: slot(req, R.right.plate.id, [40, 40]), glow: slot(req, "reading-plate-glow-character-200x120", [200, 120]) };
+      key: { price: String(c), state: short ? "dim" : "lit", pic: slot(req, `reading-key-${short ? "dim" : "lit"}-104x49`, [104, 49]), diamond: dataIcon(req, 16) }, beside: { sprout: "", text: short ? Sg.dataGrows : "" }, chip: null, mate: null, plate: slot(req, R.right.plate.id, [40, 40]), glow: slot(req, "reading-plate-glow-character-200x120", [200, 120]) };
     view.line = { ok: short ? null : Sg.identify, price: short ? "" : "◆ " + c, back: spec.strings.room.foot.backPods, subject: "", need: short ? fill(Sg.needs, { n: c, have: st.d }) : "" };
     view.targets = [{ id: "key", group: "key" }]; view.resolve = {}; prune(out); return view;
   }
@@ -97,7 +98,7 @@ export function readView(view, m, spec, req) {
     out.lamp = slot(req, "reading-lamp-lit-36x26", [36, 26]); }
   // the right frame: the chapter in hand
   out.right = rightOf(m, spec, req, p, fr, ch, k, { at, isRead, sealed, sprout: sp === k, goal, reading });
-  if (reading && out.right && !out.right.key) out.right.key = { price: String(reading.cost ?? ""), state: "pressed", pic: slot(req, "reading-key-pressed-104x49", [104, 49]), diamond: slot(req, "reading-diamond-16x16", [16, 16]), pressOnly: true };   // the key shows pressed for the read's first 80 ms
+  if (reading && out.right && !out.right.key) out.right.key = { price: String(reading.cost ?? ""), state: "pressed", pic: slot(req, "reading-key-pressed-104x49", [104, 49]), diamond: dataIcon(req, 16), pressOnly: true };   // the key shows pressed for the read's first 80 ms
   // the stamp: the one-time moment at the end of the first read ever, and the stamp view (▲ on the rail) once taught
   const moment = ui.moment && ui.moment.pod === p.id ? ui.moment : null;
   if (moment || at === "stamp" || ui.folding) out.stamp = stampOf(req, st, p, fr, rr, moment ?? (ui.folding?.was === "moment" ? { chapter: null } : null), Sg, settings);
@@ -124,7 +125,7 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
     const [r, rc, rch] = RADII[Math.min(4, n)], cost = S.readCost(st, p, ch.id, settings) ?? 0, short = st.d < cost, pressed = false;
     const plates = ch.traits.map((t) => ({ trait: t.name, kind: "", shown: { pic: discReq(req, sid, t, ch, 2 * r, { q: true, look: templateOf(st, fr, t)[0] || null }), caption: "" }, carried: { pic: discReq(req, sid, t, ch, 2 * rc, { q: true, carried: true }), caption: "" },
       chips: templateOf(st, fr, t).map((look, i) => discReq(req, sid, t, ch, 2 * rch, t.nature === "doing" || glyphOf(t) !== "bar" ? { glyph: `${glyphOf(t)}${i}`, alpha: 0.92 } : { look: look || null, alpha: 0.92 })) }));   // the drawn template glyphs: gaits, amounts, Build, Haunch, Topline, Eyes
-    return { ...base, form: "unread", plates, key: { price: String(cost), state: short ? "dim" : pressed ? "pressed" : "lit", pic: slot(req, `reading-key-${short ? "dim" : pressed ? "pressed" : "lit"}-104x49`, [104, 49]), diamond: slot(req, "reading-diamond-16x16", [16, 16]) },
+    return { ...base, form: "unread", plates, key: { price: String(cost), state: short ? "dim" : pressed ? "pressed" : "lit", pic: slot(req, `reading-key-${short ? "dim" : pressed ? "pressed" : "lit"}-104x49`, [104, 49]), diamond: dataIcon(req, 16) },
       beside: o.sprout ? { sprout: slot(req, "reading-sprout-20x18", [20, 18]), text: Sg.sprout } : { sprout: "", text: short ? Sg.dataGrows : "" } };
   }
   // read: the pair on each plate (shown over carried), the captions, the trait and its kind line; the reward chip after a read that paid for a new look
@@ -134,7 +135,7 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
       shown: { pic: discReq(req, sid, t, ch, 2 * r, t.nature === "doing" ? { glyph: `${glyphOf(t)}${lookIndex(fr, t, two[0])}` } : { look: two[0] }), caption: String(two[0] ?? "") },
       carried: { pic: discReq(req, sid, t, ch, 2 * rc, t.nature === "doing" ? { glyph: `${glyphOf(t)}${lookIndex(fr, t, two[1] ?? two[0])}`, veil: 0.28 } : { look: two[1] ?? two[0], veil: 0.28 }), caption: differs ? String(two[1]) : "" },
       glint: !!(p.first && p.first.includes(t.id)), goal: !!goalHere }; });
-  return { ...base, form: "read", plates, chip: o.reading && o.reading.reward ? { n: o.reading.reward, pic: slot(req, "reading-chip-86x32", [86, 32]), diamond: slot(req, "reading-diamond-13x13", [13, 13]) } : null };
+  return { ...base, form: "read", plates, chip: o.reading && o.reading.reward ? { n: o.reading.reward, pic: slot(req, "reading-chip-86x32", [86, 32]), diamond: dataIcon(req, 13) } : null };
 }
 const pair = (s) => [s.shows, s.hides ?? (s.halves ? (s.halves[0] === s.shows ? s.halves[1] : s.halves[0]) : s.shows)];
 const glyphOf = (t) => (/^body-(hue|value)$/.test(t.id) ? "bar" : /pace|stride|weave|drive|turning|flap/.test(t.id) ? "gait" : /hind|haunch/.test(t.id) ? "haunch" : /build|body|roundness/.test(t.id) ? "build" : /back-line|topline/.test(t.id) ? "topline" : /eye/.test(t.id) ? "eyes" : "bar");
