@@ -109,13 +109,13 @@ const walk = (seed, sp, { tier = 1, rider = false, elder = false } = {}) => {
 };
 const J = (p, src) => JSON.parse(p.run(`JSON.stringify(${src})`));
 
-test("Tuliko as the partner: range is the tier's + 1 at tier 1 and tier 2, the reach is a superset, firstPods and the hold are unchanged; the log says reach +1", () => {
+test("Tuliko as the partner: range is the tier's + 1 at tier 1 and tier 2, the reach is a superset, firstPods and the hold are unchanged; the log says one ring further", () => {
   for (const tier of [1, 2]) for (const seed of [7, 19, 88]) {
     const base = walk(seed, 0, { tier }), tul = walk(seed, 19, { tier });
     const r0 = J(base, "S.exp.range"), r1 = J(tul, "S.exp.range"); assert.equal(r0, tier === 1 ? 2 : 4); assert.equal(r1, r0 + 1);
     const a = new Set(J(base, "S.exp.reach")), b = new Set(J(tul, "S.exp.reach")); for (const c of a) assert.ok(b.has(c), "superset " + seed); assert.ok(b.size >= a.size);
     assert.deepEqual(J(base, "S.pods"), J(tul, "S.pods"), "firstPods and the world's pods are the same");
-    assert.deepEqual(J(base, "S.exp.hold"), J(tul, "S.exp.hold")); assert.ok(J(tul, "S.log").some(l => /reach \+1/.test(JSON.stringify(l))));
+    assert.deepEqual(J(base, "S.exp.hold"), J(tul, "S.exp.hold")); assert.ok(J(tul, "S.log").some(l => /one ring further/.test(JSON.stringify(l))));
   }
 });
 
@@ -183,7 +183,7 @@ test("the turn after a walk that dug a bank or the burrow says the ground shifte
 
 test("the ab keys and ability lines: sure (Tuliko), bank (Rupar), dig (Tuikis, the new line); every other kind stays without one", () => {
   const p = makePage({}); p.run("newWorld(7)");
-  assert.deepEqual(J(p, "[SPECIES[19].name, SPECIES[19].ab, SPECIES[19].abText]"), ["Tuliko", "sure", "crosses mud and scree; walks farther"]);
+  assert.deepEqual(J(p, "[SPECIES[19].name, SPECIES[19].ab, SPECIES[19].abText]"), ["Tuliko", "sure", "crosses mud and scree; reaches one ring further"]);
   assert.deepEqual(J(p, "[SPECIES[7].name, SPECIES[7].ab, SPECIES[7].abText]"), ["Rupar", "bank", "digs a way up or down earth banks"]);
   assert.deepEqual(J(p, "[SPECIES[1].ab, SPECIES[1].abText]"), ["dig", "digs out narrow burrows"]);
   assert.deepEqual(J(p, "SPECIES.map((s, i) => [i, s.ab]).filter(([i, a]) => a && ![0, 1, 2, 7, 19].includes(i))"), []);
@@ -194,4 +194,27 @@ test("fords: a ford cell is a 'ford' in the map's words, never 'shallows'", () =
   const p = makePage({}); p.run("newWorld(7)");
   assert.equal(J(p, "LAND_NAME[4]"), "ford"); const f = J(p, "(() => { for (let c = 0; c < MW * MH; c++) if (G.ford[c]) return c; return -1; })()");
   if (f >= 0) assert.equal(p.run(`landWord(${f})`), "ford");
+});
+
+test("the card fields: abCard and abCardShort, and every changed line fits its slot at the worst-case 8-letter name", () => {
+  const p = makePage({}); p.run("newWorld(7)"); const W8 = "Wmwmwmwm";
+  const w = (s, f = "textW") => p.run(`${f}(${JSON.stringify(s)}, 2)`), ab = (sp, short) => p.run(`abCardOf(${sp}, ${!!short})`);
+  assert.equal(ab(19), "mud and scree · one ring further"); assert.equal(ab(19, true), "one ring further");
+  assert.equal(ab(7), "digs up or down banks"); assert.equal(ab(7, true), "digs up or down banks"); assert.equal(ab(1), "digs out burrows"); assert.equal(ab(0), "calms wary creatures");
+  const slow = " · slow, keen", sizes = [];
+  for (const [sp, nm] of [[19, "Tuliko"], [7, "Rupar"], [1, "Tuikis"]]) {
+    const set = ab(sp), page = [nm + " · " + ab(sp), nm + " · " + ab(sp, true) + " once grown", nm + " · " + ab(sp, true) + slow], card = [ab(sp), ab(sp, true) + slow];
+    sizes.push([nm, "set-out " + w(set)]); assert.ok(w(set) <= 306, nm + " set-out card " + w(set));
+    for (const s of page) { sizes.push([s, w(s)]); assert.ok(w(s) <= 390, s + " " + w(s)); }
+    for (const s of card) { sizes.push([s, w(s)]); assert.ok(w(s) <= 314, s + " " + w(s)); } }
+  const deep = "Caves · " + W8 + " digs a way in"; sizes.push([deep, w(deep)]); assert.ok(w(deep) <= 306, "deep ground card " + w(deep));
+  p.run(`S.turn = 5; S.known = [0, 1, 2]; S.mibis = [{ id: 1, name: ${JSON.stringify(W8)}, sp: 19, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }]; S.carried = [1]; S.lead = 1`);
+  for (const sp of [19, 7, 1]) { p.run(`S.mibis[0].sp = ${sp}`);
+    const r = p.run(`lineCtx({ ok: 'Open Mibis', back: 'menu', ctx: partnerCtx() })`), forms = p.run("partnerCtx()"), last = forms[forms.length - 1];
+    sizes.push(["bottom line " + sp + " (avail " + r.avail + ")", w(last, "textWT")]); assert.ok(!r.r.includes("…")); assert.equal(r.r, forms.find(f => w(f, "textWT") <= r.avail) ?? r.r); }
+  p.run("S.mibis[0].name = \"Fig\""); { const forms = p.run("partnerCtx()"), r = p.run("lineCtx({ ok: \"Open Mibis\", back: \"menu\", ctx: partnerCtx() })"); assert.ok(w(forms[forms.length - 1], "textWT") <= r.avail, "the tight form fits a 3-letter name (a longer name drops to the name alone at the dot cut, never an ellipsis): " + w(forms[forms.length - 1], "textWT") + " of " + r.avail); }
+  p.run("S.mibis[0].sp = 19"); const forms = p.run("partnerCtx()"); assert.equal(forms.length, 3); assert.match(forms[0], /crosses mud and scree; reaches one ring further$/); assert.match(forms[1], /mud and scree · one ring further$/); assert.match(forms[2], /Partner: Fig · one ring further$/);
+  for (const l of ["Needs a rambler", "Needs a digger"]) assert.ok(l.length <= 24);
+  assert.ok(w("Mud or scree · needs a rambler") <= 322, "the sign name line");
+  console.log(sizes.map(([s, n]) => n + "  " + s).join("\n"));
 });

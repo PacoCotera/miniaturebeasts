@@ -370,7 +370,7 @@ const SPECIES = [
     ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared Loika', learn: 'Loikas sometimes shed when they shake dry, more often for someone they trust.',
     col: { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' } },
   { name: 'Tuikis', plural: 'Tuikis', hab: ROSTER[1].hab, notice: [2, 4], flee: 2, eats: false, shedP: .1, how: 'calm',
-    ab: 'dig', abText: 'digs out narrow burrows', born: 'a small burrower', learn: 'Tuikis sometimes shed when they feel safe by their burrow, more often for someone they trust.', learnCurl: 'Tuikis sometimes shed when they curl up out of the rain, more often for someone they trust.',
+    ab: 'dig', abText: 'digs out narrow burrows', abCard: 'digs out burrows', born: 'a small burrower', learn: 'Tuikis sometimes shed when they feel safe by their burrow, more often for someone they trust.', learnCurl: 'Tuikis sometimes shed when they curl up out of the rain, more often for someone they trust.',
     col: { body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' } },
   { name: 'Untuva', plural: 'Untuvas', hab: ROSTER[2].hab, notice: [1, 3], flee: 1, eats: true, shedP: .1, how: 'meal',
     ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas sometimes shed after a full meal, more often for someone they trust.',
@@ -381,8 +381,8 @@ const SPECIES = [
 for (const k of KIND_INFO.slice(3)) SPECIES.push({ name: k.name, plural: k.plural, hab: k.hab, notice: [2, 4], flee: 2, eats: true, shedP: .1, how: 'calm',
   ab: null, abText: null, born: null, learn: null, col: { body: 'bone', light: 'bone', shade: 'bone', dark: 'bone' } });
 // L2c: Rupar (sp 7) digs earth banks, Tuliko (sp 19) crosses mud and scree and walks farther (the Companion's own art for both is still to come, so their colours stay plain)
-Object.assign(SPECIES.at(7), { ab: 'bank', abText: 'digs a way up or down earth banks' });
-Object.assign(SPECIES.at(19), { ab: 'sure', abText: 'crosses mud and scree; walks farther' });
+Object.assign(SPECIES.at(7), { ab: 'bank', abText: 'digs a way up or down earth banks', abCard: 'digs up or down banks' });
+Object.assign(SPECIES.at(19), { ab: 'sure', abText: 'crosses mud and scree; reaches one ring further', abCard: 'mud and scree · one ring further', abCardShort: 'one ring further' });
 // Shedding is rare unless the creature is special: shedP is a plain creature's chance at its moment; a creature
 // fed or settled this expedition sheds at SHED_BOND; one of a species not yet known always does; at most SHED_MAX pods from creature
 // moments an expedition (a returned line's pod is apart). Tune.
@@ -399,6 +399,8 @@ const spOf = sp => (Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? SPE
 // The species name of a mibi: the Companion's own, else the one the Station wrote on it, else the slot.
 const mibiSpName = m => spOf(m.sp).name ?? m.spName ?? CARE_TEXT.spOther;
 const abTextOf = sp => spOf(sp).abText ?? CARE_TEXT.abOther;
+// The card forms of an ability line, for the cards that clip the full one: abCard (both halves where they fit), abCardShort (the tight one, where a stage word is added); each falls back to the one before.
+const abCardOf = (sp, short) => { const s = spOf(sp); return (short ? s.abCardShort : null) ?? s.abCard ?? abTextOf(sp); };
 // The mibi names: the current list (es-pets-1), one home with the Station, ../play/src/names.mjs, loaded over HTTP as the footer is (the page names no mibi itself: the Station does, and the name rides in the save).
 let MIBI_NAMES = []; import('../play/src/names.mjs').then(m => { MIBI_NAMES = m.MIBI_NAMES; }).catch(() => { });
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
@@ -561,7 +563,7 @@ const SIGN_LINE = {
   untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
 // the first sighting of each map sign: its Probe name (the line on the card is the same one)
 const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
-  beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · tier 2 Probe reads it' };   // soft: no copywriter name line (cw round 2 gave the pin, the name and the help only), so the sign's name stands here
+  beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'Mud or scree · needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · tier 2 Probe reads it' };
 const SIGN_TILE_OF = { pod: 'pod', t: 'tracks', b: 'beat', k: 'bolt', kw: 'hollow', beacon: 'beacon', skull: 'skull', depot: 'outpost', burrow: 'gate', water: 'gate', soft: 'gate', bank: 'gate', deep: 'gate' };
 const SIGN = {};
 { const add = (id, key, pri, tile, pic, line, o) => { SIGN[id] = Object.assign({ id, key, also: [], pri, tile, pic, line: typeof line === 'function' ? line : () => line }, o); };
@@ -1274,7 +1276,7 @@ function checkExplored() {
   const ex = S.exp; if (!ex || ex.saidDone) return;
   const rc = reachCounts(); if (rc.surveyed < rc.total) return;
   ex.saidDone = ex.actions || 1; logEv('Everything in reach explored (' + rc.total + ' cells)');
-  const rest = rc.soft ? 'the rest needs a rambler' : rc.bank ? 'the rest needs a digger' : '';   // the copywriter's two lines; when both kinds remain (no line of its own) the rambler's is said and the count line carries both
+  const rest = rc.soft && rc.bank ? 'the rest needs a rambler and a digger' : rc.soft ? 'the rest needs a rambler' : rc.bank ? 'the rest needs a digger' : '';   // "and" is true: no one partner reaches all of the rest; the count line gives each number
   fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + (rc.gated === 1 ? 'the cave waits for a Tuikis' : 'the caves wait for a Tuikis') : '') + (rest ? ' · ' + rest : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
 }
 // The place's survey state for the line: "surveyed 2/4 · 3 to take", "surveyed · nothing to take", "not surveyed".
@@ -1379,7 +1381,7 @@ function startExpedition(type, cell) {
   ex.reach = reachCells(cell, ex.range);
   chooseWarm(ex); ensureCharge(ex);
   const p = cxy(cell);
-  logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : rd ? ' · ' + CARE_TEXT.riderMenu(rd.name) : '') + ' · tier ' + S.tier + (ex.range > tier.range ? ' · reach +1' : ''));
+  logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : rd ? ' · ' + CARE_TEXT.riderMenu(rd.name) : '') + ' · tier ' + S.tier + (ex.range > tier.range ? ' · one ring further' : ''));
   meet('flag');   // the map's cell line says "End expedition here" with its flag: no card, the flag joins the Probe
   if (rd) fxOnce('rider', CARE_TEXT.riderSetOut(rd.name), 2, true);   // once per expedition; when mapintro fills the box it shows on the first move (noteHud)
   S.phase = 'map'; transition(); save();
@@ -1751,6 +1753,8 @@ function patchAction() {
   if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? 'Swap the pod' : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
   if (o && o.type === 'pt') return NOTHING;
   if (o && o.type === 'tile' && o.t === T.DEEP) return { label: 'Needs a swimmer', run: swimBump };
+  if (o && o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE) && !canSure()) return { label: 'Needs a rambler', run: () => softBump(o.t) };   // says why ✓ does nothing, as deep water does
+  if (o && o.type === 'tile' && o.t === T.BANK && !canBank()) return { label: 'Needs a digger', run: () => softBump(o.t) };
   if (o && o.type === 'tile' && o.t === T.BANK && canBank() && !softTileOpen(lay, o.t, f.x, f.y)) { const q = crossingAt(lay, f.x, f.y);
     if (q) return { label: ex.pt.elder && ex.bankProg === q.ei + 1 ? 'Keep digging' : ex.pt.name + ' digs a way ' + (G.level[stepCell(lay.cell, q.dir)] > G.level[lay.cell] ? 'up' : 'down'), run: digBankHere }; }
   if (o && o.type === 'feat') {
@@ -4782,7 +4786,7 @@ function drawSetup(t) {
   disc(32, 168, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 56, 192);
   if (deepOk && fr) { R(70, 192, 2, 2, C.cream); R(69, 193, 4, 1, C.yellow); }
   text('Deep ground', 112, 168, deepOk ? C.ink : C.mist, 3);
-  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs the way in' : 'Caves · needs a Tuikis', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
+  text(clipText(dig ? 'Caves · ' + dig.name + ' digs a way in' : 'Caves · needs a Tuikis', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
   // the partner card: the partner's face on the teal ring, its name, stage and ability; or why there is none. The mibis with
   // you as 24 px ring faces in carried order, a free place a dashed circle.
   const pm = partnerMibi(), cm = carriedMibis();
@@ -4791,7 +4795,7 @@ function drawSetup(t) {
     blit(RING(), 46, 322); mibiSprite(pm.sp, 'idle', fr, 28, 264, 2);
     text(nm, 112, 260, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
     chip(112, 292, STAGE_WORD[st], stageFill(st), 'bone');
-    text(clipText(abTextOf(pm.sp), 220, 2), 112, 320, C.stone); }
+    text(clipText(abCardOf(pm.sp), 306, 2), 112, 320, C.stone); }
   else if (cm.length) { const rd = cm[0], st = mibiStage(rd), nm = clipText(rd.name, 220, 3);   // the rider, first in carried order: its picture with no ring, and how it grows
     mibiSprite(rd.sp, 'idle', fr, 28, 264, 2, false, st === 'juvenile');
     text(nm, 112, 260, C.ink, 3); if (rd.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
@@ -4827,6 +4831,12 @@ function partnerRow() {
   if (pm) return 'Partner: ' + pm.name + ' · ' + abTextOf(pm.sp) + (mibiStage(pm) === 'elder' ? ' · slow, keen' : '');
   if (w) return CARE_TEXT.noOneGrown;
   return liveMibis().length ? CARE_TEXT.noOneWith : 'No partner yet';
+}
+// The same line in its three forms for the bottom line, longest first: the full ability, the card form, the tight form (the line cuts at " · " otherwise and would drop the whole ability).
+function partnerCtx() {
+  const pm = partnerMibi(); if (!pm) return partnerRow();
+  const el = mibiStage(pm) === 'elder' ? ' · slow, keen' : '';
+  return [...new Set([abTextOf(pm.sp), abCardOf(pm.sp), abCardOf(pm.sp, true)])].map(ab => 'Partner: ' + pm.name + ' · ' + ab + el);
 }
 function digPartner() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'dig' ? pm : null; }
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
@@ -5084,7 +5094,7 @@ function drawMibis(t) {
     text(CARE_TEXT.partnerCap, 104, y + 6, C.mist);
     if (pm) { text(STAGE_WORD[mibiStage(pm)] + ', ' + turnsShort(pm), 418, y + 6, C.stone, 2, 'right'); blit(RING(), 46, y + 70); mibiSprite(pm.sp, 'idle', fr, 28, y + 12, 2);
       const nm = clipText(pm.name, 314, 3); text(nm, 104, y + 28, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 104 + textW(nm, 3) + 8, y + 34);
-      text(clipText(abTextOf(pm.sp) + (mibiStage(pm) === 'elder' ? ' · slow, keen' : ''), 314, 2), 104, y + 64, C.stone); }
+      const el = mibiStage(pm) === 'elder'; text(clipText(abCardOf(pm.sp, el) + (el ? ' · slow, keen' : ''), 314, 2), 104, y + 64, C.stone); }
     else { blit(dashedCircleArt(64), 28, y + 12); text(cm.length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 104, y + 28, C.ink, 3); text(clipText(leadWhy(), 314, 2), 104, y + 64, C.stone); } }
   text(CARE_TEXT.withYouCap, 20, 148 - off, C.mist);
   for (let k = 0; k < CARRY_MAX; k++) { const y0 = PLACE_Y + k * ROW_P - off, m = cm[k]; if (m) rosterRow(m, y0, sel === k + 1, m === pm, fr); else dashedRect(16, y0, 418, 64, C.stone); }
@@ -5225,7 +5235,7 @@ function drawActive(t) {
   const nm = clipText(m.name, 260, 3); text(nm, 30, 332, C.bone, 3);
   const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, STAGE_WORD[st], stageFill(st), 'bone');
   if (m.bonded && !(bond != null && bond < BOND_MS)) placeholderPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
-  text(clipText(mibiSpName(m) + ' · ' + abTextOf(m.sp) + (!isAdult(m) && spOf(m.sp).abText ? CARE_TEXT.onceGrown : '') + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
+  text(clipText(mibiSpName(m) + ' · ' + abCardOf(m.sp, !isAdult(m) || st === 'elder') + (!isAdult(m) && spOf(m.sp).abText ? CARE_TEXT.onceGrown : '') + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
   text(clipText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2), 30, 396, isW ? C.amber : C.mist);   // one line: the widest status is 314 in 390
   text(clipText(ageLine(m), 390, 2), 30, 424, C.fog);
   { const yt = yoursText(m); if (yt) text(clipText(yt, 390, 2), 30, 446, C.mist); }
@@ -5337,7 +5347,8 @@ function mapContext() {
   const toTake = c => S.visited[c] && passable(c) && leftTotal(c) ? ' · ' + leftTotal(c) + ' to take' : '';
   // the edge you face, named even when the cell beyond is fog (your own four edges always show): a steep edge or stairs
   const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, ex.face || 'down') : EDGE.OPEN;
-  const es = ek === EDGE.CLIFF ? 'steep edge' : ek === EDGE.RAMP ? (G.level[a] > G.level[ex.pos] ? 'stairs up' : 'stairs down') : '';
+  const sk = ek === EDGE.CLIFF ? softKind(ex.pos, ex.face || 'down') : null, up = a >= 0 && G.level[a] > G.level[ex.pos];   // scree and banks are named as the bump names them; a dug bank crosses like a stair
+  const es = ek === EDGE.CLIFF ? (sk === 'scree' ? 'loose scree' : sk === 'bank' ? (bankIsDug(edgeIndex(ex.pos, ex.face || 'down')) ? 'dug way ' + (up ? 'up' : 'down') : 'earth bank') : 'steep edge') : ek === EDGE.RAMP ? (G.level[a] > G.level[ex.pos] ? 'stairs up' : 'stairs down') : '';
   const beyond = a < 0 ? 'edge of the map' : !inRange(a) ? 'edge of range' : !S.revealed[a] ? 'fog' : gatedCell(a) ? 'cave · burrow too narrow' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.revealed[a] && !gatedCell(a) ? signWords(a) : [];
   const there = es ? es + ' · ' + beyond : beyond, AS = 'Ahead: ' + (es || there);   // the short forms cut the cell beyond first, never the edge
   const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = 'Ahead: ' + there + (as.length ? ' · ' + as.join(', ') : '');
@@ -5403,7 +5414,7 @@ function lineBase() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
+    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerCtx(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
       if (S.ui.sel === 1 && !digPartner()) return L1('Needs a Tuikis', 'Deep ground', 'menu', true);   // a mibi at home is never named
       { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
       return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), bayLine(), 'menu');
@@ -5937,7 +5948,7 @@ requestAnimationFrame(frame);
 window.__mb = { get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, canStep, edgeKind, TEST,
-  capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
+  capture: () => scr.toDataURL("image/png"), get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }

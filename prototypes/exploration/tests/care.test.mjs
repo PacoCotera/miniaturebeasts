@@ -1084,7 +1084,7 @@ test("X26 copy: the copywriter's signed strings, within their widths", () => {
   // the stage species line for a juvenile: '‹Species› · ‹abText› once grown'; an unknown-species juvenile keeps abOther; an adult as built
   const q = X26.world([dot(), X26.mib(3, "Bean", -1), pip()], [1, 3, 2]);
   const line = id => { q.run(`S.ui.aId = ${id}`); return q.draw("active").find(c => c[0] === "text" && c[2] === 30 && c[3] === 370)[1]; };
-  assert.ok(line(1).startsWith("Tuikis · digs out narrow burrows once gro"), line(1));   // the copywriter's line (round 3) is a little wider than the card's 370 px line: it is clipped with an ellipsis, reported to the lead
+  assert.equal(line(1), "Tuikis · digs out burrows once grown");   // abCard: the card line fits 390 (round 1)
   assert.equal(line(3), q.run("mibiSpName(mibiById(3))") + " · no field ability yet");
   assert.equal(line(2), "Loika · calms wary creatures");
 });
@@ -1375,7 +1375,7 @@ test("the Mibis list: {n} turns right-aligned to 410 on the chip row; the Partne
   assert.match(source("rosterRow"), /text\(turnsShort\(m\), 410, y \+ 41, C\.stone, 2, 'right'\)/);
   const d = source("drawMibis");
   assert.match(d, /text\(STAGE_WORD\[mibiStage\(pm\)\] \+ ', ' \+ turnsShort\(pm\), 418, y \+ 6, C\.stone, 2, 'right'\)/);
-  assert.match(d, /abTextOf\(pm\.sp\) \+ \(mibiStage\(pm\) === 'elder' \? ' · slow, keen' : ''\), 314, 2\)/);
+  assert.match(d, /abCardOf\(pm\.sp, el\) \+ \(el \? ' · slow, keen' : ''\), 314, 2\)/);
 });
 test("the dock copies since and sinceFloor: a mibi already known, a new one, and one with no clock", () => {
   const S = save({ carried: [1], bay: [], known: [], retSeen: [], pods: [], dockSeen: 0 });
