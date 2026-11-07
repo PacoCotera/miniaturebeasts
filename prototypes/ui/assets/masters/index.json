@@ -1,11 +1,11 @@
 {
  "schema": "mb-masters/1",
  "juvenileFacing": {
-  "note": "Which way each species' adult and juvenile stands face as the masters are painted, and whether the juvenile is drawn mirrored so the young faces the opposite way from its adult (owner, 1 Nov 2026). The master files are never edited: the loader (station/src/masters.mjs) reads each mibi-juvenile-SNN-* master of a mirrored species with its rows reversed, so every stand, sleeper and thumbnail of the young shows mirrored. The Home walk reads the unmirrored stand (its facing comes from the set's native side). Redone 6 Nov 2026 (release 21c) from the twenty kinds' new paintings, measured by eye on the placed 96x88 masters: every kind faces the same way as its young, and the young of all twenty is painted facing the way its adult does, so all twenty are drawn mirrored; S12, S17 and S18 are near front views and are called by the turn of the head. Pesko S06 was painted facing left; its adult and young are placed mirrored (tools/game-masters.mjs FLIPPED), so it faces right like the rest. Loika S01's adult pictures are placed mirrored too (FLIPPED_ADULT), so the adult faces right; its young is painted facing left and drawn mirrored, so it faces right as it always did (the one kind whose young is not painted the adult's way).",
+  "note": "Which way each species' adult and juvenile stands face as the masters are painted, and whether the juvenile is drawn mirrored so the young faces the opposite way from its adult (owner, 1 Nov 2026). The master files are never edited: the loader (station/src/masters.mjs) reads each mibi-juvenile-SNN-* master of a mirrored species with its rows reversed, so every stand, sleeper and thumbnail of the young shows mirrored. The Home walk reads the unmirrored stand (its facing comes from the set's native side). Redone 6 Nov 2026 (release 21c) from the twenty kinds' new paintings, measured by eye on the placed 96x88 masters: every kind faces the same way as its young, and the young of all twenty is painted facing the way its adult does, so all twenty are drawn mirrored; S12, S17 and S18 are near front views and are called by the turn of the head. Pesko S06 was painted facing left; its adult and young are placed mirrored (tools/game-masters.mjs FLIPPED), so it faces right like the rest. Loika S01's adult pictures are placed mirrored too (FLIPPED_ADULT), so the adult faces right; its young was already painted facing right and stays as it is (the one kind whose adult was painted the other way from its young).",
   "species": {
    "S01": {
     "adult": "right",
-    "juvenile": "left",
+    "juvenile": "right",
     "mirror": true
    },
    "S02": {
