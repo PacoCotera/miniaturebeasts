@@ -659,7 +659,7 @@ test("Idle is the room's painting without the frame: one painting, the bed (Root
   const S = R.bed.sleepers; assert.equal(R.bed.rect[1] + R.bed.rect[3], V.foot[1], "the bed on the ground band's foot"); assert.equal(S.centre, R.bed.rect[0] + R.bed.rect[2] / 2); assert.equal(S.footY, R.bed.rect[1] + 40);
   for (const [n, xs] of Object.entries(S.places)) xs.forEach((x, i) => { assert.equal(x, S.centre + S.pitch * (i - (n - 1) / 2)); assert.ok(x - 72 >= 16 && x + 72 <= 1008, "an adult sleeper 16 px inside the screen"); });
   assert.equal(R.bed.markRect, undefined, "R4b: no Companion mark on the bed"); assert.ok(inside(R.resident.walk.ground, V.ground));
-  assert.deepEqual(S.ink.rects[3], S.places[3].map((x) => [x - 48, S.footY - 88, 96, 88])); assert.deepEqual([S.ink.rects[3][0][0], S.ink.rects[3][2][0] + 96], [R.bed.rect[0], R.bed.rect[0] + R.bed.rect[2]]);
+  assert.deepEqual(S.ink.rects[2], S.places[2].map((x) => [x - 48, S.footY - 88, 96, 88]));   // release 21h2: two sleepers, 150 apart, the curl drawn at the kind's scale is wider than 96
   assert.ok(!("asleepMark" in S) && S.mark === null, "no asleep mark");
   assert.deepEqual(I.strings.out, { 1: "{name} is out with the Companion", 2: "Two mibis are with the Companion", 3: "Three mibis are with the Companion" });
   for (const s of [...Object.values(I.strings.crates), I.strings.budReady, I.strings.budGrowing, ...Object.values(I.strings.out)]) { assert.ok(wordsIn(s) <= R.line.words, s); assert.ok(!/\d/.test(s), s); }
