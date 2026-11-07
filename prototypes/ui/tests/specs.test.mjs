@@ -18,19 +18,19 @@ const run = (n, r = frame.regions.rail) => (n <= r.fullUpTo ? n * r.full : (n - 
 const inside = (a, b) => a[0] >= b[0] && a[1] >= b[1] && a[0] + a[2] <= b[0] + b[2] && a[1] + a[3] <= b[1] + b[3];
 const apart = (a, b) => a[0] + a[2] <= b[0] || b[0] + b[2] <= a[0] || a[1] + a[3] <= b[1] || b[1] + b[3] <= a[1];
 
-test("Pods in five states: the inventory (its tray and Find over it), the reading screen and Compare; the cabinet's three cards a row, the panel beside it; the reading screen's two frames (ux-reading-v2.md §2.2)", () => {
+test("Pods in five states: the inventory as a pod picker (its tray and Find over it), the reading screen and Compare; the grid of big pods five across, the verb line above it, the detail line under it; the reading screen's two frames (ux-reading-v2.md §2.2)", () => {
   assert.deepEqual(pods.states, ["inventory", "filter", "find", "read", "compare"]); assert.equal(pods.initial, "inventory");
-  const I = pods.regions.inventory, C = I.cabinet, card = C.card;
-  assert.equal(card.pitch[0] * (card.across - 1) + card.size[0], C.rect[2], "three cards a row fill the cabinet");
-  assert.ok(inside([C.rect[0] + card.niche[0], C.rect[1] + card.niche[1], card.niche[2], card.niche[3]], [C.rect[0], C.rect[1], card.size[0], card.size[1]]), "the niche inside its card");
-  assert.deepEqual(C.strip.size, [672, 228]); assert.equal(C.strip.size[1], card.pitch[1], "the strip tiles a row of cards"); assert.equal(C.rect[2], C.strip.size[0], "the strip is as wide as the cabinet");
-  assert.ok(apart(C.rect, I.panel.rect) && I.panel.rect[0] + I.panel.rect[2] <= 1024 - 16, "the panel beside the cabinet, inside the 16 px side");
-  const A = I.panel.actions; assert.ok(A.first[1] + A.pitch * (A.n - 1) + A.first[3] <= I.panel.rect[1] + I.panel.rect[3], "the panel's five buttons inside it");
-  for (const t of ["sort", "filter", "find"]) assert.ok(inside(I.tools[t], I.tools.rect), t + " inside the tool row");
+  const I = pods.regions.inventory, K = I.picker, G = K.grid, stage = [0, 40, 1024, 522];
+  assert.deepEqual(K.ground.rect, stage, "the dark ground is the whole stage"); assert.deepEqual(pods.classes.pod.large, [144, 176]); assert.deepEqual(G.pod.slice(2), pods.classes.pod.large, "the pod is the large class, at 1x");
+  assert.equal(G.pitch[0] * (G.across - 1) + G.cell[0] <= 1024 - 2 * G.origin[0] + 56 && G.origin[0] + G.pitch[0] * (G.across - 1) + G.cell[0] <= K.rail.rect[0], true, "five cells fit the stage and its scroll rail");
+  assert.ok(inside(G.pod, [0, 0, ...G.cell]) && inside(G.name, [0, 0, ...G.cell]) && inside(G.mark, [0, 0, ...G.cell]) && inside(K.ground.seat.rect, [0, 0, ...G.cell]), "the pod, its name, its mark and its seat inside the cell");
+  const last = G.origin[1] + G.pitch[1] * (G.rows - 1) + G.cell[1]; assert.ok(G.origin[1] >= K.verbs.y + K.verbs.h && last <= K.detail.left[1], "the two rows between the verb line and the detail line"); assert.ok(K.detail.left[1] + K.detail.left[3] <= 562, "the detail line above the bottom line");
+  assert.ok(K.tools.y === K.verbs.y && K.tools.h === K.verbs.h, "Sort, Filter and Find on the verb line"); assert.ok(K.rail.rect[1] >= G.origin[1] && K.rail.rect[1] + K.rail.rect[3] <= last + 8, "the scroll rail beside the rows");
+  assert.equal(pods.strings.inv.picker.verbs.letgo, "Let go"); assert.deepEqual(Object.keys(pods.strings.inv.picker.verbs), ["read", "grow", "freshen", "compare", "letgo", "bring"]);
+  for (const k of ["tray", "find"]) assert.ok(I[k].rect[0] >= 16 && I[k].rect[0] + I[k].rect[2] <= 1024 - 16, k + " inside the 16 px side");
   const R = pods.regions.read; assert.deepEqual(R.ground.rect, [0, 40, 1024, 522]); assert.deepEqual(R.chamber.rect, [30, 70, 548, 356]); assert.deepEqual(R.glass.left, [30, 70, 548, 462]); assert.deepEqual(R.glass.right, [634, 70, 360, 462]);
   assert.ok(inside(R.chamber.rect, R.glass.left) && inside(R.rail.rect, R.glass.left) && inside(R.key.rect, R.glass.right), "the chamber and the rail in the left glass, the key in the right");
   for (const [k, L] of Object.entries(R.right.layouts)) for (const [y, h] of L.plates ?? []) assert.ok(y + h <= R.key.rect[1] || !/^(unread|sealed|identify)/.test(k), k + ": no plate touches the price key (a read chapter has no key)");
-  assert.deepEqual(pods.classes.pod.shelf, [64, 76], "the card's pod is the shelf class");
 });
 
 // P1 (fix 5): the painted floor of the case runs x 64 to 952 and y 88 to 535 (pixels, inclusive) on every Pods stage; the rail and the bottom line are the frame's
@@ -94,8 +94,8 @@ test("every colour a spec file names is in the palette; every region is on the 8
 });
 
 test("the focus graphs, one per state, name only groups and selectors the screen resolves", () => {
-  const groups = { inventory: ["card", "act", "sort", "filter", "find", "chip", "none"], filter: ["tchip", "none"], find: ["recent", "letter", "word", "none"], read: ["rail", "plate", "key", "trait", "stamp", "hold", "none"], compare: ["takeA", "takeB", "none"] };
-  const selectors = new Set(["card.up", "card.down", "card.left", "card.right", "card.back", "sort.down", "filter.down", "find.down", "chip.first", "tchip.up", "tchip.down", "tchip.left", "tchip.right", "letter.cur", "recent.first", "word.first", "word.up", "word.down", "word.left", "word.right",
+  const groups = { inventory: ["card", "verb", "sort", "filter", "find", "none"], filter: ["tchip", "none"], find: ["recent", "letter", "word", "none"], read: ["rail", "plate", "key", "trait", "stamp", "hold", "none"], compare: ["takeA", "takeB", "none"] };
+  const selectors = new Set(["card.up", "card.down", "card.left", "card.right", "verb.down", "sort.down", "filter.down", "find.down", "tchip.up", "tchip.down", "tchip.left", "tchip.right", "letter.cur", "recent.first", "word.first", "word.up", "word.down", "word.left", "word.right",
     "index.right", "index.open", "trow.up", "trow.down", "band.first", "band.left", "band.right", "band.up", "rail.open"]);
   const isEdge = (x) => typeof x === "string" || (x && typeof x === "object" && "nearestIn" in x);
   for (const [st, graph] of Object.entries(pods.focus)) {
@@ -744,7 +744,7 @@ const SHAPES = {
   "vivarium.json": { resident: "footprint", room: { rect: 6 }, plate: { rect: 6 }, cell: { rect: 6 }, rail: { rect: 6 }, tool: { rect: 6 }, band: { rect: 6 }, move: { rect: 6 }, swap: { rect: 6 } },
   "habitat.json": { room: { rect: 6 }, resident: "footprint", name: { rect: 0 }, species: { rect: 0, chip: 4 }, family: { rect: 0, chip: 4 }, plate: { rect: 0 }, door: { rect: 6 }, portrait: { rect: 6 }, cross: { rect: 6 }, wild: { rect: 6 }, tile: { rect: 6 } },
   "namer.json": { key: { rect: 0 }, "mod.shift": { rect: 0 }, "mod.space": { rect: 0 }, "mod.page": { rect: 0 }, "act.done": { rect: 0 }, "act.suggest": { rect: 0 } },
-  "pods.json": { take: { rect: 4 }, card: { rect: 6 }, tool: { rect: 4 }, act: { rect: 4 }, chip: { rect: 4 }, plate: { rect: 10 }, key: { rect: 10 } },
+  "pods.json": { take: { rect: 4 }, card: { rect: 6 }, tool: { rect: 4 }, verb: { rect: 10 }, chip: { rect: 4 }, plate: { rect: 10 }, key: { rect: 10 } },
   "create.json": { roll: { rect: 0 } }, "library.json": { cell: { rect: 6 }, chapter: { rect: 6 }, wish: { rect: 4 }, face: { rect: 0 }, family: { rect: 0 }, look: { circle: "box" }, node: { circle: "box" }, mibi: { rect: 2 }, bud: "oval" }, "bench.json": { plates: { rect: 0 }, switch: { rect: 6 }, slot: { rect: 6 } }, "sitting.json": { card: { rect: 6 } }, "panel.json": { card: { rect: 10 } } };
 test("fix 14, the shape rule: every focus target has a shape of the five kinds and no `ring`; its rect radius is its object's; no spec but frame.json holds ring tokens or a ring colour; six (radius, ground) pairs at most", () => {
   const pairs = new Set(); let seen = 0;

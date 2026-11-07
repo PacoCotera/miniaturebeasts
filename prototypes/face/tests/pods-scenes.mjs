@@ -14,7 +14,7 @@ setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f)
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 
 // the masters' own sizes; any other request is its size (a crop, a slot), an emblem 24, a star 12, else 16
-const SIZE = { "cabinet-strip-672x228": [672, 228], "pod-niche-88x88": [88, 88], "pod-niche-shadow-88x88": [88, 88], "pod-niche-husk-88x88": [88, 88], "pods-lantern-96x160": [96, 160], "pods-fern-120x200": [120, 200], "reading-bench-1024x520": [1024, 520] };
+const SIZE = { "reading-bench-1024x520": [1024, 520] };
 export const sizeOf = (r) => SIZE[r.id] ?? (r.kind === "readchamber" ? [548, 356] : r.kind === "readrail" ? (r.small ? [272, 40] : [526, 71]) : r.kind === "readdisc" ? [r.d + 8, r.d + 8] : r.kind === "emblem" ? [24, 24] : r.kind === "star" ? [12, 12] : Array.isArray(r.size) ? r.size : r.size ? [r.size, r.size] : [16, 16]);
 // the frame's own pictures: the material icons and the companion
 const FRAME_PICTURES = [...["energy", "data", "essence"].map((id) => ({ id: `icon:${id}:16`, w: 16, h: 16 })), ...["frame-companion-outline-16x24", "frame-companion-solid-16x24"].map((id) => ({ id, w: 16, h: 24 }))];
@@ -35,7 +35,7 @@ export function scene(state, name, st, ui, focus) {
 export function podsCases() {
   const out = [], TWELVE = [["S01", 11, 1, 2], ["S01", 12, 1, 0], ["S02", 13, 1, 1], ["S01", 14, 0, 0], ["S03", 15, 1, 8], ["S02", 16, 1, 0], ["S04", 17, 1, 0], ["S01", 18, 1, 4], ["S02", 19, 0, 0], ["S03", 20, 1, 0], ["S04", 21, 1, 2], ["S01", 22, 1, 1]];
   out.push(scene("inventory", "no pods", tray([]), {}, "sort"));
-  { const st = tray(TWELVE); out.push(scene("inventory", "twelve pods, the ring on the first card", st, {}, "card.0")); out.push(scene("inventory", "the panel's first button", st, {}, "act.0"));
+  { const st = tray(TWELVE); out.push(scene("inventory", "twelve pods, the ring on the first card", st, {}, "card.0")); out.push(scene("inventory", "the verb line", st, {}, "verb.read")); out.push(scene("inventory", "Freshen: the pods that cannot take it fade", st, { verb: "freshen" }, "verb.freshen")); out.push(scene("inventory", "Let go, the ring on a pod", st, { verb: "letgo" }, "card.0"));
     out.push(scene("filter", "the filter tray", st, { view: "filter", chips: ["S02"] }, "tchip.2.1")); out.push(scene("find", "Find", st, { view: "find", find: { letter: "L" } }, "word.0")); }
   { const st = tray([["S01", 51, 0, 0], ["S01", 52, 1, 0]]); S.putOnBench(st, st.tray[0]); out.push(scene("read", "a sealed pod", st, { view: "room" }, "key")); }
   { const st = tray([["S01", 61, 1, 1], ["S01", 62, 1, 0]]); S.putOnBench(st, st.tray[0]); out.push(scene("read", "the rail", st, { view: "room", lane: 1 }, "rail")); out.push(scene("read", "an unread chapter open", st, { view: "room", lane: 1, at: "right" }, "key"));

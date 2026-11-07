@@ -53,8 +53,8 @@ const P = (m) => body(m).props;
 function scenes() {
   const out = [["no pods", model(home(0), {}, "sort")]];
   { const st = home(1); out.push(["one sealed pod", model(st, {}, "card.0")]); }
-  { const st = mixed(); ident(st, 8); read(st, 0, 2); read(st, 4); out.push(["twelve pods by use", model(st, {}, "card.0")], ["twelve pods by species", model(st, { sort: "species" }, "card.3")], ["the panel's first button", model(st, {}, "act.0")]);
-    out.push(["the filter tray", model(st, { view: "filter", chips: ["S01", "unread"] }, "tchip.0.1")], ["Find", model(st, { view: "find", find: { letter: "U" } }, "letter.0")], ["Find's word chosen", model(st, { word: { word: "Untuva", kind: "species" }, chips: [] }, "chip.0")]); }
+  { const st = mixed(); ident(st, 8); read(st, 0, 2); read(st, 4); out.push(["twelve pods by use", model(st, {}, "card.0")], ["twelve pods by species", model(st, { sort: "species" }, "card.3")], ["the verb line", model(st, {}, "verb.read")]);
+    out.push(["the filter tray", model(st, { view: "filter", chips: ["S01", "unread"] }, "tchip.0.1")], ["Find", model(st, { view: "find", find: { letter: "U" } }, "letter.0")], ["Find's word chosen", model(st, { word: { word: "Untuva", kind: "species" }, chips: [] }, "find")]); }
   { const st = home(40); ident(st, 30); out.push(["forty pods, scrolled", model(st, { first: 5 }, "card.18")]); }
   { const st = home(3); S.putOnBench(st, st.tray[0]); st.turn = 10; S.dryPods(st); out.push(["the dried husks", model(st, {}, "card.0")]); }
   for (const id of SPECIES) {
@@ -92,14 +92,6 @@ test("every focus target the props list is a target of the state's graph, and ev
 });
 
 // ---- the inventory ----
-test("the count is a fact, never n of N: pods and species; a filter says how many of how many and what", () => {
-  const st = mixed(); ident(st);
-  assert.equal(P(model(st, {}, "card.0")).regions.inv.tools.count, "12 pods · 4 species");
-  assert.equal(P(model(st, { chips: ["S02"] }, "card.0")).regions.inv.tools.count, "3 of 12 · Untuva");
-  assert.equal(P(model(st, { chips: ["S02", "unread"] }, "card.0")).regions.inv.tools.count, "3 of 12 · Untuva, unread");
-  assert.equal(P(model(home(1), {}, "card.0")).regions.inv.tools.count, "1 pod · 1 species", "one pod");
-  const none = P(model(home(0), {}, "sort")).regions.inv; assert.deepEqual([none.tools.count, none.cabinet.empty, !!none.cabinet.bare, none.tools.dim, none.tools.sort], ["", "No pods yet · expeditions bring them home", true, true, "nothing to sort yet"], "no pods: the bare niches and the line; the tools dimmed with their reason on their face");
-});
 test("the worth line: at most two tags, from what the game holds, in their order; a sealed pod says identify ◆1", () => {
   const st = mixed(); assert.deepEqual(worthTags(st, st.tray[0], spec).map((t) => t.text), ["sealed · identify ◆ 1"]);
   ident(st); const p = st.tray[0]; assert.deepEqual(worthTags(st, p, spec).map((t) => t.key), ["newSpecies"], "no mibi of its species at home: new species");
@@ -125,7 +117,7 @@ test("sort by use puts the goal first and nothing new last; by species groups ea
   const ch = frameOf("S01").chapters[0], t = ch.traits[0]; st.wish.S01 = { [t.id]: chapterLooks(frameOf("S01"), ch, st.tray[0].genome).find(([id]) => id === t.id)[1][0] };
   const use = listOf(st, spec, ui()).map((e) => e.p.id); assert.equal(use[0], st.tray[0].id, "the goal pod leads");
   assert.ok(worthTags(st, S.podById(st, use.at(-1)), spec).some((x) => x.key === "nothing" || x.key === "full"), "nothing new last");
-  const v = P(model(st, { sort: "species" }, "card.0")).regions.inv.cabinet; assert.ok(v.rows.filter((r) => r.label).length >= 2, "labels carved for the species"); assert.match(v.rows[0].label, /^Loika · 4$/);
+  { const sp = listOf(st, spec, ui({ sort: "species" })).map((e) => (e.p.idd ? S.speciesOf(e.p) : "~")); assert.deepEqual(sp, [...sp].sort(), "each species together, the sealed last"); }
   st.turn = 0; st.tray[3].dryAt = 2; st.tray[5].dryAt = 3; S.putOnBench(st, st.tray[2]); st.tray[2].keep = 1;
   const dry = listOf(st, spec, ui({ sort: "drying" })).map((e) => e.p.id); assert.deepEqual(dry.slice(0, 2), [st.tray[3].id, st.tray[5].id]); assert.equal(dry.at(-1), st.tray[2].id, "the bench pod last");
 });
@@ -143,46 +135,6 @@ test("Find: the closed set the save holds, under the letters that start a word; 
   const f = P(model(st, { view: "find", find: { letter: "U" } }, "letter.0")).regions.find; assert.ok(f.letters.some((l) => l.lit && l.ch === "U")); assert.ok(f.words.every((w) => w.word[0].toUpperCase() === "U")); assert.equal(f.first, "Pick a letter, then a word");
   assert.equal(listOf(st, spec, ui({ word: { word: "Untuva", kind: "species" } })).length, 3);
 });
-test("a card: the niche, the pod, the mini rail, the strip; the name blank on a sealed pod; the drying words amber in place of the origin", () => {
-  const st = mixed(); ident(st, 4); read(st, 0, 1); st.turn = 9;   // every pod 12 turns from turn 1: 4 left, amber
-  const c = P(model(st, {}, "card.0")).regions.inv.cabinet.cards;
-  const sealed = c.find((x) => x.name === ""); assert.ok(sealed, "a sealed card has no name"); assert.equal(sealed.worth, "sealed · identify ◆ 1"); assert.deepEqual(sealed.rail.map((l) => l.state), ["unread"]);
-  const loika = c.find((x) => x.name === "Loika" && x.rail.filter((l) => l.state === "read").length === 1); assert.equal(loika.rail.length, 4); assert.deepEqual([loika.amber, loika.line, loika.fresh.left], [true, "dries out in 4 turns", 4]);
-  st.turn = 2; const fresh = P(model(st, {}, "card.0")).regions.inv.cabinet.cards[0]; assert.equal(fresh.amber, false); assert.match(fresh.line, /^pond edge|^[a-z ]+( · [a-z' ]+)?$/);
-});
-test("the panel: the focused card in full and its five buttons in their order, a held one saying why on its own face", () => {
-  const st = mixed(); ident(st); st.s = 0; const p = st.tray[0];
-  const panel = (focus = "card.0", over = {}) => P(model(st, over, focus)).regions.inv.panel;
-  assert.deepEqual(panel().acts.map((a) => a.word), ["Take to the reading room", "Grow it", "Freshen · already fresh", "Compare", "Let it go · its reads stay"]);
-  st.turn = 7; assert.equal(panel().acts[2].word, "Freshen ❀ 2 · you have ❀ 0", "six turns down: two steps; short: says so on its face (review round 2)"); assert.equal(body(model(st, {}, "act.2")).line.need, "Freshen · needs ❀ 2 · you have ❀ 0", "and whole in the foot"); st.s = 5; assert.equal(panel().acts[2].word, "Freshen ❀ 2");
-  S.putOnBench(st, p); const k = listOf(st, spec, ui()).findIndex((e) => e.p === p); assert.deepEqual(panel("card." + k).acts.map((a) => a.word).slice(0, 3), ["Open the reading room", "Grow it", "Freshen · the bench keeps it"]);
-  assert.equal(panel("card." + k).fresh.words, "kept fresh on the bench");
-  assert.equal(panel("card." + k, { choosing: true }).acts[0].word, "Bring onto the bench", "choosing mode");
-  const lone = home(1); ident(lone); assert.equal(P(model(lone, {}, "card.0")).regions.inv.panel.acts[3].word, "Compare · the only Loika");
-  assert.equal(P(model(lone, { ask: lone.tray[0].id }, "act.4")).regions.inv.panel.acts[4].word, "Let it go? The only Loika", "the guard asks on the button's own face");
-});
-test("the selectors: ▶ from the right-hand column is the panel's first button, ▲ from the top row the tool above it, ◀ from the panel the card it shows; the ring stays at an edge", () => {
-  const st = mixed(); ident(st);
-  const r = (focus) => P(model(st, {}, focus)).focus.resolve;
-  assert.equal(r("card.2")["card.right"], "act.0"); assert.equal(r("card.1")["card.right"], "card.2"); assert.equal(r("card.0")["card.left"], "card.0", "the left edge: the ring stays");
-  assert.deepEqual(["card.0", "card.1", "card.2"].map((c) => r(c)["card.up"]), ["sort", "filter", "find"]); assert.equal(r("card.4")["card.up"], "card.1");
-  assert.equal(r("card.9")["card.down"], "card.9", "the last row: the ring stays");
-  assert.equal(P(model(st, { panelPod: listOf(st, spec, ui())[4].p.id }, "act.2")).focus.resolve["card.back"], "card.4");
-});
-test("scrolling: the ring always sits on a whole card; a ring past the second row scrolls one row and keeps a row of context above it; the rail shows the share", () => {
-  const st = home(40); ident(st);
-  const at = (focus, first = 0) => body(model(st, { first }, focus));
-  assert.equal(at("card.6").first, 1, "the third row: one row down"); assert.equal(at("card.3").first, 0); assert.equal(at("card.0", 5).first, 0, "back at the top");
-  const v = at("card.30", 3); assert.equal(v.first, 9); const rail = v.props.regions.inv.rail; assert.ok(rail.share > 100 && rail.share < 200, "two of fourteen rows: about a seventh");
-  assert.ok(v.props.regions.inv.cabinet.cards.every((c) => c.row >= -1 && c.row <= 2), "the rows on screen and one either side");
-});
-test("a dried pod shows once as the husk in its niche with its reads kept, then is gone; the count says it dried out", () => {
-  const st = home(3); S.putOnBench(st, st.tray[0]); st.turn = 13; S.dryPods(st);
-  const v = P(model(st, {}, "card.0")).regions.inv; assert.equal(v.cabinet.cards.filter((c) => c.husk).length, 2); assert.equal(v.cabinet.cards.find((c) => c.husk).worth, "dried out · its reads stay"); assert.equal(v.tools.count, "2 pods dried out");
-  S.husksShown(st); assert.equal(P(model(st, {}, "card.0")).regions.inv.cabinet.cards.filter((c) => c.husk).length, 0, "gone after the visit");
-});
-
-// ---- the reading room ----
 test("the reading screen (ux-reading-v2.md): the ground, the chamber of its place, the rail with the bracket on the chapter in hand, the right frame's form; a sealed pod Identify on the key", () => {
   const st = home(2); S.putOnBench(st, st.tray[0]);
   const s = body(model(st, { view: "room" }, "key")); assert.equal(s.props.state, "read"); assert.equal(s.props.regions.read.right.form, "identify"); assert.deepEqual(s.props.focus.targets.map((t) => t.id), ["key"]); assert.equal(s.line.ok, "Identify");
@@ -215,21 +167,6 @@ test("the stamp in progress: the view on ▲ once taught, its plate and stamp at
 test("the recommended lane: a goal glint, a glint, never the sprout lane while another is unread; a fresh pod its first lane", () => {
   const st = home(2); ident(st); assert.equal(recommendedLane(st, st.tray[1]), 0, "a fresh pod: its first lane");
   read(st, 0, 1); const q = st.tray[1]; q.read = ["coat", "face"]; assert.equal(recommendedLane(st, q), 3, "Movement is the sprout lane: Stamina first"); q.read = ["coat", "face", "stamina"]; assert.equal(recommendedLane(st, q), 2);
-});
-test("the bottom line: the verb of what has the ring, or its reason when held; the way back named; Pods never shows the station's notice", () => {
-  const st = mixed(); ident(st); st.s = 0; st.turn = 7;
-  const line = (focus, over = {}) => body(model(st, over, focus)).line;
-  assert.deepEqual(line("card.0"), { ok: "Choose a pod", back: "Home", subject: "", need: "" });
-  assert.deepEqual(line("act.2"), { ok: null, back: "Home", subject: "", need: "Freshen · needs ❀ 2 · you have ❀ 0" }, "held: the reason in the foot, no greyed verb");
-  for (const [name, m] of SCENES) { const l = body(m).line; assert.ok(l && typeof l.need === "string", name + ": the line always has its own need"); }
-});
-test("the panel carries the pod's rail at the small size in place of the next-step line: a lane a chapter, its state, the marks over the unread lanes; an unidentified pod has none", () => {
-  const st = home(1), panel = () => P(model(st, {}, "card.0")).regions.inv.panel;
-  assert.equal(panel().rail, null, "a sealed pod has no chapters to show");
-  ident(st); let r = panel().rail; assert.match(r.pic, /^readrail:S\d\d:[0-9a-f]{8}:small$/); assert.deepEqual(r.lanes.map((l) => l.state), ["unread", "unread", "unread", "unread"]); assert.ok(r.lanes.every((l) => l.n >= 1));
-  assert.ok(r.lanes.every((l) => l.marks.every((m) => ["glint", "goal"].includes(m))), "the marks are a glint or the goal");
-  read(st, 0); r = panel().rail; assert.ok(r.lanes.every((l) => l.state === "read" && !l.marks.length), "a read lane carries no marks");
-  assert.deepEqual(Object.keys(r.marks), ["glint", "star"]);
 });
 test("the rail's layout floors (UI/UX 2026-10-30): B and x0 at the small size, x0 at the large, so every species' rail fits its picture", () => {
   const frames = SPECIES.map((id) => [id, frameOf(id)]);
@@ -280,4 +217,84 @@ test("Compare in the reading room's look: the bench and two papers, this pod on 
   assert.deepEqual([b.props.focus.cur, b.props.focus.targets.map((t) => t.id)], ["takeA", ["takeA", "takeB"]]); assert.equal(b.line.ok, "Take this Loika to the reading room"); assert.equal(b.line.back, "Pods");
   const u = home(2); ident(u); read(u, 0); const cu = P(model(u, { cmp: { a: u.tray[0].id, b: u.tray[1].id, ci: 0, from: "inventory" } }, "takeB")).regions.compare;
   assert.ok(cu.sides[1].rows.every((r) => r.look === "not read yet" && !r.differs && r.picture === ""), "an unread page: its trait names and not read yet, no tile and no mark"); assert.equal(cu.sides[1].which, "its kin");
+});
+
+// ---- the pod picker (the pods picker's design B) ----
+const inv = (m) => P(m).regions.inv, cardsOf = (m) => inv(m).grid.cards;
+test("the count is a fact, never n of N: pods and species; a filter says how many of how many and what; no pods: the empty seat and its two lines, the tools dimmed with their reason", () => {
+  const st = mixed(); ident(st);
+  assert.equal(inv(model(st, {}, "card.0")).detail.right, "12 pods · 4 species");
+  assert.equal(inv(model(st, { chips: ["S02"] }, "card.0")).detail.right, "3 of 12 · Untuva");
+  assert.equal(inv(model(st, { chips: ["S02", "unread"] }, "card.0")).detail.right, "3 of 12 · Untuva, unread");
+  assert.equal(inv(model(home(1), {}, "card.0")).detail.right, "1 pod · 1 species", "one pod");
+  const none = inv(model(home(0), {}, "sort")); assert.deepEqual([none.detail.right, none.empty, none.tools.dim, none.tools.sort, none.verbs], ["", ["No pods yet", "Expeditions bring pods home"], true, "nothing to sort yet", []], "no pods: no verbs, the empty seat and its lines");
+  assert.deepEqual(inv(model(st, { chips: ["S04", "sealed"] }, "filter")).empty, ["No pods match", "Filter or Find to change it"]);
+});
+test("a card: the pod at its large class, its name, one mark (the goal star before the drying drop before the new dot); a sealed pod says so quietly; fade and held are flags", () => {
+  const st = mixed(); ident(st, 4); read(st, 0, 1); st.turn = 9;   // every pod 12 turns from turn 1: 4 left, amber
+  const c = cardsOf(model(st, {}, "card.0"));
+  assert.ok(c.every((x) => /^pod:S\d\d:[is]:144x176$|^pod:-:s:144x176$/.test(x.pod)), "the large class, 144 x 176: " + c.map((x) => x.pod).join(" "));
+  const sealed = c.find((x) => x.sealed); assert.equal(sealed.name, "a sealed pod"); assert.ok(c.filter((x) => !x.sealed).every((x) => /^[A-Z][a-z]+$/.test(x.name)));
+  assert.ok(c.every((x) => ["drying", "star", "new", ""].includes(x.mark)) && c.some((x) => x.mark === "drying"), "twelve turns on: the pods are drying");
+  const fresh = home(2); ident(fresh); fresh.tray[1].seen = 0; const m = cardsOf(model(fresh, {}, "card.0")); assert.deepEqual(m.map((x) => x.mark).sort(), ["", "new"].sort(), "a pod not yet seen carries the new dot, the other nothing");
+  assert.ok(c.every((x) => x.fade === false && x.held === false), "Read: nothing fades");
+});
+test("the verbs: Read, Grow, Freshen, Compare and Let go, each only while some pod can take it; the caller's alone when it fixed one; a pod that cannot take the verb fades and says why", () => {
+  const st = mixed(); ident(st); st.turn = 7;
+  assert.deepEqual(inv(model(st, {}, "card.0")).verbs.map((v) => [v.id, v.on]), [["read", true], ["grow", false], ["freshen", false], ["compare", false], ["letgo", false]]);
+  st.bud = { species: "S01" }; assert.ok(!inv(model(st, {}, "card.0")).verbs.some((v) => v.id === "grow"), "no Grow while the incubator is busy"); st.bud = null;
+  const f = home(2); ident(f); assert.ok(!inv(model(f, {}, "card.0")).verbs.some((v) => v.id === "freshen"), "no Freshen when every pod is fresh");
+  const one = home(1); ident(one); assert.ok(!inv(model(one, {}, "card.0")).verbs.some((v) => v.id === "compare"), "no Compare when no species has two pods");
+  const fx = inv(model(st, { verb: "grow", fixed: true }, "card.0")); assert.deepEqual([fx.verbs, fx.heading], [[{ id: "grow", word: "Grow", on: true }], "Choose a pod"], "the caller's verb alone, its heading beside it");
+  assert.equal(inv(model(st, { verb: "bring", fixed: true, choosing: true }, "card.0")).heading, "Choose a pod for the bench");
+  const sealed = home(2); ident(sealed, 1); const g = cardsOf(model(sealed, { verb: "grow" }, "card.0")), list = listOf(sealed, spec, ui({ verb: "grow" })); assert.deepEqual(g.map((x) => [list[x.k].p.idd, x.fade]), g.map((x) => [list[x.k].p.idd, !list[x.k].p.idd]), "the sealed pod cannot grow: it fades");
+  const lz = body(model(sealed, { verb: "grow" }, "card." + g.find((x) => x.fade).k)).line; assert.deepEqual([lz.ok, lz.subject], [null, "identify it first"], "no ✓ on a pod that cannot take the verb: the reason in the middle"); assert.match(lz.subject, /identify it first/);
+  const fr = cardsOf(model(st, { verb: "freshen" }, "card.0")); assert.ok(fr.every((x) => x.fade === false), "every pod six turns down can be freshened");
+  const two = mixed(); ident(two, 2); const cmp = cardsOf(model(two, { verb: "compare" }, "card.0")); assert.equal(cmp.filter((x) => !x.fade).length, 2, "Compare: the two identified Loikas stay bright, the sealed pods fade");
+  const held = ident(mixed()), a = held.tray[0], hm = cardsOf(model(held, { verb: "compare", hold: a.id }, "card.0")), L = listOf(held, spec, ui({ hold: a.id })); assert.ok(hm.filter((x) => !x.fade).every((x) => S.speciesOf(L[x.k].p) === S.speciesOf(a)) && hm.filter((x) => !x.fade).length >= 2, "held for Compare: only its kin stay bright"); assert.ok(hm.find((x) => L[x.k].p === a).held);
+});
+test("the detail line: the focused pod's first tag and where it was found, the freshness in amber when it dries; on the verb line what the verb does and how many pods can take it", () => {
+  const st = mixed(); ident(st); const v = (focus, over = {}) => inv(model(st, over, focus)).detail;
+  assert.match(v("card.0").left, /^.+ · .+$/); assert.equal(v("card.0").amber, false); st.turn = 9; assert.deepEqual([v("card.0").amber, v("card.0").right], [true, "dries out in 4 turns"]);
+  st.turn = 2; assert.deepEqual([v("verb.read").left, v("verb.read").right], ["Read · the pods it can take stay bright", "twelve can"]);
+  assert.deepEqual([v("verb.freshen", { verb: "freshen" }).left, v("verb.freshen", { verb: "freshen" }).right], ["Freshen · the pods it can take stay bright", "twelve can"], "a turn down: every pod can be freshened");
+});
+test("the selectors: ▶ at the right edge and ◀ at the left stay; ▲ from the top row is the verb that is on (a tool when the caller fixed the verb), ▼ from the verb line the first pod that can take it; ▼ at the last row stays", () => {
+  const st = mixed(); ident(st);
+  const r = (focus, over = {}) => P(model(st, over, focus)).focus.resolve;
+  assert.equal(r("card.4")["card.right"], "card.4", "the right edge: the ring stays"); assert.equal(r("card.1")["card.right"], "card.2"); assert.equal(r("card.0")["card.left"], "card.0", "the left edge: the ring stays");
+  assert.equal(r("card.2")["card.up"], "verb.read"); assert.equal(r("card.2", { verb: "grow", fixed: true })["card.up"], "filter", "a fixed verb: the tool above"); assert.deepEqual([0, 1, 2, 3, 4].map((c) => r("card." + c, { verb: "grow", fixed: true })["card.up"]), ["sort", "sort", "filter", "filter", "find"]);
+  assert.equal(r("card.7")["card.up"], "card.2"); assert.equal(r("card.11")["card.down"], "card.11", "the last row: the ring stays");
+  assert.equal(r("verb.read")["verb.down"], "card.0"); const g = r("verb.freshen", { verb: "freshen" }); assert.match(g["verb.down"], /^card\./);
+  assert.deepEqual([r("sort")["sort.down"], r("filter")["filter.down"], r("find")["find.down"]], ["card.0", "card.2", "card.4"], "Sort over the first column, Filter the third, Find the fifth");
+});
+test("scrolling: the ring always sits on a whole card; a ring past the second row scrolls one row and keeps a row of context above it; the rail shows the share", () => {
+  const st = home(40); ident(st);
+  const at = (focus, first = 0) => body(model(st, { first }, focus));
+  assert.equal(at("card.10").first, 1, "the third row: one row down"); assert.equal(at("card.9").first, 0); assert.equal(at("card.0", 5).first, 0, "back at the top");
+  const v = at("card.30", 3); assert.equal(v.first, 5); const rail = v.props.regions.inv.rail; assert.ok(rail.share > 200 && rail.share < 300, "two of eight rows: a quarter");
+  assert.ok(v.props.regions.inv.grid.cards.every((c) => c.row >= -1 && c.row <= 2), "the rows on screen and one either side");
+  assert.equal(P(model(home(10), {}, "card.0")).regions.inv.rail, null, "two rows: no rail");
+});
+test("a dried pod shows once in the detail line (it dried out, its reads stay), then is gone", () => {
+  const st = home(3); S.putOnBench(st, st.tray[0]); st.turn = 13; S.dryPods(st);
+  assert.equal(inv(model(st, {}, "sort")).detail.right, "2 pods dried out"); S.husksShown(st); assert.equal(inv(model(st, {}, "sort")).detail.right, "1 pod · 1 species", "gone after the visit");
+});
+test("the hold Let go asks: the frame carries it with the ring on a pod under Let go (slower for a pod that carries the goal or is the only of its species, and the line says why); none under any other verb; the tray's Let these go holds too", () => {
+  const st = mixed(); ident(st); const on = (focus, over = {}) => podsProps(model(st, over, focus), spec, frameSpec);
+  assert.equal(on("card.0").hold, null, "Read: no hold"); assert.deepEqual(on("card.0", { verb: "letgo" }).hold, { ms: 0, why: "" }, "Let go: the frame's own 3 s");
+  assert.equal(on("verb.letgo", { verb: "letgo" }).hold, null, "the ring on the verb line: no hold");
+  const lone = home(1); ident(lone); const g = podsProps(model(lone, { verb: "letgo" }, "card.0"), spec, frameSpec); assert.deepEqual([g.hold.ms, g.hold.why], [6000, "the only Loika"], "the only of its species: slower, and the line says why"); assert.deepEqual([g.line.ok, g.line.subject], ["Hold ✓ longer to let it go", "the only Loika"]);
+  assert.equal(on("card.0", { verb: "letgo" }).line.ok, "Hold ✓ to let it go");
+  assert.deepEqual(on("tchip.3.2", { view: "filter" }).hold, { ms: 0, why: "" }, "Let these go"); assert.equal(on("tchip.0.0", { view: "filter" }).hold, null);
+});
+test("the bottom line: ✓ does the verb on the pod (its button's own words), a pod that cannot take it says why with no ✓, the verb line says ▼; Pods never shows the station's notice", () => {
+  const st = mixed(); ident(st); st.s = 0; st.turn = 7;
+  const line = (focus, over = {}) => body(model(st, over, focus)).line;
+  assert.deepEqual(line("card.0"), { ok: "Take to the reading room", back: "Home", subject: "", need: "" });
+  assert.deepEqual(line("verb.read"), { ok: "Read", back: "Home", subject: "▼ to the pods", need: "" });
+  assert.deepEqual(line("card.0", { verb: "freshen" }), { ok: null, back: "Home", subject: "needs ❀ 2 · you have ❀ 0", need: "" }, "held: the reason in the middle, no greyed verb");
+  assert.equal(line("card.0", { verb: "grow" }).ok, "Grow it"); assert.equal(line("card.0", { verb: "bring", fixed: true, choosing: true }).ok, "Bring onto the bench");
+  assert.equal(line("card.0", { verb: "letgo", waits: true }).subject, "A pod waits to come in");
+  for (const [name, m] of SCENES) { const l = body(m).line; assert.ok(l && typeof l.need === "string", name + ": the line always has its own need"); }
 });

@@ -30,8 +30,8 @@ const build = (st, over = {}, focus = null) => podsProps({ st, settings, docked:
 function scenes() {
   const out = {};
   out["no pods"] = build(home([]), {}, "sort");
-  { const st = home(TWELVE); out["twelve"] = build(st, {}, "card.0"); out["the panel"] = build(st, {}, "act.0"); out["by species"] = build(st, { sort: "species" }, "card.4"); out["the tray"] = build(st, { view: "filter", chips: ["S02"] }, "tchip.2.1"); out["find"] = build(st, { view: "find", find: { letter: "L" } }, "word.0"); }
-  { const st = home(Array.from({ length: 40 }, (_, i) => [["S01", "S02", "S03", "S04"][i % 4], 100 + i, i % 5 ? 1 : 0, i % 3])); out["forty, scrolled"] = build(st, { first: 5 }, "card.19"); }
+  { const st = home(TWELVE); out["twelve"] = build(st, {}, "card.0"); out["the verb line"] = build(st, {}, "verb.read"); out["Freshen"] = build(st, { verb: "freshen" }, "verb.freshen"); out["Let go"] = build(st, { verb: "letgo" }, "card.1"); out["by species"] = build(st, { sort: "species" }, "card.4"); out["the tray"] = build(st, { view: "filter", chips: ["S02"] }, "tchip.2.1"); out["find"] = build(st, { view: "find", find: { letter: "L" } }, "word.0"); }
+  { const st = home(Array.from({ length: 40 }, (_, i) => [["S01", "S02", "S03", "S04"][i % 4], 100 + i, i % 5 ? 1 : 0, i % 3])); out["forty, scrolled"] = build(st, { first: 2 }, "card.19"); }
   { const st = home([["S01", 51, 0, 0], ["S01", 52, 1, 0]]); S.putOnBench(st, st.tray[0]); out["a sealed pod"] = build(st, { view: "room" }, "key"); }
   { const st = home([["S01", 61, 1, 1], ["S01", 62, 1, 0]]); S.putOnBench(st, st.tray[0]); out["the rail"] = build(st, { view: "room", lane: 1 }, "rail"); out["an unread chapter open"] = build(st, { view: "room", lane: 1, at: "right" }, "key");
     out["a read chapter open"] = build(st, { view: "room", lane: 0, at: "right" }, "plate.0"); out["the read"] = build(st, { view: "room", lane: 0, at: "right", reading: { pod: st.tray[0].id, chapter: "coat", read: [], reward: 0, cost: 2 } }, "hold");
@@ -43,7 +43,7 @@ const SCENES = built ? scenes() : {};
 const frameProps = (line = {}) => ({ top: { screen: "pods", title: "Pods", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Home", need: "", ...line }, plate: { text: "" } });
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, [w, h]) { const dd = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { dd[i * 4] = 70 + (k & 127); dd[i * 4 + 1] = 70 + ((k >> 7) & 127); dd[i * 4 + 2] = 70 + ((k >> 14) & 127); dd[i * 4 + 3] = 255; } return { w, h, data: dd }; }
-const SIZE = { "cabinet-strip-672x228": [672, 228], "pod-niche-88x88": [88, 88], "pod-niche-shadow-88x88": [88, 88], "pod-niche-husk-88x88": [88, 88], "pods-lantern-96x160": [96, 160], "pods-fern-120x200": [120, 200], "reading-bench-1024x520": [1024, 520] };
+const SIZE = { "reading-bench-1024x520": [1024, 520] };
 const sizeOf = (r) => SIZE[r.id] ?? (r.kind === "readchamber" ? [548, 356] : r.kind === "readrail" ? (r.small ? [272, 40] : [526, 71]) : r.kind === "readdisc" ? [r.d + 8, r.d + 8] : r.kind === "emblem" ? [24, 24] : r.kind === "star" ? [12, 12] : Array.isArray(r.size) ? r.size : r.size ? [r.size, r.size] : [16, 16]);   // a crop is its size
 async function start(b, { motion = true } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
@@ -69,20 +69,25 @@ test("every scene draws without an error or a refused node, inside the object bu
 test("the ring goes round the whole card, never its niche; a card off the screen wears no ring until it scrolls in", { skip }, async () => {
   const b = SCENES["twelve"], f = await start(b), lg = logOf(f), ring = (lg.nodes ?? []).filter((n) => n[3] === "focus").map((n) => ({ rect: n.slice(4, 8) }));
   assert.ok(ring.length, "a ring"); const box = ring.reduce((a, n) => [Math.min(a[0], n.rect[0]), Math.min(a[1], n.rect[1]), Math.max(a[2], n.rect[0] + n.rect[2]), Math.max(a[3], n.rect[1] + n.rect[3])], [9999, 9999, 0, 0]);
-  assert.ok(box[0] <= 16 && box[1] <= 92 && box[2] >= 16 + 216 && box[3] >= 92 + 196, "outside the card's 216 x 196: " + box);
-  const far = build(home(TWELVE), {}, "card.9"); far.props.focus.cur = "card.9"; far.props.regions.inv.cabinet.cards = far.props.regions.inv.cabinet.cards.map((c) => c.k === 9 ? { ...c, row: 3 } : c);
-  const g = await start(far); if (process.env.DBG) console.log(JSON.stringify((logOf(g).nodes ?? []).filter((n) => n[3] === "focus")), far.props.focus.cur, JSON.stringify(far.props.regions.inv.cabinet.cards.map((c) => [c.k, c.row, c.col])));
+  const G = spec.regions.inventory.picker.grid; assert.ok(box[0] <= G.origin[0] && box[1] <= G.origin[1] && box[2] >= G.origin[0] + G.cell[0] && box[3] >= G.origin[1] + G.cell[1], "outside the cell's 168 x 206: " + box);
+  const far = build(home(TWELVE), {}, "card.9"); far.props.focus.cur = "card.9"; far.props.regions.inv.grid.cards = far.props.regions.inv.grid.cards.map((c) => c.k === 9 ? { ...c, row: 3 } : c);
+  const g = await start(far);
   assert.equal((logOf(g).nodes ?? []).filter((n) => n[3] === "focus").length, 0, "no ring on a card below the screen");
 });
-test("the keys: ▶ from the right-hand column goes to the panel's first button, ◀ back to its card, ▲ from the top row to the tool above; ✓ and ← are intents on the focused target", { skip }, async () => {
-  const st = home(TWELVE), first = build(st, {}, "card.2"), f = await start(first), on = { panelPod: first.panelPod };
-  f.key("right"); let m = said(f); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "act.0"]]);
-  show(f, build(st, on, "act.0")); f.key("down"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["act.1"]);
-  show(f, build(st, on, "act.1")); f.key("left"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["card.2"], "the card the panel shows");
-  show(f, build(st, {}, "card.1")); f.key("up"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["filter"]);
+test("the keys: ▶ ◀ move between pods and stop at an edge, ▲ from the top row goes to the verb that is on, ◀ ▶ on the verb line move the ring (and so choose the verb), ▼ goes down to the pods; ✓ and ← are intents on the focused target", { skip }, async () => {
+  const st = home(TWELVE), f = await start(build(st, {}, "card.2"));
+  f.key("right"); let m = said(f); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "card.3"]]);
+  show(f, build(st, {}, "card.4")); f.key("right"); assert.deepEqual(said(f), [], "the right edge: the ring stays, nothing said");
+  show(f, build(st, {}, "card.2")); f.key("down"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["card.7"], "the row under");
+  show(f, build(st, {}, "card.1")); f.key("up"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.read"], "▲ from the top row: the verb that is on");
+  show(f, build(st, {}, "verb.read")); f.key("right"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.grow"], "the next verb");
+  show(f, build(st, { verb: "grow" }, "verb.grow")); f.key("down"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["card.0"], "down to the first pod that can take the verb");
+  show(f, build(st, { verb: "letgo" }, "verb.letgo")); f.key("right"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["sort"], "the verb line goes on to Sort, Filter and Find");
+  show(f, build(st, {}, "sort")); f.key("left"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.letgo"]);
   show(f, build(st, {}, "card.0")); f.key("left"); assert.deepEqual(said(f), [], "the left edge: the ring stays, nothing said");
   f.key("confirm"); m = said(f); assert.deepEqual(m.map((x) => [x.t, x.target, x.verb]), [["intent", "card.0", "confirm"]]);
   f.key("back"); m = said(f); assert.deepEqual(m.map((x) => [x.t, x.verb]), [["intent", "back"]]);
+  show(f, build(st, { verb: "grow", fixed: true }, "card.2")); f.key("up"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["filter"], "a fixed verb: ▲ goes to the tool above");
 });
 test("← is one press from every target of the reading screen: each says back on its target, and nothing else", { skip }, async () => {
   for (const name of ["the rail", "a read chapter open", "the detail", "the stamp view"]) { const b = SCENES[name], f = await start(b);
@@ -97,8 +102,8 @@ test("the read on the face's clock (ux-reading-v2.md §2.6, 4): the chamber afte
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });
 test("the 200 ms scroll: the cabinet's wipe from the old first row to the new draws the rows a pitch back at its start, easing to their place in whole pixels, the ring riding with its card; a cut with motion off", { skip }, async () => {
-  const b = SCENES["forty, scrolled"], k = b.props.regions.inv.cabinet.cards.find((c) => c.row === 0 && c.col === 0 && !c.husk).k, id = `card.${k}.pod`, pitch = spec.regions.inventory.cabinet.card.pitch[1];
-  const f = await start(b), y = () => { const n = f.nodeBox(id)?.box, c = f.nodeBox("cab.clip")?.box; return n ? n[1] + (c && c[3] > 0 ? c[1] : 0) : null; }, y0 = y(); assert.ok(y0 != null, "the card's pod is drawn");   // while the scroll plays the rows are held in the cabinet's clip, placed from its corner
+  const b = SCENES["forty, scrolled"], k = b.props.regions.inv.grid.cards.find((c) => c.row === 0 && c.col === 0).k, id = `card.${k}.pod`, pitch = spec.regions.inventory.picker.grid.pitch[1];
+  const f = await start(b), y = () => { const n = f.nodeBox(id)?.box, c = f.nodeBox("grid.clip")?.box; return n ? n[1] + (c && c[3] > 0 ? c[1] : 0) : null; }, y0 = y(); assert.ok(y0 != null, "the card's pod is drawn");   // while the scroll plays the rows are held in the cabinet's clip, placed from its corner
   f.send({ t: "event", kind: "wipe", target: "cabinet", ms: 200, hold: 0, from: 4, to: 5 }); f.frame((f.t += 1));
   assert.ok(Math.abs(y() - (y0 + pitch)) <= 2, `at the start the row stands a pitch lower: ${y()} for ${y0 + pitch}`);
   f.frame((f.t += 100)); assert.ok(y() > y0 && y() < y0 + pitch, "halfway it is between"); f.frame((f.t += 150)); frames(f); assert.equal(y(), y0, "at the end in its place");

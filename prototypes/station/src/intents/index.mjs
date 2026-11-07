@@ -26,3 +26,5 @@ export function dispatch(h, { screen, target, verb }) {
   if (verb && (verb.startsWith("room:") || verb === "wake")) return frame.intent(h, target, verb);
   const m = INTENTS[screen]; return m ? m.intent(h, target, verb) : undefined;
 }
+// The hold ring is full (the face's `confirm:held`): what a held ✓ was asking for, on the screen the ring was on: a panel's Return card, else Pods' Let go.
+export function heldKey(h) { return h.ui.panel ? panel.held(h) : h.ui.screen === "pods" ? pods.held(h) : false; }

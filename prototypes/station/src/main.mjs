@@ -164,7 +164,7 @@ const podsScene = (pods, o = {}) => {
   if (o.seal) { const ch = frameOf(o.seal[0]).chapters.find((c) => c.id === o.seal[1]); if (ch) { ch.sealed = true; sceneSealed = ch; } }
   const st = G.st; st.tray = []; st.waiting = []; st.readingPod = null; st.dried = []; st.wish = {}; st.turn = 0; st.readEver = true; st.firstMibi = false;
   if (o.fresh) { st.guide = {}; st.readOnce = {}; st.libSeen = {}; }   // the species guide as it stood before any read (a glint needs a look not yet seen: scenes carry the guide of the scenes before them)
-  const u = UI.pods; Object.assign(u, { cmp: null, sort: "use", chips: [], word: null, first: 0, ask: null, choosing: false, recent: [], find: null, flash: null, spent: null, panelPod: null, lastCard: null, ci: 0, trait: 0, lane: null, at: "rail", plate: 0, reading: null, moment: null, folding: null, fromChamber: null });
+  const u = UI.pods; Object.assign(u, { cmp: null, sort: "use", chips: [], word: null, first: 0, ask: null, choosing: false, verb: "read", fixed: false, hold: null, waits: false, recent: [], find: null, flash: null, spent: null, panelPod: null, lastCard: null, ci: 0, trait: 0, lane: null, at: "rail", plate: 0, reading: null, moment: null, folding: null, fromChamber: null });
   if (o.rich) st.d = 999;   // every read of the scene paid (the reading screen's scenes); the materials are set after
   pods.forEach(([sp, seed, idd, n], i) => { const p = S.seedPodFromGenome(st, podGenome(frameOf(sp), seed), G.settings, Date.now()).pod; p.g = PLACES[i % 5]; p.how = HOWS[i % 5]; if (idd) S.skipIdentify(st, p); frameOf(sp).chapters.filter((c) => !c.sealed).slice(0, n).forEach((c) => { S.read(st, p, c.id, G.settings); }); p.seen = i % 4 === 3 ? 0 : 1; });
   if (o.goal) { const p = st.tray[o.goal[1]], fr = frameOf(o.goal[0]), ch = fr.chapters.find((c) => p.read.includes(c.id)); if (ch) { const t = ch.traits[0]; st.wish[o.goal[0]] = { [t.id]: S.guideLooks(st, o.goal[0], t.id)[0] }; } }
@@ -176,8 +176,9 @@ const podsScene = (pods, o = {}) => {
 };
 const podsAt = (o = {}) => {
   const u = UI.pods, st = G.st; u.cmp = null; u.view = o.view ?? "inventory";
-  for (const k of ["sort", "chips", "word", "first", "choosing", "find", "ci", "trait", "lane", "at", "plate"]) if (k in o) u[k] = o[k];
+  for (const k of ["sort", "chips", "word", "first", "choosing", "find", "ci", "trait", "lane", "at", "plate", "verb", "fixed", "hold", "waits"]) if (k in o) u[k] = o[k];
   u.ask = o.ask == null ? null : typeof o.ask === "number" ? st.tray[o.ask]?.id ?? null : o.ask;
+  if (u.hold === "first") u.hold = listOf(st, SPECS.pods, { ...u, hold: null }, G.settings)[0]?.p.id ?? null;   // the scene's held pod: the first card's
   if ("bench" in o) { if (o.bench == null) st.readingPod = null; else S.putOnBench(st, typeof o.bench === "string" ? S.podById(st, o.bench) : st.tray[o.bench]); }   // a tray index, or a pod id
   if (o.card) { const k = listOf(st, SPECS.pods, u, G.settings).findIndex((e) => e.p.id === o.card); o.focus = k >= 0 ? "card." + k : o.focus; }   // the ring on that pod's card
   if (o.cmp) { const a = S.benchPod(st) ?? st.tray[0], b = st.tray.find((q) => q !== a && S.canCompare(st, a, q)); if (a && b) { u.cmp = { a: a.id, b: b.id, ci: o.ci ?? 0, from: "inventory", card: a.id }; o.focus = "takeA"; } }

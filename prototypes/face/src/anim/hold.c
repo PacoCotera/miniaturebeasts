@@ -15,7 +15,7 @@ int hold_cos(int k) { return hold_sin(k + 250); }
 
 enum { H_IDLE, H_HOLDING, H_FULL, H_EMPTYING };
 static int g_state, g_armed, g_from; static uint32_t g_t0;
-static int hold_ms(void) { int v = spec_int("frame", "hold.ms", 3000); return v > 0 ? v : 3000; }
+static int hold_ms(void) { int v = spec_int("props", "frame.hold.ms", 0); if (v <= 0) v = spec_int("frame", "hold.ms", 3000); return v > 0 ? v : 3000; }   /* the frame may ask for a longer hold (a pod that carries the goal) */
 static int empty_ms(void) { int v = spec_int("frame", "hold.emptyMs", 300); return v > 0 ? v : 300; }
 static int motion(void) { return spec_bool("props", "motion", 1); }
 void hold_reset(void) { g_state = H_IDLE; g_armed = 0; g_from = 0; g_t0 = 0; }

@@ -38,7 +38,7 @@ import { cuttingHatch, landHatch } from "./intents/incubator.mjs";
 import { arrivePending } from "./intents/arrival.mjs";
 import { registerPictures, iconRequests, movingSource, libraryMade, lastSheet, wantLibrary, droppedPictures } from "./pictures.mjs";
 import { setMovingSource } from "./moving.mjs";
-import { dispatch, INTENTS } from "./intents/index.mjs";
+import { dispatch, INTENTS, heldKey } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf, isBuilt } from "./nav.mjs";
 import { assetEntry, asset as assetOf } from "../../ui/assets.mjs";
 import { policyOf } from "../../ui/asset-policy.mjs";
@@ -102,6 +102,7 @@ export function podsBody() {
   if (body.mode !== "compare" && (body.first !== (p.first ?? 0) || body.panelPod !== (p.panelPod ?? null))) { p.first = body.first; p.panelPod = body.panelPod; body = podsProps(model(), SPECS.pods, SPECS.frame); }
   { const q = body.mode === "inventory" && String(F.cur ?? "").startsWith("card.") ? S.podById(G.st, body.panelPod) : null; if (q && !q.seen) { q.seen = 1; save(); body = podsProps(model(), SPECS.pods, SPECS.frame); } }   // a card's new mark goes when the ring first lands on it
   if (UI.panel && UI.panel.screen === "pods") UI.panel = null;
+  holdNow = body.hold ? { ms: body.hold.ms } : null;   // Let go (and the tray's Let these go) hold the ✓ on a ring with the pod under it: the frame carries the hold and the face keeps ✓ down for the ring
   if (body.mode === "room" || body.mode === "trait") body.top = { readout: { text: SPECS.pods.strings.room.crumb, mark: null } };
   return body;
 }
@@ -130,10 +131,12 @@ export function vivariumBody(light = lightNow()) {
   UI.viv.f = body.props.focus.cur; if (body.nav.card != null) UI.viv.last = body.nav.card; if (body.props.view === "wall") { UI.viv.row0 = body.nav.row0; UI.viv.first = body.nav.first; UI.viv.moveFirst = body.nav.moveFirst; } delete body.nav;
   if (pn && pn.screen === "vivarium") {   // the Add a room? panel is open: its props ride on the whole's (an overlay) and its bottom line is built from the focused card
     const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump, light }, SPECS.panel, SPECS.frame, SPECS.pods);
-    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests]; panelHold(pb);
   }
   return body;
 }
+// The Return card is a held ✓ (the hold ring): while the ring is on it the frame carries the hold and a short ✓ lets nothing go.
+const panelHold = (pb) => { const c = pb.cards?.find((x) => "card." + x.id === pb.overlay.focus.cur); holdNow = c && c.act === "return" && !c.dim ? { ms: 0 } : null; };
 // The Vivarium's props from the host's state (the collection v2 design): the view, the cold page, the carry and the pick of two are UI.viv's; the intents build the same (h.vivBuild)
 export const vivariumModel = (light = lightNow()) => { const V = UI.viv;
   if (V.view === "wall") return wallBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: V.f, last: V.last ?? UI.hab.id, sort: V.sort, filter: V.filter, pick: V.pick, row0: V.row0, first: V.first, nudge: V.nudge, move: V.move, moveFirst: V.moveFirst, pair: V.pair, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home, SPECS.pods);
@@ -161,7 +164,7 @@ export function habitatBody(light = lightNow()) {
   const n = UI.hab.namer, who = n && mibiById(n.id), pn = UI.panel;
   if (pn && pn.screen === "habitat") {   // the Return panel is open: its props ride on habitat's (an overlay) and its bottom line is built from the focused card
     const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
-    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests]; panelHold(pb);
   } else if (pn && pn.screen !== "create" && pn.screen !== "pods") UI.panel = null;
   else if (n && who) { const nb = namerBuild({ st: G.st, mibi: who, ui: n }, SPECS.namer); body.props.overlay = nb.overlay; body.line = nb.line; body.requests = [...body.requests, ...nb.requests]; } else if (n) UI.hab.namer = null;
   return body;
@@ -277,9 +280,11 @@ export function enterSitting(h, m, { state = "pose", from = "habitat" } = {}) {
 // ---- the props of the screen on the page ----
 // { msg: the props message (without seq), ids: every picture the face needs before them, light, lit: the graded residents, owed: the ids of the requests that carry an owed habit key }
 // A plate that holds ✓ (the hold ring, frame.json hold): UI.hold names it, and the developer setting realmSleep lets it show; with either off the frame carries no hold and ✓ is an ordinary key.
-export const holdOn = () => !!(UI.hold && G.settings.realmSleep);
-const withHold = (frame) => (holdOn() ? { ...frame, hold: { on: 1 } } : frame);
+export let holdNow = null;   // the hold a screen asks for this frame (the pods picker's Let go, the Return card): { ms } (0: the frame's own), set by the screen's body and read by the frame and the keys
+export const holdOn = () => !!((UI.hold && G.settings.realmSleep) || holdNow);
+const withHold = (frame) => (holdOn() ? { ...frame, hold: { on: 1, ...(holdNow?.ms ? { ms: holdNow.ms } : {}) } } : frame);
 export function screenProps(plate) {
+  holdNow = null;
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
   if (UI.screen === "habitat" && !S.housed(G.st).length) goScreen("vivarium");   // one mibi up close always shows one mibi: with none housed the whole shows its empty state
   const screen = UI.screen, light = lightNow();   // the light is read once per sync: the props and the pictures dropped after them agree on it
@@ -395,7 +400,7 @@ function habitatFocus(h, target) {
 // While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends, after a kept Dock key; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
   if (m.t === "done") { if (m.kind === "hatch" && cuttingHatch(h) && !h.holding()) landHatch(h); return; }   // informative only, but for the hatch with a moving set: a key the face acted on after the hold ended it (its cut), and that key lands the meet
-  if (m.t === "intent" && m.verb === "confirm:held") { h.held?.(); return; }   // the hold ring is full (anim/hold.c); the plate that holds acts on it, no plate does yet
+  if (m.t === "intent" && m.verb === "confirm:held") { if (h.held) h.held(); else heldKey(h); return; }   // the hold ring is full (anim/hold.c): the plate that holds acts on it (a pod to let go, the Return card; intents/index.mjs held)
   if (m.t === "intent" && m.verb === "skip") { h.skip(); return; }   // ✓ in a skippable hold (lvgl-switch.md §2.1): before every other rule, so it is never a cutting key; a late one, after the hold, does nothing
   if (m.screen === "incubator" && UI.screen !== "incubator") return;   // a key the cut already spent (the meet has landed): the Incubator's intent after the screen left is dropped
   if (m.screen === "incubator" && cuttingHatch(h) && !h.holding() && m.t === "intent") { landHatch(h); return; }   // the cutting key lands the meet and does nothing else

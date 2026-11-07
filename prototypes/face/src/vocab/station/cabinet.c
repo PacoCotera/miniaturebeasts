@@ -1,12 +1,9 @@
-/* The pod inventory's words (the pod inventory's design, the art sign-off): the plaster ground, the cabinet (the painted strip tiled down the rows, one painted niche a card with the pod in it, the
-   lantern and the fern fixed over the strip and the niches and under the words), each card's paper label with its name, worth tag and origin or drying words, the read bar's four blocks, the lock, the
-   freshness strip with its leaf (the lamp on the bench pod), the goal star and the new tag; the scroll rail; the tool row (Sort, Filter, Find, the active chips, the count); the pod panel (the focused
-   pod in full and its five buttons, wood plates on the paper); the filter tray and the Find panel over the cabinet.
-   Spec: `pods` regions.inventory. Props: regions.inv { tools, cabinet { strip, lantern, fern, rows [{ row, label }], cards [{ k, row, col, niche, shadow, pod, star, isNew, blocks, lock, fresh, name,
-   worth, line, amber, husk }], empty, bare }, rail { share, at } | null, panel { name, worth [], next, originPicture, origin [], fresh { words, amber, bench }, acts [{ word, dim, ask }] } },
-   regions.tray { rows [{ head, chips [{ id, word, lit, dim }] }] }, regions.find { recent [], letters [{ ch, lit }], words [{ word, kind, row }], first, head }.
-   Rows are counted from the first row on screen (row 0 at the cabinet's top); a row that does not fit whole shows only its top (the niche rims peek), and the row above the screen is not drawn.
-   A picture the host has not sent is a slot not yet filled: nothing is drawn and the layout does not move. Words are set by role (frame.json type.roles). */
+/* The pod inventory's words (the pods picker's design B, owner ruling 2026-11-07): the pod picker (the dark ground, the verb line, Sort, Filter and Find, a grid of big pods each with its name and one small mark, the focused
+   pod's history on one line) and its filter tray and Find panel over it; the shared plates and lines (inv_say, inv_plate, inv_wrap) that Compare and the reading room use, and the pod's rail at the small size (mini_rail).
+   Spec: `pods` regions.inventory (picker, tray, find, panel.rail). Props: regions.inv { verbs [{ id, word, on }], heading, tools { sort, filter, filterAmber, find, dim }, grid { cards [{ k, row, col, pod, name, sealed, mark, fade, held }],
+   first }, rail { share, from } | null, detail { left, right, amber }, empty [title, line] }, regions.tray { rows [{ head, chips [{ id, word, lit, dim }] }] }, regions.find { recent [], letters [{ ch, lit }], words [{ word, kind, row }], first, head }.
+   Rows are counted from the first row on screen (row 0 at the grid's top); a row that is not whole on screen is drawn only while the scroll plays. A picture the host has not sent is a slot not yet filled: nothing is drawn and the
+   layout does not move. Words are set by role (frame.json type.roles). */
 #include "../vocab.h"
 #include "../words.h"
 #include "../../prim/prim.h"
@@ -14,6 +11,7 @@
 #include "../../bridge/wire.h"
 #include "../../anim/anim.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define S "pods"
@@ -72,209 +70,6 @@ void inv_plate(const char *id_in, const int r[4], const char *text, int dim, int
   v_region(id, LAYER_TYPE); inv_say(v_fmt("%s.word", id), t, r[0], r[1], r[2], r[3], role, "slate", V_ALIGN_CENTRE);
 }
 
-/* ---- the marks, code-drawn (the mark sheet: star, lock, leaf, lamp, the new tag), each a composed picture ---- */
-static void mark_lock(const char *id, int x, int y) { v_composed(id, x, y, 16, 16, "[[\"rrect\",3,7,10,8,1,\"paper\",\"paper\"],[\"h\",5,3,6,\"paper\"],[\"v\",4,4,3,\"paper\"],[\"v\",11,4,3,\"paper\"],[\"dot\",8,10,\"soil\"],[\"dot\",8,11,\"soil\"]]"); }
-static void mark_leaf(const char *id, int x, int y) { v_composed(id, x, y, 10, 10, "[[\"h\",4,0,2,\"sage\"],[\"h\",3,1,4,\"sage\"],[\"h\",2,2,6,\"sage\"],[\"h\",1,3,8,\"sage\"],[\"h\",0,4,10,\"sage\"],[\"h\",0,5,10,\"sage\"],[\"h\",1,6,8,\"sage\"],[\"h\",2,7,6,\"sage\"],[\"h\",3,8,4,\"sage\"],[\"v\",5,1,9,\"sageD\"]]"); }   /* the sheet's 10 px leaf: the blade the whole 10 px wide, its vein and stalk in sageD */
-static void mark_lamp(const char *id, int x, int y) { v_composed(id, x, y, 10, 10, "[[\"h\",3,0,4,\"gold\"],[\"rrect\",2,1,6,6,1,\"cream\",\"gold\"],[\"h\",4,8,2,\"gold\"],[\"dot\",5,4,\"white\"]]"); }
-static void mark_new(const char *id, int x, int y) { v_composed(id, x, y, 20, 20, "[[\"rrect\",3,5,14,10,1,\"paper\",\"soil\"],[\"dot\",6,10,\"soil\"],[\"h\",9,9,5,\"soil\"],[\"h\",9,11,4,\"soil\"]]"); }
-
-/* ---- the read bar and the freshness strip (shared with the reading room) ---- */
-/* The mini rail under a card (the reading screen spec section 4): n lanes across `total` px, `gap` apart, each as wide as its traits are many (`min` px at least, the rest by the largest remainder; the same rule as miniWidths in pods-props.mjs). */
-static void mini_widths(const int *ns, int n, int total, int gap, int min, int *w) {
-  int avail = total - gap * (n - 1), tot = 0; for (int i = 0; i < n; i++) tot += ns[i]; if (tot < 1) tot = 1;
-  int rem[16], used = 0; if (n > 16) n = 16;
-  for (int i = 0; i < n; i++) { w[i] = avail * ns[i] / tot; rem[i] = avail * ns[i] % tot; if (w[i] < min) w[i] = min; used += w[i]; }
-  int left = avail - used; int order[16]; for (int i = 0; i < n; i++) order[i] = i;
-  for (int i = 1; i < n; i++) { int o = order[i], j = i - 1; while (j >= 0 && (rem[order[j]] < rem[o])) { order[j + 1] = order[j]; j--; } order[j + 1] = o; }
-  for (int k = 0; left > 0 && n; k = (k + 1) % n, left--) w[order[k]]++;
-  for (int k = 0, guard = 0; left < 0 && n && guard < 64; k = (k + 1) % n, guard++) if (w[order[k]] > min) { w[order[k]]--; left++; }
-}
-/* A card's mini rail at (x, y) of `total` x 8: a read lane lit in its chapter's colour; an unread one the inlay (`off`, 1 px `edge` below) with a 1 px line in the chapter's colour on its top; a sealed one the inlay alone. Nodes <id>.<i>, .<i>.l, .<i>.e. */
-static void inv_mini(const char *id, const char *C, int x, int y, int total, int bh, int gap, int min, const char *off, const char *edge) {
-  int n = v_plen(v_fmt("%s.rail", C)); if (n > 16) n = 16; if (n < 1) return; int ns[16], w[16];
-  for (int i = 0; i < n; i++) { ns[i] = v_pint(v_fmt("%s.rail.%d.n", C, i), 1); if (ns[i] < 1) ns[i] = 1; }
-  mini_widths(ns, n, total, gap, min, w);
-  int bx = x;
-  for (int i = 0; i < n; i++) {
-    const char *st = v_pstr(v_fmt("%s.rail.%d.state", C, i)); char ch[32]; snprintf(ch, sizeof ch, "%s", v_pstr(v_fmt("%s.rail.%d.ch", C, i)));
-    char col[24]; snprintf(col, sizeof col, "%s", v_scol_or(S, v_fmt("regions.read.colours.%s", ch), "chCharacter"));
-    if (!strcmp(st, "read")) v_rect(v_fmt("%s.%d", id, i), bx, y, w[i], bh, col);
-    else { v_rect(v_fmt("%s.%d", id, i), bx, y, w[i], bh, off); v_rect(v_fmt("%s.%d.e", id, i), bx, y + bh, w[i], 1, edge);
-      if (!strcmp(st, "unread") && *ch) v_rect(v_fmt("%s.%d.l", id, i), bx, y, w[i], 1, col); }
-    bx += w[i] + gap;
-  }
-}
-/* The freshness strip: its track and its fill (one notch a turn left, of `life`), amber from DRYING_SOON; the leaf at its left, or the lamp on the bench pod. */
-void inv_fresh(const char *id, const int r[4], const int leaf[4], int left, int life, int amber, int bench, const char *on, const char *warn, const char *track) {
-  int w = life > 0 ? (r[2] * (left < 0 ? 0 : left > life ? life : left)) / life : 0;
-  v_rect(v_fmt("%s.track", id), r[0], r[1], r[2], r[3], track);
-  v_rect(v_fmt("%s.fill", id), r[0], r[1], w, w ? r[3] : 0, amber ? warn : on);
-  if (bench) mark_lamp(v_fmt("%s.mark", id), leaf[0], leaf[1]); else mark_leaf(v_fmt("%s.mark", id), leaf[0], leaf[1]);
-}
-
-/* ---- the cabinet's geometry ---- */
-static int rows_n(void) { return v_plen(P ".cabinet.rows"); }
-static int row_label(int row) { for (int i = 0, n = rows_n(); i < n; i++) if (v_pint(v_fmt(P ".cabinet.rows.%d.row", i), 99) == row) return *v_pstr(v_fmt(P ".cabinet.rows.%d.label", i)) != 0; return 0; }
-static int row_h(int row) { return v_sk(S, I ".cabinet.card.pitch", 1) + (row_label(row) ? v_si(S, I ".cabinet.speciesLabel.h", 24) : 0); }
-/* The 200 ms scroll (the pod inventory's design, Scrolling; the reviews' fix next): the host plays a `wipe` on "cabinet" from the old first row to the new; while it plays, the rows are drawn
-   g_dy px from their place (at most one row's pitch, easing to 0 in whole pixels) and the ring rides with its card. A cut with reduced motion (the event is over at once). */
-static int g_dy;
-int inv_scroll_dy(void) {
-  anim_state_t a; if (!anim_get(ANIM_WIPE, "cabinet", &a) || a.ms <= 0 || a.to == a.from) return 0;
-  int d = a.to > a.from ? 1 : -1, left = a.ms - a.elapsed; if (left <= 0) return 0;
-  long p = v_sk(S, I ".cabinet.card.pitch", 1); return (int)(d * p * left / a.ms);
-}
-void inv_scroll(int on) { g_dy = on ? inv_scroll_dy() : 0; }
-/* the top of a row (row 0 at the cabinet's top; row -1 above it); a labelled row's cards stand under its label */
-int inv_row_y(int row) {
-  int cab[4]; v_srect(S, I ".cabinet.rect", cab); int y = cab[1] + g_dy;
-  if (row >= 0) for (int r = 0; r < row; r++) y += row_h(r); else for (int r = -1; r >= row; r--) y -= row_h(r);
-  return y;
-}
-static int card_top(int row) { return inv_row_y(row) + (row_label(row) ? v_si(S, I ".cabinet.speciesLabel.h", 24) : 0); }
-/* the box of the props' card i: [x, y, 216, 196]; 1 when it stands whole in the cabinet (a target, its words drawn), 0 when it peeks or is off the screen */
-int inv_card_box(int i, int out[4]) {
-  int cab[4]; v_srect(S, I ".cabinet.rect", cab); const char *b = v_fmt(P ".cabinet.cards.%d", i); char B[64]; snprintf(B, sizeof B, "%s", b);
-  int row = v_pint(v_fmt("%s.row", B), 0), col = v_pint(v_fmt("%s.col", B), 0);
-  out[0] = cab[0] + col * v_sk(S, I ".cabinet.card.pitch", 0); out[1] = card_top(row); out[2] = v_sk(S, I ".cabinet.card.size", 0); out[3] = v_sk(S, I ".cabinet.card.size", 1);
-  return out[1] >= cab[1] && out[1] + out[3] <= cab[1] + cab[3];
-}
-static int card_index_of_k(int k) { for (int i = 0, n = v_plen(P ".cabinet.cards"); i < n; i++) if (v_pint(v_fmt(P ".cabinet.cards.%d.k", i), -9999) == k) return i; return -1; }
-int inv_card_rect_k(int k, int out[4]) { int i = card_index_of_k(k); if (i < 0) { out[0] = out[1] = out[2] = out[3] = 0; return 0; } inv_card_box(i, out); return 1; }
-
-/* ---- the tool row: Sort, Filter, Find, the active chips, the count ---- */
-static void tool_rect(const char *which, int r[4]) { v_srect(S, v_fmt(I ".tools.%s", which), r); }
-/* the chip i's plate in the tool row: its words and ✕, left to right from the chips' rect; 0 when it does not fit */
-int inv_chip_rect(int i, int out[4]) {
-  int c[4]; tool_rect("chips", c); int x = c[0], gap = v_si(S, I ".tools.chip.gap", 8), pad = v_si(S, I ".tools.chip.pad", 10);
-  for (int k = 0, n = v_plen(P ".tools.chips"); k < n && k <= i; k++) {
-    char w[V_STR]; snprintf(w, sizeof w, "%s \xe2\x9c\x95", v_pstr(v_fmt(P ".tools.chips.%d", k))); int cw = inv_plate_w(w, "label", pad);
-    if (x + cw > c[0] + c[2]) { out[0] = out[1] = out[2] = out[3] = 0; return 0; }
-    if (k == i) { out[0] = x; out[1] = c[1]; out[2] = cw; out[3] = c[3]; return 1; }
-    x += cw + gap;
-  }
-  out[0] = out[1] = out[2] = out[3] = 0; return 0;
-}
-static void tools(void) {
-  int dim = v_pbool(P ".tools.dim", 0), r[4];
-  const char *names[3] = { "sort", "filter", "find" };
-  for (int i = 0; i < 3; i++) { char t[V_STR]; snprintf(t, sizeof t, "%s", v_pstr(v_fmt(P ".tools.%s", names[i]))); tool_rect(names[i], r); inv_plate(v_fmt("tool.%s", names[i]), r, t, dim, 0, I ".tools.plate");
-    if (i == 1 && v_pbool(P ".tools.filterAmber", 0)) { v_region("tool.filter", LAYER_CHROME); int tw = v_role_width(t, "label"); v_rect("tool.filter.u", r[0] + (r[2] - tw) / 2, r[1] + r[3] - 7, tw, 1, "amber"); } }   /* the drying word underlined: the warning never lives in colour alone */
-  for (int i = 0, n = v_plen(P ".tools.chips"); i < n; i++) { int c[4]; if (!inv_chip_rect(i, c)) break; char w[V_STR]; snprintf(w, sizeof w, "%s \xe2\x9c\x95", v_pstr(v_fmt(P ".tools.chips.%d", i))); inv_plate(v_fmt("tool.chip.%d", i), c, w, 0, 1, I ".tools.plate"); }
-  char count[V_STR]; snprintf(count, sizeof count, "%s", v_pstr(P ".tools.count")); tool_rect("count", r);
-  v_region("tools.count", LAYER_TYPE); inv_say("tools.count", count, r[0], r[1], r[2], r[3], "quiet.umber", "paper", V_ALIGN_RIGHT);
-}
-
-/* ---- the cabinet ---- */
-static void strip_band(const char *id, const char *strip, int sy, int x, int y, int w, int h) { if (h > 0) v_sprite_window(id, strip, 0, sy, x, y, w, h); }
-/* A card meets the cabinet: some row of it on screen (the 200 ms scroll draws these whole, inside the cabinet's clip) */
-static int card_meets(const int b[4], const int cab[4]) { return b[1] < cab[1] + cab[3] && b[1] + b[3] > cab[1]; }
-/* The cabinet's back: the strip row by row, the bare niches, the niches, shadows and pods. While the scroll plays every row that meets the cabinet is drawn (the clip cuts it); at rest a row cut by the foot shows its niches' rims. */
-static void cabinet_back(void) {
-  int cab[4]; v_srect(S, I ".cabinet.rect", cab); int bottom = cab[1] + cab[3];
-  char strip[96]; snprintf(strip, sizeof strip, "%s", v_pstr(P ".cabinet.strip"));
-  int tileH = v_sk(S, I ".cabinet.strip.size", 1), labH = v_si(S, I ".cabinet.speciesLabel.h", 24), plankY = v_si(S, I ".cabinet.speciesLabel.plankY", 30);   /* a label's band is the strip's own plank: the label carved into the wood (review round 2) */
-  /* the strip, row by row from the cabinet's top to its foot: a labelled row first shows a band of the strip's plank for its label; the last rows run on as bare plank */
-  v_region("cabinet", LAYER_PAINTED);
-  if (has(strip) && g_dy) {   /* the scroll playing: the strip from the row above the cabinet, each band clipped to the cabinet's top and foot */
-    int y = inv_row_y(-1), row = -1;
-    for (int guard = 0; y < bottom && guard < 9; guard++, row++) {
-      int lab = row_label(row) ? labH : 0, bands[2][2] = { { plankY, lab }, { 0, tileH } };
-      for (int b = 0; b < 2; b++) { int sy = bands[b][0], h = bands[b][1], top = y; if (h <= 0) continue; y += h;
-        if (top < cab[1]) { sy += cab[1] - top; h -= cab[1] - top; top = cab[1]; } if (top + h > bottom) h = bottom - top;
-        if (h > 0) strip_band(v_fmt("cab.strip.%d.%s", row + 1, b ? "s" : "l"), strip, sy, cab[0], top, cab[2], h); }
-    }
-  }
-  else if (has(strip)) {
-    int y = cab[1], row = 0;
-    for (int guard = 0; y < bottom && guard < 8; guard++, row++) {
-      int lab = row_label(row) ? labH : 0;
-      if (lab) { strip_band(v_fmt("cab.strip.%d.l", row), strip, plankY, cab[0], y, cab[2], y + lab > bottom ? bottom - y : lab); y += lab; }
-      int h = y + tileH > bottom ? bottom - y : tileH;
-      if (h < tileH) { char peek[96]; snprintf(peek, sizeof peek, "%s", v_pstr(P ".cabinet.stripPeek")); if (h > 0 && has(peek)) v_sprite(v_fmt("cab.strip.%d", row), peek, cab[0], y, cab[2], h); }   /* the band the cabinet's foot cuts: the strip's top rows, its own picture */
-      else strip_band(v_fmt("cab.strip.%d", row), strip, 0, cab[0], y, cab[2], h);
-      y += tileH;
-    }
-  }
-  /* the fern (review round 2, G8): over the strip, under the niches and the pods */
-  { int r[4]; char id[96]; v_srect(S, I ".cabinet.fern.rect", r); snprintf(id, sizeof id, "%s", v_pstr(P ".cabinet.fern")); v_name("cabinet.fern"); v_slot("cab.fern", id, NULL, r[0], r[1], r[2], r[3], 1); }
-  int n = v_plen(P ".cabinet.cards"), nx = v_sk(S, I ".cabinet.card.niche", 0), ny = v_sk(S, I ".cabinet.card.niche", 1), nw = v_sk(S, I ".cabinet.card.niche", 2), nh = v_sk(S, I ".cabinet.card.niche", 3);
-  int px = v_sk(S, I ".cabinet.card.pod", 0), py = v_sk(S, I ".cabinet.card.pod", 1), pw = v_sk(S, I ".cabinet.card.pod", 2), ph = v_sk(S, I ".cabinet.card.pod", 3);
-  /* no pods: three bare niches on the first plank (the one place empty niches appear) */
-  char bare[96]; snprintf(bare, sizeof bare, "%s", v_pstr(P ".cabinet.bare"));
-  if (*bare) for (int c = 0; c < 3; c++) { v_name("cabinet.niche"); v_slot(v_fmt("cab.bare.%d", c), bare, NULL, cab[0] + c * v_sk(S, I ".cabinet.card.pitch", 0) + nx, cab[1] + ny, nw, nh, 1); }
-  /* the niches and the pods: a whole card's niche, its shadow and its pod; a peeking card shows the niche's top rows only */
-  for (int i = 0; i < n; i++) {
-    int b[4], whole = inv_card_box(i, b); const char *C = v_fmt(P ".cabinet.cards.%d", i); char Cb[64]; snprintf(Cb, sizeof Cb, "%s", C);
-    int k = v_pint(v_fmt("%s.k", Cb), 0); char niche[96], shadow[96], pod[96]; snprintf(niche, sizeof niche, "%s", v_pstr(v_fmt("%s.niche", Cb))); snprintf(shadow, sizeof shadow, "%s", v_pstr(v_fmt("%s.shadow", Cb))); snprintf(pod, sizeof pod, "%s", v_pstr(v_fmt("%s.pod", Cb)));
-    if (g_dy) { if (!card_meets(b, cab)) continue; }   /* the scroll: every row in the clip slides by the same offset */
-    else { if (b[1] + ny >= bottom || b[1] + b[3] <= cab[1]) continue;
-      if (!whole) { int vis = bottom - (b[1] + ny); char peek[96]; snprintf(peek, sizeof peek, "%s", v_pstr(P ".cabinet.nichePeek")); if (vis > 0 && vis < nh && has(peek)) { v_name("cabinet.niche"); v_sprite(v_fmt("card.%d.niche", k), peek, b[0] + nx, b[1] + ny, nw, vis); } continue; } }   /* a row that peeks: its niches' rims */
-    v_name("cabinet.niche"); v_slot(v_fmt("card.%d.niche", k), niche, NULL, b[0] + nx, b[1] + ny, nw, nh, 1);
-    v_name("cabinet.niche"); v_slot(v_fmt("card.%d.shadow", k), shadow, NULL, b[0] + nx, b[1] + ny, nw, nh, *shadow != 0);
-    v_name("cabinet.pod"); v_slot(v_fmt("card.%d.pod", k), pod, NULL, b[0] + px, b[1] + py, pw, ph, *pod != 0);
-  }
-}
-/* The cabinet's front: the species labels carved into the plank, then each whole card's paper label, words, read bar, lock, freshness strip and marks (every card that meets the cabinet while the scroll plays); the empty line. */
-static void cabinet_front(void) {
-  int cab[4]; v_srect(S, I ".cabinet.rect", cab); int bottom = cab[1] + cab[3], labH = v_si(S, I ".cabinet.speciesLabel.h", 24);
-  int lan[4]; v_srect(S, I ".cabinet.lantern.rect", lan); int lx = cab[0] + v_si(S, I ".cabinet.speciesLabel.x", 8), lxClear = v_si(S, I ".cabinet.speciesLabel.xClear", 80);
-  /* the species labels carved into the plank (sorted by species, on every row): umber with a 1 px light edge below; a label beside the lantern starts clear of its hook */
-  for (int i = 0, nr = rows_n(); i < nr; i++) {
-    int row = v_pint(v_fmt(P ".cabinet.rows.%d.row", i), 99); char lab[V_STR]; snprintf(lab, sizeof lab, "%s", v_pstr(v_fmt(P ".cabinet.rows.%d.label", i)));
-    if (!*lab) continue; int y = inv_row_y(row);
-    if (g_dy ? (y + labH <= cab[1] || y >= bottom) : (row < 0 || y + labH > bottom || y < cab[1])) continue;
-    int x = y < lan[1] + lan[3] && y + labH > lan[1] ? lxClear : lx;
-    v_region("cabinet.label", LAYER_TYPE); inv_say(v_fmt("cab.label.%d.e", row), lab, x, y + 1, cab[0] + cab[2] - 8 - x, labH, "label.edge", "paper", V_ALIGN_LEFT); inv_say(v_fmt("cab.label.%d", row), lab, x, y, cab[0] + cab[2] - 8 - x, labH, "label.umber", "paper", V_ALIGN_LEFT);
-  }
-  int n = v_plen(P ".cabinet.cards");
-  /* each whole card's paper label, words, read bar, lock, freshness strip and marks */
-  int L[4], NM[4], WT[4], LN[4], BR[4], LK[4], FR[4], LF[4], ST[4], NW[4];
-  v_srect(S, I ".cabinet.card.label.rect", L); v_srect(S, I ".cabinet.card.name.rect", NM); v_srect(S, I ".cabinet.card.worth.rect", WT); v_srect(S, I ".cabinet.card.line.rect", LN);
-  v_srect(S, I ".cabinet.card.bar.rect", BR); v_srect(S, I ".cabinet.card.lock", LK); v_srect(S, I ".cabinet.card.fresh.rect", FR); v_srect(S, I ".cabinet.card.fresh.leaf", LF); v_srect(S, I ".cabinet.card.star", ST); v_srect(S, I ".cabinet.card.newMark", NW);
-  int bh = v_sk(S, I ".cabinet.card.bar.rect", 3), gap = v_si(S, I ".cabinet.card.bar.gap", 2), bmin = v_si(S, I ".cabinet.card.bar.min", 4);
-  char off[24], edge[24], fon[24], fwarn[24], ftrack[24], lfill[24], ledge[24];
-  snprintf(off, sizeof off, "%s", v_scol(S, I ".cabinet.card.bar.unlit")); snprintf(edge, sizeof edge, "%s", v_scol(S, I ".cabinet.card.bar.edge"));
-  snprintf(fon, sizeof fon, "%s", v_scol(S, I ".cabinet.card.fresh.colour")); snprintf(fwarn, sizeof fwarn, "%s", v_scol(S, I ".cabinet.card.fresh.amber")); snprintf(ftrack, sizeof ftrack, "%s", v_scol(S, I ".cabinet.card.fresh.track"));
-  snprintf(lfill, sizeof lfill, "%s", v_scol(S, I ".cabinet.card.label.fill")); snprintf(ledge, sizeof ledge, "%s", v_scol(S, I ".cabinet.card.label.edge"));
-  for (int i = 0; i < n; i++) {
-    int b[4]; if (!inv_card_box(i, b) && !(g_dy && card_meets(b, cab))) continue; const char *C = v_fmt(P ".cabinet.cards.%d", i); char Cb[64]; snprintf(Cb, sizeof Cb, "%s", C);
-    int k = v_pint(v_fmt("%s.k", Cb), 0), husk = v_pbool(v_fmt("%s.husk", Cb), 0); char cid[24]; snprintf(cid, sizeof cid, "card.%d", k);
-    if (!husk) {
-      v_region("card.bar", LAYER_CHROME); inv_mini(v_fmt("%s.bar", cid), Cb, b[0] + BR[0], b[1] + BR[1], BR[2], bh, gap, bmin, off, edge);
-      if (v_pbool(v_fmt("%s.lock", Cb), 0)) { v_region("card.lock", LAYER_CHROME); mark_lock(v_fmt("%s.lock", cid), b[0] + LK[0], b[1] + LK[1]); }
-      int fr[4] = { b[0] + FR[0], b[1] + FR[1], FR[2], FR[3] }, lf[4] = { b[0] + LF[0], b[1] + LF[1], LF[2], LF[3] };
-      v_region("card.fresh", LAYER_CHROME); inv_fresh(v_fmt("%s.fresh", cid), fr, lf, v_pint(v_fmt("%s.fresh.left", Cb), 0), v_pint(v_fmt("%s.fresh.life", Cb), 12), v_pbool(v_fmt("%s.fresh.amber", Cb), 0), v_pbool(v_fmt("%s.fresh.bench", Cb), 0), fon, fwarn, ftrack);
-      if (v_pbool(v_fmt("%s.star", Cb), 0)) { v_region("card.star", LAYER_CHROME); { int sr[4] = { b[0] + ST[0], b[1] + ST[1], ST[2], ST[3] }; wood_plate(v_fmt("%s.star.plate", cid), sr, I ".tools.plate"); } v_region("card.star", LAYER_TYPE); v_say_in(v_fmt("%s.star", cid), "\xe2\x98\x85", b[0] + ST[0], ST[2], v_role_cap_in(b[1] + ST[1], ST[3], "label"), V_ANCHOR_CAP, "label", "slate"); }   /* the goal star in cream on its small wood plate, never amber */
-      if (v_pbool(v_fmt("%s.isNew", Cb), 0)) { v_region("card.new", LAYER_CHROME); mark_new(v_fmt("%s.new", cid), b[0] + NW[0], b[1] + NW[1]); }
-    }
-    v_region("card.label", LAYER_CHROME); kit_panel(v_fmt("%s.label", cid), b[0] + L[0], b[1] + L[1], L[2], L[3], lfill, ledge, NULL, 0);
-    char t[V_STR]; v_region("card.words", LAYER_TYPE);
-    snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.name", Cb))); inv_say(v_fmt("%s.name", cid), t, b[0] + NM[0], b[1] + NM[1], NM[2], NM[3], "heading.card", "paper", V_ALIGN_LEFT);
-    snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.worth", Cb))); inv_say(v_fmt("%s.worth", cid), t, b[0] + WT[0], b[1] + WT[1], WT[2], WT[3], "quiet.card", "paper", V_ALIGN_LEFT);
-    snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.line", Cb)));
-    if (v_pbool(v_fmt("%s.amber", Cb), 0)) { inv_say(v_fmt("%s.line", cid), t, b[0] + LN[0], b[1] + LN[1], LN[2], LN[3], "notice.card", "paper", V_ALIGN_LEFT); fit_words(t, LN[2], "notice.card"); int tw = v_role_width(t, "notice.card"); if (tw > LN[2]) tw = LN[2]; v_region("card.words", LAYER_CHROME); v_rect(v_fmt("%s.line.u", cid), b[0] + LN[0], b[1] + LN[1] + LN[3] - 3, tw, 1, "soil"); }   /* amber words get a 1 px umber underline */
-    else inv_say(v_fmt("%s.line", cid), t, b[0] + LN[0], b[1] + LN[1], LN[2], LN[3], "quiet.card", "paper", V_ALIGN_LEFT);
-  }
-  char empty[V_STR]; snprintf(empty, sizeof empty, "%s", v_pstr(P ".cabinet.empty"));
-  if (*empty) { int r[4], pl[4]; v_srect(S, I ".cabinet.empty.line", r); v_srect(S, I ".cabinet.empty.plate", pl); v_region("cabinet.empty", LAYER_CHROME); kit_panel("cab.empty.plate", pl[0], pl[1], pl[2], pl[3], lfill, ledge, NULL, 0); v_region("cabinet.empty", LAYER_TYPE); inv_say("cab.empty", empty, pl[0], pl[1], pl[2], pl[3], "label.umber", "paper", V_ALIGN_CENTRE); (void)r; }
-}
-static void cabinet(void) {
-  int cab[4]; v_srect(S, I ".cabinet.rect", cab);
-  /* while the scroll plays the back and the front are each held in the cabinet's clip (a dry run counts their nodes first); the lantern stays whole between them */
-  if (g_dy) { prim_dry(1); cabinet_back(); int k = prim_dry_count(); prim_dry(0); v_region("cabinet", LAYER_PAINTED); v_clip_box("cab.clip", cab[0], cab[1], cab[2], cab[3], k); }
-  cabinet_back();
-  /* the lantern: fixed, over the strip and the niches, under the labels and the marks */
-  { int r[4]; v_srect(S, I ".cabinet.lantern.rect", r); char id[96]; snprintf(id, sizeof id, "%s", v_pstr(P ".cabinet.lantern")); v_name("cabinet.lantern"); v_slot("cab.lantern", id, NULL, r[0], r[1], r[2], r[3], 1);
- }
-  if (g_dy) { prim_dry(1); cabinet_front(); int k = prim_dry_count(); prim_dry(0); v_region("cabinet.label", LAYER_TYPE); v_clip_box("cab.clipF", cab[0], cab[1], cab[2], cab[3], k); }
-  cabinet_front();
-  /* the scroll rail: the thumb sized to the share shown, drawn only when the cabinet scrolls */
-  if (spec_len("props", P ".rail") >= 0 && v_pint(P ".rail.share", 0) > 0) {
-    int r[4]; v_srect(S, I ".rail.rect", r); int share = v_pint(P ".rail.share", 1000), at = v_pint(P ".rail.from", 0), th = r[3] * share / 1000, ty = r[1] + r[3] * at / 1000; if (th < 8) th = 8; if (ty + th > r[1] + r[3]) ty = r[1] + r[3] - th;
-    v_region("rail", LAYER_CHROME); v_rect("rail.track", r[0] + r[2] / 2, r[1], 1, r[3], v_scol(S, I ".rail.track")); v_rect("rail.thumb", r[0], ty, r[2], th, v_scol(S, I ".rail.thumb"));
-  }
-}
 
 /* ---- the pod's rail at the small size, shared by the panel and Compare (the reading screen spec section 4; UI/UX 2026-10-30) ----
    The dark inset (a nine-slice at 288 x 48), the 272 x 40 rail picture 8 px in and 4 down, the 12 px marks over their lanes (rows 0 to 11 of the picture), and, on Compare, the bracket on the lane in hand.
@@ -319,31 +114,6 @@ void mini_rail(const char *ns_in, const char *pp_in, const int inset[4]) {
   }
 }
 
-/* ---- the pod panel: the focused card in full, and its five buttons ---- */
-int inv_act_rect(int i, int out[4]) { int f[4]; v_srect(S, I ".panel.actions.first", f); int pitch = v_si(S, I ".panel.actions.pitch", 46); out[0] = f[0]; out[1] = f[1] + i * pitch; out[2] = f[2]; out[3] = f[3]; return i < v_plen(P ".panel.acts"); }
-static void panel(void) {
-  int r[4]; v_srect(S, I ".panel.rect", r); v_region("panel", LAYER_CHROME); kit_panel("panel.paper", r[0], r[1], r[2], r[3], v_scol(S, I ".panel.fill"), v_scol(S, I ".panel.edge"), NULL, 0);
-  char t[V_STR]; int q[4];
-  v_region("panel.words", LAYER_TYPE);
-  snprintf(t, sizeof t, "%s", v_pstr(P ".panel.name")); v_srect(S, I ".panel.name.rect", q); inv_say("panel.name", t, q[0], q[1], q[2], q[3], "heading.umber", "paper", V_ALIGN_LEFT);
-  v_srect(S, I ".panel.worth.rect", q); { char buf[V_STR * 3]; int ln = 0; for (int i = 0, n = v_plen(P ".panel.worth"); i < n && ln < 2; i++) {   /* both tags in full: a tag wider than the rect wraps onto the next 22 px line */
-    snprintf(t, sizeof t, "%s", v_pstr(v_fmt(P ".panel.worth.%d", i))); int nl = v_role_wrap(t, q[2], "body.umber", buf, sizeof buf, 2 - ln); const char *l = buf;
-    for (int j = 0; j < nl; j++, ln++) { inv_say(v_fmt("panel.worth.%d", ln), l, q[0], q[1] + ln * 22, q[2], 22, "body.umber", "paper", V_ALIGN_LEFT); l += strlen(l) + 1; } } }
-  { int ins[4]; v_srect(S, I ".panel.rail.inset.rect", ins); mini_rail("panel.rail", P ".panel.rail", ins); }   /* the pod's rail at the small size on the dark inset (the reading screen spec section 4, UI/UX 2026-10-30) */
-  { int pic[4], sen[4]; v_srect(S, I ".panel.origin.picture", pic); v_srect(S, I ".panel.origin.sentence", sen); char op[96]; snprintf(op, sizeof op, "%s", v_pstr(P ".panel.originPicture"));
-    v_name("panel.origin"); v_slot("panel.origin.picture", op, NULL, pic[0], pic[1], pic[2], pic[3], *op != 0);
-    snprintf(t, sizeof t, "%s", v_pstr(P ".panel.origin.0")); v_region("panel.words", LAYER_TYPE); inv_wrap("panel.origin", t, sen[0], sen[1], sen[2], 20, 2, "body.umber", "paper"); }
-  { v_srect(S, I ".panel.fresh.rect", q); snprintf(t, sizeof t, "%s", v_pstr(P ".panel.fresh.words")); int amber = v_pbool(P ".panel.fresh.amber", 0), bench = v_pbool(P ".panel.fresh.bench", 0), x = q[0];
-    if (*t && bench) { v_region("panel.fresh", LAYER_CHROME); mark_lamp("panel.fresh.lamp", q[0], q[1] + 7); x += 16; }
-    v_region("panel.words", LAYER_TYPE); inv_say("panel.fresh", t, x, q[1], q[2] - (x - q[0]), q[3], amber ? "notice.paper" : "body.umber", "paper", V_ALIGN_LEFT);
-    if (amber && *t) { int tw = v_role_width(t, "notice.paper"); v_region("panel.fresh", LAYER_CHROME); v_rect("panel.fresh.u", x, q[1] + q[3] - 3, tw, 1, "soil"); } }
-  /* a bare panel says why, centred: its first line in the body, the second quiet under it (review round 2) */
-  for (int i = 0, n = v_plen(P ".panel.message"); i < n && i < 2; i++) { v_srect(S, I ".panel.message.rect", q); snprintf(t, sizeof t, "%s", v_pstr(v_fmt(P ".panel.message.%d", i))); v_region("panel.words", LAYER_TYPE); inv_say(v_fmt("panel.message.%d", i), t, q[0], q[1] + i * q[3], q[2], q[3], i ? "quiet.umber" : "body.umber", "paper", V_ALIGN_CENTRE); }
-  for (int i = 0, n = v_plen(P ".panel.acts"); i < n && i < 5; i++) {
-    int b[4]; inv_act_rect(i, b); snprintf(t, sizeof t, "%s", v_pstr(v_fmt(P ".panel.acts.%d.word", i)));
-    inv_plate(v_fmt("act.%d", i), b, t, v_pbool(v_fmt(P ".panel.acts.%d.dim", i), 0), 0, I ".panel.actions.plate");
-  }
-}
 
 /* ---- the filter tray over the cabinet ---- */
 int inv_tchip_rect(int row, int col, int out[4]) {
@@ -400,11 +170,138 @@ void word_inventoryFind(void) {
   if (*t) { v_srect(S, I ".find.first", q); v_region("find.first", LAYER_TYPE); inv_say("find.first", t, q[0], q[1], q[2], q[3], "quiet.umber", "paper", V_ALIGN_LEFT); }   /* the first-time line over the letter strip */
 }
 
-/* The whole inventory: the ground, the cabinet, the tool row and the panel (the tray and Find are drawn over it by the screen). */
-void word_inventory(void) {
-  int g[4]; v_srect(S, I ".ground.rect", g); v_region("ground", LAYER_CHROME); v_rect("inv.ground", g[0], g[1], g[2], g[3], v_scol(S, I ".ground.colour"));
-  /* the gutter: the strip's plaster (its rows plaster.y to plaster.y + h) tiled round the tool row, the cabinet and the panel, never a flat code fill */
-  { char strip[96]; snprintf(strip, sizeof strip, "%s", v_pstr(P ".cabinet.strip")); int sw = v_sk(S, I ".cabinet.strip.size", 0), py = v_sk(S, I ".ground.plaster", 0), ph = v_sk(S, I ".ground.plaster", 1);
-    if (has(strip) && sw > 0 && ph > 0) { v_region("ground", LAYER_PAINTED); int n = 0; for (int y = g[1]; y < g[1] + g[3]; y += ph) for (int x = g[0]; x < g[0] + g[2]; x += sw, n++) { int w = x + sw > g[0] + g[2] ? g[0] + g[2] - x : sw, h = y + ph > g[1] + g[3] ? g[1] + g[3] - y : ph; v_name("ground.plaster"); v_sprite_window(v_fmt("inv.plaster.%d", n), strip, 0, py, x, y, w, h); } } }
-  cabinet(); tools(); panel();
+/* ---- the pod picker (the pods picker's design B; pods.json regions.inventory.picker) ----
+   Props regions.inv { verbs [{ id, word, on }], heading, tools { sort, filter, filterAmber, find, dim }, grid { cards [{ k, row, col, pod, name, sealed, mark, fade, held }], first }, rail { share, from } | null,
+   detail { left, right, amber }, empty [title, line] }. Rows are counted from the first row on screen (row 0 at the grid's top); the row above and the row under the two on screen are drawn only while the scroll plays. */
+#define K ".picker"
+static int g_dy;   /* the 200 ms scroll: the host plays a `wipe` on "cabinet" from the old first row to the new; while it plays the rows are drawn g_dy px from their place, easing to 0 in whole pixels */
+int inv_scroll_dy(void) {
+  anim_state_t a; if (!anim_get(ANIM_WIPE, "cabinet", &a) || a.ms <= 0 || a.to == a.from) return 0;
+  int d = a.to > a.from ? 1 : -1, left = a.ms - a.elapsed; if (left <= 0) return 0;
+  long p = v_sk(S, I K ".grid.pitch", 1); return (int)(d * p * left / a.ms);
 }
+void inv_scroll(int on) { g_dy = on ? inv_scroll_dy() : 0; }
+/* the box of the props' card i: the cell [x, y, 168, 206]; 1 when it stands whole in the two rows on screen (a target, its ring drawn), 0 when it peeks or is off the screen */
+int inv_card_box(int i, int out[4]) {
+  int top = v_sk(S, I K ".grid.origin", 1), px = v_sk(S, I K ".grid.pitch", 0), py = v_sk(S, I K ".grid.pitch", 1), rows = v_si(S, I K ".grid.rows", 2); char B[64]; snprintf(B, sizeof B, "%s", v_fmt(P ".grid.cards.%d", i));
+  int row = v_pint(v_fmt("%s.row", B), 0), col = v_pint(v_fmt("%s.col", B), 0);
+  out[0] = v_sk(S, I K ".grid.origin", 0) + col * px; out[1] = top + row * py + g_dy; out[2] = v_sk(S, I K ".grid.cell", 0); out[3] = v_sk(S, I K ".grid.cell", 1);
+  return out[1] >= top && out[1] + out[3] <= top + (rows - 1) * py + out[3];
+}
+static int card_index_of_k(int k) { for (int i = 0, n = v_plen(P ".grid.cards"); i < n; i++) if (v_pint(v_fmt(P ".grid.cards.%d.k", i), -9999) == k) return i; return -1; }
+int inv_card_rect_k(int k, int out[4]) { int i = card_index_of_k(k); if (i < 0) { out[0] = out[1] = out[2] = out[3] = 0; return 0; } inv_card_box(i, out); return 1; }
+/* the verb line: each verb's pill [x, 50, word + 2 pad, 28], one after the other from x */
+static int verb_x(int i) { int x = v_si(S, I K ".verbs.x", 56), pad = v_si(S, I K ".verbs.pad", 13), gap = v_si(S, I K ".verbs.gap", 5); for (int k = 0; k < i; k++) x += v_role_width(v_pstr(v_fmt(P ".verbs.%d.word", k)), "label") + 2 * pad + gap; return x; }
+int inv_verb_rect(int i, int out[4]) {
+  int n = v_plen(P ".verbs"); if (i < 0 || i >= n) { out[0] = out[1] = out[2] = out[3] = 0; return 0; }
+  char w[V_STR]; snprintf(w, sizeof w, "%s", v_pstr(v_fmt(P ".verbs.%d.word", i)));
+  out[0] = verb_x(i); out[1] = v_si(S, I K ".verbs.y", 50); out[2] = v_role_width(w, "label") + 2 * v_si(S, I K ".verbs.pad", 13); out[3] = v_si(S, I K ".verbs.h", 28); return 1;
+}
+int inv_verb_rect_id(const char *id, int out[4]) { for (int i = 0, n = v_plen(P ".verbs"); i < n; i++) if (strcmp(v_pstr(v_fmt(P ".verbs.%d.id", i)), id) == 0) return inv_verb_rect(i, out); out[0] = out[1] = out[2] = out[3] = 0; return 0; }
+/* the tool row: Sort, Filter and Find from the right edge leftwards, each its word and its padding */
+int inv_tool_rect(int which, int out[4]) {
+  static const char *names[3] = { "sort", "filter", "find" }; int pad = v_si(S, I K ".tools.pad", 8), gap = v_si(S, I K ".tools.gap", 12), x = v_si(S, I K ".tools.right", 984) + pad;
+  for (int i = 2; i >= 0; i--) {
+    char w[V_STR]; snprintf(w, sizeof w, "%s", v_pstr(v_fmt(P ".tools.%s", names[i]))); int bw = v_role_width(w, "small.quiet") + 2 * pad; x -= bw;
+    if (i == which) { out[0] = x; out[1] = v_si(S, I K ".tools.y", 50); out[2] = bw; out[3] = v_si(S, I K ".tools.h", 28); return 1; }
+    x -= gap;
+  }
+  out[0] = out[1] = out[2] = out[3] = 0; return 0;
+}
+/* the centre the hold ring takes: the pod of the card the ring is on */
+int inv_hold_centre(int out[2]) {
+  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (strncmp(cur, "card.", 5) != 0) return 0;
+  int r[4]; if (!inv_card_rect_k(atoi(cur + 5), r) || r[2] <= 0) return 0;
+  out[0] = r[0] + v_sk(S, I K ".grid.pod", 0) + v_sk(S, I K ".grid.pod", 2) / 2; out[1] = r[1] + v_sk(S, I K ".grid.pod", 1) + v_sk(S, I K ".grid.pod", 3) / 2; return 1;
+}
+/* a Bayer lattice of `level` of 16 in `colour` over w x h (the veil of a pod that cannot take the verb: whole pixels, no opacity) */
+static void veil_ops(char *ops, size_t cap, int w, int h, int level, const char *colour) {
+  static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
+  int n = snprintf(ops, cap, "[[\"lattice\",0,0,%d,%d,4,[", w, h);
+  for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, cap - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
+  snprintf(ops + n, cap - (size_t)n, "],\"%s\"]]", colour);
+}
+/* the marks, code-drawn: the goal star in a gold disc, the drying drop in amber, the new dot in sprout; each in the mark's 22 px box at (x, y) */
+static void picker_mark(const char *id, const char *kind, int x, int y) {
+  char ops[400];
+  if (strcmp(kind, "star") == 0) {
+    snprintf(ops, sizeof ops, "[[\"rrect\",0,0,22,22,11,\"%s\",\"\"]]", v_scol(S, I K ".marks.star.fill")); v_region("card.mark", LAYER_CHROME); v_composed(id, x, y, 22, 22, ops);
+    v_region("card.mark", LAYER_TYPE); v_say_in(v_fmt("%s.s", id), "\xe2\x98\x85", x, 22, v_role_cap_in(y, 22, "label"), V_ANCHOR_CAP, "label", "slate");
+  } else if (strcmp(kind, "drying") == 0) {
+    const char *c = v_scol(S, I K ".marks.drying.fill"); char col[24]; snprintf(col, sizeof col, "%s", c);
+    static const int W[14] = { 2, 2, 4, 4, 6, 6, 8, 10, 10, 12, 12, 12, 10, 8 }; int n = snprintf(ops, sizeof ops, "[");
+    for (int r = 0; r < 14; r++) n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", r ? "," : "", (12 - W[r]) / 2, r, W[r], col);
+    snprintf(ops + n, sizeof ops - (size_t)n, "]"); v_region("card.mark", LAYER_CHROME); v_composed(id, x + 5, y + 4, 12, 14, ops);
+  } else if (strcmp(kind, "new") == 0) {
+    snprintf(ops, sizeof ops, "[[\"rrect\",0,0,12,12,6,\"%s\",\"\"]]", v_scol(S, I K ".marks.new.fill")); v_region("card.mark", LAYER_CHROME); v_composed(id, x + 5, y + 5, 12, 12, ops);
+  }
+}
+static void picker_cells(void) {
+  int cell[2] = { v_sk(S, I K ".grid.cell", 0), v_sk(S, I K ".grid.cell", 1) }, nm[4], mk[4], pd[4], st[4], rad = v_si(S, I K ".grid.radius", 8);
+  v_srect(S, I K ".grid.name", nm); v_srect(S, I K ".grid.mark", mk); v_srect(S, I K ".grid.pod", pd); v_srect(S, I K ".ground.seat.rect", st);
+  char fillc[24], seatc[24], heldc[24], veilc[24], ops[600]; snprintf(fillc, sizeof fillc, "%s", v_scol(S, I K ".grid.cellFill")); snprintf(seatc, sizeof seatc, "%s", v_scol(S, I K ".ground.seat.fill")); snprintf(heldc, sizeof heldc, "%s", v_scol(S, I K ".grid.held")); snprintf(veilc, sizeof veilc, "%s", v_scol(S, I K ".grid.veil.colour"));
+  int level = v_si(S, I K ".grid.veil.levels", 10); char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
+  for (int i = 0, n = v_plen(P ".grid.cards"); i < n; i++) {
+    int b[4], whole = inv_card_box(i, b); char Cb[64]; snprintf(Cb, sizeof Cb, "%s", v_fmt(P ".grid.cards.%d", i)); int k = v_pint(v_fmt("%s.k", Cb), 0);
+    if (!g_dy && !whole) continue;   /* at rest only the two rows on screen; while the scroll plays every row in the clip */
+    if (g_dy && (b[1] + b[3] <= v_sk(S, I K ".grid.origin", 1) || b[1] >= v_sk(S, I K ".grid.origin", 1) + 2 * v_sk(S, I K ".grid.pitch", 1))) continue;
+    char name[V_STR], pod[96]; snprintf(name, sizeof name, "%s", v_pstr(v_fmt("%s.name", Cb))); snprintf(pod, sizeof pod, "%s", v_pstr(v_fmt("%s.pod", Cb)));
+    int sealed = v_pbool(v_fmt("%s.sealed", Cb), 0), fade = v_pbool(v_fmt("%s.fade", Cb), 0), held = v_pbool(v_fmt("%s.held", Cb), 0); char id[32]; snprintf(id, sizeof id, "card.%d", k);
+    v_region("card.cell", LAYER_CHROME);
+    if (strcmp(cur, id) == 0) { snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", cell[0], cell[1], rad, fillc); v_composed(v_fmt("%s.fill", id), b[0], b[1], cell[0], cell[1], ops); }
+    snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,4000,0,\"%s\"]]", st[2], st[3], seatc); v_composed(v_fmt("%s.seat", id), b[0] + st[0], b[1] + st[1], st[2], st[3], ops);
+    v_name("card.pod"); v_slot(v_fmt("%s.pod", id), pod, NULL, b[0] + pd[0], b[1] + pd[1], pd[2], pd[3], *pod != 0);
+    { char mark[16]; snprintf(mark, sizeof mark, "%s", v_pstr(v_fmt("%s.mark", Cb))); if (*mark) picker_mark(v_fmt("%s.mark", id), mark, b[0] + mk[0], b[1] + mk[1]); }
+    v_region("card.words", LAYER_TYPE); inv_say(v_fmt("%s.name", id), name, b[0] + nm[0], b[1] + nm[1], nm[2], nm[3], sealed ? v_sstr(S, I K ".grid.sealedRole") : v_sstr(S, I K ".grid.nameRole"), "panel", V_ALIGN_CENTRE);
+    if (fade) { veil_ops(ops, sizeof ops, cell[0], cell[1], level, veilc); v_region("card.veil", LAYER_CHROME); v_composed(v_fmt("%s.veil", id), b[0], b[1], cell[0], cell[1], ops); }
+    if (held) { snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", cell[0], cell[1], rad, heldc); v_region("card.held", LAYER_CHROME); v_composed(v_fmt("%s.held", id), b[0], b[1], cell[0], cell[1], ops); }
+  }
+}
+static void picker_verbs(void) {
+  int n = v_plen(P ".verbs"), pad = v_si(S, I K ".verbs.pad", 13), rad = v_si(S, I K ".verbs.radius", 14); char pill[24]; snprintf(pill, sizeof pill, "%s", v_scol(S, I K ".verbs.pill")); int endx = 0;
+  for (int i = 0; i < n; i++) {
+    int r[4]; inv_verb_rect(i, r); char w[V_STR], vid[24]; snprintf(w, sizeof w, "%s", v_pstr(v_fmt(P ".verbs.%d.word", i))); snprintf(vid, sizeof vid, "verb.%d", i); int on = v_pbool(v_fmt(P ".verbs.%d.on", i), 0);
+    if (on) { char ops[120]; snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", r[2], r[3], rad, pill); v_region("verb.pill", LAYER_CHROME); v_composed(v_fmt("%s.pill", vid), r[0], r[1], r[2], r[3], ops); }
+    v_region("verb.word", LAYER_TYPE); inv_say(v_fmt("%s.word", vid), w, r[0] + pad, r[1], r[2] - 2 * pad, r[3], on ? v_sstr(S, I K ".verbs.onRole") : v_sstr(S, I K ".verbs.offRole"), "panel", V_ALIGN_CENTRE);
+    endx = r[0] + r[2];
+  }
+  const char *head = v_pstr(P ".heading");
+  if (*head && endx) { int y = v_si(S, I K ".verbs.y", 50), h = v_si(S, I K ".verbs.h", 28), x = endx + v_si(S, I K ".verbs.headingGap", 20); v_region("verb.heading", LAYER_TYPE); inv_say("verb.heading", head, x, y, 560, h, v_sstr(S, I K ".verbs.headingRole"), "panel", V_ALIGN_LEFT); }
+}
+static void picker_tools(void) {
+  static const char *names[3] = { "sort", "filter", "find" }; int dim = v_pbool(P ".tools.dim", 0); (void)dim;
+  for (int i = 0; i < 3; i++) {
+    int r[4]; inv_tool_rect(i, r); char w[V_STR]; snprintf(w, sizeof w, "%s", v_pstr(v_fmt(P ".tools.%s", names[i])));
+    v_region(v_fmt("tool.%s", names[i]), LAYER_TYPE); inv_say(v_fmt("tool.%s", names[i]), w, r[0], r[1], r[2], r[3], v_sstr(S, I K ".tools.role"), "panel", V_ALIGN_CENTRE);
+    if (i == 1 && v_pbool(P ".tools.filterAmber", 0)) { int tw = v_role_width(w, "small.quiet"); v_region("tool.filter", LAYER_CHROME); v_rect("tool.filter.u", r[0] + (r[2] - tw) / 2, r[1] + r[3] - 7, tw, 1, "amber"); }   /* the drying count underlined: the warning never lives in colour alone */
+  }
+}
+static void picker_detail(void) {
+  int l[4], rr[4]; v_srect(S, I K ".detail.left", l); v_srect(S, I K ".detail.right", rr); char t[V_STR];
+  snprintf(t, sizeof t, "%s", v_pstr(P ".detail.left")); if (*t) { v_region("detail.left", LAYER_TYPE); inv_say("detail.left", t, l[0], l[1], l[2], l[3], v_sstr(S, I K ".detail.role"), "panel", V_ALIGN_LEFT); }
+  snprintf(t, sizeof t, "%s", v_pstr(P ".detail.right"));
+  if (*t) { int amber = v_pbool(P ".detail.amber", 0); const char *role = amber ? v_sstr(S, I K ".detail.amberRole") : v_sstr(S, I K ".detail.role");
+    v_region("detail.right", LAYER_TYPE); inv_say("detail.right", t, rr[0], rr[1], rr[2], rr[3], role, "panel", V_ALIGN_RIGHT);
+    if (amber) { char u[V_STR]; snprintf(u, sizeof u, "%s", t); fit_words(u, rr[2], role); int tw = v_role_width(u, role); if (tw > rr[2]) tw = rr[2]; v_region("detail.right", LAYER_CHROME); v_rect("detail.right.u", rr[0] + rr[2] - tw, rr[1] + (rr[3] + v_role_pitch(role)) / 2 - 3, tw, 1, v_scol(S, I K ".detail.underline")); } }
+}
+static void picker_grid(void) {
+  int top = v_sk(S, I K ".grid.origin", 1), left = 56, w = 944, h = 2 * v_sk(S, I K ".grid.pitch", 1);
+  if (g_dy) { prim_dry(1); picker_cells(); int k = prim_dry_count(); prim_dry(0); v_region("grid", LAYER_CHROME); v_clip_box("grid.clip", left, top - 4, w, h, k); }
+  picker_cells();
+  if (spec_len("props", P ".rail") >= 0 && v_pint(P ".rail.share", 0) > 0) {   /* the scroll rail: the thumb sized to the share shown, only when the grid scrolls */
+    int r[4]; v_srect(S, I K ".rail.rect", r); int share = v_pint(P ".rail.share", 1000), at = v_pint(P ".rail.from", 0), th = r[3] * share / 1000, ty = r[1] + r[3] * at / 1000; if (th < 8) th = 8; if (ty + th > r[1] + r[3]) ty = r[1] + r[3] - th;
+    v_region("rail", LAYER_CHROME); v_rect("rail.track", r[0] + r[2] / 2, r[1], 1, r[3], v_scol(S, I K ".rail.track")); v_rect("rail.thumb", r[0], ty, r[2], th, v_scol(S, I K ".rail.thumb"));
+  }
+}
+static void picker_empty(void) {
+  int n = v_plen(P ".empty"); if (n < 1) return; int st[4], t[4], l[4]; v_srect(S, I K ".empty.seat", st); v_srect(S, I K ".empty.title", t); v_srect(S, I K ".empty.line", l); char ops[160];
+  snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,4000,0,\"%s\"]]", st[2], st[3], v_scol(S, I K ".ground.seat.fill")); v_region("empty.seat", LAYER_CHROME); v_composed("empty.seat", st[0], st[1], st[2], st[3], ops);
+  v_region("empty.words", LAYER_TYPE); { char s[V_STR]; snprintf(s, sizeof s, "%s", v_pstr(P ".empty.0")); inv_say("empty.title", s, t[0], t[1], t[2], t[3], v_sstr(S, I K ".empty.titleRole"), "panel", V_ALIGN_CENTRE);
+    if (n > 1) { snprintf(s, sizeof s, "%s", v_pstr(P ".empty.1")); inv_say("empty.line", s, l[0], l[1], l[2], l[3], v_sstr(S, I K ".empty.lineRole"), "panel", V_ALIGN_CENTRE); } }
+}
+/* The whole inventory: the dark ground, the verb line and the tools, the grid, the detail line (the tray and Find are drawn over it by the screen). */
+void word_inventory(void) {
+  int g[4]; v_srect(S, I K ".ground.rect", g); v_region("ground", LAYER_CHROME); v_rect("inv.ground", g[0], g[1], g[2], g[3], v_scol(S, I K ".ground.colour"));
+  picker_empty(); picker_verbs(); if (!v_pbool(P ".tools.dim", 0)) picker_tools(); picker_grid(); picker_detail();   /* no pods: the verb line and the tools are hidden */
+}
+
