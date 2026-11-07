@@ -121,7 +121,7 @@ for (const s of rec.shots) {
   console.log(`${s.name.padEnd(26)} ${lg.regions.length} drawn regions · ${c.screen}${c.mode ? "/" + c.mode : ""}${c.props?.state === "notBuilt" ? " (not built)" : ""} · placeholders registered ${c.placeholders}${s.snap.owed?.length ? ` · habit keys owed ${s.snap.owed.length}` : ""}`);
 }
 // every Pods state is recorded, with the regions it must draw
-{ const need = { inventory: [["painted", "cabinet.pod"], ["type", "card.words"]], room: [["painted", "read.ground"], ["painted", "read.rail"], ["type", "read.name"], ["chrome", "read.bracket"]], compare: [["chrome", "cmp.0"], ["chrome", "cmp.1"], ["chrome", "cmp.0.take"], ["chrome", "cmp.1.take"]] };
+{ const need = { inventory: [["painted", "card.pod"], ["type", "card.words"]], room: [["painted", "read.ground"], ["painted", "read.rail"], ["type", "read.name"], ["chrome", "read.bracket"]], compare: [["chrome", "cmp.0"], ["chrome", "cmp.1"], ["chrome", "cmp.0.take"], ["chrome", "cmp.1.take"]] };
   for (const [mode, ids] of Object.entries(need)) { const shots = rec.shots.filter((x) => x.check.screen === "pods" && x.check.mode === mode); if (!shots.length) { fail(`no screenshot point records Pods in its ${mode} state`); continue; }
     for (const [layer, id] of ids) if (!shots.some((x) => (x.check.log?.regions ?? []).some((r) => r.id === id && r.layer === layer))) fail(`Pods in its ${mode} state: no drawn region "${id}" on the ${layer} layer in any of its ${shots.length} screenshot points`); }
   regionsChecked++; }
