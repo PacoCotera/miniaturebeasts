@@ -1044,7 +1044,7 @@ function syncStation() {
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
     const rg = S.regions.some(q => q.id === r.rg) ? r.rg : 'g1';   // a returned pod goes back to its own region (none named: region 1)
     const id = 'r' + (S.nextId++);   // the realm counts the ids, whichever region the pod lands in
-    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }); }
+    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); reveil(+key); logEv('A returned pod is back ' + (G.land[+key] === L.WATER ? 'at' : 'in') + ' the ' + LAND_NAME[G.land[+key]]); }); }
 }
 
 // Feature state helpers: the layout says what is there; S.cells says what the player changed.
@@ -1097,7 +1097,7 @@ function cellSigns(c) {
   let pd = 0;   // a beat means a pod not found yet; one already located shows as a pod
   for (const p of S.pods) if (p.k === key) { if (p.h || p.x < 0) b = 1; else pd = 1; }
   if (passable(c)) { const lay = layout(key); for (const f of lay.feats) if (f.kind === 'k' && stormCharge(key, f) > 0) k = 1; }   // warm stones give no sign
-  const gt = c === G.gate && !S.opened[G.gate] && S.pods.some(p => p.k === 'c' + c) ? 1 : 0;   // the cave below holds a pod
+  const gt = c === G.gate && !burrowOpen() && S.pods.some(p => p.k === 'c' + c) ? 1 : 0;   // the cave below holds a pod
   return { tr, b, k, pd, d: c === G.deep && !S.deepRead ? 1 : 0, g: gt };
 }
 function recordSigns(c, turn = S.turn) {
@@ -1240,11 +1240,11 @@ function hiddenIn(c) {
 function isCleared(c) { return surveyed(c); }   // kept for the test hooks: "cleared" now means surveyed
 function inRange(c) { const ex = S.exp; return !!ex && cheb(cxy(c), cxy(ex.start)) <= ex.range; }
 // The cells an expedition can reach on foot without leaving the range square.
-function reachCells(start, range) {
+function reachCells(start, range, opts = abOpts()) {   // opts: what the partner can cross (the partner's own by default)
   const s0 = cxy(start), seen = new Set([start]), q = [start];
   while (q.length) { const c = q.shift(), p = cxy(c);
     for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-      const d = y * MW + x; if (seen.has(d) || !canStep(c, dir) || G.island[d] || Math.max(Math.abs(x - s0.x), Math.abs(y - s0.y)) > range) continue; seen.add(d); q.push(d); } }
+      const d = y * MW + x; if (seen.has(d) || !canStepIn(G, c, dir, opts) || G.island[d] || Math.max(Math.abs(x - s0.x), Math.abs(y - s0.y)) > range) continue; seen.add(d); q.push(d); } }
   return [...seen];
 }
 // The one place the map's numbers are counted.
@@ -1256,16 +1256,26 @@ function cellCounts(cells) {
 }
 // A gated cell: what is left there lies behind a gate you can't open yet (the cave under the cliff, without a digger).
 // It is left out of "Explored N of M" and said apart ("· 1 gated").
-function gatedCell(c) { return c === G.gate && !!S.revealed[c] && !S.opened[G.gate] && !canDig() && S.pods.some(p => p.k === 'c' + c); }
-function reachCounts() { if (!S.exp) return Object.assign(cellCounts([]), { gated: 0 }); const cells = S.exp.reach.filter(c => !gatedCell(c)); return Object.assign(cellCounts(cells), { gated: S.exp.reach.length - cells.length }); }
+function gatedCell(c) { return c === G.gate && !!S.revealed[c] && !burrowOpen() && !canDig() && S.pods.some(p => p.k === 'c' + c); }
+// Ground behind mud or scree (a rambler crosses it) or an earth bank (a digger), inside the range square and revealed: counted apart when the partner cannot cross it, as the cave is.
+function reachBehind() {
+  const ex = S.exp, none = { soft: 0, bank: 0 }; if (!ex) return none;
+  const k = S.seed + ':' + ex.n + ':' + ex.range;
+  if (!RT.behind || RT.behindKey !== k) { const have = new Set(ex.reach), s = reachCells(ex.start, ex.range, { sure: true }).filter(c => !have.has(c)), b = reachCells(ex.start, ex.range, { bank: 'all' }).filter(c => !have.has(c) && !s.includes(c)); RT.behind = { soft: s, bank: b }; RT.behindKey = k; }
+  const n = a => a.filter(c => S.revealed[c]).length;
+  return { soft: canSure() ? 0 : n(RT.behind.soft), bank: canBank() ? 0 : n(RT.behind.bank) };
+}
+function reachCounts() { if (!S.exp) return Object.assign(cellCounts([]), { gated: 0, soft: 0, bank: 0 }); const cells = S.exp.reach.filter(c => !gatedCell(c)); return Object.assign(cellCounts(cells), { gated: S.exp.reach.length - cells.length }, reachBehind()); }
 const gatedTail = rc => rc.gated ? ' · ' + rc.gated + ' gated' : '';
-function surveyedLine() { const rc = reachCounts(); return 'Explored ' + rc.surveyed + ' of ' + rc.total + (rc.gated ? gatedTail(rc) : ' in reach'); }
+const behindTail = rc => (rc.soft ? ' · ' + rc.soft + (rc.soft === 1 ? ' needs a rambler' : ' need a rambler') : '') + (rc.bank ? ' · ' + rc.bank + (rc.bank === 1 ? ' needs a digger' : ' need a digger') : '');
+function surveyedLine() { const rc = reachCounts(), tail = gatedTail(rc) + behindTail(rc); return 'Explored ' + rc.surveyed + ' of ' + rc.total + (tail || ' in reach'); }
 // The expedition's closing lines: said once each, at their moments. "Explored" arrives as the last reach dot fills.
 function checkExplored() {
   const ex = S.exp; if (!ex || ex.saidDone) return;
   const rc = reachCounts(); if (rc.surveyed < rc.total) return;
   ex.saidDone = ex.actions || 1; logEv('Everything in reach explored (' + rc.total + ' cells)');
-  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + (rc.gated === 1 ? 'a cave needs a digger' : 'caves need a digger') : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
+  const rest = rc.soft ? 'the rest needs a rambler' : rc.bank ? 'the rest needs a digger' : '';   // the copywriter's two lines; when both kinds remain (no line of its own) the rambler's is said and the count line carries both
+  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + (rc.gated === 1 ? 'the cave waits for a Tuikis' : 'the caves wait for a Tuikis') : '') + (rest ? ' · ' + rest : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
 }
 // The place's survey state for the line: "surveyed 2/4 · 3 to take", "surveyed · nothing to take", "not surveyed".
 // A place only counts as finished when a Call was made there (walking never hears what is buried) and no pod lies buried.
@@ -1467,7 +1477,7 @@ function callMap() {
 
 // ===================== 7. Patch rules =====================
 // Tiles nothing but the pawn and the partner stands on: stepping stones, stairs and their aprons (pods, creatures, slabs and tufts never).
-const NOSTAND = t => t === T.STEP || t === T.STAIR || t === T.APRON;
+const NOSTAND = t => t === T.STEP || t === T.STAIR || t === T.APRON || t === T.WADE || t === T.SCREE || t === T.BANK;
 function curLay() { return layout(S.exp.patch.key); }
 function curLive() { return S.exp.live[S.exp.patch.key]; }
 function featAt(lay, key, x, y) {
@@ -1534,6 +1544,8 @@ function entryPoint(lay, key, dir) {
         const d = (x - e.x) ** 2 + (y - e.y) ** 2; if (d < bd) { bd = d; best = { x, y }; } }   // ties keep the lower tile index
       if (best) return best; }
   }
+  { const cf = lay.cross && dir ? stepCell(lay.cell, OPPOSITE[dir]) : -1;   // came over scree or a bank: the tile just inside its crossing
+    if (cf >= 0 && edgeKind(cf, dir) === EDGE.CLIFF) { const q = lay.cross.find(r => r.dir === OPPOSITE[dir]); if (q && !occupant(key, q.entry.x, q.entry.y, 'player')) return { x: q.entry.x, y: q.entry.y }; } }
   const tx = dir === 'right' ? 0 : dir === 'left' ? PW - 1 : PW / 2, ty = dir === 'down' ? 0 : dir === 'up' ? PH - 1 : dir ? PH / 2 : PH - 3;
   let best = null, bd = 1e9; const sq = !!G.gen;   // generator 2 places: squared distance, ties by tile index
   for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
@@ -1568,7 +1580,7 @@ function clearSkull(key) { if (!S.skulls) return; for (const c in S.skulls) { co
 function enterCave() {
   const ex = S.exp, key = 'c' + G.gate; ensureLive(key); clearSkull(key); noteTier(ex, layout(key)); tripPlace(ex, 'cave');
   ex.patch = { key, x: 14, y: 27, dir: 'up', noise: 'creep' };
-  placePartnerNear(key, ex.patch); transition(); logEv('Went down the burrow'); save();
+  placePartnerNear(key, ex.patch); transition(); logEv(canDig() ? 'Followed ' + ex.pt.name + ' down the burrow' : 'Went down the burrow'); save();
 }
 function leavePatch() {
   const ex = S.exp, P = ex.patch, lay = layout(P.key); S.ui.swap = null;
@@ -1586,18 +1598,23 @@ function sightR(lay) { if (lay.cave || !inFog(lay.cell)) return 99; const pt = S
 function inSight(x, y) { const P = S.exp.patch, r = sightR(layout(P.key)); return r >= 99 || Math.hypot(x - P.x, y - P.y) <= r + .5; }
 function seenFromPlayer(key, x, y) { return unveiled(key, x, y) && inSight(x, y); }
 function canDig() { const pt = S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === 'dig'; }
+// The burrow is open for an old save's dug burrow (S.opened, for any partner) and for this walk once a Tuikis has dug it out (ex.burrowDug); a Tuikis is needed on every visit.
+function burrowOpen() { return !!(S && S.opened && S.opened[G.gate]) || !!(S && S.exp && S.exp.burrowDug); }
 
 function patchStep(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
   P.dir = dir; P.noise = mode;
   const x = P.x + dx, y = P.y + dy;
   if (x < 0 || y < 0 || x >= PW || y >= PH) { if (mode === 'walk') { stopRepeat(); fxHint('edgehold', 'Edge · tap again to step off', 1); return; } if (!layout(key).cave) crossEdge(dir); return; }
-  const o = occupant(key, x, y, 'player');
+  let o = occupant(key, x, y, 'player');
+  if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); o = null; }   // mud, scree or a dug bank, for the partner that crosses it
   if (o && o.type === 'pt') { live.pt.x = P.x; live.pt.y = P.y; }
   else if (o) {
     FX.bumpAt = NOW;
-    if (o.type === 'feat' && o.f.kind === 'g' && !S.opened[G.gate] && !canDig()) gateBump();
+    if (o.type === 'feat' && o.f.kind === 'g' && !burrowOpen() && !canDig()) gateBump();
     else if (o.type === 'tile' && o.t === T.DEEP) swimBump();
+    else if (o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE)) softBump(o.t);
+    else if (o.type === 'tile' && o.t === T.BANK && !canBank()) softBump(o.t);
     else if (o.type !== 'tile' && o.type !== 'cr' && !unveiled(key, x, y)) fxMsg('Something is there under the veil · ))) Call to see');
     return;
   }
@@ -1614,9 +1631,53 @@ function crossReason(a, dir) {
   const c = stepCell(a, dir);
   if (c < 0) return 'Edge of the map';
   if (!inRange(c)) return RANGE_TEXT();
-  if (edgeKind(a, dir) === EDGE.CLIFF) return EDGE_REFUSAL_CLIFF;
-  if (!passable(c) || G.island[c]) return G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross';
+  const sk = softKind(a, dir);
+  if (edgeKind(a, dir) === EDGE.CLIFF) return sk === 'scree' ? (canSure() ? null : SCREE_BUMP) : sk === 'bank' ? (canBank() ? null : BANK_BUMP) : EDGE_REFUSAL_CLIFF;
+  if (!passable(c) || G.island[c]) return G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : sk === 'wade' ? (canSure() ? null : WADE_BUMP) : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross';
   return null;
+}
+// Soft ground and earth banks (the overlays on G): the kind refusing a step, whatever the partner.
+const WADE_BUMP = 'Muddy water · needs a rambler', SCREE_BUMP = 'Loose scree · needs a rambler', BANK_BUMP = 'Earth bank · needs a digger';
+function softKind(a, dir) {
+  const c = stepCell(a, dir); if (c < 0) return null;
+  if (edgeKind(a, dir) === EDGE.CLIFF) { const ei = edgeIndex(a, dir); return G.soft && G.soft.scree[ei] ? 'scree' : G.banks && G.banks[ei] ? 'bank' : null; }
+  return G.soft && G.soft.wade[c] && !G.island[c] ? 'wade' : null;
+}
+// The pin a refused step leaves, once (the pin names the kind that can cross): ' · pinned' the first time. A wade pins its own cell; a scree or bank edge pins the cell you stand in.
+function softPin(a, dir) {
+  const c = stepCell(a, dir), sk = softKind(a, dir); if (c < 0 || !sk || !inRange(c)) return '';
+  if (sk === 'bank' ? canBank() : canSure()) return '';
+  return addPin(sk === 'wade' ? c : a, sk === 'bank' ? 'bank' : 'soft') ? ' · pinned' : '';
+}
+// Tuliko's first crossing of mud or scree in a walk is logged once, in the mibi's own name.
+function noteSure(a, dir, c) {
+  const ex = S.exp, sk = softKind(a, dir);
+  if (!canSure() || ex.softSaid || (sk !== 'wade' && sk !== 'scree')) return;
+  ex.softSaid = 1; logEv(ex.pt.name + ' crosses the ' + (sk === 'wade' ? 'mud' : 'scree') + ', sure-footed');
+}
+// Rupar digs an earth bank at the first crossing of it in a walk: one extra action (an elder two), then it crosses at a normal step for the rest of the walk (ex.dug, edge indices).
+// Returns false while an elder is still digging (the press spent its action and the step waits for the next).
+function digBank(ei, a, c) {
+  const ex = S.exp, name = ex.pt.name;
+  if (ex.pt.elder && ex.bankProg !== ei + 1) { ex.bankProg = ei + 1; fxMsg(name + ' is digging · slow but sure', 1); advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined); return false; }
+  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei);
+  const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; }
+  logEv(name + ' dug a way ' + (G.level[c] > G.level[a] ? 'up' : 'down') + ' the bank');
+  advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined);
+  return true;
+}
+const bankIsDug = ei => (S.exp.dug || []).includes(ei);
+// The crossing a place tile belongs to (a scree or bank edge's two-by-two), or null.
+function crossingAt(lay, x, y) {
+  for (const q of lay.cross || []) { const d = q.dir === 'left' ? x : q.dir === 'right' ? PW - 1 - x : q.dir === 'up' ? y : PH - 1 - y, k = q.dir === 'up' || q.dir === 'down' ? x : y;
+    if (d < 2 && k >= q.s && k <= q.s + 1) return q; }
+  return null;
+}
+// Whether the partner lets the pawn onto a soft tile of the place: mud and scree for a rambler, a dug bank for a digger.
+function softTileOpen(lay, t, x, y) {
+  if (t === T.WADE || t === T.SCREE) return canSure();
+  if (t === T.BANK) { const q = crossingAt(lay, x, y); return canBank() && !!q && bankIsDug(q.ei); }
+  return false;
 }
 // Walking off a place's edge steps onto the next map cell that way (one map action), map in view and facing
 // that way; one Confirm goes down into it from the matching side. Otherwise you stay put with the reason.
@@ -1624,7 +1685,9 @@ function crossReason(a, dir) {
 function crossEdge(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
   const why = crossReason(ex.pos, dir);
-  if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why); save(); return; }
+  if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
+  if (edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
+    if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(EDGE_REFUSAL_CLIFF); return; } }
   if (edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
     if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(EDGE_REFUSAL_CLIFF); return; } }
   ex.patch = null; S.phase = 'map'; recordSigns(ex.pos); transition();
@@ -1632,9 +1695,23 @@ function crossEdge(dir) {
   mapStep(dir);
   fxHint('edgewalk', 'Next cell · ✓ goes down', 2);
 }
+// A soft tile in a place, refused without the partner that crosses it (the shape of swimBump): the pin goes on the place's cell.
+function softBump(t) {
+  const sk = t === T.BANK ? 'bank' : 'soft', fresh = addPin(curLay().cell, sk);
+  fxMsg((t === T.WADE ? WADE_BUMP : t === T.SCREE ? SCREE_BUMP : BANK_BUMP) + (fresh ? ' · pinned' : ''));
+  FX.bumpAt = NOW; save();
+}
+function noteSureTile(t) { const ex = S.exp; if (!canSure() || ex.softSaid || (t !== T.WADE && t !== T.SCREE)) return; ex.softSaid = 1; logEv(ex.pt.name + ' crosses the ' + (t === T.WADE ? 'mud' : 'scree') + ', sure-footed'); }
+// Rupar facing a bank tile in a place: the dig, then the same two tiles cross.
+function digBankHere() {
+  const ex = S.exp, P = ex.patch, lay = layout(P.key), f = frontOf(P), q = crossingAt(lay, f.x, f.y); if (!q) return;
+  const c = stepCell(lay.cell, q.dir);
+  const lv = curLive(); if (lv.pt) lv.pt.st = 'dig';
+  digBank(q.ei, lay.cell, c);
+}
 function gateBump() {
   const fresh = addPin(G.gate, 'burrow'), pt = S.exp.pt;
-  fxMsg((pt ? 'Too narrow · ' + pt.name + ' can’t dig' : 'Too narrow for the Probe') + (fresh ? ' · pinned' : ''));
+  fxMsg((pt ? 'Too narrow for ' + pt.name : 'Too narrow for the Probe') + (fresh ? ' · pinned' : ''));
   FX.bumpAt = NOW; save();
 }
 function swimBump() {
@@ -1674,6 +1751,8 @@ function patchAction() {
   if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? 'Swap the pod' : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
   if (o && o.type === 'pt') return NOTHING;
   if (o && o.type === 'tile' && o.t === T.DEEP) return { label: 'Needs a swimmer', run: swimBump };
+  if (o && o.type === 'tile' && o.t === T.BANK && canBank() && !softTileOpen(lay, o.t, f.x, f.y)) { const q = crossingAt(lay, f.x, f.y);
+    if (q) return { label: ex.pt.elder && ex.bankProg === q.ei + 1 ? 'Keep digging' : ex.pt.name + ' digs a way ' + (G.level[stepCell(lay.cell, q.dir)] > G.level[lay.cell] ? 'up' : 'down'), run: digBankHere }; }
   if (o && o.type === 'feat') {
     const ft = o.f;
     switch (ft.kind) {
@@ -1692,12 +1771,12 @@ function patchAction() {
       case 'j': if (!fs(key, ft.id).up) return ex.cargo.e >= PRICE.beacon ? { label: 'Light beacon · 1 Energy', ctx: 'reveals the land around', run: () => lightBeacon(ft) }
         : { label: 'Light beacon · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the beacon costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; break;
       case 'g':
-        if (S.opened[G.gate]) return { label: 'Go down the burrow', run: () => { advance('patch', { noise: 'act' }); enterCave(); } };
-        if (canDig()) return { label: (ex.digProg ? 'Keep digging' : ex.pt.name + ' digs'), run: dig };
+        if (S.opened[G.gate]) return { label: 'Go down the burrow', run: () => { advance('patch', { noise: 'act' }); enterCave(); } };   // an old save's burrow is open for good (for any partner); a burrow dug this walk is the Tuikis's to follow
+        if (canDig()) return { label: ex.burrowDug ? 'Follow ' + ex.pt.name + ' down' : (ex.digProg ? 'Keep digging' : ex.pt.name + ' digs it out'), run: ex.burrowDug ? () => { advance('patch', { noise: 'act' }); enterCave(); } : dig };
         return { label: 'Too narrow', run: gateBump };
       case 'd': if (live.seen.d) return { label: S.tier >= 2 ? 'Read the deep ?' : 'Probe deeper', run: probeDeep }; break;
       case 'x': return { label: 'Climb out', run: leavePatch };
-      case 'n': if (canDig() && !S.opened[G.gate]) return { label: 'Ask ' + ex.pt.name + ' to dig', run: holeHint }; break;
+      case 'n': if (canDig() && !burrowOpen()) return { label: 'Ask ' + ex.pt.name + ' to dig', run: holeHint }; break;
     }
   }
   if (fruit) return o ? { label: 'Press the fruit', run: pressFruit } : { label: 'Put down the fruit', run: () => putDown(f) };
@@ -1877,7 +1956,7 @@ function callPlace() {
     const fp = featPos(key, f); if (!inCall(P, fp.x, fp.y, reach)) continue;
     if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) { if (lay.cave) setFS(key, f.id, { sn: 1 }); fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
     if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
-    if (f.kind === 'g' && !S.opened[G.gate]) fxGlint(f.x, f.y, 350);
+    if (f.kind === 'g' && !burrowOpen()) fxGlint(f.x, f.y, 350);
   }
   const before = lay.cave ? 0 : svyFull(lay.cell);
   let lifted = null;
@@ -1887,7 +1966,7 @@ function callPlace() {
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
   logEv('Call' + (found ? ' · found ' + found : '') + (lay.cave ? '' : ' · ' + surveyWord(lay.cell)));
   // the partner answers: a digger near the burrow digs it
-  const g = lay.feats.find(f => f.kind === 'g'), digNow = g && !S.opened[G.gate] && canDig() && cheb(P, g) <= 3;
+  const g = lay.feats.find(f => f.kind === 'g'), digNow = g && !burrowOpen() && canDig() && cheb(P, g) <= 3;
   ex.ptTagUntil = Math.max(ex.ptTagUntil || 0, ex.actions + 3);   // Called: the partner's name tag shows again
   advance('patch', { noise: 'act', pulse: true, reach, call: true });
   if (!lay.cave) {
@@ -1991,8 +2070,8 @@ function dig() {
   ex.digProg = 0; ex.abUsed = 1;
   FX.dig = { at: NOW, x: g.x, y: g.y };
   lockInput(DIG_MS + 50);
-  S.opened[G.gate] = 1; S.pins = S.pins.filter(p => !(p.c === G.gate && p.k === 'burrow'));
-  logEv(ex.pt.name + ' dug the burrow open');
+  ex.burrowDug = 1;   // open for this walk only: the ground shifts back at the world turn (the burrow's pin stays)
+  logEv(ex.pt.name + ' dug the burrow out wide enough');
   advance('patch', { noise: 'act' });
   ex.caveDue = 1; save(); setTimeout(digDone, DIG_MS);
 }
@@ -2256,7 +2335,7 @@ function partnerTick(X) {
   if (X.call) { pt.st = 'follow'; stepToward(X, pt, P, speed); return; }
   // A digger goes to look at the burrow before you ask. Partners ignore gates they can't handle.
   const g = X.lay.feats.find(f => f.kind === 'g');
-  if (ab === 'dig' && g && !S.opened[G.gate] && (cheb(pt, g) <= 8 || cheb(P, g) <= 7)) {
+  if (ab === 'dig' && g && !burrowOpen() && (cheb(pt, g) <= 8 || cheb(P, g) <= 7)) {
     const near = () => cheb(pt, g) <= 2 && pt.y > g.y;
     if (!near()) { const spots = [{ x: g.x - 1, y: g.y + 1 }, { x: g.x + 1, y: g.y + 1 }, { x: g.x, y: g.y + 1 }, { x: g.x - 1, y: g.y + 2 }, { x: g.x + 1, y: g.y + 2 }];
       const tgt = spots.find(s => canStand(X, s.x, s.y, pt)) || { x: g.x, y: g.y + 2 }; stepToward(X, pt, tgt, speed); }
@@ -2527,6 +2606,11 @@ function realmTurn(turned, pending) {
   for (const m of aged) say(m.name + ' is an elder now · slower, with keener senses.', ['elder', null, m.id, 0]);
   for (const c of depotCells(S.seed)) { const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
     if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
+  // What the walk dug (a bank, or the burrow) shifts back with the turn: said as the world's, crediting the mibi that dug it (or not naming it, if it has left the Companion). One partner a walk, so one line.
+  { const ex = S.exp, bankN = ex && ex.dug ? ex.dug.length : 0, burrow = !!(ex && ex.burrowDug), dm = ex && ex.pt && (bankN || burrow) ? carriedMibis().find(m => m.id === ex.pt.id) : null;
+    if (bankN || burrow) { const kind = PLACE_KIND[G.land[burrow ? G.gate : ex.dug[0] >> 1]], who = dm ? dm.name : null;
+      say(burrow ? (who ? 'The ground shifted, and the burrow ' + who + ' dug out is narrow again.' : 'The ground shifted, and the burrow is narrow again.')
+        : who ? 'The ground shifted, and the ' + (bankN === 1 ? 'bank ' + who + ' dug is' : 'banks ' + who + ' dug are') + ' whole again.' : 'The ground shifted, and the dug bank is whole again.', ['shift', kind, ex.pt.id, burrow ? 1 : bankN]); } }
   // Movement: a species you know first; a direction only when the herd really drifted one way.
   const moves = hereKinds().map(k => k.sp).filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
     .filter(o => o.dw || o.known).sort((a, b) => (b.known - a.known) || (!!b.dw - !!a.dw) || (mv[b.sp].n - mv[a.sp].n));
@@ -3266,6 +3350,7 @@ function tileKeys(lay) {
   for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
     const t = at(x, y), v = hash(lay.key, x, y) % 4; let m = 0;
     const nb = [at(x, y - 1), at(x + 1, y), at(x, y + 1), at(x - 1, y)];
+    if (t === T.BANK && lay.bankDug) m |= 1;   // a bank dug this walk shows its footholds
     if (t === T.WATER || t === T.STEP || t === T.DEEP) nb.forEach((n, i) => { if (!wet(n) && !(t === T.DEEP && n === T.ISLE)) m |= 1 << i; });
     else if (t === T.ROCK) nb.forEach((n, i) => { if (n === T.ROCK) m |= 1 << i; });
     else if (t === T.CLIFF) { if (nb[0] !== T.CLIFF && nb[0] !== -1) m |= 1; if (nb[2] !== T.CLIFF && nb[2] !== -1) m |= 4; }
@@ -3804,6 +3889,7 @@ function drawEdgeMarks(q) {
     const sides = [];
     for (const dir of ['up', 'down', 'left', 'right']) { const [dx, dy] = DIRS[dir], X = c % MW + dx, Y = ((c / MW) | 0) + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
       const n = Y * MW + X, kind = edgeKind(c, dir); if (kind !== EDGE.CLIFF && kind !== EDGE.RAMP) continue;
+      if (kind === EDGE.CLIFF && softEdge(edgeIndex(c, dir))) continue;   // scree and earth banks have their own marks (drawSoftMarks), never a cliff's
       if (!(S.revealed[c] && S.revealed[n]) && c !== pawn && n !== pawn) continue;
       sides.push([dir, kind, G.level[n] > G.level[c]]); }
     if (!sides.length) continue;
@@ -3815,6 +3901,34 @@ function drawEdgeMarks(q) {
       return edgeMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity, heavy); });
     blit(pb, x, y, rm);
   }
+  drawSoftMarks(q, cells, pawn);
+}
+// Soft ground and earth banks on the map and reach view (stand-ins, art list c-map-soft-26): drawn in code each frame, after the cliff and stair marks.
+// A wade is a soft brown mud smear on its water cell (never the ford's marks); a scree edge a fan of pebbles spilling over the line (dots, wider on the low side);
+// an earth bank a rounded, scalloped earth lip with crumbs (no ink line, no rock); a bank dug this walk shows a short column of footholds.
+const softEdge = i => !!((G.soft && G.soft.scree[i]) || (G.banks && G.banks[i]));
+function drawSoftMarks(q, cells, pawn) {
+  if (!G.soft && !G.banks) return;
+  const cs = q.cs, th = cs >= 72 ? 4 : cs >= 48 ? 3 : 2, dug = S.exp && S.exp.dug || [], seen = (c, n) => (S.revealed[c] && S.revealed[n]) || c === pawn || n === pawn;
+  for (const [c, x, y] of cells) {
+    if (G.soft && G.soft.wade[c] && S.revealed[c] && !G.island[c]) blit(ICON.mud(), x + ((cs - 16) >> 1), y + ((cs - 12) >> 1));
+    for (const dir of ['right', 'down']) { const X = c % MW + (dir === 'right' ? 1 : 0), Y = ((c / MW) | 0) + (dir === 'down' ? 1 : 0); if (X >= MW || Y >= MH) continue;
+      const n = Y * MW + X, ei = edgeIndex(c, dir); if (edgeKind(c, dir) !== EDGE.CLIFF || !softEdge(ei) || !seen(c, n)) continue;
+      const scree = !!(G.soft && G.soft.scree[ei]), horiz = dir === 'down', bx = horiz ? x : x + cs, by = horiz ? y + cs : y, lowFirst = G.level[c] < G.level[n];
+      for (let a = 0; a < cs; a += scree ? 2 : 1) {
+        const px = horiz ? bx + a : bx, py = horiz ? by : by + a;
+        if (scree) { const h1 = hash(ei, a, 3), spread = 1 + (h1 % (th + 2)), side = (h1 >> 4) & 1 ? 1 : -1, lowSign = lowFirst ? -1 : 1, d = side * (side === lowSign ? spread : Math.max(1, spread >> 1));   // the fan is wider on the low side
+          R(horiz ? px : px + d, horiz ? py + d : py, 1, 1, h1 & 8 ? C.rockL : C.stone); if ((h1 & 3) === 0) R(horiz ? px : px + d + 1, horiz ? py + d + 1 : py, 1, 1, C.rock); }
+        else { const off = Math.round(Math.sin(a * 6.28 / (cs / 3)) * (th >> 1)), p0 = horiz ? py - th + off : px - th + off;   // the scalloped lip
+          if (horiz) { R(px, p0, 1, th, C.clay); R(px, p0 - 1, 1, 1, C.sand); } else { R(p0, py, th, 1, C.clay); R(p0 - 1, py, 1, 1, C.sand); }
+          if (hash(ei, a, 5) % 9 === 0) R(horiz ? px : px + th, horiz ? py + th : py, 1, 1, C.clay); } }   // crumbs
+      if (!scree && dug.includes(ei)) for (let k = -1; k <= 1; k++) { const a = (cs >> 1) + k * Math.max(3, cs >> 3); if (horiz) R(bx + a, by - th - 1, 2, th + 2, C.bark); else R(bx - th - 1, by + a, th + 2, 2, C.bark); }   // footholds
+    }
+  }
+  // Tuliko's extra ring: small round dots on the cells one ring past the Probe's own range, each a 2 px round dot of the coin pattern
+  const ex = S.exp; if (ex && canSure() && q.map) { const s0 = cxy(ex.start), r = ex.range;
+    for (const [c, x, y] of cells) { const p = cxy(c); if (Math.max(Math.abs(p.x - s0.x), Math.abs(p.y - s0.y)) !== r || !S.revealed[c]) continue;
+      for (let k = 3; k < cs - 2; k += 6) { R(x + k, y + 3, 2, 2, C.gold); R(x + k, y + cs - 5, 2, 2, C.gold); R(x + 3, y + k, 2, 2, C.gold); R(x + cs - 5, y + k, 2, 2, C.gold); } } }
 }
 function drawInset(x, y, t, u) {
   const ex = S.exp; u = u || 6; ensureMap(); const W = MW * u, H = MH * u, d = Math.max(2, u - 2), o = Math.floor((u - d) / 2);
@@ -3873,7 +3987,7 @@ function drawMap(mode, t) {
       pb.ell(13, CELL + 4, 7, 15, C.bark, clip); pb.ell(13, CELL + 5, 5, 13, C.void, clip); return pb; }), px, py - CELL, rmOf(G.gate)); }
   for (const e of signs) { const { x, y } = cxy(e.c), px = ox + x * CELL, py = oy + y * CELL;
     for (const s of e.list) if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
-  if (S.opened[G.gate] && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
+  if (burrowOpen() && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
   // storm band: rain, edges, a lightning mark and the direction it travels
   if (bx1 > bx0 && preview) {
     for (let yy = 0; yy < MH * CELL; yy += 8) { R(ox + bx0, oy + yy, 2, 3, C.mist); R(ox + bx1 - 2, oy + yy, 2, 3, C.mist); }
@@ -4111,7 +4225,7 @@ function drawPatch(t) {
     else if (f.kind === 'm') blit(mushArt(fr), SX(x), SY(y));
     else if (f.kind === 'd') { blit(CRACK(), SX(x), SY(y), rm); if (live.seen.d) { const ph = motion() ? Math.floor((t * 1.2 % 1) * 4) : 2; circ(SX(x) + 16, SY(y) + 16, 10 + ph * 4, C.lavender, ph > 2); blit(BADGE(), SX(x) + 7, SY(y) - 6); } }
     else if (f.kind === 'x') blit(exitArt(fr), SX(x), SY(y));
-    else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), SX(x), SY(y), rm);
+    else if (f.kind === 'g') blit(burrowArt(!!burrowOpen()), SX(x), SY(y), rm);
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), SX(x) + 9, SY(y) + 8 + fr, tileLight(f.x, f.y)); }
   }
   // y-sorted sprites
@@ -4572,7 +4686,7 @@ function warnPicPlace(x0, y0, a) {
     if (f.kind === 'n') blit(holeArt(live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1) ? 1 : 0), x0, y0);
     else if (f.kind === 'e') blit(NEST(), x0, y0); else if (f.kind === 'm') blit(mushArt(0), x0, y0);
     else if (f.kind === 'd') blit(CRACK(), x0, y0); else if (f.kind === 'x') blit(exitArt(0), x0, y0);
-    else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), x0, y0);
+    else if (f.kind === 'g') blit(burrowArt(!!burrowOpen()), x0, y0);
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), x0 + 9, y0 + 8, L); }
     else if (f.kind === 's' && fs(a.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(x0 + 8 + (k % 4) * 5, y0 + 18 + (k >> 2) * 4, 3, 1); } }
   for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
@@ -4663,7 +4777,7 @@ function drawSetup(t) {
   disc(32, 168, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 56, 192);
   if (deepOk && fr) { R(70, 192, 2, 2, C.cream); R(69, 193, 4, 1, C.yellow); }
   text('Deep ground', 112, 168, deepOk ? C.ink : C.mist, 3);
-  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : 'Caves · needs a digging partner', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
+  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs the way in' : 'Caves · needs a Tuikis', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
   // the partner card: the partner's face on the teal ring, its name, stage and ability; or why there is none. The mibis with
   // you as 24 px ring faces in carried order, a free place a dashed circle.
   const pm = partnerMibi(), cm = carriedMibis();
@@ -5208,18 +5322,18 @@ const SIGN_ORDER = ['skull', 'depot', 'b', 'pod', 't', 'k', 'kw', 'pin', 'beacon
 function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.list : [];
   return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? DEPOT_NAME + (q.lit ? ' · lit ' + q.lit + ' turn' + (q.lit === 1 ? '' : 's') : ' (dark)') : q.kind === 'beacon' ? 'beacon' + (q.lit ? ' (lit)' : ' (unlit)') : SIGN_NAME[q.kind]); }
 function landWord(c) {
-  if (G.land[c] === L.WATER) return G.ford[c] ? 'shallows' : nextToIsland(c) ? 'fast water' : 'wide water';
+  if (G.land[c] === L.WATER) return G.ford[c] ? 'ford' : G.soft && G.soft.wade[c] ? 'muddy water' : nextToIsland(c) ? 'fast water' : 'wide water';
   return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : ''); }
 function cellWords(c) { const w = signWords(c); return landWord(c) + (w.length ? ' · ' + w.join(', ') : ''); }
 function aheadCell() { const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[ex.face || 'down'], x = p.x + dx, y = p.y + dy; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; }
 // The map's middle part: the cell you're on and the one you face, shortest forms last.
 function mapContext() {
-  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · cave needs a digger' : S.visited[ex.pos] && passable(ex.pos) ? ' · ' + surveyWord(ex.pos) : ''), hs = signWords(ex.pos), a = aheadCell();
+  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · burrow too narrow' : S.visited[ex.pos] && passable(ex.pos) ? ' · ' + surveyWord(ex.pos) : ''), hs = signWords(ex.pos), a = aheadCell();
   const toTake = c => S.visited[c] && passable(c) && leftTotal(c) ? ' · ' + leftTotal(c) + ' to take' : '';
   // the edge you face, named even when the cell beyond is fog (your own four edges always show): a steep edge or stairs
   const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, ex.face || 'down') : EDGE.OPEN;
   const es = ek === EDGE.CLIFF ? 'steep edge' : ek === EDGE.RAMP ? (G.level[a] > G.level[ex.pos] ? 'stairs up' : 'stairs down') : '';
-  const beyond = a < 0 ? 'edge of the map' : !inRange(a) ? 'edge of range' : !S.revealed[a] ? 'fog' : gatedCell(a) ? 'cave · needs a digger' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.revealed[a] && !gatedCell(a) ? signWords(a) : [];
+  const beyond = a < 0 ? 'edge of the map' : !inRange(a) ? 'edge of range' : !S.revealed[a] ? 'fog' : gatedCell(a) ? 'cave · burrow too narrow' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.revealed[a] && !gatedCell(a) ? signWords(a) : [];
   const there = es ? es + ' · ' + beyond : beyond, AS = 'Ahead: ' + (es || there);   // the short forms cut the cell beyond first, never the edge
   const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = 'Ahead: ' + there + (as.length ? ' · ' + as.join(', ') : '');
   // where you stand comes first when it has a sign; otherwise what you face; the edge word alone is the last before here
@@ -5285,7 +5399,7 @@ function lineBase() {
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
     case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
-      if (S.ui.sel === 1 && !digPartner()) return L1('Needs a digger', 'Deep ground', 'menu', true);   // a mibi at home is never named
+      if (S.ui.sel === 1 && !digPartner()) return L1('Needs a Tuikis', 'Deep ground', 'menu', true);   // a mibi at home is never named
       { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
       return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), bayLine(), 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
@@ -5386,7 +5500,7 @@ function startBlock() {
 }
 function chooseType() {
   { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; return; } }
-  if (S.ui.sel === 1 && !digPartner()) { fxMsg('Deep ground needs a digging partner'); FX.bumpAt = NOW; return; }
+  if (S.ui.sel === 1 && !digPartner()) { fxMsg('Deep ground starts down a narrow burrow · a Tuikis digs it out'); FX.bumpAt = NOW; return; }
   S.ui.type = S.ui.sel === 1 ? 'deep' : 'weather';
   const first = firstPlacement();
   let cur = S.ui.lastPos != null ? S.ui.lastPos : null;
@@ -5719,7 +5833,7 @@ function notesText() {
   L2.push('Mibis: ' + (S.mibis.length ? S.mibis.map(m => m.name + ' (' + mibiSpName(m) + ', ' + mibiStage(m) + ', ' + abTextOf(m.sp) + ')').join('; ') : 'none'));
   L2.push('Known species: ' + (S.known.length ? S.known.map(s => spOf(s).name).join(', ') : 'none'));
   L2.push('Pins: ' + (S.pins.length ? S.pins.map(p => { const q = cxy(p.c); return q.x + ',' + q.y + ' ' + PIN_TEXT[p.k]; }).join('; ') : 'none'));
-  L2.push('Burrow: ' + (S.opened[G.gate] ? 'open' : 'closed') + ' · Bay: ' + S.bay.length + ' of ' + BAY + ' sealed · ' + (isDocked() ? 'docked' : 'away') + ' · Hold: ' + (S.hold ? S.hold.e + ' energy, ' + S.hold.d + ' data, ' + S.hold.s + ' essence, ' + S.hold.pods.length + ' pods' : 'empty'));
+  L2.push('Burrow: ' + (burrowOpen() ? 'open' : 'closed') + ' · Bay: ' + S.bay.length + ' of ' + BAY + ' sealed · ' + (isDocked() ? 'docked' : 'away') + ' · Hold: ' + (S.hold ? S.hold.e + ' energy, ' + S.hold.d + ' data, ' + S.hold.s + ' essence, ' + S.hold.pods.length + ' pods' : 'empty'));
   L2.push(''); L2.push('Recent events:'); for (const s of S.log.slice(-12)) L2.push('- ' + s);
   L2.push(''); L2.push('Observations:'); L2.push('- ');
   return L2.join('\n');
