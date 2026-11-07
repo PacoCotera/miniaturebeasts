@@ -52,8 +52,8 @@ export function carryPlan(m, key) {
   const sub = subjectOf(m), W = words(m); if (!sub || !KEYS.includes(key)) return null;
   if (sub.kind === "pod") {
     const p = sub.pod, idd = !!p.idd, sid = idd ? S.speciesOf(p) : null;
-    if (key === "habitat") return idd && !S.growBlock(st, p, {}, settings, []) ? { act: "grow", word: W.grow ?? "Grow", pod: p.id } : null;   // a pod that cannot grow now (sealed, the incubator busy, short) carries nothing: the key is the room's top
-    if (key === "research") return sub.reading ? null : { act: "read", word: W.read ?? "Read", pod: p.id };
+    if (key === "habitat") return idd && !S.growBlock(st, p, {}, settings, []) ? { act: "grow", word: W.grow ?? "Grow it", pod: p.id } : null;   // a pod that cannot grow now (sealed, the incubator busy, short) carries nothing: the key is the room's top
+    if (key === "research") return sub.reading ? null : { act: "read", word: W.read ?? "Read it", pod: p.id };
     return idd && Lib.speciesStatus(st, sid) !== "unmet" ? { act: "page", word: fill(W.page ?? "{Name} page", { Name: spWord(p) }), species: sid } : null;
   }
   if (sub.kind === "mibi") {
@@ -64,7 +64,7 @@ export function carryPlan(m, key) {
   }
   if (sub.kind === "chapter") {
     const p = sub.pod, c = sub.chapter, sid = S.speciesOf(p);
-    if (key === "research") return { act: "readChapter", word: W.readingRoom ?? "Reading room", pod: p.id, chapter: c.id };
+    if (key === "research") return { act: "readChapter", word: fill(W.readChapter ?? "Read {Chapter}", { Chapter: c.id === "legs-tail" ? "Legs" : c.name }), pod: p.id, chapter: c.id };
     if (key === "library") return Lib.speciesStatus(st, sid) === "found" ? { act: "pageChapter", word: fill(W.chapterPage ?? "{Chapter} page", { Chapter: c.id === "legs-tail" ? "Legs" : c.name }), species: sid, chapter: c.id } : null;
     return null;
   }

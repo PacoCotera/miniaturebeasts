@@ -39,7 +39,7 @@ const podOf = (h, k = h.ui.pods.focus.cur) => listOf(h.st, h.specs.pods, h.ui.po
 
 test("green on a pod: Grow it, Create with that pod; ← goes back to the inventory with the ring on the card (the carry's origin)", () => {
   const h = inPods(); h.ui.pods.sort = "arrival"; h.ui.pods.focus.set("card.0");   // by arrival the first card is the newest pod
-  const q = h.st.tray[h.st.tray.length - 1]; assert.equal(cuesOf(h).find((c) => c.key === "habitat")?.word, "Grow");
+  const q = h.st.tray[h.st.tray.length - 1]; assert.equal(cuesOf(h).find((c) => c.key === "habitat")?.word, "Grow it");
   key(h, "habitat"); assert.deepEqual([h.went.at(-1), h.ui.create?.podId], ["create", q.id]); assert.deepEqual(h.ui.carry && [h.ui.carry.key, h.ui.carry.to], ["habitat", "create"]);
   press(h, "back"); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.ui.pods.sort, h.ui.pods.focus.cur, h.ui.carry], ["pods", "inventory", "arrival", "card.0", null]);
 });
@@ -68,7 +68,7 @@ test("blue on a mibi whose kind has no pod carries nothing", () => {
 test("a chapter on Create: blue the reading room on that chapter, purple the species page lit on that chapter; the unpaid choices are kept and ← goes back to Create", () => {
   const st = world(); const p = pod(st, "S01", ["coat", "face"], 3); S.seedAdults(st, "S01", 5, 2, settings); const h = host(st); openCreate(h, p); h.ui.create.f = 1; h.ui.create.choices = { body: 1 };
   const cr = h.ui.create, chs = frameOf("S01").chapters.filter((c) => p.read.includes(c.id));
-  assert.deepEqual(cuesOf(h).map((c) => c.key), ["research", "library"]);
+  assert.deepEqual(cuesOf(h).map((c) => c.key), ["research", "library"]); assert.equal(cuesOf(h)[0].word, "Read " + frameOf("S01").chapters.filter((c) => p.read.includes(c.id))[0].name, "Read {Chapter}: the cue says what you will see");
   key(h, "research"); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.st.readingPod, h.ui.create === cr], ["pods", "room", p.id, true], "a peek: Create's state stays");
   press(h, "back"); assert.deepEqual([h.went.at(-1), h.ui.create.f, h.ui.create.choices], ["create", 1, { body: 1 }], "← back to Create with its choices");
   const ch = chs[0]; h.ui.create.f = 0; key(h, "library"); assert.deepEqual([h.went.at(-1), h.ui.lib.state, h.ui.lib.lit], ["library.species", "lit", ch.id]); press(h, "back"); assert.equal(h.went.at(-1), "create");
