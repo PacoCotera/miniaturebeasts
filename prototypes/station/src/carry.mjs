@@ -11,6 +11,7 @@ import * as Lib from "./library.mjs";
 import { frameOf, frameIds } from "./genome.mjs";
 import { listOf } from "./views/pods-props.mjs";
 import { idOf } from "./views/vivarium-props.mjs";
+import { measureRole } from "../../ui/specs/measure.mjs";
 import { reviewTraits, createPod } from "./views/create-props.mjs";
 
 export const KEYS = ["research", "habitat", "library"];   // blue, green, purple: the order the keys stand in on the device (yellow, blue, green, purple: Home, Pods, Vivarium, Library) and the cues after them
@@ -18,7 +19,15 @@ export const ROOM_MARK = { habitat: "vivarium", research: "research", library: "
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const words = (m) => m.specs?.frame?.strings?.carry ?? {};
 const fill = (t, o) => String(t).replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
-const livingMibi = (st, id) => { const x = id != null ? S.mibiById(st, id) : null; return x && !x.released ? x : null; };
+// The face's Inter metrics (face/dist/metrics.json): a filled species word that is wider than a Call tag's room reads "Its page" / "Its pods" (the copywriter's safety net, the same rule as the way back's "Back").
+let METRICS = null;
+export const setMetrics = (x) => { METRICS = x; };
+export function tagRoom(frame) { const A = frame?.regions?.answer ?? frame?.answer; return A ? A.w - 2 * A.pad - 24 - A.capGap : 98; }   // 150 - 2 x 10 - 24 - 8 = 98 px
+function fitWord(m, filled, fallback) {
+  const metrics = m.metrics ?? METRICS, frame = m.specs?.frame, A = frame?.regions?.answer ?? frame?.answer; if (!metrics || !A) return filled;
+  return measureRole(metrics, frame, A.role)(filled) <= tagRoom(frame) ? filled : fallback;
+}
+const livingMibi =(st, id) => { const x = id != null ? S.mibiById(st, id) : null; return x && !x.released ? x : null; };
 
 // What the ring is on: { kind: "pod", pod, reading? } | { kind: "mibi", mibi } | { kind: "chapter", pod, chapter } | { kind: "species", species } | null.
 export function subjectOf(m) {
@@ -54,24 +63,24 @@ export function carryPlan(m, key) {
     const p = sub.pod, idd = !!p.idd, sid = idd ? S.speciesOf(p) : null;
     if (key === "habitat") return idd && !S.growBlock(st, p, {}, settings, []) ? { act: "grow", word: W.grow ?? "Grow it", pod: p.id } : null;   // a pod that cannot grow now (sealed, the incubator busy, short) carries nothing: the key is the room's top
     if (key === "research") return sub.reading ? null : { act: "read", word: W.read ?? "Read it", pod: p.id };
-    return idd && Lib.speciesStatus(st, sid) !== "unmet" ? { act: "page", word: fill(W.page ?? "{Name} page", { Name: spWord(p) }), species: sid } : null;
+    return idd && Lib.speciesStatus(st, sid) !== "unmet" ? { act: "page", word: fitWord(m, fill(W.page ?? "{Name} page", { Name: spWord(p) }), W.itsPage ?? "Its page"), species: sid } : null;
   }
   if (sub.kind === "mibi") {
     const x = sub.mibi, sid = S.speciesOf(x);
-    if (key === "habitat") return ui.screen === "habitat" ? null : { act: "close", word: W.look ?? "Look", mibi: x.id };
-    if (key === "research") return speciesPods(st, sid) ? { act: "pods", word: fill(W.pods ?? "{Species} pods", { Species: spWord(x) }), species: sid } : null;
+    if (key === "habitat") return ui.screen === "habitat" ? null : { act: "close", word: W.look ?? W.visit ?? "Visit", mibi: x.id };
+    if (key === "research") return speciesPods(st, sid) ? { act: "pods", word: fitWord(m, fill(W.pods ?? "{Species} pods", { Species: spWord(x) }), W.itsPods ?? "Its pods"), species: sid } : null;
     return ui.screen === "library.family" ? null : Lib.speciesStatus(st, sid) === "found" ? { act: "family", word: W.family ?? "Family", mibi: x.id } : null;
   }
   if (sub.kind === "chapter") {
     const p = sub.pod, c = sub.chapter, sid = S.speciesOf(p);
-    if (key === "research") return { act: "readChapter", word: fill(W.readChapter ?? "Read {Chapter}", { Chapter: c.id === "legs-tail" ? "Legs" : c.name }), pod: p.id, chapter: c.id };
-    if (key === "library") return Lib.speciesStatus(st, sid) === "found" ? { act: "pageChapter", word: fill(W.chapterPage ?? "{Chapter} page", { Chapter: c.id === "legs-tail" ? "Legs" : c.name }), species: sid, chapter: c.id } : null;
+    if (key === "research") return { act: "readChapter", word: fill(W.readChapter ?? "Read it", { Chapter: c.id === "legs-tail" ? "Legs" : c.name }), pod: p.id, chapter: c.id };
+    if (key === "library") return Lib.speciesStatus(st, sid) === "found" ? { act: "pageChapter", word: fill(W.chapterPage ?? "Its page",{ Chapter: c.id === "legs-tail" ? "Legs" : c.name }), species: sid, chapter: c.id } : null;
     return null;
   }
   if (sub.kind === "species") {
     const sid = sub.species;
     if (key === "habitat") { const x = homeMibiOf(st, sid); return x ? { act: "close", word: W.visit ?? "Visit", mibi: x.id } : null; }
-    if (key === "research") return speciesPods(st, sid) ? { act: "pods", word: fill(W.pods ?? "{Species} pods", { Species: S.cap(frameOf(sid).species.name) }), species: sid } : null;
+    if (key === "research") return speciesPods(st, sid) ? { act: "pods", word: fitWord(m, fill(W.pods ?? "{Species} pods", { Species: S.cap(frameOf(sid).species.name) }), W.itsPods ?? "Its pods"), species: sid } : null;
     return null;
   }
   return null;

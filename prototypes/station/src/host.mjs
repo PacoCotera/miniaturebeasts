@@ -9,7 +9,7 @@ import * as S from "./state.mjs";
 import { speciesStatus } from "./library.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
-import { cuesOf, originWord, answerOf } from "./carry.mjs";
+import { cuesOf, originWord, answerOf, setMetrics as setCarryMetrics } from "./carry.mjs";
 import { capLine } from "./views/words.mjs";
 import { homeBuild, mibiPictureOf, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
 import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs";
@@ -199,7 +199,7 @@ export function libraryBody() {
 // One species: its sheet, the shelf and one chapter lit with its page (library.json l2); the ring is the face's (l2.focus.<state>) and the host keeps it in UI.lib.cur (intents/library.mjs species.focus). The props name only
 // pictures that are made; the rest are made off the open path. The face's metrics measure the bottom line's ladders (setMetrics, the face's dist/metrics.json).
 let METRICS = null;
-export const setMetrics = (m) => { METRICS = m; };
+export const setMetrics = (m) => { METRICS = m; setCarryMetrics(m); };
 // The sheets to make ahead of the open (the Library 3 gate's P2), when nothing else waits: on Level 1 the sheet of the found species its ring rests on; outside the Library the last species whose sheet changed
 // (a discovery, a read, sealedOpen) since the last look (the first look only notes them); on Level 2 and below none, so the sheet shown stays kept. The kept sheet is one, so one is asked for at a time.
 let aheadSeen = null;

@@ -13,7 +13,8 @@ import { createFocus } from "../../ui/focus.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { openInventory } from "../src/intents/pods.mjs";
 import { openCreate } from "../src/intents/create.mjs";
-import { cuesOf, carryPlan, originWord } from "../src/carry.mjs";
+import { cuesOf, carryPlan, originWord, tagRoom } from "../src/carry.mjs";
+import { createMeasure } from "../../ui/specs/measure.mjs";
 import { listOf } from "../src/views/pods-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -68,7 +69,7 @@ test("blue on a mibi whose kind has no pod carries nothing", () => {
 test("a chapter on Create: blue the reading room on that chapter, purple the species page lit on that chapter; the unpaid choices are kept and ← goes back to Create", () => {
   const st = world(); const p = pod(st, "S01", ["coat", "face"], 3); S.seedAdults(st, "S01", 5, 2, settings); const h = host(st); openCreate(h, p); h.ui.create.f = 1; h.ui.create.choices = { body: 1 };
   const cr = h.ui.create, chs = frameOf("S01").chapters.filter((c) => p.read.includes(c.id));
-  assert.deepEqual(cuesOf(h).map((c) => c.key), ["research", "library"]); assert.equal(cuesOf(h)[0].word, "Read " + frameOf("S01").chapters.filter((c) => p.read.includes(c.id))[0].name, "Read {Chapter}: the cue says what you will see");
+  assert.deepEqual(cuesOf(h).map((c) => c.key), ["research", "library"]); assert.equal(cuesOf(h)[0].word, "Read it", "'it' is the chapter under the ring (the copywriter: 'Read Movement' was clipped in the tag)");
   key(h, "research"); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.st.readingPod, h.ui.create === cr], ["pods", "room", p.id, true], "a peek: Create's state stays");
   press(h, "back"); assert.deepEqual([h.went.at(-1), h.ui.create.f, h.ui.create.choices], ["create", 1, { body: 1 }], "← back to Create with its choices");
   const ch = chs[0]; h.ui.create.f = 0; key(h, "library"); assert.deepEqual([h.went.at(-1), h.ui.lib.state, h.ui.lib.lit], ["library.species", "lit", ch.id]); press(h, "back"); assert.equal(h.went.at(-1), "create");
@@ -78,6 +79,19 @@ test("a species on the Library: green Visit its mibi up close, blue its pods; pu
   assert.deepEqual(cuesOf(h).map((c) => [c.key, c.word]), [["research", S.cap(frameOf("S01").species.name) + " pods"], ["habitat", "Visit"]], "blue, then green: the order the keys stand in");
   key(h, "habitat"); assert.deepEqual([h.went.at(-1), h.ui.hab.id], ["habitat", m.id]); press(h, "back"); assert.equal(h.went.at(-1), "library");
   key(h, "library"); assert.equal(h.ui.carry, null, "nothing to carry: the top");
+});
+test("a filled page or pods word wider than a Call tag's 98 px (M16, the face's own metrics) reads 'Its page' / 'Its pods'", () => {
+  const metrics = JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")), measure = createMeasure(metrics), frame = J("frame");
+  assert.equal(tagRoom(frame), 98, "150 - 2 x 10 pad - 24 cap - 8 gap");
+  const st = world(); pod(st, "S01", [], 3); S.seedAdults(st, "S01", 5, 2, settings); const h = host(st); h.ui.screen = "library"; h.ui.lib.l1 = "S01"; h.metrics = metrics;
+  const name = S.cap(frameOf("S01").species.name), words = () => carryPlan(h, "research").word;
+  assert.equal(words(), name + " pods", "a name that fits keeps its word"); assert.ok(measure(words(), "16m") <= 98);
+  h.specs = { ...h.specs, frame: { ...frame, strings: { ...frame.strings, carry: { ...frame.strings.carry, pods: "{Species} pods and more" } } } };
+  assert.ok(measure(name + " pods and more", "16m") > 98); assert.equal(words(), "Its pods", "too wide: the fallback");
+  h.ui.screen = "pods"; openInventory(h, { from: "home" }); h.ui.pods.focus.set("card.0");
+  h.specs = { ...h.specs, frame: { ...frame, strings: { ...frame.strings, carry: { ...frame.strings.carry, page: "{Name} page of the whole book" } } } };
+  assert.equal(carryPlan(h, "library").word, "Its page", "a pod's species page too");
+  delete h.metrics; assert.equal(carryPlan(h, "library").word, "Untuva page of the whole book".replace("Untuva", S.cap(S.spName(podOf(h)))), "no metrics, no measuring: the filled word stands");
 });
 test("a second tap of the key just carried is the room's top, and ← after it is today's (the parent), not the carry's", () => {
   const h = inPods(0); key(h, "research"); assert.equal(h.ui.pods.view, "room"); key(h, "research"); assert.deepEqual([h.ui.pods.view, h.ui.carry], ["inventory", null]);
