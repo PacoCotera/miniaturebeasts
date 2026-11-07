@@ -107,7 +107,11 @@
   "##...",
   "....."
  ],
- "habits": [],
+ "habits": [
+  "stand-broad",
+  "break-through",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "large",
   "proportion": null,

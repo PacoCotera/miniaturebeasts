@@ -152,7 +152,7 @@ test("old saves: no trips list, an expedition without the new fields", () => {
   const saved = R.migrate8({ v: 8, seed: 7, gen: 5, cr: [], mibis: [], wid: "w7", retSeen: [], bay: [] }, { now: 1 }), store = { "mb-save-v8": JSON.stringify(saved) };
   const ctx = { localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; }, removeItem: k => { delete store[k]; } },
     SAVE_KEY: "mb-save-v8", LEGACY_KEY: "mb-save-v8-shared", COMPANION: { slot: "A" }, SAVE_V: 10, V7_KEY: "v7", OLD_SAVE_KEYS: [], migrate7: o => o, ...REGIONS,
-    layoutCache: { clear() {} }, genWorld() {}, genLife: () => ({ pods: [], cr: [] }), GENS: [5], indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2, MW: 16, MH: 20 };
+    layoutCache: { clear() {} }, genWorld() {}, worldOf() {}, genLife: () => ({ pods: [], cr: [] }), GENS: [5], indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2, MW: 16, MH: 20 };
   const l = load(["load", "migrateCarried", "normalizeCare", "worldFields", "idsIn", "realmOf"], ctx);
   assert.equal(l.load(), true);
   assert.deepEqual(plain(vm.runInContext("S.trips", l.ctx)), []);

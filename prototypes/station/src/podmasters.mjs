@@ -9,7 +9,9 @@ export const layersPlaced = (cls) => need(cls).every(isFilled);
 const pixels = (id) => { const a = assetOf(id); return { w: a.w, h: a.h, data: a.rgba() }; };
 
 // The clan's crown layers for a pod class ("large", ..., "well", or "opened-cap"), the ones placed; null when the clan is unknown or its shade and mask are not placed (the unknown pod has no crown)
-const crownIds = (cls, clan) => (clan ? { shade: `pod-${cls}-crown-${clan}-shade`, mask: `pod-${cls}-crown-${clan}-mask`, glow: `pod-${cls}-crown-${clan}-glow` } : null);
+// Tuliko's frame names clan C21, which has no crown files: it wears the C20 lid (the Tuliko glyph).
+const lidClan = (clan) => (clan === "C21" ? "C20" : clan);
+const crownIds = (cls, clan0) => { const clan = lidClan(clan0); return clan ? { shade: `pod-${cls}-crown-${clan}-shade`, mask: `pod-${cls}-crown-${clan}-mask`, glow: `pod-${cls}-crown-${clan}-glow` } : null; };
 function crownOf(cls, clan) {
   const ids = crownIds(cls, clan); if (!ids || !isFilled(ids.shade) || !isFilled(ids.mask)) return null;
   return { shade: pixels(ids.shade).data, mask: pixels(ids.mask).data, glow: isFilled(ids.glow) ? pixels(ids.glow).data : null };
@@ -33,7 +35,7 @@ export function podFromLayers(cls, pair, shellPattern, patterns, sealed, clan = 
 // The clan's crown layers are named by the clan: `crown` -> `crown-C03`, `crown-glow` -> `crown-C03-glow` (home.json regions.rackPod.layers.crown); a pod of no known clan has no crown.
 const rgb = (n) => RGB[C[n]];
 const isCrown = (l) => l === "crown" || l.startsWith("crown-");
-const layerId = (spec, layer, clan = null) => spec.id.replace("{layer}", isCrown(layer) ? (clan ? layer.replace("crown", `crown-${clan}`) : null) : layer);
+const layerId = (spec, layer, clan0 = null) => { const clan = lidClan(clan0); return spec.id.replace("{layer}", isCrown(layer) ? (clan ? layer.replace("crown", `crown-${clan}`) : null) : layer); };
 const clanOfFrame = (frame) => frame?.taxonomy?.clan ?? null;
 const baseLayers = (spec) => spec.order.filter((l) => l !== "pattern" && !isCrown(l));
 export const rackBase = (spec) => baseLayers(spec).map((l) => layerId(spec, l));

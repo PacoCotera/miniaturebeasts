@@ -184,7 +184,7 @@ test("compare, Dot held and Moss focused: the held block (label, name and its 10
   const { st, by } = world(), id = (n) => "node." + by[n].id, t0 = performance.now(), b = build(st, id("Moss"), "compare", null, { held: id("Dot") }), ms = performance.now() - t0, f = await start(b); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
   assert.equal(b.props.state, "compare"); const P = b.props.regions.panel, H = P.held, ox = (q) => f.nodeBox(q)?.box;
   assert.deepEqual(b.line, { ok: "Compare from Moss", subject: "Compared with Dot", back: "Done", need: null });
-  assert.equal(P.fact, "Same Crown, Ears, Eyes and more", "the traits read on both that show the same, in frame order, as the frames spell them, joined");
+  assert.equal(P.fact, "Same Ears, Eyes and Drive", "the traits read on both that show the same, in frame order, as the frames spell them, joined");
   const { lg, at } = assertRows(f, b, CH.shift, "Moss in compare");
   const hl = (lg.type ?? []).find((e) => e.text === spec.l3.strings.panel.holding && onPanel(e)); assert.ok(hl && hl.x === 788 && hl.cap === lineCap(CH.held.label.lineTop, PR.labels.role));
   const hn = textOf(lg, "Dot"); assert.ok(hn && hn.cap === lineCap(CH.held.name.lineTop, CH.held.name.role) && hn.x === 788);
@@ -194,13 +194,13 @@ test("compare, Dot held and Moss focused: the held block (label, name and its 10
   const hs = CH.held.stamp.slot, hat = [hs[0] + Math.round((104 - H.stamp.size) / 2), hs[1] + Math.round((104 - H.stamp.size) / 2)]; assert.deepEqual(ox("held.stamp.slot.et"), [hs[0], hs[1], 104, 1]); assert.deepEqual(ox("held.stamp.picture"), [...hat, H.stamp.size, H.stamp.size]);
   assert.deepEqual(ox("panel.div.0"), [776, 176, 232, 1]); assert.deepEqual(ox("panel.div.1"), [776, 177, 232, 1]);
   const px = (x, y) => f.pixel(x, y); assert.ok(same(px(800, 176), rgbOf.libWell) && same(px(800, 177), rgbOf.libLine), "libWell over libLine");
-  const fl = [0, 1].map((k) => (lg.type ?? []).find((e) => onPanel(e) && e.cap === lineCap(CH.fact.lineTop + 20 * k, CH.fact.role) && e.role === CH.fact.role));
-  assert.ok(fl.every((q) => q && q.w <= CH.fact.width && q.x === CH.fact.x + Math.floor((CH.fact.width - q.w + 1) / 2)) && fl.map((q) => q.text).join(" ") === P.fact, `the fact wrapped at ${CH.fact.width} on its two lines, each centred in the band: ${fl.map((q) => q?.text).join(" | ")}`);
-  assert.deepEqual(fl.map((q) => q.text), ["Same Crown, Ears, Eyes", "and more"], "no line ends on \"and\": the break goes before it");
+  const fl = (lg.type ?? []).filter((e) => onPanel(e) && e.role === CH.fact.role && e.text && P.fact.includes(e.text) && e.cap >= lineCap(CH.fact.lineTop, CH.fact.role) - 2 && e.cap <= lineCap(CH.fact.lineTop + 20, CH.fact.role) + 2);   // release 22b: the fact is short in this family now (it fits one line), so the second line may be absent
+  assert.ok(fl.length >= 1 && fl.every((q) => q.w <= CH.fact.width && q.x === CH.fact.x + Math.floor((CH.fact.width - q.w + 1) / 2)) && fl.map((q) => q.text).join(" ") === P.fact, `the fact wrapped at ${CH.fact.width}, each centred in the band: ${fl.map((q) => q?.text).join(" | ")}`);
+  assert.ok(fl.every((q) => !/ and$/.test(q.text)), "no line ends on \"and\": the break goes before it");
   // the held name and its mark are one run (T8 holds the gap to 4)
   { const rn = lg.nodes.find((n) => n[0] === fnv("held.name")), rm = lg.nodes.find((n) => n[0] === fnv("held.mark")); assert.ok(rn && rm && rn[13] !== 0 && rn[13] === rm[13], "the held name and its mark are one run"); }
   // the block light: Face (c 1), Movement (c 2) and Stamina (c 3) read on both and every compared trait matching; Coat not
-  assert.deepEqual(P.rows.stamp.lights.map((q) => q.c), [1, 2, 3]); assert.deepEqual(H.stamp.lights.map((q) => q.c), [1, 2, 3]);
+  assert.deepEqual(P.rows.stamp.lights.map((q) => q.c), [2]); assert.deepEqual(H.stamp.lights.map((q) => q.c), [2]);
   for (const [lid, o, L] of [["panel.light", at, P.rows.stamp.lights], ["held.light", hat, H.stamp.lights]]) {
     for (const { c, rect: r } of L) { assert.deepEqual(ox(`${lid}.${c}.et`), [o[0] + r[0], o[1] + r[1], r[2], 1]); assert.deepEqual(ox(`${lid}.${c}.in.et`), [o[0] + r[0] + 1, o[1] + r[1] + 1, r[2] - 2, 1]);
       for (const [x, y] of [[o[0] + r[0], o[1] + r[1] + 3], [o[0] + r[0] + 1, o[1] + r[1] + 3]]) assert.ok(same(px(x, y), rgbOf.mint), `${lid}.${c}: 2 px mint at ${x}, ${y}`);
@@ -244,7 +244,7 @@ test("compare, the ring on the held mibi: no fact, block light or path; ✓ Look
   const hz = cmp("Hazel", "Sedge"), unread = (() => { const keep = [by.Hazel.read, by.Sedge.read]; by.Hazel.read = ["coat"]; by.Sedge.read = ["face"]; const x = cmp("Hazel", "Sedge").props.regions.panel.fact; [by.Hazel.read, by.Sedge.read] = keep; return x; })();
   assert.equal(unread, "Nothing read on both yet"); assert.ok(hz.props.regions.panel.fact.startsWith("Same "));
   // four or more the same: the first three and "and more"; the line's nameless steps past their rooms
-  assert.equal(cmp("Ivy", "Dot").props.regions.panel.fact, "Same Markings, Crown, Ears and more");
+  assert.equal(cmp("Ivy", "Dot").props.regions.panel.fact, "Same Markings, Ears, Eyes and more");
   by.Dot.name = "Wwwwwwwwww"; assert.equal(cmp("Moss", "Dot").line.subject, "Compared with a mibi"); assert.equal(cmp("Dot", "Dot").line.subject, "Holding Wwwwwwwwww"); by.Dot.name = "Wwwwwwwwwwwwwwww"; assert.equal(cmp("Dot", "Dot").line.subject, "Holding a mibi"); by.Dot.name = "Dot";
   const measure = (s) => { const F = metrics.fonts["16"]; return Array.from(s).reduce((w, ch, i, a) => w + (F.advance[ch.codePointAt(0)] ?? 0) + (i + 1 < a.length ? F.kern[ch.codePointAt(0) + "," + a[i + 1].codePointAt(0)] ?? 0 : 0), 0); };
   const W = frameSpec.regions.subject.rect[2], fit = [["Compared with ", spec.l3.strings.comparedRoom], ["Holding ", spec.l3.strings.holdingRoom]].map(([tpl, room]) => `"${tpl}" ${measure(tpl)} + ${room} = ${measure(tpl) + room}`);

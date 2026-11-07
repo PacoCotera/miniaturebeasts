@@ -50,7 +50,7 @@ export function createBuild(m, spec, pods) {
   rail.tabs.forEach((tab, i) => {
     const c = fr.chapters[i];
     tab.glint = false;
-    tab.mark = c.traits.some((t) => cr.clash.includes(t.id)) ? "clash" : c.traits.some((t) => cr.choices[t.id]) ? "changed" : "";
+    tab.mark = c.traits.some((t) => cr.clash.includes(t.id)) ? "clash" : !grown && c.traits.some((t) => cr.choices[t.id]) ? "changed" : "";   // release 22 (D6): no diamond while it grows (nothing is open then; the pip under Coat was left over)
   });
   regions.rail = rail;   // the changed and clash pips are the words' chrome rects (create.json: the kit's chrome), never pictures
 

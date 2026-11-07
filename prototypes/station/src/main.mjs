@@ -158,7 +158,10 @@ const sceneHost = () => ({ act, goto: (s) => CORE.host.goto(s), settings: G.sett
 // Test hooks (not part of play). `openBay` is the rule alone, for the tests that need pods in the wells at once; Cargo plays the opening through its own ✓.
 // Pods for the tools (face/tools/pods-states.mjs): a scene of seeded pods ([species, seed, identified, chapters read]) with the turn, the materials, a goal on a pod and husks to show; then the Pods UI as `o` says.
 const PLACES = ["pond", "meadow", "rock", "wood", "cave"], HOWS = ["calm", "shake", "ground", "slab", "meal"];
+let sceneSealed = null;   // the chapter a scene sealed (o.seal: [species, chapter id]): the frames of version 8 seal none, so the golden that shows a sealed chapter seals one for its own scene and unseals it at the next
 const podsScene = (pods, o = {}) => {
+  if (sceneSealed) { sceneSealed.sealed = false; sceneSealed = null; }
+  if (o.seal) { const ch = frameOf(o.seal[0]).chapters.find((c) => c.id === o.seal[1]); if (ch) { ch.sealed = true; sceneSealed = ch; } }
   const st = G.st; st.tray = []; st.waiting = []; st.readingPod = null; st.dried = []; st.wish = {}; st.turn = 0; st.readEver = true; st.firstMibi = false;
   if (o.fresh) { st.guide = {}; st.readOnce = {}; st.libSeen = {}; }   // the species guide as it stood before any read (a glint needs a look not yet seen: scenes carry the guide of the scenes before them)
   const u = UI.pods; Object.assign(u, { cmp: null, sort: "use", chips: [], word: null, first: 0, ask: null, choosing: false, recent: [], find: null, flash: null, spent: null, panelPod: null, lastCard: null, ci: 0, trait: 0, lane: null, at: "rail", plate: 0, reading: null, moment: null, folding: null, fromChamber: null });

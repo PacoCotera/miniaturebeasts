@@ -183,7 +183,8 @@ test("the dots: the read, shown body colour (two halves for a two-tone, the firs
   assert.deepEqual(px(rel[0] + 2, rel[1] + 6), wc.map((v, i) => Math.round(keep * v + (1 - keep) * g[i])), "a released mibi's dot faded as its face");
   const seen = new Set(); for (let i = 0; i < pic.rgba.length; i += 4) seen.add(Array.from(pic.rgba.slice(i, i + 3)).join());
   const allowed = new Set([..."libGround mist stone mint frostS".split(" ").map((n) => rgb(n).join()), ...input.nodes.flatMap((n) => (n.colour ?? []).flatMap((h) => [hex(h), hex(h).map((v, i) => Math.round(keep * v + (1 - keep) * g[i]))])).map((c) => c.join()), rgb("frostS").map((v, i) => Math.round(keep * v + (1 - keep) * g[i])).join()]);
-  assert.deepEqual([...seen].filter((c) => !allowed.has(c)), [], "every pixel is the ground, a token or a dot's colour (flat ground: the master is not given here)");
+  const rims = new Set(input.nodes.flatMap((n) => (n.colour ?? []).filter(() => n.colour.length === 1).flatMap((h) => { const c = hex(h).map((v, i) => Math.round(0.45 * v + 0.55 * [223, 210, 174][i])); return [c.join(), c.map((v, i) => Math.round(keep * v + (1 - keep) * g[i])).join()]; }))); /* a coat dot has a lightened rim (release 22b) */
+  assert.deepEqual([...seen].filter((c) => !allowed.has(c) && !rims.has(c)), [], "every pixel is the ground, a token or a dot's colour (flat ground: the master is not given here)");
 });
 
 test("the mini: the FAR drawing reduced by s = min(208/992, 96/510), centred (ox 11); 4 px dots within 1 px of FAR x s; scale and origin map the CLOSE grid onto it", () => {
@@ -231,7 +232,7 @@ test("compare (l3.compare.compute): the heritable traits only (never a locked lo
   assert.ok(!ids(frameOf("S15")).includes("Basking") && !ids(frameOf("S16")).includes("Phase"), "never Basking or Phase");
   for (const id of ["S01", "S09", "S16"]) { const fr = frameOf(id); for (const { trait } of heritableTraits(fr)) for (const l of trait.loci) { const q = fr.loci.find((x) => x.id === l); assert.ok(q.kind !== "locked" && q.changedBy !== "self", `${id} ${trait.id}`); } }
   const { st, by, lin } = world(), fr = frameOf("S01"), c = compareLooks(fr, by.Dot, by.Moss);
-  assert.deepEqual(c.read, ["colour", "markings", "crown", "ears", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.same.map((t) => t.id), ["crown", "ears", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.lit, ["face", "movement", "stamina"]);
+  assert.deepEqual(c.read, ["colour", "markings", "crown", "ears", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.same.map((t) => t.id), ["ears", "eye-rings", "drive"]); assert.deepEqual(c.lit, ["movement"]);
   for (const t of c.same) assert.equal(traitState(fr, t, by.Dot.genome).shows, traitState(fr, t, by.Moss.genome).shows);
   assert.equal(traitState(fr, fr.chapters[0].traits[1], by.Dot.genome).shows, "patches"); assert.ok(!c.same.some((t) => t.id === "markings"), "patches is not stripes and patches (Moss): whole looks"); assert.ok(c.same.some((t) => t.id === "ears"), "the same ears (frame version 6): a trait and a chapter lit when every compared look is the same");
   const h = compareLooks(fr, by.Hazel, by.Dot); assert.ok(!h.read.includes("colour") && !h.lit.includes("coat"), "Hazel's Coat is unread: not read on both, never lit");

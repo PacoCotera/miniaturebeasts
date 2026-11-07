@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, frameIds, chapterLooks } from "../src/genome.mjs";
 import { withSeals } from "./fixtures/sealed.mjs";
 import * as S from "../src/state.mjs";
+import "./fixtures/place-poses.mjs";
 import * as L from "../src/library.mjs";
 import * as T from "../src/sitting.mjs";
 

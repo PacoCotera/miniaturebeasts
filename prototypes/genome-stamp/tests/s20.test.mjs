@@ -18,11 +18,14 @@ const FRAME_FILE = JSON.parse(readFileSync(new URL("../../workbench/body/frames/
 
 // tests/s20-before.json: sha256 (first 16 hex) of stampCode + "|" + genomeString for individual(frame, 7) with every open chapter read, per frame (key species.version), taken before S20 joined
 
-test("S20 is the last frame of the registry but the Igara and the Peplos at version 5 (appended at the merge of the game line) and the nineteen language frames at version 8; every frame before it is the same bytes as before", () => {
-  const frames = FRAME_DATA.frames, s20 = frames.at(-22);
-  assert.deepEqual(frames.slice(-21).map((f) => `${f.species}.${f.version}`), ["10.5", "12.5", "1.8", "17.8", "18.8", "19.8", ...Array.from({ length: 15 }, (_, i) => `${i + 2}.8`)], "then the nineteen language frames at version 8 (chapters 5 and 7), appended after the Igara and the Peplos");
-  assert.equal(`${s20.species}.${s20.version}`, "20.1"); assert.equal(s20.id, "S20"); assert.equal(s20.name, "Tuliko");
-  assert.equal(frames.filter((f) => f.species === 20).length, 1);
+// History: S20 version 1 is the retired biped (the "lantern" Tuliko). It stays in the registry (append-only, so an old print still decodes) and the tests below read it by frameFor(20, 1).
+// The current Tuliko is the rambler, frame 20.8 (tests at the end of this file and in s20r.test.mjs).
+test("S20 version 1 (the retired biped) keeps its place after the Peplos at version 6; the registry ends with the language frames at version 8 and the rambler S20 20.8 last", () => {
+  const frames = FRAME_DATA.frames, keys = frames.map((f) => `${f.species}.${f.version}`), s20 = frames[keys.indexOf("20.1")];
+  assert.equal(keys.indexOf("20.1"), keys.indexOf("1.6") + 1, "appended right after the Peplos at version 6, where it joined");
+  assert.equal(s20.id, "S20"); assert.equal(s20.name, "Tuliko");
+  assert.deepEqual(keys.slice(-20), ["1.8", "17.8", "18.8", "19.8", ...Array.from({ length: 15 }, (_, i) => `${i + 2}.8`), "20.8"], "then the language frames at version 8, the rambler last");
+  assert.deepEqual(frames.filter((f) => f.species === 20).map((f) => f.version), [1, 8]);
   assert.equal(frames.length, FRAMES_LIST.filter((f) => !f.synthetic).length);
 });
 
@@ -39,7 +42,7 @@ test("every other frame stamps, codes and strings to the same bytes as before S2
 const BEFORE_DIGESTS = JSON.parse(readFileSync(new URL("./s20-before.json", import.meta.url), "utf8"));
 
 test("the registry's S20 is the workbench's frame: 54 open loci in five chapters, 40 continuous, no locked rows, its pools and values from the frame file", () => {
-  const f = byName("S20"); assert.equal(f, frameFor(20, 1));
+  const f = byName("S20", 1); assert.equal(f, frameFor(20, 1));
   assert.equal(f.heritable.length, 54); assert.equal(f.heritable.filter((l) => l.values).length, 40); assert.deepEqual(f.chapters.map((c) => c.name), ["Coat", "Face", "Shape", "Legs & tail", "Movement"]);
   assert.deepEqual(f.locked, []);
   assert.deepEqual(f.chapters.map((c) => c.loci.map((l) => l.id)), FRAME_FILE.chapters.map((c) => c.traits.flatMap((t) => t.loci)), "the ring order of the frame file");
@@ -47,7 +50,7 @@ test("the registry's S20 is the workbench's frame: 54 open loci in five chapters
 });
 
 test("the type: its genome string is the frame's own, 82 characters, and the string, the stamp code and the stamp all read back", () => {
-  const f = byName("S20"), type = { species: 20, version: 1, copies: FIX.type.copies };
+  const f = byName("S20", 1), type = { species: 20, version: 1, copies: FIX.type.copies };
   const s = genomeString(f, type);
   assert.equal(s, FIX.type.string); assert.equal(s, FRAME_FILE.counts.typeString); assert.equal(s.length, 82);
   const d = decodeGenomeString(s); assert.ok(d.ok, d.detail); assert.deepEqual(d.genome.copies, type.copies); assert.equal(genomeString(d.frame ?? f, d.genome), s);
@@ -59,7 +62,7 @@ test("the type: its genome string is the frame's own, 82 characters, and the str
 });
 
 test("the twelve Tuliko of the workbench decode and re-encode exactly, by string and by stamp code", () => {
-  const f = byName("S20"); assert.equal(FIX.twelve.length, 12);
+  const f = byName("S20", 1); assert.equal(FIX.twelve.length, 12);
   assert.equal(new Set(FIX.twelve.map((t) => t.string)).size, 12);
   for (const t of FIX.twelve) {
     const label = `seed ${t.seed}`;

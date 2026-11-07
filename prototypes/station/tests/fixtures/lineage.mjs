@@ -19,19 +19,23 @@ const ONE = [["Reed", null, "elder", false], ["Rush", null, "elder", false], ...
 const SMALL = [["Reed", null, "elder", false], ["Rush", null, "elder", false], ["Ivy", ["Reed", "Rush"], "adult", false], ["Dot", ["Reed", "Rush"], "adult", false]];   // two founders and two children: the whole tree fits CLOSE's view
 export const LINEAGES = { full: { mibis: FULL, bud: ["Moss", "Thistle"], coatUnread: ["Hazel", "Sedge"] }, one: { mibis: ONE, bud: null }, small: { mibis: SMALL, bud: null } };
 
+// release 22b (0b): the crosses run on stream 9177 (9001 gave a family of between-between greys): the children show yellower, between and redder coats, light and between.
+// release 22 (D5): the founders' pod seeds are chosen so the family shows the coats the Loika has (the Tint x Shade of v8: redder, yellower and between, dark to light), not one dark coat after another: Reed redder-between, Rush yellower-between, Nettle redder-light, Yarrow yellower-dark, Bean redder-dark, Clover between-light
+const FOUNDER_SEEDS = { Reed: 2, Rush: 14, Nettle: 18, Yarrow: 13, Bean: 6, Clover: 41 };
+const founderSeed = (name, id, v8) => (v8 && FOUNDER_SEEDS[name]) || ((id * 2654435761) >>> 0);
 const stream = (seed) => { let x = seed >>> 0; return () => { x = (Math.imul(x ^ (x >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return (x >>> 8) / 16777216; }; };
 const AGE = { juvenile: 0, adult: 3, elder: 25 };   // turns since birth: young below 2, elder from 18 (state.mjs stageAt with the default turns: 2 + ELDER_TURNS 16)
 export function buildLineage(st, which = "full", { turn = st.turn ?? 0, now = 0, species = "S01" } = {}) {
-  const fr = frameOf(species), L = LINEAGES[which], by = {}, rng = stream(9001), coat = fr.chapters.find((c) => c.traits.some((t) => t.id === "colour"))?.id, open = fr.chapters.filter((c) => !c.sealed).map((c) => c.id);
+  const fr = frameOf(species), v8 = fr.chapters.some((c) => c.traits.some((t) => t.id === "body-hue")), L = LINEAGES[which], by = {}, rng = stream(9177), coat = fr.chapters.find((c) => c.traits.some((t) => t.id === "colour"))?.id, open = fr.chapters.filter((c) => !c.sealed).map((c) => c.id);
   const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
   const child = (a, b) => { for (let i = 0; i < 16; i++) { const g = cross(fr, a, b, { rng, kinship: 0 }); if (!genomeProblems(fr, g).length) return g; } throw new Error("the fixture's cross would not build"); };
   let bay = 0;
   for (const [name, parents, stage, released] of L.mibis) {
     const id = st.nextMibi++, shed = typeof parents === "string" ? by[parents.slice(5)] : null;
-    const genome = parents == null ? podGenome(fr, (id * 2654435761) >>> 0) : shed ? shedPod(fr, shed, { rng }) : child(by[parents[0]], by[parents[1]]);
+    const genome = parents == null ? podGenome(fr, founderSeed(name, id, v8)) : shed ? shedPod(fr, shed, { rng }) : child(by[parents[0]], by[parents[1]]);
     if (!genome) throw new Error("the fixture's shed pod would not build");
     const sha = genomeSha(genome), crossed = Array.isArray(parents);
-    const m = { id, name, sp: speciesIndex(species), species, gs: parents == null ? (id * 2654435761) >>> 0 : null, born: turn - AGE[stage], from: crossed ? { n: 0, g: "meadow", how: "cross", podId: null, of: parents } : { n: 0, g: "meadow", how: "ground", podId: null },
+    const m = { id, name, sp: speciesIndex(species), species, gs: parents == null ? founderSeed(name, id, v8) : null, born: turn - AGE[stage], from: crossed ? { n: 0, g: "meadow", how: "cross", podId: null, of: parents } : { n: 0, g: "meadow", how: "ground", podId: null },
       mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: (L.coatUnread ?? []).includes(name) ? open.filter((c) => c !== coat) : [...open], parents: crossed ? parents.map((p) => snap(by[p])) : null, bay: released ? null : bay++, paint: null, released, shaped: [] };
     if (released) m.releasedAt = turn;
     st.mibis.push(m); by[name] = m; (st.namesUsed ??= []).push(name);

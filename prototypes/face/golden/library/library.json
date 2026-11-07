@@ -6,15 +6,15 @@
    "png": "library-l1-first.png"
   },
   "library-l1-mid": {
-   "hash": "a1401889",
+   "hash": "77073d2b",
    "png": "library-l1-mid.png"
   },
   "library-l1-new": {
-   "hash": "d371e626",
+   "hash": "fdc56d7f",
    "png": "library-l1-new.png"
   },
   "library-l1-roomkey": {
-   "hash": "8009f8e1",
+   "hash": "77fdee1f",
    "png": "library-l1-roomkey.png"
   },
   "library-l2-loika-mid": {
@@ -42,7 +42,7 @@
    "png": "library-l2-shut.png"
   },
   "library-l2-hiljan": {
-   "hash": "6fe229bf",
+   "hash": "c2728daa",
    "png": "library-l2-hiljan.png"
   },
   "library-l2-kilpo": {
@@ -66,67 +66,67 @@
    "png": "library-l2-loika-late.png"
   },
   "library-l3-far": {
-   "hash": "eec829c8",
+   "hash": "4652d6f4",
    "png": "library-l3-far.png"
   },
   "library-l3-far-one-family": {
-   "hash": "d246de9d",
+   "hash": "6f9a7209",
    "png": "library-l3-far-one-family.png"
   },
   "library-l3-close-moss": {
-   "hash": "ce638b52",
+   "hash": "d7a29486",
    "png": "library-l3-close-moss.png"
   },
   "library-l3-close-stubs": {
-   "hash": "6b01b240",
+   "hash": "09ee1dbc",
    "png": "library-l3-close-stubs.png"
   },
   "library-l3-close-bud": {
-   "hash": "2f245148",
+   "hash": "02d8fb28",
    "png": "library-l3-close-bud.png"
   },
   "library-l3-close-fits": {
-   "hash": "113e8adb",
+   "hash": "e1e2fb85",
    "png": "library-l3-close-fits.png"
   },
   "library-l3-close-founder": {
-   "hash": "568b4534",
+   "hash": "01450cc3",
    "png": "library-l3-close-founder.png"
   },
   "library-l3-close-shedpod": {
-   "hash": "6f953b0b",
+   "hash": "46ab694c",
    "png": "library-l3-close-shedpod.png"
   },
   "library-l3-compare-dot-moss": {
-   "hash": "2541e76c",
+   "hash": "f8d1b070",
    "png": "library-l3-compare-dot-moss.png"
   },
   "library-l3-compare-on-held": {
-   "hash": "032c29bf",
+   "hash": "c77cf300",
    "png": "library-l3-compare-on-held.png"
   },
   "library-l3-compare-none": {
-   "hash": "5fedd341",
+   "hash": "a40e843b",
    "png": "library-l3-compare-none.png"
   },
   "library-l1-dither": {
-   "hash": "9f87c169",
+   "hash": "8327f0bd",
    "png": "library-l1-dither.png"
   },
   "library-l3-pan-step-1": {
-   "hash": "9abf401c",
+   "hash": "44ef57e5",
    "png": "library-l3-pan-step-1.png"
   },
   "library-l3-pan-step-2": {
-   "hash": "a5376de8",
+   "hash": "86792690",
    "png": "library-l3-pan-step-2.png"
   },
   "library-l3-pan-step-3": {
-   "hash": "6b01b240",
+   "hash": "09ee1dbc",
    "png": "library-l3-pan-step-3.png"
   },
   "library-l3-zoom-in": {
-   "hash": "fc595d76",
+   "hash": "67a3df8d",
    "png": "library-l3-zoom-in.png"
   }
  }

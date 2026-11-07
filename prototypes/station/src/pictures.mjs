@@ -22,7 +22,7 @@ import { specimenFor } from "./specimen-cache.mjs";
 import { renderCell } from "./specimen.mjs";
 import { sheetPicture, renderDisc, sheetKept, keptPictures, warmPaper } from "./library-sheet.mjs";
 import { facePicture, windowOf } from "./face-pictures.mjs";
-import { placedAt, coatMaster, coatOf } from "./stands.mjs";
+import { placedAt, coatMaster, coatOf, PAINTED_COAT } from "./stands.mjs";
 import { farPicture, miniPicture } from "./lineage-pictures.mjs";
 import { registerReading } from "./reading-pictures.mjs";
 
@@ -208,7 +208,7 @@ export function registerPictures(reqs, env) {
         const fstage = r.stage === "elder" ? "adult" : r.stage, mid = `mibi-${fstage === "juvenile" ? "juvenile" : "adult"}-${r.species}-304x312`, aid = `mibi-adult-${r.species}-304x312`;
         const layered = !!spec.windows?.[r.species]?.[fstage] && !!layeredStand(r.species, r.stage, [304, 312], "default");
         const painted = !layered && !!spec.windows?.crop?.[r.species] && placedAt(mid, 304, 312) && placedAt(aid, 304, 312);   // release 21d: every face is cut from the kind's painted stand through the art desk's window
-        const bakedId = [w <= 40 ? 40 : 64].map((s) => `mibi-face-${r.species}-${fcoat || "between-dark"}-${s}x${s}`)[0], baked = placedAt(bakedId, bakedId.endsWith("40x40") ? 40 : 64, bakedId.endsWith("40x40") ? 40 : 64);   // the desk's baked face in the coat (release 21h2): 40 x 40 at 40 and below, 64 x 64 above (a size between is reduced from the 64)
+        const bakedId = [w <= 40 ? 40 : 64].map((s) => `mibi-face-${r.species}-${fcoat || PAINTED_COAT[r.species] || "between-dark"}-${s}x${s}`)[0], baked = placedAt(bakedId, bakedId.endsWith("40x40") ? 40 : 64, bakedId.endsWith("40x40") ? 40 : 64);   // the desk's baked face in the coat (release 21h2): 40 x 40 at 40 and below, 64 x 64 above (a size between is reduced from the 64)
         const stand = layered || painted || baked;
         registerAsset({ id: r.id, w, h, status: stand ? "derived" : "stand-in", until: stand ? null : "the kind's painted stand and the art desk's face window", build: () => { let data = null; return { w, h, rgba: () => { if (data) return data;
           const rq = { species: r.species, stage: r.stage, looks: r.looks, size: w, faded: !!r.faded };

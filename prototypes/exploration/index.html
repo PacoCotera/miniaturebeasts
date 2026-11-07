@@ -253,13 +253,14 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
+import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames } from "./src/walk-data.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -304,7 +305,7 @@ const LIGHT_OF = { void: 'ink', ink: 'night', night: 'slate', slate: 'stone', st
 const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H = SCR_H - HUD_H - LINE_H; // view 450×532
 const HUD_T = 3;   // the HUD's padding above (and below) its 26 px of contents
 const CELL = 26, MAP_X = 17, MAP_Y = VIEW_Y + 6;   // map 416×520 px, its 4 px frame on rows 34–561
-const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'shallows', 'cliff'];
+const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'ford', 'cliff'];   // [4] is a walkable water cell: a ford (a wade is "muddy water" where it is named, landWord and the place line)
 // Save format v8, shared with the Station page (prototypes/station). The Companion owns every top-level field
 // except `st`, which the Station owns; each page re-reads the stored save before writing and keeps the other's part.
 // The Companion is the player's identity: the save lives under this Companion's own key, mb-save-v8@<its id>
@@ -370,7 +371,7 @@ const SPECIES = [
     ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared Loika', learn: 'Loikas sometimes shed when they shake dry, more often for someone they trust.',
     col: { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' } },
   { name: 'Tuikis', plural: 'Tuikis', hab: ROSTER[1].hab, notice: [2, 4], flee: 2, eats: false, shedP: .1, how: 'calm',
-    ab: 'dig', abText: 'digs narrow burrows', born: 'a small burrower', learn: 'Tuikis sometimes shed when they feel safe by their burrow, more often for someone they trust.', learnCurl: 'Tuikis sometimes shed when they curl up out of the rain, more often for someone they trust.',
+    ab: 'dig', abText: 'digs out narrow burrows', abCard: 'digs out burrows', born: 'a small burrower', learn: 'Tuikis sometimes shed when they feel safe by their burrow, more often for someone they trust.', learnCurl: 'Tuikis sometimes shed when they curl up out of the rain, more often for someone they trust.',
     col: { body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' } },
   { name: 'Untuva', plural: 'Untuvas', hab: ROSTER[2].hab, notice: [1, 3], flee: 1, eats: true, shedP: .1, how: 'meal',
     ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas sometimes shed after a full meal, more often for someone they trust.',
@@ -378,8 +379,13 @@ const SPECIES = [
 ];
 // The other seventeen kinds (the language frames, by the game's species list): name and plural from the frame, ground from the family, plain defaults the game designer tunes later
 // (notice 2 to 4, flee 2, eats, shed chance 0.1 at a calm moment) and no field ability: their abilities wait for the game designer, so no line about one is shown (ab, abText null).
-for (const k of KIND_INFO.slice(3)) SPECIES.push({ name: k.name, plural: k.plural, hab: k.hab, notice: [2, 4], flee: 2, eats: true, shedP: .1, how: 'calm',
-  ab: null, abText: null, born: null, learn: null, col: { body: 'bone', light: 'bone', shade: 'bone', dark: 'bone' } });
+// L2b: the shared row and the tuned kinds' own are in src/walk-data.mjs (WALK_DEFAULT, WALK); the three built kinds take their new fields from BUILT.
+KIND_INFO.slice(3).forEach((k, i) => SPECIES.push({ name: k.name, plural: k.plural, hab: k.hab, ...walkRow(i + 3),
+  ab: null, abText: null, born: null, learn: null, col: { body: 'bone', light: 'bone', shade: 'bone', dark: 'bone' } }));
+for (const sp of [0, 1, 2]) Object.assign(SPECIES.at(sp), BUILT[sp]);
+// L2c: Rupar (sp 7) digs earth banks, Tuliko (sp 19) crosses mud and scree and walks farther (the Companion's own art for both is still to come, so their colours stay plain)
+Object.assign(SPECIES.at(7), { ab: 'bank', abText: 'digs a way up or down earth banks', abCard: 'digs up or down banks' });
+Object.assign(SPECIES.at(19), { ab: 'sure', abText: 'crosses mud and scree; reaches one ring further', abCard: 'mud and scree · one ring further', abCardShort: 'one ring further' });
 // Shedding is rare unless the creature is special: shedP is a plain creature's chance at its moment; a creature
 // fed or settled this expedition sheds at SHED_BOND; one of a species not yet known always does; at most SHED_MAX pods from creature
 // moments an expedition (a returned line's pod is apart). Tune.
@@ -389,21 +395,23 @@ const SHED_BOND = .5, SHED_MAX = 1;
 const WHY_WORD = { new: 'a new species', bond: 'you fed it' }, WHY_SETTLE = 'it settled with you';
 const whyOf = p => p.why ? { why: p.why } : {};   // a pod keeps its why wherever it is copied
 // A species the Companion has no entry for (a Station species beyond the three): no habitat, no diet, no ability, no art.
-const SP_OTHER = Object.freeze({ other: true, name: null, plural: null, hab: [], notice: [2, 4], flee: 2, eats: false, shedP: 0, how: null,
+const SP_OTHER = Object.freeze({ other: true, name: null, plural: null, hab: [], notice: [2, 4], flee: 2, eats: false, shedP: 0, how: null, drinks: false, settle: null, shed: null, wander: .4,
   ab: null, abText: null, born: null, learn: null, col: null });
 // The one lookup into SPECIES: any other value (the Station's sp -1) is SP_OTHER.
 const spOf = sp => (Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? SPECIES[sp] : SP_OTHER);
 // The species name of a mibi: the Companion's own, else the one the Station wrote on it, else the slot.
 const mibiSpName = m => spOf(m.sp).name ?? m.spName ?? CARE_TEXT.spOther;
 const abTextOf = sp => spOf(sp).abText ?? CARE_TEXT.abOther;
+// The card forms of an ability line, for the cards that clip the full one: abCard (both halves where they fit), abCardShort (the tight one, where a stage word is added); each falls back to the one before.
+const abCardOf = (sp, short) => { const s = spOf(sp); return (short ? s.abCardShort : null) ?? s.abCard ?? abTextOf(sp); };
 // The mibi names: the current list (es-pets-1), one home with the Station, ../play/src/names.mjs, loaded over HTTP as the footer is (the page names no mibi itself: the Station does, and the name rides in the save).
 let MIBI_NAMES = []; import('../play/src/names.mjs').then(m => { MIBI_NAMES = m.MIBI_NAMES; }).catch(() => { });
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
-const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
+const PIN_TEXT = { burrow: 'too narrow', water: 'needs a swimmer', soft: 'needs a rambler', bank: 'needs a digger', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
-const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'needs a digger', water: 'fast water', deep: 'deep ?' };
+const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'too narrow', water: 'fast water', soft: 'needs a rambler', bank: 'needs a digger', deep: 'deep ?' };
 const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'A beacon: light it for 1 Energy to reveal the land around', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: 'An ' + DEPOT_NAME + ': light it for 1 Energy to end an expedition, mend and shelter there',
-  pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow hole · a digging partner can open it', water: 'Fast water · needs a swimmer', deep: 'Deep ? · a tier 2 Probe can read it' };
+  pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow burrow · too narrow to follow, until a Tuikis digs it out', water: 'Fast water · needs a swimmer', soft: 'Muddy water or loose scree · a rambler can cross it', bank: 'Earth bank · a digger can dig a way up or down', deep:'Deep ? · a tier 2 Probe can read it' };
 
 // ===================== 2. Seeded RNG and noise =====================
 const NUM_WORD = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
@@ -415,8 +423,15 @@ const TEST = { calm: false };   // test hook only: start expeditions without a s
 let G = null;     // static world generated from the seed (never saved)
 let S = null;     // everything that changes (saved)
 
+// The world with its overlays: soft ground (wades, scree) and earth banks, pure functions of the world and its seed, attached here and never by genWorld (the goldens stay).
+function worldOf(seed, gen, biome) { const g = genWorld(seed, gen, biome); g.soft = softGround(g, seed); g.banks = bankEdges(g, seed); return g; }
+// What the partner can cross (the partner only: a rider has no ability). Tuliko: mud and scree, and a ring more reach; Rupar: earth banks, dug at the first crossing of a walk.
+function abIs(ab) { const pt = S && S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === ab; }
+function canSure() { return abIs('sure'); }
+function canBank() { return abIs('bank'); }
+const abOpts = () => ({ sure: canSure(), bank: canBank() ? 'all' : undefined });
 function passable(c) { return passableIn(G, c); }
-function canStep(a, dir) { return canStepIn(G, a, dir); }   // a step from cell a toward dir: the target has land and the edge between is open or a stair
+function canStep(a, dir) { return canStepIn(G, a, dir, abOpts()); }   // a step from cell a toward dir: the target has land and the edge between is open or a stair (or, for the partner that can, scree, an earth bank, a wade)
 function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
 
 
@@ -511,7 +526,6 @@ function composeMsg() {
   for (const x of plain) { if (out.includes(x.text)) continue; if (out && x.once && !plain[0].once) continue;   // a one-time line never joins a plain note: it waits, unspent, for its own action
     const t = out ? out + ' · ' + x.text : x.text;
     if (out && (typeof wrapText !== 'function' || wrapText(t, 400, 2).length > 2)) { if (!x.once) FX.held.push(x); continue; } out = t; }   // shown on the next action instead
-  if (!out && hint) out = hint.text;   // the place's Call hint takes the box only when nothing else is in it, so it never widens or grows another message's box
   FX.msg = out;
 }
 // A control hint says which key does what: it goes to the bottom line's middle for one action, and is spent once the line shows it.
@@ -547,12 +561,12 @@ const SIGN_LINE = {
   pod: 'Pods open at the Station', full: 'Hold full · swap, or head back', bank: 'A break would lose your finds', fog: 'Fog · creatures calm, sight short',
   muffled: 'The fog muffles your Call', fruit: 'Put it down near a creature', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
   tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog',
-  bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still',
+  bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
   untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
 // the first sighting of each map sign: its Probe name (the line on the card is the same one)
 const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
-  beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow hole · a digger opens it', water: 'Fast water · a swimmer', deep: 'Deep ? · tier 2 Probe reads it' };
-const SIGN_TILE_OF = { pod: 'pod', t: 'tracks', b: 'beat', k: 'bolt', kw: 'hollow', beacon: 'beacon', skull: 'skull', depot: 'outpost', burrow: 'gate', water: 'gate', deep: 'gate' };
+  beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'Mud or scree · needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · tier 2 Probe reads it' };
+const SIGN_TILE_OF = { pod: 'pod', t: 'tracks', b: 'beat', k: 'bolt', kw: 'hollow', beacon: 'beacon', skull: 'skull', depot: 'outpost', burrow: 'gate', water: 'gate', soft: 'gate', bank: 'gate', deep: 'gate' };
 const SIGN = {};
 { const add = (id, key, pri, tile, pic, line, o) => { SIGN[id] = Object.assign({ id, key, also: [], pri, tile, pic, line: typeof line === 'function' ? line : () => line }, o); };
   add('shield', 'shield', 3, 'shield', 'shield', SIGN_LINE.shield);
@@ -570,6 +584,7 @@ const SIGN = {};
   add('bubbleNotice', 'mark!', 2, 'bubN', 'bub!', SIGN_LINE.bubbleNotice, { also: ['wary'] });
   add('bubbleCurious', 'mark?', 2, 'bubQ', 'bub?', SIGN_LINE.bubbleCurious);
   add('bubbleFruit', 'markf', 2, 'bubF', 'bubf', SIGN_LINE.bubbleFruit, { also: ['coach'] });
+  add('bubbleSeek', 'markfs', 2, 'bubF', 'bubf', SIGN_LINE.bubbleSeek);
   add('bubbleSettle', 'mark…', 2, 'bubS', 'bub…', SIGN_LINE.bubbleSettle);
   add('warm', 'warmstone', 1, 'warm', 'warm', SIGN_LINE.warm);
   add('tuft', 'tuft', 1, 'tuft', 'tuft', SIGN_LINE.tuft);
@@ -577,7 +592,7 @@ const SIGN = {};
   add('dew', 'fogdew', 1, 'dew', 'drop', SIGN_LINE.dew);
   add('untuva', 'cmp.hint.untuvaMeal', 2, 'untuva', 'untuva', SIGN_LINE.untuva);
   add('calmkeep', 'calmkeep', 2, 'partner', 'partner', SIGN_LINE.calmkeep);
-  for (const k of ['pod', 't', 'b', 'k', 'kw', 'beacon', 'skull', 'depot', 'burrow', 'water', 'deep']) add('m:' + k, 'sign:' + k, k === 'depot' || k === 'beacon' ? 3 : 1, SIGN_TILE_OF[k], 'm:' + k, SIGN_NAME_LINE[k]); }
+  for (const k of ['pod', 't', 'b', 'k', 'kw', 'beacon', 'skull', 'depot', 'burrow', 'water', 'soft', 'bank', 'deep']) add('m:' + k, 'sign:' + k, k === 'depot' || k === 'beacon' ? 3 : 1, SIGN_TILE_OF[k], 'm:' + k, SIGN_NAME_LINE[k]); }
 const SIGN_RANK = Object.keys(SIGN);   // table order, hazards first
 const signRank = id => SIGN_RANK.indexOf(id);
 // The Probe's tiles: the line on focus (name · gist, then the name alone), the picture, and the flags that mean it was met.
@@ -672,7 +687,7 @@ const CARE_TEXT = {
   takeAlong: 'take mibis along', whenDocked: 'when docked',
   // a mibi of a species the Companion has no entry for (X1): the copywriter's signed strings (2026-10-11 14:42)
   spOther: 'a Station species', abOther: 'no field ability yet', tendMomentOther: 'settles',
-  walkedOther: (n, mem) => n + ' walks the ' + (mem || 'path'),
+  walkedOther: (n, mem) => mem === 'mud' ? n + ' crosses the mud' : n + ' walks the ' + (mem || 'path'),
   // the juvenile that rides in the Companion on an expedition (X26): the copywriter's signed strings (2026-10-11 15:04)
   riderTime: 'grows in time in the Companion', riderCare: 'grows with care in the Companion',
   riderSetOut: n => n + ' rides along until it’s grown', riderMenu: n => n + ' rides along',
@@ -680,7 +695,7 @@ const CARE_TEXT = {
 };
 // Assets the care screens name that have no master yet: registered here, and drawn only as a labelled placeholder (a flat
 // plate at the asset's exact size, outlined, with its name where it fits), never as code-drawn art. A master replaces it by id.
-// The stand-ins (status 'stand-in') are built code-drawn pieces that play until their masters land: the care moments, and
+// The signed entries (status 'signed') are the art desk's pieces, in the game. The stand-ins (status 'stand-in') are built code-drawn pieces that play until their masters land: the care moments, and
 // generator 2's place pieces, each under its TERR name.
 const CARE_ASSETS = [
   { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'placeholder' },
@@ -707,6 +722,10 @@ const CARE_ASSETS = [
   { id: 'c-pawn-32', what: 'the pawn in a 48 px place: today’s code-drawn 32 px sprite, 1:1, bottom-aligned and centred in its cell', until: 'the 48 px pawn', w: 32, h: 32, status: 'stand-in' },
   { id: 'c-trunk-32', what: 'a tree trunk in a 48 px place: the built code-drawn 32 px trunk, with its canopy over it', until: 'the meadow tree prop', w: 32, h: 32, status: 'stand-in' },
   { id: 'c-step-32', what: 'a stepping stone in a 48 px place: the built code-drawn 32 px stone on the water’s quarters', until: 'the ford pieces', w: 32, h: 32, status: 'stand-in' },
+  { id: 'c-wade-32', what: 'a wade in a place (T.WADE): the river clouded brown with mud, its ripples moving with the 2 frames; the desk’s piece, drawn over the whole 48 px tile (32 px at the fallback size)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
+  { id: 'c-scree-32', what: 'loose scree on a steep edge in a place (T.SCREE): stones heaped over the edge, wider downhill; the desk’s piece, apart from the Fells’ walkable scree ground', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
+  { id: 'c-bank-32', what: 'an earth bank in a place (T.BANK): its face, side and lip in earth, no rock hatching; dug footholds once Rupar has dug it; the desk’s piece', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
+  { id: 'c-map-soft-26', what: 'the map’s and the reach view’s wade (muddy water), scree edge (heaped stones), bank (earth face or lip), dug bank (footholds), their signs and pins, and Tuliko’s extra range ring (a gold lattice)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 26, h: 26, status: 'signed' },
   { id: 'c-canopy-88x76', what: 'a tree canopy over its trunk, in a place at 32 or 48 px', until: 'the meadow tree prop', w: 88, h: 76, status: 'stand-in' },
   { id: 'c-roof-104x22', what: 'the roof on an outcrop, 104 px wide on the 144 px outcrop of a 48 px place', until: 'the meadow outcrop piece', w: 104, h: 22, status: 'stand-in' },
 ];
@@ -823,6 +842,7 @@ function normalizeCare(S, released) {
   if (S.lead === undefined) S.lead = null; if (typeof S.carrySeen !== 'number') S.carrySeen = 0; if (!Array.isArray(S.carryRefused)) S.carryRefused = [];
   for (const m of S.mibis) {
     for (const k of ['care', 'tends', 'outings', 'notches']) if (typeof m[k] !== 'number') m[k] = 0;
+    if (!Array.isArray(m.habitsDone)) m.habitsDone = [];   // the field habits it did on walks: a set, never cleared (the Station records each once at the dock)
     for (const k of ['tendDay', 'grownTurn']) if (m[k] === undefined) m[k] = null;
     if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && S.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; }
   }
@@ -864,7 +884,7 @@ function realmOf(flat) { const r = migrate8({ ...flat, v: 8 }, { now: Date.now()
 function newRealm(seed, gen = NEW_GEN, wid) {   // a new realm takes the newest generator (a test may ask for an older one); a realm that follows a sleep is given its wid
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
-  G = genWorld(seed, gen);
+  G = worldOf(seed, gen);
   const carry = RESET_CARRY; RESET_CARRY = null;   // a realm that follows the release's reset: it says where it came from, and takes the world id the Station wrote if the Station reset first
   S = worldFields(seed, gen, wid ?? (carry && carry.wid) ?? undefined);
   if (carry && carry.resetFrom != null) S.resetFrom = carry.resetFrom;
@@ -878,7 +898,7 @@ const newWorld = newRealm;   // the name the tests and the page's buttons call
 function mountRegion(id) {
   unmount(S); const R = mount(S, id);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; RT.mp = null; RT.key = null; mapCv = null;
-  G = genWorld(R.seed, R.gen, R.biome); indexCreatures();   // the region's own kind (generators before 4 have none)
+  G = worldOf(R.seed, R.gen, R.biome); indexCreatures();   // the region's own kind (generators before 4 have none)
   catchUp(R);
 }
 // A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
@@ -979,7 +999,7 @@ function load() {
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = genWorld(S.seed, gen, S.regions.find(r => r.id === S.here).biome);   // the mounted region's kind
+    layoutCache.clear(); G = worldOf(S.seed, gen, S.regions.find(r => r.id === S.here).biome);   // the mounted region's kind
     if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
@@ -1030,7 +1050,7 @@ function syncStation() {
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
     const rg = S.regions.some(q => q.id === r.rg) ? r.rg : 'g1';   // a returned pod goes back to its own region (none named: region 1)
     const id = 'r' + (S.nextId++);   // the realm counts the ids, whichever region the pod lands in
-    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }); }
+    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); reveil(+key); logEv('A returned pod is back ' + (G.soft && G.soft.wade[+key] ? 'in the muddy water' : (G.land[+key] === L.WATER ? 'at' : 'in') + ' the ' + LAND_NAME[G.land[+key]])); }); }
 }
 
 // Feature state helpers: the layout says what is there; S.cells says what the player changed.
@@ -1083,7 +1103,7 @@ function cellSigns(c) {
   let pd = 0;   // a beat means a pod not found yet; one already located shows as a pod
   for (const p of S.pods) if (p.k === key) { if (p.h || p.x < 0) b = 1; else pd = 1; }
   if (passable(c)) { const lay = layout(key); for (const f of lay.feats) if (f.kind === 'k' && stormCharge(key, f) > 0) k = 1; }   // warm stones give no sign
-  const gt = c === G.gate && !S.opened[G.gate] && S.pods.some(p => p.k === 'c' + c) ? 1 : 0;   // the cave below holds a pod
+  const gt = c === G.gate && !burrowOpen() && S.pods.some(p => p.k === 'c' + c) ? 1 : 0;   // the cave below holds a pod
   return { tr, b, k, pd, d: c === G.deep && !S.deepRead ? 1 : 0, g: gt };
 }
 function recordSigns(c, turn = S.turn) {
@@ -1226,11 +1246,11 @@ function hiddenIn(c) {
 function isCleared(c) { return surveyed(c); }   // kept for the test hooks: "cleared" now means surveyed
 function inRange(c) { const ex = S.exp; return !!ex && cheb(cxy(c), cxy(ex.start)) <= ex.range; }
 // The cells an expedition can reach on foot without leaving the range square.
-function reachCells(start, range) {
+function reachCells(start, range, opts = abOpts()) {   // opts: what the partner can cross (the partner's own by default)
   const s0 = cxy(start), seen = new Set([start]), q = [start];
   while (q.length) { const c = q.shift(), p = cxy(c);
     for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-      const d = y * MW + x; if (seen.has(d) || !canStep(c, dir) || G.island[d] || Math.max(Math.abs(x - s0.x), Math.abs(y - s0.y)) > range) continue; seen.add(d); q.push(d); } }
+      const d = y * MW + x; if (seen.has(d) || !canStepIn(G, c, dir, opts) || G.island[d] || Math.max(Math.abs(x - s0.x), Math.abs(y - s0.y)) > range) continue; seen.add(d); q.push(d); } }
   return [...seen];
 }
 // The one place the map's numbers are counted.
@@ -1242,16 +1262,26 @@ function cellCounts(cells) {
 }
 // A gated cell: what is left there lies behind a gate you can't open yet (the cave under the cliff, without a digger).
 // It is left out of "Explored N of M" and said apart ("· 1 gated").
-function gatedCell(c) { return c === G.gate && !!S.revealed[c] && !S.opened[G.gate] && !canDig() && S.pods.some(p => p.k === 'c' + c); }
-function reachCounts() { if (!S.exp) return Object.assign(cellCounts([]), { gated: 0 }); const cells = S.exp.reach.filter(c => !gatedCell(c)); return Object.assign(cellCounts(cells), { gated: S.exp.reach.length - cells.length }); }
+function gatedCell(c) { return c === G.gate && !!S.revealed[c] && !burrowOpen() && !canDig() && S.pods.some(p => p.k === 'c' + c); }
+// Ground behind mud or scree (a rambler crosses it) or an earth bank (a digger), inside the range square and revealed: counted apart when the partner cannot cross it, as the cave is.
+function reachBehind() {
+  const ex = S.exp, none = { soft: 0, bank: 0 }; if (!ex) return none;
+  const k = S.seed + ':' + ex.n + ':' + ex.range;
+  if (!RT.behind || RT.behindKey !== k) { const have = new Set(ex.reach), s = reachCells(ex.start, ex.range, { sure: true }).filter(c => !have.has(c)), b = reachCells(ex.start, ex.range, { bank: 'all' }).filter(c => !have.has(c) && !s.includes(c)); RT.behind = { soft: s, bank: b }; RT.behindKey = k; }
+  const n = a => a.filter(c => S.revealed[c]).length;
+  return { soft: canSure() ? 0 : n(RT.behind.soft), bank: canBank() ? 0 : n(RT.behind.bank) };
+}
+function reachCounts() { if (!S.exp) return Object.assign(cellCounts([]), { gated: 0, soft: 0, bank: 0 }); const cells = S.exp.reach.filter(c => !gatedCell(c)); return Object.assign(cellCounts(cells), { gated: S.exp.reach.length - cells.length }, reachBehind()); }
 const gatedTail = rc => rc.gated ? ' · ' + rc.gated + ' gated' : '';
-function surveyedLine() { const rc = reachCounts(); return 'Explored ' + rc.surveyed + ' of ' + rc.total + (rc.gated ? gatedTail(rc) : ' in reach'); }
+const behindTail = rc => (rc.soft ? ' · ' + rc.soft + (rc.soft === 1 ? ' needs a rambler' : ' need a rambler') : '') + (rc.bank ? ' · ' + rc.bank + (rc.bank === 1 ? ' needs a digger' : ' need a digger') : '');
+function surveyedLine() { const rc = reachCounts(), tail = gatedTail(rc) + behindTail(rc); return 'Explored ' + rc.surveyed + ' of ' + rc.total + (tail || ' in reach'); }
 // The expedition's closing lines: said once each, at their moments. "Explored" arrives as the last reach dot fills.
 function checkExplored() {
   const ex = S.exp; if (!ex || ex.saidDone) return;
   const rc = reachCounts(); if (rc.surveyed < rc.total) return;
   ex.saidDone = ex.actions || 1; logEv('Everything in reach explored (' + rc.total + ' cells)');
-  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + (rc.gated === 1 ? 'a cave needs a digger' : 'caves need a digger') : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
+  const rest = rc.soft && rc.bank ? 'the rest needs a rambler and a digger' : rc.soft ? 'the rest needs a rambler' : rc.bank ? 'the rest needs a digger' : '';   // "and" is true: no one partner reaches all of the rest; the count line gives each number
+  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + (rc.gated === 1 ? 'the cave waits for a Tuikis' : 'the caves wait for a Tuikis') : '') + (rest ? ' · ' + rest : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
 }
 // The place's survey state for the line: "surveyed 2/4 · 3 to take", "surveyed · nothing to take", "not surveyed".
 // A place only counts as finished when a Call was made there (walking never hears what is buried) and no pod lies buried.
@@ -1342,7 +1372,7 @@ function startExpedition(type, cell) {
   const pm = partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // no partner: the first mibi with you rides in the Companion (always a juvenile)
   const storm = stormOn && !TEST.calm ? stormFor(cell) : null;
   if (storm && S.expN === 1) storm.x -= 2 * storm.dir;   // the first storm comes a little later, so a new player can drain a stone first
-  S.exp = { type, ...rgField(), n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range, hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
+  S.exp = { type, ...rgField(), n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range + (pm && spOf(pm.sp).ab === 'sure' ? 1 : 0), dug: [], hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
     cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold) } : { e: 0, d: 0, s: 0, pods: [] }, carry: null, storm,
     fog: fogOn ? { x: 2.5 + R.int(11), y: 3.5 + R.int(13), r: 2.4, dx: (R.f() - .5) * .16, dy: (R.f() - .5) * .16, at: type === 'deep' ? 0 : 14 + R.int(16) } : null,
     stormCells: {}, mstrike: null, stray: null, live: {}, patch: null,
@@ -1355,7 +1385,7 @@ function startExpedition(type, cell) {
   ex.reach = reachCells(cell, ex.range);
   chooseWarm(ex); ensureCharge(ex);
   const p = cxy(cell);
-  logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : rd ? ' · ' + CARE_TEXT.riderMenu(rd.name) : '') + ' · tier ' + S.tier);
+  logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : rd ? ' · ' + CARE_TEXT.riderMenu(rd.name) : '') + ' · tier ' + S.tier + (ex.range > tier.range ? ' · one ring further' : ''));
   meet('flag');   // the map's cell line says "End expedition here" with its flag: no card, the flag joins the Probe
   if (rd) fxOnce('rider', CARE_TEXT.riderSetOut(rd.name), 2, true);   // once per expedition; when mapintro fills the box it shows on the first move (noteHud)
   S.phase = 'map'; transition(); save();
@@ -1433,8 +1463,12 @@ function mapStep(dir) {
   ex.face = dir;
   if (x < 0 || y < 0 || x >= MW || y >= MH) { FX.bumpAt = NOW; return; }
   const c = y * MW + x;
-  if (!inRange(c)) { FX.bumpAt = NOW; fxMsg(S.tier < 2 ? 'Edge of the Probe’s range · tier 2 reaches further' : 'Edge of the Probe’s range'); return; }
-  if (!canStep(ex.pos, dir)) { revealCell(c); FX.bumpAt = NOW; fxMsg(crossReason(ex.pos, dir)); save(); return; }   // land you can't stand on, or a steep edge between
+  if (!inRange(c)) { FX.bumpAt = NOW; fxMsg(RANGE_TEXT()); return; }
+  if (!canStep(ex.pos, dir)) { revealCell(c); FX.bumpAt = NOW; fxMsg(crossReason(ex.pos, dir) + softPin(ex.pos, dir)); save(); return; }   // land you can't stand on, or a steep edge between
+  const ei = edgeIndex(ex.pos, dir);
+  if (canBank() && G.banks && G.banks[ei] && !canStepIn(G, ex.pos, dir, { bank: new Set(ex.dug || []) })) { if (!digBank(ei, ex.pos, c)) return; }   // an earth bank: the first crossing of a walk is the dig
+  noteSure(ex.pos, dir, c);
+  if (G.level && G.level[c] < G.level[ex.pos] && (edgeKind(ex.pos, dir) === EDGE.RAMP || softKind(ex.pos, dir) === 'scree')) fieldHabit('hop-down');   // a step down across a stair or a scree edge
   ex.pos = c; ex.lastDir = dir; S.visited[c] = 1; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
   advance('map');
 }
@@ -1450,7 +1484,7 @@ function callMap() {
 
 // ===================== 7. Patch rules =====================
 // Tiles nothing but the pawn and the partner stands on: stepping stones, stairs and their aprons (pods, creatures, slabs and tufts never).
-const NOSTAND = t => t === T.STEP || t === T.STAIR || t === T.APRON;
+const NOSTAND = t => t === T.STEP || t === T.STAIR || t === T.APRON || t === T.WADE || t === T.SCREE || t === T.BANK;
 function curLay() { return layout(S.exp.patch.key); }
 function curLive() { return S.exp.live[S.exp.patch.key]; }
 function featAt(lay, key, x, y) {
@@ -1517,6 +1551,8 @@ function entryPoint(lay, key, dir) {
         const d = (x - e.x) ** 2 + (y - e.y) ** 2; if (d < bd) { bd = d; best = { x, y }; } }   // ties keep the lower tile index
       if (best) return best; }
   }
+  { const cf = lay.cross && dir ? stepCell(lay.cell, OPPOSITE[dir]) : -1;   // came over scree or a bank: the tile just inside its crossing
+    if (cf >= 0 && edgeKind(cf, dir) === EDGE.CLIFF) { const q = lay.cross.find(r => r.dir === OPPOSITE[dir]); if (q && !occupant(key, q.entry.x, q.entry.y, 'player')) return { x: q.entry.x, y: q.entry.y }; } }
   const tx = dir === 'right' ? 0 : dir === 'left' ? PW - 1 : PW / 2, ty = dir === 'down' ? 0 : dir === 'up' ? PH - 1 : dir ? PH / 2 : PH - 3;
   let best = null, bd = 1e9; const sq = !!G.gen;   // generator 2 places: squared distance, ties by tile index
   for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
@@ -1551,7 +1587,7 @@ function clearSkull(key) { if (!S.skulls) return; for (const c in S.skulls) { co
 function enterCave() {
   const ex = S.exp, key = 'c' + G.gate; ensureLive(key); clearSkull(key); noteTier(ex, layout(key)); tripPlace(ex, 'cave');
   ex.patch = { key, x: 14, y: 27, dir: 'up', noise: 'creep' };
-  placePartnerNear(key, ex.patch); transition(); logEv('Went down the burrow'); save();
+  placePartnerNear(key, ex.patch); transition(); logEv(canDig() ? 'Followed ' + ex.pt.name + ' down the burrow' : 'Went down the burrow'); save();
 }
 function leavePatch() {
   const ex = S.exp, P = ex.patch, lay = layout(P.key); S.ui.swap = null;
@@ -1569,18 +1605,23 @@ function sightR(lay) { if (lay.cave || !inFog(lay.cell)) return 99; const pt = S
 function inSight(x, y) { const P = S.exp.patch, r = sightR(layout(P.key)); return r >= 99 || Math.hypot(x - P.x, y - P.y) <= r + .5; }
 function seenFromPlayer(key, x, y) { return unveiled(key, x, y) && inSight(x, y); }
 function canDig() { const pt = S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === 'dig'; }
+// The burrow is open for an old save's dug burrow (S.opened, for any partner) and for this walk once a Tuikis has dug it out (ex.burrowDug); a Tuikis is needed on every visit.
+function burrowOpen() { return !!(S && S.opened && S.opened[G.gate]) || !!(S && S.exp && S.exp.burrowDug); }
 
 function patchStep(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
   P.dir = dir; P.noise = mode;
   const x = P.x + dx, y = P.y + dy;
   if (x < 0 || y < 0 || x >= PW || y >= PH) { if (mode === 'walk') { stopRepeat(); fxHint('edgehold', 'Edge · tap again to step off', 1); return; } if (!layout(key).cave) crossEdge(dir); return; }
-  const o = occupant(key, x, y, 'player');
+  let o = occupant(key, x, y, 'player');
+  if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); o = live.pt && live.pt.x === x && live.pt.y === y ? { type: 'pt' } : null; }   // mud, scree or a dug bank, for the partner that crosses it (it may be standing there: you trade places)
   if (o && o.type === 'pt') { live.pt.x = P.x; live.pt.y = P.y; }
   else if (o) {
     FX.bumpAt = NOW;
-    if (o.type === 'feat' && o.f.kind === 'g' && !S.opened[G.gate] && !canDig()) gateBump();
+    if (o.type === 'feat' && o.f.kind === 'g' && !burrowOpen() && !canDig()) gateBump();
     else if (o.type === 'tile' && o.t === T.DEEP) swimBump();
+    else if (o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE)) softBump(o.t);
+    else if (o.type === 'tile' && o.t === T.BANK && !canBank()) softBump(o.t);
     else if (o.type !== 'tile' && o.type !== 'cr' && !unveiled(key, x, y)) fxMsg('Something is there under the veil · ))) Call to see');
     return;
   }
@@ -1589,7 +1630,7 @@ function patchStep(dir, mode) {
 }
 // The refusal at a steep edge (a cliff between two levels), on the map, in the reach view and at a place's border.
 const EDGE_REFUSAL_CLIFF = 'Steep edge · look for stairs';
-const RANGE_TEXT = () => S.tier < 2 ? 'Edge of the Probe’s range · tier 2 reaches further' : 'Edge of the Probe’s range';
+const RANGE_TEXT = () => { const who = canSure() ? S.exp.pt.name + '’s' : 'the Probe’s'; return S.tier < 2 ? 'Edge of ' + who + ' range · tier 2 reaches further' : 'Edge of ' + who + ' range'; };   // with a rambler the extra ring is its own
 // The map cell one step from cell a toward dir, or -1 off the map.
 function stepCell(a, dir) { const p = cxy(a), [dx, dy] = DIRS[dir], X = p.x + dx, Y = p.y + dy; return X < 0 || Y < 0 || X >= MW || Y >= MH ? -1 : Y * MW + X; }
 // Why the Probe can't step from cell a toward dir, or null if it can.
@@ -1597,9 +1638,53 @@ function crossReason(a, dir) {
   const c = stepCell(a, dir);
   if (c < 0) return 'Edge of the map';
   if (!inRange(c)) return RANGE_TEXT();
-  if (edgeKind(a, dir) === EDGE.CLIFF) return EDGE_REFUSAL_CLIFF;
-  if (!passable(c) || G.island[c]) return G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross';
+  const sk = softKind(a, dir);
+  if (edgeKind(a, dir) === EDGE.CLIFF) return sk === 'scree' ? (canSure() ? null : SCREE_BUMP) : sk === 'bank' ? (canBank() ? null : BANK_BUMP) : EDGE_REFUSAL_CLIFF;
+  if (!passable(c) || G.island[c]) return G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : sk === 'wade' ? (canSure() ? null : WADE_BUMP) : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross';
   return null;
+}
+// Soft ground and earth banks (the overlays on G): the kind refusing a step, whatever the partner.
+const WADE_BUMP = 'Muddy water · needs a rambler', SCREE_BUMP = 'Loose scree · needs a rambler', BANK_BUMP = 'Earth bank · needs a digger';
+function softKind(a, dir) {
+  const c = stepCell(a, dir); if (c < 0) return null;
+  if (edgeKind(a, dir) === EDGE.CLIFF) { const ei = edgeIndex(a, dir); return G.soft && G.soft.scree[ei] ? 'scree' : G.banks && G.banks[ei] ? 'bank' : null; }
+  return G.soft && G.soft.wade[c] && !G.island[c] ? 'wade' : null;
+}
+// The pin a refused step leaves, once (the pin names the kind that can cross): ' · pinned' the first time. A wade pins its own cell; a scree or bank edge pins the cell you stand in.
+function softPin(a, dir) {
+  const c = stepCell(a, dir), sk = softKind(a, dir); if (c < 0 || !sk || !inRange(c)) return '';
+  if (sk === 'bank' ? canBank() : canSure()) return '';
+  return addPin(sk === 'wade' ? c : a, sk === 'bank' ? 'bank' : 'soft') ? ' · pinned' : '';
+}
+// Tuliko's first crossing of mud or scree in a walk is logged once, in the mibi's own name.
+function noteSure(a, dir, c) {
+  const ex = S.exp, sk = softKind(a, dir);
+  if (!canSure() || ex.softSaid || (sk !== 'wade' && sk !== 'scree')) return;
+  ex.softSaid = 1; logEv(ex.pt.name + ' crosses the ' + (sk === 'wade' ? 'mud' : 'scree') + ', sure-footed');
+}
+// Rupar digs an earth bank at the first crossing of it in a walk: one extra action (an elder two), then it crosses at a normal step for the rest of the walk (ex.dug, edge indices).
+// Returns false while an elder is still digging (the press spent its action and the step waits for the next).
+function digBank(ei, a, c) {
+  const ex = S.exp, name = ex.pt.name;
+  if (ex.pt.elder && ex.bankProg !== ei + 1) { ex.bankProg = ei + 1; fxMsg(name + ' is digging · slow but sure', 1); advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined); return false; }
+  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); if (G.level[c] > G.level[a]) fieldHabit('bank-dig');   // the habit is the dig up a bank (the book's pose); a dig down is the ability only
+  const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; }
+  logEv(name + ' dug a way ' + (G.level[c] > G.level[a] ? 'up' : 'down') + ' the bank');
+  advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined);
+  return true;
+}
+const bankIsDug = ei => (S.exp.dug || []).includes(ei);
+// The crossing a place tile belongs to (a scree or bank edge's two-by-two), or null.
+function crossingAt(lay, x, y) {
+  for (const q of lay.cross || []) { const d = q.dir === 'left' ? x : q.dir === 'right' ? PW - 1 - x : q.dir === 'up' ? y : PH - 1 - y, k = q.dir === 'up' || q.dir === 'down' ? x : y;
+    if (d < 2 && k >= q.s && k <= q.s + 1) return q; }
+  return null;
+}
+// Whether the partner lets the pawn onto a soft tile of the place: mud and scree for a rambler, a dug bank for a digger.
+function softTileOpen(lay, t, x, y) {
+  if (t === T.WADE || t === T.SCREE) return canSure();
+  if (t === T.BANK) { const q = crossingAt(lay, x, y); return canBank() && !!q && bankIsDug(q.ei); }
+  return false;
 }
 // Walking off a place's edge steps onto the next map cell that way (one map action), map in view and facing
 // that way; one Confirm goes down into it from the matching side. Otherwise you stay put with the reason.
@@ -1607,7 +1692,9 @@ function crossReason(a, dir) {
 function crossEdge(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
   const why = crossReason(ex.pos, dir);
-  if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why); save(); return; }
+  if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
+  if (edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
+    if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(EDGE_REFUSAL_CLIFF); return; } }
   if (edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
     if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(EDGE_REFUSAL_CLIFF); return; } }
   ex.patch = null; S.phase = 'map'; recordSigns(ex.pos); transition();
@@ -1615,9 +1702,23 @@ function crossEdge(dir) {
   mapStep(dir);
   fxHint('edgewalk', 'Next cell · ✓ goes down', 2);
 }
+// A soft tile in a place, refused without the partner that crosses it (the shape of swimBump): the pin goes on the place's cell.
+function softBump(t) {
+  const sk = t === T.BANK ? 'bank' : 'soft', fresh = addPin(curLay().cell, sk);
+  fxMsg((t === T.WADE ? WADE_BUMP : t === T.SCREE ? SCREE_BUMP : BANK_BUMP) + (fresh ? ' · pinned' : ''));
+  FX.bumpAt = NOW; save();
+}
+function noteSureTile(t) { const ex = S.exp; if (!canSure() || ex.softSaid || (t !== T.WADE && t !== T.SCREE)) return; ex.softSaid = 1; logEv(ex.pt.name + ' crosses the ' + (t === T.WADE ? 'mud' : 'scree') + ', sure-footed'); }
+// Rupar facing a bank tile in a place: the dig, then the same two tiles cross.
+function digBankHere() {
+  const ex = S.exp, P = ex.patch, lay = layout(P.key), f = frontOf(P), q = crossingAt(lay, f.x, f.y); if (!q) return;
+  const c = stepCell(lay.cell, q.dir);
+  const lv = curLive(); if (lv.pt) lv.pt.st = 'dig';
+  digBank(q.ei, lay.cell, c);
+}
 function gateBump() {
   const fresh = addPin(G.gate, 'burrow'), pt = S.exp.pt;
-  fxMsg((pt ? 'Too narrow · ' + pt.name + ' can’t dig' : 'Too narrow for the Probe') + (fresh ? ' · pinned' : ''));
+  fxMsg((pt ? 'Too narrow for ' + pt.name : 'Too narrow for the Probe') + (fresh ? ' · pinned' : ''));
   FX.bumpAt = NOW; save();
 }
 function swimBump() {
@@ -1649,7 +1750,7 @@ function patchAction() {
     // never offered to a non-eater: the label says so and pressing spends nothing
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
       const eaters = SPECIES.map((_, i) => i).filter(sp => spOf(sp).eats && S.known.includes(sp)).map(sp => spOf(sp).plural);
-      fxMsg(fruit ? cap(spOf(o.c.sp).plural) + ' don’t eat fruit' + (eaters.length ? ' · ' + eaters.join(' and ') + ' do' : '') : 'The ' + spName(o.c.sp) + ' watches you · keep still and it settles, or Call', 2); } };
+      fxMsg(fruit ? cap(spOf(o.c.sp).plural) + ' don’t eat fruit' + (eaters.length ? ' · ' + eaters.join(' and ') + ' do' : '') : 'The ' + spName(o.c.sp) + ' watches you · ' + watchTail(o.c), 2); } };
     return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) }
       : { label: 'Bring fruit, or Call', run: () => { fxMsg('The ' + spName(o.c.sp) + ' watches you · bring fruit, or Call', 2); FX.bumpAt = NOW; } }; }
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
@@ -1657,6 +1758,10 @@ function patchAction() {
   if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? 'Swap the pod' : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
   if (o && o.type === 'pt') return NOTHING;
   if (o && o.type === 'tile' && o.t === T.DEEP) return { label: 'Needs a swimmer', run: swimBump };
+  if (o && o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE) && !canSure()) return { label: 'Needs a rambler', run: () => softBump(o.t) };   // says why ✓ does nothing, as deep water does
+  if (o && o.type === 'tile' && o.t === T.BANK && !canBank()) return { label: 'Needs a digger', run: () => softBump(o.t) };
+  if (o && o.type === 'tile' && o.t === T.BANK && canBank() && !softTileOpen(lay, o.t, f.x, f.y)) { const q = crossingAt(lay, f.x, f.y);
+    if (q) return { label: ex.pt.elder && ex.bankProg === q.ei + 1 ? 'Keep digging' : ex.pt.name + ' digs a way ' + (G.level[stepCell(lay.cell, q.dir)] > G.level[lay.cell] ? 'up' : 'down'), run: digBankHere }; }
   if (o && o.type === 'feat') {
     const ft = o.f;
     switch (ft.kind) {
@@ -1675,12 +1780,12 @@ function patchAction() {
       case 'j': if (!fs(key, ft.id).up) return ex.cargo.e >= PRICE.beacon ? { label: 'Light beacon · 1 Energy', ctx: 'reveals the land around', run: () => lightBeacon(ft) }
         : { label: 'Light beacon · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the beacon costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; break;
       case 'g':
-        if (S.opened[G.gate]) return { label: 'Go down the burrow', run: () => { advance('patch', { noise: 'act' }); enterCave(); } };
-        if (canDig()) return { label: (ex.digProg ? 'Keep digging' : ex.pt.name + ' digs'), run: dig };
+        if (S.opened[G.gate]) return { label: 'Go down the burrow', run: () => { advance('patch', { noise: 'act' }); enterCave(); } };   // an old save's burrow is open for good (for any partner); a burrow dug this walk is the Tuikis's to follow
+        if (canDig()) return { label: ex.burrowDug ? 'Follow ' + ex.pt.name + ' down' : (ex.digProg ? 'Keep digging' : ex.pt.name + ' digs it out'), run: ex.burrowDug ? () => { advance('patch', { noise: 'act' }); enterCave(); } : dig };
         return { label: 'Too narrow', run: gateBump };
       case 'd': if (live.seen.d) return { label: S.tier >= 2 ? 'Read the deep ?' : 'Probe deeper', run: probeDeep }; break;
       case 'x': return { label: 'Climb out', run: leavePatch };
-      case 'n': if (canDig() && !S.opened[G.gate]) return { label: 'Ask ' + ex.pt.name + ' to dig', run: holeHint }; break;
+      case 'n': if (canDig() && !burrowOpen()) return { label: 'Ask ' + ex.pt.name + ' to dig', run: holeHint }; break;
     }
   }
   if (fruit) return o ? { label: 'Press the fruit', run: pressFruit } : { label: 'Put down the fruit', run: () => putDown(f) };
@@ -1710,10 +1815,39 @@ function eatersHere(live) {
   if (sps.every(sp => S.known.includes(sp))) return 'no one here eats fruit';
   return 'watch who comes for it';
 }
+// The Hiljan's grab: a fruit a shaken bush just dropped goes to the nearest wild Hiljan within 4 tiles of it that is not fleeing, hidden or eating, at once and with no back-off. A fruit you put down is no grab.
+// L2b: a field habit the partner did on this walk, for the Station's dock: it joins the partner mibi's `habitsDone` (a set, never cleared; the Station records each once at the dock).
+// Only the walk's partner counts (a rider never), only when its kind lists the habit (FIELD), and a habit fires once a walk.
+// The line the habit shows the first time it fires in a walk (the Loika's calm has its own line already). The copywriter's words, 11-07.
+const HABIT_LINE = {
+  tiptoe: n => n + ' tiptoes softly', 'stone-sense': n => n + ' feels the stone for warmth', 'beacon-sit': n => n + ' sits by the beacon a while',
+  'dew-find': n => n + ' found the dew first', 'hop-down': n => n + ' hops down the slope', dig: n => n + ' dug the burrow out wide enough', 'bank-dig': n => n + ' dug a way up the bank' };
+function fieldHabit(key) {
+  const ex = S.exp, pt = ex && ex.pt; if (!pt || FIELD[pt.sp] !== key) return false;
+  const m = mibiById(pt.id); if (!m) return false;
+  ex.habits = ex.habits || {}; if (ex.habits[key]) return false; ex.habits[key] = 1;
+  if (!Array.isArray(m.habitsDone)) m.habitsDone = [];
+  if (!m.habitsDone.includes(key)) m.habitsDone.push(key);
+  if (HABIT_LINE[key]) fxMsg(HABIT_LINE[key](pt.name), 0);   // once a walk, quiet: it never pushes out a more telling line
+  return true;
+}
+// The field habits that read the end of an action (a creep up to a wild mibi, a warm stone, a lit beacon).
+function endOfActionHabits(X, info) {
+  const ex = S.exp, h = ex.pt && FIELD[ex.pt.sp]; if (!h) return;
+  const { lay, key, P, live } = X;
+  if (h === 'tiptoe') { if (info.moved && info.noise === 'creep' && live.pt && live.cr.some(c => !c.hide && c.st === 'idle' && cheb(c, P) <= 1 && cheb(c, live.pt) <= 2)) fieldHabit(h); }
+  else if (h === 'stone-sense') { if (lay.feats.some(f => f.kind === 'k' && cheb(f, P) <= 1 && stoneCharge(key, f) > 0 && (lay.cave ? stoneSeen(key, f) : unveiled(key, f.x, f.y)))) fieldHabit(h); }
+  else if (h === 'beacon-sit') { if (lay.feats.some(f => f.kind === 'j' && fs(key, f.id).up && cheb(f, P) <= 2)) fieldHabit(h); }
+}
+function grabFruit(live, fr) {
+  let best = null, bd = 1e9;
+  for (const c of live.cr) { if (spOf(c.sp).shed !== 'grab' || c.hide || ['flee', 'dive', 'hidden', 'eat', 'full'].includes(c.st) || cheb(c, fr) > 4) continue; const d = man(c, fr); if (d < bd) { bd = d; best = c; } }
+  if (best) { best.st = 'seek'; best.fid = fr.id; best.grab = 1; }
+}
 function shakeBush(f) {
   const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, f.tree ? { ripe: 0 } : { bare: 1 });
   const p = freeAround(key, f.x, f.y, S.exp.patch); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
-  if (p) fxMsg('A fruit drops · ' + eatersHere(live), 2);
+  if (p) { fxMsg('A fruit drops · ' + eatersHere(live), 2); grabFruit(live, live.fr[live.fr.length - 1]); }
   advance('patch', { noise: 'act', ring: { x: f.x, y: f.y, r: 2 } });
 }
 function pickUp(fr) {
@@ -1755,7 +1889,7 @@ function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), 
 function takeDew(f) {
   const ex = S.exp;
   if (ex.cargo.s >= CAP) { fxMsg('Essence full · the cup keeps its dew', 2); return; }   // a full hold takes nothing: the cup stays full and no turn passes
-  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); advance('patch', { noise: 'act' }); }
+  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); fieldHabit('dew-find'); advance('patch', { noise: 'act' }); }
 function takeCharge(f) {
   const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f);
   if (ex.cargo.e >= CAP) { fxMsg('Energy full · the stone keeps its charge', 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
@@ -1790,9 +1924,13 @@ function lightBeacon(f) {
   fxMsg((n ? 'The beacon lights the land around · ' + n + ' cell' + (n > 1 ? 's' : '') + ' revealed' : 'The beacon burns · nothing new in sight') + ' · −1 Energy', 2);
 }
 // Pods, named for the player: the species if identified, and one tag that tells two pods apart (where it came from).
-function podName(p, short) { return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'unknown' : 'Unknown pod'; }
-function podTagOf(p) {
-  const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', shed: "of {of}'s line" }[p.how];
+function podName(p, short) { return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'Unknown' : 'Unknown pod'; }
+const podInSentence = p => S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown';   // release 22 words: a bare kind name in a sentence reads as a mibi, so a sentence says "the Untuva pod"
+// The hold's column is narrow: the six newest hows have a short form there (the Ground row keeps the full tag).
+const HOW_SHORT = { grab: 'grabbing fruit', warm: 'warm stone', dig: 'in a fresh hole', fog: 'in a fog bank', still: 'keeping still', air: 'airing scales' };
+function podTagOf(p, short) {
+  if (short && HOW_SHORT[p.how]) return HOW_SHORT[p.how];
+  const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', grab: 'shed, grabbing fruit', warm: 'by a warm stone', dig: 'in a fresh hole', fog: 'shed in a fog bank', still: 'shed, keeping still', air: 'shed, airing scales', shed: "of {of}'s line" }[p.how];
   return how ? how.replace('{of}', p.of) : (p.g === 'cave' ? 'cave' : p.bur ? 'from a hole' : 'from the ' + ({ pond: 'pond edge', rock: 'rock field' }[p.g] || p.g));
 }
 // Confirm on a pod with a full hold opens the chooser: pad picks which held pod to leave, ✓ swaps, ← keeps.
@@ -1831,6 +1969,8 @@ function awardMoment(c, kind, X) {
   const room = creatureRoom(ex), got = room ? addMat('d', Math.min(ACT_DATA, room), c.x, c.y) : 0;
   ex.dAct = (ex.dAct || 0) + got;
   ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (creatureRoom(ex) ? '' : ' (Data for this trip: full)'));
+  if (kind === 'eat' && c.grab) {   // the grab line says what happened (pri 1, pushed first); the Data note follows it and does not repeat "ate your fruit"
+    fxMsg(got ? '+' + got + ' Data' + (creatureRoom(ex) ? '' : ' · Data for this trip: full') : 'Data for this trip: full', 1); return; }
   const what = kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled';
   if (!got) { fxMsg(cap(what) + ' · Data for this trip: full', 2); return; }
   fxMsg('+' + got + ' Data · ' + what + (creatureRoom(ex) ? '' : ' · Data for this trip: full'), 2);
@@ -1860,7 +2000,7 @@ function callPlace() {
     const fp = featPos(key, f); if (!inCall(P, fp.x, fp.y, reach)) continue;
     if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) { if (lay.cave) setFS(key, f.id, { sn: 1 }); fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
     if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
-    if (f.kind === 'g' && !S.opened[G.gate]) fxGlint(f.x, f.y, 350);
+    if (f.kind === 'g' && !burrowOpen()) fxGlint(f.x, f.y, 350);
   }
   const before = lay.cave ? 0 : svyFull(lay.cell);
   let lifted = null;
@@ -1870,7 +2010,7 @@ function callPlace() {
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
   logEv('Call' + (found ? ' · found ' + found : '') + (lay.cave ? '' : ' · ' + surveyWord(lay.cell)));
   // the partner answers: a digger near the burrow digs it
-  const g = lay.feats.find(f => f.kind === 'g'), digNow = g && !S.opened[G.gate] && canDig() && cheb(P, g) <= 3;
+  const g = lay.feats.find(f => f.kind === 'g'), digNow = g && !burrowOpen() && canDig() && cheb(P, g) <= 3;
   ex.ptTagUntil = Math.max(ex.ptTagUntil || 0, ex.actions + 3);   // Called: the partner's name tag shows again
   advance('patch', { noise: 'act', pulse: true, reach, call: true });
   if (!lay.cave) {
@@ -1900,7 +2040,12 @@ function waitSnap(scope) {
   return o;
 }
 function fogNear() { if (!fogActive()) return false; const p = cxy(S.exp.pos); for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && inFog(y * MW + x)) return true; } return false; }
-const ROUTINE = [['grazes again', 'graze again'], ['pokes about again', 'poke about again'], ['potters about again', 'potter about again']];
+const ROUTINE = [['grazes again', 'graze again'], ['pokes about again', 'poke about again'], ['potters about again', 'potter about again'],
+  ['climbs about again', 'climb about again'], ['waddles about again', 'waddle about again'], ['noses about again', 'nose about again'], ['lumbers about again', 'lumber about again'],
+  ['pushes on again', 'push on again'], ['strides about again', 'stride about again'], ['is at play again', 'are at play again'], ['plods on again', 'plod on again'],
+  ['flutters about again', 'flutter about again'], ['picks its way about again', 'pick their way about again'], ['slides along again', 'slide along again'], ['walks on again', 'walk on again'],
+  ['floats about again', 'float about again'], ['sways along again', 'sway along again'], ['glides about again', 'glide about again'], ['hops about again', 'hop about again'],
+  ['rambles about again', 'ramble about again']], ROUTINE_ANY = ['is at ease again', 'are at ease again'];
 const VERB = { view: ['comes into view', 'come into view'], ate: ['finished its meal', 'finished their meals'], eat: ['is eating', 'are eating'], seek: ['heads for the fruit', 'head for the fruit'],
   run: ['runs off', 'run off'], cover: ['heads for cover', 'head for cover'], settle: ['settles a little more', 'settle a little more'], wander: ['wanders', 'wander'],
   hole: ['ducks into a hole', 'duck into holes'], gone: ['moves out of sight', 'move out of sight'] };
@@ -1928,7 +2073,7 @@ function waitChanges(a, b, scope) {
     else if (n.calm > o.calm && n.calm >= 2) add(n.sp, 'settle');
     else if (n.x !== o.x || n.y !== o.y) add(n.sp, 'wander'); }
   for (const [id, o] of a.cr) if (!b.cr.has(id)) { const c = curLive().cr.find(q => q.id === id); add(o.sp, c && c.hide ? 'hole' : 'gone'); }
-  const crs = [...ev.entries()].map(([k, n]) => { const [sp, v] = k.split('|'), s = +sp, known = S.known.includes(s), vb = v === 'routine' ? ROUTINE[s] : VERB[v];
+  const crs = [...ev.entries()].map(([k, n]) => { const [sp, v] = k.split('|'), s = +sp, known = S.known.includes(s), vb = v === 'routine' ? (ROUTINE[s] || ROUTINE_ANY) : VERB[v];
     const who = n > 1 ? numWord(n) + ' ' + (known ? spOf(s).plural : 'creatures') : (v === 'view' ? aAn(spName(s)) : 'the ' + spName(s));
     return { t: who + ' ' + vb[n > 1 ? 1 : 0], w: v === 'wander' ? 1 : 0 }; }).sort((x, y) => x.w - y.w).map(o => o.t);
   return out.concat(crs.slice(0, 2));
@@ -1948,7 +2093,7 @@ function routineStep(a) {
   const ex = S.exp, P = ex.patch, live = curLive(); if (!live) return;
   const vis = live.cr.filter(c => !c.hide && inSight(c.x, c.y) && a.cr.has(c.id));
   if (!vis.length || vis.some(c => { const o = a.cr.get(c.id); return o.x !== c.x || o.y !== c.y; })) return;
-  const idle = vis.filter(c => c.st === 'idle'); if (!idle.length) return;
+  const idle = vis.filter(c => c.st === 'idle' && !((spOf(c.sp).settle && c.calm >= 1) || c.warm >= 1)); if (!idle.length) return;
   const c = idle[ex.actions % idle.length], opts = Object.values(DIRS).map(([dx, dy]) => ({ x: c.x + dx, y: c.y + dy })).filter(q => q.x >= 0 && q.y >= 0 && q.x < PW && q.y < PH && !occupant(P.key, q.x, q.y) && !(q.x === P.x && q.y === P.y));
   if (!opts.length) return; opts.sort((p, q) => man(p, P) - man(q, P)); const q = man(opts[0], P) > 1 ? opts[0] : opts[opts.length - 1];
   if (q.x !== c.x) c.face = Math.sign(q.x - c.x); c.x = q.x; c.y = q.y;
@@ -1971,11 +2116,11 @@ function dig() {
   if (live.pt) { live.pt.st = 'dig'; }
   // an elder digs in two actions
   if (ex.pt.elder && !ex.digProg) { ex.digProg = 1; fxMsg(ex.pt.name + ' is digging · slow but sure', 1); advance('patch', { noise: 'act' }); return; }
-  ex.digProg = 0; ex.abUsed = 1;
+  ex.digProg = 0; ex.abUsed = 1; fieldHabit('dig');
   FX.dig = { at: NOW, x: g.x, y: g.y };
   lockInput(DIG_MS + 50);
-  S.opened[G.gate] = 1; S.pins = S.pins.filter(p => !(p.c === G.gate && p.k === 'burrow'));
-  logEv(ex.pt.name + ' dug the burrow open');
+  ex.burrowDug = 1;   // open for this walk only: the ground shifts back at the world turn (the burrow's pin stays)
+  logEv(ex.pt.name + ' dug the burrow out wide enough');
   advance('patch', { noise: 'act' });
   ex.caveDue = 1; save(); setTimeout(digDone, DIG_MS);
 }
@@ -2009,6 +2154,7 @@ function patchTick(info) {
   for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);
+  endOfActionHabits(X, info);
   if (!lay.cave) for (const f of lay.feats) if (f.kind === 'k' && cheb(f, P) <= 3 && unveiled(key, f.x, f.y) && stormCharge(key, f) <= 0 && stoneWarm(key, f) && fs(key, f.id).wseen !== S.turn) setFS(key, f.id, { wseen: S.turn });   // its ring stops blinking once you have been near
   // the four bubbles over creatures, each explained the first time it shows in view
   const inView = live.cr.filter(c => !c.hide && !X.away(c) && inSight(c.x, c.y));
@@ -2034,7 +2180,10 @@ function pickStrike(X) {
 }
 
 // ===================== 8. Creatures and the partner =====================
-function canStand(X, x, y, who) { return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * PW + x]); }
+function canStand(X, x, y, who) {
+  if (who && who === X.live.pt && x >= 0 && y >= 0 && x < PW && y < PH) { const t = X.lay.tiles[y * PW + x];   // the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank
+    if ((t === T.WADE || t === T.SCREE || t === T.BANK) && softTileOpen(X.lay, t, x, y)) return !X.live.cr.some(c => !c.hide && c.x === x && c.y === y) && !(X.P.x === x && X.P.y === y); }
+  return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * PW + x]); }
 function stepToward(X, who, tgt, n) {
   for (let k = 0; k < (n || 1); k++) {
     if (tgt.tree && man(who, tgt) <= 1) return;   // a hollow trunk is entered from beside it: stop there, the next tick goes in
@@ -2078,7 +2227,7 @@ function nearestHole(X, c, maxD) {
 // Flight: a Tuikis dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
 function hideOrFlee(X, c) {
   if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = h.tree ? { x: h.x, y: h.y, tree: 1 } : { x: h.x, y: h.y }; return; } }
-  c.st = 'flee'; c.t = 2;
+  const run = fleeTiles(spOf(c.sp)); c.st = 'flee'; c.fl = run; c.t = Math.ceil(run / 2);   // the kind's own run, two tiles an action
 }
 // Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once,
 // at most SHED_MAX moment pods an expedition. A creature not ready but fed or settled this expedition may still shed, on its own seeded roll.
@@ -2088,9 +2237,11 @@ function shedAllowed(c, X) {
   const w = crById.get(c.id);
   if (!w || w.s === S.exp.n || S.exp.stats.sheds >= SHED_MAX || !shedReady(c)) return false;
   if (c.st === 'shake' || c.st === 'curl') return !X.live.stormShed[c.sp];
-  if (c.st === 'glow') return !X.live.calmShed;
+  if (c.st === 'glow') return !momentTaken(c, X);
   return true;
 }
+// A settle moment spent in this place: the Tuikis's once per place per expedition (calmShed), the Tepor's by a warm stone once per place per walk (moShed). Peplos and Wickle have no per-place limit.
+function momentTaken(c, X) { const m = spOf(c.sp).shed; return m === 'calm' ? !!X.live.calmShed : m === 'warm' ? !!(X.live.moShed && X.live.moShed[c.sp]) : false; }
 // Where something happened, in words: a landmark if one is close, else a direction from you.
 function whereWord(X, x, y) {
   const { lay, P } = X, near = (fx, fy, r) => Math.abs(fx - x) <= r && Math.abs(fy - y) <= r;
@@ -2102,19 +2253,21 @@ function whereWord(X, x, y) {
   return 'to the ' + (ns && ew ? ns + '-' + ew : ns || ew || 'side');
 }
 function shedPod(c, X) {
-  const how = c.st === 'shake' ? 'shake' : c.st === 'glow' ? 'calm' : c.st === 'curl' ? 'curl' : 'meal';
-  if (how === 'shake' || how === 'curl') X.live.stormShed[c.sp] = 1;
+  const how = c.st === 'curl' ? 'curl' : spOf(c.sp).shed || 'meal';   // the kind's own moment (a Tuikis curling out of the rain is its curl)
+  if (c.st === 'shake' || c.st === 'curl') X.live.stormShed[c.sp] = 1;
   if (how === 'calm') X.live.calmShed = 1;
+  if (how === 'warm') (X.live.moShed = X.live.moShed || {})[c.sp] = 1;
   const p = freeAround(X.key, c.x, c.y, null) || { x: c.x, y: c.y };
   const id = 'p' + (S.nextId++);
   const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
   S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
+  if (how === 'dig') (X.live.holes = X.live.holes || []).push({ x: p.x, y: p.y, g: groundName(X.lay.land, X.lay.cave), at: NOW });   // the Rupar's fresh hole stays for the expedition
   const w = crById.get(c.id); if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
   fxGlint(p.x, p.y, 200);
-  const verb = { shake: 'shook dry', calm: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal' }[how];
+  const verb = { shake: 'shook dry', calm: 'settled', fog: 'settled', still: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal', grab: 'grabbed a falling fruit', warm: 'settled by a warm stone', dig: 'dug a fresh hole', air: 'aired its scales' }[how];
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
-  else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
+  else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why && !(how === 'grab' && why === 'bond') ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
 }
 // A Loika shaking dry leaves a tuft of fur on the ground (Essence), once per Loika per expedition.
 function dropTuft(c, X) {
@@ -2124,14 +2277,29 @@ function dropTuft(c, X) {
 // An eater closes in on fruit quickly from across the view, then slows near it: about 4 quiet actions.
 function seekPace(c, f) { const d = man(c, f); return d > 6 ? 3 : d > 3 ? 2 : 1; }
 // The four bubbles: ! startled · ? curious · fruit (it eats what you carry) · … settling. One at a time, in that order.
-const BUBBLE_SIGN = { '!': 'bubbleNotice', '?': 'bubbleCurious', f: 'bubbleFruit', '…': 'bubbleSettle' };   // each bubble's sign, the first time it shows in view
+const BUBBLE_SIGN = { '!': 'bubbleNotice', '?': 'bubbleCurious', f: 'bubbleFruit', fs: 'bubbleSeek', '…': 'bubbleSettle' };   // 'fs' is the fruit bubble of a creature going for fruit (drawn as 'f')   // each bubble's sign, the first time it shows in view
 function bubbleOf(c, carry) {
   if (c.st === 'alert') return '!';
-  if (c.st === 'approach' || c.st === 'seek') return '?';
+  if (c.st === 'approach') return '?';
+  if (c.st === 'seek') return 'fs';
   if (carry === 'fruit' && spOf(c.sp).eats && S.known.includes(c.sp) && c.st !== 'eat' && c.st !== 'flee') return 'f';
-  if (c.sp === 1 && c.calm >= 1 && c.st !== 'glow') return '…';
+  if (spOf(c.sp).settle && c.calm >= 1 && c.st !== 'glow') return '…';
   return null;
 }
+// Whether this creature can settle where it stands: its kind's `settle` rule (burrow: in the cave or by a hole; any: anywhere in the place; fog: only while the place is in a fog bank).
+function canSettle(c, X) {
+  const s = spOf(c.sp).settle; if (!s) return false;
+  return settlesAt(s, { cave: X.lay.cave, hole: s === 'burrow' && !X.lay.cave && !!nearestHole(X, c, 2), fog: X.fog });
+}
+// The ✓ Watch line's tail for a drinker: where it can settle says so when the place is not one (out of fog the Peplos, away from a hole the Tuikis).
+function watchTail(c) {
+  const s = spOf(c.sp).settle, lay = curLay(), X = { lay, live: curLive(), key: S.exp.patch.key, fog: !lay.cave && inFog(lay.cell) };
+  if (s === 'fog' && !canSettle(c, X)) return 'it settles only in fog';
+  if (s === 'burrow' && !canSettle(c, X)) return 'it settles by a hole';
+  return 'keep still and it settles, or Call';
+}
+// A warm stone (kind 'k', warm, not storm-charged) within a tile of the creature, or null.
+function warmStoneNear(X, c) { for (const f of X.lay.feats) if (f.kind === 'k' && cheb(f, c) <= 1 && stormCharge(X.key, f) <= 0 && stoneWarm(X.key, f)) return f; return null; }
 function creatureTick(c, X) {
   const sp = spOf(c.sp), P = X.P;
   if (c.snub) c.snub--;
@@ -2142,28 +2310,28 @@ function creatureTick(c, X) {
   }
   const d = cheb(c, P), calm = calmedBy(c, X), curious = c.b > .55;
   // Walking is noticed within the species' range; creeping only right beside it, and never inside a fog bank.
-  let notice = sp.notice[1]; if (c.b > .6) notice--; if (X.fog) notice -= 2;
+  let notice = noticeRange(sp, { curious: c.b > .6, fog: X.fog });
   const walking = X.moved && X.noise === 'walk';
   if (calm && walking && d <= notice && d > notice - 2 && ['idle', 'seek'].includes(c.st) && !X.live.noted['c' + c.id]) {
-    X.live.noted['c' + c.id] = 1;
+    X.live.noted['c' + c.id] = 1; fieldHabit('calm');
     const short = X.ptName + ' keeps the ' + spName(c.sp) + ' calm';
     // the sign is spent only once it is actually on the screen
     if (!S.found.includes('calmkeep')) fxSign('calmkeep', S.exp.pt && S.exp.pt.sp);
     else fxMsg(short, 0); }
   c.cue = calm && walking && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
   if (calm) notice -= 2;
-  const threat = X.moved && c.st !== 'eat' && (walking ? d <= notice : (!X.fog && d <= 1 && !calm && !curious));
+  const threat = X.moved && c.st !== 'eat' && (walking ? d <= notice : (!X.fog && d <= creepRange(sp) && !calm && !curious));
   const sheltered = !!X.lay.shelter[c.y * PW + c.x];
   if (c.st === 'shake' || c.st === 'full' || c.st === 'glow') {
-    if (c.st === 'shake') dropTuft(c, X);
-    if (c.st === 'glow') awardMoment(c, 'settle', X);
-    if (shedAllowed(c, X)) shedPod(c, X); c.st = 'idle'; c.wet = 0; c.calm = 0; return; }
+    if (c.st === 'shake' && c.sp === 0) dropTuft(c, X);   // the Loika's tuft; the Tuliko airing its scales leaves none
+    if (c.st === 'glow' && sp.settle) awardMoment(c, 'settle', X);
+    if (shedAllowed(c, X)) shedPod(c, X); c.st = 'idle'; c.wet = 0; c.calm = 0; c.warm = 0; c.grab = 0; return; }
   if (c.st === 'curl' && !X.raining && !X.lay.shelter[c.y * PW + c.x]) { c.st = 'idle'; c.curl = 0; }
   // Sudden things: a strike, a loud act nearby, your Call.
   const startled = (X.strike && cheb(c, X.strike) <= 3) || (X.ring && cheb(c, X.ring) <= X.ring.r && c.b < .75 && !calm && !X.fog);
   if (startled && c.st !== 'eat') hideOrFlee(X, c);
   else if (X.pulse && d <= X.reach && c.st !== 'eat') {
-    if (c.sp === 1 && c.calm >= 2) { c.calm = 0; c.st = 'alert'; c.t = 2; fxMsg('Your call startled the ' + spName(1) + ' · it stopped settling', 2); }
+    if (sp.settle && c.calm >= 2) { c.calm = 0; c.st = 'alert'; c.t = 2; fxMsg('Your call startled the ' + spName(c.sp) + ' · it stopped settling', 2); }
     else if (curious || calm) { c.st = 'approach'; c.t = 3; }
     else { c.st = 'alert'; c.t = 2; c.go = 1; } }   // wary: "!" for one action, then it hides
   // Weather.
@@ -2174,8 +2342,9 @@ function creatureTick(c, X) {
     else if (c.wet && c.sp === 1 && c.st !== 'flee') { c.st = 'curl'; c.curl++;
       if (c.curl >= 3 && shedAllowed(c, X)) { shedPod(c, X); c.curl = -99; } return; }
   } else if (c.wet) {
-    if (c.sp === 0 && !['flee', 'dive'].includes(c.st)) { c.st = 'shake'; return; }
-    if (c.sp !== 0) c.wet = 0;
+    const airs = c.sp === 0 || sp.shed === 'air';   // the Loika shakes dry, the Tuliko airs its scales: the same path, the tuft the Loika's alone
+    if (airs && !['flee', 'dive'].includes(c.st)) { c.st = 'shake'; return; }
+    if (!airs) c.wet = 0;
   }
   if (!X.raining && c.st === 'curl') { c.st = 'idle'; c.curl = 0; }
   if (!X.raining && (c.st === 'shelter' || c.st === 'huddle')) c.st = 'idle';
@@ -2186,10 +2355,10 @@ function creatureTick(c, X) {
   }
   // Act on the current state.
   switch (c.st) {
-    case 'flee': stepAway(X, c, P, c.t >= 2 ? 2 : 1); if (--c.t <= 0) { c.st = 'watch'; c.t = 3; } break;
+    case 'flee': { const n = Math.min(2, c.fl == null ? (c.t >= 2 ? 2 : 1) : c.fl); stepAway(X, c, P, n); if (c.fl != null) c.fl -= n; } if (--c.t <= 0) { c.st = 'watch'; c.t = 3; } break;
     case 'watch': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (!threat && --c.t <= 0) c.st = 'idle'; break;   // back to routine after 3 quiet actions
     case 'dive': {
-      const h = c.tgt; if (!h) { c.st = 'flee'; c.t = 2; break; }
+      const h = c.tgt; if (!h) { c.st = 'flee'; c.t = 2; c.fl = null; break; }
       if (man(c, h) <= 1) { c.x = h.x; c.y = h.y; c.hide = X.raining ? 6 : 4; c.st = 'hidden'; }
       else stepToward(X, c, h, 2);
       break; }
@@ -2197,38 +2366,45 @@ function creatureTick(c, X) {
     case 'huddle': break;
     case 'approach': if (d > 2) stepToward(X, c, P, 1); if (--c.t <= 0) c.st = 'idle'; break;
     case 'alert': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (--c.t <= 0) { if (c.go) { c.go = 0; hideOrFlee(X, c); } else c.st = 'idle'; } break;
-    case 'eat': if (--c.eat <= 0) c.st = (c.sp === 2 && shedAllowed(c, X)) ? 'full' : 'idle'; break;
+    case 'eat': if (--c.eat <= 0) { const sh = sp.shed; c.st = ((sh === 'meal' || sh === 'dig' || (sh === 'grab' && c.grab)) && shedAllowed(c, X)) ? 'full' : 'idle'; if (c.st === 'idle') c.grab = 0; } break;   // a full Untuva, Rupar (after a meal) or a Hiljan that grabbed
     case 'seek': {
       const f = X.live.fr.find(q => q.id === c.fid), keep = (curious || calm || X.fog) ? 1 : 3;
-      if (!f || cheb(P, f) < keep - 1) { c.st = 'idle'; break; }   // you came too close: it gives up for now
+      if (!f || (!c.grab && cheb(P, f) < keep - 1)) { c.st = 'idle'; c.grab = 0; break; }   // you came too close: it gives up for now (a Hiljan going for a shaken fruit ignores the back-off)
       if (cheb(c, f) <= 1) { X.live.fr = X.live.fr.filter(q => q !== f); c.st = 'eat'; c.eat = 2; if (f.x !== c.x) c.face = Math.sign(f.x - c.x);
         S.exp.stats.putFeeds++;
-        fxMsg(X.away(c) ? 'Something ate the fruit ' + whereWord(X, c.x, c.y) : 'The ' + spName(c.sp) + ' is eating the fruit', 1);
+        fxMsg(X.away(c) ? 'Something ate the fruit ' + whereWord(X, c.x, c.y) : c.grab ? 'All at once, the ' + spName(c.sp) + ' grabs the fruit' : 'The ' + spName(c.sp) + ' is eating the fruit', 1);
         awardMoment(c, 'eat', X); }
       else stepToward(X, c, f, seekPace(c, f));
       break; }
     default: {
       c.st = 'idle';
       if (X.raining && sheltered) { c.st = 'huddle'; break; }
-      // A Tuikis sheds only after a long quiet spell in its cave or by its burrow. A kin or calming
+      // A settler (the Tuikis by its burrow, the Wickle anywhere, the Peplos in a fog bank) sheds only after a long quiet spell. A kin or calming
       // partner lets you wait one tile closer; it never makes the wait shorter.
-      if (c.sp === 1 && (X.lay.cave || nearestHole(X, c, 2))) {
+      if (canSettle(c, X)) {
         const loud = walking, near = !(d >= 3 || (calm && d >= 2)), pulsed = X.pulse && d <= X.reach;
         if (!loud && !near && !pulsed) c.calm++;
-        else { if (c.calm >= 2) fxMsg(pulsed ? 'Your call startled the ' + spName(1) + ' · it stopped settling' : 'The ' + spName(1) + ' looks up · ' + (loud ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
-        if (c.calm === 2 && S.found.includes('mark…') && X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(1) + ' is settling ' + whereWord(X, c.x, c.y), 0);
-        if (c.calm >= 8 && !X.live.calmShed) { c.st = 'glow'; break; }
+        else { if (c.calm >= 2) fxMsg(pulsed ? 'Your call startled the ' + spName(c.sp) + ' · it stopped settling' : 'The ' + spName(c.sp) + ' looks up · ' + (loud ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
+        if (c.calm === 2 && S.found.includes('mark…') && X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(c.sp) + ' is settling ' + whereWord(X, c.x, c.y), 0);
+        if (c.calm >= 8 && !momentTaken(c, X)) { c.st = 'glow'; break; }
+      } else if (sp.settle === 'fog' && c.calm) c.calm = 0;   // the fog drifted off: the Peplos's settle stops with it
+      // A Tepor within a tile of a warm stone, for three quiet actions in a row (you not walking within 3 tiles, no Call reaching it), settles there; once a place a walk.
+      if (sp.shed === 'warm' && !momentTaken(c, X)) {
+        const quiet = warmStoneNear(X, c) && !(walking && d <= 3) && !(X.pulse && d <= X.reach);
+        c.warm = quiet ? (c.warm || 0) + 1 : 0;
+        if (c.warm >= 3) { c.st = 'glow'; break; }
       }
       // Put it down and back off: an eater comes for fruit on the ground once you are 3 tiles from it.
       if (sp.eats && X.live.fr.length) {
         const keep = (curious || calm || X.fog) ? 1 : 3;
         let best = null, bd = 1e9, wanted = null;
         for (const f of X.live.fr) { if (cheb(c, f) > 10) continue; const dd = man(c, f); if (dd >= bd) continue; if (cheb(P, f) >= keep) { bd = dd; best = f; } else wanted = f; }
-        if (best) { c.st = 'seek'; c.fid = best.id; if (cheb(c, best) > 1) stepToward(X, c, best, seekPace(c, best)); break; }
+        if (best) { c.st = 'seek'; c.fid = best.id; c.grab = 0; if (cheb(c, best) > 1) stepToward(X, c, best, seekPace(c, best)); break; }
         if (wanted && man(c, wanted) <= 8 && !X.away(c) ) fxSign('bubbleFruit');
       }
-      if (c.sp === 1 && c.calm >= 2) break;   // settling: stays put
-      if (rnd(S.seed, c.id, S.exp.actions, 'w') < (c.sp === 2 ? .25 : .4)) stepRandom(X, c);
+      if (sp.settle && c.calm >= 2) break;   // settling: stays put
+      if (sp.shed === 'warm' && c.warm >= 1) break;   // a Tepor settling by a warm stone stays on it
+      if (rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
     }
   }
 }
@@ -2239,7 +2415,7 @@ function partnerTick(X) {
   if (X.call) { pt.st = 'follow'; stepToward(X, pt, P, speed); return; }
   // A digger goes to look at the burrow before you ask. Partners ignore gates they can't handle.
   const g = X.lay.feats.find(f => f.kind === 'g');
-  if (ab === 'dig' && g && !S.opened[G.gate] && (cheb(pt, g) <= 8 || cheb(P, g) <= 7)) {
+  if (ab === 'dig' && g && !burrowOpen() && (cheb(pt, g) <= 8 || cheb(P, g) <= 7)) {
     const near = () => cheb(pt, g) <= 2 && pt.y > g.y;
     if (!near()) { const spots = [{ x: g.x - 1, y: g.y + 1 }, { x: g.x + 1, y: g.y + 1 }, { x: g.x, y: g.y + 1 }, { x: g.x - 1, y: g.y + 2 }, { x: g.x + 1, y: g.y + 2 }];
       const tgt = spots.find(s => canStand(X, s.x, s.y, pt)) || { x: g.x, y: g.y + 2 }; stepToward(X, pt, tgt, speed); }
@@ -2290,7 +2466,7 @@ function sealedWords(h, join, alone) { const n = h.pods ? h.pods.length : 0; ret
 // The Cargo screen's preview of what End expedition will do.
 function sealPreview() {
   const ex = S.exp, out = [];
-  if (!exploredAny(ex)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
+  if (!exploredAny(ex) && !(ex.dug && ex.dug.length)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
   // what End will seal: the hold plus the field yield still to come (End adds it before it seals)
   const h = Object.assign({}, ex.cargo), top = Math.max(0, walkYield(ex) - (ex.dField || 0)); h.d = Math.min(CAP, (h.d || 0) + top);
   if (holdEmpty(h)) { /* nothing to seal (only a save from before places had a tier): no line */ }
@@ -2318,9 +2494,10 @@ function endExpedition(reason) {
   const broke = reason === 'break'; S.ui.lastPos = ex.pos;
   const explored = exploredAny(ex), rc = reachCounts();
   let notch = null;   // a notch earned is named on Expedition ended as its own row of the outcome block (and logged), never with a count, never a world line
-  { const n = {}; for (const c of new Set(ex.trail)) if (S.visited[c] && passable(c)) n[G.land[c]] = (n[G.land[c]] || 0) + 1;   // every mibi with you remembers where you went most
-    const best = Object.keys(n).sort((a, b) => n[b] - n[a] || a - b)[0];
-    for (const w of carriedMibis()) { if (best != null) w.mem = LAND_NAME[best];
+  { const n = {}, mud = c => !!(G.soft && G.soft.wade[c]);   // a wade the partner crossed counts as 'mud', apart from a ford (both are L.WATER)
+    for (const c of new Set(ex.trail)) if (S.visited[c] && (passable(c) || mud(c))) { const k = mud(c) ? 'mud' : G.land[c]; n[k] = (n[k] || 0) + 1; }   // every mibi with you remembers where you went most
+    const best = Object.keys(n).sort((a, b) => n[b] - n[a] || (a === 'mud' ? 1 : b === 'mud' ? -1 : a - b))[0];
+    for (const w of carriedMibis()) { if (best != null) w.mem = best === 'mud' ? 'mud' : LAND_NAME[best];
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
       if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notch = { id: w.id, name: w.name, sp: w.sp }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.surveyed, of: rc.total };
@@ -2337,7 +2514,7 @@ function endExpedition(reason) {
     hits: ex.stats.hits, done: ex.saidDone || 0, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length,
     warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: walkTier(ex), dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
-  if (!explored) {   // nothing explored: nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
+  if (!explored && !(ex.dug && ex.dug.length)) {   // nothing explored (and no bank dug: a dug bank shifts back, so that walk turns the world): nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
@@ -2510,6 +2687,11 @@ function realmTurn(turned, pending) {
   for (const m of aged) say(m.name + ' is an elder now · slower, with keener senses.', ['elder', null, m.id, 0]);
   for (const c of depotCells(S.seed)) { const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
     if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
+  // What the walk dug (a bank, or the burrow) shifts back with the turn: said as the world's, crediting the mibi that dug it (or not naming it, if it has left the Companion). One partner a walk, so one line.
+  { const ex = S.exp, bankN = ex && ex.dug ? ex.dug.length : 0, burrow = !!(ex && ex.burrowDug), dm = ex && ex.pt && (bankN || burrow) ? carriedMibis().find(m => m.id === ex.pt.id) : null;
+    if (bankN || burrow) { const kind = PLACE_KIND[G.land[burrow ? G.gate : ex.dug[0] >> 1]], who = dm ? dm.name : null;
+      say(burrow ? (who ? 'The ground shifted, and the burrow ' + who + ' dug out is narrow again.' : 'The ground shifted, and the burrow is narrow again.')
+        : who ? 'The ground shifted, and the ' + (bankN === 1 ? 'bank ' + who + ' dug is' : 'banks ' + who + ' dug are') + ' whole again.' : 'The ground shifted, and the dug bank is whole again.', ['shift', kind, ex.pt.id, burrow ? 1 : bankN]); } }
   // Movement: a species you know first; a direction only when the herd really drifted one way.
   const moves = hereKinds().map(k => k.sp).filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
     .filter(o => o.dw || o.known).sort((a, b) => (b.known - a.known) || (!!b.dw - !!a.dw) || (mv[b.sp].n - mv[a.sp].n));
@@ -2686,6 +2868,8 @@ function wrapText(str, maxW, s) {
   if (cur) lines.push(cur); return lines;
 }
 function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (str.length > 1 && textW(str + '…', s) > maxW) str = str.slice(0, -1); return str + '…'; }
+// A line of " · " segments that drops its trailing segments until it fits (never an ellipsis mid-word); a first segment that alone is too wide is clipped.
+function cutLine(str, maxW, s) { while (textW(str, s) > maxW && str.includes(' · ')) str = str.slice(0, str.lastIndexOf(' · ')); return clipText(str, maxW, s); }
 
 // ---------- Species art: the signed 32 px tokens and 12 px minis, used 1:1 ----------
 // Release 21c: the twenty kinds' signed tokens from the art desk (field-tokens work/tokens.mjs, round 2; page species in sp order S01, S03, S02, S04 to S20), one
@@ -2861,6 +3045,21 @@ const JUVENILE_ART = [
     mini: '.29C.C.8CJCJC.6CJKJKC.5CQPc3HC.3CPc2CcCcC.3CPc6HC.3CP2H3PC.4CP6C.4CcPCcPC.6C2.C2.4',
   },
 ];
+// The 2-frame step (L2b): per kind an adult and a juvenile pair of 32 px strings in the token format, in page species order, for sp 0, 1, 3, 4, 7, 11, 16, 19 only (absent for the rest).
+// All empty today. The art desk's frames go here and nothing else changes when they do: a kind whose two frames of an age are both non-empty is drawn in them
+// while it is moving (a tween under way and a moving state), the first half of the tween in the first frame, the second in the second. SPECIES_ART and JUVENILE_ART stay the desk's tokens file exactly.
+// Signed 2026-11-07 (art desk, mibi-art c28a8af7e, step-frames/work/frames.mjs): idle = the signed token byte for byte, step = frame B; played idle, step, idle, step at about 4 fps.
+const STEP_ART = []; Object.assign(STEP_ART, {
+  0: { adult: ['.49A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3D2C3LD4C3KA2LA.9A2D4C4L2IAD2C2DK2L2A.7AD2C3DC4L2A2D2CD3L3A.6AD2C9L5DC3DK3A.6ADC10L4D2L3K4A.5AC16L5K3A.6AC15L8A.7AC13P2L7A.8AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14', '.17A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3D2C3LD4C3KA2LA.9A2D4C4L2IAD2C2DK2L2A.7AD2C3DC4L2A2D2CD3L3A.6AD2C9L5DC3DK3A.6ADC10L4D2L3K4A.5AC16L5K3A.6AC15L8A.7AC13P2L7A.8AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5A2C5D4A3C3D3A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.78'], juvenile: ['.237A2.28A2L2A2.25AL2QLAQA.24ALQ2PQ2A.23A2P4Q2A.22AD3P6A.20AD9P2A.18AD12A.18AD6L3DCD2A2.15ALD7L3C2D3KIA.12AL2D6L3IAD3KA2.12AL2D2CD2L4A2D2CDK2A.11AL2DC2D2L3C7D3A.10AK2L6D2C8D2A.11AKL6DC10DA.12AL7C11A.13AL7C10A.13ADL6C11A.12ADL6C10A.13ADCL4DC10A.14AC5DC10A.13AC5AD2C4AC4A.13AC4A.AD3CA.AC2A.15A4.2AD3CA.2A2.23A4.12', '.205A2.28A2L2A2.25AL2QLAQA.24ALQ2PQ2A.23A2P4Q2A.22AD3P6A.20AD9P2A.18AD12A.18AD6L3DCD2A2.15ALD7L3C2D3KIA.12AL2D6L3IAD3KA2.12AL2D2CD2L4A2D2CDK2A.11AL2DC2D2L3C7D3A.10AK2L6D2C8D2A.11AKL6DC10DA.12AL7C11A.13AL7C10A.13ADL6C11A.12ADL6C10A.13ADCL4DC10A.14AC5DC10A.13AC4A2D2C4A2C2A2.14A4.2AD3CA.2A2.23A4.76'] },   // S01 (hopper)
+  1: { adult: ['.50N9.22NJ3mJ5N.20NJmK6mKJN.18NJK4mK6JN.16NJKmK9mKN.15NJK14JN.14NK8INKINK3N.14NK8N2KN2K3N.14NLKmK12LN.14NLK9L2K3LN.4N2.8NLK13L2N.3Nq2N.6N3K12L2N.3Nq4N.3N2J3K12L2N.3Nq3pN.2NJ2K2mK12LN.4Nq2p2N.NJK8mK8N.5Np2KN.NJKmK16N.6NL2N.NK7mK11N.7NLJN2K4mK14N.7NL2N2K11mK7N.8NLJNK2mK16N.9NLJLK8mK8LN.10N2L2K3mK10L3N.11NL19N.12NL7mL9N.14NL14N2.15NK3LN2L2N2K3LN.16NK3LN2L2N2K3LN.16NK3LN2L2N2K3LN.16NK3LN.N2.NK3LN.16NK2L2N.4NK2L2N.17N4.6N4.8', '.18N9.22NJ3mJ5N.20NJmK6mKJN.18NJK4mK6JN.16NJKmK9mKN.15NJK14JN.14NK8INKINK3N.14NK8N2KN2K3N.14NLKmK12LN.14NLK9L2K3LN.4N2.8NLK13L2N.3Nq2N.6N3K12L2N.3Nq4N.3N2J3K12L2N.3Nq3pN.2NJ2K2mK12LN.4Nq2p2N.NJK8mK8N.5Np2KN.NJKmK16N.6NL2N.NK7mK11N.7NLJN2K4mK14N.7NL2N2K11mK7N.8NLJNK2mK16N.9NLJLK8mK8LN.10N2L2K3mK10L3N.11NL19N.12NL7mL9N.14NL14N2.15NK3LN2L2N2K3LN.16NK3LN2L2N2K3LN.16NK3LN.N2.NK3LN.16NK2L2N.4NK2L2N.17N4.6N4.72'], juvenile: ['.243N4.26N2J4N2.23NJ2KmK2J2N.21NJK6mKJN.19NJKmK8JN.18NK6INKINKN.17NJK6N2KN2KJN.6N2.8NK2mK10LN.5Nq2N.7NK9L2KL2N.4Nq3pN.3N4K12L2N.5Np2N.3NJ4K12LN.7NLJN.NJK3mK12N.9NLJN2K9mK7N.10NLJ2K2mK13LN.11N2L2K14L2N.12NL3K3mK8L3N.13NL2K12L2N.15NL14N.17NL12N.18NL12N.18NK2LNL2N2K2LN.19NK2LNL2N2K2LN.19NK2LN3.NK2LN.19NKL2N.3NKL2N.20N3.5N3.10', '.211N4.26N2J4N2.23NJ2KmK2J2N.21NJK6mKJN.19NJKmK8JN.18NK6INKINKN.17NJK6N2KN2KJN.6N2.8NK2mK10LN.5Nq2N.7NK9L2KL2N.4Nq3pN.3N4K12L2N.5Np2N.3NJ4K12LN.7NLJN.NJK3mK12N.9NLJN2K9mK7N.10NLJ2K2mK13LN.11N2L2K14L2N.12NL3K3mK8L3N.13NL2K12L2N.15NL14N.17NL12N.18NL12N.18NK2LNL2N2K2LN.19NK2LN3.NK2LN.19NKL2N.3NKL2N.20N3.5N3.74'] },   // S03 (hopper)
+  3: { adult: ['.48Z2.6Z2.21Zq2Z6q2Z.20Zp2H6p2Z.19ZHG10HZ.17ZHG12HZ.16ZG14HZ.15ZG8IZGIZG2Z.15ZG8Z2GZ2G2Z.15ZG14FZ.7Z4.4ZG10E2G2FZ.5Z2H4Z2.2ZG14FZ.4ZH2F4H2Z.ZG14Z.4ZHGFG4FGHZHG14Z.4ZGFG2F2G2F2ZG15Z.4ZF2GFG2FGF2ZG9FG5Z.4ZF2G2FG2FGFZG9FG5Z.4ZF5GFG2Z2G10FG4Z.5ZF6G2Z2G11F3GZ.6ZF7H2G15Z.7Z3F4G17Z.10Z2F2G17Z.12Z2FG15FZ.13ZF2G13F2Z.13ZF17Z.14ZF15Z.16ZF13Z.18ZF4Z2G4FZ.19ZF4Z2G4FZ.19ZF4Z2G4FZ.20Z4.ZG3F2Z.26Z5.7', '.16Z2.6Z2.21Zq2Z6q2Z.20Zp2H6p2Z.19ZHG10HZ.17ZHG12HZ.16ZG14HZ.15ZG8IZGIZG2Z.15ZG8Z2GZ2G2Z.15ZG14FZ.7Z4.4ZG10E2G2FZ.5Z2H4Z2.2ZG14FZ.4ZH2F4H2Z.ZG14Z.4ZHGFG4FGHZHG14Z.4ZGFG2F2G2F2ZG15Z.4ZF2GFG2FGF2ZG9FG5Z.4ZF2G2FG2FGFZG9FG5Z.4ZF5GFG2Z2G10FG4Z.5ZF6G2Z2G11F3GZ.6ZF7H2G15Z.7Z3F4G17Z.10Z2F2G17Z.12Z2FG15FZ.13ZF2G13F2Z.13ZF17Z.14ZF15Z.16ZF5Z2F6Z.17ZF4Z.2ZG4FZ.17ZF4Z.2ZG4FZ.17ZF4Z.2ZG4FZ.17ZF4Z.2ZG4FZ.18Z4.3ZG3F2Z.26Z5.6'], juvenile: ['.240Z.6Z.23ZqZ6qZ.22ZpH6pZ2.20ZHG8H2Z.18ZHG11HZ.17ZG7IZGIZGHZ.16ZG7Z2GZ2G2Z.16ZG13FZ.9Z4.3ZG9E2G2FZ.8ZH4Z.2ZG13FZ.7ZHGF2GHZ.ZG13Z.7ZHGFG2FGZ2HG13Z.7ZF2GFGFGZ2G7FG6Z.7ZF6GZ2G7FG6Z.8ZF6H2G8F4G2Z.9ZF7G14Z.10Z3F5G12FZ.13Z3F15Z.16ZF14Z.17ZF12Z.19ZF3Z2G4FZ.20ZF3Z2G4FZ.20ZF3Z2G4FZ.21Z3.ZG3F2Z.26Z5.7', '.208Z.6Z.23ZqZ6qZ.22ZpH6pZ2.20ZHG8H2Z.18ZHG11HZ.17ZG7IZGIZGHZ.16ZG7Z2GZ2G2Z.16ZG13FZ.9Z4.3ZG9E2G2FZ.8ZH4Z.2ZG13FZ.7ZHGF2GHZ.ZG13Z.7ZHGFG2FGZ2HG13Z.7ZF2GFGFGZ2G7FG6Z.7ZF6GZ2G7FG6Z.8ZF6H2G8F4G2Z.9ZF7G14Z.10Z3F5G12FZ.13Z3F15Z.16ZF14Z.17ZF4Z2F6Z.18ZF3Z.2ZG4FZ.18ZF3Z.2ZG4FZ.18ZF3Z.2ZG4FZ.18ZF3Z.2ZG4FZ.19Z3.3ZG3F2Z.26Z5.6'] },   // S04
+  4: { adult: ['.38N.N2.N2.6N3.15NJNLJNLJN6J3N2.12NJLJKLJKLJ3L3m3L2N2.10NLKLK2LK2LKm9L2N.10NLKLK2LK2m12LN.10NL3K2Lm14LN.10N2L3m16LN.11N3m17LN.12Nm9KINmINm2MN.12Nm9KN2mN2mM2N.12Nm10K2mK2M3N.10N3m12M2mM2N.10NL3m15MN.10NLmM4m13N.10NLmM6m7L3m2N.9NLmM7m12N.9Nm2M6m13N.7N2Lm3M4m13MN.6NL2m18M2mMN.5NLM4m18M2N.5NM5m18MN.7N3M3m16M2N.10N2M18N.12NM18N.13NM16N.15N3m5MNM5N.18Nm5MNM5N.18Nm5MNM5N.18Nm4M2NM6N.17Nm4M3N6.19N7.14', '.6N.N2.N2.6N3.15NJNLJNLJN6J3N2.12NJLJKLJKLJ3L3m3L2N2.10NLKLK2LK2LKm9L2N.10NLKLK2LK2m12LN.10NL3K2Lm14LN.10N2L3m16LN.11N3m17LN.12Nm9KINmINm2MN.12Nm9KN2mN2mM2N.12Nm10K2mK2M3N.10N3m12M2mM2N.10NL3m15MN.10NLmM4m13N.10NLmM6m7L3m2N.9NLmM7m12N.9Nm2M6m13N.7N2Lm3M4m13MN.6NL2m18M2mMN.5NLM4m18M2N.5NM5m18MN.7N3M3m16M2N.10N2M18N.12NM18N.13NM2NM12N2.15N4m5MNM3N.20Nm5MNM3N.20Nm5MNM3N.20Nm5MNM3N.20Nm4M2NM4N.19Nm4M3N4.21N7.13'], juvenile: ['.169N3.28NJ3N.5N3.18NJKLKJN.3NJ3N.16NJLK2LKJN3JK3JN2.14NLKLK2LmL3m5L2N2.13NL2K2m12L2N.13NL2m15LN.13N2m16LN.13Nm9KINmINm2N.13Nm9KN2mN2mMN.13Nm10K2mK2M2N.12N2m12M5N.11NL2m14M2N.11NLmM3m12MN.11NLmM5m6L3m2N.12Nm2M5m11N.10N2Lm2M4m12N.9NL2m15M2mMN.8NLM3m16M2N.9NM4m14M3N.10N2M18N.13NM16N.15NM14N.17N2m4MNM4N2.19Nm3M2NM5N.19Nm3M3N5.21N6.16', '.137N3.28NJ3N.5N3.18NJKLKJN.3NJ3N.16NJLK2LKJN3JK3JN2.14NLKLK2LmL3m5L2N2.13NL2K2m12L2N.13NL2m15LN.13N2m16LN.13Nm9KINmINm2N.13Nm9KN2mN2mMN.13Nm10K2mK2M2N.12N2m12M5N.11NL2m14M2N.11NLmM3m12MN.11NLmM5m6L3m2N.12Nm2M5m11N.10N2Lm2M4m12N.9NL2m15M2mMN.8NLM3m16M2N.9NM4m14M3N.10N2M18N.13NM16N.15NMNM11N2.17N3m4MNM2N2.21Nm4MNM2N2.21Nm3M2NM3N.21Nm3M3N3.23N6.15'] },   // S05
+  7: { adult: ['.140N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N2.16N.Nm2Nm2Nm2Nm2NmN.14NmN2m2Nm2Nm2Nm2Nm2N.13Nm2Nm2Nm2Nm2Nm2Nm2N.13Nm2NmKJK2JK2JK2Jm2N2.12Nm2JK14J2N2.9NJK5LK5LK7J2N.7NJK9LK5LK6JN.5NJK4LK18IN2.3NJK11LK8INK2N2JN.2NK21N2K5N.2NK28N.2NLK22M2K3N.2NL2K25LN.2NL3K23L2N.3NL3K21L3N.4NL25N.6NL23N.8NL21N.8NK3LNL2N4L2N2K3LN3.9NK3LNL2N.2NL2N2K3LN.11NK3LN3.4N2.NK3LN.11NK3LN.9NK3LN.10NL4N.10NL5N.10N4.12N5.7', '.108N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N2.16N.Nm2Nm2Nm2Nm2NmN.14NmN2m2Nm2Nm2Nm2Nm2N.13Nm2Nm2Nm2Nm2Nm2Nm2N.13Nm2NmKJK2JK2JK2Jm2N2.12Nm2JK14J2N2.9NJK5LK5LK7J2N.7NJK9LK5LK6JN.5NJK4LK18IN2.3NJK11LK8INK2N2JN.2NK21N2K5N.2NK28N.2NLK22M2K3N.2NL2K25LN.2NL3K23L2N.3NL3K21L3N.4NL25N.6NL23N.8NL6NL5N2L7N.9NK3LN5L2N.2NK3LN2.10NK3LN2.2NL2N.2NK3LN2.10NK3LN2.2NL2N.2NK3LN.11NK3LN.4N2.3NK3LN.11NK3LN.9NK3LN.10NL4N.10NL5N.10N4.12N5.6'], juvenile: ['.299N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N.19Nm2Nm2Nm2Nm2N2.18Nm2NK2JK2JK2J2N3.14N2K2JLK4LK4J3N2.11NJ2K7LK8J2N.9NJK18INJN.7NJK3LK11INK2N2KJN.6NK16N2K6N.6NK18M2K4N.5N2LK22LN.4NJ2L2K20L2N.5NL4K18L3N.6N2L22N.9NL20N.11NL18N.12NK2LN2L2N2L2N2K2LN2.13NK2LN2L2N2L2N2K2LN.14NK2LN.N2.2N2.NK2LN.13NL4N.7NL4N.14N4.9N4.9', '.267N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N.19Nm2Nm2Nm2Nm2N2.18Nm2NK2JK2JK2J2N3.14N2K2JLK4LK4J3N2.11NJ2K7LK8J2N.9NJK18INJN.7NJK3LK11INK2N2KJN.6NK16N2K6N.6NK18M2K4N.5N2LK22LN.4NJ2L2K20L2N.5NL4K18L3N.6N2L22N.9NL20N.11NL10N2L6N.13NK2LNLN2LN.2N2K2LN2.13NK2LNLN2LN.2N2K2LN2.13NK2LNLN2LN.2N2K2LN.14NK2LN2.2N2.2N2K2LN.13NL4N.7NL4N.14N4.9N4.8'] },   // S08
+  11: { adult: ['.85M2.11M3.15Mp2M.4M2.3Mp3M2.12Mp3M.3Mp2M.2Mp5M2.2M2.5Mp4M.2Mp3M.2Mp6LM2poM.4Mp4M.MK2p2M.3Mp7Kp3M.2Mp5M2K3p2M.3Mp6LpKp3M2p6oK4pM.4Mp4L2p3Kp2M2p9Kp2M.4Mp13Mp12M.5Mp13Mp8KM2.7Mp4Lp7Kp9M.8Mp10K3p7KpM.9Mp7LpK4p6M2.11Mp6LpK6p3K2M.11Mp8K12M.11ML6K6L2K5M.12ML7K4L2K4LM.12ML9KLINK4INM.11ML11N2K4N2M.11ML13K6M.11ML17K2M.11ML18KM.12ML18M.12ML17M.14ML15M.15ML14M.17ML2ML10M.18M2.ML3M3L2M.22ML3M.2M2.24M3.13', '.53M2.11M3.15Mp2M.4M2.3Mp3M2.12Mp3M.3Mp2M.2Mp5M2.2M2.5Mp4M.2Mp3M.2Mp6LM2poM.4Mp4M.MK2p2M.3Mp7Kp3M.2Mp5M2K3p2M.3Mp6LpKp3M2p6oK4pM.4Mp4L2p3Kp2M2p9Kp2M.4Mp13Mp12M.5Mp13Mp8KM2.7Mp4Lp7Kp9M.8Mp10K3p7KpM.9Mp7LpK4p6M2.11Mp6LpK6p3K2M.11Mp8K12M.11ML6K6L2K5M.12ML7K4L2K4LM.12ML9KLINK4INM.11ML11N2K4N2M.11ML13K6M.11ML17K2M.11ML18KM.12ML18M.12ML17M.14ML15M.15ML3ML10M.16ML2M3L8M2.16ML2M.2ML3ML2M.19M2.3ML3ML2M.24ML3M3.26M3.12'], juvenile: ['.275M2.29Mp2M.16M2.9Mp3M.2M2.11MLpM2.7Mp3M.Mp2M.10Mp4M2.5Mp4MKpM.12Mp5M.3M2p5KpM.12Mp6M3K2p6M.13M2p2Lp2MK6p2K2M.12MLM2p6K9M.12Mp2L2p3Lp3oKpK4pM.12Mp2Lp3L2p6K3pM.13MpLp2L4p6K2L2M.13ML13K2L2M.13ML9INL2INLKM.13ML9N2L2N2K2M.13ML16KM.13ML16M.14ML15M.15ML14M.17ML12M.18ML3ML4ML3M.19MLM2L4ML3M.20M.2ML3M4.25M3.14', '.243M2.29Mp2M.16M2.9Mp3M.2M2.11MLpM2.7Mp3M.Mp2M.10Mp4M2.5Mp4MKpM.12Mp5M.3M2p5KpM.12Mp6M3K2p6M.13M2p2Lp2MK6p2K2M.12MLM2p6K9M.12Mp2L2p3Lp3oKpK4pM.12Mp2Lp3L2p6K3pM.13MpLp2L4p6K2L2M.13ML13K2L2M.13ML9INL2INLKM.13ML9N2L2N2K2M.13ML16KM.13ML16M.14ML15M.15ML14M.17ML2M2L8M.18MLM.2ML4MLM.19MLM.2ML4MLM.19MLM.2ML4MLM.20M.4ML3M2.27M3.13'] },   // S12
+  16: { adult: ['.48m4.27mK4m2.24mK6nm.22mK3o2K2n2m.21mK2o2n2on2m.20mK3o2mn4m.20mK4m2n3m.20mK6m4.21mKoK4m.24mKo2K4m.22mKo2K6m.21mKo2K7m.20mKoK3J2K2Jm.19mo3K2J7m.18mo3K3INJ2INm.17mo4K3N2J2N2Jm.16mo4K5J3K2m.16mo3K4JmJ2mJKm.16mo3K6m2K3m.15m2o4K11m.14m4oK12m.14m4oK2oK9m.14m4oK2oK9m.14m4oKo2K9m.14m7o2K6o2m.15m7o3Ko4m.17m6o7m.18m12om.19m12.22m9.24m3.2m2.12', '.16m4.27mK4m2.24mK6nm.22mK3o2K2n2m.21mK2o2n2on2m.20mK3o2mn4m.20mK4m2n3m.20mK6m4.21mKoK4m.24mKo2K4m.22mKo2K6m.21mKo2K7m.20mKoK3J2K2Jm.19mo3K2J7m.18mo3K3INJ2INm.17mo4K3N2J2N2Jm.16mo4K5J3K2m.16mo3K4JmJ2mJKm.16mo3K6m2K3m.15m2o4K11m.14m4oK12m.14m4oK2oK9m.14m4oK2oK9m.14m4oKo2K9m.14m7o2K6o2m.15m7o3Ko4m.17m6o7m.19m12.22m9.24m3.2m2.76'], juvenile: ['.239m3.28mK3m.26mK2mKm.25mK3m2.26mK3m.28mK3m2.25mK6m.23moK7m.21mo2K3J2KJ2m.20mo2K2J6m.19mo3K4J2K2m.19mo3K3INJINKm.17mKo3K3N2KN2Km.17mKm2oK9m.17mKmo2K4m2K4m.16m3K11m.17m3K12m.16m3oK11m.16m3o2moK8m.17m5o3K3o2m.18m6o6m.20m11.22m9.24m8.25m3.2m.13', '.207m3.28mK3m.26mK2mKm.25mK3m2.26mK3m.28mK3m2.25mK6m.23moK7m.21mo2K3J2KJ2m.20mo2K2J6m.19mo3K4J2K2m.19mo3K3INJINKm.17mKo3K3N2KN2Km.17mKm2oK9m.17mKmo2K4m2K4m.16m3K11m.17m3K12m.16m3oK11m.16m3o2moK8m.17m5o3K3o2m.18m6o6m.20m11.22m9.25m3.2m.77'] },   // S17 (hopper)
+  19: { adult: ['.203C2.2C2.2C2.2C2.17CJ2C2J2C2J2C2J2C.15CJ3KJ3KJ3KJ3KC.14CJ3KJ3KJ3KJ3KC.13CK18C.11CQ2PQ2PQ2PQ2Pc7HC.9CQ2PQ2PQ2PQ2PQc8HC.7CPQ2PQ2PQ2PQ2Pc10HC.6CQ2PQ2PQ2PQ2Pc12C.6CPQ2PQ2PQ2Pc14C.6CQ2PQ2PQ2c9ICcICc2C.6CPQ2PQ2c11C2cC2c2C.5CHc24C.3C3c20P2c3C.2CH3c24PC.2CP2c12H11cP2C.2CP4c8H13P2C.4C2P3c6H13P2C.7C2P2c4H13P2C.10CP5H12P2C.12CP17C.13Cc2PCP2C3P2Cc2PC2.14Cc2PC3.3C3c2PC.15Cc2PC.7Cc2PC.16CPC.9CPC.18C.11C.10', '.171C2.2C2.2C2.2C2.17CJ2C2J2C2J2C2J2C.15CJ3KJ3KJ3KJ3KC.14CJ3KJ3KJ3KJ3KC.13CK18C.11CQ2PQ2PQ2PQ2Pc7HC.9CQ2PQ2PQ2PQ2PQc8HC.7CPQ2PQ2PQ2PQ2Pc10HC.6CQ2PQ2PQ2PQ2Pc12C.6CPQ2PQ2PQ2Pc14C.6CQ2PQ2PQ2c9ICcICc2C.6CPQ2PQ2c11C2cC2c2C.5CHc24C.3C3c20P2c3C.2CH3c24PC.2CP2c12H11cP2C.2CP4c8H13P2C.4C2P3c6H13P2C.7C2P2c4H13P2C.10CP5H12P2C.12CP5CP4C2P5C.14Cc2PC6.2Cc2PC2.14Cc2PC.3C2.2Cc2PC2.14Cc2PC.3C2.2Cc2PC.15Cc2PC.7Cc2PC.16CPC.9CPC.18C.11C.9'], juvenile: ['.364C2.C2.C2.23CJ2CJ2CJ2C.21CJ2KJ2KJ2KC.20CK11C3.15C2Q2PQ2PQc5H3C2.12CPQ2PQ2PQc9H2C.10CQPQ2PQ2c13HC.9CPQ2PQc10ICcICcC.9CQPQc12C2cC2cC.8CHc21HC.5C3c18P2c3C.4CH3c21P2C.5CP3c8H11P3C.6C2P2c6H11P2C2.9CP7H10P2C.12CP17C.14Cc2PCP2C2P2Cc2PC2.15Cc2PC3.2C3c2PC.16Cc2PC.6Cc2PC.17CPC.7CPC2.19C.9C.12', '.332C2.C2.C2.23CJ2CJ2CJ2C.21CJ2KJ2KJ2KC.20CK11C3.15C2Q2PQ2PQc5H3C2.12CPQ2PQ2PQc9H2C.10CQPQ2PQ2c13HC.9CPQ2PQc10ICcICcC.9CQPQc12C2cC2cC.8CHc21HC.5C3c18P2c3C.4CH3c21P2C.5CP3c8H11P3C.6C2P2c6H11P2C2.9CP7H10P2C.12C2P5CP3C2P5C.15Cc2PC5.2Cc2PC2.15Cc2PC.2C2.2Cc2PC2.15Cc2PC.2C2.2Cc2PC.16Cc2PC.6Cc2PC.17CPC.7CPC2.19C.9C.11'] },   // S20
+}); STEP_ART.length = 20;
+const HOPPER_SP = [0, 1, 16];   // S01, S03, S17: their step frame rises 1 px inside the 32 box, so the game draws it 1 px higher for the full 2 px hop
 function tokenPB(rle, w) {
   const pb = new PB(w, w); let i = 0;
   for (const [, ch, n] of rle.matchAll(/([.A-Za-z])(\d*)/g)) { const k = n ? +n : 1; if (ch !== '.') pb.p.fill(RUN_LETTERS.indexOf(ch), i, i + k); i += k; }
@@ -2870,6 +3069,7 @@ function tokenPB(rle, w) {
 // approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null. juv: the mibi is a
 // juvenile: its own picture where the species has one, else the adult's.
 function tokenOf(sp, pose, fr, juv) {
+  if (pose === 'step') { const e = stepFrames(STEP_ART[sp], juv); if (e) return art('ts' + (juv ? 'j' : '') + sp + (fr ? 1 : 0), () => tokenPB(e[fr ? 1 : 0], 32)); }   // the step's frames, when the desk has painted both
   const t = SPECIES_ART[sp]; if (!t) return sp >= 3 && sp < SPECIES.length ? standIn(32) : null;   // a kind without a token yet (the art release adds them) shows a plain stand-in
   const n = pose === 'approach' ? 'alert' : pose === 'glow' || pose === 'nest' ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
   const j = juv && JUVENILE_ART[sp];
@@ -3001,6 +3201,60 @@ function stoneArt(lit, cave, fr, warm) {
     return pb; });
 }
 function holeArt(glint) { return art('hole' + glint, () => { const pb = new PB(32, 32); pb.ell(16, 19, 10, 6, C.bark, { sh: [C.clay, C.soil] }); pb.ell(16, 20, 7.5, 4, C.void); if (glint) pb.rect(17, 20, 2, 2, C.yellow); return pb; }); }
+// Rupar fresh hole (art desk 2026-11-07, mibi-art 0f21d0919, L2b F10): pasted from the desk's patch.js, drawn with the page's own PB and art(); wired in shedPod, drawPatch and warnPicPlace.
+const HOLE_DX = -4, HOLE_FRESH_MS = 450;
+const HOLE_BARE = { rock: 1, cave: 1 };
+const HOLE_KEY = { K: 'ink', S: 'soil', B: 'bark', C: 'clay', A: 'sand', F: 'forest', L: 'leaf', G: 'grass', P: 'sprout' };
+// rows 12..31 of the piece, one character a pixel ('.' clear); [frame 0 (earth in the air), frame 1 (settled)]
+const HOLE_ROWS = [[
+  '..............................B.........',
+  '.....................................C..',
+  '........................................',
+  '.................................C......',
+  '.................................S......',
+  '........................................',
+  '.....P.G.......GP...................BC..',
+  '.....LGL.......LS.......................',
+  '......SBCACCA.CAACCAC.........AA........',
+  '....BCKKKKKBKKKKKKKKKCC.......ACCA......',
+  '.P.BKKKKKKKSKKKKKKKKKKC.....ACCACB......',
+  'LPGBKKKKKKKKKKKKKKKKKKKC...ACBCCACB.....',
+  '.SBKKKKKKKKKKKKKKKSSSSSCA.ACCSACCAB.....',
+  '..BKKKKKKKSSSSSSSSSSSSCCACCCBACCBCBB....',
+  '..BSSSSSSSSSSSSSSSSSBCCCBBBCCBBCBBBS....',
+  'P..BCASSSSSSSSSSBBBCACBCSSBBSBBSBS......',
+  '.LS.BACAACCACAACACAACBS..SS.SS.S........',
+  '.....BBCBBBBCBBBCBBBB...................',
+  '.......SBSSBBSSBSSB.....................',
+  '........................................',
+], [
+  '........................................',
+  '........................................',
+  '........................................',
+  '........................................',
+  '........................................',
+  '........................................',
+  '.....P.G.......GP.......................',
+  '.....LGL.......LS.......................',
+  '......SBCACCA.CAACCAC.........AA........',
+  '....BCKKKKKBKKKKKKKKKCC.......ACCA......',
+  '.P.BKKKKKKKSKKKKKKKKKKC.....ACCACB..C...',
+  'LPGBKKKKKKKKKKKKKKKKKKKC...ACBCCACB.S...',
+  '.SBKKKKKKKKKKKKKKKSSSSSCA.ACCSACCAB.....',
+  '..BKKKKKKKSSSSSSSSSSSSCCACCCBACCBCBB....',
+  '..BSSSSSSSSSSSSSSSSSBCCCBBBCCBBCBBBS....',
+  'P..BCASSSSSSSSSSBBBCACBCSSBBSBBSBS...CB.',
+  '.LS.BACAACCACAACACAACBS..SS.SS.S........',
+  '.....BBCBBBBCBBBCBBBB...................',
+  '...C...SBSSBBSSBSSB..............B......',
+  '........................................',
+]];
+function freshHoleArt(fr, bare) {
+  return art('fhole' + fr + (bare ? 'b' : ''), () => { const pb = new PB(40, 32);
+    HOLE_ROWS[fr].forEach((r, j) => { for (let i = 0; i < r.length; i++) { const ch = r[i], k = HOLE_KEY[ch]; if (k && !(bare && 'FLGP'.includes(ch))) pb.set(i, 12 + j, C[k]); } });
+    return pb; });
+}
+const holeFrame = h => { const a = NOW - (h.at || 0); return motion() && a >= 0 && a < HOLE_FRESH_MS ? 0 : 1; };
 const NEST = () => art('nest', () => { const pb = new PB(32, 32); pb.ell(16, 20, 8, 5, C.forest);
   for (let i = 0; i < 10; i++) { const a = i * .63; pb.line(16 + Math.cos(a) * 7, 20 + Math.sin(a) * 4.5, 16 + Math.cos(a + .5) * 11, 20 + Math.sin(a + .5) * 6.5, i % 2 ? C.clay : C.bark); } return pb; });
 function mushArt(fr) { return art('mush' + fr, () => { const pb = new PB(32, 32);
@@ -3053,6 +3307,316 @@ const DROP = () => art('drop', () => { const pb = new PB(5, 7); pb.set(2, 0, C.i
 function sparkArt(big) { return art('spark' + big, () => { const r = big ? 6 : 4, pb = new PB(r * 2 + 1, r * 2 + 1);
   pb.rect(r, 0, 1, r * 2 + 1, C.cream); pb.rect(0, r, r * 2 + 1, 1, C.cream); pb.rect(r - 1, r - 1, 3, 3, C.white); if (big) { pb.set(r - 2, r - 2, C.cream); pb.set(r + 2, r - 2, C.cream); pb.set(r - 2, r + 2, C.cream); pb.set(r + 2, r + 2, C.cream); } return pb; }); }
 
+// ---------- L2 terrain pieces (art desk, signed 2026-11-07): mud, earth banks, scree; the place wade, the map marks ----------
+const L2 = {};
+L2.n = (s, x, y) => (hash(s, x, y) % 1024) / 1024;
+// value noise, smooth; px: optional period in cells along x (seamless tiles)
+L2.noise = (s, x, y, sc, px) => { const fx = x / sc, fy = y / sc, ix = Math.floor(fx), iy = Math.floor(fy), tx = fx - ix, ty = fy - iy, sx = tx * tx * (3 - 2 * tx), sy = ty * ty * (3 - 2 * ty);
+  const w = i => px ? ((i % px) + px) % px : i, a = L2.n(s, w(ix), iy), b = L2.n(s, w(ix + 1), iy), c = L2.n(s, w(ix), iy + 1), d = L2.n(s, w(ix + 1), iy + 1);
+  const top = a + (b - a) * sx, bot = c + (d - c) * sx; return top + (bot - top) * sy; };
+L2.bay = (x, y) => (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16;
+L2.DIRS = ['up', 'right', 'down', 'left'];
+L2.SH = 999;   // a cast shadow on the ground under the piece: drawn as that ground pixel, one step darker (L2.under)
+L2.under = (c, g) => c === L2.SH ? (g >= 0 ? DARK[g] : -1) : c;
+
+// ---------- muddy water: brown water, low contrast, soft dithered edges; ripples like the river's, in clay ----------
+// box (x0, y0, w, h) in pb; soft = { n, e, s, w }: px of falloff on that side (0: the mud runs on to the next tile); period: x period of the noise in px
+// o: { seed, fr, period (x period of the cloud, px: seamless tiles), rip (ripples), rv (ripple variant), ox, oy (the noise origin: continuous over cells), sc (cloud size) }
+// The water stays in it: the mud covers about three pixels in four, so the river's own colour speckles through and the cell still reads as water.
+L2.mud = (pb, x0, y0, w, h, soft, o) => {
+  const seed = o.seed, ox = o.ox || 0, oy = o.oy || 0, sc0 = o.sc || Math.max(5, Math.min(w, h) / 3);
+  const per = o.period ? Math.max(1, Math.round(o.period / sc0)) : 0, sc = per ? o.period / per : sc0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const X = x0 + x, Y = y0 + y, b = L2.bay(X, Y);
+    let a = 1;
+    const wob = (L2.noise(seed + 3, ox + x, 0, sc, per) - .5) * 1.3, wob2 = (L2.noise(seed + 4, ox + x, 0, sc, per) - .5) * 1.3;   // the plume's top and bottom wander
+    if (soft.n) a = Math.min(a, (y + .5) / soft.n - wob); if (soft.s) a = Math.min(a, (h - y - .5) / soft.s - wob2);
+    if (soft.w) a = Math.min(a, (x + .5) / soft.w); if (soft.e) a = Math.min(a, (w - x - .5) / soft.e);
+    const nz = L2.noise(seed, ox + x, oy + y, sc, per), cl = L2.noise(seed + 11, ox + x, oy + y, sc * .7, per ? per * 2 : 0);
+    if (a < 1) a = a * 1.25 + (nz - .5) * .6;   // a ragged, dithered edge, never a straight one
+    const cover = Math.min(a, 1) * (o.cover || .72) * (.7 + nz * .45);   // how much of the pixel is mud: the water always speckles through
+    if (cover <= b) continue;
+    pb.set(X, Y, cl > .66 && b < .5 ? C.clay : C.bark);   // clay clouds in the brown, low contrast
+  }
+  const R = makeRng(hash(seed, 'rip', o.rv || 0)), n = o.rip || 1, L = Math.max(3, Math.round(Math.min(w, 48) / 7));
+  for (let i = 0; i < n; i++) { const y = Math.round(h * (.3 + .4 * (i + R.f()) / n)), x = ((Math.round(w * R.f() * .7) + (o.fr || 0) * 2) % Math.max(1, w - L - 3));
+    for (let k = 0; k < L; k++) { const X = x0 + x + k, Y = y0 + y; if (pb.get(X, Y) >= 0) pb.set(X, Y, C.sand); }   // the river's ripple, in the light of muddy water
+    for (let k = 0; k < (L >> 1); k++) { const X = x0 + x + L + k, Y = y0 + y - 1; if (pb.get(X, Y) >= 0) pb.set(X, Y, C.clay); } }
+};
+
+// ---------- stones (scree): an irregular rounded stone, lit from the top left, with its cast shadow ----------
+L2.stone = (pb, cx, cy, r, seed, big) => {
+  const rx = r * (1 + (L2.n(seed, 1, 0) - .5) * .5), ry = r * (.72 + L2.n(seed, 2, 0) * .2), rot = (L2.n(seed, 3, 0) - .5) * .8;
+  const ins = (x, y) => { const px = x + .5 - cx, py = y + .5 - cy, ca = Math.cos(rot), sa = Math.sin(rot), u = (px * ca + py * sa) / rx, v = (-px * sa + py * ca) / ry, ang = Math.atan2(v, u);
+    return u * u + v * v <= 1 - .18 * L2.n(seed, Math.round((ang + 3.2) * 2), 7); };
+  const R = Math.ceil(Math.max(rx, ry)) + 2, pts = [];
+  for (let y = Math.floor(cy - R); y <= Math.ceil(cy + R); y++) for (let x = Math.floor(cx - R); x <= Math.ceil(cx + R); x++) if (ins(x, y)) pts.push([x, y]);
+  if (!pts.length) pts.push([Math.round(cx), Math.round(cy)]);
+  const on = new Set(pts.map(([x, y]) => x + ',' + y)), has = (x, y) => on.has(x + ',' + y);
+  const done = new Set(), shade = (x, y) => { const v = pb.get(x, y), k = x + ',' + y; if (v === L2.SH || has(x, y) || done.has(k)) return; done.add(k); pb.set(x, y, v >= 0 ? DARK[v] : L2.SH); };   // cast shadow, down-right: what it falls on, one step darker
+  for (const [x, y] of pts) { if (!has(x + 1, y + 1)) shade(x + 1, y + 1); if (r > 2.5 && ((x + y) & 1)) shade(x + 2, y + 1); }
+  for (const [x, y] of pts) {
+    const px = x + .5 - cx, py = y + .5 - cy, edge = !has(x - 1, y) || !has(x + 1, y) || !has(x, y - 1) || !has(x, y + 1), l = (-px * .7 - py * .8) / Math.max(1, r);
+    let c = l > .45 ? C.rockL : l > -.35 ? C.rock : C.stone;
+    if (edge && (!has(x + 1, y) || !has(x, y + 1)) && r > 1.5) c = C.slate;   // the dark side's outline
+    else if (edge && r > 1.5 && c === C.rock && l > .1) c = C.rockL;
+    pb.set(x, y, c);
+  }
+  if (big && r > 3.5) { pb.set(Math.round(cx - r * .35), Math.round(cy - ry * .45), C.fog); const fx = Math.round(cx + r * .1), fy = Math.round(cy + ry * .1); if (has(fx, fy)) pb.set(fx, fy, C.stone); }
+};
+// Stones scattered by dart throwing (never in rows): dens(a, d) in 0..1 over the box W x H in canonical coordinates
+// (a along the edge, d away from it), mapped to the screen by toXY; sizes grow downslope (the big ones roll farthest).
+L2.scatter = (pb, W, H, toXY, dens, rmin, rmax, seed, n, bigDown) => {
+  const R = makeRng(seed), list = [];
+  for (let t = 0; t < n * 40 && list.length < n; t++) {
+    const a = R.f() * W, d = R.f() * H, p = dens(a, d); if (R.f() > p) continue;
+    const down = bigDown ? bigDown(a, d) : .5, r = rmin + (rmax - rmin) * Math.pow(R.f(), 1.6) * (.45 + down * .9);
+    if (list.some(s => Math.hypot(s.a - a, s.d - d) < (s.r + r) * .82)) continue;
+    list.push({ a, d, r, s: R.int(1 << 20) });
+  }
+  const pts = list.map(s => { const [x, y] = toXY(s.a, s.d); return { x, y, r: s.r, s: s.s }; }).sort((p, q) => p.y - q.y);
+  for (const p of pts) L2.stone(pb, p.x, p.y, p.r, p.s, true);
+};
+
+// ---------- earth: the bank's face texture (bark body, clay lit ledges, soil cracks, roots, pebbles) ----------
+// fills the rows y0..y1 of the box x0..x0+w with earth; lit: 0..1 bias to clay (a face turned to the light); seed
+L2.earth = (pb, x0, y0, w, h, lit, seed, unit) => {
+  const u = unit || 1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const X = x0 + x, Y = y0 + y, t = y / Math.max(1, h - 1);
+    const n1 = L2.noise(seed, x, y * 1.8, 7 * u), n2 = L2.noise(seed + 5, x, y, 3 * u), b = L2.bay(X, Y);
+    const crack = Math.abs(L2.noise(seed + 9, x, y * 3.2, 9 * u) - .5) < .035 + .01 * u;   // wavy, broken seams (never ruled lines)
+    const v = n1 * .7 + n2 * .3 + lit * .16 - t * .28 + (b - .5) * .12;
+    pb.set(X, Y, crack ? C.soil : v > .68 ? C.clay : v > .33 ? C.bark : C.soil);
+  }
+};
+L2.roots = (pb, x0, y0, w, h, seed, n, th) => {
+  const R = makeRng(hash(seed, 'roots'));
+  for (let i = 0; i < n; i++) { let x = x0 + 2 + R.int(Math.max(1, w - 4)); const len = Math.round(h * (.25 + R.f() * .35));
+    for (let y = 0; y < len; y++) { if (R.chance(.22)) x += R.chance(.5) ? 1 : -1; pb.rect(x, y0 + y, th, 1, C.soil); if (th > 1 && R.chance(.3)) pb.set(x, y0 + y, C.bark); } }
+};
+L2.pebbles = (pb, x0, y0, w, h, seed, n, r) => { const R = makeRng(hash(seed, 'peb'));
+  for (let i = 0; i < n; i++) L2.stone(pb, x0 + r + R.f() * (w - 2 * r), y0 + r + R.f() * (h - 2 * r), r * (.7 + R.f() * .5), R.int(1 << 20), false); };
+// grass lip: a band of grass along the top of a face (y0..y0+L), its underside dripping down unevenly; tufts in sprout
+L2.lip = (pb, x0, y0, w, L, drip, seed) => {
+  for (let x = 0; x < w; x++) { const X = x0 + x, dl = Math.round(L2.noise(seed, x, 0, 3) * drip * 1.5 + (L2.n(seed, x, 4) > .8 ? drip * .6 : 0)), bot = y0 + L + dl;
+    for (let Y = y0; Y < bot; Y++) { const t = (Y - y0) / Math.max(1, bot - y0);
+      pb.set(X, Y, Y === bot - 1 ? C.leaf : t < .25 && L2.n(seed, X, Y) > .55 ? C.sprout : L2.n(seed + 1, X, Y) > .86 ? C.leaf : C.grass); }
+    pb.set(X, bot, C.forest);   // the shade under the lip
+    if (L2.n(seed + 2, x, 0) > .8) pb.set(X, y0, C.lime); }
+};
+// grass tufts standing on a line (the foot of a face): blades up from y
+L2.tufts = (pb, x0, y, w, seed, h) => { for (let x = 0; x < w; x++) { const r = L2.n(seed, x, 9); if (r < .45) continue; const l = 1 + Math.round(r * (h - 1));
+  for (let k = 0; k < l; k++) pb.set(x0 + x, y - k, k === l - 1 ? (r > .8 ? C.sprout : C.grass) : C.leaf); } };
+// a foothold cut into earth: the dark back wall above, the lit tread below, crumbs under it
+L2.notch = (pb, cx, cy, w, h) => { const x0 = Math.round(cx - w / 2), y0 = Math.round(cy - h / 2);   // a scooped hole: rounded top, dark inside, a lit tread
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const u = (x + .5 - w / 2) / (w / 2), v = (y + .5) / h; if (v < .5 && u * u + ((.5 - v) * 2) ** 2 > 1.05) continue;
+    pb.set(x0 + x, y0 + y, y >= h - 2 ? (y === h - 1 ? C.sand : C.clay) : v < .45 ? C.ink : C.soil); }
+  pb.rect(x0 - 1, y0 + h - 1, 1, 1, C.clay); pb.rect(x0 + w, y0 + h - 1, 1, 1, C.bark);
+  pb.set(x0 + 1, y0 + h, C.clay); pb.set(x0 + w - 2, y0 + h + 1, C.clay); pb.set(x0 + (w >> 1), y0 + h + 2, C.bark); };
+
+// ---------- the place pieces: one block of 2 x 2 tiles in screen orientation, cut per tile ----------
+// type: 'face' (the high ground to the north: a south-facing face), 'side' (high ground east or west), 'lip' (this place is the high
+// side), 'foot' (high ground to the south: the face turned away). dir: the crossing's side of the place.
+L2.blockXY = (dir, S) => dir === 'up' ? (a, d) => [a, d] : dir === 'down' ? (a, d) => [a, S - 1 - d] : dir === 'left' ? (a, d) => [d, a] : (a, d) => [S - 1 - d, a];
+L2.bankBlock = (ts, dir, type, dug, seed) => art('l2bank|' + ts + dir + type + dug + seed, () => {
+  const S = 2 * ts, pb = new PB(S, S), u = ts / 32, R = makeRng(hash(seed, 'bank'));
+  if (type === 'face') {   // a south-facing earth face, the height of the rock face beside it: lip, earth, roots, foot tufts
+    const L = Math.round(6 * u), foot = S - Math.round(7 * u);   // the foot where the meadow's rock faces end theirs; the lawn below
+    L2.earth(pb, 0, L, S, foot - L, .3, seed, u);
+    L2.roots(pb, 0, L, S, foot - L, seed, 3, u > 1 ? 2 : 1);
+    L2.pebbles(pb, 0, L + 6 * u, S, foot - L - 10 * u, seed, Math.round(3 * u), 1.6 * u);
+    pb.rect(0, foot - 1, S, 1, C.soil);
+    for (let y = L; y < foot; y++) { pb.set(0, y, C.soil); pb.set(S - 1, y, C.soil); if (L2.n(seed, y, 11) > .6) pb.set(1, y, C.soil); if (L2.n(seed, y, 12) > .6) pb.set(S - 2, y, C.soil); }   // the joins to the rock beside it
+    for (let x = 0; x < S; x++) if (L2.n(seed, x, 13) > .7) pb.set(x, foot, L2.n(seed, x, 14) > .5 ? C.bark : C.clay);   // crumbs at the foot
+    L2.lip(pb, 0, 0, S, L, Math.round(3 * u), seed);
+    L2.tufts(pb, 0, foot + Math.round(2 * u), S, seed + 3, Math.round(4 * u));
+    if (dug) { const w = Math.round(9 * u), h = Math.round(6 * u); [[.4, .74], [.56, .54], [.42, .34]].forEach(([fx, fy]) => L2.notch(pb, S * fx, S * fy, w, h)); }
+    return pb; }
+  // the other three: a band of exposed earth along the place's edge, as thick as the drop shows from here
+  const toXY = L2.blockXY(dir, S), put = (a, d, c) => { const [x, y] = toXY(a, d); pb.set(x, y, c); };
+  const lit = dir === 'right' ? .55 : dir === 'left' ? .05 : dir === 'down' ? .3 : .15;
+  const band = type === 'side' ? (ts === 48 ? 28 : 14) : type === 'foot' ? Math.round(7 * u) : dir === 'up' ? Math.round(9 * u) : Math.round(12 * u);
+  const ragged = a => Math.round(L2.noise(seed + 4, a, 0, 4 * u) * 3 * u);
+  if (type === 'foot') for (let d = 0; d < Math.round(16 * u); d++) for (let a = 0; a < S; a++) if (((a + d) & 1) && d >= band && L2.bay(a, d) < .65 - (d - band) / (16 * u)) put(a, d, C.forest);   // the shade the higher ground throws
+  // the earth itself (in a temporary buffer, so its texture keeps its own grain in any orientation)
+  const tmp = new PB(S, band + 4 * u); L2.earth(tmp, 0, 0, S, tmp.h, lit, seed, u);
+  for (let a = 0; a < S; a++) { const e = band + ragged(a);
+    for (let d = 0; d < e; d++) { let c = tmp.get(a, Math.min(tmp.h - 1, e - 1 - d)); if (d === 0) c = C.soil; put(a, d, c); }
+    // the grass rim on the high side of the earth (or, for a side wall, its top edge at the place's edge)
+    if (type === 'lip' || type === 'foot') { put(a, e, L2.n(seed, a, 1) > .6 ? C.sprout : C.grass); if (L2.n(seed, a, 2) > .55) put(a, e - 1, C.leaf); if (L2.n(seed, a, 3) > .8) put(a, e + 1, C.leaf); }
+    else { put(a, 0, L2.n(seed, a, 1) > .5 ? C.grass : C.leaf); if (L2.n(seed, a, 2) > .6) put(a, 1, C.leaf);
+      put(a, e, C.soil); if (L2.n(seed, a, 5) > .7) put(a, e + 1, C.bark); }   // the side wall's foot, crumbs past it
+  }
+  // roots hanging over the earth from the grass, and crumbs fallen past the band
+  for (let i = 0; i < Math.round(4 * u); i++) { const a = 3 + R.int(S - 6), d0 = type === 'lip' || type === 'foot' ? band - 1 : 2; let aa = a;
+    for (let k = 0; k < Math.round(band * .5); k++) { if (R.chance(.25)) aa += R.chance(.5) ? 1 : -1; put(aa, type === 'lip' || type === 'foot' ? d0 - k : d0 + k, C.soil); } }
+  for (let i = 0; i < Math.round(9 * u); i++) { const a = R.int(S), d = band + 2 + R.int(Math.round(10 * u)); put(a, d, R.chance(.5) ? C.clay : C.bark); if (R.chance(.3)) put(a + 1, d, C.bark); }
+  if (type === 'side') { const tmp2 = new PB(S, S); L2.pebbles(tmp2, 0, 0, S, band, seed + 6, Math.round(3 * u), 1.5 * u);
+    for (let a = 0; a < S; a++) for (let d = 2; d < band - 1; d++) { const c = tmp2.get(a, d); if (c >= 0) put(a, d, c); } }
+  if (dug) { const w = Math.round(6 * u), h = Math.round(4 * u);
+    [[.3, .5], [.52, .45], [.74, .55]].forEach(([fa, fd]) => { const a = Math.round(S * fa), d = Math.round(band * fd);
+      const [x, y] = toXY(a, d); const vert = dir === 'left' || dir === 'right'; L2.notch(pb, x, y, vert ? h + 1 : w, vert ? w - 1 : h); }); }
+  return pb;
+});
+L2.screeBlock = (ts, dir, type, seed) => art('l2scree|' + ts + dir + type + seed, () => {
+  const S = 2 * ts, pb = new PB(S, S), u = ts / 32, toXY = L2.blockXY(dir, S);
+  // canonical: a along the edge, d inward from the place's edge (0..S). The fan widens downslope: from the edge when the place is low, toward it when high.
+  const lowHere = type !== 'lip', src = d => lowHere ? d / S : 1 - d / S;   // 0 at the source (the high side), 1 downslope
+  const dens = (a, d) => { const t = src(d), half = S * (.24 + .3 * t), off = Math.abs(a - S / 2);
+    if (off > half) return 0; const base = type === 'face' ? 1 - t * .55 : type === 'lip' ? (d < S * .45 ? .95 - d / S : .2 * (1 - d / S)) : 1 - t * .8;
+    return Math.max(0, base) * (1 - Math.pow(off / half, 3) * .7); };
+  L2.scatter(pb, S, S, (a, d) => toXY(a, d), dens, 1.3 * u, 6 * u, hash(seed, 'scree'), Math.round(30 * u * u), (a, d) => src(d));
+  // pebbles and grit between the stones
+  const R = makeRng(hash(seed, 'grit'));
+  for (let i = 0; i < Math.round(60 * u * u); i++) { const a = R.f() * S, d = R.f() * S; if (R.f() > dens(a, d) * .9) continue; const [x, y] = toXY(Math.round(a), Math.round(d)); if (pb.get(x, y) >= 0) continue; pb.set(x, y, R.chance(.6) ? C.rock : C.stone); if (R.chance(.4) && pb.get(x + 1, y + 1) < 0) pb.set(x + 1, y + 1, L2.SH); }
+  return pb;
+});
+// nb: 4 chars n,e,s,w: 'w' wade, 'o' open water, 'l' land; rv: a ripple variant; ox: the tile's x in the place (px) so the cloud runs on
+// unbroken from tile to tile (no ox: a cloud that repeats every tile, seamless, for the 32 px tiles that carry no position)
+L2.wade = (ts, nb, fr, rv, ox, period) => art('l2wade|' + ts + nb + fr + ':' + (rv || 0) + ':' + (ox == null ? 'p' : ox) + ':' + (period || 0), () => {
+  const pb = new PB(ts, ts), u = ts / 32, f = Math.round(ts * .5), shore = Math.round((ts === 48 ? 7 : 2) * u);
+  const soft = { n: nb[0] === 'o' ? f : 0, e: nb[1] === 'l' ? 3 * u : 0, s: nb[2] === 'o' ? f : 0, w: nb[3] === 'l' ? 3 * u : 0 };
+  const x0 = nb[3] === 'l' ? shore : 0, x1 = nb[1] === 'l' ? ts - shore : ts;
+  L2.murk(pb, x0, x1 - x0, ts, soft, { seed: hash('l2wade', ts), fr, period: ox == null ? ts : period || 0, ox: (ox || 0) + x0 });
+  return pb;
+});
+// The place's muddy water: the same river, brown-clouded. At most about half of the water is mud (the river shows through every other
+// pixel at the cloud's heart, far more toward its edges), the top and bottom fray into the water with no outline, and the river's own
+// ripple lines (sky, its 2 frames) run across the mud and on into the clear water.
+L2.murk = (pb, x0, w, h, soft, o) => {
+  const seed = o.seed, ox = o.ox || 0, sc0 = h / 2.2, per = o.period ? Math.max(1, Math.round(o.period / sc0)) : 0, sc = per ? o.period / per : sc0;
+  const n = (s, x, y, k) => L2.noise(seed + s, ox + x, y, sc * k, per ? Math.max(1, Math.round(per / k)) : 0);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const X = x0 + x, b = L2.bay(X, y);
+    let a = 1;   // 0 at the frayed edge, 1 at the heart of the cloud
+    if (soft.n) a = Math.min(a, (y + .5) / soft.n + (n(3, x, 0, 1) - .5) * .9);
+    if (soft.s) a = Math.min(a, (h - y - .5) / soft.s + (n(4, x, 0, 1) - .5) * .9);
+    if (soft.w) a = Math.min(a, (x + .5) / soft.w); if (soft.e) a = Math.min(a, (w - x - .5) / soft.e);
+    a = Math.max(0, Math.min(1, a * 1.5));   // a broad heart, a long frayed fall-off
+    const cl = n(0, x, y, .6), cover = a * a * (3 - 2 * a) * (.46 + cl * .3);   // a smooth rise; the cloud thicker and thinner in drifts, never over ~.6
+    if (cover <= b) continue;
+    pb.set(X, y, n(11, x, y, .45) > .78 && b < .3 ? C.clay : C.bark);   // a rare lighter swirl, never a clump
+  }
+  const R = makeRng(hash(seed, 'rip', ox)), fr = o.fr || 0, rows = h >= 48 ? [.3, .66] : [.4, .72];   // the river's ripples: a 6 px line and a 3 px step up, moving 2 px a frame
+  rows.forEach(fy => { const y = Math.round(h * fy) + R.int(5) - 2, x = x0 + ((R.int(Math.max(1, w - 10)) + fr * 2) % Math.max(1, w - 9)), on = R.chance(.75);
+    if (on) { pb.rect(x, y, 6, 1, C.sky); pb.rect(x + 6, y - 1, 3, 1, C.sky); } });   // not every tile carries both, so the row never ticks like a ruler
+};
+// The tile's place in its crossing, packed into the 32 px mask (bit 0 dug; bits 1-2 the side; bit 3 the neighbour higher; bit 4 d; bit 5 k).
+L2.tileMask = (lay, x, y) => { const q = crossingAt(lay, x, y); if (!q) return lay.bankDug ? 1 : 0;
+  const d = q.dir === 'left' ? x : q.dir === 'right' ? PW - 1 - x : q.dir === 'up' ? y : PH - 1 - y, k = (q.dir === 'up' || q.dir === 'down' ? x : y) - q.s;
+  const n = stepCell(lay.cell, q.dir), hi = n >= 0 && G.level[n] > G.level[lay.cell];
+  return (lay.bankDug ? 1 : 0) | L2.DIRS.indexOf(q.dir) << 1 | (hi ? 8 : 0) | d << 4 | k << 5; };
+L2.unpack = m => { const dir = L2.DIRS[(m >> 1) & 3], hi = !!(m & 8); return { dug: m & 1, dir, hi, d: (m >> 4) & 1, k: (m >> 5) & 1, type: !hi ? 'lip' : dir === 'up' ? 'face' : dir === 'down' ? 'foot' : 'side' }; };
+L2.cut = (blk, ts, dir, d, k) => { const [bx, by] = dir === 'up' ? [k, d] : dir === 'down' ? [k, 1 - d] : dir === 'left' ? [d, k] : [1 - d, k], out = new PB(ts, ts);
+  for (let y = 0; y < ts; y++) for (let x = 0; x < ts; x++) out.p[y * ts + x] = blk.p[(by * ts + y) * blk.w + bx * ts + x]; return out; };
+L2.piece = (ts, t, m, fr, nb, rv, ox) => {
+  if (t === T.WADE) return L2.wade(ts, nb, fr, rv, ox);
+  const o = L2.unpack(m), blk = t === T.BANK ? L2.bankBlock(ts, o.dir, o.type, o.dug, 7) : L2.screeBlock(ts, o.dir, o.type, 7);
+  return art('l2cut|' + ts + t + m + o.type, () => L2.cut(blk, ts, o.dir, o.d, o.k)); };
+// buildTile, after the ground: case T.WADE: L2.tile32(pb, t, base, mask, fr, v); break;  (and the same for T.SCREE, T.BANK)
+L2.tile32 = (pb, t, base, mask, fr, v) => {
+  if (t === T.WADE) {   // the river's water, its foam where it meets land, the mud across it
+    pb.rect(0, 0, 32, 32, C.river);
+    const nb = ['o', mask & 2 ? 'l' : 'w', 'o', mask & 8 ? 'l' : 'w'].join('');
+    pb.blit(L2.wade(32, nb, fr, v, (v & 3) * 32, 128), 0, 0);   // v = x & 3 (tileKeys): the cloud runs on over four tiles, then repeats
+    if (mask & 8) { pb.rect(0, 0, 2, 32, C.ice); for (let y = 0; y < 32; y += 3) pb.set(2, y + fr, C.sky); }
+    if (mask & 2) { pb.rect(30, 0, 2, 32, C.ice); for (let y = 1; y < 32; y += 3) pb.set(29, y + fr, C.sky); }
+    return; }
+  if (t === T.SCREE) groundInto(pb, T.SAND, hash('tile', t, base));
+  else groundInto(pb, base === T.DARK ? T.DARK : T.GRASS, hash('tile', t, base));
+  { const pc = L2.piece(32, t, mask, fr); for (let k = 0; k < 1024; k++) { const c = pc.p[k]; if (c >= 0) pb.p[k] = L2.under(c, pb.p[k]); } }
+};
+// 48 px: the piece over the whole tile, and the key suffix that tells the tiles of a crossing apart
+L2.nb48 = (lay, i) => { const x = i % PW, y = (i / PW) | 0, at = (X, Y) => X < 0 || Y < 0 || X >= PW || Y >= PH ? -1 : lay.tiles[Y * PW + X];
+  return [[0, -1], [1, 0], [0, 1], [-1, 0]].map(([dx, dy]) => { const n = at(x + dx, y + dy); return n === T.WADE ? 'w' : n === -1 || WET48(n) ? 'o' : 'l'; }).join(''); };
+L2.key48 = (lay, i, fr) => { const t = lay.tiles[i]; if (t === T.WADE) return '|L2w' + L2.nb48(lay, i) + fr + ':' + (i % PW);
+  if (t === T.BANK || t === T.SCREE) return '|L2' + L2.tileMask(lay, i % PW, (i / PW) | 0); return ''; };
+L2.place48 = (lay, i, fr) => { const t = lay.tiles[i]; return L2.piece(48, t, t === T.WADE ? 0 : L2.tileMask(lay, i % PW, (i / PW) | 0), fr, t === T.WADE ? L2.nb48(lay, i) : '', i % 3, (i % PW) * 48); };
+// tile48, once the tile's layers are in pb: the piece over them. A dark wood place darkens ground (mud, scree, a bank's rim), never a wall:
+// a bank's face or side wall stays in the light the rock faces beside it keep.
+L2.overlay48 = (pb, lay, i, fr, dark) => { const t = lay.tiles[i]; if (t !== T.WADE && t !== T.SCREE && t !== T.BANK) return;
+  const pc = L2.place48(lay, i, fr), o = t === T.BANK ? L2.unpack(L2.tileMask(lay, i % PW, (i / PW) | 0)) : null, dk = dark && !(o && (o.type === 'face' || o.type === 'side'));
+  for (let k = 0; k < 48 * 48; k++) { const c = pc.p[k]; if (c < 0) continue; const v = L2.under(c, pb.p[k]); if (v >= 0) pb.p[k] = dk && c !== L2.SH ? DARK[v] : v; } };
+
+// ---------- icons (16 x 12): the map's signs and pins ----------
+const L2_ICON = {
+  mud: () => art('i-mud', () => { const pb = new PB(16, 12);   // a puddle of muddy water: a mud rim, brown water with the blue showing through, a ripple
+    pb.ell(8, 6.4, 7.6, 4.8, C.soil); pb.ell(8, 6.2, 6.8, 4, C.bark); const w = new PB(16, 12); w.ell(8, 6.3, 5.6, 3.1, C.river);
+    for (let k = 0; k < 192; k++) if (w.p[k] >= 0) pb.p[k] = L2.bay(k % 16, k >> 4) < .6 ? C.bark : C.river;
+    pb.rect(4, 5, 3, 1, C.sky); pb.rect(7, 4, 2, 1, C.sky); pb.rect(9, 7, 3, 1, C.sand); pb.set(3, 3, C.clay); pb.set(4, 2, C.clay); return pb; }),
+  bankLip: dug => art('i-bank' + dug, () => { const pb = new PB(16, 12);   // a little earth bank: grass on top, the earth face, crumbs at its foot
+    pb.rect(1, 4, 14, 7, C.bark); pb.rect(1, 4, 14, 2, C.clay); pb.rect(0, 2, 16, 2, C.grass); pb.rect(0, 2, 16, 1, C.sprout);
+    for (const x of [1, 4, 5, 9, 12, 14]) pb.set(x, 4, C.leaf); for (const x of [3, 8, 11]) pb.set(x, 7, C.soil);
+    pb.rect(1, 10, 14, 1, C.soil); pb.set(0, 11, C.bark); pb.set(15, 11, C.clay); pb.set(6, 11, C.bark);
+    if (dug) for (const [x, y] of [[4, 8], [7, 6], [10, 8]]) { pb.rect(x, y, 2, 1, C.soil); pb.rect(x, y + 1, 2, 1, C.sand); }
+    pb.outline(() => C.soil); return pb; }),
+  scree: () => art('i-scree', () => { const pb = new PB(16, 12);   // a heap of loose stones, mixed sizes
+    for (const [x, y, r, s] of [[8, 4, 2.4, 3], [4.5, 7.5, 2.2, 5], [11, 7.6, 2.6, 8], [7.5, 9, 1.8, 2], [2.4, 10, 1.3, 4], [13.6, 10.2, 1.2, 6], [10, 3.6, 1.2, 9]]) L2.stone(pb, x, y, r, hash('icon', s), false);
+    for (let k = 0; k < pb.p.length; k++) if (pb.p[k] === L2.SH) pb.p[k] = C.stone;
+    return pb; }),
+};
+
+// ---------- the map and the reach view (26, 48, 72 px cells): replaces drawSoftMarks ----------
+// An earth bank sits where a cliff mark would, with the cliff's weight, in earth: a south-facing drop shows its face (soil, lit clay, a
+// grassy lip dripping over it, crumbs at the foot); the other drops a soil line with an earth strip. Dug: footholds cut into it.
+// A scree edge: loose stones over the edge line, a fan wider on the low side. A wade: its water clouded brown with mud.
+L2.MARK = { 26: { face: 4, lip: 1, th: 2, shadow: 2, fan: 8, r: [1.1, 2.3] }, 48: { face: 8, lip: 2, th: 3, shadow: 3, fan: 12, r: [1.2, 3.0] }, 72: { face: 12, lip: 2, th: 4, shadow: 4, fan: 17, r: [1.4, 4.0] } };
+function softMarkPB(cs, sides, ground, parity, c) {
+  const P = L2.MARK[cs] || L2.MARK[26], pb = new PB(cs, cs), cur = (x, y) => { const v = pb.get(x, y); return v >= 0 ? v : ground ? ground(x, y) : -1; };
+  const at = (dir, a, d) => dir === 'up' ? [a, d] : dir === 'down' ? [a, cs - 1 - d] : dir === 'left' ? [d, a] : [cs - 1 - d, a];   // a along the edge, d into this cell
+  const put = (dir, a, d, col) => { const [x, y] = at(dir, a, d); pb.set(x, y, col); };
+  const lipPx = (dir, a, d) => { const [x, y] = at(dir, a, d), v = cur(x, y); if (v >= 0) pb.set(x, y, TINT[v]); };
+  for (const [dir, kind, hi, dug, ei] of sides) {
+    const s = hash('l2m', ei);
+    if (kind === 'bank') {
+      if (hi && dir === 'up') {   // the face, in the lower cell's top rows
+        const F = P.face;
+        for (let a = 0; a < cs; a++) { const n = L2.n(s, a, 0), drop = L2.n(s, a, 1) > .7 ? 1 : 0;
+          for (let d = 0; d < F + drop; d++) { const t = d / F, v = L2.noise(s, a, d * 2, 3) + (L2.bay(a, d) - .5) * .2;
+            put(dir, a, d, d === 0 ? C.soil : d >= F - 1 ? (d === F - 1 ? C.soil : C.bark) : v - t * .35 > .48 ? C.clay : C.bark); }
+          if (n > .62) put(dir, a, 0, C.leaf); if (n > .9) put(dir, a, 1, C.leaf);   // grass from the lip hanging over
+          if (L2.n(s, a, 2) > .8 && F > 4) put(dir, a, F >> 1, C.soil); }
+        if (cs >= 48) for (let k = 0; k < cs / 24; k++) { const a = 3 + (hash(s, 'r', k) % (cs - 6)); for (let d = 1; d < F * .6; d++) put(dir, a + ((d >> 2) & 1), d, C.soil); }   // roots
+        for (let a = 0; a < cs; a += 1) if (L2.n(s, a, 3) > .78) put(dir, a, F + 1 + (L2.n(s, a, 4) > .6 ? 1 : 0), L2.n(s, a, 5) > .5 ? C.bark : C.clay);   // crumbs
+        if (dug) { const w = cs >= 72 ? 5 : cs >= 48 ? 4 : 2, ih = cs >= 48 ? 2 : 1; [-1, 0, 1].forEach(k => { const a = (cs >> 1) + k * Math.max(4, cs >> 3) - (w >> 1), d = 1 + ((k + 1) % 2) * Math.max(1, F >> 2);
+          for (let i = 0; i < w; i++) { for (let j = 0; j < ih; j++) put(dir, a + i, d + j, (i === 0 || i === w - 1) && j === 0 && w > 2 ? C.soil : C.ink); put(dir, a + i, d + ih, C.sand); if (F > 4) put(dir, a + i, d + ih + 1, C.clay); } }); }
+      } else if (hi) {   // a soil seam where the cliff has its ink, a lit earth strip beside it
+        for (let a = 0; a < cs; a++) { put(dir, a, 0, L2.n(s, a, 0) > .75 ? C.bark : C.soil);   // the earth's dark seam, where a cliff has its ink
+          for (let d = 1; d < P.th; d++) put(dir, a, d, L2.n(s, a, d) > .82 ? C.bark : C.clay);   // the bank's earth, lit: the line a cliff never has
+          if (L2.n(s, a, 6) > .45) put(dir, a, P.th, L2.n(s, a, 11) > .5 ? C.bark : C.clay);   // a ragged foot
+          if (L2.n(s, a, 8) > .86) put(dir, a, P.th + P.shadow - 1 + (L2.n(s, a, 9) > .5 ? 1 : 0), L2.n(s, a, 10) > .5 ? C.clay : C.bark); }   // crumbs
+        if (dir === 'left' && ground) for (let a = 0; a < cs; a++) for (let d = P.th; d < P.th + P.shadow; d++) { const [x, y] = at(dir, a, d); if ((x + y + parity) & 1) continue; const v = cur(x, y); if (v >= 0) pb.set(x, y, DARK[v]); }
+        if (dug) { const w = cs >= 48 ? 3 : 2; [-1, 0, 1].forEach(k => { const a = (cs >> 1) + k * Math.max(4, cs >> 3);
+          for (let i = 0; i < w; i++) put(dir, a + i, i ? P.th - 1 : 0, C.ink); for (let d = 0; d < P.th + 1; d++) put(dir, a + w, d, C.sand); }); }
+      } else {   // the high side: the cliff's lit lip, with a grass tuft or two over the earth
+        for (let a = 0; a < cs; a++) { for (let d = 0; d < P.lip; d++) lipPx(dir, a, d); if (L2.n(s, a, 7) > .75) put(dir, a, 0, C.sprout); }
+        if (dug && dir !== 'down') [-1, 0, 1].forEach(k => { const a = (cs >> 1) + k * Math.max(4, cs >> 3); put(dir, a, 0, C.bark); put(dir, a + 1, 0, C.bark); });
+      }
+    } else {   // scree: no edge line; stones heaped over it, the fan wider on the low side
+      const R = makeRng(hash(s, 'fan')), F = hi && dir === 'up' ? P.face : 0, list = [];
+      const n = Math.round(cs * (hi ? (dir === 'up' ? 1.5 : 1.2) : .35));
+      for (let t = 0; t < n * 30 && list.length < n; t++) { const a = R.f() * cs, d = hi ? Math.pow(R.f(), 1.5) * (P.fan + F) : R.f() * (P.lip + 1.5);
+        const r = P.r[0] + (P.r[1] - P.r[0]) * Math.pow(R.f(), 2) * (hi ? .6 + .7 * d / (P.fan + F) : .5);
+        if (list.some(q => Math.hypot(q.a - a, q.d - d) < (q.r + r) * .85)) continue; list.push({ a, d, r, k: R.int(1 << 20) }); }
+      const pts = list.map(q => { const [x, y] = at(dir, q.a, q.d); return { x, y, r: q.r, k: q.k }; }).sort((p, q) => p.y - q.y);
+      for (const p of pts) { if (p.r < 1.8 || cs < 48) { const X = Math.round(p.x), Y = Math.round(p.y), w = p.r > 2.1 ? 3 : p.r > 1.15 ? 2 : 1, h = p.r > 1.45 ? 2 : 1;   // a chip: lit top-left, its shadow on the ground
+          for (const [sx, sy] of [[w, h], [w, h - 1], [w - 1, h]]) { const g = cur(X + sx, Y + sy); if (g >= 0 && g !== C.rock && g !== C.rockL) pb.set(X + sx, Y + sy, DARK[g]); }
+          pb.rect(X, Y, w, h, C.rock); pb.set(X, Y, L2.n(p.k, 0, 0) > .35 ? C.rockL : C.rock); if (w > 1 && h > 1) pb.set(X + w - 1, Y + 1, C.stone); if (w > 2) pb.set(X + 1, Y, C.rockL); }
+        else L2.stone(pb, p.x, p.y, p.r, p.k, cs >= 48); }
+    }
+  }
+  for (let k = 0; k < cs * cs; k++) if (pb.p[k] === L2.SH) pb.p[k] = L2.under(L2.SH, ground ? ground(k % cs, (k / cs) | 0) : -1);   // cast shadows onto the cell's own ground
+  return pb;
+}
+function wadeMarkPB(cs, nb, c) {   // nb: n,e,s,w each 'w' wade, 'o' open water, 'l' land (the foam stays); the cloud is continuous from cell to cell
+  const pb = new PB(cs, cs), inset = cs === 26 ? 2 : Math.round(cs * .06), f = Math.round(cs * .35), p = cxy(c);
+  const x0 = nb[3] === 'l' ? inset : 0, x1 = nb[1] === 'l' ? cs - inset : cs, y0 = nb[0] === 'l' ? inset : 0, y1 = nb[2] === 'l' ? cs - inset : cs;
+  L2.mud(pb, x0, y0, x1 - x0, y1 - y0, { n: nb[0] === 'o' ? f : nb[0] === 'l' ? 2 : 0, s: nb[2] === 'o' ? f : nb[2] === 'l' ? 2 : 0, e: nb[1] === 'l' ? 2 : 0, w: nb[3] === 'l' ? 2 : 0 },
+    { seed: hash('l2wm', S.seed), ox: p.x * cs + x0, oy: p.y * cs + y0, rip: cs >= 48 ? 2 : 1, rv: c, sc: cs / 3, cover: cs >= 48 ? .6 : .72 });
+  return pb;
+}
+
 // ---------- Icons (HUD, map signs, menus) ----------
 const ICON = {
   energy: () => art('i-energy', () => { const pb = new PB(14, 14); pb.poly([[7, 0], [13.5, 7], [7, 14], [.5, 7]], C.amber); pb.poly([[7, 0], [13.5, 7], [7, 7]], C.yellow); pb.poly([[.5, 7], [7, 14], [7, 7]], C.orange); return pb; }),
@@ -3091,7 +3655,8 @@ const ICON = {
   start: () => art('i-start', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 5.4, 5.4, C.bone, { clip: (x, y) => Math.hypot(x + .5 - 5.5, y + .5 - 5.5) > 3.8 }); return pb; }),
   arrow: (dir) => art('i-arr' + dir, () => { const pb = new PB(9, 13); pb.poly([[0, 0], [9, 6.5], [0, 13]], C.yellow); pb.outline(() => C.rust); return dir < 0 ? flipPB(pb) : pb; }),
   tri: () => art('i-tri', () => { const pb = new PB(8, 12); pb.poly([[0, 0], [8, 6], [0, 12]], C.orange); return pb; }),
-  wave: () => art('i-wave', () => { const pb = new PB(16, 12); for (const y0 of [3, 8]) for (let x = 0; x < 16; x++) pb.set(x, y0 + Math.round(Math.sin(x * .8) * 1.4), C.sky); return pb; }),
+  ...L2_ICON,   // mud, bankLip, scree: the map's signs and pins
+  wave: () => art('i-wave',() => { const pb = new PB(16, 12); for (const y0 of [3, 8]) for (let x = 0; x < 16; x++) pb.set(x, y0 + Math.round(Math.sin(x * .8) * 1.4), C.sky); return pb; }),
   burrow: (lit) => art('i-burrow' + lit, () => { const pb = new PB(16, 14); pb.ell(8, 12, 7.5, 9, lit ? C.clay : C.stone, { clip: (x, y) => y < 13 }); pb.ell(8, 13, 4, 7, lit ? C.void : C.night, { clip: (x, y) => y < 13 }); pb.rect(0, 13, 16, 1, lit ? C.bark : C.slate); if (lit) pb.rect(7, 10, 2, 2, C.yellow); return pb; }),
   mini: (sp, juv) => miniArt(sp, juv),
   tick: (col) => art('i-tick' + col, () => { const pb = new PB(11, 9); for (const [x, y] of [[0, 4], [1, 5], [2, 6], [3, 7], [4, 6], [5, 5], [6, 4], [7, 3], [8, 2], [9, 1], [10, 0]]) pb.rect(x, y, 1, 2, C[col]); pb.outline(() => C.ink); return pb; }),
@@ -3143,6 +3708,7 @@ function buildTile(t, base, v, mask, fr, terr) {
       if (mask & 2) { pb.rect(30, 0, 2, 32, foam); for (let y = 1; y < 32; y += 3) pb.set(29, y + fr, f2); }
       if (t === T.STEP) { pb.ell(16, 17, 11, 7.5, C.rock); pb.ell(15.5, 15.5, 10, 6, C.rockL, { sh: [C.white, C.rockL] }); pb.set(20, 13, C.fog); }
       break; }
+    case T.WADE: case T.SCREE: case T.BANK: L2.tile32(pb, t, base, mask, fr, v); break;   // the 32 px places (the art desk's pieces)
     case T.REEDS: groundInto(pb, base === T.CFLOOR ? T.GRASS : base, h);
       { const px = 4 + R.int(14), py = 18 + R.int(8); pb.ell(px + 6, py, 7, 2.5, C.river); pb.rect(px + 3, py - 1, 4, 1, C.sky); }
       for (let i = 0; i < 6; i++) { const x = 2 + R.int(28), y = 26 + R.int(5), l = 12 + R.int(7); pb.rect(x, y - l, 1, l, C.leaf); pb.set(x + 1, y - l + 3, C.grass); pb.rect(x, y - l - 3, 1, 3, C.bark); pb.set(x, y - l - 3, C.clay); }
@@ -3227,16 +3793,17 @@ function buildTerrTile(t, base, v, m, fr, bv, bm) {
 function tileKeys(lay) {
   if (lay.tk) return lay.tk;
   const tk = new Array(PW * PH), at = (x, y) => (x < 0 || y < 0 || x >= PW || y >= PH) ? -1 : lay.tiles[y * PW + x];
-  const wet = t => t === T.WATER || t === T.STEP || t === T.DEEP || t === -1;
+  const wet = t => t === T.WADE || t === T.WATER || t === T.STEP || t === T.DEEP || t === -1;
   for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
     const t = at(x, y), v = hash(lay.key, x, y) % 4; let m = 0;
     const nb = [at(x, y - 1), at(x + 1, y), at(x, y + 1), at(x - 1, y)];
-    if (t === T.WATER || t === T.STEP || t === T.DEEP) nb.forEach((n, i) => { if (!wet(n) && !(t === T.DEEP && n === T.ISLE)) m |= 1 << i; });
+    if (t === T.BANK || t === T.SCREE) m = L2.tileMask(lay, x, y);   // the tile's place in its crossing, and whether it is dug
+    if (t === T.WATER || t === T.STEP || t === T.DEEP || t === T.WADE) nb.forEach((n, i) => { if (!wet(n) && !(t === T.DEEP && n === T.ISLE)) m |= 1 << i; });
     else if (t === T.ROCK) nb.forEach((n, i) => { if (n === T.ROCK) m |= 1 << i; });
     else if (t === T.CLIFF) { if (nb[0] !== T.CLIFF && nb[0] !== -1) m |= 1; if (nb[2] !== T.CLIFF && nb[2] !== -1) m |= 4; }
     else if (t === T.CWALL) { if (nb[2] === T.CFLOOR) m |= 4; }
     else if (t === T.ISLE) { if (nb[2] === T.DEEP) m |= 4; }
-    tk[y * PW + x] = { t, v: (t === T.GRASS || t === T.DARK || t === T.SAND || t === T.CFLOOR || t === T.TALL) ? v : v & 1, m, anim: t === T.WATER || t === T.STEP || t === T.DEEP };
+    tk[y * PW + x] = { t, v: t === T.WADE ? x & 3 : (t === T.GRASS || t === T.DARK || t === T.SAND || t === T.CFLOOR || t === T.TALL) ? v : v & 1, m, anim: t === T.WATER || t === T.STEP || t === T.DEEP || t === T.WADE };
     const i = y * PW + x; if (lay.terr && lay.terr[i]) { const b = tk[i]; tk[i] = { t, v: lay.terr[i], m: lay.tmask[i], anim: false, terr: true }; if (lay.terr[i] === TERR.SHADOW) { tk[i].bv = b.v; tk[i].bm = b.m; } }   // generator 2: the piece kind and its mask; SHADOW keeps the tile's own variant and mask
   }
   return (lay.tk = tk);
@@ -3304,12 +3871,12 @@ function layers48(lay, fr) {
 }
 // The tile size a place draws at: 48 when the meadow set is in and the place can be built from it; caves stay at 32.
 function placeTs(lay) { return !lay.cave && ART48.ready && layers48(lay, 0).ok ? 48 : 32; }
-const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP;
+const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP || t === T.WADE;
 const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.' + base + '@' + l.dx + ',' + l.dy : l.id + ':' + l.sx + ',' + l.sy + ',' + l.w + ',' + l.h + '@' + l.dx + ',' + l.dy + (l.tone ? '~' + l.tone : '')).join(';');
 // A trunk's tree kind and crop, and the Shade's moss, are part of a 48 px tile's key; sl is the asleep variant (the tile's light is the fog table).
 const treeCrop = (lay, t) => t.kind === 'fruit' && t.fid && fs(lay.key, t.fid).ripe ? 'fruit' : 'bare';
 function treeSig(lay, i, sl) { const t = lay.trees && lay.trees[i]; return (t ? '|r3' + t.kind + t.seed + treeCrop(lay, t) + (sl ? 'z' : '') : '') + (lay.shade ? '|m' : ''); }
-function tile48Key(lay, i, fr, sl) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : '') + treeSig(lay, i, sl); }
+function tile48Key(lay, i, fr, sl) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : '') + treeSig(lay, i, sl) + L2.key48(lay, i, fr); }
 // The tree kinds' sprites (trees48.mjs) as PBs: the trunk stand with its foot-shadow mask, the canopy whole and thinned. One build per kind, seed, crop and state.
 function treeSet(t, crop, sl) {
   return art('r3|' + t.kind + t.seed + crop + (sl ? 'z' : ''), () => { const s = treeSprites(t.kind, { asleep: !!sl, crop, seed: t.seed }, C, DARK), tr = new PB(32, 32), cn = [0, 1].map(chk => { const pb = new PB(88, 76); pb.p.set(s.canopy.p);
@@ -3348,9 +3915,10 @@ function tile48(lay, i, fr, sl) {
   }
   if (t.dark) for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = DARK[pb.p[k]];
   if (lay.shade) { const mo = shadeMoss(); for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = mo[pb.p[k]]; }   // the Shade's ground: cool moss, so its wash never reads as sprout
+  L2.overlay48(pb, lay, i, fr, t.dark);   // a wade, bank or scree tile: the art desk's 48 px piece over the whole tile
   ART.set(key, pb); ART48.g48++; return pb;
 }
-// The 32 px code stand-ins a 48 px tile carries (registered in CARE_ASSETS): today's trunk and stepping stone, without their ground.
+// The 32 px code stand-ins a 48 px tile carries (registered in CARE_ASSETS): today's trunk and stepping stone, without their ground. 'wade', 'scree', 'bank' and 'bankdug' draw nothing here: the 48 px pieces (L2.overlay48) cover the tile.
 function stand32(kind, base) {
   return art('st32|' + kind + '|' + base, () => { const pb = new PB(32, 32);
     if (kind === 'trunk') { pb.ell(16, 26, 10, 4, base === T.SAND ? C.clay : C.forest);
@@ -3585,6 +4153,8 @@ function drawSign(kind, s, px, py, fr) {
   else if (kind === 'deep') blit(BADGE(), px + 4, py + 4, s.rm);
   else if (kind === 'burrow') blit(ICON.burrow(0), px + 5, py + 6);
   else if (kind === 'water') blit(ICON.wave(), px + 5, py + 7);
+  else if (kind === 'soft') blit(ICON.mud(), px + 5, py + 7);
+  else if (kind === 'bank') blit(ICON.bankLip(0), px + 5, py + 7);
   else if (kind === 'pin') blit(ICON.pin(), px + 5, py - 2);
   else if (kind === 'beacon') blit(ICON.beacon(s.lit, fr), px + 1, py + 1);
   else if (kind === 'skull') blit(ICON.skull(), px + 11, py + 11);
@@ -3633,6 +4203,8 @@ function signSprite(kind, s, fr, big) {
     case 'beacon': return sc('beacon' + (s.lit ? 1 : 0) + (s.lit && fr ? 1 : 0), ICON.beacon(s.lit, fr));
     case 'burrow': return sc('burrow', ICON.burrow(0));
     case 'water': return sc('wave', ICON.wave());
+    case 'soft': return sc('mud', ICON.mud());
+    case 'bank': return sc('bankLip', ICON.bankLip(0));
     case 'deep': return BADGE();
   }
   return null;
@@ -3699,7 +4271,7 @@ function drawReachView(t) {
     const lines = wrapText(FX.msg, tw - 16, 2).slice(0, Math.min(q.big ? 5 : 3, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20))), h = lines.length * 20 + 12;
     panel(8, by, tw + 4, h, C.ink, C.amber); lines.forEach((l, i) => text(l, 16, by + 6 + i * 20, C.bone)); RT.msgInBand = true; }
   else { blit(ICON.flag(), 12, by + 2); text(clipText(canSend() ? 'End expedition here' : sendHint(), tw - 20, 2), 30, by + 4, C.bone);
-    text(clipText(surveyedLine(), tw, 2), 12, by + 28, C.mist); }
+    text(cutLine(surveyedLine(), tw, 2), 12, by + 28, C.mist); }
   drawInset(ix, iy, t, u);
 }
 // Edge marks (generator 2): cliff and stair edges drawn in code on the reach view (72 and 48 px) and the full map (26 px),
@@ -3765,6 +4337,7 @@ function drawEdgeMarks(q) {
     const sides = [];
     for (const dir of ['up', 'down', 'left', 'right']) { const [dx, dy] = DIRS[dir], X = c % MW + dx, Y = ((c / MW) | 0) + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
       const n = Y * MW + X, kind = edgeKind(c, dir); if (kind !== EDGE.CLIFF && kind !== EDGE.RAMP) continue;
+      if (kind === EDGE.CLIFF && softEdge(edgeIndex(c, dir))) continue;   // scree and earth banks have their own marks (drawSoftMarks), never a cliff's
       if (!(S.revealed[c] && S.revealed[n]) && c !== pawn && n !== pawn) continue;
       sides.push([dir, kind, G.level[n] > G.level[c]]); }
     if (!sides.length) continue;
@@ -3776,6 +4349,32 @@ function drawEdgeMarks(q) {
       return edgeMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity, heavy); });
     blit(pb, x, y, rm);
   }
+  drawSoftMarks(q, cells, pawn);
+}
+// Soft ground and earth banks on the map and reach view (art list c-map-soft-26): the art desk's marks (softMarkPB, wadeMarkPB), drawn after the cliff and stair marks.
+const softEdge = i => !!((G.soft && G.soft.scree[i]) || (G.banks && G.banks[i]));
+function drawSoftMarks(q, cells, pawn) {
+  if (!G.soft && !G.banks) return;
+  const cs = q.cs, dug = S.exp && S.exp.dug || [], seen = (c, n) => (S.revealed[c] && S.revealed[n]) || c === pawn || n === pawn, ex = S.exp;
+  const rmFor = c => q.map ? q.rmOf(c) : (!S.visited[c] ? 4 : (ex && ex.storm && stormCovers(c % MW)) ? 1 : 0);
+  for (const [c, x, y] of cells) {
+    if (G.soft && G.soft.wade[c] && S.revealed[c] && !G.island[c]) {
+      const nb = ['up', 'right', 'down', 'left'].map(dir => { const n = stepCell(c, dir); return n < 0 ? 'o' : G.soft.wade[n] ? 'w' : G.land[n] === L.WATER ? 'o' : 'l'; }).join('');
+      blit(art('l2wm' + cs + nb + c, () => wadeMarkPB(cs, nb, c)), x, y, rmFor(c)); }
+    const sides = [];
+    for (const dir of L2.DIRS) { const n = stepCell(c, dir); if (n < 0) continue; const ei = edgeIndex(c, dir);
+      if (edgeKind(c, dir) !== EDGE.CLIFF || !softEdge(ei) || !seen(c, n)) continue;
+      sides.push([dir, G.soft && G.soft.scree[ei] ? 'scree' : 'bank', G.level[n] > G.level[c], dug.includes(ei) ? 1 : 0, ei]); }
+    if (!sides.length) continue;
+    const fog = !S.revealed[c], parity = (x + y) & 1, key = 'l2sm' + cs + ':' + c + ':' + sides.map(s => s[0][0] + s[1][0] + (s[2] ? 1 : 0) + s[3]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed;
+    const pb = art(key, () => { const gp = fog ? null : q.map ? mapPB : landPatchPB(c, cs, 0), gx = q.map ? (c % MW) * CELL : 0, gy = q.map ? ((c / MW) | 0) * CELL : 0;
+      return softMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity, c); });
+    blit(pb, x, y, fog ? 3 : rmFor(c));
+  }
+  // Tuliko's extra ring: on the cells one ring past the Probe's own range, a light lattice of gold dots (the coin crest's), under everything else
+  if (ex && canSure()) { const s0 = cxy(ex.start), r = ex.range, sp = cs >= 48 ? 8 : 6;   // the full map and the reach view the player walks on
+    for (const [c, x, y] of cells) { const p = cxy(c); if (Math.max(Math.abs(p.x - s0.x), Math.abs(p.y - s0.y)) !== r || !S.revealed[c]) continue;
+      for (let j = 0, yy = 3; yy < cs - 2; yy += sp >> 1, j++) for (let xx = 3 + (j & 1) * (sp >> 1); xx < cs - 2; xx += sp) R(x + xx, y + yy, 1, 1, C.gold); } }
 }
 function drawInset(x, y, t, u) {
   const ex = S.exp; u = u || 6; ensureMap(); const W = MW * u, H = MH * u, d = Math.max(2, u - 2), o = Math.floor((u - d) / 2);
@@ -3834,7 +4433,7 @@ function drawMap(mode, t) {
       pb.ell(13, CELL + 4, 7, 15, C.bark, clip); pb.ell(13, CELL + 5, 5, 13, C.void, clip); return pb; }), px, py - CELL, rmOf(G.gate)); }
   for (const e of signs) { const { x, y } = cxy(e.c), px = ox + x * CELL, py = oy + y * CELL;
     for (const s of e.list) if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
-  if (S.opened[G.gate] && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
+  if (burrowOpen() && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
   // storm band: rain, edges, a lightning mark and the direction it travels
   if (bx1 > bx0 && preview) {
     for (let yy = 0; yy < MH * CELL; yy += 8) { R(ox + bx0, oy + yy, 2, 3, C.mist); R(ox + bx1 - 2, oy + yy, 2, 3, C.mist); }
@@ -3989,6 +4588,7 @@ function drawPatch(t) {
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
   const tileFor = (i, sl) => ts === 48 ? tile48(lay, i, fr, sl) : tilePB(lay, i, fr), keyFor = (i) => ts === 48 ? tile48Key(lay, i, fr) : tileKey(lay, i, fr);
   RT.plScr = { x: W(PX(RT.pl)) + (ts >> 1), y: H(PY(RT.pl)) + (ts >> 1) };
+  RT.softScr = []; for (let i = 0; i < PW * PH; i++) { const tt = lay.tiles[i]; if (tt === T.WADE || tt === T.SCREE || tt === T.BANK) RT.softScr.push({ x: W((i % PW) * ts), y: H(((i / PW) | 0) * ts), w: ts, h: ts }); }   // the crossing tiles: the message box keeps off them
   const raining = !lay.cave && stormRain(lay.cell % MW), overcast = !lay.cave && stormCovers(lay.cell % MW), fogged = !lay.cave && inFog(lay.cell);
   let darkW = 0, darkLeft = true;
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
@@ -4072,9 +4672,11 @@ function drawPatch(t) {
     else if (f.kind === 'm') blit(mushArt(fr), SX(x), SY(y));
     else if (f.kind === 'd') { blit(CRACK(), SX(x), SY(y), rm); if (live.seen.d) { const ph = motion() ? Math.floor((t * 1.2 % 1) * 4) : 2; circ(SX(x) + 16, SY(y) + 16, 10 + ph * 4, C.lavender, ph > 2); blit(BADGE(), SX(x) + 7, SY(y) - 6); } }
     else if (f.kind === 'x') blit(exitArt(fr), SX(x), SY(y));
-    else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), SX(x), SY(y), rm);
+    else if (f.kind === 'g') blit(burrowArt(!!burrowOpen()), SX(x), SY(y), rm);
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), SX(x) + 9, SY(y) + 8 + fr, tileLight(f.x, f.y)); }
   }
+  for (const h of live.holes || []) { const x = h.x * ts, y = h.y * ts; if (!vis2(x, y) || !see(h.x, h.y)) continue;   // the Rupar's fresh hole, a ground mark
+    blit(freshHoleArt(holeFrame(h), HOLE_BARE[h.g]), SX(x) + HOLE_DX, SY(y), spriteRm(h.x, h.y)); }
   // y-sorted sprites
   const items = [];
   for (const f of lay.feats) if (f.tree === 'hollow' && see(f.x, f.y) && live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1))   // a shy one in a hollow trunk: the hole's one glint, in the trunk's opening
@@ -4097,10 +4699,12 @@ function drawPatch(t) {
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : POSE[c.st] || 'idle';
     // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
     const cue = !!c.cue && ['idle', 'seek'].includes(c.st) && !(c.sp === 1 && c.calm >= 1);
-    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(PX(nr)), SY(PY(nr)), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
+    const half = CR_MOVING.includes(c.st) ? stepHalf(nr) : -1;
+    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(PX(nr)), SY(PY(nr)), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue, half) });
   }
   if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * ts, live.pt.y * ts, ex.pt.elder ? 220 : 150); const rp = RT.pt;
-    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(PX(rp)), SY(PY(rp)), t);
+    const phalf = stepHalf(rp);
+    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(PX(rp)), SY(PY(rp)), t, phalf);
       if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(PX(rp)) + 16, y: SY(PY(rp)), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(PX(rp)) + 11, SY(PY(rp)) - 9); } }); }
   let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
@@ -4157,26 +4761,33 @@ function drawPatch(t) {
       if (pl && Math.max(Math.abs(px + 48 - pl.x) - 48, 0) ** 2 + Math.max(Math.abs(py + 24 - pl.y) - 24, 0) ** 2 < keep * keep) continue; blit(puffArt(i % 2 ? 3 : 2), px, py); } }
   g.restore(); RT.remap = REMAP;
 }
-function drawCreature(c, x, y, pose, t, rm, cue) {
+// Which half of its tween a thing is in while it moves (0 or 1), or -1 when it is not moving: motion on, now inside the tween's duration, the target differing from the start.
+function stepHalf(o) { return o && motion() && NOW - o.at < o.dur && (o.tx !== o.fx || o.ty !== o.fy) ? ((NOW - o.at) * 2 >= o.dur ? 1 : 0) : -1; }
+const CR_MOVING = ['idle', 'seek', 'approach', 'flee', 'watch'];   // the states a creature steps in
+function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   const m = motion(), fr = m ? Math.floor(t * 2.4 + c.id * .37) % 2 : 0;
+  const stepping = stepFr >= 0 && !!stepFrames(STEP_ART[c.sp], false);
   let dx = 0, dy = 0;
   if (pose === 'shake' || c.st === 'full' || pose === 'glow') dx = m ? (Math.floor(t * 16) % 2 ? 1 : -1) : 0;
-  else if (pose === 'idle' || pose === 'nest') dy = fr;
-  const a = creatureArt(c.sp, pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0);
+  else if ((pose === 'idle' || pose === 'nest') && !stepping) dy = fr;
+  if (stepping && stepFr === 1 && HOPPER_SP.includes(c.sp)) dy -= 1;   // a hopper's step frame rises 1 px higher (art desk note)
+  const a = stepping ? creatureArt(c.sp, 'step', stepFr) : creatureArt(c.sp, pose === 'shake' && spOf(c.sp).shed === 'air' ? 'idle' : pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0);   // the Tuliko airing its scales is its idle with the shake's jiggle
   blit(a, x + dx, y + dy, rm, (c.face || 1) < 0);
   if (rm === 2) return;
   const b = bubbleOf(c, S.exp && S.exp.carry);
-  if (b) blit(bubbleArt(b), x + 11, y - 9); else if (cue) blit(bubbleArt('~'), x + 11, y - 9);
+  if (b) blit(bubbleArt(b === 'fs' ? 'f' : b), x + 11, y - 9); else if (cue) blit(bubbleArt('~'), x + 11, y - 9);
   if (b === '…') { const n = Math.min(4, Math.floor(c.calm / 2)); // four pips under it fill as it settles (8 quiet actions)
     for (let i = 0; i < 4; i++) { R(x + 2 + i * 7, y + 30, 6, 6, C.ink); R(x + 3 + i * 7, y + 31, 4, 4, i < n ? C.yellow : C.stone); } }
   else if (c.sp === 1 && c.st === 'glow') blit(sparkArt(fr), x + 20, y + 2);
   if (c.wet && c.st !== 'shake') blit(DROP(), x + 25, y + 6);
   if (c.st === 'flee') { const f = c.face || 1; for (let i = 0; i < 3; i++) R(f > 0 ? x - 4 : x + 30, y + 14 + i * 4, 6, 1, C.bone); }
 }
-function drawPartner(sp, pt, x, y, t) {
+function drawPartner(sp, pt, x, y, t, stepFr = -1) {
   const m = motion(), fr = m ? Math.floor(t * 2.4) % 2 : 0;
   blit(RING(), x + 2, y + 23);
-  const pose = pt.st === 'sniff' ? 'alert' : 'idle', dy = pt.st === 'dig' ? (m ? Math.floor(t * 12) % 2 * 2 : 0) : pose === 'idle' ? fr : 0;
+  const stepping = stepFr >= 0 && pt.st === 'follow' && !!stepFrames(STEP_ART[sp], false);
+  const pose = pt.st === 'sniff' ? 'alert' : 'idle', dy = pt.st === 'dig' ? (m ? Math.floor(t * 12) % 2 * 2 : 0) : pose === 'idle' && !stepping ? fr : 0;
+  if (stepping) mibiSprite(sp, 'step', stepFr, x, y + dy - (stepFr === 1 && HOPPER_SP.includes(sp) ? 1 : 0), 1, (pt.face || 1) < 0); else
   mibiSprite(sp, pose, 0, x, y + dy, 1, (pt.face || 1) < 0);
   const f = pt.face || 1;
   if (pt.st === 'sniff') for (let i = 0; i < 3; i++) R(f > 0 ? x + 30 + i * 3 : x - 2 - i * 3, y + 14 - i * 2 - ((fr + i) % 2), 2, 2, C.bone);
@@ -4205,7 +4816,7 @@ function edgeTabs() {
     const side = corner ? (Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'E' : 'W') : (dy > 0 ? 'S' : 'N')) : e.side;   // at a corner, the larger axis
     all.push({ kind, cx: e.x, cy: e.y, side, tx, ty, d: Math.hypot(tx - P.x, ty - P.y), id }); };
   for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
-    const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?') add(b, c.x, c.y, 'c' + c.id); }
+    const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?' || b === 'fs') add(b === 'fs' ? '?' : b, c.x, c.y, 'c' + c.id); }
   const q = FX.cue;
   if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
     if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
@@ -4436,14 +5047,15 @@ function drawLine(o) {
 // the one to leave framed; Ground: the pod you face.
 function drawSwap() {
   const sw = swapState(); if (!sw) return;
-  const y0 = SCR_H - LINE_H - 104, n = sw.held.length, X0 = 92, cw = Math.floor((SCR_W - 12 - X0) / n);
+  // release 22 (E2): the columns start right after the longer row label and each text line gets all the width its column has, so a tier-2 hold's three pods keep their longest line whole
+  const y0 = SCR_H - LINE_H - 104, n = sw.held.length, X0 = 16 + Math.max(textW('Hold', 1), textW('Ground', 1)) + 10, cw = Math.floor((SCR_W - 12 - X0) / n), tw = cw - 24;
   panel(6, y0, SCR_W - 12, 98, C.ink, C.amber);
-  text('Hold', 16, y0 + 12, C.mist);
+  text('Hold', 16, y0 + 15, C.mist, 1);
   sw.held.forEach((p, i) => { const x = X0 + i * cw; if (i === sw.sel) { panel(x - 4, y0 + 4, cw - 4, 46, C.night); brackets(x - 6, y0 + 2, cw, 50, C.amber); }
-    podSlot(x, y0 + 8, p); text(clipText(podName(p), cw - 30, 2), x + 20, y0 + 8, i === sw.sel ? C.bone : C.fog); text(clipText(podTagOf(p), cw - 30, 2), x + 20, y0 + 28, C.mist); });
-  text('Ground', 16, y0 + 62, C.mist);
+    podSlot(x, y0 + 8, p); text(clipText(podName(p, true), tw, 2), x + 20, y0 + 8, i === sw.sel ? C.bone : C.fog); text(clipText(podTagOf(p, true), tw, 2), x + 20, y0 + 28, C.mist); });
+  text('Ground', 16, y0 + 65, C.mist, 1);
   podSlot(X0, y0 + 58, sw.p); text(clipText(podName(sw.p) + ' · ' + podTagOf(sw.p), SCR_W - X0 - 40, 2), X0 + 20, y0 + 58, C.bone);
-  text(clipText('leave ' + podName(sw.held[sw.sel], true) + ' here, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
+  text(clipText('leave the ' + podInSentence(sw.held[sw.sel]) + ' pod, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
 }
 // The message box's rect: a sign's card (48 high, the picture and one line), or the plain box (up to three lines).
 // It sits above the bottom line, or at the top of the view when the player stands where it would cover them.
@@ -4454,6 +5066,8 @@ function msgGeom() {
   // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
   const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, lit = RT.litScr && sign && sign.sign === 'warn' ? RT.litScr : null,   // a warning card never covers the lit tile
     y = (pl ? pl.y + (RT.ts === 48 ? 24 : 20) > low : RT.focusFoot != null && RT.focusFoot >= low) || (lit && lit.y + lit.h >= low && lit.x < x + w && lit.x + lit.w > x) ? VIEW_Y + 8 : low;
+  const hits = yy => (RT.softScr || []).some(r => r.x < x + w && r.x + r.w > x && r.y < yy + h && r.y + r.h > yy);   // a box never sits on the mud, scree or bank tiles of the place: it takes the other end if that is clear
+  if (hits(y) && !hits(y === low ? VIEW_Y + 8 : low)) return { sign, lines, w, h, x, y: y === low ? VIEW_Y + 8 : low };
   return { sign, lines, w, h, x, y };
 }
 function drawMessage() {
@@ -4533,9 +5147,10 @@ function warnPicPlace(x0, y0, a) {
     if (f.kind === 'n') blit(holeArt(live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1) ? 1 : 0), x0, y0);
     else if (f.kind === 'e') blit(NEST(), x0, y0); else if (f.kind === 'm') blit(mushArt(0), x0, y0);
     else if (f.kind === 'd') blit(CRACK(), x0, y0); else if (f.kind === 'x') blit(exitArt(0), x0, y0);
-    else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), x0, y0);
+    else if (f.kind === 'g') blit(burrowArt(!!burrowOpen()), x0, y0);
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), x0 + 9, y0 + 8, L); }
     else if (f.kind === 's' && fs(a.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(x0 + 8 + (k % 4) * 5, y0 + 18 + (k >> 2) * 4, 3, 1); } }
+  for (const h of live.holes || []) if (here(h.x, h.y)) blit(freshHoleArt(1, HOLE_BARE[h.g]), x0 + HOLE_DX, y0);   // the Rupar's fresh hole
   for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
     let art;
     if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
@@ -4624,7 +5239,7 @@ function drawSetup(t) {
   disc(32, 168, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 56, 192);
   if (deepOk && fr) { R(70, 192, 2, 2, C.cream); R(69, 193, 4, 1, C.yellow); }
   text('Deep ground', 112, 168, deepOk ? C.ink : C.mist, 3);
-  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : 'Caves · needs a digging partner', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
+  text(clipText(dig ? 'Caves · ' + dig.name + ' digs a way in' : 'Caves · needs a Tuikis', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
   // the partner card: the partner's face on the teal ring, its name, stage and ability; or why there is none. The mibis with
   // you as 24 px ring faces in carried order, a free place a dashed circle.
   const pm = partnerMibi(), cm = carriedMibis();
@@ -4633,7 +5248,7 @@ function drawSetup(t) {
     blit(RING(), 46, 322); mibiSprite(pm.sp, 'idle', fr, 28, 264, 2);
     text(nm, 112, 260, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
     chip(112, 292, STAGE_WORD[st], stageFill(st), 'bone');
-    text(clipText(abTextOf(pm.sp), 220, 2), 112, 320, C.stone); }
+    text(clipText(abCardOf(pm.sp), 306, 2), 112, 320, C.stone); }
   else if (cm.length) { const rd = cm[0], st = mibiStage(rd), nm = clipText(rd.name, 220, 3);   // the rider, first in carried order: its picture with no ring, and how it grows
     mibiSprite(rd.sp, 'idle', fr, 28, 264, 2, false, st === 'juvenile');
     text(nm, 112, 260, C.ink, 3); if (rd.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
@@ -4669,6 +5284,12 @@ function partnerRow() {
   if (pm) return 'Partner: ' + pm.name + ' · ' + abTextOf(pm.sp) + (mibiStage(pm) === 'elder' ? ' · slow, keen' : '');
   if (w) return CARE_TEXT.noOneGrown;
   return liveMibis().length ? CARE_TEXT.noOneWith : 'No partner yet';
+}
+// The same line in its three forms for the bottom line, longest first: the full ability, the card form, the tight form (the line cuts at " · " otherwise and would drop the whole ability).
+function partnerCtx() {
+  const pm = partnerMibi(); if (!pm) return partnerRow();
+  const el = mibiStage(pm) === 'elder' ? ' · slow, keen' : '';
+  return [...new Set([abTextOf(pm.sp), abCardOf(pm.sp), abCardOf(pm.sp, true)])].map(ab => 'Partner: ' + pm.name + ' · ' + ab + el);
 }
 function digPartner() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'dig' ? pm : null; }
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
@@ -4926,7 +5547,7 @@ function drawMibis(t) {
     text(CARE_TEXT.partnerCap, 104, y + 6, C.mist);
     if (pm) { text(STAGE_WORD[mibiStage(pm)] + ', ' + turnsShort(pm), 418, y + 6, C.stone, 2, 'right'); blit(RING(), 46, y + 70); mibiSprite(pm.sp, 'idle', fr, 28, y + 12, 2);
       const nm = clipText(pm.name, 314, 3); text(nm, 104, y + 28, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 104 + textW(nm, 3) + 8, y + 34);
-      text(clipText(abTextOf(pm.sp) + (mibiStage(pm) === 'elder' ? ' · slow, keen' : ''), 314, 2), 104, y + 64, C.stone); }
+      const el = mibiStage(pm) === 'elder'; text(clipText(abCardOf(pm.sp, el) + (el ? ' · slow, keen' : ''), 314, 2), 104, y + 64, C.stone); }
     else { blit(dashedCircleArt(64), 28, y + 12); text(cm.length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 104, y + 28, C.ink, 3); text(clipText(leadWhy(), 314, 2), 104, y + 64, C.stone); } }
   text(CARE_TEXT.withYouCap, 20, 148 - off, C.mist);
   for (let k = 0; k < CARRY_MAX; k++) { const y0 = PLACE_Y + k * ROW_P - off, m = cm[k]; if (m) rosterRow(m, y0, sel === k + 1, m === pm, fr); else dashedRect(16, y0, 418, 64, C.stone); }
@@ -5067,7 +5688,7 @@ function drawActive(t) {
   const nm = clipText(m.name, 260, 3); text(nm, 30, 332, C.bone, 3);
   const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, STAGE_WORD[st], stageFill(st), 'bone');
   if (m.bonded && !(bond != null && bond < BOND_MS)) placeholderPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
-  text(clipText(mibiSpName(m) + ' · ' + abTextOf(m.sp) + (!isAdult(m) && spOf(m.sp).abText ? CARE_TEXT.onceGrown : '') + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
+  text(clipText(mibiSpName(m) + ' · ' + abCardOf(m.sp, !isAdult(m) || st === 'elder') + (!isAdult(m) && spOf(m.sp).abText ? CARE_TEXT.onceGrown : '') + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
   text(clipText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2), 30, 396, isW ? C.amber : C.mist);   // one line: the widest status is 314 in 390
   text(clipText(ageLine(m), 390, 2), 30, 424, C.fog);
   { const yt = yoursText(m); if (yt) text(clipText(yt, 390, 2), 30, 446, C.mist); }
@@ -5165,22 +5786,23 @@ function placeReason(c) {
   if (G.gen && passable(c) && !G.comp[c]) return 'No stairs out · can’t start';   // generator 2's sealed plateau (the fallback's)
   return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
 }
-const SIGN_ORDER = ['skull', 'depot', 'b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'deep'];
+const SIGN_ORDER = ['skull', 'depot', 'b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'soft', 'bank', 'deep'];
 function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.list : [];
   return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? DEPOT_NAME + (q.lit ? ' · lit ' + q.lit + ' turn' + (q.lit === 1 ? '' : 's') : ' (dark)') : q.kind === 'beacon' ? 'beacon' + (q.lit ? ' (lit)' : ' (unlit)') : SIGN_NAME[q.kind]); }
 function landWord(c) {
-  if (G.land[c] === L.WATER) return G.ford[c] ? 'shallows' : nextToIsland(c) ? 'fast water' : 'wide water';
+  if (G.land[c] === L.WATER) return G.ford[c] ? 'ford' : G.soft && G.soft.wade[c] ? 'muddy water' : nextToIsland(c) ? 'fast water' : 'wide water';
   return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : ''); }
 function cellWords(c) { const w = signWords(c); return landWord(c) + (w.length ? ' · ' + w.join(', ') : ''); }
 function aheadCell() { const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[ex.face || 'down'], x = p.x + dx, y = p.y + dy; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; }
 // The map's middle part: the cell you're on and the one you face, shortest forms last.
 function mapContext() {
-  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · cave needs a digger' : S.visited[ex.pos] && passable(ex.pos) ? ' · ' + surveyWord(ex.pos) : ''), hs = signWords(ex.pos), a = aheadCell();
+  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · burrow too narrow' : S.visited[ex.pos] && passable(ex.pos) ? ' · ' + surveyWord(ex.pos) : ''), hs = signWords(ex.pos), a = aheadCell();
   const toTake = c => S.visited[c] && passable(c) && leftTotal(c) ? ' · ' + leftTotal(c) + ' to take' : '';
   // the edge you face, named even when the cell beyond is fog (your own four edges always show): a steep edge or stairs
   const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, ex.face || 'down') : EDGE.OPEN;
-  const es = ek === EDGE.CLIFF ? 'steep edge' : ek === EDGE.RAMP ? (G.level[a] > G.level[ex.pos] ? 'stairs up' : 'stairs down') : '';
-  const beyond = a < 0 ? 'edge of the map' : !inRange(a) ? 'edge of range' : !S.revealed[a] ? 'fog' : gatedCell(a) ? 'cave · needs a digger' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.revealed[a] && !gatedCell(a) ? signWords(a) : [];
+  const sk = ek === EDGE.CLIFF ? softKind(ex.pos, ex.face || 'down') : null, up = a >= 0 && G.level[a] > G.level[ex.pos];   // scree and banks are named as the bump names them; a dug bank crosses like a stair
+  const es = ek === EDGE.CLIFF ? (sk === 'scree' ? 'loose scree' : sk === 'bank' ? (bankIsDug(edgeIndex(ex.pos, ex.face || 'down')) ? 'dug way ' + (up ? 'up' : 'down') : 'earth bank') : 'steep edge') : ek === EDGE.RAMP ? (G.level[a] > G.level[ex.pos] ? 'stairs up' : 'stairs down') : '';
+  const beyond = a < 0 ? 'edge of the map' : !inRange(a) ? 'edge of range' : !S.revealed[a] ? 'fog' : gatedCell(a) ? 'cave · burrow too narrow' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.revealed[a] && !gatedCell(a) ? signWords(a) : [];
   const there = es ? es + ' · ' + beyond : beyond, AS = 'Ahead: ' + (es || there);   // the short forms cut the cell beyond first, never the edge
   const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = 'Ahead: ' + there + (as.length ? ' · ' + as.join(', ') : '');
   // where you stand comes first when it has a sign; otherwise what you face; the edge word alone is the last before here
@@ -5225,7 +5847,7 @@ function noteSigns() {
 // The Data an act on this creature will pay, said before it is done: "+1 Data" while its act is open, "Data for this trip: full"
 // once the ceiling is reached, nothing once the act is paid. An unidentified creature says nothing (no act leaks).
 function actTag(c) {
-  const ex = S.exp, sp = c.sp, kind = !S.known.includes(sp) || !ex ? null : spOf(sp).eats ? 'eat' : sp === 1 ? 'settle' : null;
+  const ex = S.exp, sp = c.sp, kind = !S.known.includes(sp) || !ex ? null : spOf(sp).eats ? 'eat' : spOf(sp).settle ? 'settle' : null;
   if (!kind || actDone(ex, c, kind)) return '';
   return actOpen(ex, c, kind) ? ' · +' + ACT_DATA + ' Data' : ' · Data for this trip: full';
 }
@@ -5233,7 +5855,8 @@ function dietLine(sp, long) {
   if (!S.known.includes(sp)) return 'Unknown creature · watch what it does';
   const nm = spOf(sp).name;
   if (spOf(sp).eats) return nm + ' · eats fruit';
-  return nm + ' · doesn’t eat fruit' + (long && sp === 1 ? ' · settles when you keep still' : '');
+  const s = spOf(sp), tail = long && s.settle ? (s.settle === 'fog' ? ' · settles in fog when you keep still' : ' · settles when you keep still') : '';
+  return nm + (s.drinks ? ' · drinks dew' : ' · doesn’t eat fruit') + tail;
 }
 // A control hint, while it is due, leads the middle of the bottom line; the usual words follow if it does not fit.
 function lineFor() {
@@ -5245,8 +5868,8 @@ function lineBase() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
-      if (S.ui.sel === 1 && !digPartner()) return L1('Needs a digger', 'Deep ground', 'menu', true);   // a mibi at home is never named
+    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerCtx(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
+      if (S.ui.sel === 1 && !digPartner()) return L1('Needs a Tuikis', 'Deep ground', 'menu', true);   // a mibi at home is never named
       { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
       return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), bayLine(), 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
@@ -5260,10 +5883,10 @@ function lineBase() {
       // facing a creature you can see, the line names it and its diet before you offer anything
       const P = S.exp.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
       // the survey state in words, drawn one step brighter (after the \x01 mark); the kinds drop first, then the place name, then the count
-      const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = LAND_NAME[lay.land] + ' · ';
+      const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = (G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land]) + ' · ';
       let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay.cell, true)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
-      if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep', fieldFrozen()); }
+      if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave the ' + podInSentence(sw.held[sw.sel]) + ' pod' : 'Swap', sw ? 'take the ' + podInSentence(sw.p) + ' pod' : '', 'keep', fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
       return L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim); }
@@ -5297,7 +5920,7 @@ function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
-  trackDock(); RT.plScr = null; RT.litScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
+  trackDock(); RT.plScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
@@ -5347,7 +5970,7 @@ function startBlock() {
 }
 function chooseType() {
   { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; return; } }
-  if (S.ui.sel === 1 && !digPartner()) { fxMsg('Deep ground needs a digging partner'); FX.bumpAt = NOW; return; }
+  if (S.ui.sel === 1 && !digPartner()) { fxMsg('Deep ground starts down a narrow burrow · a Tuikis digs it out'); FX.bumpAt = NOW; return; }
   S.ui.type = S.ui.sel === 1 ? 'deep' : 'weather';
   const first = firstPlacement();
   let cur = S.ui.lastPos != null ? S.ui.lastPos : null;
@@ -5394,7 +6017,7 @@ function act(k, mode) {
   if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
   if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
-  if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
+  if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; if (FX.notes.length) composeMsg(); }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
   const isDir = k in DIRS;
   switch (S.phase) {
     case 'setup':
@@ -5680,7 +6303,7 @@ function notesText() {
   L2.push('Mibis: ' + (S.mibis.length ? S.mibis.map(m => m.name + ' (' + mibiSpName(m) + ', ' + mibiStage(m) + ', ' + abTextOf(m.sp) + ')').join('; ') : 'none'));
   L2.push('Known species: ' + (S.known.length ? S.known.map(s => spOf(s).name).join(', ') : 'none'));
   L2.push('Pins: ' + (S.pins.length ? S.pins.map(p => { const q = cxy(p.c); return q.x + ',' + q.y + ' ' + PIN_TEXT[p.k]; }).join('; ') : 'none'));
-  L2.push('Burrow: ' + (S.opened[G.gate] ? 'open' : 'closed') + ' · Bay: ' + S.bay.length + ' of ' + BAY + ' sealed · ' + (isDocked() ? 'docked' : 'away') + ' · Hold: ' + (S.hold ? S.hold.e + ' energy, ' + S.hold.d + ' data, ' + S.hold.s + ' essence, ' + S.hold.pods.length + ' pods' : 'empty'));
+  L2.push('Burrow: ' + (burrowOpen() ? 'open' : 'closed') + ' · Bay: ' + S.bay.length + ' of ' + BAY + ' sealed · ' + (isDocked() ? 'docked' : 'away') + ' · Hold: ' + (S.hold ? S.hold.e + ' energy, ' + S.hold.d + ' data, ' + S.hold.s + ' essence, ' + S.hold.pods.length + ' pods' : 'empty'));
   L2.push(''); L2.push('Recent events:'); for (const s of S.log.slice(-12)) L2.push('- ' + s);
   L2.push(''); L2.push('Observations:'); L2.push('- ');
   return L2.join('\n');
@@ -5779,7 +6402,7 @@ requestAnimationFrame(frame);
 window.__mb = { get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, canStep, edgeKind, TEST,
-  capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
+  capture: () => scr.toDataURL("image/png"), get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }

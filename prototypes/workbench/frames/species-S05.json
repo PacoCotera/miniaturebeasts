@@ -11,11 +11,11 @@
  "taxonomy": {
   "code": "S05",
   "resembles": "a four-legged body with a tail just as big",
-  "moves": "trots",
+  "moves": "waddles, never the same way twice",
   "habitat": "meadow, wood edge",
   "gate": null,
   "diet": "fruit, seeds",
-  "ability": "senses warm stones (Energy)",
+  "ability": "feels stones for warmth",
   "character": "quick and clever",
   "clanName": "Dasyla",
   "clanNumber": 5,
@@ -109,7 +109,11 @@
   ".....",
   "...#."
  ],
- "habits": [],
+ "habits": [
+  "warm-sit",
+  "stone-sense",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "medium",
   "proportion": null,

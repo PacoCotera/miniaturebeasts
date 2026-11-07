@@ -10,6 +10,7 @@ import { shedPod, SELF_KINSHIP, versionRefusal } from "../../workbench/framework
 import { MIBI_NAMES as NAME_LIST_NOW, NAME_LISTS } from "../../play/src/names.mjs";
 import { fill, capLine } from "./views/words.mjs";
 import FRAME from "../../ui/specs/station/frame.json" with { type: "json" };
+import HABITAT from "../../ui/specs/station/habitat.json" with { type: "json" };
 import VIVARIUM from "../../ui/specs/station/vivarium.json" with { type: "json" };
 import ROOM_RULES from "../../ui/specs/station/rooms-rules.json" with { type: "json" };
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
@@ -67,7 +68,7 @@ export function drawName(st, pool = {}) {
 export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock field", wood: "wood", cave: "cave" };
 // The origin line is one sentence: "Found <where>, <what happened>." Each half is at most 24 characters with its comma or full stop, so the sentence breaks after the comma (design/style-guide/station-layouts.md, Pods, Origin).
 export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
-export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried", shed: "of {name}'s line" };   // shed: a returned mibi's pod; the words are a placeholder until the copywriter's C18 lands (owed)
+export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", grab: "after a grab for fruit", warm: "as {who} warmed up", dig: "in a fresh hole", fog: "in a fog bank", still: "as {who} settled", air: "as {who} aired out", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried", shed: "of {name}'s line" };   // shed: a returned mibi's pod; the words are a placeholder until the copywriter's C18 lands (owed)
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
 export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, rooms: null, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, elderTurns: ELDER_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, realmSleep: false };
 
@@ -330,7 +331,7 @@ export const podName = (p) => (p.idd ? spName(p) + " pod" : "unknown pod");
 // The sentence in its two halves, which are the two lines under the pod; a pod with no find has one.
 export function podOriginLines(p) {
   const where = "Found " + (FOUND_WORD[p.g] || "out in the wild"), find = FIND_WORD[p.how];
-  return find ? [where + ",", find.replace("{who}", p.idd ? aAn(spName(p)) : "a creature").replace("{name}", p.of || "a returned mibi") + "."] : [where + "."];
+  return find ? [where + ",", find.replace("{who}", p.idd ? aAn(spName(p)) : "a wild mibi").replace("{name}", p.of || "a returned mibi") + "."] : [where + "."];
 }
 export const podOrigin = (p) => podOriginLines(p).join(" ");
 
@@ -363,7 +364,7 @@ export function payMend(st, settings = DEFAULT_SETTINGS) {
 }
 // The care the Companion earned, taken in at the dock and whenever the Station reads the save while docked. Max / OR only, so a repeated dock, a lift and redock and a reload change nothing; the Station never sets `bonded`
 // itself and never writes a care field the Companion has not sent. Returns the ids of the mibis whose outings went up (they came home from a walk).
-export function mergeCare(st, sv) {
+export function mergeCare(st, sv, seen = null) {   // seen: if given, each habit recorded for the first time is pushed to it as { id, habit } (the dock's plates)
   const home = [];
   for (const m of (sv && sv.mibis) || []) {
     const q = mibiById(st, m.id); if (!q) continue;
@@ -373,7 +374,7 @@ export function mergeCare(st, sv) {
     if (m.bondCare != null) q.bondCare = q.bondCare == null ? m.bondCare : Math.max(q.bondCare, m.bondCare);
     if (m.grownTurn != null) q.grownTurn = q.grownTurn == null ? m.grownTurn : Math.max(q.grownTurn, m.grownTurn);
     q.bonded = !!q.bonded || !!m.bonded;
-    if (q.outings > was) { home.push(q.id); for (const h of m.habitsDone || []) recordHabit(st, q, h); }
+    if (q.outings > was) { home.push(q.id); for (const h of m.habitsDone || []) { const r = recordHabit(st, q, h); if (r.ok && seen) seen.push({ id: q.id, habit: h }); } }
   }
   for (const rec of (sv && Array.isArray(sv.trips)) ? sv.trips : []) for (const id of tripCarried(rec)) { const q = mibiById(st, id); if (q) for (const p of rec.places || []) recordWalk(st, q, p); }   // a set insert: the whole list every time is idempotent
   return home;
@@ -389,10 +390,17 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   st.probe = { shield: sh, smax: pr.smax, tier: pr.tier, seq: (st.probe ? st.probe.seq : 0) + 1 };
   const paid = st.mendFull ? payMend(st, settings) : 0;
   // what came home with the Companion: the care it earned (mergeCare), the habits it did and the places it entered on the way
-  const home = mergeCare(st, sv);
+  const habits = [], home = mergeCare(st, sv, habits);
   const n = bayCrates(st, sv).length;
   logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
-  return { ok: true, docked: true, home, dried, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
+  return { ok: true, docked: true, home, habits, dried, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
+}
+// The world's events a crate carries (the Companion's `world.ev`, specs/world-events.md): [kind, place, who, n]. The kinds the Companion says; a kind or a shape this Station does not know is skipped, never an error.
+export const WORLD_EV_KINDS = ["grown", "elder", "lampLow", "lampOut", "shift", "herd", "storm", "fruit", "stirring", "young", "quiet"];
+export function readWorldEv(c) {
+  const ev = c && c.world && Array.isArray(c.world.ev) ? c.world.ev : [];
+  return ev.filter((e) => Array.isArray(e) && e.length === 4 && WORLD_EV_KINDS.includes(e[0]) && (e[1] === null || typeof e[1] === "string") && (e[2] === null || Number.isInteger(e[2])) && Number.isInteger(e[3]))
+    .map(([kind, place, who, n]) => ({ kind, place, who, n }));
 }
 // Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept).
 export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) { return openCrates(st, sv, settings, now, bayCrates(st, sv)); }
@@ -417,7 +425,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
     const before = st.turn; st.turn = Math.max(st.turn, c.turn | 0); const dried = dryPods(st);
     const paid = st.mendFull && st.probe ? payMend(st, settings) : 0;
     const gained = { e: (c.e | 0) + top.e, d: (c.d | 0) + top.d, s: (c.s | 0) + top.s };   // what the crate brought, the top-up with it; the plates it paid for cost `spent` Energy
-    plays.push({ c, ids, skipped, dried, paid, spent: paid * price(PRICE.mend, settings), gained, turnFrom: before, turnTo: st.turn, top });
+    plays.push({ c, ids, skipped, events: readWorldEv(c), dried, paid, spent: paid * price(PRICE.mend, settings), gained, turnFrom: before, turnTo: st.turn, top });
     logEv(st, "Crate " + c.n + " opened · " + plural(ids.length, "pod") + " · +" + gained.e + " Energy +" + gained.d + " Data +" + gained.s + " Essence" + (skipped.length ? " · not opened, no species: " + skipped.join(", ") : ""));
   }
   st.devBay = st.devBay.filter((c) => !st.accepted.includes(c.id));
@@ -430,7 +438,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
 // and at the dock for what the mibi with the player did on the walk; a place is recorded once for every place the mibi entered while with the player (`recordWalk`, at the dock).
 export const WATCH_MS = 60000;   // the default of settings.watchMs
 // A habit only seen in the field: the bench's watch never records it (calm is felt, not watched); it is recorded at the dock from the habits the Companion's mibi did (mergeCare).
-export const FIELD_ONLY_HABITS = ["calm"];
+export const FIELD_ONLY_HABITS = ["calm", "tiptoe", "stone-sense", "slab-lift", "break-through", "bank-dig", "high-look", "ride-current", "pod-carry", "dew-find", "find-hug", "fog-lift", "root-down", "catch-strike", "beacon-sit", "wind-stream", "wave-hello", "hop-down"];
 export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
 // The places a mibi has been: where its pod came from, and every place it walked to.
 // A founder keeps its pod's place first, then the walk order; a bred mibi's places are only the ones it walked to (its "from.g" is its parent's).
@@ -439,7 +447,7 @@ export function recordHabit(st, m, habit) {
   if (!m || !habit) return { ok: false };
   const fr = frameFor(m); if (!fr || !(fr.habits || []).includes(habit)) return { ok: false, msg: "not a habit of " + (fr ? fr.species.name : "that species") };
   if (!Array.isArray(m.habits)) m.habits = []; if (m.habits.includes(habit)) return { ok: false, again: true };
-  m.habits.push(habit); logEv(st, m.name + " is seen: " + habit); return { ok: true };
+  m.habits.push(habit); logEv(st, fill(HABITAT.strings.watchPlate, { name: m.name, habit: HABITAT.strings.watchHabits[habit] ?? habit })); return { ok: true };
 }
 export function recordWalk(st, m, place) {
   if (!m || !place) return { ok: false };

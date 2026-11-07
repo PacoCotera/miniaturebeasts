@@ -2,6 +2,7 @@
 //   h.ui.cargo.arrival: { from, phase: "show" | "choice", crates, shown, newCrates, plates, broke, back, leaving, choice }; h.ui.cargo.state is "arrival" while it stands.
 // The show is 3500 ms from the dock, any key skips it to the choice; Open the bay runs today's opening, Later dithers back to the screen the arrival came over. An empty trip and a broken Probe have no choice and close by themselves at 2500.
 // Docked mid-decision (a decision panel, the namer, Create or Cross open) the arrival waits: the plate says so for 2000 ms and the show plays after the player's next screen change.
+import * as S from "../state.mjs";
 import { arrivalOf } from "../arrival.mjs";
 import { openPanel } from "./panel.mjs";
 import { openBay } from "./cargo.mjs";
@@ -46,9 +47,16 @@ export function startShow(h, r, over) {
 // The show's end: with a choice, one cut to the rack and the strip; without one (an empty trip, a broken Probe) the arrival dithers back by itself.
 export function finish(h) {
   const c = h.ui.cargo, a = c.arrival; if (!a || c.state !== "arrival" || a.phase !== "show") return;
-  if (!a.choice) { later(h); return; }
+  if (!a.choice) { later(h); habitPlates(h, a); return; }
   a.phase = "choice"; c.at = h.specs.cargo.regions.arrival.end.at;
-  openPanel(h, "cargo", "dock");
+  openPanel(h, "cargo", "dock"); habitPlates(h, a);
+}
+// The field habits the Companion's mibis did on the walk: once, after the show, the home watch's own plate ("{name} is seen {habit}"), no new words. At most two at a time.
+export function habitPlates(h, a) {
+  if (!(a.habits || []).length) return;
+  const hs = h.specs.habitat.strings, lines = [];
+  for (const q of (a.habits || []).slice(0, 2)) { const m = S.mibiById(h.st, q.id), habit = hs.watchHabits[q.habit]; if (m && habit) lines.push(hs.watchPlate.replace("{name}", m.name).replace("{habit}", habit)); }
+  a.habits = []; if (lines.length) h.say(lines.join("\n"));
 }
 // Any key during the show (reduced motion, or after the face's hold ended): the show cuts to its end.
 export function skipShow(h) { const a = h.ui.cargo.arrival; if (a && a.phase === "show") finish(h); }

@@ -200,7 +200,7 @@ export function faceRunSplit(cat, seed, key, a, b, maskA, maskB) {
   return out.sort((p, q) => p.x - q.x);
 }
 
-const WETT = t => t === T.WATER || t === T.STEP || t === T.DEEP;
+const WETT = t => t === T.WATER || t === T.STEP || t === T.DEEP || t === T.WADE;
 // The shore macros: 2 × 2 blocks of open water whose outer corner meets land on its five outer tiles, scanned row by row; the first
 // quarter (nw, ne, sw, se) that matches wins and its four tiles are taken. at(x, y) gives the tile code (off the grid counts as
 // water). Returns [{ x, y, q, radius }] with the radius by the parity rule.
@@ -286,7 +286,7 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
     const L = [], tile = { layers: L, dark: 0 }; tiles[i] = tile;
     // ground: lawn (dark lawn on a dark base), sand, or none for water
     const mac = macroAt.get(i) || null;
-    const g = kind === TERR.SHADOW || mac ? lay.base : GRASSY.includes(t) ? T.GRASS : t === T.DARK ? T.DARK : t === T.SAND ? T.SAND : WETT(t) ? -1 : lay.base;   // terrain pieces and shore macros sit on the place's base
+    const g = kind === TERR.SHADOW || mac ? lay.base : GRASSY.includes(t) ? T.GRASS : t === T.DARK ? T.DARK : t === T.SAND || t === T.SCREE ? T.SAND : WETT(t) ? -1 : lay.base;   // terrain pieces and shore macros sit on the place's base
     if (g === T.SAND) { const p = pick(cat.sand, hash(seed, 'sd', key, x, y)); if (p) L.push(cellLayer(p, 0, 0)); }
     else if (g !== -1) { const p = cat.lawn[lawnIdx(i)]; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone })); if (g === T.DARK) tile.dark = 1; }
     const sandGround = g === T.SAND && (t === T.SAND || t === T.REEDS || (t === T.ROCK && lay.scree));   // on a scree place a stone on grass sits on a small scree skirt with round corners
@@ -325,7 +325,10 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
         else { const p = (sandBank ? (cat.waterSand[q][st] || [])[frame] : null) || (cat.water[q][st] || [])[frame]; if (p) L.push(quarterLayer(p, q, 0, 0, waterTone)); } }
       if (t === T.STEP) { const f = pick(cat.prop.ford, hash(seed, 'pk', key, x, y)), l = f && cellLayer(f, 0, 0);   // a ford stone at its offset in the cell, over the water; none in the set: the stand-in
         L.push(l || { stand: 'step', dx: 8, dy: 16 }); }
+      else if (t === T.WADE) L.push({ stand: 'wade', dx: 8, dy: 8 });   // L2c: muddy water, a code-drawn stand-in (art list c-wade-32), never the ford's stone
     }
+    else if (t === T.SCREE) L.push({ stand: 'scree', dx: 8, dy: 8 });   // loose scree on its ground: a stand-in (c-scree-32)
+    else if (t === T.BANK) L.push({ stand: lay.bankDug ? 'bankdug' : 'bank', dx: 8, dy: 8 });   // an earth bank, its footholds once dug: a stand-in (c-bank-32)
     else if (t === T.CLIFF && !terr && rules.g1Runs) {   // generator 1's band: its runs' slices on the top and foot rows, rock between
       const r = g1.get(i);
       if (r) { const l = cellLayer(r.piece, r.j, r.sy); if (l) L.push(l); }

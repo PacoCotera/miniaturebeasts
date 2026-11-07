@@ -15,6 +15,7 @@ import { withPolicy } from "./node-scene.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { setFrames } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
+import "../../station/tests/fixtures/place-poses.mjs";   // the habits' own pose masters, so the picker offers them
 import * as T from "../../station/src/sitting.mjs";
 import { sittingBuild } from "../../station/src/views/sitting-props.mjs";
 import { loadStandSizesFs } from "../../station/tools/stand-layers-fs.mjs";

@@ -8,8 +8,8 @@ export const MW = 16, MH = 20;                       // world map, cells
 export const PW = 28, PH = 32;
 export const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 export const L = { MEADOW: 0, POND: 1, ROCK: 2, WOOD: 3, WATER: 4, CLIFF: 5 };
-export const T = { GRASS: 0, TALL: 1, FLOWERS: 2, DARK: 3, SAND: 4, WATER: 5, REEDS: 6, ROCK: 7, TRUNK: 8, CLIFF: 9, CFLOOR: 10, CWALL: 11, STEP: 12, DEEP: 13, ISLE: 14, FACE: 15, LIP: 16, STAIR: 17, APRON: 18 };
-export const T_BLOCK = [0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0];   // 15–18 are generator 2's: faces and lips block, stairs and aprons are walked on
+export const T = { GRASS: 0, TALL: 1, FLOWERS: 2, DARK: 3, SAND: 4, WATER: 5, REEDS: 6, ROCK: 7, TRUNK: 8, CLIFF: 9, CFLOOR: 10, CWALL: 11, STEP: 12, DEEP: 13, ISLE: 14, FACE: 15, LIP: 16, STAIR: 17, APRON: 18, WADE: 19, SCREE: 20, BANK: 21 };
+export const T_BLOCK = [0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1];   // 15–18 are generator 2's: faces and lips block, stairs and aprons are walked on; 19–21 (a wade, loose scree, an earth bank) block until a partner crosses them
 
 export function hash() {
   let h = 2166136261 >>> 0;
@@ -52,7 +52,7 @@ export const man = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 export const cxy = c => ({ x: c % MW, y: (c / MW) | 0 });
 export const cdist = (a, b) => man(cxy(a), cxy(b));
 
-export function passableIn(G, c) { const l = G.land[c]; return (l !== L.WATER || G.ford[c] === 1) && l !== L.CLIFF; }
+export function passableIn(G, c, opts = {}) { const l = G.land[c]; return (l !== L.WATER || G.ford[c] === 1 || (!!opts.sure && !!G.soft && G.soft.wade[c] === 1)) && l !== L.CLIFF; }
 
 export function genWorld(seed, gen = 1, biome = 'mixed') {
   if (gen === 5) return genWorld5(seed, biome);
@@ -423,11 +423,98 @@ function noiseTab(s, P) {
 export function edgeIndex(a, dir) {   // a is a cell, dir a DIRS key; the caller has checked the neighbour is on the map
   return dir === 'right' ? 2 * a : dir === 'left' ? 2 * (a - 1) : dir === 'down' ? 2 * a + 1 : 2 * (a - MW) + 1; }
 export function edgeKindIn(G, a, dir) { return G.edge ? G.edge[edgeIndex(a, dir)] : EDGE.OPEN; }   // generator 1: every edge is open
-export function canStepIn(G, a, dir) {
+// opts (all optional; with none the result is today's, bit for bit): opts.sure lets a wade cell and a scree edge pass (G.soft); opts.bank is "all" (every earth bank, for reach) or a Set of dug edge indices (G.banks).
+export function canStepIn(G, a, dir, opts = {}) {
   const [dx, dy] = DIRS[dir], x = a % MW + dx, y = ((a / MW) | 0) + dy;
   if (x < 0 || y < 0 || x >= MW || y >= MH) return false;
   const b = y * MW + x, k = edgeKindIn(G, a, dir);
-  return passableIn(G, b) && (k === EDGE.OPEN || k === EDGE.RAMP); }   // an unknown kind blocks
+  if (!passableIn(G, b, opts)) return false;
+  if (k === EDGE.OPEN || k === EDGE.RAMP) return true;   // an unknown kind blocks
+  if (k !== EDGE.CLIFF || (!opts.sure && !opts.bank)) return false;
+  const i = edgeIndex(a, dir);
+  if (opts.sure && G.soft && G.soft.scree[i] === 1) return true;
+  return !!opts.bank && !!G.banks && G.banks[i] === 1 && (opts.bank === 'all' || (opts.bank.has && opts.bank.has(i))); }
+
+// ---- soft ground and earth banks (pure overlays: the page attaches G.soft and G.banks after mounting; no genWorld calls them, so no world changes) ----
+// Wades: a water cell that is not a ford, with land on two opposite sides. Scree: a one-level cliff edge with rock on at least one side. Banks: a one-level cliff edge of soil on both sides.
+export const SOFT = { WADE_N: 2, WADE_N_WET: 4, SCREE_N: 2, SCREE_N_HIGH: 3, SCREE_N_WET: 1, SHORTCUT_MIN: 6, POCKET_MIN: 2 };
+const SOFT_DIRS = ['up', 'down', 'left', 'right'];
+const stepCellOf = (c, dir) => { const [dx, dy] = DIRS[dir], x = c % MW + dx, y = ((c / MW) | 0) + dy; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; };
+function floodFrom(G, src) {   // walking distance over the world as it is today (no opts), islands left out
+  const dist = new Int16Array(NC).fill(-1), q = [src]; dist[src] = 0;
+  for (let h = 0; h < q.length; h++) { const c = q[h];
+    for (const dir of SOFT_DIRS) { const d = stepCellOf(c, dir); if (d < 0 || dist[d] >= 0 || G.island[d] || !canStepIn(G, c, dir)) continue; dist[d] = dist[c] + 1; q.push(d); } }
+  return dist;
+}
+// What crossing between cells a and b would open: { kind: 0 pocket, v: cells outside G.comp } or { kind: 1 shortcut, v: walking steps today }, or null.
+function softValue(G, a, b) {
+  if (G.island[a] || G.island[b]) return null;
+  const da = floodFrom(G, a);
+  if (da[b] >= 0) return da[b] >= SOFT.SHORTCUT_MIN ? { kind: 1, v: da[b] } : null;
+  if (!!G.comp[a] === !!G.comp[b]) return null;
+  const f = G.comp[a] ? floodFrom(G, b) : da; let n = 0; for (let c = 0; c < NC; c++) if (f[c] >= 0 && !G.comp[c]) n++;
+  return n >= SOFT.POCKET_MIN ? { kind: 0, v: n } : null;
+}
+// An edge i (cells a and its east or south neighbour b): its cells and whether it touches the gate or any stair edge of those two cells.
+const edgeCells = i => { const a = i >> 1, b = i & 1 ? a + MW : a + 1; return [a, b]; };
+function edgeOk(G, i) {
+  const a = i >> 1, x = a % MW, y = (a / MW) | 0; if (i & 1 ? y >= MH - 1 : x >= MW - 1) return false;
+  const [c, d] = edgeCells(i); return c !== G.gate && d !== G.gate; }
+function nearRamp(G, i) {
+  for (const c of edgeCells(i)) for (const dir of SOFT_DIRS) if (stepCellOf(c, dir) >= 0 && G.edge[edgeIndex(c, dir)] === EDGE.RAMP) return true;
+  return false; }
+export function softGround(G, seed) {
+  const wade = new Uint8Array(NC), scree = new Uint8Array(2 * NC), wet = G.biome === 'marsh' || G.biome === 'meres', high = G.biome === 'fells' || G.biome === 'tarns';
+  const pick = (cands, n) => { cands.sort((p, q) => p.kind - q.kind || q.v - p.v || p.k - q.k || p.i - q.i); return cands.slice(0, n); };
+  const wc = [];
+  for (let c = 0; c < NC; c++) {
+    if (G.land[c] !== L.WATER || G.ford[c] === 1 || G.island[c]) continue;
+    const x = c % MW, y = (c / MW) | 0; let bad = false;
+    for (const [dx, dy] of NB8) { const X = x + dx, Y = y + dy; if (onMapXY(X, Y) && G.island[Y * MW + X]) bad = true; }
+    for (const dir of SOFT_DIRS) { const d = stepCellOf(c, dir); if (d >= 0 && (G.ford[d] === 1 || (G.edge && G.edge[edgeIndex(c, dir)] === EDGE.RAMP))) bad = true; }
+    if (bad) continue;
+    const dry = d => d >= 0 && G.land[d] !== L.WATER && G.land[d] !== L.CLIFF && !G.island[d];
+    for (const [d1, d2] of [['left', 'right']]) {   // west to east only: a place's river runs north to south and its crossing row runs across it
+      const a = stepCellOf(c, d1), b = stepCellOf(c, d2); if (!dry(a) || !dry(b)) continue;
+      if (G.edge && (G.edge[edgeIndex(c, d1)] !== EDGE.OPEN || G.edge[edgeIndex(c, d2)] !== EDGE.OPEN)) continue;
+      const v = softValue(G, a, b); if (v) { wc.push({ i: c, kind: v.kind, v: v.v, k: hash(seed, 'soft', 'w', c) }); break; } }
+  }
+  for (const w of pick(wc, wet ? SOFT.WADE_N_WET : SOFT.WADE_N)) wade[w.i] = 1;
+  if (G.edge && G.level) {
+    const sc = [];
+    for (let i = 0; i < 2 * NC; i++) {
+      if (G.edge[i] !== EDGE.CLIFF || !edgeOk(G, i)) continue;
+      const [a, b] = edgeCells(i), la = G.land[a], lb = G.land[b];
+      if (Math.abs(G.level[a] - G.level[b]) !== 1 || la === L.WATER || lb === L.WATER || la === L.CLIFF || lb === L.CLIFF || (la !== L.ROCK && lb !== L.ROCK) || nearRamp(G, i)) continue;
+      const v = softValue(G, a, b); if (v) sc.push({ i, kind: v.kind, v: v.v, k: hash(seed, 'soft', 's', i) });
+    }
+    for (const s of pick(sc, wet ? SOFT.SCREE_N_WET : high ? SOFT.SCREE_N_HIGH : SOFT.SCREE_N)) scree[s.i] = 1;
+  }
+  return { wade, scree };
+}
+// Earth banks: a few per world (BANK_MIN to BANK_MAX, fewer where no candidate qualifies), picked the way softGround picks its features. A candidate is a one-level
+// cliff edge with soil on both sides (no rock, cliff cell or water), never the gate's, that opens a pocket or a shortcut of SHORTCUT_MIN steps or more that the
+// plain cliffs and stairs do not. Pockets first, then the larger value; no two banks within two cells of each other. Every other soil cliff stays a cliff. Indexed like G.edge.
+export const BANK = { MIN: 3, MAX: 5, APART: 2 };
+export function bankEdges(G, seed = 0) {
+  const bank = new Uint8Array(2 * NC); if (!G.edge || !G.level) return bank;
+  const cands = [];
+  for (let i = 0; i < 2 * NC; i++) {
+    if (G.edge[i] !== EDGE.CLIFF || !edgeOk(G, i)) continue;
+    const [a, b] = edgeCells(i), bad = c => G.land[c] === L.ROCK || G.land[c] === L.CLIFF || G.land[c] === L.WATER;
+    if (Math.abs(G.level[a] - G.level[b]) !== 1 || bad(a) || bad(b)) continue;
+    const v = softValue(G, a, b); if (v) cands.push({ i, kind: v.kind, v: v.v, k: hash(seed, 'bank', i) });
+  }
+  cands.sort((p, q) => p.kind - q.kind || q.v - p.v || p.k - q.k || p.i - q.i);
+  const n = BANK.MIN + hash(seed, 'bank', 'n') % (BANK.MAX - BANK.MIN + 1), took = [];
+  for (const c of cands) {
+    if (took.length >= n) break;
+    const cc = edgeCells(c.i);
+    if (took.some(t => edgeCells(t).some(u => cc.some(w => Math.max(Math.abs(u % MW - w % MW), Math.abs(((u / MW) | 0) - ((w / MW) | 0))) <= BANK.APART)))) continue;
+    took.push(c.i); bank[c.i] = 1;
+  }
+  return bank;
+}
 // A stair's first tile along its side: i is the edge index, len PW on north and south sides, PH on east and west; seed is the world seed.
 export function stairPos(seed, i, len) { return (len / 2 - 1) + (hash(seed, 'stair', i) % 9) - 4; }
 
@@ -932,6 +1019,19 @@ export function genPatch2(G, seed, cell) {
   // 3. Terrain bands, then stairs; from here on no random placement touches the terrain layer or the ring around a stair.
   g2Bands(G, cell, tiles, terr, tmask);
   const stairs = g2Stairs(G, seed, cell, tiles, terr, tmask);
+  // Soft ground and banks (G.soft, G.banks: attached by the page, absent in every golden): a scree or bank edge gets a crossing two tiles wide through the outer two rows, laid like a stair's.
+  const cross = [];
+  if (G.soft || G.banks) for (const [dir, dx, dy] of SIDES) {
+    if (!onMapXY(cx + dx, cy + dy)) continue;
+    const ei = edgeIndex(cell, dir); if (G.edge[ei] !== EDGE.CLIFF) continue;
+    const kind = G.soft && G.soft.scree[ei] ? 'scree' : G.banks && G.banks[ei] ? 'bank' : null; if (!kind) continue;
+    const vertical = dir === 'up' || dir === 'down', s = stairPos(seed, ei, vertical ? PW : PH);
+    const xy = (k, d) => ({ x: dir === 'left' ? d : dir === 'right' ? PW - 1 - d : k, y: dir === 'up' ? d : dir === 'down' ? PH - 1 - d : k });
+    for (let d = 0; d < 2; d++) for (let k = s; k <= s + 1; k++) { const p = xy(k, d), j = I(p.x, p.y); tiles[j] = kind === 'scree' ? T.SCREE : T.BANK; terr[j] = 0; tmask[j] = 0; }
+    cross.push({ dir, kind, s, ei, entry: xy(s, 2) });
+  }
+  for (const q of cross) for (let d = 0; d < 3; d++) for (let k = q.s - 1; k <= q.s + 2; k++) {
+    const x = q.dir === 'left' ? d : q.dir === 'right' ? PW - 1 - d : k, y = q.dir === 'up' ? d : q.dir === 'down' ? PH - 1 - d : k; if (inb(x, y)) resv[I(x, y)] = 1; }
   for (let i = 0; i < NP; i++) if (terr[i] >= TERR.STAIR) { const x = i % PW, y = (i / PW) | 0;
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (inb(x + dx, y + dy)) resv[I(x + dx, y + dy)] = 1; }
   const free = i => !terr[i] && !resv[i];
@@ -939,7 +1039,8 @@ export function genPatch2(G, seed, cell) {
   if (isFord) {
     for (let y = 0; y < PH; y++) { const w = (noiseQ(ns + 3, 0, y, 4) - 16384 + 4096) >> 13;
       for (let x = 9 + w; x <= 18 + w; x++) setT(x, y, T.WATER); setT(8 + w, y, T.REEDS); setT(19 + w, y, T.SAND); }
-    for (let x = 0; x < PW; x++) if (tiles[I(x, 16)] === T.WATER) setT(x, 16, T.STEP);
+    const stepT = G.soft && G.soft.wade[cell] === 1 ? T.WADE : T.STEP;   // a wade is mud across the row, never the ford's stones
+    for (let x = 0; x < PW; x++) if (tiles[I(x, 16)] === T.WATER) setT(x, 16, stepT);
   }
   const keep = i => tiles[i] === T.DEEP || tiles[i] === T.ISLE || terr[i] !== 0;
   // 5. Pond.
@@ -1117,6 +1218,7 @@ export function genPatch2(G, seed, cell) {
     for (let i = feats.length - 1; i >= 0; i--) if (cheb(feats[i], p) <= 1 && feats[i].kind !== 'o') feats.splice(i, 1);
     feats.push({ id: 'd', kind: 'd', x: p.x, y: p.y }); }
   const lay = { key: String(cell), cell, cave: false, land, base, tiles, shelter, feats, terr, tmask, stairs };
+  if (cross.length) lay.cross = cross;
   return finishLayout2(lay, spawnPt);
 }
 

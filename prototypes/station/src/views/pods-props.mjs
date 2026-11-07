@@ -77,7 +77,7 @@ function freshOf(st, p, spec) {
   const f = S.podFreshness(st, p), F = spec.strings.inv.fresh;
   return { left: f.left, life: f.life, amber: f.amber, bench: f.bench, words: f.bench ? F.bench : f.left <= 1 ? F.next : f.amber ? fill(F.drying, { n: f.left }) : fill(F.left, { n: f.left }) };
 }
-const SHORT_HOW = { shake: "shaken loose", calm: "a calm creature", curl: "a curled creature", meal: "after a meal", slab: "under a slab", ground: "dug up", deep: "deep below", cave: "dug up", shed: "of {name}'s line" };
+const SHORT_HOW = { shake: "shaken loose", calm: "a calm creature", curl: "a curled creature", meal: "after a meal", grab: "a grab for fruit", warm: "by a warm stone", dig: "in a fresh hole", fog: "in a fog bank", still: "keeping still", air: "airing out", slab: "under a slab", ground: "dug up", deep: "deep below", cave: "dug up", shed: "of {name}'s line" };
 function shortOrigin(p, spec) {
   const place = spec.strings.inv.places[p.g] ?? "the wild", how = SHORT_HOW[p.how];
   return how ? place + " · " + how.replace("{name}", p.of || "a returned mibi") : place;

@@ -5,18 +5,17 @@
   "name": "Pesko",
   "plural": "Pesko",
   "order": 6,
-  "summary": "",
-  "parked": true
+  "summary": ""
  },
  "taxonomy": {
   "code": "S06",
   "resembles": "a four-legged body",
   "moves": "ambles, climbs",
-  "habitat": "pond edge, wood",
+  "habitat": "Thickets",
   "gate": null,
-  "diet": "fruit, washed first",
-  "ability": "lifts slabs to find what is under them",
-  "character": "nosy, a cheerful mischief-maker",
+  "diet": "fruit",
+  "ability": null,
+  "character": "nosy and cheerful",
   "clanName": "Prosopa",
   "clanNumber": 6,
   "member": 1,
@@ -107,7 +106,11 @@
   "..#.#",
   "..###"
  ],
- "habits": [],
+ "habits": [
+  "spine-count",
+  "slab-lift",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "medium",
   "proportion": null,

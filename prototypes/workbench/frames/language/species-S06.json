@@ -15,9 +15,9 @@
   "moves": "ambles, climbs",
   "habitat": "Thickets",
   "gate": null,
-  "diet": "fruit, washed first",
-  "ability": "lifts slabs to find what is under them",
-  "character": "nosy, a cheerful mischief-maker",
+  "diet": "fruit",
+  "ability": null,
+  "character": "nosy and cheerful",
   "clanName": "Prosopa",
   "clanNumber": 6,
   "member": 1,
@@ -107,6 +107,8 @@
   "....."
  ],
  "habits": [
+  "spine-count",
+  "slab-lift",
   "sleep-curled"
  ],
  "pod": {
