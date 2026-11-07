@@ -12,6 +12,8 @@ import { frameOf, traitState, genomeDigest, stampSizing, codeText } from "../gen
 import { railOf } from "./pods-props.mjs";
 import { slotAt as slot, ph as phOf } from "./requests.mjs";
 import { treatmentOf, drawnDigest, builtOf } from "../art.mjs";
+import { drawnLooks } from "../looks.mjs";
+import { coatOf, COAT_TRAITS } from "../stands.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { fill, spell, plural } from "./words.mjs";
 import { req as reqOf } from "./requests.mjs";
@@ -27,7 +29,8 @@ export const createPod = (st, cr) => cr.grown?.pod ?? st.tray.find((q) => q.id =
 // Charge's phase are not the mibi's own while unread); the treatment is art.mjs's treatmentOf on the chapters read: nothing read the ghost, an unread look a veil over its groups (body, coat, face, leg, tail), only doings unread clear.
 export function founderPicture(p, choices, size) {
   const fr = frameOf(S.speciesOf(p)), g = S.founderGenome(p, choices), b = builtOf(fr, g, p.read), t = treatmentOf(fr, p.read, !b.error && b.validation.status === "valid" ? b.scene : null);
-  return { id: `founder:${S.speciesOf(p)}:${drawnDigest(fr, g, p.read)}:${t.mode === "veil" ? "veil-" + t.groups.join("+") : t.mode}:${size.join("x")}`, read: [...p.read], mode: t.mode };
+  const coat = COAT_TRAITS[S.speciesOf(p)] ? coatOf(S.speciesOf(p), drawnLooks(fr, { genome: g, read: p.read })) : null;   // the coat chosen where its chapter is read, else the painted one (21h: the founder shows the coat it was given)
+  return { id: `founder:${S.speciesOf(p)}:${drawnDigest(fr, g, p.read)}${coat ? "_" + coat.replace("+", "-") : ""}:${t.mode === "veil" ? "veil-" + t.groups.join("+") : t.mode}:${size.join("x")}`, read: [...p.read], mode: t.mode, coat };
 }
 
 export function createBuild(m, spec, pods) {
@@ -80,7 +83,7 @@ export function createBuild(m, spec, pods) {
   regions.chamber = { back: ph("chamber-back-400x320", R.chamber.rect.slice(2)) };
   regions.chamberFront = { picture: ph("chamber-front-400x320", R.chamberFront.rect.slice(2)) };
   const fp = founderPicture(p, cr.choices, R.founder.rect.slice(2));
-  regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), read: fp.read, size: R.founder.rect.slice(2) }) };
+  regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), coat: fp.coat, read: fp.read, size: R.founder.rect.slice(2) }) };
   const sizeClass = fr.pod?.sizeClass ?? "medium", box = pods.classes.pod[sizeClass];
   regions.pod = { sizeClass, picture: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${box.join("x")}`, species: S.speciesOf(p), state: "identified", size: box }) };   // the pod at rest in the capsule is regions.pod.dome, set below
   regions.podShadow = { picture: slot(req, `pod-${sizeClass}-shadow`, [0, 0, box[0] + pods.shadow.widen, pods.shadow.h], "the contact shadow") };   // as Pods' rule: named in every state, the face keeps its node
