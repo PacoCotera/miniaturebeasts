@@ -252,3 +252,17 @@ test("the card fields: abCard and abCardShort, and every changed line fits its s
   assert.ok(w("Mud or scree · needs a rambler") <= 322, "the sign name line");
   console.log(sizes.map(([s, n]) => n + "  " + s).join("\n"));
 });
+
+test("the count line drops trailing segments at a ' · ' cut, never an ellipsis mid-word", () => {
+  const p = makePage({}); p.run("newWorld(7)");
+  const cut = (s, maxW) => p.run(`cutLine(${JSON.stringify(s)}, ${maxW}, 2)`), w = s => p.run(`textW(${JSON.stringify(s)}, 2)`);
+  const full = "Explored 0 of 47 · 1 gated · 18 need a rambler · 3 need a digger";
+  assert.equal(cut(full, 10000), full);
+  const two = "Explored 0 of 47 · 1 gated", one = "Explored 0 of 47";
+  assert.equal(cut(full, w(two)), two); assert.equal(cut(full, w(two) - 1), one);
+  assert.equal(cut(full, w(full) - 1), "Explored 0 of 47 · 1 gated · 18 need a rambler");
+  assert.ok(cut(one, 20).endsWith("…"), "a single segment too wide for the line is clipped");
+  const tw = p.run("(() => { const q = { big: false }; return 450 - MW * 4 - 10 - 22; })()");
+  p.run("S.mibis = [{ id: 1, name: 'Fig', sp: 19, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }]; S.carried = [1]; S.lead = 1");
+  assert.ok(!cut(full, tw).includes("…") && w(cut(full, tw)) <= tw);
+});

@@ -2795,6 +2795,8 @@ function wrapText(str, maxW, s) {
   if (cur) lines.push(cur); return lines;
 }
 function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (str.length > 1 && textW(str + '…', s) > maxW) str = str.slice(0, -1); return str + '…'; }
+// A line of " · " segments that drops its trailing segments until it fits (never an ellipsis mid-word); a first segment that alone is too wide is clipped.
+function cutLine(str, maxW, s) { while (textW(str, s) > maxW && str.includes(' · ')) str = str.slice(0, str.lastIndexOf(' · ')); return clipText(str, maxW, s); }
 
 // ---------- Species art: the signed 32 px tokens and 12 px minis, used 1:1 ----------
 // Release 21c: the twenty kinds' signed tokens from the art desk (field-tokens work/tokens.mjs, round 2; page species in sp order S01, S03, S02, S04 to S20), one
@@ -4126,7 +4128,7 @@ function drawReachView(t) {
     const lines = wrapText(FX.msg, tw - 16, 2).slice(0, Math.min(q.big ? 5 : 3, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20))), h = lines.length * 20 + 12;
     panel(8, by, tw + 4, h, C.ink, C.amber); lines.forEach((l, i) => text(l, 16, by + 6 + i * 20, C.bone)); RT.msgInBand = true; }
   else { blit(ICON.flag(), 12, by + 2); text(clipText(canSend() ? 'End expedition here' : sendHint(), tw - 20, 2), 30, by + 4, C.bone);
-    text(clipText(surveyedLine(), tw, 2), 12, by + 28, C.mist); }
+    text(cutLine(surveyedLine(), tw, 2), 12, by + 28, C.mist); }
   drawInset(ix, iy, t, u);
 }
 // Edge marks (generator 2): cliff and stair edges drawn in code on the reach view (72 and 48 px) and the full map (26 px),
