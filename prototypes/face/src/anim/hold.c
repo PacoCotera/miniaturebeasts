@@ -39,12 +39,15 @@ int hold_fill(void) {
   if (g_state == H_EMPTYING) { int em = empty_ms(); if (!motion() || el >= em) return 0; if (el < 0) el = 0; return g_from * (em - el) / em; }
   return 0;
 }
-int hold_up(void) {
+static int release(int say) {
   if (g_state == H_IDLE || g_state == H_EMPTYING) return 0;
   if (g_state == H_FULL) return 1;   /* a full ring stays full until the frame stops sending the hold: the sleep's writes run after it, and an emptying ring would say cancelled */
-  g_from = hold_fill(); g_t0 = anim_now(); g_state = motion() && g_from > 0 ? H_EMPTYING : H_IDLE; screens_redraw(); return 1;
+  g_from = hold_fill(); g_t0 = anim_now(); g_state = motion() && g_from > 0 ? H_EMPTYING : H_IDLE; screens_redraw();
+  if (say) screens_say("intent", "hold", "confirm:early");   /* ✓ let go before the ring was full (loop-audit UX F5b): the host's middle slot says to keep holding */
+  return 1;
 }
-void hold_cancel(void) { hold_up(); }
+int hold_up(void) { return release(1); }
+void hold_cancel(void) { release(0); }
 int hold_tick(uint32_t now) {
   if (g_state == H_HOLDING && (int)(now - g_t0) >= hold_ms()) { g_state = H_FULL; screens_say("intent", "hold", "confirm:held"); return 1; }
   if (g_state == H_EMPTYING && (int)(now - g_t0) >= empty_ms()) { g_state = H_IDLE; return 1; }

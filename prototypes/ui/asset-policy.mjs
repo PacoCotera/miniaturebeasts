@@ -23,7 +23,6 @@ const PAINTED = [
   /^panel-(housing-840x440|card-(248|380|776)x288(-focused)?|stage-(216|348|744)x48|glow-(216|348|744)x160|light-(216|348|744)x160|scene-wild-(216|348|744)x152|contact-shadow-128x16|chip-40x20|veil-1024x522)(:\d+x\d+)?$/, /^mibi-juvenile-S\d{2}-176x128(:\d+x\d+)?$/,   // the decision panel's masters (T-20261016-47, -70): painted, placed 1:1 or nine-sliced
   /^mibi-juvenile-S\d{2}-(304x312|104x112|96x88|48x48):(dawn|dusk|night)$/, /^mibi-adult-S\d{2}-(304x312|144x152|96x88|48x48):(dawn|dusk|night)$/, /^mibi-(juvenile|adult)-S\d{2}-(stand|pass|crouch|air|curl|stepa|stepb|blink|stretch|dig|climb|wingup|wingdown|glide|swima|swimb|swim)(-(b[12]|r[1-4]))?-\d+x\d+:(dawn|dusk|night)$/, /^mibi-(juvenile|adult)-S\d{2}-shadow-\d+x(16|24):(dawn|dusk|night)$/,
   /^cross-(gate-(switch|blend)-(8x8|16x16)(-settled)?|tick-[ab]-(6x4|12x8)|wish-(lit|hollow)-(8x8|12x12)|kin-surface-10x10)$/,   // the Cross masters (cross.json masters: the gates, ticks, wish glints and the kin corner, placed 1:1, never recoloured): painted masters; proposed here, the art director confirms the family
-  /^xs:\d+:\d+:[a-z0-9-]+:[^:]+:64x32$/,   // the Cross screen's trait pictures of a pairing (cross.json masters "rendered", station/src/pictures.mjs crosspic): the trait's close-up rendered at 64 x 32 by the placeholder renderer, as the old splice registered them (painted); proposed here, the art director confirms the family
   /^cargo-crate-64x64$/,/^crate-(open|sealed)-crop-96x96$/,   // T-20261016-150: the report's crate tile picture, painted at 64
   /^label-plate-cream-216x32$/,   // gate batch 1: the Cargo report's cream label plate (the brief: the painted layer)
   /^mark-guide-16(:16x16)?$/, /^gate-wild-(shut|open)-48x48(:48x48)?$/,   // the species line's guide mark and the Wild gate (fix 3c-habitat G1, W1): painted masters
@@ -39,13 +38,15 @@ const MOVES_WITH_MASTER = [/^moving:(juvenile|adult):S\d{2}:(walk|close|nap):\d+
 // A layered stand (station/src/layered-stand.mjs, T-20261016-201): a base and cut-out layers composed in the logic process. It is the painted layer in every status, as the layers are painted cut-outs
 // ("painted" is the draw policy, not a sign-off: the register still names the stand-ins), never palette-exact art: mibi:<SXX>~<variant>:<juvenile|adult>:<w>x<h>[:<light>]
 const RELIT = [/^relit:/, /^podicon:/, /^podpart:/];   // T-20261016-222: a pod or a juvenile relit to the capsule's roof lamp (station/src/relight.mjs): painted, with its shadow and moss alpha
+const RENDERED = [/^xs:\d+:\d+:[a-z0-9-]+:[^:]+:64x32$/];   // the Cross screen's seed and end pictures of a pairing (cross.json masters "rendered", station/src/pictures.mjs crosspic): made by code, never painted and never signed (loop-audit UX F6.1); they draw on the painted layer
 const LAYERED = [/^mibi:S\d{2}~[0-9a-f]{8}:(juvenile|adult):\d+x\d+(:(dawn|dusk|night))?$/];
 export function policyOf(id, status = "placeholder") {
   if (RELIT.some((re) => re.test(id))) return "painted";
   if (LAYERED.some((re) => re.test(id))) return "painted";
+  if (RENDERED.some((re) => re.test(id))) return "painted";
   if (MOVES_WITH_MASTER.some((re) => re.test(id))) return status === "master" ? "painted" : "art";
   if (ART.some((re) => re.test(id))) return "art";
   if (PAINTED.some((re) => re.test(id))) return "painted";
   throw new Error(`asset ${id} is in no layer family (ui/asset-policy.mjs): the art director places a new family`);
 }
-export const FAMILIES = { ART, PAINTED, MOVES_WITH_MASTER, LAYERED, RELIT };
+export const FAMILIES = { ART, PAINTED, MOVES_WITH_MASTER, LAYERED, RELIT, RENDERED };

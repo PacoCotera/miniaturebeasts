@@ -5,6 +5,7 @@
 #include "screens.h"
 #include "../vocab/vocab.h"
 #include "../vocab/words.h"
+#include "../vocab/keytoken.h"
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
@@ -13,7 +14,9 @@
 #include <string.h>
 
 #define H "home"
-static const char *STATIONS[4] = { "pods", "incubator", "companion", "bay" };
+/* a key cap on the bottom line: the picture 1:1 in a square of `s` px (one call, so the guard's direct-draw ratchet counts it once) */
+static int line_cap(const char *id, const char *pic, int x, int y, int s) { return v_sprite(id, pic, x, y, s, s); }
+static const char *STATIONS[4] ={ "pods", "incubator", "companion", "bay" };
 static const char *TARGETS[7] = { "vivarium", "library", "pods", "incubator", "companion", "bay", "settings" };
 
 /* A key cap before or after a title (the controls scheme: Home's panels wear their keys; home.json regions.cap): the 22 px drawing of the room's key (frame.json regions.marks.roomPanel), 1:1, in the art layer. Returns the
@@ -66,7 +69,7 @@ static void line_words(void) {
     int W = lamp + lampGap + cap + capGap + v_run_width(full, px), x0 = centre - (W + 1) / 2;
     v_region("line", LAYER_ART);
     if (!v_sprite("line.lamp", home_lamp_pic("needsYou"), x0, z[1] + (z[3] - 12 + 1) / 2, lamp, lamp)) v_error("word: the amber lamp is not on the face");
-    v_sprite("line.cap", capPic, x0 + lamp + lampGap, z[1] + 4, cap, cap);
+    line_cap("line.cap", capPic, x0 + lamp + lampGap, z[1] + 4, cap);
     v_region("line", LAYER_TYPE);
     v_run("line.needs", full, x0 + lamp + lampGap + cap + capGap, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT);
     return;
@@ -75,7 +78,7 @@ static void line_words(void) {
     int room = z[2] - cap - capGap - v_run_width(verb, px), sepW = v_run_width(sep, px); char clipped[V_STR] = "";
     int hasSub = subject[0] && room > sepW; if (hasSub) v_clip(subject, room - sepW, px, clipped, sizeof clipped);
     int W = cap + capGap + v_run_width(verb, px) + (hasSub ? sepW + v_run_width(clipped, px) : 0), x0 = centre - (W + 1) / 2;
-    v_region("line", LAYER_ART); v_sprite("line.cap", capPic, x0, z[1] + 4, cap, cap);
+    v_region("line", LAYER_ART); line_cap("line.cap", capPic, x0, z[1] + 4, cap);
     v_region("line", LAYER_TYPE);
     v_run_t run = v_run("line.verb", verb, x0 + cap + capGap, ty, px, v_scol("frame", "colours.verb"), V_ALIGN_LEFT);
     if (hasSub) { run = v_run("line.sep", sep, run.end, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_LEFT); v_run("line.subject", clipped, run.end, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_LEFT); }
@@ -83,6 +86,19 @@ static void line_words(void) {
   }
   v_region("line", LAYER_TYPE);
   if (note[0]) { v_run("line.note", note, centre, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_CENTRE); return; }
+  char kpre[V_STR], kkey[24], kpost[V_STR];
+  if (goal[0] && v_keytok(goal, kpre, sizeof kpre, kkey, sizeof kkey, kpost, sizeof kpost)) {   /* a goal that names a key by its cap (the first day's Call line): words, the cap 1:1, words, centred; it must fit the zone */
+    char kp[96], kq[64]; snprintf(kq, sizeof kq, "regions.marks.roomCue.%s", kkey); spec_str("frame", kq, kp, sizeof kp);
+    char lgr[24]; snprintf(lgr, sizeof lgr, "%s", v_sstr("frame", "regions.line.ground"));
+    int wp = kpre[0] ? v_role_width(kpre, "subject") : 0, wq = kpost[0] ? v_role_width(kpost, "subject") : 0, W = wp + (kpre[0] ? capGap : 0) + cap + (kpost[0] ? capGap : 0) + wq, x0 = centre - (W + 1) / 2;
+    if (W > z[2]) v_error("word: Home's goal line with a key cap does not fit its zone");
+    v_inline("line.goal");
+    if (kpre[0]) { v_region("line", LAYER_TYPE); v_say_run("line.goal.pre", kpre, x0, ty, "subject", lgr, V_ALIGN_LEFT); x0 += wp + capGap; }
+    v_region("line", LAYER_ART); if (kp[0]) line_cap("line.goal.cap", kp, x0, z[1] + 4, cap); x0 += cap + capGap;
+    if (kpost[0]) { v_region("line", LAYER_TYPE); v_say_run("line.goal.post", kpost, x0, ty, "subject", lgr, V_ALIGN_LEFT); }
+    v_inline_end();
+    return;
+  }
   if (goal[0]) {
     char icons[24] = "", plain[V_STR] = ""; snprintf(icons, sizeof icons, "%s", v_pstr("regions.line.goal.icons")); snprintf(plain, sizeof plain, "%s", v_pstr("regions.line.goal.plain"));
     int ni = 0; for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;   /* each icon is one three-byte sequence beginning 0xe2 */

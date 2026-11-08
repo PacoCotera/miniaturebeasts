@@ -160,7 +160,7 @@ export function showRoom(h, i) {
 // The mibi chosen on the whole (or the hatch's, or the first at home), its card, the modules and the strip; the ring is the face's (habitat.json focus.graph) and the host keeps what the face says in UI.hab.f. While the namer is open its props ride on
 // habitat's (an overlay) and its bottom line is the frame's. Returns null with no mibi housed: the whole shows its empty state.
 export function habitatBody(light = lightNow()) {
-  const body = habitatBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.hab.f, habId: UI.hab.id, meetId: UI.meet, ...living() }, SPECS.habitat, SPECS.frame, SPECS.home, SPECS.sitting, SPECS.pods);
+  const body = habitatBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.hab.f, habId: UI.hab.id, meetId: UI.meet, greet: UI.hab.greet, ...living() }, SPECS.habitat, SPECS.frame, SPECS.home, SPECS.sitting, SPECS.pods);
   if (!body) return null;
   UI.hab.f = body.props.focus.cur; UI.hab.id = body.shown.id; const rs = body.props.regions.resident; UI.hab.asleep = !!(rs && rs.moving && rs.rest === "asleep");   // a sleeper with a moving set: its Greet is the asleep moment (habitat.json events.moment.asleep)
   const n = UI.hab.namer, who = n && mibiById(n.id), pn = UI.panel;
@@ -331,9 +331,10 @@ export function screenProps(plate) {
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   if (screen === "sitting") for (const id of [UI.sit.prev.glass, UI.sit.prev.resident]) if (id) ids.add(id);   // the pictures the window's dithers start from stay on the face until their events end
-  if (screen === "home") { homeCapsUp = true; for (const id of Object.values(SPECS.home.regions.cap?.marks ?? {})) if (assetEntry(id)) ids.add(id); }   // Home's panels wear their 22 px key caps (home.json regions.cap): loaded with Home only
+  if (screen === "home") { homeCapsUp = true; for (const id of Object.values(SPECS.home.regions.cap?.marks ?? {})) if (assetEntry(id)) ids.add(id); if (!UI.noTeach && !G.st.taught?.call && (G.st.turn | 0) < (SPECS.frame.regions.cues.callUntilTurn ?? 8)) { const cc = SPECS.frame.regions.marks.roomCue?.call; if (cc && assetEntry(cc)) ids.add(cc); } }   // Home's panels wear their 22 px key caps (home.json regions.cap): loaded with Home only
   if (screen === "home") return { msg: { screen, ...body.props, frame: withHold({ plate: pl, ...answerPart({}) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;
+  if (UI.keep && holdOn()) { line.subject = SPECS.frame.strings.keep; const kc = SPECS.frame.regions.marks.roomCue?.confirm; if (kc && assetEntry(kc)) ids.add(kc); }   // F5b: ✓ was let go early: "Keep holding [✓ cap]" in the middle slot for hold.keepMs
   { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) { line.keys = cues; for (const c of cues) { const id = SPECS.frame.regions.marks.roomCue?.[c.room]; if (id && assetEntry(id)) ids.add(id); } } if (UI.teach && cues.some((c) => c.key === UI.teach.key)) line.subject = SPECS.frame.strings.teach[UI.teach.key]; }   // the first time a key has a cue its line stands in the middle slot (intents/frame.mjs teachTick)   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
   { const back = originWord({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (back && line.back) line.back = back; }   // after a carry ← goes back to where it started: the way back names that place
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
@@ -431,7 +432,8 @@ function habitatFocus(h, target) {
 export function onFaceMessage(h, m) {
   if (m.t === "done") { if (m.kind === "hatch" && cuttingHatch(h) && !h.holding()) landHatch(h); return; }   // informative only, but for the hatch with a moving set: a key the face acted on after the hold ended it (its cut), and that key lands the meet
   if (UI.flight && (m.t === "intent" || m.t === "focus")) INTENTS.frame.landFlight(h);   // a press during the carry's flight lands it at once, and then acts on the room it opened
-  if (m.t === "intent" && m.verb === "confirm:held") { if (h.held) h.held(); else heldKey(h); return; }   // the hold ring is full (anim/hold.c): the plate that holds acts on it (a pod to let go, the Return card; intents/index.mjs held)
+  if (m.t === "intent" && m.verb === "confirm:early") { if (holdOn()) { const k = { }; UI.keep = k; h.at(SPECS.frame.hold.keepMs ?? 2500, () => { if (UI.keep === k) UI.keep = null; }); } return; }   // F5b: ✓ let go before the ring was full: the middle slot says to keep holding, for hold.keepMs
+  if (m.t === "intent" && m.verb === "confirm:held") { UI.keep = null; if (h.held) h.held(); else heldKey(h); return; }   // the hold ring is full (anim/hold.c): the plate that holds acts on it (a pod to let go, the Return card; intents/index.mjs held)
   if (m.t === "intent" && m.verb === "skip") { h.skip(); return; }   // ✓ in a skippable hold (lvgl-switch.md §2.1): before every other rule, so it is never a cutting key; a late one, after the hold, does nothing
   if (m.screen === "incubator" && UI.screen !== "incubator") return;   // a key the cut already spent (the meet has landed): the Incubator's intent after the screen left is dropped
   if (m.screen === "incubator" && cuttingHatch(h) && !h.holding() && m.t === "intent") { landHatch(h); return; }   // the cutting key lands the meet and does nothing else

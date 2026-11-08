@@ -183,7 +183,8 @@
    "realm": {
     "title": "Your realm",
     "facts": "Began {began} · {regions} · {mibis} · world turn {turn}",
-    "factsNoDate": "{regions} · {mibis} · world turn {turn}"
+    "factsNoDate": "{regions} · {mibis} · world turn {turn}",
+    "playtest": "Playtest setup is on: the waits are shortened."
    },
    "companion": {
     "title": "Your Companion",

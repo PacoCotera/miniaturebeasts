@@ -80,11 +80,12 @@ test("the state: rest, meet (the new mibi until its first press), out (with the 
 
 test("the card: the species line with the stage word, the story (a founder: where it came from; a bred mibi: its parents), the code in three groups, the heart only when bonded, the notches (at most three, none at zero) and the stamp of the chapters read", () => {
   const S0 = scenes(), card = (n, o) => build(S0[n].w, S0[n].sv, o).props.regions.card, w = S0.rest.w, m = w.st.mibis[0];
-  const c = card("rest"); assert.equal(c.species.text, "your Loika, adult"); assert.deepEqual(c.story, ["from the meadow"]); assert.match(c.code, /^\w{3} \w{3} \w{3}$/); assert.equal(c.heart, ""); assert.equal(c.notches.count, 0);
+  const c = card("rest"); assert.equal(c.species.text, "your Loika, adult"); assert.deepEqual(c.story, ["from the meadow"]); assert.ok(!("code" in c), "no genome code on the card (plan 3.17 B4)"); assert.deepEqual(c.chapters, { read: frameOf("S01").chapters.length, total: frameOf("S01").chapters.length }, "the chapters caption's counts: this Loika has read every chapter"); assert.equal(c.heart, ""); assert.equal(c.notches.count, 0);
   assert.equal(card("juvenile").species.text, "your Loika, young");
   const b = card("bonded"); assert.equal(b.heart, "heart-full-24"); assert.equal(b.notches.count, 3, "min(notches, 3)"); assert.equal(b.notches.picture, "notch-skill-16x24");
   const fr = frameOf("S01"); m.from = { ...m.from, of: ["Moss", "Fig"] }; m.mem = "pond"; assert.deepEqual(card("rest").story, ["of Moss", "and Fig", "remembers the pond edge"]); m.from = { g: "meadow" };
-  m.read = [fr.chapters[0].id]; const s = card("rest").stamp; assert.deepEqual([s.size > 0, s.size <= 104, s.asset.startsWith("stamp:") && s.asset.endsWith(":" + s.size + ":k20:quiet")], [true, true, true]); assert.ok(s.asset.includes(":" + fr.chapters[0].id + ":"), "only the chapters read");
+  m.read = [fr.chapters[0].id]; assert.deepEqual(card("rest").chapters, { read: 1, total: fr.chapters.length }, "one chapter read: the caption counts it (a child with unread chapters)");
+  const s = card("rest").stamp; assert.deepEqual([s.size > 0, s.size <= 104, s.asset.startsWith("stamp:") && s.asset.endsWith(":" + s.size + ":k20:quiet")], [true, true, true]); assert.ok(s.asset.includes(":" + fr.chapters[0].id + ":"), "only the chapters read");
   assert.ok(S0.rest.w.st.mibis.length && build(S0.rest.w, S0.rest.sv).requests.some((r) => r.kind === "stamp" && r.mibi === m.id), "the stamp is a request by mibi (the hatch's form)");
 });
 
@@ -175,6 +176,13 @@ test("the window: the near Vivarium of the light is the mibi's room's (room-<roo
   for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }); assert.equal(b.props.regions.glass.picture, `room-roots-near-${light}-544x408`); assert.ok(b.requests.some((r) => r.id === `room-roots-near-${light}-544x408` && r.kind === "slot" && r.master === r.id)); }
   const m = w.st.mibis[0], b = build(w, sv); assert.equal(b.props.regions.resident.picture, `mibi:${genomeDigest(m.genome)}:adult:304x312`); assert.equal(b.props.regions.resident.waiting, false);
   m.paint = { state: "sent" }; const x = build(w, sv); assert.equal(x.props.regions.resident.waiting, false); assert.notEqual(x.line.subject, spec.strings.painting);
+});
+
+test("F5a: after a Greet the middle slot says the mibi greets back (a sleeper stirs, then sleeps on) and the resident carries the heart; with no Greet neither", () => {
+  const S0 = scenes(), m = S0.rest.w.st.mibis[0], b0 = build(S0.rest.w, S0.rest.sv, { focus: "resident" });
+  assert.equal(b0.props.regions.resident.heart, undefined); assert.notEqual(b0.line.subject, `${m.name} greets you back`);
+  const b1 = build(S0.rest.w, S0.rest.sv, { focus: "resident", greet: { asleep: false } }); assert.equal(b1.line.subject, `${m.name} greets you back`); assert.equal(b1.props.regions.resident.heart, true); assert.equal(b1.line.ok, `Greet ${m.name}`, "the verb stays");
+  assert.equal(build(S0.rest.w, S0.rest.sv, { focus: "resident", greet: { asleep: true } }).line.subject, `${m.name} stirs, then sleeps on`);
 });
 
 test("the bottom line: the resident greets (in the meet it names), the name renames, the species word opens the guide, a tile reads as its mibi; ← Vivarium", () => {

@@ -233,7 +233,10 @@ static void picker_mark(const char *id, const char *kind, int x, int y) {
     for (int r = 0; r < 14; r++) n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", r ? "," : "", (12 - W[r]) / 2, r, W[r], col);
     snprintf(ops + n, sizeof ops - (size_t)n, "]"); v_region("card.mark", LAYER_CHROME); v_composed(id, x + 5, y + 4, 12, 14, ops);
   } else if (strcmp(kind, "new") == 0) {
-    snprintf(ops, sizeof ops, "[[\"rrect\",0,0,12,12,6,\"%s\",\"\"]]", v_scol(S, I K ".marks.new.fill")); v_region("card.mark", LAYER_CHROME); v_composed(id, x + 5, y + 5, 12, 12, ops);
+    /* the word sticker (plan 3.17 B3): marks.new.rect in the cell (the cell's origin is the mark box's less grid.mark), sprout, ink words centred */
+    int sx = x - v_sk(S, I K ".grid.mark", 0) + v_sk(S, I K ".marks.new.rect", 0), sy = y - v_sk(S, I K ".grid.mark", 1) + v_sk(S, I K ".marks.new.rect", 1), sw = v_sk(S, I K ".marks.new.rect", 2), sh = v_sk(S, I K ".marks.new.rect", 3);
+    snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", sw, sh, v_si(S, I K ".marks.new.radius", sh / 2), v_scol(S, I K ".marks.new.fill")); v_region("card.mark", LAYER_CHROME); v_composed(id, sx, sy, sw, sh, ops);
+    v_region("card.mark", LAYER_TYPE); inv_say(v_fmt("%s.w", id), v_sstr(S, I K ".marks.new.word"), sx, sy, sw, sh, v_sstr(S, I K ".marks.new.role"), "panel", V_ALIGN_CENTRE);
   }
 }
 /* a pod's soft contact shadow, whole pixels: an ellipse of w x h in `outer` whose edge is dithered (every other pixel of a row's end), a darker one of 70 % of it in `inner` at its centre; rows by integer arithmetic so every build draws the same */

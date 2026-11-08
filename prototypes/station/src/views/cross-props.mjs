@@ -79,12 +79,20 @@ export function crossBuild(m, spec, pods) {
       } else {
         const [clo, chi] = l.catalogue, fr_ = (v) => F4((v - clo) / (chi - clo));
         row.range = [fr_(l.range[0]), fr_(l.range[1])]; row.parents = [fr_(l.parents[0]), fr_(l.parents[1])]; row.range0 = [fr_(l.range0[0]), fr_(l.range0[1])]; row.narrowed = F4(l.narrowed / (chi - clo));
+        const ps = lead ? binSegs(t, l.catalogue, pin, l.range) : null; if (ps) row.pin = ps;
       }
       if (pin && wished < 0) { wished = rows.length; out.wish = pin.lit ? "lit" : "hollow"; }
       rows.push(row);
     }
     if (wished < 0 && pins.length) { out.wish = pins[0].lit ? "lit" : "hollow"; wished = 0; }
     out.wishRow = Math.max(0, wished); out.rows = rows; return out;
+  }
+  // A pinned look at a blend marks the wished bins on the range bar (F6.4): the forecast names its bins in order low to high, so bin i of n is the i-th n-th of the range bar (a lone bin is the whole bar); the ends of a blend are never pinned.
+  function binSegs(t, cat, pin, range) {
+    if (!pin || pin.kind !== "blend" || !pin.bins?.length) return null;
+    const [clo, chi] = cat, all = t.bins ?? [], n = all.length, f = (v) => F4((Math.min(chi, Math.max(clo, v)) - clo) / (chi - clo)), [r0, r1] = range;
+    const segs = pin.bins.map((v) => { const i = all.indexOf(v); return i < 0 ? null : [f(r0 + (i * (r1 - r0)) / n), f(r0 + ((i + 1) * (r1 - r0)) / n)]; }).filter(Boolean);
+    return segs.length ? segs : null;
   }
   // ---- a chapter view: the open chapter's traits (or its find, shut) ----
   function chapterView(c) {
@@ -106,7 +114,7 @@ export function crossBuild(m, spec, pods) {
       } else {
         const [clo, chi] = lead.catalogue, f = (v) => F4((v - clo) / (chi - clo));
         out.blend = { low: seedPicture(t, [t.range[0], t.range[0]], "lo"), high: t.bins.length > 1 ? seedPicture(t, [t.range[1], t.range[1]], "hi") : "", range: [f(t.range[0]), f(t.range[1])], parents: [f(t.parents[0]), f(t.parents[1])], range0: [f(lead.range0[0]), f(lead.range0[1])], narrowed: F4(lead.narrowed / (chi - clo)), one: t.bins.length <= 1 };
-        if (pin && pin.kind === "blend") { /* a pinned look at an end: that picture's 2 px yellow edge (the forecast names the bins, not the ends: left unmarked) */ }
+        const ps = binSegs(t, lead.catalogue, pin, t.range); if (ps) out.blend.pin = ps;   // the wished bin of the range bar wears a 2 px yellow edge (the ends stay unmarked)
       }
       return out;
     });

@@ -5,6 +5,7 @@
 import { clock, motion } from "./pixels.mjs";
 import { G, FX, UI, SPECS, msg, save, load, loadSettings, saveSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, saveKey, switchCompanion, activeCompanion } from "./game.mjs";
 import * as S from "./state.mjs";
+import { readOptions } from "../../play/src/options.mjs";
 import * as Lib from "./library.mjs";
 import { startScene, endScene, sceneTime, sceneBeat, SCENE_MS } from "./motion-scene.mjs";
 import { frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode, chapterLooks } from "./genome.mjs";
@@ -28,7 +29,8 @@ import { CORE, hooks, loadFrames, bootAssets, startFace, pump, tick, act, releas
 const $ = (id) => document.getElementById(id);
 const vis = $("screen");   // the page's screen: the face copies what it redrew onto it (face.display)
 const bootEl = $("boot");
-$("devBtn").hidden = false;   // the Developer tools button always shows on the sandbox (owner 2026-11-08); ?dev also opens the panel at load
+const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs), the one place of the page's options
+$("devBtn").hidden = !OPT.dev;   // the Developer tools button shows with the Developer tools option, which also opens the panel at load
 
 // --- the loop (core.mjs): what the page owns goes in through its hooks ---
 let dockElsewhere = false;   // ?embed: the play page's Dock control asked while another device had the keys (frame.json navigation.dock); never set standalone
@@ -140,8 +142,8 @@ const TEST = new URLSearchParams(location.search).has("test"); UI.noTeach = TEST
 // Test mode: the masters each screen asks for, by the screen on show ("boot" before the first frame, "idle" for the dither): the station journey writes and checks masters/groups.json from this (window.__st.used()).
 const USED = {};
 if (TEST) probe.on = (id) => { const e = assetEntry(id); if (!e?.file || e.file.startsWith("rooms/")) return; const k = !G.ready ? "boot" : UI.idle ? "idle" : UI.screen; (USED[k] ??= new Set()).add(id); };
-// The name list births draw from is the current one; ?names=<list key> pins another (the tools that show the archived English names ask for en-short-1).
-{ const n = new URLSearchParams(location.search).get("names"); if (n && S.NAME_LISTS[n]) S.useNameList(n); }
+// The name list births draw from is the current one; the Options panel's Name list pins another (the tools that show the archived English names ask for en-short-1).
+{ const n = OPT.names; if (n && S.NAME_LISTS[n]) S.useNameList(n); }
 const faceUp = bootFace(undefined, { test: TEST });   // the WebAssembly face boots beside the downloads (it needs none of them); startFace then sends it the palette, the specs and the pins
 faceUp.catch(() => {});   // a failed boot is reported through `ready` below, not as an unhandled rejection
 const faceBoot = async () => { const f = await startFace({ test: TEST, face: await faceUp }); vctx = f.display(vis); };
@@ -150,13 +152,13 @@ const bootDone = () => { if (bootBar) bootBar.hidden = true; };
 const ready = Promise.all([loadFrames(), bootAssets({ test: TEST, onProgress: (done, total) => { if (bootBar && total > 0) { bootBar.max = total; bootBar.value = done; } } }), faceUp]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
-  { const j = new URLSearchParams(location.search).get("jump"); if (j === "arrival" || j === "fork") saveSettings({ jump: j }); }   // the jump test (decision panel spec Part 3): the play page's ?jump= is saved with the settings
+  { const j = OPT.jump; if (j === "arrival" || j === "fork") saveSettings({ jump: j }); }   // the jump test (decision panel spec Part 3): the Options panel's Jump setting is saved with the settings
   UI.lastInput = performance.now(); G.ready = true;
   loadRoomsInBackground();   // the other rooms, now that the first screen can draw (the room after the shown one first; 16 in flight)
   buildDevPanel((inShell && parent.document.getElementById("devStation")) || $("devPanel"), { changed: refreshDev, openCrates: () => { CORE.host.goto("cargo"); cargo.openBay(CORE.host); }, motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()) });
   caddy.startClient();
   if (EMBED) { caddyKey = ""; updateCaddy(); postCaddy(true); setInterval(() => postCaddy(true), 5000); }   // the shell hears the Caddy's state at ready, and again every 5 s: the Station's heartbeat for the Caddy's link
-  if (new URLSearchParams(location.search).has("dev")) showDev(true);
+  if (OPT.dev) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
   return info;
 }).catch((e) => { bootDone(); bootText("the Station did not start: " + e.message); console.error(e); throw e; });

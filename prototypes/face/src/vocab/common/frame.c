@@ -6,6 +6,7 @@
    without a mark the text starts at the title's end + gap and there is no mark node. Props without frame.top.readout: neither node. */
 #include "../vocab.h"
 #include "../words.h"
+#include "../keytoken.h"
 #include "../../prim/prim.h"
 #include "../../spec/spec.h"
 #include "../../layout/layout.h"
@@ -211,8 +212,22 @@ void word_bottomLine(void) {
   /* the context, centred on 512, clipped with an ellipsis to its zone; not drawn while the cues have grown into it */
   if (!hide_mid && spec_str(P, "frame.line.subject", s, sizeof s) > 0) {
     int sr[4]; v_srect(F, "regions.subject.rect", sr); v_region("subject", LAYER_TYPE); snprintf(c, 24, "%s", v_sstr(F, "regions.subject.role"));
-    v_role_clip(s, sr[2], c, t, sizeof t);
-    v_say_run("line.subject", t, v_si(F, "regions.subject.centre", 0), v_role_cap_in(sr[1], sr[3], c), c, lg, V_ALIGN_CENTRE);
+    char kpre[V_STR], kkey[24], kpost[V_STR];
+    if (v_keytok(s, kpre, sizeof kpre, kkey, sizeof kkey, kpost, sizeof kpost)) {
+      /* a line that names a key by its cap: words, the cap (the 16 px cue picture, 1:1), words, centred in the slot. It must fit the slot whole: an ellipsis is never drawn here, a line too wide is a copy bug (a words-test error) */
+      snprintf(a, sizeof a, "regions.marks.roomCue.%s", kkey); snprintf(b, sizeof b, "%s", v_sstr(F, a));
+      int wp = *kpre ? v_role_width(kpre, c) : 0, wq = *kpost ? v_role_width(kpost, c) : 0, g = v_si(F, "regions.cues.markGap", 4);
+      int W = wp + (*kpre ? g : 0) + mk + (*kpost ? g : 0) + wq, x0 = v_si(F, "regions.subject.centre", 0) - (W + 1) / 2;
+      if (W > sr[2]) { char em[160]; snprintf(em, sizeof em, "word: the teaching line %.40s is %d px, its slot %d", s, W, sr[2]); v_error(em); }
+      int ty2 = v_role_cap_in(sr[1], sr[3], c); v_inline("line.subject");
+      if (*kpre) { v_region("subject", LAYER_TYPE); v_say_run("line.subject.pre", kpre, x0, ty2, c, lg, V_ALIGN_LEFT); x0 += wp + g; }
+      v_region("subject", LAYER_ART); if (*b) { int kr[4] = { x0, sr[1] + (sr[3] - mk) / 2, mk, mk }; mark("line.subject.cap", b, kr); } x0 += mk + g;
+      if (*kpost) { v_region("subject", LAYER_TYPE); v_say_run("line.subject.post", kpost, x0, ty2, c, lg, V_ALIGN_LEFT); }
+      v_inline_end();
+    } else {
+      v_role_clip(s, sr[2], c, t, sizeof t);
+      v_say_run("line.subject", t, v_si(F, "regions.subject.centre", 0), v_role_cap_in(sr[1], sr[3], c), c, lg, V_ALIGN_CENTRE);
+    }
   }
   if (kn > 0) {
     int x = right - total;

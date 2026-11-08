@@ -107,6 +107,17 @@ test("the overview's rows: a locus at play is a row of its kind with its hides, 
   w.st.wish = { S01: { [t.trait]: "no such look" } }; assert.equal(build(w, { state: 0 }).props.regions.overview.chapters.find((c) => c.id === t.chapter).wish, "hollow");
 });
 
+test("F6.4: a pinned look at a blend marks the wished bin of the range bar (an overview row's and the chapter view's blend carry `pin`, fractions inside the track); a blend with no pin carries none; a switch's pin stays on its seeds", () => {
+  const w = world("S01"), [a, b] = w.mibis, fr = w.fr; readAll(a, fr); readAll(b, fr);
+  const fc = S.forecastOf(w.st, a, b, settings), t = fc.traits.find((q) => q.kind === "blend" && q.bins?.length > 1); assert.ok(t, "S01 has a blend with bins");
+  const none = build(w, { state: 0 }).props.regions.overview.chapters.find((c) => c.id === t.chapter); assert.ok(none.rows.every((r) => !r.pin), "no wish, no pin");
+  const trait = w.fr.chapters.flatMap((c) => c.traits).find((q) => q.id === t.trait); let found = null;
+  for (const word of trait.looks ?? []) { w.st.wish = { S01: { [t.trait]: word } }; const rows = build(w, { state: 0 }).props.regions.overview.chapters.find((c) => c.id === t.chapter).rows.filter((r) => r.pin); if (rows.length) { found = rows; break; } }
+  assert.ok(found, "some look of the blend can be shown by a bin: its bin is pinned on the row");
+  for (const r of found) for (const [lo, hi] of r.pin) assert.ok(lo >= 0 && hi <= 10000 && lo <= hi, "fractions of the track, " + lo + " to " + hi);
+  w.st.wish = {};
+});
+
 test("a chapter view: each trait's two copies in the player's words, its gate kind, the four outcomes (switch) or the range (blend); the surface plate under kinship", () => {
   const w = world("S01"), [a, b] = w.mibis, fr = w.fr; readAll(a, fr); readAll(b, fr);
   const ch = build(w, { state: 1 }).props.regions.chapter; assert.equal(ch.name, "Coat"); assert.equal(ch.sealed, false);
@@ -145,7 +156,7 @@ test("✓ Cross them: the child is drawn and paid for, the bud takes it and the 
   const w = world("S01", 11, 2), [a, b] = w.mibis; for (const m of w.mibis) readAll(m, w.fr); const h = host(w), e0 = w.st.e, s0 = w.st.s;
   dispatch(h, { screen: "cross", target: "partner", verb: "confirm" });
   assert.equal(h.went.at(-1), "incubator"); assert.equal(h.ui.cross, null); assert.equal(w.st.bud.kind, "cross"); assert.deepEqual(w.st.bud.parents.map((p) => p.id), [a.id, b.id]); assert.equal(w.st.e, e0 - S.crossCost(settings).e); assert.equal(w.st.s, s0 - S.crossCost(settings).s);
-  assert.match(h.said.at(-1), /^Crossed · /);
+  { const said = h.said.at(-1); assert.ok(said.includes(a.name) && said.includes(b.name) && said.includes("crossed") && said.includes("Incubator"), said); assert.ok(!/[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}/.test(said) && !said.includes(w.st.bud.code), "no genome code in the message"); }
   const busy = world("S01", 11, 2); for (const m of busy.mibis) readAll(m, busy.fr); busy.st.bud = { kind: "founder" }; const hb = host(busy), eb = busy.st.e;
   dispatch(hb, { screen: "cross", target: "partner", verb: "confirm" }); assert.deepEqual([hb.said.at(-1), hb.went.length, busy.st.e], ["The incubator is busy", 0, eb], "the refusal's words, nothing spent, no screen change");
   const poor = world("S01", 11, 2); for (const m of poor.mibis) readAll(m, poor.fr); poor.st.e = 0; const hp = host(poor);

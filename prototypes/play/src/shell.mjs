@@ -8,9 +8,13 @@
 import { faceOf, rasterFace, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS } from "../../caddy/face.mjs";   // the Caddy's face, shared with the service's tests and renders
 import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX } from "./fit.mjs";   // the size: z device px per lp and its tier
 import { stampText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
+import { readOptions, writeOptions } from "./options.mjs";
+import { NAME_LISTS } from "./names.mjs";   // the Options panel's settings
+import { mountOptions } from "../vendor/options.js";   // the Options panel: React + Radix, built from play/options (npm run build there)
 
-const params = new URLSearchParams(location.search), TEST = params.has("test"), DEV = params.has("dev"), SEED = params.get("seed");
-let cslot = params.get("companion") === "B" ? "B" : "A";   // the Companion in the frame: A, or the second Companion B
+const params = new URLSearchParams(location.search), TEST = params.has("test"), SEED = params.get("seed");   // test-harness flags only: every option a person sets is in the Options panel (play/src/options.mjs)
+const OPT = readOptions(), DEV = OPT.dev;   // the options are one stored setting both devices read themselves (no URL carries them); its block is "the Options panel" below the keys
+let cslot = OPT.companion === "B" ? "B" : "A";   // the Companion in the frame: A, or the second Companion B
 const $ = (id) => document.getElementById(id);
 const SEAT_MS = 160, EASE = [0, 0, 0.2, 1];
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -54,7 +58,7 @@ let owner = "station", seatOff = 0, devOpen = false, keysOpen = false;
 let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
 let pressed = false, seatBusy = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
-const JUMP = params.get("jump"), stationUrl = "../station/?embed" + (DEV ? "&dev" : "") + (TEST ? "&test" : "") + (JUMP === "arrival" || JUMP === "fork" ? "&jump=" + JUMP : ""), companionUrl = "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (cslot === "B" ? "&companion=B" : "") + (DEV ? "&dev=1" : "");
+const stationUrl = "../station/?embed" + (TEST ? "&test" : ""), companionUrl = "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
 const SVG = {
@@ -68,8 +72,9 @@ const KEYS = {
   station: [
     { id: "left", code: "ArrowLeft", name: "Left", cls: "pad", glyph: SVG.left, g: "P", s: 56 }, { id: "up", code: "ArrowUp", name: "Up", cls: "pad", glyph: SVG.up, g: "P", s: 56 },
     { id: "down", code: "ArrowDown", name: "Down", cls: "pad", glyph: SVG.down, g: "P", s: 56 }, { id: "right", code: "ArrowRight", name: "Right", cls: "pad", glyph: SVG.right, g: "P", s: 56 },
-    { id: "home", code: "KeyH", name: "Home", cls: "room home", glyph: MARK("home"), g: "R", s: 56 }, { id: "vivarium", code: "KeyB", name: "Vivarium", cls: "room vivarium", glyph: MARK("vivarium"), g: "R", s: 56 },
-    { id: "research", code: "KeyR", name: "Research", cls: "room research", glyph: MARK("pods"), g: "R", s: 56 }, { id: "library", code: "KeyL", name: "Library", cls: "room library", glyph: MARK("library"), g: "R", s: 56 },
+    { id: "home", code: "KeyH", name: "Home", cls: "room home", glyph: MARK("home"), g: "R", s: 56 }, { id: "research", code: "KeyR", name: "Research", cls: "room research", glyph: MARK("pods"), g: "R", s: 56 },
+    { id: "vivarium", code: "KeyB", name: "Vivarium", cls: "room vivarium", glyph: MARK("vivarium"), g: "R", s: 56 }, { id: "library", code: "KeyL", name: "Library", cls: "room library", glyph: MARK("library"), g: "R", s: 56 },
+    { id: "call", code: "KeyC", name: "Call", cls: "round call", glyph: SVG.call, g: "A", s: 56 },
     { id: "back", code: "Escape", name: "Back", cls: "round back", glyph: SVG.back, g: "A", s: 56 }, { id: "confirm", code: "Enter", name: "Confirm", cls: "round confirm", glyph: SVG.confirm, g: "A", s: 64 },
   ],
   companion: [
@@ -151,7 +156,7 @@ function layout() {
   placeC(devBtn, narrow ? CW - 112 : CW - 160, 0, narrow ? 100 : 148, 40);
   if (!TEST) layoutSize((narrow ? CW - 112 : CW - 160) - zw);
   devBtn.textContent = narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
-  layoutDock(narrow); layoutCompanionCtl(narrow);
+  layoutDock(narrow); layoutCompanionCtl(narrow); layoutOptions(narrow, dockX);
   // the bar's note: the narrow tier's line, or for 4000 ms after a seat, a lift or the opening's end, the Caddy's two lines as one (T-20261016-109)
   note.textContent = noteCaddy || NOTE_TEXT;
   note.classList.toggle("hidden", !narrow);
@@ -272,7 +277,7 @@ const cycle = (dir) => setOwner(order[(order.indexOf(owner) + dir + order.length
 // the page's keys, caught in the capture phase of each frame's window and of the shell's own, before any device hears them
 function pageKey(e) {
   if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
-  const t = e.target, tag = t && t.tagName; if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) return;
+  const t = e.target, tag = t && t.tagName; if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable) || (t && t.closest && t.closest("[data-options]"))) return;   // typing, or inside the Options panel (it takes its own keys)
   let hit = true;
   if (e.code === "Backquote") cycle(e.shiftKey ? -1 : 1);
   else if (e.shiftKey && e.code === "KeyD") dockPress();
@@ -427,10 +432,10 @@ function connect(world) {
 // The second Companion (the owner's: the Companion is the player's identity): the frame holds Companion A or B; the Station and the Caddy keep the last docked player's
 // world until another Companion docks. Lift first: a Companion in its cradle is not swapped.
 const companionCtl = $("companionCtl");
-const companionSrc = () => "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (cslot === "B" ? "&companion=B" : "") + (DEV ? "&dev=1" : "");
+const companionSrc = () => "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
 function switchCompanion() {
   if (seatedNow() || pressed) return;
-  cslot = cslot === "A" ? "B" : "A"; comp = null; hold = null; frames.companion.src = companionSrc(); caddy = derive(); layout();
+  cslot = cslot === "A" ? "B" : "A"; writeOptions({ companion: cslot }); comp = null; hold = null; frames.companion.src = companionSrc(); caddy = derive(); layout();
 }
 companionCtl.addEventListener("click", () => { switchCompanion(); if (document.activeElement === companionCtl) companionCtl.blur(); giveKeys(owner); });
 function layoutCompanionCtl(narrow) {
@@ -533,13 +538,29 @@ async function printDone() {
 printTaken.addEventListener("click", () => { printDone(); if (document.activeElement === printTaken) printTaken.blur(); giveKeys(owner); });
 printLook(); setInterval(printLook, 10000);
 
+// ---- the Options panel (owner 2026-11-08): every option a person can set, in one visible place; the settings are one stored value (options.mjs) that both devices read themselves ----
+// The panel is play/options (React + Radix, built to ../vendor/options.js). Developer tools applies at once; the rest apply when the panel closes (the page reloads), and Start fresh erases this browser's save at the NEXT load,
+// before any frame is set (a frame still open would write its save back as it unloaded). The Companions' identities stay; the worlds go.
+const optionsBtn = $("optionsBtn"), FRESH_KEY = "mb-play-fresh", PLACES = ["HollowTree", "Reedpool", "SplitStone", "Test_AllCases", "Windstep"];
+try { if (sessionStorage.getItem(FRESH_KEY)) { sessionStorage.removeItem(FRESH_KEY); for (const key of Object.keys(localStorage)) if (key.startsWith("mb-save-v8") || key.startsWith("mb-exploration-v") || key === "mb-station-dev") localStorage.removeItem(key); } } catch { /* no storage: nothing to erase */ }
+function applyDev(on) { devBtn.classList.toggle("hidden", !on); for (const id of ["helpDevK", "helpDevD"]) $(id).classList.toggle("hidden", !on); if (!on && devOpen) toggleDev(false); }
+mountOptions($("optionsRoot"), {
+  trigger: optionsBtn, read: readOptions, names: Object.keys(NAME_LISTS), places: PLACES,
+  onChange: (patch) => { writeOptions(patch); if ("dev" in patch) applyDev(patch.dev); },
+  onClose: (changed) => { if (changed) location.reload(); giveKeys(owner); },
+  onStartFresh: () => { try { sessionStorage.setItem(FRESH_KEY, "1"); } catch { return; } location.reload(); },
+});
+function layoutOptions(narrow, rightEdge) {   // in the bar after the Companion control when it fits before the Dock; else the window's bottom-left corner
+  const x = narrow ? 316 : 440, w = 88, fits = x + w + 8 <= rightEdge, s = optionsBtn.style;
+  optionsBtn.classList.toggle("corner", !fits);
+  if (fits) { placeC(optionsBtn, x, 0, w, 40); s.bottom = ""; } else { s.left = "8px"; s.top = "auto"; s.bottom = "8px"; s.width = w + "px"; s.height = "28px"; }
+}
 // ---- boot ----
 buildKeys();
 for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner("station"); } } });
 let gotLoadOwner = false;
 frames.station.src = stationUrl; frames.companion.src = companionUrl;
-for (const id of ["devBtn", "helpDevK", "helpDevD"]) $(id).classList.remove("hidden");   // the Developer tools button and its help row always show on the sandbox (owner 2026-11-08)
-if (DEV) devOpen = true;   // ?dev also opens the tools at load
+if (DEV) { applyDev(true); devOpen = true; }   // the Developer tools option shows the button and its help row, and opens the tools at load
 if (!TEST) for (const id of ["zDown", "zFit", "zUp", "stamp", "helpZK", "helpZD"]) $(id).classList.remove("hidden");   // the size control, its keys and the build stamp: everywhere but ?test, which keeps today's page
 let dprQuery = null;
 function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr); dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`); dprQuery.addEventListener("change", onDpr); }

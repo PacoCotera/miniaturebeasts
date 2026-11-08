@@ -279,7 +279,7 @@ test("the partner pick: A's species only with A left out; those who can cross no
   const young = build(st, { pair: { a: fen.id }, focus: "cell." + bud.id }).props.regions.card; assert.equal(young.stateLines[0], "young"); assert.match(young.stateLines[1], /^grows up in \d+ turns?$/);
   const rest = build(st, { pair: { a: fen.id }, focus: "cell." + sky.id }); assert.deepEqual(rest.props.regions.card.stateLines, ["on a breather", "can cross in 2 turns"]); assert.match(rest.props.regions.card.mark, /mark-breather-16/, "the breather's mark leads the state"); assert.equal(rest.props.regions.card.why, "", "the why line shows with the ring on the plate");
   const onPlate = build(st, { pair: { a: fen.id }, focus: "plate.0", last: sky.id }); assert.equal(onPlate.props.regions.card.why, "on a breather · can cross in 2 turns", "an unpickable partner: the plate is held with its reason");
-  assert.equal(build(st, { pair: { a: fen.id }, focus: "plate.0", last: moss.id }).props.regions.card.why, "The forecast is not open yet", "a pickable one: the cross is the breeding screens' (held here)");
+  assert.equal(build(st, { pair: { a: fen.id }, focus: "plate.0", last: moss.id }).props.regions.card.why, "", "a pickable one: the cross is the breeding screens' (held here), with no reason of its own (pairSoon is gone)");
   assert.equal(build(st, { pair: { a: fen.id }, focus: "cell." + moss.id }).line.ok, null, "held: no ✓ act on any partner"); assert.equal(build(st, { pair: { a: fen.id }, focus: "cell." + sky.id }).line.ok, null);
   assert.equal(build(st, { pair: { a: fen.id }, focus: "cell." + moss.id, forecastOpen: true }).line.ok, "See Fen and Moss", "when the forecast lands: See {A} and {B} on a pickable partner"); assert.equal(build(st, { pair: { a: fen.id }, focus: "cell." + sky.id, forecastOpen: true }).line.ok, null, "and none on one who cannot be picked");
 });
@@ -333,4 +333,9 @@ test("the dim at both steps: those who cannot be picked and the tucked request t
     assert.equal(W.size[0], all - 1 > 15 ? 64 : 100, "the step"); assert.ok(dim.length >= 1); for (const c of dim) assert.ok(b.requests.some((r) => r.kind === "mibiv" && r.variant === "dark" && r.id === c.picture && r.base.size[0] === W.size[0]), "a dark variant of the cell's own size");
     for (const c of W.cells.filter((c) => !c.dim)) assert.ok(!b.requests.some((r) => r.kind === "mibiv" && r.id === c.picture));
   }
+});
+
+test("F6.5: the unreachable pairSoon line is gone from the spec and from the plate (a held pair plate carries no reason of its own)", () => {
+  assert.equal(JSON.stringify(spec).includes("pairSoon"), false, "vivarium.json has no pairSoon string");
+  assert.equal(readFileSync(path.resolve(here, "../src/views/wall-props.mjs"), "utf8").includes("pairSoon"), false, "wall-props has no fallback to it");
 });

@@ -95,7 +95,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
     heart: shown.bonded ? slot("heart-full-24", R.card.heart.size, "the heart master") : "",
     notches: { count: Math.min(shown.notches || 0, 3), picture: slot("notch-skill-16x24", R.card.notches.notch, "the skill notch master") },
     species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: slotAt(req, "mark-guide-16", [0, 0, 16, 16], "the guide mark master (AD G1)") },
-    story, code: codeText(shown.code),
+    story, chapters: { read: read.length, total: (fr?.chapters ?? []).length },   // the chapters caption stands where the code was (plan 3.17 B3c / B4): no player screen shows a code until L5
     stamp: { size: sz.size, N: sz.N, cell: sz.cell, plate: slot("plate-well-120x120", [120, 120], "the label's well (Habitat GB2)"), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(spec.colours.stampLabel.k)}:quiet`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size, k: spec.colours.stampLabel.k, quiet: true }),
       corner: shown.portrait?.state === "delivered" ? slot(R.stamp.portrayed.slice, R.stamp.portrayed.rect.slice(2)) : "" },   // the portrayed corner on the label (regions.stamp.portrayed): only once the portrait came
   };
@@ -189,6 +189,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
       line = { ok: null, subject: "", back: Sg.back, need: null };   // the collection v2 design §1: the move mode retires (a mibi moves in the Vivarium, picked up and set down); a room's chip has no ✓ cap
     }
   }
+  if (m.greet && !out && regions.resident) { regions.resident.heart = true; line = { ...line, subject: fill(m.greet.asleep ? Sg.greetedAsleep : Sg.greeted, named) }; }   // F5a: Greet answers with a heart and a sentence in the middle slot, for events.moment.heart.greetShowMs
   const top = S.roomCount(st, settings) >= 2 ? { readout: { text: S.roomName(st, roomOf), mark: null } } : {};   // the crumb, as the Vivarium's whole: the room of the mibi up close
   return { props: { state, regions, focus }, line, requests, shown, top, held: rows };
 }
