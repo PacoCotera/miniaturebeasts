@@ -12,7 +12,7 @@
   "roll pictures": "UI designer, 2026-10-09: 128×72 (was 128×88), so the notches sit outside the ring and the trait line clears the chamber. Art director, 13:28: re-cut from the chapter page's source (the painting's crop by the rig's region, or the per-look plate), never from its 128×160 picture; a surface or quality trait (Colour, Markings, Fluff, Sheen, Scales, Feathers, Tufts) a bleed crop filling all 128×72 with no ground; a part or posture (Beak, Crown, Crest, Tail, Head, Eyes, Carriage) whole inside the centred 75%, 96×54 at (16, 9), its ground keyed; only ever reduced",
   "one ring": "UI designer, 2026-10-09: the cream ring is on the chosen roll picture, the screen's one focus target; the four keys step what it holds, as on Cross (architect, 13:24: the stepper accepted). The rail's open tab is the focused trait's chapter and the trait's pip lifts 2 px; no second ring round a pip",
   "no mark on a picture": "UI designer, 2026-10-09, after the owner's 2026-10-08 21:55 rule: the changed tag and the clash ✕ in the trait line; a clash is a 2 px red edge on the picture's own rectangle",
-  "changed": "art director, 2026-10-09 13:28: changed is not a need, so never amber: the tag's word `bone` on plate-name-88x24, the pip a 6×6 `bone` diamond (pip-changed-6x6)",
+  "changed": "UI/UX ruling 2026-11-08 (answers the owner's 'what's that chosen thing', 11-07 20:45; supersedes the art director's 2026-10-09 13:28 tag and diamond): the plate goes; the trait line carries the change's price in `bone` (a change is not a need, never amber); the tab mark is a round dot, since the cost is per trait and a currency icon under a tab reads as a reward",
   "pod": "UI designer, 2026-10-09: the pod by its species' size class (pods.json classes.pod), bottom-centred on (160, 408); its nest is painted in Create's own stage, `room-cradle-front` over the foot once Create's own nest lands (the stage, room-bench-stage-create, is signed and placed; the nest waits)",
   "chamber": "art director, 2026-10-09 13:28 (concept measurement 316, 232, 392, 320), on the grid by the UI designer: 312, 232, 400, 320 (was 344, 232, 336, 320)",
   "dome": "art director, 2026-10-09 13:28: 776, 104, 176, 224, its floor at y 274 (the busy bud on the sill, UI/UX 10-10 10:54; was 776, 120, 176, 208)",
@@ -43,7 +43,7 @@
    "rect": [96, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail", "layout": ["railCompaction", "slantTabs"], "focusable": false, "glint": false,
    "open": "shape: the focused trait's chapter (frame.json rail.states.open); nothingRead: none",
    "tabs": { "read": "a read chapter", "unread": "a chapter not read: it stays a surprise", "sealed": "as on Pods", "open": "the focused trait's chapter" },
-   "mark": { "size": [12, 12], "at": "pipsCentre − 6, 68", "clash": "red ✕, 2 px strokes", "changed": "bone diamond", "order": "clash over changed", "else": "no size", "note": "fix 11, gate batch 1: one mark per chapter; the per-trait pips and the focused lift are retired" }
+   "mark": { "size": [12, 12], "at": "pipsCentre − 6, 68", "clash": "red ✕, 2 px strokes", "changed": "bone dot, 8 px round; on the open tab the open word's colour", "order": "clash over changed", "else": "no size", "note": "fix 11, gate batch 1: one mark per chapter; the per-trait pips and the focused lift are retired" }
   },
   "roll": {
    "rect": [296, 88, 432, 104], "build": "roll", "inStates": ["shape"], "grow": "every roll node kept with no size from t 0; the pictures stay requested (fix 5 Create C7)", "composition": ["sprite: a picture per look", "sprite: notch up", "sprite: notch down"],
@@ -59,11 +59,11 @@
    "clashEdge": { "width": 2, "inside": true, "on": "the chosen picture of a clashing trait" }
   },
   "traitLine": {
-   "rect": [296, 200, 432, 24], "component": "text", "build": "traitLine", "inStates": ["shape"], "px": 16, "weight": 400, "lines": 1, "words": 6, "noDigits": true, "centre": 512, "lineTop": 202,
-   "tag": { "component": "plate", "plate": { "series": "plate-name", "h": 24, "pad": 8, "round": 16, "min": 80, "max": 224 }, "status": "signed (art director, 5238569a)", "h": 24, "w": "the face's plate rule (layout_plate_width, oracle derive.mjs plateWidth): \"chosen\" (55) → 80 (fix 5 Create C9)", "pad": 8, "gap": 8, "y": 200, "when": "the focused trait is changed and does not clash" },
-   "clashMark": { "inline": "✕", "asset": "icon:cross:16", "size": [16, 16], "when": "the focused trait clashes", "note": "the text word's inline 16 px icon, the line's first glyph; no tag then" },
+   "rect": [296, 200, 432, 24], "component": "text", "build": "traitLine", "inStates": ["shape"], "px": 16, "weight": 400, "lines": 1, "words": 6, "digits": "the change's price tail only", "centre": 512, "lineTop": 202,
+   "price": { "sep": "·", "sepColour": "fog", "sepGap": 7, "icon": "data", "iconSize": 16, "gap": 5, "colour": "bone", "when": "line.changed and not clash", "figure": "state.priceText(0, price(PRICE.change, settings), 0); no tail when the price is 0", "note": "UI/UX ruling 2026-11-08 (create-changed.md): the 'chosen' plate goes; the line carries the price of the change; the tail is never amber (a change is not a need)" },
+   "clashMark": { "inline": "✕", "asset": "icon:cross:16", "size": [16, 16], "when": "the focused trait clashes", "note": "the text word's inline 16 px icon, the line's first glyph; no price then" },
    "breedMark": { "slice": "mark-breed-28x16", "size": [28, 16], "gap": 8, "y": 204, "after": "the line", "when": "the focused trait is a doing", "note": "the two joined rings after the trait's name, as on the chapter page" },
-   "place": "the group centred on x 512: x0 = 512 − (W + 1) / 2 (integer), W = 88 + 8 + the line's width with the tag (tag at (x0, 200, 88, 24), the words at x0 + 96, lineTop 202), or the line's width + 8 + 28 with the breed mark (the words at x0, the mark at (x0 + width + 8, 204, 28, 16)), or the line's width alone; the composition sizes its own tag from the word, as Home's name tag",
+   "place": "the group centred on x 512: x0 = 512 − (W + 1) / 2 (integer), W = the line's width + 7 + the dot + 7 + the price run's width with a change's price (the words at x0, lineTop 202), or the line's width + 8 + 28 with the breed mark (the words at x0, the mark at (x0 + width + 8, 204, 28, 16)), or the line's width alone",
    "nothingRead": "no size (fix 5 Create C2): the context carries strings.traitLine.none", "sameLook": "only when the trait is shaped (choice 1 or 2), the pod's own line hides a look (kind 'hides'), the choice keeps the shown copy (choice !== hiddenChoice) and the founder's trait is not asleep (game designer fix 5 Q2a)"
   },
   "chamber": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "inside", "note": "the work tray's back, where the founder stands; no words" },
@@ -144,7 +144,7 @@
  "colours": {
   "rail": { "changed": "bone", "clash": "red", "note": "the tabs' fills, words and pips are frame.json rail.states" },
   "roll": { "ground": "ground", "notch": "bone", "clashEdge": "red" },
-  "traitLine": { "line": "bone", "clash": "bone", "tagWord": "bone" },
+  "traitLine": { "line": "bone", "clash": "bone" },
   "chamber": { "back": "panel", "rim": "enamel", "floor": "enamel", "floorEdge": "bevel", "note": "art reset: a work tray in the housing; no glass edge, no highlight (was back ground, glass edge frostD, highlight frost)" },
   "founder": { "frost": "frostS", "frostTexture": "frostD" },
   "origin": "sand",
@@ -159,7 +159,6 @@
   "title": "Create",
   "action": "Incubate",
   "back": "{pod}",
-  "changed": "chosen",
   "growing": "it goes to the Incubator",
   "sealedShut": "all read, {Chapter} sealed",
   "traitLine": {

@@ -166,6 +166,14 @@ test("fix 5: the trait line names the same look only when all four hold (S01 Cro
   }
   for (const id of SPECIES) { const fr2 = frameOf(id), m = make(id, 3, fr2.chapters.length); reviewTraits(m.p, fr2).forEach(({ t }, f) => { const own = traitState(fr2, t, m.p.genome); if (own.kind === "hides" || S.rollOptions(m.p, t.id).length <= 1 || t.nature === "doing") return; m.cr.f = f; m.cr.choices = { [t.id]: 1 }; const L = m.build().props.regions.traitLine; assert.ok(!/hides nothing/.test(L.text), `${id} ${t.name} (${own.kind}): "${L.text}"`); assert.equal(L.changed, true); }); }
 });
+test("the change's price rides the trait line (ruling 2026-11-08): a changed look carries ◆ from priceText, equal to growCost's per-change d; as the pod is, a clash and a free-economy change carry none", () => {
+  const k = make("S01", 3, 2), list = reviewTraits(k.p, frameOf("S01")), roll = list.findIndex(({ t }) => S.rollOptions(k.p, t.id).length > 1); assert.ok(roll >= 0);
+  k.cr.f = roll; let L = k.build().props.regions.traitLine; assert.deepEqual([L.changed, L.price], [false, ""], "as the pod is: no tail");
+  k.cr.choices = { [list[roll].t.id]: 1 }; L = k.build().props.regions.traitLine; const d = S.growCost(k.st, k.cr.choices, settings).d;
+  assert.equal(L.changed, true); assert.equal(L.price, S.priceText(0, d, 0), "the tail's figure is growCost's per-change d"); assert.equal(L.price, "◆ " + S.PRICE.change);
+  k.cr.clash = [list[roll].t.id]; L = k.build().props.regions.traitLine; assert.deepEqual([L.clash, L.price], [true, ""], "a clash carries no price"); k.cr.clash = [];
+  const free = { ...settings, economy: "free" }; L = createBuild({ st: k.st, settings: free, ui: { create: k.cr } }, spec, pods).props.regions.traitLine; assert.equal(L.price, "", "a price of 0 has no tail");
+});
 test("fix 5: the context of a sealed chapter still shut: all else read names it (strings.sealedShut), unread ones show the count alone, never the shut one; fully known only with none unread or shut; sealedOpen counts it unread", () => {
   const Sg = spec.strings, fr = frameOf("S02"), sealed = fr.chapters.find((c) => c.sealed); assert.ok(sealed, "S02 has a sealed chapter");
   const nSealed = fr.chapters.indexOf(sealed), all = fr.chapters.length;
