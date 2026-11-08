@@ -1,4 +1,4 @@
-// Seam proofs (arch.md A5). Pure functions over RGBA tile images, so the same checks run at 48 px and at the derived 24 px.
+// Seam proofs (place design A5). Pure functions over RGBA tile images, so the same checks run at 48 px and at the derived 24 px.
 import { NW, NE, SW, SE } from './dualgrid.mjs';
 
 // Corner bits on each edge of dual tile k, as a 2-bit state.

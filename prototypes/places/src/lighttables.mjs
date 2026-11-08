@@ -1,4 +1,4 @@
-// Computed light tables for a tile set's palette (arch.md A3.1: "a set that does not give tables gets computed ones").
+// Computed light tables for a tile set's palette (place design A3.1: "a set that does not give tables gets computed ones").
 // A table is 256 entries: palette index -> palette index. Index 0 (transparent) maps to 0. Indices 1..47 are the core palette,
 // 48..48+n-1 the set's colours; indices beyond that map to themselves. The target of a transformed colour is the nearest colour
 // (squared RGB distance, ties to the lower index) among the core and the set colours.

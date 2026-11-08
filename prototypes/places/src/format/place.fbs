@@ -1,4 +1,4 @@
-// The baked place formats (arch.md A1.5). FlatBuffers, little endian, read zero-copy by the JS reader (flatbuffers npm) and by C (flatcc).
+// The baked place formats (place design A1.5). FlatBuffers, little endian, read zero-copy by the JS reader (flatbuffers npm) and by C (flatcc).
 //   .mbtiles  a tile set:   root_type TileSet
 //   .mbplace  a place:      root_type Place
 // formatVersion 1. A change to this file that is not backwards compatible raises format_version and is a deliberate chunk.

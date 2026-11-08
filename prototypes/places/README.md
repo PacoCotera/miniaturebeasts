@@ -1,6 +1,6 @@
 # Places: the foundation
 
-LDtk levels, the dual grid, tile sets, the baked FlatBuffers format and the indexed renderer, for the walk's 18 × 22 tile places. The design is in `iwq/results/T-20261107-place-foundation/arch.md` (A§n below); the build order is `chunks.md`. Built so far (lane A, C1 to C4): the pins, the tile-set contract with the CC0 test kit, the dual grid with the seam proofs, and the baked format.
+LDtk levels, the dual grid, tile sets, the baked FlatBuffers format and the indexed renderer, for the walk's 18 × 22 tile places. The design (A§n below) is the place-foundation architecture note kept with the work queue. Built so far (lane A, C1 to C4): the pins, the tile-set contract with the CC0 test kit, the dual grid with the seam proofs, and the baked format.
 
 | Path | What |
 | --- | --- |

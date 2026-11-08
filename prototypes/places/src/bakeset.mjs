@@ -1,4 +1,4 @@
-// A loaded tile set (set.json and its PNGs) -> the TileSet object that format/write.mjs turns into a .mbtiles blob (arch.md A1.5).
+// A loaded tile set (set.json and its PNGs) -> the TileSet object that format/write.mjs turns into a .mbtiles blob (place design A1.5).
 // Also the 24 px derivation: each 48 px tile reduced by 2 x 2 blocks, keeping the most frequent palette index in each block, ties to the darker
 // colour (so outlines survive); a block of sprite pixels is transparent unless at least half of its pixels are opaque.
 import { createHash } from 'node:crypto';

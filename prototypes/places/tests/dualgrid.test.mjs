@@ -1,4 +1,4 @@
-// C3: the dual grid (arch.md A2).
+// C3: the dual grid (place design A2).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cornerIndex, corners, cell, dualGrid, hash32, DualGridError, EMPTY, FULL_BASE, EMPTY_BASE, NW, NE, SW, SE } from '../src/dualgrid.mjs';

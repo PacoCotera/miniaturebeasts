@@ -1,4 +1,4 @@
-// The all-cases map (arch.md A5 test 2): a small binary terrain map ('1' = the pair's upper terrain) whose interior dual tiles show all
+// The all-cases map (place design A5 test 2): a small binary terrain map ('1' = the pair's upper terrain) whose interior dual tiles show all
 // 16 corner indices and every legal horizontal and vertical neighbour pair. Found once by a seeded search and committed as src/allcases.json.
 //   node find-allcases.mjs [--check]     (--check: the committed map still covers everything)
 import { writeFileSync, readFileSync } from 'node:fs';

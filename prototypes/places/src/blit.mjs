@@ -1,4 +1,4 @@
-// The indexed blitter (arch.md A4.2): tiles and RLE sprites into a Uint8Array of palette indices, clipped to the buffer.
+// The indexed blitter (place design A4.2): tiles and RLE sprites into a Uint8Array of palette indices, clipped to the buffer.
 // Index 0 is transparent: it leaves the destination pixel alone. An optional remap (256 entries) is applied to every pixel written
 // (the light tables). The same logic runs in the node tests, the sandbox and, in C, on the device.
 

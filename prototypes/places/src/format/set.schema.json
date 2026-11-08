@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://miniaturebeasts.org/schemas/place-set-1.json",
-  "title": "Tile set contract (set.json), formatVersion 1; arch.md A3",
+  "title": "Tile set contract (set.json), formatVersion 1; place design A3",
   "type": "object",
   "additionalProperties": false,
   "required": ["formatVersion", "id", "name", "ship", "licence", "sourceTile", "scale", "half", "palette", "spriteSheet", "pairs", "props", "decals", "canopy"],

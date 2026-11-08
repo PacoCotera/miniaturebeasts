@@ -1,4 +1,4 @@
-// prepare-set: a licensed source kit + a recipe -> a tile set in the contract (arch.md A3.3).
+// prepare-set: a licensed source kit + a recipe -> a tile set in the contract (place design A3.3).
 //   node prepare-set.mjs <recipe.json> --tilesets <dir holding the kits, e.g. research/tilesets> [--out <dir>] [--check]
 // Writes set.json, palette.json, the pair sheets (16 tiles in corner order, one sheet per animation frame), the full-tile variant strips,
 // sprites.png, LICENCE.md and SOURCE.md. The output is deterministic. --check compares the pixels with what is already in the out folder.
@@ -51,7 +51,7 @@ function keyOut(img, key) {
   return out;
 }
 
-// Corner index (arch.md A2): NW*8 + NE*4 + SW*2 + SE, a set bit = the upper terrain. The pieces of a 13-piece blob set show the
+// Corner index (place design A2): NW*8 + NE*4 + SW*2 + SE, a set bit = the upper terrain. The pieces of a 13-piece blob set show the
 // LOWER terrain as the blob (water in a pond), so a piece named for the blob's position maps to the corner pattern of the upper terrain.
 const DIRECT = { // [NW, NE, SW, SE] of the upper terrain -> piece
   '1110': 'TL', '1101': 'TR', '1011': 'BL', '0111': 'BR',

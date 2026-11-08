@@ -1,4 +1,4 @@
-// The dual grid (arch.md A2). Terrain lives on the world grid W x H; tiles live on the grid offset by half a tile, (W+1) x (H+1),
+// The dual grid (place design A2). Terrain lives on the world grid W x H; tiles live on the grid offset by half a tile, (W+1) x (H+1),
 // each picked by its four corners. Used by the bake only: the device never autotiles.
 //
 // Dual tile (i, j), 0 <= i <= W, 0 <= j <= H, is drawn at pixel (i*S - S/2, j*S - S/2); its corners are the cells

@@ -1,4 +1,4 @@
-// Indexed pictures: palette indices 0..255 (0 = transparent, 1..47 core, 48.. the set's colours; arch.md A1.5 / A3.1).
+// Indexed pictures: palette indices 0..255 (0 = transparent, 1..47 core, 48.. the set's colours; place design A1.5 / A3.1).
 import { newImage } from './png.mjs';
 
 export const FIRST_SET_INDEX = 48;

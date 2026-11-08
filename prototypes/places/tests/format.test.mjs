@@ -1,4 +1,4 @@
-// C4: the baked format (arch.md A1.5): FlatBuffers schema, generated reader, writers, the 24 px derivation.
+// C4: the baked format (place design A1.5): FlatBuffers schema, generated reader, writers, the 24 px derivation.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, mkdtempSync } from 'node:fs';

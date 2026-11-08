@@ -1,4 +1,4 @@
-// C3: the seam proofs (arch.md A5 tests 1 and 2), for every pair of the test kit at 48 px.
+// C3: the seam proofs (place design A5 tests 1 and 2), for every pair of the test kit at 48 px.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

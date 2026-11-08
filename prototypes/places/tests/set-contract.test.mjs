@@ -1,4 +1,4 @@
-// C2: the tile-set contract and the CC0 test kit (arch.md A3).
+// C2: the tile-set contract and the CC0 test kit (place design A3).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
