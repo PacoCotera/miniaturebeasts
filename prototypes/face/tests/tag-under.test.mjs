@@ -23,7 +23,7 @@ function scene(o) {
   st.face.room = 0; S.seedAdults(st, "S01", 5, o.adults, settings);
   for (const m of st.mibis) m.paint = { state: "landed" };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 };
-  const b = vivariumBuild({ st, sv, settings, docked: true, light: "day", focus: st.mibis[o.focus].id, seen: null, last: null, motionSets: false }, spec, frameSpec, homeSpec, J("pods"));
+  const b = vivariumBuild({ st, sv, settings, docked: true, light: "day", focus: "resident." + st.mibis[o.focus].id, seen: null, last: null, motionSets: false }, spec, frameSpec, homeSpec, J("pods"));
   return { ...b, st, settings };
 }
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -55,6 +55,9 @@ test("a crowded room (eight adults, each focused in turn, 12 seeds): the label i
     faces.forEach((fc, i) => assert.equal(hit(tag, fc), 0, `seed ${seed} focus ${focus}: the tag ${tag} lies on figure ${i}'s face ${fc}`));
     const own = f.nodeBox("g." + b.st.mibis[focus].id)?.box, feetY = own[1] + WIN[1] + FIG[1] + FIG[3] - 1;
     if (tag[1] + tag[3] <= feetY - FIG[3]) above++;
+    const off = Math.abs(tag[0] + tag[2] / 2 - (own[0] + WIN[0] + FIG[0] + FIG[2] / 2));   // L4b2: a label reads as its own mibi's: its centre is within half a figure width of the figure's centre
+    const fx = own[0] + WIN[0] + FIG[0];
+    if (fx >= WIN[0] + 56 && fx + FIG[2] <= WIN[0] + WIN[2] - 56) assert.ok(off <= FIG[2] / 2 + 1,`seed ${seed} focus ${focus}: the tag ${tag} is detached from its figure (centre ${off} px off, more than half the ${FIG[2]} px figure)`);
     n++;
   }
   assert.ok(above * 4 <= n, `a label goes above a head only as the last resort (it was ${above} of ${n}: a place under or beside the figure that lies on a face, or the window's foot)`);
