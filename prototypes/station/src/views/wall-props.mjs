@@ -68,7 +68,9 @@ export function pairOrder(st, sv, a, settings, Sg) {
 export function stateLinesOf(st, sv, m, settings, Sg) {
   const S2 = Sg.state;
   if (!S.inStore(m) && !S.comingOut(st, m) && !S.isCarried(st, sv, m) && breatherLeft(st, m) > 0) { const n = breatherLeft(st, m); return n === 1 ? S2.breatherNext : S2.breather.map((l) => fill(l, { n })); }
-  const one = stateWords(st, sv, m, settings, Sg); return one ? [one] : [];
+  const one = stateWords(st, sv, m, settings, Sg);
+  if (one && one === S2.away && S2.awayLines) return S2.awayLines.slice();   // "away with the Companion" is wider than the card's 108 px line: its own two-line form, never clipped
+  return one ? [one] : [];
 }
 // A partner's state on the pair card, the card's state form: each part its own line (the breather leads with its mark in the card)
 export function pairStateLines(why, st, x, settings, Sg) {

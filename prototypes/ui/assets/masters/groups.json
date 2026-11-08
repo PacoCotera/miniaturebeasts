@@ -231,7 +231,8 @@
    "rail-emblem-movement-read-24x24",
    "rail-emblem-shape-read-24x24",
    "rail-emblem-stamina-read-24x24",
-   "sitting-frame-empty-48x40"
+   "sitting-frame-empty-48x40",
+   "sitting-frame-held-48x40"
   ],
   "home": [
    "berth-crate-26x24",
@@ -385,6 +386,7 @@
    "icon-cross-16",
    "icon-wait-16",
    "library-ground-1024x522",
+   "library-sitting-16x12",
    "mibi-face-S01-redder-dark-64x64",
    "panel-chip-40x20",
    "panel-contact-shadow-128x16",
