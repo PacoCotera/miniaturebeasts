@@ -179,6 +179,8 @@ test("the Station frame's language: the zones of the top bar and the bottom line
   for (const [screen, room] of Object.entries(F.title.marks)) assert.ok(F.marks.room[room.toLowerCase()], `${screen}: its mark ${room} is a key's icon`);
   assert.equal(F.title.marks.cargo, "Home", "Cargo carries Home's mark"); for (const k of ["vivarium", "habitat", "cross", "sitting", "create", "incubator"]) assert.equal(F.title.marks[k], "Vivarium", k);   // green leads into Create and the Incubator: the mark is the key pressed (controls scheme)
   for (const k of Object.keys(F.title.marks)) assert.ok(frame.strings.titles[k], "a title slot for " + k);
+  { const P = frame.regions.marks.roomPanel, home = rd("../specs/station/home.json"); assert.deepEqual(P.size, [22, 22]); assert.equal(home.regions.cap.size, 22, "Home's panels wear 22 px caps (the controls scheme)");
+    for (const r of ["home", "research", "library", "vivarium"]) assert.match(P[r], /^frame-room-(home|pods|library|vivarium)-22$/, r); }
 });
 
 // The wireframe's measured boxes, as the Home test reads them: each <rect> back to [x, y, w, h].
