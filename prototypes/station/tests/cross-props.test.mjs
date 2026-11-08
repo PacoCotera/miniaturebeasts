@@ -145,7 +145,7 @@ test("✓ Cross them: the child is drawn and paid for, the bud takes it and the 
   const w = world("S01", 11, 2), [a, b] = w.mibis; for (const m of w.mibis) readAll(m, w.fr); const h = host(w), e0 = w.st.e, s0 = w.st.s;
   dispatch(h, { screen: "cross", target: "partner", verb: "confirm" });
   assert.equal(h.went.at(-1), "incubator"); assert.equal(h.ui.cross, null); assert.equal(w.st.bud.kind, "cross"); assert.deepEqual(w.st.bud.parents.map((p) => p.id), [a.id, b.id]); assert.equal(w.st.e, e0 - S.crossCost(settings).e); assert.equal(w.st.s, s0 - S.crossCost(settings).s);
-  assert.match(h.said.at(-1), /^Crossed · /);
+  { const said = h.said.at(-1); assert.ok(said.includes(a.name) && said.includes(b.name) && said.includes("crossed") && said.includes("Incubator"), said); assert.ok(!/[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}/.test(said) && !said.includes(w.st.bud.code), "no genome code in the message"); }
   const busy = world("S01", 11, 2); for (const m of busy.mibis) readAll(m, busy.fr); busy.st.bud = { kind: "founder" }; const hb = host(busy), eb = busy.st.e;
   dispatch(hb, { screen: "cross", target: "partner", verb: "confirm" }); assert.deepEqual([hb.said.at(-1), hb.went.length, busy.st.e], ["The incubator is busy", 0, eb], "the refusal's words, nothing spent, no screen change");
   const poor = world("S01", 11, 2); for (const m of poor.mibis) readAll(m, poor.fr); poor.st.e = 0; const hp = host(poor);

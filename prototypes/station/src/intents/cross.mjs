@@ -2,9 +2,8 @@
 // last does nothing), ✓ Cross them exactly as the bottom line says, ← the mibi up close. The pad is a stepper on the one target (`partner`): the face says step:<key>, the ring stays. The screen's state is the UI's
 // (`h.ui.cross`: { aId, bId, state, clash }): the partner's id and the open state, 0 the overview and n the nth chapter in ring order. A room key drops it (intents/frame.mjs).
 import * as S from "../state.mjs";
-import { codeText } from "../genome.mjs";
 import { crossBuild } from "../views/cross-props.mjs";
-import { capLine } from "../views/words.mjs";
+import { capLine, fill } from "../views/words.mjs";
 import { toIncubator } from "./create.mjs";
 
 const view = (h) => crossBuild({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui.cross }, h.specs.cross, h.specs.pods);
@@ -31,7 +30,7 @@ export function intent(h, target, verb) {
   const r = S.doCross(h.st, h.sv, a, b, h.settings, h.now());
   if (!r.ok) { x.clash = r.clash || []; h.say(r.msg); return; }
   h.ui.cross = null; h.save(); toIncubator(h);
-  h.say("Crossed · " + codeText(r.bud.code) + " · the child grows in the bud");   // carried over from the retired screen: the copywriter's words are open ([copy])
+  h.say(fill(h.specs.cross.strings.crossed, { A: a.name, B: b.name }));   // both names and no code (plan 3.17 B4/F6.6); the words are the copywriter's to settle ([copy])
 }
 
 // The ring moved: the pad is a stepper, so the face never says `focus` on Cross.

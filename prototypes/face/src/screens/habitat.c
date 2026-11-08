@@ -173,8 +173,16 @@ static void build_story(void) {
   v_region("story", LAYER_TYPE); int px = v_si(S, "regions.story.px", 16);
   for (int i = 0; i < 3; i++) { const char *t = v_pstr(v_fmt("regions.card.story.%d", i)); v_line_at(v_fmt("story.%d", i), t, v_sk(S, "regions.story.rect", 0), v_sk(S, "regions.story.lineTops", i), V_ANCHOR_LINE, px, v_scol(S, "colours.card.story"), V_ALIGN_LEFT); }
 }
-static void build_code(void) {
-  const char *code = v_pstr("regions.card.code"); v_region("code", LAYER_TYPE); v_line_at("code", code, v_sk(S, "regions.code.rect", 0), v_si(S, "regions.code.lineTop", 162), V_ANCHOR_LINE, v_si(S, "regions.code.px", 16), v_scol(S, "colours.card.code"), V_ALIGN_LEFT);
+static void build_chapters(void) {   /* the chapters caption (plan 3.17 F3c): strings.chaptersRead with {n} the chapters read and {N} the chapters it has, where the code stood */
+  char tmpl[96], n[12], N[12], text[128]; snprintf(tmpl, sizeof tmpl, "%s", v_sstr(S, "strings.chaptersRead"));
+  snprintf(n, sizeof n, "%d", v_pint("regions.card.chapters.read", 0)); snprintf(N, sizeof N, "%d", v_pint("regions.card.chapters.total", 0));
+  int o = 0; for (const char *q = tmpl; *q && o < (int)sizeof text - 12; ) {
+    if (!strncmp(q, "{n}", 3)) { o += snprintf(text + o, sizeof text - (size_t)o, "%s", n); q += 3; }
+    else if (!strncmp(q, "{N}", 3)) { o += snprintf(text + o, sizeof text - (size_t)o, "%s", N); q += 3; }
+    else text[o++] = *q++;
+  }
+  text[o] = 0;
+  v_region("chapters", LAYER_TYPE); v_line_at("chapters", text, v_sk(S, "regions.chapters.rect", 0), v_si(S, "regions.chapters.lineTop", 163), V_ANCHOR_LINE, v_si(S, "regions.chapters.px", 14), v_scol(S, "colours.card.chapters"), V_ALIGN_LEFT);
 }
 /* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label;
    a portrayed mibi's label carries the gilt corner 1:1 at regions.stamp.portrayed.at (kit_stamp's corner) */
@@ -318,7 +326,7 @@ void habitat_words(void) {
   build_ring_under(cur);
   build_resident(cur);
   build_tag();
-  build_card(); build_speciesLine(); build_story(); build_code(); build_stamp();
+  build_card(); build_speciesLine(); build_story(); build_chapters(); build_stamp();
   build_chapterPlates(cur);
   build_modules(cur);
   { int rb[4], pb[4]; build_rooms(S, cur, rb); build_places(S, cur, pb);   /* the whole's two panes: the room chips and the eight places of the mibi's room */

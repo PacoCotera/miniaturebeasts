@@ -105,7 +105,7 @@ export function createBuild(m, spec, pods) {
   const readIds = [...new Set([...p.read, ...fr.chapters.filter((c) => c.traits.some((t) => changed.includes(t.id))).map((c) => c.id)])], sz = stampSizing(fr, genome);
   const k = spec.colours.stampLabel.k;
   regions.stamp = { case: { back: slot(req, R.stampCase.slice, R.stampCase.rect, "the stamp case master"), front: slot(req, R.stampCaseFront.slice, R.stampCaseFront.rect, "the case's front glass") }, size: sz.size, N: sz.N, cell: sz.cell, plate: plateReq(req, k), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(genome)}:${[...readIds].sort().join(",")}:${sz.size}:k${kPct(k)}`, pod: p.id, species: S.speciesOf(p), read: readIds, size: sz.size, choices: cr.choices, k }) };
-  regions.code = grown ? codeText(cr.grown.code) : "";
+  regions.code = "";   // no player screen shows a genome code until L5 (plan 3.17 B4): the stamp is the identity; the code stays in the save, the developer panel and the tests
 
   // the bottom line: ✓ Grow it and the price, what stays a surprise, the first block (the rules' order, growBlockKey) with its notice; ← the pod
   const Sg = spec.strings, cost = grown ? cr.grown.cost : S.growCost(st, cr.choices, settings), key = grown ? null : S.growBlockKey(st, p, cr.choices, settings, cr.clash);
