@@ -7,6 +7,7 @@ import path from "node:path";
 import { setFrames, frameOf, podGenome } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import { podsProps } from "../../station/src/views/pods-props.mjs";
+import { dialSize } from "../../station/src/dial-picture.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../workbench/frames/language");
 const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), podsSpec = J("pods"), frameSpec = J("frame");
@@ -15,7 +16,7 @@ const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 
 // the masters' own sizes; any other request is its size (a crop, a slot), an emblem 24, a star 12, else 16
 const SIZE = { "reading-bench-1024x520": [1024, 520] };
-export const sizeOf = (r) => SIZE[r.id] ?? (r.kind === "readchamber" ? [548, 356] : r.kind === "readrail" ? (r.small ? [272, 40] : [526, 71]) : r.kind === "readdisc" ? [r.d + 8, r.d + 8] : r.kind === "emblem" ? [24, 24] : r.kind === "star" ? [12, 12] : Array.isArray(r.size) ? r.size : r.size ? [r.size, r.size] : [16, 16]);
+export const sizeOf = (r) => SIZE[r.id] ?? (r.kind === "dial" ? dialSize(r.sealed) : r.kind === "readchamber" ? [548, 356] : r.kind === "readrail" ? (r.small ? [272, 40] : [526, 71]) : r.kind === "readdisc" ? [r.d + 8, r.d + 8] : r.kind === "emblem" ? [24, 24] : r.kind === "star" ? [12, 12] : Array.isArray(r.size) ? r.size : r.size ? [r.size, r.size] : [16, 16]);
 // the frame's own pictures: the material icons and the companion
 const FRAME_PICTURES = [...["energy", "data", "essence"].map((id) => ({ id: `icon:${id}:16`, w: 16, h: 16 })), ...["frame-companion-outline-16x24", "frame-companion-solid-16x24"].map((id) => ({ id, w: 16, h: 24 }))];
 

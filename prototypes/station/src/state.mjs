@@ -544,6 +544,12 @@ export function progress(p, settings = DEFAULT_SETTINGS) {
   return all ? open.filter((c) => p.read.includes(c.id)).reduce((a, c) => a + c.traits.length, 0) / all : 1;
 }
 export const fullyRead = (p, settings) => p.idd && progress(p, settings) >= 1;
+// The reading dial (the pod picker's mark): chapters read ÷ open chapters (shut sealed ones left out), and how many are shut. null for an unidentified pod.
+export function readDial(p, settings = DEFAULT_SETTINGS) {
+  const fr = frameFor(p); if (!fr || !p.idd) return null;
+  const open = fr.chapters.filter((c) => !c.sealed || settings.sealedOpen || p.read.includes(c.id));
+  return { n: open.filter((c) => p.read.includes(c.id)).length, m: open.length, sealed: fr.chapters.length - open.length };
+}
 // Compare: two identified pods of one species; the traits read on both that differ.
 export function compareDiff(st, a, b) {
   if (!a || !b || a === b || !a.idd || !b.idd || speciesOf(a) !== speciesOf(b)) return null;

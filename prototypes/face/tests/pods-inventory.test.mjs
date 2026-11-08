@@ -14,6 +14,7 @@ import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { setFrames, frameOf, podGenome } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import { podsProps } from "../../station/src/views/pods-props.mjs";
+import { dialSize } from "../../station/src/dial-picture.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("pods");
@@ -44,7 +45,7 @@ const frameProps = (line = {}) => ({ top: { screen: "pods", title: "Pods", turn:
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, [w, h]) { const dd = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { dd[i * 4] = 70 + (k & 127); dd[i * 4 + 1] = 70 + ((k >> 7) & 127); dd[i * 4 + 2] = 70 + ((k >> 14) & 127); dd[i * 4 + 3] = 255; } return { w, h, data: dd }; }
 const SIZE = { "reading-bench-1024x520": [1024, 520] };
-const sizeOf = (r) => SIZE[r.id] ?? (r.kind === "readchamber" ? [548, 356] : r.kind === "readrail" ? (r.small ? [272, 40] : [526, 71]) : r.kind === "readdisc" ? [r.d + 8, r.d + 8] : r.kind === "emblem" ? [24, 24] : r.kind === "star" ? [12, 12] : Array.isArray(r.size) ? r.size : r.size ? [r.size, r.size] : [16, 16]);   // a crop is its size
+const sizeOf = (r) => SIZE[r.id] ?? (r.kind === "dial" ? dialSize(r.sealed) : r.kind === "readchamber" ? [548, 356] : r.kind === "readrail" ? (r.small ? [272, 40] : [526, 71]) : r.kind === "readdisc" ? [r.d + 8, r.d + 8] : r.kind === "emblem" ? [24, 24] : r.kind === "star" ? [12, 12] : Array.isArray(r.size) ? r.size : r.size ? [r.size, r.size] : [16, 16]);   // a crop is its size
 async function start(b, { motion = true } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", spec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0, f.errors().join("; "));
