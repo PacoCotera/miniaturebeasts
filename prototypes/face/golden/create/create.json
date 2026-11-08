@@ -2,91 +2,91 @@
  "_note": "Create's goldens: nothing read, the shape (as the pod is, changed, a clash, a doing, one look, short, busy, the first founder), the roll's dither halfway and the grow event at three instants: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "create-nothingRead": {
-   "hash": "e3969c40",
+   "hash": "292530d7",
    "png": "create-nothingread.png"
   },
   "create-shape": {
-   "hash": "39f4f632",
+   "hash": "352dbaf1",
    "png": "create-shape.png"
   },
   "create-shape-changed": {
-   "hash": "b816897b",
+   "hash": "18585910",
    "png": "create-shape-changed.png"
   },
   "create-shape-clash": {
-   "hash": "41d43549",
+   "hash": "6f7ac352",
    "png": "create-shape-clash.png"
   },
   "create-shape-onelook": {
-   "hash": "ba2bfa09",
+   "hash": "7335c472",
    "png": "create-shape-onelook.png"
   },
   "create-shape-short": {
-   "hash": "8acb380d",
+   "hash": "d61635aa",
    "png": "create-shape-short.png"
   },
   "create-shape-busy": {
-   "hash": "3359c5ee",
+   "hash": "f530c0d1",
    "png": "create-shape-busy.png"
   },
   "create-shape-ready": {
-   "hash": "94ea4763",
+   "hash": "18994e48",
    "png": "create-shape-ready.png"
   },
   "create-shape-samelook": {
-   "hash": "26b3d1c5",
+   "hash": "35b0c982",
    "png": "create-shape-samelook.png"
   },
   "create-shape-sealed": {
-   "hash": "ad1b0e26",
+   "hash": "f51e568d",
    "png": "create-shape-sealed.png"
   },
   "create-confirm": {
-   "hash": "00ccd0d4",
+   "hash": "0514c2b3",
    "png": "create-confirm.png"
   },
   "create-confirm-keep": {
-   "hash": "588f9f73",
+   "hash": "32117918",
    "png": "create-confirm-keep.png"
   },
   "create-confirm-S02": {
-   "hash": "ea6c8772",
+   "hash": "577356cd",
    "png": "create-confirm-s02.png"
   },
   "create-shape-first": {
-   "hash": "2531cbe0",
+   "hash": "2ef4bbc3",
    "png": "create-shape-first.png"
   },
   "create-full": {
-   "hash": "6e4c51cc",
+   "hash": "0ebc4f2b",
    "png": "create-full.png"
   },
   "create-shape-doing": {
-   "hash": "1e5a1345",
+   "hash": "33da1862",
    "png": "create-shape-doing.png"
   },
   "create-roll-100": {
-   "hash": "08f59a62",
+   "hash": "369d5981",
    "png": "create-roll-100.png"
   },
   "create-confirm-dither-90": {
-   "hash": "70e1267d",
+   "hash": "97120842",
    "png": "create-confirm-dither-90.png"
   },
   "create-grow-150": {
-   "hash": "217f6778",
+   "hash": "ab737b7b",
    "png": "create-grow-150.png"
   },
   "create-grow": {
-   "hash": "0b0456e5",
+   "hash": "5c739f46",
    "png": "create-grow.png"
   },
   "create-grow-end": {
-   "hash": "e1939baf",
+   "hash": "9f92e968",
    "png": "create-grow-end.png"
   },
   "create-grow-nothing": {
-   "hash": "cd0ecd16",
+   "hash": "1e829b8d",
    "png": "create-grow-nothing.png"
   }
  }

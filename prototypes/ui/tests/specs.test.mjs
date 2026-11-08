@@ -177,7 +177,7 @@ test("the Station frame's language: the zones of the top bar and the bottom line
   assert.deepEqual(F.back.rect, [920, 570, 88, 24]); assert.equal(F.back.room, F.back.rect[2] - F.back.cap[0] - F.back.capGap); assert.deepEqual(F.need.rect, [632, 570, 272, 24]); assert.equal(F.need.right, F.need.rect[0] + F.need.rect[2]);
   assert.deepEqual(Object.keys(F.marks.room).filter((k) => k !== "size").sort(), ["home", "library", "research", "vivarium"], "four room marks, one per coloured key");
   for (const [screen, room] of Object.entries(F.title.marks)) assert.ok(F.marks.room[room.toLowerCase()], `${screen}: its mark ${room} is a key's icon`);
-  assert.equal(F.title.marks.cargo, "Home", "Cargo carries Home's mark"); for (const k of ["vivarium", "habitat", "cross", "sitting"]) assert.equal(F.title.marks[k], "Vivarium", k);
+  assert.equal(F.title.marks.cargo, "Home", "Cargo carries Home's mark"); for (const k of ["vivarium", "habitat", "cross", "sitting", "create", "incubator"]) assert.equal(F.title.marks[k], "Vivarium", k);   // green leads into Create and the Incubator: the mark is the key pressed (controls scheme)
   for (const k of Object.keys(F.title.marks)) assert.ok(frame.strings.titles[k], "a title slot for " + k);
 });
 

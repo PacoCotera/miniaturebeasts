@@ -12,7 +12,9 @@ import * as S from "../src/state.mjs";
 import { createFocus } from "../../ui/focus.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { openInventory } from "../src/intents/pods.mjs";
-import { cuesOf } from "../src/carry.mjs";
+import { cuesOf, carryPlan, subjectOf } from "../src/carry.mjs";
+import { toRoom } from "../src/intents/pods.mjs";
+import { listOf } from "../src/views/pods-props.mjs";
 import { taughtOf, landFlight, teachTick } from "../src/intents/frame.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -22,7 +24,7 @@ const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1
 const newUI = () => ({ screen: "home", home: { f: "room" }, viv: { f: "tile.9" }, cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }, pods: { view: "inventory", cur: null, ci: 0, cmp: null, sort: "use", chips: [], word: null, first: 0, recent: [], focus: createFocus({}, null) }, create: null, carry: null, flight: null, teach: null, inc: {}, cross: null, lib: { l1: null, pending: null, l2: {}, l3: {} }, hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, bench: { f: null, arm: 0, install: false }, meet: null, idle: false, report: null });
 function host(st, motion = true, ui = newUI()) {
   const h = { st, sv: { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 }, settings, ui, specs: { pods: J("pods"), frame: J("frame"), home: J("home"), cargo: J("cargo"), create: J("create"), vivarium: J("vivarium"), bench: J("bench"), panel: J("panel"), library: J("library") }, said: [], went: [], played: [], timers: [], saved: 0, t: T0, now: () => h.t };
-  Object.assign(h, { say: (t) => h.said.push(t), goto: (s) => { h.went.push(s); ui.screen = s; }, play: (e) => h.played.push(e), at: (ms, fn) => h.timers.push({ ms, fn }), save: () => { h.saved++; }, motion: () => motion, holding: () => false, flightPic: () => "pic:test" });
+  Object.assign(h, { say: (t) => h.said.push(t), goto: (s) => { h.went.push(s); ui.screen = s; }, play: (e) => h.played.push(e), at: (ms, fn) => h.timers.push({ ms, fn }), save: () => { h.saved++; }, motion: () => motion, holding: () => false, flightPic: (sub) => (["pod", "chapter", "mibi"].includes(sub.kind) ? "pic:test" : "") });   // as the host's: a species or the growing bud has no picture to fly
   return h;
 }
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; return st; };
@@ -67,5 +69,27 @@ test("the first time a key has a live cue it hops and its line stands once; neve
 test("Call's first press is remembered (taught.call) and writes no save; the first-day line is Home's until then", () => {
   const h = inPods(); assert.ok(!taughtOf(h.st).call); const saved = h.saved; INTENTS.frame.call(h, T0); assert.equal(taughtOf(h.st).call, true); assert.equal(h.saved, saved, "Call writes nothing");
   assert.ok(J("frame").regions.cues.callUntilTurn > 0 && J("frame").strings.teach.call.startsWith("Press Call"));
+});
+test("item 7: blue on the reading room's pod is the collection with the ring on that pod, not the reading room again", () => {
+  const h = inPods(); const q = h.st.tray[0]; INTENTS.pods.toRoom ? 0 : 0; toRoom(h, q); assert.equal(h.ui.pods.view, "room");
+  assert.equal(carryPlan(h, "research"), null, "nothing to carry: the key is the room's other face");
+  key(h, "research"); assert.deepEqual([h.ui.screen, h.ui.pods.view, h.ui.carry], ["pods", "inventory", null]); assert.equal(h.ui.pods.focus.cur?.startsWith("card."), true, "the ring is on a card: " + h.ui.pods.focus.cur);
+  assert.equal(listOf(h.st, h.specs.pods, h.ui.pods, h.settings)[+h.ui.pods.focus.cur.slice(5)].p.id, q.id, "the card of the pod that was in the room");
+  assert.equal(h.ui.flight, null, "no flight: it carries nothing");
+});
+test("item 13: the Incubator's growing pod carries for purple (its species page) once the species is met", () => {
+  const h = inPods(); h.ui.screen = "incubator"; h.st.bud = { kind: "founder", species: "S01", start: T0, minutes: 5 };
+  assert.equal(subjectOf(h)?.kind, "bud"); assert.equal(carryPlan(h, "library")?.act, "page", "S01 is known to this save (a pod of it was read)");
+  assert.equal(carryPlan(h, "habitat"), null); assert.equal(carryPlan(h, "research"), null);
+  assert.deepEqual(cuesOf(h).map((c) => c.key), ["library"]);
+  h.st.knownIds = []; h.st.metIds = []; h.st.mibis = []; assert.equal(carryPlan(h, "library"), null, "an unmet species has no page");
+  const g = inPods(); g.ui.screen = "incubator"; g.st.bud = null; assert.equal(subjectOf(g), null, "nothing growing, nothing to carry");
+  const k = inPods(); k.ui.screen = "incubator"; k.st.bud = { kind: "founder", species: "S01", start: T0, minutes: 5 }; key(k, "library"); assert.deepEqual([k.ui.screen, k.ui.carry?.key], ["library.species", "library"]);
+});
+test("item 14: the first key on Idle only wakes the screen: no carry, no flight, no room", () => {
+  const h = inPods(); h.ui.idle = true; const before = [h.ui.screen, h.ui.pods.view];
+  const r = INTENTS.frame.intent(h, "x", "wake"); assert.equal(h.ui.idle, false); assert.equal(r.woke, true);
+  assert.deepEqual([h.ui.screen, h.ui.pods.view], before); assert.equal(h.ui.carry, null); assert.equal(h.ui.flight, null); assert.equal(h.timers.length, 0); assert.equal(h.went.length, 0);
+  h.ui.idle = true; assert.deepEqual(cuesOf(h), [], "no cues on Idle"); assert.equal(carryPlan(h, "habitat"), null, "and a key on Idle carries nothing");
 });
 test("the teaching words are the frame's, one for each key", () => { const T = J("frame").strings.teach; assert.ok(T.research && T.habitat && T.library && T.call); });
