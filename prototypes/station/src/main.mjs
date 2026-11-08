@@ -22,7 +22,7 @@ import * as frameIntents from "./intents/frame.mjs";
 import { onFaceMessage, frameIds as frameMarkIds, picture } from "./host.mjs";
 import { listOf } from "./views/pods-props.mjs";
 import { warmLibraryNext, libraryWaiting } from "./pictures.mjs";
-import { probe, manifest as manifestOf, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
+import { probe, MasterPending, manifest as manifestOf, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
 import { CORE, hooks, loadFrames, bootAssets, startFace, pump, tick, act, release, dockKey, LIB_ENV } from "./core.mjs";   // the loop, shared with the headless harness (prototypes/playtest)
 
 const $ = (id) => document.getElementById(id);
@@ -201,7 +201,7 @@ window.__st = { ready, used: () => Object.fromEntries(Object.entries(USED).map((
   snapshot: ({ capture = false } = {}) => { const f = CORE.face, out = { hash: f.hash(), errors: CORE.faceErrors.slice(), refused: f.refused(), owed: CORE.lastOwed.slice(), standIns: CORE.lastSent.filter((id) => { const e = assetEntry(id); return !!e?.file && NOT_IN_GOLDENS.includes(e.status); }), builtStandIns: CORE.lastSent.filter((id) => { const e = assetEntry(id); return !!e && !e.file && BUILT_NOT_IN_GOLDENS.includes(e.status); }) }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
   // The goldens wait on this (tools/goldens.mjs): nothing more is coming to the frame. The top bar's own events (a counter's tick, the turn's flash) have said `done`, every picture mark the frame names is on the face,
   // and two face frames have been drawn since the props last went out. Deterministic: a state of events, pictures and frame counts, never a time.
-  settled: () => { const f = CORE.face, marks = frameMarkIds().filter((id) => f.handleOf(id, picture) < 0), open = [...CORE.open.keys()], frames = f.frames() - CORE.propsFrame; return { ok: !marks.length && !open.length && frames >= 2 && CORE.lastProps != null, marks, open, frames }; },
+  settled: () => { const f = CORE.face, marks = frameMarkIds().filter((id) => { try { return f.handleOf(id, picture) < 0; } catch (e) { if (e instanceof MasterPending) return true; throw e; } }) /* a mark whose master has not arrived is not on the face yet */, open = [...CORE.open.keys()], frames = f.frames() - CORE.propsFrame; return { ok: !marks.length && !open.length && frames >= 2 && CORE.lastProps != null, marks, open, frames }; },
   libraryWarm: () => { let n = 0; while (warmLibraryNext(LIB_ENV)) n++; return n; }, libraryWaiting,   // the Library's pictures waiting to be made, made now (the goldens take a scene once they are)
   get msg() { return FX.msg; }, capture: () => vis.toDataURL("image/png"), holding: () => CORE.host.holding(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, frameOf, frameIds, podById, genomesText, podGenome, genomeSha, nameCode,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); const pb = stampArt(fr, p.genome, p.read, side); return { width: pb.w, height: pb.h, data: pb.rgba() }; },

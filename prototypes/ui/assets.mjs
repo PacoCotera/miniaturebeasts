@@ -30,6 +30,17 @@ export function placeMaster({ id, w, h, file, hash, signed = null, slice = null,
   ENTRIES.set(id, { id, w, h, status, until: null, file, hash, slice: slice ?? have?.slice ?? null, tile: tile ?? have?.tile ?? null, signed, build: () => picture });
   BUILT.delete(id); return ENTRIES.get(id);
 }
+// A master that the index lists but whose file has not arrived (the Station loads a screen's masters on demand): registered at its index size and status, with no pixels. Asking for its picture throws
+// MasterPending, which the Station's loop treats as "keep the face as it is, fetch the file, ask again next frame" (core.mjs syncProps); no stand-in is drawn in its place, and a stand-in registered
+// later under the same id finds this entry and leaves it. placeMaster replaces it when the file is in.
+export class MasterPending extends Error { constructor(id) { super(`master ${id} is not loaded yet`); this.name = "MasterPending"; this.id = id; } }
+export function registerPending({ id, w, h, file, hash, signed = null, slice = null, tile = null, status = "master" }) {
+  if (!/\.png$/i.test(file)) throw new Error(`master ${id}: ${file} is not a PNG (PNG only)`);
+  const have = ENTRIES.get(id);
+  if (have && (have.w !== w || have.h !== h)) throw new Error(`master ${id} is ${w}×${h}; its stand-in is ${have.w}×${have.h}: a master takes its stand-in's size, never scaled`);
+  ENTRIES.set(id, { id, w, h, status, until: null, file, hash, slice: slice ?? have?.slice ?? null, tile: tile ?? have?.tile ?? null, signed, build: () => { throw new MasterPending(id); } });
+  BUILT.delete(id); return ENTRIES.get(id);
+}
 // A slot: a place the design needs a picture where none is signed yet (a mark, a key cap, a face). It is in the manifest as status `empty` at its
 // exact size, with what it waits for; nothing is drawn there, and the layout does not move when it fills. A placed master of the same id and
 // size (placeMaster) or a registered stand-in fills it, with no change to the component.

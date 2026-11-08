@@ -15,9 +15,9 @@ export function checkGroups(root, index) {
   return problems;
 }
 // used: { screen: [ids] } -> the ids a screen used that its committed group does not name
-export function missingFrom(groups, used) {
+export function missingFrom(groups, used, index) {
   const out = [];
-  for (const [screen, ids] of Object.entries(used)) { const have = new Set(groups.screens?.[screen] ?? []); for (const id of ids) if (!have.has(id)) out.push(`${screen}: ${id}`); }
+  for (const [screen, ids] of Object.entries(used)) { const have = new Set(groups.screens?.[screen] ?? []); for (const id of ids) if (!have.has(id) && index.masters[id]) out.push(`${screen}: ${id}`); }   // an id the index does not hold (a built picture named like a size) is not a master
   return out;
 }
 export function mergeGroups(groups, used, index) {
