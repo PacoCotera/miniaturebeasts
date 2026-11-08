@@ -41,6 +41,8 @@ async function enter(browser, url, seed, place) {
   await page.waitForTimeout(1200);
   await page.evaluate(() => { window.__mb.TEST.calm = true; });
   for (let i = 0; i < 4; i++) { await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(350); }
+  await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); });   // the arrival look (C15) is skipped here: these checks are of the walking view
+  await page.waitForTimeout(250);
   return { page, errors };
 }
 const still = async (page) => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
@@ -87,9 +89,18 @@ test("the page without ?place= plays generator 6: the cell's template, baked, 18
     assert.equal(st.gen, 6);
     assert.ok(["Reedpool", "SplitStone", "HollowTree", "Windstep"].includes(st.baked.id.replace("~x", "")), st.baked.id);
     assert.deepEqual([st.w, st.h, st.baked.ox, st.baked.oy], [18, 22, 0, 0]);
-    assert.ok(st.name && ["nest", "stone", "spring"].includes(st.heart), JSON.stringify(st));
+    assert.ok(st.name && ["moment", "nest", "stone", "spring"].includes(st.heart), JSON.stringify(st));
     assert.equal(st.ts, 48);
     assert.deepEqual(st.off, []);
+    // B6 (the map design): the veil draws on a fresh baked place before any Call: the core night colour's pixels in the view, then none once the whole place is lifted
+    const nights = (img) => { let k = 0; for (let y = 60; y < 540; y++) for (let x = 0; x < img.w; x++) { const o = (y * img.w + x) * 4; if (img.data[o] === 41 && img.data[o + 1] === 37 && img.data[o + 2] === 58) k++; } return k; };
+    assert.equal(await page.evaluate(() => window.__mb.FX.pulse == null), true, "no Call yet");
+    await page.waitForTimeout(400);
+    const veiled = nights(await still(page));
+    assert.ok(veiled > 300, "the veil's night dots are on a fresh baked place: " + veiled);
+    await page.evaluate(() => { const m = window.__mb, k = m.S.exp.patch.key, lay = m.layout(k); m.S.veil[k] = new Array(lay.h).fill(0x0fffffff); });
+    await page.waitForTimeout(400);
+    assert.ok(nights(await still(page)) < veiled / 4, "and none once the place is lifted");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
 });

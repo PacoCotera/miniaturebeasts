@@ -538,7 +538,8 @@ buildKeys();
 for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner("station"); } } });
 let gotLoadOwner = false;
 frames.station.src = stationUrl; frames.companion.src = companionUrl;
-if (DEV) { devOpen = true; for (const id of ["devBtn", "helpDevK", "helpDevD"]) $(id).classList.remove("hidden"); }   // the Developer tools button and its help row show with ?dev only; the Shift+T key stays
+for (const id of ["devBtn", "helpDevK", "helpDevD"]) $(id).classList.remove("hidden");   // the Developer tools button and its help row always show on the sandbox (owner 2026-11-08)
+if (DEV) devOpen = true;   // ?dev also opens the tools at load
 if (!TEST) for (const id of ["zDown", "zFit", "zUp", "stamp", "helpZK", "helpZD"]) $(id).classList.remove("hidden");   // the size control, its keys and the build stamp: everywhere but ?test, which keeps today's page
 let dprQuery = null;
 function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr); dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`); dprQuery.addEventListener("change", onDpr); }

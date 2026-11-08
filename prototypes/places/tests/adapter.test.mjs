@@ -42,7 +42,7 @@ test('terrain becomes the page tile of terrain.json, prop footprints become trun
 
 test('the heart, its clue marks, the openings and the find slots come from the place, shifted into the page grid', () => {
   assert.ok(HEART_KINDS.includes(lay.heart.kind));
-  assert.equal(lay.heart.kind, 'nest');
+  assert.equal(lay.heart.kind, place.heart.kinds[0]);   // with no seeded fill, the place's first kind the page plays (a moment is played now)
   assert.deepEqual([lay.heart.x, lay.heart.y], [place.heart.x + 5, place.heart.y + 5]);
   assert.equal(lay.heart.reachBy, null);
   assert.deepEqual(lay.heart.clues.at(-1), { x: place.clues[0].points.at(-1).x + 5, y: place.clues[0].points.at(-1).y + 5 });

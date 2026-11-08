@@ -54,7 +54,7 @@ test("the placed grid: eight coats beside the painted one, for the stand (three 
 });
 // The desk commit these checks read (mibi-art, branch art/desk): the last commit that changed the coat outputs placed here (S03 Tuikis 8f424d91d and S12 Peplos e55f4dc3d dark rows, after S04/S05/S20 d1f5288c7, 4f9e0ed74, 0189af633, 4c8e2d00e and the faces f194573e7).
 // The desk is read where it stands, so the checks run only while its coat tools and outputs are still exactly that commit's; a later desk commit that changes them no longer turns this red (the placed files above stand).
-export const DESK_COMMIT = "e55f4dc3ddc824c4e40bcf7520ae7f981bab9162";
+export const DESK_COMMIT = "bce6ae1e66edfd3f24659638b8c5378f8d424b0f";   // bce6ae1e6: Loika's chin mouth line removed on asleep, calm, shake (adult and young), the coats rebaked
 const deskPinned = () => {
   if (!existsSync(DESK)) return false;
   const job = "art-jobs/2026-11-07-coat-recolour", repo = path.resolve(DESK, "../..");
