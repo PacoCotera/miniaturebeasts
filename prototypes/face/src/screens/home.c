@@ -285,8 +285,8 @@ static int census_travelling(void) { int n = 0; for (int i = 0; i < cen_nw; i++)
 static int heap_gap(const char *self, int x, int feet, int fw, int fh) {
   int best = 1 << 20, ay = feet + 1 - fh;
 #define HEAP_ONE(ox, ofeet, ow, oh) do { int by_ = (ofeet) + 1 - (oh); if (ay < by_ + (oh) && by_ < ay + fh) { int g_ = x < (ox) ? (ox) - (x + fw) : x - ((ox) + (ow)); if (g_ < best) best = g_; } } while (0)
-  for (int i = 0; i < cen_nw; i++) { const wk_t *o = cen_w[i]; if ((!o->sh && !(o->rs == RS_REST && o->rk == RK_CURL)) || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->w, o->h); if (o->walking) HEAP_ONE(o->tx, o->tf, o->w, o->h); }   /* L4b2: a curl at rest is a figure on the ground too: nothing starts, or lies down, on it */
-  for (int i = 0; i < cen_nm; i++) { const mv_t *o = cen_m[i]; if ((!o->sh && !(o->rs == RS_REST && o->rk == RK_CURL)) || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->fw, o->fh); }
+  for (int i = 0; i < cen_nw; i++) { const wk_t *o = cen_w[i]; if (!o->sh || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->w, o->h); if (o->walking) HEAP_ONE(o->tx, o->tf, o->w, o->h); }   /* the shown only: a curl at rest is counted by heap_hide (L4b2), not here, where the 25 px start margin over the curled leaves Home's narrow band no start for five shown (home.test R4b-1b: movers fell back to the leftmost point and overlapped) */
+  for (int i = 0; i < cen_nm; i++) { const mv_t *o = cen_m[i]; if (!o->sh || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->fw, o->fh); }
 #undef HEAP_ONE
   return best;
 }
@@ -630,7 +630,7 @@ static void mv_init(mv_t *m, const char *id, unsigned seed, const char *set, int
   { const mv_set_t *ms = moving_set(set); m->native = ms ? ms->native_right : 1; }
   unsigned r = mr(m); int nl = room_levels(), lv = nl > 1 && r % (unsigned)g_lvin == 0 && raised_ok(id) ? 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)) : 0;   /* one draw: the level (1 start in lvin, while the raised cap allows) */
   int x = 32, feet = 300, ok = 0;
-  for (int i = 0; i < (g_stw > 0 ? 32 : 8) && !ok; i++) { unsigned a = mr(m), b = mr(m); lvl_draw(lv, a, b, m->fw, WIDE, WIDE, &x, &feet); ok = gok(lv, x, feet, m->fw, 0) && !start_heap(x, feet, m->fw, m->fh) && (g_stw <= 0 || heap_hide(m->id, x, feet, m->fw, m->fh) <= 20);   /* L4b2: a start lies on no other figure (more tries: the search is wider) */
+  for (int i = 0; i < 8 && !ok; i++) { unsigned a = mr(m), b = mr(m); lvl_draw(lv, a, b, m->fw, WIDE, WIDE, &x, &feet); ok = gok(lv, x, feet, m->fw, 0) && !start_heap(x, feet, m->fw, m->fh);   /* L4b2: a start lies on no other figure (more tries: the search is wider) */
     if (ok && want) for (int k = 0; k < ne; k++) if (earlier[k].want && in_spot(&earlier[k], x + m->fw / 2, feet)) ok = 0; }   /* at screen show, asleep: not in an earlier sleeper's spot */
   if (!ok) { lv = 0; lvl_draw(0, 0, 0, m->fw, g_xlo, g_xlo, g_rlo, g_rhi, &x, &feet); }   /* all eight failed: main's leftmost point at its top */
   m->lv = m->tlv = lv; m->x = x; m->feet = feet; m->facing = (int)(mr(m) & 1u); m->rest = mv_rest_len(m); m->rested = 0;
