@@ -19,7 +19,7 @@ import { bootFace } from "./face-lvgl.mjs";
 import * as frameIntents from "./intents/frame.mjs";
 import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, shownRoomNow, roomsPending, pinned, picture, setEnv, setMetrics, libraryAhead } from "./host.mjs";
 import { warmLibraryNext, wantLibrary, warmLibraryPaper } from "./pictures.mjs";
-import { registerAsset } from "../../ui/assets.mjs";
+import { registerAsset, probe } from "../../ui/assets.mjs";
 
 // What the page (or the harness) owns. wake: the Caddy's wake at a wake intent or a Dock on Idle; afterSave: after each save the host makes; present: the face's redrawn rectangles onto the screen;
 // defer: the Library's warm, a moment after the props that asked for it; log: the warm's timings; dockElsewhere: the play page's Dock pressed while another device had the keys (read once, then cleared).
@@ -116,6 +116,7 @@ export function syncProps() {
   queueWarm();   // after the props are built, before the early return: a warm that was held waits for the hold, not for a change of props
   for (const id of p.dropped ?? []) FACE.drop(id);   // a picture a newer one superseded leaves the face (the Library 3 gate's P4)
   if (key === CORE.lastProps && !p.dropped?.length) return;
+  if (probe.on) for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) probe.on(id);   // test mode: the scene's pictures, whether or not they were built before
   { FACE.beginScene(); CORE.lastSent = []; for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) if (FACE.handleOf(id, picture) >= 0) CORE.lastSent.push(id); }   // Idle needs only its own pictures; lastSent: the pictures this scene gave the face (an empty slot gives none)
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) CORE.faceErrors.push(...FACE.errors());
   else { const light = p.light ?? lastLight; const room = shownRoomNow(); if (lastLight && (lastLight !== light || (lastRoom != null && lastRoom !== room))) for (const id of lightIds(lastLight, lastRoom ?? room)) FACE.drop(id); lastRoom = room; if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light

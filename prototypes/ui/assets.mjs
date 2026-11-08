@@ -44,7 +44,9 @@ export const empties = () => manifest().filter((e) => e.status === "empty");
 export const hasAsset = (id) => ENTRIES.has(id);
 export const assetEntry = (id) => ENTRIES.get(id) ?? null;
 // The built picture (anything with w, h and rgba()) or null when the id is unknown. `env` reaches the builder (palette lookup).
+export const probe = { on: null };   // test mode: called with every id a picture is asked by (the station journey records which masters each screen uses, masters/groups.json)
 export function asset(id, env = null) {
+  if (probe.on) probe.on(id);
   let b = BUILT.get(id); if (b) return b;
   const e = ENTRIES.get(id); if (!e) return null;
   if (!e.build) return null; b = e.build(e, env); if (!b) return null;

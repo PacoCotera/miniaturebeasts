@@ -10,6 +10,8 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSyn
 import { execFileSync } from "node:child_process";
 import { decodePNG } from "../png.mjs";
 import { placeGame, checkJuveniles } from "./game-masters.mjs";
+import { stampBytes, bytesProblems } from "./index-bytes.mjs";
+import { checkGroups } from "./groups.mjs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -132,7 +134,7 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
     if (!dryRun) { mkdirSync(path.join(root, "rooms"), { recursive: true }); writeFileSync(path.join(root, file), o.src.buf); }
   }
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
-  if (!dryRun) { mkdirSync(root, { recursive: true }); writeFileSync(idxFile, JSON.stringify(index, null, 1) + "\n"); mkdirSync(path.dirname(roomsFile), { recursive: true }); writeFileSync(roomsFile, fmt(data) + "\n"); }
+  if (!dryRun) { mkdirSync(root, { recursive: true }); writeFileSync(idxFile, JSON.stringify(stampBytes(root, index), null, 1) + "\n"); mkdirSync(path.dirname(roomsFile), { recursive: true }); writeFileSync(roomsFile, fmt(data) + "\n"); }
   return { placed, leftOut, rooms: data };
 }
 // The data guards of the rooms design (1 to 7) on rooms.json against the index: `problems` stop; `notes` are the art director's own rules (48 deep, 160 wide, 1:2, 24 px, the main floor about 100 deep), reported and never refused.
@@ -237,14 +239,18 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
   for (const id of Object.keys(manifest)) if (!want.has(id)) skipped.push(id);
   if (byStatus) for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith(group + "/") && !want.has(id)) { if (!dryRun) rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }   // what the record no longer places leaves with its file
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
-  if (!dryRun) { mkdirSync(root, { recursive: true }); writeFileSync(idxFile, JSON.stringify(index, null, 1) + "\n"); }
+  if (!dryRun) { mkdirSync(root, { recursive: true }); writeFileSync(idxFile, JSON.stringify(stampBytes(root, index), null, 1) + "\n"); }
   return { placed, skipped };
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  if (flag("bytes")) {   // annotate the installed index with each file's size (what every placement does as it writes)
+    const ix = stampBytes(dest, readIndex()); writeFileSync(indexFile, JSON.stringify(ix, null, 1) + "\n"); console.log(`bytes stamped on ${Object.keys(ix.masters).length} masters`); process.exit(0);
+  }
   if (flag("check")) {
     const p = existsSync(indexFile) ? check() : [], roomsFile = path.join(specs, "rooms.json"); let notes = [];
     if (existsSync(roomsFile)) { const r = checkRooms(JSON.parse(readFileSync(roomsFile, "utf8")), readIndex(), JSON.parse(readFileSync(path.join(specs, "vivarium.json"), "utf8")).regions.window.rect); p.push(...r.problems); notes = r.notes; }   // the rooms' data guards 1 to 7 (the rooms design)
     if (existsSync(indexFile)) p.push(...checkJuveniles(dest, readIndex()));   // the 0.8 test on every juvenile and adult pair (release 21c)
+    if (existsSync(indexFile)) { p.push(...bytesProblems(dest, readIndex())); p.push(...checkGroups(dest, readIndex())); }   // `bytes` per entry; groups.json (recorded by the station journey) names only ids the index has
     for (const x of p) console.error("FAIL " + x); for (const x of notes) console.log("note " + x);
     console.log(`masters: ${Object.keys(readIndex().masters).length} placed, ${p.length} problems`); process.exit(p.length ? 1 : 0);
   }
