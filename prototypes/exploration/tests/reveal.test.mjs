@@ -146,7 +146,8 @@ test("the reveal's frames: the spot rings the heart, the zoom out and dissolve a
     await pressSeq(page, ["confirm"]); await page.waitForTimeout(300);
     const base = amberIn(await still(page));
     await page.evaluate(() => { const m = window.__mb; m.TEST.at = 450; m.TEST.findHeart(3); });   // 450 ms into the spot: both rings out
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(700);   // the camera's slide to the rest that holds explorer and heart is done
+    await page.evaluate(() => { window.__mb.TEST.clock = 1000000; }); await page.waitForTimeout(300);   // the page's clock held at a fixed time (the camera's slide long done): every frame is the same still picture
     let s = await st(page); assert.equal(s.view, "spot");
     const spot = await still(page);
     assert.ok(amberIn(spot) > base + 60, "amber ring pixels at the heart in the spot frame: " + base + " -> " + amberIn(spot));
@@ -157,8 +158,9 @@ test("the reveal's frames: the spot rings the heart, the zoom out and dissolve a
     await page.evaluate(() => { window.__mb.TEST.at = 500; }); await page.waitForTimeout(300);
     s = await st(page); assert.equal(s.view, "reveal"); await pressSeq(page, ["confirm"]); s = await st(page); assert.equal(s.view, "reveal", "✓ in the dissolve does not close it");
     await page.evaluate(() => { window.__mb.TEST.at = 2000; }); await page.waitForTimeout(300);
-    await pressSeq(page, ["confirm"]); await page.waitForTimeout(500);
-    await page.evaluate(() => { window.__mb.TEST.at = null; });
+    await pressSeq(page, ["confirm"]);   // ✓ closes it with its two stepped frames: the held clock moves on by hand
+    await page.evaluate(() => { const T = window.__mb.TEST; T.at = null; T.clock += 400; }); await page.waitForTimeout(500);
+    await page.evaluate(() => { window.__mb.TEST.clock = null; });
     s = await st(page); assert.equal(s.view, null, "✓ closes the held card");
     // Look over the place at a found place: the same card, no dissolve; ← closes
     await pressSeq(page, ["back"]); await page.waitForTimeout(300);

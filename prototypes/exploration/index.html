@@ -423,7 +423,7 @@ const numWord = n => NUM_WORD[n] || String(n);
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 
 // ===================== 3. World generation =====================
-const TEST = { calm: false, at: null,   // test hook only: start expeditions without a storm, for measuring calm Energy; at: the reveal's clock held at this many ms (null: the real one), so its frames can be still pictures
+const TEST = { calm: false, at: null, clock: null,   // test hook only: start expeditions without a storm, for measuring calm Energy; at: the reveal's clock held at this many ms (null: the real one), so its frames can be still pictures
   // test hook only: the place's heart is found, as by walking up to it (the explorer's tile is restored); what a test that once made a Call to count the place explored now does
   // test hook only: the place's heart made of `kind` (at the same tile), unfound, the explorer `back` steps from it on the way to it, the veil lifted round the explorer
   tellStill(kind, back) { const P = S.exp.patch, h0 = heartOf(P.key); if (!h0) return null; const end = h0.path[h0.path.length - 1];
@@ -4557,8 +4557,8 @@ function drawReachView(t) {
     const small = q.big && c === ex.pos;   // on the pawn's own cell at tier 1 the outpost and the burrow sign draw at 1×, clear of the pawn
     let n = 0; for (const sg of list.slice(0, 4)) { const a = signSprite(sg.kind, sg, fr, q.big && !(small && (sg.kind === 'depot' || sg.kind === 'burrow'))); if (!a) continue;
       const p = passable(c) && G.land[c] !== L.WATER ? cellSignAt(c, x, y, q.cs, a.w, a.h, n) : { x: x + ((q.cs - a.w) >> 1) + n * 6, y: y + ((q.cs - a.h) >> 1) }; blit(a, p.x, p.y, sg.rm || 0); n++; }
-    if (c === ex.start) { const a = q.big ? up2('flag', ICON.flag()) : ICON.flag(), onPawn = c === ex.pos, pad = 2;
-      blit(a, Math.round(x + (onPawn ? pad + 2 : (q.cs - a.w) / 2)), Math.round(y + (onPawn ? pad + 2 : (q.cs - a.h) / 2 + 2))); }
+    if (c === ex.start) { const a = q.big ? up2('flag', ICON.flag()) : ICON.flag(), onOwn = c === ex.pos, pad = 2;
+      blit(a, Math.round(x + (onOwn ? pad + 2 : (q.cs - a.w) / 2)), Math.round(y + (onOwn ? pad + 2 : (q.cs - a.h) / 2 + 2))); }
   }
   // the storm's heading at the band's leading edge, if it is in the reach
   if (ex.storm) { const lead = ex.storm.dir > 0 ? ex.storm.x + ex.storm.w : ex.storm.x, lx = q.dx + (lead - (q.s0.x - q.r)) * q.cs; if (lx > q.dx && lx < q.dx + q.size) blit(ICON.arrow(ex.storm.dir), Math.round(lx) - 6, q.dy + q.size / 2 - 6); }
@@ -6358,6 +6358,7 @@ function render(t) {
   vctx.drawImage(scr, 0, 0);
 }
 function frame(t) {
+  if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
