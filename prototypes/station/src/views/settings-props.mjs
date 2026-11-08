@@ -38,7 +38,7 @@ export function settingsBuild(m, spec) {
     sleep: { sub: block ? Sg.reasons[block] : R.sleep.sub, dim: !!block },
   };
   const detail = { key: cur, title: "", blocks: [], foot: "" };
-  if (cur === "realm") { detail.title = D.realm.title; detail.blocks.push({ kind: "facts", text: capLine(fill(f.began ? D.realm.facts : D.realm.factsNoDate, f)) }); }
+  if (cur === "realm") { detail.title = D.realm.title; detail.blocks.push({ kind: "facts", text: capLine(fill(f.began ? D.realm.facts : D.realm.factsNoDate, f)) }); if (m.settings?.playtest && D.realm.playtest) detail.blocks.push({ kind: "notice", text: D.realm.playtest }); }   // the playtest preset is on (?playtest): said here and nowhere else
   else if (cur === "companion") {
     detail.title = D.companion.title;
     detail.blocks.push({ kind: "facts", text: c ? capLine(fill(D.companion.facts, { name: c.name, state, since: dayWords(c.since) || D.companion.sinceNone })) : D.companion.factsNone });

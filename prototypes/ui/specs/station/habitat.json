@@ -190,14 +190,14 @@
    "lineTops": [90, 114, 138],
    "text": "strings.story: a founder, where it was found, then what it remembers; a bred mibi, \"of {A}\" and \"and {B}\" on two lines, then what it remembers; filled from the top"
   },
-  "code": {
+  "chapters": {
    "rect": [608, 160, 152, 24],
    "component": "text",
    "inStates": ["rest", "meet", "out"],
    "px": 16,
    "lineTop": 162,
-   "text": "the mibi's code in three groups with spaces, no dots (\"3MB W21 1BB\"), live text, shareable",
-   "room": "152: the widest code, \"WWW WWW WWW\", is 152 at 16 px; the notches sit 8 px after it"
+   "text": "the chapters caption (plan 3.17 F3c/F4), in the code's old place: strings.chaptersRead filled with how many of the species' chapters this mibi has read and how many it has; no genome code is shown on a player screen until L5",
+   "room": "152: \"Chapters · 6 of 6 read\" at 16 px (a size the face bakes: 14 is not one); the notches sit 8 px after it"
   },
   "stamp": {"rect": [872, 64, 120, 120], "plate": "plate-well-120x120", "component": "stampLabel", "look": "stampCase", "slot": "the card's own, not frame.json regions.stampSlot: 804, 400 lands on the Cross and Wild modules (592 to 1008, 376 to 472), and the card's bottom right is the plates' row (608, 200, 376, 40); the rect stays, the demotion is the stampCase look", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: nothing drawn, no size (station-layouts.md, Every state composed, 2); was the bare bone label", "fromFocal": 424, "portrayed": {"slice": "spread-gilt-corner-16x16", "rect": [976, 64, 16, 16], "at": [104, 0], "sprite": "1:1, undimmed", "when": "m.portrait.state is delivered (portrayed)", "rule": "in the label's top-right corner, never over the stamp's cells: its opaque pixels stay clear of the largest stamp (104 at 880, 72) by 1 px on the diagonal (measured on the master)", "inStates": ["rest", "meet", "out"]}},
   "plates": {
@@ -343,7 +343,7 @@
   "card (its heart and notches)",
   "speciesLine",
   "story",
-  "code",
+  "chapters",
   "stamp",
   "stamp.portrayed",
   "plates",
@@ -366,6 +366,7 @@
    "hold": 300,
    "cut": true,
    "do": "Greet: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice (placeholder). Rewards nothing and shows nothing like a reward. Input is held 300 ms; the first key after the hold cuts the moment to its end, and that key then does what it does (notes.cut)",
+   "heart": { "asset": "fx-greet-heart-16x16", "rise": 8, "ms": 700, "stillMs": 1200, "gap": 3, "greetShowMs": 2500, "do": "Greet's answer (loop-audit UX F5a): the art desk's fx-greet-heart-16x16 in a named slot above the resident's box, rising `rise` px over `ms`, then gone; with reduced motion it stands still for `stillMs` then cuts. Nothing is drawn in code: until the picture is placed the slot shows nothing (the line still answers). Drawn only when props regions.resident.heart is on (the host sets it for greetShowMs after a Greet; the meet's moment has none). The line says strings.greeted (strings.greetedAsleep for a sleeper) for greetShowMs." },
    "asleep": { "ms": 2880, "hold": 300, "cut": true, "do": "a sleeper with a moving set (Station M1 §2.4): wake (16-level dither 180, crouch 400, stand), the hops at 0 and 900 of the hops, crouch 320, dither 180, curl" },
    "moving": "with a moving set: hops at 0 and 900 ms (placeholder.hops), each crouch 160, air 400 (the set's closeHop.lift on 80 ms ticks: adult and juvenile [8, 20, 24, 20, 8], elder [6, 14, 17, 14, 6], scaled down to fit when the rect leaves under 24 px above the figure, never clipped), crouch 160, stand; shadow-75 on air ticks 2 to 4",
    "placeholder": {
@@ -673,7 +674,7 @@
   "waitingLamp": {"fill": "sky", "rim": "void"},
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "ribbon": {"fill": "bark", "edge": "gold", "text": "bone"},
-  "card": {"species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
+  "card": {"species": "bone", "story": "mist", "chapters": "mist", "mark": "bone"},
   "stampLabel": {"k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "Habitat GB2 (art director's ruling): the label's plate is the signed plate-well-120x120 at (872, 64), the C5 well with its ground floor, drawn 1:1; the stamp is printed in it as before, multiplied in linear light by k × warm (art director, masters-pods 001bcd51), centred; the 1 px #3d434b edge is dropped, the well's own hairline replaces it; no fill, light, glow, frame or pane of its own"},
   "module": {"word": "metal"},
   "pane": {"fill": "panel", "edge": "hairline", "bevel": "bevel"},
@@ -728,6 +729,7 @@
   ]
  },
  "strings": {
+  "chaptersRead": "Chapters · {n} of {N} read",
   "title": "Vivarium",
   "back": "Vivarium",
   "meet": "Meet {name}",
@@ -742,6 +744,8 @@
    "rule": "filled from the top, at most three lines: where it came from (one line for a founder, two for a bred mibi), then what it remembers"
   },
   "greet": "Greet {name}",
+  "greeted": "{name} greets you back",
+  "greetedAsleep": "{name} stirs, then sleeps on",
   "residentContext": "{a} {stage} {species}",
   "residentContextBonded": "a bonded {stage} {species}",
   "residentContextExamples": ["an adult Loika", "a young Loika", "an elder Loika"],

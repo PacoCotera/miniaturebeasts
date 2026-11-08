@@ -48,7 +48,7 @@ export function incubatorBuild(m, spec, pods) {
   if (state !== "empty") {
     const known = hatch ? mb.read : gs ? gs.known : knownChapters(st, B, settings, now), g = hatch ? mb.genome : B.genome, sz = stampSizing(fr, g), k = spec.colours.stampLabel.k;
     regions.stamp = { case: { back: slot(req, R.stampCase.slice, R.stampCase.rect, "the stamp case master"), front: slot(req, R.stampCaseFront.slice, R.stampCaseFront.rect, "the case's front glass") }, size: sz.size, N: sz.N, cell: sz.cell, plate: plateMasterReq(req), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(g)}:${[...known].sort().join(",")}:${sz.size}:k${kPct(k)}`, species, read: known, size: sz.size, k, ...(hatch ? { mibi: hatch.mibi } : { bud: true }) }) };
-    regions.code = codeText(hatch ? hatch.code : B.code);
+    regions.code = "";   // no code on a player screen until L5 (plan 3.17 B4)
   }
   if (state === "growing") regions.readyIn = fill(spec.strings.readyIn, { n: gs ? gs.left : S.budMinutesLeft(st, settings, now) });
   if (state === "hatch") {

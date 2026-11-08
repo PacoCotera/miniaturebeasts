@@ -13,7 +13,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(h
 const specs = path.resolve(here, "../../ui/specs/station"), frameSpec = JSON.parse(readFileSync(path.join(specs, "frame.json"), "utf8")), H = frameSpec.hold;
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const rgbOf = (name) => { const h = palette.find(([n]) => n === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
-const FILL = rgbOf(H.fill), TRACK = rgbOf(H.track), [CX, CY] = H.centre, R0 = H.size / 2, BOX = [CX - R0, CY - R0];
+const FILL = rgbOf(H.fill), TRACK = rgbOf(H.track), TICK = rgbOf(H.tick.colour), [CX, CY] = H.centre, R0 = H.size / 2, BOX = [CX - R0, CY - R0];
 const props = (o = {}) => ({ screen: "library", state: "notBuilt", motion: o.motion ?? true, frame: { ...(o.hold === false ? {} : { hold: { on: 1 } }) } });
 const T0 = 1000;
 async function setup(o) {
@@ -32,12 +32,12 @@ function count(f) {
 // whether the ring is filled at an angle (degrees clockwise from twelve o'clock), on the band's middle
 function at(f, deg) {
   const r = R0 - H.width / 2, a = (deg * Math.PI) / 180, x = Math.round(CX + r * Math.sin(a) - 0.5), y = Math.round(CY - r * Math.cos(a) - 0.5), px = f.rgba(), i = (y * f.size[0] + x) * 4, c = [px[i], px[i + 1], px[i + 2]];
-  return same(c, FILL) ? "fill" : same(c, TRACK) ? "track" : "other";
+  return same(c, FILL) ? "fill" : same(c, TRACK) ? "track" : same(c, TICK) ? "tick" : "other";
 }
 const share = (f) => { const c = count(f); return c.fill / (c.fill + c.track); };
 const press = (f) => { f.key("confirm", "down"); }, lift = (f) => { f.key("confirm", "up"); };
 
-test("the spec: 96 px, 3000 ms to fill, 300 ms to empty, quarters", () => { assert.equal(H.size, 96); assert.equal(H.ms, 3000); assert.equal(H.emptyMs, 300); assert.equal(H.quarters, 4); });
+test("the spec: 96 px, 3000 ms to fill, 600 ms to empty (F5b), quarters, a 2 px bone tick, 2500 ms of the keep line", () => { assert.equal(H.size, 96); assert.equal(H.ms, 3000); assert.equal(H.emptyMs, 600); assert.equal(H.quarters, 4); assert.equal(H.tick.w, 2); assert.equal(H.keepMs, 2500); });
 
 test("the quarters are read from the spec", { skip }, async () => {
   const f = await setup({ motion: false }); assert.equal(f.send({ t: "spec", screen: "frame", json: { ...frameSpec, hold: { ...H, quarters: 2 } } }), 0); assert.equal(f.props(props({ motion: false })), 0); press(f); f.frame(T0 + 16); f.frame(T0 + 16 + 1499); assert.equal(count(f).fill, 0, "two steps: none before 1500 ms"); f.frame(T0 + 16 + 1500); assert.ok(Math.abs(share(f) - 0.5) < 0.02, "a half at 1500 ms: " + share(f));
@@ -46,7 +46,8 @@ test("the quarters are read from the spec", { skip }, async () => {
 test("at rest the ring is an empty track at the plate's centre", { skip }, async () => {
   const f = await setup(); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
   const c = count(f); assert.equal(c.fill, 0); assert.ok(c.track > 1000, "the track is drawn: " + c.track);
-  for (const deg of [0, 90, 180, 270]) assert.equal(at(f, deg), "track", deg + "°");
+  for (const deg of [90, 180, 270]) assert.equal(at(f, deg), "track", deg + "°");
+  assert.equal(at(f, 0), "tick", "F5b: the 2 px bone tick at twelve o'clock, so the fill's goal is seen");
 });
 
 test("filling: 0, 1000, 2000 and 3000 ms of ✓ held", { skip }, async () => {
@@ -93,30 +94,30 @@ test("the ring stands on clear ground: nothing under it or within 16 px of its b
     if (fillRing) { press(f); f.frame(T0 + 16); f.frame(T0 + 3016); }
     const p = f.rgba(); let odd = 0;
     for (let y = BOX[1] - 16; y < BOX[1] + H.size + 16; y++) for (let x = BOX[0] - 16; x < BOX[0] + H.size + 16; x++) {
-      const i = (y * W + x) * 4, c = [p[i], p[i + 1], p[i + 2]]; if (!same(c, g) && !same(c, FILL) && !same(c, TRACK)) odd++;
+      const i = (y * W + x) * 4, c = [p[i], p[i + 1], p[i + 2]]; if (!same(c, g) && !same(c, FILL) && !same(c, TRACK) && !same(c, TICK)) odd++;
     }
     assert.equal(odd, 0, label + ": pixels of another colour in the ring's box and its 16 px margin: " + odd);
   }
 });
 
-test("letting go empties the ring over 300 ms and says nothing: release +0, +150 and +300 ms", { skip }, async () => {
+test("letting go early empties the ring over 600 ms and says confirm:early, never confirm:held: release +0, +300 and +600 ms", { skip }, async () => {
   const f = await setup(); press(f); const t0 = T0 + 16; f.frame(t0);
   f.frame(t0 + 1500); const before = share(f); assert.ok(Math.abs(before - 0.5) < 0.02, "half full: " + before);
   lift(f); f.frame(t0 + 1500); assert.ok(Math.abs(share(f) - 0.5) < 0.02, "+0 ms: as it was");
-  f.frame(t0 + 1650); assert.ok(Math.abs(share(f) - 0.25) < 0.02, "+150 ms: half of what was, " + share(f)); assert.equal(at(f, 80), "fill"); assert.equal(at(f, 100), "track");
-  f.frame(t0 + 1800); assert.equal(count(f).fill, 0, "+300 ms: empty");
-  f.frame(t0 + 6000); assert.deepEqual(intents(f), [], "no intent when let go"); assert.equal(count(f).fill, 0);
+  f.frame(t0 + 1800); assert.ok(Math.abs(share(f) - 0.25) < 0.02, "+300 ms: half of what was, " + share(f)); assert.equal(at(f, 80), "fill"); assert.equal(at(f, 100), "track");
+  f.frame(t0 + 2100); assert.equal(count(f).fill, 0, "+600 ms: empty");
+  f.frame(t0 + 6000); assert.deepEqual(intents(f), ["confirm:early"], "an early release says so once, and never confirm:held"); assert.equal(count(f).fill, 0);
 });
 
-test("let go just before the end: no intent, ever", { skip }, async () => {
+test("let go just before the end: only confirm:early, never confirm:held", { skip }, async () => {
   const f = await setup(); press(f); const t0 = T0 + 16; f.frame(t0); f.frame(t0 + 2900); lift(f); f.frame(t0 + 2900);
   for (let t = t0 + 2950; t < t0 + 8000; t += 50) f.frame(t);
-  assert.deepEqual(intents(f), []); assert.equal(count(f).fill, 0);
+  assert.deepEqual(intents(f), ["confirm:early"]); assert.equal(count(f).fill, 0);
 });
 
 test("a new hold after letting go begins from empty, on its own clock", { skip }, async () => {
-  const f = await setup(); press(f); const t0 = T0 + 16; f.frame(t0); f.frame(t0 + 1000); lift(f); f.frame(t0 + 1400); assert.equal(count(f).fill, 0);
-  press(f); f.frame(t0 + 1400); f.frame(t0 + 2400); assert.ok(Math.abs(share(f) - 1 / 3) < 0.02, "a third after a second: " + share(f)); f.frame(t0 + 4300); assert.deepEqual(intents(f), []); f.frame(t0 + 4400); assert.deepEqual(intents(f), ["confirm:held"]);
+  const f = await setup(); press(f); const t0 = T0 + 16; f.frame(t0); f.frame(t0 + 1000); lift(f); f.frame(t0 + 1700); assert.equal(count(f).fill, 0); assert.deepEqual(intents(f), ["confirm:early"]);
+  press(f); f.frame(t0 + 1700); f.frame(t0 + 2700); assert.ok(Math.abs(share(f) - 1 / 3) < 0.02, "a third after a second: " + share(f)); f.frame(t0 + 4600); assert.deepEqual(intents(f), []); f.frame(t0 + 4700); assert.deepEqual(intents(f), ["confirm:held"]);
 });
 
 test("reduced motion: the fill steps in quarters, the emptying is a cut, the 3 s stay", { skip }, async () => {
@@ -126,12 +127,12 @@ test("reduced motion: the fill steps in quarters, the emptying is a cut, the 3 s
   for (const dt of [0, 700, 750, 1500, 2250]) { f.frame(t0 + dt); void 0; }
   f.frame(t0 + 2950); assert.deepEqual(intents(f), [], "not before 3000 ms");
   f.frame(t0 + 3000); assert.equal(count(f).track, 0, "full at 3000 ms"); assert.deepEqual(intents(f), ["confirm:held"]);
-  const g = await setup({ motion: false }); press(g); g.frame(T0 + 16); g.frame(T0 + 1516); assert.ok(Math.abs(share(g) - 0.5) < 0.02); lift(g); g.frame(T0 + 1532); assert.equal(count(g).fill, 0, "let go: cut to empty"); g.frame(T0 + 6000); assert.deepEqual(intents(g), []);
+  const g = await setup({ motion: false }); press(g); g.frame(T0 + 16); g.frame(T0 + 1516); assert.ok(Math.abs(share(g) - 0.5) < 0.02); lift(g); g.frame(T0 + 1532); assert.equal(count(g).fill, 0, "let go: cut to empty"); g.frame(T0 + 6000); assert.deepEqual(intents(g), ["confirm:early"], "the early release still says so");
 });
 
 test("another key ends a hold in progress and then acts as it would", { skip }, async () => {
   const f = await setup(); press(f); const t0 = T0 + 16; f.frame(t0); f.frame(t0 + 1000); assert.ok(share(f) > 0.3);
-  f.key("library"); assert.deepEqual(intents(f), ["room:library"], "a room key is said"); f.frame(t0 + 1000); f.frame(t0 + 1300); assert.equal(count(f).fill, 0, "and the ring empties");
+  f.key("library"); assert.deepEqual(intents(f), ["room:library"], "a room key is said"); f.frame(t0 + 1000); f.frame(t0 + 1700); assert.equal(count(f).fill, 0, "and the ring empties");
   f.frame(t0 + 6000); assert.deepEqual(intents(f), []);
 });
 
@@ -149,6 +150,6 @@ test("props that drop the hold end it: nothing is said afterwards", { skip }, as
 
 test("the wire: a key message with a phase is a press or a release alone; any other phase is refused", { skip }, async () => {
   const f = await setup(); assert.equal(f.send({ t: "key", k: "confirm", phase: "down" }), 0); f.frame(T0 + 16); f.frame(T0 + 1016); assert.ok(share(f) > 0.3);
-  assert.equal(f.send({ t: "key", k: "confirm", phase: "up" }), 0); f.frame(T0 + 1016); f.frame(T0 + 1400); assert.equal(count(f).fill, 0);
+  assert.equal(f.send({ t: "key", k: "confirm", phase: "up" }), 0); f.frame(T0 + 1016); f.frame(T0 + 1700); assert.equal(count(f).fill, 0);
   assert.equal(f.send({ t: "key", k: "confirm", phase: "sideways" }), -1); f.errors();
 });

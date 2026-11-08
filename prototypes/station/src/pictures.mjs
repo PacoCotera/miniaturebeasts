@@ -14,7 +14,7 @@ import { portraitSource, portraitOpening } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackCrownIds, rackPatternId, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
 import { emblemArt, dewArt, ICON, beamArt, mibiArt, founderArt, speciesArt, traitPic } from "./art.mjs";
-import { stampGenome, stampSizing } from "./genome.mjs";
+import { stampGenome, stampSizing, traitState } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { relit } from "./relight.mjs";
@@ -24,7 +24,7 @@ import { sheetPicture, renderDisc, sheetKept, keptPictures, warmPaper } from "./
 import { facePicture, windowOf } from "./face-pictures.mjs";
 import { placedAt, coatMaster, coatOf, PAINTED_COAT } from "./stands.mjs";
 import { farPicture, miniPicture } from "./lineage-pictures.mjs";
-import { registerReading } from "./reading-pictures.mjs";
+import { registerReading, discPicture } from "./reading-pictures.mjs";
 import { dialSize, dialPixels } from "./dial-picture.mjs";
 
 const SHEET_IDS = {};   // the Level 2 sheet's current entry of each kind (library-sheet.mjs keeps its pictures)
@@ -34,6 +34,18 @@ const DROPPED = [];   // the ids whose entry a newer picture superseded: the hos
 // The superseded ids since the last call, taken (the host drops each on the face).
 export const droppedPictures = () => DROPPED.splice(0);
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
+// A Cross seed or end shows the trait, not the creature (loop-audit UX F6.2/B7): the look the pairing's copies show, as the Pods reading room draws that look (reading-pictures.mjs discPicture: the coat disc of a Tint or a Shade, the Markings disc with or
+// without its pattern), centred on a bone tile. The chapters with no swatch in the reading room (Shape, Movement, Stamina) return null: the creature crop stays, until the reading room has their picture.
+const SWATCH_TRAITS = new Set(["body-hue", "body-value", "markings"]);
+function swatchPic(r, g, w, h, env) {
+  if (!SWATCH_TRAITS.has(r.trait)) return null;
+  const fr = env.frameOf(r.species), t = fr?.chapters.flatMap((c) => c.traits).find((x) => x.id === r.trait), ch = t && fr.chapters.find((c) => c.traits.includes(t)); if (!t) return null;
+  const look = traitState(fr, t, g).shows; if (look == null) return null;
+  const d = h - 8, P = d + 8, disc = discPicture({ d, species: r.species, chapter: ch.id, trait: r.trait, look }, env), bg = RGB[C.bone], out = new Uint8ClampedArray(w * h * 4), x0 = Math.floor((w - P) / 2);
+  for (let i = 0; i < w * h; i++) { out[i * 4] = bg[0]; out[i * 4 + 1] = bg[1]; out[i * 4 + 2] = bg[2]; out[i * 4 + 3] = 255; }
+  for (let y = 0; y < P && y < h; y++) for (let x = 0; x < P; x++) { const s = (y * P + x) * 4, o = (y * w + x0 + x) * 4, a = disc[s + 3] / 255; for (let k = 0; k < 3; k++) out[o + k] = Math.round(disc[s + k] * a + out[o + k] * (1 - a)); }
+  return { w, h, rgba: () => out };
+}
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
 
 // The pod at the exact size of its box, never scaled: every class (large, medium, small, collection, and the list's "well") from the signed layers recoloured by the species' pair (podmasters.mjs);
@@ -176,7 +188,7 @@ export function registerPictures(reqs, env) {
           if (r.id !== day && !hasAsset(r.id)) registerAsset({ id: r.id, w: r.size[0], h: r.size[1], status: "derived", until: null, build: () => grade(assetOf(day), r.light ?? "day") });
           break; } const [w, h] = r.size, young = r.stage === "juvenile", mm = coatMaster(`mibi-${young ? "juvenile" : "adult"}-${r.species}-${w}x${h}`, r.species, r.coat); putOrMaster(r.id, mm, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan); an adult without one is asked as its species' juvenile stand (stands.mjs, station-layouts.md Composed states rule 5), and only a species with no juvenile stand reaches the rig here, shown as a stand-in", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter"), { status: "stand-in" }, gradedOf(mm, r.light ?? "day")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed; else the view has asked for mibi-juvenile-SXX at the place's size (stands.mjs); else the rig at the adult's own size      case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas: composed from its placed masters or §1.5's stand-ins
       case "crosspic": {   // the Cross screen's trait picture of a pairing (cross.json masters "rendered"): the first parent's genome with the pairing's copies at the locus (the sleeping loci as the pair carries them), the trait's close-up rendered at its size, never scaled
-        const [w, h] = r.size; put(r.id, w, h, r.until, () => { const ga = env.mibiGenome(r.a), gb = env.mibiGenome(r.b), g = structuredClone(ga); g.loci[r.locus] = [...r.copies]; for (const id of r.sleeping || []) g.loci[id] = [ga.loci[id][0], gb.loci[id][1]]; return traitPic(env.frameOf(r.species), g, r.trait, w, h); });
+        const [w, h] = r.size; put(r.id, w, h, r.until, () => { const ga = env.mibiGenome(r.a), gb = env.mibiGenome(r.b), g = structuredClone(ga); g.loci[r.locus] = [...r.copies]; for (const id of r.sleeping || []) g.loci[id] = [ga.loci[id][0], gb.loci[id][1]]; return swatchPic(r, g, w, h, env) ?? traitPic(env.frameOf(r.species), g, r.trait, w, h); });
         break;
       }
       case "mibiv": {   // a mibi in a state the collection marks on the figure (dark, cold, outline: layered-stand.mjs variantPixels), made from its picture's pixels once

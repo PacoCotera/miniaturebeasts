@@ -37,7 +37,8 @@ async function serve() {
 async function enter(browser, url, seed, place) {
   const page = await (await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: "reduce" })).newPage();
   const errors = []; page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto(`${url}?seed=${seed}${place ? "&place=" + place : ""}`);
+  if (place) await page.addInitScript((p) => { try { localStorage.setItem("mb-options", JSON.stringify({ place: p })); } catch { /* none */ } }, place);   // the test hook: the setting the Options panel writes (play/src/options.mjs)
+  await page.goto(`${url}?seed=${seed}`);
   await page.waitForTimeout(1200);
   await page.evaluate(() => { window.__mb.TEST.calm = true; });
   for (let i = 0; i < 4; i++) { await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(350); }

@@ -148,6 +148,7 @@ static void overview(void) {
           int lo = fx(v_pint(v_fmt("%s.range.0", rp), 0), trW), hi = fx(v_pint(v_fmt("%s.range.1", rp), 0), trW), l0 = fx(v_pint(v_fmt("%s.range0.0", rp), 0), trW), h0 = fx(v_pint(v_fmt("%s.range0.1", rp), 0), trW);
           if (v_pint(v_fmt("%s.narrowed", rp), 0) * trW > 2 * 10000) ob_box(&o, tr0 + l0, cy - 3, h0 - l0 > 2 ? h0 - l0 : 2, 7, cKin, 2, 2);
           int bw = hi - lo < 3 ? 3 : hi - lo; ob_fill(&o, tr0 + lo, cy - 2, bw, 5, cBandE); ob_fill(&o, tr0 + lo + 1, cy - 1, bw - 2 < 1 ? 1 : bw - 2, 3, cBand);
+          for (int k = 0, np = v_plen(v_fmt("%s.pin", rp)); k < np; k++) { int pa = fx(v_pint(v_fmt("%s.pin.%d.0", rp, k), 0), trW), pb = fx(v_pint(v_fmt("%s.pin.%d.1", rp, k), 0), trW), pw = pb - pa < 3 ? 3 : pb - pa; ob_box(&o, tr0 + pa - 1, cy - 3, pw + 2, 7, cWish, 0, 0); ob_box(&o, tr0 + pa - 2, cy - 4, pw + 4, 9, cWish, 0, 0); }   /* a pinned look at a blend: the wished bin's 2 px yellow edge on the range bar (F6.4) */
         }
       }
       ry += rh;
@@ -277,6 +278,7 @@ static void chapter(void) {
         int l0 = fx(v_pint(v_fmt("%s.blend.range0.0", tp), 0), trW), h0 = fx(v_pint(v_fmt("%s.blend.range0.1", tp), 0), trW);
         if (v_pint(v_fmt("%s.blend.narrowed", tp), 0) * trW > 2 * 10000) ob_box(&q, trx + l0, ty - 7, h0 - l0 > 2 ? h0 - l0 : 2, 15, cKin, 2, 2);
         int bw = b - a < 3 ? 3 : b - a; ob_fill(&q, trx + a, ty - 4, bw, 9, cBandE); ob_fill(&q, trx + a + 1, ty - 3, bw - 2 < 1 ? 1 : bw - 2, 7, cBand);
+        for (int k = 0, np = v_plen(v_fmt("%s.blend.pin", tp)); k < np; k++) { int pa = fx(v_pint(v_fmt("%s.blend.pin.%d.0", tp, k), 0), trW), pb = fx(v_pint(v_fmt("%s.blend.pin.%d.1", tp, k), 0), trW), pw = pb - pa < 3 ? 3 : pb - pa; ob_box(&q, trx + pa - 1, ty - 5, pw + 2, 11, cWish, 0, 0); ob_box(&q, trx + pa - 2, ty - 6, pw + 4, 13, cWish, 0, 0); }   /* the wished bin's 2 px yellow edge (F6.4) */
       }
       v_region("ch.track", LAYER_CHROME); ob_end(&q, v_fmt("ch.%d.track", i), rw, rh);
       if (!one) { int pa = fx(v_pint(v_fmt("%s.blend.parents.0", tp), 0), trW), pb = fx(v_pint(v_fmt("%s.blend.parents.1", tp), 0), trW);

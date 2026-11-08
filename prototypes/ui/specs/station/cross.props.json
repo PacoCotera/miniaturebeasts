@@ -7,7 +7,7 @@
   "seed": {"type": "object", "required": ["fill", "pin", "kin"], "additionalProperties": false, "properties": {"fill": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"type": "string"}}, "pin": {"type": "boolean"}, "kin": {"type": "boolean"}}},
   "row": {"type": "object", "required": ["play"], "additionalProperties": false, "properties": {
    "play": {"type": "boolean"}, "kind": {"enum": ["switch", "blend"]}, "hides": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "boolean"}},
-   "seeds": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "seed"}}, "range": {"$ref": "fractions"}, "parents": {"$ref": "fractions"}, "range0": {"$ref": "fractions"}, "narrowed": {"type": "integer"}}},
+   "seeds": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "seed"}}, "range": {"$ref": "fractions"}, "parents": {"$ref": "fractions"}, "range0": {"$ref": "fractions"}, "narrowed": {"type": "integer"}, "pin": {"type": "array", "items": {"$ref": "fractions"}}}},
   "chapter": {"type": "object", "required": ["id", "name", "state", "lacksA", "lacksB", "wish", "wishRow", "rows"], "additionalProperties": false, "properties": {
    "id": {"type": "string"}, "name": {"type": "string"}, "state": {"enum": ["open", "unread", "sealed"]}, "lacksA": {"type": "boolean"}, "lacksB": {"type": "boolean"}, "wish": {"enum": ["", "lit", "hollow"]}, "wishRow": {"type": "integer"},
    "rows": {"type": "array", "items": {"$ref": "row"}}, "need": {"type": "string"}, "find": {"type": "string"}, "sealed": {"type": "string"}}},
@@ -18,7 +18,7 @@
    "a": {"type": "array", "maxItems": 2, "items": {"$ref": "copy"}}, "b": {"type": "array", "maxItems": 2, "items": {"$ref": "copy"}},
    "kind": {"enum": ["switch", "blend"]}, "settled": {"type": "boolean"}, "surface": {"type": "string"}, "words": {"type": "string"},
    "seeds": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "tseed"}},
-   "blend": {"type": "object", "required": ["low", "high", "range", "parents", "range0", "narrowed", "one"], "additionalProperties": false, "properties": {"low": {"type": "string"}, "high": {"type": "string"}, "range": {"$ref": "fractions"}, "parents": {"$ref": "fractions"}, "range0": {"$ref": "fractions"}, "narrowed": {"type": "integer"}, "one": {"type": "boolean"}}}}},
+   "blend": {"type": "object", "required": ["low", "high", "range", "parents", "range0", "narrowed", "one"], "additionalProperties": false, "properties": {"low": {"type": "string"}, "high": {"type": "string"}, "range": {"$ref": "fractions"}, "parents": {"$ref": "fractions"}, "range0": {"$ref": "fractions"}, "narrowed": {"type": "integer"}, "one": {"type": "boolean"}, "pin": {"type": "array", "items": {"$ref": "fractions"}}}}}},
   "tab": {"type": "object", "required": ["id", "word", "state", "glint", "emblem"], "additionalProperties": false, "properties": {"id": {"type": "string"}, "word": {"type": "string"}, "state": {"enum": ["read", "unread", "sealed"]}, "glint": {"type": "boolean"}, "emblem": {"type": "string"}}}
  },
  "type": "object",

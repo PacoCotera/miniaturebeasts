@@ -18,6 +18,7 @@ const SCENES = {
   meet: { shown: 2, f: "resident", state: "meet", meet: true, set: (w) => { w.rooms(1); w.adults(2); w.bud(true); window.__st.openBud(); } },
   out: { shown: 0, f: "name", state: "out", set: (w) => { w.rooms(1); w.adults(4); w.carry([0]); w.away(); } },
   card: { shown: 1, f: "plate.0", state: "rest", set: (w) => { w.rooms(1); w.adults(4); const m = window.__st.ST.mibis[1], fr = window.__st.frameOf("S01"); m.bonded = true; m.notches = 3; m.mem = "pond"; m.from = { ...m.from, of: [window.__st.ST.mibis[0].name, window.__st.ST.mibis[2].name] }; m.read = fr.chapters.filter((c, i) => i !== 0 && !c.sealed).map((c) => c.id); } },
+  greet: { shown: 0, f: "resident", state: "rest", greet: true, set: (w) => { w.rooms(1); w.adults(4); } },   // F5a: ✓ Greet just pressed (reduced motion): the heart stands still above the resident and the middle slot says it greets back
   plate: { shown: 0, f: "plate.1", state: "rest", set: (w) => { w.rooms(1); w.adults(4); const m = window.__st.ST.mibis[0], fr = window.__st.frameOf("S01"); m.read = fr.chapters.filter((c, i) => i !== 1 && !c.sealed).map((c) => c.id); window.__st.ST.d = 9; } },
   door: { shown: 0, f: "door", state: "rest", set: (w) => { w.rooms(1); w.adults(4); w.carry([1]); window.__st.intent({ screen: "habitat", target: "door", verb: "confirm" }); } },
   "door-away": { shown: 0, f: "door", state: "rest", set: (w) => { w.rooms(1); w.adults(4); w.carry([1, 2]); w.away(); } },
@@ -55,10 +56,10 @@ async function enter(page, sc) {
     const id = ST.mibis[spec.shown].id; S.UI.hab.id = id; S.UI.meet = spec.meet ? id : null; S.UI.hab.f = spec.f.startsWith("tile:") ? "tile." + ST.mibis[+spec.f.slice(5)].id : spec.f;
     if (spec.pictured) { const r = S.portraitSource(spec.digest, eval(`(${spec.fixture})`)()); if (!r.ok) throw new Error("portrait fixture: " + r.error); ST.mibis[spec.shown].portrait = { state: "delivered", digest: spec.digest }; }   // the session store only (pixels, never the save); the digest goes on ST as every scene sets ST
     S.goto("habitat"); S.UI.hab.f = spec.f.startsWith("tile:") ? "tile." + ST.mibis[+spec.f.slice(5)].id : spec.f; S.UI.hab.id = spec.f.startsWith("tile:") ? ST.mibis[+spec.f.slice(5)].id : id;
-    S.UI.panel = null; if (spec.panel) S.intent({ screen: "habitat", target: "wild", verb: "confirm" });
+    S.UI.panel = null; if (spec.greet) S.intent({ screen: "habitat", target: "resident", verb: "confirm" }); if (spec.panel) S.intent({ screen: "habitat", target: "wild", verb: "confirm" });
     if (spec.open) S.intent(spec.open === true ? { screen: "habitat", target: "resident", verb: "confirm" } : { screen: "habitat", target: "name", verb: "confirm" });
     for (const k of spec.keys ?? []) { const [t, v] = k.startsWith("x:") ? ["act.done", k.slice(2)] : [k, "confirm"]; S.intent({ screen: "namer", target: t, verb: v }); }
-  }, [sc.set.toString(), { shown: sc.shown, f: sc.f, meet: !!sc.meet, light: sc.light ?? null, panel: !!sc.panel, open: sc.open ?? null, keys: sc.keys ?? null, pictured: !!sc.pictured, digest: PICTURED, fixture: boneCanvas.toString() }]);
+  }, [sc.set.toString(), { shown: sc.shown, f: sc.f, meet: !!sc.meet, light: sc.light ?? null, panel: !!sc.panel, greet: !!sc.greet, open: sc.open ?? null, keys: sc.keys ?? null, pictured: !!sc.pictured, digest: PICTURED, fixture: boneCanvas.toString() }]);
 }
 // R6: ✓ on a held target (a full room's dimmed Move, a bonded juvenile's Return): the plate stands over the screen
 async function pressed(visit) {

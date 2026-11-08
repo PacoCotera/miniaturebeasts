@@ -33,7 +33,7 @@ export function departures(log, spec, frame, state = "growing") {
   // what each state draws
   if (state === "empty") for (const id of ["stamp", "code", "readyIn", "pod", "juvenile"]) must(got(id).length === 0 && !type.some((t) => t.region === id), `the empty Incubator draws no ${id}`);
   else if (got("seal").length > 0) { /* the incubate moment: the column cuts in at 1200 while the ring is still going out by 1380 (incubator.test.mjs holds the exact times) */ }
-  else { must(got("stamp.plate", "painted").length === 1, "the stamp label (its plate) is drawn once"); must(type.some((t) => t.region === "code"), "the code is drawn"); must(got("pod").length > 0 || state === "hatch", "the pod is inside"); }
+  else { must(got("stamp.plate", "painted").length === 1, "the stamp label (its plate) is drawn once"); must(!type.some((t) => t.region === "code" && t.text), "no code is drawn (no genome code on a player screen until L5)"); must(got("pod").length > 0 || state === "hatch", "the pod is inside"); }
   must(state === "growing" || !type.some((t) => t.region === "readyIn"), "the time is the growing state's alone");
   must(state === "hatch" || got("juvenile").length === 0, "the juvenile is drawn only in the hatch");
   must(state === "hatch" || got("ribbon", "chrome").length === 0 || got("ribbon", "chrome").every((r) => r.rect[2] === 0), "the ribbon shows only in the hatch");

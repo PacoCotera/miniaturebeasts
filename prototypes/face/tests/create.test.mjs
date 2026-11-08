@@ -231,9 +231,8 @@ test("grow from nothing read is a cut: with no roll the whole stamp shows from 0
   for (const ms of [0, 100, 299]) assert.deepEqual(region(at(ms), "stampImage", "painted").rect, [L[0] + Math.round((L[2] - size) / 2), L[1] + Math.round((L[3] - size) / 2), size, size], `${ms} ms: the whole stamp`); assert.ok(cell > 0); assert.deepEqual(f.errors(), []);
 });
 test("the code and its rule appear at 300 ms (a cut), three groups with spaces centred on x 864 with its baseline on 497; neither is there before", { skip }, async () => {
-  const { b, at } = await growing(); assert.match(b.props.regions.code, /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/);
-  let lg = at(299); assert.equal(lg.type.some((t) => t.region === "code" && t.text), false, "no code at 299"); assert.equal(region(lg, "code", "chrome"), null, "no rule before 300: the rule and the code are one object (fix 5 C4)");
-  lg = at(300); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 1); const r = region(lg, "code", "type"); assert.ok(Math.abs(r.rect[0] + r.rect[2] / 2 - 864) <= 1, "centred on 864"); assert.equal(r.rect[1] + 4 + 12, 497, "the baseline: the line box 481 to 501, the cap 12 px, 4 px above the box's middle"); assert.deepEqual(region(lg, "code", "chrome").rect, [776, 505, 176, 1], "the rule appears with the code");
+  const { b, at } = await growing(); assert.equal(b.props.regions.code, "", "no genome code on a player screen until L5");
+  for (const ms of [299, 300]) { const lg = at(ms); assert.equal(lg.type.some((t) => t.region === "code" && t.text), false, `no code at ${ms}`); }
 });
 test("the pod travels from its box to the dome from 300 to 900 ms in a straight line, whole pixels, eased in and out (e = p·p·(3000 − 2p)/1000000); at rest before, in the dome after, behind the work tray in between; at 530 ms it steps to the relit pod of the capsule, 96×91, on the same foot", { skip }, async () => {
   const { b, f, at } = await growing(), box = [100, 256, 120, 152], F = R.travel.foot, dx = F.to[0] - F.from[0], dy = F.to[1] - F.from[1], rest = R.travel.rest;   // the medium class: bottom-centred on (160, 408)
@@ -256,7 +255,7 @@ test("the step to the collection class: the travelling sprite is the medium's ow
 test("grow with reduced motion is its end at once: the stamp whole, the code printed, the pod in the dome, the event done on the frame", { skip }, async () => {
   const b = scene({ read: 2, f: 1, roll: 1, grown: true }), f = await start(b, { motion: false, t0: 1000 }); f.send({ t: "event", kind: "grow", target: "pod", ms: 900, hold: 0 }); frames(f, 2); assert.equal(f.poll("done")?.kind, "grow");
   assert.equal(f.props({ screen: "create", ...b.props, motion: false, frame: frameProps(b.line) }), 0); frames(f); const lg = logOf(f);
-  assert.deepEqual(departures(lg, createSpec, frameSpec, "grow"), []); assert.equal(region(lg, "stampImage", "painted").rect[3], b.props.regions.stamp.size); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 1); assert.deepEqual(region(lg, "travel", "painted").rect, R.travel.to);
+  assert.deepEqual(departures(lg, createSpec, frameSpec, "grow"), []); assert.equal(region(lg, "stampImage", "painted").rect[3], b.props.regions.stamp.size); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 0); assert.deepEqual(region(lg, "travel", "painted").rect, R.travel.to);
 });
 test("no refresh redraws more than a quarter of the screen while the pod travels (frames every 16 ms) or the founder dithers, the frame of the key that starts each included", { skip }, async () => {
   const area = (f, o) => dirty(f, o);
@@ -345,7 +344,7 @@ test("grow at 0, 150, 450 and 890 ms: the Grow line has no action, price or way 
     assert.deepEqual(lg.type.filter((t) => t.region === "subject").map((t) => t.text), ["it goes to the Incubator"], `${ms}: the context is the Growing sentence`); assert.equal(lg.type.filter((t) => t.region === "need").length, 0, `${ms}: an empty right slot`);
     for (const id of ["roll", "traitLine"]) assert.equal(sized(lg, id).filter((r) => r.layer !== "chrome" || r.rect[2] > 1).length === 0 || id === "roll" && sized(lg, id).every((r) => r.rect[2] <= 12), true, `${ms}: no sized ${id} node`);
     assert.equal(lg.type.filter((t) => t.region === "traitLine" && t.text).length, 0, `${ms}: no trait line text`); assert.ok(lg.regions.some((r) => r.id === "stamp" && r.rect.join() === "788,320,152,152"), `${ms}: the case`);
-    const origin = lg.type.filter((t) => t.region === "origin" && t.text).length; assert.equal(origin > 0, ms < 300, `${ms}: the origin ${ms < 300 ? "is there" : "is gone"}`); assert.equal(lg.type.some((t) => t.region === "code" && t.text), ms >= 300, `${ms}: the code`); assert.equal(!!region(lg, "code", "chrome"), ms >= 300, `${ms}: the rule`);
+    const origin = lg.type.filter((t) => t.region === "origin" && t.text).length; assert.equal(origin > 0, ms < 300, `${ms}: the origin ${ms < 300 ? "is there" : "is gone"}`); assert.equal(lg.type.some((t) => t.region === "code" && t.text), false, `${ms}: no code`);
   }
   assert.deepEqual(f.errors(), []);
 });

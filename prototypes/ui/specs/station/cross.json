@@ -88,7 +88,7 @@
    }
   },
   "chapter": {
-   "rail": { "x": "the shared chapter rail (frame.json rail), centred on x 512: 264 for seven chapters, compact tabs with the open chapter's tab full", "states": "a tab is read when both parents have read the chapter, unread when either has not, sealed when it is sealed; the open tab is the chapter shown. Pips: one per trait, filled when its forecast is drawn, hollow when it is missing", "glint": "the rail's glint slot (tab.x + 16 + w / 2 − 6, 82) carries cross-wish-lit-12x12 on a chapter holding a pinned trait a child can reach" },
+   "rail": { "x": "the shared chapter rail (frame.json rail), centred on x 512: 264 for seven chapters, compact tabs with the open chapter's tab full", "states": "a tab is read when both parents have read the chapter, unread when either has not, sealed when it is sealed; the open tab is the chapter shown. No pips, on any screen (loop-audit UX F6.3: the plate ground and the overview row already say drawn or missing)", "glint": "the rail's glint slot (tab.x + 16 + w / 2 − 6, 82) carries cross-wish-lit-12x12 on a chapter holding a pinned trait a child can reach" },
    "rows": [16, 160, 992, 392],
    "trait": {
     "h": 64,
@@ -152,13 +152,14 @@
   "cross-kin-surface-10x10": "the `amber` corner on a seed where a hidden look can surface",
   "find-{kind}-16x16": "crystal, pearl, shard: the overview's sealed chapter",
   "find-{kind}-112x112": "existing (pods.json chapter.page.sealedFindSlot): the chapter view's sealed chapter",
-  "rail": "existing: the shared chapter rail's tabs, emblems and pips (frame.json rail)",
+  "rail": "existing: the shared chapter rail's tabs and emblems (no pips: F6.3) (frame.json rail)",
   "frame": "existing: frame-room-vivarium-24, frame-cap-confirm-16, frame-cap-confirm-16-dim, frame-cap-back-16, frame-lamp-12-amber",
   "rendered": "not masters but rendered at their size by the build: the parents' portraits 48×48, the ghost 48×48, the seed and end pictures 64×32"
  },
  "buildDraws": "rect (wires, dashes, plates, bands, seeds 8×8, chips, frost and slats), text, and 1 px lines; nothing else",
  "never": ["a copy, look, seed or range of a chapter either parent has not read", "anything of a sealed chapter but its find", "the child's actual draw", "odds, percentages or counts on the screen", "letters or ratios for a copy"],
  "strings": {
+  "crossed": "{A} and {B} crossed · their child grows in the Incubator",
   "child": "the child to be",
   "pick": "◀ ▶ picks one",
   "noPartner": "no adult of its kind",
@@ -175,8 +176,9 @@
   "hides": "hides"
  },
  "derived": {
+  "seeds and ends": "loop-audit UX F6.2 (B7): a seed or an end shows the trait, not the creature: the look the pairing's copies show, as the Pods reading room draws it (the coat disc of Tint and Shade, the Markings disc with or without its pattern), rendered at 64×32 by the xs renderer (station/src/pictures.mjs swatchPic). Shape, Movement and Stamina have no swatch in the reading room yet, so their seeds and ends keep the creature crop until it has their picture (noted here, not hidden). A pinned look at a blend is the 2 px yellow edge on the wished bin of the range bar, not on an end (F6.4).",
   "density": "UI designer, 2026-10-09: the overview's rows have a minimum, not a legend. A row at play is 16 px, down to 10 when the species needs it, never less; settled, missing and sealed loci fold to 4 px hairlines; a chapter is at least 24. No legend on the screen (labels are one word, never a text page): the chapter view is where the kinds are learned, every wire there carrying its look in words, and the overview keeps only what differs (colour lit at play, grey settled, frost unread, slats sealed)",
-  "rail on Cross": "UI designer, 2026-10-09: the chapter view uses the shared rail rather than a rail of its own (the first wireframe's tick-per-locus rail is withdrawn); its pips mean drawn or missing",
+  "rail on Cross": "UI designer, 2026-10-09: the chapter view uses the shared rail rather than a rail of its own (the first wireframe's tick-per-locus rail is withdrawn); no pips (F6.3, withdrawn: the plate ground says drawn or missing)",
   "kinship place": "UI designer, 2026-10-09: the kinship word moves from the notice to the pill under the child, always shown; the notice goes to the first missing read, which draws the player back to research"
  }
 }

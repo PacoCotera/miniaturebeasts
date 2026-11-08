@@ -263,6 +263,9 @@ import { pickHeart, heartPath, heartSeen, tellShows, HEART_TEXT, HEART_FOUND_R, 
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames } from "./src/walk-data.mjs";
+import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
+import { readOptions } from "./src/options.mjs";
+const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot, a baked place
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -323,7 +326,7 @@ let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
 let SAVE_KEY = keyOfCompanion(COMPANION.id);
 function keyOfCompanion(id) { return 'mb-save-v8@' + id; }
 function companionIdentity() {
-  let slot = 'A'; try { if (new URLSearchParams(location.search).get('companion') === 'B') slot = 'B'; } catch (e) { }
+  let slot = OPT.companion === 'B' ? 'B' : 'A';
   try { const had = JSON.parse(localStorage.getItem('mb-companion-' + slot) || 'null'); if (had && /^c[0-9a-z]{12}$/.test(had.id)) { companionKept = true; return had; } } catch (e) { }
   const b = new Uint8Array(12); try { crypto.getRandomValues(b); } catch (e) { for (let i = 0; i < 12; i++) b[i] = Math.floor(Math.random() * 256); }
   let id = 'c'; for (const x of b) id += '0123456789abcdefghijklmnopqrstuvwxyz'[x % 36];
@@ -358,7 +361,8 @@ const dataLadder = () => [1, 2, 3, 4].map(t => Math.round(t * dataStep)).join(' 
 const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
 const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
 const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
-const JUVENILE_TURNS = 2, ELDER_TURNS = 16;     // young for 2 world turns; elder after 16 more as an adult (an elder at turn 18)
+const PLAYTEST_ON = playtestOn(OPT);   // the Playtest waits option: the playtest preset (play/src/playtest.mjs), the one place of the shortened waits
+const JUVENILE_TURNS = PLAYTEST_ON ? PLAYTEST.settings.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON ? PLAYTEST.settings.elderTurns : 16;     // young for 2 world turns; elder after 16 more as an adult (an elder at turn 18); the preset: 1 and 4
 // Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
 // 6 to 8 in the Probe's reach (was 3 to 5; tuned 2026-10-09, 6 to 8 after the first measure, so a calm walk earns about 3 Energy, research-economy.md §9), chosen when the expedition sets out. Each still holds +1, never more.
 const WARM_MIN = 6, WARM_MAX = 8, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
@@ -489,7 +493,7 @@ const layoutCache = new Map();
 const BAKED = { ready: false, view: null, adapt: null };
 async function loadBakedPlace() {   // the modules load on demand, so the page without ?place= never touches them
   try {
-    const id = new URLSearchParams(location.search).get('place'); if (!id) return;
+    const id = OPT.place; if (!id) return;
     const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
     const pm = await import(base + 'src/page.mjs'), am = await import(base + 'src/adapter.mjs'), { place, ts } = await pm.loadBaked(bytes, base, id);
     const terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
@@ -861,12 +865,14 @@ function leaveMibi(m) {
   if (!m || !canSwap() || !isCarried(m)) return { ok: false };
   S.carried = S.carried.filter(id => id !== m.id); if (S.lead === m.id) S.lead = null; logEv(m.name + ' stays home'); return { ok: true };
 }
+// The care day a Tend is counted in: the Companion's local date; under the playtest preset a span of PLAYTEST.careDayMs (a string that sorts after any date, so the order check below holds).
+function careDay(d) { d = d || new Date(); return PLAYTEST_ON ? 'T' + String(Math.floor(d.getTime() / PLAYTEST.careDayMs)).padStart(10, '0') : localDay(d); }
 // Tend: a carried mibi, between expeditions, once per Companion day. A clock moved back is refused and resets nothing.
-function canTend(m) { return !S.exp && isCarried(m) && (m.tendDay == null || localDay() > m.tendDay); }
+function canTend(m) { return !S.exp && isCarried(m) && (m.tendDay == null || careDay() > m.tendDay); }
 // One Tend: +1 care, +1 tends, then the bond, then growth. Returns what happened, for the lines.
 function tend(m) {
   if (!canTend(m)) return null;
-  m.care = (m.care || 0) + 1; m.tends = (m.tends || 0) + 1; m.tendDay = localDay(); logEv('Tended ' + m.name);
+  m.care = (m.care || 0) + 1; m.tends = (m.tends || 0) + 1; m.tendDay = careDay(); logEv('Tended ' + m.name);
   return { bonded: bondCheck(m), grown: growCheck(m) };
 }
 // The bond, after a Tend only: three Tends. A mibi already adult by the clock keeps its adulthood:
@@ -5748,6 +5754,15 @@ function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex
 // The Probe screen, in three groups with one heading colour: the Probe (shield, reach, Energy, the tier 2 price
 // as its last row), the map's signs and cells as an icon | name | meaning grid, and the field guide as tokens.
 // The reach grid at 2× (dot 6, pitch 8): filled is explored, your cell framed, a notch where a gate is. Between expeditions it is the Probe's range, all hollow.
+// How many of the reach grid's places are filled, and how many the grid has on the map (the words under the Probe's Reach: plan 3.17 B3). Between expeditions none are filled.
+function reachCount(range) {
+  const ex = S.exp, n = range * 2 + 1, s0 = ex ? cxy(ex.start) : null, reach = ex ? new Set(ex.reach) : null; let filled = 0, total = 0;
+  for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+    if (!ex) { total++; continue; }
+    const X = s0.x - range + i, Y = s0.y - range + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; total++; if (reach.has(Y * MW + X)) filled++;
+  }
+  return { filled, total };
+}
 function reachDots(x0, y0, range) {
   const ex = S.exp, n = range * 2 + 1, s0 = ex ? cxy(ex.start) : null, reach = ex ? new Set(ex.reach) : null;
   for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
@@ -5787,6 +5802,7 @@ function drawProbe(t) {
   for (let i = 0; i < tier.shield; i++) { const x = 24 + 30 * i; R(x - 1, 65, 26, 42, C.void);
     if (i < n) { R(x, 66, 24, 40, C.bone); R(x, 104, 24, 2, C.fog); } else { R(x, 66, 24, 40, C.stone); R(x + 1, 67, 22, 38, C.ink); } }
   reachDots(160, 66, tier.range);
+  { const rc = reachCount(tier.range); text(rc.filled + ' of ' + rc.total + ' filled', 160, 66 + (tier.range * 2 + 1) * 8 + 4, C.fog); }   // the grid has a number: it no longer reads as a stippled "?" tile
   const pods = ex ? ex.cargo.pods : ((S.hold && S.hold.pods) || []);
   for (let i = 0; i < tier.hold; i++) podSlot(250 + 22 * i, 76, pods[i]);
   blit(ICON.energy(), 330, 79); text(String(ex ? ex.cargo.e : (S.hold && S.hold.e) || 0), 350, 77, C.bone);   // the Energy held, the same number as the field HUD's
@@ -5796,7 +5812,8 @@ function drawProbe(t) {
   const met = metTiles(), f = probeFocus();
   if (!met.length) text('Signs you meet gather here', 24, 236, C.stone);
   met.slice(0, 36).forEach((tl, i) => drawTile(tl, 21 + 46 * (i % 9), 230 + 46 * Math.floor(i / 9)));
-  if (met.length) brackets(21 + 46 * (f % 9) - 3, 230 + 46 * Math.floor(f / 9) - 3, 46, 46, C.amber);
+  if (met.length) { brackets(21 + 46 * (f % 9) - 3, 230 + 46 * Math.floor(f / 9) - 3, 46, 46, C.amber);
+    const nm = met[f] && met[f].name; if (nm) text(nm, 432, 208, C.bone, 2, 'right'); }   // the ringed sign names itself where the eye is (the heading's line), as well as on the bottom line; "?" means not known yet and a sign never draws one (art desk)
   text('Field guide', 24, 420, C.mist);
   if (!S.known.length) text('No species identified yet', 24, 442, C.stone);
   S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 440, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 444); text(spOf(sp).name, x + 42, 452, C.bone); });
@@ -6814,7 +6831,7 @@ SLEEP.holdAtBoot();   // a sleep still pending keeps this page from writing
 RT.bootHold = false; save();
 if (!RT.readOnly) SLEEP.start().catch(() => { });   // the key at the first boot (and its pub), and a committed sleep finished
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
-try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(true); } catch (e) { }   // ?dev=1 opens the Observer, the page's developer panel
+if (OPT.dev) setObserver(true);   // the Developer tools option opens the Observer, the page's developer panel
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).

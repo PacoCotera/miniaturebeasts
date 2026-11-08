@@ -8,8 +8,8 @@ Two same-origin documents in one page (the workbench's bench is hidden, below), 
 
 | Frame | Source | Size (lp) |
 | --- | --- | --- |
-| Station | `../station/?embed` (plus `&dev` and `&test` when the play page has them) | 1024 × 600 |
-| Companion | `../exploration/?embed` (plus `&seed=<n>` and `&dev=1` as given) | 450 × 600 |
+| Station | `../station/?embed` (plus `&test` under the test harness) | 1024 × 600 |
+| Companion | `../exploration/?embed` (plus `&seed=<n>` under the test harness) | 450 × 600 |
 | Bench | `../workbench/` (hidden: the bench container, its handle and its tab are not shown and the frame is never loaded; the workbench's own page stays) | none |
 
 `?embed` is each device's screen alone, at a whole number of physical pixels per device pixel: each screen keeps its whole CSS size (1024 and 450 px) and is scaled by `k / devicePixelRatio` with `k = max(1, floor(devicePixelRatio))`, set from a function that re-arms itself on every device-pixel-ratio change; on the page one lp is `z / devicePixelRatio` CSS pixels, where `z` is the page's size (below; `z = k` by default where nothing larger fits). The shell scales each frame as a whole by `z / k` from its top left, so every face pixel stays a `z × z` block of device pixels. The play page applies the same rule to every edge it places.
@@ -77,6 +77,24 @@ Both ends use `targetOrigin = location.origin` and check `e.origin` and `e.sourc
 ## Developer tools
 
 The drawer or column holds the Caddy's three problems, each a switch: **Companion silent** (the Companion frame holds back its word: C1, then C4a and the amber lamp after 10 s; lift and seat with it off), **Station quiet** (the page stops hearing the Station and hands it nothing: C4b after 15 s with the link crossed, the dock reaching the Station when it is off), **Caddy fault** (the service refuses writes: C4c, amber, nothing taken). Under them, the Station's own developer panel (the Station frame builds it into the shell's `#devStation`). The Companion's Observer is on its own page.
+
+## The Options panel
+
+No option hides in a URL. The bar's **Options** button (the bottom-left corner of the window when the bar has no room) opens one panel (`options/`, React + Radix, built to `vendor/options.js`; `npm run build` in `options/` rebuilds it) with a switch or a choice and one line for each: **Playtest waits**, **Developer tools**, **Companion** (A or B), **Jump** (the game's own, arrival, fork), **Name list**, **Baked place**, and **Start fresh**. The settings are one stored value, `mb-options` in localStorage (`src/options.mjs`); the Station, the Companion and the compare page read it themselves, so nothing is handed through a URL. Developer tools applies at once; the rest apply when the panel closes (the page reloads). Tests set the same key before the page loads (`optionsInitScript`, or `addInitScript`). Only test-harness flags stay in URLs: `?test`, `?embed`, `?raw`, `?seed`, `?firstms` (with `?test`), and the cache-busting `v` of the masters.
+
+## The playtest preset
+
+The panel's **Playtest waits** turns on the playtest preset: every wait of the loop cut so an outside tester finishes it in about an hour from a fresh save (`src/playtest.mjs` is its one place: the Station's settings and the Companion's care day; the game's own defaults are untouched with it off). Both frames (and the second Companion) read the option. Nothing is saved: the Station lays the preset over its settings in memory, and says so on its Settings screen (the realm row's detail) and nowhere else. **Start fresh** in the panel asks once, then at the next load, before any frame is set, erases this browser's worlds (`mb-save-v8*`, the older `mb-exploration-v*`, the Station's settings key; the Companions' identities and the options stay).
+
+| Wait | Game | Preset |
+| --- | --- | --- |
+| the Sitting | 3 hours | 1 minute |
+| a bud in the Incubator (5 / 20 + n min) | real time | ×10: 30 s / 2 to 3 min |
+| juvenile to adult | 2 world turns | 1 |
+| adult to elder | 16 world turns | 4 |
+| a Tend (3 make the bond) | once a local day | once a minute |
+| the bench's habit watch | 60 s | 5 s |
+| the mock painter | 20 s | 5 s |
 
 ## What W2 replaces
 

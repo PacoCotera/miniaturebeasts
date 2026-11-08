@@ -7,6 +7,7 @@ import { openStation } from "./station-page.mjs";
 // the scene: what the page's state holds, as a function run in the page (the state is the page's own; the hooks seed through the rules)
 export const SCENES = {
   fresh:               { f: "room", set: () => {} },
+  "teach-call":        { f: "room", teach: true, set: () => {} },   // the first day (plan 3.17 B2): the line says "Press [the Call cap] to see what needs you" until Call is first pressed
   "rest-goal":         { f: "room", set: (w) => { w.young(2); w.carry([0, 1]); } },   // nothing needs the player: the goal is the line
   "rest-needs":        { f: "room", set: (w) => { w.adults(3); w.carry([0]); w.crates(2); w.bud(true); w.pods(2); w.seen(); } },   // crates, then the bud: two needs in the line
   "focus-vivarium":    { f: "vivarium", set: (w) => { w.adults(3); w.pods(2); w.seen(); } },
@@ -72,10 +73,10 @@ export const WORLD = () => ({
 export async function homeStates(visit, { motion = false } = {}) {
   const { page, fails, fail, close } = await openStation({ motion });
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
-  const apply = (sc) => page.evaluate(([setSrc, f, lt, tm, sl]) => {
+  const apply = (sc) => page.evaluate(([setSrc, f, lt, tm, sl, teach]) => {
     const w = window.__world; w.reset(); eval(`(${setSrc})`)(w);
-    const S = window.__st; S.settings.light = lt; S.settings.stationTime = tm; S.settings.stationDate = "2026-10-17"; S.settings.realmSleep = sl; S.UI.home.f = f; S.UI.idle = false; S.UI.lastInput = performance.now(); S.goto("home");
-  }, [sc.set.toString(), sc.f, sc.light ?? "day", sc.time ?? "12:00", sc.sleep ?? true]);
+    const S = window.__st; S.UI.noTeach = !teach;   /* the first-time teaching is off in a golden but for the scene that asks for it */ S.settings.light = lt; S.settings.stationTime = tm; S.settings.stationDate = "2026-10-17"; S.settings.realmSleep = sl; S.UI.home.f = f; S.UI.idle = false; S.UI.lastInput = performance.now(); S.goto("home");
+  }, [sc.set.toString(), sc.f, sc.light ?? "day", sc.time ?? "12:00", sc.sleep ?? true, !!sc.teach]);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
       await apply(sc); await page.waitForTimeout(600);

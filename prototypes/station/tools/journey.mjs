@@ -96,7 +96,8 @@ await page.addInitScript(() => {
   window.__release = () => { if (!held) return; off = t - realNow(); held = false; const run = q; q = []; for (const cb of run) window.requestAnimationFrame(cb); };
 });
 const hold = () => page.evaluate(() => window.__hold()), stepClock = (ms) => page.evaluate((m) => window.__step(m), ms), release = () => page.evaluate(() => window.__release());
-await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test&names=en-short-1`, { waitUntil: "load" });
+await page.addInitScript(() => { try { if (!localStorage.getItem("mb-options")) localStorage.setItem("mb-options", JSON.stringify({ dev: true, names: "en-short-1" })); } catch { /* none */ } });   // the test hook: the setting the Options panel writes (play/src/options.mjs): Developer tools on, the archived English names
+await page.goto(`http://127.0.0.1:${port}/sandbox/station/?test`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
 // The page draws with the face and nothing else: the type is Inter in the face, no font is loaded by the page, no request leaves the page's origin, and the canvas text API is never called.
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
@@ -422,7 +423,7 @@ await said(); await hold(); await page.evaluate(() => window.__st.press("confirm
   expect(p.overlay?.id === "panel" && p.overlay.form === "incubate" && p.overlay.focus.cur === "card.incubate" && l.ok === "Incubate" && s2.e === e1 && s2.s === s1 && s2.d === d1 && !s2.bud, "✓ opens the Incubate | Keep shaping panel, the ring on Incubate, nothing spent: " + JSON.stringify([p.overlay?.form, p.overlay?.focus, l.ok])); await frameShot("page-create-panel", true); }
 await page.evaluate(() => window.__st.press("confirm")); await stepClock(450);   // ✓ Incubate in the panel, then exactly 450 ms of frames: the stamp printed, the code shown at 300, the pod passing behind the tray (fix 5 Create)
 { const m = await said(), u = await ui(), l = await line(); cur.push({ key: "confirm", said: m, screen: u.screen, create: await cui(), ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); }
-{ const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/.test(p.regions.code) && p.frame.line.ok == null && p.frame.line.price == null && p.frame.line.back == null && p.frame.line.subject === "It goes to the Incubator", "✓ Grow it: the screen grows and holds input, the code is the screen's, the line is Growing (no ✓, price or way back): " + JSON.stringify([p.state, p.regions.code, p.frame.line])); }
+{ const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && p.regions.code === "" && p.frame.line.ok == null && p.frame.line.price == null && p.frame.line.back == null && p.frame.line.subject === "It goes to the Incubator", "✓ Grow it: the screen grows and holds input, the code is the screen's, the line is Growing (no ✓, price or way back): " + JSON.stringify([p.state, p.regions.code, p.frame.line])); }
 await frameShot("page-create-grow", true);
 await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);   // the held keys, one after the other without waiting: the hold is real time (1080 ms) and the jump is at 900
 { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "create" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
@@ -822,7 +823,8 @@ await page.evaluate(() => { localStorage.removeItem(window.__st.saveKey); });
 
 await assertFace("the journey");
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
-await page.goto(`http://127.0.0.1:${port}/sandbox/station/?test&names=en-short-1`, { waitUntil: "load" });
+await page.evaluate(() => localStorage.setItem("mb-options", JSON.stringify({ names: "en-short-1" })));   // Developer tools off here, as the page was without ?dev
+await page.goto(`http://127.0.0.1:${port}/sandbox/station/?test`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
 expect((await st()).tray.length === 0 && !(await sv()).seed, "a fresh world: no save, no pods");
 await page.keyboard.press("KeyD"); await page.waitForTimeout(250);

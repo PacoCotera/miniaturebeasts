@@ -31,6 +31,7 @@ export function openCross(h, a) { h.ui.cross = { aId: a.id, bId: null, state: 0,
 const chapterAt = (m, target) => frameOf(S.speciesOf(m))?.chapters[+target.slice(6)];
 // A way into one mibi up close (the whole's resident or tile, the hatch, Home's ✓ Meet): the first draw after a refusal at the dock says it once (events.refused).
 export function enter(h, o = {}) {
+  h.ui.hab.greet = null;
   const sh = shown(h); if (sh && h.ui.meet != null && String(h.ui.meet) === String(sh.id)) play(h, "moment", { hold: o.meetHold ?? 0 });   // the meet plays its moment once (habitat.json events.meet); input is not held, but after the hatch's cutting key 300 ms (events.meet)
   const r = S.seenCarryRefusal(h.st, h.sv); if (!r) return;
   const m = S.mibiById(h.st, r.id); if (m) { h.say(fill(h.specs.habitat.strings.carryRefused, { name: m.name })); h.save(); }
@@ -50,6 +51,7 @@ export function intent(h, target, verb) {
   a.f = target;
   if (target === "resident" || target.startsWith("tile.")) {
     if (meet) { openNamer(h, m, "meet"); return; }
+    const g = { asleep: !!h.ui.hab.asleep }, ms = h.specs.habitat.events.moment.heart?.greetShowMs ?? 2500; h.ui.hab.greet = g; h.at(ms, () => { if (h.ui.hab.greet === g) h.ui.hab.greet = null; });   // F5a: the heart and "{Name} greets you back" for greetShowMs; the line is the props'
     if (h.ui.hab.asleep) { const e = h.specs.habitat.events.moment, a = e.asleep; h.play({ kind: e.kind, target: e.target, ms: a.ms, hold: h.motion() ? a.hold : 0, ...(a.cut ? { cut: true } : {}) }); }   // a sleeper's Greet (Station M1 §2.4): wake, the hops, curl again
     else play(h, "moment");   // Greet: the species' moment (its moving set's hops, or the placeholder's two until a set lands); nothing rewarded, nothing said
   }

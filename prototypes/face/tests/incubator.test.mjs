@@ -92,7 +92,7 @@ test("the departure check bites: the shell moved, the room resized, the stamp of
 
 // ---- the layers of each state (build spec section 1) ----
 test("the layers: empty is the open, empty capsule (door, no glass, no bar, no pod, bare wall); growing is closed (glass, no door, the bar, the pod, the column); ready is open (door, bar full, pod); the hatch ends on the opened pod and the juvenile", { skip }, async () => {
-  const want = { empty: ["room", "interior", "shell", "door"], growing: ["room", "interior", "pod", "glass", "shell", "bar", "stamp", "code"], ready: ["room", "interior", "pod", "shell", "door", "bar", "stamp", "code"], hatch: ["room", "interior", "pod", "shell", "door", "bar", "juvenile", "stamp", "code", "ribbon"] };
+  const want = { empty: ["room", "interior", "shell", "door"], growing: ["room", "interior", "pod", "glass", "shell", "bar", "stamp"], ready: ["room", "interior", "pod", "shell", "door", "bar", "stamp"], hatch: ["room", "interior", "pod", "shell", "door", "bar", "juvenile", "stamp", "ribbon"] };
   const all = ["room", "interior", "pod", "glass", "shell", "door", "bar", "seal", "juvenile", "stamp", "code"];
   for (const [st, o] of [["empty", { pod: true }], ["growing", { minutes: 2 }], ["ready", { minutes: 30 }], ["hatch", { minutes: 30, open: true }]]) {
     const b = scene(o), f = await start(b), lg = logOf(f), got = all.filter((id) => present(lg, id)); const exp = want[st].filter((x) => all.includes(x));
@@ -120,7 +120,7 @@ test("the incubate moment: 0 to 1200 the dusk look (the dusk room, the seal ring
   const { b, f, at } = await incubating(), dusk = slotId(b, "dusk"), day = slotId(b, "day");
   for (const ms of [32, 400, 1000, 1199]) { const lg = at(ms); assert.ok(colourIs(f, 10, 60, dusk), `${ms} ms: the dusk room`); assert.ok(present(lg, "seal") && present(lg, "pod"), `${ms} ms: the seal ring, the glass and the sealed pod`); assert.ok(!present(lg, "bar"), `${ms} ms: the bar is off`); assert.ok(!present(lg, "stamp") && !lg.type.some((t) => t.region === "code" || t.region === "readyIn"), `${ms} ms: no column`); }
   for (const ms of [1216, 1250, 1300, 1350, 1379]) { at(ms); const n = Math.floor(16 * (ms - 1200) / 180), got = lvl(f, 8, 60, dusk, day); assert.equal(got, n, `${ms} ms: level ${n} of 16 toward the day (${got})`); }
-  for (const ms of [1380, 1500, 2000]) { const lg = at(ms); assert.ok(colourIs(f, 10, 60, day), `${ms} ms: the day room`); assert.ok(!present(lg, "seal"), `${ms} ms: the seal ring is gone`); assert.ok(present(lg, "bar") && present(lg, "stamp") && lg.type.some((t) => t.region === "code"), `${ms} ms: the bar and the column`); }
+  for (const ms of [1380, 1500, 2000]) { const lg = at(ms); assert.ok(colourIs(f, 10, 60, day), `${ms} ms: the day room`); assert.ok(!present(lg, "seal"), `${ms} ms: the seal ring is gone`); assert.ok(present(lg, "bar") && present(lg, "stamp") && !lg.type.some((t) => t.region === "code" && t.text), `${ms} ms: the bar and the column, no code`); }
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });
 test("the incubate moment with reduced motion is a cut straight to growing: the day look, the bar, the column, no seal ring", { skip }, async () => {

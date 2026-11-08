@@ -49,8 +49,9 @@ const expect = (c, m) => { if (!c) { fails.push(m); console.error("FAIL " + m); 
 const eq = (a, b, m) => expect(JSON.stringify(a) === JSON.stringify(b), `${m}: ${JSON.stringify(a)}, wanted ${JSON.stringify(b)}`);
 const near = (a, b, m, tol = 0.51) => expect(Array.isArray(a) ? a.every((v, i) => Math.abs(v - b[i]) <= tol) : Math.abs(a - b) <= tol, `${m}: ${JSON.stringify(a)}, wanted ${JSON.stringify(b)}`);
 
-async function open(width, height, { dsf = 1, motion = false, query = "?test" } = {}) {
+async function open(width, height, { dsf = 1, motion = false, query = "?test", options = null } = {}) {
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: dsf, reducedMotion: motion ? "no-preference" : "reduce" });
+  if (options) await ctx.addInitScript((o) => { if (!sessionStorage.getItem("play-journey-options")) { localStorage.setItem("mb-options", JSON.stringify(o)); sessionStorage.setItem("play-journey-options", "1"); } }, options);   // the test hook: the setting the Options panel writes (play/src/options.mjs), set once before the page's scripts
   await ctx.addInitScript(() => { if (!sessionStorage.getItem("play-journey")) { localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("play-journey", "1"); } });
   const page = await ctx.newPage();
   page.on("pageerror", (e) => { errors.push("pageerror: " + e.message); console.error("FAIL pageerror: " + e.message); });
@@ -295,9 +296,15 @@ const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Res
     eq(m.tier, layout, tag + ": the layout");
     for (const kk of m.keys) { const min = MIN[kk.name]; expect(kk.w >= min - 1e-6 && kk.w <= min + e && kk.h >= min - 1e-6 && kk.h <= min + e, `${tag}: ${kk.dev} ${kk.name} is ${kk.w} × ${kk.h} CSS px, wanted ${min} × ${min}`); }
     { const n = Math.max(1, Math.round(dsf)); expect(m.marks.length === 4 && m.marks.every((q) => Math.abs(q.w * dsf - 24 * n) < 0.02 && Math.abs(q.h * dsf - 24 * n) < 0.02 && q.px === "pixelated" && Math.abs(q.dx) <= 1 / dsf + 0.01 && Math.abs(q.dy) <= 1 / dsf + 0.01), `${tag}: each room mark is drawn at 24 × ${n} device px, pixelated, centred in its key (${JSON.stringify(m.marks[0])})`); }
-    eq(m.keys.length, 17, tag + ": 10 Station keys and 7 Companion keys");
+    eq(m.keys.length, 18, tag + ": 11 Station keys and 7 Companion keys");
+    eq(m.keys.filter((kk) => kk.dev === "station").map((kk) => kk.name), ["Left", "Up", "Down", "Right", "Home", "Research", "Vivarium", "Library", "Call", "Back", "Confirm"], tag + ": the Station's keys, in order (pods, vivarium, library; Call left of Back)");
     expect(m.keys.every((kk) => { const s = MIN[kk.name], row = Math.round((kk.top - (72 - s) / 2) / 72); return row >= 0 && row < 2 && Math.abs(kk.top - row * 72 - (72 - s) / 2) <= 1 / m.dpr + 0.01; }), tag + ": each key is centred in its row: a 56 key 8 from the row's top, a 64 key 4");
     expect(["station", "companion"].every((d) => { const c = m.keys.filter((kk) => kk.dev === d).map((kk) => kk.top + kk.h / 2 - Math.floor((kk.top + kk.h / 2) / 72) * 72); return c.every((v) => Math.abs(v - 36) <= 1 / m.dpr + 0.01); }), tag + ": all the key centres in a row share one line");
+    if (dsf === 1 && w === 1280) {   // the drawn Call key reaches the Station as C does
+      await page.evaluate(() => { const f = window.__play.frames.station.contentWindow; window.__callSeen = 0; f.addEventListener("keydown", (ev) => { if (ev.code === "KeyC") window.__callSeen++; }); });
+      const cb = await box(page, '#rowStation .k[aria-label="Call"]'); await page.mouse.click(cb[0] + cb[2] / 2, cb[1] + cb[3] / 2); await page.waitForTimeout(300);
+      eq(await page.evaluate(() => window.__callSeen), 1, tag + ": the Station's Call key sends KeyC to the Station");
+    }
     eq(m.rows, { station: dsf === 1.75 ? 2 : 1, companion: dsf === 1 ? 1 : 2 }, tag + ": the rows in each tray (ruling 6.1)");
     for (const d of ["station", "companion"]) { near(m.trays[d][2], m.shells[d][2], tag + ": the " + d + " tray is as wide as its shell", 1 / 64 + 0.01); near(m.trays[d][3], 72 * m.rows[d], tag + ": the " + d + " tray is 72 CSS px a row", 1 / 64 + 0.01); }
     near(m.trays.station[1], m.shells.station[1] + m.shells.station[3], tag + ": the Station tray is joined to its shell", 1 / 64 + 0.01);
@@ -376,6 +383,39 @@ async function zBad(page, sel, W, z, capture) {
   await ctx.close();
 }
 
+// ---- PT. the Options panel (owner 2026-11-08): one visible panel holds the playtest preset, Developer tools, Start fresh and the rest; the setting is one stored value both devices read, no URL (1920 × 1080) ----
+{
+  const world = (page) => page.evaluate(() => { const k = Object.keys(localStorage).find((x) => x.startsWith("mb-save-v8@")); return k ? JSON.parse(localStorage.getItem(k)).wid : null; });
+  const settled = (page) => page.waitForFunction(() => window.__play && window.__play.frames.station.contentWindow && window.__play.frames.station.contentWindow.__st, null, { timeout: 30000 }).then(() => page.waitForTimeout(800));
+  const { ctx, page, st } = await open(1920, 1080, { query: "" });
+  eq(await st().evaluate(() => { const s = window.__st.settings; return [s.playtest, s.sittingWait, s.budScale, s.adultTurns]; }), [undefined, "hours", 1, 2], "PT: with nothing set the game's own settings stand");
+  eq(await page.evaluate(() => document.getElementById("devBtn").classList.contains("hidden")), true, "PT: the dev button is hidden with Developer tools off");
+  const ob = await page.evaluate(() => { const b = document.getElementById("optionsBtn").getBoundingClientRect(), c = document.getElementById("companionCtl").getBoundingClientRect(), d = document.getElementById("dockCtl").getBoundingClientRect(); return { h: b.height, left: b.left, right: b.right, top: b.top, cr: c.right, dl: d.left, corner: document.getElementById("optionsBtn").classList.contains("corner") }; });
+  expect(ob.h === 40 && !ob.corner && ob.top === 0 && ob.left >= ob.cr && ob.right <= ob.dl, "PT: Options is in the bar, 40 tall, clear of the Companion control and the Dock " + JSON.stringify(ob));
+  expect(!(await page.evaluate(() => document.getElementById("startFresh"))), "PT: Start fresh left the bar");
+  await page.click("#optionsBtn"); await page.locator(".op-panel").waitFor();
+  await clip(page, "play-options.png");
+  await page.getByRole("switch", { name: "Playtest waits" }).click();
+  eq(await page.evaluate(() => JSON.parse(localStorage.getItem("mb-options")).playtest), true, "PT: the panel stores Playtest waits");
+  await page.waitForFunction(() => Object.keys(localStorage).some((x) => x.startsWith("mb-save-v8@")), null, { timeout: 15000 }).catch(() => {});
+  const w0 = await world(page); expect(!!w0, "PT: this browser holds a world");
+  await page.click("#optionsFresh"); await page.getByRole("button", { name: "Cancel" }).click(); await page.waitForTimeout(400);
+  eq(await world(page), w0, "PT: a cancelled confirm changes nothing");
+  await page.click("#optionsFresh"); await Promise.all([page.waitForNavigation({ waitUntil: "load" }), page.click("#optionsFreshYes")]); await settled(page);
+  const w1 = await world(page); expect(!!w1 && w1 !== w0, "PT: Start fresh erased the world and a new one began (" + w0 + " -> " + w1 + ")");
+  eq([page.url().includes("?"), await page.evaluate(() => sessionStorage.getItem("mb-play-fresh")), /playtest|dev|jump|names|place/.test(st().url() + page.frame({ url: /\/exploration\// }).url())], [false, null, false], "PT: no URL carries an option, the one-time flag spent");
+  eq(await st().evaluate(() => { const s = window.__st.settings; return [s.playtest, s.sittingWait, s.budScale, s.adultTurns, s.elderTurns]; }), [true, "minute", 10, 1, 4], "PT: the Station's settings are the preset's");
+  expect(!/playtest|minute/.test((await page.evaluate(() => localStorage.getItem("mb-station-dev"))) ?? ""), "PT: the preset is never written to the settings key");
+  const notice = await st().evaluate(() => { const S = window.__st; S.settings.realmSleep = true; S.goto("settings"); return new Promise((r) => setTimeout(() => r(S.props.regions.detail.blocks.filter((b) => b.kind === "notice").length), 500)); });
+  eq(notice, 1, "PT: the Station's Settings shows the playtest notice");
+  await page.click("#optionsBtn"); await page.locator(".op-panel").waitFor();
+  await page.getByRole("switch", { name: "Developer tools" }).click();
+  eq(await page.evaluate(() => !document.getElementById("devBtn").classList.contains("hidden")), true, "PT: Developer tools on, the dev button shows");
+  await page.click("#optionsDone"); await page.waitForTimeout(300);
+  eq(await page.evaluate(() => document.getElementById("devBtn").getBoundingClientRect().height), 40, "PT: the dev button is in the bar");
+  await ctx.close();
+}
+
 // ---- K. the Caddy's screen: always shown in its own 808 × 288 block, drawn from the face of the Caddy's state with the panel's timing; Shift+C is retired (1920 × 1080, the Row) ----
 {
   const { ctx, page, st } = await open(1920, 1080, { query: "?test&seed=3&firstms=600000" });   // firstms: the first picture waits for the Station's word and seat however long a loaded page takes to boot (the 15 s no-word fallback is for a real Caddy with no Station)
@@ -405,7 +445,7 @@ async function zBad(page, sel, W, z, capture) {
   await ctx.close();
 }
 {
-  const { ctx, page, st } = await open(1920, 1080, { query: "?test&dev" });
+  const { ctx, page, st } = await open(1920, 1080, { query: "?test", options: { dev: true } });
   await page.waitForTimeout(500); await clip(page, "play-dev.png"); await ctx.close();
 }
 
