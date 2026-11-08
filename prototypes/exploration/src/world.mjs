@@ -55,6 +55,7 @@ export const cdist = (a, b) => man(cxy(a), cxy(b));
 export function passableIn(G, c, opts = {}) { const l = G.land[c]; return (l !== L.WATER || G.ford[c] === 1 || (!!opts.sure && !!G.soft && G.soft.wade[c] === 1)) && l !== L.CLIFF; }
 
 export function genWorld(seed, gen = 1, biome = 'mixed') {
+  if (gen === 6) return genWorld6(seed, biome);
   if (gen === 5) return genWorld5(seed, biome);
   if (gen === 4) return genWorld4(seed, biome);
   if (gen === 2) return genWorld2(seed);
@@ -1454,6 +1455,20 @@ export function genLife5(G, seed, kinds) {
   return { cr, pods };
 }
 // ---- end generator 5 ----
+
+// ---- generator 6 (integer only): the same world map, composed places ----
+// The world is generator 5's, unchanged (biomes, land, edges, storms, roster). Each land cell's place is a template instance: the template of its land type, its mirror chosen by
+// hash(seed, cell); the seeded fills (heart kind, finds, names) are in fill6.mjs, which reads the template's data. A ford cell (water you wade) has no template and keeps the generated place.
+// The places themselves are baked LDtk levels (prototypes/places); this module only names which one a cell gets.
+export const TEMPLATES6 = { [L.POND]: 'Reedpool', [L.ROCK]: 'SplitStone', [L.WOOD]: 'HollowTree', [L.MEADOW]: 'Windstep' };
+export function genWorld6(seed, biome = 'mixed') { return { ...genWorld5(seed, biome), gen: 6 }; }
+// { base: the template's id, mirror: bool, id: the baked place's id ('Reedpool' or 'Reedpool~x') } for a cell; null where there is no template (water, cliff).
+export function templateFor(G, seed, cell) {
+  const base = TEMPLATES6[G.land[cell]]; if (!base) return null;
+  const mirror = hash(seed, 'mirror6', cell) % 2 === 1;
+  return { base, mirror, id: mirror ? base + '~x' : base };
+}
+// ---- end generator 6 ----
 
 // ---- tree kinds (generator 4 and later) ----
 // Every trunk in a place has a kind, drawn from its region kind's list by the hash of the seed, the place and the tile, so it never changes.
