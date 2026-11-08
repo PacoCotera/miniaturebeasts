@@ -29,6 +29,17 @@ export function camAxis(anchors, i, lo, hi, V, margin = MARGIN) {
   return i;
 }
 
+// A span that must stay in view (the explorer and the heart at the reveal's spot): the rests that hold it with the margin on both sides (the end rests need it only on their inner side),
+// the one nearest the current rest; when none does, the rest that holds it best. Never flips between rests, so a span the fixed rests cannot frame with margin still rests.
+function camSpan(anchors, i, lo, hi, V, margin) {
+  const last = anchors.length - 1, slack = (k) => Math.min(k === 0 ? Infinity : lo - anchors[k], k === last ? Infinity : anchors[k] + V - hi);
+  let best = -1;
+  for (let k = 0; k <= last; k++) if (slack(k) >= margin && (best < 0 || Math.abs(k - i) < Math.abs(best - i))) best = k;
+  if (best >= 0) return best;
+  best = i; for (let k = 0; k <= last; k++) if (slack(k) > slack(best)) best = k;
+  return best;
+}
+
 const nearest = (a, c, V) => a.reduce((b, q, i) => Math.abs(q + (V >> 1) - c) < Math.abs(a[b] + (V >> 1) - c) ? i : b, 0);
 
 export function newCam() { return { ix: -1, iy: -1, fx: 0, fy: 0, at: 0 }; }
@@ -48,11 +59,12 @@ export function stepCamera(state, view, place, tile, nowMs, motion, extra = null
   let x0 = tile.x * T, x1 = x0 + T, y0 = tile.y * T, y1 = y0 + T;
   if (extra) { x0 = Math.min(x0, extra.x0); x1 = Math.max(x1, extra.x1); y0 = Math.min(y0, extra.y0); y1 = Math.max(y1, extra.y1); }
   if (state.ix < 0 || state.ix >= ax.length || state.iy >= ay.length) {   // the first look in this place: the rest nearest the explorer, then the rule
-    state.ix = camAxis(ax, nearest(ax, x0 + (T >> 1), view.w), x0, x1, view.w, margin);
-    state.iy = camAxis(ay, nearest(ay, y0 + (T >> 1), view.h), y0, y1, view.h, margin);
+    state.ix = (extra ? camSpan : camAxis)(ax, nearest(ax, x0 + ((x1 - x0) >> 1), view.w), x0, x1, view.w, margin);
+    state.iy = (extra ? camSpan : camAxis)(ay, nearest(ay, y0 + ((y1 - y0) >> 1), view.h), y0, y1, view.h, margin);
     state.fx = ax[state.ix]; state.fy = ay[state.iy]; state.at = nowMs - SLIDE_MS;
   } else {
-    const nx = camAxis(ax, state.ix, x0, x1, view.w, margin), ny = camAxis(ay, state.iy, y0, y1, view.h, margin);
+    const nx = extra ? camSpan(ax, state.ix, x0, x1, view.w, margin) : camAxis(ax, state.ix, x0, x1, view.w, margin);
+    const ny = extra ? camSpan(ay, state.iy, y0, y1, view.h, margin) : camAxis(ay, state.iy, y0, y1, view.h, margin);
     if (nx !== state.ix || ny !== state.iy) {
       const cur = slideAt(state, ax, ay, nowMs, motion);
       state.fx = cur.x; state.fy = cur.y; state.ix = nx; state.iy = ny; state.at = nowMs;

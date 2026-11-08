@@ -82,6 +82,15 @@ test('a held span (the heart at the reveal spot) moves the rest that holds both'
   assert.equal(v.x, 207, 'the heart three tiles east moves it to the rest holding both');
 });
 
+test('a held span the fixed rests cannot frame with the margin still rests: no rest flips frame after frame', () => {
+  const s = newCam(), span = { x0: 5 * TILE, y0: 2 * TILE, x1: 6 * TILE, y1: 3 * TILE };   // explorer at column 8, heart at column 5: 4 tiles of span, no rest holds it with 72 px each side
+  const seen = new Set();
+  for (let t = 0; t < 20; t++) { stepTo(s, { x: 8, y: 3 }, t * 16, true, span); seen.add(s.ix + ',' + s.iy); }
+  assert.equal(seen.size, 1, 'one rest all along: ' + [...seen]);
+  const v = stepTo(s, { x: 8, y: 3 }, 5000, true, span);
+  assert.ok(v.x <= 5 * TILE && v.x + view.w >= 9 * TILE, 'both the heart and the explorer are inside the view: ' + v.x);
+});
+
 test('every camera output is an integer for integer inputs', () => {
   const s = newCam();
   for (let t = 0; t < 4000; t += 13) {

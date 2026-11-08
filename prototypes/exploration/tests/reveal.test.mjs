@@ -147,7 +147,7 @@ test("the reveal's frames: the spot rings the heart, the zoom out and dissolve a
     const base = amberIn(await still(page));
     await page.evaluate(() => { const m = window.__mb; m.TEST.at = 450; m.TEST.findHeart(3); });   // 450 ms into the spot: both rings out
     await page.waitForTimeout(700);   // the camera's slide to the rest that holds explorer and heart is done
-    await page.evaluate(() => { window.__mb.TEST.clock = 1000000; }); await page.waitForTimeout(300);   // the page's clock held at a fixed time (the camera's slide long done): every frame is the same still picture
+    await page.evaluate(() => { window.__mb.TEST.clock = 1000000; }); await page.waitForTimeout(300); await page.evaluate(() => { window.__mb.TEST.clock = 1001000; }); await page.waitForTimeout(300);   // the page's clock held at a fixed time (the camera's slide long done): every frame is the same still picture
     let s = await st(page); assert.equal(s.view, "spot");
     const spot = await still(page);
     assert.ok(amberIn(spot) > base + 60, "amber ring pixels at the heart in the spot frame: " + base + " -> " + amberIn(spot));
