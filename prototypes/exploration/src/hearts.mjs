@@ -27,6 +27,8 @@ export const HEART_TEXT = {
   foundMsg: { spring: "Clear water rises in the grass", nest: "A pod lies here, waiting", stone: "A struck stone holds its charge" },
   // a heart that needs a partner to reach: the partner's own verb (placeholders until the book gives them)
   reach: { tuikis: "A Tuikis could dig to it", tuliko: "A Tuliko could wade to it", rupar: "A Rupar could clear the bank to it", untuva: "An Untuva could nose it out", loika: "A Loika could calm the way to it" },
+  // the reach and the world in words: how many places have their heart found
+  reachLine: (n, total, tail) => "Found " + n + " of " + total + (tail || " in reach"), worldLine: (n, all) => "Found " + n + " of " + all + " places",
   spring: { drink: n => "+" + n + " Essence · the water is cool", full: "Essence full · the spring waits" },
 };
 

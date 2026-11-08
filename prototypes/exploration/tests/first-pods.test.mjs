@@ -266,7 +266,7 @@ test("the Probe: no legend rows and no odds; the signs met are pictures in the o
   p.key("right"); assert.equal(p.run("lineCtx(lineFor()).r"), "Flag · your start");
   p.key("down"); assert.equal(p.run("S.ui.pf"), 1, "no row below: the focus stays");
   p.key("left"); p.key("left"); assert.equal(p.run("S.ui.pf"), 0);
-  assert.ok(p.run("TILES.length") === 34 && p.run("TILES.every(t => PIC[t.pic])"));
+  assert.ok(p.run("TILES.length") === 33 && p.run("TILES.every(t => PIC[t.pic])"));
   for (const t of p.run("TILES")) { const n = typeof t.name === "function" ? t.name() : t.name; assert.ok(p.run("textWT")(n, 2) <= 200 && !/%|\d/.test(n.replace("tier 2", "")), n); }
   p.key("back"); assert.equal(p.S.phase, "menu");
 });
