@@ -9,7 +9,7 @@ import { makePage } from "./page-harness.mjs";
 import * as W from "../src/world.mjs";
 
 
-const page = (store = {}) => makePage({ store });
+const page = (store = {}) => makePage({ store, gen: 6 });   // generator 6: the composed places (the first pods land in the template's find slots)
 const plain = x => JSON.parse(JSON.stringify(x));
 const buried = p => p.h === 1 && p.bur === 1;
 const SEEDS = Array.from({ length: 1000 }, (_, i) => i + 1);
@@ -425,8 +425,8 @@ test("the 'Swapped ·' box shows alone; a pending sign or held line comes on the
 });
 
 // ---- S5: the card's tile takes the view's light (fog, the storm's dark columns) and shows what still stands on it ----
-function litPlace() {
-  const p = page();
+function litPlace(onGen5) {
+  const p = onGen5 ? makePage({ store: {} }) : page();
   p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); enterPatch(); globalThis.__rm = []; globalThis.__n = { stone: 0, bush: 0, canopy: [] };"
     + "const c0 = PB.prototype.canvas; PB.prototype.canvas = function (rm) { __rm.push(rm); return c0.apply(this, arguments); };"
     + "const s0 = stoneArt; stoneArt = function () { __n.stone++; return s0.apply(this, arguments); }; const b0 = bushArt; bushArt = function () { __n.bush++; return b0.apply(this, arguments); };"
@@ -449,8 +449,8 @@ test("S5 in the storm's darkened column: the lit tile takes light 1, equal to th
   assert.ok(dark.length && clear.length, "both a dark column and a clear one");
   assert.equal(lit(p, { key: P.key, x: dark[0], y: 5 }).rm, 1); assert.equal(lit(p, { key: P.key, x: clear[clear.length - 1], y: 5 }).rm, 0);
 });
-test("S5 shows what is still on the lit tile: a bush only when the view draws it, and a canopy in the variant the view draws", () => {
-  const p = litPlace(), P = p.run("({ key: S.exp.patch.key, x: S.exp.patch.x, y: S.exp.patch.y })");
+test("S5 shows what is still on the lit tile: a bush only when the view draws it, and a canopy in the variant the view draws (generator 5's drawn trunks; a baked place's crowns are props)", () => {
+  const p = litPlace(true), P = p.run("({ key: S.exp.patch.key, x: S.exp.patch.x, y: S.exp.patch.y })");
   p.run(`layout('${P.key}').feats.push({ kind: 'b', id: 'zb', x: ${P.x + 2}, y: ${P.y} });`);
   assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 1, "seen: the bush");
   p.run("unveiled = () => false;"); assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 0, "under the veil: no bush");

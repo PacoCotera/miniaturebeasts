@@ -26,7 +26,7 @@ async function serve() {
     if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
     if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
     let body = readFileSync(p);
-    if (p.endsWith("exploration/index.html")) body = Buffer.from(body.toString().replace("window.__mb = { get S()", "window.__mb = { drawPatch, get S()"));
+    if (p.endsWith("exploration/index.html")) body = Buffer.from(body.toString().replace("window.__mb = { ", "window.__mb = { drawPatch, "));
     res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(body);
   });
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
@@ -46,7 +46,7 @@ async function enter(browser, url, seed, place) {
 const still = async (page) => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
 const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
 
-test("?place=Test_AllCases draws the baked place in a generator 5 world, the page's colours stay clean, and the walking view matches its still", { skip }, async (t) => {
+test("?place=Test_AllCases draws the baked place (the dev switch, padded to 28 x 32) in every cell of the world, the page's colours stay clean, and the walking view matches its still", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
   const { server, url } = await serve();
   try {
@@ -78,13 +78,17 @@ test("?place=Test_AllCases draws the baked place in a generator 5 world, the pag
   } finally { await browser.close(); server.close(); }
 });
 
-test("the page without ?place= draws its generated places as before", { skip }, async (t) => {
+test("the page without ?place= plays generator 6: the cell's template, baked, 18 x 22 with its own fills, the page's colours clean", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
   const { server, url } = await serve();
   try {
     const { page, errors } = await enter(browser, url, 7, null);
-    const st = await page.evaluate(() => { const m = window.__mb, lay = m.layout(m.S.exp.patch.key); return { baked: lay.baked, w: lay.w, ts: m.RT.ts, off: m.offPalette().bad }; });
-    assert.equal(st.baked, undefined);
+    const st = await page.evaluate(() => { const m = window.__mb, lay = m.layout(m.S.exp.patch.key); return { gen: m.G.gen, baked: lay.baked, w: lay.w, h: lay.h, name: lay.name, heart: lay.heart && lay.heart.kind, ts: m.RT.ts, off: m.offPalette().bad }; });
+    assert.equal(st.gen, 6);
+    assert.ok(["Reedpool", "SplitStone", "HollowTree", "Windstep"].includes(st.baked.id.replace("~x", "")), st.baked.id);
+    assert.deepEqual([st.w, st.h, st.baked.ox, st.baked.oy], [18, 22, 0, 0]);
+    assert.ok(st.name && ["nest", "stone", "spring"].includes(st.heart), JSON.stringify(st));
+    assert.equal(st.ts, 48);
     assert.deepEqual(st.off, []);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }

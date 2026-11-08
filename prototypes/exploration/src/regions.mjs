@@ -242,4 +242,4 @@ export function keepPre9(store, key, raw) {
   } catch (e) { return false; }
 }
 
-export { RESET_V, RESET_FROM, resetPlan, keepPre10 } from "../../play/src/realm/reset.mjs";   // the release's save reset, shared with the Station (release 21b)
+export { RESET_V, RESET_FROM, resetPlan, keepPre10, keepGen5 } from "../../play/src/realm/reset.mjs";   // the release's save reset, shared with the Station (release 21b)
