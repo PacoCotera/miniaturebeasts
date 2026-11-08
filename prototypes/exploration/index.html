@@ -1363,8 +1363,9 @@ function fogState(c) {
   if (heartFound(c)) return 0;
   return S.veil[String(c)] ? 1 : 2;
 }
-// A reach-view cell's light table: a place is full colour (the fog dots say not-been-there now); only unvisited ground with no place (open water, cliff) keeps the fade; the storm's dark table over all.
-const reachRm = c => (!S.visited[c] && !passable(c)) ? 4 : (S.exp && S.exp.storm && stormCovers(c % MW)) ? 1 : 0;
+// A reach-view cell's light table: a place never been into is one step darker (the dark table, solid: dots over the level tint's pale greens read grey on a phone, lead 2026-11-08);
+// been in is full colour under light dots; found is clear; unvisited ground with no place (open water, cliff) keeps the fade; the storm's dark table over all.
+const reachRm = c => (!S.visited[c] && !passable(c)) ? 4 : ((S.exp && S.exp.storm && stormCovers(c % MW)) || fogState(c) === 2) ? 1 : 0;
 const FOGV = { n: FOG_NOT_BEEN, b: FOG_BEEN };   // the dot levels, a plain object so a still can try other values
 const fogLevel = c => { const s = fogState(c); return s === 2 ? FOGV.n : s === 1 ? FOGV.b : 0; };
 // The fog's night dots for one cell on screen at (x, y): the Bayer matrix on screen coordinates (neighbouring cells join without seams), `level` of 16, cached per size, level and phase.
@@ -4622,7 +4623,8 @@ function drawMap(mode, t) {
   const signs = mapSigns();
   // no quarters and no per-item pips: the map marks only what is worth coming back for (pods left behind, found Energy)
   // the edge marks at 26 px, after the fog, before the signs; each cell in the light it is drawn in
-  const rmOf = c => (!preview && (c % MW) * CELL >= bx0 && (c % MW) * CELL < bx1) ? 1 : (!S.visited[c] && (!ex || !passable(c))) ? 4 : 0;
+  const rmOf = c => (!preview && (c % MW) * CELL >= bx0 && (c % MW) * CELL < bx1) ? 1 : (!S.visited[c] && (!ex || !passable(c))) ? 4 : (ex && fogState(c) === 2) ? 1 : 0;
+  if (ex) for (let c = 0; c < MW * MH; c++) if (rmOf(c) === 1 && fogState(c) === 2) { const x = c % MW, y = (c / MW) | 0; g.drawImage(mapCvDark, x * CELL, y * CELL, CELL, CELL, ox + x * CELL, oy + y * CELL, CELL, CELL); }   // never been into: one step darker, as the reach view
   drawEdgeMarks({ map: true, cs: CELL, ox, oy, rmOf });
   if (ex) for (let c = 0; c < MW * MH; c++) { fogDots(ox + (c % MW) * CELL, oy + ((c / MW) | 0) * CELL, CELL, fogLevel(c)); }   // the fog dots, as in the reach view
   // generator 2: the burrow hole on the gate cell's face, drawn each frame (never baked), base on the face's foot line, rising into the mouth cell
