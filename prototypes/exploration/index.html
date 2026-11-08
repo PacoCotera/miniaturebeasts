@@ -1071,7 +1071,7 @@ function isDocked() { const st = stPart(); return !!(st && st.dock && st.dock.do
 const fieldFrozen = () => !!(S && S.exp) && isDocked();
 const DOCK_TEXT = { chip: 'Docked', first: 'Field paused while docked · lift to go on · End expedition still works at the start or a lit outpost', again: 'Docked · lift to go on',
   tierMid: 'Tier 2 · from the next expedition', probe: 'Docked · the Station mends it', bay: n => n + ' crate' + (n === 1 ? '' : 's') + ' sealed · ready for the Station',
-  sealed: 'In the Caddy · open Cargo on the Station', sealedEmpty: 'In the Caddy' };
+  sealed: 'Docked · open Cargo on the Station', sealedEmpty: 'Docked' };
 // Docked, the Companion takes what the Station hands over: accepted crates leave the bay; the Probe as mended or
 // upgraded; the Station's carry requests (st.carryReqs); the mibis raised; species identified; pods returned to the wild.
 function syncStation() {
