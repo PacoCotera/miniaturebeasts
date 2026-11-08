@@ -5752,6 +5752,15 @@ function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex
 // The Probe screen, in three groups with one heading colour: the Probe (shield, reach, Energy, the tier 2 price
 // as its last row), the map's signs and cells as an icon | name | meaning grid, and the field guide as tokens.
 // The reach grid at 2× (dot 6, pitch 8): filled is explored, your cell framed, a notch where a gate is. Between expeditions it is the Probe's range, all hollow.
+// How many of the reach grid's places are filled, and how many the grid has on the map (the words under the Probe's Reach: plan 3.17 B3). Between expeditions none are filled.
+function reachCount(range) {
+  const ex = S.exp, n = range * 2 + 1, s0 = ex ? cxy(ex.start) : null, reach = ex ? new Set(ex.reach) : null; let filled = 0, total = 0;
+  for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+    if (!ex) { total++; continue; }
+    const X = s0.x - range + i, Y = s0.y - range + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; total++; if (reach.has(Y * MW + X)) filled++;
+  }
+  return { filled, total };
+}
 function reachDots(x0, y0, range) {
   const ex = S.exp, n = range * 2 + 1, s0 = ex ? cxy(ex.start) : null, reach = ex ? new Set(ex.reach) : null;
   for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
@@ -5791,6 +5800,7 @@ function drawProbe(t) {
   for (let i = 0; i < tier.shield; i++) { const x = 24 + 30 * i; R(x - 1, 65, 26, 42, C.void);
     if (i < n) { R(x, 66, 24, 40, C.bone); R(x, 104, 24, 2, C.fog); } else { R(x, 66, 24, 40, C.stone); R(x + 1, 67, 22, 38, C.ink); } }
   reachDots(160, 66, tier.range);
+  { const rc = reachCount(tier.range); text(rc.filled + ' of ' + rc.total + ' filled', 160, 66 + (tier.range * 2 + 1) * 8 + 4, C.fog); }   // the grid has a number: it no longer reads as a stippled "?" tile
   const pods = ex ? ex.cargo.pods : ((S.hold && S.hold.pods) || []);
   for (let i = 0; i < tier.hold; i++) podSlot(250 + 22 * i, 76, pods[i]);
   blit(ICON.energy(), 330, 79); text(String(ex ? ex.cargo.e : (S.hold && S.hold.e) || 0), 350, 77, C.bone);   // the Energy held, the same number as the field HUD's
@@ -5800,7 +5810,8 @@ function drawProbe(t) {
   const met = metTiles(), f = probeFocus();
   if (!met.length) text('Signs you meet gather here', 24, 236, C.stone);
   met.slice(0, 36).forEach((tl, i) => drawTile(tl, 21 + 46 * (i % 9), 230 + 46 * Math.floor(i / 9)));
-  if (met.length) brackets(21 + 46 * (f % 9) - 3, 230 + 46 * Math.floor(f / 9) - 3, 46, 46, C.amber);
+  if (met.length) { brackets(21 + 46 * (f % 9) - 3, 230 + 46 * Math.floor(f / 9) - 3, 46, 46, C.amber);
+    const nm = met[f] && met[f].name; if (nm) text(nm, 432, 208, C.bone, 2, 'right'); }   // the ringed sign names itself where the eye is (the heading's line), as well as on the bottom line; "?" means not known yet and a sign never draws one (art desk)
   text('Field guide', 24, 420, C.mist);
   if (!S.known.length) text('No species identified yet', 24, 442, C.stone);
   S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 440, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 444); text(spOf(sp).name, x + 42, 452, C.bone); });

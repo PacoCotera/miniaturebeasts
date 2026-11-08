@@ -271,6 +271,19 @@ test("the Probe: no legend rows and no odds; the signs met are pictures in the o
   p.key("back"); assert.equal(p.S.phase, "menu");
 });
 
+test("the Probe's marks say what they are (plan 3.17 B3): Reach has its count, and the ringed sign's name is drawn under the heading", () => {
+  const p = page();
+  p.run("newWorld(3); S.phase = 'probe'; S.found.push('met:bolt', 'met:flag'); globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  const said = () => p.run("__t = []; drawProbe(0); __t.join('|')");
+  const range = p.run("tierOf().range"), total = (range * 2 + 1) ** 2;
+  let t = said();
+  assert.ok(t.includes(`0 of ${total} filled`), "between expeditions none are filled: " + t);
+  assert.ok(t.includes("Bolt"), "the ringed sign's name: " + t);
+  p.key("right"); t = said(); assert.ok(t.includes("Flag") && !/\|Bolt\|/.test("|" + t + "|".replace("Signs", "")), "the name follows the ring: " + t);
+  p.run("startExpedition('weather', G.spawns[0]); S.phase = 'probe';"); t = said();
+  assert.match(t, /\d+ of \d+ filled/, "on an expedition the count is of the places on the map: " + t);
+});
+
 test("Cargo shows the hold as pictures: no 'empty', no cap below 16, no explored-count line", () => {
   const p = page();
   p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");

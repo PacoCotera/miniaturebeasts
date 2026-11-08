@@ -221,6 +221,13 @@ test("Compare in the reading room's look: the bench and two papers, this pod on 
 
 // ---- the pod picker (the pods picker's design B) ----
 const inv = (m) => P(m).regions.inv, cardsOf = (m) => inv(m).grid.cards;
+test("a mark names itself when the ring is on it (plan 3.17 B3): the detail line leads with the mark's word, and a pod with no mark has none", () => {
+  const st = mixed(); ident(st);
+  const lead = spec.strings.inv.picker.markLead; assert.deepEqual([lead.star, lead.drying, lead.new], ["Goal", "Drying", "New"]);
+  const p = st.tray[0]; p.seen = 0; assert.equal(cardsOf(model(st, {}, "card.0"))[0].mark, "new");
+  assert.ok(inv(model(st, {}, "card.0")).detail.left.startsWith("New · "), inv(model(st, {}, "card.0")).detail.left);
+  p.seen = 1; assert.equal(cardsOf(model(st, {}, "card.0"))[0].mark, ""); assert.ok(!/^(New|Goal|Drying) · /.test(inv(model(st, {}, "card.0")).detail.left));
+});
 test("the count is a fact, never n of N: pods and species; a filter says how many of how many and what; no pods: the empty seat and its two lines, the tools dimmed with their reason", () => {
   const st = mixed(); ident(st);
   assert.equal(inv(model(st, {}, "sort")).detail.right, "12 pods · 4 species", "the ring off the pods: the count");
