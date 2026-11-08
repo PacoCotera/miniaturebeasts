@@ -159,16 +159,17 @@ test('the bake writes the fixture place, its mirror and the index, in under 5 s,
   const { files, errors, index } = bakeAll(P);
   assert.deepEqual(errors, []);
   assert.ok(Date.now() - t0 < 5000, `bake took ${Date.now() - t0} ms`);
-  assert.deepEqual([...files.keys()].sort(), [
-    'baked/Test_AllCases.mbplace', 'baked/Test_AllCases~x.mbplace', 'baked/index.json', 'baked/ninja-test.mbtiles',
-    'golden/places/Test_AllCases-24.png', 'golden/places/Test_AllCases-48.png', 'golden/places/Test_AllCases~x-24.png', 'golden/places/Test_AllCases~x-48.png',
-  ]);
+  // the fixture plus the four authored places (C13), each with its mirror and two goldens apiece
+  const ids = ['HollowTree', 'Reedpool', 'SplitStone', 'Test_AllCases', 'Windstep'];
+  const want = ['baked/index.json', 'baked/ninja-test.mbtiles'];
+  for (const id of ids) for (const v of [id, `${id}~x`]) want.push(`baked/${v}.mbplace`, `golden/places/${v}-24.png`, `golden/places/${v}-48.png`);
+  assert.deepEqual([...files.keys()].sort(), want.sort());
   const pl = readPlace(files.get('baked/Test_AllCases.mbplace').bytes);
   assert.equal(pl.w, 18); assert.equal(pl.h, 22); assert.equal(pl.set, 'ninja-test');
   assert.equal(pl.heart.kinds.join(), 'moment,nest');
   assert.equal(pl.openings.length, 3);
   assert.equal(readPlace(files.get('baked/Test_AllCases~x.mbplace').bytes).mirrorOf, 'Test_AllCases');
-  assert.deepEqual(index.places.map((p) => p.id), ['Test_AllCases', 'Test_AllCases~x']);
+  assert.deepEqual(index.places.map((p) => p.id).sort(), ids.flatMap((id) => [id, `${id}~x`]).sort());
   // deterministic: two bakes, the same bytes
   const again = bakeAll(P).files;
   for (const [k, f] of files) if (f.bytes) assert.deepEqual(again.get(k).bytes, f.bytes, k);
