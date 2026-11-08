@@ -253,10 +253,11 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn, templateFor, TEMPLATES6 } from "./src/world.mjs";
+import { fillPlace6 } from "./src/fill6.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen5, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { pickHeart, heartPath, heartSeen, tellShows, HEART_TEXT, HEART_FOUND_R, TELL_R, ANSWER_ACTIONS, SPRING_ESSENCE, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW } from "./src/hearts.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
@@ -315,6 +316,7 @@ const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'ford', 'cliff']
 // random id kept under mb-companion-<slot> (the play page's second Companion is slot B, ?companion=B), and stored with
 // the first write. The single shared save of earlier builds (LEGACY_KEY) moves under Companion A's key with its first
 // write once it has loaded; bytes this page cannot load stay where they are and open read-only, as before.
+const OLD_GENS = [5].filter(g => !GENS.includes(g));   // generator 5 stays frozen in world.mjs for its goldens; a save of it is reset, not played
 let RESET_CARRY = null;   // set by load() when the save found was reset (or the Station reset first); the new realm takes it (newRealm)
 const LEGACY_KEY = 'mb-save-v8', SAVE_V = 10, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
 let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
@@ -493,9 +495,39 @@ async function loadBakedPlace() {   // the modules load on demand, so the page w
     BAKED.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the baked place did not load', e); }
 }
+// Generator 6's places (place foundation C14): the four templates and their mirrors, baked, loaded once at boot (the tests give them at once as window.__places6).
+// PL6.places: baked id -> the place; PL6.adapt builds a layout from one; PL6.View draws one (a page without it draws the layout's tiles).
+const PL6 = { ready: false, places: new Map(), ts: null, terrains: null, adapt: null, View: null, mk: null, views: new Map() };
+async function loadPlaces6() {
+  try {
+    if (window.__places6) { Object.assign(PL6, window.__places6); PL6.ready = true; return; }
+    const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
+    const pm = await import(base + 'src/page.mjs'), am = await import(base + 'src/adapter.mjs'), rd = await import(base + 'src/format/read.mjs');
+    const ids = Object.values(TEMPLATES6).flatMap(b => [b, b + '~x']), places = await Promise.all(ids.map(async id => rd.readPlace(await bytes(base + 'baked/' + id + '.mbplace'))));
+    PL6.ts = rd.readTileSet(await bytes(base + 'baked/' + places[0].set + '.mbtiles'));
+    PL6.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
+    ids.forEach((id, i) => PL6.places.set(id, places[i]));
+    PL6.adapt = am.adaptPlace; PL6.View = pm.BakedView; PL6.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+    PL6.ready = true; layoutCache.clear(); RT.key = null;
+  } catch (e) { console.warn('the places did not load', e); }
+}
+// The view that draws a baked layout: the dev switch's one, or the generator 6 place's own (made on first use; each place's props and ground are cached in it).
+function bakedView(lay) {
+  if (!lay || !lay.baked) return null;
+  if (BAKED.view) return BAKED.view;
+  let v = PL6.views.get(lay.baked.id);
+  if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk }); PL6.views.set(lay.baked.id, v); }
+  return v || null;
+}
+const bakedColours = () => BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb());
+function layout6(key) {   // a generator 6 land cell's place: its template, built through the adapter with the seeded fills; null for a ford (generated) or while the places load
+  const t = templateFor(G, S.seed, +key), place = t && PL6.places.get(t.id); if (!place) return null;
+  return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, fill: fillPlace6(G, S.seed, +key, place) });
+}
 function layout(key) {
   let lay = layoutCache.get(key);
   if (!lay && BAKED.ready && key[0] !== 'c') { lay = BAKED.adapt(key); layoutCache.set(key, lay); }
+  if (!lay && G.gen >= 6 && key[0] !== 'c' && PL6.ready) { lay = layout6(key); if (lay) layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
@@ -997,10 +1029,10 @@ function load() {
       if (!s) { dropOld(); return false; }
     } else s = JSON.parse(raw);
     if (!s || typeof s !== 'object' || Array.isArray(s)) return 'broken';
-    const plan = resetPlan(raw, SAVE_V);   // what to do with what is found: play it, reset it (a v8 or v9 save), keep it read-only (newer, unreadable)
+    const plan = resetPlan(raw, SAVE_V, OLD_GENS);   // (a v10 realm of generator 5 only is reset too: the world is new at generator 6) what to do with what is found: play it, reset it (a v8 or v9 save), keep it read-only (newer, unreadable)
     if (plan.action === 'newer') return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
     if (plan.action === 'reset') {   // the release's reset: the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
-      if (!keepPre10(localStorage, own, raw)) return 'broken';
+      if (!(plan.gen ? keepGen5 : keepPre10)(localStorage, own, raw)) return 'broken';   // a generator reset keeps its own copy (<key>.gen5): the .pre10 of the earlier reset stays what it was
       if (SAVE_KEY === LEGACY_KEY) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) { } }   // the shared old save is kept in the copy: it must not be found and reset again
       RESET_CARRY = { resetFrom: plan.from }; dropOld(); return false;
     }
@@ -1192,6 +1224,7 @@ function explored(c) { return !!S.visited[c] && !!(S.called && S.called[c]); }
 const heartFound = c => !!(S.called && S.called[c]);
 function heartOf(key) {
   if (key[0] === 'c' || (G.gen || 1) < 5) return null;   // the older generators are frozen: no hearts there (they are played only by tests)
+  if (G.gen >= 6 && !PL6.ready && templateFor(G, S.seed, +key)) return null;   // the places are still loading: a generated stand-in must not pick (and keep) a heart
   const lay = layout(key); if (lay.heart !== undefined) return lay.heart;
   const st = fs(key, 'heart'); let h = null;
   if (st.kind) h = { x: st.x, y: st.y, kind: st.kind, reachBy: null, ...heartPath(lay, st.x, st.y) };
@@ -1591,6 +1624,12 @@ function freeSpot(key, R, avoid, pred) {
   }
   return null;
 }
+// A generator 6 place's find slots for a pod: the first free one (the slots whose roll came up pod, then the others), so the first pods land where the template put its finds.
+function findSlotFor(lay, key) {
+  for (const s of lay.podSlots || []) { const i = s.y * lay.w + s.x;
+    if (lay.reach[i] && !NOSTAND(lay.tiles[i]) && !occupant(key, s.x, s.y) && !podAt(key, s.x, s.y, true) && !lay.feats.some(f => f.x === s.x && f.y === s.y)) return { x: s.x, y: s.y }; }
+  return null;
+}
 function ensureLive(key) {
   const ex = S.exp; if (ex.live[key]) return ex.live[key];
   const lay = layout(key), R = makeRng(hash(S.seed, 'live', key, ex.n));
@@ -1598,13 +1637,18 @@ function ensureLive(key) {
   ex.live[key] = live;
   // Buried pods lie 3–6 tiles from where you first come in, so the first Call can find them.
   const ent = lay.cave ? { x: 14, y: 27 } : entryPoint(lay, key, ex.lastDir);
-  for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
+  // A generator 6 place with a nest heart holds its pod (two one time in five) at the heart, once: the heart is found by walking up to it, the pod is the reward.
+  if (lay.heartPods && lay.heart && !fs(key, 'heart').hp) { setFS(key, 'heart', { hp: 1 }); const kinds = hereKinds();
+    for (let i = 0; i < lay.heartPods; i++) { const s = i === 0 ? { x: lay.heart.x, y: lay.heart.y } : freeAround(key, lay.heart.x, lay.heart.y, null); if (!s || !kinds.length) continue;
+      S.pods.push({ id: 'n' + (S.nextId++), k: key, x: s.x, y: s.y, sp: R.pick(kinds).sp, h: 1, bur: 1, g: groundName(lay.land, false), how: 'ground' }); } }
+  for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = findSlotFor(lay, key) || freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
     if (s) { p.x = s.x; p.y = s.y; if (p.how === 'shed') { fxGlint(s.x, s.y); logEv('A pod of ' + p.of + "'s line"); } } else { S.pods.splice(S.pods.indexOf(p), 1); logEv('A pod had no room in this place and was dropped'); } }
   const nests = lay.feats.filter(f => f.kind === 'e');
   for (const w of S.cr) {
     if (w.c !== lay.cell || !!w.cv !== lay.cave) continue;
     const nest = nests.length ? nests[w.id % nests.length] : null;
-    const s = freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
+    const own = lay.spawns && lay.spawns.filter(q => !q.species.length || q.species.includes((spOf(w.sp).name || '').toLowerCase())), inOwn = own && own.length ? (x, y) => own.some(q => x >= q.x && y >= q.y && x < q.x + q.w && y < q.y + q.h) : null;   // a template's spawn areas
+    const s = (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
     if (!s) continue;
     live.cr.push({ id: w.id, sp: w.sp, x: s.x, y: s.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1,
       // the guaranteed early burrowers are always ready in the first two expeditions; a species not yet known always is
@@ -4643,7 +4687,7 @@ const veilPx = (c, x, y) => BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c]
 const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle' };
 // The place camera: today's centred camera, or for a baked place the look-ahead, pull to the tell and clamp of places/src/camera.mjs (page pixels).
 function camPos(v, px, py) { const lay = RT.key != null && S.exp && S.exp.patch ? layout(RT.key) : null;
-  return lay && lay.baked ? BAKED.view.camera({ w: v.w, h: v.h }, px, py, S.exp.patch.dir, NOW, lay.heart, heartFound(lay.cell)) : camAt(v, px, py); }
+  return lay && bakedView(lay) ? bakedView(lay).camera({ w: v.w, h: v.h }, px, py, S.exp.patch.dir, NOW, lay.heart, heartFound(lay.cell)) : camAt(v, px, py); }
 function drawPatch(t) {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), live = ex.live[P.key]; if (!live) return;
   if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
@@ -4698,7 +4742,7 @@ function drawPatch(t) {
     const ms = []; for (let j = 1; j <= 4; j++) for (let i = 1; i <= 4; i++) { let m = b[j * 6 + i] ? 256 : 0; NB9.forEach(([dx, dy], k) => { if (b[(j + dy) * 6 + i + dx]) m |= 1 << k; }); ms.push(m); }
     return { key: own.toString(36) + '.' + ring.toString(36), ms }; };
   const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
-  const bk = lay.baked ? BAKED.view : null, bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
+  const bk = bakedView(lay), bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
   if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }));
   if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
@@ -6458,6 +6502,7 @@ function actReadOnly(k) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
 if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
+loadPlaces6();   // generator 6's places (the four templates and their mirrors)
 loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
@@ -6493,12 +6538,12 @@ try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(t
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { enterPatch, leavePatch, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
   capture: () => scr.toDataURL("image/png"), get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
-  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(BAKED.ready ? BAKED.view.paletteRgb() : []).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
+  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
     return { colours: new Set(Array.from({ length: d.length / 4 }, (_, i) => (d[i * 4] << 16) | (d[i * 4 + 1] << 8) | d[i * 4 + 2])).size, bad: [...bad.entries()].slice(0, 8) }; } };
 </script>

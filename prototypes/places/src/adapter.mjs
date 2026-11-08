@@ -2,7 +2,7 @@
 // The page's grid is PW x PH (28 x 32) until places of two sizes land in the page, so the 18 x 22 place is centred in it: the cells around it are
 // rock (never walked), and `lay.baked.ox/oy` say where it sits. Terrain becomes the page's tile T, prop footprints become TRUNK (a tree, which has
 // a canopy) or ROCK, tall grass becomes T.TALL; the heart, its clue marks and the openings come from the place's entities.
-import { T, T_BLOCK, L, PW, PH } from '../../exploration/src/world.mjs';
+import { T, T_BLOCK, L, PW, PH, hash } from '../../exploration/src/world.mjs';
 import { heartPath } from '../../exploration/src/hearts.mjs';
 
 const LAND = { pond: L.POND, rock: L.ROCK, wood: L.WOOD, meadow: L.MEADOW };
@@ -48,8 +48,28 @@ export function adaptPlace(place, ts, terrains, o = {}) {
     w: pw, h: ph, openings, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })),
     baked: { id: place.id, ox, oy, w, h },
   };
-  const hh = place.heart, kind = hh.kinds.find((k) => HEART_KINDS.includes(k)) || hh.kinds[0];
-  const x = hh.x + ox, y = hh.y + oy, wp = heartPath(lay, x, y);
+  const hh = place.heart, fill = o.fill, kind = fill ? fill.heart.kind : hh.kinds.find((k) => HEART_KINDS.includes(k)) || hh.kinds[0];
+  const x = hh.x + ox, y = hh.y + oy;
+  if (fill) {   // generator 6: the seeded fills (exploration/src/fill6.mjs) become the page's features, in the page's tiles
+    const nextTo = (f) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const X = f.x + dx, Y = f.y + dy; return X >= 0 && Y >= 0 && X < pw && Y < ph && reach[Y * pw + X]; });
+    lay.feats = fill.feats.map((f) => ({ ...f, x: f.x + ox, y: f.y + oy })).filter((f) => f.id === 'kh' || nextTo(f));   // a find nobody could stand beside is dropped
+    const taken = new Set(lay.feats.map((f) => f.y * pw + f.x));
+    for (const s of fill.specials) {   // the burrow and the deep stone: on reachable ground, far from the way in, by seed
+      let best = null, bs = -1;
+      for (let i = 0; i < NP; i++) {
+        const sx = i % pw, sy = (i / pw) | 0;
+        if (!reach[i] || taken.has(i) || (sx === x && sy === y) || Math.abs(sx - spawnPt.x) + Math.abs(sy - spawnPt.y) < 6 || !nextTo({ x: sx, y: sy })) continue;
+        if (lay.findSlots.some((f) => f.x === sx && f.y === sy)) continue;
+        const sc = hash(o.seed ?? 0, 'special6', lay.cell, s.id, sx, sy); if (sc > bs) { bs = sc; best = { x: sx, y: sy }; }
+      }
+      if (best) { lay.feats.push({ ...s, ...best }); taken.add(best.y * pw + best.x); }
+    }
+    lay.name = fill.name;
+    lay.podSlots = fill.podSlots.map((s) => ({ x: s.x + ox, y: s.y + oy, on: s.on }));
+    lay.spawns = place.spawns.map((s) => ({ x: s.x + ox, y: s.y + oy, w: s.w, h: s.h, species: s.species }));
+    if (kind === 'nest') lay.heartPods = fill.heart.second ? 2 : 1;
+  }
+  const wp = heartPath(lay, x, y);
   const clues = place.clues.length ? place.clues[0].points.map((p) => ({ x: p.x + ox, y: p.y + oy })) : wp.clues;
   lay.heart = { x, y, kind, reachBy: hh.reachBy === 'none' ? null : hh.reachBy, path: wp.path, clues };
   return lay;

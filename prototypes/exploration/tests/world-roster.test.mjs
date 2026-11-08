@@ -22,7 +22,7 @@ const fnv = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^=
 
 test("1. the floor: 1,000 seeds × each generator, every species has at least 2 herds of 3, in its habitat, on the reachable component", () => {
   // Generators 1 and 2 meet it by luck of the draw with today's three species (measured: 0 misses in 1,000 seeds each); generator 3 by construction.
-  assert.deepEqual(W.GENS, [5]);   // the page plays generator 5 only; generators 1 to 4 stay in the module, frozen, and keep their floor (the pure checks below)
+  assert.deepEqual(W.GENS, [6]);   // the page plays generator 6 only; generators 1 to 4 stay in the module, frozen, and keep their floor (the pure checks below)
   for (const gen of [1, 2, 3, 4]) for (const seed of SEEDS) {
     const G = G_(gen, seed), { cr } = life(gen, seed);
     W.ROSTER.forEach((r, sp) => {

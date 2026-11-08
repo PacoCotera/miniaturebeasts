@@ -43,7 +43,7 @@ test("generator 4: mixed is generator 3's ground to the bit; the other biomes ar
 test("generators 1 to 3 are bit-identical to their vectors; the page plays generator 5 only and NEW_GEN is 5", () => {
   const a1 = { gen: 1, hash: W.hash, L, genWorld: s => W.genWorld(s, 1), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells, roster: W.ROSTER, genLife: (G, s) => W.genLife(G, s, W.ROSTER) };
   for (const [gen, a] of [[1, a1], [2, api(2)], [3, api(3)]]) for (const want of VECTORS.gens[String(gen)].seeds.slice(0, 6)) assert.deepEqual(seedDigest(a, want.seed), want, `gen ${gen} seed ${want.seed}`);
-  assert.equal(W.NEW_GEN, 5); assert.deepEqual(W.GENS, [5]);
+  assert.equal(W.NEW_GEN, 6); assert.deepEqual(W.GENS, [6]);
 });
 
 test("an unknown biome is refused, gen 4 has no cliff cells, and the world is deterministic", () => {
