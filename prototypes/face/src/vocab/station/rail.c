@@ -18,13 +18,14 @@ static int fi(const char *key, int dflt) { char p[160]; snprintf(p, sizeof p, R 
 static void fcol(const char *key, char *out, int cap) { char p[160]; snprintf(p, sizeof p, R ".%s", key); spec_str(F, p, out, cap); out[cap - 1] = 0; }
 static int has(const char *s) { return s && *s; }
 /* Create's rail mark (fix 11, gate batch 1): one composed 12 x 12 picture a tab in chrome rects of palette colours, no master: a `red` cross (2 px strokes, the pixels |x - y| <= 1 and |x + y - 11| <= 1) when a trait of the chapter clashes,
-   else a `bone` diamond (rows 2, 4, 6, 8, 10, 12, 12, 10, 8, 6, 4, 2 wide, centred) when one is changed, else a clear picture (no ops). Every tab is one node whichever it is (2.2). */
-static void rail_mark(const char *spec, const char *id, int x, int y, const char *mark) {
-  char ops[1024]; int n = 0; char bone[24] = "bone", red[24] = "red"; static const int DW[12] = { 2, 4, 6, 8, 10, 12, 12, 10, 8, 6, 4, 2 };
+   else a round dot (8 px, rows 4, 6, 8, 8, 8, 8, 6, 4 wide from row 2, centred; the designer's ruling 2026-11-08) when one is changed: `bone` on a closed tab, the open tab's word ink on the open tab (`open`); else a clear picture (no ops). Every tab is one node whichever it is (2.2). */
+static void rail_mark(const char *spec, const char *id, int x, int y, const char *mark, const char *openInk) {
+  char ops[1024]; int n = 0; char bone[24] = "bone", red[24] = "red"; static const int DOT[8] = { 4, 6, 8, 8, 8, 8, 6, 4 };
   if (spec) { spec_str(spec, "colours.rail.changed", bone, sizeof bone); spec_str(spec, "colours.rail.clash", red, sizeof red); }
+  if (openInk && *openInk) snprintf(bone, sizeof bone, "%s", openInk);
   n += snprintf(ops + n, sizeof ops - (size_t)n, "[");
   for (int r = 0, first = 1; r < 12; r++) {
-    if (strcmp(mark, "changed") == 0) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", first ? "" : ",", (12 - DW[r]) / 2, r, DW[r], bone); first = 0; }
+    if (strcmp(mark, "changed") == 0) { if (r < 2 || r > 9) continue; n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", first ? "" : ",", (12 - DOT[r - 2]) / 2, r, DOT[r - 2], bone); first = 0; }
     else if (strcmp(mark, "clash") == 0) {
       for (int c = 0; c < 12; ) { int on = abs(c - r) <= 1 || abs(c + r - 11) <= 1; if (!on) { c++; continue; } int e = c; while (e + 1 < 12 && (abs(e + 1 - r) <= 1 || abs(e + 1 + r - 11) <= 1)) e++;
         n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", first ? "" : ",", c, r, e - c + 1, red); first = 0; c = e + 1; }
@@ -70,7 +71,7 @@ void word_rail(const char *marksSpec) {
       if (has(emblem)) v_sprite(v_fmt("%s.emblem", tid), emblem, x + cEmC - em0 / 2, cEmY, em0, em1);
       pipCx = x + cPipsC;
     }
-    if (marksSpec) { v_region("rail.tab", LAYER_CHROME); rail_mark(marksSpec, v_fmt("%s.mark", tid), pipCx - 6, 68, v_pstr(v_fmt("regions.rail.tabs.%d.mark", i))); }   /* Create only (fix 11): one 12 x 12 mark a tab, under the label, ending at the tab's foot */
+    if (marksSpec) { v_region("rail.tab", LAYER_CHROME); rail_mark(marksSpec, v_fmt("%s.mark", tid), pipCx - 6, 68, v_pstr(v_fmt("regions.rail.tabs.%d.mark", i)), strcmp(key, "open") == 0 ? word : NULL); }   /* Create only (fix 11): one 12 x 12 mark a tab, under the label, ending at the tab's foot */
     if (v_pbool(v_fmt("regions.rail.tabs.%d.glint", i), 0) && has(star)) { v_region("rail.tab", LAYER_ART); v_sprite(v_fmt("%s.glint", tid), star, x + S + v_half(w) - gsz / 2, y + h + gbelow, gsz, gsz); }
   }
   /* the ring crosses 5 px onto the neighbours, so it goes after every tab */

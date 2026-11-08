@@ -166,6 +166,9 @@ export function letGoHold(st, spec, p) {
   const H = spec.strings.inv.picker, g = S.letGoGuard(st, p); if (!g) return { ms: 0, why: "" };
   return { ms: spec.hold?.slowMs ?? 6000, why: g === "goal" ? H.holdGoal : fill(H.holdOnly, { Species: S.cap(S.spName(p)) }) };
 }
+// The reading in words (the dial's right side): not read yet, n of m chapters read, fully read, each with ", k sealed" while a chapter is shut. Numbers go through inWords.
+export function readWords(R, d) { const k = d.sealed; return d.n === 0 ? R.none : d.n >= d.m ? (k ? fill(R.fullSealed, { k }) : R.full) : fill(k ? R.partSealed : R.part, { n: d.n, m: d.m, k }); }
+const dialReq = (req, d) => (d ? req({ kind: "dial", id: "dial:" + d.n + ":" + d.m + (d.sealed ? ":s" : ""), n: d.n, m: d.m, sealed: d.sealed > 0 }) : "");
 const dryMark = (st, p) => (S.dryingSoon(st, p) ? "drying" : "");
 function inventoryView(view, m, spec, req) {
   const { st, settings, ui } = m, Sg = spec.strings.inv, PK = Sg.picker, R = spec.regions.inventory.picker, focus = m.focus ?? null, across = R.grid.across, vis = R.grid.rows;
@@ -179,7 +182,8 @@ function inventoryView(view, m, spec, req) {
   const nav = !ui.fixed && verbs.length > 1, shown = cards.filter((c) => c.row >= first - 1 && c.row <= first + vis);
   const ASK = !!m.answer, answerOf = (p, goal, foc) => { const kind = goal ? "goal" : dryMark(st, p) || (!p.seen ? "new" : ""); return { dim: ASK && !kind && !foc, bubble: ASK && kind ? PK["answer" + S.cap(kind)] : "", bubbleKind: ASK ? kind : "" }; };   // Call: the pods that need you undim and say so, the others dim
   const card = (c) => { const p = c.e.p, goal = S.podGoal(st, p);
-    return { k: c.k, row: c.row - first, col: c.col, pod: podPic(req, st, p, R.grid.pod.slice(2)), name: p.idd ? S.cap(S.spName(p)) : Sg.sealedPod, sealed: !p.idd, mark: goal ? "star" : dryMark(st, p) || (!p.seen ? "new" : ""), fade: !can(c).can, held: ui.hold === p.id, ...answerOf(p, goal, focus === "card." + c.k) }; };
+    const dial = S.readDial(p, settings), dialPic = dialReq(req, dial);   // the reading dial after the name (no request for an unidentified pod)
+    return { k: c.k, row: c.row - first, col: c.col, pod: podPic(req, st, p, R.grid.pod.slice(2)), name: p.idd ? S.cap(S.spName(p)) : Sg.sealedPod, sealed: !p.idd, dial, dialPic, mark: goal ? "star" : dryMark(st, p) || (!p.seen ? "new" : ""), fade: verb === "compare" && !!ui.hold && !can(c).can, held: ui.hold === p.id, ...answerOf(p, goal, focus === "card." + c.k) }; };   // a pod is veiled only for Compare's second pick, never because a verb is blocked
   // the tool row: Sort, Filter and Find, quiet, at the top right
   const drying = st.tray.filter((p) => S.dryingSoon(st, p)).length;
   const tools = { sort: none ? Sg.nothingToSort : Sg.sorts[ui.sort ?? "use"], filter: none ? Sg.nothingToFilter : drying ? fill(Sg.filterDrying, { n: drying }) : Sg.filter, filterAmber: !none && drying > 0, find: none ? Sg.nothingToFind : Sg.find, dim: none };
@@ -190,17 +194,22 @@ function inventoryView(view, m, spec, req) {
   const filtered = chips.length ? fill(Sg.filtered, { k: list.length, n: st.tray.length, what: chips.join(", ") }) : null;
   const flash = ui.flash && ui.flash.until > (m.now ?? 0) ? ui.flash.text : husks.length ? (husks.length === 1 ? fill(Sg.dried, { n: 1 }) : fill(Sg.driedMany, { n: husks.length })) : "";
   const detail = { left: "", right: flash || filtered || (none ? "" : countAll), amber: false };
-  if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = fill(PK.help, { Verb: PK.verbs[verb] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
+  if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = verb === "freshen" && PK.helpFreshen ? fill(PK.helpFreshen, { n: S.POD_LIFE }) : fill(PK.help, { Verb: PK.verbs[verb] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
   else if (curCard && !(focus === "sort" || focus === "filter" || focus === "find")) {
     const p = curCard.e.p, f = freshOf(st, p, spec); detail.left = [curCard.e.tags[0].text, S.podOrigin(p)].join(" · ");
-    if (f.amber && !flash) { detail.right = f.words; detail.amber = true; }
+    if (f.amber && !f.bench && !flash) { detail.right = f.words; detail.amber = true; }
+    else if (!flash && !filtered) { const dial = S.readDial(p, settings); if (dial) detail.right = inWords(readWords(PK.reading, dial)); }   // drying > a flash > the filter > the reading > the count
+    if (detail.amber || detail.right !== (flash || filtered || (none ? "" : countAll))) { const d = S.readDial(p, settings); detail.rightDial = dialReq(req, d); detail.rightSealed = !!d && d.sealed > 0; }   // the dial before the reading, and under a drying pod's words too
+    if (!detail.amber && !f.bench && f.words) detail.left = detail.left.replace(/\.$/, "") + " · " + f.words;   // quietly, from the start: how long the pod stays fresh joins the history on the left (the right is the reading's, the designer's layout); amber on the right once it dries soon
   }
   // the picker: what the face draws (props name what, never where)
   const total = rowsN;
-  view.picker = { answer: ASK, verbs: nav || ui.fixed ? verbs.map((v) => ({ id: v, word: PK.verbs[v === "bring" ? "bring" : v], on: v === verb })) : [], heading: ui.fixed ? (ui.verb === "bring" ? PK.chooseBring : PK.choose) : "", tools,
+  view.picker = { answer: ASK, verbs: nav ? verbs.map((v) => ({ id: v, word: PK.verbs[v], on: v === verb })) : [], heading: ui.fixed ? (ui.verb === "bring" ? PK.chooseBring : PK.chooseGrow) : "", tools,   // a fixed verb has no pill: one plain heading says what ✓ does
     grid: { cards: shown.map(card), first }, rail: total > vis ? { share: Math.round((1000 * vis) / total), from: Math.round((1000 * first) / total) } : null, detail,
     empty: none && !husks.length ? Sg.panelNone : !list.length && !none ? PK.noMatch : [] };
-  view.line = lineOf(m, spec, view, focus, curCard, verb, can); if (ui.from === "incubator" && !ui.choosing) view.line.backWide = true;   // "Incubator" is wider than the way back's slot: the line asks for the wide one
+  view.line = lineOf(m, spec, view, focus, curCard, verb, can); if (ui.from === "incubator" && !ui.choosing) view.line.backWide = true;
+  if (focus && focus.startsWith("card.") && !view.line.subject && !view.line.need && !m.ui.hold) {   // the foot's free middle slot: why the fixed verb could not be (the incubator is busy), else on the top row of browse where the verb strip is
+    if (ui.blocked) view.line.subject = S.cap(ui.blocked); else if (nav && curCard && curCard.row === first) view.line.subject = PK.upHint; }   // "Incubator" is wider than the way back's slot: the line asks for the wide one
   // the targets: the verbs (browse), Sort, Filter and Find, the cards on screen
   const t = [];
   if (nav) verbs.forEach((v, i) => t.push({ id: "verb." + v, group: "verb", index: i }));

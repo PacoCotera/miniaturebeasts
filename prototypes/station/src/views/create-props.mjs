@@ -64,7 +64,8 @@ export function createBuild(m, spec, pods) {
 
   // the trait line: the focused trait and its chosen look; the changed tag (chrome), the clash cross or the breed mark (the mark is named in every state: the face keeps its node)
   const T = spec.strings.traitLine, breedPic = slot(req, "mark-breed-28x16", [0, 0, ...R.traitLine.breedMark.size], "the breed mark master");
-  let line = { text: "", changed: false, breed: breedPic, doing: false, clash: false };   // nothingRead and grow: no size (fix 5 C2, C7); the tag is the face's, from the plate-name series (C9)
+  const changePrice = S.price(S.PRICE.change, settings), tail = changePrice ? S.priceText(0, changePrice, 0) : "";   // the change's price, from the bottom line's own builder (the designer's ruling 2026-11-08); a price of 0 has no tail
+  let line = { text: "", changed: false, price: "", breed: breedPic, doing: false, clash: false };   // nothingRead and grow: no size (fix 5 C2, C7)
   if (cur && !grown) {
     const opts = S.rollOptions(p, cur.t.id), choice = cr.choices[cur.t.id] || 0, own = traitState(fr, cur.t, genome), name = cur.t.name;
     if (cr.clash.includes(cur.t.id)) line = { ...line, text: fill(T.clash, { Trait: name }), clash: true };
@@ -72,7 +73,7 @@ export function createBuild(m, spec, pods) {
     else if (opts.length <= 1) line = { ...line, text: fill(T.oneLook, { Trait: name }) };
     else if (choice) {   // the look is the founder's own after the choice (own.shows); sameLook only when all four hold (game designer fix 5 Q2a)
       const podOwn = traitState(fr, cur.t, p.genome), same = podOwn.kind === "hides" && choice !== podOwn.hiddenChoice && own.kind !== "asleep";
-      line = { ...line, text: own.kind === "asleep" ? fill(T.asleep, { Trait: name, shows: own.shows, sleeping: own.asleep }) : fill(same ? T.sameLook : T.only, { Trait: name, look: own.shows }), changed: true };
+      line = { ...line, text: own.kind === "asleep" ? fill(T.asleep, { Trait: name, shows: own.shows, sleeping: own.asleep }) : fill(same ? T.sameLook : T.only, { Trait: name, look: own.shows }), changed: true, price: tail };   // a clash never reaches here: it has no price
     }
     else if (own.kind === "asleep") line = { ...line, text: fill(T.asleep, { Trait: name, shows: own.shows, sleeping: own.asleep }) };
     else line = { ...line, text: fill(T.asPod, { Trait: name }) };

@@ -1,7 +1,7 @@
 // The Library's Level 2 sheet generator (station/src/library-sheet.mjs, library.json l2), in Node: the geometry of all 16 species (plates per the slot table, the tier, S_form, the form's ink inside formRoom,
 // the leader routes and radii), the surfaces' pixels, the page heights, the met-only sheet, a shut plate, the Hiljan, the colour chips, the comma form and the wrap rule, the Loika's legacy "plain",
 // the layout facts, the requests and the cache (exactly the sheet, one lit variant and one page); the ground passing through exactly, the crop of the finish byte-identical to the whole-screen reference on the eight
-// review states, and each render's time against its target (a sheet or lit variant 1.5 s, a met sheet 1.2 s on the development machine; the test fails only past 3 s).
+// review states, and each render's time printed (the speed limit, 3 s a render against targets of 1.5 s / 1.2 s, is station/perf/library-sheet.perf.mjs, a quiet run of its own).
 //   node --test prototypes/station/tests/library-sheet.test.mjs
 // PRE-LANGUAGE FIXTURE (release 21a): these rules are frame-independent, but their cases are the S01, S02 and S03 chapters of the form frames (versions 2 to 6, kept on disk beside the language frames), with their sealed chapters; the game itself loads the version 8 frames (frames-twenty.test.mjs).
 import { test } from "node:test";
@@ -210,7 +210,7 @@ test("the finish's crop is byte-identical to the whole-screen reference (out = G
     const a = L.renderSheet(fr, inp, { lit }), b = L.renderSheet(fr, inp, { lit, full: true }), target = inp.mode === "met" ? 1200 : 1500;
     let d = 0; for (let i = 0; i < a.rgba.length; i++) if (a.rgba[i] !== b.rgba[i]) d++;
     console.log(`# ${name}: rendered in ${a.ms.toFixed(0)} ms (target ${target} ms; the whole-screen reference ${b.ms.toFixed(0)} ms), ${d} bytes differ`);
-    assert.equal(d, 0, name); assert.ok(a.ms < 3000, `${name}: ${a.ms.toFixed(0)} ms`);
+    assert.equal(d, 0, name);   // the time limit (3 s a render) is a speed check: prototypes/station/perf/library-sheet.perf.mjs, run alone
   }
 });
 test("the colours band's title dims with its chapter: premix(fog, libHead, 0.3) when the Coat is not lit, fog when it is or nothing is lit", () => {

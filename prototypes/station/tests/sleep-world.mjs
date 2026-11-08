@@ -193,14 +193,21 @@ function stationFor(w, life) {
     return call(label, init, () => viaApp(w.caddy, url, init));
   };
   const shell = { listeners: [] };
+  // The ask's timeout is the real condition, not a clock: the stub always answers, so the only ask that never gets its answer is one whose ack the crash injection dropped (life.after throws).
+  // The shell's timer therefore fires when no ask is in flight (virtual timers below), never after so many wall-clock milliseconds (a loaded machine used to turn a slow answer into a timeout).
+  let inflight = 0; const timers = new Set();
+  const settleTimers = () => setImmediate(() => { if (inflight > 0) return; for (const fn of [...timers]) { timers.delete(fn); fn(); } });
+  const setTimer = (fn) => { timers.add(fn); settleTimers(); return fn; }, clearTimer = (fn) => { timers.delete(fn); };
   const post = (m) => {
     const rec = life.point("station", "ask", "Companion " + m.op, { remote: true, journal: () => w.journalState() });
     if (m.op === "sign" || m.op === "clear") w.newWidSeen = m.newWid;
     const { t, nonce, op, ...rest } = m;
-    Promise.resolve(w.companion.ask(op, rest))
-      .then((ack0) => { let ack = ack0; try { life.after(rec); } catch { return; } if (w.tamper && w.tamper.ask) ack = w.tamper.ask(op, ack); for (const fn of shell.listeners) fn({ t: "mb-sleep-ack", nonce: m.nonce, op: m.op, ...ack }); });
+    inflight++;
+    const asked = Promise.resolve(w.companion.ask(op, rest));
+    asked.then(() => { inflight--; settleTimers(); }, () => { inflight--; settleTimers(); });
+    asked.then((ack0) => { let ack = ack0; try { life.after(rec); } catch { return; } if (w.tamper && w.tamper.ask) ack = w.tamper.ask(op, ack); for (const fn of shell.listeners) fn({ t: "mb-sleep-ack", nonce: m.nonce, op: m.op, ...ack }); });
   };
-  const askShell = makeShellAsk({ post, listen: (fn) => { shell.listeners.push(fn); }, timeoutMs: 400 });
+  const askShell = makeShellAsk({ post, listen: (fn) => { shell.listeners.push(fn); }, timeoutMs: 400, setTimer, clearTimer });
   const h = {
     store, caddy: sleepClient({ fetch, base: "/caddy-api/v1" }), companion: askShell,
     settings: () => w.settings, docked: () => w.docked,

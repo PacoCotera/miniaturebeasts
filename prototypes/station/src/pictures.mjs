@@ -25,6 +25,7 @@ import { facePicture, windowOf } from "./face-pictures.mjs";
 import { placedAt, coatMaster, coatOf, PAINTED_COAT } from "./stands.mjs";
 import { farPicture, miniPicture } from "./lineage-pictures.mjs";
 import { registerReading } from "./reading-pictures.mjs";
+import { dialSize, dialPixels } from "./dial-picture.mjs";
 
 const SHEET_IDS = {};   // the Level 2 sheet's current entry of each kind (library-sheet.mjs keeps its pictures)
 const LINEAGE_IDS = {};   // Level 3's current entry of each kind (lineagefar, lineagemini); a newer one supersedes it
@@ -137,6 +138,11 @@ export function registerPictures(reqs, env) {
       case "beam": put(r.id, r.size[0], r.size[1], until, () => beamArt(r.size[0], r.size[1]), STAND_IN); break;   // a code-drawn light: never in a golden
       case "emblem": putOrMaster(r.id, `rail-emblem-${r.chapter}-${r.state || "unread"}-24x24`, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24), STAND_IN); break;
       case "star": putOrMaster(r.id, "glint-star-12x12", 12, 12, "the glint master", starPB, STAND_IN); break;
+      case "dial": {   // the reading dial (the pod picker): built-drawn from its geometry (dial-picture.mjs), 14 x 14, 25 x 14 with the lock
+        const [w, h] = dialSize(r.sealed); if (hasAsset(r.id)) break;
+        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => data ?? (data = dialPixels(r.n, r.m, r.sealed)) }; } });
+        break;
+      }
       case "stampplate": put(r.id, r.size, r.size, "the stamp label's plate (the stampCase look)", () => labelPlate(r.size, RGB[C.bone], RGB[C.hairline], r.k)); break;   // the plate of the 120 label, dimmed by K × WARM with its hairline edge (stamplook.mjs)
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const fr = env.frameOf(r.species), g = r.bud ? env.budGenome() : r.mibi != null ? env.mibiGenome(r.mibi) : (() => { const p = env.podById(r.pod); return r.choices ? env.founderGenome(p, r.choices) : p.genome; })(); const built = stampPicture(fr, g, r.read), pic0 = built.build(), pic = r.quiet ? clearMargin(pic0, built.cell) : pic0; return r.k ? dimPicture(pic, r.k) : pic; }); break;   // with a k the stamp is dimmed in linear light when it is rasterised (stamplook.mjs)
       case "founder": { const painted = placedPic(coatMaster(`mibi-adult-${r.species}-${r.size[0]}x${r.size[1]}`, r.species, r.coat), r.size[0], r.size[1]);   // Create founder A (interim): the species' painted adult, one flat picture, in place of the rig render

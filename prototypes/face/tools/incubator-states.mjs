@@ -24,6 +24,9 @@ const SCENES = {
   "ready-full": { want: "ready", timedOnly: true, set: (w) => { w.rooms(1); w.adults(8); w.bud(true); } },   // R6: the Vivarium is full (one room, eight places taken) and the bud is ready: Open is held, the notice says why
   "via-create": { want: "empty", timedOnly: true, set: (w) => { const S = window.__st; w.adults(2); S.seedPod("S01", 3); const p = S.ST.tray.at(-1); S.readSome(p.id, 2); S.openCreate(p.id); } },
 };
+// The bud's start is `Date.now() - min * 60000` and the bar and the minutes-left read Date.now() again at the capture: on the real clock a loaded machine let seconds pass between the two and the bar
+// moved a pixel. Date.now() is held at the instant the page opened (frames and performance.now() are already the stepped virtual clock), so a bud `min` minutes in is exactly that however long a step takes.
+const FREEZE_DATE = () => { const fixed = Date.now(); Date.now = () => fixed; };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${INC.toString()})`]);
 async function apply(page, sc, step) {
   await page.evaluate(([setSrc, panel, noOpen]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.UI.inc = {}; S.UI.panel = null; if (!noOpen) w.open(); if (panel) S.press("confirm"); }, [sc.set.toString(), !!sc.panel, !!sc.timedOnly && sc.want === "empty" && /openCreate/.test(sc.set.toString())]);
@@ -56,7 +59,7 @@ export async function incubatorStates(visit, { motion = false, timed = true } = 
   const t = await timedStates(visit); return { fails: [...r.fails, ...t.fails] };
 }
 async function still(visit) {
-  const { page, fails, fail, step, close } = await openStation({ motion: false, clock: true });
+  const { page, fails, fail, step, close } = await openStation({ motion: false, clock: true, init: [FREEZE_DATE] });
   await WORLDS(page);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
@@ -70,7 +73,7 @@ async function still(visit) {
   return { fails };
 }
 async function timedStates(visit) {
-  const { page, fails, fail, step, close } = await openStation({ motion: true, clock: true });
+  const { page, fails, fail, step, close } = await openStation({ motion: true, clock: true, init: [FREEZE_DATE] });
   await WORLDS(page);
   try {
     for (const [name, tp] of Object.entries(TIMED)) {

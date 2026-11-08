@@ -456,6 +456,9 @@ for (const n of ["silent", "quiet", "fault"]) { const box = $("sw-" + n); if (bo
 // and 2 as one for 4000 ms at each seat, lift and the opening's end instead. The two cradle lamps sit beside it as 12 lp dots; the cradle under the key tray carries the
 // Companion's lamp too.
 const NOTE_MS = 4000, NOTE_TEXT = note.textContent, PARTIAL_MS = 800, FULL_MS = 4000;
+// The first picture waits for the Station's word and its seat; with no word it is drawn at 15 s anyway. ?test&firstms=N moves that fallback (test pages only), so a journey on a loaded machine
+// can wait for the real condition instead of a page that took longer than 15 s to boot drawing a stand-in first.
+const FIRST_MS = (() => { const q = new URLSearchParams(location.search), n = Number(q.get("firstms")); return q.has("test") && n > 0 ? n : 15000; })();
 const caddyBlock = $("caddySheet"), view = $("caddyView"), spacer = $("spacer"), lampsEl = $("caddyLamps"), dotC = $("lampCompanion"), dotS = $("lampStation");
 const vctx = view.getContext("2d", { willReadFrequently: true }); view.width = 792; view.height = 272;
 const bootAt = now(), sched = createScheduler({ tz: TZ }), drawnLog = [];
@@ -474,7 +477,7 @@ function faceInput(t) {
 function faceTick() {
   const t = now(), f = faceOf(faceInput(t)); faceNow = f;
   lamps(f, t);
-  if (!faceStarted) { const ready = !!heard && (svc.up === false || (!!svc.snap && svc.snap.cradles.station.state === "seated")); if (!ready && t - bootAt < 15000) return; faceStarted = true; }   // the first picture once the Station has spoken and sits in its cradle (or, with no word, at 15 s)
+  if (!faceStarted) { const ready = !!heard && (svc.up === false || (!!svc.snap && svc.snap.cradles.station.state === "seated")); if (!ready && t - bootAt < FIRST_MS) return; faceStarted = true; }   // the first picture once the Station has spoken and sits in its cradle (or, with no word, at 15 s)
   for (const o of [sched.push(f, t, { beat }), sched.tick(t)]) if (o) panelOp(o);
   beat = false;
   if (!f.keep && f.id !== lastFaceId) { if (lastFaceId !== null && ["C0", "C2", "C3"].includes(f.id)) caddyEvent(f); lastFaceId = f.id; }
@@ -546,6 +549,6 @@ fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw 
 layout(); reveal(owner, true);   // the page opens revealed for the device with the keys (the Station on a fresh load); no scroll position is restored
 // for the play-page journey: read-only views of the shell's state
 window.__play = { get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get tier() { return tier; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get pressed() { return pressed; },
-  get caddySheet() { return { up: tier !== "narrow", id: drawn ? drawn.id : null, lines: drawn ? { ...drawn.lines } : null, crates: drawn ? drawn.crates : 0, ledger: drawn ? drawn.ledger : null, marks: drawn ? { ...drawn.marks } : null, next: faceNow ? faceNow.id : null, counts: sched.counts, log: drawnLog.slice(), note: noteCaddy,
+  get caddySheet() { return { up: tier !== "narrow", id: drawn ? drawn.id : null, lines: drawn ? { ...drawn.lines } : null, crates: drawn ? drawn.crates : 0, ledger: drawn ? drawn.ledger : null, marks: drawn ? { ...drawn.marks } : null, next: faceNow ? faceNow.id : null, counts: sched.counts, log: drawnLog.slice(), ops: sched.state.log.map((o) => ({ kind: o.kind, id: o.id, at: o.at, regions: o.regions })), busy: now() < sched.state.busyUntil, note: noteCaddy,
     lamp: { companion: lampOf.c, station: faceNow ? faceNow.lamp.station : "off", dot: dotC.dataset.lamp, stationDot: dotS.dataset.lamp }, pixels: () => Array.from(vctx.getImageData(0, 0, 792, 272).data.filter((_, i) => i % 4 === 0)) }; },
   get dock() { return { up: svc.up, world: svc.esWorld, snap: svc.snap, sensed: JSON.parse(JSON.stringify(sensed)), hold, comp, fault, heardAt, slot: cslot }; }, setSwitch, switchCompanion, rects, frames };
