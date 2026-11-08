@@ -200,7 +200,7 @@ function inventoryView(view, m, spec, req) {
     if (f.amber && !f.bench && !flash) { detail.right = f.words; detail.amber = true; }
     else if (!flash && !filtered) { const dial = S.readDial(p, settings); if (dial) detail.right = inWords(readWords(PK.reading, dial)); }   // drying > a flash > the filter > the reading > the count
     if (detail.amber || detail.right !== (flash || filtered || (none ? "" : countAll))) { const d = S.readDial(p, settings); detail.rightDial = dialReq(req, d); detail.rightSealed = !!d && d.sealed > 0; }   // the dial before the reading, and under a drying pod's words too
-    if (!detail.amber && !f.bench && f.words) detail.left += " · " + f.words;   // quietly, from the start: how long the pod stays fresh joins the history on the left (the right is the reading's, the designer's layout); amber on the right once it dries soon
+    if (!detail.amber && !f.bench && f.words) detail.left = detail.left.replace(/\.$/, "") + " · " + f.words;   // quietly, from the start: how long the pod stays fresh joins the history on the left (the right is the reading's, the designer's layout); amber on the right once it dries soon
   }
   // the picker: what the face draws (props name what, never where)
   const total = rowsN;

@@ -257,7 +257,7 @@ test("the verbs: Read, Grow, Freshen, Compare and Let go, each only while some p
 });
 test("the detail line: the focused pod's first tag and where it was found, the freshness in amber when it dries; on the verb line what the verb does and how many pods can take it", () => {
   const st = mixed(); ident(st); const v = (focus, over = {}) => inv(model(st, over, focus)).detail;
-  assert.match(v("card.0").left, /^.+ · .+$/); assert.deepEqual([v("card.0").amber, v("card.0").right], [false, "fresh for 12 turns"]); st.turn = 9; assert.deepEqual([v("card.0").amber, v("card.0").right], [true, "dries out in 4 turns"]);
+  assert.match(v("card.0").left, /^.+ · .+$/); assert.deepEqual([v("card.0").amber, v("card.0").right], [false, "not read yet"]); assert.ok(v("card.0").left.endsWith(" · fresh for 12 turns"), "quietly, after the history; the reading holds the right"); st.turn = 9; assert.deepEqual([v("card.0").amber, v("card.0").right], [true, "dries out in 4 turns"]);
   st.turn = 2; assert.deepEqual([v("verb.read").left, v("verb.read").right], ["Read works on the bright pods", "twelve bright pods"]);
   assert.deepEqual([v("verb.freshen", { verb: "freshen" }).left, v("verb.freshen", { verb: "freshen" }).right], ["Pods dry out after 12 turns · water one to make it fresh again", "twelve bright pods"], "a turn down: every pod can be freshened");
 });
