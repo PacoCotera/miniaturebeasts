@@ -126,6 +126,8 @@ test("the reveal plays once per place, takes every press while it dissolves, hol
     await page.waitForTimeout(500);
     const minis = await page.evaluate(() => { const m = window.__mb; return m.S.exp.reach.filter((c) => m.miniatureOf(c, 72)).length; });
     assert.equal(minis, 2, "two found places wear their miniatures");
+    await page.evaluate(() => { const m = window.__mb; m.FX.msg = ""; m.FX.notes = []; m.FX.hintNote = null; m.FX.sign = null; });   // nothing timed on the screen (a note's fade, a hint) when the still is taken
+    await page.waitForTimeout(900);
     golden("c15-reach-two-minis.png", await still(page));
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
