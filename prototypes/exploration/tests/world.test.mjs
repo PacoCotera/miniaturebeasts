@@ -74,13 +74,13 @@ test("purity, by source: no page state, DOM, storage, clock, randomness, drawing
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
 });
 
-test("unknown generators are refused; the module knows generators 1 to 5, the page plays generator 5 only, and new worlds take generator 5", () => {
-  assert.throws(() => W.genWorld(1, 6), RangeError);
+test("unknown generators are refused; the module knows generators 1 to 6, the page plays generator 6 only, and new worlds take generator 6", () => {
+  assert.throws(() => W.genWorld(1, 7), RangeError);
   assert.throws(() => W.genWorld(1, 0), RangeError);
-  assert.deepEqual(W.GENS, [5]);
+  assert.deepEqual(W.GENS, [6]);
   assert.equal(W.genWorld(1, 2).gen, 2);
-  assert.equal(W.genWorld(1, 3).gen, 3); assert.equal(W.genWorld(1, 4).gen, 4); assert.equal(W.genWorld(1, 5).gen, 5);
-  assert.equal(W.NEW_GEN, 5);
+  assert.equal(W.genWorld(1, 3).gen, 3); assert.equal(W.genWorld(1, 4).gen, 4); assert.equal(W.genWorld(1, 5).gen, 5); assert.equal(W.genWorld(1, 6).gen, 6);
+  assert.equal(W.NEW_GEN, 6);
 });
 
 test("generator 3 is generator 2's ground: the same land, edges, places and set pieces, with only gen different", () => {
@@ -117,7 +117,7 @@ test("a world of generator 2 (asked for by a test; players have them in saves) w
 
 test("a save from a generator the page does not play (a newer one, or 1 to 4) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
   const realm = (o) => JSON.stringify(R.migrate8({ ...o, v: 8 }, { now: 1793664000000 }));   // the fixture as a v10 realm (a flat v8 save is reset: reset.test.mjs)
-  const raw = realm(Object.assign(FIXTURE(), { gen: 6 })), writes = [];
+  const raw = realm(Object.assign(FIXTURE(), { gen: 7 })), writes = [];
   const old = { "mb-exploration-v1": "{}", "mb-exploration-v6": "{}" };   // the saves before v7 stay too: read-only boot removes nothing
   const store = new Proxy({ "mb-save-v8": raw, ...old }, { set: (o, k, v) => { writes.push(k); o[k] = v; return true; }, deleteProperty: (o, k) => { writes.push(k); delete o[k]; return true; } });
   const p = page(store);
@@ -138,7 +138,7 @@ test("a save from a generator the page does not play (a newer one, or 1 to 4) is
   assert.deepEqual(writes, [], "nothing was written");
   assert.doesNotThrow(() => p.els.copyNotes.on.click(), "Copy notes is a no-op while read-only");
   assert.deepEqual(writes, [], "Copy notes wrote nothing");
-  for (const gen of [6, 0, "1", 1, 2, 3, 4]) { const o = JSON.parse(realm(Object.assign(FIXTURE(), { gen: 6 }))); o.regions[0].gen = gen; const q = page({ "mb-save-v8": JSON.stringify(o) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
+  for (const gen of [7, 0, "1", 1, 2, 3, 4]) { const o = JSON.parse(realm(Object.assign(FIXTURE(), { gen: 7 }))); o.regions[0].gen = gen; const q = page({ "mb-save-v8": JSON.stringify(o) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
 });
 
 test("the Station's save reader adopts the save and keeps the region's generator as it is (5)", async () => {

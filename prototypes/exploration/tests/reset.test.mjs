@@ -78,6 +78,37 @@ test("4. a v11 save: read-only, untouched (a newer page's save is never reset)",
   assert.equal(p.writes.filter((k) => !k.startsWith("mb-companion")).length, 0, "nothing written but the Companion's own identity");
 });
 
+// ---- the generator 6 reset: a v10 save of generator 5 meets the new world ----
+const p6 = (init = {}) => makePage({ store: init, gen: 6, console: "collect", els: true, raf: "count" });
+const v10gen5 = () => ({ ...migrate8({ ...fixture("played-g2"), gen: 5 }, { now: NOW }), seed: 4242 });   // a played realm of generator 5, version 10
+
+test("5. the generator 6 reset: a v10 realm of generator 5 is copied whole to <key>.gen5 and a new generator 6 world starts, with the same notice once", () => {
+  assert.deepEqual(resetPlan(JSON.stringify(v10gen5()), 10), { action: "play" }, "a page that plays generator 5 too plays it");
+  assert.deepEqual(resetPlan(JSON.stringify(v10gen5()), 10, [5]), { action: "reset", from: 10, gen: true });
+  assert.deepEqual(resetPlan(JSON.stringify({ ...v10gen5(), regions: [] }), 10, [5]), { action: "play" }, "no region: nothing to reset");
+  const gen6 = { ...v10gen5() }; gen6.regions = gen6.regions.map((r) => ({ ...r, gen: 6 }));
+  assert.deepEqual(resetPlan(JSON.stringify(gen6), 10, [5]), { action: "play" }, "a generator 6 realm plays");
+  const raw = JSON.stringify(v10gen5()), p = p6({ "mb-save-v8": raw });
+  assert.equal(p.store[p.KEY + ".gen5"], raw, "the old bytes, untouched, in the copy");
+  const now = JSON.parse(p.store[p.KEY]);
+  assert.equal(now.v, 10); assert.equal(now.resetFrom, 10); assert.deepEqual(now.mibis, []); assert.equal(now.regions.length, 1); assert.equal(now.regions[0].gen, 6);
+  assert.notEqual(now.seed, 4242, "a new world"); assert.equal(p.run("G.gen"), 6);
+  assert.equal(p.run("RT.notice"), true, "the notice is up");
+  const t = said(p); assert.ok(t.includes("The world has changed.") && t.includes("New mibis live in it now."), t.join("|"));
+  p.key("confirm"); assert.equal(p.run("RT.notice"), false);
+  const q = p6(p.store);
+  assert.ok(!q.run("RT.notice"), "not again after a reload"); assert.equal(q.run("G.gen"), 6); assert.equal(q.store[q.KEY + ".gen5"], raw, "the copy is still the old bytes");
+});
+
+test("5b. a generator 5 copy that cannot be made: the save opens read-only and is kept; an earlier .pre10 does not stand in for it", () => {
+  const raw = JSON.stringify(v10gen5()), back = new Proxy({ "mb-save-v8": raw }, { set: (t, k, v) => { if (!String(k).endsWith(".gen5")) t[k] = v; return true; } });
+  const p = makePage({ store: back, gen: 6, console: "collect", els: true, raf: "count" });
+  assert.equal(p.run("RT.readOnly"), true); assert.equal(back["mb-save-v8"], raw);
+  const own = "mb-save-v8@cgensixreset1", withPre = { "mb-companion-A": JSON.stringify({ id: "cgensixreset1", name: "Companion A", slot: "A", at: 1 }), [own]: raw, [own + ".pre10"]: "the v9 bytes of the earlier reset" }, q = p6(withPre);
+  assert.equal(q.KEY, own);
+  assert.equal(q.store[q.KEY + ".gen5"], raw, "its own copy"); assert.equal(q.store[q.KEY + ".pre10"], "the v9 bytes of the earlier reset", "the earlier copy is not touched");
+});
+
 // ---- both pages: the Station and the Companion on one storage ----
 globalThis.localStorage = (() => { let box = {}; return { __use: (o) => { box = o; }, getItem: (k) => (k in box ? box[k] : null), setItem: (k, v) => { box[k] = String(v); }, removeItem: (k) => { delete box[k]; } }; })();
 const game = await import("../../station/src/game.mjs");
