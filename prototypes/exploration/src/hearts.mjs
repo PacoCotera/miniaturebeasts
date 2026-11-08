@@ -2,7 +2,7 @@
 // Pure: no page state, no drawing. "Heart" is a design word; no player string says it (canon check, editorial 2026-11-07).
 // Kinds built on generator 5 places: nest (a pod's tell is a slow beat), spring (a one-cell spring in the grass), stone (a struck stone).
 // The moment kind (a creature at its act) waits for the composed places (C14). Every player string is in HEART_TEXT.
-import { PW, PH, T_BLOCK, L, DIRS, DECOR, hash } from "./world.mjs";
+import { T_BLOCK, L, DIRS, DECOR, hash } from "./world.mjs";
 
 export const HEART_FOUND_R = 4;    // [tune] found = unveiled and within 4 tiles
 export const TELL_R = 6;           // [tune] a tell shows through the veil within 6 tiles
@@ -41,40 +41,40 @@ export const HEART_TEXT = {
 // pickHeart(lay, seed, anchors): the most enclosed walkable tile, reachable from the entry, for the place's heart.
 // anchors: { pods: [{x,y}], stones: [{x,y}] } the finds that can be the heart itself (a nest is a pod, a stone is a stone).
 // Returns { x, y, kind, reachBy: null, path: [{x,y}...] (entry to heart), clues: [{x,y}...] (points along the last stretch) }.
-const I = (x, y) => y * PW + x;
+const I = (w, x, y) => y * w + x;   // a tile's index in a place w tiles wide
 // walking distance from the entry through the reachable ground, with the way back (par)
 function walkField(lay) {
-  const solid = new Uint8Array(PW * PH);
-  for (let i = 0; i < PW * PH; i++) solid[i] = T_BLOCK[lay.tiles[i]] ? 1 : 0;
-  for (const f of lay.feats) if (!DECOR.includes(f.kind)) solid[I(f.x, f.y)] = 1;
-  const dist = new Int16Array(PW * PH).fill(-1), par = new Int32Array(PW * PH).fill(-1), q = [I(lay.spawnPt.x, lay.spawnPt.y)];
+  const { w, h } = lay, solid = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++) solid[i] = T_BLOCK[lay.tiles[i]] ? 1 : 0;
+  for (const f of lay.feats) if (!DECOR.includes(f.kind)) solid[I(w, f.x, f.y)] = 1;
+  const dist = new Int16Array(w * h).fill(-1), par = new Int32Array(w * h).fill(-1), q = [I(w, lay.spawnPt.x, lay.spawnPt.y)];
   dist[q[0]] = 0;
-  for (let h = 0; h < q.length; h++) { const i = q[h], x = i % PW, y = (i / PW) | 0;
-    for (const [dx, dy] of Object.values(DIRS)) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= PW || Y >= PH) continue; const j = I(X, Y);
+  for (let h = 0; h < q.length; h++) { const i = q[h], x = i % w, y = (i / w) | 0;
+    for (const [dx, dy] of Object.values(DIRS)) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= lay.h) continue; const j = I(w, X, Y);
       if (dist[j] < 0 && lay.reach[j] && !solid[j]) { dist[j] = dist[i] + 1; par[j] = i; q.push(j); } } }
   return { solid, dist, par };
 }
 // the nearest walkable tile to a tile that may itself be solid (a stone)
-function walkNear(F, x, y) { let best = -1; for (const [dx, dy] of [[0, 0], ...Object.values(DIRS)]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= PW || Y >= PH) continue; const j = I(X, Y); if (F.dist[j] >= 0 && (best < 0 || F.dist[j] < F.dist[best])) best = j; } return best; }
+function walkNear(F, lay, x, y) { let best = -1; for (const [dx, dy] of [[0, 0], ...Object.values(DIRS)]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= lay.w || Y >= lay.h) continue; const j = I(lay.w, X, Y); if (F.dist[j] >= 0 && (best < 0 || F.dist[j] < F.dist[best])) best = j; } return best; }
 // The path from the entry to a heart's walkable tile, and clue points (every third tile) on its last stretch.
 export function heartPath(lay, x, y) {
-  const F = walkField(lay), w = walkNear(F, x, y), path = [];
+  const F = walkField(lay), w = walkNear(F, lay, x, y), path = [];
   if (w < 0) return { path, clues: [] };
-  for (let i = w; i >= 0; i = F.par[i]) path.push({ x: i % PW, y: (i / PW) | 0 }); path.reverse();
+  for (let i = w; i >= 0; i = F.par[i]) path.push({ x: i % lay.w, y: (i / lay.w) | 0 }); path.reverse();
   const clues = []; for (let k = path.length - 3; k > 0 && clues.length < 4; k -= 3) clues.push(path[k]);
   return { path, clues: clues.reverse() };
 }
 export function pickHeart(lay, seed, anchors = {}) {
-  const F = walkField(lay), { solid, dist } = F;
-  const enclosed = (x, y) => { let n = 0; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= PW || Y >= PH || solid[I(X, Y)]) n++; } return n; };
-  const score = (x, y, tag) => { const w = walkNear(F, x, y); if (w < 0) return null; const d = dist[w], ok = d >= 8 && d <= 24; return { x, y, w, d, s: (ok ? 1000 : 0) + enclosed(x, y) * 20 - Math.abs(d - 16) + (hash(seed, "heart", lay.cell, tag, x, y) % 10) }; };
+  const { w: lw, h: lh } = lay, F = walkField(lay), { solid, dist } = F;
+  const enclosed = (x, y) => { let n = 0; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= lw || Y >= lh || solid[I(lw, X, Y)]) n++; } return n; };
+  const score = (x, y, tag) => { const w = walkNear(F, lay, x, y); if (w < 0) return null; const d = dist[w], ok = d >= 8 && d <= 24; return { x, y, w, d, s: (ok ? 1000 : 0) + enclosed(x, y) * 20 - Math.abs(d - 16) + (hash(seed, "heart", lay.cell, tag, x, y) % 10) }; };
   const best = list => list.map(a => score(a.x, a.y, "a")).filter(Boolean).sort((a, b) => b.s - a.s)[0] || null;
-  const margin = (x, y) => x >= 2 && y >= 2 && x < PW - 2 && y < PH - 2;
+  const margin = (x, y) => x >= 2 && y >= 2 && x < lw - 2 && y < lh - 2;
   let pick = null, kind = null;
   for (const k of KIND_BY_LAND[lay.land] || ["spring"]) {
     if (k === "nest" && anchors.pods && anchors.pods.length) { pick = best(anchors.pods.filter(p => margin(p.x, p.y))); }
     else if (k === "stone" && anchors.stones && anchors.stones.length) { pick = best(anchors.stones.filter(p => margin(p.x, p.y))); }
-    else if (k === "spring") { const open = []; for (let i = 0; i < PW * PH; i++) if (dist[i] >= 0 && margin(i % PW, (i / PW) | 0) && !lay.feats.some(f => f.x === i % PW && f.y === ((i / PW) | 0))) open.push({ x: i % PW, y: (i / PW) | 0 }); pick = best(open); }
+    else if (k === "spring") { const open = []; for (let i = 0; i < lw * lh; i++) if (dist[i] >= 0 && margin(i % lw, (i / lw) | 0) && !lay.feats.some(f => f.x === i % lw && f.y === ((i / lw) | 0))) open.push({ x: i % lw, y: (i / lw) | 0 }); pick = best(open); }
     if (pick) { kind = k; break; }
   }
   if (!pick) return null;   // a place with no walkable ground (never a generator 5 place)

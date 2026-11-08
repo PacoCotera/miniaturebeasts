@@ -380,8 +380,9 @@ export function genCave(seed, cell) {
 }
 
 export function genPlace(G, seed, key) {
-  if (G.gen >= 2) return key[0] === 'c' ? genCave2(seed, +key.slice(1)) : genPatch2(G, seed, +key);
-  return key[0] === 'c' ? genCave(seed, +key.slice(1)) : genPatch(G, seed, +key);
+  const lay = G.gen >= 2 ? (key[0] === 'c' ? genCave2(seed, +key.slice(1)) : genPatch2(G, seed, +key)) : (key[0] === 'c' ? genCave(seed, +key.slice(1)) : genPatch(G, seed, +key));
+  lay.w = PW; lay.h = PH;   // a place carries its own size in tiles; the generated ones, caves included, are 28×32
+  return lay;
 }
 
 // ---- generator 2 (integer only) ----
