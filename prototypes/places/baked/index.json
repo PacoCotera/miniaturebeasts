@@ -1,0 +1,33 @@
+{
+  "formatVersion": 1,
+  "sets": [
+    {
+      "id": "ninja-test",
+      "file": "ninja-test.mbtiles",
+      "bytes": 354344,
+      "sha256": "32cc8dab367d9c3b6ac1f7dc6d6e59a6c3baa7df158db880548703490f84c20c"
+    }
+  ],
+  "places": [
+    {
+      "id": "Test_AllCases",
+      "file": "Test_AllCases.mbplace",
+      "w": 18,
+      "h": 22,
+      "set": "ninja-test",
+      "mirrorOf": "",
+      "bytes": 4052,
+      "sha256": "6ee96b175ae8adbb05f2fe82de2973864197f97326fe9d8468f764f0845d8341"
+    },
+    {
+      "id": "Test_AllCases~x",
+      "file": "Test_AllCases~x.mbplace",
+      "w": 18,
+      "h": 22,
+      "set": "ninja-test",
+      "mirrorOf": "Test_AllCases",
+      "bytes": 4064,
+      "sha256": "53875ae5460cc13d12ed1937449d9ecc269ae246f7c176ac2b0be37a228e6c58"
+    }
+  ]
+}

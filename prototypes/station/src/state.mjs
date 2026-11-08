@@ -165,6 +165,7 @@ export function normalize(st, now = Date.now()) {
   if (st.doorAt === undefined) st.doorAt = null;   /* the sitting's door: null until it first opens on this save (sitting.mjs openSittingDoor); additive, no schema bump */
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   if (!st.libSeen || typeof st.libSeen !== "object") st.libSeen = libSnapshot(st);   /* the looks the Library had shown when it was last opened full screen (build spec 4.2, "new"): a save from before it holds none, so what it knows now is not new; additive, no schema bump */
+  if (!st.taught || typeof st.taught !== "object") st.taught = {}; if (!st.taught.carry || typeof st.taught.carry !== "object") st.taught.carry = {}; if (!Number.isInteger(st.taught.carries)) st.taught.carries = 0;   /* the controls' teaching (taught.carry.{research,habitat,library}, taught.call, the carries made so far): additive, no schema bump */
   st.dock = st.dock || { docked: false, at: now };
   if (!(st.face.room >= 0 && st.face.room < ROOMS_MAX)) st.face.room = 0;   /* the room the whole last showed (additive, no schema bump) */
   for (const r of st.returned) if (r && r.species === undefined) r.species = speciesId(r.sp);   /* a returned pod from before it carried its species: 0-2 resolve, -1 stays null; additive, no schema bump */

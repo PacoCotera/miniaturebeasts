@@ -344,6 +344,8 @@ function lineWords(m, spec, frame, v) {
   if (cur === "room") {
     const W = { strings: { needs: Sg.line.needs } };   // Home's own table: each need's action (the first) and notice (the second), the counts spelled
     if (v.needs.length) return { needs: v.needs.slice(0, spec.regions.line.needs).map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : w.notice; }) };
+    const callLine = frame.strings.teach?.call;   // the first day teaches Call (the controls scheme; the host's m.callTeach): its line takes the goal's place until Call is first pressed
+    if (callLine && m.callTeach) return { goal: { text: callLine, icons: "", plain: callLine } };
     const goal = S.goalKey(m.st, m.sv, m.settings), g = goal && goalWords(goal, !!m.docked, frame);
     return g ? { goal: g } : {};
   }

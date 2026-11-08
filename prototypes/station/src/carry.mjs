@@ -46,6 +46,7 @@ export function subjectOf(m) {
     const cr = ui.create, pod = cr && createPod(st, cr); if (!pod || cr.grown) return null;
     const list = reviewTraits(pod, frameOf(S.speciesOf(pod))), cur = list[clamp(cr.f ?? 0, 0, Math.max(0, list.length - 1))]; return cur ? { kind: "chapter", pod, chapter: cur.c } : null;
   }
+  if (sc === "incubator") { const b = st.bud; return b?.species && frameIds().includes(b.species) ? { kind: "bud", species: b.species } : null; }   // the pod that is growing: the purple key shows its species' page once the species is met
   if (sc === "library") { const id = ui.lib.l1; return id && frameIds().includes(id) && Lib.speciesStatus(st, id) !== "unmet" ? { kind: "species", species: id } : null; }
   if (sc === "library.species") { const id = ui.lib.species; return id && frameIds().includes(id) ? { kind: "species", species: id } : null; }
   if (sc === "library.family") { const id = ui.lib.species, n = ui.lib.l3?.[id]?.node, x = /^node\.(\d+)$/.test(n ?? "") ? livingMibi(st, +n.slice(5)) : null; return x ? { kind: "mibi", mibi: x } : null; }
@@ -65,6 +66,7 @@ export function carryPlan(m, key) {
     if (key === "research") return sub.reading ? null : { act: "read", word: W.read ?? "Read it", pod: p.id };
     return idd && Lib.speciesStatus(st, sid) !== "unmet" ? { act: "page", word: fitWord(m, fill(W.page ?? "{Name} page", { Name: spWord(p) }), W.itsPage ?? "Its page"), species: sid } : null;
   }
+  if (sub.kind === "bud") return key === "library" && Lib.speciesStatus(st, sub.species) !== "unmet" ? { act: "page", word: fitWord(m, fill(W.page ?? "{Name} page", { Name: S.cap(frameOf(sub.species).species.name) }), W.itsPage ?? "Its page"), species: sub.species } : null;
   if (sub.kind === "mibi") {
     const x = sub.mibi, sid = S.speciesOf(x);
     if (key === "habitat") return ui.screen === "habitat" ? null : { act: "close", word: W.look ?? W.visit ?? "Visit", mibi: x.id };
@@ -92,10 +94,12 @@ export function sameAsConfirm(m, plan) {
   if (plan.act === "grow") return m.ui.screen === "pods" && m.ui.pods.verb === "grow";   // the Incubator's picker: ✓ is Grow it
   return false;
 }
-// The bottom line's cues: [{ key, room, word }] in key order, one for each live carry that is not what ✓ says. A carry that was just made shows none for its own key (a second tap is the room's top).
+// The bottom line's cues: [{ key, room, word }] in key order, one for each live carry that is not what ✓ says. A carry that was just made shows its own key as a second-tap cue ({ ..., second: true }: the room's name; a second tap is the room's top).
 export function cuesOf(m) {
   if (m.ui.idle || m.ui.panel || m.ui.hab?.namer) return [];
-  const out = []; for (const key of KEYS) { if (m.ui.carry?.key === key) continue; const c = carryPlan(m, key); if (c && !sameAsConfirm(m, c)) out.push({ key, room: ROOM_MARK[key], word: c.word }); }
+  const out = []; for (const key of KEYS) {
+    if (m.ui.carry?.key === key) { const word = m.specs?.frame?.strings?.answer?.rooms?.[key]; if (word) out.push({ key, room: ROOM_MARK[key], word, second: true }); continue; }   // the key just carried: a second tap is its room's top; its cue is the room's name in mist, the first thing dropped when the line is full
+    const c = carryPlan(m, key); if (c && !sameAsConfirm(m, c)) out.push({ key, room: ROOM_MARK[key], word: c.word }); }
   return out;
 }
 

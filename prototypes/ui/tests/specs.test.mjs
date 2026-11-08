@@ -162,7 +162,7 @@ test("the Station frame's language: the zones of the top bar and the bottom line
   assert.ok(bot[0][0] + bot[0][2] < 400 && 400 < bot[1][0] && bot[1][0] + bot[1][2] < 624 && 624 < bot[2][0], "rules between action, context and notice");
   for (const x of F.separators.x) for (const r of bot) assert.ok(r[0] - x >= 8 || x - (r[0] + r[2]) >= 8, `the rule at ${x} 8 px from the zone ${r} (T7)`);
   assert.equal(F.need.right + F.back.gapBefore, F.back.rect[0], "the notice 16 px before the way back"); assert.equal(F.back.right, 1008); assert.equal(F.subject.rect[0] + F.subject.rect[2] / 2, 512);
-  for (const id of ["frame-room-home-24", "frame-room-research-24", "frame-room-library-24", "frame-room-vivarium-24", "frame-companion-solid-16x24", "frame-companion-outline-16x24", "frame-lamp-8-mint", "frame-lamp-8-stone", "home-lamp-amber-12x12", "home-lamp-hairline-12x12", "home-lamp-sprout-12x12", "home-lamp-sky-12x12", "face-{mibi}-24-away", "face-24-empty", "frame-sun-16"]) assert.ok(JSON.stringify(F.marks).includes(id), "slice " + id);
+  for (const id of ["frame-room-home-24", "frame-room-pods-24", "frame-room-library-24", "frame-room-vivarium-24", "frame-room-call-24", "frame-room-pods-16", "frame-room-pods-22", "frame-companion-solid-16x24", "frame-companion-outline-16x24", "frame-lamp-8-mint", "frame-lamp-8-stone", "home-lamp-amber-12x12", "home-lamp-hairline-12x12", "home-lamp-sprout-12x12", "home-lamp-sky-12x12", "face-{mibi}-24-away", "face-24-empty", "frame-sun-16"]) assert.ok(JSON.stringify(F.marks).includes(id), "slice " + id);
   assert.deepEqual(Object.keys(F.marks.lamp12).sort(), ["needsYou", "off", "waiting", "well"]);
   assert.equal(F.top.readout.gap, 12, "title → readout 12 (T8)"); assert.equal(F.top.slice, "frame-top-bar-1024x40"); assert.equal(F.line.slice, "frame-bottom-line-1024x38");
   assert.equal(F.marks.scale, "never");
@@ -177,8 +177,10 @@ test("the Station frame's language: the zones of the top bar and the bottom line
   assert.deepEqual(F.back.rect, [920, 570, 88, 24]); assert.equal(F.back.room, F.back.rect[2] - F.back.cap[0] - F.back.capGap); assert.deepEqual(F.need.rect, [632, 570, 272, 24]); assert.equal(F.need.right, F.need.rect[0] + F.need.rect[2]);
   assert.deepEqual(Object.keys(F.marks.room).filter((k) => k !== "size").sort(), ["home", "library", "research", "vivarium"], "four room marks, one per coloured key");
   for (const [screen, room] of Object.entries(F.title.marks)) assert.ok(F.marks.room[room.toLowerCase()], `${screen}: its mark ${room} is a key's icon`);
-  assert.equal(F.title.marks.cargo, "Home", "Cargo carries Home's mark"); for (const k of ["vivarium", "habitat", "cross", "sitting"]) assert.equal(F.title.marks[k], "Vivarium", k);
+  assert.equal(F.title.marks.cargo, "Home", "Cargo carries Home's mark"); for (const k of ["vivarium", "habitat", "cross", "sitting", "create", "incubator"]) assert.equal(F.title.marks[k], "Vivarium", k);   // green leads into Create and the Incubator: the mark is the key pressed (controls scheme)
   for (const k of Object.keys(F.title.marks)) assert.ok(frame.strings.titles[k], "a title slot for " + k);
+  { const home = rd("../specs/station/home.json"), P = home.regions.cap.marks; assert.equal(home.regions.cap.size, 22, "Home's panels wear 22 px caps (the controls scheme)");
+    for (const r of ["home", "research", "library", "vivarium"]) assert.match(P[r], /^frame-room-(home|pods|library|vivarium)-22$/, r); }
 });
 
 // The wireframe's measured boxes, as the Home test reads them: each <rect> back to [x, y, w, h].
