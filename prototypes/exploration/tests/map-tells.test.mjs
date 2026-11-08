@@ -106,3 +106,64 @@ test("the map has no quarter and keeps the shimmer's picture on the Probe screen
   assert.equal(p.run("SIGN['m:sh'].line()"), "Shimmer · water nearby");
   assert.equal(HEART_TEXT.band.tell.sh, "Water glints");
 });
+
+// ---- scheme map-fog-tells §3: one sign per kind besides your own cell's, sticky, never on a cell that is not a choice ----
+const NOT_OWN = "shownTells().filter(t => !t.own)";
+test("at set-out the shown tells hold at most one per kind besides your own cell, and one lies within one cell of the start (seeds 1 to 200)", () => {
+  const p = makePage({ console: "silent" });
+  for (let seed = 1; seed <= 200; seed++) {
+    p.run(`newWorld(${seed}); TEST.calm = true; startExpedition('weather', G.spawns[0]);`);
+    const all = plain(p.run("shownTells()")), others = all.filter((t) => !t.own), kinds = others.map((t) => t.kind);
+    assert.equal(new Set(kinds).size, kinds.length, `seed ${seed}: one per kind ${kinds}`);
+    assert.ok(all.some((t) => plain(p.run(`cheb(cxy(${t.c}), cxy(S.exp.start))`)) <= 1), `seed ${seed}: a shown tell within one cell of the start`);
+    p.run("S.exp = null; S.phase = 'setup'");
+  }
+});
+
+test("never a tell on a cell that is unseen, found, fogged, gated or out of reach", () => {
+  const p = makePage({ console: "silent" });
+  for (const seed of [3, 7, 13, 42, 5, 9, 11, 19]) {
+    p.run(`newWorld(${seed}); TEST.calm = true; startExpedition('weather', G.spawns[0]);`);
+    const bad = plain(p.run(`${NOT_OWN}.filter(t => !S.revealed[t.c] || heartFound(t.c) || inFog(t.c) || gatedCell(t.c) || !S.exp.reach.includes(t.c) || t.c === S.exp.pos)`));
+    assert.deepEqual(bad, [], "seed " + seed);
+    p.run("S.exp = null; S.phase = 'setup'");
+  }
+});
+
+test("a shown sign does not move when you step, unless it became invalid; stepping onto a pick hands that kind to the next place", () => {
+  const f = fixture({ canvas: true }), run = f.run;
+  run("S.exp.patch = null; S.phase = 'map'; S.exp.fog = null; S.exp.storm = null; for (const c of S.exp.reach) S.revealed[c] = 1; pickTells(S.exp);");
+  let stepped = 0, onto = 0;
+  for (let n = 0; n < 12 && stepped < 6; n++) {
+    const before = plain(run(NOT_OWN)), dirs = plain(run("['up', 'right', 'down', 'left'].filter(d => canStep(S.exp.pos, d)).map(d => [d, stepCell(S.exp.pos, d)])"));
+    if (!dirs.length) break;
+    const pickCells = new Set(before.map((t) => t.c)), step = dirs.find(([, to]) => pickCells.has(to)) || dirs[n % dirs.length];
+    run(`mapStep('${step[0]}')`); if (plain(run("S.phase")) !== "map" || !run("!!S.exp")) break; stepped++;
+    const after = plain(run(NOT_OWN)), pos = run("S.exp.pos");
+    for (const b of before) {
+      const a = after.find((t) => t.kind === b.kind), valid = plain(run(`tellPickValid(S.exp, '${b.kind}', ${b.c})`));
+      if (valid) assert.equal(a && a.c, b.c, `a ${b.kind} sign stays at ${b.c} after a step`);
+      else { onto += b.c === pos ? 1 : 0; assert.ok(!a || a.c !== b.c, "a pick that is not valid is made again"); }
+    }
+  }
+  assert.ok(stepped >= 1, "the walk stepped");
+});
+
+test("band line 2 names a shown sign's cell, and the glyph is that sign's kind", () => {
+  const f = fixture({ canvas: true }), run = f.run;
+  run("S.exp.patch = null; S.phase = 'map'; S.exp.fog = null; S.exp.storm = null; for (const c of S.exp.reach) S.revealed[c] = 1; pickTells(S.exp);");
+  const t = plain(run("nearestTell()"));
+  if (!t) return;
+  assert.ok(plain(run(NOT_OWN)).some((s) => s.c === t.c && s.kind === t.kind), "the nearest tell is a shown sign");
+  assert.equal(run("bandTell().kind"), t.kind, "the band's glyph is its kind");
+});
+
+test("a moment heart shows the paw on the map (generator 6)", () => {
+  let seen = 0;
+  for (const seed of [7, 13, 42, 3, 5, 9]) {
+    const p = makePage({ gen: 6, console: "silent" }); p.run(`newWorld(${seed}); TEST.calm = true;`);
+    const cells = plain(p.run("(() => { const o = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && G.land[c] !== L.WATER && passable(c)) { const h = heartOf(String(c)); if (h && h.kind === 'moment') o.push(c); } return o; })()"));
+    for (const c of cells) { assert.equal(p.run(`heartTellKind(${c})`), "t", "cell " + c); seen++; }
+  }
+  assert.ok(seen > 5, "moment hearts exist on the tested seeds: " + seen);
+});

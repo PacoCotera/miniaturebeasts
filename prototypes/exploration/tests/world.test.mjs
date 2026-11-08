@@ -1015,7 +1015,7 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // ---- golden frames: FNV of the 450×600 screen ----
 // The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
-const MAIN_FRAMES = { cave: 2763330596, place32: 1284530620, map: 2508564550 };   // cave and place32 are main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
+const MAIN_FRAMES = { cave: 3567260746, place32: 1284530620, map: 491298466 };   // C15: the cave frame is the reach view too (phase map) and the map the reach view: both re-captured when the fog dots came in (the pending outline went); place32 is main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
 const GOLDEN48 = { faceStair: 1781723947, gen1: 1254856577, corner: 1819452261 };   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y) {
   const p = page48(seed);

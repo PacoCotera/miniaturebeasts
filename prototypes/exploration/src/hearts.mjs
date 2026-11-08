@@ -10,6 +10,10 @@ export const ANSWER_ACTIONS = 3;   // a Call makes the tells inside its ring ans
 export const SPRING_ESSENCE = 3;   // [tune] the spring pays once, nothing refills (canon check)
 export const CALL_R_PLACE = 7;     // [tune] a Call's round in a place; 4 in a fog bank, 6 with a glowing partner
 export const CALL_R_FOG_PLACE = 4, CALL_R_FOG_GLOW = 6;
+// The map's fog over places (scheme: map-fog-tells): night dots out of 16 on a cell you have never been into, and on one you have been into but not found. A found place is clear. [tune]
+// Chosen at 1x on a lime meadow cell and a dark wood cell (6/3 greyed the land; 3/1 left not-been and been 11 luma apart on lime): 4/1 keeps lime olive-green and the three states about 22 luma apart.
+export const FOG_NOT_BEEN = 4, FOG_BEEN = 1;
+export const TELL_RANK = ['t', 'b', 'k', 'sh'];   // a map tell's kinds, rarest first: paw, beat, bolt, shimmer (the tie-break of the band's line)
 
 // The kinds a place type draws from, in order of preference: the first one with something to anchor to.
 export const KIND_BY_LAND = { [L.MEADOW]: ["spring"], [L.POND]: ["nest", "spring"], [L.ROCK]: ["stone", "nest", "spring"], [L.WOOD]: ["nest", "stone", "spring"] };
