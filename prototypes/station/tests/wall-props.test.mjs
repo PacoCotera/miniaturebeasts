@@ -293,7 +293,7 @@ test("Cross on the card: held on a breather with the spec's words, live otherwis
   for (const x of [oak, elm, wren, moss, pip, sky]) x.restUntil = 0; v.last = fen.id; v.f = "plate.4"; INTENTS.vivarium.intent(h, "plate.4", "confirm");
   assert.deepEqual([v.pair, v.f, v.last], [{ a: fen.id }, "cell." + moss.id, moss.id], "the pick opens on the first partner");
   press(h, "left"); assert.equal(v.nudge, "left", "the rail is held: ◀ at the wall's edge nudges"); press(h, "up"); assert.equal(v.nudge, "up", "and so is the toolbar");
-  const at = v.f; INTENTS.vivarium.intent(h, v.f, "confirm"); assert.equal(v.f, at, "✓ on a partner is ✓ on See this pair: the ring stays"); assert.equal(h.said.at(-1), "The forecast is not open yet", "held: the plate's message");
+  const at = v.f; INTENTS.vivarium.intent(h, v.f, "confirm"); assert.equal(v.f, at, "✓ on a partner is ✓ on See this pair: the ring stays"); assert.deepEqual([h.went.at(-1), h.ui.cross.aId, h.ui.cross.bId, h.ui.cross.state], ["cross", fen.id, moss.id, 0], "the door is open: See this pair opens the Cross on the pair, on the overview"); h.ui.cross = null; h.ui.screen = "vivarium";
   INTENTS.vivarium.intent(h, v.f, "back"); assert.deepEqual([v.pair, v.f, v.last], [null, "plate.4", fen.id], "Cancel: the Wall, the ring on Breed, the card on Fen");
 });
 

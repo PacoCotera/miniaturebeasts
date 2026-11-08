@@ -96,7 +96,7 @@ test("R4b-1b one mibi up close, a carried mibi (state out): the glass draws the 
     assert.deepEqual(d.gate, [d.wild[0] + d.g.at[0], d.wild[1] + d.g.at[1], 48, 48], "the Wild gate dimmed"); assert.deepEqual(d.frame, [d.ports[0] + d.fr.at[0], d.ports[1] + d.fr.at[1], 48, 40], "the Portrait frame dimmed");
     assert.ok(d.face && d.face[2] === 24, "a Cross face dimmed");
   }
-  const h = scene({ focus: "resident", adults: 4 }), g = await start(h, { node: true }); assert.equal(h.props.state, "rest"); assert.equal(g.nodeBox("resident.out")?.box[2] ?? 0, 0, "at home no out mark is drawn"); assert.equal(g.nodeBox("wild.gate.dither"), null, "at home the Wild gate is live: nothing dimmed"); for (const id of ["portrait.frame.dither", "cross.face.0.dither"]) assert.ok(g.nodeBox(id), `${id}: R6, the house rule: the empty Portrait and the shut Cross are drawn held before they are focused`);
+  const h = scene({ focus: "resident", adults: 4 }), g = await start(h, { node: true }); assert.equal(h.props.state, "rest"); assert.equal(g.nodeBox("resident.out")?.box[2] ?? 0, 0, "at home no out mark is drawn"); assert.equal(g.nodeBox("wild.gate.dither"), null, "at home the Wild gate is live: nothing dimmed"); assert.ok(g.nodeBox("portrait.frame.dither"), "R6, the house rule: the empty Portrait is drawn held before it is focused"); assert.equal(g.nodeBox("cross.face.0.dither"), null, "the door is open: Cross is live at home, nothing dimmed");
 });
 
 test("the departure check bites: the card moved, a plate off its pitch, a module off its rectangle, the name tag off the glass, a word past the field are each found", { skip }, async () => {

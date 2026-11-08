@@ -22,6 +22,7 @@ import { libraryStates } from "./library-states.mjs";
 import { benchStates } from "./bench-states.mjs";
 import { sittingStates } from "./sitting-states.mjs";
 import { settingsStates } from "./settings-states.mjs";
+import { crossStates } from "./cross-states.mjs";
 
 const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), longNames = process.argv.includes("--long-names"), check = process.argv.includes("--check") || longNames;   // --long-names: the states drawn again with the longest names of the live list (station-page.mjs), for the layout check's long-names pass only: nothing written, no hash compared (the hashes are not the goldens')
 if (longNames) { process.env.LONG_NAMES = "1"; if (!process.argv.includes("--logs")) { console.error("--long-names needs --logs <dir>"); process.exit(2); } }
@@ -39,6 +40,7 @@ const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' gold
   bench: { states: benchStates, prefix: "", note: "The Probe bench: docked with the ring on the plates, the upgrade armed, the Probe away, and the upgrade fitted" },
   sitting: { states: sittingStates, prefix: "", note: "The sitting (S02 adult Dot, noon, reduced motion unless timed): the pose step (three habits, the curl, one habit, a juvenile), the place step (two places, at night, five places), the confirm step (at rest, armed), begin at 150 ms (motion on, virtual clock), the portrait (the bone canvas at 528×392) and a long name" },
   settings: { states: settingsStates, prefix: "", note: "The hold ring (frame.json hold) on a calm screen, behind the developer setting realmSleep: at 0, 1000, 2000 and 3000 ms of ✓ held, 150 ms after letting go, and the reduced-motion quarters" },
+  cross: { states: crossStates, prefix: "", note: "The Cross screen: the overview (every chapter read, one parent short, a pinned look), one chapter under the rail (the Coat, the Face, the Shape, one a parent has not read, with the wish), a family pair, a pair that cannot pay, the incubator busy, a partner away, and no partner" },
   idle: { states: idleStates, prefix: "", note: "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk" } };
 const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length ? want : Object.keys(SCREENS);
 const SETTLE = new Set(["pods"]);   // the screens whose states are taken on the real clock with their events over (the others take timed instants on a virtual clock, or have none open)

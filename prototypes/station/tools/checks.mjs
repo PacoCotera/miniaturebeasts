@@ -100,6 +100,9 @@ for (const s of rec.shots) {
     const d = keep(libraryDepartures(lg, librarySpec, c.lib.props, c.lib.cur)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "habitat" && c.hab) {   // one mibi up close: every region of the face's log against habitat.json (and namer.json while the namer is open) (face/tools/habitat-regions.mjs): zero departures
     const d = keep(habitatDepartures(lg, habitatSpec, namerSpec, c.hab.state, c.hab.cur, c.hab.n, c.hab.open)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+  } else if (c.screen === "cross" && c.props && c.props.state !== "notBuilt") {   // Cross: the splice (cross.json): the bench, the heads and the ring on the partner; the state the props name; nothing refused
+    must(["overview", "chapter"].includes(c.props.state) && got("chrome", "focus").length === 1 && got("chrome", "bench").length >= 1, `Cross draws the bench, its state (${c.props.state}) and one ring on the partner`);
+    if (c.props.state === "chapter") must(!!(lg.regions ?? []).some((r) => r.id.startsWith("rail")), "the chapter view draws the shared rail");
   } else if (c.screen !== "pods" || c.props?.state === "notBuilt") {   // a screen the face has no words for: the frame, the stage in the ground and the line, centred on 512 with its cap top on 288
     must(c.props?.state === "notBuilt", `${c.screen} is not built and sends state notBuilt`);
     one("chrome", "notBuilt.stage", F.stage.rect, "the stage ground");
@@ -126,7 +129,7 @@ for (const s of rec.shots) {
     for (const [layer, id] of ids) if (!shots.some((x) => (x.check.log?.regions ?? []).some((r) => r.id === id && r.layer === layer))) fail(`Pods in its ${mode} state: no drawn region "${id}" on the ${layer} layer in any of its ${shots.length} screenshot points`); }
   regionsChecked++; }
 for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) fail(`no screenshot point records Home as ${pt}`);
-for (const screen of ["cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
+for (const [name, state] of [["cross-screen-overview", "overview"], ["cross-screen-chapter", "chapter"]]) if (!rec.shots.some((x) => x.name === name && x.check.screen === "cross" && x.check.props?.state === state)) fail(`no screenshot point records the Cross screen as ${state}: ${name}`);
 if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
 for (const [pt, state] of [["page-bench", "docked"], ["page-bench-panel-upgrade", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "all"], ["page-library-spread", "all"], ["page-vivarium", "wall"], ["page-vivarium-away", "wall"], ["page-vivarium-empty", "none"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
 // the moving sets (vivarium-regions): every resident's drawn box, at every cell's lift and dy (the hop's lift, a pass's rise, the crouch lowered 2 px), stays inside its window on the whole and Idle; up close and in the hatch

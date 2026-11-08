@@ -1,4 +1,4 @@
-// The hold ring in each of its capture points on the Station page (?test): the ring drawn over a screen that is not built yet (a calm ground), with the developer setting realmSleep on and UI.hold set, as a plate that holds
+// The hold ring in each of its capture points on the Station page (?test): the ring drawn over a calm screen (Cross with no partner: the head and its line; no screen is left unbuilt), with the developer setting realmSleep on and UI.hold set, as a plate that holds
 // ✓ will set them. ✓ is pressed and released through the page's own keys; the clock is virtual, so a frame is taken at an exact instant: `hold-0ms`, `hold-1000ms`, `hold-2000ms`, `hold-3000ms` (full, the intent said),
 // and Settings itself (settings.json) with the developer setting realmSleep on: each row focused (`settings-realm`, `settings-companion`, `settings-sleeping-none`), the sleep row focused with the Companion docked and keyed, lifted, and docked with no key the Station trusts.
 // `hold-release-150ms` (✓ let go at 1500 ms, 150 ms later), and with reduced motion `hold-quarter-1` to `hold-quarter-3` (the fill in quarters). Returns { fails }.
@@ -6,7 +6,7 @@ import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
 
 async function arm(page, step) {
-  await page.evaluate(() => { const S = window.__st; S.settings.realmSleep = true; S.UI.hold = true; S.UI.idle = false; S.goto("cross"); });
+  await page.evaluate(() => { const S = window.__st; S.settings.realmSleep = true; S.UI.hold = true; S.UI.idle = false; if (!S.ST.mibis.length) S.seedAdults("S01", 5, 1); S.UI.cross = { aId: S.ST.mibis[0].id, bId: null, state: 0, fc: null, clash: [] }; S.goto("cross"); });   // a calm ground: Cross with no partner (no screen is left unbuilt)
   await step(400);
   const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, hold: !!window.__st.props?.frame?.hold })); return u;
 }

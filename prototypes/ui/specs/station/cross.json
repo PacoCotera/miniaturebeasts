@@ -19,8 +19,22 @@
   "back": "{name} (frame.json navigation.screens.cross)",
   "room": "drops the unpaid choices; coming back starts fresh on the overview (frame.json navigation.leaving.cross)"
  },
- "focus": { "one": "the focus ring stays on the partner's head in both states; ◀ ▶ change what it holds. The open chapter is the rail's open tab, not a second ring" },
+ "focus": {
+  "one": "the focus ring stays on the partner's head in both states; ◀ ▶ change what it holds. The open chapter is the rail's open tab, not a second ring",
+  "initial": "partner", "fallback": "none",
+  "graph": { "partner": { "stepper": ["left", "right", "up", "down"] } },
+  "targets": { "partner": { "group": "partner", "shape": { "rect": 8 }, "box": "regions.heads.<state>.b.ring (the partner's head, the ring of the state shown)", "lift": 0, "note": "the ring never leaves the head, so it does not lift" } },
+  "stepper": "architect, 2026-10-09 13:24 (as Create's roll): a stepper key sends intent `step:<key>`, the ring stays and no focus message goes. ◀ ▶ pick the partner, ▲ ▼ walk the states",
+  "vectors": [
+   { "from": "partner", "key": "left", "intent": "step:left", "to": "partner" },
+   { "from": "partner", "key": "right", "intent": "step:right", "to": "partner" },
+   { "from": "partner", "key": "up", "intent": "step:up", "to": "partner" },
+   { "from": "partner", "key": "down", "intent": "step:down", "to": "partner" },
+   { "from": "partner", "key": "confirm", "intent": "confirm", "to": "partner" }
+  ]
+ },
  "bottomLine": {
+  "verb": "Cross them",
   "action": "✓ Cross them, then the cross's price (state.crossCost), icon before figure as on every Station screen: ⚡ 2 ❀ 4",
   "context": { "overview": "{a} × {b} · {species}", "chapter": "{chapter} · {a} × {b}" },
   "notice": "the first missing read, in ring order: \"read {parent}'s {chapter}\", or \"read both parents' {chapter}\" when both lack it; when nothing is missing, the kinship word (state.kinshipWord) if the kinship is above 0; otherwise none. A refusal (state.crossBlock) takes the notice and the ✓ cap goes; a family pair (direct kin, owner 2026-11-03) is one, with the line \"family · find a partner on a walk\" and no seeds drawn",
@@ -39,7 +53,7 @@
     "b": { "portrait": [960, 104, 48, 48], "name": [752, 104, 200, 24], "line": [752, 128, 200, 20], "ring": [748, 100, 264, 56], "lineWords": "◀ ▶ picks one, or \"no adult of its kind\"" },
     "child": { "ghost": [368, 104, 48, 48], "words": [424, 104, 192, 20], "kin": [424, 128, 0, 24] }
    },
-   "type": { "name": { "px": 20, "weight": 500, "colour": "bone", "b": "right-aligned to 952" }, "line": { "px": 16, "colour": "mist" }, "words": { "px": 16, "colour": "bone", "text": "the child to be" } },
+   "type": { "kinPad": 8, "name": { "px": 20, "weight": 500, "colour": "bone", "b": "right-aligned to 952" }, "line": { "px": 16, "colour": "mist" }, "words": { "px": 16, "colour": "bone", "text": "the child to be" } },
    "portrait": "the parent's painted set at 48×48, rendered at its size (paintedArt), else its placeholder rendered at 48 (mibiArt); never scaled up",
    "ghost": "the child to be, ghostArt at 48×48: never a promise",
    "kinPill": "a hugging plate: `amber` fill, 8 px pad, 24 tall (w 0 = hug), the kinship word in 16 px `ink`; shown at every kinship, 0 included (\"no kin in common\")",
@@ -106,6 +120,7 @@
  },
  "colours": {
   "_note": "names of prototypes/ui/palettes/station.json; the build never recolours a master",
+  "headNone": "slate", "rule": "hairline", "plate": { "fill": "panel", "chipEdge": "ink" },
   "wire": { "switch": "lilac", "blend": "aqua", "settled": "bevel", "unread": "frostS", "sealed": "hairline" },
   "band": { "fill": "teal", "edge": "aqua" },
   "kinship": "amber",
