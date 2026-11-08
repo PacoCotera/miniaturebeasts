@@ -381,17 +381,22 @@ static int mv_trip(mv_t *m, int reach, int lvl) {
   unsigned q = mr(m); int nl = room_levels(), tlv = m->lv, jn = -1, rt[2][2][2] = { { { 0 } } };
   if (lvl && nl > 1 && q % (unsigned)g_lvin == 0) { int to = m->lv ? 0 : 1 + (int)((q / (unsigned)g_lvin) % (unsigned)(nl - 1)); if ((to == 0 || raised_ok(m->id)) && (jn = room_route(m->lv, to, rt)) >= 0) tlv = to; }
   int ax = rt[0][0][0] - m->fw / 2, af = rt[0][0][1], bx = rt[1][0][0] - m->fw / 2, bf = rt[1][0][1];
+  int ok0 = 0, fb = 0, fwx = 0, fwf = 0;
   for (int i = 0; i < 8 && !ok; i++) {
     unsigned a = mr(m), b = mr(m);
     if (tlv == m->lv) {
       if (r > 0) lvl_draw(tlv, a, b, m->fw, m->x - r, m->x + r, m->feet - r, m->feet + r, &wx, &wf); else lvl_draw(tlv, a, b, m->fw, WIDE, WIDE, &wx, &wf);
       int dx = wx - m->x, dy = wf - m->feet, M = iabs(dx) > iabs(dy) ? iabs(dx) : iabs(dy);
-      ok = M >= 32 && (reach <= 0 || M <= reach) && gok(tlv, wx, wf, m->fw, 0) && path_ok(tlv, m->x, m->feet, wx, wf, m->fw, 0) && !spot_taken(m, wx, wf, m->fw) && (g_stw <= 0 || heap_hide(m->id, wx, wf, m->fw, m->fh) <= 200);   /* L4b2: nor to stand over, or under, another by more than a fifth */
+      ok0 = M >= 32 && (reach <= 0 || M <= reach) && gok(tlv, wx, wf, m->fw, 0) && path_ok(tlv, m->x, m->feet, wx, wf, m->fw, 0) && !spot_taken(m, wx, wf, m->fw);
     } else {
       lvl_draw(tlv, a, b, m->fw, WIDE, WIDE, &wx, &wf);
-      ok = gok(tlv, wx, wf, m->fw, 0) && path_ok(m->lv, m->x, m->feet, ax, af, m->fw, 1) && path_ok(tlv, bx, bf, wx, wf, m->fw, 1) && !spot_taken(m, wx, wf, m->fw) && (g_stw <= 0 || heap_hide(m->id, wx, wf, m->fw, m->fh) <= 200);
+      ok0 = gok(tlv, wx, wf, m->fw, 0) && path_ok(m->lv, m->x, m->feet, ax, af, m->fw, 1) && path_ok(tlv, bx, bf, wx, wf, m->fw, 1) && !spot_taken(m, wx, wf, m->fw);
     }
+    /* L4b2: a waypoint that stands over, or under, another figure by more than a fifth is the last choice: the first valid draw is kept and used only when no draw is clear (a trip that is refused leaves the travelling count under its floor, G10) */
+    ok = ok0 && (g_stw <= 0 || heap_hide(m->id, wx, wf, m->fw, m->fh) <= 200);
+    if (ok0 && !fb) { fb = 1; fwx = wx; fwf = wf; }
   }
+  if (!ok && fb) { ok = 1; wx = fwx; wf = fwf; }
   if (!ok) return 0;
   m->tlv = tlv; m->jn = jn; m->tx = wx; m->tf = wf; m->leg = 0;
   if (tlv == m->lv) mv_seg(m, wx, wf);
