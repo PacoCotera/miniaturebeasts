@@ -115,13 +115,15 @@ static void build_traitLine(void) {
   if (cross) line = s + 4;   /* the ✕ is the icon's own node, ahead of the words */
   if (clash) price[0] = 0;   /* a blocked grow carries no price on the line */
   int lw = v_run_width(line, px), bw = doing ? v_sk(C, "regions.traitLine.breedMark.size", 0) : 0, bg = v_si(C, "regions.traitLine.breedMark.gap", 8);
-  int sg = v_si(C, "regions.traitLine.price.sepGap", 7), sw = price[0] ? v_measure("\xc2\xb7", px) : 0, pw = price[0] ? v_run_width(price, px) : 0;   /* the change's price: · (fog) then the same inline ◆ and figure as the bottom line, 7 px either side of the dot */
-  int total = (cross ? ic : 0) + lw + (price[0] ? sg + sw + sg + pw : 0) + (bw ? bg + bw : 0), x = cx - v_half(total), top = v_cap_top(v_si(C, "regions.traitLine.lineTop", 202), V_ANCHOR_LINE, px);
+  char both[40]; snprintf(both, sizeof both, "\xc2\xb7%s", price);   /* the dot and the price run measured together: the dot's own width plus the run's (the icon is its own piece) */
+  int sg = v_si(C, "regions.traitLine.price.sepGap", 7), tail = price[0] ? v_run_width(both, px) : 0;   /* the change's price: · (fog) then the same inline ◆ and figure as the bottom line, 7 px either side of the dot */
+  int total = (cross ? ic : 0) + lw + (price[0] ? sg + tail + sg : 0) + (bw ? bg + bw : 0), x = cx - v_half(total), top = v_cap_top(v_si(C, "regions.traitLine.lineTop", 202), V_ANCHOR_LINE, px);
   v_name("traitLine"); v_slot("traitLine.cross", "icon-cross-16", NULL, x + 2, r[1] + v_fdiv(r[3] - 16, 2), px, px, cross); if (cross) x += ic;
   v_region("traitLine", LAYER_TYPE); v_text("traitLine.text", line, x, top, lw, px, v_scol(C, clash ? "colours.traitLine.clash" : "colours.traitLine.line")); x += lw;
-  v_text("traitLine.sep", price[0] ? "\xc2\xb7" : "", x + sg, top, sw, px, v_sstr(C, "regions.traitLine.price.sepColour"));
-  { const char *bone = v_sstr(C, "regions.traitLine.price.colour"), *cols[V_PRICE_N] = { bone, bone, bone, bone }; char c0[24]; snprintf(c0, sizeof c0, "%s", bone); cols[0] = cols[1] = cols[2] = cols[3] = c0;
+  int sw = v_line_at("traitLine.sep", price[0] ? "\xc2\xb7" : "", x + sg, v_si(C, "regions.traitLine.lineTop", 202), V_ANCHOR_LINE, px, v_sstr(C, "regions.traitLine.price.sepColour"), V_ALIGN_LEFT);
+  { char c0[24]; snprintf(c0, sizeof c0, "%s", v_sstr(C, "regions.traitLine.price.colour")); const char *cols[V_PRICE_N] = { c0, c0, c0, c0 };
     v_price("traitLine.price", price, x + sg + sw + sg, top, px, cols, c0); }
+  x += price[0] ? sg + tail + sg : 0;
   v_name("traitLine"); v_slot("traitLine.breed", breed, NULL, x + bg, r[1] + v_fdiv(r[3] - v_sk(C, "regions.traitLine.breedMark.size", 1), 2), bw ? bw : 28, v_sk(C, "regions.traitLine.breedMark.size", 1), bw);
 }
 /* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; in grow the stamp prints its cells row by row from the top over `steps.0.ms` (N + 2 rows of `cell` px, whole rows); nothing read: no label is drawn */

@@ -227,7 +227,7 @@ test("the count is a fact, never n of N: pods and species; a filter says how man
   assert.equal(inv(model(st, {}, "sort")).detail.right, "12 pods · 4 species");
   assert.equal(inv(model(st, { chips: ["S02"] }, "card.0")).detail.right, "3 of 12 · Untuva");
   assert.equal(inv(model(st, { chips: ["S02", "unread"] }, "card.0")).detail.right, "3 of 12 · Untuva, unread");
-  assert.equal(inv(model(home(1), {}, "card.0")).detail.right, "1 pod · 1 species", "one pod");
+  assert.equal(inv(model(home(1), {}, "sort")).detail.right, "1 pod · 1 species", "one pod");
   const none = inv(model(home(0), {}, "sort")); assert.deepEqual([none.detail.right, none.empty, none.tools.dim, none.tools.sort, none.verbs], ["", ["No pods yet", "Expeditions bring pods home"], true, "nothing to sort yet", []], "no pods: no verbs, the empty seat and its lines");
   assert.deepEqual(inv(model(st, { chips: ["S04", "sealed"] }, "filter")).empty, ["No pods match", "Change Filter or Find to see more"]);
 });
