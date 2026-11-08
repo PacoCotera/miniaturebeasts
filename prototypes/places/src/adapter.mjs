@@ -6,7 +6,7 @@ import { T, T_BLOCK, L, PW, PH, hash } from '../../exploration/src/world.mjs';
 import { heartPath } from '../../exploration/src/hearts.mjs';
 
 const LAND = { pond: L.POND, rock: L.ROCK, wood: L.WOOD, meadow: L.MEADOW };
-export const HEART_KINDS = ['nest', 'stone', 'spring'];   // what the page's rules know today; "moment" waits for its own chunk
+export const HEART_KINDS = ['moment', 'nest', 'stone', 'spring'];   // what the page's rules know
 
 export function arrivalCell(o, w, h) {
   const mid = (o.from + o.to) >> 1;
@@ -72,5 +72,6 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const wp = heartPath(lay, x, y);
   const clues = place.clues.length ? place.clues[0].points.map((p) => ({ x: p.x + ox, y: p.y + oy })) : wp.clues;
   lay.heart = { x, y, kind, reachBy: hh.reachBy === 'none' ? null : hh.reachBy, path: wp.path, clues };
+  if (kind === 'moment') { lay.heart.species = (fill && fill.heart.species) || hh.species || []; lay.heart.line = (fill && fill.heart.line) || hh.revealLine || ''; }
   return lay;
 }

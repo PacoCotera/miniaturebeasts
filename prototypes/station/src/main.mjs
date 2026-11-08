@@ -28,7 +28,7 @@ import { CORE, hooks, loadFrames, bootAssets, startFace, pump, tick, act, releas
 const $ = (id) => document.getElementById(id);
 const vis = $("screen");   // the page's screen: the face copies what it redrew onto it (face.display)
 const bootEl = $("boot");
-if (new URLSearchParams(location.search).has("dev")) $("devBtn").hidden = false;   // the Developer tools button is for ?dev only (the Shift+T key stays on the play page)
+$("devBtn").hidden = false;   // the Developer tools button always shows on the sandbox (owner 2026-11-08); ?dev also opens the panel at load
 
 // --- the loop (core.mjs): what the page owns goes in through its hooks ---
 let dockElsewhere = false;   // ?embed: the play page's Dock control asked while another device had the keys (frame.json navigation.dock); never set standalone

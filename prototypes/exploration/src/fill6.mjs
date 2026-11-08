@@ -6,7 +6,7 @@
 // A find slot's kinds index the FindKind enum (pod, fruit, dew, stone, material); its chance is the odds the slot holds anything this world.
 import { hash } from './world.mjs';
 
-export const HEART_KINDS6 = ['nest', 'stone', 'spring'];   // the kinds the page plays today; "moment" waits for its own chunk (hearts.mjs)
+export const HEART_KINDS6 = ['moment', 'nest', 'stone', 'spring'];   // the kinds the page plays (hearts.mjs); a moment is a creature at its act, at the heart's spot
 const FIND = ['pod', 'fruit', 'dew', 'stone', 'material'];
 
 // The name's index in the template's list for a cell: the cells of its land type, in order, take the names in turn from a seeded start.
@@ -49,5 +49,5 @@ export function fillPlace6(G, seed, cell, place) {
   if (cell === G.gate) specials.push({ id: 'g', kind: 'g' });
   if (cell === G.deep) specials.push({ id: 'd', kind: 'd' });
   const second = hash(seed, 'pods6', cell) % 100 < 20;   // a nest heart holds a second pod one time in five [tune]
-  return { name: place.names[nameIndex6(G, seed, cell, place.names.length)], heart: { kind, second: kind === 'nest' && second }, feats, podSlots, specials };
+  return { name: place.names[nameIndex6(G, seed, cell, place.names.length)], heart: { kind, second: kind === 'nest' && second, ...(kind === 'moment' ? { species: place.heart.species || [], line: place.heart.revealLine || '' } : {}) }, feats, podSlots, specials };
 }
