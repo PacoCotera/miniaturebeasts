@@ -1245,7 +1245,38 @@ function checkHeart() {
   logEv('Found a place · ' + h.kind + (got ? ' · +' + got + ' Data' : ''));
   fxMsg((h.kind === 'moment' ? momentLine(lay, h) : HEART_TEXT.foundMsg[h.kind]) + (got ? ' · +' + got + ' Data' : ''), 3);
   pickTells(ex);
+  { const bk = bakedView(lay); if (bk && !lay.cave) { const veiled = placeVeil(lay); S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); startView('reveal', lay, { veiled }); } }   // the reveal: the whole place's veil is lifted (W§4) and the view shows it
 }
+// ---------- Seeing the place (walk slice W§4): the arrival look, Look over the place, the reveal ----------
+// All three draw the whole place at 24 px from the baked place's half-scale render (places/src/page.mjs). They are views over a place (RT.view, never saved);
+// a press is consumed by them and never reaches the walking view; they spend no action. Only a baked place has them (a generated place has no 24 px picture).
+const REVEAL_MS = 1500, ARRIVE_HOLD_MS = 1200, ARRIVE_STEP_MS = 120;   // [tune]
+const VIEW_TEXT = { look: 'Look over the place', go: 'Go on', close: 'Close' };   // [copy]
+function placeVeil(lay) { const bk = bakedView(lay), { w, h } = bk.place, o = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (!unveiled(lay.key, x + bk.ox, y + bk.oy)) o[y * w + x] = 1;
+  return o; }
+function startView(kind, lay, extra) {
+  if (!lay || lay.cave || !bakedView(lay)) return false;
+  stopRepeat(); RT.view = { kind, key: lay.key, at: NOW, ...(extra || {}) };
+  if (kind === 'reveal' && motion()) lockInput(REVEAL_MS);   // input is consumed from this moment: the dissolve takes no press
+  return true;
+}
+function endView() { RT.view = null; transition(); }
+const lookable = () => { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const lay = layout(P.key); return !lay.cave && !!bakedView(lay); };
+// A press while a view is up: consumed. Reveal: only after its dissolve; arrival: any press skips to the walking view; look: ← (or ✓) closes.
+function viewPress(k) {
+  const v = RT.view;
+  if (v.kind === 'reveal') { if (motion() && NOW - v.at < REVEAL_MS) return; endView(); }
+  else if (v.kind === 'arrival') endView();
+  else if (k === 'back' || k === 'confirm') endView();
+}
+// A found place's miniature for the reach view (W§7): the 24 px render reduced by 2 x 2 most-frequent-index blocks (twice for the 72 px cell, three times for the 48 px one), cropped round the heart.
+function miniatureOf(c, cs) {
+  if (!S.exp || !heartFound(c) || !passable(c)) return null;
+  const key = String(c), lay = layout(key), bk = !lay.cave && bakedView(lay), h = bk && heartOf(key); if (!h) return null;
+  return bk.miniature(cs, cs >= 72 ? 2 : 3, h.x - bk.ox, h.y - bk.oy);
+}
+function revealLine(lay, h) { return h.kind === 'moment' ? momentLine(lay, h) : HEART_TEXT.foundMsg[h.kind]; }
 // A moment heart: a creature of the template's species (or, where the template names none, one of the region's kinds that lives on this ground) at the heart's spot.
 function momentSpecies(lay, h) {
   const names = (h.species || []).map(n => n.toLowerCase());
@@ -1740,10 +1771,12 @@ function enterPatch() {
   const ex = S.exp, key = String(ex.pos), lay = layout(key); ensureLive(key); S.visited[ex.pos] = 1;
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
+  const firstEntry = !lay.cave && !S.veil[key] && !heartFound(lay.cell);   // the arrival look: the first time in a place, and never at a found one
   const e = entryPoint(lay, key, ex.lastDir);
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
+  if (firstEntry) startView('arrival', lay);
   if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
   fxHint('backplace', '← opens the menu · Leave is first', 2);
   save();
@@ -4388,7 +4421,7 @@ function drawReachView(t) {
     if (!S.revealed[c]) {   // fog: the map's fog texture at 1×, tiled
       for (let yy = 0; yy < q.cs; yy += CELL) for (let xx = 0; xx < q.cs; xx += CELL) { const w = Math.min(CELL, q.cs - xx), h = Math.min(CELL, q.cs - yy); g.drawImage(fogCv, X * CELL, Y * CELL, w, h, x + xx, y + yy, w, h); }
       continue; }
-    g.drawImage(landPatch(c, q.cs, reachRm(c), 0), x, y);
+    g.drawImage(miniatureOf(c, q.cs) || landPatch(c, q.cs, reachRm(c), 0), x, y);
   }
   // pass 2: the strike highlight (the pending outline is retired: the fog dots say it)
   for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
@@ -4401,7 +4434,9 @@ function drawReachView(t) {
   drawEdgeMarks(q);
   for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
     const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
-    fogDots(q.dx + i * q.cs, q.dy + j * q.cs, q.cs, fogLevel(Y * MW + X)); }
+    fogDots(q.dx + i * q.cs, q.dy + j * q.cs, q.cs, fogLevel(Y * MW + X));
+    const c = Y * MW + X, mini = S.revealed[c] && miniatureOf(c, q.cs);   // a found place wears its miniature, its name under it (the reach view only)
+    if (mini) { const nm = clipText(layout(String(c)).name || '', q.cs - 4, 1), y0 = q.dy + (j + 1) * q.cs - 10; R(q.dx + i * q.cs + 1, y0, q.cs - 2, 9, C.ink); text(nm, q.dx + i * q.cs + (q.cs >> 1), y0 + 2, C.cream, 1, 'center'); } }
   // pass 4: signs in corner slots: the start flag first, then the cell's signs in their usual order
   for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
     const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
@@ -4736,6 +4771,51 @@ const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', sh
 // The place camera: today's centred camera, or for a baked place the look-ahead, pull to the tell and clamp of places/src/camera.mjs (page pixels).
 function camPos(v, px, py) { const lay = RT.key != null && S.exp && S.exp.patch ? layout(RT.key) : null;
   return lay && bakedView(lay) ? bakedView(lay).camera({ w: v.w, h: v.h }, px, py, S.exp.patch.dir, NOW, lay.heart, heartFound(lay.cell)) : camAt(v, px, py); }
+// The whole place at 24 px (RT.view: 'arrival' under its veil, 'look' as seen so far, 'reveal' dissolving the veil and then holding with the name and the heart's line).
+function drawWhole(t) {
+  const v = RT.view, P = S.exp && S.exp.patch;
+  if (!P || P.key !== v.key) { RT.view = null; return; }
+  const lay = layout(v.key), bk = bakedView(lay), live = curLive();
+  if (!bk) { RT.view = null; return; }
+  const el = NOW - v.at, W = bk.place.w * 24, H = bk.place.h * 24, ox = (SCR_W - W) >> 1, oy = VIEW_Y + ((VIEW_H - H) >> 1), h = heartOf(v.key);
+  const tp = (x, y) => ({ x: ox + (x - bk.ox) * 24 + 12, y: oy + (y - bk.oy) * 24 + 12 });
+  R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
+  let hold = true, cv;
+  if (v.kind === 'reveal') {
+    v.clear = v.clear || bk.overviewBuf(null, 0); v.vb = v.vb || bk.overviewBuf(v.veiled, 0);
+    const step = motion() ? Math.min(16, Math.floor(el / (REVEAL_MS / 16))) : 16;
+    if (!v.cv || v.step !== step) { v.cv = bk.bufCanvas(step >= 16 ? v.clear : bk.dissolveBuf(v.vb, v.clear, step), W, H); v.step = step; }
+    cv = v.cv; hold = step >= 16;
+  } else { v.cv = v.cv || bk.bufCanvas(bk.overviewBuf(placeVeil(lay), 0), W, H); cv = v.cv; }
+  // the arrival look: the hold, then two stepped frames panning toward the arrival tile (the walking view's 2× scale), then the walking view
+  if (v.kind === 'arrival' && motion() && el >= ARRIVE_HOLD_MS) {
+    const n = Math.floor((el - ARRIVE_HOLD_MS) / ARRIVE_STEP_MS);
+    if (n >= 2) { endView(); return; }
+    const k = n ? .75 : .5, s = 1 + k, a = { x: (P.x - bk.ox + .5) * 24, y: (P.y - bk.oy + .5) * 24 }, sw = SCR_W / s, sh = VIEW_H / s;
+    const cx = W / 2 + (a.x - W / 2) * k, cy = H / 2 + (a.y - H / 2) * k, sx = Math.max(0, Math.min(W - sw, cx - sw / 2)), sy = Math.max(0, Math.min(H - sh, cy - sh / 2));
+    g.drawImage(cv, Math.round(sx), Math.round(sy), Math.round(sw), Math.round(sh), 0, VIEW_Y, SCR_W, VIEW_H); return;
+  }
+  if (v.kind === 'arrival' && !motion() && el >= ARRIVE_HOLD_MS) { endView(); return; }
+  g.drawImage(cv, ox, oy);
+  if (!hold) return;
+  const found = heartFound(lay.cell);
+  // the heart's tell, through the veil (the arrival look and Look show it; the reveal rings the heart itself)
+  if (h && !found && v.kind !== 'reveal' && (v.kind === 'arrival' || tellShows(h, P) || unveiled(v.key, h.x, h.y))) {
+    const q = tp(h.x, h.y);
+    if (h.kind === 'moment') { const pa = ICON.paw('cream'); for (const c of h.clues) { const r = tp(c.x, c.y); blit(pa, r.x - 4, r.y - 4); } }
+    else if (h.kind === 'stone') blit(ICON.bolt('yellow'), q.x - 6, q.y - 14);
+    else circ(q.x, q.y, h.kind === 'spring' ? 10 : 9, h.kind === 'spring' ? C.aqua : C.cream, true);
+  }
+  if (v.kind === 'reveal') {   // the heart ringed in amber, what is still there to take in dotted rings, the name (3×) and the heart's line
+    const q = tp(h.x, h.y); circ(q.x, q.y, 14, C.ink); circ(q.x, q.y, 12, C.amber); circ(q.x, q.y, 10, C.ink);
+    for (const it of leftItems(lay.cell)) { if (it.cave) continue; const r = tp(it.x, it.y); circ(r.x, r.y, 11, C.ink); circ(r.x, r.y, 9, C.cream, true); }
+    const line = revealLine(lay, h), lines = wrapText(line, SCR_W - 48, 2), bh = 36 + lines.length * 20 + 10;
+    panel(12, VIEW_Y + 8, SCR_W - 24, bh, C.ink, C.amber);
+    text(lay.name || '', SCR_W / 2, VIEW_Y + 16, C.cream, 3, 'center'); lines.forEach((l, i) => text(l, SCR_W / 2, VIEW_Y + 16 + 30 + i * 20, C.bone, 2, 'center'));
+  }
+  { const e = tp(P.x, P.y); circ(e.x, e.y, 11, C.ink); circ(e.x, e.y, 9, C.amber); circ(e.x, e.y, 7, C.amber); R(e.x - 3, e.y - 3, 6, 6, C.cream);   // the explorer: the lantern on an amber ring
+    if (live && live.pt) { const m = tp(live.pt.x, live.pt.y); circ(m.x, m.y, 10, C.ink); circ(m.x, m.y, 8, C.teal); circ(m.x, m.y, 6, C.teal); R(m.x - 2, m.y - 2, 4, 4, C.aqua); } }   // the partner on teal
+}
 function drawPatch(t) {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), live = ex.live[P.key]; if (!live) return;
   if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
@@ -5485,7 +5565,7 @@ function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'End expedition' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   const frz = fieldFrozen() ? { frz: 1 } : {};   // docked mid-expedition: Wait and Leave stay in place, dimmed, and refuse
-  if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz), Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: 'Wait' }, frz)].concat(base);
+  if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: 'Wait' }, frz)]).concat(base);
   if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: 'Wait' }, frz), { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
   if ((from === 'sealed' || from === 'active') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   if (from === 'setup' && !S.exp) return [{ id: 'mibis', label: 'Mibis' }, { id: 'worldmap', label: 'Full map' }, { id: 'newworld', label: 'New world', sep: 1 }];
@@ -6065,7 +6145,8 @@ function lineBase() {
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? [base + wx, base + ' · storm preview', base] : wx.slice(3), 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
       return L1('Go down', mapContext(), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
-    case 'patch': { const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
+    case 'patch': { if (RT.view) { const v = RT.view; return v.kind === 'look' ? L1('', '', VIEW_TEXT.close) : v.kind === 'reveal' ? L1(VIEW_TEXT.go, '', '') : L1('', '', ''); }   // a view over the place: its own line
+      const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
       const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
       const P = S.exp.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
@@ -6114,7 +6195,7 @@ function render(t) {
     case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
-    case 'patch': drawPatch(t); drawEdgeCues(t); drawHUD(); drawSwap(); break;
+    case 'patch': if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); } drawHUD(); drawSwap(); break;   // a view over the place (arrival look, Look, the reveal) has the whole view
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
     case 'cargo': drawCargo(t); break;
@@ -6127,7 +6208,7 @@ function render(t) {
   hitFrame();
   { const wa = NOW - (FX.waitAt || -1e9); if (wa >= 0 && wa < 220 && motion() && S.exp) { const by = VIEW_Y + Math.round(wa / 220 * (VIEW_H - 24)); ditherFill(0, by, SCR_W, 24, 'cream', 3); ditherFill(0, by + 6, SCR_W, 12, 'cream', 5); } }   // Wait's ripple
   drawLine(lineFor());
-  drawMessage();
+  if (!(RT.view && S.phase === 'patch')) drawMessage();
   const ta = NOW - FX.transAt; if (ta < 200 && ta >= 0 && motion()) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 16 - Math.floor(ta / 200 * 16));
   vctx.drawImage(scr, 0, 0);
 }
@@ -6203,6 +6284,7 @@ function act(k, mode) {
   if (S.exp && S.exp.caveDue) digDone();   // a dug burrow's entry still due completes before the press (a press inside the lock is ignored, as before)
   if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
+  if (RT.view && S.phase === 'patch') { viewPress(k); return; }   // a view over the place (arrival look, Look, the reveal) takes the press: consumed, never queued, no action spent
   if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
   if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; if (FX.notes.length) composeMsg(); }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
   const isDir = k in DIRS;
@@ -6239,6 +6321,7 @@ function act(k, mode) {
       else if (k === 'confirm' && !(items[S.ui.menuSel] || {}).dis) { const id = (items[S.ui.menuSel] || items[0]).id;
         if (id === 'wait') { waitTick(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; }   // folds to a strip: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
+        else if (id === 'look') { S.phase = 'patch'; startView('look', curLay()); }   // Look over the place: spends no action; ← closes
         else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
         else if (id === 'worldmap') { S.phase = 'worldmap'; transition(); }
@@ -6591,7 +6674,7 @@ requestAnimationFrame(frame);
 window.__mb = { enterPatch, leavePatch, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
-  capture: () => scr.toDataURL("image/png"), FOGV, shownTells, fogState, pickTells, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
+  capture: () => scr.toDataURL("image/png"), miniatureOf, startView, endView, FOGV, shownTells, fogState, pickTells, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }

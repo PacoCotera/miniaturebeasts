@@ -41,6 +41,8 @@ async function enter(browser, url, seed, place) {
   await page.waitForTimeout(1200);
   await page.evaluate(() => { window.__mb.TEST.calm = true; });
   for (let i = 0; i < 4; i++) { await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(350); }
+  await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); });   // the arrival look (C15) is skipped here: these checks are of the walking view
+  await page.waitForTimeout(250);
   return { page, errors };
 }
 const still = async (page) => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
