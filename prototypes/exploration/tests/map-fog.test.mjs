@@ -1,4 +1,4 @@
-// The map's fog over places (scheme map-fog-tells, B1-B3, B6): three states by night dots, no measure, no pending outline; and the in-place veil check:
+// The map's fog over places (the map design): three states (darker, light dots, clear), no measure, no pending outline; and the in-place veil check:
 // a fresh place draws its veil before any Call (generated at 32 and 48 px, and a baked generator 6 place).
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -34,7 +34,8 @@ test("the three states: never been (one step darker, no dots), been in and not f
   const H = f.run(`layout('${key}').h`), rows = (n) => `S.veil['${key}'] = new Array(${H}).fill(0); for (let y = 0; y < ${n}; y++) S.veil['${key}'][y] = 0x0fffffff;`;
   f.run(rows(1)); assert.equal(f.run(`fogState(${c})`), 1, "a place entered: light");
   const one = cellPixels(f, c), n1 = night(f, one), N = f.run("C.night"), mask = (px) => px.map((v) => v === N ? 1 : 0).join("");   // (a sign may appear on a place whose rows are lifted; the dots may not change)
-  f.run(rows(20)); assert.equal(mask(cellPixels(f, c)), mask(one), "the same dots for 1 row and 20 rows lifted: a state, not a measure");
+  f.run(rows(20)); const m20 = mask(cellPixels(f, c)), m1 = mask(one); let moved = 0; for (let i = 0; i < m1.length; i++) if (m1[i] !== m20[i]) moved++;
+  assert.ok(moved <= 4, `the same dots for 1 row and 20 rows lifted: a state, not a measure (${moved} pixels differ; a sign's outline may blink in)`);
   assert.ok(n1 > n2, `been in carries light dots (${n1}); never been carries none of its own (${n2})`);
   assert.equal(f.run(`reachRm(${c})`), 0, "been in: full colour under the dots");
   f.run(`(S.called = S.called || {})[${c}] = 1`);

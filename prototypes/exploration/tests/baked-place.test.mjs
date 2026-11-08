@@ -92,7 +92,7 @@ test("the page without ?place= plays generator 6: the cell's template, baked, 18
     assert.ok(st.name && ["moment", "nest", "stone", "spring"].includes(st.heart), JSON.stringify(st));
     assert.equal(st.ts, 48);
     assert.deepEqual(st.off, []);
-    // B6 (scheme map-fog-tells): the veil draws on a fresh baked place before any Call: the core night colour's pixels in the view, then none once the whole place is lifted
+    // B6 (the map design): the veil draws on a fresh baked place before any Call: the core night colour's pixels in the view, then none once the whole place is lifted
     const nights = (img) => { let k = 0; for (let y = 60; y < 540; y++) for (let x = 0; x < img.w; x++) { const o = (y * img.w + x) * 4; if (img.data[o] === 41 && img.data[o + 1] === 37 && img.data[o + 2] === 58) k++; } return k; };
     assert.equal(await page.evaluate(() => window.__mb.FX.pulse == null), true, "no Call yet");
     await page.waitForTimeout(400);

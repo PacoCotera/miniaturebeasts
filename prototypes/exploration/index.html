@@ -1329,7 +1329,7 @@ function heartTellKind(c) {
   return null;
 }
 const heartTell = c => S.revealed[c] ? heartTellKind(c) : null;
-// The map shows one tell sign per kind besides your own cell's: the nearest seen, unfound, in-reach place of that kind (scheme: map-fog-tells §3).
+// The map shows one tell sign per kind besides your own cell's: the nearest seen, unfound, in-reach place of that kind (the map design, one sign per kind).
 // A pick is kept while it stays valid (so a sign never hops as you walk) and is made again, nearest first, only when it is not; ties go to the lower cell.
 // ex.tellPick = { t, b, k, sh } holds a cell or -1; pickTells is called at set-out, after a map step and after a find, and again whenever a sign is read (a fog bank or a storm that changes a cell's validity is met there).
 function tellPickValid(ex, kind, c) { return c >= 0 && c !== ex.pos && ex.reach.includes(c) && !!S.revealed[c] && !inFog(c) && heartTell(c) === kind; }

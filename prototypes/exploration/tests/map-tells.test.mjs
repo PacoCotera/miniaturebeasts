@@ -107,7 +107,7 @@ test("the map has no quarter and keeps the shimmer's picture on the Probe screen
   assert.equal(HEART_TEXT.band.tell.sh, "Water glints");
 });
 
-// ---- scheme map-fog-tells §3: one sign per kind besides your own cell's, sticky, never on a cell that is not a choice ----
+// ---- the map design: one sign per kind besides your own cell's, sticky, never on a cell that is not a choice ----
 const NOT_OWN = "shownTells().filter(t => !t.own)";
 test("at set-out the shown tells hold at most one per kind besides your own cell, and one lies within one cell of the start (seeds 1 to 200)", () => {
   const p = makePage({ console: "silent" });
