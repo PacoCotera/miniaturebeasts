@@ -12,12 +12,12 @@ import { bootFace } from "../../station/src/face-lvgl.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), frameSpec = JSON.parse(readFileSync(path.join(specs, "frame.json"), "utf8")), C = frameSpec.regions.cues;
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
-const MARKS = ["vivarium", "research", "library"].map((r) => frameSpec.regions.marks.room[r]);
+const MARKS = ["vivarium", "research", "library"].map((r) => frameSpec.regions.marks.roomCue[r]);
 const standIn = (w, h) => ({ w, h, data: new Uint8ClampedArray(w * h * 4).fill(180) });
 async function setup(line) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); assert.equal(f.send({ t: "spec", screen: "frame", json: frameSpec }), 0);
-  for (const id of MARKS) f.handleOf(id, withPolicy(() => standIn(24, 24)));
+  for (const id of MARKS) f.handleOf(id, withPolicy(() => standIn(16, 16)));
   for (const id of ["frame-cap-confirm-16", "frame-cap-confirm-16-dim", "frame-cap-back-16"]) f.handleOf(id, withPolicy(() => standIn(16, 16)));
   const top = { screen: "library", title: "Library", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } };
   assert.equal(f.props({ screen: "library", state: "notBuilt", motion: true, frame: { top, line: { back: "Home", ...line }, plate: { text: "" } } }), 0, f.errors().join("; ")); f.frame(1000); f.frame(1016); return f;
