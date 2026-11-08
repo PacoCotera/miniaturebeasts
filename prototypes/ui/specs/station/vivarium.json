@@ -1399,7 +1399,6 @@
    "breather": "on a breather · can cross in {n} {turn|turns}",
    "breatherNext": "on a breather · can cross next turn",
    "breedNoneFree": "no partner free now · {name} can cross in {n} {turn|turns}",
-   "pairSoon": "The forecast is not open yet",
    "pairCannot": "this pair cannot cross this turn",
    "turns": "{n} {turn|turns}",
    "turnsOne": "1 turn"

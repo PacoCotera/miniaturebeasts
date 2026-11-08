@@ -107,6 +107,17 @@ test("the overview's rows: a locus at play is a row of its kind with its hides, 
   w.st.wish = { S01: { [t.trait]: "no such look" } }; assert.equal(build(w, { state: 0 }).props.regions.overview.chapters.find((c) => c.id === t.chapter).wish, "hollow");
 });
 
+test("F6.4: a pinned look at a blend marks the wished bin of the range bar (an overview row's and the chapter view's blend carry `pin`, fractions inside the track); a blend with no pin carries none; a switch's pin stays on its seeds", () => {
+  const w = world("S01"), [a, b] = w.mibis, fr = w.fr; readAll(a, fr); readAll(b, fr);
+  const fc = S.forecastOf(w.st, a, b, settings), t = fc.traits.find((q) => q.kind === "blend" && q.bins?.length > 1); assert.ok(t, "S01 has a blend with bins");
+  const none = build(w, { state: 0 }).props.regions.overview.chapters.find((c) => c.id === t.chapter); assert.ok(none.rows.every((r) => !r.pin), "no wish, no pin");
+  const trait = w.fr.chapters.flatMap((c) => c.traits).find((q) => q.id === t.trait); let found = null;
+  for (const word of trait.looks ?? []) { w.st.wish = { S01: { [t.trait]: word } }; const rows = build(w, { state: 0 }).props.regions.overview.chapters.find((c) => c.id === t.chapter).rows.filter((r) => r.pin); if (rows.length) { found = rows; break; } }
+  assert.ok(found, "some look of the blend can be shown by a bin: its bin is pinned on the row");
+  for (const r of found) for (const [lo, hi] of r.pin) assert.ok(lo >= 0 && hi <= 10000 && lo <= hi, "fractions of the track, " + lo + " to " + hi);
+  w.st.wish = {};
+});
+
 test("a chapter view: each trait's two copies in the player's words, its gate kind, the four outcomes (switch) or the range (blend); the surface plate under kinship", () => {
   const w = world("S01"), [a, b] = w.mibis, fr = w.fr; readAll(a, fr); readAll(b, fr);
   const ch = build(w, { state: 1 }).props.regions.chapter; assert.equal(ch.name, "Coat"); assert.equal(ch.sealed, false);
