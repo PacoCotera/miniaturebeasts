@@ -62,97 +62,107 @@
   ],
   "props": {
     "tree-broad": {
-      "rect": [196, 47, 48, 14],
+      "rect": [66, 78, 48, 14],
       "anchor": [24, 13],
       "footprint": [[0, 0]],
       "canopy": "tree-broad-crown"
     },
     "tree-autumn": {
-      "rect": [147, 47, 48, 14],
+      "rect": [17, 78, 48, 14],
       "anchor": [24, 13],
       "footprint": [[0, 0]],
       "canopy": "tree-autumn-crown"
     },
     "bush-big": {
-      "rect": [115, 0, 32, 29],
+      "rect": [0, 48, 32, 29],
       "anchor": [16, 28],
       "footprint": [[0, 0]]
     },
     "bush-round": {
-      "rect": [130, 47, 16, 14],
+      "rect": [0, 78, 16, 14],
       "anchor": [8, 13],
       "footprint": [[0, 0]]
     },
     "bush-small": {
-      "rect": [33, 64, 15, 13],
+      "rect": [148, 78, 15, 13],
       "anchor": [7, 12],
       "footprint": [[0, 0]]
     },
     "stump": {
-      "rect": [208, 0, 30, 23],
+      "rect": [93, 48, 30, 23],
       "anchor": [15, 22],
       "footprint": [[0, 0]]
     },
     "boulder-brown": {
-      "rect": [148, 0, 29, 27],
+      "rect": [33, 48, 29, 27],
       "anchor": [14, 26],
       "footprint": [[0, 0]]
     },
     "boulder-grey": {
-      "rect": [178, 0, 29, 27],
+      "rect": [63, 48, 29, 27],
       "anchor": [14, 26],
       "footprint": [[0, 0]]
     },
     "reeds": {
-      "rect": [0, 0, 16, 46],
+      "rect": [65, 0, 16, 46],
       "anchor": [8, 45],
       "footprint": []
     },
     "tall-grass": {
-      "rect": [17, 47, 16, 16],
+      "rect": [157, 48, 16, 16],
       "anchor": [8, 15],
-      "frames": 4,
-      "frameMs": 220,
+      "frames": 3,
+      "frameMs": 300,
       "footprint": []
+    },
+    "tree-hollow": {
+      "rect": [0, 0, 64, 47],
+      "anchor": [32, 46],
+      "footprint": [[-2, 0],  [-1, 0],  [0, 0],  [1, 0],  [2, 0],  [-1, -1],  [0, -1],  [1, -1]]
+    },
+    "split-stone": {
+      "rect": [82, 0, 61, 44],
+      "anchor": [30, 43],
+      "footprint": [[-1, 0],  [0, 0],  [1, 0],  [-1, -1],  [0, -1],  [1, -1]]
     }
   },
   "decals": {
     "flower-sun": {
-      "rect": [82, 47, 15, 15],
+      "rect": [206, 48, 15, 15],
       "anchor": [7, 7]
     },
     "flower-sun-small": {
-      "rect": [239, 0, 15, 16],
+      "rect": [124, 48, 15, 16],
       "anchor": [7, 8]
     },
     "pebbles-a": {
-      "rect": [98, 47, 14, 14],
+      "rect": [222, 48, 14, 14],
       "anchor": [7, 7]
     },
     "pebbles-b": {
-      "rect": [0, 64, 15, 13],
+      "rect": [115, 78, 15, 13],
       "anchor": [7, 6]
     },
     "pebbles-c": {
-      "rect": [113, 47, 16, 14],
+      "rect": [237, 48, 16, 14],
       "anchor": [8, 7]
     },
     "tuft": {
-      "rect": [16, 64, 16, 13],
+      "rect": [131, 78, 16, 13],
       "anchor": [8, 6]
     },
     "lily-pad": {
-      "rect": [0, 47, 16, 16],
+      "rect": [140, 48, 16, 16],
       "anchor": [8, 8]
     }
   },
   "canopy": {
     "tree-broad-crown": {
-      "rect": [66, 0, 48, 34],
+      "rect": [193, 0, 48, 34],
       "anchor": [24, 47]
     },
     "tree-autumn-crown": {
-      "rect": [17, 0, 48, 34],
+      "rect": [144, 0, 48, 34],
       "anchor": [24, 47]
     }
   }

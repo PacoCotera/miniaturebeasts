@@ -6,9 +6,7 @@ import { PlaceGroundCache, applyLight, lightState, tablesOf, LEVELS, renderHalfV
 import { BAYER4 } from '../../exploration/src/view.mjs';
 import { cutOut, scaleTo, spriteFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
-import { newLook, lookTo, tellPull, cameraFor, TILE } from './camera.mjs';
-
-const DIR = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+import { stepCamera, newCam, TILE } from './camera.mjs';
 
 // Fetches the place and its tile set from `base` (the folder holding baked/).
 export async function loadBaked(fetchBytes, base, id) {
@@ -30,7 +28,6 @@ export class BakedView {
     for (let i = 1; i < 48; i++) this.lut[i] = rgb(...core[i]);
     ts.palette.forEach((c, k) => { this.lut[48 + k] = rgb((c >> 16) & 255, (c >> 8) & 255, c & 255); });
     this.colours = [...new Set(this.lut.slice(1, 48 + ts.palette.length))].map((v) => [v & 255, (v >> 8) & 255, (v >> 16) & 255]);
-    this.look = newLook();
     this.state = null; this.last = null; this.sprites = new Map(); this.scratch = null;
     this.landmarks = new Set(place.landmarks.map((l) => l.y * place.w + l.x));
   }
@@ -69,7 +66,7 @@ export class BakedView {
     g.putImageData(this.last.img, sx, sy);
   }
 
-  // ---- the whole place at 24 px (the arrival look, Look over the place, the reveal, the map's miniatures): C6's half-scale render ----
+  // ---- the whole place at 24 px (the arrival look, Look over the place, the reveal): C6's half-scale render ----
   // veil: Uint8Array(place.w * place.h), 1 = veiled, or null for the clear place. Returns the indexed buffer (place.w * 24 by place.h * 24).
   overviewBuf(veil, clockMs = 0) {
     const light = veil && veil.some((v) => v) ? lightState(this.place, { veil }) : null;
@@ -86,28 +83,6 @@ export class BakedView {
     for (let i = 0; i < buf.length; i++) u[i] = buf[i] ? this.lut[buf[i]] : 0;
     cg.putImageData(img, 0, 0); return cv;
   }
-  // The miniature for the map: the clear place's 24 px render reduced by 2 x 2 most-frequent-index blocks (ties to the darker colour), `times` over, cropped to cs x cs round (hx, hy), a place cell.
-  miniature(cs, times, hx, hy) {
-    const key = `${cs}|${times}|${hx}|${hy}`; this.minis = this.minis || new Map();
-    if (this.minis.has(key)) return this.minis.get(key);
-    let buf = this.overviewBuf(null, 0), w = this.place.w * 24, h = this.place.h * 24;
-    const luma = (i) => { const v = this.lut[i], r = v & 255, g = (v >> 8) & 255, b = (v >> 16) & 255; return 0.3 * r + 0.59 * g + 0.11 * b; };
-    for (let k = 0; k < times; k++) {
-      const nw = w >> 1, nh = h >> 1, out = new Uint8Array(nw * nh);
-      for (let y = 0; y < nh; y++) for (let x = 0; x < nw; x++) {
-        const c = [buf[2 * y * w + 2 * x], buf[2 * y * w + 2 * x + 1], buf[(2 * y + 1) * w + 2 * x], buf[(2 * y + 1) * w + 2 * x + 1]];
-        let best = c[0], bn = 0;
-        for (const v of c) { let n = 0; for (const u of c) if (u === v) n++; if (n > bn || (n === bn && luma(v) < luma(best))) { best = v; bn = n; } }
-        out[y * nw + x] = best;
-      }
-      buf = out; w = nw; h = nh;
-    }
-    const f = 24 / (1 << times) , cx = Math.round((hx + 0.5) * f), cy = Math.round((hy + 0.5) * f);   // the heart's tile centre in the reduced picture
-    const x0 = Math.max(0, Math.min(w - cs, cx - (cs >> 1))), y0 = Math.max(0, Math.min(h - cs, cy - (cs >> 1))), crop = new Uint8Array(cs * cs);
-    for (let y = 0; y < cs; y++) for (let x = 0; x < cs; x++) { const sx = x0 + x, sy = y0 + y; crop[y * cs + x] = sx < w && sy < h ? buf[sy * w + sx] : 0; }
-    const cv = this.bufCanvas(crop, cs, cs); this.minis.set(key, cv); return cv;
-  }
-
   // ---- sprites as cached canvases ----
   spriteCanvas(kind, frame, level, cut, cutKey) {
     const key = `${kind}|${frame}|${level}`;
@@ -152,15 +127,13 @@ export class BakedView {
     for (const c of this.place.canopy) draw(c.kind, c.x, c.y);
   }
 
-  // ---- the camera, in page pixels ----
-  // (px, py): the explorer's tile origin in page pixels (tweened); dir: 'up'..'right'; heart: the layout's heart ({ x, y, clues } in page cells) or null.
-  camera(view, px, py, dir, nowMs, heart, found) {
-    const ox = this.ox * TILE, oy = this.oy * TILE, d = DIR[dir] || [0, 0];
-    const pawn = { x: px + 24 - ox, y: py + 24 - oy };
-    const look = lookTo(this.look, d[0], d[1], nowMs);
-    const centre = (c) => ({ x: (c.x - this.ox) * TILE + 24, y: (c.y - this.oy) * TILE + 24 });
-    const pull = heart ? tellPull(pawn, [heart, ...(heart.clues || [])].map(centre), found) : { x: 0, y: 0 };
-    const c = cameraFor(view, { pw: this.place.w * TILE, ph: this.place.h * TILE }, pawn, look, pull);
+  // ---- the camera, in page pixels: half-screen steps (camera.mjs) ----
+  // state: the caller's newCam(); tile: the explorer's tile in page cells (not the tween); span: an optional cell { x, y } to hold in view too (the heart at the reveal's spot).
+  newCam() { return newCam(); }
+  camera(state, view, tile, nowMs, motion, span = null) {
+    const ox = this.ox * TILE, oy = this.oy * TILE;
+    const extra = span ? { x0: (span.x - this.ox) * TILE, y0: (span.y - this.oy) * TILE, x1: (span.x - this.ox + 1) * TILE, y1: (span.y - this.oy + 1) * TILE } : null;
+    const c = stepCamera(state, view, { pw: this.place.w * TILE, ph: this.place.h * TILE }, { x: tile.x - this.ox, y: tile.y - this.oy }, nowMs, motion, extra);
     return { x: c.x + ox, y: c.y + oy };
   }
 }

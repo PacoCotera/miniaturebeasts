@@ -1426,6 +1426,16 @@
 						"id": "tall-grass",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "tree-hollow",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "split-stone",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,
