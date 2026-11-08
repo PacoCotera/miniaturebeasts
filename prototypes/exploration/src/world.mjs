@@ -496,6 +496,7 @@ export function softGround(G, seed) {
 // cliff edge with soil on both sides (no rock, cliff cell or water), never the gate's, that opens a pocket or a shortcut of SHORTCUT_MIN steps or more that the
 // plain cliffs and stairs do not. Pockets first, then the larger value; no two banks within two cells of each other. Every other soil cliff stays a cliff. Indexed like G.edge.
 export const BANK = { MIN: 3, MAX: 5, APART: 2 };
+export const BANK_IN = 3;   // rows between a place's border and a bank's face in the place (the bank piece itself is the art desk's 2 x 2 block, unchanged)
 export function bankEdges(G, seed = 0) {
   const bank = new Uint8Array(2 * NC); if (!G.edge || !G.level) return bank;
   const cands = [];
@@ -1027,10 +1028,12 @@ export function genPatch2(G, seed, cell) {
     const kind = G.soft && G.soft.scree[ei] ? 'scree' : G.banks && G.banks[ei] ? 'bank' : null; if (!kind) continue;
     const vertical = dir === 'up' || dir === 'down', s = stairPos(seed, ei, vertical ? PW : PH);
     const xy = (k, d) => ({ x: dir === 'left' ? d : dir === 'right' ? PW - 1 - d : k, y: dir === 'up' ? d : dir === 'down' ? PH - 1 - d : k });
-    for (let d = 0; d < 2; d++) for (let k = s; k <= s + 1; k++) { const p = xy(k, d), j = I(p.x, p.y); tiles[j] = kind === 'scree' ? T.SCREE : T.BANK; terr[j] = 0; tmask[j] = 0; }
-    cross.push({ dir, kind, s, ei, entry: xy(s, 2) });
+    // A bank stands BANK_IN rows in from the place's border, so its whole face lies inside the view (on the border it showed as a strip at the edge); scree stays on the border rows.
+    const off = kind === 'bank' ? BANK_IN : 0;
+    for (let d = 0; d < off + 2; d++) for (let k = s; k <= s + 1; k++) { const p = xy(k, d), j = I(p.x, p.y); if (d >= off) tiles[j] = kind === 'scree' ? T.SCREE : T.BANK; terr[j] = 0; tmask[j] = 0; }
+    cross.push({ dir, kind, s, ei, off, entry: xy(s, off + 2) });
   }
-  for (const q of cross) for (let d = 0; d < 3; d++) for (let k = q.s - 1; k <= q.s + 2; k++) {
+  for (const q of cross) for (let d = 0; d < q.off + 3; d++) for (let k = q.s - 1; k <= q.s + 2; k++) {
     const x = q.dir === 'left' ? d : q.dir === 'right' ? PW - 1 - d : k, y = q.dir === 'up' ? d : q.dir === 'down' ? PH - 1 - d : k; if (inb(x, y)) resv[I(x, y)] = 1; }
   for (let i = 0; i < NP; i++) if (terr[i] >= TERR.STAIR) { const x = i % PW, y = (i / PW) | 0;
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (inb(x + dx, y + dy)) resv[I(x + dx, y + dy)] = 1; }

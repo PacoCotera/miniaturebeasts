@@ -1743,7 +1743,7 @@ const bankIsDug = ei => (S.exp.dug || []).includes(ei);
 // The crossing a place tile belongs to (a scree or bank edge's two-by-two), or null.
 function crossingAt(lay, x, y) {
   for (const q of lay.cross || []) { const d = q.dir === 'left' ? x : q.dir === 'right' ? PW - 1 - x : q.dir === 'up' ? y : PH - 1 - y, k = q.dir === 'up' || q.dir === 'down' ? x : y;
-    if (d < 2 && k >= q.s && k <= q.s + 1) return q; }
+    if (d >= (q.off || 0) && d < (q.off || 0) + 2 && k >= q.s && k <= q.s + 1) return q; }   // a bank stands BANK_IN rows in from the border (world.mjs), scree on it
   return null;
 }
 // Whether the partner lets the pawn onto a soft tile of the place: mud and scree for a rambler, a dug bank for a digger.
@@ -3568,7 +3568,7 @@ L2.murk = (pb, x0, w, h, soft, o) => {
 };
 // The tile's place in its crossing, packed into the 32 px mask (bit 0 dug; bits 1-2 the side; bit 3 the neighbour higher; bit 4 d; bit 5 k).
 L2.tileMask = (lay, x, y) => { const q = crossingAt(lay, x, y); if (!q) return lay.bankDug ? 1 : 0;
-  const d = q.dir === 'left' ? x : q.dir === 'right' ? PW - 1 - x : q.dir === 'up' ? y : PH - 1 - y, k = (q.dir === 'up' || q.dir === 'down' ? x : y) - q.s;
+  const d = (q.dir === 'left' ? x : q.dir === 'right' ? PW - 1 - x : q.dir === 'up' ? y : PH - 1 - y) - (q.off || 0), k = (q.dir === 'up' || q.dir === 'down' ? x : y) - q.s;
   const n = stepCell(lay.cell, q.dir), hi = n >= 0 && G.level[n] > G.level[lay.cell];
   return (lay.bankDug ? 1 : 0) | L2.DIRS.indexOf(q.dir) << 1 | (hi ? 8 : 0) | d << 4 | k << 5; };
 L2.unpack = m => { const dir = L2.DIRS[(m >> 1) & 3], hi = !!(m & 8); return { dug: m & 1, dir, hi, d: (m >> 4) & 1, k: (m >> 5) & 1, type: !hi ? 'lip' : dir === 'up' ? 'face' : dir === 'down' ? 'foot' : 'side' }; };
