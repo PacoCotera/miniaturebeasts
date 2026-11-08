@@ -14,7 +14,7 @@ const IN_MOTION = new Set(["vivarium-moving-8000ms"]);
 
 test("hiddenShares: the part of a box that later boxes cover, once where they overlap", () => {
   assert.deepEqual(hiddenShares([[0, 0, 10, 10], [5, 0, 10, 10]]), [0.5, 0]);
-  assert.deepEqual(hiddenShares([[0, 0, 10, 10], [5, 0, 10, 10], [5, 0, 10, 10]]), [0.5, 0, 0]);   // the same area twice counts once
+  assert.deepEqual(hiddenShares([[0, 0, 10, 10], [5, 0, 10, 10], [5, 0, 10, 10]]), [0.5, 1, 0]);   // the same area twice counts once (the first is half covered, not all); the second lies wholly behind its twin
   assert.deepEqual(hiddenShares([[0, 0, 10, 10], [20, 0, 10, 10]]), [0, 0]);
 });
 

@@ -13,12 +13,14 @@ const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(h
 const specs = path.resolve(here, "../../ui/specs/station"), frameSpec = JSON.parse(readFileSync(path.join(specs, "frame.json"), "utf8")), C = frameSpec.regions.cues;
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const MARKS = ["vivarium", "research", "library"].map((r) => frameSpec.regions.marks.room[r]);
+const CUE_MARKS = ["vivarium", "research", "library"].map((r) => frameSpec.regions.marks.roomCue[r]);   // the cues draw the 16 px set (marks.roomCue), not the 24 px title-bar marks
 const standIn = (w, h) => ({ w, h, data: new Uint8ClampedArray(w * h * 4).fill(180) });
 const KEYS = [{ room: "research", word: "Read" }, { room: "vivarium", word: "Grow" }, { room: "library", word: "Untuva page" }];
 async function setup(flight, keys = KEYS) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); assert.equal(f.send({ t: "spec", screen: "frame", json: frameSpec }), 0);
   for (const id of MARKS) f.handleOf(id, withPolicy(() => standIn(24, 24)));
+  for (const id of CUE_MARKS) f.handleOf(id, withPolicy(() => standIn(16, 16)));
   for (const id of ["frame-cap-confirm-16", "frame-cap-confirm-16-dim", "frame-cap-back-16"]) f.handleOf(id, withPolicy(() => standIn(16, 16)));
   f.handleOf("flight-test", withPolicy(() => standIn(40, 48)));
   for (const n of ["energy", "data", "essence"]) f.handleOf(`icon:${n}:16`, withPolicy(() => standIn(16, 16)));
@@ -39,7 +41,7 @@ test("the picture moves from the stage's middle to the cue's mark, every frame, 
   for (const b of path_) { assert.deepEqual([b[2], b[3]], [40, 48], "1:1"); assert.ok(b.every(Number.isInteger)); }
   const mark = f.nodeBox("line.cue.1.mark")?.box, first = path_[0], last = path_[path_.length - 1];
   assert.ok(first[1] < 400 && last[1] > first[1], "it comes down from the stage");
-  assert.ok(Math.abs(last[0] + 20 - (mark[0] + 12)) < 40 && Math.abs(last[1] + 24 - (mark[1] + 12)) < 40, "and ends on its cue " + JSON.stringify([last, mark]));
+  assert.ok(Math.abs(last[0] + 20 - (mark[0] + 8)) < 40 && Math.abs(last[1] + 24 - (mark[1] + 8)) < 40, "and ends on its cue " + JSON.stringify([last, mark]));
   for (let i = 1; i < path_.length; i++) assert.ok(path_[i][1] >= path_[i - 1][1], "monotone down");
   at(f, 1240); assert.equal(f.nodeBox("flight.pic")?.box ?? null, null, "gone when the flight is over"); assert.deepEqual(f.errors(), []);
 });
