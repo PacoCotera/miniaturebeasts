@@ -3,7 +3,7 @@
 // there is no drawing here. Also: the Caddy's one key, the shared save's storage event, the developer panel and the test hooks. Rules are in state.mjs, the key's rule call in intents/*, the
 // props in host.mjs.
 import { clock, motion } from "./pixels.mjs";
-import { G, FX, UI, SPECS, msg, save, load, loadSettings, saveSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, saveKey, switchCompanion, activeCompanion } from "./game.mjs";
+import { G, FX, UI, SPECS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, saveKey, switchCompanion, activeCompanion } from "./game.mjs";
 import * as S from "./state.mjs";
 import { readOptions } from "../../play/src/options.mjs";
 import * as Lib from "./library.mjs";
@@ -152,7 +152,6 @@ const bootDone = () => { if (bootBar) bootBar.hidden = true; };
 const ready = Promise.all([loadFrames(), bootAssets({ test: TEST, onProgress: (done, total) => { if (bootBar && total > 0) { bootBar.max = total; bootBar.value = done; } } }), faceUp]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
-  { const j = OPT.jump; if (j === "arrival" || j === "fork") saveSettings({ jump: j }); }   // the jump test (decision panel spec Part 3): the Options panel's Jump setting is saved with the settings
   UI.lastInput = performance.now(); G.ready = true;
   loadRoomsInBackground();   // the other rooms, now that the first screen can draw (the room after the shown one first; 16 in flight)
   buildDevPanel((inShell && parent.document.getElementById("devStation")) || $("devPanel"), { changed: refreshDev, openCrates: () => { CORE.host.goto("cargo"); cargo.openBay(CORE.host); }, motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()) });

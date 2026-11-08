@@ -159,7 +159,7 @@
  "buildDraws": "rect (wires, dashes, plates, bands, seeds 8×8, chips, frost and slats), text, and 1 px lines; nothing else",
  "never": ["a copy, look, seed or range of a chapter either parent has not read", "anything of a sealed chapter but its find", "the child's actual draw", "odds, percentages or counts on the screen", "letters or ratios for a copy"],
  "strings": {
-  "crossed": "{A} and {B} crossed · their child grows in the Incubator",
+  "crossed": "{A} and {B} crossed · their bud grows in the Incubator",
   "child": "the child to be",
   "pick": "◀ ▶ picks one",
   "noPartner": "no adult of its kind",
