@@ -26,7 +26,7 @@ async function serve() {
     if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
     if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
     let body = readFileSync(p);
-    if (p.endsWith("exploration/index.html")) body = Buffer.from(body.toString().replace("window.__mb = { get S()", "window.__mb = { drawPatch, get S()"));
+    if (p.endsWith("exploration/index.html")) body = Buffer.from(body.toString().replace("window.__mb = { ", "window.__mb = { drawPatch, "));
     res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(body);
   });
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
