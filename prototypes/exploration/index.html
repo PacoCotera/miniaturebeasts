@@ -4793,9 +4793,17 @@ function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; l
   cg.putImageData(id, 0, 0); EDGE_TILE.set(k, cv); return cv; }
 const veilPx = (c, x, y) => BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
 const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle' };
-// The place camera: today's centred camera, or for a baked place the look-ahead, pull to the tell and clamp of places/src/camera.mjs (page pixels).
-function camPos(v, px, py) { const lay = RT.key != null && S.exp && S.exp.patch ? layout(RT.key) : null;
-  return lay && bakedView(lay) ? bakedView(lay).camera({ w: v.w, h: v.h }, px, py, S.exp.patch.dir, NOW, lay.heart, heartFound(lay.cell)) : camAt(v, px, py); }
+// The place camera: today's centred camera for a generated place; for a baked place the half-screen steps of places/src/camera.mjs (page pixels).
+// live (drawPatch only) steps the kept state RT.ca on the explorer's tile; every other caller reads what the view would be (a copy of the state),
+// at (px, py) in place pixels. At the reveal's spot the view also holds the heart.
+function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.patch ? layout(RT.key) : null, bk = lay && bakedView(lay);
+  if (!bk) return camAt(v, px, py);
+  const P = S.exp.patch, ts = v.ts;
+  if (!RT.ca || RT.ca.p !== P) RT.ca = { p: P, s: bk.newCam() };
+  const st = live ? RT.ca.s : Object.assign({}, RT.ca.s), tile = live ? { x: P.x, y: P.y } : { x: Math.round(px / ts), y: Math.round(py / ts) };
+  const hh = RT.spot && RT.spot.key === lay.key ? heartOf(lay.key) : null;
+  return bk.camera(st, { w: v.w, h: v.h }, tile, NOW, motion(), hh);
+}
 // The whole place at 24 px (RT.view: 'arrival' under its veil, 'look' as seen so far, 'reveal' dissolving the veil and then holding with the name and the heart's line).
 function drawWhole(t) {
   const v = RT.view, P = S.exp && S.exp.patch;
@@ -4850,7 +4858,7 @@ function drawPatch(t) {
   if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
-  const c0 = camPos(v, RT.pl.rx, RT.pl.ry), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // centred, clamped; the shake after
+  const c0 = camPos(v, RT.pl.rx, RT.pl.ry, true), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // half-screen steps (centred at 32 px), clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
@@ -5083,7 +5091,7 @@ function drawPartner(sp, pt, x, y, t, stepFr = -1) {
 const TAB = { order: ['!', '?', 'find'], border: { '!': 'yellow', '?': 'sprout', find: 'cream' }, max: 4, merge: 24, clear: 4, flashMs: 160 };
 const rectsMeet = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 // the place view and its drawn camera, as drawPatch has them this frame (the shake after the clamp)
-function cueView() { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), [sx, sy] = shakeOff(), c0 = camPos(v, RT.pl.rx, RT.pl.ry); return { v, cam: { x: c0.x + sx, y: c0.y + sy } }; }
+function cueView() { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), [sx, sy] = shakeOff(), c0 = camPos(v, S.exp.patch.x * v.ts, S.exp.patch.y * v.ts); return { v, cam: { x: c0.x + sx, y: c0.y + sy } }; }
 // a find the Call lit is still lying there: a pod not taken, a charged stone, the crack
 function findThere(key, lay, q) {
   return S.pods.some(p => p.k === key && !p.h && p.x === q.x && p.y === q.y)
@@ -5420,7 +5428,7 @@ function tileInView(px, py, x, y) {
 // The lit tile as the place draws it on that frame, without the things that move (rain, drifting fog, the pawn, creatures, outlines that blink):
 // the tile at the view's light and veil, the marks and props still on it, the part of a canopy or roof over it, a pod lying on it, then the 2 px outline.
 function placeLightFn(P, lay) {   // the place's own light for a tile (fog beyond sight, an overcast storm, the storm's darkened columns), as drawPatch gives it
-  const ex = S.exp, v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), ts = v.ts, cam = RT.pl ? camPos(v, RT.pl.rx, RT.pl.ry) : camPos(v, P.x * ts, P.y * ts);
+  const ex = S.exp, v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), ts = v.ts, cam = camPos(v, P.x * ts, P.y * ts);
   const col = lay.cell % MW, fogged = !lay.cave && inFog(lay.cell), overcast = !lay.cave && stormCovers(col), sight = sightR(lay);
   const inS = (x, y) => sight >= 99 || Math.hypot(x - P.x, y - P.y) <= sight + .5;
   let darkW = 0, darkLeft = true;
