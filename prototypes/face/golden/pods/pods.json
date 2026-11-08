@@ -6,76 +6,68 @@
    "png": "pods-inventory-no-pods.png"
   },
   "inventory, one sealed pod": {
-   "hash": "14722633",
+   "hash": "a7d54432",
    "png": "pods-inventory-one-sealed-pod.png"
   },
   "inventory, twelve pods": {
-   "hash": "0e9d2a96",
+   "hash": "f5aed9e3",
    "png": "pods-inventory-twelve-pods.png"
   },
   "inventory, the verb line": {
-   "hash": "870229ec",
+   "hash": "74dd204e",
    "png": "pods-inventory-the-verb-line.png"
   },
   "inventory, sorted by species": {
-   "hash": "c1c05549",
+   "hash": "221c8b26",
    "png": "pods-inventory-sorted-by-species.png"
   },
   "inventory, filtered": {
-   "hash": "d59f2b08",
+   "hash": "39af5b32",
    "png": "pods-inventory-filtered.png"
   },
   "inventory, the filter tray": {
-   "hash": "f605cdf7",
+   "hash": "720fdc23",
    "png": "pods-inventory-the-filter-tray.png"
   },
   "inventory, no matches": {
-   "hash": "3f8a5255",
+   "hash": "0911ef61",
    "png": "pods-inventory-no-matches.png"
   },
   "inventory, find": {
-   "hash": "12e74e85",
+   "hash": "eb246679",
    "png": "pods-inventory-find.png"
   },
   "inventory, drying": {
-   "hash": "ca1b103c",
+   "hash": "c5cd6343",
    "png": "pods-inventory-drying.png"
   },
   "inventory, Freshen: the pod on the bench fades": {
-   "hash": "ec9c2c85",
+   "hash": "a7aa2064",
    "png": "pods-inventory-freshen-the-pod-on-the-bench-fades.png"
   },
   "inventory, a pod dried": {
-   "hash": "53e9d00e",
+   "hash": "7b47536c",
    "png": "pods-inventory-a-pod-dried.png"
   },
   "inventory, let go, the hold ring on the pod": {
-   "hash": "41df2a1e",
+   "hash": "cd84f45c",
    "png": "pods-inventory-let-go-the-hold-ring-on-the-pod.png"
   },
   "inventory, from the Incubator: Grow, the only verb": {
-   "hash": "1b4e963b",
+   "hash": "54ab920e",
    "png": "pods-inventory-from-the-incubator-grow-the-only-verb.png"
   },
-  "inventory, grow while busy": {
-   "hash": "9c598e8c",
-   "png": "pods-inventory-grow-while-busy.png"
-  },
   "inventory, Compare: a pod held, its kin bright": {
-   "hash": "11c90e7f",
+   "hash": "5bcc4ec0",
    "png": "pods-inventory-compare-a-pod-held-its-kin-bright.png"
   },
   "inventory, Call: the pods that need you answer, a tag over each key": {
-   "hash": "051532a4",
+   "hash": "6c1cb21a",
    "png": "pods-inventory-call-the-pods-that-need-you-answer-a-tag-over-each-key.png"
   },
   "inventory, forty pods": {
-   "hash": "8c2c009a",
+   "hash": "158cf23d",
    "png": "pods-inventory-forty-pods.png"
-  },
-  "inventory, reading dials": {
-   "hash": "ae537650",
-   "png": "pods-inventory-reading-dials.png"
   },
   "read, Loika fresh, Coat in hand": {
    "hash": "481ba599",

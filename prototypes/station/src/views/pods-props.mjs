@@ -194,12 +194,13 @@ function inventoryView(view, m, spec, req) {
   const filtered = chips.length ? fill(Sg.filtered, { k: list.length, n: st.tray.length, what: chips.join(", ") }) : null;
   const flash = ui.flash && ui.flash.until > (m.now ?? 0) ? ui.flash.text : husks.length ? (husks.length === 1 ? fill(Sg.dried, { n: 1 }) : fill(Sg.driedMany, { n: husks.length })) : "";
   const detail = { left: "", right: flash || filtered || (none ? "" : countAll), amber: false };
-  if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = fill(PK.help, { Verb: PK.verbs[verb] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
+  if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = verb === "freshen" && PK.helpFreshen ? fill(PK.helpFreshen, { n: S.POD_LIFE }) : fill(PK.help, { Verb: PK.verbs[verb] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
   else if (curCard && !(focus === "sort" || focus === "filter" || focus === "find")) {
     const p = curCard.e.p, f = freshOf(st, p, spec); detail.left = [curCard.e.tags[0].text, S.podOrigin(p)].join(" · ");
-    if (f.amber && !flash) { detail.right = f.words; detail.amber = true; }
+    if (f.amber && !f.bench && !flash) { detail.right = f.words; detail.amber = true; }
     else if (!flash && !filtered) { const dial = S.readDial(p, settings); if (dial) detail.right = inWords(readWords(PK.reading, dial)); }   // drying > a flash > the filter > the reading > the count
     if (detail.amber || detail.right !== (flash || filtered || (none ? "" : countAll))) { const d = S.readDial(p, settings); detail.rightDial = dialReq(req, d); detail.rightSealed = !!d && d.sealed > 0; }   // the dial before the reading, and under a drying pod's words too
+    if (!detail.amber && !f.bench && f.words) detail.left += " · " + f.words;   // quietly, from the start: how long the pod stays fresh joins the history on the left (the right is the reading's, the designer's layout); amber on the right once it dries soon
   }
   // the picker: what the face draws (props name what, never where)
   const total = rowsN;
