@@ -1,5 +1,5 @@
 // C9: hearts (walk slice W§2, W§3) on generator 5 places: one heart per place, found = unveiled and within 4 tiles, the yield and the dot move
-// to the heart, tells through the veil within 6 tiles, the Call and the bottom line lead with the heart, the spring pays once.
+// to the heart, tells through the veil within 8 tiles, the Call and the bottom line lead with the heart, the spring pays once.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
@@ -167,12 +167,12 @@ test("the tells, drawn: a spring's shimmer, a pod's slow beat and a struck stone
   }
 });
 
-test("tells show through the veil within 6 tiles and stop once the heart is found; Call radius is 7 (4 in fog, 6 with a glow)", () => {
+test("tells show through the veil within 8 tiles and stop once the heart is found; Call radius is 7 (4 in fog, 6 with a glow)", () => {
   const f = stand();
   assert.equal(f.run("CALL_R"), 7); assert.equal(f.run("CALL_R_FOG"), 4);
   const h = heart(f);
-  assert.equal(f.run(`tellShows(heartOf(S.exp.patch.key), { x: ${h.x + 6}, y: ${h.y} })`), true);
-  assert.equal(f.run(`tellShows(heartOf(S.exp.patch.key), { x: ${h.x + 7}, y: ${h.y} })`), false);
+  assert.equal(f.run(`tellShows(heartOf(S.exp.patch.key), { x: ${h.x + 8}, y: ${h.y} })`), true);
+  assert.equal(f.run(`tellShows(heartOf(S.exp.patch.key), { x: ${h.x + 9}, y: ${h.y} })`), false);
   // the page draws without error with the tell shown, answering, and after the find (the screen is 450×600 at 1x)
   f.run("S.veil = {}");
   for (const [dx, dy] of [[0, 3], [0, 6]]) { f.run(`S.exp.patch.x = ${h.x}; S.exp.patch.y = ${Math.min(W.PH - 2, h.y + dy)}; RT.pl = null; render(5)`); }

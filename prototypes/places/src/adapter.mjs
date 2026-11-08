@@ -7,6 +7,7 @@ import { heartPath } from '../../exploration/src/hearts.mjs';
 
 const LAND = { pond: L.POND, rock: L.ROCK, wood: L.WOOD, meadow: L.MEADOW };
 export const HEART_KINDS = ['moment', 'nest', 'stone', 'spring'];   // what the page's rules know
+const CROWN_MARGIN = 6;   // pixels at 48 px round a crown's box that still count as under it
 
 export function arrivalCell(o, w, h) {
   const mid = (o.from + o.to) >> 1;
@@ -28,6 +29,15 @@ export function adaptPlace(place, ts, terrains, o = {}) {
       if (x >= 0 && y >= 0 && x < w && y < h) tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK;
     }
   }
+  // the tiles no crown hangs over (the explorer arrives on one of these, never hidden under a canopy): a crown's box at 48 px, a tile's pawn as its centre and a margin round it
+  const clear = new Uint8Array(NP).fill(1);
+  { const crowns = [];
+    for (const p of place.props) { const c = ts.sprites[p.kind].canopy; if (c >= 0) crowns.push([c, p.x, p.y]); }
+    for (const c of place.canopy) crowns.push([c.kind, c.x, c.y]);
+    for (const [k, fx, fy] of crowns) {
+      const s = ts.sprites[k], left = fx - s.anchor48[0], top = fy - s.anchor48[1];
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x * 48 + 24, py = y * 48 + 28; if (px > left - CROWN_MARGIN && px < left + s.w48 + CROWN_MARGIN && py > top - CROWN_MARGIN && py < top + s.h48 + CROWN_MARGIN) clear[I(x, y)] = 0; }
+    } }
   const openings = place.openings.map((op) => ({ side: op.side, from: op.from, to: op.to }));
   const arrive = openings.length ? arrivalCell(openings[0], w, h) : { x: w >> 1, y: h >> 1 };
   const spawnPt = { x: arrive.x + ox, y: arrive.y + oy };
@@ -45,7 +55,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const lay = {
     key: o.key ?? place.id, cell: o.cell ?? 0, cave: false, land: LAND[place.type] ?? L.MEADOW, base: T.GRASS, tiles, shelter: new Uint8Array(NP), feats: [],
     terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt, sdist: new Int16Array(NP).fill(999), trees: {}, shade: false,
-    w: pw, h: ph, openings, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })),
+    w: pw, h: ph, openings, clear, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })),
     baked: { id: place.id, ox, oy, w, h },
   };
   const hh = place.heart, fill = o.fill, kind = fill ? fill.heart.kind : hh.kinds.find((k) => HEART_KINDS.includes(k)) || hh.kinds[0];

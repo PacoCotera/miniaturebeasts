@@ -5,7 +5,7 @@
 import { T_BLOCK, L, DIRS, DECOR, hash } from "./world.mjs";
 
 export const HEART_FOUND_R = 4;    // [tune] found = unveiled and within 4 tiles
-export const TELL_R = 6;           // [tune] a tell shows through the veil within 6 tiles
+export const TELL_R = 8;           // [tune] a tell shows through the veil within 8 tiles (was 6: from Windstep's south and far-side openings the tell came into view 11-12 steps in; at 8 it is within 10 steps from every opening of the eight places, W§8)
 export const ANSWER_ACTIONS = 3;   // a Call makes the tells inside its ring answer for 3 actions
 export const SPRING_ESSENCE = 3;   // [tune] the spring pays once, nothing refills (canon check)
 export const CALL_R_PLACE = 7;     // [tune] a Call's round in a place; 4 in a fog bank, 6 with a glowing partner

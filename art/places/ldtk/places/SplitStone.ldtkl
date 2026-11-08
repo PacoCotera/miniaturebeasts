@@ -172,8 +172,8 @@
 				{
 					"__identifier": "Heart",
 					"__grid": [
-						14,
-						9
+						13,
+						10
 					],
 					"__pivot": [
 						0,
@@ -188,8 +188,8 @@
 					"height": 16,
 					"defUid": 120,
 					"px": [
-						224,
-						144
+						208,
+						160
 					],
 					"fieldInstances": [
 						{
@@ -312,16 +312,20 @@
 									"cy": 14
 								},
 								{
-									"cx": 16,
-									"cy": 12
-								},
-								{
-									"cx": 16,
-									"cy": 10
+									"cx": 15,
+									"cy": 13
 								},
 								{
 									"cx": 15,
-									"cy": 9
+									"cy": 12
+								},
+								{
+									"cx": 14,
+									"cy": 11
+								},
+								{
+									"cx": 13,
+									"cy": 11
 								}
 							],
 							"__tile": null,
@@ -330,25 +334,46 @@
 								{
 									"id": "V_String",
 									"params": [
-										"16,14"
+										{
+											"cx": 16,
+											"cy": 14
+										}
 									]
 								},
 								{
 									"id": "V_String",
 									"params": [
-										"16,12"
+										{
+											"cx": 15,
+											"cy": 13
+										}
 									]
 								},
 								{
 									"id": "V_String",
 									"params": [
-										"16,10"
+										{
+											"cx": 15,
+											"cy": 12
+										}
 									]
 								},
 								{
 									"id": "V_String",
 									"params": [
-										"15,9"
+										{
+											"cx": 14,
+											"cy": 11
+										}
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										{
+											"cx": 13,
+											"cy": 11
+										}
 									]
 								}
 							]
@@ -630,14 +655,14 @@
 						{
 							"__identifier": "prop",
 							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
+							"__value": "split-stone",
 							"__tile": null,
 							"defUid": 127,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"boulder-grey"
+										"split-stone"
 									]
 								}
 							]
@@ -2185,126 +2210,6 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						12,
-						7
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "15094b49-a6f3-ab62-b795-3f1407420736",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						192,
-						112
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						13,
-						7
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "c953574a-8195-d863-29c1-267bb2080e02",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						208,
-						112
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-brown",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-brown"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						14,
-						7
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "7f87d26e-2c86-3172-f532-1b0b4f036876",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						224,
-						112
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-brown",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-brown"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
 						17,
 						7
 					],
@@ -2362,86 +2267,6 @@
 					"defUid": 111,
 					"px": [
 						0,
-						128
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						12,
-						8
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "eae7f641-9347-2bc6-40c5-663f623accc5",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						192,
-						128
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-brown",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-brown"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						15,
-						8
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "2cdedd87-ceb2-08aa-f271-dbb43096d9cf",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						240,
 						128
 					],
 					"fieldInstances": [
@@ -2682,86 +2507,6 @@
 					"defUid": 111,
 					"px": [
 						0,
-						176
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-brown",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-brown"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						12,
-						11
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "ac39137e-6813-6824-f393-c97436cd65f1",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						192,
-						176
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						15,
-						11
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "a49a3d98-7200-ce97-f345-6a7958eec246",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						240,
 						176
 					],
 					"fieldInstances": [
@@ -3082,46 +2827,6 @@
 					"defUid": 111,
 					"px": [
 						112,
-						256
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						15,
-						16
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "4500f10b-d129-5eda-224d-ca6f0f8f5106",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						240,
 						256
 					],
 					"fieldInstances": [
@@ -4586,86 +4291,6 @@
 					"__identifier": "Prop",
 					"__grid": [
 						13,
-						8
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "79dce569-7f08-1df2-db0c-46ad0e3bc39a",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						208,
-						128
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						14,
-						8
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "ea99d373-057d-d959-4b48-7631b098c9ab",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						224,
-						128
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						12,
 						9
 					],
 					"__pivot": [
@@ -4676,47 +4301,7 @@
 						"prop"
 					],
 					"__smartColor": "#4B7A3A",
-					"iid": "98ebb14b-13f9-0469-c576-56a5b0a66d20",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						192,
-						144
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						13,
-						9
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "ac30203c-c538-be39-92f4-0a911207432a",
+					"iid": "09d9f128-5381-4ae1-80a5-71c2a55080cc",
 					"width": 16,
 					"height": 16,
 					"defUid": 111,
@@ -4728,294 +4313,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
+							"__value": "split-stone",
 							"__tile": null,
 							"defUid": 110,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						12,
-						10
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "1cb235b4-6404-8bf4-2125-3fdd321be971",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						192,
-						160
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						13,
-						10
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "34601dea-3d7d-fe7f-944c-11fa344cacc1",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						208,
-						160
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						14,
-						10
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "0c251f0c-7dc7-8f38-3b2d-26406b8e5c7b",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						224,
-						160
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						15,
-						10
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "1e394bbd-b1c7-35ae-8ce1-edb7624708e8",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						240,
-						160
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						13,
-						11
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "8dd08c08-5d5a-7ef1-ad77-16c34be9b37f",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						208,
-						176
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						14,
-						11
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "fd8f8ed5-c277-b3db-49bd-73e303fb05fd",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						224,
-						176
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-grey",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-grey"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						12,
-						12
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "a6999923-6a92-c00c-c9bc-45606fadad0a",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						192,
-						192
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-brown",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-brown"
+										"split-stone"
 									]
 								}
 							]
@@ -5668,46 +4973,6 @@
 					"defUid": 113,
 					"px": [
 						128,
-						192
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "pebbles-a",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"pebbles-a"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
-						15,
-						12
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "5a52871f-8f00-eb11-6f25-e8a14037becc",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						240,
 						192
 					],
 					"fieldInstances": [
@@ -6545,26 +5810,9 @@
 				6,
 				6,
 				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				5,
-				5,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
+				3,
+				3,
+				3,
 				6,
 				6,
 				6,
@@ -6579,12 +5827,46 @@
 				6,
 				6,
 				6,
+				3,
+				3,
+				3,
+				3,
+				3,
 				6,
 				6,
 				6,
 				6,
 				6,
 				6,
+				5,
+				5,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				3,
+				3,
+				3,
+				3,
+				3,
+				6,
+				6,
+				6,
+				6,
+				5,
+				5,
+				6,
+				6,
+				3,
+				3,
+				6,
+				6,
+				3,
+				3,
+				3,
+				3,
 				3,
 				6,
 				6,
@@ -6596,30 +5878,13 @@
 				6,
 				3,
 				3,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				5,
-				5,
+				3,
+				3,
 				6,
 				6,
 				3,
 				3,
 				3,
-				3,
-				6,
-				6,
-				6,
-				6,
-				6,
 				6,
 				6,
 				6,

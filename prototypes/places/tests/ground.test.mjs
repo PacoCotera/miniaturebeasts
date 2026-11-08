@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { tileSlot, renderGround, renderView, renderHalfView, lightState, applyLight, tablesOf, GroundCache, applyCycles, HALF_W, HALF_H } from '../src/ground.mjs';
-import { cameraFor, newLook, lookTo, tellPull } from '../src/camera.mjs';
+import { cameraFor } from '../src/camera.mjs';
 import { compareGolden } from '../src/golden.mjs';
 import { ts, place, NIGHT, toImage, goldenFile, cells } from './render-helpers.mjs';
 import { BAYER4 } from '../../exploration/src/view.mjs';
@@ -11,7 +11,7 @@ const VIEW = { w: 450, h: 532 };
 const W48 = place.w * 48, H48 = place.h * 48;
 const T = tablesOf(ts);
 const winAt = (c, size = 48) => ({ x: c.x, y: c.y, w: VIEW.w, h: VIEW.h, size });
-const cam = (px, py, look = { x: 0, y: 0 }, pull = { x: 0, y: 0 }) => cameraFor(VIEW, { pw: W48, ph: H48 }, { x: px, y: py }, look, pull);
+const cam = (px, py) => cameraFor(VIEW, { pw: W48, ph: H48 }, { x: px, y: py });
 const golden = (name, buf, w, h) => { const r = compareGolden(goldenFile(name), toImage(buf, w, h)); assert.ok(r.ok, r.message); };
 
 test('animated tiles take their frame from the one clock, static tiles never change', () => {
@@ -143,13 +143,10 @@ test('the half-scale view is the whole place at 24 px in 432 x 528', () => {
   assert.equal(half.indexOf(0), -1);
 });
 
-test('golden: the fixture place at three camera spots (top left, the pond with look-ahead, bottom right)', () => {
-  const look = newLook();
-  const lk = lookTo(look, 1, 0, 0), lk2 = lookTo(look, 1, 0, 1000);
-  assert.deepEqual(lk, { x: 0, y: 0 });
+test('golden: the fixture place at three camera spots (top left, the pond, bottom right)', () => {
   const spots = {
     'view-top-left': cam(0, 0),
-    'view-pond': cam(6 * 48 + 24, 9 * 48 + 24, lk2, tellPull({ x: 6 * 48 + 24, y: 9 * 48 + 24 }, [{ x: 6 * 48 + 24, y: 13 * 48 + 24 }], false)),
+    'view-pond': cam(6 * 48 + 24, 9 * 48 + 24),
     'view-bottom-right': cam(W48, H48),
   };
   for (const [name, c] of Object.entries(spots)) {

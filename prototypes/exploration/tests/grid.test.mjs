@@ -42,7 +42,7 @@ test("the pending outline is retired: the reach view and the map draw no blinkin
   assert.doesNotMatch(code, /pending work: each unexplored cell/);
 });
 
-test("the corner sign slots sit at pad 4", () => {
-  assert.match(code, /const pad = 4;/);
-  assert.doesNotMatch(code, /const pad = 3;/);
+test("the corner sign slots are retired: signs stand at the heart's spot in their cell (pad 2), beside the first sign", () => {
+  assert.doesNotMatch(code, /const pad = 4;/);
+  assert.match(code, /cellSignAt\(c, x, y, q\.cs, a\.w, a\.h, n\)/, "the reach view places a sign through cellSignAt (the heart's spot, the others beside it)");
 });
