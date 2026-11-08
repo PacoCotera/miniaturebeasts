@@ -45,7 +45,8 @@ export function decodeRle(rle, w, h) {
 }
 
 // Blit the sprite whose RLE data starts at `offset` in `rle` (w x h) with its top-left at (x, y).
-export function blitRle(dst, dstW, dstH, x, y, rle, offset, w, h, remap) {
+// cut(dx, dy), optional: true drops the pixel at that destination position (the canopy's cut-out).
+export function blitRle(dst, dstW, dstH, x, y, rle, offset, w, h, remap, cut) {
   let p = offset;
   for (let row = 0; row < h; row++) {
     const dy = y + row;
@@ -58,6 +59,7 @@ export function blitRle(dst, dstW, dstH, x, y, rle, offset, w, h, remap) {
       if (live) {
         const from = Math.max(0, -(x + cx)), to = Math.min(n, dstW - (x + cx));
         for (let k = from; k < to; k++) {
+          if (cut && cut(x + cx + k, dy)) continue;
           const v = rle[p + k];
           dst[dy * dstW + x + cx + k] = remap ? remap[v] : v;
         }
