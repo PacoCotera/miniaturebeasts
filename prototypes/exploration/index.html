@@ -5879,7 +5879,7 @@ function trackDock() {
   if (d === RT.dockPrev) return; RT.dockPrev = d; if (d) dockSeated(); else dockLifted();
 }
 function dockSeated() {
-  if (S.exp) return;   // mid-expedition: the existing "Docked mid-expedition" rules, nothing new
+  if (S.exp) { if (!FX.dockSaid) { fxMsg(DOCK_TEXT.first, 3); FX.dockSaid = 1; } return; }   // mid-expedition: the existing "Docked mid-expedition" rules; the walk's haul goes home only with End expedition (the designed rule), so the dock itself says so, once, in the existing words
   FX.seated = { at: NOW, crates: S.bay.length }; FX.lifted = null;
   const lead = partnerMibi() || carriedMibis()[0];
   if (lead && S.phase !== 'newworld') { S.phase = 'active'; S.ui.aId = lead.id; }   // a mibi with you: its page, as a cut
