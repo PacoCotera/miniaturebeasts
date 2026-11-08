@@ -17,7 +17,7 @@ test("the page source no longer holds the survey: its words, its functions, its 
 
 test("the Probe screen has no 'Quarter' sign", () => {
   const p = makePage({ console: "silent" }); p.run("newWorld(7)");
-  assert.equal(p.run("TILES.some(t => t[0] === 'quarters' || /quarter/i.test(String(t[1])))"), false);
+  assert.equal(p.run("TILES.some(t => t.id === 'quarters' || /quarter/i.test(t.name))"), false);
 });
 
 // a visited cell, half under the veil, then fully lifted: no pixel of the map or the reach view moves with the veil (no quarter dither)

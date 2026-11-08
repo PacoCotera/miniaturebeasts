@@ -411,7 +411,7 @@ let MIBI_NAMES = []; import('../play/src/names.mjs').then(m => { MIBI_NAMES = m.
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
 const PIN_TEXT = { burrow: 'too narrow', water: 'needs a swimmer', soft: 'needs a rambler', bank: 'needs a digger', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
-const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'too narrow', water: 'fast water', soft: 'needs a rambler', bank: 'needs a digger', deep: 'deep ?' };
+const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', sh: 'water glints', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'too narrow', water: 'fast water', soft: 'needs a rambler', bank: 'needs a digger', deep: 'deep ?' };
 const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'A beacon: light it for 1 Energy to reveal the land around', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: 'An ' + DEPOT_NAME + ': light it for 1 Energy to end an expedition, mend and shelter there',
   pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow burrow · too narrow to follow, until a Tuikis digs it out', water: 'Fast water · needs a swimmer', soft: 'Muddy water or loose scree · a rambler can cross it', bank: 'Earth bank · a digger can dig a way up or down', deep:'Deep ? · a tier 2 Probe can read it' };
 
@@ -571,9 +571,9 @@ const SIGN_LINE = {
   bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
   untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
 // the first sighting of each map sign: its Probe name (the line on the card is the same one)
-const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
+const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', sh: 'Shimmer · water nearby', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
   beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'Mud or scree · needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · tier 2 Probe reads it' };
-const SIGN_TILE_OF = { pod: 'pod', t: 'tracks', b: 'beat', k: 'bolt', kw: 'hollow', beacon: 'beacon', skull: 'skull', depot: 'outpost', burrow: 'gate', water: 'gate', soft: 'gate', bank: 'gate', deep: 'gate' };
+const SIGN_TILE_OF = { pod: 'pod', t: 'tracks', b: 'beat', sh: 'shimmer', k: 'bolt', kw: 'hollow', beacon: 'beacon', skull: 'skull', depot: 'outpost', burrow: 'gate', water: 'gate', soft: 'gate', bank: 'gate', deep: 'gate' };
 const SIGN = {};
 { const add = (id, key, pri, tile, pic, line, o) => { SIGN[id] = Object.assign({ id, key, also: [], pri, tile, pic, line: typeof line === 'function' ? line : () => line }, o); };
   add('shield', 'shield', 3, 'shield', 'shield', SIGN_LINE.shield);
@@ -599,13 +599,14 @@ const SIGN = {};
   add('dew', 'fogdew', 1, 'dew', 'drop', SIGN_LINE.dew);
   add('untuva', 'cmp.hint.untuvaMeal', 2, 'untuva', 'untuva', SIGN_LINE.untuva);
   add('calmkeep', 'calmkeep', 2, 'partner', 'partner', SIGN_LINE.calmkeep);
-  for (const k of ['pod', 't', 'b', 'k', 'kw', 'beacon', 'skull', 'depot', 'burrow', 'water', 'soft', 'bank', 'deep']) add('m:' + k, 'sign:' + k, k === 'depot' || k === 'beacon' ? 3 : 1, SIGN_TILE_OF[k], 'm:' + k, SIGN_NAME_LINE[k]); }
+  for (const k of ['pod', 't', 'b', 'sh', 'k', 'kw', 'beacon', 'skull', 'depot', 'burrow', 'water', 'soft', 'bank', 'deep']) add('m:' + k, 'sign:' + k, k === 'depot' || k === 'beacon' ? 3 : 1, SIGN_TILE_OF[k], 'm:' + k, SIGN_NAME_LINE[k]); }
 const SIGN_RANK = Object.keys(SIGN);   // table order, hazards first
 const signRank = id => SIGN_RANK.indexOf(id);
 // The Probe's tiles: the line on focus (name · gist, then the name alone), the picture, and the flags that mean it was met.
 const TILES = [
   ['tracks', 'Tracks · creatures here', 'Tracks', 'm:t', ['sign:t']],
   ['beat', 'Slow beat · often a pod', 'Slow beat', 'm:b', ['sign:b']],
+  ['shimmer', 'Shimmer · water nearby', 'Shimmer', 'm:sh', ['sign:sh']],
   ['bolt', 'Bolt · a charged stone', 'Bolt', 'm:k', ['sign:k']],
   ['hollow', 'Hollow bolt · warm stone', 'Hollow bolt', 'm:kw', ['sign:kw']],
   ['storm', 'Storm · seek shelter', 'Storm', 'storm', []],
@@ -1227,6 +1228,43 @@ function heartState(lay, P) {
   const known = tellShows(h, P) || unveiled(lay.key, h.x, h.y);
   return { short: known ? HEART_TEXT.tell[h.kind] : HEART_TEXT.unknown, found: false };
 }
+// The map's tell of a place's heart (W§7): the sign a seen, unfound place shows: shimmer (spring), beat (a pod), bolt (a charged stone).
+// A quiet stone has no sign. Whether it is seen is the caller's: heartTellKind knows nothing of the map, heartTell adds "seen".
+function heartTellKind(c) {
+  if (!passable(c) || G.land[c] === L.WATER || !G.comp[c] || heartFound(c) || gatedCell(c)) return null;
+  const key = String(c), h = heartOf(key); if (!h) return null;
+  if (h.kind === 'spring') return 'sh';
+  if (h.kind === 'nest') return 'b';
+  if (h.kind === 'stone') return layout(key).feats.some(f => f.kind === 'k' && f.x === h.x && f.y === h.y && stormCharge(key, f) > 0) ? 'k' : null;
+  return null;
+}
+const heartTell = c => S.revealed[c] ? heartTellKind(c) : null;
+// The nearest other seen, unfound place in reach that shows a tell sign (a heart's tell, or tracks), from the pawn's cell: { c, kind, dir } or null.
+function nearestTell() {
+  const ex = S.exp; if (!ex) return null; const p = cxy(ex.pos); let best = null;
+  for (const e of mapSigns()) { if (e.c === ex.pos || !ex.reach.includes(e.c) || !S.revealed[e.c] || explored(e.c) || gatedCell(e.c)) continue;   // your own place is the line above
+    const kind = ['sh', 'b', 'k', 't'].find(k => e.list.some(q => q.kind === k)); if (!kind) continue;
+    const d = cdist(e.c, ex.pos); if (!best || d < best.d || (d === best.d && e.c < best.c)) best = { c: e.c, kind, d }; }
+  if (!best) return null;
+  const q = cxy(best.c), dx = q.x - p.x, dy = q.y - p.y;
+  return { c: best.c, kind: best.kind, dir: dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy)) || 1) };
+}
+// The band under the reach view (W§7): the place you stand in ("Meadow · found · 1 pod waits there"), then the nearest tell ("Tracks in the wood, north-east").
+// The tell comes as a list of forms, longest first (the caller takes the first that fits).
+function bandCell() {
+  const ex = S.exp, c = ex.pos, B = HEART_TEXT.band, name = cap1(landWord(c));
+  if (gatedCell(c)) return name;
+  if (!S.visited[c] || !passable(c)) return name;
+  if (heartFound(c)) { const n = leftTotal(c), pods = leftCounts(c).pod;
+    return name + ' · ' + HEART_TEXT.found + (pods ? ' · ' + B.podWaits(pods) : n ? ' · ' + HEART_TEXT.leftN(n) : ''); }
+  const k = heartTell(c);
+  return name + ' · ' + (k ? B.tell[k].toLowerCase() : B.unfound);
+}
+function bandTell() {
+  const t = nearestTell(); if (!t) return [];
+  const B = HEART_TEXT.band, word = B.tell[t.kind];
+  return [B.tellFull(word, LAND_NAME[G.land[t.c]], t.dir), B.tellShort(word, t.dir)];
+}
 // What can still be taken in a place, counting only what you can see (unveiled): the pips on the map and
 // the tail of a Call's report ("1 dew, 1 fruit left").
 function leftItems(c) {
@@ -1370,6 +1408,18 @@ function ensureCharge(ex) {
   stones.sort((a, b) => (a.w > 12) - (b.w > 12) || a.d - b.d || a.w - b.w || a.c - b.c);
   if (stones.length) { const o = stones[0]; setFS(o.key, o.f.id, { ws: S.turn }); ex.stats.preCharged = 1; }
 }
+// The start guarantee for tells (W§7): every expedition starts with at least one unfound heart's tell sign within one cell of the start (the Energy guarantee
+// below stays). Springs and a pod's beat show on their own; when the cells beside the start hold only quiet stones, the sun strikes the nearest one (a charged
+// stone is the bolt's tell, +2 Energy for whoever draws it), so a start never lacks a sign. It runs before ensureCharge, which then counts the struck stone.
+function ensureTell(ex) {
+  const p = cxy(ex.start), reach = new Set(ex.reach), near = [];
+  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const n = y * MW + x; if (reach.has(n) && passable(n) && G.land[n] !== L.WATER && G.comp[n]) near.push(n); }
+  ex.stats.tellStruck = 0;
+  if ((G.gen || 1) < 5 || near.some(n => heartTellKind(n))) return;
+  near.sort((a, b) => cdist(a, ex.start) - cdist(b, ex.start) || a - b);
+  for (const n of near) { const key = String(n), h = heartOf(key); if (!h || h.kind !== 'stone' || heartFound(n)) continue;
+    const f = layout(key).feats.find(q => q.kind === 'k' && q.x === h.x && q.y === h.y); if (f) { setFS(key, f.id, { ch: 2 }); ex.stats.tellStruck = 1; return; } }
+}
 function startExpedition(type, cell) {
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
   if (firstPlacement()) S.pods.push(...firstPods(S.seed, cell, S.pods));   // a new world's first expedition: two pods in reach (X2)
@@ -1392,7 +1442,7 @@ function startExpedition(type, cell) {
   const ex = S.exp; ex.hadStorm = !!storm; S.hold = null;   // unsealed finds ride along in the hold
   revealAround(cell, 1); S.visited[cell] = 1;
   ex.reach = reachCells(cell, ex.range);
-  chooseWarm(ex); ensureCharge(ex);
+  ensureTell(ex); chooseWarm(ex); ensureCharge(ex);
   const p = cxy(cell);
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : rd ? ' · ' + CARE_TEXT.riderMenu(rd.name) : '') + ' · tier ' + S.tier + (ex.range > tier.range ? ' · one ring further' : ''));
   meet('flag');   // the map's cell line says "End expedition here" with its flag: no card, the flag joins the Probe
@@ -3642,6 +3692,10 @@ const ICON = {
   beat: (fr) => art('i-beat' + fr, () => { const pb = new PB(23, 17); pb.ell(11.5, 8.5, 3, 3, C.pink, { sh: [C.blush, C.magenta] });
     for (const r of fr ? [6, 9.5] : [6.5, 10.5]) for (let a = -.9; a <= .9; a += .06) { pb.set(11.5 + Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); pb.set(11.5 - Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); }
     pb.outline(() => C.wine); return pb; }),
+  // the shimmer: a spring's tell on the map, drawn in code (the art desk replaces it): three glints on the water's light
+  shimmer: () => art('i-shimmer', () => { const pb = new PB(16, 16);
+    const star = (cx, cy, r) => { for (let i = -r; i <= r; i++) { pb.set(cx + i, cy, C.sky); pb.set(cx, cy + i, C.sky); } pb.set(cx, cy, C.white); };
+    star(6, 9, 4); star(12, 3, 2); star(12, 13, 2); pb.outline(() => C.sea); return pb; }),
   pin: () => art('i-pin', () => { const pb = new PB(16, 22); pb.rect(2, 1, 2, 20, C.bone); pb.poly([[4, 1], [15, 5.5], [4, 10]], C.orange); pb.poly([[4, 6], [15, 5.5], [4, 10]], C.rust); pb.ell(3, 20, 3, 1.5, C.slate); pb.outline(() => C.void); return pb; }),
   flag: () => art('i-flag', () => { const pb = new PB(13, 20); pb.rect(1, 1, 2, 19, C.bone); pb.poly([[3, 1], [12, 4.5], [3, 8]], C.orange); pb.rect(3, 2, 6, 1, C.amber); pb.outline(); return pb; }),
   skull: () => art('i-skull', () => { const pb = new PB(14, 14); pb.ell(7, 6, 6, 5.5, C.bone); pb.rect(4, 10, 6, 3, C.bone); pb.ell(4.5, 6, 1.6, 1.8, C.void); pb.ell(9.5, 6, 1.6, 1.8, C.void); pb.rect(6, 9, 2, 1, C.void); pb.rect(5, 12, 1, 1, C.void); pb.rect(8, 12, 1, 1, C.void); pb.outline(); return pb; }),
@@ -4129,6 +4183,8 @@ function mapSigns() {
   // Energy the Probe has found stays marked until drawn, found place or not: solid bolt for storm charge, hollow for warm
   if (S.exp) for (const c of S.exp.reach) { const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
     if (S.visited[c] && passable(c) && leftItems(c).some(i => i.k === 'pod' && !i.cave)) add(c, 'pod', 9); }   // a pod you saw and left behind
+  // each seen, unfound place in reach shows its heart's tell (shimmer, beat, bolt) until the heart is found; a fog bank hides it like any sign
+  if (S.exp) for (const c of S.exp.reach) { if (inFog(c)) continue; const k = heartTell(c); if (k) add(c, k, 9); }
   for (const k in S.signs) { const c = +k, s = S.signs[k], age = S.turn - s.t; if (age > 1) continue; const rm = age ? 4 : 0;
     if (s.d && !S.deepRead) add(c, 'deep', 9, { rm }); if (s.g) add(c, 'burrow', 9, { rm }); if (hide(c)) continue; if (s.b) add(c, 'b', 5, { rm }); if (s.k) add(c, 'k', 4, { rm });
     if (s.tr.some(sp => !S.known.includes(sp))) add(c, 't', 3, { rm }); }
@@ -4144,6 +4200,7 @@ function drawSign(kind, s, px, py, fr) {
   if (kind === 'pod') { blit(podArt('bone', 1), px + 1, py + 1, s.rm); return; }
   if (kind === 't') { const col = s.sp != null ? spOf(s.sp).col.body : 'bone'; blit(ICON.paw(col), px + 2, py + 15, s.rm); blit(ICON.paw(col), px + 8, py + 9, s.rm); }
   else if (kind === 'b') blit(ICON.beat(s.rm ? 0 : fr), px + 2, py, s.rm);
+  else if (kind === 'sh') blit(ICON.shimmer(), px + 5, py + 5, s.rm);
   else if (kind === 'k') blit(ICON.bolt(), px + 13, py + 2, s.rm);
   else if (kind === 'kw') blit(ICON.boltHollow(), px + 11, py + 1);
   else if (kind === 'deep') blit(BADGE(), px + 4, py + 4, s.rm);
@@ -4190,6 +4247,7 @@ function signSprite(kind, s, fr, big) {
     case 'pod': return podArt('bone', 1);   // 16×20, always 1×
     case 't': return sc('paw' + (s.sp != null ? spOf(s.sp).col.body : 'bone'), ICON.paw(s.sp != null ? spOf(s.sp).col.body : 'bone'));
     case 'b': return ICON.beat(fr);
+    case 'sh': return sc('shimmer', ICON.shimmer());
     case 'k': return sc('bolt', ICON.bolt());
     case 'kw': return sc('boltH', ICON.boltHollow());
     case 'pin': return ICON.pin();
@@ -4263,8 +4321,12 @@ function drawReachView(t) {
   if (FX.msg && !FX.sign) {   // a note takes the band's text space for one action, so nothing covers the reach or the inset; a sign has its own card
     const lines = wrapText(FX.msg, tw - 16, 2).slice(0, Math.min(q.big ? 5 : 3, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20))), h = lines.length * 20 + 12;
     panel(8, by, tw + 4, h, C.ink, C.amber); lines.forEach((l, i) => text(l, 16, by + 6 + i * 20, C.bone)); RT.msgInBand = true; }
-  else { blit(ICON.flag(), 12, by + 2); text(clipText(canSend() ? 'End expedition here' : sendHint(), tw - 20, 2), 30, by + 4, C.bone);
-    text(cutLine(reachLine(), tw, 2), 12, by + 28, C.mist); }
+  else { // the place you stand in, the nearest tell with its way, then the way home (W§7); the tell may wrap to a second row when the band has room (tier 1)
+    let ry = by + 4; text(cutLine(bandCell(), tw, 2), 12, ry, C.bone); ry += 24;
+    const tf = bandTell();
+    if (tf.length) { const rows = q.big ? wrapText(tf[0], tw, 2).slice(0, 2) : [tf.find(t => textW(t, 2) <= tw) || clipText(tf[tf.length - 1], tw, 2)];
+      for (const r of rows) { text(r, 12, ry, C.mist); ry += 24; } }
+    blit(ICON.flag(), 12, ry - 2); text(clipText(canSend() ? 'End expedition here' : sendHint(), tw - 20, 2), 30, ry, C.bone); }
   drawInset(ix, iy, t, u);
 }
 // Edge marks (generator 2): cliff and stair edges drawn in code on the reach view (72 and 48 px) and the full map (26 px),
@@ -5204,7 +5266,7 @@ const PIC = {
   tuft: (x, y) => cen2('tuft', ICON.tuft(), x, y), drop: (x, y) => cen2('drop', DROP(), x, y),
   untuva: (x, y, known) => cen(known ? creatureArt(2, 'idle', 0) : silhouette(2), x, y),
   partner: (x, y, sp) => cen(creatureArt(sgSp(sp), 'idle', 0), x, y),
-  'm:t': (x, y) => cen2('paws', PAWS(), x, y), 'm:b': (x, y) => cen(ICON.beat(0), x, y), 'm:k': (x, y) => cen2('bolt', ICON.bolt(), x, y), 'm:kw': (x, y) => cen2('boltH', ICON.boltHollow(), x, y),
+  'm:t': (x, y) => cen2('paws', PAWS(), x, y), 'm:b': (x, y) => cen(ICON.beat(0), x, y), 'm:sh': (x, y) => cen2('shimmer', ICON.shimmer(), x, y), 'm:k': (x, y) => cen2('bolt', ICON.bolt(), x, y), 'm:kw': (x, y) => cen2('boltH', ICON.boltHollow(), x, y),
   'm:pin': (x, y) => cen(ICON.pin(), x, y),   // 1×: at 2× it is 44 px high
   'm:beacon': (x, y) => { blit(ICON.beacon(0), x + 3, y + 5); blit(ICON.beacon(1, 0), x + 17, y + 5); },
   'm:depot': (x, y) => cen(ICON.depot(3, 0), x, y), 'm:skull': (x, y) => cen2('skull', ICON.skull(), x, y),
@@ -5794,7 +5856,7 @@ function placeReason(c) {
   if (G.gen && passable(c) && !G.comp[c]) return 'No stairs out · can’t start';   // generator 2's sealed plateau (the fallback's)
   return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
 }
-const SIGN_ORDER = ['skull', 'depot', 'b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'soft', 'bank', 'deep'];
+const SIGN_ORDER = ['skull', 'depot', 'b', 'sh', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'soft', 'bank', 'deep'];
 function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.list : [];
   return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? DEPOT_NAME + (q.lit ? ' · lit ' + q.lit + ' turn' + (q.lit === 1 ? '' : 's') : ' (dark)') : q.kind === 'beacon' ? 'beacon' + (q.lit ? ' (lit)' : ' (unlit)') : SIGN_NAME[q.kind]); }
 function landWord(c) {

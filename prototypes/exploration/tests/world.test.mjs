@@ -733,7 +733,7 @@ test("generator 2 play: the side tail draws no ink on its high-side column; a pl
 const fnSrc = name => { const i = PAGE.indexOf("\nfunction " + name + "("); assert.ok(i >= 0, name); return PAGE.slice(i, PAGE.indexOf("\nfunction ", i + 1)); };
 const fnv = a => { let h = 2166136261; for (const v of a) { h ^= v & 0xffff; h = Math.imul(h, 16777619) >>> 0; } return h; };
 // main's generator 1 map, captured from main's page with this harness (seed 7 saved without gen, no pods, creatures or signs, every cell seen, the gate and the mouth visited)
-// C10 (quarters out): the visited cell no longer draws its quarter dither, so the drawn full map and the reach view/cave frames were re-hashed (looked at: only the dither and the band text moved).
+// C10 (quarters out) re-hashed the drawn full map and, with C11 (the map: the band names the place and the nearest tell), the reach view and cave frames (looked at: only the dither and the band moved).
 const MAIN_G1 = { mapCv: 3936681958, frame: 3094132609 };   // main 5e287081, with the round water corners
 // a save written without gen, as every save before generators: a world started, then saved with its gen dropped
 const g1Save = () => { const m = page(); m.run("newWorld(7)"); const o = JSON.parse(m.store[m.KEY]); o.regions[0].gen = 1; return { [m.KEY]: JSON.stringify(o), "mb-companion-A": m.store["mb-companion-A"] }; };   // v9 names the generator in the region: gen 1
@@ -1015,7 +1015,7 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // ---- golden frames: FNV of the 450×600 screen ----
 // The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
-const MAIN_FRAMES = { cave: 1965775616, place32: 1284530620, map: 3095787374 };   // cave and place32 are main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
+const MAIN_FRAMES = { cave: 2763330596, place32: 1284530620, map: 2508564550 };   // cave and place32 are main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
 const GOLDEN48 = { faceStair: 1781723947, gen1: 1254856577, corner: 1819452261 };   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y) {
   const p = page48(seed);
