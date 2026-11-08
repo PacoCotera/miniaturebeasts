@@ -11,14 +11,16 @@ const decodeRGBA = async (bytes) => { const png = await decodePNGAsync(bytes); l
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 // The rooms' pictures (index file rooms/room-<room>-...) load lazily: at boot every other master and the shown room's pictures, then the other rooms in the background (the room after the shown one first); ensureRoom(room) puts a room's pictures
 // at the front of the queue and resolves when they are placed. Test mode (opts.all) loads everything at boot. Which room a master belongs to is read from its file path in the index.
-const ROOM_FILE = /^rooms\/room-([a-z0-9]+)-/;
+// A master's URL carries the start of its sha256 (`?v=`): any change to the bytes is a new URL, so the server may keep the file forever (Cache-Control immutable, ops/sandbox/Caddyfile).
+export const masterUrl = (base, e) => { const u = new URL(e.file, base); if (e.sha256) u.searchParams.set("v", e.sha256.slice(0, 12)); return u; };
+const ROOM_FILE =/^rooms\/room-([a-z0-9]+)-/;
 const realDecode = decodeRGBA;
 export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode = realDecode, place = placeMaster, concurrency = 16 } = {}) {
   // at most `concurrency` masters in flight: hundreds of concurrent fetches and decodes can fail with net::ERR_INSUFFICIENT_RESOURCES (measured on Chromium 141)
   let later = [], items = [], rooms = new Map(), queue = [], active = 0, order = [], base = null;
   const roomName = (r) => (typeof r === "number" ? order[r] : r);
   const run = async (it) => {
-    const e = it.e, r = await fx(new URL(e.file, base));
+    const e = it.e, r = await fx(masterUrl(base, e));
     if (!r.ok) throw new Error(`master ${it.id}: ${e.file} is missing`);
     const bytes = await r.arrayBuffer(), sha = hex(await crypto.subtle.digest("SHA-256", bytes));
     if (sha !== e.sha256) throw new Error(`master ${it.id}: ${e.file} does not match the index (sha256 ${sha.slice(0, 12)}…)`);
