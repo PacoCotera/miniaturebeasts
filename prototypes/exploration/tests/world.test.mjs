@@ -1318,14 +1318,14 @@ for (const ts of [32, 48]) {
   test(`cues at ${ts}: a Call sets FX.cue and nothing in S beyond what Call set before; its find shows a cream tab until it is taken or 3 actions pass`, () => {
     const strip = SCRIPT.replace(/ const cue = \[\];[^\n]*/, "").replace(/ cue\.push\(\{ x: \w+\.x, y: \w+\.y \}\);/g, "").replace(/\n  FX\.cue = \{[^\n]*/, "");
     assert.ok(!/FX\.cue =|cue\.push/.test(strip.slice(strip.indexOf("function callPlace"), strip.indexOf("function waitSnap"))), "the variant has no cue writes");
-    const pod = "S.pods.push({ k: S.exp.patch.key, x: 22, y: 13, h: 1, g: 0, sp: 0, id: 'tp' });";
+    const pod = "S.pods.push({ k: S.exp.patch.key, x: 21, y: 13, h: 1, g: 0, sp: 0, id: 'tp' });";   // 7 tiles east: the edge of a Call (7 in a place)
     const a = cuePlace(ts), b = cuePlace(ts, { script: strip });
     for (const p of [a, b]) p.run(pod + " callPlace();");
     const sOf = p => p.run("JSON.stringify(Object.assign({}, S, { wid: 0, began: 0, regions: S.regions.map(r => ({ ...r, opened: 0 })) }))");   // the world id and the realm's start are drawn from the clock
     assert.equal(sOf(a), sOf(b), "S as without the cue");
-    const cue = js(a, "FX.cue"), mine = t => t.id === "f22,13";
-    assert.deepEqual([cue.key, cue.at, cue.until, cue.r], [a.run("S.exp.patch.key"), 5000, 3, 11]);
-    assert.deepEqual(cue.finds[0], { x: 22, y: 13 }, "the pod first, at its glint's tile");
+    const cue = js(a, "FX.cue"), mine = t => t.id === "f21,13";
+    assert.deepEqual([cue.key, cue.at, cue.until, cue.r], [a.run("S.exp.patch.key"), 5000, 3, 7]);
+    assert.deepEqual(cue.finds[0], { x: 21, y: 13 }, "the pod first, at its glint's tile");
     const gb = js(a, "layout(S.exp.patch.key).feats.find(f => f.kind === 'g') || null"), glints = js(a, "FX.rings.filter(r => r.glint).map(r => ({ x: r.x, y: r.y }))");
     assert.deepEqual(cue.finds, glints.filter(g => !(gb && g.x === gb.x && g.y === gb.y)), "the same tiles it glints (the burrow aside)");
     assert.equal(b.run("FX.cue"), null);
@@ -1343,11 +1343,10 @@ for (const ts of [32, 48]) {
     p.run("{ const c0 = cxy(S.exp.pos); S.exp.fog = { x: c0.x + .5, y: c0.y + .5, r: 3, dx: 0, dy: 0, at: 0 }; }");
     assert.equal(p.run("sightR(curLay())"), 4, "in a fog bank");
     p.run(`S.pods.push({ k: S.exp.patch.key, x: 19, y: 13, h: 1, g: 0, sp: 0, id: 'fp' }); ${crt(7, 9, 13, "approach")} callPlace();`);
-    assert.equal(p.run("FX.cue.r"), 6, "muffled: the reach is 6");
+    assert.equal(p.run("FX.cue.r"), 4, "muffled: the reach is 4 (6 with a glowing partner), the same as the sight in the fog");
     const tabs = tabsOf(p).filter(t => t.id === "f19,13");
-    assert.deepEqual(tabsOf(p).filter(t => t.kind !== "find"), [], "no creature tab"); assert.deepEqual(tabs.map(t => t.kind), ["find"], "the pod 5 tiles east, beyond sight 4: a find tab; the '?' creature 5 tiles west: none");
-    assert.equal(tabs[0].side, "E"); assert.equal(at(p.run("scr").px(), tabs[0].cx, tabs[0].cy - 11), p.run("C").cream, "cream border");
-    p.run("S.exp.patch.x = 15"); p.run("RT.pl = null"); assert.equal(tabsOf(p).filter(t => t.id === "f19,13").length, 0, "walking within 4 tiles: the pod's tile is on screen, no tab");
+    assert.deepEqual(tabsOf(p).filter(t => t.kind !== "find"), [], "no creature tab"); assert.deepEqual(tabs, [], "the pod 5 tiles east lies outside a fog Call of 4: no find tab; the '?' creature 5 tiles west: none");
+    assert.equal(p.run("S.pods.find(q => q.id === 'fp').h"), 1, "and it stays hidden");
   });
 
   test(`cues at ${ts}: the Call's hold draws ice dashes on the view's edge inside the reach, each with its dark shadow on the outer side`, () => {
@@ -1565,21 +1564,26 @@ test("start-pick header at T10: 'Expedition N' and the note, unclipped up to Exp
   assert.doesNotMatch(PAGE, /dotted: storm start/);
 });
 
-test("bottom line in a place: the candidates keep the place name before the take kinds go; after a Call the name stays with Wait · Leave", () => {
+test("bottom line in a place: the heart's state leads the middle and is never dropped; the place name goes before the take kinds; after a Call it stays with Wait · Leave", () => {
   const p = inPlace(); p.run("FX.hintNote = null;");   // the first-place control hint would lead the middle; this test is about the usual words
-  p.run("leftTotal = () => 2; takeKinds = () => ['charge', 'warm stone']; S.exp.patch && (curLay().land = curLay().land);");
+  p.run("S.called[curLay().cell] = 1; leftTotal = () => 2; takeKinds = () => ['charge', 'warm stone'];");   // the heart is found
   const land = p.run("LAND_NAME[curLay().land]"), L = p.run("lineFor()");
   assert.equal(L.ok, "Wait"); assert.equal(L.back, "Leave");
-  const sv = p.run("placeState(curLay().cell)"), svN = p.run("placeState(curLay().cell, false, true)"), short = p.run("placeState(curLay().cell, true)");
-  assert.match(sv, /2 to take: charge · warm stone$/); assert.match(svN, /2 to take$/);
+  const sv = p.run("heartLine(curLay(), S.exp.patch)"), svN = p.run("heartLine(curLay(), S.exp.patch, true)"), short = p.run("heartState(curLay(), S.exp.patch).short");
+  assert.equal(sv, "found · 2 to take: charge · warm stone"); assert.equal(svN, "found · 2 to take"); assert.equal(short, "found");
   assert.deepEqual(JSON.parse(JSON.stringify(L.ctx)).map(c => c.replace("\x01", "")).map(c => c.replace(/ · (lull|overcast)$/, "")), [land + " · " + sv, land + " · " + svN, svN, short]);
-  // after a Call, drawn: the name and the count stay (the kinds drop first)
+  // the state is in every candidate, so it can never be the part that goes
+  for (const c of JSON.parse(JSON.stringify(L.ctx))) assert.match(c, /found/);
+  // before the heart is found: the tell or "something here to find", in every candidate too
+  p.run("S.called = {};"); const L0 = p.run("lineFor()");
+  for (const c of JSON.parse(JSON.stringify(L0.ctx))) assert.match(c, /something here to find|a slow beat|water glints in the grass|a struck stone/, c);
+  p.run("S.called[curLay().cell] = 1;");
+  // after a Call, drawn: the name and the count stay (the kinds drop first when they do not fit)
   p.key("call"); p.run("S.phase = 'patch'; FX.msg = ''; leftTotal = () => 2; takeKinds = () => ['charge', 'warm stone'];");
   const L2 = p.run("lineFor()"); assert.equal(L2.ok, "Wait");
-  // drawn, in a meadow ("meadow · not surveyed · 2 to take" is 276 px in the line's tight spacing, textWT, against 291 available): the name and the count stay, the kinds drop
   p.run("curLay().land = 0"); p.rec("text"); p.clear(); p.run("drawLine(lineFor())");
   const said = p.calls("text").map(c => c.a[0]).join("|");
-  assert.match(said, /\|meadow · \|not surveyed · 2 to take$/, "the place name stays: " + said);
+  assert.match(said, /\|meadow · \|found · 2 to take/, "the place name stays: " + said);
   // and whatever the land, a candidate with the name is drawn whenever it fits
   for (let k = 0; k < 4; k++) { p.run(`curLay().land = ${k}`); const c = p.run("lineFor().ctx[1]").replace("\x01", ""), fits = p.run(`textWT(${JSON.stringify(c)}, 2)`) <= 291;
     p.clear(); p.run("drawLine(lineFor())"); const d = p.calls("text").map(c => c.a[0]).join("");

@@ -6,166 +6,161 @@
  "mibis": 0,
  "dock": 0,
  "stopMid": false,
- "presses": 2909,
- "digest": "c38e79747e88a55327f0d5f244e34b86010afe2306532bc5866d92ced8e08621",
+ "presses": 2878,
+ "digest": "f34d517acb5f8abbbed688e4ae6101fe2b3d63c558946190c1f3b831f4088242",
  "steps": [
   {
    "n": 1,
-   "presses": 144,
+   "presses": 143,
    "turn": 1,
    "bay": 1,
-   "d": "305ebdca5dd24d24"
+   "d": "365d596a22b0d39e"
   },
   {
    "n": 2,
-   "presses": 332,
+   "presses": 331,
    "turn": 2,
    "bay": 2,
-   "d": "725b2ab2c938804c"
+   "d": "3b3a4455487c671f"
   },
   {
    "n": 3,
-   "presses": 654,
+   "presses": 648,
    "turn": 3,
    "bay": 3,
-   "d": "10b6d1a2e5b41acb"
+   "d": "a216314a4caec51c"
   },
   {
    "n": 4,
-   "presses": 825,
-   "turn": 4,
+   "presses": 818,
+   "turn": 3,
    "bay": 3,
-   "d": "795cd3f8065bba50"
+   "d": "3854e0a21dc1b929"
   },
   {
    "n": 5,
-   "presses": 990,
-   "turn": 5,
+   "presses": 980,
+   "turn": 4,
    "bay": 3,
-   "d": "d0d0b630f6d0d0c4"
+   "d": "6b0a38766576c654"
   },
   {
    "n": 6,
-   "presses": 1177,
-   "turn": 6,
+   "presses": 1166,
+   "turn": 4,
    "bay": 3,
-   "d": "850b1f905f829c03"
+   "d": "2e616632c52c511a"
   },
   {
    "n": 7,
-   "presses": 1292,
-   "turn": 7,
+   "presses": 1281,
+   "turn": 5,
    "bay": 3,
-   "d": "cbf298503907b7a5"
+   "d": "67d18db094f2e82f"
   },
   {
    "n": 8,
-   "presses": 1445,
-   "turn": 8,
+   "presses": 1310,
+   "turn": 5,
    "bay": 3,
-   "d": "3d71b1533f55d51d"
+   "d": "10b03bb2a91e001d"
   },
   {
    "n": 9,
-   "presses": 1467,
-   "turn": 9,
-   "bay": 3,
-   "d": "8b1f58843a80ed61"
+   "presses": 1525,
+   "turn": 6,
+   "bay": 1,
+   "d": "e8019cb2b740b31e"
   },
   {
    "n": 10,
-   "presses": 1543,
-   "turn": 10,
+   "presses": 1585,
+   "turn": 6,
    "bay": 1,
-   "d": "2b99c1fc1029aeda"
+   "d": "15d7c4c81cd77e8a"
   },
   {
    "n": 11,
-   "presses": 1675,
-   "turn": 11,
+   "presses": 1716,
+   "turn": 7,
    "bay": 2,
-   "d": "12a1d57603906e0f"
+   "d": "d900c717f91dca0f"
   },
   {
    "n": 12,
-   "presses": 1710,
-   "turn": 12,
+   "presses": 1888,
+   "turn": 7,
    "bay": 2,
-   "d": "fc2dfb6b08c14a42"
+   "d": "907d6e77b2e9bd9c"
   },
   {
    "n": 13,
-   "presses": 1900,
-   "turn": 13,
-   "bay": 1,
-   "d": "25e4cb5374a7e929"
+   "presses": 2067,
+   "turn": 8,
+   "bay": 3,
+   "d": "160c4d17da926c51"
   },
   {
    "n": 14,
-   "presses": 2004,
-   "turn": 14,
-   "bay": 2,
-   "d": "636abd497e79d741"
+   "presses": 2092,
+   "turn": 8,
+   "bay": 3,
+   "d": "b5c68aa48e73a836"
   },
   {
    "n": 15,
-   "presses": 2160,
-   "turn": 15,
-   "bay": 3,
-   "d": "99af64dfc0943ddd"
+   "presses": 2242,
+   "turn": 9,
+   "bay": 1,
+   "d": "c9a42a69c966b28b"
   },
   {
    "n": 16,
-   "presses": 2207,
-   "turn": 16,
-   "bay": 3,
-   "d": "92ea0fafa8e889bf"
+   "presses": 2424,
+   "turn": 10,
+   "bay": 2,
+   "d": "8ebd7041c61fc9e5"
   },
   {
    "n": 17,
-   "presses": 2288,
-   "turn": 17,
-   "bay": 1,
-   "d": "bc030570f338b517"
+   "presses": 2533,
+   "turn": 10,
+   "bay": 2,
+   "d": "6074f2cece49554d"
   },
   {
    "n": 18,
-   "presses": 2550,
-   "turn": 18,
+   "presses": 2577,
+   "turn": 10,
    "bay": 2,
-   "d": "39fb85a6bcccc50f"
+   "d": "62914d574124d6ba"
   },
   {
    "n": 19,
-   "presses": 2791,
-   "turn": 19,
-   "bay": 3,
-   "d": "7ca91887fbae5242"
+   "presses": 2763,
+   "turn": 11,
+   "bay": 1,
+   "d": "7819c203ed604106"
   },
   {
    "n": 20,
-   "presses": 2909,
-   "turn": 20,
-   "bay": 3,
-   "d": "c38e79747e88a553"
+   "presses": 2878,
+   "turn": 11,
+   "bay": 1,
+   "d": "f34d517acb5f8abb"
   }
  ],
  "summary": {
-  "turn": 20,
-  "expN": 21,
+  "turn": 11,
+  "expN": 12,
   "gen": 5,
-  "revealed": 124,
-  "visited": 32,
-  "called": 32,
-  "pods": 70,
-  "creatures": 792,
-  "bay": 3,
-  "hold": {
-   "e": 0,
-   "d": 2,
-   "s": 0,
-   "pods": 0
-  },
+  "revealed": 112,
+  "visited": 28,
+  "called": 28,
+  "pods": 54,
+  "creatures": 779,
+  "bay": 1,
+  "hold": null,
   "mibis": 0,
   "carried": 0,
   "known": 0,
