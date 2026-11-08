@@ -194,6 +194,9 @@ void word_bottomLine(void) {
   }
   /* the colour keys' cues (frame.json regions.cues; props frame.line.keys [{ room, word }]): the carries the ring offers, each the key's room icon and a word, standing in the notice's zone and replacing it while they show */
   int kn = spec_len(P, "frame.line.keys"); if (kn > 4) kn = 4;
+  /* the carry's flight (props frame.flight { pic, room }; a `flight` event on the room): the ringed thing's picture, 1:1, from the ring to the key's cue, in whole pixels, and a `hop` event on a room's cue lifts it 4 px twice */
+  char fpic[96] = "", froom[24] = ""; anim_state_t fa; int flying = 0, dest[2] = { -1, -1 };
+  if (spec_bool(P, "motion", 1) && spec_str(P, "frame.flight.pic", fpic, sizeof fpic) > 0 && spec_str(P, "frame.flight.room", froom, sizeof froom) > 0 && anim_get(ANIM_FLIGHT, froom, &fa) && fa.ms > 0) flying = 1;
   if (kn > 0) {
     int right = v_si(F, "regions.cues.right", 904) - back_extra, left = v_si(F, "regions.cues.left", 632), mk = spec_int(F, "regions.cues.mark.0", 24), mg = v_si(F, "regions.cues.markGap", 4), gap = v_si(F, "regions.cues.gap", 16), cy = v_si(F, "regions.cues.y", 570), ch = v_si(F, "regions.cues.h", 24);
     char role[24]; snprintf(role, sizeof role, "%s", v_sstr(F, "regions.cues.role")); int w[4], total = 0, n = kn;
@@ -205,9 +208,20 @@ void word_bottomLine(void) {
       snprintf(a, sizeof a, "%s.word", key); spec_str(P, a, word, sizeof word); snprintf(a, sizeof a, "%s.room", key); spec_str(P, a, room, sizeof room);
       snprintf(a, sizeof a, "regions.marks.room.%s", room); snprintf(b, sizeof b, "%s", v_sstr(F, a));
       snprintf(id, sizeof id, "line.cue.%d", i); v_inline(id); v_region("cues", LAYER_ART);
-      int mr[4] = { x, cy + (ch - mk) / 2, mk, mk }; if (*b) mark(v_fmt("%s.mark", id), b, mr);
-      v_region("cues", LAYER_TYPE); v_say_run(v_fmt("%s.word", id), word, x + mk + mg, v_role_cap_in(cy, ch, role), role, lg, V_ALIGN_LEFT); v_inline_end();
+      int hop = 0; { anim_state_t ht; if (spec_bool(P, "motion", 1) && anim_get(ANIM_HOP, room, &ht) && ht.ms > 0) { int ph = ht.elapsed * 4 / ht.ms; if (ph > 3) ph = 3; hop = ph % 2 == 0 ? -4 : 0; } }   /* two hops of 4 px */
+      int mr[4] = { x, cy + (ch - mk) / 2 + hop, mk, mk }; if (*b) mark(v_fmt("%s.mark", id), b, mr);
+      if (flying && strcmp(room, froom) == 0) { dest[0] = x + mk / 2; dest[1] = cy + ch / 2; }
+      v_region("cues", LAYER_TYPE); v_say_run(v_fmt("%s.word", id), word, x + mk + mg, v_role_cap_in(cy + hop, ch, role), role, lg, V_ALIGN_LEFT); v_inline_end();
       x += w[i] + gap;
+    }
+  }
+  if (flying) {
+    int sz[2], ring[4]; word_lastRing(ring); if (ring[2] <= 0) { ring[0] = 462; ring[1] = 276; ring[2] = 100; ring[3] = 100; }   /* a screen whose ring has not been drawn: from the middle of the stage */
+    if (v_asset_size(fpic, sz) == 0 && sz[0] > 0 && sz[1] > 0) {
+      if (dest[0] < 0) { int ki = !strcmp(froom, "research") ? 1 : !strcmp(froom, "vivarium") ? 2 : 3; dest[0] = v_si(F, v_fmt("regions.answer.keysX.%d", ki), 512); dest[1] = v_si(F, "regions.cues.y", 570) + v_si(F, "regions.cues.h", 24) / 2; }
+      int t = fa.elapsed > fa.ms ? fa.ms : fa.elapsed, p = 1000 * t / fa.ms, e = 1000 - (1000 - p) * (1000 - p) / 1000;   /* ease out, whole pixels */
+      int sx = ring[0] + ring[2] / 2, sy = ring[1] + ring[3] / 2, cx = sx + (dest[0] - sx) * e / 1000, cyy = sy + (dest[1] - sy) * e / 1000;
+      v_region("flight", LAYER_ART); v_sprite("flight.pic", fpic, cx - sz[0] / 2, cyy - sz[1] / 2, sz[0], sz[1]);
     }
   }
   /* the notice: the sentence right-aligned to 904 with its lamp 4 px to its left */

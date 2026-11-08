@@ -135,7 +135,7 @@ if (!EMBED) fit();
 requestAnimationFrame(frame);
 const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the face is up the screen is blank; the words go to the page
 bootText("loading the species frames…");
-const TEST = new URLSearchParams(location.search).has("test");
+const TEST = new URLSearchParams(location.search).has("test"); UI.noTeach = TEST;   // the controls' first-time teaching (a hop and a line, intents/frame.mjs teachTick) is off in the test page: the goldens and journeys are of the screens, not of a first day
 // The name list births draw from is the current one; ?names=<list key> pins another (the tools that show the archived English names ask for en-short-1).
 { const n = new URLSearchParams(location.search).get("names"); if (n && S.NAME_LISTS[n]) S.useNameList(n); }
 const faceBoot = async () => { const f = await startFace({ test: TEST }); vctx = f.display(vis); };
