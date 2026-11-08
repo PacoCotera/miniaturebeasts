@@ -270,7 +270,7 @@
     "screen": "pods",
     "focus": "bay",
     "ok": "Take to the reading room",
-    "subject": "",
+    "subject": "▲ Other actions",
     "idle": false
    },
    {
@@ -629,7 +629,7 @@
     "screen": "pods",
     "focus": "pods",
     "ok": "Take to the reading room",
-    "subject": "",
+    "subject": "▲ Other actions",
     "idle": false
    },
    {
@@ -745,7 +745,7 @@
     "screen": "pods",
     "focus": "room",
     "ok": "Take to the reading room",
-    "subject": "",
+    "subject": "▲ Other actions",
     "idle": false
    }
   ],
@@ -772,7 +772,7 @@
     "screen": "pods",
     "focus": "pods",
     "ok": "Take to the reading room",
-    "subject": "",
+    "subject": "▲ Other actions",
     "idle": false
    },
    {
