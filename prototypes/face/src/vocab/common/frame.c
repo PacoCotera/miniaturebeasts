@@ -195,7 +195,7 @@ void word_bottomLine(void) {
   /* the colour keys' cues (frame.json regions.cues; props frame.line.keys [{ room, word }]): the carries the ring offers, each the key's room icon and a word, standing in the notice's zone and replacing it while they show */
   int kn = spec_len(P, "frame.line.keys"); if (kn > 4) kn = 4;
   if (kn > 0) {
-    int right = v_si(F, "regions.cues.right", 904) - back_extra, left = v_si(F, "regions.cues.left", 632), mk = spec_int(F, "regions.cues.mark.0", 24), mg = v_si(F, "regions.cues.markGap", 4), gap = v_si(F, "regions.cues.gap", 16), cy = v_si(F, "regions.cues.y", 570), ch = v_si(F, "regions.cues.h", 24);
+    int right = v_si(F, "regions.cues.right", 904) - back_extra, left = v_si(F, "regions.cues.left", 632), mk = spec_int(F, "regions.cues.mark.0", 16), mg = v_si(F, "regions.cues.markGap", 4), gap = v_si(F, "regions.cues.gap", 16), cy = v_si(F, "regions.cues.y", 570), ch = v_si(F, "regions.cues.h", 24);
     char role[24]; snprintf(role, sizeof role, "%s", v_sstr(F, "regions.cues.role")); int w[4], total = 0, n = kn;
     for (int i = 0; i < kn; i++) { snprintf(a, sizeof a, "frame.line.keys.%d.word", i); spec_str(P, a, s, sizeof s); w[i] = mk + mg + v_role_width(s, role); }
     for (; n > 0; n--) { total = 0; for (int i = 0; i < n; i++) total += w[i] + (i ? gap : 0); if (right - total >= left) break; }   /* a cue that would pass the zone is dropped, the last first */
@@ -203,7 +203,7 @@ void word_bottomLine(void) {
     for (int i = 0; i < n; i++) {
       char key[48], word[V_STR], room[24], id[40]; snprintf(key, sizeof key, "frame.line.keys.%d", i);
       snprintf(a, sizeof a, "%s.word", key); spec_str(P, a, word, sizeof word); snprintf(a, sizeof a, "%s.room", key); spec_str(P, a, room, sizeof room);
-      snprintf(a, sizeof a, "regions.marks.room.%s", room); snprintf(b, sizeof b, "%s", v_sstr(F, a));
+      snprintf(a, sizeof a, "regions.marks.roomCue.%s", room); snprintf(b, sizeof b, "%s", v_sstr(F, a));   /* the 16 px drawing, never the 24 scaled */
       snprintf(id, sizeof id, "line.cue.%d", i); v_inline(id); v_region("cues", LAYER_ART);
       int mr[4] = { x, cy + (ch - mk) / 2, mk, mk }; if (*b) mark(v_fmt("%s.mark", id), b, mr);
       v_region("cues", LAYER_TYPE); v_say_run(v_fmt("%s.word", id), word, x + mk + mg, v_role_cap_in(cy, ch, role), role, lg, V_ALIGN_LEFT); v_inline_end();

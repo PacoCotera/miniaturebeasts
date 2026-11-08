@@ -50,7 +50,7 @@ const DEFS = {
     { id: "up", code: "ArrowUp", name: "Up", cls: "pad", html: SV.up, g: 0.4 }, { id: "down", code: "ArrowDown", name: "Down", cls: "pad", html: SV.down, g: 0.4 },
     { id: "left", code: "ArrowLeft", name: "Left", cls: "pad", html: SV.left, g: 0.4 }, { id: "right", code: "ArrowRight", name: "Right", cls: "pad", html: SV.right, g: 0.4 },
     { id: "home", code: "KeyH", name: "Home", cls: "room home", html: MARK("home") }, { id: "habitat", code: "KeyB", name: "Vivarium", cls: "room vivarium", html: MARK("vivarium") },
-    { id: "research", code: "KeyR", name: "Research", cls: "room research", html: MARK("research") }, { id: "library", code: "KeyL", name: "Library", cls: "room library", html: MARK("library") },
+    { id: "research", code: "KeyR", name: "Research", cls: "room research", html: MARK("pods") }, { id: "library", code: "KeyL", name: "Library", cls: "room library", html: MARK("library") },
     { id: "back", code: "Escape", name: "Back", cls: "round back", html: SV.back, g: 0.39 }, { id: "confirm", code: "Enter", name: "Confirm", cls: "round confirm", html: SV.confirm, g: 0.43 },
   ],
   companion: [
@@ -278,7 +278,7 @@ function renderMenu() {
   el.hidden = false; el.textContent = ""; setR(el, M.panel);
   const rel = (r) => [r[0] - M.panel[0] - 1, r[1] - M.panel[1] - 1, r[2], r[3]];
   const put = (n, r) => { const q = rel(r); n.style.left = q[0] + "px"; n.style.top = q[1] + "px"; n.style.width = q[2] + "px"; n.style.height = q[3] + "px"; el.appendChild(n); return n; };
-  for (const [id, code, cls, img, name] of [["home", "KeyH", "home", "home", "Home"], ["habitat", "KeyB", "vivarium", "vivarium", "Vivarium"], ["research", "KeyR", "research", "research", "Research"], ["library", "KeyL", "library", "library", "Library"]]) {
+  for (const [id, code, cls, img, name] of [["home", "KeyH", "home", "home", "Home"], ["habitat", "KeyB", "vivarium", "vivarium", "Vivarium"], ["research", "KeyR", "research", "pods", "Research"], ["library", "KeyL", "library", "library", "Library"]]) {
     const r = M.items[id]; if (!r) continue;
     const b = document.createElement("button"); b.type = "button"; b.className = "mk room " + cls; b.dataset.r = "menu-" + id; b.setAttribute("aria-label", name); b.innerHTML = MARK(img);
     let down = false; b.addEventListener("pointerdown", (e) => { e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch { /* no capture */ } down = true; b.classList.add("dn"); });

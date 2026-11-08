@@ -1449,34 +1449,6 @@
    "sha256": "31a32690a97334cef6e50fb1f88592b765a6a8f43e82672d2e3a653507d892e8",
    "signed": "signed (masters-pods b3b7e04)"
   },
-  "face-belatz-24": {
-   "file": "pods/face-belatz-24.png",
-   "w": 24,
-   "h": 24,
-   "sha256": "a6c5fd2a48598ce79f8a1227905c3482ee9e3fef47da73169b7fde7d644b845e",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "face-belatz-24-away": {
-   "file": "pods/face-belatz-24-away.png",
-   "w": 24,
-   "h": 24,
-   "sha256": "79ffd8beeb87e9abcc2516b9beba16f3a7f67b62fa7ace352b94881bf845f0ad",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "face-loika-24": {
-   "file": "pods/face-loika-24.png",
-   "w": 24,
-   "h": 24,
-   "sha256": "103830c29ebd70ce2ff262f837e79427b631a8bd0c6ce19bdd7d0c8df735925f",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "face-loika-24-away": {
-   "file": "pods/face-loika-24-away.png",
-   "w": 24,
-   "h": 24,
-   "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
   "face-S01-24": {
    "file": "pods/face-S01-24.png",
    "w": 24,
@@ -1637,6 +1609,34 @@
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S20-tuliko/face-S20-24.png"
   },
+  "face-belatz-24": {
+   "file": "pods/face-belatz-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "a6c5fd2a48598ce79f8a1227905c3482ee9e3fef47da73169b7fde7d644b845e",
+   "signed": "signed (masters-pods b3b7e04)"
+  },
+  "face-belatz-24-away": {
+   "file": "pods/face-belatz-24-away.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "79ffd8beeb87e9abcc2516b9beba16f3a7f67b62fa7ace352b94881bf845f0ad",
+   "signed": "signed (masters-pods b3b7e04)"
+  },
+  "face-loika-24": {
+   "file": "pods/face-loika-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "103830c29ebd70ce2ff262f837e79427b631a8bd0c6ce19bdd7d0c8df735925f",
+   "signed": "signed (masters-pods b3b7e04)"
+  },
+  "face-loika-24-away": {
+   "file": "pods/face-loika-24-away.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
+   "signed": "signed (masters-pods b3b7e04)"
+  },
   "find-crystal-112x112": {
    "file": "pods/find-crystal-112x112.png",
    "w": 112,
@@ -1749,33 +1749,110 @@
    "sha256": "7732c769d62f375be1b8a2721675f9ed81c09d5d211ed9f9b312b5e6af94bb2d",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "frame-room-call-16": {
+   "file": "pods/frame-room-call-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "36b8b03186530a316b7f1270c1dc8a8b683a8109b9c29bfc53f7f80d0bc6d1be",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-call-22": {
+   "file": "pods/frame-room-call-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "40b0d46a1e026a8af2e827086156d7ec7d5f3922b5f4a63dcb47b29940d1c29d",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-call-24": {
+   "file": "pods/frame-room-call-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "4e958edd0f2d03b742bbf6030be9bb9735586030921bc6fc957fb8b3dbd2329f",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-home-16": {
+   "file": "pods/frame-room-home-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "d5be0c9db07373921481a539f1879df9c0757d002712d55748b3a8265f9da52b",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-home-22": {
+   "file": "pods/frame-room-home-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "be56d6f5a3bcecaf98316b2ec8661c25523617eb3c9ccd451540d998b9f6a885",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
   "frame-room-home-24": {
    "file": "pods/frame-room-home-24.png",
    "w": 24,
    "h": 24,
    "sha256": "d4f4e3ad0c0e68ede883ab33a96529135a7bc8d3494de1a35e09956718641cd7",
-   "signed": "art director, original concept marks (#117)"
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-library-16": {
+   "file": "pods/frame-room-library-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "9f6652ac198780a8923fe827ede61a15cf94e237c4de4f4728f60fddbbff4726",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-library-22": {
+   "file": "pods/frame-room-library-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "7c05144fb99e30d22734beddf6c3ff81407b1996d949424a10a60fe4362ed746",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
   },
   "frame-room-library-24": {
    "file": "pods/frame-room-library-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "bb4ad9b4d7b635fd224e01a88b1df307e493e4e12625355822470f51e393ee3c",
-   "signed": "art director, original concept marks (#117)"
+   "sha256": "25623c38f975c788de2b9c0cdd8ee6269cf3234737b9bff3c1f43de1749f071b",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
   },
-  "frame-room-research-24": {
-   "file": "pods/frame-room-research-24.png",
+  "frame-room-pods-16": {
+   "file": "pods/frame-room-pods-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "dd68d97d69ac7114986d6add8a323bdb6478a6ed8fa8067053703cc206d6d120",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-pods-22": {
+   "file": "pods/frame-room-pods-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "5d0fd9efa207d879277922f230dbf6ebaf0831e4758b2d2ce5b54bcfe5da874d",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-pods-24": {
+   "file": "pods/frame-room-pods-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "239e82dba592f147a149a96c9247bc016644b3a0d3631ea6f81e437c6a0d884d",
-   "signed": "art director, original concept marks (#117)"
+   "sha256": "28af03385b02534c34ea759fa956dc7c677fa54d1946d85d61c5c66d165fc7f2",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-vivarium-16": {
+   "file": "pods/frame-room-vivarium-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "a6152b4784ea71f55046f7ba2e767320758f0b718bd0d5b65d1567a6a4c26671",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "frame-room-vivarium-22": {
+   "file": "pods/frame-room-vivarium-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "f5f59983c1b728f96d17fbf2999354fb0178e79288016c52d8c307c4e7bcf616",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
   },
   "frame-room-vivarium-24": {
    "file": "pods/frame-room-vivarium-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "c38244b25463abe0700244cd2d783313f07027cce402cafe87028adcc9c56ee5",
-   "signed": "art director, original concept marks (#117)"
+   "sha256": "219b705a99b135b9ee006e5969cf7f7ea7f5a26bb12087c731ae623e49652aca",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
   },
   "frame-sun-16": {
    "file": "pods/frame-sun-16.png",
@@ -3008,13 +3085,6 @@
    "sha256": "2fefb4b797ef82dcbe5a3c4a5b7d3e68239fa7d3aa7fde396eef55e46cf66b5c",
    "signed": "signed (masters-pods b3b7e04)"
   },
-  "mark-species-frost-24x24": {
-   "file": "pods/mark-species-frost-24x24.png",
-   "w": 24,
-   "h": 24,
-   "sha256": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c",
-   "signed": "art director (palette re-sign, masters-pods a60d822b)"
-  },
   "mark-species-S01-24x24": {
    "file": "pods/mark-species-S01-24x24.png",
    "w": 24,
@@ -3174,6 +3244,13 @@
    "sha256": "8c8157711b4fd671135866805576f8769a370b1aa68b2f96feb0bb0e8c60447e",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S20-tuliko/mark-species-S20-24x24.png"
+  },
+  "mark-species-frost-24x24": {
+   "file": "pods/mark-species-frost-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c",
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
   },
   "mark-waiting-24": {
    "file": "pods/mark-waiting-24.png",
@@ -16206,14 +16283,6 @@
    "signed": "art lead, coat recolour R21-COAT-V8 of 2026-11-06 21:55 (mibi-art commit a4d0d39e; Tint x Shade, baked 3 x 3)",
    "from": "mibi-art/art-jobs/2026-11-07-coat-recolour/work/out-tool/S20-faces/face-yellower-light-64x64.png"
   },
-  "mibi-halo-empty-128x160": {
-   "file": "pods/mibi-halo-empty-128x160.png",
-   "w": 128,
-   "h": 160,
-   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4",
-   "status": "empty"
-  },
   "mibi-halo-S01-128x160-clear": {
    "file": "pods/mibi-halo-S01-128x160-clear.png",
    "w": 128,
@@ -16533,6 +16602,14 @@
    "sha256": "1e5c7e250e2a37b014f76ddfb8e4e99b2032a265c8e2f65b405c565850fad4a4",
    "signed": "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)",
    "from": "mibi-art/art-jobs/2026-11-06-game-art/work/tool/S20-tuliko/mibi-halo-S20-128x160-mist.png"
+  },
+  "mibi-halo-empty-128x160": {
+   "file": "pods/mibi-halo-empty-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4",
+   "status": "empty"
   },
   "mibi-juvenile-S01-104x112": {
    "file": "pods/mibi-juvenile-S01-104x112.png",
@@ -27702,33 +27779,110 @@
    "sha256": "359d33b10cad83c0103542f7e506919be5b168f6d55ad2ead979f1f654a1b0d2",
    "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
   },
+  "shell-key-call-16": {
+   "file": "shell/shell-key-call-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "b7bb3c609723329f0939736e8253252325179f5036a616a108435054b1499a90",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-call-22": {
+   "file": "shell/shell-key-call-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "7adee05d9853a05d8965bdb019d79cca3f622432bf1957d42a38b11c9c19164f",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-call-24": {
+   "file": "shell/shell-key-call-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "fc84c965f9733dc133adb5f504b4e97f81de5451af68435072c60d29f2f002ae",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-home-16": {
+   "file": "shell/shell-key-home-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "9d3efb55e65e0f57a907e2ea2d5f1f486c2d74b7bc2bbce9d2edfc68f097342f",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-home-22": {
+   "file": "shell/shell-key-home-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "ea5466c2f4d77ce1d6fa5456a6a7659eae5dac9e9c06f15ca89d1d3ec164c13e",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
   "shell-key-home-24": {
    "file": "shell/shell-key-home-24.png",
    "w": 24,
    "h": 24,
    "sha256": "045b6298939b4588492ed8e3b800805358d67f5e3a8694b1f566db1e29f7f67d",
-   "signed": "art director, original concept marks (#117)"
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-library-16": {
+   "file": "shell/shell-key-library-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "822b5fd67edb036c5d2934d8ab1cb6f52fe84a1f51dff5f28054be1b0faf5421",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-library-22": {
+   "file": "shell/shell-key-library-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "01112164d2e90a15d951df4b4649e90ec77798afbfe0f2a1dfeb7ce52433f023",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
   },
   "shell-key-library-24": {
    "file": "shell/shell-key-library-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "22a4059f45993884a22c66e834fe11fffa364aba635a980a060c4c022eac4bfe",
-   "signed": "art director, original concept marks (#117)"
+   "sha256": "8bb3b96175451bda11254bc36840640d078fdcc73fdd63c412c48675c3613c5a",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
   },
-  "shell-key-research-24": {
-   "file": "shell/shell-key-research-24.png",
+  "shell-key-pods-16": {
+   "file": "shell/shell-key-pods-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "ebee0969c99b3cdcbfc512b73b2cd6e160e63506a66ffce73993d63412db3051",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-pods-22": {
+   "file": "shell/shell-key-pods-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "e545fdcf9d822ac1fb72a330a5f78ce937329aac82dd5409bdca4c16aa1db8d7",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-pods-24": {
+   "file": "shell/shell-key-pods-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "0390ecda305347452e1e402d1882828a60689790481cc5d3760eba081dbad372",
-   "signed": "art director, original concept marks (#117)"
+   "sha256": "f265b5a84cbde1e16e5a5541554a1d0e5f38750ced791e7d3afacc2c483b3b70",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-vivarium-16": {
+   "file": "shell/shell-key-vivarium-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "bc16666d94f27599e1b302bfb205f7f3e7552adc576d1d6d2308ba2abdcc847d",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
+  },
+  "shell-key-vivarium-22": {
+   "file": "shell/shell-key-vivarium-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "af2b2ccbc8b24f65bc7eb1b592c8416c47f7cb71c2ab36caf4078bdace1f9abd",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
   },
   "shell-key-vivarium-24": {
    "file": "shell/shell-key-vivarium-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "24672e5575e04e3388d0d1e48020363b824664c0ee88827f4fa15a99871815a9",
-   "signed": "art director, original concept marks (#117)"
+   "sha256": "f7fe77aa133132402a6603496431dbf17580e9a4470377895dfb66d835a359d1",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)"
   },
   "sitting-backdrop-cave-544x408": {
    "file": "pods/sitting-backdrop-cave-544x408.png",

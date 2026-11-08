@@ -1,106 +1,332 @@
 {
- "frame-room-home-24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   16,
-   8,
-   24,
-   24
-  ],
-  "src": "typed by hand (source/original.py)",
-  "made": "the Home title mark, one palette colour (#ffd441), from the original concept glyph",
-  "sha256": "d4f4e3ad0c0e68ede883ab33a96529135a7bc8d3494de1a35e09956718641cd7",
-  "status": "signed"
- },
- "frame-room-vivarium-24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   16,
-   8,
-   24,
-   24
-  ],
-  "src": "typed by hand (source/original.py)",
-  "made": "the Vivarium title mark, one palette colour (#5cbb4c), from the original concept glyph",
-  "sha256": "c38244b25463abe0700244cd2d783313f07027cce402cafe87028adcc9c56ee5",
-  "status": "signed"
- },
- "frame-room-research-24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   16,
-   8,
-   24,
-   24
-  ],
-  "src": "typed by hand (source/original.py)",
-  "made": "the Research title mark, one palette colour (#3084d8), from the original concept glyph",
-  "sha256": "239e82dba592f147a149a96c9247bc016644b3a0d3631ea6f81e437c6a0d884d",
-  "status": "signed"
- },
- "frame-room-library-24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   16,
-   8,
-   24,
-   24
-  ],
-  "src": "typed by hand (source/original.py)",
-  "made": "the Library title mark, one palette colour (#dbc0ff), from the original concept glyph",
-  "sha256": "bb4ad9b4d7b635fd224e01a88b1df307e493e4e12625355822470f51e393ee3c",
-  "status": "signed"
- },
- "shell-key-home-24": {
-  "size": [
-   24,
-   24
-  ],
-  "src": "typed by hand (source/original.py)",
-  "made": "the Home sandbox key icon, the title mark's alpha in the key ink (#2f2b28), from the original concept glyph",
-  "sha256": "045b6298939b4588492ed8e3b800805358d67f5e3a8694b1f566db1e29f7f67d",
-  "status": "signed"
- },
- "shell-key-research-24": {
-  "size": [
-   24,
-   24
-  ],
-  "src": "typed by hand (source/original.py)",
-  "made": "the Research sandbox key icon, the title mark's alpha in the key ink (#ffffff), from the original concept glyph",
-  "sha256": "0390ecda305347452e1e402d1882828a60689790481cc5d3760eba081dbad372",
-  "status": "signed"
- },
- "shell-key-library-24": {
-  "size": [
-   24,
-   24
-  ],
-  "src": "typed by hand (source/original.py)",
-  "made": "the Library sandbox key icon, the title mark's alpha in the key ink (#f4f1ec), from the original concept glyph",
-  "sha256": "22a4059f45993884a22c66e834fe11fffa364aba635a980a060c4c022eac4bfe",
-  "status": "signed"
- },
- "shell-key-vivarium-24": {
-  "size": [
-   24,
-   24
-  ],
-  "src": "typed by hand (source/original.py)",
-  "made": "the Vivarium sandbox key icon, the title mark's alpha in the key ink (#2f2b28), from the original concept glyph",
-  "sha256": "24672e5575e04e3388d0d1e48020363b824664c0ee88827f4fa15a99871815a9",
-  "status": "signed"
- }
+  "frame-room-call-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Call title mark, one Station palette colour (#1f9d8f), drawn for 16 px",
+    "sha256": "36b8b03186530a316b7f1270c1dc8a8b683a8109b9c29bfc53f7f80d0bc6d1be",
+    "status": "signed"
+  },
+  "frame-room-call-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Call title mark, one Station palette colour (#1f9d8f), drawn for 22 px",
+    "sha256": "40b0d46a1e026a8af2e827086156d7ec7d5f3922b5f4a63dcb47b29940d1c29d",
+    "status": "signed"
+  },
+  "frame-room-call-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Call title mark, one Station palette colour (#1f9d8f), drawn for 24 px",
+    "sha256": "4e958edd0f2d03b742bbf6030be9bb9735586030921bc6fc957fb8b3dbd2329f",
+    "status": "signed"
+  },
+  "frame-room-home-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Home title mark, one Station palette colour (#ffd441), drawn for 16 px",
+    "sha256": "d5be0c9db07373921481a539f1879df9c0757d002712d55748b3a8265f9da52b",
+    "status": "signed"
+  },
+  "frame-room-home-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Home title mark, one Station palette colour (#ffd441), drawn for 22 px",
+    "sha256": "be56d6f5a3bcecaf98316b2ec8661c25523617eb3c9ccd451540d998b9f6a885",
+    "status": "signed"
+  },
+  "frame-room-home-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Home title mark, one Station palette colour (#ffd441), drawn for 24 px; the signed grid, unchanged",
+    "sha256": "d4f4e3ad0c0e68ede883ab33a96529135a7bc8d3494de1a35e09956718641cd7",
+    "status": "signed"
+  },
+  "frame-room-library-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Library title mark, one Station palette colour (#dbc0ff), drawn for 16 px",
+    "sha256": "9f6652ac198780a8923fe827ede61a15cf94e237c4de4f4728f60fddbbff4726",
+    "status": "signed"
+  },
+  "frame-room-library-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Library title mark, one Station palette colour (#dbc0ff), drawn for 22 px",
+    "sha256": "7c05144fb99e30d22734beddf6c3ff81407b1996d949424a10a60fe4362ed746",
+    "status": "signed"
+  },
+  "frame-room-library-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Library title mark, one Station palette colour (#dbc0ff), drawn for 24 px",
+    "sha256": "25623c38f975c788de2b9c0cdd8ee6269cf3234737b9bff3c1f43de1749f071b",
+    "status": "signed"
+  },
+  "frame-room-pods-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Pods title mark, one Station palette colour (#3084d8), drawn for 16 px",
+    "sha256": "dd68d97d69ac7114986d6add8a323bdb6478a6ed8fa8067053703cc206d6d120",
+    "status": "signed"
+  },
+  "frame-room-pods-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Pods title mark, one Station palette colour (#3084d8), drawn for 22 px",
+    "sha256": "5d0fd9efa207d879277922f230dbf6ebaf0831e4758b2d2ce5b54bcfe5da874d",
+    "status": "signed"
+  },
+  "frame-room-pods-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Pods title mark, one Station palette colour (#3084d8), drawn for 24 px",
+    "sha256": "28af03385b02534c34ea759fa956dc7c677fa54d1946d85d61c5c66d165fc7f2",
+    "status": "signed"
+  },
+  "frame-room-vivarium-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Vivarium title mark, one Station palette colour (#5cbb4c), drawn for 16 px",
+    "sha256": "a6152b4784ea71f55046f7ba2e767320758f0b718bd0d5b65d1567a6a4c26671",
+    "status": "signed"
+  },
+  "frame-room-vivarium-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Vivarium title mark, one Station palette colour (#5cbb4c), drawn for 22 px",
+    "sha256": "f5f59983c1b728f96d17fbf2999354fb0178e79288016c52d8c307c4e7bcf616",
+    "status": "signed"
+  },
+  "frame-room-vivarium-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Vivarium title mark, one Station palette colour (#5cbb4c), drawn for 24 px",
+    "sha256": "219b705a99b135b9ee006e5969cf7f7ea7f5a26bb12087c731ae623e49652aca",
+    "status": "signed"
+  },
+  "shell-key-call-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Call sandbox key icon, the title mark's alpha in the key ink (#ffffff), drawn for 16 px",
+    "sha256": "b7bb3c609723329f0939736e8253252325179f5036a616a108435054b1499a90",
+    "status": "signed"
+  },
+  "shell-key-call-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Call sandbox key icon, the title mark's alpha in the key ink (#ffffff), drawn for 22 px",
+    "sha256": "7adee05d9853a05d8965bdb019d79cca3f622432bf1957d42a38b11c9c19164f",
+    "status": "signed"
+  },
+  "shell-key-call-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Call sandbox key icon, the title mark's alpha in the key ink (#ffffff), drawn for 24 px",
+    "sha256": "fc84c965f9733dc133adb5f504b4e97f81de5451af68435072c60d29f2f002ae",
+    "status": "signed"
+  },
+  "shell-key-home-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Home sandbox key icon, the title mark's alpha in the key ink (#2f2b28), drawn for 16 px",
+    "sha256": "9d3efb55e65e0f57a907e2ea2d5f1f486c2d74b7bc2bbce9d2edfc68f097342f",
+    "status": "signed"
+  },
+  "shell-key-home-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Home sandbox key icon, the title mark's alpha in the key ink (#2f2b28), drawn for 22 px",
+    "sha256": "ea5466c2f4d77ce1d6fa5456a6a7659eae5dac9e9c06f15ca89d1d3ec164c13e",
+    "status": "signed"
+  },
+  "shell-key-home-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Home sandbox key icon, the title mark's alpha in the key ink (#2f2b28), drawn for 24 px; the signed grid, unchanged",
+    "sha256": "045b6298939b4588492ed8e3b800805358d67f5e3a8694b1f566db1e29f7f67d",
+    "status": "signed"
+  },
+  "shell-key-library-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Library sandbox key icon, the title mark's alpha in the key ink (#f4f1ec), drawn for 16 px",
+    "sha256": "822b5fd67edb036c5d2934d8ab1cb6f52fe84a1f51dff5f28054be1b0faf5421",
+    "status": "signed"
+  },
+  "shell-key-library-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Library sandbox key icon, the title mark's alpha in the key ink (#f4f1ec), drawn for 22 px",
+    "sha256": "01112164d2e90a15d951df4b4649e90ec77798afbfe0f2a1dfeb7ce52433f023",
+    "status": "signed"
+  },
+  "shell-key-library-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Library sandbox key icon, the title mark's alpha in the key ink (#f4f1ec), drawn for 24 px",
+    "sha256": "8bb3b96175451bda11254bc36840640d078fdcc73fdd63c412c48675c3613c5a",
+    "status": "signed"
+  },
+  "shell-key-pods-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Pods sandbox key icon, the title mark's alpha in the key ink (#ffffff), drawn for 16 px",
+    "sha256": "ebee0969c99b3cdcbfc512b73b2cd6e160e63506a66ffce73993d63412db3051",
+    "status": "signed"
+  },
+  "shell-key-pods-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Pods sandbox key icon, the title mark's alpha in the key ink (#ffffff), drawn for 22 px",
+    "sha256": "e545fdcf9d822ac1fb72a330a5f78ce937329aac82dd5409bdca4c16aa1db8d7",
+    "status": "signed"
+  },
+  "shell-key-pods-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Pods sandbox key icon, the title mark's alpha in the key ink (#ffffff), drawn for 24 px",
+    "sha256": "f265b5a84cbde1e16e5a5541554a1d0e5f38750ced791e7d3afacc2c483b3b70",
+    "status": "signed"
+  },
+  "shell-key-vivarium-16": {
+    "size": [
+      16,
+      16
+    ],
+    "use": "bottom-line cues",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Vivarium sandbox key icon, the title mark's alpha in the key ink (#2f2b28), drawn for 16 px",
+    "sha256": "bc16666d94f27599e1b302bfb205f7f3e7552adc576d1d6d2308ba2abdcc847d",
+    "status": "signed"
+  },
+  "shell-key-vivarium-22": {
+    "size": [
+      22,
+      22
+    ],
+    "use": "Home panel titles",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Vivarium sandbox key icon, the title mark's alpha in the key ink (#2f2b28), drawn for 22 px",
+    "sha256": "af2b2ccbc8b24f65bc7eb1b592c8416c47f7cb71c2ab36caf4078bdace1f9abd",
+    "status": "signed"
+  },
+  "shell-key-vivarium-24": {
+    "size": [
+      24,
+      24
+    ],
+    "use": "title bar (16, 8) and the Call tags",
+    "src": "typed by hand (source/marks.py)",
+    "made": "the Vivarium sandbox key icon, the title mark's alpha in the key ink (#2f2b28), drawn for 24 px",
+    "sha256": "f7fe77aa133132402a6603496431dbf17580e9a4470377895dfb66d835a359d1",
+    "status": "signed"
+  }
 }
