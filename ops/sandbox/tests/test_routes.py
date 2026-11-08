@@ -76,6 +76,9 @@ class Routes(unittest.TestCase):
         (cls.dir / "root" / "current").mkdir(parents=True)
         (cls.dir / "root" / "current" / "build.json").write_text("{}")
         (cls.dir / "root" / "current" / "index.html").write_text("<p>site</p>")
+        (cls.dir / "root" / "current" / "sandbox" / "ui" / "assets" / "masters").mkdir(parents=True)
+        (cls.dir / "root" / "current" / "sandbox" / "ui" / "assets" / "masters" / "m.png").write_text("png")
+        (cls.dir / "root" / "current" / "sandbox" / "index.html").write_text("<p>sandbox</p>")
         cls.port = free_port()
         text = REAL.read_text()
         assert text.count(":80 {") == 1 and "127.0.0.1:8791" in text
@@ -179,6 +182,27 @@ class Routes(unittest.TestCase):
         self.assertEqual(self.req("/studiox", "GET", SPOOF).status, 404)
         self.assertEqual(self.req("/studio.html", "GET", SPOOF).status, 404)
         self.assertEqual(self.studio.hits, [])
+
+    def test_a_hashed_master_is_kept_a_year_and_every_other_sandbox_path_is_not(self):
+        # the real server's answers: the generic /sandbox/* no-cache must not win over a hashed master's immutable (it did, by header order)
+        cc = lambda p: (lambda r: (r.status, r.headers.get_all("Cache-Control")))(self.req(p))
+        self.assertEqual(cc("/sandbox/ui/assets/masters/m.png?v=0123456789ab"), (200, ["public, max-age=31536000, immutable"]))
+        self.assertEqual(cc("/sandbox/ui/assets/masters/m.png"), (200, ["no-cache"]), "no hash in the name: not kept")
+        self.assertEqual(cc("/sandbox/index.html?v=0123456789ab"), (200, ["no-cache"]), "a version on another path is not a master")
+        self.assertEqual(cc("/sandbox/index.html"), (200, ["no-cache"]))
+
+
+class CaddyfileText(unittest.TestCase):
+    """Runs without Caddy, and only reads the text: the order the cache headers are written in matters (Caddy runs `header` blocks outside a `route` in its own order),
+    so the hashed master's line must sit in the same `route` as /sandbox/*'s no-cache, after it. The real answer is checked by Routes above, where Caddy is installed."""
+
+    def test_the_hashed_header_follows_the_sandbox_no_cache_in_one_route(self):
+        text = REAL.read_text()
+        a, b = text.index('header /sandbox/* Cache-Control "no-cache"'), text.index("header @hashed Cache-Control")
+        self.assertLess(a, b)
+        route = text.rindex("route {", 0, a)
+        self.assertGreater(route, text.index("handle {"), "the file's own route, not the studio's")
+        self.assertNotIn("\n\t}\n", text[route:b].replace("\n\t\t}\n", ""), "the route is not closed between the two lines")
 
 
 if __name__ == "__main__":
