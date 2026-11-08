@@ -1,7 +1,7 @@
 // IR -> the Place object that format/write.mjs serialises (place design A1.4 steps 5 and 6), and the golden picture of a baked place.
 import { dualGrid, DualGridError, EMPTY, FULL_BASE, EMPTY_BASE } from '../dualgrid.mjs';
-import { blitTile, blitRle } from '../blit.mjs';
 import { indexedToRgba } from '../indexed.mjs';
+import { renderView } from '../ground.mjs';
 import { FORMAT_VERSION } from '../format/write.mjs';
 import { BakeError, FIND_KINDS } from './ldtk.mjs';
 import { footprintCells, spriteFor } from './rules.mjs';
@@ -58,35 +58,9 @@ export function paletteRgb(tileset) {
   return { rgb };
 }
 
-// The place at 48 or 24 px, veil off, frame 0 of every animation: ground layers, decals, props sorted by foot, then canopy (props' crowns,
-// then free pieces). Returns an RGBA image. The renderer core (C6) draws the same pixels; this is the plain version the goldens use.
+
+// The place at 48 or 24 px for the bake's goldens: the renderer core's whole-place view, veil off, clock 0, no actors, no cut-out. Returns RGBA.
 export function renderPlace(tileset, place, size) {
-  const W = place.w * size, H = place.h * size, half = size >> 1;
-  const buf = new Uint8Array(W * H);
-  const atlas = size === 48 ? tileset.atlas48 : tileset.atlas24;
-  for (const layer of place.ground) {
-    const w1 = place.w + 1;
-    for (let k = 0; k < layer.tiles.length; k++) {
-      const id = layer.tiles[k];
-      if (id === 0xFFFF) continue;
-      blitTile(buf, W, H, (k % w1) * size - half, ((k / w1) | 0) * size - half, atlas, tileset.tiles[id].frames[0], size);
-    }
-  }
-  const scale = (v) => (size === 48 ? v : v >> 1);
-  const sprite = (p) => {
-    const s = tileset.sprites[p.kind];
-    const a = size === 48 ? s.anchor48 : s.anchor24;
-    const [sw, sh, frames, rle] = size === 48 ? [s.w48, s.h48, s.frames48, tileset.spriteAtlas48] : [s.w24, s.h24, s.frames24, tileset.spriteAtlas24];
-    blitRle(buf, W, H, scale(p.x) - a[0], scale(p.y) - a[1], rle, frames[0], sw, sh);
-    return s;
-  };
-  for (const d of place.decals) sprite(d);
-  const crowns = [];
-  for (const p of place.props) {
-    const s = sprite(p);
-    if (s.canopy >= 0) crowns.push({ kind: s.canopy, x: p.x, y: p.y });
-  }
-  for (const c of crowns) sprite(c);
-  for (const c of place.canopy) sprite(c);
-  return indexedToRgba(buf, W, H, paletteRgb(tileset));
+  const W = place.w * size, H = place.h * size;
+  return indexedToRgba(renderView(tileset, place, size, { x: 0, y: 0, w: W, h: H }), W, H, paletteRgb(tileset));
 }
