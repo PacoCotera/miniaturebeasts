@@ -126,7 +126,7 @@ test('sprites: the RLE stream of every frame decodes to its pixels, 48 px and 24
     }
   }
   const tall = back.sprites.find((s) => s.kind === 'tall-grass');
-  assert.equal(tall.frames48.length, 4);
+  assert.equal(tall.frames48.length, 3);
   assert.equal(tall.footprint.length, 0);
   const tree = back.sprites.find((s) => s.kind === 'tree-broad');
   assert.ok(tree.canopy >= 0 && back.sprites[tree.canopy].group === 'canopy');

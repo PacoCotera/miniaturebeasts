@@ -1711,86 +1711,6 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						3,
-						2
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "3f37a2b8-876e-d084-5968-9dd6d087b7af",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						48,
-						32
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						4,
-						2
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "57a2760f-c455-73be-4a50-2a08082f3685",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						64,
-						32
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
 						16,
 						2
 					],
@@ -1911,166 +1831,6 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						2,
-						3
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "c1643446-4f6c-0455-5d0b-446eb7c79a91",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						32,
-						48
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						3,
-						3
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "f2a19a16-68ef-4dad-4ee6-c3eba0bce1c5",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						48,
-						48
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						4,
-						3
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "29750a90-c065-5afc-8945-9629a73ddf32",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						64,
-						48
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						5,
-						3
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "f750c826-ed63-3035-c87a-7f0b6f49a15a",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						80,
-						48
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
 						17,
 						3
 					],
@@ -2142,86 +1902,6 @@
 									"id": "V_String",
 									"params": [
 										"tree-autumn"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						3,
-						4
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "94f05a38-8595-1bb9-149f-8b2565eb8441",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						48,
-						64
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						4,
-						4
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "3e1ce473-856f-c510-f0f0-cffd558134ff",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						64,
-						64
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
 									]
 								}
 							]
@@ -2751,86 +2431,6 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						4,
-						11
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "a3d9010f-b6c2-66e5-201a-056678507847",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						64,
-						176
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						5,
-						11
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "8b0725ec-158d-5d5c-1f2c-37e15cfe0d5d",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						80,
-						176
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
 						17,
 						11
 					],
@@ -2911,126 +2511,6 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						3,
-						12
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "d9d3da40-39fa-93e8-7963-a1c63d116d3d",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						48,
-						192
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						4,
-						12
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "8927ca43-4efc-b886-85e1-9e399376f2da",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						64,
-						192
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						5,
-						12
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "98dd6878-5e18-0b28-6237-6e67b076b297",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						80,
-						192
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
 						17,
 						12
 					],
@@ -3102,86 +2582,6 @@
 									"id": "V_String",
 									"params": [
 										"tree-broad"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						4,
-						13
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "b6262301-caee-d0b9-29d8-e575cf42e96b",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						64,
-						208
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						5,
-						13
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "05909cd2-dbbb-31eb-5f92-33c32b25e134",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						80,
-						208
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
 									]
 								}
 							]
@@ -3871,126 +3271,6 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						12,
-						18
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "74d2acdf-167f-161a-420a-7bfb829eb84d",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						192,
-						288
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						13,
-						18
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "004e2acb-121d-92c4-282a-5423facef1d5",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						208,
-						288
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						14,
-						18
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "28165076-53a2-1d39-d395-d44952f39d3f",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						224,
-						288
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
 						16,
 						18
 					],
@@ -4182,166 +3462,6 @@
 									"id": "V_String",
 									"params": [
 										"tree-broad"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						11,
-						19
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "b1b804c5-3c2f-5ac0-e3fc-cee48c810d5d",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						176,
-						304
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						12,
-						19
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "da69c95e-eda5-6f3d-cd63-dd281cf496dc",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						192,
-						304
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						13,
-						19
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "29e63727-ef61-a8b4-32c1-7d5fc8be9351",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						208,
-						304
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						14,
-						19
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "00a6d9e9-eebd-5f92-a549-5405adfe6fb0",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						224,
-						304
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tall-grass",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tall-grass"
 									]
 								}
 							]
@@ -5902,6 +5022,966 @@
 									"id": "V_String",
 									"params": [
 										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						2
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "95607701-0b37-4a72-8a70-67c6cdbca82a",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						48,
+						28
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						2
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "ab758ede-ba89-478f-873e-ce77001614ed",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						49,
+						27
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						2
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "a7a04dc0-7a20-4a88-89fe-9df7b2fd5084",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						58,
+						28
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						2
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "09164916-bd49-4142-b3d8-473dc102f17d",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						70,
+						29
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "6309c820-854d-4d50-80ba-d68968b5f660",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						53,
+						41
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "776e3a3e-886e-4981-99fc-2ee2dc6c8f2c",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						52,
+						42
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						4
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "efe5cf5d-562d-4f74-99bb-7057bf1fdbda",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						50,
+						58
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						4
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "3d39838c-cc5c-47ea-aed2-b40b6bbe18c2",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						70,
+						58
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						11
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "62d79496-51e1-44ea-9452-6e68a79e36fb",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						69,
+						172
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						5,
+						11
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "e2341def-960f-43a2-9938-c58d623b1094",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						86,
+						171
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						12
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "ae1d906f-5dfa-433a-8a51-a01aeaaf71e1",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						52,
+						185
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						12
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "cf30c933-7721-4f91-8b89-be7df05c7c67",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						191
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						5,
+						12
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "69c1ef8f-1771-4ff3-856d-9a1da38b0998",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						85,
+						190
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "7ad98d03-2f82-416b-9d09-532491cecfed",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						61,
+						206
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "313f591b-e84a-46cd-b30d-8b08f0ff6ea9",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						60,
+						207
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						12,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "93da22b8-6e41-477e-bc01-890428894e9e",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						186,
+						284
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						12,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "bdac896b-d967-4b15-8c26-297d4fa47ad6",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						196,
+						299
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						13,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "a56f65fb-7989-4e62-9556-191f29ecf62e",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						209,
+						303
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						14,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "8a9a453b-937a-422e-8145-608c97f246a6",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						226,
+						301
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						14,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "2df2f8af-76ab-4927-8fc7-6447d489e612",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						227,
+						300
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						11
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "cf3473e6-68f8-428f-a885-ca4bc5a155da",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						46,
+						172
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						5,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "3c1123c0-0166-40fa-bed7-8e52d8ec01ee",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						86,
+						156
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						14
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "e57fcb05-4ce0-4a92-8c71-e9b474c207b3",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						60,
+						216
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						10,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "2dced336-5df8-4f0d-97f8-9b2516b94dfe",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						161,
+						297
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
 									]
 								}
 							]

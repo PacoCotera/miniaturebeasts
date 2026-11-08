@@ -1757,10 +1757,12 @@ function entryPoint(lay, key, dir) {
     if (cf >= 0 && edgeKind(cf, dir) === EDGE.CLIFF) { const q = lay.cross.find(r => r.dir === OPPOSITE[dir]); if (q && !occupant(key, q.entry.x, q.entry.y, 'player')) return { x: q.entry.x, y: q.entry.y }; } }
   const tx = dir === 'right' ? 0 : dir === 'left' ? lay.w - 1 : lay.w / 2, ty = dir === 'down' ? 0 : dir === 'up' ? lay.h - 1 : dir ? lay.h / 2 : lay.h - 3;
   let best = null, bd = 1e9; const sq = !!G.gen;   // generator 2 places: squared distance, ties by tile index
-  for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) {
-    if (!lay.reach[y * lay.w + x] || occupant(key, x, y, 'player')) continue;
-    const d = sq ? (x - tx) ** 2 + (y - ty) ** 2 : Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = { x, y }; }
-  }
+  // a baked place has the tiles no crown hangs over (lay.clear): the explorer arrives on one of them, the nearest to the way in, never hidden under a canopy (C16); with none, any
+  for (let pass = lay.clear ? 0 : 1; pass < 2 && !best; pass++)
+    for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) {
+      if (!lay.reach[y * lay.w + x] || occupant(key, x, y, 'player') || (pass === 0 && !lay.clear[y * lay.w + x])) continue;
+      const d = sq ? (x - tx) ** 2 + (y - ty) ** 2 : Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = { x, y }; }
+    }
   return best || lay.spawnPt;
 }
 function placePartnerNear(key, P) {
@@ -4252,6 +4254,15 @@ function circ(cx, cy, r, c, dotted) { // midpoint circle, 2 px thick
     while (x >= y) { if (!dotted || (i++ & 2)) for (const [a, b] of [[x, y], [y, x], [-y, x], [-x, y], [-x, -y], [-y, -x], [y, -x], [x, -y]]) g.fillRect(cx + a, cy + b, 1, 1);
       y++; if (e < 0) e += 2 * y + 1; else { x--; e += 2 * (y - x) + 1; } } }
 }
+// A dashed ring 4 px thick (cream between two ink lines), its dashes long: the item rings of the whole-place views, readable at 1× over any ground (C16: the 2 px dotted ring was lost on the 24 px render).
+function dashRing(cx, cy, r, c) {
+  cx = Math.round(cx); cy = Math.round(cy);
+  for (let rr = r + 3; rr >= r - 3; rr--) {
+    const col = rr >= r + 2 || rr === r - 3 ? C.ink : c, n = Math.max(8, Math.round(2 * Math.PI * rr)); g.fillStyle = HEX[col];
+    for (let k = 0; k < n; k++) { if (col === c && Math.floor(k * 14 / n) % 2) continue;   // 7 dashes, as long as the gaps
+      const a = 2 * Math.PI * k / n; g.fillRect(Math.round(cx + rr * Math.cos(a)), Math.round(cy + rr * Math.sin(a)), 1, 1); }
+  }
+}
 function pline(x0, y0, x1, y1, c, th) { // Bresenham, th×th pen
   x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1); th = th || 1; g.fillStyle = HEX[c];
   const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let e = dx + dy;
@@ -4410,6 +4421,16 @@ function signSprite(kind, s, fr, big) {
   }
   return null;
 }
+// A found place's name on its miniature (the reach view only): 2× tight text on the 72 px cell, wrapped to two lines; 1× where the cell is 48 px. An ink plate behind, so it reads over any ground.
+function mapName(nm, x, yb, cs) {
+  const s = cs >= 72 ? 2 : 1, mw = cs - 4, room = s === 2 ? 2 : 1, wrap = str => { const out = []; let cur = '';
+    for (const w of str.split(' ')) { const t = cur ? cur + ' ' + w : w; if (textWT(t, s) <= mw || !cur) cur = t; else { out.push(cur); cur = w; } }
+    if (cur) out.push(cur); return out; };
+  let lines = wrap(nm); if (lines.length > room && /^The /i.test(nm)) lines = wrap(nm.slice(4));   // "The Windy Rise" without its "The", rather than without its last word
+  const ls = lines.slice(0, room).map(l => { while (l.length > 1 && textWT(l, s) > mw) l = l.slice(0, -1); return l; }), lh = 7 * s + 2, ph = ls.length * lh + 2;
+  R(x + 1, yb - ph - 1, cs - 2, ph, C.ink);
+  ls.forEach((l, n) => text(l, x + (cs >> 1), yb - ph + 1 + n * lh, C.cream, s, 'center', true));
+}
 function drawReachView(t) {
   if (S.exp.beaconView || S.ui.mapFull) { drawMap('map', t); return; }   // the whole map, when chosen in the menu (it stays chosen)
   ensureMap();
@@ -4439,7 +4460,7 @@ function drawReachView(t) {
     const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
     fogDots(q.dx + i * q.cs, q.dy + j * q.cs, q.cs, fogLevel(Y * MW + X));
     const c = Y * MW + X, mini = S.revealed[c] && miniatureOf(c, q.cs);   // a found place wears its miniature, its name under it (the reach view only)
-    if (mini) { const nm = clipText(layout(String(c)).name || '', q.cs - 4, 1), y0 = q.dy + (j + 1) * q.cs - 10; R(q.dx + i * q.cs + 1, y0, q.cs - 2, 9, C.ink); text(nm, q.dx + i * q.cs + (q.cs >> 1), y0 + 2, C.cream, 1, 'center'); } }
+    if (mini) mapName(layout(String(c)).name || '', q.dx + i * q.cs, q.dy + (j + 1) * q.cs, q.cs); }
   // pass 4: signs in corner slots: the start flag first, then the cell's signs in their usual order
   for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
     const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
@@ -4806,13 +4827,13 @@ function drawWhole(t) {
   // the heart's tell, through the veil (the arrival look and Look show it; the reveal rings the heart itself)
   if (h && !found && v.kind !== 'reveal' && (v.kind === 'arrival' || tellShows(h, P) || unveiled(v.key, h.x, h.y))) {
     const q = tp(h.x, h.y);
-    if (h.kind === 'moment') { const pa = ICON.paw('cream'); for (const c of h.clues) { const r = tp(c.x, c.y); blit(pa, r.x - 4, r.y - 4); } }
+    if (h.kind === 'moment') { const pa = up2('paw:cream', ICON.paw('cream')); for (const c of h.clues) { const r = tp(c.x, c.y); blit(pa, r.x - (pa.w >> 1), r.y - (pa.h >> 1)); } }   // 2×: a paw at 1× is 8 px on a 24 px tile
     else if (h.kind === 'stone') blit(ICON.bolt('yellow'), q.x - 6, q.y - 14);
-    else circ(q.x, q.y, h.kind === 'spring' ? 10 : 9, h.kind === 'spring' ? C.aqua : C.cream, true);
+    else dashRing(q.x, q.y, 9, h.kind === 'spring' ? C.aqua : C.cream);
   }
   if (v.kind === 'reveal') {   // the heart ringed in amber, what is still there to take in dotted rings, the name (3×) and the heart's line
     const q = tp(h.x, h.y); circ(q.x, q.y, 14, C.ink); circ(q.x, q.y, 12, C.amber); circ(q.x, q.y, 10, C.ink);
-    for (const it of leftItems(lay.cell)) { if (it.cave) continue; const r = tp(it.x, it.y); circ(r.x, r.y, 11, C.ink); circ(r.x, r.y, 9, C.cream, true); }
+    for (const it of leftItems(lay.cell)) { if (it.cave) continue; const r = tp(it.x, it.y); dashRing(r.x, r.y, 9, C.cream); }
     const line = revealLine(lay, h), lines = wrapText(line, SCR_W - 48, 2), bh = 36 + lines.length * 20 + 10;
     panel(12, VIEW_Y + 8, SCR_W - 24, bh, C.ink, C.amber);
     text(lay.name || '', SCR_W / 2, VIEW_Y + 16, C.cream, 3, 'center'); lines.forEach((l, i) => text(l, SCR_W / 2, VIEW_Y + 16 + 30 + i * 20, C.bone, 2, 'center'));

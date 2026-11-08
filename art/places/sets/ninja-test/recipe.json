@@ -20,7 +20,8 @@
     "Stitching (`stitch`): blob art is drawn for neighbours chosen by eight cells, so re-cut as corner tiles its pieces agree on where a shore leaves a tile only to within a few pixels and its grass texture runs into the border at different places. For every tile edge and corner state the boundary line is taken from the tile whose shore runs straight through that edge, and written over the border of every tile, frame and variant with that state. The cost is at most a one-pixel line at the border of a tile whose own shore drifted; the seam proof then holds exactly.",
     "The sand full tile is the water sheet's own sand cell (TilesetWater 0,5), the colour the sand shore pieces run into.",
     "mud|water is the pack's dark swamp shore: brown mud and purple water. Its water is not the blue water of the other pairs; the three never meet (an opaque pair refuses a third terrain at a corner).",
-    "reeds: the pack has no reeds; its bamboo stalk stands in. tall-grass: the pack's swaying plant (four frames) stands in. Both are test stand-ins for the art desk's own."
+    "reeds: the pack has no reeds; its bamboo stalk stands in. tall-grass: three of the pack's grass tufts in a row stand in as the frames of a sway (the pack's daisy plant read as flowers). Both are test stand-ins for the art desk's own.",
+    "tree-hollow: the pack's great pair of gnarled trees with the arch between them, cut whole; the Hollow Tree's landmark, its heart at the foot of the arch. split-stone: the pack's three stacked grey boulders with the dark crack between them, cut whole; the Split Stone's landmark."
   ],
   "sources": {
     "water": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetWater.png",
@@ -71,7 +72,9 @@
     "boulder-brown": { "sheet": "nature", "rect": [210, 132, 29, 27], "anchor": [14, 26], "footprint": [[0, 0]] },
     "boulder-grey": { "sheet": "nature", "rect": [258, 132, 29, 27], "anchor": [14, 26], "footprint": [[0, 0]] },
     "reeds": { "sheet": "nature", "rect": [176, 128, 16, 46], "anchor": [8, 45], "footprint": [] },
-    "tall-grass": { "sheet": "plant", "rect": [0, 0, 16, 16], "anchor": [8, 15], "footprint": [], "frames": 4, "frameMs": 220 }
+    "tall-grass": { "sheet": "nature", "rect": [48, 160, 16, 16], "anchor": [8, 15], "footprint": [], "frames": 3, "frameMs": 300 },
+    "tree-hollow": { "sheet": "nature", "rect": [0, 80, 64, 47], "anchor": [32, 46], "footprint": [[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0], [-1, -1], [0, -1], [1, -1]] },
+    "split-stone": { "sheet": "nature", "rect": [257, 83, 61, 44], "anchor": [30, 43], "footprint": [[-1, 0], [0, 0], [1, 0], [-1, -1], [0, -1], [1, -1]] }
   },
   "canopy": {
     "tree-broad-crown": { "sheet": "nature", "rect": [48, 288, 48, 34], "anchor": [24, 47] },
