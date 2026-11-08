@@ -13,6 +13,11 @@ LDtk levels, the dual grid, tile sets, the baked FlatBuffers format and the inde
 | `src/format/set.schema.json`, `src/setload.mjs` | A§3: the tile-set contract (`set.json`) and its loader. |
 | `src/bakeset.mjs` | A loaded set to the `.mbtiles` object; the 24 px derivation. |
 | `tools/prepare-set.mjs` | A§3.3: a licensed kit and a recipe to a set. Recipe: `art/places/sets/<id>/recipe.json`. |
+| `src/bake/` | A§1.4, the bake: `ldtk.mjs` (load, schema, definitions check, level to IR), `rules.mjs` (the level rules, each named), `mirror.mjs`, `build.mjs` (IR to place, the plain golden render), `bake.mjs` (all outputs in memory, write, check). |
+| `tools/bake.mjs` | `node tools/bake.mjs` writes `baked/` and `golden/places/`; `--check` rebakes in memory and compares (CI); `--place <id>` bakes one place and its mirror. |
+| `../../art/places/ldtk/` | The LDtk 1.5.3 project (`places.ldtk`) and one external level file per place (`places/*.ldtkl`). Edit in LDtk; the bake reads the files. |
+| `baked/` | `<set>.mbtiles`, `<place>[~x].mbplace`, `index.json` (sha256 of each blob). Committed; CI fails when it is stale. |
+| `golden/places/` | `<place>[~x]-48.png` and `-24.png`, rendered by the blitter from the baked data. Compared by decoded pixels. |
 | `golden/seams/` | The seam goldens: `<set>-<pair>-sheet-48.png` (the 16 tiles in corner order), `<set>-<pair>-48.png` (the all-cases map). Compared by decoded pixels; `MB_UPDATE_GOLDENS=1` rewrites them on purpose, and a human looks at every changed one. |
 
 ## Run
