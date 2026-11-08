@@ -3,7 +3,7 @@
 import * as S from "../state.mjs";
 import { openPanel } from "./panel.mjs";
 import { fill } from "../views/words.mjs";
-import { vivariumBuild, idOf, partnersOf, platesOf, pickHeld } from "../views/vivarium-props.mjs";
+import { vivariumBuild, idOf, partnersOf, platesOf, pickHeld, youngTurns } from "../views/vivarium-props.mjs";
 import { walk, wallEntry, firstLive, gridWalk } from "../views/wall-walk.mjs";
 import { wallBuild } from "../views/wall-props.mjs";
 import { doorOpen } from "../nav.mjs";
@@ -32,7 +32,8 @@ export function focus(h, target) {
 function heldSay(h, p, m) {
   const H = Sg(h).msg.held, lines = H[p.plate];
   if (!lines) { if (p.why) h.say(p.why); return; }
-  say(h, lines, { name: m?.name ?? "", n: m ? S.backIn(h.st, m) || 1 : 1, p: priceOf(p.price) || S.tuckPrice(h.st, h.settings), e: h.st.e });
+  const n = m && p.plate === "young" ? (youngTurns(h.st, m, h.settings) ?? 1) : m ? S.backIn(h.st, m) || 1 : 1;   // a young mibi's plate counts its turns to grow up (the card's own count), not its way back
+  say(h, lines, { name: m?.name ?? "", n, p: priceOf(p.price) || S.tuckPrice(h.st, h.settings), e: h.st.e });
 }
 const priceOf = (s) => +String(s ?? "").replace(/[^0-9]/g, "") || 0;
 // the ring after a mibi left the room view's field (tucked away, returned): the nearest mibi in the room, else its chip

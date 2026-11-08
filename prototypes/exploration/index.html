@@ -1071,7 +1071,7 @@ function isDocked() { const st = stPart(); return !!(st && st.dock && st.dock.do
 const fieldFrozen = () => !!(S && S.exp) && isDocked();
 const DOCK_TEXT = { chip: 'Docked', first: 'Field paused while docked · lift to go on · End expedition still works at the start or a lit outpost', again: 'Docked · lift to go on',
   tierMid: 'Tier 2 · from the next expedition', probe: 'Docked · the Station mends it', bay: n => n + ' crate' + (n === 1 ? '' : 's') + ' sealed · ready for the Station',
-  sealed: 'In the Caddy · open Cargo on the Station', sealedEmpty: 'In the Caddy' };
+  sealed: 'Docked · open Cargo on the Station', sealedEmpty: 'Docked' };
 // Docked, the Companion takes what the Station hands over: accepted crates leave the bay; the Probe as mended or
 // upgraded; the Station's carry requests (st.carryReqs); the mibis raised; species identified; pods returned to the wild.
 function syncStation() {
@@ -5879,7 +5879,7 @@ function trackDock() {
   if (d === RT.dockPrev) return; RT.dockPrev = d; if (d) dockSeated(); else dockLifted();
 }
 function dockSeated() {
-  if (S.exp) return;   // mid-expedition: the existing "Docked mid-expedition" rules, nothing new
+  if (S.exp) { if (!FX.dockSaid) { fxMsg(DOCK_TEXT.first, 3); FX.dockSaid = 1; } return; }   // mid-expedition: the existing "Docked mid-expedition" rules; the walk's haul goes home only with End expedition (the designed rule), so the dock itself says so, once, in the existing words
   FX.seated = { at: NOW, crates: S.bay.length }; FX.lifted = null;
   const lead = partnerMibi() || carriedMibis()[0];
   if (lead && S.phase !== 'newworld') { S.phase = 'active'; S.ui.aId = lead.id; }   // a mibi with you: its page, as a cut

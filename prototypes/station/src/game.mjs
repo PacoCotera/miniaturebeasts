@@ -5,6 +5,7 @@ import * as S from "./state.mjs";
 import * as T from "./sitting.mjs";
 import * as Lib from "./library.mjs";
 import { clock } from "./pixels.mjs";
+import { doorOpen } from "./nav.mjs";
 import { createTimeline } from "../../ui/timeline.mjs";
 import { createFramePresenter } from "./present.mjs";
 import { createFocus } from "../../ui/focus.mjs";
@@ -75,7 +76,15 @@ function adopt(sv) {
   G.sv = sv; G.st = sv.st;
   const mh = S.docked(G.st) ? T.mergeHome(G.st, G.sv) : null, home = mh ? mh.home : [];   // docked: the care the Companion earned since, and the welcome
   if (mh) noteArrived(mh.back);
+  tendSitting();   // in memory only: the door's opening is written with the next save (a load that changes nothing else writes nothing)
   if (migrated || home.length) save();
+}
+// The sitting's door (the-portrait.md §8, X21) is the screen: once nav.mjs BUILT lists "sitting" the door is open in play. The first read opens it (every moment earned before is owed, given one at a time);
+// after that each read pays the moments newly earned. True when something changed.
+function tendSitting() {
+  if (!doorOpen("sitting") || !G.st || G.settings.sittingDoor === "shut") return false;   // settings.sittingDoor "shut" is the layer tools' own (a scene's ledger is what it sets; nothing is paid behind its back)
+  if (!G.st.doorAt) { T.openSittingDoor(G.st, G.settings); return true; }
+  return T.collectMoments(G.st, G.settings).length > 0;
 }
 // R4b: the travellers that came home (state.noteCarried) walk in from their room's rest edge: the views mark them (props `enter`) for the face, which honours it only while a walk is running.
 export function noteArrived(back = []) { UI.arrived = [...new Set([...(UI.arrived ?? []), ...back.map(String)])]; }
@@ -89,6 +98,7 @@ export function load() {
 export function save() {
   if (G.resetting) return;
   if (storedNewer()) { changed(); return; }
+  tendSitting();   // a moment earned by this change is paid before it is written
   try {
     const cur = readStored();
     if (cur && cur.wid === G.st.wid) G.sv = cur;

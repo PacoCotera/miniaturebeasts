@@ -172,7 +172,7 @@
    },
    "sleep": {
     "title": "Put this realm to sleep",
-    "sub": "Kept on the Caddy · a new realm begins"
+    "sub": "Kept at the dock · a new realm begins"
    }
   },
   "state": {
@@ -198,7 +198,7 @@
    },
    "sleep": {
     "title": "Put this realm to sleep",
-    "paras": ["Your whole realm sleeps: its regions, mibis, pods, the Library, Data, Energy and Essence. It is kept on the Caddy, signed by your Companion.", "Then your Station, Caddy and Companion start a new realm in the Meadows."],
+    "paras": ["Your whole realm sleeps: its regions, mibis, pods, the Library, Data, Energy and Essence. It is kept at the dock, signed by your Companion.", "Then your Station and Companion start a new realm in the Meadows."],
     "label": "This realm",
     "facts": ["Began {began} · world turn {turn}", "{regions} · {mibis} · {pods}"],
     "factsNoDate": ["World turn {turn}", "{regions} · {mibis} · {pods}"],
