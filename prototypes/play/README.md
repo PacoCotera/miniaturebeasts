@@ -78,6 +78,20 @@ Both ends use `targetOrigin = location.origin` and check `e.origin` and `e.sourc
 
 The drawer or column holds the Caddy's three problems, each a switch: **Companion silent** (the Companion frame holds back its word: C1, then C4a and the amber lamp after 10 s; lift and seat with it off), **Station quiet** (the page stops hearing the Station and hands it nothing: C4b after 15 s with the link crossed, the dock reaching the Station when it is off), **Caddy fault** (the service refuses writes: C4c, amber, nothing taken). Under them, the Station's own developer panel (the Station frame builds it into the shell's `#devStation`). The Companion's Observer is on its own page.
 
+## The playtest preset
+
+`/sandbox/play/?playtest` turns on the playtest preset: every wait of the loop cut so an outside tester finishes it in about an hour from a fresh save (`src/playtest.mjs` is its one place: the Station's settings and the Companion's care day; the game's own defaults are untouched without the parameter). The page hands `&playtest` to both frames (and to the second Companion). Nothing is saved: the Station lays the preset over its settings in memory, and says so on its Settings screen (the realm row's detail) and nowhere else. The bar's **Start fresh** (not under `?test`; the bottom-left corner of the window when the bar has no room) asks once, then at the next load, before any frame is set, erases this browser's worlds (`mb-save-v8*`, the older `mb-exploration-v*`, the Station's settings key; the Companions' identities stay) and opens `?playtest`.
+
+| Wait | Game | Preset |
+| --- | --- | --- |
+| the Sitting | 3 hours | 1 minute |
+| a bud in the Incubator (5 / 20 + n min) | real time | ×10: 30 s / 2 to 3 min |
+| juvenile to adult | 2 world turns | 1 |
+| adult to elder | 16 world turns | 4 |
+| a Tend (3 make the bond) | once a local day | once a minute |
+| the bench's habit watch | 60 s | 5 s |
+| the mock painter | 20 s | 5 s |
+
 ## What W2 replaces
 
 W1 is the iframe shell. W2 is one document with one store and one bus for both devices, replacing the frames; the `postMessage` contract and the `storage` crossing go with them.
