@@ -127,6 +127,7 @@ test("the reveal plays once per place, takes every press while it dissolves, hol
     const minis = await page.evaluate(() => { const m = window.__mb; return m.S.exp.reach.filter((c) => m.miniatureOf(c, 72)).length; });
     assert.equal(minis, 2, "two found places wear their miniatures");
     await page.evaluate(() => { const m = window.__mb; m.FX.msg = ""; m.FX.notes = []; m.FX.hintNote = null; m.FX.sign = null; });   // nothing timed on the screen (a note's fade, a hint) when the still is taken
+    await page.emulateMedia({ reducedMotion: "reduce" });   // the map's signs blink on the clock (a beat's two frames): the still is taken with motion held, so it never depends on timing
     await page.waitForTimeout(900);
     golden("c15-reach-two-minis.png", await still(page));
     assert.deepEqual(errors, []);
