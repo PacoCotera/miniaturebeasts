@@ -18,7 +18,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
   let later = [], items = [], rooms = new Map(), queue = [], active = 0, order = [], base = null;
   const roomName = (r) => (typeof r === "number" ? order[r] : r);
   const run = async (it) => {
-    const e = it.e, r = await fx(new URL(e.file, base), { cache: "no-store" });
+    const e = it.e, r = await fx(new URL(e.file, base));
     if (!r.ok) throw new Error(`master ${it.id}: ${e.file} is missing`);
     const bytes = await r.arrayBuffer(), sha = hex(await crypto.subtle.digest("SHA-256", bytes));
     if (sha !== e.sha256) throw new Error(`master ${it.id}: ${e.file} does not match the index (sha256 ${sha.slice(0, 12)}…)`);
@@ -42,7 +42,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
     // fetches the index and the boot set (every master that is not a room picture, plus the pictures of opts.room), and returns (the other rooms wait for background())
     async load(url, { room = null, all = false, order: ord = [] } = {}) {
       base = url; order = ord;
-      const res = await fx(new URL("index.json", base), { cache: "no-store" });
+      const res = await fx(new URL("index.json", base));
       if (!res.ok) return { placed: 0 };
       const index = await res.json(), ids = Object.keys(index.masters ?? {});
       setJuvenileFacing(index.juvenileFacing ?? null);

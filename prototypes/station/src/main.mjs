@@ -14,6 +14,7 @@ import { mountFooter, caddyAnswers } from "../../play/src/footer.mjs";
 import { openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadRoomsInBackground } from "./masters.mjs";
+import { bootFace } from "./face-lvgl.mjs";
 import { injectPortraitSource } from "./portrait-source.mjs";
 import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
@@ -138,8 +139,10 @@ bootText("loading the species frames…");
 const TEST = new URLSearchParams(location.search).has("test");
 // The name list births draw from is the current one; ?names=<list key> pins another (the tools that show the archived English names ask for en-short-1).
 { const n = new URLSearchParams(location.search).get("names"); if (n && S.NAME_LISTS[n]) S.useNameList(n); }
-const faceBoot = async () => { const f = await startFace({ test: TEST }); vctx = f.display(vis); };
-const ready = Promise.all([loadFrames(), bootAssets({ test: TEST })]).then(async ([info]) => {
+const faceUp = bootFace(undefined, { test: TEST });   // the WebAssembly face boots beside the downloads (it needs none of them); startFace then sends it the palette, the specs and the pins
+faceUp.catch(() => {});   // a failed boot is reported through `ready` below, not as an unhandled rejection
+const faceBoot = async () => { const f = await startFace({ test: TEST, face: await faceUp }); vctx = f.display(vis); };
+const ready = Promise.all([loadFrames(), bootAssets({ test: TEST }), faceUp]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
   { const j = new URLSearchParams(location.search).get("jump"); if (j === "arrival" || j === "fork") saveSettings({ jump: j }); }   // the jump test (decision panel spec Part 3): the play page's ?jump= is saved with the settings

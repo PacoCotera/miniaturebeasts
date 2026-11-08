@@ -5,7 +5,8 @@
 // usage: node load-budget.mjs [--runs N] [--enforce] [--out dir] [--no-throttle]
 // Report-only until ENFORCE (below, or --enforce) is on: the limits are then hard for bytes, requests and heap and checked on the median of N runs (with TIME_MARGIN) for the times.
 import { createServer } from "node:http";
-import { readFileSync, existsSync, statSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, existsSync, statSync, writeFileSync, mkdirSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { gzipSync } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -93,10 +94,11 @@ async function pass(page, cdp) {
   return { firstDrawMs: firstDraw, playableMs: ready, bootErr, requests: before.length, totalRequests: list.length, mb: +(sum(before) / 1e6).toFixed(2), mbTotal: +(sum(list) / 1e6).toFixed(2), n304: before.filter((r) => r.status === 304).length, nCache: before.filter((r) => r.fromCache).length, heapMB: heap, top };
 }
 async function once() {
-  const browser = await chromium.launch();
-  const ctx = await browser.newContext({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: THROTTLE, hasTouch: THROTTLE });
+  // a persistent context: a real profile's disk cache (an incognito context keeps a small in-memory cache that cannot hold the 150 MB, which made every warm load a cold one)
+  const ctx = await chromium.launchPersistentContext(mkdtempSync(path.join(tmpdir(), "mb-load-budget-")), { viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: THROTTLE, hasTouch: THROTTLE });
+  const browser = ctx;
   await ctx.addInitScript((entries) => { if (!sessionStorage.getItem("fixture-done")) { for (const [k, v] of Object.entries(entries)) localStorage.setItem(k, v); localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixtureStorage());   // a player with the fixture's mibis, on Home
-  const page = await ctx.newPage(), cdp = await ctx.newCDPSession(page);
+  const page = ctx.pages()[0] ?? await ctx.newPage(), cdp = await ctx.newCDPSession(page);
   await cdp.send("Network.enable"); await cdp.send("Network.setCacheDisabled", { cacheDisabled: false });
   if (THROTTLE) { await cdp.send("Network.emulateNetworkConditions", PHONE); await cdp.send("Emulation.setCPUThrottlingRate", { rate: CPU }); }
   page.on("pageerror", (e) => console.log("pageerror", e.message));

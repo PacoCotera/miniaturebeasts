@@ -12,13 +12,15 @@ let ATLAS = null; const SHEETS = {};   // name -> { w, h, idx: Int16Array (palet
 const hexIndex = new Map(HEX.map((h, i) => [h.toLowerCase(), i]));
 
 // Fetch the atlas and its two sheets beside the page and decode them to palette indices (a sheet pixel's colour is one of the 62 exactly).
-export async function loadPodSprites(base) {
-  ATLAS = await (await fetch(new URL("pod-atlas.json", base), { cache: "no-store" })).json();
-  for (const name of new Set(Object.values(ATLAS.sprites).map((s) => s.sheet))) {
-    const png = await decodePNGAsync(await (await fetch(new URL(name, base), { cache: "no-store" })).arrayBuffer()), d = canvasRound(png.rgba()), idx = new Int16Array(png.width * png.height);   // ui/png.mjs, as the masters (masters.mjs)
+// `after`: a promise the manifest registration waits for (the masters, which take their ids first); the fetches and decodes do not.
+export async function loadPodSprites(base, { after = null } = {}) {
+  ATLAS = await (await fetch(new URL("pod-atlas.json", base))).json();
+  await Promise.all([...new Set(Object.values(ATLAS.sprites).map((s) => s.sheet))].map(async (name) => {
+    const png = await decodePNGAsync(await (await fetch(new URL(name, base))).arrayBuffer()), d = canvasRound(png.rgba()), idx = new Int16Array(png.width * png.height);   // ui/png.mjs, as the masters (masters.mjs)
     for (let i = 0; i < idx.length; i++) { const hx = "#" + [d[i * 4], d[i * 4 + 1], d[i * 4 + 2]].map((v) => v.toString(16).padStart(2, "0")).join(""); idx[i] = d[i * 4 + 3] < 128 ? -1 : (hexIndex.get(hx) ?? -1); }
     SHEETS[name] = { w: png.width, h: png.height, idx };
-  }
+  }));
+  if (after) await after;
   // the two sheets themselves are in the manifest, from the atlas's own entries (the pods are composed from their sub-rectangles)
   for (const m of ATLAS.manifest) if (!hasAsset(m.id)) registerAsset({ id: m.id, w: m.w, h: m.h, status: m.status, until: "the pod renderer's masters (research-loop.md §6)", file: m.file, build: () => { const sh = SHEETS[m.file.split("/").pop()], pb = new PB(sh.w, sh.h); for (let i = 0; i < sh.idx.length; i++) if (sh.idx[i] >= 0) pb.p[i] = sh.idx[i]; return pb; } });
 }
