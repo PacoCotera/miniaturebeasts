@@ -2,7 +2,8 @@
 // ImageData through the page's palette, props and canopy as cached canvases (the page's usual sprite path), and the camera.
 // The page owns the creatures, the partner, the explorer and the overlays; this module never draws them.
 import { readPlace, readTileSet } from './format/read.mjs';
-import { PlaceGroundCache, applyLight, lightState, tablesOf, LEVELS } from './ground.mjs';
+import { PlaceGroundCache, applyLight, lightState, tablesOf, LEVELS, renderHalfView } from './ground.mjs';
+import { BAYER4 } from '../../exploration/src/view.mjs';
 import { cutOut, scaleTo, spriteFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
 import { newLook, lookTo, tellPull, cameraFor, TILE } from './camera.mjs';
@@ -66,6 +67,45 @@ export class BakedView {
       this.last = { key, img };
     }
     g.putImageData(this.last.img, sx, sy);
+  }
+
+  // ---- the whole place at 24 px (the arrival look, Look over the place, the reveal, the map's miniatures): C6's half-scale render ----
+  // veil: Uint8Array(place.w * place.h), 1 = veiled, or null for the clear place. Returns the indexed buffer (place.w * 24 by place.h * 24).
+  overviewBuf(veil, clockMs = 0) {
+    const light = veil && veil.some((v) => v) ? lightState(this.place, { veil }) : null;
+    return renderHalfView(this.ts, this.place, { clockMs, light, nightIndex: this.night });
+  }
+  // The dissolve: pixel by pixel the veiled picture, until the Bayer threshold `step` (0..16) passes it and the clear one shows.
+  dissolveBuf(veiled, clear, step) {
+    const out = new Uint8Array(veiled.length), W = this.place.w * 24;
+    for (let i = 0; i < out.length; i++) out[i] = BAYER4[(((i / W) | 0) & 3) * 4 + ((i % W) & 3)] >= step ? veiled[i] : clear[i];
+    return out;
+  }
+  bufCanvas(buf, w, h) {
+    const cv = this.mkCanvas(w, h), cg = cv.getContext('2d'), img = cg.createImageData(w, h), u = new Uint32Array(img.data.buffer);
+    for (let i = 0; i < buf.length; i++) u[i] = buf[i] ? this.lut[buf[i]] : 0;
+    cg.putImageData(img, 0, 0); return cv;
+  }
+  // The miniature for the map: the clear place's 24 px render reduced by 2 x 2 most-frequent-index blocks (ties to the darker colour), `times` over, cropped to cs x cs round (hx, hy), a place cell.
+  miniature(cs, times, hx, hy) {
+    const key = `${cs}|${times}|${hx}|${hy}`; this.minis = this.minis || new Map();
+    if (this.minis.has(key)) return this.minis.get(key);
+    let buf = this.overviewBuf(null, 0), w = this.place.w * 24, h = this.place.h * 24;
+    const luma = (i) => { const v = this.lut[i], r = v & 255, g = (v >> 8) & 255, b = (v >> 16) & 255; return 0.3 * r + 0.59 * g + 0.11 * b; };
+    for (let k = 0; k < times; k++) {
+      const nw = w >> 1, nh = h >> 1, out = new Uint8Array(nw * nh);
+      for (let y = 0; y < nh; y++) for (let x = 0; x < nw; x++) {
+        const c = [buf[2 * y * w + 2 * x], buf[2 * y * w + 2 * x + 1], buf[(2 * y + 1) * w + 2 * x], buf[(2 * y + 1) * w + 2 * x + 1]];
+        let best = c[0], bn = 0;
+        for (const v of c) { let n = 0; for (const u of c) if (u === v) n++; if (n > bn || (n === bn && luma(v) < luma(best))) { best = v; bn = n; } }
+        out[y * nw + x] = best;
+      }
+      buf = out; w = nw; h = nh;
+    }
+    const f = 24 / (1 << times) , cx = Math.round((hx + 0.5) * f), cy = Math.round((hy + 0.5) * f);   // the heart's tile centre in the reduced picture
+    const x0 = Math.max(0, Math.min(w - cs, cx - (cs >> 1))), y0 = Math.max(0, Math.min(h - cs, cy - (cs >> 1))), crop = new Uint8Array(cs * cs);
+    for (let y = 0; y < cs; y++) for (let x = 0; x < cs; x++) { const sx = x0 + x, sy = y0 + y; crop[y * cs + x] = sx < w && sy < h ? buf[sy * w + sx] : 0; }
+    const cv = this.bufCanvas(crop, cs, cs); this.minis.set(key, cv); return cv;
   }
 
   // ---- sprites as cached canvases ----
