@@ -1,4 +1,4 @@
-// C15: seeing the place (walk slice W§4, W§7): the arrival look, Look over the place, the reveal, the map's miniatures; input consumed during the reveal.
+// C15: seeing the place (walk slice W§4, W§7): the arrival look, Look over the place, the reveal, the map's marks; input consumed during the reveal.
 // Real Chromium (PW_DIR names the folder holding node_modules/playwright; without it the tests are skipped): the 24 px render is drawn by the baked-place view, which only a browser has.
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -83,7 +83,7 @@ test("Look over the place: second after Leave, spends no action, ← closes", { 
   } finally { await browser.close(); server.close(); }
 });
 
-test("the reveal plays once per place, takes every press while it dissolves, holds, and a miniature follows", { skip }, async (t) => {
+test("the reveal plays once per place, takes every press while it dissolves, holds, and the map wears its mark", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
   const { server, url } = await serve();
   try {
@@ -91,7 +91,8 @@ test("the reveal plays once per place, takes every press while it dissolves, hol
     await pressSeq(page, ["confirm"]); await page.waitForTimeout(300);
     let s = await st(page); assert.equal(s.view, null);
     const cell = await page.evaluate(() => window.__mb.layout(window.__mb.S.exp.patch.key).cell);
-    assert.equal(await page.evaluate((c) => !!window.__mb.miniatureOf(c, 72), cell), false, "no miniature before the heart is found");
+    const marks = (c, cs) => page.evaluate(([c, cs]) => { const m = window.__mb.cellMark(c, 0, 0, cs, cs >= 72 ? 26 : 18); return m && { w: m.mk.w, colours: new Set(m.mk.p.filter((v) => v >= 0)).size }; }, [c, cs]);   // the place's mark on the map: null (never been in), a slate silhouette (been in), full colour (found)
+    assert.equal((await marks(cell, 72)).colours, 2, "been in, not found: the slate silhouette");
     const veiledBefore = await page.evaluate(() => { const m = window.__mb, k = m.S.exp.patch.key, l = m.layout(k); let n = 0; for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) if (l.reach[y * l.w + x] && !m.unveiled(k, x, y)) n++; return n; });
     assert.ok(veiledBefore > 20, "the place is mostly veiled before the find: " + veiledBefore);
     await page.evaluate(() => window.__mb.TEST.findHeart());
@@ -113,25 +114,24 @@ test("the reveal plays once per place, takes every press while it dissolves, hol
     assert.notDeepEqual([(await st(page)).x, (await st(page)).y], p0, "the next press walks");
     // once per place
     await page.evaluate(() => window.__mb.TEST.findHeart()); s = await st(page); assert.equal(s.view, null, "found places do not play it again");
-    // the miniature
-    const mini = await page.evaluate((c) => { const cv = window.__mb.miniatureOf(c, 72); return cv && [cv.width, cv.height]; }, cell);
-    assert.deepEqual(mini, [72, 72], "a miniature stands on the found cell");
-    const mini48 = await page.evaluate((c) => { const cv = window.__mb.miniatureOf(c, 48); return cv && [cv.width, cv.height]; }, cell);
-    assert.deepEqual(mini48, [48, 48]);
+    // the mark on the map: full colour once found, 26 px at tier 1 and 18 px at tier 2
+    const m72 = await marks(cell, 72), m48 = await marks(cell, 48);
+    assert.ok(m72.colours >= 4 && m72.w === 26, "a found place wears its mark in full colour: " + JSON.stringify(m72));
+    assert.equal(m48.w, 18);
     await page.evaluate(() => { const m = window.__mb; m.leavePatch(); });
     await page.waitForTimeout(400);
-    assert.equal(await page.evaluate(() => window.__mb.offPalette().bad.length), 0, "the reach view with a miniature stays on the palette");
-    // a second place found: a step to a neighbour, in, the heart found (the reveal away), out: two miniatures
+    assert.equal(await page.evaluate(() => window.__mb.offPalette().bad.length), 0, "the painted reach view with a mark stays on the palette");
+    // a second place found: a step to a neighbour, in, the heart found (the reveal away), out: two marks in full colour
     const dir = await page.evaluate(() => { const m = window.__mb, ex = m.S.exp; return ["up", "right", "down", "left"].find((d) => m.canStep(ex.pos, d)); });
     await pressSeq(page, [dir]); await page.waitForTimeout(400); await pressSeq(page, ["confirm"]); await page.waitForTimeout(500); await pressSeq(page, ["up"]); await page.waitForTimeout(300);
     await page.evaluate(() => { const m = window.__mb; m.TEST.findHeart(); m.RT.view && m.endView(); m.leavePatch(); });
     await page.waitForTimeout(500);
-    const minis = await page.evaluate(() => { const m = window.__mb; return m.S.exp.reach.filter((c) => m.miniatureOf(c, 72)).length; });
-    assert.equal(minis, 2, "two found places wear their miniatures");
+    const full = await page.evaluate(() => { const m = window.__mb; return m.S.exp.reach.filter((c) => { const q = m.cellMark(c, 0, 0, 72, 26); return q && new Set(q.mk.p.filter((v) => v >= 0)).size >= 4; }).length; });
+    assert.equal(full, 2, "two found places wear their marks in full colour");
     await page.evaluate(() => { const m = window.__mb; m.FX.msg = ""; m.FX.notes = []; m.FX.hintNote = null; m.FX.sign = null; });   // nothing timed on the screen (a note's fade, a hint) when the still is taken
     await page.emulateMedia({ reducedMotion: "reduce" });   // the map's signs blink on the clock (a beat's two frames): the still is taken with motion held, so it never depends on timing
     await page.waitForTimeout(900);
-    golden("c15-reach-two-minis.png", await still(page));
+    golden("reach-marks.png", await still(page));
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
 });
