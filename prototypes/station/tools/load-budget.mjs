@@ -24,7 +24,7 @@ const RUNS = +opt("--runs", 1), THROTTLE = !args.includes("--no-throttle"), OUT 
 // warm 6.7 s / 0.04 MB, heap 109 MB (limits sit above that, the times at about 1.4x). The plan's targets are TARGET: the requests (123 unbundled modules, 21 species frames, 25 specs) and the times that follow from them wait for the Vite build (T8).
 // The unthrottled line is not checked here. `--report` turns the failing off again.
 const ENFORCE = THROTTLE && !PROFILE && !args.includes("--report");
-const LIMITS = { coldS: 20, coldMB: 12, coldReq: 350, warmS: 10, warmMB: 1, heapMB: 250 };
+const LIMITS = { coldS: 20, coldMB: 12, coldReq: 350, warmS: 10, warmMB: 1, heapMB: 250, barS: 1.5 };
 export const TARGET = { coldS: 10, coldMB: 12, coldReq: 250, warmS: 3, warmMB: 1, heapMB: 250 };
 const TIME_MARGIN = 1.5;   // the gate machine's CPU noise: the time limits get +50 %
 
@@ -40,17 +40,19 @@ async function pass(page, cdp) {
   const onFin = (e) => { const r = reqs.get(e.requestId); if (r) { r.bytes = e.encodedDataLength; r.t1 = e.timestamp; } };
   cdp.on("Network.requestWillBeSent", onReq); cdp.on("Network.responseReceived", onResp); cdp.on("Network.loadingFinished", onFin);
   if (PROFILE && !profiled) { await cdp.send("Profiler.enable"); await cdp.send("Profiler.start"); }
-  const t0 = Date.now(); let firstDraw = null, ready = null, bootErr = null;
+  const t0 = Date.now(); let firstDraw = null, ready = null, bootErr = null, barAt = null;
   await page.goto(URL_ + "?load-budget", { waitUntil: "commit", timeout: 600000 });
   const deadline = Date.now() + 600000;
   while (Date.now() < deadline) {
     const s = await page.evaluate(() => {
       const c = document.getElementById("screen"); let drawn = false;
       try { const x = c && c.getContext("2d"); if (x) { const d = x.getImageData(0, 0, c.width, c.height).data; for (let i = 0; i < d.length; i += 4 * 997) if (d[i + 3] && (d[i] || d[i + 1] || d[i + 2])) { drawn = true; break; } } } catch (e) {}
-      return { drawn, boot: document.getElementById("boot")?.textContent || "" };
+      const bar = document.getElementById("bootBar");
+      return { drawn, bar: !!(bar && !bar.hidden && bar.offsetParent), boot: document.getElementById("boot")?.textContent || "" };
     }).catch(() => ({ drawn: false, boot: "" }));
     const now = Date.now() - t0;
     if (s.drawn && firstDraw == null) firstDraw = now;
+    if (s.bar && barAt == null) barAt = now;   // the load bar (T6): first seen on the page
     if (/did not start/.test(s.boot)) { bootErr = s.boot; break; }
     if (/\d+ species frames ·/.test(s.boot) && ready == null) ready = now;
     if (ready != null && firstDraw != null) break;
@@ -71,7 +73,7 @@ async function pass(page, cdp) {
   const top = before.map((r) => ({ url: r.url.replace(/^.*\/sandbox\//, ""), kb: Math.round((r.bytes || 0) / 1024), ms: Math.round(((r.t1 || r.t0) - r.t0) * 1000) })).sort((a, b) => b.ms - a.ms).slice(0, 10);
   void endAbs;
   const reqsOut = OUT ? before.map((r) => [r.url.replace(/^.*\/sandbox\//, ""), Math.round((r.bytes || 0) / 1024), Math.round((r.t0 - base) * 1000), Math.round(((r.t1 || r.t0) - base) * 1000)]) : undefined;
-  return { firstDrawMs: firstDraw, playableMs: ready, bootErr, requests: before.length, totalRequests: list.length, mb: +(sum(before) / 1e6).toFixed(2), mbTotal: +(sum(list) / 1e6).toFixed(2), n304: before.filter((r) => r.status === 304).length, nCache: before.filter((r) => r.fromCache).length, heapMB: heap, top, reqs: reqsOut };
+  return { barMs: barAt, firstDrawMs: firstDraw, playableMs: ready, bootErr, requests: before.length, totalRequests: list.length, mb: +(sum(before) / 1e6).toFixed(2), mbTotal: +(sum(list) / 1e6).toFixed(2), n304: before.filter((r) => r.status === 304).length, nCache: before.filter((r) => r.fromCache).length, heapMB: heap, top, reqs: reqsOut };
 }
 async function once() {
   // a persistent context: a real profile's disk cache (an incognito context keeps a small in-memory cache that cannot hold the 150 MB, which made every warm load a cold one)
@@ -92,13 +94,13 @@ const runs = []; for (let i = 0; i < RUNS; i++) runs.push(await once());
 server.close();
 const med = (f) => { const v = runs.map(f).filter((x) => x != null).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length / 2)] : null; };
 const s = (ms) => (ms == null ? "n/a" : (ms / 1000).toFixed(1));
-const M = { coldS: med((r) => r.cold.firstDrawMs) / 1000, coldMB: med((r) => r.cold.mb), coldReq: med((r) => r.cold.requests), warmS: med((r) => r.warm.firstDrawMs) / 1000, warmMB: med((r) => r.warm.mb), heapMB: med((r) => r.cold.heapMB) };
-console.log(`load-budget: cold ${s(M.coldS * 1000)} s / ${M.coldMB} MB / ${M.coldReq} req · warm ${s(M.warmS * 1000)} s / ${M.warmMB} MB · heap ${M.heapMB} MB${THROTTLE ? "" : " (unthrottled)"}`);
+const M = { coldS: med((r) => r.cold.firstDrawMs) / 1000, coldMB: med((r) => r.cold.mb), coldReq: med((r) => r.cold.requests), warmS: med((r) => r.warm.firstDrawMs) / 1000, warmMB: med((r) => r.warm.mb), heapMB: med((r) => r.cold.heapMB), barS: med((r) => r.cold.barMs) / 1000 };
+console.log(`load-budget: cold ${s(M.coldS * 1000)} s / ${M.coldMB} MB / ${M.coldReq} req · warm ${s(M.warmS * 1000)} s / ${M.warmMB} MB · heap ${M.heapMB} MB · load bar at ${s(M.barS * 1000)} s${THROTTLE ? "" : " (unthrottled)"}`);
 const errs = runs.flatMap((r) => [r.cold.bootErr, r.warm.bootErr]).filter(Boolean);
 if (OUT) { mkdirSync(OUT, { recursive: true }); writeFileSync(path.join(OUT, "load-budget.json"), JSON.stringify({ runs, M }, null, 1)); }
 for (const e of errs) console.error("FAIL boot: " + e);
 let fail = errs.length > 0;
-const checks = [["coldS", "cold first draw (s)", TIME_MARGIN], ["coldMB", "cold MB before first draw", 1], ["coldReq", "cold requests before first draw", 1], ["warmS", "warm first draw (s)", TIME_MARGIN], ["warmMB", "warm MB transferred before first draw", 1], ["heapMB", "JS heap at playable (MB)", 1]];
+const checks = [["coldS", "cold first draw (s)", TIME_MARGIN], ["coldMB", "cold MB before first draw", 1], ["coldReq", "cold requests before first draw", 1], ["warmS", "warm first draw (s)", TIME_MARGIN], ["warmMB", "warm MB transferred before first draw", 1], ["heapMB", "JS heap at playable (MB)", 1], ["barS", "the load bar is on the page (s)", TIME_MARGIN]];
 for (const [k, label, margin] of checks) {
   const over = !(M[k] <= LIMITS[k] * margin);
   if (over) { console.log(`${ENFORCE ? "FAIL" : "over (report only)"}: ${label} ${M[k]} > ${LIMITS[k]}${margin > 1 ? " +50 %" : ""}`); if (ENFORCE) fail = true; }

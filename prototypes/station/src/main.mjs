@@ -37,7 +37,7 @@ Object.assign(hooks, { wake: () => caddy.wake(), afterSave: () => { if (G.st.out
 let lastT = null;
 function frame(t) {
   clock.now = t; const dt = lastT == null ? 0 : t - lastT; lastT = t;
-  if (G.ready && CORE.face) { tick(t, dt); updateCaddy(); }
+  if (G.ready && CORE.face) { tick(t, dt); updateCaddy(); if (CORE.lastProps != null && typeof bootDone === "function") bootDone(); }   // the load bar goes when the first screen's props are out
   requestAnimationFrame(frame);
 }
 
@@ -145,7 +145,9 @@ if (TEST) probe.on = (id) => { const e = assetEntry(id); if (!e?.file || e.file.
 const faceUp = bootFace(undefined, { test: TEST });   // the WebAssembly face boots beside the downloads (it needs none of them); startFace then sends it the palette, the specs and the pins
 faceUp.catch(() => {});   // a failed boot is reported through `ready` below, not as an unhandled rejection
 const faceBoot = async () => { const f = await startFace({ test: TEST, face: await faceUp }); vctx = f.display(vis); };
-const ready = Promise.all([loadFrames(), bootAssets({ test: TEST }), faceUp]).then(async ([info]) => {
+const bootBar = $("bootBar");   // the load bar: indeterminate until the boot pictures' bytes are known, then their share placed; hidden at ready (or on a failed boot, where the words say why)
+const bootDone = () => { if (bootBar) bootBar.hidden = true; };
+const ready = Promise.all([loadFrames(), bootAssets({ test: TEST, onProgress: (done, total) => { if (bootBar && total > 0) { bootBar.max = total; bootBar.value = done; } } }), faceUp]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
   { const j = new URLSearchParams(location.search).get("jump"); if (j === "arrival" || j === "fork") saveSettings({ jump: j }); }   // the jump test (decision panel spec Part 3): the play page's ?jump= is saved with the settings
@@ -157,7 +159,7 @@ const ready = Promise.all([loadFrames(), bootAssets({ test: TEST }), faceUp]).th
   if (new URLSearchParams(location.search).has("dev")) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
   return info;
-}).catch((e) => { bootText("the Station did not start: " + e.message); console.error(e); throw e; });
+}).catch((e) => { bootDone(); bootText("the Station did not start: " + e.message); console.error(e); throw e; });
 
 // The motion proof's scene drives the page as a player would (keys, intents, the host's goto) from the frame loop's clock.
 const sceneHost = () => ({ act, goto: (s) => CORE.host.goto(s), settings: G.settings, intent: (m) => onFaceMessage(CORE.host, { t: "intent", seq: 0, ...m }), now: () => clock.now });

@@ -21,7 +21,7 @@ const realDecode = decodeRGBA;
 // Without groups (no groups.json) every non-room master loads at boot, as before.
 export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode = realDecode, place = placeMaster, register = registerPending, concurrency = 16, prefetchConcurrency = 2 } = {}) {
   // at most `concurrency` masters in flight: hundreds of concurrent fetches and decodes can fail with net::ERR_INSUFFICIENT_RESOURCES (measured on Chromium 141)
-  let later = [], items = [], rooms = new Map(), queue = [], active = 0, order = [], base = null, groups = null, byId = new Map(), warm = [], warming = 0, roomMap = new Map(), fam = new Map(), lightFn = null, shownName = null;
+  let later = [], items = [], rooms = new Map(), queue = [], active = 0, order = [], base = null, groups = null, byId = new Map(), warm = [], warming = 0, roomMap = new Map(), fam = new Map(), lightFn = null, shownName = null, progress = null;
   const roomName = (r) => (typeof r === "number" ? order[r] : r);
   const run = async (it) => {
     const e = it.e, r = await fx(masterUrl(base, e));
@@ -68,7 +68,8 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
     // fetches the index and the boot set (every master that is not a room picture, plus the pictures of opts.room), and returns (the other rooms wait for background())
     // the light now on (opts.light, then setLight) picks which pictures of a room are the boot's
     setLight(fn) { lightFn = fn; },
-    async load(url, { room = null, all = false, order: ord = [], groups: grp = null, boot: bootGroups = ["boot", "home"], light = null } = {}) {
+    async load(url, { room = null, all = false, order: ord = [], groups: grp = null, boot: bootGroups = ["boot", "home"], light = null, onProgress = null } = {}) {
+      progress = onProgress;
       base = url; order = ord; groups = all ? null : grp?.screens ?? null;   // test mode loads everything at boot, so a test never meets a pending master
       if (light) lightFn = () => light;
       const res = await fx(new URL("index.json", base));
@@ -91,6 +92,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
         const want = new Set(bootGroups.flatMap((g) => groups[g] ?? []));
         boot = [...items.filter((it) => !it.room && want.has(it.id)), ...(shown != null ? roomNeed(shown) : [])];
       } else boot = all ? items : items.filter((it) => !it.room || it.room === shown);
+      if (progress) { const total = boot.reduce((s, it) => s + (it.e.bytes ?? 0), 0); let done = 0; progress(0, total); for (const it of boot) it.done.then(() => { done += it.e.bytes ?? 0; progress(done, total); }, () => {}); }   // the boot set's bytes (index `bytes`): the page's load bar
       enqueue(boot); await settled(boot);
       later = all ? [] : rest; shownName = shown;
       return { placed: ids.length };
