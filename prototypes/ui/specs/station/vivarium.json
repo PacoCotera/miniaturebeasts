@@ -1334,6 +1334,7 @@
   },
   "state": {
    "away": "away with the Companion",
+   "awayLines": ["away with", "the Companion"],
    "docked": "on the Companion",
    "coming": "back in {n} {turn|turns}",
    "comingOne": "back in 1 turn",

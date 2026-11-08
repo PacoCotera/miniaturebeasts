@@ -1455,7 +1455,7 @@
   }
  },
  "strings": {
-  "read": {"open": "Open {chapter}", "read": "Read {chapter}", "closer": "Closer look at {trait}", "needs": "needs ◆ {n} · you have ◆ {have}", "dataGrows": "Data comes as your mibis grow", "sprout": "free when it grows", "sealed": "opens with a find", "stampLine": "Each read fills its stamp", "kinds": {"only": "one copy is enough", "hides": "needs both copies", "blend": "a blend of both", "asleep": "asleep: it can wake in a child"}, "odds": "{a} in {b}", "oddsAll": "every one", "identify": "Identify", "identifyHead": "A sealed pod", "identifyLine": "identify it to read it", "note": "ux-reading-v2.md §2.9: the copywriter settles the kind lines, the odds and the identify words (the builder's: no state of the signed six shows them)"},
+  "read": {"open": "Open {chapter}", "read": "Read {chapter}", "closer": "Closer look at {trait}", "needs": "needs ◆ {n} · you have ◆ {have}", "dataGrows": "Data comes as your mibis grow", "sprout": "free when it grows", "sealed": "opens with a find", "stampLine": "Each read fills its stamp", "kinds": {"only": "one copy is enough", "hides": "needs both copies", "blend": "a blend of both", "asleep": "can wake in a child"}, "odds": "{a} in {b}", "oddsAll": "every one", "identify": "Identify", "identifyHead": "A sealed pod", "identifyLine": "identify it to read it", "note": "ux-reading-v2.md §2.9: the copywriter settles the kind lines, the odds and the identify words (the builder's: no state of the signed six shows them)"},
   "toCreate": "Create from this pod",
   "unknownPod": "Unknown",
   "newSpecies": "New species",
