@@ -366,6 +366,7 @@
    "hold": 300,
    "cut": true,
    "do": "Greet: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice (placeholder). Rewards nothing and shows nothing like a reward. Input is held 300 ms; the first key after the hold cuts the moment to its end, and that key then does what it does (notes.cut)",
+   "heart": { "asset": "fx-greet-heart-16x16", "rise": 8, "ms": 700, "stillMs": 1200, "gap": 3, "greetShowMs": 2500, "do": "Greet's answer (loop-audit UX F5a): the art desk's fx-greet-heart-16x16 in a named slot above the resident's box, rising `rise` px over `ms`, then gone; with reduced motion it stands still for `stillMs` then cuts. Nothing is drawn in code: until the picture is placed the slot shows nothing (the line still answers). Drawn only when props regions.resident.heart is on (the host sets it for greetShowMs after a Greet; the meet's moment has none). The line says strings.greeted (strings.greetedAsleep for a sleeper) for greetShowMs." },
    "asleep": { "ms": 2880, "hold": 300, "cut": true, "do": "a sleeper with a moving set (Station M1 §2.4): wake (16-level dither 180, crouch 400, stand), the hops at 0 and 900 of the hops, crouch 320, dither 180, curl" },
    "moving": "with a moving set: hops at 0 and 900 ms (placeholder.hops), each crouch 160, air 400 (the set's closeHop.lift on 80 ms ticks: adult and juvenile [8, 20, 24, 20, 8], elder [6, 14, 17, 14, 6], scaled down to fit when the rect leaves under 24 px above the figure, never clipped), crouch 160, stand; shadow-75 on air ticks 2 to 4",
    "placeholder": {
@@ -743,6 +744,8 @@
    "rule": "filled from the top, at most three lines: where it came from (one line for a founder, two for a bred mibi), then what it remembers"
   },
   "greet": "Greet {name}",
+  "greeted": "{name} greets you back",
+  "greetedAsleep": "{name} stirs, then sleeps on",
   "residentContext": "{a} {stage} {species}",
   "residentContextBonded": "a bonded {stage} {species}",
   "residentContextExamples": ["an adult Loika", "a young Loika", "an elder Loika"],

@@ -138,6 +138,18 @@ static void build_resident(const char *cur) {
   v_name("resident.lamp"); build_waitingLamp("resident.lamp", lp[0], lp[1] - lift, waiting && !has(outPic));   /* rides the focus lift */
 }
 
+/* ---- Greet's heart (events.moment.heart, loop-audit UX F5a): the art desk's fx-greet-heart-16x16 in a named slot above the resident's box. Nothing is drawn in code: until that picture is placed (the host sends it), the slot shows nothing.
+   It rises `rise` px over `ms` and is gone after; with reduced motion it stands still for `stillMs` and cuts. Only while props regions.resident.heart is on and the moment plays. ---- */
+static void build_greetHeart(const char *cur) {
+  anim_state_t t; if (!v_pbool("regions.resident.heart", 0) || !anim_get(ANIM_MOMENT, "resident", &t)) return;
+  const char *pic = v_sstr(S, "events.moment.heart.asset"); if (!*pic || !wire_has_asset(pic)) return;
+  int motion = v_pbool("motion", 1), ms = v_si(S, "events.moment.heart.ms", 700), still = v_si(S, "events.moment.heart.stillMs", 1200), rise = v_si(S, "events.moment.heart.rise", 8), gap = v_si(S, "events.moment.heart.gap", 3), e = t.elapsed;
+  if (e < 0 || e >= (motion ? ms : still)) return;
+  int up = motion ? rise * e / ms : 0, r[4], gl[4]; v_srect(S, "regions.resident.rect", r); v_srect(S, "regions.glass.rect", gl);
+  int lift = strcmp(cur, "resident") == 0 ? v_si(S, "regions.resident.lift", 4) : 0, x = r[0] + r[2] / 2 - 8, y = r[1] - lift - gap - 16 - up; if (y < gl[1]) y = gl[1];
+  v_region("greetHeart", LAYER_TYPE); v_name("greetHeart"); v_slot("greetHeart.pic", pic, NULL, x, y, 16, 16, 1);
+}
+
 /* ---- the name tag, or the meet ribbon in its place ---- */
 static void dim_slot(const char *region, const char *id, const char *pic, const char *under, int x, int y, int w, int h, int hx, int hy);
 static int g_mod_held;   /* the module being built is held (props regions.<module>.held, the house rule; a carried mibi's card is held too): its objects draw in the dimmed role */
@@ -325,6 +337,7 @@ void habitat_words(void) {
   build_moving_shadow();
   build_ring_under(cur);
   build_resident(cur);
+  build_greetHeart(cur);
   build_tag();
   build_card(); build_speciesLine(); build_story(); build_chapters(); build_stamp();
   build_chapterPlates(cur);

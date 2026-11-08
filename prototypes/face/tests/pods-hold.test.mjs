@@ -38,7 +38,7 @@ test("with the ring on a pod under Let go the hold ring stands on the pod (its p
 });
 test("✓ down fills the ring and says nothing; let go early it says nothing; held to the end it says confirm:held once", { skip }, async () => {
   const f = await start(0); f.key("confirm", "down"); f.frame((f.t += 16)); assert.deepEqual(said(f), [], "✓ down says nothing");
-  f.frame((f.t += 1000)); f.key("confirm", "up"); f.frame((f.t += 16)); assert.deepEqual(said(f), [], "a ✓ let go early says nothing (a quick ✓, a double ✓)");
+  f.frame((f.t += 1000)); f.key("confirm", "up"); f.frame((f.t += 16)); assert.deepEqual(said(f).map((m) => m.verb), ["confirm:early"], "a ✓ let go early says confirm:early (the host's Keep holding line), never confirm:held");
   f.key("confirm", "down"); f.frame((f.t += 16)); f.frame((f.t += H.ms - 100)); assert.deepEqual(said(f), [], "not yet at the end"); f.frame((f.t += 200)); assert.deepEqual(said(f).map((m) => [m.t, m.target, m.verb]).map((x) => x[2]), ["confirm:held"], "held to the end: once");
   f.frame((f.t += 500)); assert.deepEqual(said(f), [], "and not again"); assert.deepEqual(f.errors(), []);
 });

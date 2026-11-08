@@ -178,6 +178,13 @@ test("the window: the near Vivarium of the light is the mibi's room's (room-<roo
   m.paint = { state: "sent" }; const x = build(w, sv); assert.equal(x.props.regions.resident.waiting, false); assert.notEqual(x.line.subject, spec.strings.painting);
 });
 
+test("F5a: after a Greet the middle slot says the mibi greets back (a sleeper stirs, then sleeps on) and the resident carries the heart; with no Greet neither", () => {
+  const S0 = scenes(), m = S0.rest.w.st.mibis[0], b0 = build(S0.rest.w, S0.rest.sv, { focus: "resident" });
+  assert.equal(b0.props.regions.resident.heart, undefined); assert.notEqual(b0.line.subject, `${m.name} greets you back`);
+  const b1 = build(S0.rest.w, S0.rest.sv, { focus: "resident", greet: { asleep: false } }); assert.equal(b1.line.subject, `${m.name} greets you back`); assert.equal(b1.props.regions.resident.heart, true); assert.equal(b1.line.ok, `Greet ${m.name}`, "the verb stays");
+  assert.equal(build(S0.rest.w, S0.rest.sv, { focus: "resident", greet: { asleep: true } }).line.subject, `${m.name} stirs, then sleeps on`);
+});
+
 test("the bottom line: the resident greets (in the meet it names), the name renames, the species word opens the guide, a tile reads as its mibi; ← Vivarium", () => {
   const S0 = scenes(), m = S0.rest.w.st.mibis, L = (o, n = "rest") => build(S0[n].w, S0[n].sv, o).line;
   assert.deepEqual([L({ focus: "resident" }).ok, L({ focus: "resident" }).subject], [`Greet ${m[0].name}`, "an adult Loika"]); assert.equal(L({ focus: "resident" }).back, "Vivarium");

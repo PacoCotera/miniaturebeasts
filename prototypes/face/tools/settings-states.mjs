@@ -31,7 +31,7 @@ async function run(visit, { motion, points }) {
 }
 export async function settingsStates(visit) {
   const a = await run(visit, { motion: true, points: [{ name: "hold-0ms", at: 0, said: 0 }, { name: "hold-1000ms", at: 1000, said: 0 }, { name: "hold-2000ms", at: 2000, said: 0 }, { name: "hold-3000ms", at: 3000, said: 1 }] });
-  const b = await run(visit, { motion: true, points: [{ name: "hold-release-150ms", at: 1650, liftAt: 1500, said: 0 }] });
+  const b = await run(visit, { motion: true, points: [{ name: "hold-early", at: 1800, liftAt: 1500, said: 0 }] });
   const c = await run(visit, { motion: false, points: [{ name: "hold-quarter-1", at: 800, said: 0 }, { name: "hold-quarter-2", at: 1600, said: 0 }, { name: "hold-quarter-3", at: 2400, said: 0 }] });
   const d = await screens(visit);
   return { fails: [...a.fails, ...b.fails, ...c.fails, ...d.fails] };

@@ -17,8 +17,12 @@
    "hash": "44f1fed2",
    "png": "habitat-card.png"
   },
+  "habitat-greet": {
+   "hash": "7fbda8a5",
+   "png": "habitat-greet.png"
+  },
   "habitat-plate": {
-   "hash": "bbfdfaa0",
+   "hash": "3b941a91",
    "png": "habitat-plate.png"
   },
   "habitat-door": {
@@ -54,7 +58,7 @@
    "png": "habitat-young-night.png"
   },
   "habitat-panel-wild": {
-   "hash": "9d5093d1",
+   "hash": "8464e139",
    "png": "habitat-panel-wild.png"
   },
   "habitat-tile": {
@@ -66,7 +70,7 @@
    "png": "habitat-eight.png"
   },
   "habitat-wild-young-card": {
-   "hash": "5ae189a7",
+   "hash": "fcaa8a3f",
    "png": "habitat-wild-young-card.png"
   },
   "habitat-docked-dawn": {
