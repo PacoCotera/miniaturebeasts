@@ -102,8 +102,8 @@ await page.evaluate(() => window.__st.ready);
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
 const st = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.ST)));
 const sv = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.SV)));
-const press = async (k, ms = 120) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(ms); };
-const props = () => page.evaluate(() => window.__st.props);
+const press = async (k, ms = 120) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(ms); if (await page.evaluate(() => !!window.__st.UI.flight)) { await page.waitForFunction(() => !window.__st.UI.flight, null, { timeout: 2000 }); await page.waitForTimeout(200); } };   // (200 ms more: the landed room's props go to the face on the next frames)   // a colour key that carries flies first (400 ms for the first three carries, intents/frame.mjs startFlight): the press returns once the room is in
+const props =() => page.evaluate(() => window.__st.props);
 const line = async () => { const p = await props(); if (p.screen === "home" && p.regions?.line) { const L = p.regions.line; return L.needs ? { ok: L.needs[0], need: L.needs[1] ?? "", subject: "", back: null } : L.verb ? { ok: L.verb, subject: L.subject ?? "", need: "", back: null } : L.note ? { ok: null, subject: L.note, need: "", back: null } : L.goal ? { ok: null, subject: "", need: "", goal: L.goal, back: null } : { ok: null, subject: "", need: "", back: null }; } return p.frame?.line ?? {}; };   // the bottom line the host sent the face: what the screen says (Home's is its own, in the top bar: the needs, a verb and its subject, a note or the goal)
 const intent = (m, ms = 120) => page.evaluate((m) => window.__st.intent(m), m).then(() => page.waitForTimeout(ms));
 const expect = (cond, what) => { if (!cond) fail(what); };
