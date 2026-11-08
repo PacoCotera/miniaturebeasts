@@ -13,7 +13,7 @@ import { drawnLooks } from "./looks.mjs";
 import { portraitSource, portraitOpening } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackCrownIds, rackPatternId, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
-import { emblemArt, dewArt, ICON, beamArt, mibiArt, founderArt, speciesArt } from "./art.mjs";
+import { emblemArt, dewArt, ICON, beamArt, mibiArt, founderArt, speciesArt, traitPic } from "./art.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
@@ -175,6 +175,10 @@ export function registerPictures(reqs, env) {
           const day = r.id.replace(/:(dawn|dusk|night)$/, ""); if (!hasAsset(day)) { const [w, h] = r.size; registerAsset({ id: day, w, h, status: "derived", until: null, build: () => factorPicture(assetOf(r.master), r.factor, r.size, day) }); }
           if (r.id !== day && !hasAsset(r.id)) registerAsset({ id: r.id, w: r.size[0], h: r.size[1], status: "derived", until: null, build: () => grade(assetOf(day), r.light ?? "day") });
           break; } const [w, h] = r.size, young = r.stage === "juvenile", mm = coatMaster(`mibi-${young ? "juvenile" : "adult"}-${r.species}-${w}x${h}`, r.species, r.coat); putOrMaster(r.id, mm, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan); an adult without one is asked as its species' juvenile stand (stands.mjs, station-layouts.md Composed states rule 5), and only a species with no juvenile stand reaches the rig here, shown as a stand-in", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter"), { status: "stand-in" }, gradedOf(mm, r.light ?? "day")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed; else the view has asked for mibi-juvenile-SXX at the place's size (stands.mjs); else the rig at the adult's own size      case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas: composed from its placed masters or §1.5's stand-ins
+      case "crosspic": {   // the Cross screen's trait picture of a pairing (cross.json masters "rendered"): the first parent's genome with the pairing's copies at the locus (the sleeping loci as the pair carries them), the trait's close-up rendered at its size, never scaled
+        const [w, h] = r.size; put(r.id, w, h, r.until, () => { const ga = env.mibiGenome(r.a), gb = env.mibiGenome(r.b), g = structuredClone(ga); g.loci[r.locus] = [...r.copies]; for (const id of r.sleeping || []) g.loci[id] = [ga.loci[id][0], gb.loci[id][1]]; return traitPic(env.frameOf(r.species), g, r.trait, w, h); });
+        break;
+      }
       case "mibiv": {   // a mibi in a state the collection marks on the figure (dark, cold, outline: layered-stand.mjs variantPixels), made from its picture's pixels once
         registerPictures([r.base], env); if (hasAsset(r.id)) break; const b = assetOf(r.base.id); if (!b) break; const st = assetEntry(r.base.id)?.status === "placeholder" ? "placeholder" : "derived";
         registerAsset({ id: r.id, w: b.w, h: b.h, status: st, until: st === "placeholder" ? LAYER_UNTIL : null, build: () => { let px = null; return { w: b.w, h: b.h, rgba: () => px ?? (px = variantPixels(assetOf(r.base.id).rgba(), b.w, b.h, r.variant, (n) => RGB[C[n]])) }; } });

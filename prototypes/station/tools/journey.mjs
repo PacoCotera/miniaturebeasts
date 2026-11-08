@@ -534,21 +534,29 @@ const dot = s.mibis.find((m) => m.name === "Dot"), adult3 = s.mibis.find((m) => 
 const carriedBefore = await page.evaluate((id) => { const S = window.__st, was = JSON.stringify([S.SV.carried ?? null, S.SV.with ?? null]); S.SV.carried = (S.SV.carried ?? []).filter((x) => x !== id); if (S.SV.with === id) S.SV.with = null; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); return was; }, dot.id);   // R4b: no breeding while a mibi is carried, so Dot is brought home first (the Companion's part is put back before the save is read back)
 await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; window.__st.goto("habitat"); }, dot.id); await page.waitForTimeout(300);
 await intent({ screen: "habitat", target: "cross", verb: "confirm" }, 300);
-expect((await page.evaluate(() => window.__st.UI.screen)) === "habitat", "✓ on the shut Cross module stays up close (doorOpen(cross) false until slot 7)");
-{ const ln = (await page.evaluate(() => window.__st.props?.frame?.line)) ?? {}; expect(ln.ok != null && ln.dim === true, "the shut Cross module keeps its verb, dimmed (the house rule); ✓ plays its plate: " + JSON.stringify([ln.ok, ln.dim])); }
-await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitForTimeout(300);
-expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "the Cross screen, reached through the test hook (openCross), not a press (not built)");
+expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "✓ on the Cross module opens the Cross screen (the door is open: Cross is built)");
 await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300);
 const fc = await page.evaluate(([a, b]) => window.__st.forecastOf(a, b), [dot.id, adult3.id]);
 expect(fc.traits.filter((t) => t.kind === "switch").length === 4 && fc.traits.filter((t) => t.kind === "blend").length === 14, "four seeds for each of four switch traits, a range for the fourteen blended ones: " + JSON.stringify(fc.traits.map((t) => t.kind)));
 expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length === 4), "four seeds each");
+{ const p0 = await props(); expect(p0.screen === "cross" && p0.state === "overview" && p0.regions.overview.chapters.length >= 4 && p0.frame.line.ok === "Cross them" && p0.focus.cur === "partner", "Cross: the overview, ✓ Cross them, the ring on the partner: " + JSON.stringify([p0.state, p0.frame.line.ok]));
+  expect(p0.regions.heads.a.name === "Dot" && p0.regions.heads.b.name === (await st()).mibis.find((m) => m.id === adult3.id).name, "Cross: the pair is Dot and the partner the pick named");
+  await frameShot("cross-screen-overview");
+  await press("down", 300); const p1 = await props(); expect(p1.state === "chapter" && p1.regions.rail.open === 0 && p1.regions.chapter.traits.length >= 1, "Cross: ▼ opens the first chapter under the rail: " + JSON.stringify([p1.state, p1.regions.rail?.open]));
+  await frameShot("cross-screen-chapter");
+  await press("up", 300); expect((await props()).state === "overview", "Cross: ▲ on the first chapter returns to the overview");
+  await press("up", 200); expect((await props()).state === "overview", "Cross: ▲ on the overview stays"); }
 { await press("research", 300); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, cross: window.__st.UI.cross }));
   expect(at.screen === "pods" && at.cross === null, "a room key on Cross drops the unpaid choices: " + JSON.stringify(at));
   await page.evaluate((id) => { window.__st.UI.hab.id = id; }, dot.id); await press("habitat", 300);
   expect((await ui()).screen === "vivarium" && (await page.evaluate(() => window.__st.props?.focus?.cur)) === "cell." + dot.id, "the Vivarium key opens the Wall with the ring on the mibi last seen up close, its portrait");
-  await page.evaluate(() => window.__st.goto("habitat")); await page.waitForTimeout(300);
-  await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitForTimeout(300); await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300); }
-{ const e3 = (await st()).e, s3 = (await st()).s, r = await page.evaluate(([a, b]) => window.__st.doCross(a, b), [dot.id, adult3.id]);
+  await press("confirm", 300); await page.evaluate(() => { window.__st.UI.viv.f = "plate.4"; }); await page.waitForTimeout(300);   // ✓ on Dot's portrait opens its card; the ring on the Cross plate
+  await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.viv.pair))?.a === dot.id, "the Cross plate opens the partner pick on Dot: " + JSON.stringify(await page.evaluate(() => window.__st.UI.viv.pair)));
+  await page.evaluate((id) => { const v = window.__st.UI.viv; v.f = "cell." + id; v.last = id; }, adult3.id); await page.waitForTimeout(300);   // the ring on the partner picked
+  expect((await props()).frame.line.ok?.startsWith("See Dot and ") === true, "the pick's ✓ names the pair: " + (await props()).frame.line.ok);
+  await press("confirm", 500); const pc = await page.evaluate(() => ({ screen: window.__st.UI.screen, cross: window.__st.UI.cross }));
+  expect(pc.screen === "cross" && pc.cross?.aId === dot.id && pc.cross?.bId === adult3.id && pc.cross?.state === 0, "See this pair on the partner pick opens the Cross on the pair, on the overview: " + JSON.stringify(pc)); }
+{ const e3 = (await st()).e, s3 = (await st()).s; await press("confirm", 1800);   // ✓ Cross them on the screen itself: the child is drawn and paid, the bud takes it and the Incubator shows
   await page.waitForTimeout(400); s = await st();
   expect(s.bud && s.bud.kind === "cross" && s.bud.parents.length === 2 && s.bud.parents[0].id === dot.id, "the child grows in the bud with its real parents");
   expect(s.e === e3 - 2 && s.s === s3 - 4, "paid 2 ⚡ 4 ❀"); }
@@ -793,28 +801,8 @@ const benchIdle = () => page.waitForFunction(() => !window.__st.holding(), null,
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-settings.json: step ${id} differs from the golden`); }
   console.log(`settings steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
-// 7. every screen but Home, Cargo and Pods is not built: its room keys, ← and the first press on Idle work, with today's keys
-const NAV = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/frame.json"), "utf8")).navigation.screens;
-const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlace = (pl) => ({ probe: "bench" }[pl.split(".")[0]] || pl.split(".")[0]);
+// 7. every screen is built: Idle is checked against the screens below (no screen answers "This screen is not built yet" any more; the screen in the nav tree without words is a developer jump only)
 {
-  const SCREENS = ["cross"];
-  for (const name of SCREENS) {
-    await page.evaluate((n) => window.__st.goto(n), name); await page.waitForTimeout(500);
-    const p = await props(), c = await page.evaluate(() => window.__st.check()), nav = NAV[placeOf(name)];
-    expect(p.screen === name && p.state === "notBuilt", `${name}: sends state notBuilt: ` + JSON.stringify([p.screen, p.state]));
-    expect(c.log.type.some((t) => t.text === "This screen is not built yet") && c.log.type.some((t) => t.region === "title"), `${name}: the face draws the line and the title: ` + JSON.stringify(c.log.type.map((t) => t.text)));
-    expect(c.log.regions.some((r) => r.id === "title" && r.layer === "painted"), `${name}: the title mark is drawn (a painted "title" region): ` + JSON.stringify(c.log.regions.filter((r) => r.id === "title")));
-    const wantBack = nav?.back === "{name}" ? await page.evaluate(() => { const m = window.__st.ST.mibis.find((x) => x.id === window.__st.UI.hab.id); return m ? m.name : "Back"; }) : nav?.back === "{pod}" ? await page.evaluate(() => { const q = window.__st.podById(window.__st.UI.pods.cur); return q ? window.__st.frameOf(q.species).species.name : "Back"; }) : nav?.back ?? null;   // a way back that names the pod names the pod the rack has under the beam, one that names the mibi the mibi shown up close
-    expect((p.frame.line.back ?? null) === wantBack && !p.frame.line.ok, `${name}: ← names the parent (${wantBack ?? "none"}) and ✓ does nothing: ` + JSON.stringify(p.frame.line));
-    const e = (await st()).e; await press("confirm", 150); await press("up", 100); await press("right", 100);
-    expect((await ui()).screen === name && (await st()).e === e && (await props()).state === "notBuilt", `${name}: ✓ and the pad do nothing`);
-    await frameShot("notbuilt-" + name, name === "habitat");
-    // ← goes to the parent in the navigation tree; on Home nothing
-    await press("back", 300); const to = (await ui()).screen;
-    expect(nav?.parent ? to === screenOfPlace(nav.parent) : to === name, `${name}: ← goes to ${nav?.parent ?? "nowhere"}: ` + to);
-    // each room key opens its room's top
-    for (const [k, want] of [["research", "pods"], ["library", "library"], ["habitat", "vivarium"], ["home", "home"]]) { await page.evaluate((n) => window.__st.goto(n), name); await page.waitForTimeout(250); await press(k, 300); expect((await ui()).screen === want, `${name}: the ${k} key opens ${want}: ` + (await ui()).screen); }
-  }
   // the Dock key on Idle still acts: it wakes the screen and docks (or lifts)
   const dockBefore = JSON.stringify((await st()).dock); await page.evaluate(() => { window.__st.UI.idle = true; }); await page.waitForTimeout(300); await press("dock", 400); let u = await ui();
   expect(!u.idle && JSON.stringify((await st()).dock) !== dockBefore, "the Dock key on Idle wakes and acts: " + JSON.stringify(u)); await press("dock", 400);

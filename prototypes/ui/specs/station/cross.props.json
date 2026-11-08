@@ -1,0 +1,43 @@
+{
+ "$comment": "The props of Cross (lvgl-switch.md §2.1; cross.json): what views/cross-props.mjs gives the face, beside the frame's. Props name what, never where: the two parents and the child to be, for the overview each chapter (open, unread or sealed) with the rows of its loci, for a chapter view the traits with their copies, gates and outcomes, the rail, the masters the state places, and the one focus target; no rectangle, no measure, no layout rule. A fraction along a catalogue is in ten-thousandths. Nothing of a copy, look, seed or range of a chapter either parent has not read is named: an unread trait names the parent that lacks it and the words that say what to read.",
+ "$defs": {
+  "id": {"type": "string", "minLength": 1, "maxLength": 95},
+  "head": {"type": "object", "required": ["none", "name", "line", "away", "picture"], "additionalProperties": false, "properties": {"none": {"type": "boolean"}, "name": {"type": "string"}, "line": {"type": "string"}, "away": {"type": "boolean"}, "picture": {"type": "string"}}},
+  "fractions": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer"}},
+  "seed": {"type": "object", "required": ["fill", "pin", "kin"], "additionalProperties": false, "properties": {"fill": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"type": "string"}}, "pin": {"type": "boolean"}, "kin": {"type": "boolean"}}},
+  "row": {"type": "object", "required": ["play"], "additionalProperties": false, "properties": {
+   "play": {"type": "boolean"}, "kind": {"enum": ["switch", "blend"]}, "hides": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "boolean"}},
+   "seeds": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "seed"}}, "range": {"$ref": "fractions"}, "parents": {"$ref": "fractions"}, "range0": {"$ref": "fractions"}, "narrowed": {"type": "integer"}}},
+  "chapter": {"type": "object", "required": ["id", "name", "state", "lacksA", "lacksB", "wish", "wishRow", "rows"], "additionalProperties": false, "properties": {
+   "id": {"type": "string"}, "name": {"type": "string"}, "state": {"enum": ["open", "unread", "sealed"]}, "lacksA": {"type": "boolean"}, "lacksB": {"type": "boolean"}, "wish": {"enum": ["", "lit", "hollow"]}, "wishRow": {"type": "integer"},
+   "rows": {"type": "array", "items": {"$ref": "row"}}, "need": {"type": "string"}, "find": {"type": "string"}, "sealed": {"type": "string"}}},
+  "copy": {"type": "object", "required": ["word", "chip", "hides"], "additionalProperties": false, "properties": {"word": {"type": "string"}, "chip": {"type": "string"}, "hides": {"type": "boolean"}}},
+  "tseed": {"type": "object", "required": ["picture", "pin", "kin"], "additionalProperties": false, "properties": {"picture": {"type": "string"}, "pin": {"type": "boolean"}, "kin": {"type": "boolean"}}},
+  "trait": {"type": "object", "required": ["id", "name", "loci", "wish", "missing", "a", "b"], "additionalProperties": false, "properties": {
+   "id": {"type": "string"}, "name": {"type": "string"}, "loci": {"type": "integer"}, "wish": {"enum": ["", "lit", "hollow"]}, "missing": {"type": "boolean"}, "lacksA": {"type": "boolean"}, "lacksB": {"type": "boolean"}, "need": {"type": "string"},
+   "a": {"type": "array", "maxItems": 2, "items": {"$ref": "copy"}}, "b": {"type": "array", "maxItems": 2, "items": {"$ref": "copy"}},
+   "kind": {"enum": ["switch", "blend"]}, "settled": {"type": "boolean"}, "surface": {"type": "string"}, "words": {"type": "string"},
+   "seeds": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "tseed"}},
+   "blend": {"type": "object", "required": ["low", "high", "range", "parents", "range0", "narrowed", "one"], "additionalProperties": false, "properties": {"low": {"type": "string"}, "high": {"type": "string"}, "range": {"$ref": "fractions"}, "parents": {"$ref": "fractions"}, "range0": {"$ref": "fractions"}, "narrowed": {"type": "integer"}, "one": {"type": "boolean"}}}}},
+  "tab": {"type": "object", "required": ["id", "word", "state", "glint", "emblem"], "additionalProperties": false, "properties": {"id": {"type": "string"}, "word": {"type": "string"}, "state": {"enum": ["read", "unread", "sealed"]}, "glint": {"type": "boolean"}, "emblem": {"type": "string"}}}
+ },
+ "type": "object",
+ "required": ["state", "regions", "focus"],
+ "additionalProperties": false,
+ "properties": {
+  "state": {"enum": ["overview", "chapter"]},
+  "regions": {
+   "type": "object",
+   "required": ["heads"],
+   "additionalProperties": false,
+   "properties": {
+    "heads": {"type": "object", "required": ["a", "b", "child"], "additionalProperties": false, "properties": {"a": {"$ref": "head"}, "b": {"$ref": "head"}, "child": {"type": "object", "required": ["words", "ghost", "kin"], "additionalProperties": false, "properties": {"words": {"type": "string"}, "ghost": {"type": "string"}, "kin": {"type": "string"}}}}},
+    "overview": {"type": "object", "required": ["chapters"], "additionalProperties": false, "properties": {"chapters": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "chapter"}}}},
+    "chapter": {"type": "object", "required": ["name", "sealed"], "additionalProperties": false, "properties": {"name": {"type": "string"}, "sealed": {"type": "boolean"}, "find": {"type": "string"}, "opens": {"type": "string"}, "loci": {"type": "integer"}, "traits": {"type": "array", "maxItems": 12, "items": {"$ref": "trait"}}}},
+    "rail": {"type": "object", "required": ["open", "star", "tabs"], "additionalProperties": false, "properties": {"open": {"type": "integer"}, "star": {"type": "string"}, "tabs": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"$ref": "tab"}}}},
+    "masters": {"type": "array", "maxItems": 16, "items": {"type": "string"}}
+   }
+  },
+  "focus": {"type": "object", "required": ["cur", "targets"], "additionalProperties": false, "properties": {"cur": {"const": "partner"}, "targets": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": {"id": {"const": "partner"}, "group": {"const": "partner"}}}}}}
+ }
+}

@@ -26,6 +26,7 @@ import { namerBuild } from "./views/namer-props.mjs";
 import { panelBuild } from "./views/panel-props.mjs";
 import { benchBuild } from "./views/bench-props.mjs";
 import { settingsBuild, SLEEP_INDEX_KEY } from "./views/settings-props.mjs";
+import { crossBuild } from "./views/cross-props.mjs";
 import { libraryBuild, speciesBuild, sheetAhead, familyBuild } from "./views/library-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
@@ -140,7 +141,7 @@ export function vivariumBody(light = lightNow()) {
 const panelHold = (pb) => { const c = pb.cards?.find((x) => "card." + x.id === pb.overlay.focus.cur); holdNow = c && c.act === "return" && !c.dim ? { ms: 0 } : null; };
 // The Vivarium's props from the host's state (the collection v2 design): the view, the cold page, the carry and the pick of two are UI.viv's; the intents build the same (h.vivBuild)
 export const vivariumModel = (light = lightNow()) => { const V = UI.viv;
-  if (V.view === "wall") return wallBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: V.f, last: V.last ?? UI.hab.id, sort: V.sort, filter: V.filter, pick: V.pick, row0: V.row0, first: V.first, nudge: V.nudge, move: V.move, moveFirst: V.moveFirst, pair: V.pair, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home, SPECS.pods);
+  if (V.view === "wall") return wallBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: V.f, last: V.last ?? UI.hab.id, sort: V.sort, filter: V.filter, pick: V.pick, row0: V.row0, first: V.first, nudge: V.nudge, move: V.move, moveFirst: V.moveFirst, pair: V.pair, forecastOpen: isBuilt("cross"), ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home, SPECS.pods);
   return vivariumBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: V.f, seen: UI.hab.id, pin: V.pin, last: V.last, view: "room", page: 0, prev: V.prev, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home, SPECS.pods); };
 // The room the whole shows changes (the ring on a room's chip, a room added): st.face.room is the rules' one home for it, set here, by seeing a mibi (state.seeRoom, from game.mjs goScreen and the hatch), by a move and by ?dev Room shown; the window and the places pane cross-dither from the room that was shown (vivarium.json events.swap:
 // habitat's swap event, the same dither), the old pictures kept on the face until the event ends; a cut with reduced motion. The chips, the crumb and the line are cuts on the frame of the key.
@@ -187,6 +188,15 @@ export function benchBody() {
 export function settingsBody() {
   const c = activeCompanion(); let kept = 0; try { const l = JSON.parse(globalThis.localStorage.getItem(SLEEP_INDEX_KEY) ?? "[]"); kept = Array.isArray(l) ? l.length : 0; } catch { /* none */ }
   return settingsBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), companion: c ? { name: c.name ?? "Companion", since: c.at, keyed: !!c.pub && !c.pubMismatch } : null, sleeping: kept, ui: UI.settings }, SPECS.settings);
+}
+
+// ---- Cross ----
+// The splice (cross.json): the pair, the forecast of what the player has read, one chapter or all; the screen's state is the UI's (UI.cross), the pair and the forecast the rules'. The ring is the one target (the partner), a stepper.
+// Null with no visit (a developer's jump), or when the mibi is gone: the screen leaves for the mibi up close.
+export function crossBody() {
+  const body = UI.cross ? crossBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI.cross, light: lightNow() }, SPECS.cross, SPECS.pods) : null;
+  if (body) UI.cross.state = body.nav.state;   // the state held to the chapters the forecast has
+  return body;
 }
 
 // ---- The Library's Level 1 ----
@@ -309,8 +319,9 @@ export function screenProps(plate) {
   const fam = screen === "library.family" ? familyBody() : null;
   if (screen === "library.family" && !fam) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // no found species shown: as any screen not built
   if (screen === "sitting" && !UI.sit) { goScreen("habitat"); return screenProps(plate); }   // no visit to show: one mibi up close
+  const crs = screen === "cross" ? crossBody() : null; if (screen === "cross" && !crs) { goScreen(S.mibiById(G.st, UI.hab.id) ? "habitat" : "vivarium"); return screenProps(plate); }   // no visit to show (or the mibi is gone): one mibi up close
   const sat = screen === "sitting" ? sittingBody(light) : null; if (screen === "sitting" && !sat) { UI.sit = null; goScreen("habitat"); return screenProps(plate); }
-  const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : screen === "settings" ? settingsBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : screen === "settings" ? settingsBody() : screen === "cross" ? crs : podsBody(), reqs = [...body.requests, ...iconRequests()];
   const fl = UI.flight ? flightRequest(UI.flight.sub) : null; if (fl) reqs.push(...fl.requests);   // the carry's flight picture goes to the face with this screen's
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = [...droppedPictures()];   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
@@ -431,6 +442,7 @@ export function onFaceMessage(h, m) {
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
     if (m.screen === "settings") { if (UI.screen === "settings") INTENTS.settings.focus(h, m.target); return; }
+    if (m.screen === "cross") return;   // the pad is a stepper: the ring never moves
     if (m.screen === "library") { if (UI.screen === "library") INTENTS.library.focus(h, m.target); return; }
     if (m.screen === "sitting") { if (UI.screen === "sitting") INTENTS.sitting.focus(h, m.target); return; }
     if (m.screen === "library.species") { if (UI.screen === "library.species") INTENTS.library.species.focus(h, m.target); return; }

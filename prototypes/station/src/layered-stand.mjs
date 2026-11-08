@@ -110,6 +110,7 @@ export function variantPixels(src, w, h, variant, rgb) {
   const out = new Uint8ClampedArray(w * h * 4);
   if (variant === "dark") { for (let i = 0; i < src.length; i += 4) { out[i] = Math.round(src[i] * 0.55); out[i + 1] = Math.round(src[i + 1] * 0.55); out[i + 2] = Math.round(src[i + 2] * 0.55); out[i + 3] = src[i + 3]; } return out; }
   if (variant === "cold") { const [r, g, b] = rgb("sage"); for (let i = 0; i < src.length; i += 4) { out[i] = Math.round(src[i] * 0.88 + r * 0.12); out[i + 1] = Math.round(src[i + 1] * 0.88 + g * 0.12); out[i + 2] = Math.round(src[i + 2] * 0.88 + b * 0.12); out[i + 3] = src[i + 3]; } return out; }
+  if (variant === "ghost") { const [r, g, b] = rgb("frostS"); for (let i = 0; i < src.length; i += 4) if (src[i + 3] >= 128) { out[i] = r; out[i + 1] = g; out[i + 2] = b; out[i + 3] = 255; } return out; }   // the Cross screen's child to be: the parent's silhouette flat in frost, never a promise (cross.json portrait, ghost)
   if (variant === "outline") { const [r, g, b] = rgb("fog"), on = (x, y) => x >= 0 && y >= 0 && x < w && y < h && src[(y * w + x) * 4 + 3] >= 128;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (on(x, y) && (!on(x - 1, y) || !on(x + 1, y) || !on(x, y - 1) || !on(x, y + 1))) { const o = (y * w + x) * 4; out[o] = r; out[o + 1] = g; out[o + 2] = b; out[o + 3] = 255; }
     return out; }

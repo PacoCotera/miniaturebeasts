@@ -1,0 +1,65 @@
+{
+ "_note": "The Cross screen: the overview (every chapter read, one parent short, a pinned look), one chapter under the rail (the Coat, the Face, the Shape, one a parent has not read, with the wish), a family pair, a pair that cannot pay, the incubator busy, a partner away, and no partner: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "states": {
+  "cross-overview-read": {
+   "hash": "b45da3f2",
+   "png": "cross-overview-read.png"
+  },
+  "cross-overview-mixed": {
+   "hash": "a68dbd95",
+   "png": "cross-overview-mixed.png"
+  },
+  "cross-overview-wish": {
+   "hash": "a4ccd2ed",
+   "png": "cross-overview-wish.png"
+  },
+  "cross-chapter-coat": {
+   "hash": "907b4cb1",
+   "png": "cross-chapter-coat.png"
+  },
+  "cross-chapter-face": {
+   "hash": "d993b5d5",
+   "png": "cross-chapter-face.png"
+  },
+  "cross-chapter-shape": {
+   "hash": "56422095",
+   "png": "cross-chapter-shape.png"
+  },
+  "cross-chapter-unread": {
+   "hash": "75d0fa82",
+   "png": "cross-chapter-unread.png"
+  },
+  "cross-chapter-wish": {
+   "hash": "0958a99d",
+   "png": "cross-chapter-wish.png"
+  },
+  "cross-family": {
+   "hash": "bb102878",
+   "png": "cross-family.png"
+  },
+  "cross-pricey": {
+   "hash": "080f8bdd",
+   "png": "cross-pricey.png"
+  },
+  "cross-busy": {
+   "hash": "e416744a",
+   "png": "cross-busy.png"
+  },
+  "cross-away": {
+   "hash": "3d537a81",
+   "png": "cross-away.png"
+  },
+  "cross-alone": {
+   "hash": "64797d92",
+   "png": "cross-alone.png"
+  },
+  "cross-sealed-overview": {
+   "hash": "fa98ddbe",
+   "png": "cross-sealed-overview.png"
+  },
+  "cross-sealed-chapter": {
+   "hash": "4784261e",
+   "png": "cross-sealed-chapter.png"
+  }
+ }
+}

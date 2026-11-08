@@ -79,6 +79,10 @@ void sitting_key(int code);
 void settings_words(void);
 int settings_focus(focus_target_t *out, int cap);
 void settings_key(int code);
+/* Cross (screens/cross.c): the splice, the overview or one chapter, the partner on the ring; its words, the targets as they drew them, its keys */
+void cross_words(void);
+int cross_focus(focus_target_t *out, int cap);
+void cross_key(int code);
 /* The Library's Level 2 (screens/library_species.c): its words, its targets as they drew them (the open plates, the shelf or the lit chapter's looks), its keys; its glints' clock (again from the start when another screen shows) and its tick */
 void library_species_words(void);
 int species_focus(focus_target_t *out, int cap);
