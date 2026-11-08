@@ -96,7 +96,8 @@ await page.addInitScript(() => {
   window.__release = () => { if (!held) return; off = t - realNow(); held = false; const run = q; q = []; for (const cb of run) window.requestAnimationFrame(cb); };
 });
 const hold = () => page.evaluate(() => window.__hold()), stepClock = (ms) => page.evaluate((m) => window.__step(m), ms), release = () => page.evaluate(() => window.__release());
-await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test&names=en-short-1`, { waitUntil: "load" });
+await page.addInitScript(() => { try { if (!localStorage.getItem("mb-options")) localStorage.setItem("mb-options", JSON.stringify({ dev: true, names: "en-short-1" })); } catch { /* none */ } });   // the test hook: the setting the Options panel writes (play/src/options.mjs): Developer tools on, the archived English names
+await page.goto(`http://127.0.0.1:${port}/sandbox/station/?test`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
 // The page draws with the face and nothing else: the type is Inter in the face, no font is loaded by the page, no request leaves the page's origin, and the canvas text API is never called.
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
@@ -822,7 +823,8 @@ await page.evaluate(() => { localStorage.removeItem(window.__st.saveKey); });
 
 await assertFace("the journey");
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
-await page.goto(`http://127.0.0.1:${port}/sandbox/station/?test&names=en-short-1`, { waitUntil: "load" });
+await page.evaluate(() => localStorage.setItem("mb-options", JSON.stringify({ names: "en-short-1" })));   // Developer tools off here, as the page was without ?dev
+await page.goto(`http://127.0.0.1:${port}/sandbox/station/?test`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
 expect((await st()).tray.length === 0 && !(await sv()).seed, "a fresh world: no save, no pods");
 await page.keyboard.press("KeyD"); await page.waitForTimeout(250);

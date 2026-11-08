@@ -20,12 +20,12 @@ test("the preset is one object: the Station's settings and the Companion's care 
   assert.ok(Object.isFrozen(PLAYTEST) && Object.isFrozen(PLAYTEST.settings));
 });
 
-test("the game's own defaults are untouched, and the preset turns on from the URL only", () => {
+test("the game's own defaults are untouched, and the preset turns on from the Options panel's setting only", () => {
   const D = S.DEFAULT_SETTINGS;
   assert.deepEqual([D.sittingWait, D.budScale, D.adultTurns, D.elderTurns, D.watchMs, D.mockDelay, D.playtest], ["hours", 1, 2, 16, 60000, 20, undefined]);
-  assert.equal(playtestOn("?playtest"), true); assert.equal(playtestOn("?dev&playtest&seed=3"), true); assert.equal(playtestOn("?dev"), false); assert.equal(playtestOn(""), false); assert.equal(playtestOn(), false, "no page, no preset");
+  assert.equal(playtestOn({ playtest: true }), true); assert.equal(playtestOn({ dev: true }), false); assert.equal(playtestOn({}), false); assert.equal(playtestOn(), false, "no page, no preset");
   assert.deepEqual(withPlaytest(D, false), D); assert.equal(withPlaytest(D, true).sittingWait, "minute"); assert.equal(D.sittingWait, "hours", "a copy: the defaults are not changed");
-  assert.match(PAGE, /const JUVENILE_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.elderTurns : 16;/, "the Companion keeps the game's 2 and 16 and reads the preset's under ?playtest");
+  assert.match(PAGE, /const JUVENILE_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.elderTurns : 16;/, "the Companion keeps the game's 2 and 16 and reads the preset's under the playtest option");
   assert.match(PAGE, /function careDay\(d\) \{[^}]*PLAYTEST_ON \? [^:]*PLAYTEST\.careDayMs[^:]*: localDay\(d\)/, "a care day is the local date in play and PLAYTEST.careDayMs under the preset");
 });
 

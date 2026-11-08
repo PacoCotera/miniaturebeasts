@@ -34,7 +34,8 @@ export async function openStation({ motion = true, clock = false, longNames = pr
   for (const script of init) await page.addInitScript(script);
   const fixture = fixtureStorage();   // the schema fixture as a v10 save under a Companion A (station/tools/fixture-save.mjs): a v8 save would be reset
   await page.addInitScript((entries) => { if (!sessionStorage.getItem("fixture-done")) { for (const [k, v] of Object.entries(entries)) localStorage.setItem(k, v); localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
-  await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test&names=en-short-1`, { waitUntil: "load" });
+  await page.addInitScript(() => { try { localStorage.setItem("mb-options", JSON.stringify({ dev: true, names: "en-short-1" })); } catch { /* none */ } });   // the test hook: the setting the Options panel writes (play/src/options.mjs)
+  await page.goto(`http://127.0.0.1:${port}/sandbox/station/?test`, { waitUntil: "load" });
   await page.evaluate(() => window.__st.ready); await page.waitForTimeout(500);
   if (longNames) console.log("long names: " + (await page.evaluate((adv) => window.__st.useLongNames(adv), JSON.parse(readFileSync(path.join(here, "../dist/metrics.json"), "utf8")).fonts["16"].advance)).join(", "));   // the layout check's --long-names pass: the longest names of the live list, not the archived short ones
   const step = (ms) => page.evaluate((m) => window.__step(m), ms);

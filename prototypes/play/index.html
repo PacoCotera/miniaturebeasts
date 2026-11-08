@@ -126,7 +126,31 @@ iframe{border:0; display:block; background:var(--void)}
 /* the build stamp: page chrome in the page's bottom margin, right-aligned to the content, under every block */
 #stamp{position:absolute; color:var(--mist); font-size:12px; line-height:12px; text-align:right; white-space:nowrap; pointer-events:none}
 #zDown[aria-disabled="true"],#zUp[aria-disabled="true"]{color:var(--stone); cursor:default}
-#startFresh.corner{position:fixed; z-index:25}   /* no room in the bar: the bottom-left corner of the window (shell.mjs, the playtest preset) */
+#optionsBtn.corner{position:fixed; z-index:25}   /* no room in the bar: the bottom-left corner of the window (shell.mjs) */
+/* the Options panel (play/options, Radix): a dialog over the page in the page's palette */
+.op-overlay{position:fixed; inset:0; background:rgba(12,10,18,.7); z-index:40}
+.op-over2{z-index:50}
+.op-panel{position:fixed; z-index:41; left:50%; top:50%; transform:translate(-50%,-50%); width:min(520px,calc(100vw - 24px)); max-height:calc(100vh - 24px); overflow:auto; background:var(--bar); border:1px solid var(--hairline); border-radius:8px; padding:16px 20px; color:var(--fog)}
+.op-confirm{z-index:51; width:min(360px,calc(100vw - 24px))}
+.op-title{margin:0 0 8px; font-weight:500; font-size:16px; color:var(--bone)}
+.op-row{display:flex; align-items:center; gap:16px; padding:10px 0; border-top:1px solid var(--hairline)}
+.op-text{flex:1 1 auto; min-width:0}
+.op-label{font-size:14px; line-height:20px; color:var(--bone)}
+.op-line{font-size:12px; line-height:16px; color:var(--mist)}
+.op-switch{flex:none; width:44px; height:24px; border-radius:12px; border:1px solid var(--bevel); background:var(--ground); padding:0; position:relative}
+.op-switch[data-state=checked]{background:var(--mint)}
+.op-switch:focus-visible,.op-select:focus-visible,.op-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+.op-thumb{display:block; width:18px; height:18px; border-radius:50%; background:var(--bone); transform:translateX(3px); transition:transform .1s}
+.op-thumb[data-state=checked]{transform:translateX(23px); background:var(--void)}
+.op-select,.op-btn{flex:none; min-width:140px; height:32px; display:inline-flex; align-items:center; justify-content:space-between; gap:8px; padding:0 12px; background:var(--ground); border:1px solid var(--hairline); border-radius:6px; color:var(--fog); font-size:14px}
+.op-btn{min-width:88px; justify-content:center; color:var(--bone)}
+.op-select:hover,.op-btn:hover{border-color:var(--bevel)}
+.op-go{background:var(--amber); color:var(--void); border-color:var(--amber)}
+.op-menu{z-index:60; min-width:var(--radix-select-trigger-width); max-height:240px; overflow:auto; background:var(--bar); border:1px solid var(--bevel); border-radius:6px; padding:4px; color:var(--fog); font-size:14px}
+.op-item{padding:6px 10px; border-radius:4px; cursor:pointer; outline:none}
+.op-item[data-highlighted]{background:var(--hairline); color:var(--bone)}
+.op-actions{display:flex; justify-content:flex-end; gap:8px; padding-top:12px; border-top:1px solid var(--hairline)}
+.op-confirm .op-actions{border:0}
 </style>
 </head>
 <body>
@@ -151,7 +175,7 @@ iframe{border:0; display:block; background:var(--void)}
   <button type="button" class="ctl hidden" id="tabBench">Bench</button>
   <button type="button" class="ctl" id="companionCtl" aria-label="Companion A; switch to Companion B">Companion <b>A</b> / B</button>
   <button type="button" class="ctl" id="dockCtl" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
-  <button type="button" class="ctl hidden" id="startFresh" aria-label="Start fresh: erase the save on this browser and begin the playtest set" title="Erase the save and begin the playtest set">Start fresh</button>
+  <button type="button" class="ctl" id="optionsBtn" aria-haspopup="dialog" title="Playtest waits, developer tools, Start fresh and the other options">Options</button>
   <button type="button" class="ctl" id="keysBtn">Keys ?</button>
   <button type="button" class="ctl hidden" id="zDown" aria-label="Smaller" title="Smaller (−)">−</button>
   <button type="button" class="ctl hidden" id="zFit" aria-pressed="true">fit</button>
@@ -160,6 +184,7 @@ iframe{border:0; display:block; background:var(--void)}
   <div id="note">One device at a time: ` switches. Both show from 1064 wide.</div>
   <div id="live" aria-live="polite"></div>
 </div>
+<div id="optionsRoot"></div>
 <div id="keysPanel" class="hidden" role="dialog" aria-label="Keys">
   <h2>Keys</h2>
   <p>Only the device with the keys hears them. Shift keys belong to the page.</p>
