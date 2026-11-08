@@ -267,7 +267,15 @@ static void picker_cells(void) {
     { static char sb[4096]; seat_ops(sb, sizeof sb, st[2], st[3], seatc, seatin); v_composed(v_fmt("%s.seat", id), b[0] + st[0], b[1] + st[1], st[2], st[3], sb); }
     v_name("card.pod"); v_slot(v_fmt("%s.pod", id), pod, NULL, b[0] + pd[0], b[1] + pd[1], pd[2], pd[3], *pod != 0);
     { char mark[16]; snprintf(mark, sizeof mark, "%s", v_pstr(v_fmt("%s.mark", Cb))); if (*mark && !*v_pstr(v_fmt("%s.bubble", Cb))) picker_mark(v_fmt("%s.mark", id), mark, b[0] + mk[0], b[1] + mk[1]); }
-    v_region("card.words", LAYER_TYPE); inv_say(v_fmt("%s.name", id), name, b[0] + nm[0], b[1] + nm[1], nm[2], nm[3], sealed ? v_sstr(S, I K ".grid.sealedRole") : v_sstr(S, I K ".grid.nameRole"), "panel", V_ALIGN_CENTRE);
+    { const char *role = sealed ? v_sstr(S, I K ".grid.sealedRole") : v_sstr(S, I K ".grid.nameRole"); char dpic[96]; snprintf(dpic, sizeof dpic, "%s", v_pstr(v_fmt("%s.dialPic", Cb)));
+      if (*dpic) {   /* the reading dial: after the name, 6 px on, the pair centred in the name box (the lock, while a chapter is shut, is part of the picture) */
+        int gap = v_si(S, I K ".grid.dial.gap", 6), dw = v_sk(S, I K ".grid.dial.size", 0), dh = v_sk(S, I K ".grid.dial.size", 1), nw = v_role_width(name, role);
+        if (v_pint(v_fmt("%s.dial.sealed", Cb), 0) > 0) dw += v_si(S, I K ".grid.dial.lockGap", 3) + v_sk(S, I K ".grid.dial.lock", 0);
+        if (nw > nm[2] - gap - dw) nw = nm[2] - gap - dw;
+        int x0 = b[0] + nm[0] + (nm[2] - (nw + gap + dw)) / 2;
+        v_region("card.words", LAYER_TYPE); inv_say(v_fmt("%s.name", id), name, x0, b[1] + nm[1], nw, nm[3], role, "panel", V_ALIGN_LEFT);
+        v_name("card.dial"); v_slot(v_fmt("%s.dial", id), dpic, NULL, x0 + nw + gap, b[1] + nm[1] + (nm[3] - dh) / 2, dw, dh, 1);
+      } else { v_region("card.words", LAYER_TYPE); inv_say(v_fmt("%s.name", id), name, b[0] + nm[0], b[1] + nm[1], nm[2], nm[3], role, "panel", V_ALIGN_CENTRE); } }
     int lv = level; { int dim = v_pbool(v_fmt("%s.dim", Cb), 0); if (dim) { fade = 1; lv = v_si(S, I K ".grid.veil.answerLevels", 6); } }   /* Call: the pods that do not need you dim, lighter than a fade */
     if (fade) { veil_ops(ops, sizeof ops, cell[0], cell[1], lv, veilc); v_region("card.veil", LAYER_CHROME); v_composed(v_fmt("%s.veil", id), b[0], b[1], cell[0], cell[1], ops); }
     if (held) { snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", cell[0], cell[1], rad, heldc); v_region("card.held", LAYER_CHROME); v_composed(v_fmt("%s.held", id), b[0], b[1], cell[0], cell[1], ops); }
@@ -286,7 +294,7 @@ static void picker_verbs(void) {
     endx = r[0] + r[2];
   }
   const char *head = v_pstr(P ".heading");
-  if (*head && endx) { int y = v_si(S, I K ".verbs.y", 50), h = v_si(S, I K ".verbs.h", 28), x = endx + v_si(S, I K ".verbs.headingGap", 20); v_region("verb.heading", LAYER_TYPE); inv_say("verb.heading", head, x, y, 560, h, v_sstr(S, I K ".verbs.headingRole"), "panel", V_ALIGN_LEFT); }
+  if (*head) { int y = v_si(S, I K ".verbs.y", 50), h = v_si(S, I K ".verbs.h", 28), x = endx ? endx + v_si(S, I K ".verbs.headingGap", 20) : v_si(S, I K ".verbs.x", 56);   /* with no pill (a fixed verb) the heading stands at the verb line's start */ v_region("verb.heading", LAYER_TYPE); inv_say("verb.heading", head, x, y, 560, h, v_sstr(S, I K ".verbs.headingRole"), "panel", V_ALIGN_LEFT); }
 }
 static void picker_tools(void) {
   static const char *names[3] = { "sort", "filter", "find" }; int dim = v_pbool(P ".tools.dim", 0); (void)dim;
@@ -301,7 +309,13 @@ static void picker_detail(void) {
   snprintf(t, sizeof t, "%s", v_pstr(P ".detail.left")); if (*t) { v_region("detail.left", LAYER_TYPE); inv_say("detail.left", t, l[0], l[1], l[2], l[3], v_sstr(S, I K ".detail.role"), "panel", V_ALIGN_LEFT); }
   snprintf(t, sizeof t, "%s", v_pstr(P ".detail.right"));
   if (*t) { int amber = v_pbool(P ".detail.amber", 0); const char *role = amber ? v_sstr(S, I K ".detail.amberRole") : v_sstr(S, I K ".detail.role");
-    v_region("detail.right", LAYER_TYPE); inv_say("detail.right", t, rr[0], rr[1], rr[2], rr[3], role, "panel", V_ALIGN_RIGHT);
+    char dpic[96]; snprintf(dpic, sizeof dpic, "%s", v_pstr(P ".detail.rightDial"));
+    if (*dpic) {   /* the dial (and the lock) in front of the words, 8 px between: the line teaches the mark */
+      int dw = v_sk(S, I K ".grid.dial.size", 0), dh = v_sk(S, I K ".grid.dial.size", 1), dg = v_si(S, I K ".detail.dialGap", 8); if (v_pbool(P ".detail.rightSealed", 0)) dw += v_si(S, I K ".grid.dial.lockGap", 3) + v_sk(S, I K ".grid.dial.lock", 0);
+      char u[V_STR]; snprintf(u, sizeof u, "%s", t); fit_words(u, rr[2] - dw - dg, role); int tw = v_role_width(u, role); if (tw > rr[2] - dw - dg) tw = rr[2] - dw - dg;
+      v_name("detail.dial"); v_slot("detail.dial", dpic, NULL, rr[0] + rr[2] - tw - dg - dw, rr[1] + (rr[3] - dh) / 2, dw, dh, 1);
+      v_region("detail.right", LAYER_TYPE); inv_say("detail.right", u, rr[0], rr[1], rr[2], rr[3], role, "panel", V_ALIGN_RIGHT);
+    } else { v_region("detail.right", LAYER_TYPE); inv_say("detail.right", t, rr[0], rr[1], rr[2], rr[3], role, "panel", V_ALIGN_RIGHT); }
     if (amber) { char u[V_STR]; snprintf(u, sizeof u, "%s", t); fit_words(u, rr[2], role); int tw = v_role_width(u, role); if (tw > rr[2]) tw = rr[2]; v_region("detail.right", LAYER_CHROME); v_rect("detail.right.u", rr[0] + rr[2] - tw, rr[1] + (rr[3] + v_role_pitch(role)) / 2 - 3, tw, 1, v_scol(S, I K ".detail.underline")); } }
 }
 static void picker_grid(void) {

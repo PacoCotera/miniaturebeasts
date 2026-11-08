@@ -23,6 +23,8 @@ export function openInventory(h, opts = {}) {
   const p = pods(h); p.cmp = null; p.view = "inventory"; p.ask = null; p.choosing = !!opts.choosing; p.from = opts.from ?? (p.choosing ? "room" : "home");
   p.hold = null; p.waits = !!opts.waits;   // the verb is the caller's on every entry (the pods picker's design B): a verb never sticks from one visit to the next; the Incubator's Grow and the bench's Bring are the only one offered
   p.verb = p.callerVerb = opts.verb ?? (p.choosing ? "bring" : p.from === "incubator" ? "grow" : "read"); p.fixed = p.choosing || p.from === "incubator";
+  p.blocked = null;   // a fixed verb no pod can take (the incubator is busy): the picker opens as browse on Read, full colour, the reason in the foot; ← still goes to the caller
+  if (p.fixed && h.st.tray.length) { const m = mm(h), ts = h.st.tray.map((q) => takeOf(m, spec(h), p.verb, q)); if (ts.every((t) => !t.can)) { p.blocked = ts[0].why; p.verb = p.callerVerb = "read"; p.fixed = false; } }
   if (opts.sort) p.sort = opts.sort;
   if (p.carryFilter && !opts.chips) { p.chips = []; p.word = null; }   // the filter a carry set (blue on a mibi: its kind) lasts until the next way in
   p.carryFilter = false;
