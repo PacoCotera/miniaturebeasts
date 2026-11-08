@@ -195,9 +195,10 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
         <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. Nothing puts the veil back.</li>
         <li>The dots top left are your reach, one per cell: a dot fills once you have found what that place keeps; your cell is framed.</li>
+        <li>Find what a place holds and the whole place shows itself; its mark goes on your map.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
         <li>Up to three mibis are <b>with you</b> in the Companion; the others are at home at the Station. The partner joins the Probe: the lead if it is grown, otherwise the first grown mibi with you. While docked, ✓ <b>Take</b> a mibi at home or <b>Leave</b> one at home on Mibis (the Companion is full at three); the Station's Vivarium can ask for a mibi too, applied at the dock.</li>
-        <li>Between expeditions the Companion shows a mibi with you, large. ))) and it answers; ✓ <b>Walk together</b> once per world turn, undocked, with all of them (a moment together, no Data), then ✓ <b>Tend</b> each one once a day. Three Tends earn the bond; a bonded juvenile grows up with care. The pad looks at the others; ← goes up to Mibis.</li>
+        <li>Between expeditions the Companion shows a mibi with you, large. ))) and it answers; ✓ <b>Walk together</b> once per world turn, undocked, with all of them (a moment together, no Data), then ✓ <b>Tend</b> each one once a day (once a minute with Playtest waits on). Three Tends earn the bond; a bonded juvenile grows up with care. The pad looks at the others; ← goes up to Mibis.</li>
         <li>Bubbles: <b>!</b> startled, stop or it runs · <b>?</b> curious, it comes closer · <b>fruit</b> it eats what you carry · <b>…</b> settling, keep still.</li>
       </ul>
     </details>
@@ -725,9 +726,9 @@ function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
 // takes the mibi's name (or the mibi, or the names).
 const TEND_MOMENT = ['leans on the glass', 'glows softly', 'puffs'];   // the species moment's words, as built (Loika, Tuikis, Untuva)
 const CARE_TEXT = {
-  tendLabel: n => 'Tend ' + n, tendOnce: 'once a day', tendBond: 'a bond is for good', tendedToday: 'tended today', tendAfter: 'after the expedition',
+  tendLabel: n => 'Tend ' + n, tendOnce: PLAYTEST_ON ? 'once a minute' : 'once a day', tendBond: 'a bond is for good', tendedToday: PLAYTEST_ON ? 'again in a minute' : 'tended today', tendAfter: 'after the expedition',
   tended: m => m.name + ' ' + (TEND_MOMENT[m.sp] ?? CARE_TEXT.tendMomentOther) + ' · ' + (m.mem ? 'it remembers the ' + m.mem : 'it hasn’t been out yet'),
-  tendedRefused: n => n + ' was tended today', tendMidExp: n => 'Tend ' + n + ' when the expedition is over',
+  tendedRefused: n => PLAYTEST_ON ? n + ' was just tended · again in a minute' : n + ' was tended today', tendMidExp: n => 'Tend ' + n + ' when the expedition is over',
   walkLabel: names => names.length === 1 ? 'Walk with ' + names[0] : 'Walk together', walkOnce: 'once a turn',
   walked: names => listWords(names) + ' walk together',
   bonded: n => n + ' is bonded with you',
@@ -1081,7 +1082,7 @@ function isDocked() { const st = stPart(); return !!(st && st.dock && st.dock.do
 const fieldFrozen = () => !!(S && S.exp) && isDocked();
 const DOCK_TEXT = { chip: 'Docked', first: 'Field paused while docked · lift to go on · End expedition still works at the start or a lit outpost', again: 'Docked · lift to go on',
   tierMid: 'Tier 2 · from the next expedition', probe: 'Docked · the Station mends it', bay: n => n + ' crate' + (n === 1 ? '' : 's') + ' sealed · ready for the Station',
-  sealed: 'Docked · open Cargo on the Station', sealedEmpty: 'Docked' };
+  sealed: 'Docked · open the Station\'s Bay', sealedEmpty: 'Docked' };
 // Docked, the Companion takes what the Station hands over: accepted crates leave the bay; the Probe as mended or
 // upgraded; the Station's carry requests (st.carryReqs); the mibis raised; species identified; pods returned to the wild.
 function syncStation() {
@@ -1262,7 +1263,7 @@ function checkHeart() {
 // a press is consumed by them and never reaches the walking view; they spend no action. Only a baked place has them (a generated place has no 24 px picture).
 // The reveal in four beats (companion scheme): the spot in the walking view (SPOT_MS), the zoom out (two stepped frames, ZOOM_MS in all), the dissolve (REVEAL_MS), the hold.
 const REVEAL_MS = 1200, SPOT_MS = 600, ZOOM_STEP_MS = 120, ZOOM_MS = 240, ARRIVE_HOLD_MS = 1200, ARRIVE_STEP_MS = 120;   // [tune]
-const VIEW_TEXT = { look: 'Look over the place', go: 'Go on', close: 'Close', found: 'Found' };   // [copy]
+const VIEW_TEXT = { look: 'Look around', go: 'Go on', close: 'Close', found: 'Found' };   // [copy]
 function placeVeil(lay) { const bk = bakedView(lay), { w, h } = bk.place, o = new Uint8Array(w * h);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (!unveiled(lay.key, x + bk.ox, y + bk.oy)) o[y * w + x] = 1;
   return o; }
@@ -5759,7 +5760,7 @@ function reachCount(range) {
   const ex = S.exp, n = range * 2 + 1, s0 = ex ? cxy(ex.start) : null, reach = ex ? new Set(ex.reach) : null; let filled = 0, total = 0;
   for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
     if (!ex) { total++; continue; }
-    const X = s0.x - range + i, Y = s0.y - range + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; total++; if (reach.has(Y * MW + X)) filled++;
+    const X = s0.x - range + i, Y = s0.y - range + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; const c = Y * MW + X; if (!reach.has(c)) continue; total++; if (explored(c)) filled++;   // the dots drawn are the reach cells; the mint ones are the explored
   }
   return { filled, total };
 }
@@ -5802,7 +5803,7 @@ function drawProbe(t) {
   for (let i = 0; i < tier.shield; i++) { const x = 24 + 30 * i; R(x - 1, 65, 26, 42, C.void);
     if (i < n) { R(x, 66, 24, 40, C.bone); R(x, 104, 24, 2, C.fog); } else { R(x, 66, 24, 40, C.stone); R(x + 1, 67, 22, 38, C.ink); } }
   reachDots(160, 66, tier.range);
-  { const rc = reachCount(tier.range); text(rc.filled + ' of ' + rc.total + ' filled', 160, 66 + (tier.range * 2 + 1) * 8 + 4, C.fog); }   // the grid has a number: it no longer reads as a stippled "?" tile
+  { const rc = reachCount(tier.range); text(rc.filled + ' of ' + rc.total + ' explored', 160, 66 + (tier.range * 2 + 1) * 8 + 4, C.fog); }   // the grid has a number: it no longer reads as a stippled "?" tile
   const pods = ex ? ex.cargo.pods : ((S.hold && S.hold.pods) || []);
   for (let i = 0; i < tier.hold; i++) podSlot(250 + 22 * i, 76, pods[i]);
   blit(ICON.energy(), 330, 79); text(String(ex ? ex.cargo.e : (S.hold && S.hold.e) || 0), 350, 77, C.bone);   // the Energy held, the same number as the field HUD's

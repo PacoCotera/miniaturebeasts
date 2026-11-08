@@ -72,7 +72,7 @@ const KEYS = {
   station: [
     { id: "left", code: "ArrowLeft", name: "Left", cls: "pad", glyph: SVG.left, g: "P", s: 56 }, { id: "up", code: "ArrowUp", name: "Up", cls: "pad", glyph: SVG.up, g: "P", s: 56 },
     { id: "down", code: "ArrowDown", name: "Down", cls: "pad", glyph: SVG.down, g: "P", s: 56 }, { id: "right", code: "ArrowRight", name: "Right", cls: "pad", glyph: SVG.right, g: "P", s: 56 },
-    { id: "home", code: "KeyH", name: "Home", cls: "room home", glyph: MARK("home"), g: "R", s: 56 }, { id: "research", code: "KeyR", name: "Research", cls: "room research", glyph: MARK("pods"), g: "R", s: 56 },
+    { id: "home", code: "KeyH", name: "Home", cls: "room home", glyph: MARK("home"), g: "R", s: 56 }, { id: "research", code: "KeyR", name: "Pods", cls: "room research", glyph: MARK("pods"), g: "R", s: 56 },
     { id: "vivarium", code: "KeyB", name: "Vivarium", cls: "room vivarium", glyph: MARK("vivarium"), g: "R", s: 56 }, { id: "library", code: "KeyL", name: "Library", cls: "room library", glyph: MARK("library"), g: "R", s: 56 },
     { id: "call", code: "KeyC", name: "Call", cls: "round call", glyph: SVG.call, g: "A", s: 56 },
     { id: "back", code: "Escape", name: "Back", cls: "round back", glyph: SVG.back, g: "A", s: 56 }, { id: "confirm", code: "Enter", name: "Confirm", cls: "round confirm", glyph: SVG.confirm, g: "A", s: 64 },
@@ -541,7 +541,7 @@ printLook(); setInterval(printLook, 10000);
 // ---- the Options panel (owner 2026-11-08): every option a person can set, in one visible place; the settings are one stored value (options.mjs) that both devices read themselves ----
 // The panel is play/options (React + Radix, built to ../vendor/options.js). Developer tools applies at once; the rest apply when the panel closes (the page reloads), and Start fresh erases this browser's save at the NEXT load,
 // before any frame is set (a frame still open would write its save back as it unloaded). The Companions' identities stay; the worlds go.
-const optionsBtn = $("optionsBtn"), FRESH_KEY = "mb-play-fresh", PLACES = ["HollowTree", "Reedpool", "SplitStone", "Test_AllCases", "Windstep"];
+const optionsBtn = $("optionsBtn"), FRESH_KEY = "mb-play-fresh", PLACES = [["HollowTree", "Hollow Tree"], ["Reedpool", "Reedpool"], ["SplitStone", "Split Stone"], ["Test_AllCases", "Test, all cases"], ["Windstep", "Windstep"]];   // [id, the place's name]
 try { if (sessionStorage.getItem(FRESH_KEY)) { sessionStorage.removeItem(FRESH_KEY); for (const key of Object.keys(localStorage)) if (key.startsWith("mb-save-v8") || key.startsWith("mb-exploration-v") || key === "mb-station-dev") localStorage.removeItem(key); } } catch { /* no storage: nothing to erase */ }
 function applyDev(on) { devBtn.classList.toggle("hidden", !on); for (const id of ["helpDevK", "helpDevD"]) $(id).classList.toggle("hidden", !on); if (!on && devOpen) toggleDev(false); }
 mountOptions($("optionsRoot"), {

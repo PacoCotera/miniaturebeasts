@@ -318,7 +318,7 @@ test("Expedition ended, docked: the bay lines say the Companion is in the Caddy"
   dockKey(st, p.sv()); p.writeSt(st); assert.equal(p.run("isDocked()"), true);
   p.run("__t = []; drawSealed(0);");
   assert.ok(p.run("__t").includes("1 crate sealed · ready for the Station"));
-  assert.ok(p.run("__t").includes("Docked · open Cargo on the Station"));
+  assert.ok(p.run("__t").includes("Docked · open the Station's Bay"));
   p.run("S.bay = []; __t = []; drawSealed(0);");
   assert.ok(p.run("__t").includes("Docked"), "an empty bay: Docked alone");
 });

@@ -435,7 +435,7 @@ test("T4 merge: Companion care writes reach the Station by max and OR, and a sec
 test("one strings table for care; the heart, the 24 px face and the 48 px token are missing assets in the register, drawn only as labelled placeholders", () => {
   assert.match(PAGE, /^const CARE_TEXT = \{$/m);
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
-  const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({}));
+  const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({ PLAYTEST_ON: false }));
   assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "stand-in"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "stand-in"], ["c-moment-walk-S01-280x300", 280, 300, "stand-in"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "stand-in"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"]),
     ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-wade-32", 32, 32, "signed"], ["c-scree-32", 32, 32, "signed"], ["c-bank-32", 32, 32, "signed"], ["c-map-soft-26", 26, 26, "signed"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
@@ -466,7 +466,7 @@ test("no Companion line carries a skill count; the status line is exactly one li
 });
 test("the approved strings: Tend's line from the species moment and the place; the grow-up and full lines", () => {
   const src = PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0], tm = source("TEND_MOMENT");
-  const T = vm.runInContext(tm + "\n" + source("listWords") + "\n" + src + "\n;CARE_TEXT", vm.createContext({}));
+  const T = vm.runInContext(tm + "\n" + source("listWords") + "\n" + src + "\n;CARE_TEXT", vm.createContext({ PLAYTEST_ON: false }));
   assert.equal(T.tended({ name: "Dot", sp: 0, mem: "meadow" }), "Dot leans on the glass · it remembers the meadow");
   assert.equal(T.tended({ name: "Fig", sp: 1, mem: null }), "Fig glows softly · it hasn’t been out yet");
   assert.equal(T.walked(["Dot", "Moss", "Fig"]), "Dot, Moss and Fig walk together"); assert.equal(T.walked(["Dot", "Moss"]), "Dot and Moss walk together");
@@ -669,7 +669,7 @@ test("End expedition: the notch is its own row under the outcome's last 2× line
 });
 test("End expedition: world lines draw only while their foot stays on or above row 476; the first that fails ends the list", () => {
   const wrap = l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], long = "x".repeat(60), short = "A storm charged stones.";
-  const rows = vm.runInContext(source("worldLineRows") + "\n" + source("WORLD_FOOT") + ";worldLineRows", vm.createContext({}));
+  const rows = vm.runInContext(source("worldLineRows") + "\n" + source("WORLD_FOOT") + ";worldLineRows", vm.createContext({ PLAYTEST_ON: false }));
   assert.deepEqual(plain(rows([long, long, short], 380, wrap).map(r => [r.y, r.foot])), [[380, 417], [426, 463]], "a break with a notch, two wrapped lines: the third, at 472, is cut");
   assert.deepEqual(plain(rows([short, short, short], 380, wrap).map(r => r.foot)), [397, 423, 449], "three one-line world lines always fit");
   assert.deepEqual(plain(rows([short, long, short], 406, wrap).map(r => r.y)), [406, 432], "a line fits at 432 only if its foot ≤ 476");
@@ -736,7 +736,7 @@ test("careQueue: bonds first in carried order, 2400 ms each; then one grow-up cu
   assert.match(source("careLines"), /careQueue\(evs, dur\)/);
 });
 test("the docking copy (c7cbfa4): the Companion docks; it is never told to go to the Station", () => {
-  const T = vm.runInContext(source("TEND_MOMENT") + "\n" + source("listWords") + "\n" + PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0] + "\n;CARE_TEXT", vm.createContext({}));
+  const T = vm.runInContext(source("TEND_MOMENT") + "\n" + source("listWords") + "\n" + PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0] + "\n;CARE_TEXT", vm.createContext({ PLAYTEST_ON: false }));
   assert.equal(T.takeOne, "dock to take one along"); assert.equal(T.takeAlong, "take mibis along"); assert.equal(T.whenDocked, "when docked");
   assert.ok(!/'[^'\n]*(take one at the Station|dock at the Station|lift at the Station|consignment)[^'\n]*'/.test(PAGE), "no retired docking words in any string");
 });
@@ -859,8 +859,8 @@ test("X1 6: every SPECIES lookup goes through spOf; the two plates are in the re
   const hits = script.split("\n").filter(l => /SPECIES\[/.test(l));
   assert.equal(hits.length, 1, "SPECIES[ appears once: " + hits.join("\n")); assert.match(hits[0], /^const spOf = sp => /);
   assert.match(source("spOf"), /: SP_OTHER\);$/);
-  const reg = vm.runInContext(PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m)[0] + "\n;CARE_ASSETS", vm.createContext({}));
-  const plate = vm.runInContext(PAGE.match(/^const PLATE = \{[^]*?\};/m)[0] + "\n;PLATE", vm.createContext({}));
+  const reg = vm.runInContext(PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m)[0] + "\n;CARE_ASSETS", vm.createContext({ PLAYTEST_ON: false }));
+  const plate = vm.runInContext(PAGE.match(/^const PLATE = \{[^]*?\};/m)[0] + "\n;PLATE", vm.createContext({ PLAYTEST_ON: false }));
   for (const [id, w] of [["c-sprite-other-32", 32], ["c-mini-other-12", 12]]) {
     const e = reg.find(x => x.id === id); assert.ok(e, id); assert.equal(e.status, "placeholder"); assert.equal(e.w, w); assert.equal(e.h, w);
     assert.ok(plate[id], id + " has a plate entry"); assert.equal(plate[id][0], "stone"); }
