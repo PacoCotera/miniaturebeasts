@@ -19,7 +19,7 @@ static const char *TARGETS[7] = { "vivarium", "library", "pods", "incubator", "c
 /* A key cap before or after a title (the controls scheme: Home's panels wear their keys; home.json regions.cap): the 22 px drawing of the room's key (frame.json regions.marks.roomPanel), 1:1, in the art layer. Returns the
    width it takes with its gap, or 0 where the picture is not on the face (the title then stands as it did). */
 static int panel_cap(const char *id, const char *room, int x, int y) {
-  char a[96], pic[96]; snprintf(a, sizeof a, "regions.marks.roomPanel.%s", room); spec_str("frame", a, pic, sizeof pic);
+  char a[96], pic[96]; snprintf(a, sizeof a, "regions.cap.marks.%s", room); spec_str(H, a, pic, sizeof pic);
   int sz = v_si(H, "regions.cap.size", 22); if (!pic[0] || wire_asset_slot(pic) < 0) return 0;
   v_region(id, LAYER_ART); v_sprite(v_fmt("%s.cap", id), pic, x, y, sz, sz); return sz + v_si(H, "regions.cap.gap", 8);
 }
