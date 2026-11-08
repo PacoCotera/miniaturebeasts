@@ -4,6 +4,7 @@
 //   - the chips are renamed: trait-SNN-coat-<layout> -> trait-SNN-markings-<layout> (spots -> back-spots); trait-SNN-signature-<small|stand|large> -> trait-SNN-signature-size-<...>
 //   - what the earlier art made and nothing reads any more is removed (the earlier trait chips, the S01 rolls, the S01 and S03 reading pictures, the earlier Loika's 176x128 young)
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from "node:fs";
+import { stampBytes } from "./index-bytes.mjs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { decodePNG, encodePNG } from "../png.mjs";
@@ -138,7 +139,7 @@ export function placeGame({ work, root, dryRun = false, only = null, by = "art l
     if (!dryRun) { mkdirSync(path.join(root, "pods"), { recursive: true }); writeFileSync(path.join(root, file), o.buf); }
   }
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
-  if (!dryRun) writeFileSync(idxFile, JSON.stringify(index, null, 1) + "\n");
+  if (!dryRun) writeFileSync(idxFile, JSON.stringify(stampBytes(root, index), null, 1) + "\n");
   return { placed: ops.length, removed, report };
 }
 // The pairs the release measures: [{ kind, what, size, adult, juvenile }] for every juvenile master that has an adult of the same name and size

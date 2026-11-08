@@ -733,7 +733,8 @@ test("generator 2 play: the side tail draws no ink on its high-side column; a pl
 const fnSrc = name => { const i = PAGE.indexOf("\nfunction " + name + "("); assert.ok(i >= 0, name); return PAGE.slice(i, PAGE.indexOf("\nfunction ", i + 1)); };
 const fnv = a => { let h = 2166136261; for (const v of a) { h ^= v & 0xffff; h = Math.imul(h, 16777619) >>> 0; } return h; };
 // main's generator 1 map, captured from main's page with this harness (seed 7 saved without gen, no pods, creatures or signs, every cell seen, the gate and the mouth visited)
-const MAIN_G1 = { mapCv: 3936681958, frame: 2163068169 };   // main 5e287081, with the round water corners
+// C10 (quarters out) re-hashed the drawn full map and, with C11 (the map: the band names the place and the nearest tell), the reach view and cave frames (looked at: only the dither and the band moved).
+const MAIN_G1 = { mapCv: 3936681958, frame: 3094132609 };   // main 5e287081, with the round water corners
 // a save written without gen, as every save before generators: a world started, then saved with its gen dropped
 const g1Save = () => { const m = page(); m.run("newWorld(7)"); const o = JSON.parse(m.store[m.KEY]); o.regions[0].gen = 1; return { [m.KEY]: JSON.stringify(o), "mb-companion-A": m.store["mb-companion-A"] }; };   // v9 names the generator in the region: gen 1
 // one page per generator, shared by the tests below (each sets the state it reads), so the map and fog are built once
@@ -1014,7 +1015,7 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // ---- golden frames: FNV of the 450×600 screen ----
 // The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
-const MAIN_FRAMES = { cave: 1205165258, place32: 1284530620, map: 3135324483 };   // cave and place32 are main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
+const MAIN_FRAMES = { cave: 2763330596, place32: 1284530620, map: 2508564550 };   // cave and place32 are main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
 const GOLDEN48 = { faceStair: 1781723947, gen1: 1254856577, corner: 1819452261 };   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y) {
   const p = page48(seed);
@@ -1118,7 +1119,7 @@ test("48 px edges: a quarter of a tile is far where its tile is far, or where bo
     assert.equal(q, want, "own " + own + " m8 " + m8); }
 });
 test("48 px edges: a veiled column beside the lifted view draws each pixel on the far side exactly where the eighth rule says; a lone unveiled tile falls back to its quarters and draws whole", () => {
-  const p = place48(7, 176, 14, 14, "layout(S.exp.patch.key).svy = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); unveilRound(S.exp.patch.key, 14, 14, 4); layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
+  const p = place48(7, 176, 14, 14, "layout(S.exp.patch.key).vbl = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); unveilRound(S.exp.patch.key, 14, 14, 4); layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
   const px = frame48(p), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
   const uv = (x, y) => p.run(`unveiled('${key}', ${x}, ${y})`), far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !uv(x, y), G = refGrid(far);
   let checked = 0, edge = 0;
@@ -1135,7 +1136,7 @@ test("48 px edges: a veiled column beside the lifted view draws each pixel on th
     assert.ok(ok, "tile " + tx + "," + ty); checked++; }
   assert.ok(edge >= 4 && checked >= edge, "edge tiles checked: " + edge + " of " + checked);
   // a lone unveiled tile among veiled ones stays whole (the guard)
-  const lone = place48(7, 176, 14, 14, "layout(S.exp.patch.key).svy = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); S.veil[S.exp.patch.key][12] = 1 << 16; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
+  const lone = place48(7, 176, 14, 14, "layout(S.exp.patch.key).vbl = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); S.veil[S.exp.patch.key][12] = 1 << 16; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
   const lpx = frame48(lone), lkey = lone.run("S.exp.patch.key"), lcam = lone.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)");
   assert.equal(lone.run(`unveiled('${lkey}', 16, 12)`), true); assert.equal(lone.run(`unveiled('${lkey}', 15, 12) || unveiled('${lkey}', 17, 12) || unveiled('${lkey}', 16, 11) || unveiled('${lkey}', 16, 13)`), false);
   const lpb = lone.run(`tile48(layout('${lkey}'), ${12 * 28 + 16}, 0)`), lx = 16 * 48 - lcam.x, ly = vy + 12 * 48 - lcam.y; let whole = 0, n = 0;
@@ -1492,12 +1493,6 @@ test("the send hint in a place names the way, never a count, at all seven sites;
     cargoRefusal: `End it only at the start or a lit outpost: ${name} · ${dir}`, headBack: `head back ${dir} to the ${name === "Start" ? "start" : "outpost"}` };
   for (const k of Object.keys(want)) { assert.equal(inPlace[k], want[k], k); assert.doesNotMatch(inPlace[k], DIG, k + ": no digit"); }
   assert.doesNotMatch(inPlace.headBackHold, DIG);
-  // the explored message (headBack's other site) and its caves, through checkExplored
-  p.run("S.exp.saidDone = 0; reachCounts = () => ({ total: 9, surveyed: 9, full: 9, gated: 1 }); FX.notes = []; checkExplored();");
-  assert.equal(p.run("FX.msg"), `Everything in reach is explored · the cave waits for a Tuikis · head back ${dir} to the ${name === "Start" ? "start" : "outpost"}`);
-  p.run("S.exp.saidDone = 0; reachCounts = () => ({ total: 9, surveyed: 9, full: 9, gated: 2 }); FX.notes = []; checkExplored();");
-  assert.match(p.run("FX.msg"), /^Everything in reach is explored · the caves wait for a Tuikis · /); assert.doesNotMatch(p.run("FX.msg"), DIG);
-  assert.ok(p.run("wrapText(FX.msg, 400, 2).length") <= 3, "fits the box");
   // leave with ← then ✓: over the reach view every site counts again, with the same name
   p.run("S.phase = 'patch'; FX.lockUntil = 0; openMenu(); S.ui.menuSel = 0; act('confirm');"); assert.equal(p.run("S.phase"), "map"); assert.equal(p.run("S.exp.patch"), null);
   p.run("S.exp.cargo.pods = [];");

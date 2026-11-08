@@ -52,7 +52,7 @@ export const regionSeed = (seed1, n) => n === 1 ? seed1 : hash(seed1, "region", 
 // A new region's map, as a new world starts it (the page's worldFields, map part). Fields the page creates only when needed
 // (svyF, skulls, lastEntered, lastTrail, lastPos) are absent until then.
 export function blankMap() {
-  return { revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), called: {}, signs: {}, pins: [], cells: {}, pods: [], cr: [], veil: {}, svy: {}, opened: {}, lastStorm: null };
+  return { revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), called: {}, signs: {}, pins: [], cells: {}, pods: [], cr: [], veil: {}, opened: {}, lastStorm: null };
 }
 // the counts the atlas and the opening rule read: "explored" is visited and called (the page's explored(c)); "seen" is revealed
 export function exploredCount(map) { let n = 0; for (let c = 0; c < MW * MH; c++) if (map.visited && map.visited[c] && map.called && map.called[c]) n++; return n; }

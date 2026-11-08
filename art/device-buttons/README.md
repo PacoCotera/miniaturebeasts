@@ -8,7 +8,7 @@ Every button on the Station, the Companion and the Caddy carries an icon and no 
 
 | Device | Buttons |
 | --- | --- |
-| Station | pad (dark gloss), Home (a solid house, yellow `#e9b22e`), Vivarium (a leaf, green `#5ea64c`), Research (a test tube, blue `#2f7fd8`), Library (an open book, plum `#7a3f8f`), back (dark gloss), confirm (orange `#f0661a`) |
+| Station | pad (dark gloss), Home (a house with a raised dot under it, yellow `#e9b22e`), Pods (a flat-lid ribbed bulb, no crown or stalk, blue `#2f7fd8`), Vivarium (a glass dome with a mibi peeking out, green `#5ea64c`), Library (an open book with a footprint, a heel and three round toes, plum `#7a3f8f`), Call (the Companion's cap, teal `#2a9f90`), back (dark gloss), confirm (orange `#f0661a`) |
 | Companion | pad, Call (a dot sending two arcs), back, confirm |
 | Caddy | left, OK (confirm), right, Print (the printer, no word, charcoal gloss), Feed (a thin strip of paper running from the roll) |
 
@@ -27,9 +27,6 @@ Every button on the Station, the Companion and the Caddy carries an icon and no 
 ## Hashes (sha256)
 
 - `device-buttons-final.png`: `33d7916c7dc1b2cab24eff37c5227fed01017f69a68ae0fddcc26289a15a31e3`
-- `marks/slices/frame-room-home-24.png`: `d4f4e3ad0c0e68ede883ab33a96529135a7bc8d3494de1a35e09956718641cd7`
-- `marks/slices/frame-room-library-24.png`: `bb4ad9b4d7b635fd224e01a88b1df307e493e4e12625355822470f51e393ee3c`
-- `marks/slices/frame-room-research-24.png`: `239e82dba592f147a149a96c9247bc016644b3a0d3631ea6f81e437c6a0d884d`
-- `marks/slices/frame-room-vivarium-24.png`: `c38244b25463abe0700244cd2d783313f07027cce402cafe87028adcc9c56ee5`
+- Room marks and key icons: hashes in `marks/slices/manifest.json` (replaced 2026-11-07 by the signed key caps set).
 
 Cap master hashes are in `caps/manifest.json`.

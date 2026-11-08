@@ -8,10 +8,11 @@ import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, p
 import * as S from "./state.mjs";
 import { speciesStatus } from "./library.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
-import { podsProps } from "./views/pods-props.mjs";
+import { podsProps, podPic } from "./views/pods-props.mjs";
+import { req as reqOf } from "./views/requests.mjs";
 import { cuesOf, originWord, answerOf, setMetrics as setCarryMetrics } from "./carry.mjs";
 import { capLine } from "./views/words.mjs";
-import { homeBuild, mibiPictureOf, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
+import { homeBuild, mibiPictureOf, mibiReq, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
 import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs";
 setLibrary(libraryOf);   // Home's Library module: the specimen of the species with something found (build spec 4.2)
 setLibrarySpecies((st, settings) => specimenSpecies(st, settings) ?? STARTER);   // the species it is for: where ✓ on its bezel puts the Library's ring
@@ -114,7 +115,7 @@ const living = () => ({ time: timeNow(), now: Date.now(), restRules: SPECS.vivar
 // ---- Home ----
 // Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
 export function homeBody(light = lightNow()) {
-  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "", light, restRules: SPECS.vivarium?.rules?.rest, rules: SPECS.vivarium?.rules, arrived: UI.arrived, motionSets: !!G.settings.motionSets });   // place: the save has no place name yet
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "", light, restRules: SPECS.vivarium?.rules?.rest, rules: SPECS.vivarium?.rules, arrived: UI.arrived, motionSets: !!G.settings.motionSets, callTeach: !UI.noTeach && !G.st.taught?.call && (G.st.turn | 0) < (SPECS.frame.regions.cues.callUntilTurn ?? 8) });   // place: the save has no place name yet
   const body = homeBuild(model(), SPECS.home, SPECS.frame), pn = UI.panel;
   if (pn && pn.screen === "home" && pn.id === "reset") {   // the release's one-time notice rides on Home as the decision panel (one card, its bottom line built from the card)
     const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
@@ -277,6 +278,13 @@ export function enterSitting(h, m, { state = "pose", from = "habitat" } = {}) {
   UI.hab.id = m.id; UI.sit = sit; h.goto("sitting"); return true;
 }
 
+// The carry's flight picture (frame.json cues.flight): what the ring is on, small enough to go 1:1 to the key's cue (the face never scales a picture): a pod's list picture, a mibi's house picture. { id, requests } or null.
+function flightRequest(sub) {
+  const C = SPECS.frame.regions.cues.flight ?? {}, requests = [], req = reqOf(requests); let id = "";
+  if (sub?.kind === "pod" || sub?.kind === "chapter") id = podPic(req, G.st, sub.pod, SPECS.pods.classes.pod[C.pod ?? "list"]);
+  else if (sub?.kind === "mibi") id = mibiReq(req, G.st, sub.mibi, C.mibi ?? [48, 50], G.settings, lightNow(), "vivariumHouse");
+  return id ? { id, requests } : null;
+}
 // ---- the props of the screen on the page ----
 // { msg: the props message (without seq), ids: every picture the face needs before them, light, lit: the graded residents, owed: the ids of the requests that carry an owed habit key }
 // A plate that holds ✓ (the hold ring, frame.json hold): UI.hold names it, and the developer setting realmSleep lets it show; with either off the frame carries no hold and ✓ is an ordinary key.
@@ -303,22 +311,26 @@ export function screenProps(plate) {
   if (screen === "sitting" && !UI.sit) { goScreen("habitat"); return screenProps(plate); }   // no visit to show: one mibi up close
   const sat = screen === "sitting" ? sittingBody(light) : null; if (screen === "sitting" && !sat) { UI.sit = null; goScreen("habitat"); return screenProps(plate); }
   const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : screen === "settings" ? settingsBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  const fl = UI.flight ? flightRequest(UI.flight.sub) : null; if (fl) reqs.push(...fl.requests);   // the carry's flight picture goes to the face with this screen's
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
-  const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = droppedPictures();   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
+  const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = [...droppedPictures()];   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
+  const homeCaps = Object.values(SPECS.home.regions.cap?.marks ?? {}); if (screen !== "home" && homeCapsUp) { dropped.push(...homeCaps); homeCapsUp = false; }   // Home's 22 px caps leave the face with Home: they stayed in the picture table on every later screen (the Library's l3 states count them in layer-check's 200)
   if (screen === "vivarium" && UI.viv.prev) for (const id of [UI.viv.prev.base, ...UI.viv.prev.tiles]) if (id) ids.add(id);   // the room the swap's dither starts from stays on the face until the event ends
   if (screen === "habitat" && UI.hab.prevRoom) ids.add(UI.hab.prevRoom);   // the near painting a move's dither starts from stays on the face until the event ends
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   if (screen === "sitting") for (const id of [UI.sit.prev.glass, UI.sit.prev.resident]) if (id) ids.add(id);   // the pictures the window's dithers start from stay on the face until their events end
+  if (screen === "home") { homeCapsUp = true; for (const id of Object.values(SPECS.home.regions.cap?.marks ?? {})) if (assetEntry(id)) ids.add(id); }   // Home's panels wear their 22 px key caps (home.json regions.cap): loaded with Home only
   if (screen === "home") return { msg: { screen, ...body.props, frame: withHold({ plate: pl, ...answerPart({}) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;
-  { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) line.keys = cues; }   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
+  { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) { line.keys = cues; for (const c of cues) { const id = SPECS.frame.regions.marks.roomCue?.[c.room]; if (id && assetEntry(id)) ids.add(id); } } if (UI.teach && cues.some((c) => c.key === UI.teach.key)) line.subject = SPECS.frame.strings.teach[UI.teach.key]; }   // the first time a key has a cue its line stands in the middle slot (intents/frame.mjs teachTick)   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
   { const back = originWord({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (back && line.back) line.back = back; }   // after a carry ← goes back to where it started: the way back names that place
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
-  return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl, ...answerPart(line) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
+  return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl, ...(fl ? { flight: { pic: fl.id, room: UI.flight.room } } : {}), ...answerPart(line) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
 }
-let shownLight = null;   // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
+let homeCapsUp = false;   // Home's key caps are on the face (they are dropped when another screen's props go out)
+let shownLight = null;  // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
 const litOf = (reqs) => reqs.filter((r) => r.kind === "mibi" && r.light).map((r) => r.id);   // the graded residents the props name
 const owedOf = (reqs) => reqs.filter((r) => r.owed).map((r) => r.id);   // the scene's pictures that show an owed habit key (the request's `owed`): a golden refuses them
 // The pictures a light puts on the face, by their ids (their sizes from the specs that place them): the host drops them once props with the next light are taken.
@@ -329,7 +341,11 @@ export const roomsPending = () => roomsWanted().filter((r) => !roomLoaded(r));
 export const lightIds = (light, room = shownRoomNow()) => roomPictureIds(room, light);   // the shown room's painting, near view, pieces and (Roots) bed in a light: the host drops them once props with the next light (or room) are taken
 // The pictures of the frame and the Companion's face, the same on every screen.
 export function frameIds() {
-  const ids = new Set(); walk(SPECS.frame.regions, ids); for (const id of companionIds()) if (assetEntry(id)) ids.add(id);
+  // Not every picture the frame's spec names is drawn by the frame: marks.roomPanel (the 22 px set) is Home's own, loaded with Home from home.json regions.cap; marks.callMarks are drawn by nothing yet; no cue is Home's (carry.mjs ROOM_MARK: the three rooms a ring can carry to).
+  // They stay in frame.json for the art desk's set; loading them on every screen cost the Library's l3 states 11 pictures each (layer-check budget 200).
+  // marks.roomCue (the 16 px cue marks) are drawn only while a cue shows: screenProps adds the shown cues' own (cueMarkIds).
+  const { roomPanel, callMarks, roomCue, ...marks } = SPECS.frame.regions.marks ?? {};
+  const ids = new Set(); walk({ ...SPECS.frame.regions, marks }, ids); for (const id of companionIds()) if (assetEntry(id)) ids.add(id);
   for (const id of ["energy", "data", "essence", "cross"]) for (const px of [14, 15, 16]) if (assetEntry(`icon:${id}:${px}`)) ids.add(`icon:${id}:${px}`);
   return [...ids];
 }
@@ -341,7 +357,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "incubate", "moment", "read", "mend", "switch", "install", "pan"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "incubate", "moment", "read", "mend", "switch", "install", "pan", "flight", "hop"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
 // The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
 let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
 let timeNow = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };   // the Station time in seconds of the day: createHost({ time }) names it (main.mjs: the developer's Station time, else the clock)
@@ -371,13 +387,14 @@ export function createHost({ send, nowMs, light, time = null, afterSave = () => 
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
     keyUp: (k) => { if (downKeys.delete(k)) key(k, "up"); }, keyDown: (k) => { if (!holdOn() || k !== "confirm") return false; downKeys.add(k); key(k, "down"); return true; },   // a held ✓ reaches the face as a press and, later, a release (anim/hold.c); only while the frame carries a hold
+    flightPic: (sub) => flightRequest(sub)?.id ?? "",
     now: () => Date.now(), motion, say: msg, play, at, skip, showRoom: (i) => showRoom(h, i), save: () => { save(); afterSave(); }, holding, arriving, light: () => shownLight ?? lightNow(), vivBuild: () => vivariumModel(shownLight ?? lightNow()), enterSitting: (m, o) => enterSitting(h, m, o),
     // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
       while (timers.length && timers[0].t <= t) timers.shift().fn();
       if (UI.skip && !(t < skipUntil)) UI.skip = null;   // the skippable hold ran out: the line's ✓ Skip goes
-      incubatorTick(h);
+      incubatorTick(h); INTENTS.frame.teachTick(h);
       if (!holding() && h.pendingDock) { h.pendingDock = false; onDock(h); }   // a Dock key pressed in a hold is kept (two presses cancel) and acts when the hold ends, before a kept room key: the Dock is a world event (cargo.json keys.dock, frame.json idle.keys.dock)
       if (!holding() && h.pendingRoom && cuttingHatch(h)) { h.pendingRoom = null; landHatch(h); }   // a room key kept through the hatch's hold is a cutting key: it lands the meet and is used up (UI/UX "Hatch cutting key")
       if (!holding() && h.pendingRoom) { const k = h.pendingRoom; h.pendingRoom = null; dispatch(h, { screen: UI.screen, target: "room", verb: "room:" + k }); }
@@ -402,6 +419,7 @@ function habitatFocus(h, target) {
 // While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends, after a kept Dock key; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
   if (m.t === "done") { if (m.kind === "hatch" && cuttingHatch(h) && !h.holding()) landHatch(h); return; }   // informative only, but for the hatch with a moving set: a key the face acted on after the hold ended it (its cut), and that key lands the meet
+  if (UI.flight && (m.t === "intent" || m.t === "focus")) INTENTS.frame.landFlight(h);   // a press during the carry's flight lands it at once, and then acts on the room it opened
   if (m.t === "intent" && m.verb === "confirm:held") { if (h.held) h.held(); else heldKey(h); return; }   // the hold ring is full (anim/hold.c): the plate that holds acts on it (a pod to let go, the Return card; intents/index.mjs held)
   if (m.t === "intent" && m.verb === "skip") { h.skip(); return; }   // ✓ in a skippable hold (lvgl-switch.md §2.1): before every other rule, so it is never a cutting key; a late one, after the hold, does nothing
   if (m.screen === "incubator" && UI.screen !== "incubator") return;   // a key the cut already spent (the meet has landed): the Incubator's intent after the screen left is dropped

@@ -2,339 +2,339 @@
  "_note": "The Vivarium's whole: docked (the carried two asleep), away, an out mibi's tile focused, empty, a housed tile and a sleeper focused, eight residents, and the walk 8000 ms in: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "vivarium-wall-none": {
-   "hash": "8549ecbd",
+   "hash": "9ac823a1",
    "png": "vivarium-wall-none.png"
   },
   "vivarium-wall-one": {
-   "hash": "8d7a7255",
+   "hash": "962e063e",
    "png": "vivarium-wall-one.png"
   },
   "vivarium-wall-twelve": {
-   "hash": "381edfd1",
+   "hash": "4f048dca",
    "png": "vivarium-wall-twelve.png"
   },
   "vivarium-wall-forty": {
-   "hash": "1b964709",
+   "hash": "ca1c1fda",
    "png": "vivarium-wall-forty.png"
   },
   "vivarium-wall-eighty": {
-   "hash": "6aca896c",
+   "hash": "241fbe4b",
    "png": "vivarium-wall-eighty.png"
   },
   "vivarium-wall-one-room": {
-   "hash": "e3d33b3b",
+   "hash": "e3b6f538",
    "png": "vivarium-wall-one-room.png"
   },
   "vivarium-wall-ten-top": {
-   "hash": "43df31de",
+   "hash": "6d345ef1",
    "png": "vivarium-wall-ten-top.png"
   },
   "vivarium-wall-ten-bottom": {
-   "hash": "5177b9d4",
+   "hash": "2cd97244",
    "png": "vivarium-wall-ten-bottom.png"
   },
   "vivarium-wall-sort-kind": {
-   "hash": "f05493c0",
+   "hash": "2911647f",
    "png": "vivarium-wall-sort-kind.png"
   },
   "vivarium-wall-sort-age": {
-   "hash": "fe4bd496",
+   "hash": "7efa8825",
    "png": "vivarium-wall-sort-age.png"
   },
   "vivarium-wall-filter-room": {
-   "hash": "2c1a1514",
+   "hash": "c0859f4b",
    "png": "vivarium-wall-filter-room.png"
   },
   "vivarium-wall-filter-tucked": {
-   "hash": "3b288b4e",
+   "hash": "e24b1635",
    "png": "vivarium-wall-filter-tucked.png"
   },
   "vivarium-wall-filter-settling": {
-   "hash": "ac3fe855",
+   "hash": "a5169b25",
    "png": "vivarium-wall-filter-settling.png"
   },
   "vivarium-wall-filter-empty": {
-   "hash": "83eadf3a",
+   "hash": "e3f58eca",
    "png": "vivarium-wall-filter-empty.png"
   },
   "vivarium-wall-ring-rail": {
-   "hash": "222e6f04",
+   "hash": "cdb55df4",
    "png": "vivarium-wall-ring-rail.png"
   },
   "vivarium-wall-ring-toolbar": {
-   "hash": "9e1de622",
+   "hash": "2050a5d2",
    "png": "vivarium-wall-ring-toolbar.png"
   },
   "vivarium-wall-ring-wall": {
-   "hash": "ff23feab",
+   "hash": "edf2203c",
    "png": "vivarium-wall-ring-wall.png"
   },
   "vivarium-wall-ring-card": {
-   "hash": "a83d7950",
+   "hash": "6a572c43",
    "png": "vivarium-wall-ring-card.png"
   },
   "vivarium-wall-ring-band": {
-   "hash": "38749254",
+   "hash": "3e7c62a4",
    "png": "vivarium-wall-ring-band.png"
   },
   "vivarium-wall-move": {
-   "hash": "6a31e1f9",
+   "hash": "3f74bb09",
    "png": "vivarium-wall-move.png"
   },
   "vivarium-wall-move-full": {
-   "hash": "976b3731",
+   "hash": "31b592a1",
    "png": "vivarium-wall-move-full.png"
   },
   "vivarium-wall-move-settling": {
-   "hash": "931a1ecf",
+   "hash": "2da3cc1f",
    "png": "vivarium-wall-move-settling.png"
   },
   "vivarium-wall-pick-zero": {
-   "hash": "cc705616",
+   "hash": "b3dfe171",
    "png": "vivarium-wall-pick-zero.png"
   },
   "vivarium-wall-pick-three": {
-   "hash": "35d6c7d4",
+   "hash": "a756b59b",
    "png": "vivarium-wall-pick-three.png"
   },
   "vivarium-wall-pick-out": {
-   "hash": "5c9a00d7",
+   "hash": "e393a3f8",
    "png": "vivarium-wall-pick-out.png"
   },
   "vivarium-wall-pick-held": {
-   "hash": "aa370c70",
+   "hash": "e78c5c23",
    "png": "vivarium-wall-pick-held.png"
   },
   "vivarium-wall-pick-move": {
-   "hash": "5fc9acf4",
+   "hash": "19bd5d04",
    "png": "vivarium-wall-pick-move.png"
   },
   "vivarium-wall-swap": {
-   "hash": "a76ad417",
+   "hash": "2ec46727",
    "png": "vivarium-wall-swap.png"
   },
   "vivarium-wall-swap-held": {
-   "hash": "a19f85a6",
+   "hash": "eeea5cf2",
    "png": "vivarium-wall-swap-held.png"
   },
   "vivarium-wall-swap-several": {
-   "hash": "e156c419",
+   "hash": "43eeb969",
    "png": "vivarium-wall-swap-several.png"
   },
   "vivarium-wall-swap-chosen": {
-   "hash": "a5e39c36",
+   "hash": "da26ade6",
    "png": "vivarium-wall-swap-chosen.png"
   },
   "vivarium-wall-pair": {
-   "hash": "2efee685",
+   "hash": "0f0576c6",
    "png": "vivarium-wall-pair.png"
   },
   "vivarium-wall-pair-kin": {
-   "hash": "489a16b0",
+   "hash": "51d4f25f",
    "png": "vivarium-wall-pair-kin.png"
   },
   "vivarium-wall-pair-rest": {
-   "hash": "abbe26c4",
+   "hash": "b503006f",
    "png": "vivarium-wall-pair-rest.png"
   },
   "vivarium-wall-pair-young": {
-   "hash": "b8e65c3c",
+   "hash": "0c557e6b",
    "png": "vivarium-wall-pair-young.png"
   },
   "vivarium-wall-pair-plate": {
-   "hash": "f9b69859",
+   "hash": "fc0226b2",
    "png": "vivarium-wall-pair-plate.png"
   },
   "vivarium-wall-breed-family": {
-   "hash": "956c1b9e",
+   "hash": "fbfc1fdd",
    "png": "vivarium-wall-breed-family.png"
   },
   "vivarium-wall-breed-held": {
-   "hash": "e498d930",
+   "hash": "d1a0b1d3",
    "png": "vivarium-wall-breed-held.png"
   },
   "vivarium-wall-swap-keep": {
-   "hash": "ca9099bd",
+   "hash": "3bb1c895",
    "png": "vivarium-wall-swap-keep.png"
   },
   "vivarium-wall-swap-stays": {
-   "hash": "e255b433",
+   "hash": "70252f8b",
    "png": "vivarium-wall-swap-stays.png"
   },
   "vivarium-wall-pair-half": {
-   "hash": "75237a48",
+   "hash": "7c9f0603",
    "png": "vivarium-wall-pair-half.png"
   },
   "vivarium-wall-pair-64": {
-   "hash": "a0684b2d",
+   "hash": "30de9c6e",
    "png": "vivarium-wall-pair-64.png"
   },
   "vivarium-wall-dawn": {
-   "hash": "f6873f70",
+   "hash": "ec3e71d3",
    "png": "vivarium-wall-dawn.png"
   },
   "vivarium-wall-dusk": {
-   "hash": "d9d7e178",
+   "hash": "ba8a76d3",
    "png": "vivarium-wall-dusk.png"
   },
   "vivarium-wall-night": {
-   "hash": "1b33510d",
+   "hash": "76f34bc2",
    "png": "vivarium-wall-night.png"
   },
   "vivarium-wall-add-needs-find": {
-   "hash": "c58a49a1",
+   "hash": "501a7a5d",
    "png": "vivarium-wall-add-needs-find.png"
   },
   "vivarium-wall-add-found-short": {
-   "hash": "4b7c0a9d",
+   "hash": "76f90e65",
    "png": "vivarium-wall-add-found-short.png"
   },
   "vivarium-wall-add-found": {
-   "hash": "773adf78",
+   "hash": "6a876944",
    "png": "vivarium-wall-add-found.png"
   },
   "vivarium-wall-add-several": {
-   "hash": "6b62571d",
+   "hash": "f5564e39",
    "png": "vivarium-wall-add-several.png"
   },
   "vivarium-wall-panel-add-room": {
-   "hash": "fc4db797",
+   "hash": "44639ae3",
    "png": "vivarium-wall-panel-add-room.png"
   },
   "vivarium-wall-add-short": {
-   "hash": "0e7a5589",
+   "hash": "4fc5f981",
    "png": "vivarium-wall-add-short.png"
   },
   "vivarium-docked": {
-   "hash": "336cfaf5",
+   "hash": "faff22b2",
    "png": "vivarium-docked.png"
   },
   "vivarium-away": {
-   "hash": "989348fa",
+   "hash": "e62b4f75",
    "png": "vivarium-away.png"
   },
   "vivarium-empty": {
-   "hash": "69e0774d",
+   "hash": "d13cb629",
    "png": "vivarium-empty.png"
   },
   "vivarium-empty-reeds": {
-   "hash": "da26bd50",
+   "hash": "fb179d3c",
    "png": "vivarium-empty-reeds.png"
   },
   "vivarium-empty-boulders": {
-   "hash": "0f8601c4",
+   "hash": "0e5ff438",
    "png": "vivarium-empty-boulders.png"
   },
   "vivarium-empty-ferns": {
-   "hash": "ee7e25cc",
+   "hash": "d118b758",
    "png": "vivarium-empty-ferns.png"
   },
   "vivarium-empty-away": {
-   "hash": "018f1712",
+   "hash": "1a40167a",
    "png": "vivarium-empty-away.png"
   },
   "vivarium-one": {
-   "hash": "8f70db19",
+   "hash": "241e3b16",
    "png": "vivarium-one.png"
   },
   "vivarium-eight": {
-   "hash": "b3751afd",
+   "hash": "f72b700e",
    "png": "vivarium-eight.png"
   },
   "vivarium-twelve-v2": {
-   "hash": "e9bf48ee",
+   "hash": "7ac19d84",
    "png": "vivarium-twelve-v2.png"
   },
   "vivarium-forty": {
-   "hash": "d4457e52",
+   "hash": "26f33e85",
    "png": "vivarium-forty.png"
   },
   "vivarium-forty-reeds": {
-   "hash": "a7607244",
+   "hash": "74deac38",
    "png": "vivarium-forty-reeds.png"
   },
   "vivarium-forty-boulders": {
-   "hash": "248a2af4",
+   "hash": "22e4e271",
    "png": "vivarium-forty-boulders.png"
   },
   "vivarium-forty-ferns": {
-   "hash": "240e05a7",
+   "hash": "17e2f1b9",
    "png": "vivarium-forty-ferns.png"
   },
   "vivarium-focus-crossed": {
-   "hash": "c59305db",
+   "hash": "bb19c424",
    "png": "vivarium-focus-crossed.png"
   },
   "vivarium-docked-dawn": {
-   "hash": "0cb40ea3",
+   "hash": "9e4e9088",
    "png": "vivarium-docked-dawn.png"
   },
   "vivarium-docked-day": {
-   "hash": "336cfaf5",
+   "hash": "faff22b2",
    "png": "vivarium-docked-day.png"
   },
   "vivarium-docked-dusk": {
-   "hash": "d1ddc457",
+   "hash": "b41ee4ec",
    "png": "vivarium-docked-dusk.png"
   },
   "vivarium-docked-night": {
-   "hash": "d04b5581",
+   "hash": "415e3e5e",
    "png": "vivarium-docked-night.png"
   },
   "vivarium-room-reeds": {
-   "hash": "4e93bd1f",
+   "hash": "e55224ce",
    "png": "vivarium-room-reeds.png"
   },
   "vivarium-room-boulders": {
-   "hash": "6feadfd7",
+   "hash": "f39f09b8",
    "png": "vivarium-room-boulders.png"
   },
   "vivarium-room-ferns": {
-   "hash": "a5ea1711",
+   "hash": "706a1f3a",
    "png": "vivarium-room-ferns.png"
   },
   "vivarium-level-roots": {
-   "hash": "94d22070",
+   "hash": "4f73d043",
    "png": "vivarium-level-roots.png"
   },
   "vivarium-room-new": {
-   "hash": "6baced14",
+   "hash": "574427ac",
    "png": "vivarium-room-new.png"
   },
   "vivarium-room-empty": {
-   "hash": "986b449e",
+   "hash": "118be126",
    "png": "vivarium-room-empty.png"
   },
   "vivarium-rooms-four": {
-   "hash": "85e865c0",
+   "hash": "663670b8",
    "png": "vivarium-rooms-four.png"
   },
   "vivarium-room-short": {
-   "hash": "6de73a5d",
+   "hash": "c17e3a31",
    "png": "vivarium-room-short.png"
   },
   "panel-add-room": {
-   "hash": "d0eae26e",
+   "hash": "156e6c26",
    "png": "panel-add-room.png"
   },
   "vivarium-coming-out": {
-   "hash": "4b7342c2",
+   "hash": "226abcbc",
    "png": "vivarium-coming-out.png"
   },
   "vivarium-full-bud": {
-   "hash": "67b0fb5d",
+   "hash": "8eeb8a8d",
    "png": "vivarium-full-bud.png"
   },
   "vivarium-walk-8000ms": {
-   "hash": "f88e5677",
+   "hash": "e45948d1",
    "png": "vivarium-walk-8000ms.png"
   },
   "vivarium-moving-8000ms": {
-   "hash": "81a5edf8",
+   "hash": "6b7c90c9",
    "png": "vivarium-moving-8000ms.png"
   },
   "vivarium-ramp-ferns-4000ms": {
-   "hash": "cf1405b1",
+   "hash": "3eef6728",
    "png": "vivarium-ramp-ferns-4000ms.png"
   }
  }

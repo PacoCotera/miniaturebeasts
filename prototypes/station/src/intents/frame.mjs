@@ -9,15 +9,19 @@ import * as home from "./home.mjs";
 import { researchKey, openInventory, openRoom, growFrom, toRoom } from "./pods.mjs";
 import { openSpecies, openFamily } from "./library.mjs";
 import { frameOf } from "../genome.mjs";
-import { carryPlan, snapshot, restore } from "../carry.mjs";
+import { carryPlan, snapshot, restore, subjectOf, cuesOf, ROOM_MARK } from "../carry.mjs";
+
+// What the controls have taught (saved: st.taught.carry.{research,habitat,library}, st.taught.call, st.taught.carries, the carries made so far); additive, never a schema bump.
+export const taughtOf = (st) => { const t = st.taught ?? (st.taught = {}); if (!t.carry) t.carry = {}; if (!Number.isInteger(t.carries)) t.carries = 0; return t; };
+const CUES = (h) => h.specs?.frame?.regions?.cues ?? {};
 
 const SCREEN_OF = { home: "home", research: "pods", library: "library", habitat: "vivarium" };
 // A room key: the unpaid choices of Create, Cross and the sitting are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: Level 1 with the ring on the species it was last on (ui.lib.l1); Vivarium: the whole, the ring per vivarium.json focus.entry.vivariumKey).
 export function roomKey(h, key) {
   if (!roomTop(key)) return false;
-  const ui = h.ui, was = ui.carry; ui.carry = null;
+  const ui = h.ui, was = ui.carry; ui.carry = null; ui.teach = null;
   const plan = key === "home" || was?.key === key ? null : carryPlan(h, key);   // Home never carries; a second tap of the key just carried is the room's top, as today
-  if (plan) return carry(h, key, plan);
+  if (plan) { const f = startFlight(h, key, plan); return f ? true : carry(h, key, plan); }
   ui.create = null; ui.cross = null; ui.sit = null; ui.hab.namer = null; ui.panel = null;   // a room key closes the namer and a panel, writing nothing
   leaveCargo(h);    // a room key on Cargo finishes an opening as a cut, or closes the end, and opens its section
   endArrival(h);    // a room key on the arrival is Later, and then it acts
@@ -44,12 +48,35 @@ function carry(h, key, plan) {
   ui.carry = { key, to: ui.screen, from };
   return true;
 }
+// The carry's flight (frame.json cues.flight): the ringed thing's picture goes from the ring to the key's cue (200 ms; 400 ms for the first three carries of a save), then the room cuts in (landFlight). The carry's state change waits
+// for it; a press during it lands the carry at once (host.mjs onFaceMessage). A host with no `flightPic` (the Node tests), a subject with no picture, or reduced motion carries at once.
+function startFlight(h, key, plan) {
+  if (typeof h.flightPic !== "function" || !(h.motion ? h.motion() : false)) return false;
+  const sub = subjectOf(h), pic = sub && h.flightPic(sub); if (!pic) return false;
+  const T = taughtOf(h.st), C = CUES(h).flight ?? {}, ms = T.carries < (C.firstCarries ?? 3) ? (C.firstMs ?? 400) : (C.ms ?? 200), room = ROOM_MARK[key];
+  h.ui.flight = { key, plan, sub, room, ms, screen: h.ui.screen };
+  h.play({ kind: "flight", target: room, ms }); h.at(ms, () => landFlight(h));
+  return true;
+}
+export function landFlight(h) {
+  const f = h.ui.flight; if (!f) return false;
+  h.ui.flight = null; if (f.screen !== h.ui.screen) return false;   // the screen changed under it (an arrival): nothing to carry
+  const T = taughtOf(h.st), C = CUES(h).flight ?? {}; T.carries++; if (T.carries <= (C.firstCarries ?? 3)) h.save();
+  return carry(h, f.key, f.plan);
+}
+// The first time a colour key has a live cue (once a frame, host.frame): its cue hops and the middle slot says its line (ui.teach, for frame.json cues.teachMs); saved, so never again.
+export function teachTick(h) {
+  const ui = h.ui, st = h.st; if (!st || ui.idle || ui.flight || ui.noTeach) return;
+  const C = CUES(h); if (ui.teach && h.now() - ui.teach.at > (C.teachMs ?? 5000)) ui.teach = null;
+  const T = taughtOf(st), c = cuesOf(h).find((q) => !q.second && !T.carry[q.key]); if (!c) return;
+  T.carry[c.key] = true; ui.teach = { key: c.key, at: h.now() }; h.play({ kind: "hop", target: c.room, ms: C.hop?.ms ?? 300 }); h.save();
+}
 // ← after a carry: back where it started, the ring and the screen's choices as they were; then ← is what it is today (frame.json navigation: a colour key's carry is a peek).
 export function uncarry(h) { const c = h.ui.carry; h.ui.carry = null; if (c) restore(h, c.from); return true; }
 // The Call key (the controls scheme): things answer. A view state only (ui.answer): never saved, nothing spent, no screen change. The pad still moves the ring and the answer follows it; ← or Call puts it away and does nothing
 // else; ✓ or a colour key puts it away and then acts as usual (answerOff, from dispatch); it fades ANSWER_MS after the last press (idleTick) and with any screen change. `t` is the clock the press came on.
 export const ANSWER_MS = 8000;
-export function call(h, t = h.now()) { const ui = h.ui; if (ui.idle) return false; ui.answer = !ui.answer; ui.answerAt = t; return true; }
+export function call(h, t = h.now()) { const ui = h.ui; if (ui.idle) return false; ui.answer = !ui.answer; ui.answerAt = t; if (h.st) taughtOf(h.st).call = true; return true; }   // the first press ends Home's first-day line (taught.call: kept in memory and written with the next save, Call itself writes nothing)
 // The Companion's Dock key: it docks or lifts. Docked, the arrival plays (intents/arrival.mjs; specs/station-dock-arrival-spec.md): over the screen the player is on, over Home when the screen slept, or after their next screen change when they are
 // mid-decision (frame.json navigation.dock). A lift never moves the Station's screen; a lift during the arrival ends it, back to the screen it came over.
 export function dock(h, fromIdle = false, keysElsewhere = false) {

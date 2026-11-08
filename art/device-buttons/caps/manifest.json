@@ -1,73 +1,5 @@
 [
  {
-  "id": "cap-station-home-10mm",
-  "file": "caps/cap-station-home-10mm.png",
-  "slot_mm": [
-   10,
-   10
-  ],
-  "px_per_mm": 100,
-  "cap_colour": "#e9b22e",
-  "engraving": "printed glyph, #2f2b28",
-  "drawing": "original: home",
-  "sha256": "b64b93a11058f87d6d420ea52fb3581b136167600451f8b3724d90bdab3e7699",
-  "status": "signed",
-  "finish": "gloss",
-  "shape": "square, rounded corners",
-  "signed_in": "art director, the original caps"
- },
- {
-  "id": "cap-station-vivarium-10mm",
-  "file": "caps/cap-station-vivarium-10mm.png",
-  "slot_mm": [
-   10,
-   10
-  ],
-  "px_per_mm": 100,
-  "cap_colour": "#5ea64c",
-  "engraving": "printed glyph, #2f2b28",
-  "drawing": "original: vivarium",
-  "sha256": "73b1a9352f88c9f351a4f738f7d6a84dd4901bd0604d18c9f7c22bec8534e5f0",
-  "status": "signed",
-  "finish": "gloss",
-  "shape": "square, rounded corners",
-  "signed_in": "art director, the original caps"
- },
- {
-  "id": "cap-station-research-10mm",
-  "file": "caps/cap-station-research-10mm.png",
-  "slot_mm": [
-   10,
-   10
-  ],
-  "px_per_mm": 100,
-  "cap_colour": "#2f7fd8",
-  "engraving": "printed glyph, #ffffff",
-  "drawing": "original: research",
-  "sha256": "0cc707074a83e0ec765fcf0fc81d3cc47e364f67389b7ba0e54ce8768a5d3c28",
-  "status": "signed",
-  "finish": "gloss",
-  "shape": "square, rounded corners",
-  "signed_in": "art director, the original caps"
- },
- {
-  "id": "cap-station-library-10mm",
-  "file": "caps/cap-station-library-10mm.png",
-  "slot_mm": [
-   10,
-   10
-  ],
-  "px_per_mm": 100,
-  "cap_colour": "#7a3f8f",
-  "engraving": "printed glyph, #f4f1ec",
-  "drawing": "original: library",
-  "sha256": "df1fd6312c268ca0c30d85e310a9b8068d7f00bf77ce1c0f19ee0f5b6da991ea",
-  "status": "signed",
-  "finish": "gloss",
-  "shape": "square, rounded corners",
-  "signed_in": "art director, the original caps"
- },
- {
   "id": "cap-back-10mm",
   "file": "caps/cap-back-10mm.png",
   "slot_mm": [
@@ -204,5 +136,101 @@
   "drawing": "feed2",
   "sha256": "a39d862f457debb0dad5d67517a53a78f23cfae395d13250811392bfb94a1f1f",
   "status": "signed"
+ },
+ {
+  "id": "cap-station-home-10mm",
+  "file": "caps/cap-station-home-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#e9b22e",
+  "engraving": "printed glyph, #2f2b28",
+  "drawing": "original: home (signed master, unchanged)",
+  "sha256": "b64b93a11058f87d6d420ea52fb3581b136167600451f8b3724d90bdab3e7699",
+  "status": "signed",
+  "finish": "gloss",
+  "shape": "square, rounded corners",
+  "proposed_in": "art desk, station key caps (proposed 2026-11-07)",
+  "tactile": {
+   "file": "caps/cap-station-home-dot-10mm.png",
+   "sha256": "27c3a434ffcb1f3cf27a6bff4f0271e2d97f53b346f8c811f80aef2e0136dab1",
+   "what": "a raised dot, 1.5 mm across, centred 0.4 mm under the house (slot centre x 5.0 mm, y 8.75 mm); moulded in the cap colour, no ink",
+   "diameter_mm": 1.5,
+   "centre_mm": [
+    5,
+    8.75
+   ]
+  }
+ },
+ {
+  "id": "cap-station-pods-10mm",
+  "file": "caps/cap-station-pods-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#2f7fd8",
+  "engraving": "printed glyph, #ffffff",
+  "drawing": "pods",
+  "sha256": "956979a4c8a37f1f7cdefdeb40bb9e5edb1d563757f338645d94a991e96167bd",
+  "status": "signed",
+  "finish": "gloss",
+  "shape": "square, rounded corners",
+  "proposed_in": "art desk, station key caps (proposed 2026-11-07)"
+ },
+ {
+  "id": "cap-station-vivarium-10mm",
+  "file": "caps/cap-station-vivarium-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#5ea64c",
+  "engraving": "printed glyph, #2f2b28",
+  "drawing": "vivarium",
+  "sha256": "b6ebd6cf735babaffadd86ce5953690ae18c3ce58f19a22a042094a3e06af6b3",
+  "status": "signed",
+  "finish": "gloss",
+  "shape": "square, rounded corners",
+  "proposed_in": "art desk, station key caps (proposed 2026-11-07)"
+ },
+ {
+  "id": "cap-station-library-10mm",
+  "file": "caps/cap-station-library-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#7a3f8f",
+  "engraving": "printed glyph, #f4f1ec",
+  "drawing": "library-print",
+  "sha256": "9e651a4a7628c92794e62a642d14b216020d7ab140f22f9d4bb9904a1eb9515b",
+  "status": "signed",
+  "finish": "gloss",
+  "shape": "square, rounded corners",
+  "proposed_in": "art desk, station key caps (proposed 2026-11-07)"
+ },
+ {
+  "id": "cap-station-call-10mm",
+  "file": "caps/cap-station-call-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#2a9f90",
+  "engraving": "cut, tone on tone",
+  "drawing": "call (the Companion's signed master, unchanged)",
+  "sha256": "7ac0d0178e8ab9655ce0214bd46de7b696484abbd081b1947ec8c46bc8c502e7",
+  "status": "signed",
+  "finish": "gloss",
+  "shape": "round",
+  "proposed_in": "art desk, station key caps (proposed 2026-11-07)",
+  "cap_mm": 14
  }
 ]

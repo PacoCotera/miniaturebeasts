@@ -14,6 +14,7 @@ import { mountFooter, caddyAnswers } from "../../play/src/footer.mjs";
 import { openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadRoomsInBackground } from "./masters.mjs";
+import { bootFace } from "./face-lvgl.mjs";
 import { injectPortraitSource } from "./portrait-source.mjs";
 import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
@@ -21,7 +22,7 @@ import * as frameIntents from "./intents/frame.mjs";
 import { onFaceMessage, frameIds as frameMarkIds, picture } from "./host.mjs";
 import { listOf } from "./views/pods-props.mjs";
 import { warmLibraryNext, libraryWaiting } from "./pictures.mjs";
-import { manifest as manifestOf, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
+import { probe, MasterPending, manifest as manifestOf, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
 import { CORE, hooks, loadFrames, bootAssets, startFace, pump, tick, act, release, dockKey, LIB_ENV } from "./core.mjs";   // the loop, shared with the headless harness (prototypes/playtest)
 
 const $ = (id) => document.getElementById(id);
@@ -36,7 +37,7 @@ Object.assign(hooks, { wake: () => caddy.wake(), afterSave: () => { if (G.st.out
 let lastT = null;
 function frame(t) {
   clock.now = t; const dt = lastT == null ? 0 : t - lastT; lastT = t;
-  if (G.ready && CORE.face) { tick(t, dt); updateCaddy(); }
+  if (G.ready && CORE.face) { tick(t, dt); updateCaddy(); if (CORE.lastProps != null && typeof bootDone === "function") bootDone(); }   // the load bar goes when the first screen's props are out
   requestAnimationFrame(frame);
 }
 
@@ -135,11 +136,18 @@ if (!EMBED) fit();
 requestAnimationFrame(frame);
 const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the face is up the screen is blank; the words go to the page
 bootText("loading the species frames…");
-const TEST = new URLSearchParams(location.search).has("test");
+const TEST = new URLSearchParams(location.search).has("test"); UI.noTeach = TEST;   // the controls' first-time teaching (a hop and a line, intents/frame.mjs teachTick) is off in the test page: the goldens and journeys are of the screens, not of a first day
+// Test mode: the masters each screen asks for, by the screen on show ("boot" before the first frame, "idle" for the dither): the station journey writes and checks masters/groups.json from this (window.__st.used()).
+const USED = {};
+if (TEST) probe.on = (id) => { const e = assetEntry(id); if (!e?.file || e.file.startsWith("rooms/")) return; const k = !G.ready ? "boot" : UI.idle ? "idle" : UI.screen; (USED[k] ??= new Set()).add(id); };
 // The name list births draw from is the current one; ?names=<list key> pins another (the tools that show the archived English names ask for en-short-1).
 { const n = new URLSearchParams(location.search).get("names"); if (n && S.NAME_LISTS[n]) S.useNameList(n); }
-const faceBoot = async () => { const f = await startFace({ test: TEST }); vctx = f.display(vis); };
-const ready = Promise.all([loadFrames(), bootAssets({ test: TEST })]).then(async ([info]) => {
+const faceUp = bootFace(undefined, { test: TEST });   // the WebAssembly face boots beside the downloads (it needs none of them); startFace then sends it the palette, the specs and the pins
+faceUp.catch(() => {});   // a failed boot is reported through `ready` below, not as an unhandled rejection
+const faceBoot = async () => { const f = await startFace({ test: TEST, face: await faceUp }); vctx = f.display(vis); };
+const bootBar = $("bootBar");   // the load bar: indeterminate until the boot pictures' bytes are known, then their share placed; hidden at ready (or on a failed boot, where the words say why)
+const bootDone = () => { if (bootBar) bootBar.hidden = true; };
+const ready = Promise.all([loadFrames(), bootAssets({ test: TEST, onProgress: (done, total) => { if (bootBar && total > 0) { bootBar.max = total; bootBar.value = done; } } }), faceUp]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
   { const j = new URLSearchParams(location.search).get("jump"); if (j === "arrival" || j === "fork") saveSettings({ jump: j }); }   // the jump test (decision panel spec Part 3): the play page's ?jump= is saved with the settings
@@ -151,7 +159,7 @@ const ready = Promise.all([loadFrames(), bootAssets({ test: TEST })]).then(async
   if (new URLSearchParams(location.search).has("dev")) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
   return info;
-}).catch((e) => { bootText("the Station did not start: " + e.message); console.error(e); throw e; });
+}).catch((e) => { bootDone(); bootText("the Station did not start: " + e.message); console.error(e); throw e; });
 
 // The motion proof's scene drives the page as a player would (keys, intents, the host's goto) from the frame loop's clock.
 const sceneHost = () => ({ act, goto: (s) => CORE.host.goto(s), settings: G.settings, intent: (m) => onFaceMessage(CORE.host, { t: "intent", seq: 0, ...m }), now: () => clock.now });
@@ -186,7 +194,7 @@ const podsAt = (o = {}) => {
   UI.answer = !!o.answer; UI.answerAt = performance.now();   // Call's answer, for the scene that shows it
   u.from = o.from ?? "home"; u.roomFrom = o.roomFrom ?? "inventory"; u.focus.set(o.focus ?? null); if (UI.screen !== "pods") CORE.host.goto("pods"); save();
 };
-window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(undefined, 12, advance); S.useNameList(l); G.st.mibis.forEach((m, i) => { m.name = l[l.length - 1 - (i % l.length)]; }); G.st.namesUsed = [...new Set([...(G.st.namesUsed ?? []), ...G.st.mibis.map((m) => S.nameKey(m.name))])]; return l; }, renderErrors: CORE.renderErrors, portraitSource: (digest, rgba) => { const r = injectPortraitSource(digest, rgba); if (r.error) CORE.renderErrors.push("portrait " + digest + ": " + r.error); return r; }, faceErrors: CORE.faceErrors, said: () => CORE.said.splice(0), pendingRoom: () => CORE.host.pendingRoom ?? null, get props() { return CORE.lastProps ? JSON.parse(CORE.lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
+window.__st = { ready, used: () => Object.fromEntries(Object.entries(USED).map(([k, v]) => [k, [...v].sort()])), useLongNames: (advance) => { const l = S.longestNames(undefined, 12, advance); S.useNameList(l); G.st.mibis.forEach((m, i) => { m.name = l[l.length - 1 - (i % l.length)]; }); G.st.namesUsed = [...new Set([...(G.st.namesUsed ?? []), ...G.st.mibis.map((m) => S.nameKey(m.name))])]; return l; }, renderErrors: CORE.renderErrors, portraitSource: (digest, rgba) => { const r = injectPortraitSource(digest, rgba); if (r.error) CORE.renderErrors.push("portrait " + digest + ": " + r.error); return r; }, faceErrors: CORE.faceErrors, said: () => CORE.said.splice(0), pendingRoom: () => CORE.host.pendingRoom ?? null, get props() { return CORE.lastProps ? JSON.parse(CORE.lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   say: (t) => msg(t), act: (k) => act(k), release: (k) => release(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(CORE.host, fromIdle), openBay: () => { const r = S.openBay(G.st, G.sv, G.settings, Date.now()); save(); return r; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => CORE.host.goto(s),
   get face() { return CORE.face ? { refused: () => CORE.face.refused(), objects: () => CORE.face.objects(), version: CORE.face.version, size: CORE.face.size, loadMs: CORE.face.loadMs, hash: CORE.face.hash(), stats: CORE.face.stats(), pixel: CORE.face.pixel, invOverflows: () => CORE.face.invOverflows(), invCap: () => CORE.face.invCap(), pass: CORE.face.pass, hide: CORE.face.hide, offPalette: CORE.face.offPalette, forceFull: CORE.face.forceFull, errors: CORE.faceErrors.slice(), log: () => CORE.lastLog,
     frameTable: () => { const P = CORE.lastProps ? JSON.parse(CORE.lastProps) : null; if (!P) return null; CORE.face.props({ ...P, regions: undefined, motion: motion() }); CORE.face.frame(clock.now); pump(); const n = CORE.lastLog?.table ?? null; CORE.face.props({ ...P, motion: motion() }); CORE.face.frame(clock.now); pump(); return n; } } : null; },   // the layer check: the node table of the frame alone (the same props with no regions), the scene's own then put back,
@@ -195,7 +203,7 @@ window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(und
   snapshot: ({ capture = false } = {}) => { const f = CORE.face, out = { hash: f.hash(), errors: CORE.faceErrors.slice(), refused: f.refused(), owed: CORE.lastOwed.slice(), standIns: CORE.lastSent.filter((id) => { const e = assetEntry(id); return !!e?.file && NOT_IN_GOLDENS.includes(e.status); }), builtStandIns: CORE.lastSent.filter((id) => { const e = assetEntry(id); return !!e && !e.file && BUILT_NOT_IN_GOLDENS.includes(e.status); }) }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
   // The goldens wait on this (tools/goldens.mjs): nothing more is coming to the frame. The top bar's own events (a counter's tick, the turn's flash) have said `done`, every picture mark the frame names is on the face,
   // and two face frames have been drawn since the props last went out. Deterministic: a state of events, pictures and frame counts, never a time.
-  settled: () => { const f = CORE.face, marks = frameMarkIds().filter((id) => f.handleOf(id, picture) < 0), open = [...CORE.open.keys()], frames = f.frames() - CORE.propsFrame; return { ok: !marks.length && !open.length && frames >= 2 && CORE.lastProps != null, marks, open, frames }; },
+  settled: () => { const f = CORE.face, marks = frameMarkIds().filter((id) => { try { return f.handleOf(id, picture) < 0; } catch (e) { if (e instanceof MasterPending) return true; throw e; } }) /* a mark whose master has not arrived is not on the face yet */, open = [...CORE.open.keys()], frames = f.frames() - CORE.propsFrame; return { ok: !marks.length && !open.length && frames >= 2 && CORE.lastProps != null, marks, open, frames }; },
   libraryWarm: () => { let n = 0; while (warmLibraryNext(LIB_ENV)) n++; return n; }, libraryWaiting,   // the Library's pictures waiting to be made, made now (the goldens take a scene once they are)
   get msg() { return FX.msg; }, capture: () => vis.toDataURL("image/png"), holding: () => CORE.host.holding(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, frameOf, frameIds, podById, genomesText, podGenome, genomeSha, nameCode,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); const pb = stampArt(fr, p.genome, p.read, side); return { width: pb.w, height: pb.h, data: pb.rgba() }; },

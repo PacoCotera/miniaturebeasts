@@ -23,7 +23,7 @@ const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.h
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // No digits where a picture or a word does: a count in a sentence is said in words; an amount beside a material icon is a price or a shortfall and stays in figures.
 export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n) => spell(+n, "many"));
-const podPic = (req, st, p, size, state = p.idd ? "identified" : "sealed") => { const sp = shellSpecies(st, p); return req({ kind: "pod", id: `pod:${sp ?? "-"}:${state === "identified" ? "i" : "s"}:${size.join("x")}`, species: sp, state, size }); };
+export const podPic = (req, st, p, size, state = p.idd ? "identified" : "sealed") => { const sp = shellSpecies(st, p); return req({ kind: "pod", id: `pod:${sp ?? "-"}:${state === "identified" ? "i" : "s"}:${size.join("x")}`, species: sp, state, size }); };
 
 // ---- what a pod is worth (the pods design): the tags in their order, at most two -------------------------------------------------------------------------------------------------
 const living = (st) => st.mibis.filter((m) => !m.released);

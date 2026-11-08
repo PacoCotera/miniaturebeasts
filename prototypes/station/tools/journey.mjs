@@ -15,6 +15,7 @@ import { sameGenome } from "../../genome-stamp/src/codec.mjs";
 import { frameFor } from "../../genome-stamp/src/frames.mjs";
 import { createApp, loadFrames as loadCaddyFrames } from "../../caddy/app.mjs";
 import { decodePNG } from "../../ui/png.mjs";
+import { readGroups, mergeGroups, writeGroups, missingFrom, groupBytes } from "../../ui/tools/groups.mjs";
 import { fixtureStorage, fixtureRealm } from "./fixture-save.mjs";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -101,8 +102,8 @@ await page.evaluate(() => window.__st.ready);
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
 const st = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.ST)));
 const sv = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.SV)));
-const press = async (k, ms = 120) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(ms); };
-const props = () => page.evaluate(() => window.__st.props);
+const press = async (k, ms = 120) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(ms); if (await page.evaluate(() => !!window.__st.UI.flight)) { await page.waitForFunction(() => !window.__st.UI.flight, null, { timeout: 2000 }); await page.waitForTimeout(200); } };   // (200 ms more: the landed room's props go to the face on the next frames)   // a colour key that carries flies first (400 ms for the first three carries, intents/frame.mjs startFlight): the press returns once the room is in
+const props =() => page.evaluate(() => window.__st.props);
 const line = async () => { const p = await props(); if (p.screen === "home" && p.regions?.line) { const L = p.regions.line; return L.needs ? { ok: L.needs[0], need: L.needs[1] ?? "", subject: "", back: null } : L.verb ? { ok: L.verb, subject: L.subject ?? "", need: "", back: null } : L.note ? { ok: null, subject: L.note, need: "", back: null } : L.goal ? { ok: null, subject: "", need: "", goal: L.goal, back: null } : { ok: null, subject: "", need: "", back: null }; } return p.frame?.line ?? {}; };   // the bottom line the host sent the face: what the screen says (Home's is its own, in the top bar: the needs, a verb and its subject, a note or the goal)
 const intent = (m, ms = 120) => page.evaluate((m) => window.__st.intent(m), m).then(() => page.waitForTimeout(ms));
 const expect = (cond, what) => { if (!cond) fail(what); };
@@ -923,6 +924,11 @@ if (checks.textApiCalls !== 0) { errors.push("the page called the canvas text AP
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
 { const r = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); expect(r.render.length === 0 && r.face.length === 0, "no render threw and the face sent no error: " + JSON.stringify(r)); }
 await assertFace("the fresh world");
+// The masters each screen used (the page's probe, test mode): `STATION_WRITE_GROUPS=1` merges them into ui/assets/masters/groups.json; otherwise every id a screen used must be in that screen's committed group,
+// or the player would wait for it (the page loads a screen's group before it draws the screen, and fetches a miss on demand). A screen the journey never showed is not checked.
+{ const used = await page.evaluate(() => window.__st.used()), mroot = path.join(root, "ui/assets/masters"), index = JSON.parse(readFileSync(path.join(mroot, "index.json"), "utf8")), groups = readGroups(mroot);
+  if (process.env.STATION_WRITE_GROUPS) { const g = mergeGroups(groups, used, index); writeGroups(mroot, g); console.log("wrote groups.json: " + Object.entries(g.screens).map(([k, v]) => `${k} ${v.length} (${(groupBytes(v, index) / 1e6).toFixed(1)} MB)`).join(" · ")); }
+  else { const miss = missingFrom(groups, used, index); for (const m of miss) fail("a master a screen used is not in groups.json: " + m); console.log(`masters used per screen: ${Object.entries(used).map(([k, v]) => k + " " + v.length).join(" · ")}; ${miss.length} not in groups.json`); } }
 const checksFile = process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
 writeFileSync(checksFile, JSON.stringify(checks));
 console.log("recorded " + checks.shots.length + " screenshot points for the layer checks in " + checksFile);

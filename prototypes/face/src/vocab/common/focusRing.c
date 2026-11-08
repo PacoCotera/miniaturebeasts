@@ -38,8 +38,12 @@ static int bands_ops(char *ops, int cap, const char *shape, int W, int H, int R,
 }
 static void ground_of(const char *spec, const char *target, char *g, int cap) { (void)spec; (void)target; snprintf(g, (size_t)cap, "default"); }   /* one form on every ground: the paper ground is retired (specs/station-library-spec.md) */
 
+/* the box of the ring drawn last (the carry's flight starts from it: the thing the ring is on) */
+static int g_last[4];
+void word_lastRing(int out[4]) { for (int i = 0; i < 4; i++) out[i] = g_last[i]; }
 /* a rect ring round `r` (the object's drawn rect), the object's corner radius `rad`: a nine-slice of S = 2R + 4 with R = rad + reach */
 static void ring_rect(const char *id, const int r[4], int rad, int chip, const bands_t *b) {
+  g_last[0] = r[0]; g_last[1] = r[1]; g_last[2] = r[2]; g_last[3] = r[3];
   int R = rad + b->reach, S = 2 * R + 4, x = r[0] - chip - b->reach, y = r[1] - b->reach, w = r[2] + 2 * chip + 2 * b->reach, h = r[3] + 2 * b->reach;
   if (w < 2 * R || h < 2 * R) { v_error("word focusRing: a ring box under 2R on an axis cannot be drawn"); return; }
   int ins[3] = { 0, b->w[0], b->w[0] + b->w[1] }; char ops[400]; bands_ops(ops, sizeof ops, "round", S, S, R, b, ins, b->w);
@@ -49,6 +53,7 @@ static void ring_rect(const char *id, const int r[4], int rad, int chip, const b
 }
 /* an ellipse ring in the box (x, y, W, H) */
 static void ring_ellipse(const char *id, int x, int y, int W, int H, const bands_t *b, const int insets[3], const int widths[3]) {
+  g_last[0] = x; g_last[1] = y; g_last[2] = W; g_last[3] = H;
   if (W < 8 || H < 8) { v_error("word focusRing: an ellipse ring under 8 px on an axis cannot be drawn"); return; }
   char ops[400]; bands_ops(ops, sizeof ops, "ellipse", W, H, 0, b, insets, widths); v_composed(id, x, y, W, H, ops);
 }

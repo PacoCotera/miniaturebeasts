@@ -43,6 +43,7 @@
    "needs": 2,
    "note": "the line takes over the bottom line's job, centred in its zone and never wrapping; only a subject may end in an ellipsis, and only at the zone's edge"
   },
+  "cap": {"size": 22, "gap": 8, "dy": -1, "marks": {"home": "frame-room-home-22", "research": "frame-room-pods-22", "library": "frame-room-library-22", "vivarium": "frame-room-vivarium-22"}, "note": "the controls scheme: Home's panels wear their keys. The 22 px drawings of the signed key caps (art desk 2026-11-07, mibi-art 4be09dee5; the same files and entries as build/station-key-caps; research is the Pods key), loaded with Home only, after the title of the Vivarium (and its readout), the Library and the Pods station, `gap` after it and `dy` from the title's line top; the house (home) before Station in the bar, centred in its 40 px, the title after it"},
   "bezel": {
    "radius": 10,
    "header": 30,
