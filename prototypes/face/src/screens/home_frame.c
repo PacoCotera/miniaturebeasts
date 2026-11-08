@@ -5,6 +5,7 @@
 #include "screens.h"
 #include "../vocab/vocab.h"
 #include "../vocab/words.h"
+#include "../vocab/keytoken.h"
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
@@ -83,6 +84,18 @@ static void line_words(void) {
   }
   v_region("line", LAYER_TYPE);
   if (note[0]) { v_run("line.note", note, centre, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_CENTRE); return; }
+  char kpre[V_STR], kkey[24], kpost[V_STR];
+  if (goal[0] && v_keytok(goal, kpre, sizeof kpre, kkey, sizeof kkey, kpost, sizeof kpost)) {   /* a goal that names a key by its cap (the first day's Call line): words, the cap 1:1, words, centred; it must fit the zone */
+    char kp[96], kq[64]; snprintf(kq, sizeof kq, "regions.marks.roomCue.%s", kkey); spec_str("frame", kq, kp, sizeof kp);
+    int wp = kpre[0] ? v_run_width(kpre, px) : 0, wq = kpost[0] ? v_run_width(kpost, px) : 0, W = wp + (kpre[0] ? capGap : 0) + cap + (kpost[0] ? capGap : 0) + wq, x0 = centre - (W + 1) / 2;
+    if (W > z[2]) v_error("word: Home's goal line with a key cap does not fit its zone");
+    v_inline("line.goal");
+    if (kpre[0]) { v_region("line", LAYER_TYPE); v_run("line.goal.pre", kpre, x0, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_LEFT); x0 += wp + capGap; }
+    v_region("line", LAYER_ART); if (kp[0]) v_sprite("line.goal.cap", kp, x0, z[1] + 4, cap, cap); x0 += cap + capGap;
+    if (kpost[0]) { v_region("line", LAYER_TYPE); v_run("line.goal.post", kpost, x0, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_LEFT); }
+    v_inline_end();
+    return;
+  }
   if (goal[0]) {
     char icons[24] = "", plain[V_STR] = ""; snprintf(icons, sizeof icons, "%s", v_pstr("regions.line.goal.icons")); snprintf(plain, sizeof plain, "%s", v_pstr("regions.line.goal.plain"));
     int ni = 0; for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;   /* each icon is one three-byte sequence beginning 0xe2 */

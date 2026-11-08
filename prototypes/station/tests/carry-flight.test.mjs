@@ -69,7 +69,7 @@ test("the first time a key has a live cue it hops and its line stands once; neve
 });
 test("Call's first press is remembered (taught.call) and writes no save; the first-day line is Home's until then", () => {
   const h = inPods(); assert.ok(!taughtOf(h.st).call); const saved = h.saved; INTENTS.frame.call(h, T0); assert.equal(taughtOf(h.st).call, true); assert.equal(h.saved, saved, "Call writes nothing");
-  assert.ok(J("frame").regions.cues.callUntilTurn > 0 && J("frame").strings.teach.call.startsWith("Press Call"));
+  assert.ok(J("frame").regions.cues.callUntilTurn > 0 && J("frame").strings.teach.call.includes("{key:call}") && !/Call/.test(J("frame").strings.teach.call));
 });
 test("item 9: after a carry the carried key's cue is its room's name, second: true (mist), in key order; the others as before; teaching never takes it", () => {
   const h = inPods(false); key(h, "habitat"); assert.equal(h.ui.carry.key, "habitat");
