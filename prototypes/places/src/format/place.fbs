@@ -1,0 +1,170 @@
+// The baked place formats (place design A1.5). FlatBuffers, little endian, read zero-copy by the JS reader (flatbuffers npm) and by C (flatcc).
+//   .mbtiles  a tile set:   root_type TileSet
+//   .mbplace  a place:      root_type Place
+// formatVersion 1. A change to this file that is not backwards compatible raises format_version and is a deliberate chunk.
+// File identifiers (written by write.mjs, checked by the readers): "MBTS" for a tile set, "MBPL" for a place.
+
+namespace mb.places;
+
+enum RemapName : ubyte { dark, light, dark2, fog, fade, storm, veil }
+enum PairMode : ubyte { opaque, over }
+enum SpriteGroup : ubyte { prop, decal, canopy }
+enum PlaceType : ubyte { pond, rock, wood, meadow }
+enum HeartKind : ubyte { moment, nest, spring, stone }
+enum TellKind : ubyte { prints, beat, shimmer, rustle, bolt }
+enum Side : ubyte { N, E, S, W }
+enum ReachBy : ubyte { none, rambler, digger }
+
+// ---- the tile set ----
+
+table Remap {            // a light table: palette index -> palette index
+  name: RemapName;
+  map: [ubyte];          // 256 entries
+}
+
+table Tile {             // a tile as the layers name it; one frame is static
+  frames: [uint16];      // atlas slots, one per animation frame
+  frame_ms: uint16;      // all animated tiles share one clock; this is the step
+}
+
+table Pair {
+  lower: ubyte;          // terrain values (the IntGrid values of terrain.json)
+  upper: ubyte;
+  mode: PairMode;
+  tiles: [uint16];       // 16 tile ids, by corner index NW*8 + NE*4 + SW*2 + SE
+  full_variants: [uint16];   // tile ids of the all-upper tile, variants picked by hash
+  empty_variants: [uint16];  // tile ids of the all-lower tile (empty when tiles[0] is the only one)
+}
+
+table Sprite {           // a prop, decal or canopy piece
+  kind: string;
+  group: SpriteGroup;
+  w48: uint16;
+  h48: uint16;
+  w24: uint16;
+  h24: uint16;
+  anchor_x48: int16;     // the foot pixel
+  anchor_y48: int16;
+  anchor_x24: int16;
+  anchor_y24: int16;
+  footprint: [byte];     // pairs of tile offsets (dx, dy) from the entity's cell that block
+  frames48: [uint32];    // byte offsets of each frame's RLE data in sprite_atlas48
+  frames24: [uint32];
+  frame_ms: uint16;
+  canopy: short = -1;    // index in sprites of the canopy piece drawn over the explorer, or -1
+}
+
+table Cycle {            // palette cycling, applied at the palette stage
+  first: ubyte;
+  count: ubyte;
+  step_ms: uint16;
+}
+
+table Licence {          // kept in the blob so a device dump says where its art came from
+  spdx: string;
+  author: string;
+  source: string;
+  fetched: string;
+}
+
+table TileSet {
+  id: string;
+  format_version: uint16;
+  tile: ubyte;           // 48
+  half: ubyte;           // 24
+  palette: [uint32];     // 0x00RRGGBB of indices 48..; 0..47 are the core palette and are not stored
+  light_tables: [Remap];
+  atlas48: [ubyte];      // tiles stacked vertically, 8 bits per pixel, index 0 transparent
+  atlas24: [ubyte];
+  tiles: [Tile];
+  pairs: [Pair];
+  sprites: [Sprite];
+  sprite_atlas48: [ubyte];   // RLE rows (blit.mjs): records [skip, n, n pixels], each row ended by [0, 0]
+  sprite_atlas24: [ubyte];
+  cycles: [Cycle];
+  licence: Licence;
+}
+
+// ---- the place ----
+
+struct Point { x: short; y: short; }
+
+table Layer {            // one ground layer: one pair's dual-grid tile ids
+  pair: ubyte;           // index in the set's pairs
+  tiles: [uint16];       // (w + 1) * (h + 1) tile ids, row by row; 0xFFFF draws nothing
+}
+
+table Placed {           // a prop, decal or canopy piece placed on the place
+  kind: ushort;          // index in the set's sprites
+  x: short;              // pixels at 48 px, the sprite's anchor point
+  y: short;
+  sort_y: short;
+}
+
+table Heart {
+  x: short;
+  y: short;
+  kinds: [HeartKind];
+  species: [string];
+  reveal_line: string;
+  reach_by: ReachBy;
+}
+
+table Clue {
+  tell: TellKind;
+  points: [Point];
+}
+
+table Find {
+  x: short;
+  y: short;
+  kinds: [ubyte];        // FindKind: pod, fruit, dew, stone, material
+  chance: float;
+}
+
+table Landmark {
+  prop: ushort;          // index in the set's sprites
+  x: short;
+  y: short;
+  label: string;
+}
+
+table Opening {
+  side: Side;
+  from: ubyte;           // first cell along the edge
+  to: ubyte;             // last cell
+}
+
+table Spawn {
+  x: ubyte;              // the zone, in cells
+  y: ubyte;
+  w: ubyte;
+  h: ubyte;
+  species: [string];
+  count: ubyte;
+}
+
+table Place {
+  id: string;
+  format_version: uint16;
+  set: string;           // id of the tile set
+  w: ubyte;
+  h: ubyte;
+  type: PlaceType;
+  names: [string];
+  mirror_of: string;     // the id of the place this is the mirrored variant of, empty otherwise
+  terrain: [ubyte];      // w * h terrain values
+  ground: [Layer];       // in draw order
+  decals: [Placed];
+  props: [Placed];
+  canopy: [Placed];
+  heart: Heart;
+  clues: [Clue];
+  finds: [Find];
+  landmarks: [Landmark];
+  openings: [Opening];
+  spawns: [Spawn];
+  block_mask: [ubyte];   // w * h bits, row by row, least significant bit first: terrain play class and prop footprints combined
+}
+
+root_type Place;       // the schema has two kinds of blob; TileSet is read with getRootAsTileSet, and each blob carries its own identifier

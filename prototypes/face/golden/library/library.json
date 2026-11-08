@@ -42,7 +42,7 @@
    "png": "library-l2-shut.png"
   },
   "library-l2-hiljan": {
-   "hash": "c2728daa",
+   "hash": "40fe1a18",
    "png": "library-l2-hiljan.png"
   },
   "library-l2-kilpo": {
@@ -66,19 +66,19 @@
    "png": "library-l2-loika-late.png"
   },
   "library-l3-far": {
-   "hash": "ae45a864",
+   "hash": "5329e62f",
    "png": "library-l3-far.png"
   },
   "library-l3-far-one-family": {
-   "hash": "5b5e3fe9",
+   "hash": "19f1ed3e",
    "png": "library-l3-far-one-family.png"
   },
   "library-l3-close-moss": {
-   "hash": "8bb51e86",
+   "hash": "552da561",
    "png": "library-l3-close-moss.png"
   },
   "library-l3-close-stubs": {
-   "hash": "559e4f90",
+   "hash": "357df057",
    "png": "library-l3-close-stubs.png"
   },
   "library-l3-close-bud": {
@@ -86,23 +86,23 @@
    "png": "library-l3-close-bud.png"
   },
   "library-l3-close-fits": {
-   "hash": "f6d23cb1",
+   "hash": "2df82986",
    "png": "library-l3-close-fits.png"
   },
   "library-l3-close-founder": {
-   "hash": "3cea5e77",
+   "hash": "9207ac78",
    "png": "library-l3-close-founder.png"
   },
   "library-l3-close-shedpod": {
-   "hash": "6294a1bc",
+   "hash": "250dfafb",
    "png": "library-l3-close-shedpod.png"
   },
   "library-l3-compare-dot-moss": {
-   "hash": "e8671c40",
+   "hash": "921d03f3",
    "png": "library-l3-compare-dot-moss.png"
   },
   "library-l3-compare-on-held": {
-   "hash": "36b896e8",
+   "hash": "5b464433",
    "png": "library-l3-compare-on-held.png"
   },
   "library-l3-compare-none": {
@@ -114,19 +114,19 @@
    "png": "library-l1-dither.png"
   },
   "library-l3-pan-step-1": {
-   "hash": "c3c5ec55",
+   "hash": "dfc8528e",
    "png": "library-l3-pan-step-1.png"
   },
   "library-l3-pan-step-2": {
-   "hash": "3c4a36ac",
+   "hash": "9dbba7b3",
    "png": "library-l3-pan-step-2.png"
   },
   "library-l3-pan-step-3": {
-   "hash": "559e4f90",
+   "hash": "357df057",
    "png": "library-l3-pan-step-3.png"
   },
   "library-l3-zoom-in": {
-   "hash": "0383f23d",
+   "hash": "e310dde2",
    "png": "library-l3-zoom-in.png"
   }
  }

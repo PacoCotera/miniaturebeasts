@@ -55,7 +55,7 @@ test("the verb the ring chooses on the verb line is the grid's: ◀ ▶ on it (t
 test("Let go is a held ✓: a quick double ✓ does not let go (nothing happens but the line's hint); the held ✓ does, once; the frame carries the hold only with the ring on a pod under Let go, slower for the only pod of a species or one that carries the goal", () => {
   const st = world(); const a = pod(st, "S01", 5), b = pod(st, "S02", 6), c = pod(st, "S02", 7), h = mk(st); h.ui.screen = "pods"; openInventory(h, { from: "home" }); h.ui.pods.verb = "letgo";
   const list = () => h.ui.pods.focus; h.ui.pods.focus.set("card.0"); const first = S.podById(st, h.ui.pods.panelPod ?? st.tray[0].id) ?? st.tray[0];
-  dispatch(h, { screen: "pods", target: "card.0", verb: "confirm" }); dispatch(h, { screen: "pods", target: "card.0", verb: "confirm" }); assert.equal(st.tray.length, 3, "a quick double ✓ never lets go"); assert.equal(h.said.at(-1), "Hold ✓ to let it go");
+  dispatch(h, { screen: "pods", target: "card.0", verb: "confirm" }); dispatch(h, { screen: "pods", target: "card.0", verb: "confirm" }); assert.equal(st.tray.length, 3, "a quick double ✓ never lets go"); assert.equal(h.said.at(-1), "Hold to let go");
   assert.equal(heldKey(h), true); assert.equal(st.tray.length, 2, "the held ✓ lets exactly one go"); assert.equal(h.ui.pods.verb, "read", "the verb is the caller's again"); void a; void b; void c; void list; void first;
   assert.equal(heldKey(h), false, "nothing under Let go any more: a late held ✓ does nothing"); assert.equal(st.tray.length, 2);
 });
@@ -69,7 +69,7 @@ test("the host asks the face for the hold ring with the ring on a pod under Let 
 });
 test("the Return card of the Wild and Return panel is a held ✓ too: a short ✓ says so and lets nothing go; the held ✓ returns the mibi", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 3, settings); const [a, b] = st.mibis, h = mk(st); h.ui.hab.id = a.id; h.specs.habitat = J("habitat"); h.ui.screen = "habitat";
-  INTENTS.habitat.intent(h, "wild", "confirm"); assert.equal(h.ui.panel?.id, "wildMibi"); INTENTS.panel.intent(h, "card.return", "confirm"); assert.equal(a.released, false); assert.equal(h.said.at(-1), "Hold ✓ to return it to the wild");
+  INTENTS.habitat.intent(h, "wild", "confirm"); assert.equal(h.ui.panel?.id, "wildMibi"); INTENTS.panel.intent(h, "card.return", "confirm"); assert.equal(a.released, false); assert.equal(h.said.at(-1), "Hold to return");
   assert.equal(heldKey(h), true); assert.equal(a.released, true, "the held ✓ returns it"); assert.equal(h.ui.panel, null); void b;
   h.ui.hab.id = b.id; INTENTS.habitat.intent(h, "wild", "confirm"); INTENTS.panel.intent(h, "card.keep", "confirm"); assert.equal(b.released, false); assert.equal(heldKey(h), false, "Keep is the way out; nothing is held on it");
 });

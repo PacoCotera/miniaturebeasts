@@ -3,7 +3,7 @@ name: Sandbox
 on:
   push:
     branches: [main]
-    paths: ['website/**', 'prototypes/**', 'art/companion-48/terrain/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', 'ops/ledger/**', '.github/workflows/site.yml', '.github/smoke.mjs', '.github/roadmap.test.mjs']
+    paths: ['website/**', 'prototypes/**', 'art/companion-48/terrain/**', 'art/places/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', 'ops/ledger/**', '.github/workflows/site.yml', '.github/smoke.mjs', '.github/roadmap.test.mjs']
   pull_request:
     # The gates hold before a merge, not after it, on every pull request into main, whatever it touches: the Sandbox `build` check is one main will require.
     # The release and the gh-pages steps below run on main only.
@@ -40,6 +40,7 @@ jobs:
             v1/native/vendor
             v1/prototype/generator-workbench
             art/companion-48
+            art/places
             art/device-buttons
             art/station-masters
             art/retro-diffusion-trial
@@ -153,6 +154,18 @@ jobs:
         timeout-minutes: 3   # measured a few seconds
         # .github/roadmap.test.mjs reads website/roadmap.json, the roadmap and home pages and the build's read list, so it runs whenever the build does, whatever the filter says (and so on a push to main too).
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test .github/roadmap.test.mjs
+      - name: Places toolchain (pinned flatc, npm ci) and the bake check
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        timeout-minutes: 5
+        # prototypes/places/VERSIONS.md pins flatc (the release zip's sha256 is checked by tools/get-flatc.sh) and the lockfile pins the JavaScript tools.
+        # `bake.mjs --check` rebakes in memory and byte-compares prototypes/places/baked and golden (a no-op until the LDtk project lands, C5).
+        # The baked blobs travel to the site with the rest of prototypes/places in "Assemble the site".
+        run: |
+          set -euo pipefail
+          sh prototypes/places/tools/get-flatc.sh "$RUNNER_TEMP/flatc"
+          echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
+          npm ci --prefix prototypes/places --no-audit --no-fund
+          node prototypes/places/tools/bake.mjs --check
       - name: Station rules (node tests)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
         timeout-minutes: 15   # about 10 without the long walk proofs (MB_CI_FAST: they run in full locally before every merge)
@@ -160,7 +173,7 @@ jobs:
         # The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
         run: |
           set -euo pipefail
-          MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
+          MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/places/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
       - name: Site server (the studio login, deploy.sh, the Caddyfile)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
         timeout-minutes: 5

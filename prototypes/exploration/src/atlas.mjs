@@ -87,13 +87,13 @@ export function coreMissing(cat) {
 }
 export function coreSet(cat) { return coreMissing(cat).length === 0; }
 
-// The biome palette: one index space, 0–47 the core (unchanged) and 48 … N − 1 the biome's entries, each with the lookup tables
+// The biome palette: one index space, 0–50 the core (unchanged) and 51 … N − 1 the biome's entries, each with the lookup tables
 // the page draws through (dark, light, dark2, fog, fade; dark2 must be dark[dark[i]]) and an optional storm table (default: its dark2 on an
 // entry marked mat "grass", else its dark; an explicit storm field wins).
-// coreRGB and coreTables are the page's own 48 (coreTables also carries the core names: the page addresses colours by name).
+// coreRGB and coreTables are the page's own 51 (coreTables also carries the core names: the page addresses colours by name).
 // A core entry's name, hex, dark, light and dark2 must equal the page's; its fog, fade and storm may differ: the place overrides,
 // which the place view alone draws through. Returns the core-true tables (rgb, dark, light, dark2, fog, fade, the page's own values
-// at 0–47) plus the place tables placeFog, placeFade and placeStorm (the file's values everywhere), all of length N; or { errors }.
+// at 0–50) plus the place tables placeFog, placeFade and placeStorm (the file's values everywhere), all of length N; or { errors }.
 export const PALETTE_MAX = 256;
 export const TABLE_FIELDS = ['dark', 'light', 'dark2', 'fog', 'fade'];
 export const PLACE_OVERRIDES = ['fog', 'fade', 'storm'];

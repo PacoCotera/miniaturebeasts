@@ -9,11 +9,11 @@ export const LOIKA_COAT = {   // coat_main, [dark, between, light]
 };
 // the other signed kinds (release 22b): coat_main of each cell as the desk's palette-SNN-v8.json gives it, [dark, between, light] per Tint look of the kind's frame
 export const KIND_COAT = {
-  S03: { redder: ["#654934", "#87715f", "#ab9b8d"], between: ["#604b39", "#827362", "#aa9c8c"], yellower: ["#66492f", "#897251", "#b09b7c"] },
-  S04: { yellower: ["#696f5d", "#929880", "#bcc1aa"], between: ["#676f5f", "#919789", "#bbc0b2"], greener: ["#62715e", "#8b9a86", "#b6c2af"] },
-  S05: { redder: ["#3e2013", "#643e2c", "#886853"], between: ["#3e200d", "#663d25", "#88694d"], yellower: ["#382409", "#5f421d", "#886a44"] },
+  S03: { redder: ["#623e29", "#87715f", "#ab9b8d"], between: ["#604b39", "#827362", "#aa9c8c"], yellower: ["#644a2b", "#897251", "#b09b7c"] },
+  S04: { yellower: ["#6b6e58", "#94987c", "#bdc1a7"], between: ["#676f5f", "#919789", "#bbc0b2"], greener: ["#62715c", "#899b83", "#b5c3af"] },
+  S05: { redder: ["#3c1a0e", "#643e2c", "#886853"], between: ["#3e200d", "#663d25", "#88694d"], yellower: ["#382409", "#5f421d", "#886a44"] },
   S08: { redder: ["#86572c", "#b48251", "#d0a070"], between: ["#7c5d32", "#a98851", "#cfaf7b"], yellower: ["#815c0a", "#ad8834", "#d2af67"] },
-  S12: { redder: ["#a86b21", "#d5953a", "#f4bd62"], between: ["#9c7225", "#bda060", "#e1c688"], yellower: ["#9e7108", "#c59e40", "#e6c571"] },
+  S12: { redder: ["#9f5b24", "#d5953a", "#f4bd62"], between: ["#9c7225", "#bda060", "#e1c688"], yellower: ["#9e7108", "#c59e40", "#e6c571"] },
   S17: { redder: ["#ae6b2c", "#de954d", "#fbbb6e"], between: ["#a66f38", "#cc9d64", "#eac28a"], yellower: ["#aa6f18", "#d89944", "#f6be70"] },
   S20: { yellower: ["#66644f", "#8f8e76", "#b4b29c"], between: ["#616657", "#8a8f7f", "#aeb4a4"], greener: ["#586859", "#809281", "#a5b7a6"] },
 };

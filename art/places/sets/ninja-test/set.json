@@ -1,0 +1,159 @@
+{
+  "formatVersion": 1,
+  "id": "ninja-test",
+  "name": "Ninja Adventure (CC0 test kit)",
+  "ship": "test",
+  "licence": {
+    "spdx": "CC0-1.0",
+    "author": "Pixel-boy & AAA",
+    "source": "https://pixel-boy.itch.io/ninja-adventure-asset-pack",
+    "fetched": "2026-11-07",
+    "archiveSha256": "95a06f4fdcfd1882f061a45ff313b7c905dbe2de1e8512b281d7937df62a7b15"
+  },
+  "sourceTile": 16,
+  "scale": 3,
+  "half": "derived",
+  "palette": "palette.json",
+  "spriteSheet": "sprites.png",
+  "pairs": [
+    {
+      "id": "grass-water",
+      "lower": "water",
+      "upper": "grass",
+      "mode": "opaque",
+      "sheets": ["pair-grass-water.png", "pair-grass-water@1.png", "pair-grass-water@2.png", "pair-grass-water@3.png"],
+      "frameMs": 250,
+      "fullSheet": "pair-grass-water-full.png"
+    },
+    {
+      "id": "sand-water",
+      "lower": "water",
+      "upper": "sand",
+      "mode": "opaque",
+      "sheets": ["pair-sand-water.png", "pair-sand-water@1.png", "pair-sand-water@2.png", "pair-sand-water@3.png"],
+      "frameMs": 250,
+      "fullSheet": "pair-sand-water-full.png"
+    },
+    {
+      "id": "grass-sand",
+      "lower": "sand",
+      "upper": "grass",
+      "mode": "opaque",
+      "sheets": ["pair-grass-sand.png"],
+      "fullSheet": "pair-grass-sand-full.png"
+    },
+    {
+      "id": "grass-path",
+      "lower": "path",
+      "upper": "grass",
+      "mode": "opaque",
+      "sheets": ["pair-grass-path.png"],
+      "fullSheet": "pair-grass-path-full.png"
+    },
+    {
+      "id": "mud-water",
+      "lower": "water",
+      "upper": "mud",
+      "mode": "opaque",
+      "sheets": ["pair-mud-water.png", "pair-mud-water@1.png", "pair-mud-water@2.png", "pair-mud-water@3.png"],
+      "frameMs": 250,
+      "fullSheet": "pair-mud-water-full.png"
+    }
+  ],
+  "props": {
+    "tree-broad": {
+      "rect": [196, 47, 48, 14],
+      "anchor": [24, 13],
+      "footprint": [[0, 0]],
+      "canopy": "tree-broad-crown"
+    },
+    "tree-autumn": {
+      "rect": [147, 47, 48, 14],
+      "anchor": [24, 13],
+      "footprint": [[0, 0]],
+      "canopy": "tree-autumn-crown"
+    },
+    "bush-big": {
+      "rect": [115, 0, 32, 29],
+      "anchor": [16, 28],
+      "footprint": [[0, 0]]
+    },
+    "bush-round": {
+      "rect": [130, 47, 16, 14],
+      "anchor": [8, 13],
+      "footprint": [[0, 0]]
+    },
+    "bush-small": {
+      "rect": [33, 64, 15, 13],
+      "anchor": [7, 12],
+      "footprint": [[0, 0]]
+    },
+    "stump": {
+      "rect": [208, 0, 30, 23],
+      "anchor": [15, 22],
+      "footprint": [[0, 0]]
+    },
+    "boulder-brown": {
+      "rect": [148, 0, 29, 27],
+      "anchor": [14, 26],
+      "footprint": [[0, 0]]
+    },
+    "boulder-grey": {
+      "rect": [178, 0, 29, 27],
+      "anchor": [14, 26],
+      "footprint": [[0, 0]]
+    },
+    "reeds": {
+      "rect": [0, 0, 16, 46],
+      "anchor": [8, 45],
+      "footprint": []
+    },
+    "tall-grass": {
+      "rect": [17, 47, 16, 16],
+      "anchor": [8, 15],
+      "frames": 4,
+      "frameMs": 220,
+      "footprint": []
+    }
+  },
+  "decals": {
+    "flower-sun": {
+      "rect": [82, 47, 15, 15],
+      "anchor": [7, 7]
+    },
+    "flower-sun-small": {
+      "rect": [239, 0, 15, 16],
+      "anchor": [7, 8]
+    },
+    "pebbles-a": {
+      "rect": [98, 47, 14, 14],
+      "anchor": [7, 7]
+    },
+    "pebbles-b": {
+      "rect": [0, 64, 15, 13],
+      "anchor": [7, 6]
+    },
+    "pebbles-c": {
+      "rect": [113, 47, 16, 14],
+      "anchor": [8, 7]
+    },
+    "tuft": {
+      "rect": [16, 64, 16, 13],
+      "anchor": [8, 6]
+    },
+    "lily-pad": {
+      "rect": [0, 47, 16, 16],
+      "anchor": [8, 8]
+    }
+  },
+  "canopy": {
+    "tree-broad-crown": {
+      "rect": [66, 0, 48, 34],
+      "anchor": [24, 47]
+    },
+    "tree-autumn-crown": {
+      "rect": [17, 0, 48, 34],
+      "anchor": [24, 47]
+    }
+  }
+}

@@ -26,3 +26,5 @@ permission notice is also included in the packaged presenter HTML alongside the
 linked native binary. The project license does not replace upstream terms.
 
 jsmn, a one-header JSON tokenizer by Serge Zaitsev (MIT, copyright 2010), is vendored unchanged as `prototypes/face/src/vendor/jsmn.h` with its licence text in the file header. The Station face parses its spec files and the bridge's messages with it (design/proposals/lvgl-switch.md §2.3).
+
+The place foundation's test tile set, `art/places/sets/ninja-test/`, is cut from the Ninja Adventure Asset Pack by Pixel-boy and AAA (https://pixel-boy.itch.io/ninja-adventure-asset-pack, CC0 1.0 Universal, fetched 2026-11-07), a stand-in for tests and the public sandbox. CC0 needs no credit; we give it. The legal code is in [LICENCE.md](art/places/sets/ninja-test/LICENCE.md) and the source record, with every file read, in [SOURCE.md](art/places/sets/ninja-test/SOURCE.md).

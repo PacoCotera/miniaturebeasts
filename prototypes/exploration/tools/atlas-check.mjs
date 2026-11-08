@@ -164,8 +164,8 @@ export function check(files, log = console.log, { drop = false } = {}) {
   let pal = loadPalette(kinds.length === 1 ? used[0].pal : null);
   if (kinds.length > 1) { log("REFUSED palette: the manifests' palettes differ (" + used.map(m => m.pal.name + (m.pal.file ? " in " + path.relative(process.cwd(), path.dirname(m.pal.file)) : "")).join(", ") + ")"); refused++; }
   else if (pal.errors) { log("REFUSED palette " + pal.name + " (" + path.basename(pal.file) + "): " + pal.errors.join("; ")); refused++; pal = loadPalette(null); }
-  else { log("palette " + pal.name + (pal.file ? " (" + path.basename(pal.file) + ")" : "") + ": " + pal.n + " entries, " + pal.biome + " biome entries" + (pal.file ? ", the core 48 and every table ok" : ", the page's 48"));
-    if (pal.table) { const oc = overrideCounts(pal.table, pageTables()); log("place overrides of the core 48: " + PLACE_OVERRIDES.map(f => f + " " + oc[f]).join(", "));
+  else { log("palette " + pal.name + (pal.file ? " (" + path.basename(pal.file) + ")" : "") + ": " + pal.n + " entries, " + pal.biome + " biome entries" + (pal.file ? ", the core " + pageRGB().length + " and every table ok" : ", the page's " + pageRGB().length));
+    if (pal.table) { const oc = overrideCounts(pal.table, pageTables()); log("place overrides of the core " + pageRGB().length + ": " + PLACE_OVERRIDES.map(f => f + " " + oc[f]).join(", "));
       const sg = stormOnGrass(pal.table, pageRGB().length); log("storm on grass: dark2 on " + sg.dark2 + " entries (core " + sg.core + ", biome " + sg.biome + "); explicit storm: " + sg.explicit); } }
   const RGB = pal.rgb, of = new Set(RGB.map(c => c[0] << 16 | c[1] << 8 | c[2]));
   // --drop: a level tone that lifts or darkens a level needs grass in the palette, or it would do nothing

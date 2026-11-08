@@ -48,6 +48,7 @@ export function runBot({ seed = 7, gen = 5, expeditions = 20, mibis = 0, dock = 
   // in a place: a Call, some steps and presses on what is faced, a second Call, then Leave
   const inPlace = () => {
     key("call");
+    p.run("TEST.findHeart()");   // a Call no longer counts a place explored, its heart does: the bot's walk finds it (C16 will walk there for real). A walk that only revisits found places finds nothing new and seals nothing, so the world turns less often than once per expedition.
     for (let i = 0, n = 5 + rng(6); i < n && phase() === "patch"; i++) { key(DIRS[rng(4)]); if (rng(3) === 0 && phase() === "patch") key("confirm"); }
     if (phase() === "patch") key("call");
     for (let guard = 0; phase() === "patch" && guard < 6; guard++) {

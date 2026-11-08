@@ -39,7 +39,8 @@ export const BASE_PAIRS = [["stand", "juv", "{coat}", SIZES], ["asleep", "juvasl
 export const pairsOf = (have) => [...BASE_PAIRS, ...[...have].filter((id) => !/^(juv|lay-|sig-)/.test(id) && !["stand", "asleep"].includes(id) && have.has("juv" + id)).map((id) => [id, "juv" + id, `{coat}-${id}`, ["304x312"]])];
 export const PAIRS = BASE_PAIRS;
 // the kinds whose painted tool-size cut (144 x 152 adult, 104 x 112 young) the desk replaced: the placed masters are the old picture, so the painted cell's cut is placed over them (desk 2026-11-07 06:49: S03 is cut from the new three-quarter stand)
-export const REPLACE_TOOL = new Set(["S03"]);
+export const REBUILT = new Set(["S04", "S05", "S20"]);   // kinds rebuilt on a new stand: their painted cell is placed too (over the old painted master), not proven against it
+export const REPLACE_TOOL =new Set(["S03", "S04", "S05", "S20"]);   // S04, S05, S20: rebuilt on three-quarter stands (desk 2026-11-07 10:51), the old game-art tool cuts dropped
 // the adult's awake marked pictures (the Markings look -> the desk's picture): adult only, three sizes, in every coat
 export const MARKED = { spotted: "lay-spots", saddle: "lay-saddle", shaded: "lay-gradient", bands: "lay-bands", patches: "lay-patches" };
 export const LATER = ["sig-lo", "sig-hi"];   // recoloured by the desk, drawn by no scene yet
@@ -69,6 +70,10 @@ export function planCoats({ desk = DESK, index, only = null }) {
         if (!existsSync(af)) missing.push(af); if (!existsSync(jf)) missing.push(jf); if (!existsSync(af) || !existsSync(jf)) continue;
         const A = fl ? flipPic(pic(af)) : pic(af), J = fj ? flipPic(pic(jf)) : pic(jf), r = rescaleJuvenile(A, J), jp = GROUNDED.has(k) ? liftShadow(r.pic) : r.pic;
         const base = name.replace("{coat}-", "").replace("{coat}", ""), mid = (stage) => `mibi-${stage}-${k}-${coat}${base ? "-" + base : ""}-${size}`, plain = (stage) => `mibi-${stage}-${k}${base ? "-" + base : ""}-${size}`;
+        if (coat === PAINTED && REBUILT.has(k)) {   // the stand was repainted (three-quarter): the desk's between cell replaces the old painted master, placed under the plain id
+          ops.push({ id: plain("adult"), buf: encode(A), from: path.relative("/home/mb/mb", af) }, { id: plain("juvenile"), buf: encode(jp), from: path.relative("/home/mb/mb", jf) });
+          recoloured.add(`${k} ${aId}`); recoloured.add(`${k} ${jId}`); continue;
+        }
         if (coat === PAINTED) {   // the painted master, untouched: proven against the placed one, not placed again
           for (const [stage, p] of [["adult", A], ["juvenile", jp]]) { const m = index.masters[plain(stage)]; painted.push({ id: plain(stage), ok: !!m && same(p, pic(path.join(dest, m.file))) }); }
           continue;
@@ -79,6 +84,7 @@ export function planCoats({ desk = DESK, index, only = null }) {
     }
     for (const lay of Object.values(MARKED)) {
       if (!have.has(lay)) { waiting.add(`${k} ${lay}`); continue; }
+      if (k === "S20" && lay === "lay-saddle") { waiting.add(`${k} ${lay} (the desk keeps it as a template, no stand cells; none placed before either)`); continue; }
       for (const coat of COATS) for (const size of SIZES) {
         const f = out(lay, coat, size); cells++; if (!existsSync(f)) { missing.push(f); continue; }
         const A = fl ? flipPic(pic(f)) : pic(f); ops.push({ id: `mibi-adult-${k}-${coat}-${lay}-${size}`, buf: encode(A), from: path.relative("/home/mb/mb", f) }); recoloured.add(`${k} ${lay}`);
