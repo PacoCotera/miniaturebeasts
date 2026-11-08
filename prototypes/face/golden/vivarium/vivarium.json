@@ -246,7 +246,7 @@
    "png": "vivarium-twelve-v2.png"
   },
   "vivarium-forty": {
-   "hash": "d4457e52",
+   "hash": "cfebef6a",
    "png": "vivarium-forty.png"
   },
   "vivarium-forty-reeds": {
@@ -282,7 +282,7 @@
    "png": "vivarium-docked-night.png"
   },
   "vivarium-room-reeds": {
-   "hash": "4e93bd1f",
+   "hash": "3b050435",
    "png": "vivarium-room-reeds.png"
   },
   "vivarium-room-boulders": {
@@ -322,7 +322,7 @@
    "png": "vivarium-coming-out.png"
   },
   "vivarium-full-bud": {
-   "hash": "67b0fb5d",
+   "hash": "5fc4ed05",
    "png": "vivarium-full-bud.png"
   },
   "vivarium-walk-8000ms": {
@@ -334,7 +334,7 @@
    "png": "vivarium-moving-8000ms.png"
   },
   "vivarium-ramp-ferns-4000ms": {
-   "hash": "cf1405b1",
+   "hash": "8a5278ef",
    "png": "vivarium-ramp-ferns-4000ms.png"
   }
  }

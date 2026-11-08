@@ -821,16 +821,21 @@ static int tag_top(const ent_t *e, const char *glass, int usual, int usual2, int
   int cx = fr[0] + fr[2] / 2;
   /* release 22b (0a): a label belongs under its own figure; if no clear spot is right under it, it shifts sideways along the ground line, and only then goes over a head (a heavy penalty) */
   int under = fr[1] + fr[3] + gap, undc = under; if (undc + h > gy + gh - 2) undc = gy + gh - 2 - h;
-  int cy[8] = { usual, usual2, under, undc, fr[1] + fr[3] + gap + h, fr[1] - h - gap, fr[1] + fr[3] - h, fr[1] - h - gap - h };
-  static const int pen[8] = { 0, 6000, 8, 10, 40, 6000, 80, 6000 };   /* L4b (B1): over a head (k 1, 5, 7) only when every spot under or beside the figure lies on a face; the others' bodies cost little, a face costs 100 a pixel */
+  int cy[12] = { usual, usual2, under, undc, fr[1] + fr[3] + gap + h, fr[1] - h - gap, fr[1] + fr[3] - h, fr[1] - h - gap - h, under + 6, under + 12, under + 18, under + 24 };   /* the last four: straight down a few pixels, under a neighbour's face that stands just below the figure (L4b2) */
+  static const int pen[12] = { 0, 6000, 8, 10, 40, 6000, 80, 6000, 14, 20, 26, 32 };   /* L4b (B1): over a head (k 1, 5, 7) only when every spot under or beside the figure lies on a face; the others' bodies cost little, a face costs 100 a pixel */
   int cxs[17] = { cx, fr[0] - w / 2 - gap, fr[0] + fr[2] + w / 2 + gap, fr[0] - w - w / 2 - gap, fr[0] + fr[2] + w + w / 2 + gap };   /* centred, then to the left of the figure, then to the right, then one label further each way */
   int best = 1 << 30, by = -1000, bx = cx;
   for (int m = 1; m <= 6; m++) { cxs[3 + 2 * m] = cx - m * (w / 4); cxs[4 + 2 * m] = cx + m * (w / 4); }   /* L4b (B1): and the small nudges, a quarter label at a time, so a label that must move stays beside its own figure */
-  for (int j = 0; j < 17; j++) for (int k = 0; k < 8; k++) {
+  for (int pass = 0; pass < 3 && best == (1 << 30); pass++) {   /* L4b2: pass 0 keeps the label within half a figure width of its figure's centre (a label must read as its own mibi's) and off every face; pass 1 the same cap, a face allowed (only when nothing fits); pass 2 lifts the cap */
+  int cap = pass < 2 ? fr[2] / 2 + 1 : 1 << 20;
+  for (int j = 0; j < 17; j++) for (int k = 0; k < 12; k++) {
+    int off = cxs[j] - cx; if (off < 0) off = -off; if (off > cap) continue;   /* the cap is on the shift asked for; the window's edge may still push the label (it is then as near its figure as the window allows) */
     int x = cxs[j] - w / 2; if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
     int r[4] = { x, cy[k], w, h }; if (cy[k] < gy + 2 || cy[k] + h > gy + gh - (k == 3 ? 2 : 8)) continue;
     int dx = x + w / 2 - cx, dy = cy[k] + h / 2 - (fr[1] + fr[3] / 2); if (dx < 0) dx = -dx; if (dy < 0) dy = -dy;
-    int s = 2 * tag_cover(e, r) + 100 * tag_face_cover(e, r) + (dx + dy) / 4 + pen[k] + (j > 0 ? 24 : 0) + (j == 3 || j == 4 ? 12 : 0); if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
+    int fc = tag_face_cover(e, r); if (pass == 0 && fc) continue;
+    int s = 2 * tag_cover(e, r) + 100 * fc + (dx + dy) / 4 + pen[k] + (j > 0 ? 24 : 0) + (j == 3 || j == 4 ? 12 : 0); if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
+  }
   }
   *axc = bx; return by;
 }
