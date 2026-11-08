@@ -228,7 +228,7 @@ test("the count is a fact, never n of N: pods and species; a filter says how man
   assert.equal(inv(model(st, { chips: ["S02", "unread"] }, "card.0")).detail.right, "3 of 12 · Untuva, unread");
   assert.equal(inv(model(home(1), {}, "card.0")).detail.right, "1 pod · 1 species", "one pod");
   const none = inv(model(home(0), {}, "sort")); assert.deepEqual([none.detail.right, none.empty, none.tools.dim, none.tools.sort, none.verbs], ["", ["No pods yet", "Expeditions bring pods home"], true, "nothing to sort yet", []], "no pods: no verbs, the empty seat and its lines");
-  assert.deepEqual(inv(model(st, { chips: ["S04", "sealed"] }, "filter")).empty, ["No pods match", "Filter or Find to change it"]);
+  assert.deepEqual(inv(model(st, { chips: ["S04", "sealed"] }, "filter")).empty, ["No pods match", "Change Filter or Find to see more"]);
 });
 test("a card: the pod at its large class, its name, one mark (the goal star before the drying drop before the new dot); a sealed pod says so quietly; fade and held are flags", () => {
   const st = mixed(); ident(st, 4); read(st, 0, 1); st.turn = 9;   // every pod 12 turns from turn 1: 4 left, amber
@@ -256,8 +256,8 @@ test("the verbs: Read, Grow, Freshen, Compare and Let go, each only while some p
 test("the detail line: the focused pod's first tag and where it was found, the freshness in amber when it dries; on the verb line what the verb does and how many pods can take it", () => {
   const st = mixed(); ident(st); const v = (focus, over = {}) => inv(model(st, over, focus)).detail;
   assert.match(v("card.0").left, /^.+ · .+$/); assert.equal(v("card.0").amber, false); st.turn = 9; assert.deepEqual([v("card.0").amber, v("card.0").right], [true, "dries out in 4 turns"]);
-  st.turn = 2; assert.deepEqual([v("verb.read").left, v("verb.read").right], ["Read · the pods it can take stay bright", "twelve can"]);
-  assert.deepEqual([v("verb.freshen", { verb: "freshen" }).left, v("verb.freshen", { verb: "freshen" }).right], ["Freshen · the pods it can take stay bright", "twelve can"], "a turn down: every pod can be freshened");
+  st.turn = 2; assert.deepEqual([v("verb.read").left, v("verb.read").right], ["Read works on the bright pods", "twelve bright pods"]);
+  assert.deepEqual([v("verb.freshen", { verb: "freshen" }).left, v("verb.freshen", { verb: "freshen" }).right], ["Freshen works on the bright pods", "twelve bright pods"], "a turn down: every pod can be freshened");
 });
 test("the selectors: ▶ at the right edge and ◀ at the left stay; ▲ from the top row is the verb that is on (a tool when the caller fixed the verb), ▼ from the verb line the first pod that can take it; ▼ at the last row stays", () => {
   const st = mixed(); ident(st);
@@ -284,17 +284,17 @@ test("the hold Let go asks: the frame carries it with the ring on a pod under Le
   const st = mixed(); ident(st); const on = (focus, over = {}) => podsProps(model(st, over, focus), spec, frameSpec);
   assert.equal(on("card.0").hold, null, "Read: no hold"); assert.deepEqual(on("card.0", { verb: "letgo" }).hold, { ms: 0, why: "" }, "Let go: the frame's own 3 s");
   assert.equal(on("verb.letgo", { verb: "letgo" }).hold, null, "the ring on the verb line: no hold");
-  const lone = home(1); ident(lone); const g = podsProps(model(lone, { verb: "letgo" }, "card.0"), spec, frameSpec); assert.deepEqual([g.hold.ms, g.hold.why], [6000, "the only Loika"], "the only of its species: slower, and the line says why"); assert.deepEqual([g.line.ok, g.line.subject], ["Hold ✓ longer to let it go", "the only Loika"]);
-  assert.equal(on("card.0", { verb: "letgo" }).line.ok, "Hold ✓ to let it go");
+  const lone = home(1); ident(lone); const g = podsProps(model(lone, { verb: "letgo" }, "card.0"), spec, frameSpec); assert.deepEqual([g.hold.ms, g.hold.why], [6000, "your only Loika pod"], "the only of its species: slower, and the line says why"); assert.deepEqual([g.line.ok, g.line.subject], ["Hold longer to let go", "your only Loika pod"]);
+  assert.equal(on("card.0", { verb: "letgo" }).line.ok, "Hold to let go");
   assert.deepEqual(on("tchip.3.2", { view: "filter" }).hold, { ms: 0, why: "" }, "Let these go"); assert.equal(on("tchip.0.0", { view: "filter" }).hold, null);
 });
 test("the bottom line: ✓ does the verb on the pod (its button's own words), a pod that cannot take it says why with no ✓, the verb line says ▼; Pods never shows the station's notice", () => {
   const st = mixed(); ident(st); st.s = 0; st.turn = 7;
   const line = (focus, over = {}) => body(model(st, over, focus)).line;
   assert.deepEqual(line("card.0"), { ok: "Take to the reading room", back: "Home", subject: "", need: "" });
-  assert.deepEqual(line("verb.read"), { ok: "Read", back: "Home", subject: "▼ to the pods", need: "" });
+  assert.deepEqual(line("verb.read"), { ok: "Read", back: "Home", subject: "▼ choose a pod", need: "" });
   assert.deepEqual(line("card.0", { verb: "freshen" }), { ok: null, back: "Home", subject: "needs ❀ 2 · you have ❀ 0", need: "" }, "held: the reason in the middle, no greyed verb");
   assert.equal(line("card.0", { verb: "grow", fixed: true }).ok, "Grow it"); assert.equal(line("card.0", { verb: "bring", fixed: true, choosing: true }).ok, "Bring onto the bench");
-  assert.equal(line("card.0", { verb: "letgo", waits: true }).subject, "A pod waits to come in");
+  assert.equal(line("card.0", { verb: "letgo", waits: true }).subject, "A new pod needs room");
   for (const [name, m] of SCENES) { const l = body(m).line; assert.ok(l && typeof l.need === "string", name + ": the line always has its own need"); }
 });

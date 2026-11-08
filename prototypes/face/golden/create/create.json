@@ -6,39 +6,39 @@
    "png": "create-nothingread.png"
   },
   "create-shape": {
-   "hash": "8a1d558b",
+   "hash": "39f4f632",
    "png": "create-shape.png"
   },
   "create-shape-changed": {
-   "hash": "d7536e1e",
+   "hash": "b816897b",
    "png": "create-shape-changed.png"
   },
   "create-shape-clash": {
-   "hash": "0116d1e8",
+   "hash": "41d43549",
    "png": "create-shape-clash.png"
   },
   "create-shape-onelook": {
-   "hash": "57bedfbc",
+   "hash": "ba2bfa09",
    "png": "create-shape-onelook.png"
   },
   "create-shape-short": {
-   "hash": "15e8c37c",
+   "hash": "8acb380d",
    "png": "create-shape-short.png"
   },
   "create-shape-busy": {
-   "hash": "178fde8f",
+   "hash": "3359c5ee",
    "png": "create-shape-busy.png"
   },
   "create-shape-ready": {
-   "hash": "1597ce86",
+   "hash": "94ea4763",
    "png": "create-shape-ready.png"
   },
   "create-shape-samelook": {
-   "hash": "024d5a08",
+   "hash": "26b3d1c5",
    "png": "create-shape-samelook.png"
   },
   "create-shape-sealed": {
-   "hash": "56b15bd7",
+   "hash": "ad1b0e26",
    "png": "create-shape-sealed.png"
   },
   "create-confirm": {
@@ -54,19 +54,19 @@
    "png": "create-confirm-s02.png"
   },
   "create-shape-first": {
-   "hash": "0494727d",
+   "hash": "2531cbe0",
    "png": "create-shape-first.png"
   },
   "create-full": {
-   "hash": "9f65844d",
+   "hash": "6e4c51cc",
    "png": "create-full.png"
   },
   "create-shape-doing": {
-   "hash": "0fed4404",
+   "hash": "1e5a1345",
    "png": "create-shape-doing.png"
   },
   "create-roll-100": {
-   "hash": "22d3442b",
+   "hash": "08f59a62",
    "png": "create-roll-100.png"
   },
   "create-confirm-dither-90": {

@@ -124,7 +124,7 @@ test("end to end: the Wickle sits by a lit beacon on a walk; End expedition; the
   assert.equal(run("partnerMibi().id"), 1);
   assert.ok(ST.dockKey(st, p.sv()).lifted, "lifted"); p.writeSt(st);
   // the walk
-  run("S.known = [16]; startExpedition('weather', G.spawns[0]); enterPatch(); S.exp.fog = null; S.exp.storm = null; S.exp.stats.calls = 1;");
+  run("S.known = [16]; startExpedition('weather', G.spawns[0]); enterPatch(); S.exp.fog = null; S.exp.storm = null; S.exp.stats.hearts = 1;");
   assert.equal(run("S.exp.pt.sp"), 16);
   run("var __habLines = []; (() => { const real = fxMsg; fxMsg = (t, p) => { __habLines.push(t); return real(t, p); }; })();");
   const s = JSON.parse(run("JSON.stringify(curLay().spawnPt)")), P = plain(run("S.exp.patch"));

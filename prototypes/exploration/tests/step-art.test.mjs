@@ -7,7 +7,7 @@ import { existsSync } from "node:fs";
 import { fixture, plain } from "./walk-fixture.mjs";
 
 const DESK = "/home/mb/mb/mibi-art/art-jobs/2026-11-06-field-tokens/work/tokens.mjs";
-const FRAMES = "/home/mb/mb/mibi-art/art-jobs/2026-11-07-step-frames/work/frames.mjs";
+const FRAMES = "/home/mb/mb/mibi-art/art-jobs/2026-11-07-step-frames/work/frames-sage.mjs";   // the signed rows with the sage S04 and S20 (2026-11-07)
 const STEPPERS = [0, 1, 3, 4, 7, 11, 16, 19];
 const px = (f, src) => f.run(`Array.from(${src}.p).join()`);
 

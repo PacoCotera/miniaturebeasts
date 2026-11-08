@@ -807,6 +807,13 @@ static int tag_cover(const ent_t *self, const int r[4]) {
   for (int i = 0; i < g_ne; i++) { const ent_t *o = &g_e[i]; if (o == self || o->hidden) continue; ent_figrect(o, q); if (q[2] > 0) s += rect_area(r, q); }
   return s;
 }
+/* L4b (B1): a figure's face is the upper half of its rectangle, inset an eighth each side; the label never lies on one (its own or a neighbour's), whatever else it must cross */
+static int tag_face_cover(const ent_t *self, const int r[4]) {
+  int s = 0;
+  for (int i = 0; i < g_ne; i++) { const ent_t *o = &g_e[i]; if (o->hidden) continue; int q[4]; ent_figrect(o, q); if (q[2] <= 0) continue;
+    int f[4] = { q[0] + q[2] / 8, q[1], q[2] - q[2] / 4, q[3] / 2 }; (void)self; s += rect_area(r, f); }
+  return s;
+}
 /* the tag's top for a figure, clear of every figure (its own face included): the standing one's usual place when clear, else under its feet, else over its head, else as far as the window allows; -1000 when none is clear */
 static int tag_top(const ent_t *e, const char *glass, int usual, int usual2, int *axc) {
   int h = v_si(sp(), hp("regions.nameTag.h"), 24), w = v_role_width(e->name, "nameTag") + 40, gap = 4, fr[4]; ent_figrect(e, fr);
@@ -815,14 +822,15 @@ static int tag_top(const ent_t *e, const char *glass, int usual, int usual2, int
   /* release 22b (0a): a label belongs under its own figure; if no clear spot is right under it, it shifts sideways along the ground line, and only then goes over a head (a heavy penalty) */
   int under = fr[1] + fr[3] + gap, undc = under; if (undc + h > gy + gh - 2) undc = gy + gh - 2 - h;
   int cy[8] = { usual, usual2, under, undc, fr[1] + fr[3] + gap + h, fr[1] - h - gap, fr[1] + fr[3] - h, fr[1] - h - gap - h };
-  static const int pen[8] = { 0, 30, 8, 10, 40, 60, 80, 90 };
-  int cxs[5] = { cx, fr[0] - w / 2 - gap, fr[0] + fr[2] + w / 2 + gap, fr[0] - w - w / 2 - gap, fr[0] + fr[2] + w + w / 2 + gap };   /* centred, then to the left of the figure, then to the right, then one label further each way */
+  static const int pen[8] = { 0, 6000, 8, 10, 40, 6000, 80, 6000 };   /* L4b (B1): over a head (k 1, 5, 7) only when every spot under or beside the figure lies on a face; the others' bodies cost little, a face costs 100 a pixel */
+  int cxs[17] = { cx, fr[0] - w / 2 - gap, fr[0] + fr[2] + w / 2 + gap, fr[0] - w - w / 2 - gap, fr[0] + fr[2] + w + w / 2 + gap };   /* centred, then to the left of the figure, then to the right, then one label further each way */
   int best = 1 << 30, by = -1000, bx = cx;
-  for (int j = 0; j < 5; j++) for (int k = 0; k < 8; k++) {
+  for (int m = 1; m <= 6; m++) { cxs[3 + 2 * m] = cx - m * (w / 4); cxs[4 + 2 * m] = cx + m * (w / 4); }   /* L4b (B1): and the small nudges, a quarter label at a time, so a label that must move stays beside its own figure */
+  for (int j = 0; j < 17; j++) for (int k = 0; k < 8; k++) {
     int x = cxs[j] - w / 2; if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
     int r[4] = { x, cy[k], w, h }; if (cy[k] < gy + 2 || cy[k] + h > gy + gh - (k == 3 ? 2 : 8)) continue;
     int dx = x + w / 2 - cx, dy = cy[k] + h / 2 - (fr[1] + fr[3] / 2); if (dx < 0) dx = -dx; if (dy < 0) dy = -dy;
-    int s = 4 * tag_cover(e, r) + (dx + dy) / 4 + pen[k] + (j > 0 ? 24 : 0) + (j > 2 ? 12 : 0); if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
+    int s = 2 * tag_cover(e, r) + 100 * tag_face_cover(e, r) + (dx + dy) / 4 + pen[k] + (j > 0 ? 24 : 0) + (j == 3 || j == 4 ? 12 : 0); if (s < best) { best = s; by = cy[k]; bx = x + w / 2; }   /* least covered first, then the nearest to its figure */
   }
   *axc = bx; return by;
 }

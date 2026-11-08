@@ -449,8 +449,8 @@ async function zBad(page, sel, W, z, capture) {
   await page.mouse.click(1300, 300); await page.waitForTimeout(200);
   await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "place"); await page.waitForTimeout(700);
   await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "map"); await page.waitForTimeout(400);
-  // the exploring itself is stood in for: a Call made in a place and its finds in the hold (two supplies and a pod), as a walk would leave them
-  await mb().evaluate(() => { const ex = window.__mb.S.exp; ex.stats.calls = 1; ex.cargo.e += 3; ex.cargo.d += 2; ex.cargo.s += 1; ex.cargo.pods.push({ id: "q9", sp: 0, g: "meadow", how: "shake", gs: 987654321, k: null }); });
+  // the exploring itself is stood in for: a heart found in a place (a Call alone no longer counts a place explored) and its finds in the hold (two supplies and a pod), as a walk would leave them
+  await mb().evaluate(() => { const ex = window.__mb.S.exp; ex.stats.calls = 1; ex.stats.hearts = 1; ex.cargo.e += 3; ex.cargo.d += 2; ex.cargo.s += 1; ex.cargo.pods.push({ id: "q9", sp: 0, g: "meadow", how: "shake", gs: 987654321, k: null }); });
   await page.keyboard.press("Escape"); await page.waitForTimeout(400); await page.keyboard.press("Enter"); await page.waitForTimeout(600);   // the menu: End expedition on top
   if ((await mb().evaluate(() => window.__mb.S.phase)) === "cargo") { await page.keyboard.press("Enter"); await page.waitForTimeout(600); }   // Cargo: ✓ End expedition seals the crate
   const sealed = await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.bay.length === 1, null, { timeout: 5000 }).then(() => true, () => false);

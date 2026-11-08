@@ -54,7 +54,7 @@ function ending({ explored, trips, ex, world = { lines: [], ev: [] } }) {
   t.endExpedition(ex.reason || "home");
   return { S, turned };
 }
-const expedition = (o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { calls: 1 }, stormCells: {}, entered: [0], met: [], moments: [], pt: null }, o);
+const expedition = (o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { hearts: 1 }, stormCells: {}, entered: [0], met: [], moments: [], pt: null }, o);
 
 test("a trip is recorded only when the world turns", () => {
   const home = ending({ explored: true, trips: [], ex: expedition({ pt: { id: 2 }, tripPlaces: ["wood"] }) });

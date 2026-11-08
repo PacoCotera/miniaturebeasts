@@ -131,7 +131,7 @@ for (const kind of ["mibi", "pod"]) {
   });
   test(`the Return panel (${kind}): the focused Return card puts no price on the bottom line, and no notice stands under the panel`, () => {
     const h = wildHost(kind); h.ui.panel.focus = "card.return"; const v = wview(h);
-    assert.equal(v.line.ok, "Hold ✓ to return it to the wild", "the Return card is a held ✓: the line says so"); assert.equal(v.line.need, "", "not null: the host fills no need() under an open panel"); assert.ok(!v.line.price, "no gain on the line"); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel"); assert.ok(wview(h).cards[0].line, "the fact is on the card");
+    assert.equal(v.line.ok, "Hold to return", "the Return card is a held ✓: the line says so"); assert.equal(v.line.need, "", "not null: the host fills no need() under an open panel"); assert.ok(!v.line.price, "no gain on the line"); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel"); assert.ok(wview(h).cards[0].line, "the fact is on the card");
   });
 }
 

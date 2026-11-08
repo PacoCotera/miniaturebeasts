@@ -315,7 +315,7 @@ await press("confirm", 900);
 // 5. Compare: from the second Loika's card, the panel's Compare, ✓; ← lands back on the card's Compare
 s = await st();
 await toBand(loika2.id, "compare");
-l = await line(); expect(l.ok === "Compare with this", "compare offered on another Loika pod: " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Compare this one", "compare offered on another Loika pod: " + JSON.stringify(l));
 await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.pods.hold)) === loika2.id, "✓ holds the pod for Compare"); await podsAt({ view: "inventory", card: loika.id, verb: "compare", hold: loika2.id }); l = await line(); expect(l.ok === "Compare with this one", "a kin of the held pod: " + JSON.stringify(l));
 await press("confirm", 400); await frameShot("page-compare");
 l = await line(); expect(l.back === "Pods", "Compare's way back is the inventory: " + JSON.stringify(l));

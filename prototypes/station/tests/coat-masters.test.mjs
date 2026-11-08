@@ -3,6 +3,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -50,7 +52,16 @@ test("the placed grid: eight coats beside the painted one, for the stand (three 
   const box = (id) => figureBox({ w: M[id].w, h: M[id].h, data: decodePNG(readFileSync(path.join(root, M[id].file))).data });
   for (const coat of ["redder-dark", "yellower-light"]) assert.deepEqual(box(`mibi-adult-S01-${coat}-304x312`), box("mibi-adult-S01-304x312"), coat + " keeps the painted figure's box (the recolour leaves alpha alone)");
 });
+// The desk commit these checks read (mibi-art, branch art/desk): the last commit that changed the coat outputs placed here (S03 Tuikis 8f424d91d and S12 Peplos e55f4dc3d dark rows, after S04/S05/S20 d1f5288c7, 4f9e0ed74, 0189af633, 4c8e2d00e and the faces f194573e7).
+// The desk is read where it stands, so the checks run only while its coat tools and outputs are still exactly that commit's; a later desk commit that changes them no longer turns this red (the placed files above stand).
+export const DESK_COMMIT = "e55f4dc3ddc824c4e40bcf7520ae7f981bab9162";
+const deskPinned = () => {
+  if (!existsSync(DESK)) return false;
+  const job = "art-jobs/2026-11-07-coat-recolour", repo = path.resolve(DESK, "../..");
+  try { execFileSync("git", ["-C", repo, "diff", "--quiet", DESK_COMMIT, "--", `${job}/tools`, `${job}/work/out`, `${job}/work/out-tool`], { stdio: "ignore" }); return true; } catch { return false; }
+};
 test("the generator: every cell of the grid exists in the desk's folder, and the desk's between-dark, put through the placement, is the placed painted master to the byte", () => {
+  if (!deskPinned()) return;   // the desk is not on this machine, or has moved on from DESK_COMMIT
   const plan = planCoats({ desk: DESK, index });
   if (!plan.kinds.length) return;   // the desk's folder is not on this machine: the placed files above stand
   assert.deepEqual(plan.missing, [], "no cell of the grid is missing");
@@ -61,20 +72,21 @@ test("the generator: every cell of the grid exists in the desk's folder, and the
   assert.equal(s01.cells, 279);   // 243 + the living windows 18 baked pictures + the Library faces 18 (40 x 40 and 64 x 64, nine coats each)
 });
 test("the grid is per kind: S01 redder / between / yellower with between-dark painted; S20 yellower / between / greener with between-between painted", () => {
-  if (!existsSync(DESK)) return;
+  if (!deskPinned()) return;
   const s01 = coatGrid(DESK, "S01"), s20 = coatGrid(DESK, "S20");
   assert.deepEqual(s01.tints, ["redder", "between", "yellower"]); assert.equal(s01.painted, "between-dark"); assert.equal(s01.coats.length, 9);
   assert.deepEqual(s20.tints, ["yellower", "between", "greener"]); assert.equal(s20.painted, "between-between"); assert.equal(s20.coats.length, 9);
   assert.deepEqual(s20.coats.filter((c) => c.startsWith("between-")), ["between-dark", "between-between", "between-light"]);
 });
-test("S20: its painted cell (between-between) is proven against the placed master, the other eight are placed by the plan, between-dark among them", () => {
-  if (!existsSync(DESK)) return;
+test("S20 (rebuilt on its three-quarter stand): all nine coats are placed by the plan, the between-between cell over the old painted master's id, and the placed files are the plan's to the byte", () => {
+  if (!deskPinned()) return;
   const plan = planCoats({ desk: DESK, index, only: "S20" }), { coats, painted } = coatGrid(DESK, "S20");
   assert.deepEqual(plan.kinds, ["S20"]); assert.deepEqual(plan.missing, []);
-  assert.ok(plan.painted.length >= 6 && plan.painted.every((c) => c.ok && c.id.includes("S20")), plan.painted.filter((c) => !c.ok).map((c) => c.id).join(", "));
+  assert.deepEqual(plan.painted, [], "a rebuilt kind's painted cell is placed, not proven against the old master");
   for (const coat of coats) {
-    const placed = plan.ops.some((o) => o.id === `mibi-adult-S20-${coat}-304x312`);
-    assert.equal(placed, coat !== painted, `${coat}: ${coat === painted ? "proven, not placed again" : "placed"}`);
+    const id = coat === painted ? "mibi-adult-S20-304x312" : `mibi-adult-S20-${coat}-304x312`, op = plan.ops.find((o) => o.id === id);
+    assert.ok(op, `${coat}: placed as ${id}`);
+    assert.equal(createHash("sha256").update(op.buf).digest("hex"), M[id].sha256, `${id} is the desk's cell as placed`);
   }
   assert.ok(plan.ops.some((o) => o.id === "mibi-adult-S20-between-dark-304x312"), "between-dark is a coat of its own for S20, placed");
   assert.ok(!plan.ops.some((o) => /S20-redder/.test(o.id)), "no S01 Tint for S20");
