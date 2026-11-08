@@ -2,63 +2,63 @@
  "_note": "The Cross screen: the overview (every chapter read, one parent short, a pinned look), one chapter under the rail (the Coat, the Face, the Shape, one a parent has not read, with the wish), a family pair, a pair that cannot pay, the incubator busy, a partner away, and no partner: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "cross-overview-read": {
-   "hash": "b45da3f2",
+   "hash": "f06fda46",
    "png": "cross-overview-read.png"
   },
   "cross-overview-mixed": {
-   "hash": "a68dbd95",
+   "hash": "60c01151",
    "png": "cross-overview-mixed.png"
   },
   "cross-overview-wish": {
-   "hash": "a4ccd2ed",
+   "hash": "93d86119",
    "png": "cross-overview-wish.png"
   },
   "cross-chapter-coat": {
-   "hash": "907b4cb1",
+   "hash": "4432dc11",
    "png": "cross-chapter-coat.png"
   },
   "cross-chapter-face": {
-   "hash": "d993b5d5",
+   "hash": "9661e58d",
    "png": "cross-chapter-face.png"
   },
   "cross-chapter-shape": {
-   "hash": "56422095",
+   "hash": "efd3f13d",
    "png": "cross-chapter-shape.png"
   },
   "cross-chapter-unread": {
-   "hash": "75d0fa82",
+   "hash": "4ecc7772",
    "png": "cross-chapter-unread.png"
   },
   "cross-chapter-wish": {
-   "hash": "0958a99d",
+   "hash": "3ae13db5",
    "png": "cross-chapter-wish.png"
   },
   "cross-family": {
-   "hash": "bb102878",
+   "hash": "0c56dcc4",
    "png": "cross-family.png"
   },
   "cross-pricey": {
-   "hash": "080f8bdd",
+   "hash": "07c4d9f9",
    "png": "cross-pricey.png"
   },
   "cross-busy": {
-   "hash": "e416744a",
+   "hash": "1b27b346",
    "png": "cross-busy.png"
   },
   "cross-away": {
-   "hash": "3d537a81",
+   "hash": "e29a48f5",
    "png": "cross-away.png"
   },
   "cross-alone": {
-   "hash": "64797d92",
+   "hash": "d31ebe22",
    "png": "cross-alone.png"
   },
   "cross-sealed-overview": {
-   "hash": "fa98ddbe",
+   "hash": "c6c442da",
    "png": "cross-sealed-overview.png"
   },
   "cross-sealed-chapter": {
-   "hash": "4784261e",
+   "hash": "4223815e",
    "png": "cross-sealed-chapter.png"
   }
  }
