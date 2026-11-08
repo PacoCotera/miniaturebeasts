@@ -87,7 +87,7 @@ test("the page without ?place= plays generator 6: the cell's template, baked, 18
     assert.equal(st.gen, 6);
     assert.ok(["Reedpool", "SplitStone", "HollowTree", "Windstep"].includes(st.baked.id.replace("~x", "")), st.baked.id);
     assert.deepEqual([st.w, st.h, st.baked.ox, st.baked.oy], [18, 22, 0, 0]);
-    assert.ok(st.name && ["nest", "stone", "spring"].includes(st.heart), JSON.stringify(st));
+    assert.ok(st.name && ["moment", "nest", "stone", "spring"].includes(st.heart), JSON.stringify(st));
     assert.equal(st.ts, 48);
     assert.deepEqual(st.off, []);
     assert.deepEqual(errors, []);

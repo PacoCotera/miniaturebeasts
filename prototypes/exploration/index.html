@@ -1243,8 +1243,17 @@ function checkHeart() {
   (S.called = S.called || {})[c] = 1; ex.stats.hearts = (ex.stats.hearts || 0) + 1;
   const want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top, h.x, h.y) : 0; ex.dField = (ex.dField || 0) + got;
   logEv('Found a place · ' + h.kind + (got ? ' · +' + got + ' Data' : ''));
-  fxMsg(HEART_TEXT.foundMsg[h.kind] + (got ? ' · +' + got + ' Data' : ''), 3);
+  fxMsg((h.kind === 'moment' ? momentLine(lay, h) : HEART_TEXT.foundMsg[h.kind]) + (got ? ' · +' + got + ' Data' : ''), 3);
 }
+// A moment heart: a creature of the template's species (or, where the template names none, one of the region's kinds that lives on this ground) at the heart's spot.
+function momentSpecies(lay, h) {
+  const names = (h.species || []).map(n => n.toLowerCase());
+  const byName = SPECIES.findIndex(s => s.name && names.includes(s.name.toLowerCase()));
+  if (byName >= 0) return byName;
+  const k = hereKinds().filter(q => q.hab.includes(lay.land));
+  return k.length ? k[hash(S.seed, 'momsp', lay.cell) % k.length].sp : 0;
+}
+const momentLine = (lay, h) => (h.species && h.species.length && h.line) || HEART_TEXT.momentAny(spOf(momentSpecies(lay, h)).name);
 // The spring pays once, when you step onto it: Essence, never refilled.
 function springStep() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
@@ -1283,6 +1292,7 @@ function heartTellKind(c) {
   const key = String(c), h = heartOf(key); if (!h) return null;
   if (h.kind === 'spring') return 'sh';
   if (h.kind === 'nest') return 'b';
+  if (h.kind === 'moment') return 't';
   if (h.kind === 'stone') return layout(key).feats.some(f => f.kind === 'k' && f.x === h.x && f.y === h.y && stormCharge(key, f) > 0) ? 'k' : null;
   return null;
 }
@@ -1635,6 +1645,11 @@ function ensureLive(key) {
   const lay = layout(key), R = makeRng(hash(S.seed, 'live', key, ex.n));
   const live = { key, cr: [], fr: [], tf: [], strike: null, seen: {}, fid: 1, pt: null, rainOn: 0, stormShed: {}, calmShed: 0, noted: {} };
   ex.live[key] = live;
+  // A moment heart: its creature is at the heart's spot (first, so nothing else is placed there), ready for its act, and goes back there when it has been startled
+  if (lay.heart && lay.heart.kind === 'moment') {
+    const sp = momentSpecies(lay, lay.heart), open = !T_BLOCK[lay.tiles[lay.heart.y * lay.w + lay.heart.x]], at = open ? lay.heart : lay.heart.path[lay.heart.path.length - 1] || lay.heart;   // a heart on a landmark's stone: the ground beside it
+    live.cr.push({ id: 900000 + lay.cell, sp, x: at.x, y: at.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: .3, face: 1, ready: true, home: { x: at.x, y: at.y }, stub: { s: 0 } });
+  }
   // Buried pods lie 3–6 tiles from where you first come in, so the first Call can find them.
   const ent = lay.cave ? { x: 14, y: 27 } : entryPoint(lay, key, ex.lastDir);
   // A generator 6 place with a nest heart holds its pod (two one time in five) at the heart, once: the heart is found by walking up to it, the pod is the reward.
@@ -2342,7 +2357,7 @@ function hideOrFlee(X, c) {
 const bonded = c => actDone(S.exp, c, 'eat') || actDone(S.exp, c, 'settle');
 const shedReady = c => c.ready || (bonded(c) && rnd(S.seed, 'bond', c.id, S.exp.n) < SHED_BOND);
 function shedAllowed(c, X) {
-  const w = crById.get(c.id);
+  const w = crById.get(c.id) || c.stub;
   if (!w || w.s === S.exp.n || S.exp.stats.sheds >= SHED_MAX || !shedReady(c)) return false;
   if (c.st === 'shake' || c.st === 'curl') return !X.live.stormShed[c.sp];
   if (c.st === 'glow') return !momentTaken(c, X);
@@ -2370,7 +2385,7 @@ function shedPod(c, X) {
   const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
   S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
   if (how === 'dig') (X.live.holes = X.live.holes || []).push({ x: p.x, y: p.y, g: groundName(X.lay.land, X.lay.cave), at: NOW });   // the Rupar's fresh hole stays for the expedition
-  const w = crById.get(c.id); if (w) w.s = S.exp.n;
+  const w = crById.get(c.id) || c.stub; if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
   fxGlint(p.x, p.y, 200);
   const verb = { shake: 'shook dry', calm: 'settled', fog: 'settled', still: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal', grab: 'grabbed a falling fruit', warm: 'settled by a warm stone', dig: 'dug a fresh hole', air: 'aired its scales' }[how];
@@ -2512,7 +2527,8 @@ function creatureTick(c, X) {
       }
       if (sp.settle && c.calm >= 2) break;   // settling: stays put
       if (sp.shed === 'warm' && c.warm >= 1) break;   // a Tepor settling by a warm stone stays on it
-      if (rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
+      if (c.home) { if (c.x !== c.home.x || c.y !== c.home.y) stepToward(X, c, c.home, 1); }   // a moment heart's creature stays at its spot
+      else if (rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
     }
   }
 }

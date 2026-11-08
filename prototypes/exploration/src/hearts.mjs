@@ -25,6 +25,8 @@ export const HEART_TEXT = {
   tell: { spring: "water glints in the grass", nest: "a slow beat", stone: "a struck stone", moment: "something moves" },
   // found message on the line: what the heart was
   foundMsg: { spring: "Clear water rises in the grass", nest: "A pod lies here, waiting", stone: "A struck stone holds its charge" },
+  // a moment's found line is the template's own reveal line (canon-checked); a template with no species of its own (Windstep) draws one from the region
+  momentAny: name => "A " + name + " settles in the grass",   // [copy]
   // a heart that needs a partner to reach: the partner's own verb (placeholders until the book gives them)
   reach: { tuikis: "A Tuikis could dig to it", tuliko: "A Tuliko could wade to it", rupar: "A Rupar could clear the bank to it", untuva: "An Untuva could nose it out", loika: "A Loika could calm the way to it" },
   // the reach and the world in words: how many places have their heart found
