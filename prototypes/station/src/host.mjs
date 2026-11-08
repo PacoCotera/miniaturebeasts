@@ -313,22 +313,24 @@ export function screenProps(plate) {
   const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : screen === "settings" ? settingsBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   const fl = UI.flight ? flightRequest(UI.flight.sub) : null; if (fl) reqs.push(...fl.requests);   // the carry's flight picture goes to the face with this screen's
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
-  const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = droppedPictures();   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
+  const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = [...droppedPictures()];   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
+  const homeCaps = Object.values(SPECS.home.regions.cap?.marks ?? {}); if (screen !== "home" && homeCapsUp) { dropped.push(...homeCaps); homeCapsUp = false; }   // Home's 22 px caps leave the face with Home: they stayed in the picture table on every later screen (the Library's l3 states count them in layer-check's 200)
   if (screen === "vivarium" && UI.viv.prev) for (const id of [UI.viv.prev.base, ...UI.viv.prev.tiles]) if (id) ids.add(id);   // the room the swap's dither starts from stays on the face until the event ends
   if (screen === "habitat" && UI.hab.prevRoom) ids.add(UI.hab.prevRoom);   // the near painting a move's dither starts from stays on the face until the event ends
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   if (screen === "sitting") for (const id of [UI.sit.prev.glass, UI.sit.prev.resident]) if (id) ids.add(id);   // the pictures the window's dithers start from stay on the face until their events end
-  if (screen === "home") for (const id of Object.values(SPECS.home.regions.cap?.marks ?? {})) if (assetEntry(id)) ids.add(id);   // Home's panels wear their 22 px key caps (home.json regions.cap): loaded with Home only
+  if (screen === "home") { homeCapsUp = true; for (const id of Object.values(SPECS.home.regions.cap?.marks ?? {})) if (assetEntry(id)) ids.add(id); }   // Home's panels wear their 22 px key caps (home.json regions.cap): loaded with Home only
   if (screen === "home") return { msg: { screen, ...body.props, frame: withHold({ plate: pl, ...answerPart({}) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;
-  { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) line.keys = cues; if (UI.teach && cues.some((c) => c.key === UI.teach.key)) line.subject = SPECS.frame.strings.teach[UI.teach.key]; }   // the first time a key has a cue its line stands in the middle slot (intents/frame.mjs teachTick)   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
+  { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) { line.keys = cues; for (const c of cues) { const id = SPECS.frame.regions.marks.roomCue?.[c.room]; if (id && assetEntry(id)) ids.add(id); } } if (UI.teach && cues.some((c) => c.key === UI.teach.key)) line.subject = SPECS.frame.strings.teach[UI.teach.key]; }   // the first time a key has a cue its line stands in the middle slot (intents/frame.mjs teachTick)   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
   { const back = originWord({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (back && line.back) line.back = back; }   // after a carry ← goes back to where it started: the way back names that place
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
   return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl, ...(fl ? { flight: { pic: fl.id, room: UI.flight.room } } : {}), ...answerPart(line) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
 }
-let shownLight = null;   // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
+let homeCapsUp = false;   // Home's key caps are on the face (they are dropped when another screen's props go out)
+let shownLight = null;  // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
 const litOf = (reqs) => reqs.filter((r) => r.kind === "mibi" && r.light).map((r) => r.id);   // the graded residents the props name
 const owedOf = (reqs) => reqs.filter((r) => r.owed).map((r) => r.id);   // the scene's pictures that show an owed habit key (the request's `owed`): a golden refuses them
 // The pictures a light puts on the face, by their ids (their sizes from the specs that place them): the host drops them once props with the next light are taken.
@@ -339,7 +341,11 @@ export const roomsPending = () => roomsWanted().filter((r) => !roomLoaded(r));
 export const lightIds = (light, room = shownRoomNow()) => roomPictureIds(room, light);   // the shown room's painting, near view, pieces and (Roots) bed in a light: the host drops them once props with the next light (or room) are taken
 // The pictures of the frame and the Companion's face, the same on every screen.
 export function frameIds() {
-  const ids = new Set(); walk(SPECS.frame.regions, ids); for (const id of companionIds()) if (assetEntry(id)) ids.add(id);
+  // Not every picture the frame's spec names is drawn by the frame: marks.roomPanel (the 22 px set) is Home's own, loaded with Home from home.json regions.cap; marks.callMarks are drawn by nothing yet; no cue is Home's (carry.mjs ROOM_MARK: the three rooms a ring can carry to).
+  // They stay in frame.json for the art desk's set; loading them on every screen cost the Library's l3 states 11 pictures each (layer-check budget 200).
+  // marks.roomCue (the 16 px cue marks) are drawn only while a cue shows: screenProps adds the shown cues' own (cueMarkIds).
+  const { roomPanel, callMarks, roomCue, ...marks } = SPECS.frame.regions.marks ?? {};
+  const ids = new Set(); walk({ ...SPECS.frame.regions, marks }, ids); for (const id of companionIds()) if (assetEntry(id)) ids.add(id);
   for (const id of ["energy", "data", "essence", "cross"]) for (const px of [14, 15, 16]) if (assetEntry(`icon:${id}:${px}`)) ids.add(`icon:${id}:${px}`);
   return [...ids];
 }
