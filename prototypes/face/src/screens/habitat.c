@@ -182,7 +182,7 @@ static void build_chapters(void) {   /* the chapters caption (plan 3.17 F3c): st
     else text[o++] = *q++;
   }
   text[o] = 0;
-  v_region("chapters", LAYER_TYPE); v_line_at("chapters", text, v_sk(S, "regions.chapters.rect", 0), v_si(S, "regions.chapters.lineTop", 163), V_ANCHOR_LINE, v_si(S, "regions.chapters.px", 14), v_scol(S, "colours.card.chapters"), V_ALIGN_LEFT);
+  v_region("chapters", LAYER_TYPE); v_line_at("chapters", text, v_sk(S, "regions.chapters.rect", 0), v_si(S, "regions.chapters.lineTop", 162), V_ANCHOR_LINE, v_si(S, "regions.chapters.px", 16), v_scol(S, "colours.card.chapters"), V_ALIGN_LEFT);
 }
 /* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label;
    a portrayed mibi's label carries the gilt corner 1:1 at regions.stamp.portrayed.at (kit_stamp's corner) */
