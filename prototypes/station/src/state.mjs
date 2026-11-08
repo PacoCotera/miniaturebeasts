@@ -595,7 +595,7 @@ export function freshen(st, p, settings = DEFAULT_SETTINGS) {
   const b = freshenBlock(st, p, settings); if (b) return { ok: false, why: b };
   const cost = freshenCost(st, p, settings); st.s -= cost;
   if (onBench(st, p)) p.keep = POD_LIFE; else p.dryAt = (st.turn | 0) + POD_LIFE;
-  logEv(st, "Freshened " + aAn(podName(p)) + " pod · " + spendText(0, 0, cost));
+  logEv(st, "Watered " + aAn(podName(p)) + " pod · " + spendText(0, 0, cost));
   return { ok: true, cost };
 }
 // Freshen these (the filter tray): every pod named, to full, in the order given ("by use"), while the Essence lasts; { cost, n, of } before the press, and freshenAll spends it.

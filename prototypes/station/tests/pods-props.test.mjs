@@ -223,7 +223,8 @@ test("Compare in the reading room's look: the bench and two papers, this pod on 
 const inv = (m) => P(m).regions.inv, cardsOf = (m) => inv(m).grid.cards;
 test("the count is a fact, never n of N: pods and species; a filter says how many of how many and what; no pods: the empty seat and its two lines, the tools dimmed with their reason", () => {
   const st = mixed(); ident(st);
-  assert.equal(inv(model(st, {}, "card.0")).detail.right, "12 pods · 4 species");
+  assert.equal(inv(model(st, {}, "card.0")).detail.right, "fresh for 12 turns", "a focused pod says how long it stays fresh, quietly");
+  assert.equal(inv(model(st, {}, "sort")).detail.right, "12 pods · 4 species");
   assert.equal(inv(model(st, { chips: ["S02"] }, "card.0")).detail.right, "3 of 12 · Untuva");
   assert.equal(inv(model(st, { chips: ["S02", "unread"] }, "card.0")).detail.right, "3 of 12 · Untuva, unread");
   assert.equal(inv(model(home(1), {}, "card.0")).detail.right, "1 pod · 1 species", "one pod");
@@ -255,9 +256,9 @@ test("the verbs: Read, Grow, Freshen, Compare and Let go, each only while some p
 });
 test("the detail line: the focused pod's first tag and where it was found, the freshness in amber when it dries; on the verb line what the verb does and how many pods can take it", () => {
   const st = mixed(); ident(st); const v = (focus, over = {}) => inv(model(st, over, focus)).detail;
-  assert.match(v("card.0").left, /^.+ · .+$/); assert.equal(v("card.0").amber, false); st.turn = 9; assert.deepEqual([v("card.0").amber, v("card.0").right], [true, "dries out in 4 turns"]);
+  assert.match(v("card.0").left, /^.+ · .+$/); assert.deepEqual([v("card.0").amber, v("card.0").right], [false, "fresh for 12 turns"]); st.turn = 9; assert.deepEqual([v("card.0").amber, v("card.0").right], [true, "dries out in 4 turns"]);
   st.turn = 2; assert.deepEqual([v("verb.read").left, v("verb.read").right], ["Read works on the bright pods", "twelve bright pods"]);
-  assert.deepEqual([v("verb.freshen", { verb: "freshen" }).left, v("verb.freshen", { verb: "freshen" }).right], ["Freshen works on the bright pods", "twelve bright pods"], "a turn down: every pod can be freshened");
+  assert.deepEqual([v("verb.freshen", { verb: "freshen" }).left, v("verb.freshen", { verb: "freshen" }).right], ["Pods dry out after 12 turns · water one to make it fresh again", "twelve bright pods"], "a turn down: every pod can be freshened");
 });
 test("the selectors: ▶ at the right edge and ◀ at the left stay; ▲ from the top row is the verb that is on (a tool when the caller fixed the verb), ▼ from the verb line the first pod that can take it; ▼ at the last row stays", () => {
   const st = mixed(); ident(st);

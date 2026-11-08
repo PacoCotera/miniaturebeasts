@@ -190,10 +190,10 @@ function inventoryView(view, m, spec, req) {
   const filtered = chips.length ? fill(Sg.filtered, { k: list.length, n: st.tray.length, what: chips.join(", ") }) : null;
   const flash = ui.flash && ui.flash.until > (m.now ?? 0) ? ui.flash.text : husks.length ? (husks.length === 1 ? fill(Sg.dried, { n: 1 }) : fill(Sg.driedMany, { n: husks.length })) : "";
   const detail = { left: "", right: flash || filtered || (none ? "" : countAll), amber: false };
-  if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = fill(PK.help, { Verb: PK.verbs[verb] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
+  if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = verb === "freshen" && PK.helpFreshen ? fill(PK.helpFreshen, { n: S.POD_LIFE }) : fill(PK.help, { Verb: PK.verbs[verb] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
   else if (curCard && !(focus === "sort" || focus === "filter" || focus === "find")) {
     const p = curCard.e.p, f = freshOf(st, p, spec); detail.left = [curCard.e.tags[0].text, S.podOrigin(p)].join(" · ");
-    if (f.amber && !flash) { detail.right = f.words; detail.amber = true; }
+    if (!flash && !filtered) { detail.right = f.words; detail.amber = !!f.amber && !f.bench; }   // the focused pod says how long it stays fresh, quietly from the start; amber when it dries soon
   }
   // the picker: what the face draws (props name what, never where)
   const total = rowsN;
