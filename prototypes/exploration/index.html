@@ -6,7 +6,7 @@
 <title>Companion Field Test</title>
 <script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
 <script>if (new URLSearchParams(location.search).has("raw")) document.documentElement.classList.add("raw");</script>
-<meta name="description" content="Miniature Beasts exploration rough playable on a simulated Companion screen: 450×600 pixels at 1:1, a fixed 48-colour palette, the world map, living patches, storms, partners and two gates.">
+<meta name="description" content="Miniature Beasts exploration rough playable on a simulated Companion screen: 450×600 pixels at 1:1, a fixed 51-colour palette, the world map, living patches, storms, partners and two gates.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap">
@@ -274,7 +274,7 @@ import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, cree
    ===================================================================== */
 
 // ===================== 0. Screen palette (data; maps 1:1 to an LVGL palette) =====================
-// 48 colours. Every pixel the screen shows is one of these. Names are used by the art code.
+// 51 colours (the first 48 and the three sage). Every pixel the screen shows is one of these. Names are used by the art code.
 const PALETTE = [
   ['void', '#0c0a12'], ['ink', '#1a1725'], ['night', '#29253a'], ['slate', '#3d3954'], ['stone', '#5d5974'], ['mist', '#8d8aa6'],
   ['fog', '#c6c4d8'], ['bone', '#f1ebdf'], ['white', '#ffffff'],
@@ -288,18 +288,19 @@ const PALETTE = [
   ['gold', '#d89b14'], ['yellow', '#ffd441'], ['cream', '#fff4a6'],
   ['magenta', '#c3387e'], ['pink', '#ff80c0'],
   ['rock', '#847fa8'], ['rockL', '#bab6d4'],
+  ['sageL', '#bfccb6'], ['sage', '#87947f'], ['sageD', '#556251'],
 ];
 // One step darker (storm light, shade, outlines) and one step lighter (highlights).
 const DARK_OF = { void: 'void', ink: 'void', night: 'ink', slate: 'night', stone: 'slate', mist: 'stone', fog: 'mist', bone: 'fog', white: 'bone',
   paper: 'sand', sand: 'clay', clay: 'bark', bark: 'soil', soil: 'ink', pine: 'ink', forest: 'pine', leaf: 'forest', grass: 'leaf', sprout: 'grass', lime: 'sprout',
   deep: 'ink', sea: 'deep', river: 'sea', sky: 'river', ice: 'sky', tealD: 'ink', teal: 'tealD', aqua: 'teal', mint: 'aqua',
   plumD: 'ink', plum: 'plumD', lilac: 'plum', lavender: 'lilac', wine: 'night', red: 'wine', coral: 'red', peach: 'coral', blush: 'peach',
-  rust: 'soil', orange: 'rust', amber: 'orange', gold: 'bark', yellow: 'gold', cream: 'yellow', magenta: 'wine', pink: 'magenta', rock: 'stone', rockL: 'rock' };
+  rust: 'soil', orange: 'rust', amber: 'orange', gold: 'bark', yellow: 'gold', cream: 'yellow', magenta: 'wine', pink: 'magenta', rock: 'stone', rockL: 'rock', sageL: 'sage', sage: 'sageD', sageD: 'ink' };
 const LIGHT_OF = { void: 'ink', ink: 'night', night: 'slate', slate: 'stone', stone: 'mist', mist: 'fog', fog: 'bone', bone: 'white', white: 'white',
   paper: 'bone', sand: 'paper', clay: 'sand', bark: 'clay', soil: 'bark', pine: 'forest', forest: 'leaf', leaf: 'grass', grass: 'sprout', sprout: 'lime', lime: 'cream',
   deep: 'sea', sea: 'river', river: 'sky', sky: 'ice', ice: 'white', tealD: 'teal', teal: 'aqua', aqua: 'mint', mint: 'white',
   plumD: 'plum', plum: 'lilac', lilac: 'lavender', lavender: 'white', wine: 'red', red: 'coral', coral: 'peach', peach: 'blush', blush: 'bone',
-  rust: 'orange', orange: 'amber', amber: 'cream', gold: 'yellow', yellow: 'cream', cream: 'white', magenta: 'pink', pink: 'blush', rock: 'rockL', rockL: 'fog' };
+  rust: 'orange', orange: 'amber', amber: 'cream', gold: 'yellow', yellow: 'cream', cream: 'white', magenta: 'pink', pink: 'blush', rock: 'rockL', rockL: 'fog', sageL: 'bone', sage: 'sageL', sageD: 'sage' };
 
 // ===================== 1. Constants =====================
 const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H = SCR_H - HUD_H - LINE_H; // view 450×532
@@ -2724,20 +2725,23 @@ const LIGHT_GRASS = PALETTE.map((_, i) => i), DARK_GRASS = PALETTE.map((_, i) =>
 const TINT = LEVEL_LIGHT.map((l, c) => c === C.lime ? c : l);   // the level tint's step: LEVEL_LIGHT capped at lime, so green never steps on to cream
 const SHADE_LUT = DARK.slice(); SHADE_LUT[C.pine] = C.pine;   // the Shade's step: one value darker, the tuft bases stay pine so the green never goes black
 function tintLevel(pb, x0, y0, w, h, lv) { for (let k = 0; k < lv; k++) for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const v = pb.get(x, y); if (v >= 0) pb.set(x, y, TINT[v]); } }
-function nearestPal(r, g, b) { let best = 0, bd = 1e9; RGB.forEach(([R, G2, B], i) => { const d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } }); return best; }
-function mixLUT(target, t) { const [tr, tg, tb] = RGB[C[target]]; return RGB.map(([r, g, b]) => nearestPal(r + (tr - r) * t, g + (tg - g) * t, b + (tb - b) * t)); }
+// The sage three (48-50) joined the first 48 later: a mixed colour of the first 48 still lands on the first 48 (so no fog, fade or wash table
+// of an older colour changed when the sage came in), while a sage colour may land on any of the 51 (Hiljan and Tuliko fog to pale sage).
+const FIRST_N = 48;
+function nearestPal(r, g, b, n = RGB.length) { let best = 0, bd = 1e9; for (let i = 0; i < n; i++) { const [R, G2, B] = RGB[i], d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } } return best; }
+function mixLUT(target, t) { const [tr, tg, tb] = RGB[C[target]]; return RGB.map(([r, g, b], k) => nearestPal(r + (tr - r) * t, g + (tg - g) * t, b + (tb - b) * t, k < FIRST_N ? FIRST_N : RGB.length)); }
 const FOGLUT = mixLUT('bone', .62),   // fog whitens and washes out: pale, low contrast
      FADE = mixLUT('stone', .5);
 FOGLUT[C.sprout] = C.fog; FOGLUT[C.lime] = C.fog;   // the lightest grass fogs to fog, as grass does: it never grows brighter asleep than woken (the palette's place fog says the same)
-// The Shade's asleep wash, one table: every colour mixed .48 toward bone, then the nearest of the 48 core colours; a cool colour that lands there
+// The Shade's asleep wash, one table: every colour mixed .48 toward bone, then the nearest of the core colours (the first 48 for the first 48, as the fog and fade tables); a cool colour that lands there
 // (sky, ice, river, aqua, mint) becomes mist, so a glow cap or water never shines through the Shade. Built and tested; nothing draws through it yet
 // (the Shade place and its teal trees draw through it; it needs the Shade's moss ground, or the wash turns the green floor to sprout).
 const SHADE_WASH = [];
 function buildShadeWash() {
   const [tr, tg, tb] = RGB[C.bone], cool = [C.sky, C.ice, C.river, C.aqua, C.mint]; SHADE_WASH.length = 0;
-  for (const [r, g, b] of RGB) { const q = nearestCore(r + (tr - r) * .48, g + (tg - g) * .48, b + (tb - b) * .48); SHADE_WASH.push(cool.includes(q) ? C.mist : q); }
+  RGB.forEach(([r, g, b], k) => { const q = nearestCore(r + (tr - r) * .48, g + (tg - g) * .48, b + (tb - b) * .48, k < FIRST_N ? FIRST_N : PALETTE.length); SHADE_WASH.push(cool.includes(q) ? C.mist : q); });
 }
-function nearestCore(r, g, b) { let best = 0, bd = 1e9; for (let i = 0; i < PALETTE.length; i++) { const [R, G2, B] = RGB[i], d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } } return best; }
+function nearestCore(r, g, b, n = PALETTE.length) { let best = 0, bd = 1e9; for (let i = 0; i < n; i++) { const [R, G2, B] = RGB[i], d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } } return best; }
 buildShadeWash();
 // Lookup tables a frame may use: 0 none, 1 dark (storm, dim cave), 2 darker (dark cave), 3 fog, 4 faded sign.
 const REMAP = [null, DARK, DARK2, FOGLUT, FADE];
@@ -2873,10 +2877,10 @@ function cutLine(str, maxW, s) { while (textW(str, s) > maxW && str.includes(' �
 
 // ---------- Species art: the signed 32 px tokens and 12 px minis, used 1:1 ----------
 // Release 21c: the twenty kinds' signed tokens from the art desk (field-tokens work/tokens.mjs, round 2; page species in sp order S01, S03, S02, S04 to S20), one
-// picture per string over the 48 colours in PALETTE order: a letter is a colour (A–Z, a–v: index 0–47), '.' is clear, a number
+// picture per string over the 51 colours in PALETTE order: a letter is a colour (A–Z, a–y: index 0–50), '.' is clear, a number
 // after a letter is the run length (none: 1), read left to right, row by row. Nothing is recoloured, scaled or redrawn here:
 // the token is the signed picture; the cards and the stage show it at a whole number of pixels per pixel (upArt).
-const RUN_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv';
+const RUN_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy';
 const SPECIES_ART = [
   { // S01 Loika
     idle: '.49A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3D2C3LD4C3KA2LA.9A2D4C4L2IAD2C2DK2L2A.7AD2C3DC4L2A2D2CD3L3A.6AD2C9L5DC3DK3A.6ADC10L4D2L3K4A.5AC16L5K3A.6AC15L8A.7AC13P2L7A.8AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14',
@@ -2891,8 +2895,8 @@ const SPECIES_ART = [
     mini: '.31C2.7C3t2C.4C2Eu5C.2CvE3u2v2C.2CuDEu3v2C.2CuE2CuCuC2.2CE4u4C.2CE7C.4C3EDC2.8C2.5',
   },
   { // S04 Hiljan
-    idle: '.48Z2.6Z2.21Zq2Z6q2Z.20Zp2H6p2Z.19ZHG10HZ.17ZHG12HZ.16ZG14HZ.15ZG8IZGIZG2Z.15ZG8Z2GZ2G2Z.15ZG14FZ.7Z4.4ZG10E2G2FZ.5Z2H4Z2.2ZG14FZ.4ZH2F4H2Z.ZG14Z.4ZHGFG4FGHZHG14Z.4ZGFG2F2G2F2ZG15Z.4ZF2GFG2FGF2ZG9FG5Z.4ZF2G2FG2FGFZG9FG5Z.4ZF5GFG2Z2G10FG4Z.5ZF6G2Z2G11F3GZ.6ZF7H2G15Z.7Z3F4G17Z.10Z2F2G17Z.12Z2FG15FZ.13ZF2G13F2Z.13ZF17Z.14ZF15Z.16ZF13Z.18ZF4Z2G4FZ.19ZF4Z2G4FZ.19ZF4Z2G4FZ.20Z4.ZG3F2Z.26Z5.7',
-    mini: '.17Z.2Z.7ZqZ2qZ.6ZGH2GZ.5ZHG4HZ.3Z2FZGZGFZ.2ZH2ZG4FZ.2ZF2ZF4Z.3ZF2HF4Z.4Z3F4Z.6ZFZG2Z.7Z.Z2.3',
+    idle: '.48Z2.6Z2.21Zq2Z6q2Z.20Zp2H6p2Z.19ZHw10HZ.17ZHw12HZ.16Zw14HZ.15Zw8IZwIZw2Z.15Zw8Z2wZ2w2Z.15Zw14xZ.7Z4.4Zw10E2w2xZ.5Z2H4Z2.2Zw14xZ.4ZH2x4H2Z.Zw14Z.4ZHwxw4xwHZHw14Z.4Zwxw2x2w2x2Zw15Z.4Zx2wxw2xwx2Zw9xw5Z.4Zx2w2xw2xwxZw9xw5Z.4Zx5wxw2Z2w10xw4Z.5Zx6w2Z2w11x3wZ.6Zx7H2w15Z.7Z3x4w17Z.10Z2x2w17Z.12Z2xw15xZ.13Zx2w13x2Z.13Zx17Z.14Zx15Z.16Zx13Z.18Zx4Z2w4xZ.19Zx4Z2w4xZ.19Zx4Z2w4xZ.20Z4.Zw3x2Z.26Z5.7',
+    mini: '.17Z.2Z.7ZqZ2qZ.6ZwH2wZ.5ZHw4HZ.3Z2xZwZwxZ.2ZH2Zw4xZ.2Zx2Zx4Z.3Zx2Hx4Z.4Z3x4Z.6ZxZw2Z.7Z.Z2.3',
   },
   { // S05 Tepor
     idle: '.38N.N2.N2.6N3.15NJNLJNLJN6J3N2.12NJLJKLJKLJ3L3m3L2N2.10NLKLK2LK2LKm9L2N.10NLKLK2LK2m12LN.10NL3K2Lm14LN.10N2L3m16LN.11N3m17LN.12Nm9KINmINm2MN.12Nm9KN2mN2mM2N.12Nm10K2mK2M3N.10N3m12M2mM2N.10NL3m15MN.10NLmM4m13N.10NLmM6m7L3m2N.9NLmM7m12N.9Nm2M6m13N.7N2Lm3M4m13MN.6NL2m18M2mMN.5NLM4m18M2N.5NM5m18MN.7N3M3m16M2N.10N2M18N.12NM18N.13NM16N.15N3m5MNM5N.18Nm5MNM5N.18Nm5MNM5N.18Nm4M2NM6N.17Nm4M3N6.19N7.14',
@@ -2955,8 +2959,8 @@ const SPECIES_ART = [
     mini: '.18Z3.8Zb2cZ.6Zab2c2Z.4Za2ZaZbZ.4Za3J3Z.4Za2b2JbZ.3Z2a3b2aZ.2Za5bJ2Z.2Zaba3bJZ.4Za6Z.5Z6.3',
   },
   { // S20 Tuliko
-    idle: '.203C2.2C2.2C2.2C2.17CJ2C2J2C2J2C2J2C.15CJ3KJ3KJ3KJ3KC.14CJ3KJ3KJ3KJ3KC.13CK18C.11CQ2PQ2PQ2PQ2Pc7HC.9CQ2PQ2PQ2PQ2PQc8HC.7CPQ2PQ2PQ2PQ2Pc10HC.6CQ2PQ2PQ2PQ2Pc12C.6CPQ2PQ2PQ2Pc14C.6CQ2PQ2PQ2c9ICcICc2C.6CPQ2PQ2c11C2cC2c2C.5CHc24C.3C3c20P2c3C.2CH3c24PC.2CP2c12H11cP2C.2CP4c8H13P2C.4C2P3c6H13P2C.7C2P2c4H13P2C.10CP5H12P2C.12CP17C.13Cc2PCP2C3P2Cc2PC2.14Cc2PC3.3C3c2PC.15Cc2PC.7Cc2PC.16CPC.9CPC.18C.11C.10',
-    mini: '.16C.C.8CJCJC.6CJKJKJC.4CQPQc3HC.3CPQcCcCcHC.2CPc6PC.2CP3H3PC.4CP6C.4Cc2C2c2C.4CcPC2cPC.5C2.2C2.3',
+    idle: '.211C2.C2.24C3J2CJ2C3.18C3J2CJ5CJ2C.16CJ2CJ12C.14CKJ15KC.12CK18C.12Cxyxwxyxwxw9C.10C2xyxyxyxyxw11C.8Cwxyxwxyxwxyw11C.7Cyxyxyxyxyxyw12C.6Cwxyxwxyxwxyw5ICw3ICwC.6Cxyxyxyxyxyw6C2w3C2wC.6Cyxwxyxwxw16C.5Cyxyxyxyw12yw2yw2C.4Cyxwxw17y2w3C.3Cyxyw24C.2Cxw11H13w2xC.2C2x2w7H15wxC.5C2x3w4H14wxC.8C3x5H12x2C.12Cx9Cx7C.14Cw2xC2y2C.Cy2C2w2xC.13Cw2xC2y2C.Cy2C2w2xC.13CwxyC2y2C.Cy2C2wxyC.13Cx2yC.C2.3C2.Cx2yC.14C3.11C3.5',
+    mini: '.17C.C.8CJCJC.6CKJKJKC.4Cxyxw4C.2Cyxw2CwCwC.2Cxw4yw2C.2Cx2wH4xC.3Cx2H3xC.4CwxC2wxC.4CxyC2xyC.5C2.2C2.3',
   },
 ];
 // The juvenile pictures (all twenty kinds signed: idle and mini), same species order and same format as above: per species idle, alert, huddle, eat0, eat1 (32 px) and mini
@@ -2977,8 +2981,8 @@ const JUVENILE_ART = [
     mini: '.31C.8C3tC.5C2E2u3C.3CuE2u2v2C.3CuDEu4vC.2CuE2u2EuC2.2CE3CuCu2C.2CE7C.4C3ED2C.8C3.4',
   },
   { // S04 Hiljan
-    idle: '.240Z.6Z.23ZqZ6qZ.22ZpH6pZ2.20ZHG8H2Z.18ZHG11HZ.17ZG7IZGIZGHZ.16ZG7Z2GZ2G2Z.16ZG13FZ.9Z4.3ZG9E2G2FZ.8ZH4Z.2ZG13FZ.7ZHGF2GHZ.ZG13Z.7ZHGFG2FGZ2HG13Z.7ZF2GFGFGZ2G7FG6Z.7ZF6GZ2G7FG6Z.8ZF6H2G8F4G2Z.9ZF7G14Z.10Z3F5G12FZ.13Z3F15Z.16ZF14Z.17ZF12Z.19ZF3Z2G4FZ.20ZF3Z2G4FZ.20ZF3Z2G4FZ.21Z3.ZG3F2Z.26Z5.7',
-    mini: '.29Z.2Z.7ZqZ2qZ.6ZGH2GZ.5ZHG4HZ.3Z2FZGZGFZ.2ZHFZF4Z.3ZF2HF4Z.4Z3F4Z.6ZFZG2Z.7Z.Z2.3',
+    idle: '.240Z.6Z.23ZqZ6qZ.22ZpH6pZ2.20ZHw8H2Z.18ZHw11HZ.17Zw7IZwIZwHZ.16Zw7Z2wZ2w2Z.16Zw13xZ.9Z4.3Zw9E2w2xZ.8ZH4Z.2Zw13xZ.7ZHwx2wHZ.Zw13Z.7ZHwxw2xwZ2Hw13Z.7Zx2wxwxwZ2w7xw6Z.7Zx6wZ2w7xw6Z.8Zx6H2w8x4w2Z.9Zx7w14Z.10Z3x5w12xZ.13Z3x15Z.16Zx14Z.17Zx12Z.19Zx3Z2w4xZ.20Zx3Z2w4xZ.20Zx3Z2w4xZ.21Z3.Zw3x2Z.26Z5.7',
+    mini: '.29Z.2Z.7ZqZ2qZ.6ZwH2wZ.5ZHw4HZ.3Z2xZwZwxZ.2ZHxZx4Z.3Zx2Hx4Z.4Z3x4Z.6ZxZw2Z.7Z.Z2.3',
   },
   { // S05 Tepor
     idle: '.169N3.28NJ3N.5N3.18NJKLKJN.3NJ3N.16NJLK2LKJN3JK3JN2.14NLKLK2LmL3m5L2N2.13NL2K2m12L2N.13NL2m15LN.13N2m16LN.13Nm9KINmINm2N.13Nm9KN2mN2mMN.13Nm10K2mK2M2N.12N2m12M5N.11NL2m14M2N.11NLmM3m12MN.11NLmM5m6L3m2N.12Nm2M5m11N.10N2Lm2M4m12N.9NL2m15M2mMN.8NLM3m16M2N.9NM4m14M3N.10N2M18N.13NM16N.15NM14N.17N2m4MNM4N2.19Nm3M2NM5N.19Nm3M3N5.21N6.16',
@@ -3041,8 +3045,8 @@ const JUVENILE_ART = [
     mini: '.18Z3.8Zb2cZ.6Zab4Z.4Za2ZaZbZ.4Za3Jc2Z.4Za3bcZ.4Z2a3bcbZ.2Za6c2Z.2Za6bZ.4Za2Za2Z.6Z2.Z2.4',
   },
   { // S20 Tuliko
-    idle: '.364C2.C2.C2.23CJ2CJ2CJ2C.21CJ2KJ2KJ2KC.20CK11C3.15C2Q2PQ2PQc5H3C2.12CPQ2PQ2PQc9H2C.10CQPQ2PQ2c13HC.9CPQ2PQc10ICcICcC.9CQPQc12C2cC2cC.8CHc21HC.5C3c18P2c3C.4CH3c21P2C.5CP3c8H11P3C.6C2P2c6H11P2C2.9CP7H10P2C.12CP17C.14Cc2PCP2C2P2Cc2PC2.15Cc2PC3.2C3c2PC.16Cc2PC.6Cc2PC.17CPC.7CPC2.19C.9C.12',
-    mini: '.29C.C.8CJCJC.6CJKJKC.5CQPc3HC.3CPc2CcCcC.3CPc6HC.3CP2H3PC.4CP6C.4CcPCcPC.6C2.C2.4',
+    idle: '.370C2.27C3J2C3.23CJ2CJ2CJ2C.20C2J9KC.16C3K12C.14C2xwxyxwxw9C2.11Cyxyxyxyxw12C.9Cyxwxyxwxw14C.8Cxyxyxyxw7ICw3ICwC.7Cxwxyxw10C2w3C2wC.6Cxyxyxw19C.4C2xwxw16yw2yw2C.4C2xw8H10wy2w2xC.6C2x2w4H14wxC.9C2x4H13x2C.12Cx9Cx7C.14Cw2xC2y2C.Cy2C2w2xC.13Cw2xC2y2C.Cy2C2w2xC.13CwxyC2y2C.Cy2C2wxyC.13Cx2yC.C2.3C2.Cx2yC.14C3.11C3.6',
+    mini: '.29C.C.8CJCJC.5C2yK3wC.3Cyxw2CwCwC.2Cxw4yw2C.2Cx2wH4xC.3Cx2H3xC.4CwxC2wxC.4CxyC2xyC.5C2.2C2.3',
   },
 ];
 // The 2-frame step (L2b): per kind an adult and a juvenile pair of 32 px strings in the token format, in page species order, for sp 0, 1, 3, 4, 7, 11, 16, 19 only (absent for the rest).
@@ -3052,12 +3056,12 @@ const JUVENILE_ART = [
 const STEP_ART = []; Object.assign(STEP_ART, {
   0: { adult: ['.49A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3D2C3LD4C3KA2LA.9A2D4C4L2IAD2C2DK2L2A.7AD2C3DC4L2A2D2CD3L3A.6AD2C9L5DC3DK3A.6ADC10L4D2L3K4A.5AC16L5K3A.6AC15L8A.7AC13P2L7A.8AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14', '.17A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3D2C3LD4C3KA2LA.9A2D4C4L2IAD2C2DK2L2A.7AD2C3DC4L2A2D2CD3L3A.6AD2C9L5DC3DK3A.6ADC10L4D2L3K4A.5AC16L5K3A.6AC15L8A.7AC13P2L7A.8AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5A2C5D4A3C3D3A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.78'], juvenile: ['.237A2.28A2L2A2.25AL2QLAQA.24ALQ2PQ2A.23A2P4Q2A.22AD3P6A.20AD9P2A.18AD12A.18AD6L3DCD2A2.15ALD7L3C2D3KIA.12AL2D6L3IAD3KA2.12AL2D2CD2L4A2D2CDK2A.11AL2DC2D2L3C7D3A.10AK2L6D2C8D2A.11AKL6DC10DA.12AL7C11A.13AL7C10A.13ADL6C11A.12ADL6C10A.13ADCL4DC10A.14AC5DC10A.13AC5AD2C4AC4A.13AC4A.AD3CA.AC2A.15A4.2AD3CA.2A2.23A4.12', '.205A2.28A2L2A2.25AL2QLAQA.24ALQ2PQ2A.23A2P4Q2A.22AD3P6A.20AD9P2A.18AD12A.18AD6L3DCD2A2.15ALD7L3C2D3KIA.12AL2D6L3IAD3KA2.12AL2D2CD2L4A2D2CDK2A.11AL2DC2D2L3C7D3A.10AK2L6D2C8D2A.11AKL6DC10DA.12AL7C11A.13AL7C10A.13ADL6C11A.12ADL6C10A.13ADCL4DC10A.14AC5DC10A.13AC4A2D2C4A2C2A2.14A4.2AD3CA.2A2.23A4.76'] },   // S01 (hopper)
   1: { adult: ['.50N9.22NJ3mJ5N.20NJmK6mKJN.18NJK4mK6JN.16NJKmK9mKN.15NJK14JN.14NK8INKINK3N.14NK8N2KN2K3N.14NLKmK12LN.14NLK9L2K3LN.4N2.8NLK13L2N.3Nq2N.6N3K12L2N.3Nq4N.3N2J3K12L2N.3Nq3pN.2NJ2K2mK12LN.4Nq2p2N.NJK8mK8N.5Np2KN.NJKmK16N.6NL2N.NK7mK11N.7NLJN2K4mK14N.7NL2N2K11mK7N.8NLJNK2mK16N.9NLJLK8mK8LN.10N2L2K3mK10L3N.11NL19N.12NL7mL9N.14NL14N2.15NK3LN2L2N2K3LN.16NK3LN2L2N2K3LN.16NK3LN2L2N2K3LN.16NK3LN.N2.NK3LN.16NK2L2N.4NK2L2N.17N4.6N4.8', '.18N9.22NJ3mJ5N.20NJmK6mKJN.18NJK4mK6JN.16NJKmK9mKN.15NJK14JN.14NK8INKINK3N.14NK8N2KN2K3N.14NLKmK12LN.14NLK9L2K3LN.4N2.8NLK13L2N.3Nq2N.6N3K12L2N.3Nq4N.3N2J3K12L2N.3Nq3pN.2NJ2K2mK12LN.4Nq2p2N.NJK8mK8N.5Np2KN.NJKmK16N.6NL2N.NK7mK11N.7NLJN2K4mK14N.7NL2N2K11mK7N.8NLJNK2mK16N.9NLJLK8mK8LN.10N2L2K3mK10L3N.11NL19N.12NL7mL9N.14NL14N2.15NK3LN2L2N2K3LN.16NK3LN2L2N2K3LN.16NK3LN.N2.NK3LN.16NK2L2N.4NK2L2N.17N4.6N4.72'], juvenile: ['.243N4.26N2J4N2.23NJ2KmK2J2N.21NJK6mKJN.19NJKmK8JN.18NK6INKINKN.17NJK6N2KN2KJN.6N2.8NK2mK10LN.5Nq2N.7NK9L2KL2N.4Nq3pN.3N4K12L2N.5Np2N.3NJ4K12LN.7NLJN.NJK3mK12N.9NLJN2K9mK7N.10NLJ2K2mK13LN.11N2L2K14L2N.12NL3K3mK8L3N.13NL2K12L2N.15NL14N.17NL12N.18NL12N.18NK2LNL2N2K2LN.19NK2LNL2N2K2LN.19NK2LN3.NK2LN.19NKL2N.3NKL2N.20N3.5N3.10', '.211N4.26N2J4N2.23NJ2KmK2J2N.21NJK6mKJN.19NJKmK8JN.18NK6INKINKN.17NJK6N2KN2KJN.6N2.8NK2mK10LN.5Nq2N.7NK9L2KL2N.4Nq3pN.3N4K12L2N.5Np2N.3NJ4K12LN.7NLJN.NJK3mK12N.9NLJN2K9mK7N.10NLJ2K2mK13LN.11N2L2K14L2N.12NL3K3mK8L3N.13NL2K12L2N.15NL14N.17NL12N.18NL12N.18NK2LNL2N2K2LN.19NK2LN3.NK2LN.19NKL2N.3NKL2N.20N3.5N3.74'] },   // S03 (hopper)
-  3: { adult: ['.48Z2.6Z2.21Zq2Z6q2Z.20Zp2H6p2Z.19ZHG10HZ.17ZHG12HZ.16ZG14HZ.15ZG8IZGIZG2Z.15ZG8Z2GZ2G2Z.15ZG14FZ.7Z4.4ZG10E2G2FZ.5Z2H4Z2.2ZG14FZ.4ZH2F4H2Z.ZG14Z.4ZHGFG4FGHZHG14Z.4ZGFG2F2G2F2ZG15Z.4ZF2GFG2FGF2ZG9FG5Z.4ZF2G2FG2FGFZG9FG5Z.4ZF5GFG2Z2G10FG4Z.5ZF6G2Z2G11F3GZ.6ZF7H2G15Z.7Z3F4G17Z.10Z2F2G17Z.12Z2FG15FZ.13ZF2G13F2Z.13ZF17Z.14ZF15Z.16ZF13Z.18ZF4Z2G4FZ.19ZF4Z2G4FZ.19ZF4Z2G4FZ.20Z4.ZG3F2Z.26Z5.7', '.16Z2.6Z2.21Zq2Z6q2Z.20Zp2H6p2Z.19ZHG10HZ.17ZHG12HZ.16ZG14HZ.15ZG8IZGIZG2Z.15ZG8Z2GZ2G2Z.15ZG14FZ.7Z4.4ZG10E2G2FZ.5Z2H4Z2.2ZG14FZ.4ZH2F4H2Z.ZG14Z.4ZHGFG4FGHZHG14Z.4ZGFG2F2G2F2ZG15Z.4ZF2GFG2FGF2ZG9FG5Z.4ZF2G2FG2FGFZG9FG5Z.4ZF5GFG2Z2G10FG4Z.5ZF6G2Z2G11F3GZ.6ZF7H2G15Z.7Z3F4G17Z.10Z2F2G17Z.12Z2FG15FZ.13ZF2G13F2Z.13ZF17Z.14ZF15Z.16ZF5Z2F6Z.17ZF4Z.2ZG4FZ.17ZF4Z.2ZG4FZ.17ZF4Z.2ZG4FZ.17ZF4Z.2ZG4FZ.18Z4.3ZG3F2Z.26Z5.6'], juvenile: ['.240Z.6Z.23ZqZ6qZ.22ZpH6pZ2.20ZHG8H2Z.18ZHG11HZ.17ZG7IZGIZGHZ.16ZG7Z2GZ2G2Z.16ZG13FZ.9Z4.3ZG9E2G2FZ.8ZH4Z.2ZG13FZ.7ZHGF2GHZ.ZG13Z.7ZHGFG2FGZ2HG13Z.7ZF2GFGFGZ2G7FG6Z.7ZF6GZ2G7FG6Z.8ZF6H2G8F4G2Z.9ZF7G14Z.10Z3F5G12FZ.13Z3F15Z.16ZF14Z.17ZF12Z.19ZF3Z2G4FZ.20ZF3Z2G4FZ.20ZF3Z2G4FZ.21Z3.ZG3F2Z.26Z5.7', '.208Z.6Z.23ZqZ6qZ.22ZpH6pZ2.20ZHG8H2Z.18ZHG11HZ.17ZG7IZGIZGHZ.16ZG7Z2GZ2G2Z.16ZG13FZ.9Z4.3ZG9E2G2FZ.8ZH4Z.2ZG13FZ.7ZHGF2GHZ.ZG13Z.7ZHGFG2FGZ2HG13Z.7ZF2GFGFGZ2G7FG6Z.7ZF6GZ2G7FG6Z.8ZF6H2G8F4G2Z.9ZF7G14Z.10Z3F5G12FZ.13Z3F15Z.16ZF14Z.17ZF4Z2F6Z.18ZF3Z.2ZG4FZ.18ZF3Z.2ZG4FZ.18ZF3Z.2ZG4FZ.18ZF3Z.2ZG4FZ.19Z3.3ZG3F2Z.26Z5.6'] },   // S04
+  3: { adult: ['.48Z2.6Z2.21Zq2Z6q2Z.20Zp2H6p2Z.19ZHw10HZ.17ZHw12HZ.16Zw14HZ.15Zw8IZwIZw2Z.15Zw8Z2wZ2w2Z.15Zw14xZ.7Z4.4Zw10E2w2xZ.5Z2H4Z2.2Zw14xZ.4ZH2x4H2Z.Zw14Z.4ZHwxw4xwHZHw14Z.4Zwxw2x2w2x2Zw15Z.4Zx2wxw2xwx2Zw9xw5Z.4Zx2w2xw2xwxZw9xw5Z.4Zx5wxw2Z2w10xw4Z.5Zx6w2Z2w11x3wZ.6Zx7H2w15Z.7Z3x4w17Z.10Z2x2w17Z.12Z2xw15xZ.13Zx2w13x2Z.13Zx17Z.14Zx15Z.16Zx13Z.18Zx4Z2w4xZ.19Zx4Z2w4xZ.19Zx4Z2w4xZ.20Z4.Zw3x2Z.26Z5.7', '.16Z2.6Z2.21Zq2Z6q2Z.20Zp2H6p2Z.19ZHw10HZ.17ZHw12HZ.16Zw14HZ.15Zw8IZwIZw2Z.15Zw8Z2wZ2w2Z.15Zw14xZ.7Z4.4Zw10E2w2xZ.5Z2H4Z2.2Zw14xZ.4ZH2x4H2Z.Zw14Z.4ZHwxw4xwHZHw14Z.4Zwxw2x2w2x2Zw15Z.4Zx2wxw2xwx2Zw9xw5Z.4Zx2w2xw2xwxZw9xw5Z.4Zx5wxw2Z2w10xw4Z.5Zx6w2Z2w11x3wZ.6Zx7H2w15Z.7Z3x4w17Z.10Z2x2w17Z.12Z2xw15xZ.13Zx2w13x2Z.13Zx17Z.14Zx15Z.16Zx5Z2x6Z.17Zx4Z.2Zw4xZ.17Zx4Z.2Zw4xZ.17Zx4Z.2Zw4xZ.17Zx4Z.2Zw4xZ.18Z4.3Zw3x2Z.26Z5.6'], juvenile: ['.240Z.6Z.23ZqZ6qZ.22ZpH6pZ2.20ZHw8H2Z.18ZHw11HZ.17Zw7IZwIZwHZ.16Zw7Z2wZ2w2Z.16Zw13xZ.9Z4.3Zw9E2w2xZ.8ZH4Z.2Zw13xZ.7ZHwx2wHZ.Zw13Z.7ZHwxw2xwZ2Hw13Z.7Zx2wxwxwZ2w7xw6Z.7Zx6wZ2w7xw6Z.8Zx6H2w8x4w2Z.9Zx7w14Z.10Z3x5w12xZ.13Z3x15Z.16Zx14Z.17Zx12Z.19Zx3Z2w4xZ.20Zx3Z2w4xZ.20Zx3Z2w4xZ.21Z3.Zw3x2Z.26Z5.7', '.208Z.6Z.23ZqZ6qZ.22ZpH6pZ2.20ZHw8H2Z.18ZHw11HZ.17Zw7IZwIZwHZ.16Zw7Z2wZ2w2Z.16Zw13xZ.9Z4.3Zw9E2w2xZ.8ZH4Z.2Zw13xZ.7ZHwx2wHZ.Zw13Z.7ZHwxw2xwZ2Hw13Z.7Zx2wxwxwZ2w7xw6Z.7Zx6wZ2w7xw6Z.8Zx6H2w8x4w2Z.9Zx7w14Z.10Z3x5w12xZ.13Z3x15Z.16Zx14Z.17Zx4Z2x6Z.18Zx3Z.2Zw4xZ.18Zx3Z.2Zw4xZ.18Zx3Z.2Zw4xZ.18Zx3Z.2Zw4xZ.19Z3.3Zw3x2Z.26Z5.6'] },   // S04
   4: { adult: ['.38N.N2.N2.6N3.15NJNLJNLJN6J3N2.12NJLJKLJKLJ3L3m3L2N2.10NLKLK2LK2LKm9L2N.10NLKLK2LK2m12LN.10NL3K2Lm14LN.10N2L3m16LN.11N3m17LN.12Nm9KINmINm2MN.12Nm9KN2mN2mM2N.12Nm10K2mK2M3N.10N3m12M2mM2N.10NL3m15MN.10NLmM4m13N.10NLmM6m7L3m2N.9NLmM7m12N.9Nm2M6m13N.7N2Lm3M4m13MN.6NL2m18M2mMN.5NLM4m18M2N.5NM5m18MN.7N3M3m16M2N.10N2M18N.12NM18N.13NM16N.15N3m5MNM5N.18Nm5MNM5N.18Nm5MNM5N.18Nm4M2NM6N.17Nm4M3N6.19N7.14', '.6N.N2.N2.6N3.15NJNLJNLJN6J3N2.12NJLJKLJKLJ3L3m3L2N2.10NLKLK2LK2LKm9L2N.10NLKLK2LK2m12LN.10NL3K2Lm14LN.10N2L3m16LN.11N3m17LN.12Nm9KINmINm2MN.12Nm9KN2mN2mM2N.12Nm10K2mK2M3N.10N3m12M2mM2N.10NL3m15MN.10NLmM4m13N.10NLmM6m7L3m2N.9NLmM7m12N.9Nm2M6m13N.7N2Lm3M4m13MN.6NL2m18M2mMN.5NLM4m18M2N.5NM5m18MN.7N3M3m16M2N.10N2M18N.12NM18N.13NM2NM12N2.15N4m5MNM3N.20Nm5MNM3N.20Nm5MNM3N.20Nm5MNM3N.20Nm4M2NM4N.19Nm4M3N4.21N7.13'], juvenile: ['.169N3.28NJ3N.5N3.18NJKLKJN.3NJ3N.16NJLK2LKJN3JK3JN2.14NLKLK2LmL3m5L2N2.13NL2K2m12L2N.13NL2m15LN.13N2m16LN.13Nm9KINmINm2N.13Nm9KN2mN2mMN.13Nm10K2mK2M2N.12N2m12M5N.11NL2m14M2N.11NLmM3m12MN.11NLmM5m6L3m2N.12Nm2M5m11N.10N2Lm2M4m12N.9NL2m15M2mMN.8NLM3m16M2N.9NM4m14M3N.10N2M18N.13NM16N.15NM14N.17N2m4MNM4N2.19Nm3M2NM5N.19Nm3M3N5.21N6.16', '.137N3.28NJ3N.5N3.18NJKLKJN.3NJ3N.16NJLK2LKJN3JK3JN2.14NLKLK2LmL3m5L2N2.13NL2K2m12L2N.13NL2m15LN.13N2m16LN.13Nm9KINmINm2N.13Nm9KN2mN2mMN.13Nm10K2mK2M2N.12N2m12M5N.11NL2m14M2N.11NLmM3m12MN.11NLmM5m6L3m2N.12Nm2M5m11N.10N2Lm2M4m12N.9NL2m15M2mMN.8NLM3m16M2N.9NM4m14M3N.10N2M18N.13NM16N.15NMNM11N2.17N3m4MNM2N2.21Nm4MNM2N2.21Nm3M2NM3N.21Nm3M3N3.23N6.15'] },   // S05
   7: { adult: ['.140N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N2.16N.Nm2Nm2Nm2Nm2NmN.14NmN2m2Nm2Nm2Nm2Nm2N.13Nm2Nm2Nm2Nm2Nm2Nm2N.13Nm2NmKJK2JK2JK2Jm2N2.12Nm2JK14J2N2.9NJK5LK5LK7J2N.7NJK9LK5LK6JN.5NJK4LK18IN2.3NJK11LK8INK2N2JN.2NK21N2K5N.2NK28N.2NLK22M2K3N.2NL2K25LN.2NL3K23L2N.3NL3K21L3N.4NL25N.6NL23N.8NL21N.8NK3LNL2N4L2N2K3LN3.9NK3LNL2N.2NL2N2K3LN.11NK3LN3.4N2.NK3LN.11NK3LN.9NK3LN.10NL4N.10NL5N.10N4.12N5.7', '.108N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N2.16N.Nm2Nm2Nm2Nm2NmN.14NmN2m2Nm2Nm2Nm2Nm2N.13Nm2Nm2Nm2Nm2Nm2Nm2N.13Nm2NmKJK2JK2JK2Jm2N2.12Nm2JK14J2N2.9NJK5LK5LK7J2N.7NJK9LK5LK6JN.5NJK4LK18IN2.3NJK11LK8INK2N2JN.2NK21N2K5N.2NK28N.2NLK22M2K3N.2NL2K25LN.2NL3K23L2N.3NL3K21L3N.4NL25N.6NL23N.8NL6NL5N2L7N.9NK3LN5L2N.2NK3LN2.10NK3LN2.2NL2N.2NK3LN2.10NK3LN2.2NL2N.2NK3LN.11NK3LN.4N2.3NK3LN.11NK3LN.9NK3LN.10NL4N.10NL5N.10N4.12N5.6'], juvenile: ['.299N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N.19Nm2Nm2Nm2Nm2N2.18Nm2NK2JK2JK2J2N3.14N2K2JLK4LK4J3N2.11NJ2K7LK8J2N.9NJK18INJN.7NJK3LK11INK2N2KJN.6NK16N2K6N.6NK18M2K4N.5N2LK22LN.4NJ2L2K20L2N.5NL4K18L3N.6N2L22N.9NL20N.11NL18N.12NK2LN2L2N2L2N2K2LN2.13NK2LN2L2N2L2N2K2LN.14NK2LN.N2.2N2.NK2LN.13NL4N.7NL4N.14N4.9N4.9', '.267N.2N.25N.NmN2mN.N.21NmN2m2Nm2NmN.20Nm2Nm2Nm2Nm2N.19Nm2Nm2Nm2Nm2N2.18Nm2NK2JK2JK2J2N3.14N2K2JLK4LK4J3N2.11NJ2K7LK8J2N.9NJK18INJN.7NJK3LK11INK2N2KJN.6NK16N2K6N.6NK18M2K4N.5N2LK22LN.4NJ2L2K20L2N.5NL4K18L3N.6N2L22N.9NL20N.11NL10N2L6N.13NK2LNLN2LN.2N2K2LN2.13NK2LNLN2LN.2N2K2LN2.13NK2LNLN2LN.2N2K2LN.14NK2LN2.2N2.2N2K2LN.13NL4N.7NL4N.14N4.9N4.8'] },   // S08
   11: { adult: ['.85M2.11M3.15Mp2M.4M2.3Mp3M2.12Mp3M.3Mp2M.2Mp5M2.2M2.5Mp4M.2Mp3M.2Mp6LM2poM.4Mp4M.MK2p2M.3Mp7Kp3M.2Mp5M2K3p2M.3Mp6LpKp3M2p6oK4pM.4Mp4L2p3Kp2M2p9Kp2M.4Mp13Mp12M.5Mp13Mp8KM2.7Mp4Lp7Kp9M.8Mp10K3p7KpM.9Mp7LpK4p6M2.11Mp6LpK6p3K2M.11Mp8K12M.11ML6K6L2K5M.12ML7K4L2K4LM.12ML9KLINK4INM.11ML11N2K4N2M.11ML13K6M.11ML17K2M.11ML18KM.12ML18M.12ML17M.14ML15M.15ML14M.17ML2ML10M.18M2.ML3M3L2M.22ML3M.2M2.24M3.13', '.53M2.11M3.15Mp2M.4M2.3Mp3M2.12Mp3M.3Mp2M.2Mp5M2.2M2.5Mp4M.2Mp3M.2Mp6LM2poM.4Mp4M.MK2p2M.3Mp7Kp3M.2Mp5M2K3p2M.3Mp6LpKp3M2p6oK4pM.4Mp4L2p3Kp2M2p9Kp2M.4Mp13Mp12M.5Mp13Mp8KM2.7Mp4Lp7Kp9M.8Mp10K3p7KpM.9Mp7LpK4p6M2.11Mp6LpK6p3K2M.11Mp8K12M.11ML6K6L2K5M.12ML7K4L2K4LM.12ML9KLINK4INM.11ML11N2K4N2M.11ML13K6M.11ML17K2M.11ML18KM.12ML18M.12ML17M.14ML15M.15ML3ML10M.16ML2M3L8M2.16ML2M.2ML3ML2M.19M2.3ML3ML2M.24ML3M3.26M3.12'], juvenile: ['.275M2.29Mp2M.16M2.9Mp3M.2M2.11MLpM2.7Mp3M.Mp2M.10Mp4M2.5Mp4MKpM.12Mp5M.3M2p5KpM.12Mp6M3K2p6M.13M2p2Lp2MK6p2K2M.12MLM2p6K9M.12Mp2L2p3Lp3oKpK4pM.12Mp2Lp3L2p6K3pM.13MpLp2L4p6K2L2M.13ML13K2L2M.13ML9INL2INLKM.13ML9N2L2N2K2M.13ML16KM.13ML16M.14ML15M.15ML14M.17ML12M.18ML3ML4ML3M.19MLM2L4ML3M.20M.2ML3M4.25M3.14', '.243M2.29Mp2M.16M2.9Mp3M.2M2.11MLpM2.7Mp3M.Mp2M.10Mp4M2.5Mp4MKpM.12Mp5M.3M2p5KpM.12Mp6M3K2p6M.13M2p2Lp2MK6p2K2M.12MLM2p6K9M.12Mp2L2p3Lp3oKpK4pM.12Mp2Lp3L2p6K3pM.13MpLp2L4p6K2L2M.13ML13K2L2M.13ML9INL2INLKM.13ML9N2L2N2K2M.13ML16KM.13ML16M.14ML15M.15ML14M.17ML2M2L8M.18MLM.2ML4MLM.19MLM.2ML4MLM.19MLM.2ML4MLM.20M.4ML3M2.27M3.13'] },   // S12
   16: { adult: ['.48m4.27mK4m2.24mK6nm.22mK3o2K2n2m.21mK2o2n2on2m.20mK3o2mn4m.20mK4m2n3m.20mK6m4.21mKoK4m.24mKo2K4m.22mKo2K6m.21mKo2K7m.20mKoK3J2K2Jm.19mo3K2J7m.18mo3K3INJ2INm.17mo4K3N2J2N2Jm.16mo4K5J3K2m.16mo3K4JmJ2mJKm.16mo3K6m2K3m.15m2o4K11m.14m4oK12m.14m4oK2oK9m.14m4oK2oK9m.14m4oKo2K9m.14m7o2K6o2m.15m7o3Ko4m.17m6o7m.18m12om.19m12.22m9.24m3.2m2.12', '.16m4.27mK4m2.24mK6nm.22mK3o2K2n2m.21mK2o2n2on2m.20mK3o2mn4m.20mK4m2n3m.20mK6m4.21mKoK4m.24mKo2K4m.22mKo2K6m.21mKo2K7m.20mKoK3J2K2Jm.19mo3K2J7m.18mo3K3INJ2INm.17mo4K3N2J2N2Jm.16mo4K5J3K2m.16mo3K4JmJ2mJKm.16mo3K6m2K3m.15m2o4K11m.14m4oK12m.14m4oK2oK9m.14m4oK2oK9m.14m4oKo2K9m.14m7o2K6o2m.15m7o3Ko4m.17m6o7m.19m12.22m9.24m3.2m2.76'], juvenile: ['.239m3.28mK3m.26mK2mKm.25mK3m2.26mK3m.28mK3m2.25mK6m.23moK7m.21mo2K3J2KJ2m.20mo2K2J6m.19mo3K4J2K2m.19mo3K3INJINKm.17mKo3K3N2KN2Km.17mKm2oK9m.17mKmo2K4m2K4m.16m3K11m.17m3K12m.16m3oK11m.16m3o2moK8m.17m5o3K3o2m.18m6o6m.20m11.22m9.24m8.25m3.2m.13', '.207m3.28mK3m.26mK2mKm.25mK3m2.26mK3m.28mK3m2.25mK6m.23moK7m.21mo2K3J2KJ2m.20mo2K2J6m.19mo3K4J2K2m.19mo3K3INJINKm.17mKo3K3N2KN2Km.17mKm2oK9m.17mKmo2K4m2K4m.16m3K11m.17m3K12m.16m3oK11m.16m3o2moK8m.17m5o3K3o2m.18m6o6m.20m11.22m9.25m3.2m.77'] },   // S17 (hopper)
-  19: { adult: ['.203C2.2C2.2C2.2C2.17CJ2C2J2C2J2C2J2C.15CJ3KJ3KJ3KJ3KC.14CJ3KJ3KJ3KJ3KC.13CK18C.11CQ2PQ2PQ2PQ2Pc7HC.9CQ2PQ2PQ2PQ2PQc8HC.7CPQ2PQ2PQ2PQ2Pc10HC.6CQ2PQ2PQ2PQ2Pc12C.6CPQ2PQ2PQ2Pc14C.6CQ2PQ2PQ2c9ICcICc2C.6CPQ2PQ2c11C2cC2c2C.5CHc24C.3C3c20P2c3C.2CH3c24PC.2CP2c12H11cP2C.2CP4c8H13P2C.4C2P3c6H13P2C.7C2P2c4H13P2C.10CP5H12P2C.12CP17C.13Cc2PCP2C3P2Cc2PC2.14Cc2PC3.3C3c2PC.15Cc2PC.7Cc2PC.16CPC.9CPC.18C.11C.10', '.171C2.2C2.2C2.2C2.17CJ2C2J2C2J2C2J2C.15CJ3KJ3KJ3KJ3KC.14CJ3KJ3KJ3KJ3KC.13CK18C.11CQ2PQ2PQ2PQ2Pc7HC.9CQ2PQ2PQ2PQ2PQc8HC.7CPQ2PQ2PQ2PQ2Pc10HC.6CQ2PQ2PQ2PQ2Pc12C.6CPQ2PQ2PQ2Pc14C.6CQ2PQ2PQ2c9ICcICc2C.6CPQ2PQ2c11C2cC2c2C.5CHc24C.3C3c20P2c3C.2CH3c24PC.2CP2c12H11cP2C.2CP4c8H13P2C.4C2P3c6H13P2C.7C2P2c4H13P2C.10CP5H12P2C.12CP5CP4C2P5C.14Cc2PC6.2Cc2PC2.14Cc2PC.3C2.2Cc2PC2.14Cc2PC.3C2.2Cc2PC.15Cc2PC.7Cc2PC.16CPC.9CPC.18C.11C.9'], juvenile: ['.364C2.C2.C2.23CJ2CJ2CJ2C.21CJ2KJ2KJ2KC.20CK11C3.15C2Q2PQ2PQc5H3C2.12CPQ2PQ2PQc9H2C.10CQPQ2PQ2c13HC.9CPQ2PQc10ICcICcC.9CQPQc12C2cC2cC.8CHc21HC.5C3c18P2c3C.4CH3c21P2C.5CP3c8H11P3C.6C2P2c6H11P2C2.9CP7H10P2C.12CP17C.14Cc2PCP2C2P2Cc2PC2.15Cc2PC3.2C3c2PC.16Cc2PC.6Cc2PC.17CPC.7CPC2.19C.9C.12', '.332C2.C2.C2.23CJ2CJ2CJ2C.21CJ2KJ2KJ2KC.20CK11C3.15C2Q2PQ2PQc5H3C2.12CPQ2PQ2PQc9H2C.10CQPQ2PQ2c13HC.9CPQ2PQc10ICcICcC.9CQPQc12C2cC2cC.8CHc21HC.5C3c18P2c3C.4CH3c21P2C.5CP3c8H11P3C.6C2P2c6H11P2C2.9CP7H10P2C.12C2P5CP3C2P5C.15Cc2PC5.2Cc2PC2.15Cc2PC.2C2.2Cc2PC2.15Cc2PC.2C2.2Cc2PC.16Cc2PC.6Cc2PC.17CPC.7CPC2.19C.9C.11'] },   // S20
+  19: { adult: ['.211C2.C2.24C3J2CJ2C3.18C3J2CJ5CJ2C.16CJ2CJ12C.14CKJ15KC.12CK18C.12Cxyxwxyxwxw9C.10C2xyxyxyxyxw11C.8Cwxyxwxyxwxyw11C.7Cyxyxyxyxyxyw12C.6Cwxyxwxyxwxyw5ICw3ICwC.6Cxyxyxyxyxyw6C2w3C2wC.6Cyxwxyxwxw16C.5Cyxyxyxyw12yw2yw2C.4Cyxwxw17y2w3C.3Cyxyw24C.2Cxw11H13w2xC.2C2x2w7H15wxC.5C2x3w4H14wxC.8C3x5H12x2C.12Cx9Cx7C.14Cw2xC2y2C.Cy2C2w2xC.13Cw2xC2y2C.Cy2C2w2xC.13CwxyC2y2C.Cy2C2wxyC.13Cx2yC.C2.3C2.Cx2yC.14C3.11C3.5', '.179C2.C2.24C3J2CJ2C3.18C3J2CJ5CJ2C.16CJ2CJ12C.14CKJ15KC.12CK18C.12Cxyxwxyxwxw9C.10C2xyxyxyxyxw11C.8Cwxyxwxyxwxyw11C.7Cyxyxyxyxyxyw12C.6Cwxyxwxyxwxyw5ICw3ICwC.6Cxyxyxyxyxyw6C2w3C2wC.6Cyxwxyxwxw16C.5Cyxyxyxyw12yw2yw2C.4Cyxwxw17y2w3C.3Cyxyw24C.2Cxw11H13w2xC.2C2x2w7H15wxC.5C2x3w4H14wxC.8C3x5H12x2C.12C2x7C2x3C2x2C.15Cw2xCyC.Cy2C.2Cw2C2.13Cw2xCyC.Cy2C.2Cw2xC.13Cw2xCyC.Cy2C.2Cw2xC.13CwxyCyC.Cy2C.2CwxyC.13Cx2yC2.3C2.3Cx2yC.14C3.11C3.4'], juvenile: ['.370C2.27C3J2C3.23CJ2CJ2CJ2C.20C2J9KC.16C3K12C.14C2xwxyxwxw9C2.11Cyxyxyxyxw12C.9Cyxwxyxwxw14C.8Cxyxyxyxw7ICw3ICwC.7Cxwxyxw10C2w3C2wC.6Cxyxyxw19C.4C2xwxw16yw2yw2C.4C2xw8H10wy2w2xC.6C2x2w4H14wxC.9C2x4H13x2C.12Cx9Cx7C.14Cw2xC2y2C.Cy2C2w2xC.13Cw2xC2y2C.Cy2C2w2xC.13CwxyC2y2C.Cy2C2wxyC.13Cx2yC.C2.3C2.Cx2yC.14C3.11C3.6', '.338C2.27C3J2C3.23CJ2CJ2CJ2C.20C2J9KC.16C3K12C.14C2xwxyxwxw9C2.11Cyxyxyxyxw12C.9Cyxwxyxwxw14C.8Cxyxyxyxw7ICw3ICwC.7Cxwxyxw10C2w3C2wC.6Cxyxyxw19C.4C2xwxw16yw2yw2C.4C2xw8H10wy2w2xC.6C2x2w4H14wxC.9C2x4H13x2C.12C2x7C2x3C2x2C.15Cw2xCyC.Cy2C.2Cw2C2.13Cw2xCyC.Cy2C.2Cw2xC.13Cw2xCyC.Cy2C.2Cw2xC.13CwxyCyC.Cy2C.2CwxyC.13Cx2yC2.3C2.3Cx2yC.14C3.11C3.5'] },   // S20
 }); STEP_ART.length = 20;
 const HOPPER_SP = [0, 1, 16];   // S01, S03, S17: their step frame rises 1 px inside the 32 box, so the game draws it 1 px higher for the full 2 px hop
 function tokenPB(rle, w) {
@@ -3820,8 +3824,8 @@ function tileCanvas(lay, i, light, fr) { return tilePB(lay, i, fr).canvas(light)
 // The manifests, their sheets and the biome palette beside each manifest. Any failure leaves places at 32 px, exactly as before.
 const ATLAS_URLS = ['../../art/companion-48/terrain/meadow/meadow.json'];
 const ART48 = { ready: false, pieces: new Map(), cat: null, refused: [], ver: 0, g48: 0 };
-const CORE_N = 48;
-// The page's core 48 with their names and tables, as the palette file must repeat them.
+const CORE_N = 51;
+// The page's core 51 with their names and tables, as the palette file must repeat them.
 const coreTables = () => ({ names: PALETTE.slice(0, CORE_N).map(p => p[0]), dark: DARK.slice(0, CORE_N), light: LIGHT.slice(0, CORE_N), dark2: DARK2.slice(0, CORE_N), fog: FOGLUT.slice(0, CORE_N), fade: FADE.slice(0, CORE_N) });
 async function loadAtlas() {
   try {
@@ -3849,8 +3853,8 @@ async function loadAtlas() {
     atlasInstall(list, table, mans[mans.length - 1].man.levelTone); ART48.refused = refused;
   } catch (e) { console.warn('the 48 px place art did not load; places draw at 32 px', e); }
 }
-// The last step of the load (and the tests' hook): the pieces [{ ...fields, w, h, px }], the palette table (null: the core 48) and
-// the manifest's levelTone. The page's colour and lookup arrays grow from index 48 by the table; 0–47 never change.
+// The last step of the load (and the tests' hook): the pieces [{ ...fields, w, h, px }], the palette table (null: the core 51) and
+// the manifest's levelTone. The page's colour and lookup arrays grow from index 51 by the table; 0–50 never change.
 function atlasInstall(list, table, levelTone) {
   for (const a of [RGB, HEX, DARK, LIGHT, DARK2, FOGLUT, FADE, TINT, LEVEL_LIGHT]) a.length = CORE_N;
   for (let i = 0; i < CORE_N; i++) { LIGHT_GRASS[i] = table ? table.lightGrass[i] : i; DARK_GRASS[i] = table ? table.darkGrass[i] : i; } LIGHT_GRASS.length = DARK_GRASS.length = CORE_N;
@@ -5081,7 +5085,7 @@ function drawMessage() {
 const cen = (pb, x, y) => blit(pb, x + ((32 - pb.w) >> 1), y + ((32 - pb.h) >> 1));
 const cen2 = (key, pb, x, y) => cen(upArt('sg' + key, pb, 2), x, y);
 const onGrass = (x, y, f) => { R(x, y, 32, 32, C.grass); f(); };
-// The shelter sign's picture: art/companion-48/signs/sign-shelter-32.png (32×32 on the core 48, sha256 bf8c1827f8d042aae7778c4a2212f958bb8ab8f1de8b8dcd8c6c7add710b4edf), copied one character per pixel: '.' clear, else the palette index + 48.
+// The shelter sign's picture: art/companion-48/signs/sign-shelter-32.png (32×32 on the core colours, sha256 bf8c1827f8d042aae7778c4a2212f958bb8ab8f1de8b8dcd8c6c7add710b4edf), copied one character per pixel: '.' clear, else the palette index + 48.
 // Regenerate these rows from the file if it is ever re-signed; never edit them by hand (a test compares them with the file).
 const SHELTER_ROWS = [
   'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
