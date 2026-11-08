@@ -231,7 +231,8 @@
    "rail-emblem-movement-read-24x24",
    "rail-emblem-shape-read-24x24",
    "rail-emblem-stamina-read-24x24",
-   "sitting-frame-empty-48x40"
+   "sitting-frame-empty-48x40",
+   "sitting-frame-held-48x40"
   ],
   "home": [
    "berth-crate-26x24",
