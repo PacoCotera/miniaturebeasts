@@ -136,7 +136,7 @@ if (!EMBED) fit();
 requestAnimationFrame(frame);
 const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the face is up the screen is blank; the words go to the page
 bootText("loading the species frames…");
-const TEST = new URLSearchParams(location.search).has("test");
+const TEST = new URLSearchParams(location.search).has("test"); UI.noTeach = TEST;   // the controls' first-time teaching (a hop and a line, intents/frame.mjs teachTick) is off in the test page: the goldens and journeys are of the screens, not of a first day
 // Test mode: the masters each screen asks for, by the screen on show ("boot" before the first frame, "idle" for the dither): the station journey writes and checks masters/groups.json from this (window.__st.used()).
 const USED = {};
 if (TEST) probe.on = (id) => { const e = assetEntry(id); if (!e?.file || e.file.startsWith("rooms/")) return; const k = !G.ready ? "boot" : UI.idle ? "idle" : UI.screen; (USED[k] ??= new Set()).add(id); };

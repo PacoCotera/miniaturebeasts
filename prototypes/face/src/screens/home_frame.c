@@ -16,6 +16,13 @@
 static const char *STATIONS[4] = { "pods", "incubator", "companion", "bay" };
 static const char *TARGETS[7] = { "vivarium", "library", "pods", "incubator", "companion", "bay", "settings" };
 
+/* A key cap before or after a title (the controls scheme: Home's panels wear their keys; home.json regions.cap): the 22 px drawing of the room's key (frame.json regions.marks.roomPanel), 1:1, in the art layer. Returns the
+   width it takes with its gap, or 0 where the picture is not on the face (the title then stands as it did). */
+static int panel_cap(const char *id, const char *room, int x, int y) {
+  char a[96], pic[96]; snprintf(a, sizeof a, "regions.cap.marks.%s", room); spec_str(H, a, pic, sizeof pic);
+  int sz = v_si(H, "regions.cap.size", 22); if (!pic[0] || wire_asset_slot(pic) < 0) return 0;
+  v_region(id, LAYER_ART); v_sprite(v_fmt("%s.cap", id), pic, x, y, sz, sz); return sz + v_si(H, "regions.cap.gap", 8);
+}
 /* ---- the top bar and the line ---- */
 static void bar_words(void) {
   int r[4]; v_srect(H, "regions.bar.rect", r);
@@ -29,6 +36,7 @@ static void bar_words(void) {
   spec_str(H, "strings.titles.bar", title, sizeof title);
   snprintf(place, sizeof place, "%s", v_pstr("regions.bar.place")); snprintf(date, sizeof date, "%s", v_pstr("regions.bar.date")); snprintf(clock, sizeof clock, "%s", v_pstr("regions.bar.clock"));
   int tx = v_si(H, "regions.bar.title.x", 16), tpx = v_si(H, "regions.bar.title.px", 20), ty = 10;   /* the title's cap top, the top bar's own: zone 8 + 2 (frame.json regions.title.text) */
+  { int capw = panel_cap("bar", "home", tx, r[1] + (r[3] - v_si(H, "regions.cap.size", 22)) / 2); tx += capw; v_region("bar", LAYER_TYPE); }   /* the house, then the title */
   int tw = v_line_at("bar.title", title, tx, ty, V_ANCHOR_CAP, tpx, v_scol(H, "regions.bar.title.colour"), V_ALIGN_LEFT);
   int ppx = v_si(H, "regions.bar.place.px", 16), by = 12;   /* a 16 px figure's cap top in the bar: zone 8 + 4 (the counters', the turn's) */
   if (place[0]) v_line_at("bar.place", place, tx + tw + v_si(H, "regions.bar.place.gap", 12), by, V_ANCHOR_CAP, ppx, v_scol(H, "regions.bar.place.colour"), V_ALIGN_LEFT);
@@ -157,7 +165,10 @@ static void bezel_words(const char *key) {
   char title[40], readout[V_STR]; spec_str(H, v_fmt("strings.titles.%s", key), title, sizeof title); snprintf(readout, sizeof readout, "%s", v_pstr(v_fmt("regions.%s.readout", key)));
   int x = r[0] + v_sk(H, "regions.bezel.title", 0), y = r[1] + v_sk(H, "regions.bezel.title", 1);
   int tw = v_line_at(v_fmt("%s.title", key), title, x, y, V_ANCHOR_LINE, v_si(H, "regions.bezel.titlePx", 16), v_scol(H, "regions.bezel.titleColour"), V_ALIGN_LEFT);
-  if (readout[0]) v_line_at(v_fmt("%s.readout", key), readout, x + tw + v_si(H, "regions.bezel.readoutGap", 8), y, V_ANCHOR_LINE, v_si(H, "regions.bezel.readoutPx", 16), v_scol(H, "regions.bezel.readoutColour"), V_ALIGN_LEFT);
+  int endx = x + tw;
+  if (readout[0]) { int rw = v_line_at(v_fmt("%s.readout", key), readout, x + tw + v_si(H, "regions.bezel.readoutGap", 8), y, V_ANCHOR_LINE, v_si(H, "regions.bezel.readoutPx", 16), v_scol(H, "regions.bezel.readoutColour"), V_ALIGN_LEFT); endx = x + tw + v_si(H, "regions.bezel.readoutGap", 8) + rw; }
+  panel_cap(v_fmt("%s.key", key), key, endx + v_si(H, "regions.cap.gap", 8), y + v_si(H, "regions.cap.dy", -1));   /* the key's cap after the title (and its readout) */
+  v_region(key, LAYER_TYPE);
   if (strcmp(key, "library") == 0) library_captions();
 }
 
@@ -240,7 +251,8 @@ static void station_words(const char *key) {
   v_region(key, LAYER_TYPE);
   char name[40], l1[V_STR], l2[V_STR], who[V_STR]; spec_str(H, v_fmt("strings.titles.%s", key), name, sizeof name);
   snprintf(l1, sizeof l1, "%s", v_pstr(v_fmt("regions.%s.line1", key))); snprintf(l2, sizeof l2, "%s", v_pstr(v_fmt("regions.%s.line2", key))); snprintf(who, sizeof who, "%s", v_pstr(v_fmt("regions.%s.name", key)));
-  v_line_at(v_fmt("%s.name", key), name, r[0] + v_sk(H, "regions.station.name", 0), r[1] + v_sk(H, "regions.station.name", 1), V_ANCHOR_LINE, v_si(H, "regions.station.namePx", 16), v_scol(H, "regions.station.nameColour"), V_ALIGN_LEFT);
+  int nw = v_line_at(v_fmt("%s.name", key), name, r[0] + v_sk(H, "regions.station.name", 0), r[1] + v_sk(H, "regions.station.name", 1), V_ANCHOR_LINE, v_si(H, "regions.station.namePx", 16), v_scol(H, "regions.station.nameColour"), V_ALIGN_LEFT);
+  if (strcmp(key, "pods") == 0) { panel_cap(v_fmt("%s.key", key), "research", r[0] + v_sk(H, "regions.station.name", 0) + nw + v_si(H, "regions.cap.gap", 8), r[1] + v_sk(H, "regions.station.name", 1) + v_si(H, "regions.cap.dy", -1)); v_region(key, LAYER_TYPE); }   /* the Pods station wears the blue key's cap */
   if (l1[0]) {   /* line 1 is 20 px if it fits the column, else 16; if it still does not fit, only a name in it is cut with an ellipsis */
     int px = v_measure(l1, v_si(H, "regions.station.line1Px", 20)) <= col ? v_si(H, "regions.station.line1Px", 20) : v_si(H, "regions.station.line1Px2", 16); char cut[V_STR * 3];
     const char *at = who[0] ? strstr(l1, who) : NULL;

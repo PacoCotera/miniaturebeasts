@@ -2018,6 +2018,30 @@
    "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
    "bytes": 167
   },
+  "frame-room-library-22": {
+   "file": "pods/frame-room-library-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "7c05144fb99e30d22734beddf6c3ff81407b1996d949424a10a60fe4362ed746",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
+   "bytes": 183
+  },
+  "frame-room-pods-22": {
+   "file": "pods/frame-room-pods-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "5d0fd9efa207d879277922f230dbf6ebaf0831e4758b2d2ce5b54bcfe5da874d",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
+   "bytes": 180
+  },
+  "frame-room-vivarium-22": {
+   "file": "pods/frame-room-vivarium-22.png",
+   "w": 22,
+   "h": 22,
+   "sha256": "f5f59983c1b728f96d17fbf2999354fb0178e79288016c52d8c307c4e7bcf616",
+   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
+   "bytes": 183
+  },
   "frame-room-home-24": {
    "file": "pods/frame-room-home-24.png",
    "w": 24,
@@ -2033,14 +2057,6 @@
    "sha256": "9f6652ac198780a8923fe827ede61a15cf94e237c4de4f4728f60fddbbff4726",
    "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
    "bytes": 153
-  },
-  "frame-room-library-22": {
-   "file": "pods/frame-room-library-22.png",
-   "w": 22,
-   "h": 22,
-   "sha256": "7c05144fb99e30d22734beddf6c3ff81407b1996d949424a10a60fe4362ed746",
-   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
-   "bytes": 183
   },
   "frame-room-library-24": {
    "file": "pods/frame-room-library-24.png",
@@ -2058,14 +2074,6 @@
    "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
    "bytes": 139
   },
-  "frame-room-pods-22": {
-   "file": "pods/frame-room-pods-22.png",
-   "w": 22,
-   "h": 22,
-   "sha256": "5d0fd9efa207d879277922f230dbf6ebaf0831e4758b2d2ce5b54bcfe5da874d",
-   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
-   "bytes": 180
-  },
   "frame-room-pods-24": {
    "file": "pods/frame-room-pods-24.png",
    "w": 24,
@@ -2081,14 +2089,6 @@
    "sha256": "a6152b4784ea71f55046f7ba2e767320758f0b718bd0d5b65d1567a6a4c26671",
    "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
    "bytes": 150
-  },
-  "frame-room-vivarium-22": {
-   "file": "pods/frame-room-vivarium-22.png",
-   "w": 22,
-   "h": 22,
-   "sha256": "f5f59983c1b728f96d17fbf2999354fb0178e79288016c52d8c307c4e7bcf616",
-   "signed": "signed (art desk, key caps, 2026-11-07 17:21; mibi-art 4be09dee5)",
-   "bytes": 183
   },
   "frame-room-vivarium-24": {
    "file": "pods/frame-room-vivarium-24.png",

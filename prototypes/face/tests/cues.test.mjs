@@ -35,6 +35,23 @@ test("each live carry is the key's room icon and a word, in key order, ending at
   assert.ok(w[2][0] + w[2][2] <= 904 + 1, "the last ends at 904"); assert.ok(m[0][0] >= C.left, "inside the zone");
   assert.equal(f.nodeBox("line.need.0")?.box ?? null, null, "the cues replace the notice");
 });
+test("items 5 and 9: past 616 the cues grow left to 416 and the middle words go; still short, the mist second-tap cue goes first, then the last", { skip }, async () => {
+  assert.equal(C.growLeft, 416);
+  const mid = [{ room: "research", word: "Untuva pods" }, { room: "vivarium", word: "Visit" }, { room: "library", word: "Untuva page" }, { room: "library", word: "Family tree" }].slice(0, 3);
+  const fits = await setup({ keys: [{ room: "research", word: "Read" }, { room: "library", word: "Page" }], subject: "The middle words" });
+  assert.ok(fits.nodeBox("line.subject.0")?.box, "two short cues fit the zone: the middle words stay");
+  const wide = await setup({ keys: [{ room: "research", word: "Untuva pods and more" }, { room: "vivarium", word: "Visit the mibi" }, { room: "library", word: "Untuva page" }], subject: "The middle words" });
+  const m0 = wide.nodeBox("line.cue.0.mark")?.box; assert.ok(m0 && m0[0] < C.left && m0[0] >= C.growLeft, "the cues grew left of 616 and no further than 416: " + m0?.[0]);
+  assert.equal(wide.nodeBox("line.subject.0")?.box ?? null, null, "and the middle words are not drawn while they do");
+  void mid;
+  const second = { room: "vivarium", word: "Vivarium", second: true };
+  const g = await setup({ keys: [{ room: "research", word: "Untuva pods and more" }, second, { room: "library", word: "Untuva page" }], subject: "The middle words" });
+  assert.ok(g.nodeBox("line.cue.1.mark")?.box && g.nodeBox("line.cue.1.word.0")?.box, "the second-tap cue stands in its key's place (an outline and a mist word)"); assert.deepEqual(g.errors(), []);
+  const tight = await setup({ keys: [{ room: "research", word: "A very long carried word here ok" }, second, { room: "library", word: "Another quite long word to read" }], subject: "The middle words" });
+  assert.equal(tight.nodeBox("line.cue.1.word.0")?.box ?? null, null, "still short: the mist cue goes first"); assert.ok(tight.nodeBox("line.cue.0.word.0")?.box, "the first cue stays");
+  const four = await setup({ keys: [{ room: "research", word: "A very long carried word here ok" }, { room: "vivarium", word: "Another quite long word to read" }, { room: "library", word: "Yet another long word here" }], subject: "x" });
+  assert.equal(four.nodeBox("line.cue.2.word.0")?.box ?? null, null, "then the cues from the last"); assert.ok(four.nodeBox("line.cue.0.word.0")?.box); assert.deepEqual(four.errors(), []);
+});
 test("no keys: the notice shows as before; a cue that would pass the zone's left edge is dropped, the last first", { skip }, async () => {
   const f = await setup({ need: "Something waits" }); assert.ok(f.nodeBox("line.need.0")?.box, "the notice"); assert.equal(f.nodeBox("line.cue.0.word.0")?.box ?? null, null);
   const long = [{ room: "vivarium", word: "A very long carried word here" }, { room: "research", word: "Another quite long word" }, { room: "library", word: "Coat page" }];
