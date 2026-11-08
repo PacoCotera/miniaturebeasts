@@ -65,8 +65,8 @@ test("the rail: All, the rooms in bought order with their count, tick and fill, 
 
 test("a settling room: its row in bought order with the turns left, no fill bar, the cut dimmed; its filter reads 'settling', the wall empty; the card keeps its mibi", () => {
   const st = world(1); fillRooms(st, [3]); st.e = 99; S.addRoom(st, settings); const b = build(st, { filter: "1" }), row = b.props.regions.rail.rows.find((r) => r.id === "1");
-  assert.deepEqual([row.settling, row.count, row.fill, row.lit], [1, "1 turns", null, true], "turns left in the row"); assert.match(row.picture, /^room-reeds-rail-day-164x40~dim$/);
-  assert.equal(b.props.regions.wall.message, "Reeds is settling · ready in 1 turns"); assert.equal(b.props.regions.wall.cells.length, 0); assert.ok(b.props.regions.card.id, "the card keeps its mibi");
+  assert.deepEqual([row.settling, row.count, row.fill, row.lit], [1, "1 turn", null, true], "turns left in the row"); assert.match(row.picture, /^room-reeds-rail-day-164x40~dim$/);
+  assert.equal(b.props.regions.wall.message, "Reeds is settling · ready in 1 turn"); assert.equal(b.props.regions.wall.cells.length, 0); assert.ok(b.props.regions.card.id, "the card keeps its mibi");
   const empty = build(world(2), { filter: "1" }); assert.equal(empty.props.state, "none");
   const st2 = world(2); fillRooms(st2, [2, 0]); assert.equal(build(st2, { filter: "1" }).props.regions.wall.message, "Nobody lives in Reeds yet. Move a mibi here from its card.");
 });

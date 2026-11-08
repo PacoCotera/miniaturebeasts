@@ -1335,7 +1335,7 @@
   "state": {
    "away": "away with the Companion",
    "docked": "on the Companion",
-   "coming": "back in {n} turns",
+   "coming": "back in {n} {turn|turns}",
    "comingOne": "back in 1 turn",
    "resting": "resting after a cross",
    "bonded": "bonded",
@@ -1343,7 +1343,7 @@
    "tucked": "since turn {n}",
    "breather": [
     "on a breather",
-    "can cross in {n} turns"
+    "can cross in {n} {turn|turns}"
    ],
    "breatherNext": [
     "on a breather",
@@ -1353,17 +1353,17 @@
   "why": {
    "move": "{Room} {a} of 8, then {b} of 8",
    "full": "{Room} is full",
-   "tuck": "Frees its place · bringing it out costs ⚡{p} and {n} turns",
-   "out": "⚡{p} · back in {n} turns",
+   "tuck": "Frees its place · bringing it out costs ⚡{p} and {n} {turn|turns}",
+   "out": "⚡{p} · back in {n} {turn|turns}",
    "outPlace": "Bring out needs a free place",
    "short": "Needs {p} Energy · you have {e}",
    "last": "Your last mibi at home stays",
    "onboard": "On the Companion · bring it home first",
    "tucked": "Tucked away · bring it out first",
-   "coming": "Back in {n} turns",
+   "coming": "Back in {n} {turn|turns}",
    "comingOne": "Back in 1 turn",
    "away": "{name} is away · its place is kept",
-   "kept": "Kept for {name} · back in {n} turns",
+   "kept": "Kept for {name} · back in {n} {turn|turns}",
    "keptOne": "Kept for {name} · back in 1 turn",
    "noPlace": "No place free · move one or add a room",
    "noPlace4": "No place free · move one",
@@ -1372,7 +1372,7 @@
    "takeOut": "The Companion is out · dock it to send a mibi",
    "home": "Back to its place in {Room}",
    "homeAway": "Away with the Companion · comes home when it docks",
-   "breedYoung": "young · grows up in {n} turns",
+   "breedYoung": "young · grows up in {n} {turn|turns}",
    "breedYoungOne": "young · grows up in 1 turn",
    "breedResting": "resting after a cross",
    "breedBusy": "the incubator is busy",
@@ -1388,19 +1388,19 @@
    "pair": "{kin} · {trait} {odds}",
    "pairKin": "{kin}",
    "partnerKind": "another kind",
-   "partnerYoung": "young · grows up in {n} turns",
+   "partnerYoung": "young · grows up in {n} {turn|turns}",
    "partnerTucked": "tucked away · bring it out first",
    "partnerOut": "out with the Companion",
    "partnerResting": "resting after a cross",
    "moveOne": "No other room yet · add a room",
    "moveOne4": "No other room to move to",
    "swapStays": "{name} is one of the picks · it stays in {Room}",
-   "breather": "on a breather · can cross in {n} turns",
+   "breather": "on a breather · can cross in {n} {turn|turns}",
    "breatherNext": "on a breather · can cross next turn",
-   "breedNoneFree": "no partner free now · {name} can cross in {n} turns",
+   "breedNoneFree": "no partner free now · {name} can cross in {n} {turn|turns}",
    "pairSoon": "The forecast is not open yet",
    "pairCannot": "this pair cannot cross this turn",
-   "turns": "{n} turns",
+   "turns": "{n} {turn|turns}",
    "turnsOne": "1 turn"
   },
   "kin": {
@@ -1417,7 +1417,7 @@
    "tucked": "{name} is tucked away",
    "reserved": [
     "A place is kept for {name}",
-    "It is back in {n} turns"
+    "It is back in {n} {turn|turns}"
    ],
    "reservedOne": [
     "A place is kept for {name}",
@@ -1447,7 +1447,7 @@
     ],
     "coming": [
      "{name} is on its way back",
-     "Back in {n} turns"
+     "Back in {n} {turn|turns}"
     ],
     "noPlace": [
      "No place is free",
@@ -1459,7 +1459,7 @@
     ],
     "young": [
      "{name} is still young",
-     "It grows up in {n} turns"
+     "It grows up in {n} {turn|turns}"
     ],
     "resting": [
      "{name} is resting after a cross"
@@ -1506,7 +1506,7 @@
    "addNeedsFind": "Each room needs its find · look in a place of its kind",
    "addShort": "Needs ⚡{p} · you have {e}",
    "moveHere": "{name} is already in {Room}",
-   "moveSettling": "{Room} is settling · ready in {n} turns",
+   "moveSettling": "{Room} is settling · ready in {n} {turn|turns}",
    "movedTo": "{name} is in {Room}",
    "moveFull": "{Room} is full",
    "movedMany": "{n} are in {Room}",
@@ -1528,7 +1528,7 @@
    "tucked": "Tucked away",
    "add": "Add a room",
    "count": "{a} of 8",
-   "turns": "{n} turns",
+   "turns": "{n} {turn|turns}",
    "needFind": "needs a find",
    "foundOne": "{Room} found",
    "found": "{n} found"
@@ -1542,7 +1542,7 @@
   },
   "wall": {
    "none": "No mibis yet",
-   "settling": "{Room} is settling · ready in {n} turns",
+   "settling": "{Room} is settling · ready in {n} {turn|turns}",
    "emptyRoom": "Nobody lives in {room} yet. Move a mibi here from its card."
   },
   "backCancel": "Cancel",
@@ -1551,7 +1551,7 @@
    "title": "Move {name} to",
    "here": "here",
    "full": "full · swap",
-   "settling": "settling · {n} turns",
+   "settling": "settling · {n} {turn|turns}",
    "count": "{a} of 8 → {b}",
    "then": "{Room} {a} of 8, then {b} of 8",
    "foot": "Move {name} to {Room}",
@@ -1568,7 +1568,7 @@
   "pair": {
    "head": "Cross {A} with…",
    "foot": "See {A} and {B}",
-   "restLine": "{A} rests {n} turns · {B} {m}",
+   "restLine": "{A} rests {n} {turn|turns} · {B} {m}",
    "restOne": "{A} rests 1 turn · {B} {m}",
    "onboard": "on the Companion",
    "tucked": "tucked away",
@@ -1614,7 +1614,7 @@
    "state": {
     "breather": [
      "on a breather",
-     "can cross in {n} turns"
+     "can cross in {n} {turn|turns}"
     ],
     "breatherNext": [
      "on a breather",
@@ -1622,7 +1622,7 @@
     ],
     "young": [
      "young",
-     "grows up in {n} turns"
+     "grows up in {n} {turn|turns}"
     ],
     "youngOne": [
      "young",
@@ -1630,7 +1630,7 @@
     ],
     "coming": [
      "coming out",
-     "back in {n} turns"
+     "back in {n} {turn|turns}"
     ],
     "comingOne": [
      "coming out",
