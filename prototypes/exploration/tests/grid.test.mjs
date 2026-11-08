@@ -37,13 +37,9 @@ test("the pawn's cell has orange 2 px brackets, arms 9 at tier 1 and 6 at tier 2
   assert.equal((code.match(/C\.orange\)/g) || []).length, 8, "four corners, two arms each");
 });
 
-test("the pending outline skips the dots under the arms on the pawn's cell only", () => {
-  assert.match(code, /onPawn = c === ex\.pos/);
-  assert.match(code, /if \(onPawn && \(k < L \+ 2 \|\| k > q\.cs - L - 3\)\) continue;/);
-  // the kept range at each tier: L + 2 <= k <= cs - L - 3
-  const kept = (cs, L) => { const o = []; for (let k = 2; k < cs - 2; k += 3) if (!(k < L + 2 || k > cs - L - 3)) o.push(k); return o; };
-  assert.deepEqual([kept(72, 9)[0], kept(72, 9).at(-1)], [11, 59]);
-  assert.deepEqual([kept(48, 6)[0], kept(48, 6).at(-1)], [8, 38]);
+test("the pending outline is retired: the reach view and the map draw no blinking dotted cell border (the fog dots say it)", () => {
+  assert.doesNotMatch(code, /onPawn = c === ex\.pos/);
+  assert.doesNotMatch(code, /pending work: each unexplored cell/);
 });
 
 test("the corner sign slots sit at pad 4", () => {

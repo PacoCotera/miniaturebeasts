@@ -10,6 +10,10 @@ export const ANSWER_ACTIONS = 3;   // a Call makes the tells inside its ring ans
 export const SPRING_ESSENCE = 3;   // [tune] the spring pays once, nothing refills (canon check)
 export const CALL_R_PLACE = 7;     // [tune] a Call's round in a place; 4 in a fog bank, 6 with a glowing partner
 export const CALL_R_FOG_PLACE = 4, CALL_R_FOG_GLOW = 6;
+// The map's fog over places (scheme: map-fog-tells): night dots out of 16 on a cell you have never been into, and on one you have been into but not found. A found place is clear. [tune]
+// Chosen at 1x on a lime meadow cell and a dark wood cell (6/3 greyed the land; 3/1 left not-been and been 11 luma apart on lime): 4/1 keeps lime olive-green and the three states about 22 luma apart.
+export const FOG_NOT_BEEN = 0, FOG_BEEN = 2;   // night-dot levels of 16: never been into is drawn one step darker (the dark table) with no dots; been in, light dots [tune]
+export const TELL_RANK = ['t', 'b', 'k', 'sh'];   // a map tell's kinds, rarest first: paw, beat, bolt, shimmer (the tie-break of the band's line)
 
 // The kinds a place type draws from, in order of preference: the first one with something to anchor to.
 export const KIND_BY_LAND = { [L.MEADOW]: ["spring"], [L.POND]: ["nest", "spring"], [L.ROCK]: ["stone", "nest", "spring"], [L.WOOD]: ["nest", "stone", "spring"] };
@@ -25,6 +29,8 @@ export const HEART_TEXT = {
   tell: { spring: "water glints in the grass", nest: "a slow beat", stone: "a struck stone", moment: "something moves" },
   // found message on the line: what the heart was
   foundMsg: { spring: "Clear water rises in the grass", nest: "A pod lies here, waiting", stone: "A struck stone holds its charge" },
+  // a moment's found line is the template's own reveal line (canon-checked); a template with no species of its own (Windstep) draws one from the region
+  momentAny: name => "A " + name + " settles in the grass",   // [copy]
   // a heart that needs a partner to reach: the partner's own verb (placeholders until the book gives them)
   reach: { tuikis: "A Tuikis could dig to it", tuliko: "A Tuliko could wade to it", rupar: "A Rupar could clear the bank to it", untuva: "An Untuva could nose it out", loika: "A Loika could calm the way to it" },
   // the reach and the world in words: how many places have their heart found
