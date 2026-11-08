@@ -72,6 +72,7 @@ export function bakeAll(P, { only } = {}) {
       for (const size of SCALES) files.set(`golden/places/${v.id}-${size}.png`, { img: renderPlace(sets.get(v.tileset), place, size) });
     }
   }
+  files.set('baked/terrain.json', { bytes: readFileSync(P.terrain) });   // the terrain catalogue travels with the blobs: the page maps terrain values to its tiles from it
   if (!only) files.set('baked/index.json', { bytes: Buffer.from(JSON.stringify(index, null, 2) + '\n') });
   return { files, errors, index };
 }

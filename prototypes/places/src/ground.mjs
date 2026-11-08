@@ -131,6 +131,25 @@ export function veilVisible(place, state) {
   return (cx, cy) => !state.veil[cy * place.w + cx] || marks.has(cy * place.w + cx);
 }
 
+// The web host's ground cache: the whole place (864 x 1056 at 48 px, under a megabyte) rendered once per animation frame, a camera window
+// cut from it by row copies. The device keeps the window-sized GroundCache above (its PSRAM budget has no room for the whole place twice).
+export class PlaceGroundCache {
+  constructor(ts, place, size) { this.helper = new GroundCache(ts, place, size); this.ts = ts; this.place = place; this.size = size; this.key = null; this.full = null; this.redone = 0; }
+  frameKey(clockMs) { return this.helper.frameKey(clockMs); }
+  get(win, clockMs = 0) {
+    const key = this.frameKey(clockMs), W = this.place.w * this.size, H = this.place.h * this.size;
+    if (key !== this.key) { this.full = renderGround(this.ts, this.place, this.size, { x: 0, y: 0, w: W, h: H }, clockMs); this.key = key; this.redone++; }
+    const out = new Uint8Array(win.w * win.h);
+    for (let y = 0; y < win.h; y++) {
+      const sy = win.y + y;
+      if (sy < 0 || sy >= H) continue;
+      const x0 = Math.max(0, win.x), x1 = Math.min(W, win.x + win.w);
+      if (x0 < x1) out.set(this.full.subarray(sy * W + x0, sy * W + x1), y * win.w + (x0 - win.x));
+    }
+    return out;
+  }
+}
+
 // One whole view as an indexed buffer: the ground (a fresh copy of the cache's, so the light can be applied), the light, the sorted sprites
 // (props and `actors`: [{ sortY, x, draw(buf, win) }]), then the canopy with the cut-out around `pawns`.
 //   o: { clockMs, light (lightState), nightIndex, visible(cx, cy), actors, pawns, cache (GroundCache) }

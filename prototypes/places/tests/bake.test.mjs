@@ -160,7 +160,7 @@ test('the bake writes the fixture place, its mirror and the index, in under 5 s,
   assert.deepEqual(errors, []);
   assert.ok(Date.now() - t0 < 5000, `bake took ${Date.now() - t0} ms`);
   assert.deepEqual([...files.keys()].sort(), [
-    'baked/Test_AllCases.mbplace', 'baked/Test_AllCases~x.mbplace', 'baked/index.json', 'baked/ninja-test.mbtiles',
+    'baked/Test_AllCases.mbplace', 'baked/Test_AllCases~x.mbplace', 'baked/index.json', 'baked/ninja-test.mbtiles', 'baked/terrain.json',
     'golden/places/Test_AllCases-24.png', 'golden/places/Test_AllCases-48.png', 'golden/places/Test_AllCases~x-24.png', 'golden/places/Test_AllCases~x-48.png',
   ]);
   const pl = readPlace(files.get('baked/Test_AllCases.mbplace').bytes);

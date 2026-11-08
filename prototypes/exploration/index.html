@@ -480,8 +480,23 @@ function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state 
 
 // ===================== 4. Patch layouts (pure: seed + cell) =====================
 const layoutCache = new Map();
+// Baked places (place foundation C7): the dev switch ?place=<id> plays a baked place (prototypes/places/baked) in every land cell of the world.
+const BAKED = { ready: false, view: null, adapt: null };
+async function loadBakedPlace() {   // the modules load on demand, so the page without ?place= never touches them
+  try {
+    const id = new URLSearchParams(location.search).get('place'); if (!id) return;
+    const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
+    const pm = await import(base + 'src/page.mjs'), am = await import(base + 'src/adapter.mjs'), { place, ts } = await pm.loadBaked(bytes, base, id);
+    const terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
+    const ox = (PW - place.w) >> 1, oy = (PH - place.h) >> 1, mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+    BAKED.view = new pm.BakedView(ts, place, { core: RGB.slice(0, 48), night: C.night, ox, oy, mkCanvas: mk });
+    BAKED.adapt = key => am.adaptPlace(place, ts, terrains, { key, cell: +key });
+    BAKED.ready = true; layoutCache.clear(); RT.key = null;
+  } catch (e) { console.warn('the baked place did not load', e); }
+}
 function layout(key) {
   let lay = layoutCache.get(key);
+  if (!lay && BAKED.ready && key[0] !== 'c') { lay = BAKED.adapt(key); layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
@@ -3934,7 +3949,7 @@ function layers48(lay, fr) {
   return lay.l48[fr] || (lay.l48[fr] = placeLayers(lay, S.seed, ART48.cat, fr, G.level ? G.level[lay.cell] : null));
 }
 // The tile size a place draws at: 48 when the meadow set is in and the place can be built from it; caves stay at 32.
-function placeTs(lay) { return !lay.cave && ART48.ready && layers48(lay, 0).ok ? 48 : 32; }
+function placeTs(lay) { return lay.baked ? 48 : !lay.cave && ART48.ready && layers48(lay, 0).ok ? 48 : 32; }
 const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP || t === T.WADE;
 const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.' + base + '@' + l.dx + ',' + l.dy : l.id + ':' + l.sx + ',' + l.sy + ',' + l.w + ',' + l.h + '@' + l.dx + ',' + l.dy + (l.tone ? '~' + l.tone : '')).join(';');
 // A trunk's tree kind and crop, and the Shade's moss, are part of a 48 px tile's key; sl is the asleep variant (the tile's light is the fog table).
@@ -4637,6 +4652,9 @@ function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; l
   cg.putImageData(id, 0, 0); EDGE_TILE.set(k, cv); return cv; }
 const veilPx = (c, x, y) => BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
 const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle' };
+// The place camera: today's centred camera, or for a baked place the look-ahead, pull to the tell and clamp of places/src/camera.mjs (page pixels).
+function camPos(v, px, py) { const lay = RT.key != null && S.exp && S.exp.patch ? layout(RT.key) : null;
+  return lay && lay.baked ? BAKED.view.camera({ w: v.w, h: v.h }, px, py, S.exp.patch.dir, NOW, lay.heart, heartFound(lay.cell)) : camAt(v, px, py); }
 function drawPatch(t) {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), live = ex.live[P.key]; if (!live) return;
   if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
@@ -4646,7 +4664,7 @@ function drawPatch(t) {
   if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
-  const c0 = camAt(v, RT.pl.rx, RT.pl.ry), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // centred, clamped; the shake after
+  const c0 = camPos(v, RT.pl.rx, RT.pl.ry), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // centred, clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
@@ -4691,8 +4709,10 @@ function drawPatch(t) {
     const ms = []; for (let j = 1; j <= 4; j++) for (let i = 1; i <= 4; i++) { let m = b[j * 6 + i] ? 256 : 0; NB9.forEach(([dx, dy], k) => { if (b[(j + dy) * 6 + i + dx]) m |= 1 << k; }); ms.push(m); }
     return { key: own.toString(36) + '.' + ring.toString(36), ms }; };
   const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
-  const fogE = ts === 48 && fogged ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 ? eighths('V', (x, y) => !uvAt(x, y)) : null;
-  for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
+  const bk = lay.baked ? BAKED.view : null, bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
+  const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
+  if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }));
+  if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= PW || ty >= PH) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
     if (lightAt) { const i = ty * PW + tx, L = lvAt(tx, ty);
       let m = 0; if (L < 2) { const dk = (x, y) => lvAt(x, y) > L, u = dk(tx, ty - 1), r = dk(tx + 1, ty), d = dk(tx, ty + 1), l = dk(tx - 1, ty);
@@ -4776,12 +4796,14 @@ function drawPatch(t) {
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
     blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)));
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); } });
-  if (ts === 48) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
+  if (bk) items.push(...bk.propItems(g, bOrg, bclk, (x, y) => see(x, y), (x, y) => tileLight(x, y)));
+  if (ts === 48 && !bk) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; items.sort((a, b) => a.y - b.y).forEach(it => it.d());
   if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, see, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
-  for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK) {
+  if (bk) bk.drawCanopy(g, bOrg, bclk, [{ x: RT.pl.rx + 24, y: RT.pl.ry + 24 }].concat(RT.pt ? [{ x: RT.pt.rx + 24, y: RT.pt.ry + 24 }] : []), (x, y) => shown(x, y), (x, y) => tileLight(x, y));   // the crowns, cut away round the explorer and the partner
+  for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK && !bk) {
     const x = i % PW, y = (i / PW) | 0; if (!vis2(x * ts, y * ts)) continue;
     const under = tokens.some(o => cheb(o, { x, y }) <= 1);
     overlay((ts === 48 && treeCanopy(lay, i, under ? 1 : 0, !lightAt && tileLight(x, y) === 3)) || canopyArt(under ? 1 : 0), W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
@@ -4873,7 +4895,7 @@ function drawPartner(sp, pt, x, y, t, stepFr = -1) {
 const TAB = { order: ['!', '?', 'find'], border: { '!': 'yellow', '?': 'sprout', find: 'cream' }, max: 4, merge: 24, clear: 4, flashMs: 160 };
 const rectsMeet = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 // the place view and its drawn camera, as drawPatch has them this frame (the shake after the clamp)
-function cueView() { const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), [sx, sy] = shakeOff(), c0 = camAt(v, RT.pl.rx, RT.pl.ry); return { v, cam: { x: c0.x + sx, y: c0.y + sy } }; }
+function cueView() { const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), [sx, sy] = shakeOff(), c0 = camPos(v, RT.pl.rx, RT.pl.ry); return { v, cam: { x: c0.x + sx, y: c0.y + sy } }; }
 // a find the Call lit is still lying there: a pod not taken, a charged stone, the crack
 function findThere(key, lay, q) {
   return S.pods.some(p => p.k === key && !p.h && p.x === q.x && p.y === q.y)
@@ -5205,13 +5227,13 @@ const PAWS = () => art('sg-paws', () => { const pb = new PB(16, 15); pb.blit(ICO
 const sgSp = sp => Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? sp : 0;
 // Is the tile (x, y) inside the place view when the player stands on P? (the camera clamps at the place's edges)
 function tileInView(px, py, x, y) {
-  try { const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, c = camAt(v, px * ts, py * ts);
+  try { const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, c = camPos(v, px * ts, py * ts);
     return x * ts >= c.x && (x + 1) * ts <= c.x + SCR_W && y * ts >= c.y && (y + 1) * ts <= c.y + VIEW_H; } catch (e) { return true; }
 }
 // The lit tile as the place draws it on that frame, without the things that move (rain, drifting fog, the pawn, creatures, outlines that blink):
 // the tile at the view's light and veil, the marks and props still on it, the part of a canopy or roof over it, a pod lying on it, then the 2 px outline.
 function placeLightFn(P, lay) {   // the place's own light for a tile (fog beyond sight, an overcast storm, the storm's darkened columns), as drawPatch gives it
-  const ex = S.exp, v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, cam = RT.pl ? camAt(v, RT.pl.rx, RT.pl.ry) : camAt(v, P.x * ts, P.y * ts);
+  const ex = S.exp, v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, cam = RT.pl ? camPos(v, RT.pl.rx, RT.pl.ry) : camPos(v, P.x * ts, P.y * ts);
   const col = lay.cell % MW, fogged = !lay.cave && inFog(lay.cell), overcast = !lay.cave && stormCovers(col), sight = sightR(lay);
   const inS = (x, y) => sight >= 99 || Math.hypot(x - P.x, y - P.y) <= sight + .5;
   let darkW = 0, darkLeft = true;
@@ -6450,6 +6472,7 @@ function actReadOnly(k) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
 if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
+loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
@@ -6489,7 +6512,7 @@ window.__mb = { get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get 
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, canStep, edgeKind, TEST,
   capture: () => scr.toDataURL("image/png"), get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
-  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
+  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(BAKED.ready ? BAKED.view.paletteRgb() : []).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
     return { colours: new Set(Array.from({ length: d.length / 4 }, (_, i) => (d[i * 4] << 16) | (d[i * 4 + 1] << 8) | d[i * 4 + 2])).size, bad: [...bad.entries()].slice(0, 8) }; } };
 </script>
