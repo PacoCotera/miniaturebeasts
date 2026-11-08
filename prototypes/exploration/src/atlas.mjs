@@ -154,10 +154,10 @@ export function lipState(m, q, zero) { const s = quarterState(m, q); return zero
 
 // The lawn variant of every tile: hashed, then stepped so no tile shares a variant with the tile left of it or above it.
 export function lawnVariants(lay, seed, n) {
-  const v = new Array(PW * PH).fill(0); if (!n) return v;
-  for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) { const i = y * PW + x;
+  const lw = lay.w ?? PW, lh = lay.h ?? PH, v = new Array(lw * lh).fill(0); if (!n) return v;
+  for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) { const i = y * lw + x;
     v[i] = hash(seed, 'lawn', lay.key, x, y) % n;
-    while (n >= 3 && ((x > 0 && v[i] === v[i - 1]) || (y > 0 && v[i] === v[i - PW]))) v[i] = (v[i] + 1) % n; }
+    while (n >= 3 && ((x > 0 && v[i] === v[i - 1]) || (y > 0 && v[i] === v[i - lw]))) v[i] = (v[i] + 1) % n; }
   return v;
 }
 
@@ -231,46 +231,46 @@ Object.freeze(PLACE_RULES);   // the runtime default: a test passes its own `rul
 export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULES) {
   const toneOf = L => { const t = L == null || !cat.levelTone ? null : cat.levelTone[L]; return t === 'light' || t === 'dark' ? t : null; };
   const lawnTone = toneOf(level), lipTone = level == null ? null : toneOf(level - 1), faceTone = rules.faceTone && level != null ? toneOf(level + 1) : null, waterTone = rules.waterTone ? lawnTone : null;
-  const key = lay.key, N = PW * PH, tiles = new Array(N), sprites = [], at = (x, y) => (x < 0 || y < 0 || x >= PW || y >= PH ? -1 : lay.tiles[y * PW + x]);
+  const key = lay.key, lw = lay.w ?? PW, lh = lay.h ?? PH, N = lw * lh, tiles = new Array(N), sprites = [], at = (x, y) => (x < 0 || y < 0 || x >= lw || y >= lh ? -1 : lay.tiles[y * lw + x]);
   const terr = lay.terr || null, tmask = lay.tmask || null, frame = fr ? 1 : 0;
   const sandG = (x, y) => { const t = at(x, y); return t === T.SAND || (t === T.REEDS && lay.base === T.SAND); };   // sand ground: sand, or reeds on a sand base
-  const lv = lawnVariants(lay, seed, cat.lawn.length), lawnIdx = (i) => (rules.lawnPick ? rules.lawnPick(i % PW, (i / PW) | 0, lv[i]) : lv[i]);   // lawnPick: the proof check's own picks
+  const lv = lawnVariants(lay, seed, cat.lawn.length), lawnIdx = (i) => (rules.lawnPick ? rules.lawnPick(i % lw, (i / lw) | 0, lv[i]) : lv[i]);   // lawnPick: the proof check's own picks
   const faceAt = new Map();   // FACE columns on row 0: x → { piece, j }
-  if (terr) for (let x = 0; x < PW;) {
-    if (terr[x] !== TERR.FACE) { x++; continue; } let b = x; while (b + 1 < PW && terr[b + 1] === TERR.FACE) b++;
+  if (terr) for (let x = 0; x < lw;) {
+    if (terr[x] !== TERR.FACE) { x++; continue; } let b = x; while (b + 1 < lw && terr[b + 1] === TERR.FACE) b++;
     for (const c of faceRunSplit(cat, seed, key, x, b, tmask[x], tmask[b])) faceAt.set(c.x, c); x = b + 1;
   }
   const sideMid = { e: [], w: [] };   // the side mid chosen per row, per column side
   const macroAt = new Map();   // tile → its macro slice layer (falls back to the other radius, else the quarter rule)
-  if (rules.macros) for (const mc of shoreMacros(at, PW, PH)) {
+  if (rules.macros) for (const mc of shoreMacros(at, lw, lh)) {
     const list = cat.waterMacro[mc.q], [, dy, dx] = MACRO_Q.find(m => m[0] === mc.q), ro = dy < 0 ? mc.y - 1 : mc.y + 2, co = dx < 0 ? mc.x - 1 : mc.x + 2;
     // a macro whose four side tiles meet sand takes the sand-margin form (the corner tile does not decide); a missing form falls back to the lawn-margin one
     const sandy = rules.waterSand && [[mc.x, ro], [mc.x + 1, ro], [co, mc.y], [co, mc.y + 1]].some(([a, b]) => sandG(a, b)), sl = cat.waterMacroSand[mc.q];
     const p = (sandy ? (sl[mc.radius] || [])[frame] : null) || (list[mc.radius] || [])[frame] || (list[mc.radius === 60 ? 42 : 60] || [])[frame];
-    if (p) for (let j = 0; j < 4; j++) { const tx = mc.x + (j & 1), ty = mc.y + (j >> 1); macroAt.set(ty * PW + tx, Object.assign(cellLayer(p, tx - mc.x, ty - mc.y), { tone: waterTone })); }
+    if (p) for (let j = 0; j < 4; j++) { const tx = mc.x + (j & 1), ty = mc.y + (j >> 1); macroAt.set(ty * lw + tx, Object.assign(cellLayer(p, tx - mc.x, ty - mc.y), { tone: waterTone })); }
   }
   // generator 1's cliff bands, laid as runs: the top row and the foot row split like the faces, rock between, open sides
   const g1 = new Map(), isCliff = (x, y) => at(x, y) === T.CLIFF, onP = (x, y) => at(x, y) !== -1;
   if (!terr && rules.g1Runs) {
     const top = (x, y) => isCliff(x, y) && onP(x, y - 1) && !isCliff(x, y - 1), foot = (x, y) => isCliff(x, y) && onP(x, y + 1) && !isCliff(x, y + 1);
-    for (let y = 0; y < PH; y++) for (const [rowOf, sy] of [[top, 0], [(x, yy) => foot(x, yy) && !top(x, yy), 1]]) for (let x = 0; x < PW;) {
-      if (!rowOf(x, y)) { x++; continue; } let b = x; while (b + 1 < PW && rowOf(b + 1, y)) b++;
-      for (const c of faceRunSplit(cat, seed, key + '|g1|' + y, x, b, x > 0 ? 2 : 0, b < PW - 1 ? 4 : 0)) g1.set(y * PW + c.x, { piece: c.piece, j: c.j, sy });
+    for (let y = 0; y < lh; y++) for (const [rowOf, sy] of [[top, 0], [(x, yy) => foot(x, yy) && !top(x, yy), 1]]) for (let x = 0; x < lw;) {
+      if (!rowOf(x, y)) { x++; continue; } let b = x; while (b + 1 < lw && rowOf(b + 1, y)) b++;
+      for (const c of faceRunSplit(cat, seed, key + '|g1|' + y, x, b, x > 0 ? 2 : 0, b < lw - 1 ? 4 : 0)) g1.set(y * lw + c.x, { piece: c.piece, j: c.j, sy });
       x = b + 1; }
   }
   // the cast shadow's state of a lawn tile: e (raised to the west), s (a face's foot to the north), es, or c (raised only to the north-west)
   const raised = (x, y) => { const t = at(x, y); return terr ? t === T.FACE : t === T.CLIFF; };
-  const footAt = (x, y) => terr ? at(x, y) === T.FACE && terr[y * PW + x] === TERR.FACE && (tmask[y * PW + x] & 1) === 1 : isCliff(x, y) && onP(x, y + 1) && !isCliff(x, y + 1);
+  const footAt = (x, y) => terr ? at(x, y) === T.FACE && terr[y * lw + x] === TERR.FACE && (tmask[y * lw + x] & 1) === 1 : isCliff(x, y) && onP(x, y + 1) && !isCliff(x, y + 1);
   const shadowState = (x, y) => castState(raised, footAt, x, y);
   const lawnBase = lay.base === T.GRASS || lay.base === T.DARK;
   // grass decals: one candidate tile per 2 × 2 block (hashed), taken only when it is plain lawn with no terrain kind, no shadow and no feature on it;
   // the piece steps off the pick of the block to the west and the block to the north. Computed row by row of blocks, as faceAt is.
   const decalAt = new Map(), gd = cat.decal.grass;
   if (rules.grassDecals && gd.length) {
-    const BW = (PW + 1) >> 1, BH = (PH + 1) >> 1, pickOf = new Array(BW * BH).fill(-1), feat = new Set((lay.feats || []).map(f => f.y * PW + f.x));
+    const BW = (lw + 1) >> 1, BH = (lh + 1) >> 1, pickOf = new Array(BW * BH).fill(-1), feat = new Set((lay.feats || []).map(f => f.y * lw + f.x));
     for (let by = 0; by < BH; by++) for (let bx = 0; bx < BW; bx++) {
-      const j = hash(seed, 'gb', key, bx, by) & 3, x = 2 * bx + (j & 1), y = 2 * by + (j >> 1), i = y * PW + x;
-      if (x >= PW || y >= PH) continue;
+      const j = hash(seed, 'gb', key, bx, by) & 3, x = 2 * bx + (j & 1), y = 2 * by + (j >> 1), i = y * lw + x;
+      if (x >= lw || y >= lh) continue;
       const t = lay.tiles[i]; if ((t !== T.GRASS && t !== T.DARK) || (terr && terr[i]) || macroAt.has(i) || feat.has(i) || shadowState(x, y) !== null) continue;
       let k = hash(seed, 'gp', key, x, y) % gd.length;
       const kw = bx > 0 ? pickOf[by * BW + bx - 1] : -1, kn = by > 0 ? pickOf[(by - 1) * BW + bx] : -1;
@@ -282,7 +282,7 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
   }
   const openAt = new Map();   // a SIDE tile looking east → the width of its open strip (set when the tile is placed, read by the tile to its east)
   for (let i = 0; i < N; i++) {
-    const x = i % PW, y = (i / PW) | 0, t = lay.tiles[i], kind = terr ? terr[i] : 0, m = tmask ? tmask[i] : 0;
+    const x = i % lw, y = (i / lw) | 0, t = lay.tiles[i], kind = terr ? terr[i] : 0, m = tmask ? tmask[i] : 0;
     const L = [], tile = { layers: L, dark: 0 }; tiles[i] = tile;
     // ground: lawn (dark lawn on a dark base), sand, or none for water
     const mac = macroAt.get(i) || null;
@@ -370,7 +370,7 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
     }
     else if (kind === TERR.LANDING || kind === TERR.FOOT || kind === TERR.APRON_TOP) {
       const list = { [TERR.LANDING]: cat.landing, [TERR.FOOT]: cat.foot2, [TERR.APRON_TOP]: cat.apronTop }[kind][m & 1];
-      const side = y >= 3 && y <= PH - 4, p = side ? null : pick(list, 0), sand = pick(cat.sand, hash(seed, 'sd', key, x, y));
+      const side = y >= 3 && y <= lh - 4, p = side ? null : pick(list, 0), sand = pick(cat.sand, hash(seed, 'sd', key, x, y));
       if (p) { const l = cellLayer(p, 0, 0); if (l) L.push(l); } else if (sand) { L.length = 0; tile.dark = 0; L.push(cellLayer(sand, 0, 0)); }
     }
     tile.needStand = T_BLOCK[t] === 1 && t !== T.WATER && t !== T.DEEP && t !== T.ISLE && L.length <= ground;
@@ -378,7 +378,7 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
   // a blocking tile never draws as lawn: the rock stand-in, generator 1's cliff rule over its blocking neighbours
   const blocks = (x, y) => { const t = at(x, y); return t !== -1 && T_BLOCK[t] === 1; };
   for (let i = 0; i < N; i++) { const tile = tiles[i]; if (!tile.needStand) { delete tile.needStand; continue; } delete tile.needStand;
-    const x = i % PW, y = (i / PW) | 0;
+    const x = i % lw, y = (i / lw) | 0;
     if (!cat.face.w1.length || !cat.material.rock.length) return { ok: false };
     if (!blocks(x, y - 1)) tile.layers.push(cellLayer(pick(cat.face.w1, hash(seed, 'sr', key, x)), 0, 0));
     else if (!blocks(x, y + 1)) tile.layers.push(cellLayer(pick(cat.face.w1, hash(seed, 'sr', key, x)), 0, 1));

@@ -14,7 +14,7 @@ const at = (l, x, y) => l.tiles[(y + l.baked.oy) * PW + x + l.baked.ox];
 test('the place sits centred in the page grid, with rock all round it', () => {
   assert.equal(lay.tiles.length, PW * PH);
   assert.deepEqual(lay.baked, { id: 'Test_AllCases', ox: 5, oy: 5, w: 18, h: 22 });
-  assert.equal(lay.w, 18); assert.equal(lay.h, 22);
+  assert.equal(lay.w, PW); assert.equal(lay.h, PH);   // the layout's size is the padded grid its tiles are indexed by; the place's own size is in lay.baked
   for (let x = 0; x < PW; x++) { assert.equal(lay.tiles[x], T.ROCK); assert.equal(lay.tiles[(PH - 1) * PW + x], T.ROCK); }
   assert.equal(lay.cave, false);
   assert.equal(lay.key, '100');

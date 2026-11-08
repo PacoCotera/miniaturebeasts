@@ -46,7 +46,7 @@ function ending({ explored, trips, ex, world = { lines: [], ev: [] } }) {
   const turned = [];
   const t = load(["endExpedition", "holdEmpty", ...TRIP], {
     S, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3,
-    carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ surveyed: explored ? 1 : 0, total: 9 }),
+    carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ found: explored ? 1 : 0, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
     worldTurn: () => { turned.push(S.expN); S.turn++; S.expN++; return world; },
     logEv: () => {}, transition: () => {}, save: () => {},
@@ -177,7 +177,7 @@ test("End expedition while docked at the start", () => {
     "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen", ...TRIP], {
     S, window: {}, RT: {}, FX: {}, NOW: 0, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
-    CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ surveyed: 1, total: 9 }),
+    CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ found: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},
     worldTurn: () => { S.turn++; S.expN++; return { lines: [], ev: [] }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
   });

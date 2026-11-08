@@ -45,7 +45,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const lay = {
     key: o.key ?? place.id, cell: o.cell ?? 0, cave: false, land: LAND[place.type] ?? L.MEADOW, base: T.GRASS, tiles, shelter: new Uint8Array(NP), feats: [],
     terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt, sdist: new Int16Array(NP).fill(999), trees: {}, shade: false,
-    w, h, openings, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })),
+    w: pw, h: ph, openings, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })),
     baked: { id: place.id, ox, oy, w, h },
   };
   const hh = place.heart, kind = hh.kinds.find((k) => HEART_KINDS.includes(k)) || hh.kinds[0];

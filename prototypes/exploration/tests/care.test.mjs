@@ -230,7 +230,7 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 // ---- The expedition: outings, notches, the trip ----
 function ending(S, ex, reason = "home") {
   const t = vm.createContext({ console, S, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 16,
-    reachCounts: () => ({ surveyed: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
+    reachCounts: () => ({ found: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
     worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]] }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
   const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
   vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
@@ -373,7 +373,7 @@ test("T7, the Companion's half: it takes a third mibi while a Station add is que
 function dock(S, st, docked, log = []) {
   const notes = [];
   const ctx = vm.createContext({ console, S, CARRY_MAX: 3, SPECIES: [{ name: "Loika" }, { name: "Tuikis" }, { name: "Untuva" }], LAND_NAME: [], G: { land: [] },
-    stPart: () => st, isDocked: () => docked, clamp: (v, a, b) => Math.max(a, Math.min(b, v)), reveil: () => {}, logEv: t => log.push(t), fxMsg: t => notes.push(t),
+    stPart: () => st, isDocked: () => docked, clamp: (v, a, b) => Math.max(a, Math.min(b, v)), logEv: t => log.push(t), fxMsg: t => notes.push(t),
     CARE_TEXT: { left: n => n + " stays home", took: n => n + " is with you", fullRefused: n => n + " stays home · full" } });
   const names = ["syncStation", "carryApply", "mibiById", "normalizeCare", "releasedIds"];
   vm.runInContext(ACCESSOR() + names.map(source).join("\n") + "\n;syncStation(); normalizeCare(S);", Object.assign(ctx, { JUVENILE_TURNS: 2 }));
@@ -543,7 +543,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 16, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs out narrow burrows" }],
     FX: {}, shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
-    panel: noop, card: noop, disc: noop, blit: noop, R: noop, shieldBars: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
+    panel: noop, card: noop, disc: noop, blit: noop, R: noop, shieldBars: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false, HEART_TEXT: { worldLine: (n, a) => "Found " + n + " of " + a + " places" },
     CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
   const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
   vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);

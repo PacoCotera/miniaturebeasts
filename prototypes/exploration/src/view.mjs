@@ -6,8 +6,8 @@ import { PW, PH } from './world.mjs';
 export const TS = 48, TS_OLD = 32, SPR = 32;                       // the place tile; the cave and fallback tile; today's sprite box
 export const ON_SCREEN = { x0: 17, y0: 49, x1: 433, y1: 547 };     // a 32 px creature centred in its cell shows whole
 export const ON_SCREEN_48 = { x0: 25, y0: 57, x1: 425, y1: 539 };  // the box once the 48 px frames land (unused in C2a)
-export function viewOf(ts, x, y, w, h) {                           // the page passes 0, VIEW_Y, SCR_W, VIEW_H (0, 32, 450, 532)
-  return { ts, x, y, w, h, pw: PW * ts, ph: PH * ts };
+export function viewOf(ts, x, y, w, h, tw = PW, th = PH) {         // the page passes 0, VIEW_Y, SCR_W, VIEW_H (0, 32, 450, 532) and the place's own width and height in tiles
+  return { ts, x, y, w, h, pw: tw * ts, ph: th * ts };
 }
 export function sprOff(ts) { return { x: (ts - SPR) >> 1, y: ts - SPR }; }   // 48: (8, 16); 32: (0, 0)
 
