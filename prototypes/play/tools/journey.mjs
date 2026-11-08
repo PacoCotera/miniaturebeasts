@@ -279,7 +279,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
 
 // ---- M. the layouts and the key minimums, measured (the ruling's checks) ----
 const SIZES = [[1280, 720, 1, "stack"], [1440, 900, 1, "stack"], [1920, 1080, 1, "row"], [2560, 1440, 1, "row"], [1440, 900, 1.25, "stack"], [1440, 900, 1.75, "stack"]];
-const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Research: 56, Library: 56, Back: 56, Call: 56, Confirm: 64 };
+const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Pods: 56, Library: 56, Back: 56, Call: 56, Confirm: 64 };
 {
   for (const [w, h, dsf, layout] of SIZES) {
     const tag = `M ${w}×${h}${dsf === 1 ? "" : " @" + dsf}`;
@@ -297,7 +297,7 @@ const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Res
     for (const kk of m.keys) { const min = MIN[kk.name]; expect(kk.w >= min - 1e-6 && kk.w <= min + e && kk.h >= min - 1e-6 && kk.h <= min + e, `${tag}: ${kk.dev} ${kk.name} is ${kk.w} × ${kk.h} CSS px, wanted ${min} × ${min}`); }
     { const n = Math.max(1, Math.round(dsf)); expect(m.marks.length === 4 && m.marks.every((q) => Math.abs(q.w * dsf - 24 * n) < 0.02 && Math.abs(q.h * dsf - 24 * n) < 0.02 && q.px === "pixelated" && Math.abs(q.dx) <= 1 / dsf + 0.01 && Math.abs(q.dy) <= 1 / dsf + 0.01), `${tag}: each room mark is drawn at 24 × ${n} device px, pixelated, centred in its key (${JSON.stringify(m.marks[0])})`); }
     eq(m.keys.length, 18, tag + ": 11 Station keys and 7 Companion keys");
-    eq(m.keys.filter((kk) => kk.dev === "station").map((kk) => kk.name), ["Left", "Up", "Down", "Right", "Home", "Research", "Vivarium", "Library", "Call", "Back", "Confirm"], tag + ": the Station's keys, in order (pods, vivarium, library; Call left of Back)");
+    eq(m.keys.filter((kk) => kk.dev === "station").map((kk) => kk.name), ["Left", "Up", "Down", "Right", "Home", "Pods", "Vivarium", "Library", "Call", "Back", "Confirm"], tag + ": the Station's keys, in order (pods, vivarium, library; Call left of Back)");
     expect(m.keys.every((kk) => { const s = MIN[kk.name], row = Math.round((kk.top - (72 - s) / 2) / 72); return row >= 0 && row < 2 && Math.abs(kk.top - row * 72 - (72 - s) / 2) <= 1 / m.dpr + 0.01; }), tag + ": each key is centred in its row: a 56 key 8 from the row's top, a 64 key 4");
     expect(["station", "companion"].every((d) => { const c = m.keys.filter((kk) => kk.dev === d).map((kk) => kk.top + kk.h / 2 - Math.floor((kk.top + kk.h / 2) / 72) * 72); return c.every((v) => Math.abs(v - 36) <= 1 / m.dpr + 0.01); }), tag + ": all the key centres in a row share one line");
     if (dsf === 1 && w === 1280) {   // the drawn Call key reaches the Station as C does

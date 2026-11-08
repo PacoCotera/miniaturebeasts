@@ -277,11 +277,14 @@ test("the Probe's marks say what they are (plan 3.17 B3): Reach has its count, a
   const said = () => p.run("__t = []; drawProbe(0); __t.join('|')");
   const range = p.run("tierOf().range"), total = (range * 2 + 1) ** 2;
   let t = said();
-  assert.ok(t.includes(`0 of ${total} filled`), "between expeditions none are filled: " + t);
+  assert.ok(t.includes(`0 of ${total} explored`), "between expeditions none are explored: " + t);
   assert.ok(t.includes("Bolt"), "the ringed sign's name: " + t);
   p.key("right"); t = said(); assert.ok(t.includes("Flag") && !/\|Bolt\|/.test("|" + t + "|".replace("Signs", "")), "the name follows the ring: " + t);
   p.run("startExpedition('weather', G.spawns[0]); S.phase = 'probe';"); t = said();
-  assert.match(t, /\d+ of \d+ filled/, "on an expedition the count is of the places on the map: " + t);
+  assert.match(t, /\d+ of \d+ explored/, "on an expedition the count is of the places in reach: " + t);
+  assert.ok(t.includes("0 of " + p.run("S.exp.reach.length") + " explored"), "none explored yet; the total is the cells in reach: " + t);
+  p.run("const c = S.exp.reach.find(c => c !== S.exp.pos); S.visited[c] = 1; S.called = S.called || {}; S.called[c] = 1;");
+  assert.ok(said().includes("1 of " + p.run("S.exp.reach.length") + " explored"), "an explored place counts: " + said());
 });
 
 test("Cargo shows the hold as pictures: no 'empty', no cap below 16, no explored-count line", () => {

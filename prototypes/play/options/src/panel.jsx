@@ -48,20 +48,19 @@ function Panel({ api }) {
         <Dialog.Overlay className="op-overlay" />
         <Dialog.Content className="op-panel" data-options="" aria-describedby={undefined}>
           <Dialog.Title className="op-title">Options</Dialog.Title>
-          <Toggle label="Playtest waits" line="Short waits, so a tester finishes the whole loop in about an hour." on={o.playtest} set={set("playtest")} />
-          <Toggle label="Developer tools" line="The tools button, the Station's panel and the Companion's Observer." on={o.dev} set={set("dev")} />
-          <Pick label="Companion" line="Which Companion the frame holds." value={o.companion} set={set("companion")} items={[["A", "Companion A"], ["B", "Companion B"]]} />
-          <Pick label="Jump" line="Where a jump lands." value={o.jump} set={set("jump")} items={[["", "The game's own"], ["arrival", "Arrival"], ["fork", "Fork"]]} />
+          <Toggle label="Playtest waits" line="Short waits, so the whole loop fits in about an hour." on={o.playtest} set={set("playtest")} />
+          <Toggle label="Developer tools" line="Shows the tools button, the Station's panel and the Companion's Observer." on={o.dev} set={set("dev")} />
+          <Pick label="Companion" line="Which Companion the page plays." value={o.companion} set={set("companion")} items={[["A", "Companion A"], ["B", "Companion B"]]} />
           <Pick label="Name list" line="Where new mibi names come from." value={o.names} set={set("names")} items={[["", "The current list"], ...api.names.map((n) => [n, n])]} />
-          <Pick label="Baked place" line="Play a baked place in every land cell of the Companion's world." value={o.place} set={set("place")} items={[["", "None"], ...api.places.map((n) => [n, n])]} />
-          <Row label="Start fresh" line="Erases the save on this browser and begins again; the options stay.">
+          <Pick label="One place everywhere" line="Every land cell of the Companion's map plays this hand-made place." value={o.place} set={set("place")} items={[["", "Off"], ...api.places]} />
+          <Row label="Start fresh" line="Erases the save in this browser and starts again. The options stay.">
             <AlertDialog.Root>
               <AlertDialog.Trigger className="op-btn" id="optionsFresh">Start fresh</AlertDialog.Trigger>
               <AlertDialog.Portal>
                 <AlertDialog.Overlay className="op-overlay op-over2" />
                 <AlertDialog.Content className="op-panel op-confirm" data-options="">
                   <AlertDialog.Title className="op-title">Start fresh?</AlertDialog.Title>
-                  <AlertDialog.Description className="op-line">This erases your save on this browser.</AlertDialog.Description>
+                  <AlertDialog.Description className="op-line">This erases the save in this browser. It cannot be undone.</AlertDialog.Description>
                   <div className="op-actions">
                     <AlertDialog.Cancel className="op-btn">Cancel</AlertDialog.Cancel>
                     <AlertDialog.Action className="op-btn op-go" id="optionsFreshYes" onClick={() => api.onStartFresh()}>Start fresh</AlertDialog.Action>
@@ -70,6 +69,7 @@ function Panel({ api }) {
               </AlertDialog.Portal>
             </AlertDialog.Root>
           </Row>
+          <div className="op-line">Changes apply when you press Done; the page reloads. Developer tools applies at once.</div>
           <div className="op-actions"><Dialog.Close className="op-btn" id="optionsDone">Done</Dialog.Close></div>
         </Dialog.Content>
       </Dialog.Portal>

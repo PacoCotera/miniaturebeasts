@@ -3,11 +3,10 @@
 //   playtest   the playtest preset's short waits (playtest.mjs)
 //   dev        Developer tools: the play bar's button, the Station's panel, the Companion's Observer, the compare page's build stamp
 //   companion  the Companion in the frame: "A", or the second Companion "B"
-//   jump       where a jump lands: "" (the game's own), "arrival" or "fork" (the jump test)
 //   names      the name list births draw from: "" (the current one) or a list key of names.mjs (en-short-1 shows the archived English names)
 //   place      a baked place (prototypes/places/baked) played in every land cell of the Companion's world: "" for none
 export const OPTIONS_KEY = "mb-options";
-export const OPTION_DEFAULTS = Object.freeze({ playtest: false, dev: false, companion: "A", jump: "", names: "", place: "" });
+export const OPTION_DEFAULTS = Object.freeze({ playtest: false, dev: false, companion: "A", names: "", place: "" });
 export function readOptions(storage = globalThis.localStorage) {
   try { const o = JSON.parse(storage.getItem(OPTIONS_KEY) || "{}"); return { ...OPTION_DEFAULTS, ...(o && typeof o === "object" ? o : {}) }; } catch { return { ...OPTION_DEFAULTS }; }
 }
