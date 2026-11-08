@@ -263,6 +263,7 @@ import { pickHeart, heartPath, heartSeen, tellShows, HEART_TEXT, HEART_FOUND_R, 
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames } from "./src/walk-data.mjs";
+import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -358,7 +359,8 @@ const dataLadder = () => [1, 2, 3, 4].map(t => Math.round(t * dataStep)).join(' 
 const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
 const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
 const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
-const JUVENILE_TURNS = 2, ELDER_TURNS = 16;     // young for 2 world turns; elder after 16 more as an adult (an elder at turn 18)
+const PLAYTEST_ON = (() => { try { return playtestOn(location.search); } catch (e) { return false; } })();   // ?playtest: the playtest preset (play/src/playtest.mjs), the one place of the shortened waits
+const JUVENILE_TURNS = PLAYTEST_ON ? PLAYTEST.settings.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON ? PLAYTEST.settings.elderTurns : 16;     // young for 2 world turns; elder after 16 more as an adult (an elder at turn 18); the preset: 1 and 4
 // Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
 // 6 to 8 in the Probe's reach (was 3 to 5; tuned 2026-10-09, 6 to 8 after the first measure, so a calm walk earns about 3 Energy, research-economy.md §9), chosen when the expedition sets out. Each still holds +1, never more.
 const WARM_MIN = 6, WARM_MAX = 8, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
@@ -861,12 +863,14 @@ function leaveMibi(m) {
   if (!m || !canSwap() || !isCarried(m)) return { ok: false };
   S.carried = S.carried.filter(id => id !== m.id); if (S.lead === m.id) S.lead = null; logEv(m.name + ' stays home'); return { ok: true };
 }
+// The care day a Tend is counted in: the Companion's local date; under the playtest preset a span of PLAYTEST.careDayMs (a string that sorts after any date, so the order check below holds).
+function careDay(d) { d = d || new Date(); return PLAYTEST_ON ? 'T' + String(Math.floor(d.getTime() / PLAYTEST.careDayMs)).padStart(10, '0') : localDay(d); }
 // Tend: a carried mibi, between expeditions, once per Companion day. A clock moved back is refused and resets nothing.
-function canTend(m) { return !S.exp && isCarried(m) && (m.tendDay == null || localDay() > m.tendDay); }
+function canTend(m) { return !S.exp && isCarried(m) && (m.tendDay == null || careDay() > m.tendDay); }
 // One Tend: +1 care, +1 tends, then the bond, then growth. Returns what happened, for the lines.
 function tend(m) {
   if (!canTend(m)) return null;
-  m.care = (m.care || 0) + 1; m.tends = (m.tends || 0) + 1; m.tendDay = localDay(); logEv('Tended ' + m.name);
+  m.care = (m.care || 0) + 1; m.tends = (m.tends || 0) + 1; m.tendDay = careDay(); logEv('Tended ' + m.name);
   return { bonded: bondCheck(m), grown: growCheck(m) };
 }
 // The bond, after a Tend only: three Tends. A mibi already adult by the clock keeps its adulthood:

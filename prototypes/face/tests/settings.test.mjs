@@ -59,6 +59,7 @@ const SCENES = {
   "the sleep row, no save": () => model({ f: "sleep", noSave: true }),
   "no Companion yet": () => model({ f: "companion", noCompanion: true, docked: false }),
   "one region, no date": () => model({ regions: 1, began: null, mibis: 1 }),
+  "the realm row, playtest setup on": () => ({ ...model(), settings: { ...S.DEFAULT_SETTINGS, realmSleep: true, playtest: true } }),
 };
 
 for (const [name, mk] of Object.entries(SCENES)) {
@@ -80,6 +81,12 @@ test("the sleep row says why it cannot act, in the order of the sleep's own pref
     const p = settingsBuild(SCENES[sc](), spec).props.regions; assert.equal(p.sleep.dim, true); assert.equal(p.sleep.sub, R[why]); assert.ok(p.detail.blocks.some((b) => b.kind === "notice" && b.text === R[why]), sc);
   }
   const ok = settingsBuild(SCENES["the sleep row, docked"](), spec).props.regions; assert.equal(ok.sleep.dim, false); assert.equal(ok.sleep.sub, spec.strings.rows.sleep.sub); assert.ok(!Object.values(spec.strings.reasons).includes(ok.sleep.sub), "nothing stops it: the line names no condition"); assert.ok(!ok.detail.blocks.some((b) => b.kind === "notice"));
+});
+
+test("the playtest setup is said on Settings only, as one notice under the realm's facts, and nowhere when it is off", () => {
+  const on = settingsBuild(SCENES["the realm row, playtest setup on"](), spec).props.regions.detail.blocks, off = settingsBuild(model(), spec).props.regions.detail.blocks;
+  assert.deepEqual(on[1], { kind: "notice", text: spec.strings.detail.realm.playtest }); assert.equal(on.length, 2); assert.equal(off.length, 1, "off: the realm's facts alone");
+  for (const f of ["companion", "sleeping", "sleep"]) assert.ok(!settingsBuild({ ...model({ f }), settings: { ...S.DEFAULT_SETTINGS, realmSleep: true, playtest: true } }, spec).props.regions.detail.blocks.some((b) => b.text === spec.strings.detail.realm.playtest), f);
 });
 
 test("the realm's words: the day it began, the regions, the mibis that are not released, the world turn; plural and singular; no date when the save has none", () => {

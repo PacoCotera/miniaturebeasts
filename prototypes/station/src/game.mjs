@@ -11,6 +11,7 @@ import { createFramePresenter } from "./present.mjs";
 import { createFocus } from "../../ui/focus.mjs";
 import * as C from "./companions.mjs";
 import { resetPlan, keepPre10 } from "../../play/src/realm/reset.mjs";
+import { playtestOn, withPlaytest } from "../../play/src/playtest.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
@@ -125,9 +126,10 @@ export function resetSave() {
 // --- developer settings, under their own key ---
 export function loadSettings() {
   try { const o = JSON.parse(localStorage.getItem(S.DEV_KEY) || "null"); if (o && typeof o === "object") Object.assign(G.settings, o); delete G.settings.trickleCap; } catch { /* defaults */ }
+  if (playtestOn()) Object.assign(G.settings, withPlaytest({}, true));   // ?playtest: the playtest preset (play/src/playtest.mjs) laid over the settings, in memory only
   return G.settings;
 }
-export function saveSettings(patch) { Object.assign(G.settings, patch || {}); try { localStorage.setItem(S.DEV_KEY, JSON.stringify(G.settings)); } catch { /* in memory */ } changed(); }
+export function saveSettings(patch) { Object.assign(G.settings, patch || {}); if (G.settings.playtest) { changed(); return; }   /* the preset lasts the visit: never written to the settings key */ try { localStorage.setItem(S.DEV_KEY, JSON.stringify(G.settings)); } catch { /* in memory */ } changed(); }
 
 // --- screens ---
 const SCREENS = {};
