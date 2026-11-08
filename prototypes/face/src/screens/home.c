@@ -107,20 +107,29 @@ static int path_ok(int lv, int x0, int f0, int x1, int f1, int w, int relaxed) {
 static int census_raised(const char *skip);   /* the walkers (but `skip`) on a raised level or bound for one */
 static int census_travelling(void);           /* the walkers on a trip */
 static int heap_gap(const char *self, int x, int feet, int fw, int fh);   /* the clear x gap to the nearest shown resident in depth (below the census) */
+static int heap_hide(const char *self, int x, int feet, int fw, int fh);   /* L4b2: the most of one figure a box at (x, feet) covers or lies under, in thousandths */
 static int start_heap(int x, int feet, int fw, int fh);   /* a start at (box x, feet) whose ink box meets a shown resident's widened ink box (home.json regions.resident.walk.start) */
 static int raised_ok(const char *id) { int cap = g_nres / g_rdiv; return census_raised(id) < (cap < 1 ? 1 : cap); }   /* at most max(1, ⌊N / raisedDiv⌋) on the raised levels, N the residents shown */
 static int speed_d(int stage, int n) { return n * g_spd[stage][0] / g_spd[stage][1]; }   /* the distance of n own ticks at the stage's speed */
+/* the rule is on (Home, Idle, the Vivarium): of twenty-four draws the start with the most room round it, so the household spreads as it is placed and never opens on a heap (the figure's own width on the ground line); 1 with the start in *ox, *of and its level in *olv */
+static int pick_start(wk_t *k, const char *id, int w, int h, int lv, int *ox, int *of, int *olv) {
+  int have = 0, bg = 0, be = 0, bx = 0, bf = 0, blv = lv;
+  int rows = g_rlo > -(1 << 19) && g_rhi > g_rlo ? 64 : 0;   /* with a known feet band (Home) sixty-four more draws on four evenly spaced rows, the band's two edges among them: two depth rows are room for five where one row is not */
+  int lv0 = lv;
+  for (int pass = 0; pass < 3; pass++) {   /* L4b2: when every start lies on another figure, the search again with fresh draws, then (from a raised level, a small terrace) on main */
+    if (pass > 0) { if (!have || bg > -1000) break; if (pass == 2) { if (lv0 == 0) break; lv = 0; } }
+    for (int i = 0; i < 24 + rows; i++) { unsigned a = wr(k), b = wr(k); int cx, cf; if (i < 24) lvl_draw(lv, a, b, w, WIDE, WIDE, &cx, &cf); else { int row = g_rlo + (g_rhi - g_rlo) * ((i - 24) % 4) / 3; lvl_draw(lv, a, b, w, WIDE, row, row, &cx, &cf); } if (!gok(lv, cx, cf, w, 0)) continue; int g = heap_gap(id, cx, cf, w, h), e = rows ? iabs(cf - (g_rlo + g_rhi) / 2) : 0; if (g > 60) g = 60; { int hv = heap_hide(id, cx, cf, w, h); if (hv > 20) g = -1000 - hv; }   /* L4b2: a start whose body box meets another figure's (the picture's ink is wider and taller than the body box) is the last choice, the least covered of those first; room beyond 60 px is plenty: among those the start nearer the band's front or back edge, so the household stands in two depth rows */
+      if (!have || g > bg || (g == bg && e > be)) { have = 1; bg = g; be = e; bx = cx; bf = cf; blv = lv; } }
+  }
+  if (have) { *ox = bx; *of = bf; *olv = blv; }
+  return have;
+}
 static void wk_init(wk_t *k, const char *id, unsigned seed, int w, int h, int stage, int pi) {
   memset(k, 0, sizeof *k); snprintf(k->id, sizeof k->id, "%s", id); k->seed = seed; k->s = seed; k->w = w; k->h = h; k->live = 1; k->done = 0; k->stage = stage; k->pi = pi;
   unsigned r = wr(k); int nl = room_levels(), lv = nl > 1 && r % (unsigned)g_lvin == 0 && raised_ok(id) ? 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)) : 0;   /* one draw: the level (1 start in lvin, while the raised cap allows) */
   if (!lv_open(lv, w)) lv = 0;   /* a level no one can climb to in the room view: main */
   int x = 32, feet = 300, ok = 0;
-  if (g_stw > 0) {   /* the rule is on (Home, Idle, the Vivarium): of twenty-four draws the start with the most room round it, so the household spreads as it is placed and never opens on a heap (the figure's own width on the ground line) */
-    int have = 0, bg = 0, be = 0, bx = 0, bf = 0;
-    int rows = g_rlo > -(1 << 19) && g_rhi > g_rlo ? 64 : 0;   /* with a known feet band (Home) sixty-four more draws on four evenly spaced rows, the band's two edges among them: two depth rows are room for five where one row is not */
-    for (int i = 0; i < 24 + rows; i++) { unsigned a = wr(k), b = wr(k); int cx, cf; if (i < 24) lvl_draw(lv, a, b, w, WIDE, WIDE, &cx, &cf); else { int row = g_rlo + (g_rhi - g_rlo) * ((i - 24) % 4) / 3; lvl_draw(lv, a, b, w, WIDE, row, row, &cx, &cf); } if (!gok(lv, cx, cf, w, 0)) continue; int g = heap_gap(id, cx, cf, w, h), e = rows ? iabs(cf - (g_rlo + g_rhi) / 2) : 0; if (g > 60) g = 60;   /* room beyond 60 px is plenty: among those the start nearer the band's front or back edge, so the household stands in two depth rows */
-      if (!have || g > bg || (g == bg && e > be)) { have = 1; bg = g; be = e; bx = cx; bf = cf; } }
-    if (have) { x = bx; feet = bf; ok = 1; } }
+  if (g_stw > 0) ok = pick_start(k, id, w, h, lv, &x, &feet, &lv);
   else for (int i = 0; i < 8 && !ok; i++) { unsigned a = wr(k), b = wr(k); lvl_draw(lv, a, b, w, WIDE, WIDE, &x, &feet); ok = gok(lv, x, feet, w, 0) && !start_heap(x, feet, w, h); }
   if (!ok) { lv = 0; lvl_draw(0, 0, 0, w, g_xlo, g_xlo, g_rlo, g_rhi, &x, &feet); }   /* all eight failed: main's leftmost point at its top */
   k->lv = k->tlv = lv; k->x = x; k->feet = feet; k->facing = (int)(wr(k) & 1u); k->idle = 25 + (int)(wr(k) % 38u); k->walking = 0;
@@ -152,14 +161,16 @@ static const void *g_lw, *g_lm; static const int *g_nlw, *g_nlm;
 /* a nice spot for a curl (vivarium.json rules.show.curl; the game designer's cats): a foot point (fx, feet) on level lv that is a valid stand (the walk's own test), at least `gap` from every other curl and from the bed, beside an occluder of lv (fx = its rect.x - beside or
    rect.x + rect.w + beside, feet = its foot - occDy) or on the level's back edge (feet = top(fx) + backDy at a profile breakpoint); chosen by a draw on the mibi's seed among those within rules.night.reach of where its trip ended, else the nearest, else where it stands if
    that is valid. 1 with the foot point in *ox, *of; 0 when there is none (it walks out). */
-static int curl_spot(const char *self, unsigned seed, int lv, int w, int cw, int x, int feet, int *ox, int *of) {
+static int curl_spot(const char *self, unsigned seed, int lv, int w, int h, int cw, int x, int feet, int *ox, int *of) {
   int beside = v_si("vivarium", "rules.show.curl.beside", 56), backDy = v_si("vivarium", "rules.show.curl.backDy", 8), occDy = v_si("vivarium", "rules.show.curl.occDy", 4), gap = v_si("vivarium", "rules.show.curl.gap", 48), reach = v_si("vivarium", "rules.night.reach", 200);
   int cx[24], cf[24], n = 0, here = x + w / 2; const rp_t *oc; int noc = room_pieces(RP_OCCLUDER, &oc);
   for (int k = 0; k < noc && n + 2 <= 20; k++) if (oc[k].level == lv) { cx[n] = oc[k].x - beside; cf[n++] = oc[k].foot - occDy; cx[n] = oc[k].x + oc[k].w + beside; cf[n++] = oc[k].foot - occDy; }
   { int xs[8], nx = room_xs(lv, xs, 8), q = (w + 3) / 4; for (int i = 0; i < nx && n < 24; i++) { int fx = xs[i]; if (fx < xs[0] + q) fx = xs[0] + q; if (fx > xs[nx - 1] - q) fx = xs[nx - 1] - q; cx[n] = fx; cf[n++] = room_top(lv, fx) + backDy; } }
-  int ok[24], nok = 0, best = -1, bd = 1 << 30, near[24], nn = 0;
-  for (int i = 0; i < n; i++) { ok[i] = gok(lv, cx[i] - w / 2, cf[i], w, 0) && curl_clear(self, cx[i], cw, gap) && lv_open(lv, w) && !curl_on_piece(cx[i], cf[i], cw); if (!ok[i]) continue; nok++;
-    int d = iabs(cx[i] - here) > iabs(cf[i] - feet) ? iabs(cx[i] - here) : iabs(cf[i] - feet); if (d < bd) { bd = d; best = i; } if (d <= reach) near[nn++] = i; }
+  int ok[24], okh[24], nok = 0, nokh = 0, best = -1, bd = 1 << 30, near[24], nn = 0;
+  for (int i = 0; i < n; i++) { ok[i] = gok(lv, cx[i] - w / 2, cf[i], w, 0) && curl_clear(self, cx[i], cw, gap) && lv_open(lv, w) && !curl_on_piece(cx[i], cf[i], cw); okh[i] = ok[i] && heap_hide(self, cx[i] - (cw > w ? cw : w) / 2, cf[i], cw > w ? cw : w, h) <= 20; nok += ok[i]; nokh += okh[i]; }   /* L4b2: a spot that would lie over another mibi (the curl's box over a standing one's by more than a sixth of its width) is the last choice: no mibi is hidden by a curl placed on it */
+  { const int *use = nokh ? okh : ok;
+    for (int i = 0; i < n; i++) { if (!use[i]) continue;
+      int d = iabs(cx[i] - here) > iabs(cf[i] - feet) ? iabs(cx[i] - here) : iabs(cf[i] - feet); if (d < bd) { bd = d; best = i; } if (d <= reach) near[nn++] = i; } }
   if (nn) { unsigned r = (seed ^ 0x9e3779b9u) * 2654435761u >> 16; int i = near[r % (unsigned)nn]; *ox = cx[i]; *of = cf[i]; return 1; }
   if (nok) { *ox = cx[best]; *of = cf[best]; return 1; }
   if (gok(lv, x, feet, w, 0) && curl_clear(self, here, cw, gap) && lv_open(lv, w) && !curl_on_piece(here, feet, cw)) { *ox = here; *of = feet; return 1; }
@@ -178,7 +189,7 @@ static int wk_go(wk_t *k, int tlv, int wx, int wf) {
 static void edge_point(int w, int *x, int *feet) { lvl_draw(0, 0, 0, w, g_xlo, g_xlo, g_rlo, g_rhi, x, feet); }
 /* a rester's rest trip from where its own trip ended: its curl spot (else out), or off main's left end */
 static int wk_rest_plan(wk_t *k) {
-  if (k->rk == RK_CURL) { int ox, of; if (curl_spot(k->id, k->seed, k->lv, k->w, k->cw, k->x, k->feet, &ox, &of)) {
+  if (k->rk == RK_CURL) { int ox, of; if (curl_spot(k->id, k->seed, k->lv, k->w, k->h, k->cw, k->x, k->feet, &ox, &of)) {
       int bx = ox - k->w / 2; if (bx == k->x && of == k->feet) { k->rs = RS_REST; k->hold = 1; return 1; }
       k->rs = RS_GOING; if (wk_go(k, k->lv, bx, of)) return 1; k->rs = RS_FINISH; }
     k->rk = RK_OUT; }
@@ -189,7 +200,7 @@ static int wk_rest_plan(wk_t *k) {
 }
 /* a rester placed where it rests, the walk shown from its seed (a new walker that is not shown): out past the edge, or at its curl spot, or where it stands */
 static void wk_rest_at(wk_t *k) {
-  if (k->rk == RK_CURL) { int ox, of; if (curl_spot(k->id, k->seed, k->lv, k->w, k->cw, k->x, k->feet, &ox, &of)) { k->x = ox - k->w / 2; k->feet = of; k->rs = RS_REST; k->hold = 1; return; } k->rk = RK_OUT; }
+  if (k->rk == RK_CURL) { int ox, of; if (curl_spot(k->id, k->seed, k->lv, k->w, k->h, k->cw, k->x, k->feet, &ox, &of)) { k->x = ox - k->w / 2; k->feet = of; k->rs = RS_REST; k->hold = 1; return; } k->rk = RK_OUT; }
   if (k->rk == RK_OUT) { int tx, tf; edge_point(k->w, &tx, &tf); k->lv = k->tlv = 0; k->x = g_lx - k->w - 2; k->feet = tf; }
   k->rs = RS_REST; k->hold = 1;
 }
@@ -201,6 +212,8 @@ static void wk_return(wk_t *k) {
   int was = k->rs, out = k->rk == RK_OUT || k->ex; k->rs = RS_SHOWN;
   if ((was == RS_REST && out) || (was == RS_GOING && k->ex)) { wk_enter(k); return; }
   k->ex = 0; k->hold = 0;
+  if (g_stw > 0) { int hv = heap_hide(k->id, k->x, k->feet, k->w, k->h);   /* L4b2: it stands where it rested, which another figure may have taken since: not over, or under, one */
+    if (hv > 20) { int x, f, l; if (pick_start(k, k->id, k->w, k->h, k->lv, &x, &f, &l) && heap_hide(k->id, x, f, k->w, k->h) < hv) { k->x = x; k->feet = f; k->lv = k->tlv = l; } } }
 }
 static void wk_step(wk_t *k) {   /* one step of this resident's own time */
   if (!k->walking) {
@@ -215,7 +228,7 @@ static void wk_step(wk_t *k) {   /* one step of this resident's own time */
     { int third = -(k->w / 3); if (room > third) room = third; }   /* release 22 (D2): a waypoint may put this figure behind another's (L4-22, the owner's fine) but never more than a third of its width over it, nor deeper than where it stands now */
     for (int i = 0; i < 8 && !ok; i++) {
       unsigned a = wr(k), b = wr(k); lvl_draw(tlv, a, b, k->w, WIDE, WIDE, &wx, &wf);
-      if (g_stw > 0 && heap_gap(k->id, wx, wf, k->w, k->h) < room) continue;
+      if (g_stw > 0 && (heap_gap(k->id, wx, wf, k->w, k->h) < room || heap_hide(k->id, wx, wf, k->w, k->h) > 200)) continue;   /* L4b2: nor a waypoint over, or under, another figure by more than a fifth */
       if (tlv == k->lv) ok = (iabs(wx - k->x) > iabs(wf - k->feet) ? iabs(wx - k->x) : iabs(wf - k->feet)) >= 32 && gok(tlv, wx, wf, k->w, 0) && path_ok(tlv, k->x, k->feet, wx, wf, k->w, 0);
       else ok = gok(tlv, wx, wf, k->w, 0) && path_ok(k->lv, k->x, k->feet, ax, af, k->w, 1) && path_ok(tlv, bx, bf, wx, wf, k->w, 1);   /* leg 2 skips the profile and keep-out samples: a join is walkable by definition */
     }
@@ -272,10 +285,27 @@ static int census_travelling(void) { int n = 0; for (int i = 0; i < cen_nw; i++)
 static int heap_gap(const char *self, int x, int feet, int fw, int fh) {
   int best = 1 << 20, ay = feet + 1 - fh;
 #define HEAP_ONE(ox, ofeet, ow, oh) do { int by_ = (ofeet) + 1 - (oh); if (ay < by_ + (oh) && by_ < ay + fh) { int g_ = x < (ox) ? (ox) - (x + fw) : x - ((ox) + (ow)); if (g_ < best) best = g_; } } while (0)
-  for (int i = 0; i < cen_nw; i++) { const wk_t *o = cen_w[i]; if (!o->sh || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->w, o->h); if (o->walking) HEAP_ONE(o->tx, o->tf, o->w, o->h); }
-  for (int i = 0; i < cen_nm; i++) { const mv_t *o = cen_m[i]; if (!o->sh || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->fw, o->fh); }
+  for (int i = 0; i < cen_nw; i++) { const wk_t *o = cen_w[i]; if ((!o->sh && !(o->rs == RS_REST && o->rk == RK_CURL)) || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->w, o->h); if (o->walking) HEAP_ONE(o->tx, o->tf, o->w, o->h); }   /* L4b2: a curl at rest is a figure on the ground too: nothing starts, or lies down, on it */
+  for (int i = 0; i < cen_nm; i++) { const mv_t *o = cen_m[i]; if ((!o->sh && !(o->rs == RS_REST && o->rk == RK_CURL)) || !strcmp(o->id, self)) continue; HEAP_ONE(o->x, o->feet, o->fw, o->fh); }
 #undef HEAP_ONE
   return best;
+}
+/* L4b2: how much a figure at (box x, feet) would cover or be covered by the others, summed, each in thousandths of the smaller of the two boxes (the boxes' overlap in x and in y); a curl at rest counts at its ink width, and the bed's sleepers as one figure. 0 with no overlap. `self` is left out */
+static int heap_hide(const char *self, int x, int feet, int fw, int fh) {
+  int worst = 0, ay = feet + 1 - fh;
+  { int ns = strcmp(v_pstr("regions.bed.state"), "resting") == 0 ? v_plen("regions.bed.sleepers") : 0;   /* the bed's sleepers lie on the ground as figures too: nothing starts, or lies down, behind them */
+    if (ns > 0 && ns <= MAXS) { int bw = v_sk(sp(), hp("regions.bed.sleepers.ink.max"), 0), bh = v_sk(sp(), hp("regions.bed.sleepers.ink.max"), 1), footY = v_si(sp(), hp("regions.bed.sleepers.footY"), 512), f0 = 1 << 20, f1 = -(1 << 20);
+      for (int i = 0; i < ns; i++) { int f = v_sk(sp(), hp(v_fmt("regions.bed.sleepers.places.%d", ns)), i); if (f < f0) f0 = f; if (f > f1) f1 = f; }
+      int zx = f0 - bw / 2, zw = f1 - f0 + bw, zh = bh * 5 / 6, by_ = footY - zh, vx_ = (x + fw < zx + zw ? x + fw : zx + zw) - (x > zx ? x : zx), vy_ = (ay + fh < footY ? ay + fh : footY) - (ay > by_ ? ay : by_);
+      if (vx_ > 0 && vy_ > 0) { int a_ = fw * fh < zw * zh ? fw * fh : zw * zh, p_ = (int)((long)vx_ * vy_ * 1000 / a_); worst += p_; } } }
+#define HIDE_ONE(ox, ofeet, ow, oh) do { int by_ = (ofeet) + 1 - (oh), vx_ = (x + fw < (ox) + (ow) ? x + fw : (ox) + (ow)) - (x > (ox) ? x : (ox)), vy_ = (ay + fh < by_ + (oh) ? ay + fh : by_ + (oh)) - (ay > by_ ? ay : by_); \
+    if (vx_ > 0 && vy_ > 0) { int a_ = fw * fh < (ow) * (oh) ? fw * fh : (ow) * (oh), p_ = a_ > 0 ? (int)((long)vx_ * vy_ * 1000 / a_) : 0; worst += p_; } } while (0)
+  for (int i = 0; i < cen_nw; i++) { const wk_t *o = cen_w[i]; int cu = o->rs == RS_REST && o->rk == RK_CURL; if ((!o->sh && !cu) || !strcmp(o->id, self)) continue;
+    int ow = cu && o->cw > o->w ? o->cw : o->w, ox = o->x + o->w / 2 - ow / 2; HIDE_ONE(ox, o->feet, ow, o->h); if (o->walking) HIDE_ONE(o->tx, o->tf, o->w, o->h); }
+  for (int i = 0; i < cen_nm; i++) { const mv_t *o = cen_m[i]; int cu = o->rs == RS_REST && o->rk == RK_CURL; if ((!o->sh && !cu) || !strcmp(o->id, self)) continue;
+    int ow = cu && o->cw > o->fw ? o->cw : o->fw, ox = o->x + o->fw / 2 - ow / 2; HIDE_ONE(ox, o->feet, ow, o->fh); }
+#undef HIDE_ONE
+  return worst;
 }
 static int start_heap(int x, int feet, int fw, int fh) { return g_stw > 0 && heap_gap("", x, feet, fw, fh) < g_stw; }
 typedef struct { int fig[4], cf[4], cp[2], asleep, ent, w, h; } sg_t;   /* a still's geometry from the props, kept until its walk has stepped */
@@ -356,10 +386,10 @@ static int mv_trip(mv_t *m, int reach, int lvl) {
     if (tlv == m->lv) {
       if (r > 0) lvl_draw(tlv, a, b, m->fw, m->x - r, m->x + r, m->feet - r, m->feet + r, &wx, &wf); else lvl_draw(tlv, a, b, m->fw, WIDE, WIDE, &wx, &wf);
       int dx = wx - m->x, dy = wf - m->feet, M = iabs(dx) > iabs(dy) ? iabs(dx) : iabs(dy);
-      ok = M >= 32 && (reach <= 0 || M <= reach) && gok(tlv, wx, wf, m->fw, 0) && path_ok(tlv, m->x, m->feet, wx, wf, m->fw, 0) && !spot_taken(m, wx, wf, m->fw);
+      ok = M >= 32 && (reach <= 0 || M <= reach) && gok(tlv, wx, wf, m->fw, 0) && path_ok(tlv, m->x, m->feet, wx, wf, m->fw, 0) && !spot_taken(m, wx, wf, m->fw) && (g_stw <= 0 || heap_hide(m->id, wx, wf, m->fw, m->fh) <= 200);   /* L4b2: nor to stand over, or under, another by more than a fifth */
     } else {
       lvl_draw(tlv, a, b, m->fw, WIDE, WIDE, &wx, &wf);
-      ok = gok(tlv, wx, wf, m->fw, 0) && path_ok(m->lv, m->x, m->feet, ax, af, m->fw, 1) && path_ok(tlv, bx, bf, wx, wf, m->fw, 1) && !spot_taken(m, wx, wf, m->fw);
+      ok = gok(tlv, wx, wf, m->fw, 0) && path_ok(m->lv, m->x, m->feet, ax, af, m->fw, 1) && path_ok(tlv, bx, bf, wx, wf, m->fw, 1) && !spot_taken(m, wx, wf, m->fw) && (g_stw <= 0 || heap_hide(m->id, wx, wf, m->fw, m->fh) <= 200);
     }
   }
   if (!ok) return 0;
@@ -379,7 +409,7 @@ static int mv_go(mv_t *m, int tlv, int wx, int wf) {
   mv_clip_start(m); return 1;
 }
 static int mv_rest_trip(mv_t *m) {
-  if (m->rk == RK_CURL) { int ox, of; if (curl_spot(m->id, m->seed, m->lv, m->fw, m->cw, m->x, m->feet, &ox, &of)) {
+  if (m->rk == RK_CURL) { int ox, of; if (curl_spot(m->id, m->seed, m->lv, m->fw, m->fh, m->cw, m->x, m->feet, &ox, &of)) {
       int bx = ox - m->fw / 2; if (bx == m->x && of == m->feet) { m->rs = RS_REST; m->want = 1; m->flip_due = g_wticks; m->settle_tried = 0; return 1; }
       m->rs = RS_GOING; if (mv_go(m, m->lv, bx, of)) return 1; m->rs = RS_FINISH; }
     m->rk = RK_OUT; }
@@ -392,7 +422,7 @@ static void mv_to_rest(mv_t *m, int fresh);
 static void mv_to_asleep(mv_t *m, int ct);
 static int loop_period(const mv_loop_t *l);
 static void mv_rest_at(mv_t *m) {   /* a new mover that is not shown: at rest already */
-  if (m->rk == RK_CURL) { int ox, of; if (curl_spot(m->id, m->seed, m->lv, m->fw, m->cw, m->x, m->feet, &ox, &of)) { m->x = ox - m->fw / 2; m->feet = of; m->rs = RS_REST; m->want = 1; mv_to_asleep(m, (int)(m->seed % (unsigned)loop_period(&m->S->asleep))); return; } m->rk = RK_OUT; }
+  if (m->rk == RK_CURL) { int ox, of; if (curl_spot(m->id, m->seed, m->lv, m->fw, m->fh, m->cw, m->x, m->feet, &ox, &of)) { m->x = ox - m->fw / 2; m->feet = of; m->rs = RS_REST; m->want = 1; mv_to_asleep(m, (int)(m->seed % (unsigned)loop_period(&m->S->asleep))); return; } m->rk = RK_OUT; }
   if (m->rk == RK_OUT) { int tx, tf; edge_point(m->fw, &tx, &tf); m->lv = m->tlv = 0; m->x = g_lx - m->fw - 2; m->feet = tf; }
   m->rs = RS_REST;
 }
@@ -600,7 +630,7 @@ static void mv_init(mv_t *m, const char *id, unsigned seed, const char *set, int
   { const mv_set_t *ms = moving_set(set); m->native = ms ? ms->native_right : 1; }
   unsigned r = mr(m); int nl = room_levels(), lv = nl > 1 && r % (unsigned)g_lvin == 0 && raised_ok(id) ? 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)) : 0;   /* one draw: the level (1 start in lvin, while the raised cap allows) */
   int x = 32, feet = 300, ok = 0;
-  for (int i = 0; i < 8 && !ok; i++) { unsigned a = mr(m), b = mr(m); lvl_draw(lv, a, b, m->fw, WIDE, WIDE, &x, &feet); ok = gok(lv, x, feet, m->fw, 0) && !start_heap(x, feet, m->fw, m->fh);
+  for (int i = 0; i < (g_stw > 0 ? 32 : 8) && !ok; i++) { unsigned a = mr(m), b = mr(m); lvl_draw(lv, a, b, m->fw, WIDE, WIDE, &x, &feet); ok = gok(lv, x, feet, m->fw, 0) && !start_heap(x, feet, m->fw, m->fh) && (g_stw <= 0 || heap_hide(m->id, x, feet, m->fw, m->fh) <= 20);   /* L4b2: a start lies on no other figure (more tries: the search is wider) */
     if (ok && want) for (int k = 0; k < ne; k++) if (earlier[k].want && in_spot(&earlier[k], x + m->fw / 2, feet)) ok = 0; }   /* at screen show, asleep: not in an earlier sleeper's spot */
   if (!ok) { lv = 0; lvl_draw(0, 0, 0, m->fw, g_xlo, g_xlo, g_rlo, g_rhi, &x, &feet); }   /* all eight failed: main's leftmost point at its top */
   m->lv = m->tlv = lv; m->x = x; m->feet = feet; m->facing = (int)(mr(m) & 1u); m->rest = mv_rest_len(m); m->rested = 0;
@@ -702,7 +732,7 @@ static int ent_load(const char *cur) {
     k->sh = ssh; if (!ssh) k->rk = srk ? srk : RK_OUT;   /* R4b: a rester finishes its trip, then rests where restAt says; a shown one comes back; a new rester starts at rest */
     if (!old) { if (!ssh) wk_rest_at(k); else if (motion && !firstLoad && !strcmp(v_pstr(v_fmt("%s.enter", P)), "edge")) wk_enter(k); }   /* a traveller home walks in from the edge (reduced motion: a cut to its walk start) */
     else if (!ssh && k->rs == RS_SHOWN) k->rs = RS_FINISH;
-    else if (ssh && k->rs != RS_SHOWN) { wk_return(k); if (!motion && k->x < g_xlo) { int tx, tf; edge_point(k->w, &tx, &tf); k->x = tx; k->feet = tf; k->walking = 0; } }
+    else if (ssh && k->rs != RS_SHOWN) { census_load(kept, nk, mk, nmk, nres); wk_return(k); if (!motion && k->x < g_xlo) { int tx, tf; edge_point(k->w, &tx, &tf); k->x = tx; k->feet = tf; k->walking = 0; } }
     if (!motion && !ssh && (k->rs == RS_FINISH || k->rs == RS_GOING)) { k->walking = 0; wk_rest_at(k); }   /* with motion off a flip is a cut */
     asleepStill = curlOk && ((propAsleep && (ssh || k->rs == RS_REST)) || (!ssh && k->rs == RS_REST && k->rk == RK_CURL)); if (asleepStill) snprintf(e->pic, sizeof e->pic, "%s", cpic);
     k->hold = (!g_viv && ent_focused(e, cur)) || asleepStill || (k->rs == RS_REST) || e->carried;   /* a sleeping resident stays where it is; so does one at rest; the room view's focused mibi keeps walking (the collection v2 design §3) and only the carried one pauses */
