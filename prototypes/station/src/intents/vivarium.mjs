@@ -6,6 +6,7 @@ import { fill } from "../views/words.mjs";
 import { vivariumBuild, idOf, partnersOf, platesOf, pickHeld } from "../views/vivarium-props.mjs";
 import { walk, wallEntry, firstLive, gridWalk } from "../views/wall-walk.mjs";
 import { wallBuild } from "../views/wall-props.mjs";
+import { doorOpen } from "../nav.mjs";
 
 export const newViv = () => ({ f: null, prev: null, view: "wall", page: 0, last: null, pin: null, sort: "room", filter: "all", pick: null, row0: 0, first: 0, nudge: null, move: null, moveFirst: 0, pair: null });
 const viv = (h) => { const v = h.ui.viv; for (const [k, d] of Object.entries(newViv())) if (!(k in v)) v[k] = d; return v; };
@@ -14,7 +15,7 @@ const say = (h, lines, vals = {}) => h.say((Array.isArray(lines) ? lines : [line
 // the field as the props builder sees it now
 export const build = (h) => { const v = viv(h); if (h.vivBuild) return h.vivBuild();
   const m = { st: h.st, sv: h.sv, settings: h.settings, docked: S.docked(h.st), light: h.light ? h.light() : "day", focus: v.f };
-  return v.view === "wall" ? wallBuild({ ...m, last: v.last ?? h.ui.hab.id, sort: v.sort, filter: v.filter, pick: v.pick, row0: v.row0, first: v.first, nudge: v.nudge, move: v.move, moveFirst: v.moveFirst, pair: v.pair }, h.specs.vivarium, h.specs.frame, h.specs.home, h.specs.pods)
+  return v.view === "wall" ? wallBuild({ ...m, last: v.last ?? h.ui.hab.id, sort: v.sort, filter: v.filter, pick: v.pick, row0: v.row0, first: v.first, nudge: v.nudge, move: v.move, moveFirst: v.moveFirst, pair: v.pair, forecastOpen: doorOpen("cross") }, h.specs.vivarium, h.specs.frame, h.specs.home, h.specs.pods)
     : vivariumBuild({ ...m, seen: h.ui.hab.id, last: v.last, view: "room", page: v.page }, h.specs.vivarium, h.specs.frame, h.specs.home, h.specs.pods); };
 const motion = (h) => (h.motion ? h.motion() : true);
 // show room i in the room view (the swap's dither from the room shown, host.mjs showRoom)

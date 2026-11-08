@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { listPitch } from "../../ui/specs/derive.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), file = path.resolve(here, "../tests/vectors/focus.json"), specs = path.resolve(here, "../../ui/specs/station");
-const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["home", "settings", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench", "pods-screen"];
+const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["home", "settings", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench", "cross", "pods-screen"];
 const V = JSON.parse(readFileSync(file, "utf8")), J = (n) => JSON.parse(readFileSync(path.join(specs, n.replace(/-screen$/, "") + ".json"), "utf8"));   // pods-screen: pods.json's vectors (its hand-written cases are named "pods: ...")
 const TARGETS = {
   // Home: the six targets in the order the view lists them (the two bezels, then the four stations), each on its region's rectangle; the room (no ring at rest) is a vector's from, never a listed target
@@ -50,6 +50,7 @@ const TARGETS = {
     for (let i = 0; i < R.band.n; i++) out.push({ id: "band." + i, rect: [R.band.rect[0] + R.band.pitch * i, R.band.rect[1], R.band.button[2], R.band.button[3]], group: "band", index: i });
     for (const t of ["swap", "kin", "letGo"]) out.push({ id: t, rect: R.subject.bottomRow[t], group: t });
     return out; },
+  cross: (state, spec) => [{ id: "partner", rect: spec.regions.heads.overview.b.ring, group: "partner" }],   // the partner's head: the one target, a stepper
   create: (state, spec) => (state === "shape" ? [{ id: "roll", rect: spec.regions.roll.forms.roll.pictures[1], group: "roll" }] : []),   // the chosen picture's rectangle: the middle one stands for it
 };
 const cases = [];
