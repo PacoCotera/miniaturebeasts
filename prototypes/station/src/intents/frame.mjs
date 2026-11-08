@@ -68,7 +68,7 @@ export function landFlight(h) {
 export function teachTick(h) {
   const ui = h.ui, st = h.st; if (!st || ui.idle || ui.flight || ui.noTeach) return;
   const C = CUES(h); if (ui.teach && h.now() - ui.teach.at > (C.teachMs ?? 5000)) ui.teach = null;
-  const T = taughtOf(st), c = cuesOf(h).find((q) => !T.carry[q.key]); if (!c) return;
+  const T = taughtOf(st), c = cuesOf(h).find((q) => !q.second && !T.carry[q.key]); if (!c) return;
   T.carry[c.key] = true; ui.teach = { key: c.key, at: h.now() }; h.play({ kind: "hop", target: c.room, ms: C.hop?.ms ?? 300 }); h.save();
 }
 // ← after a carry: back where it started, the ring and the screen's choices as they were; then ← is what it is today (frame.json navigation: a colour key's carry is a peek).

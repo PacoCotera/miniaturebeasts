@@ -33,6 +33,7 @@ function inPods(motion = true) {
   const h = host(st, motion); h.ui.screen = "pods"; openInventory(h, { from: "home" }); h.went.length = 0; h.ui.pods.focus.set("card.0"); return h;
 }
 const key = (h, k) => dispatch(h, { screen: h.ui.screen, target: "x", verb: "room:" + k });
+const press = (h, verb, target = "x") => dispatch(h, { screen: h.ui.screen, target, verb });
 
 test("a carrying key flies first: the screen stays, a flight event plays on the key's room, the carry lands when it ends", () => {
   const h = inPods(); key(h, "habitat");
@@ -69,6 +70,13 @@ test("the first time a key has a live cue it hops and its line stands once; neve
 test("Call's first press is remembered (taught.call) and writes no save; the first-day line is Home's until then", () => {
   const h = inPods(); assert.ok(!taughtOf(h.st).call); const saved = h.saved; INTENTS.frame.call(h, T0); assert.equal(taughtOf(h.st).call, true); assert.equal(h.saved, saved, "Call writes nothing");
   assert.ok(J("frame").regions.cues.callUntilTurn > 0 && J("frame").strings.teach.call.startsWith("Press Call"));
+});
+test("item 9: after a carry the carried key's cue is its room's name, second: true (mist), in key order; the others as before; teaching never takes it", () => {
+  const h = inPods(false); key(h, "habitat"); assert.equal(h.ui.carry.key, "habitat");
+  const c = cuesOf(h); assert.deepEqual(c.find((q) => q.key === "habitat"), { key: "habitat", room: "vivarium", word: "Vivarium", second: true });
+  assert.deepEqual(c.map((q) => q.key), [...c.map((q) => q.key)].sort((a, b) => ["research", "habitat", "library"].indexOf(a) - ["research", "habitat", "library"].indexOf(b)), "key order");
+  h.ui.idle = false; teachTick(h); assert.equal(h.ui.teach?.key === "habitat", false, "the second-tap cue is not taught");
+  press(h, "back"); assert.equal(cuesOf(h).some((q) => q.second), false, "← ends the carry: no second-tap cue");
 });
 test("item 7: blue on the reading room's pod is the collection with the ring on that pod, not the reading room again", () => {
   const h = inPods(); const q = h.st.tray[0]; INTENTS.pods.toRoom ? 0 : 0; toRoom(h, q); assert.equal(h.ui.pods.view, "room");

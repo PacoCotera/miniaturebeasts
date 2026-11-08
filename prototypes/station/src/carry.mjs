@@ -94,10 +94,12 @@ export function sameAsConfirm(m, plan) {
   if (plan.act === "grow") return m.ui.screen === "pods" && m.ui.pods.verb === "grow";   // the Incubator's picker: ✓ is Grow it
   return false;
 }
-// The bottom line's cues: [{ key, room, word }] in key order, one for each live carry that is not what ✓ says. A carry that was just made shows none for its own key (a second tap is the room's top).
+// The bottom line's cues: [{ key, room, word }] in key order, one for each live carry that is not what ✓ says. A carry that was just made shows its own key as a second-tap cue ({ ..., second: true }: the room's name; a second tap is the room's top).
 export function cuesOf(m) {
   if (m.ui.idle || m.ui.panel || m.ui.hab?.namer) return [];
-  const out = []; for (const key of KEYS) { if (m.ui.carry?.key === key) continue; const c = carryPlan(m, key); if (c && !sameAsConfirm(m, c)) out.push({ key, room: ROOM_MARK[key], word: c.word }); }
+  const out = []; for (const key of KEYS) {
+    if (m.ui.carry?.key === key) { const word = m.specs?.frame?.strings?.answer?.rooms?.[key]; if (word) out.push({ key, room: ROOM_MARK[key], word, second: true }); continue; }   // the key just carried: a second tap is its room's top; its cue is the room's name in mist, the first thing dropped when the line is full
+    const c = carryPlan(m, key); if (c && !sameAsConfirm(m, c)) out.push({ key, room: ROOM_MARK[key], word: c.word }); }
   return out;
 }
 

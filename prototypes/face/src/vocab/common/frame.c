@@ -140,6 +140,8 @@ void word_topBar(void) {
   v_inline_end();
 }
 
+/* the width of the cues in use, a gap between each; their number into *cn */
+static int cue_span(const int *use, const int *w, int n, int gap, int *cn) { int total = 0; *cn = 0; for (int q = 0; q < n; q++) if (use[q]) { total += w[q] + (*cn ? gap : 0); (*cn)++; } return total; }
 void word_bottomLine(void) {
   char c[24], a[96], b[96], s[V_STR], t[V_STR]; int r[4], r2[4];
   v_srect(F, "regions.line.rect", r);
@@ -179,12 +181,6 @@ void word_bottomLine(void) {
     }
     v_inline_end();
   }
-  /* the context, centred on 512, clipped with an ellipsis to its zone */
-  if (spec_str(P, "frame.line.subject", s, sizeof s) > 0) {
-    int sr[4]; v_srect(F, "regions.subject.rect", sr); v_region("subject", LAYER_TYPE); snprintf(c, 24, "%s", v_sstr(F, "regions.subject.role"));
-    v_role_clip(s, sr[2], c, t, sizeof t);
-    v_say_run("line.subject", t, v_si(F, "regions.subject.centre", 0), v_role_cap_in(sr[1], sr[3], c), c, lg, V_ALIGN_CENTRE);
-  }
   /* a way back wider than its slot when the line asks for it (backWide): the extra px it takes to the left, which the notice gives up */
   int back_extra = 0;
   if (spec_bool(P, "frame.line.backWide", 0) && spec_str(P, "frame.line.back", s, sizeof s) > 0) {
@@ -197,21 +193,41 @@ void word_bottomLine(void) {
   /* the carry's flight (props frame.flight { pic, room }; a `flight` event on the room): the ringed thing's picture, 1:1, from the ring to the key's cue, in whole pixels, and a `hop` event on a room's cue lifts it 4 px twice */
   char fpic[96] = "", froom[24] = ""; anim_state_t fa; int flying = 0, dest[2] = { -1, -1 };
   if (spec_bool(P, "motion", 1) && spec_str(P, "frame.flight.pic", fpic, sizeof fpic) > 0 && spec_str(P, "frame.flight.room", froom, sizeof froom) > 0 && anim_get(ANIM_FLIGHT, froom, &fa) && fa.ms > 0) flying = 1;
+  /* The cues' room (items 5 and 9): they stand right-aligned to `right` and fit the notice's zone to `left`; past it they grow left to `growLeft` and the middle words are not drawn while they do; still short, the mist second-tap cue (`second`: the key just
+     carried, its room's name in mist) goes first, then the cues from the last. ✓ and ← are never dropped (their slots lie outside this span). */
+  int use[4] = { 0, 0, 0, 0 }, hide_mid = 0, cn = 0;
+  int right = v_si(F, "regions.cues.right", 904) - back_extra, left = v_si(F, "regions.cues.left", 632), mk = spec_int(F, "regions.cues.mark.0", 24), mg = v_si(F, "regions.cues.markGap", 4), gap = v_si(F, "regions.cues.gap", 16), cy = v_si(F, "regions.cues.y", 570), ch = v_si(F, "regions.cues.h", 24), total = 0, w[4], second[4];
+  char role[24], mrole[32]; snprintf(role, sizeof role, "%s", v_sstr(F, "regions.cues.role")); snprintf(mrole, sizeof mrole, "%s.mist", role);
   if (kn > 0) {
-    int right = v_si(F, "regions.cues.right", 904) - back_extra, left = v_si(F, "regions.cues.left", 632), mk = spec_int(F, "regions.cues.mark.0", 24), mg = v_si(F, "regions.cues.markGap", 4), gap = v_si(F, "regions.cues.gap", 16), cy = v_si(F, "regions.cues.y", 570), ch = v_si(F, "regions.cues.h", 24);
-    char role[24]; snprintf(role, sizeof role, "%s", v_sstr(F, "regions.cues.role")); int w[4], total = 0, n = kn;
-    for (int i = 0; i < kn; i++) { snprintf(a, sizeof a, "frame.line.keys.%d.word", i); spec_str(P, a, s, sizeof s); w[i] = mk + mg + v_role_width(s, role); }
-    for (; n > 0; n--) { total = 0; for (int i = 0; i < n; i++) total += w[i] + (i ? gap : 0); if (right - total >= left) break; }   /* a cue that would pass the zone is dropped, the last first */
+    int grow = v_si(F, "regions.cues.growLeft", left);
+    for (int i = 0; i < kn; i++) { snprintf(a, sizeof a, "frame.line.keys.%d.word", i); spec_str(P, a, s, sizeof s); snprintf(a, sizeof a, "frame.line.keys.%d.second", i); second[i] = spec_bool(P, a, 0); w[i] = mk + mg + v_role_width(s, second[i] ? mrole : role); use[i] = 1; }
+    total = cue_span(use, w, kn, gap, &cn);
+    if (right - total < left) {   /* past the zone: grow, and the middle words give way */
+      hide_mid = 1;
+      if (right - total < grow) { for (int q = 0; q < kn; q++) if (second[q]) use[q] = 0; total = cue_span(use, w, kn, gap, &cn); }
+      for (int q = kn - 1; q >= 0 && right - total < grow; q--) if (use[q]) { use[q] = 0; total = cue_span(use, w, kn, gap, &cn); }
+    }
+  }
+  /* the context, centred on 512, clipped with an ellipsis to its zone; not drawn while the cues have grown into it */
+  if (!hide_mid && spec_str(P, "frame.line.subject", s, sizeof s) > 0) {
+    int sr[4]; v_srect(F, "regions.subject.rect", sr); v_region("subject", LAYER_TYPE); snprintf(c, 24, "%s", v_sstr(F, "regions.subject.role"));
+    v_role_clip(s, sr[2], c, t, sizeof t);
+    v_say_run("line.subject", t, v_si(F, "regions.subject.centre", 0), v_role_cap_in(sr[1], sr[3], c), c, lg, V_ALIGN_CENTRE);
+  }
+  if (kn > 0) {
     int x = right - total;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < kn; i++) {
+      if (!use[i]) continue;
       char key[48], word[V_STR], room[24], id[40]; snprintf(key, sizeof key, "frame.line.keys.%d", i);
       snprintf(a, sizeof a, "%s.word", key); spec_str(P, a, word, sizeof word); snprintf(a, sizeof a, "%s.room", key); spec_str(P, a, room, sizeof room);
       snprintf(a, sizeof a, "regions.marks.room.%s", room); snprintf(b, sizeof b, "%s", v_sstr(F, a));
       snprintf(id, sizeof id, "line.cue.%d", i); v_inline(id); v_region("cues", LAYER_ART);
       int hop = 0; { anim_state_t ht; if (spec_bool(P, "motion", 1) && anim_get(ANIM_HOP, room, &ht) && ht.ms > 0) { int ph = ht.elapsed * 4 / ht.ms; if (ph > 3) ph = 3; hop = ph % 2 == 0 ? -4 : 0; } }   /* two hops of 4 px */
-      int mr[4] = { x, cy + (ch - mk) / 2 + hop, mk, mk }; if (*b) mark(v_fmt("%s.mark", id), b, mr);
+      int mr[4] = { x, cy + (ch - mk) / 2 + hop, mk, mk };
+      if (second[i]) { char ops[96]; snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", mk, mk, mk / 2, "mist"); v_composed(v_fmt("%s.mark", id), mr[0], mr[1], mk, mk, ops); }   /* the second tap's cap: an outline, the room's name in mist */
+      else if (*b) mark(v_fmt("%s.mark", id), b, mr);
       if (flying && strcmp(room, froom) == 0) { dest[0] = x + mk / 2; dest[1] = cy + ch / 2; }
-      v_region("cues", LAYER_TYPE); v_say_run(v_fmt("%s.word", id), word, x + mk + mg, v_role_cap_in(cy + hop, ch, role), role, lg, V_ALIGN_LEFT); v_inline_end();
+      v_region("cues", LAYER_TYPE); v_say_run(v_fmt("%s.word", id), word, x + mk + mg, v_role_cap_in(cy + hop, ch, second[i] ? mrole : role), second[i] ? mrole : role, lg, V_ALIGN_LEFT); v_inline_end();
       x += w[i] + gap;
     }
   }
