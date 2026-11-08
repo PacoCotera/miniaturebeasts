@@ -11,7 +11,7 @@
 	"iid": "80fcf837-f6be-6267-0c3c-aacb9b6b0900",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 156,
+	"nextUid": 160,
 	"identifierStyle": "Free",
 	"toc": [],
 	"worldLayout": "Free",
@@ -1849,6 +1849,466 @@
 							"id": "V_String",
 							"params": [
 								"Every shore case, a path, props, canopy and one of each mark."
+							]
+						}
+					]
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"identifier": "Reedpool",
+			"iid": "7d289e28-6406-9909-529b-ec1ed90520de",
+			"uid": 156,
+			"worldX": 400,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 288,
+			"pxHei": 352,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"bgPivotX": 0.5,
+			"bgPivotY": 0.5,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "places/Reedpool.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "type",
+					"__type": "LocalEnum.PlaceType",
+					"__value": "pond",
+					"__tile": null,
+					"defUid": 140,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"pond"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "names",
+					"__type": "Array<String>",
+					"__value": [
+						"Reedpool",
+						"Reedside",
+						"The Glitter Pool"
+					],
+					"__tile": null,
+					"defUid": 141,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"Reedpool"
+							]
+						},
+						{
+							"id": "V_String",
+							"params": [
+								"Reedside"
+							]
+						},
+						{
+							"id": "V_String",
+							"params": [
+								"The Glitter Pool"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "tileset",
+					"__type": "LocalEnum.TileSet",
+					"__value": "ninja-test",
+					"__tile": null,
+					"defUid": 142,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"ninja-test"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "mirror",
+					"__type": "Bool",
+					"__value": true,
+					"__tile": null,
+					"defUid": 143,
+					"realEditorValues": [
+						{
+							"id": "V_Bool",
+							"params": [
+								true
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "mood",
+					"__type": "String",
+					"__value": "Cool and glittering; a pond in the east with a sand spit out to the island stone.",
+					"__tile": null,
+					"defUid": 144,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"Cool and glittering; a pond in the east with a sand spit out to the island stone."
+							]
+						}
+					]
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"identifier": "SplitStone",
+			"iid": "74c54664-0fde-a583-7c89-1cb5c3ae85a1",
+			"uid": 157,
+			"worldX": 720,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 288,
+			"pxHei": 352,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"bgPivotX": 0.5,
+			"bgPivotY": 0.5,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "places/SplitStone.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "type",
+					"__type": "LocalEnum.PlaceType",
+					"__value": "rock",
+					"__tile": null,
+					"defUid": 140,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"rock"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "names",
+					"__type": "Array<String>",
+					"__value": [
+						"The Split Stone",
+						"Warm Stone",
+						"The Stone Field"
+					],
+					"__tile": null,
+					"defUid": 141,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"The Split Stone"
+							]
+						},
+						{
+							"id": "V_String",
+							"params": [
+								"Warm Stone"
+							]
+						},
+						{
+							"id": "V_String",
+							"params": [
+								"The Stone Field"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "tileset",
+					"__type": "LocalEnum.TileSet",
+					"__value": "ninja-test",
+					"__tile": null,
+					"defUid": 142,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"ninja-test"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "mirror",
+					"__type": "Bool",
+					"__value": true,
+					"__tile": null,
+					"defUid": 143,
+					"realEditorValues": [
+						{
+							"id": "V_Bool",
+							"params": [
+								true
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "mood",
+					"__type": "String",
+					"__value": "Sun-baked and still; a great split boulder with a warm crack.",
+					"__tile": null,
+					"defUid": 144,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"Sun-baked and still; a great split boulder with a warm crack."
+							]
+						}
+					]
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"identifier": "HollowTree",
+			"iid": "8fa578f7-b9b3-a15b-787d-11a13c9ca9a5",
+			"uid": 158,
+			"worldX": 1040,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 288,
+			"pxHei": 352,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"bgPivotX": 0.5,
+			"bgPivotY": 0.5,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "places/HollowTree.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "type",
+					"__type": "LocalEnum.PlaceType",
+					"__value": "wood",
+					"__tile": null,
+					"defUid": 140,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"wood"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "names",
+					"__type": "Array<String>",
+					"__value": [
+						"Hollow Tree",
+						"The Hollow",
+						"Root Hollow"
+					],
+					"__tile": null,
+					"defUid": 141,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"Hollow Tree"
+							]
+						},
+						{
+							"id": "V_String",
+							"params": [
+								"The Hollow"
+							]
+						},
+						{
+							"id": "V_String",
+							"params": [
+								"Root Hollow"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "tileset",
+					"__type": "LocalEnum.TileSet",
+					"__value": "ninja-test",
+					"__tile": null,
+					"defUid": 142,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"ninja-test"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "mirror",
+					"__type": "Bool",
+					"__value": true,
+					"__tile": null,
+					"defUid": 143,
+					"realEditorValues": [
+						{
+							"id": "V_Bool",
+							"params": [
+								true
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "mood",
+					"__type": "String",
+					"__value": "Dappled and hushed; a great hollow tree with roots, its crown hanging over the paths.",
+					"__tile": null,
+					"defUid": 144,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"Dappled and hushed; a great hollow tree with roots, its crown hanging over the paths."
+							]
+						}
+					]
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"identifier": "Windstep",
+			"iid": "a5890b07-3d45-dd99-6e04-a54b56596c0e",
+			"uid": 159,
+			"worldX": 1360,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 288,
+			"pxHei": 352,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"bgPivotX": 0.5,
+			"bgPivotY": 0.5,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "places/Windstep.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "type",
+					"__type": "LocalEnum.PlaceType",
+					"__value": "meadow",
+					"__tile": null,
+					"defUid": 140,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"meadow"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "names",
+					"__type": "Array<String>",
+					"__value": [
+						"Windstep",
+						"The Windy Rise",
+						"Windrise"
+					],
+					"__tile": null,
+					"defUid": 141,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"Windstep"
+							]
+						},
+						{
+							"id": "V_String",
+							"params": [
+								"The Windy Rise"
+							]
+						},
+						{
+							"id": "V_String",
+							"params": [
+								"Windrise"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "tileset",
+					"__type": "LocalEnum.TileSet",
+					"__value": "ninja-test",
+					"__tile": null,
+					"defUid": 142,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"ninja-test"
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "mirror",
+					"__type": "Bool",
+					"__value": true,
+					"__tile": null,
+					"defUid": 143,
+					"realEditorValues": [
+						{
+							"id": "V_Bool",
+							"params": [
+								true
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "mood",
+					"__type": "String",
+					"__value": "Airy and moving; tall grass sways across the north-east and a lone tree stands on the open ground.",
+					"__tile": null,
+					"defUid": 144,
+					"realEditorValues": [
+						{
+							"id": "V_String",
+							"params": [
+								"Airy and moving; tall grass sways across the north-east and a lone tree stands on the open ground."
 							]
 						}
 					]

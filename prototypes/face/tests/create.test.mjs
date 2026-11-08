@@ -107,16 +107,17 @@ test("the roll: three pictures at the spec's places, the chosen one ringed (5 px
   const one = scene({ read: 4, f: 3 }), f = await start(one), lg = logOf(f); assert.equal(one.props.regions.roll.form, "single"); assert.deepEqual(region(lg, "focus").rect, [443, 99, 138, 82]);
   assert.ok(pixelIs(f, 448 + 64, 104 + 36, one.props.regions.roll.pictures[0])); assert.equal(one.props.regions.roll.notches, false); assert.ok(f.pixel(448 + 58 + 5, 90).join() !== rgbOf("bone").join(), "no notch for a trait that does not roll");
 });
-test("a clash is a 2 px red edge inside the chosen picture, the line bone with its red ✕ first and no tag; the tag (chosen, 80 × 24, 8 px before the words) is on a changed look that does not clash", { skip }, async () => {
+test("a clash is a 2 px red edge inside the chosen picture, the line bone with its red ✕ first and no price; a changed look that does not clash carries the price tail (· then ◆ 1, no plate)", { skip }, async () => {
   const red = (f, x, y) => f.pixel(x, y).join() === rgbOf("red").join();
   const b = scene({ read: 2, f: 1, roll: 1, clash: true }), f = await start(b), c = R.roll.forms.roll.pictures[1];
   assert.ok(b.props.regions.roll.clash); assert.equal(b.props.regions.traitLine.changed, false); assert.match(b.props.regions.traitLine.text, /^✕ /); assert.equal(b.props.regions.traitLine.clash, true);
   for (const [x, y] of [[c[0], c[1] + 30], [c[0] + 1, c[1] + 30], [c[0] + 60, c[1]], [c[0] + 60, c[1] + 1], [c[0] + 60, c[1] + 71], [c[0] + 126, c[1] + 30], [c[0] + 127, c[1] + 30]]) assert.ok(red(f, x, y), `red at ${x}, ${y}`);
   assert.ok(!red(f, c[0] + 2, c[1] + 30) && !red(f, c[0] + 60, c[1] + 2) && !red(f, c[0] + 60, c[1] + 69), "the edge is 2 px, inside the picture"); assert.ok(pixelIs(f, c[0] + 60, c[1] + 30, b.props.regions.roll.pictures[1]));
-  const n = scene({ read: 2, f: 1, roll: 1 }), g = await start(n), lg = logOf(g); assert.ok(n.props.regions.traitLine.changed && !n.props.regions.roll.clash); const t = region(lg, "traitLine", "painted"), words = lg.type.filter((x) => x.region === "traitLine");
-  assert.deepEqual([t.rect[2], t.rect[3], t.rect[1]], [80, 24, 200], "the tag: the plate-name series' 80 × 24 for \"chosen\", at the line's top (fix 5 C9)"); assert.equal(words.length, 2, "the tag's word and the line"); assert.ok(words.some((x) => x.text === "chosen"));
-  const ty = lg.regions.find((r) => r.id === "traitLine" && r.layer === "type"); assert.ok(Math.abs(ty.rect[0] - (t.rect[0] + (80 - 55) / 2)) <= 1, "the tag's word is centred on the plate: x0 + (80 − 55) / 2 for \"chosen\""); assert.equal(t.rect[2], 80, "the tag is the plate at the series' width, 80, never stretched"); assert.ok(Math.abs((t.rect[0] + ty.rect[0] + ty.rect[2]) / 2 - 512) <= 1, "the group (tag, 8 px, the line) is centred on 512");
-  assert.ok(!("tag" in n.props.regions.traitLine), "the props name no plate: the face picks it from the plate-name series"); assert.ok(pixelIs(g, t.rect[0] + 4, t.rect[1] + 12, "plate-name-80x24"), "the tag is the signed plate-name-80x24, on the painted layer");
+  const n = scene({ read: 2, f: 1, roll: 1 }), g = await start(n), lg = logOf(g); assert.ok(n.props.regions.traitLine.changed && !n.props.regions.roll.clash); const words = lg.type.filter((x) => x.region === "traitLine");
+  assert.equal(n.props.regions.traitLine.price, "◆ 1", "the tail is the change's price from priceText"); assert.ok(!words.some((x) => x.text === "chosen") && !region(lg, "traitLine", "painted"), "no 'chosen' word and no plate");
+  assert.ok(words.some((x) => x.text === "·") && words.some((x) => x.text === "1"), "the tail: the dot and the figure"); assert.ok(!("tag" in n.props.regions.traitLine), "the props name no plate");
+  const ty = lg.regions.find((r) => r.id === "traitLine" && r.layer === "type"); assert.ok(ty && ty.rect[0] > 296 && ty.rect[0] + ty.rect[2] < 728, "the group sits inside the line's 432 px rect");
+  assert.equal(b.props.regions.traitLine.price, "", "a clash carries no price");
 });
 
 
@@ -266,13 +267,13 @@ test("no refresh redraws more than a quarter of the screen while the pod travels
 
 
 // ---- the chrome the words draw, and the fronts that are not drawn ----
-test("the rail's mark: one 12 × 12 composed mark a tab (fix 11), a `bone` diamond for a changed trait, a `red` cross for a clash, none otherwise, on the AD's pixel reference; no 6 × 6 pip, no lift; the work tray's and the small chamber's fronts are drawn at their rects", { skip }, async () => {
-  const DW = [2, 4, 6, 8, 10, 12, 12, 10, 8, 6, 4, 2], is = (f, x, y, c) => f.pixel(x, y).join() === rgbOf(c).join();
+test("the rail's mark: one 12 × 12 composed mark a tab (fix 11), an 8 px round dot for a changed trait (the open word's ink on the open tab), a `red` cross for a clash, none otherwise; no 6 × 6 pip, no lift; the work tray's and the small chamber's fronts are drawn at their rects", { skip }, async () => {
+  const DW = [4, 6, 8, 8, 8, 8, 6, 4], is = (f, x, y, c) => f.pixel(x, y).join() === rgbOf(c).join();
   const find = (f, test) => { for (let y = 60; y < 84; y++) for (let x = 100; x < 940; x++) if (test(x, y)) return [x, y]; return null; };
-  const diamond = (f, x, y) => DW.every((w, r) => is(f, x + (12 - w) / 2, y + r, "bone") && is(f, x + (12 - w) / 2 + w - 1, y + r, "bone") && !is(f, x + (12 - w) / 2 + w, y + r, "bone") || false) && is(f, x + 5, y, "bone") && is(f, x + 6, y + 11, "bone");
+  const ink = frameSpec.regions.rail.states.open.word, diamond = (f, x, y) => DW.every((w, r) => is(f, x + (12 - w) / 2, y + 2 + r, ink) && is(f, x + (12 - w) / 2 + w - 1, y + 2 + r, ink) && !is(f, x + (12 - w) / 2 + w, y + 2 + r, ink) && !is(f, x + (12 - w) / 2 - 1, y + 2 + r, ink)) && !is(f, x + 5, y + 1, ink) && !is(f, x + 6, y + 10, ink);   // the dot: the changed chapter (Coat) is the open tab, so its ink
   const cross = (f, x, y) => { for (let r = 0; r < 12; r++) for (let c = 0; c < 12; c++) if ((Math.abs(c - r) <= 1 || Math.abs(c + r - 11) <= 1) !== is(f, x + c, y + r, "red")) return false; return true; };
   const b = scene({ read: 2, f: 1, roll: 1 }), f = await start(b), lg = logOf(f);
-  const hit = find(f, (x, y) => diamond(f, x, y)); assert.ok(hit, "a bone diamond: the changed chapter's mark"); assert.equal(hit[1], 68, "the mark's top is y 68, at the tab's foot (80)");
+  const hit = find(f, (x, y) => diamond(f, x, y)); assert.ok(hit, "a round dot: the changed chapter's mark"); assert.equal(hit[1], 68, "the mark's top is y 68, at the tab's foot (80)");
   assert.ok(b.props.regions.rail.tabs.every((t) => ["clash", "changed", ""].includes(t.mark) && !("pips" in t) && !("lift" in t)), "one mark a tab, no pips, no lift");
   assert.deepEqual(region(lg, "chamberFront")?.rect, R.chamberFront.rect, "the tray's front is drawn at its rect"); assert.deepEqual(region(lg, "domeFront")?.rect, R.domeFront.rect, "the small chamber's front is drawn at its rect");
   const c = scene({ read: 2, f: 1, roll: 1, clash: true }), g = await start(c); assert.ok(find(g, (x, y) => cross(g, x, y)), "a red cross, the pixels |x - y| <= 1 and |x + y - 11| <= 1");
@@ -353,10 +354,10 @@ test("the right column is one stack on the axis 864: the label 804,336 inside it
     assert.deepEqual(region(lg, "stamp.plate", "painted").rect, [804, 336, 120, 120]); assert.deepEqual(region(lg, "stamp", "painted").rect, [788, 320, 152, 152]); assert.deepEqual(region(lg, "cradleFront", "painted").rect, [48, 344, 224, 96]);
     assert.equal(lg.type.filter((t) => t.region === "need").length, 0, "the right slot is empty (never the frame's notice)"); assert.ok(b.line.need === "", "need is the empty string"); assert.deepEqual(departures(lg, createSpec, frameSpec, b.props.state), []); assert.deepEqual(f.errors(), []); }
 });
-test("the tag is the plate-name series' own: \"chosen\" takes plate-name-80x24, \"changed\" would take 96 × 24, the word centred", { skip }, async () => {
-  const n = scene({ read: 2, f: 1, roll: 1 }), f = await start(n); assert.equal(region(logOf(f), "traitLine", "painted").rect[2], 80);
-  const was = createSpec.strings.changed; createSpec.strings.changed = "changed";   // the word is the spec's; the series takes its width (66 + 16 rounded up to 96)
-  try { const g = await start(n), t = region(logOf(g), "traitLine", "painted"); assert.deepEqual([t.rect[2], t.rect[3]], [96, 24], "\"changed\": 66 + 16 rounded up to 96 on the series"); } finally { createSpec.strings.changed = was; }
+test("the changed price tail is centred with its line on x 512 and a clean look has no tail", { skip }, async () => {
+  const n = scene({ read: 2, f: 1, roll: 1 }), f = await start(n), lg = logOf(f), ty = lg.regions.find((r) => r.id === "traitLine" && r.layer === "type");
+  assert.ok(Math.abs((ty.rect[0] + ty.rect[0] + ty.rect[2]) / 2 - 512) <= 2, "the group (words, dot, ◆, figure) is centred on 512");
+  const c = scene({ read: 2, f: 1 }), g = await start(c); assert.equal(c.props.regions.traitLine.price, ""); assert.ok(!logOf(g).type.some((x) => x.region === "traitLine" && x.text === "·"), "no dot without a change");
 });
 test("the frame of ✓ and the travel redraw at most a quarter of the screen: the props change from a chosen shape to grow with the event, and the worst frame every 16 ms to 899", { skip }, async () => {
   const s0 = scene({ read: 2, f: 1, roll: 1 }), f = await start(s0, { t0: 1000 }); frames(f); logOf(f); dirty(f, { fullCut: true });

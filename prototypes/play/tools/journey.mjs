@@ -378,24 +378,25 @@ async function zBad(page, sel, W, z, capture) {
 
 // ---- K. the Caddy's screen: always shown in its own 808 × 288 block, drawn from the face of the Caddy's state with the panel's timing; Shift+C is retired (1920 × 1080, the Row) ----
 {
-  const { ctx, page, st } = await open(1920, 1080, { query: "?test&seed=3" });
+  const { ctx, page, st } = await open(1920, 1080, { query: "?test&seed=3&firstms=600000" });   // firstms: the first picture waits for the Station's word and seat however long a loaded page takes to boot (the 15 s no-word fallback is for a real Caddy with no Station)
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
   const sheet = () => page.evaluate(() => { const s = __play.caddySheet; delete s.pixels; return s; });
   eq((await sheet()).up, true, "K: shown before any dock"); expect(await page.locator("#caddySheet").isVisible(), "K: the block is visible with the Companion away");
   eq(await box(page, "#caddySheet"), [419, 768, 808, 288], "K: the block, under the Station and right-aligned to its shell"); eq(await box(page, "#caddyView"), [427, 776, 792, 272], "K: the view, 1 lp per view pixel, 8 lp inside");
   eq(await page.evaluate(() => [document.getElementById("caddyView").width, document.getElementById("caddyView").height]), [792, 272], "K: the canvas is the view's 792 × 272");
   const lampsBox = await box(page, "#caddyLamps"); expect(lampsBox[0] >= 0 && lampsBox[0] + lampsBox[2] <= 419 && Math.abs(lampsBox[1] + lampsBox[3] - (768 + 288)) <= 1, "K: the two cradle lamps sit beside the block, at its foot " + JSON.stringify(lampsBox));
-  await page.waitForFunction(() => __play.caddySheet.id !== null, null, { timeout: 9000 });   // the first picture: a full refresh, black, white, then the face, over 4 s
+  await page.waitForFunction(() => __play.caddySheet.id !== null, null, { timeout: 180000 });   // the first picture: a full refresh, black, white, then the face, over 4 s (the limit is a hang detector, not a speed check)
   const away = await sheet();
   eq([away.id, away.lines.l1, away.lines.l2, away.log.map((l) => l.kind)], ["C0", "Companion out", "exploring", ["full"]], "K: at boot one full refresh draws C0");
   eq([away.marks.companion, away.marks.station, away.lamp.companion, away.lamp.stationDot], ["lifted", "seated", "off", "warm"], "K: the Station sits in its cradle (its lamp a dim warm white), the Companion's is empty and dark");
   eq([...new Set(await page.evaluate(() => __play.caddySheet.pixels()))].sort((a, b) => a - b), [0, 255], "K: the panel holds ink and paper only");
-  await page.waitForFunction((at) => Date.now() - at >= 1450, away.log[0].at);   // the boot's full refresh (4 s, drawn at 2/3) has ended and the panel is idle: the seat then waits the partial's 0.8 s alone, not what is left of the full
-  const t0 = Date.now(); await page.click("#dockCtl");
-  await page.waitForFunction(() => __play.caddySheet.id === "C2", null, { timeout: 3000 }); const dt = Date.now() - t0;
+  await page.waitForFunction(() => !__play.caddySheet.busy, null, { timeout: 60000 });   // the boot's full refresh (4 s, drawn at 2/3) has ended and the panel is idle (the scheduler's own busy flag): the seat then waits the partial's 0.8 s alone, not what is left of the full
+  const before = (await sheet()).log.length, t0 = Date.now(); await page.click("#dockCtl");
+  await page.waitForFunction(() => __play.caddySheet.id === "C2", null, { timeout: 60000 });
   const k = await sheet(); eq([k.lines.l1, k.lines.l2, k.crates], ["Companion home", "one crate", 1], "K: its lines read the docked state, with one crate icon");
-  expect(dt >= 750 && dt <= 1200, "K: the partial appears about 0.8 s after the seat (" + dt + " ms)");
-  eq(k.log.slice(1).map((l) => [l.kind, l.id, l.regions.join(",")]), [["partial", "C2", "hero,msg,status"]], "K: one partial over the regions that changed");
+  const op = k.ops.filter((o) => o.kind === "partial" && o.id === "C2").at(-1), drawnAt = k.log.filter((l) => l.kind === "partial" && l.id === "C2").at(-1)?.at;   // the scheduler's decision and the picture's draw, each stamped when it happened: the lag is the panel's, not the machine's
+  expect(op && op.at >= t0 && drawnAt - op.at >= 790, "K: the partial is drawn 0.8 s after the panel took it up, and after the seat (" + JSON.stringify([op && op.at - t0, drawnAt - (op && op.at)]) + " ms)");
+  eq(k.log.slice(before).map((l) => [l.kind, l.id, l.regions.join(",")]), [["partial", "C2", "hero,msg,status"]], "K: one partial over the regions that changed");
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "K: docked");
   await clip(page, "play-row-caddy.png");
   await page.waitForTimeout(6200); eq((await sheet()).up, true, "K: it stays, nothing lowers it");

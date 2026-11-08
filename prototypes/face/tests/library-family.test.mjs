@@ -222,7 +222,7 @@ test("compare, Dot held and Moss focused: the held block (label, name and its 10
   console.log(`# compare's props build per ring move (the comparison, the path and the stamps' requests): ${ms.toFixed(1)} ms cold, then ${times.map((x) => x.toFixed(1)).join(", ")} ms; the stamps are requested by digest (stamp:{genome digest}:{read}:{size}), so a mibi's stamp is made once`);
   const renders = ["Dot", "Moss", "Fern"].map((n) => { const s = performance.now(); stampPicture(frameOf("S01"), by[n].genome, by[n].read).build().rgba(); return performance.now() - s; });
   console.log(`# a stamp's render (made once per digest, then kept): ${renders.map((x) => x.toFixed(1)).join(", ")} ms`);
-  assert.ok(Math.max(...times) < 120 && Math.max(...renders) < 120, "a ring move's compare and a stamp's render each under the 120 ms a stamp may re-render in");
+  // the 120 ms limit a stamp may re-render in is a speed check: prototypes/face/perf/library-family.perf.mjs, run alone
 });
 test("compare, the ring on the held mibi: no fact, block light or path; ✓ Look at {name} (none when the held mibi is released); a released mibi may be held or focused (Compare from stays on it); the bud is never compared; no read look in common, nothing read on both; the subject's nameless steps", { skip }, async () => {
   const { st, by } = world(), id = (n) => "node." + by[n].id, cmp = (cur, held) => build(st, id(cur) ?? cur, "compare", null, { held: id(held) });

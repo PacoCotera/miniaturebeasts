@@ -602,3 +602,9 @@ test("Pods, the 200 ms scroll: a ring move that changes the first row on screen 
   INTENTS.pods.focus(h, "card.10"); assert.deepEqual(h.played.map((e) => [e.kind, e.target, e.ms, e.from, e.to]), [["wipe", "cabinet", 200, 0, 1]], "row 2: the first row goes to 1, sliding");
   assert.equal(h.ui.pods.first, 1);
 });
+
+test("Pods from the Incubator: Grow is fixed while a pod can take it; when none can (the incubator is busy) the picker opens as browse on Read with the reason kept, and ← still goes to the Incubator", () => {
+  { const st = world(); pod(st, "S01", chapters("S01"), 5); const h = host(st); h.specs.incubator = incubatorSpec; h.ui.screen = "pods"; openInventory(h, { from: "incubator" }); assert.deepEqual([h.ui.pods.verb, h.ui.pods.fixed, h.ui.pods.blocked], ["grow", true, null], "a pod can grow: the verb is fixed"); }
+  { const st = world(); pod(st, "S01", chapters("S01"), 5); st.bud = { minutes: 5 }; const h = host(st); h.specs.incubator = incubatorSpec; h.ui.screen = "pods"; openInventory(h, { from: "incubator" });
+    assert.deepEqual([h.ui.pods.verb, h.ui.pods.fixed], ["read", false]); assert.match(h.ui.pods.blocked, /busy/i); h.went.length = 0; INTENTS.pods.intent(h, "card.0", "back"); assert.equal(h.went.at(-1), "incubator"); }
+});

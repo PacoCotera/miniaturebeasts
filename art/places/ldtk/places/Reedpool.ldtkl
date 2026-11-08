@@ -1,0 +1,7283 @@
+{
+	"__header__": {
+		"fileType": "LDtk Project JSON",
+		"app": "LDtk",
+		"doc": "https://ldtk.io/json",
+		"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+		"appAuthor": "Sebastien 'deepnight' Benard",
+		"appVersion": "1.5.3",
+		"url": "https://ldtk.io"
+	},
+	"identifier": "Reedpool",
+	"iid": "7d289e28-6406-9909-529b-ec1ed90520de",
+	"uid": 156,
+	"worldX": 400,
+	"worldY": 0,
+	"worldDepth": 0,
+	"pxWid": 288,
+	"pxHei": 352,
+	"__bgColor": "#696A79",
+	"bgColor": null,
+	"useAutoIdentifier": false,
+	"bgRelPath": null,
+	"bgPos": null,
+	"bgPivotX": 0.5,
+	"bgPivotY": 0.5,
+	"__smartColor": "#ADADB5",
+	"__bgPos": null,
+	"externalRelPath": "places/Reedpool.ldtkl",
+	"fieldInstances": [
+		{
+			"__identifier": "type",
+			"__type": "LocalEnum.PlaceType",
+			"__value": "pond",
+			"__tile": null,
+			"defUid": 140,
+			"realEditorValues": [
+				{
+					"id": "V_String",
+					"params": [
+						"pond"
+					]
+				}
+			]
+		},
+		{
+			"__identifier": "names",
+			"__type": "Array<String>",
+			"__value": [
+				"Reedpool",
+				"Reedside",
+				"The Glitter Pool"
+			],
+			"__tile": null,
+			"defUid": 141,
+			"realEditorValues": [
+				{
+					"id": "V_String",
+					"params": [
+						"Reedpool"
+					]
+				},
+				{
+					"id": "V_String",
+					"params": [
+						"Reedside"
+					]
+				},
+				{
+					"id": "V_String",
+					"params": [
+						"The Glitter Pool"
+					]
+				}
+			]
+		},
+		{
+			"__identifier": "tileset",
+			"__type": "LocalEnum.TileSet",
+			"__value": "ninja-test",
+			"__tile": null,
+			"defUid": 142,
+			"realEditorValues": [
+				{
+					"id": "V_String",
+					"params": [
+						"ninja-test"
+					]
+				}
+			]
+		},
+		{
+			"__identifier": "mirror",
+			"__type": "Bool",
+			"__value": true,
+			"__tile": null,
+			"defUid": 143,
+			"realEditorValues": [
+				{
+					"id": "V_Bool",
+					"params": [
+						true
+					]
+				}
+			]
+		},
+		{
+			"__identifier": "mood",
+			"__type": "String",
+			"__value": "Cool and glittering; a pond in the east with a sand spit out to the island stone.",
+			"__tile": null,
+			"defUid": 144,
+			"realEditorValues": [
+				{
+					"id": "V_String",
+					"params": [
+						"Cool and glittering; a pond in the east with a sand spit out to the island stone."
+					]
+				}
+			]
+		}
+	],
+	"layerInstances": [
+		{
+			"__identifier": "Canopy",
+			"__type": "Entities",
+			"__cWid": 18,
+			"__cHei": 22,
+			"__gridSize": 16,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "3af74def-d5d3-059b-29c1-8afa9d1a5db8",
+			"levelId": 156,
+			"layerDefUid": 135,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 1234,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		},
+		{
+			"__identifier": "Marks",
+			"__type": "Entities",
+			"__cWid": 18,
+			"__cHei": 22,
+			"__gridSize": 16,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "68e6d395-3086-6db7-20cc-6e84456d6344",
+			"levelId": 156,
+			"layerDefUid": 136,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 1234,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": [
+				{
+					"__identifier": "Heart",
+					"__grid": [
+						14,
+						9
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#E0457B",
+					"iid": "fc415ec3-a77c-ecc0-0cc6-7968371908ad",
+					"width": 16,
+					"height": 16,
+					"defUid": 120,
+					"px": [
+						224,
+						144
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kinds",
+							"__type": "Array<LocalEnum.HeartKind>",
+							"__value": [
+								"moment",
+								"nest"
+							],
+							"__tile": null,
+							"defUid": 116,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"moment"
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										"nest"
+									]
+								}
+							]
+						},
+						{
+							"__identifier": "species",
+							"__type": "Array<String>",
+							"__value": [
+								"loika"
+							],
+							"__tile": null,
+							"defUid": 117,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"loika"
+									]
+								}
+							]
+						},
+						{
+							"__identifier": "revealLine",
+							"__type": "String",
+							"__value": "A Loika shakes the pond off on the island stone.",
+							"__tile": null,
+							"defUid": 118,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"A Loika shakes the pond off on the island stone."
+									]
+								}
+							]
+						},
+						{
+							"__identifier": "reachBy",
+							"__type": "LocalEnum.ReachBy",
+							"__value": "none",
+							"__tile": null,
+							"defUid": 119,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"none"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Clue",
+					"__grid": [
+						2,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#F2A33A",
+					"iid": "f20c6dd6-bdd0-5283-ab6e-706e00442f32",
+					"width": 16,
+					"height": 16,
+					"defUid": 123,
+					"px": [
+						32,
+						160
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "tell",
+							"__type": "LocalEnum.TellKind",
+							"__value": "prints",
+							"__tile": null,
+							"defUid": 121,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"prints"
+									]
+								}
+							]
+						},
+						{
+							"__identifier": "path",
+							"__type": "Array<Point>",
+							"__value": [
+								{
+									"cx": 2,
+									"cy": 10
+								},
+								{
+									"cx": 4,
+									"cy": 10
+								},
+								{
+									"cx": 6,
+									"cy": 10
+								},
+								{
+									"cx": 8,
+									"cy": 10
+								},
+								{
+									"cx": 10,
+									"cy": 9
+								},
+								{
+									"cx": 12,
+									"cy": 9
+								},
+								{
+									"cx": 13,
+									"cy": 9
+								}
+							],
+							"__tile": null,
+							"defUid": 122,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"2,10"
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										"4,10"
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										"6,10"
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										"8,10"
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										"10,9"
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										"12,9"
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										"13,9"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Find",
+					"__grid": [
+						4,
+						6
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#43B8C9",
+					"iid": "50076927-97ef-d7b4-4f5a-46f256a61566",
+					"width": 16,
+					"height": 16,
+					"defUid": 126,
+					"px": [
+						64,
+						96
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kinds",
+							"__type": "Array<LocalEnum.FindKind>",
+							"__value": [
+								"pod"
+							],
+							"__tile": null,
+							"defUid": 124,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"pod"
+									]
+								}
+							]
+						},
+						{
+							"__identifier": "chance",
+							"__type": "Float",
+							"__value": 1,
+							"__tile": null,
+							"defUid": 125,
+							"realEditorValues": [
+								{
+									"id": "V_Float",
+									"params": [
+										1
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Find",
+					"__grid": [
+						8,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#43B8C9",
+					"iid": "59e7d8cb-070b-c21c-a6f1-4af180675907",
+					"width": 16,
+					"height": 16,
+					"defUid": 126,
+					"px": [
+						128,
+						208
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kinds",
+							"__type": "Array<LocalEnum.FindKind>",
+							"__value": [
+								"fruit",
+								"dew"
+							],
+							"__tile": null,
+							"defUid": 124,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"fruit"
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										"dew"
+									]
+								}
+							]
+						},
+						{
+							"__identifier": "chance",
+							"__type": "Float",
+							"__value": 0.6,
+							"__tile": null,
+							"defUid": 125,
+							"realEditorValues": [
+								{
+									"id": "V_Float",
+									"params": [
+										0.6
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Find",
+					"__grid": [
+						14,
+						16
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#43B8C9",
+					"iid": "93454401-edcf-0623-a2a4-db0cda43a9ba",
+					"width": 16,
+					"height": 16,
+					"defUid": 126,
+					"px": [
+						224,
+						256
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kinds",
+							"__type": "Array<LocalEnum.FindKind>",
+							"__value": [
+								"stone",
+								"material"
+							],
+							"__tile": null,
+							"defUid": 124,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"stone"
+									]
+								},
+								{
+									"id": "V_String",
+									"params": [
+										"material"
+									]
+								}
+							]
+						},
+						{
+							"__identifier": "chance",
+							"__type": "Float",
+							"__value": 0.6,
+							"__tile": null,
+							"defUid": 125,
+							"realEditorValues": [
+								{
+									"id": "V_Float",
+									"params": [
+										0.6
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Landmark",
+					"__grid": [
+						13,
+						8
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#8A6FD1",
+					"iid": "d0bf3084-d108-e99e-30fc-9527e6c3d9d7",
+					"width": 16,
+					"height": 16,
+					"defUid": 129,
+					"px": [
+						208,
+						128
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "prop",
+							"__type": "LocalEnum.PropKind",
+							"__value": "boulder-grey",
+							"__tile": null,
+							"defUid": 127,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"boulder-grey"
+									]
+								}
+							]
+						},
+						{
+							"__identifier": "label",
+							"__type": "String",
+							"__value": "the island stone",
+							"__tile": null,
+							"defUid": 128,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"the island stone"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Opening",
+					"__grid": [
+						8,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#F5F5F5",
+					"iid": "be57e073-08e6-b5d9-cc85-9523c09daaf7",
+					"width": 32,
+					"height": 16,
+					"defUid": 131,
+					"px": [
+						128,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "side",
+							"__type": "LocalEnum.Side",
+							"__value": "N",
+							"__tile": null,
+							"defUid": 130,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"N"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Opening",
+					"__grid": [
+						0,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#F5F5F5",
+					"iid": "046278c2-75d2-b55e-faea-64319cd7b4cf",
+					"width": 16,
+					"height": 32,
+					"defUid": 131,
+					"px": [
+						0,
+						160
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "side",
+							"__type": "LocalEnum.Side",
+							"__value": "W",
+							"__tile": null,
+							"defUid": 130,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"W"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Opening",
+					"__grid": [
+						6,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#F5F5F5",
+					"iid": "270b9bc8-0132-bd62-d41d-361fff991e5e",
+					"width": 32,
+					"height": 16,
+					"defUid": 131,
+					"px": [
+						96,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "side",
+							"__type": "LocalEnum.Side",
+							"__value": "S",
+							"__tile": null,
+							"defUid": 130,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"S"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "CreatureSpawn",
+					"__grid": [
+						2,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"mark"
+					],
+					"__smartColor": "#C96A43",
+					"iid": "88e65347-7d55-f925-d5fc-fc9a6bd9ac8e",
+					"width": 64,
+					"height": 32,
+					"defUid": 134,
+					"px": [
+						32,
+						208
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "species",
+							"__type": "Array<String>",
+							"__value": [
+								"loika"
+							],
+							"__tile": null,
+							"defUid": 132,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"loika"
+									]
+								}
+							]
+						},
+						{
+							"__identifier": "count",
+							"__type": "Int",
+							"__value": 1,
+							"__tile": null,
+							"defUid": 133,
+							"realEditorValues": [
+								{
+									"id": "V_Int",
+									"params": [
+										1
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"__identifier": "Props",
+			"__type": "Entities",
+			"__cWid": 18,
+			"__cHei": 22,
+			"__gridSize": 16,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "7be0fdb7-2162-a42d-c621-fe425ef3a63f",
+			"levelId": 156,
+			"layerDefUid": 137,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 1234,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": [
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "2dc05736-f59d-6e1e-d0b5-a417bda4cf90",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						1,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "1ea26fad-b889-6053-16e2-26c830b24e08",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						16,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						2,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "1cac0b50-50af-772b-8630-7c6e6bec00d6",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						32,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "3e119fa9-f03a-99f1-ac2d-dc643729caaa",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						48,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "5d973fe8-7c28-9697-e66f-362003ef1aae",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						5,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "c4518349-e2b8-cb87-b8c7-909beb74ee8d",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						80,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						6,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "97ded63f-b80b-da66-74c7-66b2186c53bc",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						96,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						7,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "b6e158f3-411b-40ab-c236-00627b7cb718",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						112,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						10,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "fdd61c2b-31fa-852f-5c98-19ee54dfc7bf",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						160,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						11,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "ac2ca7ea-715a-d937-9025-6a4a71ab8ce9",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						176,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						12,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "bd01eab9-3478-20f3-6015-f4a1df9f8939",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						192,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						13,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "0935bd2c-cb00-81cf-2add-e6342674abb5",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						208,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						14,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "df788461-6e67-2990-cbc8-9af3bdf23b40",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						224,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						15,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "1369e48a-1725-2349-8eb4-070bea975e4e",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						240,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						16,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "cfa70666-4fbe-b648-59cf-db434c5ba1bb",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						256,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						0
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "1b380eda-90a8-4413-fc2f-b29236c4b5c5",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						0
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						1
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "19149d75-0a7f-4b63-7565-ad2507233294",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						16
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						1,
+						1
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "8b8a2935-1a70-8d21-a3d0-1530d403f09d",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						16,
+						16
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						15,
+						1
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "8c58c819-1d66-489b-3879-53ca7363fabb",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						240,
+						16
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						16,
+						1
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "c47bf140-9121-0697-8580-f063ad6065d2",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						256,
+						16
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						1
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "59c77cb7-933a-a9ce-692b-aa5d4eddbcd2",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						16
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						2
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "ddeaf8c8-ebf6-7347-bd96-8cc627af9810",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						32
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						2
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "3f37a2b8-876e-d084-5968-9dd6d087b7af",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						48,
+						32
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						2
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "57a2760f-c455-73be-4a50-2a08082f3685",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						32
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						16,
+						2
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "492f1200-21e4-0a6d-eb17-7c1f3ead18f9",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						256,
+						32
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						2
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "b5b21f18-d438-007c-925f-de4ae7bf8862",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						32
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "352b5729-7d4e-b1b7-2202-cf5d6daeb677",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						48
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						2,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "c1643446-4f6c-0455-5d0b-446eb7c79a91",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						32,
+						48
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "f2a19a16-68ef-4dad-4ee6-c3eba0bce1c5",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						48,
+						48
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "29750a90-c065-5afc-8945-9629a73ddf32",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						48
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						5,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "f750c826-ed63-3035-c87a-7f0b6f49a15a",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						80,
+						48
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "0ac928d7-f2ca-236e-8fbf-4dcfa8a33867",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						48
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						4
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "ee241240-2252-d534-7ae8-d3e8e9bad1d7",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						64
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						4
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "94f05a38-8595-1bb9-149f-8b2565eb8441",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						48,
+						64
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						4
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "3e1ce473-856f-c510-f0f0-cffd558134ff",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						64
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						4
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "8ec1efd5-fbcc-b252-d9f5-8ebe7dc02772",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						64
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						5
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "258fa26a-15a2-83e3-bfc3-d375a2ec7700",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						80
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						5
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "43e9e68d-f925-9cb6-0240-95d8606ca302",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						80
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						6
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "299b68eb-6691-2357-b0b6-fb2a2aa67b8c",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						96
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						6
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "99167953-c4b6-ed5b-1875-0945ac343784",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						96
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						7
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "51201ac4-710d-9fc0-b9ce-1a14d4e12b55",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						112
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						7
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "a1c26aaf-8c2b-f98a-9b36-00ac09474bae",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						112
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						8
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "a6bb746c-f510-03e9-f04c-746836606cc4",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						128
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						8
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "4b6ba922-0534-1316-7418-83bccdcec3c4",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						128
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "boulder-grey",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"boulder-grey"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						8
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "25237bd2-43d5-f28c-b689-01447dc9c182",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						128
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						9
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "fa9cfe08-554a-fb2d-5ac1-a1a7a4922777",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						144
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						9
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "535708f3-e281-7adf-f9d8-4a34572efd59",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						144
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "bdefdce0-8bc9-497e-4855-f4f92f574e5a",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						160
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						11
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "a3d9010f-b6c2-66e5-201a-056678507847",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						176
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						5,
+						11
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "8b0725ec-158d-5d5c-1f2c-37e15cfe0d5d",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						80,
+						176
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						11
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "839b5a24-b1a9-24dc-dee8-3c9f4a36116f",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						176
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						12
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "1ac761cc-71ab-573b-69f4-762d80817a71",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						192
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						12
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "d9d3da40-39fa-93e8-7963-a1c63d116d3d",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						48,
+						192
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						12
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "8927ca43-4efc-b886-85e1-9e399376f2da",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						192
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						5,
+						12
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "98dd6878-5e18-0b28-6237-6e67b076b297",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						80,
+						192
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						12
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "77da0893-3186-1831-7a64-12c1a0e08638",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						192
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "4b01e07e-d754-0656-4900-2319e9ebae60",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						208
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "b6262301-caee-d0b9-29d8-e575cf42e96b",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						208
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						5,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "05909cd2-dbbb-31eb-5f92-33c32b25e134",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						80,
+						208
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "83b39256-c4e5-31e5-f59e-8f65d183c058",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						208
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						14
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "181d6906-c6db-36ec-75b4-1493dca33649",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						224
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						14
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "e00e2219-3e43-535a-f860-e82963c789e8",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						224
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						15
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "9186e69d-c599-93ff-b0a3-2a45f6dbf69d",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						240
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						15
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "b064c6f9-9d55-8dc5-79ed-6e536faf3f3f",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						48,
+						240
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "boulder-brown",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"boulder-brown"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						9,
+						15
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "afdc631f-f8df-f89f-9be6-aab86bd513e1",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						144,
+						240
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						10,
+						15
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "32ddfbbd-1b71-bb5d-94be-0c62dcded616",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						160,
+						240
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						15
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "c868f0fe-4da9-0720-b716-bdaa17eb0e5a",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						240
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						16
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "a0708ce0-c30e-8db7-197c-2c0d6f2d540a",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						256
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						9,
+						16
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "c7e4651e-ee4f-39d6-a1e9-cc0edab0a4e7",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						144,
+						256
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						10,
+						16
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "568d521c-9d63-d007-8054-7ccdada23887",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						160,
+						256
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						11,
+						16
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "d5d603c0-d2c6-6065-acb0-58b6a115b619",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						176,
+						256
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						16
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "f1d40d58-2272-c3fa-2116-f55ec0da9590",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						256
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						17
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "bb820f7a-6bb2-f4b2-4596-1404bba0c9cd",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						272
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						17
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "b7264d40-933d-e24f-1fa2-26d388e8749b",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						272
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "dad76e61-9aa9-ecd5-56d3-1c4c7e9513ac",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						288
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						1,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "aaefd1ac-b9e5-1de9-bf39-eb1c36eb979b",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						16,
+						288
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						12,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "74d2acdf-167f-161a-420a-7bfb829eb84d",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						192,
+						288
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						13,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "004e2acb-121d-92c4-282a-5423facef1d5",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						208,
+						288
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						14,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "28165076-53a2-1d39-d395-d44952f39d3f",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						224,
+						288
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						16,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "0c733211-cf68-dd36-b1fa-6d87af8f9869",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						256,
+						288
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "1d0bb908-329e-f9f0-ad93-89c939cf94d6",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						288
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "32cba0b3-c2bb-efe9-ef76-d8679a84910e",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						1,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "d200d7a2-2050-592d-f4ba-e89de43f7020",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						16,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						2,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "1719cb04-44cd-f95b-a21b-013afdddbc3e",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						32,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						11,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "b1b804c5-3c2f-5ac0-e3fc-cee48c810d5d",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						176,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						12,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "da69c95e-eda5-6f3d-cd63-dd281cf496dc",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						192,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						13,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "29e63727-ef61-a8b4-32c1-7d5fc8be9351",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						208,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						14,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "00a6d9e9-eebd-5f92-a549-5405adfe6fb0",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						224,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tall-grass",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tall-grass"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						15,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "8bdcfde6-41f0-1012-a307-749ff9802296",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						240,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						16,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "88ec5e20-0af7-96b5-d5fb-4a2c39b7e2d7",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						256,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "86d4ef0f-9945-9ba7-5fb4-dc949b5d71e0",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "9b50ee7e-ce1e-8727-41fe-48ae266a898a",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						1,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "6e04313a-1b36-b70e-82be-25d9363d3ef9",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						16,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						2,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "cc326270-b41e-4fd2-2459-50d5bf1911d8",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						32,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "6705c2e1-9fec-2ac9-095e-04d729575906",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						48,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						13,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "6890218c-eede-d355-cbcc-e002a365fcbb",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						208,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						14,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "7d0c745b-c797-1882-6ee9-46a9d2f915d4",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						224,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						15,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "6038bb07-89ab-a65a-6136-075da5629016",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						240,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						16,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "f513dec5-5392-4d33-f6df-5328d77438c8",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						256,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "32502918-23dc-6b20-7dbd-766cb21101b5",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						0,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "3e99c4a7-80d0-0fa9-46e1-942904f1061f",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						0,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						1,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "6e5afbe9-6c39-9d30-5407-9d1b5baff4fc",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						16,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						2,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "d6fd8415-143d-8d7e-a610-62ba84b7bea0",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						32,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						3,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "75de256e-983b-33dc-b1d2-63acbad3c446",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						48,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						4,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "49b5a160-b033-2b60-15fc-8ca423aec3a4",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						64,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						5,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "5c88db25-1ba2-ae32-ea48-6a2c6d3ba0ca",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						80,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						8,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "b25bae8c-5376-34c5-475d-e87bb679b9b1",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						128,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						9,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "7b9495ca-131b-2223-e746-a4ac3a477e0b",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						144,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						10,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "afc64409-29eb-6901-be91-360147f32e82",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						160,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						11,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "161de7c1-03ac-5084-4a9e-847199fd531a",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						176,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						12,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "0f356dd9-3888-9411-b532-7f9447eb013b",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						192,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						13,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "a5a210c8-8876-8e1c-0bf2-20eb6d4304bc",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						208,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						14,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "c1879194-90d7-0e39-7839-4f96cb38f194",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						224,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						15,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "30eb6a8a-1b7f-0d8b-9252-77a9d60dfd15",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						240,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						16,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "c163c0a5-1dd9-a02c-b318-ff5e3aaf7601",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						256,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						17,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "2c583d79-c7b4-b6a0-6ba7-313fc572d547",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						272,
+						336
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						13,
+						8
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "4696d668-56b5-0626-ea02-addfdf253725",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						208,
+						128
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "boulder-grey",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"boulder-grey"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						14,
+						8
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "6a12d697-fe75-3d69-d31b-3dda11f17afa",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						224,
+						128
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "boulder-brown",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"boulder-brown"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						15,
+						4
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "cca67fa7-c041-4a80-88e0-26442dd8d608",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						240,
+						64
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						16,
+						8
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "bb4b2f05-82e6-2275-b864-abf39e19b79c",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						256,
+						128
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						16,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "9c6c8f03-6048-1f2d-a77a-9c082ce33b57",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						256,
+						160
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						10,
+						11
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "5ad2c777-f081-5eb2-9cc7-bb93a7ef7b5a",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						160,
+						176
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						11,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "58759c5c-6055-2789-5fa7-2c61e9237cf4",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						176,
+						208
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						15,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "b8368893-ac07-9f1d-a161-bb6ef4fb6ebe",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						240,
+						208
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						12,
+						14
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "070d3019-12ae-43df-d9b2-a10e039f8759",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						192,
+						224
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						13,
+						14
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "ebafb153-1e15-b49d-5887-3af16f65c62d",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						208,
+						224
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						14,
+						14
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "c82dcdf5-7fa1-06bd-dcd8-7ddfa4bd4857",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						224,
+						224
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "reeds",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"reeds"
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"__identifier": "Decals",
+			"__type": "Entities",
+			"__cWid": 18,
+			"__cHei": 22,
+			"__gridSize": 16,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "12d5895a-1e19-6a77-7281-f964b8a081dc",
+			"levelId": 156,
+			"layerDefUid": 138,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 1234,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": [
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						12,
+						7
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "fc98ea62-d258-152e-3072-05fa901f52c2",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						192,
+						112
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "lily-pad",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"lily-pad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						14,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "4cef1b64-7d99-d09e-5bab-482ad2efa492",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						224,
+						160
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "lily-pad",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"lily-pad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						7,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "14335dfb-8db7-da85-6ab3-e1c072643c4b",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						112,
+						48
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "flower-sun-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"flower-sun-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						13,
+						3
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "00f46e54-2648-415c-ddb2-bf40787c83ec",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						208,
+						48
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						8,
+						6
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "18e19c25-5252-59ab-3ab6-5ae6cf76aef4",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						128,
+						96
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						1,
+						8
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "e98f62fa-6331-fab7-2530-cb6b8b50f059",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						16,
+						128
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "flower-sun-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"flower-sun-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						2,
+						8
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "03c5543b-31b6-5247-b03b-891236e79007",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						32,
+						128
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "flower-sun-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"flower-sun-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						8,
+						9
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "38fd4d4a-d74b-a50f-1858-29e8156294be",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						128,
+						144
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "pebbles-a",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"pebbles-a"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						10,
+						9
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "b05f7fa5-08c9-5d13-c1f0-9ca75413da40",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						160,
+						144
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "pebbles-a",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"pebbles-a"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						2,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "c14ebfa9-d1d6-35e0-d6a2-e0fa293f19bb",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						32,
+						160
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "flower-sun-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"flower-sun-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						3,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "28f986f6-27ab-2f07-2eed-851d8d75a0f2",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						48,
+						160
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						5,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "500d770b-e49f-6785-0dde-60a45bf1e0e2",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						80,
+						160
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "pebbles-a",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"pebbles-a"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						10,
+						10
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "f9866762-785a-1b0c-b9b6-29db78bf67c3",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						160,
+						160
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "flower-sun-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"flower-sun-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						8,
+						11
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "721a665a-2731-449c-b35f-794847e3b17a",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						128,
+						176
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						4,
+						12
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "8b36c7eb-fa53-ab1d-685b-899ce23571a6",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						64,
+						192
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "flower-sun-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"flower-sun-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						1,
+						13
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "0e800895-3622-a65f-2bb5-3a3290a555c6",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						16,
+						208
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "flower-sun-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"flower-sun-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						8,
+						14
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "393d8af0-21e3-aac5-465e-72bf84d9db33",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						128,
+						224
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "pebbles-a",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"pebbles-a"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						12,
+						16
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "f461d7c4-69ce-1310-560a-16116a84314e",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						192,
+						256
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "flower-sun-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"flower-sun-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						13,
+						16
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "d2e11afd-cff5-d0e4-6d4c-5291f2e2cf3c",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						208,
+						256
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "flower-sun-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"flower-sun-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						8,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "2d09be64-b81a-8551-fd70-54bf730b9467",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						128,
+						288
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						12,
+						18
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "4728c38f-80b6-991c-ae3c-2ab98fe69eba",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						192,
+						288
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "pebbles-a",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"pebbles-a"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						9,
+						19
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "949f44ec-f8e8-cc04-04e1-391973206b76",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						144,
+						304
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						6,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "12effb65-c8f2-6f35-7c24-49e5515b3630",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						96,
+						320
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "pebbles-a",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"pebbles-a"
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"__identifier": "Terrain",
+			"__type": "IntGrid",
+			"__cWid": 18,
+			"__cHei": 22,
+			"__gridSize": 16,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "337c5fbd-e87d-c1aa-566e-4bd8783f50e2",
+			"levelId": 156,
+			"layerDefUid": 139,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				5,
+				5,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				5,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				3,
+				3,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				5,
+				6,
+				3,
+				3,
+				2,
+				2,
+				3,
+				3,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				2,
+				2,
+				2,
+				2,
+				2,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				3,
+				2,
+				2,
+				2,
+				2,
+				2,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				3,
+				2,
+				2,
+				3,
+				3,
+				2,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				3,
+				3,
+				3,
+				3,
+				3,
+				2,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				2,
+				2,
+				2,
+				2,
+				2,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				2,
+				2,
+				2,
+				2,
+				2,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				2,
+				2,
+				2,
+				2,
+				3,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				3,
+				2,
+				2,
+				2,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				3,
+				3,
+				3,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				5,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				5,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				5,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				5,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				5,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6
+			],
+			"autoLayerTiles": [],
+			"seed": 1234,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		}
+	],
+	"__neighbours": []
+}

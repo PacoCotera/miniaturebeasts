@@ -80,10 +80,10 @@ test("a new look is a new id: the props keep showing the last specimen until the
   const t = frameOf("S01").chapters.flatMap((c) => c.traits).find((x) => x.id === "efficiency"), un = t.looks.find((l) => !S.guideLooks(st, "S01", t.id).includes(l));
   if (un) { S.guideAdd(st, "S01", t.id, [un]); assert.equal(libraryOf(st, settings, spec).region.picture, a, "a miss shows the last specimen"); assert.equal(renderCount(), n0, "and renders nothing"); const id = warmLibrary(st, settings); assert.ok(id && id !== a); assert.equal(libraryOf(st, settings, spec).region.picture, id); }
 });
-test("a cold cache: building Home's props renders nothing and takes under 50 ms; the starter's empty form shows once it is made; with nothing made at all the region is empty", () => {
+test("a cold cache: building Home's props renders nothing and (its 50 ms limit is station/perf/specimen-props.perf.mjs); the starter's empty form shows once it is made; with nothing made at all the region is empty", () => {
   clearSpecimens(); const st = world(); S.seedAdults(st, "S01", 5, 3, settings); const n0 = renderCount();
   const t0 = performance.now(); const b = homeBuild({ st, sv: { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 }, settings, docked: true, ui: {}, focus: null, time: 12 * 3600, date: { y: 2026, m: 9, d: 17 }, now: Date.now() }, spec, frameSpec), ms = performance.now() - t0;
-  assert.equal(renderCount(), n0, "a Home build renders nothing"); assert.ok(ms < 50, `${ms.toFixed(1)} ms`); console.log(`# a cold-cache Home build: ${ms.toFixed(1)} ms, ${renderCount() - n0} renders`);
+  assert.equal(renderCount(), n0, "a Home build renders nothing"); console.log(`# a cold-cache Home build: ${ms.toFixed(1)} ms, ${renderCount() - n0} renders`);
   assert.ok(b.props.regions.library.picture || Object.keys(b.props.regions.library).length === 0);
   const e = world(); clearSpecimens(); warmLibrary(e, settings); const r = libraryOf(e, settings, spec).region; assert.equal(r.species, "S01"); assert.equal(r.genome, "Loika genome"); assert.ok(!("new" in r)); assert.deepEqual(r.glints, []);
 });
