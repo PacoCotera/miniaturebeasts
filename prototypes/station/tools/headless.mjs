@@ -76,7 +76,7 @@ export class Player {
   // The bud: wait out what is left of its minutes (the rule's own, from its start), then open it (a press). With `growNow` the player pays Hatch now (1 Essence per 2 minutes left, and the bud hatches in the same press) instead
   // of waiting whenever it can pay.
   waitBud() {
-    const B = this.st.bud, left = () => Math.max(0, B.start + B.minutes * MIN - this.now);
+    const B = this.st.bud, scale = this.settings.budScale === "instant" ? 1e9 : this.settings.budScale || 1, left = () => Math.max(0, B.start + (B.minutes * MIN) / scale - this.now);   // the bud's own clock: settings.budScale (1 in play, 10 in the playtest preset)
     if (this.growNow && left() > 0) { const c = S.instantGrowCost(this.st, this.settings, this.now); if (S.canPay(this.st, c.e, c.d, c.s)) { const was = left(); const r = this.step("hatch now (" + Math.round(was / MIN) + " min left)", () => S.instantGrow(this.st, this.settings, this.now)); this.hatchedNow = r.mibi; return r; } }   // Hatch now hatches: open() below hands back that mibi
     const ms = left(); return this.step("the bud grows (" + B.minutes + " min" + (ms ? ", " + Math.round(ms / MIN) + " left" : ", done") + ")", () => ({ ok: true }), { wait: ms });
   }

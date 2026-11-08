@@ -376,6 +376,30 @@ async function zBad(page, sel, W, z, capture) {
   await ctx.close();
 }
 
+// ---- PT. the playtest preset (plan row 3.13): ?playtest reaches both devices and the Station's settings (in memory only), Start fresh sits in the bar and erases the save at the next load (1920 × 1080) ----
+{
+  const world = (page) => page.evaluate(() => { const k = Object.keys(localStorage).find((x) => x.startsWith("mb-save-v8@")); return k ? JSON.parse(localStorage.getItem(k)).wid : null; });
+  const settled = (page) => page.waitForFunction(() => window.__play && window.__play.frames.station.contentWindow && window.__play.frames.station.contentWindow.__st, null, { timeout: 30000 }).then(() => page.waitForTimeout(800));
+  const { ctx, page, st, mb } = await open(1920, 1080, { query: "?playtest" });
+  eq([st().url().includes("&playtest"), mb().url().includes("&playtest")], [true, true], "PT: ?playtest goes on to the Station and the Companion");
+  eq(await st().evaluate(() => { const s = window.__st.settings; return [s.playtest, s.sittingWait, s.budScale, s.adultTurns, s.elderTurns]; }), [true, "minute", 10, 1, 4], "PT: the Station's settings are the preset's");
+  expect(!/playtest|minute/.test((await page.evaluate(() => localStorage.getItem("mb-station-dev"))) ?? ""), "PT: the preset is never written to the settings key");
+  const sf = await page.evaluate(() => { const b = document.getElementById("startFresh").getBoundingClientRect(), c = document.getElementById("companionCtl").getBoundingClientRect(), d = document.getElementById("dockCtl").getBoundingClientRect(); return { h: b.height, left: b.left, right: b.right, top: b.top, cr: c.right, dl: d.left, shown: getComputedStyle(document.getElementById("startFresh")).display !== "none", corner: document.getElementById("startFresh").classList.contains("corner") }; });
+  expect(sf.shown && sf.h === 40 && !sf.corner && sf.top === 0 && sf.left >= sf.cr && sf.right <= sf.dl, "PT: Start fresh is in the bar, 40 tall, clear of the Companion control and the Dock " + JSON.stringify(sf));
+  await page.waitForFunction(() => Object.keys(localStorage).some((x) => x.startsWith("mb-save-v8@")), null, { timeout: 15000 }).catch(() => {});
+  const w0 = await world(page); expect(!!w0, "PT: this browser holds a world");
+  page.once("dialog", (d) => d.dismiss()); await page.click("#startFresh"); await page.waitForTimeout(600);
+  eq([await world(page), page.url().endsWith("?playtest")], [w0, true], "PT: a dismissed confirm changes nothing");
+  page.once("dialog", (d) => d.accept()); await page.click("#startFresh"); await page.waitForLoadState("load"); await settled(page);
+  const w1 = await world(page); expect(!!w1 && w1 !== w0, "PT: Start fresh erased the world and a new one began (" + w0 + " -> " + w1 + ")");
+  eq([page.url().endsWith("/play/?playtest"), await st().evaluate(() => window.__st.settings.sittingWait), await page.evaluate(() => sessionStorage.getItem("mb-play-fresh"))], [true, "minute", null], "PT: it opens the preset, the one-time flag spent");
+  await ctx.close();
+  const plain = await open(1920, 1080, { query: "?seed=5" });
+  eq(await plain.st().evaluate(() => { const s = window.__st.settings; return [s.playtest, s.sittingWait, s.budScale, s.adultTurns]; }), [undefined, "hours", 1, 2], "PT: without ?playtest the game's own settings stand");
+  eq(await plain.page.evaluate(() => !document.getElementById("startFresh").classList.contains("hidden")), true, "PT: the Start fresh link shows on the play page");
+  await plain.ctx.close();
+}
+
 // ---- K. the Caddy's screen: always shown in its own 808 × 288 block, drawn from the face of the Caddy's state with the panel's timing; Shift+C is retired (1920 × 1080, the Row) ----
 {
   const { ctx, page, st } = await open(1920, 1080, { query: "?test&seed=3&firstms=600000" });   // firstms: the first picture waits for the Station's word and seat however long a loaded page takes to boot (the 15 s no-word fallback is for a real Caddy with no Station)

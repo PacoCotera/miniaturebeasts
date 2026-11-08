@@ -126,6 +126,7 @@ iframe{border:0; display:block; background:var(--void)}
 /* the build stamp: page chrome in the page's bottom margin, right-aligned to the content, under every block */
 #stamp{position:absolute; color:var(--mist); font-size:12px; line-height:12px; text-align:right; white-space:nowrap; pointer-events:none}
 #zDown[aria-disabled="true"],#zUp[aria-disabled="true"]{color:var(--stone); cursor:default}
+#startFresh.corner{position:fixed; z-index:25}   /* no room in the bar: the bottom-left corner of the window (shell.mjs, the playtest preset) */
 </style>
 </head>
 <body>
@@ -150,6 +151,7 @@ iframe{border:0; display:block; background:var(--void)}
   <button type="button" class="ctl hidden" id="tabBench">Bench</button>
   <button type="button" class="ctl" id="companionCtl" aria-label="Companion A; switch to Companion B">Companion <b>A</b> / B</button>
   <button type="button" class="ctl" id="dockCtl" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
+  <button type="button" class="ctl hidden" id="startFresh" aria-label="Start fresh: erase the save on this browser and begin the playtest set" title="Erase the save and begin the playtest set">Start fresh</button>
   <button type="button" class="ctl" id="keysBtn">Keys ?</button>
   <button type="button" class="ctl hidden" id="zDown" aria-label="Smaller" title="Smaller (−)">−</button>
   <button type="button" class="ctl hidden" id="zFit" aria-pressed="true">fit</button>

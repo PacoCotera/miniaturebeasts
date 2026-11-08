@@ -48,13 +48,13 @@ const station = (...names) => names.every(n => typeof ST[n] === "function") ? fa
 function clockAt(day) { const [y, m, d] = day.split("-").map(Number), at = new Date(y, m - 1, d, 12).getTime();
   return class extends Date { constructor(...a) { super(...(a.length ? a : [at])); } }; }
 
-const CARE = ["mibiById", "listWords", "localDay", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "homeMibis", "partnerMibi",
+const CARE = ["mibiById", "listWords", "localDay", "careDay", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "homeMibis", "partnerMibi",
   "grownNow", "agedNow", "rosterList", "canSwap", "releasedIds", "takeMibi", "leaveMibi", "canTend", "tend", "bondCheck", "growCheck", "migrateCarried", "normalizeCare",
   "carryApply", "canWalk", "walkAll", "tripRecord", "TRIP_KINDS", "tripsWith", "liveMibis", "setLead", "nextLead", "LEAD_Y", "rosterAt", "rosterCount", "rosterRect", "rosterOff"];
 // The care functions over a world: S, docked or not, on a given day. ctx.S, ctx.Date and the flags can change between calls.
 function world(S, o = {}) {
   const env = { docked: !!o.docked, log: [] };
-  const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 16, CARRY_MAX: 3, BOND_TENDS: 3,
+  const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 16, CARRY_MAX: 3, BOND_TENDS: 3, PLAYTEST_ON: !!o.playtest, PLAYTEST: { careDayMs: 60000 },
     isDocked: () => env.docked, stPart: () => env.st || null, logEv: t => env.log.push(t) });
   const names = CARE.filter(n => !["JUVENILE_TURNS", "CARRY_MAX"].includes(n));
   const out = vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx);
@@ -1343,7 +1343,7 @@ test("stage words: young on the chips (the Mibis list, the Partner card, the mib
 test("stage boundaries on the Companion: young below 2, adult through 17, an elder at 18 (2 + 16); an elder from grownTurn + 16", () => {
   const S = save({ turn: 0 }), t = world(S), m = { born: 0 };
   for (const [turn, want] of [[0, "juvenile"], [1, "juvenile"], [2, "adult"], [17, "adult"], [18, "elder"], [19, "elder"], [200, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(m), want, "turn " + turn); }
-  assert.match(PAGE, /const JUVENILE_TURNS = 2, ELDER_TURNS = 16;/);
+  assert.match(PAGE, /const JUVENILE_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.elderTurns : 16;/);   // the game's own 2 and 16; the preset's numbers only under ?playtest
   const g = { born: 0, grownTurn: 5, bonded: true }; for (const [turn, want] of [[20, "adult"], [21, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(g), want, "grown at 5, turn " + turn); }
   S.turn = 21; assert.equal(t.agedNow(g), true); S.turn = 22; assert.equal(t.agedNow(g), false); S.turn = 18; assert.equal(t.agedNow(m), true);
 });

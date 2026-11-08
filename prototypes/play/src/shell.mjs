@@ -10,6 +10,7 @@ import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX } from "./fit.mjs";  
 import { stampText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 
 const params = new URLSearchParams(location.search), TEST = params.has("test"), DEV = params.has("dev"), SEED = params.get("seed");
+const PT = params.has("playtest") ? "&playtest" : "";   // the playtest preset (play/src/playtest.mjs): ?playtest goes on to both devices; its block is "the playtest preset" below the keys
 let cslot = params.get("companion") === "B" ? "B" : "A";   // the Companion in the frame: A, or the second Companion B
 const $ = (id) => document.getElementById(id);
 const SEAT_MS = 160, EASE = [0, 0, 0.2, 1];
@@ -54,7 +55,7 @@ let owner = "station", seatOff = 0, devOpen = false, keysOpen = false;
 let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
 let pressed = false, seatBusy = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
-const JUMP = params.get("jump"), stationUrl = "../station/?embed" + (DEV ? "&dev" : "") + (TEST ? "&test" : "") + (JUMP === "arrival" || JUMP === "fork" ? "&jump=" + JUMP : ""), companionUrl = "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (cslot === "B" ? "&companion=B" : "") + (DEV ? "&dev=1" : "");
+const JUMP = params.get("jump"), stationUrl = "../station/?embed" + (DEV ? "&dev" : "") + (TEST ? "&test" : "") + (JUMP === "arrival" || JUMP === "fork" ? "&jump=" + JUMP : "") + PT, companionUrl = "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (cslot === "B" ? "&companion=B" : "") + (DEV ? "&dev=1" : "") + PT;
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
 const SVG = {
@@ -151,7 +152,7 @@ function layout() {
   placeC(devBtn, narrow ? CW - 112 : CW - 160, 0, narrow ? 100 : 148, 40);
   if (!TEST) layoutSize((narrow ? CW - 112 : CW - 160) - zw);
   devBtn.textContent = narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
-  layoutDock(narrow); layoutCompanionCtl(narrow);
+  layoutDock(narrow); layoutCompanionCtl(narrow); layoutFresh(narrow, dockX);
   // the bar's note: the narrow tier's line, or for 4000 ms after a seat, a lift or the opening's end, the Caddy's two lines as one (T-20261016-109)
   note.textContent = noteCaddy || NOTE_TEXT;
   note.classList.toggle("hidden", !narrow);
@@ -427,7 +428,7 @@ function connect(world) {
 // The second Companion (the owner's: the Companion is the player's identity): the frame holds Companion A or B; the Station and the Caddy keep the last docked player's
 // world until another Companion docks. Lift first: a Companion in its cradle is not swapped.
 const companionCtl = $("companionCtl");
-const companionSrc = () => "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (cslot === "B" ? "&companion=B" : "") + (DEV ? "&dev=1" : "");
+const companionSrc = () => "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (cslot === "B" ? "&companion=B" : "") + (DEV ? "&dev=1" : "") + PT;
 function switchCompanion() {
   if (seatedNow() || pressed) return;
   cslot = cslot === "A" ? "B" : "A"; comp = null; hold = null; frames.companion.src = companionSrc(); caddy = derive(); layout();
@@ -533,6 +534,21 @@ async function printDone() {
 printTaken.addEventListener("click", () => { printDone(); if (document.activeElement === printTaken) printTaken.blur(); giveKeys(owner); });
 printLook(); setInterval(printLook, 10000);
 
+// ---- the playtest preset (plan row 3.13): ?playtest is passed to both devices (PT above); "Start fresh" erases this browser's save and opens the preset ----
+// The erase runs at the NEXT load, before any frame is set (a frame still open would write its save back as it unloaded). The Companions' identities stay; the worlds go.
+const startFresh = $("startFresh"), FRESH_KEY = "mb-play-fresh";
+try { if (sessionStorage.getItem(FRESH_KEY)) { sessionStorage.removeItem(FRESH_KEY); for (const key of Object.keys(localStorage)) if (key.startsWith("mb-save-v8") || key.startsWith("mb-exploration-v") || key === "mb-station-dev") localStorage.removeItem(key); } } catch { /* no storage: nothing to erase */ }
+startFresh.addEventListener("click", () => {
+  if (!confirm("Start fresh? This erases your save on this browser and begins the playtest set.")) return;   // [copy] the one confirm
+  try { sessionStorage.setItem(FRESH_KEY, "1"); } catch { return; }
+  location.assign(location.pathname + "?playtest");
+});
+function layoutFresh(narrow, rightEdge) {   // in the bar after the Companion control when it fits before the Dock; else the window's bottom-left corner
+  if (TEST) return;
+  const x = narrow ? 316 : 440, w = 104, fits = x + w + 8 <= rightEdge, s = startFresh.style;
+  startFresh.classList.remove("hidden"); startFresh.classList.toggle("corner", !fits);
+  if (fits) { placeC(startFresh, x, 0, w, 40); s.bottom = ""; } else { s.left = "8px"; s.top = "auto"; s.bottom = "8px"; s.width = w + "px"; s.height = "28px"; }
+}
 // ---- boot ----
 buildKeys();
 for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner("station"); } } });
