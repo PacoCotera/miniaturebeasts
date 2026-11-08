@@ -295,9 +295,15 @@ const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Res
     eq(m.tier, layout, tag + ": the layout");
     for (const kk of m.keys) { const min = MIN[kk.name]; expect(kk.w >= min - 1e-6 && kk.w <= min + e && kk.h >= min - 1e-6 && kk.h <= min + e, `${tag}: ${kk.dev} ${kk.name} is ${kk.w} × ${kk.h} CSS px, wanted ${min} × ${min}`); }
     { const n = Math.max(1, Math.round(dsf)); expect(m.marks.length === 4 && m.marks.every((q) => Math.abs(q.w * dsf - 24 * n) < 0.02 && Math.abs(q.h * dsf - 24 * n) < 0.02 && q.px === "pixelated" && Math.abs(q.dx) <= 1 / dsf + 0.01 && Math.abs(q.dy) <= 1 / dsf + 0.01), `${tag}: each room mark is drawn at 24 × ${n} device px, pixelated, centred in its key (${JSON.stringify(m.marks[0])})`); }
-    eq(m.keys.length, 17, tag + ": 10 Station keys and 7 Companion keys");
+    eq(m.keys.length, 18, tag + ": 11 Station keys and 7 Companion keys");
+    eq(m.keys.filter((kk) => kk.dev === "station").map((kk) => kk.name), ["Left", "Up", "Down", "Right", "Home", "Research", "Vivarium", "Library", "Call", "Back", "Confirm"], tag + ": the Station's keys, in order (pods, vivarium, library; Call left of Back)");
     expect(m.keys.every((kk) => { const s = MIN[kk.name], row = Math.round((kk.top - (72 - s) / 2) / 72); return row >= 0 && row < 2 && Math.abs(kk.top - row * 72 - (72 - s) / 2) <= 1 / m.dpr + 0.01; }), tag + ": each key is centred in its row: a 56 key 8 from the row's top, a 64 key 4");
     expect(["station", "companion"].every((d) => { const c = m.keys.filter((kk) => kk.dev === d).map((kk) => kk.top + kk.h / 2 - Math.floor((kk.top + kk.h / 2) / 72) * 72); return c.every((v) => Math.abs(v - 36) <= 1 / m.dpr + 0.01); }), tag + ": all the key centres in a row share one line");
+    if (dsf === 1 && w === 1280) {   // the drawn Call key reaches the Station as C does
+      await page.evaluate(() => { const f = window.__play.frames.station.contentWindow; window.__callSeen = 0; f.addEventListener("keydown", (ev) => { if (ev.code === "KeyC") window.__callSeen++; }); });
+      const cb = await box(page, '#rowStation .k[aria-label="Call"]'); await page.mouse.click(cb[0] + cb[2] / 2, cb[1] + cb[3] / 2); await page.waitForTimeout(300);
+      eq(await page.evaluate(() => window.__callSeen), 1, tag + ": the Station's Call key sends KeyC to the Station");
+    }
     eq(m.rows, { station: dsf === 1.75 ? 2 : 1, companion: dsf === 1 ? 1 : 2 }, tag + ": the rows in each tray (ruling 6.1)");
     for (const d of ["station", "companion"]) { near(m.trays[d][2], m.shells[d][2], tag + ": the " + d + " tray is as wide as its shell", 1 / 64 + 0.01); near(m.trays[d][3], 72 * m.rows[d], tag + ": the " + d + " tray is 72 CSS px a row", 1 / 64 + 0.01); }
     near(m.trays.station[1], m.shells.station[1] + m.shells.station[3], tag + ": the Station tray is joined to its shell", 1 / 64 + 0.01);

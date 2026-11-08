@@ -69,8 +69,9 @@ const KEYS = {
   station: [
     { id: "left", code: "ArrowLeft", name: "Left", cls: "pad", glyph: SVG.left, g: "P", s: 56 }, { id: "up", code: "ArrowUp", name: "Up", cls: "pad", glyph: SVG.up, g: "P", s: 56 },
     { id: "down", code: "ArrowDown", name: "Down", cls: "pad", glyph: SVG.down, g: "P", s: 56 }, { id: "right", code: "ArrowRight", name: "Right", cls: "pad", glyph: SVG.right, g: "P", s: 56 },
-    { id: "home", code: "KeyH", name: "Home", cls: "room home", glyph: MARK("home"), g: "R", s: 56 }, { id: "vivarium", code: "KeyB", name: "Vivarium", cls: "room vivarium", glyph: MARK("vivarium"), g: "R", s: 56 },
-    { id: "research", code: "KeyR", name: "Research", cls: "room research", glyph: MARK("pods"), g: "R", s: 56 }, { id: "library", code: "KeyL", name: "Library", cls: "room library", glyph: MARK("library"), g: "R", s: 56 },
+    { id: "home", code: "KeyH", name: "Home", cls: "room home", glyph: MARK("home"), g: "R", s: 56 }, { id: "research", code: "KeyR", name: "Research", cls: "room research", glyph: MARK("pods"), g: "R", s: 56 },
+    { id: "vivarium", code: "KeyB", name: "Vivarium", cls: "room vivarium", glyph: MARK("vivarium"), g: "R", s: 56 }, { id: "library", code: "KeyL", name: "Library", cls: "room library", glyph: MARK("library"), g: "R", s: 56 },
+    { id: "call", code: "KeyC", name: "Call", cls: "round call", glyph: SVG.call, g: "A", s: 56 },
     { id: "back", code: "Escape", name: "Back", cls: "round back", glyph: SVG.back, g: "A", s: 56 }, { id: "confirm", code: "Enter", name: "Confirm", cls: "round confirm", glyph: SVG.confirm, g: "A", s: 64 },
   ],
   companion: [
