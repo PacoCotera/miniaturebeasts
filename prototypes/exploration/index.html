@@ -1702,10 +1702,12 @@ function freeSpot(key, R, avoid, pred) {
   return null;
 }
 // A generator 6 place's find slots for a pod: the first free one (the slots whose roll came up pod, then the others), so the first pods land where the template put its finds.
-function findSlotFor(lay, key) {
-  for (const s of lay.podSlots || []) { const i = s.y * lay.w + s.x;
-    if (lay.reach[i] && !NOSTAND(lay.tiles[i]) && !occupant(key, s.x, s.y) && !podAt(key, s.x, s.y, true) && !lay.feats.some(f => f.x === s.x && f.y === s.y)) return { x: s.x, y: s.y }; }
-  return null;
+// The first pods of a new world (fa, fb) take the free slot nearest the heart: the walk to the tell and the Call there lift them, so the first walk always holds a pod (C16, loop audit 3.18).
+function findSlotFor(lay, key, pod) {
+  const free = (lay.podSlots || []).filter(s => { const i = s.y * lay.w + s.x;
+    return lay.reach[i] && !NOSTAND(lay.tiles[i]) && !occupant(key, s.x, s.y) && !podAt(key, s.x, s.y, true) && !lay.feats.some(f => f.x === s.x && f.y === s.y); });
+  if (pod && (pod.id === 'fa' || pod.id === 'fb') && lay.heart && free.length) { const h = lay.heart, d = s => Math.hypot(s.x - h.x, s.y - h.y); return free.reduce((b, s) => d(s) < d(b) ? s : b); }
+  return free.length ? { x: free[0].x, y: free[0].y } : null;
 }
 function ensureLive(key) {
   const ex = S.exp; if (ex.live[key]) return ex.live[key];
@@ -1723,7 +1725,7 @@ function ensureLive(key) {
   if (lay.heartPods && lay.heart && !fs(key, 'heart').hp) { setFS(key, 'heart', { hp: 1 }); const kinds = hereKinds();
     for (let i = 0; i < lay.heartPods; i++) { const s = i === 0 ? { x: lay.heart.x, y: lay.heart.y } : freeAround(key, lay.heart.x, lay.heart.y, null); if (!s || !kinds.length) continue;
       S.pods.push({ id: 'n' + (S.nextId++), k: key, x: s.x, y: s.y, sp: R.pick(kinds).sp, h: 1, bur: 1, g: groundName(lay.land, false), how: 'ground' }); } }
-  for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = findSlotFor(lay, key) || freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
+  for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = findSlotFor(lay, key, p) || freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
     if (s) { p.x = s.x; p.y = s.y; if (p.how === 'shed') { fxGlint(s.x, s.y); logEv('A pod of ' + p.of + "'s line"); } } else { S.pods.splice(S.pods.indexOf(p), 1); logEv('A pod had no room in this place and was dropped'); } }
   const nests = lay.feats.filter(f => f.kind === 'e');
   for (const w of S.cr) {
