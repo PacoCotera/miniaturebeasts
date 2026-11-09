@@ -637,8 +637,8 @@ function layout(key) {
 // warm is finished a step a frame behind the transition, the controls live, and past WARM_SIGN_MS a calm line says the land is coming. The pictures live in the place's view
 // (one per template, at most eight), so memory stays flat however far the walk goes.
 const LAND_COMING = 'The Probe is reading the land';
-const WARM_SIGN_MS = 150, WARM_DONE = 3, RIM_STEP_MS = 3;
-const WARM = { queue: [], sig: '', cb: 0, cold: null, steps: 0, hit: 0, miss: 0 };   // hit, miss: the arrival pictures found warm, and built on the spot
+const WARM_SIGN_MS = 150, WARM_DONE = 3, RIM_STEP_MS = 3, WARM_EAGER_MS = 10;
+const WARM = { queue: [], first: null, firstDir: null, sig: '', cb: 0, cold: null, steps: 0, hit: 0, miss: 0 };   // hit, miss: the arrival pictures found warm, and built on the spot
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
 function warmReady(key) {   // nothing left to build for this cell (a generated place, a cave and the test pages have no baked view to warm)
   const lay = layout(key); if (!lay.baked || lay.cave) return true;
@@ -693,6 +693,21 @@ function warmLightLevel(lay) {   // the one clear-light level the whole place ta
   if (ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1); if (gap >= 0 && gap < 3) return null; }
   return overcast ? 1 : 0;
 }
+// The ground window of the walking view's first frame, drawn ahead (the window image with the range haze and the light is the biggest piece of that frame): the camera the entry gives, the veil walkLift
+// will leave there, the clear light, the same haze and patches as drawPatchBody; the view keeps the picture (drawGround's `last`), so a first frame under the same key only blits it. A guess that misses costs only this step.
+function primeWindow(lay, bk, key, dir) {
+  if (!lay.lines) applyLines(lay);   // the range lines (the haze and the blocks) as enterPatch will make them
+  const lvl = warmLightLevel(lay); if (lvl == null) return false;
+  const e = entryPoint(lay, key, dir, true); if (!e) return false;
+  const rows = (S.veil[key] || []).slice(); while (rows.length < lay.h) rows.push(0); liftFlood(lay, rows, e.x, e.y);
+  const vb = veilable(lay), un = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h || ((rows[y] >>> x) & 1) === 1 || !vb[y * lay.w + x];
+  const cam = bk.camera(bk.newCam(), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
+  bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));
+  hazeSync(lay); const hz = hazeLevels(lay); bk.setHaze(hz && hz.lv, hz ? hz.id : '', lay.baked.id);
+  const g = PL6.mk(SCR_W, VIEW_H).getContext('2d'); warmOf(bk).fk = bk.cache.frameKey(motion() ? NOW : 0);
+  bk.drawGround(g, 0, 0, { x: cam.x - bk.ox * 48, y: cam.y - bk.oy * 48, w: SCR_W, h: VIEW_H }, motion() ? NOW : 0, bk.lightFor({ veiled: (x, y) => !un(x, y), foggedFar: () => false, level: () => lvl }, key));
+  return true;
+}
 function warmStep(key, dir) {   // one small step on a cell's pictures; true while more remain. dir: the way the pawn will come in (the arrival picture is warmed too)
   const lay = layout(key); if (!lay.baked || lay.cave) return false;
   const bk = bakedView(lay); if (!bk) return false;
@@ -715,6 +730,7 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
   if (vs && LIT.get(key) !== vs) { LIT.delete(key); LIT.set(key, vs); while (LIT.size > 12) LIT.delete(LIT.keys().next().value);
     const lvl = warmLightLevel(lay); if (lvl != null) { bk.prepareLight(bk.lightFor({ veiled: (x, y) => !unveiled(key, x, y), foggedFar: () => false, level: () => lvl }, key)); return true; } }
   if (dir === undefined) return false;
+  if (vs && WARM.first === key && w.win !== key + '|' + dir) { w.win = key + '|' + dir; if (primeWindow(lay, bk, key, dir)) return true; }   // a place walked before opens on its walking view (no arrival look): its ground window is drawn ahead
   const id = key + '|' + dir; let a = ARR.get(id);
   if (!a) { a = { st: 0, rows: arrivalRows(key, dir) }; if (!a.rows) a.st = 9; ARR.set(id, a); while (ARR.size > 12) ARR.delete(ARR.keys().next().value); }
   if (a.st === 0) { const veil = placeVeil(lay, a.rows); a.wk = wholeKeyOf(lay, veil); if (WHOLE.has(a.wk)) a.st = 9; else { a.veil = veil; a.it = bk.overviewSteps(veil, 0, lay.cut); a.st = 1; } }
@@ -745,7 +761,12 @@ function warmRun(dl) {   // an idle slot: steps while the slot has time, and exa
 function warmTick() {   // each frame: if where the walk stands changed, the list of cells to warm is made again; the work itself runs in idle slots
   if (!S || !S.exp || RT.readOnly) return;
   const ex = S.exp, P = ex.patch, sig = S.phase + '|' + ex.pos + '|' + (P ? P.key + P.dir : ex.face || '');
-  if (sig !== WARM.sig) { WARM.sig = sig; WARM.queue = warmTargets(); }
+  if (sig !== WARM.sig) { WARM.sig = sig; WARM.queue = warmTargets(); WARM.first = S.phase === 'map' && WARM.queue.length ? WARM.queue[0].key : null; WARM.firstDir = WARM.first != null ? WARM.queue[0].dir : null; }   // first: the cell the next Confirm goes down into (the only one whose ground window is drawn ahead: a view keeps one window)
+  if (S.phase === 'map' && WARM.first != null && !document.hidden) {   // the ground's animation frame moves on: the window drawn ahead is drawn again for the frame now showing, so the step finds the one it will ask for
+    const lay = layout(WARM.first), bk = lay.baked && !lay.cave ? bakedView(lay) : null, w = bk && warmOf(bk);
+    if (w && w.win && w.fk !== bk.cache.frameKey(motion() ? NOW : 0)) { w.win = null; try { warmStep(WARM.first, WARM.firstDir); } catch (e) { console.warn('warming a cell failed', e); } } }
+  if (S.phase === 'map' && WARM.queue.length && !document.hidden) {   // on the map nothing else is drawn that costs: the cell the next Confirm goes down into is primed a slice each frame (ground, haze, sprites, arrival picture), not left to idle slots a step may never wait for
+    const t0 = performance.now(); try { while (WARM.queue.length && performance.now() - t0 < WARM_EAGER_MS) if (!warmStep(WARM.queue[0].key, WARM.queue[0].dir)) WARM.queue.shift(); } catch (e) { WARM.queue.shift(); console.warn('warming a cell failed', e); } }
   if (WARM.queue.length && !WARM.cb && !document.hidden) WARM.cb = warmIdle(warmRun);
 }
 // Entered cold: the rest is built a step a frame (about 8 ms of work a frame) while the walk stays live; the arrival look starts when the land is ready.
