@@ -16,10 +16,10 @@ export const FIXTURE = path.resolve(here, "../station/tests/fixtures/save-v8-sch
 export { KEYS, FRAME_MS } from "./driver.mjs";
 
 const v10 = (raw) => { try { return JSON.parse(raw).v >= 10; } catch { return false; } };   // a v10 save goes under a Companion A (the shared key only moves a v8 save, which a page resets)
-export async function boot({ seed = 1, save = null, settings = {}, names = null, face = "native", epoch, test = true, quiet = true } = {}) {
+export async function boot({ seed = 1, save = null, settings = {}, options = null, names = null, face = "native", epoch, test = true, quiet = true } = {}) {
   const raw = save === "fixture" ? null : save == null ? null : typeof save === "string" ? save : JSON.stringify(save);
   const dev = { light: "day", stationTime: "12:00", stationDate: "2026-10-17", ...settings };
-  const shims = install({ seed, epoch, storage: { ...(save === "fixture" ? fixtureStorage() : {}), ...(raw && v10(raw) ? { "mb-companion-A": JSON.stringify({ id: COMPANION_ID, name: "Companion A", slot: "A", at: 1 }), [FIXTURE_KEY]: raw } : raw ? { "mb-save-v8": raw } : {}), "mb-station-dev": JSON.stringify(dev) } });
+  const shims = install({ seed, epoch, storage: { ...(save === "fixture" ? fixtureStorage() : {}), ...(raw && v10(raw) ? { "mb-companion-A": JSON.stringify({ id: COMPANION_ID, name: "Companion A", slot: "A", at: 1 }), [FIXTURE_KEY]: raw } : raw ? { "mb-save-v8": raw } : {}), "mb-station-dev": JSON.stringify(dev), ...(options ? { "mb-options": JSON.stringify(options) } : {}) } });
   if (quiet) { const log = console.log; console.log = (...a) => { if (typeof a[0] === "string" && a[0].startsWith("# ")) return; log(...a); }; }   // the pictures' timing lines
   const real0 = globalThis.process.hrtime.bigint();
   const core = await import("../station/src/core.mjs"), game = await import("../station/src/game.mjs"), S = await import("../station/src/state.mjs"), { clock } = await import("../station/src/pixels.mjs"), { libraryWaiting } = await import("../station/src/pictures.mjs");

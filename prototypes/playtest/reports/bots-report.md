@@ -1,27 +1,54 @@
 # Bot runs
 
-20 games a policy, 30 world turns each, up to 60 keys a turn, economy strict, native face. stub trips: Energy 2-4, Data 4-12, Essence 1-3, 1-3 pods of Loika/Tuikis/Untuva a trip (assumed, not measured).
+6 games a policy, 30 world turns each, up to 800 keys a turn (a policy may name its own), economy strict, native face, Playtest waits on (the Options panel's key, on). stub trips: Energy 2-4, Data 4-12, Essence 1-3, 0-2 pods of Loika/Tuikis/Untuva a trip, about 1 (assumed, not measured).
+
+## The whole loop
+
+A game walks the loop when it reaches every step: read, then grown, then hatched, then cared for, then crossed, then child hatched, then out with the Companion. Minutes of play are keys pressed x 1.5 s (assumed); the Companion's trips and the Station's waits are not play.
+
+| policy | loops finished | at world turn, median (range) | minutes of play, median (range) | keys, median | stopped at (the first step missed) | the Sitting opened / held and begun |
+|---|---|---|---|---|---|---|
+| random | 0/6 | - | - | - | cared for 6 | 0/6 · 0/6 |
+| greedy | 6/6 | 5.5 (5–11) | 14.1 (8.3–41.9) | 564 | - | 2/6 · 2/6 |
+| hoarder | 6/6 | 5.5 (4–9) | 9.1 (6.8–22.3) | 362.5 | - | 1/6 · 1/6 |
+| speedrunner | 6/6 | 5.5 (4–11) | 9.5 (6.7–25.5) | 379.5 | - | 0/6 · 0/6 |
+
+Steps reached, games of 6 (random, greedy, hoarder, speedrunner):
+
+| step | random | greedy | hoarder | speedrunner |
+|---|---|---|---|---|
+| read | 6 | 6 | 6 | 6 |
+| grown | 6 | 6 | 6 | 6 |
+| hatched | 6 | 6 | 6 | 6 |
+| cared for | 0 | 6 | 6 | 6 |
+| crossed | 0 | 6 | 6 | 6 |
+| child hatched | 0 | 6 | 6 | 6 |
+| out with the Companion | 0 | 6 | 6 | 6 |
+
+## Economy and dead ends
 
 STUB: the trips are the stand-in Companion's, so what comes in is an assumption; what the policies do with it, and what the Station does, is measured. The world turn is one trip; between two turns 20 minutes of Station time pass.
 
 | policy | first hatch: turn median (range) · games | first elder | hatched at end (median) | Energy at end, mean (peak) | Data at end | Essence at end | pods held at end (median) · peak | pods never read | dead ends: games (events) | soft locks | crashed |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| random | 3.5 (1–10) · 20/20 | 21.5 (19–28) · 20/20 | 8 | 67.5 (peak 80) | 210.45 (peak 247) | 16.05 (peak 33) | 52.5 · 60 | 94% | 20/20 (270) | 0 | 0 |
-| greedy | 2 (1–2) · 20/20 | 20 (19–20) · 20/20 | 8 | 73.25 (peak 80) | 168.75 (peak 205) | 31.5 (peak 42) | 55.5 · 63 | 87% | 0/20 (0) | 0 | 0 |
-| hoarder | never · 0/20 | never · 0/20 | 0 | 89.25 (peak 96) | 238.1 (peak 271) | 60.25 (peak 73) | 63.5 · 71 | 100% | 0/20 (0) | 0 | 0 |
-| speedrunner | 2 (1–2) · 20/20 | 20 (19–20) · 20/20 | 1 | 87.25 (peak 94) | 235.1 (peak 265) | 59.5 (peak 70) | 62.5 · 70 | 100% | 0/20 (0) | 0 | 0 |
+| random | 2.5 (1–3) · 6/6 | 7.5 (6–8) · 6/6 | 9 | 69.33 (peak 80) | 80.17 (peak 104) | 2.67 (peak 22) | 15.5 · 24 | 46% | 6/6 (141) | 0 | 0 |
+| greedy | 1 (1–3) · 6/6 | 6 (6–8) · 6/6 | 16 | 37.33 (peak 52) | 0 (peak 40) | 1.5 (peak 4) | 14.5 · 20 | 57% | 1/6 (6) | 0 | 0 |
+| hoarder | 1 (1–3) · 6/6 | 6 (6–8) · 6/6 | 15 | 51.67 (peak 63) | 267.33 (peak 289) | 6.33 (peak 24) | 14 · 18 | 100% | 1/6 (6) | 0 | 0 |
+| speedrunner | 1 (1–3) · 6/6 | 6 (6–8) · 6/6 | 14 | 58 (peak 64) | 267 (peak 288) | 7.5 (peak 28) | 13.5 · 19 | 100% | 1/6 (6) | 0 | 0 |
 
-Dead ends (the stuck detector) by place: habitat.rest 81, vivarium.empty 63, create.nothingRead 59, home.home 20, pods.chapter 15, incubator.growing 6, create.shape 5, pods.compare 4, library.all 3, pods.overview 3, library.family.compare 2, cargo.bay 2, pods.collection 2, vivarium.rest 2, library.species.sheet 1, library.species.lit 1, bench.docked 1.
+Pods received a trip (mean): random 1.04, greedy 1.04, hoarder 1.04, speedrunner 1.04.
 
-Share of game-turns holding more than 20 (the old hold): random Energy 71%, Data 92%, Essence 10%; greedy Energy 67%, Data 81%, Essence 20%; hoarder Energy 79%, Data 94%, Essence 66%; speedrunner Energy 76%, Data 93%, Essence 65%.
+Dead ends (the stuck detector) by place: pods.read 50, habitat.rest 37, home.home 28, cargo.bay 11, vivarium.none 9, incubator.empty 6, library.family.close 4, incubator.growing 4, pods.inventory 4, vivarium.wall 2, library.family.compare 2, library.species.sheet 1, library.all 1.
 
-Screens never reached by any bot: sitting.
+Share of game-turns holding more than 20 (the old hold): random Energy 71%, Data 64%, Essence 1%; greedy Energy 61%, Data 4%, Essence 0%; hoarder Energy 65%, Data 92%, Essence 2%; speedrunner Energy 66%, Data 93%, Essence 3%.
+
+Screens never reached by any bot: settings.
 
 Energy, Essence and Data held turn by turn (mean, min, max over the games) are in the JSON under `policies.*.energy|data|essence.byTurn`.
 
 Not measurable yet:
 
-- Crosses beyond the first: crosses a trip, refusals by reason, the forecast against the draw, the line over time, samples: breeding (the breeding design) is not built; the game has one cross from a pod (bot runs 3, 4, 5)
+- Crosses: refusals by reason, the forecast against the draw, the line over time, samples: the bots cross and read the line's depth by the Sitting being earned; the refusals are plates the bots read only for the Vivarium being full and the Essence being short
 - The house and the manager: free places by turn, bonded share, tuck-away and bring-out: the manager is not built (bot run 6)
 - Pods in by source and out by exit (grown, let go, dried), turns held, Freshen: the new Pods screens are not built; only grown and let go through today's screens are counted (bot run 2)
 - Data per trip by source and the Watch share, trips that hit the ceiling: the Companion is a stub, so the acts that pay Data are not played (bot run 1)

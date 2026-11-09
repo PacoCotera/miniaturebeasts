@@ -4,7 +4,7 @@
 import { readPlace, readTileSet } from './format/read.mjs';
 import { PlaceGroundCache, applyLight, lightState, tablesOf, LEVELS, renderHalfView } from './ground.mjs';
 import { BAYER4 } from '../../exploration/src/view.mjs';
-import { cutOut, scaleTo, spriteFrame } from './sprites.mjs';
+import { cutOut, scaleTo, walkFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
 import { stepCamera, newCam, TILE } from './camera.mjs';
 
@@ -105,7 +105,7 @@ export class BakedView {
     for (const p of this.place.props) {
       const cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48), px = cx + this.ox, py = cy + this.oy;
       if (!this.landmarks.has(cy * w + cx) && !visible(px, py)) continue;
-      const s = this.ts.sprites[p.kind], frame = spriteFrame(s, clockMs), lv = level(px, py);
+      const s = this.ts.sprites[p.kind], frame = walkFrame(s, clockMs), lv = level(px, py);
       items.push({ y: this.oy * 48 + p.sortY - 43, d: () => g.drawImage(this.spriteCanvas(p.kind, frame, lv), org.x + p.x - s.anchor48[0], org.y + p.y - s.anchor48[1]) });
     }
     return items;
@@ -117,7 +117,7 @@ export class BakedView {
     const cutAt = cutOut(48, local), draw = (kind, x, y) => {
       const cx = Math.floor(x / 48), cy = Math.floor(y / 48), px = cx + this.ox, py = cy + this.oy;
       if (!visible(px, py)) return;
-      const s = this.ts.sprites[kind], frame = spriteFrame(s, clockMs), lv = level(px, py);
+      const s = this.ts.sprites[kind], frame = walkFrame(s, clockMs), lv = level(px, py);
       const left = x - s.anchor48[0], top = y - s.anchor48[1];
       let cut = null;
       if (cutAt && local.some((q) => q.x > left - 22 && q.x < left + s.w48 + 22 && q.y > top - 22 && q.y < top + s.h48 + 22)) cut = (dx, dy) => cutAt(dx + left, dy + top);
