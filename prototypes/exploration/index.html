@@ -606,7 +606,7 @@ function bakedView(lay) {
 const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS);
 function layout6(key) {   // a generator 6 land cell's place: its template, built through the adapter with the seeded fills; null for a ford (generated) or while the places load
   const t = templateFor(G, S.seed, +key), place = t && PL6.places.get(t.id); if (!place) return null;
-  return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, fill: fillPlace6(G, S.seed, +key, place) });
+  return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, G, fill: fillPlace6(G, S.seed, +key, place) });
 }
 function layout(key) {
   let lay = layoutCache.get(key);
@@ -632,10 +632,25 @@ function warmReady(key) {   // nothing left to build for this cell (a generated 
 const WARM_WHOLE_MAX = 6, WHOLE = new Map();
 const wholeKeyOf = (lay, veil) => lay.key + '|' + veil.join('');
 function wholePut(key, cv) { WHOLE.set(key, cv); while (WHOLE.size > WARM_WHOLE_MAX) WHOLE.delete(WHOLE.keys().next().value); }
+// The world's edges over a baked place (lay.rim: the tiles the cell's cliff lips, faces, stairs, water bands and crossings stand on; src/world.mjs edgeLayer through places/src/edges.mjs):
+// the same 48 px pieces a generated place is built from, laid over the baked ground. The baked ground stays under the pieces (the tile's own lawn layer is left out). null until the 48 px art is in.
+function rimTile(lay, i, fr) {
+  if (!ART48.ready || !layers48(lay, WET48(lay.tiles[i]) ? fr : 0).ok) return null;
+  return tile48(lay, i, fr, false, true);   // the baked ground stays under the piece: a lawn layer of the tile is left out
+}
+// A whole-place picture (24 or 16 px a tile) as a canvas, the rim's tiles laid over it at its scale (veil: the place's veiled cells, or null).
+function wholeCanvas(lay, bk, buf, veil) {
+  const T = bk.wholeSize(), cv = bk.bufCanvas(buf, bk.place.w * T, bk.place.h * T);
+  if (lay.rim && lay.rim.length && ART48.ready) { const cg = cv.getContext('2d'); cg.imageSmoothingEnabled = false;
+    for (const i of lay.rim) { const pb = rimTile(lay, i, 0); if (pb) cg.drawImage(pb.canvas(0, false, false, !!(veil && veil[i])), (i % lay.w) * T, ((i / lay.w) | 0) * T, T, T); }
+    const rs = lay.rimSet || (lay.rimSet = new Set(lay.rim)), k = T / 48;   // the reeds on the rim's shore
+    for (const s2 of layers48(lay, 0).sprites) { const pc = rs.has(s2.ty * lay.w + s2.tx) && ART48.pieces.get(s2.id); if (pc) cg.drawImage(art('p48|' + s2.id, () => { const pb = new PB(pc.w, pc.h); pb.p.set(pc.px); return pb; }).canvas(0), Math.round(s2.x * k), Math.round(s2.y * k), Math.round(pc.w * k), Math.round(pc.h * k)); } }
+  return cv;
+}
 function wholeFor(lay, bk) {
   const veil = placeVeil(lay), key = wholeKeyOf(lay, veil); let cv = WHOLE.get(key);
   if (cv) { WHOLE.delete(key); WHOLE.set(key, cv); WARM.hit++; return cv; }
-  WARM.miss++; const T = bk.wholeSize(); cv = bk.bufCanvas(bk.overviewBuf(veil, 0), bk.place.w * T, bk.place.h * T); wholePut(key, cv); return cv;
+  WARM.miss++; cv = wholeCanvas(lay, bk, bk.overviewBuf(veil, 0, lay.cut), veil); wholePut(key, cv); return cv;
 }
 // Where the pawn will most likely stand on arriving, and the veil the walk's first lift would leave there (null: not a first arrival, so no arrival look to warm).
 function arrivalRows(key, dir) {
@@ -670,9 +685,9 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
   if (dir === undefined) return false;
   const id = key + '|' + dir; let a = ARR.get(id);
   if (!a) { a = { st: 0, rows: arrivalRows(key, dir) }; if (!a.rows) a.st = 9; ARR.set(id, a); while (ARR.size > 12) ARR.delete(ARR.keys().next().value); }
-  if (a.st === 0) { const veil = placeVeil(lay, a.rows); a.wk = wholeKeyOf(lay, veil); if (WHOLE.has(a.wk)) a.st = 9; else { a.it = bk.overviewSteps(veil, 0); a.st = 1; } }
+  if (a.st === 0) { const veil = placeVeil(lay, a.rows); a.wk = wholeKeyOf(lay, veil); if (WHOLE.has(a.wk)) a.st = 9; else { a.veil = veil; a.it = bk.overviewSteps(veil, 0, lay.cut); a.st = 1; } }
   else if (a.st === 1) { const r = a.it.next(); if (r.done) { a.buf = r.value; a.st = 2; } }
-  else if (a.st === 2) { const T2 = bk.wholeSize(); wholePut(a.wk, bk.bufCanvas(a.buf, bk.place.w * T2, bk.place.h * T2)); a.buf = a.it = null; a.st = 9; }
+  else if (a.st === 2) { wholePut(a.wk, wholeCanvas(lay, bk, a.buf, a.veil)); a.buf = a.it = a.veil = null; a.st = 9; }
   return a.st < 9;
 }
 // The cells one step can reach from here, the one faced first and then by how near the pawn is to that edge; on the map, the cell the next Confirm goes down into comes first.
@@ -4390,7 +4405,8 @@ const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.'
 // A trunk's tree kind and crop, and the Shade's moss, are part of a 48 px tile's key; sl is the asleep variant (the tile's light is the fog table).
 const treeCrop = (lay, t) => t.kind === 'fruit' && t.fid && fs(lay.key, t.fid).ripe ? 'fruit' : 'bare';
 function treeSig(lay, i, sl) { const t = lay.trees && lay.trees[i]; return (t ? '|r3' + t.kind + t.seed + treeCrop(lay, t) + (sl ? 'z' : '') : '') + (lay.shade ? '|m' : ''); }
-function tile48Key(lay, i, fr, sl) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : '') + treeSig(lay, i, sl) + L2.key48(lay, i, fr); }
+const isLawn = l => !!l && !l.stand && /^meadow\/ground\/lawn/.test(l.id);   // a tile's leading ground layer, the lawn piece
+function tile48Key(lay, i, fr, sl, bare) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + (bare ? 'bare|' : '') + layerSig(bare && isLawn(t.layers[0]) ? t.layers.slice(1) : t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : '') + treeSig(lay, i, sl) + L2.key48(lay, i, fr); }
 // The tree kinds' sprites (trees48.mjs) as PBs: the trunk stand with its foot-shadow mask, the canopy whole and thinned. One build per kind, seed, crop and state.
 function treeSet(t, crop, sl) {
   return art('r3|' + t.kind + t.seed + crop + (sl ? 'z' : ''), () => { const s = treeSprites(t.kind, { asleep: !!sl, crop, seed: t.seed }, C, DARK), tr = new PB(32, 32), cn = [0, 1].map(chk => { const pb = new PB(88, 76); pb.p.set(s.canopy.p);
@@ -4413,11 +4429,11 @@ function fellsLut(kind) {
 }
 // A 48 px tile composed as an indexed PB: each layer's opaque pixels through its level tone (grass colours only), the 32 px stand-ins, then the dark of
 // a wood place. Identical tiles share one buffer (and one canvas per light level).
-function tile48(lay, i, fr, sl) {
-  const key = tile48Key(lay, i, fr, sl); let pb = ART.get(key); if (pb) return pb;
+function tile48(lay, i, fr, sl, bare) {
+  const key = tile48Key(lay, i, fr, sl, bare); let pb = ART.get(key); if (pb) return pb;
   if (ART48.g48 > 4000) { for (const k of [...ART.keys()]) if (k.startsWith('g48|')) ART.delete(k); ART48.g48 = 0; }
   const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; pb = new PB(48, 48);
-  for (const l of t.layers) {
+  for (const l of bare && isLawn(t.layers[0]) ? t.layers.slice(1) : t.layers) {
     if (l.stand) { const tr = lay.trees && lay.trees[i], ts32 = tr ? treeSet(tr, treeCrop(lay, tr), sl) : null, s32 = ts32 ? ts32.trunk : stand32(l.stand, lay.base);
       if (ts32) for (let k = 0; k < 1024; k++) { const q = (l.dy + (k >> 5)) * 48 + l.dx + (k & 31); if (ts32.shadow[k] && pb.p[q] >= 0) pb.p[q] = DARK[pb.p[q]]; }   // the tree's foot shadow on the ground
       for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }
@@ -5181,9 +5197,9 @@ function drawWhole(t) {
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   let hold = true, cv;
   if (v.kind === 'reveal') {
-    v.clear = v.clear || bk.overviewBuf(null, 0); v.vb = v.vb || bk.overviewBuf(v.veiled, 0);
+    v.clear = v.clear || bk.overviewBuf(null, 0, lay.cut); v.vb = v.vb || bk.overviewBuf(v.veiled, 0, lay.cut);
     const step = motion() ? Math.max(0, Math.min(16, Math.floor((el - (v.zoom ? ZOOM_MS : 0)) / (REVEAL_MS / 16)))) : 16;
-    if (!v.cv || v.step !== step) { v.cv = bk.bufCanvas(step >= 16 ? v.clear : bk.dissolveBuf(v.vb, v.clear, step), W, H); v.step = step; }
+    if (!v.cv || v.step !== step) { v.cv = wholeCanvas(lay, bk, step >= 16 ? v.clear : bk.dissolveBuf(v.vb, v.clear, step), step >= 16 ? null : v.veiled); v.step = step; }
     cv = v.cv; hold = step >= 16;
   } else { v.cv = v.cv || wholeFor(lay, bk); cv = v.cv; }
   // two stepped frames between the whole picture and the walking view's 2× scale, panning toward the explorer's tile (k: how far in, 0 = the whole place)
@@ -5313,6 +5329,10 @@ function drawPatchBody(t) {
   if (bk) bk.setPatches(lay.lines ? lay.lines.patches : [], lay.lines ? lay.lines.id : '');   // a closed opening's path drawn as grass
   if (bk) { hazeSync(lay); const hz = hazeLevels(lay); bk.setHaze(hz && hz.lv, hz ? hz.id : '', lay.baked.id); }   // the range haze, past the Probe's reach
   if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }, lay.key));
+  if (bk && lay.rim) for (const i of lay.rim) {   // the world's edges over the baked ground: lips, faces, stairs, water bands, crossings (rimTile), lit as the props are
+    const tx = i % lay.w, ty = (i / lay.w) | 0; if (tx < r.tx0 || tx > r.tx1 || ty < r.ty0 || ty > r.ty1) continue;
+    const pb = rimTile(lay, i, fr); if (!pb) continue; const L0 = tileLight(tx, ty);
+    g.drawImage(pb.canvas(L0, false, false, L0 !== 3 && !uvAt(tx, ty)), W(tx * ts), H(ty * ts)); }
   if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= lay.w || ty >= lay.h) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
     if (lightAt) { const i = ty * lay.w + tx, L = lvAt(tx, ty);
@@ -5402,7 +5422,8 @@ function drawPatchBody(t) {
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); };
   items.push({ y: RT.pl.y + 5, hero: true, d: heroDraw });
   if (TEST.boom === 1) items.push({ y: -1e9, d: () => { throw new Error('test: a sprite throws'); } });   // test hook only: an item that throws before everything else
-  if (bk) items.push(...bk.propItems(g, bOrg, bclk, (x, y) => see(x, y), (x, y) => tileLight(x, y)));
+  if (bk) items.push(...bk.propItems(g, bOrg, bclk, (x, y) => see(x, y), (x, y) => tileLight(x, y), lay.cut));
+  if (ts === 48 && bk && lay.rim && ART48.ready) { const rs = lay.rimSet || (lay.rimSet = new Set(lay.rim)); for (const s2 of layers48(lay, fr).sprites) if (rs.has(s2.ty * lay.w + s2.tx) && vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) }); }   // the rim's reeds, as a generated place's
   if (ts === 48 && !bk) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; let heroDrawn = false;
   items.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); if (it.hero) heroDrawn = true; } catch (e) { if (RT.err++ < 3) console.error(e); } });   // one sprite that throws costs that sprite, never the explorer or the rest of the frame
@@ -5411,7 +5432,7 @@ function drawPatchBody(t) {
   if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, see, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
-  if (bk) bk.drawCanopy(g, bOrg, bclk, [{ x: RT.pl.rx + 24, y: RT.pl.ry + 24 }].concat(RT.pt ? [{ x: RT.pt.rx + 24, y: RT.pt.ry + 24 }] : []), (x, y) => shown(x, y), (x, y) => tileLight(x, y));   // the crowns, cut away round the explorer and the partner
+  if (bk) bk.drawCanopy(g, bOrg, bclk, [{ x: RT.pl.rx + 24, y: RT.pl.ry + 24 }].concat(RT.pt ? [{ x: RT.pt.rx + 24, y: RT.pt.ry + 24 }] : []), (x, y) => shown(x, y), (x, y) => tileLight(x, y), lay.cut);   // the crowns, cut away round the explorer and the partner
   for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.TRUNK && !bk) {
     const x = i % lay.w, y = (i / lay.w) | 0; if (!vis2(x * ts, y * ts)) continue;
     const under = tokens.some(o => cheb(o, { x, y }) <= 1);

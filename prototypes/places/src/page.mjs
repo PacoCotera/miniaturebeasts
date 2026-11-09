@@ -104,14 +104,15 @@ export class BakedView {
   // ---- the whole place at 24 px (the arrival look, Look over the place, the reveal): C6's half-scale render ----
   // veil: Uint8Array(place.w * place.h), 1 = veiled, or null for the clear place. Returns the indexed buffer (place.w * 24 by place.h * 24).
   wholeSize() { return wholeScale(this.place); }   // 16 for a place larger than 18 x 22, else 24
-  overviewBuf(veil, clockMs = 0) {
-    const it = this.overviewSteps(veil, clockMs);
+  // cut: { props, canopy } the lists a cell shows instead of the template's (the world's edges take trees away and add a wall's clones); none: the template's own.
+  overviewBuf(veil, clockMs = 0, cut = null) {
+    const it = this.overviewSteps(veil, clockMs, cut);
     for (;;) { const r = it.next(); if (r.done) return r.value; }
   }
   // The same picture in steps (a generator: each next() does one step, the last returns the buffer), for a page that builds it in its idle time.
-  overviewSteps(veil, clockMs = 0) {
-    const light = veil && veil.some((v) => v) ? lightState(this.place, { veil }) : null;
-    return renderViewSteps(this.ts, this.place, wholeScale(this.place), { x: 0, y: 0, w: this.place.w * wholeScale(this.place), h: this.place.h * wholeScale(this.place) }, { clockMs, light, nightIndex: this.night, cache: this.half });
+  overviewSteps(veil, clockMs = 0, cut = null) {
+    const light = veil && veil.some((v) => v) ? lightState(this.place, { veil }) : null, place = cut ? { ...this.place, props: cut.props, canopy: cut.canopy } : this.place;
+    return renderViewSteps(this.ts, place, wholeScale(this.place), { x: 0, y: 0, w: this.place.w * wholeScale(this.place), h: this.place.h * wholeScale(this.place) }, { clockMs, light, nightIndex: this.night, cache: this.half });
   }
   // The dissolve: pixel by pixel the veiled picture, until the Bayer threshold `step` (0..16) passes it and the clear one shows.
   dissolveBuf(veiled, clear, step) {
@@ -143,9 +144,9 @@ export class BakedView {
 
   // The props as sorted-list items { y, d } for the page's y-sort: y is on the page's scale (a creature in a tile sorts at tile top + 4).
   // org: { x, y } the screen position of the place's pixel (0, 0). visible(px, py) and level(px, py) take the page's cells.
-  propItems(g, org, clockMs, visible, level) {
+  propItems(g, org, clockMs, visible, level, cut = null) {
     const items = [], { w } = this.place;
-    for (const p of this.place.props) {
+    for (const p of cut ? cut.props : this.place.props) {
       const cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48), px = cx + this.ox, py = cy + this.oy;
       if (!this.landmarks.has(cy * w + cx) && !visible(px, py)) continue;
       const s = this.ts.sprites[p.kind], frame = walkFrame(s, clockMs), lv = level(px, py);
@@ -156,7 +157,7 @@ export class BakedView {
   }
 
   // Pass 4: every crown over everything, dithered away in a disc round each pawn. pawns: [{ x, y }] page pixels of a pawn's centre.
-  drawCanopy(g, org, clockMs, pawns, visible, level) {
+  drawCanopy(g, org, clockMs, pawns, visible, level, cut = null) {
     const local = pawns.map((q) => ({ x: q.x - this.ox * 48, y: q.y - this.oy * 48 }));
     const cutAt = cutOut(48, local), draw = (kind, x, y) => {
       const cx = Math.floor(x / 48), cy = Math.floor(y / 48), px = cx + this.ox, py = cy + this.oy;
@@ -168,8 +169,8 @@ export class BakedView {
       const at = this.hazeLv && this.hazeLv[cy * this.place.w + cx] ? { left, top } : null;
       g.drawImage(this.spriteCanvas(kind, frame, lv, cut, undefined, at), org.x + left, org.y + top);
     };
-    for (const p of this.place.props) { const c = this.ts.sprites[p.kind].canopy; if (c >= 0) draw(c, p.x, p.y); }
-    for (const c of this.place.canopy) draw(c.kind, c.x, c.y);
+    for (const p of cut ? cut.props : this.place.props) { const c = this.ts.sprites[p.kind].canopy; if (c >= 0) draw(c, p.x, p.y); }
+    for (const c of cut ? cut.canopy : this.place.canopy) draw(c.kind, c.x, c.y);
   }
 
   // ---- the camera, in page pixels: half-screen steps (camera.mjs) ----
