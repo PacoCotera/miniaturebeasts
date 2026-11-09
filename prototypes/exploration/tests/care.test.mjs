@@ -436,7 +436,7 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
   assert.match(PAGE, /^const CARE_TEXT = \{$/m);
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
   const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({ PLAYTEST_ON: false }));
-  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "signed"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "signed"], ["c-moment-walk-S01-280x300", 280, 300, "signed"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "signed"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"]),
+  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "signed"], ["c-moment-tend-S02-280x300", 280, 300, "signed"], ["c-moment-tend-S03-280x300", 280, 300, "signed"], ["c-moment-walk-S01-280x300", 280, 300, "signed"], ["c-moment-walk-S02-280x300", 280, 300, "signed"], ["c-moment-walk-S03-280x300", 280, 300, "signed"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"]),
     ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-wade-32", 32, 32, "signed"], ["c-scree-32", 32, 32, "signed"], ["c-bank-32", 32, 32, "signed"], ["c-map-soft-26", 26, 26, "signed"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"], ["c-open-night", 192, 192, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
@@ -1267,15 +1267,9 @@ test("juvenile pictures: no site draws a juvenile in huddle or eat (Tend, the Wa
   assert.ok(seen.length > 1000, "the recorder saw the draw calls");
 });
 
-test("juvenile Loika's Tend paws are drawn 6 source rows (48 px) lower than the adult's, in y only; the adult's, the Tuikis' sparks and the Untuva's ring are unchanged", () => {
-  const pawY = (sp, adult, st) => { const p = X26.world([X26.mib(1, "Kit", sp, adult ? { grownTurn: 0 } : {})], [1]); p.run("S.ui.aId = 1");
-    p.run(`var __p = []; (() => { const real = stagePawY; stagePawY = j => { const y = real(j); __p.push([j, y]); return y; }; })();`);
-    p.run("FX.moment = { id: 1, at: 0 }"); p.draw("active", 700); return plain(p.run("__p")); };
-  assert.deepEqual(pawY(0, true), [[false, 78], [false, 78]], "the adult Loika's two paws: y 78, as before");
-  assert.deepEqual(pawY(0, false), [[true, 126], [true, 126]], "the juvenile Loika's paws: y 78 + 48");
-  assert.equal(p0().run("LOIKA_JUV_PAW_DROP"), 6 * 8, "6 source rows at 8x");
-  for (const sp of [1, 2]) for (const adult of [true, false]) assert.deepEqual(pawY(sp, adult), [], "no paws for species " + sp);
-  assert.match(source("drawActive"), /for \(const px of \[250, 300\]\) blit\(upArt\('paw', ICON\.paw\('blush'\), 3\), px, stagePawY\(st === 'juvenile'\)\)/, "x stays 250 and 300; y by the chip");
+test("the Tend moment draws no code-drawn blush paws on the Loika (the painted stand carries its own look); the Untuva ring and the Tuikis' sparks are unchanged", () => {
+  assert.ok(!/ICON\.paw\('blush'\)/.test(source("drawActive")), "no code-drawn paws on the stage");
+  assert.equal(p0().run("typeof stagePawY"), "undefined", "the paw helper is gone");
   assert.match(source("drawActive"), /R\(225 \+ Math\.round\(Math\.cos\(a\) \* r \* 1\.2\) - 4, 178 \+ Math\.round\(Math\.sin\(a\) \* r \* \.8\) - 4, 8, 8, C\.fog\)/, "the Untuva ring is as it was");
   assert.match(source("drawActive"), /\[\[90, 88\], \[340, 118\], \[120, 248\], \[320, 238\]\]/, "the Tuikis' sparks are as they were");
 });

@@ -1010,10 +1010,10 @@ const CARE_ASSETS = [
   { id: 'c-sprite-other-32', what: 'a mibi of a species the Companion has no art for: the field partner (1×), the partner card and the Lead card (2×), the active mibi stage (8×)', until: 'the species’ HiBit sprite from the art director (X6, one look)', w: 32, h: 32, status: 'placeholder' },
   { id: 'c-mini-other-12', what: 'the 12 px partner mini of such a mibi: the HUD and the field marker', until: 'the species’ HiBit mini from the art director', w: 12, h: 12, status: 'placeholder' },
   { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S01-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
-  { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S02-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (mb-2c call, art-swap-signed-2)', w: 280, h: 300, status: 'signed' },
   { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S03-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
   { id: 'c-moment-walk-S01-280x300', what: 'the Loika walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
-  { id: 'c-moment-walk-S02-280x300', what: 'the Untuva walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-walk-S02-280x300', what: 'the Untuva walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (mb-2c call, art-swap-signed-2)', w: 280, h: 300, status: 'signed' },
   { id: 'c-moment-walk-S03-280x300', what: 'the Tuikis walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
   { id: 'LIP', what: 'the rim of the higher ground at a steep edge in a generator 2 place, by its 8-neighbour mask (lip/<47-blob index>)', until: 'the phase 6 atlas, meadow/lip (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'FACE', what: 'the south face, two rows under the higher ground, with its foot, ends and inner corners (face/face3x2, face2x2, face1x2, corner-out-sw/-se, corner-in-w/-e)', until: 'the phase 6 atlas, meadow/face (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
@@ -5575,7 +5575,6 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
 }
 function drawPartner(sp, pt, x, y, t, stepFr = -1) {
   const m = motion(), fr = m ? Math.floor(t * 2.4) % 2 : 0;
-  blit(RING(), x + 2, y + 23);
   const stepping = stepFr >= 0 && pt.st === 'follow' && !!stepFrames(STEP_ART[sp], false);
   const pose = pt.st === 'sniff' ? 'alert' : 'idle', dy = pt.st === 'dig' ? (m ? Math.floor(t * 12) % 2 * 2 : 0) : pose === 'idle' && !stepping ? fr : 0;
   if (stepping) mibiSprite(sp, 'step', stepFr, x, y + dy - (stepFr === 1 && HOPPER_SP.includes(sp) ? 1 : 0), 1, (pt.face || 1) < 0); else
@@ -6058,7 +6057,7 @@ async function loadOpenArt(after) {
 // The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during a Tend or Walk
 // moment the kind's painted stand takes the token's place, its lowest row on the token's foot row. A kind with no file here (the Untuva until the desk gives a stand that fits) and a juvenile keep the token.
 // Until the files are in (or if they fail) the token plays.
-const MOMENT_ART = { stand: {} }, MOMENT_COLOURS = [], MOMENT_KINDS = ['S01', 'S03'];   // stand[sp]: { w, h, foot, canvas() }
+const MOMENT_ART = { stand: {} }, MOMENT_COLOURS = [], MOMENT_KINDS = ['S01', 'S02', 'S03'];   // stand[sp]: { w, h, foot, canvas() }
 function momentRead(files) {
   const seen = new Set();
   for (const sid of MOMENT_KINDS) { const im = files[`stand-${sid}-280x300`]; if (!im || im.width !== 280 || im.height !== 300) throw new Error('moment stand ' + sid);
@@ -6490,10 +6489,6 @@ function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb 
   for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) { const c = src.p[y * src.w + x]; if (c < 0) continue; for (let j = 0; j < k; j++) for (let i = 0; i < k; i++) pb.p[(y * k + j) * pb.w + x * k + i] = c; }
   return pb; }); }
 const BIG = 8;   // the 32×32 token at 8×: 256×256, inside the 280×300 stage
-// The Loika's blush paws in Tend rest on the adult's crest at y 78. A juvenile Loika stands on the same foot row but its crest is 6 source rows
-// lower (6 × BIG = 48 px), so its paws drop with it; only the paws, only in y. The Tuikis' sparks and the Untuva's ring are not tied to the head.
-const LOIKA_JUV_PAW_DROP = 6 * BIG;
-function stagePawY(juv) { return 78 + (juv ? LOIKA_JUV_PAW_DROP : 0); }
 const bigArt = (sp, pose, fr, juv) => upArt('cr' + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), creatureArt(sp, pose, fr, 1, juv), BIG);
 // The active mibi screen: the Companion's screen between expeditions. The mibi large, its name, stage, ability and status.
 // Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
@@ -6606,7 +6601,6 @@ function drawActive(t) {
   if (stand) blit({ w: stand.w, h: stand.h, canvas: stand.canvas }, x + 128 - (stand.w >> 1), y + tokenFoot(m.sp, false) - stand.foot);
   else mibiSprite(m.sp, pose, fr, x, y, BIG, flip, st === 'juvenile');
   if (h && !h.quiet && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
-  if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, stagePawY(st === 'juvenile'));
   if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
   if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
   if (home) darkenRect(24, 40, 402, 280);
