@@ -2,6 +2,7 @@
 // Pure over indexed buffers (index 0 = transparent), so the node goldens, the sandbox and the firmware run the same logic.
 // A `win` is { x, y, w, h }: the place pixels, at the drawn size (48 or 24), that a buffer covers.
 import { blitTile } from './blit.mjs';
+import { sixteenOf } from './sixteen.mjs';
 import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
 import { BAYER4, eighthGrid, coverE, stormStep } from '../../exploration/src/view.mjs';
 
@@ -26,7 +27,7 @@ export function tileSlot(ts, id, clockMs = 0) {
 // Pass 1: the dual-grid layers, then the decals, into a fresh buffer covering win. Tile (i, j) of a layer sits at (i*size - size/2, j*size - size/2).
 export function renderGround(ts, place, size, win, clockMs = 0) {
   const buf = new Uint8Array(win.w * win.h), half = size >> 1, w1 = place.w + 1;
-  const atlas = size === 48 ? ts.atlas48 : ts.atlas24;
+  const atlas = size === 48 ? ts.atlas48 : size === 24 ? ts.atlas24 : sixteenOf(ts).atlas16;
   const i0 = Math.max(0, Math.floor((win.x + half) / size)), i1 = Math.min(place.w, Math.floor((win.x + win.w - 1 + half) / size));
   const j0 = Math.max(0, Math.floor((win.y + half) / size)), j1 = Math.min(place.h, Math.floor((win.y + win.h - 1 + half) / size));
   for (const layer of place.ground) {
@@ -164,10 +165,13 @@ export function renderView(ts, place, size, win, o = {}) {
   return buf;
 }
 
-// The whole place at 24 px (the reveal, the arrival look, Look over the place): 432 x 528, no camera.
+// The whole place (the reveal, the arrival look, Look over the place, the peek), no camera. A place larger than 18 x 22 is drawn at 16 px (the kit's own
+// pixel, exact thirds of 48: a 24 x 28 place is 384 x 448 and fits the 450 x 532 view); today's 18 x 22 places stay at 24 px (432 x 528).
 export const HALF_W = 432, HALF_H = 528;
+export const wholeScale = (place) => (place.w > 18 || place.h > 22 ? 16 : 24);
 export function renderHalfView(ts, place, o = {}) {
-  return renderView(ts, place, 24, { x: 0, y: 0, w: place.w * 24, h: place.h * 24 }, o);
+  const s = o.size || wholeScale(place);
+  return renderView(ts, place, s, { x: 0, y: 0, w: place.w * s, h: place.h * s }, o);
 }
 
 // Palette cycling at the palette stage: rotates each cycle's range of RGB entries by the steps of the clock. rgb: array of 256 [r, g, b];

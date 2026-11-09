@@ -696,7 +696,7 @@ const TILES = [
   ['warm', 'Warm stone · Energy', 'Warm stone', 'warm', []],
   ['charged', 'Charged stone · Energy', 'Charged stone', 'charged', []],
   ['warned', 'Warned · lightning next', 'Warned', 'warn', []],
-  ['call', 'Call · lifts the veil', 'Call', 'call', []],
+  ['call', 'Call · hold: whole place', 'Call', 'call', []],   // [copy]
   ['shield', 'Shield · each plate a hit', 'Shield', 'shield', []],
   ['shelter', 'Shelter · never trees', 'Shelter', 'shelter', []],
   ['podsopen', 'Pods · the Station opens', 'Pods', 'pod', []],
@@ -1317,6 +1317,7 @@ function viewPress(k) {
     if (k === 'confirm' || k === 'back') { if (motion()) { v.closing = NOW; lockInput(ZOOM_MS); } else endView(); }
     else RT.blink = NOW; }
   else if (v.kind === 'arrival') endView();
+  else if (v.kind === 'peek') return;   // the peek lasts as long as Call is held; other presses are consumed
   else if (k === 'back' || k === 'confirm') endView();
 }
 function revealLine(lay, h) { return h.kind === 'moment' ? momentLine(lay, h) : HEART_TEXT.foundMsg[h.kind]; }
@@ -5014,8 +5015,9 @@ function drawWhole(t) {
   if (!P || P.key !== v.key) { RT.view = null; return; }
   const lay = layout(v.key), bk = bakedView(lay), live = curLive();
   if (!bk) { RT.view = null; return; }
-  const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * 24, H = bk.place.h * 24, ox = (SCR_W - W) >> 1, oy = VIEW_Y + ((VIEW_H - H) >> 1), h = heartOf(v.key);
-  const tp = (x, y) => ({ x: ox + (x - bk.ox) * 24 + 12, y: oy + (y - bk.oy) * 24 + 12 });
+  const T = bk.wholeSize();   // 16 for a place larger than 18 x 22 (the kit's own pixel), 24 for today's places
+  const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * T, H = bk.place.h * T, ox = (SCR_W - W) >> 1, oy = VIEW_Y + ((VIEW_H - H) >> 1), h = heartOf(v.key);
+  const tp = (x, y) => ({ x: ox + (x - bk.ox) * T + T / 2, y: oy + (y - bk.oy) * T + T / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   let hold = true, cv;
   if (v.kind === 'reveal') {
@@ -5025,7 +5027,7 @@ function drawWhole(t) {
     cv = v.cv; hold = step >= 16;
   } else { v.cv = v.cv || bk.bufCanvas(bk.overviewBuf(placeVeil(lay), 0), W, H); cv = v.cv; }
   // two stepped frames between the whole picture and the walking view's 2× scale, panning toward the explorer's tile (k: how far in, 0 = the whole place)
-  const toward = (k) => { const s = 1 + k, a = { x: (P.x - bk.ox + .5) * 24, y: (P.y - bk.oy + .5) * 24 }, sw = SCR_W / s, sh = VIEW_H / s;
+  const toward = (k) => { const s = 1 + k, a = { x: (P.x - bk.ox + .5) * T, y: (P.y - bk.oy + .5) * T }, sw = SCR_W / s, sh = VIEW_H / s;
     const cx = W / 2 + (a.x - W / 2) * k, cy = H / 2 + (a.y - H / 2) * k, sx = Math.max(0, Math.min(W - sw, cx - sw / 2)), sy = Math.max(0, Math.min(H - sh, cy - sh / 2));
     g.drawImage(cv, Math.round(sx), Math.round(sy), Math.round(sw), Math.round(sh), 0, VIEW_Y, SCR_W, VIEW_H); };
   if (v.kind === 'reveal' && v.zoom && motion() && el < ZOOM_MS) { toward(el < ZOOM_STEP_MS ? .75 : .5); return; }   // the zoom out: the arrival look in reverse
@@ -5034,7 +5036,7 @@ function drawWhole(t) {
   if (v.kind === 'arrival' && motion() && el >= ARRIVE_HOLD_MS) {
     const n = Math.floor((el - ARRIVE_HOLD_MS) / ARRIVE_STEP_MS);
     if (n >= 2) { endView(); return; }
-    const k = n ? .75 : .5, s = 1 + k, a = { x: (P.x - bk.ox + .5) * 24, y: (P.y - bk.oy + .5) * 24 }, sw = SCR_W / s, sh = VIEW_H / s;
+    const k = n ? .75 : .5, s = 1 + k, a = { x: (P.x - bk.ox + .5) * T, y: (P.y - bk.oy + .5) * T }, sw = SCR_W / s, sh = VIEW_H / s;
     const cx = W / 2 + (a.x - W / 2) * k, cy = H / 2 + (a.y - H / 2) * k, sx = Math.max(0, Math.min(W - sw, cx - sw / 2)), sy = Math.max(0, Math.min(H - sh, cy - sh / 2));
     g.drawImage(cv, Math.round(sx), Math.round(sy), Math.round(sw), Math.round(sh), 0, VIEW_Y, SCR_W, VIEW_H); return;
   }
@@ -5048,7 +5050,7 @@ function drawWhole(t) {
     const q = tp(h.x, h.y);
     if (h.kind === 'moment') { const pa = up2('paw:cream', ICON.paw('cream')); for (const c of h.clues) { const r = tp(c.x, c.y); blit(pa, r.x - (pa.w >> 1), r.y - (pa.h >> 1)); } }   // 2×: a paw at 1× is 8 px on a 24 px tile
     else if (h.kind === 'stone') blit(ICON.bolt('yellow'), q.x - 6, q.y - 14);
-    else { if (h.kind === 'spring') paintCluePuddles(h, c => { const t = tp(c.x, c.y), sp = puddleSpot(c, .5); return { x: t.x - 12 + sp.x, y: t.y - 12 + sp.y }; }, .5, false);   // the same puddles on the same clue tiles as the walking view
+    else { if (h.kind === 'spring') paintCluePuddles(h, c => { const t = tp(c.x, c.y), sp = puddleSpot(c, T / 48); return { x: t.x - T / 2 + sp.x, y: t.y - T / 2 + sp.y }; }, T / 48, false);   // the same puddles on the same clue tiles as the walking view
       dashRing(q.x, q.y, 9, h.kind === 'spring' ? C.aqua : C.cream); }
   }
   const card = () => { if (!cardUp) return;   // the hold's card (over the explorer's lantern): what is still there to take in dotted rings, then the kicker, the name (3×) and the heart's line
@@ -6715,14 +6717,37 @@ function act(k, mode) {
 const REPEAT_DELAY = 230, REPEAT_EVERY = 150;
 const repeat = { dir: null, timer: null };
 function stopRepeat() { clearTimeout(repeat.timer); repeat.timer = null; repeat.dir = null; }
+// The peek (walk scheme B4 amendment): hold Call PEEK_MS = the whole place on one screen for as long as it is held; release = back to the walk at once.
+// A press under the hold time is Call, fired on release. Free: no action, no Energy, nothing moves (the view draws no creatures and the clock of the game is its actions),
+// nothing is found by looking. Only in a baked place with the walk showing; everywhere else Call fires on press as before. Reduced motion: it is a cut either way.
+const PEEK_MS = 400;   // [tune]
+const peek = { timer: null, on: false, held: false };
+function peekable() {
+  return !RT.readOnly && !RT.notice && S && S.phase === 'patch' && !RT.view && !RT.spot && !RT.notice && !RT.readOnly && !(S.ui && S.ui.swap) && !(S.exp && S.exp.beaconView) && NOW >= FX.lockUntil && !frozenRefuses('call') && lookable();
+}
+function peekStart() {
+  peek.timer = null;
+  if (!peekable()) { peek.on = false; return; }
+  peek.on = true; RT.view = { kind: 'peek', key: S.exp.patch.key, at: performance.now() };
+}
+function peekEnd() { clearTimeout(peek.timer); peek.timer = null; if (peek.on && RT.view && RT.view.kind === 'peek') RT.view = null; peek.on = false; }
 function press(k) {
+  if (k === 'call') {
+    NOW = performance.now();
+    if (peek.held) return;   // a key repeat or a second finger: the hold is already counting
+    if (peekable()) { peek.held = true; peek.on = false; peek.timer = setTimeout(peekStart, PEEK_MS); return; }
+    act(k); return;
+  }
   if (k in DIRS) {
     stopRepeat(); repeat.dir = k; act(k, 'creep');
     const loop = () => { if (repeat.dir !== k) return; act(k, 'walk'); repeat.timer = setTimeout(loop, REPEAT_EVERY); };
     repeat.timer = setTimeout(loop, REPEAT_DELAY);
   } else act(k);
 }
-function release(k) { if (repeat.dir === k) stopRepeat(); }
+function release(k) {
+  if (k === 'call' && peek.held) { const was = peek.on; peek.held = false; peekEnd(); if (!was) act('call'); return; }   // a short press: Call, fired on release
+  if (repeat.dir === k) stopRepeat();
+}
 
 const deviceEl = document.getElementById('device');
 document.querySelectorAll('.key').forEach(btn => {
@@ -6758,7 +6783,7 @@ window.addEventListener('keyup', e => {
   const b = document.querySelector(`.key[data-key="${k}"]`); if (b) b.classList.remove('is-down');
   release(k);
 });
-window.addEventListener('blur', () => { stopRepeat(); document.querySelectorAll('.key.is-down').forEach(b => b.classList.remove('is-down')); });
+window.addEventListener('blur', () => { stopRepeat(); if (peek.held) { peek.held = false; peekEnd(); } document.querySelectorAll('.key.is-down').forEach(b => b.classList.remove('is-down')); });
 
 // ===================== 17. Page: fit, build footer, observer =====================
 const fitEl = document.getElementById('deviceFit');
@@ -7003,7 +7028,7 @@ if (OPT.dev) setObserver(true);   // the Developer tools option opens the Observ
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { enterPatch, leavePatch, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { press, release, PEEK_MS, enterPatch, leavePatch, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, heartOf, springClues, mapPuddleSpots: (c, x, y, cs) => { const m = mapPuddleSpots(c, x, y, cs); return m && { sc: m.sc, spots: springClues(m.h).map(q => m.at(q)) }; }, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, shownTells, fogState, pickTells, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
