@@ -4,7 +4,7 @@
 import { createHash } from 'node:crypto';
 import { crop, scaleNearest } from './png.mjs';
 import { paletteOf, indexImage } from './indexed.mjs';
-import { pairTiles, fullVariants } from './setload.mjs';
+import { pairTiles, fullVariants, sheetTiles, extraEntries } from './setload.mjs';
 import { encodeRle } from './blit.mjs';
 import { FORMAT_VERSION } from './format/write.mjs';
 import { TABLE_NAMES } from './lighttables.mjs';
@@ -72,6 +72,16 @@ export function bakeTileSet(loaded, terrains) {
     if (!valueOf.has(p.lower) || !valueOf.has(p.upper)) throw new Error(`pair ${p.id}: terrain ${!valueOf.has(p.lower) ? p.lower : p.upper} is not in terrain.json`);
     return { lower: valueOf.get(p.lower), upper: valueOf.get(p.upper), mode: p.mode, tiles, fullVariants: fullIds, emptyVariants: [] };
   });
+
+  // the extra entries (the cliff's tall sheets, the scrub's variants, the way-up piece, the reed bank's looks): pairs listed after the main ones, in setload.extraEntries order,
+  // that no layer names: the bake takes their tile ids where the level asks for them
+  const mainFor = new Map(set.pairs.map((p) => [p.id, p]));
+  for (const e of extraEntries(set)) {
+    const main = mainFor.get(e.pair), tilesOf = (sheet) => sheetTiles(loaded, sheet, true);
+    if (e.kind === 'wayup') { pairs.push({ lower: valueOf.get(main.lower), upper: valueOf.get(main.upper), mode: main.mode, tiles: tilesOf(e.sheets[0]).map((img) => tileId([slotFor(img)], 0)), fullVariants: [], emptyVariants: [] }); continue; }
+    const frames = e.sheets.map((sh) => tilesOf(sh).map(slotFor));
+    pairs.push({ lower: valueOf.get(main.lower), upper: valueOf.get(main.upper), mode: main.mode, tiles: Array.from({ length: 16 }, (_, k) => tileId(frames.map((f) => f[k]), e.kind === 'look' ? main.frameMs || 0 : 0)), fullVariants: [], emptyVariants: [] });
+  }
 
   const atlas48 = new Uint8Array(slots48.length * S * S);
   const atlas24 = new Uint8Array(slots48.length * 24 * 24);

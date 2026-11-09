@@ -38,7 +38,7 @@ test('terrain.json has unique ids, values and z', () => {
   }
   for (const r of t.terrains) {
     assert.ok(Number.isInteger(r.value) && r.value >= 1 && r.value <= 15, r.id + ' value 1..15');
-    assert.ok(['walk', 'block', 'wade', 'scree', 'bank', 'deep'].includes(r.play), r.id + ' play');
+    assert.ok(['walk', 'block', 'wade', 'scree', 'bank', 'deep', 'cliff'].includes(r.play), r.id + ' play');
     assert.match(r.editorColour, /^#[0-9a-f]{6}$/);
   }
 });
