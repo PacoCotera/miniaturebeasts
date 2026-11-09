@@ -519,8 +519,24 @@ async function loadPlaces6() {
     PL6.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
     ids.forEach((id, i) => PL6.places.set(id, places[i]));
     PL6.adapt = am.adaptPlace; PL6.View = pm.BakedView; PL6.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+    await loadStoneArt(base);
     PL6.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); }
+}
+// The art desk's standing stone (places/baked/stone-standing/, signed in mibi-art 16dd23ebb) fills the `stone-standing` slot: plain, and charged in two frames, at 48 x 72.
+// Each is a canvas the page blits as it blits a sprite (dx, dy put its 48 x 72 foot where the 32 px stone's foot stood); its colours join the screen's allowed set.
+const STONE_COLOURS = [];
+async function loadStoneArt(base) {
+  if (typeof Image === 'undefined') return;
+  try {
+    const load = n => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = base + 'baked/stone-standing/stone-standing-' + n + '-48x72.png'; });
+    const piece = im => { const c = PL6.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      const d = cg.getImageData(0, 0, c.width, c.height).data, seen = new Set(STONE_COLOURS.map(q => q.join()));
+      for (let i = 0; i < d.length; i += 4) if (d[i + 3] && !seen.has([d[i], d[i + 1], d[i + 2]].join())) { seen.add([d[i], d[i + 1], d[i + 2]].join()); STONE_COLOURS.push([d[i], d[i + 1], d[i + 2]]); }
+      return { w: c.width, h: c.height, dx: (32 - c.width) >> 1, dy: 32 - c.height, canvas: () => c }; };
+    const [p, c1, c2] = (await Promise.all(['plain', 'charged-1', 'charged-2'].map(load))).map(piece);
+    ART_SLOTS['stone-standing'] = { plain: p, charged: [c1, c2] };
+  } catch (e) { console.warn('the standing stone did not load', e); }
 }
 // The view that draws a baked layout: the dev switch's one, or the generator 6 place's own (made on first use; each place's props and ground are cached in it).
 function bakedView(lay) {
@@ -530,7 +546,7 @@ function bakedView(lay) {
   if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk }); PL6.views.set(lay.baked.id, v); }
   return v || null;
 }
-const bakedColours = () => BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb());
+const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS);
 function layout6(key) {   // a generator 6 land cell's place: its template, built through the adapter with the seeded fills; null for a ford (generated) or while the places load
   const t = templateFor(G, S.seed, +key), place = t && PL6.places.get(t.id); if (!place) return null;
   return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, fill: fillPlace6(G, S.seed, +key, place) });
@@ -3489,13 +3505,13 @@ function cupArt(full, cave) {
 // [art] The named empty slot `stone-standing` (place design walk-content B2): the standing storm stone, upright, pale, one seam, 48 x 72 at the place scale (16 x 24 in the
 // kit's pixels). The art desk fills `plain` (dark seam) and `charged` (lit seam, two frames) with PB sprites; until then today's stone draws.
 const ART_SLOTS = { 'stone-standing': { plain: null, charged: [null, null] } };
-function stoneArt(lit, cave, fr, warm) {
-  { const sl = ART_SLOTS['stone-standing']; if (!cave && !warm) { const a = lit ? sl.charged[fr ? 1 : 0] : sl.plain; if (a) return a; } }
+function stoneArt(lit, cave, fr, warm, small) {   // small: the 32 px stone for a sign or a card, never the standing one
+  { const sl = ART_SLOTS['stone-standing']; if (!cave && !warm && !small) { const a = lit ? sl.charged[fr ? 1 : 0] : sl.plain; if (a) return a; } }
   // warm: a 2 px ring on the ground around its foot (amber with yellow dashes; fr 1 = the dim beat of its slow blink)
   // warm: one clean 2 px amber ring on the ground around its foot, pulsing slowly (fr 1 = the dim beat), nothing on the stone
   // warm: a 2 px amber ring fully inside the tile (a 26 px circle) and a 3 px amber dot on the stone's top; the slow
   // pulse swaps the ring between two ambers (fr 1 = the dim beat)
-  if (warm && !lit && !cave) return art('stonew3' + fr, () => { const pb = new PB(32, 32), b = stoneArt(0, cave, 0);
+  if (warm && !lit && !cave) return art('stonew3' + fr, () => { const pb = new PB(32, 32), b = stoneArt(0, cave, 0, 0, 1);
     for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const d = Math.hypot(x + .5 - 16, y + .5 - 16); if (d <= 13 && d > 11) pb.set(x, y, fr ? C.orange : C.amber); }
     pb.blit(b, 0, 0); pb.rect(13, 5, 3, 3, fr ? C.orange : C.amber); pb.set(14, 5, fr ? C.amber : C.yellow);
     return pb; });
@@ -4348,7 +4364,7 @@ const vis = document.getElementById('screen'), vctx = vis.getContext('2d'); vctx
 const RM = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
 const motion = () => !RM.matches;
 const R = (x, y, w, h, c) => { g.fillStyle = HEX[c]; g.fillRect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); };
-const blit = (pb, x, y, rm, flip, chk) => g.drawImage(pb.canvas(rm, flip, chk), Math.round(x), Math.round(y));
+const blit = (pb, x, y, rm, flip, chk) => g.drawImage(pb.canvas(rm, flip, chk), Math.round(x) + (pb.dx || 0), Math.round(y) + (pb.dy || 0));
 function text(str, x, y, col, s, align, tight) {
   s = s || 2; x = Math.round(x); y = Math.round(y);
   const w = tight ? textWT(str, s) : textW(str, s);
@@ -5721,7 +5737,7 @@ function warnPicPlace(x0, y0, a) {
     let art;
     if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
     else if (f.kind === 'u') art = cupArt(cupFull(a.key, f), lay.cave);
-    else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, 0, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0); }
+    else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, 0, 1, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0, 0, 1); }
     blit(art, x0, y0); }
   for (const f of live.tf) if (here(f.x, f.y) && see(f.x, f.y)) blit(ICON.tuft(), x0 + 9, y0 + 16);
   for (const f of live.fr) if (here(f.x, f.y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) blit(FRUIT(), x0 + 10, y0 + 14);
@@ -5747,9 +5763,9 @@ const PIC = {
     if (a && a.c != null) { const ex = S.exp, c = a.c, X = c % MW; g.drawImage(landPatch(c, 32, !S.visited[c] ? 4 : (ex && ex.storm && stormCovers(X)) ? 1 : 0, 0), x, y); ditherFill(x, y, 32, 32, 'yellow', 6); blit(ICON.bolt(), x + 10, y + 8);   // the map's lit cell: dither and bolt, no outline
       if (S.ui.mapFull) { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); } return; }
     onGrass(x, y, () => { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); }); },   // the Probe's tile: flat grass and the outline, no stone
-  stone: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0), x, y)),
-  warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 1), x, y)),
-  charged: (x, y) => onGrass(x, y, () => blit(stoneArt(1, false, 0), x, y)),
+  stone: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 0, 1), x, y)),
+  warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 1, 1), x, y)),
+  charged: (x, y) => onGrass(x, y, () => blit(stoneArt(1, false, 0, 0, 1), x, y)),
   shelter: (x, y) => cen(SHELTER(), x, y),
   pod: (x, y, p) => cen(podArt(POD_SHELL[p && p.g] || 'bone', 1), x, y),
   full: (x, y, ps) => { podSlot(x, y + 6, (ps && ps[0]) || { g: 'meadow' }); podSlot(x + 16, y + 6, (ps && ps[1]) || { g: 'pond' }); },
