@@ -144,7 +144,6 @@ function renderPB(scene, camera, device) {
   for (let i = 0; i < pb.p.length; i++) if (pb.p[i] >= 0 && isShadow(img.data[i * 4], img.data[i * 4 + 1], img.data[i * 4 + 2])) pb.p[i] = -1;
   return pb;
 }
-const blobArt = (w, h) => { const pb = new PB(w, h); pb.ell(w / 2, h / 2, w * 0.4, h * 0.4, C.frostD, { sh: [C.frost, C.frostS] }); pb.outline(() => C.stone); return pb; };
 
 
 // ---------- Trait pictures: a close-up of this pod's mibi around the part the trait names ----------
@@ -195,7 +194,7 @@ const faceless = (scene) => ({ ...scene, nodes: scene.nodes.filter((n) => (n.par
 // chosen so the part fills w×h with the old crop's margins; the placeholder renderer draws it once, at that size.
 export function closeUpPB(frame, genome, traitId, w, h) {
   const pb = pictureGround(w, h), b = builtOf(frame, genome);
-  if (b.error || b.validation.status !== "valid") { pb.blit(blobArt(w, h), 0, 0); return pb; }
+  if (b.error || b.validation.status !== "valid") return pb;   // no body to read: nothing is drawn (the Station's rule)
   const scene = faceless(b.scene), base = fitCamera(scene, "portrait", [300, 310], 0.06), box = partBox(scene, base, partsFor(traitId)), pad = box.whole ? 0.04 : 0.3;
   const bw = Math.max(box.x1 - box.x0, 40) * (1 + pad), bh = Math.max(box.y1 - box.y0, 40) * (1 + pad), s0 = base.scale;
   const center = [base.center[0] + ((box.x0 + box.x1) / 2 - 150) / s0, base.center[1] - ((box.y0 + box.y1) / 2 - 155) / s0];
@@ -206,7 +205,7 @@ export function traitPic(frame, genome, traitId, w = 150, h = 110) {
   const key = "pic" + genomeDigest(genome) + ":" + traitId + ":" + w + "x" + h;
   return art(key, () => {
     const pb = new PB(w, h); pb.rect(0, 0, w, h, PIC_BG); for (let y = h - 24; y < h; y++) for (let x = 0; x < w; x++) if (bay(x, y) < (y - (h - 24)) / 2) pb.set(x, y, C.sand);
-    const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") { pb.blit(blobArt(w, h), 0, 0); return pb; }
+    const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") return pb;   // no body to read: nothing is drawn (the Station's rule)
     const camera = fitCamera(b.scene, "portrait", [300, 310], 0.06), full = art("mbfull" + genomeDigest(genome), () => renderPB(b.scene, camera, "station"));
     const box = partBox(b.scene, camera, partsFor(traitId)), pad = box.whole ? 0.04 : 0.3;
     let bw = Math.max(box.x1 - box.x0, 40), bh = Math.max(box.y1 - box.y0, 40), cx = (box.x0 + box.x1) / 2, cy = (box.y0 + box.y1) / 2;
