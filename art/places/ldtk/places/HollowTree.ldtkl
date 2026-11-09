@@ -183,7 +183,7 @@
 						"mark"
 					],
 					"__smartColor": "#E0457B",
-					"iid": "d995d79c-ca1a-44cf-a9ee-55bee911",
+					"iid": "945895de-442c-46cd-a400-17bca3d3",
 					"width": 16,
 					"height": 16,
 					"defUid": 120,
@@ -268,7 +268,7 @@
 				{
 					"__identifier": "Clue",
 					"__grid": [
-						9,
+						8,
 						24
 					],
 					"__pivot": [
@@ -279,12 +279,12 @@
 						"mark"
 					],
 					"__smartColor": "#F2A33A",
-					"iid": "1c8cf69d-6cb9-45ae-ace5-74bf8baf",
+					"iid": "d74fb4df-e6ca-47ac-a6f7-36bd4672",
 					"width": 16,
 					"height": 16,
 					"defUid": 123,
 					"px": [
-						144,
+						128,
 						384
 					],
 					"fieldInstances": [
@@ -308,15 +308,15 @@
 							"__type": "Array<Point>",
 							"__value": [
 								{
-									"cx": 9,
+									"cx": 8,
 									"cy": 24
 								},
 								{
-									"cx": 10,
-									"cy": 22
+									"cx": 8,
+									"cy": 21
 								},
 								{
-									"cx": 11,
+									"cx": 10,
 									"cy": 19
 								},
 								{
@@ -338,19 +338,19 @@
 								{
 									"id": "V_String",
 									"params": [
-										"9,24"
+										"8,24"
 									]
 								},
 								{
 									"id": "V_String",
 									"params": [
-										"10,22"
+										"8,21"
 									]
 								},
 								{
 									"id": "V_String",
 									"params": [
-										"11,19"
+										"10,19"
 									]
 								},
 								{
@@ -389,7 +389,7 @@
 						"mark"
 					],
 					"__smartColor": "#43B8C9",
-					"iid": "945895de-442c-46cd-a400-17bca3d3",
+					"iid": "64105b18-5495-484b-a468-d93af4ed",
 					"width": 16,
 					"height": 16,
 					"defUid": 126,
@@ -435,8 +435,8 @@
 				{
 					"__identifier": "Find",
 					"__grid": [
-						9,
-						9
+						11,
+						8
 					],
 					"__pivot": [
 						0,
@@ -446,13 +446,13 @@
 						"mark"
 					],
 					"__smartColor": "#43B8C9",
-					"iid": "d74fb4df-e6ca-47ac-a6f7-36bd4672",
+					"iid": "a7077a19-f733-492a-a75f-f83b978c",
 					"width": 16,
 					"height": 16,
 					"defUid": 126,
 					"px": [
-						144,
-						144
+						176,
+						128
 					],
 					"fieldInstances": [
 						{
@@ -499,8 +499,8 @@
 				{
 					"__identifier": "Find",
 					"__grid": [
-						17,
-						23
+						16,
+						21
 					],
 					"__pivot": [
 						0,
@@ -510,13 +510,13 @@
 						"mark"
 					],
 					"__smartColor": "#43B8C9",
-					"iid": "64105b18-5495-484b-a468-d93af4ed",
+					"iid": "1ed3195a-cea6-4a49-ae7a-9b38afb0",
 					"width": 16,
 					"height": 16,
 					"defUid": 126,
 					"px": [
-						272,
-						368
+						256,
+						336
 					],
 					"fieldInstances": [
 						{
@@ -567,7 +567,7 @@
 						"mark"
 					],
 					"__smartColor": "#43B8C9",
-					"iid": "a7077a19-f733-492a-a75f-f83b978c",
+					"iid": "61ca385b-7145-4b28-a171-ba39524e",
 					"width": 16,
 					"height": 16,
 					"defUid": 126,
@@ -631,7 +631,7 @@
 						"mark"
 					],
 					"__smartColor": "#43B8C9",
-					"iid": "1ed3195a-cea6-4a49-ae7a-9b38afb0",
+					"iid": "70ccb4c4-6151-41f7-a125-32e68047",
 					"width": 16,
 					"height": 16,
 					"defUid": 126,
@@ -695,7 +695,7 @@
 						"mark"
 					],
 					"__smartColor": "#43B8C9",
-					"iid": "61ca385b-7145-4b28-a171-ba39524e",
+					"iid": "b3c3d3c5-03f0-42d6-a41c-51e722e6",
 					"width": 16,
 					"height": 16,
 					"defUid": 126,
@@ -748,8 +748,8 @@
 				{
 					"__identifier": "Find",
 					"__grid": [
-						20,
-						4
+						21,
+						3
 					],
 					"__pivot": [
 						0,
@@ -759,13 +759,13 @@
 						"mark"
 					],
 					"__smartColor": "#43B8C9",
-					"iid": "70ccb4c4-6151-41f7-a125-32e68047",
+					"iid": "2b8f7306-db63-43f5-ab36-f4e43b0a",
 					"width": 16,
 					"height": 16,
 					"defUid": 126,
 					"px": [
-						320,
-						64
+						336,
+						48
 					],
 					"fieldInstances": [
 						{
@@ -816,7 +816,7 @@
 						"mark"
 					],
 					"__smartColor": "#43B8C9",
-					"iid": "b3c3d3c5-03f0-42d6-a41c-51e722e6",
+					"iid": "6e869207-7e01-44d4-ae2e-13e5dda9",
 					"width": 16,
 					"height": 16,
 					"defUid": 126,
@@ -880,7 +880,7 @@
 						"mark"
 					],
 					"__smartColor": "#8A6FD1",
-					"iid": "2b8f7306-db63-43f5-ab36-f4e43b0a",
+					"iid": "fb473840-ebcb-4573-ab9f-b6628c24",
 					"width": 16,
 					"height": 16,
 					"defUid": 129,
@@ -935,7 +935,7 @@
 						"mark"
 					],
 					"__smartColor": "#F5F5F5",
-					"iid": "6e869207-7e01-44d4-ae2e-13e5dda9",
+					"iid": "3e3e5741-8e6a-4652-ae96-d5632ec3",
 					"width": 192,
 					"height": 16,
 					"defUid": 131,
@@ -975,7 +975,7 @@
 						"mark"
 					],
 					"__smartColor": "#F5F5F5",
-					"iid": "fb473840-ebcb-4573-ab9f-b6628c24",
+					"iid": "b609f682-65dd-4771-a5b1-786046e7",
 					"width": 224,
 					"height": 16,
 					"defUid": 131,
@@ -1015,7 +1015,7 @@
 						"mark"
 					],
 					"__smartColor": "#F5F5F5",
-					"iid": "3e3e5741-8e6a-4652-ae96-d5632ec3",
+					"iid": "f9011583-087c-4850-a8a8-9761e985",
 					"width": 16,
 					"height": 224,
 					"defUid": 131,
@@ -1055,7 +1055,7 @@
 						"mark"
 					],
 					"__smartColor": "#F5F5F5",
-					"iid": "b609f682-65dd-4771-a5b1-786046e7",
+					"iid": "5bd7adcc-4c5c-4aff-ac30-2bee6b52",
 					"width": 16,
 					"height": 160,
 					"defUid": 131,
@@ -1085,7 +1085,7 @@
 					"__identifier": "CreatureSpawn",
 					"__grid": [
 						2,
-						22
+						15
 					],
 					"__pivot": [
 						0,
@@ -1095,13 +1095,13 @@
 						"mark"
 					],
 					"__smartColor": "#C96A43",
-					"iid": "f9011583-087c-4850-a8a8-9761e985",
+					"iid": "9ececccd-eefb-4bde-af27-4aef0df1",
 					"width": 64,
 					"height": 48,
 					"defUid": 134,
 					"px": [
 						32,
-						352
+						240
 					],
 					"fieldInstances": [
 						{
@@ -1143,7 +1143,7 @@
 						"mark"
 					],
 					"__smartColor": "#C96A43",
-					"iid": "5bd7adcc-4c5c-4aff-ac30-2bee6b52",
+					"iid": "169a6c0e-c66e-4cfd-a641-edec2615",
 					"width": 64,
 					"height": 48,
 					"defUid": 134,
@@ -1191,7 +1191,7 @@
 						"mark"
 					],
 					"__smartColor": "#C96A43",
-					"iid": "9ececccd-eefb-4bde-af27-4aef0df1",
+					"iid": "59918b0f-690c-4ddc-a939-0cedc8b4",
 					"width": 48,
 					"height": 32,
 					"defUid": 134,
@@ -1303,8 +1303,8 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						5,
-						5
+						4,
+						7
 					],
 					"__pivot": [
 						0,
@@ -1319,8 +1319,8 @@
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						80,
-						80
+						64,
+						112
 					],
 					"fieldInstances": [
 						{
@@ -1343,8 +1343,8 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						8,
-						4
+						6,
+						6
 					],
 					"__pivot": [
 						0,
@@ -1359,8 +1359,8 @@
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						128,
-						64
+						96,
+						96
 					],
 					"fieldInstances": [
 						{
@@ -1383,8 +1383,8 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						4,
-						8
+						5,
+						9
 					],
 					"__pivot": [
 						0,
@@ -1399,8 +1399,8 @@
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						64,
-						128
+						80,
+						144
 					],
 					"fieldInstances": [
 						{
@@ -1423,8 +1423,8 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						10,
-						7
+						7,
+						8
 					],
 					"__pivot": [
 						0,
@@ -1439,8 +1439,8 @@
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						160,
-						112
+						112,
+						128
 					],
 					"fieldInstances": [
 						{
@@ -1463,7 +1463,7 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						7,
+						8,
 						10
 					],
 					"__pivot": [
@@ -1479,7 +1479,7 @@
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						112,
+						128,
 						160
 					],
 					"fieldInstances": [
@@ -1503,8 +1503,8 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						12,
-						5
+						17,
+						6
 					],
 					"__pivot": [
 						0,
@@ -1519,7 +1519,47 @@
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						192,
+						272,
+						96
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						19,
+						5
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "afabc9ac-a030-46df-a004-47cebf27",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						304,
 						80
 					],
 					"fieldInstances": [
@@ -1544,47 +1584,7 @@
 					"__identifier": "Prop",
 					"__grid": [
 						18,
-						5
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "afabc9ac-a030-46df-a004-47cebf27",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						288,
-						80
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tree-autumn",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tree-autumn"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						20,
-						7
+						8
 					],
 					"__pivot": [
 						0,
@@ -1599,8 +1599,8 @@
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						320,
-						112
+						288,
+						128
 					],
 					"fieldInstances": [
 						{
@@ -1623,8 +1623,8 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						17,
-						9
+						4,
+						22
 					],
 					"__pivot": [
 						0,
@@ -1639,48 +1639,8 @@
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						272,
-						144
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tree-broad",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tree-broad"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						20,
-						10
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "ad65a6ef-bce0-49bc-ad0d-28cd1c88",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						320,
-						160
+						64,
+						352
 					],
 					"fieldInstances": [
 						{
@@ -1703,8 +1663,48 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
+						6,
+						23
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "ad65a6ef-bce0-49bc-ad0d-28cd1c88",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						96,
+						368
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
 						5,
-						16
+						24
 					],
 					"__pivot": [
 						0,
@@ -1720,47 +1720,7 @@
 					"defUid": 111,
 					"px": [
 						80,
-						256
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tree-broad",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tree-broad"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						9,
-						17
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "7d1d6c29-cd49-4b3a-ad75-ea4b6da2",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						144,
-						272
+						384
 					],
 					"fieldInstances": [
 						{
@@ -1784,7 +1744,7 @@
 					"__identifier": "Prop",
 					"__grid": [
 						3,
-						21
+						25
 					],
 					"__pivot": [
 						0,
@@ -1794,13 +1754,13 @@
 						"prop"
 					],
 					"__smartColor": "#4B7A3A",
-					"iid": "f4e90b6a-a4bc-4c59-a490-8d4885c6",
+					"iid": "7d1d6c29-cd49-4b3a-ad75-ea4b6da2",
 					"width": 16,
 					"height": 16,
 					"defUid": 111,
 					"px": [
 						48,
-						336
+						400
 					],
 					"fieldInstances": [
 						{
@@ -1823,8 +1783,48 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						7,
+						10,
 						22
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "f4e90b6a-a4bc-4c59-a490-8d4885c6",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						160,
+						352
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						12,
+						23
 					],
 					"__pivot": [
 						0,
@@ -1839,8 +1839,8 @@
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						112,
-						352
+						192,
+						368
 					],
 					"fieldInstances": [
 						{
@@ -1864,7 +1864,7 @@
 					"__identifier": "Prop",
 					"__grid": [
 						11,
-						21
+						25
 					],
 					"__pivot": [
 						0,
@@ -1880,6 +1880,46 @@
 					"defUid": 111,
 					"px": [
 						176,
+						400
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-broad",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-broad"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						19,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "3181fd95-81ae-4ca6-a1da-7bb7a0a4",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						304,
 						336
 					],
 					"fieldInstances": [
@@ -1903,8 +1943,8 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						12,
-						24
+						20,
+						23
 					],
 					"__pivot": [
 						0,
@@ -1914,13 +1954,13 @@
 						"prop"
 					],
 					"__smartColor": "#4B7A3A",
-					"iid": "3181fd95-81ae-4ca6-a1da-7bb7a0a4",
+					"iid": "a94d9cd6-5921-4dc5-a8f5-1eb4b8c8",
 					"width": 16,
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						192,
-						384
+						320,
+						368
 					],
 					"fieldInstances": [
 						{
@@ -1943,8 +1983,8 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						19,
-						22
+						18,
+						24
 					],
 					"__pivot": [
 						0,
@@ -1954,13 +1994,93 @@
 						"prop"
 					],
 					"__smartColor": "#4B7A3A",
-					"iid": "a94d9cd6-5921-4dc5-a8f5-1eb4b8c8",
+					"iid": "ec44bbd7-fbbf-4ea4-abec-3db55b67",
 					"width": 16,
 					"height": 16,
 					"defUid": 111,
 					"px": [
-						304,
-						352
+						288,
+						384
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						11,
+						4
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "79056210-698a-4f43-a95d-e03209e2",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						176,
+						64
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.PropKind",
+							"__value": "tree-autumn",
+							"__tile": null,
+							"defUid": 110,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tree-autumn"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Prop",
+					"__grid": [
+						8,
+						17
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"prop"
+					],
+					"__smartColor": "#4B7A3A",
+					"iid": "bbfc8111-0c28-4022-ac54-ff33ac81",
+					"width": 16,
+					"height": 16,
+					"defUid": 111,
+					"px": [
+						128,
+						272
 					],
 					"fieldInstances": [
 						{
@@ -1984,7 +2104,7 @@
 					"__identifier": "Prop",
 					"__grid": [
 						20,
-						20
+						11
 					],
 					"__pivot": [
 						0,
@@ -1994,53 +2114,13 @@
 						"prop"
 					],
 					"__smartColor": "#4B7A3A",
-					"iid": "ec44bbd7-fbbf-4ea4-abec-3db55b67",
+					"iid": "33c82052-e39b-4141-a36f-a230c4a5",
 					"width": 16,
 					"height": 16,
 					"defUid": 111,
 					"px": [
 						320,
-						320
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tree-autumn",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tree-autumn"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						19,
-						12
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "79056210-698a-4f43-a95d-e03209e2",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						304,
-						192
+						176
 					],
 					"fieldInstances": [
 						{
@@ -2074,7 +2154,7 @@
 						"prop"
 					],
 					"__smartColor": "#4B7A3A",
-					"iid": "bbfc8111-0c28-4022-ac54-ff33ac81",
+					"iid": "76bf3f53-863a-4220-a666-c1316743",
 					"width": 16,
 					"height": 16,
 					"defUid": 111,
@@ -2114,7 +2194,7 @@
 						"prop"
 					],
 					"__smartColor": "#4B7A3A",
-					"iid": "33c82052-e39b-4141-a36f-a230c4a5",
+					"iid": "d995d79c-ca1a-44cf-a9ee-55bee911",
 					"width": 16,
 					"height": 16,
 					"defUid": 111,
@@ -2154,7 +2234,7 @@
 						"prop"
 					],
 					"__smartColor": "#4B7A3A",
-					"iid": "76bf3f53-863a-4220-a666-c1316743",
+					"iid": "1c8cf69d-6cb9-45ae-ace5-74bf8baf",
 					"width": 16,
 					"height": 16,
 					"defUid": 111,
@@ -2220,7 +2300,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "169a6c0e-c66e-4cfd-a641-edec2615",
+					"iid": "e6523148-d6d6-4e7b-a6aa-af6a772f",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2260,7 +2340,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "59918b0f-690c-4ddc-a939-0cedc8b4",
+					"iid": "29495049-7975-4f5a-a9a1-ce6b19ce",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2289,46 +2369,6 @@
 				{
 					"__identifier": "Decal",
 					"__grid": [
-						20,
-						23
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "e6523148-d6d6-4e7b-a6aa-af6a772f",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						322,
-						367
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "tuft-lean",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tuft-lean"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
 						18,
 						18
 					],
@@ -2340,7 +2380,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "29495049-7975-4f5a-a9a1-ce6b19ce",
+					"iid": "a114ef8a-50e8-4079-a0bc-716831f2",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2380,7 +2420,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "a114ef8a-50e8-4079-a0bc-716831f2",
+					"iid": "e40c0e8b-f387-4158-a3b3-9069d490",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2420,7 +2460,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "e40c0e8b-f387-4158-a3b3-9069d490",
+					"iid": "9ab6c2b4-8b3b-4fe7-ab0f-40d6aa32",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2460,7 +2500,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "9ab6c2b4-8b3b-4fe7-ab0f-40d6aa32",
+					"iid": "ddade1b5-2dda-40c6-ae06-5fd74cd0",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2500,7 +2540,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "ddade1b5-2dda-40c6-ae06-5fd74cd0",
+					"iid": "557980f6-054d-41e5-a521-02d464f4",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2540,7 +2580,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "557980f6-054d-41e5-a521-02d464f4",
+					"iid": "98709ff7-a7eb-42c4-a818-21d50793",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2580,7 +2620,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "98709ff7-a7eb-42c4-a818-21d50793",
+					"iid": "25314630-15b6-4363-a589-c452b60e",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2620,7 +2660,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "25314630-15b6-4363-a589-c452b60e",
+					"iid": "68286531-b854-4442-a880-e35358ad",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2660,7 +2700,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "68286531-b854-4442-a880-e35358ad",
+					"iid": "dff40472-8fc7-4561-af9b-865070d1",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2700,7 +2740,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "dff40472-8fc7-4561-af9b-865070d1",
+					"iid": "22eb2373-3266-4640-a292-a551136f",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2740,7 +2780,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "22eb2373-3266-4640-a292-a551136f",
+					"iid": "85c1bbbc-7646-48ef-a61a-39de953c",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2780,7 +2820,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "85c1bbbc-7646-48ef-a61a-39de953c",
+					"iid": "c8b8dabd-18e5-49ce-a911-58df37db",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2820,7 +2860,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "c8b8dabd-18e5-49ce-a911-58df37db",
+					"iid": "408479fe-f058-4aed-a02b-fbdc4fff",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -2860,53 +2900,13 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "408479fe-f058-4aed-a02b-fbdc4fff",
+					"iid": "837b98ff-92f6-4bcc-a323-1addf29e",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
 					"px": [
 						125,
 						175
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-buttercup",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"flower-buttercup"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
-						6,
-						6
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "837b98ff-92f6-4bcc-a323-1addf29e",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						98,
-						94
 					],
 					"fieldInstances": [
 						{
@@ -4009,8 +4009,8 @@
 				{
 					"__identifier": "Decal",
 					"__grid": [
-						4,
-						22
+						2,
+						24
 					],
 					"__pivot": [
 						0,
@@ -4025,21 +4025,21 @@
 					"height": 16,
 					"defUid": 113,
 					"px": [
-						67,
-						352
+						29,
+						384
 					],
 					"fieldInstances": [
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-buttercup",
+							"__value": "flower-daisy",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-buttercup"
+										"flower-daisy"
 									]
 								}
 							]
@@ -4609,126 +4609,6 @@
 				{
 					"__identifier": "Decal",
 					"__grid": [
-						17,
-						6
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "0e61bec2-be35-4fb1-ae09-40a09f3e",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						270,
-						95
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-buttercup",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"flower-buttercup"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
-						19,
-						6
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "5158ddc3-60d4-4090-a100-5fa141dd",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						304,
-						93
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-buttercup",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"flower-buttercup"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
-						17,
-						8
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "b42f760c-a4b4-433f-a487-f42ec3aa",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						272,
-						125
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-daisy-pair",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"flower-daisy-pair"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
 						21,
 						25
 					],
@@ -4740,7 +4620,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "f726950d-4752-441e-a77f-132f6649",
+					"iid": "0e61bec2-be35-4fb1-ae09-40a09f3e",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -4780,7 +4660,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "6ef2344e-1ec5-453d-ae99-b62c7e6d",
+					"iid": "5158ddc3-60d4-4090-a100-5fa141dd",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -4820,7 +4700,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "b1e9534f-c164-461c-a190-d52d210c",
+					"iid": "b42f760c-a4b4-433f-a487-f42ec3aa",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -4860,7 +4740,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "3ea9f988-2f2e-46bb-af02-77aacf87",
+					"iid": "f726950d-4752-441e-a77f-132f6649",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -4900,7 +4780,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "81a11889-d1cd-479a-a1f9-96ab7225",
+					"iid": "6ef2344e-1ec5-453d-ae99-b62c7e6d",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -4940,7 +4820,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "f96cb7ca-a940-48b9-a914-39a88a49",
+					"iid": "b1e9534f-c164-461c-a190-d52d210c",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -4980,7 +4860,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "3c63d6cb-4bdf-4998-ac0b-58a92ce8",
+					"iid": "3ea9f988-2f2e-46bb-af02-77aacf87",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5020,7 +4900,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "f30e8af4-e393-4827-a367-09160289",
+					"iid": "81a11889-d1cd-479a-a1f9-96ab7225",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5060,7 +4940,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "3605a9f5-8631-4906-a65e-2817a528",
+					"iid": "f96cb7ca-a940-48b9-a914-39a88a49",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5072,14 +4952,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "tuft-fan",
+							"__value": "flower-daisy",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"tuft-fan"
+										"flower-daisy"
 									]
 								}
 							]
@@ -5100,7 +4980,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "add14936-5da5-4a25-ad78-cb14bd4c",
+					"iid": "3c63d6cb-4bdf-4998-ac0b-58a92ce8",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5140,7 +5020,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "f0c86837-0043-4b04-a06f-ea155feb",
+					"iid": "f30e8af4-e393-4827-a367-09160289",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5180,7 +5060,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "7d890e70-6e0d-4ba3-ade1-8c920e66",
+					"iid": "3605a9f5-8631-4906-a65e-2817a528",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5220,7 +5100,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "c0802d71-10ac-4c82-a0d8-ab93b104",
+					"iid": "add14936-5da5-4a25-ad78-cb14bd4c",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5260,7 +5140,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "384bccb2-e81f-4da1-a7f3-4e90c929",
+					"iid": "f0c86837-0043-4b04-a06f-ea155feb",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5300,7 +5180,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "7b42ebb3-8abe-4e80-aaea-6d916bc7",
+					"iid": "7d890e70-6e0d-4ba3-ade1-8c920e66",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5340,7 +5220,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "de1983fc-ce9e-412f-ae72-021eed94",
+					"iid": "c0802d71-10ac-4c82-a0d8-ab93b104",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5380,7 +5260,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "2110a2fd-713c-420e-a169-211f9033",
+					"iid": "384bccb2-e81f-4da1-a7f3-4e90c929",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5420,7 +5300,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "98dc423e-48b0-432d-a883-c41ca857",
+					"iid": "7b42ebb3-8abe-4e80-aaea-6d916bc7",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5460,7 +5340,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "dbd3613f-eb4e-440c-ab7a-e31d4af6",
+					"iid": "de1983fc-ce9e-412f-ae72-021eed94",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5500,7 +5380,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "68940778-5918-44ab-a8ec-859af971",
+					"iid": "2110a2fd-713c-420e-a169-211f9033",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5540,7 +5420,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "ab8b2679-fbb7-458a-abe3-a49b9c0f",
+					"iid": "98dc423e-48b0-432d-a883-c41ca857",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5580,7 +5460,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "2356c5ba-d32a-46a9-a2fe-4798b434",
+					"iid": "dbd3613f-eb4e-440c-ab7a-e31d4af6",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5620,7 +5500,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "664de4bb-75c9-4788-a5f5-669956d2",
+					"iid": "68940778-5918-44ab-a8ec-859af971",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5660,7 +5540,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "75506124-65d5-4e57-a5a8-df4684cb",
+					"iid": "ab8b2679-fbb7-458a-abe3-a49b9c0f",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5700,7 +5580,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "b8478025-0873-4f36-a89f-fe47276a",
+					"iid": "2356c5ba-d32a-46a9-a2fe-4798b434",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5740,7 +5620,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "30131f66-dfe6-4055-afba-a1443f8e",
+					"iid": "664de4bb-75c9-4788-a5f5-669956d2",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5780,7 +5660,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "730a3e67-8285-4134-a2b1-c045e22d",
+					"iid": "75506124-65d5-4e57-a5a8-df4684cb",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5820,7 +5700,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "ffcae4a0-f04f-41d3-a023-62c290a8",
+					"iid": "b8478025-0873-4f36-a89f-fe47276a",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5860,7 +5740,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "42c203a1-92ee-42b2-a31a-81c33346",
+					"iid": "30131f66-dfe6-4055-afba-a1443f8e",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5900,7 +5780,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "ba8da2e2-6a61-43d1-aa35-24c04b6a",
+					"iid": "730a3e67-8285-4134-a2b1-c045e22d",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5940,7 +5820,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "fd84c1e3-0d00-44b0-ad2c-43c1ee09",
+					"iid": "ffcae4a0-f04f-41d3-a023-62c290a8",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -5980,7 +5860,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "605b5a2c-50e0-475f-a0b3-d84e6fd6",
+					"iid": "42c203a1-92ee-42b2-a31a-81c33346",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6020,7 +5900,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "a352792d-f37e-483e-a3aa-f74f1275",
+					"iid": "ba8da2e2-6a61-43d1-aa35-24c04b6a",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6060,7 +5940,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "1b1e186e-caf1-495d-aac5-9a4c2a99",
+					"iid": "fd84c1e3-0d00-44b0-ad2c-43c1ee09",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6100,53 +5980,13 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "5e15376f-6d90-4a3c-adbc-b94dcd37",
+					"iid": "605b5a2c-50e0-475f-a0b3-d84e6fd6",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
 					"px": [
 						63,
 						160
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "tuft-fan",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tuft-fan"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
-						5,
-						24
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "ead5dda8-db5a-4adb-ab2e-5bca7bb3",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						80,
-						381
 					],
 					"fieldInstances": [
 						{
@@ -6180,7 +6020,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "2dccfca9-7df9-4bba-ae25-7acb1e51",
+					"iid": "a352792d-f37e-483e-a3aa-f74f1275",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6220,7 +6060,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "a5989bea-556c-4cd9-a540-1dc83675",
+					"iid": "1b1e186e-caf1-495d-aac5-9a4c2a99",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6260,7 +6100,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "e88fbaeb-f80a-4db8-a837-3cc9d914",
+					"iid": "5e15376f-6d90-4a3c-adbc-b94dcd37",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6300,7 +6140,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "9f3a6f14-8fbf-4c47-af92-ed36aeb5",
+					"iid": "ead5dda8-db5a-4adb-ab2e-5bca7bb3",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6340,7 +6180,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "e2318e15-325d-4d26-a28a-0c375154",
+					"iid": "2dccfca9-7df9-4bba-ae25-7acb1e51",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6380,7 +6220,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "59fd2d56-09d0-4e45-a9a4-af346978",
+					"iid": "a5989bea-556c-4cd9-a540-1dc83675",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6420,7 +6260,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "9cf44c57-ac6f-4f24-ac9b-ce350c17",
+					"iid": "e88fbaeb-f80a-4db8-a837-3cc9d914",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6460,7 +6300,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "29b4f290-1a39-4fc3-aa0d-70b2ba92",
+					"iid": "9f3a6f14-8fbf-4c47-af92-ed36aeb5",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6500,7 +6340,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "6cac1191-bcd8-40a2-ad04-8fb35d30",
+					"iid": "e2318e15-325d-4d26-a28a-0c375154",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6540,7 +6380,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "e477b0d2-944b-41c1-a41f-32b07554",
+					"iid": "59fd2d56-09d0-4e45-a9a4-af346978",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6580,7 +6420,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "276ecfd3-36ea-42a0-a716-51b117f3",
+					"iid": "9cf44c57-ac6f-4f24-ac9b-ce350c17",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6609,6 +6449,46 @@
 				{
 					"__identifier": "Decal",
 					"__grid": [
+						20,
+						4
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "29b4f290-1a39-4fc3-aa0d-70b2ba92",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						317,
+						62
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft-fan",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft-fan"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
 						18,
 						3
 					],
@@ -6620,7 +6500,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "8a45681c-7aca-454f-aa9d-e63e99c0",
+					"iid": "6cac1191-bcd8-40a2-ad04-8fb35d30",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6649,6 +6529,86 @@
 				{
 					"__identifier": "Decal",
 					"__grid": [
+						10,
+						7
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "e477b0d2-944b-41c1-a41f-32b07554",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						162,
+						109
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft-small",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						20,
+						20
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "276ecfd3-36ea-42a0-a716-51b117f3",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						317,
+						318
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft-lean",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft-lean"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
 						18,
 						19
 					],
@@ -6660,7 +6620,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "cd3c871d-1d68-462e-ad95-053f3c5f",
+					"iid": "8a45681c-7aca-454f-aa9d-e63e99c0",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6700,7 +6660,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "4508265e-f4db-474d-a4af-a83c5483",
+					"iid": "cd3c871d-1d68-462e-ad95-053f3c5f",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6740,7 +6700,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "87ff455f-977a-482c-a7a6-c73df722",
+					"iid": "4508265e-f4db-474d-a4af-a83c5483",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6780,7 +6740,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "14bfeb98-0544-48cb-a518-69baa59d",
+					"iid": "87ff455f-977a-482c-a7a6-c73df722",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6820,7 +6780,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "57b70a99-a7e3-49aa-a80f-88bb483b",
+					"iid": "14bfeb98-0544-48cb-a518-69baa59d",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6849,46 +6809,6 @@
 				{
 					"__identifier": "Decal",
 					"__grid": [
-						8,
-						24
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "cf82a9da-7f56-4ac9-af2a-2bb8605f",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						127,
-						382
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "tuft-small",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tuft-small"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
 						2,
 						10
 					],
@@ -6900,7 +6820,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "1279c8db-21f5-4ba8-a221-4ab902fe",
+					"iid": "57b70a99-a7e3-49aa-a80f-88bb483b",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -6940,53 +6860,13 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "217c4544-1201-4277-a1d4-c36630f7",
+					"iid": "cf82a9da-7f56-4ac9-af2a-2bb8605f",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
 					"px": [
 						142,
 						223
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "tuft-small",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tuft-small"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
-						6,
-						23
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "64736445-b49f-4356-a4cb-e267d396",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						94,
-						365
 					],
 					"fieldInstances": [
 						{
@@ -7020,7 +6900,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "dc3f0386-8c12-4475-abe6-8564ebba",
+					"iid": "1279c8db-21f5-4ba8-a221-4ab902fe",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7060,7 +6940,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "1f362287-2eb1-4554-aedd-a4658e58",
+					"iid": "217c4544-1201-4277-a1d4-c36630f7",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7100,7 +6980,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "abf6c8c0-9c7b-45f3-ac4f-46e23cd4",
+					"iid": "64736445-b49f-4356-a4cb-e267d396",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7140,7 +7020,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "eeede7c1-3f1a-46d2-af46-65e3df72",
+					"iid": "dc3f0386-8c12-4475-abe6-8564ebba",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7180,7 +7060,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "66b98702-168d-47f1-a661-08e0f796",
+					"iid": "1f362287-2eb1-4554-aedd-a4658e58",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7220,7 +7100,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "a9b0a603-b92b-48d0-a958-27e19a35",
+					"iid": "abf6c8c0-9c7b-45f3-ac4f-46e23cd4",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7260,7 +7140,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "0c873e4c-fd0b-4b7f-acdf-bc6e1c02",
+					"iid": "eeede7c1-3f1a-46d2-af46-65e3df72",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7300,7 +7180,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "4f7e5d4d-9faa-4c5e-afd6-db6fbea1",
+					"iid": "66b98702-168d-47f1-a661-08e0f796",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7340,7 +7220,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "c749fc8e-771d-4d7d-a6f1-7e6cd6c5",
+					"iid": "a9b0a603-b92b-48d0-a958-27e19a35",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7380,7 +7260,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "0a411b8f-19bc-4e5c-a9e8-9d6d7963",
+					"iid": "0c873e4c-fd0b-4b7f-acdf-bc6e1c02",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7420,7 +7300,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "9701c1c8-8786-4efb-a75a-3fea27de",
+					"iid": "4f7e5d4d-9faa-4c5e-afd6-db6fbea1",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7460,7 +7340,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "d9f8e0c9-2a25-4fda-aa51-5eebca7d",
+					"iid": "c749fc8e-771d-4d7d-a6f1-7e6cd6c5",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7500,7 +7380,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "51c4800a-0198-40f9-a16c-01e8e2a1",
+					"iid": "0a411b8f-19bc-4e5c-a9e8-9d6d7963",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7540,7 +7420,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "94bb9f0b-a436-41d8-a463-20e98540",
+					"iid": "9701c1c8-8786-4efb-a75a-3fea27de",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7580,7 +7460,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "4b665334-3beb-4067-abbe-d1565ae1",
+					"iid": "d9f8e0c9-2a25-4fda-aa51-5eebca7d",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7620,7 +7500,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "8e5d7235-de89-4146-aeb5-f057fd80",
+					"iid": "51c4800a-0198-40f9-a16c-01e8e2a1",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7660,7 +7540,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "06291176-b5fc-4265-a5d0-935415a4",
+					"iid": "94bb9f0b-a436-41d8-a463-20e98540",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7700,13 +7580,53 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "49203077-589b-4344-a8c7-b255b842",
+					"iid": "4b665334-3beb-4067-abbe-d1565ae1",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
 					"px": [
 						207,
 						317
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft-lean",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft-lean"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						11,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "8e5d7235-de89-4146-aeb5-f057fd80",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						174,
+						336
 					],
 					"fieldInstances": [
 						{
@@ -7740,7 +7660,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "d5e0d6b0-c665-43e3-a639-54d266be",
+					"iid": "06291176-b5fc-4265-a5d0-935415a4",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7780,7 +7700,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "18d7f5b1-6904-44c2-a930-73d3095c",
+					"iid": "49203077-589b-4344-a8c7-b255b842",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7820,7 +7740,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "90a394f2-4077-45e1-a04b-16d02180",
+					"iid": "d5e0d6b0-c665-43e3-a639-54d266be",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7860,7 +7780,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "d39ab3f3-e315-46c0-a342-35d1c41f",
+					"iid": "18d7f5b1-6904-44c2-a930-73d3095c",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7900,7 +7820,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "36714c3c-26f6-496f-a6c9-ca5e45ec",
+					"iid": "90a394f2-4077-45e1-a04b-16d02180",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7940,7 +7860,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "79686b3d-c994-4a4e-a9c0-e95fe88b",
+					"iid": "d39ab3f3-e315-46c0-a342-35d1c41f",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -7980,7 +7900,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "f1340a7e-a107-4b6d-a0db-8c5c00af",
+					"iid": "36714c3c-26f6-496f-a6c9-ca5e45ec",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8020,7 +7940,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "342b297f-43a6-4c4c-a3d2-ab5da34d",
+					"iid": "79686b3d-c994-4a4e-a9c0-e95fe88b",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8060,7 +7980,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "c0ebcfb8-b170-4ceb-a144-4dda51c9",
+					"iid": "f1340a7e-a107-4b6d-a0db-8c5c00af",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8100,7 +8020,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "03e2eeb9-540f-4dca-a43b-6cdbf467",
+					"iid": "342b297f-43a6-4c4c-a3d2-ab5da34d",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8140,7 +8060,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "7bae8dfa-2b82-4ee9-ab56-0fd80c8b",
+					"iid": "c0ebcfb8-b170-4ceb-a144-4dda51c9",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8180,7 +8100,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "bea5acfb-ce20-4fc8-ae4d-2ed9af2a",
+					"iid": "03e2eeb9-540f-4dca-a43b-6cdbf467",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8220,7 +8140,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "cda82964-be2c-4697-ae00-a786dd23",
+					"iid": "7bae8dfa-2b82-4ee9-ab56-0fd80c8b",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8260,13 +8180,53 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "109f4865-60cb-4776-a0f7-c6877fc2",
+					"iid": "bea5acfb-ce20-4fc8-ae4d-2ed9af2a",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
 					"px": [
 						81,
 						317
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft-lean",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft-lean"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						3,
+						21
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "cda82964-be2c-4697-ae00-a786dd23",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						48,
+						336
 					],
 					"fieldInstances": [
 						{
@@ -8300,7 +8260,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "886ae7a6-383e-4895-a812-698497e6",
+					"iid": "109f4865-60cb-4776-a0f7-c6877fc2",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8340,7 +8300,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "cb6206a7-dadd-4974-ab09-88853a84",
+					"iid": "886ae7a6-383e-4895-a812-698497e6",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8380,53 +8340,13 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "5822ace0-48a7-4a13-a87b-2b02e8ff",
+					"iid": "cb6206a7-dadd-4974-ab09-88853a84",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
 					"px": [
 						141,
 						112
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "tuft-fan",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tuft-fan"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
-						7,
-						8
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "9b19cbe1-eb46-4af2-ab72-4a038b9e",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						115,
-						127
 					],
 					"fieldInstances": [
 						{
@@ -8460,7 +8380,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "12e56b22-c2b9-4c11-a28c-ed00a3c2",
+					"iid": "5822ace0-48a7-4a13-a87b-2b02e8ff",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8500,7 +8420,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "55dc8a23-6557-4cf0-a584-0c014661",
+					"iid": "9b19cbe1-eb46-4af2-ab72-4a038b9e",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8540,7 +8460,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "b8b3226c-a937-4f9f-a90b-a08ec82e",
+					"iid": "12e56b22-c2b9-4c11-a28c-ed00a3c2",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8580,7 +8500,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "fbaa416d-4bd6-407e-ac02-bf8f6acd",
+					"iid": "55dc8a23-6557-4cf0-a584-0c014661",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8620,7 +8540,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "7375e0ae-2349-419d-a31d-628c82f1",
+					"iid": "b8b3226c-a937-4f9f-a90b-a08ec82e",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8660,7 +8580,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "b66cffaf-c5e8-427c-a614-818d258f",
+					"iid": "fbaa416d-4bd6-407e-ac02-bf8f6acd",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8700,7 +8620,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "432da5e8-33b2-431b-a386-240ad40a",
+					"iid": "7375e0ae-2349-419d-a31d-628c82f1",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8740,7 +8660,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "8624c4e9-d651-43fa-a67d-430b76a9",
+					"iid": "b66cffaf-c5e8-427c-a614-818d258f",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8780,7 +8700,7 @@
 						"decal"
 					],
 					"__smartColor": "#B9A66B",
-					"iid": "fdf0642a-adc4-4519-ad97-e6088ecd",
+					"iid": "432da5e8-33b2-431b-a386-240ad40a",
 					"width": 16,
 					"height": 16,
 					"defUid": 113,
@@ -8800,6 +8720,46 @@
 									"id": "V_String",
 									"params": [
 										"tuft-small"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"__identifier": "Decal",
+					"__grid": [
+						18,
+						23
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [
+						"decal"
+					],
+					"__smartColor": "#B9A66B",
+					"iid": "8624c4e9-d651-43fa-a67d-430b76a9",
+					"width": 16,
+					"height": 16,
+					"defUid": 113,
+					"px": [
+						291,
+						365
+					],
+					"fieldInstances": [
+						{
+							"__identifier": "kind",
+							"__type": "LocalEnum.DecalKind",
+							"__value": "tuft-fan",
+							"__tile": null,
+							"defUid": 112,
+							"realEditorValues": [
+								{
+									"id": "V_String",
+									"params": [
+										"tuft-fan"
 									]
 								}
 							]

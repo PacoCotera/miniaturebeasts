@@ -81,7 +81,7 @@ test("?place=Test_AllCases draws the baked place (the dev switch, padded to 28 x
   } finally { await browser.close(); server.close(); }
 });
 
-test("the page without ?place= plays generator 6: the cell's template, baked, 18 x 22 with its own fills, the page's colours clean", { skip }, async (t) => {
+test("the page without ?place= plays generator 6: the cell's template, baked, 24 x 28 with its own fills, the page's colours clean", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
   const { server, url } = await serve();
   try {
@@ -89,7 +89,7 @@ test("the page without ?place= plays generator 6: the cell's template, baked, 18
     const st = await page.evaluate(() => { const m = window.__mb, lay = m.layout(m.S.exp.patch.key); return { gen: m.G.gen, baked: lay.baked, w: lay.w, h: lay.h, name: lay.name, heart: lay.heart && lay.heart.kind, ts: m.RT.ts, off: m.offPalette().bad }; });
     assert.equal(st.gen, 6);
     assert.ok(["Reedpool", "SplitStone", "HollowTree", "Windstep"].includes(st.baked.id.replace("~x", "")), st.baked.id);
-    assert.deepEqual([st.w, st.h, st.baked.ox, st.baked.oy], (st.baked.id.startsWith("Windstep") || st.baked.id.startsWith("HollowTree")) ? [24, 28, 0, 0] : [18, 22, 0, 0]);
+    assert.deepEqual([st.w, st.h, st.baked.ox, st.baked.oy], [24, 28, 0, 0]);
     assert.ok(st.name && ["moment", "nest", "stone", "spring"].includes(st.heart), JSON.stringify(st));
     assert.equal(st.ts, 48);
     assert.deepEqual(st.off, []);

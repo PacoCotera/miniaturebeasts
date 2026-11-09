@@ -16,8 +16,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 10588,
-      "sha256": "aeb7c4b319829b2b415d05031bb65ee0ac3625e7b8965ed3df4ab592701d07ee"
+      "bytes": 10572,
+      "sha256": "e7297a4ae6aaa18ce19a8baf68571c1ffca78aba82634eb21a953491de1465c3"
     },
     {
       "id": "HollowTree~x",
@@ -26,48 +26,48 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "HollowTree",
-      "bytes": 10600,
-      "sha256": "b0f33dd9f9cd8261f6f0b541ba4b2fc47a565058904e844359a54726f501f449"
+      "bytes": 10584,
+      "sha256": "0e76b34cb4142956682809084983b3143d00c4d6ef9229441c41e82589c203f5"
     },
     {
       "id": "Reedpool",
       "file": "Reedpool.mbplace",
-      "w": 18,
-      "h": 22,
+      "w": 24,
+      "h": 28,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 6312,
-      "sha256": "b260fbc2f5889988d533f6ffb1db31a4747aace74b8976ec7d9e7acbf63ee8fb"
+      "bytes": 12956,
+      "sha256": "91831f879864681dad2cbb640600ca7125407bda63a612331832ba839db858b7"
     },
     {
       "id": "Reedpool~x",
       "file": "Reedpool~x.mbplace",
-      "w": 18,
-      "h": 22,
+      "w": 24,
+      "h": 28,
       "set": "ninja-test",
       "mirrorOf": "Reedpool",
-      "bytes": 6320,
-      "sha256": "4139ca258360b49f7a33429c3b59cd3ecdfb7fffc9cb96c7418bb31ac8135332"
+      "bytes": 12964,
+      "sha256": "0bf3a7c8b61b04ba5ce7987558854da98cf6e1defe3042fdddbc4cbb54e46e36"
     },
     {
       "id": "SplitStone",
       "file": "SplitStone.mbplace",
-      "w": 18,
-      "h": 22,
+      "w": 24,
+      "h": 28,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 5768,
-      "sha256": "9b2651ae9c3d4442c443effa709a06b1a2b381b3c65e5c2258c0b161945dba0f"
+      "bytes": 9508,
+      "sha256": "a857d92b4fc2bf6f301bff91b8a9b9b1c1053ef237e38a7a1f9057ef5ba7902e"
     },
     {
       "id": "SplitStone~x",
       "file": "SplitStone~x.mbplace",
-      "w": 18,
-      "h": 22,
+      "w": 24,
+      "h": 28,
       "set": "ninja-test",
       "mirrorOf": "SplitStone",
-      "bytes": 5780,
-      "sha256": "6391283d68e145404399e804121891b055b5aa6f410e544ea16908a6e4d54c97"
+      "bytes": 9520,
+      "sha256": "cdeaca28df2ba9ec43ed310743081eddb881f092d15a160babbb49577bf9ed2a"
     },
     {
       "id": "Test_AllCases",
