@@ -140,7 +140,8 @@ export function crossBuild(m, spec, pods) {
   const context = !b ? "" : overview ? fill(spec.bottomLine.context.overview, { a: a.name, b: b.name, species }) : fill(spec.bottomLine.context.chapter, { chapter: open.name, a: a.name, b: b.name });
   const first = fc?.firstMissing ? sideWord(Sg, fc.firstMissing.parents, fc.firstMissing.chapterName, fc.firstMissing.names) : null;
   const notice = !b ? Sg.noPartner : block ? block : first ?? (fc && fc.kinship > 0 ? S.kinshipWord(fc.kinship) : null);
-  const line = !b || block ? { ok: null, subject: context, back: a.name, need: notice }
+  const line = b && S.vivFull(st, settings) && block === "the Vivarium is full" ? { ok: spec.bottomLine.verb, price: S.priceText(cost.e, cost.d, cost.s), dim: true, subject: context, back: a.name, need: notice }   // no place: Cross them stays on screen dimmed and ✓ opens the full panel (B2, the one rule)
+    : !b || block ? { ok: null, subject: context, back: a.name, need: notice }
     : { ok: spec.bottomLine.verb, price: S.priceText(cost.e, cost.d, cost.s), ...(can ? {} : { dim: true, short: S.shortIcons(st, cost.e, cost.d, cost.s) }), subject: context, back: a.name, need: notice };
   const props = { state: overview || !fc || !b ? "overview" : "chapter", regions, focus: { cur: "partner", targets: [{ id: "partner", group: "partner" }] } };
   return { props, line, requests, nav: { a: a.id, b: b?.id ?? null, partners: partners.map((p) => p.id), last: chapters.length, state: at, block, can } };

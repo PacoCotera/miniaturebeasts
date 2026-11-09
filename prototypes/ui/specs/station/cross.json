@@ -3,6 +3,7 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#cross-the-splice",
  "frame": "frame.json",
+ "overlays": { "panel": { "spec": "panel.json", "id": "full", "from": "✓ Cross them while no place is free (the Vivarium is full): the full panel, Add the room | Make room (dead ends B2)", "closes": "Not now, ← or a room key: Cross as before, nothing spent; Add the room stays here and the plate says when it is ready; Make room goes to the Vivarium's whole" } },
  "wireframes": ["design/style-guide/station-layouts/09a-cross-overview.png", "design/style-guide/station-layouts/09b-cross-chapter.png"],
  "note": "The one home of the Cross numbers, transcribed from station-layouts.md (Cross: the splice). Rectangles are [x, y, w, h] in screen pixels; a pair [x, w] is a column. Decided by the experts with the owner's leave (2026-10-09): the splice is the body of the Cross screen and replaces the seed table; ✓ stays Cross them. The owner's rule (2026-10-09): the Cross shows \"only what you have read, and an indication of everything missing\" (forecastOf's kind `missing`, built on main at bf225c82). The build draws only rectangles, text and 1 px lines; every other mark is a master placed 1:1 (masters).",
  "states": {

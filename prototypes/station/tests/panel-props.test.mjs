@@ -3,6 +3,7 @@
 // the panel never disagree); its intents (intents/panel.mjs, create.mjs) open on ✓ Grow it, spend nothing on ←, a room key or a dimmed card, and land where the card said: both jump modes end to end.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it (the full panel names the room it adds)
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -199,4 +200,17 @@ test("the reset notice (panel.json reset, the copywriter's words): one card with
   assert.ok(![v.overlay.regions.title, v.cards[0].name, v.cards[0].line].some((t) => /\d|save|version/i.test(t)), "no numbers, no talk of versions or saves");
   const e0 = st.e; INTENTS.panel.intent(h, "card.begin", "confirm"); assert.equal(h.ui.panel, null, "closed"); assert.equal(st.e, e0, "nothing spent");
   openPanel(h, "home", "reset"); INTENTS.panel.intent(h, "card.begin", "back"); assert.equal(h.ui.panel, null, "← closes it too");
+});
+
+test("B2 the full panel: title, the two cards (Add the room with the room's settling, Make room on the empty pedestal), Add dimmed short of Energy, Make room | Not now at the last room; the words fit; the props validate", () => {
+  const st = world(), h = host(st); h.ui.screen = "incubator"; h.settings = { ...settings, rooms: 0 }; st.rooms = 1;
+  const at = (e) => { st.e = e; h.ui.panel = { screen: "incubator", id: "full", focus: "" }; return panelBuild({ st, sv: h.sv, settings: h.settings, ui: h.ui, jump: h.settings.jump, now: T0 }, panelSpec, frameSpec, podsSpec); };
+  let v = at(99); assert.equal(v.overlay.regions.title, "The Vivarium is full"); assert.deepEqual(v.cards.map((c) => [c.id, c.name, c.dim]), [["add", "Add the room", false], ["make", "Make room", false]]);
+  assert.match(v.cards[0].line, /settles · ready next turn$/); assert.equal(v.cards[1].line, "Return a mibi to the wild"); assert.equal(v.cards[1].picture, "", "the Not now pedestal: no picture of its own"); assert.equal(v.overlay.focus.cur, "card.add");
+  assert.deepEqual(validate(v.overlay, schema, schema), [], "validates against panel.props.json");
+  v = at(1); assert.deepEqual([v.cards[0].dim, v.overlay.focus.cur, v.line.need === "", v.line.dim], [true, "card.make", true, undefined], "short of Energy: Add dimmed, the ring on Make room"); h.ui.panel = { screen: "incubator", id: "full", focus: "card.add" };
+  v = panelBuild({ st, sv: h.sv, settings: h.settings, ui: h.ui, now: T0 }, panelSpec, frameSpec, podsSpec); assert.deepEqual([v.line.ok, v.line.dim, /need/.test(v.line.need)], ["Add the room", true, true], "focused: the verb dimmed and the notice says what is short");
+  h.settings = { ...settings, rooms: 0, roomRules: { max: 1 } }; v = at(99); assert.deepEqual(v.cards.map((c) => c.id), ["make", "keep"]); assert.equal(v.cards[1].name, "Not now");
+  for (const c of [panelSpec.strings.full.cards.add.line.replace("{Room}", "Boulders"), panelSpec.strings.full.cards.make.line, panelSpec.strings.full.cards.keep.line]) assert.ok(measure(c, 16) <= 208 || measure(c, 16) <= P.limits[2].text, `${c} (${measure(c, 16)} px)`);
+  assert.ok(measure(panelSpec.strings.full.title, 20) <= P.title.rect[2]);
 });

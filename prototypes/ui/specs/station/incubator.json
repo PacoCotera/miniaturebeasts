@@ -463,9 +463,9 @@
  },
  "bottomLine": {
   "empty": {
-   "action": "✓ Choose a pod when the rack holds a pod and a place is free; else no ✓ cap",
+   "action": "✓ Choose a pod, always drawn; dimmed when it cannot act (the Vivarium full, a room settling, no pods at home), and ✓ then never silent: full opens the full panel (panel.json full), settling plays strings.settling and strings.settlingPlateLine, no pods plays strings.noPodsPlate",
    "context": "strings.empty",
-   "notice": "none, but strings.full when no place is free (the Vivarium is full)",
+   "notice": "strings.full when no place is free (the Vivarium is full); strings.settling while a new room settles; strings.noPods when the rack is empty; else none",
    "back": "Home"
   },
   "growing": {
@@ -521,7 +521,13 @@
   "empty": "ready for a new bud",
   "full": "The Vivarium is full",
   "fullPlate": ["The Vivarium is full", "Return a mibi to make room", "or add a room"],
-  "fullPlateNote": "the rooms words C9, C10, C17: the notice and the three plate lines; the third line shows only while fewer than four rooms can be bought (state.mjs fullWords)",
+  "noPods": "No pods at home",
+  "noPodsPlate": ["No pods at home", "The Companion brings them from a walk"],
+  "settling": "{Room} settles · ready next turn",
+  "settlingMany": "{Room} settles · ready in {n} turns",
+  "settlingPlateLine": "It takes mibis after the next walk",
+  "settlingPlateManyLine": "It takes mibis after {n} more walks",
+  "fullPlateNote":"the rooms words C9, C10, C17: the notice and the three plate lines; the third line shows only while fewer than four rooms can be bought (state.mjs fullWords)",
   "painting": "its painting is on its way",
   "offline": "waiting for a signal",
   "hatchRibbon": "{Name}, a young {Species}",

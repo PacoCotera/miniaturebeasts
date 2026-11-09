@@ -37,6 +37,22 @@
    "hash": "f0a853e7",
    "png": "incubator-cross-growing.png"
   },
+  "incubator-empty-full": {
+   "hash": "81c72b8c",
+   "png": "incubator-empty-full.png"
+  },
+  "incubator-empty-nopods": {
+   "hash": "ac587988",
+   "png": "incubator-empty-nopods.png"
+  },
+  "incubator-empty-settling": {
+   "hash": "03d3862c",
+   "png": "incubator-empty-settling.png"
+  },
+  "incubator-panel-full": {
+   "hash": "e08acf27",
+   "png": "incubator-panel-full.png"
+  },
   "incubator-incubate-100": {
    "hash": "09daab45",
    "png": "incubator-incubate-100.png"
@@ -98,7 +114,7 @@
    "png": "incubator-panel-grownow-200.png"
   },
   "incubator-full-pressed": {
-   "hash": "89bd237b",
+   "hash": "4a8522e9",
    "png": "incubator-full-pressed.png"
   },
   "incubator-hatch-skip": {

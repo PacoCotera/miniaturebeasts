@@ -8,7 +8,7 @@ import { plateMasterReq, kPct } from "../stamplook.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { slotAt as slot } from "./requests.mjs";
-import { choosePod } from "../intents/incubator.mjs";
+import { emptyBlock, settlingNotice } from "../intents/incubator.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { relitJuvenile } from "./hatch-props.mjs";
 import { RECIPE } from "../relight.mjs";
@@ -21,6 +21,8 @@ export function knownChapters(st, B, settings, now) {
   const fr = frameOf(B.species);
   return fr.chapters.filter((c) => (B.read || []).includes(c.id) || (B.kind !== "cross" && S.budChapterKnown(st, c.id, settings, now))).map((c) => c.id);
 }
+// The notice when no place is free: the Vivarium is full, or a new room settles (B1).
+const noPlaceNotice = (st, settings, Sg) => (S.placeBlock(st, settings) === "settling" ? settlingNotice(st, settings, Sg) : Sg.full);
 export function incubatorBuild(m, spec, pods) {
   const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = reqOf(requests), R = spec.regions, hatch = m.ui.inc.hatch ?? null;
   const signed = "signed (art director, the capsule masters list)", gs = !hatch && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null, B = st.bud ?? gs?.bud ?? null;   // gs: Hatch now is playing (it has already hatched the bud, so gs.bud is the bud that was in the chamber): the screen shows the bud as it was until the event ends, then the hatch on one refresh
@@ -60,19 +62,23 @@ export function incubatorBuild(m, spec, pods) {
 
   // the bottom line (incubator.json bottomLine): Choose a pod, Hatch now, Open; the context, the notice, back Home
   const Sg = spec.strings; let line = { ok: null, back: Sg.back, subject: "", need: null };
-  if (state === "empty") { line = { ok: choosePod({ st, settings }) !== null ? Sg.choose : null, back: Sg.back, subject: Sg.empty, need: S.vivFull(st, settings) ? Sg.full : null }; }
+  if (state === "empty") {   // ✓ Choose a pod is always drawn (dead ends B1): dimmed when it cannot act, and the notice says why (full, a room settling, no pods at home)
+    const why = emptyBlock(st, settings);
+    line = { ok: Sg.choose, back: Sg.back, subject: Sg.empty, need: why === "full" ? Sg.full : why === "settling" ? settlingNotice(st, settings, Sg) : why === "noPods" ? Sg.noPods : null };
+    if (why) line.dim = true;
+  }
   else if (state === "growing" || state === "ready") {
     const subject = kind === "cross" ? fill(Sg.crossBud, { A: S.cap(B.parents?.[0]?.name ?? ""), B: S.cap(B.parents?.[1]?.name ?? "") }) : fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) });
     const bud = kind === "cross" && B.parents?.length !== 2 ? fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) }) : subject;
     if (state === "growing") {
       const c = gs ? gs.cost : S.instantGrowCost(st, settings, now), key = S.canPay(st, c.e, c.d, c.s) || gs ? null : { short: S.shortIcons(st, c.e, c.d, c.s) };
       line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: gs ? gs.need : null };   // the context is the bud; "ready in about {n} min" is the left wall's (regions.readyIn); while Hatch now plays the notice is the one the bud had (the snapshot)
-      if (S.vivFull(st, settings) && !gs) { line.dim = true; line.need = Sg.full; }   // the Vivarium is full: Hatch now is held (the house rule), the notice says why, ✓ plays the plate
+      if (S.vivFull(st, settings) && !gs) { line.dim = true; line.need = noPlaceNotice(st, settings, Sg); }   // the Vivarium is full: Hatch now is held (the house rule), the notice says why, ✓ plays the plate
       else if (key) { line.dim = true; line.short = key.short; line.need = fill(pods.strings.needMore, { icons: key.short }); }
       else if (!gs && m.frame) line.need = warnWords(st, m.sv, settings, m.frame, c, { key: "growNow" }) ?? line.need;
     } else {
       const full = S.vivFull(st, settings);
-      line = { ok: Sg.open, back: Sg.back, subject: bud, need: full ? Sg.full : null }; if (full) line.dim = true;   // a dimmed cap while the Vivarium is full: ✓ plays the plate
+      line = { ok: Sg.open, back: Sg.back, subject: bud, need: full ? noPlaceNotice(st, settings, Sg) : null }; if (full) line.dim = true;   // a dimmed cap while the Vivarium is full: ✓ plays the plate
     }
   } else line = { ok: state === "hatch" && m.ui.skip ? Sg.skip : null, back: Sg.back, subject: waitingWhy === "offline" ? Sg.offline : waitingWhy === "waiting" ? Sg.painting : "", need: null };   // ✓ Skip only while the hatch's skippable hold runs (the host's ui.skip)
   const props = { state, regions, focus: { cur: "room", targets: [] } };

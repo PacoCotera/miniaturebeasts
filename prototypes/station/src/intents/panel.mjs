@@ -2,7 +2,7 @@
 // spent), ← closes with nothing spent, a room key closes with nothing spent and then acts as everywhere (intents/frame.mjs); the pad's moves are the face's and arrive as `focus`. The way out of a panel is its last card.
 // The panel is one component for every commitment: a screen opens it with `openPanel(h, screen, id)` and `doCard` below answers the card pressed; Grow this founder? is Create's (intents/create.mjs growFounder).
 import * as S from "../state.mjs";
-import { panelBuild, cardsOf, initialFocus } from "../views/panel-props.mjs";
+import { panelBuild, cardsOf, initialFocus, settleWords } from "../views/panel-props.mjs";
 import { incubateNow, keepShaping } from "./create.mjs";
 import { returnNow } from "./habitat.mjs";
 import { fitNow } from "./bench.mjs";
@@ -18,6 +18,23 @@ export function openPanel(h, screen, id) {
   h.ui.panel.focus = initialFocus(cardsOf(model(h), h.specs.panel, h.specs.frame, []));
 }
 export function closePanel(h) { h.ui.panel = null; }
+// The full panel (panel.json full; dead ends B2): the one way out of every full-Vivarium refusal, opened on the screen the player is on (Incubator, Create, Cross) by the 180 ms stage dither (a cut with reduced motion).
+export function openFullPanel(h) {
+  openPanel(h, h.ui.screen, "full");
+  if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 });
+}
+// Add the room, from the full panel: the rule spends ⚡ and builds the room; the player stays where they are (the room settles, the plate says when it is ready).
+function addRoomHere(h) {
+  const r = S.addRoom(h.st, h.settings); if (!r.ok) return r;
+  h.say(settleWords(h.specs.panel.strings.full.cards.add, S.roomName(h.st, r.room), r.turns));
+  h.save(); return r;
+}
+// Make room: the Vivarium's whole with the ring on the first resident that can be returned (else the first), as Home's full need puts it.
+function makeRoom(h) {
+  const st = h.st, rooms = [st.face?.room ?? 0, ...Array.from({ length: S.roomCount(st, h.settings) }, (_, i) => i)], homed = rooms.flatMap((i) => S.inRoom(st, i));
+  const m = homed.find((q) => !S.returnMibiBlock(st, h.sv, q)) ?? homed[0];
+  h.goto("vivarium"); h.ui.viv.f = m ? "resident." + m.id : null;
+}
 // `target`: card.<id>; `verb`: confirm | back (the room keys go to the frame's intent).
 export function intent(h, target, verb) {
   const ui = h.ui.panel; if (!ui) return;
@@ -40,6 +57,8 @@ export function intent(h, target, verb) {
   closePanel(h);
   if (card.act === "fit") fitNow(h);
   else if (card.act === "addRoom") addRoomNow(h);
+  else if (card.act === "addRoomHere") addRoomHere(h);
+  else if (card.act === "make") makeRoom(h);
   else if (card.act === "growNow") growNow(h);
   else if (card.act === "open") openFromArrival(h);
   else if (card.act === "later") later(h);

@@ -11,7 +11,8 @@
   "bench",
   "incubator",
   "cargo",
-  "home"
+  "home",
+  "cross"
  ],
  "spec": "specs/station-decision-panel-spec.md",
  "frame": "frame.json",
@@ -61,6 +62,10 @@
   "addRoom": {
    "opens": "vivarium, and habitat (R6: the same chip up close; after buying, the ring stays on the place, now the new room's chip)",
    "by": "✓ on the new-room chip (T-20261027-318, the rooms design): the two-card form of fitUpgrade on the slate pane; the left card's picture is rooms.json rooms.<id>.preview of the room it adds (348 × 160: a 1:1 cut of that room's Idle painting, rooms.json rooms.<id>.preview { from, rect }; no stage, no pedestal on the card); the done plate says the new room is ready"
+  },
+  "full": {
+   "opens": "incubator, create and cross (dead ends B2)",
+   "by": "✓ on a refusal for want of a place: the Incubator's Choose a pod, Open and Open now, Create's Incubate, Cross's Cross them. The two-card form of addRoom: Add the room (the next room's preview, its price ⚡, dimmed when short; settles for turns) and Make room (✓ goes to the Vivarium's whole, the ring on the first resident that can be returned; the picture is Not now's pedestal). When no room can be added the cards are Make room and Not now. ← and Not now close it, nothing changed. A room that is settling is not this panel: the plate says when it is ready."
   },
   "dock": {
    "opens": "cargo",
@@ -145,6 +150,24 @@
     }
    },
    "done": "The {Room} room is ready"
+  },
+  "full": {
+   "title": "The Vivarium is full",
+   "cards": {
+    "add": {
+     "name": "Add the room",
+     "line": "{Room} settles · ready next turn",
+     "lineMany": "{Room} settles · ready in {n} turns"
+    },
+    "make": {
+     "name": "Make room",
+     "line": "Return a mibi to the wild"
+    },
+    "keep": {
+     "name": "Not now",
+     "line": "The Vivarium stays as it is"
+    }
+   }
   },
   "fitUpgrade": {
    "title": "Fit the upgrade?",

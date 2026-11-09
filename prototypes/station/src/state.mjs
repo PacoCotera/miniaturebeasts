@@ -961,6 +961,9 @@ export function freePlace(st, settings = DEFAULT_SETTINGS, prefer = null) {
   return null;
 }
 export const vivFull = (st, settings = DEFAULT_SETTINGS) => freePlace(st, settings) === null;
+// Why no place is free (dead ends B1): null when one is, "settling" when a new room still has a free place but is settling (it takes mibis after the next walk), else "full". The settling room's index: settlingRoom.
+export const settlingRoom = (st, settings = DEFAULT_SETTINGS) => { const n = roomCount(st, settings); for (let i = 0; i < n; i++) if (isSettling(st, i) && inRoom(st, i).length < ROOM) return i; return null; };
+export const placeBlock = (st, settings = DEFAULT_SETTINGS) => (!vivFull(st, settings) ? null : settlingRoom(st, settings) !== null ? "settling" : "full");
 // The room rules (rooms-rules.json): the ladder, the settling times, the ceiling, the themes and the finds. `settings.roomRules` overrides a key (a test, the developer's panel); `needFind` is off until the Companion's trips produce finds.
 export const roomRules = (settings = DEFAULT_SETTINGS) => ({ ...ROOM_RULES, ...(settings?.roomRules ?? {}) });
 // The Energy the next room costs on the ladder, for `built` rooms already there: 4, 8, 12, then 4 more each (the first three from the data, then one step more per room)
