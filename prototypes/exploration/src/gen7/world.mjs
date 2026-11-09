@@ -11,7 +11,6 @@ import { slotBiome, ATLAS } from '../regions.mjs';
 
 export const RW = ATLAS * MW, RH = ATLAS * MH, NR = RW * RH;     // the realm in cells: 80 x 100
 export const CW = 24, CH = 28;                                   // a place's tiles (the scheme's open style)
-export const LV = [0.38, 0.52];                                  // the fixed level thresholds [tune], on the pulled height
 export const BLEND = 2;                                          // neighbouring regions blend over two cells at their shared border
 
 // ---- the fields ----
@@ -166,6 +165,44 @@ function mergeSmallZones(pass, land, lv, W, H, zoneMin) {
   fixSaddles(lv, W, H);
 }
 
+// A way up exists only in a south-facing face (the one painted piece), so a stair joins a cell to the one south of it, the higher to the north. A level zone of a region whose only cliff
+// edges to the rest face north or east or west could never be reached by a stair: such a zone takes the level of what rings it (a pocket is filled, a stranded plateau is lowered).
+// Raised level never goes next to water (water and its neighbours are level 0). Per slot window, repeated over the realm until nothing moves.
+function joinSouth(land, ford, lv, tr) {
+  const wetNear = c => { const x = c % RW, y = (c / RW) | 0; if (land[c] === L.WATER) return true; for (const [dx, dy] of NB8) { const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < RW && Y < RH && land[Y * RW + X] === L.WATER) return true; } return false; };
+  const NC = MW * MH;
+  for (let round = 0; round < 8; round++) {
+    let flips = 0;
+    for (let s = 0; s < ATLAS * ATLAS; s++) {
+      const cells = slotCells(s), pass = c => land[cells[c]] !== L.WATER || ford[cells[c]] === 1, loc = Uint8Array.from(cells, w => lv[w]);
+      const Z = levelZones(pass, loc, MW, MH), uS = Int32Array.from({ length: Z.n }, (_, z) => z), uA = uS.slice();
+      const fnd = (u, z) => { while (u[z] !== z) z = u[z]; return z; }, uni = (u, a, b) => { a = fnd(u, a); b = fnd(u, b); if (a !== b) u[a < b ? b : a] = a < b ? a : b; };
+      const edges = [];   // every cliff edge between two zones: [zone a, zone b, joins south-facing?, length]
+      for (let c = 0; c < NC; c++) for (const [d, south] of [[1, false], [MW, true]]) {
+        if (!south && c % MW === MW - 1) continue; const n = c + d; if (n >= NC || !pass(c) || !pass(n) || loc[c] === loc[n]) continue;
+        uni(uA, Z.id[c], Z.id[n]); const sf = south && loc[c] > loc[n]; if (sf) uni(uS, Z.id[c], Z.id[n]);
+        edges.push([Z.id[c], Z.id[n], sf]);
+      }
+      const size = new Map(); for (let z = 0; z < Z.n; z++) { const g = fnd(uS, z); size.set(g, (size.get(g) || 0) + Z.cells[z].length); }
+      const byAll = new Map(); for (const g of size.keys()) { const k = fnd(uA, g); if (!byAll.has(k)) byAll.set(k, []); byAll.get(k).push(g); }
+      for (const gs of byAll.values()) {
+        if (gs.length < 2) continue;
+        gs.sort((a, b) => size.get(b) - size.get(a) || a - b);
+        for (const g of gs.slice(1)) {   // a group no south-facing edge joins to the largest: flip the zone of it that borders the rest the longest
+          const touch = new Map(); for (const [a, b, sf] of edges) { if (sf) continue; const ga = fnd(uS, a), gb = fnd(uS, b); if (ga === g && gb !== g) touch.set(a, (touch.get(a) || 0) + 1); else if (gb === g && ga !== g) touch.set(b, (touch.get(b) || 0) + 1); }
+          const order = [...touch].sort((p, q) => q[1] - p[1] || p[0] - q[0]);
+          for (const [z] of order) {
+            const to = 1 - Z.lvOf[z]; if (to === 1 && Z.cells[z].some(c => wetNear(cells[c]))) continue;
+            for (const c of Z.cells[z]) lv[cells[c]] = to; flips++; break;
+          }
+        }
+      }
+    }
+    if (!flips) break;
+    closeLevels(lv, RW, RH); fixSaddles(lv, RW, RH);
+  }
+}
+
 const quantile = (sorted, p) => sorted.length ? sorted[clamp(Math.floor(p * (sorted.length - 1)), 0, sorted.length - 1)] : 0;
 // the threshold that leaves the top k of a descending-sorted list above it
 const cutTop = (desc, k) => k <= 0 ? Infinity : k >= desc.length ? -Infinity : (desc[k - 1] + desc[k]) / 2;
@@ -191,17 +228,17 @@ export function buildRealm(seed, tries = null) {
   const thc = blend(th);
   for (let c = 0; c < NR; c++) if (score[c] >= thc[c]) { wkind[c] = kindOf[c]; land[c] = L.WATER; }
   // calibration per slot over its own dry cells: wood and rock thresholds, and the height quantiles that put the fixed level thresholds at the level shares
-  const wT = new Float64Array(nS), rT = new Float64Array(nS), e0 = new Float64Array(nS), e1 = new Float64Array(nS);
+  const wT = new Float64Array(nS), rT = new Float64Array(nS), e0 = new Float64Array(nS);
   for (let s = 0; s < nS; s++) {
     const dry = slotCells(s).filter(c => !land[c]), t = tg[s];
     const fs = dry.map(c => F[c]).sort((a, b) => b - a), nw = Math.min(t.wood, Math.max(0, dry.length - 1));
     wT[s] = cutTop(fs, nw);
     const ks = dry.filter(c => F[c] < wT[s]).map(c => K[c]).sort((a, b) => b - a);
     rT[s] = cutTop(ks, Math.min(t.rock, ks.length));
-    const es = dry.map(c => E[c]).sort((a, b) => a - b), a = clamp(t.lv[0] / 100 + 0.06 * jit(seed, s, tr(s), 'e0'), 0.04, 0.9), b = clamp((t.lv[0] + t.lv[1]) / 100 + 0.06 * jit(seed, s, tr(s), 'e1'), a + 0.05, 0.95);
-    e0[s] = quantile(es, a); e1[s] = Math.max(quantile(es, b), e0[s] + 1e-4);
+    const es = dry.map(c => E[c]).sort((a, b) => a - b), a = clamp(t.lv[0] / 100 + 0.06 * jit(seed, s, tr(s), 'e0'), 0.04, 0.9);
+    e0[s] = quantile(es, a);
   }
-  const wTc = blend(wT), rTc = blend(rT), e0c = blend(e0), e1c = blend(e1);
+  const wTc = blend(wT), rTc = blend(rT), e0c = blend(e0);
   for (let c = 0; c < NR; c++) { if (land[c]) continue; land[c] = F[c] >= wTc[c] ? L.WOOD : K[c] >= rTc[c] ? L.ROCK : L.MEADOW; }
   const onR = (x, y) => x >= 0 && y >= 0 && x < RW && y < RH;
   const pond = [];
@@ -213,10 +250,11 @@ export function buildRealm(seed, tries = null) {
   for (let c = 0; c < NR; c++) { if (land[c] !== L.WATER) continue; const x = c % RW, y = (c / RW) | 0;
     if (((dryAt(x - 1, y) && dryAt(x + 1, y)) || (dryAt(x, y - 1) && dryAt(x, y + 1))) && hash(seed, 'gen7', 'ford', x, y) % 100 < 28) ford[c] = 1; }
   // levels: fixed thresholds on the pulled height; water and its 8 neighbours are level 0; then today's closure, saddles and small zones
-  const level = new Uint8Array(NR);
-  for (let c = 0; c < NR; c++) { const p = LV[0] + (E[c] - e0c[c]) * (LV[1] - LV[0]) / (e1c[c] - e0c[c]); level[c] = land[c] === L.WATER ? 0 : p < LV[0] ? 0 : p < LV[1] ? 1 : 2; }
+  const level = new Uint8Array(NR);   // one raised level only (the art director, Call 1): 0 or 1
+  for (let c = 0; c < NR; c++) level[c] = land[c] === L.WATER ? 0 : E[c] >= e0c[c] ? 1 : 0;
   for (let c = 0; c < NR; c++) { if (land[c] !== L.WATER) continue; const x = c % RW, y = (c / RW) | 0; for (const [dx, dy] of NB8) if (onR(x + dx, y + dy)) level[(y + dy) * RW + x + dx] = 0; }
   closeLevels(level, RW, RH); fixSaddles(level, RW, RH);
   mergeSmallZones(c => land[c] !== L.WATER || ford[c] === 1, land, level, RW, RH, G2.ZONE_MIN);
-  return { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, M, T: R.T, F, K, acc, e0: e0c, e1: e1c };   // e0, e1: the pulled height's level calibration per cell, which the place layer reads at tile scale
+  joinSouth(land, ford, level);
+  return { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, M, T: R.T, F, K, acc, e0: e0c };   // e0: the height at which a cell is raised, per cell, which the place layer reads at tile scale
 }

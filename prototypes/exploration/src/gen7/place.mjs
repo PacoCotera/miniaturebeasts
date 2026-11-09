@@ -3,16 +3,16 @@
 // or of the order cells were made in, so a cell and its neighbour are windows onto one land:
 //   - the shapes (ground, wood, sand, water) come from the world's own fields sampled at every tile (the same functions the region samples at cell centres), plus a light linear
 //     pull from the region's cell labels. No smoothstep between cell centres, so no boundary falls on a cell edge (scheme Rule 1.10);
-//   - the levels come from the elevation field on 8 x 8 world blocks offset by 3 tiles, read across the whole realm at once (so a cliff is a contour line of the land, runs
-//     straight, and never falls on a cell edge: 24 and 28 are never 3 more than a multiple of 8). The cell's level is a summary of this land: the blocks round the cell's centre
-//     take the cell's level, the others are clamped between the levels of the four cell centres round them, then every level region is kept at 2 x 2 blocks or more (Rule 5.2);
-//   - ways up sit on existing straight south faces of that block land, nearest the stair's port; nothing is carved (Rule 5.5);
+//   - the levels come from the elevation field read at every tile and thresholded (levels.mjs: no blocks, a cliff is the field's own contour line; it wanders and rounds, and
+//     never runs along a cell edge). The cell's level is a summary of this land (Rule 5.2). One raised level, 0 or 1;
+//   - ways up sit on existing straight south faces of that land, nearest the stair's port, where the region chose the stair for that face; nothing is carved (Rule 5.5);
 //   - the passes of Rule 1.4 run on a window of 5 x 7 cells round the cell, and the cell's tiles plus a one-tile apron are cut out of it;
 // Rule 1.8: every terrain boundary is drawn only by the dual grid's corner pieces; nothing here composites or overlays.
 import { hash, L, EDGE, MW, MH } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
-import { RW, RH, CW, CH, LV, noiseField, fieldsAt } from './world.mjs';
+import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
+import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, WTW, WTH } from './levels.mjs';
 
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
 // the pairs the set draws (art/places/terrain.json values): every 2 x 2 block of logic tiles holds at most two terrains, and they are one of these
@@ -21,9 +21,7 @@ const PAIRS = new Set(['2|6', '2|3', '3|6', '5|6', '2|4', '6|7', '3|7', '6|8', '
 const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 7: 5, 3: 4, 10: 3, 6: 0 };
 export const pairOk = (a, b) => PAIRS.has(a < b ? a + '|' + b : b + '|' + a);
 
-export const LB = 8, LO = 3;          // level blocks: 8 tiles, offset 3
-const CLOSE = 4, RAISE_OFF = 7;       // the map's end: the last 4 tiles close the land; raised land keeps three more tiles of grass from them (a one-tile strip would be widened into the closing band)
-const WTW = RW * CW, WTH = RH * CH;   // the realm in tiles
+const CLOSE = 4;                      // the map's end: the last 4 tiles close the land; raised land keeps three more tiles of grass from them (levels.mjs RAISE_OFF)
 const WIN_X = 5, WIN_Y = 7, HX = (WIN_X - 1) / 2, HY = (WIN_Y - 1) / 2;   // the window the passes run on, in cells: the cell and two cells each side (three above and below, where a chain of conversions runs farthest), so what an edge of the window does stays clear of the cell
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const WATER_CLOSE = new Set(['marsh', 'meres', 'tarns']);   // these biomes close the map with water, the others with a thicket mass
@@ -33,7 +31,7 @@ const CTX = new Map();
 function ctxOf(seed) {
   let S = CTX.get(seed); if (S) return S;
   const R = realm7(seed), re = R.realm, N = RW * RH;
-  S = { seed, R, re, at: fieldsAt(seed), forestC: new Float32Array(N), wetC: new Float32Array(N), rockC: new Float32Array(N), lvC: new Int8Array(N), landC: new Uint8Array(N), chunks: new Map(), cells: new Map(), blocks: null, stairs: null, trails: null };
+  S = { seed, R, re, at: fieldsAt(seed), forestC: new Float32Array(N), wetC: new Float32Array(N), rockC: new Float32Array(N), lvC: new Int8Array(N), landC: new Uint8Array(N), chunks: new Map(), cells: new Map(), stairs: null, trails: null };
   for (const G of R.regions) {
     const [ax, ay] = G.slot;
     for (let c = 0; c < NC; c++) {
@@ -56,14 +54,14 @@ const closeWater = (S, gx, gy) => WATER_CLOSE.has(S.re.slotBiome[((clamp(Math.fl
 // the tile fields of one cell (24 x 28 values each), from the world's fields at tile scale
 function chunk(S, X, Y) {
   const key = (X + 8) * 1000 + (Y + 8), hit = S.chunks.get(key); if (hit) return hit;
-  const n = CW * CH, forest = new Float32Array(n), rock = new Float32Array(n), wet = new Float32Array(n), scrub = new Float32Array(n);
+  const n = CW * CH, forest = new Float32Array(n), rock = new Float32Array(n), wet = new Float32Array(n), scrub = new Float32Array(n), f = tileFields(S.seed, X, Y);   // the fields of each tile, sampled once for the levels and for this
   const bil = (A, i00, i10, i01, i11, a, b) => A[i00] * (1 - a) * (1 - b) + A[i10] * a * (1 - b) + A[i01] * (1 - a) * b + A[i11] * a * b;
   for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
     const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx;
     const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
-    const i00 = cellIdx(X0, Y0), i10 = cellIdx(X0 + 1, Y0), i01 = cellIdx(X0, Y0 + 1), i11 = cellIdx(X0 + 1, Y0 + 1), f = S.at(u, v);
-    forest[k] = 0.55 * f.wildness + 0.45 * bil(S.forestC, i00, i10, i01, i11, a, b) + 0.12 * S.nF(gx, gy);
-    rock[k] = 0.5 * f.rockiness + 0.5 * bil(S.rockC, i00, i10, i01, i11, a, b) + 0.12 * S.nR(gx, gy);
+    const i00 = cellIdx(X0, Y0), i10 = cellIdx(X0 + 1, Y0), i01 = cellIdx(X0, Y0 + 1), i11 = cellIdx(X0 + 1, Y0 + 1);
+    forest[k] = 0.55 * f.wild[k] + 0.45 * bil(S.forestC, i00, i10, i01, i11, a, b) + 0.12 * S.nF(gx, gy);
+    rock[k] = 0.5 * f.rock[k] + 0.5 * bil(S.rockC, i00, i10, i01, i11, a, b) + 0.12 * S.nR(gx, gy);
     wet[k] = bil(S.wetC, i00, i10, i01, i11, a, b) + 0.22 * S.nW(gx, gy);
     scrub[k] = S.nS(gx, gy);
     if (Math.min(gx, gy, WTW - 1 - gx, WTH - 1 - gy) < CLOSE) {   // the map's end: the land closes itself over the last four tiles (Rule 4.4)
@@ -75,83 +73,28 @@ function chunk(S, X, Y) {
   S.chunks.set(key, out); return out;
 }
 
-// ---- the level blocks, over the whole realm ----
-const BX0 = -2, BY0 = -2;
-function blocksOf(S) {
-  if (S.blocks) return S.blocks;
-  const BW = Math.floor((WTW - 1 - LO) / LB) - BX0 + 3, BH = Math.floor((WTH - 1 - LO) / LB) - BY0 + 3, bg = new Int8Array(BW * BH), pin = new Uint8Array(BW * BH), re = S.re;
-  const lvAt = (X, Y) => S.lvC[cellIdx(X, Y)];
-  for (let j = 0; j < BH; j++) for (let i = 0; i < BW; i++) {
-    const cx = (i + BX0) * LB + LO + LB / 2, cy = (j + BY0) * LB + LO + LB / 2, u = cx / CW - 0.5, v = cy / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
-    const i00 = cellIdx(X0, Y0), i10 = cellIdx(X0 + 1, Y0), i01 = cellIdx(X0, Y0 + 1), i11 = cellIdx(X0 + 1, Y0 + 1);
-    const lo = Math.min(S.lvC[i00], S.lvC[i10], S.lvC[i01], S.lvC[i11]), hi = Math.max(S.lvC[i00], S.lvC[i10], S.lvC[i01], S.lvC[i11]);
-    let raw = lo;
-    if (hi > lo) {   // the contour of the pulled height (today's calibration per cell, bilinear at tile scale) decides, between the levels of the cells round it
-      const e = S.at(u, v).height, e0 = re.e0[i00] * (1 - a) * (1 - b) + re.e0[i10] * a * (1 - b) + re.e0[i01] * (1 - a) * b + re.e0[i11] * a * b, e1 = re.e1[i00] * (1 - a) * (1 - b) + re.e1[i10] * a * (1 - b) + re.e1[i01] * (1 - a) * b + re.e1[i11] * a * b;
-      const p = LV[0] + (e - e0) * (LV[1] - LV[0]) / (e1 - e0); raw = clamp(p < LV[0] ? 0 : p < LV[1] ? 1 : 2, lo, hi);
-    }
-    bg[j * BW + i] = raw;
-  }
-  for (let Y = 0; Y < RH; Y++) for (let X = 0; X < RW; X++) {   // the summary: the blocks under the cell's centre square take the cell's level and stay
-    const cx = X * CW + CW / 2, cy = Y * CH + CH / 2, ia = Math.floor((cx - 4 - LO) / LB), ib = Math.floor((cx + 3 - LO) / LB), ja = Math.floor((cy - 4 - LO) / LB), jb = Math.floor((cy + 3 - LO) / LB);
-    for (let j = ja; j <= jb; j++) for (let i = ia; i <= ib; i++) { bg[(j - BY0) * BW + i - BX0] = lvAt(X, Y); pin[(j - BY0) * BW + i - BX0] = 1; }
-  }
-  // an open edge stays open (Rule 5.2): two neighbouring cells of one level are joined by a corridor of that level across the edge, the blocks round its middle
-  const pinSquare = (cx, cy, lv) => { for (let j = Math.floor((cy - 4 - LO) / LB); j <= Math.floor((cy + 3 - LO) / LB); j++) for (let i = Math.floor((cx - 4 - LO) / LB); i <= Math.floor((cx + 3 - LO) / LB); i++) { bg[(j - BY0) * BW + i - BX0] = lv; pin[(j - BY0) * BW + i - BX0] = 1; } };
-  for (let Y = 0; Y < RH; Y++) for (let X = 0; X < RW; X++) {
-    if (X + 1 < RW && lvAt(X, Y) === lvAt(X + 1, Y)) pinSquare((X + 1) * CW, Y * CH + CH / 2, lvAt(X, Y));
-    if (Y + 1 < RH && lvAt(X, Y) === lvAt(X, Y + 1)) pinSquare(X * CW + CW / 2, (Y + 1) * CH, lvAt(X, Y));
-  }
-  // round 4: a level region is at least 2 x 2 blocks, so a cliff changes course at most once every 8 tiles; no square staircases, notches or spikes
-  const at = (src, i, j) => src[clamp(j, 0, BH - 1) * BW + clamp(i, 0, BW - 1)];
-  for (let pass = 0; pass < 16; pass++) {
-    const src = bg.slice(); let changed = 0;
-    for (let j = 0; j < BH; j++) for (let i = 0; i < BW; i++) {
-      if (pin[j * BW + i]) continue;
-      const v = src[j * BW + i];
-      if ([[0, 0], [-1, 0], [0, -1], [-1, -1]].some(([a, b]) => at(src, i + a, j + b) === v && at(src, i + a + 1, j + b) === v && at(src, i + a, j + b + 1) === v && at(src, i + a + 1, j + b + 1) === v)) continue;
-      const cnt = [0, 0, 0]; for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const u = at(src, i + a, j + b); if (u !== v) cnt[u]++; }
-      let best = -1, bc = 0; for (let u = 0; u < 3; u++) if (cnt[u] > bc) { best = u; bc = cnt[u]; }
-      if (best >= 0) { bg[j * BW + i] = best; changed++; }
-    }
-    if (!changed) break;
-  }
-  return (S.blocks = { bg, BW, BH });
-}
+// ---- the terrain levels: tile scale, from the elevation field (levels.mjs) ----
 // a world tile's level (0 at the map's end: the closing band and a tile beyond it keep to the low ground)
-export function levelAt(seed, gx, gy) {
-  const S = ctxOf(seed), { bg, BW, BH } = blocksOf(S);
-  return bg[clamp(Math.floor((gy - LO) / LB) - BY0, 0, BH - 1) * BW + clamp(Math.floor((gx - LO) / LB) - BX0, 0, BW - 1)];
-}
-export const raisedAt = (seed, gx, gy) => Math.min(gx, gy, WTW - 1 - gx, WTH - 1 - gy) >= RAISE_OFF && levelAt(seed, gx, gy) >= 1;
+export const levelAt = (seed, gx, gy) => tileLevel(levelsOf(ctxOf(seed).re), gx, gy);
+export const raisedAt = (seed, gx, gy) => raisedTile(levelsOf(ctxOf(seed).re), gx, gy);
 
-// ---- ways up: on an existing straight south face of the block land, nearest the stair's port ----
-// A stair edge between a cell A (north) and a cell B (south) whose upper cell is A has a south-facing face between them. East and west stairs, and stairs whose upper cell is B
-// (a north-facing face), have no piece yet: they are the art slots `wayup-east-west` and `wayup-north`, and the stair gets no way up.
+// ---- ways up: on the straight south-facing face the region chose the stair for (levels.mjs `findWayup`, the one face test), nearest the stair's port ----
+// Every stair is on an edge between a cell A (north, the higher) and the cell south of it, and the region only chose it where a face exists: no way up is ever carved. The east,
+// west and north ways up have no piece yet (art slots `wayup-east-west` and `wayup-north`); the region never chooses such a stair.
 function stairsOf(S) {
   if (S.stairs) return S.stairs;
-  const out = [];
+  const out = [], L = levelsOf(S.re);
   for (const G of S.R.regions) {
     const [ax, ay] = G.slot;
     for (const cr of G.cross) {
       const X = ax * MW + (cr.c % MW), Y = ay * MH + ((cr.c / MW) | 0), south = cr.side === 's', e = 2 * cr.c + (south ? 1 : 0);
-      const A = [X, Y], B = south ? [X, Y + 1] : [X + 1, Y], lvA = S.lvC[cellIdx(A[0], A[1])], lvB = S.lvC[cellIdx(B[0], B[1])];
-      const st = { A, B, south, upperIsA: lvA > lvB, port: portOffset(S.seed, ax, ay, e), wayup: null, kind: south ? (lvA > lvB ? 'south' : 'north') : 'east-west' };
-      if (st.kind === 'south') st.wayup = findWayup(S, st);
+      const A = [X, Y], B = south ? [X, Y + 1] : [X + 1, Y], lvA = S.lvC[cellIdx(A[0], A[1])], lvB = S.lvC[cellIdx(B[0], B[1])], port = portOffset(S.seed, ax, ay, e);
+      const st = { A, B, south, upperIsA: lvA > lvB, port, wayup: null, kind: south ? (lvA > lvB ? 'south' : 'north') : 'east-west' };
+      if (st.kind === 'south') st.wayup = findWayup(L, X, Y, port);
       out.push(st);
     }
   }
   return (S.stairs = out);
-}
-function findWayup(S, st) {
-  const R = (x, y) => raisedAt(S.seed, x, y), px = st.A[0] * CW + st.port, py = (st.A[1] + 1) * CH;
-  const face = (x, y) => R(x, y) && !R(x, y + 1) && !R(x, y + 2) && !R(x, y + 3) && R(x, y - 1) && R(x, y - 2);
-  let best = null, bd = 61;
-  for (let y = st.A[1] * CH + 10; y <= (st.A[1] + 1) * CH + 6; y++) for (let x = st.A[0] * CW + 2; x <= st.A[0] * CW + CW - 5; x++) {
-    if (![-1, 0, 1, 2].every(dx => face(x + dx, y))) continue;
-    const d = Math.abs(x - px) + Math.abs(y - py); if (d < bd) { bd = d; best = { x, y, w: 2, h: 1 }; }
-  }
-  return best;
 }
 export const stairsInfo = seed => stairsOf(ctxOf(seed));
 
@@ -252,6 +195,24 @@ function dropPools(t, W, H) {
   }
 }
 
+// Smooth the edge of one terrain v: an opening then a closing with a 3 x 3 square on its mask (the art director's rulings b and c). What is narrower than 3 tiles goes (a bay of it, a
+// strip, a spur, a block): it becomes grass. A gap of grass narrower than 3 in it fills with v. Other terrains are not touched. The window's rim is read as itself.
+function smoothBays(t, W, H, v) {
+  const k = 3, N2 = W * H;
+  const erode = (m, val) => { const T = new Uint8Array(N2), O = new Uint8Array(N2);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let r = 1; for (let d = 0; d < k; d++) if (m[y * W + Math.min(x + d, W - 1)] !== val) { r = 0; break; } T[y * W + x] = r; }
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let r = 1; for (let d = 0; d < k; d++) if (!T[Math.min(y + d, H - 1) * W + x]) { r = 0; break; } O[y * W + x] = r; }
+    return O; };
+  const dilate = m => { const T = new Uint8Array(N2), O = new Uint8Array(N2);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let r = 0; for (let d = 0; d < k; d++) if (m[y * W + Math.max(x - d, 0)]) { r = 1; break; } T[y * W + x] = r; }
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let r = 0; for (let d = 0; d < k; d++) if (T[Math.max(y - d, 0) * W + x]) { r = 1; break; } O[y * W + x] = r; }
+    return O; };
+  let mask = new Uint8Array(N2); for (let i = 0; i < N2; i++) mask[i] = t[i] === v ? 1 : 0;
+  const opened = dilate(erode(mask, 1));                      // where a 3 x 3 square of v fits
+  for (let i = 0; i < N2; i++) if (mask[i] && !opened[i]) { t[i] = TV.GRASS; mask[i] = 0; }
+  const gapOpen = dilate(erode(mask, 0));                     // where a 3 x 3 square of not-v fits
+  for (let i = 0; i < N2; i++) if (!mask[i] && !gapOpen[i] && t[i] === TV.GRASS) t[i] = v;
+}
 const islands = S => S.islandSet || (S.islandSet = new Set(S.R.regions.flatMap(G => { const o = []; for (let c = 0; c < NC; c++) if (G.island[c]) o.push((G.slot[0] * MW + (c % MW)) * 1000 + G.slot[1] * MH + ((c / MW) | 0)); return o; })));
 // A bit of ground the walker cannot reach (a grass island the water noise left in a lake, a hollow ringed by thicket) is filled with what rings it. A body of ground that reaches the window's
 // edge, holds raised land, is large, or is a region's swim island stays.
@@ -293,10 +254,12 @@ function windowOf(S, X, Y) {
     if (wet[i] > 0.7) t[i] = TV.WATER;
   }
   dropPools(t, W, H);
+  smoothBays(t, W, H, TV.WATER); smoothBays(t, W, H, TV.THICKET);   // the art director, b and c: no bay, strip or block under 3 tiles wide, so shores and thickets do not read as walls
   majority(t, W, H, 2); minFeature(t, W, H);
   // raised land from the levels: every tile on a level above the lowest; water lies only on the low ground
   const raised = new Uint8Array(N);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (raisedAt(seed, gx0 + x, gy0 + y)) { raised[y * W + x] = 1; t[y * W + x] = TV.CLIFF; }
+  const LVL = levelsOf(S.re);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (raisedTile(LVL, gx0 + x, gy0 + y)) { raised[y * W + x] = 1; t[y * W + x] = TV.CLIFF; }
   // the cliff's outline is the blocks' outline and nothing else bites into it: terrain the cliff has no pair with keeps one tile of grass between it and the rim, made on its side
   { const near = new Uint8Array(N);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (raised[y * W + x]) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 >= 0 && Y2 >= 0 && X2 < W && Y2 < H) near[Y2 * W + X2] = 1; }

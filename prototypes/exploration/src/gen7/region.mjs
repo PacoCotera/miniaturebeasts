@@ -7,8 +7,10 @@ import FlatQueue from 'flatqueue';
 import { hash, makeRng, MW, MH, L, EDGE, G2, WALK_MIN, BIOME_GROUND, cdist, cxy, cheb, passableIn, canStepIn, edgeIndex } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
 import { buildRealm, RW, CW, CH, NB8, isSaddle, levelZones } from './world.mjs';
+import { levelsOf, findWayup } from './levels.mjs';
 
 export const NC = MW * MH;
+export const STRANDED_MAX_PCT = 6;   // the most a region's dry land that no stair with a way up reaches (a pocket across a river that ends on a north-facing wall), in percent
 const SIDES = [['up', 0, -1], ['right', 1, 0], ['down', 0, 1], ['left', -1, 0]];
 const inRegion = (x, y) => x >= 0 && y >= 0 && x < MW && y < MH;
 const inner = c => { const x = c % MW, y = (c / MW) | 0; return x >= 1 && y >= 1 && x < MW - 1 && y < MH - 1; };   // pieces that change land stay off the border cells, so neighbours never see them
@@ -97,19 +99,28 @@ export function regionAt(realm, ax, ay) {
   for (let c = 0; c < NC; c++) { const x = c % MW, y = (c / MW) | 0;
     if (x < MW - 1 && level[c] !== level[c + 1]) edge[2 * c] = EDGE.CLIFF;
     if (y < MH - 1 && level[c] !== level[c + MW]) edge[2 * c + 1] = EDGE.CLIFF; }
-  const pass = c => passableIn(Gp, c) && !island[c], Z = levelZones(pass, level, MW, MH), cand = [];
+  // Stairs. A way up exists only in a south-facing face (the one painted piece), so a stair sits on an edge between a cell and the one south of it, the higher to the north, and only
+  // where the place layer finds a straight face of the way up's width on that edge (levels.mjs, the one face test). The tree keeps today's rule (every level zone reachable) and picks
+  // another edge, in the order of the hashed keys, where an edge has no face; a region whose zones cannot all be joined that way fails its check and is drawn again.
+  const pass = c => passableIn(Gp, c) && !island[c], Z = levelZones(pass, level, MW, MH), cand = [], LVL = levelsOf(realm);
+  const faceOk = i => { const c = i >> 1; return !!findWayup(LVL, ax * MW + (c % MW), ay * MH + ((c / MW) | 0), portOffset(seed, ax, ay, i)); };
+  const southUp = e => (e.i & 1) === 1 && level[e.a] > level[e.b];
   for (let i = 0; i < 2 * NC; i++) { if (edge[i] !== EDGE.CLIFF) continue; const a = i >> 1, b = i & 1 ? a + MW : a + 1;
     if (pass(a) && pass(b)) cand.push({ i, a, b, key: hash(seed, 'gen7', 'ramp', 2 * wc(a) + (i & 1)) }); }
   cand.sort((p, q) => p.key - q.key || p.i - q.i);
-  const up = Int32Array.from({ length: Z.n }, (_, z) => z), find = z => { while (up[z] !== z) z = up[z]; return z; };
-  for (const e of cand) { const ra = find(Z.id[e.a]), rb = find(Z.id[e.b]); if (ra === rb) continue; up[ra < rb ? rb : ra] = ra < rb ? ra : rb; edge[e.i] = EDGE.RAMP; }
+  const find = (up, z) => { while (up[z] !== z) z = up[z]; return z; }, roots = up => { let n = 0; for (let z = 0; z < up.length; z++) if (up[z] === z) n++; return n; };
+  const upAll = Int32Array.from({ length: Z.n }, (_, z) => z);   // the zones as every cliff edge would join them
+  for (const e of cand) { const ra = find(upAll, Z.id[e.a]), rb = find(upAll, Z.id[e.b]); if (ra !== rb) upAll[ra < rb ? rb : ra] = ra < rb ? ra : rb; }
+  const up = Int32Array.from({ length: Z.n }, (_, z) => z);
+  for (const e of cand) { if (!southUp(e)) continue; const ra = find(up, Z.id[e.a]), rb = find(up, Z.id[e.b]); if (ra === rb || !faceOk(e.i)) continue; up[ra < rb ? rb : ra] = ra < rb ? ra : rb; edge[e.i] = EDGE.RAMP; }
+  const zonesJoined = roots(up) === roots(upAll);
   if (B && B.extraStairs) {   // a biome's own stairs besides the tree's, each clear of a stair beside it on the same wall
     let have = 0; for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) have++;
-    const along = i => (i & 1) ? [i - 2, i + 2] : [i - 2 * MW, i + 2 * MW];
-    for (let k = 0, want = ((have * B.extraStairs + 50) / 100) | 0; k < want;) {
-      const pick = cand.filter(e => edge[e.i] === EDGE.CLIFF && !wet(e.a) && !wet(e.b) && along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP))
-        .sort((p, q) => hash(s0, 'xramp', p.i) - hash(s0, 'xramp', q.i) || p.i - q.i)[0];
-      if (!pick) break; edge[pick.i] = EDGE.RAMP; k++;
+    const along = i => [i - 2, i + 2];
+    const extras = cand.filter(e => southUp(e) && edge[e.i] === EDGE.CLIFF && !wet(e.a) && !wet(e.b)).sort((p, q) => hash(s0, 'xramp', p.i) - hash(s0, 'xramp', q.i) || p.i - q.i);
+    for (let k = 0, want = ((have * B.extraStairs + 50) / 100) | 0, at = 0; k < want && at < extras.length; at++) {
+      const e = extras[at]; if (!along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP) || !faceOk(e.i)) continue;
+      edge[e.i] = EDGE.RAMP; k++;
     }
   }
   const cross = []; for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) cross.push({ c: i >> 1, side: (i & 1) ? 's' : 'e', kind: 'ramp' });
@@ -190,6 +201,12 @@ export function regionAt(realm, ax, ay) {
     }
     G.border[side] = out;
   }
+  // the cells of the level zones that no stair with a way up reaches (their only cliffs face north, east or west, and what rings them is water): a region may keep a few
+  G.stranded = 0; { const size = new Map(), top = new Map();
+    for (let z = 0; z < Z.n; z++) { const r = find(up, z); size.set(r, (size.get(r) || 0) + Z.cells[z].length); }
+    for (const [r, n] of size) { const k = find(upAll, r), cur = top.get(k); if (cur === undefined || n > size.get(cur) || (n === size.get(cur) && r < cur)) top.set(k, r); }
+    for (const [r, n] of size) if (top.get(find(upAll, r)) !== r) G.stranded += n; }
+  G.zonesJoined = zonesJoined;
   G.fails = checkRegion(G, biome);
   return G;
 }
@@ -209,12 +226,13 @@ function checkRegion(G, biome) {
   if (G.spawns.length !== 5 || !(G.gate >= 0 && cdist(G.spawns[0], G.gate) >= 2 && cdist(G.spawns[0], G.gate) <= 4)) bad.push('spawns');
   const inComp = c => c >= 0 && comp[c] === 1;
   if (!inComp(G.deep) || !G.spawns.every(inComp) || !G.glow.every(inComp) || (G.swim >= 0 && !inComp(G.swim)) || ![...G.beacons.set].every(inComp) || G.depots.set.size !== 6 || ![...G.depots.set].every(inComp)) bad.push('comp');
-  let dryN = 0, dryComp = 0, walk = 0; const per = [0, 0, 0];
+  let dryN = 0, dryComp = 0, walk = 0; const per = [0, 0];
   for (let c = 0; c < NC; c++) { walk += comp[c]; if (land[c] !== L.WATER && !G.island[c]) { dryN++; if (comp[c]) dryComp++; per[lv[c]]++; } }
   if (dryComp * 100 < G2.MIN_COMP_PCT * dryN) bad.push('compShare');
   if (walk < WALK_MIN) bad.push('walk');
   if (per.some(n => n * 100 < G2.MIN_SHARE_PCT * dryN)) bad.push('share');
   if (G.cross.length < 1) bad.push('ramps');
+  if (G.stranded * 100 > STRANDED_MAX_PCT * dryN) bad.push('ways');   // too much land that no stair with a way up reaches: the region is drawn again
   return [...new Set(bad)];
 }
 
