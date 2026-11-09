@@ -33,7 +33,7 @@ export function focusOn(ctx, id, max = 40) {
 }
 
 // Along a screen's reading order (the targets are listed in it): the pad's first key toward the target, never the whole ring. `only` keeps the walk on places it matches: on Pods' inventory a move
-// onto the verb line CHANGES the verb (the ring choosing Freshen or Let go would grow, freshen or let go the pods the bot then presses ✓ on), so the bot steps back from any place that is not a card.
+// onto the verb line only PREVIEWS the verb (dead ends B6: ✓ or ▼ chooses it), but ▼ off a previewed verb would turn it on and grow, freshen or let go the pods the bot then presses ✓ on, so the bot steps back from any place that is not a card.
 // Habitat's modules sit in reading order too, and walking the whole ring there takes ten times the keys.
 export function focusLine(ctx, id, { only = null, max = 14 } = {}) {
   const seen = new Set(); let cur = ctx.view().L.focus; seen.add(cur);
@@ -124,7 +124,7 @@ export function readAllPods(ctx, { identify = true, read = true, max = 8 } = {})
   for (let i = 0; i < Math.min(total, max); i++) {
     if (ctx.view().L.state !== "inventory") break;
     if (!focusCard(ctx, "card." + i)) continue;
-    if (ctx.view().L.targets.includes("verb.read") && /^(Grow|Freshen|Compare|Let go|Water)/.test(ctx.view().L.label ?? "")) {   // the verb moved off Read on the way (a move onto the verb line chooses it): choose Read again
+    if (ctx.view().L.targets.includes("verb.read") && /^(Grow|Freshen|Compare|Let go|Water)/.test(ctx.view().L.label ?? "")) {   // the verb moved off Read on the way (▼ off a previewed verb turns it on): choose Read again with ✓
       if (!focusOn(ctx, "verb.read")) continue;
       ctx.press("confirm", "the Read verb");
       if (!focusCard(ctx, "card." + i)) continue;

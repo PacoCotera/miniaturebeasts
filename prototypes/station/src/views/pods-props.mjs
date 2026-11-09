@@ -174,7 +174,9 @@ function inventoryView(view, m, spec, req) {
   const { st, settings, ui } = m, Sg = spec.strings.inv, PK = Sg.picker, R = spec.regions.inventory.picker, focus = m.focus ?? null, across = R.grid.across, vis = R.grid.rows;
   const list = listOf(st, spec, ui, settings), husks = S.unshownHusks(st).slice(0, 3), none = !st.tray.length;
   const cards = list.map((e, k) => ({ k, row: Math.floor(k / across), col: k % across, e })), rowsN = Math.ceil(cards.length / across);
-  const verbs = verbsOf(m, spec), verb = verbs.includes(ui.verb) ? ui.verb : verbs[0] ?? "read", can = (c) => takeOf(m, spec, verb, c.e.p);
+  const verbs = verbsOf(m, spec), verb = verbs.includes(ui.verb) ? ui.verb : verbs[0] ?? "read";
+  const peek = !ui.fixed && ui.peek && ui.peek !== verb && verbs.includes(ui.peek) && focus && focus.startsWith("verb.") ? ui.peek : null, look = peek ?? verb;   // dead ends B6: the ring on a verb previews it (the grid answers), the verb that is on stays on the pill until ✓ or ▼ turns the other on
+  const can = (c) => takeOf(m, spec, look, c.e.p);
   const curCard = cards.find((c) => "card." + c.k === focus) ?? (ui.panelPod ? cards.find((c) => c.e.p.id === ui.panelPod) : null) ?? cards[0] ?? null;
   const maxFirst = Math.max(0, rowsN - vis); let first = clamp(ui.first ?? 0, 0, maxFirst);
   if (focus && focus.startsWith("card.") && curCard && (curCard.row < first || curCard.row > first + vis - 1)) first = clamp(curCard.row - 1, 0, maxFirst);
@@ -183,7 +185,7 @@ function inventoryView(view, m, spec, req) {
   const ASK = !!m.answer, answerOf = (p, goal, foc) => { const kind = goal ? "goal" : dryMark(st, p) || (!p.seen ? "new" : ""); return { dim: ASK && !kind && !foc, bubble: ASK && kind ? PK["answer" + S.cap(kind)] : "", bubbleKind: ASK ? kind : "" }; };   // Call: the pods that need you undim and say so, the others dim
   const card = (c) => { const p = c.e.p, goal = S.podGoal(st, p);
     const dial = S.readDial(p, settings), dialPic = dialReq(req, dial);   // the reading dial after the name (no request for an unidentified pod)
-    return { k: c.k, row: c.row - first, col: c.col, pod: podPic(req, st, p, R.grid.pod.slice(2)), name: p.idd ? S.cap(S.spName(p)) : Sg.sealedPod, sealed: !p.idd, dial, dialPic, mark: goal ? "star" : dryMark(st, p) || (!p.seen ? "new" : ""), fade: verb === "compare" && !!ui.hold && !can(c).can, held: ui.hold === p.id, ...answerOf(p, goal, focus === "card." + c.k) }; };   // a pod is veiled only for Compare's second pick, never because a verb is blocked
+    return { k: c.k, row: c.row - first, col: c.col, pod: podPic(req, st, p, R.grid.pod.slice(2)), name: p.idd ? S.cap(S.spName(p)) : Sg.sealedPod, sealed: !p.idd, dial, dialPic, mark: goal ? "star" : dryMark(st, p) || (!p.seen ? "new" : ""), fade: look === "compare" && !!ui.hold && !can(c).can, held: ui.hold === p.id, ...answerOf(p, goal, focus === "card." + c.k) }; };   // a pod is veiled only for Compare's second pick, never because a verb is blocked
   // the tool row: Sort, Filter and Find, quiet, at the top right
   const drying = st.tray.filter((p) => S.dryingSoon(st, p)).length;
   const tools = { sort: none ? Sg.nothingToSort : Sg.sorts[ui.sort ?? "use"], filter: none ? Sg.nothingToFilter : drying ? fill(Sg.filterDrying, { n: drying }) : Sg.filter, filterAmber: !none && drying > 0, find: none ? Sg.nothingToFind : Sg.find, dim: none };
@@ -194,7 +196,7 @@ function inventoryView(view, m, spec, req) {
   const filtered = chips.length ? fill(Sg.filtered, { k: list.length, n: st.tray.length, what: chips.join(", ") }) : null;
   const flash = ui.flash && ui.flash.until > (m.now ?? 0) ? ui.flash.text : husks.length ? (husks.length === 1 ? fill(Sg.dried, { n: 1 }) : fill(Sg.driedMany, { n: husks.length })) : "";
   const detail = { left: "", right: flash || filtered || (none ? "" : countAll), amber: false };
-  if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = verb === "freshen" && PK.helpFreshen ? fill(PK.helpFreshen, { n: S.POD_LIFE }) : fill(PK.help, { Verb: PK.verbs[verb] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
+  if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = peek ? fill(PK.peek, { Verb: PK.verbs[peek] }) : look === "freshen" && PK.helpFreshen ? fill(PK.helpFreshen, { n: S.POD_LIFE }) : fill(PK.help, { Verb: PK.verbs[look] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
   else if (curCard && !(focus === "sort" || focus === "filter" || focus === "find")) {
     const p = curCard.e.p, f = freshOf(st, p, spec); detail.left = [curCard.e.tags[0].text, S.podOrigin(p)].join(" · ");
     const markKind = S.podGoal(st, p) ? "star" : dryMark(st, p) || (!p.seen ? "new" : ""), lead = markKind && PK.markLead?.[markKind];   // the mark names itself when the ring is on it (plan 3.17 B3)
@@ -209,9 +211,10 @@ function inventoryView(view, m, spec, req) {
   view.picker = { answer: ASK, verbs: nav ? verbs.map((v) => ({ id: v, word: PK.verbs[v], on: v === verb })) : [], heading: ui.fixed ? (ui.verb === "bring" ? PK.chooseBring : PK.chooseGrow) : "", tools,   // a fixed verb has no pill: one plain heading says what ✓ does
     grid: { cards: shown.map(card), first }, rail: total > vis ? { share: Math.round((1000 * vis) / total), from: Math.round((1000 * first) / total) } : null, detail,
     empty: none && !husks.length ? Sg.panelNone : !list.length && !none ? PK.noMatch : [] };
-  view.line = lineOf(m, spec, view, focus, curCard, verb, can); if (ui.from === "incubator" && !ui.choosing) view.line.backWide = true;
+  view.line = lineOf(m, spec, view, focus, curCard, verb, can, peek); if (ui.from === "incubator" && !ui.choosing) view.line.backWide = true;
+  if (focus && focus.startsWith("card.") && !view.line.need && ui.now && ui.now.until > (m.now ?? 0)) view.line.subject = ui.now.text;   // "Now: {Verb}" for 2.5 s after another verb than the caller's was turned on
   if (focus && focus.startsWith("card.") && !view.line.subject && !view.line.need && !m.ui.hold) {   // the foot's free middle slot: why the fixed verb could not be (the incubator is busy), else on the top row of browse where the verb strip is
-    if (ui.blocked) view.line.subject = S.cap(ui.blocked); else if (nav && curCard && curCard.row === first) view.line.subject = PK.upHint; }   // "Incubator" is wider than the way back's slot: the line asks for the wide one
+    if (ui.blocked) view.line.subject = S.cap(ui.blocked); else if (nav && curCard && curCard.row === first && !(ui.now && ui.now.until > (m.now ?? 0))) view.line.subject = PK.upHint; }   // "Incubator" is wider than the way back's slot: the line asks for the wide one
   // the targets: the verbs (browse), Sort, Filter and Find, the cards on screen
   const t = [];
   if (nav) verbs.forEach((v, i) => t.push({ id: "verb." + v, group: "verb", index: i }));
@@ -234,6 +237,7 @@ function holdOf(m, spec, curCard, verb, focus, list) {
 function inventoryResolve(cards, focus, curCard, first, vis, across, verb, can) {
   const at = (row, col) => cards.find((x) => x.row === row && x.col === col), top = cards.filter((c) => c.row === first), under = (col) => { const c = top.find((x) => x.col === col) ?? top.at(-1); return c ? "card." + c.k : null; };
   const able = cards.filter((c) => c.row >= first).find((c) => can(c).can) ?? cards.find((c) => can(c).can) ?? cards[0], r = { "verb.down": able ? "card." + able.k : null, "sort.down": under(0), "filter.down": under(2), "find.down": under(4) };
+  if (verb) r["sort.left"] = "verb." + verb;   // ◀ from Sort lands on the verb that is on, never the nearest one (dead ends B6)
   const c = cards.find((x) => "card." + x.k === focus);
   if (c) {
     const left = at(c.row, c.col - 1), right = at(c.row, c.col + 1), up = at(c.row - 1, c.col), down = at(c.row + 1, c.col) ?? cards.filter((x) => x.row === c.row + 1).at(-1);
@@ -297,10 +301,10 @@ export function recommendedRow(st, p, settings = S.DEFAULT_SETTINGS) {
 // ---- the bottom line (frame.json bottomLine): left the verb of what has the ring (or its reason when held), middle the one need line, right where ← goes ---------------------------------------------
 const back = (m, spec) => { const u = m.ui; if (u.choosing) return spec.strings.inv.foot.backRoom; return u.from === "create" ? spec.strings.inv.foot.backCreate : u.from === "incubator" ? spec.strings.inv.foot.backIncubator : spec.strings.inv.foot.back; };
 // The inventory's line: what ✓ does on the ring (the verb on the pod: its button's own words; a pod that cannot take the verb says why in the middle, no ✓), on the verb line it goes down to the pods, on Sort, Filter and Find as before.
-function lineOf(m, spec, view, focus, curCard, verb, can) {
+function lineOf(m, spec, view, focus, curCard, verb, can, peek = null) {
   const B = back(m, spec), Sg = spec.strings.inv, PK = Sg.picker, T = view.picker.tools, sub = m.ui.waits && verb === "letgo" ? PK.waits : "";
   if (!m.st.tray.length) return { ok: null, back: B, subject: Sg.none.split(" · ")[0], need: "" };   // not a need: the quiet middle slot, fog with no dot
-  if (focus && focus.startsWith("verb.")) return { ok: PK.verbs[verb], back: B, subject: PK.down, need: "" };
+  if (focus && focus.startsWith("verb.")) return { ok: peek ? fill(PK.switch, { Verb: PK.verbs[peek] }) : PK.verbs[verb], back: B, subject: PK.down, need: "" };   // a previewed verb: ✓ says Switch to it
   if (focus === "sort") return { ok: fill(Sg.sort, { how: T.sort }), back: B, subject: "", need: "" };
   if (focus === "filter") return { ok: T.filter, back: B, subject: "", need: "" };
   if (focus === "find") return { ok: T.find, back: B, subject: "", need: "" };

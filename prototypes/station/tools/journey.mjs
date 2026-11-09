@@ -560,7 +560,7 @@ expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length 
 { const e3 = (await st()).e, s3 = (await st()).s; await press("confirm", 1800);   // ✓ Cross them on the screen itself: the child is drawn and paid, the bud takes it and the Incubator shows
   await page.waitForTimeout(400); s = await st();
   expect(s.bud && s.bud.kind === "cross" && s.bud.parents.length === 2 && s.bud.parents[0].id === dot.id, "the child grows in the bud with its real parents");
-  expect(s.e === e3 - 2 && s.s === s3 - 4, "paid 2 ⚡ 4 ❀"); }
+  expect(s.e === e3 - 2 && s.s === s3 - 2, "paid 2 ⚡ 2 ❀"); }
 await page.evaluate((was) => { const S = window.__st, [c, w] = JSON.parse(was); if (c === null) delete S.SV.carried; else S.SV.carried = c; if (w === null) delete S.SV.with; else S.SV.with = w; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); }, carriedBefore);   // the Companion's part as it was (see M4): Dot goes with the Companion again
 await page.evaluate(() => window.__st.skipBud("ready"));
 { const k = await page.evaluate(() => { const b = window.__st.ST.bud, fr = window.__st.frameOf(b.species || b.sp); return { known: fr.chapters.map((c) => c.id).filter((c) => window.__st.budKnown(c)), read: b.read || [] }; });

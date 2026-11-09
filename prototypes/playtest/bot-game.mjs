@@ -58,7 +58,7 @@ export async function playGame({ policy: name, seed = 1, turns = 30, presses = 8
     }
     return r;
   };
-  const ctx = { press, view, wait: (m) => { s.wait(m); rec.minutes += m; return view(); }, rng: prng, state: {}, mark };
+  const ctx = { crossEssence: () => S.crossCost(settings).s, press, view, wait: (m) => { s.wait(m); rec.minutes += m; return view(); }, rng: prng, state: {}, mark };
   stuck.start(s.hash());
   try {
     for (turn = 1; turn <= turns; turn++) {

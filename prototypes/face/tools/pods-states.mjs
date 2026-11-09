@@ -24,7 +24,9 @@ export async function podsStates(visit) {
     await scene([["S01", 11, 0, 0]]); await to({ view: "inventory", focus: "card.0" }); await at("inventory, one sealed pod", { view: "inventory", focus: "card.0" });
     await scene(TWELVE, { goal: ["S01", 0] }); await to({ view: "inventory", focus: "card.0" }); await at("inventory, twelve pods", { view: "inventory", focus: "card.0" });
     await to({ view: "inventory", focus: "verb.read" }); await at("inventory, the verb line", { view: "inventory", focus: "verb.read" });
-    await to({ view: "inventory", focus: "card.4", sort: "species" }); await at("inventory, sorted by species", { view: "inventory", focus: "card.4" });
+    await to({ view: "inventory", focus: "verb.letgo", verb: "read", peek: "letgo", fixed: false, from: "home" }); await at("verb-peek", { view: "inventory", focus: "verb.letgo" });   // B6: the ring on Let go previews it: the pill still says Read, the line says "Switch to Let go"
+    await to({ view: "inventory", focus: "card.0", verb: "letgo", now: "Now: Let go", fixed: false, from: "home" }); await at("verb-now", { view: "inventory", focus: "card.0" });   // B6: Let go turned on with ✓: the middle slot says so for 2.5 s
+    await to({ view: "inventory", focus: "card.4", sort: "species", verb: "read", fixed: false, now: null }); await at("inventory, sorted by species", { view: "inventory", focus: "card.4" });
     await to({ view: "inventory", focus: "card.0", chips: ["S02", "unread"] }); await at("inventory, filtered", { view: "inventory", focus: "card.0" });
     await to({ view: "filter", focus: "tchip.2.1", chips: ["S02"] }); await at("inventory, the filter tray", { view: "filter", focus: "tchip.2.1" });
     await to({ view: "inventory", focus: "filter", chips: ["S04", "sealed"] }); await at("inventory, no matches", { view: "inventory", focus: "filter" });

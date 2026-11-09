@@ -95,7 +95,7 @@ test("every colour a spec file names is in the palette; every region is on the 8
 
 test("the focus graphs, one per state, name only groups and selectors the screen resolves", () => {
   const groups = { inventory: ["card", "verb", "sort", "filter", "find", "none"], filter: ["tchip", "none"], find: ["recent", "letter", "word", "none"], read: ["rail", "plate", "key", "trait", "stamp", "hold", "none"], compare: ["takeA", "takeB", "none"] };
-  const selectors = new Set(["card.up", "card.down", "card.left", "card.right", "verb.down", "sort.down", "filter.down", "find.down", "tchip.up", "tchip.down", "tchip.left", "tchip.right", "letter.cur", "recent.first", "word.first", "word.up", "word.down", "word.left", "word.right",
+  const selectors = new Set(["card.up", "card.down", "card.left", "card.right", "verb.down", "sort.left", "sort.down", "filter.down", "find.down", "tchip.up", "tchip.down", "tchip.left", "tchip.right", "letter.cur", "recent.first", "word.first", "word.up", "word.down", "word.left", "word.right",
     "index.right", "index.open", "trow.up", "trow.down", "band.first", "band.left", "band.right", "band.up", "rail.open"]);
   const isEdge = (x) => typeof x === "string" || (x && typeof x === "object" && "nearestIn" in x);
   for (const [st, graph] of Object.entries(pods.focus)) {
@@ -576,9 +576,9 @@ test("the Home spec file is the build spec's frame: the top bar and its line, th
   for (const w of Object.values(home.strings.titles)) assert.equal(wordsIn(w), 1, w);
   for (const s of stringsOf(home.strings.actions)) assert.ok(wordsIn(s) <= 5, s);   // section 11 words them: "Go to the Probe bench" is five (the four-word rule is the stations' lines)
   for (const s of stringsOf(home.strings.stations)) assert.ok(wordsIn(s.replace(/\{(\w+)\}/g, "x")) <= 4, s);
-  for (const s of stringsOf(home.strings.needs)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
+  for (const s of stringsOf(home.strings.needs)) { assert.ok(wordsIn(s.replace(" · ", " ")) <= 6, s); assert.ok(!/\d/.test(s), s); }
   assert.ok(!/outing|pocket/.test(JSON.stringify(home.strings)));
-  is(home.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"], "the needs in order"); for (const k of home.strings.line.order) assert.ok(home.strings.line.needs[k], k);
+  is(home.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "pair", "newPods", "glints", "waitingPods", "couldGrow"], "the needs in order"); for (const k of home.strings.line.order) assert.ok(home.strings.line.needs[k], k);
   assert.equal(home.strings.line.needs.crates.action, "Open the Bay"); assert.ok(!("lineAction" in home.strings.needs.crates)); assert.equal(home.strings.needs.crates.action, "Open the bay", "Cargo's own words are unchanged"); is(home.strings.actions, { vivarium: "Go to the Vivarium", library: "Go to the Library", pods: "Go to Pods", incubator: "Go to the Incubator", companion: "Go to the Probe bench", bay: "Open the Bay", settings: "Go to Settings" }); assert.equal(home.strings.line.needs.budReady.action, "Open the bud"); is(home.strings.line.needs.portrait, { action: "Open the Bay", notice: "a portrait waits in the Bay" }); is(home.strings.line.needs.crates.withPortrait, { notice: "Bay: {count} crates and a portrait", noticeOne: "Bay: a crate and a portrait" }); assert.match(home.strings.needs.crates.rule, /A ready portrait is counted apart/); assert.deepEqual(home.strings.stages, { juvenile: "young", adult: "adult", elder: "elder" });
   assert.equal(home.strings.titles.bar, "Station"); is(home.strings.readout, { home: "{n} at home", homeSome: "{n} at home, {k} in view", trip: "{m} on a trip", allTrip: "all on a trip", sep: " \u00b7 " });
   is(home.events.rest, { ...home.events.rest, kind: "rest", target: "home", ms: 200, hold: 380 }); assert.ok(!("crateIn" in home.events), "the crates' slide went with the Cargo module");

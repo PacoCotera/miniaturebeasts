@@ -39,8 +39,9 @@ export function modulesOf(m, shown, Sg, sittingSpec = null) {
   const pst = shown.portrait ? (shown.portrait.state === "delivered" ? "portrayed" : "painting") : st.sitting ? "held" : "none";
   const sitting = pst === "held" && !out && habitsOf(shown).length && placesOf(shown).length;
   const look = pst === "portrayed" && portraitOffered(shown) && doorOpen("sitting") && !out && !!sittingSpec?.strings?.lookPortrait;   // portrayed and its picture held: ✓ opens the sitting's state portrait
-  const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : out ? null : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : !doorOpen("sitting") ? Sg.shut.portrait : null;
-  if (!look) { if (out) rows.portrait = held(fill(Sg.portray, named), travel, plateT); else if (why) rows.portrait = held(fill(Sg.portray, named), why, [capLine(why)]); }   // a carried mibi's card is held by heldRule whatever else holds it
+  const noSit = pst === "none" ? (st.welcomeGiven ? { why: Sg.noSittingResearch, plate: Sg.noSittingResearchPlate } : { why: Sg.noSittingWalk, plate: Sg.noSittingWalkPlate.map((l) => fill(l, named)) }) : null;   // dead ends B5: how a sitting is earned, nearest way first (a walk home before the welcome sitting, research after it)
+  const why = pst === "none" ? noSit.why : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : out ? null : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : !doorOpen("sitting") ? Sg.shut.portrait : null;
+  if (!look) { if (out) rows.portrait = held(fill(Sg.portray, named), travel, plateT); else if (why) rows.portrait = held(fill(Sg.portray, named), why, noSit ? noSit.plate : [capLine(why)]); }   // a carried mibi's card is held by heldRule whatever else holds it
   // Cross: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
   const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);   // a carried partner is kept in the list marked away (dimmed, never picked)
   const crossState = stage === "juvenile" ? "young" : out ? "out" : !partners.length ? "alone" : !pickable.length ? "away" : !pickable.some((p) => !p.family) ? "kin" : "adult";   // kin (dead ends B3): every partner at home is direct family, so Cross has no one to open on (held like alone)
@@ -53,7 +54,7 @@ export function modulesOf(m, shown, Sg, sittingSpec = null) {
   else if (wildBlock === "already with you") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.withYou[where], plateT, { price });
   else if (wildBlock) { const k = wildBlock === "your last mibi at home stays" ? "last" : wildBlock.startsWith("tucked away") ? "tucked" : wildBlock.startsWith("back in") ? "coming" : "waiting";   // the put-away rules: the last at home stays; tucked away or on its way back, it cannot be returned
     rows.wild = held(fill(Sg.wild, named), k === "coming" ? wildBlock : Sg.wildBlocks[k], Sg.wildPlates[k].map((l) => fill(l, { ...named, n: S.backIn(st, shown) })), { price }); }
-  return { out, stage, dKind, pst, sitting, look, partners, pickable, crossState, wildBlock, rows };
+  return { out, stage, dKind, pst, noSit: !!noSit, sitting, look, partners, pickable, crossState, wildBlock, rows };
 }
 
 export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = null) {

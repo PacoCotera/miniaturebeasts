@@ -77,7 +77,7 @@ test("the head, the child to be, the kinship pill, the heads' words and the bott
   const w = world("S01"), [a, b] = w.mibis, fr = w.fr; readAll(a, fr); readAll(b, fr);
   const v = build(w, { state: 0 }), H = v.props.regions.heads;
   assert.deepEqual([H.a.name, H.a.line, H.b.name, H.b.line, H.child.words, H.child.kin], [a.name, "Loika", b.name, spec.strings.pick, spec.strings.child, S.kinshipWord(0)]);
-  assert.deepEqual(v.line, { ok: "Cross them", price: S.priceText(2, 0, 4).replace(/.*/, (t) => t), subject: `${a.name} × ${b.name} · Loika`, back: a.name, need: null });
+  assert.deepEqual(v.line, { ok: "Cross them", price: S.priceText(2, 0, 2).replace(/.*/, (t) => t), subject: `${a.name} × ${b.name} · Loika`, back: a.name, need: null });
   assert.equal(build(w, { state: 1 }).line.subject, `Coat · ${a.name} × ${b.name}`);
   assert.equal(v.requests.some((r) => r.kind === "mibiv" && r.variant === "ghost"), true, "the ghost is the first parent's silhouette");
   const away = world("S01", 11, 3); readAll(away.mibis[0], away.fr); readAll(away.mibis[1], away.fr); away.sv.carried = [away.mibis[1].id]; away.st.dock = { docked: false, at: T0 };

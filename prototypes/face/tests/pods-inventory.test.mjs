@@ -75,7 +75,7 @@ test("the ring goes round the whole card, never its niche; a card off the screen
   const g = await start(far);
   assert.equal((logOf(g).nodes ?? []).filter((n) => n[3] === "focus").length, 0, "no ring on a card below the screen");
 });
-test("the keys: ▶ ◀ move between pods and stop at an edge, ▲ from the top row goes to the verb that is on, ◀ ▶ on the verb line move the ring (and so choose the verb), ▼ goes down to the pods; ✓ and ← are intents on the focused target", { skip }, async () => {
+test("the keys: ▶ ◀ move between pods and stop at an edge, ▲ from the top row goes to the verb that is on, ◀ ▶ on the verb line move the ring (and so preview the verb), ▼ goes down to the pods; ✓ and ← are intents on the focused target", { skip }, async () => {
   const st = home(TWELVE), f = await start(build(st, {}, "card.2"));
   f.key("right"); let m = said(f); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "card.3"]]);
   show(f, build(st, {}, "card.4")); f.key("right"); assert.deepEqual(said(f), [], "the right edge: the ring stays, nothing said");
@@ -84,7 +84,7 @@ test("the keys: ▶ ◀ move between pods and stop at an edge, ▲ from the top 
   show(f, build(st, {}, "verb.read")); f.key("right"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.freshen"], "the next verb");
   show(f, build(st, { verb: "freshen" }, "verb.freshen")); f.key("down"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["card.0"], "down to the first pod that can take the verb");
   show(f, build(st, { verb: "letgo" }, "verb.letgo")); f.key("right"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["sort"], "the verb line goes on to Sort, Filter and Find");
-  show(f, build(st, {}, "sort")); f.key("left"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.letgo"]);
+  show(f, build(st, { verb: "letgo" }, "sort")); f.key("left"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.letgo"], "◀ from Sort lands on the verb that is on"); show(f, build(st, {}, "sort")); f.key("left"); m = said(f); assert.deepEqual(m.map((x) => x.target), ["verb.read"], "never the nearest verb");
   show(f, build(st, {}, "card.0")); f.key("left"); assert.deepEqual(said(f), [], "the left edge: the ring stays, nothing said");
   f.key("confirm"); m = said(f); assert.deepEqual(m.map((x) => [x.t, x.target, x.verb]), [["intent", "card.0", "confirm"]]);
   f.key("back"); m = said(f); assert.deepEqual(m.map((x) => [x.t, x.verb]), [["intent", "back"]]);
