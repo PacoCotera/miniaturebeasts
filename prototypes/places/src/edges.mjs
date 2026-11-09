@@ -62,13 +62,12 @@ export function shapeEdges(G, seed, cell, place, ts, walk0, heart) {
   for (const q of cross) zone(q.dir, q.s - 1, q.s + 2, q.off + 3);
   // the openings the world keeps: the template's on an open side, and a new one (the wall's gap) on an open side the template has none on
   const openings = [];
+  for (const o of place.openings) if (kind[DIR_OF[o.side]] === 'open') openings.push({ side: o.side, from: o.from, to: o.to });   // the template's own, in its order (the first is the way in)
   for (const d of DIRS) {
-    if (kind[d] !== 'open') continue;
-    const o = opening[SIDE_OF[d]];
-    if (o) { openings.push({ side: o.side, from: o.from, to: o.to }); continue; }
+    if (kind[d] !== 'open' || opening[SIDE_OF[d]]) continue;
     const len = lenOf(d), want = Math.max(3, Math.min(len - 7, (len >> 1) - 2 + (hash(seed, 'gap', cell, d) % 5) - 2));
     let m = want; search: for (let o = 0; o < len; o++) for (const k of o ? [want + o, want - o] : [want]) if (k >= 3 && k <= len - 7 && led(d, k + 1, 4)) { m = k; break search; }
-    zone(d, m, m + 3, 2); openings.push({ side: SIDE_OF[d], from: m + 1, to: m + 2 });
+    zone(d, m + 1, m + 2, 2); openings.push({ side: SIDE_OF[d], from: m + 1, to: m + 2 });   // two tiles wide, as the templates' narrowest
   }
   // the props this cell shows: a tree whose trunk or footprint stands in a hidden cell is not drawn; a closed opening is plugged with clones of the wall's trees
   const landmarks = new Set(place.landmarks.map(l => l.y * w + l.x)), cellOf = p => ({ cx: Math.floor(p.x / 48), cy: Math.floor(p.y / 48) });

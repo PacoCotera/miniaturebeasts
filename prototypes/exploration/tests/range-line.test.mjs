@@ -1,5 +1,5 @@
 // Walk content B3: an opening never promises a way that is closed. Seed 13, set out from cell 9, down into cell 41 (a Windstep): its south opening is past the Probe's
-// range, its west one a cliff edge, north and east are open. The range line: the tiles past it are not walked (the reason, nothing spent), the words come within 2 tiles of it,
+// range, its west one a cliff edge (drawn as a cliff lip, not an opening: the world's edges are laid on the place, places/src/edges.mjs), north and east are open. The range line: the tiles past it are not walked (the reason, nothing spent), the words come within 2 tiles of it,
 // and the Probe's reach (tier, a Tuliko along) moves it. The line is the desk's range haze now (places/haze): a golden at 1x.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -9,6 +9,7 @@ import { readFileSync, existsSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { makePage } from "./page-harness.mjs";
+import { sideKind } from "../src/world.mjs";
 import { decodePng } from "../../places/src/png.mjs";
 import { compareGolden } from "../../places/src/golden.mjs";
 
@@ -16,12 +17,14 @@ const plain = (x) => JSON.parse(JSON.stringify(x));
 const down = (tier = 1) => { const p = makePage({ gen: 6, console: "collect" }); p.run(`newWorld(13); TEST.calm = true; S.tier = ${tier}; startExpedition('weather', 9); S.exp.pos = 41; enterPatch(); if (RT.view) endView();`); return p; };
 const kinds = (p) => plain(p.run("(() => { const lay = layout('41'); return lay.openings.map(o => o.side + ':' + openingKind(lay, o).kind); })()"));
 
-test("each opening is classified at entry: south past the range, west closed, north and east open; tier 2 opens the south one", () => {
-  assert.deepEqual(kinds(down(1)), ["N:open", "E:open", "S:range", "W:closed"]);
-  assert.deepEqual(kinds(down(2)), ["N:open", "E:open", "S:open", "W:closed"], "the Probe's reach moves the line");
+test("each opening is classified at entry: south past the range, north and east open (the west cliff is no opening: its lip is drawn); tier 2 opens the south one", () => {
+  assert.deepEqual(kinds(down(1)), ["N:open", "E:open", "S:range"]);
+  assert.deepEqual(kinds(down(2)), ["N:open", "E:open", "S:open"], "the Probe's reach moves the line");
   // a Tuliko along adds one ring of reach: the same effect through ex.range, whatever its source
   const p = down(1); p.run("S.exp.range = 3; applyLines(layout('41'));");
-  assert.deepEqual(plain(p.run("layout('41').lines.ops.map(o => o.side + ':' + o.kind)")), ["W:closed"]);
+  assert.deepEqual(plain(p.run("layout('41').lines.ops.map(o => o.side + ':' + o.kind)")), []);
+  assert.equal(sideKind(p.run("G"), 41, "left"), "cliff");
+  assert.equal(plain(p.run("(() => { const l = layout('41'); let lip = 0; for (let y = 3; y < l.h - 3; y++) if (l.terr[y * l.w] === TERR.LIP || l.terr[y * l.w] === TERR.SIDE) lip++; return lip; })()")) > 10, true, "the west edge is a cliff lip in the cell");
 });
 
 test("the haze: the whole side 3 cells deep (levels 3, 2, 1), drawn back 3, 2, 1, gone at 200 ms a step before its cells open; reduced motion is a cut; a side that closes lays it the same way", () => {
@@ -70,18 +73,19 @@ test("past the line the tiles are blocked: a step refuses with the range words, 
   const q = down(2);
   q.run(`S.exp.patch.x = ${x}; S.exp.patch.y = ${lay.h - 4}; FX.msg = '';`); q.key("down");
   assert.equal(q.run("S.exp.patch.y"), lay.h - 3, "open at tier 2");
-  assert.equal(q.run("layout('41').lines.cells.size > 0"), true, "the west one is still closed");
+  assert.equal(q.run("layout('41').lines.cells.size"), 0, "nothing is blocked once the line is past");
 });
 
-test("a closed opening blocks its tiles with the built reason (a cell beside wide water)", () => {
+test("a cell beside wide water has the water, not an opening: the band is drawn on that side and a step into it is refused, spending nothing", () => {
   const p = down(1); p.run("S.exp.pos = 25; enterPatch(); if (RT.view) endView();");
-  const lay = plain(p.run("(() => { const l = layout('25'); return { w: l.w, h: l.h, N: l.openings.find(o => o.side === 'N') }; })()"));
-  const x = (lay.N.from + lay.N.to) >> 1;
-  p.run(`S.exp.patch.x = ${x}; S.exp.patch.y = 3; FX.msg = '';`);
+  const lay = plain(p.run("(() => { const l = layout('25'); return { w: l.w, h: l.h, sides: l.openings.map(o => o.side), wet: [...l.tiles.slice(0, l.w * 2)].filter(t => t === T.WATER).length }; })()"));
+  assert.equal(sideKind(p.run("G"), 25, "up"), "water");
+  assert.ok(!lay.sides.includes("N"), "no opening on the water's side: " + lay.sides);
+  assert.ok(lay.wet > lay.w, "the two rows along the north edge are water: " + lay.wet);
+  const x = lay.w >> 1;
+  p.run(`S.exp.patch.x = ${x}; S.exp.patch.y = 2; FX.msg = '';`);   // the shore row, the water beyond it
   const a0 = p.run("S.exp.actions"); p.key("up");
-  assert.equal(p.run("S.exp.patch.y"), 3); assert.equal(p.run("S.exp.actions"), a0);
-  assert.equal(p.run("FX.msg"), "Wide water · too deep to cross");
-  assert.ok(p.run("layout('25').lines.patches.length") > 0, "its path past the line is drawn as grass");
+  assert.equal(p.run("S.exp.patch.y"), 2); assert.equal(p.run("S.exp.actions"), a0);
 });
 
 // ---- the golden at 1x ----
@@ -91,7 +95,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
 const skip = !chromium && "playwright is not installed (set PW_DIR)";
 
-test("the range haze at 1x: the wash past the Probe's reach, no dashes and no plum dots (golden range-edge.png), and a closed opening's path stops short (golden closed-edge.png)", { skip }, async (t) => {
+test("the range haze at 1x: the wash past the Probe's reach, no dashes and no plum dots (golden range-edge.png), and a cell beside wide water shows its water band (golden closed-edge.png)", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
   const server = createServer((req, res) => {
     let p = path.join(root, decodeURIComponent(req.url.split("?")[0]));

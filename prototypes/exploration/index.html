@@ -626,7 +626,7 @@ const WARM = { queue: [], sig: '', cb: 0, cold: null, steps: 0, hit: 0, miss: 0 
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
 function warmReady(key) {   // nothing left to build for this cell (a generated place, a cave and the test pages have no baked view to warm)
   const lay = layout(key); if (!lay.baked || lay.cave) return true;
-  const bk = BAKED.view || PL6.views.get(lay.baked.id); return PL6.View || BAKED.view ? !!bk && warmOf(bk).st >= WARM_DONE : true;
+  const bk = BAKED.view || PL6.views.get(lay.baked.id); return PL6.View || BAKED.view ? !!bk && warmOf(bk).st >= WARM_DONE && !(lay.rim && ART48.ready && !lay.rimWarm) : true;
 }
 // The arrival look's picture of a place (the whole place at its veil, as a canvas): kept by place and veil in a small LRU, so the warmed one is drawn at once and a new one is built once.
 const WARM_WHOLE_MAX = 6, WHOLE = new Map();
@@ -670,6 +670,7 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
   const lay = layout(key); if (!lay.baked || lay.cave) return false;
   const bk = bakedView(lay); if (!bk) return false;
   const w = warmOf(bk), T = bk.wholeSize(); WARM.steps++;
+  if (lay.rim && ART48.ready && !lay.rimWarm) { lay.rimWarm = 1; for (const i of lay.rim) for (const f of WET48(lay.tiles[i]) ? [0, 1] : [0]) rimTile(lay, i, f); return true; }   // this cell's edges (the stair, lips, shore and crossings): their pieces composed ahead, once, so the first frame finds them
   if (w.st === 0) {   // the 48 px ground, rendered whole for each animation frame it has (one when the views have no ring), the frame showing now last
     const cl = bk.cache.ring && motion() ? bk.cache.frameClocks() : [], now = motion() ? NOW : 0; if (w.fi == null) w.fi = 0;
     if (w.fi < cl.length) bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, cl[w.fi++]); else { bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, now); w.st = 1; }
