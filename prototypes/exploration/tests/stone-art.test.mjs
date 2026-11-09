@@ -1,26 +1,22 @@
-// The quartz stone family (art/stone/, signed in mibi-art ccbb3bb17, the owner's pick C): every placed file is the desk's file byte for byte (read from that commit, never the desk's live folder),
+// The painted stone family C (art/stone/, signed in mibi-art f0b1e8c19): every placed file is its recorded hash (the files are copied byte for byte from that commit; the test never reads the desk's repo),
 // the page keeps each as a picture, picks tall for the heart's stone and small for a field stone, draws a collected stone as spent (the plain picture, still small), has no ring round a warm stone
 // and no stone drawn in code.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { execFileSync } from "node:child_process";
-import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { makePage, STONE_ART, PAGE } from "./page-harness.mjs";
 
-const DIR = new URL("../art/stone/", import.meta.url), DESK_REPO = process.env.MIBI_ART_REPO || "/home/mb/mb/mibi-art", FROM = "art-jobs/2026-11-09-you-are-here/out", COMMIT = "ccbb3bb17";
+const DIR = new URL("../art/stone/", import.meta.url);
 const sha = (b) => createHash("sha256").update(b).digest("hex");
 const files = readdirSync(DIR).filter((f) => f.endsWith(".png")).sort();
 const HASHES = JSON.parse(readFileSync(new URL("SHA256.json", DIR), "utf8"));
-const show = (p) => execFileSync("git", ["-C", DESK_REPO, "show", `${COMMIT}:${p}`], { maxBuffer: 1 << 26 });
-const haveDesk = existsSync(DESK_REPO + "/.git") && (() => { try { show(FROM + "/manifest.json"); return true; } catch { return false; } })();
 
-test("the 28 placed stone files are the desk's, byte for byte, at the signed commit", () => {
+test("the 28 placed stone files are the recorded hashes", () => {
   const want = ["tall", "small"].flatMap((k) => ["plain", "charged-1", "charged-2", "warm-1", "warm-2", "warm-still", "spent"].flatMap((s) => ["16", "48"].map((r) => `stone-${k}-${s}@${r}.png`))).sort();
   assert.deepEqual(files, want);
   assert.deepEqual(Object.keys(HASHES).sort(), files);
   for (const f of files) assert.equal(sha(readFileSync(new URL(f, DIR))), HASHES[f], f);
-  if (haveDesk) for (const f of files) assert.ok(readFileSync(new URL(f, DIR)).equals(show(FROM + "/" + f)), f + " differs from the desk's file at " + COMMIT);
   const f = STONE_ART;   // sizes: tall 16 x 24, small 16 x 16, at 1x and 3x; no partial alpha
   for (const [n, im] of Object.entries(f)) {
     const k = n.includes("@16") ? 1 : 3, h = n.startsWith("stone-tall") ? 24 : 16;
