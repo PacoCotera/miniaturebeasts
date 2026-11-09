@@ -1033,7 +1033,7 @@ const CARE_ASSETS = [
   { id: 'c-map-soft-26', what: 'the map’s and the reach view’s wade (muddy water), scree edge (heaped stones), bank (earth face or lip), dug bank (footholds), their signs and pins, and Tuliko’s extra range ring (a gold lattice)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 26, h: 26, status: 'signed' },
   { id: 'c-canopy-88x76', what: 'a tree canopy over its trunk, in a place at 32 or 48 px', until: 'the meadow tree prop', w: 88, h: 76, status: 'stand-in' },
   { id: 'c-roof-104x22', what: 'the roof on an outcrop, 104 px wide on the 144 px outcrop of a 48 px place', until: 'the meadow outcrop piece', w: 104, h: 22, status: 'stand-in' },
-  { id: 'c-open-night', what: 'the opening screen’s night mist under the land of a first-time player: three seamless 96 px variants (a, b, c) picked per 96 px block by hash, two 900 ms frames and a still; four colours of its own', until: 'signed by the art desk, 2026-11-09 (mibi-art a23ee74f6)', w: 96, h: 96, status: 'signed' },
+  { id: 'c-open-night', what: 'the opening screen’s night mist under the land of a first-time player: one painted seamless 192 px tile (a only), two 900 ms frames and a still; four colours of its own', until: 'signed by the art desk, 2026-11-09 (mibi-art 668876d3e)', w: 192, h: 192, status: 'signed' },
   { id: 'c-open-pod-96', what: 'the opening screen’s pod where the partner would stand: 96 px (3× a 32 px master), foot at (48, 92) on the partner ring, two 1200 ms glow frames and a still', until: 'signed by the art desk, 2026-11-09 (mibi-art a23ee74f6)', w: 96, h: 96, status: 'signed' },
 ];
 const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f'], 'mini'], 'c-token-48': ['stone', ['token', 't'], 'sprite'],
@@ -4837,7 +4837,7 @@ function* landPaint(spec, sliced) {
   for (let x = 0; x < N; x++) {
     const wx = X0 * cs + x, wy = Y0 * cs + y, c = cellOf(wx, wy), b = BAYER[(y & 3) * 4 + (x & 3)];
     if (c < 0) { put(y * N + x, C.void); continue; }
-    if (mist && !seen(c)) { u[y * N + x] = mist[hash(7, Math.floor(wx / 96), Math.floor(wy / 96)) % 3][spec.mist][(wy % 96) * 96 + (wx % 96)]; continue; }
+    if (mist && !seen(c)) { u[y * N + x] = mist[0][spec.mist][(wy % OPEN_TILE) * OPEN_TILE + (wx % OPEN_TILE)]; continue; }
     if (!seen(c)) { const c2 = cellOf(wx + 4 * k, wy + 3 * k), edge = c2 >= 0 && seen(c2); put(y * N + x, edge ? (b < 8 ? C.night : C.ink) : (b < 3 ? C.night : C.ink)); continue; }
     let land = landOf(c), col;
     const lx = (wx - (c % MW) * cs) / cs, ly = (wy - ((c / MW) | 0) * cs) / cs;
@@ -6027,13 +6027,13 @@ const OPEN_TEXT = {
 // its pixels go to the painting as they are, and the colours join the screen's allowed set. Until the files are in (or if they fail) the built night dots and the built field pod at 3× play.
 const OPEN_ART = { ready: false, night: [], pod: [] };   // night[variant][0, 1, 2 = still]: Uint32 pixels; pod[0, 1, 2 = still]: a PB
 const OPEN_COLOURS = [[0x0d, 0x13, 0x22], [0x13, 0x20, 0x36], [0x1a, 0x2d, 0x46], [0x24, 0x46, 0x5a]], OPEN_POD_COLOURS = [];
-const OPEN_FRAMES = ['1', '2', 'still'], OPEN_VARIANTS = ['a', 'b', 'c'];
+const OPEN_FRAMES = ['1', '2', 'still'], OPEN_VARIANTS = ['a'], OPEN_TILE = 192;   // the mist is one painted 192 px tile (a only)
 const OPEN_FILES = [...OPEN_VARIANTS.flatMap(v => OPEN_FRAMES.map(f => `c-open-night-${v}-${f}`)), ...OPEN_FRAMES.map(f => `c-open-pod-96-${f}`)];
 function openRead(files) {
   const at = new Map(), mist = new Set(OPEN_COLOURS.map(c => c.join())); RGB.slice(0, CORE_N).forEach((c, i) => { const k = c[0] << 16 | c[1] << 8 | c[2]; if (!at.has(k)) at.set(k, i); });
-  const night = OPEN_VARIANTS.map(v => OPEN_FRAMES.map(f => { const im = files[`c-open-night-${v}-${f}`], u = new Uint32Array(96 * 96);
-    if (!im || im.width !== 96 || im.height !== 96) throw new Error('opening night ' + v + f);
-    for (let i = 0; i < 96 * 96; i++) { const o = i * 4, r = im.data[o], g2 = im.data[o + 1], b = im.data[o + 2]; if (!mist.has([r, g2, b].join()) && !at.has(r << 16 | g2 << 8 | b)) throw new Error('opening night off the palette ' + v + f); u[i] = (255 << 24) | (b << 16) | (g2 << 8) | r; }
+  const night = OPEN_VARIANTS.map(v => OPEN_FRAMES.map(f => { const im = files[`c-open-night-${v}-${f}`], u = new Uint32Array(OPEN_TILE * OPEN_TILE);
+    if (!im || im.width !== OPEN_TILE || im.height !== OPEN_TILE) throw new Error('opening night ' + v + f);
+    for (let i = 0; i < OPEN_TILE * OPEN_TILE; i++) { const o = i * 4, r = im.data[o], g2 = im.data[o + 1], b = im.data[o + 2]; if (!mist.has([r, g2, b].join()) && !at.has(r << 16 | g2 << 8 | b)) throw new Error('opening night off the palette ' + v + f); u[i] = (255 << 24) | (b << 16) | (g2 << 8) | r; }
     return u; }));
   const seen = new Set(), pod = OPEN_FRAMES.map(f => { const im = files[`c-open-pod-96-${f}`]; if (!im || im.width !== 96 || im.height !== 96) throw new Error('opening pod ' + f);   // the pod's shell ramp is not all on the core palette either: its own canvas, its colours join the screen's allowed set
     let c = null; const build = () => { c = document.createElement('canvas'); c.width = 96; c.height = 96; const cg = c.getContext('2d'), id = cg.createImageData(96, 96); id.data.set(im.data); cg.putImageData(id, 0, 0); return c; };
