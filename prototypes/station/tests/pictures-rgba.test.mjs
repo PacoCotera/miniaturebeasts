@@ -239,7 +239,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
   const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station"), mastersDir = path.resolve(here, "../../ui/assets/masters");
   setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
   const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), home = J("home.json"), frameSpec = J("frame.json"), viv = J("vivarium.json"), hab = J("habitat.json");
-  const index = JSON.parse(readFileSync(path.join(mastersDir, "index.json"), "utf8")).masters;
+  const index = (await import("../../ui/tools/index-io.mjs")).readIndex(mastersDir).masters;
   const placeAll = () => { for (const [id, e] of Object.entries(index)) placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: e.status ?? "master" }, { w: e.w, h: e.h, rgba: () => new Uint8ClampedArray(0) }); };
   const dropAll = () => { for (const id of Object.keys(index)) dropAsset(id); };
   describe("an owned mibi is never absent (Fix 1b part 3, stands.mjs)", () => {
@@ -450,7 +450,7 @@ test("Create founder A (interim): with the species' placed adult master the foun
 describe("a graded creature picture has its master's footprint", () => {
   test("a placed juvenile master of S01 and of S05, at dawn, dusk and night", async () => {
     const { readFileSync, readdirSync } = await import("node:fs"), { decodePNG } = await import("../../ui/png.mjs"), { grade } = await import("../src/light-grade.mjs"), { footOf } = await import("../src/moving.mjs");
-    const root = new URL("../../ui/assets/masters/", import.meta.url), idx = JSON.parse(readFileSync(new URL("index.json", root), "utf8")).masters; let n = 0;
+    const root = new URL("../../ui/assets/masters/", import.meta.url), idx = (await import("../../ui/tools/index-io.mjs")).readIndex(root.pathname).masters; let n = 0;
     for (const sp of ["S01", "S05"]) {
       const id = Object.keys(idx).find((k) => new RegExp(`^mibi-juvenile-${sp}-\\d+x\\d+$`).test(k)); if (!id) continue;
       const png = decodePNG(readFileSync(new URL(idx[id].file, root))), pic = { w: png.width, h: png.height, rgba: () => png.data }, day = footOf(`mibi:t${sp}:juvenile:${pic.w}x${pic.h}`, pic, () => null);

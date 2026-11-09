@@ -3,6 +3,7 @@
 // rules on what the room's ✓ does. The living window's shared selectors (residents' seeds, rest, light, picture ids), which Idle and the Vivarium's whole use, are tested through Idle's view beneath.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 import { movingFixture } from "./fixtures/moving.mjs";
 import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test } from "node:test";
@@ -175,7 +176,7 @@ test("the residents at home walk (a seed each); the carried set is never drawn (
   assert.deepEqual(idle(sc.docked.st, sc.docked.sv).props.regions.residents.map((r) => r.seed), d.residents.map((r) => r.seed));
 });
 test("the light picks the pictures: Idle's painting and the bed are the room's masters of that light (R3: Roots), each a placed master of its own size", () => {
-  const sc = scenes(), ix = JSON.parse(readFileSync(path.join(specs, "../../assets/masters/index.json"), "utf8")).masters;
+  const sc = scenes(), ix = readIndex(path.join(specs, "../../assets/masters")).masters;
   for (const light of ["dawn", "day", "dusk", "night"]) {
     const i = idle(sc.docked.st, sc.docked.sv, { light }), ids = i.requests.filter((r) => r.kind === "slot"), bed = ids.find((r) => r.id.startsWith("room-roots-bed-")), viv = ids.find((r) => r.id.startsWith("room-roots-idle-"));
     assert.deepEqual([bed.id, bed.master], [`room-roots-bed-${light}-192x56`, `room-roots-bed-${light}-192x56`]); assert.deepEqual([viv.id, viv.master], [`room-roots-idle-${light}-1024x568`, `room-roots-idle-${light}-1024x568`]);
@@ -192,7 +193,7 @@ test("R3: Home shows the room the whole last showed, except that a mibi being me
   st.face.room = 1; assert.equal(r({}).room.id, "reeds", "the room the whole shows"); assert.equal(r({ ui: { meet: st.mibis[3].id } }).room.id, "roots", "a mibi met in another room");
 });
 test("every room has its pictures in every light of frame.light.from, all placed at their size", () => {
-  const lights = frameSpec.light.from.map(([, l]) => l), ROOMS = JSON.parse(readFileSync(path.join(specs, "rooms.json"), "utf8")), ix = JSON.parse(readFileSync(path.join(specs, "../../assets/masters/index.json"), "utf8")).masters;
+  const lights = frameSpec.light.from.map(([, l]) => l), ROOMS = JSON.parse(readFileSync(path.join(specs, "rooms.json"), "utf8")), ix = readIndex(path.join(specs, "../../assets/masters")).masters;
   for (const name of ROOMS.order) { const r = ROOMS.rooms[name]; for (const l of lights) for (const t of [r.base, r.near, ...(r.bed ? [r.bed.picture] : []), ...r.pieces.filter((p) => p.picture).map((p) => p.picture)]) { const id = t.replace("{light}", l); assert.ok(ix[id], id + " is placed"); assert.equal(`${ix[id].w}x${ix[id].h}`, id.match(/(\d+x\d+)$/)[1]); } }
 });
 test("every light of frame.light.from has its pictures on Idle and its bed, and no more", () => {

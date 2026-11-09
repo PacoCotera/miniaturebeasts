@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { readIndex, writeIndex } from "./index-io.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), dest = path.resolve(here, "../assets/masters"), indexFile = path.join(dest, "index.json");
 const from = process.argv[process.argv.indexOf("--from") + 1]; if (!from || process.argv.indexOf("--from") < 0) { console.error("--from <masters dir>"); process.exit(2); }
 const SIGNED = "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)";
@@ -17,7 +18,7 @@ const LIST = [
   ...["capsule-room-dusk-474x468", "capsule-interior-dusk-296x459", "capsule-shell-dusk-296x459", "capsule-seal-ring-296x459", "capsule-glass-closed-296x459", "capsule-room-day-474x468", "capsule-shell-296x459", "capsule-interior-day-296x459", "capsule-bar-lit-296x459", "capsule-door-open-457x459"].map((n) => ["panel", n]),
   ...["bowl-shade", "bowl-mask-body", "bowl-mask-accent", ...["bands", "dots", "plates", "plates-relief", "ribs", "segments", "segments-relief", "stripes"].map((p) => "bowl-pattern-" + p), "cap-shade", "cap-mask-body", "cap-mask-accent"].map((n) => ["opened", "pod-opened-" + n]),
 ];
-const index = JSON.parse(readFileSync(indexFile, "utf8"));
+const index = readIndex(dest);
 for (const [dir, name] of LIST) {
   const src = path.join(from, dir, name + ".png"), buf = readFileSync(src); mkdirSync(path.join(dest, "capsule"), { recursive: true });
   if (buf.subarray(1, 4).toString("ascii") !== "PNG") throw new Error(src + ": not a PNG");
@@ -28,4 +29,4 @@ for (const [dir, name] of LIST) {
   const src = path.join(from, "stamp-case", "room-stamp-case-152x152-front.png"), buf = readFileSync(src), id = "capsule-stamp-case-front-152x152";
   copyFileSync(src, path.join(dest, "capsule", id + ".png")); index.masters[id] = { file: `capsule/${id}.png`, w: buf.readUInt32BE(16), h: buf.readUInt32BE(20), sha256: createHash("sha256").update(buf).digest("hex"), signed: SIGNED + "; the case's front veil recut with alpha 0 over the plate, for the Incubator's wall" };
 }
-writeFileSync(indexFile, JSON.stringify(index, null, 1) + "\n"); console.log(`placed ${LIST.length} capsule masters`);
+writeIndex(dest, index); console.log(`placed ${LIST.length} capsule masters`);

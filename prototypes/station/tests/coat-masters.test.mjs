@@ -13,8 +13,9 @@ import { placeMaster } from "../../ui/assets.mjs";
 import { planCoats, coatGrid, PAIRS, DESK, MARKED } from "../../ui/tools/coat-masters.mjs";
 import { SIZES, figureBox } from "../../ui/tools/game-masters.mjs";
 import { decodePNG } from "../../ui/png.mjs";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")), M = index.masters;
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/assets/masters"), index = readIndex(root), M = index.masters;
 const put = (id) => placeMaster({ id, w: M[id].w, h: M[id].h, file: M[id].file, hash: M[id].sha256, signed: "test", status: "master" }, { w: M[id].w, h: M[id].h, rgba: () => new Uint8ClampedArray(0) });
 const looks = (tint, shade, marking) => ({ "body-hue": tint, "body-value": shade, markings: marking });
 // S01 Loika's placed grid (the game's coats): redder / between / yellower by dark / between / light; between-dark is the painted master

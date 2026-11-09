@@ -10,7 +10,8 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSyn
 import { execFileSync } from "node:child_process";
 import { decodePNG } from "../png.mjs";
 import { placeGame, checkJuveniles } from "./game-masters.mjs";
-import { stampBytes, bytesProblems } from "./index-bytes.mjs";
+import { bytesProblems } from "./index-bytes.mjs";
+import { readIndex as readIndexAt, writeIndex, indexProblems } from "./index-io.mjs";
 import { checkGroups } from "./groups.mjs";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -19,7 +20,7 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url)), dest = path.resolve(here, "../assets/masters"), indexFile = path.join(dest, "index.json"), specs = path.resolve(here, "../specs/station");
 const arg = (k) => { const i = process.argv.indexOf("--" + k); return i > 0 ? process.argv[i + 1] : null; }, flag = (k) => process.argv.includes("--" + k);
 const sha = (buf) => createHash("sha256").update(buf).digest("hex");
-const readIndex = () => (existsSync(indexFile) ? JSON.parse(readFileSync(indexFile, "utf8")) : { schema: "mb-masters/1", masters: {} });
+const readIndex = () => readIndexAt(dest);
 // a PNG's size from its header (indexed masters are legal: no decode needed)
 const dims = (buf) => { if (buf.subarray(1, 4).toString("ascii") !== "PNG") throw new Error("not a PNG"); return [buf.readUInt32BE(16), buf.readUInt32BE(20)]; };
 
@@ -33,7 +34,7 @@ export function signedIds(readme) {
   return out;
 }
 export function check(root = dest) {
-  const index = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")), problems = [];
+  const index = readIndexAt(root), problems = [...indexProblems(root)];
   for (const [id, e] of Object.entries(index.masters)) {
     const f = path.join(root, e.file); if (!existsSync(f)) { problems.push(`${id}: ${e.file} is missing`); continue; }
     const buf = readFileSync(f), [w, h] = dims(buf);
@@ -126,7 +127,7 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
     data.rooms[room] = { ...out, ...(bed ? { bed } : {}), rest, ...view, levels: lv, joins, pieces, ambient };
   }
   // all read and checked: now write
-  const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} }, placed = [];
+  const index = readIndexAt(root), placed = [];
   for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith("rooms/") && !dryRun && !ops.some((o) => o.id === id)) { rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }   // what this run no longer places leaves with its file
   for (const o of ops) {
     const file = `rooms/${o.id}.png`; placed.push(o.id);
@@ -134,7 +135,7 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
     if (!dryRun) { mkdirSync(path.join(root, "rooms"), { recursive: true }); writeFileSync(path.join(root, file), o.src.buf); }
   }
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
-  if (!dryRun) { mkdirSync(root, { recursive: true }); writeFileSync(idxFile, JSON.stringify(stampBytes(root, index), null, 1) + "\n"); mkdirSync(path.dirname(roomsFile), { recursive: true }); writeFileSync(roomsFile, fmt(data) + "\n"); }
+  if (!dryRun) { writeIndex(root, index); mkdirSync(path.dirname(roomsFile), { recursive: true }); writeFileSync(roomsFile, fmt(data) + "\n"); }
   return { placed, leftOut, rooms: data };
 }
 // The data guards of the rooms design (1 to 7) on rooms.json against the index: `problems` stop; `notes` are the art director's own rules (48 deep, 160 wide, 1:2, 24 px, the main floor about 100 deep), reported and never refused.
@@ -224,7 +225,7 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
   if (byStatus) { const st = JSON.parse(readFileSync(path.join(from, "slices/status.json"), "utf8"));
     for (const [id, e] of Object.entries(st)) if (manifest[id] && ["signed", "placeholder", "held", "new"].includes(e.status)) { want.set(id, `signed (${by ?? "the studio's record"})`); statuses.set(id, e.status); if (e.status !== "signed") flags.set(id, `${e.status} (${by ?? "the studio's record"}), not final`); } }
   for (const id of ids) { if (!manifest[id]) throw new Error(`${id} is not in ${from}/slices/manifest.json`); want.set(id, manifest[id].signed_in || by || "named with --ids"); }   // --by names who signed these ids, verbatim
-  const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} };
+  const index = readIndexAt(root);
   const placed = [], skipped = [];
   for (const id of skip) want.delete(id);   // named by --skip: not placed (a slice the studio's own folder does not hold consistently), listed as skipped
   for (const [id, who] of want) {
@@ -239,12 +240,12 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
   for (const id of Object.keys(manifest)) if (!want.has(id)) skipped.push(id);
   if (byStatus) for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith(group + "/") && !want.has(id)) { if (!dryRun) rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }   // what the record no longer places leaves with its file
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
-  if (!dryRun) { mkdirSync(root, { recursive: true }); writeFileSync(idxFile, JSON.stringify(stampBytes(root, index), null, 1) + "\n"); }
+  if (!dryRun) writeIndex(root, index);
   return { placed, skipped };
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   if (flag("bytes")) {   // annotate the installed index with each file's size (what every placement does as it writes)
-    const ix = stampBytes(dest, readIndex()); writeFileSync(indexFile, JSON.stringify(ix, null, 1) + "\n"); console.log(`bytes stamped on ${Object.keys(ix.masters).length} masters`); process.exit(0);
+    const ix = writeIndex(dest, readIndex()).slim; console.log(`bytes stamped on ${Object.keys(ix.masters).length} masters`); process.exit(0);
   }
   if (flag("check")) {
     const p = existsSync(indexFile) ? check() : [], roomsFile = path.join(specs, "rooms.json"); let notes = [];

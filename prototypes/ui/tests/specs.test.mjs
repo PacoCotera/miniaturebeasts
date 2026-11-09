@@ -6,7 +6,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { floorThresholds, FLOOR_SCENES, zoneRange } from "../rings.mjs";
-
+import { readIndex } from "../tools/index-io.mjs";
+const MASTERS = new URL("../assets/masters/", import.meta.url).pathname;   // the placed masters (index.json beside provenance.json: readIndex)
 
 const rd = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 // a focus ring shape (frame.json focus.ring.shapes): "oval", "footprint", "tab", { rect: r [, chip: n] }, { circle: "box" } or { circle: { centre: [x, y], r } }
@@ -642,7 +643,7 @@ test("the Cargo spec file is the build spec's sections 1 to 6 (T-20261016-197): 
 });
 
 test("the Bay's cuts: every picture the spec names is a placed master of exactly the size its name gives (the cut script and the art director's clean cuts)", () => {
-  const idx = rd("../assets/masters/index.json").masters, cg = rd("../specs/station/cargo.json"), R = cg.regions, ids = new Set();
+  const idx = readIndex(MASTERS).masters, cg = rd("../specs/station/cargo.json"), R = cg.regions, ids = new Set();
   const take = (o) => { if (typeof o === "string") { if (/^(cargo-|berth-|hatch-|pods-hatch|well-lit|crate-|ring-hatch|find-|glint)/.test(o)) ids.add(o); } else if (o && typeof o === "object") for (const [k, v] of Object.entries(o)) if (k !== "rule" && k !== "note") take(v); };
   for (const k of ["bay", "hatch", "waiting", "display", "berths"]) take(R[k]);
   for (const kind of ["crystal", "pearl", "shard"]) for (const sz of ["112x112", "16x16"]) ids.add(`find-${kind}-${sz}`);
@@ -672,7 +673,7 @@ test("every title mark, lower-cased, has a room mark picture: the face looks the
   const frame = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8")), rooms = frame.regions.marks.room;
   for (const [screen, word] of Object.entries(frame.regions.title.marks)) assert.ok(typeof rooms[word.toLowerCase()] === "string", `the title mark of ${screen} is "${word}": marks.room has no "${word.toLowerCase()}"`);
   assert.equal(rooms.vivarium, "frame-room-vivarium-24", "the Vivarium's mark is the key's icon, the device button's drawing (station-layouts.md, The frame)");
-  const masters = JSON.parse(readFileSync(new URL("../assets/masters/index.json", import.meta.url), "utf8"));
+  const masters = readIndex(MASTERS);
   for (const id of Object.values(rooms).filter((v) => typeof v === "string")) assert.ok(JSON.stringify(masters).includes(`"${id}"`), `${id} is a registered master`);
 });
 
@@ -712,7 +713,7 @@ test("the Library's Level 1: sixteen cells of 152 on a 6 by 3 grid centred on th
   assert.ok(!frame.navigation.jumps.some((j) => j.to === "book" || j.from === "book"), "no jump reaches or leaves the Book"); assert.equal(frame.strings.titles.library, "Library"); assert.equal(frame.regions.title.marks.library, "Library");
   const home = rd("../specs/station/home.json"); assert.equal(home.strings.actions.library, "Go to the Library");
   // the masters: the ground, the seed, the wish mark, the glint and the sixteen species marks, each placed at its size
-  const masters = JSON.parse(readFileSync(new URL("../assets/masters/index.json", import.meta.url), "utf8")), M = masters.masters ?? masters;
+  const masters = readIndex(MASTERS), M = masters.masters ?? masters;
   for (const [id, w, h] of [[L.stage.master, 1024, 522], [C.seed.slice, 24, 24], [C.wish.slice, 12, 12], [C.glint.slice, 12, 12], ...Array.from({ length: 16 }, (_, i) => [C.mark.slice.replace("{SNN}", "S" + String(i + 1).padStart(2, "0")), 10, 10])])
     assert.ok(M[id] && M[id].w === w && M[id].h === h, id + " is placed at " + w + "x" + h);
   assert.deepEqual(lib.faces.sizes, [18, 24, 40, 56, 64]); assert.equal(C.face.size, 18); assert.ok(lib.faces.sizes.includes(C.face.size)); assert.deepEqual(lib.faces.ticks.sizes, [40, 56, 64]); assert.equal(lib.faces.faded.keep, 0.38);
@@ -771,7 +772,7 @@ test("fix 14, the shape rule: every focus target has a shape of the five kinds a
 
 // the 2 px floor (§14.4): a creature ring's bands that reach 3:1 against the ground must add up to 2 px in every light. The thresholds come from the palette, never typed.
 const { keyFrom, coreTo } = floorThresholds(palette);
-const SCENES = FLOOR_SCENES, masters = rd("../assets/masters/index.json").masters;
+const SCENES = FLOOR_SCENES, masters = readIndex(MASTERS).masters;
 function floorProblems(weight) {
   const out = [];
   for (const [light, w] of Object.entries(weight)) {

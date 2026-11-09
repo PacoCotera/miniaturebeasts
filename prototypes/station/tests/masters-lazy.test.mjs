@@ -129,3 +129,15 @@ test("a background fetch that never answers (fetch's TypeError) is quiet, not th
     assert.equal(l.roomLoaded("reeds"), true, "shown, the room is fetched again and placed");
   } finally { console.error = ce; console.warn = cw; globalThis.reportError = re; }
 });
+
+// T7: the page reads the slim index (group + a 12-hex sha, file only when it is not <group>/<id>.png) and never asks for provenance.json
+test("a slim index loads: the file name comes from the group and id, the sha is its first 12 hex, and provenance.json is never fetched", async () => {
+  const asked = [], placed = [], masters = { "frame-a": { group: "shell", w: 4, h: 4, bytes: 9, sha: sha("shell/frame-a.png").slice(0, 12) }, "odd-b": { group: "pods", file: "pods/other.png", w: 4, h: 4, bytes: 9, sha: sha("pods/other.png").slice(0, 12) } };
+  const fx = async (url) => { asked.push(url.pathname.replace(/^\/m\//, "") + url.search); const f = url.pathname.replace(/^\/m\//, ""); if (f === "index.json") return { ok: true, json: async () => ({ masters }) }; const b = body(f); return { ok: true, arrayBuffer: async () => b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) }; };
+  const loader = createMasterLoader({ fetch: fx, decode: async () => ({ w: 4, h: 4, rgba: () => null }), place: (m) => placed.push(m.id + ":" + m.hash) });
+  await loader.load(new URL("http://x/m/"), { order: ORDER });
+  assert.deepEqual(asked.sort(), ["index.json", "pods/other.png?v=" + masters["odd-b"].sha, "shell/frame-a.png?v=" + masters["frame-a"].sha].sort());
+  assert.deepEqual(placed.sort(), ["frame-a:" + masters["frame-a"].sha, "odd-b:" + masters["odd-b"].sha]); assert.ok(!asked.some((a) => /provenance/.test(a)));
+  const bad = createMasterLoader({ fetch: async (url) => (url.pathname.endsWith("index.json") ? { ok: true, json: async () => ({ masters: { x: { group: "shell", w: 4, h: 4, sha: "000000000000" } } }) } : { ok: true, arrayBuffer: async () => body("x").buffer.slice(0) }), decode: async () => ({ w: 4, h: 4, rgba: () => null }), place: () => {} });
+  await assert.rejects(bad.load(new URL("http://x/m/"), { order: ORDER }), /does not match the index/);
+});

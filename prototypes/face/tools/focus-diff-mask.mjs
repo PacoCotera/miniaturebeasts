@@ -9,6 +9,7 @@
 // the builder pastes into the gate note: per screen, the `ring-only` and the `re-gate whole` states.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { decodePNG, encodePNG } from "../../ui/png.mjs";
 import { ringMask, tabRingMask, focusRingOps, ringRaster } from "../../ui/rings.mjs";
@@ -107,7 +108,7 @@ const CAPTURES = [
   ["cargo-bay", "Cargo", "the room", "none: room-only focus; captured to show no ring was added"], ["incubator-growing", "Incubator, painted creature (juvenile)", "the room", "none: room-only focus, no creature target; captured to show no ring was added"], ["idle-docked", "Idle, painted creature", "the room", "none: room-only focus, no creature target; captured to show no ring was added"]];
 async function writeCaptures(out, tmp) {
   mkdirSync(out, { recursive: true }); const info = JSON.parse(readFileSync(path.join(tmp, "states.json"), "utf8")), bySlug = Object.fromEntries(Object.keys(info).map((n) => [slug(n), n])), rows = [];
-  const masters = JSON.parse(readFileSync(path.resolve(here, "../../ui/assets/masters/index.json"), "utf8")).masters, weight = T.shapes.footprint.weight;
+  const masters = readIndex(path.resolve(here, "../../ui/assets/masters")).masters, weight = T.shapes.footprint.weight;
   for (const [key, screen, target, ring] of CAPTURES) {
     const name = Object.keys(info).find((n) => slug(n) === key || slug(n) === "pods-" + key || slug(n) === slug(key)) ?? bySlug[key]; if (!name) { console.error("no state for " + key); continue; }
     const file = slug(name) + ".png"; copyFileSync(path.join(tmp, file), path.join(out, file));

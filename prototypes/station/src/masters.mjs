@@ -12,7 +12,9 @@ const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart
 // The rooms' pictures (index file rooms/room-<room>-...) load lazily: at boot every other master and the shown room's pictures, then the other rooms in the background (the room after the shown one first); ensureRoom(room) puts a room's pictures
 // at the front of the queue and resolves when they are placed. Test mode (opts.all) loads everything at boot. Which room a master belongs to is read from its file path in the index.
 // A master's URL carries the start of its sha256 (`?v=`): any change to the bytes is a new URL, so the server may keep the file forever (Cache-Control immutable, ops/sandbox/Caddyfile).
-export const masterUrl = (base, e) => { const u = new URL(e.file, base); if (e.sha256) u.searchParams.set("v", e.sha256.slice(0, 12)); return u; };
+// The index the page fetches is the slim one (ui/tools/index-io.mjs): per master { group, w, h, bytes, sha, [file] }, `sha` the first 12 hex of the SHA-256 and `file` only when it is not <group>/<id>.png. provenance.json (who signed, the whole hash) is never fetched.
+const SHORT = 12, shaOf = (e) => (e.sha ?? e.sha256 ?? "").slice(0, SHORT);
+export const masterUrl = (base, e) => { const u = new URL(e.file, base), v = shaOf(e); if (v) u.searchParams.set("v", v); return u; };
 const ROOM_FILE = /^rooms\/room-([a-z0-9]+)-/, LIGHT_IN = /-(dawn|day|dusk|night)-/;
 const realDecode = decodeRGBA;
 // On demand (opts.groups, from masters/groups.json, which the station journey records): the index registers every master with no pixels (registerPending), and only the boot groups' pictures and the shown room's are
@@ -27,9 +29,9 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
     const e = it.e, r = await fx(masterUrl(base, e));
     if (!r.ok) throw new Error(`master ${it.id}: ${e.file} is missing`);
     const bytes = await r.arrayBuffer(), sha = hex(await crypto.subtle.digest("SHA-256", bytes));
-    if (sha !== e.sha256) throw new Error(`master ${it.id}: ${e.file} does not match the index (sha256 ${sha.slice(0, 12)}…)`);
+    if (sha.slice(0, SHORT) !== shaOf(e)) throw new Error(`master ${it.id}: ${e.file} does not match the index (sha256 ${sha.slice(0, 12)}…)`);
     let bmp = await decode(bytes); if (juvenileMirrored(it.id)) bmp = mirrorPic(bmp);   // the young of a flagged species faces the opposite way from its adult: drawn mirrored, the file untouched
-    place({ id: it.id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }, { w: bmp.w, h: bmp.h, rgba: bmp.rgba }); it.placed = true;
+    place({ id: it.id, w: e.w, h: e.h, file: e.file, hash: shaOf(e), slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }, { w: bmp.w, h: bmp.h, rgba: bmp.rgba }); it.placed = true;
   };
   const pump = () => {
     while (active < concurrency && queue.length) {
@@ -77,7 +79,8 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
       const index = await res.json(), ids = Object.keys(index.masters ?? {});
       setJuvenileFacing(index.juvenileFacing ?? null);
       items = ids.map((id) => {
-        const e = index.masters[id], f = e.file.startsWith("rooms/") ? ROOM_FILE.exec(e.file) : null;
+        const e = { ...index.masters[id] }; e.file ??= `${e.group}/${id}.png`;
+        const f = e.file.startsWith("rooms/") ? ROOM_FILE.exec(e.file) : null;
         if (e.file.startsWith("rooms/") && !f) throw new Error(`master ${id}: ${e.file} names no room (rooms/room-<room>-...)`);
         const it = { id, e, room: f ? f[1] : null, light: f ? LIGHT_IN.exec(e.file)?.[1] ?? null : null, queued: false }; it.done = new Promise((ok, no) => { it.resolve = ok; it.reject = no; }); it.done.catch(() => {}); return it;
       });
@@ -88,7 +91,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
       for (const it of items) { if (it.room) { if (!roomMap.has(it.room)) roomMap.set(it.room, []); roomMap.get(it.room).push(it); } const k = famKey(it.id); if (!fam.has(k)) fam.set(k, []); fam.get(k).push(it); }
       let boot;
       if (groups) {   // on demand: every master is in the manifest without pixels; the boot groups' and the shown room's are fetched now
-        for (const it of items) { const e = it.e; register({ id: it.id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }); }
+        for (const it of items) { const e = it.e; register({ id: it.id, w: e.w, h: e.h, file: e.file, hash: shaOf(e), slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }); }
         const want = new Set(bootGroups.flatMap((g) => groups[g] ?? []));
         boot = [...items.filter((it) => !it.room && want.has(it.id)), ...(shown != null ? roomNeed(shown) : [])];
       } else boot = all ? items : items.filter((it) => !it.room || it.room === shown);

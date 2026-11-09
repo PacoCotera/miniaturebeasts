@@ -8,6 +8,7 @@
 import { createServer } from "node:http";
 import { readFileSync, readdirSync, existsSync, statSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { createRequire } from "node:module";
 import { decode } from "../../genome-stamp/src/decode.mjs";
@@ -926,7 +927,7 @@ if (external.length) { errors.push("requests left the page's origin: " + externa
 await assertFace("the fresh world");
 // The masters each screen used (the page's probe, test mode): `STATION_WRITE_GROUPS=1` merges them into ui/assets/masters/groups.json; otherwise every id a screen used must be in that screen's committed group,
 // or the player would wait for it (the page loads a screen's group before it draws the screen, and fetches a miss on demand). A screen the journey never showed is not checked.
-{ const used = await page.evaluate(() => window.__st.used()), mroot = path.join(root, "ui/assets/masters"), index = JSON.parse(readFileSync(path.join(mroot, "index.json"), "utf8")), groups = readGroups(mroot);
+{ const used = await page.evaluate(() => window.__st.used()), mroot = path.join(root, "ui/assets/masters"), index = readIndex(mroot), groups = readGroups(mroot);
   if (process.env.STATION_WRITE_GROUPS) { const g = mergeGroups(groups, used, index); writeGroups(mroot, g); console.log("wrote groups.json: " + Object.entries(g.screens).map(([k, v]) => `${k} ${v.length} (${(groupBytes(v, index) / 1e6).toFixed(1)} MB)`).join(" · ")); }
   else { const miss = missingFrom(groups, used, index); for (const m of miss) fail("a master a screen used is not in groups.json: " + m); console.log(`masters used per screen: ${Object.entries(used).map(([k, v]) => k + " " + v.length).join(" · ")}; ${miss.length} not in groups.json`); } }
 const checksFile = process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");

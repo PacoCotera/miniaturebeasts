@@ -6,12 +6,13 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodePNG } from "../../ui/png.mjs";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 import { RGB, C } from "../src/pixels.mjs";
 import { facePicture, windowOf } from "../src/face-pictures.mjs";
 import { setJuvenileFacing, juvenileMirrored, mirrorRGBA, adultFacing, youngFacing } from "../src/facing.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), root = path.resolve(here, "../../ui/assets/masters");
-const index = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")), lib = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/library.json"), "utf8")).faces;
+const index = readIndex(root), lib = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/library.json"), "utf8")).faces;
 setJuvenileFacing(index.juvenileFacing);
 const load = (id) => { const d = decodePNG(readFileSync(path.join(root, index.masters[id].file))); return { w: d.width, h: d.height, rgba: juvenileMirrored(id) ? mirrorRGBA(d.data, d.width, d.height) : d.data }; };
 const rgb = (n) => RGB[C[n]], stone = RGB[C.stone];
