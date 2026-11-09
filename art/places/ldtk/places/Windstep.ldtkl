@@ -584,14 +584,14 @@
 						{
 							"__identifier": "chance",
 							"__type": "Float",
-							"__value": 0.6,
+							"__value": 0.5,
 							"__tile": null,
 							"defUid": 125,
 							"realEditorValues": [
 								{
 									"id": "V_Float",
 									"params": [
-										0.6
+										0.5
 									]
 								}
 							]
@@ -648,14 +648,14 @@
 						{
 							"__identifier": "chance",
 							"__type": "Float",
-							"__value": 0.6,
+							"__value": 0.5,
 							"__tile": null,
 							"defUid": 125,
 							"realEditorValues": [
 								{
 									"id": "V_Float",
 									"params": [
-										0.6
+										0.5
 									]
 								}
 							]
@@ -712,14 +712,14 @@
 						{
 							"__identifier": "chance",
 							"__type": "Float",
-							"__value": 0.6,
+							"__value": 0.5,
 							"__tile": null,
 							"defUid": 125,
 							"realEditorValues": [
 								{
 									"id": "V_Float",
 									"params": [
-										0.6
+										0.5
 									]
 								}
 							]
@@ -769,14 +769,14 @@
 						{
 							"__identifier": "chance",
 							"__type": "Float",
-							"__value": 0.6,
+							"__value": 0.5,
 							"__tile": null,
 							"defUid": 125,
 							"realEditorValues": [
 								{
 									"id": "V_Float",
 									"params": [
-										0.6
+										0.5
 									]
 								}
 							]
@@ -833,14 +833,14 @@
 						{
 							"__identifier": "chance",
 							"__type": "Float",
-							"__value": 0.6,
+							"__value": 0.5,
 							"__tile": null,
 							"defUid": 125,
 							"realEditorValues": [
 								{
 									"id": "V_Float",
 									"params": [
-										0.6
+										0.5
 									]
 								}
 							]

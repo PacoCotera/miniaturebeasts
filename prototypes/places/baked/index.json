@@ -12,22 +12,22 @@
     {
       "id": "HollowTree",
       "file": "HollowTree.mbplace",
-      "w": 18,
-      "h": 22,
+      "w": 24,
+      "h": 28,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 5676,
-      "sha256": "23846a0448e6ac6583d101fe711b3f70709c0b582aad6f63a0c1dc1a97cd1692"
+      "bytes": 10588,
+      "sha256": "aeb7c4b319829b2b415d05031bb65ee0ac3625e7b8965ed3df4ab592701d07ee"
     },
     {
       "id": "HollowTree~x",
       "file": "HollowTree~x.mbplace",
-      "w": 18,
-      "h": 22,
+      "w": 24,
+      "h": 28,
       "set": "ninja-test",
       "mirrorOf": "HollowTree",
-      "bytes": 5688,
-      "sha256": "a1796f37335ce4ee9b16f401907b64d81e2379b87a66c6be0cd680af0b9483f0"
+      "bytes": 10600,
+      "sha256": "b0f33dd9f9cd8261f6f0b541ba4b2fc47a565058904e844359a54726f501f449"
     },
     {
       "id": "Reedpool",
@@ -97,7 +97,7 @@
       "set": "ninja-test",
       "mirrorOf": "",
       "bytes": 14364,
-      "sha256": "0cbf38b28684fbdbd4bef7806c03fc7fe7e1ed80865829a166b19144b18f795b"
+      "sha256": "73fa0593c03f86a891bd5ddeb9ae3d701f904a9b113ba4f1681a3d4673d680fe"
     },
     {
       "id": "Windstep~x",
@@ -107,7 +107,7 @@
       "set": "ninja-test",
       "mirrorOf": "Windstep",
       "bytes": 14372,
-      "sha256": "93bffd0da26c6466644bf51de06755fb3c360b8927a976ca87da38473cab3d98"
+      "sha256": "e4801d01b37c0053c9693266504898a2ba2d67f03a3236c27150e18d33d26c50"
     }
   ]
 }

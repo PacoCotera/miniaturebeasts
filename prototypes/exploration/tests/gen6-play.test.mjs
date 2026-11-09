@@ -9,13 +9,13 @@ const page = () => makePage({ gen: 6, console: "collect" });
 const SEEDS = [7, 13, 42];
 const plain = (x) => JSON.parse(JSON.stringify(x));
 
-test("a new world is generator 6 and every land cell's layout is the template's size (Windstep 24 x 28 in the open style, the others 18 x 22), with a heart of a kind the page plays", () => {
+test("a new world is generator 6 and every land cell's layout is the template's size (Windstep and the Hollow Tree 24 x 28 in the open style, the others 18 x 22), with a heart of a kind the page plays", () => {
   for (const seed of SEEDS) {
     const p = page(); p.run(`newWorld(${seed})`);
     assert.equal(p.run("G.gen"), 6); assert.equal(p.run("S.regions[0].gen"), 6);
     const rows = plain(p.run(`(() => { const out = []; for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const lay = layout(String(c)), h = heartOf(String(c)); out.push({ c, id: lay.baked.id, w: lay.w, h: lay.h, name: lay.name, kind: h && h.kind, t: templateFor(G, S.seed, c).id, reach: !!(h && h.path.length) }); } return out; })()`));
     assert.ok(rows.length > 40, "land cells: " + rows.length);
-    for (const r of rows) { assert.equal(r.id, r.t); assert.deepEqual([r.w, r.h], r.id.startsWith("Windstep") ? [24, 28] : [18, 22]); assert.ok(r.name, "a name"); assert.ok(["moment", "nest", "stone", "spring"].includes(r.kind), r.kind); assert.ok(r.reach, "a path to the heart from the way in: cell " + r.c); }
+    for (const r of rows) { assert.equal(r.id, r.t); assert.deepEqual([r.w, r.h], (r.id.startsWith("Windstep") || r.id.startsWith("HollowTree")) ? [24, 28] : [18, 22]); assert.ok(r.name, "a name"); assert.ok(["moment", "nest", "stone", "spring"].includes(r.kind), r.kind); assert.ok(r.reach, "a path to the heart from the way in: cell " + r.c); }
     assert.equal(new Set(rows.map((r) => r.id.replace("~x", ""))).size >= 3, true, "several templates in play");
   }
 });
