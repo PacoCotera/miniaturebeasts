@@ -6,8 +6,14 @@ import { BUILT } from "../station/src/nav.mjs";
 
 // the old Station's hold, as a line to count against (the design review's bot run 7: what would have been lost to the old 20)
 export const OLD_CEILING = 20;
+// the whole loop of the playtest (plan row 3.15), in the order a tester walks it: a pod in the Bay, read (identified for a bot that reads nothing), grown, hatched, cared for (greeted),
+// crossed (the child hatched), and out again with the Companion. The Sitting is reported beside it: it is earned by research (a line four crosses deep), not walked to.
+export const LOOP_STEPS = ["read", "grown", "hatched", "care", "crossed", "crossHatched", "out"];
+export const LOOP_WORDS = { read: "read", grown: "grown", hatched: "hatched", care: "cared for", crossed: "crossed", crossHatched: "child hatched", out: "out with the Companion" };
+export const KEY_SECONDS = 1.5;   // a key a player presses about every second and a half (assumed): minutes of play = presses x this
+const stepAt = (g, s) => (s === "read" ? g.loop?.read ?? g.loop?.identified : g.loop?.[s]);
 export const NOT_MEASURABLE = [
-  { what: "Crosses beyond the first: crosses a trip, refusals by reason, the forecast against the draw, the line over time, samples", why: "breeding (the breeding design) is not built; the game has one cross from a pod (bot runs 3, 4, 5)" },
+  { what: "Crosses: refusals by reason, the forecast against the draw, the line over time, samples", why: "the bots cross and read the line's depth by the Sitting being earned; the refusals are plates the bots read only for the Vivarium being full and the Essence being short" },
   { what: "The house and the manager: free places by turn, bonded share, tuck-away and bring-out", why: "the manager is not built (bot run 6)" },
   { what: "Pods in by source and out by exit (grown, let go, dried), turns held, Freshen", why: "the new Pods screens are not built; only grown and let go through today's screens are counted (bot run 2)" },
   { what: "Data per trip by source and the Watch share, trips that hit the ceiling", why: "the Companion is a stub, so the acts that pay Data are not played (bot run 1)" },
@@ -32,6 +38,14 @@ function held(games, key) {
   return { byTurn, peak: all.length ? Math.max(...all) : 0, shareOver20: all.length ? +(all.filter((v) => v > OLD_CEILING).length / all.length).toFixed(3) : 0 };
 }
 
+// the whole loop: the games that walked all of it, when (the world turn, presses, minutes of play), and where the others stopped (the first step they never reached)
+function loopSummary(rows) {
+  const steps = {}; for (const s of LOOP_STEPS) steps[s] = rows.filter((g) => stepAt(g, s)).length;
+  const done = rows.filter((g) => LOOP_STEPS.every((s) => stepAt(g, s)));
+  const last = (g, f) => Math.max(...LOOP_STEPS.map((s) => stepAt(g, s)[f]));
+  const stoppedAt = count(rows.filter((g) => !done.includes(g)), (g) => LOOP_STEPS.find((s) => !stepAt(g, s)));
+  return { finished: done.length, of: rows.length, steps, stoppedAt, turn: spread(done.map((g) => last(g, "turn"))), presses: spread(done.map((g) => last(g, "press"))), playMinutes: spread(done.map((g) => +(last(g, "press") * KEY_SECONDS / 60).toFixed(1))), sat: rows.filter((g) => g.loop?.sat).length, sittingOpened: rows.filter((g) => g.loop?.sittingOpened).length, roomAdded: rows.filter((g) => g.loop?.roomAdded).length, outAny: rows.filter((g) => g.loop?.outAny).length };
+}
 // one policy's games, summed up
 export function summarise(policy, games) {
   const rows = games.map((g) => ({ ...g, series: g.series ?? [] }));
@@ -41,7 +55,7 @@ export function summarise(policy, games) {
   return {
     policy, games: rows.length, finished: rows.filter((g) => g.end === "done").length, crashed: rows.filter((g) => g.end === "error").map((g) => ({ seed: g.seed, error: g.error })),
     presses: spread(rows.map((g) => g.presses ?? 0)), hatched: spread(rows.map((g) => g.hatched ?? 0)),
-    firstHatch: milestone(rows, "firstHatch"), firstElder: milestone(rows, "firstElder"),
+    firstHatch: milestone(rows, "firstHatch"), firstElder: milestone(rows, "firstElder"), loop: loopSummary(rows),
     energy: held(rows, "e"), data: held(rows, "d"), essence: held(rows, "s"),
     pods: {
       received, trips, perTrip: trips ? +(received / trips).toFixed(2) : null, neverRead, neverReadShare: received ? +(neverRead / received).toFixed(3) : null, grown: sum(pods.map((p) => p.grown ?? 0)), letGo: sum(pods.map((p) => p.letGo ?? 0)),
@@ -73,7 +87,14 @@ const at = (m) => (m.reached ? `${m.turn.median} (${m.turn.min}–${m.turn.max})
 const last = (h) => (h.byTurn.length ? `${h.byTurn.at(-1).mean} (peak ${h.peak})` : "-");
 export function markdown(r) {
   const P = Object.values(r.policies), m = r.meta, L = [];
-  L.push("# Bot runs", "", `${m.games ?? "?"} games a policy, ${m.turns} world turns each, up to ${m.presses} keys a turn, economy ${m.economy ?? "?"}, ${m.face ?? "native"} face. ${STUB.note}.`, "",
+  L.push("# Bot runs", "", `${m.games ?? "?"} games a policy, ${m.turns} world turns each, up to ${m.presses} keys a turn (a policy may name its own), economy ${m.economy ?? "?"}, ${m.face ?? "native"} face, Playtest waits on (the Options panel's key, ${m.playtest === false ? "off" : "on"}). ${STUB.note}.`, "",
+    "## The whole loop", "",
+    "A game walks the loop when it reaches every step: " + LOOP_STEPS.map((s) => LOOP_WORDS[s]).join(", then ") + ". Minutes of play are keys pressed x " + KEY_SECONDS + " s (assumed); the Companion's trips and the Station's waits are not play.", "",
+    "| policy | loops finished | at world turn, median (range) | minutes of play, median (range) | keys, median | stopped at (the first step missed) | the Sitting opened / held and begun |",
+    "|---|---|---|---|---|---|---|");
+  for (const p of P) { const l = p.loop, t = l.turn, pm = l.playMinutes; L.push(`| ${p.policy} | ${l.finished}/${l.of} | ${t ? `${t.median} (${t.min}–${t.max})` : "-"} | ${pm ? `${+pm.median.toFixed(1)} (${pm.min}–${pm.max})` : "-"} | ${l.presses?.median ?? "-"} | ${Object.entries(l.stoppedAt).map(([k, v]) => `${LOOP_WORDS[k]} ${v}`).join(", ") || "-"} | ${l.sittingOpened}/${l.of} · ${l.sat}/${l.of} |`); }
+  L.push("", "Steps reached, games of " + (P[0]?.games ?? "?") + " (" + P.map((p) => p.policy).join(", ") + "):", "", "| step | " + P.map((p) => p.policy).join(" | ") + " |", "|---|" + P.map(() => "---").join("|") + "|", ...LOOP_STEPS.map((s) => "| " + LOOP_WORDS[s] + " | " + P.map((p) => p.loop.steps[s]).join(" | ") + " |"), "",
+    "## Economy and dead ends", "",
     "STUB: the trips are the stand-in Companion's, so what comes in is an assumption; what the policies do with it, and what the Station does, is measured. The world turn is one trip; between two turns 20 minutes of Station time pass.", "",
     "| policy | first hatch: turn median (range) · games | first elder | hatched at end (median) | Energy at end, mean (peak) | Data at end | Essence at end | pods held at end (median) · peak | pods never read | dead ends: games (events) | soft locks | crashed |",
     "|---|---|---|---|---|---|---|---|---|---|---|---|");

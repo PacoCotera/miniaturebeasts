@@ -15,19 +15,26 @@ import { firstWorld, trip, mulberry32 } from "./companion-stub.mjs";
 export const TURN_MINUTES = 20;   // Station time between two trips: a bud (5 or 20 minutes) made in one turn is ready by the next
 class BudgetOut extends Error {}
 
-export async function playGame({ policy: name, seed = 1, turns = 30, presses = 60, economy = "strict", logDir = null, face = "native" } = {}) {
+export async function playGame({ policy: name, seed = 1, turns = 30, presses = 800, economy = "strict", logDir = null, face = "native", playtest = true } = {}) {
   const policy = POLICIES[name]; if (!policy) throw new Error("no policy " + name);
-  const s = await boot({ seed, face, save: firstWorld(seed), names: "en-short-1", settings: { economy } });
+  const s = await boot({ seed, face, save: firstWorld(seed), names: "en-short-1", settings: { economy }, options: playtest ? { playtest: true } : null });
   const { G, UI } = s.game, S = s.S, settings = G.settings;
   const prng = mulberry32((seed * 2654435761) ^ 0x9e3779b9), tripRng = mulberry32(seed ^ 0x5bd1e995);
   const log = logDir ? createLog(path.join(logDir, `${name}-${seed}.jsonl`), { mode: "assisted", policy: name, seed, turns, face }) : null;
-  const rec = { policy: name, seed, turns, economy, presses: 0, minutes: 0, firstHatch: null, firstElder: null, series: [], screens: {}, stuck: [], softLock: null, pods: { seen: {}, grown: 0, letGo: 0 }, hatched: 0, end: "done" };
+  const rec = { policy: name, seed, turns, economy, presses: 0, minutes: 0, firstHatch: null, firstElder: null, series: [], screens: {}, stuck: [], softLock: null, loop: {}, pods: { seen: {}, grown: 0, letGo: 0 }, hatched: 0, end: "done" };
   let turn = 0, turnPresses = 0, stuck = createStuck(), inRecovery = false, lastView = null, viewAt = -1, podIds = new Set(), budIds = null;
+  const mark = (k) => { rec.loop[k] ??= { turn, press: rec.presses, minutes: rec.minutes }; };
   const seenScreen = (k) => { rec.screens[k] = (rec.screens[k] ?? 0) + 1; };
   const view = () => { if (viewAt === rec.presses + rec.minutes) return lastView; const o = s.observeAssisted(); const L = legal(s); const m = materials(o); lastView = { o, L, mat: m ?? lastView?.mat ?? null }; viewAt = rec.presses + rec.minutes; return lastView; };
   const watch = (r) => {
     seenScreen(UI.screen); if (UI.screen === "pods" || UI.screen === "library" || UI.screen === "cargo") seenScreen(UI.screen + "." + (s.props()?.state ?? ""));
     const st = G.st;
+    if (st.readEver) mark("read");
+    if (st.bud || st.mibis.length) mark("grown");
+    if (st.mibis.length) mark("hatched");
+    if (st.bud?.kind === "cross" || st.mibis.some((m) => m.parents?.length === 2)) mark("crossed");
+    if (st.mibis.some((m) => m.parents?.length === 2)) mark("crossHatched");
+    if (UI.screen === "sitting") mark("sittingOpened");
     if (!rec.firstHatch && st.mibis.length) rec.firstHatch = { turn, press: rec.presses, minutes: rec.minutes };
     rec.hatched = Math.max(rec.hatched, st.mibis.length);
     const now = new Set([...st.tray, ...st.waiting].map((p) => p.id));
@@ -51,7 +58,7 @@ export async function playGame({ policy: name, seed = 1, turns = 30, presses = 6
     }
     return r;
   };
-  const ctx = { press, view, wait: (m) => { s.wait(m); rec.minutes += m; return view(); }, rng: prng, state: {} };
+  const ctx = { press, view, wait: (m) => { s.wait(m); rec.minutes += m; return view(); }, rng: prng, state: {}, mark };
   stuck.start(s.hash());
   try {
     for (turn = 1; turn <= turns; turn++) {
@@ -59,7 +66,8 @@ export async function playGame({ policy: name, seed = 1, turns = 30, presses = 6
       trip(s, tripRng, turn);
       if (!S.docked(G.st)) s.press("dock");
       try { policy.playTurn(ctx); } catch (e) { if (!(e instanceof BudgetOut)) throw e; }
-      if (S.docked(G.st)) { s.press("dock"); if (S.docked(G.st)) rec.stuck.push({ turn, kind: "cannot-lift", screen: UI.screen, state: s.props()?.state ?? null, presses: rec.presses }); }
+      if (S.docked(G.st)) { if (S.projectCarried(G.st, G.sv).length) { mark("outAny"); if (rec.loop.crossed) mark("out"); }
+        s.press("dock"); if (S.docked(G.st)) rec.stuck.push({ turn, kind: "cannot-lift", screen: UI.screen, state: s.props()?.state ?? null, presses: rec.presses }); }
       s.wait(TURN_MINUTES); rec.minutes += TURN_MINUTES;
       const st = G.st, stages = st.mibis.filter((m) => !m.released).map((m) => S.mibiStage(st, m, settings));
       if (!rec.firstElder && stages.includes("elder")) rec.firstElder = { turn, press: rec.presses, minutes: rec.minutes };
