@@ -801,7 +801,7 @@ test("M3: the gen-1 hint shows on a generator 1 save between expeditions, never 
   g1.run("scr.px().fill(-1); text(" + JSON.stringify(hint) + ", 28, 365, C.sand);"); const alone = g1.run("scr").px(), sand = g1.run("C.sand");
   assert.equal([...alone].filter(v => v === sand).length, shown.n, "exactly the hint's pixels");
   assert.equal(sandIn(g1, "S.gen = 1; S.exp = null; S.phase = 'setup'").n, shown.n, "gen 1 written out: still shown");
-  assert.equal(sandIn(g1, "delete S.gen; S.phase = 'setup'; S.exp = { pos: 0 }").n, 0, "during an expedition: none");
+  assert.equal(sandIn(g1, "delete S.gen; S.phase = 'setup'; S.exp = { pos: 0, reach: [] }").n, 0, "during an expedition: none");
   assert.equal(sandIn(g1, "S.exp = null; S.phase = 'menu'").n, 0, "another phase: none");
   const g2 = g2Page();
   assert.equal(sandIn(g2, "S.exp = null; S.phase = 'setup'").n, 0, "generator 2: none");

@@ -37,9 +37,13 @@ export const WALK_ART = Object.fromEntries(readdirSync(WALK_DIR).filter((f) => f
 const LOOK_DIR = new URL("../art/look/", import.meta.url);
 export const LOOK_ART = Object.fromEntries(readdirSync(LOOK_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, LOOK_DIR)))]));
 
+// The opening screen's mist and pod (art/open/), decoded the same way.
+const OPEN_DIR = new URL("../art/open/", import.meta.url);
+export const OPEN_ART = Object.fromEntries(readdirSync(OPEN_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, OPEN_DIR)))]));
+
 // Binds the imports into ctx, runs the page script (or a variant of it) there, and returns run(src), which evaluates in the page.
 export function loadPage(ctx, script = SCRIPT) {
-  ctx.window = ctx; if (ctx.__places6 === undefined) ctx.__places6 = PLACES6; if (ctx.__walkArt === undefined) ctx.__walkArt = WALK_ART; if (ctx.__lookArt === undefined) ctx.__lookArt = LOOK_ART;
+  ctx.window = ctx; if (ctx.__places6 === undefined) ctx.__places6 = PLACES6; if (ctx.__walkArt === undefined) ctx.__walkArt = WALK_ART; if (ctx.__lookArt === undefined) ctx.__lookArt = LOOK_ART; if (ctx.__openArt === undefined) ctx.__openArt = OPEN_ART;
   for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from];
   // The page plays generator 6 only (GENS = [6]). The suites written for generator 5's generated places run on generator 5, which stays frozen in world.mjs: a page opened with
   // `gen: 6` (makePage) or `__gen6: true` (a ctx given to loadPage) is the page as played; any other is that page with generator 5 played too and new worlds of generator 5.

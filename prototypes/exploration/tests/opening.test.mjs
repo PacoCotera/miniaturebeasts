@@ -1,7 +1,7 @@
 // The Companion's opening screen (designer's scheme T-20261108-companion-opening, B1 + B2): the front door between expeditions.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { makePage } from "./page-harness.mjs";
+import { makePage, OPEN_ART } from "./page-harness.mjs";
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
@@ -77,19 +77,20 @@ test("B1: Up and Down skip Deep ground while it is not shown", () => {
   const q = opening(14, { known: [1] }); q.key("down"); assert.equal(q.run("S.ui.sel"), 1); q.key("down"); assert.equal(q.run("S.ui.sel"), 2);
 });
 
-test("B1: the two named art slots are registered, and the built stand-ins play until their files are in", () => {
+test("the two signed art pieces are registered; the desk's pod stands on the partner ring at (8, 458), its foot (48, 92); the built pod plays only until the files are in", () => {
   const p = opening(), reg = plain(p.run("CARE_ASSETS.filter(a => /^c-open-/.test(a.id))"));
-  assert.deepEqual(reg.map(a => [a.id, a.w, a.h, a.status]), [["c-open-night", 48, 48, "stand-in"], ["c-open-pod-96", 96, 96, "stand-in"]]);
-  assert.equal(p.run("openArt('c-open-pod-96')"), null, "no file yet: the built pod");
-  draw(p); const pod = p.run("podArt('bone', 3)"), r = stands(p, pod, 32, 488); assert.ok(r.n > 300 && r.bad === 0, "the field pod at 3x: " + JSON.stringify(r));
+  assert.deepEqual(reg.map(a => [a.id, a.w, a.h, a.status]), [["c-open-night", 96, 96, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
+  assert.equal(p.run("OPEN_ART.ready"), true, "the art read at boot");
+  draw(p); assert.equal(p.run("OPEN_ART.pod.length"), 3); assert.equal(p.run("OPEN_ART.pod[2].w"), 96);
+  const ring = stands(p, p.run("ringArt('opring84', 84, 22)"), 14, 536); assert.ok(ring.n > 100 && ring.bad < ring.n * 0.5, "the ring under its foot: " + JSON.stringify(ring));
+  const q = opening(); q.run("OPEN_ART.ready = false;"); draw(q); const b = stands(q, q.run("podArt('bone', 3)"), 32, 488); assert.ok(b.bad === 0, "without the files: the built pod at 3x");
 });
 
 // ---- B2: the land in the frame ----
 test("B2: a fresh world: the frame is night, each light's own cell is land in the dark table, and drawing reveals nothing", () => {
   const p = opening(); p.run("ensureMap();");
   const before = JSON.stringify(p.run("[S.revealed, S.visited, S.veil, S.called]"));
-  const px = draw(p), W = p.run("SCR_W"), night = p.run("C.night"), ink = p.run("C.ink");
-  assert.ok([night, ink].includes(px[198 * W + 225]), "the frame's centre pixel is night");
+  draw(p); const night = p.run("C.night"), ink = p.run("C.ink");
   const q = plain(p.run("(() => { const o = openFrame(); return { cs: o.cs, first: o.first, spawns: G.spawns.map(c => o.at(c)), g: o.glimpse }; })()"));
   assert.equal(q.first, true); assert.equal(q.g.length, 5, "the five lights"); assert.equal(q.cs, 22, "22 px cells on seed 14");
   const cv = p.run("landImage({ X0: openFrame().X0, Y0: openFrame().Y0, w: 430 + 22, h: 316 + 22, cs: 22, glimpse: G.spawns })").px(), ox = p.run("openFrame().ox"), oy = p.run("openFrame().oy"), CW = 430 + 22;
@@ -147,6 +148,11 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
     assert.equal(await page.evaluate(() => window.__mb.S.phase), "setup");
     await page.evaluate(() => { const m = window.__mb; m.S.revealed.fill(0); m.S.visited.fill(0); m.S.mibis = []; m.S.carried = []; m.S.report = null; m.S.known = []; m.S.bay = []; m.S.ui.lastPos = null; m.S.ui.sel = 0; m.FX.msg = ""; });
     const first = await shot(); golden("opening-first.png", first);
+    // the desk's mist fills the unseen frame (its four colours), and the desk's pod (still, reduced motion) stands at (8, 458), pixel for pixel
+    { const four = new Set(["13,19,34", "19,32,54", "26,45,70", "36,70,90"]); let mist = 0, tot = 0; for (let y = 60; y < 340; y++) for (let x = 60; x < 400; x++) { const o = (y * first.w + x) * 4; tot++; if (four.has([first.data[o], first.data[o + 1], first.data[o + 2]].join())) mist++; }
+      assert.ok(mist > tot * 0.8, "the mist fills the frame: " + mist + " of " + tot);
+      const pod = OPEN_ART["c-open-pod-96-still"]; let bad = 0, n = 0; for (let i = 0; i < 96 * 96; i++) { if (pod.data[i * 4 + 3] !== 255) continue; n++; const o = ((458 + ((i / 96) | 0)) * first.w + 8 + (i % 96)) * 4; if (first.data[o] !== pod.data[i * 4] || first.data[o + 1] !== pod.data[i * 4 + 1] || first.data[o + 2] !== pod.data[i * 4 + 2]) bad++; }
+      assert.ok(n > 2000 && bad === 0, "the pod at (8, 458): " + bad + " of " + n + " differ"); }
     const rev = await page.evaluate(() => window.__mb.S.revealed.some(v => v)); assert.equal(rev, false, "the glimpse revealed nothing");
     // the returning player: Pip (Loika), Moss (Tuikis), Dot (a young Untuva); expedition 5; four places found and three been into; one crate; last turn's line
     await page.evaluate(() => { const m = window.__mb, S = m.S, mk = (id, name, sp, o) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: 0, mem: null, habitsDone: [] }, o);
@@ -170,4 +176,29 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
     assert.ok(marks.been.slate > marks.been.px.length * 0.5, "been: the slate silhouette"); assert.ok(marks.found.slate < marks.found.px.length * 0.5, "found: in colour");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
+});
+
+// ---- the desk's opening art (art/open/, signed in mibi-art a23ee74f6) ----
+import { createHash } from "node:crypto";
+import { readdirSync } from "node:fs";
+const ODIR = new URL("../art/open/", import.meta.url), DESK = process.env.MIBI_ART_OPEN || "/home/mb/mb/mibi-art/art-jobs/2026-11-09-opening/out/";
+const sha = (buf) => createHash("sha256").update(buf).digest("hex");
+const ofiles = readdirSync(ODIR).filter((f) => f.endsWith(".png")).sort(), HASHES = JSON.parse(readFileSync(new URL("SHA256.json", ODIR), "utf8"));
+
+test("art/open: every placed file is the desk's byte for byte (and its recorded hash), the manifest is placed, the page names exactly these files", () => {
+  assert.equal(ofiles.length, 12); assert.deepEqual(Object.keys(HASHES).sort(), ofiles);
+  for (const f of ofiles) assert.equal(sha(readFileSync(new URL(f, ODIR))), HASHES[f], f);
+  if (existsSync(DESK)) { for (const f of [...ofiles, "manifest.json"]) assert.ok(readFileSync(new URL(f, ODIR)).equals(readFileSync(DESK + f)), f + " differs from the desk's file"); }
+  else console.log("# the desk's out/ is not beside this repo: byte check against the recorded hashes only");
+  assert.deepEqual([...opening().run("OPEN_FILES")].sort(), ofiles.map((f) => f.slice(0, -4)));
+});
+
+test("art/open: the mist is 96 px, three variants with a plain night border, on the core palette plus the manifest's four colours; the pod is 96 px, its shell ramp joins the allowed set; no partial alpha", () => {
+  const p = opening(), core = new Set(p.run("RGB").slice(0, 51).map((c) => c.join())), mf = JSON.parse(readFileSync(new URL("manifest.json", ODIR), "utf8"));
+  const four = Object.keys(mf["c-open-night"].palette_additions).map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)).join());
+  assert.deepEqual(four.sort(), plain(p.run("OPEN_COLOURS")).map((c) => c.join()).sort(), "the page's four colours are the manifest's");
+  for (const f of ofiles) { const im = OPEN_ART[f.slice(0, -4)]; assert.equal(im.width, 96); assert.equal(im.height, 96);
+    for (let i = 0; i < 96 * 96; i++) { const a = im.data[i * 4 + 3]; assert.ok(a === 255 || (f.includes("pod") && a === 0), f + ": alpha " + a); if (!a) continue; const k = [im.data[i * 4], im.data[i * 4 + 1], im.data[i * 4 + 2]].join();
+      assert.ok(f.includes("pod") || core.has(k) || four.includes(k), f + ": off the palette at " + i); }
+    if (f.includes("night")) for (let i = 0; i < 96 * 96; i++) { const x = i % 96, y = (i / 96) | 0; if (x < 3 || y < 3 || x > 92 || y > 92) assert.equal([im.data[i * 4], im.data[i * 4 + 1], im.data[i * 4 + 2]].join(), "19,32,54", f + ": the border is the plain night #132036"); } }
 });

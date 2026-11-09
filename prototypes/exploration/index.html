@@ -603,7 +603,7 @@ function bakedView(lay) {
   if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk, ring: PL6.ring || null, haze: PL6.haze }); PL6.views.set(lay.baked.id, v); }
   return v || null;
 }
-const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS);
+const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS);
 function layout6(key) {   // a generator 6 land cell's place: its template, built through the adapter with the seeded fills; null for a ford (generated) or while the places load
   const t = templateFor(G, S.seed, +key), place = t && PL6.places.get(t.id); if (!place) return null;
   return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, G, fill: fillPlace6(G, S.seed, +key, place) });
@@ -992,8 +992,8 @@ const CARE_ASSETS = [
   { id: 'c-map-soft-26', what: 'the map’s and the reach view’s wade (muddy water), scree edge (heaped stones), bank (earth face or lip), dug bank (footholds), their signs and pins, and Tuliko’s extra range ring (a gold lattice)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 26, h: 26, status: 'signed' },
   { id: 'c-canopy-88x76', what: 'a tree canopy over its trunk, in a place at 32 or 48 px', until: 'the meadow tree prop', w: 88, h: 76, status: 'stand-in' },
   { id: 'c-roof-104x22', what: 'the roof on an outcrop, 104 px wide on the 144 px outcrop of a 48 px place', until: 'the meadow outcrop piece', w: 104, h: 22, status: 'stand-in' },
-  { id: 'c-open-night', what: 'the opening screen’s night under the land of a first-time player: a seamless night-mist tile, two frames of slow drift', until: 'the art desk’s tile (the built night dots stand in)', w: 48, h: 48, status: 'stand-in' },
-  { id: 'c-open-pod-96', what: 'the opening screen’s pod where the partner would stand, on its stone ring: two frames of a slow glow', until: 'the art desk’s piece (the built field pod at 3× stands in)', w: 96, h: 96, status: 'stand-in' },
+  { id: 'c-open-night', what: 'the opening screen’s night mist under the land of a first-time player: three seamless 96 px variants (a, b, c) picked per 96 px block by hash, two 900 ms frames and a still; four colours of its own', until: 'signed by the art desk, 2026-11-09 (mibi-art a23ee74f6)', w: 96, h: 96, status: 'signed' },
+  { id: 'c-open-pod-96', what: 'the opening screen’s pod where the partner would stand: 96 px (3× a 32 px master), foot at (48, 92) on the partner ring, two 1200 ms glow frames and a still', until: 'signed by the art desk, 2026-11-09 (mibi-art a23ee74f6)', w: 96, h: 96, status: 'signed' },
 ];
 const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f'], 'mini'], 'c-token-48': ['stone', ['token', 't'], 'sprite'],
   'c-sprite-other-32': ['stone', ['mibi', 'm']], 'c-mini-other-12': ['stone', ['m']] };   // each placeholder's plate colour and labels (longest first), and the mibi's own built art it carries ('mini' 12 px, 'sprite' 32 px)
@@ -4779,7 +4779,8 @@ function landImage(spec) {
   const glimpse = spec.glimpse ? new Set(spec.glimpse) : null, seen = c => !!S.revealed[c] || (glimpse !== null && glimpse.has(c)), fogOf = c => S.revealed[c] ? fogState(c) : glimpse !== null && glimpse.has(c) && passable(c) && G.land[c] !== L.WATER ? 2 : 0;
   const nx = Math.ceil(N / cs), ny = Math.ceil(NH / cs); let st = '';
   for (let j = -1; j <= ny; j++) for (let i = -1; i <= nx; i++) { const X = X0 + i, Y = Y0 + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) { st += 'x'; continue; } const c = Y * MW + X; st += !seen(c) ? 'n' : (fogOf(c) + (ex && ex.storm && stormCovers(X) ? 4 : 0)); }
-  const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : ''].join('|');
+  const mist = spec.mist != null && OPEN_ART.ready ? OPEN_ART.night : null;   // the opening's night mist: unseen pixels take the desk's tiles (frame 0, 1 or 2 = still), a variant per 96 px block of world pixels
+  const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : '', mist ? 'm' + spec.mist : ''].join('|');
   if (LAND_CACHE.key === key) return LAND_CACHE.cv;
   const cv = document.createElement('canvas'); cv.width = N; cv.height = NH; const cg = cv.getContext('2d'), id = cg.createImageData(N, NH), u = new Uint32Array(id.data.buffer);
   const cellOf = landCellOf(cs), tiles = {}, tcs = WALK_CS.reduce((a, b) => Math.abs(b - cs) < Math.abs(a - cs) ? b : a);   // the desk's terrain set nearest the cell size (72, 48 or 26)
@@ -4794,6 +4795,7 @@ function landImage(spec) {
   for (let y = 0; y < NH; y++) for (let x = 0; x < N; x++) {
     const wx = X0 * cs + x, wy = Y0 * cs + y, c = cellOf(wx, wy), b = BAYER[(y & 3) * 4 + (x & 3)];
     if (c < 0) { put(y * N + x, C.void); continue; }
+    if (mist && !seen(c)) { u[y * N + x] = mist[hash(7, Math.floor(wx / 96), Math.floor(wy / 96)) % 3][spec.mist][(wy % 96) * 96 + (wx % 96)]; continue; }
     if (!seen(c)) { const c2 = cellOf(wx + 4 * k, wy + 3 * k), edge = c2 >= 0 && seen(c2); put(y * N + x, edge ? (b < 8 ? C.night : C.ink) : (b < 3 ? C.night : C.ink)); continue; }
     let land = landOf(c), col;
     const lx = (wx - (c % MW) * cs) / cs, ly = (wy - ((c / MW) | 0) * cs) / cs;
@@ -5978,8 +5980,35 @@ const OPEN_TEXT = {
   firstWalk: 'Your first walk', firstFind: 'Find a pod and bring it home.', firstGrows: 'The Station grows it.',   // the first-time partner place
   flat: 'Flat world · New world has stairs', docked: 'Docked · lift to explore',   // a generator 1 world's line; the docked band
 };
-// The art desk's two pieces for this screen, named slots: until their files are in, the built night and the built field pod at 3× play (CARE_ASSETS holds both).
-const openArt = name => (typeof WART !== 'undefined' && WART.pb.get(name)) || null;
+// The art desk's two opening pieces (art/open/, signed in mibi-art a23ee74f6; manifest.json there): the night mist under the first-time frame (three seamless 96 px variants a, b, c, picked per 96 px block of world pixels by a hash,
+// two 900 ms frames and a still for reduced motion) and the pod where the partner would stand (96 px, anchor (48, 92), two 1200 ms glow frames and a still). The mist's four colours are not on the core palette:
+// its pixels go to the painting as they are, and the colours join the screen's allowed set. Until the files are in (or if they fail) the built night dots and the built field pod at 3× play.
+const OPEN_ART = { ready: false, night: [], pod: [] };   // night[variant][0, 1, 2 = still]: Uint32 pixels; pod[0, 1, 2 = still]: a PB
+const OPEN_COLOURS = [[0x0d, 0x13, 0x22], [0x13, 0x20, 0x36], [0x1a, 0x2d, 0x46], [0x24, 0x46, 0x5a]], OPEN_POD_COLOURS = [];
+const OPEN_FRAMES = ['1', '2', 'still'], OPEN_VARIANTS = ['a', 'b', 'c'];
+const OPEN_FILES = [...OPEN_VARIANTS.flatMap(v => OPEN_FRAMES.map(f => `c-open-night-${v}-${f}`)), ...OPEN_FRAMES.map(f => `c-open-pod-96-${f}`)];
+function openRead(files) {
+  const at = new Map(), mist = new Set(OPEN_COLOURS.map(c => c.join())); RGB.slice(0, CORE_N).forEach((c, i) => { const k = c[0] << 16 | c[1] << 8 | c[2]; if (!at.has(k)) at.set(k, i); });
+  const night = OPEN_VARIANTS.map(v => OPEN_FRAMES.map(f => { const im = files[`c-open-night-${v}-${f}`], u = new Uint32Array(96 * 96);
+    if (!im || im.width !== 96 || im.height !== 96) throw new Error('opening night ' + v + f);
+    for (let i = 0; i < 96 * 96; i++) { const o = i * 4, r = im.data[o], g2 = im.data[o + 1], b = im.data[o + 2]; if (!mist.has([r, g2, b].join()) && !at.has(r << 16 | g2 << 8 | b)) throw new Error('opening night off the palette ' + v + f); u[i] = (255 << 24) | (b << 16) | (g2 << 8) | r; }
+    return u; }));
+  const seen = new Set(), pod = OPEN_FRAMES.map(f => { const im = files[`c-open-pod-96-${f}`]; if (!im || im.width !== 96 || im.height !== 96) throw new Error('opening pod ' + f);   // the pod's shell ramp is not all on the core palette either: its own canvas, its colours join the screen's allowed set
+    let c = null; const build = () => { c = document.createElement('canvas'); c.width = 96; c.height = 96; const cg = c.getContext('2d'), id = cg.createImageData(96, 96); id.data.set(im.data); cg.putImageData(id, 0, 0); return c; };
+    for (let i = 0; i < 96 * 96; i++) { const o = i * 4; if (im.data[o + 3] && !seen.has(im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2])) { seen.add(im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2]); OPEN_POD_COLOURS.push([im.data[o], im.data[o + 1], im.data[o + 2]]); } }
+    return { w: 96, h: 96, canvas: () => c || build() }; });
+  OPEN_ART.night = night; OPEN_ART.pod = pod; OPEN_ART.ready = true; ART.clear(); LAND_CACHE.key = null;
+}
+async function loadOpenArt() {
+  try {
+    if (window.__openArt) { openRead(window.__openArt); return; }   // the tests give them at once, decoded
+    if (typeof Image === 'undefined') return;
+    const files = {};
+    await Promise.all(OPEN_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/open/', location.href).href + n + '.png'; })));
+    openRead(files);
+  } catch (e) { console.warn('the opening art did not load; the built night and pod play', e); }
+}
 // Deep ground shows once the player has met a digging kind, seen the burrow, or has a grown digger with them.
 const deepShown = () => !!digPartner() || carriedMibis().some(m => isAdult(m) && spOf(m.sp).ab === 'dig') || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.revealed[G.gate];
 // A mibi's picture at k× at (x, y); a kind the Companion has no art for is its labelled plate.
@@ -6002,7 +6031,7 @@ function openFrame() {
 // The land in the frame: the built painting cropped to it, the place marks, the signs, the start flag, the lights of a first walk, the lost plates and the docked band. Drawn only: nothing here reveals a cell.
 function drawOpenLand(t, fr) {
   const q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
-  const cv = landImage({ X0: q.X0, Y0: q.Y0, w: WW + cs, h: WH + cs, cs, glimpse: q.glimpse });
+  const cv = landImage({ X0: q.X0, Y0: q.Y0, w: WW + cs, h: WH + cs, cs, glimpse: q.glimpse, mist: q.first && OPEN_ART.ready ? (motion() ? Math.floor(t / 0.9) % 2 : 2) : null });
   g.drawImage(cv, WX - q.ox, WY - q.oy, WW, WH, WX, WY, WW, WH);
   const x1 = q.X0 + Math.ceil((WW + cs) / cs), y1 = q.Y0 + Math.ceil((WH + cs) / cs), ms = markSizeFor(cs), signs = new Map(mapSigns().map(e => [e.c, e.list]));
   for (let Y = q.Y0; Y < Math.min(MH, y1); Y++) for (let X = q.X0; X < Math.min(MW, x1); X++) {
@@ -6056,7 +6085,8 @@ function drawSetup(t) {
     liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, PY + PH - 66 - (i % 2) * 6));
     text(CARE_TEXT.noOneWithT, 116, PY + 10, C.bone, 3); text(clipText(leadWhy(), 320, 2), 116, PY + 48, C.fog); }
   else {   // no mibi at all: the pod stands where the partner would, and says what the walk is for
-    const pod = openArt('c-open-pod-96'); if (pod) blit(pod, 8, PY + PH - 102); else blit(podArt('bone', 3), 32, PY + PH - 72);
+    if (OPEN_ART.ready) { blit(ringArt('opring84', 84, 22), 14, PY + PH - 24); blit(OPEN_ART.pod[motion() ? Math.floor(t / 1.2) % 2 : 2], 8, PY + PH - 102); }   // the desk's pod, its foot (48, 92) on the ring
+    else blit(podArt('bone', 3), 32, PY + PH - 72);
     text(OPEN_TEXT.firstWalk, 116, PY + 8, C.bone, 3); text(OPEN_TEXT.firstFind, 116, PY + 46, C.fog); text(OPEN_TEXT.firstGrows, 116, PY + 68, C.fog); }
 }
 // The partner row: "Partner: Pip · calms wary creatures", or why there is none.
@@ -7193,6 +7223,7 @@ function actReadOnly(k) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
 if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
+loadOpenArt();   // the art desk's opening mist and pod
 loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
 loadPlaces6();   // generator 6's places (the four templates and their mirrors)
 loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
