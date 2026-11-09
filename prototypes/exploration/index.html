@@ -5111,7 +5111,7 @@ function drawPatchBody(t) {
   for (const h of live.holes || []) { const x = h.x * ts, y = h.y * ts; if (!vis2(x, y) || !see(h.x, h.y)) continue;   // the Rupar's fresh hole, a ground mark
     blit(freshHoleArt(holeFrame(h), HOLE_BARE[h.g]), SX(x) + HOLE_DX, SY(y), spriteRm(h.x, h.y)); }
   // y-sorted sprites
-  const items = [];
+  const items = [], aboveCrowns = [];
   for (const f of lay.feats) if (f.tree === 'hollow' && see(f.x, f.y) && live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1))   // a shy one in a hollow trunk: the hole's one glint, in the trunk's opening
     items.push({ y: f.y * ts + 2, d: () => blit(art('hglint', () => { const pb = new PB(2, 2); pb.rect(0, 0, 2, 2, C.yellow); return pb; }), SX(f.x * ts) + 15, SY(f.y * ts) + 22, spriteRm(f.x, f.y)) });
   for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
@@ -5121,7 +5121,10 @@ function drawPatchBody(t) {
     else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
       a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, blinkFr, 1) : stoneArt(stormCharge(P.key, f) > 0, false, fr); }
     const rr = f.kind === 'k' && lay.cave && stoneCharge(P.key, f) > 0 ? 0 : rm;
-    items.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) }); }
+    // a baked place's bush, cup or stone with something to take is drawn after the crowns, as pods are, so nothing a player can take hides under a tree
+    const takeable = f.kind === 'b' ? bushFull(P.key, f) : f.kind === 'u' ? cupFull(P.key, f) : f.kind === 'k' ? (lay.cave ? stoneCharge(P.key, f) > 0 : stormCharge(P.key, f) > 0) : false;
+    if (bk && takeable) aboveCrowns.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) });
+    else items.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) }); }
 
   for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, spriteRm(f.x, f.y)) }); }
   for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16, spriteRm(f.x, f.y)) }); }
@@ -5165,6 +5168,7 @@ function drawPatchBody(t) {
   for (const f of lay.feats) if (f.kind === 'o') { const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue;
     const under = tokens.some(o => o.y === f.y + 2 && o.x >= f.x && o.x <= f.x + 2);
     overlay(roofArt(under ? 1 : 0), W(f.x * ts + ((3 * ts - 104) >> 1)), H((f.y + 2) * ts - 10), f.x + 1, f.y); }
+  aboveCrowns.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); } catch (e) { if (RT.err++ < 3) console.error(e); } });
   // pods sit above the canopy layer so they can't hide under a tree
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     // a find your Call or partner turned up stays outlined until you take it

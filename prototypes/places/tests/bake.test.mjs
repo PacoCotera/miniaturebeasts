@@ -92,6 +92,7 @@ const RULES = {
   'opening-count': [(l) => remove(l, 'Opening', 1), null],
   'opening-edge': [(l) => moveTo(ents(l, 'Opening').find((e) => field(e, 'side').__value === 'N'), 13, 1), { x: 13, y: 1 }],
   'opening-arrival': [(l) => setCell(l, 13, 0, 'water'), { x: 13, y: 0 }],
+  'slot-clear': [(l) => moveTo(ents(l, 'Find')[0], 3, 2), { x: 3, y: 2 }],   // under the broad tree's crown
   'spawn-count': [(l) => { for (let k = 0; k < 4; k++) l.layerInstances.find((x) => x.__identifier === 'Marks').entityInstances.push(structuredClone(ents(l, 'CreatureSpawn')[0])); }, null],
   'spawn-zone': [(l) => moveTo(ents(l, 'CreatureSpawn')[0], 5, 8), { x: 5, y: 8 }],
   'three-terrain': [(l) => { setCell(l, 9, 19, 'water'); setCell(l, 10, 19, 'sand'); }, null],
@@ -111,6 +112,15 @@ for (const [rule, [mutate, cell]] of Object.entries(RULES)) {
     }
   });
 }
+
+test('slot-clear also fails a Find in the edge band, a Find beside a prop footprint and a Heart under a crown, but lets a Heart stand at its landmark', () => {
+  const rulesOf = (fn) => problems(edit(fn)).filter((e) => e.rule === 'slot-clear').map((e) => e.message);
+  assert.match(rulesOf((l) => moveTo(ents(l, 'Find')[0], 17, 14)).join(), /edge band/);
+  assert.match(rulesOf((l) => moveTo(ents(l, 'Find')[0], 11, 15)).join(), /within 1 cell of a prop footprint/);
+  assert.match(rulesOf((l) => moveTo(ents(l, 'Find')[0], 3, 2)).join(), /Find lies under a crown/);
+  assert.match(rulesOf((l) => moveTo(ents(l, 'Heart')[0], 3, 2)).join(), /Heart lies under a crown/);
+  assert.deepEqual(rulesOf((l) => moveTo(ents(l, 'Heart')[0], 4, 10)), []);
+});
 
 test('a rule failure on a level is reported with every other failure of that level, together', () => {
   const level = edit((l) => { remove(l, 'Heart'); remove(l, 'Clue'); remove(l, 'Landmark'); });
