@@ -112,7 +112,12 @@ export class BakedView {
   // The same picture in steps (a generator: each next() does one step, the last returns the buffer), for a page that builds it in its idle time.
   overviewSteps(veil, clockMs = 0, cut = null) {
     const light = veil && veil.some((v) => v) ? lightState(this.place, { veil }) : null, place = cut ? { ...this.place, props: cut.props, canopy: cut.canopy } : this.place;
-    return renderViewSteps(this.ts, place, wholeScale(this.place), { x: 0, y: 0, w: this.place.w * wholeScale(this.place), h: this.place.h * wholeScale(this.place) }, { clockMs, light, nightIndex: this.night, cache: this.half });
+    const it = renderViewSteps(this.ts, place, wholeScale(this.place), { x: 0, y: 0, w: this.place.w * wholeScale(this.place), h: this.place.h * wholeScale(this.place) }, { clockMs, light, nightIndex: this.night, cache: this.half });
+    const stamp = cut && cut.patches && cut.patches.length ? cut.patches : null; if (!stamp) return it;
+    const s = wholeScale(this.place), Wd = this.place.w * s;   // the closed sides' ground (a thicket stamped over the map's end) in the whole view too: each patch is a cell of the donor's pixels
+    return (function* () { for (;;) { const r = it.next(); if (!r.done) { yield r.value; continue; }
+      const buf = r.value; for (const p of stamp) for (let j = 0; j < s; j++) for (let i = 0; i < s; i++) buf[(p.y * s + j) * Wd + p.x * s + i] = buf[(p.from.y * s + j) * Wd + p.from.x * s + i];
+      return buf; } })();
   }
   // The dissolve: pixel by pixel the veiled picture, until the Bayer threshold `step` (0..16) passes it and the clear one shows.
   dissolveBuf(veiled, clear, step) {

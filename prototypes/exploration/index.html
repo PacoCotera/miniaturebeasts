@@ -533,7 +533,7 @@ async function loadHazeKit(base, bytes) {
     await Promise.all(hm.hazeFileNames().map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL6.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = dir + n + '.png'; })));
     const json = async n => JSON.parse(new TextDecoder().decode(await bytes(dir + n)));
-    PL6.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'));
+    PL6.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'), PL6.ts.palette.length);
   } catch (e) { console.warn('the range haze did not load', e); }
 }
 // The art desk's quartz stone family (art/stone/, signed in mibi-art ccbb3bb17; SOURCE.md there) and the look view's three stone marks (art/look/, same commit). The stones' colours are not all on the
@@ -5343,7 +5343,7 @@ function drawPatchBody(t) {
   const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
   const bk = bakedView(lay), bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
-  if (bk) bk.setPatches(lay.lines ? lay.lines.patches : [], lay.lines ? lay.lines.id : '');   // a closed opening's path drawn as grass
+  if (bk) bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));   // a closed opening's path drawn as grass; the map's end a thicket
   if (bk) { hazeSync(lay); const hz = hazeLevels(lay); bk.setHaze(hz && hz.lv, hz ? hz.id : '', lay.baked.id); }   // the range haze, past the Probe's reach
   if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }, lay.key));
   if (bk && lay.rim && lay.rim.length && ART48.ready) {   // the world's edges over the baked ground: lips, faces, stairs, water bands, crossings (rimTile), lit as the props are; one blit of the cached picture

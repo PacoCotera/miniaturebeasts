@@ -3,7 +3,7 @@
 // rock (never walked), and `lay.baked.ox/oy` say where it sits. Terrain becomes the page's tile T, prop footprints become TRUNK (a tree, which has
 // a canopy) or ROCK, tall grass becomes T.TALL; the heart, its clue marks and the openings come from the place's entities.
 import { T, T_BLOCK, L, PW, PH, TERR, hash } from '../../exploration/src/world.mjs';
-import { shapeEdges } from './edges.mjs';
+import { shapeEdges, sideXY } from './edges.mjs';
 import { heartPath } from '../../exploration/src/hearts.mjs';
 
 const LAND = { pond: L.POND, rock: L.ROCK, wood: L.WOOD, meadow: L.MEADOW };
@@ -22,6 +22,9 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const tileOf = new Map(terrains.map((t) => [t.value, T[t.T]]));
   const tiles = new Uint8Array(NP).fill(T.ROCK);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) tiles[I(x, y)] = tileOf.get(place.terrain[y * w + x]) ?? T.GRASS;
+  // what the bake blocks beyond the terrain's own play: the cliff's lip and face (the open edges); thicket, scrub, water and prop footprints already map to blocked tiles
+  const cliffV = (terrains.find((t) => t.id === 'cliff') || {}).value;
+  if (cliffV && place.blockMask) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const b = y * w + x; if (place.terrain[b] === cliffV && (place.blockMask[b >> 3] >> (b & 7)) & 1) tiles[I(x, y)] = T.ROCK; }
   // the world's edges on this cell (o.G: the world; a place that fills the page's grid exactly, never the dev switch's padded one): the bands, stairs and crossings, the openings, the trees that stay
   let sh = null;
   if (o.G && o.G.edge && o.cell != null && pw === w && ph === h) {
@@ -41,6 +44,21 @@ export function adaptPlace(place, ts, terrains, o = {}) {
     }
   }
   if (sh) for (const i of sh.rim) { if (sh.terr[i] !== TERR.SHADOW) tiles[i] = sh.tilesE[i]; }   // the bands, stairs and crossings stand over the ground and the trees
+  // The open style (a 24 x 28 place has no wall of trees): a side the world closes with no band of its own, a cliff or the map's end, is closed in the land. Its two outer rows block (a cliff's lip
+  // and face are the world's rim; the rows beyond it are the raised land nobody reaches) and the map's end is a dense thicket, the set's own thicket ground stamped over them (a patch, as the
+  // closed openings' path is). Never an open-looking edge that refuses a step.
+  let closure = null;
+  if (sh && w === 24 && h === 28) {
+    const thick = (terrains.find((t) => t.id === 'thicket') || {}).value; let donor = null;
+    for (let y = 1; y < h - 1 && !donor && thick; y++) for (let x = 1; x < w - 1; x++) { let all = true; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (place.terrain[(y + dy) * w + x + dx] !== thick) all = false; if (all) { donor = { x, y }; break; } }
+    const patches = [];
+    for (const d of ['up', 'down', 'left', 'right']) {
+      const kind = sh.kind[d]; if (kind !== 'mapend' && kind !== 'cliff') continue;
+      const len = d === 'up' || d === 'down' ? w : h;
+      for (let depth = 0; depth < 2; depth++) for (let k = 0; k < len; k++) { const p = sideXY(d, k, depth, w, h), i = I(p.x, p.y); if (!T_BLOCK[tiles[i]]) tiles[i] = T.ROCK; if (kind === 'mapend' && donor) patches.push({ x: p.x, y: p.y, from: donor }); }
+    }
+    closure = { patches, id: patches.map((p) => p.x + ',' + p.y).join(';') };
+  }
   // the tiles no crown hangs over (the explorer arrives on one of these, never hidden under a canopy): a crown's box at 48 px, a tile's pawn as its centre and a margin round it
   const clear = new Uint8Array(NP).fill(1);
   { const crowns = [];
@@ -72,7 +90,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   };
   if (sh) {   // the world's edges: the terrain layer the page draws over the baked ground, the stairs and crossings that walk, the trees this cell shows
     lay.terr = sh.terr; lay.tmask = sh.tmask; lay.stairs = sh.stairs; if (sh.cross.length) lay.cross = sh.cross;
-    lay.rim = sh.rim; lay.cut = { props, canopy: canopyList };
+    lay.rim = sh.rim; lay.cut = { props, canopy: canopyList, patches: closure ? closure.patches : [] }; if (closure) lay.closure = closure;
     if (place.type === 'wood') lay.base = T.DARK; else if (place.type === 'rock') lay.base = T.SAND;
   }
   const hh = place.heart, fill = o.fill, kind = fill ? fill.heart.kind : hh.kinds.find((k) => HEART_KINDS.includes(k)) || hh.kinds[0];

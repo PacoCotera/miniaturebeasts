@@ -21,5 +21,6 @@ export function mirrorIR(ir) {
       return { ...o, side, x, from: side === 'N' || side === 'S' ? x : o.from, to: side === 'N' || side === 'S' ? x + o.cw - 1 : o.to };
     }),
     spawns: ir.spawns.map((s) => ({ ...s, x: w - s.x - s.w })),
+    wayups: (ir.wayups || []).map((a) => ({ ...a, x: w - a.x - a.w })), reedbanks: (ir.reedbanks || []).map((a) => ({ ...a, x: w - a.x - a.w })),
   };
 }

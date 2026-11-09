@@ -6484,14 +6484,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-buttercup",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-buttercup"
 									]
 								}
 							]
@@ -6724,14 +6724,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-buttercup",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-buttercup"
 									]
 								}
 							]
@@ -6804,14 +6804,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-buttercup",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-buttercup"
 									]
 								}
 							]
@@ -6884,14 +6884,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-pink-three",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-pink-three"
 									]
 								}
 							]
@@ -6964,14 +6964,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-blue-pair",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-blue-pair"
 									]
 								}
 							]
@@ -7004,14 +7004,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-blue-pair",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-blue-pair"
 									]
 								}
 							]
@@ -7044,14 +7044,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-buttercup",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-buttercup"
 									]
 								}
 							]
@@ -7084,14 +7084,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-buttercup",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-buttercup"
 									]
 								}
 							]
@@ -7124,14 +7124,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-daisy-pair",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-daisy-pair"
 									]
 								}
 							]
@@ -7164,14 +7164,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-daisy-pair",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-daisy-pair"
 									]
 								}
 							]
@@ -7284,14 +7284,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-pink-three",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-pink-three"
 									]
 								}
 							]
@@ -7364,14 +7364,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-pink-three",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-pink-three"
 									]
 								}
 							]
@@ -7524,14 +7524,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-blue-pair",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-blue-pair"
 									]
 								}
 							]
@@ -7604,14 +7604,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun-small",
+							"__value": "flower-daisy-pair",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun-small"
+										"flower-daisy-pair"
 									]
 								}
 							]

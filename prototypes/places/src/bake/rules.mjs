@@ -2,10 +2,14 @@
 // Terrain classes (terrain.json `play`): "standable" = anything but block and deep (you can stand or wade there); "foot" = walk, scree, bank
 // (walkable without a partner). Reachability floods over foot cells that no prop footprint blocks; a heart that names a `reachBy` is allowed
 // to be out of foot reach (and so are the finds).
-import { BakeError, PLACE_W, PLACE_H } from './ldtk.mjs';
+import { BakeError, PLACE_SIZES } from './ldtk.mjs';
+import { cliffInfo, gullies } from './openedges.mjs';
 
 export const standable = (play) => play !== 'block' && play !== 'deep';
-export const onFoot = (play) => play === 'walk' || play === 'scree' || play === 'bank';
+export const onFoot = (play) => play === 'walk' || play === 'scree' || play === 'bank' || play === 'cliff';   // 'cliff': its top walks; its lip and face are blocked cells (openedges.cliffInfo)
+
+// The open style (walk content B5): a 24 x 28 place has no edge ring; its sides run on into the neighbour cell. Today's 18 x 22 places keep their walls.
+export const isOpenStyle = (ir) => ir.w === 24 && ir.h === 28;
 
 export function spriteFor(tileset, group, kind) {
   const i = tileset.sprites.findIndex((s) => s.group === group && s.kind === kind);
@@ -81,6 +85,9 @@ export function checkRules(ir, ctx) {
     for (const p of list) if (!spriteFor(tileset, group, p.kind)) fail('kind-missing', `the tile set ${ir.tileset} has no ${group} "${p.kind}"`, { x: p.cx, y: p.cy });
   }
   const blocked = footprintCells(ir, tileset);
+  const cliffs = cliffInfo(ir, ctx.terrains);
+  for (const c of cliffs.lipCells) if (!blocked.has(c)) blocked.set(c, { kind: 'the cliff' });   // the cliff's lip and face block
+  const open = isOpenStyle(ir);
   for (const [cell, p] of blocked) {
     const x = cell % w, y = (cell / w) | 0;
     if (!standable(play(x, y))) fail('prop-footprint', `the footprint of ${p.kind} stands on ${play(x, y)} terrain`, { x, y });
@@ -123,7 +130,8 @@ export function checkRules(ir, ctx) {
   }
 
   // finds
-  if (ir.finds.length < 2 || ir.finds.length > 6) fail('find-count', `a place has 2 to 6 Finds, this one has ${ir.finds.length}`);
+  const maxFinds = open ? 8 : 6;
+  if (ir.finds.length < 2 || ir.finds.length > maxFinds) fail('find-count', `a place has 2 to ${maxFinds} Finds, this one has ${ir.finds.length}`);
   for (const f of ir.finds) {
     if (blocked.has(f.y * w + f.x)) fail('find-footprint', 'a Find lies under a prop footprint', f);
     else if (!standable(play(f.x, f.y))) fail('find-reach', `a Find is on ${play(f.x, f.y)} terrain`, f);
@@ -160,6 +168,39 @@ export function checkRules(ir, ctx) {
       else if (!standable(play(x, y))) fail('spawn-zone', `a CreatureSpawn zone covers ${play(x, y)} terrain`, { x, y });
     }
   }
-  if (w !== PLACE_W || h !== PLACE_H) fail('size', `size ${w} x ${h}`);
+  if (!PLACE_SIZES.some(([pw, ph]) => w === pw && h === ph)) fail('size', `size ${w} x ${h}`);
+
+  // the open style's rules (walk content B5; the art desk's manifest, bake rules): no edge ring, an edge closes only where the land has a reason, the seam is one meadow
+  for (const g of gullies(ir, ctx.terrains)) fail('cliff-foot', 'a column of cliff, one low row, cliff again: a 1-row gully the face cannot be drawn in', g);
+  for (const a of ir.wayups || []) {
+    const cl = (x, y) => cliffs.isCliff(x, y) && ir.terrain[y * w + x] === ctx.terrains.find((t) => t.id === 'cliff').value;
+    for (let x = a.x - 1; x <= a.x + a.w; x++) if (!cl(x, a.y)) fail('wayup', 'a WayUp area sits on cliff cells with the face straight one cell either side', { x, y: a.y });
+    for (let x = a.x - 1; x <= a.x + a.w; x++) if (cl(x, a.y + 1)) fail('wayup', 'the cell below a WayUp area and its two neighbours is not cliff (a straight south face)', { x, y: a.y + 1 });
+  }
+  if (open) {
+    const sides = { N: (k) => ({ x: k, y: 0 }), S: (k) => ({ x: k, y: h - 1 }), W: (k) => ({ x: 0, y: k }), E: (k) => ({ x: w - 1, y: k }) };
+    for (const [side, at] of Object.entries(sides)) {
+      const len = side === 'N' || side === 'S' ? w : h; let walk = 0;
+      for (let k = 0; k < len; k++) { const p = at(k); if (onFoot(play(p.x, p.y)) && !blocked.has(p.y * w + p.x)) walk++; }
+      if (walk * 3 < len * 2) fail('two-thirds-open', `the ${side} side is walkable on ${walk} of ${len} cells; an open place keeps at least two thirds of every side walkable`);
+    }
+    // seam-ground and path-short: the last 2 rows and columns are the land's grass, with no prop footprint, crown or decal on them, so any two open sides meet as one meadow
+    const grass = ctx.terrains.find((t) => t.id === 'grass').value, path = ctx.terrains.find((t) => t.id === 'path').value, under = crownCover(ir, tileset);
+    const near = (x, y) => Math.min(x, y, w - 1 - x, h - 1 - y) < 2;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      if (!near(x, y)) continue;
+      const v = ir.terrain[y * w + x];
+      if (v === path) fail('path-short', 'a path stops at least 2 cells before an open side', { x, y });
+      else if (v !== grass) fail('seam-ground', 'the last 2 rows of a side are grass (the land\'s base ground), the same on both sides of a seam', { x, y });
+      else if (blocked.has(y * w + x) || under.has(y * w + x)) fail('seam-ground', 'no prop footprint or crown on the last 2 rows of a side', { x, y });
+    }
+    for (const d of ir.decals) if (near(d.cx, d.cy)) fail('seam-ground', 'no decal on the last 2 rows of a side', { x: d.cx, y: d.cy });
+    // the heart: far from every arrival, and nothing standing within 2 cells of it (its clearing)
+    if (heart) {
+      for (const a of arrivals) if (Math.abs(a.x - heart.x) + Math.abs(a.y - heart.y) < 10) fail('heart-far', `the Heart is ${Math.abs(a.x - heart.x) + Math.abs(a.y - heart.y)} cells from the ${a.side} arrival; it must be at least 10 from every arrival`, heart);
+      const lm = new Set(ir.landmarks.map((l) => l.y * w + l.x));
+      for (const [cell, p] of blocked) { const x = cell % w, y = (cell / w) | 0; if (Math.max(Math.abs(x - heart.x), Math.abs(y - heart.y)) <= 2 && !lm.has(p.cy === undefined ? -1 : p.cy * w + p.cx)) fail('heart-clear', `a prop (${p.kind}) stands within 2 cells of the Heart`, { x, y }); }
+    }
+  }
   return errors;
 }

@@ -54,7 +54,7 @@ for (const [seed, motion] of [[6, true], [7, true], [11, true], [6, false]]) {
     const { server, url } = await serve();
     try {
       const { page, ctx, errors, logged } = await enter(browser, url, seed, motion);
-      const keys = ["up", "up", "up", "left", "left", "down", "right", "right", "right", "down", "down", "down", "left", "up"];
+      const keys = ["up", "up", "up", "left", "left", "down", "right", "right", "right", "up", "up", "down", "left", "up"];   // no side is a wall now: the walk stays inside the place
       let walked = 0, last = null;
       for (const k of keys) {
         await page.evaluate((k) => window.__mb.act(k), k); await page.waitForTimeout(motion ? 480 : 120);

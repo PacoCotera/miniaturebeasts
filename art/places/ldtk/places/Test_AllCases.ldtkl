@@ -1277,14 +1277,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.DecalKind",
-							"__value": "flower-sun",
+							"__value": "flower-blue-pair",
 							"__tile": null,
 							"defUid": 112,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"flower-sun"
+										"flower-blue-pair"
 									]
 								}
 							]
