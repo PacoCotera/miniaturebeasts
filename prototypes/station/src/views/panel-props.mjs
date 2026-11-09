@@ -81,6 +81,16 @@ export function addRoomCards(m, spec, frame, requests) {
     { id: "keep", act: "keep", room: null, picture: "", pictureSize: ROOM_PREVIEW, mark: "", name: Sg.cards.keep.name, cost: "", gain: false, short: "", line: Sg.cards.keep.line, loss: false, dim: false },
   ];
 }
+// The settling words of a room: "ready next turn" at one turn, else how many (panel.json full.cards.add).
+export const settleWords = (add, Room, n) => fill(n > 1 ? add.lineMany : add.line, { Room, n });
+// The cards of the full panel (panel.json full; dead ends B2): Add the room | Make room, or Make room | Not now when no room can be added. Add is addRoom's card (the next room's preview, ⚡ price, dimmed when short); Make room has the empty pedestal Not now has.
+export function fullCards(m, spec, frame, requests) {
+  const { st, settings } = m, Sg = spec.strings.full.cards, blocked = S.addRoomBlock(st, settings), canAdd = !blocked || blocked.key === "short";
+  const [add, keep] = addRoomCards(m, spec, frame, requests), th = S.nextTheme(st, settings), ti = S.ROOM_THEMES.indexOf(th);
+  const make = { id: "make", act: "make", room: null, picture: "", pictureSize: ROOM_PREVIEW, mark: "", name: Sg.make.name, cost: "", gain: false, short: "", line: Sg.make.line, loss: false, dim: false };
+  const addCard = { ...add, act: "addRoomHere", name: Sg.add.name, line: settleWords(Sg.add, th ? S.ROOM_NAMES[ti] : "", S.settleTurns((st.rooms || 1) + 1, th, S.roomRules(settings))) };
+  return canAdd ? [addCard, make] : [make, { ...keep, name: Sg.keep.name, line: Sg.keep.line }];
+}
 // The cards of the Hatch now | Wait panel (T-20261016-222; the Incubator's `confirm` state): Hatch now (the bud at its ready step, ❀ n from the rules; dimmed when short) and Wait (nothing spent, "ready in about {n} min": the one minute count, owner ruling 3). The pictures are the windows' (hatchNowBuild), not the cards'.
 export function growNowCards(m, spec) {
   const { st, settings } = m, Sg = spec.strings.growNow, now = m.now ?? Date.now();
@@ -140,7 +150,7 @@ export function artOf(frame, n, requests, wild = false) {
   const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return id ? req(id, sz(id)) : ""; };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };
 }
-export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "addRoom" ? addRoomCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : m.ui.panel.id === "reset" ? resetCards(spec) : wildCards(m, spec, frame, requests));
+export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "addRoom" ? addRoomCards(m, spec, frame, requests) : m.ui.panel.id === "full" ? fullCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : m.ui.panel.id === "reset" ? resetCards(spec) : wildCards(m, spec, frame, requests));
 export const titleOf = (m, spec) => {
   const id = m.ui.panel.id, t = spec.strings[id].title;
   if (id === "wildMibi") return fill(t, { name: habitatShown(m.st, m.sv, m.ui.hab.id)?.name ?? "" });

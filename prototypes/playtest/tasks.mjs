@@ -147,7 +147,8 @@ export function growOne(ctx) {
   ctx.press("confirm", "the Incubator");
   if (screenOf(ctx) !== "incubator" || ctx.view().L.state !== "empty") return false;
   ctx.press("confirm", "Choose a pod");
-  if (screenOf(ctx) !== "pods") { ctx.state.full = true; return false; }   // an empty Incubator whose Choose a pod does nothing: the Vivarium is full
+  if (ctx.view().L.overlay === "panel") { ctx.state.full = true; ctx.press("back", "the full panel: not now"); return false; }   // the Vivarium is full: Choose a pod opens the full panel (B2); the policy adds the room
+  if (screenOf(ctx) !== "pods") return false;   // a settling room or no pods at home: Choose a pod plays its plate (B1), nothing to grow yet
   if (ctx.view().L.label !== "Grow it") { ctx.press("back", "no pod to grow"); return false; }
   ctx.press("confirm", "grow this pod");
   if (screenOf(ctx) !== "create") { if (screenOf(ctx) === "pods") ctx.press("back", "refused"); return false; }
@@ -174,6 +175,7 @@ export function hatch(ctx, { pay = false } = {}) {
       continue;
     }
     ctx.press("confirm", "Open the bud");
+    if (ctx.view().L.overlay === "panel") { ctx.state.full = true; ctx.press("back", "the full panel: not now"); break; }   // no place: the full panel opens (B2); the bot closes it and the policy adds the room
   }
   if (screenOf(ctx) === "habitat") { meetAndName(ctx); out.hatched = true; ctx.mark("hatched"); ctx.state.hatchedN = (ctx.state.hatchedN ?? 0) + 1; }
   return out;
@@ -206,7 +208,7 @@ export function toHabitat(ctx, idx = 0) {
   for (let i = 0; i < 2 && screenOf(ctx) === "vivarium"; i++) ctx.press("confirm", "a mibi up close");
   return screenOf(ctx) === "habitat";
 }
-// The Vivarium is full: ✓ Add a room on the wall (Essence), the panel's ✓. True when the wall's room count went up (the screen's chip row grew).
+// The Vivarium is full: ✓ Add a room on the wall (a room costs Energy: ⚡4, 8, 12), the panel's ✓. The room settles for a world turn before it takes a mibi. True when the wall's room count went up (the screen's chip row grew).
 export function addRoom(ctx) {
   if (!toWall(ctx) || !ctx.view().L.targets.includes("rail.add")) return false;
   
@@ -238,7 +240,7 @@ export function crossHere(ctx) {
   if (m && pr.length >= 2 && (m.e < pr[0] || m.s < pr[1])) { ctx.state.saving = true; ctx.press("back", "cannot pay yet: keep the Essence"); return false; }
   ctx.press("confirm", "Cross them");
   if (screenOf(ctx) === "incubator") { ctx.mark("crossed"); return true; }
-  if ((ctx.view().o.events ?? []).slice(-2).some((e) => /Vivarium is full/.test(e))) ctx.state.full = true;   // refused: no free place for the child
+  if (ctx.view().L.overlay === "panel") { ctx.state.full = true; ctx.press("back", "the full panel: not now"); }   // refused: no free place for the child; the full panel opens (B2)
   ctx.press("back", "no cross"); return false;
 }
 // Out with the Companion: on a mibi up close, ✓ the door (Take it with the Companion). True when the screen answered it.

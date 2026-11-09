@@ -498,7 +498,7 @@ await toHome( 400);
 stepOf("incubator-empty");
 await page.evaluate(() => { window.__st.seedPod("S01", 4); window.__st.goto("incubator"); }); await page.waitForTimeout(600);
 { const p = await props(), st2 = await st(); cur.push({ state: p.state, ok: p.frame.line.ok ?? null, subject: p.frame.line.subject ?? null });
-  expect(p.state === "empty" && p.frame.line.ok === "Choose a pod" && p.frame.line.subject === "Ready for a new bud" && p.frame.line.back === "Home" && st2.tray.length >= 1, "the empty Incubator offers ✓ Choose a pod: " + JSON.stringify([p.state, p.frame.line])); await frameShot("page-incubator-empty", true); }
+  expect(p.state === "empty" && p.frame.line.ok === "Choose a pod" && p.frame.line.subject === "Ready for a pod" && p.frame.line.back === "Home" && st2.tray.length >= 1, "the empty Incubator offers ✓ Choose a pod: " + JSON.stringify([p.state, p.frame.line])); await frameShot("page-incubator-empty", true); }
 await hpressI("confirm", 600);
 { const at = await page.evaluate(() => { const u = window.__st.UI; return { screen: u.screen, view: u.pods.view, sort: u.pods.sort, focus: u.pods.focus.cur, verb: u.pods.verb }; }); cur.push(at);
   expect(at.screen === "pods" && at.view === "inventory" && at.sort === "use" && /^card\.\d+$/.test(at.focus) && at.verb === "grow", "✓ Choose a pod jumps to Pods' inventory sorted by use, the verb Grow, the ring on the first pod that can grow: " + JSON.stringify(at)); }

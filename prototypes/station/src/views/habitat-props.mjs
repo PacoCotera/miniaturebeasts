@@ -43,9 +43,10 @@ export function modulesOf(m, shown, Sg, sittingSpec = null) {
   if (!look) { if (out) rows.portrait = held(fill(Sg.portray, named), travel, plateT); else if (why) rows.portrait = held(fill(Sg.portray, named), why, [capLine(why)]); }   // a carried mibi's card is held by heldRule whatever else holds it
   // Cross: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
   const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);   // a carried partner is kept in the list marked away (dimmed, never picked)
-  const crossState = stage === "juvenile" ? "young" : out ? "out" : !partners.length ? "alone" : !pickable.length ? "away" : "adult";
-  const crossWhy = out ? travel : crossState === "young" ? Sg.crossLater : crossState === "alone" ? fill(Sg.noPartner, { Species: S.spName(shown) }) : crossState === "away" ? Sg.crossAway : !doorOpen("cross") ? Sg.shut.cross : null;
-  if (crossWhy) rows.cross = held(fill(Sg.cross, named), crossWhy, out ? plateT : [capLine(crossWhy)]);
+  const crossState = stage === "juvenile" ? "young" : out ? "out" : !partners.length ? "alone" : !pickable.length ? "away" : !pickable.some((p) => !p.family) ? "kin" : "adult";   // kin (dead ends B3): every partner at home is direct family, so Cross has no one to open on (held like alone)
+  const crossWhy = out ? travel : crossState === "young" ? Sg.crossLater : crossState === "alone" ? fill(Sg.noPartner, { Species: S.spName(shown) }) : crossState === "away" ? Sg.crossAway : crossState === "kin" ? fill(Sg.allFamily, { Species: S.spName(shown) }) : !doorOpen("cross") ? Sg.shut.cross : null;
+  const kinPlate = crossState === "kin" ? [fill(Sg.allFamilyPlate[0], { ...named, Species: S.spName(shown) }), fill(st.tray.some((q) => q.idd && S.speciesOf(q) === S.speciesOf(shown)) ? Sg.allFamilyPod : Sg.allFamilyPlate[1], { ...named, Species: S.spName(shown) })] : null;   // the second line names the pod at home when there is one (Pods already says "a partner for {name}")
+  if (crossWhy) rows.cross = held(fill(Sg.cross, named), crossWhy, out ? plateT : kinPlate ?? [capLine(crossWhy)]);
   // Wild: in the order of the rule (state.returnMibiBlock): bonded, with you, going at the next dock; a young mibi is not held (the rooms words C12a)
   const wildBlock = S.returnMibiBlock(st, sv, shown), price = "";   // a release pays nothing (owner 2026-10-28 23:16)
   if (wildBlock === "a bonded mibi stays") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.bonded, Sg.wildPlates.bonded.map((l) => fill(l, named)).concat(stage === "juvenile" ? [fill(Sg.wildPlates.bondedYoung, named)] : []), { price });

@@ -182,7 +182,7 @@ body.phone iframe{image-rendering:pixelated}
   <div class="shell" id="shStation"><iframe id="fStation" title="Station screen" allow="" loading="eager"></iframe></div>
   <div class="row" id="rowStation"></div>
   <div class="shell" id="shCompanion"><iframe id="fCompanion" title="Companion screen" allow="" loading="eager"></iframe></div>
-  <div class="row" id="rowCompanion"><button type="button" class="ctl hidden" id="undockBtn" aria-label="Lift the Companion from the Caddy" title="Lift the Companion from the Caddy">Undock</button></div>
+  <div class="row" id="rowCompanion"><button type="button" class="ctl hidden" id="undockBtn" aria-label="Lift the Companion from the Caddy" title="Lift the Companion from the Caddy">Lift</button></div>
   <div id="caddySheet" aria-label="The Caddy's screen" role="img"><canvas id="caddyView" width="792" height="272"></canvas></div>
   <div id="caddyLamps" aria-label="The Caddy's cradle lamps"><div class="cl"><span>Companion cradle</span><i id="lampCompanion"></i></div><div class="cl"><span>Station cradle</span><i id="lampStation"></i></div></div>
   <div id="caddyPrint" class="hidden" role="group" aria-labelledby="printHead"><img id="printImg" alt="Your recovery key, as the Caddy printed it"><div id="printText"><p id="printHead">The Caddy printed your recovery key</p><p id="printNote">Keep the paper somewhere safe. The Caddy prints it only once.</p><button type="button" id="printTaken">I have it</button><p id="printStatus" role="status"></p></div></div>
@@ -190,7 +190,7 @@ body.phone iframe{image-rendering:pixelated}
   <div id="cradle" title="Dock the Companion in the Caddy"><div id="slot"></div><img id="lamp" alt="" src="../ui/assets/masters/pods/frame-lamp-8-stone.png" width="8" height="8"></div>
   <div id="ring"></div>
   <div id="stamp" class="hidden">build local</div>
-  <div id="turnHint" class="hidden" role="status">Turn the phone for a bigger Station</div>   <!-- [copy] placeholder -->
+  <div id="turnHint" class="hidden" role="status">Turn your phone sideways for a bigger Station</div>
 </div>
   <iframe id="fBench" title="Bench" class="hidden" allow=""></iframe>   <!-- the workbench is hidden on the play page (an outdated tool): never loaded -->
   <div id="dev" class="hidden"><div id="devCaddy"><p class="dev-lede">The Caddy's problems</p><label><input type="checkbox" id="sw-silent"> Companion silent (the Companion holds back its word)</label><label><input type="checkbox" id="sw-quiet"> Station quiet (the Station's link drops)</label><label><input type="checkbox" id="sw-fault"> Caddy fault (the Caddy refuses writes)</label></div><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
@@ -218,7 +218,7 @@ body.phone iframe{image-rendering:pixelated}
   <h3>Station</h3>
   <dl><dt>← ↑ → ↓</dt><dd>Move the ring</dd><dt>Enter, Space</dt><dd>✓, what the bottom line names</dd><dt>Esc, Backspace</dt><dd>← Back one view</dd><dt>C</dt><dd>))) Call: what needs you, and what each key does</dd><dt>H</dt><dd>Home; Home again: rest</dd><dt>R</dt><dd>Pods</dd><dt>B</dt><dd>Vivarium</dd><dt>L</dt><dd>Library</dd></dl>
   <h3>Companion</h3>
-  <dl><dt>← ↑ → ↓ or W A S D</dt><dd>Tap to step, hold to walk</dd><dt>Enter, Space</dt><dd>✓ Confirm</dd><dt>Esc, Backspace</dt><dd>← Back</dd><dt>C</dt><dd>))) Call; hold it to see the whole place while held</dd></dl>
+  <dl><dt>← ↑ → ↓ or W A S D</dt><dd>Tap to step, hold to walk</dd><dt>Enter, Space</dt><dd>✓ Confirm</dd><dt>Esc, Backspace</dt><dd>← Back</dd><dt>C</dt><dd>))) Call; hold to look around</dd></dl>
 </div>
 <script type="module" src="src/shell.mjs"></script>
 </body>

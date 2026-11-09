@@ -60,7 +60,7 @@ test("past the line the tiles are blocked: a step refuses with the range words, 
   p.key("down"); p.key("down");   // y = h - 6: the line is 3 tiles in from the edge, the words are due within 2 tiles of it
   assert.doesNotMatch(p.run("FX.msg"), /range/, "no words far from the line");
   p.key("down");   // y = h - 5
-  assert.match(p.run("FX.msg"), /^Edge of the Probe’s range/, "within 2 tiles of the line the words show");
+  assert.match(p.run("FX.msg"), /^The Probe’s reach ends here/, "within 2 tiles of the line the words show");
   assert.doesNotMatch(p.run("FX.msg"), /tier/i);
   p.key("down");   // y = h - 4: the line's last walkable tile
   assert.equal(p.run("S.exp.patch.y"), lay.h - 4, "stands at the tile before the line");
@@ -68,7 +68,7 @@ test("past the line the tiles are blocked: a step refuses with the range words, 
   p.key("down");   // past the line
   const after = plain(p.run("({ x: S.exp.patch.x, y: S.exp.patch.y, a: S.exp.actions, msg: FX.msg })"));
   assert.deepEqual([after.x, after.y, after.a], [before.x, before.y, before.a], "the step is refused and spends no action");
-  assert.match(after.msg, /^Edge of the Probe’s range/);
+  assert.match(after.msg, /^The Probe’s reach ends here/);
   // the same step at tier 2: the opening is open and the step is taken
   const q = down(2);
   q.run(`S.exp.patch.x = ${x}; S.exp.patch.y = ${lay.h - 4}; FX.msg = '';`); q.key("down");

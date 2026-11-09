@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameOf, genomeDigest } from "../src/genome.mjs";
+import { setFrames, frameOf, genomeDigest, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { habitatBuild as habitatBuildUnchecked } from "../src/views/habitat-props.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
@@ -116,6 +116,17 @@ test("Cross: a face a partner (an adult or an elder of the species), a partner o
   const none = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, none, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "away"); assert.equal(b.line.subject, "its partners are travelling"); assert.deepEqual([b.line.ok, b.line.dim], [`Cross ${m[0].name}`, true]);
   b = build(w, sv0({ carried: [m[0].id] }), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "out"); assert.deepEqual([b.line.ok, b.line.dim, b.line.subject], [`Cross ${m[0].name}`, true, "out exploring"], "held while carried: the verb dimmed, the reason in the context");
   m[0].born = w.st.turn; dock(w.st); b = build(w, sv0(), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "young"); assert.equal(b.line.subject, "crosses once adult"); assert.deepEqual(b.props.regions.cross.faces, []); assert.deepEqual([b.line.ok, b.line.dim, b.props.regions.cross.held], [`Cross ${m[0].name}`, true, true], "a young mibi's Cross is held before it is focused");
+});
+
+test("B3 Cross when every partner at home is family: the state kin, held like alone (Cross dimmed, not a live target), the context says why, the faces are in a held module; a partner who is not family makes it live again", () => {
+  const w = world(); dock(w.st); S.seedSiblings(w.st, "S01", 31, w.settings); const [x, y] = w.st.mibis.slice(-2), sv = sv0();
+  let b = build(w, sv, { focus: "cross", habId: x.id }); const C = b.props.regions.cross;
+  assert.deepEqual([C.state, C.held, C.faces.length > 0, b.line.ok, b.line.dim, b.line.subject, b.props.focus.targets.find((t) => t.id === "cross").enabled], ["kin", true, true, `Cross ${x.name}`, true, `its ${S.spName(x)} are all family`, false]);
+  assert.deepEqual(validate(b.props, schema), [], "kin validates against habitat.props.json");
+  assert.deepEqual(b.held.cross.plate, [`${x.name}'s ${S.spName(x)} are all family`, `A ${S.spName(x)} from another pod can cross with ${x.name}`], "the plate's two lines");
+  S.seedPodFromGenome(w.st, podGenome(frameOf("S01"), 77), w.settings, T0); S.skipIdentify(w.st, w.st.tray.at(-1));
+  b = build(w, sv, { focus: "cross", habId: x.id }); assert.equal(b.held.cross.plate[1], `A ${S.spName(x)} pod at home can cross with ${x.name}`, "with a pod of the species at home the second line names it, as Pods' 'a partner for' does");
+  S.seedAdults(w.st, "S01", 9, 1, w.settings); b = build(w, sv, { focus: "cross", habId: x.id }); assert.deepEqual([b.props.regions.cross.state, b.props.regions.cross.held], ["adult", false], "a partner outside the family: Cross is live");
 });
 
 test("Wild: shut (no armed state), its context from the rules (a young, a bonded, a carried mibi stays) and no price on the line: a release pays nothing", () => {

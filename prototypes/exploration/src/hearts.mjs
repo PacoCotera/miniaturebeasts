@@ -24,7 +24,7 @@ export const HEART_TEXT = {
   call: { spring: dir => "Water glints in the grass, " + dir, nest: dir => "A slow beat, " + dir, stone: dir => "A struck stone still holds its charge, " + dir, quiet: dir => "A quiet stone, " + dir, moment: dir => "Something moves, " + dir },
   here: { spring: "Water glints right here", nest: "A slow beat right here", stone: "A struck stone still holds its charge here" },   // the heart is at your feet
   farther: "Nothing answers here · walk on", hereWord: "right here",
-  found: "found", foundAnswer: "Water wets the grass here", left: "nothing left to take", leftN: n => n + " to take", moreN: n => n + " more", /* [copy] the band after the find: "found · a charge west · 3 more" */unknown: "something here to find",
+  found: "found", foundAnswer: "Water wets the grass here", left: "nothing left to take", leftN: n => n + " to take", moreN: n => n + " more to take", unknown: "something here to find",
   // the tell in words for the bottom line (before the heart is found), seen or called
   tell: { spring: "water glints in the grass", nest: "a slow beat", stone: "a struck stone", moment: "something moves" },
   // found message on the line: what the heart was

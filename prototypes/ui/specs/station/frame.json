@@ -95,7 +95,7 @@
  "needs": { "rule": "The bottom line's notice (state.mjs need()): the first that holds, in need()'s order. {N} is a spelled count (two to three crates, two to six pods), dropped above what the picture holds; {A} {Species} the article and the species' name; {icons} the materials that are short, as 16 px icons after the words, no figure. need() fills a line and cases it with capLine.",
   "crates": { "notice": "{N} crates wait in the Bay", "noticeOne": "A crate waits in the Bay", "label": "Open the Bay", "withPortrait": { "notice": "Bay: {count} crates and a portrait", "noticeOne": "Bay: a crate and a portrait" } },
   "full": { "notice": "The Vivarium is full", "labelAdd": "Add a room", "labelMake": "Make room" },
-  "budReady": { "notice": "A mibi is ready to hatch", "label": "Hatch the mibi" },
+  "budReady": { "notice": "A mibi is ready to come out", "label": "Open the pod" },
   "portrait": { "notice": "A portrait waits in the Bay", "label": "Open the Bay" },
   "meet": { "notice": "Meet {name}", "label": "Meet {name}" },
   "fresh": { "notice": "{N} new pods", "noticeOne": "A new pod", "label": "Look at the pods", "labelOne": "Look at the pod" },

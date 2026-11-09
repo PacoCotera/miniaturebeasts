@@ -35,7 +35,7 @@ test("seeds 1 to 12: every pod is a version-8 Loika that carries the ear length,
 
 test("a version-5 and a version-8 Loika are not crossed: the Cross refuses before cost with a reason in words, and the forecast says nothing", () => {
   const a = { id: 1, species: "S01", genome: podGenome(fr, 1) }, b = { id: 2, species: "S01", genome: { ...podGenome(fr, 2), frameVersion: 5 } }, c = { id: 3, species: "S01", genome: podGenome(fr, 3) };
-  assert.equal(S.crossBlock({}, null, a, b), "born on different frame versions"); assert.equal(S.crossBlock({}, null, b, a), "born on different frame versions");
+  assert.equal(S.crossBlock({}, null, a, b), "too different"); assert.equal(S.crossBlock({}, null, b, a), "too different");
   assert.equal(S.forecastOf({}, a, b), null);
   assert.equal(versionRefusal(fr, a.genome, c.genome), null, "two of one version are not refused for it");
 });

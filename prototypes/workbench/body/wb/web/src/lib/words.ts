@@ -108,7 +108,7 @@ export const P = {
   walk: 'Walk', // pl.pods.play
   keep: 'Keep', // pl.pods.keep
   kept: (name: string) => `${name} is in My mibis.`, // pl.pods.kept
-  wobble: 'Hatching…', // pl.pods.wobble
+  wobble: 'Opening…', // pl.pods.wobble
   grow: 'Grow', // pl.grow
   growSteps: { juvenile: 'young', adult: 'grown', elder: 'elder' } as Record<string, string>, // pl.grow.steps
   diff: 'How different?', // pl.diff
@@ -117,5 +117,5 @@ export const P = {
   how: { often: 'often', sometimes: 'sometimes', rarely: 'rarely', grown: 'when grown' } as Record<string, string>, // pl.family.rows
   nameTitle: 'Name your mibi', // pl.name.title
   nameKeep: (name: string) => `Keep ${name}`, // pl.name.keep
-  nest: 'Pods', pod: (n: number) => `Pod ${n}`, dice: 'More names', closeName: 'Close', noPod: "This one didn't hatch.", growSr: 'How old?',
+  nest: 'Pods', pod: (n: number) => `Pod ${n}`, dice: 'More names', closeName: 'Close', noPod: "This one didn't open.", growSr: 'How old?',
 } as const
