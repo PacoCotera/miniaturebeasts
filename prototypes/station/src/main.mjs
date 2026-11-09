@@ -186,7 +186,8 @@ const podsScene = (pods, o = {}) => {
 };
 const podsAt = (o = {}) => {
   const u = UI.pods, st = G.st; u.cmp = null; u.view = o.view ?? "inventory";
-  for (const k of ["sort", "chips", "word", "first", "choosing", "find", "ci", "trait", "lane", "at", "plate", "verb", "fixed", "blocked", "hold", "waits"]) if (k in o) u[k] = o[k];
+  for (const k of ["sort", "chips", "word", "first", "choosing", "find", "ci", "trait", "lane", "at", "plate", "verb", "fixed", "blocked", "hold", "waits", "peek"]) if (k in o) u[k] = o[k];
+  u.now = o.now ? { text: o.now, until: Infinity } : null; if (!("peek" in o)) u.peek = null;   // the scene's preview and "Now" line (dead ends B6)
   u.ask = o.ask == null ? null : typeof o.ask === "number" ? st.tray[o.ask]?.id ?? null : o.ask;
   if (u.hold === "first") u.hold = listOf(st, SPECS.pods, { ...u, hold: null }, G.settings)[0]?.p.id ?? null;   // the scene's held pod: the first card's
   if ("bench" in o) { if (o.bench == null) st.readingPod = null; else S.putOnBench(st, typeof o.bench === "string" ? S.podById(st, o.bench) : st.tray[o.bench]); }   // a tray index, or a pod id

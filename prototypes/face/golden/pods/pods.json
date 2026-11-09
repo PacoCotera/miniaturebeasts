@@ -17,6 +17,14 @@
    "hash": "26cbd7ae",
    "png": "pods-inventory-the-verb-line.png"
   },
+  "verb-peek": {
+   "hash": "49127768",
+   "png": "pods-verb-peek.png"
+  },
+  "verb-now": {
+   "hash": "c9503d51",
+   "png": "pods-verb-now.png"
+  },
   "inventory, sorted by species": {
    "hash": "dff201e1",
    "png": "pods-inventory-sorted-by-species.png"
