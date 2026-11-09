@@ -2,13 +2,19 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { goldenStill } from "./png-golden.mjs";
+import { createRequire } from "node:module";
+import { createServer } from "node:http";
+import { readFileSync, existsSync, statSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { decodePng } from "../../places/src/png.mjs";
+import { compareGolden } from "../../places/src/golden.mjs";
 
 const plain = x => JSON.parse(JSON.stringify(x));
 const mib = (id, name, sp, o = {}) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: 0, mem: null, habitsDone: [] }, o);
 // The page between expeditions with a canvas to read back; reduced motion, so every frame is the first.
 function opening(seed = 14, { carried = [], known = [] } = {}) {
-  const p = makePage({ console: "silent", els: true, raf: 1, canvas: true });
+  const p = makePage({ console: "silent", els: true, raf: 1, canvas: true, gen: 6 });
   p.run(`newWorld(${seed}); RM.matches = true; S.known = ${JSON.stringify(known)};`);
   p.run(`S.mibis = ${JSON.stringify(carried)}; S.carried = ${JSON.stringify(carried.map(m => m.id))}; S.lead = ${carried.length ? carried[0].id : null}; S.phase = 'setup'; S.ui.sel = 0;`);
   return p;
@@ -21,7 +27,7 @@ function returning(seed = 14) {
   const p = opening(seed, { carried: THREE, known: [0, 1, 2] });
   p.run(`S.turn = 5; S.expN = 5; S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.report = { lines: ['A storm charged stones in the wood.'], n: 4 };
     const s0 = G.spawns[0]; S.ui.lastPos = s0; const q = cxy(s0); let k = 0;
-    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = q.x + dx, y = q.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const c = y * MW + x; S.revealed[c] = 1; S.visited[c] = 1;
+    for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const x = q.x + dx, y = q.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const c = y * MW + x; S.revealed[c] = 1; if (Math.abs(dx) > 2 || Math.abs(dy) > 2) continue; S.visited[c] = 1;
       if (passable(c) && G.land[c] !== L.WATER) { if (k < 4) S.called[c] = 1; else if (k < 7) S.veil[String(c)] = [1]; k++; } }`);
   return p;
 }
@@ -78,7 +84,90 @@ test("B1: the two named art slots are registered, and the built stand-ins play u
   draw(p); const pod = p.run("podArt('bone', 3)"), r = stands(p, pod, 32, 488); assert.ok(r.n > 300 && r.bad === 0, "the field pod at 3x: " + JSON.stringify(r));
 });
 
-test("B1: stills of the first-time and returning screens", () => {
-  const f = opening(); draw(f); goldenStill(assert, f, "opening-first.png");
-  const r = returning(); draw(r); goldenStill(assert, r, "opening-returning.png");
+// ---- B2: the land in the frame ----
+test("B2: a fresh world: the frame is night, each light's own cell is land in the dark table, and drawing reveals nothing", () => {
+  const p = opening(); p.run("ensureMap();");
+  const before = JSON.stringify(p.run("[S.revealed, S.visited, S.veil, S.called]"));
+  const px = draw(p), W = p.run("SCR_W"), night = p.run("C.night"), ink = p.run("C.ink");
+  assert.ok([night, ink].includes(px[198 * W + 225]), "the frame's centre pixel is night");
+  const q = plain(p.run("(() => { const o = openFrame(); return { cs: o.cs, first: o.first, spawns: G.spawns.map(c => o.at(c)), g: o.glimpse }; })()"));
+  assert.equal(q.first, true); assert.equal(q.g.length, 5, "the five lights"); assert.equal(q.cs, 22, "22 px cells on seed 14");
+  const cv = p.run("landImage({ X0: openFrame().X0, Y0: openFrame().Y0, w: 430 + 22, h: 316 + 22, cs: 22, glimpse: G.spawns })").px(), ox = p.run("openFrame().ox"), oy = p.run("openFrame().oy"), CW = 430 + 22;
+  for (const s of q.spawns) { let land = 0; for (let y = 7; y < 15; y++) for (let x = 7; x < 15; x++) { const v = cv[(s.y - oy + y) * CW + (s.x - ox + x)]; if (v !== night && v !== ink) land++; } assert.ok(land >= 25, "a land colour at the light's cell: " + land + " of 64"); }
+  const edge = p.run("C.void"); let all = 0; for (let i = 0; i < cv.length; i++) if (cv[i] !== night && cv[i] !== ink && cv[i] !== edge) all++; assert.ok(all < 5 * 22 * 22 * 3, "land only round the five lights (" + all + " pixels)");
+  assert.equal(JSON.stringify(p.run("[S.revealed, S.visited, S.veil, S.called]")), before, "S.revealed and the rest are unchanged by drawing");
+  assert.ok(p.run("S.revealed.every(v => !v)"), "still a first placement");
+});
+
+test("B2: the reach fits the frame: cell 52 at tier 1, 31 at tier 2; the start flag is on the land", () => {
+  const p = returning(); assert.equal(p.run("openFrame().cs"), 52); assert.equal(p.run("tierOf().range"), 2);
+  const s = p.run("openFrame().at(S.ui.lastPos)"); draw(p);
+  const f = p.run("up2('flag', ICON.flag())"), r = stands(p, f, Math.round(s.x + 26 - f.w / 2 + 2), Math.round(s.y + 26 - f.h + 4)); assert.ok(r.n > 50 && r.bad === 0, "the flag at 2x: " + JSON.stringify(r));
+  p.run("S.tier = 2;"); assert.equal(p.run("tierOf().range"), 4); assert.equal(p.run("openFrame().cs"), 31); draw(p);
+  const o = plain(p.run("(() => { const o = openFrame(); return [o.WX, o.WY, o.WW, o.WH]; })()")); assert.deepEqual(o, [10, 40, 430, 316]);
+});
+
+test("B2: the painting is cached: two frames, one paint", () => {
+  const p = returning(); p.run("drawSetup(0);"); const a = p.run("LAND_CACHE.cv"); p.run("drawSetup(0.5);"); assert.equal(p.run("LAND_CACHE.cv"), a, "the same canvas");
+  p.run("S.revealed[S.ui.lastPos] = 0;"); p.run("drawSetup(0.5);"); assert.notEqual(p.run("LAND_CACHE.cv"), a, "a changed cell paints again");
+});
+
+test("B2: the lost-plates chip only when a plate is lost; the docked band when docked", () => {
+  const p = returning(); p.run("globalThis.__s = 0; shieldBars = (o => function (...a) { __s++; return o.apply(this, a); })(shieldBars);");
+  p.run("S.shield = null; drawSetup(0);"); assert.equal(p.run("__s"), 0, "whole: no plates on this screen");
+  p.run("S.shield = 1; drawSetup(0);"); assert.equal(p.run("__s"), 1, "one lost: the chip");
+  p.run("S.shield = null; isDocked = () => true;"); assert.ok(said(p).includes("Docked · lift to explore"), "docked: the band");
+});
+
+// ---- The stills and the marks, in real Chromium (PW_DIR; skipped without it): the marks need the baked places' views, which only a browser has ----
+const require = createRequire(import.meta.url);
+let chromium; try { ({ chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright")); } catch { chromium = null; }
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
+const skip = !chromium && "playwright is not installed (set PW_DIR)";
+
+test("B1/B2 in Chromium: the first-time and the returning screens (goldens opening-first.png, opening-returning.png at 1x); a found place has its colour mark, a been-into place the slate one", { skip }, async (t) => {
+  let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
+  const server = createServer((req, res) => {
+    let p = path.join(root, decodeURIComponent(req.url.split("?")[0]));
+    if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
+    if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
+    let body = readFileSync(p);
+    if (p.endsWith("exploration/index.html")) body = Buffer.from(body.toString().replace("window.__mb = { ", "window.__mb = { openFrame, tierOf, "));   // the frame's geometry, for the test only
+    res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(body);
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  const url = `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html`;
+  try {
+    const page = await (await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: "reduce" })).newPage();
+    const errors = []; page.on("pageerror", (e) => errors.push(e.message));
+    await page.goto(`${url}?seed=14`); await page.waitForTimeout(1500);
+    const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
+    const shot = async () => { await page.waitForTimeout(700); return decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64")); };
+    assert.equal(await page.evaluate(() => window.__mb.S.phase), "setup");
+    await page.evaluate(() => { const m = window.__mb; m.S.revealed.fill(0); m.S.visited.fill(0); m.S.mibis = []; m.S.carried = []; m.S.report = null; m.S.known = []; m.S.bay = []; m.S.ui.lastPos = null; m.S.ui.sel = 0; m.FX.msg = ""; });
+    const first = await shot(); golden("opening-first.png", first);
+    const rev = await page.evaluate(() => window.__mb.S.revealed.some(v => v)); assert.equal(rev, false, "the glimpse revealed nothing");
+    // the returning player: Pip (Loika), Moss (Tuikis), Dot (a young Untuva); expedition 5; four places found and three been into; one crate; last turn's line
+    await page.evaluate(() => { const m = window.__mb, S = m.S, mk = (id, name, sp, o) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: 0, mem: null, habitsDone: [] }, o);
+      S.turn = 5; S.expN = 5; S.known = [0, 1, 2]; S.mibis = [mk(1, "Pip", 0), mk(2, "Moss", 1), mk(3, "Dot", 2, { grownTurn: null, born: 4 })]; S.carried = [1, 2, 3]; S.lead = 1;
+      S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.report = { lines: ["A storm charged stones in the wood."], n: 4 };
+      const s0 = m.G.spawns[0]; S.ui.lastPos = s0; const qx = s0 % m.MW, qy = Math.floor(s0 / m.MW); let k = 0;
+      for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const x = qx + dx, y = qy + dy; if (x < 0 || y < 0 || x >= m.MW || y >= m.MH) continue; const c = y * m.MW + x; S.revealed[c] = 1; if (Math.abs(dx) > 2 || Math.abs(dy) > 2) continue; S.visited[c] = 1;
+        if (m.passable(c) && m.G.land[c] !== m.L.WATER) { if (k < 4) S.called[c] = 1; else if (k < 7) S.veil[String(c)] = [1]; k++; } } });
+    const ret = await shot(); golden("opening-returning.png", ret);
+    const cs = await page.evaluate(() => window.__mb.openFrame().cs); assert.equal(cs, 52, "tier 1: the reach fits at 52");
+    // the marks: the mark's own pixels stand on the land (a sign may cover a few); found in colour, been the slate silhouette
+    const marks = await page.evaluate(() => { const m = window.__mb, o = m.openFrame(), out = {};
+      for (let c = 0; c < m.MW * m.MH; c++) { if (!m.S.revealed[c]) continue; const a = o.at(c), mk = m.cellMark(c, a.x, a.y, o.cs, 18, true); if (!mk) continue;
+        const kind = m.S.called[c] ? "found" : m.S.veil[String(c)] ? "been" : null; if (!kind || out[kind]) continue;
+        const px = []; for (let j = 0; j < mk.mk.h; j++) for (let i = 0; i < mk.mk.w; i++) { const v = mk.mk.p[j * mk.mk.w + i]; if (v >= 0) px.push([mk.x + i, mk.y + j, m.RGB[v]]); }
+        out[kind] = { same: mk.mk === m.placeMark(m.G.land[c], kind, 18), px, slate: px.filter(([, , rgb]) => rgb.join() === m.RGB[m.C.slate].join()).length }; }
+      return out; });
+    for (const kind of ["found", "been"]) { const r = marks[kind]; assert.ok(r, "a " + kind + " cell with a mark"); assert.ok(r.same, "the " + kind + " mark");
+      let bad = 0; for (const [x, y, rgb] of r.px) { const o = (y * ret.w + x) * 4; if (ret.data[o] !== rgb[0] || ret.data[o + 1] !== rgb[1] || ret.data[o + 2] !== rgb[2]) bad++; }
+      assert.ok(r.px.length > 20 && bad <= r.px.length * 0.15, kind + " mark drawn on the land: " + bad + " of " + r.px.length + " differ"); }
+    assert.ok(marks.been.slate > marks.been.px.length * 0.5, "been: the slate silhouette"); assert.ok(marks.found.slate < marks.found.px.length * 0.5, "found: in colour");
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); server.close(); }
 });

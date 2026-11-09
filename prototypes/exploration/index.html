@@ -4775,13 +4775,15 @@ function landCellOf(cs) {
 const LAND_CACHE = { key: null, cv: null };
 function landImage(spec) {
   const { X0, Y0, w: N, h: NH, cs } = spec, k = cs / 72, ex = S.exp;
+  // spec.glimpse: cells drawn as seen and never been in (the opening's five lights before the first walk); drawn only, S.revealed is never touched
+  const glimpse = spec.glimpse ? new Set(spec.glimpse) : null, seen = c => !!S.revealed[c] || (glimpse !== null && glimpse.has(c)), fogOf = c => S.revealed[c] ? fogState(c) : glimpse !== null && glimpse.has(c) && passable(c) && G.land[c] !== L.WATER ? 2 : 0;
   const nx = Math.ceil(N / cs), ny = Math.ceil(NH / cs); let st = '';
-  for (let j = -1; j <= ny; j++) for (let i = -1; i <= nx; i++) { const X = X0 + i, Y = Y0 + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) { st += 'x'; continue; } const c = Y * MW + X; st += !S.revealed[c] ? 'n' : (fogState(c) + (ex && ex.storm && stormCovers(X) ? 4 : 0)); }
-  const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st].join('|');
+  for (let j = -1; j <= ny; j++) for (let i = -1; i <= nx; i++) { const X = X0 + i, Y = Y0 + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) { st += 'x'; continue; } const c = Y * MW + X; st += !seen(c) ? 'n' : (fogOf(c) + (ex && ex.storm && stormCovers(X) ? 4 : 0)); }
+  const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : ''].join('|');
   if (LAND_CACHE.key === key) return LAND_CACHE.cv;
   const cv = document.createElement('canvas'); cv.width = N; cv.height = NH; const cg = cv.getContext('2d'), id = cg.createImageData(N, NH), u = new Uint32Array(id.data.buffer);
-  const cellOf = landCellOf(cs), tiles = {};
-  for (const n of WALK_TEX) tiles[n] = WART.pb.get(`map-tex-${n}-${cs}`);
+  const cellOf = landCellOf(cs), tiles = {}, tcs = WALK_CS.reduce((a, b) => Math.abs(b - cs) < Math.abs(a - cs) ? b : a);   // the desk's terrain set nearest the cell size (72, 48 or 26)
+  for (const n of WALK_TEX) tiles[n] = WART.pb.get(`map-tex-${n}-${tcs}`);
   const tile = (n, wx, wy) => { const t = tiles[n]; return t ? t.p[(((wy % t.h) + t.h) % t.h) * t.w + (((wx % t.w) + t.w) % t.w)] : C.ink; };   // no art yet: a named empty slot (ink)
   const landOf = c => c < 0 ? -1 : G.land[c];
   const pond = {};   // a pond cell's water: the place's own water tiles, as an ellipse in the cell (so its mirror shows)
@@ -4792,11 +4794,11 @@ function landImage(spec) {
   for (let y = 0; y < NH; y++) for (let x = 0; x < N; x++) {
     const wx = X0 * cs + x, wy = Y0 * cs + y, c = cellOf(wx, wy), b = BAYER[(y & 3) * 4 + (x & 3)];
     if (c < 0) { put(y * N + x, C.void); continue; }
-    if (!S.revealed[c]) { const c2 = cellOf(wx + 4 * k, wy + 3 * k), edge = c2 >= 0 && S.revealed[c2]; put(y * N + x, edge ? (b < 8 ? C.night : C.ink) : (b < 3 ? C.night : C.ink)); continue; }
+    if (!seen(c)) { const c2 = cellOf(wx + 4 * k, wy + 3 * k), edge = c2 >= 0 && seen(c2); put(y * N + x, edge ? (b < 8 ? C.night : C.ink) : (b < 3 ? C.night : C.ink)); continue; }
     let land = landOf(c), col;
     const lx = (wx - (c % MW) * cs) / cs, ly = (wy - ((c / MW) | 0) * cs) / cs;
     // near water: a beach on the land side, foam on the water side
-    const nearW = (d) => { for (const [ox, oy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) { const c3 = cellOf(wx + ox, wy + oy); if (c3 >= 0 && S.revealed[c3] && (landOf(c3) === L.WATER) !== (land === L.WATER)) return true; } return false; };
+    const nearW = (d) => { for (const [ox, oy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) { const c3 = cellOf(wx + ox, wy + oy); if (c3 >= 0 && seen(c3) && (landOf(c3) === L.WATER) !== (land === L.WATER)) return true; } return false; };
     if (land === L.POND) { const p = pondOf(c), dx = (lx - p.x) / (p.r * 1.25), dy = (ly - p.y) / p.r, rr = dx * dx + dy * dy + (vnoise(wx / (6 * k), wy / (6 * k), 7) - .5) * .5;
       if (rr < 1) land = L.WATER; else if (rr < 1.35) col = tile('pondrim', wx, wy); }
     if (col == null) {
@@ -4808,7 +4810,7 @@ function landImage(spec) {
       else col = tile('meadow', wx, wy);
     }
     // the storm's dark over the cells it covers, then the fog states on the same soft borders
-    const fs = fogState(c);
+    const fs = fogOf(c);
     if (fs === 2 || (ex && ex.storm && stormCovers(c % MW))) col = DARK[col];
     if (fs === 2) { if (b < FOGV.n) col = C.night; } else if (fs === 1 && b < FOGV.b) col = C.night;
     put(y * N + x, col);
@@ -4817,8 +4819,8 @@ function landImage(spec) {
 }
 // A place's mark on the land at its landmark's real spot in the cell (a mirrored place puts it on the other side); been in: the slate silhouette, found: full colour; never been in: none.
 // (fx, fy): the spot as fractions of the cell. Returns { mk, x, y } for a cell at (cx, cy) of size cs, or null.
-function cellMark(c, cx, cy, cs, size) {
-  if (!S.exp || !S.revealed[c] || !passable(c) || G.land[c] === L.WATER) return null;
+function cellMark(c, cx, cy, cs, size, open) {   // open: the opening screen draws them between expeditions
+  if ((!S.exp && !open) || !S.revealed[c] || !passable(c) || G.land[c] === L.WATER) return null;
   const found = heartFound(c), been = !!S.veil[String(c)]; if (!found && !been) return null;
   const lay = layout(String(c)), bk = !lay.cave && bakedView(lay); if (!bk) return null;
   const lm = (bk.place.landmarks && bk.place.landmarks[0]) || { x: bk.place.w / 2, y: bk.place.h / 2 }, mk = placeMark(G.land[c], found ? 'found' : 'been', size), pad = 2;
@@ -5984,12 +5986,50 @@ const deepShown = () => !!digPartner() || carriedMibis().some(m => isAdult(m) &&
 function openCreature(sp, pose, fr, k, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(creatureArt(sp, pose, fr, k, juv), x, y); }
 // The Companion's front door: the land you know (the frame), one line of what changed, the way out as two tabs, and who comes along.
 const OPEN_FRAME = { x: 8, y: 38, w: 434, h: 320 }, OPEN_PY = 450, OPEN_PH = 110;
+// The land you know, as the frame holds it (430 × 316 at (10, 40) inside the panel): the Probe's reach round the last start plus half a cell each side (the first time, the five lights and half a cell round them),
+// at the largest whole cell size up to 72 that fits, centred and clamped to the world.
+function openFrame() {
+  const WX = OPEN_FRAME.x + 2, WY = OPEN_FRAME.y + 2, WW = OPEN_FRAME.w - 4, WH = OPEN_FRAME.h - 4, first = firstPlacement();
+  let x0 = MW, y0 = MH, x1 = -1, y1 = -1;
+  if (first) for (const c of G.spawns) { const p = cxy(c); x0 = Math.min(x0, p.x); y0 = Math.min(y0, p.y); x1 = Math.max(x1, p.x); y1 = Math.max(y1, p.y); }
+  else { const s = cxy(S.ui.lastPos != null ? S.ui.lastPos : G.spawns[0]), r = tierOf().range; x0 = s.x - r; x1 = s.x + r; y0 = s.y - r; y1 = s.y + r; }
+  const bw = x1 - x0 + 2, bh = y1 - y0 + 2, cs = Math.max(1, Math.min(72, Math.floor(Math.min(WW / bw, WH / bh))));
+  let px0 = Math.round((x0 + x1 + 1) / 2 * cs - WW / 2), py0 = Math.round((y0 + y1 + 1) / 2 * cs - WH / 2);
+  px0 = MW * cs > WW ? clamp(px0, 0, MW * cs - WW) : Math.round((MW * cs - WW) / 2); py0 = MH * cs > WH ? clamp(py0, 0, MH * cs - WH) : Math.round((MH * cs - WH) / 2);
+  const X0 = Math.floor(px0 / cs), Y0 = Math.floor(py0 / cs), ox = WX - (px0 - X0 * cs), oy = WY - (py0 - Y0 * cs);
+  return { first, WX, WY, WW, WH, cs, X0, Y0, ox, oy, glimpse: first ? G.spawns.slice() : null, at: c => { const p = cxy(c); return { x: ox + (p.x - X0) * cs, y: oy + (p.y - Y0) * cs }; } };
+}
+// The land in the frame: the built painting cropped to it, the place marks, the signs, the start flag, the lights of a first walk, the lost plates and the docked band. Drawn only: nothing here reveals a cell.
+function drawOpenLand(t, fr) {
+  const q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
+  const cv = landImage({ X0: q.X0, Y0: q.Y0, w: WW + cs, h: WH + cs, cs, glimpse: q.glimpse });
+  g.drawImage(cv, WX - q.ox, WY - q.oy, WW, WH, WX, WY, WW, WH);
+  const x1 = q.X0 + Math.ceil((WW + cs) / cs), y1 = q.Y0 + Math.ceil((WH + cs) / cs), ms = markSizeFor(cs), signs = new Map(mapSigns().map(e => [e.c, e.list]));
+  for (let Y = q.Y0; Y < Math.min(MH, y1); Y++) for (let X = q.X0; X < Math.min(MW, x1); X++) {
+    const c = Y * MW + X, p = q.at(c); if (!S.revealed[c]) continue;
+    const m = cellMark(c, p.x, p.y, cs, ms, true); if (m && inF(m.x, m.y, m.mk.w, m.mk.h)) blit(m.mk, m.x, m.y);
+    const list = (signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind)); let n = 0;
+    for (const sg of list.slice(0, 4)) { if (sg.kind === 'sh' && inF(p.x, p.y, cs, cs) && mapPuddles(c, p.x, p.y, cs)) { n++; continue; }
+      const a = signSprite(sg.kind, sg, fr, false); if (!a) continue;
+      const s = passable(c) && G.land[c] !== L.WATER ? cellSignAt(c, p.x, p.y, cs, a.w, a.h, n) : { x: p.x + ((cs - a.w) >> 1) + n * 6, y: p.y + ((cs - a.h) >> 1) };
+      if (inF(s.x, s.y, a.w, a.h)) blit(a, s.x, s.y); n++; }
+  }
+  // the first walk: the five lights, each with its sign (tracks or a slow beat) beside it
+  if (q.first) for (const c of G.spawns) { const p = q.at(c), a = sparkArt(motion() ? Math.floor(t * 3 + c) % 2 : 1), sx = p.x + (cs >> 1) - (a.w >> 1), sy = p.y + (cs >> 1) - (a.h >> 1); blit(a, sx, sy);
+    const sg = spawnSign(c); if (sg) { const tx = Math.min(WX + WW - 28, p.x + (cs >> 1) + 8), ty = Math.max(WY + 2, p.y + (cs >> 1) - 22); panel(tx, ty, 26, 20, C.ink, C.stone);
+      if (sg === 'b') blit(ICON.beat(fr), tx + 2, ty + 2); else { blit(ICON.paw('bone'), tx + 3, ty + 6); blit(ICON.paw('bone'), tx + 11, ty + 2); } } }
+  // the start flag (2× at 48 px cells and up)
+  if (!q.first && S.ui.lastPos != null) { const p = q.at(S.ui.lastPos), f = cs >= 48 ? up2('flag', ICON.flag()) : ICON.flag(), fx = Math.round(p.x + cs / 2 - f.w / 2 + 2), fy = Math.round(p.y + cs / 2 - f.h + 4); if (inF(fx, fy, f.w, f.h)) blit(f, fx, fy); }
+  // corner states: the Probe's plates only when one is lost; docked, a band across the foot
+  const tier = tierOf(); if (S.shield != null && S.shield < tier.shield) { const w = 9 * tier.shield + 12; panel(WX + WW - w - 4, WY + 4, w, 22, C.ink, C.stone); shieldBars(WX + WW - w + 2, WY + 9, Math.max(0, S.shield), tier.shield, 6, 12); }
+  if (isDocked()) { R(WX, WY + WH - 30, WW, 30, C.ink); text(OPEN_TEXT.docked, WX + WW / 2, WY + WH - 24, C.mint, 2, 'center'); }
+}
 function drawSetup(t) {
   viewBg();
   drawTop('Expedition ' + S.expN, '');
   const fr = motion() ? Math.floor(t * 2) % 2 : 0, first = firstPlacement(), F = OPEN_FRAME;
   // 1. the land you know
-  panel(F.x, F.y, F.w, F.h, C.ink, C.night);
+  panel(F.x, F.y, F.w, F.h, C.ink, C.night); drawOpenLand(t, fr);
   // 2. one line of what changed: the world turn's first line (the Station's dock line takes the message box); the first time what the lights are; a generator 1 world's hint
   { const rl = S.report && S.report.lines && S.report.lines[0], flat = !rl && S.phase === 'setup' && !S.exp && (S.gen == null ? 1 : S.gen) === 1, line = rl || (flat ? OPEN_TEXT.flat : first ? OPEN_TEXT.dark : '');
     if (line) { R(14, 371, 6, 6, C.orange); text(clipText(line, 410, 2), 28, 365, flat ? C.sand : C.bone); } }
