@@ -1001,7 +1001,7 @@ test("X26 §5.4: the partner strip with only Dot: its picture at 3× without a r
   assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[4] === 398 && c[6] === 1), "the other at 1× at the top right");
   // unchanged: none carried, a grown partner
   p = X26.world([dot()], []); d = p.draw("setup"); assert.ok(d.some(c => c[0] === "text" && c[1] === "No one with you"));
-  p = X26.world([pip()], [2]); d = p.draw("setup"); assert.ok(d.some(c => c[0] === "art" && c[1] === "opring84"), "a partner keeps its ring");
+  p = X26.world([pip()], [2]); d = p.draw("setup"); assert.ok(!d.some(c => c[0] === "art" && (c[1] === "opring84" || c[1] === "opring32")), "a partner stands on its own sprite: no ring (owner 11-08)");
 });
 
 test("X26 §5.5: one set-out message names the rider, once per expedition; no Dig or ability prompt at the burrow with a juvenile Tuikis", () => {

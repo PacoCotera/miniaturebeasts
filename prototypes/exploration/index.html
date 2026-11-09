@@ -6160,17 +6160,16 @@ function drawSetup(t) {
   if (selP) brackets(2, PY - 4, SCR_W - 4, PH + 6, C.amber);
   if (cm.length) { const front = sel === 1 ? dig : null, lead = front || pm || cm[0], st = mibiStage(lead), juv = st === 'juvenile', others = cm.filter(m => m !== lead);   // only juveniles: the first, its own picture, no ring; Deep ground focused: the digger steps to the front
     const ca = callAnim(lead), hop = ca && motion() ? Math.round(Math.abs(Math.sin(ca.a / 150)) * 12 * Math.max(0, 1 - ca.a / 900)) : 0;   // Call: it hops and plays its alert frame
-    if (!juv) blit(ringArt('opring84', 84, 22), 14, PY + PH - 24);
     openCreature(lead.sp, (selP && fr) || (ca && ca.a < 900) ? 'alert' : 'idle', fr, 3, 8, PY + PH - 102 - hop, juv);
     text(clipText(lead.name, 200 - others.length * 44, 3), 116, PY + 2, C.bone, 3);
     let cx = 116; cx += chip(cx, PY + 38, STAGE_WORD[st], stageFill(st), 'bone') + 6; if (pm || front) chip(cx, PY + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
     text(clipText(pm || front ? abCardOf(lead.sp) : (lead.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime), 320, 2), 116, PY + 70, C.fog);
-    others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; blit(ringArt('opring32', 30, 10, C.stone, C.slate), x + 1, y + 26); openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
+    others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
   else if (liveMibis().length) {   // mibis, none with you: their silhouettes
     liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, PY + PH - 66 - (i % 2) * 6));
     text(CARE_TEXT.noOneWithT, 116, PY + 10, C.bone, 3); text(clipText(leadWhy(), 320, 2), 116, PY + 48, C.fog); }
   else {   // no mibi at all: the pod stands where the partner would, and says what the walk is for
-    if (OPEN_ART.ready) { blit(ringArt('opring84', 84, 22), 14, PY + PH - 24); blit(OPEN_ART.pod[motion() ? Math.floor(t / 1.2) % 2 : 2], 8, PY + PH - 102); }   // the desk's pod, its foot (48, 92) on the ring
+    if (OPEN_ART.ready) blit(OPEN_ART.pod[motion() ? Math.floor(t / 1.2) % 2 : 2], 8, PY + PH - 102);   // the desk's pod, its foot at (48, 92), no ring
     else blit(podArt('bone', 3), 32, PY + PH - 72);
     text(OPEN_TEXT.firstWalk, 116, PY + 8, C.bone, 3); text(OPEN_TEXT.firstFind, 116, PY + 46, C.fog); text(OPEN_TEXT.firstGrows, 116, PY + 68, C.fog); }
 }
