@@ -4645,7 +4645,8 @@ const spawnSignCache = new Map();
 function spawnSignsFor(c) {
   const p = cxy(c); let b = 0, n = 0, r = 0;
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const q = y * MW + x;
-    const s = cellSigns(q); b += s.b; n += S.cr.filter(w => w.c === q && !w.cv).length; }
+    if (S.pods.some(pd => pd.k === String(q) && (pd.h || pd.x < 0))) b = 1;   // a beat: a pod not found yet (cellSigns' own rule, without building the place's layout)
+    n += S.cr.filter(w => w.c === q && !w.cv).length; }
   return [b && 'b', n >= 3 && 't'].filter(Boolean);   // strongest first
 }
 function spawnSign(c) {
@@ -5997,12 +5998,13 @@ function openRead(files) {
     let c = null; const build = () => { c = document.createElement('canvas'); c.width = 96; c.height = 96; const cg = c.getContext('2d'), id = cg.createImageData(96, 96); id.data.set(im.data); cg.putImageData(id, 0, 0); return c; };
     for (let i = 0; i < 96 * 96; i++) { const o = i * 4; if (im.data[o + 3] && !seen.has(im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2])) { seen.add(im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2]); OPEN_POD_COLOURS.push([im.data[o], im.data[o + 1], im.data[o + 2]]); } }
     return { w: 96, h: 96, canvas: () => c || build() }; });
-  OPEN_ART.night = night; OPEN_ART.pod = pod; OPEN_ART.ready = true; ART.clear(); LAND_CACHE.key = null;
+  OPEN_ART.night = night; OPEN_ART.pod = pod; OPEN_ART.ready = true; LAND_CACHE.key = null;
 }
-async function loadOpenArt() {
+async function loadOpenArt(after) {
   try {
     if (window.__openArt) { openRead(window.__openArt); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
+    await after;   // in a browser the opening art waits for the walk art: the first screen's other work is not disturbed
     const files = {};
     await Promise.all(OPEN_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/open/', location.href).href + n + '.png'; })));
@@ -6030,12 +6032,12 @@ function openFrame() {
 }
 // The land in the frame: the built painting cropped to it, the place marks, the signs, the start flag, the lights of a first walk, the lost plates and the docked band. Drawn only: nothing here reveals a cell.
 function drawOpenLand(t, fr) {
-  const q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
+  const ready = !(G.gen >= 6) || PL6.ready || BAKED.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
   const cv = landImage({ X0: q.X0, Y0: q.Y0, w: WW + cs, h: WH + cs, cs, glimpse: q.glimpse, mist: q.first && OPEN_ART.ready ? (motion() ? Math.floor(t / 0.9) % 2 : 2) : null });
   g.drawImage(cv, WX - q.ox, WY - q.oy, WW, WH, WX, WY, WW, WH);
-  const x1 = q.X0 + Math.ceil((WW + cs) / cs), y1 = q.Y0 + Math.ceil((WH + cs) / cs), ms = markSizeFor(cs), signs = new Map(mapSigns().map(e => [e.c, e.list]));
+  const x1 = q.X0 + Math.ceil((WW + cs) / cs), y1 = q.Y0 + Math.ceil((WH + cs) / cs), ms = markSizeFor(cs), signs = ready && !q.first ? new Map(mapSigns().map(e => [e.c, e.list])) : new Map();   // a place layout is built only once the places have loaded (an earlier one would be cached as the generated stand-in)
   for (let Y = q.Y0; Y < Math.min(MH, y1); Y++) for (let X = q.X0; X < Math.min(MW, x1); X++) {
-    const c = Y * MW + X, p = q.at(c); if (!S.revealed[c]) continue;
+    const c = Y * MW + X, p = q.at(c); if (!ready || !S.revealed[c]) continue;
     const m = cellMark(c, p.x, p.y, cs, ms, true); if (m && inF(m.x, m.y, m.mk.w, m.mk.h)) blit(m.mk, m.x, m.y);
     const list = (signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind)); let n = 0;
     for (const sg of list.slice(0, 4)) { if (sg.kind === 'sh' && inF(p.x, p.y, cs, cs) && mapPuddles(c, p.x, p.y, cs)) { n++; continue; }
@@ -6045,7 +6047,7 @@ function drawOpenLand(t, fr) {
   }
   // the first walk: the five lights, each with its sign (tracks or a slow beat) beside it
   if (q.first) for (const c of G.spawns) { const p = q.at(c), a = sparkArt(motion() ? Math.floor(t * 3 + c) % 2 : 1), sx = p.x + (cs >> 1) - (a.w >> 1), sy = p.y + (cs >> 1) - (a.h >> 1); blit(a, sx, sy);
-    const sg = spawnSign(c); if (sg) { const tx = Math.min(WX + WW - 28, p.x + (cs >> 1) + 8), ty = Math.max(WY + 2, p.y + (cs >> 1) - 22); panel(tx, ty, 26, 20, C.ink, C.stone);
+    const sg = ready && spawnSign(c); if (sg) { const tx = Math.min(WX + WW - 28, p.x + (cs >> 1) + 8), ty = Math.max(WY + 2, p.y + (cs >> 1) - 22); panel(tx, ty, 26, 20, C.ink, C.stone);
       if (sg === 'b') blit(ICON.beat(fr), tx + 2, ty + 2); else { blit(ICON.paw('bone'), tx + 3, ty + 6); blit(ICON.paw('bone'), tx + 11, ty + 2); } } }
   // the start flag (2× at 48 px cells and up)
   if (!q.first && S.ui.lastPos != null) { const p = q.at(S.ui.lastPos), f = cs >= 48 ? up2('flag', ICON.flag()) : ICON.flag(), fx = Math.round(p.x + cs / 2 - f.w / 2 + 2), fy = Math.round(p.y + cs / 2 - f.h + 4); if (inF(fx, fy, f.w, f.h)) blit(f, fx, fy); }
@@ -7223,8 +7225,8 @@ function actReadOnly(k) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
 if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
-loadOpenArt();   // the art desk's opening mist and pod
-loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
+const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
+loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
 loadPlaces6();   // generator 6's places (the four templates and their mirrors)
 loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)

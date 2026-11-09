@@ -185,7 +185,7 @@ const ODIR = new URL("../art/open/", import.meta.url), DESK = process.env.MIBI_A
 const sha = (buf) => createHash("sha256").update(buf).digest("hex");
 const ofiles = readdirSync(ODIR).filter((f) => f.endsWith(".png")).sort(), HASHES = JSON.parse(readFileSync(new URL("SHA256.json", ODIR), "utf8"));
 
-test("art/open: every placed file is the desk's byte for byte (and its recorded hash), the manifest is placed, the page names exactly these files", () => {
+test("the opening art: every placed file is the desk's byte for byte (and its recorded hash), the manifest is placed, the page names exactly these files", () => {
   assert.equal(ofiles.length, 12); assert.deepEqual(Object.keys(HASHES).sort(), ofiles);
   for (const f of ofiles) assert.equal(sha(readFileSync(new URL(f, ODIR))), HASHES[f], f);
   if (existsSync(DESK)) { for (const f of [...ofiles, "manifest.json"]) assert.ok(readFileSync(new URL(f, ODIR)).equals(readFileSync(DESK + f)), f + " differs from the desk's file"); }
@@ -193,7 +193,7 @@ test("art/open: every placed file is the desk's byte for byte (and its recorded 
   assert.deepEqual([...opening().run("OPEN_FILES")].sort(), ofiles.map((f) => f.slice(0, -4)));
 });
 
-test("art/open: the mist is 96 px, three variants with a plain night border, on the core palette plus the manifest's four colours; the pod is 96 px, its shell ramp joins the allowed set; no partial alpha", () => {
+test("the opening art: the mist is 96 px, three variants with a plain night border, on the core palette plus the manifest's four colours; the pod is 96 px, its shell ramp joins the allowed set; no partial alpha", () => {
   const p = opening(), core = new Set(p.run("RGB").slice(0, 51).map((c) => c.join())), mf = JSON.parse(readFileSync(new URL("manifest.json", ODIR), "utf8"));
   const four = Object.keys(mf["c-open-night"].palette_additions).map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)).join());
   assert.deepEqual(four.sort(), plain(p.run("OPEN_COLOURS")).map((c) => c.join()).sort(), "the page's four colours are the manifest's");
