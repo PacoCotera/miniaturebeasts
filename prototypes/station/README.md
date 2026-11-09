@@ -48,7 +48,7 @@ The Station's depicted keys, mapped to the keyboard. Routine play uses these onl
 | Library (plum) | L | The Library, Level 1 |
 | ← | Esc / Backspace | Back one view. On Home: focus back to the room; on the room it only says so |
 | ✓ Confirm | Enter / Space | Exactly what the bottom line names, with its price |
-| Caddy: Dock / Lift | D (Shift+D on the play page) | The Dock control: on the play page its control in the bar or Shift+D; on this page alone, the Dock control beside the Caddy or D. It docks or lifts the Companion and is not a Station key |
+| Dock / Lift | D (Shift+D on the play page) | The Dock control: on the play page its control in the bar or Shift+D; on this page alone, the Dock control or D. It docks or lifts the Companion and is not a Station key |
 
 The four middle keys switch views and never spend. Every spend is one deliberate press; returning a pod takes two (the first arms).
 

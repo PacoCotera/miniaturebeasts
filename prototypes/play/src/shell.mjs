@@ -289,7 +289,7 @@ function layoutPhone() {
   window.__playRects = rects;
 }
 function dockTitle() {
-  const c = caddy; return !c.canDock ? "The Companion has no world yet" : c.docked ? "Lift the Companion from the Caddy" : c.crates > 0 ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion in the Caddy";
+  const c = caddy; return !c.canDock ? "The Companion has no world yet" : c.docked ? "Lift the Companion" : c.crates > 0 ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion";
 }
 // the size control: − / fit / +, the middle showing ×z (and "fit" while the fit is on)
 function layoutSize(x) {
@@ -310,7 +310,7 @@ function layoutDock(iconOnly) {
   placeC(dot, 25, 5, 6, 6); dot.hidden = !crates;
   wordEl.classList.toggle("hidden", iconOnly); hint.classList.toggle("hidden", iconOnly);
   dockCtl.setAttribute("aria-disabled", String(!c.canDock));
-  const label = d ? "Lift the Companion from the Caddy" : crates ? "Dock the Companion in the Caddy; cargo waits aboard" : "Dock the Companion in the Caddy", title = dockTitle();
+  const label = d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion", title = dockTitle();
   dockCtl.setAttribute("aria-label", label); dockCtl.title = title;
   if (!c.canDock) dockCtl.setAttribute("aria-description", title); else dockCtl.removeAttribute("aria-description");
   dockCtl.classList.toggle("pressed", pressed || c.pending);
@@ -578,7 +578,7 @@ function lamps(f, t) {
 }
 function caddyEvent(f) {
   if (tier !== "narrow") return;
-  noteCaddy = "Caddy: " + f.lines.l1 + (f.lines.l2 ? " · " + f.lines.l2 : ""); clearTimeout(noteTimer); noteTimer = setTimeout(() => { noteCaddy = ""; layout(); }, NOTE_MS); layout();
+  noteCaddy = "Dock: " + f.lines.l1 + (f.lines.l2 ? " · " + f.lines.l2 : ""); clearTimeout(noteTimer); noteTimer = setTimeout(() => { noteCaddy = ""; layout(); }, NOTE_MS); layout();
 }
 
 // ---- the Caddy's recovery print (sandbox) ----
@@ -606,8 +606,8 @@ async function printDone() {
   try {
     const r = await fetch(API + "/print/taken", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ print: print.id }) });
     if (r.ok) { print.busy = false; printClear(); say("Recovery key taken"); }
-    else { print.busy = false; if (r.status === 409) { print.note = "The Caddy printed a new key. Keep this one instead."; print.id = null; layout(); await printLook(); } else printStatus.textContent = "The Caddy could not save that. Try again."; }
-  } catch { printStatus.textContent = "The Caddy did not answer. Try again."; }
+    else { print.busy = false; if (r.status === 409) { print.note = "The dock printed a new key. Keep this one instead."; print.id = null; layout(); await printLook(); } else printStatus.textContent = "The dock could not save that. Try again."; }
+  } catch { printStatus.textContent = "The dock did not answer. Try again."; }
   print.busy = false; printTaken.removeAttribute("aria-disabled");
 }
 printTaken.addEventListener("click", () => { printDone(); if (document.activeElement === printTaken) printTaken.blur(); giveKeys(owner); });

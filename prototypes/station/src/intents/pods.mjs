@@ -109,7 +109,7 @@ function doVerb(h, target) {
   if (!t.can) { if (t.why) h.say(t.why); return; }   // a pod that cannot take the verb: the reason on the plate, nothing done
   if (vb === "read" || vb === "bring") return toRoom(h, q, p.choosing ? "choosing" : "inventory");
   if (vb === "grow") return growFrom(h, q, p.from === "incubator" ? "incubator" : "inventory");
-  if (vb === "freshen") { const r = S.freshen(st, q, h.settings); if (!r.ok) return h.say(r.why); h.play({ kind: "tick", target: "s", ms: 300 }); flash(h, fill(spec(h).strings.inv.freshened, { n: r.cost })); h.save(); return; }
+  if (vb === "freshen") { const r = S.freshen(st, q, h.settings); if (!r.ok) return h.say(r.why); h.play({ kind: "tick", target: "s", ms: 300 }); flash(h, fill(spec(h).strings.inv.freshened, { n: r.cost, turns: S.POD_LIFE })); h.save(); return; }
   if (vb === "compare") {
     if (!p.hold) { p.hold = q.id; return; }   // this pod is held: only its kin stay bright
     if (p.hold === q.id) { p.hold = null; return; }

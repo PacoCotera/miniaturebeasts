@@ -52,7 +52,7 @@ export function incubatorBuild(m, spec, pods) {
     regions.stamp = { case: { back: slot(req, R.stampCase.slice, R.stampCase.rect, "the stamp case master"), front: slot(req, R.stampCaseFront.slice, R.stampCaseFront.rect, "the case's front glass") }, size: sz.size, N: sz.N, cell: sz.cell, plate: plateMasterReq(req), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(g)}:${[...known].sort().join(",")}:${sz.size}:k${kPct(k)}`, species, read: known, size: sz.size, k, ...(hatch ? { mibi: hatch.mibi } : { bud: true }) }) };
     regions.code = "";   // no code on a player screen until L5 (plan 3.17 B4)
   }
-  if (state === "growing") regions.readyIn = fill(spec.strings.readyIn, { n: gs ? gs.left : S.budMinutesLeft(st, settings, now) });
+  if (state === "growing") { const left = gs ? gs.left : S.budMinutesLeft(st, settings, now); regions.readyIn = left < 1 ? spec.strings.readyUnderMinute : fill(spec.strings.readyIn, { n: left }); }
   if (state === "hatch") {
     const interior = { id: L["interior-day"], size: roomSize, at: R.capsule.rect.slice(0, 2) };
     regions.juvenile = relitJuvenile(req, st, mb, settings, { height: R.juvenile.height, foot: R.juvenile.foot, light: "day", interior });

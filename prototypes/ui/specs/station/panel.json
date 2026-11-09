@@ -204,7 +204,8 @@
     },
     "wait": {
      "name": "Wait",
-     "line": "ready in about {n} min"
+     "line": "ready in about {n} min",
+     "lineUnderMinute": "ready in under a minute"
     }
    }
   },
