@@ -253,7 +253,7 @@ test("a sign never joins another sign or a note; the one that loses keeps its fl
   assert.ok(p.S.found.includes("hudstorm") && !p.S.found.includes("callintro") && !p.S.found.includes("fogbank"), "only the shown sign is spent");
   assert.ok(p.S.found.includes("met:storm"), "and it joins the Probe");
   assert.ok(p.run("SIGN_RANK.slice(0, 5).join()") === "shield,bank,shelter,warn,storm", "hazards first");
-  assert.ok(Object.values(p.run("SIGN")).every(d => d.line(1).length && p.run("textW")(d.line(1), 2) <= 340), "every line fits its 340 px slot");
+  assert.ok(Object.values(p.run("SIGN")).every(d => d.line(1).length && p.run("wrapText")(d.line(1), 340, 2).length <= 2), "every line fits its 340 px slot, on two lines at most (the card wraps a long one: the shield sign)");
 });
 test("the Probe: no legend rows and no odds; the signs met are pictures in the order met, the pad moves the focus, the bottom line names it", () => {
   const p = page();
@@ -477,13 +477,12 @@ test("S5 shows what is still on the lit tile: a bush only when the view draws it
   assert.equal(lit(p, { key: P.key, x: tx, y: ty - 1 }).canopy, "0", "whole leaves");
   p.run(`S.exp.patch.x = ${tx + 1}; S.exp.patch.y = ${ty};`); assert.equal(lit(p, { key: P.key, x: tx, y: ty - 1 }).canopy, "1", "thinned to the checkerboard beside the trunk");
 });
-test("the setup strip: the turn and tier, then the Probe's plates as the top bar draws them; no Shield digits, no sealed count, always mist", () => {
+test("the opening screen: no strip and no counts (no turn, tier, fog, 'of 320' or Seen), even with a plate lost and a sealed crate in the bay", () => {
   const p = page();
-  p.run("newWorld(3); S.phase = 'setup'; S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  p.run("newWorld(3); S.phase = 'setup'; S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.shield = 1; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
   const said = () => { p.run("__t = []; drawSetup(0);"); return p.run("__t.join('|')"); };
-  const t = said(); assert.ok(t.includes("World · turn 1 · Probe tier 1"), t); assert.ok(!/Shield \d|\d+\/\d+|sealed · |· \d+ sealed/.test(t.split("|").filter(x => /World/.test(x)).join()), "the strip has no digits for plates and no sealed tail");
-  p.run("S.shield = 1;"); said();
-  assert.equal(p.run("(() => { const s = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier, w = textW(s, 2) + 12 + 27, x0 = Math.round(225 - w / 2); return x0 > 14 && x0 + w < 436; })()"), true, "inside the screen at tier 1");
+  const t = said(); assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Shield \d|\d+\/\d+|crate|sealed/.test(t), t);
+  p.run("S.revealed.fill(1); S.visited.fill(1);"); const t2 = said(); assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Your world|last start/.test(t2), t2);
 });
 
 // ---- R2: the shed pod of a returned mibi's line ----

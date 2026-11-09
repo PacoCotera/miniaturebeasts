@@ -36,8 +36,9 @@ async function enter(browser, url, seed, motion) {
   return { page, errors };
 }
 const still = async (page) => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
+const cardStrip = (img) => { const x0 = 12, x1 = 438, y0 = 452, y1 = 536, w = x1 - x0, out = new Uint8Array(w * (y1 - y0) * 4); for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) for (let k = 0; k < 4; k++) out[((y - y0) * w + x - x0) * 4 + k] = img.data[(y * img.w + x) * 4 + k]; return { w, h: y1 - y0, data: out }; };   // the held card's rectangle (it stands at the bottom when the heart is in the top half)
 const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
-const st = (page) => page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; return { phase: m.S.phase, view: m.RT.view ? m.RT.view.kind : m.RT.spot ? "spot" : null, x: P && P.x, y: P && P.y, actions: m.S.exp.actions, key: P && P.key, found: P ? !!(m.S.called && m.S.called[m.layout(P.key).cell]) : null }; });
+const st = (page) => page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; return { phase: m.S.phase, view: m.RT.view ? m.RT.view.kind : m.RT.spot ? (m.RT.spot.held ? "card" : "spot") : null, x: P && P.x, y: P && P.y, actions: m.S.exp.actions, key: P && P.key, found: P ? !!(m.S.called && m.S.called[m.layout(P.key).cell]) : null }; });
 const pressSeq = async (page, keys) => { for (const k of keys) { await page.evaluate((k) => window.__mb.act(k), k); await page.waitForTimeout(30); } };
 
 test("the arrival look: the first entry shows the whole place; a press skips it and is consumed; a found place has none", { skip }, async (t) => {
@@ -83,7 +84,7 @@ test("Look over the place: second after Leave, spends no action, ← closes", { 
   } finally { await browser.close(); server.close(); }
 });
 
-test("the reveal plays once per place, takes every press while it dissolves, holds, and the map wears its mark", { skip }, async (t) => {
+test("a find plays once per place, never changes the view, takes every press during its spot, holds the Found card, and the map wears its mark", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
   const { server, url } = await serve();
   try {
@@ -99,15 +100,19 @@ test("the reveal plays once per place, takes every press while it dissolves, hol
     s = await st(page); assert.equal(s.view, "spot", "the spot comes first, in the walking view"); assert.equal(s.found, true);
     const p0 = [s.x, s.y], a0 = s.actions;
     await pressSeq(page, ["left", "right", "up", "down", "confirm", "call", "back"]);   // the spot and the dissolve take no press
-    s = await st(page); assert.ok(s.view === "spot" || s.view === "reveal", "still in the reveal: " + s.view); assert.deepEqual([s.x, s.y], p0); assert.equal(s.actions, a0);
-    await page.waitForTimeout(2300);
+    s = await st(page); assert.ok(s.view === "spot" || s.view === "card", "still in the find: " + s.view); assert.deepEqual([s.x, s.y], p0); assert.equal(s.actions, a0);
+    const noView = () => page.evaluate(() => window.__mb.RT.view === null);
+    assert.ok(await noView(), "a find never starts a whole-place view");
+    await page.waitForTimeout(1500);
     assert.equal(await page.evaluate(() => window.__mb.offPalette().bad.length), 0, "the held picture stays on the palette");
-    s = await st(page); assert.equal(s.view, "reveal", "it holds until ✓ or ←");
-    golden("c15-reveal-held.png", await still(page));
+    s = await st(page); assert.equal(s.view, "card", "the card holds until ✓ or ←"); assert.ok(await noView(), "no zoom out, no dissolve: the view is the walking view");
+    await page.evaluate(() => { window.__mb.TEST.clock = Math.ceil(performance.now() / 2400) * 2400; }); await page.waitForTimeout(200);   // the clock held on a multiple of 2400 ms: the take marks (two frames, 300 ms each) and the explorer's pulse (400 ms each) stand on their first, whenever the run was
+    golden("c15-reveal-held.png", cardStrip(await still(page)));   // only the card: the walking view under it has wild creatures that move on real time
+    await page.evaluate(() => { window.__mb.TEST.clock = null; });
     const left = await page.evaluate(() => { const m = window.__mb, k = m.S.exp.patch.key, l = m.layout(k); let n = 0; for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) if (l.reach[y * l.w + x] && !m.unveiled(k, x, y)) n++; return n; });
     assert.equal(left, 0, "the whole place's veil is lifted");
     await pressSeq(page, ["up", "left", "down"]); await page.waitForTimeout(300);   // an arrow in the hold is consumed and blinks the line; it does not close
-    s = await st(page); assert.equal(s.view, "reveal", "arrows keep the hold"); assert.deepEqual([s.x, s.y], p0); assert.equal(s.actions, a0);
+    s = await st(page); assert.equal(s.view, "card", "arrows keep the hold"); assert.deepEqual([s.x, s.y], p0); assert.equal(s.actions, a0);
     await pressSeq(page, ["confirm"]); await page.waitForTimeout(500);
     s = await st(page); assert.equal(s.view, null, "✓ closes it back to the walking view"); assert.deepEqual([s.x, s.y], p0, "and is consumed, not queued"); assert.equal(s.actions, a0);
     await pressSeq(page, ["up"]); await page.waitForTimeout(300);
@@ -136,9 +141,9 @@ test("the reveal plays once per place, takes every press while it dissolves, hol
   } finally { await browser.close(); server.close(); }
 });
 
-// Held-clock stills: TEST.at holds the reveal's clock, so the spot, the zoom out and the dissolve are pictures that never depend on timing.
+// Held-clock stills: TEST.at holds the spot's clock, so the spot is a picture that never depends on timing.
 const amberIn = (img) => { let n = 0; for (let y = 32; y < 564; y++) for (let x = 0; x < img.w; x++) { const i = (y * img.w + x) * 4; if (img.data[i] === 255 && img.data[i + 1] === 168 && img.data[i + 2] === 63) n++; } return n; };
-test("the reveal's frames: the spot rings the heart, the zoom out and dissolve are stills, Look over a found place shows the held card", { skip }, async (t) => {
+test("the find's frames: the spot rings the heart, the card holds over the walking view (no zoom, no dissolve), Look over a found place shows the held card", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
   const { server, url } = await serve();
   try {
@@ -152,21 +157,20 @@ test("the reveal's frames: the spot rings the heart, the zoom out and dissolve a
     const spot = await still(page);
     assert.ok(amberIn(spot) > base + 60, "amber ring pixels at the heart in the spot frame: " + base + " -> " + amberIn(spot));
     golden("reveal-spot.png", spot);
-    const p0 = [s.x, s.y]; await pressSeq(page, ["up", "left", "confirm"]); s = await st(page); assert.deepEqual([s.x, s.y], p0, "a press during the spot changes nothing");
-    await page.evaluate(() => { const m = window.__mb, sp = m.RT.spot; m.RT.spot = null; m.startView("reveal", m.layout(sp.key), { ...sp.extra, go: 1, zoom: 1 }); m.TEST.at = 100; });
-    await page.waitForTimeout(300); golden("reveal-zoom.png", await still(page));
-    await page.evaluate(() => { window.__mb.TEST.at = 500; }); await page.waitForTimeout(300);
-    s = await st(page); assert.equal(s.view, "reveal"); await pressSeq(page, ["confirm"]); s = await st(page); assert.equal(s.view, "reveal", "✓ in the dissolve does not close it");
-    await page.evaluate(() => { window.__mb.TEST.at = 2000; }); await page.waitForTimeout(300);
-    await pressSeq(page, ["confirm"]);   // ✓ closes it with its two stepped frames: the held clock moves on by hand
-    await page.evaluate(() => { const T = window.__mb.TEST; T.at = null; T.clock += 400; }); await page.waitForTimeout(500);
+    const p0 = [s.x, s.y]; await pressSeq(page, ["up", "left", "confirm"]); s = await st(page); assert.deepEqual([s.x, s.y], p0, "a press during the spot changes nothing"); assert.equal(s.view, "spot", "✓ in the spot does not close it");
+    await page.evaluate(() => { window.__mb.TEST.at = null; }); await page.waitForTimeout(300);   // the spot's beat is long done on the held clock: the card stands over the walking view
+    s = await st(page); assert.equal(s.view, "card"); assert.ok(await page.evaluate(() => window.__mb.RT.view === null), "the view never changed");
+    assert.ok(amberIn(await still(page)) > 100, "the amber ring and card border show over the walking view");
+    await pressSeq(page, ["confirm"]); await page.waitForTimeout(300);
     await page.evaluate(() => { window.__mb.TEST.clock = null; });
-    s = await st(page); assert.equal(s.view, null, "✓ closes the held card");
+    s = await st(page); assert.equal(s.view, null, "✓ closes the held card at once");
     // Look over the place at a found place: the same card, no dissolve; ← closes
     await pressSeq(page, ["back"]); await page.waitForTimeout(300);
     await pressSeq(page, ["down", "confirm"]); await page.waitForTimeout(400);
     s = await st(page); assert.equal(s.view, "look");
+    await page.evaluate(() => { window.__mb.TEST.clock = Math.ceil(performance.now() / 2400) * 2400; }); await page.waitForTimeout(200);   // held on a multiple of 2400 ms, as above
     const card = await still(page); assert.ok(amberIn(card) > 100, "the amber ring and card border show");
+    await page.evaluate(() => { window.__mb.TEST.clock = null; });
     golden("look-found.png", card);
     await pressSeq(page, ["back"]); await page.waitForTimeout(300);
     s = await st(page); assert.equal(s.view, null, "← closes it");

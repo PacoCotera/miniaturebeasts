@@ -105,7 +105,8 @@ test("the whole-place look, the reach view and the full map carry the same puddl
     await page.evaluate(() => { const m = window.__mb; m.startView("look", m.layout(m.S.exp.patch.key)); }); await page.waitForTimeout(400);
     const lookOn = await still(page); await found(true); await page.waitForTimeout(300); const lookOff = await still(page);
     await found(false); await page.evaluate(() => window.__mb.endView()); await page.waitForTimeout(300);
-    assert.ok(rivers(lookOn, 0, 32, 450, 532) - rivers(lookOff, 0, 32, 450, 532) >= 6 * info.clues.length, "the look shows a puddle per clue: " + (rivers(lookOn, 0, 32, 450, 532) - rivers(lookOff, 0, 32, 450, 532)));
+    const heartMark = (() => { const f = decodePng(readFileSync(new URL("../art/look/look-heart-spring.png", import.meta.url))); let n = 0; for (let i = 0; i < f.w * f.h; i++) if (f.data[i * 4 + 3] && px({ w: f.w, data: f.data }, i % f.w, (i / f.w) | 0) === RIVER) n++; return n; })();   // the found spring wears the desk's heart mark, which has blue of its own
+    assert.ok(rivers(lookOn, 0, 32, 450, 532) - rivers(lookOff, 0, 32, 450, 532) + heartMark >= 6 * info.clues.length, "the look shows a puddle per clue: " + (rivers(lookOn, 0, 32, 450, 532) - rivers(lookOff, 0, 32, 450, 532) + heartMark));
     // the reach view: the puddles on the clue tiles inside the cell
     await page.evaluate(() => { const m = window.__mb; m.S.phase = "map"; m.S.ui.mapFull = false; }); await page.waitForTimeout(400);
     const geom = await page.evaluate(() => { const m = window.__mb, q = m.reachGeom(), ex = m.S.exp, i = q.r, j = q.r; return { x: q.dx + i * q.cs, y: q.dy + j * q.cs, cs: q.cs }; });

@@ -2,7 +2,8 @@
 // The page's grid is PW x PH (28 x 32) until places of two sizes land in the page, so the 18 x 22 place is centred in it: the cells around it are
 // rock (never walked), and `lay.baked.ox/oy` say where it sits. Terrain becomes the page's tile T, prop footprints become TRUNK (a tree, which has
 // a canopy) or ROCK, tall grass becomes T.TALL; the heart, its clue marks and the openings come from the place's entities.
-import { T, T_BLOCK, L, PW, PH, hash } from '../../exploration/src/world.mjs';
+import { T, T_BLOCK, L, PW, PH, TERR, hash } from '../../exploration/src/world.mjs';
+import { shapeEdges } from './edges.mjs';
 import { heartPath } from '../../exploration/src/hearts.mjs';
 
 const LAND = { pond: L.POND, rock: L.ROCK, wood: L.WOOD, meadow: L.MEADOW };
@@ -21,7 +22,17 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const tileOf = new Map(terrains.map((t) => [t.value, T[t.T]]));
   const tiles = new Uint8Array(NP).fill(T.ROCK);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) tiles[I(x, y)] = tileOf.get(place.terrain[y * w + x]) ?? T.GRASS;
-  for (const p of place.props) {
+  // the world's edges on this cell (o.G: the world; a place that fills the page's grid exactly, never the dev switch's padded one): the bands, stairs and crossings, the openings, the trees that stay
+  let sh = null;
+  if (o.G && o.G.edge && o.cell != null && pw === w && ph === h) {
+    const t0 = tiles.slice(), walk0 = new Uint8Array(NP);   // the template as it stands: its ground and every prop, to tell which stretch of it a stair or a new opening must lead to
+    for (const p of place.props) { const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48);
+      for (let i = 0; i + 1 < s.footprint.length; i += 2) { const x = cx + s.footprint[i], y = cy + s.footprint[i + 1]; if (x >= 0 && y >= 0 && x < w && y < h) t0[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; } }
+    for (let i = 0; i < NP; i++) walk0[i] = T_BLOCK[t0[i]] ? 0 : 1;
+    sh = shapeEdges(o.G, o.seed ?? 0, o.cell, place, ts, walk0, place.heart);
+  }
+  const props = sh ? sh.props : place.props, canopyList = sh ? sh.canopy : place.canopy;
+  for (const p of props) {
     const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48);
     if (s.kind === 'tall-grass' && !s.footprint.length) { if (tiles[I(cx, cy)] === T.GRASS) tiles[I(cx, cy)] = T.TALL; continue; }
     for (let i = 0; i + 1 < s.footprint.length; i += 2) {
@@ -29,17 +40,18 @@ export function adaptPlace(place, ts, terrains, o = {}) {
       if (x >= 0 && y >= 0 && x < w && y < h) tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK;
     }
   }
+  if (sh) for (const i of sh.rim) { if (sh.terr[i] !== TERR.SHADOW) tiles[i] = sh.tilesE[i]; }   // the bands, stairs and crossings stand over the ground and the trees
   // the tiles no crown hangs over (the explorer arrives on one of these, never hidden under a canopy): a crown's box at 48 px, a tile's pawn as its centre and a margin round it
   const clear = new Uint8Array(NP).fill(1);
   { const crowns = [];
-    for (const p of place.props) { const c = ts.sprites[p.kind].canopy; if (c >= 0) crowns.push([c, p.x, p.y]); }
-    for (const c of place.canopy) crowns.push([c.kind, c.x, c.y]);
+    for (const p of props) { const c = ts.sprites[p.kind].canopy; if (c >= 0) crowns.push([c, p.x, p.y]); }
+    for (const c of canopyList) crowns.push([c.kind, c.x, c.y]);
     for (const [k, fx, fy] of crowns) {
       const s = ts.sprites[k], left = fx - s.anchor48[0], top = fy - s.anchor48[1];
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x * 48 + 24, py = y * 48 + 28; if (px > left - CROWN_MARGIN && px < left + s.w48 + CROWN_MARGIN && py > top - CROWN_MARGIN && py < top + s.h48 + CROWN_MARGIN) clear[I(x, y)] = 0; }
     } }
-  const openings = place.openings.map((op) => ({ side: op.side, from: op.from, to: op.to }));
-  const arrive = openings.length ? arrivalCell(openings[0], w, h) : { x: w >> 1, y: h >> 1 };
+  const openings = sh ? sh.openings : place.openings.map((op) => ({ side: op.side, from: op.from, to: op.to }));
+  const arrive = openings.length ? arrivalCell(openings[0], w, h) : sh && sh.stairs.length ? sh.stairs[0].entry : sh && sh.cross.length ? sh.cross[0].entry : { x: w >> 1, y: h >> 1 };
   const spawnPt = { x: arrive.x + ox, y: arrive.y + oy };
   const reach = new Uint8Array(NP), stack = [spawnPt.y * pw + spawnPt.x];
   if (!T_BLOCK[tiles[stack[0]]]) reach[stack[0]] = 1; else stack.length = 0;
@@ -55,14 +67,19 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const lay = {
     key: o.key ?? place.id, cell: o.cell ?? 0, cave: false, land: LAND[place.type] ?? L.MEADOW, base: T.GRASS, tiles, shelter: new Uint8Array(NP), feats: [],
     terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt, sdist: new Int16Array(NP).fill(999), trees: {}, shade: false,
-    w: pw, h: ph, openings, clear, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })),
+    w: pw, h: ph, openings, clear, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })).filter((f) => !sh || !T_BLOCK[tiles[f.y * pw + f.x]]),
     baked: { id: place.id, ox, oy, w, h },
   };
+  if (sh) {   // the world's edges: the terrain layer the page draws over the baked ground, the stairs and crossings that walk, the trees this cell shows
+    lay.terr = sh.terr; lay.tmask = sh.tmask; lay.stairs = sh.stairs; if (sh.cross.length) lay.cross = sh.cross;
+    lay.rim = sh.rim; lay.cut = { props, canopy: canopyList };
+    if (place.type === 'wood') lay.base = T.DARK; else if (place.type === 'rock') lay.base = T.SAND;
+  }
   const hh = place.heart, fill = o.fill, kind = fill ? fill.heart.kind : hh.kinds.find((k) => HEART_KINDS.includes(k)) || hh.kinds[0];
   const x = hh.x + ox, y = hh.y + oy;
   if (fill) {   // generator 6: the seeded fills (exploration/src/fill6.mjs) become the page's features, in the page's tiles
     const nextTo = (f) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const X = f.x + dx, Y = f.y + dy; return X >= 0 && Y >= 0 && X < pw && Y < ph && reach[Y * pw + X]; });
-    lay.feats = fill.feats.map((f) => ({ ...f, x: f.x + ox, y: f.y + oy })).filter((f) => f.id === 'kh' || nextTo(f));   // a find nobody could stand beside is dropped
+    lay.feats = fill.feats.map((f) => ({ ...f, x: f.x + ox, y: f.y + oy })).filter((f) => f.id === 'kh' || (nextTo(f) && (!sh || !T_BLOCK[tiles[f.y * pw + f.x]])));   // a find nobody could stand beside is dropped
     const taken = new Set(lay.feats.map((f) => f.y * pw + f.x));
     for (const s of fill.specials) {   // the burrow and the deep stone: on reachable ground, far from the way in, by seed
       let best = null, bs = -1;
@@ -75,7 +92,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
       if (best) { lay.feats.push({ ...s, ...best }); taken.add(best.y * pw + best.x); }
     }
     lay.name = fill.name;
-    lay.podSlots = fill.podSlots.map((s) => ({ x: s.x + ox, y: s.y + oy, on: s.on }));
+    lay.podSlots = fill.podSlots.map((s) => ({ x: s.x + ox, y: s.y + oy, on: s.on })).filter((s) => !sh || !T_BLOCK[tiles[s.y * pw + s.x]]);
     lay.spawns = place.spawns.map((s) => ({ x: s.x + ox, y: s.y + oy, w: s.w, h: s.h, species: s.species }));
     if (kind === 'nest') lay.heartPods = fill.heart.second ? 2 : 1;
   }

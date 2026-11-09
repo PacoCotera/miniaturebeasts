@@ -246,7 +246,7 @@ test("the card fields: abCard and abCardShort, and every changed line fits its s
     sizes.push([nm, "set-out " + w(set)]); assert.ok(w(set) <= 306, nm + " set-out card " + w(set));
     for (const s of page) { sizes.push([s, w(s)]); assert.ok(w(s) <= 390, s + " " + w(s)); }
     for (const s of card) { sizes.push([s, w(s)]); assert.ok(w(s) <= 314, s + " " + w(s)); } }
-  const deep = "Caves · " + W8 + " digs a way in"; sizes.push([deep, w(deep)]); assert.ok(w(deep) <= 306, "deep ground card " + w(deep));
+  const deep = p.run(`clipText(OPEN_TEXT.digs(${JSON.stringify(W8)}), 154, 2)`); sizes.push([deep, w(deep)]); assert.ok(w(deep) <= 154, "deep ground tab line " + w(deep));
   p.run(`S.turn = 5; S.known = [0, 1, 2]; S.mibis = [{ id: 1, name: ${JSON.stringify(W8)}, sp: 19, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }]; S.carried = [1]; S.lead = 1`);
   for (const sp of [19, 7, 1]) { p.run(`S.mibis[0].sp = ${sp}`);
     const r = p.run(`lineCtx({ ok: 'Open Mibis', back: 'menu', ctx: partnerCtx() })`), forms = p.run("partnerCtx()"), last = forms[forms.length - 1];

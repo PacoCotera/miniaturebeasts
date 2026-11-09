@@ -1,0 +1,26 @@
+{
+ "job": "2026-11-09-opening",
+ "status": "SIGNED by the art lead (hand pixels, 0 MXN)",
+ "c-open-night": {
+  "files": "c-open-night-{a,b,c}-{1,2,still}.png",
+  "size": [96, 96],
+  "why_96": "a 48 px tile repeats as wallpaper across the frame; 96 px = 2 x 2 painter cells",
+  "variants": "a, b, c: every border (3 px) is the plain night #132036, so any variant meets any other with no seam. Pick one per 96 px block by a hash of the block (as the range-haze lump variants), anchored to world px so it does not swim when the frame moves.",
+  "frames": "1 and 2, 900 ms each (the banks move 1 px right, the hollows 1 px left); reduced motion: still",
+  "use": "unseen cells on the first-time Companion screen only, in place of the dark table and night dots; glimpses, chips and sparkles draw over it",
+  "palette_additions": {"#0d1322": "under-shadow / hollows", "#132036": "the night", "#1a2d46": "bank body", "#24465a": "bank crest"},
+  "not": "no dots, no dither, nothing round and lit (the five lights are the Companion's marks; the mist has no glows of its own)"
+ },
+ "c-open-pod-96": {
+  "files": "c-open-pod-96-{1,2,still}.png",
+  "size": [96, 96],
+  "master": "32 x 32 drawn for this size, 3x nearest",
+  "anchor": [48, 92],
+  "anchor_note": "the foot: bottom centre of the outline; stand it on the partner ring where the 3x token's feet go",
+  "frames": "1 and 2, 1200 ms each (warm life in the rib grooves brightens and widens); reduced motion: still (= 1)",
+  "what": "canon pod: flat cream lid on its sand rim, the dark seam, a ribbed barrel bulb wider than the lid; the neutral unread shell (fog / mist / stone) since the first pod's kind is unknown; no crown, stalk or sprout, nothing past the outline",
+  "replaces": "the built field pod at 3x (the egg-looking stand-in in the scheme mock)"
+ },
+ "turf_strip": "not needed: the ring already grounds the pod and the partner; a turf strip would add a second ground line under the text block",
+ "sheet": "out/sheet-opening.png"
+}
