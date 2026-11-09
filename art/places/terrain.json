@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "note": "The single home of terrain semantics (place design A1.3). The LDtk IntGrid value list must equal this file; the bake checks it. z: draw order, low first, unique. T: the exploration tile the terrain becomes in lay.tiles. earth (the heart's clearing, the art desk's pairs grass-earth and sand-earth) is the lowest ground of both its pairs, so its z sits below sand's and grass's. The open edges (mibi-art abb33a65b, order low to high: deep, water, earth, sand, mud, path, grass, scrub, thicket, cliff): cliff is raised land, its top is ground you can walk, every cliff cell with a non-cliff cell next to it (4-neighbour) is the lip or the face and blocks except the cells under a WayUp area; thicket and scrub block.",
+  "note": "The single home of terrain semantics (place design A1.3). The LDtk IntGrid value list must equal this file; the bake checks it. z: draw order, low first, unique. T: the exploration tile the terrain becomes in lay.tiles. earth (the heart's clearing, the art desk's pairs grass-earth and sand-earth) is the lowest ground of both its pairs, so its z sits below sand's and grass's. The open edges (mibi-art abb33a65b, order low to high: deep, water, earth, sand, mud, path, grass, scrub, thicket, cliff): cliff is raised land, its top is ground you can walk, every cliff cell with a non-cliff cell next to it (4-neighbour) is the lip or the face and blocks except the cells under a WayUp area; thicket blocks; scrub is low and walks like grass.",
   "terrains": [
     { "id": "deep", "name": "Deep water", "value": 1, "z": 0, "play": "block", "T": "DEEP", "editorColour": "#2c568e" },
     { "id": "water", "name": "Water", "value": 2, "z": 1, "play": "block", "T": "WATER", "editorColour": "#4f86c6" },
@@ -11,6 +11,6 @@
     { "id": "earth", "name": "Worn earth", "value": 7, "z": 2, "play": "walk", "T": "GRASS", "editorColour": "#9a7453" },
     { "id": "cliff", "name": "Cliff (raised land)", "value": 8, "z": 9, "play": "cliff", "T": "GRASS", "editorColour": "#8d977f" },
     { "id": "thicket", "name": "Dense thicket", "value": 9, "z": 8, "play": "block", "T": "ROCK", "editorColour": "#36603a" },
-    { "id": "scrub", "name": "Low scrub", "value": 10, "z": 7, "play": "block", "T": "ROCK", "editorColour": "#93a332" }
+    { "id": "scrub", "name": "Low scrub", "value": 10, "z": 7, "play": "walk", "T": "GRASS", "editorColour": "#93a332" }
   ]
 }

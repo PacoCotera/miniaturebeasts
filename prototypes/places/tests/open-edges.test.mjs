@@ -72,11 +72,12 @@ test('the cliff: lip and face cells block, the top and the way up walk, found by
   for (const [x, y] of [[5, 5], [7, 4], [6, 7], [7, 7], [6, 8]]) assert.ok(!T_BLOCK[tile(x, y)], `the adapter lets (${x}, ${y}) be walked`);
 });
 
-test('the reed bank blocks nothing: the shore cells in the ReedBank area are as walkable as the grass beside them; thicket, scrub, water and deep water block', () => {
+test('the reed bank blocks nothing: the shore cells in the ReedBank area are as walkable as the grass beside them; low scrub walks; thicket, water and deep water block', () => {
   const place = readPlace(new Uint8Array(readFileSync(path.join(placesDir, 'baked', 'Windstep.mbplace')))), ts = readTileSet(new Uint8Array(readFileSync(path.join(placesDir, 'baked', 'ninja-test.mbtiles'))));
   const lay = adaptPlace(place, ts, terrains, { key: 'x', cell: 0 }), ox = 2, oy = 2, tile = (x, y) => lay.tiles[(y + oy) * 28 + x + ox];
   assert.ok(!T_BLOCK[tile(16, 12)], 'the grass cell at the reed bank');
-  for (const [x, y] of [[17, 12], [19, 13], [3, 12], [3, 18]]) assert.ok(T_BLOCK[tile(x, y)], `(${x}, ${y}) blocks`);
+  for (const [x, y] of [[17, 12], [19, 13], [3, 18]]) assert.ok(T_BLOCK[tile(x, y)], `(${x}, ${y}) blocks`);
+  for (const [x, y] of [[3, 12], [4, 12], [6, 13]]) assert.ok(!T_BLOCK[tile(x, y)], `(${x}, ${y}) low scrub walks`);
 });
 
 test('the bake picks the cliff\'s tall tiles, the way up and the reed look: baked ground tiles come from the extra pairs', () => {
