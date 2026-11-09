@@ -519,6 +519,18 @@ export function bankEdges(G, seed = 0) {
   return bank;
 }
 // A stair's first tile along its side: i is the edge index, len PW on north and south sides, PH on east and west; seed is the world seed.
+// What a side of a cell is in the world, the one word every view draws: 'mapend' (no cell beyond), 'open' (a passable cell, edge open), 'stair' (a ramp edge), 'cliff' (a one-level or higher
+// drop), 'scree' and 'bank' (a cliff edge a partner can cross), 'wade' (a mud cell, west or east only) or 'water' (a cell nobody walks). Needs G.edge (generator 2 and later).
+export function sideKind(G, c, dir) {
+  const [dx, dy] = DIRS[dir], x = (c % MW) + dx, y = ((c / MW) | 0) + dy;
+  if (x < 0 || y < 0 || x >= MW || y >= MH) return 'mapend';
+  const n = y * MW + x, k = edgeKindIn(G, c, dir), ei = G.edge ? edgeIndex(c, dir) : -1;
+  if (G.land[n] === L.CLIFF) return 'water';
+  if (k === EDGE.RAMP) return 'stair';
+  if (k === EDGE.CLIFF) return G.soft && G.soft.scree[ei] ? 'scree' : G.banks && G.banks[ei] ? 'bank' : 'cliff';
+  if (!canStepIn(G, c, dir)) return G.soft && G.soft.wade[n] ? 'wade' : 'water';
+  return 'open';
+}
 export function stairPos(seed, i, len) { return (len / 2 - 1) + (hash(seed, 'stair', i) % 9) - 4; }
 
 const onMapXY = (x, y) => x >= 0 && y >= 0 && x < MW && y < MH;
@@ -933,47 +945,47 @@ function finishLayout2(lay, spawnPt0) {
 }
 
 // The terrain bands of a place: kind, mask and tile code for each tile on the outer two rows and columns.
-function g2Bands(G, cell, tiles, terr, tmask) {
-  const cx = cell % MW, cy = (cell / MW) | 0, l = G.level[cell], I = (x, y) => y * PW + x;
+function g2Bands(G, cell, tiles, terr, tmask, w = PW, h = PH) {
+  const cx = cell % MW, cy = (cell / MW) | 0, l = G.level[cell], I = (x, y) => y * w + x;
   const onMap = (dx, dy) => onMapXY(cx + dx, cy + dy);
   const lvAt = (dx, dy) => onMap(dx, dy) ? G.level[(cy + dy) * MW + cx + dx] : l;   // off the map, the edge is never a drop
   const N = lvAt(0, -1), S = lvAt(0, 1), W = lvAt(-1, 0), E = lvAt(1, 0), NW = lvAt(-1, -1), NE = lvAt(1, -1), SW = lvAt(-1, 1), SE = lvAt(1, 1);
   const set = (x, y, kind, m, code) => { const i = I(x, y); terr[i] = kind; tmask[i] = m; if (code >= 0) tiles[i] = code; };
-  for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
-    if (x > 1 && x < PW - 2 && y > 1 && y < PH - 2) continue;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    if (x > 1 && x < w - 2 && y > 1 && y < h - 2) continue;
     let m = 0;
-    for (let b = 0; b < 8; b++) { const X = x + NB8[b][0], Y = y + NB8[b][1], dx = X < 0 ? -1 : X >= PW ? 1 : 0, dy = Y < 0 ? -1 : Y >= PH ? 1 : 0;
+    for (let b = 0; b < 8; b++) { const X = x + NB8[b][0], Y = y + NB8[b][1], dx = X < 0 ? -1 : X >= w ? 1 : 0, dy = Y < 0 ? -1 : Y >= h ? 1 : 0;
       if ((dx || dy) && lvAt(dx, dy) < l) m |= 1 << b; }
     if (m) { set(x, y, TERR.LIP, m, T.LIP); continue; }
     if (y <= 1 && N > l) { let b = y === 1 ? 1 : 0;
       if (x === 0) { if (W > l) b |= 8; else if (!(W === l && NW > l)) b |= 2; }
-      if (x === PW - 1) { if (E > l) b |= 16; else if (!(E === l && NE > l)) b |= 4; }
+      if (x === w - 1) { if (E > l) b |= 16; else if (!(E === l && NE > l)) b |= 4; }
       set(x, y, TERR.FACE, b, T.FACE); continue; }
-    const west = x === 0 && W > l, east = x === PW - 1 && E > l;
+    const west = x === 0 && W > l, east = x === w - 1 && E > l;
     if (west || east) { let b = west ? 1 : 0; const hiN = west ? NW : NE, hiS = west ? SW : SE;
       if (y === 0 && !(N === l && hiN > l)) b |= 2;
-      if (y === PH - 1 && !(S === l && hiS > l)) { b |= 4; if (S === l && onMap(west ? -1 : 1, 1) && hiS === l) b |= 8; }
+      if (y === h - 1 && !(S === l && hiS > l)) { b |= 4; if (S === l && onMap(west ? -1 : 1, 1) && hiS === l) b |= 8; }
       set(x, y, TERR.SIDE, b, T.FACE); continue; }
     if (y <= 1 && x === 0 && NW > l && N === l && onMap(-1, 0) && W === l) { set(x, y, TERR.SIDE, 1 | 16 | (y === 1 ? 4 : 0), T.FACE); continue; }   // bit 4: the side tail
-    if (y <= 1 && x === PW - 1 && NE > l && N === l && onMap(1, 0) && E === l) { set(x, y, TERR.SIDE, 16 | (y === 1 ? 4 : 0), T.FACE); continue; }
-    if (y === PH - 1 && S > l) set(x, y, TERR.SHADOW, 0, -1);
+    if (y <= 1 && x === w - 1 && NE > l && N === l && onMap(1, 0) && E === l) { set(x, y, TERR.SIDE, 16 | (y === 1 ? 4 : 0), T.FACE); continue; }
+    if (y === h - 1 && S > l) set(x, y, TERR.SHADOW, 0, -1);
   }
 }
 // The stairs of a place, one per ramp side, with their entry tiles.
-function g2Stairs(G, seed, cell, tiles, terr, tmask) {
+function g2Stairs(G, seed, cell, tiles, terr, tmask, w = PW, h = PH, stairAt = null) {
   const cx = cell % MW, cy = (cell / MW) | 0, l = G.level[cell], stairs = [];
   for (const [dir, dx, dy] of SIDES) {
     if (!onMapXY(cx + dx, cy + dy)) continue;
     const i = edgeIndex(cell, dir); if (G.edge[i] !== EDGE.RAMP) continue;
     const lo = G.level[(cy + dy) * MW + cx + dx] > l;
     const facing = dir === 'up' ? (lo ? 'S' : 'N') : dir === 'down' ? (lo ? 'N' : 'S') : dir === 'left' ? (lo ? 'E' : 'W') : (lo ? 'W' : 'E');
-    const vertical = dir === 'up' || dir === 'down', s = stairPos(seed, i, vertical ? PW : PH);
-    const xy = (k, d) => ({ x: dir === 'left' ? d : dir === 'right' ? PW - 1 - d : k, y: dir === 'up' ? d : dir === 'down' ? PH - 1 - d : k });
-    const put = (k, d, kind, m, code) => { const p = xy(k, d), j = p.y * PW + p.x; terr[j] = kind; tmask[j] = m; tiles[j] = code; };
+    const vertical = dir === 'up' || dir === 'down', s = stairAt ? stairAt(dir, i, vertical ? w : h) : stairPos(seed, i, vertical ? w : h);
+    const xy = (k, d) => ({ x: dir === 'left' ? d : dir === 'right' ? w - 1 - d : k, y: dir === 'up' ? d : dir === 'down' ? h - 1 - d : k });
+    const put = (k, d, kind, m, code) => { const p = xy(k, d), j = p.y * w + p.x; terr[j] = kind; tmask[j] = m; tiles[j] = code; };
     const fc = { S: 0, N: 1, E: 2, W: 3 }[facing] << 4;
     const stair = depth => { const ps = []; for (let d = 0; d < depth; d++) for (let k = s; k <= s + 1; k++) ps.push(xy(k, d));
       const x0 = Math.min(...ps.map(p => p.x)), y0 = Math.min(...ps.map(p => p.y));
-      for (const p of ps) { const j = p.y * PW + p.x; terr[j] = TERR.STAIR; tmask[j] = fc | ((p.y - y0) * 2 + (p.x - x0)); tiles[j] = T.STAIR; } };
+      for (const p of ps) { const j = p.y * w + p.x; terr[j] = TERR.STAIR; tmask[j] = fc | ((p.y - y0) * 2 + (p.x - x0)); tiles[j] = T.STAIR; } };
     let ed;
     if (lo && facing === 'N') { put(s, 0, TERR.FOOT, 0, T.APRON); put(s + 1, 0, TERR.FOOT, 1, T.APRON); ed = 0; }
     else if (lo) { stair(2); put(s, 2, TERR.FOOT, 0, T.APRON); put(s + 1, 2, TERR.FOOT, 1, T.APRON); ed = 2; }
@@ -982,6 +994,52 @@ function g2Stairs(G, seed, cell, tiles, terr, tmask) {
     stairs.push({ dir, facing, role: lo ? 'lo' : 'hi', s, entry: xy(s, ed) });
   }
   return stairs;
+}
+
+// The edges of a place, laid as the world has them: the ONE source every place is built from (a generated place here, a baked one through places/src/adapter.mjs), so the
+// map, the reach view and the cell show the same land. Over a w x h grid of tiles (the page's 28 x 32, or a template's own size) it writes the water bands toward water
+// neighbours and the swimmer's side, the cliff lips, faces and sides (G.level), the stairs of every ramp edge, and the scree and bank crossings of every soft edge.
+// o: { w, h, tiles, terr, tmask } (arrays of w * h, written), ns (the place's noise seed), stairAt(dir, edgeIndex, len) the stair's first column (default stairPos),
+// crossAt likewise for a crossing, waterDepth: { min, span } (default 3 and 4 tiles, the swimmer's side deeper). Returns { stairs, cross }.
+export function edgeLayer(G, seed, cell, o) {
+  const w = o.w || PW, h = o.h || PH, { tiles, terr, tmask } = o, ns = o.ns != null ? o.ns : hash(seed, 'pn2', cell);
+  const { x: cx, y: cy } = cxy(cell), isFord = G.land[cell] === L.WATER, I = (x, y) => y * w + x, setT = (x, y, t) => { if (x >= 0 && y >= 0 && x < w && y < h) tiles[I(x, y)] = t; };
+  const wd = o.waterDepth || { min: 3, span: 5 }, sw = o.swimDepth || { min: 7, span: 3 };
+  // 2. Water bands and the swimmer side (no cell is L.CLIFF in generator 2).
+  const nbLand = (dx, dy) => { const x = cx + dx, y = cy + dy; if (!onMapXY(x, y)) return -1; const c = y * MW + x;
+    if (G.land[c] === L.WATER) return G.ford[c] ? L.POND : L.WATER; return G.land[c]; };
+  for (const [dn, dx, dy] of SIDES) {
+    const swimSide = cell === G.swim && dn === G.swimDir;
+    const nl = nbLand(dx, dy); if (!swimSide && nl !== L.WATER) continue;
+    if (isFord && dx === 0) continue;
+    const len = dx === 0 ? w : h;
+    for (let k = 0; k < len; k++) {
+      const depth = swimSide ? sw.min + ((noiseQ(ns + 61, k, 0, 4) * sw.span + 32768) >> 16) : wd.min + ((noiseQ(ns + dx * 7 + dy * 13 + 99, k, 0, 4) * wd.span + 32768) >> 16);
+      for (let d = 0; d <= depth; d++) {
+        const x = dn === 'left' ? d : dn === 'right' ? w - 1 - d : k, y = dn === 'up' ? d : dn === 'down' ? h - 1 - d : k;
+        if (swimSide) { if (d < 3) setT(x, y, T.ISLE); else if (d < depth) setT(x, y, T.DEEP); else if (!T_BLOCK[tiles[I(x, y)]]) setT(x, y, hash(ns, x, y, 2) & 1 ? T.REEDS : T.SAND); }
+        else if (d < depth) { if (tiles[I(x, y)] !== T.DEEP && tiles[I(x, y)] !== T.ISLE) setT(x, y, T.WATER); }
+        else if (nl === L.WATER && !T_BLOCK[tiles[I(x, y)]]) setT(x, y, hash(ns, x, y, 2) & 1 ? T.REEDS : T.SAND);
+      }
+    }
+  }
+  // 3. Terrain bands, then stairs.
+  g2Bands(G, cell, tiles, terr, tmask, w, h);
+  const stairs = g2Stairs(G, seed, cell, tiles, terr, tmask, w, h, o.stairAt || null);
+  // Soft ground and banks (G.soft, G.banks: attached by the page, absent in every golden): a scree or bank edge gets a crossing two tiles wide through the outer two rows, laid like a stair's.
+  const cross = [];
+  if (G.soft || G.banks) for (const [dir, dx, dy] of SIDES) {
+    if (!onMapXY(cx + dx, cy + dy)) continue;
+    const ei = edgeIndex(cell, dir); if (G.edge[ei] !== EDGE.CLIFF) continue;
+    const kind = G.soft && G.soft.scree[ei] ? 'scree' : G.banks && G.banks[ei] ? 'bank' : null; if (!kind) continue;
+    const vertical = dir === 'up' || dir === 'down', s = o.crossAt ? o.crossAt(dir, ei, vertical ? w : h) : stairPos(seed, ei, vertical ? w : h);
+    const xy = (k, d) => ({ x: dir === 'left' ? d : dir === 'right' ? w - 1 - d : k, y: dir === 'up' ? d : dir === 'down' ? h - 1 - d : k });
+    // A bank stands BANK_IN rows in from the place's border, so its whole face lies inside the view (on the border it showed as a strip at the edge); scree stays on the border rows.
+    const off = kind === 'bank' ? BANK_IN : 0;
+    for (let d = 0; d < off + 2; d++) for (let k = s; k <= s + 1; k++) { const p = xy(k, d), j = I(p.x, p.y); if (d >= off) tiles[j] = kind === 'scree' ? T.SCREE : T.BANK; terr[j] = 0; tmask[j] = 0; }
+    cross.push({ dir, kind, s, ei, off, entry: xy(s, off + 2) });
+  }
+  return { stairs, cross };
 }
 
 export function genPatch2(G, seed, cell) {
@@ -1001,40 +1059,8 @@ export function genPatch2(G, seed, cell) {
       else if (n < 11141) t = T.GRASS;
       tiles[I(x, y)] = t;
     } }
-  // 2. Water bands and the swimmer side (no cell is L.CLIFF in generator 2).
-  const nbLand = (dx, dy) => { const x = cx + dx, y = cy + dy; if (!onMapXY(x, y)) return -1; const c = y * MW + x;
-    if (G.land[c] === L.WATER) return G.ford[c] ? L.POND : L.WATER; return G.land[c]; };
-  for (const [dn, dx, dy] of SIDES) {
-    const swimSide = cell === G.swim && dn === G.swimDir;
-    const nl = nbLand(dx, dy); if (!swimSide && nl !== L.WATER) continue;
-    if (isFord && dx === 0) continue;
-    const len = dx === 0 ? PW : PH;
-    for (let k = 0; k < len; k++) {
-      const depth = swimSide ? 7 + ((noiseQ(ns + 61, k, 0, 4) * 3 + 32768) >> 16) : 3 + ((noiseQ(ns + dx * 7 + dy * 13 + 99, k, 0, 4) * 5 + 32768) >> 16);
-      for (let d = 0; d <= depth; d++) {
-        const x = dn === 'left' ? d : dn === 'right' ? PW - 1 - d : k, y = dn === 'up' ? d : dn === 'down' ? PH - 1 - d : k;
-        if (swimSide) { if (d < 3) setT(x, y, T.ISLE); else if (d < depth) setT(x, y, T.DEEP); else if (!T_BLOCK[tiles[I(x, y)]]) setT(x, y, hash(ns, x, y, 2) & 1 ? T.REEDS : T.SAND); }
-        else if (d < depth) { if (tiles[I(x, y)] !== T.DEEP && tiles[I(x, y)] !== T.ISLE) setT(x, y, T.WATER); }
-        else if (nl === L.WATER && !T_BLOCK[tiles[I(x, y)]]) setT(x, y, hash(ns, x, y, 2) & 1 ? T.REEDS : T.SAND);
-      }
-    }
-  }
-  // 3. Terrain bands, then stairs; from here on no random placement touches the terrain layer or the ring around a stair.
-  g2Bands(G, cell, tiles, terr, tmask);
-  const stairs = g2Stairs(G, seed, cell, tiles, terr, tmask);
-  // Soft ground and banks (G.soft, G.banks: attached by the page, absent in every golden): a scree or bank edge gets a crossing two tiles wide through the outer two rows, laid like a stair's.
-  const cross = [];
-  if (G.soft || G.banks) for (const [dir, dx, dy] of SIDES) {
-    if (!onMapXY(cx + dx, cy + dy)) continue;
-    const ei = edgeIndex(cell, dir); if (G.edge[ei] !== EDGE.CLIFF) continue;
-    const kind = G.soft && G.soft.scree[ei] ? 'scree' : G.banks && G.banks[ei] ? 'bank' : null; if (!kind) continue;
-    const vertical = dir === 'up' || dir === 'down', s = stairPos(seed, ei, vertical ? PW : PH);
-    const xy = (k, d) => ({ x: dir === 'left' ? d : dir === 'right' ? PW - 1 - d : k, y: dir === 'up' ? d : dir === 'down' ? PH - 1 - d : k });
-    // A bank stands BANK_IN rows in from the place's border, so its whole face lies inside the view (on the border it showed as a strip at the edge); scree stays on the border rows.
-    const off = kind === 'bank' ? BANK_IN : 0;
-    for (let d = 0; d < off + 2; d++) for (let k = s; k <= s + 1; k++) { const p = xy(k, d), j = I(p.x, p.y); if (d >= off) tiles[j] = kind === 'scree' ? T.SCREE : T.BANK; terr[j] = 0; tmask[j] = 0; }
-    cross.push({ dir, kind, s, ei, off, entry: xy(s, off + 2) });
-  }
+  // 2 and 3. The edges: water bands and the swimmer side, terrain bands, stairs, scree and bank crossings (edgeLayer, above); from here on no random placement touches the terrain layer or the ring around a stair.
+  const { stairs, cross } = edgeLayer(G, seed, cell, { w: PW, h: PH, tiles, terr, tmask, ns });
   for (const q of cross) for (let d = 0; d < q.off + 3; d++) for (let k = q.s - 1; k <= q.s + 2; k++) {
     const x = q.dir === 'left' ? d : q.dir === 'right' ? PW - 1 - d : k, y = q.dir === 'up' ? d : q.dir === 'down' ? PH - 1 - d : k; if (inb(x, y)) resv[I(x, y)] = 1; }
   for (let i = 0; i < NP; i++) if (terr[i] >= TERR.STAIR) { const x = i % PW, y = (i / PW) | 0;

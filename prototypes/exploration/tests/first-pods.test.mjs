@@ -253,7 +253,7 @@ test("a sign never joins another sign or a note; the one that loses keeps its fl
   assert.ok(p.S.found.includes("hudstorm") && !p.S.found.includes("callintro") && !p.S.found.includes("fogbank"), "only the shown sign is spent");
   assert.ok(p.S.found.includes("met:storm"), "and it joins the Probe");
   assert.ok(p.run("SIGN_RANK.slice(0, 5).join()") === "shield,bank,shelter,warn,storm", "hazards first");
-  assert.ok(Object.values(p.run("SIGN")).every(d => d.line(1).length && p.run("textW")(d.line(1), 2) <= 340), "every line fits its 340 px slot");
+  assert.ok(Object.values(p.run("SIGN")).every(d => d.line(1).length && p.run("wrapText")(d.line(1), 340, 2).length <= 2), "every line fits its 340 px slot, on two lines at most (the card wraps a long one: the shield sign)");
 });
 test("the Probe: no legend rows and no odds; the signs met are pictures in the order met, the pad moves the focus, the bottom line names it", () => {
   const p = page();

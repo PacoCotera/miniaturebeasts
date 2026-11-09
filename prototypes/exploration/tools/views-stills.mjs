@@ -1,0 +1,53 @@
+// Stills of one cell as every view draws it, at 1x: the reach view (48 px a cell) with the cell under the pawn, the cell itself (the walking view, the pawn in front of the way out
+// on the side asked), the whole place and the peek. The views must show the same land.
+//   PW_DIR=... node prototypes/exploration/tools/views-stills.mjs --seed 9 --cell 268 [--biome mixed] [--face up] [--out DIR]
+import { createRequire } from "node:module";
+import { createServer } from "node:http";
+import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
+const arg = (n, d) => { const i = process.argv.indexOf("--" + n); return i < 0 ? d : process.argv[i + 1]; };
+const seed = +arg("seed", 9), cell = +arg("cell", 268), face = arg("face", "up"), out = path.resolve(arg("out", "views-stills"));
+mkdirSync(out, { recursive: true });
+
+const server = createServer((req, res) => {
+  let p = path.join(root, decodeURIComponent(req.url.split("?")[0]));
+  if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
+  if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
+  res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(readFileSync(p));
+});
+await new Promise((r) => server.listen(0, "127.0.0.1", r));
+const url = `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html?seed=${seed}`;
+const browser = await chromium.launch();
+const page = await (await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: "reduce" })).newPage();
+const errors = []; page.on("pageerror", (e) => errors.push(e.message));
+await page.goto(url); await page.waitForTimeout(1500);
+await page.evaluate(() => { window.__mb.TEST.calm = true; });
+for (let i = 0; i < 4; i++) { await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(350); }
+await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); });
+// to the map, on the cell asked, its neighbourhood revealed
+await page.evaluate(([c, f]) => { const m = window.__mb, ex = m.S.exp; if (ex.patch) m.leavePatch(); ex.pos = c; ex.start = c; ex.lastDir = null; ex.face = f;
+  for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const X = (c % m.MW) + dx, Y = ((c / m.MW) | 0) + dy; if (X >= 0 && Y >= 0 && X < m.MW && Y < m.MH) m.S.revealed[Y * m.MW + X] = 1; } }, [cell, face]);
+await page.waitForTimeout(1800);
+const save = async (name) => { const d = await page.evaluate(() => window.__mb.capture()); writeFileSync(path.join(out, name), Buffer.from(d.split(",")[1], "base64")); };
+await save(`s${seed}-c${cell}-reach.png`);
+await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(800);
+await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); });
+await page.waitForTimeout(500);
+await save(`s${seed}-c${cell}-cell-arrival.png`);
+// walk the pawn to the way out on the face side: the stair's entry (or the opening's middle) and the picture
+await page.evaluate(([f]) => { const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key), st = (lay.stairs || []).find((q) => q.dir === f), o = (lay.openings || []).find((q) => ({ N: "up", S: "down", W: "left", E: "right" })[q.side] === f);
+  if (st) { P.x = st.entry.x; P.y = st.entry.y; } else if (!o) { P.x = f === "left" ? 4 : f === "right" ? lay.w - 5 : lay.w >> 1; P.y = f === "up" ? 4 : f === "down" ? lay.h - 5 : lay.h >> 1; } else if (o) { const k = (o.from + o.to) >> 1; P.x = f === "left" ? 1 : f === "right" ? lay.w - 2 : k; P.y = f === "up" ? 1 : f === "down" ? lay.h - 2 : k; }
+  P.dir = f; m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); }, [face]);
+await page.waitForTimeout(700);
+await save(`s${seed}-c${cell}-cell-${face}.png`);
+await page.evaluate(() => { const m = window.__mb, lay = m.layout(m.S.exp.patch.key); m.startView("look", lay); });
+await page.waitForTimeout(700);
+await save(`s${seed}-c${cell}-whole.png`);
+console.log("errors", JSON.stringify(errors), "off-palette", JSON.stringify(await page.evaluate(() => window.__mb.offPalette().bad)));
+await browser.close(); server.close();
