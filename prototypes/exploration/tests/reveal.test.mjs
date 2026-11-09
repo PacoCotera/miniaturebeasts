@@ -36,6 +36,7 @@ async function enter(browser, url, seed, motion) {
   return { page, errors };
 }
 const still = async (page) => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
+const cardStrip = (img) => { const x0 = 12, x1 = 438, y0 = 452, y1 = 536, w = x1 - x0, out = new Uint8Array(w * (y1 - y0) * 4); for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) for (let k = 0; k < 4; k++) out[((y - y0) * w + x - x0) * 4 + k] = img.data[(y * img.w + x) * 4 + k]; return { w, h: y1 - y0, data: out }; };   // the held card's rectangle (it stands at the bottom when the heart is in the top half)
 const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
 const st = (page) => page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; return { phase: m.S.phase, view: m.RT.view ? m.RT.view.kind : m.RT.spot ? (m.RT.spot.held ? "card" : "spot") : null, x: P && P.x, y: P && P.y, actions: m.S.exp.actions, key: P && P.key, found: P ? !!(m.S.called && m.S.called[m.layout(P.key).cell]) : null }; });
 const pressSeq = async (page, keys) => { for (const k of keys) { await page.evaluate((k) => window.__mb.act(k), k); await page.waitForTimeout(30); } };
@@ -106,7 +107,7 @@ test("a find plays once per place, never changes the view, takes every press dur
     assert.equal(await page.evaluate(() => window.__mb.offPalette().bad.length), 0, "the held picture stays on the palette");
     s = await st(page); assert.equal(s.view, "card", "the card holds until ✓ or ←"); assert.ok(await noView(), "no zoom out, no dissolve: the view is the walking view");
     await page.evaluate(() => { window.__mb.TEST.clock = Math.ceil(performance.now() / 2400) * 2400; }); await page.waitForTimeout(200);   // the clock held on a multiple of 2400 ms: the take marks (two frames, 300 ms each) and the explorer's pulse (400 ms each) stand on their first, whenever the run was
-    golden("c15-reveal-held.png", await still(page));
+    golden("c15-reveal-held.png", cardStrip(await still(page)));   // only the card: the walking view under it has wild creatures that move on real time
     await page.evaluate(() => { window.__mb.TEST.clock = null; });
     const left = await page.evaluate(() => { const m = window.__mb, k = m.S.exp.patch.key, l = m.layout(k); let n = 0; for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) if (l.reach[y * l.w + x] && !m.unveiled(k, x, y)) n++; return n; });
     assert.equal(left, 0, "the whole place's veil is lifted");
