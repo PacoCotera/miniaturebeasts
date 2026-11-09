@@ -41,6 +41,8 @@ export function goldenImages() {
     const p = home(seed); picks[seed] = p;
     out.push({ name: `window-seed${seed}-cells${p.X}-${p.Y}-16px.png`, img: renderIR(p.ir, 16).img });
   }
+  // G2c: a second window of seed 7, centred on the nearest spot to the owner's window with a cliff, a lake and a trail (cells 38-40 across, 57-59 down): the owner's window is now all plateau top
+  const near = { X: 38, Y: 57 }; out.push({ name: `window-seed7-cells${near.X}-${near.Y}-16px.png`, img: renderIR(windowIR(7, near.X, near.Y, 3, 3), 16).img });
   for (const seed of [13, 7]) {
     const p = picks[seed], spot = borderSpot(p.ir), W = frameAt(p.ir, spot.x, spot.y);
     out.push({ name: `frame-seed${seed}-border-at-tile${p.X * CW + spot.x}-${p.Y * CH + spot.y}-48px.png`, img: renderIR(p.ir, 48, W).img });

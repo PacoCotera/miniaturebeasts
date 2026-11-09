@@ -8,9 +8,9 @@ import { decodePng, encodePng } from '../../places/src/png.mjs';
 
 const dir = new URL('./golden/gen7-g2/', import.meta.url).pathname;
 
-test('the five G2 goldens match', { timeout: 300000 }, () => {
+test('the six G2 goldens match', { timeout: 300000 }, () => {
   const imgs = goldenImages();
-  assert.equal(imgs.length, 5);
+  assert.equal(imgs.length, 6);
   if (process.env.MB_UPDATE_GOLDENS) { mkdirSync(dir, { recursive: true }); for (const { name, img } of imgs) writeFileSync(dir + name, encodePng(img)); return; }
   for (const { name, img } of imgs) {
     assert.ok(existsSync(dir + name), name + ' is missing');

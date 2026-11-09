@@ -12,6 +12,7 @@ const stat = () => ({ cells: 0, pairBreaks: 0, loneTiles: 0, apronMismatch: 0, b
   centreWrong: 0, edges: 0, openNoRun: 0, changeNoCliff: 0, steps: 0, bandTiles: 0, bandWalkable: 0,
   cliffRuns: 0, cliffRunsUnder4: 0, cliffRunsUnder8: 0, cliffRunMin: 999, cliffRunMax: 0, cliffRunsOnCellEdge: 0, cliffTiles: 0, cliffTilesInRunsOver8: 0, runHist: {},
   cliffThin: 0, thinAt: [], loneAt: [], unreachedAt: [],
+  pathUnreached: 0, pieces: 0, piecesUnreached: 0, needAt: [],
   stairs: 0, stairsSouthWithWayUp: 0, stairsWithoutWayUp: 0, regions: 0, regionsWholeReach: 0, walkableTiles: 0, reachedTiles: 0, unreachedTiles: 0, unreachedInMain: 0, zonesNotJoined: 0, ms: 0 });
 
 // Every cell of the seed. Returns the numbers; the test asserts them.
@@ -119,6 +120,10 @@ export function placeProps(seed) {
       for (let k = 0; k < q.length; k++) for (const [dx, dy] of NB4) { const x = (q[k] % SW) + dx, y = ((q[k] / SW) | 0) + dy; if (x < 0 || y < 0 || x >= SW || y >= SH || seen[y * SW + x] || !pass(x, y)) continue; seen[y * SW + x] = 1; q.push(y * SW + x); }
       let walk = 0, un = 0, unMain = 0;
       for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) if (pass(x, y)) { walk++; if (!seen[y * SW + x]) { un++; if (G.comp[((y / CH) | 0) * MW + ((x / CW) | 0)]) unMain++; } }
+      // what a player needs never sits on unreached land: every trail tile (ports are trail ends) and the centre tile of every set-piece cell (starts, glints, gate, deep stone, swim gate, beacons, depots)
+      for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) if (t[y * SW + x] === TV.PATH && !seen[y * SW + x]) { st.pathUnreached++; if (st.needAt.length < 6) st.needAt.push(['path', ax, ay, x, y]); }
+      const pieces = [...G.spawns, ...G.glow, G.gate, G.deep, G.swim, ...G.beacons.set, ...G.depots.set].filter(c => c >= 0);
+      for (const c of pieces) { const x = (c % MW) * CW + (CW >> 1), y = ((c / MW) | 0) * CH + (CH >> 1); st.pieces++; if (pass(x, y) && !seen[y * SW + x]) { st.piecesUnreached++; if (st.needAt.length < 6) st.needAt.push(['piece', ax, ay, x, y]); } }
       st.regions++; st.walkableTiles += walk; st.unreachedTiles += un; st.reachedTiles += walk - un; st.unreachedInMain += unMain; if (!un) st.regionsWholeReach++;
       if (!G.zonesJoined) st.zonesNotJoined++;
     }
