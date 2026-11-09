@@ -501,14 +501,14 @@ async function loadBakedPlace() {   // the modules load on demand, so the page w
     const pm = await import(base + 'src/page.mjs'), am = await import(base + 'src/adapter.mjs'), { place, ts } = await pm.loadBaked(bytes, base, id);
     const terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
     const ox = (PW - place.w) >> 1, oy = (PH - place.h) >> 1, mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-    BAKED.view = new pm.BakedView(ts, place, { core: RGB.slice(0, 48), night: C.night, ox, oy, mkCanvas: mk });
+    BAKED.view = new pm.BakedView(ts, place, { core: RGB.slice(0, 48), night: C.night, ox, oy, mkCanvas: mk, haze: PL6.haze });
     BAKED.adapt = key => am.adaptPlace(place, ts, terrains, { key, cell: +key });
     BAKED.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the baked place did not load', e); }
 }
 // Generator 6's places (place foundation C14): the four templates and their mirrors, baked, loaded once at boot (the tests give them at once as window.__places6).
 // PL6.places: baked id -> the place; PL6.adapt builds a layout from one; PL6.View draws one (a page without it draws the layout's tiles).
-const PL6 = { ready: false, places: new Map(), ts: null, terrains: null, adapt: null, View: null, mk: null, views: new Map() };
+const PL6 = { ready: false, places: new Map(), ts: null, terrains: null, adapt: null, View: null, mk: null, views: new Map(), haze: null };
 async function loadPlaces6() {
   try {
     if (window.__places6) { Object.assign(PL6, window.__places6); PL6.ready = true; return; }
@@ -521,8 +521,21 @@ async function loadPlaces6() {
     PL6.adapt = am.adaptPlace; PL6.View = pm.BakedView; PL6.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
     PL6.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadStoneArt(base);
+    await loadHazeKit(base, bytes);
     PL6.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); }
+}
+// The art desk's range haze (places/haze/, signed in mibi-art 9fa531bba; SOURCE.md there): nine wash sheets, the 6-colour ramp and the 21 remap tables. The kit is built once and
+// handed to every place view (PL6.haze); a view without it draws no haze.
+async function loadHazeKit(base, bytes) {
+  if (typeof Image === 'undefined') return;
+  try {
+    const hm = await import(base + 'src/haze.mjs'), dir = base + 'haze/', files = {};
+    await Promise.all(hm.hazeFileNames().map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL6.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = dir + n + '.png'; })));
+    const json = async n => JSON.parse(new TextDecoder().decode(await bytes(dir + n)));
+    PL6.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'));
+  } catch (e) { console.warn('the range haze did not load', e); }
 }
 // The art desk's standing stone (places/baked/stone-standing/, signed in mibi-art 16dd23ebb) fills the `stone-standing` slot: plain, and charged in two frames, at 48 x 72.
 // Each is a canvas the page blits as it blits a sprite (dx, dy put its 48 x 72 foot where the 32 px stone's foot stood); its colours join the screen's allowed set.
@@ -563,13 +576,22 @@ function walkRead(files) {   // { name: { width, height, data (RGBA) } } to pale
   }
   WART.ready = true; ART.clear(); LAND_CACHE.key = null;
 }
+// The look view's marks (art/look/, signed in mibi-art 07cd89ed6; SOURCE.md there): you are here (a still and two pulse frames), the heart marks, and the takeables (two frames and a still each).
+// look-heart-stone, look-take-charge and look-take-warm are PLACEHOLDERS (a flat grey stone) until the owner picks a stone look: the slots are named, so a swap is files only.
+// Each is drawn 1:1 with its anchor on the tile's bottom centre.
+const LOOK_TAKE = ['pod', 'fruit', 'dew', 'tuft', 'beacon', 'charge', 'warm'], LOOK_HEART = ['spring', 'nest', 'moment', 'stone'];
+const LOOK_FILES = ['you-here-still', 'you-here-pulse-1', 'you-here-pulse-2', ...LOOK_HEART.map(k => 'look-heart-' + k), ...LOOK_TAKE.flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))];
+const LOOK_SIZE = { you: [24, 30, 12, 30], spring: [22, 18, 11, 17], nest: [22, 18, 11, 17], moment: [20, 16, 10, 15], stone: [16, 18, 8, 17], take: [26, 26, 11, 25] };   // w, h, anchor x, anchor y
+function lookMark(name, kind, x, y, T) {   // anchor on the tile's bottom centre: (x, y) is the tile's centre, T the tile size
+  const [w, h, ax, ay] = LOOK_SIZE[kind]; blit(walkPB(name, w, h), x - ax, y + T / 2 - ay);
+}
 async function loadWalkArt() {
   try {
-    if (window.__walkArt) { walkRead(window.__walkArt); return; }   // the tests give them at once, decoded
+    if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
-    const base = new URL('./art/walk/', location.href).href, files = {};
-    await Promise.all(WALK_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = base + n + '.png'; })));
+    const files = {}, load = (dir, names) => Promise.all(names.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/' + dir + '/', location.href).href + n + '.png'; })));
+    await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES)]);
     walkRead(files);
   } catch (e) { console.warn('the walk art did not load', e); }
 }
@@ -578,7 +600,7 @@ function bakedView(lay) {
   if (!lay || !lay.baked) return null;
   if (BAKED.view) return BAKED.view;
   let v = PL6.views.get(lay.baked.id);
-  if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk, ring: PL6.ring || null }); PL6.views.set(lay.baked.id, v); }
+  if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk, ring: PL6.ring || null, haze: PL6.haze }); PL6.views.set(lay.baked.id, v); }
   return v || null;
 }
 const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS);
@@ -769,7 +791,8 @@ function settleOnce() {
 const SWAP_TEXT = { title: 'Your bag is full', sub: 'Keep one of these. The other stays here.', bag: 'In your bag', found: 'Found here', stays: 'stays here',
   foot: 'The one you leave waits here. The map remembers it.', take: 'Take it', leave: 'Leave it here', leaveCtx: p => 'leave the ' + p + ' pod', kept: 'Left it here', swapTitle: 'Swap the pod' };
 const SIGN_LINE = {
-  call: 'Call lifts the veil: finds show', shield: 'Plate lost · no plates, Probe breaks',
+  call: 'Call lifts the veil: finds show', shield: 'Plate lost · lose them all and the Probe breaks',   // [copy] placeholder: the copywriter has the final word (owner 11-08: "no plates, Probe breaks" read as "the Probe is broken")
+
   storm: dir => 'More bolts, more strikes · ' + (dir > 0 ? '▶ east' : '◀ west'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
   pod: 'Pods open at the Station', full: 'Hold full · a new pod is a choice',bank: 'A break would lose your finds', fog: 'Fog · creatures calm, sight short',
   muffled: 'The fog muffles your Call', fruit: 'Put it down near a creature', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
@@ -2063,10 +2086,10 @@ function openingKind(lay, o) {
   if (why === RANGE_TEXT()) return { kind: 'range', text: why };
   return why === WADE_BUMP || why === SCREE_BUMP || why === BANK_BUMP ? { kind: 'gate', text: why } : { kind: 'closed', text: why };
 }
-// The cells of an opening past the line: LINE_DEPTH deep along its side, across its gap (page cells).
-function lineCells(lay, o) {
-  const { w, h } = lay.baked, out = [];
-  for (let d = 0; d < LINE_DEPTH; d++) for (let k = o.from; k <= o.to; k++) {
+// The cells of an opening past the line: LINE_DEPTH deep along its side, across its gap (page cells); a range side is hazed and blocked along the whole side (whole).
+function lineCells(lay, o, whole) {
+  const { w, h } = lay.baked, out = [], k0 = whole ? 0 : o.from, k1 = whole ? (o.side === 'N' || o.side === 'S' ? w : h) - 1 : o.to;
+  for (let d = 0; d < LINE_DEPTH; d++) for (let k = k0; k <= k1; k++) {
     const x = o.side === 'W' ? d : o.side === 'E' ? w - 1 - d : k, y = o.side === 'N' ? d : o.side === 'S' ? h - 1 - d : k;
     out.push({ x: x + lay.baked.ox, y: y + lay.baked.oy, d });
   }
@@ -2079,7 +2102,7 @@ function applyLines(lay) {
   const place = PL6.places && PL6.places.get(lay.baked.id), idOf = v => ((PL6.terrains || []).find(t => t.value === v) || {}).id;
   for (const o of lay.openings || []) {
     const k = openingKind(lay, o); if (k.kind !== 'range' && k.kind !== 'closed') continue;
-    const cells = lineCells(lay, o); lay.lines.ops.push({ ...o, ...k });
+    const cells = lineCells(lay, o, k.kind === 'range'); lay.lines.ops.push({ ...o, ...k });
     for (const c of cells) { const i = c.y * lay.w + c.x; if (T_BLOCK[lay.tiles[i]]) continue; lay.lineSaved.push([i, lay.tiles[i]]); lay.tiles[i] = T.ROCK; lay.lines.cells.set(i, { kind: k.kind, text: k.text }); }
     if (k.kind === 'closed' && place) {   // the path past the line draws as grass: the ground of the nearest all-grass cell stands in
       const grass = (x, y) => x >= 0 && y >= 0 && x < place.w && y < place.h && idOf(place.terrain[y * place.w + x]) === 'grass';
@@ -2093,11 +2116,36 @@ function applyLines(lay) {
   }
   lay.lines.id = lay.lines.patches.map(p => p.x + ',' + p.y).join(';');
 }
-// The fade past a range line: 2 x 2 px plum dots on a Bayer ladder, level 0 (the line's own tile) to 2 (the edge): 3, 7 and 11 of 16.
-function rangeFadeArt(level) {
-  return art('rfade' + level, () => { const pb = new PB(48, 48), th = [3, 7, 11][level];
-    for (let j = 0; j < 48; j++) for (let i = 0; i < 48; i++) if (BAYER[(((j >> 1) & 3) << 2) + ((i >> 1) & 3)] < th) pb.set(i, j, C.plumD);
-    return pb; });
+// The range haze (the art desk's, places/haze/): past the Probe's range the land washes out into a pale mist along the whole side, LINE_DEPTH cells deep, densest at the edge (level 3 - d).
+// The place view takes the level grid (BakedView.setHaze) and draws it through the desk's remap tables. It stands still and never moves toward the player. When the reach grows it draws back
+// 3, 2, 1, gone at HAZE_STEP_MS a step before its cells open; when it shrinks it lays the same way; reduced motion is a cut.
+const HAZE_STEP_MS = 200;
+function hazeDepth(lay, side) {
+  const a = lay.hazeAnim && lay.hazeAnim[side]; if (!a) return LINE_DEPTH;
+  const n = Math.floor((NOW - a.t0) / HAZE_STEP_MS); return a.dir < 0 ? Math.max(0, LINE_DEPTH - n) : Math.min(LINE_DEPTH, n);
+}
+function hazeSync(lay) {
+  if (!lay.lines || !lay.baked) return;
+  const anim = lay.hazeAnim || (lay.hazeAnim = {});
+  for (const [side, a] of Object.entries(anim)) if (NOW - a.t0 >= LINE_DEPTH * HAZE_STEP_MS) { delete anim[side]; if (a.dir < 0) applyLines(lay); }   // the drawn-back side opens
+  let redo = false;
+  for (const o of lay.openings || []) {
+    const range = openingKind(lay, o).kind === 'range', had = lay.lines.ops.some(q => q.side === o.side && q.kind === 'range');
+    if (range === had || anim[o.side]) continue;
+    if (!motion()) { redo = true; continue; }
+    if (had) anim[o.side] = { t0: NOW, dir: -1 }; else { anim[o.side] = { t0: NOW, dir: 1 }; redo = true; }
+  }
+  if (redo) applyLines(lay);
+}
+function hazeLevels(lay) {
+  const ops = lay.lines ? lay.lines.ops.filter(o => o.kind === 'range') : []; if (!ops.length) return null;
+  const { w, h } = lay.baked, depths = ops.map(o => hazeDepth(lay, o.side)), id = ops.map((o, i) => o.side + depths[i]).join('');
+  if (lay.hazeLv && lay.hazeLv.id === id) return lay.hazeLv;
+  const lv = new Uint8Array(w * h);
+  ops.forEach((o, i) => { const hz = o.side === 'N' || o.side === 'S';
+    for (let d = 0; d < depths[i]; d++) for (let k = 0; k < (hz ? w : h); k++) { const x = o.side === 'W' ? d : o.side === 'E' ? w - 1 - d : k, y = o.side === 'N' ? d : o.side === 'S' ? h - 1 - d : k;
+      lv[y * w + x] = Math.max(lv[y * w + x], LINE_DEPTH - d); } });
+  return (lay.hazeLv = { id, lv });
 }
 // Within 2 tiles of a range line the Probe's words show on the band, once per approach.
 function lineWords(lay, P) {
@@ -5155,8 +5203,14 @@ function drawWhole(t) {
   if (v.kind === 'arrival' && !motion() && el >= ARRIVE_HOLD_MS) { endView(); return; }
   g.drawImage(cv, ox, oy);
   const found = heartFound(lay.cell), cardUp = h && (v.kind === 'reveal' || (v.kind === 'look' && found));   // Look over a found place shows the same card, with no dissolve
-  if (cardUp) { const q = tp(h.x, h.y); circ(q.x, q.y, 14, C.ink); circ(q.x, q.y, 12, C.amber); circ(q.x, q.y, 10, C.ink); }   // the heart ringed in amber, through the dissolve and the hold
-  if (!hold) return;
+  // the marks, drawn in this order: what is still there to take, the heart, then you on top (the desk's look-view art; the partner's teal ring is still code)
+  const marks = () => {
+    if (cardUp) for (const it of leftItems(lay.cell)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still'; lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
+    if (cardUp) { const q = tp(h.x, h.y); lookMark('look-heart-' + h.kind, h.kind, q.x, q.y, T); }   // the heart, through the dissolve and the hold
+    { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, T);
+      if (live && live.pt) { const m = tp(live.pt.x, live.pt.y); circ(m.x, m.y, 10, C.ink); circ(m.x, m.y, 8, C.teal); circ(m.x, m.y, 6, C.teal); R(m.x - 2, m.y - 2, 4, 4, C.aqua); } }   // the partner on teal
+  };
+  if (!hold) { if (cardUp) { const q = tp(h.x, h.y); lookMark('look-heart-' + h.kind, h.kind, q.x, q.y, T); } return; }
   // the heart's tell, through the veil (the arrival look and Look show it; the reveal rings the heart itself)
   if (h && !found && v.kind !== 'reveal' && (v.kind === 'arrival' || tellOn(h, P) || unveiled(v.key, h.x, h.y))) {
     const q = tp(h.x, h.y);
@@ -5165,16 +5219,14 @@ function drawWhole(t) {
     else { if (h.kind === 'spring') paintCluePuddles(h, c => { const t = tp(c.x, c.y), sp = puddleSpot(c, T / 48); return { x: t.x - T / 2 + sp.x, y: t.y - T / 2 + sp.y }; }, T / 48, false);   // the same puddles on the same clue tiles as the walking view
       dashRing(q.x, q.y, 9, h.kind === 'spring' ? C.aqua : C.cream); }
   }
-  const card = () => { if (!cardUp) return;   // the hold's card (over the explorer's lantern): what is still there to take in dotted rings, then the kicker, the name (3×) and the heart's line
-    for (const it of leftItems(lay.cell)) { if (it.cave) continue; const r = tp(it.x, it.y); dashRing(r.x, r.y, 9, C.cream); }
+  const card = () => { if (!cardUp) return;   // the hold's card (over the marks): the kicker, the name (3×) and the heart's line
     const line = revealLine(lay, h), lines = wrapText(line, SCR_W - 48, 2), bh = 22 + 30 + lines.length * 20 + 12, mk = placeMark(G.land[lay.cell], 'found', 26);   // the place's mark, the same one the map wears
     panel(12, VIEW_Y + 8, SCR_W - 24, bh, C.ink, C.amber);
     blit(mk, 26, VIEW_Y + 16);
     text(VIEW_TEXT.found, 26 + mk.w + 8, VIEW_Y + 20, C.amber, 2);
     text(lay.name || '', SCR_W / 2, VIEW_Y + 16 + 26, C.cream, 3, 'center'); lines.forEach((l, i) => text(l, SCR_W / 2, VIEW_Y + 16 + 26 + 30 + i * 20, C.bone, 2, 'center'));
   };
-  { const e = tp(P.x, P.y); circ(e.x, e.y, 11, C.ink); circ(e.x, e.y, 9, C.amber); circ(e.x, e.y, 7, C.amber); R(e.x - 3, e.y - 3, 6, 6, C.cream);   // the explorer: the lantern on an amber ring
-    if (live && live.pt) { const m = tp(live.pt.x, live.pt.y); circ(m.x, m.y, 10, C.ink); circ(m.x, m.y, 8, C.teal); circ(m.x, m.y, 6, C.teal); R(m.x - 2, m.y - 2, 4, 4, C.aqua); } }   // the partner on teal
+  marks();
   card();
 }
 // ---------- The spring's tell, one painter for every view ----------
@@ -5259,6 +5311,7 @@ function drawPatchBody(t) {
   const bk = bakedView(lay), bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
   if (bk) bk.setPatches(lay.lines ? lay.lines.patches : [], lay.lines ? lay.lines.id : '');   // a closed opening's path drawn as grass
+  if (bk) { hazeSync(lay); const hz = hazeLevels(lay); bk.setHaze(hz && hz.lv, hz ? hz.id : '', lay.baked.id); }   // the range haze, past the Probe's reach
   if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }, lay.key));
   if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= lay.w || ty >= lay.h) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
@@ -5309,9 +5362,6 @@ function drawPatchBody(t) {
   }
   for (const h of live.holes || []) { const x = h.x * ts, y = h.y * ts; if (!vis2(x, y) || !see(h.x, h.y)) continue;   // the Rupar's fresh hole, a ground mark
     blit(freshHoleArt(holeFrame(h), HOLE_BARE[h.g]), SX(x) + HOLE_DX, SY(y), spriteRm(h.x, h.y)); }
-  // past a range line the land fades: coarse plum dots, denser toward the edge (the map's fog is single night pixels; this is not it)
-  if (lay.lines) for (const op of lay.lines.ops) { if (op.kind !== 'range') continue;
-    for (const c of lineCells(lay, op)) { if (!vis2(c.x * ts, c.y * ts)) continue; blit(rangeFadeArt(LINE_DEPTH - 1 - c.d), W(c.x * ts), H(c.y * ts)); } }
   // y-sorted sprites
   const items = [], aboveCrowns = [];
   for (const f of lay.feats) if (f.tree === 'hollow' && see(f.x, f.y) && live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1))   // a shy one in a hollow trunk: the hole's one glint, in the trunk's opening
@@ -5370,13 +5420,6 @@ function drawPatchBody(t) {
   for (const f of lay.feats) if (f.kind === 'o') { const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue;
     const under = tokens.some(o => o.y === f.y + 2 && o.x >= f.x && o.x <= f.x + 2);
     overlay(roofArt(under ? 1 : 0), W(f.x * ts + ((3 * ts - 104) >> 1)), H((f.y + 2) * ts - 10), f.x + 1, f.y); }
-  // the range line: the map's own ice dashes across the gap at the band's inner face, over everything, like the Call ring
-  if (lay.lines) for (const op of lay.lines.ops) { if (op.kind !== 'range') continue;
-    const { w, h, ox, oy } = lay.baked, hz = op.side === 'N' || op.side === 'S', c = C[DASH.col], sh = C[DASH.shadow];
-    const along0 = (op.from - 1) * ts, along1 = (op.to + 2) * ts, at = (op.side === 'N' || op.side === 'W' ? LINE_DEPTH : (hz ? h : w) - LINE_DEPTH) * ts;
-    for (let a = along0 + 4; a < along1 - 4; a += 12) {
-      const x = hz ? (ox * ts) + a : (ox * ts) + at, y = hz ? (oy * ts) + at : (oy * ts) + a; if (!vis2(x, y)) continue;
-      if (hz) { R(W(x) - 1, H(y) - 2, 10, 6, sh); R(W(x), H(y) - 1, 8, 4, c); } else { R(W(x) - 2, H(y) - 1, 6, 10, sh); R(W(x) - 1, H(y), 4, 8, c); } } }
   aboveCrowns.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); } catch (e) { if (RT.err++ < 3) console.error(e); } });
   // pods sit above the canopy layer so they can't hide under a tree
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
@@ -5752,7 +5795,8 @@ function drawSwap() {
 // It sits above the bottom line, or at the top of the view when the player stands where it would cover them.
 function msgGeom() {
   if (!FX.msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return null;
-  const sign = FX.sign, lines = sign ? [FX.msg] : wrapText(FX.msg, 400, 2).slice(0, 3), w = sign ? 60 + textW(FX.msg, 2) : Math.max(...lines.map(l => textW(l, 2))) + 26, h = sign ? 48 : lines.length * 20 + 12;
+  const sign = FX.sign, lines = sign ? (60 + textW(FX.msg, 2) > SCR_W - 16 ? wrapText(FX.msg, SCR_W - 76, 2).slice(0, 2) : [FX.msg]) : wrapText(FX.msg, 400, 2).slice(0, 3),   // a sign's line too long for the card goes on two
+    w = sign ? 60 + Math.max(...lines.map(l => textW(l, 2))) : Math.max(...lines.map(l => textW(l, 2))) + 26, h = sign ? 48 : lines.length * 20 + 12;
   // the cell's foot is the player's centre + 20 at 32 px, + 24 at 48
   // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
   const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, lit = RT.litScr && sign && sign.sign === 'warn' ? RT.litScr : null,   // a warning card never covers the lit tile
@@ -5765,7 +5809,7 @@ function drawMessage() {
   const m = msgGeom(); if (!m) return;   // the reach view shows a plain note in its band; the swap chooser has the space
   panel(m.x, m.y, m.w, m.h, C.ink, C.amber);
   if (m.sign) { try { PIC[SIGN[m.sign.sign].pic](m.x + 8, m.y + 8, m.sign.arg); } catch (e) { resetCanvas(); RT.remap = REMAP; if (RT.err++ < 3) console.error(e); }   // a picture that throws (it may hold a clip) costs the picture, not the card's words
-    text(FX.msg, m.x + 48, m.y + 15, C.bone); }
+    m.lines.forEach((l, i) => text(l, m.x + 48, m.y + (m.lines.length > 1 ? 7 : 15) + i * 20, C.bone)); }
   else m.lines.forEach((l, i) => text(l, SCR_W / 2, m.y + 8 + i * 20, C.bone, 2, 'center'));
 }
 // ---------- The signs' pictures: the thing's own built art, centred in a 32×32 slot (2× when both its sides are 16 px or less) ----------
