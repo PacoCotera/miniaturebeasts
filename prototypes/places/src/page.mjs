@@ -2,7 +2,7 @@
 // ImageData through the page's palette, props and canopy as cached canvases (the page's usual sprite path), and the camera.
 // The page owns the creatures, the partner, the explorer and the overlays; this module never draws them.
 import { readPlace, readTileSet } from './format/read.mjs';
-import { PlaceGroundCache, applyLight, lightState, tablesOf, LEVELS, renderHalfView } from './ground.mjs';
+import { PlaceGroundCache, applyLight, lightState, tablesOf, LEVELS, renderHalfView, wholeScale } from './ground.mjs';
 import { BAYER4 } from '../../exploration/src/view.mjs';
 import { cutOut, scaleTo, walkFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
@@ -78,13 +78,14 @@ export class BakedView {
 
   // ---- the whole place at 24 px (the arrival look, Look over the place, the reveal): C6's half-scale render ----
   // veil: Uint8Array(place.w * place.h), 1 = veiled, or null for the clear place. Returns the indexed buffer (place.w * 24 by place.h * 24).
+  wholeSize() { return wholeScale(this.place); }   // 16 for a place larger than 18 x 22, else 24
   overviewBuf(veil, clockMs = 0) {
     const light = veil && veil.some((v) => v) ? lightState(this.place, { veil }) : null;
     return renderHalfView(this.ts, this.place, { clockMs, light, nightIndex: this.night });
   }
   // The dissolve: pixel by pixel the veiled picture, until the Bayer threshold `step` (0..16) passes it and the clear one shows.
   dissolveBuf(veiled, clear, step) {
-    const out = new Uint8Array(veiled.length), W = this.place.w * 24;
+    const out = new Uint8Array(veiled.length), W = this.place.w * this.wholeSize();
     for (let i = 0; i < out.length; i++) out[i] = BAYER4[(((i / W) | 0) & 3) * 4 + ((i % W) & 3)] >= step ? veiled[i] : clear[i];
     return out;
   }
