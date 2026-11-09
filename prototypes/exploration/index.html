@@ -1838,7 +1838,7 @@ function startExpedition(type, cell) {
     if (c != null) S.pods.push({ id: 's' + sr.id, k: String(c), x: -1, y: -1, sp: sr.sp, h: 0, bur: 0, g: sr.g, how: 'shed', shed: sr.id, of: sr.name, genome: sr.genome }); }
   const stormOn = type === 'weather' || R.chance(.3);
   const fogOn = type === 'deep' || R.chance(.45);
-  const pm = partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // no partner: the first mibi with you rides in the Companion (always a juvenile)
+  const pm = type === 'deep' ? digger() : partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // Deep ground: the grown digger with you goes (S.lead is left alone). No partner: the first mibi with you rides in the Companion (always a juvenile)
   const storm = stormOn && !TEST.calm ? stormFor(cell) : null;
   if (storm && S.expN === 1) storm.x -= 2 * storm.dir;   // the first storm comes a little later, so a new player can drain a stone first
   S.exp = { type, ...rgField(), n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range + (pm && spOf(pm.sp).ab === 'sure' ? 1 : 0), dug: [], hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
@@ -6021,6 +6021,7 @@ const OPEN_TEXT = {
   digs: n => n + ' digs', needsTuikis: 'needs a Tuikis',   // the Deep ground tab's line
   firstWalk: 'Your first walk', firstFind: 'Find a pod and bring it home.', firstGrows: 'The Station grows it.',   // the first-time partner place
   flat: 'Flat world · New world has stairs', docked: 'Docked · lift to explore',   // a generator 1 world's line; the docked band
+  setOut: 'Set out', needsLabel: 'Needs a Tuikis', deepLeads: n => 'Deep ground · ' + n + ' leads', podBottom: 'your partner comes from a pod',   // the ✓ labels and the bottom line's middle on the opening
 };
 // The art desk's two opening pieces (art/open/, signed in mibi-art a23ee74f6; manifest.json there): the night mist under the first-time frame (three seamless 96 px variants a, b, c, picked per 96 px block of world pixels by a hash,
 // two 900 ms frames and a still for reduced motion) and the pod where the partner would stand (96 px, anchor (48, 92), two 1200 ms glow frames and a still). The mist's four colours are not on the core palette:
@@ -6053,7 +6054,7 @@ async function loadOpenArt(after) {
   } catch (e) { console.warn('the opening art did not load; the built night and pod play', e); } finally { ART_DONE.open = true; }
 }
 // Deep ground shows once the player has met a digging kind, seen the burrow, or has a grown digger with them.
-const deepShown = () => !!digPartner() || carriedMibis().some(m => isAdult(m) && spOf(m.sp).ab === 'dig') || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.revealed[G.gate];
+const deepShown = () => !!digger() || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.revealed[G.gate];
 // A mibi's picture at k× at (x, y); a kind the Companion has no art for is its labelled plate.
 function openCreature(sp, pose, fr, k, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(creatureArt(sp, pose, fr, k, juv), x, y); }
 // The Companion's front door: the land you know (the frame), one line of what changed, the way out as two tabs, and who comes along.
@@ -6080,6 +6081,30 @@ function openPainting(spec) {
   do { r = OPEN_JOB.it.next(); } while (!r.done && performance.now() - t0 < 8);
   if (!r.done) return null; OPEN_JOB.it = null; return r.value;
 }
+// The tab the land shows: Weather (0) or Deep ground (1); while the partner is focused, the last tab left (S.ui.way).
+const openWay = () => S.ui.sel === 2 ? (S.ui.way === 1 && deepShown() ? 1 : 0) : (S.ui.sel === 1 && !deepShown() ? 0 : S.ui.sel);
+// The way out, on the land: Weather shows the storm where it would start from the last start (the land dimmed under it, rain, the bolt at its top, the arrow on its leading edge; an edge chip when the band is outside the frame);
+// Deep ground shows the burrow's cell ringed in amber. Built pieces only (the dither, the rain colour, the icons); no storm the first time (no start yet).
+function drawOpenWay(q, t, fr) {
+  const { WX, WY, WW, WH, cs } = q;
+  if (openWay() === 0) {
+    if (q.first || S.ui.lastPos == null) return;
+    const st = stormFor(S.ui.lastPos), bx0 = q.ox + (st.x - q.X0) * cs, bx1 = bx0 + st.w * cs, l = Math.max(WX, Math.round(bx0)), r = Math.min(WX + WW, Math.round(bx1));
+    if (r <= l) {   // outside the frame: a small ink chip on that edge carries the bolt and the arrow pointing in
+      const right = bx0 >= WX + WW, cx = right ? WX + WW - 32 : WX + 4, cy = WY + (WH >> 1) - 11; panel(cx, cy, 28, 22, C.ink, C.stone);
+      blit(ICON.bolt(), cx + 2, cy + 4); blit(ICON.arrow(st.dir), cx + 14, cy + 5); return; }
+    ditherFill(l, WY, r - l, WH, 'night', 8);
+    for (let i = 0; i < 40; i++) { const h = hash(5, i), rx = h % (r - l), ry = ((h >>> 9) % WH + (motion() ? Math.floor(t * 140) : 0)) % WH; R(l + rx, WY + ry, 1, 3, C.ice); }
+    const lead = st.dir > 0 ? Math.round(bx1) : Math.round(bx0);
+    if (lead > WX + 14 && lead < WX + WW - 14) blit(ICON.arrow(st.dir), lead + (st.dir > 0 ? 3 : -12), WY + (WH >> 1) - 6);
+    blit(ICON.bolt(), Math.round((l + r) / 2) - 6, WY + 4);
+  } else {
+    const p = q.at(G.gate); if (p.x + cs <= WX || p.y + cs <= WY || p.x >= WX + WW || p.y >= WY + WH) return;
+    const col = fr ? C.yellow : C.amber, i = fr ? 1 : 0;
+    for (const [x, y, w, h] of [[p.x + i, p.y + i, cs - 2 * i, 2], [p.x + i, p.y + cs - 2 - i, cs - 2 * i, 2], [p.x + i, p.y + i, 2, cs - 2 * i], [p.x + cs - 2 - i, p.y + i, 2, cs - 2 * i]]) R(x, y, w, h, col);
+    blit(ICON.burrow(1), p.x + ((cs - 16) >> 1), p.y + ((cs - 14) >> 1));
+  }
+}
 // The land in the frame: the built painting cropped to it, the place marks, the signs, the start flag, the lights of a first walk, the lost plates and the docked band. Drawn only: nothing here reveals a cell.
 function drawOpenLand(t, fr) {
   const ready = !(G.gen >= 6) || PL6.ready || BAKED.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
@@ -6102,6 +6127,7 @@ function drawOpenLand(t, fr) {
       if (sg === 'b') blit(ICON.beat(fr), tx + 2, ty + 2); else { blit(ICON.paw('bone'), tx + 3, ty + 6); blit(ICON.paw('bone'), tx + 11, ty + 2); } } }
   // the start flag (2× at 48 px cells and up)
   if (!q.first && S.ui.lastPos != null) { const p = q.at(S.ui.lastPos), f = cs >= 48 ? up2('flag', ICON.flag()) : ICON.flag(), fx = Math.round(p.x + cs / 2 - f.w / 2 + 2), fy = Math.round(p.y + cs / 2 - f.h + 4); if (inF(fx, fy, f.w, f.h)) blit(f, fx, fy); }
+  drawOpenWay(q, t, fr);
   // corner states: the Probe's plates only when one is lost; docked, a band across the foot
   const tier = tierOf(); if (S.shield != null && S.shield < tier.shield) { const w = 9 * tier.shield + 12; panel(WX + WW - w - 4, WY + 4, w, 22, C.ink, C.stone); shieldBars(WX + WW - w + 2, WY + 9, Math.max(0, S.shield), tier.shield, 6, 12); }
   if (isDocked()) { R(WX, WY + WH - 30, WW, 30, C.ink); text(OPEN_TEXT.docked, WX + WW / 2, WY + WH - 24, C.mint, 2, 'center'); }
@@ -6116,7 +6142,7 @@ function drawSetup(t) {
   { const rl = S.report && S.report.lines && S.report.lines[0], flat = !rl && S.phase === 'setup' && !S.exp && (S.gen == null ? 1 : S.gen) === 1, line = rl || (flat ? OPEN_TEXT.flat : first ? OPEN_TEXT.dark : '');
     if (line) { R(14, 371, 6, 6, C.orange); text(clipText(line, 410, 2), 28, 365, flat ? C.sand : C.bone); } }
   // 3. the way out: two tabs under the land (Weather alone and full width until Deep ground is met)
-  const dig = digPartner(), showDeep = deepShown(), sel = S.ui.sel === 1 && !showDeep ? 0 : S.ui.sel, start = S.ui.lastPos != null ? S.ui.lastPos : null, storm = start != null ? stormFor(start) : null;
+  const dig = digger(), showDeep = deepShown(), sel = S.ui.sel === 1 && !showDeep ? 0 : S.ui.sel, start = S.ui.lastPos != null ? S.ui.lastPos : null, storm = start != null ? stormFor(start) : null;
   const tabs = [{ t: 'Weather', s: storm ? (storm.dir > 0 ? OPEN_TEXT.stormWest : OPEN_TEXT.stormEast) : OPEN_TEXT.chargeStones, ok: true }];
   if (showDeep) tabs.push({ t: 'Deep ground', s: dig ? OPEN_TEXT.digs(dig.name) : OPEN_TEXT.needsTuikis, ok: !!dig });
   tabs.forEach((tb, i) => { const w = tabs.length > 1 ? 212 : 434, x = i ? 230 : 8, y = 392, h = 50;
@@ -6127,12 +6153,13 @@ function drawSetup(t) {
   // 4. who comes along: the partner as itself at 3× on its ring, the others with you at 1× beside it
   const pm = partnerMibi(), cm = carriedMibis(), selP = sel === 2, PY = OPEN_PY, PH = OPEN_PH;
   if (selP) brackets(2, PY - 4, SCR_W - 4, PH + 6, C.amber);
-  if (cm.length) { const lead = pm || cm[0], st = mibiStage(lead), juv = st === 'juvenile', others = cm.filter(m => m !== lead);   // only juveniles: the first, its own picture, no ring
+  if (cm.length) { const front = sel === 1 ? dig : null, lead = front || pm || cm[0], st = mibiStage(lead), juv = st === 'juvenile', others = cm.filter(m => m !== lead);   // only juveniles: the first, its own picture, no ring; Deep ground focused: the digger steps to the front
+    const ca = callAnim(lead), hop = ca && motion() ? Math.round(Math.abs(Math.sin(ca.a / 150)) * 12 * Math.max(0, 1 - ca.a / 900)) : 0;   // Call: it hops and plays its alert frame
     if (!juv) blit(ringArt('opring84', 84, 22), 14, PY + PH - 24);
-    openCreature(lead.sp, selP && fr ? 'alert' : 'idle', fr, 3, 8, PY + PH - 102, juv);
+    openCreature(lead.sp, (selP && fr) || (ca && ca.a < 900) ? 'alert' : 'idle', fr, 3, 8, PY + PH - 102 - hop, juv);
     text(clipText(lead.name, 200 - others.length * 44, 3), 116, PY + 2, C.bone, 3);
-    let cx = 116; cx += chip(cx, PY + 38, STAGE_WORD[st], stageFill(st), 'bone') + 6; if (pm) chip(cx, PY + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
-    text(clipText(pm ? abCardOf(pm.sp) : (lead.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime), 320, 2), 116, PY + 70, C.fog);
+    let cx = 116; cx += chip(cx, PY + 38, STAGE_WORD[st], stageFill(st), 'bone') + 6; if (pm || front) chip(cx, PY + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
+    text(clipText(pm || front ? abCardOf(lead.sp) : (lead.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime), 320, 2), 116, PY + 70, C.fog);
     others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; blit(ringArt('opring32', 30, 10, C.stone, C.slate), x + 1, y + 26); openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
   else if (liveMibis().length) {   // mibis, none with you: their silhouettes
     liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, PY + PH - 66 - (i % 2) * 6));
@@ -6155,7 +6182,8 @@ function partnerCtx() {
   const el = mibiStage(pm) === 'elder' ? ' · slow, keen' : '';
   return [...new Set([abTextOf(pm.sp), abCardOf(pm.sp), abCardOf(pm.sp, true)])].map(ab => 'Partner: ' + pm.name + ' · ' + ab + el);
 }
-function digPartner() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'dig' ? pm : null; }
+// The grown digger who would go down the burrow: the partner when it digs, otherwise any grown Tuikis with you (at set-out it becomes this expedition's partner; the lead is left alone).
+function digger() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'dig' ? pm : carriedMibis().find(m => isAdult(m) && spOf(m.sp).ab === 'dig') || null; }
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
@@ -6575,11 +6603,11 @@ function drawActive(t) {
 // Call between expeditions: the shown (or focused) mibi with you answers; otherwise the partner, or the first mibi with you, and
 // the view comes to it. Free.
 function callTarget() {
-  const f = S.phase === 'active' ? shownMibi() : S.phase === 'mibis' ? rosterAt(S.ui.rSel) : null;
+  const f = S.phase === 'active' ? shownMibi() : S.phase === 'mibis' ? rosterAt(S.ui.rSel) : S.phase === 'setup' && S.ui.sel === 1 ? digger() : null;   // the opening: the digger in front answers on Deep ground
   return isCarried(f) ? f : partnerMibi() || carriedMibis()[0] || null;
 }
 function callWith() {
-  const m = callTarget(); if (!m) { fxMsg('No mibi with you'); return; }
+  const m = callTarget(); if (!m) { if (S.phase !== 'setup') fxMsg('No mibi with you'); return; }   // the opening with no one along: nothing
   if (S.phase === 'active') S.ui.aId = m.id;
   const n = (S.ui.calls = (S.ui.calls || 0) + 1), wrong = !isAdult(m) && n % 3 !== 0;
   FX.callMibi = { id: m.id, at: NOW, wrong }; lockInput(300);
@@ -6743,10 +6771,10 @@ function lineBase() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerCtx(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
-      if (S.ui.sel === 1 && !digPartner()) return L1('Needs a Tuikis', 'Deep ground', 'menu', true);   // a mibi at home is never named
+    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerCtx(), 'menu') : L1('', OPEN_TEXT.podBottom, 'menu');
+      if (S.ui.sel === 1 && !digger()) return L1(OPEN_TEXT.needsLabel, 'Deep ground', 'menu', true);   // a mibi at home is never named
       { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
-      return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), bayLine(), 'menu');
+      return L1(OPEN_TEXT.setOut, bayLine() || (S.ui.sel === 1 ? OPEN_TEXT.deepLeads(digger().name) : 'Weather'), 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
       const wx = S.ui.type !== 'deep' ? ' · dotted band: where the storm starts' : '';   // the dotted band is a preview, not the live storm
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), [base + wx, base + ' · storm preview', base], 'back', !placeValid(c)); }
@@ -6854,7 +6882,7 @@ function startBlock() {
 }
 function chooseType() {
   { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; return; } }
-  if (S.ui.sel === 1 && !digPartner()) { fxMsg('Deep ground starts down a narrow burrow · a Tuikis digs it out'); FX.bumpAt = NOW; return; }
+  if (S.ui.sel === 1 && !digger()) { fxMsg('Deep ground starts down a narrow burrow · a Tuikis digs it out'); FX.bumpAt = NOW; return; }
   S.ui.type = S.ui.sel === 1 ? 'deep' : 'weather';
   const first = firstPlacement();
   let cur = S.ui.lastPos != null ? S.ui.lastPos : null;
@@ -6903,12 +6931,18 @@ function act(k, mode) {
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
   if (RT.spot && S.phase === 'patch') { if (RT.spot.held) spotPress(k); else if (NOW - RT.spot.at > SPOT_MS + 1500) cancelBeat(); return; }   // the reveal's spot takes every press; its held card only ✓ or ← closes (an unheld spot is never longer than its beat: one that never gets drawn is dropped)
   if (RT.view && S.phase === 'patch') { viewPress(k); return; }   // a view over the place (arrival look, Look) takes the press: consumed, never queued, no action spent
-  if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
+  if (k === 'call' && !['setup', 'map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
   if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; if (FX.notes.length) composeMsg(); }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
   const isDir = k in DIRS;
   switch (S.phase) {
     case 'setup':
-      if (k === 'up' || k === 'down') { const d = k === 'down' ? 1 : -1; let n = clamp(S.ui.sel + d, 0, 2); if (n === 1 && !deepShown()) n = clamp(n + d, 0, 2); S.ui.sel = n; }   // Deep ground is not a stop until it is shown
+      if (k === 'up' || k === 'down') {   // between the way-out row and the partner; ↑ from the partner returns to the tab left (S.ui.way)
+        if (k === 'down' && S.ui.sel < 2) { S.ui.way = S.ui.sel; S.ui.sel = 2; }
+        else if (k === 'up' && S.ui.sel === 2) S.ui.sel = deepShown() && S.ui.way === 1 ? 1 : 0;
+        else FX.bumpAt = NOW; }
+      else if (k === 'left' || k === 'right') {   // on the way-out row, between Weather and Deep ground (a bump at either end); on the partner, nothing
+        if (S.ui.sel < 2) { const n = S.ui.sel + (k === 'right' ? 1 : -1); if (n < 0 || n > 1 || !deepShown()) FX.bumpAt = NOW; else S.ui.way = S.ui.sel = n; } }
+      else if (k === 'call') callWith();
       else if (k === 'confirm') { if (S.ui.sel === 2) { S.phase = 'mibis'; S.ui.rSel = 0; S.ui.rFrom = 'setup'; transition(); } else chooseType(); }
       else if (k === 'back') openMenu();
       break;

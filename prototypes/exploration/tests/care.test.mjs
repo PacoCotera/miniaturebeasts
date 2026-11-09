@@ -546,7 +546,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
     panel: noop, card: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, firstPlacement: () => true, drawOpenLand: () => {}, stormFor: () => ({ dir: 1 }), brackets: noop, ringArt: noop, upArt: noop, silhouette: noop, podArt: noop, OPEN_ART: { ready: false }, G: { gate: 0 }, STAGE_WORD: {},
     OPEN_TEXT: { dark: "dark", stormEast: "e", stormWest: "w", chargeStones: "charge", digs: n => n + " digs", needsTuikis: "needs a Tuikis", firstWalk: "first", firstFind: "find", firstGrows: "grows", flat: "flat", docked: "docked" },
     CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
-  const names = ["OPEN_FRAME", "deepShown", "openCreature", "drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
+  const names = ["OPEN_FRAME", "deepShown", "openCreature", "drawSetup", "digger", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
   S.known = [2]; vm.runInContext(ACCESSOR() + names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
   const home = S.mibis.map(m => m.name);
   for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
@@ -786,7 +786,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   assert.ok(p.run("takeMibi(mibiById(1)).ok && takeMibi(mibiById(3)).ok"), "taken while docked");
   assert.equal(p.run("setLead(mibiById(1))"), true, "an S05 mibi can lead (game designer, 2026-10-11)");
   assert.equal(p.run("partnerMibi().id"), 1, "Dot is the partner");
-  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digPartner()"), null, "no gate opens");
+  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null, "no gate opens");
   assert.equal(p.run("partnerRow()"), "Partner: Dot · " + p.run("CARE_TEXT.abOther"), "the partner line reads abOther");
   const render = phase => { p.run(`S.phase = ${JSON.stringify(phase)}; render(0)`); return drawn(); };
   let d = render("mibis"); assert.ok(d.some(x => /^c-sprite-other-32@28,\d+x2$/.test(x)), "the Lead card: the plate at 2× in the sprite's rect: " + d);
@@ -812,7 +812,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   d = render("patch"); assert.ok(d.some(x => x.startsWith("c-sprite-other-32@") && x.endsWith("x1")), "the field partner: the plate at 1×: " + d);
   assert.ok(d.some(x => x.startsWith("c-mini-other-12@")), "the HUD mini in a place");
   assert.doesNotThrow(() => p.run("ptCtx()")); assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), 4, "never matches a wild species (the page is cut to three here)");
-  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digPartner()"), null);
+  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null);
   assert.doesNotThrow(() => p.run("onStateChanged(); notesText();"));
   const lines = p.run("FX.notes.map(n => n.text).concat(S.log).join('\\n')");
   assert.ok(!/undefined|null/.test(lines), "no line reads undefined or null:\n" + lines);
@@ -944,7 +944,7 @@ test("X26 §5.2: with a rider no field token, no dig, no calm, no glow and no fl
   // a juvenile Tuikis: no token in any place, no dig, the fog sight and the fog Call reach as with no partner
   let p = X26.world([dot()], [1]); p.setOut(); p.key("confirm"); assert.equal(p.S.phase, "patch");
   assert.ok(Object.keys(p.S.exp.live).length > 0); for (const k in p.S.exp.live) assert.equal(p.S.exp.live[k].pt, null, "live.pt in " + k);
-  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digPartner()"), null);
+  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null);
   assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), -1);
   p.run("inFog = () => true;");
   assert.equal(p.run("sightR(curLay())"), p.run("SIGHT_FOG"), "the fog sight");

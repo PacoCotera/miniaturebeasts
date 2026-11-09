@@ -61,7 +61,7 @@ test("B1: Pip, Moss and Dot carried: the 3x Loika stands at (8, 458) and two 1x 
   const t = said(p); assert.ok(t.includes("Pip") && t.includes("adult") && t.includes("leads"), "name, stage, leads: " + t);
   assert.ok(t.includes("A storm charged stones in the wood."), "last turn's first line");
   assert.ok(t.includes("storm ▶ east") || t.includes("storm ◀ west"), "the Weather tab's line");
-  assert.ok(t.includes("needs a Tuikis"), "Deep ground still needs the Tuikis to lead until B3 (digger() along): the tab says so");
+  assert.ok(t.includes("Moss digs"), "Deep ground: any grown Tuikis along digs, not only the lead (B3)");
   assert.ok(!t.some(s => /crate/.test(s)), "the crate panel is gone from the screen (the bottom line says it)");
 });
 
@@ -72,9 +72,52 @@ test("B1: the rider, no one with you, and the first-time place", () => {
   assert.ok(said(nobody).includes("No one with you"), "mibis, none with you");
 });
 
-test("B1: Up and Down skip Deep ground while it is not shown", () => {
+// ---- B3: focus, keys and the way out on the land ----
+test("B3: Down goes to the partner, Up returns to the tab left; Left and Right move between the tabs and bump at the ends and on one tab", () => {
   const p = opening(); p.key("down"); assert.equal(p.run("S.ui.sel"), 2); p.key("up"); assert.equal(p.run("S.ui.sel"), 0);
-  const q = opening(14, { known: [1] }); q.key("down"); assert.equal(q.run("S.ui.sel"), 1); q.key("down"); assert.equal(q.run("S.ui.sel"), 2);
+  p.run("FX.bumpAt = 0;"); p.key("right"); assert.equal(p.run("S.ui.sel"), 0, "one tab: Right bumps"); assert.ok(p.run("FX.bumpAt") > 0);
+  const q = opening(14, { known: [1] }); q.key("right"); assert.equal(q.run("[S.ui.sel, S.ui.way]").join(), "1,1");
+  q.run("FX.bumpAt = 0;"); q.key("right"); assert.equal(q.run("S.ui.sel"), 1, "the end: a bump"); assert.ok(q.run("FX.bumpAt") > 0);
+  q.key("down"); assert.equal(q.run("S.ui.sel"), 2); q.run("FX.bumpAt = 0;"); q.key("left"); q.key("right"); assert.equal(q.run("S.ui.sel"), 2, "on the partner Left and Right do nothing");
+  q.key("up"); assert.equal(q.run("S.ui.sel"), 1, "Up returns to the tab left"); q.key("left"); assert.equal(q.run("S.ui.sel"), 0); q.run("FX.bumpAt = 0;"); q.key("left"); assert.ok(q.run("FX.bumpAt") > 0, "the other end: a bump");
+});
+
+test("B3: Right then Set out with Moss along and Pip leading: Deep ground, Moss is the partner, the lead is left alone; the bottom line", () => {
+  const p = returning(); assert.equal(p.run("lineBase().ok"), "Set out"); p.key("right");
+  assert.equal(p.run("lineBase().ok"), "Set out"); assert.ok(/crate/.test(p.run("lineBase().ctx")), "the crates line takes the middle: " + p.run("lineBase().ctx"));
+  p.run("S.bay = [];"); assert.equal(p.run("lineBase().ctx"), "Deep ground · Moss leads");
+  p.key("confirm"); assert.equal(p.run("S.phase"), "place"); p.key("confirm");
+  assert.equal(p.run("S.phase"), "map"); assert.equal(p.run("S.exp.type"), "deep"); assert.equal(p.run("S.exp.pt.id"), 2, "Moss"); assert.equal(p.run("S.lead"), 1, "Pip still leads");
+  const w = returning(); w.key("confirm"); w.key("confirm"); assert.equal(w.run("S.exp.type"), "weather"); assert.equal(w.run("S.exp.pt.id"), 1, "Weather: the lead goes");
+});
+
+test("B3: the partner strip shows the digger in front while Deep ground is focused", () => {
+  const p = returning(); draw(p); const pip = p.run("creatureArt(0, 'idle', 0, 3, false)"); assert.equal(stands(p, pip, 8, 458).bad, 0, "Pip in front on Weather");
+  p.key("right"); draw(p); const moss = p.run("creatureArt(1, 'idle', 0, 3, false)"); const r = stands(p, moss, 8, 458); assert.ok(r.n > 500 && r.bad === 0, "Moss in front on Deep ground: " + JSON.stringify(r));
+  assert.ok(said(p).includes("Moss"), "named");
+});
+
+test("B3: Call on the opening: the partner answers and nothing is spent; with no one along, nothing", () => {
+  const p = returning(), before = JSON.stringify(p.run("[S.turn, S.expN, S.bay, S.carried, S.lead, S.exp, S.phase]"));
+  p.key("call"); assert.equal(p.run("FX.callMibi.id"), 1, "Pip answers"); assert.equal(p.run("S.phase"), "setup");
+  assert.equal(JSON.stringify(p.run("[S.turn, S.expN, S.bay, S.carried, S.lead, S.exp, S.phase]")), before, "free");
+  p.key("right"); p.key("call"); assert.equal(p.run("FX.callMibi.id"), 2, "Deep ground focused: the digger answers");
+  const n = opening(); n.key("call"); assert.ok(!n.run("FX.callMibi"), "no one with you: nothing");
+});
+
+test("B3: Weather draws the storm on the land (the edge chip when outside the frame); Deep ground rings the burrow", () => {
+  const p = returning(); p.run("S.shield = null; globalThis.__sf = stormFor; stormFor = () => ({ x: S.ui.lastPos % MW + 20, dir: -1, w: 3, v: .25, t: 0 });"); draw(p);   // a band far to the east, outside the frame
+  const chip = plain(p.run("(() => { const q = openFrame(), st = stormFor(S.ui.lastPos), bx0 = q.ox + (st.x - q.X0) * q.cs; return { out: bx0 >= q.WX + q.WW || bx0 + st.w * q.cs <= q.WX, right: bx0 >= q.WX + q.WW, WX: q.WX, WW: q.WW, WY: q.WY, WH: q.WH, dir: st.dir }; })()"));
+  assert.equal(chip.out, true, "the band is outside the frame");
+  const cx = chip.right ? chip.WX + chip.WW - 32 : chip.WX + 4, cy = chip.WY + (chip.WH >> 1) - 11, bolt = p.run("ICON.bolt()"), arrow = p.run(`ICON.arrow(${chip.dir})`);
+  assert.equal(stands(p, bolt, cx + 2, cy + 4).bad, 0, "the chip's bolt"); assert.equal(stands(p, arrow, cx + 14, cy + 5).bad, 0, "the chip's arrow");
+  p.key("right"); draw(p); assert.ok(stands(p, bolt, cx + 2, cy + 4).bad > 5, "Deep ground: no storm chip");
+  p.run("S.ui.sel = 0; stormFor = __sf;"); draw(p);
+  const inb = plain(p.run("(() => { const q = openFrame(), st = stormFor(S.ui.lastPos), bx0 = q.ox + (st.x - q.X0) * q.cs, l = Math.max(q.WX, Math.round(bx0)), r = Math.min(q.WX + q.WW, Math.round(bx0 + st.w * q.cs)); return { l, r, WY: q.WY }; })()"));
+  assert.ok(inb.r > inb.l, "the real band reaches into the frame"); assert.equal(stands(p, bolt, Math.round((inb.l + inb.r) / 2) - 6, inb.WY + 4).bad, 0, "the bolt at the band's top");
+  const g = opening(14, { carried: [THREE[1]] }); g.run("S.tier = 1; S.ui.lastPos = G.gate; S.revealed[G.gate] = 1; S.ui.sel = 1;"); draw(g);
+  const ring = plain(g.run("(() => { const q = openFrame(), p = q.at(G.gate); return { x: p.x, y: p.y, cs: q.cs, a: C.amber, y2: C.yellow }; })()")), px = g.run("scr").px(), W = g.run("SCR_W");
+  let n = 0; for (let i = 4; i < ring.cs - 4; i++) { const v = px[ring.y * W + ring.x + i]; if (v === ring.a) n++; } assert.ok(n > ring.cs - 12, "the amber ring on the burrow's cell: " + n);
 });
 
 test("the two signed art pieces are registered; the desk's pod stands on the partner ring at (8, 458), its foot (48, 92); the built pod plays only until the files are in", () => {
@@ -166,6 +209,12 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
         if (m.passable(c) && m.G.land[c] !== m.L.WATER) { if (k < 4) S.called[c] = 1; else if (k < 7) S.veil[String(c)] = [1]; k++; } } });
     const ret = await shot(1500); golden("opening-returning.png", ret);
     const cs = await page.evaluate(() => window.__mb.openFrame().cs); assert.equal(cs, 52, "tier 1: the reach fits at 52");
+    // B3: Deep ground focused (the ringed burrow, Moss in front), and the partner focused
+    await page.evaluate(() => { window.__mb.S.ui.sel = 1; window.__mb.S.ui.way = 1; window.__mb.S.ui.lastPos = window.__mb.G.gate; window.__mb.S.revealed[window.__mb.G.gate] = 1; });
+    golden("opening-deep.png", await shot(700));
+    await page.evaluate(() => { window.__mb.S.ui.sel = 2; });
+    golden("opening-partner.png", await shot(700));
+    await page.evaluate(() => { window.__mb.S.ui.sel = 0; window.__mb.S.ui.lastPos = window.__mb.G.spawns[0]; });
     // the marks: the mark's own pixels stand on the land (a sign may cover a few); found in colour, been the slate silhouette
     const marks = await page.evaluate(() => { const m = window.__mb, o = m.openFrame(), out = {};
       for (let c = 0; c < m.MW * m.MH; c++) { if (!m.S.revealed[c]) continue; const a = o.at(c), mk = m.cellMark(c, a.x, a.y, o.cs, 18, true); if (!mk) continue;
