@@ -4,6 +4,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
+import path from "node:path";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { makePage, LOOK_ART, PAGE } from "./page-harness.mjs";
 
@@ -11,13 +13,20 @@ const DIR = new URL("../art/look/", import.meta.url), DESK = process.env.MIBI_AR
 const sha = (b) => createHash("sha256").update(b).digest("hex");
 const files = readdirSync(DIR).filter((f) => f.endsWith(".png")).sort();
 const HASHES = JSON.parse(readFileSync(new URL("SHA256.json", DIR), "utf8"));
-const MANIFEST = existsSync(DESK + "manifest.json") ? JSON.parse(readFileSync(DESK + "manifest.json", "utf8")) : null;
+// The desk's commit the placed files came from. The live out/ folder is compared only while it still equals that commit (the way coat-masters pins its desk commit), so desk work never turns the gate red.
+const DESK_COMMIT = "07cd89ed6";
+const deskPinned = () => {
+  if (!existsSync(DESK + "manifest.json")) return false;
+  const repo = path.resolve(DESK, "../../..");
+  try { execFileSync("git", ["-C", repo, "diff", "--quiet", DESK_COMMIT, "--", "art-jobs/2026-11-09-you-are-here/out"], { stdio: "ignore" }); return true; } catch { return false; }
+};
+const MANIFEST = deskPinned() ? JSON.parse(readFileSync(DESK + "manifest.json", "utf8")) : null;
 
 test("every placed file equals the desk's file byte for byte (and its recorded hash)", () => {
   assert.equal(files.length, 3 + 4 + 21 - 1 + 1, "the files are placed: " + files.length);
   assert.deepEqual(Object.keys(HASHES).sort(), files);
   for (const f of files) assert.equal(sha(readFileSync(new URL(f, DIR))), HASHES[f], f);
-  if (!MANIFEST) { console.log("# the desk's out/ is not beside this repo: byte check against the recorded hashes only"); return; }
+  if (!MANIFEST) { console.log("# the desk's out/ is not beside this repo, or has moved on from " + DESK_COMMIT + ": byte check against the recorded hashes only"); return; }
   for (const f of files) assert.ok(readFileSync(new URL(f, DIR)).equals(readFileSync(DESK + f)), f + " differs from the desk's file");
 });
 
