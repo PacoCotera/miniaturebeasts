@@ -9,7 +9,9 @@ export const HAZE_T = 16, HAZE_VARIANTS = 3, HAZE_KIT = 43;   // the kit's relea
 export const hazeFileNames = () => [1, 2, 3].flatMap((L) => ['', '~v1', '~v2'].map((v) => `haze-L${L}${v}`));
 
 // files: { name: { width, height, data (RGBA) } } for the nine sheets; remap: haze-remap.json; ramp: haze-ramp.json
-export function hazeKit(files, remap, ramp) {
+// setLen: how many colours the tile set's palette holds (indices 48..). The desk keyed its tables to the kit's 43 then the open edges' 7 (50 colours, the ramp at 98..103); the set now also carries the
+// meadow decor's colours after those 50, so the ramp the tables answer with moves up by the difference and follows the set's palette.
+export function hazeKit(files, remap, ramp, setLen = HAZE_KIT + 7) {
   // a pixel's kind is its layer and its alpha step (the colour is the layer's own; a browser's canvas premultiplies low alphas, so the colour is not read back)
   const kindOf = new Map(remap.kinds.map((k) => [k.key[1] + ':' + k.rgba[3], k.key]));
   const tiles = [1, 2, 3].map((L) => ['', '~v1', '~v2'].map((v) => {
@@ -27,16 +29,16 @@ export function hazeKit(files, remap, ramp) {
       return t;
     });
   }));
-  const first = remap.firstIndex;
+  const first = remap.firstIndex, shift = setLen - (HAZE_KIT + 7);
   const tables = [1, 2, 3].map((L) => [null, ...Array.from({ length: 7 }, (_, s) => {
     const row = remap.tables[`L${L}.${s + 1}`], t = Uint8Array.from({ length: 256 }, (_, i) => i);
-    row.forEach((to, p) => { t[first + p] = to; });
+    row.forEach((to, p) => { t[first + p] = to >= first + HAZE_KIT + 7 ? to + shift : to; });
     return t;
   })]);
   const toRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-  // extra: the colours the tables can answer with beyond the kit's 43 (indices 91..): the 7 open-edges colours the desk's palette order carries, then the 6 ramp colours (98..103)
-  const extra = { first: first + HAZE_KIT, rgb: remap.order.slice(HAZE_KIT).map(toRgb) };
-  return { tiles, tables, ramp: { first: ramp.firstIndex, rgb: ramp.colours.map(toRgb) }, extra, kit43: remap.order.slice(0, HAZE_KIT).map(toRgb) };
+  // extra: the colours the tables can answer with beyond the tile set's palette: the 6 ramp colours (the set holds the open edges' 7 itself, in the desk's order, at 91..97)
+  const extra = { first: first + setLen, rgb: remap.order.slice(HAZE_KIT + 7).map(toRgb) };
+  return { tiles, tables, ramp: { first: ramp.firstIndex + shift, rgb: ramp.colours.map(toRgb) }, extra, kit43: remap.order.slice(0, HAZE_KIT).map(toRgb), edges7: remap.order.slice(HAZE_KIT, HAZE_KIT + 7).map(toRgb) };
 }
 
 // FNV-1a over the place's id, the layer and the dual tile (the desk's h32): which of the three lumps a dual tile wears.

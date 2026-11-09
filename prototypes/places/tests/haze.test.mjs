@@ -16,7 +16,9 @@ const placed = readdirSync(DIR).filter((f) => f.endsWith(".png") || f.endsWith("
 const HASHES = JSON.parse(readFileSync(new URL("SHA256.json", DIR), "utf8"));
 const files = Object.fromEntries(hazeFileNames().map((n) => [n, decodePNG(readFileSync(new URL(n + ".png", DIR)))]));
 const remap = JSON.parse(readFileSync(new URL("haze-remap.json", DIR), "utf8")), ramp = JSON.parse(readFileSync(new URL("haze-ramp.json", DIR), "utf8"));
-const kit = hazeKit(files, remap, ramp);
+const SETLEN = readTileSet(new Uint8Array(readFileSync(new URL("../baked/ninja-test.mbtiles", import.meta.url)))).palette.length;   // the set holds the kit's 43, the open edges' 7 and the decor's colours
+const kit = hazeKit(files, remap, ramp, SETLEN);
+const RAMP0 = 98 + SETLEN - 50;
 
 test("every placed file equals the desk's file byte for byte (and its recorded hash)", () => {
   assert.deepEqual(Object.keys(HASHES).sort(), placed);
@@ -32,12 +34,13 @@ test("the desk's hash: the lump a dual tile wears", () => {
   assert.equal(h32("Windsteph2", 17, 5), 1153023243);
 });
 
-test("the kit: the ramp sits at 98-103, 21 tables, and a table only ever answers with a palette or ramp index", () => {
-  assert.equal(kit.ramp.first, 98); assert.equal(kit.ramp.rgb.length, 6); assert.equal(kit.extra.first, 91); assert.equal(kit.extra.rgb.length, 13, "the open-edges 7 and the ramp 6");
-  assert.deepEqual(kit.kit43, ts.palette.map((c) => [(c >> 16) & 255, (c >> 8) & 255, c & 255]), "the tables are keyed to the tile set's 43 colours, in its order");
-  const ok = new Set(Array.from({ length: 56 }, (_, k) => 48 + k));
+test("the kit: the ramp follows the set's palette, 21 tables, and a table only ever answers with a palette or ramp index", () => {
+  assert.equal(kit.ramp.first, RAMP0); assert.equal(kit.ramp.rgb.length, 6); assert.equal(kit.extra.first, 48 + SETLEN); assert.equal(kit.extra.rgb.length, 6, "the ramp 6 (the set holds the open edges' 7)");
+  assert.deepEqual(kit.edges7, ts.palette.slice(43, 50).map((c) => [(c >> 16) & 255, (c >> 8) & 255, c & 255]), "the open edges' 7 are the set's colours 43 to 49, in the desk's order");
+  assert.deepEqual(kit.kit43, ts.palette.slice(0, 43).map((c) => [(c >> 16) & 255, (c >> 8) & 255, c & 255]), "the tables are keyed to the tile set's 43 colours, in its order");
+  const ok = new Set(Array.from({ length: SETLEN + 6 }, (_, k) => 48 + k));
   for (let L = 0; L < 3; L++) for (let s = 1; s <= 7; s++) for (let i = 48; i < 48 + 43; i++) assert.ok(ok.has(kit.tables[L][s][i]), `L${L + 1}.${s}[${i}]`);
-  for (let L = 0; L < 3; L++) for (let s = 1; s <= 7; s++) for (let i = 98; i < 104; i++) assert.ok(ok.has(kit.tables[L][s][i]), `ramp L${L + 1}.${s}[${i}]`);
+  for (let L = 0; L < 3; L++) for (let s = 1; s <= 7; s++) for (let i = RAMP0; i < RAMP0 + 6; i++) assert.ok(ok.has(kit.tables[L][s][i]), `ramp L${L + 1}.${s}[${i}]`);
 });
 
 // a real ground: Windstep at 48 px
@@ -48,12 +51,12 @@ const levelsOf = (depth) => { const lv = new Uint8Array(place.w * place.h); for 
 
 test("every pixel the haze draws is a palette index; the edge is washed, the far side is untouched, and depth 0 draws nothing", () => {
   const W = place.w * 48, win = { x: 0, y: 0, w: W, h: place.h * 48 }, base = ground();
-  const allowed = new Set(Array.from({ length: 56 }, (_, k) => 48 + k));
+  const allowed = new Set(Array.from({ length: SETLEN + 6 }, (_, k) => 48 + k));
   for (const depth of [0, 1, 2, 3]) {
     const buf = Uint8Array.from(base), hz = layHaze(kit, levelsOf(depth), place.w, place.h, "Windstep");
     applyHaze(buf, win, 48, kit, hz);
     let changed = 0, rampPx = 0, lastRow = -1;
-    for (let i = 0; i < buf.length; i++) { if (buf[i] !== base[i]) { changed++; lastRow = Math.max(lastRow, (i / W) | 0); if (buf[i] >= 98) rampPx++; } if (base[i]) assert.ok(allowed.has(buf[i]), `pixel ${i} drew index ${buf[i]}`); }
+    for (let i = 0; i < buf.length; i++) { if (buf[i] !== base[i]) { changed++; lastRow = Math.max(lastRow, (i / W) | 0); if (buf[i] >= RAMP0) rampPx++; } if (base[i]) assert.ok(allowed.has(buf[i]), `pixel ${i} drew index ${buf[i]}`); }
     if (!depth) { assert.equal(changed, 0); continue; }
     assert.ok(changed > 500, `depth ${depth} washes the ground: ${changed}`); assert.ok(rampPx > 0, "the ramp colours are used");
     assert.ok(lastRow < depth * 48 + 24, `depth ${depth}: the wash ends within its cells (row ${lastRow})`);
@@ -79,7 +82,7 @@ test("the view joins the ramp to its palette and light tables, washes the ground
   assert.equal(v.paletteRgb().length >= 6 + 1, true);
   for (const c of kit.ramp.rgb) assert.ok(v.paletteRgb().some((q) => q.join() === c.join()), "ramp colour " + c);
   const tb = tablesOf(ts).fog;
-  for (let i = 91; i < 104; i++) assert.ok(tb[i] >= 1 && tb[i] < 104, "the fog table answers for the ramp index " + i);
+  for (let i = 91; i < RAMP0 + 6; i++) assert.ok(tb[i] >= 1 && tb[i] < RAMP0 + 6, "the fog table answers for the ramp index " + i);
   v.setHaze(levelsOf(3), "N3", "Windstep");
   assert.ok(v.hazeMaps); v.setHaze(null); assert.equal(v.hazeMaps, null);
   const plain = new BakedView(ts, place, { core, night: 2, mkCanvas: mk });

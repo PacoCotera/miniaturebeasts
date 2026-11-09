@@ -36,7 +36,8 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
     else key("back");
     const c = cargo(); if (out.firstPodAt == null && c.pods) out.firstPodAt = acts(); if (out.firstDataAt == null && c.d >= NEXT_DATA) out.firstDataAt = acts();
   }
-  const c = cargo(); out.pods = c.pods; out.data = c.d; out.energy = c.e; out.actions = acts(); out.hearts = p.run("S.exp.stats.hearts || 0");
+  if (!p.S.exp) { out.sealed = true; out.why = "sealed before the walk was done (the Probe's shield ran out)"; return out; }
+  const c = cargo(); out.pods = c.pods; out.data = c.d; out.energy = c.e; out.actions = acts(); out.hearts = p.run("S.exp ? (S.exp.stats.hearts || 0) : 0");
   out.ok = c.pods >= 1 && c.d >= NEXT_DATA;
   if (!out.ok && !out.why) out.why = c.pods < 1 ? (c.d < NEXT_DATA ? "no pod, " + c.d + " Data" : "no pod") : "only " + c.d + " Data";
   out.log = w.log; Object.defineProperty(out, "page", { value: p, enumerable: false });

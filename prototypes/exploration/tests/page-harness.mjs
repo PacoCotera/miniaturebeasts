@@ -37,6 +37,10 @@ export const WALK_ART = Object.fromEntries(readdirSync(WALK_DIR).filter((f) => f
 const LOOK_DIR = new URL("../art/look/", import.meta.url);
 export const LOOK_ART = Object.fromEntries(readdirSync(LOOK_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, LOOK_DIR)))]));
 
+// The quartz stone family (art/stone/), decoded the same way.
+const STONE_DIR = new URL("../art/stone/", import.meta.url);
+export const STONE_ART = Object.fromEntries(readdirSync(STONE_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, STONE_DIR)))]));
+
 // The opening screen's mist and pod (art/open/), decoded the same way.
 const OPEN_DIR = new URL("../art/open/", import.meta.url);
 export const OPEN_ART = Object.fromEntries(readdirSync(OPEN_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, OPEN_DIR)))]));

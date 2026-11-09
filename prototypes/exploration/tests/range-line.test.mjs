@@ -18,8 +18,8 @@ const down = (tier = 1) => { const p = makePage({ gen: 6, console: "collect" });
 const kinds = (p) => plain(p.run("(() => { const lay = layout('41'); return lay.openings.map(o => o.side + ':' + openingKind(lay, o).kind); })()"));
 
 test("each opening is classified at entry: south past the range, north and east open (the west cliff is no opening: its lip is drawn); tier 2 opens the south one", () => {
-  assert.deepEqual(kinds(down(1)), ["N:open", "E:open", "S:range"]);
-  assert.deepEqual(kinds(down(2)), ["N:open", "E:open", "S:open"], "the Probe's reach moves the line");
+  assert.deepEqual(kinds(down(1)), ["N:open", "S:range", "E:open"]);
+  assert.deepEqual(kinds(down(2)), ["N:open", "S:open", "E:open"], "the Probe's reach moves the line");
   // a Tuliko along adds one ring of reach: the same effect through ex.range, whatever its source
   const p = down(1); p.run("S.exp.range = 3; applyLines(layout('41'));");
   assert.deepEqual(plain(p.run("layout('41').lines.ops.map(o => o.side + ':' + o.kind)")), []);
@@ -123,7 +123,7 @@ test("the range haze at 1x: the wash past the Probe's reach, no dashes and no pl
     await page.evaluate(() => { const m = window.__mb; m.TEST.calm = true; m.S.tier = 1; m.startExpedition("weather", 9); });
     const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
     await page.evaluate(() => { window.__mb.FX.hintNote = null; });
-    const img = await shot(page, 41, 9, 16, "down");
+    const img = await shot(page, 41, 10, 22, "down");   // the open Windstep is 28 tall: stand near its south side so the haze band is in the view
     await page.evaluate(() => window.__mb.act("down")); await page.waitForTimeout(500);   // 1 tile on, within 2 of the line: the words are up
     golden("range-edge.png", decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64")));
     assert.ok(img.w === 450);

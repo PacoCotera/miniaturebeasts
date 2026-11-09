@@ -520,7 +520,6 @@ async function loadPlaces6() {
     ids.forEach((id, i) => PL6.places.set(id, places[i]));
     PL6.adapt = am.adaptPlace; PL6.View = pm.BakedView; PL6.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
     PL6.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
-    await loadStoneArt(base);
     await loadHazeKit(base, bytes);
     PL6.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); }
@@ -534,23 +533,33 @@ async function loadHazeKit(base, bytes) {
     await Promise.all(hm.hazeFileNames().map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL6.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = dir + n + '.png'; })));
     const json = async n => JSON.parse(new TextDecoder().decode(await bytes(dir + n)));
-    PL6.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'));
+    PL6.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'), PL6.ts.palette.length);
   } catch (e) { console.warn('the range haze did not load', e); }
 }
-// The art desk's standing stone (places/baked/stone-standing/, signed in mibi-art 16dd23ebb) fills the `stone-standing` slot: plain, and charged in two frames, at 48 x 72.
-// Each is a canvas the page blits as it blits a sprite (dx, dy put its 48 x 72 foot where the 32 px stone's foot stood); its colours join the screen's allowed set.
-const STONE_COLOURS = [];
-async function loadStoneArt(base) {
-  if (typeof Image === 'undefined') return;
+// The art desk's quartz stone family (art/stone/, signed in mibi-art ccbb3bb17; SOURCE.md there) and the look view's three stone marks (art/look/, same commit). The stones' colours are not all on the
+// core palette (the quartz ramp, the warm glow): each file is kept as a canvas the page blits as it blits a sprite (dx, dy put a 48 px stone's foot where a 32 px sprite's foot stood), and its colours
+// join the screen's allowed set. A 16 px small stone is also kept doubled (32 x 32) for a sign or a card.
+const STONE_COLOURS = [], STONE_PIECES = new Map();
+const STONE_FILES = ['tall', 'small'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
+const STONE_LOOK = new Set(['look-heart-stone', ...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
+function stonePut(name, f, look) {   // f: { width, height, data (RGBA) }
+  const mk = (w, h) => PL6.mk ? PL6.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h });
+  const seen = new Set(STONE_COLOURS.map(q => q.join())), keep = (w, h, data, dx, dy, key) => {
+    let c = null;   // the canvas is made when first drawn
+    STONE_PIECES.set(key, { w, h, dx, dy, canvas: () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; } }); };
+  for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] && !seen.has(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2])) { seen.add(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2]); STONE_COLOURS.push([f.data[o], f.data[o + 1], f.data[o + 2]]); } }
+  keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? 0 : 32 - f.height, name);
+  if (name.startsWith('stone-small-') && name.endsWith('@16')) {   // doubled, for a sign or a card (32 x 32)
+    const d = new Uint8ClampedArray(32 * 32 * 4); for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) for (let k = 0; k < 4; k++) d[(y * 32 + x) * 4 + k] = f.data[((y >> 1) * 16 + (x >> 1)) * 4 + k];
+    keep(32, 32, d, 0, 0, name + 'x2'); }
+}
+async function loadStoneArt() {
   try {
-    const load = n => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = base + 'baked/stone-standing/stone-standing-' + n + '-48x72.png'; });
-    const piece = im => { const c = PL6.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      const d = cg.getImageData(0, 0, c.width, c.height).data, seen = new Set(STONE_COLOURS.map(q => q.join()));
-      for (let i = 0; i < d.length; i += 4) if (d[i + 3] && !seen.has([d[i], d[i + 1], d[i + 2]].join())) { seen.add([d[i], d[i + 1], d[i + 2]].join()); STONE_COLOURS.push([d[i], d[i + 1], d[i + 2]]); }
-      return { w: c.width, h: c.height, dx: (32 - c.width) >> 1, dy: 32 - c.height, canvas: () => c }; };
-    const [p, c1, c2] = (await Promise.all(['plain', 'charged-1', 'charged-2'].map(load))).map(piece);
-    ART_SLOTS['stone-standing'] = { plain: p, charged: [c1, c2] };
-  } catch (e) { console.warn('the standing stone did not load', e); }
+    if (window.__stoneArt) { for (const [n, f] of Object.entries(window.__stoneArt)) stonePut(n, f); return; }   // the tests give them at once, decoded
+    if (typeof Image === 'undefined') return;
+    await Promise.all(STONE_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/stone/', location.href).href + n + '.png'; })));
+  } catch (e) { console.warn('the stones did not load', e); }
 }
 // The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks, the spring's puddles, the shimmer sign,
 // the "!" notice card and the Curious bubble. Every file is loaded at boot and read into a palette-index buffer (every pixel is on the core palette), so the fog, storm and night tables
@@ -571,6 +580,7 @@ function walkPB(name, w = 1, h = 1) {
 function walkRead(files) {   // { name: { width, height, data (RGBA) } } to palette-index buffers
   const at = new Map(); RGB.forEach((c, i) => { const k = c[0] << 16 | c[1] << 8 | c[2]; if (!at.has(k)) at.set(k, i); });
   for (const [name, f] of Object.entries(files)) {
+    if (STONE_LOOK.has(name)) { stonePut(name, f, true); continue; }   // the quartz stone marks are off the core palette: kept as pictures
     const pb = new PB(f.width, f.height);
     for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] < 128) continue; const v = at.get(f.data[o] << 16 | f.data[o + 1] << 8 | f.data[o + 2]); if (v == null) throw new Error('walk art off the palette: ' + name); pb.p[i] = v; }
     WART.pb.set(name, pb);
@@ -581,18 +591,23 @@ function walkRead(files) {   // { name: { width, height, data (RGBA) } } to pale
 // look-heart-stone, look-take-charge and look-take-warm are PLACEHOLDERS (a flat grey stone) until the owner picks a stone look: the slots are named, so a swap is files only.
 // Each is drawn 1:1 with its anchor on the tile's bottom centre.
 const LOOK_TAKE = ['pod', 'fruit', 'dew', 'tuft', 'beacon', 'charge', 'warm'], LOOK_HEART = ['spring', 'nest', 'moment', 'stone'];
-const LOOK_FILES = ['you-here-still', 'you-here-pulse-1', 'you-here-pulse-2', ...LOOK_HEART.map(k => 'look-heart-' + k), ...LOOK_TAKE.flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))];
-const LOOK_SIZE = { you: [24, 30, 12, 30], spring: [22, 18, 11, 17], nest: [22, 18, 11, 17], moment: [20, 16, 10, 15], stone: [16, 18, 8, 17], take: [26, 26, 11, 25] };   // w, h, anchor x, anchor y
+// The partner as itself in the whole-place view (art/look/look-partner-*, signed in mibi-art b1141c8ab, all twenty kinds): adult 18 px tall, young 16, anchor at the foot, bottom centre (x = width >> 1, y = height - 1).
+// PARTNER_FILE: the species index (as SPECIES) to the desk's kind number (the page's order puts Tuikis before Untuva).
+const PARTNER_FILE = ['S01', 'S03', 'S02', ...Array.from({ length: 17 }, (_, i) => 'S' + String(i + 4).padStart(2, '0'))];
+const partnerMark = (sp, young) => 'look-partner-' + PARTNER_FILE[sp] + (young ? '-juv' : '');
+const LOOK_FILES = [...PARTNER_FILE.flatMap(k => ['', '-juv'].map(j => 'look-partner-' + k + j)), 'you-here-still', 'you-here-pulse-1', 'you-here-pulse-2', ...LOOK_HEART.map(k => 'look-heart-' + k), ...LOOK_TAKE.flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))];
+const LOOK_SIZE = { you: [24, 30, 12, 30], spring: [22, 18, 11, 17], nest: [22, 18, 11, 17], moment: [20, 16, 10, 15], stone: [18, 25, 9, 24], take: [26, 26, 11, 25] };   // w, h, anchor x, anchor y
 function lookMark(name, kind, x, y, T) {   // anchor on the tile's bottom centre: (x, y) is the tile's centre, T the tile size
-  const [w, h, ax, ay] = LOOK_SIZE[kind]; blit(walkPB(name, w, h), x - ax, y + T / 2 - ay);
+  if (kind === 'partner') { const pb = walkPB(name); blit(pb, x - (pb.w >> 1), y + T / 2 - (pb.h - 1)); return; }
+  const [w, h, ax, ay] = LOOK_SIZE[kind]; blit(STONE_PIECES.get(name) || walkPB(name, w, h), x - ax, y + T / 2 - ay);
 }
 async function loadWalkArt() {
   try {
-    if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); return; }   // the tests give them at once, decoded
+    if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     const files = {}, load = (dir, names) => Promise.all(names.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/' + dir + '/', location.href).href + n + '.png'; })));
-    await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES)]);
+    await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt()]);
     walkRead(files);
   } catch (e) { console.warn('the walk art did not load', e); } finally { ART_DONE.walk = true; }
 }
@@ -3708,21 +3723,16 @@ function cupArt(full, cave) {
       if (full) pb.ell(16, 18.5, 8, 2.6, C.ice, { sh: [C.white, C.sky], clip: (x, y) => y >= 17 }); }
     pb.outline(); return pb; });
 }
-// lit: storm charge (yellow zigzag and a cream ring); warm: only a dim amber ring of dots and one glint, no zigzag,
-// so it is never confused with a storm charge or with the strike warning (a yellow tile with a bolt).
-// [art] The named empty slot `stone-standing` (place design walk-content B2): the standing storm stone, upright, pale, one seam, 48 x 72 at the place scale (16 x 24 in the
-// kit's pixels). The art desk fills `plain` (dark seam) and `charged` (lit seam, two frames) with PB sprites; until then today's stone draws.
-const ART_SLOTS = { 'stone-standing': { plain: null, charged: [null, null] } };
-function stoneArt(lit, cave, fr, warm, small) {   // small: the 32 px stone for a sign or a card, never the standing one
-  { const sl = ART_SLOTS['stone-standing']; if (!cave && !warm && !small) { const a = lit ? sl.charged[fr ? 1 : 0] : sl.plain; if (a) return a; } }
-  // warm: a 2 px ring on the ground around its foot (amber with yellow dashes; fr 1 = the dim beat of its slow blink)
-  // warm: one clean 2 px amber ring on the ground around its foot, pulsing slowly (fr 1 = the dim beat), nothing on the stone
-  // warm: a 2 px amber ring fully inside the tile (a 26 px circle) and a 3 px amber dot on the stone's top; the slow
-  // pulse swaps the ring between two ambers (fr 1 = the dim beat)
-  if (warm && !lit && !cave) return art('stonew3' + fr, () => { const pb = new PB(32, 32), b = stoneArt(0, cave, 0, 0, 1);
-    for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const d = Math.hypot(x + .5 - 16, y + .5 - 16); if (d <= 13 && d > 11) pb.set(x, y, fr ? C.orange : C.amber); }
-    pb.blit(b, 0, 0); pb.rect(13, 5, 3, 3, fr ? C.orange : C.amber); pb.set(14, 5, fr ? C.amber : C.yellow);
-    return pb; });
+// The quartz stone family (art/stone/, signed in mibi-art ccbb3bb17, owner's pick C): tall (the heart's stone) and small (a field stone) in plain, charged (two frames), warm (two frames and a
+// still) and spent (the plain picture: a collected stone keeps its size). The walk draws the 48 px files, a sign or card the 16 px small one doubled; a collected field stone stays small and spent.
+// Until the files are in, a named empty slot draws nothing (no stone is drawn in code). The cave's teal crystals are another object and stay as they were.
+// fr: 0 or 1 the frame, -1 the still (reduced motion).
+function stoneArt(lit, cave, fr, warm, small, tall) {
+  if (!cave) {
+    const st = warm && !lit ? (fr < 0 ? 'warm-still' : 'warm-' + (fr ? 2 : 1)) : lit ? 'charged-' + (fr > 0 ? 2 : 1) : 'plain';
+    const p = small ? STONE_PIECES.get('stone-small-' + st + '@16x2') : STONE_PIECES.get('stone-' + (tall ? 'tall' : 'small') + '-' + st + '@48');
+    return p || walkPB('stone-quartz-slot', 32, 32);
+  }
   return art('stone' + lit + cave + fr, () => { const pb = new PB(32, 32);
     if (cave) {
       const a = lit ? C.aqua : C.teal, b = lit ? C.mint : C.aqua, d = lit ? C.teal : C.tealD;
@@ -3732,14 +3742,7 @@ function stoneArt(lit, cave, fr, warm, small) {   // small: the 32 px stone for 
       if (lit) for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const dd = Math.hypot(x - 16, y - 18); if (dd > 12 && dd < 15 && (x + y + fr) % 2 === 0 && pb.get(x, y) < 0) pb.set(x, y, C.mint); }
       return pb;
     }
-    pb.poly([[4, 27], [6, 14], [14, 6], [25, 10], [28, 26]], C.rock); pb.poly([[6, 14], [14, 6], [17, 15]], C.rockL); pb.poly([[17, 15], [25, 10], [28, 26], [17, 27]], C.stone);
-    pb.outline();
-    if (lit) {   // charged: a bright blue-white crackle over the stone (2 frames) and a small bolt above it
-      const path = fr ? [[9, 12], [13, 15], [11, 18], [17, 20], [15, 23], [21, 25]] : [[8, 15], [12, 13], [15, 17], [13, 20], [19, 22], [23, 19]];
-      for (let i = 1; i < path.length; i++) pb.line(path[i - 1][0], path[i - 1][1], path[i][0], path[i][1], i % 2 ? C.white : C.ice);
-      for (const [x, y] of fr ? [[7, 11], [22, 26], [24, 13]] : [[6, 16], [24, 18], [10, 24]]) pb.set(x, y, C.ice);
-      pb.poly([[25, 0], [21, 4], [24, 4], [22, 8], [27, 3], [24, 3], [26, 0]], fr ? C.white : C.cream); pb.set(23, 4, C.sky); }
-    return pb; });
+  return pb; });
 }
 function holeArt(glint) { return art('hole' + glint, () => { const pb = new PB(32, 32); pb.ell(16, 19, 10, 6, C.bark, { sh: [C.clay, C.soil] }); pb.ell(16, 20, 7.5, 4, C.void); if (glint) pb.rect(17, 20, 2, 2, C.yellow); return pb; }); }
 // Rupar fresh hole (art desk 2026-11-07, mibi-art 0f21d0919, L2b F10): pasted from the desk's patch.js, drawn with the page's own PB and art(); wired in shedPod, drawPatch and warnPicPlace.
@@ -5232,12 +5235,12 @@ function drawWhole(t) {
   if (v.kind === 'arrival' && !motion() && el >= ARRIVE_HOLD_MS) { endView(); return; }
   g.drawImage(cv, ox, oy);
   const found = heartFound(lay.cell), cardUp = h && v.kind === 'look' && found;   // Look over a found place shows the same card as the find does
-  // the marks, drawn in this order: what is still there to take, the heart, then you on top (the desk's look-view art; the partner's teal ring is still code)
+  // the marks, drawn in this order: what is still there to take, the heart, then the partner as its kind, then you on top (the desk's look-view art)
   const marks = () => {
     if (cardUp) for (const it of leftItems(lay.cell)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still'; lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
     if (cardUp) { const q = tp(h.x, h.y); lookMark('look-heart-' + h.kind, h.kind, q.x, q.y, T); }   // the heart, through the dissolve and the hold
-    { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, T);
-      if (live && live.pt) { const m = tp(live.pt.x, live.pt.y); circ(m.x, m.y, 10, C.ink); circ(m.x, m.y, 8, C.teal); circ(m.x, m.y, 6, C.teal); R(m.x - 2, m.y - 2, 4, 4, C.aqua); } }   // the partner on teal
+    if (live && live.pt && S.exp.pt) { const m = tp(live.pt.x, live.pt.y), pm = mibiById(S.exp.pt.id); lookMark(partnerMark(S.exp.pt.sp, !!pm && !isAdult(pm)), 'partner', m.x, m.y, T); }   // the partner as its kind, under the you-mark
+    { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, T); }
   };
   // the heart's tell, through the veil (the arrival look and Look show it)
   if (h && !found && (v.kind === 'arrival' || tellOn(h, P) || unveiled(v.key, h.x, h.y))) {
@@ -5340,7 +5343,7 @@ function drawPatchBody(t) {
   const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
   const bk = bakedView(lay), bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
-  if (bk) bk.setPatches(lay.lines ? lay.lines.patches : [], lay.lines ? lay.lines.id : '');   // a closed opening's path drawn as grass
+  if (bk) bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));   // a closed opening's path drawn as grass; the map's end a thicket
   if (bk) { hazeSync(lay); const hz = hazeLevels(lay); bk.setHaze(hz && hz.lv, hz ? hz.id : '', lay.baked.id); }   // the range haze, past the Probe's reach
   if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }, lay.key));
   if (bk && lay.rim && lay.rim.length && ART48.ready) {   // the world's edges over the baked ground: lips, faces, stairs, water bands, crossings (rimTile), lit as the props are; one blit of the cached picture
@@ -5404,7 +5407,7 @@ function drawPatchBody(t) {
     if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
-      a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, blinkFr, 1) : stoneArt(stormCharge(P.key, f) > 0, false, fr); }
+      a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, motion() ? blinkFr : -1, 1, 0, f.id === 'kh') : stoneArt(stormCharge(P.key, f) > 0, false, motion() ? Math.floor(NOW / 300) % 2 : 0, 0, 0, f.id === 'kh'); }   // the heart's stone is the tall one, a field stone the small one
     const rr = f.kind === 'k' && lay.cave && stoneCharge(P.key, f) > 0 ? 0 : rm;
     // a baked place's bush, cup or stone with something to take is drawn after the crowns, as pods are, so nothing a player can take hides under a tree
     const takeable = f.kind === 'b' ? bushFull(P.key, f) : f.kind === 'u' ? cupFull(P.key, f) : f.kind === 'k' ? (lay.cave ? stoneCharge(P.key, f) > 0 : stormCharge(P.key, f) > 0) : false;
@@ -5926,7 +5929,7 @@ function warnPicPlace(x0, y0, a) {
     let art;
     if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
     else if (f.kind === 'u') art = cupArt(cupFull(a.key, f), lay.cave);
-    else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, 0, 1, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0, 0, 1); }
+    else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, -1, 1, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0, 0, 1); }
     blit(art, x0, y0); }
   for (const f of live.tf) if (here(f.x, f.y) && see(f.x, f.y)) blit(ICON.tuft(), x0 + 9, y0 + 16);
   for (const f of live.fr) if (here(f.x, f.y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) blit(FRUIT(), x0 + 10, y0 + 14);
@@ -5953,7 +5956,7 @@ const PIC = {
       if (S.ui.mapFull) { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); } return; }
     onGrass(x, y, () => { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); }); },   // the Probe's tile: flat grass and the outline, no stone
   stone: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 0, 1), x, y)),
-  warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 1, 1), x, y)),
+  warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, -1, 1, 1), x, y)),
   charged: (x, y) => onGrass(x, y, () => blit(stoneArt(1, false, 0, 0, 1), x, y)),
   shelter: (x, y) => cen(SHELTER(), x, y),
   pod: (x, y, p) => cen(podArt(POD_SHELL[p && p.g] || 'bone', 1), x, y),

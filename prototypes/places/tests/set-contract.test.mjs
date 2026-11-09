@@ -69,7 +69,7 @@ test('palette: at most 208 colours, light tables of 256 entries, every drawn col
 });
 
 test('every pair has 16 tiles, in whole sheets, one per frame; opaque tiles are opaque', () => {
-  const kit = ['grass-water', 'sand-water', 'grass-sand', 'grass-path', 'mud-water', 'grass-earth', 'sand-earth'];
+  const kit = ['grass-water', 'sand-water', 'grass-sand', 'grass-path', 'mud-water', 'grass-earth', 'sand-earth', 'cliff-grass', 'thicket-grass', 'scrub-grass', 'cliff-sand', 'thicket-sand', 'scrub-sand', 'deep-water'];   // the kit's, the clearing's, then the desk's open edges
   assert.deepEqual(set.pairs.map((p) => p.id), kit);
   const t = set.sourceTile;
   for (const p of set.pairs) {

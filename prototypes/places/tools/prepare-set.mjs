@@ -8,6 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPng, decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
 import { computeTables, TABLE_NAMES } from '../src/lighttables.mjs';
+import { deskArt } from './desk-art.mjs';
 
 export const SOURCE_ALLOW = ['ninja-adventure', 'puny-world', 'happyland-wang'];
 export const PALETTE_MAX = 208;       // indices 48..255; 0..47 are the core palette
@@ -248,16 +249,24 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     pairs.push(entry);
   }
 
+  // the art desk's open edges and meadow decor (`desk`), read from the pinned desk commits: more pairs, the reed look, and small decals for the sprite sheet
+  let desk = null;
+  if (recipe.desk) {
+    desk = deskArt();
+    for (const [n, im] of desk.images) images.set(n, im);
+    pairs.push(...desk.pairs);
+  }
+
   // sprites
   const items = [];
-  const groups = { props: recipe.props || {}, decals: recipe.decals || {}, canopy: recipe.canopy || {} };
+  const groups = { props: recipe.props || {}, decals: { ...(recipe.decals || {}), ...Object.fromEntries(Object.entries(desk ? desk.decals : {}).map(([n, image]) => [n, { image, rect: [0, 0, image.w, image.h], anchor: [8, 15] }])) }, canopy: recipe.canopy || {} };
   const spriteImg = {};
   for (const [g, defs] of Object.entries(groups)) {
     for (const [name, d] of Object.entries(defs)) {
       const frames = d.frames || 1;
       const [x, y, w, h] = d.rect;
       const strip = newImage(w * frames, h);
-      for (let k = 0; k < frames; k++) paste(strip, keyOut(crop(load(d.sheet), x + k * w, y, w, h), d.key), k * w, 0);
+      for (let k = 0; k < frames; k++) paste(strip, d.image ? d.image : keyOut(crop(load(d.sheet), x + k * w, y, w, h), d.key), k * w, 0);
       spriteImg[`${g}/${name}`] = strip;
       items.push({ name: `${g}/${name}`, w: strip.w, h: strip.h });
     }
@@ -288,7 +297,11 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     }
   }
   const lum = (h) => { const [r, g, b] = unhex(h); return 0.299 * r + 0.587 * g + 0.114 * b; };
-  const sorted = [...colours].sort((a, b) => lum(a) - lum(b) || (a < b ? -1 : 1));
+  let sorted = [...colours].sort((a, b) => lum(a) - lum(b) || (a < b ? -1 : 1));
+  if (recipe.palettePin) {   // indices already promised to the art desk's light tables (the range haze is keyed to the kit's 43, then the open edges' 7): they keep their slots, new colours follow
+    const pin = recipe.palettePin.map((c) => c.replace('#', ''));
+    sorted = [...pin, ...sorted.filter((c) => !pin.includes(c))];
+  }
   if (sorted.length > PALETTE_MAX) {
     throw new Error(`the source has ${sorted.length} colours, over the ${PALETTE_MAX} the contract allows; add the pinned pngquant step to the recipe`);
   }
@@ -298,13 +311,15 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
 
   for (const [name, img] of images) files.set(name, Buffer.from(encodePng(img)));
+  for (const p of recipe.pairs) if (p.premade) for (const n of [...p.premade.sheets, p.premade.fullSheet]) files.set(n, readFileSync(path.join(root, 'art', 'places', 'sets', recipe.id, n)));   // the desk's own bytes, as placed
 
   const set = {
     formatVersion: 1, id: recipe.id, name: recipe.name, ship: recipe.ship,
     licence: { spdx: recipe.licence.spdx, author: recipe.licence.author, source: recipe.licence.source, fetched: recipe.licence.fetched, archiveSha256: recipe.licence.archiveSha256 },
     sourceTile: t, scale: recipe.scale, half: recipe.half, palette: 'palette.json', spriteSheet: 'sprites.png',
-    pairs, props: setSprites.props, decals: setSprites.decals, canopy: setSprites.canopy,
+    pairs, ...(desk ? { looks: desk.looks } : {}), props: setSprites.props, decals: setSprites.decals, canopy: setSprites.canopy,
   };
+  if (desk) { for (const [n, b] of desk.files) files.set(n, b); files.set('DESK.json', Buffer.from(JSON.stringify(desk.desk, null, 2) + '\n')); }
   files.set('set.json', Buffer.from(fmtJson(set) + '\n'));
   files.set('palette.json', Buffer.from(fmtJson(palette) + '\n'));
 

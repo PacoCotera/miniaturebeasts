@@ -1,0 +1,5 @@
+The quartz stone family (the owner's pick C): tall (the heart's stone, 16 x 24 at 1x) and small (a field stone, 16 x 16) in plain, charged-1/2, warm-1/2, warm-still and spent, each at 16 px (the master) and 48 px (3x nearest, the walk's scale).
+Signed by the art desk: mibi-art commit ccbb3bb17, art-jobs/2026-11-09-you-are-here/out/ (manifest.json there, key stone_family; sheet out/sheet-stones.png). Copied byte for byte from that commit; never edit here, re-sign at the desk.
+The anchor is the foot, the last opaque row, centred on the tile. Spent is the same picture as plain: a collected field stone stays small. Warm has no ring (the amber is in the stone's vein).
+The colours are the desk's quartz ramp, not all on the core palette: the page keeps each file as a picture and adds its colours to the screen's allowed set. SHA256.json records each file as placed; tests/stone-art.test.mjs checks them against the desk's commit.
+The look view's three stone marks (look-heart-stone, look-take-charge-*, look-take-warm-*) are in art/look/, from the same commit.

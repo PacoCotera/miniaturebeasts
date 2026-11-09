@@ -28,8 +28,8 @@ export function makeWalker(p, { budget = 1e9, verbose = false, tag = "" } = {}) 
   let presses = 0;
   const key = (k) => { if (++presses > 20000) throw new Error("runaway: phase " + phase()); p.key(k); };
   const budgetGone = () => acts() >= budget;
-  const cargo = () => p.run("({ e: S.exp.cargo.e, d: S.exp.cargo.d, s: S.exp.cargo.s, pods: S.exp.cargo.pods.length, hold: S.exp.hold })");
-  const room = () => p.run("S.exp.hold - S.exp.cargo.pods.length") > 0;
+  const cargo = () => p.run("(S.exp ? { e: S.exp.cargo.e, d: S.exp.cargo.d, s: S.exp.cargo.s, pods: S.exp.cargo.pods.length, hold: S.exp.hold } : { e: 0, d: 0, s: 0, pods: 0, hold: 0 })");
+  const room = () => !!p.run("S.exp") && p.run("S.exp.hold - S.exp.cargo.pods.length") > 0;
 
   // in the open place: toward a tile (beside it, or onto it); stops after n steps, when there, or when boxed in
   const walk = (x, y, onto, n = 80) => {
@@ -41,11 +41,11 @@ export function makeWalker(p, { budget = 1e9, verbose = false, tag = "" } = {}) 
   };
   const facing = (x, y) => { const P = p.S.exp.patch; return Object.keys(DIRS).find((d) => P.x + DIRS[d][0] === x && P.y + DIRS[d][1] === y); };
   // the pods this place shows (announced, lying in the open), nearest first
-  const shownPods = () => p.run(`(() => { const P = S.exp.patch, out = []; for (const q of S.pods) if (q.k === P.key && q.x >= 0 && !q.h) out.push({ id: q.id, d: Math.abs(q.x - P.x) + Math.abs(q.y - P.y) }); return out.sort((a, b) => a.d - b.d); })()`);
+  const shownPods = () => p.run(`(() => { const P = S.exp && S.exp.patch, out = []; if (!P) return out; for (const q of S.pods) if (q.k === P.key && q.x >= 0 && !q.h) out.push({ id: q.id, d: Math.abs(q.x - P.x) + Math.abs(q.y - P.y) }); return out.sort((a, b) => a.d - b.d); })()`);
   // Face a pod and dig it up; false when it cannot be (boxed in, or a full bag: the choice is not made here).
   const takePodAt = (id) => {
     for (let n = 0; n < 6 && phase() === "patch"; n++) {
-      const pod = p.S.pods.find((q) => q.id === id); if (!pod) return true;
+      const pod = p.S.pods.find((q) => q.id === id); if (!pod) return true; if (!p.S.exp) return false;
       if (!walk(pod.x, pod.y, false)) return false;
       key(facing(pod.x, pod.y)); key("confirm");
       if (p.S.exp.cargo.pods.some((q) => q.id === id)) { say("took pod " + id); return true; }

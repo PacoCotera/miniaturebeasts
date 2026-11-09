@@ -7,12 +7,13 @@ import * as G from '../format/gen/place.mjs';
 
 export const LDTK_VERSION = '1.5.3';
 export const GRID = 16;
-export const PLACE_W = 18, PLACE_H = 22;
+export const PLACE_W = 18, PLACE_H = 22;   // today's places; a place may also be 24 x 28 (the open style, walk content B5)
+export const PLACE_SIZES = [[18, 22], [24, 28]];
 export const FIND_KINDS = ['pod', 'fruit', 'dew', 'stone', 'material'];
 export const LAYERS = ['Canopy', 'Marks', 'Props', 'Decals', 'Terrain'];
 export const ENTITY_FIELDS = {
   Prop: ['kind'], Decal: ['kind'], Canopy: ['kind'], Heart: ['kinds', 'species', 'revealLine', 'reachBy'], Clue: ['tell', 'path'],
-  Find: ['kinds', 'chance'], Landmark: ['prop', 'label'], Opening: ['side'], CreatureSpawn: ['species', 'count'],
+  Find: ['kinds', 'chance'], Landmark: ['prop', 'label'], Opening: ['side'], CreatureSpawn: ['species', 'count'], WayUp: [], ReedBank: [],
 };
 export const LEVEL_FIELDS = ['type', 'names', 'tileset', 'mirror', 'mood'];
 
@@ -108,15 +109,15 @@ export function levelToIR(level, terrains) {
   const id = level.identifier;
   const errors = [];
   const fail = (rule, text, cell) => errors.push(new BakeError(id, rule, text, cell));
-  if (level.pxWid !== PLACE_W * GRID || level.pxHei !== PLACE_H * GRID) {
-    fail('size', `the level is ${level.pxWid / GRID} x ${level.pxHei / GRID} cells; a place is exactly ${PLACE_W} x ${PLACE_H}`);
+  if (!PLACE_SIZES.some(([pw, ph]) => level.pxWid === pw * GRID && level.pxHei === ph * GRID)) {
+    fail('size', `the level is ${level.pxWid / GRID} x ${level.pxHei / GRID} cells; a place is ${PLACE_SIZES.map(([a, b]) => `${a} x ${b}`).join(' or ')}`);
     return { errors };
   }
   const layer = Object.fromEntries(level.layerInstances.map((l) => [l.__identifier, l]));
   for (const name of LAYERS) if (!layer[name]) { fail('layers', `the level has no ${name} layer`); }
   if (errors.length) return { errors };
   const lf = fieldsOf(level);
-  const w = PLACE_W, h = PLACE_H;
+  const w = level.pxWid / GRID, h = level.pxHei / GRID;
   const csv = layer.Terrain.intGridCsv;
   const known = new Set(terrains.map((t) => t.value));
   const terrain = new Uint8Array(w * h);
@@ -127,7 +128,7 @@ export function levelToIR(level, terrains) {
   }
   const ir = {
     id, w, h, type: lf.type, names: lf.names || [], tileset: lf.tileset, mirror: lf.mirror !== false, mood: lf.mood || '', terrain,
-    props: [], decals: [], canopy: [], hearts: [], clues: [], finds: [], landmarks: [], openings: [], spawns: [],
+    props: [], decals: [], canopy: [], hearts: [], clues: [], finds: [], landmarks: [], openings: [], spawns: [], wayups: [], reedbanks: [],
   };
   const inside = (cx, cy) => cx >= 0 && cy >= 0 && cx < w && cy < h;
   const placed = (e, f) => {
@@ -155,6 +156,8 @@ export function levelToIR(level, terrains) {
           ir.openings.push({ side, x: cx, y: cy, cw, ch, from: along[0], to: along[0] + along[1] - 1 });
           break;
         }
+        case 'WayUp': ir.wayups.push({ x: cx, y: cy, w: cw, h: ch }); break;
+        case 'ReedBank': ir.reedbanks.push({ x: cx, y: cy, w: cw, h: ch }); break;
         case 'CreatureSpawn': ir.spawns.push({ x: cx, y: cy, w: cw, h: ch, species: f.species || [], count: f.count ?? 1 }); break;
         default: fail('entity', `unknown entity ${e.__identifier}`, { x: cx, y: cy });
       }
