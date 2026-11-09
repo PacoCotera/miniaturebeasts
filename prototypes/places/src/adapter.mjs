@@ -3,7 +3,8 @@
 // rock (never walked), and `lay.baked.ox/oy` say where it sits. Terrain becomes the page's tile T, prop footprints become TRUNK (a tree, which has
 // a canopy) or ROCK, tall grass becomes T.TALL; the heart, its clue marks and the openings come from the place's entities.
 import { T, T_BLOCK, L, PW, PH, TERR, hash } from '../../exploration/src/world.mjs';
-import { shapeEdges, sideXY } from './edges.mjs';
+import { shapeEdges, sideXY, DIR_OF } from './edges.mjs';
+import { thicketDonor } from './bake/openedges.mjs';
 import { heartPath } from '../../exploration/src/hearts.mjs';
 
 const LAND = { pond: L.POND, rock: L.ROCK, wood: L.WOOD, meadow: L.MEADOW };
@@ -15,7 +16,21 @@ export function arrivalCell(o, w, h) {
   return o.side === 'N' ? { x: mid, y: 0 } : o.side === 'S' ? { x: mid, y: h - 1 } : o.side === 'W' ? { x: 0, y: mid } : { x: w - 1, y: mid };
 }
 
-// terrains: art/places/terrain.json's list. o: { key, cell, pw, ph }.
+// The closed looks (walk content B8): every opening of a place in the open style carries a second look for the day its side is refused by the land (wide water, a cliff, the map's edge):
+// the set's own dense thicket, stamped as ground patches over the two outer rows of the opening's span and one cell either side, and blocked. The donor is a cell with a thicket
+// all round it, found in the level (the bake rule `closed-look` holds that every level in the open style has one). null for a place that is not in the open style (its walls close it).
+export const CLOSED_DEPTH = 2;
+export function closedLooks(place, terrains) {
+  if (place.w !== 24 || place.h !== 28) return null;
+  const donor = thicketDonor(place, terrains), w = place.w, h = place.h;
+  return place.openings.map((op) => {
+    const len = op.side === 'N' || op.side === 'S' ? w : h, cells = [];
+    for (let d = 0; d < CLOSED_DEPTH; d++) for (let k = Math.max(0, op.from - 1); k <= Math.min(len - 1, op.to + 1); k++) cells.push(sideXY(DIR_OF[op.side], k, d, w, h));
+    return { side: op.side, from: op.from, to: op.to, look: donor ? 'thicket' : null, donor, cells };
+  });
+}
+
+// terrains: art/places/terrain.json's list. o: { key, cell, pw, ph, closed } (closed: the sides the land refuses, 'N' 'S' 'W' 'E').
 export function adaptPlace(place, ts, terrains, o = {}) {
   const pw = o.pw || PW, ph = o.ph || PH, w = place.w, h = place.h;
   const ox = (pw - w) >> 1, oy = (ph - h) >> 1, NP = pw * ph, I = (x, y) => (y + oy) * pw + x + ox;
@@ -48,15 +63,17 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   // and face are the world's rim; the rows beyond it are the raised land nobody reaches) and the map's end is a dense thicket, the set's own thicket ground stamped over them (a patch, as the
   // closed openings' path is). Never an open-looking edge that refuses a step.
   let closure = null;
-  if (sh && w === 24 && h === 28) {
-    const thick = (terrains.find((t) => t.id === 'thicket') || {}).value; let donor = null;
-    for (let y = 1; y < h - 1 && !donor && thick; y++) for (let x = 1; x < w - 1; x++) { let all = true; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (place.terrain[(y + dy) * w + x + dx] !== thick) all = false; if (all) { donor = { x, y }; break; } }
-    const patches = [];
-    for (const d of ['up', 'down', 'left', 'right']) {
+  // The world's own bands (water, cliff lip, the map's thicket) already close the sides it draws; the closed look serves a refused side that has no band of its own.
+  const looks = closedLooks(place, terrains), closedSides = new Set([...(o.closed || [])].filter((s) => !sh || sh.kind[DIR_OF[s]] === 'open'));
+  if ((sh || closedSides.size) && w === 24 && h === 28) {
+    const donor = thicketDonor(place, terrains), patches = [];
+    if (sh) for (const d of ['up', 'down', 'left', 'right']) {
       const kind = sh.kind[d]; if (kind !== 'mapend' && kind !== 'cliff') continue;
       const len = d === 'up' || d === 'down' ? w : h;
       for (let depth = 0; depth < 2; depth++) for (let k = 0; k < len; k++) { const p = sideXY(d, k, depth, w, h), i = I(p.x, p.y); if (!T_BLOCK[tiles[i]]) tiles[i] = T.ROCK; if (kind === 'mapend' && donor) patches.push({ x: p.x, y: p.y, from: donor }); }
     }
+    // an opening on a side the land refuses shows its closed look: the thicket over its span, blocked (never a path that runs into a wall of nothing)
+    for (const lk of looks) if (closedSides.has(lk.side)) for (const p of lk.cells) { const i = I(p.x, p.y); if (!T_BLOCK[tiles[i]]) tiles[i] = T.ROCK; if (lk.donor && !patches.some((q) => q.x === p.x && q.y === p.y)) patches.push({ x: p.x, y: p.y, from: lk.donor }); }
     closure = { patches, id: patches.map((p) => p.x + ',' + p.y).join(';') };
   }
   // the tiles no crown hangs over (the explorer arrives on one of these, never hidden under a canopy): a crown's box at 48 px, a tile's pawn as its centre and a margin round it
@@ -68,7 +85,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
       const s = ts.sprites[k], left = fx - s.anchor48[0], top = fy - s.anchor48[1];
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x * 48 + 24, py = y * 48 + 28; if (px > left - CROWN_MARGIN && px < left + s.w48 + CROWN_MARGIN && py > top - CROWN_MARGIN && py < top + s.h48 + CROWN_MARGIN) clear[I(x, y)] = 0; }
     } }
-  const openings = sh ? sh.openings : place.openings.map((op) => ({ side: op.side, from: op.from, to: op.to }));
+  const openings = (sh ? sh.openings : place.openings.map((op) => ({ side: op.side, from: op.from, to: op.to }))).filter((op) => !closedSides.has(op.side));   // never an arrival at a closed opening
   const arrive = openings.length ? arrivalCell(openings[0], w, h) : sh && sh.stairs.length ? sh.stairs[0].entry : sh && sh.cross.length ? sh.cross[0].entry : { x: w >> 1, y: h >> 1 };
   const spawnPt = { x: arrive.x + ox, y: arrive.y + oy };
   const reach = new Uint8Array(NP), stack = [spawnPt.y * pw + spawnPt.x];
@@ -85,12 +102,13 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const lay = {
     key: o.key ?? place.id, cell: o.cell ?? 0, cave: false, land: LAND[place.type] ?? L.MEADOW, base: T.GRASS, tiles, shelter: new Uint8Array(NP), feats: [],
     terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt, sdist: new Int16Array(NP).fill(999), trees: {}, shade: false,
-    w: pw, h: ph, openings, clear, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })).filter((f) => !sh || !T_BLOCK[tiles[f.y * pw + f.x]]),
+    w: pw, h: ph, openings, closedLooks: looks, clear, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })).filter((f) => !sh || !T_BLOCK[tiles[f.y * pw + f.x]]),
     baked: { id: place.id, ox, oy, w, h },
   };
+  if (closure) lay.closure = closure;
   if (sh) {   // the world's edges: the terrain layer the page draws over the baked ground, the stairs and crossings that walk, the trees this cell shows
     lay.terr = sh.terr; lay.tmask = sh.tmask; lay.stairs = sh.stairs; if (sh.cross.length) lay.cross = sh.cross;
-    lay.rim = sh.rim; lay.cut = { props, canopy: canopyList, patches: closure ? closure.patches : [] }; if (closure) lay.closure = closure;
+    lay.rim = sh.rim; lay.cut = { props, canopy: canopyList, patches: closure ? closure.patches : [] };
     if (place.type === 'wood') lay.base = T.DARK; else if (place.type === 'rock') lay.base = T.SAND;
   }
   const hh = place.heart, fill = o.fill, kind = fill ? fill.heart.kind : hh.kinds.find((k) => HEART_KINDS.includes(k)) || hh.kinds[0];

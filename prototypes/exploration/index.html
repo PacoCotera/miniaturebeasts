@@ -622,7 +622,7 @@ function bakedView(lay) {
 const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS);
 function layout6(key) {   // a generator 6 land cell's place: its template, built through the adapter with the seeded fills; null for a ford (generated) or while the places load
   const t = templateFor(G, S.seed, +key), place = t && PL6.places.get(t.id); if (!place) return null;
-  return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, G, fill: fillPlace6(G, S.seed, +key, place) });
+  return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, G, fill: fillPlace6(G, S.seed, +key, place), closed: closedSidesOf(+key) });
 }
 function layout(key) {
   let lay = layoutCache.get(key);
@@ -2123,9 +2123,21 @@ function crossReason(a, dir) {
 }
 // Walk B3: an opening never promises a way that is closed. At entry each opening of a baked place is one of four kinds, from crossReason for that side:
 // open (nothing), range (past the Probe's reach: the map's dashes and a fade, the tiles past the line not walked), gate (mud, scree, a bank: a partner crosses, as before),
-// closed (wide water, a cliff, the map's edge: its tiles block and its path draws as grass until the art desk's closed looks land). The range follows ex.range, so the
+// closed (wide water, a cliff, the map's edge: the adapter draws the opening's closed look, a thicket, and never arrives there (closedSidesOf); a closed opening that reaches
+// this list anyway still blocks its tiles). The range follows ex.range, so the
 // tier and a Tuliko along move the line. The line stands LINE_DEPTH tiles in from the place's edge (the band's inner face); the tiles between it and the edge are blocked.
 const LINE_DEPTH = 3, SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' };
+// Walk B8: the sides of a cell the land refuses outright (wide water, a cliff, fast water, the map's edge: crossReason's answer without the Probe's range or a partner), the same
+// whatever the tier. The adapter draws each one's opening as its closed look (a thicket, blocked) and never arrives at it; the range line is another thing and moves with the tier.
+function closedSidesOf(cell) {
+  const out = new Set();
+  for (const [side, dir] of Object.entries(SIDE_DIR)) {
+    const c = stepCell(cell, dir); if (c < 0) { out.add(side); continue; }
+    if (edgeKind(cell, dir) === EDGE.CLIFF) { if (!softKind(cell, dir)) out.add(side); continue; }
+    if ((!passable(c) || G.island[c]) && softKind(cell, dir) !== 'wade') out.add(side);
+  }
+  return out;
+}
 function openingKind(lay, o) {
   const why = crossReason(lay.cell, SIDE_DIR[o.side]);
   if (!why) return { kind: 'open', text: '' };
@@ -2145,20 +2157,10 @@ function applyLines(lay) {
   if (!lay.baked || lay.cave) return;
   for (const [i, t] of lay.lineSaved || []) lay.tiles[i] = t;   // the last visit's blocks come off
   lay.lineSaved = []; lay.lines = { cells: new Map(), ops: [], patches: [] };
-  const place = PL6.places && PL6.places.get(lay.baked.id), idOf = v => ((PL6.terrains || []).find(t => t.value === v) || {}).id;
   for (const o of lay.openings || []) {
     const k = openingKind(lay, o); if (k.kind !== 'range' && k.kind !== 'closed') continue;
     const cells = lineCells(lay, o, k.kind === 'range'); lay.lines.ops.push({ ...o, ...k });
     for (const c of cells) { const i = c.y * lay.w + c.x; if (T_BLOCK[lay.tiles[i]]) continue; lay.lineSaved.push([i, lay.tiles[i]]); lay.tiles[i] = T.ROCK; lay.lines.cells.set(i, { kind: k.kind, text: k.text }); }
-    if (k.kind === 'closed' && place) {   // the path past the line draws as grass: the ground of the nearest all-grass cell stands in
-      const grass = (x, y) => x >= 0 && y >= 0 && x < place.w && y < place.h && idOf(place.terrain[y * place.w + x]) === 'grass';
-      const clean = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (!grass(x + dx, y + dy)) return false; return true; };
-      const pathNear = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && y + dy >= 0 && x + dx < place.w && y + dy < place.h && idOf(place.terrain[(y + dy) * place.w + x + dx]) === 'path') return true; return false; };
-      const wide = lineCells(lay, { ...o, from: Math.max(0, o.from - 2), to: o.to + 2 });   // the path is wider than the gap, and its ragged edge reaches into the next cells: they go too
-      for (const c of wide) { const px = c.x - lay.baked.ox, py = c.y - lay.baked.oy; if (px < 0 || py < 0 || px >= place.w || py >= place.h) continue;
-        if (!pathNear(px, py)) continue;
-        let best = null, bd = 1e9; for (let y = 0; y < place.h; y++) for (let x = 0; x < place.w; x++) { if (!clean(x, y)) continue; const d = (x - px) ** 2 + (y - py) ** 2; if (d < bd) { bd = d; best = { x, y }; } }
-        if (best) lay.lines.patches.push({ x: px, y: py, from: best }); } }
   }
   lay.lines.id = lay.lines.patches.map(p => p.x + ',' + p.y).join(';');
 }
