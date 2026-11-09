@@ -777,7 +777,7 @@ test("M3: generator 2's burrow hole draws on the gate cell's face each frame, th
   assert.equal(holes, 0, "the mouth unseen: no hole");
   // never baked: the map image (which the inset reads) holds no void pixel anywhere
   assert.ok(!p.run("mapPB").p.includes(C.void), "no hole in mapPB");
-  for (const f of ["drawInset", "drawWorldInset", "buildMapPB"]) assert.ok(!fnSrc(f).includes("g2hole"), f + " draws no generator 2 hole");
+  for (const f of ["drawInset", "buildMapPB"]) assert.ok(!fnSrc(f).includes("g2hole"), f + " draws no generator 2 hole");
 });
 
 test("M3: generator 1's map and its burrow hole are unchanged, pixel for pixel against main", () => {
@@ -790,15 +790,15 @@ test("M3: generator 1's map and its burrow hole are unchanged, pixel for pixel a
 
 test("M3: the gen-1 hint shows on a generator 1 save between expeditions, never on generator 2 or during an expedition", () => {
   const sandIn = (p, setup) => { p.run(`${setup}; ensureMap(); scr.px().fill(-1); drawSetup(0);`); const f = p.run("scr").px(), W_ = p.run("SCR_W"), sand = p.run("C.sand"); let n = 0, x1 = 0;
-    for (let y = 462; y < 482; y++) for (let x = 136; x < 442; x++) if (f[y * W_ + x] === sand) { n++; x1 = Math.max(x1, x); } return { n, x1 }; };
+    for (let y = 365; y < 385; y++) for (let x = 28; x < 438; x++) if (f[y * W_ + x] === sand) { n++; x1 = Math.max(x1, x); } return { n, x1 }; };
   const g1 = g1Page();
   assert.equal(g1.run("S.gen"), 1);
   const hint = "Flat world · New world has stairs", w = g1.run(`textW(${JSON.stringify(hint)}, 2)`);
-  assert.ok(w <= 306, "fits 306 at 2×");
+  assert.ok(w <= 410, "fits 410 at 2×");
   const shown = sandIn(g1, "S.exp = null; S.phase = 'setup'; FX.msg = ''");
-  assert.ok(shown.n > 0 && shown.x1 < 136 + w, "the hint in sand at (136, 462)");
+  assert.ok(shown.n > 0 && shown.x1 < 28 + w, "the hint in sand at (28, 365)");
   // the same pixels as the text alone
-  g1.run("scr.px().fill(-1); text(" + JSON.stringify(hint) + ", 136, 462, C.sand);"); const alone = g1.run("scr").px(), sand = g1.run("C.sand");
+  g1.run("scr.px().fill(-1); text(" + JSON.stringify(hint) + ", 28, 365, C.sand);"); const alone = g1.run("scr").px(), sand = g1.run("C.sand");
   assert.equal([...alone].filter(v => v === sand).length, shown.n, "exactly the hint's pixels");
   assert.equal(sandIn(g1, "S.gen = 1; S.exp = null; S.phase = 'setup'").n, shown.n, "gen 1 written out: still shown");
   assert.equal(sandIn(g1, "delete S.gen; S.phase = 'setup'; S.exp = { pos: 0 }").n, 0, "during an expedition: none");
@@ -1591,17 +1591,6 @@ test("focus brackets: none on the empty tile when ✓ is Wait; shown on a thing 
   assert.ok(f);
 });
 
-test("the fresh 'Your world' box draws its unseen cells from the map's fog layer, not flat night", () => {
-  const p = world();
-  p.run("S.revealed.fill(0); S.visited.fill(0); ensureMap(); scr.px().fill(-1); drawWorldInset(100, 100, 0, 6);");
-  const f = p.run("scr").px(), fog = p.run("fogCv"), fp = fog.px(), SW = p.run("SCR_W"), MW_ = p.run("MW"), MH_ = p.run("MH"), CELL_ = p.run("CELL"), u = 6;
-  let diff = 0, night = 0; const nightI = p.run("HEX.indexOf(C.night)"), N = MW_ * MH_ * u * u;
-  for (let c = 0; c < MW_ * MH_; c++) for (let j = 0; j < u; j++) for (let i = 0; i < u; i++) {
-    const x = 100 + (c % MW_) * u + i, y = 100 + Math.floor(c / MW_) * u + j, want = fp[(Math.floor(c / MW_) * CELL_ + Math.floor(j * CELL_ / u)) * fog.width + (c % MW_) * CELL_ + Math.floor(i * CELL_ / u)];
-    const got = f[y * SW + x]; if (got !== want) diff++; if (got === nightI) night++; }
-  assert.ok(diff <= N * 0.02, `the fog layer, cell for cell (${diff} of ${N} pixels differ: the pins, outposts and the last start draw over it)`);
-  assert.ok(night < N * 0.5, "not a flat night square");
-});
 
 // ---- the shell ----
 test("shell: no engravings, the brand line kept, the key icons in their inks, Call as built", () => {

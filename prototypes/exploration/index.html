@@ -992,6 +992,8 @@ const CARE_ASSETS = [
   { id: 'c-map-soft-26', what: 'the map’s and the reach view’s wade (muddy water), scree edge (heaped stones), bank (earth face or lip), dug bank (footholds), their signs and pins, and Tuliko’s extra range ring (a gold lattice)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 26, h: 26, status: 'signed' },
   { id: 'c-canopy-88x76', what: 'a tree canopy over its trunk, in a place at 32 or 48 px', until: 'the meadow tree prop', w: 88, h: 76, status: 'stand-in' },
   { id: 'c-roof-104x22', what: 'the roof on an outcrop, 104 px wide on the 144 px outcrop of a 48 px place', until: 'the meadow outcrop piece', w: 104, h: 22, status: 'stand-in' },
+  { id: 'c-open-night', what: 'the opening screen’s night under the land of a first-time player: a seamless night-mist tile, two frames of slow drift', until: 'the art desk’s tile (the built night dots stand in)', w: 48, h: 48, status: 'stand-in' },
+  { id: 'c-open-pod-96', what: 'the opening screen’s pod where the partner would stand, on its stone ring: two frames of a slow glow', until: 'the art desk’s piece (the built field pod at 3× stands in)', w: 96, h: 96, status: 'stand-in' },
 ];
 const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f'], 'mini'], 'c-token-48': ['stone', ['token', 't'], 'sprite'],
   'c-sprite-other-32': ['stone', ['mibi', 'm']], 'c-mini-other-12': ['stone', ['m']] };   // each placeholder's plate colour and labels (longest first), and the mibi's own built art it carries ('mini' 12 px, 'sprite' 32 px)
@@ -5966,68 +5968,56 @@ function card(x, y, w, h, sel, enabled) {
 function weatherIcon(x, y, lit) { blit(ICON.cloud(lit ? 1 : 0), x - 15, y - 14); blit(ICON.bolt(lit ? 'yellow' : 'mist'), x - 2, y); }
 const silhouette = sp => art('sil' + sp, () => { const a = tokenOf(sp, 'idle', 0), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C.slate;   // the signed idle's own alpha, filled slate
   return pb; });
-// The expedition choice: a status strip, two expedition cards with living icons, the partner as a card, and a
-// world preview (the whole-map inset with the last start flagged).
+// [copy] The opening screen's words: placeholders for the copywriter, all in this one table (a change of wording never touches code).
+const OPEN_TEXT = {
+  dark: 'Tracks in the dark · start at one',   // the first-time line under the land
+  stormEast: 'storm east', stormWest: 'storm west', chargeStones: 'charge stones',   // the Weather tab's line (where the storm starts; the first time)
+  digs: n => n + ' digs', needsTuikis: 'needs a Tuikis',   // the Deep ground tab's line
+  firstWalk: 'Your first walk', firstFind: 'Find a pod and bring it home.', firstGrows: 'The Station grows it.',   // the first-time partner place
+  flat: 'Flat world · New world has stairs', docked: 'Docked · lift to explore',   // a generator 1 world's line; the docked band
+};
+// The art desk's two pieces for this screen, named slots: until their files are in, the built night and the built field pod at 3× play (CARE_ASSETS holds both).
+const openArt = name => (typeof WART !== 'undefined' && WART.pb.get(name)) || null;
+// Deep ground shows once the player has met a digging kind, seen the burrow, or has a grown digger with them.
+const deepShown = () => !!digPartner() || carriedMibis().some(m => isAdult(m) && spOf(m.sp).ab === 'dig') || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.revealed[G.gate];
+// A mibi's picture at k× at (x, y); a kind the Companion has no art for is its labelled plate.
+function openCreature(sp, pose, fr, k, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(creatureArt(sp, pose, fr, k, juv), x, y); }
+// The Companion's front door: the land you know (the frame), one line of what changed, the way out as two tabs, and who comes along.
+const OPEN_FRAME = { x: 8, y: 38, w: 434, h: 320 }, OPEN_PY = 450, OPEN_PH = 110;
 function drawSetup(t) {
   viewBg();
   drawTop('Expedition ' + S.expN, '');
-  const fr = motion() ? Math.floor(t * 2) % 2 : 0, shN = S.shield != null ? Math.min(S.shield, tierOf().shield) : tierOf().shield;
-  // the strip: the world's turn and the Probe's tier, then the Probe's plates as the top bar draws them (a lost plate is an outline), centred as one group
-  { const strip = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier, m = tierOf().shield, w = textW(strip, 2) + 12 + 9 * m - 1, x0 = Math.round(SCR_W / 2 - w / 2), p0 = x0 + textW(strip, 2) + 12;
-    text(strip, x0, 40, C.mist);
-    for (let k = 0; k < m; k++) R(p0 + 9 * k, 42, 8, 14, C.void);
-    shieldBars(p0 + 1, 43, Math.max(0, shN), m, 6, 12); }
-  // while a message shows, the message box takes the view's foot and neither panel is drawn
-  if (!FX.msg && isDocked()) { panel(70, 512, 310, 26, C.ink, C.mint); text('Docked · lift to explore', SCR_W / 2, 517, C.mint, 2, 'center'); }
-  else if (!FX.msg && S.bay.length) { const n = S.bay.length; panel(70, 494, 310, 48, C.ink, C.amber); text(n + ' crate' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 500, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 520, C.amber, 2, 'center'); }
-  const sel = S.ui.sel, dig = digPartner(), deepOk = !!dig;
-  // Weather: a storm cloud with a flickering bolt
-  card(20, 64, 410, 84, sel === 0, true);
-  disc(32, 74, 32, 'sand', 'clay'); blit(ICON.cloud(1), 49, 88); blit(ICON.bolt(fr ? 'cream' : 'yellow'), 62 + fr, 102);
-  text('Weather', 112, 74, C.ink, 3); text('Charge stones · pods in the rain', 112, 112, C.stone);
-  // Deep ground: the burrow's mouth with a glint
-  card(20, 158, 410, 84, sel === 1, deepOk);
-  disc(32, 168, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 56, 192);
-  if (deepOk && fr) { R(70, 192, 2, 2, C.cream); R(69, 193, 4, 1, C.yellow); }
-  text('Deep ground', 112, 168, deepOk ? C.ink : C.mist, 3);
-  text(clipText(dig ? 'Caves · ' + dig.name + ' digs a way in' : 'Caves · needs a Tuikis', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
-  // the partner card: the partner's face on the teal ring, its name, stage and ability; or why there is none. The mibis with
-  // you as 24 px ring faces in carried order, a free place a dashed circle.
-  const pm = partnerMibi(), cm = carriedMibis();
-  card(20, 252, 410, 92, sel === 2, true);
-  if (pm) { const st = mibiStage(pm), nm = clipText(pm.name, 220, 3);
-    blit(RING(), 46, 322); mibiSprite(pm.sp, 'idle', fr, 28, 264, 2);
-    text(nm, 112, 260, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
-    chip(112, 292, STAGE_WORD[st], stageFill(st), 'bone');
-    text(clipText(abCardOf(pm.sp), 306, 2), 112, 320, C.stone); }
-  else if (cm.length) { const rd = cm[0], st = mibiStage(rd), nm = clipText(rd.name, 220, 3);   // the rider, first in carried order: its picture with no ring, and how it grows
-    mibiSprite(rd.sp, 'idle', fr, 28, 264, 2, false, st === 'juvenile');
-    text(nm, 112, 260, C.ink, 3); if (rd.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
-    chip(112, 292, STAGE_WORD[st], stageFill(st), 'bone');
-    text(clipText(rd.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime, 306, 2), 112, 320, C.stone); }
-  else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(CARE_TEXT.noOneWithT, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
-  else { emptyPodSmall(52, 298); text('No partner yet', 112, 264, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 302 + i * 20, C.stone)); }
-  if (liveMibis().length) for (let i = 0; i < CARRY_MAX; i++) { const q = cm[i], fx = 338 + i * 28; if (q) ringFace(fx, 262, q.sp, q === pm, !isAdult(q)); else blit(dashedCircleArt(24), fx, 262); }
-  // the world preview: the whole map small, the last start flagged, and the count
-  const iy = 360, u = 6; drawWorldInset(24, iy, t, u);
-  const all = MW * MH; let seen = 0, done = 0; for (let c = 0; c < all; c++) { if (S.revealed[c]) seen++; if (explored(c)) done++; }
-  text('Your world', 136, iy + 2, C.mist); text(HEART_TEXT.worldLine(done, all), 136, iy + 26, C.bone); text('Seen ' + seen + ' · fog ' + (all - seen), 136, iy + 50, C.fog);
-  if (S.ui.lastPos != null) { blit(ICON.flag(), 136, iy + 76); text('last start', 154, iy + 78, C.fog); }
-  // generator 1 worlds: a standing hint that a New world brings the terrain (plain text, not focusable)
-  if (S.phase === 'setup' && !S.exp && (S.gen == null ? 1 : S.gen) === 1) text(clipText('Flat world · New world has stairs', 306, 2), 136, 462, C.sand);
-}
-function emptyPodSmall(cx, cy) { for (let a = 0; a < 6.28; a += .2) R(cx + Math.round(Math.cos(a) * 18), cy + Math.round(Math.sin(a) * 24), 2, 2, C.stone); }
-// The whole world small, between expeditions: fog, seen land faded, visited land in colour, pins, outposts, skulls, the last start.
-function drawWorldInset(x, y, t, u) {
-  ensureMap(); const W = MW * u, H = MH * u, d = Math.max(2, u - 2), o = Math.floor((u - d) / 2);
-  panel(x - 3, y - 3, W + 6, H + 6, C.ink, C.slate);
-  g.drawImage(mapCvFade, 0, 0, MW * CELL, MH * CELL, x, y, W, H);
-  for (let c = 0; c < MW * MH; c++) { const cx = x + (c % MW) * u, cy = y + ((c / MW) | 0) * u;
-    if (!S.revealed[c]) g.drawImage(fogCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, u, u); else if (S.visited[c]) g.drawImage(mapCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, u, u); }
-  for (const pin of S.pins) R(x + (pin.c % MW) * u + o, y + ((pin.c / MW) | 0) * u + o, 2, 2, C.orange);
-  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, outpostLeft(String(c), f) ? C.amber : C.bark); }
-  for (const k in (S.skulls || {})) R(x + (k % MW) * u + o, y + ((k / MW) | 0) * u + o, d, d, C.bone);
-  if (S.ui.lastPos != null && (!motion() || Math.floor(t * 2) % 2 === 0)) { const c = S.ui.lastPos; R(x + (c % MW) * u, y + ((c / MW) | 0) * u, u, u, C.orange); }
+  const fr = motion() ? Math.floor(t * 2) % 2 : 0, first = firstPlacement(), F = OPEN_FRAME;
+  // 1. the land you know
+  panel(F.x, F.y, F.w, F.h, C.ink, C.night);
+  // 2. one line of what changed: the world turn's first line (the Station's dock line takes the message box); the first time what the lights are; a generator 1 world's hint
+  { const rl = S.report && S.report.lines && S.report.lines[0], flat = !rl && S.phase === 'setup' && !S.exp && (S.gen == null ? 1 : S.gen) === 1, line = rl || (flat ? OPEN_TEXT.flat : first ? OPEN_TEXT.dark : '');
+    if (line) { R(14, 371, 6, 6, C.orange); text(clipText(line, 410, 2), 28, 365, flat ? C.sand : C.bone); } }
+  // 3. the way out: two tabs under the land (Weather alone and full width until Deep ground is met)
+  const dig = digPartner(), showDeep = deepShown(), sel = S.ui.sel === 1 && !showDeep ? 0 : S.ui.sel, start = S.ui.lastPos != null ? S.ui.lastPos : null, storm = start != null ? stormFor(start) : null;
+  const tabs = [{ t: 'Weather', s: storm ? (storm.dir > 0 ? OPEN_TEXT.stormWest : OPEN_TEXT.stormEast) : OPEN_TEXT.chargeStones, ok: true }];
+  if (showDeep) tabs.push({ t: 'Deep ground', s: dig ? OPEN_TEXT.digs(dig.name) : OPEN_TEXT.needsTuikis, ok: !!dig });
+  tabs.forEach((tb, i) => { const w = tabs.length > 1 ? 212 : 434, x = i ? 230 : 8, y = 392, h = 50;
+    card(x, y, w, h, sel === i, tb.ok);
+    if (i === 0) { blit(ICON.cloud(1), x + 8, y + 9); blit(ICON.bolt(fr ? 'cream' : 'yellow'), x + 21, y + 23); }
+    else { blit(ICON.burrow(tb.ok ? 1 : 0), x + 12, y + 18); if (tb.ok && fr) { R(x + 24, y + 18, 2, 2, C.cream); R(x + 23, y + 19, 4, 1, C.yellow); } }
+    text(tb.t, x + 50, y + 5, tb.ok ? C.ink : C.mist, 2); text(clipText(tb.s, w - 58, 2), x + 50, y + 26, tb.ok ? C.stone : C.fog); });
+  // 4. who comes along: the partner as itself at 3× on its ring, the others with you at 1× beside it
+  const pm = partnerMibi(), cm = carriedMibis(), selP = sel === 2, PY = OPEN_PY, PH = OPEN_PH;
+  if (selP) brackets(2, PY - 4, SCR_W - 4, PH + 6, C.amber);
+  if (cm.length) { const lead = pm || cm[0], st = mibiStage(lead), juv = st === 'juvenile', others = cm.filter(m => m !== lead);   // only juveniles: the first, its own picture, no ring
+    if (!juv) blit(ringArt('opring84', 84, 22), 14, PY + PH - 24);
+    openCreature(lead.sp, selP && fr ? 'alert' : 'idle', fr, 3, 8, PY + PH - 102, juv);
+    text(clipText(lead.name, 200 - others.length * 44, 3), 116, PY + 2, C.bone, 3);
+    let cx = 116; cx += chip(cx, PY + 38, STAGE_WORD[st], stageFill(st), 'bone') + 6; if (pm) chip(cx, PY + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
+    text(clipText(pm ? abCardOf(pm.sp) : (lead.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime), 320, 2), 116, PY + 70, C.fog);
+    others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; blit(ringArt('opring32', 30, 10, C.stone, C.slate), x + 1, y + 26); openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
+  else if (liveMibis().length) {   // mibis, none with you: their silhouettes
+    liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, PY + PH - 66 - (i % 2) * 6));
+    text(CARE_TEXT.noOneWithT, 116, PY + 10, C.bone, 3); text(clipText(leadWhy(), 320, 2), 116, PY + 48, C.fog); }
+  else {   // no mibi at all: the pod stands where the partner would, and says what the walk is for
+    const pod = openArt('c-open-pod-96'); if (pod) blit(pod, 8, PY + PH - 102); else blit(podArt('bone', 3), 32, PY + PH - 72);
+    text(OPEN_TEXT.firstWalk, 116, PY + 8, C.bone, 3); text(OPEN_TEXT.firstFind, 116, PY + 46, C.fog); text(OPEN_TEXT.firstGrows, 116, PY + 68, C.fog); }
 }
 // The partner row: "Partner: Pip · calms wary creatures", or why there is none.
 function partnerRow() {
@@ -6795,7 +6785,7 @@ function act(k, mode) {
   const isDir = k in DIRS;
   switch (S.phase) {
     case 'setup':
-      if (k === 'up' || k === 'down') S.ui.sel = clamp(S.ui.sel + (k === 'down' ? 1 : -1), 0, 2);
+      if (k === 'up' || k === 'down') { const d = k === 'down' ? 1 : -1; let n = clamp(S.ui.sel + d, 0, 2); if (n === 1 && !deepShown()) n = clamp(n + d, 0, 2); S.ui.sel = n; }   // Deep ground is not a stop until it is shown
       else if (k === 'confirm') { if (S.ui.sel === 2) { S.phase = 'mibis'; S.ui.rSel = 0; S.ui.rFrom = 'setup'; transition(); } else chooseType(); }
       else if (k === 'back') openMenu();
       break;

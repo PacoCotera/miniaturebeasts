@@ -437,7 +437,7 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
   const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({ PLAYTEST_ON: false }));
   assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "stand-in"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "stand-in"], ["c-moment-walk-S01-280x300", 280, 300, "stand-in"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "stand-in"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"]),
-    ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-wade-32", 32, 32, "signed"], ["c-scree-32", 32, 32, "signed"], ["c-bank-32", 32, 32, "signed"], ["c-map-soft-26", 26, 26, "signed"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"]]);
+    ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-wade-32", 32, 32, "signed"], ["c-scree-32", 32, 32, "signed"], ["c-bank-32", 32, 32, "signed"], ["c-map-soft-26", 26, 26, "signed"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"], ["c-open-night", 48, 48, "stand-in"], ["c-open-pod-96", 96, 96, "stand-in"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
   const ids = ["c-heart-24", "c-heart-16", "c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z-]+-\d+)'/g)].map(x => x[1]);
@@ -543,13 +543,14 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 16, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs out narrow burrows" }],
     FX: {}, shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
-    panel: noop, card: noop, disc: noop, blit: noop, R: noop, shieldBars: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false, HEART_TEXT: { worldLine: (n, a) => "Found " + n + " of " + a + " places" },
+    panel: noop, card: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, firstPlacement: () => true, stormFor: () => ({ dir: 1 }), brackets: noop, ringArt: noop, upArt: noop, silhouette: noop, podArt: noop, G: { gate: 0 }, STAGE_WORD: {},
+    OPEN_TEXT: { dark: "dark", stormEast: "e", stormWest: "w", chargeStones: "charge", digs: n => n + " digs", needsTuikis: "needs a Tuikis", firstWalk: "first", firstFind: "find", firstGrows: "grows", flat: "flat", docked: "docked" },
     CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
-  const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
-  vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
+  const names = ["OPEN_FRAME", "deepShown", "openArt", "openCreature", "drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
+  S.known = [2]; vm.runInContext(ACCESSOR() + names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
   const home = S.mibis.map(m => m.name);
   for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
-  assert.ok(said.includes("No one with you") && said.includes("dock to take one along") && said.includes("Caves · needs a Tuikis"), "none carried: No one with you (ruling 19:21)");
+  assert.ok(said.includes("No one with you") && said.includes("dock to take one along") && said.includes("needs a Tuikis"), "none carried: No one with you (ruling 19:21)");
   assert.ok(!said.includes("No partner"), "No partner only when juveniles are carried");
   assert.ok(!said.some(l => /at home/.test(l)), "no at-home list or count");
   for (const fn of ["lineFor", "drawSetup"]) assert.ok(!/mibiWith|homeMibis/.test(source(fn)));
@@ -792,7 +793,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   for (let i = 0; i < 4; i++) { p.run(`S.ui.aId = null; S.ui.aIdx = ${i};`); d = render("active");
     assert.ok(d.includes("c-sprite-other-32@97,52x8"), "the stage: the 256×256 plate at (97, 52), page " + i + ": " + d); }
   render("menu");
-  d = render("setup"); assert.ok(d.includes("c-sprite-other-32@28,264x2"), "the partner card: the plate at 2×: " + d);
+  d = render("setup"); assert.ok(d.includes("c-sprite-other-32@8,458x3"), "the partner at 3× at (8, 458): " + d);
   assert.doesNotThrow(() => p.run("tendPress(mibiById(1))"));
   assert.match(p.run("FX.notes.map(n => n.text).join('\\n')"), /^Dot settles · it hasn’t been out yet$/m, "Tend's line takes tendMomentOther");
   p.pass(3000); assert.doesNotThrow(() => p.run("tendPress(mibiById(3))"));
@@ -917,6 +918,7 @@ const X26 = (() => {
       w('panel', (x, y, ww, h, fill, border) => ['panel', x, y, ww, h, fill, border]);
       w('miniOf', (sp, x, y, juv) => ['mini', sp, x, y, !!juv]);
       w('mibiSprite', (sp, pose, fr, x, y, k, flip, juv) => ['sprite', sp, pose, fr, x, y, k || 1, !!flip, !!juv]);
+      w('openCreature', (sp, pose, fr, k, x, y, juv) => ['open', sp, pose, fr, x, y, k, !!juv]);
       w('placeholderPlate', (id, x, y, k, sp, fr, juv) => ['plate', id, x, y, k || 1, sp, fr || 0, !!juv]);
       w('art', key => ['art', key]);
     })();`);
@@ -982,27 +984,24 @@ test("X26 §5.3: the HUD draws the rider's mini in a slate window at the partner
   assert.ok(d.some(c => c[0] === "art" && c[1] === "ptrings2") && d.some(c => c[0] === "text" && c[1] === "Pip" && c[4] === p.run("C.amber")), "a grown partner: as built");
 });
 
-test("X26 §5.4: the partner card with only Dot: its sprite without RING, its name, the juvenile chip and one 2× line, no 'No partner'; two juveniles show the first carried", () => {
+test("X26 §5.4: the partner strip with only Dot: its picture at 3× without a ring, its name, the juvenile chip and one 2× line, no 'No partner'; two juveniles show the first carried", () => {
   const T = X1.page().run("CARE_TEXT");
   let p = X26.world([dot()], [1]); let d = p.draw("setup");
-  assert.ok(d.some(c => c[0] === "sprite" && c[1] === 1 && c[2] === "idle" && c[4] === 28 && c[5] === 264 && c[6] === 2), "Dot's sprite at 2× in the face place");
-  assert.ok(!d.some(c => c[0] === "art" && (c[1] === "ptring2" || c[1] === "dcirc64")), "no RING() and no dashed circle");
-  assert.ok(d.some(c => c[0] === "text" && c[1] === "Dot" && c[2] === 112 && c[3] === 260 && c[5] === 3), "its name at (112, 260), 3×");
-  assert.ok(d.some(c => c[0] === "text" && c[1] === "young" && c[2] === 120 && c[3] === 295), "the young chip at (112, 292)");
-  const lines = d.filter(c => c[0] === "text" && c[3] === 320 && c[2] === 112); assert.deepEqual(lines.map(c => c[1]), [T.riderTime], "one 2× line, unbonded");
-  assert.equal(lines[0][4], p.run("C.stone"));
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[2] === "idle" && c[4] === 8 && c[5] === 458 && c[6] === 3 && c[7] === true), "Dot's juvenile picture at 3× at (8, 458)");
+  assert.ok(!d.some(c => c[0] === "art" && (c[1] === "opring84" || c[1] === "dcirc64")), "no ring and no dashed circle");
+  assert.ok(d.some(c => c[0] === "text" && c[1] === "Dot" && c[2] === 116 && c[3] === 452 && c[5] === 3), "its name at (116, 452), 3×");
+  assert.ok(d.some(c => c[0] === "text" && c[1] === "young" && c[2] === 124 && c[3] === 491), "the young chip at (116, 488)");
+  const lines = d.filter(c => c[0] === "text" && c[3] === 520 && c[2] === 116); assert.deepEqual(lines.map(c => c[1]), [T.riderTime], "one 2× line, unbonded");
+  assert.equal(lines[0][4], p.run("C.fog"));
   for (const no of ["No partner", "young · grows in time", "young · grows with care"]) assert.ok(!d.some(c => c[0] === "text" && c[1] === no), "no " + no);
-  assert.ok(!d.some(c => c[0] === "plate" && c[1] === "c-heart-16"), "no heart unbonded");
   p = X26.world([dot({ bonded: true })], [1]); d = p.draw("setup");
-  assert.ok(d.some(c => c[0] === "text" && c[1] === T.riderCare && c[3] === 320), "bonded: riderCare");
-  assert.ok(d.some(c => c[0] === "plate" && c[1] === "c-heart-16" && c[3] === 266), "bonded: the heart");
+  assert.ok(d.some(c => c[0] === "text" && c[1] === T.riderCare && c[3] === 520), "bonded: riderCare");
   p = X26.world([dot(), X26.mib(3, "Moss", 2)], [3, 1]); d = p.draw("setup");
-  assert.ok(d.some(c => c[0] === "sprite" && c[1] === 2 && c[4] === 28) && d.some(c => c[0] === "text" && c[1] === "Moss" && c[3] === 260), "the first in S.carried");
-  assert.equal(d.filter(c => c[0] === "plate" && c[1] === "c-face-24").length, 2, "both as ring faces on the right");
-  assert.ok(!d.some(c => c[0] === "art" && c[1] === "rf24t"), "every ring stone: there is no partner");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 2 && c[4] === 8 && c[6] === 3) && d.some(c => c[0] === "text" && c[1] === "Moss" && c[3] === 452), "the first in S.carried");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[4] === 398 && c[6] === 1), "the other at 1× at the top right");
   // unchanged: none carried, a grown partner
   p = X26.world([dot()], []); d = p.draw("setup"); assert.ok(d.some(c => c[0] === "text" && c[1] === "No one with you"));
-  p = X26.world([pip()], [2]); d = p.draw("setup"); assert.ok(d.some(c => c[0] === "art" && c[1] === "ptring2"), "a partner keeps its ring");
+  p = X26.world([pip()], [2]); d = p.draw("setup"); assert.ok(d.some(c => c[0] === "art" && c[1] === "opring84"), "a partner keeps its ring");
 });
 
 test("X26 §5.5: one set-out message names the rider, once per expedition; no Dig or ability prompt at the burrow with a juvenile Tuikis", () => {
@@ -1095,8 +1094,8 @@ test("X26 placeholder plates: no label unless the observer panel is open; a mibi
   p.run("var __obs = { hidden: true }; (() => { const d = document; globalThis.document = new Proxy({}, { get: (t, k) => k === 'getElementById' ? (id => id === 'obs' ? __obs : d.getElementById(id)) : d[k] }); })();");
   const labels = ["face", "f", "token", "t", "heart", "h", "mibi", "m"], lettered = d => d.filter(c => c[0] === "text" && c[5] === 1 && labels.includes(c[1]));
   let d = p.draw("setup");
-  assert.ok(d.some(c => c[0] === "plate" && c[1] === "c-face-24" && c[5] === 1), "Dot's face plate");
-  const f = d.find(c => c[0] === "plate" && c[1] === "c-face-24" && c[5] === 1); assert.ok(d.some(c => c[0] === "mini" && c[1] === 1 && c[2] === f[2] + 6 && c[3] === f[3] + 6), "its mini centred at (x + 6, y + 6)");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[4] === 8 && c[5] === 458 && c[6] === 3), "Dot's picture at 3× on the strip");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === -1 && c[4] === 398 && c[6] === 1), "Bean (no art): its plate stands at 1× at the top right (openCreature draws it)");
   assert.deepEqual(lettered(d), [], "the observer closed: no label");
   d = p.draw("mibis"); assert.ok(d.some(c => c[0] === "sprite" && c[1] === 1 && c[2] === "idle" && c[4] === 36 && c[6] === 1), "the token plate carries the 32 px sprite at (x + 8, y + 8)");
   assert.deepEqual(lettered(d), [], "the roster: no label");
@@ -1285,13 +1284,10 @@ function p0() { return X1.page(); }
 test("juvenile pictures at the sites: setup card and faces, header mini, roster, stage, look-out and the Walk's side tokens ask for the juvenile exactly when the mibi is one", () => {
   // setup: Dot (Tuikis, juvenile) alone rides: its card at 2×, no ring; its face plate; with Pip (Loika, grown) the partner card is Pip's, an adult picture
   let p = X26.world([dot()], [1]); let d = p.draw("setup");
-  assert.deepEqual(d.find(c => c[0] === "sprite" && c[6] === 2).slice(1, 9), [1, "idle", 0, 28, 264, 2, false, true].slice(0, 8), "the rider card: Dot's idle at 2×");
-  assert.equal(d.find(c => c[0] === "sprite" && c[6] === 2)[8], true, "juvenile");
-  assert.equal(d.find(c => c[0] === "plate" && c[1] === "c-face-24")[7], true, "Dot's ring face plate asks for the juvenile");
-  assert.equal(d.find(c => c[0] === "mini")[4], true, "and so does the mini inside it");
+  assert.deepEqual(d.find(c => c[0] === "open" && c[6] === 3).slice(1, 8), [1, "idle", 0, 8, 458, 3, true], "the rider: Dot's idle at 3×, a juvenile");
   p = X26.world([pip(), dot()], [1, 2]); d = p.draw("setup");
-  assert.equal(d.find(c => c[0] === "sprite" && c[6] === 2)[8], false, "the partner card shows Pip, an adult");
-  assert.deepEqual(d.filter(c => c[0] === "plate" && c[1] === "c-face-24").map(c => [c[5], c[7]]), [[1, true], [0, false]], "faces in carried order: Dot (id 1) juvenile, Pip (id 2) adult");
+  assert.equal(d.find(c => c[0] === "open" && c[6] === 3)[7], false, "the strip shows Pip, an adult");
+  assert.deepEqual(d.filter(c => c[0] === "open" && c[6] === 1).map(c => [c[1], c[7]]), [[1, true]], "the others at 1×: Dot a juvenile");
   // header: the rider's mini asks for the juvenile; a partner's does not
   p = X26.world([dot()], [1]); p.setOut(); d = p.draw("map"); assert.deepEqual(d.filter(c => c[0] === "mini").map(c => [c[1], c[4]]), [[1, true]], "the rider's mini");
   p = X26.world([pip(), dot()], [1, 2]); p.setOut(); d = p.draw("map"); assert.deepEqual(d.filter(c => c[0] === "mini").map(c => [c[1], c[4]]), [[0, false]], "the partner's mini");
@@ -1338,7 +1334,7 @@ test("age words: the page's functions are the Station's text, character for char
 test("stage words: young on the chips (the Mibis list, the Partner card, the mibi page, the Home card); adult and elder as they were", () => {
   assert.match(PAGE, /const STAGE_WORD = \{ juvenile: 'young', adult: 'adult', elder: 'elder' \}/);
   assert.ok(!/chip\([^)]*, st, stageFill/.test(PAGE), "no chip draws the raw stage");
-  assert.equal((PAGE.match(/chip\([^;]*STAGE_WORD\[st\], stageFill\(st\)/g) || []).length, 4);
+  assert.equal((PAGE.match(/chip\([^;]*STAGE_WORD\[st\], stageFill\(st\)/g) || []).length, 3);
 });
 test("stage boundaries on the Companion: young below 2, adult through 17, an elder at 18 (2 + 16); an elder from grownTurn + 16", () => {
   const S = save({ turn: 0 }), t = world(S), m = { born: 0 };
