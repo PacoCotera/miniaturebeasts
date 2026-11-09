@@ -1865,8 +1865,8 @@ function advance(scope, info) {
   // The storm's level counts; its one-time lines are signs (the bottom line's bolts, the open ground).
   const lvl = stormLevel(); ex.stats.maxLvl = Math.max(ex.stats.maxLvl, lvl);
   if (lvl >= 2) { ex.stats.stormActs++; if (!sheltered()) ex.stats.openStormActs++; }
-  // Roll the next action's stray strike now, so a keen partner can feel it coming.
-  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= 6 && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
+  // Roll the next action's stray strike now, so a keen partner can feel it coming. The first walk of a world takes one stray strike at most (the plates are met, the Probe never breaks before it has a pod: loop audit 3.18).
+  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= 6 && (ex.n !== 1 || ex.stats.hits < 1) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
     ex.stray = { at: ex.actions + 1 };
     const pt = ex.pt, keen = pt && (pt.elder || spOf(pt.sp).ab === 'nose');
     if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
@@ -1954,10 +1954,11 @@ function occupant(key, x, y, ignore) {
   if (P && P.key === key && P.x === x && P.y === y && ignore !== 'player') return { type: 'player' };
   return null;
 }
-function freeSpot(key, R, avoid, pred) {
+function freeSpot(key, R, avoid, pred, box) {   // box: { x, y, w, h } the tries are drawn from (a spawn area is a small part of a 24 x 28 place)
   const lay = layout(key);
   for (let t = 0; t < 200; t++) {
-    const x = 1 + R.int(lay.w - 2), y = 1 + R.int(lay.h - 2), i = y * lay.w + x;
+    const x = box ? box.x + R.int(box.w) : 1 + R.int(lay.w - 2), y = box ? box.y + R.int(box.h) : 1 + R.int(lay.h - 2), i = y * lay.w + x;
+    if (x < 0 || y < 0 || x >= lay.w || y >= lay.h) continue;
     if (!lay.reach[i] || NOSTAND(lay.tiles[i])) continue;
     if (avoid && man({ x, y }, lay.spawnPt) < avoid) continue;
     if (pred && !pred(x, y)) continue;
@@ -1992,11 +1993,13 @@ function ensureLive(key) {
   for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = findSlotFor(lay, key, p) || freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
     if (s) { p.x = s.x; p.y = s.y; if (p.how === 'shed') { fxGlint(s.x, s.y); logEv('A pod of ' + p.of + "'s line"); } } else { S.pods.splice(S.pods.indexOf(p), 1); logEv('A pod had no room in this place and was dropped'); } }
   const nests = lay.feats.filter(f => f.kind === 'e');
+  const mates = S.cr.filter(w => w.c === lay.cell && !!w.cv === lay.cave).map(w => w.id).sort((a, b) => a - b);   // the cell's creatures by id: they share the template's spawn areas round robin (walk content B6)
   for (const w of S.cr) {
     if (w.c !== lay.cell || !!w.cv !== lay.cave) continue;
     const nest = nests.length ? nests[w.id % nests.length] : null;
-    const own = lay.spawns && lay.spawns.filter(q => !q.species.length || q.species.includes((spOf(w.sp).name || '').toLowerCase())), inOwn = own && own.length ? (x, y) => own.some(q => x >= q.x && y >= q.y && x < q.x + q.w && y < q.y + q.h) : null;   // a template's spawn areas
-    const s = (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
+    const own = lay.spawns && lay.spawns.filter(q => !q.species.length || q.species.includes((spOf(w.sp).name || '').toLowerCase())), inArea = q => (x, y) => x >= q.x && y >= q.y && x < q.x + q.w && y < q.y + q.h;
+    const mine = own && own.length ? own[mates.indexOf(w.id) % own.length] : null, inOwn = own && own.length ? (x, y) => own.some(q => inArea(q)(x, y)) : null;   // a template's spawn areas
+    const s = (mine && freeSpot(key, R, 5, inArea(mine), mine)) || (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
     if (!s) continue;
     live.cr.push({ id: w.id, sp: w.sp, x: s.x, y: s.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1,
       // the guaranteed early burrowers are always ready in the first two expeditions; a species not yet known always is
