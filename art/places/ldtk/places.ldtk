@@ -11,7 +11,7 @@
 	"iid": "80fcf837-f6be-6267-0c3c-aacb9b6b0900",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 160,
+	"nextUid": 162,
 	"identifierStyle": "Free",
 	"toc": [],
 	"worldLayout": "Free",
@@ -265,6 +265,27 @@
 						"value": 7,
 						"identifier": "earth",
 						"color": "#9A7453",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 8,
+						"identifier": "cliff",
+						"color": "#8D977F",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 9,
+						"identifier": "thicket",
+						"color": "#36603A",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 10,
+						"identifier": "scrub",
+						"color": "#93A332",
 						"tile": null,
 						"groupUid": 0
 					}
@@ -1231,6 +1252,80 @@
 						"tilesetUid": null
 					}
 				]
+			},
+			{
+				"identifier": "WayUp",
+				"uid": 160,
+				"tags": [
+					"mark"
+				],
+				"exportToToc": false,
+				"doc": "a rectangle over the last row of a straight south-facing cliff face, 1 or more cells wide, with straight face one cell either side: the face has broken down into a slope you can walk",
+				"width": 16,
+				"height": 16,
+				"resizableX": true,
+				"resizableY": true,
+				"minWidth": null,
+				"maxWidth": null,
+				"minHeight": null,
+				"maxHeight": null,
+				"keepAspectRatio": false,
+				"tileOpacity": 1,
+				"fillOpacity": 0.35,
+				"lineOpacity": 1,
+				"hollow": false,
+				"color": "#B8D96B",
+				"renderMode": "Rectangle",
+				"showName": true,
+				"tilesetId": null,
+				"tileRenderMode": "FitInside",
+				"tileRect": null,
+				"uiTileRect": null,
+				"nineSliceBorders": [],
+				"maxCount": 0,
+				"limitScope": "PerLayer",
+				"limitBehavior": "MoveLastOne",
+				"pivotX": 0,
+				"pivotY": 0,
+				"allowOutOfBounds": false,
+				"fieldDefs": []
+			},
+			{
+				"identifier": "ReedBank",
+				"uid": 161,
+				"tags": [
+					"mark"
+				],
+				"exportToToc": false,
+				"doc": "a rectangle over a stretch of shore (grass or sand against water): its dual tiles draw the reed-bank look; nothing blocks",
+				"width": 16,
+				"height": 16,
+				"resizableX": true,
+				"resizableY": true,
+				"minWidth": null,
+				"maxWidth": null,
+				"minHeight": null,
+				"maxHeight": null,
+				"keepAspectRatio": false,
+				"tileOpacity": 1,
+				"fillOpacity": 0.35,
+				"lineOpacity": 1,
+				"hollow": false,
+				"color": "#4FC3A1",
+				"renderMode": "Rectangle",
+				"showName": true,
+				"tilesetId": null,
+				"tileRenderMode": "FitInside",
+				"tileRect": null,
+				"uiTileRect": null,
+				"nineSliceBorders": [],
+				"maxCount": 0,
+				"limitScope": "PerLayer",
+				"limitBehavior": "MoveLastOne",
+				"pivotX": 0,
+				"pivotY": 0,
+				"allowOutOfBounds": false,
+				"fieldDefs": []
 			}
 		],
 		"tilesets": [],
@@ -1455,16 +1550,6 @@
 				"uid": 106,
 				"values": [
 					{
-						"id": "flower-sun",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "flower-sun-small",
-						"color": 0,
-						"tileRect": null
-					},
-					{
 						"id": "pebbles-a",
 						"color": 0,
 						"tileRect": null
@@ -1486,6 +1571,51 @@
 					},
 					{
 						"id": "lily-pad",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-daisy",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-buttercup",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-daisy-pair",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-blue-pair",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-pink-three",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tuft-fan",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tuft-lean",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tuft-small",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "clump-tall",
 						"color": 0,
 						"tileRect": null
 					}

@@ -42,7 +42,7 @@ export function fixturePlace(loaded, tileset, terrains) {
   return {
     id: 'fixture', formatVersion: 1, set: tileset.id, w: W, h: H, type: 'pond', names: ['Reedpool', 'Pondside'], mirrorOf: '',
     terrain, ground: layersToTileIds(dg, tileset),
-    decals: [prop('pebbles-a', 3, 16), prop('flower-sun', 9, 4)],
+    decals: [prop('pebbles-a', 3, 16), prop('flower-daisy', 9, 4)],
     props: [prop('tree-broad', 3, 3), prop('boulder-brown', 10, 15), prop('bush-big', 15, 6)],
     canopy: [],
     heart: { x: 6, y: 12, kinds: ['moment', 'nest'], species: ['heron'], revealLine: 'Something lives here.', reachBy: 'none' },

@@ -23,6 +23,16 @@ LDtk levels, the dual grid, tile sets, the baked FlatBuffers format and the inde
 | `golden/places/` | `<place>[~x]-48.png` and `-24.png`, rendered by the blitter from the baked data. Compared by decoded pixels. |
 | `golden/seams/` | The seam goldens: `<set>-<pair>-sheet-48.png` (the 16 tiles in corner order), `<set>-<pair>-48.png` (the all-cases map). Compared by decoded pixels; `MB_UPDATE_GOLDENS=1` rewrites them on purpose, and a human looks at every changed one. |
 
+## Open edges and the open style (walk content B5)
+
+A 24 x 28 place (Windstep) is in the open style: no ring of trees, every side runs on into the next cell, an edge closes only where the land has a reason (a cliff, deep water, a thicket) and reads as that thing. Today's 18 x 22 places keep their walls.
+
+- The art desk's pieces (`art/places/sets/ninja-test/DESK.json` lists each file with its sha256 and signed commit; `tools/desk-art.mjs`, run by `prepare-set` when the recipe says `desk`): the cliff, thicket, scrub and deep-water pairs, the cliff's tall sheets (`tall`), the way-up piece (`wayup`), the scrub variants (`variants`), the reed bank look (`looks`), and the small meadow flowers and tufts. The tile set lists these as extra pairs after the main ones (`setload.extraEntries`); no format change.
+- Bake: `src/bake/openedges.mjs` picks each cliff tile by its corners plus the two cells under its bottom corners (s), the way-up pieces over a WayUp area, the reed look inside a ReedBank area, a scrub variant by hash; the cliff's lip and face block (the baked `blockMask`; the adapter blocks them), its top and the way up walk. LDtk: terrains cliff, thicket, scrub; entities WayUp and ReedBank.
+- Rules (open style only): `cliff-foot` (no 1-row gully), `wayup`, `two-thirds-open` (every side walkable on at least two thirds), `seam-ground` and `path-short` (the last 2 rows and columns are grass, nothing on them), `heart-far` (10 from every arrival), `heart-clear` (no prop within 2 of the heart); up to 8 finds.
+- The palette keeps the slots the range haze is keyed to (the kit's 43, then the open edges' 7); the decor's colours follow, and the haze ramp moves up after the set's palette (`hazeKit(..., setLen)`).
+- The adapter closes a side the world closes (the map's end: a thicket stamped over the two outer rows; a cliff: the rows behind its lip), blocked; `tools/views-audit.mjs` holds every open-style side to it.
+
 ## Run
 
 ```

@@ -5,7 +5,7 @@ import { readFileSync, mkdtempSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadSet, dualPairs } from '../src/setload.mjs';
+import { loadSet, dualPairs, extraEntries } from '../src/setload.mjs';
 import { bakeTileSet, halve } from '../src/bakeset.mjs';
 import { writeTileSet, writePlace, FORMAT_VERSION } from '../src/format/write.mjs';
 import { readTileSet, readPlace } from '../src/format/read.mjs';
@@ -42,7 +42,7 @@ test('a tile set written and read back is the same, field by field', () => {
   assert.equal(back.atlas48.length, back.atlas24.length * 4, 'one 24 px tile for every 48 px tile');
   assert.equal(back.lightTables.length, 7);
   assert.equal(back.licence.spdx, 'CC0-1.0');
-  assert.ok(back.pairs.length === 7 && back.pairs.every((p) => p.tiles.length === 16));
+  assert.ok(back.pairs.length === loaded.set.pairs.length + extraEntries(loaded.set).length && back.pairs.every((p, k) => p.tiles.length === (k >= loaded.set.pairs.length && extraEntries(loaded.set)[k - loaded.set.pairs.length].kind === 'wayup' ? 6 : 16)));   // the main pairs, then the cliff's tall sheets, the scrub's variants, the way-up pieces and the reed looks
 });
 
 test('a place written and read back is the same, field by field', () => {
@@ -148,12 +148,13 @@ test('seam test 1 at 24 px: edge signatures hold on the derived tiles of every p
     }
     return img;
   };
-  for (const p of back.pairs) {
+  for (const [k, p] of back.pairs.slice(0, loaded.set.pairs.length).entries()) {
+    if (loaded.set.pairs[k].tall) continue;   // a tall face is held to the block rule (seams.test.mjs), not the one-line-per-edge-state proof
     const nFrames = Math.max(...p.tiles.map((id) => back.tiles[id].frames.length));
     const frames = Array.from({ length: nFrames }, (_, f) => p.tiles.map((id) => { const fr = back.tiles[id].frames; return slotImg(fr[f % fr.length]); }));
     const variants = p.fullVariants.map((id) => slotImg(back.tiles[id].frames[0]));
     const failures = edgeSignatureFailures(frames, variants);
     assert.deepEqual(failures, [], `pair ${p.lower}|${p.upper}:\n${failures.join('\n')}`);
   }
-  assert.equal(dualPairs(loaded).length, back.pairs.length);
+  assert.equal(dualPairs(loaded).length, loaded.set.pairs.length);
 });

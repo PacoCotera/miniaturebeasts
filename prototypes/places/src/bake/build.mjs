@@ -5,6 +5,7 @@ import { renderView } from '../ground.mjs';
 import { FORMAT_VERSION } from '../format/write.mjs';
 import { BakeError, FIND_KINDS } from './ldtk.mjs';
 import { footprintCells, spriteFor } from './rules.mjs';
+import { ALT_CODE, applyOpenEdges, cliffInfo } from './openedges.mjs';
 
 export function layersToTileIds(dg, tileset) {
   return dg.layers.map((l) => ({
@@ -12,6 +13,7 @@ export function layersToTileIds(dg, tileset) {
     tiles: Uint16Array.from(l.tiles, (c) => {
       if (c === EMPTY) return 0xFFFF;
       const p = tileset.pairs[l.pair];
+      if (c >= ALT_CODE) return tileset.pairs[(c - ALT_CODE) >> 4].tiles[(c - ALT_CODE) & 15];   // the cliff's tall tiles, the way up, a variant or the reed look
       if (c < FULL_BASE) return p.tiles[c];
       if (c < EMPTY_BASE) return p.fullVariants[c - FULL_BASE];
       return p.emptyVariants[c - EMPTY_BASE];
@@ -25,6 +27,7 @@ export function buildPlace(ir, ctx) {
   let dg;
   try {
     dg = dualGrid({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain }, ctx.terrains, ctx.pairsOf.get(ir.tileset));
+    applyOpenEdges(dg, ir, ctx.terrains, ctx.pairsOf.get(ir.tileset));
   } catch (e) {
     if (!(e instanceof DualGridError)) throw e;
     const cell = e.cell && e.cell.i !== undefined ? { x: Math.min(e.cell.i, ir.w - 1), y: Math.min(e.cell.j, ir.h - 1) } : e.cell || null;
@@ -36,6 +39,7 @@ export function buildPlace(ir, ctx) {
   const block = new Uint8Array((ir.w * ir.h + 7) >> 3);
   const setBit = (i) => { block[i >> 3] |= 1 << (i & 7); };
   for (let i = 0; i < ir.w * ir.h; i++) { const pl = playOf.get(ir.terrain[i]); if (pl === 'block' || pl === 'deep') setBit(i); }
+  for (const i of cliffInfo(ir, ctx.terrains).lipCells) setBit(i);   // the cliff's lip and face block; its top and the way up walk
   for (const cell of footprintCells(ir, tileset).keys()) setBit(cell);
   const heart = ir.hearts[0];
   const place = {

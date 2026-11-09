@@ -69,7 +69,7 @@ test('palette: at most 208 colours, light tables of 256 entries, every drawn col
 });
 
 test('every pair has 16 tiles, in whole sheets, one per frame; opaque tiles are opaque', () => {
-  const kit = ['grass-water', 'sand-water', 'grass-sand', 'grass-path', 'mud-water', 'grass-earth', 'sand-earth'];
+  const kit = ['grass-water', 'sand-water', 'grass-sand', 'grass-path', 'mud-water', 'grass-earth', 'sand-earth', 'cliff-grass', 'thicket-grass', 'scrub-grass', 'cliff-sand', 'thicket-sand', 'scrub-sand', 'deep-water'];   // the kit's, the clearing's, then the desk's open edges
   assert.deepEqual(set.pairs.map((p) => p.id), kit);
   const t = set.sourceTile;
   for (const p of set.pairs) {
@@ -134,6 +134,7 @@ test('prepare-set: a source with more than 208 colours stops and says so (fixtur
   writeFileSync(path.join(root, 'ninja-adventure', 'LICENSE.txt'), 'CC0 1.0 Universal\n');
   const recipe = JSON.parse(readFileSync(path.join(setDir, 'recipe.json'), 'utf8'));
   for (const k of Object.keys(recipe.sources)) recipe.sources[k] = 'ninja-adventure/a.png';
+  delete recipe.desk;   // the fixture's own source only: the desk's pinned art lives outside this repo (absent in CI)
   assert.throws(() => prepareSet(recipe, { tilesetsRoot: root }), /over the 208/);
 });
 

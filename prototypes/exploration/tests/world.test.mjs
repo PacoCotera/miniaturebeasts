@@ -6,7 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { loadPage, fakeCanvas, PAGE, MODULE, SCRIPT } from "./page-harness.mjs";
+import { loadPage, fakeCanvas, PAGE, MODULE, SCRIPT, STONE_ART } from "./page-harness.mjs";
 import { blank } from "../../face/tools/blank.mjs";
 import * as W from "../src/world.mjs";
 import * as R from "../src/regions.mjs";
@@ -1037,6 +1037,7 @@ test("golden frames at 48: a place with a south face and a stair, a generator 1 
 
 test("the warned-tile card in a 48 px place shows the cell's sprite box (columns 8–39, rows 16–47): the 48 px tile, the stone at the card's origin, the place's tables left as found", () => {
   const p = place48(7, 176, 14, 14); frame48(p); assert.equal(p.run("RT.ts"), 48);
+  p.ctx.__stoneArt = STONE_ART; p.run("loadStoneArt()");   // the quartz family, decoded, as a browser loads it
   const key = p.run("S.exp.patch.key");
   const st = p.run(`(() => { const lay = layout(${JSON.stringify(key)}), P = S.exp.patch; let f = lay.feats.find(q => q.kind === 'k'); if (!f) { f = { kind: 'k', id: 'zz', x: P.x + 1, y: P.y, ch: 0 }; lay.feats.push(f); } return { x: f.x, y: f.y }; })()`);
   p.run("unveiled = () => true; globalThis.__t48 = 0; globalThis.__tp = 0; globalThis.__b = []; { const t0 = tile48; tile48 = function () { __t48++; return t0.apply(this, arguments); }; const t1 = tilePB; tilePB = function () { __tp++; return t1.apply(this, arguments); };"
@@ -1044,7 +1045,8 @@ test("the warned-tile card in a 48 px place shows the cell's sprite box (columns
   p.run(`PIC.warn(100, 200, { key: ${JSON.stringify(key)}, x: ${st.x}, y: ${st.y} })`);
   assert.equal(p.run("__t48 + ',' + __tp"), "1,0", "the 48 px tile, not the 32 px one");
   assert.equal(p.run("JSON.stringify(__b.slice(0, 2))"), "[[92,184],[100,200]]", "the tile is drawn 8 left and 16 up of the slot, the stone at the slot's origin: the sprite box is the slot");
-  const art = p.run("__stone"); let low = -1; for (let i = 0; i < art.p.length; i++) if (art.p[i] >= 0) low = Math.max(low, (i / art.w) | 0);
+  const art = p.run("__stone"); assert.deepEqual([art.w, art.h, art.dx, art.dy], [32, 32, 0, 0], "the card's stone is the small quartz stone doubled, 32 x 32 at the slot's origin");
+  const m = STONE_ART["stone-small-plain@16"]; let low = -1; for (let i = 0; i < 16 * 16; i++) if (m.data[i * 4 + 3]) low = Math.max(low, 2 * ((i / 16) | 0) + 1);
   assert.ok(low >= 0 && low + 16 <= 47, "the stone's lowest row (sprite row " + low + ", cell row " + (low + 16) + ", card y + " + (8 + low) + ") is inside the sprite box, not cut off");
   assert.equal(p.run("RT.remap === REMAP"), true, "the tables are left as they were");
   assert.equal(p.run("placeLightFn(S.exp.patch, layout(S.exp.patch.key)).ts"), 48);
