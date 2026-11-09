@@ -37,7 +37,7 @@ function scene(o = {}) {
   if (o.portrait) { st.sitting = { source: "dev", key: null, at: 0 }; if (o.portrait === "portrayed") st.mibis[0].portrait = { state: "delivered", ...(o.digest ? { digest: o.digest } : {}) }; }   // a sitting held; portrayed: its portrait came, with its picture when the digest is named
   if (o.bonded) { st.mibis[0].bonded = true; st.mibis[0].notches = 3; }
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3, carryReqs: [] };
-  const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null };
+  const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null, ...(o.greet ? { greet: { asleep: false } } : {}) };
   if (o.look) injectPortraitSource(o.digest, new Uint8ClampedArray(528 * 392 * 4).fill(255));   // its 528x392 opening is held: ✓ Look at the portrait is live, the Portrait module is not held
   const b = habitatBuild(m, spec, frameSpec, homeSpec, o.look ? sittingSpec : null);
   if (o.namer) { const n = { mode: o.meet ? "meet" : "rename", id: b.shown.id, text: o.text ?? b.shown.name, fs: o.fs ?? "selected", page: o.page ?? "letters", shift: false, f: o.nf ?? "act.done", say: o.say ?? null, sugg: -1 }, nb = namerBuild({ st, mibi: b.shown, ui: n }, namerSpec); b.props.overlay = nb.overlay; b.line = nb.line; b.requests = [...b.requests, ...nb.requests]; if (o.meet) { b.props.state = "rest"; b.props.regions.meetRibbon.text = ""; b.props.regions.nameTag.text = b.shown.name; } }
@@ -238,6 +238,27 @@ test("a sleeper's Greet (M1 §2.4): wake (16-level dither in 180 ms, crouch 400,
   assert.ok(first.length >= 12 && first.every((v, i) => i === 0 || v >= first[i - 1]), "the wake's dither climbs its levels within 180 ms: " + first); assert.ok(last.length >= 12, "the curl's dither: " + last);
   assert.ok(tr.filter((x) => x.cell === "air").length >= 10, "the hops"); assert.match(tr.at(-1).cell, /^curl/, "it ends curled"); assert.ok(tr.find((x) => x.cell === "crouch"));
 });
+test("F5a Greet's heart: the art desk's fx-greet-heart-16x16 (a master, mibi-art ce97d1c19) is asked for with the Greet and drawn above the resident while its moment plays; with no Greet nothing is asked for or drawn", { skip }, async () => {
+  const id = "fx-greet-heart-16x16", colour = Array.from(standIn(id, [1, 1]).data.slice(0, 3));
+  const quiet = scene({ focus: "resident" }); assert.ok(!quiet.requests.some((r) => r.id === id), "no Greet, no request");
+  const b = scene({ focus: "resident", greet: true }); assert.ok(b.requests.some((r) => r.id === id), "the Greet asks for the heart"); assert.equal(b.props.regions.resident.heart, true);
+  const f = await start(b, { t0: 1000 }), r = spec.regions.resident.rect, lift = spec.regions.resident.lift ?? 4, ev = spec.events.moment.heart;
+  f.send({ t: "event", kind: "moment", target: "resident", ms: 1800, hold: 300, cut: true }); f.frame((f.t += 100));
+  const up = Math.floor(ev.rise * 100 / ev.ms), x = r[0] + (r[2] >> 1) - 8, y = r[1] - lift - ev.gap - 16 - up;
+  assert.deepEqual(Array.from(f.pixel(x + 8, y + 8)), colour, "the heart's picture shows above the resident, rising");
+  if (process.env.GREET_STILL) {   // a 1x still of the glass with the real master in the slot (looked at by a person; never compared)
+    const { encodePNG } = await import("../../ui/png.mjs"), { readFileSync: rf, writeFileSync: wf } = await import("node:fs"), { decodePNG } = await import("../../ui/png.mjs");
+    const real = decodePNG(rf(new URL("../../ui/assets/masters/pods/" + id + ".png", import.meta.url)));
+    UNSIGNED = new Set([id]); const s = await start(b, { t0: 1000 }); UNSIGNED = null;   // the slot is left to the real master, handed over by hand
+    s.handleOf(id, withPolicy(() => ({ w: real.width, h: real.height, data: real.data }))); assert.equal(push(s, b), 0, s.errors().join("; "));
+    s.send({ t: "event", kind: "moment", target: "resident", ms: 1800, hold: 300, cut: true }); s.frame((s.t += 100));
+    const [gx, gy, gw, gh] = spec.regions.glass.rect, rgba = new Uint8ClampedArray(gw * gh * 4); for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const p = s.pixel(gx + i, gy + j), o = (j * gw + i) * 4; rgba[o] = p[0]; rgba[o + 1] = p[1]; rgba[o + 2] = p[2]; rgba[o + 3] = 255; }
+    wf(process.env.GREET_STILL, encodePNG(gw, gh, rgba));
+  }
+  const g = await start(quiet, { t0: 1000 }); g.send({ t: "event", kind: "moment", target: "resident", ms: 1800, hold: 300, cut: true }); g.frame((g.t += 100));
+  assert.notDeepEqual(Array.from(g.pixel(x + 8, y + 8)), colour, "no Greet, no heart");
+});
+
 test("motion off up close: stand, or curl asleep; the moment plays nothing", { skip }, async () => {
   const a = await upClose({ motion: false }); assert.equal(cellOf(a.f, "adult"), "stand");
   const b = await upClose({ motion: false, time: 23 * 3600 }); assert.equal(cellOf(b.f, "adult"), "curl");
