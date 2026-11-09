@@ -211,6 +211,12 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   // pairs
   const pairs = [];
   for (const p of recipe.pairs) {
+    if (p.premade) {   // a pair the art desk drew whole (16 tiles in corner order, the full tile): its sheets are placed files in the set's own folder, taken as they are
+      const dir = path.join(root, 'art', 'places', 'sets', recipe.id);
+      for (const n of [...p.premade.sheets, p.premade.fullSheet]) images.set(n, readPng(path.join(dir, n)));
+      pairs.push({ id: p.id, lower: p.lower, upper: p.upper, mode: p.mode, sheets: p.premade.sheets, fullSheet: p.premade.fullSheet });
+      continue;
+    }
     const pieces = {};
     for (const n of BLOB_PIECES) { const [c, r] = p.blob.cells[n]; pieces[n] = recolourImage(cell(p.blob.sheet, c, r), p.recolour); }
     const fullCells = p.upperFull.cells.map(([c, r]) => cell(p.upperFull.sheet, c, r));

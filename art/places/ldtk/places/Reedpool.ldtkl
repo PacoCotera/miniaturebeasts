@@ -4631,46 +4631,6 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						14,
-						8
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "6a12d697-fe75-3d69-d31b-3dda11f17afa",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						224,
-						128
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "boulder-brown",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"boulder-brown"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
 						15,
 						4
 					],
@@ -4689,86 +4649,6 @@
 					"px": [
 						240,
 						64
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "reeds",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"reeds"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						16,
-						8
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "bb4b2f05-82e6-2275-b864-abf39e19b79c",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						256,
-						128
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "reeds",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"reeds"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
-						16,
-						10
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "9c6c8f03-6048-1f2d-a77a-9c082ce33b57",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						256,
-						160
 					],
 					"fieldInstances": [
 						{
@@ -6017,86 +5897,6 @@
 				{
 					"__identifier": "Decal",
 					"__grid": [
-						12,
-						7
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "fc98ea62-d258-152e-3072-05fa901f52c2",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						192,
-						112
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "lily-pad",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"lily-pad"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
-						14,
-						10
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "4cef1b64-7d99-d09e-5bab-482ad2efa492",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						224,
-						160
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "lily-pad",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"lily-pad"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
 						7,
 						3
 					],
@@ -7093,10 +6893,28 @@
 				3,
 				2,
 				2,
+				3,
+				3,
+				3,
+				3,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
+				3,
 				2,
-				2,
-				2,
-				2,
+				3,
+				7,
+				7,
+				7,
 				3,
 				6,
 				6,
@@ -7110,47 +6928,11 @@
 				6,
 				3,
 				3,
-				2,
-				2,
 				3,
 				3,
-				2,
-				3,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				3,
-				3,
-				3,
-				3,
-				3,
-				3,
-				2,
-				3,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				3,
-				2,
-				2,
-				2,
-				2,
-				2,
+				7,
+				7,
+				7,
 				3,
 				6,
 				6,
@@ -7165,10 +6947,28 @@
 				6,
 				3,
 				2,
+				3,
+				7,
+				7,
+				7,
+				3,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				3,
 				2,
-				2,
-				2,
-				2,
+				3,
+				3,
+				3,
+				3,
 				3,
 				6,
 				6,

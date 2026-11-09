@@ -42,7 +42,7 @@ test('a tile set written and read back is the same, field by field', () => {
   assert.equal(back.atlas48.length, back.atlas24.length * 4, 'one 24 px tile for every 48 px tile');
   assert.equal(back.lightTables.length, 7);
   assert.equal(back.licence.spdx, 'CC0-1.0');
-  assert.ok(back.pairs.length === 5 && back.pairs.every((p) => p.tiles.length === 16));
+  assert.ok(back.pairs.length === 7 && back.pairs.every((p) => p.tiles.length === 16));
 });
 
 test('a place written and read back is the same, field by field', () => {

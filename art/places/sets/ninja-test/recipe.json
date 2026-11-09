@@ -21,7 +21,8 @@
     "The sand full tile is the water sheet's own sand cell (TilesetWater 0,5), the colour the sand shore pieces run into.",
     "mud|water is the pack's dark swamp shore: brown mud and purple water. Its water is not the blue water of the other pairs; the three never meet (an opaque pair refuses a third terrain at a corner).",
     "reeds: the pack has no reeds; its bamboo stalk stands in. tall-grass: three of the pack's grass tufts in a row stand in as the frames of a sway (the pack's daisy plant read as flowers). Both are test stand-ins for the art desk's own.",
-    "tree-hollow: the pack's great pair of gnarled trees with the arch between them, cut whole; the Hollow Tree's landmark, its heart at the foot of the arch. split-stone: the pack's three stacked grey boulders with the dark crack between them, cut whole; the Split Stone's landmark."
+    "tree-hollow: the pack's great pair of gnarled trees with the arch between them, cut whole; the Hollow Tree's landmark, its heart at the foot of the arch. split-stone: the pack's three stacked grey boulders with the dark crack between them, cut whole; the Split Stone's landmark.",
+    "grass|earth and sand|earth (`premade`): the heart's clearing, drawn by the art desk and placed as they are: signed in mibi-art 16dd23ebb, art-jobs/2026-11-09-stone-standing/out/clearing/ (pair-grass-earth, pair-sand-earth and their full tiles, copied byte for byte; never edit here, re-sign at the desk). Earth is the lower terrain of both pairs; the clearing is painted wholly inside grass or wholly inside sand, so earth, sand and grass never meet at a corner. Their six new colours join the palette."
   ],
   "sources": {
     "water": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetWater.png",
@@ -60,6 +61,14 @@
       "blob": { "sheet": "water", "cells": { "TL": [13, 6], "T": [14, 6], "TR": [15, 6], "L": [13, 7], "C": [14, 7], "R": [15, 7], "BL": [13, 8], "B": [14, 8], "BR": [15, 8], "inSE": [18, 7], "inSW": [19, 7], "inNE": [18, 8], "inNW": [19, 8] } },
       "upperFull": { "sheet": "water", "cells": [[13, 11]] },
       "lowerFrames": { "sheet": "rippleSwamp", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
+    },
+    {
+      "id": "grass-earth", "lower": "earth", "upper": "grass", "mode": "opaque",
+      "premade": { "sheets": ["pair-grass-earth.png"], "fullSheet": "pair-grass-earth-full.png" }
+    },
+    {
+      "id": "sand-earth", "lower": "earth", "upper": "sand", "mode": "opaque",
+      "premade": { "sheets": ["pair-sand-earth.png"], "fullSheet": "pair-sand-earth-full.png" }
     }
   ],
   "props": {
