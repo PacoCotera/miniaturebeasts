@@ -103,7 +103,7 @@ test("the reveal plays once per place, takes every press while it dissolves, hol
     await page.waitForTimeout(2300);
     assert.equal(await page.evaluate(() => window.__mb.offPalette().bad.length), 0, "the held picture stays on the palette");
     s = await st(page); assert.equal(s.view, "reveal", "it holds until ✓ or ←");
-    await page.evaluate(() => { window.__mb.TEST.clock = Math.ceil(performance.now() / 600) * 600; }); await page.waitForTimeout(200);   // the clock held on a multiple of 600 ms: the take marks (two frames, 300 ms each) stand on their first, whenever the run was
+    await page.evaluate(() => { window.__mb.TEST.clock = Math.ceil(performance.now() / 2400) * 2400; }); await page.waitForTimeout(200);   // the clock held on a multiple of 2400 ms: the take marks (two frames, 300 ms each) and the explorer's pulse (400 ms each) stand on their first, whenever the run was
     golden("c15-reveal-held.png", await still(page));
     await page.evaluate(() => { window.__mb.TEST.clock = null; });
     const left = await page.evaluate(() => { const m = window.__mb, k = m.S.exp.patch.key, l = m.layout(k); let n = 0; for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) if (l.reach[y * l.w + x] && !m.unveiled(k, x, y)) n++; return n; });
@@ -168,7 +168,7 @@ test("the reveal's frames: the spot rings the heart, the zoom out and dissolve a
     await pressSeq(page, ["back"]); await page.waitForTimeout(300);
     await pressSeq(page, ["down", "confirm"]); await page.waitForTimeout(400);
     s = await st(page); assert.equal(s.view, "look");
-    await page.evaluate(() => { window.__mb.TEST.clock = Math.ceil(performance.now() / 600) * 600; }); await page.waitForTimeout(200);   // held on a multiple of 600 ms, as above
+    await page.evaluate(() => { window.__mb.TEST.clock = Math.ceil(performance.now() / 2400) * 2400; }); await page.waitForTimeout(200);   // held on a multiple of 2400 ms, as above
     const card = await still(page); assert.ok(amberIn(card) > 100, "the amber ring and card border show");
     await page.evaluate(() => { window.__mb.TEST.clock = null; });
     golden("look-found.png", card);

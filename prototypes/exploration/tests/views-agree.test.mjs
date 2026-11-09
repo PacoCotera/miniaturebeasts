@@ -63,6 +63,8 @@ async function serve() {
   return { server, url: `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html` };
 }
 const still = async (page) => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
+// A picture is taken once the page has drawn several frames of the state it was put in (a loaded machine draws late): a pause, then eight frames.
+const settle = async (page) => { await page.waitForTimeout(500); await page.evaluate(async () => { const m = window.__mb, f0 = m.RT.frameN, t0 = performance.now(); while (m.RT.frameN < f0 + 8 && performance.now() - t0 < 10000) await new Promise((r) => requestAnimationFrame(r)); }); };
 
 test("the owner's case: the reach view shows the stair on the wood cell's north edge, and so do the cell and the whole place (one picture, three views)", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
@@ -79,16 +81,16 @@ test("the owner's case: the reach view shows the stair on the wood cell's north 
     assert.deepEqual(world, { land: 3, north: 2 }, "a wood cell with a ramp edge to the north");
     await page.evaluate((c) => { const m = window.__mb, ex = m.S.exp; if (ex.patch) m.leavePatch(); ex.pos = c; ex.start = c; ex.lastDir = null; ex.face = "up";
       for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const X = (c % m.MW) + dx, Y = ((c / m.MW) | 0) + dy; if (X >= 0 && Y >= 0 && X < m.MW && Y < m.MH) { m.S.revealed[Y * m.MW + X] = 1; if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1) m.S.visited[Y * m.MW + X] = 1; } } }, CELL);
-    await page.waitForTimeout(1800);
+    await settle(page);
     const reach = await still(page);
     await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(800);
     await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); });
     const lay = await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch, l = m.layout(P.key), st = l.stairs.find((q) => q.dir === "up");
-      P.x = st.entry.x; P.y = st.entry.y; P.dir = "up"; m.S.veil[P.key] = new Array(l.h).fill(0x0fffffff);
+      P.x = st.entry.x; P.y = st.entry.y; P.dir = "up"; m.RT.ca = null;   /* the camera starts from its first rest for this tile, however the pawn got here */ m.S.veil[P.key] = new Array(l.h).fill(0x0fffffff);
       let stairTiles = 0; for (let x = 0; x < l.w; x++) for (let y = 0; y < 3; y++) if (l.terr[y * l.w + x] === 5) stairTiles++;
       return { stair: st, stairTiles, walkable: !m.T_BLOCK[l.tiles[st.entry.y * l.w + st.entry.x]] && l.reach[st.entry.y * l.w + st.entry.x] === 1, rim: l.rim.length }; });
     assert.equal(lay.stair.dir, "up"); assert.ok(lay.stairTiles >= 2, "the stair is drawn in the cell, on the north border"); assert.ok(lay.walkable, "and it is walkable from the way in");
-    await page.waitForTimeout(700);
+    await settle(page);
     const cell = await still(page);
     // the stair crosses: one step up from its entry leaves the cell for the next one north
     await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; P.y = 0; });
@@ -98,7 +100,7 @@ test("the owner's case: the reach view shows the stair on the wood cell's north 
     await page.evaluate((c) => { const m = window.__mb, ex = m.S.exp; ex.pos = c; ex.lastDir = null; }, CELL);
     await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(800);
     await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); m.startView("look", m.layout(m.S.exp.patch.key)); });
-    await page.waitForTimeout(700);
+    await settle(page);
     const whole = await still(page);
     const img = newImage(450 * 3, 600); paste(img, reach, 0, 0); paste(img, cell, 450, 0); paste(img, whole, 900, 0);
     const r = compareGolden(path.join(here, "golden", "views-agree-stair.png"), img);
