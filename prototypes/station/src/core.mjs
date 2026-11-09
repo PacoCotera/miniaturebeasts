@@ -20,6 +20,26 @@ import * as frameIntents from "./intents/frame.mjs";
 import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, shownRoomNow, roomsPending, pinned, picture, setEnv, setMetrics, libraryAhead } from "./host.mjs";
 import { warmLibraryNext, wantLibrary, warmLibraryPaper } from "./pictures.mjs";
 import { registerAsset, probe, MasterPending } from "../../ui/assets.mjs";
+// The spec files are imported, not fetched: the Vite build bundles them into the page's chunks (no round trip each), the harness and the tests read them from disk. Each boot takes its own copy.
+import frameSpec from "../../ui/specs/station/frame.json" with { type: "json" };
+import podsSpec from "../../ui/specs/station/pods.json" with { type: "json" };
+import homeSpec from "../../ui/specs/station/home.json" with { type: "json" };
+import cargoSpec from "../../ui/specs/station/cargo.json" with { type: "json" };
+import createSpec from "../../ui/specs/station/create.json" with { type: "json" };
+import incubatorSpec from "../../ui/specs/station/incubator.json" with { type: "json" };
+import vivariumSpec from "../../ui/specs/station/vivarium.json" with { type: "json" };
+import habitatSpec from "../../ui/specs/station/habitat.json" with { type: "json" };
+import namerSpec from "../../ui/specs/station/namer.json" with { type: "json" };
+import panelSpec from "../../ui/specs/station/panel.json" with { type: "json" };
+import librarySpec from "../../ui/specs/station/library.json" with { type: "json" };
+import benchSpec from "../../ui/specs/station/bench.json" with { type: "json" };
+import crossSpec from "../../ui/specs/station/cross.json" with { type: "json" };
+import sittingSpec from "../../ui/specs/station/sitting.json" with { type: "json" };
+import settingsSpec from "../../ui/specs/station/settings.json" with { type: "json" };
+import roomsSpecJson from "../../ui/specs/station/rooms.json" with { type: "json" };
+import movingIndexJson from "../../ui/specs/station/moving/index.json" with { type: "json" };
+import standSizesJson from "../../ui/specs/station/stand-sizes.json" with { type: "json" };
+import { PROTOTYPES } from "../../ui/site-base.mjs";
 
 // What the page (or the harness) owns. wake: the Caddy's wake at a wake intent or a Dock on Idle; afterSave: after each save the host makes; present: the face's redrawn rectangles onto the screen;
 // defer: the Library's warm, a moment after the props that asked for it; log: the warm's timings; dockElsewhere: the play page's Dock pressed while another device had the keys (read once, then cleared).
@@ -30,7 +50,7 @@ let lastRoom = null, msgSent = -1, lastLight = null, litHeld = new Set(), moving
 
 // --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
 export async function loadFrames() {
-  const base = new URL("../../workbench/frames/language/", import.meta.url);
+  const base = new URL("workbench/frames/language/", PROTOTYPES);
   const index = await (await fetch(new URL("index.json", base))).json();
   const frames = await Promise.all(index.species.map((s) => fetch(new URL(s.file, base)).then((r) => r.json())));
   setFrames(frames);
@@ -40,22 +60,22 @@ const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]
 // The spec files the face takes (frame, pods, home, cargo, create, incubator, vivarium, habitat, namer, library, bench, cross (the rack pod reads its pigment chips), sitting and settings), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 // Every fetch starts at once and follows the server's headers (no-cache plus ETag: a revalidation, a 304 when nothing changed): the specs, the moving sets, the rooms, metrics, stand sizes, the pod sprites and (once the rooms spec says
 // which room is shown) the masters. What must keep an order keeps it in the code after the fetches: the specs are set in their list order (the face is sent them in that order), and the pod sprites register after the masters placed theirs.
-const SPEC_KEYS = ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross", "sitting", "settings"];
+const SPEC_KEYS = ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross", "sitting", "settings"], SPEC_JSON = { frame: frameSpec, pods: podsSpec, home: homeSpec, cargo: cargoSpec, create: createSpec, incubator: incubatorSpec, vivarium: vivariumSpec, habitat: habitatSpec, namer: namerSpec, panel: panelSpec, library: librarySpec, bench: benchSpec, cross: crossSpec, sitting: sittingSpec, settings: settingsSpec };
 export async function bootAssets({ test = false, onProgress = null } = {}) {   // onProgress(done, total): the boot pictures' bytes placed, for the page's load bar
   const getJSON = async (u) => (await fetch(u)).json();
-  const spec = (f) => getJSON(new URL("../../ui/specs/station/" + f, import.meta.url));
-  const rooms = spec("rooms.json");   // the four rooms (the rooms design), generated by place-masters --rooms and merged as `moving` is: one spec on the face, which checks it whole (room_load)
-  const groups = getJSON(new URL("../../ui/assets/masters/groups.json", import.meta.url)).catch(() => null);   // which masters each screen uses (the station journey records it): without it every master loads at boot
-  const specs = Promise.all(SPEC_KEYS.map((k) => spec(k + ".json")));
+  const spec = (f) => getJSON(new URL("ui/specs/station/" + f, PROTOTYPES));   // only the moving sets (none today): their names are data
+  const rooms = Promise.resolve(structuredClone(roomsSpecJson));   // the four rooms (the rooms design), generated by place-masters --rooms and merged as `moving` is: one spec on the face, which checks it whole (room_load)
+  const groups = getJSON(new URL("ui/assets/masters/groups.json", PROTOTYPES)).catch(() => null);   // which masters each screen uses (the station journey records it): without it every master loads at boot
+  const specs = Promise.resolve(SPEC_KEYS.map((k) => structuredClone(SPEC_JSON[k])));
   const lightNow = (frame) => G.settings.light ?? lightAt(Math.floor(stationSeconds() / 3600), frame.light);   // the light on, as the host takes it (createHost's `light`)
   // on demand the shown room needs only the light now on, so the boot waits for the frame spec and the settings before it picks the room's pictures (the settings are read again by the page's own loadSettings)
   const bootLight = Promise.all([specs, groups]).then(([s, g]) => { if (!g || test) return null; loadSettings(); return lightNow(s[0]); });
-  const masters = Promise.all([rooms, groups, bootLight]).then(([r, g, light]) => loadMasters(new URL("../../ui/assets/masters/", import.meta.url), { all: test, order: r.order, room: readStored()?.st?.face?.room ?? 0, groups: g, light, onProgress }));   // the signed masters take their stand-ins' ids before any screen registers them
+  const masters = Promise.all([rooms, groups, bootLight]).then(([r, g, light]) => loadMasters(new URL("ui/assets/masters/", PROTOTYPES), { all: test, order: r.order, room: readStored()?.st?.face?.room ?? 0, groups: g, light, onProgress }));   // the signed masters take their stand-ins' ids before any screen registers them
   const mastersDone = masters.then(() => {}, () => {});   // the pod sprites wait for the masters to be placed, not for their failure (the boot reports that)
-  const moving = spec("moving/index.json").then(async (ix) => Object.fromEntries(await Promise.all(ix.sets.map(async (id) => [id, await spec(`moving/${id}.json`)]))));   // the moving sets: one file a species, one spec on the face
+  const moving = Promise.resolve(structuredClone(movingIndexJson)).then(async (ix) => Object.fromEntries(await Promise.all(ix.sets.map(async (id) => [id, await spec(`moving/${id}.json`)]))));   // the moving sets: one file a species, one spec on the face
   const metrics = getJSON(new URL("../../face/dist/metrics.json", import.meta.url));   // the face's Inter metrics: Level 2 measures its bottom-line ladders with them (ui/specs/measure.mjs)
-  const sizes = spec("stand-sizes.json");   // the views' figure boxes (no kind has a layered stand or a stand-looks table: each mibi is drawn from its painted stand)
-  const pods = loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url), { after: mastersDone });
+  const sizes = Promise.resolve(structuredClone(standSizesJson));   // the views' figure boxes (no kind has a layered stand or a stand-looks table: each mibi is drawn from its painted stand)
+  const pods = loadPodSprites(new URL("ui/assets/placeholders/pod/", PROTOTYPES), { after: mastersDone });
   const [specList, sets, roomsSpec] = await Promise.all([specs, moving, rooms, masters, metrics, sizes, pods]);
   SPEC_KEYS.forEach((k, i) => { SPECS[k] = specList[i]; });
   SPECS.moving = sets; setMoving(sets);

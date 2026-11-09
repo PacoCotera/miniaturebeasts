@@ -1,0 +1,15 @@
+{
+  "name": "mb-sandbox-build",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The sandbox pages' build (station, play, exploration): Vite bundles them into content-hashed chunks for the deployed copy; p-queue is the Station's masters queue. The sources, the headless harness, the goldens and the node tests run from the source modules and never need the build. See station/README.md, Building for the sandbox.",
+  "license": "AGPL-3.0-only",
+  "engines": { "node": ">=22" },
+  "scripts": { "build": "vite build --config vite.config.mjs" },
+  "dependencies": {
+    "p-queue": "10.0.0"
+  },
+  "devDependencies": {
+    "vite": "7.3.8"
+  }
+}

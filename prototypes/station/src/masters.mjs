@@ -4,6 +4,7 @@
 import { placeMaster, registerPending } from "../../ui/assets.mjs";
 import { setJuvenileFacing, juvenileMirrored, mirrorPic } from "./facing.mjs";
 import { decodePNGAsync, canvasRound } from "../../ui/png.mjs";
+import PQueue from "p-queue";
 
 // The one decoder of the masters, on the page and headless alike (ui/png.mjs): inflated at load, the pixels made when a picture first asks, through the 8-bit premultiplied
 // round trip the browser's canvas gave them (canvasRound), so every picture is the one the goldens were drawn with.
@@ -23,7 +24,9 @@ const realDecode = decodeRGBA;
 // Without groups (no groups.json) every non-room master loads at boot, as before.
 export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode = realDecode, place = placeMaster, register = registerPending, concurrency = 16, prefetchConcurrency = 2 } = {}) {
   // at most `concurrency` masters in flight: hundreds of concurrent fetches and decodes can fail with net::ERR_INSUFFICIENT_RESOURCES (measured on Chromium 141)
-  let later = [], items = [], rooms = new Map(), queue = [], active = 0, order = [], base = null, groups = null, byId = new Map(), warm = [], warming = 0, roomMap = new Map(), fam = new Map(), lightFn = null, shownName = null, progress = null;
+  let later = [], items = [], rooms = new Map(), order = [], base = null, groups = null, byId = new Map(), warm = [], warming = 0, roomMap = new Map(), fam = new Map(), lightFn = null, shownName = null, progress = null;
+  // the queue is p-queue: at most `concurrency` in flight, and a priority per picture. A picture a screen asks for (ensure, ensureRoom) goes ahead of everything waiting, the first named first, a later ask ahead of an earlier one
+  const q = new PQueue({ concurrency }); let boost = 0;
   const roomName = (r) => (typeof r === "number" ? order[r] : r);
   const run = async (it) => {
     const e = it.e, r = await fx(masterUrl(base, e));
@@ -33,16 +36,14 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
     let bmp = await decode(bytes); if (juvenileMirrored(it.id)) bmp = mirrorPic(bmp);   // the young of a flagged species faces the opposite way from its adult: drawn mirrored, the file untouched
     place({ id: it.id, w: e.w, h: e.h, file: e.file, hash: shaOf(e), slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }, { w: bmp.w, h: bmp.h, rgba: bmp.rgba }); it.placed = true;
   };
-  const pump = () => {
-    while (active < concurrency && queue.length) {
-      const it = queue.shift(); active++;
-      run(it).then(it.resolve, (err) => { const no = it.reject; if (isNet(err)) fresh(it); no(err); }).finally(() => { active--; pump(); });
-    }
-  };
   // a fetch that never answered (the page went away, the network dropped: fetch's TypeError) is not a refused picture: the item goes back to waiting, and the room's promise is dropped, so the next ensureRoom fetches it again
   const isNet = (err) => err instanceof TypeError;
   const fresh = (it) => { it.queued = false; it.done = new Promise((ok, no) => { it.resolve = ok; it.reject = no; }); it.done.catch(() => {}); if (it.room) for (const k of [...rooms.keys()]) if (k.startsWith(it.room + "|")) rooms.delete(k); };
-  const enqueue = (list) => { for (const it of list) if (!it.queued) { it.queued = true; queue.push(it); } pump(); };
+  const submit = (it, priority) => { it.queued = true; it.started = false; q.add(() => { it.started = true; return run(it); }, { priority, id: it.id }).then(it.resolve, (err) => { const no = it.reject; if (isNet(err)) fresh(it); no(err); }); };
+  const enqueue = (list, front = false) => {
+    if (front) boost += list.length;
+    list.forEach((it, i) => { const p = front ? boost - i : 0; if (!it.queued) submit(it, p); else if (front && !it.started) { try { q.setPriority(it.id, p); } catch { /* it has just started */ } } });
+  };
   const settled = (list) => Promise.all(list.map((it) => it.done));
   // On demand, a room needs only the pictures of the light now on (a name with -dawn-, -day-, -dusk- or -night-): the others are warmed in the cache and fetched when the light changes (the host then holds the face until they are in, as it does for a room)
   const roomPromise = (name) => { const k = name + "|" + (lazyLight() ?? ""); if (!rooms.has(k)) rooms.set(k, settled(roomNeed(name)).then(() => {})); return rooms.get(k); };
@@ -59,11 +60,11 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
   };
   // cache warming: fetch and drop (a later ensure finds the file in the HTTP cache, immutable by its ?v=), a couple at a time, and only while nothing is being asked for
   const warmNext = () => {
-    while (warming < prefetchConcurrency && active === 0 && queue.length === 0 && warm.length) {
+    while (warming < prefetchConcurrency && q.pending === 0 && q.size === 0 && warm.length) {
       const it = warm.shift(); if (it.placed || it.queued) continue; warming++;
       fx(masterUrl(base, it.e)).then((r) => (r.ok ? r.arrayBuffer() : null)).catch(() => {}).finally(() => { warming--; setTimeout(warmNext, 0); });
     }
-    if (warm.length && (active > 0 || queue.length > 0) && !warmTimer) warmTimer = setTimeout(() => { warmTimer = null; warmNext(); }, 250);
+    if (warm.length && (q.pending > 0 || q.size > 0) && !warmTimer) warmTimer = setTimeout(() => { warmTimer = null; warmNext(); }, 250);
   };
   let warmTimer = null;
   const loader = {
@@ -106,9 +107,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
       if (family) mine = [...new Set([...mine, ...mine.filter((it) => !it.room).flatMap((it) => fam.get(famKey(it.id)) ?? []).filter((it) => !it.room)])];
       mine = mine.filter((it) => !it.placed);
       if (!mine.length) return Promise.resolve();
-      const waiting = mine.filter((it) => queue.includes(it));
-      if (waiting.length) queue = [...waiting, ...queue.filter((it) => !waiting.includes(it))];
-      enqueue(mine); return settled(mine).then(() => {});
+      enqueue(mine, true); return settled(mine).then(() => {});
     },
     // the ids of a screen's group (groups.json), or []
     groupOf(screen) { return groups?.[screen] ?? []; },
@@ -117,9 +116,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
     ensureRoom(r) {
       const name = roomName(r), mine = roomNeed(name);
       if (!roomItems(name).length) return items.length ? Promise.reject(new Error(`no room ${JSON.stringify(r)} in the masters index`)) : Promise.resolve();
-      const waiting = mine.filter((it) => queue.includes(it));
-      if (waiting.length) queue = [...waiting, ...queue.filter((it) => !waiting.includes(it))];
-      enqueue(mine); return roomPromise(name);
+      enqueue(mine, true); return roomPromise(name);
     },
     // the other rooms, in the background, the room after the shown one first (the page calls it once the first screen is up, so the boot set is the only thing fetched before it)
     background() {

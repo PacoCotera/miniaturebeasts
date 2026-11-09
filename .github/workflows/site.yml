@@ -117,6 +117,12 @@ jobs:
           # the Companion's 48 px place art, from where it lives: the shipping folder only (sheets, palette and manifest)
           mkdir -p _site/art/companion-48/terrain && cp -r art/companion-48/terrain/meadow _site/art/companion-48/terrain/
           printf '{"commit":"%s","short":"%s","built":"%s"}\n' "$GITHUB_SHA" "${GITHUB_SHA:0:7}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _site/build.json
+      - name: Bundle the pages (Vite)
+        if: steps.scope.outputs.docs != 'true'
+        # prototypes/vite.config.mjs bundles the Station, play and exploration pages into content-hashed chunks with modulepreload (the spec JSON and p-queue inside, the pictures and metrics hashed) and
+        # lays them over _site/sandbox: the three pages are replaced, /sandbox/assets/ is added (ops/sandbox/Caddyfile keeps it immutable), every source file stays where it was. npm ci installs the
+        # pinned vite and p-queue (prototypes/package-lock.json); the node tests and the browser checks below import the sources and use the same install. Measured: about 3 s for the build.
+        run: sh ops/sandbox/bundle-pages.sh _site
       - name: Check the pages parse
         if: steps.scope.outputs.docs != 'true'
         run: |
