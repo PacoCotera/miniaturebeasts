@@ -205,7 +205,7 @@ test("need(): a ready portrait is counted apart from the walk crates: alone, the
   { crates(1); assert.equal(S.need(st, sv, settings, {}, 1).text, W.noticeOne); crates(2); assert.equal(S.need(st, sv, settings, {}, 1).text, W.notice.replace("{count}", "two")); crates(4); assert.equal(S.need(st, sv, settings, {}, 1).text, W.notice.replace("{count} ", ""), "above three the count is dropped"); }
   for (const n of [1, 2, 3, 4]) { crates(n); assert.equal(S.need(st, sv, settings, {}, 0).text, S.need(st, sv, settings).text, "no portrait: the crates notice as built"); assert.equal(S.need(st, sv, settings).label, "Open the Bay", "crates alone: the same label"); }
   crates(0); st.dock = { docked: false, at: 0 }; assert.equal(S.need(st, sv, settings, {}, 1).text, "A portrait waits in the Bay", "away: a portrait still waits"); crates(2); assert.equal(S.need(st, sv, settings, {}, 1).text, "A portrait waits in the Bay", "away the walk crates are not counted");
-  st.dock = { docked: true, at: 0 }; crates(0); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; assert.equal(S.need(st, sv, settings, {}, 1).text, "A mibi is ready to hatch", "a ready bud before a portrait"); st.bud = null;
+  st.dock = { docked: true, at: 0 }; crates(0); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; assert.equal(S.need(st, sv, settings, {}, 1).text, "A mibi is ready to come out", "a ready bud before a portrait"); st.bud = null;
   const fake = (n) => Array.from({ length: n }, (_, i) => ({ id: "x" + i, idd: 0, read: [], g: "meadow" })); st.tray = fake(2); assert.equal(S.need(st, sv, settings, {}, 1).text, "A portrait waits in the Bay", "a portrait before the pods"); st.tray = [];
   for (const w of [W.notice, W.noticeOne, P.notice]) assert.ok(!/\d/.test(w) && w.split(" ").length <= 8, w);
 });
@@ -295,7 +295,7 @@ for (const cross of [false, true]) {
     assert.deepEqual(m.read, o.mibi.read, "known as Open makes it known"); if (cross) assert.deepEqual(m.read, ["coat"], "the cross child's unread chapters stay unread"); else assert.deepEqual(m.read, chapters("S01"));
     assert.deepEqual(a.guide, b.guide, "the field guide gains what Open adds");
     assert.equal(a.log.length, log0 + 1, "one line, no separate Opened line"); assert.equal(a.log.at(-1), hatchLog(a, m, S.spendText(cost.e, cost.d, cost.s)));
-    assert.ok(!a.log.slice(log0).some((l) => /Opened|Grew/.test(l)));
+    assert.ok(!a.log.slice(log0).some((l) => /· Opened ·|Grew/.test(l)));
   });
 }
 test("T-219 case 3: Open after a natural finish is as before: no price, its own log line; Hatch now is not offered on a ready bud", () => {

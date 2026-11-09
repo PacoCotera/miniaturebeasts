@@ -32,7 +32,7 @@
     "state": "growing",
     "ok": "Hatch now",
     "price": "❀ 11",
-    "subject": "A Loika bud"
+    "subject": "A Loika"
    },
    {
     "key": "confirm",
@@ -64,7 +64,7 @@
     "state": "growing",
     "ok": "Hatch now",
     "price": "❀ 11",
-    "subject": "A Loika bud"
+    "subject": "A Loika"
    },
    {
     "held": [
@@ -99,7 +99,7 @@
    {
     "state": "empty",
     "ok": "Choose a pod",
-    "subject": "Ready for a new bud"
+    "subject": "Ready for a pod"
    },
    {
     "key": "confirm",
@@ -138,7 +138,7 @@
     "state": "empty",
     "ok": "Choose a pod",
     "price": null,
-    "subject": "Ready for a new bud"
+    "subject": "Ready for a pod"
    },
    {
     "back": "incubator"

@@ -39,8 +39,8 @@ test("B1: a fresh world draws one tab and the pod, its three lines and the dark 
   const p = opening(), t = said(p);
   assert.ok(t.includes("Weather") && !t.includes("Deep ground"), "Weather alone: " + t);
   assert.deepEqual(t.filter(s => /^(Your first walk|Find a pod and bring it home\.|The Station grows it\.)$/.test(s)), ["Your first walk", "Find a pod and bring it home.", "The Station grows it."]);
-  assert.ok(t.includes("Tracks in the dark · start at one"), "the first-time line");
-  assert.ok(t.includes("charge stones"), "the Weather tab's first-time line");
+  assert.ok(t.includes("Signs in the dark · start at one"), "the first-time line");
+  assert.ok(t.includes("storms charge stones"), "the Weather tab's first-time line");
   for (const s of t) assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Your world|last start|hatch|egg|born|No partner/i.test(s), "no such line: " + s);
   assert.equal(p.run("OPEN_TEXT.firstGrows"), "The Station grows it.");
 });
@@ -60,7 +60,7 @@ test("B1: Pip, Moss and Dot carried: the 3x Loika stands at (8, 458) and two 1x 
   const a = stands(p, moss, 398, 452), b = stands(p, dot, 354, 452); assert.ok(a.n > 50 && a.bad === 0, "Moss at 1x top right " + JSON.stringify(a)); assert.ok(b.n > 50, "Dot's token is there");
   const t = said(p); assert.ok(t.includes("Pip") && t.includes("adult") && t.includes("leads"), "name, stage, leads: " + t);
   assert.ok(t.includes("A storm charged stones in the wood."), "last turn's first line");
-  assert.ok(t.includes("storm east") || t.includes("storm west"), "the Weather tab's line");
+  assert.ok(t.includes("storm ▶ east") || t.includes("storm ◀ west"), "the Weather tab's line");
   assert.ok(t.includes("needs a Tuikis"), "Deep ground still needs the Tuikis to lead until B3 (digger() along): the tab says so");
   assert.ok(!t.some(s => /crate/.test(s)), "the crate panel is gone from the screen (the bottom line says it)");
 });
