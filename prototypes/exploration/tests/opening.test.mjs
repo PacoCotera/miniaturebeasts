@@ -144,7 +144,10 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
     const errors = []; page.on("pageerror", (e) => errors.push(e.message));
     await page.goto(`${url}?seed=14`); await page.waitForTimeout(1500);
     const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
-    const shot = async () => { await page.waitForTimeout(700); return decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64")); };
+    // settle: the top bar's world-turn clock flashes (amber, blinking every 150 ms) for 900 ms after the turn changes, whatever the motion setting: the returning shot waits that out so the bar holds still
+    // and a loaded machine paints late: the shot is the first one that two captures 250 ms apart agree on
+    const cap = async () => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
+    const shot = async (settle = 700) => { await page.waitForTimeout(settle); let prev = await cap(); for (let i = 0; i < 16; i++) { await page.waitForTimeout(250); const cur = await cap(); if (Buffer.compare(Buffer.from(prev.data), Buffer.from(cur.data)) === 0) return cur; prev = cur; } return prev; };
     assert.equal(await page.evaluate(() => window.__mb.S.phase), "setup");
     await page.evaluate(() => { const m = window.__mb; m.S.revealed.fill(0); m.S.visited.fill(0); m.S.mibis = []; m.S.carried = []; m.S.report = null; m.S.known = []; m.S.bay = []; m.S.ui.lastPos = null; m.S.ui.sel = 0; m.FX.msg = ""; });
     const first = await shot(); golden("opening-first.png", first);
@@ -161,7 +164,7 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
       const s0 = m.G.spawns[0]; S.ui.lastPos = s0; const qx = s0 % m.MW, qy = Math.floor(s0 / m.MW); let k = 0;
       for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const x = qx + dx, y = qy + dy; if (x < 0 || y < 0 || x >= m.MW || y >= m.MH) continue; const c = y * m.MW + x; S.revealed[c] = 1; if (Math.abs(dx) > 2 || Math.abs(dy) > 2) continue; S.visited[c] = 1;
         if (m.passable(c) && m.G.land[c] !== m.L.WATER) { if (k < 4) S.called[c] = 1; else if (k < 7) S.veil[String(c)] = [1]; k++; } } });
-    const ret = await shot(); golden("opening-returning.png", ret);
+    const ret = await shot(1500); golden("opening-returning.png", ret);
     const cs = await page.evaluate(() => window.__mb.openFrame().cs); assert.equal(cs, 52, "tier 1: the reach fits at 52");
     // the marks: the mark's own pixels stand on the land (a sign may cover a few); found in colour, been the slate silhouette
     const marks = await page.evaluate(() => { const m = window.__mb, o = m.openFrame(), out = {};

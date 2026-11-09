@@ -10,10 +10,10 @@ const SEEDS = Array.from({ length: 200 }, (_, i) => i + 1);
 const rows = SEEDS.map((s) => firstTrip(s));
 
 test(`every seed 1-200: the first walk holds a pod and ${NEXT_DATA} Data (identify it, read one trait)`, () => {
-  // The Probe can run out of shield before the bot has what it came for (seed 70: three places in, with the open Windstep's creatures noticing the bot at its open sides; the bot plays like a player who follows the glints). A handful of seeds, never more.
+  // No walk is sealed: the Probe's shield is lost only to stray storm strikes, and the first walk of a world takes one at most (seed 70 lost all three plates in 17 actions under the open Windstep).
   const sealed = rows.filter((r) => r.sealed), bad = rows.filter((r) => !r.ok && !r.sealed);
   assert.deepEqual(bad.map((r) => r.seed + ": " + r.why), []);
-  assert.ok(sealed.length <= 3, "walks sealed: " + sealed.map((r) => r.seed));
+  assert.deepEqual(sealed.map((r) => r.seed), [], "walks sealed");
   assert.ok(rows.every((r) => r.actions < BUDGET));
 });
 

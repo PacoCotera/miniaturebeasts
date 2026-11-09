@@ -1093,7 +1093,7 @@ export function instantGrowCost(st, settings = DEFAULT_SETTINGS, now = Date.now(
 export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.bud || budReady(st, settings, now)) return { ok: false };
   if (vivFull(st, settings)) return { ok: false, ...fullWords(st) };
-  const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Hatch now · " + shortText(st, c.e, c.d, c.s) };
+  const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Open now · " + shortText(st, c.e, c.d, c.s) };
   st.e -= c.e; st.d -= c.d; st.s -= c.s; const bud = st.bud; bud.early = true;
   const r = hatchBud(st, settings, now, (m, sp, room) => "Opened now · " + m.name + " · " + sp + " · juvenile · the " + room + " room · " + spendText(c.e, c.d, c.s));
   return { ok: true, mibi: r.mibi, bud, cost: c };

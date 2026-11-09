@@ -14,7 +14,7 @@
     ],
     "screen": "incubator",
     "state": "growing",
-    "ok": "Hatch now",
+    "ok": "Open now",
     "price": null,
     "subject": ""
    },
@@ -30,7 +30,7 @@
     ],
     "screen": "incubator",
     "state": "growing",
-    "ok": "Hatch now",
+    "ok": "Open now",
     "price": "❀ 11",
     "subject": "A Loika"
    },
@@ -46,7 +46,7 @@
     ],
     "screen": "incubator",
     "state": "growing",
-    "ok": "Hatch now",
+    "ok": "Open now",
     "price": null,
     "subject": ""
    },
@@ -62,7 +62,7 @@
     ],
     "screen": "incubator",
     "state": "growing",
-    "ok": "Hatch now",
+    "ok": "Open now",
     "price": "❀ 11",
     "subject": "A Loika"
    },

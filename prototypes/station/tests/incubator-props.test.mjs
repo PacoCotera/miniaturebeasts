@@ -66,7 +66,7 @@ test("a growing bud: the bar is floor(158 x progress) px, the time is 'ready in 
   assert.ok(g.props.regions.inside.pod.day && g.props.regions.inside.pod.dusk && !g.props.regions.inside.opened, "the sealed pod, day and dusk; no opened pod yet");
   const rd = build(st, { inc: {} }, T0 + st.bud.minutes * 60_000 + 10_000);
   assert.equal(rd.props.state, "ready"); assert.equal(rd.line.ok, spec.strings.open); assert.equal(rd.props.regions.capsule.barPx, 158); assert.ok(!("readyIn" in rd.props.regions), "ready: no time"); assert.equal(rd.props.regions.inside.pod.dusk, "", "ready has no dusk pod");
-  assert.equal(spec.strings.grow, "Hatch now"); assert.notEqual(rd.line.ok, spec.strings.grow); assert.ok(!("price" in rd.line), "Open has no price");
+  assert.equal(spec.strings.grow, "Open now"); assert.notEqual(rd.line.ok, spec.strings.grow); assert.ok(!("price" in rd.line), "Open has no price");
 });
 
 test("while Hatch now plays the chamber is already empty, and the screen keeps the bud it hatched: growing, the bar at its width, the time, the stamp and the line as they were", () => {

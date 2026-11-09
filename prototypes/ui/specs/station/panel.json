@@ -199,7 +199,7 @@
    "title": "Open the {Species} pod now?",
    "cards": {
     "grow": {
-     "name": "Hatch now",
+     "name": "Open now",
      "line": "comes out now"
     },
     "wait": {

@@ -46,7 +46,8 @@ export function sideMismatches(G, lay, c, dir) {
   // Walk content B5 (every edge that refuses looks closed, and an open-looking edge never refuses), for a place in the open style (no wall of trees; a 24 x 28 baked place): the whole side, corners included.
   if (lay.baked && lay.w === 24 && lay.h === 28) {
     const along = dir === "up" || dir === "down" ? lay.w : lay.h, edge = [0, 1].flatMap(d => border(lay, dir, d).map(([i, k]) => ({ i, k, d })));
-    const blockedEdge = edge.filter(e => T_BLOCK[lay.tiles[e.i]]);
+    const rimmed = new Set(lay.rim || []);   // an open side's corner under the next side's band (a deep swimmer's water, a cliff's face) is that band, drawn as it, never an open-looking edge
+    const blockedEdge = edge.filter(e => T_BLOCK[lay.tiles[e.i]] && !rimmed.has(e.i));
     if (w === "open" && blockedEdge.some(e => e.k >= 2 && e.k < along - 2)) out.push("open: an open-looking edge refuses a step");
     if (w === "mapend") { const stamped = new Set((lay.closure ? lay.closure.patches : []).map(p => p.y * lay.w + p.x)); if (edge.some(e => !stamped.has(e.i))) out.push("mapend: the edge is not drawn closed (a thicket)"); }
     if (w === "cliff") { for (const k of [0, 1]) if (border(lay, dir, k).some(([i]) => !T_BLOCK[lay.tiles[i]])) out.push("cliff: the edge rows are not closed"); }

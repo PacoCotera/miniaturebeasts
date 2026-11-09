@@ -168,8 +168,8 @@ export function hatch(ctx, { pay = false } = {}) {
     const L = ctx.view().L;
     if (L.state === "empty") return out;
     if (L.state === "growing") {
-      const m = materialsNow(ctx), afford = m && L.label === "Hatch now" && (L.prices[0] ?? 0) <= m.s;
-      if ((typeof pay === "function" ? pay(ctx) : pay) && afford && !out.paid) { ctx.press("confirm", "Hatch now"); if (has(ctx, "panelHeader", /./)) ctx.press("confirm", "Hatch now (the panel)"); out.paid = true; continue; }
+      const m = materialsNow(ctx), afford = m && L.label === "Open now" && (L.prices[0] ?? 0) <= m.s;
+      if ((typeof pay === "function" ? pay(ctx) : pay) && afford && !out.paid) { ctx.press("confirm", "Open now"); if (has(ctx, "panelHeader", /./)) ctx.press("confirm", "Open now (the panel)"); out.paid = true; continue; }
       const mins = wordsOf(ctx, "readyIn").map((t) => +(t.match(/(\d+)/)?.[1])).find(Number.isFinite) ?? 20;
       ctx.wait(mins); if (screenOf(ctx) === "idle") ctx.press("home", "wake"); if (screenOf(ctx) === "home") { focusOn(ctx, "incubator"); ctx.press("confirm", "the Incubator"); }
       continue;

@@ -27,6 +27,18 @@ export function cliffInfo(ir, terrains) {
   return { isCliff: at, wayup, lipCells };
 }
 
+// A cell with the dense thicket all round it (the 3 x 3 block), or null: the donor of the closed looks (walk content B8), found in the level itself; terrains: terrain.json's list.
+// `place` is a level IR or a baked place (both carry w, h and a terrain grid).
+export function thicketDonor(place, terrains) {
+  const thick = (terrains.find((t) => t.id === 'thicket') || {}).value, w = place.w, h = place.h;
+  if (!thick) return null;
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    let all = true; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (place.terrain[(y + dy) * w + x + dx] !== thick) all = false;
+    if (all) return { x, y };
+  }
+  return null;
+}
+
 // 1-row gullies: a column of cliff, one low row, cliff again (the face cannot be drawn there)
 export function gullies(ir, terrains) {
   const { isCliff } = cliffInfo(ir, terrains), out = [];
