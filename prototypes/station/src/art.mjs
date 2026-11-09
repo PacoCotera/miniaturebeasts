@@ -144,18 +144,6 @@ function renderPB(scene, camera, device) {
   for (let i = 0; i < pb.p.length; i++) if (pb.p[i] >= 0 && isShadow(img.data[i * 4], img.data[i * 4 + 1], img.data[i * 4 + 2])) pb.p[i] = -1;
   return pb;
 }
-// Fix 6 N4: the founder carries no ink outside its body's own connected silhouette. The plain pass's cast shadow is cleared by colour tolerance, and the pixels that miss it are left as isolated dots on the shadow's ellipse; a component of fewer than
-// `min` opaque pixels (8-connected) is residue and goes. Applied to the founder's picture only (founderArt), so no other picture of the rig moves.
-export function dropSpecks(pb, min = 8) {
-  const { w, h, p } = pb, seen = new Uint8Array(w * h), stack = [];
-  for (let s0 = 0; s0 < w * h; s0++) {
-    if (seen[s0] || p[s0] < 0) continue;
-    const comp = []; seen[s0] = 1; stack.push(s0);
-    while (stack.length) { const q = stack.pop(); comp.push(q); const x = q % w, y = (q - x) / w; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue; const n = ny * w + nx; if (!seen[n] && p[n] >= 0) { seen[n] = 1; stack.push(n); } } }
-    if (comp.length < min) for (const q of comp) p[q] = -1;
-  }
-  return pb;
-}
 const blobArt = (w, h) => { const pb = new PB(w, h); pb.ell(w / 2, h / 2, w * 0.4, h * 0.4, C.frostD, { sh: [C.frost, C.frostS] }); pb.outline(() => C.stone); return pb; };
 
 
@@ -349,21 +337,11 @@ export const twinkle = () => (motion() ? Math.floor(clock.now / 300) % 3 : 0);
 export { upPB };
 
 // ---------- The founder on Create: its own colours, calm where a chapter is unread (Fix 1b part 1, unknown.mjs) ----------
-// The rig at the picture's size with Glow's emission and Charge's phase as the unread chapters leave them, then the treatment treatmentOf names: clear (the picture, palette art), a veil over the unread looks' parts or the whole body, or the
-// ghost of nothing read. A part group with no part on this body veils nothing.
-export function founderArt(frame, genome, read, w, h, painted = null, whole = false) {   // painted: the species' placed adult master at this size (Create founder A, interim): the one flat picture in place of the rig render, under the same treatment
-  const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h + (painted ? ":painted" : "") + (whole ? ":whole" : "");
-  return art(key, () => {
-    const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = painted ?? (ok ? dropSpecks(renderPB(b.scene, camera, "station")) : blobArt(w, h));
-    if (t.mode === "clear") return base;
-    // 21h (art desk 21h ART INPUTS): no tint pass touches mibi art. A veil's boxes are the rig's, which do not land on the painted picture's parts, so over a painted adult a veil washed its leaves and eyes grey: the painted picture
-    // (in the coat the choices made where that chapter is read) is shown as it is; only nothing read at all stays the ghost (and the reading room's whole)
-    if (painted && !whole && t.mode === "veil") return base;
-    // whole (the reading room): the painted adult is one flat picture: the rig's part boxes do not land on its parts, so while any part is unread the whole painting stays the grey silhouette (as far as read, never a guess)
-    if (painted && whole) return treat({ w, h, rgba: () => base.rgba() }, { mode: "ghost" });
-    const boxes = t.boxes[0]?.whole ? "body" : !ok ? [] : t.boxes.map(({ parts }) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });
-    return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });
-  });
+// The species' painted adult (`painted`, its placed master at this size) under the treatment treatmentOf names: clear (the picture as it is), a veil over the unread looks (also the picture as it is: no tint pass touches mibi art, 21h), or the
+// ghost of nothing read. `whole` (the reading room): while any part is unread the whole painting stays the grey silhouette. A part group with no part on the rig's body veils nothing (the rig is read for that and never drawn).
+export function founderArt(frame, genome, read, w, h, painted, whole = false) {
+  const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h + (whole ? ":whole" : "");
+  return art(key, () => t.mode === "clear" || (!whole && t.mode === "veil") ? painted : treat({ w, h, rgba: () => painted.rgba() }, { mode: "ghost" }));
 }
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.focus, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });

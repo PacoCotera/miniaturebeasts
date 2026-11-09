@@ -7,7 +7,7 @@ import { PB, C, RGB } from "../src/pixels.mjs";
 import { figureFromLayers } from "../src/podmasters.mjs";
 import { registerAsset, asset, dropAsset } from "../../ui/assets.mjs";
 import { dimRGBA, dimPicture, labelPlate, WARM, plateReq, plateMasterReq, PLATE_MASTER } from "../src/stamplook.mjs";
-import { beamArt, UNREAD_REGION, treatmentOf, builtOf, founderArt, drawnDigest, dropSpecks } from "../src/art.mjs";
+import { beamArt, UNREAD_REGION, treatmentOf, builtOf, founderArt, drawnDigest } from "../src/art.mjs";
 import { typeSpecimen, genomeDigest } from "../../workbench/framework/species.mjs";
 import { fitCamera } from "../../workbench/framework/raster.mjs";
 import { setFrames } from "../src/genome.mjs";
@@ -368,18 +368,8 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
     assert.deepEqual(g("face"), ["veil", ["face"], false]); assert.deepEqual(g("legs-tail"), ["veil", ["leg", "tail"], false]); assert.deepEqual(g("face", "legs-tail"), ["veil", ["face", "leg", "tail"], false]);
     assert.deepEqual(g("movement", "stamina"), ["clear", [], false]);
   });
-  test("N4: the founder carries no ink outside its body's connected silhouette: a component under 8 opaque pixels is residue and goes, on every species' founder, whatever is read", () => {
-    const pb = new PB(20, 12); for (let y = 2; y < 9; y++) for (let x = 3; x < 12; x++) pb.set(x, y, C.bone); pb.set(16, 10, C.bone); pb.set(18, 3, C.bone); pb.set(18, 4, C.bone); pb.set(14, 1, C.bone); pb.set(15, 2, C.bone);   // a body, a lone dot, a pair, a diagonal pair
-    dropSpecks(pb); const live = []; for (let i = 0; i < pb.p.length; i++) if (pb.p[i] >= 0) live.push(i); assert.equal(live.length, 7 * 9, "the body stays whole, the specks go");
-    for (const sp of ["S01", "S02", "S03", "S09", "S13", "S16"]) for (const read of [[], ["coat"], null]) {
-      const fr = frameOf(sp), rd = read ?? fr.chapters.map((c) => c.id), a = founderArt(fr, typeSpecimen(fr), rd, 304, 312).rgba(), seen = new Uint8Array(304 * 312);
-      for (let s0 = 0; s0 < 304 * 312; s0++) { if (seen[s0] || !a[s0 * 4 + 3]) continue; let n = 0; const st = [s0]; seen[s0] = 1; while (st.length) { const q = st.pop(); n++; const x = q % 304, y = (q - x) / 304; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= 304 || ny >= 312) continue; const m = ny * 304 + nx; if (!seen[m] && a[m * 4 + 3]) { seen[m] = 1; st.push(m); } } } assert.ok(n >= 8, `${sp}: a stray component of ${n} px at ${s0 % 304},${(s0 / 304) | 0}`); }
-    }
-  });
-  test("founderArt: clear is the palette's own rig; ghost and veil are the treatment's pixels on the rig's alpha; unread Glow and Charge are drawn at none and solid and are in the drawn digest", () => {
-    const fr = frameOf("S01"), g = typeSpecimen(fr), all = fr.chapters.map((c) => c.id), [w, h] = [304, 312];
-    const ghost = founderArt(fr, g, [], w, h), a = (p) => [...p.rgba()].filter((_, i) => i % 4 === 3), clearP = founderArt(fr, g, all, w, h); assert.deepEqual(a(ghost), a(clearP), "alpha unchanged"); assert.notDeepEqual([...ghost.rgba()], [...clearP.rgba()]);
-    const coat = founderArt(fr, g, all.filter((c) => c !== "coat"), w, h); assert.deepEqual(a(coat), a(clearP)); assert.notDeepEqual([...coat.rgba()], [...clearP.rgba()]);
+  test("unread Glow and Charge are drawn at none and solid and are in the drawn digest", () => {
+    const fr = frameOf("S01"), g = typeSpecimen(fr);
     const s16 = frameOf("S16"), g16 = typeSpecimen(s16), r16 = s16.chapters.map((c) => c.id);
     assert.equal(drawnDigest(s16, g16, r16), genomeDigest(g16)); assert.equal(drawnDigest(s16, g16, r16.filter((c) => c !== "glow" && c !== "charge")), genomeDigest(g16) + "~gc"); assert.equal(drawnDigest(fr, g, []), genomeDigest(g), "a frame with neither chapter: the genome's own");
   });
@@ -438,8 +428,8 @@ test("no golden's states file (face/tools/*-states.mjs) imports the Portrait tes
 test("Create founder A (interim): with the species' placed adult master the founder is that one flat picture, clear when everything is read, and the same calm treatment over it otherwise (ghost: alpha unchanged, no hue); never the rig", () => {
   const w = 304, h = 312, d = new Uint8ClampedArray(w * h * 4); for (let y = 40; y < 290; y++) for (let x = 60; x < 250; x++) { const i = (y * w + x) * 4; d[i] = 40 + (x % 90); d[i + 1] = 120 + (y % 60); d[i + 2] = 60; d[i + 3] = 255; }
   const painted = { w, h, rgba: () => d }, fr = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language/species-S01.json"), "utf8")), g = typeSpecimen(fr), all = fr.chapters.map((c) => c.id);
-  const clear = founderArt(fr, g, all, w, h, painted), rig = founderArt(fr, g, all, w, h);
-  assert.deepEqual([...clear.rgba()], [...d], "clear: the painted picture as it is, to the pixel"); assert.notDeepEqual([...clear.rgba()], [...rig.rgba()], "and not the rig");
+  const clear = founderArt(fr, g, all, w, h, painted);
+  assert.deepEqual([...clear.rgba()], [...d], "clear: the painted picture as it is, to the pixel");
   const ghost = founderArt(fr, g, [], w, h, painted), a = (p) => [...p.rgba()].filter((_, i) => i % 4 === 3);
   assert.deepEqual(a(ghost), a(clear), "nothing read: the body alone is greyed, the alpha is unchanged"); assert.notDeepEqual([...ghost.rgba()], [...d]);
   assert.equal(founderArt(fr, g, all, w, h, painted), founderArt(fr, g, all, w, h, painted), "cached per picture");
