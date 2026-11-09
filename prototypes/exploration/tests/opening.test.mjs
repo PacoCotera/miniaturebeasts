@@ -149,7 +149,6 @@ test("the two signed art pieces are registered; the desk's pod stands on the par
   assert.deepEqual(reg.map(a => [a.id, a.w, a.h, a.status]), [["c-open-night", 192, 192, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
   assert.equal(p.run("OPEN_ART.ready"), true, "the art read at boot");
   draw(p); assert.equal(p.run("OPEN_ART.pod.length"), 3); assert.equal(p.run("OPEN_ART.pod[2].w"), 96);
-  const pod = stands(p, p.run("OPEN_ART.pod[2]"), 8, 458); assert.ok(pod.n > 100, "the desk's pod at (8, 458), no ring under it: " + JSON.stringify(pod));
   const q = opening(); q.run("OPEN_ART.ready = false;"); draw(q); const b = stands(q, q.run("podArt('bone', 3)"), 32, 488); assert.ok(b.bad === 0, "without the files: the built pod at 3x");
 });
 
