@@ -183,6 +183,9 @@ test("F5a: after a Greet the middle slot says the mibi greets back (a sleeper st
   assert.equal(b0.props.regions.resident.heart, undefined); assert.notEqual(b0.line.subject, `${m.name} greets you back`);
   const b1 = build(S0.rest.w, S0.rest.sv, { focus: "resident", greet: { asleep: false } }); assert.equal(b1.line.subject, `${m.name} greets you back`); assert.equal(b1.props.regions.resident.heart, true); assert.equal(b1.line.ok, `Greet ${m.name}`, "the verb stays");
   assert.equal(build(S0.rest.w, S0.rest.sv, { focus: "resident", greet: { asleep: true } }).line.subject, `${m.name} stirs, then sleeps on`);
+  // the art desk's heart (mibi-art ce97d1c19) is the slot's picture: the Greet asks for it, nothing else does
+  const asks = (b) => b.requests.some((r) => r.id === "fx-greet-heart-16x16");
+  assert.equal(asks(b0), false, "no Greet, no heart asked for"); assert.equal(asks(b1), true, "the Greet asks for the heart");
 });
 
 test("the bottom line: the resident greets (in the meet it names), the name renames, the species word opens the guide, a tile reads as its mibi; ← Vivarium", () => {

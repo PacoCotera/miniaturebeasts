@@ -2114,6 +2114,14 @@
    "signed": "art director (frame bars, #112 78b6bfbc)",
    "bytes": 310
   },
+  "fx-greet-heart-16x16": {
+   "file": "pods/fx-greet-heart-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "35855bafa1dde7b57ea3eb39cb7d5ec66865b1e8ebb8e03e27ba54c8e7f0e367",
+   "signed": "art desk (walk art, mibi-art ce97d1c19, art-jobs/2026-11-09-walk-art/out)",
+   "bytes": 246
+  },
   "gate-wild-open-48x48": {
    "file": "pods/gate-wild-open-48x48.png",
    "w": 48,

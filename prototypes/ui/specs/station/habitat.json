@@ -366,7 +366,7 @@
    "hold": 300,
    "cut": true,
    "do": "Greet: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice (placeholder). Rewards nothing and shows nothing like a reward. Input is held 300 ms; the first key after the hold cuts the moment to its end, and that key then does what it does (notes.cut)",
-   "heart": { "asset": "fx-greet-heart-16x16", "rise": 8, "ms": 700, "stillMs": 1200, "gap": 3, "greetShowMs": 2500, "do": "Greet's answer (loop-audit UX F5a): the art desk's fx-greet-heart-16x16 in a named slot above the resident's box, rising `rise` px over `ms`, then gone; with reduced motion it stands still for `stillMs` then cuts. Nothing is drawn in code: until the picture is placed the slot shows nothing (the line still answers). Drawn only when props regions.resident.heart is on (the host sets it for greetShowMs after a Greet; the meet's moment has none). The line says strings.greeted (strings.greetedAsleep for a sleeper) for greetShowMs." },
+   "heart": { "asset": "fx-greet-heart-16x16", "rise": 8, "ms": 700, "stillMs": 1200, "gap": 3, "greetShowMs": 2500, "do": "Greet's answer (loop-audit UX F5a): the art desk's fx-greet-heart-16x16 in a named slot above the resident's box, rising `rise` px over `ms`, then gone; with reduced motion it stands still for `stillMs` then cuts. Nothing is drawn in code: the picture is placed (masters/pods, signed in mibi-art ce97d1c19) and the host asks for it with the Greet. Drawn only when props regions.resident.heart is on (the host sets it for greetShowMs after a Greet; the meet's moment has none). The line says strings.greeted (strings.greetedAsleep for a sleeper) for greetShowMs." },
    "asleep": { "ms": 2880, "hold": 300, "cut": true, "do": "a sleeper with a moving set (Station M1 §2.4): wake (16-level dither 180, crouch 400, stand), the hops at 0 and 900 of the hops, crouch 320, dither 180, curl" },
    "moving": "with a moving set: hops at 0 and 900 ms (placeholder.hops), each crouch 160, air 400 (the set's closeHop.lift on 80 ms ticks: adult and juvenile [8, 20, 24, 20, 8], elder [6, 14, 17, 14, 6], scaled down to fit when the rect leaves under 24 px above the figure, never clipped), crouch 160, stand; shadow-75 on air ticks 2 to 4",
    "placeholder": {
@@ -711,6 +711,7 @@
    "notch-skill-16x24 (new)",
    "mark-out-with-companion-64x96 (new)",
    "heart-full-24",
+   "fx-greet-heart-16x16 (the Greet heart, rises above the resident)",
    "sitting-frame-empty-48x40",
    "sitting-frame-held-48x40",
    "sitting-frame-portrait-48x40",
