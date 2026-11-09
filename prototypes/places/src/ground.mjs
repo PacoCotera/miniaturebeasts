@@ -134,12 +134,33 @@ export function veilVisible(place, state) {
 
 // The web host's ground cache: the whole place (864 x 1056 at 48 px, under a megabyte) rendered once per animation frame, a camera window
 // cut from it by row copies. The device keeps the window-sized GroundCache above (its PSRAM budget has no room for the whole place twice).
+// ring (optional): a FrameRing shared by the caches of one page. With it the renders of the animation frames a cache has seen are kept (a place's water cycles through four), so a
+// flip back to one costs a row copy and not a render; the ring holds at most `max` renders across all its caches, the oldest dropped first. Without it, one render is kept (the device).
+export class FrameRing {
+  constructor(max = 16) { this.max = max; this.list = []; }
+  touch(cache, key) {
+    const i = this.list.findIndex((e) => e.cache === cache && e.key === key); if (i >= 0) this.list.splice(i, 1);
+    this.list.push({ cache, key });
+    while (this.list.length > this.max) { const o = this.list.shift(); o.cache.frames.delete(o.key); }
+  }
+}
 export class PlaceGroundCache {
-  constructor(ts, place, size) { this.helper = new GroundCache(ts, place, size); this.ts = ts; this.place = place; this.size = size; this.key = null; this.full = null; this.redone = 0; }
+  constructor(ts, place, size, ring = null) { this.helper = new GroundCache(ts, place, size); this.ts = ts; this.place = place; this.size = size; this.key = null; this.full = null; this.redone = 0; this.ring = ring; this.frames = new Map(); }
   frameKey(clockMs) { return this.helper.frameKey(clockMs); }
+  // The clocks (ms) that show each animation frame the ground has, one per frame: what the page renders ahead so no flip costs a render.
+  frameClocks() {
+    if (this.clocks) return this.clocks;
+    const ms = this.ts.tiles.filter((t) => t.frames.length > 1).map((t) => t.frameMs), step = ms.length ? Math.min(...ms) : 1, seen = new Set(), out = [];
+    for (let k = 0; k < 64; k++) { const key = this.frameKey(k * step); if (seen.has(key)) break; seen.add(key); out.push(k * step); }
+    return (this.clocks = out);
+  }
   get(win, clockMs = 0) {
     const key = this.frameKey(clockMs), W = this.place.w * this.size, H = this.place.h * this.size;
-    if (key !== this.key) { this.full = renderGround(this.ts, this.place, this.size, { x: 0, y: 0, w: W, h: H }, clockMs); this.key = key; this.redone++; }
+    if (key !== this.key) {
+      const kept = this.ring && this.frames.get(key);
+      if (kept) this.full = kept; else { this.full = renderGround(this.ts, this.place, this.size, { x: 0, y: 0, w: W, h: H }, clockMs); this.redone++; }
+      this.key = key; if (this.ring) { this.frames.set(key, this.full); this.ring.touch(this, key); }
+    } else if (this.ring) this.ring.touch(this, key);
     const out = new Uint8Array(win.w * win.h);
     for (let y = 0; y < win.h; y++) {
       const sy = win.y + y;
@@ -155,12 +176,20 @@ export class PlaceGroundCache {
 // (props and `actors`: [{ sortY, x, draw(buf, win) }]), then the canopy with the cut-out around `pawns`.
 //   o: { clockMs, light (lightState), nightIndex, visible(cx, cy), actors, pawns, cache (GroundCache) }
 export function renderView(ts, place, size, win, o = {}) {
+  const it = renderViewSteps(ts, place, size, win, o);
+  for (;;) { const r = it.next(); if (r.done) return r.value; }
+}
+// The same view in four steps (ground, light, sprites, canopy), a yield between each, so a page can spend its idle time on one step at a time. Returns the buffer.
+export function* renderViewSteps(ts, place, size, win, o = {}) {
   const clockMs = o.clockMs || 0;
   const buf = o.cache ? Uint8Array.from(o.cache.get(win, clockMs)) : renderGround(ts, place, size, win, clockMs);
+  yield;
   if (o.light) applyLight(buf, win, size, ts, o.light, o);
   const remapAt = remapAtFor(ts, o.light);
   const visible = o.visible || veilVisible(place, o.light);
+  yield;
   drawItems(buf, win, sortItems([...propItems(ts, place, size, { remapAt, visible, clockMs }), ...(o.actors || [])]));
+  yield;
   canopyPass(buf, win, ts, place, size, { pawns: o.pawns, remapAt, visible, clockMs });
   return buf;
 }

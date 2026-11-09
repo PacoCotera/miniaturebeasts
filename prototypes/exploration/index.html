@@ -519,6 +519,7 @@ async function loadPlaces6() {
     PL6.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
     ids.forEach((id, i) => PL6.places.set(id, places[i]));
     PL6.adapt = am.adaptPlace; PL6.View = pm.BakedView; PL6.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+    PL6.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadStoneArt(base);
     PL6.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); }
@@ -577,7 +578,7 @@ function bakedView(lay) {
   if (!lay || !lay.baked) return null;
   if (BAKED.view) return BAKED.view;
   let v = PL6.views.get(lay.baked.id);
-  if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk }); PL6.views.set(lay.baked.id, v); }
+  if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk, ring: PL6.ring || null }); PL6.views.set(lay.baked.id, v); }
   return v || null;
 }
 const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS);
@@ -591,6 +592,103 @@ function layout(key) {
   if (!lay && G.gen >= 6 && key[0] !== 'c' && PL6.ready) { lay = layout6(key); if (lay) layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
+}
+// ---------- Warming the next cells (no freeze at a cell boundary) ----------
+// A step into a cell used to build that place's pictures on the spot: the baked view, its ground (at 48 px and for the whole-place picture) and the sprite canvases of its props.
+// Now the cells a step can reach are warmed in idle time, the one faced first, a small step at a time (never more than one step when the page is busy); a cell entered before it is
+// warm is finished a step a frame behind the transition, the controls live, and past WARM_SIGN_MS a calm line says the land is coming. The pictures live in the place's view
+// (one per template, at most eight), so memory stays flat however far the walk goes.
+const LAND_COMING = 'The land is coming into view';   // [copy] placeholder: the copywriter words this sign
+const WARM_SIGN_MS = 150, WARM_DONE = 3;
+const WARM = { queue: [], sig: '', cb: 0, cold: null, steps: 0, hit: 0, miss: 0 };   // hit, miss: the arrival pictures found warm, and built on the spot
+const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
+function warmReady(key) {   // nothing left to build for this cell (a generated place, a cave and the test pages have no baked view to warm)
+  const lay = layout(key); if (!lay.baked || lay.cave) return true;
+  const bk = BAKED.view || PL6.views.get(lay.baked.id); return PL6.View || BAKED.view ? !!bk && warmOf(bk).st >= WARM_DONE : true;
+}
+// The arrival look's picture of a place (the whole place at its veil, as a canvas): kept by place and veil in a small LRU, so the warmed one is drawn at once and a new one is built once.
+const WARM_WHOLE_MAX = 6, WHOLE = new Map();
+const wholeKeyOf = (lay, veil) => lay.key + '|' + veil.join('');
+function wholePut(key, cv) { WHOLE.set(key, cv); while (WHOLE.size > WARM_WHOLE_MAX) WHOLE.delete(WHOLE.keys().next().value); }
+function wholeFor(lay, bk) {
+  const veil = placeVeil(lay), key = wholeKeyOf(lay, veil); let cv = WHOLE.get(key);
+  if (cv) { WHOLE.delete(key); WHOLE.set(key, cv); WARM.hit++; return cv; }
+  WARM.miss++; const T = bk.wholeSize(); cv = bk.bufCanvas(bk.overviewBuf(veil, 0), bk.place.w * T, bk.place.h * T); wholePut(key, cv); return cv;
+}
+// Where the pawn will most likely stand on arriving, and the veil the walk's first lift would leave there (null: not a first arrival, so no arrival look to warm).
+function arrivalRows(key, dir) {
+  const lay = layout(key); if (lay.cave || !lay.baked || S.veil[key] || heartFound(lay.cell)) return null;
+  const e = entryPoint(lay, key, dir || null, true); if (!e) return null;
+  const rows = new Array(lay.h).fill(0); liftFlood(lay, rows, e.x, e.y); return rows;
+}
+const ARR = new Map();   // cell + way in -> the arrival picture's progress
+const LIT = new Map();   // cell -> the veil its light state was last warmed for
+function warmLightLevel(lay) {   // the one clear-light level the whole place takes (1 under a storm cover, else 0), or null when the frame must work it out (fog bank, a storm's edge)
+  if (lay.cave || inFog(lay.cell)) return null;
+  const ex = S.exp, overcast = stormCovers(lay.cell % MW);
+  if (ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1); if (gap >= 0 && gap < 3) return null; }
+  return overcast ? 1 : 0;
+}
+function warmStep(key, dir) {   // one small step on a cell's pictures; true while more remain. dir: the way the pawn will come in (the arrival picture is warmed too)
+  const lay = layout(key); if (!lay.baked || lay.cave) return false;
+  const bk = bakedView(lay); if (!bk) return false;
+  const w = warmOf(bk), T = bk.wholeSize(); WARM.steps++;
+  if (w.st === 0) {   // the 48 px ground, rendered whole for each animation frame it has (one when the views have no ring), the frame showing now last
+    const cl = bk.cache.ring && motion() ? bk.cache.frameClocks() : [], now = motion() ? NOW : 0; if (w.fi == null) w.fi = 0;
+    if (w.fi < cl.length) bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, cl[w.fi++]); else { bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, now); w.st = 1; }
+    return true; }
+  if (w.st === 1) { bk.half.get({ x: 0, y: 0, w: bk.place.w * T, h: bk.place.h * T }, 0); w.st = 2; return true; }   // the whole-place picture's ground
+  if (w.st === 2) {   // the sprite canvases of the props and crowns, a few a step
+    if (!w.kinds) { const ks = new Set(); for (const p of bk.place.props) { ks.add(p.kind); const c = bk.ts.sprites[p.kind].canopy; if (c >= 0) ks.add(c); } for (const c of bk.place.canopy) ks.add(c.kind); w.kinds = [...ks]; }
+    for (let n = 0; n < 4 && w.i < w.kinds.length; n++) bk.spriteCanvas(w.kinds[w.i++], 0, 0);
+    if (w.i >= w.kinds.length) w.st = WARM_DONE; return true; }
+  const vs = S.veil[key] ? S.veil[key].join() : '';   // a place walked before: its light state and the grids it opens, as its first walking frame will ask for them (a fog bank or a storm's edge is left to the frame)
+  if (vs && LIT.get(key) !== vs) { LIT.delete(key); LIT.set(key, vs); while (LIT.size > 12) LIT.delete(LIT.keys().next().value);
+    const lvl = warmLightLevel(lay); if (lvl != null) { bk.prepareLight(bk.lightFor({ veiled: (x, y) => !unveiled(key, x, y), foggedFar: () => false, level: () => lvl }, key)); return true; } }
+  if (dir === undefined) return false;
+  const id = key + '|' + dir; let a = ARR.get(id);
+  if (!a) { a = { st: 0, rows: arrivalRows(key, dir) }; if (!a.rows) a.st = 9; ARR.set(id, a); while (ARR.size > 12) ARR.delete(ARR.keys().next().value); }
+  if (a.st === 0) { const veil = placeVeil(lay, a.rows); a.wk = wholeKeyOf(lay, veil); if (WHOLE.has(a.wk)) a.st = 9; else { a.it = bk.overviewSteps(veil, 0); a.st = 1; } }
+  else if (a.st === 1) { const r = a.it.next(); if (r.done) { a.buf = r.value; a.st = 2; } }
+  else if (a.st === 2) { const T2 = bk.wholeSize(); wholePut(a.wk, bk.bufCanvas(a.buf, bk.place.w * T2, bk.place.h * T2)); a.buf = a.it = null; a.st = 9; }
+  return a.st < 9;
+}
+// The cells one step can reach from here, the one faced first and then by how near the pawn is to that edge; on the map, the cell the next Confirm goes down into comes first.
+function warmTargets() {
+  const ex = S && S.exp; if (!ex || RT.readOnly || !(S.phase === 'map' || S.phase === 'patch') || !(PL6.View || BAKED.view)) return [];
+  const P = ex.patch, lay = P && !P.key.startsWith('c') ? layout(P.key) : null, out = [];
+  if (!P && S.phase === 'map') out.push({ key: String(ex.pos), dir: ex.lastDir || null });
+  if (P && P.key.startsWith('c')) return out;
+  const edge = d => !lay ? 0 : d === 'up' ? P.y : d === 'down' ? lay.h - 1 - P.y : d === 'left' ? P.x : lay.w - 1 - P.x, face = (P && P.dir) || ex.face || ex.lastDir;
+  for (const d of Object.keys(DIRS).sort((a, b) => (b === face) - (a === face) || edge(a) - edge(b))) {
+    const c = stepCell(ex.pos, d); if (c < 0 || !inRange(c) || !canStep(ex.pos, d)) continue; out.push({ key: String(c), dir: d }); }
+  return out;
+}
+const warmIdle = f => typeof requestIdleCallback === 'function' ? requestIdleCallback(f, { timeout: 400 }) : setTimeout(() => f({ timeRemaining: () => 4, didTimeout: true }), 120);
+function warmRun(dl) {   // an idle slot: steps while the slot has time, and exactly one when the slot is a forced one (the page never goes quiet)
+  WARM.cb = 0; const t0 = performance.now();
+  try { while (WARM.queue.length && S && S.exp) {
+    if (!warmStep(WARM.queue[0].key, WARM.queue[0].dir)) WARM.queue.shift();
+    if (dl.didTimeout || (dl.timeRemaining() < 6 && performance.now() - t0 > 2)) break; } }
+  catch (e) { WARM.queue.shift(); console.warn('warming a cell failed', e); }
+  if (WARM.queue.length) WARM.cb = warmIdle(warmRun);
+}
+function warmTick() {   // each frame: if where the walk stands changed, the list of cells to warm is made again; the work itself runs in idle slots
+  if (!S || !S.exp || RT.readOnly) return;
+  const ex = S.exp, P = ex.patch, sig = S.phase + '|' + ex.pos + '|' + (P ? P.key + P.dir : ex.face || '');
+  if (sig !== WARM.sig) { WARM.sig = sig; WARM.queue = warmTargets(); }
+  if (WARM.queue.length && !WARM.cb && !document.hidden) WARM.cb = warmIdle(warmRun);
+}
+// Entered cold: the rest is built a step a frame (about 8 ms of work a frame) while the walk stays live; the arrival look starts when the land is ready.
+function warmLanding() {
+  const c = WARM.cold, P = S.exp && S.exp.patch;
+  if (!c || !P || P.key !== c.key) { WARM.cold = null; return false; }
+  const t0 = performance.now(); let more = true;
+  try { while (more && performance.now() - t0 < 8) more = warmStep(c.key); } catch (e) { more = false; console.warn('landing failed', e); }
+  if (!more) { WARM.cold = null; FX.notes = FX.notes.filter(n => n.text !== LAND_COMING); composeMsg(); if (RT.view && RT.view.kind === 'arrival') RT.view.at = NOW; return false; }
+  if (!c.signed && NOW - c.at > WARM_SIGN_MS) { c.signed = true; fxMsg(LAND_COMING, 4); }   // 4: above the signs' 3, so a sign on arrival (the Call's) waits, unspent, for its next moment
+  R(0, VIEW_Y, SCR_W, VIEW_H, C.void); if (c.signed && RT.view) drawMessage();   // (with no view up the frame draws the message itself)
+  return true;
 }
 
 
@@ -1271,14 +1369,17 @@ function unveil(key, cx, cy, r) {
 const WALK_R = 4;
 function walkLift() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
-  const lay = layout(P.key), lw = lay.w, lh = lay.h, v = S.veil[P.key] || (S.veil[P.key] = new Array(lh).fill(0));
-  // a small flood from the pawn through open ground: it lifts the first blocking tile it meets (a shore, a trunk)
-  // but never what lies behind it, so it doesn't see across water or cliff
-  const tiles = layout(P.key).tiles, seen = new Set([P.y * lw + P.x]), q = [[P.x, P.y]];
+  const lay = layout(P.key), v = S.veil[P.key] || (S.veil[P.key] = new Array(lay.h).fill(0));
+  liftFlood(lay, v, P.x, P.y);
+  checkHeart();
+}
+// a small flood from the pawn through open ground: it lifts the first blocking tile it meets (a shore, a trunk)
+// but never what lies behind it, so it doesn't see across water or cliff
+function liftFlood(lay, v, px, py) {
+  const lw = lay.w, lh = lay.h, tiles = lay.tiles, seen = new Set([py * lw + px]), q = [[px, py]];
   for (let h = 0; h < q.length; h++) { const [x, y] = q[h]; v[y] = (v[y] | (1 << x)) >>> 0; if (h && T_BLOCK[tiles[y * lw + x]]) continue;
     for (const [dx, dy] of Object.values(DIRS)) { const X = x + dx, Y = y + dy, k = Y * lw + X;
-      if (X < 0 || Y < 0 || X >= lw || Y >= lh || seen.has(k) || (X - P.x) ** 2 + (Y - P.y) ** 2 > (WALK_R + .3) ** 2) continue; seen.add(k); q.push([X, Y]); } }
-  checkHeart();
+      if (X < 0 || Y < 0 || X >= lw || Y >= lh || seen.has(k) || (X - px) ** 2 + (Y - py) ** 2 > (WALK_R + .3) ** 2) continue; seen.add(k); q.push([X, Y]); } }
 }
 function stoneSeen(key, f) { return key[0] === 'c' ? !!fs(key, f.id).sn : unveiled(key, f.x, f.y); }
 // A place is explored when its heart is found (S.called keeps that mark; "called at least once" retired): the reach dot fills then.
@@ -1317,8 +1418,10 @@ function checkHeart() {
 // The reveal in four beats (companion scheme): the spot in the walking view (SPOT_MS), the zoom out (two stepped frames, ZOOM_MS in all), the dissolve (REVEAL_MS), the hold.
 const REVEAL_MS = 1200, SPOT_MS = 600, ZOOM_STEP_MS = 120, ZOOM_MS = 240, ARRIVE_HOLD_MS = 1200, ARRIVE_STEP_MS = 120;   // [tune]
 const VIEW_TEXT = { look: 'Look around', go: 'Go on', close: 'Close', found: 'Found' };   // [copy]
-function placeVeil(lay) { const bk = bakedView(lay), { w, h } = bk.place, o = new Uint8Array(w * h);
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (!unveiled(lay.key, x + bk.ox, y + bk.oy)) o[y * w + x] = 1;
+function placeVeil(lay, rows) {   // rows: the veil as it would stand (the warmed arrival picture's guess); else the place's own
+  const bk = bakedView(lay), { w, h } = bk.place, o = new Uint8Array(w * h), vbl = rows ? veilable(lay) : null;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x + bk.ox, py = y + bk.oy;
+    if (rows ? !((rows[py] >>> px) & 1) && vbl[py * lay.w + px] : !unveiled(lay.key, px, py)) o[y * w + x] = 1; }
   return o; }
 function startView(kind, lay, extra) {
   if (!lay || lay.cave || !bakedView(lay)) return false;
@@ -1836,26 +1939,27 @@ function ensureLive(key) {
   return live;
 }
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
-function entryPoint(lay, key, dir) {
+function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most likely arrive, asked before the place is live (nothing stands anywhere yet)
+  const occ = (x, y) => !guess && occupant(key, x, y, 'player');
   // Up or down a stair (the edge just crossed is a ramp): its entry tile, or the nearest free tile that is not the stair itself.
   const from = lay.stairs && lay.stairs.length && dir ? stepCell(lay.cell, OPPOSITE[dir]) : -1;
   if (from >= 0 && edgeKind(from, dir) === EDGE.RAMP) {
     const st = lay.stairs.find(q => q.dir === OPPOSITE[dir]);
-    if (st) { const e = st.entry; if (!occupant(key, e.x, e.y, 'player')) return { x: e.x, y: e.y };
+    if (st) { const e = st.entry; if (!occ(e.x, e.y)) return { x: e.x, y: e.y };
       let best = null, bd = 1e9;
       for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) { const i = y * lay.w + x;
-        if (!lay.reach[i] || lay.tiles[i] === T.STAIR || T_BLOCK[lay.tiles[i]] || occupant(key, x, y, 'player')) continue;
+        if (!lay.reach[i] || lay.tiles[i] === T.STAIR || T_BLOCK[lay.tiles[i]] || occ(x, y)) continue;
         const d = (x - e.x) ** 2 + (y - e.y) ** 2; if (d < bd) { bd = d; best = { x, y }; } }   // ties keep the lower tile index
       if (best) return best; }
   }
   { const cf = lay.cross && dir ? stepCell(lay.cell, OPPOSITE[dir]) : -1;   // came over scree or a bank: the tile just inside its crossing
-    if (cf >= 0 && edgeKind(cf, dir) === EDGE.CLIFF) { const q = lay.cross.find(r => r.dir === OPPOSITE[dir]); if (q && !occupant(key, q.entry.x, q.entry.y, 'player')) return { x: q.entry.x, y: q.entry.y }; } }
+    if (cf >= 0 && edgeKind(cf, dir) === EDGE.CLIFF) { const q = lay.cross.find(r => r.dir === OPPOSITE[dir]); if (q && !occ(q.entry.x, q.entry.y)) return { x: q.entry.x, y: q.entry.y }; } }
   const tx = dir === 'right' ? 0 : dir === 'left' ? lay.w - 1 : lay.w / 2, ty = dir === 'down' ? 0 : dir === 'up' ? lay.h - 1 : dir ? lay.h / 2 : lay.h - 3;
   let best = null, bd = 1e9; const sq = !!G.gen;   // generator 2 places: squared distance, ties by tile index
   // a baked place has the tiles no crown hangs over (lay.clear): the explorer arrives on one of them, the nearest to the way in, never hidden under a canopy (C16); with none, any
   for (let pass = lay.clear ? 0 : 1; pass < 2 && !best; pass++)
     for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) {
-      if (!lay.reach[y * lay.w + x] || occupant(key, x, y, 'player') || (pass === 0 && !lay.clear[y * lay.w + x])) continue;
+      if (!lay.reach[y * lay.w + x] || occ(x, y) || (pass === 0 && !lay.clear[y * lay.w + x])) continue;
       const d = sq ? (x - tx) ** 2 + (y - ty) ** 2 : Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = { x, y }; }
     }
   return best || lay.spawnPt;
@@ -1877,6 +1981,7 @@ function enterPatch() {
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
+  WARM.cold = TEST.clock == null && TEST.at == null && !warmReady(key) ? { key, at: NOW, signed: false } : null;   // not warm yet: the rest is built a step a frame (warmLanding)
   if (RT.spot) RT.spot.skip = true;   // found on arrival: the reveal takes the arrival look's place, one zoom out and no spot
   else if (firstEntry) startView('arrival', lay);
   if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
@@ -5032,7 +5137,7 @@ function drawWhole(t) {
     const step = motion() ? Math.max(0, Math.min(16, Math.floor((el - (v.zoom ? ZOOM_MS : 0)) / (REVEAL_MS / 16)))) : 16;
     if (!v.cv || v.step !== step) { v.cv = bk.bufCanvas(step >= 16 ? v.clear : bk.dissolveBuf(v.vb, v.clear, step), W, H); v.step = step; }
     cv = v.cv; hold = step >= 16;
-  } else { v.cv = v.cv || bk.bufCanvas(bk.overviewBuf(placeVeil(lay), 0), W, H); cv = v.cv; }
+  } else { v.cv = v.cv || wholeFor(lay, bk); cv = v.cv; }
   // two stepped frames between the whole picture and the walking view's 2× scale, panning toward the explorer's tile (k: how far in, 0 = the whole place)
   const toward = (k) => { const s = 1 + k, a = { x: (P.x - bk.ox + .5) * T, y: (P.y - bk.oy + .5) * T }, sw = SCR_W / s, sh = VIEW_H / s;
     const cx = W / 2 + (a.x - W / 2) * k, cy = H / 2 + (a.y - H / 2) * k, sx = Math.max(0, Math.min(W - sw, cx - sw / 2)), sy = Math.max(0, Math.min(H - sh, cy - sh / 2));
@@ -5154,7 +5259,7 @@ function drawPatchBody(t) {
   const bk = bakedView(lay), bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
   if (bk) bk.setPatches(lay.lines ? lay.lines.patches : [], lay.lines ? lay.lines.id : '');   // a closed opening's path drawn as grass
-  if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }));
+  if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }, lay.key));
   if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= lay.w || ty >= lay.h) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
     if (lightAt) { const i = ty * lay.w + tx, L = lvAt(tx, ty);
@@ -6530,7 +6635,8 @@ function renderFrame(t) {
     case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
-    case 'patch': spotStep(); if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); } drawHUD(); drawSwap(); break;   // a view over the place (arrival look, Look, the reveal) has the whole view
+    case 'patch': if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
+      spotStep(); if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); } drawHUD(); drawSwap(); break;   // a view over the place (arrival look, Look, the reveal) has the whole view
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
     case 'cargo': drawCargo(t); break;
@@ -6550,6 +6656,7 @@ function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
+  try { warmTick(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
@@ -7032,7 +7139,7 @@ if (OPT.dev) setObserver(true);   // the Developer tools option opens the Observ
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { press, release, PEEK_MS, enterPatch, leavePatch, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { press, release, PEEK_MS, enterPatch, leavePatch, WARM, WHOLE, ARR, WARM_WHOLE_MAX, PL6, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, heartOf, springClues, mapPuddleSpots: (c, x, y, cs) => { const m = mapPuddleSpots(c, x, y, cs); return m && { sc: m.sc, spots: springClues(m.h).map(q => m.at(q)) }; }, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, shownTells, fogState, pickTells, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,

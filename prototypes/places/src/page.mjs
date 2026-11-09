@@ -2,11 +2,13 @@
 // ImageData through the page's palette, props and canopy as cached canvases (the page's usual sprite path), and the camera.
 // The page owns the creatures, the partner, the explorer and the overlays; this module never draws them.
 import { readPlace, readTileSet } from './format/read.mjs';
-import { PlaceGroundCache, applyLight, lightState, tablesOf, LEVELS, renderHalfView, wholeScale } from './ground.mjs';
+import { PlaceGroundCache, GroundCache, applyLight, lightState, tablesOf, LEVELS, renderHalfView, renderViewSteps, wholeScale } from './ground.mjs';
 import { BAYER4 } from '../../exploration/src/view.mjs';
 import { cutOut, scaleTo, walkFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
 import { stepCamera, newCam, TILE } from './camera.mjs';
+
+export { FrameRing } from './ground.mjs';
 
 // Fetches the place and its tile set from `base` (the folder holding baked/).
 export async function loadBaked(fetchBytes, base, id) {
@@ -19,16 +21,17 @@ const same = (a, b) => { if (!a || a.length !== b.length) return false; for (let
 
 // core: the page's core colours [[r, g, b]] for indices 0..47 (the set's own colours come from the tile set); night: the veil dots' colour index.
 export class BakedView {
-  constructor(ts, place, { core, night = 2, ox = 0, oy = 0, mkCanvas }) {
+  constructor(ts, place, { core, night = 2, ox = 0, oy = 0, mkCanvas, ring = null }) {   // ring: a FrameRing shared by the page's views (the ground's animation frames kept, across all of them, up to its bound)
     Object.assign(this, { ts, place, ox, oy, night, mkCanvas });
     this.size = 48;
-    this.cache = new PlaceGroundCache(ts, place, 48);
+    this.cache = new PlaceGroundCache(ts, place, 48, ring);
+    this.half = new GroundCache(ts, place, wholeScale(place));   // the whole-place picture's ground (clock 0, no veil): made once for the place, whatever the veil, so each arrival look and Look pays only the light and the sprites
     this.lut = new Uint32Array(256);                 // ABGR, little-endian ImageData
     const rgb = (r, g, b) => (255 << 24) | (b << 16) | (g << 8) | r;
     for (let i = 1; i < 48; i++) this.lut[i] = rgb(...core[i]);
     ts.palette.forEach((c, k) => { this.lut[48 + k] = rgb((c >> 16) & 255, (c >> 8) & 255, c & 255); });
     this.colours = [...new Set(this.lut.slice(1, 48 + ts.palette.length))].map((v) => [v & 255, (v >> 8) & 255, (v >> 16) & 255]);
-    this.state = null; this.last = null; this.sprites = new Map(); this.scratch = null;
+    this.state = null; this.states = new Map(); this.last = null; this.sprites = new Map(); this.scratch = null;
     this.landmarks = new Set(place.landmarks.map((l) => l.y * place.w + l.x));
   }
 
@@ -37,7 +40,8 @@ export class BakedView {
 
   // ---- light: page cells in, one lightState out (kept while the bits stand, so the eighth grids are not rebuilt) ----
   // fns: { veiled(x, y), foggedFar(x, y), level(x, y) } in the page's cell coordinates.
-  lightFor(fns) {
+  // slot: whose light it is (the page passes the cell's key), so cells that share this view each keep their own state and its grids; at most eight are kept.
+  lightFor(fns, slot = '') {
     const { w, h } = this.place, n = w * h, veil = new Uint8Array(n), fog = new Uint8Array(n), level = new Uint8Array(n);
     let anyV = 0, anyF = 0, anyL = 0;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
@@ -47,10 +51,14 @@ export class BakedView {
       const l = fns.level(px, py);
       if (l) { level[i] = l; anyL = 1; }
     }
-    const s = this.state;
+    const s = this.states.get(slot);
     if (s && same(s.veil || new Uint8Array(n), veil) && same(s.fog || new Uint8Array(n), fog) && same(s.level || new Uint8Array(n), level)) return s;
-    return (this.state = lightState(this.place, { veil: anyV ? veil : null, fog: anyF ? fog : null, level: anyL ? level : null }));
+    const st = lightState(this.place, { veil: anyV ? veil : null, fog: anyF ? fog : null, level: anyL ? level : null });
+    this.states.delete(slot); this.states.set(slot, st); while (this.states.size > 8) this.states.delete(this.states.keys().next().value);
+    return (this.state = st);
   }
+  // Opens a light state's eighth grids now (they are otherwise made by the first draw that uses it): the page does this in idle time for a cell it is about to enter.
+  prepareLight(st) { if (st) applyLight(new Uint8Array(1), { x: 0, y: 0, w: 1, h: 1 }, 48, this.ts, st, { nightIndex: this.night }); }
 
   // ---- pass 1 and 2 to the screen ----
   // win: the place pixels the view covers { x, y, w, h }; (sx, sy): where the view's top-left goes on the page's canvas.
@@ -80,8 +88,13 @@ export class BakedView {
   // veil: Uint8Array(place.w * place.h), 1 = veiled, or null for the clear place. Returns the indexed buffer (place.w * 24 by place.h * 24).
   wholeSize() { return wholeScale(this.place); }   // 16 for a place larger than 18 x 22, else 24
   overviewBuf(veil, clockMs = 0) {
+    const it = this.overviewSteps(veil, clockMs);
+    for (;;) { const r = it.next(); if (r.done) return r.value; }
+  }
+  // The same picture in steps (a generator: each next() does one step, the last returns the buffer), for a page that builds it in its idle time.
+  overviewSteps(veil, clockMs = 0) {
     const light = veil && veil.some((v) => v) ? lightState(this.place, { veil }) : null;
-    return renderHalfView(this.ts, this.place, { clockMs, light, nightIndex: this.night });
+    return renderViewSteps(this.ts, this.place, wholeScale(this.place), { x: 0, y: 0, w: this.place.w * wholeScale(this.place), h: this.place.h * wholeScale(this.place) }, { clockMs, light, nightIndex: this.night, cache: this.half });
   }
   // The dissolve: pixel by pixel the veiled picture, until the Bayer threshold `step` (0..16) passes it and the clear one shows.
   dissolveBuf(veiled, clear, step) {
