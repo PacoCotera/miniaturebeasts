@@ -747,15 +747,9 @@ const g1Map = () => { const p = g1Page();
   p.run("S.exp = null; S.phase = 'setup'; S.pins = []; S.opened = {}; S.pods = []; S.cr = []; S.signs = {}; S.skulls = {}; for (let c = 0; c < MW * MH; c++) { S.revealed[c] = 1; S.visited[c] = c === G.gate || c === G.mouth ? 1 : 0; } mapCv = null; scr.px().fill(-1); drawMap('view', 0);");
   return p; };
 
-test("M3: the lip on lime ground stays lime, in the edge marks at 72, 48 and 26 and in the place lip at 32 (no cream pixel)", () => {
+test("M3: the lip on lime ground stays lime in the place lip at 32 (no cream pixel); the map's edge marks are the art desk's pieces, laid by walk-art.test.mjs", () => {
   const p = page(); p.run("newWorld(1)");
-  const lime = p.run("C.lime"), cream = p.run("C.cream"), grass = p.run("C.grass"), ink = p.run("C.ink");
-  for (const cs of [72, 48, 26]) for (const dir of ["up", "left", "right"]) {
-    const pb = p.run(`edgeMarkPB(${cs}, [[${JSON.stringify(dir)}, EDGE.CLIFF, false]], () => C.lime, 0)`), lit = [...pb.p].filter(v => v >= 0);
-    assert.ok(lit.length > 0 && lit.every(v => v === lime), `${cs} ${dir}: the lip keeps lime`); assert.ok(!lit.includes(cream), `${cs} ${dir}: no cream`);
-    const g = p.run(`edgeMarkPB(${cs}, [[${JSON.stringify(dir)}, EDGE.CLIFF, false]], () => C.grass, 0)`);
-    assert.ok([...g.p].filter(v => v >= 0).every(v => v === p.run(`TINT[C.grass]`) && v !== grass), `${cs} ${dir}: other ground still steps lighter`);
-  }
+  const lime = p.run("C.lime"), cream = p.run("C.cream"), ink = p.run("C.ink");
   // the place lip (32 px, all four edges and every corner) on all-lime ground: lime bands, ink edges, no cream
   p.run("const __g0 = groundInto; groundInto = (pb, base, h) => { __g0(pb, base, h); pb.rect(0, 0, 32, 32, C.lime); };");
   for (const m of [0x55, 0xaa, 0xff, 0x01, 0x04]) { const pb = p.run(`buildTile(T.FACE, T.GRASS, TERR.LIP, ${m}, 0, {})`);
@@ -1015,7 +1009,8 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // ---- golden frames: FNV of the 450×600 screen ----
 // The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
-const MAIN_FRAMES = { cave: 2067713589, place32: 1284530620, map: 2312390098 };   // C15 (and the lead 11-08: never been is the dark table, no dots): the cave frame is the reach view too (phase map) and the map the reach view: both re-captured when the fog dots came in (the pending outline went); place32 is main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
+// Walk art wired (mibi-art ce97d1c19): the reach view (the cave frame is one too, phase map) wears the desk's terrain tiles, marks and edge pieces: re-hashed, looked at 1x against the desk's sheet-walk-art-map.png.
+const MAIN_FRAMES = { cave: 3929618603, place32: 1284530620, map: 2853447065 };   // C15 (and the lead 11-08: never been is the dark table, no dots): the cave frame is the reach view too (phase map) and the map the reach view: both re-captured when the fog dots came in (the pending outline went); place32 is main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
 const GOLDEN48 = { faceStair: 1781723947, gen1: 1254856577, corner: 1819452261 };   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y) {
   const p = page48(seed);

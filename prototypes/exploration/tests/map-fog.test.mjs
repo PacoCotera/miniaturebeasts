@@ -67,7 +67,7 @@ test("the pending outline is gone from the reach view: no dotted border on a cel
   const r = plain(f.run(`${RECT}(${c})`)), px = () => { f.run("RT.key = null; scr.px().fill(-1); render(5)"); return f.run("scr").px(); }, W = f.run("SCR_W");
   const before = px(); const edge = [];
   for (let k = 3; k < r.cs - 3; k += 3) edge.push(before[(r.y + 2) * W + r.x + k]);
-  assert.ok(new Set(edge).size <= 3, "the cell's top border row is the land, not a dotted line of fog: " + [...new Set(edge)].join());
+  const night = f.run("C.night"); assert.ok(edge.every(v => v !== night), "the cell's top border row is the land, not a dotted line of fog: " + [...new Set(edge)].join());
   f.run(`FOGV.n = ${FOG_NOT_BEEN}; FOGV.b = ${FOG_BEEN}`);
 });
 
