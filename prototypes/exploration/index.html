@@ -1825,7 +1825,7 @@ function placePartnerNear(key, P) {
   }
 }
 function enterPatch() {
-  const ex = S.exp, key = String(ex.pos), lay = layout(key); ensureLive(key); S.visited[ex.pos] = 1;
+  const ex = S.exp, key = String(ex.pos), lay = layout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.spot = null; RT.view = null;
@@ -1871,6 +1871,8 @@ function patchStep(dir, mode) {
   P.dir = dir; P.noise = mode;
   const x = P.x + dx, y = P.y + dy;
   if (x < 0 || y < 0 || x >= layout(key).w || y >= layout(key).h) { if (mode === 'walk') { stopRepeat(); fxHint('edgehold', 'Edge · tap again to step off', 1); return; } if (!layout(key).cave) crossEdge(dir); return; }
+  { const lay = layout(key), lc = lay.lines && lay.lines.cells.get(y * lay.w + x);   // past a range line or into a closed opening: the reason, nothing spent
+    if (lc) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(lc.text); return; } }
   let o = occupant(key, x, y, 'player');
   if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); o = live.pt && live.pt.x === x && live.pt.y === y ? { type: 'pt' } : null; }   // mud, scree or a dug bank, for the partner that crosses it (it may be standing there: you trade places)
   if (o && o.type === 'pt') { live.pt.x = P.x; live.pt.y = P.y; }
@@ -1883,12 +1885,13 @@ function patchStep(dir, mode) {
     else if (o.type !== 'tile' && o.type !== 'cr' && !unveiled(key, x, y)) fxMsg('Something is there under the veil · ))) Call to see');
     return;
   }
-  P.x = x; P.y = y; walkLift(); springStep();
+  P.x = x; P.y = y; walkLift(); springStep(); lineWords(layout(key), P);
   advance('patch', { noise: mode, moved: true });
 }
 // The refusal at a steep edge (a cliff between two levels), on the map, in the reach view and at a place's border.
 const EDGE_REFUSAL_CLIFF = 'Steep edge · look for stairs';
-const RANGE_TEXT = () => { const who = canSure() ? S.exp.pt.name + '’s' : 'the Probe’s'; return S.tier < 2 ? 'Edge of ' + who + ' range · tier 2 reaches further' : 'Edge of ' + who + ' range'; };   // with a rambler the extra ring is its own
+const RANGE_UPGRADE = 'the next Probe upgrade reaches further';   // [copy] placeholder: the copywriter names the upgrade that lifts the range (no "tier" in a player string; the page font has no square brackets)
+const RANGE_TEXT = () => { const who = canSure() ? S.exp.pt.name + '’s' : 'the Probe’s'; return S.tier < 2 ? 'Edge of ' + who + ' range · ' + RANGE_UPGRADE : 'Edge of ' + who + ' range'; };   // with a rambler the extra ring is its own
 // The map cell one step from cell a toward dir, or -1 off the map.
 function stepCell(a, dir) { const p = cxy(a), [dx, dy] = DIRS[dir], X = p.x + dx, Y = p.y + dy; return X < 0 || Y < 0 || X >= MW || Y >= MH ? -1 : Y * MW + X; }
 // Why the Probe can't step from cell a toward dir, or null if it can.
@@ -1900,6 +1903,62 @@ function crossReason(a, dir) {
   if (edgeKind(a, dir) === EDGE.CLIFF) return sk === 'scree' ? (canSure() ? null : SCREE_BUMP) : sk === 'bank' ? (canBank() ? null : BANK_BUMP) : EDGE_REFUSAL_CLIFF;
   if (!passable(c) || G.island[c]) return G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : sk === 'wade' ? (canSure() ? null : WADE_BUMP) : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross';
   return null;
+}
+// Walk B3: an opening never promises a way that is closed. At entry each opening of a baked place is one of four kinds, from crossReason for that side:
+// open (nothing), range (past the Probe's reach: the map's dashes and a fade, the tiles past the line not walked), gate (mud, scree, a bank: a partner crosses, as before),
+// closed (wide water, a cliff, the map's edge: its tiles block and its path draws as grass until the art desk's closed looks land). The range follows ex.range, so the
+// tier and a Tuliko along move the line. The line stands LINE_DEPTH tiles in from the place's edge (the band's inner face); the tiles between it and the edge are blocked.
+const LINE_DEPTH = 3, SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' };
+function openingKind(lay, o) {
+  const why = crossReason(lay.cell, SIDE_DIR[o.side]);
+  if (!why) return { kind: 'open', text: '' };
+  if (why === RANGE_TEXT()) return { kind: 'range', text: why };
+  return why === WADE_BUMP || why === SCREE_BUMP || why === BANK_BUMP ? { kind: 'gate', text: why } : { kind: 'closed', text: why };
+}
+// The cells of an opening past the line: LINE_DEPTH deep along its side, across its gap (page cells).
+function lineCells(lay, o) {
+  const { w, h } = lay.baked, out = [];
+  for (let d = 0; d < LINE_DEPTH; d++) for (let k = o.from; k <= o.to; k++) {
+    const x = o.side === 'W' ? d : o.side === 'E' ? w - 1 - d : k, y = o.side === 'N' ? d : o.side === 'S' ? h - 1 - d : k;
+    out.push({ x: x + lay.baked.ox, y: y + lay.baked.oy, d });
+  }
+  return out;
+}
+function applyLines(lay) {
+  if (!lay.baked || lay.cave) return;
+  for (const [i, t] of lay.lineSaved || []) lay.tiles[i] = t;   // the last visit's blocks come off
+  lay.lineSaved = []; lay.lines = { cells: new Map(), ops: [], patches: [] };
+  const place = PL6.places && PL6.places.get(lay.baked.id), idOf = v => ((PL6.terrains || []).find(t => t.value === v) || {}).id;
+  for (const o of lay.openings || []) {
+    const k = openingKind(lay, o); if (k.kind !== 'range' && k.kind !== 'closed') continue;
+    const cells = lineCells(lay, o); lay.lines.ops.push({ ...o, ...k });
+    for (const c of cells) { const i = c.y * lay.w + c.x; if (T_BLOCK[lay.tiles[i]]) continue; lay.lineSaved.push([i, lay.tiles[i]]); lay.tiles[i] = T.ROCK; lay.lines.cells.set(i, { kind: k.kind, text: k.text }); }
+    if (k.kind === 'closed' && place) {   // the path past the line draws as grass: the ground of the nearest all-grass cell stands in
+      const grass = (x, y) => x >= 0 && y >= 0 && x < place.w && y < place.h && idOf(place.terrain[y * place.w + x]) === 'grass';
+      const clean = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (!grass(x + dx, y + dy)) return false; return true; };
+      const pathNear = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && y + dy >= 0 && x + dx < place.w && y + dy < place.h && idOf(place.terrain[(y + dy) * place.w + x + dx]) === 'path') return true; return false; };
+      const wide = lineCells(lay, { ...o, from: Math.max(0, o.from - 2), to: o.to + 2 });   // the path is wider than the gap, and its ragged edge reaches into the next cells: they go too
+      for (const c of wide) { const px = c.x - lay.baked.ox, py = c.y - lay.baked.oy; if (px < 0 || py < 0 || px >= place.w || py >= place.h) continue;
+        if (!pathNear(px, py)) continue;
+        let best = null, bd = 1e9; for (let y = 0; y < place.h; y++) for (let x = 0; x < place.w; x++) { if (!clean(x, y)) continue; const d = (x - px) ** 2 + (y - py) ** 2; if (d < bd) { bd = d; best = { x, y }; } }
+        if (best) lay.lines.patches.push({ x: px, y: py, from: best }); } }
+  }
+  lay.lines.id = lay.lines.patches.map(p => p.x + ',' + p.y).join(';');
+}
+// The fade past a range line: 2 x 2 px plum dots on a Bayer ladder, level 0 (the line's own tile) to 2 (the edge): 3, 7 and 11 of 16.
+function rangeFadeArt(level) {
+  return art('rfade' + level, () => { const pb = new PB(48, 48), th = [3, 7, 11][level];
+    for (let j = 0; j < 48; j++) for (let i = 0; i < 48; i++) if (BAYER[(((j >> 1) & 3) << 2) + ((i >> 1) & 3)] < th) pb.set(i, j, C.plumD);
+    return pb; });
+}
+// Within 2 tiles of a range line the Probe's words show on the band, once per approach.
+function lineWords(lay, P) {
+  if (!lay.lines || !lay.lines.ops.length) return;
+  const { w, h, ox, oy } = lay.baked, px = P.x - ox, py = P.y - oy;
+  for (const o of lay.lines.ops) { if (o.kind !== 'range') continue;
+    const d = o.side === 'N' ? py : o.side === 'S' ? h - 1 - py : o.side === 'W' ? px : w - 1 - px, k = o.side === 'N' || o.side === 'S' ? px : py;
+    const near = d <= LINE_DEPTH + 1 && k >= o.from - 1 && k <= o.to + 1, id = lay.key + o.side;
+    if (near && RT.lineSaid !== id) { RT.lineSaid = id; fxMsg(o.text, 2); } else if (!near && RT.lineSaid === id) RT.lineSaid = null; }
 }
 // Soft ground and earth banks (the overlays on G): the kind refusing a step, whatever the partner.
 const WADE_BUMP = 'Muddy water · needs a rambler', SCREE_BUMP = 'Loose scree · needs a rambler', BANK_BUMP = 'Earth bank · needs a digger';
@@ -5073,6 +5132,7 @@ function drawPatchBody(t) {
   const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
   const bk = bakedView(lay), bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
+  if (bk) bk.setPatches(lay.lines ? lay.lines.patches : [], lay.lines ? lay.lines.id : '');   // a closed opening's path drawn as grass
   if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }));
   if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= lay.w || ty >= lay.h) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
@@ -5123,6 +5183,9 @@ function drawPatchBody(t) {
   }
   for (const h of live.holes || []) { const x = h.x * ts, y = h.y * ts; if (!vis2(x, y) || !see(h.x, h.y)) continue;   // the Rupar's fresh hole, a ground mark
     blit(freshHoleArt(holeFrame(h), HOLE_BARE[h.g]), SX(x) + HOLE_DX, SY(y), spriteRm(h.x, h.y)); }
+  // past a range line the land fades: coarse plum dots, denser toward the edge (the map's fog is single night pixels; this is not it)
+  if (lay.lines) for (const op of lay.lines.ops) { if (op.kind !== 'range') continue;
+    for (const c of lineCells(lay, op)) { if (!vis2(c.x * ts, c.y * ts)) continue; blit(rangeFadeArt(LINE_DEPTH - 1 - c.d), W(c.x * ts), H(c.y * ts)); } }
   // y-sorted sprites
   const items = [], aboveCrowns = [];
   for (const f of lay.feats) if (f.tree === 'hollow' && see(f.x, f.y) && live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1))   // a shy one in a hollow trunk: the hole's one glint, in the trunk's opening
@@ -5181,6 +5244,13 @@ function drawPatchBody(t) {
   for (const f of lay.feats) if (f.kind === 'o') { const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue;
     const under = tokens.some(o => o.y === f.y + 2 && o.x >= f.x && o.x <= f.x + 2);
     overlay(roofArt(under ? 1 : 0), W(f.x * ts + ((3 * ts - 104) >> 1)), H((f.y + 2) * ts - 10), f.x + 1, f.y); }
+  // the range line: the map's own ice dashes across the gap at the band's inner face, over everything, like the Call ring
+  if (lay.lines) for (const op of lay.lines.ops) { if (op.kind !== 'range') continue;
+    const { w, h, ox, oy } = lay.baked, hz = op.side === 'N' || op.side === 'S', c = C[DASH.col], sh = C[DASH.shadow];
+    const along0 = (op.from - 1) * ts, along1 = (op.to + 2) * ts, at = (op.side === 'N' || op.side === 'W' ? LINE_DEPTH : (hz ? h : w) - LINE_DEPTH) * ts;
+    for (let a = along0 + 4; a < along1 - 4; a += 12) {
+      const x = hz ? (ox * ts) + a : (ox * ts) + at, y = hz ? (oy * ts) + at : (oy * ts) + a; if (!vis2(x, y)) continue;
+      if (hz) { R(W(x) - 1, H(y) - 2, 10, 6, sh); R(W(x), H(y) - 1, 8, 4, c); } else { R(W(x) - 2, H(y) - 1, 6, 10, sh); R(W(x) - 1, H(y), 4, 8, c); } } }
   aboveCrowns.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); } catch (e) { if (RT.err++ < 3) console.error(e); } });
   // pods sit above the canopy layer so they can't hide under a tree
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;

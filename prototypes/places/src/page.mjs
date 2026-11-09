@@ -54,10 +54,20 @@ export class BakedView {
 
   // ---- pass 1 and 2 to the screen ----
   // win: the place pixels the view covers { x, y, w, h }; (sx, sy): where the view's top-left goes on the page's canvas.
+  // Ground patches: whole 48 px cells of the ground replaced by the ground of another cell of the same place (the set's own pixels), for a stop-gap look such as a
+  // closed opening's path drawn as grass. list: [{ x, y, from: { x, y } }] in place cells; id names the list (the cache key).
+  setPatches(list, id = '') { this.patches = list || []; this.patchId = this.patches.length ? id : ''; }
   drawGround(g, sx, sy, win, clockMs, light) {
-    const key = `${win.x},${win.y},${win.w},${win.h}|${this.cache.frameKey(clockMs)}|${light ? light.id ?? (light.id = (this.nextId = (this.nextId || 0) + 1)) : 0}`;
+    const key = `${win.x},${win.y},${win.w},${win.h}|${this.cache.frameKey(clockMs)}|${light ? light.id ?? (light.id = (this.nextId = (this.nextId || 0) + 1)) : 0}|${this.patchId || ''}`;
     if (!this.last || this.last.key !== key) {
       const buf = this.cache.get(win, clockMs);   // a fresh copy of the window, so the light can be applied in place
+      for (const p of this.patches || []) {
+        const donor = this.cache.get({ x: p.from.x * 48, y: p.from.y * 48, w: 48, h: 48 }, clockMs);
+        for (let j = 0; j < 48; j++) for (let i = 0; i < 48; i++) {
+          const X = p.x * 48 + i - win.x, Y = p.y * 48 + j - win.y;
+          if (X >= 0 && Y >= 0 && X < win.w && Y < win.h) buf[Y * win.w + X] = donor[j * 48 + i];
+        }
+      }
       if (light) applyLight(buf, win, 48, this.ts, light, { nightIndex: this.night });
       const img = g.createImageData(win.w, win.h), u = new Uint32Array(img.data.buffer);
       for (let i = 0; i < buf.length; i++) u[i] = buf[i] ? this.lut[buf[i]] : 0;

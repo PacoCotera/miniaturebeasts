@@ -67,7 +67,7 @@ Quarters are out (walk slice W§6, C10): nothing counts a place as "surveyed", a
 ## Place edges
 
 - Walking off a place's edge steps onto the neighbouring map cell that way (one map action, so the clock, storm and sweep move), with the map in view and the pawn facing the way you walked. One Confirm goes down into it from the matching side. That is 2 presses per crossing, against 5 before (Back, down, Confirm, a map step, Confirm).
-- Past the range edge, off the map, or onto cliff or wide water, the Probe stays in the place with the reason ("Edge of the Probe's range · tier 2 reaches further").
+- Past the range edge, off the map, or onto cliff or wide water, the Probe stays in the place with the reason ("Edge of the Probe's range · the next Probe upgrade reaches further", a [copy] placeholder). In a baked place each opening is classified at entry (`openingKind`: open, range, gate, closed). A range opening shows the map's ice dashes across the gap 3 tiles in from the edge and a plum-dot fade past them; a closed one has its path drawn as grass; the 3 tiles past either are blocked (a step there refuses with the reason and spends nothing); the range words show within 2 tiles of a range line. The line follows `ex.range` (the tier, a Tuliko along).
 - "Leave this place" is still in the menu. There is no minimap.
 
 ## Height levels, cliffs and stairs (new worlds)
