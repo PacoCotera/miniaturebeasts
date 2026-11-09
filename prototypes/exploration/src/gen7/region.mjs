@@ -19,26 +19,32 @@ export function portOffset(seed, ax, ay, e) {
   const c = e >> 1, x = ax * MW + (c % MW), y = ay * MH + ((c / MW) | 0), south = e & 1, len = south ? CW : CH;   // a south edge runs along x (CW tiles), an east edge along y (CH tiles)
   return 6 + hash(seed, 'gen7', 'port', 2 * (y * RW + x) + south) % (len - 12);
 }
-const edgeOfStep = (a, b) => { const d = b - a; return d === 1 ? 2 * a : d === -1 ? 2 * b : d === MW ? 2 * a + 1 : 2 * b + 1; };
+export const edgeOfStep = (a, b) => { const d = b - a; return d === 1 ? 2 * a : d === -1 ? 2 * b : d === MW ? 2 * a + 1 : 2 * b + 1; };
 
 // ---- trails: A* over the cell graph ----
 // Past explorers' roads join outposts, beacons and fords. Level ground is preferred; levels are crossed only at stairs; water only at fords.
-function astar(G, from, to) {
-  const cost = c => (G.ford[c] ? 4 : G.land[c] === L.POND ? 3 : G.land[c] === L.WOOD ? 3 : G.land[c] === L.ROCK ? 3 : 2);
-  const g = new Float64Array(NC).fill(Infinity), prev = new Int32Array(NC).fill(-1), q = new FlatQueue(), tx = to % MW, ty = (to / MW) | 0;
+// One A* on flatqueue for every grid in generator 7: the cell graph here, and the tiles of a place (place.mjs). step(c, n, dir) is the cost of moving from cell c to its
+// 4-neighbour n (dir 'up' | 'right' | 'down' | 'left'), or null when the move is not allowed. Returns the cells from `from` to `to`, or null.
+export function route(W, H, from, to, step, hw = 2) {
+  const N = W * H, g = new Float64Array(N).fill(Infinity), prev = new Int32Array(N).fill(-1), q = new FlatQueue(), tx = to % W, ty = (to / W) | 0;
   g[from] = 0; q.push(from, 0);
   while (q.length) {
     const c = q.pop(); if (c === to) break;
-    const x = c % MW, y = (c / MW) | 0;
+    const x = c % W, y = (c / W) | 0;
     for (const [dir, dx, dy] of SIDES) {
-      if (!canStepIn(G, c, dir) || G.island[(y + dy) * MW + x + dx]) continue;
-      const n = (y + dy) * MW + x + dx, ng = g[c] + cost(n) + (G.edge[edgeIndex(c, dir)] === EDGE.RAMP ? 6 : 0);
-      if (ng < g[n]) { g[n] = ng; prev[n] = c; q.push(n, ng + 2 * Math.max(Math.abs(n % MW - tx), Math.abs(((n / MW) | 0) - ty))); }
+      const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= W || Y >= H) continue;
+      const n = Y * W + X, k = step(c, n, dir); if (k === null) continue;
+      const ng = g[c] + k;
+      if (ng < g[n]) { g[n] = ng; prev[n] = c; q.push(n, ng + hw * Math.max(Math.abs(X - tx), Math.abs(Y - ty))); }
     }
   }
   if (prev[to] < 0 && from !== to) return null;
   const path = [to]; for (let c = to; c !== from;) { c = prev[c]; path.push(c); }
   return path.reverse();
+}
+function astar(G, from, to) {
+  const cost = c => (G.ford[c] ? 4 : G.land[c] === L.POND ? 3 : G.land[c] === L.WOOD ? 3 : G.land[c] === L.ROCK ? 3 : 2);
+  return route(MW, MH, from, to, (c, n, dir) => (!canStepIn(G, c, dir) || G.island[n] ? null : cost(n) + (G.edge[edgeIndex(c, dir)] === EDGE.RAMP ? 6 : 0)));
 }
 function trailsOf(G) {
   const nodes = [...G.depots.set, ...G.beacons.set].filter(c => G.comp[c]);

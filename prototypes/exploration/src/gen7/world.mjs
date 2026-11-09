@@ -16,7 +16,7 @@ export const BLEND = 2;                                          // neighbouring
 
 // ---- the fields ----
 // One FastNoiseLite per field, seeded from the realm seed and the field's name. Returns f(x, y) in -1..1.
-function noiseField(seed, tag, freq, fractal = 'FBm', octaves = 4) {
+export function noiseField(seed, tag, freq, fractal = 'FBm', octaves = 4) {
   const n = new FastNoiseLite(hash(seed, 'gen7', tag) | 0);
   n.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2); n.SetFrequency(freq);
   n.SetFractalType(FastNoiseLite.FractalType[fractal]); n.SetFractalOctaves(octaves); n.SetFractalGain(0.5);
@@ -218,5 +218,5 @@ export function buildRealm(seed, tries = null) {
   for (let c = 0; c < NR; c++) { if (land[c] !== L.WATER) continue; const x = c % RW, y = (c / RW) | 0; for (const [dx, dy] of NB8) if (onR(x + dx, y + dy)) level[(y + dy) * RW + x + dx] = 0; }
   closeLevels(level, RW, RH); fixSaddles(level, RW, RH);
   mergeSmallZones(c => land[c] !== L.WATER || ford[c] === 1, land, level, RW, RH, G2.ZONE_MIN);
-  return { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, M, T: R.T, F, K, acc };
+  return { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, M, T: R.T, F, K, acc, e0: e0c, e1: e1c };   // e0, e1: the pulled height's level calibration per cell, which the place layer reads at tile scale
 }
