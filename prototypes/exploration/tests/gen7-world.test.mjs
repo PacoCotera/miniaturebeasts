@@ -46,7 +46,7 @@ test('over seeds 1-200 and every biome, the region checks pass (main part >= 70%
   const bad = all.filter(x => x.G.fails.length).map(x => x.seed + ' ' + x.G.slot + ' ' + x.G.biome + ' ' + x.G.fails);
   assert.deepEqual(bad, []);
   for (const { G } of all) {   // the checks' own numbers, read back from the data
-    let dry = 0, main = 0, walk = 0; const lv = [0, 0, 0];
+    let dry = 0, main = 0, walk = 0; const lv = [0, 0];   // one raised level: 0 and 1
     for (let c = 0; c < NC; c++) { walk += G.comp[c]; if (G.land[c] !== L.WATER && !G.island[c]) { dry++; main += G.comp[c]; lv[G.level[c]]++; } }
     assert.ok(main * 100 >= 70 * dry && walk >= 260 && lv.every(n => n * 100 >= 10 * dry) && G.cross.length >= 1);
   }

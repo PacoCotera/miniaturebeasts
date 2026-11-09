@@ -1,24 +1,15 @@
 // Generator 7, chunk G2: the goldens for the art director. Five pictures, each baked and rendered by the places bake and renderer alone (no compositing, no overlays), where the cell borders must not be findable:
 //   three 3 x 3 windows of cells at 16 px a tile (seeds 7, 13 and 42), and two 48 px walking frames (450 x 532) straddling cell borders.
-// Which windows: the most varied 3 x 3 block in the home region (slot 2,2) of each seed, by the terrains and cliffs it holds. The frames: the 3 x 3 window's border crossing where a cliff and another edge meet.
+// Which windows: fixed 3 x 3 blocks, seed 7 cells 41-55 (the owner's window), seed 13 cells 33-48 and seed 42 cells 37-50. The frames: the 3 x 3 window's border crossing where a cliff and another edge meet.
 //   node tools/gen7-goldens.mjs <outDir>      writes the PNGs and prints their names
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { windowIR, TV, CW, CH } from '../src/gen7/place.mjs';
 import { renderIR } from './gen7-render.mjs';
 import { encodePng } from '../../places/src/png.mjs';
 
-const home = (seed, wantCliff) => {   // the best 3 x 3 block of cells inside the home region (slot 2,2: cells 32..47, 40..59)
-  let best = null;
-  for (let Y = 41; Y <= 56; Y += 1) for (let X = 33; X <= 44; X += 1) {
-    const ir = windowIR(seed, X, Y, 3, 3), t = ir.terrain, n = new Map();
-    for (const v of t) n.set(v, (n.get(v) || 0) + 1);
-    const share = v => (n.get(v) || 0) / t.length;
-    const kinds = [TV.WATER, TV.SAND, TV.CLIFF, TV.THICKET, TV.SCRUB, TV.PATH].filter(v => share(v) > 0.02).length;
-    const score = 10 * kinds - 30 * Math.max(0, share(TV.GRASS) - 0.6) + (wantCliff ? 20 * (share(TV.CLIFF) > 0.08 && share(TV.CLIFF) < 0.5 ? 1 : 0) : 0) + 4 * ir.wayups.length;
-    if (!best || score > best.score) best = { score, X, Y, ir };
-  }
-  return best;
-};
+// The three windows are fixed: the blocks G2 showed (seed 7 cells 41-55 is the owner's window), so before and after are the same land. A block of 3 x 3 cells at (X, Y).
+const WINDOWS = { 7: [41, 55], 13: [33, 48], 42: [37, 50] };
+const home = seed => { const [X, Y] = WINDOWS[seed]; return { X, Y, ir: windowIR(seed, X, Y, 3, 3) }; };
 
 // a 450 x 532 px frame of an IR at 48 px: the tile (tx, ty) at its centre, clamped to the picture
 const frameAt = (ir, tx, ty) => ({ x: Math.max(0, Math.min(ir.w * 48 - 450, tx * 48 + 24 - 225)), y: Math.max(0, Math.min(ir.h * 48 - 532, ty * 48 + 24 - 266)), w: 450, h: 532 });
@@ -47,7 +38,7 @@ function borderSpot(ir) {
 export function goldenImages() {
   const out = [], picks = {};
   for (const seed of [7, 13, 42]) {
-    const p = home(seed, true); picks[seed] = p;
+    const p = home(seed); picks[seed] = p;
     out.push({ name: `window-seed${seed}-cells${p.X}-${p.Y}-16px.png`, img: renderIR(p.ir, 16).img });
   }
   for (const seed of [13, 7]) {
