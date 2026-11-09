@@ -2,18 +2,21 @@
 // Positions are place pixels at 48 px (the foot of the sprite); at 24 px they are halved. A `win` is { x, y, w, h }: the place pixels (at the drawn
 // size) the buffer covers, so a camera view and the whole place use the same code.
 import { blitRle } from './blit.mjs';
+import { sixteenOf } from './sixteen.mjs';
 import { BAYER4 } from '../../exploration/src/view.mjs';
 
 export const CUT_RADIUS = 22;        // pixels at 48 px: the explorer's cut-out in a canopy
 export const CUT_THRESHOLD = 8;      // the 4 x 4 Bayer matrix below this drops the pixel: a 50% dither disc
 
-export const scaleTo = (size, v48) => (size === 48 ? v48 : v48 >> 1);
+export const scaleTo = (size, v48) => (size === 48 ? v48 : size === 24 ? v48 >> 1 : Math.floor(v48 / 3));
 
 // Blit sprite `kind` (index in the tile set's sprites) with its foot at (x48, y48), frame `frame`, into a buffer covering win.
 export function blitPlaced(buf, win, ts, size, kind, x48, y48, frame = 0, remap, cut) {
   const s = ts.sprites[kind];
-  const a = size === 48 ? s.anchor48 : s.anchor24;
-  const [sw, sh, frames, rle] = size === 48 ? [s.w48, s.h48, s.frames48, ts.spriteAtlas48] : [s.w24, s.h24, s.frames24, ts.spriteAtlas24];
+  let a, sw, sh, frames, rle;
+  if (size === 48) { a = s.anchor48; [sw, sh, frames, rle] = [s.w48, s.h48, s.frames48, ts.spriteAtlas48]; }
+  else if (size === 24) { a = s.anchor24; [sw, sh, frames, rle] = [s.w24, s.h24, s.frames24, ts.spriteAtlas24]; }
+  else { const t = sixteenOf(ts), q = t.sprites[kind]; a = q.anchor16; [sw, sh, frames, rle] = [q.w16, q.h16, q.frames16, t.spriteAtlas16]; }
   const f = frames.length > 1 ? frame % frames.length : 0;
   blitRle(buf, win.w, win.h, scaleTo(size, x48) - a[0] - win.x, scaleTo(size, y48) - a[1] - win.y, rle, frames[f], sw, sh, remap, cut);
   return s;
