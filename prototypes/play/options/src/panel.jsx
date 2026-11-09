@@ -38,8 +38,8 @@ function Pick({ label, line, value, set, items }) {
 }
 
 function Panel({ api }) {
-  const [open, setOpen] = useState(false), [o, setO] = useState(api.read()), changed = useRef(false);
-  api.open = () => { setO(api.read()); changed.current = false; setOpen(true); };
+  const [open, setOpen] = useState(false), [o, setO] = useState(api.read()), changed = useRef(false), [ph, setPh] = useState(false), [dk, setDk] = useState({ docked: false, enabled: false, title: "" });
+  api.open = () => { setO(api.read()); setPh(api.phone()); setDk(api.dock()); changed.current = false; setOpen(true); };
   const set = (key) => (v) => { setO((p) => ({ ...p, [key]: v })); api.onChange({ [key]: v }); if (key !== "dev") changed.current = true; };
   const close = (next) => { setOpen(next); if (!next) api.onClose(changed.current); };
   return (
@@ -48,6 +48,10 @@ function Panel({ api }) {
         <Dialog.Overlay className="op-overlay" />
         <Dialog.Content className="op-panel" data-options="" aria-describedby={undefined}>
           <Dialog.Title className="op-title">Options</Dialog.Title>
+          {ph && <div className="op-line op-lede">One device at a time: Station and Companion at the top switch.</div>}
+          {ph && <Row label={dk.docked ? "Lift the Companion" : "Dock the Companion"} line={dk.title}>
+            <button type="button" className="op-btn" id="optionsDock" disabled={!dk.enabled} onClick={() => { api.onDock(); close(false); }}>{dk.docked ? "Lift" : "Dock"}</button>
+          </Row>}
           <Toggle label="Playtest waits" line="Short waits, so the whole loop fits in about an hour." on={o.playtest} set={set("playtest")} />
           <Toggle label="Developer tools" line="Shows the tools button, the Station's panel and the Companion's Observer." on={o.dev} set={set("dev")} />
           <Pick label="Companion" line="Which Companion the page plays." value={o.companion} set={set("companion")} items={[["A", "Companion A"], ["B", "Companion B"]]} />

@@ -13,6 +13,7 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import http from "node:http";
+import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
@@ -279,7 +280,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
 
 // ---- M. the layouts and the key minimums, measured (the ruling's checks) ----
 const SIZES = [[1280, 720, 1, "stack"], [1440, 900, 1, "stack"], [1920, 1080, 1, "row"], [2560, 1440, 1, "row"], [1440, 900, 1.25, "stack"], [1440, 900, 1.75, "stack"]];
-const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Pods: 56, Library: 56, Back: 56, Call: 56, Confirm: 64 };
+const MIN = { Left: 22, Up: 22, Down: 22, Right: 22, Home: 56, Vivarium: 56, Pods: 56, Library: 56, Back: 56, Call: 56, Confirm: 64 };
 {
   for (const [w, h, dsf, layout] of SIZES) {
     const tag = `M ${w}×${h}${dsf === 1 ? "" : " @" + dsf}`;
@@ -297,15 +298,17 @@ const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Pod
     for (const kk of m.keys) { const min = MIN[kk.name]; expect(kk.w >= min - 1e-6 && kk.w <= min + e && kk.h >= min - 1e-6 && kk.h <= min + e, `${tag}: ${kk.dev} ${kk.name} is ${kk.w} × ${kk.h} CSS px, wanted ${min} × ${min}`); }
     { const n = Math.max(1, Math.round(dsf)); expect(m.marks.length === 4 && m.marks.every((q) => Math.abs(q.w * dsf - 24 * n) < 0.02 && Math.abs(q.h * dsf - 24 * n) < 0.02 && q.px === "pixelated" && Math.abs(q.dx) <= 1 / dsf + 0.01 && Math.abs(q.dy) <= 1 / dsf + 0.01), `${tag}: each room mark is drawn at 24 × ${n} device px, pixelated, centred in its key (${JSON.stringify(m.marks[0])})`); }
     eq(m.keys.length, 18, tag + ": 11 Station keys and 7 Companion keys");
+    for (const d of ["station", "companion"]) { const K = Object.fromEntries(m.keys.filter((kk) => kk.dev === d).map((kk) => [kk.name, kk])), a = 22;   // the D-pad is a cross (owner 2026-11-09): up above, down below, left and right at the sides, a hub between
+      expect([Math.abs(K.Left.top - K.Up.top - a), Math.abs(K.Down.top - K.Left.top - a), Math.abs(K.Left.l + a - K.Up.l), Math.abs(K.Right.l - K.Up.l - a), Math.abs(K.Right.top - K.Left.top)].every((v) => v <= 1 / m.dpr + 0.01), `${tag}: the ${d}'s four arrows are a cross`); }
     eq(m.keys.filter((kk) => kk.dev === "station").map((kk) => kk.name), ["Left", "Up", "Down", "Right", "Home", "Pods", "Vivarium", "Library", "Call", "Back", "Confirm"], tag + ": the Station's keys, in order (pods, vivarium, library; Call left of Back)");
-    expect(m.keys.every((kk) => { const s = MIN[kk.name], row = Math.round((kk.top - (72 - s) / 2) / 72); return row >= 0 && row < 2 && Math.abs(kk.top - row * 72 - (72 - s) / 2) <= 1 / m.dpr + 0.01; }), tag + ": each key is centred in its row: a 56 key 8 from the row's top, a 64 key 4");
-    expect(["station", "companion"].every((d) => { const c = m.keys.filter((kk) => kk.dev === d).map((kk) => kk.top + kk.h / 2 - Math.floor((kk.top + kk.h / 2) / 72) * 72); return c.every((v) => Math.abs(v - 36) <= 1 / m.dpr + 0.01); }), tag + ": all the key centres in a row share one line");
+    expect(m.keys.filter((kk) => MIN[kk.name] > 22).every((kk) => { const s = MIN[kk.name], row = Math.round((kk.top - (72 - s) / 2) / 72); return row >= 0 && row < 2 && Math.abs(kk.top - row * 72 - (72 - s) / 2) <= 1 / m.dpr + 0.01; }), tag + ": each key is centred in its row: a 56 key 8 from the row's top, a 64 key 4");
+    expect(["station", "companion"].every((d) => { const c = m.keys.filter((kk) => kk.dev === d && MIN[kk.name] > 22).map((kk) => kk.top + kk.h / 2 - Math.floor((kk.top + kk.h / 2) / 72) * 72); return c.every((v) => Math.abs(v - 36) <= 1 / m.dpr + 0.01); }), tag + ": all the key centres in a row share one line");
     if (dsf === 1 && w === 1280) {   // the drawn Call key reaches the Station as C does
       await page.evaluate(() => { const f = window.__play.frames.station.contentWindow; window.__callSeen = 0; f.addEventListener("keydown", (ev) => { if (ev.code === "KeyC") window.__callSeen++; }); });
       const cb = await box(page, '#rowStation .k[aria-label="Call"]'); await page.mouse.click(cb[0] + cb[2] / 2, cb[1] + cb[3] / 2); await page.waitForTimeout(300);
       eq(await page.evaluate(() => window.__callSeen), 1, tag + ": the Station's Call key sends KeyC to the Station");
     }
-    eq(m.rows, { station: dsf === 1.75 ? 2 : 1, companion: dsf === 1 ? 1 : 2 }, tag + ": the rows in each tray (ruling 6.1)");
+    eq(m.rows, { station: 1, companion: dsf === 1.75 ? 2 : 1 }, tag + ": the rows in each tray (ruling 6.1; the cross is narrower than the row of arrows was, so one row holds more)");
     for (const d of ["station", "companion"]) { near(m.trays[d][2], m.shells[d][2], tag + ": the " + d + " tray is as wide as its shell", 1 / 64 + 0.01); near(m.trays[d][3], 72 * m.rows[d], tag + ": the " + d + " tray is 72 CSS px a row", 1 / 64 + 0.01); }
     near(m.trays.station[1], m.shells.station[1] + m.shells.station[3], tag + ": the Station tray is joined to its shell", 1 / 64 + 0.01);
     expect(m.keys.every((kk) => kk.l >= -0.01 && kk.r >= -0.01), tag + ": no row overflows its tray");
@@ -683,6 +686,9 @@ const screenAt = (frame, W) => frame().evaluate(() => { const el = document.quer
   console.log("R: " + (fails.length ? "see above" : "ok (the recovery strip)"));
   await ctx.close();
 }
+
+// ---- PH. the phone: touch emulation at 412 × 915, 390 × 844 and 915 × 412 (its own file; the desktop sections above run with a mouse and are unchanged by it) ----
+{ const r = spawnSync(process.execPath, [path.join(here, "phone.mjs")], { encoding: "utf8", env: process.env }); process.stdout.write(r.stdout ?? ""); process.stderr.write(r.stderr ?? ""); expect(r.status === 0, "PH: the phone test (tools/phone.mjs) passes"); }
 
 await browser.close(); server.close(); await caddyStop(); rmSync(caddyData, { recursive: true, force: true });
 if (errors.length) fails.push(...errors);

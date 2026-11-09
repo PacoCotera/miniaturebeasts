@@ -76,6 +76,29 @@ iframe{border:0; display:block; background:var(--void)}
 .row .k.confirm{background:radial-gradient(circle at 40% 30%,#ff8a45,#f0661a 55%,#c94f0d); box-shadow:0 calc(var(--f) * 5px) 0 #8c3608, inset 0 calc(var(--f) * 1px) 0 rgba(255,255,255,.35)}
 .row .k.confirm svg{fill:none; stroke:#fff8ef; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; width:24px; height:24px}
 .row .k.confirm.dn{transform:translateY(calc(var(--f) * 3px)); box-shadow:0 calc(var(--f) * 2px) 0 #8c3608, inset 0 calc(var(--f) * 2px) calc(var(--f) * 5px) rgba(0,0,0,.35)}
+/* the D-pad is a cross: four arms round a hub, one continuous cap (the arms' backgrounds are cut from one 3 × 3 sheet: --pk is an arm's CSS px, set by the shell); the Station's arms are the keys of its own look, the Companion's its own */
+.row .hub{position:absolute; pointer-events:none; background-repeat:no-repeat; background-size:calc(var(--pk) * 3) calc(var(--pk) * 3); background-position:calc(var(--pk) * -1) calc(var(--pk) * -1)}
+.row .hub::after{content:""; position:absolute; left:30%; top:30%; width:40%; height:40%; border-radius:50%; background:radial-gradient(circle at 40% 35%,#3d4146,#24272a)}
+.row .k.arm svg{width:12px; height:12px}
+body.phone .row .k.arm svg{width:20px; height:20px}
+.row .shub{background-image:linear-gradient(135deg,#303439,#24262a)}
+.row .chub{background-image:linear-gradient(180deg,#3a3d42,#2f3236)}
+.row .k.arm{background-repeat:no-repeat; background-size:calc(var(--pk) * 3) calc(var(--pk) * 3)}
+.row .k.pad.arm{background-image:linear-gradient(135deg,#303439,#24262a)}
+.row .k.cpad.arm{background-image:linear-gradient(180deg,#3a3d42,#2f3236)}
+.row .k.arm.up{border-radius:calc(var(--f) * 10px) calc(var(--f) * 10px) 0 0; background-position:calc(var(--pk) * -1) 0}
+.row .k.arm.down{border-radius:0 0 calc(var(--f) * 10px) calc(var(--f) * 10px); background-position:calc(var(--pk) * -1) calc(var(--pk) * -2)}
+.row .k.arm.left{border-radius:calc(var(--f) * 10px) 0 0 calc(var(--f) * 10px); background-position:0 calc(var(--pk) * -1)}
+.row .k.arm.right{border-radius:0 calc(var(--f) * 10px) calc(var(--f) * 10px) 0; background-position:calc(var(--pk) * -2) calc(var(--pk) * -1)}
+.row .k.arm:not(.up)::before{display:none}
+/* the phone (shell.mjs layoutPhone): one device at a time; the bar holds only the device switch and Options; the landscape tray is the whole area, transparent, only its keys take a touch */
+body.phone #dockCtl,body.phone #companionCtl,body.phone #keysBtn,body.phone #devBtn,body.phone #zDown,body.phone #zFit,body.phone #zUp,body.phone #note,body.phone #tabBench{display:none !important}
+body.phone iframe{image-rendering:pixelated}
+.row.side{background:none; box-shadow:none; border-radius:0; pointer-events:none}
+.row.side .k,.row.side .hub{pointer-events:auto}
+.row.side .hub{pointer-events:none}
+#turnHint{position:absolute; color:var(--mist); font-size:12px; line-height:16px; text-align:center; z-index:21; pointer-events:none}
+.op-lede{padding:2px 0 8px}
 .row .k.band::before,.row .k.room::before,.row .k.back::before,.row .k.confirm::before,.row .k.pad::before{content:""; position:absolute; left:5.5%; right:5.5%; top:3.3%; height:20%; border-radius:calc(var(--f) * 6px); background:rgba(255,255,255,.27); filter:blur(calc(var(--f) * 2px)); pointer-events:none}
 /* the Caddy's screen: the 792 × 272 lp view in an 8 lp bezel, 808 × 288 lp, always shown */
 #caddySheet{position:absolute; background:var(--bar); box-shadow:inset 0 calc(var(--f) * 1px) 0 var(--bevel); border-radius:calc(var(--f) * 8px); overflow:hidden; z-index:2}
@@ -151,6 +174,7 @@ iframe{border:0; display:block; background:var(--void)}
 .op-item[data-highlighted]{background:var(--hairline); color:var(--bone)}
 .op-actions{display:flex; justify-content:flex-end; gap:8px; padding-top:12px; border-top:1px solid var(--hairline)}
 .op-confirm .op-actions{border:0}
+@media (pointer:coarse){ .op-select,.op-btn{height:44px} .op-row{min-height:56px} }
 </style>
 </head>
 <body>
@@ -166,6 +190,7 @@ iframe{border:0; display:block; background:var(--void)}
   <div id="cradle" title="Dock the Companion in the Caddy"><div id="slot"></div><img id="lamp" alt="" src="../ui/assets/masters/pods/frame-lamp-8-stone.png" width="8" height="8"></div>
   <div id="ring"></div>
   <div id="stamp" class="hidden">build local</div>
+  <div id="turnHint" class="hidden" role="status">Turn the phone for a bigger Station</div>   <!-- [copy] placeholder -->
 </div>
   <iframe id="fBench" title="Bench" class="hidden" allow=""></iframe>   <!-- the workbench is hidden on the play page (an outdated tool): never loaded -->
   <div id="dev" class="hidden"><div id="devCaddy"><p class="dev-lede">The Caddy's problems</p><label><input type="checkbox" id="sw-silent"> Companion silent (the Companion holds back its word)</label><label><input type="checkbox" id="sw-quiet"> Station quiet (the Station's link drops)</label><label><input type="checkbox" id="sw-fault"> Caddy fault (the Caddy refuses writes)</label></div><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
