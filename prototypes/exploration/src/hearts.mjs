@@ -91,3 +91,8 @@ export function pickHeart(lay, seed, anchors = {}) {
 export const heartSeen = (heart, P, unveiledAt) => !!heart && Math.max(Math.abs(heart.x - P.x), Math.abs(heart.y - P.y)) <= HEART_FOUND_R && unveiledAt(heart.x, heart.y);
 // A tell shows through the veil within TELL_R tiles.
 export const tellShows = (heart, P) => !!heart && Math.hypot(heart.x - P.x, heart.y - P.y) <= TELL_R + .5;
+// Is the tell on? The spring's is not tied to where the explorer stands: its puddles lie on the clue tiles, in world space, in every view of the place (the walk, the whole-place looks,
+// the reach view, the full map), until the spring is found. The other kinds still show within TELL_R.
+export const tellOn = (heart, P) => !!heart && (heart.kind === "spring" || tellShows(heart, P));
+// The spring's clue tiles, farthest from the spring first (the order the sparkle runs in). The one list every view reads; world tile coordinates, nothing of the screen or the explorer in it.
+export const springClues = (heart) => (heart && heart.kind === "spring" ? heart.clues.slice().sort((a, b) => Math.hypot(b.x - heart.x, b.y - heart.y) - Math.hypot(a.x - heart.x, a.y - heart.y)) : []);
