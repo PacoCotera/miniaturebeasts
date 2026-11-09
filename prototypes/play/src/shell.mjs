@@ -182,6 +182,15 @@ function layout() {
   placeC(shC, xC, yC + seatPx, cw, shH, true); place(frames.companion, 8, 8, 450, 600);
   placeC(trayEl.station, xS, yS + shH, sw, trS, true); placeC(trayEl.companion, xC, yC + shH, cw, trC, true);
   for (const dv of ["station", "companion"]) { const pl = dv === "station" ? planS : planC; for (const { def, el } of keyEls[dv]) { const [kx, ky] = pl.pos[def.id]; placeC(el, kx, ky, def.s, def.s); } }
+  // the Undock button: while the Companion is seated, beside its D-pad in its tray, as tall as a key; the same dockPress as the bar's control
+  { const ub = $("undockBtn"), show = caddy.docked && caddy.canDock;
+    const row0 = KEYS.companion.map((d) => [planC.pos[d.id][0], planC.pos[d.id][0] + d.s, planC.pos[d.id][1]]).filter((q) => q[2] < ROWH).sort((a, b) => a[0] - b[0]);   // the keys of the tray's first row, left to right
+    let gap = { x: 0, w: 0 }, at = 8; for (const [x0, x1] of row0.concat([[cw - 8, cw - 8]])) { if (x0 - at > gap.w) gap = { x: at, w: x0 - at }; at = Math.max(at, x1); }
+    // beside the tray: 12 px off its right edge when the page has the room, else off its left edge (a stack's Companion stands clear of the Station), else in the widest free stretch of its first row
+    const UW = 104; let x = null, w = UW;
+    if (xC + cw + 12 + UW <= cwid - 8) x = cw + 12; else if (!row && !narrow && xC - 12 - UW >= 8) x = -12 - UW;
+    else { w = Math.min(UW, gap.w - 16); if (w >= 64) x = gap.x + Math.floor((gap.w - w) / 2); }
+    ub.classList.toggle("hidden", !show || x == null); if (show && x != null) placeC(ub, x, Math.floor((ROWH - 56) / 2), w, 56); ub.classList.toggle("pressed", pressed || caddy.pending); }
   const vis = (el, on) => { el.style.visibility = on ? "visible" : "hidden"; el.style.pointerEvents = on ? "" : "none"; };
   vis(shS, !narrow || owner === "station"); vis(trayEl.station, !narrow || owner === "station"); vis(shC, !narrow || owner === "companion"); vis(trayEl.companion, !narrow || owner === "companion");
   // the cradle and the seat
@@ -386,6 +395,7 @@ function reconcile() {
 }
 dockCtl.addEventListener("click", () => { dockPress(); giveKeysBack(); });
 cradle.addEventListener("click", () => dockPress());
+$("undockBtn").addEventListener("click", () => { dockPress(); if (document.activeElement === $("undockBtn")) $("undockBtn").blur(); });   // [copy] "Undock": the same lift as the bar's control, the keys go to the Companion on its answer
 const giveKeysBack = () => { if (document.activeElement === dockCtl) dockCtl.blur(); };
 window.addEventListener("message", (e) => {
   if (e.origin !== location.origin) return; const m = e.data || {};
