@@ -1,5 +1,5 @@
 // Generator 7, layer 2: the place (a cell of 24 x 28 tiles). Pure: no page state, DOM, storage, clock or Math.random.
-// Terrain per tile for the bake's dual grid, nothing else (props and decor are G3). Every value is a function of the realm seed and a WORLD tile position, never of a cell number
+// Terrain per tile for the bake's dual grid; props and decor (G3) are decor.mjs, read here as the IR's lists. Every value is a function of the realm seed and a WORLD tile position, never of a cell number
 // or of the order cells were made in, so a cell and its neighbour are windows onto one land:
 //   - the shapes (ground, wood, sand, water) come from the world's own fields sampled at every tile (the same functions the region samples at cell centres), plus a light linear
 //     pull from the region's cell labels. No smoothstep between cell centres, so no boundary falls on a cell edge (scheme Rule 1.10);
@@ -13,6 +13,7 @@ import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
 import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, WTW, WTH } from './levels.mjs';
+import { createDecor } from './decor.mjs';
 
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
 // the pairs the set draws (art/places/terrain.json values): every 2 x 2 block of logic tiles holds at most two terrains, and they are one of these
@@ -351,10 +352,41 @@ export function groundMix(seed, x0, y0, w1, h1) {
   return out;
 }
 
+// ---- props and decor (G3, decor.mjs): a function of world tiles, so a cell and its neighbour draw the same props ----
+// The land the decor reads: the terrain of any world tile (through the cells' own passes), the biome of the region slot it lies in, every way up, and the atlas slots.
+const DEC = new Map();
+function landOf(seed) {
+  const S = ctxOf(seed), cc = new Map();
+  let lx = -1, ly = -1, lt = null;
+  const T = (gx, gy) => {
+    if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH) return TV.THICKET;
+    const X = (gx / CW) | 0, Y = (gy / CH) | 0;
+    if (X !== lx || Y !== ly) { const k = Y * RW + X; let t = cc.get(k); if (!t) { if (cc.size > 400) cc.clear(); t = cellTerrain(seed, X, Y).terrain; cc.set(k, t); } lt = t; lx = X; ly = Y; }
+    return lt[(gy - Y * CH + 1) * (CW + 2) + gx - X * CW + 1];
+  };
+  const biome = (gx, gy) => S.re.slotBiome[((clamp((gy / CH) | 0, 0, RH - 1) / MH) | 0) * ATLAS + ((clamp((gx / CW) | 0, 0, RW - 1) / MW) | 0)];
+  const slots = []; for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) slots.push({ ax, ay, biome: S.re.slotBiome[ay * ATLAS + ax], x0: ax * MW * CW, y0: ay * MH * CH, x1: (ax + 1) * MW * CW - 1, y1: (ay + 1) * MH * CH - 1 });
+  return { T, biome, W: WTW, H: WTH, wayups: stairsOf(S).filter(st => st.wayup).map(st => st.wayup), slots };
+}
+export const decorOf = seed => { let d = DEC.get(seed); if (!d) { if (DEC.size > 3) DEC.clear(); d = createDecor(seed, landOf(seed)); DEC.set(seed, d); } return d; };
+export const biomeAtTile = (seed, gx, gy) => landOf(seed).biome(gx, gy);
+// the decor of the tiles x0 .. x0 + w - 1, y0 .. y0 + h - 1 as IR lists (pixels at 48 a tile, relative to the IR's own corner). A prop is in the list when its foot is within two tiles sideways or
+// three tiles below: its crown (up to three tiles above the foot, one or two either side) then hangs into the rectangle, and the neighbour draws it identically
+function decorIR(seed, x0, y0, w, h) {
+  const D = decorOf(seed), props = [], decals = [], at = (tx, ty, dx = 0, dy = 0) => ({ x: (tx - x0) * 48 + 24 + 3 * dx, y: (ty - y0) * 48 + 47 + 3 * dy });
+  const placed = (kind, p) => ({ kind, x: p.x, y: p.y, sortY: p.y, cx: Math.floor(p.x / 48), cy: Math.floor(p.y / 48) });
+  for (const p of D.propsIn(x0 - 2, y0, x0 + w + 1, y0 + h + 2)) props.push({ ...placed(p.kind, at(p.x, p.y)), tx: p.x, ty: p.y, fam: p.fam, cluster: p.cluster });
+  for (const d of D.decalsIn(x0, y0, x0 + w - 1, y0 + h - 1)) decals.push({ ...placed(d.kind, at(d.x, d.y, d.dx, d.dy)), tx: d.x, ty: d.y });
+  const reedbanks = D.reedsIn(x0, y0, x0 + w, y0 + h).map(r => ({ x: 4 * r.bx - x0, y: 4 * r.by - y0, w: 3, h: 3 }));
+  const byPos = (a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0);
+  return { props: props.sort(byPos), decals: decals.sort(byPos), reedbanks };
+}
+
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
 function irOf(seed, id, x0, y0, w, h, terrain, wayups) {
-  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props: [], decals: [], canopy: [], hearts: [], clues: [], finds: [], landmarks: [],
-    openings: [], spawns: [], wayups, reedbanks: [], groundMix: groundMix(seed, x0, y0, w + 1, h + 1) };
+  const d = decorIR(seed, x0, y0, w, h);
+  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props: d.props, decals: d.decals, canopy: [], hearts: [], clues: [], finds: [], landmarks: [],
+    openings: [], spawns: [], wayups, reedbanks: d.reedbanks, groundMix: groundMix(seed, x0, y0, w + 1, h + 1) };
 }
 // One cell for the bake: terrain with its one-tile apron.
 export function cellIR(seed, X, Y) {
