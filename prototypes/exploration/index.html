@@ -562,6 +562,7 @@ const WALK_FILES = [
   ...['cliff-face', 'cliff-lip-h', 'cliff-lip-v', 'cliff-side', 'ramp', 'ramp-side'].flatMap(e => WALK_CS.map(c => `edge-${e}-${c}`)),
   ...['48', '24', 'map7', 'map4'].flatMap(k => [0, 1, 2].map(s => `spring-puddle-${k}-spark${s}`)),
   'icon-shimmer-16', 'spot-notice-16x22', 'bubble-curious-11x13'];
+const ART_DONE = { walk: false, open: false };   // each art load has settled (loaded or failed): the opening paints its land once, after both, not once per arrival
 const WART = { pb: new Map(), empty: new Map(), ready: false };
 function walkPB(name, w = 1, h = 1) {
   const pb = WART.pb.get(name); if (pb) return pb;
@@ -574,7 +575,7 @@ function walkRead(files) {   // { name: { width, height, data (RGBA) } } to pale
     for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] < 128) continue; const v = at.get(f.data[o] << 16 | f.data[o + 1] << 8 | f.data[o + 2]); if (v == null) throw new Error('walk art off the palette: ' + name); pb.p[i] = v; }
     WART.pb.set(name, pb);
   }
-  WART.ready = true; ART.clear(); LAND_CACHE.key = null;
+  WART.ready = true; ART.clear(); landReset();
 }
 // The look view's marks (art/look/, signed in mibi-art 07cd89ed6; SOURCE.md there): you are here (a still and two pulse frames), the heart marks, and the takeables (two frames and a still each).
 // look-heart-stone, look-take-charge and look-take-warm are PLACEHOLDERS (a flat grey stone) until the owner picks a stone look: the slots are named, so a swap is files only.
@@ -593,7 +594,7 @@ async function loadWalkArt() {
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/' + dir + '/', location.href).href + n + '.png'; })));
     await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES)]);
     walkRead(files);
-  } catch (e) { console.warn('the walk art did not load', e); }
+  } catch (e) { console.warn('the walk art did not load', e); } finally { ART_DONE.walk = true; }
 }
 // The view that draws a baked layout: the dev switch's one, or the generator 6 place's own (made on first use; each place's props and ground are cached in it).
 function bakedView(lay) {
@@ -4762,7 +4763,9 @@ function signSprite(kind, s, fr, big) {
 // One continuous painting: each pixel takes the land of the cell under it after a soft displacement (value noise, ±11 px at 72 px cells and ±2.5 px fine), so cell borders become
 // coastlines, wood edges and field edges and no grid lines are drawn. Fog keeps its three states on the same soft borders: never been in the dark table (plus FOGV.n night dots),
 // been in dots at FOGV.b, found clear; a cell not seen is night with a dithered fringe. The painting is made once per change of state (integer value noise, cached).
-function vnoise(x, y, s) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, h = (a, b) => (hash(9, s, a, b) % 1000) / 1000, sm = t => t * t * (3 - 2 * t);
+const VN_LAT = new Map();   // the lattice values of the value noise, by (s, a, b): the same numbers as hash gives, found once (a painting asks for each of them thousands of times)
+const vnLat = (s, a, b) => { if (a < 0 || b < 0 || a > 8191 || b > 8191 || s < 0 || s > 15) return (hash(9, s, a, b) % 1000) / 1000; const k = ((s * 8192 + a) * 8192) + b; let v = VN_LAT.get(k); if (v === undefined) { v = (hash(9, s, a, b) % 1000) / 1000; VN_LAT.set(k, v); } return v; };
+function vnoise(x, y, s) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, h = (a, b) => vnLat(s, a, b), sm = t => t * t * (3 - 2 * t);
   const a = h(xi, yi), b = h(xi + 1, yi), c = h(xi, yi + 1), d = h(xi + 1, yi + 1), u = sm(xf), w = sm(yf); return a + (b - a) * u + (c - a) * w + (a - b - c + d) * u * w; }
 // The painting's cell borders: the cell under a world pixel after the soft displacement (-1 off the map). The edge marks find their borders with the same function.
 function landCellOf(cs) {
@@ -4773,8 +4776,11 @@ function landCellOf(cs) {
 }
 // spec: { X0, Y0 (the top-left cell), w, h (pixels), cs (the cell's size) }
 // The ground is the art desk's seamless tiles (art/walk/, map-tex-*), each pixel taking its tile at (wx mod w, wy mod h) in world pixels, from the set for the cell size (72, 48, 26).
-const LAND_CACHE = { key: null, cv: null };
-function landImage(spec) {
+const LAND_CACHE = { key: null, cv: null, more: new Map() };   // the last painting, and up to four more by key (the opening's mist frames flip between two without a repaint)
+const landReset = () => { LAND_CACHE.key = null; LAND_CACHE.more.clear(); };
+// The painting is a generator: it yields every 16 rows when `sliced`, so a screen can paint it across frames; landImage runs it whole.
+function landImage(spec) { const it = landPaint(spec, false); let r; while (!(r = it.next()).done); return r.value; }
+function* landPaint(spec, sliced) {
   const { X0, Y0, w: N, h: NH, cs } = spec, k = cs / 72, ex = S.exp;
   // spec.glimpse: cells drawn as seen and never been in (the opening's five lights before the first walk); drawn only, S.revealed is never touched
   const glimpse = spec.glimpse ? new Set(spec.glimpse) : null, seen = c => !!S.revealed[c] || (glimpse !== null && glimpse.has(c)), fogOf = c => S.revealed[c] ? fogState(c) : glimpse !== null && glimpse.has(c) && passable(c) && G.land[c] !== L.WATER ? 2 : 0;
@@ -4783,6 +4789,7 @@ function landImage(spec) {
   const mist = spec.mist != null && OPEN_ART.ready ? OPEN_ART.night : null;   // the opening's night mist: unseen pixels take the desk's tiles (frame 0, 1 or 2 = still), a variant per 96 px block of world pixels
   const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : '', mist ? 'm' + spec.mist : ''].join('|');
   if (LAND_CACHE.key === key) return LAND_CACHE.cv;
+  { const hit = LAND_CACHE.more.get(key); if (hit) { LAND_CACHE.key = key; LAND_CACHE.cv = hit; return hit; } }
   const cv = document.createElement('canvas'); cv.width = N; cv.height = NH; const cg = cv.getContext('2d'), id = cg.createImageData(N, NH), u = new Uint32Array(id.data.buffer);
   const cellOf = landCellOf(cs), tiles = {}, tcs = WALK_CS.reduce((a, b) => Math.abs(b - cs) < Math.abs(a - cs) ? b : a);   // the desk's terrain set nearest the cell size (72, 48 or 26)
   for (const n of WALK_TEX) tiles[n] = WART.pb.get(`map-tex-${n}-${tcs}`);
@@ -4793,7 +4800,8 @@ function landImage(spec) {
     if (lay) for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.WATER || lay.tiles[i] === T.ISLE) { sx += i % lay.w; sy += (i / lay.w) | 0; n++; }
     return pond[c] = n ? { x: (sx / n + .5) / lay.w, y: (sy / n + .5) / lay.h, r: Math.sqrt(n / (lay.w * lay.h)) * .62 } : { x: .5, y: .5, r: .3 }; };
   const put = (i, c) => { const q2 = RGB[c]; u[i] = (255 << 24) | (q2[2] << 16) | (q2[1] << 8) | q2[0]; };
-  for (let y = 0; y < NH; y++) for (let x = 0; x < N; x++) {
+  for (let y = 0; y < NH; y++) { if (sliced && (y & 15) === 0 && y) yield;
+  for (let x = 0; x < N; x++) {
     const wx = X0 * cs + x, wy = Y0 * cs + y, c = cellOf(wx, wy), b = BAYER[(y & 3) * 4 + (x & 3)];
     if (c < 0) { put(y * N + x, C.void); continue; }
     if (mist && !seen(c)) { u[y * N + x] = mist[hash(7, Math.floor(wx / 96), Math.floor(wy / 96)) % 3][spec.mist][(wy % 96) * 96 + (wx % 96)]; continue; }
@@ -4817,8 +4825,8 @@ function landImage(spec) {
     if (fs === 2 || (ex && ex.storm && stormCovers(c % MW))) col = DARK[col];
     if (fs === 2) { if (b < FOGV.n) col = C.night; } else if (fs === 1 && b < FOGV.b) col = C.night;
     put(y * N + x, col);
-  }
-  cg.putImageData(id, 0, 0); LAND_CACHE.key = key; LAND_CACHE.cv = cv; return cv;
+  } }
+  cg.putImageData(id, 0, 0); LAND_CACHE.key = key; LAND_CACHE.cv = cv; LAND_CACHE.more.set(key, cv); if (LAND_CACHE.more.size > 4) LAND_CACHE.more.delete(LAND_CACHE.more.keys().next().value); return cv;
 }
 // A place's mark on the land at its landmark's real spot in the cell (a mirrored place puts it on the other side); been in: the slate silhouette, found: full colour; never been in: none.
 // (fx, fy): the spot as fractions of the cell. Returns { mk, x, y } for a cell at (cx, cy) of size cs, or null.
@@ -5998,7 +6006,7 @@ function openRead(files) {
     let c = null; const build = () => { c = document.createElement('canvas'); c.width = 96; c.height = 96; const cg = c.getContext('2d'), id = cg.createImageData(96, 96); id.data.set(im.data); cg.putImageData(id, 0, 0); return c; };
     for (let i = 0; i < 96 * 96; i++) { const o = i * 4; if (im.data[o + 3] && !seen.has(im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2])) { seen.add(im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2]); OPEN_POD_COLOURS.push([im.data[o], im.data[o + 1], im.data[o + 2]]); } }
     return { w: 96, h: 96, canvas: () => c || build() }; });
-  OPEN_ART.night = night; OPEN_ART.pod = pod; OPEN_ART.ready = true; LAND_CACHE.key = null;
+  OPEN_ART.night = night; OPEN_ART.pod = pod; OPEN_ART.ready = true; landReset();
 }
 async function loadOpenArt(after) {
   try {
@@ -6009,7 +6017,7 @@ async function loadOpenArt(after) {
     await Promise.all(OPEN_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/open/', location.href).href + n + '.png'; })));
     openRead(files);
-  } catch (e) { console.warn('the opening art did not load; the built night and pod play', e); }
+  } catch (e) { console.warn('the opening art did not load; the built night and pod play', e); } finally { ART_DONE.open = true; }
 }
 // Deep ground shows once the player has met a digging kind, seen the burrow, or has a grown digger with them.
 const deepShown = () => !!digPartner() || carriedMibis().some(m => isAdult(m) && spOf(m.sp).ab === 'dig') || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.revealed[G.gate];
@@ -6030,10 +6038,20 @@ function openFrame() {
   const X0 = Math.floor(px0 / cs), Y0 = Math.floor(py0 / cs), ox = WX - (px0 - X0 * cs), oy = WY - (py0 - Y0 * cs);
   return { first, WX, WY, WW, WH, cs, X0, Y0, ox, oy, glimpse: first ? G.spawns.slice() : null, at: c => { const p = cxy(c); return { x: ox + (p.x - X0) * cs, y: oy + (p.y - Y0) * cs }; } };
 }
+// The opening's painting is made a slice (about 8 ms) each frame and drawn when whole, so the first screen never stalls on its painting. A cached painting comes back at once.
+const OPEN_JOB = { sig: '', it: null };
+function openPainting(spec) {
+  const sig = [spec.X0, spec.Y0, spec.w, spec.h, spec.cs, spec.mist, spec.glimpse ? spec.glimpse.join() : ''].join('|');
+  if (OPEN_JOB.sig !== sig || !OPEN_JOB.it) { OPEN_JOB.sig = sig; OPEN_JOB.it = landPaint(spec, true); }
+  const t0 = performance.now(); let r;
+  do { r = OPEN_JOB.it.next(); } while (!r.done && performance.now() - t0 < 8);
+  if (!r.done) return null; OPEN_JOB.it = null; return r.value;
+}
 // The land in the frame: the built painting cropped to it, the place marks, the signs, the start flag, the lights of a first walk, the lost plates and the docked band. Drawn only: nothing here reveals a cell.
 function drawOpenLand(t, fr) {
   const ready = !(G.gen >= 6) || PL6.ready || BAKED.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
-  const cv = landImage({ X0: q.X0, Y0: q.Y0, w: WW + cs, h: WH + cs, cs, glimpse: q.glimpse, mist: q.first && OPEN_ART.ready ? (motion() ? Math.floor(t / 0.9) % 2 : 2) : null });
+  if (!(ART_DONE.walk && ART_DONE.open)) return;   // one paint, once the art has settled (a painting costs hundreds of ms: never once per arriving file)
+  const cv = openPainting({ X0: q.X0, Y0: q.Y0, w: WW + cs, h: WH + cs, cs, glimpse: q.glimpse, mist: q.first && OPEN_ART.ready ? (motion() ? Math.floor(t / 0.9) % 2 : 2) : null }); if (!cv) return;   // made over a few frames: the screen shows its panel until then
   g.drawImage(cv, WX - q.ox, WY - q.oy, WW, WH, WX, WY, WW, WH);
   const x1 = q.X0 + Math.ceil((WW + cs) / cs), y1 = q.Y0 + Math.ceil((WH + cs) / cs), ms = markSizeFor(cs), signs = ready && !q.first ? new Map(mapSigns().map(e => [e.c, e.list])) : new Map();   // a place layout is built only once the places have loaded (an earlier one would be cached as the generated stand-in)
   for (let Y = q.Y0; Y < Math.min(MH, y1); Y++) for (let X = q.X0; X < Math.min(MW, x1); X++) {
