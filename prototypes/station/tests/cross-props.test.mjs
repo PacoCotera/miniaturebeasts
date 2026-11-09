@@ -89,6 +89,11 @@ test("the head, the child to be, the kinship pill, the heads' words and the bott
   const alone = world("S01", 11, 1); const nv = build(alone, { state: 0 }); assert.deepEqual([nv.props.regions.heads.b.none, nv.props.regions.heads.b.line, nv.line.ok ?? null, nv.line.need], [true, spec.strings.noPartner, null, spec.strings.noPartner]);
 });
 
+test("B2 no place for the child: Cross them stays on screen dimmed with the notice (✓ opens the full panel), no other refusal changes", () => {
+  const w = world("S01", 11, 2); w.st.mibis.push(...Array.from({ length: S.roomCount(w.st, settings) * S.ROOM }, (_, i) => ({ id: 900 + i, room: i >> 3, slot: i & 7, bay: 100 + i, released: false })));
+  w.mibis.forEach((m, i) => { m.room = 0; m.slot = i; });
+  const v = build(w, { state: 0 }); assert.deepEqual([v.nav.block, v.line.ok, v.line.dim, v.line.need], ["the Vivarium is full", spec.bottomLine.verb, true, "the Vivarium is full"]);
+});
 test("a family pair is refused with the line as built and no seeds drawn", () => {
   const w = world("S01"); S.seedSiblings(w.st, "S01", 31, settings); const [x, y] = w.st.mibis.slice(-2); readAll(x, w.fr); readAll(y, w.fr);
   const v = crossBuild({ st: w.st, sv: w.sv, settings, ui: { aId: x.id, bId: y.id, state: 0, clash: [] } }, spec, pods);

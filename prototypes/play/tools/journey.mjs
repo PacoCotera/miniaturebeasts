@@ -482,18 +482,18 @@ async function zBad(page, sel, W, z, capture) {
   await ctx.close();
 }
 
-// ---- U. the Undock button (owner 2026-11-09): beside the Companion's D-pad while it is seated, a key tall, the bar's own lift; the keys go to the Companion (fresh context, 1920 × 1080) ----
+// ---- U. the Lift button (owner 2026-11-09): beside the Companion's D-pad while it is seated, a key tall, the bar's own lift; the keys go to the Companion (fresh context, 1920 × 1080) ----
 {
   const { ctx, page, st, mb } = await open(1920, 1080);
   const shown = () => page.evaluate(() => { const b = document.getElementById("undockBtn"), r = b.getBoundingClientRect(); return { vis: !b.classList.contains("hidden") && r.width > 0, box: [r.left, r.top, r.width, r.height], tray: (({ left, top, width, height }) => [left, top, width, height])(document.getElementById("rowCompanion").getBoundingClientRect()) }; });
-  eq((await shown()).vis, false, "U: no Undock button while the Companion is lifted");
+  eq((await shown()).vis, false, "U: no Lift button while the Companion is lifted");
   await page.click("#dockCtl"); await page.waitForTimeout(900);
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "U: seated");
-  const u = await shown(); eq(u.vis, true, "U: the Undock button shows while seated");
+  const u = await shown(); eq(u.vis, true, "U: the Lift button shows while seated");
   expect(u.box[3] === 56 && u.box[2] >= 64 && u.box[1] >= u.tray[1] && u.box[1] + u.box[3] <= u.tray[1] + u.tray[3] && u.box[0] >= u.tray[0] + u.tray[2], "U: a key tall, level with the Companion's tray and beside it " + JSON.stringify(u));
   if (process.env.UNDOCK_SHOT) await page.screenshot({ path: process.env.UNDOCK_SHOT, clip: { x: u.tray[0] - 20, y: u.tray[1] - 640, width: 640, height: 760 } });
   await page.click("#undockBtn"); await page.waitForTimeout(900);
-  eq(await st().evaluate(() => window.__st.ST.dock.docked), false, "U: Undock lifts the Companion");
+  eq(await st().evaluate(() => window.__st.ST.dock.docked), false, "U: Lift lifts the Companion");
   eq((await shown()).vis, false, "U: and the button hides");
   eq(await page.evaluate(() => document.activeElement && document.activeElement.id), "fCompanion", "U: the keys go to the Companion");
   await ctx.close();

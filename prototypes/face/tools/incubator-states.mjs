@@ -21,6 +21,10 @@ const SCENES = {
   "growing-half": { want: "growing", set: (w) => { w.adults(2); w.budAt(10); } },
   "growing-start": { want: "growing", set: (w) => { w.adults(2); w.budAt(0.05); } },
   "cross-growing": { want: "growing", set: (w) => { w.adults(2); w.budAt(6); const st = window.__st.ST; st.bud.kind = "cross"; st.bud.parents = [{ name: "Fig" }, { name: "Pip" }]; } },
+  "empty-full":    { want: "empty", set: (w) => { w.rooms(1); w.adults(8); w.pods(1); } },   // B1: a pod in the rack and no place free: Choose a pod dimmed, "The Vivarium is full" in the notice
+  "empty-nopods":  { want: "empty", set: (w) => { w.adults(2); } },   // B1: the rack is empty: Choose a pod dimmed, "No pods at home"
+  "empty-settling": { want: "empty", set: (w) => { w.rooms(2); w.adults(8); w.pods(1); const st = window.__st.ST; st.roomMeta = [{}, { settleUntil: (st.turn | 0) + 1 }]; } },   // B1: room two is settling (one turn): Choose a pod dimmed, "{Room} settles · ready next turn"
+  "panel-full":    { want: "empty", panel: true, panelId: "full", set: (w) => { w.rooms(1); w.adults(8); w.pods(1); } },   // B2: ✓ Choose a pod with the Vivarium full opens the full panel (Add the room | Make room)
   "ready-full": { want: "ready", timedOnly: true, set: (w) => { w.rooms(1); w.adults(8); w.bud(true); } },   // R6: the Vivarium is full (one room, eight places taken) and the bud is ready: Open is held, the notice says why
   "via-create": { want: "empty", timedOnly: true, set: (w) => { const S = window.__st; w.adults(2); S.seedPod("S01", 3); const p = S.ST.tray.at(-1); S.readSome(p.id, 2); S.openCreate(p.id); } },
 };
@@ -49,7 +53,7 @@ const TIMED = {
   "growNow-500": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 500, want: "growing" },
   "panel-dither-90": { scene: "growing", go: () => window.__st.press("confirm"), at: 90, want: "growing" },   // ✓ Hatch now above ❀ 4: the dither in to the Hatch now | Wait panel, halfway (level 8 of 16)
   "panel-grownow-200": { scene: "growing", go: () => window.__st.press("confirm"), then: [() => window.__st.press("confirm")], arrive: 0, at: 200, want: "growing" },   // the panel's ✓ Hatch now: a cut to the room, 200 ms into the bar's cuts
-  "full-pressed": { scene: "ready-full", go: () => window.__st.press("confirm"), at: 400, want: "ready", plate: true },   // R6: ✓ on the held Open: the plate The Vivarium is full / Return a mibi to make room / or add a room
+  "full-pressed": { scene: "ready-full", go: () => window.__st.press("confirm"), at: 400, want: "ready", panel: "full" },   // R6, B2: ✓ on the held Open: the full panel (Add the room | Make room), where the plate was
   "hatch-skip": { scene: "ready", go: () => window.__st.press("confirm"), at: 1100, skip: true, want: "habitat" },
 };
 // The hatch's name and code, read from the props at each hatch frame: one name and one code (never the fixture's "BUD") across every frame; the Habitat's meet takes the same name (habitat-states.mjs)
@@ -66,6 +70,7 @@ async function still(visit) {
       if (sc.timedOnly) continue;
       await apply(page, sc, step); await step(400);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state })); if (u.screen !== "incubator" || u.props !== sc.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
+      if (sc.panelId) { const pn = await page.evaluate(() => window.__st.UI.panel?.id ?? null); if (pn !== sc.panelId) fail(`incubator-${name}: the panel is ${pn}`); }
       await visit("incubator-" + name, page, fail);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
@@ -84,7 +89,7 @@ async function timedStates(visit) {
       if (tp.skip) { await page.evaluate(() => window.__st.press("confirm")); await step(16); }   // the skip, and the frame after it
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state }));
       if (tp.skip ? u.screen !== tp.want : u.screen !== "incubator" || u.props !== tp.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
-      if (tp.plate) { const m = await page.evaluate(() => window.__st.msg); if (m !== "The Vivarium is full\nReturn a mibi to make room\nor add a room") fail(`incubator-${name}: the plate is ${JSON.stringify(m)}`); }
+      if (tp.panel) { const pn = await page.evaluate(() => window.__st.UI.panel?.id ?? null); if (pn !== tp.panel) fail(`incubator-${name}: the panel is ${pn}`); }
       await visit("incubator-" + name, page, fail);
       if (/^hatch-\d+$/.test(name)) {
         const h = await page.evaluate(() => { const S = window.__st, m = S.ST.mibis[S.ST.mibis.length - 1], r = S.props?.regions; return { name: m.name, code: m.code, ribbon: r?.ribbon ?? "", shown: r?.code ?? "" }; });

@@ -5,6 +5,7 @@ import { frameOf } from "../genome.mjs";
 import { reviewTraits, createPod, founderPicture } from "../views/create-props.mjs";
 import { capLine } from "../views/words.mjs";
 import { openInventory, openRoom } from "./pods.mjs";
+import { noPlace } from "./incubator.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // The screen's own state names the pod (h.ui.create.podId); its frame is the species'. Nothing else is on the wire: { screen, target, verb }.
@@ -22,6 +23,7 @@ export function intent(h, target, verb) {
   }
   else if (verb === "confirm") {
     const block = S.growBlockKey(h.st, p, cr.choices, h.settings, cr.clash);
+    if (block && block.key === "full" && noPlace(h)) return;   // no place: the full panel (or the settling plate), not a plate that names a way out it cannot take (B2)
     if (block && (block.key === "busy" || block.key === "full" || block.key === "clash")) { h.say(block.key === "full" ? S.fullWords(h.st).plate.join("\n") : capLine(spec.strings.notices[block.key])); return; }   // blocked: the verb is dimmed and ✓ plays its plate, never silent (the house rule): the Vivarium full its three lines (C10), busy and clash the notice's own sentence
     if (block && block.key === "short") { h.say(spec.strings.notices.shortFrom[block.from].replace("{icons}", block.short)); return; }   // refused as before: the plate, and the panel does not open (build spec 6a.1)
     openIncubatePanel(h);   // the 180 ms dither (16 levels) from Create to the Incubate | Keep shaping panel; nothing is spent until its ✓ Incubate

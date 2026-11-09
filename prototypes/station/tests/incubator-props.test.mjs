@@ -45,14 +45,22 @@ test("an empty Incubator is the open, empty capsule: no pod, no stamp, no code; 
   assert.deepEqual(validate(e.props, schema), [], "empty validates"); assert.equal(e.props.state, "empty"); assert.equal(e.line.ok, spec.strings.choose);
   assert.deepEqual(["inside", "stamp", "code", "readyIn", "juvenile", "ribbon"].filter((k) => k in e.props.regions), [], "nothing inside, bare wall");
   assert.equal(e.props.regions.capsule.barPx, 158, "the bar is off in the empty look: the face draws none"); assert.equal(e.line.subject, spec.strings.empty);
-  st.tray.length = 0; assert.equal(build(st).line.ok, null);
+  assert.equal(e.line.dim, undefined, "live with a pod and a place");
+  st.tray.length = 0; const n = build(st).line; assert.deepEqual([n.ok, n.dim, n.need], [spec.strings.choose, true, spec.strings.noPods], "B1: no pods at home, Choose a pod stays on screen dimmed and the notice says why");
+});
+test("B1 a room that is settling: Choose a pod dimmed and the notice names the room and the turn; a longer settling counts the turns", () => {
+  const { st } = world(); st.mibis = Array.from({ length: S.ROOM }, (_, i) => ({ id: 900 + i, room: 0, slot: i, bay: i, released: false }));
+  const two = { ...settings, rooms: 2 }; st.rooms = 2; st.roomMeta = [{ theme: S.ROOM_THEMES[0], settleUntil: 0 }, { theme: S.ROOM_THEMES[1], settleUntil: (st.turn | 0) + 1 }];
+  assert.equal(S.placeBlock(st, two), "settling"); const l = incubatorBuild({ st, settings: two, now: T0, ui: { inc: {} }, lamp: "" }, spec, pods).line;
+  assert.deepEqual([l.ok, l.dim, l.need], [spec.strings.choose, true, S.roomName(st, 1) + " settles · ready next turn"]);
+  st.roomMeta[1].settleUntil = (st.turn | 0) + 3; assert.equal(incubatorBuild({ st, settings: two, now: T0, ui: { inc: {} }, lamp: "" }, spec, pods).line.need, S.roomName(st, 1) + " settles · ready in 3 turns");
 });
 
 test("a growing bud: the bar is floor(158 x progress) px, the time is 'ready in about {n} min' on the left wall, the sealed pod is inside; Hatch now and its price; ready: Open, the bar full (Hatch now is not offered on a ready bud)", () => {
   const { st, p } = world(); const r = S.grow(st, p, {}, settings, T0); assert.ok(r.ok);
   const g = build(st, { inc: {} }, T0 + 1000);
   assert.equal(g.props.state, "growing"); assert.equal(g.line.ok, spec.strings.grow); assert.ok(g.line.price); assert.equal(g.props.regions.readyIn, "ready in about " + S.budMinutesLeft(st, settings, T0 + 1000) + " min", "the minutes left, owner ruling 3"); assert.equal(S.budMinutesLeft(st, settings, T0 + st.bud.minutes * 60_000 - 1), 1, "at least one minute");
-  assert.equal(g.props.regions.capsule.barPx, Math.max(1, Math.floor(158 * S.budProgress(st, settings, T0 + 1000))), "the bar is lit from its first pixel"); assert.match(g.line.subject, /bud$/, "the context is the bud, not the time");
+  assert.equal(g.props.regions.capsule.barPx, Math.max(1, Math.floor(158 * S.budProgress(st, settings, T0 + 1000))), "the bar is lit from its first pixel"); assert.match(g.line.subject, /^an? /i, "the context is the pod, not the time");
   const mid = build(st, { inc: {} }, T0 + st.bud.minutes * 30_000); assert.ok(mid.props.regions.capsule.barPx > 70 && mid.props.regions.capsule.barPx < 90, "half way: about 79 px"); assert.equal(mid.props.regions.capsule.barPx, Math.floor(158 * S.budProgress(st, settings, T0 + st.bud.minutes * 30_000)));
   const near = build(st, { inc: {} }, T0 + st.bud.minutes * 60_000 - 1000); assert.equal(near.props.regions.capsule.barPx, Math.floor(158 * S.budProgress(st, settings, T0 + st.bud.minutes * 60_000 - 1000))); assert.ok(near.props.regions.capsule.barPx >= 157);
   assert.ok(g.props.regions.inside.pod.day && g.props.regions.inside.pod.dusk && !g.props.regions.inside.opened, "the sealed pod, day and dusk; no opened pod yet");
@@ -109,7 +117,7 @@ test("the hatch's juvenile is the meet's mibi: its source request is the incubat
 test("R6 the Vivarium full: the notice The Vivarium is full at the ready bud (its Open held), at Hatch now (held) and on the empty Incubator; the plate lines are the rules' (the rooms words C9, C10, C17)", () => {
   const full = (st) => { st.mibis = Array.from({ length: S.roomCount(st, settings) * S.ROOM }, (_, i) => ({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false })); };
   assert.deepEqual([spec.strings.full, spec.strings.noBay, spec.strings.noBayPlate], ["The Vivarium is full", undefined, undefined], "the keys are renamed and the words are the owner's");
-  { const { st } = world(); full(st); const e = build(st); assert.deepEqual([e.line.ok, e.line.need], [null, "The Vivarium is full"], "empty: no Choose a pod while no place is free, the notice says why"); }
+  { const { st } = world(); full(st); const e = build(st); assert.deepEqual([e.line.ok, e.line.dim, e.line.need], [spec.strings.choose, true, "The Vivarium is full"], "empty: Choose a pod stays, dimmed, while no place is free, the notice says why (B1)"); }
   { const { st, p } = world(); S.grow(st, p, {}, settings, T0); const free = build(st), g0 = free.line; assert.equal(g0.dim, undefined); full(st); const g = build(st).line;
     assert.deepEqual([g.ok, g.dim, g.need], [spec.strings.grow, true, "The Vivarium is full"], "Hatch now is held while the Vivarium is full: the verb dimmed, the notice, ✓ plays the plate");
     S.skipBud(st, settings, "ready"); const r = build(st).line; assert.deepEqual([r.ok, r.dim, r.need], [spec.strings.open, true, "The Vivarium is full"], "the ready bud's Open is held"); }

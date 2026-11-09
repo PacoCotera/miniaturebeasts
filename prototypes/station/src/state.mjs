@@ -961,6 +961,9 @@ export function freePlace(st, settings = DEFAULT_SETTINGS, prefer = null) {
   return null;
 }
 export const vivFull = (st, settings = DEFAULT_SETTINGS) => freePlace(st, settings) === null;
+// Why no place is free (dead ends B1): null when one is, "settling" when a new room still has a free place but is settling (it takes mibis after the next walk), else "full". The settling room's index: settlingRoom.
+export const settlingRoom = (st, settings = DEFAULT_SETTINGS) => { const n = roomCount(st, settings); for (let i = 0; i < n; i++) if (isSettling(st, i) && inRoom(st, i).length < ROOM) return i; return null; };
+export const placeBlock = (st, settings = DEFAULT_SETTINGS) => (!vivFull(st, settings) ? null : settlingRoom(st, settings) !== null ? "settling" : "full");
 // The room rules (rooms-rules.json): the ladder, the settling times, the ceiling, the themes and the finds. `settings.roomRules` overrides a key (a test, the developer's panel); `needFind` is off until the Companion's trips produce finds.
 export const roomRules = (settings = DEFAULT_SETTINGS) => ({ ...ROOM_RULES, ...(settings?.roomRules ?? {}) });
 // The Energy the next room costs on the ladder, for `built` rooms already there: 4, 8, 12, then 4 more each (the first three from the data, then one step more per room)
@@ -1076,13 +1079,13 @@ export function instantGrowCost(st, settings = DEFAULT_SETTINGS, now = Date.now(
   return { e: 0, d: 0, s: left > 1e-9 ? price(Math.ceil(left / 2 - 1e-9), settings) : 0 };
 }
 // Hatch now: pays the price for the minutes left, ends the wait and opens the bud as Open does, in one press (game text 1). A place is checked before anything is spent: none free (only a developer
-// path reaches it) refuses with Open's words and spends nothing, then short of Essence refuses with "Hatch now · {short}". One log line, "Hatched {name} now · ...". Returns { ok, mibi, bud, cost }.
+// path reaches it) refuses with Open's words and spends nothing, then short of Essence refuses with "Hatch now · {short}". One log line, "Opened now · {name} · ...". Returns { ok, mibi, bud, cost }.
 export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.bud || budReady(st, settings, now)) return { ok: false };
   if (vivFull(st, settings)) return { ok: false, ...fullWords(st) };
   const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Hatch now · " + shortText(st, c.e, c.d, c.s) };
   st.e -= c.e; st.d -= c.d; st.s -= c.s; const bud = st.bud; bud.early = true;
-  const r = hatchBud(st, settings, now, (m, sp, room) => "Hatched " + m.name + " now · " + sp + " · juvenile · the " + room + " room · " + spendText(c.e, c.d, c.s));
+  const r = hatchBud(st, settings, now, (m, sp, room) => "Opened now · " + m.name + " · " + sp + " · juvenile · the " + room + " room · " + spendText(c.e, c.d, c.s));
   return { ok: true, mibi: r.mibi, bud, cost: c };
 }
 // Open: a press; the juvenile steps out fully known, into a free place, wearing the placeholder until its painting lands (M3).
@@ -1169,7 +1172,7 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return "pick two";
   if (a === b || a.id === b.id) return "one mibi is not a pair";
   if (speciesOf(a) !== speciesOf(b)) return "another species";
-  if (a.genome && b.genome && versionRefusal(frameFor(a), a.genome, b.genome)) return "born on different frame versions";   // a version-4 and a version-5 Loika carry different loci: never crossed, never a crash
+  if (a.genome && b.genome && versionRefusal(frameFor(a), a.genome, b.genome)) return "too different";   // a version-4 and a version-5 Loika carry different loci: never crossed, never a crash
   if (a.released || b.released) return "gone to the wild";
   if (directKinOf(st, a, b)) return FAMILY;
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
@@ -1190,7 +1193,7 @@ export const kinshipWord = (k) => (k <= 0 ? "no kin in common" : k >= 0.5 ? "the
 // and which chapter to read; a sealed chapter's traits stay `sealed`. `missing` counts the readable traits still unknown, `sealedTraits` the sealed ones, `unknown` both; the genome-wide
 // likeness is shown only when nothing is unknown. The cross itself (`doCross`) still draws on the whole genomes: the mask is only what the screen may say.
 export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
-  const fr = frameFor(a); if (!fr || ["another species", "born on different frame versions"].includes(crossBlock(st, null, a, b, settings)) || (a !== b && directKinOf(st, a, b))) return null;
+  const fr = frameFor(a); if (!fr || ["another species", "too different"].includes(crossBlock(st, null, a, b, settings)) || (a !== b && directKinOf(st, a, b))) return null;
   const k = kinshipOf(st, a, b), opts = { kinship: k, lookup: genomeLookup(st) }, full = crossForecast(fr, a, b, opts);   // the mibi records: by id
   const traitOf = (id) => fr.chapters.flatMap((c) => c.traits).find((t) => t.id === id), chapterName = (id) => fr.chapters.find((c) => c.id === id)?.name || id;
   let loci = null;   // every locus's own outcome, computed once and only read for a trait whose chapter both parents have read

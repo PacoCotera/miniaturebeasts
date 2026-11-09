@@ -19,6 +19,7 @@ import { arrivePending } from "../src/intents/arrival.mjs";
 import { setLibrarySpecies } from "../src/views/home-props.mjs";
 import { capLine } from "../src/views/words.mjs";
 import { listOf } from "../src/views/pods-props.mjs";
+import { cardsOf } from "../src/views/panel-props.mjs";
 import { openInventory } from "../src/intents/pods.mjs";
 import { incubateNow } from "../src/intents/create.mjs";
 import { lineageOf, camFromOffset, panFor } from "../src/lineage.mjs";
@@ -198,7 +199,7 @@ test("the incubator: Choose a pod (empty), Hatch now (growing: pays, ends the wa
   { const hb = host(world()); hb.specs.incubator = incubatorSpec; const sb = hb.st, pb = pod(sb, "S01", chapters("S01")); sb.tray = [pb]; S.grow(sb, pb, {}, settings, T0); hb.settings = { ...settings, growNowAbove: 99 }; INTENTS.incubator.intent(hb, "bud", "confirm"); assert.deepEqual([hb.ui.panel ?? null, hb.played.at(-1)?.kind], [null, "growNow"], "at or below the threshold ✓ acts as before: no panel");
     const hc = host(world()); hc.specs.incubator = incubatorSpec; const sc = hc.st, pc = pod(sc, "S01", chapters("S01")); sc.tray = [pc]; S.grow(sc, pc, {}, settings, T0); INTENTS.incubator.intent(hc, "bud", "confirm"); const sc0 = sc.s; INTENTS.panel.intent(hc, "card.wait", "confirm"); assert.deepEqual([hc.ui.panel, hc.played.at(-1).kind, sc.s, S.budReady(sc, settings, T0)], [null, "dither", sc0, false], "Wait spends nothing and dithers back"); INTENTS.incubator.intent(hc, "bud", "confirm"); INTENTS.panel.intent(hc, "card.grow", "back"); assert.deepEqual([hc.ui.panel, hc.played.at(-1).kind, sc.s], [null, "dither", sc0], "← spends nothing and dithers back");
     const hd = host(world()); hd.specs.incubator = incubatorSpec; const sd = hd.st, pd = pod(sd, "S01", chapters("S01")); sd.tray = [pd]; S.grow(sd, pd, {}, settings, T0); sd.s = 1; INTENTS.incubator.intent(hd, "bud", "confirm"); assert.equal(hd.ui.panel ?? null, null, "short of Essence: the refusal plate, no panel"); assert.deepEqual(hd.played.map((e) => e.kind), [], "nothing plays"); assert.ok(hd.said?.length || hd.plates?.length || true); }
-    { const he = host(world()); he.specs.incubator = incubatorSpec; const se = he.st, pe = pod(se, "S01", chapters("S01")); se.tray = [pe]; S.grow(se, pe, {}, settings, T0); for (let i = 0; i < 16; i++) se.mibis.push({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false }); const s0 = se.s; INTENTS.incubator.intent(he, "bud", "confirm"); assert.deepEqual([he.ui.panel ?? null, he.played.length, se.s, !!se.bud], [null, 0, s0, true], "the Vivarium is full: a press that would be refused never opens the panel, nothing is spent"); assert.deepEqual(he.said, ["The Vivarium is full\nReturn a mibi to make room\nor add a room"], "Hatch now while full: ✓ plays the three lines, one a line (the rooms words C10)"); }
+    { const he = host(world()); he.specs.incubator = incubatorSpec; const se = he.st, pe = pod(se, "S01", chapters("S01")); se.tray = [pe]; S.grow(se, pe, {}, settings, T0); for (let i = 0; i < 16; i++) se.mibis.push({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false }); const s0 = se.s; he.ui.screen = "incubator"; INTENTS.incubator.intent(he, "bud", "confirm"); assert.deepEqual([he.ui.panel?.id ?? null, he.played.map((e) => e.kind), se.s, !!se.bud, he.said], ["full", ["dither"], s0, true, []], "the Vivarium is full: Hatch now opens the full panel (B2, not the Hatch now | Wait one), nothing is spent, no plate"); }
   assert.ok(h.ui.inc.hatch && h.ui.inc.hatch.mibi === st.mibis.at(-1).id); INTENTS.incubator.intent(h, "bud", "back"); assert.notEqual(h.went.at(-1), "home", "← does nothing in the hatch");
   meet.fn(); assert.deepEqual([h.went.at(-1), h.ui.hab.f, h.ui.inc.hatch], ["habitat", "resident", null]); assert.equal(h.ui.meet, st.mibis.at(-1).id); assert.equal(st.bud, null);
   INTENTS.incubator.intent(h, "bud", "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "incubator"]);
@@ -372,11 +373,38 @@ test("Create ✓ refused: a short purse says what is short and nothing is spent,
   const e = st.e; INTENTS.create.intent(h, "roll", "confirm"); assert.equal(st.e, e); assert.ok(!st.bud); assert.equal(h.ui.create.grown, null); assert.equal(h.said.length, 1); assert.deepEqual(h.played, []);
 });
 
-test("R6 the Incubator's Open while the Vivarium is full: ✓ plays the three plate lines and opens nothing (the third only while a room can be bought)", () => {
-  const he = host(world()); he.specs.incubator = incubatorSpec; const se = he.st, pe = pod(se, "S01", chapters("S01")); se.tray = [pe]; S.grow(se, pe, {}, settings, T0); S.skipBud(se, settings, "ready");
+test("B2 the Incubator's Open while the Vivarium is full: ✓ opens the full panel (Add the room | Make room; at the last room Make room | Not now) and opens nothing", () => {
+  const he = host(world()); he.specs.incubator = incubatorSpec; he.ui.screen = "incubator"; const se = he.st, pe = pod(se, "S01", chapters("S01")); se.tray = [pe]; S.grow(se, pe, {}, settings, T0); S.skipBud(se, settings, "ready");
   for (let i = 0; i < 16; i++) se.mibis.push({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false });
-  INTENTS.incubator.intent(he, "bud", "confirm"); assert.deepEqual([he.said, !!se.bud, he.played.length], [["The Vivarium is full\nReturn a mibi to make room\nor add a room"], true, 0]);
-  he.said.length = 0; se.rooms = S.ROOMS_MAX; INTENTS.incubator.intent(he, "bud", "confirm"); assert.deepEqual(he.said, ["The Vivarium is full\nReturn a mibi to make room"], "at four rooms nothing more can be bought: two lines");
+  INTENTS.incubator.intent(he, "bud", "confirm"); assert.deepEqual([he.ui.panel?.id, he.ui.panel?.screen, he.said, !!se.bud, he.played.map((e) => e.kind)], ["full", "incubator", [], true, ["dither"]]);
+  const cards = (h) => cardsOf({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, now: T0 }, h.specs.panel, frameSpec, []).map((c) => c.id);
+  assert.deepEqual(cards(he), ["add", "make"], "a room can still be bought"); he.ui.panel = null; he.settings = { ...settings, roomRules: { max: se.rooms } };
+  assert.deepEqual([S.canAddRoom(se, he.settings)], [false]); INTENTS.incubator.intent(he, "bud", "confirm"); assert.deepEqual(cards(he), ["make", "keep"], "no room can be added: Make room | Not now");
+  he.moving = false; he.ui.panel = null; he.played.length = 0; INTENTS.incubator.intent(he, "bud", "confirm"); assert.deepEqual([he.ui.panel?.id, he.played.length], ["full", 0], "reduced motion: a cut, no dither");
+});
+test("B2 the full panel: Add the room buys and settles and the player stays; Make room lands on a resident of the Vivarium; Not now and ← close it with nothing changed; short of Energy the Add card says what is short", () => {
+  const mk = () => { const h = host(world()); h.specs.incubator = incubatorSpec; h.ui.screen = "incubator"; h.sv.with = null; const se = h.st, pe = pod(se, "S01", chapters("S01")); se.tray = [pe]; S.grow(se, pe, {}, settings, T0); S.skipBud(se, settings, "ready");
+    h.settings = { ...settings, rooms: 0 }; se.rooms = 2; se.mibis = Array.from({ length: 16 }, (_, i) => ({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false, from: {}, sp: 0 })); return h; };
+  { const h = mk(), e0 = h.st.e, rooms = h.st.rooms; INTENTS.incubator.intent(h, "bud", "confirm"); INTENTS.panel.intent(h, "card.add", "confirm");
+    assert.deepEqual([h.ui.panel, h.ui.screen, h.st.rooms, h.st.e < e0, h.said.length], [null, "incubator", rooms + 1, true, 1], "bought; no screen change"); assert.match(h.said[0], /settles · ready/);
+    assert.equal(S.placeBlock(h.st, h.settings), "settling", "the new room settles: still no place, and the next ✓ says so"); h.said.length = 0; INTENTS.incubator.intent(h, "bud", "confirm"); assert.deepEqual([h.ui.panel, h.said.length], [null, 1], "settling: the plate, not the panel"); assert.match(h.said[0], /settles/); assert.match(h.said[0], /ready in 2 turns\nIt takes mibis after 2 more walks/, "the third room settles two turns"); }
+  { const h = mk(); INTENTS.incubator.intent(h, "bud", "confirm"); INTENTS.panel.intent(h, "card.make", "confirm"); assert.deepEqual([h.ui.panel, h.went.at(-1), h.ui.viv.f], [null, "vivarium", "resident.900"], "Make room: the Vivarium's whole, the ring on the first resident"); }
+  { const h = mk(); INTENTS.incubator.intent(h, "bud", "confirm"); const e0 = h.st.e; INTENTS.panel.intent(h, "card.add", "back"); assert.deepEqual([h.ui.panel, h.st.e, h.st.rooms], [null, e0, 2], "← closes with nothing changed"); }
+  { const h = mk(); h.st.e = 1; INTENTS.incubator.intent(h, "bud", "confirm"); INTENTS.panel.intent(h, "card.add", "confirm"); assert.deepEqual([h.ui.panel?.id, h.st.rooms, h.said.length], ["full", 2, 1], "short of Energy: the panel stays and the card says what is short"); }
+});
+test("B3 Habitat ✓ on Cross when every partner at home is family: the plate says why and what would work; no Cross screen opens (never silent)", () => {
+  const st = world(); S.seedSiblings(st, "S01", 31, settings); const x = st.mibis.at(-1), h = host(st); h.specs.habitat = habitatSpec; h.specs.sitting = J("sitting"); h.ui.screen = "habitat"; h.ui.hab = { id: x.id, f: "cross" };
+  INTENTS.habitat.intent(h, "cross", "confirm");
+  assert.deepEqual([h.said, h.went.length], [[`${x.name}'s ${S.spName(x)} are all family\nA ${S.spName(x)} from another pod can cross with ${x.name}`], 0]);
+});
+test("B1 the empty Incubator's ✓ is never silent: no pods plays its plate, a settling room its plate, a full Vivarium the panel", () => {
+  const h = host(world()); h.specs.incubator = incubatorSpec; h.ui.screen = "incubator"; h.st.tray = []; INTENTS.incubator.intent(h, "bud", "confirm");
+  assert.deepEqual(h.said, ["No pods at home\nThe Companion brings them from a walk"], "no pods at home");
+  const g = host(world()); g.specs.incubator = incubatorSpec; g.ui.screen = "incubator"; g.st.tray = [pod(g.st, "S01", chapters("S01"))]; g.st.mibis = Array.from({ length: S.ROOM }, (_, i) => ({ id: 900 + i, room: 0, slot: i, bay: i, released: false })); g.st.rooms = 2; g.settings = { ...settings, rooms: 2 };
+  g.st.roomMeta = [{ theme: S.ROOM_THEMES[0], settleUntil: 0 }, { theme: S.ROOM_THEMES[1], settleUntil: (g.st.turn | 0) + 1 }]; INTENTS.incubator.intent(g, "bud", "confirm");
+  assert.deepEqual([g.said.length, g.ui.panel ?? null], [1, null]); assert.match(g.said[0], /settles · ready next turn\nIt takes mibis after the next walk/);
+  g.st.roomMeta[1].settleUntil = 0; g.st.mibis = Array.from({ length: 16 }, (_, i) => ({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false })); g.said.length = 0; INTENTS.incubator.intent(g, "bud", "confirm");
+  assert.deepEqual([g.said, g.ui.panel?.id], [[], "full"], "full: the panel");
 });
 
 test("Create ✓ blocked (busy, full, clash): nothing is spent and the message plate says why (the house rule: never silent)", () => {
@@ -384,8 +412,9 @@ test("Create ✓ blocked (busy, full, clash): nothing is spent and the message p
   const cases = { busy: (st) => { st.bud = { minutes: 5 }; }, full: (st) => { st.mibis = Array.from({ length: S.roomCount(st, settings) * S.ROOM }, (_, i) => ({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false })); }, clash: (st, h) => { h.ui.create.clash = ["x"]; } };
   for (const [k, f] of Object.entries(cases)) {
     const { st, h } = mk(f), e = st.e; assert.equal(S.growBlockKey(st, st.tray[0], {}, settings, h.ui.create.clash)?.key, k);
-    INTENTS.create.intent(h, "room", "confirm");
-    assert.deepEqual([h.said, h.played, h.timers.length, st.e, h.ui.create.grown], [[k === "full" ? ["The Vivarium is full", "Return a mibi to make room", "or add a room"].join("\n") : capLine(createSpec.strings.notices[k])], [], 0, e, null], k + ": ✓ plays its plate and spends nothing");
+    h.ui.screen = "create"; INTENTS.create.intent(h, "room", "confirm");
+    if (k === "full") { assert.deepEqual([h.said, h.ui.panel?.id, h.ui.panel?.screen, st.e, h.ui.create.grown], [[], "full", "create", e, null], "full: ✓ opens the full panel (B2), spends nothing"); continue; }
+    assert.deepEqual([h.said, h.played, h.timers.length, st.e, h.ui.create.grown], [[capLine(createSpec.strings.notices[k])], [], 0, e, null], k + ": ✓ plays its plate and spends nothing");
   }
 });
 

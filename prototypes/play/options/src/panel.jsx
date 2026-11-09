@@ -48,7 +48,7 @@ function Panel({ api }) {
         <Dialog.Overlay className="op-overlay" />
         <Dialog.Content className="op-panel" data-options="" aria-describedby={undefined}>
           <Dialog.Title className="op-title">Options</Dialog.Title>
-          {ph && <div className="op-line op-lede">One device at a time: Station and Companion at the top switch.</div>}
+          {ph && <div className="op-line op-lede">On a phone, one device shows at a time. Switch between them at the top.</div>}
           {ph && <Row label={dk.docked ? "Lift the Companion" : "Dock the Companion"} line={dk.title}>
             <button type="button" className="op-btn" id="optionsDock" disabled={!dk.enabled} onClick={() => { api.onDock(); close(false); }}>{dk.docked ? "Lift" : "Dock"}</button>
           </Row>}

@@ -196,6 +196,11 @@ export function settingsBody() {
 export function crossBody() {
   const body = UI.cross ? crossBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI.cross, light: lightNow() }, SPECS.cross, SPECS.pods) : null;
   if (body) UI.cross.state = body.nav.state;   // the state held to the chapters the forecast has
+  const pn = UI.panel;
+  if (body && pn && pn.screen === "cross" && pn.id === "full") {   // the full panel (B2) rides on Cross as an overlay; its bottom line is built from the focused card
+    const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump, light: lightNow() }, SPECS.panel, SPECS.frame, SPECS.pods);
+    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+  } else if (pn && pn.screen === "cross") UI.panel = null;
   return body;
 }
 
@@ -262,7 +267,7 @@ export function createBody() {
 // The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch). No lamp: Grow paints nothing (decisions 10-11 14:17).
 export function incubatorBody() {
   const body = incubatorBuild({ st: G.st, sv: G.sv, settings: G.settings, frame: SPECS.frame, ui: UI, ...living(), lamp: "" }, SPECS.incubator, SPECS.pods), pn = UI.panel;
-  if (pn && pn.screen === "incubator" && body.props.state === "growing" && !UI.inc.grow) {   // the Hatch now? panel is open: its props ride on the Incubator's (an overlay) and its bottom line is built from the focused card
+  if (pn && pn.screen === "incubator" && ((body.props.state === "growing" && !UI.inc.grow) || (pn.id === "full" && body.props.state !== "hatch"))) {   // the Hatch now? panel, or the full panel (B2: any state but the hatch) panel is open: its props ride on the Incubator's (an overlay) and its bottom line is built from the focused card
     const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump, now: Date.now() }, SPECS.panel, SPECS.frame, SPECS.pods);
     pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
   } else if (pn && pn.screen === "incubator") UI.panel = null;

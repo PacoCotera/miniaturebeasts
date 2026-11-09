@@ -5,6 +5,7 @@ import * as S from "../state.mjs";
 import { crossBuild } from "../views/cross-props.mjs";
 import { capLine, fill } from "../views/words.mjs";
 import { toIncubator } from "./create.mjs";
+import { noPlace } from "./incubator.mjs";
 
 const view = (h) => crossBuild({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui.cross }, h.specs.cross, h.specs.pods);
 // The screen with no one to cross (the mibi was let go, or the visit is gone): the mibi up close, or the whole.
@@ -24,6 +25,7 @@ export function intent(h, target, verb) {
   if (verb !== "confirm") return;
   const b = n.b != null ? S.mibiById(h.st, n.b) : null;
   if (!b) { h.say(capLine(h.specs.cross.strings.noPartner)); return; }
+  if (n.block === "the Vivarium is full" && noPlace(h)) return;   // no place: the full panel (or the settling plate), the way out one ✓ away (B2)
   if (n.block) { h.say(capLine(n.block)); return; }   // refused before cost: the reason, no ✓ cap
   const cost = S.crossCost(h.settings);
   if (!n.can) { h.say(capLine(S.shortText(h.st, cost.e, cost.d, cost.s))); return; }

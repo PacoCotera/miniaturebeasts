@@ -282,6 +282,7 @@
     "away": "an adult or an elder at home whose partners are all out with the Companion, away: their faces dimmed",
     "out": "the shown mibi is out with the Companion, away: its faces drawn as for an adult; it cannot cross until it docks",
     "alone": "an adult or elder with no partner: no faces",
+    "kin": "an adult or elder at home whose partners at home are all direct family: their faces drawn dimmed, Cross held (dead ends B3)",
     "young": "a juvenile: no faces"
    }
   },
@@ -652,6 +653,7 @@
    "out": {"action": "strings.cross, dimmed (frame-cap-confirm-16-dim)", "context": "strings.travellerContext docked or away", "when": "state out: the shown mibi is carried (heldRule)"},
    "away": {"action": "strings.cross, dimmed (houseRule)", "context": "strings.crossAway", "when": "an adult at home whose partners are all carried (the owner: a carried mibi is never picked as a partner, docked or away)"},
    "alone": {"action": "strings.cross, dimmed (houseRule)", "context": "strings.noPartner"},
+   "kin": {"action": "strings.cross, dimmed (houseRule)", "context": "strings.allFamily", "when": "an adult at home whose partners at home are all direct family (dead ends B3); the faces are drawn dimmed; ✓ plays strings.allFamilyPlate, its second line strings.allFamilyPod when a pod of the species is at home"},
    "young": {"action": "strings.cross, dimmed (houseRule)", "context": "strings.crossLater"},
    "shut": {"action": "strings.cross, dimmed (houseRule)", "context": "strings.shut.cross", "when": "state adult and doorOpen(cross) false (until slot 7); the partner faces drawn as for adult"}
   },
@@ -823,6 +825,9 @@
   "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer for the action, a label of six words or fewer for the context; no dot-joined parts; \"Again: …\" is the arm's wording on every screen",
   "partnersRule": "n counts only the partners that can be picked (not carried: a carried mibi is never picked as a partner, docked or away)",
   "crossAway": "its partners are travelling",
+  "allFamily": "its {Species} are all family",
+  "allFamilyPlate": ["{name}'s {Species} are all family", "A {Species} from another pod can cross with {name}"],
+  "allFamilyPod": "A {Species} pod at home can cross with {name}",
   "measuredOut": "16 px, the face's metrics: subjectTraveller and travellerContext docked 161, away 99, in the context's 208; travellerPlate 321 and 263 docked, 259 and 348 away, in the plate's 608 (a name as Mmmmmmmmmm); crossAway 184, noPose 126, noPlace 129, all in the context's 208"
  },
  "buildChanges": [
