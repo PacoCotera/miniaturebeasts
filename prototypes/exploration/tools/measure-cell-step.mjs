@@ -4,7 +4,7 @@
 // the step is the sum, measured to the end of the first frame that follows it. With --warm the page is given time to warm the neighbours first (idle), then the same walk.
 import { createRequire } from "node:module"; import { createServer } from "node:http"; import { readFileSync, existsSync, statSync } from "node:fs"; import path from "node:path"; import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url); const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.."); const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.."); const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
 const arg = (n, d) => { const a = process.argv.find((x) => x.startsWith("--" + n + "=")); return a ? +a.split("=")[1] : d; };
 const CPU = arg("cpu", 4), N = arg("n", 8), SEEDS = arg("seeds", 3), WARM = process.argv.includes("--warm");
 const server = createServer((req, res) => { let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/")); if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
@@ -14,7 +14,7 @@ let hits = 0, misses = 0; const b = await chromium.launch(), rows = [], med = (a
 for (let sd = 0; sd < SEEDS; sd++) {
   const ctx = await b.newContext({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 1 }), page = await ctx.newPage(), cdp = await ctx.newCDPSession(page);
   page.on("pageerror", (e) => console.log("pageerror", e.message)); page.on("console", (m) => { if (m.type() === "error" || m.type() === "warning") console.log("console", m.type(), m.text().slice(0, 300)); });
-  await page.goto(`http://127.0.0.1:${port}/exploration/index.html?seed=${[7, 13, 42, 300, 5, 99][sd % 6]}`); await page.waitForTimeout(800);
+  await page.goto(`http://127.0.0.1:${port}/prototypes/exploration/index.html?seed=${[7, 13, 42, 300, 5, 99][sd % 6]}`); await page.waitForTimeout(800);
   await cdp.send("Emulation.setCPUThrottlingRate", { rate: CPU });
   await page.evaluate(() => { window.__mb.TEST.calm = true; }); await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(150); await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(600);
   // the set-out: the first walk view
@@ -43,4 +43,5 @@ console.log(process.argv.includes("--rows") ? "" : "", `arrival pictures warm/bu
 console.log(`cpu ${CPU}x ${WARM ? "warm" : "cold"}: ${cell.length} cells, ${so.length} set-outs`);
 if (process.argv.includes("--rows")) console.log(cell.map((r) => `${r.tpl} ${r.seen ? "revisit" : "new"} hit ${r.hit} first ${r.first.toFixed(0)} step ${r.step.toFixed(0)} idle ${r.idle.toFixed(0)}`).join("\n"));
 for (const [k, label] of [["idle", "steady frame"], ["lay", "layout(key)"], ["sync", "enterPatch (rest, save)"], ["first", "first frame after"], ["frames", "two frames after"], ["step", "step to first frame"]]) console.log(label.padEnd(26), fmt(col(cell, k)));
+for (const [name, rs] of [["first entry", cell.filter((r) => !r.seen)], ["revisit", cell.filter((r) => r.seen)]]) if (rs.length) console.log(`${name} (${rs.length}): first frame`, fmt(col(rs, "first")), "| step to first frame", fmt(col(rs, "step")));
 if (so.length) console.log("set-out (confirm + 2 frames)", fmt(col(so, "step")), "· sync", fmt(col(so, "sync")));

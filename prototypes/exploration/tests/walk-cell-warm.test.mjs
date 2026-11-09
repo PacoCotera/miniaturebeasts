@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
 let chromium; try { ({ chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright")); } catch { chromium = null; }
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
 const skip = !chromium && "playwright is not installed (set PW_DIR)";
 const WARM_BAR = 100, COLD_BAR = 250;   // ms at 4x: the first frame of a warm step, and of a cold one (the brief's 150 ms with room for a loaded machine)
@@ -25,7 +25,7 @@ async function serve() {
     res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(readFileSync(p));
   });
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
-  return { server, url: `http://127.0.0.1:${server.address().port}/exploration/index.html` };
+  return { server, url: `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html` };
 }
 
 // A fresh page on a seed, throttled, an expedition begun and standing on the map (the next Confirm goes down into the first cell).
