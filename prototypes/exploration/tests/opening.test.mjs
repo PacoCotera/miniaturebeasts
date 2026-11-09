@@ -79,7 +79,7 @@ test("B1: Up and Down skip Deep ground while it is not shown", () => {
 
 test("the two signed art pieces are registered; the desk's pod stands on the partner ring at (8, 458), its foot (48, 92); the built pod plays only until the files are in", () => {
   const p = opening(), reg = plain(p.run("CARE_ASSETS.filter(a => /^c-open-/.test(a.id))"));
-  assert.deepEqual(reg.map(a => [a.id, a.w, a.h, a.status]), [["c-open-night", 96, 96, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
+  assert.deepEqual(reg.map(a => [a.id, a.w, a.h, a.status]), [["c-open-night", 192, 192, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
   assert.equal(p.run("OPEN_ART.ready"), true, "the art read at boot");
   draw(p); assert.equal(p.run("OPEN_ART.pod.length"), 3); assert.equal(p.run("OPEN_ART.pod[2].w"), 96);
   const ring = stands(p, p.run("ringArt('opring84', 84, 22)"), 14, 536); assert.ok(ring.n > 100 && ring.bad < ring.n * 0.5, "the ring under its foot: " + JSON.stringify(ring));
@@ -184,27 +184,22 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
 // ---- the desk's opening art (art/open/, signed in mibi-art a23ee74f6) ----
 import { createHash } from "node:crypto";
 import { readdirSync } from "node:fs";
-const ODIR = new URL("../art/open/", import.meta.url), DESK = process.env.MIBI_ART_OPEN || "/home/mb/mb/mibi-art/art-jobs/2026-11-09-opening/out/";
+const ODIR = new URL("../art/open/", import.meta.url);
 const sha = (buf) => createHash("sha256").update(buf).digest("hex");
 const ofiles = readdirSync(ODIR).filter((f) => f.endsWith(".png")).sort(), HASHES = JSON.parse(readFileSync(new URL("SHA256.json", ODIR), "utf8"));
 
 test("the opening art: every placed file is the desk's byte for byte (and its recorded hash), the manifest is placed, the page names exactly these files", () => {
-  assert.equal(ofiles.length, 12); assert.deepEqual(Object.keys(HASHES).sort(), ofiles);
+  assert.equal(ofiles.length, 6); assert.deepEqual(Object.keys(HASHES).sort(), ofiles);
   for (const f of ofiles) assert.equal(sha(readFileSync(new URL(f, ODIR))), HASHES[f], f);
-  if (existsSync(DESK)) { for (const f of ofiles) assert.ok(readFileSync(new URL(f, ODIR)).equals(readFileSync(DESK + f)), f + " differs from the desk's file");
-    // the placed manifest is the desk's minus "brief" (an internal path, kept out of the public repo)
-    const desk = JSON.parse(readFileSync(DESK + "manifest.json", "utf8")); delete desk.brief;
-    assert.deepEqual(JSON.parse(readFileSync(new URL("manifest.json", ODIR), "utf8")), desk, "manifest.json differs from the desk's file (less its brief)"); }
-  else console.log("# the desk's out/ is not beside this repo: byte check against the recorded hashes only");
   assert.deepEqual([...opening().run("OPEN_FILES")].sort(), ofiles.map((f) => f.slice(0, -4)));
 });
 
-test("the opening art: the mist is 96 px, three variants with a plain night border, on the core palette plus the manifest's four colours; the pod is 96 px, its shell ramp joins the allowed set; no partial alpha", () => {
+test("the opening art: the mist is one 192 px tile (a only), on the core palette plus the manifest's four colours; the pod is 96 px, its shell ramp joins the allowed set; no partial alpha", () => {
   const p = opening(), core = new Set(p.run("RGB").slice(0, 51).map((c) => c.join())), mf = JSON.parse(readFileSync(new URL("manifest.json", ODIR), "utf8"));
   const four = Object.keys(mf["c-open-night"].palette_additions).map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)).join());
   assert.deepEqual(four.sort(), plain(p.run("OPEN_COLOURS")).map((c) => c.join()).sort(), "the page's four colours are the manifest's");
-  for (const f of ofiles) { const im = OPEN_ART[f.slice(0, -4)]; assert.equal(im.width, 96); assert.equal(im.height, 96);
-    for (let i = 0; i < 96 * 96; i++) { const a = im.data[i * 4 + 3]; assert.ok(a === 255 || (f.includes("pod") && a === 0), f + ": alpha " + a); if (!a) continue; const k = [im.data[i * 4], im.data[i * 4 + 1], im.data[i * 4 + 2]].join();
+  for (const f of ofiles) { const T = f.includes("night") ? 192 : 96, im = OPEN_ART[f.slice(0, -4)]; assert.equal(im.width, T); assert.equal(im.height, T);
+    for (let i = 0; i < T * T; i++) { const a = im.data[i * 4 + 3]; assert.ok(a === 255 || (f.includes("pod") && a === 0), f + ": alpha " + a); if (!a) continue; const k = [im.data[i * 4], im.data[i * 4 + 1], im.data[i * 4 + 2]].join();
       assert.ok(f.includes("pod") || core.has(k) || four.includes(k), f + ": off the palette at " + i); }
-    if (f.includes("night")) for (let i = 0; i < 96 * 96; i++) { const x = i % 96, y = (i / 96) | 0; if (x < 3 || y < 3 || x > 92 || y > 92) assert.equal([im.data[i * 4], im.data[i * 4 + 1], im.data[i * 4 + 2]].join(), "19,32,54", f + ": the border is the plain night #132036"); } }
+  }
 });

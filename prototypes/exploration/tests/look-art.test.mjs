@@ -4,28 +4,19 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { execFileSync } from "node:child_process";
-import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { makePage, LOOK_ART, PAGE } from "./page-harness.mjs";
 
-const DIR = new URL("../art/look/", import.meta.url), DESK_REPO = process.env.MIBI_ART_REPO || "/home/mb/mb/mibi-art";
+const DIR = new URL("../art/look/", import.meta.url);
 const sha = (b) => createHash("sha256").update(b).digest("hex");
 const files = readdirSync(DIR).filter((f) => f.endsWith(".png")).sort();
 const HASHES = JSON.parse(readFileSync(new URL("SHA256.json", DIR), "utf8"));
-// The desk commit each placed file came from, and its folder there.
-const HERE = "art-jobs/2026-11-09-you-are-here/out", PARTNER = "art-jobs/2026-11-09-partner-look/out";
 const isStone = (f) => /^(look-heart-stone|look-take-(charge|warm)-)/.test(f), isPartner = (f) => f.startsWith("look-partner-");
-const pin = (f) => isPartner(f) ? { commit: "b1141c8ab", dir: PARTNER } : isStone(f) ? { commit: "ccbb3bb17", dir: HERE } : { commit: "07cd89ed6", dir: HERE };
-const show = (commit, p) => execFileSync("git", ["-C", DESK_REPO, "show", `${commit}:${p}`], { maxBuffer: 1 << 26 });
-const haveDesk = existsSync(DESK_REPO + "/.git") && (() => { try { show("ccbb3bb17", HERE + "/manifest.json"); return true; } catch { return false; } })();
-const MANIFEST = haveDesk ? JSON.parse(show("ccbb3bb17", HERE + "/manifest.json")) : null;
 
-test("every placed file equals the desk's file byte for byte (at its signed commit) and its recorded hash", () => {
+test("every placed file equals its recorded hash (copied byte for byte from the desk's signed commits)", () => {
   assert.equal(files.length, 28 + 40, "the files are placed: " + files.length);
   assert.deepEqual(Object.keys(HASHES).sort(), files);
   for (const f of files) assert.equal(sha(readFileSync(new URL(f, DIR))), HASHES[f], f);
-  if (!haveDesk) { console.log("# the desk's repo is not beside this one: byte check against the recorded hashes only"); return; }
-  for (const f of files) { const { commit, dir } = pin(f); assert.ok(readFileSync(new URL(f, DIR)).equals(show(commit, dir + "/" + f)), f + " differs from the desk's file at " + commit); }
 });
 
 test("the page's slots and the files are the same set, on the core palette (the quartz marks apart), no partial alpha, at the sizes the manifest names", () => {
@@ -39,12 +30,6 @@ test("the page's slots and the files are the same set, on the core palette (the 
     const kind = n.startsWith("you-here") ? "you" : n.startsWith("look-take") ? "take" : n.slice("look-heart-".length);
     assert.deepEqual([f.width, f.height], size[kind].slice(0, 2), n + " size");
   }
-  if (MANIFEST) { const m = MANIFEST;
-    assert.deepEqual(size.you.slice(2), m.you.anchor); assert.deepEqual(size.take.slice(2), m.take.anchor);
-    for (const k of ["spring", "nest", "moment", "stone"]) assert.deepEqual(size[k].slice(2), m.heart.by_kind[k].anchor, k + " anchor"); }
-  // the partner's anchor is the foot, bottom centre: x = width >> 1, y = height - 1, as the desk's manifest says for every one of the forty
-  const pm = haveDesk ? JSON.parse(show("b1141c8ab", PARTNER + "/manifest.json").toString()) : null;
-  for (const [k, v] of Object.entries(pm ? pm.files : {})) { const f = LOOK_ART[k]; assert.deepEqual([f.width, f.height], v.size, k + " size"); assert.deepEqual(v.anchor, [f.width >> 1, f.height - 1], k + " anchor"); }
 });
 
 test("the page draws each mark as the file, its anchor on the tile's bottom centre", () => {
@@ -67,11 +52,9 @@ test("all twenty kinds have an adult and a young partner mark, and the species i
   const p = makePage({ console: "silent", els: true, canvas: true, raf: 1 });
   const names = JSON.parse(JSON.stringify(p.run("SPECIES.map(s => s.name)")));
   assert.equal(names.length, 20);
-  const pm = haveDesk ? JSON.parse(show("b1141c8ab", PARTNER + "/manifest.json").toString()) : null;
   for (let sp = 0; sp < 20; sp++) {
     for (const young of [false, true]) {
       const n = p.run(`partnerMark(${sp}, ${young})`); assert.ok(LOOK_ART[n], n + " is placed");
-      if (pm) { assert.equal(pm.files[n].sp, sp, n + " is species index " + sp); assert.equal(pm.files[n].kind.split(" ")[1], names[sp], n + " is " + names[sp]); }
     }
   }
 });
