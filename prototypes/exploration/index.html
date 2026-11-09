@@ -619,7 +619,7 @@ function bakedView(lay) {
   if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk, ring: PL6.ring || null, haze: PL6.haze }); PL6.views.set(lay.baked.id, v); }
   return v || null;
 }
-const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS);
+const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
 function layout6(key) {   // a generator 6 land cell's place: its template, built through the adapter with the seeded fills; null for a ford (generated) or while the places load
   const t = templateFor(G, S.seed, +key), place = t && PL6.places.get(t.id); if (!place) return null;
   return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, G, fill: fillPlace6(G, S.seed, +key, place), closed: closedSidesOf(+key) });
@@ -1009,12 +1009,12 @@ const CARE_ASSETS = [
   { id: 'c-token-48', what: 'the mibi’s 48 px field token: roster rows, the Walk on the active mibi screen', until: 'the derived token from the Station', w: 48, h: 48, status: 'placeholder' },
   { id: 'c-sprite-other-32', what: 'a mibi of a species the Companion has no art for: the field partner (1×), the partner card and the Lead card (2×), the active mibi stage (8×)', until: 'the species’ HiBit sprite from the art director (X6, one look)', w: 32, h: 32, status: 'placeholder' },
   { id: 'c-mini-other-12', what: 'the 12 px partner mini of such a mibi: the HUD and the field marker', until: 'the species’ HiBit mini from the art director', w: 12, h: 12, status: 'placeholder' },
-  { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S01-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
   { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
-  { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
-  { id: 'c-moment-walk-S01-280x300', what: 'the Loika walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S03-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-walk-S01-280x300', what: 'the Loika walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
   { id: 'c-moment-walk-S02-280x300', what: 'the Untuva walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
-  { id: 'c-moment-walk-S03-280x300', what: 'the Tuikis walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-walk-S03-280x300', what: 'the Tuikis walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
   { id: 'LIP', what: 'the rim of the higher ground at a steep edge in a generator 2 place, by its 8-neighbour mask (lip/<47-blob index>)', until: 'the phase 6 atlas, meadow/lip (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'FACE', what: 'the south face, two rows under the higher ground, with its foot, ends and inner corners (face/face3x2, face2x2, face1x2, corner-out-sw/-se, corner-in-w/-e)', until: 'the phase 6 atlas, meadow/face (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'SIDE', what: 'the east or west side face, one column, with its ends; the side tail beside a south face’s outer end uses it too (face/side-e, face/side-w)', until: 'the phase 6 atlas, meadow/face (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
@@ -6055,6 +6055,29 @@ async function loadOpenArt(after) {
     openRead(files);
   } catch (e) { console.warn('the opening art did not load; the built night and pod play', e); } finally { ART_DONE.open = true; }
 }
+// The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during a Tend or Walk
+// moment the kind's painted stand takes the token's place, its lowest row on the token's foot row. A kind with no file here (the Untuva until the desk gives a stand that fits) and a juvenile keep the token.
+// Until the files are in (or if they fail) the token plays.
+const MOMENT_ART = { stand: {} }, MOMENT_COLOURS = [], MOMENT_KINDS = ['S01', 'S03'];   // stand[sp]: { w, h, foot, canvas() }
+function momentRead(files) {
+  const seen = new Set();
+  for (const sid of MOMENT_KINDS) { const im = files[`stand-${sid}-280x300`]; if (!im || im.width !== 280 || im.height !== 300) throw new Error('moment stand ' + sid);
+    let c = null, foot = -1; const build = () => { c = document.createElement('canvas'); c.width = 280; c.height = 300; const cg = c.getContext('2d'), id = cg.createImageData(280, 300); id.data.set(im.data); cg.putImageData(id, 0, 0); return c; };
+    for (let i = 0; i < 280 * 300; i++) { const o = i * 4; if (im.data[o + 3]) { foot = Math.max(foot, (i / 280) | 0); const k = im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2]; if (!seen.has(k)) { seen.add(k); MOMENT_COLOURS.push([im.data[o], im.data[o + 1], im.data[o + 2]]); } } }
+    MOMENT_ART.stand[PARTNER_FILE.indexOf(sid)] = { w: 280, h: 300, foot, canvas: () => c || build() }; }
+}
+async function loadMomentArt() {
+  try {
+    if (window.__momentArt) { momentRead(window.__momentArt); return; }   // the tests give them at once, decoded
+    if (typeof Image === 'undefined') return;
+    const files = {};
+    await Promise.all(MOMENT_KINDS.map(s => `stand-${s}-280x300`).map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/moment/', location.href).href + n + '.png'; })));
+    momentRead(files);
+  } catch (e) { console.warn('the moment stands did not load; the tokens play', e); }
+}
+// The token's lowest drawn row at BIG× (the stand's foot goes there): the kind's own idle frame.
+const tokenFoot = (sp, juv) => art('tfoot' + sp + (juv ? 'j' : 'a'), () => { const pb = bigArt(sp, 'idle', 0, juv); let f = 0; for (let i = 0; i < pb.p.length; i++) if (pb.p[i] >= 0) f = Math.max(f, (i / pb.w) | 0); return { f }; }).f;
 // Deep ground shows once the player has met a digging kind, seen the burrow, or has a grown digger with them.
 const deepShown = () => !!digger() || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.revealed[G.gate];
 // A mibi's picture at k× at (x, y); a kind the Companion has no art for is its labelled plate.
@@ -6579,7 +6602,9 @@ function drawActive(t) {
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
-  mibiSprite(m.sp, pose, fr, x, y, BIG, flip, st === 'juvenile');
+  const stand = sp && st !== 'juvenile' && !h ? MOMENT_ART.stand[m.sp] : null;   // a Tend or Walk moment: the kind's painted stand, its foot on the token's foot row (a kind without one keeps the token)
+  if (stand) blit({ w: stand.w, h: stand.h, canvas: stand.canvas }, x + 128 - (stand.w >> 1), y + tokenFoot(m.sp, false) - stand.foot);
+  else mibiSprite(m.sp, pose, fr, x, y, BIG, flip, st === 'juvenile');
   if (h && !h.quiet && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
   if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, stagePawY(st === 'juvenile'));
   if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
@@ -7316,6 +7341,7 @@ if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true; 
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
 const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
 loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
+loadMomentArt();   // the art desk's painted stands for the care moments
 loadPlaces6();   // generator 6's places (the four templates and their mirrors)
 loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
