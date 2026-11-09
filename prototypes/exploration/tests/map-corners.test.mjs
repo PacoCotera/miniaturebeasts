@@ -40,7 +40,3 @@ test("generations 1 to 3 draw the full map with the same cut: a round corner whe
   for (const gen of [1, 2, 3]) { p.run(`newWorld(7, ${gen})`); const r = check(W.genWorld(7, gen), `gen ${gen}`); assert.ok(r.corners > 5 && r.cutN > 0, `gen ${gen}: ${r.corners} corners`); }
 });
 
-test("the edge-mark cache key carries the Fells flag in the one expression (a stray semicolon once cut it off)", () => {
-  const line = PAGE.split("\n").find(l => l.includes("const key = 'em' + cs"));
-  assert.ok(line, "the key line"); assert.ok(/const key = [^;]*\(heavy \? ':F' : ''\);/.test(line), line);
-});

@@ -2,7 +2,7 @@
 // `import { … } from "./src/<module>.mjs"` line of the page is bound to that module's real exports. The imports are read from the
 // page itself, so a new ./src/ module the page imports needs no change here or in any test.
 //   import { loadPage, makePage, PAGE, MODULE, SCRIPT } from "./page-harness.mjs";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import vm from "node:vm";
 
 export const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
@@ -28,9 +28,14 @@ export const PLACES6 = (() => {
   return { places, ts, terrains, adapt: adaptPlace };
 })();
 
+// The art desk's walk art (art/walk/), decoded at once as a browser loads it at boot: { name: { width, height, data (RGBA) } }.
+const { decodePNG } = await import("../../ui/png.mjs");
+const WALK_DIR = new URL("../art/walk/", import.meta.url);
+export const WALK_ART = Object.fromEntries(readdirSync(WALK_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, WALK_DIR)))]));
+
 // Binds the imports into ctx, runs the page script (or a variant of it) there, and returns run(src), which evaluates in the page.
 export function loadPage(ctx, script = SCRIPT) {
-  ctx.window = ctx; if (ctx.__places6 === undefined) ctx.__places6 = PLACES6;
+  ctx.window = ctx; if (ctx.__places6 === undefined) ctx.__places6 = PLACES6; if (ctx.__walkArt === undefined) ctx.__walkArt = WALK_ART;
   for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from];
   // The page plays generator 6 only (GENS = [6]). The suites written for generator 5's generated places run on generator 5, which stays frozen in world.mjs: a page opened with
   // `gen: 6` (makePage) or `__gen6: true` (a ctx given to loadPage) is the page as played; any other is that page with generator 5 played too and new worlds of generator 5.

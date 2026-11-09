@@ -260,6 +260,13 @@
 						"color": "#6FA44A",
 						"tile": null,
 						"groupUid": 0
+					},
+					{
+						"value": 7,
+						"identifier": "earth",
+						"color": "#9A7453",
+						"tile": null,
+						"groupUid": 0
 					}
 				],
 				"intGridValuesGroups": [],

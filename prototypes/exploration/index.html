@@ -538,6 +538,40 @@ async function loadStoneArt(base) {
     ART_SLOTS['stone-standing'] = { plain: p, charged: [c1, c2] };
   } catch (e) { console.warn('the standing stone did not load', e); }
 }
+// The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks, the spring's puddles, the shimmer sign,
+// the "!" notice card and the Curious bubble. Every file is loaded at boot and read into a palette-index buffer (every pixel is on the core palette), so the fog, storm and night tables
+// act on it as on any sprite. walkPB(name) is that buffer; until the files are in, a named empty one (nothing is drawn in code).
+const WALK_KINDS = ['windstep', 'reedpool', 'splitstone', 'hollowtree'], WALK_TEX = ['meadow', 'wood', 'rock', 'pondrim', 'beach', 'foam', 'water'], WALK_CS = [72, 48, 26];
+const WALK_FILES = [
+  ...WALK_KINDS.flatMap(k => ['found', 'been'].flatMap(s => [26, 18, 12].map(n => `mark-${k}-${s}-${n}`))),
+  ...WALK_TEX.flatMap(t => WALK_CS.map(c => `map-tex-${t}-${c}`)),
+  ...['cliff-face', 'cliff-lip-h', 'cliff-lip-v', 'cliff-side', 'ramp', 'ramp-side'].flatMap(e => WALK_CS.map(c => `edge-${e}-${c}`)),
+  ...['48', '24', 'map7', 'map4'].flatMap(k => [0, 1, 2].map(s => `spring-puddle-${k}-spark${s}`)),
+  'icon-shimmer-16', 'spot-notice-16x22', 'bubble-curious-11x13'];
+const WART = { pb: new Map(), empty: new Map(), ready: false };
+function walkPB(name, w = 1, h = 1) {
+  const pb = WART.pb.get(name); if (pb) return pb;
+  const key = w + 'x' + h; let e = WART.empty.get(key); if (!e) { e = new PB(w, h); WART.empty.set(key, e); } return e;   // a named empty slot until the art is in: nothing is drawn
+}
+function walkRead(files) {   // { name: { width, height, data (RGBA) } } to palette-index buffers
+  const at = new Map(); RGB.forEach((c, i) => { const k = c[0] << 16 | c[1] << 8 | c[2]; if (!at.has(k)) at.set(k, i); });
+  for (const [name, f] of Object.entries(files)) {
+    const pb = new PB(f.width, f.height);
+    for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] < 128) continue; const v = at.get(f.data[o] << 16 | f.data[o + 1] << 8 | f.data[o + 2]); if (v == null) throw new Error('walk art off the palette: ' + name); pb.p[i] = v; }
+    WART.pb.set(name, pb);
+  }
+  WART.ready = true; ART.clear(); LAND_CACHE.key = null;
+}
+async function loadWalkArt() {
+  try {
+    if (window.__walkArt) { walkRead(window.__walkArt); return; }   // the tests give them at once, decoded
+    if (typeof Image === 'undefined') return;
+    const base = new URL('./art/walk/', location.href).href, files = {};
+    await Promise.all(WALK_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = base + n + '.png'; })));
+    walkRead(files);
+  } catch (e) { console.warn('the walk art did not load', e); }
+}
 // The view that draws a baked layout: the dev switch's one, or the generator 6 place's own (made on first use; each place's props and ground are cached in it).
 function bakedView(lay) {
   if (!lay || !lay.baked) return null;
@@ -1321,20 +1355,12 @@ function viewPress(k) {
   else if (k === 'back' || k === 'confirm') endView();
 }
 function revealLine(lay, h) { return h.kind === 'moment' ? momentLine(lay, h) : HEART_TEXT.foundMsg[h.kind]; }
-// ---------- Place marks (the map's key for place kinds; code stand-ins until the art desk paints them) ----------
-// One mark per kind of place, drawn on a 26 px grid and scaled: meadow a lone tree, wood the hollow tree on a clearing, rock the split stone, pond the island stone in water.
-// state 'found': full colour; 'been': a slate silhouette (something is there). size: 26 (the reach view, tier 1 and the reveal's card), 18 (tier 2), 12 (the full map).
+// ---------- Place marks (the map's key for place kinds: the art desk's marks) ----------
+// One mark per kind of place, one landmark each: meadow Windstep, wood the Hollow Tree, rock the Split Stone, pond the Reedpool. state 'found': full colour; 'been': the slate silhouette
+// (ink kept). size: 26 (the reach view, tier 1 and the reveal's card), 18 (tier 2), 12 (the full map).
 const MARK_SIZES = [26, 18, 12];
-function placeMark(land, state, size = 26) {
-  return art('pmark:' + land + ':' + state + ':' + size, () => { const k = size / 26, pb = new PB(size, size), q = v => v * k, qi = v => Math.round(v * k), r = (x, y, w, h, c) => pb.rect(qi(x), qi(y), Math.max(1, qi(w)), Math.max(1, qi(h)), c), e = (cx, cy, rx, ry, c, o) => pb.ell(q(cx), q(cy), Math.max(.8, q(rx)), Math.max(.8, q(ry)), c, o);
-    if (land === L.MEADOW) { e(13, 23, 7, 2.5, C.forest); r(12, 15, 3, 8, C.bark); r(12, 15, 1, 8, C.clay); e(13, 10, 9, 8, C.leaf, { sh: [C.sprout, C.forest] }); e(8, 12, 4, 3.5, C.leaf, { sh: [C.grass, C.forest] }); e(18, 12, 4, 3.5, C.leaf, { sh: [C.grass, C.forest] }); }
-    else if (land === L.WOOD) { e(13, 23, 10, 2.5, C.pine); r(6, 13, 4, 10, C.bark); r(16, 13, 4, 10, C.bark); r(10, 16, 6, 7, C.soil); e(13, 16, 3, 3, C.soil); e(13, 9, 11, 7, C.forest, { sh: [C.leaf, C.pine] }); e(6, 11, 5, 4, C.forest, { sh: [C.leaf, C.pine] }); e(20, 11, 5, 4, C.forest, { sh: [C.leaf, C.pine] }); }
-    else if (land === L.ROCK) { e(13, 23, 11, 2.5, C.clay); e(7, 17, 6, 5, C.rock, { sh: [C.rockL, C.stone] }); e(19, 17, 6, 5, C.rock, { sh: [C.rockL, C.stone] }); e(13, 9, 7, 6, C.rock, { sh: [C.rockL, C.stone] }); pb.line(qi(13), qi(4), qi(12), qi(9), C.ink); pb.line(qi(12), qi(9), qi(13), qi(14), C.ink); pb.line(qi(13), qi(14), qi(13), qi(21), C.ink); }
-    else { e(13, 16, 12, 7, C.river, { sh: [C.sky, C.sea] }); r(4, 15, 3, 1, C.ice); e(13, 13, 5, 4, C.rock, { sh: [C.rockL, C.stone] }); r(3, 6, 1, 7, C.leaf); r(5, 4, 1, 9, C.forest); r(21, 5, 1, 8, C.leaf); r(23, 7, 1, 6, C.forest); }
-    pb.outline(() => C.ink);
-    if (state === 'been') for (let i = 0; i < pb.p.length; i++) if (pb.p[i] >= 0) pb.p[i] = pb.p[i] === C.ink ? C.ink : C.slate;
-    return pb; });
-}
+const MARK_OF = { [L.MEADOW]: 'windstep', [L.POND]: 'reedpool', [L.ROCK]: 'splitstone', [L.WOOD]: 'hollowtree' };
+function placeMark(land, state, size = 26) { return walkPB(`mark-${MARK_OF[land] || MARK_OF[L.POND]}-${state}-${size}`, size, size); }
 // The mark of a place's land, at its real spot's size for a reach view cell (cs 72: 26 px, cs 48: 18 px) or the full map's 26 px cell (12 px).
 const markSizeFor = cs => cs >= 72 ? 26 : cs >= 48 ? 18 : 12;
 // A moment heart: a creature of the template's species (or, where the template names none, one of the region's kinds that lives on this ground) at the heart's spot.
@@ -3629,11 +3655,11 @@ const ringArt = (key, w, h, lit, dark) => art(key, () => { const pb = new PB(w, 
   return pb; });
 const RING = () => ringArt('ptring2', 28, 11);
 const RING_S = () => ringArt('ptrings2', 14, 6);
-function bubbleArt(kind) { return art('bub' + kind, () => { const pb = new PB(11, 13), bg = { '!': C.yellow, '?': C.sprout, '…': C.bone, '~': C.teal, f: C.blush }[kind], fg = { '!': C.void, '?': C.pine, '…': C.slate, '~': C.mint, f: C.red }[kind];
+// '?' is the Curious bubble: the art desk's two paws walking toward you (bubble-curious-11x13), over a curious creature and as the bubQ sign (2x). A "?" glyph means "not known yet" only.
+function bubbleArt(kind) { if (kind === '?') return walkPB('bubble-curious-11x13', 11, 13); return art('bub' + kind, () => { const pb = new PB(11, 13), bg = { '!': C.yellow, '…': C.bone, '~': C.teal, f: C.blush }[kind], fg = { '!': C.void, '…': C.slate, '~': C.mint, f: C.red }[kind];
   pb.rect(1, 0, 9, 11, bg); pb.rect(0, 1, 11, 9, bg); pb.set(5, 11, bg); pb.set(5, 12, bg);
   if (kind === '!') { pb.rect(5, 2, 1, 5, fg); pb.rect(5, 8, 1, 1, fg); }
   else if (kind === 'f') { pb.rect(3, 4, 5, 4, C.coral); pb.rect(4, 3, 3, 6, C.coral); pb.set(4, 4, C.white); pb.rect(6, 7, 2, 1, fg); pb.set(7, 6, fg); pb.set(5, 1, C.bark); pb.set(5, 2, C.bark); pb.set(6, 1, C.leaf); pb.set(7, 1, C.leaf); }
-  else if (kind === '?') { pb.rect(4, 2, 3, 1, fg); pb.set(7, 3, fg); pb.set(6, 4, fg); pb.set(5, 5, fg); pb.set(5, 6, fg); pb.set(5, 8, fg); }
   else if (kind === '~') { pb.set(1, 6, fg); pb.set(2, 5, fg); pb.set(3, 5, fg); pb.set(4, 6, fg); pb.set(5, 6, fg); pb.set(6, 5, fg); pb.set(7, 5, fg); pb.set(8, 6, fg); }
   else { pb.set(2, 6, fg); pb.set(5, 6, fg); pb.set(8, 6, fg); }
   return pb; }); }
@@ -3975,10 +4001,7 @@ const ICON = {
   beat: (fr) => art('i-beat' + fr, () => { const pb = new PB(23, 17); pb.ell(11.5, 8.5, 3, 3, C.pink, { sh: [C.blush, C.magenta] });
     for (const r of fr ? [6, 9.5] : [6.5, 10.5]) for (let a = -.9; a <= .9; a += .06) { pb.set(11.5 + Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); pb.set(11.5 - Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); }
     pb.outline(() => C.wine); return pb; }),
-  // the shimmer: a spring's tell on the map, drawn in code (the art desk replaces it): three glints on the water's light
-  shimmer: () => art('i-shimmer', () => { const pb = new PB(16, 16);
-    const star = (cx, cy, r) => { for (let i = -r; i <= r; i++) { pb.set(cx + i, cy, C.sky); pb.set(cx, cy + i, C.sky); } pb.set(cx, cy, C.white); };
-    star(6, 9, 4); star(12, 3, 2); star(12, 13, 2); pb.outline(() => C.sea); return pb; }),
+  shimmer: () => walkPB('icon-shimmer-16', 16, 16),   // a spring's tell on the map: the art desk's shimmer sign
   pin: () => art('i-pin', () => { const pb = new PB(16, 22); pb.rect(2, 1, 2, 20, C.bone); pb.poly([[4, 1], [15, 5.5], [4, 10]], C.orange); pb.poly([[4, 6], [15, 5.5], [4, 10]], C.rust); pb.ell(3, 20, 3, 1.5, C.slate); pb.outline(() => C.void); return pb; }),
   flag: () => art('i-flag', () => { const pb = new PB(13, 20); pb.rect(1, 1, 2, 19, C.bone); pb.poly([[3, 1], [12, 4.5], [3, 8]], C.orange); pb.rect(3, 2, 6, 1, C.amber); pb.outline(); return pb; }),
   skull: () => art('i-skull', () => { const pb = new PB(14, 14); pb.ell(7, 6, 6, 5.5, C.bone); pb.rect(4, 10, 6, 3, C.bone); pb.ell(4.5, 6, 1.6, 1.8, C.void); pb.ell(9.5, 6, 1.6, 1.8, C.void); pb.rect(6, 9, 2, 1, C.void); pb.rect(5, 12, 1, 1, C.void); pb.rect(8, 12, 1, 1, C.void); pb.outline(); return pb; }),
@@ -4563,7 +4586,15 @@ function signSprite(kind, s, fr, big) {
 // been in dots at FOGV.b, found clear; a cell not seen is night with a dithered fringe. The painting is made once per change of state (integer value noise, cached).
 function vnoise(x, y, s) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, h = (a, b) => (hash(9, s, a, b) % 1000) / 1000, sm = t => t * t * (3 - 2 * t);
   const a = h(xi, yi), b = h(xi + 1, yi), c = h(xi, yi + 1), d = h(xi + 1, yi + 1), u = sm(xf), w = sm(yf); return a + (b - a) * u + (c - a) * w + (a - b - c + d) * u * w; }
+// The painting's cell borders: the cell under a world pixel after the soft displacement (-1 off the map). The edge marks find their borders with the same function.
+function landCellOf(cs) {
+  const k = cs / 72;
+  const disp = (wx, wy) => [wx + (vnoise(wx / (13 * k), wy / (13 * k), 1) - .5) * 22 * k + (vnoise(wx / (5 * k), wy / (5 * k), 3) - .5) * 5 * k,
+                            wy + (vnoise(wx / (13 * k), wy / (13 * k), 2) - .5) * 22 * k + (vnoise(wx / (5 * k), wy / (5 * k), 4) - .5) * 5 * k];
+  return (wx, wy) => { const [a, b] = disp(wx, wy), X = Math.floor(a / cs), Y = Math.floor(b / cs); return (X < 0 || Y < 0 || X >= MW || Y >= MH) ? -1 : Y * MW + X; };
+}
 // spec: { X0, Y0 (the top-left cell), w, h (pixels), cs (the cell's size) }
+// The ground is the art desk's seamless tiles (art/walk/, map-tex-*), each pixel taking its tile at (wx mod w, wy mod h) in world pixels, from the set for the cell size (72, 48, 26).
 const LAND_CACHE = { key: null, cv: null };
 function landImage(spec) {
   const { X0, Y0, w: N, h: NH, cs } = spec, k = cs / 72, ex = S.exp;
@@ -4572,10 +4603,9 @@ function landImage(spec) {
   const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st].join('|');
   if (LAND_CACHE.key === key) return LAND_CACHE.cv;
   const cv = document.createElement('canvas'); cv.width = N; cv.height = NH; const cg = cv.getContext('2d'), id = cg.createImageData(N, NH), u = new Uint32Array(id.data.buffer);
-  const cellAt = (X, Y) => (X < 0 || Y < 0 || X >= MW || Y >= MH) ? -1 : Y * MW + X;
-  const disp = (wx, wy) => [wx + (vnoise(wx / (13 * k), wy / (13 * k), 1) - .5) * 22 * k + (vnoise(wx / (5 * k), wy / (5 * k), 3) - .5) * 5 * k,
-                            wy + (vnoise(wx / (13 * k), wy / (13 * k), 2) - .5) * 22 * k + (vnoise(wx / (5 * k), wy / (5 * k), 4) - .5) * 5 * k];
-  const cellOf = (wx, wy) => { const [a, b] = disp(wx, wy); return cellAt(Math.floor(a / cs), Math.floor(b / cs)); };
+  const cellOf = landCellOf(cs), tiles = {};
+  for (const n of WALK_TEX) tiles[n] = WART.pb.get(`map-tex-${n}-${cs}`);
+  const tile = (n, wx, wy) => { const t = tiles[n]; return t ? t.p[(((wy % t.h) + t.h) % t.h) * t.w + (((wx % t.w) + t.w) % t.w)] : C.ink; };   // no art yet: a named empty slot (ink)
   const landOf = c => c < 0 ? -1 : G.land[c];
   const pond = {};   // a pond cell's water: the place's own water tiles, as an ellipse in the cell (so its mirror shows)
   const pondOf = c => { if (pond[c] !== undefined) return pond[c]; let sx = 0, sy = 0, n = 0, lay = null; try { lay = layout(String(c)); } catch (e) { }
@@ -4587,26 +4617,18 @@ function landImage(spec) {
     if (c < 0) { put(y * N + x, C.void); continue; }
     if (!S.revealed[c]) { const c2 = cellOf(wx + 4 * k, wy + 3 * k), edge = c2 >= 0 && S.revealed[c2]; put(y * N + x, edge ? (b < 8 ? C.night : C.ink) : (b < 3 ? C.night : C.ink)); continue; }
     let land = landOf(c), col;
-    const h1 = hash(5, wx >> 2, wy >> 2), lx = (wx - (c % MW) * cs) / cs, ly = (wy - ((c / MW) | 0) * cs) / cs;
+    const lx = (wx - (c % MW) * cs) / cs, ly = (wy - ((c / MW) | 0) * cs) / cs;
     // near water: a beach on the land side, foam on the water side
     const nearW = (d) => { for (const [ox, oy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) { const c3 = cellOf(wx + ox, wy + oy); if (c3 >= 0 && S.revealed[c3] && (landOf(c3) === L.WATER) !== (land === L.WATER)) return true; } return false; };
     if (land === L.POND) { const p = pondOf(c), dx = (lx - p.x) / (p.r * 1.25), dy = (ly - p.y) / p.r, rr = dx * dx + dy * dy + (vnoise(wx / (6 * k), wy / (6 * k), 7) - .5) * .5;
-      if (rr < 1) land = L.WATER; else if (rr < 1.35) col = (h1 % 7 === 0) ? C.leaf : C.sand; }
+      if (rr < 1) land = L.WATER; else if (rr < 1.35) col = tile('pondrim', wx, wy); }
     if (col == null) {
-      if (land === L.WATER) { col = nearW(3 * k) ? C.sky : ((wy + (h1 & 1)) % (9 * k | 0 || 1) === 0 && (wx + (wy >> 3)) % 11 < 4 ? C.river : C.sea); if (G.land[c] === L.POND) col = col === C.sea ? C.river : col === C.river ? C.sky : col; }
-      else if (nearW(2 * k)) col = C.sand;
-      else if (land === L.MEADOW || land === L.POND) { const hb = hash(6, Math.floor(wx / 6), Math.floor(wy / 6)), bx = hb % 6, by = (hb >>> 4) % 6, ix = ((wx % 6) + 6) % 6, iy = ((wy % 6) + 6) % 6;
-        col = C.grass; if (ix === bx && (iy === by || iy === by + 1)) col = C.leaf; else if (ix === (bx + 3) % 6 && iy === (by + 3) % 6 && hb % 3 === 0) col = C.sprout;
-        if (hb % 41 === 0 && ix === bx && iy === by) col = hb % 2 ? C.cream : C.pink; }
-      else if (land === L.WOOD) { const g9 = 9 * k; let best = 1e9, bc = null; const gx = Math.floor(wx / g9), gy = Math.floor(wy / g9);
-        for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) { const hh2 = hash(7, gx + i, gy + j), cx = (gx + i + .2 + (hh2 % 60) / 100) * g9, cy = (gy + j + .2 + ((hh2 >>> 8) % 60) / 100) * g9, d = Math.hypot(wx - cx, wy - cy) / (5.6 * k); if (d < best) { best = d; bc = [wx - cx, wy - cy]; } }
-        col = best > 1 ? C.pine : (bc[0] + bc[1] < -3.5 * k ? C.leaf : bc[0] * .5 + bc[1] > 2.5 * k ? C.pine : C.forest); }
-      else if (land === L.ROCK) { const g12 = 12 * k, gx = Math.floor(wx / g12), gy = Math.floor(wy / g12), hh2 = hash(8, gx, gy);
-        col = (h1 % 9 === 0) ? C.clay : C.sand;
-        if (hh2 % 5 < 3) { const cx = (gx + .3 + (hh2 % 40) / 100) * g12, cy = (gy + .3 + ((hh2 >>> 7) % 40) / 100) * g12, dx = (wx - cx) / (4.2 * k), dy = (wy - cy) / (3.2 * k), d = dx * dx + dy * dy;
-          if (d < 1) col = dx + dy < -.7 ? C.rockL : dy > .45 ? C.stone : C.rock; else if (d < 1.5 && dy > .3) col = C.clay; } }
+      if (land === L.WATER) col = nearW(3 * k) ? tile('foam', wx, wy) : tile('water', wx, wy);
+      else if (nearW(2 * k)) col = tile('beach', wx, wy);
+      else if (land === L.WOOD) col = tile('wood', wx, wy);
+      else if (land === L.ROCK) col = tile('rock', wx, wy);
       else if (land === L.CLIFF) col = (wy % 5 === 0) ? C.stone : C.slate;
-      else col = C.grass;
+      else col = tile('meadow', wx, wy);
     }
     // the storm's dark over the cells it covers, then the fog states on the same soft borders
     const fs = fogState(c);
@@ -4700,80 +4722,65 @@ function drawReachView(t) {
     blit(ICON.flag(), 12, ry - 2); text(clipText(canSend() ? 'End expedition here' : sendHint(), tw - 20, 2), 30, ry, C.bone); }
   drawInset(ix, iy, t, u);
 }
-// Edge marks (generator 2): cliff and stair edges drawn in code on the reach view (72 and 48 px) and the full map (26 px),
-// never baked into mapCv and never in the band inset. Every CLIFF and RAMP edge whose two cells are revealed, plus the
-// pawn's four edges always. A mark's parts each belong to one cell and take that cell's light table (fog: the fog table,
-// with no lip and no shadow). Draw order: faces, lips, ink lines, shadows, wedges.
-const EDGE_MARK = {
-  72: { face: 12, stone: [4, 8, 11], lip: 2, shadow: 4, s0: 24, w: 24, depth: 12, p: 3, wall: 2 },
-  48: { face: 8, stone: [4, 7], lip: 2, shadow: 3, s0: 16, w: 16, depth: 8, p: 2, wall: 1 },
-  26: { face: 4, stone: [3], lip: 1, shadow: 2, s0: 9, w: 8, depth: 4, p: 2, wall: 0 },
-};
-// One cell's marks, as an overlay at the cell's own size: -1 where nothing is drawn. sides: [dir, kind, the neighbour is higher].
-// ground(x, y) is the cell's own ground (null in fog); parity is the screen parity of the cell's origin, for the shadow's checkerboard.
-function edgeMarkPB(cs, sides, ground, parity, heavy) {
-  const P = EDGE_MARK[cs], pb = new PB(cs, cs), lit = new Uint8Array(cs * cs), dk = new Uint8Array(cs * cs);
-  const cur = (x, y) => { const v = pb.get(x, y); return v >= 0 ? v : ground(x, y); };
-  if (heavy) {   // the Fells on the full map: a cliff is a dark face of 4 px on the low side, a stair a light notch across it; the high side keeps its lip
-    const F = 4, span = a => a >= P.s0 && a < P.s0 + P.w, face = [C.ink, C.slate, C.slate, C.night], notch = [C.stone, C.rockL, C.stone, C.rockL];
-    const put = (dir, d, a, col) => { const x = dir === 'left' ? d : dir === 'right' ? cs - 1 - d : a, y = dir === 'up' ? d : dir === 'down' ? cs - 1 - d : a; pb.set(x, y, col); };
-    for (const [dir, kind, hi] of sides) { if (!hi) continue;
-      for (let a = 0; a < cs; a++) for (let d = 0; d < F; d++) put(dir, d, a, kind === EDGE.RAMP && span(a) ? notch[d] : face[d]); }
-    if (ground) for (const [dir, kind, hi] of sides) { if (hi) continue;
-      const ramp = kind === EDGE.RAMP, px = (x, y) => { const i = y * cs + x; if (lit[i]) return; lit[i] = 1; const v = ground(x, y); if (v >= 0) pb.set(x, y, TINT[v]); };
-      if (dir === 'up') for (let y = 0; y < P.lip; y++) for (let x = 0; x < cs; x++) { if (ramp && span(x)) continue; px(x, y); }
-      else if (dir === 'down') for (let y = cs - P.lip; y < cs; y++) for (let x = 0; x < cs; x++) { if (ramp && span(x)) continue; px(x, y); }
-      else if (dir === 'left') for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = 0; x < P.lip; x++) px(x, y); }
-      else for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = cs - P.lip; x < cs; x++) px(x, y); } }
-    return pb;
-  }
-  const span = a => a >= P.s0 && a < P.s0 + P.w;
-  const wedge = (x0, y0, w, h, dOf, aOf) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const d = dOf(x, y), a = aOf(x, y) - P.s0;
-    pb.set(x, y, a < P.wall || a >= P.w - P.wall || d % P.p === P.p - 1 ? C.stone : C.rockL); } };
-  // faces: a south-facing drop's face in the lower cell's top rows, the whole width
-  for (const [dir, , hi] of sides) if (dir === 'up' && hi) for (let y = 0; y < P.face; y++) pb.rect(0, y, cs, 1, y === 0 ? C.ink : P.stone.includes(y) ? C.stone : C.rock);
-  // lips: the high cell's rim, each ground pixel remapped once through TINT (lime stays lime; there the ink line alone carries the edge)
-  if (ground) for (const [dir, kind, hi] of sides) { if (hi) continue; const ramp = kind === EDGE.RAMP;
-    const px = (x, y) => { const i = y * cs + x; if (lit[i]) return; lit[i] = 1; const v = cur(x, y); if (v >= 0) pb.set(x, y, TINT[v]); };
-    if (dir === 'up') for (let y = 0; y < P.lip; y++) for (let x = 0; x < cs; x++) px(x, y);
-    else if (dir === 'left') for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = 0; x < P.lip; x++) px(x, y); }
-    else if (dir === 'right') for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = cs - P.lip; x < cs; x++) px(x, y); } }
-  // ink lines: on the lower cell's side of the edge
-  for (const [dir, kind, hi] of sides) { if (!hi) continue; const ramp = kind === EDGE.RAMP;
-    for (let k = 0; k < cs; k++) { if (ramp && span(k) && dir !== 'up') continue;
-      if (dir === 'up') pb.set(k, 0, C.ink); else if (dir === 'down') pb.set(k, cs - 1, C.ink); else if (dir === 'left') pb.set(0, k, C.ink); else pb.set(cs - 1, k, C.ink); } }
-  // shadows: east-facing drops only (the light comes from the top left), on the screen's checkerboard, each pixel through DARK once
-  if (ground) for (const [dir, kind, hi] of sides) { if (dir !== 'left' || !hi) continue;
-    for (let y = 0; y < cs; y++) { if (kind === EDGE.RAMP && span(y)) continue;
-      for (let x = 1; x <= P.shadow; x++) { const i = y * cs + x; if (((x + y + parity) & 1) || dk[i]) continue; dk[i] = 1; const v = cur(x, y); if (v >= 0) pb.set(x, y, DARK[v]); } } }
-  // wedges: the stair, centred on the edge; treads rockL, risers and side walls stone; d = 0 at the edge
-  for (const [dir, kind, hi] of sides) { if (kind !== EDGE.RAMP) continue;
-    if (dir === 'up') wedge(P.s0, 0, P.w, P.depth, (x, y) => y, (x, y) => x);                              // south (lower cell) or north (upper cell)
-    else if (dir === 'left' && hi) wedge(0, P.s0, P.depth, P.w, (x, y) => x, (x, y) => y);                  // east-facing, in the lower cell
-    else if (dir === 'right' && hi) wedge(cs - P.depth, P.s0, P.depth, P.w, (x, y) => cs - 1 - x, (x, y) => y); }   // west-facing, in the lower cell
-  return pb;
-}
+// Edge marks (generator 2): cliff and stair edges on the reach view (72 and 48 px) and the full map (26 px), never baked into mapCv and never in the band inset. The art desk's pieces
+// (art/walk/, edge-*) are laid along the painting's displaced border, not the straight cell line: for each column (or row) of an edge the border is found where landCellOf changes from
+// the one cell to the other, searching +-16k px round the cell line (k = cs / 72), the columns' y smoothed with a 7 px running mean. Every CLIFF and RAMP edge whose two cells are revealed,
+// plus the pawn's four edges always. A piece takes the light table of the cell it lies in (fog: the fog table). Cliff face (south-facing drop), lip-h (north-facing), side (east-facing),
+// lip-v (west-facing): the piece's column (row) at (wx mod w, wy mod h) from the border into the second cell; a stair is its ramp piece on its span, the face skipped under it.
+const EDGE_RAMP = { 72: { s0: 24, w: 24 }, 48: { s0: 16, w: 16 }, 26: { s0: 9, w: 8 } };   // the stair's span along its edge, in cell pixels
+const EDGE_CACHE = {};
+const posMod = (a, n) => ((a % n) + n) % n;
 // q: the reach geometry from reachGeom(), or the full map's { map: true, cs: 26, ox, oy, rmOf }.
 function drawEdgeMarks(q) {
   if (!G.edge) return;
   const ex = S.exp, pawn = ex ? ex.pos : -1, cs = q.cs, cells = [];
   if (q.map) for (let c = 0; c < MW * MH; c++) cells.push([c, q.ox + (c % MW) * CELL, q.oy + ((c / MW) | 0) * CELL]);
   else for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) { const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j; if (X >= 0 && Y >= 0 && X < MW && Y < MH) cells.push([Y * MW + X, q.dx + i * cs, q.dy + j * cs]); }
-  for (const [c, x, y] of cells) {
-    const sides = [];
-    for (const dir of ['up', 'down', 'left', 'right']) { const [dx, dy] = DIRS[dir], X = c % MW + dx, Y = ((c / MW) | 0) + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
-      const n = Y * MW + X, kind = edgeKind(c, dir); if (kind !== EDGE.CLIFF && kind !== EDGE.RAMP) continue;
-      if (kind === EDGE.CLIFF && softEdge(edgeIndex(c, dir))) continue;   // scree and earth banks have their own marks (drawSoftMarks), never a cliff's
-      if (!(S.revealed[c] && S.revealed[n]) && c !== pawn && n !== pawn) continue;
-      sides.push([dir, kind, G.level[n] > G.level[c]]); }
-    if (!sides.length) continue;
-    const fog = !S.revealed[c], parity = (x + y) & 1, rm = fog ? 3 : q.map ? q.rmOf(c) : reachRm(c);
-    const heavy = q.map && G.biome === 'fells';   // generator 4's Fells, on the full map only
-    const key = 'em' + cs + ':' + c + ':' + sides.map(sd => sd[0][0] + sd[1]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed + ':' + (S.gen || 1) + (heavy ? ':F' : '');
-    const pb = art(key, () => {
-      const gp = fog ? null : q.map ? mapPB : landPatchPB(c, cs, 0), gx = q.map ? (c % MW) * CELL : 0, gy = q.map ? ((c / MW) | 0) * CELL : 0;
-      return edgeMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity, heavy); });
-    blit(pb, x, y, rm);
+  const rmOf = c => !S.revealed[c] ? 3 : q.map ? q.rmOf(c) : reachRm(c), seen = new Set(), edges = [];
+  for (const [c] of cells) for (const dir of ['up', 'left', 'down', 'right']) {
+    const n = stepCell(c, dir); if (n < 0) continue;
+    const ei = edgeIndex(c, dir); if (seen.has(ei)) continue; seen.add(ei);
+    const kind = edgeKind(c, dir); if (kind !== EDGE.CLIFF && kind !== EDGE.RAMP) continue;
+    if (kind === EDGE.CLIFF && softEdge(ei)) continue;   // scree and earth banks have their own marks (drawSoftMarks), never a cliff's
+    if (!(S.revealed[c] && S.revealed[n]) && c !== pawn && n !== pawn) continue;
+    const horiz = dir === 'up' || dir === 'down', A = dir === 'up' || dir === 'left' ? n : c, B = A === n ? c : n;   // A: the north or west cell, B: the south or east one
+    const e = { A, B, horiz, ramp: kind === EDGE.RAMP, hiA: G.level[A] > G.level[B] };
+    e.rm = rmOf(!horiz && e.ramp && !e.hiA ? A : B);   // the cell the piece lies in (a stair going down west lies in A)
+    edges.push(e);
+  }
+  if (edges.length) {
+    const X0 = q.map ? 0 : q.s0.x - q.r, Y0 = q.map ? 0 : q.s0.y - q.r, W = q.map ? MW * CELL : q.size, H = q.map ? MH * CELL : q.size, sx = q.map ? q.ox : q.dx, sy = q.map ? q.oy : q.dy;
+    const key = [q.map ? 'm' : 'r', X0, Y0, cs, S.seed, S.gen || 1, WART.ready ? 1 : 0, ...edges.map(e => e.A + '>' + e.B + (e.ramp ? 'r' : 'c') + (e.hiA ? 1 : 0) + ':' + e.rm)].join('|'), slot = q.map ? 'map' : 'reach';
+    let cv = EDGE_CACHE[slot] && EDGE_CACHE[slot].key === key ? EDGE_CACHE[slot].cv : null;
+    if (!cv) {
+      const pix = new Int16Array(W * H).fill(-1), cellOf = landCellOf(cs), rad = Math.ceil(16 * cs / 72), R7 = EDGE_RAMP[cs];
+      const put = (wx, wy, v, rm) => { const x = wx - X0 * cs, y = wy - Y0 * cs; if (v >= 0 && x >= 0 && y >= 0 && x < W && y < H) { const t = REMAP[rm]; pix[y * W + x] = t ? t[v] : v; } };
+      const hBorder = (B, wx) => { const y0 = ((B / MW) | 0) * cs; for (let y = y0 - rad; y <= y0 + rad; y++) if (cellOf(wx, y) === B) return y; return y0; };
+      const vBorder = (B, wy) => { const x0 = (B % MW) * cs; for (let x = x0 - rad; x <= x0 + rad; x++) if (cellOf(x, wy) === B) return x; return x0; };
+      const pieces = e => ({ face: walkPB(`edge-cliff-${e.hiA ? 'face' : 'lip-h'}-${cs}`), side: walkPB(`edge-cliff-${e.hiA ? 'side' : 'lip-v'}-${cs}`), ramp: walkPB(`edge-ramp-${cs}`), rampSide: walkPB(`edge-ramp-side-${cs}`) });
+      const yb = new Map();   // a horizontal edge's smoothed border y per column
+      for (const e of edges) if (e.horiz) {
+        const xs = (e.B % MW) * cs, raw = []; for (let wx = xs - 3; wx < xs + cs + 3; wx++) raw.push(hBorder(e.B, wx));
+        const col = []; for (let i = 0; i < cs; i++) { let t = 0; for (let d = 0; d <= 6; d++) t += raw[i + d]; col.push(Math.round(t / 7)); }
+        yb.set(e, col);
+      }
+      // sides first (east- and west-facing), then the faces and lips along the horizontal borders, then the stairs
+      for (const e of edges) if (!e.horiz) { const P = pieces(e).side, ys = ((e.B / MW) | 0) * cs;
+        for (let wy = ys; wy < ys + cs; wy++) { if (e.ramp && wy >= ys + R7.s0 && wy < ys + R7.s0 + R7.w) continue;
+          const xb = vBorder(e.B, wy), r = posMod(wy, P.h); for (let i = 0; i < P.w; i++) put(xb + i, wy, P.p[r * P.w + i], e.rm); } }
+      for (const e of edges) if (e.horiz) { const P = pieces(e), xs = (e.B % MW) * cs, col = yb.get(e), F = P.face;
+        for (let wx = xs; wx < xs + cs; wx++) { if (e.ramp && wx >= xs + R7.s0 && wx < xs + R7.s0 + P.ramp.w) continue;
+          const c = posMod(wx, F.w); for (let r = 0; r < F.h; r++) put(wx, col[wx - xs] + r, F.p[r * F.w + c], e.rm); } }
+      for (const e of edges) if (e.ramp) { const P = pieces(e);
+        if (e.horiz) { const xs = (e.B % MW) * cs, rx = xs + R7.s0, top = yb.get(e)[rx + (P.ramp.w >> 1) - xs];
+          for (let r = 0; r < P.ramp.h; r++) for (let i = 0; i < P.ramp.w; i++) put(rx + i, top + r, P.ramp.p[r * P.ramp.w + i], e.rm); }
+        else { const ys = ((e.B / MW) | 0) * cs, ry = ys + R7.s0, rp = P.rampSide, xb = vBorder(e.B, ry + (rp.h >> 1));   // east-facing: into B from the border; west-facing: mirrored, into A up to the border
+          for (let j = 0; j < rp.h; j++) for (let i = 0; i < rp.w; i++) put(e.hiA ? xb + i : xb - 1 - i, ry + j, rp.p[j * rp.w + i], e.rm); } }
+      cv = document.createElement('canvas'); cv.width = W; cv.height = H; const cg = cv.getContext('2d'), id = cg.createImageData(W, H), u = new Uint32Array(id.data.buffer);
+      for (let i = 0; i < pix.length; i++) { const v = pix[i]; if (v >= 0) { const c = RGB[v]; u[i] = (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0]; } }
+      cg.putImageData(id, 0, 0); EDGE_CACHE[slot] = { key, cv };
+    }
+    g.drawImage(cv, sx, sy);
   }
   drawSoftMarks(q, cells, pawn);
 }
@@ -5067,19 +5074,15 @@ function drawWhole(t) {
 }
 // ---------- The spring's tell, one painter for every view ----------
 // A puddle on each clue tile (springClues in src/hearts.mjs, world tiles) and a sparkle running along the line toward the spring. sc scales the picture: 1 on a 48 px tile.
-// [art] The art desk's puddle and shimmer frames replace this code stand-in when they land.
 const sparkRun = (n, answering) => motion() ? Math.floor(NOW / (answering ? 110 : 170)) % (n + 4) : -1;   // the puddle the sparkle is on (n + 4: a pause of four steps); -1 in reduced motion
 const sparkAt = (run, i) => run === i ? 2 : run < 0 ? 1 : 0;   // 2 the running sparkle (white), 1 the still sparkle of reduced motion (cream), 0 none
 function puddleSpot(q, sc = 1) { const hs = hash(31, 'dew', q.x, q.y); return { x: Math.round((10 + (hs % 12)) * sc), y: Math.round((22 + ((hs >>> 6) % 10)) * sc) }; }   // its place in the tile comes from a hash: the line does not look ruled
+// The art desk's puddle frames (art/walk/, spring-puddle-<scale>-spark<n>): scale 48 for a 48 px tile or larger, 24 for the whole place at 24, map7 for a map cell at 72, map4 below; each is
+// blitted at (x0, y0) plus its own offset. spark: 0 none, 1 the still sparkle (reduced motion), 2 the running one.
+const PUDDLE_AT = { 48: -11, 24: -5, map7: -3, map4: -3 };
 function paintPuddle(x0, y0, sc, spark) {
-  if (sc < .5) {   // on a map cell the puddle is a few pixels: a river body with a sky line over it, and a cream cross for the sparkle
-    const w = Math.max(4, Math.round(18 * sc)), h = Math.max(2, Math.round(5 * sc));
-    R(x0, y0, w, h, C.river); R(x0 + 1, y0, Math.max(1, w - 2), 1, C.sky);
-    if (spark) { const hi = spark === 2 ? C.white : C.cream; R(x0 + w - 1, y0 - 3, 1, 3, hi); R(x0 + w - 2, y0 - 2, 3, 1, hi); }
-    return; }
-  const r = (dx, dy, w, h, c) => R(x0 + Math.round(dx * sc), y0 + Math.round(dy * sc), Math.max(1, Math.round(w * sc)), Math.max(1, Math.round(h * sc)), c);
-  r(3, -1, 12, 1, C.sea); r(1, 0, 16, 1, C.sea); r(0, 1, 18, 4, C.river); r(3, 1, 12, 1, C.sky); r(4, 2, 4, 1, C.ice); r(1, 5, 16, 1, C.sky); r(3, 6, 12, 1, C.leaf);
-  if (spark) { const sx = 13, sy = -6, hi = spark === 2 ? C.white : C.cream; r(sx - 1, sy - 1, 3, 3, hi); r(sx, sy - 5, 1, 4, C.cream); r(sx, sy + 2, 1, 4, C.cream); r(sx - 5, sy, 4, 1, C.cream); r(sx + 2, sy, 4, 1, C.cream); }
+  const k = sc >= 1 ? '48' : sc >= .5 ? '24' : sc >= .35 ? 'map7' : 'map4';
+  blit(walkPB(`spring-puddle-${k}-spark${spark}`), x0, y0 + PUDDLE_AT[k]);
 }
 // The same tell on a view that shows the whole place or a map cell: the puddles on the clue tiles, each where its tile lies in the picture (at(q): the puddle's top left), at scale sc.
 function paintCluePuddles(heart, at, sc, answering) {
@@ -5332,7 +5335,7 @@ function drawPatchBody(t) {
     const sp = RT.spot, hh = heartOf(P.key), el = TEST.at != null ? TEST.at : NOW - sp.at; sp.drawn = true;
     if (hh) { const hx = W(hh.x * ts) + (ts >> 1), hy = H(hh.y * ts) + (ts >> 1);
       for (const d of motion() ? [0, 300] : [0]) { const e = el - d; if (motion() && e < 0) continue; const r = motion() ? 12 + Math.round(Math.min(1, e / 300) * 26) : 24; circ(hx, hy, r + 2, C.ink); circ(hx, hy, r, C.amber); } }
-    { const bx = Math.round(RT.plScr.x) - 8, by = Math.round(RT.plScr.y) - 52; panel(bx, by, 16, 22, C.cream, C.ink); R(bx + 6, by + 4, 4, 9, C.orange); R(bx + 6, by + 15, 4, 3, C.orange); } }
+    blit(walkPB('spot-notice-16x22', 16, 22), Math.round(RT.plScr.x) - 8, Math.round(RT.plScr.y) - 52); }   // the art desk's "!" card over the explorer
   g.restore(); RT.remap = REMAP;
 }
 // Which half of its tween a thing is in while it moves (0 or 1), or -1 when it is not moving: motion on, now inside the tween's duration, the target differing from the start.
@@ -6992,6 +6995,7 @@ function actReadOnly(k) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
 if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
+loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
 loadPlaces6();   // generator 6's places (the four templates and their mirrors)
 loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)

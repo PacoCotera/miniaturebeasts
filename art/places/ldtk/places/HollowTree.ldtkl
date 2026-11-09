@@ -3075,46 +3075,6 @@
 				{
 					"__identifier": "Prop",
 					"__grid": [
-						15,
-						12
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"prop"
-					],
-					"__smartColor": "#4B7A3A",
-					"iid": "134d9e67-981a-15da-dbb8-e6d7267f8030",
-					"width": 16,
-					"height": 16,
-					"defUid": 111,
-					"px": [
-						240,
-						192
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.PropKind",
-							"__value": "tree-broad",
-							"__tile": null,
-							"defUid": 110,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"tree-broad"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Prop",
-					"__grid": [
 						17,
 						12
 					],
@@ -7061,46 +7021,6 @@
 				{
 					"__identifier": "Decal",
 					"__grid": [
-						12,
-						11
-					],
-					"__pivot": [
-						0,
-						0
-					],
-					"__tags": [
-						"decal"
-					],
-					"__smartColor": "#B9A66B",
-					"iid": "36aefb77-98bb-7766-917c-7d5be71c8cd6",
-					"width": 16,
-					"height": 16,
-					"defUid": 113,
-					"px": [
-						192,
-						176
-					],
-					"fieldInstances": [
-						{
-							"__identifier": "kind",
-							"__type": "LocalEnum.DecalKind",
-							"__value": "pebbles-b",
-							"__tile": null,
-							"defUid": 112,
-							"realEditorValues": [
-								{
-									"id": "V_String",
-									"params": [
-										"pebbles-b"
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					"__identifier": "Decal",
-					"__grid": [
 						2,
 						12
 					],
@@ -7893,27 +7813,9 @@
 				6,
 				6,
 				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
-				5,
-				6,
-				6,
-				6,
-				6,
-				6,
-				6,
+				7,
+				7,
+				7,
 				6,
 				6,
 				6,
@@ -7926,12 +7828,30 @@
 				6,
 				6,
 				5,
+				6,
+				6,
+				6,
+				7,
+				7,
+				7,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				6,
+				5,
 				5,
 				6,
 				6,
-				6,
-				6,
-				6,
+				7,
+				7,
+				7,
 				6,
 				6,
 				6,
