@@ -50,6 +50,17 @@ test("the report keeps one row a game, lists what is not measurable yet, and say
   JSON.parse(JSON.stringify(r));
 });
 
+test("the whole loop: the games that walked every step, when, in minutes of play, and the first step the others missed", () => {
+  const at = (turn, press) => ({ turn, press, minutes: turn * 20 });
+  const full = { read: at(1, 20), grown: at(1, 40), hatched: at(1, 60), care: at(2, 100), crossed: at(7, 400), crossHatched: at(7, 410), out: at(7, 450), sat: at(9, 600), sittingOpened: at(9, 590) };
+  const s = summarise("greedy", [game("greedy", 1, { loop: full }), game("greedy", 2, { loop: { identified: at(1, 5), grown: at(1, 9), hatched: at(1, 12), care: at(2, 40) } }), game("greedy", 3, { loop: { ...full, out: undefined, crossed: undefined, crossHatched: undefined } })]);
+  assert.equal(s.loop.finished, 1); assert.equal(s.loop.of, 3); assert.deepEqual(s.loop.turn, { min: 7, median: 7, max: 7 }); assert.deepEqual(s.loop.presses, { min: 450, median: 450, max: 450 });
+  assert.equal(s.loop.playMinutes.median, 11.3);   // 450 keys at 1.5 s
+  assert.deepEqual(s.loop.stoppedAt, { crossed: 2 }); assert.equal(s.loop.steps.read, 3); assert.equal(s.loop.steps.out, 1); assert.equal(s.loop.sat, 2);
+  const md = markdown(report([game("greedy", 1, { loop: full })], { games: 1, turns: 4, presses: 60 }));
+  assert.match(md, /## The whole loop/); assert.match(md, /^\| greedy \| 1\/1 \| 7 \(7–7\) \| 11\.3 /m);
+});
+
 test("fewer pods: 1,000 stand-in crates hold 0 to 2 pods, about one; the report prints the note and the pods-a-trip line", () => {
   const rng = mulberry32(7), n = Array.from({ length: 1000 }, (_, i) => crate(rng, "w", i + 1).pods.length);
   assert.ok(n.every((k) => k >= 0 && k <= 2), "0 to 2 pods a crate"); assert.ok(n.includes(0) && n.includes(2));

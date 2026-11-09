@@ -22,7 +22,12 @@ export function blitPlaced(buf, win, ts, size, kind, x48, y48, frame = 0, remap,
 // Animation frame of a sprite on the shared clock.
 export const spriteFrame = (sprite, clockMs) => (sprite.frames48.length > 1 && sprite.frameMs ? Math.floor(clockMs / sprite.frameMs) : 0);
 
-const cellOf = (size, x48, y48) => ({ cx: Math.floor(scaleTo(size, x48) / size), cy: Math.floor(scaleTo(size, y48) / size) });
+// The walking view's frame for a sprite. The tall grass sways calmly (owner, 2026-11-09: "the grass moving is too much"): its frame lasts twice as long and it
+// moves between its first two frames only, so it changes half as often and by less each time. Every other sprite is as spriteFrame has it. At clock 0 (reduced motion) it stands still.
+export const SWAY_SLOW = 2;
+export const walkFrame = (sprite, clockMs) => (sprite.kind === 'tall-grass' && sprite.frames48.length > 1 && sprite.frameMs ? Math.floor(clockMs / (sprite.frameMs * SWAY_SLOW)) % 2 : spriteFrame(sprite, clockMs));
+
+const cellOf =(size, x48, y48) => ({ cx: Math.floor(scaleTo(size, x48) / size), cy: Math.floor(scaleTo(size, y48) / size) });
 
 // The props of a place as sorted-list items: { sortY, x, draw(buf, win) }. A prop takes the remap of the cell under its anchor.
 //   o.remapAt(cx, cy) -> Uint8Array(256) | null;  o.visible(cx, cy) -> boolean (default true: the survey veil hides what stands on a veiled tile);
@@ -33,7 +38,7 @@ export function propItems(ts, place, size, o = {}) {
     const { cx, cy } = cellOf(size, p.x, p.y);
     if (o.visible && !o.visible(cx, cy)) continue;
     const remap = o.remapAt ? o.remapAt(cx, cy) : null;
-    items.push({ sortY: p.sortY, x: p.x, draw: (buf, win) => blitPlaced(buf, win, ts, size, p.kind, p.x, p.y, spriteFrame(ts.sprites[p.kind], o.clockMs || 0), remap) });
+    items.push({ sortY: p.sortY, x: p.x, draw: (buf, win) => blitPlaced(buf, win, ts, size, p.kind, p.x, p.y, walkFrame(ts.sprites[p.kind], o.clockMs || 0), remap) });
   }
   return items;
 }
@@ -65,7 +70,7 @@ export function canopyPass(buf, win, ts, place, size, o = {}) {
   const draw = (kind, x, y) => {
     const { cx, cy } = cellOf(size, x, y);
     if (o.visible && !o.visible(cx, cy)) return;
-    const frame = spriteFrame(ts.sprites[kind], o.clockMs || 0);
+    const frame = walkFrame(ts.sprites[kind], o.clockMs || 0);
     blitPlaced(buf, win, ts, size, kind, x, y, frame, o.remapAt ? o.remapAt(cx, cy) : null, cut ? (dx, dy) => cut(dx + win.x, dy + win.y) : undefined);
   };
   for (const p of place.props) { const c = ts.sprites[p.kind].canopy; if (c >= 0) draw(c, p.x, p.y); }

@@ -260,7 +260,7 @@ import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep,
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen5, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { pickHeart, heartPath, heartSeen, tellShows, HEART_TEXT, HEART_FOUND_R, TELL_R, ANSWER_ACTIONS, SPRING_ESSENCE, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, FOG_NOT_BEEN, FOG_BEEN, TELL_RANK } from "./src/hearts.mjs";
+import { pickHeart, heartPath, heartSeen, tellShows, tellOn, springClues, HEART_TEXT, HEART_FOUND_R, TELL_R, ANSWER_ACTIONS, SPRING_ESSENCE, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, FOG_NOT_BEEN, FOG_BEEN, TELL_RANK } from "./src/hearts.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames } from "./src/walk-data.mjs";
@@ -428,7 +428,9 @@ const numWord = n => NUM_WORD[n] || String(n);
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 
 // ===================== 3. World generation =====================
-const TEST = { calm: false, at: null, clock: null,   // test hook only: start expeditions without a storm, for measuring calm Energy; at: the reveal's clock held at this many ms (null: the real one), so its frames can be still pictures
+const TEST = { calm: false, at: null, clock: null, boom: 0,
+  paint: (x, y) => { resetCanvas(); g.fillStyle = '#ff00ff'; g.fillRect(x, y, 4, 4); },   // test hook only: a magenta mark on a clean canvas, which the next whole frame must paint over   // boom: 1 makes one sprite throw, 2 makes the place view throw after its sprites (a test that no throw loses the explorer or the bars)
+   // test hook only: start expeditions without a storm, for measuring calm Energy; at: the reveal's clock held at this many ms (null: the real one), so its frames can be still pictures
   // test hook only: the place's heart is found, as by walking up to it (the explorer's tile is restored); what a test that once made a Call to count the place explored now does
   // test hook only: the place's heart made of `kind` (at the same tile), unfound, the explorer `back` steps from it on the way to it, the veil lifted round the explorer
   tellStill(kind, back) { const P = S.exp.patch, h0 = heartOf(P.key); if (!h0) return null; const end = h0.path[h0.path.length - 1];
@@ -707,7 +709,8 @@ const spName = sp => S.known.includes(sp) ? spOf(sp).name : 'creature';   // spe
 const aAn = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
 function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW }); }
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
-function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + ms); }
+const LOCK_MAX = 2500;   // no hold on the keys lasts longer than this, whatever asked for it: input never locks for good
+function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + Math.min(ms, LOCK_MAX)); }
 function transition() { FX.transAt = NOW; lockInput(160); if (typeof stopRepeat === 'function') stopRepeat(); } // a held direction never carries across scales
 
 let crById = new Map();
@@ -1276,6 +1279,8 @@ function startView(kind, lay, extra) {
   return true;
 }
 function endView() { RT.view = null; transition(); }
+// The reveal's spot that outlived its beat (it was never drawn, so it never ended): dropped at the next press, with the lock (the find and the lifted veil are already recorded).
+function cancelBeat() { RT.spot = null; if (RT.view && RT.view.kind === 'reveal') RT.view = null; FX.lockUntil = 0; transition(); }
 // The spot becomes the reveal's view after SPOT_MS (reduced motion: after the one frame that shows the still ring). Found on arrival (spot.skip): no spot, no zoom, straight to the dissolve.
 function spotStep() {
   const sp = RT.spot; if (!sp) return;
@@ -1291,6 +1296,7 @@ const lookable = () => { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0
 function viewPress(k) {
   const v = RT.view;
   if (v.kind === 'reveal') {   // consumed until the hold; then only ✓ or ← closes it (two stepped frames back toward the explorer), an arrow blinks the line
+    if (v.closing && NOW - v.closing > 4 * ZOOM_STEP_MS) { endView(); return; }   // a closing that never got drawn to its end: finished by the next press
     if (!revealHeld(v)) return;
     if (k === 'confirm' || k === 'back') { if (motion()) { v.closing = NOW; lockInput(ZOOM_MS); } else endView(); }
     else RT.blink = NOW; }
@@ -1351,7 +1357,7 @@ function callReport(lay, P, tellIn) {
 function heartState(lay, P) {
   const c = lay.cell, h = heartOf(lay.key); if (!h) return { short: HEART_TEXT.found, found: true };
   if (heartFound(c)) return { short: HEART_TEXT.found, found: true };
-  const known = tellShows(h, P) || unveiled(lay.key, h.x, h.y);
+  const known = tellOn(h, P) || unveiled(lay.key, h.x, h.y);
   return { short: known ? HEART_TEXT.tell[h.kind] : HEART_TEXT.unknown, found: false };
 }
 // The map's tell of a place's heart (W§7): the sign a seen, unfound place shows: shimmer (spring), beat (a pod), bolt (a charged stone).
@@ -4264,6 +4270,8 @@ function puffArt(level) { return art('puff' + level, () => { const pb = new PB(9
 // ===================== 11. The frame: 450×600 offscreen, 1:1 device pixels =====================
 const scr = document.createElement('canvas'); scr.width = SCR_W; scr.height = SCR_H;
 const g = scr.getContext('2d'); g.imageSmoothingEnabled = false;
+// The depth of the canvas's save stack, so a frame that threw between a save and its restore can be put right without clearing the picture (the canvas's own reset() clears it).
+let gDepth = 0; { const sv = g.save.bind(g), rs = g.restore.bind(g); g.save = () => { gDepth++; sv(); }; g.restore = () => { if (gDepth > 0) { gDepth--; rs(); } }; }
 const vis = document.getElementById('screen'), vctx = vis.getContext('2d'); vctx.imageSmoothingEnabled = false;
 const RM = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
 const motion = () => !RM.matches;
@@ -4534,6 +4542,13 @@ function cellSignAt(c, cx, cy, cs, w, h, n) {
   const fx = (hh ? (hh.x - bk.ox + .5) / bk.place.w : .5) + n * .3, fy = hh ? (hh.y - bk.oy + .5) / bk.place.h : .5;
   return { x: Math.round(Math.max(cx + pad, Math.min(cx + cs - w - pad, cx + fx * cs - w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - h - pad, cy + fy * cs - h / 2))) };
 }
+// The spring's tell on a map cell at (x, y), cs px wide: the same puddles on the same clue tiles as the walking view, where those tiles lie in the cell. False for a cell with no spring.
+function mapPuddleSpots(c, x, y, cs) {   // where they lie, and their scale: null for a cell with no spring
+  const key = String(c), lay = layout(key), h = heartOf(key); if (!h || h.kind !== 'spring') return null;
+  const bk = !lay.cave && bakedView(lay), w = bk ? bk.place.w : lay.w, ht = bk ? bk.place.h : lay.h, ox = bk ? bk.ox : 0, oy = bk ? bk.oy : 0, tw = cs / w, th = cs / ht;
+  return { h, sc: Math.max(.2, cs / 180), at: q => { const sp = puddleSpot(q, Math.min(tw, th) / 48); return { x: x + (q.x - ox) * tw + sp.x, y: y + (q.y - oy) * th + sp.y }; } };
+}
+function mapPuddles(c, x, y, cs) { const m = mapPuddleSpots(c, x, y, cs); if (!m) return false; paintCluePuddles(m.h, m.at, m.sc, false); return true; }
 function drawReachView(t) {
   if (S.exp.beaconView || S.ui.mapFull) { drawMap('map', t); return; }   // the whole map, when chosen in the menu (it stays chosen)
   ensureMap();
@@ -4562,7 +4577,8 @@ function drawReachView(t) {
     const c = Y * MW + X; if (!S.revealed[c]) continue;
     const list = (signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind));
     const small = q.big && c === ex.pos;   // on the pawn's own cell at tier 1 the outpost and the burrow sign draw at 1×, clear of the pawn
-    let n = 0; for (const sg of list.slice(0, 4)) { const a = signSprite(sg.kind, sg, fr, q.big && !(small && (sg.kind === 'depot' || sg.kind === 'burrow'))); if (!a) continue;
+    let n = 0; for (const sg of list.slice(0, 4)) { if (sg.kind === 'sh' && mapPuddles(c, x, y, q.cs)) { n++; continue; }   // the spring's tell: its puddles on its clue tiles, no icon
+      const a = signSprite(sg.kind, sg, fr, q.big && !(small && (sg.kind === 'depot' || sg.kind === 'burrow'))); if (!a) continue;
       const p = passable(c) && G.land[c] !== L.WATER ? cellSignAt(c, x, y, q.cs, a.w, a.h, n) : { x: x + ((q.cs - a.w) >> 1) + n * 6, y: y + ((q.cs - a.h) >> 1) }; blit(a, p.x, p.y, sg.rm || 0); n++; }
     if (c === ex.start) { const a = q.big ? up2('flag', ICON.flag()) : ICON.flag(), onOwn = c === ex.pos, pad = 2;
       blit(a, Math.round(x + (onOwn ? pad + 2 : (q.cs - a.w) / 2)), Math.round(y + (onOwn ? pad + 2 : (q.cs - a.h) / 2 + 2))); }
@@ -4755,7 +4771,7 @@ function drawMap(mode, t) {
     blit(art('g2hole', () => { const pb = new PB(CELL, CELL + 4), clip = { clip: (X, Y) => Y < CELL + 4 };   // local origin (px, py - CELL)
       pb.ell(13, CELL + 4, 7, 15, C.bark, clip); pb.ell(13, CELL + 5, 5, 13, C.void, clip); return pb; }), px, py - CELL, rmOf(G.gate)); }
   for (const e of signs) { const { x, y } = cxy(e.c), px = ox + x * CELL, py = oy + y * CELL;
-    for (const s of e.list) if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
+    for (const s of e.list) if (s.kind === 'sh' && mapPuddles(e.c, px, py, CELL)) continue; else if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
   if (burrowOpen() && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
   // storm band: rain, edges, a lightning mark and the direction it travels
   if (bx1 > bx0 && preview) {
@@ -4940,11 +4956,12 @@ function drawWhole(t) {
   if (cardUp) { const q = tp(h.x, h.y); circ(q.x, q.y, 14, C.ink); circ(q.x, q.y, 12, C.amber); circ(q.x, q.y, 10, C.ink); }   // the heart ringed in amber, through the dissolve and the hold
   if (!hold) return;
   // the heart's tell, through the veil (the arrival look and Look show it; the reveal rings the heart itself)
-  if (h && !found && v.kind !== 'reveal' && (v.kind === 'arrival' || tellShows(h, P) || unveiled(v.key, h.x, h.y))) {
+  if (h && !found && v.kind !== 'reveal' && (v.kind === 'arrival' || tellOn(h, P) || unveiled(v.key, h.x, h.y))) {
     const q = tp(h.x, h.y);
     if (h.kind === 'moment') { const pa = up2('paw:cream', ICON.paw('cream')); for (const c of h.clues) { const r = tp(c.x, c.y); blit(pa, r.x - (pa.w >> 1), r.y - (pa.h >> 1)); } }   // 2×: a paw at 1× is 8 px on a 24 px tile
     else if (h.kind === 'stone') blit(ICON.bolt('yellow'), q.x - 6, q.y - 14);
-    else dashRing(q.x, q.y, 9, h.kind === 'spring' ? C.aqua : C.cream);
+    else { if (h.kind === 'spring') paintCluePuddles(h, c => { const t = tp(c.x, c.y), sp = puddleSpot(c, .5); return { x: t.x - 12 + sp.x, y: t.y - 12 + sp.y }; }, .5, false);   // the same puddles on the same clue tiles as the walking view
+      dashRing(q.x, q.y, 9, h.kind === 'spring' ? C.aqua : C.cream); }
   }
   const card = () => { if (!cardUp) return;   // the hold's card (over the explorer's lantern): what is still there to take in dotted rings, then the kicker, the name (3×) and the heart's line
     for (const it of leftItems(lay.cell)) { if (it.cave) continue; const r = tp(it.x, it.y); dashRing(r.x, r.y, 9, C.cream); }
@@ -4958,7 +4975,36 @@ function drawWhole(t) {
     if (live && live.pt) { const m = tp(live.pt.x, live.pt.y); circ(m.x, m.y, 10, C.ink); circ(m.x, m.y, 8, C.teal); circ(m.x, m.y, 6, C.teal); R(m.x - 2, m.y - 2, 4, 4, C.aqua); } }   // the partner on teal
   card();
 }
+// ---------- The spring's tell, one painter for every view ----------
+// A puddle on each clue tile (springClues in src/hearts.mjs, world tiles) and a sparkle running along the line toward the spring. sc scales the picture: 1 on a 48 px tile.
+// [art] The art desk's puddle and shimmer frames replace this code stand-in when they land.
+const sparkRun = (n, answering) => motion() ? Math.floor(NOW / (answering ? 110 : 170)) % (n + 4) : -1;   // the puddle the sparkle is on (n + 4: a pause of four steps); -1 in reduced motion
+const sparkAt = (run, i) => run === i ? 2 : run < 0 ? 1 : 0;   // 2 the running sparkle (white), 1 the still sparkle of reduced motion (cream), 0 none
+function puddleSpot(q, sc = 1) { const hs = hash(31, 'dew', q.x, q.y); return { x: Math.round((10 + (hs % 12)) * sc), y: Math.round((22 + ((hs >>> 6) % 10)) * sc) }; }   // its place in the tile comes from a hash: the line does not look ruled
+function paintPuddle(x0, y0, sc, spark) {
+  if (sc < .5) {   // on a map cell the puddle is a few pixels: a river body with a sky line over it, and a cream cross for the sparkle
+    const w = Math.max(4, Math.round(18 * sc)), h = Math.max(2, Math.round(5 * sc));
+    R(x0, y0, w, h, C.river); R(x0 + 1, y0, Math.max(1, w - 2), 1, C.sky);
+    if (spark) { const hi = spark === 2 ? C.white : C.cream; R(x0 + w - 1, y0 - 3, 1, 3, hi); R(x0 + w - 2, y0 - 2, 3, 1, hi); }
+    return; }
+  const r = (dx, dy, w, h, c) => R(x0 + Math.round(dx * sc), y0 + Math.round(dy * sc), Math.max(1, Math.round(w * sc)), Math.max(1, Math.round(h * sc)), c);
+  r(3, -1, 12, 1, C.sea); r(1, 0, 16, 1, C.sea); r(0, 1, 18, 4, C.river); r(3, 1, 12, 1, C.sky); r(4, 2, 4, 1, C.ice); r(1, 5, 16, 1, C.sky); r(3, 6, 12, 1, C.leaf);
+  if (spark) { const sx = 13, sy = -6, hi = spark === 2 ? C.white : C.cream; r(sx - 1, sy - 1, 3, 3, hi); r(sx, sy - 5, 1, 4, C.cream); r(sx, sy + 2, 1, 4, C.cream); r(sx - 5, sy, 4, 1, C.cream); r(sx + 2, sy, 4, 1, C.cream); }
+}
+// The same tell on a view that shows the whole place or a map cell: the puddles on the clue tiles, each where its tile lies in the picture (at(q): the puddle's top left), at scale sc.
+function paintCluePuddles(heart, at, sc, answering) {
+  const cl = springClues(heart), run = sparkRun(cl.length, answering);
+  cl.forEach((q, i) => { const p = at(q); paintPuddle(Math.round(p.x), Math.round(p.y), sc, sparkAt(run, i)); });
+}
+// The canvas state a frame starts from: no clip, no transform, no pending save, sharp pixels. A frame that threw half way (a save with no restore) can never leave a clip behind.
+function resetCanvas() { while (gDepth > 0) g.restore(); g.setTransform(1, 0, 0, 1, 0, 0); g.imageSmoothingEnabled = false; }
+// The place view never takes the rest of the frame down with it: a throw inside is logged (the first three) and the canvas and the tables are put back.
 function drawPatch(t) {
+  try { drawPatchBody(t); }
+  catch (e) { if (RT.err++ < 3) console.error(e); }
+  finally { resetCanvas(); RT.remap = REMAP; }
+}
+function drawPatchBody(t) {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), live = ex.live[P.key]; if (!live) return;
   if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
   else if (RT.ts === 32 && (!RT.pl || NOW - RT.pl.at >= RT.pl.dur) && placeTs(lay) === 48) { RT.ts = 48; RT.cr.clear(); RT.pt = null; RT.pl = null; }   // the art arrived: switch with no slide running
@@ -5095,13 +5141,18 @@ function drawPatch(t) {
       if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(PX(rp)) + 16, y: SY(PY(rp)), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(PX(rp)) + 11, SY(PY(rp)) - 9); } }); }
   let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
-  items.push({ y: RT.pl.y + 5, d: () => {
+  const heroDraw = () => {
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
     blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)));
-    if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); } });
+    if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); };
+  items.push({ y: RT.pl.y + 5, hero: true, d: heroDraw });
+  if (TEST.boom === 1) items.push({ y: -1e9, d: () => { throw new Error('test: a sprite throws'); } });   // test hook only: an item that throws before everything else
   if (bk) items.push(...bk.propItems(g, bOrg, bclk, (x, y) => see(x, y), (x, y) => tileLight(x, y)));
   if (ts === 48 && !bk) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
-  RT.tag = null; items.sort((a, b) => a.y - b.y).forEach(it => it.d());
+  RT.tag = null; let heroDrawn = false;
+  items.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); if (it.hero) heroDrawn = true; } catch (e) { if (RT.err++ < 3) console.error(e); } });   // one sprite that throws costs that sprite, never the explorer or the rest of the frame
+  if (!heroDrawn) { try { heroDraw(); } catch (e) { if (RT.err++ < 3) console.error(e); } }
+  if (TEST.boom === 2) throw new Error('test: the place view throws after its sprites');   // test hook only
   if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, see, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
@@ -5121,16 +5172,13 @@ function drawPatch(t) {
     blit(podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), spriteRm(p.x, p.y)); }
   // the heart's tell shows through the veil within 6 tiles; a Call makes it answer for 3 actions; once the heart is found it stops
   if (!lay.cave) { const hh = heartOf(P.key);
-    if (hh && !heartFound(lay.cell) && tellShows(hh, P)) {
+    if (hh && !heartFound(lay.cell) && tellOn(hh, P)) {
       const ans = ex.actions < (ex.answerUntil || 0), fa = motion() ? Math.floor(t * (ans ? 4 : 2)) % 2 : 0, hx = hh.x * ts, hy = hh.y * ts;
       if (hh.kind === 'spring') {   // a line of greener grass along the path and a two-frame glint, brighter when it answers
-        if (bk) {   // a baked place: each clue keeps its own grass and holds a small puddle (water that reads as water); a sparkle runs along the line toward the spring, one puddle per 170 ms (110 ms while it answers), then a 4-step pause; reduced motion: every puddle wears a still sparkle
-          const cl = hh.clues.slice().sort((a, b) => Math.hypot(b.x - hh.x, b.y - hh.y) - Math.hypot(a.x - hh.x, a.y - hh.y)), n = cl.length, run = motion() ? Math.floor(NOW / (ans ? 110 : 170)) % (n + 4) : -1;   // farthest from the spring first
+        { // the clue tiles' puddles (one list, springClues, for every view and every kind of place; the old light-table shimmer is gone): a sparkle runs along the line toward the spring, one puddle per 170 ms (110 ms while it answers), then a 4-step pause; reduced motion: every puddle wears a still sparkle
+          const cl = springClues(hh), run = sparkRun(cl.length, ans);
           cl.forEach((q, i) => { if (!vis2(q.x * ts, q.y * ts) || T_BLOCK[lay.tiles[q.y * lay.w + q.x]] !== 0) return;
-            const hs = hash(31, 'dew', q.x, q.y), x0 = W(q.x * ts) + 10 + (hs % 12), y0 = H(q.y * ts) + 22 + ((hs >>> 6) % 10);
-            R(x0 + 3, y0 - 1, 12, 1, C.sea); R(x0 + 1, y0, 16, 1, C.sea); R(x0, y0 + 1, 18, 4, C.river); R(x0 + 3, y0 + 1, 12, 1, C.sky); R(x0 + 4, y0 + 2, 4, 1, C.ice); R(x0 + 1, y0 + 5, 16, 1, C.sky); R(x0 + 3, y0 + 6, 12, 1, C.leaf);
-            if (run === i || !motion()) { const sx = x0 + 13, sy = y0 - 6, hi = run === i ? C.white : C.cream; R(sx - 1, sy - 1, 3, 3, hi); R(sx, sy - 5, 1, 4, C.cream); R(sx, sy + 2, 1, 4, C.cream); R(sx - 5, sy, 4, 1, C.cream); R(sx + 2, sy, 4, 1, C.cream); } }); }
-        else for (const q of hh.clues) if (vis2(q.x * ts, q.y * ts) && T_BLOCK[lay.tiles[q.y * lay.w + q.x]] === 0) { ditherFill(W(q.x * ts) + 8, H(q.y * ts) + 8, ts - 16, ts - 16, 'mint', ans ? 3 : 1); R(W(q.x * ts) + 14 + fa * 14, H(q.y * ts) + 12 + fa * 8, 3, 3, C.cream); }
+            const sc = ts / 48, sp = puddleSpot(q, sc); paintPuddle(W(q.x * ts) + sp.x, H(q.y * ts) + sp.y, sc, sparkAt(run, i)); }); }
         if (vis2(hx, hy)) { circ(W(hx) + (ts >> 1), H(hy) + (ts >> 1), (ans ? 14 : 10) + fa * 2, ans ? C.mint : C.aqua, true); R(W(hx) + 12 + fa * 16, H(hy) + 10 + fa * 14, 4, 4, C.white); R(W(hx) + 30 - fa * 14, H(hy) + 30 - fa * 8, 3, 3, C.cream); } }
       else if (hh.kind === 'stone') { if (vis2(hx, hy)) blit(ICON.bolt(fa || ans ? 'cream' : 'yellow'), W(hx) + (ts >> 1) - 6, H(hy) - 8); }   // the bolt over the stone
       else if (hh.kind === 'moment') { const pa = ICON.paw(ans ? 'cream' : 'bone'); for (const q of hh.clues) if (vis2(q.x * ts, q.y * ts)) blit(pa, W(q.x * ts) + ((ts - pa.w) >> 1), H(q.y * ts) + ((ts - pa.h) >> 1)); }   // prints: a paw on each clue point (brighter when a Call answers)
@@ -5493,7 +5541,8 @@ function msgGeom() {
 function drawMessage() {
   const m = msgGeom(); if (!m) return;   // the reach view shows a plain note in its band; the swap chooser has the space
   panel(m.x, m.y, m.w, m.h, C.ink, C.amber);
-  if (m.sign) { PIC[SIGN[m.sign.sign].pic](m.x + 8, m.y + 8, m.sign.arg); text(FX.msg, m.x + 48, m.y + 15, C.bone); }
+  if (m.sign) { try { PIC[SIGN[m.sign.sign].pic](m.x + 8, m.y + 8, m.sign.arg); } catch (e) { resetCanvas(); RT.remap = REMAP; if (RT.err++ < 3) console.error(e); }   // a picture that throws (it may hold a clip) costs the picture, not the card's words
+    text(FX.msg, m.x + 48, m.y + 15, C.bone); }
   else m.lines.forEach((l, i) => text(l, SCR_W / 2, m.y + 8 + i * 20, C.bone, 2, 'center'));
 }
 // ---------- The signs' pictures: the thing's own built art, centred in a 32×32 slot (2× when both its sides are 16 px or less) ----------
@@ -6348,8 +6397,13 @@ function lineBase() {
   }
   return L1('', '', '');
 }
+// A frame always starts from a clean canvas state and always reaches the screen: whatever threw inside, the bottom line, the top bar and the explorer are redrawn next frame, never a frozen picture.
 function render(t) {
-  g.setTransform(1, 0, 0, 1, 0, 0);
+  resetCanvas();
+  try { renderFrame(t); }
+  finally { resetCanvas(); RT.remap = REMAP; vctx.drawImage(scr, 0, 0); }
+}
+function renderFrame(t) {
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.plScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
@@ -6373,7 +6427,6 @@ function render(t) {
   drawLine(lineFor());
   if (!(RT.view && S.phase === 'patch')) drawMessage();
   const ta = NOW - FX.transAt; if (ta < 200 && ta >= 0 && motion()) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 16 - Math.floor(ta / 200 * 16));
-  vctx.drawImage(scr, 0, 0);
 }
 function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
@@ -6444,11 +6497,12 @@ function act(k, mode) {
   if (RT.notice) { actNotice(k); return; }
   const refused = frozenRefuses(k);
   if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
-  NOW = performance.now(); if (NOW < FX.lockUntil) return;
+  NOW = performance.now(); if (FX.lockUntil - NOW > LOCK_MAX) FX.lockUntil = NOW + LOCK_MAX;
+  if (NOW < FX.lockUntil) return;
   if (S.exp && S.exp.caveDue) digDone();   // a dug burrow's entry still due completes before the press (a press inside the lock is ignored, as before)
   if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
-  if (RT.spot && S.phase === 'patch') return;   // the reveal's spot takes every press, as the dissolve after it does
+  if (RT.spot && S.phase === 'patch') { if (NOW - RT.spot.at > SPOT_MS + 1500) cancelBeat(); return; }   // the reveal's spot takes every press, as the dissolve after it does (never longer than its beat: a spot that never gets drawn is dropped)
   if (RT.view && S.phase === 'patch') { viewPress(k); return; }   // a view over the place (arrival look, Look, the reveal) takes the press: consumed, never queued, no action spent
   if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
   if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; if (FX.notes.length) composeMsg(); }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
@@ -6839,7 +6893,7 @@ requestAnimationFrame(frame);
 window.__mb = { enterPatch, leavePatch, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
-  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, startView, endView, FOGV, shownTells, fogState, pickTells, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
+  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, heartOf, springClues, mapPuddleSpots: (c, x, y, cs) => { const m = mapPuddleSpots(c, x, y, cs); return m && { sc: m.sc, spots: springClues(m.h).map(q => m.at(q)) }; }, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, shownTells, fogState, pickTells, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
