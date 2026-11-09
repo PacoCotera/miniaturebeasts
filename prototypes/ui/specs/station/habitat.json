@@ -635,7 +635,7 @@
    "full": {"action": "strings.take, dimmed (frame-cap-confirm-16-dim)", "context": "strings.full", "when": "the set as it will be holds three and the shown mibi is not in it (houseRule): the module is held; ✓ plays the reason, capitalised"}
   },
   "portrait": {
-   "none": {"action": "strings.portray, dimmed (houseRule)", "context": "strings.noSitting", "plate": "✓ plays the context, capitalised"},
+   "none": {"action": "strings.portray, dimmed (houseRule)", "context": "strings.noSittingWalk before the welcome sitting (st.welcomeGiven false), strings.noSittingResearch after it", "plate": "✓ plays strings.noSittingWalkPlate or noSittingResearchPlate (the way to earn one); before the welcome sitting, with Take live, the ring then moves to the Companion"},
    "held": {
     "action": "strings.portray",
     "price": null,
@@ -778,6 +778,10 @@
   "travellerContext": {"docked": "ready to go exploring", "away": "out exploring"},
   "travellerPlate": {"docked": ["{name} is ready to go exploring", "Bring {name} home first"], "away": ["{name} is out exploring", "Bring {name} home when you dock"]},
   "noSitting": "no sitting held",
+  "noSittingWalk": "a walk home earns one",
+  "noSittingWalkPlate": ["No sitting held yet", "Take {name} on a walk: the first walk home earns one"],
+  "noSittingResearch": "research earns the next",
+  "noSittingResearchPlate": ["No sitting held", "Fill a field guide, or a line four crosses deep"],
   "portray": "Portray {name}",
   "portrayContext": "one sitting each, ever",
   "noPose": "no pose seen yet",

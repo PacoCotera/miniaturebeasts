@@ -122,11 +122,12 @@ export function wordsOf(need, spec) {
   const N = spec.strings.needs[need.key]; if (!N) return { notice: "", action: null };   // a key home.json has no words for
   const word = need.n != null && need.n >= 1 && need.n <= need.max ? count(need.n) : "";
   let notice = need.n === 1 && N.noticeOne ? N.noticeOne : N.notice;
-  const vals = { count: word, name: need.name, a: need.a, species: need.species };
+  const vals = { count: word, name: need.name, a: need.a, species: need.species, first: need.nameA, second: need.nameB };
   if (need.short && N.short) notice = N.short;
   notice = fill(notice, vals).replace(/\s{2,}/g, " ").trim();
   if (need.short) notice += " " + need.short;
-  return { notice, action: fill(N.actions ? N.actions[need.ring === "room.new" ? "add" : "make"] : N.action, vals) };   // full: Add a room or Make room by where its ✓ goes (state.needKey's ring)
+  const shortAction = need.short && N.shortAction ? fill(N.shortAction, vals) + " " + need.short : null;   // pair: the cross is short, so the ✓ word says what is missing (the ✓ still goes to Cross)
+  return { notice, action: shortAction ?? fill(N.actions ? N.actions[need.ring === "room.new" ? "add" : "make"] : N.action, vals) };   // full: Add a room or Make room by where its ✓ goes (state.needKey's ring)
 }
 
 // The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state and its picture by the light (the Companion's mark is not drawn: the bed's `mark` is always ""). R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
@@ -260,6 +261,7 @@ export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const drying = S.dryingNext(st); if (drying.length) out.push({ key: "drying", n: drying.length, max: 6, act: "pods" });
   if (readyCrates(st, settings, now).length) out.push({ key: "portrait", act: "cargo" });
   const meet = ui.meet != null ? S.mibiById(st, ui.meet) : null; if (meet) out.push({ key: "meet", name: meet.name, act: "meet" });
+  const cn = S.crossNeed(st, sv, settings); if (cn) out.push({ key: "pair", nameA: cn.a.name, nameB: cn.b.name, id: cn.a.id, short: cn.short, act: "cross" });   // two adults at home could cross: above new pods and a pod that can be incubated
   const unseen = st.tray.filter((p) => !p.idd && !p.seen); if (unseen.length) out.push({ key: "newPods", n: unseen.length, max: 6, act: "pods" });
   const glint = st.tray.filter((p) => S.podGlints(st, p)); if (glint.length) out.push({ key: "glints", n: glint.length, max: 6, act: "pods" });
   if (st.waiting.length) out.push({ key: "waitingPods", n: st.waiting.length, max: 6, act: "pods" });
@@ -343,7 +345,9 @@ function lineWords(m, spec, frame, v) {
   const Sg = spec.strings, { cur } = v;
   if (cur === "room") {
     const W = { strings: { needs: Sg.line.needs } };   // Home's own table: each need's action (the first) and notice (the second), the counts spelled
-    if (v.needs.length) return { needs: v.needs.slice(0, spec.regions.line.needs).map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : w.notice; }) };
+    // the pair need (two names) is the line's first need and alone: as the second it could pass the zone's width with long names, so it waits until it leads
+    const needs = v.needs.filter((nd, i) => nd.key !== "pair" || i === 0), lead = needs[0]?.key === "pair" ? needs.slice(0, 1) : needs.slice(0, spec.regions.line.needs);
+    if (lead.length) return { needs: lead.map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : w.notice; }) };
     const callLine = frame.strings.teach?.call;   // the first day teaches Call (the controls scheme; the host's m.callTeach): its line takes the goal's place until Call is first pressed
     if (callLine && m.callTeach) return { goal: { text: callLine, icons: "", plain: callLine } };
     const goal = S.goalKey(m.st, m.sv, m.settings), g = goal && goalWords(goal, !!m.docked, frame);

@@ -23,6 +23,7 @@ export function openInventory(h, opts = {}) {
   const p = pods(h); p.cmp = null; p.view = "inventory"; p.ask = null; p.choosing = !!opts.choosing; p.from = opts.from ?? (p.choosing ? "room" : "home");
   p.hold = null; p.waits = !!opts.waits;   // the verb is the caller's on every entry (the pods picker's design B): a verb never sticks from one visit to the next; the Incubator's Grow and the bench's Bring are the only one offered
   p.verb = p.callerVerb = opts.verb ?? (p.choosing ? "bring" : p.from === "incubator" ? "grow" : "read"); p.fixed = p.choosing || p.from === "incubator";
+  p.peek = null; p.now = null;   // a preview and the "Now" line never outlive a visit
   p.blocked = null;   // a fixed verb no pod can take (the incubator is busy): the picker opens as browse on Read, full colour, the reason in the foot; ← still goes to the caller
   if (p.fixed && h.st.tray.length) { const m = mm(h), ts = h.st.tray.map((q) => takeOf(m, spec(h), p.verb, q)); if (ts.every((t) => !t.can)) { p.blocked = ts[0].why; p.verb = p.callerVerb = "read"; p.fixed = false; } }
   if (opts.sort) p.sort = opts.sort;
@@ -77,6 +78,13 @@ const mm = (h) => ({ st: h.st, settings: h.settings, ui: pods(h), now: h.now ? h
 export const verbNow = (h) => { const p = pods(h), vs = verbsOf(mm(h), spec(h)); return vs.includes(p.verb) ? p.verb : vs[0] ?? "read"; };
 // The ring's first landing under a verb: the first pod that can take it (from the top row on screen), else the first.
 function firstAble(h) { const p = pods(h), m = mm(h), vb = verbNow(h), list = listOf(h.st, spec(h), p, h.settings), i = list.findIndex((e, k) => k >= (p.first ?? 0) * 5 && takeOf(m, spec(h), vb, e.p).can), j = i >= 0 ? i : list.findIndex((e) => takeOf(m, spec(h), vb, e.p).can); return "card." + Math.max(0, j); }
+// ✓ or ▼ on a verb turns it on (dead ends B6: the ring on a verb only previews it). Another verb than the caller's says "Now: {Verb}" in the middle slot for NOW_MS.
+export const NOW_MS = 2500;
+function turnOn(h, v) {
+  const p = pods(h); p.peek = null; p.hold = null;
+  if (p.verb === v) return;
+  p.verb = v; if (v !== p.callerVerb) p.now = { text: fill(spec(h).strings.inv.picker.now, { Verb: spec(h).strings.inv.picker.verbs[v] }), until: h.now() + NOW_MS };
+}
 function inventoryIntent(h, target, verb) {
   const p = pods(h), st = h.st;
   if (verb === "back") {
@@ -91,7 +99,7 @@ function inventoryIntent(h, target, verb) {
   if (target === "sort") { if (!st.tray.length) return h.say(spec(h).strings.inv.nothingToSort); const i = SORTS.indexOf(p.sort ?? "use"); p.sort = SORTS[(i + 1) % SORTS.length]; p.first = 0; return; }   // the list returns to its top and the ring stays on Sort
   if (target === "filter") { if (!st.tray.length) return h.say(spec(h).strings.inv.nothingToFilter); p.view = "filter"; p.focus.set("tchip.0.0"); return; }
   if (target === "find") { if (!st.tray.length) return h.say(spec(h).strings.inv.nothingToFind); p.view = "find"; const f = findOf({ st, ui: p }, spec(h)); p.find = { letter: f.letter }; p.focus.set(f.letters.length ? "letter." + Math.max(0, f.letters.findIndex((l) => l.lit)) : "find"); return; }
-  if (target.startsWith("verb.")) { if (!p.fixed) p.verb = target.slice(5); p.hold = null; p.focus.set(firstAble(h)); return; }   // ✓ on the verb line: down to the pods, the ring on the first one that can take it
+  if (target.startsWith("verb.")) { if (!p.fixed) turnOn(h, target.slice(5)); p.focus.set(firstAble(h)); return; }   // ✓ on the verb line turns the verb on: down to the pods, the ring on the first one that can take it
   if (target.startsWith("card.")) return doVerb(h, target);
 }
 // ✓ on a pod does the verb in one press (the pods picker's design B): Read and Bring open the reading room, Grow opens Create, Freshen freshens at once, Compare holds the pod and then opens on a kin, Let go asks to be held.
@@ -126,8 +134,12 @@ export function held(h) {
 }
 // The ring moved: a move puts a guard's question back, the verb line's move chooses the verb (the grid answers at once), the letter strip redraws on the letter the ring is on.
 export function focus(h, target) {
-  const p = pods(h); p.focus.set(target);
-  if (p.view === "inventory" && target.startsWith("verb.") && !p.fixed) { p.verb = target.slice(5); p.hold = null; }
+  const p = pods(h), prev = p.focus.cur ?? ""; p.focus.set(target);
+  if (p.view === "inventory" && !p.fixed) {   // focus is not selection (dead ends B6): the ring on a verb previews it; ▼ from a previewed verb turns it on; a move sideways to a tool drops the preview, the verb stays
+    if (target.startsWith("verb.")) p.peek = target.slice(5) === verbNow(h) ? null : target.slice(5);
+    else if (target.startsWith("card.")) { if (prev.startsWith("verb.") && p.peek) turnOn(h, p.peek); }
+    else p.peek = null;
+  }
   if (p.view === "inventory" && target.startsWith("card.")) {
     const q = podAt(h, target); if (q) { p.panelPod = q.id; if (!q.seen && !h.ui.answer) { q.seen = 1; h.save(); } }
     // the 200 ms scroll: when the ring's card moves the first row on screen, the rows slide there (a cut with reduced motion: the face ends the event at once)

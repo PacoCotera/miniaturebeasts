@@ -49,6 +49,7 @@ const SCENES = {
 };
 // R6: the scenes where ✓ was pressed on a held target and its message plate stands (4000 ms): taken with motion and the virtual clock, 400 ms after the press, as the plate is an event (reduced motion cuts it away)
 const PRESSED = {
+  "portrait-walk": { shown: 0, f: "portrait", ring: "door", state: "rest", plate: "No sitting held yet\\nTake \\w+ on a walk: the first walk home earns one", set: (w) => { w.rooms(1); w.adults(4); } },   // B5: ✓ on the empty Portrait before the welcome sitting: the way to earn one on the plate, the ring moved onto Take
   "wild-bonded-pressed": { shown: 3, f: "wild", state: "rest", plate: "A bond is for good\\n\\w+ stays with you\\nCarried and tended, \\w+ grows up", set: (w) => { w.rooms(1); w.adults(3); w.young(1); const m = window.__st.ST.mibis[3]; m.bonded = true; } },   // a bonded juvenile: ✓ on the held Return plays its three lines
 };
 async function enter(page, sc) {
@@ -70,7 +71,7 @@ async function pressed(visit) {
     for (const [name, sc] of Object.entries(PRESSED)) {
       await enter(page, sc); await step(1200);
       await page.evaluate((f) => window.__st.intent({ screen: "habitat", target: f, verb: "confirm" }), sc.f); await step(400);
-      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, cur: window.__st.props?.focus?.cur, msg: window.__st.msg })); if (u.screen !== "habitat" || u.cur !== sc.f || !new RegExp("^" + sc.plate + "$").test(u.msg)) fail(`habitat-${name}: ${JSON.stringify(u)}`);
+      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, cur: window.__st.props?.focus?.cur, msg: window.__st.msg })); if (u.screen !== "habitat" || u.cur !== (sc.ring ?? sc.f) || !new RegExp("^" + sc.plate + "$").test(u.msg)) fail(`habitat-${name}: ${JSON.stringify(u)}`);
       await visit("habitat-" + name, page, fail);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));

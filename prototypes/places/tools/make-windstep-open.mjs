@@ -50,7 +50,7 @@ for (const [k, x, y] of [['tree-broad', 8, 15], ['tree-autumn', 7, 20], ['tree-b
 const marks = [];
 marks.push(ent('Heart', 12, 13, 1, 1, { kinds: ['spring', 'moment'], species: [], revealLine: 'Clear water rises in the grass.', reachBy: 'none' }));
 marks.push(ent('Clue', 8, 21, 1, 1, { tell: 'shimmer', path: [{ cx: 8, cy: 21 }, { cx: 9, cy: 19 }, { cx: 10, cy: 17 }, { cx: 11, cy: 15 }, { cx: 12, cy: 14 }] }));
-const finds = [[15, 15, ['pod'], 1], [8, 9, ['fruit', 'dew'], 1], [21, 18, ['stone'], 1], [9, 17, ['pod', 'fruit'], 0.6], [14, 8, ['fruit', 'dew'], 0.6], [20, 24, ['stone', 'material'], 0.6], [3, 23, ['dew'], 0.6], [13, 24, ['pod', 'material'], 0.6]];
+const finds = [[15, 15, ['pod'], 1], [8, 9, ['fruit', 'dew'], 1], [21, 18, ['stone'], 1], [9, 17, ['pod', 'fruit'], 0.5], [14, 8, ['fruit', 'dew'], 0.5], [20, 24, ['stone', 'material'], 0.5], [3, 23, ['dew'], 0.5], [13, 24, ['pod', 'material'], 0.5]];
 for (const [x, y, kinds, chance] of finds) marks.push(ent('Find', x, y, 1, 1, { kinds, chance }));
 marks.push(ent('Landmark', 17, 19, 1, 1, { prop: 'tree-autumn', label: 'the lone tree' }));
 prop('tree-autumn', 17, 19);

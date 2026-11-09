@@ -139,7 +139,7 @@ test("Wild: shut (no armed state), its context from the rules (a young, a bonded
 test("Portrait: none, held, its portrait on the way, portrayed; the context names why it cannot sit", () => {
   const w = world(); dock(w.st); const m = mibis(w, 2), sv = sv0();
   const line = (o) => build(w, sv, { focus: "portrait", ...o }).line, st = (o) => build(w, sv, { focus: "portrait", ...o }).props.regions.portrait.state;
-  assert.equal(st(), "none"); assert.equal(line().subject, "no sitting held");
+  assert.equal(st(), "none"); assert.equal(line().subject, "a walk home earns one"); w.st.welcomeGiven = true; assert.equal(line().subject, "research earns the next"); w.st.welcomeGiven = false;
   w.st.sitting = { source: "dev", key: null, at: 0 }; assert.equal(st(), "held"); assert.equal(line().subject, "no pose seen yet"); assert.equal(build(w, sv, { focus: "portrait" }).props.focus.targets.find((t) => t.id === "portrait").enabled, false);
   m[0].habits = ["calm"]; m[0].walked = ["wood"]; m[0].places = ["wood"]; const l = line(); assert.equal(l.ok, `Portray ${m[0].name}`); assert.equal(l.subject, spec.strings.portrayContext, "a mibi that has seen a pose and been to a place may sit: the door is open"); assert.equal(build(w, sv, { focus: "portrait" }).props.focus.targets.find((t) => t.id === "portrait").enabled, true);
   m[0].portrait = { state: "painting" }; assert.equal(st(), "painting"); assert.equal(line().subject, "its portrait is on its way"); m[0].portrait = { state: "delivered" }; assert.equal(st(), "portrayed"); assert.equal(line().subject, "already portrayed");
@@ -293,8 +293,10 @@ test("R6 the house rule on one mibi up close: a held module is drawn held before
   S.carryHome(w.st, carried, m[0]); w.st.carryReqs = []; sv.carryReqs = [];
   // the other held modules: the reason's own sentence capitalised (the plates owed to the copywriter)
   const w2 = world(); dock(w2.st); const n = mibis(w2, 2); n[1].born = w2.st.turn;
-  const row2 = (target, mb = n[0]) => { const b = build(w2, sv0(), { habId: mb.id, focus: target }), h = hostFor(w2, sv0(), mb.id); h.ui.hab.f = target; press(h, target); return { b, said: h.said, held: b.props.regions[target].held }; };
-  r = row2("portrait"); assert.deepEqual([r.held, r.b.line.ok, r.b.line.dim, r.b.line.subject, r.said], [true, `Portray ${n[0].name}`, true, "no sitting held", ["No sitting held"]], "the empty Portrait module is held");
+  const row2 = (target, mb = n[0]) => { const b = build(w2, sv0(), { habId: mb.id, focus: target }), h = hostFor(w2, sv0(), mb.id); h.ui.hab.f = target; press(h, target); return { b, said: h.said, held: b.props.regions[target].held, f: h.ui.hab.f }; };
+  r = row2("portrait"); assert.deepEqual([r.held, r.b.line.ok, r.b.line.dim, r.b.line.subject, r.said, r.f], [true, `Portray ${n[0].name}`, true, "a walk home earns one", [`No sitting held yet\nTake ${n[0].name} on a walk: the first walk home earns one`], "door"], "dead ends B5: the empty Portrait module is held; before the welcome sitting it says a walk home earns one and the ring moves to Take (live while docked)");
+  w2.st.welcomeGiven = true; r = row2("portrait"); assert.deepEqual([r.b.line.subject, r.said, r.f], ["research earns the next", ["No sitting held\nFill a field guide, or a line four crosses deep"], "portrait"], "after the welcome sitting: research earns the next, and the ring stays on the Portrait");
+  w2.st.welcomeGiven = false; { const sv = sv0({ carried: [n[0].id] }); const b = build(w2, sv, { habId: n[0].id, focus: "portrait" }), h = hostFor(w2, sv, n[0].id); h.ui.hab.f = "portrait"; press(h, "portrait"); assert.deepEqual([h.said.length, h.ui.hab.f], [1, "portrait"], "carried keeps the traveller plate and the ring stays: " + b.line.subject); }
   r = row2("cross", n[1]); assert.deepEqual([r.held, r.b.line.ok, r.b.line.dim, r.said], [true, `Cross ${n[1].name}`, true, [capLine(spec.strings.crossLater)]]);
   const w3 = world(); dock(w3.st); const k = mibis(w3, 5); const full = sv0({ carried: [k[1].id, k[2].id, k[3].id] });
   { const b = build(w3, full, { habId: k[0].id, focus: "door" }), h = hostFor(w3, full, k[0].id); press(h, "door"); assert.deepEqual([b.props.regions.door.held, b.line.dim, h.said, w3.st.mibis.length], [true, true, ["The Companion is full"], 5], "the Companion full: held, ✓ plays its plate and takes nobody"); }

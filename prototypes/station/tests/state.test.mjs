@@ -336,7 +336,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
   const e0 = st.e, s0 = st.s;
   let seed = 7; const rng = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x80000000; };
   const c = S.doCross(st, null, a, b, settings, 1000, rng); assert.equal(c.ok, true, c.msg);
-  assert.equal(st.e, e0 - 2); assert.equal(st.s, s0 - 4);
+  assert.equal(st.e, e0 - 2); assert.equal(st.s, s0 - 2);
   const B = st.bud; assert.equal(B.kind, "cross"); assert.equal(B.parents.length, 2); assert.equal(B.parents[0].id, a.id); assert.ok(B.parents[1].genome); assert.equal(B.minutes, 20); assert.equal(B.kinship, 0);
   assert.deepEqual(B.read, S.childKnownChapters(fr, fc), "known only where every trait of the chapter is firm");
   for (const l of fr.loci) if (l.kind !== "locked") { const [x, y] = B.genome.loci[l.id]; const cont = typeof x === "number"; if (!cont) { assert.ok(a.genome.loci[l.id].includes(x) && b.genome.loci[l.id].includes(y), "one copy from each parent at " + l.id); } else assert.equal(x, y, "a blend's copies are equal"); }
@@ -477,7 +477,7 @@ test("Hatch now costs 1 Essence per 2 minutes left on the bud, rounded up, and n
   assert.equal(at(0, 20, { economy: "free" }).s, 0, "the free economy");
   st.bud = null; assert.deepEqual(S.instantGrowCost(st, settings, 0), { e: 0, d: 0, s: 0 });
   // the rule pays it: refused when the Essence is short, taken when it is not
-  st.bud = { start: 0, minutes: 20, early: false, species: "S01" }; st.e = 5; st.d = 5; st.s = 9; const no = S.instantGrow(st, settings, 0); assert.equal(no.ok, false); assert.match(no.msg, /^Hatch now · /); assert.equal(st.s, 9); assert.notEqual(st.bud, null, "a refused press hatches nothing");
+  st.bud = { start: 0, minutes: 20, early: false, species: "S01" }; st.e = 5; st.d = 5; st.s = 9; const no = S.instantGrow(st, settings, 0); assert.equal(no.ok, false); assert.match(no.msg, /^Open now · /); assert.equal(st.s, 9); assert.notEqual(st.bud, null, "a refused press hatches nothing");
 });
 
 // ---- the care save shape: the carried set, the dock merge, the stage, the migration step (Station side) ----

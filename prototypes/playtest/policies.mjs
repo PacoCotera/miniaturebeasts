@@ -22,10 +22,10 @@ export const random = {
   },
 };
 
-// Hatch now costs Essence, and the Cross costs 4 of it (the Cross screen's price): the first bud is paid for, the later ones only from what stays above the Cross's price (the bots found
+// Hatch now costs Essence, and the Cross costs some of it (the game's crossCost, read through ctx.crossEssence): the first bud is paid for, the later ones only from what stays above the Cross's price (the bots found
 // this the hard way: paying every Hatch now left the Essence short of the Cross for the whole game)
-const CROSS_ESSENCE = 4, HATCH_NOW_ESSENCE = 3;
-const payKeep = (ctx) => { const m = materialsNow(ctx); return (ctx.state.hatchedN ?? 0) === 0 || (!!m && m.s >= CROSS_ESSENCE + HATCH_NOW_ESSENCE); };
+const HATCH_NOW_ESSENCE = 3;
+const payKeep = (ctx) => { const m = materialsNow(ctx); return (ctx.state.hatchedN ?? 0) === 0 || (!!m && m.s >= ctx.crossEssence() + HATCH_NOW_ESSENCE); };
 
 // one world turn of the loop. o: read (chapters of pods), max (pods looked at), pay (Hatch now), readMibis, sitting, tier2
 // The order matters (the bots found it): a bud already in the Incubator hatches first, then the mibis at home are greeted and the Cross is tried, and only then a new pod is grown. A new

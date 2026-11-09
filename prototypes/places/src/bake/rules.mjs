@@ -3,7 +3,17 @@
 // (walkable without a partner). Reachability floods over foot cells that no prop footprint blocks; a heart that names a `reachBy` is allowed
 // to be out of foot reach (and so are the finds).
 import { BakeError, PLACE_SIZES } from './ldtk.mjs';
-import { cliffInfo, gullies } from './openedges.mjs';
+import { cliffInfo, gullies, thicketDonor } from './openedges.mjs';
+
+// Groves, not an orchard (walk content, lead's look at the Hollow Tree's whole view): the trees of a place stand in clumps of 3-5 that touch or overlap their crowns, with open
+// glades between and a few lone trees; never an even lattice, rows or rings. Measured on the nearest-neighbour spacing of the standing things (trees and boulders), in cells.
+export const GROVE = { minTrees: 12, touch: 2.3, minTouching: 0.4, minCv: 0.35, lone: 4, minLone: 2 };
+export function groveStats(ir) {
+  const trees = ir.props.filter((p) => /^(tree-(broad|autumn)|boulder-(grey|brown))$/.test(p.kind)).map((p) => [p.cx, p.cy]);
+  const nn = trees.map((a, i) => Math.min(...trees.filter((_, j) => j !== i).map((b) => Math.hypot(a[0] - b[0], a[1] - b[1]))));
+  const mean = nn.reduce((s, v) => s + v, 0) / (nn.length || 1), sd = Math.sqrt(nn.reduce((s, v) => s + (v - mean) ** 2, 0) / (nn.length || 1));
+  return { trees: trees.length, mean, cv: mean ? sd / mean : 0, touching: nn.filter((v) => v <= GROVE.touch).length, lone: nn.filter((v) => v >= GROVE.lone).length };
+}
 
 export const standable = (play) => play !== 'block' && play !== 'deep';
 export const onFoot = (play) => play === 'walk' || play === 'scree' || play === 'bank' || play === 'cliff';   // 'cliff': its top walks; its lip and face are blocked cells (openedges.cliffInfo)
@@ -195,6 +205,15 @@ export function checkRules(ir, ctx) {
       else if (blocked.has(y * w + x) || under.has(y * w + x)) fail('seam-ground', 'no prop footprint or crown on the last 2 rows of a side', { x, y });
     }
     for (const d of ir.decals) if (near(d.cx, d.cy)) fail('seam-ground', 'no decal on the last 2 rows of a side', { x: d.cx, y: d.cy });
+    // closed-look: every opening can show its closed look, the set's dense thicket, so the level holds a 3 x 3 block of it to stamp from (the adapter's closedLooks)
+    if (!thicketDonor(ir, ctx.terrains)) fail('closed-look', 'the level holds no 3 x 3 block of dense thicket, the donor of its openings\' closed looks');
+    // grove-lattice: the trees stand in groves with glades between, not an even lattice
+    { const g = groveStats(ir);
+      if (g.trees >= GROVE.minTrees) {
+        if (g.touching < Math.ceil(g.trees * GROVE.minTouching)) fail('grove-lattice', `only ${g.touching} of ${g.trees} trees touch another (crowns overlap within ${GROVE.touch} cells); groves need at least ${Math.ceil(g.trees * GROVE.minTouching)}`);
+        if (g.cv < GROVE.minCv) fail('grove-lattice', `the trees' nearest-neighbour spacing varies by only ${g.cv.toFixed(2)} (an even lattice); groves and glades vary by at least ${GROVE.minCv}`);
+        if (g.lone < GROVE.minLone) fail('grove-lattice', `${g.lone} lone trees (no neighbour within ${GROVE.lone} cells); a few stand alone, at least ${GROVE.minLone}`);
+      } }
     // the heart: far from every arrival, and nothing standing within 2 cells of it (its clearing)
     if (heart) {
       for (const a of arrivals) if (Math.abs(a.x - heart.x) + Math.abs(a.y - heart.y) < 10) fail('heart-far', `the Heart is ${Math.abs(a.x - heart.x) + Math.abs(a.y - heart.y)} cells from the ${a.side} arrival; it must be at least 10 from every arrival`, heart);

@@ -25,6 +25,11 @@ function heldModule(h, m, target) {
   if (!row) return false;
   h.say(row.plate.join("\n")); return true;
 }
+// The held Portrait before the welcome sitting says a walk home earns one; when Take is live, the ring moves onto it (dead ends B5): the way out is one ✓ away on the same card.
+function ringToTake(h, m) {
+  const mods = modulesOf({ st: h.st, sv: h.sv, settings: h.settings, docked: S.docked(h.st) }, m, h.specs.habitat.strings, h.specs.sitting);
+  if (mods.noSit && !h.st.welcomeGiven && mods.dKind === "take" && !mods.rows.door) h.ui.hab.f = "door";
+}
 // A pick of the Cross screen: the first partner not out with the Companion while it is away.
 export function openCross(h, a) { h.ui.cross = { aId: a.id, bId: null, state: 0, fc: null, clash: [] }; const p = S.crossPartners(h.st, h.sv, a, h.settings).find((x) => !x.away && !x.family); if (p) h.ui.cross.bId = p.id; h.goto("cross"); }
 // The mibi's chapter ids in ring order: the plate a target names.
@@ -73,7 +78,7 @@ export function intent(h, target, verb) {
     const bring = S.projectCarried(h.st, h.sv).includes(m.id), r = bring ? S.carryHome(h.st, h.sv, m) : S.carryAdd(h.st, h.sv, m);
     if (r.ok) h.save(); else if (r.why === "full") h.say(fill(h.specs.habitat.strings.carryRefused, { name: m.name }));
   }
-  else if (target === "portrait") { if (heldModule(h, m, "portrait")) return; if (doorOpen("sitting") && !S.isCarried(h.st, h.sv, m) && (m.portrait || h.st.sitting) && h.enterSitting) h.enterSitting(m, { state: m.portrait ? "portrait" : "pose", from: "habitat" }); }   // the sitting (its door shut until the screen is listed in nav.mjs BUILT): Portray opens the pose step; portrayed, the portrait, only while its picture is held (host.mjs enterSitting)
+  else if (target === "portrait") { if (heldModule(h, m, "portrait")) { ringToTake(h, m); return; } if (doorOpen("sitting") && !S.isCarried(h.st, h.sv, m) && (m.portrait || h.st.sitting) && h.enterSitting) h.enterSitting(m, { state: m.portrait ? "portrait" : "pose", from: "habitat" }); }   // the sitting (its door shut until the screen is listed in nav.mjs BUILT): Portray opens the pose step; portrayed, the portrait, only while its picture is held (host.mjs enterSitting)
   else if (target === "cross") {
     if (heldModule(h, m, "cross")) return;   // no breeding while carried (the owner); young, alone, partners away: the house rule
     if (!doorOpen("cross") || !S.isAdult(h.st, m, h.settings)) return;

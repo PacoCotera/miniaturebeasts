@@ -46,11 +46,20 @@ test("every way into Pods sets the caller's verb: Home and the Research key Read
   toPodsWaiting(h); assert.deepEqual([h.ui.pods.verb, h.ui.pods.waits, h.ui.pods.sort], ["letgo", true, "use"], "a pod waits on the mat: Let go set"); const n = st.tray.length; assert.equal(h.ui.pods.focus.cur, "card." + (n - 1), "the ring on the least useful pod, the end of by use");
   h.ui.pods.verb = "freshen"; openInventory(h, { from: "home" }); assert.deepEqual(state(h).slice(0, 2), ["read", false], "a verb never sticks from one visit to the next");
 });
-test("the verb the ring chooses on the verb line is the grid's: ◀ ▶ on it (the face says `focus`) change the verb and let any held pod go; ✓ on it goes down to the first pod that can take it; a fixed verb cannot be changed", () => {
-  const st = world(); pod(st, "S01", 5, false); pod(st, "S01", 6); pod(st, "S02", 7); const h = mk(st); h.ui.screen = "pods"; openInventory(h, { from: "home" });
-  INTENTS.pods.focus(h, "verb.freshen"); assert.equal(h.ui.pods.verb, "freshen"); INTENTS.pods.intent(h, "verb.freshen", "confirm"); assert.equal(h.ui.pods.focus.cur, "card.0", "down to the pods");
-  INTENTS.pods.focus(h, "verb.read"); assert.equal(h.ui.pods.verb, "read");
-  openInventory(h, { from: "incubator" }); INTENTS.pods.focus(h, "verb.read"); assert.equal(h.ui.pods.verb, "grow", "the Incubator's verb is fixed");
+test("B6 the verb line previews, ✓ or ▼ chooses: the ring on a verb is a peek; a move to a tool drops it and the verb stays; ▼ or ✓ turns the previewed verb on; the Now line; a fixed verb cannot be changed", () => {
+  const st = world(); pod(st, "S01", 5, false); pod(st, "S01", 6); pod(st, "S02", 7); const h = mk(st); h.ui.screen = "pods"; openInventory(h, { from: "home" }); const P = () => h.ui.pods;
+  // the dead end: ▲ ▶ ▶ ▶ ▶ ◀ ▼ used to leave Let go on while the pill said Read
+  INTENTS.pods.focus(h, "verb.read"); INTENTS.pods.focus(h, "verb.freshen"); INTENTS.pods.focus(h, "verb.letgo"); assert.deepEqual([P().verb, P().peek], ["read", "letgo"], "the ring on Let go only previews it");
+  INTENTS.pods.focus(h, "sort"); assert.deepEqual([P().verb, P().peek], ["read", null], "sideways to Sort drops the preview");
+  INTENTS.pods.focus(h, "verb.read"); assert.deepEqual([P().verb, P().peek], ["read", null], "◀ from Sort lands on the verb that is on");
+  INTENTS.pods.focus(h, "card.0"); assert.equal(P().verb, "read", "▼ from the verb that is on changes nothing"); assert.equal(P().now, null);
+  // ▼ from a previewed verb turns it on, and the middle slot says so
+  INTENTS.pods.focus(h, "verb.freshen"); assert.equal(P().verb, "read"); INTENTS.pods.focus(h, "card.0"); assert.deepEqual([P().verb, P().peek], ["freshen", null], "▼ turns the previewed verb on"); assert.equal(P().now.text, "Now: Water");
+  // ✓ on a previewed verb turns it on and the ring drops to the first pod that can take it
+  INTENTS.pods.focus(h, "verb.read"); INTENTS.pods.focus(h, "verb.letgo"); INTENTS.pods.intent(h, "verb.letgo", "confirm"); assert.deepEqual([P().verb, P().peek, P().focus.cur], ["letgo", null, "card.0"], "✓ turns it on, down to the pods");
+  INTENTS.pods.focus(h, "verb.read"); INTENTS.pods.intent(h, "verb.read", "confirm"); assert.equal(P().verb, "read", "back to the caller verb");
+  openInventory(h, { from: "home" }); assert.deepEqual([P().verb, P().peek, P().now], ["read", null, null], "every entry resets the preview and the Now line");
+  openInventory(h, { from: "incubator" }); INTENTS.pods.focus(h, "verb.read"); assert.deepEqual([P().verb, P().peek], ["grow", null], "the Incubator's verb is fixed");
 });
 test("Let go is a held ✓: a quick double ✓ does not let go (nothing happens but the line's hint); the held ✓ does, once; the frame carries the hold only with the ring on a pod under Let go, slower for the only pod of a species or one that carries the goal", () => {
   const st = world(); const a = pod(st, "S01", 5), b = pod(st, "S02", 6), c = pod(st, "S02", 7), h = mk(st); h.ui.screen = "pods"; openInventory(h, { from: "home" }); h.ui.pods.verb = "letgo";

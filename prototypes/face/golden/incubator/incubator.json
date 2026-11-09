@@ -6,11 +6,11 @@
    "png": "incubator-empty.png"
   },
   "incubator-growing": {
-   "hash": "d5a27078",
+   "hash": "92425a22",
    "png": "incubator-growing.png"
   },
   "incubator-growing-late": {
-   "hash": "91ccc01e",
+   "hash": "7bbe0ab8",
    "png": "incubator-growing-late.png"
   },
   "incubator-ready": {
@@ -18,23 +18,23 @@
    "png": "incubator-ready.png"
   },
   "incubator-panel-grownow": {
-   "hash": "8264e299",
+   "hash": "0874d1e4",
    "png": "incubator-panel-grownow.png"
   },
   "incubator-panel-wait": {
-   "hash": "0e2fa8a5",
+   "hash": "700d21aa",
    "png": "incubator-panel-wait.png"
   },
   "incubator-growing-half": {
-   "hash": "0726ace0",
+   "hash": "63ff4d06",
    "png": "incubator-growing-half.png"
   },
   "incubator-growing-start": {
-   "hash": "90764f2c",
+   "hash": "b053cdec",
    "png": "incubator-growing-start.png"
   },
   "incubator-cross-growing": {
-   "hash": "ec9ad727",
+   "hash": "14dcf981",
    "png": "incubator-cross-growing.png"
   },
   "incubator-empty-full": {
@@ -54,11 +54,11 @@
    "png": "incubator-panel-full.png"
   },
   "incubator-incubate-100": {
-   "hash": "0f173e35",
+   "hash": "ff6baf05",
    "png": "incubator-incubate-100.png"
   },
   "incubator-incubate-1290": {
-   "hash": "5493a5ee",
+   "hash": "bb82c9fe",
    "png": "incubator-incubate-1290.png"
   },
   "incubator-hatch-300": {
@@ -90,27 +90,27 @@
    "png": "incubator-hatch-2000.png"
   },
   "incubator-growNow-0": {
-   "hash": "093beb55",
+   "hash": "1fba71bb",
    "png": "incubator-grownow-0.png"
   },
   "incubator-growNow-200": {
-   "hash": "db5b59bd",
+   "hash": "17a7ea33",
    "png": "incubator-grownow-200.png"
   },
   "incubator-growNow-400": {
-   "hash": "56573782",
+   "hash": "4fc0fb70",
    "png": "incubator-grownow-400.png"
   },
   "incubator-growNow-500": {
-   "hash": "d0769a31",
+   "hash": "f2e0266f",
    "png": "incubator-grownow-500.png"
   },
   "incubator-panel-dither-90": {
-   "hash": "c4a1eff2",
+   "hash": "40b61e07",
    "png": "incubator-panel-dither-90.png"
   },
   "incubator-panel-grownow-200": {
-   "hash": "4d164d0e",
+   "hash": "6d560e1c",
    "png": "incubator-panel-grownow-200.png"
   },
   "incubator-full-pressed": {
