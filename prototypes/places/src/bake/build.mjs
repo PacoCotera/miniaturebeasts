@@ -6,6 +6,7 @@ import { FORMAT_VERSION } from '../format/write.mjs';
 import { BakeError, FIND_KINDS } from './ldtk.mjs';
 import { footprintCells, spriteFor } from './rules.mjs';
 import { ALT_CODE, applyOpenEdges, cliffInfo } from './openedges.mjs';
+import { applyGroundMix } from './groundmix.mjs';
 
 export function layersToTileIds(dg, tileset) {
   return dg.layers.map((l) => ({
@@ -26,13 +27,15 @@ export function buildPlace(ir, ctx) {
   const tileset = ctx.sets.get(ir.tileset);
   let dg;
   try {
-    dg = dualGrid({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain }, ctx.terrains, ctx.pairsOf.get(ir.tileset));
+    dg = dualGrid({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin }, ctx.terrains, ctx.pairsOf.get(ir.tileset));
     applyOpenEdges(dg, ir, ctx.terrains, ctx.pairsOf.get(ir.tileset));
   } catch (e) {
     if (!(e instanceof DualGridError)) throw e;
     const cell = e.cell && e.cell.i !== undefined ? { x: Math.min(e.cell.i, ir.w - 1), y: Math.min(e.cell.j, ir.h - 1) } : e.cell || null;
     return { errors: [new BakeError(ir.id, e.rule, e.message.replace(/^[^:]*: /, ''))].map((b) => Object.assign(b, { cell })) };
   }
+  const ground = layersToTileIds(dg, tileset);
+  if (ir.groundMix) applyGroundMix({ ground }, ir.groundMix, tileset);
   const index = (group, kind) => spriteFor(tileset, group, kind).index;
   const placed = (group) => (p) => ({ kind: index(group, p.kind), x: p.x, y: p.y, sortY: p.sortY });
   const playOf = new Map(ctx.terrains.map((t) => [t.value, t.play]));
@@ -41,10 +44,10 @@ export function buildPlace(ir, ctx) {
   for (let i = 0; i < ir.w * ir.h; i++) { const pl = playOf.get(ir.terrain[i]); if (pl === 'block' || pl === 'deep') setBit(i); }
   for (const i of cliffInfo(ir, ctx.terrains).lipCells) setBit(i);   // the cliff's lip and face block; its top and the way up walk
   for (const cell of footprintCells(ir, tileset).keys()) setBit(cell);
-  const heart = ir.hearts[0];
+  const heart = ir.hearts[0] || { x: 0, y: 0, kinds: [], species: [], revealLine: '', reachBy: 'none' };   // a generated place has no per-cell heart (scheme section 4)
   const place = {
     id: ir.id, formatVersion: FORMAT_VERSION, set: ir.tileset, w: ir.w, h: ir.h, type: ir.type, names: ir.names, mirrorOf: ir.mirrorOf || '',
-    terrain: ir.terrain, ground: layersToTileIds(dg, tileset),
+    terrain: ir.terrain, ground,
     decals: ir.decals.map(placed('decal')), props: ir.props.map(placed('prop')), canopy: ir.canopy.map(placed('canopy')),
     heart: { x: heart.x, y: heart.y, kinds: heart.kinds, species: heart.species, revealLine: heart.revealLine, reachBy: heart.reachBy },
     clues: ir.clues, finds: ir.finds.map((f) => ({ x: f.x, y: f.y, kinds: f.kinds.map((k) => FIND_KINDS.indexOf(k)), chance: f.chance })),

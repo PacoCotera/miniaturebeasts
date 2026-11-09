@@ -62,6 +62,7 @@ export function corners(terrain, w, h, i, j) {
 // a terrain the set cannot draw as ground, a lower region that would meet itself with two looks.
 export function dualGrid(level, terrains, pairs) {
   const { id, w, h, terrain } = level;
+  const vh = (i, j) => (level.origin ? hash32('', level.origin.x + i, level.origin.y + j) : hash32(id, i, j));   // variants by world position when the level has one (generated places), else by place id
   const byValue = new Map(terrains.map((t) => [t.value, t]));
   const byId = new Map(terrains.map((t) => [t.id, t]));
   for (let k = 0; k < terrain.length; k++) {
@@ -105,7 +106,7 @@ export function dualGrid(level, terrains, pairs) {
       const u = byId.get(p.upper).z;
       const index = cornerIndex(terrain, w, h, i, j, (v) => z(v) >= u);
       if (index === 0) continue;
-      layerOf(k)[idx(i, j)] = index === 15 ? FULL_BASE + (hash32(id, i, j) % Math.max(1, p.fullCount || 1)) : index;
+      layerOf(k)[idx(i, j)] = index === 15 ? FULL_BASE + (vh(i, j) % Math.max(1, p.fullCount || 1)) : index;
     }
   }
 
@@ -147,8 +148,8 @@ export function dualGrid(level, terrains, pairs) {
     }
     const p = pairs[st.k];
     let code;
-    if (st.role === 'upper') code = FULL_BASE + (hash32(id, i, j) % Math.max(1, p.fullCount || 1));
-    else code = p.emptyCount ? EMPTY_BASE + (hash32(id, i, j) % p.emptyCount) : 0;
+    if (st.role === 'upper') code = FULL_BASE + (vh(i, j) % Math.max(1, p.fullCount || 1));
+    else code = p.emptyCount ? EMPTY_BASE + (vh(i, j) % p.emptyCount) : 0;
     layerOf(st.k)[idx(i, j)] = code;
   }
   const look = (st) => (st.role === 'upper' ? pairs[st.k].upperLook : pairs[st.k].lowerLook) ?? `${st.k}/${st.role}`;

@@ -50,6 +50,7 @@ export function gullies(ir, terrains) {
 export function applyOpenEdges(dg, ir, terrains, pairs) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
   const { isCliff, wayup } = cliffInfo(ir, terrains);
+  const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
   const inArea = (list, i, j) => (list || []).some((a) => i >= a.x && i <= a.x + a.w && j >= a.y && j <= a.y + a.h);
   for (const layer of dg.layers) {
     const p = pairs[layer.pair];
@@ -64,10 +65,10 @@ export function applyOpenEdges(dg, ir, terrains, pairs) {
         if (s > 0) { layer.tiles[j * w1 + i] = ALT_CODE + 16 * p.tall[s] + corner; continue; }
       }
       if (variants && corner > 0 && corner < 15 && c < FULL_BASE) {
-        const n = hash32(ir.id, i, j) % (variants.length + 1);
+        const n = vh(i, j) % (variants.length + 1);
         if (n > 0) layer.tiles[j * w1 + i] = ALT_CODE + 16 * variants[n - 1] + corner;
       }
-      if (looks && corner > 0 && corner < 15 && c < FULL_BASE && inArea(ir.reedbanks, i, j)) layer.tiles[j * w1 + i] = ALT_CODE + 16 * looks[hash32(ir.id, i, j) % looks.length] + corner;
+      if (looks && corner > 0 && corner < 15 && c < FULL_BASE && inArea(ir.reedbanks, i, j)) layer.tiles[j * w1 + i] = ALT_CODE + 16 * looks[vh(i, j) % looks.length] + corner;
     }
     if (p.wayup != null && ir.wayups) {
       for (const a of ir.wayups) for (let c = 0; c <= a.w; c++) {

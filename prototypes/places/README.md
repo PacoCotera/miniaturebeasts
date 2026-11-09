@@ -37,6 +37,14 @@ Closed looks (walk content B8): every opening of a place in the open style carri
 - The palette keeps the slots the range haze is keyed to (the kit's 43, then the open edges' 7); the decor's colours follow, and the haze ramp moves up after the set's palette (`hazeKit(..., setLen)`).
 - The adapter closes a side the world closes (the map's end: a thicket stamped over the two outer rows; a cliff: the rows behind its lip), blocked; `tools/views-audit.mjs` holds every open-style side to it.
 
+## Generated places (world generation, G2)
+
+The bake also takes the IR of a generated place (`prototypes/exploration/src/gen7/place.mjs`): `buildPlace` is the same call. An IR may carry `origin` (the world tile of its first tile), `groundMix` and no heart.
+- With `origin`, the full-tile variants, the scrub variants and the reed look are picked by `hash32('', world x, world y)` instead of the place id, so a tile is the same in every place that shows it. IR without `origin` (the LDtk places) keeps the place-id hash.
+- `groundMix` (`src/bake/groundmix.mjs`): 0, 1 or 2 per dual tile, from a noise field at world position. Every full grass tile of the baked place (grass's full tiles, grass as a lower side, the raised top's fill) takes the plain ground or one of the set's two swirl variants by it, so the ground forms patches of a few tiles. Only tile ids change.
+- The cliff-grass pair is the art desk's second cliff job (mibi-art 4315b9d25: rounded corners, east and west walls, north lip, tall sheets), listed in `DESK.json` and pinned in `tools/desk-art.mjs`.
+- The ground pixels of the grass-lower pieces (the flat fill and the plain lower grass of the cliff, thicket and scrub pieces) still carry their own fill, not the textured meadow's pixels (the set change of round 4 is not made in the set yet); only full tiles are patched.
+
 ## Run
 
 ```
