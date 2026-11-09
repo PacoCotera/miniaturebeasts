@@ -189,7 +189,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
       line = { ok: null, subject: "", back: Sg.back, need: null };   // the collection v2 design §1: the move mode retires (a mibi moves in the Vivarium, picked up and set down); a room's chip has no ✓ cap
     }
   }
-  if (m.greet && !out && regions.resident) { regions.resident.heart = true; line = { ...line, subject: fill(m.greet.asleep ? Sg.greetedAsleep : Sg.greeted, named) }; }   // F5a: Greet answers with a heart and a sentence in the middle slot, for events.moment.heart.greetShowMs
+  if (m.greet && !out && regions.resident) { regions.resident.heart = true; slot(spec.events.moment.heart.asset, [16, 16], "the Greet heart (events.moment.heart.asset): the art desk's fx-greet-heart-16x16"); line = { ...line, subject: fill(m.greet.asleep ? Sg.greetedAsleep : Sg.greeted, named) }; }   // F5a: Greet answers with a heart and a sentence in the middle slot, for events.moment.heart.greetShowMs
   const top = S.roomCount(st, settings) >= 2 ? { readout: { text: S.roomName(st, roomOf), mark: null } } : {};   // the crumb, as the Vivarium's whole: the room of the mibi up close
   return { props: { state, regions, focus }, line, requests, shown, top, held: rows };
 }

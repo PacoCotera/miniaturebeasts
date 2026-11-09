@@ -58,6 +58,22 @@
       "sheets": ["pair-mud-water.png", "pair-mud-water@1.png", "pair-mud-water@2.png", "pair-mud-water@3.png"],
       "frameMs": 250,
       "fullSheet": "pair-mud-water-full.png"
+    },
+    {
+      "id": "grass-earth",
+      "lower": "earth",
+      "upper": "grass",
+      "mode": "opaque",
+      "sheets": ["pair-grass-earth.png"],
+      "fullSheet": "pair-grass-earth-full.png"
+    },
+    {
+      "id": "sand-earth",
+      "lower": "earth",
+      "upper": "sand",
+      "mode": "opaque",
+      "sheets": ["pair-sand-earth.png"],
+      "fullSheet": "pair-sand-earth-full.png"
     }
   ],
   "props": {
