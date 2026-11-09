@@ -70,6 +70,22 @@ test("a step into a warmed cell: its first frame comes at once, and the neighbou
   } finally { await browser.close(); server.close(); }
 });
 
+test("a cell warmed ahead has its 48 px layers laid for both water frames, so the first walking frame (whichever frame it lands on) does not lay them", { skip }, async () => {
+  const { server, url } = await serve(), browser = await chromium.launch();
+  try {
+    const { page, errors } = await onMap(browser, url, 7);
+    const r = await page.evaluate(async () => {
+      const m = window.__mb, key = String(m.S.exp.pos), wait = (ms) => new Promise((q) => setTimeout(q, ms));
+      for (let i = 0; i < 100 && !m.warmReady(key); i++) await wait(100);
+      const lay = m.layout(key);
+      return { ready: m.warmReady(key), rim: !!lay.rim, l48: [!!(lay.l48 && lay.l48[0]), !!(lay.l48 && lay.l48[1])] };
+    });
+    assert.deepEqual(errors, []);
+    assert.ok(r.ready, "the cell the map stands on was warmed: " + JSON.stringify(r));
+    if (r.rim) assert.deepEqual(r.l48, [true, true], "the layers for both water frames were laid ahead: " + JSON.stringify(r));
+  } finally { await browser.close(); server.close(); }
+});
+
 test("a step into a cold cell (no time to warm): the first frame is under the cold bar, the walk stays live, and the land is built behind the transition", { skip }, async () => {
   const { server, url } = await serve(), browser = await chromium.launch();
   try {

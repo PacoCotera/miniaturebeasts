@@ -622,7 +622,7 @@ function layout(key) {
 // warm is finished a step a frame behind the transition, the controls live, and past WARM_SIGN_MS a calm line says the land is coming. The pictures live in the place's view
 // (one per template, at most eight), so memory stays flat however far the walk goes.
 const LAND_COMING = 'The land is coming into view';   // [copy] placeholder: the copywriter words this sign
-const WARM_SIGN_MS = 150, WARM_DONE = 3;
+const WARM_SIGN_MS = 150, WARM_DONE = 3, RIM_STEP_MS = 3;
 const WARM = { queue: [], sig: '', cb: 0, cold: null, steps: 0, hit: 0, miss: 0 };   // hit, miss: the arrival pictures found warm, and built on the spot
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
 function warmReady(key) {   // nothing left to build for this cell (a generated place, a cave and the test pages have no baked view to warm)
@@ -682,7 +682,11 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
   const lay = layout(key); if (!lay.baked || lay.cave) return false;
   const bk = bakedView(lay); if (!bk) return false;
   const w = warmOf(bk), T = bk.wholeSize(); WARM.steps++;
-  if (lay.rim && ART48.ready && !lay.rimWarm) { const i0 = lay.rimAt || 0, n = Math.min(lay.rim.length, i0 + 12); for (let j = i0; j < n; j++) for (const f of WET48(lay.tiles[lay.rim[j]]) ? [0, 1] : [0]) rimTile(lay, lay.rim[j], f); lay.rimAt = n; if (n >= lay.rim.length) lay.rimWarm = 1; return true; }   // this cell's edges (the stair, lips, shore and crossings): their pieces composed ahead, twelve tiles a step, so the first frame finds them
+  if (lay.rim && ART48.ready && !lay.rimWarm) {
+    if (lay.rimAt == null) { layers48(lay, 0); layers48(lay, 1); lay.rimAt = 0; return true; }   // the place's layers for both water frames (the first walking frame asks for whichever frame it lands on; placeLayers is a few ms at 4x)
+    const i0 = lay.rimAt || 0, end = performance.now() + RIM_STEP_MS; let n = i0;   // this cell's edges (the stair, lips, shore and crossings): their pieces composed ahead, about RIM_STEP_MS of tiles a step (at least one), so a cold landing's 8 ms frame is not carried past by twelve tiles at once
+    while (n < lay.rim.length && (n === i0 || performance.now() < end)) { for (const f of WET48(lay.tiles[lay.rim[n]]) ? [0, 1] : [0]) rimTile(lay, lay.rim[n], f); n++; }
+    lay.rimAt = n; if (n >= lay.rim.length) lay.rimWarm = 1; return true; }
   if (w.st === 0) {   // the 48 px ground, rendered whole for each animation frame it has (one when the views have no ring), the frame showing now last
     const cl = bk.cache.ring && motion() ? bk.cache.frameClocks() : [], now = motion() ? NOW : 0; if (w.fi == null) w.fi = 0;
     if (w.fi < cl.length) bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, cl[w.fi++]); else { bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, now); w.st = 1; }
