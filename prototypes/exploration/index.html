@@ -1836,6 +1836,7 @@ function startExpedition(type, cell) {
   const sr = shedsDue()[0];   // one shed pod an expedition; the rest wait for the next
   if (sr) { const c = shedCell(cell, tier.range, S.pods, sr.g);
     if (c != null) S.pods.push({ id: 's' + sr.id, k: String(c), x: -1, y: -1, sp: sr.sp, h: 0, bur: 0, g: sr.g, how: 'shed', shed: sr.id, of: sr.name, genome: sr.genome }); }
+  if (S.report) S.report.news = null;   // the opening's pips on last turn's cells end with the set-out
   const stormOn = type === 'weather' || R.chance(.3);
   const fogOn = type === 'deep' || R.chance(.45);
   const pm = type === 'deep' ? digger() : partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // Deep ground: the grown digger with you goes (S.lead is left alone). No partner: the first mibi with you rides in the Companion (always a juvenile)
@@ -3095,6 +3096,7 @@ function endExpedition(reason) {
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
   const turned = worldTurn(pending), worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
+  { const a = turned.arrived; rep.news = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] }; }   // where it happened: the opening puts a pip on these cells until the next set-out
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
@@ -3282,7 +3284,7 @@ function realmTurn(turned, pending) {
   if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' appeared ' + placePhrase([y0.c]) + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
   if (!lines.length) say('A quiet turn. Little changed.', ['quiet', null, null, 0]);
   logEv('World turn ' + wTurn());
-  return { lines: lines.slice(0, 3), ev: ev.slice(0, 3), arrived: { pods: newPods, young: young.map(y => y.c), bloom } };   // the same three, in the same order; `arrived` names the cells the guard placed things in
+  return { lines: lines.slice(0, 3), ev: ev.slice(0, 3), arrived: { pods: newPods, young: young.map(y => y.c), bloom, charged } };   // the same three, in the same order; `arrived` names the cells the guard placed things in, and the cells the storm charged
 }
 
 // ===================== 10. Pixel graphics core =====================
@@ -6094,7 +6096,7 @@ function drawOpenWay(q, t, fr) {
       const right = bx0 >= WX + WW, cx = right ? WX + WW - 32 : WX + 4, cy = WY + (WH >> 1) - 11; panel(cx, cy, 28, 22, C.ink, C.stone);
       blit(ICON.bolt(), cx + 2, cy + 4); blit(ICON.arrow(st.dir), cx + 14, cy + 5); return; }
     ditherFill(l, WY, r - l, WH, 'night', 8);
-    for (let i = 0; i < 40; i++) { const h = hash(5, i), rx = h % (r - l), ry = ((h >>> 9) % WH + (motion() ? Math.floor(t * 140) : 0)) % WH; R(l + rx, WY + ry, 1, 3, C.ice); }
+    if (motion()) for (let i = 0; i < 40; i++) { const h = hash(5, i), rx = h % (r - l), ry = ((h >>> 9) % WH + Math.floor(t * 140)) % WH; R(l + rx, WY + ry, 1, 3, C.ice); }   // reduced motion: no rain falls, the band holds still
     const lead = st.dir > 0 ? Math.round(bx1) : Math.round(bx0);
     if (lead > WX + 14 && lead < WX + WW - 14) blit(ICON.arrow(st.dir), lead + (st.dir > 0 ? 3 : -12), WY + (WH >> 1) - 6);
     blit(ICON.bolt(), Math.round((l + r) / 2) - 6, WY + 4);
@@ -6127,6 +6129,9 @@ function drawOpenLand(t, fr) {
       if (sg === 'b') blit(ICON.beat(fr), tx + 2, ty + 2); else { blit(ICON.paw('bone'), tx + 3, ty + 6); blit(ICON.paw('bone'), tx + 11, ty + 2); } } }
   // the start flag (2× at 48 px cells and up)
   if (!q.first && S.ui.lastPos != null) { const p = q.at(S.ui.lastPos), f = cs >= 48 ? up2('flag', ICON.flag()) : ICON.flag(), fx = Math.round(p.x + cs / 2 - f.w / 2 + 2), fy = Math.round(p.y + cs / 2 - f.h + 4); if (inF(fx, fy, f.w, f.h)) blit(f, fx, fy); }
+  // what changed, on the land: the cells last turn's line names get the orange pip (6 px with a 1 px ink rim, blinking to 8) while the line shows, until the next set-out
+  { const nw = S.report && S.report.lines && S.report.lines[0] && S.report.news; if (nw && !q.first) { const s = motion() && fr ? 8 : 6;
+    for (const c of nw.cells) { const p = q.at(c), x = p.x + cs - 11, y = p.y + 5; if (!inF(x - 1, y - 1, s + 2, s + 2)) continue; R(x - 1, y - 1, s + 2, s + 2, C.ink); R(x, y, s, s, C.orange); } } }
   drawOpenWay(q, t, fr);
   // corner states: the Probe's plates only when one is lost; docked, a band across the foot
   const tier = tierOf(); if (S.shield != null && S.shield < tier.shield) { const w = 9 * tier.shield + 12; panel(WX + WW - w - 4, WY + 4, w, 22, C.ink, C.stone); shieldBars(WX + WW - w + 2, WY + 9, Math.max(0, S.shield), tier.shield, 6, 12); }

@@ -72,6 +72,30 @@ test("B1: the rider, no one with you, and the first-time place", () => {
   assert.ok(said(nobody).includes("No one with you"), "mibis, none with you");
 });
 
+// ---- B4: what changed, on the land ----
+test("B4: realmTurn hands back the charged cells; the orange pip is drawn on a charged cell while the line shows and is gone after set-out", () => {
+  const p = returning(); p.run("S.shield = null;");
+  const c = p.run("(() => { const q = cxy(S.ui.lastPos); return (q.y * MW + q.x + 1); })()");
+  const r = plain(p.run(`realmTurn({ mv: SPECIES.map(() => ({ dx: 0, dy: 0, n: 0 })), charged: [${c}], bushes: 0, bloom: -1, newPods: [], young: [] }, { storm: [${c}], trail: [] }).arrived`));
+  assert.deepEqual(r, { pods: [], young: [], bloom: -1, charged: [c] });
+  p.run(`S.report = { lines: ['A storm charged stones in the wood.'], n: 4, news: { cells: [${c}] } };`);
+  const pip = () => { draw(p); const a = p.run(`openFrame().at(${c})`), px = p.run("scr").px(), W = p.run("SCR_W"), o = p.run("C.orange"), k = p.run("C.ink"), x = a.x + 52 - 11, y = a.y + 5;
+    let n = 0; for (let j = 0; j < 6; j++) for (let i = 0; i < 6; i++) if (px[(y + j) * W + x + i] === o) n++; return { n, rim: px[(y - 1) * W + x - 1] === k }; };
+  assert.deepEqual(pip(), { n: 36, rim: true }, "the 6 px pip with its ink rim");
+  p.run("S.report.lines = [];"); assert.equal(pip().n < 36, true, "no line, no pip");
+  p.run("S.report.lines = ['A storm charged stones in the wood.'];"); assert.equal(pip().n, 36);
+  p.run("startExpedition('weather', S.ui.lastPos);"); assert.equal(p.run("S.report.news"), null, "cleared at set-out");
+});
+
+test("B4: reduced motion: no rain, the same pixels on two frames; with motion on, the pip blinks 6 and 8", () => {
+  const p = returning(); p.run("S.shield = null; S.ui.lastPos = S.ui.lastPos + 0; S.report.news = { cells: [S.ui.lastPos + 1] };");
+  p.run("scr.px().fill(-1); drawSetup(0);"); const a = Array.from(p.run("scr").px()); p.run("scr.px().fill(-1); drawSetup(0.5);"); const b = Array.from(p.run("scr").px());
+  assert.equal(a.length, b.length); let d = 0; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) d++; assert.equal(d, 0, "two frames, the same pixels: " + d);
+  p.run("RM.matches = false;"); const sz = t => { p.run(`scr.px().fill(-1); drawSetup(${t});`); const o = p.run("C.orange"), px = p.run("scr").px(), W = p.run("SCR_W"), s = p.run("openFrame().at(S.ui.lastPos + 1)"); let n = 0;
+    for (let j = 0; j < 10; j++) for (let i = 0; i < 10; i++) if (px[(s.y + 5 + j - 1) * W + s.x + 52 - 11 + i - 1] === o) n++; return n; };
+  assert.ok(sz(0.5) > sz(0), "the pip blinks between 6 and 8 px");
+});
+
 // ---- B3: focus, keys and the way out on the land ----
 test("B3: Down goes to the partner, Up returns to the tab left; Left and Right move between the tabs and bump at the ends and on one tab", () => {
   const p = opening(); p.key("down"); assert.equal(p.run("S.ui.sel"), 2); p.key("up"); assert.equal(p.run("S.ui.sel"), 0);
@@ -215,6 +239,10 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
     await page.evaluate(() => { window.__mb.S.ui.sel = 2; });
     golden("opening-partner.png", await shot(700));
     await page.evaluate(() => { window.__mb.S.ui.sel = 0; window.__mb.S.ui.lastPos = window.__mb.G.spawns[0]; });
+    // B4: the orange pips on the cells last turn's line names (two cells beside the start)
+    await page.evaluate(() => { const m = window.__mb, s0 = m.G.spawns[0]; m.S.report.news = { cells: [s0 + 1, s0 - 1, s0 + m.MW] }; });
+    golden("opening-pip.png", await shot(700));
+    await page.evaluate(() => { window.__mb.S.report.news = null; });
     // the marks: the mark's own pixels stand on the land (a sign may cover a few); found in colour, been the slate silhouette
     const marks = await page.evaluate(() => { const m = window.__mb, o = m.openFrame(), out = {};
       for (let c = 0; c < m.MW * m.MH; c++) { if (!m.S.revealed[c]) continue; const a = o.at(c), mk = m.cellMark(c, a.x, a.y, o.cs, 18, true); if (!mk) continue;
