@@ -27,6 +27,71 @@ async function serve() {
   return { server, url: `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html` };
 }
 
+// A baked place, the heart found or not, one stone or cup placed in the open at page cell (8, 12), the page's clock held (TEST.clock), a still of the tile's region.
+async function open(browser, url, reduced) {
+  const page = await (await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: reduced ? "reduce" : "no-preference" })).newPage();
+  await page.addInitScript(() => { try { localStorage.setItem("mb-options", JSON.stringify({ place: "Test_AllCases" })); } catch { /* none */ } });
+  await page.goto(`${url}?seed=7`);
+  await page.waitForTimeout(1200);
+  await page.evaluate(() => { window.__mb.TEST.calm = true; });
+  for (let i = 0; i < 4; i++) { await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(350); }
+  await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); });
+  await page.waitForTimeout(250);
+  return page;
+}
+const shot = async (page) => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
+async function setUp(page, feat, found, settle = 700) {
+  await page.evaluate(([feat, found]) => {
+    const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key);
+    lay.feats = lay.feats.filter((f) => !f.id.startsWith("t-test")); lay.feats.push(feat);
+    m.S.veil[P.key] = new Array(m.PH).fill(0x0FFFFFFF); P.x = 8; P.y = 15;
+    m.S.called = found ? { [lay.cell]: 1 } : {};
+  }, [feat, found]);
+  await page.waitForTimeout(settle);   // the camera settles on the explorer
+}
+const frameAt = async (page, clock) => { await page.evaluate((c) => { window.__mb.TEST.clock = c; }, clock); await page.waitForTimeout(120); return shot(page); };
+// The tile's screen box: the camera's top-left subtracted from the cell, the view starting below the 32 px HUD.
+const tileBox = (page, x, y) => page.evaluate(([x, y]) => { const m = window.__mb, P = m.S.exp.patch, p = m.RT.plScr; return { x: Math.round(p.x) - 24 + (x - P.x) * 48, y: Math.round(p.y) - 24 + (y - P.y) * 48 }; }, [x, y]);   // the explorer's own screen spot, the cell offset from it
+const diffIn = (a, b, bx, by, w, h) => { let n = 0; for (let y = Math.max(0, by); y < Math.min(a.h, by + h); y++) for (let x = Math.max(0, bx); x < Math.min(a.w, bx + w); x++) { const i = (y * a.w + x) * 4; if (a.data[i] !== b.data[i] || a.data[i + 1] !== b.data[i + 1] || a.data[i + 2] !== b.data[i + 2]) n++; } return n; };
+
+test("a charged stone that is not the heart keeps a bolt over it; a stone with no charge has none", { skip }, async (t) => {
+  let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
+  const { server, url } = await serve();
+  try {
+    const page = await open(browser, url, true);
+    await setUp(page, { id: "t-test", kind: "k", x: 8, y: 12, ch: 3 }, true);
+    await page.waitForTimeout(500);
+    const charged = await shot(page), b = await tileBox(page, 8, 12);
+    await setUp(page, { id: "t-test", kind: "k", x: 8, y: 12, ch: 0 }, true);
+    await page.waitForTimeout(500);
+    const plain = await shot(page);
+    // the strip just above the tile belongs to the bolt alone: the stone's own pixels lie inside the tile
+    assert.ok(diffIn(charged, plain, b.x, b.y - 12, 48, 12) > 10, "a bolt over the charged stone, above its tile");
+  } finally { await browser.close(); server.close(); }
+});
+
+test("once the heart is found a takeable glints 400 ms in every 1.6 s, and never under reduced motion", { skip }, async (t) => {
+  let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
+  const { server, url } = await serve();
+  try {
+    const cup = { id: "t-test", kind: "u", x: 8, y: 12, full: true };
+    const run = async (reduced) => {
+      const page = await open(browser, url, reduced);
+      await setUp(page, cup, false); const b = await tileBox(page, 8, 12);
+      let on = 0;
+      for (let c = 0; c < 1600; c += 200) {
+        await setUp(page, cup, false, 60); const quiet = await frameAt(page, 100000 + c);
+        await setUp(page, cup, true, 60); const found = await frameAt(page, 100000 + c);
+        if (diffIn(quiet, found, b.x, b.y, 48, 48) > 0) on++;
+      }
+      return on;
+    };
+    const moving = await run(false), still = await run(true);
+    assert.ok(moving >= 1 && moving <= 3, `the glint is on for about a quarter of the cycle (${moving} of 8 steps)`);
+    assert.equal(still, 0, "no glint under reduced motion");
+  } finally { await browser.close(); server.close(); }
+});
+
 test("a charged stone under a crown has its own pixels on screen, a plain one stays covered", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
   const { server, url } = await serve();

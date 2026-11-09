@@ -1340,7 +1340,8 @@ function springStep() {
 function heartLine(lay, P, noKinds) {
   const st = heartState(lay, P); if (!st.found) return st.short;
   const c = lay.cell, n = leftTotal(c); if (!n) return st.short + ' · ' + HEART_TEXT.left;
-  return st.short + ' · ' + HEART_TEXT.leftN(n) + (noKinds ? '' : ': ' + takeKinds(c).join(' · '));
+  const near = noKinds ? null : nearestTake(c, P);   // the full form names the nearest takeable and its way, then how many more
+  return near ? st.short + ' · ' + near + (n > 1 ? ' · ' + HEART_TEXT.moreN(n - 1) : '') : st.short + ' · ' + HEART_TEXT.leftN(n);
 }
 // The Call's report leads with the heart, then what is there to take, each with its direction:
 //   not found: "A slow beat, south-west · a pod north";  found: "Meadow · found · a pod north, fruit west"  or  "Meadow · found · nothing left to take".
@@ -1449,13 +1450,21 @@ function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, fruit: 
 function leftTotal(c) { const n = leftCounts(c); return Object.values(n).reduce((a, b) => a + b, 0); }
 function pipsOf(c) { return Math.min(3, leftTotal(c)); }
 // What is left, each kind with the way to its nearest one from where you stand: "a pod east, a warm stone north-west".
+const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charge', 'charges'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], fruit: ['a fruit', 'fruit'], tuft: ['a tuft', 'tufts'], beacon: ['an unlit beacon', 'unlit beacons'] };   // [copy]
+// The way to one takeable from where you stand: " close by", " west", " in the cave".
+function wayTo(near, P) { const dx = near.x - P.x, dy = near.y - P.y;
+  return near.cave ? ' in the cave' : cheb(near, P) <= 2 ? ' close by' : ' ' + (dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))) || 'close by'); }
+// The nearest takeable in a place with its way ("a charge west"), or null. Tufts are not takes.
+function nearestTake(c, P) {
+  const its = leftItems(c).filter(i => i.k !== 'tuft'); if (!its.length || !P) return null;
+  const near = its.reduce((a, b) => cheb(a, P) <= cheb(b, P) ? a : b); return LEFT_WORDS[near.k][0] + wayTo(near, P);
+}
 function leftPhrase(c, P, room, kinds) {
-  const items = leftItems(c).filter(i => !kinds || kinds.includes(i.k)), w = { pod: ['a pod', 'pods'], charge: ['a charge', 'charges'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], fruit: ['a fruit', 'fruit'], tuft: ['a tuft', 'tufts'], beacon: ['an unlit beacon', 'unlit beacons'] };
+  const items = leftItems(c).filter(i => !kinds || kinds.includes(i.k)), w = LEFT_WORDS;
   let out = '';
   for (const k of Object.keys(w)) { const its = items.filter(i => i.k === k); if (!its.length) continue;
     let dir = '';
-    if (P) { const near = its.reduce((a, b) => cheb(a, P) <= cheb(b, P) ? a : b), dx = near.x - P.x, dy = near.y - P.y;
-      dir = near.cave ? ' in the cave' : cheb(near, P) <= 2 ? ' close by' : ' ' + (dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))) || 'close by'); }
+    if (P) dir = wayTo(its.reduce((a, b) => cheb(a, P) <= cheb(b, P) ? a : b), P);
     const part = (its.length === 1 ? w[k][0] : its.length + ' ' + w[k][1]) + dir, t = out ? out + ', ' + part : part;
     if (out && t.length > (room || 60)) break; out = t; }
   return out;
@@ -3418,7 +3427,11 @@ function cupArt(full, cave) {
 }
 // lit: storm charge (yellow zigzag and a cream ring); warm: only a dim amber ring of dots and one glint, no zigzag,
 // so it is never confused with a storm charge or with the strike warning (a yellow tile with a bolt).
+// [art] The named empty slot `stone-standing` (place design walk-content B2): the standing storm stone, upright, pale, one seam, 48 x 72 at the place scale (16 x 24 in the
+// kit's pixels). The art desk fills `plain` (dark seam) and `charged` (lit seam, two frames) with PB sprites; until then today's stone draws.
+const ART_SLOTS = { 'stone-standing': { plain: null, charged: [null, null] } };
 function stoneArt(lit, cave, fr, warm) {
+  { const sl = ART_SLOTS['stone-standing']; if (!cave && !warm) { const a = lit ? sl.charged[fr ? 1 : 0] : sl.plain; if (a) return a; } }
   // warm: a 2 px ring on the ground around its foot (amber with yellow dashes; fr 1 = the dim beat of its slow blink)
   // warm: one clean 2 px amber ring on the ground around its foot, pulsing slowly (fr 1 = the dim beat), nothing on the stone
   // warm: a 2 px amber ring fully inside the tile (a 26 px circle) and a 3 px amber dot on the stone's top; the slow
@@ -5187,7 +5200,17 @@ function drawPatchBody(t) {
       else if (hh.kind === 'stone') { if (vis2(hx, hy)) blit(ICON.bolt(fa || ans ? 'cream' : 'yellow'), W(hx) + (ts >> 1) - 6, H(hy) - 8); }   // the bolt over the stone
       else if (hh.kind === 'moment') { const pa = ICON.paw(ans ? 'cream' : 'bone'); for (const q of hh.clues) if (vis2(q.x * ts, q.y * ts)) blit(pa, W(q.x * ts) + ((ts - pa.w) >> 1), H(q.y * ts) + ((ts - pa.h) >> 1)); }   // prints: a paw on each clue point (brighter when a Call answers)
       else if (vis2(hx, hy)) circ(W(hx) + (ts >> 1), H(hy) + (ts >> 1), (ans ? 11 : 9) + fa * 3, ans ? C.amber : C.cream, true);   // the slow beat: a ring that swells and falls (faster when it answers)
-    } }
+    }
+    // the take marks: a charged storm stone keeps its bolt for as long as it holds a charge (the unfound heart's own bolt is drawn above)
+    const heartBolt = hh && hh.kind === 'stone' && !heartFound(lay.cell) && tellOn(hh, P);
+    for (const f of lay.feats) { if (f.kind !== 'k' || stormCharge(P.key, f) <= 0 || (heartBolt && f.x === hh.x && f.y === hh.y)) continue;
+      const x = f.x * ts, y = f.y * ts; if (!vis2(x, y) || !see(f.x, f.y)) continue;
+      blit(ICON.bolt(motion() && Math.floor(t * 2) % 2 ? 'cream' : 'yellow'), W(x) + (ts >> 1) - 6, H(y) - 8); }
+    // once the heart is found, every takeable still in view glints: the sparkle for 400 ms every 1.6 s, staggered by position; none under reduced motion
+    if (hh && heartFound(lay.cell) && motion()) {
+      for (const it of leftItems(lay.cell)) { if (it.k === 'tuft' || it.cave || !vis2(it.x * ts, it.y * ts)) continue;
+        if ((NOW + hash(it.x, it.y, 7) % 1600) % 1600 >= 400) continue;
+        const a = sparkArt(false); blit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); } } }
   // what Confirm will act on
   const act = patchAction();
   if (act.run && act !== NOTHING) { const f = frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
