@@ -630,7 +630,7 @@ function warmReady(key) {   // nothing left to build for this cell (a generated 
 }
 // The arrival look's picture of a place (the whole place at its veil, as a canvas): kept by place and veil in a small LRU, so the warmed one is drawn at once and a new one is built once.
 const WARM_WHOLE_MAX = 6, WHOLE = new Map();
-const wholeKeyOf = (lay, veil) => lay.key + '|' + veil.join('');
+const wholeKeyOf = (lay, veil) => lay.key + (lay.rim && ART48.ready ? '+' : '') + '|' + veil.join('');   // a picture made before the 48 px art was in has no edges on it: it is not the one to keep
 function wholePut(key, cv) { WHOLE.set(key, cv); while (WHOLE.size > WARM_WHOLE_MAX) WHOLE.delete(WHOLE.keys().next().value); }
 // The world's edges over a baked place (lay.rim: the tiles the cell's cliff lips, faces, stairs, water bands and crossings stand on; src/world.mjs edgeLayer through places/src/edges.mjs):
 // the same 48 px pieces a generated place is built from, laid over the baked ground. The baked ground stays under the pieces (the tile's own lawn layer is left out). null until the 48 px art is in.
@@ -670,7 +670,7 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
   const lay = layout(key); if (!lay.baked || lay.cave) return false;
   const bk = bakedView(lay); if (!bk) return false;
   const w = warmOf(bk), T = bk.wholeSize(); WARM.steps++;
-  if (lay.rim && ART48.ready && !lay.rimWarm) { lay.rimWarm = 1; for (const i of lay.rim) for (const f of WET48(lay.tiles[i]) ? [0, 1] : [0]) rimTile(lay, i, f); return true; }   // this cell's edges (the stair, lips, shore and crossings): their pieces composed ahead, once, so the first frame finds them
+  if (lay.rim && ART48.ready && !lay.rimWarm) { const i0 = lay.rimAt || 0, n = Math.min(lay.rim.length, i0 + 12); for (let j = i0; j < n; j++) for (const f of WET48(lay.tiles[lay.rim[j]]) ? [0, 1] : [0]) rimTile(lay, lay.rim[j], f); lay.rimAt = n; if (n >= lay.rim.length) lay.rimWarm = 1; return true; }   // this cell's edges (the stair, lips, shore and crossings): their pieces composed ahead, twelve tiles a step, so the first frame finds them
   if (w.st === 0) {   // the 48 px ground, rendered whole for each animation frame it has (one when the views have no ring), the frame showing now last
     const cl = bk.cache.ring && motion() ? bk.cache.frameClocks() : [], now = motion() ? NOW : 0; if (w.fi == null) w.fi = 0;
     if (w.fi < cl.length) bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, cl[w.fi++]); else { bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, now); w.st = 1; }
