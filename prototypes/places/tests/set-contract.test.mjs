@@ -134,6 +134,7 @@ test('prepare-set: a source with more than 208 colours stops and says so (fixtur
   writeFileSync(path.join(root, 'ninja-adventure', 'LICENSE.txt'), 'CC0 1.0 Universal\n');
   const recipe = JSON.parse(readFileSync(path.join(setDir, 'recipe.json'), 'utf8'));
   for (const k of Object.keys(recipe.sources)) recipe.sources[k] = 'ninja-adventure/a.png';
+  delete recipe.desk;   // the fixture's own source only: the desk's pinned art lives outside this repo (absent in CI)
   assert.throws(() => prepareSet(recipe, { tilesetsRoot: root }), /over the 208/);
 });
 
