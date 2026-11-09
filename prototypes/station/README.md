@@ -217,5 +217,5 @@ Engineers do not do art. Every drawn thing is a stand-in listed in `src/art.mjs`
 - The real painter has painted the Loika, the Belatz and the Peplos (parked); the Untuva and the Tuikis are untried and stay mock until a calibration batch is reviewed.
 - A released mibi is listed in `st.releases` and marked `released: true` in `st.mibis`; the Companion's side (dropping it from its list, the place that remembers it, the pod it may shed) is exploration's.
 - On Pods, trait close-ups are rendered by the rig's camera at their picture's size, centred on the part the trait names (head, crown, eyes, snout, ears, legs, tail, flaps, cap, shell; the whole body for the rest); the other screens still crop and enlarge until T2.
-- The pod is the art director's placeholder sprites (`prototypes/ui/assets/placeholders/pod/`), composed 1:1 by `src/podsprites.mjs`: no proportion or shell pattern is drawn (the page no longer reads a frame's `pod` block for its drawing). Home's tray and Create's "from the pod" use the 32×40 well-size pod until those screens move (T2).
+- The pod is composed 1:1 from the art director's signed layers (`src/podmasters.mjs`): no proportion or shell pattern is drawn. The old pod placeholder sprites are gone (no screen drew them).
 - Two tabs of the same page are not coordinated (the last write of `st` wins).

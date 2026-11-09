@@ -12,7 +12,6 @@ import { setRooms } from "./views/room-props.mjs";
 import { sceneTick } from "./motion-scene.mjs";
 import { setFrames, frameOf } from "./genome.mjs";
 import { watch as watchHabitat } from "./intents/habitat.mjs";
-import { loadPodSprites } from "./podsprites.mjs";
 import { loadMasters, ensureRoom, ensureMasters, screenGroup, setRoomLight, mastersOnDemand } from "./masters.mjs";
 import { setStandSizes } from "./layered-stand.mjs";
 import { bootFace } from "./face-lvgl.mjs";
@@ -71,12 +70,10 @@ export async function bootAssets({ test = false, onProgress = null } = {}) {   /
   // on demand the shown room needs only the light now on, so the boot waits for the frame spec and the settings before it picks the room's pictures (the settings are read again by the page's own loadSettings)
   const bootLight = Promise.all([specs, groups]).then(([s, g]) => { if (!g || test) return null; loadSettings(); return lightNow(s[0]); });
   const masters = Promise.all([rooms, groups, bootLight]).then(([r, g, light]) => loadMasters(new URL("ui/assets/masters/", PROTOTYPES), { all: test, order: r.order, room: readStored()?.st?.face?.room ?? 0, groups: g, light, onProgress }));   // the signed masters take their stand-ins' ids before any screen registers them
-  const mastersDone = masters.then(() => {}, () => {});   // the pod sprites wait for the masters to be placed, not for their failure (the boot reports that)
   const moving = Promise.resolve(structuredClone(movingIndexJson)).then(async (ix) => Object.fromEntries(await Promise.all(ix.sets.map(async (id) => [id, await spec(`moving/${id}.json`)]))));   // the moving sets: one file a species, one spec on the face
   const metrics = getJSON(new URL("../../face/dist/metrics.json", import.meta.url));   // the face's Inter metrics: Level 2 measures its bottom-line ladders with them (ui/specs/measure.mjs)
   const sizes = Promise.resolve(structuredClone(standSizesJson));   // the views' figure boxes (no kind has a layered stand or a stand-looks table: each mibi is drawn from its painted stand)
-  const pods = loadPodSprites(new URL("ui/assets/placeholders/pod/", PROTOTYPES), { after: mastersDone });
-  const [specList, sets, roomsSpec] = await Promise.all([specs, moving, rooms, masters, metrics, sizes, pods]);
+  const [specList, sets, roomsSpec] = await Promise.all([specs, moving, rooms, masters, metrics, sizes]);
   SPEC_KEYS.forEach((k, i) => { SPECS[k] = specList[i]; });
   SPECS.moving = sets; setMoving(sets);
   SPECS.rooms = roomsSpec; setRooms(roomsSpec);
