@@ -22,6 +22,7 @@ export function expandIndex(slim, prov = null) {
     if (e.sha256 === undefined && p.sha256 !== undefined) e.sha256 = p.sha256;
     if (e.signed === undefined && p.signed !== undefined) e.signed = p.signed;
     if (e.from === undefined && p.from !== undefined) e.from = p.from;
+    if (e.squeezed === undefined && p.squeezed !== undefined) e.squeezed = p.squeezed;
     out.masters[id] = e;
   }
   return out;
@@ -37,9 +38,9 @@ export function splitIndex(index) {
   if (index.juvenileFacing) { const { note, ...table } = index.juvenileFacing; slim.juvenileFacing = table; if (note !== undefined) prov.juvenileFacingNote = note; }
   slim.masters = {};
   for (const [id, e] of Object.entries(index.masters)) {
-    const group = e.group ?? groupOf(e.file), { file, sha256, signed, from, group: _g, w, h, bytes, ...rest } = e;
+    const group = e.group ?? groupOf(e.file), { file, sha256, sha: _s, signed, from, squeezed, group: _g, w, h, bytes, ...rest } = e;
     slim.masters[id] = { group, w, h, ...(bytes !== undefined ? { bytes } : {}), sha: sha256.slice(0, SHORT), ...(file === defaultFile(id, group) ? {} : { file }), ...rest };
-    prov.masters[id] = { sha256, ...(signed !== undefined ? { signed } : {}), ...(from !== undefined ? { from } : {}) };
+    prov.masters[id] = { sha256, ...(signed !== undefined ? { signed } : {}), ...(from !== undefined ? { from } : {}), ...(squeezed !== undefined ? { squeezed } : {}) };
   }
   return { slim, prov };
 }
@@ -62,7 +63,7 @@ export function indexProblems(root) {
   for (const [id, s] of Object.entries(slim.masters)) {
     const p = prov.masters[id]; if (!p) { out.push(`${id}: no provenance entry`); continue; }
     if (s.sha !== p.sha256.slice(0, SHORT)) out.push(`${id}: the index's sha ${s.sha} is not the start of the provenance hash`);
-    for (const k of ["signed", "from", "sha256"]) if (k in s) out.push(`${id}: index.json carries ${k}; it belongs in provenance.json`);
+    for (const k of ["signed", "from", "sha256", "squeezed"]) if (k in s) out.push(`${id}: index.json carries ${k}; it belongs in provenance.json`);
   }
   for (const id of Object.keys(prov.masters)) if (!slim.masters[id]) out.push(`${id}: in provenance.json, not in index.json`);
   return out;

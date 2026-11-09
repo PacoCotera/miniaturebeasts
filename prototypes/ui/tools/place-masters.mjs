@@ -5,6 +5,7 @@
 // rest are listed as not signed. Re-running is idempotent. `--check` verifies the installed files against the index (size, hash) and exits 1 on a difference.
 //   node prototypes/ui/tools/place-masters.mjs --from art/station-masters/pods [--ids pod-large-identified,room-shelf] [--group pods] [--dry]
 //   node prototypes/ui/tools/place-masters.mjs --rooms <masters-pods>/art/station-masters/pods/rooms/rooms-manifest.json [--dry] [--source-commit <what it was made from>]   (the four rooms: the rooms design)
+//   node prototypes/ui/tools/place-masters.mjs --squeeze                (lossless oxipng over every master not yet squeezed; every placement above ends with it unless --no-squeeze; needs oxipng 10.2.1 on PATH or in $OXIPNG)
 //   node prototypes/ui/tools/place-masters.mjs --check
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -12,6 +13,7 @@ import { decodePNG } from "../png.mjs";
 import { placeGame, checkJuveniles } from "./game-masters.mjs";
 import { bytesProblems } from "./index-bytes.mjs";
 import { readIndex as readIndexAt, writeIndex, indexProblems } from "./index-io.mjs";
+import { squeezeIndex } from "./squeeze.mjs";
 import { checkGroups } from "./groups.mjs";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -244,6 +246,10 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
   return { placed, skipped };
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  // lossless squeeze (oxipng, tools/squeeze.mjs) of every master not yet squeezed; the placements below end with it, `--squeeze` alone does it for what the other tools (coat-masters, place-capsule) placed
+  const squeezeNow = () => { const ix = readIndex(), r = squeezeIndex(dest, ix, { log: (s) => console.log("squeeze " + s) }); writeIndex(dest, ix); console.log(`squeezed ${r.done} masters: ${r.before} -> ${r.after} bytes (${r.before ? (100 * (1 - r.after / r.before)).toFixed(1) : 0} % smaller)${r.refused.length ? `; kept as they were (the page's reader would not give the same pixels): ${r.refused.join(", ")}` : ""}`); };
+  const squeezeAfter = (dry) => { if (!dry && !flag("no-squeeze")) squeezeNow(); };
+  if (flag("squeeze")) { squeezeNow(); process.exit(0); }
   if (flag("bytes")) {   // annotate the installed index with each file's size (what every placement does as it writes)
     const ix = writeIndex(dest, readIndex()).slim; console.log(`bytes stamped on ${Object.keys(ix.masters).length} masters`); process.exit(0);
   }
@@ -259,15 +265,16 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     const r = placeGame({ work: path.resolve(arg("game")), root: dest, dryRun: flag("dry"), only: arg("only") ? new RegExp(arg("only")) : null });   // --only <regex on the master id>: just those, nothing retired
     console.log(`${flag("dry") ? "would place" : "placed"} ${r.placed} masters, removed ${r.removed.length}`);
     for (const q of r.report) if (Math.abs(q.before - 0.8) > 0.03) console.log(`rescaled ${q.kind} ${q.what} ${q.size}: ${q.before.toFixed(3)} -> ${q.after.toFixed(3)}`);
-    process.exit(0);
+    squeezeAfter(flag("dry")); process.exit(0);
   }
   if (arg("rooms")) {
     const r = placeRooms({ manifest: path.resolve(arg("rooms")), dryRun: flag("dry"), commit: arg("source-commit") });   // --source-commit: a copy of the rooms outside its repository (the commit it was made from and what changed it)
     console.log(`${flag("dry") ? "would place" : "placed"} ${r.placed.length} room pictures, rooms.json for ${r.rooms.order.join(", ")} (masters-pods ${r.rooms.source.commit})`);
     for (const q of r.leftOut) console.log(`${q.kept === "left out" ? "left out" : "no picture"}: ${q.room}/${q.id}: ${q.why}${q.kept === "left out" ? "" : " (" + q.kept + ")"}`);
-    process.exit(0);
+    squeezeAfter(flag("dry")); process.exit(0);
   }
   const from = arg("from"); if (!from) { console.error("usage: place-masters.mjs --from <masters folder> [--ids a,b [--only]] [--by <who signed>] [--group pods] [--dry] [--status] [--skip a,b] | --rooms <rooms-manifest.json> [--dry] | --check"); process.exit(2); }
   const r = place({ from: path.resolve(from), ids: (arg("ids") ?? "").split(",").filter(Boolean), group: arg("group") ?? path.basename(path.resolve(from)), dryRun: flag("dry"), headings: !flag("only") && !flag("status"), by: arg("by"), byStatus: flag("status"), skip: (arg("skip") ?? "").split(",").filter(Boolean) });
   console.log(`placed ${r.placed.length}: ${r.placed.join(", ")}\nnot signed (left as stand-ins): ${r.skipped.length}`);
+  squeezeAfter(flag("dry"));
 }

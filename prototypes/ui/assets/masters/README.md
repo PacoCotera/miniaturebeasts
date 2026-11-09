@@ -8,4 +8,6 @@ node prototypes/ui/tools/place-masters.mjs --from art/station-masters/pods --ids
 node prototypes/ui/tools/place-masters.mjs --check                                    # CI: files against the index
 ```
 
+Every placed master is squeezed with oxipng (`tools/squeeze.mjs`, lossless: `-o 4 --strip safe`; the decoded pixels of each file are compared with the original's, and a file that would differ is kept as it was). `place-masters.mjs` ends each placement with it (`--no-squeeze` skips); `place-masters.mjs --squeeze` squeezes what the other tools (`coat-masters.mjs`, `place-capsule.mjs`) placed. It needs oxipng 10.2.1 on PATH or in `$OXIPNG`. A squeezed master's whole hash in `provenance.json` is the squeezed file's, and the entry carries `squeezed`, so the next placement of the same id (from its unsqueezed source) is squeezed again and nothing else is.
+
 The tool copies a slice only after its size and hash match the masters folder's own `slices/manifest.json`. A README heading marked "(signed)" is the tool's only automatic signal; a slice signed in the verdict text rather than under such a heading is placed with `--ids` once the art director's list names it.

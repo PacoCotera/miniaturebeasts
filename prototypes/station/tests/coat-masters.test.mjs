@@ -87,7 +87,8 @@ test("S20 (rebuilt on its three-quarter stand): all nine coats are placed by the
   for (const coat of coats) {
     const id = coat === painted ? "mibi-adult-S20-304x312" : `mibi-adult-S20-${coat}-304x312`, op = plan.ops.find((o) => o.id === id);
     assert.ok(op, `${coat}: placed as ${id}`);
-    assert.equal(createHash("sha256").update(op.buf).digest("hex"), M[id].sha256, `${id} is the desk's cell as placed`);
+    const src = decodePNG(op.buf), got = decodePNG(readFileSync(path.join(root, M[id].file)));   // the placed file is squeezed (oxipng, lossless): the same pixels, not the same bytes
+    assert.ok(src.width === got.width && src.height === got.height && Buffer.compare(Buffer.from(src.data), Buffer.from(got.data)) === 0, `${id} is the desk's cell as placed`);
   }
   assert.ok(plan.ops.some((o) => o.id === "mibi-adult-S20-between-dark-304x312"), "between-dark is a coat of its own for S20, placed");
   assert.ok(!plan.ops.some((o) => /S20-redder/.test(o.id)), "no S01 Tint for S20");
