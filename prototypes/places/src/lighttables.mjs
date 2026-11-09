@@ -19,6 +19,25 @@ export const TRANSFORMS = {
   veil: (c) => mix(c, [26, 23, 37], 0.62),
 };
 
+// Adds the entries of extra colours (the haze ramp, at palette indices first..) to tables already computed: each goes to the nearest colour of
+// the core, the set and the extras, as computeTables does. tables: { name: Uint8Array(256) | array }, changed in place.
+export function extendTables(tables, coreRgb, setRgb, first, extraRgb) {
+  const cand = [];
+  for (let i = 1; i < coreRgb.length; i++) cand.push([i, coreRgb[i]]);
+  setRgb.forEach((rgb, k) => cand.push([coreRgb.length + k, rgb]));
+  extraRgb.forEach((rgb, k) => cand.push([first + k, rgb]));
+  for (const name of TABLE_NAMES) {
+    if (!tables[name]) continue;
+    extraRgb.forEach((rgb, k) => {
+      const c = TRANSFORMS[name](rgb);
+      let best = -1, bd = Infinity;
+      for (const [i, r] of cand) { const d = (r[0] - c[0]) ** 2 + (r[1] - c[1]) ** 2 + (r[2] - c[2]) ** 2; if (d < bd) { bd = d; best = i; } }
+      tables[name][first + k] = best;
+    });
+  }
+  return tables;
+}
+
 export function computeTables(coreRgb, setRgb) {
   const cand = [];
   for (let i = 1; i < coreRgb.length; i++) cand.push([i, coreRgb[i]]);

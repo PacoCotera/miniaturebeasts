@@ -1,0 +1,16 @@
+{
+ "for": "the range haze on the indexed screen: the ramp added to the kit palette",
+ "firstIndex": 98,
+ "count": 6,
+ "colours": [
+  "#f6e1c7",
+  "#e8e5b7",
+  "#d3d387",
+  "#e4b99a",
+  "#c0c45c",
+  "#dd9e79"
+ ],
+ "meanErrorLab": 6.16,
+ "textureKept": 0.654,
+ "note": "indices assume the kit's 43 released colours (48..90) and the open-edges 7 (91..97) land first"
+}
