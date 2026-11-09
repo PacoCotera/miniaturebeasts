@@ -1,28 +1,28 @@
 {
   "pair-cliff-grass.png": {
-    "commit": "abb33a65b",
-    "from": "art-jobs/2026-11-09-open-edges/out/pair-cliff-grass.png",
-    "sha256": "818ab9cc08718310af9560b19442afd076273eb32cefcd8b84c53cf6dba8eebb"
+    "commit": "4315b9d25",
+    "from": "art-jobs/2026-11-09-cliff-set/out/pair-cliff-grass.png",
+    "sha256": "3ebf26f93156029908349632fc7f66f5b1772d9f79900fe44f167007dffba1de"
   },
   "pair-cliff-grass-full.png": {
-    "commit": "abb33a65b",
-    "from": "art-jobs/2026-11-09-open-edges/out/pair-cliff-grass-full.png",
-    "sha256": "5b400bc9c2a1ff063b4c12c21ad500c8e0af7e073bf5fe5ecd8b3a868554fa90"
+    "commit": "4315b9d25",
+    "from": "art-jobs/2026-11-09-cliff-set/out/pair-cliff-grass-full.png",
+    "sha256": "0f9b68002f9bcbdf8e17e7c9da2a161d58bde7f488c4beb91ae9dd2c5c8c5456"
   },
   "pair-cliff-grass~s1.png": {
-    "commit": "abb33a65b",
-    "from": "art-jobs/2026-11-09-open-edges/out/pair-cliff-grass~s1.png",
-    "sha256": "ff0c6e1e7cd42051070e7fa172a71e7aff63ac46f09dbdf5f2fba0f030aba8d9"
+    "commit": "4315b9d25",
+    "from": "art-jobs/2026-11-09-cliff-set/out/pair-cliff-grass~s1.png",
+    "sha256": "770bd15c685492365776bec0c9fb1e6f816c74fb275a759e53f7e8581d450795"
   },
   "pair-cliff-grass~s2.png": {
-    "commit": "abb33a65b",
-    "from": "art-jobs/2026-11-09-open-edges/out/pair-cliff-grass~s2.png",
-    "sha256": "a915d6ab92fecdfc60be591adb6086ed6d53d6a5afb168cf185567b5ce7d1249"
+    "commit": "4315b9d25",
+    "from": "art-jobs/2026-11-09-cliff-set/out/pair-cliff-grass~s2.png",
+    "sha256": "222741a4154f341f53917cae96ca818fa95a92352445053d70878fe94f13a29d"
   },
   "pair-cliff-grass~s3.png": {
-    "commit": "abb33a65b",
-    "from": "art-jobs/2026-11-09-open-edges/out/pair-cliff-grass~s3.png",
-    "sha256": "2e6215d2ad2f58a837f58565656a396424133f3625d486caae58a360cb5520cb"
+    "commit": "4315b9d25",
+    "from": "art-jobs/2026-11-09-cliff-set/out/pair-cliff-grass~s3.png",
+    "sha256": "6eefb6435fb72c42067f469ea0be8e667c84e6863f536a435c39a0571986cd20"
   },
   "wayup-cliff-grass.png": {
     "commit": "abb33a65b",

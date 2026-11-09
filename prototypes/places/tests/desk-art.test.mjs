@@ -16,7 +16,7 @@ const haveDesk = existsSync(REPO + '/.git') && (() => { try { execFileSync('git'
 test('every placed desk file equals the recorded hash, and the desk\'s file at its signed commit', () => {
   const names = Object.keys(desk);
   assert.ok(names.length > 60, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['5734abc5', 'abb33a65b']);
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['4315b9d25', '5734abc5', 'abb33a65b']);
   for (const [n, d] of Object.entries(desk)) {
     const have = readFileSync(path.join(dir, n));
     assert.equal(createHash('sha256').update(have).digest('hex'), d.sha256, n);

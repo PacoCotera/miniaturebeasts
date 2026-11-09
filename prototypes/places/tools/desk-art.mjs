@@ -2,13 +2,14 @@
 // byte for byte, and listed with their sha256 in the set's DESK.json.
 //   Open edges (mibi-art abb33a65b, art-jobs/2026-11-09-open-edges/out/): the cliff, thicket, scrub and deep-water pairs, the cliff's tall sheets (~s1..~s3) and way-up pieces, the scrub variants,
 //   the reed-bank look of the two shores.
+//   Cliff set 2 (mibi-art 4315b9d25, art-jobs/2026-11-09-cliff-set/out/): the cliff-grass pair and its tall sheets (rounded corners, east and west walls, north lip), which replace the open edges' cliff-grass sheets.
 //   Meadow decor (mibi-art 5734abc5, art-jobs/2026-11-09-meadow-decor/out/): the small flowers and tufts, which replace the kit's sunflowers.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { decodePng } from '../src/png.mjs';
 
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
-export const EDGES = { commit: 'abb33a65b', dir: 'art-jobs/2026-11-09-open-edges/out' }, DECOR = { commit: '5734abc5', dir: 'art-jobs/2026-11-09-meadow-decor/out' };
+export const EDGES = { commit: 'abb33a65b', dir: 'art-jobs/2026-11-09-open-edges/out' }, CLIFF2 = { commit: '4315b9d25', dir: 'art-jobs/2026-11-09-cliff-set/out' }, DECOR = { commit: '5734abc5', dir: 'art-jobs/2026-11-09-meadow-decor/out' };
 export const DECOR_NAMES = ['flower-daisy', 'flower-buttercup', 'flower-daisy-pair', 'flower-blue-pair', 'flower-pink-three', 'tuft-fan', 'tuft-lean', 'tuft-small', 'clump-tall'];
 const show = (c, p) => execFileSync('git', ['-C', DESK, 'show', `${c.commit}:${c.dir}/${p}`], { maxBuffer: 1 << 26 });
 
@@ -16,9 +17,10 @@ const show = (c, p) => execFileSync('git', ['-C', DESK, 'show', `${c.commit}:${c
 export function deskArt() {
   const files = new Map(), desk = {};
   const place = (c, name, as = name) => { const b = show(c, name); files.set(as, b); desk[as] = { commit: c.commit, from: `${c.dir}/${name}`, sha256: createHash('sha256').update(b).digest('hex') }; return as; };
-  const pairs = [], pair = (id, upper, lower, o = {}) => ({ id, lower, upper, mode: 'opaque', sheets: [place(EDGES, `pair-${id}.png`)], ...o, fullSheet: place(EDGES, `pair-${id}-full.png`) });
+  const src = (id) => (id === 'cliff-grass' ? CLIFF2 : EDGES);   // the signed cliff-grass set is the art desk's second cliff job
+  const pairs = [], pair = (id, upper, lower, o = {}) => ({ id, lower, upper, mode: 'opaque', sheets: [place(src(id), `pair-${id}.png`)], ...o, fullSheet: place(src(id), `pair-${id}-full.png`) });
   for (const g of ['grass', 'sand']) {
-    pairs.push({ ...pair(`cliff-${g}`, 'cliff', g), tall: { 1: place(EDGES, `pair-cliff-${g}~s1.png`), 2: place(EDGES, `pair-cliff-${g}~s2.png`), 3: place(EDGES, `pair-cliff-${g}~s3.png`) }, wayup: place(EDGES, `wayup-cliff-${g}.png`) });
+    pairs.push({ ...pair(`cliff-${g}`, 'cliff', g), tall: { 1: place(src(`cliff-${g}`), `pair-cliff-${g}~s1.png`), 2: place(src(`cliff-${g}`), `pair-cliff-${g}~s2.png`), 3: place(src(`cliff-${g}`), `pair-cliff-${g}~s3.png`) }, wayup: place(EDGES, `wayup-cliff-${g}.png`) });
     pairs.push(pair(`thicket-${g}`, 'thicket', g));
     pairs.push({ ...pair(`scrub-${g}`, 'scrub', g), variants: [1, 2, 3].map((v) => place(EDGES, `pair-scrub-${g}~v${v}.png`)) });
   }
