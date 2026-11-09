@@ -621,7 +621,7 @@ function layout(key) {
 // Now the cells a step can reach are warmed in idle time, the one faced first, a small step at a time (never more than one step when the page is busy); a cell entered before it is
 // warm is finished a step a frame behind the transition, the controls live, and past WARM_SIGN_MS a calm line says the land is coming. The pictures live in the place's view
 // (one per template, at most eight), so memory stays flat however far the walk goes.
-const LAND_COMING = 'The land is coming into view';   // [copy] placeholder: the copywriter words this sign
+const LAND_COMING = 'The Probe is reading the land';
 const WARM_SIGN_MS = 150, WARM_DONE = 3, RIM_STEP_MS = 3;
 const WARM = { queue: [], sig: '', cb: 0, cold: null, steps: 0, hit: 0, miss: 0 };   // hit, miss: the arrival pictures found warm, and built on the spot
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
@@ -826,14 +826,14 @@ const SIGN_LINE = {
   call: 'Call lifts the veil: finds show', shield: 'Plate lost · lose them all and the Probe breaks',   // [copy] placeholder: the copywriter has the final word (owner 11-08: "no plates, Probe breaks" read as "the Probe is broken")
 
   storm: dir => 'More bolts, more strikes · ' + (dir > 0 ? '▶ east' : '◀ west'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
-  pod: 'Pods open at the Station', full: 'Hold full · a new pod is a choice',bank: 'A break would lose your finds', fog: 'Fog · creatures calm, sight short',
+  pod: 'Pods open at the Station', full: 'Hold full · a new pod is a choice',bank: 'If the Probe breaks, you lose your finds', fog: 'Fog · creatures calm, sight short',
   muffled: 'The fog muffles your Call', fruit: 'Put it down near a creature', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
   tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog',
   bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
   untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
 // the first sighting of each map sign: its Probe name (the line on the card is the same one)
 const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', sh: 'Shimmer · water nearby', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
-  beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'Mud or scree · needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · tier 2 Probe reads it' };
+  beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'Mud or scree · needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · the Probe upgrade reads it' };
 const SIGN_TILE_OF = { pod: 'pod', t: 'tracks', b: 'beat', sh: 'shimmer', k: 'bolt', kw: 'hollow', beacon: 'beacon', skull: 'skull', depot: 'outpost', burrow: 'gate', water: 'gate', soft: 'gate', bank: 'gate', deep: 'gate' };
 const SIGN = {};
 { const add = (id, key, pri, tile, pic, line, o) => { SIGN[id] = Object.assign({ id, key, also: [], pri, tile, pic, line: typeof line === 'function' ? line : () => line }, o); };
@@ -883,7 +883,7 @@ const TILES = [
   ['warm', 'Warm stone · Energy', 'Warm stone', 'warm', []],
   ['charged', 'Charged stone · Energy', 'Charged stone', 'charged', []],
   ['warned', 'Warned · lightning next', 'Warned', 'warn', []],
-  ['call', 'Call · hold: whole place', 'Call', 'call', []],   // [copy]
+  ['call', 'Call · hold to look around', 'Call', 'call', []],
   ['shield', 'Shield · each plate a hit', 'Shield', 'shield', []],
   ['shelter', 'Shelter · never trees', 'Shelter', 'shelter', []],
   ['podsopen', 'Pods · the Station opens', 'Pods', 'pod', []],
@@ -1647,7 +1647,7 @@ function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, fruit: 
 function leftTotal(c) { const n = leftCounts(c); return Object.values(n).reduce((a, b) => a + b, 0); }
 function pipsOf(c) { return Math.min(3, leftTotal(c)); }
 // What is left, each kind with the way to its nearest one from where you stand: "a pod east, a warm stone north-west".
-const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charge', 'charges'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], fruit: ['a fruit', 'fruit'], tuft: ['a tuft', 'tufts'], beacon: ['an unlit beacon', 'unlit beacons'] };   // [copy]
+const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], fruit: ['a fruit', 'fruit'], tuft: ['a tuft', 'tufts'], beacon: ['an unlit beacon', 'unlit beacons'] };   // [copy]
 // The way to one takeable from where you stand: " close by", " west", " in the cave".
 function wayTo(near, P) { const dx = near.x - P.x, dy = near.y - P.y;
   return near.cave ? ' in the cave' : cheb(near, P) <= 2 ? ' close by' : ' ' + (dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))) || 'close by'); }
@@ -2089,8 +2089,8 @@ function patchStep(dir, mode) {
 }
 // The refusal at a steep edge (a cliff between two levels), on the map, in the reach view and at a place's border.
 const EDGE_REFUSAL_CLIFF = 'Steep edge · look for stairs';
-const RANGE_UPGRADE = 'the next Probe upgrade reaches further';   // [copy] placeholder: the copywriter names the upgrade that lifts the range (no "tier" in a player string; the page font has no square brackets)
-const RANGE_TEXT = () => { const who = canSure() ? S.exp.pt.name + '’s' : 'the Probe’s'; return S.tier < 2 ? 'Edge of ' + who + ' range · ' + RANGE_UPGRADE : 'Edge of ' + who + ' range'; };   // with a rambler the extra ring is its own
+const RANGE_UPGRADE = 'the Probe upgrade goes further';
+const RANGE_TEXT = () => { const who = canSure() ? S.exp.pt.name + '’s' : 'The Probe’s'; return S.tier < 2 ? who + ' reach ends here · ' + RANGE_UPGRADE : who + ' reach ends here'; };   // with a rambler the extra ring is its own
 // The map cell one step from cell a toward dir, or -1 off the map.
 function stepCell(a, dir) { const p = cxy(a), [dx, dy] = DIRS[dir], X = p.x + dx, Y = p.y + dy; return X < 0 || Y < 0 || X >= MW || Y >= MH ? -1 : Y * MW + X; }
 // Why the Probe can't step from cell a toward dir, or null if it can.
@@ -3238,7 +3238,7 @@ function realmTurn(turned, pending) {
   if (stormWhere || !pending.storm.length) S.lastStorm = stormWhere;   // a stormy turn that charged nothing keeps the memory
   if (bushes) say('Fruit is back on ' + (bushes === 1 ? 'one bush.' : numWord(bushes) + ' bushes.'), ['fruit', mainLand([bloom]), null, bushes]);
   if (lines.length < 3 && newPods.length) say('Something new is stirring in ' + regionWord(newPods) + '.', ['stirring', mainLand(newPods), null, newPods.length]);
-  if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' were born ' + placePhrase([y0.c]) + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
+  if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' appeared ' + placePhrase([y0.c]) + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
   if (!lines.length) say('A quiet turn. Little changed.', ['quiet', null, null, 0]);
   logEv('World turn ' + wTurn());
   return { lines: lines.slice(0, 3), ev: ev.slice(0, 3), arrived: { pods: newPods, young: young.map(y => y.c), bloom } };   // the same three, in the same order; `arrived` names the cells the guard placed things in
@@ -5987,8 +5987,8 @@ const silhouette = sp => art('sil' + sp, () => { const a = tokenOf(sp, 'idle', 0
   return pb; });
 // [copy] The opening screen's words: placeholders for the copywriter, all in this one table (a change of wording never touches code).
 const OPEN_TEXT = {
-  dark: 'Tracks in the dark · start at one',   // the first-time line under the land
-  stormEast: 'storm east', stormWest: 'storm west', chargeStones: 'charge stones',   // the Weather tab's line (where the storm starts; the first time)
+  dark: 'Signs in the dark · start at one',   // the first-time line under the land
+  stormEast: 'storm ◀ west', stormWest: 'storm ▶ east', chargeStones: 'storms charge stones',   // the Weather tab's line (where the storm starts; the first time)
   digs: n => n + ' digs', needsTuikis: 'needs a Tuikis',   // the Deep ground tab's line
   firstWalk: 'Your first walk', firstFind: 'Find a pod and bring it home.', firstGrows: 'The Station grows it.',   // the first-time partner place
   flat: 'Flat world · New world has stairs', docked: 'Docked · lift to explore',   // a generator 1 world's line; the docked band

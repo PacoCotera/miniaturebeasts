@@ -282,7 +282,7 @@ test("W1 every habit of every frame has its words in habitat.json strings.watchH
 });
 
 // ---- 7. Incubate and Hatch now (T-20261016-219; results/incubate-and-hatch-now-game-text.md §1, §4) ----
-const hatchLog = (st, m, spend) => `T${st.turn + 1} · Hatched ${m.name} now · ${frameOf(m.species).species.name} · juvenile · the ${S.ROOM_NAMES[m.room]} room · ${spend}`;
+const hatchLog = (st, m, spend) => `T${st.turn + 1} · Opened now · ${m.name} · ${frameOf(m.species).species.name} · juvenile · the ${S.ROOM_NAMES[m.room]} room · ${spend}`;
 const twin = (cross = false) => { const st = cross ? crossed() : fresh(); if (!cross) { st.firstMibi = false; S.seedAdults(st, "S01", 5, 1, settings); S.grow(st, podOf(st, "S01", ["coat"]), {}, settings, T0); } return st; };
 for (const cross of [false, true]) {
   test(`T-219 case ${cross ? 2 : 1}: Hatch now on ${cross ? "a bred" : "a founder's"} bud pays once, ends the wait and opens it in the first free place, as Open does, with one log line`, () => {

@@ -196,11 +196,11 @@
    "oneCrate": "A crate to open"
   },
   "growNow": {
-   "title": "Hatch the {Species} now?",
+   "title": "Open the {Species} pod now?",
    "cards": {
     "grow": {
      "name": "Hatch now",
-     "line": "hatches now"
+     "line": "comes out now"
     },
     "wait": {
      "name": "Wait",

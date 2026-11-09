@@ -24,7 +24,7 @@ describe('P3, pods', () => {
     const { container } = go()
     await screen.findByText("Pemmi's pods")
     expect(screen.getAllByRole('group', { name: /^Pod \d$/ })).toHaveLength(6)
-    expect(screen.getAllByText('Hatching…')).toHaveLength(2)
+    expect(screen.getAllByText('Opening…')).toHaveLength(2)
     expect(screen.getAllByRole('img', { name: 'Pemmi' })).toHaveLength(4)
     expect(screen.getAllByRole('button', { name: 'Walk' })).toHaveLength(6)
     expect(screen.getAllByRole('button', { name: 'Keep' })).toHaveLength(6)

@@ -460,7 +460,7 @@ function reconcile() {
 }
 dockCtl.addEventListener("click", () => { dockPress(); giveKeysBack(); });
 cradle.addEventListener("click", () => dockPress());
-$("undockBtn").addEventListener("click", () => { dockPress(); if (document.activeElement === $("undockBtn")) $("undockBtn").blur(); });   // [copy] "Undock": the same lift as the bar's control, the keys go to the Companion on its answer
+$("undockBtn").addEventListener("click", () => { dockPress(); if (document.activeElement === $("undockBtn")) $("undockBtn").blur(); });   // "Lift": the same lift as the bar's control, the keys go to the Companion on its answer
 const giveKeysBack = () => { if (document.activeElement === dockCtl) dockCtl.blur(); };
 window.addEventListener("message", (e) => {
   if (e.origin !== location.origin) return; const m = e.data || {};
