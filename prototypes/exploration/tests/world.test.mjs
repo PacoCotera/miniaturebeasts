@@ -1561,11 +1561,11 @@ test("start-pick header at T10: 'Expedition N' and the note, unclipped up to Exp
 
 test("bottom line in a place: the heart's state leads the middle and is never dropped; the place name goes before the take kinds; after a Call it stays with Wait · Leave", () => {
   const p = inPlace(); p.run("FX.hintNote = null;");   // the first-place control hint would lead the middle; this test is about the usual words
-  p.run("S.called[curLay().cell] = 1; leftTotal = () => 2; takeKinds = () => ['charge', 'warm stone'];");   // the heart is found
+  p.run("S.called[curLay().cell] = 1; leftItems = () => [{ k: 'charge', x: S.exp.patch.x + 4, y: S.exp.patch.y }, { k: 'warm', x: S.exp.patch.x + 6, y: S.exp.patch.y }];");   // the heart is found; two takeables, a charge the nearer
   const land = p.run("LAND_NAME[curLay().land]"), L = p.run("lineFor()");
   assert.equal(L.ok, "Wait"); assert.equal(L.back, "Leave");
   const sv = p.run("heartLine(curLay(), S.exp.patch)"), svN = p.run("heartLine(curLay(), S.exp.patch, true)"), short = p.run("heartState(curLay(), S.exp.patch).short");
-  assert.equal(sv, "found · 2 to take: charge · warm stone"); assert.equal(svN, "found · 2 to take"); assert.equal(short, "found");
+  assert.match(sv, /^found · a charge (east|close by|[a-z-]+) · 1 more$/, "the nearest takeable and its way, then how many more: " + sv); assert.equal(svN, "found · 2 to take"); assert.equal(short, "found");
   assert.deepEqual(JSON.parse(JSON.stringify(L.ctx)).map(c => c.replace("\x01", "")).map(c => c.replace(/ · (lull|overcast)$/, "")), [land + " · " + sv, land + " · " + svN, svN, short]);
   // the state is in every candidate, so it can never be the part that goes
   for (const c of JSON.parse(JSON.stringify(L.ctx))) assert.match(c, /found/);
@@ -1574,7 +1574,7 @@ test("bottom line in a place: the heart's state leads the middle and is never dr
   for (const c of JSON.parse(JSON.stringify(L0.ctx))) assert.match(c, /something here to find|a slow beat|water glints in the grass|a struck stone/, c);
   p.run("S.called[curLay().cell] = 1;");
   // after a Call, drawn: the name and the count stay (the kinds drop first when they do not fit)
-  p.key("call"); p.run("S.phase = 'patch'; FX.msg = ''; leftTotal = () => 2; takeKinds = () => ['charge', 'warm stone'];");
+  p.key("call"); p.run("S.phase = 'patch'; FX.msg = '';");
   const L2 = p.run("lineFor()"); assert.equal(L2.ok, "Wait");
   p.run("curLay().land = 0"); p.rec("text"); p.clear(); p.run("drawLine(lineFor())");
   const said = p.calls("text").map(c => c.a[0]).join("|");
@@ -1663,4 +1663,14 @@ test("the Call sign never joins another message; it is spent only when it is dra
   let shown = 0, was = false;
   for (let i = 0; i < 30; i++) { q.key(["left", "right", "up", "down"][i % 4]); const now = q.run("FX.msg === SIGN_LINE.call"); if (now && !was) shown++; was = was || now; }
   assert.ok(shown <= 1 && q.run("S.found.includes('callintro')") === true, "shown at most once more, and spent");
+});
+
+test("walk B2: after the find the band names the nearest takeable and its way, then how many more (1, 2 and 4 takeables); nothing left says so", () => {
+  const p = inPlace(); p.run("FX.hintNote = null; S.called[curLay().cell] = 1;");
+  const items = n => `leftItems = () => [${[0, 1, 2, 3].slice(0, n).map(k => `{ k: ['dew', 'pod', 'fruit', 'charge'][${k}], x: S.exp.patch.x - 4 - ${k}, y: S.exp.patch.y }`).join(", ")}];`;
+  p.run(items(1)); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west");
+  p.run(items(2)); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west · 1 more");
+  p.run(items(4)); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west · 3 more");
+  assert.equal(p.run("heartLine(curLay(), S.exp.patch, true)"), "found · 4 to take", "the short form keeps the count");
+  p.run("leftItems = () => [];"); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · nothing left to take");
 });
