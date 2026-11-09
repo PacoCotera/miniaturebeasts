@@ -738,7 +738,6 @@ export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrate
   const drying = dryingNext(st); if (drying.length) return { key: "drying", n: drying.length, max: 6, act: "pods" };   // the only warning away from Pods before a pod is lost
   const meet = ui.meet != null ? mibiById(st, ui.meet) : null;
   if (meet) return { key: "meet", name: meet.name, act: "meet" };
-  const cn = crossNeed(st, sv, settings); if (cn) return { key: "pair", nameA: cn.a.name, nameB: cn.b.name, id: cn.a.id, short: cn.short, act: "cross" };   // two adults at home could cross: above new pods and a pod that can be incubated
   const fresh = st.tray.filter((p) => !p.idd), unseen = fresh.filter((p) => !p.seen);
   if (unseen.length) return { key: "newPods", n: unseen.length, max: 6, act: "pods" };   // firm: an unidentified pod Pods has not drawn yet
   const glint = st.tray.filter((p) => podGlints(st, p)); if (glint.length) return { key: "glints", n: glint.length, max: 6, act: "pods" };

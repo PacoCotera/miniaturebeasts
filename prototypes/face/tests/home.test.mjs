@@ -208,9 +208,10 @@ test("the line never wraps: every pair of needs (the first by its action, the se
   const species = readdirSync(framesDir).filter((x) => x.startsWith("species-")).map((x) => JSON.parse(readFileSync(path.join(framesDir, x), "utf8")).species.name);
   const widest = species.reduce((a, b) => (W(b) > W(a) ? b : a)), NAME_MAX = 160;   // the namer's limit: a name is at most 160 px at Inter 16 (namer.json limit.inter16); the widest letters make the widest name
   let name = ""; while (W(name + "W") <= NAME_MAX) name += "W";
-  const keys = homeSpec.strings.line.order, facts = (k, n) => ({ key: k, n, max: k === "crates" ? 3 : 6, name, species: widest, a: "an" }), words = (k, n) => wordsOf(facts(k, n), { strings: { needs: homeSpec.strings.line.needs } });
+  const keys = homeSpec.strings.line.order.filter((k) => k !== "pair"), facts = (k, n) => ({ key: k, n, max: k === "crates" ? 3 : 6, name, species: widest, a: "an", nameA: name, nameB: name }), words = (k, n) => wordsOf(facts(k, n), { strings: { needs: homeSpec.strings.line.needs } });
   let worst = 0, at = "";   // the first need comes before the second in the spec order: only those pairs can be on the line
   for (const a of keys) for (const b of keys) if (keys.indexOf(a) < keys.indexOf(b)) for (const na of [1, 2, 6]) for (const nb of [1, 2, 6]) { const w = W(words(a, na).action) + sep + W(words(b, nb).notice); if (w > worst) { worst = w; at = `${a} (${na}) then ${b} (${nb})`; } }
+  { const pw = W(wordsOf({ ...facts("pair", 1), short: null }, { strings: { needs: homeSpec.strings.line.needs } }).action); assert.ok(pw <= room, `the pair need leads the line alone with two names of the namer's longest: ${pw} of ${room}`); }   // B4: it is only ever the line's first need, alone
   console.log(`# the line: the widest pair of needs is ${worst} px of the ${room} the zone leaves its words (${at})`);
   assert.ok(worst <= room, `the widest pair of needs, ${at}, is ${worst} of ${room}`);
   for (const v of Object.values(homeSpec.strings.actions)) assert.ok(W(v) + 16 + 4 <= lineBox[2], v);
@@ -263,7 +264,7 @@ test("the Vivarium's readout: each part only when non-zero, 'all on a trip' when
 test("the needs hold in the spec's order and clear when acted on: crates, the bud, a portrait, a new mibi to meet, new or glinting pods, pods waiting for a well, a pod that could be incubated", { skip }, async () => {
   const b = scene({ adults: 3, crates: 2, bud: 1e8 / 60000, portrait: true, unseen: true, waiting: true, ui: { meet: 1 } });
   const keys = (x) => homeNeeds(x.st, x.sv, settings, x.ui ?? { meet: 1 }, Date.now() + 1000).map((n) => n.key); assert.deepEqual(keys(b), ["crates", "budReady", "portrait", "meet", "newPods", "waitingPods"]);
-  assert.deepEqual(homeSpec.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
+  assert.deepEqual(homeSpec.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "pair", "newPods", "glints", "waitingPods", "couldGrow"]);
   assert.deepEqual(b.props.regions.line, { needs: ["Open the Bay", "The bud is ready"] }, "at most two");
   b.sv.bay = []; assert.deepEqual(keys(b).slice(0, 2), ["budReady", "portrait"], "the crates are gone once opened");
 });
