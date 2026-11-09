@@ -42,6 +42,8 @@ export const SCENES = {
   "library-0-new":       { f: "room", set: (w) => { w.adults(3); w.libNew(0); } },   // the Library opened full screen: the specimen of the species with the fewest looks unfound, no new caption, no glint (build spec 4.2)
   "library-3-new":       { f: "room", set: (w) => { w.adults(3); w.libNew(3); } },   // three looks found since: "3 new" and a glint on each bead (reduced motion: the glints simply show)
   "library-focused":     { f: "library", set: (w) => { w.adults(3); w.libNew(3); } },
+  "need-pair":           { f: "room", set: (w) => { w.adults(2); w.pods(1); } },   // dead ends B4: two adults at home could cross: the line leads to "Cross A and B", the new pod is the second need
+  "need-pair-short":     { f: "room", set: (w) => { w.adults(2); window.__st.ST.s = 0; } },   // the same pair, short of Essence: "A and B could cross · need ❀2"
   // R5 (T-20261027-318): every place taken and a bud ready (the last scene, so the rooms and the Energy it sets are in no earlier one): the line leads to the Vivarium (✓ Make room: no Energy for a room), the Incubator module says it waits for room
   "full-bud":            { f: "room", set: (w) => { const st = window.__st.ST; w.rooms(1); st.rooms = 1; st.e = 0; w.adults(8); w.bud(true); } },
 };

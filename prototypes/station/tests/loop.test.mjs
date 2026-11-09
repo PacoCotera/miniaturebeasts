@@ -59,9 +59,9 @@ test("the welcome sitting comes at the first dock where a mibi comes home from a
   const begin = one(/^begin the sitting/); assert.deepEqual([begin.e, begin.d, begin.s], [0, 0, 0], "the ceremony costs nothing"); assert.equal(begin.t, P.marks.welcome, "begun at once");
 });
 
-test("two adults of one species are crossed: 2 Energy and 4 Essence, kinship 0 for two founders, twenty minutes; the child has its real parents", () => {
+test("two adults of one species are crossed: 2 Energy and 2 Essence, kinship 0 for two founders, twenty minutes; the child has its real parents", () => {
   assert.ok(S.isAdult(st, a, P.settings) && S.isAdult(st, b, P.settings));
-  const c = one(/^cross /); assert.deepEqual([c.e, c.d, c.s], [-2, 0, -4]);
+  const c = one(/^cross /); assert.deepEqual([c.e, c.d, c.s], [-2, 0, -2]);
   assert.deepEqual(child.parents.map((p) => p.id).sort(), [a.id, b.id].sort()); assert.equal(S.kinshipOf(st, a, b), 0, "wild founders");
   assert.ok(by(/^the bud grows \(20 min/).length >= 2);
 });

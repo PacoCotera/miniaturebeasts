@@ -361,7 +361,7 @@
   },
   "needs": {
    "rule": "the notice and the room's ✓, the first that holds: the module it lights, the notice, the action. Counts are spelled (a, two to six); above what the picture holds the count is dropped",
-   "order": ["crates","full","budReady","drying","meet","newPods","glints","waitingPods","couldGrow","toRead","budGrowing"],
+   "order": ["crates","full","budReady","drying","meet","pair","newPods","glints","waitingPods","couldGrow","toRead","budGrowing"],
    "crates": {
     "module": "cargo",
     "notice": "{count} crates wait in the bay",
@@ -400,11 +400,12 @@
     "action": "Look at the pods",
     "rule": "short of what reading its next chapter costs, it stays a need: the short notice, ◆ as its 16 px icon after the words, no figure"
    },
+   "pair": {"module":null,"notice":"{first} and {second} could cross","short":"{first} and {second} could cross · need","shortAction":"{first} and {second} could cross · need","action":"Cross {first} and {second}","rule":"two adults of one species at home could cross (not family, a free place, the incubator idle): ahead of the new pods and of a pod that can be incubated. ✓ opens the first up close with the ring on Cross; short of materials the words say what is missing"},
    "budGrowing": {"module":null,"notice":"a bud is growing","action":"Look at the Incubator"}
   },
   "line": {
    "rule": "the line at rest: at most two needs joined by a dot, amber, with the amber lamp before them; the first carries the confirm cap and says its action, the second its notice. With none, the goal (frame.json strings.goal), mist. With a target focused: the target's verb with the cap, then its subject, if it has one, in mist.",
-   "order": ["crates","full","budReady","drying","portrait","meet","newPods","glints","waitingPods","couldGrow"],
+   "order": ["crates","full","budReady","drying","portrait","meet","pair","newPods","glints","waitingPods","couldGrow"],
    "needs": {
     "crates": {"action":"Open the Bay","notice":"{count} crates wait in the Bay","noticeOne":"a crate waits in the Bay","withPortrait":{"notice":"Bay: {count} crates and a portrait","noticeOne":"Bay: a crate and a portrait"}},
     "full": {"actions":{"add":"Add a room","make":"Make room"},"notice":"The Vivarium is full"},
@@ -415,6 +416,7 @@
     "drying": {"action":"Look at the pods","notice":"{count} pods dry out next turn","noticeOne":"a pod dries out next turn"},
     "glints": {"action":"Look at the pods","notice":"{count} pods glint","noticeOne":"a pod glints"},
     "waitingPods": {"action":"Look at the pods","notice":"The Pods rack is full","noticeOne":"The Pods rack is full"},
+    "pair": {"action":"Cross {first} and {second}","shortAction":"{first} and {second} could cross · need","notice":"{first} and {second} could cross","short":"{first} and {second} could cross · need"},
     "couldGrow": {"action":"Look at the pods","notice":"{a} {species} pod, ready to incubate"}
    }
   }

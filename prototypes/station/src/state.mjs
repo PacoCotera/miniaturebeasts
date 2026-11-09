@@ -21,7 +21,7 @@ export const SAVE_KEY = "mb-save-v8", SAVE_V = 10, SAVE_VS = [10], V7_KEY = "mb-
 export const OLD_SAVE_KEYS = ["mb-exploration-v1", "mb-exploration-v2", "mb-exploration-v3", "mb-exploration-v4", "mb-exploration-v5", "mb-exploration-v6", V7_KEY];
 export const DEV_KEY = "mb-station-dev";
 // The decided prices (research-economy.md §2).
-export const PRICE = { identify: 1 /* Data: ◆1, always, no free first one (owner 2026-10-11 15:20) */, readTrait: 1, change: 1, growE: 2, growS: 4, mend: 1, tier2E: 12, tier2D: 4, freshen: 1 /* Essence for FRESHEN_TURNS more turns of a pod's life, up to full */ };
+export const PRICE = { identify: 1 /* Data: ◆1, always, no free first one (owner 2026-10-11 15:20) */, readTrait: 1, change: 1, growE: 2, growS: 4, crossE: 2, crossS: 2 /* the cross costs half of a grow's Essence (editorial 2026-11-09): both parents are paid for */, mend: 1, tier2E: 12, tier2D: 4, freshen: 1 /* Essence for FRESHEN_TURNS more turns of a pod's life, up to full */ };
 // Letting a pod go and releasing a mibi pay nothing (owner 2026-10-28 20:42 and 23:16): there is no price for them here.
 // Pods at home: no rack and no cap (owner 2026-10-28 20:26, 20:36). Every pod brought home is in st.tray, in the order it came; st.waiting stays in the save's shape, always empty.
 // A pod keeps POD_LIFE world turns after it comes home; world turns move only with expeditions; the pod on the reading-room bench does not dry; amber from DRYING_SOON turns left (the pod inventory's design; all tune).
@@ -708,6 +708,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0
   if (budReady(st, settings)) return { text: needLine(N.budReady.notice), act: "inc", label: needLine(N.budReady.label) };
   if (portraits) return { text: needLine(N.portrait.notice), act: "bay", label: needLine(N.portrait.label) };
   if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: needLine(N.meet.notice, { name: m.name }), act: "meet", label: needLine(N.meet.label, { name: m.name }) }; }
+  // the pair need (two adults could cross) is Home's line alone, never this frame notice: the Cross screen and the namer would say it over their own words
   // needKey's one order: the unseen new pods (news) above the full rack, the seen ones below it and below a pod that can be incubated now
   const fresh = st.tray.filter((p) => !p.idd), unseen = fresh.filter((p) => !p.seen), pods = (T, n) => ({ text: counted(T, n, 6), act: "pods", label: needLine(n === 1 ? T.labelOne : T.label) });
   if (unseen.length) return pods(N.fresh, unseen.length);
@@ -737,6 +738,7 @@ export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrate
   const drying = dryingNext(st); if (drying.length) return { key: "drying", n: drying.length, max: 6, act: "pods" };   // the only warning away from Pods before a pod is lost
   const meet = ui.meet != null ? mibiById(st, ui.meet) : null;
   if (meet) return { key: "meet", name: meet.name, act: "meet" };
+  const cn = crossNeed(st, sv, settings); if (cn) return { key: "pair", nameA: cn.a.name, nameB: cn.b.name, id: cn.a.id, short: cn.short, act: "cross" };   // two adults at home could cross: above new pods and a pod that can be incubated
   const fresh = st.tray.filter((p) => !p.idd), unseen = fresh.filter((p) => !p.seen);
   if (unseen.length) return { key: "newPods", n: unseen.length, max: 6, act: "pods" };   // firm: an unidentified pod Pods has not drawn yet
   const glint = st.tray.filter((p) => podGlints(st, p)); if (glint.length) return { key: "glints", n: glint.length, max: 6, act: "pods" };
@@ -869,7 +871,16 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
 // The one-line warning before a spend that would leave the goal's next price short: null, or { step, species | name, icons }. `price` is { e, d, s }, what the act pays; `act` is { key: "identify" | "read" | "grow" |
 // "growNow" | "mend" | "cross", pod?, mibi? } so that the act that IS the step never warns. Only identify, grow, cross, read and fit are priced; a step that is a wait, a short, a block or the guide is not. The Probe's `save` never
 // warns. Cross is never the priced step while its door is shut (goalKey is asked without doors, as every caller does today).
-export function goalSpendWarn(st, sv, settings = DEFAULT_SETTINGS, price = {}, act = {}, doors) {
+export function goalSpendWarn(st, sv, settings = DEFAULT_SETTINGS, price = {}, act = {}, doors) { return pairSpendWarn(st, sv, settings, price, act) ?? stepSpendWarn(st, sv, settings, price, act, doors); }
+// A pair at home could cross now and this spend would leave the cross short (the designer's scheme c3): { step: "pair", name, name2, left, need } with the figures of what is short ("❀1" left, "❀2" needed); null otherwise.
+function pairSpendWarn(st, sv, settings, price, act) {
+  if (act.key === "cross" || !((price.e || 0) || (price.s || 0))) return null;
+  const cn = crossNeed(st, sv, settings); if (!cn || cn.short) return null;   // no pair, or the cross cannot be paid even now: its own need says so
+  const c = crossCost(settings), after = { e: st.e - (price.e || 0), s: st.s - (price.s || 0) }; if (after.e >= c.e && after.s >= c.s) return null;
+  const left = [c.e > after.e ? "⚡" + Math.max(0, after.e) : "", c.s > after.s ? "❀" + Math.max(0, after.s) : ""].filter(Boolean).join(" "), need = [c.e > after.e ? "⚡" + c.e : "", c.s > after.s ? "❀" + c.s : ""].filter(Boolean).join(" ");
+  return { step: "pair", name: cn.a.name, name2: cn.b.name, left, need };
+}
+function stepSpendWarn(st, sv, settings, price, act, doors) {
   const g = goalKey(st, sv, settings, doors); if (!g) return null;
   const step = g.step, p = { e: price.e || 0, d: price.d || 0, s: price.s || 0 }, grow = growCost(st, {}, settings), ident = { e: 0, d: identifyCost(st, settings), s: 0 };
   let next = null, who = {}, key = step.key;
@@ -1149,7 +1160,7 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
 // --- The cross (the-cross.md, decided; station-build.md M4): two adults of one species make one child --------
 import { lociOf, copyWords, copyHides, rangeWords } from "./splice.mjs";
 import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, directKin, identity as genomeIdentity } from "./genome.mjs";
-export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.growE, settings), s: price(PRICE.growS, settings), d: 0 });
+export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.crossE, settings), s: price(PRICE.crossS, settings), d: 0 });
 // The pedigree by id, never by digest (two mibis with equal genomes are two mibis): an id names a mibi's record in the vivarium, else the
 // parent snapshot a child holds (a parent no longer in the vivarium counts as a founder beyond it).
 export function genomeLookup(st) {
@@ -1184,6 +1195,18 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
 }
 // The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
 export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => { const kin = directKinOf(st, a, m), away = isCarried(st, sv, m) || inStore(m) || comingOut(st, m); return kin || away ? { ...m, ...(away ? { away: true } : {}), ...(kin ? { family: kin.rel } : {}) } : m; });   // tucked away or on its way back: listed dimmed, never picked (the put-away rules); family: listed, marked with the relation, never picked
+// The first pair at home that could cross now (same species, adults, not family, both at home, a free place, the incubator idle: crossBlock holds nothing back), in mibi id order: { a, b } or null.
+export function crossPair(st, sv, settings = DEFAULT_SETTINGS) {
+  const living = st.mibis.filter((m) => !m.released).sort((x, y) => x.id - y.id);
+  for (const a of living) for (const b of living) if (b.id > a.id && !crossBlock(st, sv, a, b, settings)) return { a, b };
+  return null;
+}
+// The pair need's facts for Home (home.json strings.needs.pair): { a, b, short } where short is the materials the cross is short of as "⚡2 ❀2" (figures: what the cross costs) or null; null when no pair could cross.
+export function crossNeed(st, sv, settings = DEFAULT_SETTINGS) {
+  const p = crossPair(st, sv, settings); if (!p) return null;
+  const c = crossCost(settings), short = [c.e > st.e ? "⚡" + c.e : "", c.s > st.s ? "❀" + c.s : ""].filter(Boolean).join(" ");
+  return { a: p.a, b: p.b, short: short || null };
+}
 // A child of close kin or the same line: its parents' kinship is a quarter or more (the card says "from close kin"); a founder or a pod has no parents
 export const bredClose = (st, m) => Array.isArray(m?.parents) && m.parents.length === 2 && pedigreeKinship(m.parents[0], m.parents[1], genomeLookup(st)) >= 0.25;
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids

@@ -16,7 +16,7 @@ import { traitLooks } from "../../workbench/framework/describe.mjs";
 import { homeBuild as homeBuildUnchecked, homeNeeds, dateWords, clockWords, lightAt, wordsOf } from "../src/views/home-props.mjs";
 const homeBuild = lineCased(homeBuildUnchecked, "home");   // every body it builds goes through assertLineCase (report mode)
 import { idleBuild } from "../src/views/idle-props.mjs";
-import { goalWords } from "../src/views/goal-words.mjs";
+import { goalWords, warnWords } from "../src/views/goal-words.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -87,9 +87,9 @@ test("the top bar's words: the date as Sat 17 Oct and the clock as 24 hours from
 
 test("the needs hold in the spec's order: crates, a full Vivarium, the bud, a pod that dries out next turn, a portrait, a new mibi to meet, new pods, glinting pods, pods waiting for a well, a pod that could be incubated; a soft need is not a need", () => {
   const needs = (st, sv, ui = {}) => homeNeeds(st, sv, settings, ui, Date.now() + 1000).map((n) => n.key), sc = scenes();
-  assert.deepEqual(spec.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
-  assert.deepEqual(needs(sc.empty.st, sc.empty.sv), []); assert.deepEqual(needs(sc.crates.st, sc.crates.sv), ["crates"]); assert.deepEqual(needs(sc.crates.st, { ...sc.crates.sv, bay: [] }), []); assert.deepEqual(needs(sc.away.st, sc.away.sv), [], "away: the crates are not in the bay");
-  assert.deepEqual(needs(sc.waiting.st, sc.waiting.sv), ["waitingPods"]); assert.deepEqual(needs(sc.portrait.st, sc.portrait.sv), ["crates", "portrait"]);
+  assert.deepEqual(spec.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "pair", "newPods", "glints", "waitingPods", "couldGrow"]);
+  assert.deepEqual(needs(sc.empty.st, sc.empty.sv), []); assert.deepEqual(needs(sc.crates.st, sc.crates.sv), ["crates", "pair"]); assert.deepEqual(needs(sc.crates.st, { ...sc.crates.sv, bay: [] }), ["pair"]); assert.deepEqual(needs(sc.away.st, sc.away.sv), ["pair"], "away: the crates are not in the bay (two others at home could cross)");
+  assert.deepEqual(needs(sc.waiting.st, sc.waiting.sv), ["waitingPods"]); assert.deepEqual(needs(sc.portrait.st, sc.portrait.sv), ["crates", "portrait", "pair"]);
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); st.waiting.push({ id: "w" }); pod(st, "S01", 5, false);
     assert.deepEqual(needs(st, sv0({ bay: [crate(1)] }), { meet: st.mibis[0].id }), ["crates", "budReady", "portrait", "meet", "newPods", "waitingPods"], "every need, in order"); }
   { const st = world(); dock(st); const p = pod(st, "S01", 5, false); p.seen = 1; p.dryAt = (st.turn | 0) + 1; assert.deepEqual(needs(st, sv0()), ["drying"], "a pod that dries out next turn: the only warning away from Pods"); }
@@ -105,11 +105,11 @@ test("F7: while the Vivarium is full and the bud waits for a place, the line is 
 });
 test("the line at rest: at most two needs, the first by its action and the second by its notice; with none, the goal; the verb of a target on a focus; the Companion away says it is on a trip", () => {
   const sc = scenes(), line = (x, over) => build(x.st, x.sv, over).props.regions.line;
-  assert.deepEqual(line(sc.crates), { needs: ["Open the Bay"] }); assert.deepEqual(line(sc.portrait), { needs: ["Open the Bay", "A portrait waits in the Bay"] }, "walk crates and a portrait: the action, then the portrait's notice; no name");
+  assert.deepEqual(line(sc.crates), { needs: ["Open the Bay", `${sc.crates.st.mibis[0].name} and ${sc.crates.st.mibis[1].name} could cross`] }); assert.deepEqual(line(sc.portrait), { needs: ["Open the Bay", "A portrait waits in the Bay"] }, "walk crates and a portrait: the action, then the portrait's notice; no name");
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0({ bay: [crate(1), crate(2)] }) }), { needs: ["Open the Bay", "The bud is ready"] }, "two at most, the example of the spec; each zone a line with its capital"); }
-  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); portrait(st); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay"] }, "a portrait alone: the Bay's action"); st.waiting.push({ id: "w1" }); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay", "The Pods rack is full"] }, "then the next need's notice"); dock(st, false); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay", "The Pods rack is full"] }, "away, a portrait still waits"); }
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 1, settings); portrait(st); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay"] }, "a portrait alone: the Bay's action"); st.waiting.push({ id: "w1" }); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay", "The Pods rack is full"] }, "then the next need's notice"); dock(st, false); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay", "The Pods rack is full"] }, "away, a portrait still waits"); }
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the bud", "A portrait waits in the Bay"] }, "a ready bud takes the first slot, the portrait the second"); }
-  { const { st, sv } = sc.docked; assert.ok(line({ st, sv }).goal, "nothing needs the player: the goal"); }
+  { const { st, sv } = sc.docked; assert.deepEqual(line({ st, sv }).needs.length, 1, "four at home, two could cross: the pair is the need"); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; assert.ok(line({ st, sv }).goal, "nothing needs the player (a bud is growing): the goal"); }
   for (const [id, verb] of Object.entries({ vivarium: "Go to the Vivarium", library: "Go to the Library", pods: "Go to Pods", incubator: "Go to the Incubator", companion: "Go to the Probe bench", bay: "Open the Bay" })) assert.deepEqual(line(sc.docked, { focus: id }), { verb }, id);
   assert.deepEqual(line(sc.away, { focus: "companion" }), { note: "The Companion is on a trip" }); assert.deepEqual(line(sc.away, { focus: "bay" }), { verb: "Open the Bay" });
 });
@@ -146,7 +146,7 @@ test("the room's \u2713 is the first need's action: homeNeeds and state.needKey 
     if (first && first.key !== "portrait") { assert.equal(first.key, k?.key, name); assert.equal(first.act, k.act, name); }   // a portrait crate is not in needKey: the sitting crates were left out until the reveal was designed
     if (!first) assert.ok(!k || k.soft || ["couldGrow", "toRead", "budGrowing", "newPods"].includes(k.key), `${name}: ${k?.key}`);
   }
-  const { st, sv } = scenes().docked; const m = st.mibis[0]; assert.equal(S.needKey(st, sv, settings, { meet: m.id }).key, "meet"); assert.deepEqual(build(st, sv, { ui: { meet: m.id } }).props.regions.line.needs, ["Meet " + m.name]);
+  const { st, sv } = scenes().docked; const m = st.mibis[0]; assert.equal(S.needKey(st, sv, settings, { meet: m.id }).key, "meet"); assert.deepEqual(build(st, sv, { ui: { meet: m.id } }).props.regions.line.needs, ["Meet " + m.name, (cn => `${cn.a.name} and ${cn.b.name} could cross`)(S.crossNeed(st, sv, settings))], "the meet first, then the pair");
 });
 
 test("the short notices carry each short material once, Energy before Essence, and ◆ for a read", () => {
@@ -226,6 +226,28 @@ test("restOf (R1): the worked example: four diurnal residents settle across the 
   for (const [id, t] of Object.entries(flips)) { assert.equal(restOf(here, t - 1, REST)[id], "awake", `${id} a second before its flip`); assert.equal(restOf(here, t, REST)[id], "asleep", `${id} at its flip`); const w = t - hm(20) + hm(6); assert.equal(restOf(here, w - 1, REST)[id], "asleep"); assert.equal(restOf(here, w, REST)[id], "awake", `${id} wakes at the same offset from 06:00`); }
   assert.deepEqual(Object.values(restOf(here, hm(20, 30), REST)), ["asleep", "asleep", "asleep", "asleep"], "20:30 all asleep"); assert.deepEqual(Object.values(restOf(here, hm(5, 59, 59), REST)), ["asleep", "asleep", "asleep", "asleep"], "05:59:59 asleep");
   assert.deepEqual(Object.values(restOf(here, hm(6, 30), REST)), ["awake", "awake", "awake", "awake"], "06:30 all diurnal awake");
+});
+test("B4: two adults at home that could cross are a need above new pods and a pod that can be incubated; short of the price it says what is missing; it names the pair and its ✓ goes to Cross", () => {
+  assert.deepEqual(S.crossCost(settings), { e: 2, s: 2, d: 0 }, "a cross is 2 Energy and 2 Essence, half of a grow's Essence");
+  const st = world(); dock(st); const r = S.seedAdults(st, "S01", 5, 2, settings), [a, b] = r.mibis; const p = pod(st, "S01", 5, false); p.seen = 0;
+  const needs = () => homeNeeds(st, sv0(), settings, {}, Date.now() + 1000);
+  assert.deepEqual(needs().map((n) => n.key), ["pair", "newPods"], "above the new pods");
+  assert.deepEqual([needs()[0].nameA, needs()[0].nameB, needs()[0].short, needs()[0].act], [a.name, b.name, null, "cross"]);
+  const line = () => homeBuild({ st, sv: sv0(), settings, docked: true, ui: {}, now: Date.now() + 1000 }, spec, frameSpec).props.regions.line.needs;
+  assert.equal(line()[0], `Cross ${a.name} and ${b.name}`, "the ✓ word names the pair");
+  st.s = 1; assert.equal(line()[0], `${a.name} and ${b.name} could cross · need ❀2`, "short of Essence: what is missing");
+  assert.equal(S.needKey(st, sv0(), settings, {}).key, "pair"); assert.notEqual(S.need(st, sv0(), settings, {}).act, "cross", "the frame notice never says the pair");
+  st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; assert.deepEqual(needs().map((n) => n.key), ["newPods"], "a bud in the incubator: no pair");
+  st.bud = null; st.mibis[1] = { ...b, born: st.turn }; assert.deepEqual(needs().map((n) => n.key), ["newPods"], "a young one is no pair");
+});
+test("B4: Grow warns before it spends the cross: Leaves ❀n · A and B need ❀2", () => {
+  const st = world(); dock(st); const [a, b] = S.seedAdults(st, "S01", 5, 2, settings).mibis; st.s = 5;
+  const words = (price) => warnWords(st, sv0(), settings, frameSpec, price, { key: "grow" });
+  assert.deepEqual(S.goalSpendWarn(st, sv0(), settings, { e: 2, s: 4 }, { key: "grow" }), { step: "pair", name: a.name, name2: b.name, left: "❀1", need: "❀2" });
+  assert.equal(S.goalSpendWarn(st, sv0(), settings, { e: 2, s: 3 }, { key: "grow" }), null, "the cross is still payable");
+  assert.equal(S.goalSpendWarn(st, sv0(), settings, { e: 2, s: 4 }, { key: "cross" }), null, "the cross itself never warns");
+  assert.equal(words({ e: 2, s: 4 }), `Leaves ❀1 · ${a.name} and ${b.name} need ❀2`);
+  st.s = 1; assert.equal(S.goalSpendWarn(st, sv0(), settings, { e: 2, s: 1 }, { key: "grow" }), null, "the cross cannot be paid even now: its own need says so");
 });
 test("restOf (R1): an elder settles in the 18:00 window and wakes last in the 06:00 window; S16 sleeps by day (asleep at 06:30, awake at 18:30); a household of one flips in its first 900 s; a household of twelve flips at least 75 s apart", () => {
   const E = { id: "E", seed: 12345, species: "S01", stage: "elder" }, here = [{ id: "J1", seed: 100, species: "S01", stage: "juvenile" }, E];
