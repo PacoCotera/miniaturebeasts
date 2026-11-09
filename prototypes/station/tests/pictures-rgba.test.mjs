@@ -97,8 +97,8 @@ test("fix 7: the grade's table is the oracle's (SHA-256 per light), day is the i
 });
 test("fix 7: the three juvenile masters graded at four lights equal the oracle's pixels (SHA-256 of the RGBA), alpha is the master's, no channel is brighter, day is the master itself", () => {
   for (const [sp, row] of [...Object.entries(LG.juvenile104x112), ...Object.entries(LG.adult144x152 ?? {})]) {
-    const buf = masterPng(row.file.replace(/^/, "")); assert.equal(sha(buf), row.source, sp + ": a recut master fails here, loudly");
-    const d = decodePNG(buf), p = { w: d.w ?? d.width, h: d.h ?? d.height, rgba: () => d.rgba ?? d.data };
+    const buf = masterPng(row.file.replace(/^/, "")), d = decodePNG(buf), p = { w: d.w ?? d.width, h: d.h ?? d.height, rgba: () => d.rgba ?? d.data };
+    const d0 = p.rgba(); assert.equal(sha(Buffer.from(d0.buffer, d0.byteOffset, d0.byteLength)), row.rgba.day, sp + ": a recut master fails here, loudly (its decoded RGBA, not its file bytes: row.source is the signed file before the lossless squeeze, whose bytes differ and whose pixels do not)");
     for (const [l, want] of Object.entries(row.rgba)) {
       const g = grade(p, l), px = g.rgba(); assert.equal(sha(Buffer.from(px.buffer, px.byteOffset, px.byteLength)), want, `${sp} ${l}`);
       if (l === "day") assert.equal(g, p); else for (let i = 0; i < px.length; i += 4) { assert.equal(px[i + 3], p.rgba()[i + 3]); for (let c = 0; c < 3; c++) assert.ok(px[i + c] <= p.rgba()[i + c]); }
