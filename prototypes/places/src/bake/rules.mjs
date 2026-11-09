@@ -27,6 +27,24 @@ export function footprintCells(ir, tileset) {
   return cells;
 }
 
+// The tiles a crown hangs over, as the page's adapter reckons them (adapter.mjs: a crown's box at 48 px, a tile's pawn as its centre and a margin round it).
+export const CROWN_MARGIN = 6;
+export const BAND_DEPTH = 2;   // tiles of the place's edge band: nothing to take lies in it
+export function crownCover(ir, tileset) {
+  const crowns = [];
+  for (const p of ir.props) { const s = spriteFor(tileset, 'prop', p.kind); if (s && s.sprite.canopy >= 0) crowns.push([s.sprite.canopy, p.x, p.y]); }
+  for (const c of ir.canopy) { const s = spriteFor(tileset, 'canopy', c.kind); if (s) crowns.push([s.index, c.x, c.y]); }
+  const under = new Set();
+  for (const [k, fx, fy] of crowns) {
+    const s = tileset.sprites[k], left = fx - s.anchor48[0], top = fy - s.anchor48[1];
+    for (let y = 0; y < ir.h; y++) for (let x = 0; x < ir.w; x++) {
+      const px = x * 48 + 24, py = y * 48 + 28;
+      if (px > left - CROWN_MARGIN && px < left + s.w48 + CROWN_MARGIN && py > top - CROWN_MARGIN && py < top + s.h48 + CROWN_MARGIN) under.add(y * ir.w + x);
+    }
+  }
+  return under;
+}
+
 export const arrival = (o, w, h) => {
   const mid = (o.from + o.to) >> 1;
   return o.side === 'N' ? { x: mid, y: 0 } : o.side === 'S' ? { x: mid, y: h - 1 } : o.side === 'W' ? { x: 0, y: mid } : { x: w - 1, y: mid };
@@ -110,6 +128,20 @@ export function checkRules(ir, ctx) {
     if (blocked.has(f.y * w + f.x)) fail('find-footprint', 'a Find lies under a prop footprint', f);
     else if (!standable(play(f.x, f.y))) fail('find-reach', `a Find is on ${play(f.x, f.y)} terrain`, f);
     else if (heart && heart.reachBy === 'none' && floods.length && !floods.some((s) => s[f.y * w + f.x])) fail('find-reach', 'a Find cannot be reached on foot from any Opening', f);
+  }
+
+  // slot-clear: what a player can take is never hidden. No Heart and no Find under a crown, in the edge band, and (Finds only: the Heart stands at its
+  // landmark by design) within 1 cell of a prop footprint.
+  { const under = crownCover(ir, tileset);
+    const inBand = (x, y) => x < BAND_DEPTH || y < BAND_DEPTH || x >= w - BAND_DEPTH || y >= h - BAND_DEPTH;
+    const nearProp = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (blocked.has((y + dy) * w + x + dx)) return true; return false; };
+    const slots = [...ir.hearts.map((s) => ({ ...s, what: 'Heart', prop: false })), ...ir.finds.map((s) => ({ ...s, what: 'Find', prop: true }))];
+    for (const s of slots) {
+      if (s.x < 0 || s.y < 0 || s.x >= w || s.y >= h) continue;
+      if (under.has(s.y * w + s.x)) fail('slot-clear', `a ${s.what} lies under a crown, where a player cannot see it`, s);
+      else if (inBand(s.x, s.y)) fail('slot-clear', `a ${s.what} lies in the edge band (the outer ${BAND_DEPTH} cells)`, s);
+      else if (s.prop && nearProp(s.x, s.y)) fail('slot-clear', `a ${s.what} lies within 1 cell of a prop footprint`, s);
+    }
   }
 
   // landmarks
