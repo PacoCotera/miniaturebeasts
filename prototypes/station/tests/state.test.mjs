@@ -477,7 +477,7 @@ test("Hatch now costs 1 Essence per 2 minutes left on the bud, rounded up, and n
   assert.equal(at(0, 20, { economy: "free" }).s, 0, "the free economy");
   st.bud = null; assert.deepEqual(S.instantGrowCost(st, settings, 0), { e: 0, d: 0, s: 0 });
   // the rule pays it: refused when the Essence is short, taken when it is not
-  st.bud = { start: 0, minutes: 20, early: false, species: "S01" }; st.e = 5; st.d = 5; st.s = 9; const no = S.instantGrow(st, settings, 0); assert.equal(no.ok, false); assert.match(no.msg, /^Hatch now · /); assert.equal(st.s, 9); assert.notEqual(st.bud, null, "a refused press hatches nothing");
+  st.bud = { start: 0, minutes: 20, early: false, species: "S01" }; st.e = 5; st.d = 5; st.s = 9; const no = S.instantGrow(st, settings, 0); assert.equal(no.ok, false); assert.match(no.msg, /^Open now · /); assert.equal(st.s, 9); assert.notEqual(st.bud, null, "a refused press hatches nothing");
 });
 
 // ---- the care save shape: the carried set, the dock merge, the stage, the migration step (Station side) ----

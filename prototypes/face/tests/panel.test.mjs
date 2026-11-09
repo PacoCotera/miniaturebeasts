@@ -178,7 +178,7 @@ for (const [name, o] of [["a Loika bud", { species: "S01" }], ["a second species
     assert.deepEqual(region(lg, "panelHatched").rect.slice(0, 2), [24, 76], "the hatched look's room fills the left window"); assert.deepEqual(region(lg, "panelGrowing").rect.slice(0, 2), [526, 76], "the growing look's room fills the right window");
     assert.deepEqual([region(lg, "panelWindow.0").rect, region(lg, "panelWindow.1").rect], [I.windows.left, I.windows.right], "the two window frames");
     const rings = lg.regions.filter((r) => r.id === "focus" && r.layer === "chrome"); assert.equal(rings.length, 1); const [x, y, w, h] = BEZ[at]; assert.deepEqual(rings[0].rect, [x - 5, y - 5, w + 10, h + 10], "the house ring, reaching 5 px round the bezel");
-    assert.deepEqual(lg.type.filter((t) => t.region === "panelHeader").map((t) => t.text), ["Hatch now", "Wait"], "the two verbs and nothing else: no title");
+    assert.deepEqual(lg.type.filter((t) => t.region === "panelHeader").map((t) => t.text), ["Open now", "Wait"], "the two verbs and nothing else: no title");
     assert.equal(f.objects() <= 400, true, `${f.objects()} objects`);
   });
 }

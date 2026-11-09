@@ -174,7 +174,7 @@ test("the Hatch now | Wait panel: the price from the rules, the minute count onl
   assert.equal(panelSpec.growNowAbove, 4); assert.ok(c.s > panelSpec.growNowAbove, "this bud is above the threshold");
   assert.deepEqual(validate(v.overlay, hnSchema, hnSchema), []); assert.equal(v.overlay.form, "hatchnow"); assert.equal(R.title, undefined, "no title");
   assert.deepEqual([grow.id, wait.id], ["grow", "wait"]); assert.equal(grow.cost, S.priceText(c.e, c.d, c.s)); assert.equal(R.price, grow.cost); assert.match(R.price, /^❀ \d+$/); assert.equal(wait.cost, ""); assert.equal(R.caption, `ready in about ${n} min`);
-  assert.deepEqual([R.verbs.grow, R.verbs.wait], ["Hatch now", "Wait"]);
+  assert.deepEqual([R.verbs.grow, R.verbs.wait], ["Open now", "Wait"]);
   for (const t of [R.verbs.grow, R.verbs.wait, R.price]) assert.ok(!/\bmin\b|⧗/.test(t), "no minute count outside the caption: " + t);
   assert.equal(v.overlay.focus.cur, "card.grow"); h.ui.panel.focus = "card.wait"; assert.equal(gview(h).overlay.focus.cur, "card.wait");
   assert.ok(!/"(rect|x|y|at)"/.test(JSON.stringify(v.overlay)), "props name what, never where");
