@@ -3,17 +3,21 @@
 Each source stand is scaled down with an area filter to fit 280x300, keeping its aspect, and written as a 280x300 canvas with
 the figure centred across and its bottom at the canvas bottom (the foot anchor: the game aligns the figure's lowest row to the
 token's). Alpha is cut to 0 or 255 after the scale so the figure adds only opaque colours to the screen.
-Usage: build-moment-stands.py <out dir> <S01 src> <S02 src> <S03 src>   (a source of "-" is skipped)"""
+Usage: build-moment-stands.py <out dir> <name>=<src>[@<scale>] ...
+  name S01/S02/S03 writes stand-<name>-280x300.png (the adult); name S01j/S02j/S03j writes stand-<name>-280x300.png (the young).
+  @<scale> shrinks the box by that factor (a kind with no signed young stand: its adult stand at the young scale, 112/152 = the desk's
+  young-to-adult height ratio for the 144x152 and 104x112 stands)."""
 import sys
 from PIL import Image
 
 W, H = 280, 300
 out = sys.argv[1]
-for sid, src in zip(("S01", "S02", "S03"), sys.argv[2:5]):
-    if src == "-":
-        continue
+for arg in sys.argv[2:]:
+    sid, rest = arg.split("=", 1)
+    src, _, sc = rest.partition("@")
+    box = float(sc) if sc else 1.0
     im = Image.open(src).convert("RGBA")
-    k = min(W / im.width, H / im.height)
+    k = min(W * box / im.width, H * box / im.height)
     if k > 1:
         raise SystemExit(sid + ": source " + str(im.size) + " is smaller than the box: not an area-filter case")
     nw, nh = round(im.width * k), round(im.height * k)

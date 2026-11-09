@@ -1267,11 +1267,13 @@ test("juvenile pictures: no site draws a juvenile in huddle or eat (Tend, the Wa
   assert.ok(seen.length > 1000, "the recorder saw the draw calls");
 });
 
-test("the Tend moment draws no code-drawn blush paws on the Loika (the painted stand carries its own look); the Untuva ring and the Tuikis' sparks are unchanged", () => {
+test("the Tend moment draws no code-drawn blush paws on the Loika and no ring of fog squares round the Untuva; the Tuikis' four sparks stay, none on the face; a young one shows its own stand", () => {
   assert.ok(!/ICON\.paw\('blush'\)/.test(source("drawActive")), "no code-drawn paws on the stage");
   assert.equal(p0().run("typeof stagePawY"), "undefined", "the paw helper is gone");
-  assert.match(source("drawActive"), /R\(225 \+ Math\.round\(Math\.cos\(a\) \* r \* 1\.2\) - 4, 178 \+ Math\.round\(Math\.sin\(a\) \* r \* \.8\) - 4, 8, 8, C\.fog\)/, "the Untuva ring is as it was");
-  assert.match(source("drawActive"), /\[\[90, 88\], \[340, 118\], \[120, 248\], \[320, 238\]\]/, "the Tuikis' sparks are as they were");
+  assert.ok(!/, 8, 8, C\.fog\)/.test(source("drawActive")), "no fog squares on the stage");
+  assert.match(source("drawActive"), /\[\[90, 88\], \[392, 104\], \[120, 248\], \[320, 238\]\]/, "the Tuikis' sparks: the cheek one moved off the figure");
+  assert.match(source("drawActive"), /MOMENT_ART\[juv \? 'young' : 'stand'\]/, "a young one takes the young stand, never its token at stage size");
+  assert.equal(p0().run("Object.keys(MOMENT_ART.young).sort().join()"), "0,1,2", "a young stand for every kind");
 });
 function p0() { return X1.page(); }
 

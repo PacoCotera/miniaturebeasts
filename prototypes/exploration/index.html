@@ -6055,15 +6055,15 @@ async function loadOpenArt(after) {
   } catch (e) { console.warn('the opening art did not load; the built night and pod play', e); } finally { ART_DONE.open = true; }
 }
 // The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during a Tend or Walk
-// moment the kind's painted stand takes the token's place, its lowest row on the token's foot row. A kind with no file here (the Untuva until the desk gives a stand that fits) and a juvenile keep the token.
+// moment the kind's painted stand takes the token's place, its lowest row on the token's foot row; a young one takes the kind's young stand (stand-S0Nj: the Loika's and Tuikis' signed young stands; the Untuva has none, so its adult stand at the young scale, listed for the art director).
 // Until the files are in (or if they fail) the token plays.
-const MOMENT_ART = { stand: {} }, MOMENT_COLOURS = [], MOMENT_KINDS = ['S01', 'S02', 'S03'];   // stand[sp]: { w, h, foot, canvas() }
+const MOMENT_ART = { stand: {}, young: {} }, MOMENT_COLOURS = [], MOMENT_KINDS = ['S01', 'S02', 'S03', 'S01j', 'S02j', 'S03j'];   // stand[sp] / young[sp]: { w, h, foot, canvas() }; the young are the signed young stands (S02: the adult stand at the young scale, listed for the art director)
 function momentRead(files) {
   const seen = new Set();
   for (const sid of MOMENT_KINDS) { const im = files[`stand-${sid}-280x300`]; if (!im || im.width !== 280 || im.height !== 300) throw new Error('moment stand ' + sid);
     let c = null, foot = -1; const build = () => { c = document.createElement('canvas'); c.width = 280; c.height = 300; const cg = c.getContext('2d'), id = cg.createImageData(280, 300); id.data.set(im.data); cg.putImageData(id, 0, 0); return c; };
     for (let i = 0; i < 280 * 300; i++) { const o = i * 4; if (im.data[o + 3]) { foot = Math.max(foot, (i / 280) | 0); const k = im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2]; if (!seen.has(k)) { seen.add(k); MOMENT_COLOURS.push([im.data[o], im.data[o + 1], im.data[o + 2]]); } } }
-    MOMENT_ART.stand[PARTNER_FILE.indexOf(sid)] = { w: 280, h: 300, foot, canvas: () => c || build() }; }
+    MOMENT_ART[sid.endsWith('j') ? 'young' : 'stand'][PARTNER_FILE.indexOf(sid.slice(0, 3))] = { w: 280, h: 300, foot, canvas: () => c || build() }; }
 }
 async function loadMomentArt() {
   try {
@@ -6584,7 +6584,6 @@ function drawActive(t) {
   const h = callAnim(m);
   let sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < TEND_MS ? FX.moment : null;
   if (bond != null && bond >= 0 && bond < 900) sp = { at: bc.at };   // the bond: the species moment again, short
-  const sa = sp ? (mo ? NOW - sp.at : 900) : 0;
   const home = isDocked() && !S.exp;   // seated between expeditions: the stage one step darker, the mibi resting on idle frame 1 (the dock frames, "home")
   let x = 97, y = 52, pose = 'idle', fr = home ? 1 : mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0;
@@ -6597,12 +6596,11 @@ function drawActive(t) {
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
-  const stand = sp && st !== 'juvenile' && !h ? MOMENT_ART.stand[m.sp] : null;   // a Tend or Walk moment: the kind's painted stand, its foot on the token's foot row (a kind without one keeps the token)
-  if (stand) blit({ w: stand.w, h: stand.h, canvas: stand.canvas }, x + 128 - (stand.w >> 1), y + tokenFoot(m.sp, false) - stand.foot);
+  const juv = st === 'juvenile', stand = sp && !h ? MOMENT_ART[juv ? 'young' : 'stand'][m.sp] : null;   // a Tend or Walk moment: the kind's painted stand (the young's own for a young one), its foot on the token's foot row (a kind without one keeps the token)
+  if (stand) blit({ w: stand.w, h: stand.h, canvas: stand.canvas }, x + 128 - (stand.w >> 1), y + tokenFoot(m.sp, juv) - stand.foot);
   else mibiSprite(m.sp, pose, fr, x, y, BIG, flip, st === 'juvenile');
   if (h && !h.quiet && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
-  if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
-  if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
+  if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [392, 104], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
   if (home) darkenRect(24, 40, 402, 280);
   // the Walk: every other mibi with you at the stage’s foot as its 48 px field token (its placeholder until the token lands; its 2 idle frames come with it), for 2.4 s
   const wk = FX.walk && FX.walk.id === m.id && NOW - FX.walk.at < WALK_MS ? FX.walk : null;
