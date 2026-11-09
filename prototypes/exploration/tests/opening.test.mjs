@@ -145,7 +145,9 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
     await page.goto(`${url}?seed=14`); await page.waitForTimeout(1500);
     const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
     // settle: the top bar's world-turn clock flashes (amber, blinking every 150 ms) for 900 ms after the turn changes, whatever the motion setting: the returning shot waits that out so the bar holds still
-    const shot = async (settle = 700) => { await page.waitForTimeout(settle); return decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64")); };
+    // and a loaded machine paints late: the shot is the first one that two captures 250 ms apart agree on
+    const cap = async () => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
+    const shot = async (settle = 700) => { await page.waitForTimeout(settle); let prev = await cap(); for (let i = 0; i < 16; i++) { await page.waitForTimeout(250); const cur = await cap(); if (Buffer.compare(Buffer.from(prev.data), Buffer.from(cur.data)) === 0) return cur; prev = cur; } return prev; };
     assert.equal(await page.evaluate(() => window.__mb.S.phase), "setup");
     await page.evaluate(() => { const m = window.__mb; m.S.revealed.fill(0); m.S.visited.fill(0); m.S.mibis = []; m.S.carried = []; m.S.report = null; m.S.known = []; m.S.bay = []; m.S.ui.lastPos = null; m.S.ui.sel = 0; m.FX.msg = ""; });
     const first = await shot(); golden("opening-first.png", first);
