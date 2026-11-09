@@ -36,8 +36,8 @@
       "h": 22,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 7128,
-      "sha256": "ed3fcc757883ce18a9627fe99459055449af1377125475215986f119f41ec7ef"
+      "bytes": 6312,
+      "sha256": "cc5d1c77222e2181b57eb8fbf40ee4bc2c49841fc93630f3347a79912287e389"
     },
     {
       "id": "Reedpool~x",
@@ -46,8 +46,8 @@
       "h": 22,
       "set": "ninja-test",
       "mirrorOf": "Reedpool",
-      "bytes": 7136,
-      "sha256": "992d10d5b586e3191d7c128f843b1ca193194dc52f0277383909800734298dc2"
+      "bytes": 6320,
+      "sha256": "a13a4480f156f7d41be91b9efbd9acfef3f5f871f3c97eae71466c676e90dc04"
     },
     {
       "id": "SplitStone",

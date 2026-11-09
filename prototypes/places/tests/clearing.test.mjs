@@ -13,7 +13,15 @@ const level = (n) => {
   return { w: lay.Terrain.__cWid, csv: lay.Terrain.intGridCsv, marks: lay.Marks.entityInstances, props: lay.Props.entityInstances, decals: lay.Decals.entityInstances };
 };
 
-for (const [name, ground] of [['Windstep', GRASS], ['HollowTree', GRASS], ['SplitStone', SAND], ['Reedpool', SAND]]) {
+// Reedpool is exempt: its heart is an island in the pond and the water already clears it. It takes no earth, and its heart cell keeps water within 2.
+test('Reedpool: the island heart takes no earth clearing, the pond stays round it', () => {
+  const L = level('Reedpool'), [hx, hy] = L.marks.find((e) => e.__identifier === 'Heart').__grid;
+  let water = 0;
+  for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const v = L.csv[(hy + dy) * L.w + hx + dx]; assert.notEqual(v, EARTH, `earth at (${hx + dx}, ${hy + dy})`); if (v === 1 || v === 2) water++; }
+  assert.ok(water >= 8, `water cells within 2 of the heart: ${water}`);
+});
+
+for (const [name, ground] of [['Windstep', GRASS], ['HollowTree', GRASS], ['SplitStone', SAND]]) {
   test(`${name}: the heart stands on a 3 x 3 of earth, ringed wholly by ${ground === GRASS ? 'grass' : 'sand'}, with no prop or decal within 2`, () => {
     const L = level(name), heart = L.marks.find((e) => e.__identifier === 'Heart'), lm = L.marks.find((e) => e.__identifier === 'Landmark'), [hx, hy] = heart.__grid;
     for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
