@@ -6,7 +6,8 @@
 // Lengths are in lp: one lp is `f` CSS px, so every edge lands on a whole physical pixel. Colours are the Station's 14.
 
 import { faceOf, rasterFace, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS } from "../../caddy/face.mjs";   // the Caddy's face, shared with the service's tests and renders
-import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX } from "./fit.mjs";   // the size: z device px per lp and its tier
+import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX, ARM, CROSS_ROW, ROWH } from "./fit.mjs";   // the size: z device px per lp and its tier
+import { areaHeight, isPhone, isPortrait, phoneFit, biggerTurned, planPortrait, planLandscape, trayMin, trayMax, sides, PHONE_BAR, PHONE_PAD } from "./phone.mjs";   // the phone: one device whole, its keys in the viewport
 import { stampText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 import { readOptions, writeOptions } from "./options.mjs";
 import { NAME_LISTS } from "./names.mjs";   // the Options panel's settings
@@ -27,9 +28,11 @@ const Z_KEY = "mb-play-z";
 const loadZ = () => { try { const v = localStorage.getItem(Z_KEY); return v == null ? null : clampZ(v); } catch { return null; } };
 const saveZ = (v) => { try { if (v == null) localStorage.removeItem(Z_KEY); else localStorage.setItem(Z_KEY, String(v)); } catch { /* no storage: the choice lasts the visit */ } };
 let dpr = 1, k = 1, k0 = 1, f = 1, CW = 1920, CH = 1080, tier = "row", zSet = TEST ? null : loadZ();   // tier: "stack", "row" or "narrow"; zSet: the chosen z, null for fit
+let phone = false;   // a touch device with a short side under 600 CSS px: one device at a time, whole, keys in the viewport (phone.mjs)
 function metrics() {
   dpr = window.devicePixelRatio || 1; k0 = baseK(dpr); CW = innerWidth; CH = innerHeight;
-  const c = TEST ? { tier: baseTier(CW, CH), z: k0 } : zSet != null ? chosen(zSet, CW, CH, dpr) : fitChoice(CW, CH, dpr);
+  phone = isPhone(window.matchMedia("(pointer: coarse)").matches, CW, CH);
+  const c = phone ? { tier: "narrow", z: phoneFit(owner, CW, CH, dpr).z } : TEST ? { tier: baseTier(CW, CH), z: k0 } : zSet != null ? chosen(zSet, CW, CH, dpr) : fitChoice(CW, CH, dpr);
   k = c.z; tier = c.tier; f = k / dpr;
   document.documentElement.style.setProperty("--f", String(f));
   document.documentElement.style.setProperty("--mark", (24 * Math.max(1, Math.round(dpr))) / dpr + "px");   // the 24 px room marks at 24 × n device px, nearest-neighbour: never smoothed, never a fractional step
@@ -54,7 +57,8 @@ const placeC = (el, x, y, w, h, tf) => { const s = el.style;
   if (w != null) s.width = Zc(w) + "px"; if (h != null) s.height = Zc(h) + "px"; };
 
 // ---- state ----
-let owner = "station", seatOff = 0, devOpen = false, keysOpen = false;
+const START_OWNER = isPhone(window.matchMedia("(pointer: coarse)").matches, innerWidth, innerHeight) && isPortrait(innerWidth, innerHeight) ? "companion" : "station";   // a portrait phone opens on the Companion, the handheld
+let owner = START_OWNER, seatOff = 0, devOpen = false, keysOpen = false;
 let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
 let pressed = false, seatBusy = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
@@ -70,24 +74,25 @@ const MARK = (n) => `<img src="../ui/assets/masters/shell/shell-key-${n}-24.png"
 // key sizes in CSS px (the ruling's minimums); g is the group: P the D-pad, R the rooms, A the actions
 const KEYS = {
   station: [
-    { id: "left", code: "ArrowLeft", name: "Left", cls: "pad", glyph: SVG.left, g: "P", s: 56 }, { id: "up", code: "ArrowUp", name: "Up", cls: "pad", glyph: SVG.up, g: "P", s: 56 },
-    { id: "down", code: "ArrowDown", name: "Down", cls: "pad", glyph: SVG.down, g: "P", s: 56 }, { id: "right", code: "ArrowRight", name: "Right", cls: "pad", glyph: SVG.right, g: "P", s: 56 },
+    { id: "left", code: "ArrowLeft", name: "Left", cls: "pad arm left", glyph: SVG.left, g: "P", s: ARM }, { id: "up", code: "ArrowUp", name: "Up", cls: "pad arm up", glyph: SVG.up, g: "P", s: ARM },
+    { id: "down", code: "ArrowDown", name: "Down", cls: "pad arm down", glyph: SVG.down, g: "P", s: ARM }, { id: "right", code: "ArrowRight", name: "Right", cls: "pad arm right", glyph: SVG.right, g: "P", s: ARM },
     { id: "home", code: "KeyH", name: "Home", cls: "room home", glyph: MARK("home"), g: "R", s: 56 }, { id: "research", code: "KeyR", name: "Pods", cls: "room research", glyph: MARK("pods"), g: "R", s: 56 },
     { id: "vivarium", code: "KeyB", name: "Vivarium", cls: "room vivarium", glyph: MARK("vivarium"), g: "R", s: 56 }, { id: "library", code: "KeyL", name: "Library", cls: "room library", glyph: MARK("library"), g: "R", s: 56 },
     { id: "call", code: "KeyC", name: "Call", cls: "round call", glyph: SVG.call, g: "A", s: 56 },
     { id: "back", code: "Escape", name: "Back", cls: "round back", glyph: SVG.back, g: "A", s: 56 }, { id: "confirm", code: "Enter", name: "Confirm", cls: "round confirm", glyph: SVG.confirm, g: "A", s: 64 },
   ],
   companion: [
-    { id: "left", code: "ArrowLeft", name: "Left", cls: "cpad", glyph: SVG.left, g: "P", s: 56 }, { id: "up", code: "ArrowUp", name: "Up", cls: "cpad", glyph: SVG.up, g: "P", s: 56 },
-    { id: "down", code: "ArrowDown", name: "Down", cls: "cpad", glyph: SVG.down, g: "P", s: 56 }, { id: "right", code: "ArrowRight", name: "Right", cls: "cpad", glyph: SVG.right, g: "P", s: 56 },
+    { id: "left", code: "ArrowLeft", name: "Left", cls: "cpad arm left", glyph: SVG.left, g: "P", s: ARM }, { id: "up", code: "ArrowUp", name: "Up", cls: "cpad arm up", glyph: SVG.up, g: "P", s: ARM },
+    { id: "down", code: "ArrowDown", name: "Down", cls: "cpad arm down", glyph: SVG.down, g: "P", s: ARM }, { id: "right", code: "ArrowRight", name: "Right", cls: "cpad arm right", glyph: SVG.right, g: "P", s: ARM },
     { id: "call", code: "KeyC", name: "Call", cls: "round call", glyph: SVG.call, g: "A", s: 56 }, { id: "back", code: "Escape", name: "Back", cls: "round cback", glyph: SVG.back, g: "A", s: 56 },
     { id: "confirm", code: "Enter", name: "Confirm", cls: "round confirm", glyph: SVG.confirm, g: "A", s: 64 },
   ],
 };
-const keyEls = { station: [], companion: [] };   // { def, el }
+const keyEls = { station: [], companion: [] }, hubEl = {};   // { def, el }; the hubs
 function buildKeys() {
   for (const dev of ["station", "companion"]) {
     const host = $(dev === "station" ? "rowStation" : "rowCompanion");
+    const hub = document.createElement("div"); hub.className = "hub " + (dev === "station" ? "shub" : "chub"); host.appendChild(hub); hubEl[dev] = hub;   // the d-pad's centre: the cross is four arms round a hub
     for (const def of KEYS[dev]) {
       const b = document.createElement("button"); b.type = "button"; b.className = "k " + def.cls; b.innerHTML = def.glyph; b.setAttribute("aria-label", def.name); b.tabIndex = -1; wireKey(b, dev, def);
       host.appendChild(b); keyEls[dev].push({ def, el: b });
@@ -107,8 +112,10 @@ function wireKey(b, dev, def) {
 }
 
 // ---- the key trays (ruling 6.1): a tray is as wide as its shell, 72 CSS px a row; the groups wrap to two rows, a key never shrinks and the shell never widens ----
-const GAP = [16, 8], MARGIN = [8, 4], ROWH = 72, GROUPS = { station: ["P", "R", "A"], companion: ["P", "A"] }, INNER = { P: 4, R: 8, A: 8 };
+const GAP = [16, 8], MARGIN = [8, 4], GROUPS = { station: ["P", "R", "A"], companion: ["P", "A"] }, INNER = { P: 4, R: 8, A: 8 };
+const CROSS = { up: [ARM, 0], left: [0, ARM], right: [2 * ARM, ARM], down: [ARM, 2 * ARM] };   // the D-pad is a cross: up above, down below, left and right at the sides, a hub between (owner 2026-11-09)
 function groupOf(dev, n) {
+  if (n === "P") return { n, w: 3 * ARM, off: CROSS };   // each key's [x, y] in the cross
   const defs = KEYS[dev].filter((d) => d.g === n); let x = 0; const off = {};
   defs.forEach((d, i) => { off[d.id] = x; x += d.s + (i < defs.length - 1 ? INNER[n] : 0); });
   return { n, w: x, off };
@@ -117,14 +124,18 @@ function groupOf(dev, n) {
 function trayPlan(dev, T) {
   const gs = GROUPS[dev].map((n) => groupOf(dev, n)), by = Object.fromEntries(gs.map((g) => [g.n, g]));
   const need = (list, g, m) => list.reduce((a, x) => a + x.w, 0) + (list.length - 1) * g + 2 * m;
-  const sizeOf = Object.fromEntries(KEYS[dev].map((d) => [d.id, d.s])), pos = {}, put = (grp, x, row) => { for (const [id, o] of Object.entries(grp.off)) pos[id] = [S(x + o), S(row * ROWH + (ROWH - sizeOf[id]) / 2)]; };
+  const sizeOf = Object.fromEntries(KEYS[dev].map((d) => [d.id, d.s])), pos = {}, rowTop = (row) => (row ? CROSS_ROW : 0), rowH = (row) => (row ? ROWH : CROSS_ROW); let hub = null;
+  const put = (grp, x, row) => { for (const [id, o] of Object.entries(grp.off)) {
+    if (grp.n === "P") pos[id] = [S(x + o[0]), S(rowTop(row) + (rowH(row) - 3 * ARM) / 2 + o[1])];
+    else pos[id] = [S(x + o), S(rowTop(row) + (rowH(row) - sizeOf[id]) / 2)];
+    if (grp.n === "P") hub = [S(x + ARM), S(rowTop(row) + (rowH(row) - 3 * ARM) / 2 + ARM)]; } };
   const gm = (list) => { for (let i = 0; i < 2; i++) if (need(list, GAP[i], MARGIN[i]) <= T) return i; return -1; };
   const one = gm(gs);
   if (one >= 0) {   // one row: the D-pad at the left, the rooms centred (kept clear of both neighbours), the actions at the right
     const g = GAP[one], m = MARGIN[one], P = by.P, A = by.A, R = by.R;
     put(P, m, 0); put(A, T - m - A.w, 0);
     if (R) put(R, Math.min(Math.max((T - R.w) / 2, m + P.w + g), T - m - A.w - g - R.w), 0);
-    return { rows: 1, pos };
+    return { rows: 1, h: CROSS_ROW, pos, hub };
   }
   if (dev === "station") {   // row 1 the D-pad at the left and the rooms at the right; row 2 the actions, right-aligned
     const l1 = [by.P, by.R], i1 = gm(l1), m1 = MARGIN[i1 < 0 ? 1 : i1], g1 = GAP[i1 < 0 ? 1 : i1];
@@ -132,19 +143,22 @@ function trayPlan(dev, T) {
     const i2 = gm([by.A]), m2 = MARGIN[i2 < 0 ? 1 : i2];
     if (i2 >= 0) put(by.A, T - m2 - by.A.w, 1); else put(by.A, (T - by.A.w) / 2, 1);
   } else { put(by.P, (T - by.P.w) / 2, 0); put(by.A, (T - by.A.w) / 2, 1); }   // the Companion: the D-pad centred, then the actions centred
-  return { rows: 2, pos };
+  return { rows: 2, h: CROSS_ROW + ROWH, pos, hub };
 }
 
 // ---- layout ----
 const bar = $("bar"), stage = $("stage"), shS = $("shStation"), shC = $("shCompanion"), ring = $("ring"), cradle = $("cradle"), slot = $("slot"), lamp = $("lamp"), dev = $("dev"), keysPanel = $("keysPanel");
 const trayEl = { station: $("rowStation"), companion: $("rowCompanion") };
 const tabs = { station: $("tabStation"), companion: $("tabCompanion") }, dockCtl = $("dockCtl"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), note = $("note");
-const zDown = $("zDown"), zFit = $("zFit"), zUp = $("zUp"), stamp = $("stamp");
+const zDown = $("zDown"), zFit = $("zFit"), zUp = $("zUp"), stamp = $("stamp"), turnHint = $("turnHint");
 const GAPV = 24, TOP = 16, BOT = 16;   // CSS px: between blocks, from the bar, below the last block
 const geom = { station: null, companion: null, caddy: null, height: 0, rows: { station: 1, companion: 1 } };   // block boxes in stage CSS px, for the scroll and the checks
 
 function layout() {
   metrics();
+  if (phone) { layoutPhone(); return; }
+  document.body.classList.remove("phone"); bar.style.height = ""; stage.style.top = ""; stage.style.overflow = ""; ring.classList.remove("hidden"); turnHint.classList.add("hidden");
+  for (const dv of ["station", "companion"]) { trayEl[dv].classList.remove("side"); }
   const narrow = tier === "narrow", row = tier === "row";
   // the bar: 40 CSS px, controls 40 tall
   const tabW = narrow ? 104 : 124, tw = narrow ? [12, 124] : [12, 144];
@@ -164,7 +178,7 @@ function layout() {
   // the column(s): the shell (the face and 8 lp all round), its key tray joined below, the Companion's cradle under its tray, the Caddy's block
   const cwid = stage.clientWidth || CW;
   const sw = Zc(1040 * f), cw = Zc(466 * f), shH = 616 * f, cradleH = 28 * f, caddyW = 808 * f, caddyH = 288 * f;
-  const planS = trayPlan("station", sw), planC = trayPlan("companion", cw), trS = planS.rows * ROWH, trC = planC.rows * ROWH;
+  const planS = trayPlan("station", sw), planC = trayPlan("companion", cw), trS = planS.h, trC = planC.h;
   geom.rows = { station: planS.rows, companion: planC.rows };
   const y0 = narrow ? 28 : TOP;
   let xS, xC, yS = y0, yC, caddyX, caddyY, h;
@@ -181,16 +195,16 @@ function layout() {
   placeC(shS, xS, yS, sw, shH, true); place(frames.station, 8, 8, 1024, 600);
   placeC(shC, xC, yC + seatPx, cw, shH, true); place(frames.companion, 8, 8, 450, 600);
   placeC(trayEl.station, xS, yS + shH, sw, trS, true); placeC(trayEl.companion, xC, yC + shH, cw, trC, true);
-  for (const dv of ["station", "companion"]) { const pl = dv === "station" ? planS : planC; for (const { def, el } of keyEls[dv]) { const [kx, ky] = pl.pos[def.id]; placeC(el, kx, ky, def.s, def.s); } }
+  for (const dv of ["station", "companion"]) { const pl = dv === "station" ? planS : planC; trayEl[dv].style.setProperty("--pk", ARM + "px"); placeC(hubEl[dv], pl.hub[0], pl.hub[1], ARM, ARM); for (const { def, el } of keyEls[dv]) { const [kx, ky] = pl.pos[def.id]; placeC(el, kx, ky, def.s, def.s); } }
   // the Undock button: while the Companion is seated, beside its D-pad in its tray, as tall as a key; the same dockPress as the bar's control
   { const ub = $("undockBtn"), show = caddy.docked && caddy.canDock;
-    const row0 = KEYS.companion.map((d) => [planC.pos[d.id][0], planC.pos[d.id][0] + d.s, planC.pos[d.id][1]]).filter((q) => q[2] < ROWH).sort((a, b) => a[0] - b[0]);   // the keys of the tray's first row, left to right
+    const row0 = KEYS.companion.map((d) => [planC.pos[d.id][0], planC.pos[d.id][0] + d.s, planC.pos[d.id][1]]).filter((q) => q[2] < CROSS_ROW).sort((a, b) => a[0] - b[0]);   // the keys of the tray's first row, left to right
     let gap = { x: 0, w: 0 }, at = 8; for (const [x0, x1] of row0.concat([[cw - 8, cw - 8]])) { if (x0 - at > gap.w) gap = { x: at, w: x0 - at }; at = Math.max(at, x1); }
     // beside the tray: 12 px off its right edge when the page has the room, else off its left edge (a stack's Companion stands clear of the Station), else in the widest free stretch of its first row
     const UW = 104; let x = null, w = UW;
     if (xC + cw + 12 + UW <= cwid - 8) x = cw + 12; else if (!row && !narrow && xC - 12 - UW >= 8) x = -12 - UW;
     else { w = Math.min(UW, gap.w - 16); if (w >= 64) x = gap.x + Math.floor((gap.w - w) / 2); }
-    ub.classList.toggle("hidden", !show || x == null); if (show && x != null) placeC(ub, x, Math.floor((ROWH - 56) / 2), w, 56); ub.classList.toggle("pressed", pressed || caddy.pending); }
+    ub.classList.toggle("hidden", !show || x == null); if (show && x != null) placeC(ub, x, Math.floor((CROSS_ROW - 56) / 2), w, 56); ub.classList.toggle("pressed", pressed || caddy.pending); }
   const vis = (el, on) => { el.style.visibility = on ? "visible" : "hidden"; el.style.pointerEvents = on ? "" : "none"; };
   vis(shS, !narrow || owner === "station"); vis(trayEl.station, !narrow || owner === "station"); vis(shC, !narrow || owner === "companion"); vis(trayEl.companion, !narrow || owner === "companion");
   // the cradle and the seat
@@ -221,6 +235,57 @@ function layout() {
   if (row) placeC(dev, CW - 332, 52, 320, CH - 64); else { const w = tier === "stack" ? 360 : Math.min(360, CW); placeC(dev, CW - w, 40, w, CH - 40); }
   // the Keys ? panel
   keysPanel.classList.toggle("hidden", !keysOpen); if (keysOpen) placeC(keysPanel, Math.max(0, Math.floor((CW - 640) / 2)), 48, Math.min(640, CW), Math.min(CH - 56, 760));
+  window.__playRects = rects;
+}
+// ---- the phone (phone.mjs; owner 2026-11-09) ----
+// One device at a time, always whole: z fits the viewport's width and the free height (a whole number when one fits, a smooth step below 1). The bar holds only the Station / Companion switch and Options (everything
+// else is in the Options panel). Portrait: the device's shell spans the width, its key tray fills it below; landscape: the keys stand in a column each side of the screen. No scrolling, no Caddy, no cradle.
+const TURN_KEY = "mb-play-turn-hint";
+let turnState = (() => { try { return localStorage.getItem(TURN_KEY) ? "done" : "idle"; } catch { return "idle"; } })();   // the turn hint: idle, shown, done (once, never blocking)
+function placeFrameC(el, xc, yc, w, h) {   // a frame inside its shell at CSS px, scaled by z / k0 from its top left
+  const s = el.style, sc = k / k0;
+  s.left = "0px"; s.top = "0px"; s.transform = "translate(" + S(xc) + "px," + S(yc) + "px)" + (sc !== 1 ? " scale(" + sc + ")" : ""); s.transformOrigin = sc !== 1 ? "0 0" : "";
+  s.width = Math.ceil(Math.round(w * k0) / dpr * 64) / 64 + "px"; s.height = Math.ceil(Math.round(h * k0) / dpr * 64) / 64 + "px";
+}
+function layoutPhone() {
+  const portrait = isPortrait(CW, CH), P = PHONE_PAD, bh = PHONE_BAR, d = owner, areaW = CW - 2 * P, areaH = areaHeight(portrait, CH);
+  document.body.classList.add("phone"); bar.style.height = bh + "px"; stage.style.top = bh + "px"; stage.style.overflow = "clip";   // nothing scrolls, not even by a focus or a script
+  // the bar: the two-button device switch at the left (44 tall), Options at the right
+  const ow = 92, tw = Math.min(132, Math.floor((CW - 2 * P - ow - 12) / 2));
+  placeC(tabs.station, P, 4, tw, 44); placeC(tabs.companion, P + tw + 2, 4, tw, 44);
+  for (const dv of ["station", "companion"]) { tabs[dv].classList.toggle("on", owner === dv); tabs[dv].setAttribute("aria-pressed", String(owner === dv)); }
+  placeC(optionsBtn, CW - P - ow, 4, ow, 44); optionsBtn.classList.remove("corner"); optionsBtn.style.bottom = "";
+  // the devices
+  const hSh = 616 * f, geomOf = {};
+  for (const dv of ["station", "companion"]) {
+    const st = dv === "station", shell = st ? shS : shC, tray = trayEl[dv], fw = st ? 1024 : 450, shLp = st ? 1040 : 466;
+    let sx, sy = P, sw, T, plan, box;
+    if (portrait) {
+      T = Math.max(0, Math.min(trayMax(dv), Math.floor(areaH - hSh))); sx = P; sw = areaW; plan = planPortrait(dv, areaW, T);
+      box = { x: P, y: P + Math.ceil(hSh), w: areaW, h: T }; tray.classList.remove("side");
+    } else {
+      const sd = sides(dv, areaH), shW = shLp * f; sw = shW; sx = P + sd.LW + 8 + Math.max(0, Math.floor((areaW - sd.LW - sd.RW - 16 - shW) / 2)); plan = planLandscape(dv, areaW, areaH);
+      box = { x: P, y: P, w: areaW, h: areaH - 1 }; tray.classList.add("side");   // a pixel short: a size rounds up to a whole device pixel
+    }
+    placeC(shell, sx, sy, sw, hSh, true); placeFrameC(frames[dv], (sw - fw * f) / 2, 8 * f, fw, 600);
+    placeC(tray, box.x, box.y, box.w, box.h, true); tray.style.setProperty("--pk", plan.arm + "px"); placeC(hubEl[dv], plan.hub[0], plan.hub[1], plan.arm, plan.arm);
+    for (const { def, el } of keyEls[dv]) { const [kx, ky, kw, kh] = plan.pos[def.id]; placeC(el, kx, ky, kw, kh); }
+    geomOf[dv] = portrait ? { x: P, y: P, w: areaW, h: Math.ceil(hSh) + T } : { x: sx, y: P, w: sw, h: hSh };
+    const on = d === dv; for (const el of [shell, tray]) { el.style.visibility = on ? "visible" : "hidden"; el.style.pointerEvents = on ? "" : "none"; }
+    if (!portrait) tray.style.pointerEvents = "none";   // the landscape tray is the whole area: only its keys take a touch
+  }
+  geom.station = geomOf.station; geom.companion = geomOf.companion; geom.rows = { station: 1, companion: 1 };
+  const g = geomOf[d]; geom.height = portrait ? P + g.h + P : CH - bh;
+  for (const el of [ring, cradle, caddyBlock, lampsEl, printBox, dev, $("undockBtn")]) el.classList.add("hidden");
+  spacer.style.top = "0px"; spacer.style.left = "";
+  // the build stamp: in the free strip under a portrait tray when there is one
+  const free = CH - bh - (P + g.h + P); stamp.classList.toggle("hidden", !portrait || free < 20); if (portrait && free >= 20) placeC(stamp, 0, CH - bh - 18, CW - P, 12, true);
+  // the turn hint: once, a quiet line under the portrait Station when turning the phone gives a bigger one
+  const want = portrait && d === "station" && biggerTurned(CW, CH, dpr);
+  if (want && turnState === "idle") { turnState = "shown"; try { localStorage.setItem(TURN_KEY, "1"); } catch { /* no storage: shown again next visit */ } }
+  else if (!want && turnState === "shown") turnState = "done";
+  turnHint.classList.toggle("hidden", !(want && turnState === "shown")); if (want && turnState === "shown") placeC(turnHint, P, P + g.h + 10, areaW, 16);
+  keysPanel.classList.toggle("hidden", !keysOpen); if (keysOpen) placeC(keysPanel, 0, 48, CW, Math.min(CH - 56, 760));
   window.__playRects = rects;
 }
 function dockTitle() {
@@ -556,6 +621,7 @@ try { if (sessionStorage.getItem(FRESH_KEY)) { sessionStorage.removeItem(FRESH_K
 function applyDev(on) { devBtn.classList.toggle("hidden", !on); for (const id of ["helpDevK", "helpDevD"]) $(id).classList.toggle("hidden", !on); if (!on && devOpen) toggleDev(false); }
 mountOptions($("optionsRoot"), {
   trigger: optionsBtn, read: readOptions, names: Object.keys(NAME_LISTS), places: PLACES,
+  phone: () => phone, dock: () => ({ docked: caddy.docked, enabled: caddy.canDock && !pressed && !seatBusy, title: dockTitle() }), onDock: () => dockPress(),   // on a phone the bar holds only the device switch and Options: the Dock control lives in the panel
   onChange: (patch) => { writeOptions(patch); if ("dev" in patch) applyDev(patch.dev); },
   onClose: (changed) => { if (changed) location.reload(); giveKeys(owner); },
   onStartFresh: () => { try { sessionStorage.setItem(FRESH_KEY, "1"); } catch { return; } location.reload(); },
@@ -567,7 +633,7 @@ function layoutOptions(narrow, rightEdge) {   // in the bar after the Companion 
 }
 // ---- boot ----
 buildKeys();
-for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner("station"); } } });
+for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner(START_OWNER); } } });
 let gotLoadOwner = false;
 frames.station.src = stationUrl; frames.companion.src = companionUrl;
 if (DEV) { applyDev(true); devOpen = true; }   // the Developer tools option shows the button and its help row, and opens the tools at load
@@ -580,7 +646,7 @@ armDpr(); window.addEventListener("resize", layout);
 fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => { stamp.textContent = stampText(j); }).catch(() => { stamp.textContent = "build local"; });
 layout(); reveal(owner, true);   // the page opens revealed for the device with the keys (the Station on a fresh load); no scroll position is restored
 // for the play-page journey: read-only views of the shell's state
-window.__play = { get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get tier() { return tier; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get pressed() { return pressed; },
+window.__play = { get phone() { return phone; }, get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get tier() { return tier; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get pressed() { return pressed; },
   get caddySheet() { return { up: tier !== "narrow", id: drawn ? drawn.id : null, lines: drawn ? { ...drawn.lines } : null, crates: drawn ? drawn.crates : 0, ledger: drawn ? drawn.ledger : null, marks: drawn ? { ...drawn.marks } : null, next: faceNow ? faceNow.id : null, counts: sched.counts, log: drawnLog.slice(), ops: sched.state.log.map((o) => ({ kind: o.kind, id: o.id, at: o.at, regions: o.regions })), busy: now() < sched.state.busyUntil, note: noteCaddy,
     lamp: { companion: lampOf.c, station: faceNow ? faceNow.lamp.station : "off", dot: dotC.dataset.lamp, stationDot: dotS.dataset.lamp }, pixels: () => Array.from(vctx.getImageData(0, 0, 792, 272).data.filter((_, i) => i % 4 === 0)) }; },
   get dock() { return { up: svc.up, world: svc.esWorld, snap: svc.snap, sensed: JSON.parse(JSON.stringify(sensed)), hold, comp, fault, heardAt, slot: cslot }; }, setSwitch, switchCompanion, rects, frames };
