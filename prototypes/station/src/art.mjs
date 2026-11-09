@@ -1,7 +1,7 @@
 // The placeholder register and every drawn stand-in. Engineers do not do art (decided): everything here
 // stands in for a master the art director has not made yet, stays plainly a placeholder, and is listed
-// in PLACEHOLDERS so masters replace them one by one. The mibi itself is the placeholder of the
-// placeholder brief (plain.mjs, the stylised rig pass), rendered from the genome through the workbench.
+// in PLACEHOLDERS so masters replace them one by one. The mibi itself is never drawn by the plain renderer
+// (art director, 2026-11-09): pictures.mjs places the kind's signed painted stand.
 import { PB, C, RGB, art, fromRGBA, cropPB, scalePB, flipPB, upPB, bay, lite, shade, clock, motion } from "./pixels.mjs";
 import { buildIndividual, shapeTrait, genomeDigest, stampGenome, stampFrameOf } from "./genome.mjs";
 import { fitCamera, resolveCamera, VIEWS } from "../../workbench/framework/raster.mjs";
@@ -14,7 +14,6 @@ import { treat } from "./unknown.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
-  { id: "mibi", what: "every mibi and founder: the placeholder of the plain renderer (flat slots, outline, no face, no material), quantised to the palette; on Home a resident (144×152 or 104×112) and a sleeper (fitted in 96×88) are the same stand-in, standing and never mirrored, with no nap pose; a juvenile shows the art director's signed juvenile stand-in at its size (mibi-juvenile-<species>-<w>x<h>, masters-pods be36e701) and an adult or elder its species' signed adult stand when placed (mibi-adult-<species>-<w>x<h>, the adult plan), so this placeholder is Create's founder, and any mibi whose stand-in is not placed", until: "the Grow painting lands (M3), and the rig's own placeholder brief is finished" },
   { id: "stand-layers", what: "the layered Loika stands (S01 adult at 304×312, 144×152, 96×96 and 48×48; juvenile at 304×312, 104×112, 96×96 and 48×48; in the poses anchor, curl, shake and calm), composed per mibi from its drawn looks (looks.mjs, layered-stand.mjs): the signed version 4 bare base key of each pose (anchor, curl; shake and calm cut from the floor set's signed final ids, sha256-checked against floor/S01/manifest.json), the crest overlay, the patches and the stripes layers (ui/assets/stands, cut by tools/make-stand-layers.py). Stand-ins: the 16 eye-ring overlays (thin, wide; ui/assets/stands/index.json standIns, from layers/register.json) draw as the base's \"between\" rings; colour is the charcoal base until the ramps", until: "the eye-ring overlays (hand cut) and the colour ramps (T-20261016-203)" },
   { id: "habit-key-owed", what: "a pose card, thumb or window whose habit has no signed held key: the derived stand (every S02 and S03 habit, and an S01 habit outside stands.S01.habits)", until: "the habit's signed key, cut by make-stand-layers.py" },
   { id: "trait-picture", what: "a trait's picture: a close-up of this pod's mibi in the placeholder, cropped around the part the trait names", until: "the Grow painting's close-ups" },
@@ -29,7 +28,6 @@ export const PLACEHOLDERS = [
   { id: "cargo-rack-992x168", what: "Cargo's rack insert 992×168 at (16, 384): the sage strip with six fitted wells, placed 1:1; a master missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
   { id: "cargo-report-plate-560x{128..288}", what: "the report plate set into the bay's door, 21 exact heights (128 to 288 by 8), placed 1:1; a height missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
   { id: "crate-shadow-256x24, crate-shadow-432x24, cargo-store-shadow-72x21", what: "the contact shadows under the bay's crates, the opening's closer and the haul's containers, placed 1:1; a master missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
-  { id: "founder-304x312", what: "Create's founder, 304×312: the plain renderer's placeholder (the stylised rig pass), frosted where a chapter is unread; with nothing read the whole of it on its own outline; the roll's dither is composed from two of them", until: "the Grow painting and the rig's own placeholder brief" },
   { id: "roll-128x72", what: "the roll's pictures, roll-{species}-{trait}-{look}-128x72: one PH plate for each look; the ring, the notches and the order are the real ones", until: "the roll close-ups cut from the paintings" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
 ];
@@ -159,15 +157,6 @@ export function dropSpecks(pb, min = 8) {
   return pb;
 }
 const blobArt = (w, h) => { const pb = new PB(w, h); pb.ell(w / 2, h / 2, w * 0.4, h * 0.4, C.frostD, { sh: [C.frost, C.frostS] }); pb.outline(() => C.stone); return pb; };
-// A mibi at w×h in a view ("portrait" faces viewer-left; "three-quarter" the flank), transparent around it.
-export function mibiArt(frame, genome, w, h, view = "portrait", flip = false) {
-  const key = "mb" + genomeDigest(genome) + ":" + w + "x" + h + ":" + view;
-  const pb = art(key, () => { const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") return blobArt(w, h);
-    return renderPB(b.scene, fitCamera(b.scene, view, [w, h], 0.06), "station"); });   // the Station's pass at every size: its ground stays the plain ground, so it clears to a sprite
-  return flip ? art(key + "f", () => flipPB(pb)) : pb;
-}
-// The species' face: its type specimen (the frame's typical body) in the placeholder.
-export function speciesArt(frame, w, h, view = "portrait") { return frame.typeSpecimen?.genome ? mibiArt(frame, frame.typeSpecimen.genome, w, h, view) : blobArt(w, h); }
 
 
 // ---------- Trait pictures: a close-up of this pod's mibi around the part the trait names ----------

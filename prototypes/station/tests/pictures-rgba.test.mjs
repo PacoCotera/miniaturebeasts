@@ -7,7 +7,7 @@ import { PB, C, RGB } from "../src/pixels.mjs";
 import { figureFromLayers } from "../src/podmasters.mjs";
 import { registerAsset, asset, dropAsset } from "../../ui/assets.mjs";
 import { dimRGBA, dimPicture, labelPlate, WARM, plateReq, plateMasterReq, PLATE_MASTER } from "../src/stamplook.mjs";
-import { beamArt, UNREAD_REGION, treatmentOf, builtOf, founderArt, drawnDigest, mibiArt, dropSpecks } from "../src/art.mjs";
+import { beamArt, UNREAD_REGION, treatmentOf, builtOf, founderArt, drawnDigest, dropSpecks } from "../src/art.mjs";
 import { typeSpecimen, genomeDigest } from "../../workbench/framework/species.mjs";
 import { fitCamera } from "../../workbench/framework/raster.mjs";
 import { setFrames } from "../src/genome.mjs";
@@ -377,8 +377,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
     }
   });
   test("founderArt: clear is the palette's own rig; ghost and veil are the treatment's pixels on the rig's alpha; unread Glow and Charge are drawn at none and solid and are in the drawn digest", () => {
-    const fr = frameOf("S01"), g = typeSpecimen(fr), all = fr.chapters.map((c) => c.id), [w, h] = [304, 312], base = mibiArt(fr, g, w, h, "portrait");
-    const clear = founderArt(fr, g, all, w, h).rgba(), live = (a) => { let n = 0; for (let i = 3; i < a.length; i += 4) if (a[i]) n++; return n; }; assert.ok(live(clear) <= live(base.rgba()) && live(clear) > live(base.rgba()) - 60, "clear: the rig as it is, less the stray specks of its cast shadow (fix 6 N4)");
+    const fr = frameOf("S01"), g = typeSpecimen(fr), all = fr.chapters.map((c) => c.id), [w, h] = [304, 312];
     const ghost = founderArt(fr, g, [], w, h), a = (p) => [...p.rgba()].filter((_, i) => i % 4 === 3), clearP = founderArt(fr, g, all, w, h); assert.deepEqual(a(ghost), a(clearP), "alpha unchanged"); assert.notDeepEqual([...ghost.rgba()], [...clearP.rgba()]);
     const coat = founderArt(fr, g, all.filter((c) => c !== "coat"), w, h); assert.deepEqual(a(coat), a(clearP)); assert.notDeepEqual([...coat.rgba()], [...clearP.rgba()]);
     const s16 = frameOf("S16"), g16 = typeSpecimen(s16), r16 = s16.chapters.map((c) => c.id);
