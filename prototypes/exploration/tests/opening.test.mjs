@@ -188,7 +188,10 @@ const ofiles = readdirSync(ODIR).filter((f) => f.endsWith(".png")).sort(), HASHE
 test("the opening art: every placed file is the desk's byte for byte (and its recorded hash), the manifest is placed, the page names exactly these files", () => {
   assert.equal(ofiles.length, 12); assert.deepEqual(Object.keys(HASHES).sort(), ofiles);
   for (const f of ofiles) assert.equal(sha(readFileSync(new URL(f, ODIR))), HASHES[f], f);
-  if (existsSync(DESK)) { for (const f of [...ofiles, "manifest.json"]) assert.ok(readFileSync(new URL(f, ODIR)).equals(readFileSync(DESK + f)), f + " differs from the desk's file"); }
+  if (existsSync(DESK)) { for (const f of ofiles) assert.ok(readFileSync(new URL(f, ODIR)).equals(readFileSync(DESK + f)), f + " differs from the desk's file");
+    // the placed manifest is the desk's minus "brief" (an internal path, kept out of the public repo)
+    const desk = JSON.parse(readFileSync(DESK + "manifest.json", "utf8")); delete desk.brief;
+    assert.deepEqual(JSON.parse(readFileSync(new URL("manifest.json", ODIR), "utf8")), desk, "manifest.json differs from the desk's file (less its brief)"); }
   else console.log("# the desk's out/ is not beside this repo: byte check against the recorded hashes only");
   assert.deepEqual([...opening().run("OPEN_FILES")].sort(), ofiles.map((f) => f.slice(0, -4)));
 });
