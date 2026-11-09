@@ -239,7 +239,7 @@ function checkRegion(G, biome) {
 // ---- the realm: attempts until every region passes ----
 // A region that fails is re-drawn with the next attempt number; the attempt only moves that slot's own parameters and its piece draws, and the blend carries the
 // change into the neighbours' border cells by position, so the borders still agree. Rounds repeat until every region passes (or ROUNDS is spent).
-export const ROUNDS = 24;
+export const ROUNDS = 64;   // was 24: with stairs only where a south-facing face exists, two marsh regions of seeds 1-200 (62 and 173) needed more draws
 const cache = new Map();
 export function realm7(seed) {
   if (cache.has(seed)) return cache.get(seed);
