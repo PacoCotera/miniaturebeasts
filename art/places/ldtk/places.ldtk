@@ -1715,6 +1715,21 @@
 						"tileRect": null
 					},
 					{
+						"id": "clump-tall-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "clump-tall-s",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "clump-tall-sm",
+						"color": 0,
+						"tileRect": null
+					},
+					{
 						"id": "fleck-0",
 						"color": 0,
 						"tileRect": null
