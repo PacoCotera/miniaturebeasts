@@ -171,6 +171,7 @@ test('prepare-set refuses a recipe whose source names the Zelda-like set (fixtur
   const recipe = JSON.parse(readFileSync(path.join(setDir, 'recipe.json'), 'utf8'));
   for (const k of Object.keys(recipe.sources)) recipe.sources[k] = 'zelda-like-armm1998/Overworld.png';
   recipe.decals = { probe: { sheet: 'nature', rect: [0, 0, 16, 16], anchor: [8, 8] } };   // the set draws no kit picture now: the fixture brings one to read the source
+  delete recipe.desk;   // the fixture's own source only: the desk's pinned art lives outside this repo (absent in CI)
   assert.throws(() => prepareSet(recipe, { tilesetsRoot: root }), /Zelda-like/);
 });
 
