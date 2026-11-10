@@ -175,7 +175,7 @@ jobs:
           node prototypes/places/tools/bake.mjs --check
       - name: Station rules (node tests)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        timeout-minutes: 15   # about 10 without the long walk proofs (MB_CI_FAST: they run in full locally before every merge)
+        timeout-minutes: 25   # about 15 without the long walk proofs (raised 2026-11-10: the suite reached 15) (MB_CI_FAST: they run in full locally before every merge)
         # The Station's rules and the Caddy service in Node, and the other prototypes' tests.
         # The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
         run: |
