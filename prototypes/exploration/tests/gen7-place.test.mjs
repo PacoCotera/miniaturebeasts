@@ -9,7 +9,10 @@ import { bakeIR } from '../tools/gen7-render.mjs';
 import { decorProps } from '../tools/gen7-decor-props.mjs';
 import { TABLE } from '../src/gen7/decor.mjs';
 
-for (const seed of [7, 13, 42]) {
+// The whole-world proofs take about five minutes a seed. A pull request into main (MB_CI_FAST=1) runs seed 7 and seeds 1-5 only; the full set runs locally before every merge.
+const FAST = process.env.MB_CI_FAST === '1';
+
+for (const seed of FAST ? [7] : [7, 13, 42]) {
   test(`seed ${seed}: every cell holds the scheme's rules for tiles, cliffs, edges, ways up and the bake`, { timeout: 900000 }, () => {
     const s = placeProps(seed);
     const hist = Object.keys(s.runHist).map(Number).sort((a, b) => a - b).map(k => k + ':' + s.runHist[k]).join(' ');
@@ -126,7 +129,7 @@ for (const seed of [7, 13, 42]) {
 test('seeds 1-50: reed clumps stand on the shore and in the shallows (never on deep water), tone patches keep a full cell off every edge', { timeout: 1800000 }, () => {
   const CELLS = [[36, 48], [20, 30], [50, 70], [10, 90], [60, 20], [40, 40]], land = v => v === TV.GRASS || v === TV.SAND;
   let inWater = 0, onDeep = 0, notShallow = 0, farFromLand = 0, shore = 0, shoreNoWater = 0, patchTiles = 0, patchNear = 0;
-  for (let seed = 1; seed <= 50; seed++) {
+  for (let seed = 1; seed <= (FAST ? 5 : 50); seed++) {
     const D = decorOf(seed), T = worldTiles(seed);
     for (const [X, Y] of CELLS) {
       const x0 = X * CW, y0 = Y * CH;
