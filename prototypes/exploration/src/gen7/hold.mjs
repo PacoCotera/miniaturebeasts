@@ -11,7 +11,7 @@
 //   traces     [{ kind: 'outpost'|'beacon', x, y }]       explorers' traces, only where the region already places them
 //   strikes    [{ x, y, age, glass, read: false }]        strike marks (section 4.7a); age = world turns since the strike, glass = storm glass lies in it (sand only)
 // No hearts, springs or clue gleams: section 4 replaces them.
-import { hash, L, MW, MH, HERD, groundName, genLife5, sideKind, softGround, bankEdges } from '../world.mjs';
+import { hash, L, MW, MH, HERD, groundName, genLife5, sideKind, softGround, bankEdges, canStepIn } from '../world.mjs';
 import { ATLAS, regionKinds, KIND_INFO } from '../regions.mjs';
 import { realm7, route, NC } from './region.mjs';
 import { CW, CH } from './world.mjs';
@@ -52,12 +52,17 @@ function startsOf(seed) {
   STARTS.set(seed, by); return by;
 }
 const HOSTS = new Map();
-// the cell that holds the strike mark guaranteed to a start: the cell of its 3 x 3 with the most bare ground (the start's own on a tie); bareOf(X, Y) counts it
+// the cell that holds the strike mark guaranteed to a start: the cell of its 3 x 3 with the most bare ground (the start's own on a tie); bareOf(X, Y) counts it.
+// Only a cell the Probe can walk to is named: inside the start's region, reached from the start by steps over open or ramp sides within one cell of it (the walk's own reach, no partner skill).
 function hostOf(seed, st, bareOf) {
   const key = seed + ':' + st.X + ',' + st.Y, hit = HOSTS.get(key); if (hit) return hit;
-  const R = realm7(seed), land = (X, Y) => { const G = R.regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)]; if (!G || X < 0 || Y < 0) return false; const c = (Y % MH) * MW + (X % MW); return G.land[c] !== L.WATER && !G.island[c]; };
-  let best = [st.X, st.Y], bn = land(st.X, st.Y) ? bareOf(st.X, st.Y) * 1.01 : -1;
-  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = st.X + dx, Y = st.Y + dy; if (X < 0 || Y < 0 || X >= MW * ATLAS || Y >= MH * ATLAS || (!dx && !dy) || !land(X, Y)) continue; const n = bareOf(X, Y); if (n > bn) { bn = n; best = [X, Y]; } }
+  const G = realm7(seed).regions[st.slot[1] * ATLAS + st.slot[0]], c0 = (st.Y % MH) * MW + (st.X % MW), x0 = c0 % MW, y0 = (c0 / MW) | 0;
+  const seen = new Set([c0]), q = [c0];
+  while (q.length) { const c = q.shift(), x = c % MW, y = (c / MW) | 0;
+    for (const [dir, dx, dy] of [['up', 0, -1], ['right', 1, 0], ['down', 0, 1], ['left', -1, 0]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH || Math.max(Math.abs(X - x0), Math.abs(Y - y0)) > 1) continue;
+      const d = Y * MW + X; if (seen.has(d) || G.island[d] || !canStepIn(G, c, dir)) continue; seen.add(d); q.push(d); } }
+  let best = [st.X, st.Y], bn = G.land[c0] !== L.WATER && !G.island[c0] ? bareOf(st.X, st.Y) * 1.01 : -1;
+  for (const d of seen) { if (d === c0) continue; const X = st.X + (d % MW) - x0, Y = st.Y + ((d / MW) | 0) - y0, n = bareOf(X, Y); if (G.land[d] !== L.WATER && n > bn) { bn = n; best = [X, Y]; } }
   if (HOSTS.size > 5000) HOSTS.clear();
   HOSTS.set(key, best); return best;
 }

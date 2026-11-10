@@ -7136,7 +7136,7 @@ loadAtlas();   // the 48 px place art, in the background: places draw at 32 unti
 const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
 loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
 loadMomentArt();   // the art desk's painted stands for the care moments
-loadPlaces();   // generator 6's places (the four templates and their mirrors)
+loadPlaces();   // the places kit: the tile set, the terrain layers and the range haze that generator 7's cells are drawn with
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave

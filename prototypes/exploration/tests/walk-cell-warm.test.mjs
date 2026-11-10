@@ -137,7 +137,7 @@ test("what warming keeps stays bounded however far the walk goes", { skip }, asy
     const { page, errors } = await onMap(browser, url, 5, 2);
     await page.evaluate(`(${STEP})({ settle: 0, first: true })`);
     for (let i = 0; i < 24; i++) await page.evaluate(`(${STEP})({ settle: 300, first: false })`);
-    const k = await page.evaluate(() => { const m = window.__mb; return { whole: m.WHOLE.size, wholeMax: m.WARM_WHOLE_MAX, arr: m.ARR.size, ring: m.PL6.ring ? m.PL6.ring.list.length : 0, ringMax: m.PL6.ring ? m.PL6.ring.max : 0, views: m.PL6.views.size, queue: m.WARM.queue.length }; });
+    const k = await page.evaluate(() => { const m = window.__mb; return { whole: m.WHOLE.size, wholeMax: m.WARM_WHOLE_MAX, arr: m.ARR.size, ring: m.PL.ring ? m.PL.ring.list.length : 0, ringMax: m.PL.ring ? m.PL.ring.max : 0, views: m.PL.views.size, queue: m.WARM.queue.length }; });
     assert.deepEqual(errors, []);
     assert.ok(k.whole <= k.wholeMax, "arrival pictures: " + JSON.stringify(k));
     assert.ok(k.arr <= 12, "arrival progress: " + JSON.stringify(k));

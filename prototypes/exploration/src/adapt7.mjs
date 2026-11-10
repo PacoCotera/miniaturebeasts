@@ -43,21 +43,25 @@ export function adaptCell(place, ir, ts, terrains, o) {
   // A cell is walked from every way in (the generator holds that each walkable tile is reached from some side), so the walkable ground is the union of what each opening reaches. Each reached tile
   // carries the number of the first opening whose flood reached it (compId, 0: unreached), and compOfSide says which number a side's way in leads to: a player who comes in by that side starts there.
   const compId = new Uint8Array(NP), compOfSide = {}; let nc = 0;
-  for (const pt of [spawnPt, ...openings.map(arrive)]) {
+  // every tile along a way in (a wall may split a run: its middle can lie on a cut-off strip while the rest of the run leads to the main ground)
+  const runPts = (op) => { const out = []; for (let k = op.from - 1; k <= op.to - 1; k++) out.push(op.side === 'N' ? { x: k, y: 0 } : op.side === 'S' ? { x: k, y: h - 1 } : op.side === 'W' ? { x: 0, y: k } : { x: w - 1, y: k }); return out; };
+  for (const pt of [spawnPt, ...openings.map(arrive), ...openings.flatMap(runPts)]) {
     if (!walks(pt.x, pt.y)) continue;
     let id = compId[I(pt.x, pt.y)];
     if (!id) { id = ++nc; const stack = [I(pt.x, pt.y)]; compId[stack[0]] = id;
       while (stack.length) { const i = stack.pop(), x = i % w, y = (i / w) | 0;
         for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!compId[j] && !T_BLOCK[tiles[j]]) { compId[j] = id; stack.push(j); } } } }
   }
-  openings.forEach(op => { const pt = arrive(op); if (walks(pt.x, pt.y) && compOfSide[op.side] == null) compOfSide[op.side] = compId[I(pt.x, pt.y)]; });
   const reach = compId.map(v => v ? 1 : 0), size = new Array(nc + 1).fill(0); for (let i = 0; i < NP; i++) size[compId[i]]++;
   let mainComp = 1; for (let k = 1; k <= nc; k++) if (size[k] > size[mainComp]) mainComp = k;   // the biggest ground: where a walk that comes from no side starts
   // the IR names the ground the cell's finds lie on (src/gen7/hold.mjs `ground`): a walk that comes from no side starts there, on a way in that leads to it
   if (ir.ground && walks(ir.ground.x - 1, ir.ground.y - 1) && compId[I(ir.ground.x - 1, ir.ground.y - 1)]) {
     mainComp = compId[I(ir.ground.x - 1, ir.ground.y - 1)];
-    const into = openings.map(arrive).find(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp); if (into) spawnPt = into;
+    const into = [...openings.map(arrive), ...openings.flatMap(runPts)].find(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp); if (into) spawnPt = into;
   }
+  // a side leads to the main ground when any tile of its ways in touches it; else to the ground its first way in's middle leads to
+  const touches = {}; openings.forEach(op => { if (runPts(op).some(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp)) touches[op.side] = 1; });
+  openings.forEach(op => { const pt = arrive(op); if (compOfSide[op.side] == null) { if (touches[op.side]) compOfSide[op.side] = mainComp; else if (walks(pt.x, pt.y)) compOfSide[op.side] = compId[I(pt.x, pt.y)]; } });
   const nextTo = (x, y) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const X = x + dx, Y = y + dy; return X >= 0 && Y >= 0 && X < w && Y < h && reach[I(X, Y)]; });
   const standable = (x, y) => x >= 0 && y >= 0 && x < w && y < h && !T_BLOCK[tiles[I(x, y)]];
   // finds: a pod is a slot (the world's pods take them), the rest are the page's features. A find nobody could stand beside is dropped.

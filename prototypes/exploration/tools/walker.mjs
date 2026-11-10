@@ -15,6 +15,16 @@ const NEXT_STEP = `(x, y, onto) => { const P = S.exp.patch, lay = layout(P.key),
       seen.set(i, [cy * lay.w + cx, dir]); if (done(X, Y)) { let j = i, st = null; while (seen.get(j)) { st = seen.get(j)[1]; j = seen.get(j)[0]; } return st; } q.push([X, Y]); } }
   return null; }`;
 
+// The first step toward the open tile nearest (x, y) among those the pawn can reach (the aim may be a tree, a stone or a mark): 'here' when the pawn stands on it, null when boxed in.
+const NEAR_STEP = `(x, y) => { const P = S.exp.patch, lay = layout(P.key), D = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, seen = new Map([[P.y * lay.w + P.x, null]]), q = [[P.x, P.y]];
+  let best = P.y * lay.w + P.x, bd = (P.x - x) ** 2 + (P.y - y) ** 2;
+  while (q.length) { const [cx, cy] = q.shift();
+    for (const [dir, [dx, dy]] of Object.entries(D)) { const X = cx + dx, Y = cy + dy, i = Y * lay.w + X;
+      if (X < 0 || Y < 0 || X >= lay.w || Y >= lay.h || seen.has(i) || occupant(P.key, X, Y, 'player')) continue;
+      seen.set(i, [cy * lay.w + cx, dir]); const d = (X - x) ** 2 + (Y - y) ** 2; if (d < bd) { bd = d; best = i; } q.push([X, Y]); } }
+  if (best === P.y * lay.w + P.x) return 'here';
+  let j = best, st = null; while (seen.get(j)) { st = seen.get(j)[1]; j = seen.get(j)[0]; } return st; }`;
+
 // A fresh page at generator 7 (or `gen`), a new world of `seed`.
 export function newPage(seed, { gen = 7, calm = false } = {}) {
   const p = makePage({ console: "silent", date: FIXED_DATE, gen });
@@ -35,6 +45,15 @@ export function makeWalker(p, { budget = 1e9, verbose = false, tag = "" } = {}) 
   const walk = (x, y, onto, n = 80) => {
     for (let i = 0; i < n && phase() === "patch"; i++) {
       const st = next(x, y, onto); if (st === "here") return true; if (!st) return false;
+      key(st); if (budgetGone()) return false;
+    }
+    return false;
+  };
+  // in the open place: toward the open tile nearest (x, y) that can be reached; stops after n steps or when there
+  const nearStep = p.run("(" + NEAR_STEP + ")");
+  const walkNear = (x, y, n = 80) => {
+    for (let i = 0; i < n && phase() === "patch"; i++) {
+      const st = nearStep(x, y); if (st === "here") return true; if (!st) return false;
       key(st); if (budgetGone()) return false;
     }
     return false;
@@ -78,5 +97,5 @@ export function makeWalker(p, { budget = 1e9, verbose = false, tag = "" } = {}) 
   // walk the map along a list of steps; false if the phase changed or the budget ran out
   const steps = (way) => { for (const d of way) { if (phase() !== "map" || budgetGone()) return false; key(d); } return true; };
 
-  return { p, key, phase, acts, cargo, room, walk, facing, shownPods, takePodAt, takeShownPods, items, itemCount, leave, road, unvisited, wayHome, steps, budgetGone, say, log };
+  return { p, key, phase, acts, cargo, room, walk, walkNear, facing, shownPods, takePodAt, takeShownPods, items, itemCount, leave, road, unvisited, wayHome, steps, budgetGone, say, log };
 }

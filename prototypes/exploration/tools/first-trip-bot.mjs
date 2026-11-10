@@ -20,6 +20,16 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
     out.places++; w.say("in place " + p.S.exp.pos + (thorough ? " (properly)" : ""));
     key("call"); w.takeShownPods(); takeReadings();
     for (const [fx, fy] of thorough ? THOROUGH : QUICK) { if (enough() || phase() !== "patch" || w.budgetGone()) break; if (!walkTo(fx, fy)) continue; key("call"); w.takeShownPods(); takeReadings(); }
+    // A properly-visited place with no pod held yet: Call on over a lattice a Call's reach apart (7 tiles round, so 8 apart) until a pod shows, the stop nearest first.
+    if (thorough && cargo().pods < 1 && phase() === "patch") {
+      const lay = p.run("(() => { const l = layout(S.exp.patch.key); return { w: l.w, h: l.h }; })()"), left = [];
+      for (let y = 3; y < lay.h; y += 8) for (let x = 3; x < lay.w; x += 8) left.push([x, Math.min(y, lay.h - 3)]);
+      if (lay.w - 1 - left[left.length - 1][0] > 3) for (let y = 3; y < lay.h; y += 8) left.push([lay.w - 3, Math.min(y, lay.h - 3)]);
+      while (left.length && phase() === "patch" && cargo().pods < 1 && !w.budgetGone()) {
+        const q = p.S.exp.patch; left.sort((a, b) => Math.hypot(a[0] - q.x, a[1] - q.y) - Math.hypot(b[0] - q.x, b[1] - q.y));
+        const [x, y] = left.shift(); w.walkNear(x, y, 40); if (phase() !== "patch") break; key("call"); w.takeShownPods(); takeReadings();
+      }
+    }
     w.leave();
   };
   // every strike mark the Call shows, nearest first: walk beside it, face it, press ✓
@@ -32,13 +42,13 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
     }
   };
   // a few steps toward a point of the place (fractions of its width and height), to see more of it
-  const walkTo = (fx, fy) => { const lay = p.run("(() => { const l = layout(S.exp.patch.key); return { w: l.w, h: l.h }; })()"); return w.walk(Math.round(lay.w * fx), Math.round(lay.h * fy), true, 40) || phase() === "patch"; };
+  const walkTo = (fx, fy) => { const lay = p.run("(() => { const l = layout(S.exp.patch.key); return { w: l.w, h: l.h }; })()"); return w.walkNear(Math.round(lay.w * fx), Math.round(lay.h * fy), 40) || phase() === "patch"; };   // the open tile nearest the aim: the aim itself may be a tree, a stone or a mark
 
   key("confirm"); key("confirm");   // Weather, then the first glint offered
   if (!p.S.exp) { out.why = "no walk started"; return out; }
   w.say("start cell " + p.S.exp.pos);
   // A cell crossed on the map is "visited" to the page but not gone into: the bot keeps its own lists of the places it has been into, and into properly.
-  const entered = new Set(), proper = new Set(), cellsInReach = () => p.run("(() => S.exp.reach.filter(c => G.comp[c] && G.land[c] !== L.WATER && passable(c) && !G.island[c] && c !== G.gate))()");
+  const entered = new Set(), proper = new Set(), cellsInReach = () => p.run("(() => S.exp.reach.filter(c => G.comp[c] && G.land[c] !== L.WATER && passable(c) && !G.island[c]))()");   // the cave-gate cell too: its ground is walked like any other (only the cave under it is gated)
   const near = (() => { const s = p.run("cxy(S.exp.start)"); return (c) => { const q = p.run(`cxy(${c})`); return Math.max(Math.abs(q.x - s.x), Math.abs(q.y - s.y)) <= 1; }; })();
   const STAGES = [(c) => near(c) && !proper.has(c), (c) => !entered.has(c), (c) => !proper.has(c)];   // the start and its neighbours properly; every cell in reach quickly; every cell properly
   let stage = 0;

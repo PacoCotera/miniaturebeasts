@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { adaptPlace, HEART_KINDS } from '../src/adapter.mjs';
+import { adaptPlace } from '../src/adapter.mjs';
 import { T, T_BLOCK, PW, PH } from '../../exploration/src/world.mjs';
 import { ts, place, placeX, places } from './render-helpers.mjs';
 
@@ -40,11 +40,7 @@ test('terrain becomes the page tile of terrain.json, prop footprints become trun
   assert.equal(T_BLOCK[T.TALL], 0);
 });
 
-test('the heart, the openings and the find slots come from the place, shifted into the page grid', () => {
-  assert.ok(HEART_KINDS.includes(lay.heart.kind));
-  assert.equal(lay.heart.kind, place.heart.kinds[0]);   // with no seeded fill, the place's first kind the page plays (a moment is played now)
-  assert.deepEqual([lay.heart.x, lay.heart.y], [place.heart.x + 5, place.heart.y + 5]);
-  assert.equal(lay.heart.reachBy, null);
+test('the openings and the find slots come from the place, shifted into the page grid', () => {
   assert.equal(lay.openings.length, 3);
   assert.equal(lay.findSlots.length, place.finds.length);
   assert.deepEqual(lay.findSlots[0], { x: place.finds[0].x + 5, y: place.finds[0].y + 5, kinds: place.finds[0].kinds, chance: place.finds[0].chance });
@@ -59,17 +55,16 @@ test('the press mask (lay.press) marks a boulder and a tree trunk, never a bush'
   assert.equal(lay.press[0], 0, 'the padding rock all round is not stone either');
 });
 
-test('the explorer starts on walkable ground and the reachable set holds the heart, and nothing outside the place', () => {
+test('the explorer starts on walkable ground and the reachable set holds nothing outside the place', () => {
   const s = lay.spawnPt;
   assert.equal(T_BLOCK[lay.tiles[s.y * PW + s.x]], 0);
   assert.equal(lay.reach[s.y * PW + s.x], 1);
-  assert.equal(lay.reach[lay.heart.y * PW + lay.heart.x], 1);
   for (let i = 0; i < PW * PH; i++) if (lay.reach[i]) { const x = (i % PW) - 5, y = ((i / PW) | 0) - 5; assert.ok(x >= 0 && y >= 0 && x < 18 && y < 22); }
 });
 
-test('the mirrored place adapts too, with its heart mirrored', () => {
+test('the mirrored place adapts too, with its find slots mirrored', () => {
   const m = adaptPlace(placeX, ts, terrains, { key: '101', cell: 101 });
   assert.equal(m.baked.id, 'Test_AllCases~x');
-  assert.equal(m.heart.x - 5, 17 - (lay.heart.x - 5));
-  assert.equal(m.reach[m.heart.y * PW + m.heart.x], 1);
+  assert.equal(m.findSlots.length, lay.findSlots.length);
+  assert.equal(m.findSlots[0].x - 5, 17 - (lay.findSlots[0].x - 5));
 });
