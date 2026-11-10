@@ -12,7 +12,6 @@ import { readTileSet, readPlace } from '../src/format/read.mjs';
 import { paletteOf } from '../src/indexed.mjs';
 import { decodeRle } from '../src/blit.mjs';
 import { newImage } from '../src/png.mjs';
-import { EMPTY_SLOTS } from '../tools/desk-art.mjs';
 import { edgeSignatureFailures } from '../src/seams.mjs';
 import { fixturePlace } from './fixture-place.mjs';
 import { generate, GEN, flatcVersion } from '../tools/gen-format.mjs';
@@ -130,12 +129,12 @@ test('sprites: the RLE stream of every frame decodes to its pixels, 48 px and 24
       assert.ok(offsets.length >= 1);
       for (const off of offsets) {
         const px = decodeRle(atlas.subarray(off), w, h);
-        if (!EMPTY_SLOTS.includes(s.kind)) assert.ok(px.some((v) => v !== 0), s.kind + ' draws something');   // the empty slots are transparent by design
+        assert.ok(px.some((v) => v !== 0), s.kind + ' draws something');   // no empty slot is left in the set
       }
     }
   }
   const tall = back.sprites.find((s) => s.kind === 'tall-grass');
-  assert.equal(tall.frames48.length, 3);
+  assert.equal(tall.frames48.length, 1, 'the sweeps of tall grass are still pictures now');
   assert.equal(tall.footprint.length, 0);
   const tree = back.sprites.find((s) => s.kind === 'tree-broad');
   assert.ok(tree.canopy >= 0 && back.sprites[tree.canopy].group === 'canopy');
