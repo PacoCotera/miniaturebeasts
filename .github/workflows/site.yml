@@ -41,7 +41,6 @@ jobs:
             design
             hardware
             v1/native/vendor
-            v1/prototype/generator-workbench
             art/companion-48
             art/places
             art/device-buttons

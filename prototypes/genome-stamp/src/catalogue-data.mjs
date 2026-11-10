@@ -1,6 +1,6 @@
 // Copied from prototypes/genome-ring/src/catalogue-data.mjs (generated there from the real catalogue). Do not edit.
 export const CATALOGUE = {
- "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#INNATE_CATALOGUE",
+ "source": "the retired v1 workbench (innate profile package)#INNATE_CATALOGUE",
  "id": "genomic-compositional-source-experiment",
  "version": 6,
  "digest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",

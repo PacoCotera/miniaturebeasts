@@ -1,6 +1,6 @@
 // Owner guards: which loci a body carries, and which of a carried locus's values are drawn.
 //
-// The plan-and-part guards are ported from v1's resolver (v1/prototype/generator-workbench/
+// The plan-and-part guards are ported from v1's resolver (the retired v1 workbench,
 // compositional-vocabulary-adapter.mjs `consumerGuard` and `roleGuard`, catalogue6), reading the
 // same target vocabulary; the older broader records use the catalogue's own `applicability`, as
 // design/proposals/species-frames/frames.py APPLICABILITY does. New parts add their owners below.

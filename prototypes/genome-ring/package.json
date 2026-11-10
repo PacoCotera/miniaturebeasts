@@ -9,7 +9,6 @@
   "scripts": {
     "test": "node tests/run.mjs",
     "test:quick": "node tests/run.mjs --quick",
-    "build": "node tools/print-sheet.mjs && node tools/build-scan.mjs && node tools/illustrate.mjs",
-    "catalogue": "node tools/extract-catalogue.mjs"
+    "build": "node tools/print-sheet.mjs && node tools/build-scan.mjs && node tools/illustrate.mjs"
   }
 }
