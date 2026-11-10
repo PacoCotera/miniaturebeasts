@@ -86,6 +86,6 @@ test('the bake picks the cliff\'s tall tiles, the way up and the reed look: bake
   const ts = sets.get('ninja-test'), rows = layerRows(loadedOf.get('ninja-test').set);
   const ids = new Set(r.place.ground.flatMap((g) => [...g.tiles]));
   const from = (type) => new Set(ts.pairs.filter((p, k) => rows[k].type === type).flatMap((p) => p.tiles));
-  for (const type of ['tall', 'wayup', 'look']) assert.ok([...ids].some((id) => from(type).has(id)), `some baked tiles are from the ${type} rows (${ts.pairs.length} rows in the set)`);
+  for (const type of ['tall', 'wayup', 'variant']) assert.ok([...ids].some((id) => from(type).has(id)), `some baked tiles are from the ${type} rows (${ts.pairs.length} rows in the set)`);
   assert.ok(ALT_CODE > 255);
 });
