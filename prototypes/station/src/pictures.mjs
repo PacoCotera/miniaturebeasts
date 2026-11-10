@@ -7,6 +7,7 @@ import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset,
 import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
 import { gradedOf, grade } from "./light-grade.mjs";
+import { registerStepSlot } from "./room-steps.mjs";
 import { juvenileMirrored, mirrorPic, adultFacing, youngFacing } from "./facing.mjs";
 import { layeredStand, composeStand, standPictureId, standVariant, fitDown, curlPicture, curlOfStand, traitTile, chipId, CHIP_TILE, factorPicture, variantPixels } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
@@ -146,7 +147,8 @@ export function registerPictures(reqs, env) {
       case "waiting": putOrMaster(r.id, "mark-waiting-24", 24, 24, "the waiting mark's master", waitingPB, STAND_IN); break;
       case "figure": put(r.id, r.size[0], r.size[1], "the figure masters (mist and clear)", () => figureFromLayers(r.mist, r.clear, r.alpha, r.size), { status: figureStatus(r.mist, r.clear) }); break;
       case "slot": {   // a master at exactly this size takes the id; otherwise the id is an empty slot, waiting
-        const m = assetEntry(r.master), e = assetEntry(r.id);
+        if (registerStepSlot(r, SPECS.rooms)) break;   // a room picture at a step of the day curve (room-steps.mjs): derived from the two paintings the step mixes
+        const m =assetEntry(r.master), e = assetEntry(r.id);
         if (m && m.file && m.status !== "empty" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile, status: m.status }, assetOf(r.master)); }
         else registerSlot({ id: r.id, w: r.size[0], h: r.size[1], until: r.until });
         break;

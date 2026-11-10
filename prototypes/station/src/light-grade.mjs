@@ -36,6 +36,7 @@ const stepOf = (key) => {
   const gain = [0, 1, 2].map((c) => Object.entries(s.mix).reduce((a, [k, v]) => a + v * GAIN[k][c], 0) * s.gain[c]);
   const e = { gain, lut: tableOf(gain) }; STEPS.set(key, e); return e;
 };
+export const stepOfLight = (key) => (CURVE ? stepOfKey(key, CURVE) : null);   // the curve step ({ mix, gain, mood, … }) of a step key, null for a painting name or an unknown key
 export const gainOfKey = (key) => GAIN[key] ?? stepOf(key)?.gain ?? null;
 const lutOf = (key) => LUT[key] ?? stepOf(key).lut;
 

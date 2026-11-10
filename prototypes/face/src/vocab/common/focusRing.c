@@ -81,7 +81,7 @@ static int footprint_light(const char *picture) {
   for (int k = 0; k < 4; k++) { char p[96]; snprintf(p, sizeof p, RING ".shapes.footprint.weight.%s", L[k]); if (spec_str(F, p, w[k], sizeof w[k]) <= 0) snprintf(w[k], sizeof w[k], "default"); if (strcmp(w[k], w[0])) same = 0; }
   if (same) return strcmp(w[0], "light") == 0;
   const char *at = picture ? strrchr(picture, ':') : NULL; int k = 1;   /* day */
-  if (at) { at++; if (!strcmp(at, "dawn")) k = 0; else if (!strcmp(at, "dusk")) k = 2; else if (!strcmp(at, "night")) k = 3; else { int alpha = *at != 0; for (const char *q = at; *q; q++) if (*q < 'a' || *q > 'z') alpha = 0; if (alpha && strcmp(at, "species")) return -1; } }
+  if (at) { at++; if (!strcmp(at, "dawn")) k = 0; else if (!strcmp(at, "dusk")) k = 2; else if (!strcmp(at, "night")) k = 3; else if (*at == '@') k = 1; /* a step of the day curve (@L50, @0545): its weight is the day's */ else { int alpha = *at != 0; for (const char *q = at; *q; q++) if (*q < 'a' || *q > 'z') alpha = 0; if (alpha && strcmp(at, "species")) return -1; } }
   return strcmp(w[k], "light") == 0;
 }
 /* The shape of a target: 0 on a kind drawn, -1 (with the error sent) otherwise. */

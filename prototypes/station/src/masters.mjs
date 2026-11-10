@@ -49,7 +49,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
   const roomPromise = (name) => { const k = name + "|" + (lazyLight() ?? ""); if (!rooms.has(k)) rooms.set(k, settled(roomNeed(name)).then(() => {})); return rooms.get(k); };
   const roomItems = (name) => roomMap.get(name) ?? [];
   const lazyLight = () => (groups && lightFn ? lightFn() : null);
-  const roomNeed = (name) => { const l = lazyLight(); return l ? roomItems(name).filter((it) => !it.light || it.light === l) : roomItems(name); };
+  const roomNeed = (name) => { const l = lazyLight(); return l ? roomItems(name).filter((it) => !it.light || (Array.isArray(l) ? l.includes(it.light) : it.light === l)) : roomItems(name); };   // l: a painting, or the paintings a step mixes
   // a miss fetches its family with it: the pictures of the same kind, species and size (mibi-adult-S01-*-304x312), so a screen that needs one needs them in one round of requests, not one a frame
   // (a mibi's pictures are one family per coat: the tokens before the pose word, mibi-adult-S01-redder-dark-lay-spots-304x312 is coat "redder-dark"; a species has 9 coats of 9 poses at each size, and a screen shows a few)
   let poses = new Set(["lay"]);
