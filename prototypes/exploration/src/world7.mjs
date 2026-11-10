@@ -17,8 +17,8 @@ export function bakedCell(ctx, seed, slot, cell) {
   const [X, Y] = cellWorldXY(slot, cell), ir = cellIR(seed, X, Y);
   return { ir, place: bakeCell(ir, ctx) };
 }
-export function layout7(ctx, G, seed, slot, key) {
-  const cell = +key, { ir, place } = bakedCell(ctx, seed, slot, cell), lay = adaptCell(place, ir, ctx.ts, ctx.terrains, { key, cell, land: G.land[cell], G, seed });
+export function layout7(ctx, G, seed, slot, key, shut) {   // shut(side): the side is past the Probe's range or closed, so its band is not walked (the page's crossReason)
+  const cell = +key, { ir, place } = bakedCell(ctx, seed, slot, cell), lay = adaptCell(place, ir, ctx.ts, ctx.terrains, { key, cell, land: G.land[cell], G, seed, shut });
   const [X, Y] = cellWorldXY(slot, cell);
   lay.raisedFn = (x, y) => raisedAt(seed, X * CW + x, Y * CH + y);   // is this tile raised land (height lets you see further)
   return lay;

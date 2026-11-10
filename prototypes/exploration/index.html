@@ -660,7 +660,7 @@ function bakedView(lay) {
 const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
 function layout(key) {   // a land cell's layout from the generator (cached); a stand-in while the tile set loads
   let lay = layoutCache.get(key);
-  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key); addStrikeFeats(lay); layoutCache.set(key, lay); }
+  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side])); addStrikeFeats(lay); layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
@@ -1566,8 +1566,9 @@ function checkWalked() {
 const ARRIVE_HOLD_MS = 1200, ARRIVE_STEP_MS = 120;   // [tune]
 const VIEW_TEXT = { look: 'Look around', close: 'Close' };   // [copy]
 function placeVeil(lay, rows) {   // rows: the veil as it would stand (the warmed arrival picture's guess); else the place's own
-  const bk = bakedView(lay), { w, h } = bk.place, o = new Uint8Array(w * h), vbl = rows ? veilable(lay) : null;
+  const bk = lay.baked, { w, h } = bk.place, o = new Uint8Array(w * h), vbl = rows ? veilable(lay) : null;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x + bk.ox, py = y + bk.oy;
+    if (px < 0 || py < 0 || px >= lay.w || py >= lay.h) continue;   // the apron lies off the cell: never veiled, as in the walking view (one fog record for both views)
     if (rows ? !((rows[py] >>> px) & 1) && vbl[py * lay.w + px] : !unveiled(lay.key, px, py)) o[y * w + x] = 1; }
   return o; }
 function startView(kind, lay, extra) {
@@ -1640,11 +1641,16 @@ function bandCell() {
 // leftItemsAll is everything left (fruit and unlit beacons too), for the pacing bot only; leftItems is the finds: pod, charge, warm, dew, tuft.
 const FINDS = ['pod', 'charge', 'warm', 'dew', 'tuft', 'strike'];
 function leftItems(c) { return leftItemsAll(c).filter(i => FINDS.includes(i.k)); }
+// A thing counts as left to take only if the explorer can stand on its tile or beside it: a reachable tile that is not under the range haze or a closed side's band (its own guard, notes 26-28).
+function reachableTile(lay, x, y) {
+  const open = (X, Y) => X >= 0 && Y >= 0 && X < lay.w && Y < lay.h && !!lay.reach[Y * lay.w + X] && !(lay.lines && lay.lines.cells.has(Y * lay.w + X));
+  return open(x, y) || open(x + 1, y) || open(x - 1, y) || open(x, y + 1) || open(x, y - 1);
+}
 function leftItemsAll(c) {
   const out = []; if (!passable(c)) return out;
-  const key = String(c), live = S.exp && S.exp.live[key], see = (x, y) => unveiled(key, x, y);
+  const key = String(c), lay0 = layout(key), live = S.exp && S.exp.live[key], see = (x, y) => unveiled(key, x, y) && (lay0.cave || reachableTile(lay0, x, y));
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
-  for (const f of layout(key).feats) { if (!see(f.x, f.y)) continue;
+  for (const f of lay0.feats) { if (!see(f.x, f.y)) continue;
     if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
     if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && strikeGain(S.exp) > 0) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once the trip's strikes are full
     if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'beacon', x: f.x, y: f.y }); }
@@ -2013,7 +2019,13 @@ function placePartnerNear(key, P) {
     const x = P.x + dx, y = P.y + dy; if (!occupant(key, x, y)) { live.pt = { x, y, st: 'follow', face: 1 }; return; }
   }
 }
+// A place that takes long to build freezes the page; key presses made meanwhile queue in the browser and would all run in a rush afterwards. They are dropped (STALL: the window they were made in).
+const STALL_MS = 120, STALL = { from: 0, to: 0 };
+const nowMs = () => typeof performance !== 'undefined' ? performance.now() : Date.now();
 function enterPatch() {
+  const t0 = nowMs(); try { enterPatchBuilt(); } finally { const t1 = nowMs(); if (t1 - t0 >= STALL_MS) { STALL.from = t0; STALL.to = t1; } }
+}
+function enterPatchBuilt() {
   const ex = S.exp, key = String(ex.pos), lay = layout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
@@ -2055,6 +2067,14 @@ function canDig() { const pt = S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab 
 // The burrow is open for an old save's dug burrow (S.opened, for any partner) and for this walk once a Tuikis has dug it out (ex.burrowDug); a Tuikis is needed on every visit.
 function burrowOpen() { return !!(S && S.opened && S.opened[G.gate]) || !!(S && S.exp && S.exp.burrowDug); }
 
+// Small things never block the explorer (note 33): a leaf cup, a tuft, a fallen fruit and a strike mark are smaller than the explorer. A pod is never trodden on (editorial); trees, boulders, bushes, water, cliffs and mibis still block.
+const SMALL_FEAT = 'uq';
+function stepsOver(key, o, x, y) {
+  if (!o || (o.type !== 'fruit' && o.type !== 'tuft' && !(o.type === 'feat' && SMALL_FEAT.includes(o.f.kind)))) return false;
+  const lay = layout(key); return !lay.cave && !T_BLOCK[lay.tiles[y * lay.w + x]];
+}
+// What the explorer stands on that can be acted on (a small thing), or null.
+function standingOn(key, P) { const o = occupant(key, P.x, P.y, 'player'); return o && (o.type === 'fruit' || o.type === 'tuft' || (o.type === 'feat' && SMALL_FEAT.includes(o.f.kind))) ? o : null; }
 function patchStep(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
   P.dir = dir; P.noise = mode;
@@ -2064,6 +2084,7 @@ function patchStep(dir, mode) {
     if (lc) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(lc.text); return; } }
   let o = occupant(key, x, y, 'player');
   if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); o = live.pt && live.pt.x === x && live.pt.y === y ? { type: 'pt' } : null; }   // mud, scree or a dug bank, for the partner that crosses it (it may be standing there: you trade places)
+  if (stepsOver(key, o, x, y)) o = null;   // small things (a cup, a tuft, a fruit, a strike mark) are walked onto; standing on one offers its action
   if (o && o.type === 'pt') { live.pt.x = P.x; live.pt.y = P.y; }
   else if (o) {
     FX.bumpAt = NOW;
@@ -2258,9 +2279,12 @@ function holeHint() {
 // What Confirm will do right now in the place: { label, run, ctx? }. Facing nothing it waits.
 // Facing nothing to act on, Confirm waits one action (the same Wait as the menu's, with its cue and report).
 const NOTHING = { label: 'Wait', run: () => waitTick('patch') };
+let ACT_AT = null;   // the tile patchAction last read (the faced tile, or the one stood on): where the amber brackets stand
 function patchAction() {
-  const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive(), f = frontOf(P);
-  const o = occupant(key, f.x, f.y, 'player');
+  const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive();
+  let f = frontOf(P), o = occupant(key, f.x, f.y, 'player');
+  if (!o && ex.carry !== 'fruit') { const here = standingOn(key, P); if (here) { o = here; f = { x: P.x, y: P.y }; } }   // facing nothing, standing on a small thing: its action
+  ACT_AT = f;
   const nm = sp => S.known.includes(sp) ? ' · ' + spOf(sp).name : '';
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
@@ -2333,7 +2357,8 @@ function pressOn(lay, o, f) {
 function freeAround(key, x, y, prefer) {
   const lw = layout(key).w, ds = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
   if (prefer) ds.sort((a, b) => man({ x: x + a[0], y: y + a[1] }, prefer) - man({ x: x + b[0], y: y + b[1] }, prefer));
-  for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(layout(key).tiles[Y * lw + X])) return { x: X, y: Y }; }
+  const lay = layout(key), seen = (X, Y) => !!lay.reach[Y * lw + X] && !(lay.lines && lay.lines.cells.has(Y * lw + X)) && !(lay.decalNear && lay.decalNear(X, Y));   // reachable ground, clear of the haze and of any decor that would cover it
+  for (const strict of [true, false]) for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]) && (!strict || seen(X, Y))) return { x: X, y: Y }; }
   return null;
 }
 // Materials carried cap at 20 each. Returns how much was taken.
@@ -5046,7 +5071,9 @@ function drawWhole(t) {
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
   const marks = () => {
-    if ((v.kind === 'look' && found) || v.kind === 'peek') for (const it of leftItems(lay.cell).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still'; lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
+    if ((v.kind === 'look' && found) || v.kind === 'peek') for (const it of leftItems(lay.cell).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still';
+      if (it.k === 'strike') { const pc = propPiece('strike-mark-unread-' + (f === '2' ? 2 : 1)); if (pc.w > 1) blit(pc, Math.round(r.x - pc.w / 2), Math.round(r.y - pc.h / 2), 0, hash(it.x, it.y, 9) % 2 === 1); continue; }   // the same piece the walk draws (the desk's look-take-strike picture is a slot)
+      lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
     if (live && live.pt && S.exp.pt) { const m = tp(live.pt.x, live.pt.y), pm = mibiById(S.exp.pt.id); lookMark(partnerMark(S.exp.pt.sp, !!pm && !isAdult(pm)), 'partner', m.x, m.y, T); }   // the partner as its kind, under the you-mark
     { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, T); }
   };
@@ -5168,6 +5195,11 @@ function drawPatchBody(t) {
     else if (f.kind === 'x') blit(exitArt(fr), SX(x), SY(y));
     else if (f.kind === 'g') blit(burrowArt(!!burrowOpen()), SX(x), SY(y), rm);
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), SX(x) + 9, SY(y) + 8 + fr, tileLight(f.x, f.y)); }
+    else if (f.kind === 'q' && !lay.cave && !strikeFaded(f)) {   // a strike mark: a dark glassy fused streak, nothing burns (art/props, the art desk's strike mark); it lies one way or its mirror, by its place. A ground decal: crowns, trunks and sprites draw over it
+      const read = strikeIsRead(P.key, f), pc = propPiece(read ? 'strike-mark-read' : 'strike-mark-unread-' + (motion() && Math.floor((NOW + hash(f.x, f.y, 3) % 1000) / 500) % 2 ? 2 : 1));
+      if (pc.w > 1) blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + ((ts - pc.h) >> 1), spriteRm(f.x, f.y), hash(f.x, f.y, 9) % 2 === 1);
+      if (f.glass && !read) { const sh = propPiece('storm-glass-shard'); if (sh.w > 1) blit(sh, SX(x) + ((ts - sh.w) >> 1), SY(y) + ((ts - sh.h) >> 1) + 6, spriteRm(f.x, f.y)); }   // storm glass lies in a mark on sand: its picture, sand base and all
+    }
   }
   for (const h of live.holes || []) { const x = h.x * ts, y = h.y * ts; if (!vis2(x, y) || !see(h.x, h.y)) continue;   // the Rupar's fresh hole, a ground mark
     blit(freshHoleArt(holeFrame(h), HOLE_BARE[h.g]), SX(x) + HOLE_DX, SY(y), spriteRm(h.x, h.y)); }
@@ -5246,10 +5278,8 @@ function drawPatchBody(t) {
       blit(ICON.bolt(motion() && Math.floor(t * 2) % 2 ? 'cream' : 'yellow'), W(x) + (ts >> 1) - 6, H(y) - 8); }
     for (const f of lay.feats) { if (f.kind !== 'q' || strikeFaded(f)) continue;
       const x = f.x * ts, y = f.y * ts; if (!vis2(x, y) || !see(f.x, f.y)) continue;
-      // the unread mark (two frames that alternate) and the read mark: a dark glassy fused streak, nothing burns (art/props, the art desk's strike mark); each lies one way or its mirror, by its place
-      const read = strikeIsRead(P.key, f), pc = propPiece(read ? 'strike-mark-read' : 'strike-mark-unread-' + (motion() && Math.floor((NOW + hash(f.x, f.y, 3) % 1000) / 500) % 2 ? 2 : 1));
-      if (pc.w > 1) blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + ((ts - pc.h) >> 1), spriteRm(f.x, f.y), hash(f.x, f.y, 9) % 2 === 1);
-      if (f.glass && !read) { const sh = propPiece('storm-glass-shard'); if (sh.w > 1) blit(sh, SX(x) + ((ts - sh.w) >> 1), SY(y) + ((ts - sh.h) >> 1) + 6, spriteRm(f.x, f.y)); }   // storm glass lies in a mark on sand: its picture, sand base and all
+      // the mark itself is a ground decal (drawn with the ground marks, below anything standing); the Probe's glint on an unread one is drawn here
+      const read = strikeIsRead(P.key, f);
       if (!read && motion() && (NOW + hash(f.x, f.y, 5) % 1600) % 1600 < 400) { const a = sparkArt(false); blit(a, W(x + (ts >> 1)) - Math.floor(a.w / 2), H(y + (ts >> 1) - 4) - Math.floor(a.h / 2)); } }
     // once the place is explored, every takeable still in view glints: the sparkle for 400 ms every 1.6 s, staggered by position; none under reduced motion
     if (walkedCell(lay.cell) && motion()) {
@@ -5258,7 +5288,7 @@ function drawPatchBody(t) {
         const a = sparkArt(false); blit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); } } }
   // what Confirm will act on
   const act = patchAction();
-  if (act.run && act !== NOTHING) { const f = frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
+  if (act.run && act !== NOTHING) { const f = ACT_AT || frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
   // the strike warning: a tile glows one action before lightning hits it
   if (live.strike) { const x = W(live.strike.x * ts), y = H(live.strike.y * ts), col = fr ? C.cream : C.yellow;
     R(x, y, ts, 2, col); R(x, y + ts - 2, ts, 2, col); R(x, y, 2, ts, col); R(x + ts - 2, y, 2, ts, col); RT.litScr = { x, y, w: ts, h: ts }; }   // strike warned: the tile's outline only
@@ -6846,6 +6876,7 @@ function keyOf(e) { return KEYMAP[e.code] || KEYMAP2[e.key] || KEYMAP[e.key] || 
 window.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = keyOf(e); if (!k) return;
+  if (e.timeStamp > STALL.from && e.timeStamp < STALL.to) { e.preventDefault(); return; }   // made while a place was being built: dropped, not replayed
   const inPanel = e.target && e.target.closest && e.target.closest('.panel');
   if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;   // the developer field keeps its keys
   if (e.target && e.target.tagName === 'TEXTAREA') e.target.blur();   // the notes box gives the keys back to the game (copying uses Ctrl/⌘)
