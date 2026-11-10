@@ -1,165 +1,165 @@
 {
  "note": "Recorded by tools/realm-run.mjs on the v10 page (the release: a new realm is generator 5, life by land): 20 expeditions, seed 7, generator 5, no mibis. Retaken once at the release; the digest moves only with the world.",
  "seed": 7,
- "gen": 5,
+ "gen": 7,
  "expeditions": 20,
  "mibis": 0,
  "dock": 0,
  "stopMid": false,
- "presses": 2861,
- "digest": "fbfc31683f58bf9faf0ae3522e6c6b70b4f2bd81af736137a4948f2ddf59b47a",
+ "presses": 3271,
+ "digest": "971c99ecfc2624738f3b1e3516f76298cba743b38eaedc6f6cba1e8ed09340b4",
  "steps": [
   {
    "n": 1,
-   "presses": 141,
+   "presses": 129,
    "turn": 1,
-   "bay": 1,
-   "d": "f92bf7e66431bc40"
+   "bay": 0,
+   "d": "16468d31d6af93a6"
   },
   {
    "n": 2,
-   "presses": 326,
+   "presses": 296,
    "turn": 2,
-   "bay": 2,
-   "d": "0f461b859c163254"
+   "bay": 0,
+   "d": "1e7959397a1552dd"
   },
   {
    "n": 3,
-   "presses": 641,
+   "presses": 578,
    "turn": 3,
-   "bay": 3,
-   "d": "77df13fb2e9c101c"
+   "bay": 0,
+   "d": "9a03f24de68edb42"
   },
   {
    "n": 4,
-   "presses": 810,
-   "turn": 3,
-   "bay": 3,
-   "d": "114023a10b666e4b"
+   "presses": 671,
+   "turn": 4,
+   "bay": 0,
+   "d": "4c33d7c8198d2e68"
   },
   {
    "n": 5,
-   "presses": 972,
-   "turn": 4,
-   "bay": 3,
-   "d": "788c1a16b5614bcc"
+   "presses": 806,
+   "turn": 5,
+   "bay": 0,
+   "d": "33d956ce2fe7f70e"
   },
   {
    "n": 6,
-   "presses": 1158,
-   "turn": 4,
-   "bay": 3,
-   "d": "26f3bdc015ac2ec1"
+   "presses": 1023,
+   "turn": 6,
+   "bay": 0,
+   "d": "8e087250d62d9eb8"
   },
   {
    "n": 7,
-   "presses": 1273,
-   "turn": 5,
-   "bay": 3,
-   "d": "ea1476a46fdb6d70"
+   "presses": 1126,
+   "turn": 7,
+   "bay": 0,
+   "d": "4f3e62b70b38d897"
   },
   {
    "n": 8,
-   "presses": 1302,
-   "turn": 5,
-   "bay": 3,
-   "d": "127c0cf98df677f0"
+   "presses": 1160,
+   "turn": 8,
+   "bay": 0,
+   "d": "474f9929f03c40e6"
   },
   {
    "n": 9,
-   "presses": 1516,
-   "turn": 6,
-   "bay": 1,
-   "d": "3333201243e37790"
+   "presses": 1432,
+   "turn": 9,
+   "bay": 0,
+   "d": "2d419d08de3b7d61"
   },
   {
    "n": 10,
-   "presses": 1576,
-   "turn": 6,
-   "bay": 1,
-   "d": "32682b0b6b5bdc81"
+   "presses": 1500,
+   "turn": 10,
+   "bay": 0,
+   "d": "5b22b06354b37f86"
   },
   {
    "n": 11,
-   "presses": 1707,
-   "turn": 7,
-   "bay": 2,
-   "d": "433f8f0aa65fc805"
+   "presses": 1610,
+   "turn": 11,
+   "bay": 0,
+   "d": "de6cbed24c4d0a08"
   },
   {
    "n": 12,
-   "presses": 1876,
-   "turn": 7,
-   "bay": 2,
-   "d": "6c86d64c0a853e0d"
+   "presses": 1767,
+   "turn": 12,
+   "bay": 0,
+   "d": "a2b83e8b39802293"
   },
   {
    "n": 13,
-   "presses": 2054,
-   "turn": 8,
-   "bay": 3,
-   "d": "d74289a6623749fb"
+   "presses": 2035,
+   "turn": 13,
+   "bay": 1,
+   "d": "e29e3c6877916409"
   },
   {
    "n": 14,
-   "presses": 2079,
-   "turn": 8,
-   "bay": 3,
-   "d": "3540fb2aa09af0f1"
+   "presses": 2155,
+   "turn": 14,
+   "bay": 1,
+   "d": "3034752e32f19e44"
   },
   {
    "n": 15,
-   "presses": 2228,
-   "turn": 9,
+   "presses": 2284,
+   "turn": 15,
    "bay": 1,
-   "d": "d0620835c2e63dd9"
+   "d": "4c848d1647a16e2b"
   },
   {
    "n": 16,
-   "presses": 2408,
-   "turn": 10,
-   "bay": 2,
-   "d": "cf4bc2e81ffa91d3"
+   "presses": 2480,
+   "turn": 16,
+   "bay": 1,
+   "d": "553d1c053c4caf03"
   },
   {
    "n": 17,
-   "presses": 2517,
-   "turn": 10,
-   "bay": 2,
-   "d": "a7a7904d5f0bb355"
+   "presses": 2595,
+   "turn": 17,
+   "bay": 1,
+   "d": "422bc674120289d0"
   },
   {
    "n": 18,
-   "presses": 2561,
-   "turn": 10,
+   "presses": 2786,
+   "turn": 18,
    "bay": 2,
-   "d": "96a7c5f32931c827"
+   "d": "77f2d0b4832984be"
   },
   {
    "n": 19,
-   "presses": 2746,
-   "turn": 11,
-   "bay": 1,
-   "d": "687b36dd0120e2be"
+   "presses": 3075,
+   "turn": 19,
+   "bay": 3,
+   "d": "83dfcfcbc67ad0ef"
   },
   {
    "n": 20,
-   "presses": 2861,
-   "turn": 11,
-   "bay": 1,
-   "d": "fbfc31683f58bf9f"
+   "presses": 3271,
+   "turn": 20,
+   "bay": 3,
+   "d": "971c99ecfc262473"
   }
  ],
  "summary": {
-  "turn": 11,
-  "expN": 12,
-  "gen": 5,
-  "revealed": 112,
-  "visited": 28,
-  "called": 28,
-  "pods": 54,
-  "creatures": 779,
-  "bay": 1,
+  "turn": 20,
+  "expN": 21,
+  "gen": 7,
+  "revealed": 145,
+  "visited": 24,
+  "called": 23,
+  "pods": 64,
+  "creatures": 778,
+  "bay": 3,
   "hold": null,
   "mibis": 0,
   "carried": 0,

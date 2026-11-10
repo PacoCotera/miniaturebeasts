@@ -251,7 +251,7 @@ function fillPockets(t, W, H, gx0, gy0, island, gate) {
   return changed;
 }
 
-// Views agree: where the map calls the edge between two land cells open (world.mjs sideKind), the land has a way across it. When the tiles of the edge hold no run of two that walk on both sides
+// Views agree: where the map calls the edge between two land cells open or a stair (world.mjs sideKind), the land has a way across it. When the tiles of the edge hold no run of two that walk on both sides
 // (a thicket mass, a lake), a gate 2 tiles wide is cut at the edge's port (the trail's tiles, region.mjs portOffset) and runs straight in on each side until it meets ground that walks, at most
 // GATE_DEPTH tiles; what it crosses turns to grass (raised land and deep water are never cut). It is a function of the world edge and the tiles round it, so both cells cut the same gate.
 const GATE_DEPTH = 14;
@@ -268,7 +268,8 @@ function openGates(S, t, W, H, gx0, gy0, X, Y) {
       if (!G || G !== cellRegion(nx, ny)) continue;
       const a = (cy % MH) * MW + (cx % MW), b = (ny % MH) * MW + (nx % MW);
       G.soft = G.soft || softGround(G, S.seed); G.banks = G.banks || bankEdges(G, S.seed);
-      if (sideKind(G, a, dx ? 'right' : 'down') !== 'open' && sideKind(G, b, dx ? 'left' : 'up') !== 'open') continue;   // open from either cell's side (a ford is stepped into, not out of)
+      const goes = k => k === 'open' || k === 'stair';   // a stair's border is crossed on the low ground like an open one
+      if (!goes(sideKind(G, a, dx ? 'right' : 'down')) && !goes(sideKind(G, b, dx ? 'left' : 'up'))) continue;   // open from either cell's side (a ford is stepped into, not out of)
       const len = dx ? CH : CW, base = dx ? cy * CH : cx * CW, line = dx ? nx * CW : ny * CH;   // the edge runs along `len` tiles from `base`; the first tile across it is `line`
       const walkPair = k => dx ? walkAt(line - 1, base + k) && walkAt(line, base + k) : walkAt(base + k, line - 1) && walkAt(base + k, line);
       let run = 0, has = false; for (let k = 0; k < len && !has; k++) { run = walkPair(k) ? run + 1 : 0; has = run >= 2; }

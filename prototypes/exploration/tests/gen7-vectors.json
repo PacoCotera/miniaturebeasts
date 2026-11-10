@@ -2943,7 +2943,14 @@
      "landmarks": [],
      "signs": [],
      "traces": [],
-     "strikes": []
+     "strikes": [
+      [
+       4,
+       9,
+       0,
+       0
+      ]
+     ]
     },
     "41,44": {
      "names": [
