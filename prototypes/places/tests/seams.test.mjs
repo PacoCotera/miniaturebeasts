@@ -4,11 +4,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadSet, layerTiles, fillTiles, layerDescriptors, layerRows } from '../src/setload.mjs';
+import { loadSet, layerTiles, fillTiles, kindFullTiles, layerDescriptors, layerRows } from '../src/setload.mjs';
 import { paste } from '../src/png.mjs';
 import { cornerSheet } from '../src/sheets.mjs';
 import { applyOpenEdges, ALT_CODE } from '../src/bake/openedges.mjs';
-import { terrainLayers, FILL_CODE, EMPTY } from '../src/dualgrid.mjs';
+import { terrainLayers, FILL_CODE, FULL_BASE, EMPTY } from '../src/dualgrid.mjs';
 import { edgeSignatureFailures, coverage, legalAdjacencies, edgeLine } from '../src/seams.mjs';
 import { compareGolden } from '../src/golden.mjs';
 
@@ -27,7 +27,8 @@ const desc = layerDescriptors(loaded, TERRAINS);
 // The proof is the one-line-per-edge-state rule, per (terrain, kind, lower), at 48 px; the composites are the goldens ninja-test-<t>-<kind>-over-<lower>-48.png.
 // Fill variants are interior variants: every variant of T's fill is held to tile 15's edge lines.
 function layerComposites(terrainId, ki, lowerId, scaled) {
-  const over = layerTiles(loaded, terrainId, ki, 0, scaled), lowerFill = fillTiles(loaded, lowerId, 0, scaled)[0], own = fillTiles(loaded, terrainId, 0, scaled);
+  // a terrain with a ground and no fill (scrub) has its slot-15 strip in place of one
+  const over = layerTiles(loaded, terrainId, ki, 0, scaled), lowerFill = fillTiles(loaded, lowerId, 0, scaled)[0], own = loaded.set.layers[terrainId].fill ? fillTiles(loaded, terrainId, 0, scaled) : kindFullTiles(loaded, terrainId, ki, scaled);
   const tiles = over.map((o, k) => {
     if (k === 0) return lowerFill;
     if (k === 15) return own[0];
@@ -37,11 +38,11 @@ function layerComposites(terrainId, ki, lowerId, scaled) {
   });
   return { tiles, own };
 }
-const layerCases = () => Object.entries(loaded.set.layers).flatMap(([id, l]) => (l.over || []).flatMap((k, ki) => k.lowers.filter((lower) => loaded.set.layers[lower].fill).map((lower) => ({ id, kind: k.kind, ki, lower }))));   // scrub is drawn as grass: no fill, no case
+const layerCases = () => Object.entries(loaded.set.layers).flatMap(([id, l]) => (l.over || []).flatMap((k, ki) => k.lowers.filter((lower) => loaded.set.layers[lower].fill).map((lower) => ({ id, kind: k.kind, ki, lower }))));
 for (const sc of SCALES) {
   test(`terrain layers at ${sc.name} px: the composite of every (terrain, kind, lower) equals its golden`, () => {
     const cases = layerCases();
-    assert.equal(cases.length, 27);
+    assert.equal(cases.length, 32);
     for (const c of cases) {
       const { tiles } = layerComposites(c.id, c.ki, c.lower, sc.scaled);
       const r = compareGolden(path.join(places, 'golden', 'seams', `ninja-test-${c.id}-${c.kind}-over-${c.lower}-${sc.name}.png`), cornerSheet(tiles));
@@ -117,7 +118,7 @@ test('the committed all-cases map has every corner index and every legal horizon
 });
 
 // the layer's code as a corner index: the fill is the all-upper tile, nothing is the all-lower tile, a kind's code is its slot
-const classify = (c) => (c === EMPTY ? 0 : c >= FILL_CODE ? 15 : c % 64);
+const classify = (c) => (c === EMPTY ? 0 : c >= FILL_CODE || c % 64 >= FULL_BASE ? 15 : c % 64);   // a terrain with a ground (scrub) has its all-upper tile as a full variant code
 
 test('all-cases maps: every (terrain, kind, lower) is covered by every corner index and every legal neighbour pair', () => {
   const lg = legalAdjacencies();

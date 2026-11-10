@@ -14,14 +14,7 @@ export const ts = readTileSet(readFileSync(path.join(places, 'baked', 'ninja-tes
 export const place = readPlace(readFileSync(path.join(places, 'baked', 'Test_AllCases.mbplace')));
 export const placeX = readPlace(readFileSync(path.join(places, 'baked', 'Test_AllCases~x.mbplace')));
 
-// The layered set has ONE water frame until the art desk paints the ripple frames (@1..@3, owed [art]), so nothing in the set animates. The clock tests need an animated tile: here, in memory only
-// (never in baked/), each tile of the water fill gets three more frames, the atlas slots of the deep, sand and mud fills, at 250 ms. Frame 0 is the real water, so every picture at clock 0 is the real
-// one; the water-frame-2 golden shows the fixture's frame, not art. Drop this when the desk's frames are in the set.
-{
-  const fillOf = (v) => ts.pairs.find((p) => p.lower === v && p.upper === v && p.mode === 'opaque');
-  const water = fillOf(2), others = [1, 3, 4].map((v) => ts.tiles[fillOf(v).fullVariants[0]].frames[0]);
-  for (const id of water.fullVariants) { ts.tiles[id].frames = [ts.tiles[id].frames[0], ...others]; ts.tiles[id].frameMs = 250; }
-}
+// The set's water fill is the desk's four ripple frames (250 ms a frame), so the clock tests read the real baked tile set; nothing is added in memory.
 
 const core = JSON.parse(readFileSync(path.join(repo, 'art', 'companion-48', 'terrain', 'meadow', 'meadow-palette.json'), 'utf8')).entries.slice(0, 48);
 export const NIGHT = core.find((e) => e.name === 'night').i;

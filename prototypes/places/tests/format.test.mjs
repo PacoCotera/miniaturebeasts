@@ -12,6 +12,7 @@ import { readTileSet, readPlace } from '../src/format/read.mjs';
 import { paletteOf } from '../src/indexed.mjs';
 import { decodeRle } from '../src/blit.mjs';
 import { newImage } from '../src/png.mjs';
+import { EMPTY_SLOTS } from '../tools/desk-art.mjs';
 import { edgeSignatureFailures } from '../src/seams.mjs';
 import { fixturePlace } from './fixture-place.mjs';
 import { generate, GEN, flatcVersion } from '../tools/gen-format.mjs';
@@ -129,7 +130,7 @@ test('sprites: the RLE stream of every frame decodes to its pixels, 48 px and 24
       assert.ok(offsets.length >= 1);
       for (const off of offsets) {
         const px = decodeRle(atlas.subarray(off), w, h);
-        assert.ok(px.some((v) => v !== 0), s.kind + ' draws something');
+        if (!EMPTY_SLOTS.includes(s.kind)) assert.ok(px.some((v) => v !== 0), s.kind + ' draws something');   // the empty slots are transparent by design
       }
     }
   }
@@ -139,7 +140,7 @@ test('sprites: the RLE stream of every frame decodes to its pixels, 48 px and 24
   const tree = back.sprites.find((s) => s.kind === 'tree-broad');
   assert.ok(tree.canopy >= 0 && back.sprites[tree.canopy].group === 'canopy');
   assert.deepEqual(tree.footprint, [0, 0]);
-  assert.deepEqual(tree.anchor48, [72, 39]);
+  assert.deepEqual(tree.anchor48, [54, 15]);
 });
 
 // The 24 px half of the layer seam proof (seams.test.mjs has the 48 px half): per (terrain, kind, lower), the composite of the lower's fill and the kind's tile, read from the baked tile set's derived tiles.
@@ -153,7 +154,7 @@ test('seam test 1 at 24 px: every (terrain, kind, lower) has one boundary line p
   const fillRow = (t) => back.pairs[rows.findIndex((r) => r.type === 'fill' && r.terrain === t)];
   const bad = [];
   for (const [id, l] of Object.entries(loaded.set.layers)) for (const k of l.over || []) for (const lower of k.lowers) {
-    if (!loaded.set.layers[lower].fill) continue;   // scrub is drawn as grass: it has no fill of its own
+    if (!loaded.set.layers[lower].fill || !loaded.set.layers[id].fill) continue;   // a terrain with a ground and no fill (scrub) has no fill row to compare
     const row = back.pairs[rows.findIndex((r) => r.type === 'over' && r.terrain === id && r.kind === k.kind)], under = flat(fillRow(lower).fullVariants[0]), own = fillRow(id).fullVariants.map(flat);
     const tiles = row.tiles.map((tid, n) => {
       if (n === 0) return under;
