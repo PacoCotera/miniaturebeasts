@@ -19,8 +19,8 @@
   "notes": [
     "reeds: the pack has no reeds; its bamboo stalk stands in. tall-grass: three of the pack's grass tufts in a row stand in as the frames of a sway (the pack's daisy plant read as flowers). Both are test stand-ins for the art desk's own.",
     "tree-hollow: the pack's great pair of gnarled trees with the arch between them, cut whole; the Hollow Tree's landmark, its heart at the foot of the arch. split-stone: the pack's three stacked grey boulders with the dark crack between them, cut whole; the Split Stone's landmark.",
-    "desk (`desk`: true, tools/desk-art.mjs): the art desk's way-up pieces, signed in mibi-art abb33a65b (art-jobs/2026-11-09-open-edges/out/), and its meadow decor, signed in mibi-art 5734abc5 (art-jobs/2026-11-09-meadow-decor/out/; small flowers and tufts that replace the kit's sunflowers). Read from those commits, copied byte for byte, hashes in DESK.json; their colours join the palette.",
-    "terrain layers (`desk`: true, tools/desk-art.mjs deskLayers; set.json `layers` and `tone`): the water, earth, sand, mud, path and grass layers and the grass tone layer, signed in mibi-art 4e21bd68f (sand job), 386ed11fa and b60587b26 (meadow), read from those commits. A fill is slot 15 of a signed sheet cropped without a changed pixel (DESK.json `from: <sheet>#15`) or the desk's own fill strip; the reed look of the sand beach is the pixels of the signed reed composites that differ from the plain beach composite. Scrub is drawn as grass. Thicket (mibi-art e43e480ac) and cliff (c335654cc) come with every pixel of alpha under 255 made transparent in their over sheets (art director ruling 2026-11-09: the soft cast shade goes, the opaque undersides and face shading stay); the thicket fill is its full strip, the cliff top is slot 15 of the plain over-cliff sheet, the cliff's tall faces at s = 3 are three variants. The palette keeps its indices (palettePin) and the new colours follow."
+    "desk (`desk`: true, tools/desk-art.mjs): the art desk's way-up pieces, signed in mibi-art abb33a65b (art-jobs/2026-11-09-open-edges/out/), and the map look (art director route A): tree and bush of style test 3 (662fca36d), rock and tufts of the style test's route A props (003ee9598), the scrub shrubs (34a8dc49c). Read from those commits, copied byte for byte (the tree is cropped in two, crown and trunk), hashes in DESK.json; their colours join the palette. The kit's tree, bush, boulder and tuft names stay in the set and draw these pieces (tree-autumn draws the one signed tree until a variant is painted; the three bushes and both boulders share one piece); the five flowers and clump-tall are named empty slots (transparent sprites) until the desk's decor job paints them. The stump, reeds, tall grass, pebbles, lily pad, the hollow tree and the split stone are still the kit's.",
+    "terrain layers (`desk`: true, tools/desk-art.mjs deskLayers; set.json `layers` and `tone`): the water, earth, sand, mud, path and grass layers and the grass tone layer, signed in mibi-art 4e21bd68f (sand job), 386ed11fa and b60587b26 (meadow), read from those commits. A fill is slot 15 of a signed sheet cropped without a changed pixel (DESK.json `from: <sheet>#15`) or the desk's own fill strip; the reed look of the sand beach is the pixels of the signed reed composites that differ from the plain beach composite. The water fill has four frames (mibi-art af25a3017, the ripple job), each a strip of its four variants, 250 ms a frame; deep water stays still. Scrub (mibi-art 34a8dc49c) is the olive flat ground over grass (its ground): the sheet, three variants and the slot-15 strip. Thicket (mibi-art e43e480ac) and cliff (c335654cc) come with every pixel of alpha under 255 made transparent in their over sheets (art director ruling 2026-11-09: the soft cast shade goes, the opaque undersides and face shading stay); the cliff sheets are the desk's cut run again without the dither specks (tools/recut/README.md); the thicket fill is its full strip, the cliff top is slot 15 of the plain over-cliff sheet, the cliff's tall faces at s = 3 are three variants. The tone layer is drawn on grass and on the raised top (the cliff terrain, where the cell two rows below is cliff too). The palette keeps its indices (palettePin) and the new colours follow."
   ],
   "sources": {
     "water": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetWater.png",
@@ -28,28 +28,17 @@
     "plant": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Animated/Plant/SpriteSheet16x16.png"
   },
   "props": {
-    "tree-broad": { "sheet": "nature", "rect": [48, 322, 48, 14], "anchor": [24, 13], "footprint": [[0, 0]], "canopy": "tree-broad-crown" },
-    "tree-autumn": { "sheet": "nature", "rect": [144, 322, 48, 14], "anchor": [24, 13], "footprint": [[0, 0]], "canopy": "tree-autumn-crown" },
-    "bush-big": { "sheet": "nature", "rect": [0, 2, 32, 29], "anchor": [16, 28], "footprint": [[0, 0]] },
-    "bush-round": { "sheet": "nature", "rect": [16, 161, 16, 14], "anchor": [8, 13], "footprint": [[0, 0]] },
-    "bush-small": { "sheet": "nature", "rect": [1, 163, 15, 13], "anchor": [7, 12], "footprint": [[0, 0]] },
     "stump": { "sheet": "nature", "rect": [1, 134, 30, 23], "anchor": [15, 22], "footprint": [[0, 0]] },
-    "boulder-brown": { "sheet": "nature", "rect": [210, 132, 29, 27], "anchor": [14, 26], "footprint": [[0, 0]] },
-    "boulder-grey": { "sheet": "nature", "rect": [258, 132, 29, 27], "anchor": [14, 26], "footprint": [[0, 0]] },
     "reeds": { "sheet": "nature", "rect": [176, 128, 16, 46], "anchor": [8, 45], "footprint": [] },
     "tall-grass": { "sheet": "nature", "rect": [48, 160, 16, 16], "anchor": [8, 15], "footprint": [], "frames": 3, "frameMs": 300 },
     "tree-hollow": { "sheet": "nature", "rect": [0, 80, 64, 47], "anchor": [32, 46], "footprint": [[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0], [-1, -1], [0, -1], [1, -1]] },
     "split-stone": { "sheet": "nature", "rect": [257, 83, 61, 44], "anchor": [30, 43], "footprint": [[-1, 0], [0, 0], [1, 0], [-1, -1], [0, -1], [1, -1]] }
   },
-  "canopy": {
-    "tree-broad-crown": { "sheet": "nature", "rect": [48, 288, 48, 34], "anchor": [24, 47] },
-    "tree-autumn-crown": { "sheet": "nature", "rect": [144, 288, 48, 34], "anchor": [24, 47] }
-  },
+  "canopy": {},
   "decals": {
     "pebbles-a": { "sheet": "nature", "rect": [257, 289, 14, 14], "anchor": [7, 7] },
     "pebbles-b": { "sheet": "nature", "rect": [273, 289, 15, 13], "anchor": [7, 6] },
     "pebbles-c": { "sheet": "nature", "rect": [288, 289, 16, 14], "anchor": [8, 7] },
-    "tuft": { "sheet": "nature", "rect": [48, 162, 16, 13], "anchor": [8, 6] },
     "lily-pad": { "sheet": "water", "rect": [176, 48, 16, 16], "anchor": [8, 8], "key": "71ddee" }
   }
 }

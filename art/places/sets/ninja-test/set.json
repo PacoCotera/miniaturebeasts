@@ -23,7 +23,8 @@
     },
     "water": {
       "fill": {
-        "sheets": ["fill-water.png"]
+        "sheets": ["fill-water.png", "fill-water@1.png", "fill-water@2.png", "fill-water@3.png"],
+        "frameMs": 250
       },
       "over": [
         {
@@ -114,7 +115,16 @@
       ]
     },
     "scrub": {
-      "drawAs": "grass"
+      "ground": "grass",
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["earth", "sand", "mud", "path", "grass"],
+          "sheets": ["over-scrub.png"],
+          "full": "over-scrub-full.png",
+          "variants": ["over-scrub~v1.png", "over-scrub~v2.png", "over-scrub~v3.png"]
+        }
+      ]
     },
     "thicket": {
       "fill": {
@@ -152,49 +162,13 @@
   },
   "tone": {
     "of": "grass",
+    "also": ["cliff"],
     "sheets": ["tone-grass.png"]
   },
   "props": {
-    "tree-broad": {
-      "rect": [198, 78, 48, 14],
-      "anchor": [24, 13],
-      "footprint": [[0, 0]],
-      "canopy": "tree-broad-crown"
-    },
-    "tree-autumn": {
-      "rect": [149, 78, 48, 14],
-      "anchor": [24, 13],
-      "footprint": [[0, 0]],
-      "canopy": "tree-autumn-crown"
-    },
-    "bush-big": {
-      "rect": [0, 48, 32, 29],
-      "anchor": [16, 28],
-      "footprint": [[0, 0]]
-    },
-    "bush-round": {
-      "rect": [132, 78, 16, 14],
-      "anchor": [8, 13],
-      "footprint": [[0, 0]]
-    },
-    "bush-small": {
-      "rect": [33, 95, 15, 13],
-      "anchor": [7, 12],
-      "footprint": [[0, 0]]
-    },
     "stump": {
-      "rect": [93, 48, 30, 23],
+      "rect": [50, 48, 30, 23],
       "anchor": [15, 22],
-      "footprint": [[0, 0]]
-    },
-    "boulder-brown": {
-      "rect": [33, 48, 29, 27],
-      "anchor": [14, 26],
-      "footprint": [[0, 0]]
-    },
-    "boulder-grey": {
-      "rect": [63, 48, 29, 27],
-      "anchor": [14, 26],
       "footprint": [[0, 0]]
     },
     "reeds": {
@@ -203,7 +177,7 @@
       "footprint": []
     },
     "tall-grass": {
-      "rect": [51, 78, 16, 16],
+      "rect": [0, 73, 16, 16],
       "anchor": [8, 15],
       "frames": 3,
       "frameMs": 300,
@@ -218,74 +192,131 @@
       "rect": [82, 0, 61, 44],
       "anchor": [30, 43],
       "footprint": [[-1, 0],  [0, 0],  [1, 0],  [-1, -1],  [0, -1],  [1, -1]]
+    },
+    "tree-broad": {
+      "rect": [0, 90, 36, 9],
+      "anchor": [18, 5],
+      "footprint": [[0, 0]],
+      "canopy": "tree-broad-crown"
+    },
+    "tree-autumn": {
+      "rect": [213, 73, 36, 9],
+      "anchor": [18, 5],
+      "footprint": [[0, 0]],
+      "canopy": "tree-autumn-crown"
+    },
+    "bush-big": {
+      "rect": [218, 0, 24, 24],
+      "anchor": [12, 22],
+      "footprint": [[0, 0]]
+    },
+    "bush-round": {
+      "rect": [0, 48, 24, 24],
+      "anchor": [12, 22],
+      "footprint": [[0, 0]]
+    },
+    "bush-small": {
+      "rect": [25, 48, 24, 24],
+      "anchor": [12, 22],
+      "footprint": [[0, 0]]
+    },
+    "boulder-brown": {
+      "rect": [200, 48, 22, 16],
+      "anchor": [11, 15],
+      "footprint": [[0, 0]]
+    },
+    "boulder-grey": {
+      "rect": [223, 48, 22, 16],
+      "anchor": [11, 15],
+      "footprint": [[0, 0]]
+    },
+    "shrub-1": {
+      "rect": [149, 73, 15, 13],
+      "anchor": [7, 12],
+      "footprint": [[0, 0]]
+    },
+    "shrub-2": {
+      "rect": [165, 73, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
+    },
+    "shrub-3": {
+      "rect": [181, 73, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
+    },
+    "shrub-4": {
+      "rect": [197, 73, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
     }
   },
   "decals": {
     "pebbles-a": {
-      "rect": [100, 78, 14, 14],
+      "rect": [49, 73, 14, 14],
       "anchor": [7, 7]
     },
     "pebbles-b": {
-      "rect": [0, 95, 15, 13],
+      "rect": [81, 73, 15, 13],
       "anchor": [7, 6]
     },
     "pebbles-c": {
-      "rect": [115, 78, 16, 14],
+      "rect": [64, 73, 16, 14],
       "anchor": [8, 7]
     },
-    "tuft": {
-      "rect": [16, 95, 16, 13],
-      "anchor": [8, 6]
-    },
     "lily-pad": {
-      "rect": [226, 48, 16, 16],
+      "rect": [183, 48, 16, 16],
       "anchor": [8, 8]
     },
+    "tuft-fan": {
+      "rect": [110, 73, 12, 13],
+      "anchor": [6, 12]
+    },
+    "tuft-lean": {
+      "rect": [123, 73, 12, 13],
+      "anchor": [6, 12]
+    },
+    "tuft-small": {
+      "rect": [136, 73, 12, 13],
+      "anchor": [6, 12]
+    },
+    "tuft": {
+      "rect": [97, 73, 12, 13],
+      "anchor": [6, 12]
+    },
     "flower-daisy": {
-      "rect": [175, 48, 16, 16],
+      "rect": [132, 48, 16, 16],
       "anchor": [8, 15]
     },
     "flower-buttercup": {
-      "rect": [158, 48, 16, 16],
+      "rect": [115, 48, 16, 16],
       "anchor": [8, 15]
     },
     "flower-daisy-pair": {
-      "rect": [192, 48, 16, 16],
+      "rect": [149, 48, 16, 16],
       "anchor": [8, 15]
     },
     "flower-blue-pair": {
-      "rect": [141, 48, 16, 16],
+      "rect": [98, 48, 16, 16],
       "anchor": [8, 15]
     },
     "flower-pink-three": {
-      "rect": [209, 48, 16, 16],
-      "anchor": [8, 15]
-    },
-    "tuft-fan": {
-      "rect": [0, 78, 16, 16],
-      "anchor": [8, 15]
-    },
-    "tuft-lean": {
-      "rect": [17, 78, 16, 16],
-      "anchor": [8, 15]
-    },
-    "tuft-small": {
-      "rect": [34, 78, 16, 16],
+      "rect": [166, 48, 16, 16],
       "anchor": [8, 15]
     },
     "clump-tall": {
-      "rect": [124, 48, 16, 16],
+      "rect": [81, 48, 16, 16],
       "anchor": [8, 15]
     }
   },
   "canopy": {
     "tree-broad-crown": {
-      "rect": [193, 0, 48, 34],
-      "anchor": [24, 47]
+      "rect": [181, 0, 36, 32],
+      "anchor": [18, 37]
     },
     "tree-autumn-crown": {
-      "rect": [144, 0, 48, 34],
-      "anchor": [24, 47]
+      "rect": [144, 0, 36, 32],
+      "anchor": [18, 37]
     }
   }
 }
