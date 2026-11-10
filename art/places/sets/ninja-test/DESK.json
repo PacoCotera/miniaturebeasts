@@ -38,9 +38,22 @@
     ],
     "sha256": "a04a6a02de56e4f1cdaf9f579f6b901edd6163a08a6ff9e02dbe779807daa732"
   },
-  "rock.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/rock.png",
+  "rock-b.png": {
+    "commit": "ffa823829",
+    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-b.png",
+    "size": [
+      13,
+      14
+    ],
+    "foot": [
+      6,
+      13
+    ],
+    "sha256": "7f4fc66b687f702ea49b970af43014c6145535df74f68072742e6725520152fd"
+  },
+  "rock-a.png": {
+    "commit": "ffa823829",
+    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-a.png",
     "size": [
       15,
       12
@@ -49,7 +62,7 @@
       7,
       11
     ],
-    "sha256": "c1b63c0b7069e55b9e1cd24a055a24eb9abd5fea56966316f27f90d55af431b8"
+    "sha256": "0b4e6f691505d6f738b746af9520b571151fba9ab5c74b6cc1eb73b5ebeecbef"
   },
   "stump.png": {
     "commit": "75f1ff195",
@@ -63,6 +76,58 @@
       12
     ],
     "sha256": "94d02af02077168eeb02e9ecb811c3523428f0fc86af0ccbdd90ff44356d4c1c"
+  },
+  "rock-a-m.png": {
+    "commit": "ffa823829",
+    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-a-m.png",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "f2afc6e5a8f689ae56b1e15404a165dde2d916c782de15d93f278adf5d1a038a"
+  },
+  "rock-b-m.png": {
+    "commit": "ffa823829",
+    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-b-m.png",
+    "size": [
+      13,
+      14
+    ],
+    "foot": [
+      6,
+      13
+    ],
+    "sha256": "5f3870b793645169a840e8531c0b91fc0c0373d85ba651b05f7914c10f9585cc"
+  },
+  "rock-big.png": {
+    "commit": "ffa823829",
+    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-big.png",
+    "size": [
+      24,
+      18
+    ],
+    "foot": [
+      12,
+      17
+    ],
+    "sha256": "7580aa5c6dd21dcc431bdc847a62cae663332f0a5c7c75f302390692dd49d7af"
+  },
+  "rock-big-m.png": {
+    "commit": "ffa823829",
+    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-big-m.png",
+    "size": [
+      24,
+      18
+    ],
+    "foot": [
+      11,
+      17
+    ],
+    "sha256": "40bed5fa49565666d283bf344014cba953333cdff2a179a904a8e8fbe5e43670"
   },
   "hollow-tree.png": {
     "commit": "75f1ff195",
@@ -143,121 +208,121 @@
     "sha256": "2f94a0e16acc8648393ae6e156a519b7438767cd4af0e103a4d98b0c64ee0859"
   },
   "tufts-2.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-2.png",
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/tufts-2.png",
     "size": [
-      10,
-      9
+      11,
+      10
     ],
     "foot": [
       5,
-      8
+      9
     ],
-    "sha256": "b25c3446a7fe91bc3d7e0cced8cf9011136c38fcf2c93b8011bf22904486be6e"
+    "sha256": "a803617a54970038c9a30f0636866e36bf6b55b8a3ede7583adbec6b08db4560"
   },
   "tufts-2-m.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-2-m.png",
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/tufts-2-m.png",
     "size": [
-      10,
-      9
+      11,
+      10
     ],
     "foot": [
-      4,
-      8
+      5,
+      9
     ],
-    "sha256": "6e460d1164516710b8a475397a38d4d5ee978cc63a29b91b5e0b7cb0698eea29"
+    "sha256": "24db962e352d330db225031bd3865e7a4c9d47b49dd92f1bc01e19734b23402c"
   },
   "tufts-3.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-3.png",
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/tufts-3.png",
     "size": [
-      11,
-      9
+      12,
+      10
     ],
     "foot": [
-      5,
-      8
+      6,
+      9
     ],
-    "sha256": "7f27549fbc227b5a377a6efe1fc00f85e162b26efdbfa2e0474803a1fbb2a8ce"
+    "sha256": "ebc0ecc0b282d8f3b3f37447a4b945538fb31f5571710dc17930fc4a392c55c8"
   },
   "tufts-3-m.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-3-m.png",
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/tufts-3-m.png",
     "size": [
-      11,
-      9
+      12,
+      10
     ],
     "foot": [
       5,
-      8
+      9
     ],
-    "sha256": "7a681b1695b26e38465b07f49c9673db265709a21f5ea4fd267593f679ac6876"
+    "sha256": "0ad13bf6b44046890460ed41450cd786dc4bdd4671112efea3fc030c419bfb30"
   },
   "tufts-1.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-1.png",
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/tufts-1.png",
     "size": [
-      9,
+      11,
+      10
+    ],
+    "foot": [
+      5,
       9
     ],
-    "foot": [
-      4,
-      8
-    ],
-    "sha256": "abc984049e585d929c8c1ff044dedf0316dfca1abd3a0a09be364d90a9c0e3e9"
+    "sha256": "5ae7d02ee3e213d4144cd3fdc363130d6affe7c148d970602a541c6d80ae283a"
   },
   "flowers-1.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/flowers-1.png",
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/flowers-1.png",
     "size": [
-      11,
-      12
+      13,
+      14
     ],
     "foot": [
-      5,
-      11
+      6,
+      13
     ],
-    "sha256": "13cdc17256ff82672b18696ea2b8c0002898417ec2b29ebe5ca0966959c5e85d"
+    "sha256": "7cdf58728ccd51050c74bc68621d82dbbc692d4a33d41edc8dfe1b4f7fa92c14"
   },
   "flowers-2.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/flowers-2.png",
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/flowers-2.png",
     "size": [
-      11,
-      12
+      13,
+      14
     ],
     "foot": [
-      5,
-      11
+      6,
+      13
     ],
-    "sha256": "518060458ce9b41fc787b87d37b07dd1bffb76eabad702f70218d4d1895d8cb0"
+    "sha256": "073667257600ef53b0ffb5e7ea01c1d01afef483f4b59dd636a9c3c38a589152"
   },
   "flowers-3.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/flowers-3.png",
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/flowers-3.png",
     "size": [
-      11,
-      12
+      13,
+      14
     ],
     "foot": [
-      5,
-      11
+      6,
+      13
     ],
-    "sha256": "aa06d9f2abadc00a742e6c7c801c950cdf556d5c5a12937d561887b858cb54a0"
+    "sha256": "3dfe9c5f0b540453cdb9cb7fe9f14c3f343c9cd0be5fa90b36d31856f570326c"
   },
   "flowers-blue-pair.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/flowers-blue-pair.png",
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/flowers-blue-pair.png",
     "size": [
-      14,
-      12
+      16,
+      14
     ],
     "foot": [
-      7,
-      11
+      8,
+      13
     ],
-    "sha256": "0b90dd50bd649ad2f26de7d1dc3009468b3bfad1977b9ccae853effe18138f75"
+    "sha256": "ced517a3f8c9661ca74537352be89051478501dbd465229c44826a099f7c424d"
   },
   "clump-tall.png": {
     "commit": "75f1ff195",
@@ -531,6 +596,864 @@
       6
     ],
     "sha256": "2b99557b038fbba2ef91c020293050c70ddb324209f0cefa5dbb078f6a3267f9"
+  },
+  "flowers-1-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/flowers-1.png flipped left to right (layout)",
+    "size": [
+      13,
+      14
+    ],
+    "foot": [
+      6,
+      13
+    ],
+    "sha256": "340e2f1912c166cec7f2d63ab844ab55ddfe7838146a6b31f94933ebd3939ddf"
+  },
+  "flowers-1-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-1-young.png",
+    "size": [
+      9,
+      10
+    ],
+    "foot": [
+      4,
+      9
+    ],
+    "sha256": "785ca4b92388db91f26d7bf9ed32a8eb57b7c1b80570f99f6c259568b8a29fcd"
+  },
+  "flowers-1-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-1-young-m.png",
+    "size": [
+      9,
+      10
+    ],
+    "foot": [
+      4,
+      9
+    ],
+    "sha256": "727409ec502e27e358274d92d926cc9f8bacbd545df12956b03c31775cf6cfb5"
+  },
+  "flowers-1-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-1-grown.png",
+    "size": [
+      17,
+      18
+    ],
+    "foot": [
+      8,
+      17
+    ],
+    "sha256": "8f81dbd435c7f636c5cefe201fcf393a8b950c4fa3cc0181eacd1d7649fbb294"
+  },
+  "flowers-1-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-1-grown-m.png",
+    "size": [
+      17,
+      18
+    ],
+    "foot": [
+      8,
+      17
+    ],
+    "sha256": "db26baf9cc7a34ee2611668aac1176ba75a3a72feb4fa598a0c03f8bfde78009"
+  },
+  "flowers-2-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/flowers-2.png flipped left to right (layout)",
+    "size": [
+      13,
+      14
+    ],
+    "foot": [
+      6,
+      13
+    ],
+    "sha256": "b75e512aa6cbc670ca0c9fc6cb212c63cff2b66f1b9d2767cc6bb29c56d0ff4f"
+  },
+  "flowers-2-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-2-young.png",
+    "size": [
+      9,
+      10
+    ],
+    "foot": [
+      4,
+      9
+    ],
+    "sha256": "4efd1f9083798040b20bd019cb980dca00dd92f87db183b963b4466dea6e3aaf"
+  },
+  "flowers-2-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-2-young-m.png",
+    "size": [
+      9,
+      10
+    ],
+    "foot": [
+      4,
+      9
+    ],
+    "sha256": "4e6e1025c71dcf28398537cd91b33d75925b7c7f8d55cdf28655a2803d8536ed"
+  },
+  "flowers-2-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-2-grown.png",
+    "size": [
+      17,
+      18
+    ],
+    "foot": [
+      8,
+      17
+    ],
+    "sha256": "f4bda0ec61a6a25ebf48d3ed995e32309c32ebf516bd55bfe6406cd47c072794"
+  },
+  "flowers-2-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-2-grown-m.png",
+    "size": [
+      17,
+      18
+    ],
+    "foot": [
+      8,
+      17
+    ],
+    "sha256": "3b2ecefc0106bdfc8de44b24c1047943516795e5ec035ca3523286b33c866d94"
+  },
+  "flowers-3-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/flowers-3.png flipped left to right (layout)",
+    "size": [
+      13,
+      14
+    ],
+    "foot": [
+      6,
+      13
+    ],
+    "sha256": "a51bbdbb99ed6b5b7be66bc8ec9076b97d7537d479afdce4c6541ec9193b169c"
+  },
+  "flowers-3-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-3-young.png",
+    "size": [
+      9,
+      10
+    ],
+    "foot": [
+      4,
+      9
+    ],
+    "sha256": "ca90c2ce6c391954eaf85bd58446056235855c4bdc220a4da1bed30a567db26b"
+  },
+  "flowers-3-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-3-young-m.png",
+    "size": [
+      9,
+      10
+    ],
+    "foot": [
+      4,
+      9
+    ],
+    "sha256": "7dcdaba6837b6edea0407958c06cf5c637e08a9a73f87d7d3f61dfe4cea36ee9"
+  },
+  "flowers-3-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-3-grown.png",
+    "size": [
+      16,
+      18
+    ],
+    "foot": [
+      8,
+      17
+    ],
+    "sha256": "e33ccc452fb5f43219f74845b750f4d4843bb2ca6f1c58be792efa28592e78ea"
+  },
+  "flowers-3-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-3-grown-m.png",
+    "size": [
+      16,
+      18
+    ],
+    "foot": [
+      7,
+      17
+    ],
+    "sha256": "212338952939ce8af1e391688f6332fee8a87c224c2a344cbcdd547ac7a42d32"
+  },
+  "flowers-blue-pair-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/flowers-blue-pair.png flipped left to right (layout)",
+    "size": [
+      16,
+      14
+    ],
+    "foot": [
+      7,
+      13
+    ],
+    "sha256": "1806263c01cf0fc6e26a2d078fe3060dc70d5a9d0fe3338d5e39e94549cc8396"
+  },
+  "flowers-blue-pair-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-blue-pair-young.png",
+    "size": [
+      11,
+      10
+    ],
+    "foot": [
+      5,
+      9
+    ],
+    "sha256": "41e1cfc7d86c4cf17f2cb2931069882d12e05a4cc6206a1288772c948ccb7cf9"
+  },
+  "flowers-blue-pair-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-blue-pair-young-m.png",
+    "size": [
+      11,
+      10
+    ],
+    "foot": [
+      5,
+      9
+    ],
+    "sha256": "4b5c242853bd78d42130b8aa1829f6519ec71541b6916ab5c93895cc06e8c222"
+  },
+  "flowers-blue-pair-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-blue-pair-grown.png",
+    "size": [
+      21,
+      18
+    ],
+    "foot": [
+      10,
+      17
+    ],
+    "sha256": "4dcd8b1861cf5d73bfaaaacb4bb06240e47bced567802789eb66fa26f130e923"
+  },
+  "flowers-blue-pair-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/flowers-blue-pair-grown-m.png",
+    "size": [
+      21,
+      18
+    ],
+    "foot": [
+      10,
+      17
+    ],
+    "sha256": "aee60c13f55b6afa09e05502e3883011260c05e3971c25029b611866cde2a10a"
+  },
+  "tufts-1-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/tufts-1.png flipped left to right (layout)",
+    "size": [
+      11,
+      10
+    ],
+    "foot": [
+      5,
+      9
+    ],
+    "sha256": "cfc05fa77f9dc0450ec83f3fb08020c5884ceb7fcddeb2bcc67a0a56d966c32c"
+  },
+  "tufts-1-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-1-young.png",
+    "size": [
+      7,
+      7
+    ],
+    "foot": [
+      3,
+      6
+    ],
+    "sha256": "f746f8c10d446e3ff0540a99bcf0cd646a40617c558141cb28988236b30366a9"
+  },
+  "tufts-1-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-1-young-m.png",
+    "size": [
+      7,
+      7
+    ],
+    "foot": [
+      3,
+      6
+    ],
+    "sha256": "a7df7bd2168bbb9d0db3e8e945dd926ab2f42fba2bd4ed084908807de3a5265d"
+  },
+  "tufts-1-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-1-grown.png",
+    "size": [
+      14,
+      13
+    ],
+    "foot": [
+      7,
+      12
+    ],
+    "sha256": "866fee6e5ecfdbfd31eb9a3f23f9a0cf1889e6533aa9749f0162133dd592d495"
+  },
+  "tufts-1-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-1-grown-m.png",
+    "size": [
+      14,
+      13
+    ],
+    "foot": [
+      6,
+      12
+    ],
+    "sha256": "58cb155c80489e569466a16d331f0c513686de3c63a7be53ff8680effee3e1eb"
+  },
+  "tufts-2-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-2-young.png",
+    "size": [
+      7,
+      7
+    ],
+    "foot": [
+      3,
+      6
+    ],
+    "sha256": "b6dc08309454c84ac873070fbacc9b9965566f5304942424d5bb7c6f532256e2"
+  },
+  "tufts-2-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-2-young-m.png",
+    "size": [
+      7,
+      7
+    ],
+    "foot": [
+      3,
+      6
+    ],
+    "sha256": "2ac2795c1152bc28ee33f5085d10aec946de6b390a596fdac0b088a74f66921b"
+  },
+  "tufts-2-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-2-grown.png",
+    "size": [
+      14,
+      13
+    ],
+    "foot": [
+      7,
+      12
+    ],
+    "sha256": "52712e52549812e3e42cb01735d5cfd8b6b62913ca8b7447b5a906eb814d0372"
+  },
+  "tufts-2-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-2-grown-m.png",
+    "size": [
+      14,
+      13
+    ],
+    "foot": [
+      6,
+      12
+    ],
+    "sha256": "107f85d6de26fe8734acbfb60cf20cb4e43caf8cefee6f9bb79b43bd30737ba6"
+  },
+  "tufts-3-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-3-young.png",
+    "size": [
+      8,
+      7
+    ],
+    "foot": [
+      4,
+      6
+    ],
+    "sha256": "f230a418ade3367c54e4f3b9c221fe4766bdf19c390da2a66ba3edbd3acb5511"
+  },
+  "tufts-3-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-3-young-m.png",
+    "size": [
+      8,
+      7
+    ],
+    "foot": [
+      3,
+      6
+    ],
+    "sha256": "a410f22c16ac83493c2137fdb0f383634e54d1b561677d3afb0283be2d114d17"
+  },
+  "tufts-3-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-3-grown.png",
+    "size": [
+      15,
+      13
+    ],
+    "foot": [
+      7,
+      12
+    ],
+    "sha256": "070b99c0e2d1f62c8f1eed86578f97a5d6b76e949d147c35fdbe004979e0fbfd"
+  },
+  "tufts-3-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/tufts-3-grown-m.png",
+    "size": [
+      15,
+      13
+    ],
+    "foot": [
+      7,
+      12
+    ],
+    "sha256": "77bc115b1472c7cf9c0d5d9b2a80dd7987a695ded053c0b1ae2b6afbf71e48db"
+  },
+  "clump-tall-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/clump-tall-young.png",
+    "size": [
+      11,
+      14
+    ],
+    "foot": [
+      5,
+      13
+    ],
+    "sha256": "94bbe24d4ca6c67e14f61a12c3f23d3b9bdd92ffc77fa86d212c3fc1c37c1b8f"
+  },
+  "clump-tall-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/clump-tall-young-m.png",
+    "size": [
+      11,
+      14
+    ],
+    "foot": [
+      5,
+      13
+    ],
+    "sha256": "33ad8e564dcaf3df7c33e356ba1041e41b8d810ab581fca4a36a8ddd5e8ed9a3"
+  },
+  "clump-tall-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/clump-tall-grown.png",
+    "size": [
+      18,
+      24
+    ],
+    "foot": [
+      9,
+      23
+    ],
+    "sha256": "1ef8fac2480e8a0d8355c5b0328ce87cc6d984f37e67bbd04f48c4f899afeaf2"
+  },
+  "clump-tall-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/clump-tall-grown-m.png",
+    "size": [
+      18,
+      24
+    ],
+    "foot": [
+      8,
+      23
+    ],
+    "sha256": "9b6373c9aa159d31bdca593cd31c37d52ebc195f1164abef1dbe2de7b61f6bc4"
+  },
+  "clump-tall-s-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/clump-tall-s-young.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "dfdbb75de695377f972969958d54923947e2040387a6b776bd04ea924054e632"
+  },
+  "clump-tall-s-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/clump-tall-s-young-m.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "d468d1a5649a2043dc4aee963d57801e416c19093897f0bf14e1546560b3a02f"
+  },
+  "clump-tall-s-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/clump-tall-s-grown.png",
+    "size": [
+      18,
+      15
+    ],
+    "foot": [
+      9,
+      14
+    ],
+    "sha256": "cb9fd758c0b09fb672a82c2b0155d67c80f8eed105f607e0da21e141a244022e"
+  },
+  "clump-tall-s-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/clump-tall-s-grown-m.png",
+    "size": [
+      18,
+      15
+    ],
+    "foot": [
+      8,
+      14
+    ],
+    "sha256": "15e262cb3847c33a99876eb3ead9b9f92cbd82cf8665464508f395bc581b1205"
+  },
+  "shrub-1-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/shrub-1.png flipped left to right (layout)",
+    "size": [
+      15,
+      13
+    ],
+    "foot": [
+      7,
+      12
+    ],
+    "sha256": "97dae82f833f286ff6451751ffafcfd18f874c935de2c6f8863848246b1be211"
+  },
+  "shrub-1-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-1-young.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "58d75a02006ca65a6f2d59fa90770a9c7c1074959fd265a2f82baae7e0760ae0"
+  },
+  "shrub-1-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-1-young.png flipped left to right (layout)",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "e4b2b28d1d0150d4e7336c6185214f4205555a9ddce521244d0a8e214b53e1fc"
+  },
+  "shrub-1-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-1-grown.png",
+    "size": [
+      19,
+      16
+    ],
+    "foot": [
+      9,
+      15
+    ],
+    "sha256": "a65830bc5240b52191ccf8fe0fe5ba20ab988e7b48f70b89d9a6f42c8b67b834"
+  },
+  "shrub-1-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-1-grown.png flipped left to right (layout)",
+    "size": [
+      19,
+      16
+    ],
+    "foot": [
+      9,
+      15
+    ],
+    "sha256": "5d23fec9a6b0d63c62049e4984e7da20e16ffb34d602df7ea7b264a5647fa4c0"
+  },
+  "shrub-2-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/shrub-2.png flipped left to right (layout)",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "2bd6ad4fafc76e40b49ec043ea34b5bd0fe71abe08284ca4a1c7946dd30e9987"
+  },
+  "shrub-2-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-2-young.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "a3d2787805a556208d3a18eec7762ace781d37baaab3d6ca9fd3bef6e52a6bb6"
+  },
+  "shrub-2-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-2-young.png flipped left to right (layout)",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "637a592cc14370714269afa4145e1dd3e6610fddf84c524788412402709b0027"
+  },
+  "shrub-2-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-2-grown.png",
+    "size": [
+      19,
+      16
+    ],
+    "foot": [
+      9,
+      15
+    ],
+    "sha256": "42c3fb3644391a91e8b8c06b6223c36c0c1f7e8cf4b7a0eb4c8ec0cf6cc50470"
+  },
+  "shrub-2-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-2-grown.png flipped left to right (layout)",
+    "size": [
+      19,
+      16
+    ],
+    "foot": [
+      9,
+      15
+    ],
+    "sha256": "7dbeb783e097e32f1f3904cec0fddbda1986290a99a7eff0427f03e5b3d46692"
+  },
+  "shrub-3-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/shrub-3.png flipped left to right (layout)",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "4e8ff891c4a4c2dd99af3e0114a4e2979f5cf2fca8a96547482c8e2f1973c62f"
+  },
+  "shrub-3-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-3-young.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "cbacea567e0a03d7fb8c9ec7d9ab885ab599201320274fa09d77ac813acd745c"
+  },
+  "shrub-3-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-3-young.png flipped left to right (layout)",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "63aded01e5850f67b04de77bb4714843906f4894765e91c99415cd7a4b24250c"
+  },
+  "shrub-3-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-3-grown.png",
+    "size": [
+      19,
+      16
+    ],
+    "foot": [
+      9,
+      15
+    ],
+    "sha256": "39a2e1d2ccf204c2f0c36ed689eb268a2ef837c028e1b3c32808addbd9f24e11"
+  },
+  "shrub-3-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-3-grown.png flipped left to right (layout)",
+    "size": [
+      19,
+      16
+    ],
+    "foot": [
+      9,
+      15
+    ],
+    "sha256": "7b372b08e170e426bb2185ebfb2ed34aa79d93376a38fd33b63617cb8170d4ed"
+  },
+  "shrub-4-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/shrub-4.png flipped left to right (layout)",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "9d0cfe6a6c52de98bf2abc93d1689118f7fdb6c67ce94885f43aca1e2db2c26f"
+  },
+  "shrub-4-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-4-young.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "e135e1f847b1d8cc4d0b728e62fc965070ef095adf666c3f9395643e817b1bd2"
+  },
+  "shrub-4-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-4-young.png flipped left to right (layout)",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "1a70aad8fbbfa9e4b1f78f35f42ce7c8f0fb94db7ff8cf47bb65b3cc951635d2"
+  },
+  "shrub-4-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-4-grown.png",
+    "size": [
+      19,
+      15
+    ],
+    "foot": [
+      9,
+      14
+    ],
+    "sha256": "e015fb93a8947710239c3465ec8b7e6242046ed83c1076f4587440840e6b46d4"
+  },
+  "shrub-4-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/shrub-4-grown.png flipped left to right (layout)",
+    "size": [
+      19,
+      15
+    ],
+    "foot": [
+      9,
+      14
+    ],
+    "sha256": "e7f3e020c466d06133f70006a3514f6c8a28a57b8a0b7505bd8af11654f5fc88"
+  },
+  "bush-round-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/bush-round.png flipped left to right (layout)",
+    "size": [
+      20,
+      16
+    ],
+    "foot": [
+      9,
+      15
+    ],
+    "sha256": "7530a8ebecc2984911410c7ccc033f783e25a093b6b232f6b78e4885913d6af3"
+  },
+  "bush-round-young.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/bush-round-young.png",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "b738c9f2acec327c8907258a5f54aa4f744de4696fa10a63f2a3abc8d10b9733"
+  },
+  "bush-round-young-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/bush-round-young.png flipped left to right (layout)",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "35d452ea0cef75c31dda0bb9a0f4c9836b713bc5ace4ef911f6df5007f37d766"
+  },
+  "bush-round-grown.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/bush-round-grown.png",
+    "size": [
+      25,
+      20
+    ],
+    "foot": [
+      12,
+      19
+    ],
+    "sha256": "39ff353d55fd09675040710a6e67f32dcc85f24813877ade67648bea8942d99b"
+  },
+  "bush-round-grown-m.png": {
+    "commit": "cc712a83e",
+    "from": "art-jobs/2026-11-10-art-quiet-ground/out/steps/bush-round-grown.png flipped left to right (layout)",
+    "size": [
+      25,
+      20
+    ],
+    "foot": [
+      12,
+      19
+    ],
+    "sha256": "4ff606cd7758b0402f1542d9dfc07b7b73fa21ebd9dc95cefbd1ed88cd4d344c"
   },
   "reed-shore-1.png": {
     "commit": "75f1ff195",

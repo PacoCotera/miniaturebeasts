@@ -21,6 +21,16 @@ const applied = (job, sub) => ({ commit: DC, dir: `${APPLIED}/${job}/out${sub ? 
 export const WAYUP = { commit: '704373a58', dir: `${APPLIED}/art-paint-wayup/out` };   // the way-up pieces (art director signed 2026-11-09 22:1x; the applied copies, art/desk 704373a58), 48 x 32, in the map palette; the sand one keeps its one painted sand tone #dfd387
 // the walk's sprites at their signed 1x sizes (art director mb-74, mibi-art art/desk 75f1ff195, art-jobs/2026-11-10-art-fix-decor-edges/out/p2/, 77 pieces with mirrors): manifest.json gives each piece's file, size and foot
 export const P2 = { commit: '75f1ff195', dir: 'art-jobs/2026-11-10-art-fix-decor-edges/out/p2' };
+// the middle sizes of the flowers (14 tall) and tufts (10 tall), re-cut (art director, mibi-art art/desk cc712a83e, art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/): only the nine pieces its changed.json lists; every other p3 piece is the p2 piece
+export const P3 = { commit: 'cc712a83e', dir: 'art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3' };
+export const P3_KEYS = ['flowers-1', 'flowers-2', 'flowers-3', 'flowers-blue-pair', 'tufts-1', 'tufts-2', 'tufts-2-m', 'tufts-3', 'tufts-3-m'];
+// the young and grown steps of the plants (same commit, art-jobs/2026-11-10-art-quiet-ground/out/steps/, manifest.json there): <slot>-young and <slot>-grown, each with a -m mirror
+export const STEPS = { commit: 'cc712a83e', dir: 'art-jobs/2026-11-10-art-quiet-ground/out/steps' };
+// the signed rock family (art director, mibi-art art/desk ffa823829, art-jobs/2026-11-10-art-paint-rock-family/out/): the three boulder shapes (rock-a, rock-b, rock-big, each with a -m mirror), sizes and feet in out/manifest.json
+export const ROCKS = { commit: 'ffa823829', dir: 'art-jobs/2026-11-10-art-paint-rock-family/out' };
+// the plant slots the meadow scatter draws, by the manifest's slot names (each in three steps: young, the middle signed piece, grown)
+export const PLANTS = ['flowers-1', 'flowers-2', 'flowers-3', 'flowers-blue-pair', 'tufts-1', 'tufts-2', 'tufts-3', 'clump-tall', 'clump-tall-s', 'shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-round'];
+export const BOULDERS = ['rock-a', 'rock-b', 'rock-big'];
 export const SAND = applied('art-paint-terrain-sand', ''), MEADOW1 = applied('art-paint-terrain-meadow', ''), MEADOW2 = MEADOW1, THICKET = applied('art-paint-terrain-thicket', 'tiles');
 export const CLIFF3 = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles' };   // the cliff sheets are the re-cut ones (tools/recut); the commit and folder are the label of their source
 export const SCRUBJOB = applied('art-paint-terrain-thicket', 'tiles'), RIPPLE = applied('art-paint-water-ripple', 'tiles');
@@ -128,7 +138,8 @@ export function deskLayers() {
 //   shrubs; fleck-0..5 (and fleck-Nm) the grass flecks; reed-* the reed sprites (and reed-*m); the water bits; the stump, the hollow tree and the split stone.
 export const DECOR_SOURCES = {
   props: {
-    'tree-broad': 'tree-trunk', 'tree-autumn': 'tree-trunk', 'bush-big': 'bush-round', 'bush-round': 'bush-round', 'bush-small': 'bush-round', 'boulder-brown': 'rock', 'boulder-grey': 'rock', stump: 'stump',
+    'tree-broad': 'tree-trunk', 'tree-autumn': 'tree-trunk', 'bush-big': 'bush-round', 'bush-round': 'bush-round', 'bush-small': 'bush-round', 'boulder-brown': 'rock-b', 'boulder-grey': 'rock-a', stump: 'stump',
+    ...Object.fromEntries(BOULDERS.flatMap((b) => [[b, b], [`${b}-m`, `${b}-m`]])),   // the three signed boulder shapes and their mirrors: what the generator's rocks are; the hand-set places' two kit names draw the first two
     'tree-hollow': 'hollow-tree', 'split-stone': 'split-stone', 'shrub-1': 'shrub-1', 'shrub-2': 'shrub-2', 'shrub-3': 'shrub-3', 'shrub-4': 'shrub-4',
   },
   sweeps: { 'tall-grass': 'tufts-2', 'tall-grass-m': 'tufts-2-m', 'tall-grass-b': 'tufts-3', 'tall-grass-bm': 'tufts-3-m' },
@@ -138,21 +149,42 @@ export const DECOR_SOURCES = {
     'clump-tall': 'clump-tall', 'clump-tall-m': 'clump-tall-m', 'clump-tall-s': 'clump-tall-s', 'clump-tall-sm': 'clump-tall-s-m',
     'pebbles-a': 'pebbles-a', 'pebbles-b': 'pebbles-b', 'pebbles-c': 'pebbles-c', 'lily-pad': 'lily-pad', 'lily-pad-flower': 'lily-pad-flower',
     ...Object.fromEntries([0, 1, 2, 3, 4, 5].flatMap((k) => [[`fleck-${k}`, `fleck-${k}`], [`fleck-${k}m`, `fleck-${k}-m`]])),
+    // the meadow scatter's pieces (map-rules.json meadow.scatter): every plant slot in its three sizes, each with its mirror; named sc-<slot>[-young|-grown][-m] (the middle size is the signed p3 / p2 piece)
+    ...Object.fromEntries(PLANTS.flatMap((s) => ['', '-young', '-grown'].flatMap((st) => ['', '-m'].map((m) => [`sc-${s}${st}${m}`, `${s}${st}${m}`])))),
   },
   reeds: Object.fromEntries(['shore-1', 'shore-2', 'shore-3', 'shore-4', 'water-1', 'water-2'].flatMap((n) => [[`reed-${n}`, `reed-${n}`], [`reed-${n}m`, `reed-${n}-m`]])),
 };
 export function deskArt() {
   const files = new Map(), desk = {}, manifest = JSON.parse(show(P2, 'manifest.json')), seen = new Map();
-  const piece = (key) => {   // one signed piece: its bytes (written once, under the manifest key), the image and the foot
-    const m = manifest[key];
-    if (!m) throw new Error(`p2 manifest has no piece ${key}`);
-    const file = `${key}.png`;
-    if (!seen.has(key)) {
-      const b = show(P2, path.posix.basename(m.file)), im = decodePng(b);
-      if (im.w !== m.size[0] || im.h !== m.size[1]) throw new Error(`${key}: the file is ${im.w} x ${im.h}, the manifest says ${m.size.join(' x ')}`);
-      files.set(file, b); desk[file] = { commit: P2.commit, from: `${P2.dir}/${path.posix.basename(m.file)}`, size: m.size, foot: m.foot, sha256: createHash('sha256').update(b).digest('hex') };
-      seen.set(key, { image: im, anchor: [m.foot[0], m.foot[1]] });
+  const man = { p3: JSON.parse(show(P3, 'manifest.json')), steps: JSON.parse(show(STEPS, 'manifest.json')), rocks: JSON.parse(show(ROCKS, 'manifest.json')) };
+  const sha = (b) => createHash('sha256').update(b).digest('hex');
+  // where a desk file lives: a step (young, grown) in the steps folder, the nine re-cut flowers and tufts in p3, the boulders in the rock family, every other piece in p2
+  const entryOf = (key) => {
+    if (man.steps[key]) return { S: STEPS, m: man.steps[key], path: path.posix.basename(man.steps[key].file) };
+    if (P3_KEYS.includes(key)) return { S: P3, m: man.p3[key], path: path.posix.basename(man.p3[key].file) };
+    if (manifest[key]) return { S: P2, m: manifest[key], path: path.posix.basename(manifest[key].file) };
+    const base = key.replace(/-m$/, ''), r = man.rocks[base];
+    if (BOULDERS.includes(base) && r) {   // a boulder: its file (out/boulders/...); its mirror is the desk's own -m file, the foot flipped across the picture
+      const mir = base !== key;
+      return { S: ROCKS, m: { size: r.size, foot: mir ? [r.size[0] - 1 - r.foot[0], r.foot[1]] : r.foot }, path: (mir ? r.mirror : r.file).replace(/^out\//, '') };
     }
+    return null;
+  };
+  const flipX = (im) => { const o = newImage(im.w, im.h); for (let y = 0; y < im.h; y++) for (let x = 0; x < im.w; x++) o.data.set(im.data.subarray((y * im.w + x) * 4, (y * im.w + x) * 4 + 4), (y * im.w + (im.w - 1 - x)) * 4); return o; };
+  const piece = (key) => {   // one signed piece: its bytes (written once, under the manifest key), the image and the foot
+    const file = `${key}.png`;
+    if (seen.has(key)) return seen.get(key);
+    const e = entryOf(key);
+    if (e) {
+      const b = show(e.S, e.path), im = decodePng(b), m = e.m;
+      if (im.w !== m.size[0] || im.h !== m.size[1]) throw new Error(`${key}: the file is ${im.w} x ${im.h}, the manifest says ${m.size.join(' x ')}`);
+      files.set(file, b); desk[file] = { commit: e.S.commit, from: `${e.S.dir}/${e.path}`, size: m.size, foot: m.foot, sha256: sha(b) };
+      seen.set(key, { image: im, anchor: [m.foot[0], m.foot[1]] });
+    } else if (key.endsWith('-m') && entryOf(key.slice(0, -2))) {   // a middle step the desk has no mirror file for: the signed picture flipped left to right (layout), the foot across the picture (the desk's manifests do the same for their -m pieces)
+      const base = piece(key.slice(0, -2)), d = desk[`${key.slice(0, -2)}.png`], im = flipX(base.image), b = Buffer.from(encodePng(im));
+      files.set(file, b); desk[file] = { commit: d.commit, from: `${d.from} flipped left to right (layout)`, size: d.size, foot: [im.w - 1 - base.anchor[0], base.anchor[1]], sha256: sha(b) };
+      seen.set(key, { image: im, anchor: [im.w - 1 - base.anchor[0], base.anchor[1]] });
+    } else throw new Error(`the desk's manifests have no piece ${key}`);
     return seen.get(key);
   };
   const props = {}, canopy = {}, decals = {};

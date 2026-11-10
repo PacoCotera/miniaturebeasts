@@ -1628,6 +1628,36 @@
 						"id": "reed-water-2m",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "rock-a",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-a-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-b",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-b-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-big",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-big-m",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,
@@ -1786,6 +1816,426 @@
 					},
 					{
 						"id": "fleck-5m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-1-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-1-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-1-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-1-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-1-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-2-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-2-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-2-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-2-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-2-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-3-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-3-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-3-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-3-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-3-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-blue-pair",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-blue-pair-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-blue-pair-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-blue-pair-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-blue-pair-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-flowers-blue-pair-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-1-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-1-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-1-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-1-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-1-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-2-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-2-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-2-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-2-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-2-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-3-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-3-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-3-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-3-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-tufts-3-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-s",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-s-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-s-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-s-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-s-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-clump-tall-s-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-1-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-1-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-1-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-1-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-1-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-2-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-2-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-2-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-2-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-2-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-3-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-3-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-3-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-3-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-3-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-4",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-4-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-4-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-4-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-4-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-shrub-4-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-bush-round",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-bush-round-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-bush-round-young",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-bush-round-young-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-bush-round-grown",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "sc-bush-round-grown-m",
 						"color": 0,
 						"tileRect": null
 					}

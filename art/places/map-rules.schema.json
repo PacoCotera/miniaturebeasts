@@ -47,7 +47,7 @@
         "clear": { "description": "Plain-tile radius in cells: props, shrubs and meadow decor need the tile and every tile this near it to be one terrain (pattern size 2 * clear + 1)", "type": "integer", "minimum": 1, "maximum": 4 },
         "groves": {
           "type": "object", "additionalProperties": false,
-          "required": ["noise", "usedSwing", "reach", "touchD2", "minD2", "bisector", "otherKindShare", "greyRockShare"],
+          "required": ["noise", "usedSwing", "reach", "touchD2", "minD2", "bisector", "otherKindShare", "rockShapes"],
           "properties": {
             "noise": { "$ref": "#/definitions/noise" },
             "usedSwing": { "description": "How far the grove noise swings a family's `used` share (0.5 = up to half again)", "type": "number", "minimum": 0, "maximum": 1 },
@@ -56,7 +56,7 @@
             "minD2": { "description": "Least squared distance between two members when the family names none", "type": "integer", "minimum": 1 },
             "bisector": { "description": "How many tiles a tile keeps from the border between two clusters' claims", "type": "number", "minimum": 0, "maximum": 3 },
             "otherKindShare": { "$ref": "#/definitions/chance" },
-            "greyRockShare": { "$ref": "#/definitions/chance" }
+            "rockShapes": { "description": "The share of an outcrop's rocks that take each signed boulder shape (they sum to 1); a mirror is by hash", "type": "object", "additionalProperties": false, "required": ["rock-a", "rock-b", "rock-big"], "properties": { "rock-a": { "$ref": "#/definitions/chance" }, "rock-b": { "$ref": "#/definitions/chance" }, "rock-big": { "$ref": "#/definitions/chance" } } }
           }
         },
         "wayZone": { "description": "Cells kept clear of props round a way up, counted from its rectangle", "$ref": "#/definitions/box" },
@@ -70,28 +70,26 @@
       }
     },
     "meadow": {
-      "type": "object", "additionalProperties": false, "required": ["target", "tuft", "flower", "clump", "fleck"],
+      "type": "object", "additionalProperties": false, "required": ["noOverlap", "scatter"],
       "properties": {
-        "noOverlap": { "description": "When true the scatter drops a meadow piece (tuft, flower, clump, fleck) whole if its picture's rectangle overlaps another piece's, a prop's or another meadow piece's; the piece with the lower hash goes", "type": "boolean" },
-        "target": { "description": "The desk's rule as a share of open tiles; the raw chances below are tuned to it (not read by the generator)", "type": "object", "additionalProperties": false, "required": ["tufts", "flowers", "clumps"], "properties": { "tufts": { "$ref": "#/definitions/chance" }, "flowers": { "$ref": "#/definitions/chance" }, "clumps": { "$ref": "#/definitions/chance" } } },
-        "tuft": { "type": "object", "additionalProperties": false, "required": ["chance"], "properties": { "chance": { "$ref": "#/definitions/chance" } } },
-        "flower": {
-          "type": "object", "additionalProperties": false, "required": ["chance", "reach", "drift", "sameKind"],
+        "noOverlap": { "description": "When true a meadow piece never meets a prop's picture, and the scatter keeps the foot boxes of its pieces apart (0.7 of the width by a quarter of the height, one pixel clear; up to four places in the cell, then the piece is dropped); the piece with the lower hash goes", "type": "boolean" },
+        "scatter": {
+          "description": "The art director's quiet-ground rule: one noise field on the world's 16 px master cells; its top patchShare is the patch zone, a patch is the basin of one peak; pieces a cell by the density, a dominant kind a patch, sizes by the field's rank inside the patch (young at the edge, grown at the centre)",
+          "type": "object", "additionalProperties": false,
+          "required": ["noiseScale", "noiseOctaves", "patchShare", "patchDensity", "openDensity", "openKinds", "dominantShare", "dominants", "mixed", "kindKeep", "standJitter", "steps"],
           "properties": {
-            "chance": { "$ref": "#/definitions/chance" },
-            "reach": { "description": "How far a drift's seed may lie from a tile of it", "$ref": "#/definitions/cells" },
-            "drift": { "description": "The offsets a drift's second and third flowers take from its seed", "type": "array", "minItems": 1, "items": { "type": "array", "items": { "type": "integer", "minimum": -4, "maximum": 4 }, "minItems": 2, "maxItems": 2 } },
-            "sameKind": { "description": "Share of a drift's flowers that are the seed's own kind", "$ref": "#/definitions/chance" }
-          }
-        },
-        "clump": { "type": "object", "additionalProperties": false, "required": ["chance", "apart"], "properties": { "chance": { "$ref": "#/definitions/chance" }, "apart": { "description": "Cells an accent clump keeps to itself (pattern size 2 * apart + 1)", "$ref": "#/definitions/cells" } } },
-        "fleck": {
-          "type": "object", "additionalProperties": false, "required": ["chance", "margin", "sizes", "clearOfProps"],
-          "properties": {
-            "chance": { "$ref": "#/definitions/chance" },
-            "margin": { "description": "Pixels a fleck keeps from its tile's edge (tiles are 16 pixels)", "type": "integer", "minimum": 0, "maximum": 4 },
-            "sizes": { "description": "Width and height in pixels of each fleck look", "type": "array", "minItems": 1, "items": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 16 }, "minItems": 2, "maxItems": 2 } },
-            "clearOfProps": { "description": "Cells round a prop's foot tile where no fleck lies", "$ref": "#/definitions/box" }
+            "noiseScale": { "description": "The field's wavelength in cells", "type": "number", "exclusiveMinimum": 0, "maximum": 64 },
+            "noiseOctaves": { "type": "integer", "minimum": 1, "maximum": 6 },
+            "patchShare": { "description": "The share of cells in a patch (the field above its 1 - share quantile)", "$ref": "#/definitions/chance" },
+            "patchDensity": { "description": "Pieces a cell before the footprint check: at a patch's peak and at its edge, thinning between", "type": "object", "additionalProperties": false, "required": ["peak", "edge"], "properties": { "peak": { "type": "number", "minimum": 0, "maximum": 6 }, "edge": { "type": "number", "minimum": 0, "maximum": 6 } } },
+            "openDensity": { "description": "Pieces a cell between patches", "type": "number", "minimum": 0, "maximum": 1 },
+            "openKinds": { "type": "object", "additionalProperties": false, "required": ["tuft", "fleck"], "properties": { "tuft": { "$ref": "#/definitions/chance" }, "fleck": { "$ref": "#/definitions/chance" } } },
+            "dominantShare": { "description": "The share of a patch's draws that are its dominant kind (the rest are the mixed table's)", "$ref": "#/definitions/chance" },
+            "dominants": { "description": "The kind a patch is dominated by, by share (they sum to 1)", "type": "object", "additionalProperties": { "$ref": "#/definitions/chance" } },
+            "mixed": { "description": "The kinds of the draws that are not the dominant, by share (they sum to 1)", "type": "object", "additionalProperties": { "$ref": "#/definitions/chance" } },
+            "kindKeep": { "description": "The share of a kind's draws kept inside a patch: the big kinds thin out", "type": "object", "additionalProperties": { "$ref": "#/definitions/chance" } },
+            "standJitter": { "description": "Kinds whose pieces take a random offset (a fraction of a tile either way) so stands never line up in a curve", "type": "object", "additionalProperties": false, "required": ["kinds", "amountTiles"], "properties": { "kinds": { "type": "array", "items": { "type": "string" } }, "amountTiles": { "type": "number", "minimum": 0, "maximum": 1 } } },
+            "steps": { "description": "A piece's size: the field's rank w in the patch (0 at the edge, 1 at the centre) plus a jitter of +-jitter/2; above grownAbove it is grown, below youngBelow young, else the signed middle piece", "type": "object", "additionalProperties": false, "required": ["grownAbove", "youngBelow", "jitter"], "properties": { "grownAbove": { "$ref": "#/definitions/chance" }, "youngBelow": { "$ref": "#/definitions/chance" }, "jitter": { "type": "number", "minimum": 0, "maximum": 1 } } }
           }
         }
       }

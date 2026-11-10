@@ -21,7 +21,7 @@
       "minD2": 4,
       "bisector": 0.75,
       "otherKindShare": 0.14285714285714285,
-      "greyRockShare": 0.5
+      "rockShapes": { "rock-a": 0.4, "rock-b": 0.35, "rock-big": 0.25 }
     },
     "wayZone": { "left": 1, "right": 1, "up": 3, "down": 4 },
     "hollow": {
@@ -34,15 +34,19 @@
   },
   "meadow": {
     "noOverlap": true,
-    "target": { "tufts": 0.125, "flowers": 0.075, "clumps": 0.025 },
-    "tuft": { "chance": 0.151 },
-    "flower": { "chance": 0.042, "reach": 2, "drift": [[1, 1], [-1, 1], [2, 0], [-2, 1], [0, 2], [1, -1]], "sameKind": 0.7 },
-    "clump": { "chance": 0.04, "apart": 3 },
-    "fleck": {
-      "chance": 0.4,
-      "margin": 1,
-      "sizes": [[9, 6], [6, 5], [3, 7], [7, 7], [7, 6], [6, 7]],
-      "clearOfProps": { "left": 1, "right": 1, "up": 1, "down": 2 }
+    "scatter": {
+      "noiseScale": 5.5,
+      "noiseOctaves": 2,
+      "patchShare": 0.30,
+      "patchDensity": { "peak": 2.4, "edge": 0.8 },
+      "openDensity": 0.08,
+      "openKinds": { "tuft": 0.5, "fleck": 0.5 },
+      "dominantShare": 0.7,
+      "dominants": { "flower-pink": 0.14, "flower-white": 0.10, "flower-yellow": 0.13, "flower-blue": 0.08, "tuft": 0.25, "shrub": 0.15, "bush": 0.15 },
+      "mixed": { "tuft": 0.36, "fleck": 0.22, "flower-pink": 0.09, "flower-white": 0.09, "flower-yellow": 0.09, "flower-blue": 0.06, "clump": 0.05, "shrub": 0.04 },
+      "kindKeep": { "flower-pink": 0.55, "flower-white": 0.55, "flower-yellow": 0.55, "flower-blue": 0.35, "tuft": 0.5, "fleck": 1, "clump": 0.5, "shrub": 0.4, "bush": 0.3 },
+      "standJitter": { "kinds": ["bush", "shrub"], "amountTiles": 0.35 },
+      "steps": { "grownAbove": 0.62, "youngBelow": 0.30, "jitter": 0.5 }
     }
   },
   "shrubs": { "smallPatchMax": 80 },

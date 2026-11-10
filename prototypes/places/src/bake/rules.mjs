@@ -9,7 +9,7 @@ import { cliffInfo, gullies, thicketDonor } from './openedges.mjs';
 // glades between and a few lone trees; never an even lattice, rows or rings. Measured on the nearest-neighbour spacing of the standing things (trees and boulders), in cells.
 export const GROVE = { minTrees: 12, touch: 2.3, minTouching: 0.4, minCv: 0.35, lone: 4, minLone: 2 };
 export function groveStats(ir) {
-  const trees = ir.props.filter((p) => /^(tree-(broad|autumn)|boulder-(grey|brown))$/.test(p.kind)).map((p) => [p.cx, p.cy]);
+  const trees = ir.props.filter((p) => /^(tree-(broad|autumn)|boulder-(grey|brown)|rock-(a|b|big)(-m)?)$/.test(p.kind)).map((p) => [p.cx, p.cy]);
   const nn = trees.map((a, i) => Math.min(...trees.filter((_, j) => j !== i).map((b) => Math.hypot(a[0] - b[0], a[1] - b[1]))));
   const mean = nn.reduce((s, v) => s + v, 0) / (nn.length || 1), sd = Math.sqrt(nn.reduce((s, v) => s + (v - mean) ** 2, 0) / (nn.length || 1));
   return { trees: trees.length, mean, cv: mean ? sd / mean : 0, touching: nn.filter((v) => v <= GROVE.touch).length, lone: nn.filter((v) => v >= GROVE.lone).length };

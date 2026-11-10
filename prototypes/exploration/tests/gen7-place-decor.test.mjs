@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { decorProps } from '../tools/gen7-decor-props.mjs';
-import { TABLE } from '../src/gen7/decor.mjs';
+import { TABLE, ROCK_KINDS } from '../src/gen7/decor.mjs';
 
 // The whole-world proofs take about five minutes a seed. A pull request into main (MB_CI_FAST=1) runs seed 7 only; the full set runs locally before every merge.
 const FAST = process.env.MB_CI_FAST === '1';
@@ -19,7 +19,10 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
       const [lo, hi] = TABLE[b].trees.size, off = Object.keys(s.groveHistByBiome[b]).map(Number).filter(n => n < lo || n > hi);
       check(off.length === 0, `grove sizes in ${b} are ${lo}-${hi}: ` + JSON.stringify(s.groveHistByBiome[b]));
     }
-    check(s.outcropMixed === 0, 'one colour an outcrop: ' + s.outcropMixed + ' mixed');
+    // the signed boulders: each rock of an outcrop takes a shape by the rule's shares (rock-a .4, rock-b .35, rock-big .25) and a mirror by hash; no other rock kind is left
+    { const k = s.rockKinds, n = Object.values(k).reduce((x, y) => x + y, 0), base = b => (k[b] || 0) + (k[b + '-m'] || 0);
+      check(Object.keys(k).every(x => ROCK_KINDS.includes(x)), 'rock kinds: ' + JSON.stringify(k));
+      for (const [b, share] of [['rock-a', 0.4], ['rock-b', 0.35], ['rock-big', 0.25]]) { check(Math.abs(base(b) / n - share) < 0.05, `${b} share ${(base(b) / n).toFixed(3)} (rule ${share})`); check(Math.abs((k[b + '-m'] || 0) / base(b) - 0.5) < 0.05, `${b} mirrored share`); } }
     check(s.outcrops > 100, 'outcrops: ' + s.outcrops);
     // the places bake's grove-lattice rule, grove clause: in a cell of 12 or more trees and boulders at least 40% of them touch another (crowns within 2.3 tiles). It holds in all but a
     // few cells in a thousand (a meadow cell whose 12 are singles and pairs); its other two clauses (spacing varies by 0.35, two trees stand alone) are those of a hand-made place of a few
@@ -30,16 +33,13 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
     check(s.reedBanks > 100, 'reed banks: ' + s.reedBanks);
     check(s.onWall + s.onPath + s.onLip === 0, 'no prop on or beside water, thicket, lip or trail');
     check(s.propOnEdge + s.decalOnEdge === 0, 'every prop, tuft, flower and clump on a plain tile, one full cell clear of every lip, shore and edge: ' + JSON.stringify(s.edgeAt));
-    // decor per 10 grass tiles, interior and border rows alike, within the desk's rule
-    const per10 = (n, d) => 10 * n / d, T = s.tiles, I = { el: T.eligible - T.bEligible, tu: T.tufts - T.bTufts, fl: T.flowers - T.bFlowers, cl: T.clumps - T.bClumps };
-    for (const [name, el, tu, fl, cl] of [['interior', I.el, I.tu, I.fl, I.cl], ['border rows', T.bEligible, T.bTufts, T.bFlowers, T.bClumps]]) {
-      // halved from the desk's 2.5 and 1.5 (art director, map decor B: open meadow was carpeted); the numbers live in art/places/map-rules.json
-      check(per10(tu, el) > 1.1 && per10(tu, el) < 1.6, `${name}: tufts per 10 grass tiles ${per10(tu, el).toFixed(2)} (rule 1.25)`);
-      check(per10(fl, el) > 0.6 && per10(fl, el) < 0.95, `${name}: flowers per 10 grass tiles ${per10(fl, el).toFixed(2)} (rule 0.75)`);
-      check(per10(cl, el) <= 10 / 40, `${name}: clumps per 10 grass tiles ${per10(cl, el).toFixed(3)} (at most 1 in 40)`);
-      check(per10(el - tu - fl - cl, el) >= 5.5, `${name}: bare ${per10(el - tu - fl - cl, el).toFixed(2)} of 10 (about 6)`);
-    }
-    check(s.cellTuftBad === 0, 'tufts in every large cell within 0.5-2.5 per 10: ' + JSON.stringify(s.tuftAt));
+    // the meadow scatter (art/places/map-rules.json meadow.scatter): pieces per 16 px cell of grass between 0.15 and 0.35 over the seed (the rule lands at about 0.25-0.33), every size present, the grown the commonest of the plants,
+    // flecks and every plant kind in use, the interior and the border rows alike (a piece near a border is the same from both cells: the seam check below)
+    { const S = s.scatter, cells = s.tiles.eligible * 9, bCells = s.tiles.bEligible * 9, per = S.pieces / cells, bper = S.bPieces / bCells;
+      check(per > 0.15 && per < 0.35, 'pieces per cell ' + per.toFixed(3)); check(Math.abs(bper - per) < 0.05, 'border rows ' + bper.toFixed(3) + ' against interior ' + per.toFixed(3));
+      check(S.young > 0 && S.mid > 0 && S.grown > 0 && S.flecks > 0, 'every size and the flecks: ' + JSON.stringify({ ...S, perCell: undefined, kinds: undefined }));
+      for (const slot of ['flowers-1', 'flowers-2', 'flowers-3', 'flowers-blue-pair', 'tufts-1', 'tufts-2', 'tufts-3', 'clump-tall', 'clump-tall-s', 'shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-round']) check(S.kinds[slot] > 100, slot + ' pieces ' + S.kinds[slot]);
+      check(Math.min(...S.perCell) > 0.05 && Math.max(...S.perCell) < 0.45, 'cells of the seed hold 0.05-0.45 pieces a cell: ' + Math.min(...S.perCell) + '-' + Math.max(...S.perCell)); }
     // the Hollow Tree
     check(s.hollow >= 3, 'hollow trees: ' + s.hollow);
     check(s.hollowCrownNear === 0, 'no crown or prop within two tiles of the Hollow Tree: ' + JSON.stringify(s.hollowAt));
