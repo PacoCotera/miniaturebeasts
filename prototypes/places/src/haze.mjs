@@ -1,17 +1,17 @@
 // The range haze (art desk, mibi-art 9fa531bba, art-jobs/2026-11-09-range-haze/out/): the land past the Probe's range washes out into a pale warm mist.
-// No alpha at run time: each wash layer (L1, L2, L3) is one table lookup per pixel, into the kit palette plus the 6 ramp colours. Pure over indexed buffers,
+// No alpha at run time: each wash layer (L1, L2, L3) is one table lookup per pixel, into the kit palette plus the ramp colours (haze-ramp.json count). Pure over indexed buffers,
 // so the node tests, the sandbox and the firmware run the same logic. Wisps are off.
 //
 // kit = hazeKit(files, remap, ramp): the wash sheets as per-pixel steps (0 none, 1..7), the 3 x 7 remap tables as Uint8Array(256), the ramp colours.
 // A level grid (0..3 per place cell, 3 = the edge row) is laid into three kind maps at the kit's own pixel (16 px a cell); the screen draws that pixel
 // at size / 16 screen pixels (3 at 48).
-export const HAZE_T = 16, HAZE_VARIANTS = 3, HAZE_KIT = 43;   // the kit's released colours (indices 48..90) the tables are keyed to
+export const HAZE_T = 16, HAZE_VARIANTS = 3;
 export const hazeFileNames = () => [1, 2, 3].flatMap((L) => ['', '~v1', '~v2'].map((v) => `haze-L${L}${v}`));
 
 // files: { name: { width, height, data (RGBA) } } for the nine sheets; remap: haze-remap.json; ramp: haze-ramp.json
-// setLen: how many colours the tile set's palette holds (indices 48..). The desk keyed its tables to the kit's 43 then the open edges' 7 (50 colours, the ramp at 98..103); the set now also carries the
-// meadow decor's colours after those 50, so the ramp the tables answer with moves up by the difference and follows the set's palette.
-export function hazeKit(files, remap, ramp, setLen = HAZE_KIT + 7) {
+// setLen: how many colours the tile set's palette holds (indices 48..). The desk keyed its tables to the whole set (99 colours at 48..146, order in haze-remap.json) and put the ramp after it
+// (haze-ramp.json firstIndex, 147..154); nothing is shifted here.
+export function hazeKit(files, remap, ramp, setLen = 99) {
   // a pixel's kind is its layer and its alpha step (the colour is the layer's own; a browser's canvas premultiplies low alphas, so the colour is not read back)
   const kindOf = new Map(remap.kinds.map((k) => [k.key[1] + ':' + k.rgba[3], k.key]));
   const tiles = [1, 2, 3].map((L) => ['', '~v1', '~v2'].map((v) => {
@@ -29,16 +29,17 @@ export function hazeKit(files, remap, ramp, setLen = HAZE_KIT + 7) {
       return t;
     });
   }));
-  const first = remap.firstIndex, shift = setLen - (HAZE_KIT + 7);
+  const first = remap.firstIndex;
+  if (ramp.firstIndex !== first + setLen || remap.order.length !== setLen + ramp.count) throw new Error(`haze tables are keyed to ${ramp.firstIndex - first} set colours, the tile set holds ${setLen}`);
   const tables = [1, 2, 3].map((L) => [null, ...Array.from({ length: 7 }, (_, s) => {
     const row = remap.tables[`L${L}.${s + 1}`], t = Uint8Array.from({ length: 256 }, (_, i) => i);
-    row.forEach((to, p) => { t[first + p] = to >= first + HAZE_KIT + 7 ? to + shift : to; });
+    row.forEach((to, p) => { t[first + p] = to; });
     return t;
   })]);
   const toRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-  // extra: the colours the tables can answer with beyond the tile set's palette: the 6 ramp colours (the set holds the open edges' 7 itself, in the desk's order, at 91..97)
-  const extra = { first: first + setLen, rgb: remap.order.slice(HAZE_KIT + 7).map(toRgb) };
-  return { tiles, tables, ramp: { first: ramp.firstIndex + shift, rgb: ramp.colours.map(toRgb) }, extra, kit43: remap.order.slice(0, HAZE_KIT).map(toRgb), edges7: remap.order.slice(HAZE_KIT, HAZE_KIT + 7).map(toRgb) };
+  // extra: the colours the tables can answer with beyond the tile set's palette: the ramp colours, at the ramp file's own firstIndex
+  const extra = { first: ramp.firstIndex, rgb: ramp.colours.map(toRgb) };
+  return { tiles, tables, ramp: extra, extra, setRgb: remap.order.slice(0, setLen).map(toRgb) };
 }
 
 // FNV-1a over the place's id, the layer and the dual tile (the desk's h32): which of the three lumps a dual tile wears.

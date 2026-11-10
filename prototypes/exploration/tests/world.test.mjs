@@ -6,7 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { loadPage, fakeCanvas, PAGE, MODULE, SCRIPT, STONE_ART } from "./page-harness.mjs";
+import { loadPage, fakeCanvas, paletteLook, PAGE, MODULE, SCRIPT, STONE_ART } from "./page-harness.mjs";
 import { blank } from "../../face/tools/blank.mjs";
 import * as W from "../src/world.mjs";
 import * as R from "../src/regions.mjs";
@@ -31,7 +31,7 @@ function page(store = {}, search, opts = {}) {
     apply: () => any, construct: () => any, set: () => true });
   const els = {}, elStub = () => { const on = {}; return new Proxy(function () {}, { get: (t, k) => k === "addEventListener" ? (e, f) => { on[e] = f; } : k === "on" ? on : any[k], apply: () => any, set: () => true }); };
   let run = null, pal = null; const P = () => pal || (pal = { hex: new Map(run("HEX").map((h, i) => [h, i])), rgb: run("RGB"), of: new Map(run("RGB").map((c, i) => [c[0] << 16 | c[1] << 8 | c[2], i])) });
-  const look = { hex: h => P().hex.get(h) ?? -2, rgbOf: v => P().rgb[v], rgb: (r, g, b) => P().of.get(r << 16 | g << 8 | b) ?? -2 };
+  const { look, rgbTable } = paletteLook(P, opts.paint);   // opts.paint: the painted props' colours stay on the fake canvas
   const document = new Proxy(any, { get: (t, k) => k === "getElementById" ? id => els[id] || (els[id] = elStub()) : k === "createElement" && opts.canvas ? tag => tag === "canvas" ? fakeCanvas(look) : any : any[k] });
   const clock = { t: 1000, timers: [] };
   const ctx = { console, URLSearchParams, Date, fetch: () => new Promise(() => {}), document, location: search ? { search, reload() {} } : any, navigator: any,
@@ -39,7 +39,7 @@ function page(store = {}, search, opts = {}) {
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
   run = loadPage(ctx, opts.script || SCRIPT);
-  return { run, store, els, ctx, clock, KEY: run("SAVE_KEY") };
+  return { run, store, els, ctx, clock, KEY: run("SAVE_KEY"), rgbTable };
 }
 const withoutMemo = w => { const o = { ...w }; delete o.beacons; delete o.depots; return o; };
 
@@ -836,8 +836,8 @@ function synthFill(q) {
     px[y * q.w + x] = c; }
   return px;
 }
-function page48(seed = 7, levelTone = ["dark", "none", "light"], over) {
-  const p = page({}, undefined, { canvas: true }); p.run("newWorld(" + seed + ", 2)");
+function page48(seed = 7, levelTone = ["dark", "none", "light"], over, paint = false) {
+  const p = page({}, undefined, { canvas: true, paint }); p.run("newWorld(" + seed + ", 2)");
   const RGB = p.run("RGB.slice(0, 51)"), core = p.run("({ names: PALETTE.slice(0, 51).map(q => q[0]), dark: DARK.slice(0, 51), light: LIGHT.slice(0, 51), dark2: DARK2.slice(0, 51), fog: FOGLUT.slice(0, 51), fade: FADE.slice(0, 51) })");
   const table = A.paletteTable(RGB, core, synthPalette(p, over)); assert.equal(table.errors, undefined, String(table.errors));
   p.ctx.__syn = { list: VECTORS.atlas.catalogue.map(q => Object.assign({}, q, { px: synthFill(q) })), table, levelTone };
@@ -965,8 +965,8 @@ test("the wood place's T.DARK lawn receives the cast shadow, darkened after it",
 });
 
 // ---- 48 px places on the page: anchor, camera, palette, edges, overrides ----
-function place48(seed, cell, x, y, setup = "", over) {
-  const p = page48(seed, undefined, over);
+function place48(seed, cell, x, y, setup = "", over, paint = false) {
+  const p = page48(seed, undefined, over, paint);
   p.run(`TEST.calm = true; startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.storm = null; FX.lockUntil = 0; S.exp.pos = ${cell}; enterPatch(); S.exp.patch.x = ${x}; S.exp.patch.y = ${y};
     S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff); ${setup}`);
   return p;
@@ -1009,18 +1009,19 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // ---- golden frames: FNV of the 450×600 screen ----
 // The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
+// The painted walk props (640a62182: crowns, bushes, pods, depot, beacon; off the core palette) are shown on these pages (paint): the place32, gen1 and corner frames re-hashed with the signed crown and bush in place of the code-drawn ones, looked at 1x; the cave, the reach view and the stair frame hold none and are unchanged.
 // Walk art wired (mibi-art ce97d1c19): the reach view (the cave frame is one too, phase map) wears the desk's terrain tiles, marks and edge pieces: re-hashed, looked at 1x against the desk's sheet-walk-art-map.png.
-const MAIN_FRAMES = { cave: 3929618603, place32: 1284530620, map: 2853447065 };   // C15 (and the lead 11-08: never been is the dark table, no dots): the cave frame is the reach view too (phase map) and the map the reach view: both re-captured when the fog dots came in (the pending outline went); place32 is main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
-const GOLDEN48 = { faceStair: 1781723947, gen1: 1254856577, corner: 1819452261 };   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
-function place48g1(seed, cell, x, y) {
-  const p = page48(seed);
+const MAIN_FRAMES = { cave: 3929618603, place32: 1737998333, map: 2853447065 };   // C15 (and the lead 11-08: never been is the dark table, no dots): the cave frame is the reach view too (phase map) and the map the reach view: both re-captured when the fog dots came in (the pending outline went); place32 is main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
+const GOLDEN48 = { faceStair: 1781723947, gen1: 423604428, corner: 667927620 };   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
+function place48g1(seed, cell, x, y, paint = false) {
+  const p = page48(seed, undefined, undefined, paint);
   p.run(`layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; G = genWorld(${seed}, 1); S = worldFields(${seed}, 1); const life = genLife(${seed}); S.cr = life.cr; S.pods = life.pods; indexCreatures();
     TEST.calm = true; startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.storm = null; FX.lockUntil = 0; S.exp.pos = ${cell}; enterPatch(); S.exp.patch.x = ${x}; S.exp.patch.y = ${y}; S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);`);
   return p;
 }
 test("golden frames: 32 px stays byte-identical to main (the cave, a place with no atlas, the reach view)", () => {
   const frame = (p, setup) => { p.run(setup); for (let i = 0; i < 3; i++) { p.clock.t += 16; p.run(`scr.px().fill(-1); RT.key = null; render(${p.clock.t})`); } return fnv(p.run("scr").px()); };
-  const p = page({}, undefined, { canvas: true });
+  const p = page({}, undefined, { canvas: true, paint: true });
   assert.equal(frame(p, "TEST.calm = true; newWorld(7, 2); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; S.exp.pos = G.gate; enterCave();"), MAIN_FRAMES.cave, "the cave"); assert.equal(p.run("RT.ts"), 32);
   assert.equal(frame(p, "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14;"), MAIN_FRAMES.place32, "a place with no atlas"); assert.equal(p.run("RT.ts"), 32);
   assert.equal(frame(p, "S.exp.patch = null; S.phase = 'map';"), MAIN_FRAMES.map, "the reach view");
@@ -1028,9 +1029,9 @@ test("golden frames: 32 px stays byte-identical to main (the cave, a place with 
 test("golden frames at 48: a place with a south face and a stair, a generator 1 place, the pawn in a place corner", () => {
   const e = CROSSINGS["S down"], ent = entryFor(e.seed, e);
   const got = {
-    faceStair: fnv(frame48(place48(e.seed, e.b, ent.x, ent.y))),
-    gen1: fnv(frame48(place48g1(7, 65, 14, 24))),
-    corner: fnv(frame48(place48(7, 176, 1, 1))),
+    faceStair: fnv(frame48(place48(e.seed, e.b, ent.x, ent.y, "", undefined, true))),
+    gen1: fnv(frame48(place48g1(7, 65, 14, 24, true))),
+    corner: fnv(frame48(place48(7, 176, 1, 1, "", undefined, true))),
   };
   for (const [k, v] of Object.entries(got)) assert.equal(v, GOLDEN48[k], k + " " + v);
 });

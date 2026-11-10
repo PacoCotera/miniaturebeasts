@@ -131,7 +131,7 @@ test("the range haze at 1x: the wash past the Probe's reach, no dashes and no pl
     const has = (im, r, g, b) => { for (let y = 32; y < 564; y++) for (let x = 0; x < 450; x++) { const o = (y * im.w + x) * 4; if (im.data[o] === r && im.data[o + 1] === g && im.data[o + 2] === b) return true; } return false; };
     assert.equal(has(img, 0xa9, 0xe6, 0xff), false, "no ice dashes"); assert.equal(has(img, 0x3c, 0x1e, 0x6c), false, "no plum dots");
     assert.deepEqual(await page.evaluate(() => window.__mb.offPalette().bad), [], "every pixel is a palette colour (the ramp is one)");
-    const ramp = [[0xf6, 0xe1, 0xc7], [0xe8, 0xe5, 0xb7], [0xd3, 0xd3, 0x87], [0xe4, 0xb9, 0x9a], [0xc0, 0xc4, 0x5c], [0xdd, 0x9e, 0x79]];
+    const ramp = JSON.parse(readFileSync(new URL("../../places/haze/haze-ramp.json", import.meta.url), "utf8")).colours.map((h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16)));   // the ramp, whatever its length, from the desk's file
     assert.ok(ramp.some(([r, g, b]) => has(img, r, g, b)), "the haze ramp is on the screen");
     golden("closed-edge.png", await shot(page, 25, 8, 5, "up"));
     assert.deepEqual(errors, []);

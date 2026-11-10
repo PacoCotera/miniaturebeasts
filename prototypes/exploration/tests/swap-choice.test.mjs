@@ -7,7 +7,7 @@ import { goldenStill } from "./png-golden.mjs";
 const POD = (id, sp, g, how) => ({ id, sp, g, how, bur: 0, gs: 7, k: "1" });
 // a place with a full bag of `n` pods (a Tuikis one under a slab, a Loika one shed shaking dry) and a found pod lying near
 function setup(n) {
-  const f = fixture({ canvas: true }), r = f.run;
+  const f = fixture({ canvas: true, paint: true }), r = f.run;
   r("S.exp.hold = " + n + "; S.exp.cargo.pods = " + JSON.stringify([POD("h1", 1, "rock", "slab"), POD("h2", 0, "pond", "shake")].slice(0, n)) + "; S.exp.cargo.pods.forEach(q => q.k = S.exp.patch.key);");
   r("S.pods.push({ id: 'z', k: S.exp.patch.key, x: S.exp.patch.x + 1, y: S.exp.patch.y, sp: 2, h: 0, g: 'wood', how: 'ground' });");
   r("FX.msg = ''; FX.notes = [];");

@@ -109,7 +109,7 @@ test("a charged stone under a crown has its own pixels on screen, a plain one st
       await page.evaluate((ch) => {
         const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key);
         lay.feats = lay.feats.filter((f) => f.id !== "t-test");
-        lay.feats.push({ id: "t-test", kind: "k", x: 8, y: 6, ch });
+        lay.feats.push({ id: "t-test", kind: "k", x: 8, y: 7, ch });
         m.S.veil[P.key] = new Array(m.PH).fill(0x0FFFFFFF); P.x = 8; P.y = 11;
       }, ch);
       await page.waitForTimeout(700);

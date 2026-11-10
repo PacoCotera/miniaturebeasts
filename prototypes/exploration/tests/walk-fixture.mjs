@@ -23,8 +23,8 @@ function __add(sp, x, y, o) {
   const c = Object.assign({ id, sp, x, y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: .2, face: 1, ready: true }, o || {}); live.cr.push(c); return c; }
 `;
 
-export function fixture({ partner = null, rider = null, seed = 3, canvas = false, known = ALL_KNOWN, gate = false } = {}) {
-  const p = makePage({ console: "silent", els: true, raf: 1, canvas });
+export function fixture({ partner = null, rider = null, seed = 3, canvas = false, paint = false, known = ALL_KNOWN, gate = false } = {}) {
+  const p = makePage({ console: "silent", els: true, raf: 1, canvas, paint });
   const run = p.run;
   run(`newWorld(${seed}); TEST.calm = true; S.known = ${JSON.stringify(known)};`);
   if (partner != null) run(`S.mibis = [${JSON.stringify(mibi(1, "Pip", partner))}]; S.carried = [1]; S.lead = 1;`);

@@ -49,7 +49,7 @@ test("pickHeart is pure and takes the most enclosed ground within walking range"
 
 // a fixture standing in the first place, the heart placed where a test wants it
 function stand(seed = 13, hold = null) {
-  const f = fixture({ seed, canvas: true }), r = f.run;
+  const f = fixture({ seed, canvas: true, paint: true }), r = f.run;
   r("TEST.calm = true; S.veil = {}; S.called = {}; S.exp.stats.hearts = 0; S.exp.dField = 0; S.exp.cargo.d = 0; S.exp.cargo.s = 0;");
   r("FX.msg = ''; FX.notes = [];");
   return f;
