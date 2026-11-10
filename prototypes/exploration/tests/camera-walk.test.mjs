@@ -41,7 +41,7 @@ test("seed 6: the camera rests on a few anchors, moves on at most one of six pre
   const { server, url } = await serve();
   try {
     const { page, errors } = await enter(browser, url, 6, true);
-    await page.evaluate(() => { const P = window.__mb.S.exp.patch; P.x = 7; P.y = 24; }); await page.waitForTimeout(500);   // the scheme's strip, from (7, 24) in the open Windstep (the heart is far away)
+    await page.evaluate(() => { const P = window.__mb.S.exp.patch; P.x = 7; P.y = 22; }); await page.waitForTimeout(500);   // the scheme's strip, from (7, 22) in seed 6's first place (the generator 7 land since be4905488; (7, 24) there rests on its anchor through all six presses): one slide over the six presses
     const r0 = await rest(page); assert.equal(r0.view, null, "walking view");
     assert.ok(Number.isInteger(r0.ix) && Number.isInteger(r0.iy), "the camera state is kept");
     let moves = 0, last = r0, walked = 0;
