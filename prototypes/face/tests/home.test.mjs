@@ -4,6 +4,7 @@
 // words and the dirty area of a lamp change and of the ring moving between a bezel and a station. Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/home.test.mjs
 import { test } from "node:test";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
@@ -374,7 +375,7 @@ test("a lamp change and the ring moving between a bezel and a station stay insid
 // ---- the console's pictures (build spec 4.3, 11.4, H3): the signed masters 1:1 through the picture table, the case, the capsule, the Companion and the berths, and the budgets ----
 import { createHash } from "node:crypto";
 const StateRules = S;
-const mastersDir = path.resolve(here, "../../ui/assets/masters"), mastersIndex = JSON.parse(readFileSync(path.join(mastersDir, "index.json"), "utf8")).masters;
+const mastersDir = path.resolve(here, "../../ui/assets/masters"), mastersIndex = readIndex(mastersDir).masters;
 const SIGNED_H3 = { "companion-upright-docked-28x46": [28, 46], "companion-upright-away-28x46": [28, 46], "berth-shut-26x24": [26, 24], "berth-crate-26x24": [26, 24], "berth-portrait-18x24": [18, 24] };
 test("the five signed masters are placed unchanged in masters/home, at their own sizes, with their hashes in the index", () => {
   for (const [id, [w, h]] of Object.entries(SIGNED_H3)) {

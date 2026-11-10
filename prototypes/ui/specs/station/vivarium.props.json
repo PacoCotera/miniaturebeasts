@@ -606,6 +606,18 @@
       }
      }
     },
+    "travel": {
+     "type": "object",
+     "required": ["max"],
+     "additionalProperties": false,
+     "properties": {
+      "max": {
+       "type": "integer",
+       "minimum": 0,
+       "description": "the travelling ceiling now (vivarium.json rules.day, by the rhythm band); the face reads it over rules.travel.max; absent: the spec's"
+      }
+     }
+    },
     "residents": {
      "type": "array",
      "maxItems": 12,

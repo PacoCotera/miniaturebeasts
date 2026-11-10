@@ -16,7 +16,7 @@ const golden = (name, buf, w, h) => { const r = compareGolden(goldenFile(name), 
 
 test('animated tiles take their frame from the one clock, static tiles never change', () => {
   const animated = ts.tiles.map((t, id) => [t, id]).filter(([t]) => t.frames.length > 1);
-  assert.ok(animated.length >= 2, 'the all-water tiles are animated');
+  assert.ok(animated.length >= 1, 'the water tile is animated (the desk\'s four ripple frames)');
   for (const [t, id] of animated) {
     assert.equal(tileSlot(ts, id, 0), t.frames[0]);
     assert.equal(tileSlot(ts, id, t.frameMs), t.frames[1]);

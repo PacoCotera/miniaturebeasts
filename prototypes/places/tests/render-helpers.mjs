@@ -14,6 +14,8 @@ export const ts = readTileSet(readFileSync(path.join(places, 'baked', 'ninja-tes
 export const place = readPlace(readFileSync(path.join(places, 'baked', 'Test_AllCases.mbplace')));
 export const placeX = readPlace(readFileSync(path.join(places, 'baked', 'Test_AllCases~x.mbplace')));
 
+// The set's water fill is the desk's four ripple frames (250 ms a frame), so the clock tests read the real baked tile set; nothing is added in memory.
+
 const core = JSON.parse(readFileSync(path.join(repo, 'art', 'companion-48', 'terrain', 'meadow', 'meadow-palette.json'), 'utf8')).entries.slice(0, 48);
 export const NIGHT = core.find((e) => e.name === 'night').i;
 export const pal = { rgb: new Array(256).fill(null).map(() => [255, 0, 255]) };

@@ -540,18 +540,60 @@ async function loadHazeKit(base, bytes) {
 // core palette (the quartz ramp, the warm glow): each file is kept as a canvas the page blits as it blits a sprite (dx, dy put a 48 px stone's foot where a 32 px sprite's foot stood), and its colours
 // join the screen's allowed set. A 16 px small stone is also kept doubled (32 x 32) for a sign or a card.
 const STONE_COLOURS = [], STONE_PIECES = new Map();
+// The places' light tables, the one set the walk's props read (a prop in a dark, stormy or foggy place goes through the table its place's ground goes through, so the walk and the places never disagree):
+// the screen colour at each index (the core 47 from the page, then the set's own) and the tile set's tables by name (storm, dark2, fog, fade, dark). Null until the places have loaded.
+const PLACE_LEVELS = [null, 'storm', 'dark2', 'fog', 'fade'], PT = { ts: null, rgb: null, tabs: null };
+function placeTables() {
+  const ts = PL6.ts || (BAKED.view && BAKED.view.ts); if (!ts) return null;
+  if (PT.ts !== ts) { PT.ts = ts; PT.rgb = RGB.slice(0, 48).map(c => c.slice()); ts.palette.forEach(c => PT.rgb.push([(c >> 16) & 255, (c >> 8) & 255, c & 255])); PT.tabs = Object.fromEntries(ts.lightTables.map(r => [r.name, r.map])); }
+  return PT;
+}
 const STONE_FILES = ['tall', 'small'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
 const STONE_LOOK = new Set(['look-heart-stone', ...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
-function stonePut(name, f, look) {   // f: { width, height, data (RGBA) }
-  const mk = (w, h) => PL6.mk ? PL6.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h });
+function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
+  const mk = (w, h) => PL6.mk ? PL6.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }), prop = dy !== undefined;
   const seen = new Set(STONE_COLOURS.map(q => q.join())), keep = (w, h, data, dx, dy, key) => {
-    let c = null;   // the canvas is made when first drawn
-    STONE_PIECES.set(key, { w, h, dx, dy, canvas: () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; } }); };
+    let c = null; const tinted = new Map();   // the canvas is made when first drawn; a prop's tinted ones (storm, fog, fade) by table set and number
+    const plain = () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; };
+    // canvas(rm, flip, chk, veil) as a palette buffer's: chk thins the picture to a checkerboard (a crown or roof the explorer stands under), veil is the one-step-darker night dot of an unseen tile
+    STONE_PIECES.set(key, { w, h, dx, dy, canvas: (rm, flip, chk, veil) => {
+      const pt = prop && (rm || veil) ? placeTables() : null, lut = pt && rm ? pt.tabs[PLACE_LEVELS[rm]] : null;   // a prop (given a foot offset) takes the places' own light tables (storm, dark2, fog, fade, dark), the ones its place's ground takes
+      if (!lut && !(prop && (chk || veil))) return plain();   // only a prop takes the tables
+      const tk = (flip ? 4 : 0) + (chk ? 2 : 0) + (veil ? 1 : 0) + (rm || 0) * 8 + (pt ? 64 : 0); let tc = tinted.get(tk); if (tc) return tc;
+      tc = mk(w, h); const tg = tc.getContext('2d'), im = tg.createImageData(w, h), near = new Map();   // each colour takes its nearest palette colour's entry in the table
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const o = (y * w + (flip ? w - 1 - x : x)) * 4, p = (y * w + x) * 4; if (!data[o + 3] || (chk && (x + y) % 2)) continue;
+        if (!lut && !(veil && pt)) { im.data[p] = data[o]; im.data[p + 1] = data[o + 1]; im.data[p + 2] = data[o + 2]; im.data[p + 3] = 255; continue; }   // a thinned picture with no table keeps its own colours
+        const k = data[o] << 16 | data[o + 1] << 8 | data[o + 2]; let n = near.get(k);
+        if (n === undefined) { let bd = 1e9; n = 0; for (let j = 1; j < pt.rgb.length; j++) { const q = pt.rgb[j], d = (q[0] - data[o]) ** 2 + (q[1] - data[o + 1]) ** 2 + (q[2] - data[o + 2]) ** 2; if (d < bd) { bd = d; n = j; } } near.set(k, n); }
+        let c = lut ? lut[n] : n; if (veil) c = BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : pt.tabs.dark[c];
+        const rgb = pt.rgb[c]; im.data[p] = rgb[0]; im.data[p + 1] = rgb[1]; im.data[p + 2] = rgb[2]; im.data[p + 3] = 255; }
+      tg.putImageData(im, 0, 0); tinted.set(tk, tc); return tc; } }); };
   for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] && !seen.has(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2])) { seen.add(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2]); STONE_COLOURS.push([f.data[o], f.data[o + 1], f.data[o + 2]]); } }
-  keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? 0 : 32 - f.height, name);
-  if (name.startsWith('stone-small-') && name.endsWith('@16')) {   // doubled, for a sign or a card (32 x 32)
-    const d = new Uint8ClampedArray(32 * 32 * 4); for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) for (let k = 0; k < 4; k++) d[(y * 32 + x) * 4 + k] = f.data[((y >> 1) * 16 + (x >> 1)) * 4 + k];
-    keep(32, 32, d, 0, 0, name + 'x2'); }
+  keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? dy || 0 : 32 - f.height, name);
+  const ups = (name.startsWith('stone-small-') && name.endsWith('@16')) || name === 'prop-fruit' || name.startsWith('icon-') ? [2] : name.startsWith('pod-walk-') ? [2, 3] : [];   // doubled (and tripled), for a sign, a card or a tray: each pixel a whole block
+  for (const k of ups) {
+    const W = f.width * k, H = f.height * k, d = new Uint8ClampedArray(W * H * 4); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) for (let c = 0; c < 4; c++) d[(y * W + x) * 4 + c] = f.data[((Math.floor(y / k)) * f.width + Math.floor(x / k)) * 4 + c];
+    keep(W, H, d, 0, 0, name + 'x' + k); }
+}
+// The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
+// the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
+// cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
+const PROP_DY = { 'bush-full-32': -4, 'bush-bare-32': -4, 'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+  // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (16 x 20) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
+  ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
+    'pod-walk-16x20-bone', 'pod-walk-16x20-lime', 'pod-walk-16x20-ice', 'pod-walk-16x20-sand', 'pod-walk-16x20-sprout', 'pod-walk-16x20-lavender', 'canopy-legacy', 'roof-legacy'].map(n => [n, 0])) };
+const PROP_FILES = Object.keys(PROP_DY);
+const PROP_SIZE = { 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
+  ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
+  ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-16x20-' + s, [16, 20]])) };
+const propPiece = name => STONE_PIECES.get(name) || walkPB(name, ...(PROP_SIZE[name] || [32, 32]));   // a named empty slot until the art is in: nothing is drawn
+async function loadPropArt() {
+  try {
+    if (window.__propArt) { for (const [n, f] of Object.entries(window.__propArt)) stonePut(n, f, true, PROP_DY[n]); return; }   // the tests give them at once, decoded
+    if (typeof Image === 'undefined') return;
+    await Promise.all(PROP_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, true, PROP_DY[n]); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/props/', location.href).href + n + '.png'; })));
+  } catch (e) { console.warn('the props did not load', e); }
 }
 async function loadStoneArt() {
   try {
@@ -603,11 +645,11 @@ function lookMark(name, kind, x, y, T) {   // anchor on the tile's bottom centre
 }
 async function loadWalkArt() {
   try {
-    if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); return; }   // the tests give them at once, decoded
+    if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); loadPropArt(); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     const files = {}, load = (dir, names) => Promise.all(names.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/' + dir + '/', location.href).href + n + '.png'; })));
-    await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt()]);
+    await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt(), loadPropArt()]);
     walkRead(files);
   } catch (e) { console.warn('the walk art did not load', e); } finally { ART_DONE.walk = true; }
 }
@@ -619,7 +661,7 @@ function bakedView(lay) {
   if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk, ring: PL6.ring || null, haze: PL6.haze }); PL6.views.set(lay.baked.id, v); }
   return v || null;
 }
-const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS);
+const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
 function layout6(key) {   // a generator 6 land cell's place: its template, built through the adapter with the seeded fills; null for a ford (generated) or while the places load
   const t = templateFor(G, S.seed, +key), place = t && PL6.places.get(t.id); if (!place) return null;
   return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, G, fill: fillPlace6(G, S.seed, +key, place), closed: closedSidesOf(+key) });
@@ -863,7 +905,7 @@ const SIGN_LINE = {
 
   storm: dir => 'More bolts, more strikes · ' + (dir > 0 ? '▶ east' : '◀ west'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
   pod: 'Pods open at the Station', full: 'Hold full · a new pod is a choice',bank: 'If the Probe breaks, you lose your finds', fog: 'Fog · creatures calm, sight short',
-  muffled: 'The fog muffles your Call', fruit: 'Put it down near a creature', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
+  muffled: 'The fog muffles your Call', fruit: 'Feed it, or press on a stone or tree', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
   tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog',
   bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
   untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
@@ -925,7 +967,7 @@ const TILES = [
   ['podsopen', 'Pods · the Station opens', 'Pods', 'pod', []],
   ['full', 'Full hold · you choose', 'Full hold', 'full', []],
   ['bank', 'Crate · end to seal finds', 'Crate', 'bank', []],
-  ['fruit', 'Fruit · set it down', 'Fruit', 'fruit', []],
+  ['fruit', 'Fruit · feed or press', 'Fruit', 'fruit', []],
   ['bubN', 'Noticed · stop or it runs', 'Noticed', 'bub!', []],
   ['bubQ', 'Curious · it comes', 'Curious', 'bub?', []],
   ['bubF', 'Wants fruit · put it down', 'Wants fruit', 'bubf', []],
@@ -1009,12 +1051,15 @@ const CARE_ASSETS = [
   { id: 'c-token-48', what: 'the mibi’s 48 px field token: roster rows, the Walk on the active mibi screen', until: 'the derived token from the Station', w: 48, h: 48, status: 'placeholder' },
   { id: 'c-sprite-other-32', what: 'a mibi of a species the Companion has no art for: the field partner (1×), the partner card and the Lead card (2×), the active mibi stage (8×)', until: 'the species’ HiBit sprite from the art director (X6, one look)', w: 32, h: 32, status: 'placeholder' },
   { id: 'c-mini-other-12', what: 'the 12 px partner mini of such a mibi: the HUD and the field marker', until: 'the species’ HiBit mini from the art director', w: 12, h: 12, status: 'placeholder' },
-  { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
-  { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
-  { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
-  { id: 'c-moment-walk-S01-280x300', what: 'the Loika walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
-  { id: 'c-moment-walk-S02-280x300', what: 'the Untuva walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
-  { id: 'c-moment-walk-S03-280x300', what: 'the Tuikis walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S01-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S02-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (mb-2c call, art-swap-signed-2)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S03-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-walk-S01-280x300', what: 'the Loika walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-walk-S02-280x300', what: 'the Untuva walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (mb-2c call, art-swap-signed-2)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-walk-S03-280x300', what: 'the Tuikis walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-young-S01-280x300', what: 'the Loika young moment on the stage (Tend and walk): the desk’s painted young stand (art/moment/stand-S01j-280x300.png), its foot on the young token’s', until: 'signed by the art desk, 2026-11-09 (art-swap-signed-4)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-young-S02-280x300', what: 'the Untuva young moment on the stage (Tend and walk): the desk’s painted adult stand at the young scale, 0.737 (art/moment/stand-S02j-280x300.png), its foot on the young token’s', until: 'signed by the art desk, 2026-11-09 (art-swap-signed-4)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-young-S03-280x300', what: 'the Tuikis young moment on the stage (Tend and walk): the desk’s painted young stand (art/moment/stand-S03j-280x300.png), its foot on the young token’s', until: 'signed by the art desk, 2026-11-09 (art-swap-signed-4)', w: 280, h: 300, status: 'signed' },
   { id: 'LIP', what: 'the rim of the higher ground at a steep edge in a generator 2 place, by its 8-neighbour mask (lip/<47-blob index>)', until: 'the phase 6 atlas, meadow/lip (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'FACE', what: 'the south face, two rows under the higher ground, with its foot, ends and inner corners (face/face3x2, face2x2, face1x2, corner-out-sw/-se, corner-in-w/-e)', until: 'the phase 6 atlas, meadow/face (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'SIDE', what: 'the east or west side face, one column, with its ends; the side tail beside a south face’s outer end uses it too (face/side-e, face/side-w)', until: 'the phase 6 atlas, meadow/face (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
@@ -1669,7 +1714,10 @@ function bandTell() {
 }
 // What can still be taken in a place, counting only what you can see (unveiled): the pips on the map and
 // the tail of a Call's report ("1 dew, 1 fruit left").
-function leftItems(c) {
+// leftItemsAll is everything left (fruit and unlit beacons too), for the pacing bot only; leftItems is the finds: pod, charge, warm, dew, tuft.
+const FINDS = ['pod', 'charge', 'warm', 'dew', 'tuft'];
+function leftItems(c) { return leftItemsAll(c).filter(i => FINDS.includes(i.k)); }
+function leftItemsAll(c) {
   const out = []; if (!passable(c)) return out;
   const key = String(c), live = S.exp && S.exp.live[key], see = (x, y) => unveiled(key, x, y);
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
@@ -1679,17 +1727,17 @@ function leftItems(c) {
   if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
   return out;
 }
-function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, fruit: 0, tuft: 0, beacon: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
+function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, tuft: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
 function leftTotal(c) { const n = leftCounts(c); return Object.values(n).reduce((a, b) => a + b, 0); }
 function pipsOf(c) { return Math.min(3, leftTotal(c)); }
 // What is left, each kind with the way to its nearest one from where you stand: "a pod east, a warm stone north-west".
-const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], fruit: ['a fruit', 'fruit'], tuft: ['a tuft', 'tufts'], beacon: ['an unlit beacon', 'unlit beacons'] };   // [copy]
+const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], tuft: ['a tuft', 'tufts'] };   // [copy]
 // The way to one takeable from where you stand: " close by", " west", " in the cave".
 function wayTo(near, P) { const dx = near.x - P.x, dy = near.y - P.y;
   return near.cave ? ' in the cave' : cheb(near, P) <= 2 ? ' close by' : ' ' + (dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))) || 'close by'); }
-// The nearest takeable in a place with its way ("a charge west"), or null. Tufts are not takes.
+// The nearest takeable in a place with its way ("a charge west"), or null.
 function nearestTake(c, P) {
-  const its = leftItems(c).filter(i => i.k !== 'tuft'); if (!its.length || !P) return null;
+  const its = leftItems(c); if (!its.length || !P) return null;
   const near = its.reduce((a, b) => cheb(a, P) <= cheb(b, P) ? a : b); return LEFT_WORDS[near.k][0] + wayTo(near, P);
 }
 function leftPhrase(c, P, room, kinds) {
@@ -1752,7 +1800,7 @@ function reachLine() { const rc = reachCounts(), tail = gatedTail(rc) + behindTa
 // A place counts as finished when its heart is found and no pod lies buried.
 const buriedIn = c => S.pods.filter(p => p.k === String(c) && p.h).length;
 const placeDone = c => explored(c) && !buriedIn(c);   // the heart is found and no pod lies buried
-const TAKE_WORD = { pod: 'pod', charge: 'charge', warm: 'warm stone', dew: 'dew', fruit: 'fruit', tuft: 'tuft', beacon: 'beacon' };
+const TAKE_WORD = { pod: 'pod', charge: 'charge', warm: 'warm stone', dew: 'dew', tuft: 'tuft' };
 function takeKinds(c) { const n = leftCounts(c); return Object.keys(TAKE_WORD).filter(k => n[k]).map(k => TAKE_WORD[k]); }
 // A found place with nothing to take: ← leaves in one press (unless a Tuikis is settling and Wait matters).
 function doneEmpty() {
@@ -1836,9 +1884,10 @@ function startExpedition(type, cell) {
   const sr = shedsDue()[0];   // one shed pod an expedition; the rest wait for the next
   if (sr) { const c = shedCell(cell, tier.range, S.pods, sr.g);
     if (c != null) S.pods.push({ id: 's' + sr.id, k: String(c), x: -1, y: -1, sp: sr.sp, h: 0, bur: 0, g: sr.g, how: 'shed', shed: sr.id, of: sr.name, genome: sr.genome }); }
+  if (S.report) S.report.news = null;   // the opening's pips on last turn's cells end with the set-out
   const stormOn = type === 'weather' || R.chance(.3);
   const fogOn = type === 'deep' || R.chance(.45);
-  const pm = partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // no partner: the first mibi with you rides in the Companion (always a juvenile)
+  const pm = type === 'deep' ? digger() : partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // Deep ground: the grown digger with you goes (S.lead is left alone). No partner: the first mibi with you rides in the Companion (always a juvenile)
   const storm = stormOn && !TEST.calm ? stormFor(cell) : null;
   if (storm && S.expN === 1) storm.x -= 2 * storm.dir;   // the first storm comes a little later, so a new player can drain a stone first
   S.exp = { type, ...rgField(), n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range + (pm && spOf(pm.sp).ab === 'sure' ? 1 : 0), dug: [], hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
@@ -2370,8 +2419,23 @@ function patchAction() {
       case 'n': if (canDig() && !burrowOpen()) return { label: 'Ask ' + ex.pt.name + ' to dig', run: holeHint }; break;
     }
   }
-  if (fruit) return o ? { label: 'Press the fruit', run: pressFruit } : { label: 'Put down the fruit', run: () => putDown(f) };
+  if (fruit) {
+    if (!o) return { label: 'Put down the fruit', run: () => putDown(f) };
+    const pk = pressOn(lay, o, f);   // fruit is pressed only on a stone, a rock or a tree trunk; anything else that blocks says so and spends nothing
+    if (pk) return { label: pk === 'tree' ? 'Press the fruit on the tree' : 'Press fruit on the stone', run: () => pressFruit(f) };   // [copy]
+    return { label: 'Press on a stone', dim: true, run: () => { FX.bumpAt = NOW; fxMsg('Fruit presses on stone or rock · or put it down', 2); } };   // [copy]
+  }
   return NOTHING;
+}
+// What the facing tile offers a fruit to be pressed on: 'stone' (a storm stone, a stone prop, a cliff face, a cave wall), 'tree' (a trunk, a fruit tree), or null.
+// Never read from T.ROCK: the adapter stamps it on every blocking prop, bush and closed side. The mask is lay.press (1 stone, 2 tree).
+function pressOn(lay, o, f) {
+  if (o.type === 'feat') return o.f.kind === 'k' ? 'stone' : o.f.kind === 'b' && o.f.tree ? 'tree' : null;
+  if (o.type !== 'tile') return null;
+  if (o.t === T.FACE || o.t === T.CWALL) return 'stone';
+  if (o.t === T.TRUNK) return 'tree';
+  const m = lay.press ? lay.press[f.y * lay.w + f.x] : 0;
+  return m === 1 ? 'stone' : m === 2 ? 'tree' : null;
 }
 function freeAround(key, x, y, prefer) {
   const lw = layout(key).w, ds = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
@@ -2438,8 +2502,8 @@ function pickUp(fr) {
   advance('patch', { noise: 'act' });
 }
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
-function pressFruit() {
-  const ex = S.exp, P = ex.patch;
+function pressFruit(at) {   // at: the stone or tree pressed on (the +2 floats up from it); the explorer's own tile when called without
+  const ex = S.exp, P = at || ex.patch;
   if (CAP - ex.cargo.s < 2) { fxMsg('Not enough room for Essence · the fruit stays in your hands', 2); return; }   // pressing would waste the fruit
   ex.carry = null;
   const got = addMat('s', 2, P.x, P.y); fxSign('press');
@@ -3095,6 +3159,7 @@ function endExpedition(reason) {
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
   const turned = worldTurn(pending), worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
+  { const a = turned.arrived; rep.news = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] }; }   // where it happened: the opening puts a pip on these cells until the next set-out
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
@@ -3282,7 +3347,7 @@ function realmTurn(turned, pending) {
   if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' appeared ' + placePhrase([y0.c]) + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
   if (!lines.length) say('A quiet turn. Little changed.', ['quiet', null, null, 0]);
   logEv('World turn ' + wTurn());
-  return { lines: lines.slice(0, 3), ev: ev.slice(0, 3), arrived: { pods: newPods, young: young.map(y => y.c), bloom } };   // the same three, in the same order; `arrived` names the cells the guard placed things in
+  return { lines: lines.slice(0, 3), ev: ev.slice(0, 3), arrived: { pods: newPods, young: young.map(y => y.c), bloom, charged } };   // the same three, in the same order; `arrived` names the cells the guard placed things in, and the cells the storm charged
 }
 
 // ===================== 10. Pixel graphics core =====================
@@ -3694,54 +3759,17 @@ function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y+
 
 // ---------- Small items and features ----------
 // Pods: shell colour from the ground and a dark outline so they read on grass and in shade. An unread pod shows nothing of its kind.
-function podArt(shell, s) {
-  return art('pod' + shell + (s || 1), () => {
-    s = s || 1; const pb = new PB(16 * s, 20 * s), c = C[shell], P = (x, y, w, h, col) => pb.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), col);
-    pb.ell(8 * s, 10.5 * s, 5.8 * s, 7.8 * s, c, { sh: [lite(c), shade(c)] });
-    for (let i = -4; i <= 4; i++) P(8 + i, 12 + (Math.abs(i) > 3 ? 0 : 1), 1, 1, shade(c));
-    P(5, 6, 1, 2, C.white);
-    pb.outline(() => C.ink); return pb;
-  });
-}
-const FRUIT = () => art('fruit', () => { const pb = new PB(12, 12); pb.ell(6, 7, 4.4, 4.2, C.coral, { sh: [C.blush, C.red] }); pb.rect(6, 1, 1, 2, C.bark); pb.ell(8.5, 2.2, 2, 1.2, C.grass); pb.outline(); return pb; });
-function bushArt(full, fr) {
-  return art('bush' + full + fr, () => {
-    const pb = new PB(32, 32), m = full ? C.leaf : C.grass, sh = full ? [C.sprout, C.forest] : [C.sprout, C.leaf];
-    pb.ell(9, 20, 7, 6.5, m, { sh }); pb.ell(23, 20, 7, 6.5, m, { sh }); pb.ell(16, 14, 8.5, 7.5, m, { sh });
-    if (full) for (const [x, y] of [[10, 18], [21, 22], [17, 10], [24, 15]]) { pb.ell(x, y, 2.2, 2.2, C.coral, { sh: [C.blush, C.red] }); }
-    else { pb.line(13, 7, 11, 3, C.bark); pb.line(19, 7, 22, 4, C.bark); pb.set(16, 12, C.forest); pb.set(10, 19, C.forest); }
-    pb.outline(); return pb;
-  });
-}
-const SLAB = () => art('slab', () => { const pb = new PB(32, 32);
-  pb.poly([[4, 10], [28, 10], [29, 26], [3, 26]], C.rock); pb.poly([[4, 10], [28, 10], [28, 16], [4, 16]], C.rockL);
-  pb.rect(3, 24, 27, 2, C.stone); pb.line(12, 11, 15, 17, C.stone); pb.line(15, 17, 13, 22, C.stone); pb.set(5, 11, C.white);
-  pb.outline(); return pb; });
+// The pod is the art desk's painted walk pod, one file per shell (art/props/pod-walk-16x20-<shell>, signed in mibi-art e48cee90a); s = 2 or 3 is the same picture, each pixel a whole block. No pod is drawn in code.
+function podArt(shell, s) { const n = 'pod-walk-16x20-' + shell; return propPiece((s || 1) > 1 ? n + 'x' + s : n); }
+// The walk props are the art desk's painted files (art/props/, see PROP_FILES): no prop is drawn in code.
+const FRUIT = () => propPiece('prop-fruit'), FRUIT2 = () => propPiece('prop-fruitx2');
+function bushArt(full, fr) { return propPiece(full ? 'bush-full-32' : 'bush-bare-32'); }
+const SLAB = () => propPiece('prop-slab');
 // Beacon: a stone post with a lamp cage. Unlit the cage is dark; lit, a small flame burns (2 frames).
 // Depot: a small hut with a mast; its lamp is dark until lit, then it glows (2 frames).
-function depotArt(lit, fr) {   // lit: turns of light left (0 dark, 1 ember, 2 half, 3 full)
-  return art('depot' + lit + (lit ? fr : 0), () => { const pb = new PB(32, 32);
-    pb.ell(15, 28, 13, 3, C.stone);
-    pb.rect(4, 17, 18, 11, C.bark); pb.rect(4, 17, 18, 2, C.clay); pb.poly([[2, 18], [13, 9], [24, 18]], C.rust); pb.poly([[13, 9], [24, 18], [20, 18]], C.wine);
-    pb.rect(11, 21, 5, 7, C.soil); pb.rect(6, 20, 3, 3, lit ? C.amber : C.night);
-    pb.rect(26, 4, 2, 24, C.stone); pb.rect(26, 4, 1, 24, C.rockL); pb.rect(23, 1, 8, 1, C.soil); pb.rect(24, 2, 6, 4, lit ? C.amber : C.night); pb.rect(23, 6, 8, 1, C.soil);
-    pb.outline();
-    if (lit) { const h = [0, 3, 6, 9][lit], w = [0, 2, 3, 4][lit], t = fr ? 1 : 0;   // the flame above the lamp: its size is the light left
-      pb.ell(27, 6 - h / 2, w / 2 + .3, h / 2 + .4 + t * .3, C.orange); if (lit > 1) pb.ell(27, 6.5 - h / 3, w / 3 + .2, h / 3, C.yellow); if (lit > 2) pb.set(27, 4 - t, C.cream); }
-    return pb; });
-}
-function beaconArt(lit, fr) {
-  return art('beacon' + (lit ? 1 : 0) + (lit ? fr : 0), () => { const pb = new PB(32, 32);
-    pb.ell(16, 28, 9, 2.6, C.stone); pb.rect(12, 25, 8, 3, C.rock); pb.rect(12, 25, 8, 1, C.rockL);           // footing
-    pb.rect(13, 12, 6, 14, C.rock); pb.rect(13, 12, 2, 14, C.rockL); pb.rect(17, 12, 2, 14, C.stone);          // the post
-    pb.rect(11, 11, 10, 2, C.soil); pb.rect(11, 2, 10, 1, C.soil); pb.rect(12, 1, 8, 1, C.bark);              // cage floor and roof
-    pb.rect(12, 3, 8, 8, lit ? C.wine : C.night);                                                            // inside the cage
-    if (lit) { const t = fr ? 1 : 0; pb.ell(16, 8 - t * .5, 3, 3.6 + t * .5, C.orange); pb.ell(16, 8.5 - t * .5, 2, 2.6 + t * .4, C.amber); pb.ell(16, 9, 1, 1.4 + t * .4, C.cream); }
-    for (const x of [11, 15, 20]) pb.rect(x, 3, 1, 8, C.soil);                                                 // cage bars
-    pb.outline();
-    if (lit) for (const [x, y] of fr ? [[9, 4], [23, 6], [10, 10]] : [[8, 6], [22, 3], [22, 10]]) pb.set(x, y, C.cream);   // glow
-    return pb; });
-}
+// Depot and beacon are the art desk's painted files (art/props/walk-depot-*, walk-beacon-*, signed in mibi-art e48cee90a); no hut or post is drawn in code.
+function depotArt(lit, fr) { return propPiece('walk-depot-' + ['dark', 'ember', 'half', 'full'][lit | 0]); }   // lit: turns of light left (0 dark, 1 ember, 2 half, 3 full); the desk painted one full frame, so the flicker frames share it
+function beaconArt(lit, fr) { return propPiece(lit ? 'walk-beacon-lit' : 'walk-beacon-unlit'); }
 function cupArt(full, cave) {
   return art('cup' + full + cave, () => { const pb = new PB(32, 32);
     if (cave) { pb.ell(16, 20, 11, 6.5, C.stone, { sh: [C.mist, C.slate] }); pb.ell(16, 19, 8, 3.5, C.night); if (full) pb.ell(16, 19.5, 7.5, 3, C.aqua, { sh: [C.mint, C.teal] }); }
@@ -3770,73 +3798,21 @@ function stoneArt(lit, cave, fr, warm, small, tall) {
     }
   return pb; });
 }
-function holeArt(glint) { return art('hole' + glint, () => { const pb = new PB(32, 32); pb.ell(16, 19, 10, 6, C.bark, { sh: [C.clay, C.soil] }); pb.ell(16, 20, 7.5, 4, C.void); if (glint) pb.rect(17, 20, 2, 2, C.yellow); return pb; }); }
-// Rupar fresh hole (art desk 2026-11-07, mibi-art 0f21d0919, L2b F10): pasted from the desk's patch.js, drawn with the page's own PB and art(); wired in shedPod, drawPatch and warnPicPlace.
+const holeArt = glint => propPiece(glint ? 'prop-hole1' : 'prop-hole0');
+// Rupar fresh hole (the art desk's painted files, art/props/): drawn at HOLE_DX; wired in shedPod, drawPatch and warnPicPlace. Frame 0 is the fresh dig, frame 1 the settled one; a rock or cave floor has no loose earth (bare).
 const HOLE_DX = -4, HOLE_FRESH_MS = 450;
 const HOLE_BARE = { rock: 1, cave: 1 };
-const HOLE_KEY = { K: 'ink', S: 'soil', B: 'bark', C: 'clay', A: 'sand', F: 'forest', L: 'leaf', G: 'grass', P: 'sprout' };
-// rows 12..31 of the piece, one character a pixel ('.' clear); [frame 0 (earth in the air), frame 1 (settled)]
-const HOLE_ROWS = [[
-  '..............................B.........',
-  '.....................................C..',
-  '........................................',
-  '.................................C......',
-  '.................................S......',
-  '........................................',
-  '.....P.G.......GP...................BC..',
-  '.....LGL.......LS.......................',
-  '......SBCACCA.CAACCAC.........AA........',
-  '....BCKKKKKBKKKKKKKKKCC.......ACCA......',
-  '.P.BKKKKKKKSKKKKKKKKKKC.....ACCACB......',
-  'LPGBKKKKKKKKKKKKKKKKKKKC...ACBCCACB.....',
-  '.SBKKKKKKKKKKKKKKKSSSSSCA.ACCSACCAB.....',
-  '..BKKKKKKKSSSSSSSSSSSSCCACCCBACCBCBB....',
-  '..BSSSSSSSSSSSSSSSSSBCCCBBBCCBBCBBBS....',
-  'P..BCASSSSSSSSSSBBBCACBCSSBBSBBSBS......',
-  '.LS.BACAACCACAACACAACBS..SS.SS.S........',
-  '.....BBCBBBBCBBBCBBBB...................',
-  '.......SBSSBBSSBSSB.....................',
-  '........................................',
-], [
-  '........................................',
-  '........................................',
-  '........................................',
-  '........................................',
-  '........................................',
-  '........................................',
-  '.....P.G.......GP.......................',
-  '.....LGL.......LS.......................',
-  '......SBCACCA.CAACCAC.........AA........',
-  '....BCKKKKKBKKKKKKKKKCC.......ACCA......',
-  '.P.BKKKKKKKSKKKKKKKKKKC.....ACCACB..C...',
-  'LPGBKKKKKKKKKKKKKKKKKKKC...ACBCCACB.S...',
-  '.SBKKKKKKKKKKKKKKKSSSSSCA.ACCSACCAB.....',
-  '..BKKKKKKKSSSSSSSSSSSSCCACCCBACCBCBB....',
-  '..BSSSSSSSSSSSSSSSSSBCCCBBBCCBBCBBBS....',
-  'P..BCASSSSSSSSSSBBBCACBCSSBBSBBSBS...CB.',
-  '.LS.BACAACCACAACACAACBS..SS.SS.S........',
-  '.....BBCBBBBCBBBCBBBB...................',
-  '...C...SBSSBBSSBSSB..............B......',
-  '........................................',
-]];
-function freshHoleArt(fr, bare) {
-  return art('fhole' + fr + (bare ? 'b' : ''), () => { const pb = new PB(40, 32);
-    HOLE_ROWS[fr].forEach((r, j) => { for (let i = 0; i < r.length; i++) { const ch = r[i], k = HOLE_KEY[ch]; if (k && !(bare && 'FLGP'.includes(ch))) pb.set(i, 12 + j, C[k]); } });
-    return pb; });
-}
+const freshHoleArt = (fr, bare) => propPiece(bare ? 'prop-hole-fresh-bare' : fr ? 'prop-hole-fresh-f2' : 'prop-hole-fresh');
 const holeFrame = h => { const a = NOW - (h.at || 0); return motion() && a >= 0 && a < HOLE_FRESH_MS ? 0 : 1; };
-const NEST = () => art('nest', () => { const pb = new PB(32, 32); pb.ell(16, 20, 8, 5, C.forest);
-  for (let i = 0; i < 10; i++) { const a = i * .63; pb.line(16 + Math.cos(a) * 7, 20 + Math.sin(a) * 4.5, 16 + Math.cos(a + .5) * 11, 20 + Math.sin(a + .5) * 6.5, i % 2 ? C.clay : C.bark); } return pb; });
+const NEST = () => propPiece('prop-nest');
 function mushArt(fr) { return art('mush' + fr, () => { const pb = new PB(32, 32);
   for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const d = Math.hypot(x - 16, y - 18); if (d < 13 && d > 6 && (x + y + fr) % 2 === 0 && (x * 7 + y * 3) % 5 < 2) pb.set(x, y, C.plum); }
   for (const [x, y, r] of [[10, 20, 3.5], [18, 17, 4.5], [23, 22, 3]]) { pb.rect(x - 1, y, 2, 5, C.bone); pb.ell(x, y, r, r * .75, C.lilac, { sh: [C.lavender, C.plum], clip: (px, py) => py <= y }); }
   pb.outline(n => n === C.bone ? C.mist : shade(n, 2)); return pb; }); }
-const CRACK = () => art('crack', () => { const pb = new PB(32, 32);
-  for (const [a, b] of [[[5, 18], [12, 15]], [[12, 15], [16, 20]], [[16, 20], [22, 14]], [[22, 14], [28, 17]], [[12, 15], [10, 9]], [[22, 14], [24, 24]]]) { pb.line(a[0], a[1], b[0], b[1], C.soil, 2); pb.line(a[0], a[1] - 1, b[0], b[1] - 1, C.bark); } return pb; });
+const CRACK = () => propPiece('prop-crack');
 const BADGE = () => art('badge', () => { const pb = new PB(18, 18); pb.ell(9, 9, 8, 8, C.plumD); pb.ell(9, 9, 8, 8, C.lavender, { clip: (x, y) => Math.hypot(x + .5 - 9, y + .5 - 9) > 6.8 });
   GLYPHS['?'].split('|').forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === '#') pb.set(7 + x, 5 + y, C.lavender); }); return pb; });
-function exitArt(fr) { return art('exit' + fr, () => { const pb = new PB(32, 32);
-  pb.ell(16, 14, 14, 12, C.cream, { chk: 1 }); for (const oy of [0, 6]) { pb.line(10, 18 - oy - fr, 16, 12 - oy - fr, C.bone, 2); pb.line(16, 12 - oy - fr, 22, 18 - oy - fr, C.bone, 2); } return pb; }); }
+const exitArt = fr => propPiece('prop-exit');
 function burrowArt(open) { return art('burrow' + open, () => { const pb = new PB(32, 32), w = open ? 10 : 6;
   pb.ell(16, 30, w + 6, 22, C.soil, { clip: (x, y) => y < 32 });
   pb.ell(16, 30, w + 4, 20, C.bark, { sh: [C.clay, C.soil], clip: (x, y) => y < 32 });
@@ -3845,18 +3821,10 @@ function burrowArt(open) { return art('burrow' + open, () => { const pb = new PB
   if (open) { pb.rect(15, 24, 2, 2, C.yellow); pb.set(14, 25, C.gold); pb.set(17, 25, C.gold); }
   else { pb.rect(12, 29, 8, 3, C.clay); pb.rect(13, 28, 6, 1, C.sand); }
   return pb; }); }
-function canopyArt(chk) { return art('canopy' + chk, () => { const pb = new PB(88, 76);
-  const blobs = [[44, 40, 34, 28], [26, 34, 17, 15], [62, 34, 17, 15], [44, 20, 20, 15], [30, 52, 16, 12], [58, 52, 16, 12]];
-  for (const [x, y, rx, ry] of blobs) pb.ell(x, y, rx, ry, C.leaf, { sh: [C.grass, C.forest] });
-  for (const [x, y, r] of [[34, 22, 5], [52, 18, 4], [24, 32, 4], [44, 30, 6], [62, 28, 4]]) pb.ell(x, y, r, r * .8, C.sprout, { sh: [C.lime, C.grass] });
-  pb.outline(() => C.pine);
-  if (chk) for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) if ((x + y) % 2) pb.p[y * pb.w + x] = -1;
-  return pb; }); }
-function roofArt(chk) { return art('roof' + chk, () => { const pb = new PB(104, 22);
-  pb.poly([[2, 2], [102, 2], [98, 18], [6, 18]], C.rock); pb.poly([[2, 2], [102, 2], [101, 7], [3, 7]], C.rockL); pb.rect(6, 16, 92, 2, C.stone);
-  pb.outline(() => C.slate);
-  if (chk) for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) if ((x + y) % 2) pb.p[y * pb.w + x] = -1;
-  return pb; }); }
+// The legacy path's crown and roof are the art desk's painted pieces (art/props/canopy-legacy 88 x 76 and roof-legacy 104 x 22, mibi-art 1158b9710); the thinned look (an explorer under it) is the same picture on a checkerboard.
+const thinnedPiece = (name, chk) => { const p = propPiece(name); return chk ? { w: p.w, h: p.h, canvas: (rm, flip, c, veil) => p.canvas(rm, flip, true, veil) } : p; };
+function canopyArt(chk) { return thinnedPiece('canopy-legacy', chk); }
+function roofArt(chk) { return thinnedPiece('roof-legacy', chk); }
 // The partner's marker: a 2 px teal ring under its feet (wild creatures never get one). Small copy for the HUD token.
 // The partner's marker: a 2 px bright teal ring with a 1 px dark outline (wild creatures never get one). Small copy for the HUD token.
 const ringArt = (key, w, h, lit, dark) => art(key, () => { const pb = new PB(w, h), cx = w / 2, cy = h / 2; lit = lit ?? C.aqua; dark = dark ?? C.tealD;
@@ -4194,12 +4162,7 @@ const ICON = {
   essence: () => art('i-ess', () => { const pb = new PB(14, 14); pb.ell(7, 7, 6.6, 6.6, C.grass, { sh: [C.lime, C.leaf] }); pb.rect(4, 3, 2, 2, C.white); return pb; }),
   // The same bolt with its inside left open (the ground shows through): a found warm stone.
   // A beacon: a tall stone post with a lamp cage on top; the cage dark until lit, then a flame (2 frames).
-  beacon: (lit, fr) => art('i-beacon' + (lit ? 1 : 0) + (lit && fr ? 1 : 0), () => { const pb = new PB(12, 22), t = lit && fr ? 1 : 0;
-    pb.rect(2, 20, 8, 2, C.rock); pb.rect(4, 8, 4, 12, C.rock); pb.rect(4, 8, 1, 12, C.rockL); pb.rect(7, 8, 1, 12, C.stone);   // footing and post
-    pb.rect(1, 7, 10, 1, C.soil); pb.rect(1, 1, 10, 1, C.soil); pb.rect(2, 0, 8, 1, C.bark);                                      // cage floor and roof
-    pb.rect(2, 2, 8, 5, lit ? C.wine : C.night); if (lit) { pb.ell(6, 4.6 - t * .4, 2.4, 2.4 + t * .4, C.orange); pb.ell(6, 5, 1.4, 1.6, C.yellow); pb.set(6 - t, 5, C.cream); }
-    for (const x of [1, 6, 10]) pb.rect(x, 2, 1, 5, C.soil);                                                                   // bars
-    pb.outline(); return pb; }),
+  beacon: (lit, fr) => propPiece(lit ? 'icon-beacon-lit' : 'icon-beacon-unlit'),   // the art desk's painted map icon (12 x 22, mibi-art e48cee90a)
   boltHollow: () => art('i-boltH', () => { const a = new PB(14, 17); a.poly([[9, 0], [0, 10], [6, 10], [3, 17], [14, 6], [8, 6], [12, 0]], C.yellow); const pb = new PB(14, 17);   // a little fatter than the bolt, so the open inside reads
     const inA = (x, y) => a.get(x, y) >= 0;
     for (let y = 0; y < 17; y++) for (let x = 0; x < 14; x++) if (inA(x, y)) pb.set(x, y, inA(x - 1, y) && inA(x + 1, y) && inA(x, y - 1) && inA(x, y + 1) ? C.ink : C.yellow);   // a yellow rim, dark inside
@@ -4216,13 +4179,7 @@ const ICON = {
   flag: () => art('i-flag', () => { const pb = new PB(13, 20); pb.rect(1, 1, 2, 19, C.bone); pb.poly([[3, 1], [12, 4.5], [3, 8]], C.orange); pb.rect(3, 2, 6, 1, C.amber); pb.outline(); return pb; }),
   skull: () => art('i-skull', () => { const pb = new PB(14, 14); pb.ell(7, 6, 6, 5.5, C.bone); pb.rect(4, 10, 6, 3, C.bone); pb.ell(4.5, 6, 1.6, 1.8, C.void); pb.ell(9.5, 6, 1.6, 1.8, C.void); pb.rect(6, 9, 2, 1, C.void); pb.rect(5, 12, 1, 1, C.void); pb.rect(8, 12, 1, 1, C.void); pb.outline(); return pb; }),
   // An outpost: a hut with a lamp post beside it; the lamp dark until lit, then a flame whose size is the light left.
-  depot: (lit, fr) => art('i-depot' + (lit | 0) + (lit && fr ? 1 : 0), () => { const L = lit | 0, t = L && fr ? 1 : 0, pb = new PB(20, 22);
-    pb.rect(1, 13, 11, 8, C.bark); pb.rect(1, 13, 11, 1, C.clay); pb.poly([[-0.5, 13.5], [6.5, 7], [13.5, 13.5]], C.rust); pb.poly([[6.5, 7], [13.5, 13.5], [10.5, 13.5]], C.wine);   // hut and roof
-    pb.rect(5, 16, 3, 5, C.soil); pb.rect(2, 15, 2, 2, L ? C.amber : C.night);                                                 // door and window
-    pb.rect(15, 8, 2, 13, C.stone); pb.rect(15, 8, 1, 13, C.rockL); pb.rect(13, 20, 6, 1, C.rock);                              // the lamp post
-    pb.rect(13, 7, 6, 1, C.soil); pb.rect(13, 3, 6, 1, C.soil); pb.rect(14, 4, 4, 3, L ? C.amber : C.night); pb.rect(13, 4, 1, 3, C.soil); pb.rect(18, 4, 1, 3, C.soil);   // lamp cage
-    if (L) { const h = [0, 2, 3, 4][L] + t; pb.ell(16, 3.2 - h / 2, [0, 1, 1.5, 2][L] + .3, h / 2 + .3, C.orange); if (L > 1) pb.ell(16, 3.4 - h / 3, .9, h / 3, C.yellow); if (L > 2) pb.set(16, 1 - t, C.cream); }
-    pb.outline(); return pb; }),
+  depot: (lit, fr) => propPiece('icon-depot-' + ['dark', 'ember', 'half', 'full'][lit | 0]),   // the art desk's painted map icon (20 x 22, mibi-art e48cee90a), four states
   start: () => art('i-start', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 5.4, 5.4, C.bone, { clip: (x, y) => Math.hypot(x + .5 - 5.5, y + .5 - 5.5) > 3.8 }); return pb; }),
   arrow: (dir) => art('i-arr' + dir, () => { const pb = new PB(9, 13); pb.poly([[0, 0], [9, 6.5], [0, 13]], C.yellow); pb.outline(() => C.rust); return dir < 0 ? flipPB(pb) : pb; }),
   tri: () => art('i-tri', () => { const pb = new PB(8, 12); pb.poly([[0, 0], [8, 6], [0, 12]], C.orange); return pb; }),
@@ -4782,8 +4739,8 @@ function signSprite(kind, s, fr, big) {
     case 'pin': return ICON.pin();
     case 'flag': return ICON.flag();
     case 'skull': return sc('skull', ICON.skull());
-    case 'depot': return sc('depot' + (s.lit | 0) + (s.lit && fr ? 1 : 0), ICON.depot(s.lit, fr));
-    case 'beacon': return sc('beacon' + (s.lit ? 1 : 0) + (s.lit && fr ? 1 : 0), ICON.beacon(s.lit, fr));
+    case 'depot': return k === 2 ? propPiece('icon-depot-' + ['dark', 'ember', 'half', 'full'][s.lit | 0] + 'x2') : ICON.depot(s.lit, fr);   // the painted icon, each pixel a whole block at 2x
+    case 'beacon': return k === 2 ? propPiece((s.lit ? 'icon-beacon-lit' : 'icon-beacon-unlit') + 'x2') : ICON.beacon(s.lit, fr);
     case 'burrow': return sc('burrow', ICON.burrow(0));
     case 'water': return sc('wave', ICON.wave());
     case 'soft': return sc('mud', ICON.mud());
@@ -5263,7 +5220,7 @@ function drawWhole(t) {
   const found = heartFound(lay.cell), cardUp = h && v.kind === 'look' && found;   // Look over a found place shows the same card as the find does
   // the marks, drawn in this order: what is still there to take, the heart, then the partner as its kind, then you on top (the desk's look-view art)
   const marks = () => {
-    if (cardUp) for (const it of leftItems(lay.cell)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still'; lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
+    if (cardUp || v.kind === 'peek') for (const it of leftItems(lay.cell).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still'; lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
     if (cardUp) { const q = tp(h.x, h.y); lookMark('look-heart-' + h.kind, h.kind, q.x, q.y, T); }   // the heart, through the dissolve and the hold
     if (live && live.pt && S.exp.pt) { const m = tp(live.pt.x, live.pt.y), pm = mibiById(S.exp.pt.id); lookMark(partnerMark(S.exp.pt.sp, !!pm && !isAdult(pm)), 'partner', m.x, m.y, T); }   // the partner as its kind, under the you-mark
     { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, T); }
@@ -5510,7 +5467,7 @@ function drawPatchBody(t) {
       blit(ICON.bolt(motion() && Math.floor(t * 2) % 2 ? 'cream' : 'yellow'), W(x) + (ts >> 1) - 6, H(y) - 8); }
     // once the heart is found, every takeable still in view glints: the sparkle for 400 ms every 1.6 s, staggered by position; none under reduced motion
     if (hh && heartFound(lay.cell) && motion()) {
-      for (const it of leftItems(lay.cell)) { if (it.k === 'tuft' || it.cave || !vis2(it.x * ts, it.y * ts)) continue;
+      for (const it of leftItems(lay.cell)) { if (it.cave || !vis2(it.x * ts, it.y * ts)) continue;
         if ((NOW + hash(it.x, it.y, 7) % 1600) % 1600 >= 400) continue;
         const a = sparkArt(false); blit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); } } }
   // what Confirm will act on
@@ -5573,7 +5530,6 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
 }
 function drawPartner(sp, pt, x, y, t, stepFr = -1) {
   const m = motion(), fr = m ? Math.floor(t * 2.4) % 2 : 0;
-  blit(RING(), x + 2, y + 23);
   const stepping = stepFr >= 0 && pt.st === 'follow' && !!stepFrames(STEP_ART[sp], false);
   const pose = pt.st === 'sniff' ? 'alert' : 'idle', dy = pt.st === 'dig' ? (m ? Math.floor(t * 12) % 2 * 2 : 0) : pose === 'idle' && !stepping ? fr : 0;
   if (stepping) mibiSprite(sp, 'step', stepFr, x, y + dy - (stepFr === 1 && HOPPER_SP.includes(sp) ? 1 : 0), 1, (pt.face || 1) < 0); else
@@ -5989,7 +5945,7 @@ const PIC = {
   full: (x, y, ps) => { podSlot(x, y + 6, (ps && ps[0]) || { g: 'meadow' }); podSlot(x + 16, y + 6, (ps && ps[1]) || { g: 'pond' }); },
   bank: (x, y) => cen2('crate', crateArt(), x, y),
   fog: (x, y) => ditherFill(x, y, 32, 32, 'fog', 8),
-  fruit: (x, y) => cen2('fruit', FRUIT(), x, y),
+  fruit: (x, y) => cen(FRUIT2(), x, y),
   'bub!': (x, y) => cen2('bub!', bubbleArt('!'), x, y), 'bub?': (x, y) => cen2('bub?', bubbleArt('?'), x, y),
   bubf: (x, y) => cen2('bubf', bubbleArt('f'), x, y), 'bub…': (x, y) => cen2('bub…', bubbleArt('…'), x, y),
   tuft: (x, y) => cen2('tuft', ICON.tuft(), x, y), drop: (x, y) => cen2('drop', DROP(), x, y),
@@ -6021,6 +5977,7 @@ const OPEN_TEXT = {
   digs: n => n + ' digs', needsTuikis: 'needs a Tuikis',   // the Deep ground tab's line
   firstWalk: 'Your first walk', firstFind: 'Find a pod and bring it home.', firstGrows: 'The Station grows it.',   // the first-time partner place
   flat: 'Flat world · New world has stairs', docked: 'Docked · lift to explore',   // a generator 1 world's line; the docked band
+  setOut: 'Set out', needsLabel: 'Needs a Tuikis', deepLeads: n => 'Deep ground · ' + n + ' leads', podBottom: 'your partner comes from a pod',   // the ✓ labels and the bottom line's middle on the opening
 };
 // The art desk's two opening pieces (art/open/, signed in mibi-art a23ee74f6; manifest.json there): the night mist under the first-time frame (three seamless 96 px variants a, b, c, picked per 96 px block of world pixels by a hash,
 // two 900 ms frames and a still for reduced motion) and the pod where the partner would stand (96 px, anchor (48, 92), two 1200 ms glow frames and a still). The mist's four colours are not on the core palette:
@@ -6052,8 +6009,31 @@ async function loadOpenArt(after) {
     openRead(files);
   } catch (e) { console.warn('the opening art did not load; the built night and pod play', e); } finally { ART_DONE.open = true; }
 }
+// The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during a Tend or Walk
+// moment the kind's painted stand takes the token's place, its lowest row on the token's foot row; a young one takes the kind's young stand (stand-S0Nj: the Loika's and Tuikis' signed young stands; the Untuva has none, so its adult stand at the young scale, listed for the art director).
+// Until the files are in (or if they fail) the token plays.
+const MOMENT_ART = { stand: {}, young: {} }, MOMENT_COLOURS = [], MOMENT_KINDS = ['S01', 'S02', 'S03', 'S01j', 'S02j', 'S03j'];   // stand[sp] / young[sp]: { w, h, foot, canvas() }; the young are the signed young stands (S02: the adult stand at the young scale, listed for the art director)
+function momentRead(files) {
+  const seen = new Set();
+  for (const sid of MOMENT_KINDS) { const im = files[`stand-${sid}-280x300`]; if (!im || im.width !== 280 || im.height !== 300) throw new Error('moment stand ' + sid);
+    let c = null, foot = -1; const build = () => { c = document.createElement('canvas'); c.width = 280; c.height = 300; const cg = c.getContext('2d'), id = cg.createImageData(280, 300); id.data.set(im.data); cg.putImageData(id, 0, 0); return c; };
+    for (let i = 0; i < 280 * 300; i++) { const o = i * 4; if (im.data[o + 3]) { foot = Math.max(foot, (i / 280) | 0); const k = im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2]; if (!seen.has(k)) { seen.add(k); MOMENT_COLOURS.push([im.data[o], im.data[o + 1], im.data[o + 2]]); } } }
+    MOMENT_ART[sid.endsWith('j') ? 'young' : 'stand'][PARTNER_FILE.indexOf(sid.slice(0, 3))] = { w: 280, h: 300, foot, canvas: () => c || build() }; }
+}
+async function loadMomentArt() {
+  try {
+    if (window.__momentArt) { momentRead(window.__momentArt); return; }   // the tests give them at once, decoded
+    if (typeof Image === 'undefined') return;
+    const files = {};
+    await Promise.all(MOMENT_KINDS.map(s => `stand-${s}-280x300`).map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/moment/', location.href).href + n + '.png'; })));
+    momentRead(files);
+  } catch (e) { console.warn('the moment stands did not load; the tokens play', e); }
+}
+// The token's lowest drawn row at BIG× (the stand's foot goes there): the kind's own idle frame.
+const tokenFoot = (sp, juv) => art('tfoot' + sp + (juv ? 'j' : 'a'), () => { const pb = bigArt(sp, 'idle', 0, juv); let f = 0; for (let i = 0; i < pb.p.length; i++) if (pb.p[i] >= 0) f = Math.max(f, (i / pb.w) | 0); return { f }; }).f;
 // Deep ground shows once the player has met a digging kind, seen the burrow, or has a grown digger with them.
-const deepShown = () => !!digPartner() || carriedMibis().some(m => isAdult(m) && spOf(m.sp).ab === 'dig') || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.revealed[G.gate];
+const deepShown = () => !!digger() || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.revealed[G.gate];
 // A mibi's picture at k× at (x, y); a kind the Companion has no art for is its labelled plate.
 function openCreature(sp, pose, fr, k, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(creatureArt(sp, pose, fr, k, juv), x, y); }
 // The Companion's front door: the land you know (the frame), one line of what changed, the way out as two tabs, and who comes along.
@@ -6080,6 +6060,30 @@ function openPainting(spec) {
   do { r = OPEN_JOB.it.next(); } while (!r.done && performance.now() - t0 < 8);
   if (!r.done) return null; OPEN_JOB.it = null; return r.value;
 }
+// The tab the land shows: Weather (0) or Deep ground (1); while the partner is focused, the last tab left (S.ui.way).
+const openWay = () => S.ui.sel === 2 ? (S.ui.way === 1 && deepShown() ? 1 : 0) : (S.ui.sel === 1 && !deepShown() ? 0 : S.ui.sel);
+// The way out, on the land: Weather shows the storm where it would start from the last start (the land dimmed under it, rain, the bolt at its top, the arrow on its leading edge; an edge chip when the band is outside the frame);
+// Deep ground shows the burrow's cell ringed in amber. Built pieces only (the dither, the rain colour, the icons); no storm the first time (no start yet).
+function drawOpenWay(q, t, fr) {
+  const { WX, WY, WW, WH, cs } = q;
+  if (openWay() === 0) {
+    if (q.first || S.ui.lastPos == null) return;
+    const st = stormFor(S.ui.lastPos), bx0 = q.ox + (st.x - q.X0) * cs, bx1 = bx0 + st.w * cs, l = Math.max(WX, Math.round(bx0)), r = Math.min(WX + WW, Math.round(bx1));
+    if (r <= l) {   // outside the frame: a small ink chip on that edge carries the bolt and the arrow pointing in
+      const right = bx0 >= WX + WW, cx = right ? WX + WW - 32 : WX + 4, cy = WY + (WH >> 1) - 11; panel(cx, cy, 28, 22, C.ink, C.stone);
+      blit(ICON.bolt(), cx + 2, cy + 4); blit(ICON.arrow(st.dir), cx + 14, cy + 5); return; }
+    ditherFill(l, WY, r - l, WH, 'night', 8);
+    if (motion()) for (let i = 0; i < 40; i++) { const h = hash(5, i), rx = h % (r - l), ry = ((h >>> 9) % WH + Math.floor(t * 140)) % WH; R(l + rx, WY + ry, 1, 3, C.ice); }   // reduced motion: no rain falls, the band holds still
+    const lead = st.dir > 0 ? Math.round(bx1) : Math.round(bx0);
+    if (lead > WX + 14 && lead < WX + WW - 14) blit(ICON.arrow(st.dir), lead + (st.dir > 0 ? 3 : -12), WY + (WH >> 1) - 6);
+    blit(ICON.bolt(), Math.round((l + r) / 2) - 6, WY + 4);
+  } else {
+    const p = q.at(G.gate); if (p.x + cs <= WX || p.y + cs <= WY || p.x >= WX + WW || p.y >= WY + WH) return;
+    const col = fr ? C.yellow : C.amber, i = fr ? 1 : 0;
+    for (const [x, y, w, h] of [[p.x + i, p.y + i, cs - 2 * i, 2], [p.x + i, p.y + cs - 2 - i, cs - 2 * i, 2], [p.x + i, p.y + i, 2, cs - 2 * i], [p.x + cs - 2 - i, p.y + i, 2, cs - 2 * i]]) R(x, y, w, h, col);
+    blit(ICON.burrow(1), p.x + ((cs - 16) >> 1), p.y + ((cs - 14) >> 1));
+  }
+}
 // The land in the frame: the built painting cropped to it, the place marks, the signs, the start flag, the lights of a first walk, the lost plates and the docked band. Drawn only: nothing here reveals a cell.
 function drawOpenLand(t, fr) {
   const ready = !(G.gen >= 6) || PL6.ready || BAKED.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
@@ -6102,6 +6106,10 @@ function drawOpenLand(t, fr) {
       if (sg === 'b') blit(ICON.beat(fr), tx + 2, ty + 2); else { blit(ICON.paw('bone'), tx + 3, ty + 6); blit(ICON.paw('bone'), tx + 11, ty + 2); } } }
   // the start flag (2× at 48 px cells and up)
   if (!q.first && S.ui.lastPos != null) { const p = q.at(S.ui.lastPos), f = cs >= 48 ? up2('flag', ICON.flag()) : ICON.flag(), fx = Math.round(p.x + cs / 2 - f.w / 2 + 2), fy = Math.round(p.y + cs / 2 - f.h + 4); if (inF(fx, fy, f.w, f.h)) blit(f, fx, fy); }
+  // what changed, on the land: the cells last turn's line names get the orange pip (6 px with a 1 px ink rim, blinking to 8) while the line shows, until the next set-out
+  { const nw = S.report && S.report.lines && S.report.lines[0] && S.report.news; if (nw && !q.first) { const s = motion() && fr ? 8 : 6;
+    for (const c of nw.cells) { const p = q.at(c), x = p.x + cs - 11, y = p.y + 5; if (!inF(x - 1, y - 1, s + 2, s + 2)) continue; R(x - 1, y - 1, s + 2, s + 2, C.ink); R(x, y, s, s, C.orange); } } }
+  drawOpenWay(q, t, fr);
   // corner states: the Probe's plates only when one is lost; docked, a band across the foot
   const tier = tierOf(); if (S.shield != null && S.shield < tier.shield) { const w = 9 * tier.shield + 12; panel(WX + WW - w - 4, WY + 4, w, 22, C.ink, C.stone); shieldBars(WX + WW - w + 2, WY + 9, Math.max(0, S.shield), tier.shield, 6, 12); }
   if (isDocked()) { R(WX, WY + WH - 30, WW, 30, C.ink); text(OPEN_TEXT.docked, WX + WW / 2, WY + WH - 24, C.mint, 2, 'center'); }
@@ -6116,7 +6124,7 @@ function drawSetup(t) {
   { const rl = S.report && S.report.lines && S.report.lines[0], flat = !rl && S.phase === 'setup' && !S.exp && (S.gen == null ? 1 : S.gen) === 1, line = rl || (flat ? OPEN_TEXT.flat : first ? OPEN_TEXT.dark : '');
     if (line) { R(14, 371, 6, 6, C.orange); text(clipText(line, 410, 2), 28, 365, flat ? C.sand : C.bone); } }
   // 3. the way out: two tabs under the land (Weather alone and full width until Deep ground is met)
-  const dig = digPartner(), showDeep = deepShown(), sel = S.ui.sel === 1 && !showDeep ? 0 : S.ui.sel, start = S.ui.lastPos != null ? S.ui.lastPos : null, storm = start != null ? stormFor(start) : null;
+  const dig = digger(), showDeep = deepShown(), sel = S.ui.sel === 1 && !showDeep ? 0 : S.ui.sel, start = S.ui.lastPos != null ? S.ui.lastPos : null, storm = start != null ? stormFor(start) : null;
   const tabs = [{ t: 'Weather', s: storm ? (storm.dir > 0 ? OPEN_TEXT.stormWest : OPEN_TEXT.stormEast) : OPEN_TEXT.chargeStones, ok: true }];
   if (showDeep) tabs.push({ t: 'Deep ground', s: dig ? OPEN_TEXT.digs(dig.name) : OPEN_TEXT.needsTuikis, ok: !!dig });
   tabs.forEach((tb, i) => { const w = tabs.length > 1 ? 212 : 434, x = i ? 230 : 8, y = 392, h = 50;
@@ -6127,18 +6135,18 @@ function drawSetup(t) {
   // 4. who comes along: the partner as itself at 3× on its ring, the others with you at 1× beside it
   const pm = partnerMibi(), cm = carriedMibis(), selP = sel === 2, PY = OPEN_PY, PH = OPEN_PH;
   if (selP) brackets(2, PY - 4, SCR_W - 4, PH + 6, C.amber);
-  if (cm.length) { const lead = pm || cm[0], st = mibiStage(lead), juv = st === 'juvenile', others = cm.filter(m => m !== lead);   // only juveniles: the first, its own picture, no ring
-    if (!juv) blit(ringArt('opring84', 84, 22), 14, PY + PH - 24);
-    openCreature(lead.sp, selP && fr ? 'alert' : 'idle', fr, 3, 8, PY + PH - 102, juv);
+  if (cm.length) { const front = sel === 1 ? dig : null, lead = front || pm || cm[0], st = mibiStage(lead), juv = st === 'juvenile', others = cm.filter(m => m !== lead);   // only juveniles: the first, its own picture, no ring; Deep ground focused: the digger steps to the front
+    const ca = callAnim(lead), hop = ca && motion() ? Math.round(Math.abs(Math.sin(ca.a / 150)) * 12 * Math.max(0, 1 - ca.a / 900)) : 0;   // Call: it hops and plays its alert frame
+    openCreature(lead.sp, (selP && fr) || (ca && ca.a < 900) ? 'alert' : 'idle', fr, 3, 8, PY + PH - 102 - hop, juv);
     text(clipText(lead.name, 200 - others.length * 44, 3), 116, PY + 2, C.bone, 3);
-    let cx = 116; cx += chip(cx, PY + 38, STAGE_WORD[st], stageFill(st), 'bone') + 6; if (pm) chip(cx, PY + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
-    text(clipText(pm ? abCardOf(pm.sp) : (lead.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime), 320, 2), 116, PY + 70, C.fog);
-    others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; blit(ringArt('opring32', 30, 10, C.stone, C.slate), x + 1, y + 26); openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
+    let cx = 116; cx += chip(cx, PY + 38, STAGE_WORD[st], stageFill(st), 'bone') + 6; if (pm || front) chip(cx, PY + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
+    text(clipText(pm || front ? abCardOf(lead.sp) : (lead.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime), 320, 2), 116, PY + 70, C.fog);
+    others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
   else if (liveMibis().length) {   // mibis, none with you: their silhouettes
     liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, PY + PH - 66 - (i % 2) * 6));
     text(CARE_TEXT.noOneWithT, 116, PY + 10, C.bone, 3); text(clipText(leadWhy(), 320, 2), 116, PY + 48, C.fog); }
   else {   // no mibi at all: the pod stands where the partner would, and says what the walk is for
-    if (OPEN_ART.ready) { blit(ringArt('opring84', 84, 22), 14, PY + PH - 24); blit(OPEN_ART.pod[motion() ? Math.floor(t / 1.2) % 2 : 2], 8, PY + PH - 102); }   // the desk's pod, its foot (48, 92) on the ring
+    if (OPEN_ART.ready) blit(OPEN_ART.pod[motion() ? Math.floor(t / 1.2) % 2 : 2], 8, PY + PH - 102);   // the desk's pod, its foot at (48, 92), no ring
     else blit(podArt('bone', 3), 32, PY + PH - 72);
     text(OPEN_TEXT.firstWalk, 116, PY + 8, C.bone, 3); text(OPEN_TEXT.firstFind, 116, PY + 46, C.fog); text(OPEN_TEXT.firstGrows, 116, PY + 68, C.fog); }
 }
@@ -6155,7 +6163,8 @@ function partnerCtx() {
   const el = mibiStage(pm) === 'elder' ? ' · slow, keen' : '';
   return [...new Set([abTextOf(pm.sp), abCardOf(pm.sp), abCardOf(pm.sp, true)])].map(ab => 'Partner: ' + pm.name + ' · ' + ab + el);
 }
-function digPartner() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'dig' ? pm : null; }
+// The grown digger who would go down the burrow: the partner when it digs, otherwise any grown Tuikis with you (at set-out it becomes this expedition's partner; the lead is left alone).
+function digger() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'dig' ? pm : carriedMibis().find(m => isAdult(m) && spOf(m.sp).ab === 'dig') || null; }
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
@@ -6435,10 +6444,6 @@ function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb 
   for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) { const c = src.p[y * src.w + x]; if (c < 0) continue; for (let j = 0; j < k; j++) for (let i = 0; i < k; i++) pb.p[(y * k + j) * pb.w + x * k + i] = c; }
   return pb; }); }
 const BIG = 8;   // the 32×32 token at 8×: 256×256, inside the 280×300 stage
-// The Loika's blush paws in Tend rest on the adult's crest at y 78. A juvenile Loika stands on the same foot row but its crest is 6 source rows
-// lower (6 × BIG = 48 px), so its paws drop with it; only the paws, only in y. The Tuikis' sparks and the Untuva's ring are not tied to the head.
-const LOIKA_JUV_PAW_DROP = 6 * BIG;
-function stagePawY(juv) { return 78 + (juv ? LOIKA_JUV_PAW_DROP : 0); }
 const bigArt = (sp, pose, fr, juv) => upArt('cr' + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), creatureArt(sp, pose, fr, 1, juv), BIG);
 // The active mibi screen: the Companion's screen between expeditions. The mibi large, its name, stage, ability and status.
 // Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
@@ -6534,7 +6539,6 @@ function drawActive(t) {
   const h = callAnim(m);
   let sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < TEND_MS ? FX.moment : null;
   if (bond != null && bond >= 0 && bond < 900) sp = { at: bc.at };   // the bond: the species moment again, short
-  const sa = sp ? (mo ? NOW - sp.at : 900) : 0;
   const home = isDocked() && !S.exp;   // seated between expeditions: the stage one step darker, the mibi resting on idle frame 1 (the dock frames, "home")
   let x = 97, y = 52, pose = 'idle', fr = home ? 1 : mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0;
@@ -6547,11 +6551,11 @@ function drawActive(t) {
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
-  mibiSprite(m.sp, pose, fr, x, y, BIG, flip, st === 'juvenile');
+  const juv = st === 'juvenile', stand = sp && !h ? MOMENT_ART[juv ? 'young' : 'stand'][m.sp] : null;   // a Tend or Walk moment: the kind's painted stand (the young's own for a young one), its foot on the token's foot row (a kind without one keeps the token)
+  if (stand) blit({ w: stand.w, h: stand.h, canvas: stand.canvas }, x + 128 - (stand.w >> 1), y + tokenFoot(m.sp, juv) - stand.foot);
+  else mibiSprite(m.sp, pose, fr, x, y, BIG, flip, st === 'juvenile');
   if (h && !h.quiet && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
-  if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, stagePawY(st === 'juvenile'));
-  if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
-  if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
+  if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [392, 104], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
   if (home) darkenRect(24, 40, 402, 280);
   // the Walk: every other mibi with you at the stage’s foot as its 48 px field token (its placeholder until the token lands; its 2 idle frames come with it), for 2.4 s
   const wk = FX.walk && FX.walk.id === m.id && NOW - FX.walk.at < WALK_MS ? FX.walk : null;
@@ -6575,11 +6579,11 @@ function drawActive(t) {
 // Call between expeditions: the shown (or focused) mibi with you answers; otherwise the partner, or the first mibi with you, and
 // the view comes to it. Free.
 function callTarget() {
-  const f = S.phase === 'active' ? shownMibi() : S.phase === 'mibis' ? rosterAt(S.ui.rSel) : null;
+  const f = S.phase === 'active' ? shownMibi() : S.phase === 'mibis' ? rosterAt(S.ui.rSel) : S.phase === 'setup' && S.ui.sel === 1 ? digger() : null;   // the opening: the digger in front answers on Deep ground
   return isCarried(f) ? f : partnerMibi() || carriedMibis()[0] || null;
 }
 function callWith() {
-  const m = callTarget(); if (!m) { fxMsg('No mibi with you'); return; }
+  const m = callTarget(); if (!m) { if (S.phase !== 'setup') fxMsg('No mibi with you'); return; }   // the opening with no one along: nothing
   if (S.phase === 'active') S.ui.aId = m.id;
   const n = (S.ui.calls = (S.ui.calls || 0) + 1), wrong = !isAdult(m) && n % 3 !== 0;
   FX.callMibi = { id: m.id, at: NOW, wrong }; lockInput(300);
@@ -6743,10 +6747,10 @@ function lineBase() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerCtx(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
-      if (S.ui.sel === 1 && !digPartner()) return L1('Needs a Tuikis', 'Deep ground', 'menu', true);   // a mibi at home is never named
+    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerCtx(), 'menu') : L1('', OPEN_TEXT.podBottom, 'menu');
+      if (S.ui.sel === 1 && !digger()) return L1(OPEN_TEXT.needsLabel, 'Deep ground', 'menu', true);   // a mibi at home is never named
       { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
-      return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), bayLine(), 'menu');
+      return L1(OPEN_TEXT.setOut, bayLine() || (S.ui.sel === 1 ? OPEN_TEXT.deepLeads(digger().name) : 'Weather'), 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
       const wx = S.ui.type !== 'deep' ? ' · dotted band: where the storm starts' : '';   // the dotted band is a preview, not the live storm
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), [base + wx, base + ' · storm preview', base], 'back', !placeValid(c)); }
@@ -6854,7 +6858,7 @@ function startBlock() {
 }
 function chooseType() {
   { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; return; } }
-  if (S.ui.sel === 1 && !digPartner()) { fxMsg('Deep ground starts down a narrow burrow · a Tuikis digs it out'); FX.bumpAt = NOW; return; }
+  if (S.ui.sel === 1 && !digger()) { fxMsg('Deep ground starts down a narrow burrow · a Tuikis digs it out'); FX.bumpAt = NOW; return; }
   S.ui.type = S.ui.sel === 1 ? 'deep' : 'weather';
   const first = firstPlacement();
   let cur = S.ui.lastPos != null ? S.ui.lastPos : null;
@@ -6903,12 +6907,18 @@ function act(k, mode) {
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
   if (RT.spot && S.phase === 'patch') { if (RT.spot.held) spotPress(k); else if (NOW - RT.spot.at > SPOT_MS + 1500) cancelBeat(); return; }   // the reveal's spot takes every press; its held card only ✓ or ← closes (an unheld spot is never longer than its beat: one that never gets drawn is dropped)
   if (RT.view && S.phase === 'patch') { viewPress(k); return; }   // a view over the place (arrival look, Look) takes the press: consumed, never queued, no action spent
-  if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
+  if (k === 'call' && !['setup', 'map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
   if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; if (FX.notes.length) composeMsg(); }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
   const isDir = k in DIRS;
   switch (S.phase) {
     case 'setup':
-      if (k === 'up' || k === 'down') { const d = k === 'down' ? 1 : -1; let n = clamp(S.ui.sel + d, 0, 2); if (n === 1 && !deepShown()) n = clamp(n + d, 0, 2); S.ui.sel = n; }   // Deep ground is not a stop until it is shown
+      if (k === 'up' || k === 'down') {   // between the way-out row and the partner; ↑ from the partner returns to the tab left (S.ui.way)
+        if (k === 'down' && S.ui.sel < 2) { S.ui.way = S.ui.sel; S.ui.sel = 2; }
+        else if (k === 'up' && S.ui.sel === 2) S.ui.sel = deepShown() && S.ui.way === 1 ? 1 : 0;
+        else FX.bumpAt = NOW; }
+      else if (k === 'left' || k === 'right') {   // on the way-out row, between Weather and Deep ground (a bump at either end); on the partner, nothing
+        if (S.ui.sel < 2) { const n = S.ui.sel + (k === 'right' ? 1 : -1); if (n < 0 || n > 1 || !deepShown()) FX.bumpAt = NOW; else S.ui.way = S.ui.sel = n; } }
+      else if (k === 'call') callWith();
       else if (k === 'confirm') { if (S.ui.sel === 2) { S.phase = 'mibis'; S.ui.rSel = 0; S.ui.rFrom = 'setup'; transition(); } else chooseType(); }
       else if (k === 'back') openMenu();
       break;
@@ -7278,6 +7288,7 @@ if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true; 
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
 const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
 loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
+loadMomentArt();   // the art desk's painted stands for the care moments
 loadPlaces6();   // generator 6's places (the four templates and their mirrors)
 loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)

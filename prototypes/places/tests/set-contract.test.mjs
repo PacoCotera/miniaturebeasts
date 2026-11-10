@@ -5,17 +5,14 @@ import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadSet, validateSetJson, pairTiles, fullVariants, ALLOWED_SPDX } from '../src/setload.mjs';
-import { cornerSheet } from '../src/sheets.mjs';
-import { compareGolden } from '../src/golden.mjs';
-import { newImage, writePng, fill, decodePng } from '../src/png.mjs';
-import { checkSourcePath, prepareSet, PALETTE_MAX, cutBlobToDual16, BLOB_PIECES } from '../tools/prepare-set.mjs';
+import { loadSet, validateSetJson, ALLOWED_SPDX, layerTiles, fillTiles, kindFullTiles, layerRows, layerDescriptors } from '../src/setload.mjs';
+import { newImage, writePng, fill, decodePng, crop } from '../src/png.mjs';
+import { checkSourcePath, prepareSet, PALETTE_MAX } from '../tools/prepare-set.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const places = path.join(here, '..');
 const repo = path.join(places, '..', '..');
 const setDir = path.join(repo, 'art', 'places', 'sets', 'ninja-test');
-const goldenDir = path.join(places, 'golden', 'seams');
 const loaded = loadSet(setDir);
 const { set, palette } = loaded;
 
@@ -28,8 +25,8 @@ test('the contract refuses what it should', () => {
   assert.ok(bad((s) => { s.licence.spdx = 'CC-BY-4.0'; }), 'a licence that is not CC0 or ours');
   assert.ok(bad((s) => { delete s.licence; }), 'no licence record');
   assert.ok(bad((s) => { s.ship = 'never'; }));
-  assert.ok(bad((s) => { s.pairs[0].mode = 'blend'; }));
-  assert.ok(bad((s) => { delete s.pairs[0].sheets; }));
+  assert.ok(bad((s) => { delete s.layers; }), 'no layers');
+  assert.ok(bad((s) => { s.pairs = []; }), 'the pair table is gone from the contract');
   assert.ok(bad((s) => { s.extra = 1; }), 'unknown top-level key');
 });
 
@@ -56,7 +53,8 @@ test('palette: at most 208 colours, light tables of 256 entries, every drawn col
     assert.ok(m.every((v) => Number.isInteger(v) && v >= 0 && v < 256));
   }
   const have = new Set(palette.colours);
-  const names = [...set.pairs.flatMap((p) => [...p.sheets, p.fullSheet]), set.spriteSheet];
+  const layerFiles = Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...k.sheets, ...(k.full ? [k.full] : []), ...Object.values(k.looks || {}).flat(2)])]);
+  const names = [...layerFiles, ...Object.values(set.layers).flatMap((l) => (l.over || []).flatMap((k) => [...Object.values(k.tall || {}).flat(), ...Object.values(k.wayup || {})])), ...set.tone.sheets, set.spriteSheet];
   for (const f of names) {
     const img = loaded.png(f);
     for (let i = 0; i < img.data.length; i += 4) {
@@ -68,26 +66,76 @@ test('palette: at most 208 colours, light tables of 256 entries, every drawn col
   }
 });
 
-test('every pair has 16 tiles, in whole sheets, one per frame; opaque tiles are opaque', () => {
-  const kit = ['grass-water', 'sand-water', 'grass-sand', 'grass-path', 'mud-water', 'grass-earth', 'sand-earth', 'cliff-grass', 'thicket-grass', 'scrub-grass', 'cliff-sand', 'thicket-sand', 'scrub-sand', 'deep-water'];   // the kit's, the clearing's, then the desk's open edges
-  assert.deepEqual(set.pairs.map((p) => p.id), kit);
+// ---- terrain layers: one fill per terrain, one transparent 16-slot sheet per over kind (place design: terrain-layers-design) ----
+const terrainIds = JSON.parse(readFileSync(path.join(repo, 'art', 'places', 'terrain.json'), 'utf8')).terrains;
+const clearTile = (tile) => { for (let k = 3; k < tile.data.length; k += 4) if (tile.data[k] !== 0) return false; return true; };
+
+test('layers: the contract refuses a layer block that is malformed', () => {
+  const bad = (f) => { const s = structuredClone(set); f(s); return validateSetJson(s).length > 0; };
+  assert.ok(bad((s) => { delete s.layers.grass.over[0].lowers; }), 'a kind without lowers');
+  assert.ok(bad((s) => { s.layers.grass.over[0].sheets = []; }), 'a kind without sheets');
+  assert.ok(bad((s) => { s.layers.water.fill = {}; }), 'a fill without sheets');
+  assert.ok(bad((s) => { s.layers.deep.extra = 1; }), 'an unknown layer key');
+  assert.ok(bad((s) => { delete s.tone.of; }), 'a tone layer without its terrain');
+});
+
+test('layers: every kind has 16 slots in whole sheets, slot 0 empty, slot 15 equal to fill variant 0; fills are opaque strips', () => {
   const t = set.sourceTile;
-  for (const p of set.pairs) {
-    for (const f of p.sheets) {
-      const img = loaded.png(f);
-      assert.equal(img.w, 4 * t, f);
-      assert.equal(img.h, 4 * t, f);
+  for (const [id, l] of Object.entries(set.layers)) {
+    if (l.drawAs) { assert.ok(!l.fill && !l.over, id + ': drawAs stands alone'); continue; }
+    assert.ok(l.fill || l.ground, id + ' has a fill or a ground');
+    // a terrain with a ground and no fill (scrub) keeps its all-upper variants in the kind's `full` strip, which stands in for the fill
+    const fills = l.fill ? l.fill.sheets.map((_, f) => fillTiles(loaded, id, f)) : [kindFullTiles(loaded, id, 0)];
+    for (const frame of fills) {
+      assert.ok(frame.length >= 1, id + ' fill variants');
+      for (const [v, tile] of frame.entries()) for (let k = 3; k < tile.data.length; k += 4) assert.equal(tile.data[k], 255, `${id} fill variant ${v} has a transparent pixel`);
     }
-    const tiles = pairTiles(loaded, p);
-    assert.equal(tiles.length, 16);
-    if (p.mode === 'opaque') for (const [i, tile] of tiles.entries()) {
-      for (let k = 3; k < tile.data.length; k += 4) assert.equal(tile.data[k], 255, `${p.id} tile ${i} has a transparent pixel`);
+    for (const f of l.fill ? l.fill.sheets : []) assert.equal(loaded.png(f).h, t, f);
+    if (l.fill && l.fill.sheets.length > 1) assert.ok(l.fill.frameMs >= 16, id + ' fill animation has a frame time');
+    for (const [ki, k] of (l.over || []).entries()) {
+      for (let f = 0; f < k.sheets.length; f++) {
+        assert.deepEqual([loaded.png(k.sheets[f]).w, loaded.png(k.sheets[f]).h], [4 * t, 4 * t], k.sheets[f]);
+        const tiles = layerTiles(loaded, id, ki, f);
+        assert.equal(tiles.length, 16);
+        assert.ok(clearTile(tiles[0]), `${id}/${k.kind}: slot 0 is empty`);
+        assert.deepEqual(tiles[15].data, fills[Math.min(f, fills.length - 1)][0].data, `${id}/${k.kind}: slot 15 is fill variant 0`);
+        assert.ok(tiles.slice(1, 15).every((x) => !clearTile(x)), `${id}/${k.kind}: slots 1..14 draw something`);
+      }
+      for (const [n, v] of kindFullTiles(loaded, id, ki).entries()) assert.ok(!clearTile(v), `${id}/${k.kind} full variant ${n}`);
     }
-    if (p.sheets.length > 1) assert.ok(p.frameMs >= 16, p.id + ' animation has a frame time');
-    const variants = fullVariants(loaded, p);
-    assert.ok(variants.length >= 1);
-    assert.deepEqual(variants[0].data, tiles[15].data, p.id + ': variant 0 is tile 15');
   }
+  const tone = layerTiles(loaded, 'tone', 0);
+  assert.equal(tone.length, 16);
+  assert.ok(clearTile(tone[0]), 'tone slot 0 is empty');
+});
+
+test('layers: every lowers, ground, drawAs and tone id is a terrain in terrain.json, and the descriptors resolve', () => {
+  const ids = new Set(terrainIds.map((x) => x.id));
+  for (const [id, l] of Object.entries(set.layers)) {
+    assert.ok(ids.has(id), id);
+    for (const x of [l.drawAs, l.ground, ...(l.over || []).flatMap((k) => k.lowers)]) if (x !== undefined) assert.ok(ids.has(x), `${id}: ${x}`);
+    for (const k of l.over || []) for (const lo of k.lowers) assert.ok(terrainIds.find((x) => x.id === lo).z < terrainIds.find((x) => x.id === id).z, `${id}/${k.kind} lists a lower ${lo} that is not below it`);
+  }
+  assert.ok(ids.has(set.tone.of));
+  const d = layerDescriptors(loaded, terrainIds);
+  const v = (id) => terrainIds.find((x) => x.id === id).value;
+  assert.equal(d.layers.get(v('scrub')).drawAs, undefined, 'scrub has its own layer');
+  assert.equal(d.layers.get(v('scrub')).ground, v('grass'), 'the grass fill shows through the scrub paint');
+  assert.equal(d.layers.get(v('scrub')).kinds[0].rows.variants.length, 3);
+  assert.equal(d.layers.get(v('scrub')).kinds[0].fullCount, 4);
+  assert.equal(d.layers.get(v('mud')).fillCount, 5);
+  assert.deepEqual(d.layers.get(v('grass')).kinds.map((k) => k.kind), ['bank', 'flat'], 'bank is listed first, so it wins over flat');
+  assert.deepEqual([...d.layers.get(v('grass')).kinds[1].lowers].sort(), ['earth', 'sand', 'mud', 'path'].map(v).sort());
+  assert.deepEqual(d.tone, { of: v('grass'), also: [v('cliff')], row: layerRows(set).findIndex((r) => r.type === 'tone') });
+  assert.equal(d.layers.get(v('sand')).kinds[0].rows.looks, undefined, 'the beach has no reed look: the reeds are sprites');
+});
+
+test('layers: the baked rows list fills and kinds first, then the extras, then the tone row', () => {
+  const rows = layerRows(set);
+  assert.deepEqual(rows.map((r) => r.type).filter((t, i, a) => a.indexOf(t) === i), ['fill', 'over', 'variant', 'tall', 'wayup', 'tone']);
+  assert.equal(rows.filter((r) => r.type === 'fill').length, Object.values(set.layers).filter((l) => l.fill).length);
+  assert.equal(rows.filter((r) => r.type === 'over').length, Object.values(set.layers).flatMap((l) => l.over || []).length);
+  assert.equal(rows.at(-1).type, 'tone');
 });
 
 test('sprites: every rect lies inside the sprite sheet and every canopy named exists', () => {
@@ -99,9 +147,9 @@ test('sprites: every rect lies inside the sprite sheet and every canopy named ex
     assert.ok(x + w * frames <= sheet.w && y + h <= sheet.h, `${g}/${name} outside the sheet`);
     if (s.canopy) assert.ok(set.canopy[s.canopy], `${name} names a missing canopy ${s.canopy}`);
   }
-  for (const k of ['tree-broad', 'boulder-brown', 'reeds', 'bush-big', 'stump', 'tall-grass']) assert.ok(set.props[k], k);
-  assert.ok(set.props['tall-grass'].frames > 1);
+  for (const k of ['tree-broad', 'boulder-brown', 'reed-shore-1', 'bush-big', 'stump', 'tall-grass']) assert.ok(set.props[k], k);
   assert.deepEqual(set.props['tall-grass'].footprint, []);
+  assert.deepEqual(set.props['reed-water-1'].footprint, []);
   assert.ok(Object.keys(set.decals).length >= 4);
 });
 
@@ -122,6 +170,7 @@ test('prepare-set refuses a recipe whose source names the Zelda-like set (fixtur
   writePng(path.join(root, 'zelda-like-armm1998', 'Overworld.png'), img);
   const recipe = JSON.parse(readFileSync(path.join(setDir, 'recipe.json'), 'utf8'));
   for (const k of Object.keys(recipe.sources)) recipe.sources[k] = 'zelda-like-armm1998/Overworld.png';
+  recipe.decals = { probe: { sheet: 'nature', rect: [0, 0, 16, 16], anchor: [8, 8] } };   // the set draws no kit picture now: the fixture brings one to read the source
   assert.throws(() => prepareSet(recipe, { tilesetsRoot: root }), /Zelda-like/);
 });
 
@@ -134,35 +183,9 @@ test('prepare-set: a source with more than 208 colours stops and says so (fixtur
   writeFileSync(path.join(root, 'ninja-adventure', 'LICENSE.txt'), 'CC0 1.0 Universal\n');
   const recipe = JSON.parse(readFileSync(path.join(setDir, 'recipe.json'), 'utf8'));
   for (const k of Object.keys(recipe.sources)) recipe.sources[k] = 'ninja-adventure/a.png';
+  recipe.decals = { probe: { sheet: 'nature', rect: [0, 0, 256, 256], anchor: [8, 8] } };   // the set draws no kit picture now: the fixture brings one to read the source
   delete recipe.desk;   // the fixture's own source only: the desk's pinned art lives outside this repo (absent in CI)
   assert.throws(() => prepareSet(recipe, { tilesetsRoot: root }), /over the 208/);
-});
-
-test('the blob re-cut: 16 tiles, tile 15 is the upper base, the diagonals are pieced from two inner corners (fixture)', () => {
-  const t = 16;
-  const solid = (r, g, b) => { const i = newImage(t, t); fill(i, r, g, b); return i; };
-  const pieces = {};
-  BLOB_PIECES.forEach((n, k) => { pieces[n] = solid(10 + k, 0, 0); });
-  const base = solid(200, 200, 200);
-  const tiles = cutBlobToDual16(pieces, base, t);
-  assert.equal(tiles.length, 16);
-  assert.deepEqual(tiles[15].data, base.data);
-  assert.equal(tiles[0].data[0], 10 + BLOB_PIECES.indexOf('C'));
-  assert.equal(tiles[9].data[0], 10 + BLOB_PIECES.indexOf('inNW'));                       // NW+SE: inNW whole ...
-  assert.equal(tiles[9].data[((t - 1) * t + (t - 1)) * 4], 10 + BLOB_PIECES.indexOf('inSE')); // ... and inSE's quarter at the SE
-  assert.equal(tiles[6].data[0], 10 + BLOB_PIECES.indexOf('inNE'));
-  assert.equal(tiles[6].data[((t - 1) * t) * 4], 10 + BLOB_PIECES.indexOf('inSW'));
-  assert.equal(tiles[1].data[0], 10 + BLOB_PIECES.indexOf('inSE'));                       // SE only
-  assert.equal(tiles[8].data[0], 10 + BLOB_PIECES.indexOf('inNW'));                       // NW only
-  assert.equal(tiles[3].data[0], 10 + BLOB_PIECES.indexOf('B'));                          // SW+SE: bottom half
-});
-
-test('corner sheets at 48 px match their goldens (A5 test 3)', () => {
-  for (const p of set.pairs) {
-    const sheet = cornerSheet(pairTiles(loaded, p, 0, true));
-    const r = compareGolden(path.join(goldenDir, `${set.id}-${p.id}-sheet-48.png`), sheet);
-    assert.ok(r.ok, r.message);
-  }
 });
 
 test('regenerating the set from the kit gives the committed pixels (skipped when the kit is not on this machine)', (t) => {

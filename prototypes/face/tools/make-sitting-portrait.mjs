@@ -6,13 +6,14 @@
 //   node prototypes/face/tools/make-sitting-portrait.mjs [--check]     writes prototypes/face/tools/fixtures/sitting-portrait-dot.png (deterministic)
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import path from "node:path";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 import { fileURLToPath } from "node:url";
 import { decodePNG, encodePNG } from "../../ui/png.mjs";
 import { figureBox, scaleInto } from "../../ui/tools/game-masters.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), masters = path.resolve(here, "../../ui/assets/masters"), out = path.join(here, "fixtures/sitting-portrait-dot.png");
 export const COAT = "redder-between", POSE = "calm", GLASS = [544, 408], OPENING = [528, 392], AXIS = 264, FEET = 316;   // sitting.json: the opening is 8 px inside the glass; axis 296 and feet 380 in the screen's frame, minus the opening's origin (32, 64)
-const index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters;
+const index = readIndex(masters).masters;
 const pic = (id) => { const m = index[id]; if (!m) throw new Error("no master " + id); const im = decodePNG(readFileSync(path.join(masters, m.file))); return { w: im.width, h: im.height, data: im.data }; };
 // the kind's one scale: the same rule as home-props.mjs sittingKindScale, over the painted pictures of the kind
 export function loikaScale() {

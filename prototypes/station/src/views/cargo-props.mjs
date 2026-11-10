@@ -44,7 +44,9 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
     dock.rack = { insert: slot(R.dockRack.slice, R.dockRack.rect.slice(2)), wells: Array.from({ length: slots }, (_, i) => { const q = i < rackN ? st.tray[i] : null; return { pod: q ? podPic(q, podSize) : "" }; }) };
     props.regions = { dockBay: dock.bay, dockCrates: dock.crates, dockRack: dock.rack, arrival: arrivalRegion(m, spec, ph, slot, req) };
     const a = c.arrival, n = a.crates;
-    const AS = Sg.arrival.subjects, line = a.phase === "show" ? { ok: m.ui.skip ? Sg.arrival.skip : null, back: null, subject: n ? plural(n, AS.cratesOne, fill(AS.crates, { count: spelled(n) })) : AS.empty, need: "" } : { ok: null, back: null, subject: "", need: "" };   // the choice's line is the panel's (host.mjs cargoBody)
+    const AS = Sg.arrival.subjects, nums = walkCrates(st, sv, docked).map((x) => x.n), named = n > 0 && nums.length === n && nums.every((x) => Number.isInteger(x));   // the crates' own expedition numbers, when every crate has one (8a)
+    const crateWords = named ? (n === 1 ? fill(AS.crateOf, { n: nums[0] }) : fill(AS.cratesOf, { count: spelled(n), a: Math.min(...nums), b: Math.max(...nums) })) : plural(n, AS.cratesOne, fill(AS.crates, { count: spelled(n) }));
+    const line = a.phase === "show" ? { ok: m.ui.skip ? Sg.arrival.skip : null, back: null, subject: n ? crateWords : AS.empty, need: "" } :{ ok: null, back: null, subject: "", need: "" };   // the choice's line is the panel's (host.mjs cargoBody)
     return { props, line, requests, need: null };
   }
 

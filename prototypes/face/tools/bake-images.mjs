@@ -6,6 +6,7 @@
 //   node prototypes/face/tools/bake-images.mjs [--out prototypes/face/dist/images] [--masters prototypes/ui/assets/masters]     node .../bake-images.mjs --check
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { decodePNG } from "../../ui/png.mjs";
@@ -24,7 +25,7 @@ export function bakeImage(w, h, rgba) {
 // The header of a baked image, read back.
 export function readHeader(buf) { return { magic: buf[0], cf: buf[1], flags: buf.readUInt16LE(2), w: buf.readUInt16LE(4), h: buf.readUInt16LE(6), stride: buf.readUInt16LE(8) }; }
 export function bakeAll({ masters, out }) {
-  const index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")), images = {};
+  const index = readIndex(masters), images = {};
   mkdirSync(out, { recursive: true });
   for (const [id, e] of Object.entries(index.masters)) {
     const png = readFileSync(path.join(masters, e.file)), pic = decodePNG(png);
@@ -37,7 +38,7 @@ export function bakeAll({ masters, out }) {
 }
 // The baked files against the masters' index and their own index: the problems, as sentences.
 export function checkBaked({ masters, out }) {
-  const index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")), baked = JSON.parse(readFileSync(path.join(out, "images.json"), "utf8")).images, problems = [];
+  const index = readIndex(masters), baked = JSON.parse(readFileSync(path.join(out, "images.json"), "utf8")).images, problems = [];
   for (const [id, e] of Object.entries(index.masters)) {
     const b = baked[id]; if (!b) { problems.push(`${id}: not baked`); continue; }
     if (b.source !== e.sha256) problems.push(`${id}: baked from a PNG that is not the placed master (hash ${b.source.slice(0, 8)}, the index says ${e.sha256.slice(0, 8)})`);

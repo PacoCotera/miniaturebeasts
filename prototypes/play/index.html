@@ -182,24 +182,24 @@ body.phone iframe{image-rendering:pixelated}
   <div class="shell" id="shStation"><iframe id="fStation" title="Station screen" allow="" loading="eager"></iframe></div>
   <div class="row" id="rowStation"></div>
   <div class="shell" id="shCompanion"><iframe id="fCompanion" title="Companion screen" allow="" loading="eager"></iframe></div>
-  <div class="row" id="rowCompanion"><button type="button" class="ctl hidden" id="undockBtn" aria-label="Lift the Companion from the Caddy" title="Lift the Companion from the Caddy">Lift</button></div>
-  <div id="caddySheet" aria-label="The Caddy's screen" role="img"><canvas id="caddyView" width="792" height="272"></canvas></div>
-  <div id="caddyLamps" aria-label="The Caddy's cradle lamps"><div class="cl"><span>Companion cradle</span><i id="lampCompanion"></i></div><div class="cl"><span>Station cradle</span><i id="lampStation"></i></div></div>
-  <div id="caddyPrint" class="hidden" role="group" aria-labelledby="printHead"><img id="printImg" alt="Your recovery key, as the Caddy printed it"><div id="printText"><p id="printHead">The Caddy printed your recovery key</p><p id="printNote">Keep the paper somewhere safe. The Caddy prints it only once.</p><button type="button" id="printTaken">I have it</button><p id="printStatus" role="status"></p></div></div>
+  <div class="row" id="rowCompanion"><button type="button" class="ctl hidden" id="undockBtn" aria-label="Lift the Companion" title="Lift the Companion">Lift</button></div>
+  <div id="caddySheet" aria-label="The dock's screen" role="img"><canvas id="caddyView" width="792" height="272"></canvas></div>
+  <div id="caddyLamps" aria-label="The dock's cradle lamps"><div class="cl"><span>Companion cradle</span><i id="lampCompanion"></i></div><div class="cl"><span>Station cradle</span><i id="lampStation"></i></div></div>
+  <div id="caddyPrint" class="hidden" role="group" aria-labelledby="printHead"><img id="printImg" alt="Your recovery key, as the dock printed it"><div id="printText"><p id="printHead">The dock printed your recovery key</p><p id="printNote">Keep the paper somewhere safe. The dock prints it only once.</p><button type="button" id="printTaken">I have it</button><p id="printStatus" role="status"></p></div></div>
   <div id="spacer"></div>
-  <div id="cradle" title="Dock the Companion in the Caddy"><div id="slot"></div><img id="lamp" alt="" src="../ui/assets/masters/pods/frame-lamp-8-stone.png" width="8" height="8"></div>
+  <div id="cradle" title="Dock the Companion"><div id="slot"></div><img id="lamp" alt="" src="../ui/assets/masters/pods/frame-lamp-8-stone.png" width="8" height="8"></div>
   <div id="ring"></div>
   <div id="stamp" class="hidden">build local</div>
   <div id="turnHint" class="hidden" role="status">Turn your phone sideways for a bigger Station</div>
 </div>
   <iframe id="fBench" title="Bench" class="hidden" allow=""></iframe>   <!-- the workbench is hidden on the play page (an outdated tool): never loaded -->
-  <div id="dev" class="hidden"><div id="devCaddy"><p class="dev-lede">The Caddy's problems</p><label><input type="checkbox" id="sw-silent"> Companion silent (the Companion holds back its word)</label><label><input type="checkbox" id="sw-quiet"> Station quiet (the Station's link drops)</label><label><input type="checkbox" id="sw-fault"> Caddy fault (the Caddy refuses writes)</label></div><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
+  <div id="dev" class="hidden"><div id="devCaddy"><p class="dev-lede">The dock's problems</p><label><input type="checkbox" id="sw-silent"> Companion silent (the Companion holds back its word)</label><label><input type="checkbox" id="sw-quiet"> Station quiet (the Station's link drops)</label><label><input type="checkbox" id="sw-fault"> Dock fault (the dock refuses writes)</label></div><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
 <div id="bar">
   <button type="button" class="ctl" id="tabStation">Station</button>
   <button type="button" class="ctl" id="tabCompanion">Companion</button>
   <button type="button" class="ctl hidden" id="tabBench">Bench</button>
   <button type="button" class="ctl" id="companionCtl" aria-label="Companion A; switch to Companion B">Companion <b>A</b> / B</button>
-  <button type="button" class="ctl" id="dockCtl" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
+  <button type="button" class="ctl" id="dockCtl" aria-label="Dock the Companion" title="Dock the Companion"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
   <button type="button" class="ctl" id="optionsBtn" aria-haspopup="dialog" title="Playtest waits, developer tools, Start fresh and more">Options</button>
   <button type="button" class="ctl" id="keysBtn">Keys ?</button>
   <button type="button" class="ctl hidden" id="zDown" aria-label="Smaller" title="Smaller (−)">−</button>

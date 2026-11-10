@@ -503,7 +503,7 @@ import { readdirSync as ls2, readFileSync as rf2, existsSync as ex2 } from "node
 // The transitive import graph of intents/: every module it reaches, followed through relative imports (and `import()`), reads like a Node program: no document, window, canvas, storage or clock of the page, and none of
 // the drawing half, the screens, the renderer or the game's singletons.
 const FORBIDDEN = /\b(document|window|canvas|getContext|localStorage|sessionStorage|performance|requestAnimationFrame|createImageBitmap|OffscreenCanvas|Image)\b/;
-const NOT_REACHED = /(^|\/)(screens|render|components)\/|(^|\/)(gfx|game|scene|layout|context|type|main|face-lvgl|masters|podsprites|pictures|dev|caddy)\.mjs$/;
+const NOT_REACHED = /(^|\/)(screens|render|components)\/|(^|\/)(gfx|game|scene|layout|context|type|main|face-lvgl|masters|pictures|dev|caddy)\.mjs$/;
 function graph(entry) {
   const seen = new Map(), todo = [entry];
   while (todo.length) {

@@ -15,287 +15,430 @@
   "half": "derived",
   "palette": "palette.json",
   "spriteSheet": "sprites.png",
-  "pairs": [
-    {
-      "id": "grass-water",
-      "lower": "water",
-      "upper": "grass",
-      "mode": "opaque",
-      "sheets": ["pair-grass-water.png", "pair-grass-water@1.png", "pair-grass-water@2.png", "pair-grass-water@3.png"],
-      "frameMs": 250,
-      "fullSheet": "pair-grass-water-full.png"
-    },
-    {
-      "id": "sand-water",
-      "lower": "water",
-      "upper": "sand",
-      "mode": "opaque",
-      "sheets": ["pair-sand-water.png", "pair-sand-water@1.png", "pair-sand-water@2.png", "pair-sand-water@3.png"],
-      "frameMs": 250,
-      "fullSheet": "pair-sand-water-full.png"
-    },
-    {
-      "id": "grass-sand",
-      "lower": "sand",
-      "upper": "grass",
-      "mode": "opaque",
-      "sheets": ["pair-grass-sand.png"],
-      "fullSheet": "pair-grass-sand-full.png"
-    },
-    {
-      "id": "grass-path",
-      "lower": "path",
-      "upper": "grass",
-      "mode": "opaque",
-      "sheets": ["pair-grass-path.png"],
-      "fullSheet": "pair-grass-path-full.png"
-    },
-    {
-      "id": "mud-water",
-      "lower": "water",
-      "upper": "mud",
-      "mode": "opaque",
-      "sheets": ["pair-mud-water.png", "pair-mud-water@1.png", "pair-mud-water@2.png", "pair-mud-water@3.png"],
-      "frameMs": 250,
-      "fullSheet": "pair-mud-water-full.png"
-    },
-    {
-      "id": "grass-earth",
-      "lower": "earth",
-      "upper": "grass",
-      "mode": "opaque",
-      "sheets": ["pair-grass-earth.png"],
-      "fullSheet": "pair-grass-earth-full.png"
-    },
-    {
-      "id": "sand-earth",
-      "lower": "earth",
-      "upper": "sand",
-      "mode": "opaque",
-      "sheets": ["pair-sand-earth.png"],
-      "fullSheet": "pair-sand-earth-full.png"
-    },
-    {
-      "id": "cliff-grass",
-      "lower": "grass",
-      "upper": "cliff",
-      "mode": "opaque",
-      "sheets": ["pair-cliff-grass.png"],
-      "fullSheet": "pair-cliff-grass-full.png",
-      "tall": {
-        "1": "pair-cliff-grass~s1.png",
-        "2": "pair-cliff-grass~s2.png",
-        "3": "pair-cliff-grass~s3.png"
-      },
-      "wayup": "wayup-cliff-grass.png"
-    },
-    {
-      "id": "thicket-grass",
-      "lower": "grass",
-      "upper": "thicket",
-      "mode": "opaque",
-      "sheets": ["pair-thicket-grass.png"],
-      "fullSheet": "pair-thicket-grass-full.png"
-    },
-    {
-      "id": "scrub-grass",
-      "lower": "grass",
-      "upper": "scrub",
-      "mode": "opaque",
-      "sheets": ["pair-scrub-grass.png"],
-      "fullSheet": "pair-scrub-grass-full.png",
-      "variants": ["pair-scrub-grass~v1.png", "pair-scrub-grass~v2.png", "pair-scrub-grass~v3.png"]
-    },
-    {
-      "id": "cliff-sand",
-      "lower": "sand",
-      "upper": "cliff",
-      "mode": "opaque",
-      "sheets": ["pair-cliff-sand.png"],
-      "fullSheet": "pair-cliff-sand-full.png",
-      "tall": {
-        "1": "pair-cliff-sand~s1.png",
-        "2": "pair-cliff-sand~s2.png",
-        "3": "pair-cliff-sand~s3.png"
-      },
-      "wayup": "wayup-cliff-sand.png"
-    },
-    {
-      "id": "thicket-sand",
-      "lower": "sand",
-      "upper": "thicket",
-      "mode": "opaque",
-      "sheets": ["pair-thicket-sand.png"],
-      "fullSheet": "pair-thicket-sand-full.png"
-    },
-    {
-      "id": "scrub-sand",
-      "lower": "sand",
-      "upper": "scrub",
-      "mode": "opaque",
-      "sheets": ["pair-scrub-sand.png"],
-      "fullSheet": "pair-scrub-sand-full.png",
-      "variants": ["pair-scrub-sand~v1.png", "pair-scrub-sand~v2.png", "pair-scrub-sand~v3.png"]
-    },
-    {
-      "id": "deep-water",
-      "lower": "water",
-      "upper": "deep",
-      "mode": "opaque",
-      "sheets": ["pair-deep-water.png", "pair-deep-water@1.png", "pair-deep-water@2.png", "pair-deep-water@3.png"],
-      "frameMs": 250,
-      "fullSheet": "pair-deep-water-full.png"
-    }
-  ],
-  "looks": [
-    {
-      "id": "reeds",
-      "of": {
-        "grass-water": [
-          ["pair-grass-water~reeds.png", "pair-grass-water~reeds@1.png", "pair-grass-water~reeds@2.png", "pair-grass-water~reeds@3.png"],
-          ["pair-grass-water~reeds~v1.png", "pair-grass-water~reeds~v1@1.png", "pair-grass-water~reeds~v1@2.png", "pair-grass-water~reeds~v1@3.png"],
-          ["pair-grass-water~reeds~v2.png", "pair-grass-water~reeds~v2@1.png", "pair-grass-water~reeds~v2@2.png", "pair-grass-water~reeds~v2@3.png"]
-        ],
-        "sand-water": [
-          ["pair-sand-water~reeds.png", "pair-sand-water~reeds@1.png", "pair-sand-water~reeds@2.png", "pair-sand-water~reeds@3.png"],
-          ["pair-sand-water~reeds~v1.png", "pair-sand-water~reeds~v1@1.png", "pair-sand-water~reeds~v1@2.png", "pair-sand-water~reeds~v1@3.png"],
-          ["pair-sand-water~reeds~v2.png", "pair-sand-water~reeds~v2@1.png", "pair-sand-water~reeds~v2@2.png", "pair-sand-water~reeds~v2@3.png"]
-        ]
+  "layers": {
+    "deep": {
+      "fill": {
+        "sheets": ["fill-deep.png"]
       }
+    },
+    "water": {
+      "fill": {
+        "sheets": ["fill-water.png", "fill-water@1.png", "fill-water@2.png", "fill-water@3.png"],
+        "frameMs": 250
+      },
+      "over": [
+        {
+          "kind": "step",
+          "lowers": ["deep"],
+          "sheets": ["over-water.png"]
+        }
+      ]
+    },
+    "earth": {
+      "fill": {
+        "sheets": ["fill-earth.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["deep", "water"],
+          "sheets": ["over-earth.png"]
+        }
+      ]
+    },
+    "sand": {
+      "fill": {
+        "sheets": ["fill-sand.png"]
+      },
+      "over": [
+        {
+          "kind": "beach",
+          "lowers": ["deep", "water"],
+          "sheets": ["over-sand-beach.png"]
+        },
+        {
+          "kind": "flat",
+          "lowers": ["earth"],
+          "sheets": ["over-sand-flat.png"]
+        }
+      ]
+    },
+    "mud": {
+      "fill": {
+        "sheets": ["fill-mud.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["deep", "water", "earth", "sand"],
+          "sheets": ["over-mud.png"]
+        }
+      ]
+    },
+    "path": {
+      "fill": {
+        "sheets": ["fill-path.png"]
+      },
+      "over": [
+        {
+          "kind": "bank",
+          "lowers": ["deep", "water"],
+          "sheets": ["over-path.png"]
+        }
+      ]
+    },
+    "grass": {
+      "fill": {
+        "sheets": ["fill-grass.png"]
+      },
+      "over": [
+        {
+          "kind": "bank",
+          "lowers": ["deep", "water"],
+          "sheets": ["over-grass-bank.png"]
+        },
+        {
+          "kind": "flat",
+          "lowers": ["earth", "sand", "mud", "path"],
+          "sheets": ["over-grass-flat.png"]
+        }
+      ]
+    },
+    "scrub": {
+      "ground": "grass",
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["earth", "sand", "mud", "path", "grass"],
+          "sheets": ["over-scrub.png"],
+          "full": "over-scrub-full.png",
+          "variants": ["over-scrub~v1.png", "over-scrub~v2.png", "over-scrub~v3.png"]
+        }
+      ]
+    },
+    "thicket": {
+      "fill": {
+        "sheets": ["fill-thicket.png"]
+      },
+      "over": [
+        {
+          "kind": "rim",
+          "lowers": ["earth", "sand", "mud", "path", "grass", "scrub"],
+          "sheets": ["over-thicket.png"]
+        }
+      ]
+    },
+    "cliff": {
+      "fill": {
+        "sheets": ["fill-cliff.png"]
+      },
+      "over": [
+        {
+          "kind": "bank",
+          "lowers": ["earth", "sand", "path", "grass"],
+          "sheets": ["over-cliff.png"],
+          "tall": {
+            "1": ["over-cliff~s1.png"],
+            "2": ["over-cliff~s2.png"],
+            "3": ["over-cliff~s3.png", "over-cliff-face2~s3.png", "over-cliff-face3~s3.png"]
+          },
+          "wayup": {
+            "grass": "wayup-cliff-grass.png",
+            "sand": "wayup-cliff-sand.png"
+          }
+        }
+      ]
     }
-  ],
+  },
+  "tone": {
+    "of": "grass",
+    "also": ["cliff"],
+    "sheets": ["tone-grass.png"]
+  },
   "props": {
     "tree-broad": {
-      "rect": [198, 78, 48, 14],
-      "anchor": [24, 13],
+      "rect": [68, 140, 36, 9],
+      "anchor": [18, 5],
       "footprint": [[0, 0]],
       "canopy": "tree-broad-crown"
     },
     "tree-autumn": {
-      "rect": [149, 78, 48, 14],
-      "anchor": [24, 13],
+      "rect": [31, 140, 36, 9],
+      "anchor": [18, 5],
       "footprint": [[0, 0]],
       "canopy": "tree-autumn-crown"
     },
     "bush-big": {
-      "rect": [0, 48, 32, 29],
-      "anchor": [16, 28],
+      "rect": [19, 98, 24, 24],
+      "anchor": [12, 22],
       "footprint": [[0, 0]]
     },
     "bush-round": {
-      "rect": [132, 78, 16, 14],
-      "anchor": [8, 13],
+      "rect": [44, 98, 24, 24],
+      "anchor": [12, 22],
       "footprint": [[0, 0]]
     },
     "bush-small": {
-      "rect": [33, 95, 15, 13],
-      "anchor": [7, 12],
-      "footprint": [[0, 0]]
-    },
-    "stump": {
-      "rect": [93, 48, 30, 23],
-      "anchor": [15, 22],
+      "rect": [69, 98, 24, 24],
+      "anchor": [12, 22],
       "footprint": [[0, 0]]
     },
     "boulder-brown": {
-      "rect": [33, 48, 29, 27],
-      "anchor": [14, 26],
+      "rect": [232, 98, 22, 16],
+      "anchor": [11, 15],
       "footprint": [[0, 0]]
     },
     "boulder-grey": {
-      "rect": [63, 48, 29, 27],
-      "anchor": [14, 26],
+      "rect": [0, 123, 22, 16],
+      "anchor": [11, 15],
       "footprint": [[0, 0]]
     },
-    "reeds": {
-      "rect": [65, 0, 16, 46],
-      "anchor": [8, 45],
-      "footprint": []
+    "stump": {
+      "rect": [94, 98, 26, 24],
+      "anchor": [12, 23],
+      "footprint": [[0, 0]]
     },
     "tall-grass": {
-      "rect": [51, 78, 16, 16],
-      "anchor": [8, 15],
-      "frames": 3,
-      "frameMs": 300,
+      "rect": [146, 123, 12, 13],
+      "anchor": [6, 12],
+      "footprint": []
+    },
+    "tall-grass-b": {
+      "rect": [159, 123, 12, 13],
+      "anchor": [6, 12],
+      "footprint": []
+    },
+    "tall-grass-m": {
+      "rect": [185, 123, 12, 13],
+      "anchor": [5, 12],
+      "footprint": []
+    },
+    "tall-grass-bm": {
+      "rect": [172, 123, 12, 13],
+      "anchor": [5, 12],
       "footprint": []
     },
     "tree-hollow": {
-      "rect": [0, 0, 64, 47],
-      "anchor": [32, 46],
+      "rect": [0, 0, 64, 64],
+      "anchor": [32, 63],
       "footprint": [[-2, 0],  [-1, 0],  [0, 0],  [1, 0],  [2, 0],  [-1, -1],  [0, -1],  [1, -1]]
     },
     "split-stone": {
-      "rect": [82, 0, 61, 44],
+      "rect": [65, 0, 61, 44],
       "anchor": [30, 43],
       "footprint": [[-1, 0],  [0, 0],  [1, 0],  [-1, -1],  [0, -1],  [1, -1]]
+    },
+    "shrub-1": {
+      "rect": [130, 123, 15, 13],
+      "anchor": [7, 12],
+      "footprint": [[0, 0]]
+    },
+    "shrub-2": {
+      "rect": [215, 123, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
+    },
+    "shrub-3": {
+      "rect": [231, 123, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
+    },
+    "shrub-4": {
+      "rect": [0, 140, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
+    },
+    "reed-shore-1": {
+      "rect": [161, 0, 16, 33],
+      "anchor": [8, 33],
+      "footprint": []
+    },
+    "reed-shore-1m": {
+      "rect": [178, 0, 16, 33],
+      "anchor": [7, 33],
+      "footprint": []
+    },
+    "reed-shore-3": {
+      "rect": [127, 0, 16, 34],
+      "anchor": [8, 34],
+      "footprint": []
+    },
+    "reed-shore-3m": {
+      "rect": [144, 0, 16, 34],
+      "anchor": [7, 34],
+      "footprint": []
+    },
+    "reed-shore-2": {
+      "rect": [74, 65, 17, 32],
+      "anchor": [8, 32],
+      "footprint": []
+    },
+    "reed-shore-2m": {
+      "rect": [92, 65, 17, 32],
+      "anchor": [8, 32],
+      "footprint": []
+    },
+    "reed-shore-4": {
+      "rect": [195, 0, 17, 33],
+      "anchor": [8, 33],
+      "footprint": []
+    },
+    "reed-shore-4m": {
+      "rect": [213, 0, 17, 33],
+      "anchor": [8, 33],
+      "footprint": []
+    },
+    "reed-water-1": {
+      "rect": [146, 65, 17, 29],
+      "anchor": [8, 26],
+      "footprint": []
+    },
+    "reed-water-1m": {
+      "rect": [164, 65, 17, 29],
+      "anchor": [8, 26],
+      "footprint": []
+    },
+    "reed-water-2": {
+      "rect": [110, 65, 17, 30],
+      "anchor": [8, 27],
+      "footprint": []
+    },
+    "reed-water-2m": {
+      "rect": [128, 65, 17, 30],
+      "anchor": [8, 27],
+      "footprint": []
     }
   },
   "decals": {
+    "tuft-fan": {
+      "rect": [91, 123, 12, 13],
+      "anchor": [6, 12]
+    },
+    "tuft-lean": {
+      "rect": [104, 123, 12, 13],
+      "anchor": [6, 12]
+    },
+    "tuft-small": {
+      "rect": [117, 123, 12, 13],
+      "anchor": [6, 12]
+    },
+    "tuft": {
+      "rect": [78, 123, 12, 13],
+      "anchor": [6, 12]
+    },
+    "clump-tall": {
+      "rect": [182, 65, 20, 26],
+      "anchor": [10, 25]
+    },
+    "clump-tall-m": {
+      "rect": [203, 65, 20, 26],
+      "anchor": [10, 25]
+    },
+    "clump-tall-s": {
+      "rect": [171, 98, 20, 17],
+      "anchor": [10, 16]
+    },
+    "clump-tall-sm": {
+      "rect": [192, 98, 20, 17],
+      "anchor": [10, 16]
+    },
+    "flower-daisy": {
+      "rect": [224, 65, 18, 24],
+      "anchor": [8, 23]
+    },
+    "flower-buttercup": {
+      "rect": [23, 123, 21, 15],
+      "anchor": [10, 14]
+    },
+    "flower-daisy-pair": {
+      "rect": [0, 98, 18, 24],
+      "anchor": [8, 23]
+    },
+    "flower-blue-pair": {
+      "rect": [121, 98, 24, 22],
+      "anchor": [11, 21]
+    },
+    "flower-pink-three": {
+      "rect": [146, 98, 24, 22],
+      "anchor": [11, 21]
+    },
+    "fleck-0": {
+      "rect": [143, 140, 9, 6],
+      "anchor": [4, 5]
+    },
+    "fleck-0m": {
+      "rect": [153, 140, 9, 6],
+      "anchor": [4, 5]
+    },
+    "fleck-1": {
+      "rect": [179, 140, 6, 5],
+      "anchor": [3, 4]
+    },
+    "fleck-1m": {
+      "rect": [186, 140, 6, 5],
+      "anchor": [2, 4]
+    },
+    "fleck-2": {
+      "rect": [105, 140, 3, 7],
+      "anchor": [1, 6]
+    },
+    "fleck-2m": {
+      "rect": [109, 140, 3, 7],
+      "anchor": [1, 6]
+    },
+    "fleck-3": {
+      "rect": [113, 140, 7, 7],
+      "anchor": [3, 6]
+    },
+    "fleck-3m": {
+      "rect": [121, 140, 7, 7],
+      "anchor": [3, 6]
+    },
+    "fleck-4": {
+      "rect": [163, 140, 7, 6],
+      "anchor": [3, 5]
+    },
+    "fleck-4m": {
+      "rect": [171, 140, 7, 6],
+      "anchor": [3, 5]
+    },
+    "fleck-5": {
+      "rect": [129, 140, 6, 7],
+      "anchor": [3, 6]
+    },
+    "fleck-5m": {
+      "rect": [136, 140, 6, 7],
+      "anchor": [2, 6]
+    },
     "pebbles-a": {
-      "rect": [100, 78, 14, 14],
-      "anchor": [7, 7]
+      "rect": [16, 140, 14, 10],
+      "anchor": [7, 5]
     },
     "pebbles-b": {
-      "rect": [0, 95, 15, 13],
+      "rect": [62, 123, 15, 13],
       "anchor": [7, 6]
     },
     "pebbles-c": {
-      "rect": [115, 78, 16, 14],
-      "anchor": [8, 7]
-    },
-    "tuft": {
-      "rect": [16, 95, 16, 13],
+      "rect": [198, 123, 16, 12],
       "anchor": [8, 6]
     },
     "lily-pad": {
-      "rect": [226, 48, 16, 16],
-      "anchor": [8, 8]
+      "rect": [45, 123, 16, 14],
+      "anchor": [8, 7]
     },
-    "flower-daisy": {
-      "rect": [175, 48, 16, 16],
-      "anchor": [8, 15]
-    },
-    "flower-buttercup": {
-      "rect": [158, 48, 16, 16],
-      "anchor": [8, 15]
-    },
-    "flower-daisy-pair": {
-      "rect": [192, 48, 16, 16],
-      "anchor": [8, 15]
-    },
-    "flower-blue-pair": {
-      "rect": [141, 48, 16, 16],
-      "anchor": [8, 15]
-    },
-    "flower-pink-three": {
-      "rect": [209, 48, 16, 16],
-      "anchor": [8, 15]
-    },
-    "tuft-fan": {
-      "rect": [0, 78, 16, 16],
-      "anchor": [8, 15]
-    },
-    "tuft-lean": {
-      "rect": [17, 78, 16, 16],
-      "anchor": [8, 15]
-    },
-    "tuft-small": {
-      "rect": [34, 78, 16, 16],
-      "anchor": [8, 15]
-    },
-    "clump-tall": {
-      "rect": [124, 48, 16, 16],
-      "anchor": [8, 15]
+    "lily-pad-flower": {
+      "rect": [213, 98, 18, 16],
+      "anchor": [9, 8]
     }
   },
   "canopy": {
     "tree-broad-crown": {
-      "rect": [193, 0, 48, 34],
-      "anchor": [24, 47]
+      "rect": [37, 65, 36, 32],
+      "anchor": [18, 37]
     },
     "tree-autumn-crown": {
-      "rect": [144, 0, 48, 34],
-      "anchor": [24, 47]
+      "rect": [0, 65, 36, 32],
+      "anchor": [18, 37]
     }
   }
 }

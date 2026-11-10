@@ -107,6 +107,12 @@ test("the counts in words: waiting pods and arriving crates read seven to twelve
   const crates = (n) => build(world(), sv0(), cargoUI({ state: "arrival", arrival: { phase: "show", crates: n, shown: Math.min(n, 3), newCrates: [], back: [], leaving: [], plates: { max: 3, whole: 3, mended: 0 }, broke: false } })).line.subject;
   assert.equal(crates(7), "seven sealed crates"); assert.equal(crates(12), "twelve sealed crates"); assert.equal(crates(13), "many sealed crates");
 });
+test("the arrival line names the crate's walk: one crate says its expedition, several give the range; crates with no number keep the old words (loop audit 2, finding 8a)", () => {
+  const arr = (n) => cargoUI({ state: "arrival", arrival: { phase: "show", crates: n, shown: Math.min(n, 3), newCrates: [], back: [], leaving: [], plates: { max: 3, whole: 3, mended: 0 }, broke: false } });
+  assert.equal(build(world(), sv0([crate(1)]), arr(1)).line.subject, "Expedition 1's crate");
+  assert.equal(build(world(), sv0([crate(2), crate(3), crate(5)]), arr(3)).line.subject, "three crates · expeditions 2 to 5");
+  assert.equal(build(world(), sv0([crate(1, 2, { n: undefined })]), arr(1)).line.subject, "a sealed crate", "no expedition number: the old words");
+});
 test("the line: Open them all (Open it for one) when a crate is ready, none otherwise; the waiting line in the middle when a pod waits; the notice the most pressing after the crates", () => {
   const sc = scenes(), L = (n, ui) => build(sc[n].st, sc[n].sv, ui).line;
   assert.deepEqual(L("one"), { ok: "Open it", back: "Home", subject: "", need: "" }); assert.equal(L("two").ok, "Open them all"); assert.equal(L("three").ok, "Open them all");

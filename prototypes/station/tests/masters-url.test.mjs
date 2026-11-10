@@ -18,3 +18,10 @@ test("the Caddyfile serves a hashed master immutable and compresses with zstd", 
   assert.match(f, /header @hashed Cache-Control "public, max-age=31536000, immutable"/);
   assert.match(f, /encode zstd gzip/);
 });
+
+test("the Caddyfile keeps the pages' hashed build files immutable and the pages themselves no-cache", () => {
+  const f = readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), "../../../ops/sandbox/Caddyfile"), "utf8");
+  assert.match(f, /@bundled \{[^}]*path \/sandbox\/assets\/\*[^}]*\}/);
+  assert.match(f, /header @bundled Cache-Control "public, max-age=31536000, immutable"/);
+  assert.ok(f.indexOf(`header /sandbox/* Cache-Control "no-cache"`) < f.indexOf("header @bundled"), "the generic no-cache line comes first, the hashed one overrides it");
+});

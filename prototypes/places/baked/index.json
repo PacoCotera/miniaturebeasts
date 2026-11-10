@@ -4,8 +4,8 @@
     {
       "id": "ninja-test",
       "file": "ninja-test.mbtiles",
-      "bytes": 1453532,
-      "sha256": "d66c334c6b96a3b0734bd99f1fc6126c6c97a257393840c51dba80d78151e67b"
+      "bytes": 849804,
+      "sha256": "d68015bc587a7d3bb55141ada2bb8a2e73babe7234cf4259f4fb8e9251c6b701"
     }
   ],
   "places": [
@@ -16,8 +16,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 10572,
-      "sha256": "e7297a4ae6aaa18ce19a8baf68571c1ffca78aba82634eb21a953491de1465c3"
+      "bytes": 7612,
+      "sha256": "f08359a9e8e87b2c17d44c8c83185ada7aa84ed0f4c1516a6466864bdfa8f33a"
     },
     {
       "id": "HollowTree~x",
@@ -26,8 +26,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "HollowTree",
-      "bytes": 10584,
-      "sha256": "0e76b34cb4142956682809084983b3143d00c4d6ef9229441c41e82589c203f5"
+      "bytes": 7624,
+      "sha256": "1a0b0fc8ab4474aaeb192ad43cb2f338b8bfb8a2a05774acf80b4aa6ceccf76b"
     },
     {
       "id": "Reedpool",
@@ -36,8 +36,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 12956,
-      "sha256": "91831f879864681dad2cbb640600ca7125407bda63a612331832ba839db858b7"
+      "bytes": 7644,
+      "sha256": "2822c9b1053de3c72816392404b4df0adaa43130a9a55b5c9a6da4d8dab60939"
     },
     {
       "id": "Reedpool~x",
@@ -46,8 +46,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "Reedpool",
-      "bytes": 12964,
-      "sha256": "0bf3a7c8b61b04ba5ce7987558854da98cf6e1defe3042fdddbc4cbb54e46e36"
+      "bytes": 7668,
+      "sha256": "1301cea26d17d310e980b46372924029ded8b7f7a19e5ae670050518106f48c1"
     },
     {
       "id": "SplitStone",
@@ -56,8 +56,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 9508,
-      "sha256": "a857d92b4fc2bf6f301bff91b8a9b9b1c1053ef237e38a7a1f9057ef5ba7902e"
+      "bytes": 8016,
+      "sha256": "4b0082125023280d7592671038d02d95933bedfbdc0d398408059b2ad184b187"
     },
     {
       "id": "SplitStone~x",
@@ -66,8 +66,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "SplitStone",
-      "bytes": 9520,
-      "sha256": "cdeaca28df2ba9ec43ed310743081eddb881f092d15a160babbb49577bf9ed2a"
+      "bytes": 8028,
+      "sha256": "64630ffecbaefe517228bbc49e6a613294dab10197116dce2a526cd3df5a36a5"
     },
     {
       "id": "Test_AllCases",
@@ -76,8 +76,8 @@
       "h": 22,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 4052,
-      "sha256": "7b215c53af46178e098f176412f0c830e78cd3bc8996d5efb20732c9c3499485"
+      "bytes": 3140,
+      "sha256": "74095583215b1a8ec65b69a0446c557319d6955dd65dd27a90dc193150691557"
     },
     {
       "id": "Test_AllCases~x",
@@ -86,8 +86,8 @@
       "h": 22,
       "set": "ninja-test",
       "mirrorOf": "Test_AllCases",
-      "bytes": 4064,
-      "sha256": "a9e03fe381a557c00cdca0a991f82e2a48783f1f20ce4c0897c07470a544d396"
+      "bytes": 3152,
+      "sha256": "843777d966cd623c6657de0c009a6743dd2f759247d3fb6588b7644b10d94947"
     },
     {
       "id": "Windstep",
@@ -96,8 +96,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 14364,
-      "sha256": "73fa0593c03f86a891bd5ddeb9ae3d701f904a9b113ba4f1681a3d4673d680fe"
+      "bytes": 7224,
+      "sha256": "4d22ba16e77129e27e512d7b9a8b5177220cada9fd983a3abab2f22bdaeccaff"
     },
     {
       "id": "Windstep~x",
@@ -106,8 +106,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "Windstep",
-      "bytes": 14372,
-      "sha256": "e4801d01b37c0053c9693266504898a2ba2d67f03a3236c27150e18d33d26c50"
+      "bytes": 7248,
+      "sha256": "8eff2b3f8d3194aac761430e68fc54f3e3b759fcc4588bf18808da9f5962a5e7"
     }
   ]
 }

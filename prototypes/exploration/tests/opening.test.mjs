@@ -61,7 +61,7 @@ test("B1: Pip, Moss and Dot carried: the 3x Loika stands at (8, 458) and two 1x 
   const t = said(p); assert.ok(t.includes("Pip") && t.includes("adult") && t.includes("leads"), "name, stage, leads: " + t);
   assert.ok(t.includes("A storm charged stones in the wood."), "last turn's first line");
   assert.ok(t.includes("storm ▶ east") || t.includes("storm ◀ west"), "the Weather tab's line");
-  assert.ok(t.includes("needs a Tuikis"), "Deep ground still needs the Tuikis to lead until B3 (digger() along): the tab says so");
+  assert.ok(t.includes("Moss digs"), "Deep ground: any grown Tuikis along digs, not only the lead (B3)");
   assert.ok(!t.some(s => /crate/.test(s)), "the crate panel is gone from the screen (the bottom line says it)");
 });
 
@@ -72,18 +72,83 @@ test("B1: the rider, no one with you, and the first-time place", () => {
   assert.ok(said(nobody).includes("No one with you"), "mibis, none with you");
 });
 
-test("B1: Up and Down skip Deep ground while it is not shown", () => {
-  const p = opening(); p.key("down"); assert.equal(p.run("S.ui.sel"), 2); p.key("up"); assert.equal(p.run("S.ui.sel"), 0);
-  const q = opening(14, { known: [1] }); q.key("down"); assert.equal(q.run("S.ui.sel"), 1); q.key("down"); assert.equal(q.run("S.ui.sel"), 2);
+// ---- B4: what changed, on the land ----
+test("B4: realmTurn hands back the charged cells; the orange pip is drawn on a charged cell while the line shows and is gone after set-out", () => {
+  const p = returning(); p.run("S.shield = null;");
+  const c = p.run("(() => { const q = cxy(S.ui.lastPos); return (q.y * MW + q.x + 1); })()");
+  const r = plain(p.run(`realmTurn({ mv: SPECIES.map(() => ({ dx: 0, dy: 0, n: 0 })), charged: [${c}], bushes: 0, bloom: -1, newPods: [], young: [] }, { storm: [${c}], trail: [] }).arrived`));
+  assert.deepEqual(r, { pods: [], young: [], bloom: -1, charged: [c] });
+  p.run(`S.report = { lines: ['A storm charged stones in the wood.'], n: 4, news: { cells: [${c}] } };`);
+  const pip = () => { draw(p); const a = p.run(`openFrame().at(${c})`), px = p.run("scr").px(), W = p.run("SCR_W"), o = p.run("C.orange"), k = p.run("C.ink"), x = a.x + 52 - 11, y = a.y + 5;
+    let n = 0; for (let j = 0; j < 6; j++) for (let i = 0; i < 6; i++) if (px[(y + j) * W + x + i] === o) n++; return { n, rim: px[(y - 1) * W + x - 1] === k }; };
+  assert.deepEqual(pip(), { n: 36, rim: true }, "the 6 px pip with its ink rim");
+  p.run("S.report.lines = [];"); assert.equal(pip().n < 36, true, "no line, no pip");
+  p.run("S.report.lines = ['A storm charged stones in the wood.'];"); assert.equal(pip().n, 36);
+  p.run("startExpedition('weather', S.ui.lastPos);"); assert.equal(p.run("S.report.news"), null, "cleared at set-out");
 });
 
-test("the two signed art pieces are registered; the desk's pod stands on the partner ring at (8, 458), its foot (48, 92); the built pod plays only until the files are in", () => {
+test("B4: reduced motion: no rain, the same pixels on two frames; with motion on, the pip blinks 6 and 8", () => {
+  const p = returning(); p.run("S.shield = null; S.ui.lastPos = S.ui.lastPos + 0; S.report.news = { cells: [S.ui.lastPos + 1] };");
+  p.run("scr.px().fill(-1); drawSetup(0);"); const a = Array.from(p.run("scr").px()); p.run("scr.px().fill(-1); drawSetup(0.5);"); const b = Array.from(p.run("scr").px());
+  assert.equal(a.length, b.length); let d = 0; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) d++; assert.equal(d, 0, "two frames, the same pixels: " + d);
+  p.run("RM.matches = false;"); const sz = t => { p.run(`scr.px().fill(-1); drawSetup(${t});`); const o = p.run("C.orange"), px = p.run("scr").px(), W = p.run("SCR_W"), s = p.run("openFrame().at(S.ui.lastPos + 1)"); let n = 0;
+    for (let j = 0; j < 10; j++) for (let i = 0; i < 10; i++) if (px[(s.y + 5 + j - 1) * W + s.x + 52 - 11 + i - 1] === o) n++; return n; };
+  assert.ok(sz(0.5) > sz(0), "the pip blinks between 6 and 8 px");
+});
+
+// ---- B3: focus, keys and the way out on the land ----
+test("B3: Down goes to the partner, Up returns to the tab left; Left and Right move between the tabs and bump at the ends and on one tab", () => {
+  const p = opening(); p.key("down"); assert.equal(p.run("S.ui.sel"), 2); p.key("up"); assert.equal(p.run("S.ui.sel"), 0);
+  p.run("FX.bumpAt = 0;"); p.key("right"); assert.equal(p.run("S.ui.sel"), 0, "one tab: Right bumps"); assert.ok(p.run("FX.bumpAt") > 0);
+  const q = opening(14, { known: [1] }); q.key("right"); assert.equal(q.run("[S.ui.sel, S.ui.way]").join(), "1,1");
+  q.run("FX.bumpAt = 0;"); q.key("right"); assert.equal(q.run("S.ui.sel"), 1, "the end: a bump"); assert.ok(q.run("FX.bumpAt") > 0);
+  q.key("down"); assert.equal(q.run("S.ui.sel"), 2); q.run("FX.bumpAt = 0;"); q.key("left"); q.key("right"); assert.equal(q.run("S.ui.sel"), 2, "on the partner Left and Right do nothing");
+  q.key("up"); assert.equal(q.run("S.ui.sel"), 1, "Up returns to the tab left"); q.key("left"); assert.equal(q.run("S.ui.sel"), 0); q.run("FX.bumpAt = 0;"); q.key("left"); assert.ok(q.run("FX.bumpAt") > 0, "the other end: a bump");
+});
+
+test("B3: Right then Set out with Moss along and Pip leading: Deep ground, Moss is the partner, the lead is left alone; the bottom line", () => {
+  const p = returning(); assert.equal(p.run("lineBase().ok"), "Set out"); p.key("right");
+  assert.equal(p.run("lineBase().ok"), "Set out"); assert.ok(/crate/.test(p.run("lineBase().ctx")), "the crates line takes the middle: " + p.run("lineBase().ctx"));
+  p.run("S.bay = [];"); assert.equal(p.run("lineBase().ctx"), "Deep ground · Moss leads");
+  p.key("confirm"); assert.equal(p.run("S.phase"), "place"); p.key("confirm");
+  assert.equal(p.run("S.phase"), "map"); assert.equal(p.run("S.exp.type"), "deep"); assert.equal(p.run("S.exp.pt.id"), 2, "Moss"); assert.equal(p.run("S.lead"), 1, "Pip still leads");
+  const w = returning(); w.key("confirm"); w.key("confirm"); assert.equal(w.run("S.exp.type"), "weather"); assert.equal(w.run("S.exp.pt.id"), 1, "Weather: the lead goes");
+});
+
+test("B3: the partner strip shows the digger in front while Deep ground is focused", () => {
+  const p = returning(); draw(p); const pip = p.run("creatureArt(0, 'idle', 0, 3, false)"); assert.equal(stands(p, pip, 8, 458).bad, 0, "Pip in front on Weather");
+  p.key("right"); draw(p); const moss = p.run("creatureArt(1, 'idle', 0, 3, false)"); const r = stands(p, moss, 8, 458); assert.ok(r.n > 500 && r.bad === 0, "Moss in front on Deep ground: " + JSON.stringify(r));
+  assert.ok(said(p).includes("Moss"), "named");
+});
+
+test("B3: Call on the opening: the partner answers and nothing is spent; with no one along, nothing", () => {
+  const p = returning(), before = JSON.stringify(p.run("[S.turn, S.expN, S.bay, S.carried, S.lead, S.exp, S.phase]"));
+  p.key("call"); assert.equal(p.run("FX.callMibi.id"), 1, "Pip answers"); assert.equal(p.run("S.phase"), "setup");
+  assert.equal(JSON.stringify(p.run("[S.turn, S.expN, S.bay, S.carried, S.lead, S.exp, S.phase]")), before, "free");
+  p.key("right"); p.key("call"); assert.equal(p.run("FX.callMibi.id"), 2, "Deep ground focused: the digger answers");
+  const n = opening(); n.key("call"); assert.ok(!n.run("FX.callMibi"), "no one with you: nothing");
+});
+
+test("B3: Weather draws the storm on the land (the edge chip when outside the frame); Deep ground rings the burrow", () => {
+  const p = returning(); p.run("S.shield = null; globalThis.__sf = stormFor; stormFor = () => ({ x: S.ui.lastPos % MW + 20, dir: -1, w: 3, v: .25, t: 0 });"); draw(p);   // a band far to the east, outside the frame
+  const chip = plain(p.run("(() => { const q = openFrame(), st = stormFor(S.ui.lastPos), bx0 = q.ox + (st.x - q.X0) * q.cs; return { out: bx0 >= q.WX + q.WW || bx0 + st.w * q.cs <= q.WX, right: bx0 >= q.WX + q.WW, WX: q.WX, WW: q.WW, WY: q.WY, WH: q.WH, dir: st.dir }; })()"));
+  assert.equal(chip.out, true, "the band is outside the frame");
+  const cx = chip.right ? chip.WX + chip.WW - 32 : chip.WX + 4, cy = chip.WY + (chip.WH >> 1) - 11, bolt = p.run("ICON.bolt()"), arrow = p.run(`ICON.arrow(${chip.dir})`);
+  assert.equal(stands(p, bolt, cx + 2, cy + 4).bad, 0, "the chip's bolt"); assert.equal(stands(p, arrow, cx + 14, cy + 5).bad, 0, "the chip's arrow");
+  p.key("right"); draw(p); assert.ok(stands(p, bolt, cx + 2, cy + 4).bad > 5, "Deep ground: no storm chip");
+  p.run("S.ui.sel = 0; stormFor = __sf;"); draw(p);
+  const inb = plain(p.run("(() => { const q = openFrame(), st = stormFor(S.ui.lastPos), bx0 = q.ox + (st.x - q.X0) * q.cs, l = Math.max(q.WX, Math.round(bx0)), r = Math.min(q.WX + q.WW, Math.round(bx0 + st.w * q.cs)); return { l, r, WY: q.WY }; })()"));
+  assert.ok(inb.r > inb.l, "the real band reaches into the frame"); assert.equal(stands(p, bolt, Math.round((inb.l + inb.r) / 2) - 6, inb.WY + 4).bad, 0, "the bolt at the band's top");
+  const g = opening(14, { carried: [THREE[1]] }); g.run("S.tier = 1; S.ui.lastPos = G.gate; S.revealed[G.gate] = 1; S.ui.sel = 1;"); draw(g);
+  const ring = plain(g.run("(() => { const q = openFrame(), p = q.at(G.gate); return { x: p.x, y: p.y, cs: q.cs, a: C.amber, y2: C.yellow }; })()")), px = g.run("scr").px(), W = g.run("SCR_W");
+  let n = 0; for (let i = 4; i < ring.cs - 4; i++) { const v = px[ring.y * W + ring.x + i]; if (v === ring.a) n++; } assert.ok(n > ring.cs - 12, "the amber ring on the burrow's cell: " + n);
+});
+
+test("the two signed art pieces are registered; the desk's pod stands on the partner ring at (8, 458), its foot (48, 92)", () => {
   const p = opening(), reg = plain(p.run("CARE_ASSETS.filter(a => /^c-open-/.test(a.id))"));
   assert.deepEqual(reg.map(a => [a.id, a.w, a.h, a.status]), [["c-open-night", 192, 192, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
   assert.equal(p.run("OPEN_ART.ready"), true, "the art read at boot");
   draw(p); assert.equal(p.run("OPEN_ART.pod.length"), 3); assert.equal(p.run("OPEN_ART.pod[2].w"), 96);
-  const ring = stands(p, p.run("ringArt('opring84', 84, 22)"), 14, 536); assert.ok(ring.n > 100 && ring.bad < ring.n * 0.5, "the ring under its foot: " + JSON.stringify(ring));
-  const q = opening(); q.run("OPEN_ART.ready = false;"); draw(q); const b = stands(q, q.run("podArt('bone', 3)"), 32, 488); assert.ok(b.bad === 0, "without the files: the built pod at 3x");
 });
 
 // ---- B2: the land in the frame ----
@@ -166,6 +231,16 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
         if (m.passable(c) && m.G.land[c] !== m.L.WATER) { if (k < 4) S.called[c] = 1; else if (k < 7) S.veil[String(c)] = [1]; k++; } } });
     const ret = await shot(1500); golden("opening-returning.png", ret);
     const cs = await page.evaluate(() => window.__mb.openFrame().cs); assert.equal(cs, 52, "tier 1: the reach fits at 52");
+    // B3: Deep ground focused (the ringed burrow, Moss in front), and the partner focused
+    await page.evaluate(() => { window.__mb.S.ui.sel = 1; window.__mb.S.ui.way = 1; window.__mb.S.ui.lastPos = window.__mb.G.gate; window.__mb.S.revealed[window.__mb.G.gate] = 1; });
+    golden("opening-deep.png", await shot(700));
+    await page.evaluate(() => { window.__mb.S.ui.sel = 2; });
+    golden("opening-partner.png", await shot(700));
+    await page.evaluate(() => { window.__mb.S.ui.sel = 0; window.__mb.S.ui.lastPos = window.__mb.G.spawns[0]; });
+    // B4: the orange pips on the cells last turn's line names (two cells beside the start)
+    await page.evaluate(() => { const m = window.__mb, s0 = m.G.spawns[0]; m.S.report.news = { cells: [s0 + 1, s0 - 1, s0 + m.MW] }; });
+    golden("opening-pip.png", await shot(700));
+    await page.evaluate(() => { window.__mb.S.report.news = null; });
     // the marks: the mark's own pixels stand on the land (a sign may cover a few); found in colour, been the slate silhouette
     const marks = await page.evaluate(() => { const m = window.__mb, o = m.openFrame(), out = {};
       for (let c = 0; c < m.MW * m.MH; c++) { if (!m.S.revealed[c]) continue; const a = o.at(c), mk = m.cellMark(c, a.x, a.y, o.cs, 18, true); if (!mk) continue;

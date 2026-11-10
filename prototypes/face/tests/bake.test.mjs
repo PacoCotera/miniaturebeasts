@@ -1,6 +1,7 @@
 // The image baker (lvgl-switch.md §2.4): a master's PNG becomes the LVGL 9 binary the sandbox and the Pi load as the same bytes (ARGB8888, straight alpha); the baked files match the masters' index.
 //   node --test prototypes/face/tests/bake.test.mjs
 import { test } from "node:test";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -18,7 +19,7 @@ test("an image: the header, the pixels as B G R A, straight alpha", () => {
   assert.throws(() => bakeImage(0, 1, new Uint8Array(0))); assert.throws(() => bakeImage(2, 2, new Uint8Array(4))); assert.throws(() => bakeImage(70000, 1, new Uint8Array(280000)));
 });
 test("every placed master bakes to its size and pixels, deterministically, and the baked files match the masters' index", () => withBakeDirs(["bake-a-", "bake-b-"], (a, b) => {
-  const first = bakeAll({ masters, out: a }), second = bakeAll({ masters, out: b }), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters;
+  const first = bakeAll({ masters, out: a }), second = bakeAll({ masters, out: b }), index = readIndex(masters).masters;
   assert.equal(Object.keys(first).length, Object.keys(index).length); assert.ok(Object.keys(first).length > 10);
   assert.deepEqual(first, second, "the same masters bake to the same bytes");
   assert.deepEqual(checkBaked({ masters, out: a }), []);

@@ -29,6 +29,7 @@
    "room": { "type": "object", "required": ["id", "base", "pieces"], "additionalProperties": false, "properties": { "id": { "type": "string", "description": "the room shown: its name in rooms.json (roots, reeds, boulders, ferns)" }, "base": { "type": "string", "description": "the room's painting (the near view in Habitat) in the light" }, "pieces": { "type": "object", "description": "the room's pieces that have a picture, by piece id (rooms.json), the picture id in the light; Habitat has none" } } },
    "glass": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "tag": { "type": "string" }, "away": { "type": "object", "required": ["picture", "figure"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "figure": { "type": "array", "items": { "type": "integer" }, "minItems": 4, "maxItems": 4 } } } } },
    "residents": { "type": "array", "maxItems": 12, "items": { "$ref": "person" } },
+   "travel": { "type": "object", "required": ["max"], "additionalProperties": false, "properties": { "max": { "type": "integer", "minimum": 0, "description": "the travelling ceiling now (vivarium.json rules.day, by the rhythm band); the face reads it over rules.travel.max; absent: the spec's" } } },
    
    "pods": { "$ref": "station" },
    "incubator": { "$ref": "station" },

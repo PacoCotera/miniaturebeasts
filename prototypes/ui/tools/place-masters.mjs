@@ -5,12 +5,15 @@
 // rest are listed as not signed. Re-running is idempotent. `--check` verifies the installed files against the index (size, hash) and exits 1 on a difference.
 //   node prototypes/ui/tools/place-masters.mjs --from art/station-masters/pods [--ids pod-large-identified,room-shelf] [--group pods] [--dry]
 //   node prototypes/ui/tools/place-masters.mjs --rooms <masters-pods>/art/station-masters/pods/rooms/rooms-manifest.json [--dry] [--source-commit <what it was made from>]   (the four rooms: the rooms design)
+//   node prototypes/ui/tools/place-masters.mjs --squeeze                (lossless oxipng over every master not yet squeezed; every placement above ends with it unless --no-squeeze; needs oxipng 10.2.1 on PATH or in $OXIPNG)
 //   node prototypes/ui/tools/place-masters.mjs --check
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { decodePNG } from "../png.mjs";
 import { placeGame, checkJuveniles } from "./game-masters.mjs";
-import { stampBytes, bytesProblems } from "./index-bytes.mjs";
+import { bytesProblems } from "./index-bytes.mjs";
+import { readIndex as readIndexAt, writeIndex, indexProblems } from "./index-io.mjs";
+import { squeezeIndex } from "./squeeze.mjs";
 import { checkGroups } from "./groups.mjs";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -19,7 +22,7 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url)), dest = path.resolve(here, "../assets/masters"), indexFile = path.join(dest, "index.json"), specs = path.resolve(here, "../specs/station");
 const arg = (k) => { const i = process.argv.indexOf("--" + k); return i > 0 ? process.argv[i + 1] : null; }, flag = (k) => process.argv.includes("--" + k);
 const sha = (buf) => createHash("sha256").update(buf).digest("hex");
-const readIndex = () => (existsSync(indexFile) ? JSON.parse(readFileSync(indexFile, "utf8")) : { schema: "mb-masters/1", masters: {} });
+const readIndex = () => readIndexAt(dest);
 // a PNG's size from its header (indexed masters are legal: no decode needed)
 const dims = (buf) => { if (buf.subarray(1, 4).toString("ascii") !== "PNG") throw new Error("not a PNG"); return [buf.readUInt32BE(16), buf.readUInt32BE(20)]; };
 
@@ -33,7 +36,7 @@ export function signedIds(readme) {
   return out;
 }
 export function check(root = dest) {
-  const index = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")), problems = [];
+  const index = readIndexAt(root), problems = [...indexProblems(root)];
   for (const [id, e] of Object.entries(index.masters)) {
     const f = path.join(root, e.file); if (!existsSync(f)) { problems.push(`${id}: ${e.file} is missing`); continue; }
     const buf = readFileSync(f), [w, h] = dims(buf);
@@ -89,7 +92,7 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
       if (files.some((q) => !q.f)) throw new Error(`${room}: the chip ${pictureId(r.chip.file, "day")} is missing`);
       if (files.some((q) => q.f.w !== cw || q.f.h !== ch)) throw new Error(`${room}: a chip file is not ${cw}×${ch}`);
       chip = `room-${room}-chip-{light}-${cw}x${ch}`; for (const { l, f } of files) add(room, pictureId(chip, l), f, signed[l].idle); }
-    const out = { base: pic.base, near: pic.near, chip, preview: prior?.rooms?.[room]?.preview ?? null };
+    const out = { base: pic.base, near: pic.near, chip, preview: prior?.rooms?.[room]?.preview ?? null, ...(prior?.rooms?.[room]?.duskFallback ? { duskFallback: prior.rooms[room].duskFallback } : {}) };   // duskFallback stays until those pictures' dusk is re-cut (room-steps.mjs)
     const lv = r.levels.map((L) => ({ id: L.id, x: L.profile.x, top: L.profile.top_painting, bottom: L.bottom_painting, keepOuts: [] }));
     if (lv[0]?.id !== "main") throw new Error(`${room}: the first level must be main`);
     const byId = (id) => lv.find((L) => L.id === id) ?? (() => { throw new Error(`${room}: no level ${id}`); })();
@@ -126,7 +129,7 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
     data.rooms[room] = { ...out, ...(bed ? { bed } : {}), rest, ...view, levels: lv, joins, pieces, ambient };
   }
   // all read and checked: now write
-  const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} }, placed = [];
+  const index = readIndexAt(root), placed = [];
   for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith("rooms/") && !dryRun && !ops.some((o) => o.id === id)) { rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }   // what this run no longer places leaves with its file
   for (const o of ops) {
     const file = `rooms/${o.id}.png`; placed.push(o.id);
@@ -134,7 +137,7 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
     if (!dryRun) { mkdirSync(path.join(root, "rooms"), { recursive: true }); writeFileSync(path.join(root, file), o.src.buf); }
   }
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
-  if (!dryRun) { mkdirSync(root, { recursive: true }); writeFileSync(idxFile, JSON.stringify(stampBytes(root, index), null, 1) + "\n"); mkdirSync(path.dirname(roomsFile), { recursive: true }); writeFileSync(roomsFile, fmt(data) + "\n"); }
+  if (!dryRun) { writeIndex(root, index); mkdirSync(path.dirname(roomsFile), { recursive: true }); writeFileSync(roomsFile, fmt(data) + "\n"); }
   return { placed, leftOut, rooms: data };
 }
 // The data guards of the rooms design (1 to 7) on rooms.json against the index: `problems` stop; `notes` are the art director's own rules (48 deep, 160 wide, 1:2, 24 px, the main floor about 100 deep), reported and never refused.
@@ -224,7 +227,7 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
   if (byStatus) { const st = JSON.parse(readFileSync(path.join(from, "slices/status.json"), "utf8"));
     for (const [id, e] of Object.entries(st)) if (manifest[id] && ["signed", "placeholder", "held", "new"].includes(e.status)) { want.set(id, `signed (${by ?? "the studio's record"})`); statuses.set(id, e.status); if (e.status !== "signed") flags.set(id, `${e.status} (${by ?? "the studio's record"}), not final`); } }
   for (const id of ids) { if (!manifest[id]) throw new Error(`${id} is not in ${from}/slices/manifest.json`); want.set(id, manifest[id].signed_in || by || "named with --ids"); }   // --by names who signed these ids, verbatim
-  const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} };
+  const index = readIndexAt(root);
   const placed = [], skipped = [];
   for (const id of skip) want.delete(id);   // named by --skip: not placed (a slice the studio's own folder does not hold consistently), listed as skipped
   for (const [id, who] of want) {
@@ -239,12 +242,16 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
   for (const id of Object.keys(manifest)) if (!want.has(id)) skipped.push(id);
   if (byStatus) for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith(group + "/") && !want.has(id)) { if (!dryRun) rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }   // what the record no longer places leaves with its file
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
-  if (!dryRun) { mkdirSync(root, { recursive: true }); writeFileSync(idxFile, JSON.stringify(stampBytes(root, index), null, 1) + "\n"); }
+  if (!dryRun) writeIndex(root, index);
   return { placed, skipped };
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  // lossless squeeze (oxipng, tools/squeeze.mjs) of every master not yet squeezed; the placements below end with it, `--squeeze` alone does it for what the other tools (coat-masters, place-capsule) placed
+  const squeezeNow = () => { const ix = readIndex(), r = squeezeIndex(dest, ix, { log: (s) => console.log("squeeze " + s) }); writeIndex(dest, ix); console.log(`squeezed ${r.done} masters: ${r.before} -> ${r.after} bytes (${r.before ? (100 * (1 - r.after / r.before)).toFixed(1) : 0} % smaller)${r.refused.length ? `; kept as they were (the page's reader would not give the same pixels): ${r.refused.join(", ")}` : ""}`); };
+  const squeezeAfter = (dry) => { if (!dry && !flag("no-squeeze")) squeezeNow(); };
+  if (flag("squeeze")) { squeezeNow(); process.exit(0); }
   if (flag("bytes")) {   // annotate the installed index with each file's size (what every placement does as it writes)
-    const ix = stampBytes(dest, readIndex()); writeFileSync(indexFile, JSON.stringify(ix, null, 1) + "\n"); console.log(`bytes stamped on ${Object.keys(ix.masters).length} masters`); process.exit(0);
+    const ix = writeIndex(dest, readIndex()).slim; console.log(`bytes stamped on ${Object.keys(ix.masters).length} masters`); process.exit(0);
   }
   if (flag("check")) {
     const p = existsSync(indexFile) ? check() : [], roomsFile = path.join(specs, "rooms.json"); let notes = [];
@@ -258,15 +265,16 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     const r = placeGame({ work: path.resolve(arg("game")), root: dest, dryRun: flag("dry"), only: arg("only") ? new RegExp(arg("only")) : null });   // --only <regex on the master id>: just those, nothing retired
     console.log(`${flag("dry") ? "would place" : "placed"} ${r.placed} masters, removed ${r.removed.length}`);
     for (const q of r.report) if (Math.abs(q.before - 0.8) > 0.03) console.log(`rescaled ${q.kind} ${q.what} ${q.size}: ${q.before.toFixed(3)} -> ${q.after.toFixed(3)}`);
-    process.exit(0);
+    squeezeAfter(flag("dry")); process.exit(0);
   }
   if (arg("rooms")) {
     const r = placeRooms({ manifest: path.resolve(arg("rooms")), dryRun: flag("dry"), commit: arg("source-commit") });   // --source-commit: a copy of the rooms outside its repository (the commit it was made from and what changed it)
     console.log(`${flag("dry") ? "would place" : "placed"} ${r.placed.length} room pictures, rooms.json for ${r.rooms.order.join(", ")} (masters-pods ${r.rooms.source.commit})`);
     for (const q of r.leftOut) console.log(`${q.kept === "left out" ? "left out" : "no picture"}: ${q.room}/${q.id}: ${q.why}${q.kept === "left out" ? "" : " (" + q.kept + ")"}`);
-    process.exit(0);
+    squeezeAfter(flag("dry")); process.exit(0);
   }
   const from = arg("from"); if (!from) { console.error("usage: place-masters.mjs --from <masters folder> [--ids a,b [--only]] [--by <who signed>] [--group pods] [--dry] [--status] [--skip a,b] | --rooms <rooms-manifest.json> [--dry] | --check"); process.exit(2); }
   const r = place({ from: path.resolve(from), ids: (arg("ids") ?? "").split(",").filter(Boolean), group: arg("group") ?? path.basename(path.resolve(from)), dryRun: flag("dry"), headings: !flag("only") && !flag("status"), by: arg("by"), byStatus: flag("status"), skip: (arg("skip") ?? "").split(",").filter(Boolean) });
   console.log(`placed ${r.placed.length}: ${r.placed.join(", ")}\nnot signed (left as stand-ins): ${r.skipped.length}`);
+  squeezeAfter(flag("dry"));
 }

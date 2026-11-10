@@ -52,6 +52,15 @@ test('the heart, its clue marks, the openings and the find slots come from the p
   assert.deepEqual(lay.findSlots[0], { x: place.finds[0].x + 5, y: place.finds[0].y + 5, kinds: place.finds[0].kinds, chance: place.finds[0].chance });
 });
 
+test('the press mask (lay.press) marks a boulder and a tree trunk, never a bush', () => {
+  const tileOf = (p) => (Math.floor(p.y / 48) + lay.baked.oy) * PW + Math.floor(p.x / 48) + lay.baked.ox;
+  const rock = place.props.find((p) => ts.sprites[p.kind].kind === 'boulder-brown'), tree = place.props.find((p) => ts.sprites[p.kind].kind === 'tree-broad');
+  const bush = place.props.find((p) => String(ts.sprites[p.kind].kind).startsWith('bush'));
+  assert.equal(lay.press[tileOf(rock)], 1); assert.equal(lay.press[tileOf(tree)], 2);
+  if (bush) { assert.equal(T_BLOCK[lay.tiles[tileOf(bush)]], 1); assert.equal(lay.press[tileOf(bush)], 0, 'a bush blocks, but is not pressed on'); }
+  assert.equal(lay.press[0], 0, 'the padding rock all round is not stone either');
+});
+
 test('the explorer starts on walkable ground and the reachable set holds the heart, and nothing outside the place', () => {
   const s = lay.spawnPt;
   assert.equal(T_BLOCK[lay.tiles[s.y * PW + s.x]], 0);

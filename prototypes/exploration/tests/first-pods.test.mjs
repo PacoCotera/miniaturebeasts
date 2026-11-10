@@ -392,7 +392,7 @@ test("an empty pod slot is a dashed outline; the fruit is at 2x; Cargo between e
   const p = page();
   p.run("newWorld(3); globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
   assert.ok(!/Math\.cos/.test(p.run("podSlot.toString()")) && /dashedRect/.test(p.run("podSlot.toString()")), "no hollow oval");
-  assert.ok(/cen2\('fruit'/.test(p.run("PIC.fruit.toString()")), "the 12x12 fruit is drawn 24x24");
+  assert.ok(/FRUIT2\(\)/.test(p.run("PIC.fruit.toString()")) && p.run("FRUIT().w === 12 && FRUIT2().w === 24 && FRUIT2().h === 24"), "the 12x12 fruit is drawn 24x24");
   p.run("S.phase = 'cargo'; S.bay = [{ id: 1, n: 1, pods: [], e: 1, d: 0, s: 0 }]; __t = []; drawCargo(0);");
   const t = p.run("__t.join('|')"); assert.ok(!/Away|Docked|accepts|Probe tier|World turn|Nothing sealed/.test(t), t); assert.ok(t.includes("The sealed bay"));
   assert.equal(p.run("lineFor().ctx"), "1 crate sealed · dock to transfer", "the bay line is the bottom line's, once");

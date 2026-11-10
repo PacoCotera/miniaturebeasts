@@ -56,6 +56,19 @@ test("B1 a room that is settling: Choose a pod dimmed and the notice names the r
   st.roomMeta[1].settleUntil = (st.turn | 0) + 3; assert.equal(incubatorBuild({ st, settings: two, now: T0, ui: { inc: {} }, lamp: "" }, spec, pods).line.need, S.roomName(st, 1) + " settles · ready in 3 turns");
 });
 
+test("every wait is wall-clock time under the settings (loop audit 2, findings 6 and 7): scale 1 is unchanged, scale 10 divides the minutes, under a minute says so", () => {
+  const { st, p } = world(); assert.ok(S.grow(st, p, {}, settings, T0).ok);
+  const M = st.bud.minutes, fast = { ...settings, budScale: 10 };
+  assert.equal(S.budMinutesLeft(st, settings, T0), Math.ceil(M - 1e-9), "scale 1: the game minutes, as before");
+  assert.equal(S.budMinutesLeft(st, fast, T0), Math.ceil(M / 10 - 1e-9), "scale 10: a tenth of the minutes");
+  st.bud.minutes = 20; assert.equal(S.budMinutesLeft(st, fast, T0), 2, "a 20-minute cross under the preset shows 2");
+  st.bud.minutes = 5; assert.equal(S.budMinutesLeft(st, fast, T0), 0, "a 5-minute first bud under the preset is under a minute");
+  assert.equal(build(st, { inc: {} }, T0 + 1000).props.regions.readyIn, "ready in about 5 min", "scale 1 words unchanged");
+  const bf = incubatorBuild({ st, settings: fast, now: T0 + 1000, ui: { inc: {} }, lamp: "" }, spec, pods);
+  assert.equal(bf.props.regions.readyIn, spec.strings.readyUnderMinute, "under a minute: the words say so");
+  assert.equal(S.budMinutesLeft(st, settings, T0 + 5 * 60_000 - 1), 1, "scale 1 keeps its one-minute floor");
+});
+
 test("a growing bud: the bar is floor(158 x progress) px, the time is 'ready in about {n} min' on the left wall, the sealed pod is inside; Hatch now and its price; ready: Open, the bar full (Hatch now is not offered on a ready bud)", () => {
   const { st, p } = world(); const r = S.grow(st, p, {}, settings, T0); assert.ok(r.ok);
   const g = build(st, { inc: {} }, T0 + 1000);

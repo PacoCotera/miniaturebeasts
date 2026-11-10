@@ -6,6 +6,8 @@ import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { encodePNG } from "../png.mjs";
+import { readIndex, writeIndex, indexProblems } from "../tools/index-io.mjs";
+import { gzipSync } from "node:zlib";
 import { place, check, signedIds, placeRooms, checkRooms } from "../tools/place-masters.mjs";
 import { registerAsset, placeMaster, assetEntry, asset, dropAsset, placeholders, NOT_FINAL } from "../assets.mjs";
 
@@ -65,12 +67,12 @@ test("--status places signed, placeholder, held and new slices flagged in the in
   const from = folder(), root = mkdtempSync(path.join(tmpdir(), "placed-"));
   writeFileSync(path.join(from, "slices/status.json"), JSON.stringify({ "page-pane-8x4": { status: "signed" }, "pod-small-sealed": { status: "held" }, "room-shelf": { status: "new" } }));
   const r = place({ from, group: "pods", root, byStatus: true, by: "masters-pods abc1234" }); assert.deepEqual(r.placed.sort(), ["page-pane-8x4", "pod-small-sealed", "room-shelf"]);
-  const ix = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")).masters;
+  const ix = readIndex(root).masters;
   assert.equal(ix["page-pane-8x4"].status, undefined, "signed carries no flag"); assert.equal(ix["pod-small-sealed"].status, "held"); assert.equal(ix["room-shelf"].status, "new");
   assert.match(ix["page-pane-8x4"].signed, /^signed \(masters-pods abc1234\)$/); assert.doesNotMatch(JSON.stringify(ix), /pass \d|verdict/i, "plain provenance, no verdict language");
   writeFileSync(path.join(from, "slices/status.json"), JSON.stringify({ "page-pane-8x4": { status: "signed" }, "room-shelf": { status: "withdrawn" } }));
   const again = place({ from, group: "pods", root, byStatus: true, by: "masters-pods def5678" }); assert.deepEqual(again.placed, ["page-pane-8x4"]);
-  const after = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")).masters;
+  const after = readIndex(root).masters;
   assert.deepEqual(Object.keys(after), ["page-pane-8x4"], "the held and the withdrawn leave the index"); assert.ok(!existsSync(path.join(root, "pods/room-shelf.png")), "and their files");
   assert.deepEqual(check(root), []);
 });
@@ -79,18 +81,18 @@ test("a slot the Station emptied (status empty) keeps that status when it is pla
   const from = folder(), root = mkdtempSync(path.join(tmpdir(), "placed-"));
   writeFileSync(path.join(from, "slices/status.json"), JSON.stringify({ "page-pane-8x4": { status: "signed" }, "pod-small-sealed": { status: "held" }, "room-shelf": { status: "new" } }));
   place({ from, group: "pods", root, byStatus: true, by: "masters-pods abc1234" });
-  const idx = path.join(root, "index.json"), ix = JSON.parse(readFileSync(idx, "utf8"));
+  const ix = readIndex(root);
   for (const id of ["pod-small-sealed", "room-shelf"]) ix.masters[id].status = "empty";   // the Station's placement: these slots show nothing
-  writeFileSync(idx, JSON.stringify(ix, null, 1) + "\n");
+  writeIndex(root, ix);
   place({ from, group: "pods", root, byStatus: true, by: "masters-pods def5678" });
-  let after = JSON.parse(readFileSync(idx, "utf8")).masters;
+  let after = readIndex(root).masters;
   assert.equal(after["pod-small-sealed"].status, "empty", "held in the record: stays empty"); assert.equal(after["room-shelf"].status, "empty", "new in the record: stays empty");
   assert.match(after["room-shelf"].signed, /def5678/, "the studio's words are carried (provenance)");
   place({ from, ids: ["room-shelf"], group: "pods", root });
-  assert.equal(JSON.parse(readFileSync(idx, "utf8")).masters["room-shelf"].status, "empty", "named with --ids: no record says signed, stays empty");
+  assert.equal(readIndex(root).masters["room-shelf"].status, "empty", "named with --ids: no record says signed, stays empty");
   writeFileSync(path.join(from, "slices/status.json"), JSON.stringify({ "page-pane-8x4": { status: "signed" }, "pod-small-sealed": { status: "signed" }, "room-shelf": { status: "new" } }));
   place({ from, group: "pods", root, byStatus: true, by: "masters-pods 0a1b2c3" });
-  after = JSON.parse(readFileSync(idx, "utf8")).masters;
+  after = readIndex(root).masters;
   assert.equal(after["pod-small-sealed"].status, undefined, "the record says signed: the slot is a master again"); assert.equal(after["room-shelf"].status, "empty");
   assert.deepEqual(check(root), []);
 });
@@ -99,7 +101,7 @@ test("a slot the Station emptied (status empty) keeps that status when it is pla
 // They are the placement guard: the face never receives these ids, the host measures the pictures built from them (station/src/moving.mjs footOf).
 test("every placed mibi-(juvenile|adult)-SXX-* master has a non-null footprint (fix 14, FR4)", async () => {
   const { decodePNG } = await import("../png.mjs"), { footprintOf } = await import("../specs/derive.mjs"), root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../assets/masters");
-  const idx = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")).masters, T = JSON.parse(readFileSync(path.join(root, "../../specs/station/frame.json"), "utf8")).focus.ring.shapes.footprint; let n = 0;
+  const idx = readIndex(root).masters, T = JSON.parse(readFileSync(path.join(root, "../../specs/station/frame.json"), "utf8")).focus.ring.shapes.footprint; let n = 0;
   for (const [id, m] of Object.entries(idx)) {
     if (!/^mibi-(juvenile|adult)-S\d{2}-/.test(id)) continue;
     const png = decodePNG(readFileSync(path.join(root, m.file))), foot = footprintOf({ w: png.width, h: png.height, rgba: () => png.data }, 0, png.width, { band: T.band, alpha: /-shadow-/.test(id) ? T.shadowAlpha : T.alpha });
@@ -140,7 +142,7 @@ const sha256 = (b) => createHash("sha256").update(b).digest("hex");
 const placeFixture = (f, extra = {}) => { const root = mkdtempSync(path.join(tmpdir(), "placed-")), roomsFile = path.join(root, "rooms.json"); const r = placeRooms({ manifest: f.manifest, root, roomsFile, commit: "abc1234", only: ["roots", "reeds"], ...extra }); return { root, roomsFile, ...r }; };
 
 test("placeRooms writes the index entries (their light's signed text) and a rooms.json that passes the guards; a piece with no file is left out and named", () => {
-  const f = roomsFolder(), r = placeFixture(f), ix = JSON.parse(readFileSync(path.join(r.root, "index.json"), "utf8")), data = JSON.parse(readFileSync(r.roomsFile, "utf8"));
+  const f = roomsFolder(), r = placeFixture(f), ix = readIndex(r.root), data = JSON.parse(readFileSync(r.roomsFile, "utf8"));
   assert.equal(data.schema, "mb-rooms/1"); assert.deepEqual(data.order, ["roots", "reeds"]); assert.equal(data.source.commit, "abc1234");
   const e = ix.masters["room-roots-idle-night-64x36"]; assert.equal(e.file, "rooms/room-roots-idle-night-64x36.png"); assert.deepEqual([e.w, e.h], [64, 36]); assert.equal(e.signed, "art director, roots night verdict");
   assert.equal(ix.masters["room-roots-idle-day-64x36"].signed, "art director, roots day composition", "the day's is the room's"); assert.equal(ix.masters["room-roots-near-day-34x26"].signed, "art director, roots near day");
@@ -181,7 +183,7 @@ test("placeRooms leaves out a piece whose file is not its rect's size; a placed 
 });
 
 test("placeRooms writes each index entry's source (from: <pods path>@<commit>) and honours the manifest's hashes map: a listed file with another hash is refused, a matching one passes", () => {
-  const f = roomsFolder(), r = placeFixture(f), ix = JSON.parse(readFileSync(path.join(r.root, "index.json"), "utf8")), pods = path.dirname(f.rooms);
+  const f = roomsFolder(), r = placeFixture(f), ix = readIndex(r.root), pods = path.dirname(f.rooms);
   assert.equal(ix.masters["room-roots-idle-night-64x36"].from, "rooms/seated-idle-roots-night.png@abc1234"); assert.equal(ix.masters["room-roots-near-day-34x26"].from, "rooms/signed-near-roots-day.png@abc1234");
   assert.equal(ix.masters["room-roots-sorrel-day-8x6"].from, "rooms/pieces/roots/roots-sorrel-day.png@abc1234");
   for (const id of r.placed) { const [rel] = ix.masters[id].from.split("@"); assert.equal(ix.masters[id].sha256, sha256(readFileSync(path.join(pods, rel))), id + ": the source file is the placed one"); }
@@ -192,7 +194,7 @@ test("placeRooms writes each index entry's source (from: <pods path>@<commit>) a
 });
 
 test("the data guards 1 to 7 refuse; the art director's rules are notes only", () => {
-  const f = roomsFolder(), r = placeFixture(f), ix = JSON.parse(readFileSync(path.join(r.root, "index.json"), "utf8")), good = JSON.parse(readFileSync(r.roomsFile, "utf8")), win = [0, 0, PW, PH];
+  const f = roomsFolder(), r = placeFixture(f), ix = readIndex(r.root), good = JSON.parse(readFileSync(r.roomsFile, "utf8")), win = [0, 0, PW, PH];
   const run = (mutate) => { const d = structuredClone(good); mutate(d.rooms.roots, d); return checkRooms(d, ix, win, r.root); };
   assert.deepEqual(run(() => {}).problems, []);
   const cases = [[1, (r) => { r.levels[0].x = [2, 62, 40]; }], [1, (r) => { r.levels[0].top = [20]; }], [1, (r) => { r.levels[1].top = [15]; }],
@@ -203,5 +205,21 @@ test("the data guards 1 to 7 refuse; the art director's rules are notes only", (
   for (const [n, mutate] of cases) assert.match(run(mutate).problems.join("\n"), new RegExp(`guard ${n}:`), "guard " + n);
   const notes = run((r) => { r.levels[1].top = [12]; r.levels[1].x = [2, 20]; r.joins[0].ends = [[14, 14], [34, 30]]; });
   assert.deepEqual(notes.problems, []); assert.match(notes.notes.join("\n"), /level terrace is 2 px deep \(the art director's rule: at least 48\)/); assert.match(notes.notes.join("\n"), /level terrace is 18 px wide \(the art director's rule: at least 160\)/); assert.match(notes.notes.join("\n"), /roots-ramp-1 rises 16 over 20 \(0.80/);
-  const r2 = placeFixture(roomsFolder()); writeFileSync(path.join(r2.root, "rooms/room-roots-sorrel-day-8x6.png"), encodePNG(8, 6, new Uint8Array(8 * 6 * 4).fill(100))); assert.match(checkRooms(good, JSON.parse(readFileSync(path.join(r2.root, "index.json"), "utf8")), win, r2.root).problems.join("\n"), /guard 5: .*room-roots-sorrel-day-8x6.*alpha/);
+  const r2 = placeFixture(roomsFolder()); writeFileSync(path.join(r2.root, "rooms/room-roots-sorrel-day-8x6.png"), encodePNG(8, 6, new Uint8Array(8 * 6 * 4).fill(100))); assert.match(checkRooms(good, readIndex(r2.root), win, r2.root).problems.join("\n"), /guard 5: .*room-roots-sorrel-day-8x6.*alpha/);
+});
+
+// T7 (station-load plan P6): the runtime index is slim (at most 80 KB gzipped), its provenance lives in provenance.json, and the two agree
+test("the installed index.json is at most 80 KB gzipped, carries no provenance, and agrees with provenance.json", () => {
+  const real = new URL("../assets/masters/", import.meta.url).pathname, raw = readFileSync(path.join(real, "index.json"));
+  assert.ok(gzipSync(raw, { level: 6 }).length <= 80 * 1024, `index.json is ${gzipSync(raw, { level: 6 }).length} bytes gzipped (at most 81920)`);
+  assert.deepEqual(indexProblems(real), []);
+  const full = readIndex(real), id = Object.keys(full.masters)[0]; assert.ok(full.masters[id].sha256.length === 64 && full.masters[id].file, "readIndex gives the whole entry back");
+});
+test("the slim index writes file only when it is not <group>/<id>.png, and reads back whole", () => {
+  const root = mkdtempSync(path.join(tmpdir(), "slim-")); mkdirSync(path.join(root, "pods")); writeFileSync(path.join(root, "pods/a-4x4.png"), encodePNG(4, 4, new Uint8Array(64).fill(9))); writeFileSync(path.join(root, "pods/odd.png"), encodePNG(4, 4, new Uint8Array(64).fill(7)));
+  const h = (f) => createHash("sha256").update(readFileSync(path.join(root, f))).digest("hex");
+  const { slim, prov } = writeIndex(root, { schema: "mb-masters/1", masters: { "a-4x4": { file: "pods/a-4x4.png", w: 4, h: 4, sha256: h("pods/a-4x4.png"), signed: "s", from: "x@1" }, "b-4x4": { file: "pods/odd.png", w: 4, h: 4, sha256: h("pods/odd.png"), signed: "t", status: "held" } } });
+  assert.equal(slim.masters["a-4x4"].file, undefined); assert.equal(slim.masters["b-4x4"].file, "pods/odd.png"); assert.equal(slim.masters["a-4x4"].sha.length, 12); assert.equal(slim.masters["a-4x4"].signed, undefined); assert.equal(prov.masters["a-4x4"].signed, "s");
+  const back = readIndex(root).masters; assert.equal(back["a-4x4"].file, "pods/a-4x4.png"); assert.equal(back["a-4x4"].sha256, h("pods/a-4x4.png")); assert.equal(back["b-4x4"].status, "held"); assert.equal(back["a-4x4"].bytes, readFileSync(path.join(root, "pods/a-4x4.png")).length);
+  assert.deepEqual(check(root), []); assert.deepEqual(indexProblems(root), []);
 });

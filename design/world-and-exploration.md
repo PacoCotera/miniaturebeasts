@@ -74,6 +74,27 @@ the Station the pod is identified and hatches; then the world turns once.
   lit beacon reveals 3 cells around (**Built**). Revealed land never closes
   (**Decided**).
 
+## What a cell holds (generator 7)
+
+Generator 7 (`prototypes/exploration/src/gen7/`, owner 11-09: the whole map and terrain generation is overhauled) places what a cell holds from the land, in the cell's
+IR (`hold.mjs`, `landmarks.mjs`). The page does not play it yet (G4b switches the page); nothing here is in a save. No cell has a heart, a spring or a diagonal of clue gleams.
+All positions are IR tiles (the cell's own tiles are 1 to 24 by 1 to 28; the apron is the ring round them).
+
+- **Ways in.** `openings`: the runs, two tiles or longer, along each edge of the cell where the ground on both sides of the border walks. Every land cell has one.
+- **Finds, from the fields.** Fruit on bushes and at the foot of fruit trees at a wood's edge; dew cups in damp hollows (wet ground, by reeds, in shade) with 0.7 cups a cell
+  from the old spring's budget; stones on sand away from water, by boulders and on raised tops; pods under slabs, in moss and roots, in burrows by scrub and thicket (woods
+  and rock, never open meadow); holes at hollow trunks; a pearl in the shallows by reeds now and then. A cell holds 2 to 9 by its fields, the realm 5.5 on average.
+  A start cell always holds a stone and a pod; a pod is set beside each herd of three or more.
+- **Life.** `spawns`: creature areas by land, from the region's kinds (`regionKinds`, `genLife5`), with the number of that kind living in the cell.
+- **Landmarks.** Four rule sets placed by the region layer (Windstep on a meadow cell at a stair, the Hollow Tree at the decor's clearing in each Woods or Tallwood region,
+  the Split Stone on a rock cell with trails first, Reedpool on a pond cell by open water), never two within two cells of each other, each region with one of each kind it has
+  a cell for. Names are editorial's lists (`landmark-names.mjs`, parsed from their file by `tools/gen7-landmark-names.mjs`), none twice in a region. A cell with no landmark is
+  named by its land.
+- **Clues from the land.** Herd tracks along the walkable path from the nearest way in to where the herd beds down; a reed line on a shore; a moss hollow of full cups with a
+  pod asleep under the moss, kept as two readings; explorers' traces only at the outposts and beacons the region already places.
+- **Strike marks.** Where lightning went into bare ground and ridges: about one for two cells, more in Cliffs and Highpools, fewer in Woods, at least one within one cell of
+  every start. A mark carries its age in world turns; the page adds fresh ones each turn and lets old ones fade. Storm glass lies in only a few marks, on sand only.
+
 ## Expeditions
 
 - **Start anywhere seen.** Any seen cell can be a starting point; placing the Probe

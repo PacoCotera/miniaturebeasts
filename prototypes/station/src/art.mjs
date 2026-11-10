@@ -1,7 +1,7 @@
 // The placeholder register and every drawn stand-in. Engineers do not do art (decided): everything here
 // stands in for a master the art director has not made yet, stays plainly a placeholder, and is listed
-// in PLACEHOLDERS so masters replace them one by one. The mibi itself is the placeholder of the
-// placeholder brief (plain.mjs, the stylised rig pass), rendered from the genome through the workbench.
+// in PLACEHOLDERS so masters replace them one by one. The mibi itself is never drawn by the plain renderer
+// (art director, 2026-11-09): pictures.mjs places the kind's signed painted stand.
 import { PB, C, RGB, art, fromRGBA, cropPB, scalePB, flipPB, upPB, bay, lite, shade, clock, motion } from "./pixels.mjs";
 import { buildIndividual, shapeTrait, genomeDigest, stampGenome, stampFrameOf } from "./genome.mjs";
 import { fitCamera, resolveCamera, VIEWS } from "../../workbench/framework/raster.mjs";
@@ -14,23 +14,20 @@ import { treat } from "./unknown.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
-  { id: "mibi", what: "every mibi and founder: the placeholder of the plain renderer (flat slots, outline, no face, no material), quantised to the palette; on Home a resident (144×152 or 104×112) and a sleeper (fitted in 96×88) are the same stand-in, standing and never mirrored, with no nap pose; a juvenile shows the art director's signed juvenile stand-in at its size (mibi-juvenile-<species>-<w>x<h>, masters-pods be36e701) and an adult or elder its species' signed adult stand when placed (mibi-adult-<species>-<w>x<h>, the adult plan), so this placeholder is Create's founder, and any mibi whose stand-in is not placed", until: "the Grow painting lands (M3), and the rig's own placeholder brief is finished" },
   { id: "stand-layers", what: "the layered Loika stands (S01 adult at 304×312, 144×152, 96×96 and 48×48; juvenile at 304×312, 104×112, 96×96 and 48×48; in the poses anchor, curl, shake and calm), composed per mibi from its drawn looks (looks.mjs, layered-stand.mjs): the signed version 4 bare base key of each pose (anchor, curl; shake and calm cut from the floor set's signed final ids, sha256-checked against floor/S01/manifest.json), the crest overlay, the patches and the stripes layers (ui/assets/stands, cut by tools/make-stand-layers.py). Stand-ins: the 16 eye-ring overlays (thin, wide; ui/assets/stands/index.json standIns, from layers/register.json) draw as the base's \"between\" rings; colour is the charcoal base until the ramps", until: "the eye-ring overlays (hand cut) and the colour ramps (T-20261016-203)" },
   { id: "habit-key-owed", what: "a pose card, thumb or window whose habit has no signed held key: the derived stand (every S02 and S03 habit, and an S01 habit outside stands.S01.habits)", until: "the habit's signed key, cut by make-stand-layers.py" },
-  { id: "pod", what: "the pod placeholder sprites: hand-drawn, per size class and state, coloured per species by remap (prototypes/ui/assets/placeholders/pod)", until: "the pod renderer's masters (research-loop.md §6)" },
   { id: "trait-picture", what: "a trait's picture: a close-up of this pod's mibi in the placeholder, cropped around the part the trait names", until: "the Grow painting's close-ups" },
   { id: "seed", what: "the misty seed: the hidden look as a frosted close-up in a pearl", until: "the seed master" },
   { id: "stamp", what: "the genome stamp rastered by genome-stamp/src/stamp.mjs and quantised to the palette", until: "the stamp's label art (PV-D-r3-a4)" },
   { id: "ring", what: "the progress ring: a centre dot, one arc per chapter sized by its traits, a star for a glint, a notch for a sealed chapter", until: "the pod list master" },
   { id: "chapter-emblem", what: "one 16 px emblem per chapter", until: "the chapter rail master" },
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
-  { id: "home-glass-by-light", what: "the room's painting (1024×568, room-<room>-idle-<light>-1024x568; Home's glass and the whole's window are cuts of it), its near view (544×408, room-<room>-near-<light>-544x408) and Roots' bed (192×56, room-roots-bed-<light>-192x56), for the four rooms (roots, reeds, boulders, ferns; rooms.json): one slot a light (dawn, day, dusk, night); the room's pieces are room-<piece>-<light>-<w>x<h>. The gold era's idle-vivarium-<light>, vivarium-near-<light> and home-bed-<light> stay in the masters index, unreferenced; the flat plates of the colours show only while a light's slot is empty (all four lights have their masters today)", until: "the masters of a light, if one is not placed" },
+  { id: "home-glass-by-light", what: "the room's painting (1024×568, room-<room>-idle-<light>-1024x568; Home's glass and the whole's window are cuts of it), its near view (544×408, room-<room>-near-<light>-544x408) and Roots' bed (192×56, room-roots-bed-<light>-192x56), for the four rooms (roots, reeds, boulders, ferns; rooms.json): one slot a light (dawn, day, dusk, night); at a step of the day curve (frame.json light.curve; "@L50" in the day loop, "@0545" on the real clock) the id carries the step and the picture is derived from the two lights it mixes (room-steps.mjs); the room's pieces are room-<piece>-<light>-<w>x<h>. The gold era's idle-vivarium-<light>, vivarium-near-<light> and home-bed-<light> stay in the masters index, unreferenced; the flat plates of the colours show only while a light's slot is empty (all four lights have their masters today)", until: "the masters of a light, if one is not placed" },
   { id: "face:{mibi}:{size}", what: "the Library's face picture of a mibi whose species has no layered stand (or no face window): libGround, the 1 px libLine frame and its ticks round a flat stone square, at each size (18, 24, 40, 56, 64) and faded", until: "the species' layered stand and the art director's face window" },
   { id: "cargo-bay-992x320", what: "Cargo's painted bay 992×320 (open) and its door cargo-bay-shut-976x304: placed 1:1; drawn in every state, the door by what the bay holds. A master missing draws nothing (never code-drawn)", until: "the art director's 1× sign in Cargo's whole-screen captures (placed, status new)" },
   { id: "cargo-rack-992x168", what: "Cargo's rack insert 992×168 at (16, 384): the sage strip with six fitted wells, placed 1:1; a master missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
   { id: "cargo-report-plate-560x{128..288}", what: "the report plate set into the bay's door, 21 exact heights (128 to 288 by 8), placed 1:1; a height missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
   { id: "crate-shadow-256x24, crate-shadow-432x24, cargo-store-shadow-72x21", what: "the contact shadows under the bay's crates, the opening's closer and the haul's containers, placed 1:1; a master missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
-  { id: "founder-304x312", what: "Create's founder, 304×312: the plain renderer's placeholder (the stylised rig pass), frosted where a chapter is unread; with nothing read the whole of it on its own outline; the roll's dither is composed from two of them", until: "the Grow painting and the rig's own placeholder brief" },
   { id: "roll-128x72", what: "the roll's pictures, roll-{species}-{trait}-{look}-128x72: one PH plate for each look; the ring, the notches and the order are the real ones", until: "the roll close-ups cut from the paintings" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
 ];
@@ -147,28 +144,6 @@ function renderPB(scene, camera, device) {
   for (let i = 0; i < pb.p.length; i++) if (pb.p[i] >= 0 && isShadow(img.data[i * 4], img.data[i * 4 + 1], img.data[i * 4 + 2])) pb.p[i] = -1;
   return pb;
 }
-// Fix 6 N4: the founder carries no ink outside its body's own connected silhouette. The plain pass's cast shadow is cleared by colour tolerance, and the pixels that miss it are left as isolated dots on the shadow's ellipse; a component of fewer than
-// `min` opaque pixels (8-connected) is residue and goes. Applied to the founder's picture only (founderArt), so no other picture of the rig moves.
-export function dropSpecks(pb, min = 8) {
-  const { w, h, p } = pb, seen = new Uint8Array(w * h), stack = [];
-  for (let s0 = 0; s0 < w * h; s0++) {
-    if (seen[s0] || p[s0] < 0) continue;
-    const comp = []; seen[s0] = 1; stack.push(s0);
-    while (stack.length) { const q = stack.pop(); comp.push(q); const x = q % w, y = (q - x) / w; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue; const n = ny * w + nx; if (!seen[n] && p[n] >= 0) { seen[n] = 1; stack.push(n); } } }
-    if (comp.length < min) for (const q of comp) p[q] = -1;
-  }
-  return pb;
-}
-const blobArt = (w, h) => { const pb = new PB(w, h); pb.ell(w / 2, h / 2, w * 0.4, h * 0.4, C.frostD, { sh: [C.frost, C.frostS] }); pb.outline(() => C.stone); return pb; };
-// A mibi at w×h in a view ("portrait" faces viewer-left; "three-quarter" the flank), transparent around it.
-export function mibiArt(frame, genome, w, h, view = "portrait", flip = false) {
-  const key = "mb" + genomeDigest(genome) + ":" + w + "x" + h + ":" + view;
-  const pb = art(key, () => { const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") return blobArt(w, h);
-    return renderPB(b.scene, fitCamera(b.scene, view, [w, h], 0.06), "station"); });   // the Station's pass at every size: its ground stays the plain ground, so it clears to a sprite
-  return flip ? art(key + "f", () => flipPB(pb)) : pb;
-}
-// The species' face: its type specimen (the frame's typical body) in the placeholder.
-export function speciesArt(frame, w, h, view = "portrait") { return frame.typeSpecimen?.genome ? mibiArt(frame, frame.typeSpecimen.genome, w, h, view) : blobArt(w, h); }
 
 
 // ---------- Trait pictures: a close-up of this pod's mibi around the part the trait names ----------
@@ -219,7 +194,7 @@ const faceless = (scene) => ({ ...scene, nodes: scene.nodes.filter((n) => (n.par
 // chosen so the part fills w×h with the old crop's margins; the placeholder renderer draws it once, at that size.
 export function closeUpPB(frame, genome, traitId, w, h) {
   const pb = pictureGround(w, h), b = builtOf(frame, genome);
-  if (b.error || b.validation.status !== "valid") { pb.blit(blobArt(w, h), 0, 0); return pb; }
+  if (b.error || b.validation.status !== "valid") return pb;   // no body to read: nothing is drawn (the Station's rule)
   const scene = faceless(b.scene), base = fitCamera(scene, "portrait", [300, 310], 0.06), box = partBox(scene, base, partsFor(traitId)), pad = box.whole ? 0.04 : 0.3;
   const bw = Math.max(box.x1 - box.x0, 40) * (1 + pad), bh = Math.max(box.y1 - box.y0, 40) * (1 + pad), s0 = base.scale;
   const center = [base.center[0] + ((box.x0 + box.x1) / 2 - 150) / s0, base.center[1] - ((box.y0 + box.y1) / 2 - 155) / s0];
@@ -230,7 +205,7 @@ export function traitPic(frame, genome, traitId, w = 150, h = 110) {
   const key = "pic" + genomeDigest(genome) + ":" + traitId + ":" + w + "x" + h;
   return art(key, () => {
     const pb = new PB(w, h); pb.rect(0, 0, w, h, PIC_BG); for (let y = h - 24; y < h; y++) for (let x = 0; x < w; x++) if (bay(x, y) < (y - (h - 24)) / 2) pb.set(x, y, C.sand);
-    const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") { pb.blit(blobArt(w, h), 0, 0); return pb; }
+    const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") return pb;   // no body to read: nothing is drawn (the Station's rule)
     const camera = fitCamera(b.scene, "portrait", [300, 310], 0.06), full = art("mbfull" + genomeDigest(genome), () => renderPB(b.scene, camera, "station"));
     const box = partBox(b.scene, camera, partsFor(traitId)), pad = box.whole ? 0.04 : 0.3;
     let bw = Math.max(box.x1 - box.x0, 40), bh = Math.max(box.y1 - box.y0, 40), cx = (box.x0 + box.x1) / 2, cy = (box.y0 + box.y1) / 2;
@@ -361,21 +336,11 @@ export const twinkle = () => (motion() ? Math.floor(clock.now / 300) % 3 : 0);
 export { upPB };
 
 // ---------- The founder on Create: its own colours, calm where a chapter is unread (Fix 1b part 1, unknown.mjs) ----------
-// The rig at the picture's size with Glow's emission and Charge's phase as the unread chapters leave them, then the treatment treatmentOf names: clear (the picture, palette art), a veil over the unread looks' parts or the whole body, or the
-// ghost of nothing read. A part group with no part on this body veils nothing.
-export function founderArt(frame, genome, read, w, h, painted = null, whole = false) {   // painted: the species' placed adult master at this size (Create founder A, interim): the one flat picture in place of the rig render, under the same treatment
-  const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h + (painted ? ":painted" : "") + (whole ? ":whole" : "");
-  return art(key, () => {
-    const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = painted ?? (ok ? dropSpecks(renderPB(b.scene, camera, "station")) : blobArt(w, h));
-    if (t.mode === "clear") return base;
-    // 21h (art desk 21h ART INPUTS): no tint pass touches mibi art. A veil's boxes are the rig's, which do not land on the painted picture's parts, so over a painted adult a veil washed its leaves and eyes grey: the painted picture
-    // (in the coat the choices made where that chapter is read) is shown as it is; only nothing read at all stays the ghost (and the reading room's whole)
-    if (painted && !whole && t.mode === "veil") return base;
-    // whole (the reading room): the painted adult is one flat picture: the rig's part boxes do not land on its parts, so while any part is unread the whole painting stays the grey silhouette (as far as read, never a guess)
-    if (painted && whole) return treat({ w, h, rgba: () => base.rgba() }, { mode: "ghost" });
-    const boxes = t.boxes[0]?.whole ? "body" : !ok ? [] : t.boxes.map(({ parts }) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });
-    return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });
-  });
+// The species' painted adult (`painted`, its placed master at this size) under the treatment treatmentOf names: clear (the picture as it is), a veil over the unread looks (also the picture as it is: no tint pass touches mibi art, 21h), or the
+// ghost of nothing read. `whole` (the reading room): while any part is unread the whole painting stays the grey silhouette. A part group with no part on the rig's body veils nothing (the rig is read for that and never drawn).
+export function founderArt(frame, genome, read, w, h, painted, whole = false) {
+  const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h + (whole ? ":whole" : "");
+  return art(key, () => t.mode === "clear" || (!whole && t.mode === "veil") ? painted : treat({ w, h, rgba: () => painted.rgba() }, { mode: "ghost" }));
 }
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.focus, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });

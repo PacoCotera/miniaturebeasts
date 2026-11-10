@@ -48,7 +48,7 @@
  },
  "strings": {
   "title": "Bay",
-  "arrival": {"ribbon": "The Companion is home", "broken": "The Companion is home. Nothing came back this time.", "mended": "{n in words} mended, free", "skip": "Skip", "rule": "the ribbon at 20, the band words at 16; measured: \"The Companion is home\" and the broken line fit the ribbon (words + 32 ≤ 608), \"three mended, free\" ≤ 160; the choice strip's names and lines are panel.json strings.dock", "subjects": {"crates": "{count} sealed crates", "cratesOne": "a sealed crate", "empty": "the bay is empty"}},
+  "arrival": {"ribbon": "The Companion is home", "broken": "The Companion is home. Nothing came back this time.", "mended": "{n in words} mended, free", "skip": "Skip", "rule": "the ribbon at 20, the band words at 16; measured: \"The Companion is home\" and the broken line fit the ribbon (words + 32 ≤ 608), \"three mended, free\" ≤ 160; the choice strip's names and lines are panel.json strings.dock", "subjects": {"crates": "{count} sealed crates", "cratesOne": "a sealed crate", "crateOf": "Expedition {n}'s crate", "cratesOf": "{count} crates · expeditions {a} to {b}", "empty": "the bay is empty"}},
   "skip": "Skip",
   "open": "Open them all",
   "openOne": "Open it",

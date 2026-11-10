@@ -11,16 +11,17 @@ import { checkRules } from '../src/bake/rules.mjs';
 import { mirrorIR } from '../src/bake/mirror.mjs';
 import { buildPlace } from '../src/bake/build.mjs';
 import { readPlace } from '../src/format/read.mjs';
-import { dualGrid } from '../src/dualgrid.mjs';
+import { terrainLayers, packDepth } from '../src/dualgrid.mjs';
 import { layersToTileIds } from '../src/bake/build.mjs';
+import { applyOpenEdges } from '../src/bake/openedges.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const placesDir = path.join(here, '..');
 const P = paths(placesDir);
 const terrains = JSON.parse(readFileSync(P.terrain, 'utf8')).terrains;
 const valueOf = Object.fromEntries(terrains.map((t) => [t.id, t.value]));
-const { sets, pairsOf, loadedOf } = loadSets(P, terrains);
-const ctx = { terrains, sets, pairsOf };
+const { sets, layersOf, loadedOf } = loadSets(P, terrains);
+const ctx = { terrains, sets, layersOf };
 const { project, levels } = loadProject(P.project, P.schema);
 const base = levels.find((l) => l.identifier === 'Test_AllCases');
 const W = 18, H = 22;
@@ -95,8 +96,7 @@ const RULES = {
   'slot-clear': [(l) => moveTo(ents(l, 'Find')[0], 3, 2), { x: 3, y: 2 }],   // under the broad tree's crown
   'spawn-count': [(l) => { for (let k = 0; k < 4; k++) l.layerInstances.find((x) => x.__identifier === 'Marks').entityInstances.push(structuredClone(ents(l, 'CreatureSpawn')[0])); }, null],
   'spawn-zone': [(l) => moveTo(ents(l, 'CreatureSpawn')[0], 5, 8), { x: 5, y: 8 }],
-  'three-terrain': [(l) => { setCell(l, 9, 19, 'water'); setCell(l, 10, 19, 'sand'); }, null],
-  'no-pair': [(l) => { setCell(l, 1, 19, 'mud'); }, null],
+  'no-edge': [(l) => { setCell(l, 6, 9, 'thicket'); }, null],   // thicket in the pond: the set lists no edge of thicket over water
 };
 
 for (const [rule, [mutate, cell]] of Object.entries(RULES)) {
@@ -155,8 +155,9 @@ test('the mirror maps E and W, mirrors terrain and entities on the logic grid, a
   assert.deepEqual(mm.openings.map((o) => [o.side, o.from, o.to]).sort(), ir.openings.map((o) => [o.side, o.from, o.to]).sort());
   // the dual grid is looked up again on the mirrored terrain...
   const a = buildPlace(ir, ctx).place, b = buildPlace(m, ctx).place;
-  const dg = dualGrid({ id: m.id, w: W, h: H, terrain: m.terrain }, terrains, pairsOf.get('ninja-test'));
-  assert.deepEqual(b.ground.map((l) => Array.from(l.tiles)), layersToTileIds(dg, sets.get('ninja-test')).map((l) => Array.from(l.tiles)));
+  const desc = layersOf.get('ninja-test'), dg = terrainLayers({ id: m.id, w: W, h: H, terrain: m.terrain }, terrains, desc.layers, desc.tone);
+  applyOpenEdges(dg, m, terrains, desc.layers);
+  assert.deepEqual(b.ground.map((l) => Array.from(l.tiles)), packDepth(layersToTileIds(dg, sets.get('ninja-test'), desc), dg.w1, dg.h1).map((t) => Array.from(t)));
   // ...and is not the original's tile ids flipped: the shore art is lit from the top left, so a mirrored shore is a different tile
   const flipped = a.ground.map((l) => Array.from({ length: l.tiles.length }, (_, k) => l.tiles[((k / (W + 1)) | 0) * (W + 1) + (W - (k % (W + 1)))]));
   assert.notDeepEqual(b.ground.map((l) => Array.from(l.tiles)), flipped);

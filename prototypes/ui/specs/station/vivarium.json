@@ -54,6 +54,11 @@
   "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
   "needed": [],
   "listPitch": "the rooms pane's chips (regions.chips.forms: n chips, 1 to 4) and the places pane's tiles (regions.tiles.forms: eight places), each by the form with the smallest upTo at least n",
+  "day": {
+   "real": [["00:00", 1], ["06:30", 2], ["18:00", 1]],
+   "loop": { "cloud": { "max": 1 }, "full sun": { "sun": { "max": 1, "stages": ["adult", "elder"] } } },
+   "note": "the rhythm bands (the day-cycle scheme, C5): bandOf (views/home-props.mjs) reads this; real = [from, travelling ceiling] by the Station clock outside the day loop (the ceiling is the last band at or before the time); loop = by the light's mood name inside the loop (frame.json light.curve.loop): a band without max takes the real band's ceiling at that time; the ceiling goes to the face as regions.travel.max (rules.travel.max is its fallback); sun = the sun rest: while the mood is on, at most sun.max shown, awake, unfocused, unmet residents of sun.stages that have a curl rest in place (rest asleep), picked by hash(id + loop number), and only when at least two shown residents are awake; sun.max 0 turns it off. Sleep itself stays on the real clock (rules.rest)"
+  },
   "travel": {
    "floorDiv": 3,
    "capMin": 4,

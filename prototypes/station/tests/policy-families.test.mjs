@@ -13,6 +13,7 @@ import { podsProps } from "../src/views/pods-props.mjs";
 import { createBuild } from "../src/views/create-props.mjs";
 import { registerPictures, iconRequests } from "../src/pictures.mjs";
 import { SPECS } from "../src/game.mjs";
+import { readIndex } from "../../ui/tools/index-io.mjs";
 import { assetEntry, placeMaster, dropAsset } from "../../ui/assets.mjs";
 import { policyOf } from "../../ui/asset-policy.mjs";
 import { idleBuild } from "../src/views/idle-props.mjs";
@@ -47,7 +48,7 @@ function scenes() {
 const SCENES = scenes();
 SPECS.pods = spec; SPECS.frame = frameSpec;
 // the signed masters take their ids as the page places them (loadMasters), with no pixels: only their ids, sizes and status matter here
-{ const base = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(base, "index.json"), "utf8"));
+{ const base = path.resolve(here, "../../ui/assets/masters"), index = readIndex(base);
   for (const [id, e] of Object.entries(index.masters)) placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }, { w: e.w, h: e.h, rgba: () => new Uint8ClampedArray(e.w * e.h * 4) }); }
 const walk = (o, into) => { if (typeof o === "string") { if (assetEntry(o)) into.add(o); } else if (o && typeof o === "object") for (const v of Object.values(o)) walk(v, into); };
 

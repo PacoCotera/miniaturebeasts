@@ -9,9 +9,9 @@ const page = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 test("the hole is 40 x 32, its two frames differ, and rock or cave ground leaves out the torn grass", () => {
   const f = fixture();
   assert.equal(f.run("freshHoleArt(1, false).w"), 40); assert.equal(f.run("freshHoleArt(1, false).h"), 32);
-  const px = src => f.run(`Array.from(${src}.p).join()`);
-  assert.notEqual(px("freshHoleArt(0, false)"), px("freshHoleArt(1, false)"), "earth in the air, then settled");
-  assert.notEqual(px("freshHoleArt(1, false)"), px("freshHoleArt(1, true)"), "bare ground: no torn grass");
+  const names = f.run("[freshHoleArt(0, false), freshHoleArt(1, false), freshHoleArt(1, true)].map(p => [...STONE_PIECES].find(([, v]) => v === p)[0])");
+  assert.deepEqual(Array.from(names), ["prop-hole-fresh", "prop-hole-fresh-f2", "prop-hole-fresh-bare"], "the art desk's three paintings: the dig, the settled hole, bare ground");
+  for (const n of names) assert.deepEqual(Array.from(f.run(`[STONE_PIECES.get('${n}').w, STONE_PIECES.get('${n}').h]`)), [40, 32]);
   assert.equal(f.run("HOLE_BARE.rock && HOLE_BARE.cave && !HOLE_BARE.grass ? 1 : 0"), 1);
 });
 test("wired in the three places the patch names: shedPod remembers it for a dig, drawPatch and the place card draw it", () => {

@@ -92,12 +92,13 @@ export function fullCards(m, spec, frame, requests) {
   return canAdd ? [addCard, make] : [make, { ...keep, name: Sg.keep.name, line: Sg.keep.line }];
 }
 // The cards of the Hatch now | Wait panel (T-20261016-222; the Incubator's `confirm` state): Hatch now (the bud at its ready step, ❀ n from the rules; dimmed when short) and Wait (nothing spent, "ready in about {n} min": the one minute count, owner ruling 3). The pictures are the windows' (hatchNowBuild), not the cards'.
+const waitLine = (card, n) => (n < 1 ? card.lineUnderMinute : fill(card.line, { n }));
 export function growNowCards(m, spec) {
   const { st, settings } = m, Sg = spec.strings.growNow, now = m.now ?? Date.now();
   const c = S.instantGrowCost(st, settings, now), short = S.canPay(st, c.e, c.d, c.s) ? "" : S.shortIcons(st, c.e, c.d, c.s);
   return [
     { id: "grow", act: "growNow", room: null, mark: "", name: Sg.cards.grow.name, cost: S.priceText(c.e, c.d, c.s), gain: false, short, line: Sg.cards.grow.line, loss: false, dim: !!short },
-    { id: "wait", act: "wait", room: null, mark: "", name: Sg.cards.wait.name, cost: "", gain: false, short: "", line: fill(Sg.cards.wait.line, { n: S.budMinutesLeft(st, settings, now) }), loss: false, dim: false },
+    { id: "wait", act: "wait", room: null, mark: "", name: Sg.cards.wait.name, cost: "", gain: false, short: "", line: waitLine(Sg.cards.wait, S.budMinutesLeft(st, settings, now)), loss: false, dim: false },
   ];
 }
 // The bud as the juvenile it becomes, before it exists: the mibi the hatch will make (hatchBud's own `read`), at the juvenile stage. Only its looks are used.

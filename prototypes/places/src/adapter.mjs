@@ -30,16 +30,18 @@ export function closedLooks(place, terrains) {
   });
 }
 
+// The props fruit may be pressed on, besides every tree's trunk (never a bush, thicket, reed or crown).
+export const PRESS_PROPS = ['boulder-grey', 'boulder-brown', 'split-stone'];
 // terrains: art/places/terrain.json's list. o: { key, cell, pw, ph, closed } (closed: the sides the land refuses, 'N' 'S' 'W' 'E').
 export function adaptPlace(place, ts, terrains, o = {}) {
   const pw = o.pw || PW, ph = o.ph || PH, w = place.w, h = place.h;
   const ox = (pw - w) >> 1, oy = (ph - h) >> 1, NP = pw * ph, I = (x, y) => (y + oy) * pw + x + ox;
   const tileOf = new Map(terrains.map((t) => [t.value, T[t.T]]));
-  const tiles = new Uint8Array(NP).fill(T.ROCK);
+  const tiles = new Uint8Array(NP).fill(T.ROCK), press = new Uint8Array(NP);   // press: where fruit may be pressed: 1 a stone prop or blocked cliff, 2 a tree's trunk, 0 nowhere (never read from T.ROCK)
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) tiles[I(x, y)] = tileOf.get(place.terrain[y * w + x]) ?? T.GRASS;
   // what the bake blocks beyond the terrain's own play: the cliff's lip and face (the open edges); thicket, scrub, water and prop footprints already map to blocked tiles
   const cliffV = (terrains.find((t) => t.id === 'cliff') || {}).value;
-  if (cliffV && place.blockMask) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const b = y * w + x; if (place.terrain[b] === cliffV && (place.blockMask[b >> 3] >> (b & 7)) & 1) tiles[I(x, y)] = T.ROCK; }
+  if (cliffV && place.blockMask) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const b = y * w + x; if (place.terrain[b] === cliffV && (place.blockMask[b >> 3] >> (b & 7)) & 1) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; } }
   // the world's edges on this cell (o.G: the world; a place that fills the page's grid exactly, never the dev switch's padded one): the bands, stairs and crossings, the openings, the trees that stay
   let sh = null;
   if (o.G && o.G.edge && o.cell != null && pw === w && ph === h) {
@@ -52,10 +54,10 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const props = sh ? sh.props : place.props, canopyList = sh ? sh.canopy : place.canopy;
   for (const p of props) {
     const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48);
-    if (s.kind === 'tall-grass' && !s.footprint.length) { if (tiles[I(cx, cy)] === T.GRASS) tiles[I(cx, cy)] = T.TALL; continue; }
+    if (String(s.kind).startsWith('tall-grass') && !s.footprint.length) { if (tiles[I(cx, cy)] === T.GRASS) tiles[I(cx, cy)] = T.TALL; continue; }
     for (let i = 0; i + 1 < s.footprint.length; i += 2) {
       const x = cx + s.footprint[i], y = cy + s.footprint[i + 1];
-      if (x >= 0 && y >= 0 && x < w && y < h) tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK;
+      if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }
     }
   }
   if (sh) for (const i of sh.rim) { if (sh.terr[i] !== TERR.SHADOW) tiles[i] = sh.tilesE[i]; }   // the bands, stairs and crossings stand over the ground and the trees
@@ -105,6 +107,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
     w: pw, h: ph, openings, closedLooks: looks, clear, findSlots: place.finds.map((f) => ({ x: f.x + ox, y: f.y + oy, kinds: f.kinds, chance: f.chance })).filter((f) => !sh || !T_BLOCK[tiles[f.y * pw + f.x]]),
     baked: { id: place.id, ox, oy, w, h },
   };
+  lay.press = press;
   if (closure) lay.closure = closure;
   if (sh) {   // the world's edges: the terrain layer the page draws over the baked ground, the stairs and crossings that walk, the trees this cell shows
     lay.terr = sh.terr; lay.tmask = sh.tmask; lay.stairs = sh.stairs; if (sh.cross.length) lay.cross = sh.cross;
