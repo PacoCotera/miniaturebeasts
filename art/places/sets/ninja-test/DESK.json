@@ -34,6 +34,26 @@
     "from": "art-jobs/2026-11-10-art-style-test/out/route-a/props/tufts-3.png recoloured",
     "sha256": "d65aaeb4a5749f4006f1618977519d9aa364dc199da18361e16d066156a6c12a"
   },
+  "clump-tall-26.png": {
+    "commit": "86d239e96",
+    "from": "art-jobs/2026-11-10-art-paint-tall-clump/out/clump-tall-26.png",
+    "sha256": "56e85d60265dcd7a502e3ea557820fcf0267e9ec5a37c74412bea4eb31ee7bf4"
+  },
+  "clump-tall-26-mirror.png": {
+    "commit": "86d239e96",
+    "from": "art-jobs/2026-11-10-art-paint-tall-clump/out/clump-tall-26-mirror.png",
+    "sha256": "557b6804872d15814d15327788af90e0ef7f762eb6af170b7d04dd0957b5fb8b"
+  },
+  "clump-tall-17.png": {
+    "commit": "86d239e96",
+    "from": "art-jobs/2026-11-10-art-paint-tall-clump/out/clump-tall-17.png",
+    "sha256": "457a77db1ae98b3900db92e9f8638202015f1e8675e7b26cec5a2e745cec359f"
+  },
+  "clump-tall-17-mirror.png": {
+    "commit": "86d239e96",
+    "from": "art-jobs/2026-11-10-art-paint-tall-clump/out/clump-tall-17-mirror.png",
+    "sha256": "435cf87d011989460a782a623543f19caef90c1731f1d32908fda8e46f18bf3d"
+  },
   "flowers-1.png": {
     "commit": "633e4d641",
     "from": "art-jobs/2026-11-10-art-style-test/out/route-a/props/flowers-1.png recoloured",
@@ -51,8 +71,8 @@
   },
   "flowers-blue-pair.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-map-decor/out/props/flowers-blue-pair.png",
-    "sha256": "ff4ac5c71dc8d582a0552dfe88187ef8afcfaaa49d41efaedbf852e2a03fe22d"
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-map-decor/out/props/flowers-blue-pair.png area-reduced 32x28 to 24x22, pixel-snapped",
+    "sha256": "980a79743f1dce911936b9e0355efb0d6579e9c28ea01349a025ed923669e2d7"
   },
   "stump-1.png": {
     "commit": "633e4d641",
@@ -146,33 +166,33 @@
   },
   "reed-shore-1.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-1.png",
-    "sha256": "ded9c975db7b79047015a2f6355eb9b47b59d44a89a058de317cd9fc4dae1cd7"
+    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-1.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
+    "sha256": "0f4ac3c94b8ab57b9e3cee83f7b57f3236bd8951e08f7d82ec991fbc696d79de"
   },
   "reed-shore-3.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-3.png",
-    "sha256": "37988e5b5732aa4094f7ba9e3c4c1cae2ae44abec22633c3b764dc71a82df3cc"
+    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-3.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
+    "sha256": "5ef0741ed38cb4b56bfd12ca2974303f7e438c71e7258e683e362d6ef44abf3c"
   },
   "reed-shore-2.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-2.png",
-    "sha256": "76f1de0594ed60355b7d6609eb7883a51ea48b99b4c79e3463b4efae1e48a84c"
+    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-2.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
+    "sha256": "c379cdfc91e7aecbb8da07a98392239d0d22fac1654b93da1df9f4e98bb57ea4"
   },
   "reed-shore-4.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-4.png",
-    "sha256": "cdad7d6fff2c8ea8a8c18fd591bee88b398f19981ff728f28577a3d5b336d775"
+    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-4.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
+    "sha256": "fee5c29e68cb8b8ef12da61e633848e81ce08a791be2ac6775452d94e2d7e8a4"
   },
   "reed-water-1.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/water-1.png",
-    "sha256": "4b5666339c08657ffe3c8cc4ce95777ab7f1e996888b84bf57bfb8de900cbd15"
+    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/water-1.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
+    "sha256": "566abffe8b8a0af4d0a2c0fd5a95b8669d27b5d2f0e1150be2b26c0a9b72dabb"
   },
   "reed-water-2.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/water-2.png",
-    "sha256": "341cbea15213554391b672e3cb49c6c37382c30d960c70bc45b72d252efd306b"
+    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/water-2.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
+    "sha256": "f7b91f0562b3bd1828126ec5c04cf62787d36cfa2ff7ada357294a9de93273ea"
   },
   "fill-deep.png": {
     "commit": "633e4d641",
@@ -266,28 +286,28 @@
   },
   "over-scrub.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub.png",
-    "sha256": "83befd80a939cfcca4bc79cb158d7817316c3a08285f75f9ea1bd80dc8b8c21d"
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub.png scrub ground (#589054 to #82a05a)",
+    "sha256": "edb3912e4a67b8c4077aa89fa6176e64cd5020af03ac4a9e5c8128ade550a620"
   },
   "over-scrub-full.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub-full.png",
-    "sha256": "acc336b6075d81ffe8ce9493c587f35ca82ffc11a66ed433cfc2253f46be84bb"
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub-full.png scrub ground (#589054 to #82a05a)",
+    "sha256": "b277ac4240dee25b05d2f22bb8a2e72555dd14f549acd4e11742193c3d19d17c"
   },
   "over-scrub~v1.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub~v1.png",
-    "sha256": "83befd80a939cfcca4bc79cb158d7817316c3a08285f75f9ea1bd80dc8b8c21d"
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub~v1.png scrub ground (#589054 to #82a05a)",
+    "sha256": "edb3912e4a67b8c4077aa89fa6176e64cd5020af03ac4a9e5c8128ade550a620"
   },
   "over-scrub~v2.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub~v2.png",
-    "sha256": "83befd80a939cfcca4bc79cb158d7817316c3a08285f75f9ea1bd80dc8b8c21d"
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub~v2.png scrub ground (#589054 to #82a05a)",
+    "sha256": "edb3912e4a67b8c4077aa89fa6176e64cd5020af03ac4a9e5c8128ade550a620"
   },
   "over-scrub~v3.png": {
     "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub~v3.png",
-    "sha256": "83befd80a939cfcca4bc79cb158d7817316c3a08285f75f9ea1bd80dc8b8c21d"
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/over-scrub~v3.png scrub ground (#589054 to #82a05a)",
+    "sha256": "edb3912e4a67b8c4077aa89fa6176e64cd5020af03ac4a9e5c8128ade550a620"
   },
   "fill-thicket.png": {
     "commit": "633e4d641",
