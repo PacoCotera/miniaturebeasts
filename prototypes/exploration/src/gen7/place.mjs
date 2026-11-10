@@ -389,7 +389,7 @@ export function toneField(seed, x0, y0, w, h) {
 // The land the decor reads: the terrain of any world tile (through the cells' own passes), the biome of the region slot it lies in, every way up, and the atlas slots.
 const DEC = new Map();
 // the terrain of any world tile (through the cells' own passes); beyond the world it is thicket
-function worldTiles(seed) {
+export function worldTiles(seed) {
   const cc = new Map();
   let lx = -1, ly = -1, lt = null;
   return (gx, gy) => {

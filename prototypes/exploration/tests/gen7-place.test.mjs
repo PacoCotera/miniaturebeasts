@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
-import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, decorOf, toneField, worldTiles } from '../src/gen7/place.mjs';
 import { bakeIR } from '../tools/gen7-render.mjs';
 import { decorProps } from '../tools/gen7-decor-props.mjs';
 import { TABLE } from '../src/gen7/decor.mjs';
@@ -59,7 +59,6 @@ for (const seed of [7, 13, 42]) {
     // groves and do not hold on generated cells (counted in the log, see the report)
     check(s.latticeCells > 500, 'cells with 12 or more trees and boulders: ' + s.latticeCells);
     check(s.latticeFails * 200 <= s.latticeCells, `the grove clause of the grove-lattice rule holds in ${s.latticeCells - s.latticeFails} of ${s.latticeCells} cells: ` + JSON.stringify(s.latticeAt));
-    check(s.reedProps === 0, 'no reed prop: reeds are the shore look only');
     check(s.reedOffShore === 0, 'every reed bank holds a shore: ' + s.reedOffShore);
     check(s.reedBanks > 100, 'reed banks: ' + s.reedBanks);
     check(s.onWall + s.onPath + s.onLip === 0, 'no prop on or beside water, thicket, lip or trail');
@@ -99,9 +98,10 @@ test('a cell is the same land whatever else was made before it, and its picture 
   for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) { const c = cellTerrain(13, 35 + i, 47 + j); for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) assert.equal(win.terrain[(j * CH + y) * win.w + i * CW + x], c.terrain[(y + 1) * c.w + x + 1]); }
 });
 
-// L3 (terrain layers): the grass tone is on grass tiles whose 3 x 3 is all grass, in patches, and a cell and its neighbour agree on the tiles they share
+// L3 (terrain layers): the sunlit grass tone is in patches on plain grass, a FULL CELL clear of every edge (the 5 x 5 block round each tone tile is that one ground; a patch that would come closer is dropped whole,
+// never clipped), and a cell and its neighbour agree on the tiles they share
 for (const seed of [7, 13, 42]) {
-  test(`seed ${seed}: tone sits only on grass with grass all round it`, () => {
+  test(`seed ${seed}: tone sits only on grass with two tiles of grass all round it`, () => {
     let tone = 0, cells = 0;
     for (const [X, Y] of [[36, 48], [37, 48], [20, 30], [50, 70], [10, 90], [60, 20], [40, 40], [41, 40]]) {
       const ir = cellIR(seed, X, Y), { w, h } = ir; cells++;
@@ -111,8 +111,7 @@ for (const seed of [7, 13, 42]) {
         tone++;
         const v = ir.terrain[y * w + x];
         assert.ok(v === TV.GRASS || v === TV.CLIFF, 'tone sits on grass or the raised top');
-        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 >= 0 && Y2 >= 0 && X2 < w && Y2 < h) assert.equal(ir.terrain[Y2 * w + X2], v, `tone at ${x},${y} of ${seed}:${X},${Y} has another terrain at ${X2},${Y2}`); }
-        if (v === TV.CLIFF && y + 2 < h) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && x + dx < w) assert.equal(ir.terrain[(y + 2) * w + x + dx], TV.CLIFF, 'raised-top tone has raised ground two rows below');
+        for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 >= 0 && Y2 >= 0 && X2 < w && Y2 < h) assert.equal(ir.terrain[Y2 * w + X2], v, `tone at ${x},${y} of ${seed}:${X},${Y} has another terrain at ${X2},${Y2}`); }
       }
       bakeIR(ir);   // the bake refuses a tone corner on a tile that is not all grass
     }
@@ -121,6 +120,69 @@ for (const seed of [7, 13, 42]) {
     for (let y = 0; y < a.h; y++) for (let k = 0; k < 2; k++) assert.equal(a.tone[y * a.w + a.w - 2 + k], b.tone[y * b.w + k], `tone agrees across the border at row ${y}`);
   });
 }
+
+// The map decor swap: over seeds 1-50 (six cells each) the reed beds keep to the shore, no sunlit patch comes within a full cell of an edge, and the scrub shrubs never touch.
+test('seeds 1-50: reed clumps stand on the shore and in the shallows (never on deep water), tone patches keep a full cell off every edge', { timeout: 1800000 }, () => {
+  const CELLS = [[36, 48], [20, 30], [50, 70], [10, 90], [60, 20], [40, 40]], land = v => v === TV.GRASS || v === TV.SAND;
+  let inWater = 0, onDeep = 0, notShallow = 0, farFromLand = 0, shore = 0, shoreNoWater = 0, patchTiles = 0, patchNear = 0;
+  for (let seed = 1; seed <= 50; seed++) {
+    const D = decorOf(seed), T = worldTiles(seed);
+    for (const [X, Y] of CELLS) {
+      const x0 = X * CW, y0 = Y * CH;
+      for (const c of D.reedClumpsIn(x0, y0, x0 + CW - 1, y0 + CH - 1)) {
+        const v = T(c.tx, c.ty);
+        if (c.water) {
+          inWater++; if (v === TV.DEEP) onDeep++; if (v !== TV.WATER) notShallow++;
+          let near = false; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) if (Math.abs(dx) + Math.abs(dy) <= 2 && land(T(c.tx + dx, c.ty + dy))) near = true;
+          if (!near) farFromLand++;
+        } else { shore++; let wet = false; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (T(c.tx + dx, c.ty + dy) === TV.WATER) wet = true; if (!wet) shoreNoWater++; }
+      }
+      const tone = toneField(seed, x0, y0, CW, CH);
+      for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if (tone[y * CW + x]) {
+        patchTiles++; const v = T(x0 + x, y0 + y);
+        for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) if (T(x0 + x + dx, y0 + y + dy) !== v) patchNear++;
+      }
+    }
+  }
+  console.log(`# reeds over seeds 1-50: ${shore} shore clumps, ${inWater} in the shallows, ${onDeep} on deep water; tone: ${patchTiles} tiles, ${patchNear} within two tiles of another ground`);
+  assert.ok(inWater > 30 && shore > 300, 'reed clumps found: ' + shore + ' shore, ' + inWater + ' in the water');
+  assert.equal(onDeep, 0, 'no reed clump on deep water');
+  assert.equal(notShallow, 0, 'every in-water clump is on shallow water');
+  assert.equal(farFromLand, 0, 'every in-water clump is within two tiles of land');
+  assert.equal(shoreNoWater, 0, 'every shore clump has water beside its tile');
+  assert.ok(patchTiles > 500, 'tone tiles: ' + patchTiles);
+  assert.equal(patchNear, 0, 'no tone patch pixel within a cell of another ground');
+});
+
+test('scrub shrubs never touch, take the most the rule allows, and every patch of one or two cells has one', () => {
+  for (const seed of [7, 13, 42]) {
+    const D = decorOf(seed), T = worldTiles(seed);
+    let eligible = 0, taken = 0, small = 0, smallWith = 0;
+    const scrubCells = [];   // up to six cells of the seed that hold scrub shrubs (found on a coarse grid of cells)
+    for (let Y = 15; Y < 90 && scrubCells.length < 6; Y += 2) for (let X = 15; X < 70 && scrubCells.length < 6; X += 2) if (D.propsIn(X * CW, Y * CH, X * CW + CW - 1, Y * CH + CH - 1).filter(p => p.fam === 'shrubs').length >= 4) scrubCells.push([X, Y]);
+    if (!scrubCells.length) continue;
+    for (const [X, Y] of scrubCells) {
+      const x0 = X * CW, y0 = Y * CH, shrubs = new Set(D.propsIn(x0, y0, x0 + CW - 1, y0 + CH - 1).filter(p => p.fam === 'shrubs').map(p => p.x + ',' + p.y));
+      for (const k of shrubs) { const [x, y] = k.split(',').map(Number); for (const [dx, dy] of [[1, 0], [0, 1]]) assert.ok(!shrubs.has((x + dx) + ',' + (y + dy)), `shrubs touch at ${k}`); }
+      for (let y = 1; y < CH - 1; y++) for (let x = 1; x < CW - 1; x++) if (D.plain(x0 + x, y0 + y) && T(x0 + x, y0 + y) === TV.SCRUB) { eligible++; if (shrubs.has((x0 + x) + ',' + (y0 + y))) taken++; }
+      // a scrub patch with no tile that has a full cell of scrub round it (a patch one or two cells across) holds a shrub
+      const seen = new Set();
+      for (let y = 2; y < CH - 2; y++) for (let x = 2; x < CW - 2; x++) {
+        const k = (x0 + x) + ',' + (y0 + y); if (seen.has(k) || T(x0 + x, y0 + y) !== TV.SCRUB) continue;
+        const q = [[x0 + x, y0 + y]]; seen.add(k); let any = false, inside = true, has = false;
+        for (let i = 0; i < q.length; i++) {
+          const [a, b] = q[i]; if (D.plain(a, b)) any = true; if (shrubs.has(a + ',' + b)) has = true;
+          if (a < x0 + 2 || a > x0 + CW - 3 || b < y0 + 2 || b > y0 + CH - 3) inside = false;
+          for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const kk = (a + dx) + ',' + (b + dy); if (!seen.has(kk) && T(a + dx, b + dy) === TV.SCRUB) { seen.add(kk); q.push([a + dx, b + dy]); } }
+        }
+        if (!any && inside) { small++; if (has) smallWith++; }
+      }
+    }
+    console.log(`# seed ${seed}: ${taken} shrubs on ${eligible} eligible scrub tiles (${(100 * taken / Math.max(1, eligible)).toFixed(0)}%); small patches ${smallWith} of ${small} hold one`);
+    assert.ok(eligible > 5 && taken / eligible >= 0.3, `shrub share of the eligible tiles: ${taken} of ${eligible}`);
+    assert.equal(smallWith, small, 'every small scrub patch holds a shrub');
+  }
+});
 
 test('a 2 x 2 block holds at most three terrains and every two are a pair of the set (terrain layers)', () => {
   assert.ok(blockOk([TV.GRASS, TV.SAND, TV.WATER, TV.SAND]), 'grass, sand and water meet at a corner');

@@ -64,8 +64,9 @@ export function decorProps(seed, { every = 1 } = {}) {
       // the art director's scatter rule: every prop's foot tile and every tuft, flower and clump sits on a plain tile (the tile and its eight neighbours one terrain)
       { const ct = cellTerrain(seed, X, Y), at = (x, y) => ct.terrain[(y - y0 + 1) * ct.w + (x - x0 + 1)];
         const plain = (x, y) => { const v = at(x, y); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (at(x + dx, y + dy) !== v) return false; return true; };
-        for (const p of props) if (p.fam !== 'landmark' && !plain(p.x, p.y)) { st.propOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['prop', p.kind, p.x, p.y]); }
-        for (const d of dec) if ((TUFTS.includes(d.kind) || FLOWERS.includes(d.kind) || d.kind === 'clump-tall') && !plain(d.x, d.y)) { st.decalOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['decal', d.kind, d.x, d.y]); } }
+        // (the scrub shrubs have their own rule, tests/gen7-place.test.mjs: a shrub of a patch one or two cells across stands on the patch's own edge)
+        for (const p of props) if (p.fam !== 'landmark' && p.fam !== 'shrubs' && !plain(p.x, p.y)) { st.propOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['prop', p.kind, p.x, p.y]); }
+        for (const d of dec) if ((TUFTS.includes(d.kind) || FLOWERS.includes(d.kind) || d.kind === 'clump-tall' || d.kind.startsWith('fleck-')) && !plain(d.x, d.y)) { st.decalOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['decal', d.kind, d.x, d.y]); } }
       if (el >= 250) { if (tu * 10 / el < 1.6 || tu * 10 / el > 3.4) { st.cellTuftBad++; if (st.tuftAt.length < 4) st.tuftAt.push([X, Y, +(tu * 10 / el).toFixed(2), el]); } if (fl * 10 / el < 0.7 || fl * 10 / el > 2.4) st.cellFlowerBad++; }
     }
     // reed banks only on shores

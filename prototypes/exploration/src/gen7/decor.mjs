@@ -369,14 +369,14 @@ export function createDecor(seed, land) {
     return out;
   }
   // the reed clumps of the stretches round a rectangle of tiles (the desk's scatter rule, reeds.mjs, seeded by world tile): { kind: 'reed-shore-1' .. 'reed-water-2' (+ 'm' mirrored), tx, ty (the base's tile),
-  // px, py (the base in native pixels, 16 a tile, world frame), water }; the clumps whose base tile lies in x0 - 1 .. x1 + 1, y0 .. y1 + 3 (a reed is up to 34 px tall: its top hangs two tiles above its base)
+  // px, py (the base in native pixels, 16 a tile, world frame), water }; the clumps whose base tile lies in x0 - 2 .. x1 + 2, y0 .. y1 + 3 (a reed is up to 34 px tall: its top hangs two tiles above its base)
   const reedH = (x, y, z) => U(seed, TAG.REEDB, x, y, z);
   function reedClumpsIn(x0, y0, x1, y1) {
     const out = [];
-    for (const r of reedsIn(x0 - 2, y0 - 2, x1 + 2, y1 + 4)) {   // the dual-tile range of reedsIn: stretches are 4 x 4 tiles at 4bx, 4by
+    for (const r of reedsIn(x0 - 4, y0 - 4, x1 + 4, y1 + 4)) {   // the dual-tile range of reedsIn: stretches are 4 x 4 tiles at 4bx, 4by; a clump may stand a tile off its own stretch
       for (const c of reedClumps(T, reedH, { x0: 4 * r.bx, y0: 4 * r.by, x1: 4 * r.bx + 3, y1: 4 * r.by + 3 })) {
         const tx = Math.floor(c.x / 16), ty = Math.floor(c.y / 16);
-        if (tx < x0 - 1 || tx > x1 + 1 || ty < y0 || ty > y1 + 3) continue;
+        if (tx < x0 - 2 || tx > x1 + 2 || ty < y0 || ty > y1 + 3) continue;   // as propsIn: within two tiles sideways, three below
         out.push({ kind: `reed-${c.sprite}${c.mirror ? 'm' : ''}`, tx, ty, px: c.x, py: c.y, water: c.water });
       }
     }
