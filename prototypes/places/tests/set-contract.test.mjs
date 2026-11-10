@@ -5,17 +5,14 @@ import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadSet, validateSetJson, pairTiles, fullVariants, ALLOWED_SPDX, layerTiles, fillTiles, kindFullTiles, layerRows, layerDescriptors } from '../src/setload.mjs';
-import { cornerSheet } from '../src/sheets.mjs';
-import { compareGolden } from '../src/golden.mjs';
+import { loadSet, validateSetJson, ALLOWED_SPDX, layerTiles, fillTiles, kindFullTiles, layerRows, layerDescriptors } from '../src/setload.mjs';
 import { newImage, writePng, fill, decodePng, crop } from '../src/png.mjs';
-import { checkSourcePath, prepareSet, PALETTE_MAX, cutBlobToDual16, BLOB_PIECES } from '../tools/prepare-set.mjs';
+import { checkSourcePath, prepareSet, PALETTE_MAX } from '../tools/prepare-set.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const places = path.join(here, '..');
 const repo = path.join(places, '..', '..');
 const setDir = path.join(repo, 'art', 'places', 'sets', 'ninja-test');
-const goldenDir = path.join(places, 'golden', 'seams');
 const loaded = loadSet(setDir);
 const { set, palette } = loaded;
 
@@ -28,8 +25,8 @@ test('the contract refuses what it should', () => {
   assert.ok(bad((s) => { s.licence.spdx = 'CC-BY-4.0'; }), 'a licence that is not CC0 or ours');
   assert.ok(bad((s) => { delete s.licence; }), 'no licence record');
   assert.ok(bad((s) => { s.ship = 'never'; }));
-  assert.ok(bad((s) => { s.pairs[0].mode = 'blend'; }));
-  assert.ok(bad((s) => { delete s.pairs[0].sheets; }));
+  assert.ok(bad((s) => { delete s.layers; }), 'no layers');
+  assert.ok(bad((s) => { s.pairs = []; }), 'the pair table is gone from the contract');
   assert.ok(bad((s) => { s.extra = 1; }), 'unknown top-level key');
 });
 
@@ -57,7 +54,7 @@ test('palette: at most 208 colours, light tables of 256 entries, every drawn col
   }
   const have = new Set(palette.colours);
   const layerFiles = Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...k.sheets, ...(k.full ? [k.full] : []), ...Object.values(k.looks || {}).flat(2)])]);
-  const names = [...set.pairs.flatMap((p) => [...p.sheets, p.fullSheet]), ...layerFiles, ...set.tone.sheets, set.spriteSheet];
+  const names = [...layerFiles, ...Object.values(set.layers).flatMap((l) => (l.over || []).flatMap((k) => [...Object.values(k.tall || {}).flat(), ...Object.values(k.wayup || {})])), ...set.tone.sheets, set.spriteSheet];
   for (const f of names) {
     const img = loaded.png(f);
     for (let i = 0; i < img.data.length; i += 4) {
@@ -66,28 +63,6 @@ test('palette: at most 208 colours, light tables of 256 entries, every drawn col
       const h = '#' + [img.data[i], img.data[i + 1], img.data[i + 2]].map((v) => v.toString(16).padStart(2, '0')).join('');
       assert.ok(have.has(h), `${f}: colour ${h} is not in palette.json`);
     }
-  }
-});
-
-test('every pair has 16 tiles, in whole sheets, one per frame; opaque tiles are opaque', () => {
-  const kit = ['grass-water', 'sand-water', 'grass-sand', 'grass-path', 'mud-water', 'grass-earth', 'sand-earth', 'cliff-grass', 'thicket-grass', 'scrub-grass', 'cliff-sand', 'thicket-sand', 'scrub-sand', 'deep-water'];   // the kit's, the clearing's, then the desk's open edges
-  assert.deepEqual(set.pairs.map((p) => p.id), kit);
-  const t = set.sourceTile;
-  for (const p of set.pairs) {
-    for (const f of p.sheets) {
-      const img = loaded.png(f);
-      assert.equal(img.w, 4 * t, f);
-      assert.equal(img.h, 4 * t, f);
-    }
-    const tiles = pairTiles(loaded, p);
-    assert.equal(tiles.length, 16);
-    if (p.mode === 'opaque') for (const [i, tile] of tiles.entries()) {
-      for (let k = 3; k < tile.data.length; k += 4) assert.equal(tile.data[k], 255, `${p.id} tile ${i} has a transparent pixel`);
-    }
-    if (p.sheets.length > 1) assert.ok(p.frameMs >= 16, p.id + ' animation has a frame time');
-    const variants = fullVariants(loaded, p);
-    assert.ok(variants.length >= 1);
-    assert.deepEqual(variants[0].data, tiles[15].data, p.id + ': variant 0 is tile 15');
   }
 });
 
@@ -211,33 +186,6 @@ test('prepare-set: a source with more than 208 colours stops and says so (fixtur
   for (const k of Object.keys(recipe.sources)) recipe.sources[k] = 'ninja-adventure/a.png';
   delete recipe.desk;   // the fixture's own source only: the desk's pinned art lives outside this repo (absent in CI)
   assert.throws(() => prepareSet(recipe, { tilesetsRoot: root }), /over the 208/);
-});
-
-test('the blob re-cut: 16 tiles, tile 15 is the upper base, the diagonals are pieced from two inner corners (fixture)', () => {
-  const t = 16;
-  const solid = (r, g, b) => { const i = newImage(t, t); fill(i, r, g, b); return i; };
-  const pieces = {};
-  BLOB_PIECES.forEach((n, k) => { pieces[n] = solid(10 + k, 0, 0); });
-  const base = solid(200, 200, 200);
-  const tiles = cutBlobToDual16(pieces, base, t);
-  assert.equal(tiles.length, 16);
-  assert.deepEqual(tiles[15].data, base.data);
-  assert.equal(tiles[0].data[0], 10 + BLOB_PIECES.indexOf('C'));
-  assert.equal(tiles[9].data[0], 10 + BLOB_PIECES.indexOf('inNW'));                       // NW+SE: inNW whole ...
-  assert.equal(tiles[9].data[((t - 1) * t + (t - 1)) * 4], 10 + BLOB_PIECES.indexOf('inSE')); // ... and inSE's quarter at the SE
-  assert.equal(tiles[6].data[0], 10 + BLOB_PIECES.indexOf('inNE'));
-  assert.equal(tiles[6].data[((t - 1) * t) * 4], 10 + BLOB_PIECES.indexOf('inSW'));
-  assert.equal(tiles[1].data[0], 10 + BLOB_PIECES.indexOf('inSE'));                       // SE only
-  assert.equal(tiles[8].data[0], 10 + BLOB_PIECES.indexOf('inNW'));                       // NW only
-  assert.equal(tiles[3].data[0], 10 + BLOB_PIECES.indexOf('B'));                          // SW+SE: bottom half
-});
-
-test('corner sheets at 48 px match their goldens (A5 test 3)', () => {
-  for (const p of set.pairs) {
-    const sheet = cornerSheet(pairTiles(loaded, p, 0, true));
-    const r = compareGolden(path.join(goldenDir, `${set.id}-${p.id}-sheet-48.png`), sheet);
-    assert.ok(r.ok, r.message);
-  }
 });
 
 test('regenerating the set from the kit gives the committed pixels (skipped when the kit is not on this machine)', (t) => {

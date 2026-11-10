@@ -1,8 +1,8 @@
 // The heart clearings: under each of the four places' hearts a 3 x 3 of earth (radius about 1.5 tiles), the ring of one cell round it wholly grass or wholly sand (earth, sand and grass never
-// meet at a corner: both earth pairs are opaque), no prop (but the landmark) and no decal within 2 of the heart; and the desk's two pairs are the set's, byte for byte.
+// meet at a corner), no prop (but the landmark) and no decal within 2 of the heart; and the set draws earth as the lowest ground under grass and sand.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -35,12 +35,10 @@ for (const [name, ground] of [['Windstep', GRASS], ['HollowTree', GRASS], ['Spli
   });
 }
 
-test('the set holds the desk\'s two earth pairs byte for byte, and earth is the lowest ground of both', () => {
-  const dir = path.join(repo, 'art/places/sets/ninja-test'), desk = '/home/mb/mb/mibi-art/art-jobs/2026-11-09-stone-standing/out/clearing/';
+test('the set draws earth as the lowest ground under grass and sand: a fill of its own, and grass and sand have an edge over it', () => {
+  const dir = path.join(repo, 'art/places/sets/ninja-test');
   const set = JSON.parse(readFileSync(path.join(dir, 'set.json'), 'utf8')), terr = JSON.parse(readFileSync(path.join(repo, 'art/places/terrain.json'), 'utf8')).terrains, z = (id) => terr.find((t) => t.id === id).z;
-  for (const id of ['grass-earth', 'sand-earth']) {
-    const p = set.pairs.find((q) => q.id === id); assert.ok(p, id); assert.equal(p.lower, 'earth'); assert.ok(z('earth') < z(p.upper) && z('earth') < z(p.lower === 'earth' ? p.upper : p.lower));
-    for (const f of [...p.sheets, p.fullSheet]) if (existsSync(desk + f)) assert.ok(readFileSync(path.join(dir, f)).equals(readFileSync(desk + f)), f + ' differs from the desk\'s file');
-  }
+  assert.ok(set.layers.earth.fill, 'earth has its own fill');
+  for (const id of ['grass', 'sand']) assert.ok(set.layers[id].over.some((k) => k.lowers.includes('earth')), id + ' has an edge over earth');
   assert.ok(z('earth') < z('sand') && z('earth') < z('grass'));
 });

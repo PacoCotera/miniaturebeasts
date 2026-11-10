@@ -1,5 +1,5 @@
 // The art desk's signed pieces in the test set (open edges, mibi-art abb33a65b; meadow decor, mibi-art 5734abc5): every placed file is the desk's file byte for byte at its signed commit
-// (never the desk's live folder), as DESK.json records; the cliff, thicket, scrub and deep-water pairs, the reed look and the small decals are in the set.
+// (never the desk's live folder), as DESK.json records; the terrain layers (fills, overs, cliff faces, way up, reed look, tone) and the small decals are in the set.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -17,8 +17,8 @@ const haveDesk = existsSync(REPO + '/.git') && (() => { try { execFileSync('git'
 
 test('every placed desk file equals the recorded hash, and the desk\'s file at its signed commit', () => {
   const names = Object.keys(desk);
-  assert.ok(names.length > 60, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['386ed11fa', '4315b9d25', '4e21bd68f', '5734abc5', 'abb33a65b', 'b60587b26', 'c335654cc', 'e43e480ac']);
+  assert.ok(names.length > 35, 'files recorded: ' + names.length);
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['386ed11fa', '4e21bd68f', '5734abc5', 'abb33a65b', 'b60587b26', 'c335654cc', 'e43e480ac']);
   const show = (c, p) => execFileSync('git', ['-C', REPO, 'show', `${c}:${p}`], { maxBuffer: 1 << 26 });
   for (const [n, d] of Object.entries(desk)) {
     const have = readFileSync(path.join(dir, n));
@@ -58,12 +58,13 @@ test('the terrain layers are signed pieces: every layer file is recorded, fills 
   assert.deepEqual(set.layers.grass.over[0].looks.reeds, [], 'the grass bank reeds are an empty slot');
 });
 
-test('the set holds the open edges and the decor', () => {
-  const ids = set.pairs.map((p) => p.id);
-  for (const id of ['cliff-grass', 'cliff-sand', 'thicket-grass', 'thicket-sand', 'scrub-grass', 'scrub-sand', 'deep-water']) assert.ok(ids.includes(id), id);
-  for (const g of ['cliff-grass', 'cliff-sand']) { const p = set.pairs.find((q) => q.id === g); assert.deepEqual(Object.keys(p.tall), ['1', '2', '3']); assert.ok(p.wayup); }
-  assert.equal(set.pairs.find((p) => p.id === 'scrub-grass').variants.length, 3);
-  assert.deepEqual(set.looks[0].of['grass-water'].map((v) => v.length), [4, 4, 4]);
+test('the set holds the terrain layers, the cliff, the way up and the decor; no pair table', () => {
+  assert.equal(set.pairs, undefined);
+  assert.equal(set.looks, undefined);
+  for (const id of ['deep', 'water', 'earth', 'sand', 'mud', 'path', 'grass', 'thicket', 'cliff']) assert.ok(set.layers[id].fill, id + ' has a fill');
+  const cliff = set.layers.cliff.over[0];
+  assert.deepEqual(Object.keys(cliff.tall), ['1', '2', '3']);
+  assert.deepEqual(Object.keys(cliff.wayup), ['grass', 'sand']);
   for (const n of ['flower-daisy', 'flower-buttercup', 'flower-daisy-pair', 'flower-blue-pair', 'flower-pink-three', 'tuft-fan', 'tuft-lean', 'tuft-small', 'clump-tall']) assert.deepEqual(set.decals[n].anchor, [8, 15], n);
   assert.ok(!set.decals['flower-sun'] && !set.decals['flower-sun-small'], 'the kit\'s sunflowers are retired');
 });

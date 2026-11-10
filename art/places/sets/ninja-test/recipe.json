@@ -17,64 +17,16 @@
   "palettePin": ["#141b1b","#17331f","#4e484a","#584b46","#7b473c","#6e5038","#954625","#56634d","#965340","#82603f","#965746","#4a7f4b","#5f7160","#a16240","#9a7453","#b36f3c","#a26a83","#8e7c73","#d4683b","#74a334","#bd7959","#e46d3a","#b08a63","#8d977f","#a8a129","#d3865f","#d78b4a","#bc84b5","#b3957f","#c69469","#79b8ce","#adbc3a","#d6a46f","#c9b28c","#f1ae41","#d2b37d","#b6beb0","#ffad5d","#71ddee","#eecf9b","#ffcb8d","#ffe166","#ffffff","#28432d","#36603a","#3f9cc0","#2e7aa3","#93a332","#e8ad75","#bccb4f","#5f7fd0","#c96b9c","#9cc4f4","#f4a3c8"],
   "corePalette": "art/companion-48/terrain/meadow/meadow-palette.json",
   "notes": [
-    "Every piece is cut whole from the pack's 13-piece blob sets (4 outer corners, 4 edges, centre, 4 inner corners); the two diagonal tiles are pieced from two inner corners. Nothing is repainted.",
-    "grass|sand: the pack has no grass-and-sand blob, so the pack's grass-and-dirt blob is used with its dirt colours changed to the plain sand colour of the sand shore (exact colour map in the recipe, `recolour`), so a sand tile looks the same in grass|sand and in sand|water.",
-    "Stitching (`stitch`): blob art is drawn for neighbours chosen by eight cells, so re-cut as corner tiles its pieces agree on where a shore leaves a tile only to within a few pixels and its grass texture runs into the border at different places. For every tile edge and corner state the boundary line is taken from the tile whose shore runs straight through that edge, and written over the border of every tile, frame and variant with that state. The cost is at most a one-pixel line at the border of a tile whose own shore drifted; the seam proof then holds exactly.",
-    "The sand full tile is the water sheet's own sand cell (TilesetWater 0,5), the colour the sand shore pieces run into.",
-    "mud|water is the pack's dark swamp shore: brown mud and purple water. Its water is not the blue water of the other pairs; the three never meet (an opaque pair refuses a third terrain at a corner).",
     "reeds: the pack has no reeds; its bamboo stalk stands in. tall-grass: three of the pack's grass tufts in a row stand in as the frames of a sway (the pack's daisy plant read as flowers). Both are test stand-ins for the art desk's own.",
     "tree-hollow: the pack's great pair of gnarled trees with the arch between them, cut whole; the Hollow Tree's landmark, its heart at the foot of the arch. split-stone: the pack's three stacked grey boulders with the dark crack between them, cut whole; the Split Stone's landmark.",
-    "grass|earth and sand|earth (`premade`): the heart's clearing, drawn by the art desk and placed as they are: signed in mibi-art 16dd23ebb, art-jobs/2026-11-09-stone-standing/out/clearing/ (pair-grass-earth, pair-sand-earth and their full tiles, copied byte for byte; never edit here, re-sign at the desk). Earth is the lower terrain of both pairs; the clearing is painted wholly inside grass or wholly inside sand, so earth, sand and grass never meet at a corner. Their six new colours join the palette.",
-    "desk (`desk`: true, tools/desk-art.mjs): the art desk's open edges, signed in mibi-art abb33a65b (art-jobs/2026-11-09-open-edges/out/; cliff, thicket, scrub and deep-water pairs, the cliff's tall sheets and way-up pieces, the scrub variants, the reed bank look of the two shores) and its meadow decor, signed in mibi-art 5734abc5 (art-jobs/2026-11-09-meadow-decor/out/; small flowers and tufts that replace the kit's sunflowers). Read from those commits, copied byte for byte, hashes in DESK.json; their colours join the palette.",
+    "desk (`desk`: true, tools/desk-art.mjs): the art desk's way-up pieces, signed in mibi-art abb33a65b (art-jobs/2026-11-09-open-edges/out/), and its meadow decor, signed in mibi-art 5734abc5 (art-jobs/2026-11-09-meadow-decor/out/; small flowers and tufts that replace the kit's sunflowers). Read from those commits, copied byte for byte, hashes in DESK.json; their colours join the palette.",
     "terrain layers (`desk`: true, tools/desk-art.mjs deskLayers; set.json `layers` and `tone`): the water, earth, sand, mud, path and grass layers and the grass tone layer, signed in mibi-art 4e21bd68f (sand job), 386ed11fa and b60587b26 (meadow), read from those commits. A fill is slot 15 of a signed sheet cropped without a changed pixel (DESK.json `from: <sheet>#15`) or the desk's own fill strip; the reed look of the sand beach is the pixels of the signed reed composites that differ from the plain beach composite. Scrub is drawn as grass. Thicket (mibi-art e43e480ac) and cliff (c335654cc) come with every pixel of alpha under 255 made transparent in their over sheets (art director ruling 2026-11-09: the soft cast shade goes, the opaque undersides and face shading stay); the thicket fill is its full strip, the cliff top is slot 15 of the plain over-cliff sheet, the cliff's tall faces at s = 3 are three variants. The palette keeps its indices (palettePin) and the new colours follow."
   ],
   "sources": {
     "water": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetWater.png",
-    "floor": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetFloor.png",
     "nature": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetNature.png",
-    "ripple": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Animated/Water Ripples/SpriteSheet16x16.png",
-    "rippleSwamp": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Animated/Water Ripples/SpriteSheetPurple.png",
     "plant": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Animated/Plant/SpriteSheet16x16.png"
   },
-  "pairs": [
-    {
-      "id": "grass-water", "lower": "water", "upper": "grass", "mode": "opaque", "stitch": true,
-      "blob": { "sheet": "water", "cells": { "TL": [0, 6], "T": [1, 6], "TR": [2, 6], "L": [0, 7], "C": [1, 7], "R": [2, 7], "BL": [0, 8], "B": [1, 8], "BR": [2, 8], "inSE": [5, 7], "inSW": [6, 7], "inNE": [5, 8], "inNW": [6, 8] } },
-      "upperFull": { "sheet": "floor", "cells": [[0, 12], [1, 12], [2, 12], [3, 12], [4, 12]] },
-      "lowerFrames": { "sheet": "ripple", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
-    },
-    {
-      "id": "sand-water", "lower": "water", "upper": "sand", "mode": "opaque", "stitch": true,
-      "blob": { "sheet": "water", "cells": { "TL": [0, 0], "T": [1, 0], "TR": [2, 0], "L": [0, 1], "C": [1, 1], "R": [2, 1], "BL": [0, 2], "B": [1, 2], "BR": [2, 2], "inSE": [5, 1], "inSW": [6, 1], "inNE": [5, 2], "inNW": [6, 2] } },
-      "upperFull": { "sheet": "water", "cells": [[0, 5]] },
-      "lowerFrames": { "sheet": "ripple", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
-    },
-    {
-      "id": "grass-sand", "lower": "sand", "upper": "grass", "mode": "opaque", "stitch": true,
-      "blob": { "sheet": "floor", "cells": { "TL": [0, 7], "T": [1, 7], "TR": [2, 7], "L": [0, 8], "C": [1, 8], "R": [2, 8], "BL": [0, 9], "B": [1, 9], "BR": [2, 9], "inSE": [5, 8], "inSW": [6, 8], "inNE": [5, 9], "inNW": [6, 9] } },
-      "upperFull": { "sheet": "floor", "cells": [[0, 12], [1, 12], [2, 12], [3, 12], [4, 12]] },
-      "recolour": { "d3865f": "ffcb8d", "bd7959": "ffcb8d", "e6a578": "ffcb8d", "ad704b": "ffad5d" }
-    },
-    {
-      "id": "grass-path", "lower": "path", "upper": "grass", "mode": "opaque", "stitch": true,
-      "blob": { "sheet": "floor", "cells": { "TL": [0, 7], "T": [1, 7], "TR": [2, 7], "L": [0, 8], "C": [1, 8], "R": [2, 8], "BL": [0, 9], "B": [1, 9], "BR": [2, 9], "inSE": [5, 8], "inSW": [6, 8], "inNE": [5, 9], "inNW": [6, 9] } },
-      "upperFull": { "sheet": "floor", "cells": [[0, 12], [1, 12], [2, 12], [3, 12], [4, 12]] }
-    },
-    {
-      "id": "mud-water", "lower": "water", "upper": "mud", "mode": "opaque", "stitch": true,
-      "blob": { "sheet": "water", "cells": { "TL": [13, 6], "T": [14, 6], "TR": [15, 6], "L": [13, 7], "C": [14, 7], "R": [15, 7], "BL": [13, 8], "B": [14, 8], "BR": [15, 8], "inSE": [18, 7], "inSW": [19, 7], "inNE": [18, 8], "inNW": [19, 8] } },
-      "upperFull": { "sheet": "water", "cells": [[13, 11]] },
-      "lowerFrames": { "sheet": "rippleSwamp", "rects": [[0, 0, 16, 16], [16, 0, 16, 16], [32, 0, 16, 16], [48, 0, 16, 16]], "ms": 250 }
-    },
-    {
-      "id": "grass-earth", "lower": "earth", "upper": "grass", "mode": "opaque",
-      "premade": { "sheets": ["pair-grass-earth.png"], "fullSheet": "pair-grass-earth-full.png" }
-    },
-    {
-      "id": "sand-earth", "lower": "earth", "upper": "sand", "mode": "opaque",
-      "premade": { "sheets": ["pair-sand-earth.png"], "fullSheet": "pair-sand-earth-full.png" }
-    }
-  ],
   "props": {
     "tree-broad": { "sheet": "nature", "rect": [48, 322, 48, 14], "anchor": [24, 13], "footprint": [[0, 0]], "canopy": "tree-broad-crown" },
     "tree-autumn": { "sheet": "nature", "rect": [144, 322, 48, 14], "anchor": [24, 13], "footprint": [[0, 0]], "canopy": "tree-autumn-crown" },
