@@ -1,5 +1,5 @@
 // Reads the landmark names list (a markdown file) and writes src/gen7/landmark-names.mjs, which the generator reads. Run when the list changes:
-//   node tools/gen7-landmark-names.mjs [path to landmark-names.md]
+//   node tools/gen7-landmark-names.mjs [path to the names list]
 // The markdown stays the one source; the json is its parsed form (a page and the Station cannot read the markdown folder).
 import { readFileSync, writeFileSync } from 'node:fs';
 
