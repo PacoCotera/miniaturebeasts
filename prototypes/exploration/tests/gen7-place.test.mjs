@@ -71,7 +71,7 @@ for (const seed of [7, 13, 42]) {
       check(per10(cl, el) <= 10 / 40, `${name}: clumps per 10 grass tiles ${per10(cl, el).toFixed(3)} (at most 1 in 40)`);
       check(per10(el - tu - fl - cl, el) >= 5.5, `${name}: bare ${per10(el - tu - fl - cl, el).toFixed(2)} of 10 (about 6)`);
     }
-    check(s.cellTuftBad === 0, 'tufts in every large cell within 1.6-3.4 per 10: ' + JSON.stringify(s.tuftAt));
+    check(s.cellTuftBad === 0, 'tufts in every large cell within 0.8-1.7 per 10: ' + JSON.stringify(s.tuftAt));
     // the Hollow Tree
     check(s.hollow >= 3, 'hollow trees: ' + s.hollow);
     check(s.hollowCrownNear === 0, 'no crown or prop within two tiles of the Hollow Tree: ' + JSON.stringify(s.hollowAt));

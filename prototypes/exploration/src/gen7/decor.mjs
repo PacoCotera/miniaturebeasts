@@ -38,6 +38,7 @@ export const BUSH_KINDS = KINDS.bushes;
 export const HOLLOW = 'tree-hollow';
 // the desk's meadow decor rule (mibi-art 5734abc5): per 10 open tiles 2.5 tufts and 1.5 flowers, mostly in loose drifts of 2-3, an accent clump at most 1 in 40 tiles and 4 tiles from another
 export const TUFTS = ['tuft-fan', 'tuft-lean', 'tuft-small'];
+export const CLUMP_KINDS = ['clump-tall', 'clump-tall-m', 'clump-tall-s', 'clump-tall-sm'];   // the four signed tall clumps (26 and 17 rows, each mirrored), one by hash
 export const FLOWERS = ['flower-daisy', 'flower-buttercup', 'flower-daisy-pair', 'flower-blue-pair', 'flower-pink-three'];
 export const DECOR_RULE = RULES.meadow.target;
 // the scrub shrubs (the desk's shrub-1..4, mibi-art 34a8dc49c): on the inside of a scrub patch only, never on neighbouring tiles (a shrub is 15 px in a 16 px tile, so two in a row would touch); at this raw rate about
@@ -326,7 +327,7 @@ export function createDecor(seed, land, rules = RULES) {
       const t = T(x, y); let kind = null;
       if (t === GRASS || t === CLIFF) {
         if (!grassTile(x, y) || occ.has(key(x, y))) continue;
-        if (clumpAt(x, y)) kind = 'clump-tall';
+        if (clumpAt(x, y)) kind = CLUMP_KINDS[H(seed, TAG.CLUMP + 2, x, y) % CLUMP_KINDS.length];
         else { kind = flowerAt(x, y); if (!kind && U(seed, TAG.TUFT, x, y) < MD.tuft.chance) kind = TUFTS[H(seed, TAG.TUFTKIND, x, y) % 3]; }
         if (!kind && !nearProp.has(key(x, y)) && U(seed, TAG.FLECK, x, y) <= FL.chance) {   // a fleck: its kind, mirror and place in the tile by the desk's rule
           const f = Math.floor(U(seed, TAG.FLECK + 1, x, y) * FL.sizes.length), [fw, fh] = FL.sizes[f], m = U(seed, TAG.FLECK + 2, x, y) < 0.5, room = 16 - 2 * FL.margin;
@@ -341,7 +342,7 @@ export function createDecor(seed, land, rules = RULES) {
         if (pr && U(seed, TAG.PAD, x, y) < pr && openWater(x, y)) kind = U(seed, TAG.PAD + 1, x, y) < 0.25 ? 'lily-pad-flower' : 'lily-pad';   // about one pad in four carries the flower (the signed variant)
       }
       if (!kind) continue;
-      const tall = kind.startsWith('flower') || kind.startsWith('tuft') || kind === 'clump-tall';
+      const tall = kind.startsWith('flower') || kind.startsWith('tuft') || kind.startsWith('clump-tall');
       out.push({ kind, x, y, dx: tall ? (H(seed, TAG.NUDGE, x, y) % 7) - 3 : 0, dy: tall ? -(H(seed, TAG.NUDGE + 1, x, y) % 4) : 0 });
     }
     return out;

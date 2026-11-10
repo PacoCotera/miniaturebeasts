@@ -33,9 +33,9 @@
     }
   },
   "meadow": {
-    "target": { "tufts": 0.25, "flowers": 0.15, "clumps": 0.025 },
-    "tuft": { "chance": 0.302 },
-    "flower": { "chance": 0.083, "reach": 2, "drift": [[1, 1], [-1, 1], [2, 0], [-2, 1], [0, 2], [1, -1]], "sameKind": 0.7 },
+    "target": { "tufts": 0.125, "flowers": 0.075, "clumps": 0.025 },
+    "tuft": { "chance": 0.151 },
+    "flower": { "chance": 0.042, "reach": 2, "drift": [[1, 1], [-1, 1], [2, 0], [-2, 1], [0, 2], [1, -1]], "sameKind": 0.7 },
     "clump": { "chance": 0.04, "apart": 3 },
     "fleck": {
       "chance": 0.4,
