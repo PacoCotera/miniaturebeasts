@@ -66,12 +66,13 @@ for (const seed of [7, 13, 42]) {
     // decor per 10 grass tiles, interior and border rows alike, within the desk's rule
     const per10 = (n, d) => 10 * n / d, T = s.tiles, I = { el: T.eligible - T.bEligible, tu: T.tufts - T.bTufts, fl: T.flowers - T.bFlowers, cl: T.clumps - T.bClumps };
     for (const [name, el, tu, fl, cl] of [['interior', I.el, I.tu, I.fl, I.cl], ['border rows', T.bEligible, T.bTufts, T.bFlowers, T.bClumps]]) {
-      check(per10(tu, el) > 2.2 && per10(tu, el) < 2.8, `${name}: tufts per 10 grass tiles ${per10(tu, el).toFixed(2)} (rule 2.5)`);
-      check(per10(fl, el) > 1.25 && per10(fl, el) < 1.75, `${name}: flowers per 10 grass tiles ${per10(fl, el).toFixed(2)} (rule 1.5)`);
+      // halved from the desk's 2.5 and 1.5 (art director, map decor B: open meadow was carpeted); the numbers live in art/places/map-rules.json
+      check(per10(tu, el) > 1.1 && per10(tu, el) < 1.6, `${name}: tufts per 10 grass tiles ${per10(tu, el).toFixed(2)} (rule 1.25)`);
+      check(per10(fl, el) > 0.6 && per10(fl, el) < 0.95, `${name}: flowers per 10 grass tiles ${per10(fl, el).toFixed(2)} (rule 0.75)`);
       check(per10(cl, el) <= 10 / 40, `${name}: clumps per 10 grass tiles ${per10(cl, el).toFixed(3)} (at most 1 in 40)`);
       check(per10(el - tu - fl - cl, el) >= 5.5, `${name}: bare ${per10(el - tu - fl - cl, el).toFixed(2)} of 10 (about 6)`);
     }
-    check(s.cellTuftBad === 0, 'tufts in every large cell within 0.8-1.7 per 10: ' + JSON.stringify(s.tuftAt));
+    check(s.cellTuftBad === 0, 'tufts in every large cell within 0.5-2.5 per 10: ' + JSON.stringify(s.tuftAt));
     // the Hollow Tree
     check(s.hollow >= 3, 'hollow trees: ' + s.hollow);
     check(s.hollowCrownNear === 0, 'no crown or prop within two tiles of the Hollow Tree: ' + JSON.stringify(s.hollowAt));

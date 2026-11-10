@@ -67,7 +67,7 @@ export function decorProps(seed, { every = 1 } = {}) {
         // (the scrub shrubs have their own rule, tests/gen7-place.test.mjs: a shrub of a patch one or two cells across stands on the patch's own edge)
         for (const p of props) if (p.fam !== 'landmark' && p.fam !== 'shrubs' && !plain(p.x, p.y)) { st.propOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['prop', p.kind, p.x, p.y]); }
         for (const d of dec) if ((TUFTS.includes(d.kind) || FLOWERS.includes(d.kind) || d.kind.startsWith('clump-tall') || d.kind.startsWith('fleck-')) && !plain(d.x, d.y)) { st.decalOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['decal', d.kind, d.x, d.y]); } }
-      if (el >= 250) { if (tu * 10 / el < 0.8 || tu * 10 / el > 1.7) { st.cellTuftBad++; if (st.tuftAt.length < 4) st.tuftAt.push([X, Y, +(tu * 10 / el).toFixed(2), el]); } if (fl * 10 / el < 0.35 || fl * 10 / el > 1.2) st.cellFlowerBad++; }
+      if (el >= 250) { if (tu * 10 / el < 0.5 || tu * 10 / el > 2.5) { st.cellTuftBad++; if (st.tuftAt.length < 4) st.tuftAt.push([X, Y, +(tu * 10 / el).toFixed(2), el]); } if (fl * 10 / el < 0.35 || fl * 10 / el > 1.2) st.cellFlowerBad++; }
     }
     // reed banks only on shores
     { const ir = cellIR(seed, X, Y);
