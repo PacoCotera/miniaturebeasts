@@ -75,11 +75,13 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
   for (const name of TABLE_NAMES) {
     const map = new Array(256), night = NIGHT_TABLES.includes(name);
     // the night grass: the green the plain grass fill goes to; the crowns stay at or below its lightness, the tone goes to the green just above it
-    let g0 = -1, lim = Infinity, up = -1;
+    let g0 = -1, lim = Infinity, up = -1, groundLum = Infinity;
     if (night && ground.size) {
-      const gi = [...ground][0]; g0 = nearest(TRANSFORMS[name](rgbAt(gi)), pools.green); lim = lumOf(rgbAt(g0));
+      const gi = [...ground][0]; g0 = nearest(TRANSFORMS[name](rgbAt(gi)), pools.green); lim = lumOf(rgbAt(g0)); groundLum = lumOf(rgbAt(gi));
       let bl = Infinity; for (const [i, rgb] of pools.green) { const l = lumOf(rgb); if (l > lim && l < bl) { bl = l; up = i; } }
     }
+    // the other greens keep their order against the grass: a green darker than the plain grass (the scrub, the reeds, the shades) goes to a green darker than the night grass, a lighter one to one at least as light
+    const darkGreens = pools.green.filter(([, c]) => lumOf(c) < lim), lightGreens = pools.green.filter(([, c]) => lumOf(c) >= lim);
     for (let i = 0; i < 256; i++) {
       if (i === 0) { map[i] = 0; continue; }
       if (i >= used) { map[i] = i; continue; }
@@ -87,6 +89,7 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
       if (!night || !f) map[i] = nearest(t);
       else if (tone.has(i) && up >= 0 && f === 'green') map[i] = up;
       else if (crowns.has(i) && f === 'green') map[i] = nearest(t, pools.green.filter(([, c]) => lumOf(c) <= lim));
+      else if (f === 'green' && ground.size && !ground.has(i)) { const pool = lumOf(rgb) < groundLum ? darkGreens : lightGreens; map[i] = nearest(t, pool.length ? pool : pools.green); }
       else map[i] = nearest(t, pools[f]);
     }
     tables[name] = map;
