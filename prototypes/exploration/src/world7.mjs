@@ -3,7 +3,7 @@
 //   cellWorldXY(slot, cell)      the realm cell [X, Y] of a region cell
 //   layout7(ctx, G, seed, slot, key)   the page's layout of a land cell: its IR, baked in the page, adapted. ctx: { ts, terrains, pairs }
 import { genRegion7, realm7 } from './gen7/region.mjs';
-import { cellIR } from './gen7/place.mjs';
+import { cellIR, raisedAt, CW, CH } from './gen7/place.mjs';
 import { MW, MH } from './world.mjs';
 import { bakeCell } from './bake7.mjs';
 import { adaptCell } from './adapt7.mjs';
@@ -17,6 +17,8 @@ export function bakedCell(ctx, seed, slot, cell) {
   return { ir, place: bakeCell(ir, ctx) };
 }
 export function layout7(ctx, G, seed, slot, key) {
-  const cell = +key, { ir, place } = bakedCell(ctx, seed, slot, cell);
-  return adaptCell(place, ir, ctx.ts, ctx.terrains, { key, cell, land: G.land[cell], G, seed });
+  const cell = +key, { ir, place } = bakedCell(ctx, seed, slot, cell), lay = adaptCell(place, ir, ctx.ts, ctx.terrains, { key, cell, land: G.land[cell], G, seed });
+  const [X, Y] = cellWorldXY(slot, cell);
+  lay.raisedFn = (x, y) => raisedAt(seed, X * CW + x, Y * CH + y);   // is this tile raised land (height lets you see further)
+  return lay;
 }

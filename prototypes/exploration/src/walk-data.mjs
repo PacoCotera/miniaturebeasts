@@ -50,3 +50,11 @@ export const fleeTiles = row => row.flee + 1;
 
 // The 2-frame step slot's shape check: both frames of an age non-empty means the step is drawn.
 export const stepFrames = (art, juv) => { const e = art && art[juv ? 'juvenile' : 'adult']; return e && e[0] && e[1] ? e : null; };
+
+// How far the veil lifts in a place (tiles): a Call's round, 4 in a fog bank, 6 with a glowing partner; walking lifts WALK_R, and on raised land WALK_R_HIGH (plain seeing: height lets you see further).
+export const CALL_R_PLACE = 7;     // [tune]
+export const CALL_R_FOG_PLACE = 4, CALL_R_FOG_GLOW = 6;
+export const WALK_R = 4, WALK_R_HIGH = 6;   // [tune]
+// The map's fog over places: night dots out of 16 on a cell you have never been into, and on one you have been into but not explored. An explored place is clear. [tune]
+// Chosen at 1x on a lime meadow cell and a dark wood cell (6/3 greyed the land; 3/1 left not-been and been 11 luma apart on lime): 4/1 keeps lime olive-green and the three states about 22 luma apart.
+export const FOG_NOT_BEEN = 0, FOG_BEEN = 2;   // night-dot levels of 16: never been into is drawn one step darker (the dark table) with no dots; been in, light dots
