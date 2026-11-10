@@ -99,7 +99,12 @@ export function makePage(opts = {}) {
   const els = {}, elStub = () => new Proxy({}, { get: (t, k) => k in t ? t[k] : any, set: (t, k, v) => { t[k] = v; return true; } });
   let run = null, pal = null;
   const P = () => pal || (pal = { hex: new Map(run("HEX").map((h, i) => [h, i])), rgb: run("RGB"), of: new Map(run("RGB").map((c, i) => [c[0] << 16 | c[1] << 8 | c[2], i])) });
-  const look = { hex: h => P().hex.get(h) ?? -2, rgbOf: v => P().rgb[v], rgb: (r, g, b) => P().of.get(r << 16 | g << 8 | b) ?? -2 };
+  // opts.paint: the art desk's painted pieces carry colours off the core palette; a fake canvas drops them (index -2) unless this is set,
+  // when each new colour gets the next index after the core ones, so a picture of the screen shows the painted props too (p.rgbTable() lists them all)
+  const ext = [], extOf = new Map();
+  const look = { hex: h => P().hex.get(h) ?? -2, rgbOf: v => v < P().rgb.length ? P().rgb[v] : ext[v - P().rgb.length],
+    rgb: (r, g, b) => { const k = r << 16 | g << 8 | b, v = P().of.get(k); if (v !== undefined || !opts.paint) return v ?? -2;
+      let e = extOf.get(k); if (e === undefined) { e = P().rgb.length + ext.length; ext.push([r, g, b]); extOf.set(k, e); } return e; } };
   const document = opts.els || opts.canvas ? new Proxy(any, { get: (t, k) => k === "getElementById" && opts.els ? id => els[id] || (els[id] = elStub()) : k === "createElement" && opts.canvas ? tag => tag === "canvas" ? fakeCanvas(look) : any : any }) : any;
   const clock = { t: 1000, timers: [] }, writes = [], errors = [], raf = { n: 0 };
   const silent = { log() {}, warn() {}, error() {} };
@@ -114,6 +119,7 @@ export function makePage(opts = {}) {
   let KEY; try { KEY = run("SAVE_KEY"); } catch { KEY = undefined; }
   const p = { run, ctx, store, clock, els, writes, errors, raf, KEY,
     get S() { return run("S"); },
+    rgbTable: () => P().rgb.concat(ext),
     // real time passes: the timers due run in order
     pass(ms) { const end = clock.t + ms; for (;;) { clock.timers.sort((a, b) => a.at - b.at); const n = clock.timers[0]; if (!n || n.at > end) break; clock.timers.shift(); clock.t = n.at; n.f(); } clock.t = end; },
     // one key press, after any input lock has run out
