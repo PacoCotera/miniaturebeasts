@@ -543,10 +543,18 @@ const STONE_COLOURS = [], STONE_PIECES = new Map();
 const STONE_FILES = ['tall', 'small'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
 const STONE_LOOK = new Set(['look-heart-stone', ...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
 function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
-  const mk = (w, h) => PL6.mk ? PL6.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h });
+  const mk = (w, h) => PL6.mk ? PL6.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }), prop = dy !== undefined;
   const seen = new Set(STONE_COLOURS.map(q => q.join())), keep = (w, h, data, dx, dy, key) => {
-    let c = null;   // the canvas is made when first drawn
-    STONE_PIECES.set(key, { w, h, dx, dy, canvas: () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; } }); };
+    let c = null; const tinted = new Map();   // the canvas is made when first drawn; a prop's tinted ones (storm, fog, fade) by table set and number
+    const plain = () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; };
+    STONE_PIECES.set(key, { w, h, dx, dy, canvas: (rm) => {
+      const lut = prop && rm ? RT.remap[rm] : null; if (!lut) return plain();   // only a prop (given a foot offset) takes the tables
+      const tk = RT.remap.id * 10 + rm; let tc = tinted.get(tk); if (tc) return tc;
+      tc = mk(w, h); const tg = tc.getContext('2d'), im = tg.createImageData(w, h), near = new Map();   // each colour takes its nearest palette colour's entry in the table
+      for (let i = 0; i < w * h; i++) { const o = i * 4; if (!data[o + 3]) continue; const k = data[o] << 16 | data[o + 1] << 8 | data[o + 2]; let n = near.get(k);
+        if (n === undefined) { let bd = 1e9; n = 0; for (let j = 0; j < RGB.length; j++) { const q = RGB[j], d = (q[0] - data[o]) ** 2 + (q[1] - data[o + 1]) ** 2 + (q[2] - data[o + 2]) ** 2; if (d < bd) { bd = d; n = j; } } near.set(k, n); }
+        const rgb = RGB[lut[n]]; im.data[o] = rgb[0]; im.data[o + 1] = rgb[1]; im.data[o + 2] = rgb[2]; im.data[o + 3] = 255; }
+      tg.putImageData(im, 0, 0); tinted.set(tk, tc); return tc; } }); };
   for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] && !seen.has(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2])) { seen.add(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2]); STONE_COLOURS.push([f.data[o], f.data[o + 1], f.data[o + 2]]); } }
   keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? dy || 0 : 32 - f.height, name);
   if ((name.startsWith('stone-small-') && name.endsWith('@16')) || name === 'prop-fruit') {   // doubled, for a sign or a card
