@@ -264,6 +264,39 @@
     },
     "scrub": {
       "drawAs": "grass"
+    },
+    "thicket": {
+      "fill": {
+        "sheets": ["fill-thicket.png"]
+      },
+      "over": [
+        {
+          "kind": "rim",
+          "lowers": ["earth", "sand", "mud", "path", "grass", "scrub"],
+          "sheets": ["over-thicket.png"]
+        }
+      ]
+    },
+    "cliff": {
+      "fill": {
+        "sheets": ["fill-cliff.png"]
+      },
+      "over": [
+        {
+          "kind": "bank",
+          "lowers": ["earth", "sand", "path", "grass"],
+          "sheets": ["over-cliff.png"],
+          "tall": {
+            "1": ["over-cliff~s1.png"],
+            "2": ["over-cliff~s2.png"],
+            "3": ["over-cliff~s3.png", "over-cliff-face2~s3.png", "over-cliff-face3~s3.png"]
+          },
+          "wayup": {
+            "grass": "wayup-cliff-grass.png",
+            "sand": "wayup-cliff-sand.png"
+          }
+        }
+      ]
     }
   },
   "tone": {

@@ -409,6 +409,51 @@
     "from": "art-jobs/2026-11-10-art-paint-terrain-meadow/out/layers/grass-flat.png",
     "sha256": "d57a455514faf6de08b2dbd9c62ddb22a93a9b178235cd93804c6a7ef776cf48"
   },
+  "fill-thicket.png": {
+    "commit": "e43e480ac",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-thicket/out/tiles/over-thicket-full.png",
+    "sha256": "f543072f9c707eb6551071a0991050e27693c4ff063932cef2d8aaced3f6d208"
+  },
+  "over-thicket.png": {
+    "commit": "e43e480ac",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-thicket/out/tiles/over-thicket.png keyed",
+    "sha256": "37f48ea45e66445fe28c5aa05f5f909c731185cacde23bcfc344f4e2d4b51272"
+  },
+  "fill-cliff.png": {
+    "commit": "c335654cc",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff.png#15",
+    "sha256": "8ccfad779f533806bc8acca68efdfcad7993bc1d7e85fd4f5c1375c5aedbc9ce"
+  },
+  "over-cliff.png": {
+    "commit": "c335654cc",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff.png keyed",
+    "sha256": "7d86ce8e1faef44e71ad84bc974579e2dac2591cd34fe2cfe1e71136be453906"
+  },
+  "over-cliff~s1.png": {
+    "commit": "c335654cc",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff~s1.png keyed",
+    "sha256": "2fa08c9eae7b35edddf45666a8e3c1f32a7d883ca75b26a06e9844623edf2f09"
+  },
+  "over-cliff~s2.png": {
+    "commit": "c335654cc",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff~s2.png keyed",
+    "sha256": "7736faa7c3783403dd9ea377c9b94a85974a789e3ebe58ff26cd023e8453556e"
+  },
+  "over-cliff~s3.png": {
+    "commit": "c335654cc",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff~s3.png keyed",
+    "sha256": "c1efa74b46476467ef73eb629f12192ea2c5af51e3b80763c7c6f76e2a326573"
+  },
+  "over-cliff-face2~s3.png": {
+    "commit": "c335654cc",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff-face2~s3.png keyed",
+    "sha256": "5c1e8a9a73cada873bc3e32bae67958c95c0a3aba8156dd3a0c1db21d5317ea8"
+  },
+  "over-cliff-face3~s3.png": {
+    "commit": "c335654cc",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff-face3~s3.png keyed",
+    "sha256": "e85d929c5c56ef869dbee012c29ce6ccb733c5a787aadd94d1967ffc08d994a9"
+  },
   "tone-grass.png": {
     "commit": "386ed11fa",
     "from": "art-jobs/2026-11-10-art-paint-terrain-meadow/out/layers/grass-tone.png",

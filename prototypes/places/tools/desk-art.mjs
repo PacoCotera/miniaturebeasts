@@ -17,7 +17,17 @@ const show = (c, p) => execFileSync('git', ['-C', DESK, 'show', `${c.commit}:${c
 //   fill is slot 15 of a signed sheet, cropped without a changed pixel and recorded as `from: <sheet>#15`; the reed look of the sand beach is the pixels of the signed reed composites that differ from the
 //   signed plain beach composite (`from: <reeds> minus <plain>`), transparent elsewhere. The builder makes no pixel.
 export const SAND = { commit: '4e21bd68f', dir: 'art-jobs/2026-11-10-art-paint-terrain-sand/out' }, MEADOW1 = { commit: '386ed11fa', dir: 'art-jobs/2026-11-10-art-paint-terrain-meadow/out' }, MEADOW2 = { commit: 'b60587b26', dir: 'art-jobs/2026-11-10-art-paint-terrain-meadow/out' };
+//   Thicket (mibi-art e43e480ac) and cliff (mibi-art c335654cc), art director's ruling 2026-11-09: every pixel with alpha under 255 in their over sheets becomes transparent (the soft cast shade goes; the
+//   opaque undersides and face shading stay), recorded as `from: <sheet> keyed`. The thicket fill is its full strip (4 variants); the cliff top is slot 15 of the plain over-cliff sheet.
+export const THICKET = { commit: 'e43e480ac', dir: 'art-jobs/2026-11-10-art-paint-terrain-thicket/out/tiles' }, CLIFF3 = { commit: 'c335654cc', dir: 'art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles' };
 const T = 16;
+
+// The sheet with every pixel of alpha under 255 made fully transparent (colour cleared too).
+export function keyShade(img) {
+  const out = { w: img.w, h: img.h, data: new Uint8Array(img.data) };
+  for (let i = 0; i < out.data.length; i += 4) if (out.data[i + 3] < 255) out.data.fill(0, i, i + 4);
+  return out;
+}
 
 // The pixels of slot 15 (the all-upper tile) of a 4 x 4 sheet, as a 16 x 16 image.
 export function slot15(img) { return crop(img, 3 * T, 3 * T, T, T); }
@@ -31,11 +41,12 @@ export function reedPixels(reeds, plain) {
 }
 
 // Returns { files: Map(name -> Buffer), images: Map(name -> image), layers: the set.json `layers` block, tone, desk: the DESK.json entries } for the terrain layers.
-// Thicket and cliff are not here yet: their signed over sheets carry soft shade pixels (alpha 70 and 90) that the set contract (alpha 0 or 255) does not allow; scrub is drawn as grass.
+// Thicket and cliff come keyed (the soft shade pixels, alpha 70 and 90, which the set contract of alpha 0 or 255 does not allow, are made transparent); scrub is drawn as grass until its over sheet is signed.
 export function deskLayers() {
   const files = new Map(), desk = {};
   const rec = (c, name, from, b) => { files.set(name, b); desk[name] = { commit: c.commit, from, sha256: createHash('sha256').update(b).digest('hex') }; return name; };
   const place = (c, src, as) => rec(c, as, `${c.dir}/${src}`, show(c, src));
+  const keyed = (c, src, as) => rec(c, as, `${c.dir}/${src} keyed`, Buffer.from(encodePng(keyShade(decodePng(show(c, src))))));
   const fillFrom = (c, src, as) => rec(c, as, `${c.dir}/${src}#15`, Buffer.from(encodePng(slot15(decodePng(show(c, src))))));
   const reeds = (suffix, as) => rec(SAND, as, `${SAND.dir}/sets/pair-sand-water~reeds${suffix}.png minus ${SAND.dir}/sets/pair-sand-water.png`,
     Buffer.from(encodePng(reedPixels(decodePng(show(SAND, `sets/pair-sand-water~reeds${suffix}.png`)), decodePng(show(SAND, 'sets/pair-sand-water.png'))))));
@@ -60,6 +71,18 @@ export function deskLayers() {
       ],
     },
     scrub: { drawAs: 'grass' },
+    thicket: {
+      fill: { sheets: [place(THICKET, 'over-thicket-full.png', 'fill-thicket.png')] },
+      over: [{ kind: 'rim', lowers: ['earth', 'sand', 'mud', 'path', 'grass', 'scrub'], sheets: [keyed(THICKET, 'over-thicket.png', 'over-thicket.png')] }],
+    },
+    cliff: {
+      fill: { sheets: [rec(CLIFF3, 'fill-cliff.png', `${CLIFF3.dir}/over-cliff.png#15`, Buffer.from(encodePng(slot15(keyShade(decodePng(show(CLIFF3, 'over-cliff.png')))))))] },
+      over: [{
+        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass'], sheets: [keyed(CLIFF3, 'over-cliff.png', 'over-cliff.png')],
+        tall: { 1: [keyed(CLIFF3, 'over-cliff~s1.png', 'over-cliff~s1.png')], 2: [keyed(CLIFF3, 'over-cliff~s2.png', 'over-cliff~s2.png')], 3: ['over-cliff~s3.png', 'over-cliff-face2~s3.png', 'over-cliff-face3~s3.png'].map((n) => keyed(CLIFF3, n, n)) },
+        wayup: { grass: place(EDGES, 'wayup-cliff-grass.png', 'wayup-cliff-grass.png'), sand: place(EDGES, 'wayup-cliff-sand.png', 'wayup-cliff-sand.png') },
+      }],
+    },
   };
   const tone = { of: 'grass', sheets: [place(MEADOW1, 'layers/grass-tone.png', 'tone-grass.png')] };
   const images = new Map([...files].map(([n, b]) => [n, decodePng(b)]));
