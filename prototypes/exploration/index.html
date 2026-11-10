@@ -570,6 +570,8 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
 const PROP_DY = { 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full-40': 0, 'bush-full-40-m': 0, 'bush-bare-40': 0, 'bush-bare-40-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+  // the walk cups (surface and cave, empty and full), the cave crystals (dim, lit), the mushroom ring and the burrow (open, closed; deep-shadow #141b1b): art/desk f66de6a16, 32 x 32; foot row as the code-drawn ones were
+  'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (16 x 20) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
   ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
     'pod-walk-16x20-bone', 'pod-walk-16x20-lime', 'pod-walk-16x20-ice', 'pod-walk-16x20-sand', 'pod-walk-16x20-sprout', 'pod-walk-16x20-lavender', 'canopy-legacy', 'roof-legacy'].map(n => [n, 0])) };
@@ -3656,16 +3658,11 @@ const SLAB = () => propPiece('prop-slab');
 // Depot and beacon are the art desk's painted files (art/props/walk-depot-*, walk-beacon-*, signed in mibi-art e48cee90a); no hut or post is drawn in code.
 function depotArt(lit, fr) { return propPiece('walk-depot-' + ['dark', 'ember', 'half', 'full'][lit | 0]); }   // lit: turns of light left (0 dark, 1 ember, 2 half, 3 full); the desk painted one full frame, so the flicker frames share it
 function beaconArt(lit, fr) { return propPiece(lit ? 'walk-beacon-lit' : 'walk-beacon-unlit'); }
-function cupArt(full, cave) {
-  return art('cup' + full + cave, () => { const pb = new PB(32, 32);
-    if (cave) { pb.ell(16, 20, 11, 6.5, C.stone, { sh: [C.mist, C.slate] }); pb.ell(16, 19, 8, 3.5, C.night); if (full) pb.ell(16, 19.5, 7.5, 3, C.aqua, { sh: [C.mint, C.teal] }); }
-    else { pb.ell(16, 18, 11.5, 7, C.grass, { sh: [C.sprout, C.leaf], clip: (x, y) => y >= 17 }); pb.rect(5, 17, 22, 1, C.sprout); pb.set(3, 15, C.sprout); pb.set(4, 16, C.sprout); pb.set(28, 15, C.sprout); pb.set(27, 16, C.sprout);
-      if (full) pb.ell(16, 18.5, 8, 2.6, C.ice, { sh: [C.white, C.sky], clip: (x, y) => y >= 17 }); }
-    pb.outline(); return pb; });
-}
+// The cups, the cave crystals, the mushroom ring and the burrow are the art desk's painted files (art/props/, signed in mibi-art f66de6a16): no cup, crystal, ring or burrow is drawn in code.
+function cupArt(full, cave) { return propPiece('cup-' + (cave ? 'cave' : 'surface') + '-' + (full ? 'full' : 'empty')); }
 // The quartz stone family (art/stone/, signed in mibi-art ccbb3bb17, owner's pick C): tall (the heart's stone) and small (a field stone) in plain, charged (two frames), warm (two frames and a
 // still) and spent (the plain picture: a collected stone keeps its size). The walk draws the 48 px files, a sign or card the 16 px small one doubled; a collected field stone stays small and spent.
-// Until the files are in, a named empty slot draws nothing (no stone is drawn in code). The cave's teal crystals are another object and stay as they were.
+// Until the files are in, a named empty slot draws nothing (no stone is drawn in code). The cave's crystals are the painted crystals-dim and crystals-lit.
 // fr: 0 or 1 the frame, -1 the still (reduced motion).
 function stoneArt(lit, cave, fr, warm, small, tall) {
   if (!cave) {
@@ -3673,16 +3670,7 @@ function stoneArt(lit, cave, fr, warm, small, tall) {
     const p = small ? STONE_PIECES.get('stone-small-' + st + '@16x2') : STONE_PIECES.get('stone-' + (tall ? 'tall' : 'small') + '-' + st + '@48');
     return p || walkPB('stone-quartz-slot', 32, 32);
   }
-  return art('stone' + lit + cave + fr, () => { const pb = new PB(32, 32);
-    if (cave) {
-      const a = lit ? C.aqua : C.teal, b = lit ? C.mint : C.aqua, d = lit ? C.teal : C.tealD;
-      for (const [pts, f] of [[[[8, 29], [7, 17], [10, 12], [13, 17], [13, 29]], 0], [[[14, 29], [14, 10], [17, 4], [20, 10], [20, 29]], 1], [[[21, 29], [21, 18], [24, 14], [26, 19], [25, 29]], 0]]) {
-        pb.poly(pts, a); pb.poly([pts[1], pts[2], [(pts[2][0] + pts[3][0]) / 2, pts[3][1] + 3], [(pts[2][0] + pts[3][0]) / 2, 29]], b); if (f) pb.line(18, 11, 18, 27, d); }
-      pb.outline();
-      if (lit) for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const dd = Math.hypot(x - 16, y - 18); if (dd > 12 && dd < 15 && (x + y + fr) % 2 === 0 && pb.get(x, y) < 0) pb.set(x, y, C.mint); }
-      return pb;
-    }
-  return pb; });
+  return propPiece(lit ? 'crystals-lit' : 'crystals-dim');   // the cave's crystals: the painted dim and lit pictures
 }
 const holeArt = glint => propPiece(glint ? 'prop-hole1' : 'prop-hole0');
 // Rupar fresh hole (the art desk's painted files, art/props/): drawn at HOLE_DX; wired in shedPod, drawPatch and warnPicPlace. Frame 0 is the fresh dig, frame 1 the settled one; a rock or cave floor has no loose earth (bare).
@@ -3691,22 +3679,12 @@ const HOLE_BARE = { rock: 1, cave: 1 };
 const freshHoleArt = (fr, bare) => propPiece(bare ? 'prop-hole-fresh-bare' : fr ? 'prop-hole-fresh-f2' : 'prop-hole-fresh');
 const holeFrame = h => { const a = NOW - (h.at || 0); return motion() && a >= 0 && a < HOLE_FRESH_MS ? 0 : 1; };
 const NEST = () => propPiece('prop-nest');
-function mushArt(fr) { return art('mush' + fr, () => { const pb = new PB(32, 32);
-  for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const d = Math.hypot(x - 16, y - 18); if (d < 13 && d > 6 && (x + y + fr) % 2 === 0 && (x * 7 + y * 3) % 5 < 2) pb.set(x, y, C.plum); }
-  for (const [x, y, r] of [[10, 20, 3.5], [18, 17, 4.5], [23, 22, 3]]) { pb.rect(x - 1, y, 2, 5, C.bone); pb.ell(x, y, r, r * .75, C.lilac, { sh: [C.lavender, C.plum], clip: (px, py) => py <= y }); }
-  pb.outline(n => n === C.bone ? C.mist : shade(n, 2)); return pb; }); }
+function mushArt(fr) { return propPiece('mushroom-ring'); }   // one painted picture; the frame argument is kept for the callers
 const CRACK = () => propPiece('prop-crack');
 const BADGE = () => art('badge', () => { const pb = new PB(18, 18); pb.ell(9, 9, 8, 8, C.plumD); pb.ell(9, 9, 8, 8, C.lavender, { clip: (x, y) => Math.hypot(x + .5 - 9, y + .5 - 9) > 6.8 });
   GLYPHS['?'].split('|').forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === '#') pb.set(7 + x, 5 + y, C.lavender); }); return pb; });
 const exitArt = fr => propPiece('prop-exit');
-function burrowArt(open) { return art('burrow' + open, () => { const pb = new PB(32, 32), w = open ? 10 : 6;
-  pb.ell(16, 30, w + 6, 22, C.soil, { clip: (x, y) => y < 32 });
-  pb.ell(16, 30, w + 4, 20, C.bark, { sh: [C.clay, C.soil], clip: (x, y) => y < 32 });
-  pb.ell(16, 31, w, 17, C.void, { clip: (x, y) => y < 32 });
-  for (const [x, y] of [[5, 26], [26, 25], [8, 13], [24, 12]]) { pb.rect(x, y, 3, 2, C.sand); pb.set(x, y + 2, C.clay); }
-  if (open) { pb.rect(15, 24, 2, 2, C.yellow); pb.set(14, 25, C.gold); pb.set(17, 25, C.gold); }
-  else { pb.rect(12, 29, 8, 3, C.clay); pb.rect(13, 28, 6, 1, C.sand); }
-  return pb; }); }
+function burrowArt(open) { return propPiece(open ? 'burrow-open-dark' : 'burrow-closed-dark'); }
 // The legacy path's crown and roof are the art desk's painted pieces (art/props/canopy-legacy 88 x 76 and roof-legacy 104 x 22, mibi-art 1158b9710); the thinned look (an explorer under it) is the same picture on a checkerboard.
 const thinnedPiece = (name, chk) => { const p = propPiece(name); return chk ? { w: p.w, h: p.h, canvas: (rm, flip, c, veil) => p.canvas(rm, flip, true, veil) } : p; };
 function canopyArt(chk) { return thinnedPiece('canopy-legacy', chk); }
@@ -5205,7 +5183,7 @@ function drawPatchBody(t) {
     if (f.kind === 's' && fs(P.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(W(x + 8 + (k % 4) * 5) + o.x, H(y + 18 + (k >> 2) * 4) + o.y, 3, 1); }
     if (f.kind === 'n') blit(holeArt(live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1) ? 1 : 0), SX(x), SY(y), rm);
     else if (f.kind === 'e') blit(NEST(), SX(x), SY(y), rm);
-    else if (f.kind === 'm') blit(mushArt(fr), SX(x), SY(y));
+    else if (f.kind === 'm') blit(mushArt(fr), SX(x), SY(y), rm);
     else if (f.kind === 'd') { blit(CRACK(), SX(x), SY(y), rm); if (live.seen.d) { const ph = motion() ? Math.floor((t * 1.2 % 1) * 4) : 2; circ(SX(x) + 16, SY(y) + 16, 10 + ph * 4, C.lavender, ph > 2); blit(BADGE(), SX(x) + 7, SY(y) - 6); } }
     else if (f.kind === 'x') blit(exitArt(fr), SX(x), SY(y));
     else if (f.kind === 'g') blit(burrowArt(!!burrowOpen()), SX(x), SY(y), rm);
