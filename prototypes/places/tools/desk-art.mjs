@@ -37,8 +37,16 @@ export const FLECK_NAMES = FLECK_FILES.map((_, k) => `fleck-${k}`);
 export const REED_SHORE = ['shore-1', 'shore-3', 'shore-2', 'shore-4'], REED_WATER = ['water-1', 'water-2'];   // shore pick: 37.5 / 37.5 / 12.5 / 12.5 %, in this order
 export const REED_NAMES = [...REED_SHORE, ...REED_WATER].map((n) => `reed-${n}`);
 export const TALL_GRASS = ['tall-grass', 'tall-grass-b', 'tall-grass-m', 'tall-grass-bm'];   // the signed tufts-2 and tufts-3, each as it is and mirrored (the sweeps of tall grass)
-export const SUNLIT = '#82b266';   // the map palette's `grass`, one sunlit step above the grass base #74a65d: the grass tone patches
+// the tall clump (mibi-art art/desk 86d239e96): decal name -> file; the generator picks one by hash (decor.mjs CLUMP_KINDS)
+export const CLUMP = { commit: '86d239e96', dir: 'art-jobs/2026-11-10-art-paint-tall-clump/out' };
+export const CLUMP_PIECES = [['clump-tall', 'clump-tall-26.png'], ['clump-tall-m', 'clump-tall-26-mirror.png'], ['clump-tall-s', 'clump-tall-17.png'], ['clump-tall-sm', 'clump-tall-17-mirror.png']];
+export const SUNLIT ='#82b266';   // the map palette's `grass`, one sunlit step above the grass base #74a65d: the grass tone patches
 export const SUNLIT_FROM = '#5e9357';
+export const FLOWER_BLUE_SIZE = [24, 22];   // the blue pair is drawn at the size of the route A flowers (flowers-1)
+// the scrub ground (the desk's olive #589054, darker than the grass #74a65d, read as a hollow): the same value as the grass (luminance 143), drier and yellower (hue 80 degrees against the grass's 99)
+export const SCRUB_FROM = '#589054', SCRUB_GROUND = '#82a05a';
+// the cattail heads of the reed sprites: the applied ramp (#6f4a37 to the palette's trunk line, #8a6444 to its earth line)
+export const CATTAIL_MAP = [['#6f4a37', '#664330'], ['#8a6444', '#7c5a3d']];
 export const FLOWER_NAMES = ['flower-daisy', 'flower-buttercup', 'flower-daisy-pair', 'flower-blue-pair', 'flower-pink-three'];
 export const TUFT_NAMES = ['tuft-fan', 'tuft-lean', 'tuft-small'], SHRUBS = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4'];
 const show = (c, p) => execFileSync('git', ['-C', DESK, 'show', `${c.commit}:${c.dir}/${p}`], { maxBuffer: 1 << 26 });
@@ -55,10 +63,36 @@ export function keyShade(img) {
   for (let i = 0; i < out.data.length; i += 4) if (out.data[i + 3] < 255) out.data.fill(0, i, i + 4);
   return out;
 }
-// The picture with one colour replaced by another (a colour map of one entry: the tone layer's sunlit step).
-export function mapColour(img, fromHex, toHex) {
-  const f = parseInt(fromHex.slice(1), 16), t = parseInt(toHex.slice(1), 16), out = { w: img.w, h: img.h, data: new Uint8Array(img.data) };
-  for (let i = 0; i < out.data.length; i += 4) if (out.data[i + 3] && ((out.data[i] << 16) | (out.data[i + 1] << 8) | out.data[i + 2]) === f) { out.data[i] = t >> 16; out.data[i + 1] = (t >> 8) & 255; out.data[i + 2] = t & 255; }
+// The picture with colours replaced by others (a colour map: the tone layer's sunlit step, the scrub ground, the cattail browns). pairs: [[fromHex, toHex], ...]
+export function mapColours(img, pairs) {
+  const m = new Map(pairs.map(([f, t]) => [parseInt(f.slice(1), 16), parseInt(t.slice(1), 16)])), out = { w: img.w, h: img.h, data: new Uint8Array(img.data) };
+  for (let i = 0; i < out.data.length; i += 4) {
+    if (!out.data[i + 3]) continue;
+    const t = m.get((out.data[i] << 16) | (out.data[i + 1] << 8) | out.data[i + 2]);
+    if (t !== undefined) { out.data[i] = t >> 16; out.data[i + 1] = (t >> 8) & 255; out.data[i + 2] = t & 255; }
+  }
+  return out;
+}
+export const mapColour = (img, fromHex, toHex) => mapColours(img, [[fromHex, toHex]]);
+// The picture area-reduced to w x h and pixel-snapped: each target pixel averages its box of the source (alpha-weighted), then takes the nearest colour the source itself uses; opaque when
+// half the box or more is opaque, else clear. No colour outside the source's own palette is made.
+export function areaReduce(img, w, h) {
+  const pal = new Map();
+  for (let i = 0; i < img.data.length; i += 4) if (img.data[i + 3] === 255) pal.set((img.data[i] << 16) | (img.data[i + 1] << 8) | img.data[i + 2], 1);
+  const cols = [...pal.keys()].map((c) => [c, c >> 16, (c >> 8) & 255, c & 255]), out = newImage(w, h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const x0 = (x * img.w) / w, x1 = ((x + 1) * img.w) / w, y0 = (y * img.h) / h, y1 = ((y + 1) * img.h) / h;
+    let a = 0, area = 0, r = 0, g = 0, b = 0;
+    for (let sy = Math.floor(y0); sy < Math.ceil(y1); sy++) for (let sx = Math.floor(x0); sx < Math.ceil(x1); sx++) {
+      const wgt = (Math.min(sx + 1, x1) - Math.max(sx, x0)) * (Math.min(sy + 1, y1) - Math.max(sy, y0)), k = (sy * img.w + sx) * 4, al = img.data[k + 3] / 255;
+      area += wgt; a += wgt * al; r += wgt * al * img.data[k]; g += wgt * al * img.data[k + 1]; b += wgt * al * img.data[k + 2];
+    }
+    if (a * 2 < area) continue;
+    r /= a; g /= a; b /= a;
+    let best = cols[0], bd = Infinity;
+    for (const c of cols) { const d = (c[1] - r) ** 2 + (c[2] - g) ** 2 + (c[3] - b) ** 2; if (d < bd) { bd = d; best = c; } }
+    out.data.set([best[1], best[2], best[3], 255], (y * w + x) * 4);
+  }
   return out;
 }
 // The picture flipped left to right (a layout change, no pixel made).
@@ -77,6 +111,7 @@ export function deskLayers() {
   const files = new Map(), desk = {};
   const rec = (c, name, from, b) => { files.set(name, b); desk[name] = { commit: c.commit, from, sha256: createHash('sha256').update(b).digest('hex') }; return name; };
   const place = (c, src, as) => rec(c, as, `${c.dir}/${src}`, show(c, src));
+  const scrubPlace = (src, as) => rec(SCRUBJOB, as, `${SCRUBJOB.dir}/${src} scrub ground (${SCRUB_FROM} to ${SCRUB_GROUND})`, Buffer.from(encodePng(mapColour(decodePng(show(SCRUBJOB, src)), SCRUB_FROM, SCRUB_GROUND))));
   const keyed = (c, src, as) => rec(c, as, `${c.dir}/${src} keyed`, Buffer.from(encodePng(keyShade(decodePng(show(c, src))))));
   // the cliff sheets re-cut from the desk's painted island (tools/recut/README.md), then the map palette's colour map, shade keyed as the desk's own are
   const recutImg = (src) => recolour(decodePng(readFileSync(path.join(here, 'recut', src))));
@@ -112,9 +147,9 @@ export function deskLayers() {
     scrub: {
       ground: 'grass',
       over: [{
-        kind: 'flat', lowers: ['earth', 'sand', 'mud', 'path', 'grass'], sheets: [place(SCRUBJOB, 'over-scrub.png', 'over-scrub.png')],
-        full: place(SCRUBJOB, 'over-scrub-full.png', 'over-scrub-full.png'),
-        variants: ['~v1', '~v2', '~v3'].map((v) => place(SCRUBJOB, `over-scrub${v}.png`, `over-scrub${v}.png`)),
+        kind: 'flat', lowers: ['earth', 'sand', 'mud', 'path', 'grass'], sheets: [scrubPlace('over-scrub.png', 'over-scrub.png')],
+        full: scrubPlace('over-scrub-full.png', 'over-scrub-full.png'),
+        variants: ['~v1', '~v2', '~v3'].map((v) => scrubPlace(`over-scrub${v}.png`, `over-scrub${v}.png`)),
       }],
     },
     thicket: {
@@ -164,9 +199,11 @@ export function deskArt() {
   const tufts = [1, 2, 3].map((k) => place(ROUTE_A, `tufts-${k}.png`, `tufts-${k}.png`));
   TUFT_NAMES.forEach((n, k) => { decals[n] = { image: tufts[k], anchor: [6, 12] }; });
   decals.tuft = { image: tufts[0], anchor: [6, 12] };
-  decals['clump-tall'] = { image: tufts[2], anchor: [6, 12] };   // the art director's ruling: the accent clump is the signed tufts-3 until a taller one is painted
+  // the accent clump: four signed pieces (art director, mibi-art 86d239e96), picked by the generator's hash: 26 rows tall and 17 rows tall, each as it is and mirrored; anchors from the job's manifest
+  const clumpMan = JSON.parse(show(CLUMP, 'manifest.json'));
+  for (const [name, file] of CLUMP_PIECES) { const im = place(CLUMP, file, file), a = clumpMan[file].anchor; decals[name] = { image: im, anchor: a }; }
   // flowers: the signed route A flowers and the blue pair; each drawn bottom-centre on its tile
-  const flowers = [1, 2, 3].map((k) => place(ROUTE_A, `flowers-${k}.png`, `flowers-${k}.png`)), blue = place(MAPDECOR, 'flowers-blue-pair.png', 'flowers-blue-pair.png');
+  const flowers = [1, 2, 3].map((k) => place(ROUTE_A, `flowers-${k}.png`, `flowers-${k}.png`)), blue = (() => { const b = decodePng(picBytes(MAPDECOR, 'flowers-blue-pair.png')); return rec(MAPDECOR, 'flowers-blue-pair.png', `${MAPDECOR.dir}/flowers-blue-pair.png area-reduced ${b.w}x${b.h} to ${FLOWER_BLUE_SIZE[0]}x${FLOWER_BLUE_SIZE[1]}, pixel-snapped`, Buffer.from(encodePng(areaReduce(b, ...FLOWER_BLUE_SIZE)))); })();
   const flowerOf = { 'flower-daisy': flowers[1], 'flower-daisy-pair': flowers[1], 'flower-buttercup': flowers[2], 'flower-pink-three': flowers[0], 'flower-blue-pair': blue };
   for (const n of FLOWER_NAMES) decals[n] = { image: flowerOf[n], anchor: foot(flowerOf[n]) };
   // the stump
@@ -194,7 +231,7 @@ export function deskArt() {
   const manifest = JSON.parse(show({ commit: DC, dir: 'art-jobs/2026-11-10-art-paint-reeds/out' }, 'manifest.json'));
   const reedDefs = { ...manifest.sprites, ...manifest.extras };
   for (const n of [...REED_SHORE, ...REED_WATER]) {
-    const d = reedDefs[n], im = place(REEDS, `${n}.png`, `reed-${n}.png`);
+    const d = reedDefs[n], im = rec(REEDS, `reed-${n}.png`, `${REEDS.dir}/${n}.png cattail browns (${CATTAIL_MAP.map(([f, t]) => `${f} to ${t}`).join(', ')})`, Buffer.from(encodePng(mapColours(decodePng(show(REEDS, `${n}.png`)), CATTAIL_MAP))));
     props[`reed-${n}`] = { image: im, anchor: d.anchor, footprint: [] };   // a prop with no footprint: it sorts with the walkers and blocks nothing
     props[`reed-${n}m`] = { image: mirror(im), anchor: [(im.w - 1) - d.anchor[0], d.anchor[1]], footprint: [] };
   }
