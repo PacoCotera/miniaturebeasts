@@ -24,7 +24,7 @@ jobs:
     # Chromium's libraries) are installed once on the server, so the install lines below run only on a GitHub machine. Never for a pull request from a fork.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, mb-dev]
-    timeout-minutes: 30   # (raised 2026-11-10 with the Station rules step) measured 29 minutes with the browser checks (2026-10-28); a pull request now runs the build, smoke and node tests (about 11), a manual run all of them
+    timeout-minutes: 60   # (raised 2026-11-10 with the Station rules step) measured 29 minutes with the browser checks (2026-10-28); a pull request now runs the build, smoke and node tests (about 11), a manual run all of them
     steps:
       - uses: actions/checkout@v4
         with:
@@ -178,7 +178,7 @@ jobs:
           node prototypes/places/tools/bake.mjs --check
       - name: Station rules (node tests)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        timeout-minutes: 20   # about 15 without the long walk proofs (raised 2026-11-10: the suite reached 15) (MB_CI_FAST: they run in full locally before every merge)
+        timeout-minutes: 45   # measured 15-23 (2026-11-10, dev server shared with builders); the limit only catches a hung run (MB_CI_FAST: they run in full locally before every merge)
         # The Station's rules and the Caddy service in Node, and the other prototypes' tests.
         # The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
         run: |
