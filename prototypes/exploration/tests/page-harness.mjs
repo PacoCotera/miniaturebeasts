@@ -85,12 +85,24 @@ export function fakeCanvas(look) {
   return Object.assign(t, { getContext: () => ctx, px: buf, style: {}, toDataURL: () => "" });
 }
 
+// The colour book a fake canvas reads (P() gives the page's core palette: hex, rgb, of). The art desk's painted pieces carry colours off that palette; a fake canvas drops them
+// (index -2) unless `paint` is set, when each new colour gets its own index from 4096 up, clear of anything the page adds to its own palette, so a picture of the screen shows
+// the painted props too. rgbTable() lists every index's colour (the core ones and the painted ones) for writing a still.
+export function paletteLook(P, paint) {
+  const ext = [], extOf = new Map(), EXT = 4096;
+  const look = { hex: h => P().hex.get(h) ?? -2, rgbOf: v => v >= EXT ? ext[v - EXT] : P().rgb[v],
+    rgb: (r, g, b) => { const k = r << 16 | g << 8 | b, v = P().of.get(k); if (v !== undefined || !paint) return v ?? -2;
+      let e = extOf.get(k); if (e === undefined) { e = EXT + ext.length; ext.push([r, g, b]); extOf.set(k, e); } return e; } };
+  return { look, rgbTable: () => { const t = P().rgb.slice(); ext.forEach((c, i) => { t[EXT + i] = c; }); return t; } };
+}
+
 // The standard page. opts:
 //   store    the localStorage object (default {})
 //   console  "real" (default), "silent", or "collect" (errors go to p.errors, the rest is silent)
 //   els      true: document.getElementById answers one stub element for each id (p.els)
 //   raf      what requestAnimationFrame returns: 0 (default), 1, or "count" (1, 2, 3 … ; p.raf.n counts the calls)
 //   canvas   true: document.createElement("canvas") gives a fakeCanvas, so a drawing can be read back (p.run("scr").px())
+//   paint    true (with canvas): the painted props' off-palette colours are kept on the fake canvas (see paletteLook; p.rgbTable() for a still)
 //   date     a number: the page's Date stands still at that many ms (new Date() and Date.now()); default is the real clock
 // Returns { run, ctx, store, clock, els, writes, errors, raf, KEY, S, pass(ms), key(k, n), sv(), writeSt(st) }.
 // Timers wait on the clock: pass(ms) runs the ones that fall due, in order.
@@ -99,12 +111,7 @@ export function makePage(opts = {}) {
   const els = {}, elStub = () => new Proxy({}, { get: (t, k) => k in t ? t[k] : any, set: (t, k, v) => { t[k] = v; return true; } });
   let run = null, pal = null;
   const P = () => pal || (pal = { hex: new Map(run("HEX").map((h, i) => [h, i])), rgb: run("RGB"), of: new Map(run("RGB").map((c, i) => [c[0] << 16 | c[1] << 8 | c[2], i])) });
-  // opts.paint: the art desk's painted pieces carry colours off the core palette; a fake canvas drops them (index -2) unless this is set,
-  // when each new colour gets the next index after the core ones, so a picture of the screen shows the painted props too (p.rgbTable() lists them all)
-  const ext = [], extOf = new Map();
-  const look = { hex: h => P().hex.get(h) ?? -2, rgbOf: v => v < P().rgb.length ? P().rgb[v] : ext[v - P().rgb.length],
-    rgb: (r, g, b) => { const k = r << 16 | g << 8 | b, v = P().of.get(k); if (v !== undefined || !opts.paint) return v ?? -2;
-      let e = extOf.get(k); if (e === undefined) { e = P().rgb.length + ext.length; ext.push([r, g, b]); extOf.set(k, e); } return e; } };
+  const { look, rgbTable } = paletteLook(P, opts.paint);
   const document = opts.els || opts.canvas ? new Proxy(any, { get: (t, k) => k === "getElementById" && opts.els ? id => els[id] || (els[id] = elStub()) : k === "createElement" && opts.canvas ? tag => tag === "canvas" ? fakeCanvas(look) : any : any }) : any;
   const clock = { t: 1000, timers: [] }, writes = [], errors = [], raf = { n: 0 };
   const silent = { log() {}, warn() {}, error() {} };
@@ -119,7 +126,7 @@ export function makePage(opts = {}) {
   let KEY; try { KEY = run("SAVE_KEY"); } catch { KEY = undefined; }
   const p = { run, ctx, store, clock, els, writes, errors, raf, KEY,
     get S() { return run("S"); },
-    rgbTable: () => P().rgb.concat(ext),
+    rgbTable,
     // real time passes: the timers due run in order
     pass(ms) { const end = clock.t + ms; for (;;) { clock.timers.sort((a, b) => a.at - b.at); const n = clock.timers[0]; if (!n || n.at > end) break; clock.timers.shift(); clock.t = n.at; n.f(); } clock.t = end; },
     // one key press, after any input lock has run out
