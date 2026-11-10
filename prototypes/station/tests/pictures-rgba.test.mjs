@@ -92,7 +92,7 @@ test("fix 7: the grade's table is the oracle's (SHA-256 per light), day is the i
   for (const l of Object.keys(GAIN)) assert.equal(sha(LUT[l]), LG.lut[l], l);
   for (let c = 0; c < 3; c++) for (let v = 0; v < 256; v++) { assert.equal(LUT.day[c * 256 + v], v); for (const l of ["dawn", "dusk", "night"]) assert.ok(LUT[l][c * 256 + v] <= v, `${l} ${"RGB"[c]}${v}`); }
   assert.equal(LUT.dawn[256 + 5], LG.ties.dawn.G5); for (const k of ["G1", "G5", "G9"]) assert.equal(LUT.night[256 + +k.slice(1)], LG.ties.night[k], "night " + k);
-  const frame = JSON.parse(readFileSync(new URL("../../ui/specs/station/frame.json", import.meta.url), "utf8")); assert.deepEqual(frame.light.from.map((r) => r[1]).sort(), Object.keys(GAIN).sort(), "frame.json light.from names exactly the lights with a gain");
+  const frame = JSON.parse(readFileSync(new URL("../../ui/specs/station/frame.json", import.meta.url), "utf8")); assert.deepEqual([...frame.light.lights].sort(), Object.keys(GAIN).sort(), "frame.json light.lights names exactly the lights with a gain");
   assert.throws(() => grade({ w: 1, h: 1, rgba: () => new Uint8ClampedArray(4) }, "dusk2"), /not a light/);
 });
 test("fix 7: the three juvenile masters graded at four lights equal the oracle's pixels (SHA-256 of the RGBA), alpha is the master's, no channel is brighter, day is the master itself", () => {

@@ -14,7 +14,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { traitLooks } from "../../workbench/framework/describe.mjs";
-import { homeBuild as homeBuildUnchecked, homeNeeds, dateWords, clockWords, lightAt, wordsOf } from "../src/views/home-props.mjs";
+import { homeBuild as homeBuildUnchecked, homeNeeds, dateWords, clockWords, wordsOf } from "../src/views/home-props.mjs";
 const homeBuild = lineCased(homeBuildUnchecked, "home");   // every body it builds goes through assertLineCase (report mode)
 import { idleBuild } from "../src/views/idle-props.mjs";
 import { goalWords, warnWords } from "../src/views/goal-words.mjs";
@@ -160,10 +160,7 @@ test("the short notices carry each short material once, Energy before Essence, a
 });
 
 // ---- the light by the clock (frame.json light): the hours ----
-test("lightAt: the hour's light from frame.json light.from, the last wrapping midnight", () => {
-  const L = frameSpec.light;
-  for (const [h, want] of [[0, "night"], [5, "night"], [6, "dawn"], [7, "day"], [12, "day"], [17, "day"], [18, "dusk"], [19, "dusk"], [20, "night"], [23, "night"]]) assert.equal(lightAt(h, L), want, `${h}:00`);
-});
+// (lightOf, the curve over the clock, is tested in light-curve.test.mjs)
 
 // ---- the living window's shared selectors, through Idle's view (Idle and the Vivarium's whole use them; Home no longer shows residents) ----
 const idle = (st, sv, over = {}) => idleBuild({ st, sv, settings, docked: S.docked(st), light: "day", time: 12 * 3600, now: T0 + 12 * 3600 * 1000, restRules: RULES.rest, rules: RULES, ...over }, frameSpec);
@@ -192,12 +189,12 @@ test("R3: Home shows the room the whole last showed, except that a mibi being me
   assert.deepEqual(Object.keys(met.room.pieces), ["reeds-sedge-2", "reeds-stone-1", "reeds-raincup"], "the pieces that have a picture: the sedge cut-out of the scene has none");
   st.face.room = 1; assert.equal(r({}).room.id, "reeds", "the room the whole shows"); assert.equal(r({ ui: { meet: st.mibis[3].id } }).room.id, "roots", "a mibi met in another room");
 });
-test("every room has its pictures in every light of frame.light.from, all placed at their size", () => {
-  const lights = frameSpec.light.from.map(([, l]) => l), ROOMS = JSON.parse(readFileSync(path.join(specs, "rooms.json"), "utf8")), ix = readIndex(path.join(specs, "../../assets/masters")).masters;
+test("every room has its pictures in every light of frame.light.lights, all placed at their size", () => {
+  const lights = frameSpec.light.lights, ROOMS = JSON.parse(readFileSync(path.join(specs, "rooms.json"), "utf8")), ix = readIndex(path.join(specs, "../../assets/masters")).masters;
   for (const name of ROOMS.order) { const r = ROOMS.rooms[name]; for (const l of lights) for (const t of [r.base, r.near, ...(r.bed ? [r.bed.picture] : []), ...r.pieces.filter((p) => p.picture).map((p) => p.picture)]) { const id = t.replace("{light}", l); assert.ok(ix[id], id + " is placed"); assert.equal(`${ix[id].w}x${ix[id].h}`, id.match(/(\d+x\d+)$/)[1]); } }
 });
-test("every light of frame.light.from has its pictures on Idle and its bed, and no more", () => {
-  const lights = frameSpec.light.from.map(([, l]) => l).sort();
+test("every light of frame.light.lights has its pictures on Idle and its bed, and no more", () => {
+  const lights = [...frameSpec.light.lights].sort();
   for (const m of [frameSpec.idle.light.pictures, frameSpec.light.bed]) assert.deepEqual(Object.keys(m).sort(), lights);
 });
 test("a mibi that grows up changes every picture id from :juvenile: to :adult: with a resident's size following its stage", () => {

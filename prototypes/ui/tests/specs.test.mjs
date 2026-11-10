@@ -787,7 +787,7 @@ function floorProblems(weight) {
 }
 test("fix 14, rule F1: the 2 px floor holds in every light: the thresholds overlap, the weight map names the lights, night is default, and a light weight needs every ring zone at or above the key's threshold", () => {
   assert.ok(keyFrom < coreTo, "the core and the key overlap, so every ground gets 2 px of line: " + keyFrom.toFixed(4) + " < " + coreTo.toFixed(4)); assert.ok(Math.abs(keyFrom - 0.1102) < 0.0005 && Math.abs(coreTo - 0.2362) < 0.0005, "the palette's thresholds are the spec's 0.1102 and 0.2362");
-  const FP = frame.focus.ring.shapes.footprint, lights = frame.light.from.map(([, n]) => n);
+  const FP = frame.focus.ring.shapes.footprint, lights = frame.light.lights;
   assert.deepEqual(Object.keys(FP.weight).sort(), [...lights].sort(), "the weight map has one value for each light"); for (const v of Object.values(FP.weight)) assert.ok(v === "default" || v === "light");
   assert.equal(FP.weight.night, "default", "night is pinned to default (CD ruling)"); assert.deepEqual(FP.floor, { px: 2, ratio: 3 });
   const bands = frame.focus.ring.bands.map((b) => b.w); assert.equal(bands[1], 2, "the default weight's core is 2 px"); assert.equal(bands[0] + bands[2], 2, "and its keys sum to 2 px: 2 px of line on any ground");
