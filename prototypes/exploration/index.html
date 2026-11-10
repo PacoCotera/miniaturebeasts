@@ -542,16 +542,31 @@ async function loadHazeKit(base, bytes) {
 const STONE_COLOURS = [], STONE_PIECES = new Map();
 const STONE_FILES = ['tall', 'small'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
 const STONE_LOOK = new Set(['look-heart-stone', ...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
-function stonePut(name, f, look) {   // f: { width, height, data (RGBA) }
+function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
   const mk = (w, h) => PL6.mk ? PL6.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h });
   const seen = new Set(STONE_COLOURS.map(q => q.join())), keep = (w, h, data, dx, dy, key) => {
     let c = null;   // the canvas is made when first drawn
     STONE_PIECES.set(key, { w, h, dx, dy, canvas: () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; } }); };
   for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] && !seen.has(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2])) { seen.add(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2]); STONE_COLOURS.push([f.data[o], f.data[o + 1], f.data[o + 2]]); } }
-  keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? 0 : 32 - f.height, name);
-  if (name.startsWith('stone-small-') && name.endsWith('@16')) {   // doubled, for a sign or a card (32 x 32)
-    const d = new Uint8ClampedArray(32 * 32 * 4); for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) for (let k = 0; k < 4; k++) d[(y * 32 + x) * 4 + k] = f.data[((y >> 1) * 16 + (x >> 1)) * 4 + k];
-    keep(32, 32, d, 0, 0, name + 'x2'); }
+  keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? dy || 0 : 32 - f.height, name);
+  if ((name.startsWith('stone-small-') && name.endsWith('@16')) || name === 'prop-fruit') {   // doubled, for a sign or a card
+    const W = f.width * 2, H = f.height * 2, d = new Uint8ClampedArray(W * H * 4); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) for (let k = 0; k < 4; k++) d[(y * W + x) * 4 + k] = f.data[((y >> 1) * f.width + (x >> 1)) * 4 + k];
+    keep(W, H, d, 0, 0, name + 'x2'); }
+}
+// The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
+// the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
+// cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
+const PROP_DY = { 'bush-full-32': -4, 'bush-bare-32': -4, 'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2 };
+const PROP_FILES = Object.keys(PROP_DY);
+const PROP_SIZE = { 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32] };
+const propPiece = name => STONE_PIECES.get(name) || walkPB(name, ...(PROP_SIZE[name] || [32, 32]));   // a named empty slot until the art is in: nothing is drawn
+async function loadPropArt() {
+  try {
+    if (window.__propArt) { for (const [n, f] of Object.entries(window.__propArt)) stonePut(n, f, true, PROP_DY[n]); return; }   // the tests give them at once, decoded
+    if (typeof Image === 'undefined') return;
+    await Promise.all(PROP_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, true, PROP_DY[n]); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/props/', location.href).href + n + '.png'; })));
+  } catch (e) { console.warn('the props did not load', e); }
 }
 async function loadStoneArt() {
   try {
@@ -603,11 +618,11 @@ function lookMark(name, kind, x, y, T) {   // anchor on the tile's bottom centre
 }
 async function loadWalkArt() {
   try {
-    if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); return; }   // the tests give them at once, decoded
+    if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); loadPropArt(); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     const files = {}, load = (dir, names) => Promise.all(names.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/' + dir + '/', location.href).href + n + '.png'; })));
-    await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt()]);
+    await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt(), loadPropArt()]);
     walkRead(files);
   } catch (e) { console.warn('the walk art did not load', e); } finally { ART_DONE.walk = true; }
 }
@@ -3726,20 +3741,10 @@ function podArt(shell, s) {
     pb.outline(() => C.ink); return pb;
   });
 }
-const FRUIT = () => art('fruit', () => { const pb = new PB(12, 12); pb.ell(6, 7, 4.4, 4.2, C.coral, { sh: [C.blush, C.red] }); pb.rect(6, 1, 1, 2, C.bark); pb.ell(8.5, 2.2, 2, 1.2, C.grass); pb.outline(); return pb; });
-function bushArt(full, fr) {
-  return art('bush' + full + fr, () => {
-    const pb = new PB(32, 32), m = full ? C.leaf : C.grass, sh = full ? [C.sprout, C.forest] : [C.sprout, C.leaf];
-    pb.ell(9, 20, 7, 6.5, m, { sh }); pb.ell(23, 20, 7, 6.5, m, { sh }); pb.ell(16, 14, 8.5, 7.5, m, { sh });
-    if (full) for (const [x, y] of [[10, 18], [21, 22], [17, 10], [24, 15]]) { pb.ell(x, y, 2.2, 2.2, C.coral, { sh: [C.blush, C.red] }); }
-    else { pb.line(13, 7, 11, 3, C.bark); pb.line(19, 7, 22, 4, C.bark); pb.set(16, 12, C.forest); pb.set(10, 19, C.forest); }
-    pb.outline(); return pb;
-  });
-}
-const SLAB = () => art('slab', () => { const pb = new PB(32, 32);
-  pb.poly([[4, 10], [28, 10], [29, 26], [3, 26]], C.rock); pb.poly([[4, 10], [28, 10], [28, 16], [4, 16]], C.rockL);
-  pb.rect(3, 24, 27, 2, C.stone); pb.line(12, 11, 15, 17, C.stone); pb.line(15, 17, 13, 22, C.stone); pb.set(5, 11, C.white);
-  pb.outline(); return pb; });
+// The walk props are the art desk's painted files (art/props/, see PROP_FILES): no prop is drawn in code.
+const FRUIT = () => propPiece('prop-fruit'), FRUIT2 = () => propPiece('prop-fruitx2');
+function bushArt(full, fr) { return propPiece(full ? 'bush-full-32' : 'bush-bare-32'); }
+const SLAB = () => propPiece('prop-slab');
 // Beacon: a stone post with a lamp cage. Unlit the cage is dark; lit, a small flame burns (2 frames).
 // Depot: a small hut with a mast; its lamp is dark until lit, then it glows (2 frames).
 function depotArt(lit, fr) {   // lit: turns of light left (0 dark, 1 ember, 2 half, 3 full)
@@ -3793,73 +3798,21 @@ function stoneArt(lit, cave, fr, warm, small, tall) {
     }
   return pb; });
 }
-function holeArt(glint) { return art('hole' + glint, () => { const pb = new PB(32, 32); pb.ell(16, 19, 10, 6, C.bark, { sh: [C.clay, C.soil] }); pb.ell(16, 20, 7.5, 4, C.void); if (glint) pb.rect(17, 20, 2, 2, C.yellow); return pb; }); }
-// Rupar fresh hole (art desk 2026-11-07, mibi-art 0f21d0919, L2b F10): pasted from the desk's patch.js, drawn with the page's own PB and art(); wired in shedPod, drawPatch and warnPicPlace.
+const holeArt = glint => propPiece(glint ? 'prop-hole1' : 'prop-hole0');
+// Rupar fresh hole (the art desk's painted files, art/props/): drawn at HOLE_DX; wired in shedPod, drawPatch and warnPicPlace. Frame 0 is the fresh dig, frame 1 the settled one; a rock or cave floor has no loose earth (bare).
 const HOLE_DX = -4, HOLE_FRESH_MS = 450;
 const HOLE_BARE = { rock: 1, cave: 1 };
-const HOLE_KEY = { K: 'ink', S: 'soil', B: 'bark', C: 'clay', A: 'sand', F: 'forest', L: 'leaf', G: 'grass', P: 'sprout' };
-// rows 12..31 of the piece, one character a pixel ('.' clear); [frame 0 (earth in the air), frame 1 (settled)]
-const HOLE_ROWS = [[
-  '..............................B.........',
-  '.....................................C..',
-  '........................................',
-  '.................................C......',
-  '.................................S......',
-  '........................................',
-  '.....P.G.......GP...................BC..',
-  '.....LGL.......LS.......................',
-  '......SBCACCA.CAACCAC.........AA........',
-  '....BCKKKKKBKKKKKKKKKCC.......ACCA......',
-  '.P.BKKKKKKKSKKKKKKKKKKC.....ACCACB......',
-  'LPGBKKKKKKKKKKKKKKKKKKKC...ACBCCACB.....',
-  '.SBKKKKKKKKKKKKKKKSSSSSCA.ACCSACCAB.....',
-  '..BKKKKKKKSSSSSSSSSSSSCCACCCBACCBCBB....',
-  '..BSSSSSSSSSSSSSSSSSBCCCBBBCCBBCBBBS....',
-  'P..BCASSSSSSSSSSBBBCACBCSSBBSBBSBS......',
-  '.LS.BACAACCACAACACAACBS..SS.SS.S........',
-  '.....BBCBBBBCBBBCBBBB...................',
-  '.......SBSSBBSSBSSB.....................',
-  '........................................',
-], [
-  '........................................',
-  '........................................',
-  '........................................',
-  '........................................',
-  '........................................',
-  '........................................',
-  '.....P.G.......GP.......................',
-  '.....LGL.......LS.......................',
-  '......SBCACCA.CAACCAC.........AA........',
-  '....BCKKKKKBKKKKKKKKKCC.......ACCA......',
-  '.P.BKKKKKKKSKKKKKKKKKKC.....ACCACB..C...',
-  'LPGBKKKKKKKKKKKKKKKKKKKC...ACBCCACB.S...',
-  '.SBKKKKKKKKKKKKKKKSSSSSCA.ACCSACCAB.....',
-  '..BKKKKKKKSSSSSSSSSSSSCCACCCBACCBCBB....',
-  '..BSSSSSSSSSSSSSSSSSBCCCBBBCCBBCBBBS....',
-  'P..BCASSSSSSSSSSBBBCACBCSSBBSBBSBS...CB.',
-  '.LS.BACAACCACAACACAACBS..SS.SS.S........',
-  '.....BBCBBBBCBBBCBBBB...................',
-  '...C...SBSSBBSSBSSB..............B......',
-  '........................................',
-]];
-function freshHoleArt(fr, bare) {
-  return art('fhole' + fr + (bare ? 'b' : ''), () => { const pb = new PB(40, 32);
-    HOLE_ROWS[fr].forEach((r, j) => { for (let i = 0; i < r.length; i++) { const ch = r[i], k = HOLE_KEY[ch]; if (k && !(bare && 'FLGP'.includes(ch))) pb.set(i, 12 + j, C[k]); } });
-    return pb; });
-}
+const freshHoleArt = (fr, bare) => propPiece(bare ? 'prop-hole-fresh-bare' : fr ? 'prop-hole-fresh-f2' : 'prop-hole-fresh');
 const holeFrame = h => { const a = NOW - (h.at || 0); return motion() && a >= 0 && a < HOLE_FRESH_MS ? 0 : 1; };
-const NEST = () => art('nest', () => { const pb = new PB(32, 32); pb.ell(16, 20, 8, 5, C.forest);
-  for (let i = 0; i < 10; i++) { const a = i * .63; pb.line(16 + Math.cos(a) * 7, 20 + Math.sin(a) * 4.5, 16 + Math.cos(a + .5) * 11, 20 + Math.sin(a + .5) * 6.5, i % 2 ? C.clay : C.bark); } return pb; });
+const NEST = () => propPiece('prop-nest');
 function mushArt(fr) { return art('mush' + fr, () => { const pb = new PB(32, 32);
   for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const d = Math.hypot(x - 16, y - 18); if (d < 13 && d > 6 && (x + y + fr) % 2 === 0 && (x * 7 + y * 3) % 5 < 2) pb.set(x, y, C.plum); }
   for (const [x, y, r] of [[10, 20, 3.5], [18, 17, 4.5], [23, 22, 3]]) { pb.rect(x - 1, y, 2, 5, C.bone); pb.ell(x, y, r, r * .75, C.lilac, { sh: [C.lavender, C.plum], clip: (px, py) => py <= y }); }
   pb.outline(n => n === C.bone ? C.mist : shade(n, 2)); return pb; }); }
-const CRACK = () => art('crack', () => { const pb = new PB(32, 32);
-  for (const [a, b] of [[[5, 18], [12, 15]], [[12, 15], [16, 20]], [[16, 20], [22, 14]], [[22, 14], [28, 17]], [[12, 15], [10, 9]], [[22, 14], [24, 24]]]) { pb.line(a[0], a[1], b[0], b[1], C.soil, 2); pb.line(a[0], a[1] - 1, b[0], b[1] - 1, C.bark); } return pb; });
+const CRACK = () => propPiece('prop-crack');
 const BADGE = () => art('badge', () => { const pb = new PB(18, 18); pb.ell(9, 9, 8, 8, C.plumD); pb.ell(9, 9, 8, 8, C.lavender, { clip: (x, y) => Math.hypot(x + .5 - 9, y + .5 - 9) > 6.8 });
   GLYPHS['?'].split('|').forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === '#') pb.set(7 + x, 5 + y, C.lavender); }); return pb; });
-function exitArt(fr) { return art('exit' + fr, () => { const pb = new PB(32, 32);
-  pb.ell(16, 14, 14, 12, C.cream, { chk: 1 }); for (const oy of [0, 6]) { pb.line(10, 18 - oy - fr, 16, 12 - oy - fr, C.bone, 2); pb.line(16, 12 - oy - fr, 22, 18 - oy - fr, C.bone, 2); } return pb; }); }
+const exitArt = fr => propPiece('prop-exit');
 function burrowArt(open) { return art('burrow' + open, () => { const pb = new PB(32, 32), w = open ? 10 : 6;
   pb.ell(16, 30, w + 6, 22, C.soil, { clip: (x, y) => y < 32 });
   pb.ell(16, 30, w + 4, 20, C.bark, { sh: [C.clay, C.soil], clip: (x, y) => y < 32 });
@@ -6011,7 +5964,7 @@ const PIC = {
   full: (x, y, ps) => { podSlot(x, y + 6, (ps && ps[0]) || { g: 'meadow' }); podSlot(x + 16, y + 6, (ps && ps[1]) || { g: 'pond' }); },
   bank: (x, y) => cen2('crate', crateArt(), x, y),
   fog: (x, y) => ditherFill(x, y, 32, 32, 'fog', 8),
-  fruit: (x, y) => cen2('fruit', FRUIT(), x, y),
+  fruit: (x, y) => cen(FRUIT2(), x, y),
   'bub!': (x, y) => cen2('bub!', bubbleArt('!'), x, y), 'bub?': (x, y) => cen2('bub?', bubbleArt('?'), x, y),
   bubf: (x, y) => cen2('bubf', bubbleArt('f'), x, y), 'bub…': (x, y) => cen2('bub…', bubbleArt('…'), x, y),
   tuft: (x, y) => cen2('tuft', ICON.tuft(), x, y), drop: (x, y) => cen2('drop', DROP(), x, y),
