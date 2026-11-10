@@ -1672,7 +1672,10 @@ function bandTell() {
 }
 // What can still be taken in a place, counting only what you can see (unveiled): the pips on the map and
 // the tail of a Call's report ("1 dew, 1 fruit left").
-function leftItems(c) {
+// leftItemsAll is everything left (fruit and unlit beacons too), for the pacing bot only; leftItems is the finds: pod, charge, warm, dew, tuft.
+const FINDS = ['pod', 'charge', 'warm', 'dew', 'tuft'];
+function leftItems(c) { return leftItemsAll(c).filter(i => FINDS.includes(i.k)); }
+function leftItemsAll(c) {
   const out = []; if (!passable(c)) return out;
   const key = String(c), live = S.exp && S.exp.live[key], see = (x, y) => unveiled(key, x, y);
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
@@ -1682,17 +1685,17 @@ function leftItems(c) {
   if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
   return out;
 }
-function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, fruit: 0, tuft: 0, beacon: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
+function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, tuft: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
 function leftTotal(c) { const n = leftCounts(c); return Object.values(n).reduce((a, b) => a + b, 0); }
 function pipsOf(c) { return Math.min(3, leftTotal(c)); }
 // What is left, each kind with the way to its nearest one from where you stand: "a pod east, a warm stone north-west".
-const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], fruit: ['a fruit', 'fruit'], tuft: ['a tuft', 'tufts'], beacon: ['an unlit beacon', 'unlit beacons'] };   // [copy]
+const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], tuft: ['a tuft', 'tufts'] };   // [copy]
 // The way to one takeable from where you stand: " close by", " west", " in the cave".
 function wayTo(near, P) { const dx = near.x - P.x, dy = near.y - P.y;
   return near.cave ? ' in the cave' : cheb(near, P) <= 2 ? ' close by' : ' ' + (dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))) || 'close by'); }
-// The nearest takeable in a place with its way ("a charge west"), or null. Tufts are not takes.
+// The nearest takeable in a place with its way ("a charge west"), or null.
 function nearestTake(c, P) {
-  const its = leftItems(c).filter(i => i.k !== 'tuft'); if (!its.length || !P) return null;
+  const its = leftItems(c); if (!its.length || !P) return null;
   const near = its.reduce((a, b) => cheb(a, P) <= cheb(b, P) ? a : b); return LEFT_WORDS[near.k][0] + wayTo(near, P);
 }
 function leftPhrase(c, P, room, kinds) {
@@ -1755,7 +1758,7 @@ function reachLine() { const rc = reachCounts(), tail = gatedTail(rc) + behindTa
 // A place counts as finished when its heart is found and no pod lies buried.
 const buriedIn = c => S.pods.filter(p => p.k === String(c) && p.h).length;
 const placeDone = c => explored(c) && !buriedIn(c);   // the heart is found and no pod lies buried
-const TAKE_WORD = { pod: 'pod', charge: 'charge', warm: 'warm stone', dew: 'dew', fruit: 'fruit', tuft: 'tuft', beacon: 'beacon' };
+const TAKE_WORD = { pod: 'pod', charge: 'charge', warm: 'warm stone', dew: 'dew', tuft: 'tuft' };
 function takeKinds(c) { const n = leftCounts(c); return Object.keys(TAKE_WORD).filter(k => n[k]).map(k => TAKE_WORD[k]); }
 // A found place with nothing to take: ← leaves in one press (unless a Tuikis is settling and Wait matters).
 function doneEmpty() {
@@ -5515,7 +5518,7 @@ function drawPatchBody(t) {
       blit(ICON.bolt(motion() && Math.floor(t * 2) % 2 ? 'cream' : 'yellow'), W(x) + (ts >> 1) - 6, H(y) - 8); }
     // once the heart is found, every takeable still in view glints: the sparkle for 400 ms every 1.6 s, staggered by position; none under reduced motion
     if (hh && heartFound(lay.cell) && motion()) {
-      for (const it of leftItems(lay.cell)) { if (it.k === 'tuft' || it.cave || !vis2(it.x * ts, it.y * ts)) continue;
+      for (const it of leftItems(lay.cell)) { if (it.cave || !vis2(it.x * ts, it.y * ts)) continue;
         if ((NOW + hash(it.x, it.y, 7) % 1600) % 1600 >= 400) continue;
         const a = sparkArt(false); blit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); } } }
   // what Confirm will act on

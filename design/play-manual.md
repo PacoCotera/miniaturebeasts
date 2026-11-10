@@ -28,7 +28,7 @@ The bottom line has three sections, left to right, with a thin divider between t
 `✓ Wait · ← Leave` | `meadow · surveyed 2/4` | `⚡⚡◀`
 
 - **The two actions, together on the left.** First **✓ what Confirm does now** ("✓ Take the pod", "✓ Go down", or "✓ Wait" when you face nothing), at most 24 letters. Then **← what the ← key opens**, named by the menu's top entry: "← Leave" in a place ("← Climb out" in the cave), "← End expedition" on the start cell or a lit outpost, "← close" on screens. If a screen has nothing for ✓ to do, only ← shows.
-- **Where you are**, in the middle: the place and how much of it is surveyed ("rock field · surveyed 2/4 · 3 to take: fruit · dew · tuft"), and on the map also the cell you face ("Ahead: meadow · outpost (dark)"). When space is short this section shrinks first: the list is cut, never the actions.
+- **Where you are**, in the middle: the place and how much of it is surveyed ("rock field · surveyed 2/4 · 3 to take: pod · dew · tuft"), and on the map also the cell you face ("Ahead: meadow · outpost (dark)"). When space is short this section shrinks first: the list is cut, never the actions.
 - **Conditions**, on the right, only when there are any: one to three bolts for a storm with ◀ or ▶ for the way it moves, and a small fog patch with its own ◀ or ▶ when a fog bank is within two cells.
 
 ### The header (left to right)

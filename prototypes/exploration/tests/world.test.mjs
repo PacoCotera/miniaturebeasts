@@ -1653,10 +1653,23 @@ test("the Call sign never joins another message; it is spent only when it is dra
 
 test("walk B2: after the find the band names the nearest takeable and its way, then how many more (1, 2 and 4 takeables); nothing left says so", () => {
   const p = inPlace(); p.run("FX.hintNote = null; S.called[curLay().cell] = 1;");
-  const items = n => `leftItems = () => [${[0, 1, 2, 3].slice(0, n).map(k => `{ k: ['dew', 'pod', 'fruit', 'charge'][${k}], x: S.exp.patch.x - 4 - ${k}, y: S.exp.patch.y }`).join(", ")}];`;
+  const items = n => `leftItems = () => [${[0, 1, 2, 3].slice(0, n).map(k => `{ k: ['dew', 'pod', 'tuft', 'charge'][${k}], x: S.exp.patch.x - 4 - ${k}, y: S.exp.patch.y }`).join(", ")}];`;
   p.run(items(1)); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west");
   p.run(items(2)); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west · 1 more to take");
   p.run(items(4)); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west · 3 more to take");
   assert.equal(p.run("heartLine(curLay(), S.exp.patch, true)"), "found · 4 to take", "the short form keeps the count");
   p.run("leftItems = () => [];"); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · nothing left to take");
+});
+
+test("finds: fruit and an unlit beacon are not takes; a place with a full cup reads 1 to take, and is done once the cup is taken", () => {
+  const p = inPlace(); p.run("FX.hintNote = null; S.called[curLay().cell] = 1; S.found.push('heart:' + curLay().cell); S.pods = S.pods.filter(q => q.k !== S.exp.patch.key);");
+  const at = (k, dx) => `{ k: '${k}', x: S.exp.patch.x - ${dx}, y: S.exp.patch.y }`;
+  p.run(`leftItemsAll = () => [${at('fruit', 3)}, ${at('fruit', 4)}, ${at('beacon', 5)}, ${at('dew', 6)}];`);
+  assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west", "only the cup counts");
+  assert.equal(p.run("leftTotal(curLay().cell)"), 1);
+  assert.equal(p.run("doneEmpty()"), false);
+  p.run(`leftItemsAll = () => [${at('fruit', 3)}, ${at('beacon', 5)}];`);
+  assert.equal(p.run("leftTotal(curLay().cell)"), 0);
+  assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · nothing left to take");
+  assert.equal(p.run("doneEmpty()"), true);
 });
