@@ -38,16 +38,27 @@ export function extendTables(tables, coreRgb, setRgb, first, extraRgb) {
   return tables;
 }
 
-// A green: more green than red and than blue. The night table sends the grass-tone colours to a green only (terrain-layers-c: they went to brown).
-export const isGreen = (rgb) => rgb[1] > rgb[0] && rgb[1] > rgb[2];
-export const GREEN_ONLY_TABLES = ['dark2'];
+// ---- the night table (dark2): every colour keeps its hue family (art director, 2026-11-09 20:4x) ----
+// green (grass, tone, reeds, shrubs, leaves) -> a dark green, never red-brown; water and teal -> a dark blue-teal, never purple; sand, earth, path, trunk -> a dark warm brown; stone -> a dark grey;
+// the tree crowns and bushes (the leaf ramp) go to no lighter a green than the night grass; the sunlit grass tone goes to the next green a touch lighter than the night grass. Anything else (pinks, whites,
+// the core's blues and purples) goes to the nearest colour of the whole palette as before.
+export const NIGHT_TABLES = ['dark2'];
+export function family(rgb) {
+  const [r, g, b] = rgb, mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+  if (mx - mn <= 30 && r >= b - 4) return 'grey';
+  if (g >= r && g >= b) return b >= 0.8 * g ? 'teal' : 'green';
+  if (b > g && b > r && g >= r) return b <= 1.25 * g ? 'teal' : 'blue';   // a teal leans no more than a quarter to blue; the core's deep blues are their own family
+  if (r >= g && g >= b) return 'warm';
+  return null;
+}
+const lumOf = (c) => 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2];
 
-// opts.greenOnly: palette indices (core and set colours) whose target in GREEN_ONLY_TABLES is the nearest green among the candidates, not the nearest colour.
+// opts.ground: palette indices of the plain grass fill's colours; opts.tone: of the sunlit tone patch; opts.crowns: of the tree, bush and shrub leaf ramp (all core-and-set indices).
 export function computeTables(coreRgb, setRgb, opts = {}) {
   const cand = [];
   for (let i = 1; i < coreRgb.length; i++) cand.push([i, coreRgb[i]]);
   setRgb.forEach((rgb, k) => cand.push([coreRgb.length + k, rgb]));
-  const greenOnly = new Set(opts.greenOnly || []);
+  const rgbAt = (i) => (i < coreRgb.length ? coreRgb[i] : setRgb[i - coreRgb.length]);
   const nearest = (c, pool = cand) => {
     let best = -1, bd = Infinity;
     for (const [i, rgb] of pool) {
@@ -56,23 +67,30 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
     }
     return best;
   };
-  const rgbAt = (i) => (i < coreRgb.length ? coreRgb[i] : setRgb[i - coreRgb.length]);
-  // opts.greenKeep: indices of the plain ground colour (the grass fill): the greens they go to are left out of the pool, so the tone stays a patch beside it
-  const greenPool = (name) => {
-    const keep = new Set((opts.greenKeep || []).map((i) => nearest(TRANSFORMS[name](rgbAt(i)))));
-    return cand.filter(([i, rgb]) => isGreen(rgb) && !keep.has(i));
-  };
+  const pools = {};
+  for (const f of ['green', 'teal', 'blue', 'warm', 'grey']) pools[f] = cand.filter(([, rgb]) => family(rgb) === f);
+  const ground = new Set(opts.ground || []), tone = new Set(opts.tone || []), crowns = new Set(opts.crowns || []);
   const used = coreRgb.length + setRgb.length;
   const tables = {};
   for (const name of TABLE_NAMES) {
-    const map = new Array(256);
-    const pool = GREEN_ONLY_TABLES.includes(name) ? greenPool(name) : null;
+    const map = new Array(256), night = NIGHT_TABLES.includes(name);
+    // the night grass: the green the plain grass fill goes to; the crowns stay at or below its lightness, the tone goes to the green just above it
+    let g0 = -1, lim = Infinity, up = -1;
+    if (night && ground.size) {
+      const gi = [...ground][0]; g0 = nearest(TRANSFORMS[name](rgbAt(gi)), pools.green); lim = lumOf(rgbAt(g0));
+      let bl = Infinity; for (const [i, rgb] of pools.green) { const l = lumOf(rgb); if (l > lim && l < bl) { bl = l; up = i; } }
+    }
     for (let i = 0; i < 256; i++) {
-      if (i === 0) map[i] = 0;
-      else if (i >= used) map[i] = i;
-      else map[i] = nearest(TRANSFORMS[name](rgbAt(i)), pool && greenOnly.has(i) ? pool : cand);
+      if (i === 0) { map[i] = 0; continue; }
+      if (i >= used) { map[i] = i; continue; }
+      const rgb = rgbAt(i), t = TRANSFORMS[name](rgb), f = night ? family(rgb) : null;
+      if (!night || !f) map[i] = nearest(t);
+      else if (tone.has(i) && up >= 0 && f === 'green') map[i] = up;
+      else if (crowns.has(i) && f === 'green') map[i] = nearest(t, pools.green.filter(([, c]) => lumOf(c) <= lim));
+      else map[i] = nearest(t, pools[f]);
     }
     tables[name] = map;
   }
   return tables;
 }
+

@@ -1,12 +1,12 @@
-// The open edges (walk content B5; art desk mibi-art abb33a65b, manifest.json "howLDtkPaints"): what the bake does with the cliff, the way up, the reed bank and the low scrub.
-// Pure over the level IR and the set's layer descriptors (setload.layerDescriptors: `tall`, `variants`, `wayup`, `looks` are indices into the baked tile set's rows).
+// The open edges (walk content B5; art desk mibi-art abb33a65b, manifest.json "howLDtkPaints"): what the bake does with the cliff, the way up, the reed bank (a list of areas the reed sprites go in) and the low scrub.
+// Pure over the level IR and the set's layer descriptors (setload.layerDescriptors: `tall`, `variants`, `wayup` are indices into the baked tile set's rows).
 //   cliff   painted as the raised land, like any terrain. Each cliff tile is picked by its corners plus the two cells under its bottom corners: s = (SW is cliff and the cell below SW is not) * 2
 //           + (SE is cliff and the cell below SE is not); s = 0 the ordinary sheet, s = 1..3 the ~s sheets (a list of face variants is picked by hash). A tile of four cliff corners with s > 0 takes
 //           ~s<n> tile 15 (opaque) in place of the fill.
 //   walking: the top is ground; every cliff cell with a non-cliff 4-neighbour is the lip or the face and blocks, except the cells under a WayUp area.
 //   wayup   an area over the cliff's last row on a straight face, n >= 1 cells wide, with straight face one cell either side: for the dual columns x0..x0+n the left, middle and right pieces,
 //           row 1 for the face tile (corners 12) and row 0 for the tile above it (corners 15, s = 3); the piece is the one for the terrain below the face (grass or sand).
-//   reeds   the reed look of a shore kind inside a ReedBank area: the reed pixels alone (transparent elsewhere, variants by hash), drawn over the shore tile as one more piece of the tile; nothing blocks.
+//   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
 //   scrub   variants share every edge line; one per dual tile by hash.
 import { EMPTY, FILL_CODE, hash32, splitCode } from '../dualgrid.mjs';
 
@@ -46,20 +46,17 @@ export function gullies(ir, terrains) {
 }
 
 // Rewrites the tile codes of dg's layers in place (dg: dualgrid.terrainLayers' output). ir: the level; terrains: terrain.json's list;
-// layers: Map(terrain value -> descriptor) of setload.layerDescriptors, whose kinds carry `rows` (indices into the baked tile set's rows: over, tall { s: [rows] }, variants, wayup { lowerId: row }, looks { name: [rows] }).
+// layers: Map(terrain value -> descriptor) of setload.layerDescriptors, whose kinds carry `rows` (indices into the baked tile set's rows: over, tall { s: [rows] }, variants, wayup { lowerId: row }).
 export function applyOpenEdges(dg, ir, terrains, layers) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
   const { isCliff } = cliffInfo(ir, terrains);
   const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
-  const inArea = (list, i, j) => (list || []).some((a) => i >= a.x && i <= a.x + a.w && j >= a.y && j <= a.y + a.h);
   const pick = (list, i, j) => (list.length > 1 ? list[vh(i, j) % list.length] : list[0]);
-  const looks = [];   // [terrain layer, its reed look layer]: spliced in after the loop, so the layers being walked do not move
   for (const layer of dg.layers) {
     if (layer.tone) continue;
     const d = layers.get(layer.terrain), withTall = d.kinds.find((k) => k.rows.tall);
     const tall = cliff && layer.terrain === cliff.value && withTall ? withTall.rows.tall : null;
-    if (!tall && !d.kinds.some((k) => k.rows.variants || (k.rows.looks && k.rows.looks.reeds && k.rows.looks.reeds.length))) continue;
-    let look = null;
+    if (!tall && !d.kinds.some((k) => k.rows.variants)) continue;
     for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
       const c = layer.tiles[j * w1 + i]; if (c === EMPTY) continue;
       const fill = c >= FILL_CODE, s0 = fill ? null : splitCode(c), full = fill || s0.full !== undefined, corner = full ? 15 : s0.slot;
@@ -74,15 +71,8 @@ export function applyOpenEdges(dg, ir, terrains, layers) {
         const n = vh(i, j) % (rows.variants.length + 1);
         if (n > 0) layer.tiles[j * w1 + i] = ALT_CODE + 16 * rows.variants[n - 1] + corner;
       }
-      const reeds = rows.looks && rows.looks.reeds;
-      if (reeds && reeds.length && corner > 0 && corner < 15 && inArea(ir.reedbanks, i, j)) {   // the reed look is the reed pixels alone (transparent elsewhere): drawn over the shore tile, one layer up
-        if (!look) look = { terrain: layer.terrain, look: true, tiles: new Uint16Array(layer.tiles.length).fill(EMPTY) };
-        look.tiles[j * w1 + i] = ALT_CODE + 16 * reeds[vh(i, j) % reeds.length] + corner;
-      }
     }
-    if (look) looks.push([layer, look]);
   }
-  for (const [layer, look] of looks) dg.layers.splice(dg.layers.indexOf(layer) + 1, 0, look);
   // the way up: the kit's piece for the terrain below the face replaces the cliff's own tiles on the tile above the face (row 0) and on the face (row 1)
   if (cliff && ir.wayups && ir.wayups.length) {
     const layer = dg.layers.find((l) => l.terrain === cliff.value), d = layer && layers.get(cliff.value), withUp = d && d.kinds.find((k) => k.rows.wayup);

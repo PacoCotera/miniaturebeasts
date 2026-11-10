@@ -54,7 +54,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const props = sh ? sh.props : place.props, canopyList = sh ? sh.canopy : place.canopy;
   for (const p of props) {
     const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48);
-    if (s.kind === 'tall-grass' && !s.footprint.length) { if (tiles[I(cx, cy)] === T.GRASS) tiles[I(cx, cy)] = T.TALL; continue; }
+    if (String(s.kind).startsWith('tall-grass') && !s.footprint.length) { if (tiles[I(cx, cy)] === T.GRASS) tiles[I(cx, cy)] = T.TALL; continue; }
     for (let i = 0; i + 1 < s.footprint.length; i += 2) {
       const x = cx + s.footprint[i], y = cy + s.footprint[i + 1];
       if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }

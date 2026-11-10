@@ -358,19 +358,29 @@ export function cellTerrain(seed, X, Y) {
 // grass tone (terrain layers, ground patches of Rule 1.6): the lipless tone layer over plain grass, in patches of a few tiles from a noise field at world position (about 3 to 8 tiles a patch), never a per-tile repeat. A tile carries tone only when
 // the 3 x 3 tiles round it are all grass (or all raised top, with the cells two rows below raised too: terrain-layers-c), so every dual tile that touches a tone corner is wholly one ground: tone never meets a lip, a face or an edge.
 // Returns 0/1 per tile of an area whose first tile is world (x0, y0).
-const TONE_AT = 0.1;
+export const TONE_AT = 0.45, TONE_CLEAR = 2, TONE_PATCH_MAX = 160;
 export function toneField(seed, x0, y0, w, h) {
-  const n = ctxOf(seed).nG, T = worldTiles(seed), out = new Uint8Array(w * h);
+  const S = ctxOf(seed), n = S.nG, T = worldTiles(seed), out = new Uint8Array(w * h), memo = S.toneMemo || (S.toneMemo = new Map()), K = (x, y) => y * 8192 + x;
+  // a tile that may carry tone: grass (or the raised top) with the whole 5 x 5 block round it that same ground, so a full cell is clear of every edge (path, water, sand, cliff, thicket, scrub); on the raised
+  // top the three cells two rows below are in that block, so every dual tile the tone touches is the plain top, never a face or a way up
+  const clear = (gx, gy, v) => { for (let dy = -TONE_CLEAR; dy <= TONE_CLEAR; dy++) for (let dx = -TONE_CLEAR; dx <= TONE_CLEAR; dx++) if (T(gx + dx, gy + dy) !== v) return false; return true; };
+  // a patch is the 8-connected blob of tiles the noise puts above the threshold; it is kept whole or dropped whole: one tile that is not clear drops the patch (never clipped, which went boxy beside paths and ponds)
+  const patchOk = (gx, gy) => {
+    const k = K(gx, gy), hit = memo.get(k); if (hit !== undefined) return hit;
+    const v = T(gx, gy), seen = new Set([k]), q = [[gx, gy]];
+    let ok = (v === TV.GRASS || v === TV.CLIFF);
+    for (let i = 0; i < q.length && ok; i++) {
+      const [px, py] = q[i];
+      if (T(px, py) !== v || !clear(px, py, v) || q.length > TONE_PATCH_MAX) { ok = false; break; }
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const a = px + dx, b = py + dy, kk = K(a, b); if ((dx || dy) && !seen.has(kk) && n(a, b) > TONE_AT) { seen.add(kk); q.push([a, b]); } }
+    }
+    if (memo.size > 400000) memo.clear();
+    for (const kk of seen) memo.set(kk, ok);   // every tile read is of this one patch, which stands or falls whole
+    return ok;
+  };
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const gx = x0 + x, gy = y0 + y;
-    if (n(gx, gy) <= TONE_AT) continue;
-    const v = T(gx, gy);
-    if (v !== TV.GRASS && v !== TV.CLIFF) continue;
-    let all = true;
-    for (let dy = -1; dy <= 1 && all; dy++) for (let dx = -1; dx <= 1; dx++) if (T(gx + dx, gy + dy) !== v) { all = false; break; }
-    // the raised top (cliff terrain) takes tone by the same rule and one more: the three cells two rows below are raised too, so every dual tile the tone touches is the plain top, never a face or a way up
-    if (all && v === TV.CLIFF) for (let dx = -1; dx <= 1; dx++) if (T(gx + dx, gy + 2) !== TV.CLIFF) { all = false; break; }
-    if (all) out[y * w + x] = 1;
+    if (n(gx, gy) > TONE_AT && patchOk(gx, gy)) out[y * w + x] = 1;
   }
   return out;
 }
@@ -403,10 +413,12 @@ function decorIR(seed, x0, y0, w, h) {
   const D = decorOf(seed), props = [], decals = [], at = (tx, ty, dx = 0, dy = 0) => ({ x: (tx - x0) * 48 + 24 + 3 * dx, y: (ty - y0) * 48 + 47 + 3 * dy });
   const placed = (kind, p) => ({ kind, x: p.x, y: p.y, sortY: p.y, cx: Math.floor(p.x / 48), cy: Math.floor(p.y / 48) });
   for (const p of D.propsIn(x0 - 2, y0, x0 + w + 1, y0 + h + 2)) props.push({ ...placed(p.kind, at(p.x, p.y)), tx: p.x, ty: p.y, fam: p.fam, cluster: p.cluster });
-  for (const d of D.decalsIn(x0, y0, x0 + w - 1, y0 + h - 1)) decals.push({ ...placed(d.kind, at(d.x, d.y, d.dx, d.dy)), tx: d.x, ty: d.y });
+  for (const d of D.decalsIn(x0, y0, x0 + w - 1, y0 + h - 1)) decals.push({ ...placed(d.kind, d.mx === undefined ? at(d.x, d.y, d.dx, d.dy) : { x: (d.x - x0) * 48 + d.mx, y: (d.y - y0) * 48 + d.my }), tx: d.x, ty: d.y });   // a fleck sits by its own pixel offset
   const reedbanks = D.reedsIn(x0, y0, x0 + w, y0 + h).map(r => ({ x: 4 * r.bx - x0, y: 4 * r.by - y0, w: 3, h: 3 }));
+  // the reed beds: props with no footprint (they sort with the walkers and block nothing), at the reed's foot, 3 master pixels to a native one
+  const reedProps = D.reedClumpsIn(x0, y0, x0 + w - 1, y0 + h - 1).map(c => { const x = (c.px - x0 * 16) * 3, y = (c.py - y0 * 16) * 3; return { ...placed(c.kind, { x, y }), tx: c.tx, ty: c.ty, fam: 'reeds', cluster: -3 }; });
   const byPos = (a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0);
-  return { props: props.sort(byPos), decals: decals.sort(byPos), reedbanks };
+  return { props: props.sort(byPos), decals: decals.sort(byPos), reedbanks, reedProps };
 }
 
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
@@ -414,7 +426,8 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null) {
   const d = decorIR(seed, x0, y0, w, h);
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
   const hold = cell ? holdOf({ seed, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
-  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props: d.props, decals: d.decals, canopy: [], hearts: [], clues: [],
+  const props = d.props.concat(d.reedProps).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));   // the reeds are not read by the hold: only the land's props are
+  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props, decals: d.decals, canopy: [], hearts: [], clues: [],
     finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone: toneField(seed, x0, y0, w, h),
     inner: hold ? hold.inner : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
 }

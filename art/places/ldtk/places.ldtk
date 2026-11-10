@@ -1520,11 +1520,6 @@
 						"tileRect": null
 					},
 					{
-						"id": "reeds",
-						"color": 0,
-						"tileRect": null
-					},
-					{
 						"id": "tall-grass",
 						"color": 0,
 						"tileRect": null
@@ -1556,6 +1551,81 @@
 					},
 					{
 						"id": "shrub-4",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tall-grass-b",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tall-grass-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tall-grass-bm",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-shore-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-shore-1m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-shore-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-shore-3m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-shore-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-shore-2m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-shore-4",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-shore-4m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-water-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-water-1m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-water-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "reed-water-2m",
 						"color": 0,
 						"tileRect": null
 					}
@@ -1636,6 +1706,66 @@
 					},
 					{
 						"id": "clump-tall",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-0",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-0m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-1m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-2m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-3m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-4",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-4m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-5",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "fleck-5m",
 						"color": 0,
 						"tileRect": null
 					}

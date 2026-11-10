@@ -14,6 +14,7 @@
 // shrub-1..4) stand sparsely inside scrub patches, a full cell off every scrub edge, never touching each other; scrub holds no other prop or decal.
 // Raised land's top is dressed like the low ground of its biome by the same scatter. Decals (tufts, flowers, clumps) follow the art desk's meadow density on every grass tile.
 import { noiseField } from './world.mjs';
+import { reedClumps } from './reeds.mjs';
 
 export const TERR = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
 const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET, SCRUB } = TERR;
@@ -37,7 +38,9 @@ export const BIOME_IDS = Object.keys(TABLE);
 // props per 100 tiles a table row asks for (on tiles where the kind may stand)
 export const expectedPer100 = (biome, fam) => { const P = TABLE[biome][fam]; if (!P) return 0; const m = P.size ? (P.size[0] + P.size[1]) / 2 : 1; return 100 * P.used * m / (P.B * P.B); };
 
-const KINDS = { broad: 'tree-broad', autumn: 'tree-autumn', greyRock: 'boulder-grey', brownRock: 'boulder-brown', bushes: ['bush-big', 'bush-round', 'bush-small'], stump: 'stump', sweep: 'tall-grass', hollow: 'tree-hollow' };
+// the sweeps of tall grass are still pictures now: the signed tufts-2 and tufts-3, each as it is and mirrored (art director: mirrored at random, no new paint)
+export const SWEEPS = ['tall-grass', 'tall-grass-b', 'tall-grass-m', 'tall-grass-bm'];
+const KINDS = { broad: 'tree-broad', autumn: 'tree-autumn', greyRock: 'boulder-grey', brownRock: 'boulder-brown', bushes: ['bush-big', 'bush-round', 'bush-small'], stump: 'stump', hollow: 'tree-hollow' };
 export const TREE_KINDS = [KINDS.broad, KINDS.autumn];
 export const ROCK_KINDS = [KINDS.greyRock, KINDS.brownRock];
 export const BUSH_KINDS = KINDS.bushes;
@@ -50,14 +53,15 @@ const DRIFT = [[1, 1], [-1, 1], [2, 0], [-2, 1], [0, 2], [1, -1]];
 // the scrub shrubs (the desk's shrub-1..4, mibi-art 34a8dc49c): on the inside of a scrub patch only, never on neighbouring tiles (a shrub is 15 px in a 16 px tile, so two in a row would touch); at this raw rate about
 // one in three of the scrub tiles a shrub may stand on holds one (one in two is a checkerboard, a lattice)
 export const SHRUBS = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4'];
-const P_SHRUB = 0.9;
+// the grass flecks (art director signed: single blades, pale pairs, 2-blade flicks; mibi-art 633e4d641, out/scatter-rule.md): tiny texture on open grass, about one tile in 2.5, one a tile, in its tile with a pixel's margin
+export const FLECK_SIZES = [[9, 6], [6, 5], [3, 7], [7, 7], [7, 6], [6, 7]], P_FLECK = 0.4;
 const P_CLUMP = 0.04, P_FLOWER_SEED = 0.083, P_TUFT = 0.302;   // raw rates after the exclusions (a clump keeps 7 x 7 to itself: about 1 in 65 tiles), tuned on seeds 7, 13 and 42 to the rule above
 
 // ---- integer hashing by position ----
 const mix = h => { h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return h >>> 0; };
 const H = (seed, tag, x, y, z = 0) => { let h = Math.imul(seed | 0, 0x9e3779b1) ^ Math.imul(tag, 0x85ebca6b); h = mix(h ^ Math.imul(x | 0, 0xc2b2ae35)); h = mix(h ^ Math.imul(y | 0, 0x27d4eb2f)); return mix(h ^ Math.imul(z | 0, 0x165667b1)); };
 const U = (seed, tag, x, y, z) => H(seed, tag, x, y, z) / 4294967296;
-const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000, SHRUB: 1010 };
+const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000, SHRUB: 1010, REEDB: 1020, FLECK: 1030 };
 const key = (x, y) => y * 8192 + x;
 const CS = 16;                                           // coarse cells of the seed index, in tiles
 const sizeRange = P => P.size || [1, 1];
@@ -235,21 +239,41 @@ export function createDecor(seed, land) {
     if (fi === 1) return s.kind;                                                                                                   // one colour an outcrop
     if (fi === 2) return KINDS.stump;
     if (fi === 3) return KINDS.bushes[H(seed, TAG.MEM, x, y, s.h) % 3];
-    return KINDS.sweep;
+    return SWEEPS[H(seed, TAG.MEM + 1, x, y, s.h) % SWEEPS.length];
   }
   function memberOf(fi, x, y) { const s = owner(fi, x, y); if (!s) return null; return cluster(fi, s).set.get(key(x, y)) || null; }
 
   // ---- scrub shrubs: a scrub tile whose 3 x 3 is all scrub (a full cell off every scrub edge) may hold one by hash; of two candidates on neighbouring tiles (side by side) the lower hash wins, so none ever touch ----
-  const shrubCand = (x, y) => inMap(x, y) && T(x, y) === SCRUB && U(seed, TAG.SHRUB, x, y) < P_SHRUB && plain(x, y);
-  const shrubAt = (x, y) => {
-    if (!shrubCand(x, y)) return false;
-    const u = U(seed, TAG.SHRUB + 1, x, y);
-    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-      const a = x + dx, b = y + dy;
-      if (shrubCand(a, b)) { const v = U(seed, TAG.SHRUB + 1, a, b); if (v < u || (v === u && (b < y || (b === y && a < x)))) return false; }
-    }
-    return true;
+  // The most the no-touching rule allows (art director, final): every eligible scrub tile (plain: a full cell off the patch edge) takes a shrub unless a neighbour at its side holds one, the tiles taken in an order
+  // of per-tile hashes (a greedy maximal choice, never an even lattice, a checkerboard at most), the answer a function of the world alone. A patch with no eligible tile (1 or 2 cells across) takes one shrub
+  // on its lowest-hash tile.
+  const SIDE4 = [[1, 0], [-1, 0], [0, 1], [0, -1]], shrubMemo = new Map(), patchMemo = new Map();
+  const shrubCand = (x, y) => inMap(x, y) && T(x, y) === SCRUB && plain(x, y);
+  const prio = (x, y) => U(seed, TAG.SHRUB + 1, x, y);
+  const before = (a, b, x, y) => { const v = prio(a, b), u = prio(x, y); return v < u || (v === u && (b < y || (b === y && a < x))); };
+  const bigShrub = (x, y) => {   // an eligible tile: taken when no side neighbour that comes before it in the order is taken
+    const k = key(x, y), hit = shrubMemo.get(k); if (hit !== undefined) return hit;
+    let r = shrubCand(x, y);
+    if (r) for (const [dx, dy] of SIDE4) { const a = x + dx, b = y + dy; if (shrubCand(a, b) && before(a, b, x, y) && bigShrub(a, b)) { r = false; break; } }
+    if (shrubMemo.size > 400000) shrubMemo.clear();
+    shrubMemo.set(k, r); return r;
   };
+  // the scrub patch of a tile (4-connected, at most 80 tiles read): the tile that takes the patch's one shrub when the patch has no eligible tile, else null
+  const smallPatchShrub = (x, y) => {
+    const k = key(x, y), hit = patchMemo.get(k); if (hit !== undefined) return hit;
+    const seen = new Map([[k, 1]]), q = [[x, y]];
+    let eligible = false;
+    for (let h = 0; h < q.length && q.length <= 80; h++) {
+      const [px, py] = q[h]; if (shrubCand(px, py)) eligible = true;
+      for (const [dx, dy] of SIDE4) { const a = px + dx, b = py + dy; if (inMap(a, b) && T(a, b) === SCRUB && !seen.has(key(a, b))) { seen.set(key(a, b), 1); q.push([a, b]); } }
+    }
+    let pick = null;
+    if (!eligible && q.length <= 80) for (const [a, b] of q) if (!pick || before(a, b, pick[0], pick[1])) pick = [a, b];
+    for (const [a, b] of q) patchMemo.set(key(a, b), pick && pick[0] === a && pick[1] === b);
+    if (patchMemo.size > 400000) patchMemo.clear();
+    return patchMemo.get(k);
+  };
+  const shrubAt = (x, y) => inMap(x, y) && T(x, y) === SCRUB && (bigShrub(x, y) || smallPatchShrub(x, y));
 
   // ---- the props of a rectangle of tiles: { kind, x, y } in world tiles (the foot tile), sorted by foot row, column, kind ----
   function propsIn(x0, y0, x1, y1) {
@@ -296,7 +320,11 @@ export function createDecor(seed, land) {
   const openWater = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (T(x + dx, y + dy) !== WATER) return false; return true; };
   // the decals of a rectangle of tiles: { kind, x, y (tile), dx, dy (master pixels inside the tile) }
   function decalsIn(x0, y0, x1, y1, props) {
-    const occ = new Set(); for (const p of props || propsIn(x0 - 1, y0 - 1, x1 + 1, y1 + 1)) for (const [a, b] of footprint(p)) occ.add(key(a, b));
+    const occ = new Set(), nearProp = new Set();   // nearProp: within 1 tile (2 above) of a prop's foot tile, where no fleck lies
+    for (const p of props || propsIn(x0 - 1, y0 - 1, x1 + 1, y1 + 2)) {
+      for (const [a, b] of footprint(p)) occ.add(key(a, b));
+      for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 1; dx++) nearProp.add(key(p.x + dx, p.y + dy));
+    }
     const out = [];
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       if (!inMap(x, y)) continue;
@@ -305,6 +333,12 @@ export function createDecor(seed, land) {
         if (!grassTile(x, y) || occ.has(key(x, y))) continue;
         if (clumpAt(x, y)) kind = 'clump-tall';
         else { kind = flowerAt(x, y); if (!kind && U(seed, TAG.TUFT, x, y) < P_TUFT) kind = TUFTS[H(seed, TAG.TUFTKIND, x, y) % 3]; }
+        if (!kind && !nearProp.has(key(x, y)) && U(seed, TAG.FLECK, x, y) <= P_FLECK) {   // a fleck: its kind, mirror and place in the tile by the desk's rule
+          const f = Math.floor(U(seed, TAG.FLECK + 1, x, y) * FLECK_SIZES.length), [fw, fh] = FLECK_SIZES[f], m = U(seed, TAG.FLECK + 2, x, y) < 0.5;
+          const px = 1 + Math.floor(U(seed, TAG.FLECK + 3, x, y) * (14 - fw)), py = 1 + Math.floor(U(seed, TAG.FLECK + 4, x, y) * (14 - fh)), ax = m ? (fw - 1) - (fw >> 1) : fw >> 1;
+          out.push({ kind: `fleck-${f}${m ? 'm' : ''}`, x, y, dx: 0, dy: 0, mx: 3 * (px + ax), my: 3 * (py + fh - 1) });   // the sprite's own pixel grid: its anchor pixel at (px + ax, py + fh - 1) in the tile
+          continue;
+        }
       } else if (t === SAND && !occ.has(key(x, y)) && !lip(x, y)) {
         if (U(seed, TAG.PEB, x, y) < (TABLE[biome(x, y)] || TABLE.mixed).pebbles) kind = ['pebbles-a', 'pebbles-b', 'pebbles-c'][H(seed, TAG.PEB + 1, x, y) % 3];
       } else if (t === WATER) {
@@ -334,6 +368,20 @@ export function createDecor(seed, land) {
     }
     return out;
   }
+  // the reed clumps of the stretches round a rectangle of tiles (the desk's scatter rule, reeds.mjs, seeded by world tile): { kind: 'reed-shore-1' .. 'reed-water-2' (+ 'm' mirrored), tx, ty (the base's tile),
+  // px, py (the base in native pixels, 16 a tile, world frame), water }; the clumps whose base tile lies in x0 - 1 .. x1 + 1, y0 .. y1 + 3 (a reed is up to 34 px tall: its top hangs two tiles above its base)
+  const reedH = (x, y, z) => U(seed, TAG.REEDB, x, y, z);
+  function reedClumpsIn(x0, y0, x1, y1) {
+    const out = [];
+    for (const r of reedsIn(x0 - 2, y0 - 2, x1 + 2, y1 + 4)) {   // the dual-tile range of reedsIn: stretches are 4 x 4 tiles at 4bx, 4by
+      for (const c of reedClumps(T, reedH, { x0: 4 * r.bx, y0: 4 * r.by, x1: 4 * r.bx + 3, y1: 4 * r.by + 3 })) {
+        const tx = Math.floor(c.x / 16), ty = Math.floor(c.y / 16);
+        if (tx < x0 - 1 || tx > x1 + 1 || ty < y0 || ty > y1 + 3) continue;
+        out.push({ kind: `reed-${c.sprite}${c.mirror ? 'm' : ''}`, tx, ty, px: c.x, py: c.y, water: c.water });
+      }
+    }
+    return out;
+  }
   const free = (fi, x, y) => stands(fi, x, y) && !earlier(fi, x, y);   // a tile this kind could take (what the table's density is counted on)
-  return { propsIn, decalsIn, reedsIn, hollowSites, footprint, shoreCorner, stands, free, isLip: lip, flags, memberOf, grassTile, plain };
+  return { propsIn, decalsIn, reedsIn, reedClumpsIn, hollowSites, footprint, shoreCorner, stands, free, isLip: lip, flags, memberOf, grassTile, plain };
 }

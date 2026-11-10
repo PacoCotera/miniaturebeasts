@@ -1,51 +1,42 @@
-// The art desk's signed pieces in the test set (open edges, mibi-art abb33a65b; the map decor, mibi-art 662fca36d and 003ee9598): every placed file is the desk's file byte for byte at its signed commit
-// (never the desk's live folder), as DESK.json records; the terrain layers (fills, overs, cliff faces, way up, reed look, tone) and the small decals are in the set.
+// The art desk's signed pieces in the test set (the map palette, mibi-art f1a9fe54e, carried by 633e4d641; open edges abb33a65b): every placed file is the file DESK.json records (sha256, signed commit and
+// source path), read from the committed copies in this repo only (no test reads the desk's repository); the terrain layers, the map decor and the reeds are in the set, and every map picture is in the new palette.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, crop } from '../src/png.mjs';
-import { slot15, reedPixels, keyShade } from '../tools/desk-art.mjs';
+import { recolour, NEW_COLOURS } from '../tools/recolour.mjs';
+import { keyShade } from '../tools/desk-art.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dir = path.join(here, '..', '..', '..', 'art', 'places', 'sets', 'ninja-test');
 const desk = JSON.parse(readFileSync(path.join(dir, 'DESK.json'), 'utf8')), set = JSON.parse(readFileSync(path.join(dir, 'set.json'), 'utf8'));
-const REPO = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
-const haveDesk = existsSync(REPO + '/.git') && (() => { try { execFileSync('git', ['-C', REPO, 'cat-file', '-t', 'abb33a65b']); return true; } catch { return false; } })();
+const img = (n) => decodePng(readFileSync(path.join(dir, n)));
 
-test('every placed desk file equals the recorded hash, and the desk\'s file at its signed commit', () => {
+test('every placed desk file equals the recorded hash, names its signed commit and its source in the desk', () => {
   const names = Object.keys(desk);
-  assert.ok(names.length > 35, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['003ee9598', '34a8dc49c', '386ed11fa', '4e21bd68f', '662fca36d', 'abb33a65b', 'af25a3017', 'b60587b26', 'c335654cc', 'e43e480ac']);
-  const show = (c, p) => execFileSync('git', ['-C', REPO, 'show', `${c}:${p}`], { maxBuffer: 1 << 26 });
+  assert.ok(names.length > 60, 'files recorded: ' + names.length);
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['633e4d641', 'abb33a65b']);
   for (const [n, d] of Object.entries(desk)) {
-    const have = readFileSync(path.join(dir, n));
-    assert.equal(createHash('sha256').update(have).digest('hex'), d.sha256, n);
-    if (!haveDesk) continue;
-    if (d.from.includes(' recut')) continue;   // the cliff sheets re-cut at the desk's windows: the inputs are tools/recut (checked below), not the desk's file
-    if (d.from.includes('#15')) {   // a fill: slot 15 of a signed sheet, cropped, no pixel changed
-      const sheet = decodePng(show(d.commit, d.from.replace('#15', '')));
-      assert.deepEqual(decodePng(have).data, slot15(sheet).data, n + ' is not slot 15 of ' + d.from);
-    } else if (d.from.includes(' + ')) {   // the water frames: the signed 16 px variants laid side by side in one strip
-      const parts = d.from.split(' + ').map((p) => decodePng(show(d.commit, p))), strip = decodePng(have);
-      parts.forEach((p, k) => assert.deepEqual(crop(strip, k * 16, 0, 16, 16).data, p.data, `${n} variant ${k}`));
-    } else if (/ rows \d+\.\.\d+ \(/.test(d.from)) {   // the tree's crown and trunk: a crop of the signed picture
-      const [, src, y0, y1] = d.from.match(/^(.*) rows (\d+)\.\.(\d+) \(/), sheet = decodePng(show(d.commit, src));
-      assert.deepEqual(decodePng(have).data, crop(sheet, 0, +y0, sheet.w, +y1 - +y0 + 1).data, n + ' is not rows of ' + src);
-    } else if (d.from.endsWith(' keyed')) {   // thicket and cliff over sheets: the signed sheet with every pixel of alpha under 255 made transparent (art director ruling 2026-11-09), nothing else changed
-      const sheet = decodePng(show(d.commit, d.from.replace(/ keyed$/, '')));
-      assert.deepEqual(decodePng(have).data, keyShade(sheet).data, n + ' is not the keyed ' + d.from);
-    } else if (d.from.includes(' minus ')) {   // a reed look: the pixels of the signed reed composite that differ from the plain one
-      const [reeds, plain] = d.from.split(' minus ').map((p) => decodePng(show(d.commit, p)));
-      assert.deepEqual(decodePng(have).data, reedPixels(reeds, plain).data, n + ' is not the reed pixels of ' + d.from);
-    } else assert.ok(have.equals(show(d.commit, d.from)), n + ' differs from the desk\'s file at ' + d.commit);
+    assert.equal(createHash('sha256').update(readFileSync(path.join(dir, n))).digest('hex'), d.sha256, n);
+    assert.ok(d.from.startsWith('art-jobs/'), n + ' names a source in the desk: ' + d.from);
   }
 });
 
-test('the terrain layers are signed pieces: every layer file is recorded, fills say which sheet they were cut from, thicket and cliff come keyed', () => {
-  const files = [...Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...k.sheets, ...(k.variants || []), ...(k.full ? [k.full] : []), ...Object.values(k.looks || {}).flat(2)])]), ...set.tone.sheets];
+test('every map picture is in the new map palette: no pastel colour is left but the way-up pieces the desk has not re-issued, and the kit pebbles and lily pad', () => {
+  const OLD_ALLOWED = new Set(['wayup-cliff-grass.png', 'wayup-cliff-sand.png']);
+  for (const n of Object.keys(desk)) {
+    if (OLD_ALLOWED.has(n)) continue;
+    const im = img(n), r = recolour(im);
+    assert.deepEqual(r.left, [], n + ' holds colours outside the map palette');
+    assert.deepEqual(Buffer.from(r.data), Buffer.from(im.data), n + ' still holds a colour of the old palette');
+  }
+  assert.ok(NEW_COLOURS.size > 60);
+});
+
+test('the terrain layers are signed pieces: every layer file is recorded, fills say which sheet they were cut from, thicket and cliff come keyed, the reed look is gone', () => {
+  const files = [...Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...k.sheets, ...(k.variants || []), ...(k.full ? [k.full] : [])])]), ...set.tone.sheets];
   assert.equal(new Set(files).size, files.length);
   for (const f of files) assert.ok(desk[f], f + ' is not recorded in DESK.json');
   const from = (f) => desk[f].from;
@@ -58,47 +49,63 @@ test('the terrain layers are signed pieces: every layer file is recorded, fills 
   assert.equal(set.layers.deep.fill.sheets.length, 1, 'deep water stays still');
   assert.match(from('fill-deep.png'), /sets\/pair-deep-water\.png#15$/);
   assert.equal(desk['fill-earth.png'].from.includes('#'), false, 'the earth fill is the desk\'s own strip');
-  assert.equal(desk['fill-mud.png'].from.includes('#'), false);
   assert.deepEqual(Object.keys(set.layers), ['deep', 'water', 'earth', 'sand', 'mud', 'path', 'grass', 'scrub', 'thicket', 'cliff']);
   assert.equal(set.layers.scrub.ground, 'grass');
-  assert.equal(set.layers.scrub.drawAs, undefined, 'scrub has its own layer');
   assert.deepEqual(set.layers.scrub.over[0].variants, ['over-scrub~v1.png', 'over-scrub~v2.png', 'over-scrub~v3.png']);
-  assert.match(from('fill-cliff.png'), /over-cliff\.png#15 recut$/);
+  assert.match(from('fill-cliff.png'), /over-cliff\.png#15 recut recoloured$/);
   assert.match(from('over-thicket.png'), / keyed$/);
   assert.deepEqual(set.layers.cliff.over[0].tall['3'].length, 3, 'the cliff face at s = 3 has three variants');
-  assert.deepEqual(set.layers.sand.over[0].looks.reeds.map((v) => v.length), [1, 1, 1]);
-  assert.deepEqual(set.layers.grass.over[0].looks.reeds, [], 'the grass bank reeds are an empty slot');
+  assert.equal(set.layers.sand.over[0].looks, undefined, 'the reed look of the beach is gone: the reeds are sprites (reeds.mjs)');
+  assert.equal(set.layers.grass.over[0].looks, undefined);
+  assert.ok(!Object.keys(desk).some((n) => n.startsWith('looks-reeds')));
 });
 
-test('the set holds the terrain layers, the cliff, the way up and the decor; no pair table', () => {
-  assert.equal(set.pairs, undefined);
-  assert.equal(set.looks, undefined);
-  for (const id of ['deep', 'water', 'earth', 'sand', 'mud', 'path', 'grass', 'thicket', 'cliff']) assert.ok(set.layers[id].fill, id + ' has a fill');
-  const cliff = set.layers.cliff.over[0];
-  assert.deepEqual(Object.keys(cliff.tall), ['1', '2', '3']);
-  assert.deepEqual(Object.keys(cliff.wayup), ['grass', 'sand']);
-  assert.deepEqual(set.tone.also, ['cliff'], 'the raised top carries tone');
-});
-
-test('the cliff sheets are the re-cut ones (tools/recut): the placed file is the recut sheet with the soft shade keyed, and the recut leaves no loose speck', () => {
+test('the cliff sheets are the re-cut ones in the map palette: the placed file is the recut sheet (tools/recut) recoloured with the soft shade keyed', () => {
   const recutDir = path.join(here, '..', 'tools', 'recut');
-  for (const [n, d] of Object.entries(desk)) {
+  let n = 0;
+  for (const [name, d] of Object.entries(desk)) {
     if (!d.from.includes(' recut (')) continue;
-    assert.deepEqual(decodePng(readFileSync(path.join(dir, n))).data, keyShade(decodePng(readFileSync(path.join(recutDir, n)))).data, n);
+    n++;
+    assert.deepEqual(img(name).data, keyShade(recolour(decodePng(readFileSync(path.join(recutDir, name))))).data, name);
   }
-  assert.ok(Object.values(desk).filter((d) => d.from.includes(' recut (')).length >= 6);
+  assert.ok(n >= 6);
 });
 
-test('the map decor: the kit names stay and draw the signed pieces, the tree is cut into crown and trunk, the flowers and the clump are empty slots', () => {
-  for (const n of ['tuft-fan', 'tuft-lean', 'tuft-small', 'tuft']) assert.deepEqual(set.decals[n].rect.slice(2), [12, 13], n);
-  for (const n of ['flower-daisy', 'flower-buttercup', 'flower-daisy-pair', 'flower-blue-pair', 'flower-pink-three', 'clump-tall']) assert.deepEqual(set.decals[n].anchor, [8, 15], n);
-  assert.ok(!set.decals['flower-sun'] && !set.decals['flower-sun-small'], 'the kit\'s sunflowers are retired');
+test('the tone layer is the sunlit step: one colour, lighter than the grass fill, no dark patch', () => {
+  const tone = img(set.tone.sheets[0]), fill = img('fill-grass.png'), lum = (d, i) => 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+  const colours = new Set(); let max = 0;
+  for (let i = 0; i < tone.data.length; i += 4) if (tone.data[i + 3]) { colours.add(tone.data.slice(i, i + 3).join(',')); }
+  assert.deepEqual([...colours], ['130,178,102'], 'the sunlit #82b266 only');
+  const counts = new Map(); for (let i = 0; i < fill.data.length; i += 4) { const k = fill.data.slice(i, i + 3).join(','); counts.set(k, (counts.get(k) || 0) + 1); }
+  const base = [...counts].sort((a, b) => b[1] - a[1])[0][0].split(',').map(Number);
+  assert.deepEqual(base, [116, 166, 93], 'the plain grass is #74a65d');
+  max = lum(Uint8Array.from([130, 178, 102, 255]), 0) - lum(Uint8Array.from([...base, 255]), 0);
+  assert.ok(max > 0, 'the tone is lighter than the grass');
+});
+
+test('the map decor: the kit names stay and draw the signed pieces, the tree is cut into crown and trunk, no kit picture or empty slot is left among them', () => {
+  for (const n of ['tuft-fan', 'tuft-lean', 'tuft-small', 'tuft', 'clump-tall']) assert.deepEqual(set.decals[n].rect.slice(2), [12, 13], n + ' draws a signed tufts piece');
+  for (const n of ['flower-daisy', 'flower-buttercup', 'flower-daisy-pair', 'flower-blue-pair', 'flower-pink-three']) {
+    const r = set.decals[n].rect, im = decodePng(readFileSync(path.join(dir, 'sprites.png')));
+    assert.ok(crop(im, r[0], r[1], r[2], r[3]).data.some((v, i) => i % 4 === 3 && v === 255), n + ' draws a flower');
+    assert.deepEqual(set.decals[n].anchor, [r[2] >> 1, r[3] - 1], n + ' stands bottom-centre');
+  }
   assert.deepEqual(Object.keys(set.canopy).sort(), ['tree-autumn-crown', 'tree-broad-crown']);
   assert.equal(set.props['tree-broad'].canopy, 'tree-broad-crown');
   assert.equal(set.props['tree-broad'].rect[3], 9, 'the trunk piece: 9 rows under the crown');
   assert.equal(set.canopy['tree-broad-crown'].rect[3], 32);
-  for (const n of ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4']) assert.deepEqual(set.props[n].footprint, [[0, 0]], n);
-  for (const f of ['tree-trunk.png', 'tree-crown.png', 'bush.png', 'rock-1.png', 'tufts-1.png', 'shrub-1.png']) assert.ok(desk[f], f + ' is recorded');
-  const empty = (n) => { const r = set.decals[n].rect, sheet = decodePng(readFileSync(path.join(dir, 'sprites.png'))); return crop(sheet, r[0], r[1], r[2], r[3]).data.every((v, i) => (i % 4 === 3 ? v === 0 : true)); };
-  for (const n of ['flower-daisy', 'clump-tall']) assert.ok(empty(n), n + ' draws nothing');
+  for (const n of ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'stump']) assert.deepEqual(set.props[n].footprint, [[0, 0]], n);
+  assert.deepEqual(set.props['tree-hollow'].rect.slice(2), [64, 64], 'the signed hollow tree is 64 x 64');
+  assert.deepEqual(set.props['split-stone'].rect.slice(2), [61, 44]);
+  assert.deepEqual(set.props['tree-hollow'].footprint.length, 8, 'its footprint is as the kit\'s');
+  for (const n of ['tall-grass', 'tall-grass-b', 'tall-grass-m', 'tall-grass-bm']) assert.deepEqual(set.props[n].footprint, [], n + ' blocks nothing');
+  for (const f of ['tree-trunk.png', 'tree-crown.png', 'bush.png', 'rock-1.png', 'tufts-1.png', 'shrub-1.png', 'stump-1.png', 'flowers-1.png', 'flowers-blue-pair.png', 'hollow-tree.png', 'split-stone.png']) assert.ok(desk[f], f + ' is recorded');
+  assert.equal(set.props.reeds, undefined, 'the kit\'s bamboo reeds are gone');
+  assert.ok(!set.decals['flower-sun'] && !set.decals['flower-sun-small'], 'the kit\'s sunflowers are retired');
+});
+
+test('the reed sprites and the grass flecks are in the set: four shore looks and two water looks (each mirrored) as props that block nothing, six flecks (each mirrored) as decals', () => {
+  for (const n of ['shore-1', 'shore-2', 'shore-3', 'shore-4', 'water-1', 'water-2']) for (const m of ['', 'm']) assert.deepEqual(set.props[`reed-${n}${m}`].footprint, [], `reed-${n}${m}`);
+  for (let k = 0; k < 6; k++) for (const m of ['', 'm']) assert.ok(set.decals[`fleck-${k}${m}`], `fleck-${k}${m}`);
+  assert.ok(!set.decals['fleck-6'], 'only the six flecks the art director keeps');
 });

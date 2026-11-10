@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { readPng, decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
 import { computeTables, TABLE_NAMES } from '../src/lighttables.mjs';
 import { deskArt, deskLayers } from './desk-art.mjs';
+import { PALETTE } from './recolour.mjs';
 
 export const SOURCE_ALLOW = ['ninja-adventure', 'puny-world', 'happyland-wang'];
 export const PALETTE_MAX = 208;       // indices 48..255; 0..47 are the core palette
@@ -138,15 +139,18 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     throw new Error(`the source has ${sorted.length} colours, over the ${PALETTE_MAX} the contract allows; add the pinned pngquant step to the recipe`);
   }
   const core = JSON.parse(readFileSync(path.join(root, recipe.corePalette), 'utf8')).entries.slice(0, CORE_COLOURS).map((e) => unhex(e.hex.slice(1)));
-  // the grass-tone colours go to a green at night (lighttables GREEN_ONLY_TABLES), not to the nearest colour (which was a brown); the grass over sheets share that colour, which is grass too
+  // the night table keeps each colour in its hue family (lighttables computeTables): the sunlit tone goes to a green a touch lighter than the night grass; the grass over sheets share that colour, which is grass too
   const toneImg = images.get(deskTerrain && deskTerrain.tone ? deskTerrain.tone.sheets[0] : '');
   const toneColours = new Set();
   if (toneImg) for (let i = 0; i < toneImg.data.length; i += 4) if (toneImg.data[i + 3]) toneColours.add(hex(toneImg.data[i], toneImg.data[i + 1], toneImg.data[i + 2]));
-  const greenOnly = sorted.map((c, k) => (toneColours.has(c) ? CORE_COLOURS + k : -1)).filter((i) => i >= 0);
+  const tone = sorted.map((c, k) => (toneColours.has(c) ? CORE_COLOURS + k : -1)).filter((i) => i >= 0);
   const fillImg = images.get('fill-grass.png');
-  const greenKeep = [];
-  if (fillImg) for (let i = 0; i < fillImg.data.length; i += 4) { const k = sorted.indexOf(hex(fillImg.data[i], fillImg.data[i + 1], fillImg.data[i + 2])); if (fillImg.data[i + 3] && k >= 0 && !greenKeep.includes(CORE_COLOURS + k)) greenKeep.push(CORE_COLOURS + k); }
-  const tables = computeTables(core, sorted.map(unhex), { greenOnly, greenKeep });
+  const ground = [], count = new Map();   // the grass fill's commonest colour is the plain grass
+  if (fillImg) for (let i = 0; i < fillImg.data.length; i += 4) { const k = sorted.indexOf(hex(fillImg.data[i], fillImg.data[i + 1], fillImg.data[i + 2])); if (fillImg.data[i + 3] && k >= 0) count.set(CORE_COLOURS + k, (count.get(CORE_COLOURS + k) || 0) + 1); }
+  if (count.size) ground.push([...count].sort((a, b) => b[1] - a[1])[0][0]);
+  // the leaf ramp of the tree crowns, bushes and shrubs (the map palette's leaf_hi, leaf, leaf_dk, leaf_line): at night no lighter than the grass
+  const crowns = ['leaf_hi', 'leaf', 'leaf_dk', 'leaf_line'].map((n) => sorted.indexOf(PALETTE.map[n][1].slice(1))).filter((k) => k >= 0).map((k) => CORE_COLOURS + k);
+  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns });
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
 

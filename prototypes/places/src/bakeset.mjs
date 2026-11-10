@@ -65,7 +65,7 @@ export function bakeTileSet(loaded, terrains) {
     return tileKey.get(key);
   };
 
-  // The rows of the tile set (setload.layerRows order): per terrain its fill row and one row per over kind, then the extras (cliff faces, scrub variants, way-up pieces, reed looks), then the tone row.
+  // The rows of the tile set (setload.layerRows order): per terrain its fill row and one row per over kind, then the extras (cliff faces, scrub variants, way-up pieces), then the tone row.
   // A fill row holds the fill variants (animated when the fill has frames); an over row holds 16 tile ids by corner index with slot 0 empty (0xFFFF) and the all-upper variants when the terrain has a ground.
   const val = (id, where) => { if (!valueOf.has(id)) throw new Error(`${where}: terrain ${id} is not in terrain.json`); return valueOf.get(id); };
   const layers = set.layers || {}, EMPTY_TILE = 0xFFFF;
@@ -86,9 +86,9 @@ export function bakeTileSet(loaded, terrains) {
       return { lower: 0, upper: T, mode: 'over', tiles: sixteen(frames, set.tone.frameMs || 0), fullVariants: [], emptyVariants: [] };
     }
     if (r.type === 'wayup') return { lower: 0, upper: T, mode: 'over', tiles: sheetTiles(loaded, r.sheets[0], true).map((img) => tileId([slotFor(img)], 0)), fullVariants: [], emptyVariants: [] };
-    // tall, variant, look: 16-slot sheets sharing the kind's edge lines (a look is animated like its kind)
+    // tall, variant: 16-slot sheets sharing the kind's edge lines
     const frames = r.sheets.map((sh) => sheetTiles(loaded, sh, true).map(slotFor));
-    return { lower: 0, upper: T, mode: 'over', tiles: sixteen(frames, r.type === 'look' ? kind.frameMs || 0 : 0), fullVariants: [], emptyVariants: [] };
+    return { lower: 0, upper: T, mode: 'over', tiles: sixteen(frames, 0), fullVariants: [], emptyVariants: [] };
   });
 
   const atlas48 = new Uint8Array(slots48.length * S * S);
