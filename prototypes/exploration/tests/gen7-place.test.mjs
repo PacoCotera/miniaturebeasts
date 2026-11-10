@@ -45,7 +45,7 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
 }
 
 // G3: props and decor on world coordinates (decor.mjs). Numbers from tools/gen7-decor-props.mjs; every cell of the seed. Every check is collected and asserted together, so one run shows them all.
-for (const seed of [7, 13, 42]) {
+for (const seed of FAST ? [7] : [7, 13, 42]) {
   test(`seed ${seed}: props and decor hold the scheme's scatter rules in every cell`, { timeout: 1800000 }, () => {
     const s = decorProps(seed), bad = [], check = (ok, msg) => { if (!ok) bad.push(msg); };
     console.log(`# seed ${seed} decor: ${JSON.stringify({ ...s, groveHist: undefined })}\n# grove sizes (all biomes) ${JSON.stringify(s.groveHist)}`);
@@ -148,8 +148,9 @@ test('seeds 1-50: reed clumps stand on the shore and in the shallows (never on d
       }
     }
   }
-  console.log(`# reeds over seeds 1-50: ${shore} shore clumps, ${inWater} in the shallows, ${onDeep} on deep water; tone: ${patchTiles} tiles, ${patchNear} within two tiles of another ground`);
-  assert.ok(inWater > 30 && shore > 300, 'reed clumps found: ' + shore + ' shore, ' + inWater + ' in the water');
+  console.log(`# reeds over seeds 1-${FAST ? 5 : 50}: ${shore} shore clumps, ${inWater} in the shallows, ${onDeep} on deep water; tone: ${patchTiles} tiles, ${patchNear} within two tiles of another ground`);
+  const SEEDS = FAST ? 5 : 50; // the floors are per seed: 0.6 clumps in the shallows and 6 on the shore
+  assert.ok(inWater > 0.6 * SEEDS && shore > 6 * SEEDS, 'reed clumps found: ' + shore + ' shore, ' + inWater + ' in the water');
   assert.equal(onDeep, 0, 'no reed clump on deep water');
   assert.equal(notShallow, 0, 'every in-water clump is on shallow water');
   assert.equal(farFromLand, 0, 'every in-water clump is within two tiles of land');
