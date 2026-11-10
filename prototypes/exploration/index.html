@@ -524,7 +524,7 @@ async function loadPlaces6() {
     PL6.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); }
 }
-// The art desk's range haze (places/haze/, signed in mibi-art 9fa531bba; SOURCE.md there): nine wash sheets, the 6-colour ramp and the 21 remap tables. The kit is built once and
+// The art desk's range haze (places/haze/, signed in mibi-art 9fa531bba; SOURCE.md there): nine wash sheets, the 8-colour ramp and the 21 remap tables. The kit is built once and
 // handed to every place view (PL6.haze); a view without it draws no haze.
 async function loadHazeKit(base, bytes) {
   if (typeof Image === 'undefined') return;
