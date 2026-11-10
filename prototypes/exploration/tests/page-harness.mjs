@@ -14,18 +14,15 @@ export const SCRIPT = MODULE.replace(IMPORT_RE, "");
 export const MODS = {};
 for (const name of new Set(BINDINGS.map(b => b[0]))) MODS[name] = await import(new URL(`../src/${name}.mjs`, import.meta.url));
 
-// Generator 6's places, given to the page at once (a browser loads them at boot): the four templates and their mirrors, the tile set, the terrain table and the adapter. No BakedView:
-// the page then draws a baked layout from its tiles, as it does a generated one.
+// Generator 7's tile set, terrain table and pair descriptors, given to the page at once (a browser loads them at boot). No BakedView: the page then draws a baked layout from its tiles,
+// as it does a generated one.
 const BAKED_DIR = new URL("../../places/baked/", import.meta.url);
-const { readPlace, readTileSet } = await import("../../places/src/format/read.mjs");
-const { adaptPlace } = await import("../../places/src/adapter.mjs");
-const { TEMPLATES6 } = MODS.world;
+const { readTileSet } = await import("../../places/src/format/read.mjs");
 const fileBytes = (name) => new Uint8Array(readFileSync(new URL(name, BAKED_DIR)));
-export const PLACES6 = (() => {
-  const places = new Map();
-  for (const b of Object.values(TEMPLATES6)) for (const id of [b, b + "~x"]) places.set(id, readPlace(fileBytes(id + ".mbplace")));
-  const ts = readTileSet(fileBytes([...places.values()][0].set + ".mbtiles")), terrains = JSON.parse(readFileSync(new URL("terrain.json", BAKED_DIR), "utf8")).terrains;
-  return { places, ts, terrains, adapt: adaptPlace };
+export const PLACES = (() => {
+  const ts = readTileSet(fileBytes("ninja-test.mbtiles")), terrains = JSON.parse(readFileSync(new URL("terrain.json", BAKED_DIR), "utf8")).terrains;
+  const pairs = JSON.parse(readFileSync(new URL("../art/gen7/pairs.json", import.meta.url), "utf8")).pairs;
+  return { ts, terrains, pairs, ctx: { ts, terrains, pairs } };
 })();
 
 // The art desk's walk art (art/walk/), decoded at once as a browser loads it at boot: { name: { width, height, data (RGBA) } }.
@@ -55,11 +52,11 @@ export const MOMENT_ART = Object.fromEntries(readdirSync(MOMENT_DIR).filter((f) 
 
 // Binds the imports into ctx, runs the page script (or a variant of it) there, and returns run(src), which evaluates in the page.
 export function loadPage(ctx, script = SCRIPT) {
-  ctx.window = ctx; if (ctx.__places6 === undefined) ctx.__places6 = PLACES6; if (ctx.__walkArt === undefined) ctx.__walkArt = WALK_ART; if (ctx.__lookArt === undefined) ctx.__lookArt = LOOK_ART; if (ctx.__propArt === undefined) ctx.__propArt = PROP_ART; if (ctx.__openArt === undefined) ctx.__openArt = OPEN_ART; if (ctx.__momentArt === undefined) ctx.__momentArt = MOMENT_ART;
+  ctx.window = ctx; if (ctx.__places === undefined) ctx.__places = PLACES; if (ctx.__walkArt === undefined) ctx.__walkArt = WALK_ART; if (ctx.__lookArt === undefined) ctx.__lookArt = LOOK_ART; if (ctx.__propArt === undefined) ctx.__propArt = PROP_ART; if (ctx.__openArt === undefined) ctx.__openArt = OPEN_ART; if (ctx.__momentArt === undefined) ctx.__momentArt = MOMENT_ART;
   for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from];
-  // The page plays generator 6 only (GENS = [6]). The suites written for generator 5's generated places run on generator 5, which stays frozen in world.mjs: a page opened with
-  // `gen: 6` (makePage) or `__gen6: true` (a ctx given to loadPage) is the page as played; any other is that page with generator 5 played too and new worlds of generator 5.
-  if (!ctx.__gen6) { ctx.NEW_GEN = 5; ctx.GENS = [...new Set([...MODS.world.GENS, 5])]; }
+  // The page plays generator 7 only (GENS = [7]). The suites written for generator 5's generated places run on generator 5, which stays frozen in world.mjs: a page opened with
+  // `gen: 7` (makePage) or `__gen7: true` (a ctx given to loadPage) is the page as played; any other is that page with generator 5 played too and new worlds of generator 5.
+  if (!ctx.__gen7) { ctx.NEW_GEN = 5; ctx.GENS = [...new Set([...MODS.world.GENS, 5])]; }
   vm.createContext(ctx); vm.runInContext(script, ctx);
   return src => vm.runInContext(src, ctx);
 }
@@ -117,7 +114,7 @@ export function makePage(opts = {}) {
   const silent = { log() {}, warn() {}, error() {} };
   const cons = opts.console === "silent" ? silent : opts.console === "collect" ? { ...silent, error: e => errors.push(e) } : console;
   const D = opts.date == null ? Date : class extends Date { constructor(...a) { super(...(a.length ? a : [opts.date])); } static now() { return opts.date; } };
-  const ctx = { __gen6: opts.gen === 6, console: cons, URLSearchParams, Date: D, fetch: () => new Promise(() => {}), document, location: any, navigator: any,
+  const ctx = { __gen7: opts.gen === 7, console: cons, URLSearchParams, Date: D, fetch: () => new Promise(() => {}), document, location: any, navigator: any,
     matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
     requestAnimationFrame: () => opts.raf === "count" ? ++raf.n : (++raf.n, opts.raf || 0),
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},

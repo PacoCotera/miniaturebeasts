@@ -34,9 +34,9 @@ export function adaptCell(place, ir, ts, terrains, o) {
     const s = ts.sprites[k], left = fx - s.anchor48[0] - 48, top = fy - s.anchor48[1] - 48;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x * 48 + 24, py = y * 48 + 28; if (px > left - CROWN_MARGIN && px < left + s.w48 + CROWN_MARGIN && py > top - CROWN_MARGIN && py < top + s.h48 + CROWN_MARGIN) clear[I(x, y)] = 0; }
   }
-  // the ways in (the IR's runs along a side, in the cell's own tiles 1..24 and 1..28)
-  const openings = ir.openings.map(op => ({ side: op.side, from: op.from - 1, to: op.to - 1 }));
-  const arrive = (op) => { const mid = (op.from + op.to) >> 1; return op.side === 'N' ? { x: mid, y: 0 } : op.side === 'S' ? { x: mid, y: h - 1 } : op.side === 'W' ? { x: 0, y: mid } : { x: w - 1, y: mid }; };
+  // the ways in: the IR's runs along a side, kept in the baked place's tiles (1..24 and 1..28 inside its apron), as the page's range lines read them (lay.baked has the offset)
+  const openings = ir.openings.map(op => ({ side: op.side, from: op.from, to: op.to }));
+  const arrive = (op) => { const mid = ((op.from + op.to) >> 1) - 1; return op.side === 'N' ? { x: mid, y: 0 } : op.side === 'S' ? { x: mid, y: h - 1 } : op.side === 'W' ? { x: 0, y: mid } : { x: w - 1, y: mid }; };
   let spawnPt = openings.length ? arrive(openings[0]) : { x: w >> 1, y: h >> 1 };
   const walks = (x, y) => x >= 0 && y >= 0 && x < w && y < h && !T_BLOCK[tiles[I(x, y)]];
   if (!walks(spawnPt.x, spawnPt.y)) { let best = null, bd = 1e9; for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (walks(x, y)) { const d = (x - spawnPt.x) ** 2 + (y - spawnPt.y) ** 2; if (d < bd) { bd = d; best = { x, y }; } } if (best) spawnPt = best; }
@@ -76,7 +76,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const lay = {
     key: o.key, cell: o.cell, cave: false, land: o.land, base: T.GRASS, tiles, shelter: new Uint8Array(NP), feats, terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt,
     sdist: new Int16Array(NP).fill(999), trees: {}, shade: false, w, h, openings, clear, findSlots: finds.map(f => ({ x: f.x, y: f.y, kinds: [f.what], chance: 1 })),
-    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h }, press, heart: null,
+    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, heart: null,
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
     strikes: ir.strikes.map((m, i) => ({ id: 'm' + i, x: m.x - 1, y: m.y - 1, age: m.age, glass: !!m.glass })).filter(m => m.x >= 0 && m.y >= 0 && m.x < w && m.y < h),

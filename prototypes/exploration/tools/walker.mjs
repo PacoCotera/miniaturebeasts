@@ -15,8 +15,8 @@ const NEXT_STEP = `(x, y, onto) => { const P = S.exp.patch, lay = layout(P.key),
       seen.set(i, [cy * lay.w + cx, dir]); if (done(X, Y)) { let j = i, st = null; while (seen.get(j)) { st = seen.get(j)[1]; j = seen.get(j)[0]; } return st; } q.push([X, Y]); } }
   return null; }`;
 
-// A fresh page at generator 6 (or `gen`), a new world of `seed`.
-export function newPage(seed, { gen = 6, calm = false } = {}) {
+// A fresh page at generator 7 (or `gen`), a new world of `seed`.
+export function newPage(seed, { gen = 7, calm = false } = {}) {
   const p = makePage({ console: "silent", date: FIXED_DATE, gen });
   p.run(`newWorld(${seed}); ${calm ? "TEST.calm = true;" : ""}`);
   return p;

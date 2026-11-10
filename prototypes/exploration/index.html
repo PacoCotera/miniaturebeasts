@@ -254,11 +254,11 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn, templateFor, TEMPLATES6 } from "./src/world.mjs";
-import { fillPlace6 } from "./src/fill6.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { genWorld7, layout7 as layout7In } from "./src/world7.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen5, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { pickHeart, heartPath, heartSeen, tellShows, tellOn, springClues, HEART_TEXT, HEART_FOUND_R, TELL_R, ANSWER_ACTIONS, SPRING_ESSENCE, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, FOG_NOT_BEEN, FOG_BEEN, TELL_RANK } from "./src/hearts.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
@@ -320,7 +320,7 @@ const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'ford', 'cliff']
 // random id kept under mb-companion-<slot> (the play page's second Companion is slot B, ?companion=B), and stored with
 // the first write. The single shared save of earlier builds (LEGACY_KEY) moves under Companion A's key with its first
 // write once it has loaded; bytes this page cannot load stay where they are and open read-only, as before.
-const OLD_GENS = [5].filter(g => !GENS.includes(g));   // generator 5 stays frozen in world.mjs for its goldens; a save of it is reset, not played
+const OLD_GENS = [5, 6].filter(g => !GENS.includes(g));   // a save of an older generator is reset, not played: its bytes are kept under <key>.gen<N>
 let RESET_CARRY = null;   // set by load() when the save found was reset (or the Station reset first); the new realm takes it (newRealm)
 const LEGACY_KEY = 'mb-save-v8', SAVE_V = 10, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
 let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
@@ -441,8 +441,10 @@ let G = null;     // static world generated from the seed (never saved)
 let S = null;     // everything that changes (saved)
 
 // The world with its overlays: soft ground (wades, scree) and earth banks, pure functions of the world and its seed, attached here and never by genWorld (the goldens stay).
-function worldOf(seed, gen, biome) { const g = genWorld(seed, gen, biome); g.soft = softGround(g, seed); g.banks = bankEdges(g, seed); return g; }
+function worldOf(seed, gen, biome, slot) { const g = gen === 7 ? genWorld7(seed, slot || [2, 2]) : genWorld(seed, gen, biome); g.soft = softGround(g, seed); g.banks = bankEdges(g, seed); return g; }
 // What the partner can cross (the partner only: a rider has no ability). Tuliko: mud and scree, and a ring more reach; Rupar: earth banks, dug at the first crossing of a walk.
+// A generator 7 region is the realm's land at its slot, so it is made from the realm's seed (region 1's), not the region's own.
+const worldOfRegion = R => worldOf(R.gen === 7 ? S.regions[0].seed : R.seed, R.gen, R.biome, R.slot);
 function abIs(ab) { const pt = S && S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === ab; }
 function canSure() { return abIs('sure'); }
 function canBank() { return abIs('bank'); }
@@ -501,39 +503,41 @@ async function loadBakedPlace() {   // the modules load on demand, so the page w
     const pm = await import(base + 'src/page.mjs'), am = await import(base + 'src/adapter.mjs'), { place, ts } = await pm.loadBaked(bytes, base, id);
     const terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
     const ox = (PW - place.w) >> 1, oy = (PH - place.h) >> 1, mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-    BAKED.view = new pm.BakedView(ts, place, { core: RGB.slice(0, 48), night: C.night, ox, oy, mkCanvas: mk, haze: PL6.haze });
+    BAKED.view = new pm.BakedView(ts, place, { core: RGB.slice(0, 48), night: C.night, ox, oy, mkCanvas: mk, haze: PL.haze });
     BAKED.adapt = key => am.adaptPlace(place, ts, terrains, { key, cell: +key });
     BAKED.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the baked place did not load', e); }
 }
-// Generator 6's places (place foundation C14): the four templates and their mirrors, baked, loaded once at boot (the tests give them at once as window.__places6).
-// PL6.places: baked id -> the place; PL6.adapt builds a layout from one; PL6.View draws one (a page without it draws the layout's tiles).
-const PL6 = { ready: false, places: new Map(), ts: null, terrains: null, adapt: null, View: null, mk: null, views: new Map(), haze: null };
-async function loadPlaces6() {
+// Generator 7's tile set and pieces (loaded once at boot; the tests give them at once as window.__places).
+// PL.ctx is what a cell is baked with in the page (src/bake7.mjs: the tile set, the terrain table, the dual grid's pair descriptors); PL.View draws one baked cell (a page without it draws the layout's tiles).
+// A cell's view is made on first use and kept in a small LRU (PL_VIEWS_MAX), so memory stays flat however far the walk goes.
+const PL = { ready: false, ts: null, terrains: null, pairs: null, ctx: null, View: null, mk: null, views: new Map(), haze: null };
+const PL_VIEWS_MAX = 8, SET7 = 'ninja-test';
+async function loadPlaces() {
   try {
-    if (window.__places6) { Object.assign(PL6, window.__places6); PL6.ready = true; return; }
+    if (window.__places) { Object.assign(PL, window.__places); PL.ready = true; return; }
     const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
-    const pm = await import(base + 'src/page.mjs'), am = await import(base + 'src/adapter.mjs'), rd = await import(base + 'src/format/read.mjs');
-    const ids = Object.values(TEMPLATES6).flatMap(b => [b, b + '~x']), places = await Promise.all(ids.map(async id => rd.readPlace(await bytes(base + 'baked/' + id + '.mbplace'))));
-    PL6.ts = rd.readTileSet(await bytes(base + 'baked/' + places[0].set + '.mbtiles'));
-    PL6.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
-    ids.forEach((id, i) => PL6.places.set(id, places[i]));
-    PL6.adapt = am.adaptPlace; PL6.View = pm.BakedView; PL6.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-    PL6.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
+    const pm = await import(base + 'src/page.mjs'), rd = await import(base + 'src/format/read.mjs');
+    PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles'));
+    PL.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
+    PL.pairs = JSON.parse(new TextDecoder().decode(await bytes(new URL('./art/gen7/pairs.json', location.href).href))).pairs;
+    PL.ctx = { ts: PL.ts, terrains: PL.terrains, pairs: PL.pairs };
+    PL.View = pm.BakedView; PL.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+    PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadHazeKit(base, bytes);
-    PL6.ready = true; layoutCache.clear(); RT.key = null;
+    PL.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); }
 }
 // The art desk's range haze (places/haze/, signed in mibi-art 9fa531bba; SOURCE.md there): nine wash sheets, the 8-colour ramp and the 21 remap tables. The kit is built once and
-// handed to every place view (PL6.haze); a view without it draws no haze.
+// handed to every place view (PL.haze); a view without it draws no haze.
 async function loadHazeKit(base, bytes) {
   if (typeof Image === 'undefined') return;
   try {
     const hm = await import(base + 'src/haze.mjs'), dir = base + 'haze/', files = {};
-    await Promise.all(hm.hazeFileNames().map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL6.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+    await Promise.all(hm.hazeFileNames().map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = dir + n + '.png'; })));
     const json = async n => JSON.parse(new TextDecoder().decode(await bytes(dir + n)));
-    PL6.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'), PL6.ts.palette.length);
+    PL.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'), PL.ts.palette.length);
   } catch (e) { console.warn('the range haze did not load', e); }
 }
 // The art desk's quartz stone family (art/stone/, signed in mibi-art ccbb3bb17; SOURCE.md there) and the look view's three stone marks (art/look/, same commit). The stones' colours are not all on the
@@ -544,14 +548,14 @@ const STONE_COLOURS = [], STONE_PIECES = new Map();
 // the screen colour at each index (the core 47 from the page, then the set's own) and the tile set's tables by name (storm, dark2, fog, fade, dark). Null until the places have loaded.
 const PLACE_LEVELS = [null, 'storm', 'dark2', 'fog', 'fade'], PT = { ts: null, rgb: null, tabs: null };
 function placeTables() {
-  const ts = PL6.ts || (BAKED.view && BAKED.view.ts); if (!ts) return null;
+  const ts = PL.ts || (BAKED.view && BAKED.view.ts); if (!ts) return null;
   if (PT.ts !== ts) { PT.ts = ts; PT.rgb = RGB.slice(0, 48).map(c => c.slice()); ts.palette.forEach(c => PT.rgb.push([(c >> 16) & 255, (c >> 8) & 255, c & 255])); PT.tabs = Object.fromEntries(ts.lightTables.map(r => [r.name, r.map])); }
   return PT;
 }
 const STONE_FILES = ['tall', 'small'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
 const STONE_LOOK = new Set(['look-heart-stone', ...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
 function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
-  const mk = (w, h) => PL6.mk ? PL6.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }), prop = dy !== undefined;
+  const mk = (w, h) => PL.mk ? PL.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }), prop = dy !== undefined;
   const seen = new Set(STONE_COLOURS.map(q => q.join())), keep = (w, h, data, dx, dy, key) => {
     let c = null; const tinted = new Map();   // the canvas is made when first drawn; a prop's tinted ones (storm, fog, fade) by table set and number
     const plain = () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; };
@@ -653,23 +657,21 @@ async function loadWalkArt() {
     walkRead(files);
   } catch (e) { console.warn('the walk art did not load', e); } finally { ART_DONE.walk = true; }
 }
-// The view that draws a baked layout: the dev switch's one, or the generator 6 place's own (made on first use; each place's props and ground are cached in it).
+// The view that draws a baked layout: the dev switch's one, or the cell's own (made on first use, the last PL_VIEWS_MAX kept; each cell's props and ground are cached in it).
 function bakedView(lay) {
   if (!lay || !lay.baked) return null;
   if (BAKED.view) return BAKED.view;
-  let v = PL6.views.get(lay.baked.id);
-  if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk, ring: PL6.ring || null, haze: PL6.haze }); PL6.views.set(lay.baked.id, v); }
+  let v = PL.views.get(lay.baked.id);
+  if (v) { PL.views.delete(lay.baked.id); PL.views.set(lay.baked.id, v); }
+  else if (PL.View) { v = new PL.View(PL.ts, lay.baked.place, { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL.mk, ring: PL.ring || null, haze: PL.haze }); PL.views.set(lay.baked.id, v);
+    while (PL.views.size > PL_VIEWS_MAX) PL.views.delete(PL.views.keys().next().value); }
   return v || null;
 }
-const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
-function layout6(key) {   // a generator 6 land cell's place: its template, built through the adapter with the seeded fills; null for a ford (generated) or while the places load
-  const t = templateFor(G, S.seed, +key), place = t && PL6.places.get(t.id); if (!place) return null;
-  return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, G, fill: fillPlace6(G, S.seed, +key, place), closed: closedSidesOf(+key) });
-}
-function layout(key) {
+const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
+function layout(key) {   // a land cell's layout from the generator (cached); a stand-in while the tile set loads
   let lay = layoutCache.get(key);
   if (!lay && BAKED.ready && key[0] !== 'c') { lay = BAKED.adapt(key); layoutCache.set(key, lay); }
-  if (!lay && G.gen >= 6 && key[0] !== 'c' && PL6.ready) { lay = layout6(key); if (lay) layoutCache.set(key, lay); }
+  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key); layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
@@ -684,7 +686,7 @@ const WARM = { queue: [], first: null, firstDir: null, sig: '', cb: 0, cold: nul
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
 function warmReady(key) {   // nothing left to build for this cell (a generated place, a cave and the test pages have no baked view to warm)
   const lay = layout(key); if (!lay.baked || lay.cave) return true;
-  const bk = BAKED.view || PL6.views.get(lay.baked.id); return PL6.View || BAKED.view ? !!bk && warmOf(bk).st >= WARM_DONE && !(lay.rim && ART48.ready && !lay.rimWarm) : true;
+  const bk = BAKED.view || PL.views.get(lay.baked.id); return PL.View || BAKED.view ? !!bk && warmOf(bk).st >= WARM_DONE && !(lay.rim && ART48.ready && !lay.rimWarm) : true;
 }
 // The arrival look's picture of a place (the whole place at its veil, as a canvas): kept by place and veil in a small LRU, so the warmed one is drawn at once and a new one is built once.
 const WARM_WHOLE_MAX = 6, WHOLE = new Map();
@@ -746,7 +748,7 @@ function primeWindow(lay, bk, key, dir) {
   const cam = bk.camera(bk.newCam(), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
   bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));
   hazeSync(lay); const hz = hazeLevels(lay); bk.setHaze(hz && hz.lv, hz ? hz.id : '', lay.baked.id);
-  const g = PL6.mk(SCR_W, VIEW_H).getContext('2d'); warmOf(bk).fk = bk.cache.frameKey(motion() ? NOW : 0);
+  const g = PL.mk(SCR_W, VIEW_H).getContext('2d'); warmOf(bk).fk = bk.cache.frameKey(motion() ? NOW : 0);
   bk.drawGround(g, 0, 0, { x: cam.x - bk.ox * 48, y: cam.y - bk.oy * 48, w: SCR_W, h: VIEW_H }, motion() ? NOW : 0, bk.lightFor({ veiled: (x, y) => !un(x, y), foggedFar: () => false, level: () => lvl }, key));
   return true;
 }
@@ -782,7 +784,7 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
 }
 // The cells one step can reach from here, the one faced first and then by how near the pawn is to that edge; on the map, the cell the next Confirm goes down into comes first.
 function warmTargets() {
-  const ex = S && S.exp; if (!ex || RT.readOnly || !(S.phase === 'map' || S.phase === 'patch') || !(PL6.View || BAKED.view)) return [];
+  const ex = S && S.exp; if (!ex || RT.readOnly || !(S.phase === 'map' || S.phase === 'patch') || !(PL.View || BAKED.view)) return [];
   const P = ex.patch, lay = P && !P.key.startsWith('c') ? layout(P.key) : null, out = [];
   if (!P && S.phase === 'map') out.push({ key: String(ex.pos), dir: ex.lastDir || null });
   if (P && P.key.startsWith('c')) return out;
@@ -1252,7 +1254,7 @@ const newWorld = newRealm;   // the name the tests and the page's buttons call
 function mountRegion(id) {
   unmount(S); const R = mount(S, id);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; RT.mp = null; RT.key = null; mapCv = null;
-  G = worldOf(R.seed, R.gen, R.biome); indexCreatures();   // the region's own kind (generators before 4 have none)
+  G = worldOfRegion(R); indexCreatures();   // the region's own kind
   catchUp(R);
 }
 // A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
@@ -1332,7 +1334,7 @@ function load() {
     const plan = resetPlan(raw, SAVE_V, OLD_GENS);   // (a v10 realm of generator 5 only is reset too: the world is new at generator 6) what to do with what is found: play it, reset it (a v8 or v9 save), keep it read-only (newer, unreadable)
     if (plan.action === 'newer') return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
     if (plan.action === 'reset') {   // the release's reset: the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
-      if (!(plan.gen ? keepGen5 : keepPre10)(localStorage, own, raw)) return 'broken';   // a generator reset keeps its own copy (<key>.gen5): the .pre10 of the earlier reset stays what it was
+      if (!(plan.gen ? keepGen(localStorage, own, raw, oldGenOf(raw)) : keepPre10(localStorage, own, raw))) return 'broken';   // a generator reset keeps its own copy (<key>.gen6, or .gen5): the .pre10 of the earlier reset stays what it was
       if (SAVE_KEY === LEGACY_KEY) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) { } }   // the shared old save is kept in the copy: it must not be found and reset again
       RESET_CARRY = { resetFrom: plan.from }; dropOld(); return false;
     }
@@ -1353,7 +1355,7 @@ function load() {
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = worldOf(S.seed, gen, S.regions.find(r => r.id === S.here).biome);   // the mounted region's kind
+    layoutCache.clear(); G = worldOfRegion(S.regions.find(r => r.id === S.here));   // the mounted region's kind
     if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
@@ -1527,7 +1529,7 @@ function explored(c) { return !!S.visited[c] && !!(S.called && S.called[c]); }
 const heartFound = c => !!(S.called && S.called[c]);
 function heartOf(key) {
   if (key[0] === 'c' || (G.gen || 1) < 5) return null;   // the older generators are frozen: no hearts there (they are played only by tests)
-  if (G.gen >= 6 && !PL6.ready && templateFor(G, S.seed, +key)) return null;   // the places are still loading: a generated stand-in must not pick (and keep) a heart
+  if (G.gen >= 6 && !PL.ready && templateFor(G, S.seed, +key)) return null;   // the places are still loading: a generated stand-in must not pick (and keep) a heart
   const lay = layout(key); if (lay.heart !== undefined) return lay.heart;
   const st = fs(key, 'heart'); let h = null;
   if (st.kind) h = { x: st.x, y: st.y, kind: st.kind, reachBy: null, ...heartPath(lay, st.x, st.y) };
@@ -2219,7 +2221,7 @@ function lineCells(lay, o, whole) {
   const { w, h } = lay.baked, out = [], k0 = whole ? 0 : o.from, k1 = whole ? (o.side === 'N' || o.side === 'S' ? w : h) - 1 : o.to;
   for (let d = 0; d < LINE_DEPTH; d++) for (let k = k0; k <= k1; k++) {
     const x = o.side === 'W' ? d : o.side === 'E' ? w - 1 - d : k, y = o.side === 'N' ? d : o.side === 'S' ? h - 1 - d : k;
-    out.push({ x: x + lay.baked.ox, y: y + lay.baked.oy, d });
+    const X = x + lay.baked.ox, Y = y + lay.baked.oy; if (X >= 0 && Y >= 0 && X < lay.w && Y < lay.h) out.push({ x: X, y: Y, d });   // a generator 7 cell's apron lies outside the page's cell
   }
   return out;
 }
@@ -6086,7 +6088,7 @@ function drawOpenWay(q, t, fr) {
 }
 // The land in the frame: the built painting cropped to it, the place marks, the signs, the start flag, the lights of a first walk, the lost plates and the docked band. Drawn only: nothing here reveals a cell.
 function drawOpenLand(t, fr) {
-  const ready = !(G.gen >= 6) || PL6.ready || BAKED.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
+  const ready = !(G.gen >= 6) || PL.ready || BAKED.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
   if (!(ART_DONE.walk && ART_DONE.open)) return;   // one paint, once the art has settled (a painting costs hundreds of ms: never once per arriving file)
   const cv = openPainting({ X0: q.X0, Y0: q.Y0, w: WW + cs, h: WH + cs, cs, glimpse: q.glimpse, mist: q.first && OPEN_ART.ready ? (motion() ? Math.floor(t / 0.9) % 2 : 2) : null }); if (!cv) return;   // made over a few frames: the screen shows its panel until then
   g.drawImage(cv, WX - q.ox, WY - q.oy, WW, WH, WX, WY, WW, WH);
@@ -7289,7 +7291,7 @@ loadAtlas();   // the 48 px place art, in the background: places draw at 32 unti
 const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
 loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
 loadMomentArt();   // the art desk's painted stands for the care moments
-loadPlaces6();   // generator 6's places (the four templates and their mirrors)
+loadPlaces();   // generator 6's places (the four templates and their mirrors)
 loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
@@ -7325,7 +7327,7 @@ if (OPT.dev) setObserver(true);   // the Developer tools option opens the Observ
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { press, release, PEEK_MS, enterPatch, leavePatch, WARM, WHOLE, ARR, WARM_WHOLE_MAX, PL6, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { press, release, PEEK_MS, enterPatch, leavePatch, WARM, WHOLE, ARR, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, heartOf, springClues, mapPuddleSpots: (c, x, y, cs) => { const m = mapPuddleSpots(c, x, y, cs); return m && { sc: m.sc, spots: springClues(m.h).map(q => m.at(q)) }; }, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, shownTells, fogState, pickTells, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
