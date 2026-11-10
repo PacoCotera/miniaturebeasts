@@ -5119,6 +5119,7 @@ function drawPatchBody(t) {
   const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; return clearLight(tx, ty); };
   // (the approaching storm darkens whole tile columns on the side it comes from)
   const spriteRm = (x, y) => lightAt ? lightAt(x, y) : 0;
+  const findRm = (x, y) => lightAt ? lightAt(x, y) : bakedView(lay) ? clearLight(x, y) : 0;   // things to act on (finds, marks, fruit, pods) take the world's storm grade, not a pasted full-colour sprite
   // overlays (canopies, roofs) take the veil like the tiles under them; beyond fog sight the fog table
   const overlay = (pb, x, y, tx, ty) => { const rm = lightAt ? lightAt(tx, ty) : tileLight(tx, ty), vl = !lightAt && rm !== 3 && !unveiled(P.key, tx, ty);
     g.drawImage(pb.canvas(rm, false, false, vl), Math.round(x), Math.round(y)); };
@@ -5185,7 +5186,7 @@ function drawPatchBody(t) {
   // ground decals
   for (const f of lay.feats) {
     if (f.tree) continue;   // a tree's feature is drawn by its tree
-    const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue; const rm = spriteRm(f.x, f.y);
+    const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue; const rm = findRm(f.x, f.y);
     if (!'gxim'.includes(f.kind) && !see(f.x, f.y)) continue;   // landmarks always show; the rest wait for the veil to lift
     if (f.kind === 's' && fs(P.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(W(x + 8 + (k % 4) * 5) + o.x, H(y + 18 + (k >> 2) * 4) + o.y, 3, 1); }
     if (f.kind === 'n') blit(holeArt(live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1) ? 1 : 0), SX(x), SY(y), rm);
@@ -5197,8 +5198,8 @@ function drawPatchBody(t) {
     else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), SX(x) + 9, SY(y) + 8 + fr, tileLight(f.x, f.y)); }
     else if (f.kind === 'q' && !lay.cave && !strikeFaded(f)) {   // a strike mark: a dark glassy fused streak, nothing burns (art/props, the art desk's strike mark); it lies one way or its mirror, by its place. A ground decal: crowns, trunks and sprites draw over it
       const read = strikeIsRead(P.key, f), pc = propPiece(read ? 'strike-mark-read' : 'strike-mark-unread-' + (motion() && Math.floor((NOW + hash(f.x, f.y, 3) % 1000) / 500) % 2 ? 2 : 1));
-      if (pc.w > 1) blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + ((ts - pc.h) >> 1), spriteRm(f.x, f.y), hash(f.x, f.y, 9) % 2 === 1);
-      if (f.glass && !read) { const sh = propPiece('storm-glass-shard'); if (sh.w > 1) blit(sh, SX(x) + ((ts - sh.w) >> 1), SY(y) + ((ts - sh.h) >> 1) + 6, spriteRm(f.x, f.y)); }   // storm glass lies in a mark on sand: its picture, sand base and all
+      if (pc.w > 1) blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + ((ts - pc.h) >> 1), findRm(f.x, f.y), hash(f.x, f.y, 9) % 2 === 1);
+      if (f.glass && !read) { const sh = propPiece('storm-glass-shard'); if (sh.w > 1) blit(sh, SX(x) + ((ts - sh.w) >> 1), SY(y) + ((ts - sh.h) >> 1) + 6, findRm(f.x, f.y)); }   // storm glass lies in a mark on sand: its picture, sand base and all
     }
   }
   for (const h of live.holes || []) { const x = h.x * ts, y = h.y * ts; if (!vis2(x, y) || !see(h.x, h.y)) continue;   // the Rupar's fresh hole, a ground mark
@@ -5208,7 +5209,7 @@ function drawPatchBody(t) {
   for (const f of lay.feats) if (f.tree === 'hollow' && see(f.x, f.y) && live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1))   // a shy one in a hollow trunk: the hole's one glint, in the trunk's opening
     items.push({ y: f.y * ts + 2, d: () => blit(art('hglint', () => { const pb = new PB(2, 2); pb.rect(0, 0, 2, 2, C.yellow); return pb; }), SX(f.x * ts) + 15, SY(f.y * ts) + 22, spriteRm(f.x, f.y)) });
   for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
-    const rm = spriteRm(p.x, p.y); let a;
+    const rm = findRm(p.x, p.y); let a;
     if (f.kind === 'b') a = bushArt(bushFull(P.key, f), f); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
@@ -5222,8 +5223,8 @@ function drawPatchBody(t) {
   { const lm = lay.landmark, name = lm && LM_PIECE[lm.kind], pc = name && propPiece(name);
     if (pc && pc.w > 1 && see(lm.x, lm.y)) { const x = lm.x * ts, y = lm.y * ts, low = lm.kind === 'windstep'; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + (low ? ts - pc.h : (ts - pc.h) >> 1), spriteRm(lm.x, lm.y)) }); } }
 
-  for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, spriteRm(f.x, f.y)) }); }
-  for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16, spriteRm(f.x, f.y)) }); }
+  for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, findRm(f.x, f.y)) }); }
+  for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16, findRm(f.x, f.y)) }); }
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * ts, c.y * ts, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y) || !inS(c.x, c.y)) continue;   // creatures show under the veil too (not beyond fog sight)
@@ -5270,7 +5271,7 @@ function drawPatchBody(t) {
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     // a find your Call or partner turned up stays outlined until you take it
     if (p.out) { const o2 = fr ? 0 : 1; for (let k = 2; k < ts - 2; k += 4) { R(W(x + k), H(y + 1 + o2), 2, 2, C.cream); R(W(x + k), H(y + ts - 3 - o2), 2, 2, C.cream); R(W(x + 1 + o2), H(y + k), 2, 2, C.cream); R(W(x + ts - 3 - o2), H(y + k), 2, 2, C.cream); } }
-    blit(podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), spriteRm(p.x, p.y)); }
+    blit(podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), findRm(p.x, p.y)); }
   // the take marks: a charged storm stone keeps its bolt for as long as it holds a charge; a strike mark stands in the art desk's slot with the Probe's glint on it while unread (kit light)
   if (!lay.cave) {
     for (const f of lay.feats) { if (f.kind !== 'k' || stormCharge(P.key, f) <= 0) continue;
