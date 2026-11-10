@@ -318,5 +318,100 @@
     "commit": "5734abc5",
     "from": "art-jobs/2026-11-09-meadow-decor/out/clump-tall@16.png",
     "sha256": "9a68dd0cf884f19fa3fdfabcfdf36f5510ac00a78b81e81a32647f8d7f2acd93"
+  },
+  "fill-deep.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/sets/pair-deep-water.png#15",
+    "sha256": "cb7dc6e57c0354363d3f28f7cc50ab3c51d5be01848397f9a61d62b2b7f1a130"
+  },
+  "fill-water.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/layers/water-over.png#15",
+    "sha256": "21574fc9a4799c557f06498bb0db1c2fdfac30dbe1f7fefe1049307c331d03c8"
+  },
+  "over-water.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/layers/water-over.png",
+    "sha256": "79ba5ece893c50f0235822a5716a4c771867bcc5370bfaf2e19a7f075206b980"
+  },
+  "fill-earth.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/layers/fill-earth.png",
+    "sha256": "14066c724c2c319e8d418c8f20a0103ede052b41197c4ebe77e73796057ddf0c"
+  },
+  "over-earth.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/layers/earth-over.png",
+    "sha256": "de3ac54c2046afb7495d455edabf8395795c1f1978f5384a30b83e29b3f0317d"
+  },
+  "fill-sand.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/layers/sand_beach-over.png#15",
+    "sha256": "147497559677bb17da62adf3d4c811ca55cd48e01bfe363544c7774dd2339862"
+  },
+  "over-sand-beach.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/layers/sand_beach-over.png",
+    "sha256": "0bf9d4c084b7d4fe71aebafbca98a9b85546602979b8126c4f41ba38d2775634"
+  },
+  "looks-reeds-sand-beach.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/sets/pair-sand-water~reeds.png minus art-jobs/2026-11-10-art-paint-terrain-sand/out/sets/pair-sand-water.png",
+    "sha256": "600843ac6b3f778ca5ea20292a4f5294d46476faa6cff1eafe54e107a8304e27"
+  },
+  "looks-reeds-sand-beach~v1.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/sets/pair-sand-water~reeds~v1.png minus art-jobs/2026-11-10-art-paint-terrain-sand/out/sets/pair-sand-water.png",
+    "sha256": "b21f61a7666341d2b47268feb2be61d88c4099d6bafad82654f547f8edce8648"
+  },
+  "looks-reeds-sand-beach~v2.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/sets/pair-sand-water~reeds~v2.png minus art-jobs/2026-11-10-art-paint-terrain-sand/out/sets/pair-sand-water.png",
+    "sha256": "8395ba9c169446347bb6c9a78b89086e4ba94f8cded6907eb7ec70ee3216c9e8"
+  },
+  "over-sand-flat.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/layers/sand_flat-over.png",
+    "sha256": "16b431e2694326f139bd01bec82a78047d468e5634dc22a51e8f8c2b2b9376a4"
+  },
+  "fill-mud.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/layers/fill-mud.png",
+    "sha256": "556a29429aa312cbd64f20dcfc93f9ed8a29798f728b9307dd1d29e209504626"
+  },
+  "over-mud.png": {
+    "commit": "4e21bd68f",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-sand/out/layers/mud-over.png",
+    "sha256": "c3155164e7fbe49a0daabc9edee5a1537c6750832933e384b9c7afd73378be60"
+  },
+  "fill-path.png": {
+    "commit": "b60587b26",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-meadow/out/layers/path-over.png#15",
+    "sha256": "91d9823ddfa0446e9fc6c6d5b547137b698ae68f3b6fcfa339486b3882b8f2ef"
+  },
+  "over-path.png": {
+    "commit": "b60587b26",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-meadow/out/layers/path-over.png",
+    "sha256": "57314e43f5c592fa0b595ab3000b20cef2a4403ae55736d9e01d19edbaa7cb29"
+  },
+  "fill-grass.png": {
+    "commit": "386ed11fa",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-meadow/out/layers/grass-over.png#15",
+    "sha256": "8ccfad779f533806bc8acca68efdfcad7993bc1d7e85fd4f5c1375c5aedbc9ce"
+  },
+  "over-grass-bank.png": {
+    "commit": "386ed11fa",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-meadow/out/layers/grass-over.png",
+    "sha256": "f09654302cb7099042c1a1adc11ed51adc344f28620dbf846f13a7f7f60b0c7a"
+  },
+  "over-grass-flat.png": {
+    "commit": "b60587b26",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-meadow/out/layers/grass-flat.png",
+    "sha256": "d57a455514faf6de08b2dbd9c62ddb22a93a9b178235cd93804c6a7ef776cf48"
+  },
+  "tone-grass.png": {
+    "commit": "386ed11fa",
+    "from": "art-jobs/2026-11-10-art-paint-terrain-meadow/out/layers/grass-tone.png",
+    "sha256": "faf15fc0b62c68c653e5c4b797aa51048efd7ba5fdbaa627e9e0e0133a7eea9e"
   }
 }

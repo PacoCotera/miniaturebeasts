@@ -164,6 +164,112 @@
       }
     }
   ],
+  "layers": {
+    "deep": {
+      "fill": {
+        "sheets": ["fill-deep.png"]
+      }
+    },
+    "water": {
+      "fill": {
+        "sheets": ["fill-water.png"]
+      },
+      "over": [
+        {
+          "kind": "step",
+          "lowers": ["deep"],
+          "sheets": ["over-water.png"]
+        }
+      ]
+    },
+    "earth": {
+      "fill": {
+        "sheets": ["fill-earth.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["deep", "water"],
+          "sheets": ["over-earth.png"]
+        }
+      ]
+    },
+    "sand": {
+      "fill": {
+        "sheets": ["fill-sand.png"]
+      },
+      "over": [
+        {
+          "kind": "beach",
+          "lowers": ["deep", "water"],
+          "sheets": ["over-sand-beach.png"],
+          "looks": {
+            "reeds": [
+              ["looks-reeds-sand-beach.png"],
+              ["looks-reeds-sand-beach~v1.png"],
+              ["looks-reeds-sand-beach~v2.png"]
+            ]
+          }
+        },
+        {
+          "kind": "flat",
+          "lowers": ["earth"],
+          "sheets": ["over-sand-flat.png"]
+        }
+      ]
+    },
+    "mud": {
+      "fill": {
+        "sheets": ["fill-mud.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["deep", "water", "earth", "sand"],
+          "sheets": ["over-mud.png"]
+        }
+      ]
+    },
+    "path": {
+      "fill": {
+        "sheets": ["fill-path.png"]
+      },
+      "over": [
+        {
+          "kind": "bank",
+          "lowers": ["deep", "water"],
+          "sheets": ["over-path.png"]
+        }
+      ]
+    },
+    "grass": {
+      "fill": {
+        "sheets": ["fill-grass.png"]
+      },
+      "over": [
+        {
+          "kind": "bank",
+          "lowers": ["deep", "water"],
+          "sheets": ["over-grass-bank.png"],
+          "looks": {
+            "reeds": []
+          }
+        },
+        {
+          "kind": "flat",
+          "lowers": ["earth", "sand", "mud", "path"],
+          "sheets": ["over-grass-flat.png"]
+        }
+      ]
+    },
+    "scrub": {
+      "drawAs": "grass"
+    }
+  },
+  "tone": {
+    "of": "grass",
+    "sheets": ["tone-grass.png"]
+  },
   "props": {
     "tree-broad": {
       "rect": [198, 78, 48, 14],

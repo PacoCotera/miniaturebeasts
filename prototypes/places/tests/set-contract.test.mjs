@@ -5,10 +5,10 @@ import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadSet, validateSetJson, pairTiles, fullVariants, ALLOWED_SPDX } from '../src/setload.mjs';
+import { loadSet, validateSetJson, pairTiles, fullVariants, ALLOWED_SPDX, layerTiles, fillTiles, kindFullTiles, layerRows, layerDescriptors } from '../src/setload.mjs';
 import { cornerSheet } from '../src/sheets.mjs';
 import { compareGolden } from '../src/golden.mjs';
-import { newImage, writePng, fill, decodePng } from '../src/png.mjs';
+import { newImage, writePng, fill, decodePng, crop } from '../src/png.mjs';
 import { checkSourcePath, prepareSet, PALETTE_MAX, cutBlobToDual16, BLOB_PIECES } from '../tools/prepare-set.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -56,7 +56,8 @@ test('palette: at most 208 colours, light tables of 256 entries, every drawn col
     assert.ok(m.every((v) => Number.isInteger(v) && v >= 0 && v < 256));
   }
   const have = new Set(palette.colours);
-  const names = [...set.pairs.flatMap((p) => [...p.sheets, p.fullSheet]), set.spriteSheet];
+  const layerFiles = Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...k.sheets, ...(k.full ? [k.full] : []), ...Object.values(k.looks || {}).flat(2)])]);
+  const names = [...set.pairs.flatMap((p) => [...p.sheets, p.fullSheet]), ...layerFiles, ...set.tone.sheets, set.spriteSheet];
   for (const f of names) {
     const img = loaded.png(f);
     for (let i = 0; i < img.data.length; i += 4) {
@@ -88,6 +89,80 @@ test('every pair has 16 tiles, in whole sheets, one per frame; opaque tiles are 
     assert.ok(variants.length >= 1);
     assert.deepEqual(variants[0].data, tiles[15].data, p.id + ': variant 0 is tile 15');
   }
+});
+
+// ---- terrain layers: one fill per terrain, one transparent 16-slot sheet per over kind (place design: terrain-layers-design) ----
+const terrainIds = JSON.parse(readFileSync(path.join(repo, 'art', 'places', 'terrain.json'), 'utf8')).terrains;
+const clearTile = (tile) => { for (let k = 3; k < tile.data.length; k += 4) if (tile.data[k] !== 0) return false; return true; };
+
+test('layers: the contract refuses a layer block that is malformed', () => {
+  const bad = (f) => { const s = structuredClone(set); f(s); return validateSetJson(s).length > 0; };
+  assert.ok(bad((s) => { delete s.layers.grass.over[0].lowers; }), 'a kind without lowers');
+  assert.ok(bad((s) => { s.layers.grass.over[0].sheets = []; }), 'a kind without sheets');
+  assert.ok(bad((s) => { s.layers.water.fill = {}; }), 'a fill without sheets');
+  assert.ok(bad((s) => { s.layers.deep.extra = 1; }), 'an unknown layer key');
+  assert.ok(bad((s) => { delete s.tone.of; }), 'a tone layer without its terrain');
+});
+
+test('layers: every kind has 16 slots in whole sheets, slot 0 empty, slot 15 equal to fill variant 0; fills are opaque strips', () => {
+  const t = set.sourceTile;
+  for (const [id, l] of Object.entries(set.layers)) {
+    if (l.drawAs) { assert.ok(!l.fill && !l.over, id + ': drawAs stands alone'); continue; }
+    assert.ok(l.fill, id + ' has a fill');
+    const fills = l.fill.sheets.map((_, f) => fillTiles(loaded, id, f));
+    for (const frame of fills) {
+      assert.ok(frame.length >= 1, id + ' fill variants');
+      for (const [v, tile] of frame.entries()) for (let k = 3; k < tile.data.length; k += 4) assert.equal(tile.data[k], 255, `${id} fill variant ${v} has a transparent pixel`);
+    }
+    for (const f of l.fill.sheets) assert.equal(loaded.png(f).h, t, f);
+    if (l.fill.sheets.length > 1) assert.ok(l.fill.frameMs >= 16, id + ' fill animation has a frame time');
+    for (const [ki, k] of (l.over || []).entries()) {
+      for (let f = 0; f < k.sheets.length; f++) {
+        assert.deepEqual([loaded.png(k.sheets[f]).w, loaded.png(k.sheets[f]).h], [4 * t, 4 * t], k.sheets[f]);
+        const tiles = layerTiles(loaded, id, ki, f);
+        assert.equal(tiles.length, 16);
+        assert.ok(clearTile(tiles[0]), `${id}/${k.kind}: slot 0 is empty`);
+        assert.deepEqual(tiles[15].data, fills[Math.min(f, fills.length - 1)][0].data, `${id}/${k.kind}: slot 15 is fill variant 0`);
+        assert.ok(tiles.slice(1, 15).every((x) => !clearTile(x)), `${id}/${k.kind}: slots 1..14 draw something`);
+      }
+      for (const [n, v] of kindFullTiles(loaded, id, ki).entries()) assert.ok(!clearTile(v), `${id}/${k.kind} full variant ${n}`);
+      for (const [name, variants] of Object.entries(k.looks || {})) for (const frames of variants) for (const f of frames) {
+        assert.deepEqual([loaded.png(f).w, loaded.png(f).h], [4 * t, 4 * t], f);
+        const tiles = layerTiles(loaded, id, ki, 0).map((_, i) => crop(loaded.png(f), (i % 4) * t, (i >> 2) * t, t, t));
+        assert.ok(clearTile(tiles[0]) && clearTile(tiles[15]), `${id}/${k.kind} look ${name}: slots 0 and 15 are empty`);
+      }
+    }
+  }
+  const tone = layerTiles(loaded, 'tone', 0);
+  assert.equal(tone.length, 16);
+  assert.ok(clearTile(tone[0]), 'tone slot 0 is empty');
+});
+
+test('layers: every lowers, ground, drawAs and tone id is a terrain in terrain.json, and the descriptors resolve', () => {
+  const ids = new Set(terrainIds.map((x) => x.id));
+  for (const [id, l] of Object.entries(set.layers)) {
+    assert.ok(ids.has(id), id);
+    for (const x of [l.drawAs, l.ground, ...(l.over || []).flatMap((k) => k.lowers)]) if (x !== undefined) assert.ok(ids.has(x), `${id}: ${x}`);
+    for (const k of l.over || []) for (const lo of k.lowers) assert.ok(terrainIds.find((x) => x.id === lo).z < terrainIds.find((x) => x.id === id).z, `${id}/${k.kind} lists a lower ${lo} that is not below it`);
+  }
+  assert.ok(ids.has(set.tone.of));
+  const d = layerDescriptors(loaded, terrainIds);
+  const v = (id) => terrainIds.find((x) => x.id === id).value;
+  assert.equal(d.layers.get(v('scrub')).drawAs, v('grass'));
+  assert.equal(d.layers.get(v('mud')).fillCount, 5);
+  assert.deepEqual(d.layers.get(v('grass')).kinds.map((k) => k.kind), ['bank', 'flat'], 'bank is listed first, so it wins over flat');
+  assert.deepEqual([...d.layers.get(v('grass')).kinds[1].lowers].sort(), ['earth', 'sand', 'mud', 'path'].map(v).sort());
+  assert.deepEqual(d.tone, { of: v('grass'), row: layerRows(set).findIndex((r) => r.type === 'tone') });
+  const sandBeach = d.layers.get(v('sand')).kinds[0];
+  assert.equal(sandBeach.rows.looks.reeds.length, 3, 'the beach carries the three reed variants');
+});
+
+test('layers: the baked rows list fills and kinds first, then the extras, then the tone row', () => {
+  const rows = layerRows(set);
+  assert.deepEqual(rows.map((r) => r.type).filter((t, i, a) => a.indexOf(t) === i), ['fill', 'over', 'look', 'tone']);
+  assert.equal(rows.filter((r) => r.type === 'fill').length, Object.values(set.layers).filter((l) => l.fill).length);
+  assert.equal(rows.filter((r) => r.type === 'over').length, Object.values(set.layers).flatMap((l) => l.over || []).length);
+  assert.equal(rows.at(-1).type, 'tone');
 });
 
 test('sprites: every rect lies inside the sprite sheet and every canopy named exists', () => {

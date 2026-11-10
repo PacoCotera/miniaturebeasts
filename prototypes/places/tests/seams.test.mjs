@@ -4,7 +4,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadSet, pairTiles, fullVariants, pairAtlas, dualPairs, sheetTiles, extraEntries } from '../src/setload.mjs';
+import { loadSet, pairTiles, fullVariants, pairAtlas, dualPairs, sheetTiles, extraEntries, layerTiles, fillTiles } from '../src/setload.mjs';
+import { paste } from '../src/png.mjs';
+import { cornerSheet } from '../src/sheets.mjs';
 import { applyOpenEdges, ALT_CODE } from '../src/bake/openedges.mjs';
 import { dualGrid, FULL_BASE, EMPTY_BASE } from '../src/dualgrid.mjs';
 import { edgeSignatureFailures, coverage, legalAdjacencies, edgeLine } from '../src/seams.mjs';
@@ -31,6 +33,44 @@ for (const sc of SCALES) {
       const failures = edgeSignatureFailures(frames, fullVariants(loaded, p, sc.scaled));
       assert.deepEqual(failures, [], `${p.id}:\n${failures.join('\n')}`);
     }
+  });
+}
+
+// Terrain layers: a kind of terrain T over a lower L draws the kind's sheet on L's fill, so the 16 tiles the player sees are (tile 0 = L's fill, tiles 1..14 = the sheet over L's fill, tile 15 = T's fill).
+// The proof is the same one-line-per-edge-state rule, per (terrain, kind, lower), at 48 px; the composites are the goldens ninja-test-<t>-<kind>-over-<lower>-48.png.
+// Fill variants are interior variants: every variant of T's fill is held to tile 15's edge lines.
+function layerComposites(terrainId, ki, lowerId, scaled) {
+  const over = layerTiles(loaded, terrainId, ki, 0, scaled), lowerFill = fillTiles(loaded, lowerId, 0, scaled)[0], own = fillTiles(loaded, terrainId, 0, scaled);
+  const tiles = over.map((o, k) => {
+    if (k === 0) return lowerFill;
+    if (k === 15) return own[0];
+    const t = { w: lowerFill.w, h: lowerFill.h, data: new Uint8Array(lowerFill.data) };
+    paste(t, o, 0, 0);
+    return t;
+  });
+  return { tiles, own };
+}
+const layerCases = () => Object.entries(loaded.set.layers).flatMap(([id, l]) => (l.over || []).flatMap((k, ki) => k.lowers.map((lower) => ({ id, kind: k.kind, ki, lower }))));
+for (const sc of SCALES) {
+  test(`terrain layers at ${sc.name} px: the composite of every (terrain, kind, lower) equals its golden`, () => {
+    const cases = layerCases();
+    assert.equal(cases.length, 18);
+    for (const c of cases) {
+      const { tiles } = layerComposites(c.id, c.ki, c.lower, sc.scaled);
+      const r = compareGolden(path.join(places, 'golden', 'seams', `ninja-test-${c.id}-${c.kind}-over-${c.lower}-${sc.name}.png`), cornerSheet(tiles));
+      assert.ok(r.ok, r.message);
+    }
+  });
+  // OPEN: this does not hold for the signed layers (all 18 composites fail). The desk's shores are organic: where a shore crosses a tile edge differs from tile to tile with the same edge state
+  // (by up to a few pixels), and a layer's border band differs from the fill's own border. Closing it needs a ruling (stitch the layers, accept a tolerance, or repaint); see the terrain-layers-a report.
+  test(`terrain layers at ${sc.name} px: every (terrain, kind, lower) has one boundary line per edge state`, { todo: 'the signed layers carry organic edges (terrain-layers-a report)' }, () => {
+    const bad = [];
+    for (const c of layerCases()) {
+      const { tiles, own } = layerComposites(c.id, c.ki, c.lower, sc.scaled);
+      const failures = edgeSignatureFailures([tiles], own);
+      if (failures.length) bad.push(`${c.id}/${c.kind} over ${c.lower}: ${failures.length} edge lines differ, first: ${failures[0]}`);
+    }
+    assert.deepEqual(bad, []);
   });
 }
 

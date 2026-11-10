@@ -7,6 +7,8 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { decodePng } from '../src/png.mjs';
+import { slot15, reedPixels } from '../tools/desk-art.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dir = path.join(here, '..', '..', '..', 'art', 'places', 'sets', 'ninja-test');
 const desk = JSON.parse(readFileSync(path.join(dir, 'DESK.json'), 'utf8')), set = JSON.parse(readFileSync(path.join(dir, 'set.json'), 'utf8'));
@@ -16,12 +18,38 @@ const haveDesk = existsSync(REPO + '/.git') && (() => { try { execFileSync('git'
 test('every placed desk file equals the recorded hash, and the desk\'s file at its signed commit', () => {
   const names = Object.keys(desk);
   assert.ok(names.length > 60, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['4315b9d25', '5734abc5', 'abb33a65b']);
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['386ed11fa', '4315b9d25', '4e21bd68f', '5734abc5', 'abb33a65b', 'b60587b26']);
+  const show = (c, p) => execFileSync('git', ['-C', REPO, 'show', `${c}:${p}`], { maxBuffer: 1 << 26 });
   for (const [n, d] of Object.entries(desk)) {
     const have = readFileSync(path.join(dir, n));
     assert.equal(createHash('sha256').update(have).digest('hex'), d.sha256, n);
-    if (haveDesk) assert.ok(have.equals(execFileSync('git', ['-C', REPO, 'show', `${d.commit}:${d.from}`], { maxBuffer: 1 << 26 })), n + ' differs from the desk\'s file at ' + d.commit);
+    if (!haveDesk) continue;
+    if (d.from.includes('#15')) {   // a fill: slot 15 of a signed sheet, cropped, no pixel changed
+      const sheet = decodePng(show(d.commit, d.from.replace('#15', '')));
+      assert.deepEqual(decodePng(have).data, slot15(sheet).data, n + ' is not slot 15 of ' + d.from);
+    } else if (d.from.includes(' minus ')) {   // a reed look: the pixels of the signed reed composite that differ from the plain one
+      const [reeds, plain] = d.from.split(' minus ').map((p) => decodePng(show(d.commit, p)));
+      assert.deepEqual(decodePng(have).data, reedPixels(reeds, plain).data, n + ' is not the reed pixels of ' + d.from);
+    } else assert.ok(have.equals(show(d.commit, d.from)), n + ' differs from the desk\'s file at ' + d.commit);
   }
+});
+
+test('the terrain layers are signed pieces: every layer file is recorded, fills say which sheet they were cut from, thicket and cliff wait', () => {
+  const files = [...Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...k.sheets, ...Object.values(k.looks || {}).flat(2)])]), ...set.tone.sheets];
+  assert.equal(new Set(files).size, files.length);
+  for (const f of files) assert.ok(desk[f], f + ' is not recorded in DESK.json');
+  const from = (f) => desk[f].from;
+  assert.match(from('fill-grass.png'), /grass-over\.png#15$/);
+  assert.match(from('fill-path.png'), /path-over\.png#15$/);
+  assert.match(from('fill-sand.png'), /sand_beach-over\.png#15$/);
+  assert.match(from('fill-water.png'), /water-over\.png#15$/);
+  assert.match(from('fill-deep.png'), /sets\/pair-deep-water\.png#15$/);
+  assert.equal(desk['fill-earth.png'].from.includes('#'), false, 'the earth fill is the desk\'s own strip');
+  assert.equal(desk['fill-mud.png'].from.includes('#'), false);
+  assert.deepEqual(Object.keys(set.layers), ['deep', 'water', 'earth', 'sand', 'mud', 'path', 'grass', 'scrub']);
+  assert.deepEqual(set.layers.scrub, { drawAs: 'grass' });
+  assert.deepEqual(set.layers.sand.over[0].looks.reeds.map((v) => v.length), [1, 1, 1]);
+  assert.deepEqual(set.layers.grass.over[0].looks.reeds, [], 'the grass bank reeds are an empty slot');
 });
 
 test('the set holds the open edges and the decor', () => {
