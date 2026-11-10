@@ -1,18 +1,16 @@
-// The dual grid (place design A2). Terrain lives on the world grid W x H; tiles live on the grid offset by half a tile, (W+1) x (H+1),
+// The dual grid (place design A2), by terrain. Terrain lives on the world grid W x H; tiles live on the grid offset by half a tile, (W+1) x (H+1),
 // each picked by its four corners. Used by the bake only: the device never autotiles.
 //
 // Dual tile (i, j), 0 <= i <= W, 0 <= j <= H, is drawn at pixel (i*S - S/2, j*S - S/2); its corners are the cells
 // NW (i-1, j-1), NE (i, j-1), SW (i-1, j), SE (i, j). Cells outside the place read as the nearest edge cell (clamp).
 //
-// Corner index = NW*8 + NE*4 + SW*2 + SE*1; a set bit means the corner holds the pair's UPPER terrain.
+// Corner index = NW*8 + NE*4 + SW*2 + SE*1; a set bit means the corner holds the layer's terrain or a higher one.
 // 0 is all lower, 15 all upper; 6 (NE+SW) and 9 (NW+SE) are the two diagonal tiles.
 //
-// A layer tile code is local to its pair: 0..15 a corner tile, FULL_BASE + k the k-th variant of the all-upper tile,
-// EMPTY_BASE + k the k-th variant of the all-lower tile; EMPTY (0xFFFF) draws nothing. The bake maps codes to atlas slots.
+// A tile code is local to its terrain layer (see terrainLayers below); EMPTY (0xFFFF) draws nothing. The bake maps codes to atlas tile ids.
 
 export const EMPTY = 0xFFFF;
 export const FULL_BASE = 16;
-export const EMPTY_BASE = 128;
 export const NW = 8, NE = 4, SW = 2, SE = 1;
 
 export class DualGridError extends Error {
@@ -39,129 +37,98 @@ export function cell(terrain, w, h, x, y) {
   return terrain[cy * w + cx];
 }
 
-// inUpper(terrainValue) -> boolean. Returns the corner index of dual tile (i, j).
-export function cornerIndex(terrain, w, h, i, j, inUpper) {
-  return (inUpper(cell(terrain, w, h, i - 1, j - 1)) ? NW : 0)
-       | (inUpper(cell(terrain, w, h, i, j - 1)) ? NE : 0)
-       | (inUpper(cell(terrain, w, h, i - 1, j)) ? SW : 0)
-       | (inUpper(cell(terrain, w, h, i, j)) ? SE : 0);
-}
-
 // The four corner terrain values of dual tile (i, j): [NW, NE, SW, SE].
 export function corners(terrain, w, h, i, j) {
   return [cell(terrain, w, h, i - 1, j - 1), cell(terrain, w, h, i, j - 1), cell(terrain, w, h, i - 1, j), cell(terrain, w, h, i, j)];
 }
 
-// Build the ground layers of a place.
-//   level:    { id, w, h, terrain: Uint8Array(w*h) of IntGrid values }
-//   terrains: [{ id, value, z }]  (art/places/terrain.json)
-//   pairs:    [{ lower, upper, mode: 'opaque'|'over', fullCount, emptyCount, upperLook?, lowerLook? }] in the set's order; ids are terrain ids.
-//             upperLook / lowerLook: strings equal for two pairs exactly when their all-upper (all-lower) tiles draw identical pixels.
-// Returns { w1, h1, layers: [{ pair: index into pairs, tiles: Uint16Array((w+1)*(h+1)) }] } in draw order (upper z, then lower z).
-// Throws DualGridError for the rules of A3.2: a three-terrain corner where a pair is opaque, a terrain pair the set has no pair for,
-// a terrain the set cannot draw as ground, a lower region that would meet itself with two looks.
-export function dualGrid(level, terrains, pairs) {
+// ---- The dual grid by terrain (one layer per terrain) ----
+// One fill per terrain plus one transparent 16-slot layer per upper terrain, drawn in terrain.json z order. A tile code of a terrain layer is
+//   FILL_CODE + k      the k-th fill variant of the terrain (the lowest terrain of the tile),
+//   KIND_STRIDE * kind + m   the over sheet of the terrain's `kind`-th kind, slot m = 1..14, or FULL_BASE + v for the v-th all-upper variant (a terrain with a ground).
+// EMPTY (0xFFFF) draws nothing. The bake maps codes to atlas tile ids; openedges rewrites cliff, scrub and reed codes afterwards.
+export const FILL_CODE = 0x2000;
+export const KIND_STRIDE = 64;
+
+export function splitCode(c) {
+  if (c >= FILL_CODE && c !== EMPTY) return { fill: c - FILL_CODE };
+  const kind = (c / KIND_STRIDE) | 0, m = c % KIND_STRIDE;
+  return m >= FULL_BASE ? { kind, full: m - FULL_BASE } : { kind, slot: m };
+}
+
+// level:    { id, w, h, terrain: Uint8Array(w*h), tone?: Uint8Array(w*h) of 0/1, origin? }
+// terrains: [{ id, value, z }]
+// layers:   Map or object keyed by terrain VALUE -> { fillCount, kinds: [{ kind, lowers: Set(values), fullCount }], ground?: value, drawAs?: value } (setload.layerDescriptors)
+// tone:     null, or { of: value } the terrain whose cells may carry tone; level.tone marks them. The tone layer is drawn last, at mask = the tone corners.
+// Returns { w1, h1, layers: [{ terrain: value | null, tone?: true, tiles: Uint16Array((w+1)*(h+1)) }] } sorted by z, the tone layer last.
+// Throws DualGridError: 'terrain-value' (a value terrain.json lacks), 'no-edge' (a lower terrain that no kind of the upper lists), 'no-layer' (a terrain the set has no layer for),
+// 'tone-ground' (a tone corner on a tile that is not wholly the tone terrain).
+export function terrainLayers(level, terrains, layers, tone = null) {
   const { id, w, h, terrain } = level;
+  const vh = (i, j) => (level.origin ? hash32('', level.origin.x + i, level.origin.y + j) : hash32(id, i, j));
   const byValue = new Map(terrains.map((t) => [t.value, t]));
-  const byId = new Map(terrains.map((t) => [t.id, t]));
+  const lay = layers instanceof Map ? layers : new Map(Object.entries(layers).map(([k, v]) => [+k, v]));
   for (let k = 0; k < terrain.length; k++) {
     if (!byValue.has(terrain[k])) throw new DualGridError('terrain-value', `${id}: cell (${k % w}, ${(k / w) | 0}) holds value ${terrain[k]}, which terrain.json does not define`, { level: id, cell: { x: k % w, y: (k / w) | 0 } });
   }
-  const z = (value) => byValue.get(value).z;
-  const order = pairs.map((p, k) => k).sort((a, b) => {
-    const pa = pairs[a], pb = pairs[b];
-    return byId.get(pa.upper).z - byId.get(pb.upper).z || byId.get(pa.lower).z - byId.get(pb.lower).z || a - b;
-  });
+  const z = (v) => byValue.get(v).z;
+  const resolve = (v) => { for (let n = 0; lay.get(v)?.drawAs !== undefined; n++) { if (n > 8) throw new DualGridError('no-layer', `${id}: drawAs loops at ${byValue.get(v).id}`, { level: id }); v = lay.get(v).drawAs; } return v; };
   const w1 = w + 1, h1 = h + 1;
-  const layers = new Map(); // pair index -> Uint16Array
-  const layerOf = (k) => { if (!layers.has(k)) layers.set(k, new Uint16Array(w1 * h1).fill(EMPTY)); return layers.get(k); };
-  const pairFor = (idA, idB) => order.find((k) => (pairs[k].lower === idA && pairs[k].upper === idB) || (pairs[k].lower === idB && pairs[k].upper === idA));
+  const out = new Map();   // terrain value -> Uint16Array
+  const layerOf = (v) => { if (!out.has(v)) out.set(v, new Uint16Array(w1 * h1).fill(EMPTY)); return out.get(v); };
   const cellName = (i, j) => `dual tile (${i}, ${j}), cells (${Math.max(i - 1, 0)}..${Math.min(i, w - 1)}, ${Math.max(j - 1, 0)}..${Math.min(j, h - 1)})`;
-
-  const uniform = []; // [i, j, terrain id]: all four corners alike; resolved after the two-terrain tiles
-  const idx = (i, j) => j * w1 + i;
+  const toneLayer = tone ? new Uint16Array(w1 * h1).fill(EMPTY) : null;
+  const toneAt = (x, y) => (level.tone ? level.tone[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] : 0);
 
   for (let j = 0; j < h1; j++) for (let i = 0; i < w1; i++) {
-    const cs = corners(terrain, w, h, i, j);
-    const set = [...new Set(cs)];
-    if (set.length === 1) { uniform.push([i, j, byValue.get(set[0]).id]); continue; }
-    const ids = set.map((v) => byValue.get(v).id).sort((a, b) => z(byId.get(a).value) - z(byId.get(b).value));
-    if (set.length === 2) {
-      const k = pairFor(ids[0], ids[1]);
-      if (k === undefined) throw new DualGridError('no-pair', `${id}: ${cellName(i, j)}: the set has no pair for ${ids[0]} and ${ids[1]}`, { level: id, cell: { i, j }, terrains: ids });
-      const p = pairs[k], up = byId.get(p.upper).value;
-      layerOf(k)[idx(i, j)] = cornerIndex(terrain, w, h, i, j, (v) => v === up);
-      continue;
+    const cs = corners(terrain, w, h, i, j).map((v) => { const r = resolve(v); if (!lay.has(r)) throw new DualGridError('no-layer', `${id}: ${cellName(i, j)}: the set has no layer for ${byValue.get(r).id}`, { level: id, cell: { i, j } }); return r; });
+    const present = new Set(cs);
+    for (const v of [...present]) for (let g = lay.get(v).ground, n = 0; g !== undefined && n < 8; g = lay.get(g)?.ground, n++) present.add(g);
+    const order = [...present].sort((a, b) => z(a) - z(b));
+    const idx = j * w1 + i;
+    const B = order[0], fill = lay.get(B);
+    layerOf(B)[idx] = FILL_CODE + (vh(i, j) % Math.max(1, fill.fillCount || 1));
+    for (const T of order.slice(1)) {
+      const d = lay.get(T), zT = z(T);
+      let mask = 0;
+      [NW, NE, SW, SE].forEach((bit, k) => { if (z(cs[k]) >= zT) mask |= bit; });
+      if (mask === 0) continue;
+      if (mask === 15) {
+        const kind = Math.max(0, d.kinds.findIndex((k) => k.fullCount > 0));
+        layerOf(T)[idx] = KIND_STRIDE * kind + FULL_BASE + (vh(i, j) % Math.max(1, d.kinds[kind].fullCount || 1));
+        continue;
+      }
+      const lowers = cs.filter((c) => z(c) < zT);
+      for (const c of lowers) if (!d.kinds.some((k) => k.lowers.has(c))) throw new DualGridError('no-edge', `${id}: ${cellName(i, j)}: ${byValue.get(T).id} has no edge over ${byValue.get(c).id}`, { level: id, cell: { i, j }, terrains: [byValue.get(c).id, byValue.get(T).id] });
+      const kind = d.kinds.findIndex((k) => lowers.some((c) => k.lowers.has(c)));
+      layerOf(T)[idx] = KIND_STRIDE * kind + mask;
     }
-    // three or more terrains at one corner: only pairs in `over` mode stack
-    const involved = pairs.filter((p) => ids.includes(p.lower) || ids.includes(p.upper));
-    const opaque = involved.find((p) => p.mode === 'opaque');
-    if (opaque || involved.length === 0) {
-      throw new DualGridError('three-terrain', `${id}: ${cellName(i, j)}: three terrains (${ids.join(', ')}) meet at one corner and the pair ${opaque ? opaque.upper + '|' + opaque.lower : 'set'} is opaque`, { level: id, cell: { i, j }, terrains: ids });
-    }
-    for (const k of order) {
-      const p = pairs[k];
-      if (!ids.includes(p.upper)) continue;
-      const u = byId.get(p.upper).z;
-      const index = cornerIndex(terrain, w, h, i, j, (v) => z(v) >= u);
-      if (index === 0) continue;
-      layerOf(k)[idx(i, j)] = index === 15 ? FULL_BASE + (hash32(id, i, j) % Math.max(1, p.fullCount || 1)) : index;
-    }
-  }
-
-
-  // Uniform tiles (all four corners alike). A region of one terrain takes its look from the pair of the nearest two-terrain tile that
-  // touches it (8-neighbour seeds in raster order, then breadth-first over the region's uniform tiles): as the pair's upper terrain it
-  // draws the pair's full tile (variant by hash), as the lower terrain its all-lower tile (index 0, or a variant from emptySheet). A region no
-  // shore touches takes the first pair listing the terrain, upper role first. A region two of whose neighbouring tiles would draw
-  // different pixels shows a seam inside itself and is refused ('two-looks'). Looks: pairs[k].upperLook / lowerLook, strings equal
-  // exactly when the tiles are pixel-identical.
-  const isUniform = new Map(uniform.map(([i, j, tid]) => [idx(i, j), tid]));
-  const state = new Map(); // tile -> { k, role }
-  const near8 = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]];
-  const roleIn = (k, tid) => (pairs[k].upper === tid ? 'upper' : pairs[k].lower === tid ? 'lower' : null);
-  const queue = [];
-  for (const [i, j, tid] of uniform) {
-    for (const [dx, dy] of near8) {
-      const ni = i + dx, nj = j + dy;
-      if (ni < 0 || nj < 0 || ni >= w1 || nj >= h1 || isUniform.has(idx(ni, nj))) continue;
-      const k = order.find((kk) => roleIn(kk, tid) && layers.has(kk) && layers.get(kk)[idx(ni, nj)] !== EMPTY);
-      if (k !== undefined && !state.has(idx(i, j))) { state.set(idx(i, j), { k, role: roleIn(k, tid) }); queue.push([i, j]); }
-    }
-  }
-  for (let q = 0; q < queue.length; q++) {
-    const [i, j] = queue[q], st = state.get(idx(i, j)), tid = isUniform.get(idx(i, j));
-    for (const [dx, dy] of near8.slice(0, 4)) {
-      const ni = i + dx, nj = j + dy;
-      if (ni < 0 || nj < 0 || ni >= w1 || nj >= h1 || isUniform.get(idx(ni, nj)) !== tid || state.has(idx(ni, nj))) continue;
-      state.set(idx(ni, nj), st); queue.push([ni, nj]);
-    }
-  }
-  for (const [i, j, tid] of uniform) {
-    let st = state.get(idx(i, j));
-    if (!st) {
-      const k = order.find((kk) => pairs[kk].upper === tid) ?? order.find((kk) => pairs[kk].lower === tid);
-      if (k === undefined) throw new DualGridError('no-ground', `${id}: ${cellName(i, j)}: the set cannot draw ${tid} as ground`, { level: id, cell: { i, j }, terrains: [tid] });
-      st = { k, role: roleIn(k, tid) };
-      state.set(idx(i, j), st);
-    }
-    const p = pairs[st.k];
-    let code;
-    if (st.role === 'upper') code = FULL_BASE + (hash32(id, i, j) % Math.max(1, p.fullCount || 1));
-    else code = p.emptyCount ? EMPTY_BASE + (hash32(id, i, j) % p.emptyCount) : 0;
-    layerOf(st.k)[idx(i, j)] = code;
-  }
-  const look = (st) => (st.role === 'upper' ? pairs[st.k].upperLook : pairs[st.k].lowerLook) ?? `${st.k}/${st.role}`;
-  for (const [i, j, tid] of uniform) {
-    for (const [dx, dy] of [[1, 0], [0, 1]]) {
-      const ni = i + dx, nj = j + dy;
-      if (isUniform.get(idx(ni, nj)) !== tid) continue;
-      const a = state.get(idx(i, j)), b = state.get(idx(ni, nj));
-      if (look(a) !== look(b)) {
-        throw new DualGridError('two-looks', `${id}: ${cellName(i, j)}: ${tid} is drawn two ways here (next to ${cellName(ni, nj)}; it touches shores of ${pairs[a.k].upper}|${pairs[a.k].lower} and ${pairs[b.k].upper}|${pairs[b.k].lower} whose ${tid} differs)`, { level: id, cell: { i, j }, terrains: [tid] });
+    if (toneLayer) {
+      const tm = (toneAt(i - 1, j - 1) ? NW : 0) | (toneAt(i, j - 1) ? NE : 0) | (toneAt(i - 1, j) ? SW : 0) | (toneAt(i, j) ? SE : 0);
+      if (tm) {
+        const onTone = [tone.of, ...(tone.also || [])];   // a tone tile is wholly one terrain that carries tone (grass, or the raised top)
+        if (!onTone.includes(cs[0]) || !cs.every((c) => c === cs[0])) throw new DualGridError('tone-ground', `${id}: ${cellName(i, j)}: tone on a tile that is not all ${onTone.map((v) => byValue.get(v).id).join(' or ')}`, { level: id, cell: { i, j } });
+        toneLayer[idx] = tm;
       }
     }
   }
+  const res = [...out].sort((a, b) => z(a[0]) - z(b[0])).map(([terrainValue, tiles]) => ({ terrain: terrainValue, tiles }));
+  if (toneLayer) res.push({ terrain: null, tone: true, tiles: toneLayer });
+  return { w1, h1, layers: res };
+}
 
-  return { w1, h1, layers: order.filter((k) => layers.has(k)).map((k) => ({ pair: k, tiles: layers.get(k) })) };
+// Pack by depth: dual tiles never overlap, so draw order matters only inside one tile. The k-th drawn entry of every tile goes to layer k
+// (0xFFFF where its list is shorter). `layers` are in draw order with final tile ids (EMPTY draws nothing); returns [Uint16Array] of length max depth.
+export function packDepth(layers, w1, h1) {
+  const n = w1 * h1, packed = [];
+  const depth = new Uint8Array(n);
+  for (const l of layers) {
+    for (let t = 0; t < n; t++) {
+      const c = l.tiles[t];
+      if (c === EMPTY) continue;
+      if (depth[t] === packed.length) packed.push(new Uint16Array(n).fill(EMPTY));
+      packed[depth[t]++][t] = c;
+    }
+  }
+  return packed;
 }

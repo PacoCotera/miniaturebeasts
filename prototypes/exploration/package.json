@@ -1,0 +1,13 @@
+{
+  "name": "mb-exploration",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Miniature Beasts exploration prototype: the Generator 7 world and region layers use these two libraries; everything else in this folder has no dependencies",
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "fastnoise-lite": "1.1.1",
+    "flatqueue": "3.1.0"
+  }
+}

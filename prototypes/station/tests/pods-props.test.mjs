@@ -266,7 +266,14 @@ test("the detail line: the focused pod's first tag and where it was found, the f
   const st = mixed(); ident(st); const v = (focus, over = {}) => inv(model(st, over, focus)).detail;
   assert.match(v("card.0").left, /^.+ · .+$/); assert.deepEqual([v("card.0").amber, v("card.0").right], [false, "not read yet"]); assert.ok(v("card.0").left.endsWith(" · fresh for 12 turns"), "quietly, after the history; the reading holds the right"); st.turn = 9; assert.deepEqual([v("card.0").amber, v("card.0").right], [true, "dries out in 4 turns"]);
   st.turn = 2; assert.deepEqual([v("verb.read").left, v("verb.read").right], ["Read works on the bright pods", "twelve bright pods"]);
-  assert.deepEqual([v("verb.freshen", { verb: "freshen" }).left, v("verb.freshen", { verb: "freshen" }).right], ["Pods dry out after 12 turns · water one to make it fresh again", "twelve bright pods"], "a turn down: every pod can be freshened");
+  assert.deepEqual([v("verb.freshen", { verb: "freshen" }).left, v("verb.freshen", { verb: "freshen" }).right], ["Pods dry out after 12 turns · Water makes one fresh again", "twelve bright pods"], "a turn down: every pod can be freshened");
+});
+test("Water explains Water: with Water on, a pod's detail line is the rule; the bench pod's ✓ word; the watered answer says what it bought (loop audit 2, finding 10)", () => {
+  const st = mixed(); ident(st); const d = inv(model(st, { verb: "freshen" }, "card.0")).detail;
+  assert.equal(d.left, "Pods dry out after 12 turns · Water makes one fresh again", "the rule while Water is on");
+  assert.notEqual(inv(model(st, { verb: "read" }, "card.0")).detail.left, d.left, "Read keeps the pod's history");
+  const all = JSON.stringify(spec); assert.ok(all.includes('"freshenBench":"The bench keeps this pod fresh"') || all.includes('"freshenBench": "The bench keeps this pod fresh"'), "the bench pod's ✓ word");
+  assert.ok(all.includes("Watered · fresh for {turns} turns · ❀ {n}") && S.POD_LIFE === 12, "the watered answer carries the turns it bought");
 });
 test("the selectors: ▶ at the right edge and ◀ at the left stay; ▲ from the top row is the verb that is on (a tool when the caller fixed the verb), ▼ from the verb line the first pod that can take it; ▼ at the last row stays", () => {
   const st = mixed(); ident(st);

@@ -23,7 +23,7 @@ export function decodeRGB(buf) {   // our own files only: 8-bit RGB, filter 0
 
 // The page's screen (450×600 palette indices) as RGB.
 export function stillOf(p) {
-  const scr = p.run("scr"), px = scr.px(), rgb = p.run("RGB"), w = scr.width, h = scr.height, out = Buffer.alloc(w * h * 3);
+  const scr = p.run("scr"), px = scr.px(), rgb = p.rgbTable ? p.rgbTable() : p.run("RGB"), w = scr.width, h = scr.height, out = Buffer.alloc(w * h * 3);
   for (let i = 0; i < w * h; i++) { const c = rgb[px[i] < 0 ? 0 : px[i]]; out[i * 3] = c[0]; out[i * 3 + 1] = c[1]; out[i * 3 + 2] = c[2]; }
   return { w, h, rgb: out };
 }

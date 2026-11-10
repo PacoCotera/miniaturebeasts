@@ -17,6 +17,7 @@ import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs"
 setLibrary(libraryOf);   // Home's Library module: the specimen of the species with something found (build spec 4.2)
 setLibrarySpecies((st, settings) => specimenSpecies(st, settings) ?? STARTER);   // the species it is for: where ✓ on its bezel puts the Library's ring
 import { dropLight } from "./light-grade.mjs";
+import { STEP_ID } from "./room-steps.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
 import { wallBuild } from "./views/wall-props.mjs";
 import { shownRoom, roomPictureIds, roomIds } from "./views/room-props.mjs";
@@ -42,7 +43,7 @@ import { registerPictures, iconRequests, movingSource, libraryMade, lastSheet, w
 import { setMovingSource } from "./moving.mjs";
 import { dispatch, INTENTS, heldKey } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf, isBuilt } from "./nav.mjs";
-import { assetEntry, asset as assetOf } from "../../ui/assets.mjs";
+import { assetEntry, asset as assetOf, dropAsset } from "../../ui/assets.mjs";
 import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 import { footOf } from "./moving.mjs";
@@ -312,7 +313,7 @@ export function screenProps(plate) {
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
   if (UI.screen === "habitat" && !S.housed(G.st).length) goScreen("vivarium");   // one mibi up close always shows one mibi: with none housed the whole shows its empty state
   const screen = UI.screen, light = lightNow();   // the light is read once per sync: the props and the pictures dropped after them agree on it
-  if (shownLight !== light) { if (shownLight) dropLight(shownLight); shownLight = light; }   // one light's graded residents in the manifest (fix 7): re-derived from the cached master if a light returns
+  if (shownLight !== light) { if (shownLight) { dropLight(shownLight); for (const id of roomPictureIds(shownRoomNow(), shownLight)) if (STEP_ID.test(id)) dropAsset(id); } shownLight = light; }   // a step's room pictures are derived: the last step's are dropped (the paintings stay)   // one light's graded residents in the manifest (fix 7): re-derived from the cached master if a light returns
   if (UI.idle) {   // Idle: the whole screen, no frame but its line (frame.json idle): the living window's people, the painting's slot and the one line
     const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, meet: UI.meet, ...living() }, SPECS.frame);
     registerPictures(body.requests, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });

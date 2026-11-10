@@ -23,7 +23,7 @@ defaults:
 
 jobs:
   lab:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, mb-dev]   # the dev server (owner 2026-11-10); its system packages are installed there once
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -64,7 +64,7 @@ jobs:
           retention-days: 7
 
   probe:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, mb-dev]   # the dev server (owner 2026-11-10); its system packages are installed there once
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -73,8 +73,8 @@ jobs:
       - name: Install Probe toolchain
         run: |
           source native/toolchains.env
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends python3.12-venv python3.12-dev gperf device-tree-compiler ninja-build cmake xz-utils
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get update; fi
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y --no-install-recommends python3.12-venv python3.12-dev gperf device-tree-compiler ninja-build cmake xz-utils; fi
           python3.12 -m venv "$RUNNER_TEMP/zephyr-venv"
           source "$RUNNER_TEMP/zephyr-venv/bin/activate"
           pip install "west==$WEST_VERSION"
@@ -119,7 +119,7 @@ jobs:
           retention-days: 7
 
   companion:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, mb-dev]   # the dev server (owner 2026-11-10); its system packages are installed there once
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -128,8 +128,8 @@ jobs:
       - name: Install Companion toolchain
         run: |
           source native/toolchains.env
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends python3.12-venv python3.12-dev cmake ninja-build libffi-dev libssl-dev dfu-util
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get update; fi
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y --no-install-recommends python3.12-venv python3.12-dev cmake ninja-build libffi-dev libssl-dev dfu-util; fi
           git clone --branch "$IDF_TAG" --depth 1 --recursive --shallow-submodules https://github.com/espressif/esp-idf.git "$RUNNER_TEMP/esp-idf"
           test "$(git -C "$RUNNER_TEMP/esp-idf" rev-parse HEAD)" = "$IDF_REVISION"
           python3.12 "$RUNNER_TEMP/esp-idf/tools/idf_tools.py" install --targets="$COMPANION_TARGET"

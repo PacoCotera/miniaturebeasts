@@ -105,12 +105,11 @@ function updateCaddy() {
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
   dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
-  const crates = !d && c.canDock && c.crates > 0, title = !c.canDock ? "The Companion has no world yet" : d ? "Lift the Companion from the Caddy" : crates ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion in the Caddy";   // copy: station-copy-w1-polish A1
-  dockCtl.setAttribute("aria-disabled", String(!c.canDock)); dockCtl.setAttribute("aria-label", d ? "Lift the Companion from the Caddy" : crates ? "Dock the Companion in the Caddy; cargo waits aboard" : "Dock the Companion in the Caddy");
+  const crates = !d && c.canDock && c.crates > 0, title = !c.canDock ? "The Companion has no world yet" : d ? "Lift the Companion" : crates ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion";  dockCtl.setAttribute("aria-disabled", String(!c.canDock)); dockCtl.setAttribute("aria-label", d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion");
   if (!c.canDock) dockCtl.setAttribute("aria-description", title); else dockCtl.removeAttribute("aria-description");
   dockCtl.title = title;
   dockDot.hidden = !(!d && c.canDock && c.crates > 0); dockCtl.classList.toggle("is-pressed", c.pending);
-  caddyPaper.textContent = !hasWorld() ? "Caddy · no Companion world yet" : d ? "Caddy · Companion docked" + (bayCrates().length ? " · " + S.plural(bayCrates().length, "crate") + " sealed" : "") : "Caddy · Companion lifted at " + hm(G.st.dock.at);
+  caddyPaper.textContent = !hasWorld() ? "Dock · no Companion world yet" : d ? "Dock · Companion docked" + (bayCrates().length ? " · " + S.plural(bayCrates().length, "crate") + " sealed" : "") : "Dock · Companion lifted at " + hm(G.st.dock.at);
 }
 if (EMBED) window.addEventListener("message", (e) => {   // the play page's shell: the dock by postMessage, the developer panel's visibility; both ends check the origin and the parent
   if (e.origin !== location.origin || e.source !== parent) return; const m = e.data || {};

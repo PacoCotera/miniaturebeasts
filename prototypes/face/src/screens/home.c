@@ -58,7 +58,7 @@ static void walk_load(void) {
     room_view_mode(g_viv); room_select(v_pstr("regions.room.id"), dx, dy, g_home); }
   /* the feet band: the union of the room's levels in the window's coordinates (the levels set it); Home keeps its own band, and so does a window with no room */
   if (g_home || !room_have()) { g_rlo = g_flo; g_rhi = g_flo + g_fn - 1; } else { g_rlo = -(1 << 20); g_rhi = 1 << 20; }
-  g_trmax = v_si("vivarium", "rules.travel.max", 3); g_rdiv = v_si("vivarium", "rules.walk.raisedDiv", 3); g_lvin = v_si("vivarium", "rules.walk.levelOneIn", 4); if (g_rdiv < 1) g_rdiv = 1; if (g_lvin < 1) g_lvin = 1;
+  g_trmax = v_pint("regions.travel.max", v_si("vivarium", "rules.travel.max", 3)); g_rdiv = v_si("vivarium", "rules.walk.raisedDiv", 3); g_lvin = v_si("vivarium", "rules.walk.levelOneIn", 4); if (g_rdiv < 1) g_rdiv = 1; if (g_lvin < 1) g_lvin = 1;
   for (int s = 0; s < 3; s++) { static const char *nm[3] = { "juvenile", "adult", "elder" }; g_spd[s][0] = v_si("vivarium", v_fmt("rules.walk.speed.%s.0", nm[s]), 1); g_spd[s][1] = v_si("vivarium", v_fmt("rules.walk.speed.%s.1", nm[s]), 1); if (g_spd[s][0] < 1) g_spd[s][0] = 1; if (g_spd[s][1] < 1) g_spd[s][1] = 1; }
 }
 /* R4b: a resident the room does not show (props shown false) is a rester. It finishes its trip (a leg 2 included), then rests where the props say (restAt): RK_BED (its sleeper on the bed draws, the walker hides where it stands), RK_CURL (it walks to a nice spot and curls

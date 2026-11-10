@@ -12,12 +12,13 @@ import { checkRules } from '../src/bake/rules.mjs';
 import { buildPlace } from '../src/bake/build.mjs';
 import { cliffInfo, gullies, ALT_CODE } from '../src/bake/openedges.mjs';
 import { readPlace, readTileSet } from '../src/format/read.mjs';
+import { layerRows } from '../src/setload.mjs';
 import { adaptPlace } from '../src/adapter.mjs';
 import { T_BLOCK, T } from '../../exploration/src/world.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url)), placesDir = path.join(here, '..'), P = paths(placesDir);
 const terrains = JSON.parse(readFileSync(P.terrain, 'utf8')).terrains, V = Object.fromEntries(terrains.map((t) => [t.id, t.value]));
-const { sets, pairsOf } = loadSets(P, terrains), ctx = { terrains, sets, pairsOf };
+const { sets, layersOf, loadedOf } = loadSets(P, terrains), ctx = { terrains, sets, layersOf };
 const { levels } = loadProject(P.project, P.schema), base = levels.find((l) => l.identifier === 'Windstep');
 const W = 24, H = 28;
 const edit = (fn) => { const l = structuredClone(base); fn(l); return l; };
@@ -72,18 +73,19 @@ test('the cliff: lip and face cells block, the top and the way up walk, found by
   for (const [x, y] of [[5, 5], [7, 4], [6, 7], [7, 7], [6, 8]]) assert.ok(!T_BLOCK[tile(x, y)], `the adapter lets (${x}, ${y}) be walked`);
 });
 
-test('the reed bank blocks nothing: the shore cells in the ReedBank area are as walkable as the grass beside them; thicket, scrub, water and deep water block', () => {
+test('the reed bank blocks nothing: the shore cells in the ReedBank area are as walkable as the grass beside them; low scrub walks; thicket, water and deep water block', () => {
   const place = readPlace(new Uint8Array(readFileSync(path.join(placesDir, 'baked', 'Windstep.mbplace')))), ts = readTileSet(new Uint8Array(readFileSync(path.join(placesDir, 'baked', 'ninja-test.mbtiles'))));
   const lay = adaptPlace(place, ts, terrains, { key: 'x', cell: 0 }), ox = 2, oy = 2, tile = (x, y) => lay.tiles[(y + oy) * 28 + x + ox];
   assert.ok(!T_BLOCK[tile(16, 12)], 'the grass cell at the reed bank');
-  for (const [x, y] of [[17, 12], [19, 13], [3, 12], [3, 18]]) assert.ok(T_BLOCK[tile(x, y)], `(${x}, ${y}) blocks`);
+  for (const [x, y] of [[17, 12], [19, 13], [3, 18]]) assert.ok(T_BLOCK[tile(x, y)], `(${x}, ${y}) blocks`);
+  for (const [x, y] of [[3, 12], [4, 12], [6, 13]]) assert.ok(!T_BLOCK[tile(x, y)], `(${x}, ${y}) low scrub walks`);
 });
 
-test('the bake picks the cliff\'s tall tiles, the way up and the reed look: baked ground tiles come from the extra pairs', () => {
+test('the bake picks the cliff\'s tall tiles, the way up and the reed look: baked ground tiles come from the extra rows', () => {
   const ir = irOf(), r = buildPlace(ir, ctx); assert.ok(r.place, 'builds');
-  const ts = sets.get('ninja-test'), main = ts.pairs.length;
+  const ts = sets.get('ninja-test'), rows = layerRows(loadedOf.get('ninja-test').set);
   const ids = new Set(r.place.ground.flatMap((g) => [...g.tiles]));
-  const altTiles = new Set(ts.pairs.slice(pairsOf.get('ninja-test').length).flatMap((p) => p.tiles));
-  assert.ok([...ids].some((id) => altTiles.has(id)), `some baked tiles are from the extra pairs (${main} pairs in the set)`);
+  const from = (type) => new Set(ts.pairs.filter((p, k) => rows[k].type === type).flatMap((p) => p.tiles));
+  for (const type of ['tall', 'wayup', 'variant']) assert.ok([...ids].some((id) => from(type).has(id)), `some baked tiles are from the ${type} rows (${ts.pairs.length} rows in the set)`);
   assert.ok(ALT_CODE > 255);
 });

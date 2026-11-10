@@ -28,7 +28,7 @@ The bottom line has three sections, left to right, with a thin divider between t
 `✓ Wait · ← Leave` | `meadow · surveyed 2/4` | `⚡⚡◀`
 
 - **The two actions, together on the left.** First **✓ what Confirm does now** ("✓ Take the pod", "✓ Go down", or "✓ Wait" when you face nothing), at most 24 letters. Then **← what the ← key opens**, named by the menu's top entry: "← Leave" in a place ("← Climb out" in the cave), "← End expedition" on the start cell or a lit outpost, "← close" on screens. If a screen has nothing for ✓ to do, only ← shows.
-- **Where you are**, in the middle: the place and how much of it is surveyed ("rock field · surveyed 2/4 · 3 to take: fruit · dew · tuft"), and on the map also the cell you face ("Ahead: meadow · outpost (dark)"). When space is short this section shrinks first: the list is cut, never the actions.
+- **Where you are**, in the middle: the place and how much of it is surveyed ("rock field · surveyed 2/4 · 3 to take: pod · dew · tuft"), and on the map also the cell you face ("Ahead: meadow · outpost (dark)"). When space is short this section shrinks first: the list is cut, never the actions.
 - **Conditions**, on the right, only when there are any: one to three bolts for a storm with ◀ or ▶ for the way it moves, and a small fog patch with its own ◀ or ▶ when a fog bank is within two cells.
 
 ### The header (left to right)
@@ -108,7 +108,8 @@ A place has four quarters. A quarter is **surveyed** when every tile in it is un
 | A fruit | **Pick up the fruit** (you carry one at a time). |
 | A creature, with fruit in hand | **Offer fruit** (see Creatures). |
 | Open ground, with fruit in hand | **Put down the fruit**. |
-| A rock or bush, with fruit in hand | **Press the fruit**: +2 Essence. |
+| A stone, a rock or a tree, with fruit in hand | **Press fruit on the stone** / **Press the fruit on the tree**: +2 Essence. |
+| Anything else that blocks (a bush, thicket, water), with fruit in hand | "Press on a stone" (dimmed): nothing spends and the fruit stays in hand. |
 | A full dew cup | **Collect dew**: +1 Essence. |
 | A tuft of fur | **Pick up the tuft**: +1 Essence. |
 | A charged or warm stone | **Take the charge**: Energy. |

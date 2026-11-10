@@ -432,11 +432,18 @@ test("G10 (M1 §3), on Idle: eight awake for 120 s: from 2.0 s on, at every fram
   } });
   assert.ok(worstDip <= 64, `travelling fell under the floor ${floor} for ${worstDip} ms`); assert.ok(maxT <= cap, `travelling rose to ${maxT} (cap ${cap})`); assert.ok(maxAir <= 2); assert.ok(ends > 5, ends + " trips"); assert.ok(starts > 5);
 });
+test("C5 (the rhythm bands), on Idle: the ceiling is the props' regions.travel.max: at 1, at most one travels at every frame for 60 s; the same props at 2 (same seeds, state kept): two travel within 30 s", { skip }, async () => {
+  const sc = movingScene("idle", { adults: 4, juveniles: 3, s05: 1 }), f = await bootScene(sc), M = f.M, all = sc.props.regions.residents.length, count = () => { let n = 0; for (let i = 0; i < all; i++) if (STATE(M._face_test_state(i)).travelling) n++; return n; };
+  sc.props.regions.travel = { max: 1 }; resend(f); let hi = 0; runFrames(f, 60000, { each: () => { hi = Math.max(hi, count()); } });
+  assert.ok(hi <= 1, `travelling rose to ${hi} under a ceiling of 1`); assert.ok(hi >= 1, "one still travels");
+  sc.props.regions.travel = { max: 2 }; resend(f); hi = 0; runFrames(f, 30000, { each: () => { hi = Math.max(hi, count()); } });
+  assert.equal(hi, 2, `travelling reached ${hi} under a ceiling of 2`);
+});
 test("facing (M1 §1.2): a native-left set shows the mirrored walk cells when facing right and the painted ones when facing left; the curl is never mirrored", { skip }, async () => {
   const left = JSON.parse(JSON.stringify(MOVING_SETS)); left.S01.native = "left";
   for (const [sets, native] of [[MOVING_SETS, 1], [left, 0]]) {
     const sc = movingScene("idle", { adults: 3 }), f = await bootScene(sc, { moving: sets }), nb = MOVING_SETS.S01.adult.walk.cells.length, curl = MOVING_SETS.S01.adult.walk.cells.indexOf("curl"); let seen = 0;
-    runFrames(f, 20000, { each: () => { for (let i = 0; i < 3; i++) { const c = f.M._face_test_cell(i), fr = f.M._face_test_mv(i, 2); if (c < 0) continue; assert.equal(c >= nb, fr !== native, `resident ${i}: cell ${c} facing ${fr ? "right" : "left"}`); seen++; } } });
+    runFrames(f, 20000, { each: () => { for (let i = 0; i < 3; i++) { const c = f.M._face_test_cell(i), fr = f.M._face_test_mv(i, 2); if (c < 0 || c === curl || c === curl + 1) continue; assert.equal(c >= nb, fr !== native, `resident ${i}: cell ${c} facing ${fr ? "right" : "left"}`); seen++; } } });
     assert.ok(seen > 100);
     sc.props.regions.residents.forEach((r) => (r.rest = "asleep")); resend(f); runFrames(f, 15000);
     for (let i = 0; i < 3; i++) assert.ok([curl, curl + 1].includes(f.M._face_test_cell(i)), "asleep: the curl as painted");

@@ -79,7 +79,7 @@ test("the dot of a found place is filled on the reach grid", () => {
 });
 
 test("the band: the place you stand in, the nearest tell with its way, the way home", () => {
-  const f = fixture({ canvas: true }), run = f.run;
+  const f = fixture({ canvas: true, paint: true }), run = f.run;
   run("S.exp.patch = null; S.phase = 'map'; S.visited[S.exp.pos] = 1;");
   const cell = run("bandCell()");
   assert.match(cell, /^(Meadow|Pond edge|Rock field|Wood)( · (water glints|a slow beat|a struck stone|not found yet))?$/, cell);
@@ -97,7 +97,7 @@ test("the band: the place you stand in, the nearest tell with its way, the way h
     assert.match(forms[0], new RegExp(" in the (meadow|pond edge|rock field|wood), " + t.dir + "$")); }
   // the band draws, within the view, with the way home last
   run("FX.msg = ''; FX.notes = []; FX.lockUntil = 0; RT.key = null; scr.px().fill(-1); render(5)");
-  goldenStill(assert, { run }, "map-band-reach.png");
+  goldenStill(assert, f.p, "map-band-reach.png");
 });
 
 test("the map has no quarter and keeps the shimmer's picture on the Probe screen", () => {

@@ -4,7 +4,7 @@
   "title": "Tile set contract (set.json), formatVersion 1; place design A3",
   "type": "object",
   "additionalProperties": false,
-  "required": ["formatVersion", "id", "name", "ship", "licence", "sourceTile", "scale", "half", "palette", "spriteSheet", "pairs", "props", "decals", "canopy"],
+  "required": ["formatVersion", "id", "name", "ship", "licence", "sourceTile", "scale", "half", "palette", "spriteSheet", "layers", "tone", "props", "decals", "canopy"],
   "properties": {
     "formatVersion": { "const": 1 },
     "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
@@ -27,37 +27,20 @@
     "half": { "enum": ["derived", "painted"] },
     "palette": { "type": "string", "description": "file with the colours (indices 48..) and the light tables" },
     "spriteSheet": { "type": "string", "description": "PNG holding every prop, decal and canopy sprite" },
-    "pairs": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["id", "lower", "upper", "mode", "sheets", "fullSheet"],
-        "properties": {
-          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-          "lower": { "type": "string" },
-          "upper": { "type": "string" },
-          "mode": { "enum": ["opaque", "over"] },
-          "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid of the 16 tiles in corner order (NW*8+NE*4+SW*2+SE, a bit set = the upper terrain) per animation frame" },
-          "frameMs": { "type": "integer", "minimum": 16 },
-          "fullSheet": { "type": "string", "description": "one row of variants of the all-upper tile (index 15); variant 0 equals tile 15" },
-          "emptySheet": { "type": "string", "description": "optional row of variants of the all-lower tile (index 0)" },
-          "tall": { "type": "object", "additionalProperties": { "type": "string" }, "description": "a tall upper terrain (the cliff face climbs a tile above its own): keys 1..3, the sheet used when the left (1), right (2) or both (3) cells under the tile's bottom corners are not the upper terrain" },
-          "variants": { "type": "array", "items": { "type": "string" }, "description": "further 16-tile sheets sharing every edge line of `sheets`, one picked per dual tile by hash (low scrub)" },
-          "wayup": { "type": "string", "description": "a 3 x 2 sheet of 16 px tiles, columns left, middle, right and rows (the tile above the face, the face): where the face has broken down into a slope" }
-        }
-      }
+    "layers": {
+      "type": "object",
+      "description": "terrain layers (place design: terrain-layers-design): per terrain id, one fill and the transparent 16-slot layers (kinds) it draws over lower terrains, or `drawAs` another terrain until its own layers are signed.",
+      "additionalProperties": { "$ref": "#/definitions/layer" }
     },
-    "looks": {
-      "type": "array",
-      "description": "alternate looks of pairs the set has: same terrains and edge lines, drawn where an area asks for them. of: pair id -> variants (each a list of animation frame sheets)",
-      "items": {
-        "type": "object", "additionalProperties": false, "required": ["id", "of"],
-        "properties": {
-          "id": { "type": "string" },
-          "of": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } } }
-        }
+    "tone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["of", "sheets"],
+      "description": "the lipless tone layer of one terrain: 16 slots, drawn last over uniform tiles of `of`; it has no fill",
+      "properties": {
+        "of": { "type": "string", "description": "terrain id" },
+        "also": { "type": "array", "items": { "type": "string" }, "description": "further terrain ids that may carry tone: the raised top (cliff), where the generator also keeps the cell two rows below raised, so tone never lands on a face" },
+        "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid per animation frame" }
       }
     },
     "props": {
@@ -74,6 +57,40 @@
     }
   },
   "definitions": {
+    "layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "drawAs": { "type": "string", "description": "terrain id: the terrain this one is drawn as while the set has no layers of its own for it" },
+        "ground": { "type": "string", "description": "terrain id drawn beneath this terrain's own corners (a layer whose paint has gaps)" },
+        "fill": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sheets"],
+          "properties": {
+            "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one strip per animation frame, each holding n opaque 16 px variants left to right" },
+            "frameMs": { "type": "integer", "minimum": 16 }
+          }
+        },
+        "over": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "lowers", "sheets"],
+            "properties": {
+              "kind": { "type": "string", "description": "free name (step, flat, beach, bank, rim ...); the paint decides bank vs flat" },
+              "lowers": { "type": "array", "items": { "type": "string" }, "description": "terrain ids this kind can meet; a lower in no kind's list is refused by the bake (no-edge). The first kind holding any lower of a tile wins" },
+              "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid of 16 slots in corner order NW*8+NE*4+SW*2+SE per animation frame; slot 0 empty, transparent where the lower shows" },
+              "full": { "type": "string", "description": "a strip of slot-15 variants, for a terrain with a ground" },
+              "variants": { "type": "array", "items": { "type": "string" }, "description": "further 16-slot sheets sharing every edge line, one picked per dual tile by hash" },
+              "tall": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } }, "description": "a tall terrain (the cliff face): keys 1..3, the sheets used when the cell under the bottom left (1), right (2) or both (3) corners is not this terrain; several sheets are picked by hash" },
+              "wayup": { "type": "object", "additionalProperties": { "type": "string" }, "description": "per lower terrain id, a 3 x 2 sheet of 16 px tiles for the way up" }
+            }
+          }
+        }
+      }
+    },
     "int2": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 },
     "sprite": {
       "type": "object",

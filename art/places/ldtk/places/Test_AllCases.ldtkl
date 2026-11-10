@@ -1051,14 +1051,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.PropKind",
-							"__value": "reeds",
+							"__value": "reed-shore-1",
 							"__tile": null,
 							"defUid": 110,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"reeds"
+										"reed-shore-1"
 									]
 								}
 							]
@@ -1091,14 +1091,14 @@
 						{
 							"__identifier": "kind",
 							"__type": "LocalEnum.PropKind",
-							"__value": "reeds",
+							"__value": "reed-shore-1",
 							"__tile": null,
 							"defUid": 110,
 							"realEditorValues": [
 								{
 									"id": "V_String",
 									"params": [
-										"reeds"
+										"reed-shore-1"
 									]
 								}
 							]

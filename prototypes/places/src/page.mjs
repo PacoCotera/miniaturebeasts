@@ -33,7 +33,7 @@ export class BakedView {
     const rgb = (r, g, b) => (255 << 24) | (b << 16) | (g << 8) | r;
     for (let i = 1; i < 48; i++) this.lut[i] = rgb(...core[i]);
     ts.palette.forEach((c, k) => { this.lut[48 + k] = rgb((c >> 16) & 255, (c >> 8) & 255, c & 255); });
-    if (haze) {   // the haze's extra colours (the open-edges 7 its tables can answer with, then the 6 ramp colours) join the screen's palette, and the light tables learn them (shared, once per tile set)
+    if (haze) {   // the haze's extra colours (the open-edges 7 its tables can answer with, then the ramp colours) join the screen's palette, and the light tables learn them (shared, once per tile set)
       haze.extra.rgb.forEach((c, k) => { this.lut[haze.extra.first + k] = rgb(...c); });
       const T = tablesOf(ts);
       if (!T.__haze) { extendTables(T, core, ts.palette.map((c) => [(c >> 16) & 255, (c >> 8) & 255, c & 255]), haze.extra.first, haze.extra.rgb); Object.defineProperty(T, '__haze', { value: true }); }

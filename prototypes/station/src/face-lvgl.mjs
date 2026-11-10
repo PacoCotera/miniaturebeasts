@@ -5,8 +5,9 @@
 // The face is driven by words only: there is no node path. Tests that need to place primitives by hand use face/tests/node-scene.mjs.
 export const LV_KEYS = { up: 17, down: 18, right: 19, left: 20, confirm: 10, back: 27, home: 2, research: 114, library: 108, habitat: 98, dock: 100 };
 export const CONTRACT = 1;
+import { PROTOTYPES } from "../../ui/site-base.mjs";
 
-export async function bootFace(base = new URL("../../face/dist/", import.meta.url), { test = false } = {}) {
+export async function bootFace(base = new URL("face/dist/", PROTOTYPES), { test = false } = {}) {
   const t0 = performance.now();
   const create = (await import(new URL("face.mjs", base).href)).default;
   const M = await create({ locateFile: (p) => new URL(p, base).href });

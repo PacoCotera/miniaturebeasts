@@ -49,7 +49,7 @@
  "light": {
   "pictures": { "dawn": "vivarium-near-dawn", "day": "vivarium-near-day", "dusk": "vivarium-near-dusk", "night": "vivarium-near-night" },
   "size": [544, 408],
-  "note": "the glass's painting by the light of the hour (frame.json light.from), one a light, the master id `<picture>-544x408`: switched with Home's glass and Idle's painting, dropped on a light change as theirs are"
+  "note": "the glass's painting by the light of the hour (frame.json light.lights, light.curve), one a light, the master id `<picture>-544x408`: switched with Home's glass and Idle's painting, dropped on a light change as theirs are"
  },
  "overlays": {
   "panel": {

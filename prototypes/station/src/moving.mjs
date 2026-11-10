@@ -22,7 +22,7 @@ export function movingIds(species, stage, look = "species", light = "day") {
   return { walk: `moving:${st}:${species}:walk:${w}x${h}:${look}${L}`, close: `moving:${st}:${species}:close:${cw}x${ch}:${look}${L}`, nap: `moving:${st}:${species}:nap:${nw}x${nh}:${look}${L}`,
     shadow: `moving:${st}:${species}:shadow:${s.shadow.walk[0]}x${s.shadow.walk[1]}`, closeShadow: `moving:${st}:${species}:shadow:${s.shadow.close[0]}x${s.shadow.close[1]}` };
 }
-const parse = (id) => { const m = /^moving:(juvenile|adult):(S\d{2}):(walk|close|nap|shadow):(\d+)x(\d+)(?::([0-9a-f]{16}|species))?(?::(dawn|day|dusk|night))?$/.exec(id); return m && { stage: m[1], species: m[2], part: m[3], w: +m[4], h: +m[5], look: m[6] ?? null, light: m[7] ?? "day" }; };
+const parse = (id) => { const m = /^moving:(juvenile|adult):(S\d{2}):(walk|close|nap|shadow):(\d+)x(\d+)(?::([0-9a-f]{16}|species))?(?::(dawn|day|dusk|night|@L\d\d|@\d{4}))?$/.exec(id); return m && { stage: m[1], species: m[2], part: m[3], w: +m[4], h: +m[5], look: m[6] ?? null, light: m[7] ?? "day" }; };
 // a part's cells in atlas order: the painted cells, then the mirrors (walk); each { name, master, mirror }
 export function cellsOf(species, stage, part, w, h) {
   const s = movingOf(species, stage); if (!s) return [];
@@ -123,7 +123,7 @@ export function atlasFigure(id, pic) {
 // the figure of the set's walk atlas of a species, stage and look, composed here from its sources (the day atlas: a light grades colour, never alpha), cached by the atlas id; null with no source or no ink
 export function movingFigure(walkId) {
   if (FIGURES.has(walkId)) return FIGURES.get(walkId); if (!SOURCE) return null;
-  const f = atlasFigure(walkId, compose(walkId.replace(/:(dawn|dusk|night)$/, ""), SOURCE)); FIGURES.set(walkId, f); return f;
+  const f = atlasFigure(walkId, compose(walkId.replace(/:(dawn|dusk|night|@L\d\d|@\d{4})$/, ""), SOURCE)); FIGURES.set(walkId, f); return f;
 }
 export function registerMoving(id, src) {
   if (hasAsset(id)) return id; const a = parse(id), n = cellsOf(a.species, a.stage, a.part, a.w, a.h).length;

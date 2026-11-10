@@ -231,7 +231,7 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 function ending(S, ex, reason = "home") {
   const t = vm.createContext({ console, S, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 16,
     reachCounts: () => ({ found: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]] }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
+    worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
   const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
   vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
 }
@@ -436,7 +436,7 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
   assert.match(PAGE, /^const CARE_TEXT = \{$/m);
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
   const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({ PLAYTEST_ON: false }));
-  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "stand-in"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "stand-in"], ["c-moment-walk-S01-280x300", 280, 300, "stand-in"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "stand-in"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"]),
+  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "signed"], ["c-moment-tend-S02-280x300", 280, 300, "signed"], ["c-moment-tend-S03-280x300", 280, 300, "signed"], ["c-moment-walk-S01-280x300", 280, 300, "signed"], ["c-moment-walk-S02-280x300", 280, 300, "signed"], ["c-moment-walk-S03-280x300", 280, 300, "signed"], ["c-moment-young-S01-280x300", 280, 300, "signed"], ["c-moment-young-S02-280x300", 280, 300, "signed"], ["c-moment-young-S03-280x300", 280, 300, "signed"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"]),
     ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-wade-32", 32, 32, "signed"], ["c-scree-32", 32, 32, "signed"], ["c-bank-32", 32, 32, "signed"], ["c-map-soft-26", 26, 26, "signed"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"], ["c-open-night", 192, 192, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
@@ -546,7 +546,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
     panel: noop, card: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, firstPlacement: () => true, drawOpenLand: () => {}, stormFor: () => ({ dir: 1 }), brackets: noop, ringArt: noop, upArt: noop, silhouette: noop, podArt: noop, OPEN_ART: { ready: false }, G: { gate: 0 }, STAGE_WORD: {},
     OPEN_TEXT: { dark: "dark", stormEast: "e", stormWest: "w", chargeStones: "charge", digs: n => n + " digs", needsTuikis: "needs a Tuikis", firstWalk: "first", firstFind: "find", firstGrows: "grows", flat: "flat", docked: "docked" },
     CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
-  const names = ["OPEN_FRAME", "deepShown", "openCreature", "drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
+  const names = ["OPEN_FRAME", "deepShown", "openCreature", "drawSetup", "digger", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
   S.known = [2]; vm.runInContext(ACCESSOR() + names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
   const home = S.mibis.map(m => m.name);
   for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
@@ -786,7 +786,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   assert.ok(p.run("takeMibi(mibiById(1)).ok && takeMibi(mibiById(3)).ok"), "taken while docked");
   assert.equal(p.run("setLead(mibiById(1))"), true, "an S05 mibi can lead (game designer, 2026-10-11)");
   assert.equal(p.run("partnerMibi().id"), 1, "Dot is the partner");
-  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digPartner()"), null, "no gate opens");
+  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null, "no gate opens");
   assert.equal(p.run("partnerRow()"), "Partner: Dot · " + p.run("CARE_TEXT.abOther"), "the partner line reads abOther");
   const render = phase => { p.run(`S.phase = ${JSON.stringify(phase)}; render(0)`); return drawn(); };
   let d = render("mibis"); assert.ok(d.some(x => /^c-sprite-other-32@28,\d+x2$/.test(x)), "the Lead card: the plate at 2× in the sprite's rect: " + d);
@@ -812,7 +812,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   d = render("patch"); assert.ok(d.some(x => x.startsWith("c-sprite-other-32@") && x.endsWith("x1")), "the field partner: the plate at 1×: " + d);
   assert.ok(d.some(x => x.startsWith("c-mini-other-12@")), "the HUD mini in a place");
   assert.doesNotThrow(() => p.run("ptCtx()")); assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), 4, "never matches a wild species (the page is cut to three here)");
-  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digPartner()"), null);
+  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null);
   assert.doesNotThrow(() => p.run("onStateChanged(); notesText();"));
   const lines = p.run("FX.notes.map(n => n.text).concat(S.log).join('\\n')");
   assert.ok(!/undefined|null/.test(lines), "no line reads undefined or null:\n" + lines);
@@ -944,7 +944,7 @@ test("X26 §5.2: with a rider no field token, no dig, no calm, no glow and no fl
   // a juvenile Tuikis: no token in any place, no dig, the fog sight and the fog Call reach as with no partner
   let p = X26.world([dot()], [1]); p.setOut(); p.key("confirm"); assert.equal(p.S.phase, "patch");
   assert.ok(Object.keys(p.S.exp.live).length > 0); for (const k in p.S.exp.live) assert.equal(p.S.exp.live[k].pt, null, "live.pt in " + k);
-  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digPartner()"), null);
+  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null);
   assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), -1);
   p.run("inFog = () => true;");
   assert.equal(p.run("sightR(curLay())"), p.run("SIGHT_FOG"), "the fog sight");
@@ -1001,7 +1001,7 @@ test("X26 §5.4: the partner strip with only Dot: its picture at 3× without a r
   assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[4] === 398 && c[6] === 1), "the other at 1× at the top right");
   // unchanged: none carried, a grown partner
   p = X26.world([dot()], []); d = p.draw("setup"); assert.ok(d.some(c => c[0] === "text" && c[1] === "No one with you"));
-  p = X26.world([pip()], [2]); d = p.draw("setup"); assert.ok(d.some(c => c[0] === "art" && c[1] === "opring84"), "a partner keeps its ring");
+  p = X26.world([pip()], [2]); d = p.draw("setup"); assert.ok(!d.some(c => c[0] === "art" && (c[1] === "opring84" || c[1] === "opring32")), "a partner stands on its own sprite: no ring (owner 11-08)");
 });
 
 test("X26 §5.5: one set-out message names the rider, once per expedition; no Dig or ability prompt at the burrow with a juvenile Tuikis", () => {
@@ -1267,17 +1267,13 @@ test("juvenile pictures: no site draws a juvenile in huddle or eat (Tend, the Wa
   assert.ok(seen.length > 1000, "the recorder saw the draw calls");
 });
 
-test("juvenile Loika's Tend paws are drawn 6 source rows (48 px) lower than the adult's, in y only; the adult's, the Tuikis' sparks and the Untuva's ring are unchanged", () => {
-  const pawY = (sp, adult, st) => { const p = X26.world([X26.mib(1, "Kit", sp, adult ? { grownTurn: 0 } : {})], [1]); p.run("S.ui.aId = 1");
-    p.run(`var __p = []; (() => { const real = stagePawY; stagePawY = j => { const y = real(j); __p.push([j, y]); return y; }; })();`);
-    p.run("FX.moment = { id: 1, at: 0 }"); p.draw("active", 700); return plain(p.run("__p")); };
-  assert.deepEqual(pawY(0, true), [[false, 78], [false, 78]], "the adult Loika's two paws: y 78, as before");
-  assert.deepEqual(pawY(0, false), [[true, 126], [true, 126]], "the juvenile Loika's paws: y 78 + 48");
-  assert.equal(p0().run("LOIKA_JUV_PAW_DROP"), 6 * 8, "6 source rows at 8x");
-  for (const sp of [1, 2]) for (const adult of [true, false]) assert.deepEqual(pawY(sp, adult), [], "no paws for species " + sp);
-  assert.match(source("drawActive"), /for \(const px of \[250, 300\]\) blit\(upArt\('paw', ICON\.paw\('blush'\), 3\), px, stagePawY\(st === 'juvenile'\)\)/, "x stays 250 and 300; y by the chip");
-  assert.match(source("drawActive"), /R\(225 \+ Math\.round\(Math\.cos\(a\) \* r \* 1\.2\) - 4, 178 \+ Math\.round\(Math\.sin\(a\) \* r \* \.8\) - 4, 8, 8, C\.fog\)/, "the Untuva ring is as it was");
-  assert.match(source("drawActive"), /\[\[90, 88\], \[340, 118\], \[120, 248\], \[320, 238\]\]/, "the Tuikis' sparks are as they were");
+test("the Tend moment draws no code-drawn blush paws on the Loika and no ring of fog squares round the Untuva; the Tuikis' four sparks stay, none on the face; a young one shows its own stand", () => {
+  assert.ok(!/ICON\.paw\('blush'\)/.test(source("drawActive")), "no code-drawn paws on the stage");
+  assert.equal(p0().run("typeof stagePawY"), "undefined", "the paw helper is gone");
+  assert.ok(!/, 8, 8, C\.fog\)/.test(source("drawActive")), "no fog squares on the stage");
+  assert.match(source("drawActive"), /\[\[90, 88\], \[392, 104\], \[120, 248\], \[320, 238\]\]/, "the Tuikis' sparks: the cheek one moved off the figure");
+  assert.match(source("drawActive"), /MOMENT_ART\[juv \? 'young' : 'stand'\]/, "a young one takes the young stand, never its token at stage size");
+  assert.equal(p0().run("Object.keys(MOMENT_ART.young).sort().join()"), "0,1,2", "a young stand for every kind");
 });
 function p0() { return X1.page(); }
 

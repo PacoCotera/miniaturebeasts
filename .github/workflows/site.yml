@@ -20,8 +20,11 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 25   # measured 29 minutes with the browser checks (2026-10-28); a pull request now runs the build, smoke and node tests (about 11), a manual run all of them
+    # The project's own dev server (owner 2026-11-10: the tests run there, not on GitHub's machines). Its system tools (ninja, bc, Caddy at the web server's version,
+    # Chromium's libraries) are installed once on the server, so the install lines below run only on a GitHub machine. Never for a pull request from a fork.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, mb-dev]
+    timeout-minutes: 60   # (raised 2026-11-10 with the Station rules step) measured 29 minutes with the browser checks (2026-10-28); a pull request now runs the build, smoke and node tests (about 11), a manual run all of them
     steps:
       - uses: actions/checkout@v4
         with:
@@ -96,7 +99,7 @@ jobs:
         # prototypes/face/dist travels with the sandbox bundle.
         run: |
           set -euo pipefail
-          sudo apt-get install -y -q ninja-build bc >/dev/null
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y -q ninja-build bc >/dev/null; fi
           if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
           (cd "$HOME/emsdk" && ./emsdk install "${{ steps.emsdk.outputs.version }}" >/dev/null && ./emsdk activate "${{ steps.emsdk.outputs.version }}" >/dev/null)
           EMSDK="$HOME/emsdk" prototypes/face/build.sh all
@@ -117,6 +120,12 @@ jobs:
           # the Companion's 48 px place art, from where it lives: the shipping folder only (sheets, palette and manifest)
           mkdir -p _site/art/companion-48/terrain && cp -r art/companion-48/terrain/meadow _site/art/companion-48/terrain/
           printf '{"commit":"%s","short":"%s","built":"%s"}\n' "$GITHUB_SHA" "${GITHUB_SHA:0:7}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _site/build.json
+      - name: Bundle the pages (Vite)
+        if: steps.scope.outputs.docs != 'true'
+        # prototypes/vite.config.mjs bundles the Station, play and exploration pages into content-hashed chunks with modulepreload (the spec JSON and p-queue inside, the pictures and metrics hashed) and
+        # lays them over _site/sandbox: the three pages are replaced, /sandbox/assets/ is added (ops/sandbox/Caddyfile keeps it immutable), every source file stays where it was. npm ci installs the
+        # pinned vite and p-queue (prototypes/package-lock.json); the node tests and the browser checks below import the sources and use the same install. Measured: about 3 s for the build.
+        run: sh ops/sandbox/bundle-pages.sh _site
       - name: Check the pages parse
         if: steps.scope.outputs.docs != 'true'
         run: |
@@ -140,7 +149,7 @@ jobs:
           sleep 1
           npm --prefix "$RUNNER_TEMP" install --silent playwright@1.56.1
           # split and timed, so a slow run says which part was slow
-          time npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then time npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null; fi
           time PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
       - name: Import guard (the JavaScript drawing layer is removed)
@@ -165,10 +174,11 @@ jobs:
           sh prototypes/places/tools/get-flatc.sh "$RUNNER_TEMP/flatc"
           echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
           npm ci --prefix prototypes/places --no-audit --no-fund
+          npm ci --prefix prototypes/exploration --no-audit --no-fund
           node prototypes/places/tools/bake.mjs --check
       - name: Station rules (node tests)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        timeout-minutes: 15   # about 10 without the long walk proofs (MB_CI_FAST: they run in full locally before every merge)
+        timeout-minutes: 45   # measured 15-23 (2026-11-10, dev server shared with builders); the limit only catches a hung run (MB_CI_FAST: they run in full locally before every merge)
         # The Station's rules and the Caddy service in Node, and the other prototypes' tests.
         # The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
         run: |
@@ -182,12 +192,14 @@ jobs:
         # apt repository (the version the web server runs), the shipped Caddyfile validated and a broken one refused. The Caddy service is stopped after the install: nothing here needs port 80.
         run: |
           set -euo pipefail
-          sudo apt-get install -y -q debian-keyring debian-archive-keyring apt-transport-https gpg >/dev/null
-          curl -fsSL https://dl.cloudsmith.io/public/caddy/stable/gpg.key | sudo gpg --dearmor --yes -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-          curl -fsSL https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt | sudo tee /etc/apt/sources.list.d/caddy-stable.list >/dev/null
-          sudo apt-get update -q >/dev/null
-          sudo apt-get install -y -q caddy >/dev/null
-          sudo systemctl stop caddy || true
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then
+            sudo apt-get install -y -q debian-keyring debian-archive-keyring apt-transport-https gpg >/dev/null
+            curl -fsSL https://dl.cloudsmith.io/public/caddy/stable/gpg.key | sudo gpg --dearmor --yes -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+            curl -fsSL https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt | sudo tee /etc/apt/sources.list.d/caddy-stable.list >/dev/null
+            sudo apt-get update -q >/dev/null
+            sudo apt-get install -y -q caddy >/dev/null
+            sudo systemctl stop caddy || true
+          fi
           caddy version
           python3 -m unittest discover -s ops/sandbox/tests -v
       - name: Station journey

@@ -15,6 +15,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodePNG, encodePNG } from "../png.mjs";
+import { readIndex, writeIndex } from "./index-io.mjs";
 import { rescaleJuvenile, flipPic, liftShadow, FLIPPED, FLIPPED_ADULT, GROUNDED, SIZES } from "./game-masters.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dest = path.resolve(here, "../assets/masters");
@@ -114,7 +115,7 @@ export function planCoats({ desk = DESK, index, only = null }) {
 // the masters the retired names (21f: charcoal, russet, ash) put in the index and on disk are taken out when the grid is placed
 const retiredCoat = (id) => /^mibi-(adult|juvenile)-S\d\d-(russet|ash)-/.test(id);
 export function placeCoats({ desk = DESK, root = dest, dryRun = false, only = null } = {}) {
-  const idxFile = path.join(root, "index.json"), index = JSON.parse(readFileSync(idxFile, "utf8")), plan = planCoats({ desk, index, only }), removed = Object.keys(index.masters).filter(retiredCoat);
+  const index = readIndex(root), plan = planCoats({ desk, index, only }), removed = Object.keys(index.masters).filter(retiredCoat);
   if (plan.missing.length) return { ...plan, removed: [] };   // the grid is whole or nothing is placed
   for (const o of plan.ops) {
     const file = `pods/${o.id}.png`, [w, h] = [o.buf.readUInt32BE(16), o.buf.readUInt32BE(20)];
@@ -123,7 +124,7 @@ export function placeCoats({ desk = DESK, root = dest, dryRun = false, only = nu
   }
   if (plan.ops.length) for (const id of removed) { if (!dryRun) unlinkSync(path.join(root, index.masters[id].file)); delete index.masters[id]; }
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
-  if (!dryRun) writeFileSync(idxFile, JSON.stringify(index, null, 1) + "\n");
+  if (!dryRun) writeIndex(root, index);
   return { ...plan, removed };
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

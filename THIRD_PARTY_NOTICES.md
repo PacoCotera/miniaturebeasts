@@ -6,6 +6,9 @@ Dependencies retain their original licenses; the project's licenses do not repla
 | --- | --- | --- |
 | qrcode | 1.5.4 | MIT |
 | jsqr (development) | 1.4.0 | Apache-2.0 |
+| p-queue (the Station's masters queue, bundled into the sandbox pages; `prototypes/package.json`) | 10.0.0 | MIT |
+| Vite (development: the sandbox pages' build, `prototypes/vite.config.mjs`) | 7.3.8 | MIT |
+| oxipng (development: the lossless squeeze of the placed masters, `prototypes/ui/tools/squeeze.mjs`; a program, not installed by the lockfile) | 10.2.1 | MIT |
 | LVGL (native device UI) | 9.6.0 /80ca777e37a2b176770726a02e07a6fb79ef0b39 | MIT |
 | jsmn (the Station face's JSON tokenizer) | zserge/jsmn `jsmn.h`, unmodified (SHA-256 `c04533e9181e1e33baceb0f55ac449b05145bb936e8c68cc77dfe0d8277514fb`) | MIT |
 

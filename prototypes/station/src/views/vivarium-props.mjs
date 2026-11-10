@@ -139,7 +139,7 @@ export function vivariumBuild(m, spec, frame, home, pods) {
   for (const p of lw.sleepers) { const mb = S.mibiById(st, +p.id), k = markOf(st, sv, mb, settings); if (k) p.mark = markPic(k); }
   const region = roomRegion(req, shown, light), rd = roomData(shown);
   regions["window"] = { picture: region.base, edge: { crop: rd.crop, painting: [1024, 568], keep: (rd.keep ?? []).map((k) => ({ id: k.id, form: k.box, ...(k.leaves ? { leaves: k.leaves } : {}) })), joins: (rd.joins ?? []).map((j, i) => ({ id: `${region.id}-join-${i}`, form: j.rect, ...(j.leaves ? { leaves: j.leaves } : {}) })) } };
-  regions.room = region; regions.residents = residents; if (lw.bed) regions.bed = lw.bed;
+  regions.room = region; regions.residents = residents; if (lw.travel) regions.travel = lw.travel; if (lw.bed) regions.bed = lw.bed;
   // a mibi coming out: its silhouette on the drop spot it was brought out to (m.tucked.spot), else the first drop spot no other one holds
   const coming = S.inRoom(st, shown).filter((mb) => S.comingOut(st, mb)), used = new Set(), drops = rd.drops ?? [];
   const res = coming.map((mb) => { let k = Number.isInteger(mb.tucked.spot) && !used.has(mb.tucked.spot) ? mb.tucked.spot : drops.findIndex((_, i) => !used.has(i)); used.add(k);

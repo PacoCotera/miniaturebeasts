@@ -97,6 +97,7 @@
    "ambient": []
   },
   "reeds": {
+   "duskFallback": ["band", "chip", "move", "rail"],
    "base": "room-reeds-idle-{light}-1024x568",
    "near": "room-reeds-near-{light}-544x408",
    "chip": "room-reeds-chip-{light}-128x32",

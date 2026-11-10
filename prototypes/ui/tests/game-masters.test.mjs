@@ -3,11 +3,12 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { decodePNG } from "../png.mjs";
+import { readIndex } from "../tools/index-io.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkJuveniles, pairsOf, figureBox, rescaleJuvenile, retired, flipPic, FLIPPED, FLIPPED_ADULT, GROUNDED, RATIO } from "../tools/game-masters.mjs";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../assets/masters"), index = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")), M = index.masters;
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../assets/masters"), index = readIndex(root), M = index.masters;
 const KINDS = Array.from({ length: 20 }, (_, i) => "S" + String(i + 1).padStart(2, "0"));
 
 test("every juvenile master is 0.8 of its adult's figure height at the same size, on the same feet row", () => {

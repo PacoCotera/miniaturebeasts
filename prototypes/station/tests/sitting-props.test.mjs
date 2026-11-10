@@ -17,7 +17,6 @@ import { poseFor, layeredStand, standFigure } from "../src/layered-stand.mjs";
 import { loadStandSizesFs, unloadStands } from "../tools/stand-layers-fs.mjs";
 import { sittingBuild as sittingBuildUnchecked, portraitOffered } from "../src/views/sitting-props.mjs";
 const sittingBuild = lineCased(sittingBuildUnchecked, "sitting");   // every body it builds goes through assertLineCase (report mode)
-import { lightAt } from "../src/views/home-props.mjs";
 import { injectPortraitSource, dropPortraitSources, portraitOpening, portraitSource, OPENINGS_KEPT } from "../src/portrait-source.mjs";
 import { registerPictures } from "../src/pictures.mjs";
 import { asset as assetOf, assetEntry, dropAsset, manifest } from "../../ui/assets.mjs";

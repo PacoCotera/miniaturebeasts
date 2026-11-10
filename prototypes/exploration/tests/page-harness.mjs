@@ -41,13 +41,21 @@ export const LOOK_ART = Object.fromEntries(readdirSync(LOOK_DIR).filter((f) => f
 const STONE_DIR = new URL("../art/stone/", import.meta.url);
 export const STONE_ART = Object.fromEntries(readdirSync(STONE_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, STONE_DIR)))]));
 
+// The walk props (art/props/), decoded the same way.
+const PROP_DIR = new URL("../art/props/", import.meta.url);
+export const PROP_ART = Object.fromEntries(readdirSync(PROP_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, PROP_DIR)))]));
+
 // The opening screen's mist and pod (art/open/), decoded the same way.
 const OPEN_DIR = new URL("../art/open/", import.meta.url);
 export const OPEN_ART = Object.fromEntries(readdirSync(OPEN_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, OPEN_DIR)))]));
 
+// The care moments' signed stands (art/moment/), decoded the same way.
+const MOMENT_DIR = new URL("../art/moment/", import.meta.url);
+export const MOMENT_ART = Object.fromEntries(readdirSync(MOMENT_DIR).filter((f) => f.endsWith(".png")).map((f) => [f.slice(0, -4), decodePNG(readFileSync(new URL(f, MOMENT_DIR)))]));
+
 // Binds the imports into ctx, runs the page script (or a variant of it) there, and returns run(src), which evaluates in the page.
 export function loadPage(ctx, script = SCRIPT) {
-  ctx.window = ctx; if (ctx.__places6 === undefined) ctx.__places6 = PLACES6; if (ctx.__walkArt === undefined) ctx.__walkArt = WALK_ART; if (ctx.__lookArt === undefined) ctx.__lookArt = LOOK_ART; if (ctx.__openArt === undefined) ctx.__openArt = OPEN_ART;
+  ctx.window = ctx; if (ctx.__places6 === undefined) ctx.__places6 = PLACES6; if (ctx.__walkArt === undefined) ctx.__walkArt = WALK_ART; if (ctx.__lookArt === undefined) ctx.__lookArt = LOOK_ART; if (ctx.__propArt === undefined) ctx.__propArt = PROP_ART; if (ctx.__openArt === undefined) ctx.__openArt = OPEN_ART; if (ctx.__momentArt === undefined) ctx.__momentArt = MOMENT_ART;
   for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from];
   // The page plays generator 6 only (GENS = [6]). The suites written for generator 5's generated places run on generator 5, which stays frozen in world.mjs: a page opened with
   // `gen: 6` (makePage) or `__gen6: true` (a ctx given to loadPage) is the page as played; any other is that page with generator 5 played too and new worlds of generator 5.
@@ -77,12 +85,24 @@ export function fakeCanvas(look) {
   return Object.assign(t, { getContext: () => ctx, px: buf, style: {}, toDataURL: () => "" });
 }
 
+// The colour book a fake canvas reads (P() gives the page's core palette: hex, rgb, of). The art desk's painted pieces carry colours off that palette; a fake canvas drops them
+// (index -2) unless `paint` is set, when each new colour gets its own index from 4096 up, clear of anything the page adds to its own palette, so a picture of the screen shows
+// the painted props too. rgbTable() lists every index's colour (the core ones and the painted ones) for writing a still.
+export function paletteLook(P, paint) {
+  const ext = [], extOf = new Map(), EXT = 4096;
+  const look = { hex: h => P().hex.get(h) ?? -2, rgbOf: v => v >= EXT ? ext[v - EXT] : P().rgb[v],
+    rgb: (r, g, b) => { const k = r << 16 | g << 8 | b, v = P().of.get(k); if (v !== undefined || !paint) return v ?? -2;
+      let e = extOf.get(k); if (e === undefined) { e = EXT + ext.length; ext.push([r, g, b]); extOf.set(k, e); } return e; } };
+  return { look, rgbTable: () => { const t = P().rgb.slice(); ext.forEach((c, i) => { t[EXT + i] = c; }); return t; } };
+}
+
 // The standard page. opts:
 //   store    the localStorage object (default {})
 //   console  "real" (default), "silent", or "collect" (errors go to p.errors, the rest is silent)
 //   els      true: document.getElementById answers one stub element for each id (p.els)
 //   raf      what requestAnimationFrame returns: 0 (default), 1, or "count" (1, 2, 3 … ; p.raf.n counts the calls)
 //   canvas   true: document.createElement("canvas") gives a fakeCanvas, so a drawing can be read back (p.run("scr").px())
+//   paint    true (with canvas): the painted props' off-palette colours are kept on the fake canvas (see paletteLook; p.rgbTable() for a still)
 //   date     a number: the page's Date stands still at that many ms (new Date() and Date.now()); default is the real clock
 // Returns { run, ctx, store, clock, els, writes, errors, raf, KEY, S, pass(ms), key(k, n), sv(), writeSt(st) }.
 // Timers wait on the clock: pass(ms) runs the ones that fall due, in order.
@@ -91,7 +111,7 @@ export function makePage(opts = {}) {
   const els = {}, elStub = () => new Proxy({}, { get: (t, k) => k in t ? t[k] : any, set: (t, k, v) => { t[k] = v; return true; } });
   let run = null, pal = null;
   const P = () => pal || (pal = { hex: new Map(run("HEX").map((h, i) => [h, i])), rgb: run("RGB"), of: new Map(run("RGB").map((c, i) => [c[0] << 16 | c[1] << 8 | c[2], i])) });
-  const look = { hex: h => P().hex.get(h) ?? -2, rgbOf: v => P().rgb[v], rgb: (r, g, b) => P().of.get(r << 16 | g << 8 | b) ?? -2 };
+  const { look, rgbTable } = paletteLook(P, opts.paint);
   const document = opts.els || opts.canvas ? new Proxy(any, { get: (t, k) => k === "getElementById" && opts.els ? id => els[id] || (els[id] = elStub()) : k === "createElement" && opts.canvas ? tag => tag === "canvas" ? fakeCanvas(look) : any : any }) : any;
   const clock = { t: 1000, timers: [] }, writes = [], errors = [], raf = { n: 0 };
   const silent = { log() {}, warn() {}, error() {} };
@@ -106,6 +126,7 @@ export function makePage(opts = {}) {
   let KEY; try { KEY = run("SAVE_KEY"); } catch { KEY = undefined; }
   const p = { run, ctx, store, clock, els, writes, errors, raf, KEY,
     get S() { return run("S"); },
+    rgbTable,
     // real time passes: the timers due run in order
     pass(ms) { const end = clock.t + ms; for (;;) { clock.timers.sort((a, b) => a.at - b.at); const n = clock.timers[0]; if (!n || n.at > end) break; clock.timers.shift(); clock.t = n.at; n.f(); } clock.t = end; },
     // one key press, after any input lock has run out

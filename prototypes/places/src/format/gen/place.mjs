@@ -1182,10 +1182,6 @@ var Layer = class _Layer {
     bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
     return (obj || new _Layer()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
   }
-  pair() {
-    const offset = this.bb.__offset(this.bb_pos, 4);
-    return offset ? this.bb.readUint8(this.bb_pos + offset) : 0;
-  }
   tiles(index) {
     const offset = this.bb.__offset(this.bb_pos, 6);
     return offset ? this.bb.readUint16(this.bb.__vector(this.bb_pos + offset) + index * 2) : 0;
@@ -1200,9 +1196,6 @@ var Layer = class _Layer {
   }
   static startLayer(builder) {
     builder.startObject(2);
-  }
-  static addPair(builder, pair) {
-    builder.addFieldInt8(0, pair, 0);
   }
   static addTiles(builder, tilesOffset) {
     builder.addFieldOffset(1, tilesOffset, 0);
@@ -1221,9 +1214,8 @@ var Layer = class _Layer {
     const offset = builder.endObject();
     return offset;
   }
-  static createLayer(builder, pair, tilesOffset) {
+  static createLayer(builder, tilesOffset) {
     _Layer.startLayer(builder);
-    _Layer.addPair(builder, pair);
     _Layer.addTiles(builder, tilesOffset);
     return _Layer.endLayer(builder);
   }

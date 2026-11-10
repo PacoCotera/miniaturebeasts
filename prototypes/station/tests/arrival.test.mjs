@@ -59,7 +59,7 @@ test("the props of the show: validate against cargo.props.json, name no rectangl
 });
 test("the show's bottom line: ✓ Skip while the hold runs, the crates counted in words, an empty trip says the bay is empty; the choice's line is the strip's", () => {
   const w = world({ reqs: [] }), a = { ...arrivalOf(w.st, w.sv, w.r), phase: "show", from: "home", choice: true };
-  let l = build(w, a, {}).line; assert.deepEqual([l.ok, l.back, l.subject], [null, null, "two sealed crates"]);
+  let l = build(w, a, {}).line; assert.deepEqual([l.ok, l.back, l.subject], [null, null, "two crates · expeditions 1 to 2"]);
   l = cargoBuild({ st: w.st, sv: w.sv, settings, docked: true, light: "day", ui: { ...ui(a), skip: { kind: "arrival", target: "show" } } }, cargo, home, frame).line; assert.equal(l.ok, "Skip");
   const e = world({ crates: 0, reqs: [] }); l = build(e, { ...arrivalOf(e.st, e.sv, e.r), phase: "show", from: "home", choice: false }).line; assert.equal(l.subject, "the bay is empty");
 });

@@ -516,6 +516,7 @@
   "back": "Home",
   "bud": "{a/an} {Species}",
   "readyIn": "ready in about {n} min",
+  "readyUnderMinute": "ready in under a minute",
   "crossBud": "{A} and {B}'s child",
   "crossBudFallback": "{a/an} {Species}",
   "empty": "Ready for a pod",

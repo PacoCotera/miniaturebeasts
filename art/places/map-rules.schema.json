@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Map rules: the numbers behind the map's dressing (art/places/map-rules.json)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "biomes", "props", "meadow", "shrubs", "water", "reeds", "tone"],
+  "definitions": {
+    "chance": { "type": "number", "minimum": 0, "maximum": 1 },
+    "cells": { "type": "integer", "minimum": 0, "maximum": 12 },
+    "box": {
+      "description": "A rectangle of cells round a tile, counted from it: left, right, up, down",
+      "type": "object", "additionalProperties": false, "required": ["left", "right", "up", "down"],
+      "properties": { "left": { "$ref": "#/definitions/cells" }, "right": { "$ref": "#/definitions/cells" }, "up": { "$ref": "#/definitions/cells" }, "down": { "$ref": "#/definitions/cells" } }
+    },
+    "noise": {
+      "description": "A fractal noise field read at world position: scale is its frequency (per tile), octaves its layers; threshold, where a rule uses one, is the level above which the field counts",
+      "type": "object", "additionalProperties": false, "required": ["scale", "octaves"],
+      "properties": { "scale": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }, "octaves": { "type": "integer", "minimum": 1, "maximum": 6 }, "threshold": { "type": "number", "minimum": -1, "maximum": 1 } }
+    },
+    "family": {
+      "description": "A kind of cluster in a biome: B = block size in tiles, used = share of blocks holding one, size = [smallest, largest] members, keep = smallest size kept (smaller is dropped whole), minD2 = least squared distance between two members",
+      "type": "object", "additionalProperties": false, "required": ["B", "used"],
+      "properties": {
+        "B": { "type": "integer", "minimum": 2, "maximum": 64 }, "used": { "$ref": "#/definitions/chance" },
+        "size": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 20 }, "minItems": 2, "maxItems": 2 },
+        "keep": { "type": "integer", "minimum": 1, "maximum": 20 }, "minD2": { "type": "integer", "minimum": 1, "maximum": 20 }
+      }
+    },
+    "biome": {
+      "type": "object", "additionalProperties": false, "required": ["reeds", "pads", "broad", "pebbles"],
+      "properties": {
+        "trees": { "$ref": "#/definitions/family" }, "rocks": { "$ref": "#/definitions/family" }, "stumps": { "$ref": "#/definitions/family" },
+        "bushes": { "$ref": "#/definitions/family" }, "sweeps": { "$ref": "#/definitions/family" },
+        "reeds": { "$ref": "#/definitions/chance" }, "pads": { "$ref": "#/definitions/chance" }, "broad": { "$ref": "#/definitions/chance" }, "pebbles": { "$ref": "#/definitions/chance" }
+      }
+    }
+  },
+  "properties": {
+    "version": { "const": 1 },
+    "biomes": {
+      "description": "The biome table, in a fixed order (a biome's place in it is part of its seeds). reeds = share of shore stretches with a reed bed, pads = share of open-water tiles with a lily pad, broad = share of groves of the broad kind, pebbles = share of sand tiles",
+      "type": "object", "minProperties": 1, "additionalProperties": { "$ref": "#/definitions/biome" }
+    },
+    "props": {
+      "type": "object", "additionalProperties": false, "required": ["clear", "groves", "wayZone", "hollow"],
+      "properties": {
+        "clear": { "description": "Plain-tile radius in cells: props, shrubs and meadow decor need the tile and every tile this near it to be one terrain (pattern size 2 * clear + 1)", "type": "integer", "minimum": 1, "maximum": 4 },
+        "groves": {
+          "type": "object", "additionalProperties": false,
+          "required": ["noise", "usedSwing", "reach", "touchD2", "minD2", "bisector", "otherKindShare", "greyRockShare"],
+          "properties": {
+            "noise": { "$ref": "#/definitions/noise" },
+            "usedSwing": { "description": "How far the grove noise swings a family's `used` share (0.5 = up to half again)", "type": "number", "minimum": 0, "maximum": 1 },
+            "reach": { "type": "object", "additionalProperties": false, "required": ["base", "perSize"], "properties": { "base": { "type": "number", "minimum": 0 }, "perSize": { "type": "number", "minimum": 0 } } },
+            "touchD2": { "description": "Largest squared step from a member to the next one grown, by family", "type": "object", "additionalProperties": false, "required": ["trees", "rocks", "stumps", "bushes", "sweeps"], "properties": { "trees": { "type": "integer", "minimum": 1 }, "rocks": { "type": "integer", "minimum": 1 }, "stumps": { "type": "integer", "minimum": 1 }, "bushes": { "type": "integer", "minimum": 1 }, "sweeps": { "type": "integer", "minimum": 1 } } },
+            "minD2": { "description": "Least squared distance between two members when the family names none", "type": "integer", "minimum": 1 },
+            "bisector": { "description": "How many tiles a tile keeps from the border between two clusters' claims", "type": "number", "minimum": 0, "maximum": 3 },
+            "otherKindShare": { "$ref": "#/definitions/chance" },
+            "greyRockShare": { "$ref": "#/definitions/chance" }
+          }
+        },
+        "wayZone": { "description": "Cells kept clear of props round a way up, counted from its rectangle", "$ref": "#/definitions/box" },
+        "hollow": {
+          "type": "object", "additionalProperties": false, "required": ["clearing", "keepOff"],
+          "properties": {
+            "clearing": { "description": "The plain grass a Hollow Tree's site needs round its foot tile", "$ref": "#/definitions/box" },
+            "keepOff": { "type": "object", "additionalProperties": false, "required": ["tree", "other"], "properties": { "tree": { "$ref": "#/definitions/box" }, "other": { "$ref": "#/definitions/box" } } }
+          }
+        }
+      }
+    },
+    "meadow": {
+      "type": "object", "additionalProperties": false, "required": ["target", "tuft", "flower", "clump", "fleck"],
+      "properties": {
+        "target": { "description": "The desk's rule as a share of open tiles; the raw chances below are tuned to it (not read by the generator)", "type": "object", "additionalProperties": false, "required": ["tufts", "flowers", "clumps"], "properties": { "tufts": { "$ref": "#/definitions/chance" }, "flowers": { "$ref": "#/definitions/chance" }, "clumps": { "$ref": "#/definitions/chance" } } },
+        "tuft": { "type": "object", "additionalProperties": false, "required": ["chance"], "properties": { "chance": { "$ref": "#/definitions/chance" } } },
+        "flower": {
+          "type": "object", "additionalProperties": false, "required": ["chance", "reach", "drift", "sameKind"],
+          "properties": {
+            "chance": { "$ref": "#/definitions/chance" },
+            "reach": { "description": "How far a drift's seed may lie from a tile of it", "$ref": "#/definitions/cells" },
+            "drift": { "description": "The offsets a drift's second and third flowers take from its seed", "type": "array", "minItems": 1, "items": { "type": "array", "items": { "type": "integer", "minimum": -4, "maximum": 4 }, "minItems": 2, "maxItems": 2 } },
+            "sameKind": { "description": "Share of a drift's flowers that are the seed's own kind", "$ref": "#/definitions/chance" }
+          }
+        },
+        "clump": { "type": "object", "additionalProperties": false, "required": ["chance", "apart"], "properties": { "chance": { "$ref": "#/definitions/chance" }, "apart": { "description": "Cells an accent clump keeps to itself (pattern size 2 * apart + 1)", "$ref": "#/definitions/cells" } } },
+        "fleck": {
+          "type": "object", "additionalProperties": false, "required": ["chance", "margin", "sizes", "clearOfProps"],
+          "properties": {
+            "chance": { "$ref": "#/definitions/chance" },
+            "margin": { "description": "Pixels a fleck keeps from its tile's edge (tiles are 16 pixels)", "type": "integer", "minimum": 0, "maximum": 4 },
+            "sizes": { "description": "Width and height in pixels of each fleck look", "type": "array", "minItems": 1, "items": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 16 }, "minItems": 2, "maxItems": 2 } },
+            "clearOfProps": { "description": "Cells round a prop's foot tile where no fleck lies", "$ref": "#/definitions/box" }
+          }
+        }
+      }
+    },
+    "shrubs": { "type": "object", "additionalProperties": false, "required": ["smallPatchMax"], "properties": { "smallPatchMax": { "description": "A scrub patch of at most this many tiles with no tile a full cell off its edge still takes one shrub", "type": "integer", "minimum": 1, "maximum": 400 } } },
+    "water": { "type": "object", "additionalProperties": false, "required": ["padClear"], "properties": { "padClear": { "description": "A lily pad needs the tile and every tile this near it to be water", "$ref": "#/definitions/cells" } } },
+    "reeds": {
+      "type": "object", "additionalProperties": false, "required": ["stretch", "reach", "shore", "water"],
+      "properties": {
+        "stretch": { "description": "Side of a shore stretch in tiles (even); a stretch has a reed bed by the biome's `reeds` share", "type": "integer", "minimum": 2, "maximum": 16 },
+        "reach": { "description": "Cells a reed's foot may lie beyond the rectangle asked for", "type": "object", "additionalProperties": false, "required": ["side", "above", "below"], "properties": { "side": { "$ref": "#/definitions/cells" }, "above": { "$ref": "#/definitions/cells" }, "below": { "$ref": "#/definitions/cells" } } },
+        "shore": {
+          "type": "object", "additionalProperties": false, "required": ["startSteps", "spacing", "jitter", "rag", "looks"],
+          "properties": {
+            "startSteps": { "description": "A bed starts 0 to this many pixels minus one along the edge", "type": "integer", "minimum": 1, "maximum": 16 },
+            "spacing": { "description": "Pixels between clumps: min, plus 0 to spread minus one", "type": "object", "additionalProperties": false, "required": ["min", "spread"], "properties": { "min": { "type": "integer", "minimum": 1, "maximum": 16 }, "spread": { "type": "integer", "minimum": 1, "maximum": 16 } } },
+            "jitter": { "description": "Pixels a clump's base is moved along the edge, either way", "type": "integer", "minimum": 0, "maximum": 8 },
+            "rag": { "description": "Pixels a clump's base is moved across the edge, 0 to this (even)", "type": "integer", "minimum": 0, "maximum": 8, "multipleOf": 2 },
+            "looks": { "description": "The shore looks and their shares, which add up to 1", "type": "array", "minItems": 1, "items": { "type": "object", "additionalProperties": false, "required": ["sprite", "share"], "properties": { "sprite": { "type": "string", "pattern": "^shore-[0-9]+$" }, "share": { "$ref": "#/definitions/chance" } } } }
+          }
+        },
+        "water": {
+          "type": "object", "additionalProperties": false, "required": ["within", "count"],
+          "properties": {
+            "within": { "description": "In-water clumps stand only on shallow water this many cells from land", "type": "integer", "minimum": 1, "maximum": 4 },
+            "count": { "description": "Clumps in a stretch, min to max", "type": "object", "additionalProperties": false, "required": ["min", "max"], "properties": { "min": { "type": "integer", "minimum": 0, "maximum": 12 }, "max": { "type": "integer", "minimum": 0, "maximum": 12 } } }
+          }
+        }
+      }
+    },
+    "tone": {
+      "description": "The sunlit grass tone: patches of the noise above the threshold, kept whole or dropped whole; every tile needs the block of `clear` cells round it to be one ground",
+      "type": "object", "additionalProperties": false, "required": ["noise", "clear", "patchMax"],
+      "properties": {
+        "noise": { "allOf": [{ "$ref": "#/definitions/noise" }, { "type": "object", "required": ["threshold"] }] },
+        "clear": { "$ref": "#/definitions/cells" },
+        "patchMax": { "description": "A patch larger than this many tiles is dropped", "type": "integer", "minimum": 1, "maximum": 2000 }
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@
 //   - the chips are renamed: trait-SNN-coat-<layout> -> trait-SNN-markings-<layout> (spots -> back-spots); trait-SNN-signature-<small|stand|large> -> trait-SNN-signature-size-<...>
 //   - what the earlier art made and nothing reads any more is removed (the earlier trait chips, the S01 rolls, the S01 and S03 reading pictures, the earlier Loika's 176x128 young)
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from "node:fs";
-import { stampBytes } from "./index-bytes.mjs";
+import { readIndex, writeIndex } from "./index-io.mjs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { decodePNG, encodePNG } from "../png.mjs";
@@ -131,7 +131,7 @@ export const retired = (id, kinds) => /^trait-S\d\d-/.test(id) || /^roll-S01-(?!
 
 // `only` (a RegExp on the master id): place just those masters and retire nothing (a later hand-off row added to a placement already made)
 export function placeGame({ work, root, dryRun = false, only = null, by = "art lead, game art hand-off of 2026-11-06 (mibi-art game-art work)" }) {
-  const plan = planGame({ work }), { report, kinds } = plan, ops = only ? plan.ops.filter((o) => only.test(o.id)) : plan.ops, idxFile = path.join(root, "index.json"), index = JSON.parse(readFileSync(idxFile, "utf8")), removed = [];
+  const plan = planGame({ work }), { report, kinds } = plan, ops = only ? plan.ops.filter((o) => only.test(o.id)) : plan.ops, index = readIndex(root), removed = [];
   if (!only) for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith("pods/") && retired(id, kinds)) { removed.push(id); if (!dryRun) rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }
   for (const o of ops) {
     const [w, h] = dimsOf(o.buf), file = `pods/${o.id}.png`;
@@ -139,7 +139,7 @@ export function placeGame({ work, root, dryRun = false, only = null, by = "art l
     if (!dryRun) { mkdirSync(path.join(root, "pods"), { recursive: true }); writeFileSync(path.join(root, file), o.buf); }
   }
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
-  if (!dryRun) writeFileSync(idxFile, JSON.stringify(stampBytes(root, index), null, 1) + "\n");
+  if (!dryRun) writeIndex(root, index);
   return { placed: ops.length, removed, report };
 }
 // The pairs the release measures: [{ kind, what, size, adult, juvenile }] for every juvenile master that has an adult of the same name and size

@@ -169,6 +169,11 @@ function growNowHost(o = {}) {
   const h = host(st); h.ui.screen = "incubator"; h.ui.inc = {}; h.ui.panel = { screen: "incubator", id: "growNow", focus: "" }; return h;
 }
 const gview = (h) => panelBuild({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: "arrival", now: T0 }, panelSpec, frameSpec, podsSpec);
+test("the Wait card is wall-clock time under the preset's speed-up, and 'under a minute' below one (loop audit 2, findings 6 and 7)", () => {
+  const h = growNowHost(), fast = { ...settings, budScale: 10 }, fv = () => panelBuild({ st: h.st, sv: h.sv, settings: fast, ui: h.ui, jump: "arrival", now: T0 }, panelSpec, frameSpec, podsSpec).overlay.regions.caption;
+  h.st.bud.minutes = 20; assert.equal(fv(), "ready in about 2 min");
+  h.st.bud.minutes = 5; assert.equal(fv(), panelSpec.strings.growNow.cards.wait.lineUnderMinute);
+});
 test("the Hatch now | Wait panel: the price from the rules, the minute count only in the caption, the threshold is a spec value, the props validate and name no rectangle", () => {
   const h = growNowHost(), v = gview(h), [grow, wait] = v.cards, c = S.instantGrowCost(h.st, settings, T0), n = S.budMinutesLeft(h.st, settings, T0), R = v.overlay.regions;
   assert.equal(panelSpec.growNowAbove, 4); assert.ok(c.s > panelSpec.growNowAbove, "this bud is above the threshold");

@@ -344,4 +344,5 @@ for name, path, (w, h), sl in MADE:
     if sl: e["slice"] = sl
     masters[name] = e
 json.dump(idx, open(idx_path, "w"), indent=1, ensure_ascii=False); open(idx_path, "a").write("\n")
+import subprocess; subprocess.run(["node", os.path.join(UI, "tools/place-masters.mjs"), "--bytes"], check=True)   # rewrites the whole entries as the slim index.json and provenance.json (tools/index-io.mjs)
 print(f"{len(MADE)} cuts in {OUT}")

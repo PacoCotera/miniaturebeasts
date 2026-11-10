@@ -1,17 +1,16 @@
-// The open edges (walk content B5; art desk mibi-art abb33a65b, manifest.json "howLDtkPaints"): what the bake does with the cliff, the way up, the reed bank and the low scrub.
-// Pure over the level IR and the set's pair descriptors (setload.dualPairs: `tall`, `variants`, `wayup`, `looks` are indices into the baked tile set's pairs).
+// The open edges (walk content B5; art desk mibi-art abb33a65b, manifest.json "howLDtkPaints"): what the bake does with the cliff, the way up, the reed bank (a list of areas the reed sprites go in) and the low scrub.
+// Pure over the level IR and the set's layer descriptors (setload.layerDescriptors: `tall`, `variants`, `wayup` are indices into the baked tile set's rows).
 //   cliff   painted as the raised land, like any terrain. Each cliff tile is picked by its corners plus the two cells under its bottom corners: s = (SW is cliff and the cell below SW is not) * 2
-//           + (SE is cliff and the cell below SE is not); s = 0 the ordinary sheet, s = 1..3 the ~s sheets. A tile of four cliff corners with s > 0 takes ~s<n> tile 15 (not a full variant).
+//           + (SE is cliff and the cell below SE is not); s = 0 the ordinary sheet, s = 1..3 the ~s sheets (a list of face variants is picked by hash). A tile of four cliff corners with s > 0 takes
+//           ~s<n> tile 15 (opaque) in place of the fill.
 //   walking: the top is ground; every cliff cell with a non-cliff 4-neighbour is the lip or the face and blocks, except the cells under a WayUp area.
 //   wayup   an area over the cliff's last row on a straight face, n >= 1 cells wide, with straight face one cell either side: for the dual columns x0..x0+n the left, middle and right pieces,
-//           row 1 for the face tile (corners 12) and row 0 for the tile above it (corners 15, s = 3).
-//   reeds   an alternate look of the shore pairs inside a ReedBank area (three variants by hash); nothing blocks.
-//   scrub   four variants share every edge line; one per dual tile by hash.
-import { EMPTY, FULL_BASE, hash32 } from '../dualgrid.mjs';
+//           row 1 for the face tile (corners 12) and row 0 for the tile above it (corners 15, s = 3); the piece is the one for the terrain below the face (grass or sand).
+//   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
+//   scrub   variants share every edge line; one per dual tile by hash.
+import { EMPTY, FILL_CODE, hash32, splitCode } from '../dualgrid.mjs';
 
-export const ALT_CODE = 1024;   // a tile code >= ALT_CODE is ALT_CODE + 16 * (index of a pair of the baked tile set) + the tile in it
-
-const idOf = (terrains, id) => terrains.find((t) => t.id === id).value;
+export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
 
 // the cells of a level the cliff terrain holds, and the cells under a WayUp area
 export function cliffInfo(ir, terrains) {
@@ -46,34 +45,45 @@ export function gullies(ir, terrains) {
   return out;
 }
 
-// Rewrites the tile codes of dg's layers in place. ir: the level; terrains: terrain.json's list; pairs: the set's pair descriptors in the set's order.
-export function applyOpenEdges(dg, ir, terrains, pairs) {
+// Rewrites the tile codes of dg's layers in place (dg: dualgrid.terrainLayers' output). ir: the level; terrains: terrain.json's list;
+// layers: Map(terrain value -> descriptor) of setload.layerDescriptors, whose kinds carry `rows` (indices into the baked tile set's rows: over, tall { s: [rows] }, variants, wayup { lowerId: row }).
+export function applyOpenEdges(dg, ir, terrains, layers) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
-  const { isCliff, wayup } = cliffInfo(ir, terrains);
-  const inArea = (list, i, j) => (list || []).some((a) => i >= a.x && i <= a.x + a.w && j >= a.y && j <= a.y + a.h);
+  const { isCliff } = cliffInfo(ir, terrains);
+  const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
+  const pick = (list, i, j) => (list.length > 1 ? list[vh(i, j) % list.length] : list[0]);
   for (const layer of dg.layers) {
-    const p = pairs[layer.pair];
-    const tall = cliff && p.upper === 'cliff' && p.tall, variants = p.variants, looks = p.looks && p.looks.reeds;
-    if (!tall && !variants && !looks && !p.wayup) continue;
+    if (layer.tone) continue;
+    const d = layers.get(layer.terrain), withTall = d.kinds.find((k) => k.rows.tall);
+    const tall = cliff && layer.terrain === cliff.value && withTall ? withTall.rows.tall : null;
+    if (!tall && !d.kinds.some((k) => k.rows.variants)) continue;
     for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
       const c = layer.tiles[j * w1 + i]; if (c === EMPTY) continue;
-      const corner = c >= FULL_BASE ? 15 : c;
+      const fill = c >= FILL_CODE, s0 = fill ? null : splitCode(c), full = fill || s0.full !== undefined, corner = full ? 15 : s0.slot;
       if (tall) {
         // the cells under the tile's bottom corners: SW is cell (i - 1, j), SE is (i, j); the cell below is one row down
         const sw = isCliff(i - 1, j) && !isCliff(i - 1, j + 1) ? 2 : 0, se = isCliff(i, j) && !isCliff(i, j + 1) ? 1 : 0, s = (corner & 2 ? sw : 0) + (corner & 1 ? se : 0);
-        if (s > 0) { layer.tiles[j * w1 + i] = ALT_CODE + 16 * p.tall[s] + corner; continue; }
+        if (s > 0) { layer.tiles[j * w1 + i] = ALT_CODE + 16 * pick(tall[s], i, j) + corner; continue; }
       }
-      if (variants && corner > 0 && corner < 15 && c < FULL_BASE) {
-        const n = hash32(ir.id, i, j) % (variants.length + 1);
-        if (n > 0) layer.tiles[j * w1 + i] = ALT_CODE + 16 * variants[n - 1] + corner;
+      if (full) continue;
+      const rows = d.kinds[s0.kind].rows;
+      if (rows.variants && corner > 0 && corner < 15) {
+        const n = vh(i, j) % (rows.variants.length + 1);
+        if (n > 0) layer.tiles[j * w1 + i] = ALT_CODE + 16 * rows.variants[n - 1] + corner;
       }
-      if (looks && corner > 0 && corner < 15 && c < FULL_BASE && inArea(ir.reedbanks, i, j)) layer.tiles[j * w1 + i] = ALT_CODE + 16 * looks[hash32(ir.id, i, j) % looks.length] + corner;
     }
-    if (p.wayup != null && ir.wayups) {
+  }
+  // the way up: the kit's piece for the terrain below the face replaces the cliff's own tiles on the tile above the face (row 0) and on the face (row 1)
+  if (cliff && ir.wayups && ir.wayups.length) {
+    const layer = dg.layers.find((l) => l.terrain === cliff.value), d = layer && layers.get(cliff.value), withUp = d && d.kinds.find((k) => k.rows.wayup);
+    if (withUp) {
+      const idOfValue = new Map(terrains.map((t) => [t.value, t.id]));
       for (const a of ir.wayups) for (let c = 0; c <= a.w; c++) {
         const col = c === 0 ? 0 : c === a.w ? 2 : 1, i = a.x + c;
-        layer.tiles[a.y * w1 + i] = ALT_CODE + 16 * p.wayup + col;           // the tile above the face (row 0)
-        layer.tiles[(a.y + 1) * w1 + i] = ALT_CODE + 16 * p.wayup + 3 + col;  // the face (row 1)
+        const below = ir.terrain[Math.min(h - 1, a.y + 1) * w + Math.max(0, Math.min(w - 1, Math.max(a.x, Math.min(i, a.x + a.w - 1))))];   // the cell under the face, in the area's columns
+        const row = withUp.rows.wayup[idOfValue.get(below)] ?? withUp.rows.wayup.grass;
+        layer.tiles[a.y * w1 + i] = ALT_CODE + 16 * row + col;           // the tile above the face (row 0)
+        layer.tiles[(a.y + 1) * w1 + i] = ALT_CODE + 16 * row + 3 + col;  // the face (row 1)
       }
     }
   }

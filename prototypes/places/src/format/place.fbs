@@ -27,13 +27,13 @@ table Tile {             // a tile as the layers name it; one frame is static
   frame_ms: uint16;      // all animated tiles share one clock; this is the step
 }
 
-table Pair {
-  lower: ubyte;          // terrain values (the IntGrid values of terrain.json)
+table Pair {             // a ROW of the tile set: one piece of the terrain layers (the name is the format's; the set has no pairs any more). The device never reads the rows: it blits tile ids.
+  lower: ubyte;          // terrain values (the IntGrid values of terrain.json). A fill row: lower == upper == the terrain; an over row: upper = the terrain, lower = 0
   upper: ubyte;
-  mode: PairMode;
-  tiles: [uint16];       // 16 tile ids, by corner index NW*8 + NE*4 + SW*2 + SE
-  full_variants: [uint16];   // tile ids of the all-upper tile, variants picked by hash
-  empty_variants: [uint16];  // tile ids of the all-lower tile (empty when tiles[0] is the only one)
+  mode: PairMode;        // opaque for a fill row, over for the rest
+  tiles: [uint16];       // an over row: 16 tile ids by corner index NW*8 + NE*4 + SW*2 + SE, slot 0 = 0xFFFF (empty); a fill row: none; a way-up row: 6
+  full_variants: [uint16];   // a fill row: tile ids of the fill variants, picked by hash; an over row: the all-upper tile, when the terrain has a ground
+  empty_variants: [uint16];  // unused (empty)
 }
 
 table Sprite {           // a prop, decal or canopy piece
@@ -89,8 +89,8 @@ table TileSet {
 
 struct Point { x: short; y: short; }
 
-table Layer {            // one ground layer: one pair's dual-grid tile ids
-  pair: ubyte;           // index in the set's pairs
+table Layer {            // one ground layer, packed by depth: layer k holds the k-th piece drawn on every dual tile (a dual tile covers its own square, so only the order inside one tile matters)
+  pair: ubyte (deprecated);   // was the index in the set's pairs; a layer is no longer one pair's
   tiles: [uint16];       // (w + 1) * (h + 1) tile ids, row by row; 0xFFFF draws nothing
 }
 

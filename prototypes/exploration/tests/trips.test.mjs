@@ -41,7 +41,8 @@ const TRIP = ["TRIP_KINDS", "tripPlace", "tripRecord", "tripsWith"];
 const LAND = [];   // groundName is src/world.mjs's now (the page imports it): handed to the sandbox as it is
 
 // endExpedition with the world stubbed: `explored` decides the branch, worldTurn moves the counter as the page does.
-function ending({ explored, trips, ex, world = { lines: [], ev: [] } }) {
+const ARRIVED = { pods: [], young: [], bloom: -1, charged: [] };   // what worldTurn hands back for the opening's pips
+function ending({ explored, trips, ex, world = { lines: [], ev: [], arrived: ARRIVED } }) {
   const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [], carried: [] };
   const turned = [];
   const t = load(["endExpedition", "holdEmpty", ...TRIP], {
@@ -67,7 +68,7 @@ test("a trip is recorded only when the world turns", () => {
 });
 
 test("the sealed crate carries the world's events beside its lines (specs/world-events.md); the Companion's report keeps its lines", () => {
-  const world = { lines: ["Fruit is back on one bush.", "A quiet turn."], ev: [["fruit", "wood", null, 1], ["quiet", null, null, 0]] };
+  const world = { lines: ["Fruit is back on one bush.", "A quiet turn."], ev: [["fruit", "wood", null, 1], ["quiet", null, null, 0]], arrived: ARRIVED };
   const { S } = ending({ explored: true, trips: [], ex: expedition({ cargo: { e: 1, d: 0, s: 0, pods: [] } }), world });
   assert.equal(S.bay.length, 1); assert.deepEqual(plain(S.bay[0].lines), world.lines);
   assert.deepEqual(plain(S.bay[0].world), { v: 1, turn: 4, ev: world.ev }, "turn is the crate's own turn, after the world turned");
@@ -179,7 +180,7 @@ test("End expedition while docked at the start", () => {
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
     CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ found: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},
-    worldTurn: () => { S.turn++; S.expN++; return { lines: [], ev: [] }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
+    worldTurn: () => { S.turn++; S.expN++; return { lines: [], ev: [], arrived: ARRIVED }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
   });
   // start an expedition, undocked
   writeSt(); t.save();
