@@ -214,12 +214,6 @@ export function checkRules(ir, ctx) {
         if (g.cv < GROVE.minCv) fail('grove-lattice', `the trees' nearest-neighbour spacing varies by only ${g.cv.toFixed(2)} (an even lattice); groves and glades vary by at least ${GROVE.minCv}`);
         if (g.lone < GROVE.minLone) fail('grove-lattice', `${g.lone} lone trees (no neighbour within ${GROVE.lone} cells); a few stand alone, at least ${GROVE.minLone}`);
       } }
-    // the heart: far from every arrival, and nothing standing within 2 cells of it (its clearing)
-    if (heart) {
-      for (const a of arrivals) if (Math.abs(a.x - heart.x) + Math.abs(a.y - heart.y) < 10) fail('heart-far', `the Heart is ${Math.abs(a.x - heart.x) + Math.abs(a.y - heart.y)} cells from the ${a.side} arrival; it must be at least 10 from every arrival`, heart);
-      const lm = new Set(ir.landmarks.map((l) => l.y * w + l.x));
-      for (const [cell, p] of blocked) { const x = cell % w, y = (cell / w) | 0; if (Math.max(Math.abs(x - heart.x), Math.abs(y - heart.y)) <= 2 && !lm.has(p.cy === undefined ? -1 : p.cy * w + p.cx)) fail('heart-clear', `a prop (${p.kind}) stands within 2 cells of the Heart`, { x, y }); }
-    }
   }
   return errors;
 }

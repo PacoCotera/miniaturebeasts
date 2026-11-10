@@ -1,11 +1,10 @@
 // A baked place -> the exploration page's layout `lay` (place design A6, "layout() branches"). Pure: no page state.
 // The page's grid is PW x PH (28 x 32) until places of two sizes land in the page, so the 18 x 22 place is centred in it: the cells around it are
 // rock (never walked), and `lay.baked.ox/oy` say where it sits. Terrain becomes the page's tile T, prop footprints become TRUNK (a tree, which has
-// a canopy) or ROCK, tall grass becomes T.TALL; the heart, its clue marks and the openings come from the place's entities.
+// a canopy) or ROCK, tall grass becomes T.TALL; the heart and the openings come from the place's entities.
 import { T, T_BLOCK, L, PW, PH, TERR, hash } from '../../exploration/src/world.mjs';
 import { shapeEdges, sideXY, DIR_OF } from './edges.mjs';
 import { thicketDonor } from './bake/openedges.mjs';
-import { heartPath } from '../../exploration/src/hearts.mjs';
 
 const LAND = { pond: L.POND, rock: L.ROCK, wood: L.WOOD, meadow: L.MEADOW };
 export const HEART_KINDS = ['moment', 'nest', 'stone', 'spring'];   // what the page's rules know
@@ -135,9 +134,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
     lay.spawns = place.spawns.map((s) => ({ x: s.x + ox, y: s.y + oy, w: s.w, h: s.h, species: s.species }));
     if (kind === 'nest') lay.heartPods = fill.heart.second ? 2 : 1;
   }
-  const wp = heartPath(lay, x, y);
-  const clues = place.clues.length ? place.clues[0].points.map((p) => ({ x: p.x + ox, y: p.y + oy })) : wp.clues;
-  lay.heart = { x, y, kind, reachBy: hh.reachBy === 'none' ? null : hh.reachBy, path: wp.path, clues };
+  lay.heart = { x, y, kind, reachBy: hh.reachBy === 'none' ? null : hh.reachBy };
   if (kind === 'moment') { lay.heart.species = (fill && fill.heart.species) || hh.species || []; lay.heart.line = (fill && fill.heart.line) || hh.revealLine || ''; }
   return lay;
 }

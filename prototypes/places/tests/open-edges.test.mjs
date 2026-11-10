@@ -1,5 +1,5 @@
 // B5: Windstep in the open style (24 x 28, no edge ring) and the bake rules of the open edges (the art desk's manifest, mibi-art abb33a65b): cliff-foot, the two-thirds-open rule, seam-ground,
-// path-short, heart-far, heart-clear, the way up. Each rule fails on its own edit of the real level; the committed Windstep passes them all; its cliff blocks at the lip and face and walks on top and
+// path-short, the way up. Each rule fails on its own edit of the real level; the committed Windstep passes them all; its cliff blocks at the lip and face and walks on top and
 // at the way up; its reed bank and low scrub block nothing they should not.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -52,15 +52,10 @@ const fails = {
   'seam-ground': (l) => setCell(l, 10, 1, 'sand'),
   'path-short': (l) => setCell(l, 10, 1, 'path'),
   'two-thirds-open': (l) => { for (let x = 0; x < 17; x++) { setCell(l, x, 0, 'thicket'); setCell(l, x, 1, 'thicket'); } },
-  'heart-far': (l) => { const h = ents(l, 'Heart')[0]; h.px = [18 * 16, 6 * 16]; h.__grid = [18, 6]; },
   'wayup': (l) => { const a = ents(l, 'WayUp')[0]; a.px = [9 * 16, 7 * 16]; a.__grid = [9, 7]; a.width = 2 * 16; },
 };
 for (const [rule, fn] of Object.entries(fails)) test(`the bake refuses a level that breaks ${rule}, and says so`, () => assert.ok(rules(edit(fn)).includes(rule), rule + ' in ' + rules(edit(fn)).join(', ')));
 
-test('heart-clear: a prop within 2 cells of the heart (not its landmark) is refused', () => {
-  const l = edit((x) => { const p = ents(x, 'Prop')[0]; p.px = [13 * 16, 13 * 16]; p.__grid = [13, 13]; });
-  assert.ok(rules(l).includes('heart-clear'), rules(l).join());
-});
 
 test('the cliff: lip and face cells block, the top and the way up walk, found by the bake and by the adapter', () => {
   const ir = irOf(), info = cliffInfo(ir, terrains), at = (x, y) => y * W + x;

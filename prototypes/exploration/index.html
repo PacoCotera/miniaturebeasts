@@ -266,7 +266,7 @@ import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 import { readOptions } from "./src/options.mjs";
-const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot, a baked place
+const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -490,20 +490,6 @@ function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state 
 
 // ===================== 4. Patch layouts (pure: seed + cell) =====================
 const layoutCache = new Map();
-// Baked places (place foundation C7): the dev switch ?place=<id> plays a baked place (prototypes/places/baked) in every land cell of the world.
-const BAKED = { ready: false, view: null, adapt: null };
-async function loadBakedPlace() {   // the modules load on demand, so the page without ?place= never touches them
-  try {
-    const id = OPT.place; if (!id) return;
-    const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
-    const pm = await import(base + 'src/page.mjs'), am = await import(base + 'src/adapter.mjs'), { place, ts } = await pm.loadBaked(bytes, base, id);
-    const terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
-    const ox = (PW - place.w) >> 1, oy = (PH - place.h) >> 1, mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-    BAKED.view = new pm.BakedView(ts, place, { core: RGB.slice(0, 48), night: C.night, ox, oy, mkCanvas: mk, haze: PL.haze });
-    BAKED.adapt = key => am.adaptPlace(place, ts, terrains, { key, cell: +key });
-    BAKED.ready = true; layoutCache.clear(); RT.key = null;
-  } catch (e) { console.warn('the baked place did not load', e); }
-}
 // Generator 7's tile set and pieces (loaded once at boot; the tests give them at once as window.__places).
 // PL.ctx is what a cell is baked with in the page (src/bake7.mjs: the tile set, the terrain table, the dual grid's layer descriptors); PL.View draws one baked cell (a page without it draws the layout's tiles).
 // A cell's view is made on first use and kept in a small LRU (PL_VIEWS_MAX), so memory stays flat however far the walk goes.
@@ -544,7 +530,7 @@ const STONE_COLOURS = [], STONE_PIECES = new Map();
 // the screen colour at each index (the core 47 from the page, then the set's own) and the tile set's tables by name (storm, dark2, fog, fade, dark). Null until the places have loaded.
 const PLACE_LEVELS = [null, 'storm', 'dark2', 'fog', 'fade'], PT = { ts: null, rgb: null, tabs: null };
 function placeTables() {
-  const ts = PL.ts || (BAKED.view && BAKED.view.ts); if (!ts) return null;
+  const ts = PL.ts; if (!ts) return null;
   if (PT.ts !== ts) { PT.ts = ts; PT.rgb = RGB.slice(0, 48).map(c => c.slice()); ts.palette.forEach(c => PT.rgb.push([(c >> 16) & 255, (c >> 8) & 255, c & 255])); PT.tabs = Object.fromEntries(ts.lightTables.map(r => [r.name, r.map])); }
   return PT;
 }
@@ -652,20 +638,18 @@ async function loadWalkArt() {
     walkRead(files);
   } catch (e) { console.warn('the walk art did not load', e); } finally { ART_DONE.walk = true; }
 }
-// The view that draws a baked layout: the dev switch's one, or the cell's own (made on first use, the last PL_VIEWS_MAX kept; each cell's props and ground are cached in it).
+// The view that draws a baked layout: the cell's own (made on first use, the last PL_VIEWS_MAX kept; each cell's props and ground are cached in it).
 function bakedView(lay) {
   if (!lay || !lay.baked) return null;
-  if (BAKED.view) return BAKED.view;
   let v = PL.views.get(lay.baked.id);
   if (v) { PL.views.delete(lay.baked.id); PL.views.set(lay.baked.id, v); }
   else if (PL.View) { v = new PL.View(PL.ts, lay.baked.place, { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL.mk, ring: PL.ring || null, haze: PL.haze }); PL.views.set(lay.baked.id, v);
     while (PL.views.size > PL_VIEWS_MAX) PL.views.delete(PL.views.keys().next().value); }
   return v || null;
 }
-const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
+const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
 function layout(key) {   // a land cell's layout from the generator (cached); a stand-in while the tile set loads
   let lay = layoutCache.get(key);
-  if (!lay && BAKED.ready && key[0] !== 'c') { lay = BAKED.adapt(key); layoutCache.set(key, lay); }
   if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key); addStrikeFeats(lay); layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
@@ -681,7 +665,7 @@ const WARM = { queue: [], first: null, firstDir: null, sig: '', cb: 0, cold: nul
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
 function warmReady(key) {   // nothing left to build for this cell (a generated place, a cave and the test pages have no baked view to warm)
   const lay = layout(key); if (!lay.baked || lay.cave) return true;
-  const bk = BAKED.view || PL.views.get(lay.baked.id); return PL.View || BAKED.view ? !!bk && warmOf(bk).st >= WARM_DONE && !(lay.rim && ART48.ready && !lay.rimWarm) : true;
+  const bk = PL.views.get(lay.baked.id); return PL.View ? !!bk && warmOf(bk).st >= WARM_DONE && !(lay.rim && ART48.ready && !lay.rimWarm) : true;
 }
 // The arrival look's picture of a place (the whole place at its veil, as a canvas): kept by place and veil in a small LRU, so the warmed one is drawn at once and a new one is built once.
 const WARM_WHOLE_MAX = 6, WHOLE = new Map();
@@ -779,7 +763,7 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
 }
 // The cells one step can reach from here, the one faced first and then by how near the pawn is to that edge; on the map, the cell the next Confirm goes down into comes first.
 function warmTargets() {
-  const ex = S && S.exp; if (!ex || RT.readOnly || !(S.phase === 'map' || S.phase === 'patch') || !(PL.View || BAKED.view)) return [];
+  const ex = S && S.exp; if (!ex || RT.readOnly || !(S.phase === 'map' || S.phase === 'patch') || !PL.View) return [];
   const P = ex.patch, lay = P && !P.key.startsWith('c') ? layout(P.key) : null, out = [];
   if (!P && S.phase === 'map') out.push({ key: String(ex.pos), dir: ex.lastDir || null });
   if (P && P.key.startsWith('c')) return out;
@@ -5914,7 +5898,7 @@ function drawOpenWay(q, t, fr) {
 }
 // The land in the frame: the built painting cropped to it, the place marks, the signs, the start flag, the lights of a first walk, the lost plates and the docked band. Drawn only: nothing here reveals a cell.
 function drawOpenLand(t, fr) {
-  const ready = !(G.gen >= 6) || PL.ready || BAKED.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
+  const ready = !(G.gen >= 6) || PL.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
   if (!(ART_DONE.walk && ART_DONE.open)) return;   // one paint, once the art has settled (a painting costs hundreds of ms: never once per arriving file)
   const cv = openPainting({ X0: q.X0, Y0: q.Y0, w: WW + cs, h: WH + cs, cs, glimpse: q.glimpse, mist: q.first && OPEN_ART.ready ? (motion() ? Math.floor(t / 0.9) % 2 : 2) : null }); if (!cv) return;   // made over a few frames: the screen shows its panel until then
   g.drawImage(cv, WX - q.ox, WY - q.oy, WW, WH, WX, WY, WW, WH);
@@ -7118,7 +7102,6 @@ const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrai
 loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
 loadMomentArt();   // the art desk's painted stands for the care moments
 loadPlaces();   // generator 6's places (the four templates and their mirrors)
-loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
