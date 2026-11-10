@@ -6,18 +6,20 @@
 import { newPage, makeWalker } from "./walker.mjs";
 
 export const NEXT_DATA = 2;     // Data held at the end of the first walk: identify the pod (1) and read one trait (1)
-export const BUDGET = 400;      // actions of the first walk before the bot gives up looking (the 15-minute walk of W§9 is 500-650)
+export const BUDGET = 900;      // actions of the first walk before the bot gives up looking: it goes into the start and its eight neighbours properly (about 90 actions a place) and then the rest of the reach
 
 export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET } = {}) {
   const p = newPage(seed, { calm }), w = makeWalker(p, { budget, verbose, tag: String(seed) }), { key, phase, acts, cargo } = w;
   const enough = () => { const c = cargo(); return c.pods >= 1 && c.d >= NEXT_DATA; };
   const out = { seed, ok: false, why: "", actions: 0, places: 0, readings: 0, pods: 0, data: 0, energy: 0, firstPodAt: null, firstDataAt: null };
 
-  // One place: Call, take what it shows (pods, stones, strike marks: a press on each), and leave.
-  const inPlace = () => {
-    out.places++; w.say("in place " + p.S.exp.pos);
+  // One place: Call, take what it shows (pods, stones, strike marks: a press on each), and leave. A place is gone into properly (a Call at its four quarters and its middle) or quickly (the way in and the
+  // middle). The first walk goes into the start and the cells round it properly (the pods lie in reach, the first strike mark within one cell), then into the rest of the reach quickly, then back for the rest properly.
+  const QUICK = [[.5, .5]], THOROUGH = [[.25, .25], [.75, .25], [.25, .75], [.75, .75], [.5, .5]];
+  const inPlace = (thorough = false) => {
+    out.places++; w.say("in place " + p.S.exp.pos + (thorough ? " (properly)" : ""));
     key("call"); w.takeShownPods(); takeReadings();
-    for (const [fx, fy] of [[.5, .5], [.25, .3], [.75, .3], [.25, .75], [.75, .75]]) { if (enough() || phase() !== "patch" || w.budgetGone()) break; if (!walkTo(fx, fy)) continue; key("call"); w.takeShownPods(); takeReadings(); }   // the middle first, then each quarter of the place
+    for (const [fx, fy] of thorough ? THOROUGH : QUICK) { if (enough() || phase() !== "patch" || w.budgetGone()) break; if (!walkTo(fx, fy)) continue; key("call"); w.takeShownPods(); takeReadings(); }
     w.leave();
   };
   // every strike mark the Call shows, nearest first: walk beside it, face it, press ✓
@@ -35,13 +37,21 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
   key("confirm"); key("confirm");   // Weather, then the first glint offered
   if (!p.S.exp) { out.why = "no walk started"; return out; }
   w.say("start cell " + p.S.exp.pos);
-  key("confirm"); if (phase() === "patch") inPlace();   // the start cell's own place first
-  for (let guard = 0; guard < 60 && !w.budgetGone() && !enough(); guard++) {
+  // A cell crossed on the map is "visited" to the page but not gone into: the bot keeps its own lists of the places it has been into, and into properly.
+  const entered = new Set(), proper = new Set(), cellsInReach = () => p.run("(() => S.exp.reach.filter(c => G.comp[c] && G.land[c] !== L.WATER && passable(c) && !G.island[c] && c !== G.gate))()");
+  const near = (() => { const s = p.run("cxy(S.exp.start)"); return (c) => { const q = p.run(`cxy(${c})`); return Math.max(Math.abs(q.x - s.x), Math.abs(q.y - s.y)) <= 1; }; })();
+  const STAGES = [(c) => near(c) && !proper.has(c), (c) => !entered.has(c), (c) => !proper.has(c)];   // the start and its neighbours properly; every cell in reach quickly; every cell properly
+  let stage = 0;
+  const went = () => { const thorough = stage !== 1; entered.add(p.S.exp.pos); if (thorough) proper.add(p.S.exp.pos); inPlace(thorough); };
+  key("confirm"); if (phase() === "patch") went();   // the start cell's own place first
+  for (let guard = 0; guard < 80 && !w.budgetGone() && !enough(); guard++) {
     if (phase() === "map") {
-      const way = w.road(w.unvisited()); if (!way) { out.why = "no cell left to go into in reach"; break; }
+      let way = null, goal = [];
+      while (stage < STAGES.length) { goal = cellsInReach().filter(STAGES[stage]); way = goal.length ? w.road(goal) : null; if (way) break; stage++; }
+      if (!way) { out.why = "no cell left to go into in reach"; break; }
       w.steps(way);
-      if (phase() === "map") { key("confirm"); if (phase() === "patch") inPlace(); }
-    } else if (phase() === "patch") inPlace();
+      if (phase() === "map") { key("confirm"); if (phase() === "patch") went(); }
+    } else if (phase() === "patch") went();
     else key("back");
     const c = cargo(); if (out.firstPodAt == null && c.pods) out.firstPodAt = acts(); if (out.firstDataAt == null && c.d >= NEXT_DATA) out.firstDataAt = acts();
   }

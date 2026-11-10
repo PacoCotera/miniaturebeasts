@@ -466,7 +466,10 @@ function firstPods(seed, cell, pods) {
   const ok = c => podSite(c, buried());
   const pick = (pools, id, sp) => { const pool = pools.find(a => a.length); if (pool) { const c = R.pick(pool); out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); } };
   const d1 = reach.filter(c => dist(c) === 1);
-  if (!buried().some(p => p.sp === 0 && d1.includes(+p.k))) { const e = d1.filter(ok);
+  // pod A lies in the start's own place when it holds a pod slot (the generator gives every start one: hold.mjs, "a start's guarantees"), so the first Call there can lift it; else at distance 1 as before
+  const here = PL.ready && G.gen === 7 ? layout(String(cell)) : null;
+  if (here && (here.podSlots || []).length && !buried().some(p => p.sp === 0 && +p.k === cell)) out.push({ id: 'fa', k: String(cell), x: -1, y: -1, sp: 0, h: 1, bur: 1, g: groundName(G.land[cell], false), how: 'ground' });
+  else if (!buried().some(p => p.sp === 0 && d1.includes(+p.k))) { const e = d1.filter(ok);
     pick([e.filter(c => G.land[c] === L.MEADOW || G.land[c] === L.POND), e.filter(c => !G.glow.includes(c)), e], 'fa', 0); }
   if (buried().filter(p => reach.includes(+p.k)).length < 2) { const e = reach.filter(c => dist(c) === 2 && ok(c));
     pick([e.filter(c => G.land[c] === L.ROCK || G.land[c] === L.WOOD), e], 'fb', 1); }
@@ -545,7 +548,7 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
     // canvas(rm, flip, chk, veil) as a palette buffer's: chk thins the picture to a checkerboard (a crown or roof the explorer stands under), veil is the one-step-darker night dot of an unseen tile
     STONE_PIECES.set(key, { w, h, dx, dy, canvas: (rm, flip, chk, veil) => {
       const pt = prop && (rm || veil) ? placeTables() : null, lut = pt && rm ? pt.tabs[PLACE_LEVELS[rm]] : null;   // a prop (given a foot offset) takes the places' own light tables (storm, dark2, fog, fade, dark), the ones its place's ground takes
-      if (!lut && !(prop && (chk || veil))) return plain();   // only a prop takes the tables
+      if (!lut && !(prop && (chk || veil || flip))) return plain();   // only a prop takes the tables
       const tk = (flip ? 4 : 0) + (chk ? 2 : 0) + (veil ? 1 : 0) + (rm || 0) * 8 + (pt ? 64 : 0); let tc = tinted.get(tk); if (tc) return tc;
       tc = mk(w, h); const tg = tc.getContext('2d'), im = tg.createImageData(w, h), near = new Map();   // each colour takes its nearest palette colour's entry in the table
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const o = (y * w + (flip ? w - 1 - x : x)) * 4, p = (y * w + x) * 4; if (!data[o + 3] || (chk && (x + y) % 2)) continue;
@@ -565,11 +568,12 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
-const PROP_DY = { 'bush-full-32': -4, 'bush-bare-32': -4, 'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+const PROP_DY = { 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full-32': -4, 'bush-bare-32': -4, 'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (16 x 20) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
   ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
     'pod-walk-16x20-bone', 'pod-walk-16x20-lime', 'pod-walk-16x20-ice', 'pod-walk-16x20-sand', 'pod-walk-16x20-sprout', 'pod-walk-16x20-lavender', 'canopy-legacy', 'roof-legacy'].map(n => [n, 0])) };
 const PROP_FILES = Object.keys(PROP_DY);
+const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
 const PROP_SIZE = { 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-16x20-' + s, [16, 20]])) };
@@ -1938,12 +1942,11 @@ function freeSpot(key, R, avoid, pred, box) {   // box: { x, y, w, h } the tries
   }
   return null;
 }
-// A generator 6 place's find slots for a pod: the first free one (the slots whose roll came up pod, then the others), so the first pods land where the template put its finds.
-// The first pods of a new world (fa, fb) take the free slot nearest the way in, so the first walk always holds a pod (C16, loop audit 3.18).
-function findSlotFor(lay, key, pod) {
+// A generator 7 place's find slots for a pod: the free slot nearest where you first come in (ent), so the first Call there lifts it (the slots whose roll came up pod are the IR's, all on the cell's main ground).
+function findSlotFor(lay, key, pod, ent) {
   const free = (lay.podSlots || []).filter(s => { const i = s.y * lay.w + s.x;
     return lay.reach[i] && !NOSTAND(lay.tiles[i]) && !occupant(key, s.x, s.y) && !podAt(key, s.x, s.y, true) && !lay.feats.some(f => f.x === s.x && f.y === s.y); });
-  if (pod && (pod.id === 'fa' || pod.id === 'fb') && free.length) { const h = lay.spawnPt, d = s => Math.hypot(s.x - h.x, s.y - h.y); return free.reduce((b, s) => d(s) < d(b) ? s : b); }
+  if (free.length) { const h = ent || lay.spawnPt, d = s => Math.hypot(s.x - h.x, s.y - h.y); return free.reduce((b, s) => d(s) < d(b) ? s : b); }   // the slot nearest where you first come in, so the first Call there lifts the pod (a pod set earlier by the walk keeps its own place)
   return free.length ? { x: free[0].x, y: free[0].y } : null;
 }
 function ensureLive(key) {
@@ -1953,7 +1956,7 @@ function ensureLive(key) {
   ex.live[key] = live;
   // Buried pods lie 3–6 tiles from where you first come in, so the first Call can find them.
   const ent = lay.cave ? { x: 14, y: 27 } : entryPoint(lay, key, ex.lastDir);
-  for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = findSlotFor(lay, key, p) || freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
+  for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = findSlotFor(lay, key, p, ent) || freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
     if (s) { p.x = s.x; p.y = s.y; if (p.how === 'shed') { fxGlint(s.x, s.y); logEv('A pod of ' + p.of + "'s line"); } } else { S.pods.splice(S.pods.indexOf(p), 1); logEv('A pod had no room in this place and was dropped'); } }
   const nests = lay.feats.filter(f => f.kind === 'e');
   const mates = S.cr.filter(w => w.c === lay.cell && !!w.cv === lay.cave).map(w => w.id).sort((a, b) => a - b);   // the cell's creatures by id: they share the template's spawn areas round robin (walk content B6)
@@ -5224,6 +5227,9 @@ function drawPatchBody(t) {
     const takeable = f.kind === 'b' ? bushFull(P.key, f) : f.kind === 'u' ? cupFull(P.key, f) : f.kind === 'k' ? (lay.cave ? stoneCharge(P.key, f) > 0 : stormCharge(P.key, f) > 0) : false;
     if (bk && takeable) aboveCrowns.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) });
     else items.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) }); }
+  // a landmark's own piece (art/props: the Windstep's lone tree, the Reedpool's island stone), drawn at its tile once the tile is seen; the tree stands on its foot, the stone in the middle of the tile
+  { const lm = lay.landmark, name = lm && LM_PIECE[lm.kind], pc = name && propPiece(name);
+    if (pc && pc.w > 1 && see(lm.x, lm.y)) { const x = lm.x * ts, y = lm.y * ts, low = lm.kind === 'windstep'; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + (low ? ts - pc.h : (ts - pc.h) >> 1), spriteRm(lm.x, lm.y)) }); } }
 
   for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, spriteRm(f.x, f.y)) }); }
   for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16, spriteRm(f.x, f.y)) }); }
@@ -5281,8 +5287,10 @@ function drawPatchBody(t) {
       blit(ICON.bolt(motion() && Math.floor(t * 2) % 2 ? 'cream' : 'yellow'), W(x) + (ts >> 1) - 6, H(y) - 8); }
     for (const f of lay.feats) { if (f.kind !== 'q' || strikeFaded(f)) continue;
       const x = f.x * ts, y = f.y * ts; if (!vis2(x, y) || !see(f.x, f.y)) continue;
-      const read = strikeIsRead(P.key, f), slot = walkPB(read ? 'strike-mark-read' : 'strike-mark-unread', 48, 48);   // [art] the unread and the read mark (a dark glassy fused streak; nothing burns)
-      if (slot.w > 1) blit(slot, W(x) + ((ts - slot.w) >> 1), H(y) + ((ts - slot.h) >> 1));
+      // the unread mark (two frames that alternate) and the read mark: a dark glassy fused streak, nothing burns (art/props, the art desk's strike mark); each lies one way or its mirror, by its place
+      const read = strikeIsRead(P.key, f), pc = propPiece(read ? 'strike-mark-read' : 'strike-mark-unread-' + (motion() && Math.floor((NOW + hash(f.x, f.y, 3) % 1000) / 500) % 2 ? 2 : 1));
+      if (pc.w > 1) blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + ((ts - pc.h) >> 1), spriteRm(f.x, f.y), hash(f.x, f.y, 9) % 2 === 1);
+      if (f.glass && !read) { const sh = propPiece('storm-glass-shard'); if (sh.w > 1) blit(sh, SX(x) + ((ts - sh.w) >> 1), SY(y) + ((ts - sh.h) >> 1) + 6, spriteRm(f.x, f.y)); }   // storm glass lies in a mark on sand: its picture, sand base and all
       if (!read && motion() && (NOW + hash(f.x, f.y, 5) % 1600) % 1600 < 400) { const a = sparkArt(false); blit(a, W(x + (ts >> 1)) - Math.floor(a.w / 2), H(y + (ts >> 1) - 4) - Math.floor(a.h / 2)); } }
     // once the place is explored, every takeable still in view glints: the sparkle for 400 ms every 1.6 s, staggered by position; none under reduced motion
     if (walkedCell(lay.cell) && motion()) {

@@ -23,12 +23,12 @@ test("it does not take long: the walk's 90th percentile is within 150 actions an
   assert.ok(rows.every((r) => r.places <= 12), "places " + Math.max(...rows.map((r) => r.places)));
 });
 
-test("the first pods lie in the find slot nearest the way in, where the Call there lifts them", () => {
+test("the first pods lie in the find slot nearest where the pawn first comes in, where the Call there lifts them; pod A is in the start place", () => {
   for (const seed of [1, 7, 13, 42]) {
     const p = makePage({ gen: 7, console: "silent" });
     p.run(`newWorld(${seed}); TEST.calm = true; startExpedition('weather', G.spawns[0]);`);
-    const r = JSON.parse(JSON.stringify(p.run(`(() => { const out = []; for (const pod of S.pods.slice()) { if (pod.id !== 'fa' && pod.id !== 'fb') continue; const lay = layout(pod.k); ensureLive(pod.k);
-      const h = lay.spawnPt, d = s => Math.hypot(s.x - h.x, s.y - h.y), live = S.pods.find(q => q.id === pod.id), free = (lay.podSlots || []).map(d); out.push({ id: pod.id, d: d(live), nearest: Math.min(...free) }); } return out; })()`)));
+    const r = JSON.parse(JSON.stringify(p.run(`(() => { const out = []; for (const pod of S.pods.slice()) { if (pod.id !== 'fa' && pod.id !== 'fb') continue; const lay = layout(pod.k); ensureLive(pod.k); const ent = entryPoint(lay, pod.k, S.exp.lastDir);
+      const h = ent, d = s => Math.hypot(s.x - h.x, s.y - h.y), live = S.pods.find(q => q.id === pod.id), free = (lay.podSlots || []).map(d); out.push({ id: pod.id, d: d(live), nearest: Math.min(...free) }); } return out; })()`)));
     assert.ok(r.length >= 1);
     for (const q of r) assert.ok(q.d <= q.nearest + 12 || q.d <= 12, `seed ${seed}: ${q.id} lies ${q.d.toFixed(1)} tiles from the way in (nearest slot ${q.nearest.toFixed(1)})`);
   }
