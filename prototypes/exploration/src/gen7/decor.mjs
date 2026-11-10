@@ -9,7 +9,9 @@
 //   - growth: from the seed onto tiles of its own claim, trunk by trunk, each touching the cluster (crowns touch) and none beside another, until the cluster has its size; a cluster that
 //     cannot reach its smallest size (a grove of 4) is dropped whole, leaving a clearing;
 //   - kinds come in an order (trees, rocks, stumps, bushes, tall-grass sweeps); a later kind never stands on a tile an earlier kind holds. Each tile's answer is a function of the world.
-// Where props stand: never on a tile beside water, thicket or the cliff's lip (so a prop never closes a gap), never beside a trail, never at a way up, never near the Hollow Tree's clearing.
+// Where props stand: never on a tile beside water, thicket or the cliff's lip (so a prop never closes a gap), never beside a trail, never at a way up, never near the Hollow Tree's clearing, and only
+// on a plain tile (the tile and its eight neighbours one terrain: one full cell clear of every lip, shore and edge). Tufts, flowers and clumps sit wholly inside a plain cell too. Scrub shrubs (when the desk
+// signs them) will go sparsely inside scrub cells, off edges: scrub is drawn as grass until then and holds no prop or decal.
 // Raised land's top is dressed like the low ground of its biome by the same scatter. Decals (tufts, flowers, clumps) follow the art desk's meadow density on every grass tile.
 import { noiseField } from './world.mjs';
 
@@ -76,6 +78,16 @@ export function createDecor(seed, land) {
     const t = T(x, y), f = (t === WATER || t === DEEP || t === THICKET || isLip(x, y) ? 1 : 0) | (t === PATH ? 2 : 0) | (isLip(x, y) ? 4 : 0);
     if (cls.size > 600000) cls.clear();
     cls.set(k, f); return f;
+  };
+  // a plain tile: it and its eight neighbours are one terrain, so no edge, shore or lip is drawn on it or beside it (the art director, 2026-11-09: props keep one full cell clear of every lip, shore and
+  // edge; tufts sit wholly inside a plain cell; only decor made for an edge, the shore pebbles and the reed banks, sits on one)
+  const plainMemo = new Map();
+  const plain = (x, y) => {
+    const k = key(x, y), hit = plainMemo.get(k); if (hit !== undefined) return hit;
+    const t = T(x, y); let ok = true;
+    for (let dy = -1; dy <= 1 && ok; dy++) for (let dx = -1; dx <= 1; dx++) if (T(x + dx, y + dy) !== t) { ok = false; break; }
+    if (plainMemo.size > 600000) plainMemo.clear();
+    plainMemo.set(k, ok); return ok;
   };
   const near9 = (x, y, bit) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (flags(x + dx, y + dy) & bit) return true; return false; };
   const lip = (x, y) => (flags(x, y) & 4) !== 0;
@@ -154,9 +166,9 @@ export function createDecor(seed, land) {
   const stands = (fi, x, y) => {
     if (!inMap(x, y)) return false;
     const t = T(x, y);
-    if (fi === 4) return (t === GRASS || t === CLIFF) && !near9(x, y, 4) && !hollowNear(x, y, false);
+    if (fi === 4) return (t === GRASS || t === CLIFF) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
     if (!(t === GRASS || t === CLIFF || (fi === 1 && t === SAND))) return false;
-    return !near9(x, y, 1) && !near9(x, y, 2) && !wayZone.has(key(x, y)) && !hollowNear(x, y, fi === 0);
+    return plain(x, y) && !near9(x, y, 1) && !near9(x, y, 2) && !wayZone.has(key(x, y)) && !hollowNear(x, y, fi === 0);
   };
   // a tile an earlier kind holds, or (for a prop that blocks) one beside it: no two props that block ever touch, even at a corner, so a ring of them cannot close a gap
   const earlier = (fi, x, y) => {
@@ -243,7 +255,7 @@ export function createDecor(seed, land) {
 
   // ---- decals: the desk's meadow density on every grass tile (and raised land's top), pebbles on sand, lily pads on open water ----
   // (the cliff's face is drawn over the tile below the lip and its rim over the tile above, so nothing is laid within a tile of a lip)
-  const grassTile = (x, y) => { const t = T(x, y); return inMap(x, y) && (t === GRASS || t === CLIFF) && !near9(x, y, 4); };
+  const grassTile = (x, y) => { const t = T(x, y); return inMap(x, y) && (t === GRASS || t === CLIFF) && plain(x, y) && !near9(x, y, 4); };
   const clumpRaw = (x, y) => U(seed, TAG.CLUMP, x, y) < P_CLUMP;
   const clumpAt = (x, y) => {
     if (!clumpRaw(x, y)) return false; const u = U(seed, TAG.CLUMP + 1, x, y);
@@ -306,5 +318,5 @@ export function createDecor(seed, land) {
     return out;
   }
   const free = (fi, x, y) => stands(fi, x, y) && !earlier(fi, x, y);   // a tile this kind could take (what the table's density is counted on)
-  return { propsIn, decalsIn, reedsIn, hollowSites, footprint, shoreCorner, stands, free, isLip: lip, flags, memberOf, grassTile };
+  return { propsIn, decalsIn, reedsIn, hollowSites, footprint, shoreCorner, stands, free, isLip: lip, flags, memberOf, grassTile, plain };
 }

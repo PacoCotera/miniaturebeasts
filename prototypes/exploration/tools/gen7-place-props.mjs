@@ -2,7 +2,7 @@
 //   node tools/gen7-place-props.mjs 13
 // G2b: levels come from the field at tile scale (no blocks), one raised level, every stair has a way up. Added: the straight cliff runs (every length, the longest, the share of cliff
 // tiles in runs longer than 8), cliff chains (a stretch of the contour that may step one tile, so a diagonal counts as one), and whole-region reach through the ways up.
-import { cellTerrain, cellIR, TV, pairOk, levelAt, stairsInfo, CW, CH, RW, RH } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, TV, blockOk, levelAt, stairsInfo, CW, CH, RW, RH } from '../src/gen7/place.mjs';
 import { genRegion7 } from '../src/gen7/region.mjs';
 import { MW, MH } from '../src/world.mjs';
 import { bakeIR } from './gen7-render.mjs';
@@ -26,10 +26,9 @@ export function placeProps(seed) {
       st.cells++;
       for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) R[(j * CH + y) * SW + i * CW + x] = t[(y + 1) * w + x + 1];
       for (const a of c.wayups) if (!wayups.some(b => b.x === a.x && b.y === a.y)) wayups.push({ x: a.x - cx0 * CW, y: a.y - cy0 * CH, w: a.w, h: a.h });
-      // no 2 x 2 block breaks the pair table (over the cell and its apron)
+      // no 2 x 2 block breaks the pair table: at most three terrains, every two a pair of the set (over the cell and its apron)
       for (let y = 0; y + 1 < h; y++) for (let x = 0; x + 1 < w; x++) {
-        const v = new Set([t[y * w + x], t[y * w + x + 1], t[(y + 1) * w + x], t[(y + 1) * w + x + 1]]);
-        if (v.size > 2 || (v.size === 2 && !pairOk(...v))) st.pairBreaks++;
+        if (!blockOk([t[y * w + x], t[y * w + x + 1], t[(y + 1) * w + x], t[(y + 1) * w + x + 1]])) st.pairBreaks++;
       }
       // every tile of the cell sits in a 2 x 2 block of its own terrain
       for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {

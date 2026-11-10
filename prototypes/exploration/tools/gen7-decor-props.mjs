@@ -16,7 +16,7 @@ export function decorProps(seed, { every = 1 } = {}) {
   const t0 = Date.now(), D = decorOf(seed);
   const st = { cells: 0, groveHist: {}, groveHistByBiome: {}, outcropMixed: 0, outcrops: 0, latticeCells: 0, latticeFails: 0, latticeAt: [], latticeDense: 0, latticeWood: 0, latticeOpen: 0, latticeOpenFails: 0, latticeWhy: { touching: 0, cv: 0, lone: 0 }, latticeWhyDense: { cv: 0, lone: 0 },
     reedBanks: 0, reedOffShore: 0, reedProps: 0, tiles: { eligible: 0, tufts: 0, flowers: 0, clumps: 0, bEligible: 0, bTufts: 0, bFlowers: 0, bClumps: 0 }, cellTuftBad: 0, cellFlowerBad: 0, tuftAt: [],
-    hollow: 0, hollowCrownNear: 0, hollowAt: [], seamProps: 0, seamMismatch: 0, seamAt: [], stranded: 0, strandedCells: 0, strandedAt: [], onWall: 0, onPath: 0, onWay: 0, onLip: 0, noKind: 0,
+    hollow: 0, hollowCrownNear: 0, hollowAt: [], seamProps: 0, seamMismatch: 0, seamAt: [], stranded: 0, strandedCells: 0, strandedAt: [], onWall: 0, onPath: 0, onWay: 0, onLip: 0, noKind: 0, propOnEdge: 0, decalOnEdge: 0, edgeAt: [],
     perBiome: {}, ms: 0 };
   const groups = new Map();   // cluster -> { fam, biome, n, kinds }
   const biomeOfK = k => BIOME_IDS[Math.floor(k / 1e9) % 16];
@@ -61,6 +61,11 @@ export function decorProps(seed, { every = 1 } = {}) {
         else if (k && FLOWERS.includes(k)) { fl++; st.tiles.flowers++; if (border) st.tiles.bFlowers++; }
         else if (k === 'clump-tall') { cl++; st.tiles.clumps++; if (border) st.tiles.bClumps++; }
       }
+      // the art director's scatter rule: every prop's foot tile and every tuft, flower and clump sits on a plain tile (the tile and its eight neighbours one terrain)
+      { const ct = cellTerrain(seed, X, Y), at = (x, y) => ct.terrain[(y - y0 + 1) * ct.w + (x - x0 + 1)];
+        const plain = (x, y) => { const v = at(x, y); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (at(x + dx, y + dy) !== v) return false; return true; };
+        for (const p of props) if (p.fam !== 'landmark' && !plain(p.x, p.y)) { st.propOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['prop', p.kind, p.x, p.y]); }
+        for (const d of dec) if ((TUFTS.includes(d.kind) || FLOWERS.includes(d.kind) || d.kind === 'clump-tall') && !plain(d.x, d.y)) { st.decalOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['decal', d.kind, d.x, d.y]); } }
       if (el >= 250) { if (tu * 10 / el < 1.6 || tu * 10 / el > 3.4) { st.cellTuftBad++; if (st.tuftAt.length < 4) st.tuftAt.push([X, Y, +(tu * 10 / el).toFixed(2), el]); } if (fl * 10 / el < 0.7 || fl * 10 / el > 2.4) st.cellFlowerBad++; }
     }
     // reed banks only on shores

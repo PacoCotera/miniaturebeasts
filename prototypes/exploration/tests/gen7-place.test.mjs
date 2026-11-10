@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
-import { cellTerrain, cellIR, windowIR, pairOk, TV, CW, CH } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH } from '../src/gen7/place.mjs';
 import { bakeIR } from '../tools/gen7-render.mjs';
 import { decorProps } from '../tools/gen7-decor-props.mjs';
 import { TABLE } from '../src/gen7/decor.mjs';
@@ -15,7 +15,7 @@ for (const seed of [7, 13, 42]) {
     const hist = Object.keys(s.runHist).map(Number).sort((a, b) => a - b).map(k => k + ':' + s.runHist[k]).join(' ');
     console.log(`# seed ${seed}: ${JSON.stringify({ ...s, runHist: undefined })}\n# straight cliff runs (length:count) ${hist}`);
     assert.equal(s.cells, 8000);
-    assert.equal(s.pairBreaks, 0, 'no 2 x 2 block breaks the pair table');
+    assert.equal(s.pairBreaks, 0, 'no 2 x 2 block holds more than three terrains or two that are not a pair of the set');
     assert.equal(s.loneTiles, 0, 'every tile sits in a 2 x 2 block of its own terrain');
     // G2b: a cliff is the field's contour at tile scale, so its straight runs are short and wandering (a diagonal is a staircase of one-tile steps). The old rule "no run under 4" was the
     // blocks' (a cliff turned at most once in 8 tiles); the rule now is that no cliff is a spike, a spur or a one-row ridge: every cliff tile sits in a 4 x 4 block of raised land.
@@ -63,6 +63,7 @@ for (const seed of [7, 13, 42]) {
     check(s.reedOffShore === 0, 'every reed bank holds a shore: ' + s.reedOffShore);
     check(s.reedBanks > 100, 'reed banks: ' + s.reedBanks);
     check(s.onWall + s.onPath + s.onLip === 0, 'no prop on or beside water, thicket, lip or trail');
+    check(s.propOnEdge + s.decalOnEdge === 0, 'every prop, tuft, flower and clump on a plain tile, one full cell clear of every lip, shore and edge: ' + JSON.stringify(s.edgeAt));
     // decor per 10 grass tiles, interior and border rows alike, within the desk's rule
     const per10 = (n, d) => 10 * n / d, T = s.tiles, I = { el: T.eligible - T.bEligible, tu: T.tufts - T.bTufts, fl: T.flowers - T.bFlowers, cl: T.clumps - T.bClumps };
     for (const [name, el, tu, fl, cl] of [['interior', I.el, I.tu, I.fl, I.cl], ['border rows', T.bEligible, T.bTufts, T.bFlowers, T.bClumps]]) {
@@ -118,6 +119,14 @@ for (const seed of [7, 13, 42]) {
     for (let y = 0; y < a.h; y++) for (let k = 0; k < 2; k++) assert.equal(a.tone[y * a.w + a.w - 2 + k], b.tone[y * b.w + k], `tone agrees across the border at row ${y}`);
   });
 }
+
+test('a 2 x 2 block holds at most three terrains and every two are a pair of the set (terrain layers)', () => {
+  assert.ok(blockOk([TV.GRASS, TV.SAND, TV.WATER, TV.SAND]), 'grass, sand and water meet at a corner');
+  assert.ok(blockOk([TV.GRASS, TV.GRASS, TV.THICKET, TV.SAND]), 'grass, sand and thicket');
+  assert.ok(!blockOk([TV.CLIFF, TV.GRASS, TV.PATH, TV.GRASS]), 'cliff never touches path');
+  assert.ok(!blockOk([TV.GRASS, TV.SAND, TV.WATER, TV.THICKET]), 'four terrains in a block');
+  assert.ok(blockOk([TV.GRASS]) && blockOk([TV.WATER, TV.GRASS]));
+});
 
 test('the pair table is the set\'s: raised land meets only grass', () => {
   for (const [a, b] of [[TV.CLIFF, TV.WATER], [TV.CLIFF, TV.PATH], [TV.CLIFF, TV.THICKET], [TV.CLIFF, TV.SCRUB], [TV.CLIFF, TV.EARTH], [TV.THICKET, TV.SCRUB], [TV.PATH, TV.SAND], [TV.PATH, TV.WATER]]) assert.ok(!pairOk(a, b), a + '|' + b);

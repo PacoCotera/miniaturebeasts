@@ -18,11 +18,19 @@ import { holdOf } from './hold.mjs';
 import { landmarksOf } from './landmarks.mjs';
 
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
-// the pairs the set draws (art/places/terrain.json values): every 2 x 2 block of logic tiles holds at most two terrains, and they are one of these
+// the pairs the set draws (art/places/terrain.json values): a terrain meets another only as one of these (the set's `lowers`); every 2 x 2 block of logic tiles holds at most three terrains (terrain layers),
+// and every two of them are such a pair
 const PAIRS = new Set(['2|6', '2|3', '3|6', '5|6', '2|4', '6|7', '3|7', '6|8', '6|9', '6|10', '3|9', '3|10', '1|2']);   // sand-raised ('3|8') is in the set but the generator never uses it: a raised region that meets both grass and sand is drawn two ways, which the bake refuses
 // who gives way to grass when a 2 x 2 block breaks the table: the lesser first; raised land is never cut (round 4), the others yield to it
 const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 7: 5, 3: 4, 10: 3, 6: 0 };
 export const pairOk = (a, b) => PAIRS.has(a < b ? a + '|' + b : b + '|' + a);
+// the terrains of one 2 x 2 block (an iterable of values, repeats allowed): at most three distinct, every two a legal pair
+export function blockOk(values) {
+  const v = [...new Set(values)];
+  if (v.length > 3) return false;
+  for (let i = 0; i < v.length; i++) for (let j = i + 1; j < v.length; j++) if (!pairOk(v[i], v[j])) return false;
+  return true;
+}
 
 const CLOSE = 4;                      // the map's end: the last 4 tiles close the land; raised land keeps three more tiles of grass from them (levels.mjs RAISE_OFF)
 const WIN_X = 5, WIN_Y = 7, HX = (WIN_X - 1) / 2, HY = (WIN_Y - 1) / 2;   // the window the passes run on, in cells: the cell and two cells each side (three above and below, where a chain of conversions runs farthest), so what an edge of the window does stays clear of the cell
@@ -157,7 +165,7 @@ function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8
           for (let oy = -1; oy <= 0; oy++) for (let ox = -1; ox <= 0; ox++) {
             const xs = x + ox, ys = y + oy; if (xs < 0 || ys < 0 || xs + 1 >= W || ys + 1 >= H) continue;
             const b0 = a[ys * W + xs], b1 = a[ys * W + xs + 1], b2 = a[(ys + 1) * W + xs], b3 = a[(ys + 1) * W + xs + 1], set = new Set([b0, b1, b2, b3]);
-            if (set.size > 2 || (set.size === 2 && !pairOk(...set))) legal = false;
+            if (!blockOk(set)) legal = false;
             if (set.size === 1 && b0 === best) own = true;
           }
           if (legal && own) { changed++; continue; }
@@ -317,10 +325,11 @@ function windowOf(S, X, Y) {
           const k = j * W + i, v0 = t[k - W - 1], v1 = t[k - W], v2 = t[k - 1], v3 = t[k];
           if (v0 === v1 && v1 === v2 && v2 === v3) continue;
         }
-        let a = -1, b = -1, three = false; const idx = [];
-        for (const [x, y] of [[i - 1, j - 1], [i, j - 1], [i - 1, j], [i, j]]) if (x >= 0 && y >= 0 && x < W && y < H) { const k = y * W + x; idx.push(k); const v = t[k]; if (a < 0 || v === a) a = v; else if (b < 0 || v === b) b = v; else three = true; }
-        if (b < 0 || (!three && pairOk(a, b))) continue;
-        const vals = three ? [...new Set(idx.map(k => t[k]))] : [a, b], drop = vals.filter(v => v !== TV.GRASS).sort((p, q) => KEEP[p] - KEEP[q])[0];
+        const idx = [];
+        for (const [x, y] of [[i - 1, j - 1], [i, j - 1], [i - 1, j], [i, j]]) if (x >= 0 && y >= 0 && x < W && y < H) idx.push(y * W + x);
+        const vals = [...new Set(idx.map(k => t[k]))];
+        if (blockOk(vals)) continue;
+        const drop = vals.filter(v => v !== TV.GRASS).sort((p, q) => KEEP[p] - KEEP[q])[0];
         for (const k of idx) if (t[k] === drop) { t[k] = TV.GRASS; n++; }
       }
       changed += n;
