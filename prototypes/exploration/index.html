@@ -1417,8 +1417,8 @@ const STRIKE_FADE = 12;   // [tune] world turns a mark stays on the land
 const strikeFaded = f => S.turn - f.born >= STRIKE_FADE;
 const strikeIsRead = (key, f) => fs(key, f.id).read != null;
 function addStrikeFeats(lay) {   // the generated marks, and the fresh ones the cell has kept
-  for (const m of lay.strikes || []) lay.feats.push({ id: m.id, kind: 'm', x: m.x, y: m.y, born: -m.age, glass: m.glass });
-  const c = S.cells[lay.key]; if (c) for (const id of Object.keys(c)) if (c[id].fresh) lay.feats.push({ id, kind: 'm', x: c[id].x, y: c[id].y, born: c[id].born, glass: false });
+  for (const m of lay.strikes || []) lay.feats.push({ id: m.id, kind: 'q', x: m.x, y: m.y, born: -m.age, glass: m.glass });
+  const c = S.cells[lay.key]; if (c) for (const id of Object.keys(c)) if (c[id].fresh) lay.feats.push({ id, kind: 'q', x: c[id].x, y: c[id].y, born: c[id].born, glass: false });
 }
 // What a press on a strike mark would add to the hold now: the trip's yield less the Data from strikes so far, and the hold's room. 0: a press is refused.
 function strikeGain(ex) { return Math.max(0, Math.min(walkYield(ex) - (ex.dField || 0), CAP - ex.cargo.d)); }
@@ -1437,7 +1437,7 @@ function freshStrike(key, lay, t, rng) {
   for (let i = 0; i < lay.w * lay.h; i++) { if (!lay.reach[i] || taken.has(i) || T_BLOCK[lay.tiles[i]]) continue; any.push(i); if (bare.has(lay.baked.place.terrain[((i / lay.w | 0) + 1) * W + (i % lay.w) + 1])) pool.push(i); }
   const list = pool.length ? pool : any; if (!list.length) return false;
   const i = rng.pick(list), id = 'sf' + t, x = i % lay.w, y = (i / lay.w) | 0;
-  setFS(key, id, { x, y, born: t, fresh: 1 }); lay.feats.push({ id, kind: 'm', x, y, born: t, glass: false }); return true;
+  setFS(key, id, { x, y, born: t, fresh: 1 }); lay.feats.push({ id, kind: 'q', x, y, born: t, glass: false }); return true;
 }
 // A stone's storm charge (+2 or +3, from lightning), kept until drawn.
 function stormCharge(key, f) { const s = fs(key, f.id); return s.ch != null ? s.ch : (f.ch || 0); }
@@ -1650,7 +1650,7 @@ function leftItemsAll(c) {
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
   for (const f of layout(key).feats) { if (!see(f.x, f.y)) continue;
     if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
-    if (f.kind === 'm' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && strikeGain(S.exp) > 0) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once the trip's strikes are full
+    if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && strikeGain(S.exp) > 0) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once the trip's strikes are full
     if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'beacon', x: f.x, y: f.y }); }
   if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
   return out;
@@ -1922,7 +1922,7 @@ function curLay() { return layout(S.exp.patch.key); }
 function curLayOr() { return S.exp && S.exp.patch ? curLay() : { w: PW, h: PH }; }   // the cues and the view test may ask with no place open: the standard size
 function curLive() { return S.exp.live[S.exp.patch.key]; }
 function featAt(lay, key, x, y) {
-  for (const f of lay.feats) { if (DECOR.includes(f.kind) || (f.kind === 'm' && strikeFaded(f))) continue; const p = featPos(key, f); if (p.x === x && p.y === y) return f; }
+  for (const f of lay.feats) { if (DECOR.includes(f.kind) || (f.kind === 'q' && strikeFaded(f))) continue; const p = featPos(key, f); if (p.x === x && p.y === y) return f; }
   return null;
 }
 function podAt(key, x, y, hiddenToo) { return S.pods.find(p => p.k === key && p.x === x && p.y === y && (hiddenToo || !p.h)); }
@@ -2003,9 +2003,10 @@ function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most
   const tx = dir === 'right' ? 0 : dir === 'left' ? lay.w - 1 : lay.w / 2, ty = dir === 'down' ? 0 : dir === 'up' ? lay.h - 1 : dir ? lay.h / 2 : lay.h - 3;
   let best = null, bd = 1e9; const sq = !!G.gen;   // generator 2 places: squared distance, ties by tile index
   // a baked place has the tiles no crown hangs over (lay.clear): the explorer arrives on one of them, the nearest to the way in, never hidden under a canopy (C16); with none, any
+  const want = lay.compOfSide ? (dir ? lay.compOfSide[{ up: 'S', down: 'N', left: 'E', right: 'W' }[dir]] : null) ?? lay.mainComp : 0;   // a generator 7 cell: you start on the ground the way you came in by leads to
   for (let pass = lay.clear ? 0 : 1; pass < 2 && !best; pass++)
     for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) {
-      if (!lay.reach[y * lay.w + x] || occ(x, y) || (pass === 0 && !lay.clear[y * lay.w + x])) continue;
+      if (!lay.reach[y * lay.w + x] || occ(x, y) || (pass === 0 && !lay.clear[y * lay.w + x]) || (want && lay.compId[y * lay.w + x] !== want)) continue;
       const d = sq ? (x - tx) ** 2 + (y - ty) ** 2 : Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = { x, y }; }
     }
   return best || lay.spawnPt;
@@ -2306,7 +2307,7 @@ function patchAction() {
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
       case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : WORDS.takeDew, run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
-      case 'm': if (!strikeFaded(ft) && !strikeIsRead(key, ft)) { const g = strikeGain(ex), m = walkYield(ex);   // the press says what it adds, or that the trip's strikes are full, before it is made
+      case 'q': if (!strikeFaded(ft) && !strikeIsRead(key, ft)) { const g = strikeGain(ex), m = walkYield(ex);   // the press says what it adds, or that the trip's strikes are full, before it is made
           return { label: WORDS.strike.read, ctx: g ? [WORDS.strike.ctx(g), WORDS.strike.ctxShort(g)] : [WORDS.strike.capCtx(m), WORDS.strike.capShort(m)], run: () => readStrike(ft) }; } break;
       case 'h': { const st = fs(key, ft.id), left = outpostLeft(key, ft), relight = !!st.lightT;
         if (!left) { const lbl = relight ? (S.ui.depotArm ? 'Confirm: light, 1 Energy' : 'Relight · 1 Energy') : 'Light ' + DEPOT_NAME + ' · 1 Energy', ctx = relight ? cap(DEPOT_NAME) + ' · dark' : 'end here, mend and shelter';
@@ -2571,7 +2572,7 @@ function callPlace() {
     const lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
     if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); cue.push({ x: lp.x, y: lp.y }); }   // a pod still lying here glints again, so a beat always leads somewhere
     for (const q of S.pods) if (q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y)) q.out = 1;   // announced pods keep the dotted outline until taken
-    fxMsg(callReport(lay, P, tellIn), found ? 1 : 2);
+    fxMsg(callReport(lay, P), found ? 1 : 2);
   }
   if (digNow && !ex.ending) dig();
 }
@@ -5303,7 +5304,7 @@ function drawPatchBody(t) {
     for (const f of lay.feats) { if (f.kind !== 'k' || stormCharge(P.key, f) <= 0) continue;
       const x = f.x * ts, y = f.y * ts; if (!vis2(x, y) || !see(f.x, f.y)) continue;
       blit(ICON.bolt(motion() && Math.floor(t * 2) % 2 ? 'cream' : 'yellow'), W(x) + (ts >> 1) - 6, H(y) - 8); }
-    for (const f of lay.feats) { if (f.kind !== 'm' || strikeFaded(f)) continue;
+    for (const f of lay.feats) { if (f.kind !== 'q' || strikeFaded(f)) continue;
       const x = f.x * ts, y = f.y * ts; if (!vis2(x, y) || !see(f.x, f.y)) continue;
       const read = strikeIsRead(P.key, f), slot = walkPB(read ? 'strike-mark-read' : 'strike-mark-unread', 48, 48);   // [art] the unread and the read mark (a dark glassy fused streak; nothing burns)
       if (slot.w > 1) blit(slot, W(x) + ((ts - slot.w) >> 1), H(y) + ((ts - slot.h) >> 1));

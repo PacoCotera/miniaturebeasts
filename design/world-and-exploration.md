@@ -77,7 +77,7 @@ the Station the pod is identified and hatches; then the world turns once.
 ## What a cell holds (generator 7)
 
 Generator 7 (`prototypes/exploration/src/gen7/`, owner 11-09: the whole map and terrain generation is overhauled) places what a cell holds from the land, in the cell's
-IR (`hold.mjs`, `landmarks.mjs`). The page does not play it yet (G4b switches the page); nothing here is in a save. No cell has a heart, a spring or a diagonal of clue gleams.
+IR (`hold.mjs`, `landmarks.mjs`). The page plays it. No cell has a heart, a spring or a diagonal of clue gleams.
 All positions are IR tiles (the cell's own tiles are 1 to 24 by 1 to 28; the apron is the ring round them).
 
 - **Ways in.** `openings`: the runs, two tiles or longer, along each edge of the cell where the ground on both sides of the border walks. Every land cell has one.
@@ -94,7 +94,7 @@ All positions are IR tiles (the cell's own tiles are 1 to 24 by 1 to 28; the apr
   pod asleep under the moss, kept as two readings; explorers' traces only at the outposts and beacons the region already places.
 - **Strike marks.** Where lightning went into bare ground and ridges: about one for two cells, more in Cliffs and Highpools, fewer in Woods, at least one within one cell of
   every start. A mark carries its age in world turns; the page adds fresh ones each turn and lets old ones fade. Storm glass lies in only a few marks, on sand only.
-
+  every start. A mark carries its age in world turns; each world turn's storm adds a fresh one in every cell it struck and a mark fades 12 turns after the strike. Storm glass lies in only a few marks, on sand only (no supply holds it yet).
 ## Expeditions
 
 - **Start anywhere seen.** Any seen cell can be a starting point; placing the Probe
@@ -147,14 +147,14 @@ All positions are IR tiles (the cell's own tiles are 1 to 24 by 1 to 28; the apr
   see" and spends nothing (**Built**). The cave has its own darkness instead
   (**Built**).
 - **Walking lifts a short line of sight** through open ground; **Call lifts
-  more**; what is lifted stays lifted (**Decided**). Walking lifts about 4 tiles,
+  more**; what is lifted stays lifted (**Decided**). Walking lifts about 4 tiles (6 on raised land: height lets you see further),
   a Call a circle of 11 (6 in a fog bank) for one action; only Call hears what is
   buried and makes creatures react (**Built**).
 - **Quarters.** A place has four quarters. A quarter is **surveyed** when every
   tile in it is uncovered; the map draws each visited cell in quarters, dotted
   while veiled, lightly dotted when almost done, whole once surveyed (**Decided**).
-- **Explored** means visited and Called in at least once; **finished**
-  ("surveyed · nothing to take") means surveyed, Called, nothing left (**Built**).
+- **Explored** means you have walked most of a place: its veil is lifted over 60 % of its walkable ground (**Built**, generator 7). The dot fills quietly, with no card or sound,
+  and nothing is paid. **Finished** means explored with nothing left to take.
 - **Call reports** how far the survey is and what is left, with directions: "Half
   surveyed · a pod east, a warm stone north-west"; a Call that finds Energy leads
   with "Energy nearby" (**Decided**). It never says "Nothing here" (**Built**).
@@ -238,7 +238,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
 | Material | What it is | Gathered from (**Decided**) | Amounts (**Built**) |
 | --- | --- | --- | --- |
 | **Energy** | Charge; in the field, the Probe's own | Storm-struck stones; warm stones | +2 (+3 at the peak); warm +1 |
-| **Data** | Records of creatures doing things | Creature moments the player causes | +1, or +2 for a first |
+| **Data** | Records of something that happened | Creature moments the player causes (+1); strike marks the player reads (up to 2 / 4 / 6 / 8 a trip, by the highest tier entered) | +1 an act; a reading tops the trip up to its tier's yield |
 | **Essence** | Living matter | Dew, pressed fruit, shed tufts | dew +1, fruit +2, tuft +1 |
 
 - **Warm stones.** At each world turn an unstruck stone can hold a warm charge of

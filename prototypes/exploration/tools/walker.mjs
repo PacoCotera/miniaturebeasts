@@ -54,22 +54,22 @@ export function makeWalker(p, { budget = 1e9, verbose = false, tag = "" } = {}) 
     return false;
   };
   const takeShownPods = () => { for (const q of shownPods()) { if (!room()) break; takePodAt(q.id); } };
-  const heartInfo = () => p.run(`(() => { const P = S.exp.patch, h = heartOf(P.key), lay = layout(P.key); return h ? { x: h.x, y: h.y, kind: h.kind, found: heartFound(lay.cell), cell: lay.cell, path: h.path.length } : null; })()`);
-  // everything the place still offers that the screen shows (the page's own leftItems), nearest first
-  const items = () => p.run(`(() => { const P = S.exp.patch, c = layout(P.key).cell; return leftItems(c).filter(i => !i.cave).map(i => ({ k: i.k, x: i.x, y: i.y, d: Math.abs(i.x - P.x) + Math.abs(i.y - P.y) })).sort((a, b) => a.d - b.d); })()`);
+
+  // everything the place still offers that the screen shows (the page's own leftItemsAll: finds, strike marks; fruit and beacons are not takes), nearest first
+  const items = () => p.run(`(() => { const P = S.exp.patch, c = layout(P.key).cell; return leftItemsAll(c).filter(i => !i.cave && ['pod', 'charge', 'warm', 'dew', 'tuft', 'strike'].includes(i.k)).map(i => ({ k: i.k, x: i.x, y: i.y, d: Math.abs(i.x - P.x) + Math.abs(i.y - P.y) })).sort((a, b) => a.d - b.d); })()`);
   const itemCount = () => p.run(`leftTotal(layout(S.exp.patch.key).cell)`);
 
   // leave the place for the map
   const leave = () => { if (phase() === "patch") p.run("leavePatch()"); };
 
-  // map: the cell with an unfound heart nearest the start (rings out from it), then the shortest way there by the page's own canStep; null when none is in reach
+  // map: the goal cell nearest the start (rings out from it), then the shortest way there by the page's own canStep; null when none is in reach
   const road = (goal) => p.run(`(() => { const from = S.exp.pos, start = S.exp.start, goal = ${JSON.stringify(goal)}, seen = new Map([[from, null]]), dist = new Map([[from, 0]]), q = [from];
     for (let i = 0; i < q.length; i++) { const c = q[i];
       for (const d of ['up', 'right', 'down', 'left']) { if (!canStep(c, d) || !inRange(stepCell(c, d))) continue; const t = stepCell(c, d); if (t < 0 || seen.has(t)) continue; seen.set(t, [c, d]); dist.set(t, dist.get(c) + 1); q.push(t); } }
     const cand = goal.filter(c => c !== from && seen.has(c)).sort((a, b) => cdist(a, start) - cdist(b, start) || dist.get(a) - dist.get(b) || a - b)[0];
     if (cand === undefined) return null;
     const out = []; for (let k = cand; seen.get(k); k = seen.get(k)[0]) out.unshift(seen.get(k)[1]); return out; })()`);
-  const unfound = () => p.run(`(() => { const out = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && G.land[c] !== L.WATER && passable(c) && !G.island[c] && !heartFound(c) && c !== G.gate) out.push(c); return out; })()`);
+  const unvisited = () => p.run(`(() => { const out = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && G.land[c] !== L.WATER && passable(c) && !G.island[c] && !S.visited[c] && c !== G.gate) out.push(c); return out; })()`);
   // the way back to the start along cells already visited (the page's rule for a step)
   const wayHome = () => p.run(`(() => { const goal = S.exp.start, from = S.exp.pos, seen = new Map([[from, null]]), q = [from];
     for (let i = 0; i < q.length; i++) { const c = q[i]; if (c === goal) break;
@@ -78,5 +78,5 @@ export function makeWalker(p, { budget = 1e9, verbose = false, tag = "" } = {}) 
   // walk the map along a list of steps; false if the phase changed or the budget ran out
   const steps = (way) => { for (const d of way) { if (phase() !== "map" || budgetGone()) return false; key(d); } return true; };
 
-  return { p, key, phase, acts, cargo, room, walk, facing, shownPods, takePodAt, takeShownPods, heartInfo, items, itemCount, leave, road, unfound, wayHome, steps, budgetGone, say, log };
+  return { p, key, phase, acts, cargo, room, walk, facing, shownPods, takePodAt, takeShownPods, items, itemCount, leave, road, unvisited, wayHome, steps, budgetGone, say, log };
 }
