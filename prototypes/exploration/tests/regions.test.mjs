@@ -348,13 +348,13 @@ test("11. seeds and ids: region 1 keeps the realm's seed and its pod ids; region
   }
 });
 
-test("11b. generators: 3 is the herd floor, 4 is the biomes, 5 is life by land, 6 is the composed places; new realms take 6 and the page plays only 6", () => {
+test("11b. generators: 3 is the herd floor, 4 is the biomes, 5 is life by land, 6 is the composed places, 7 is the generated land; new realms take 7 and the page plays only 7", () => {
   assert.equal(W.NEW_GEN, 7); assert.deepEqual(W.GENS, [7]);
   assert.equal(W.genWorld(7, 3).gen, 3, "generator 3 is the herd floor on generator 2's ground");
   assert.ok(W.GENS.includes(7), "the page knows the one generator it plays");
-  const second = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 6, opened: 1 });
-  assert.notEqual(R.realmStatus({ v: 10, regions: [second] }), "newer", "a realm that holds a generator 6 region is playable");
-  const later = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 7, opened: 1 });
+  const second = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 7, opened: 1 });
+  assert.notEqual(R.realmStatus({ v: 10, regions: [second] }), "newer", "a realm that holds a generator 7 region is playable");
+  const later = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 8, opened: 1 });
   assert.equal(R.realmStatus({ v: 10, regions: [later] }), "newer", "a generator the page does not know (and any earlier one) is read-only");
   const old = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 5, opened: 1 });
   assert.equal(R.realmStatus({ v: 10, regions: [old] }), "newer", "generators 1 to 5 are not played any more");
