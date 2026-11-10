@@ -29,8 +29,6 @@ The presenter uses `CRITTER_DEMO_BIND` and `CRITTER_DEMO_PORT`, defaulting to lo
 
 ## Separate experiments
 
-The [generator workbench](../../prototype/generator-workbench/README.md) has its own authoring setup and persistence. It does not create accepted residents in the simulator.
-
 Older browser studies run separately with Node.js 22 or later:
 
 ```sh

@@ -59,7 +59,7 @@ const sizeRange = P => P.size || [1, 1];
 // land: { T(gx, gy) terrain value (outside the map: thicket), biome(gx, gy) biome id, W, H (world tiles), wayups: [{ x, y, w, h }] (all of them),
 //         slots: [{ ax, ay, biome, x0, y0, x1, y1 }] (the atlas slots in world tiles) }
 // rules: the map rules (art/places/map-rules.json); a changed copy shows what a change does
-export function createDecor(seed, land, rules = RULES) {
+export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const { T, biome } = land, TABLE = rules.biomes, BIOME_IDS = Object.keys(TABLE);
   const { props: PR, meadow: MD, shrubs: SH, water: WA, reeds: RE } = rules, GV = PR.groves, HO = PR.hollow, CLEAR = PR.clear;
   const nG = noiseField(seed, 'g3-grove', GV.noise.scale, 'FBm', GV.noise.octaves);
@@ -95,7 +95,7 @@ export function createDecor(seed, land, rules = RULES) {
   const lip = (x, y) => (flags(x, y) & 4) !== 0;
 
   // ---- the Hollow Tree: a site in each region of Woods or Tallwood, on a clearing of plain grass (nothing is drawn on the terrain here: the clearing is the absence of props) ----
-  let sites = null;
+  let sites = presetSites;   // the Hollow Tree sites may be given (made off the page by src/realm-worker.mjs): a list of { x, y, slot }
   const CL = HO.clearing, clearing = (x, y) => { for (let dy = -CL.up; dy <= CL.down; dy++) for (let dx = -CL.left; dx <= CL.right; dx++) { if (T(x + dx, y + dy) !== GRASS || flags(x + dx, y + dy) !== 0) return false; } return true; };
   const hollowSites = () => {
     if (sites) return sites;

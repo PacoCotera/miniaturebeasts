@@ -10,7 +10,6 @@ Developer reference. These are separate local experiments with authored inputs, 
 | [Saved-record compatibility](compatibility/README.md) | Headless demo | Preserve identity, stored bytes and portrait hashes |
 | [Pixel renderer](pixel/README.md) | Export command | Static indexed frames |
 | [Retained portrait job](generation/README.md) | CLI | Original Pip bytes, controlled facts and exact replay |
-| [Genome workbench](generator-workbench/README.md) | `/genome/` on the public origin | Guided authoring, structure and retained render proposals |
 | [Hosting gateway](platform-server/README.md) | Node process | Separate website/workbench/native routing and metadata |
 
 ## Try breeding and sharing

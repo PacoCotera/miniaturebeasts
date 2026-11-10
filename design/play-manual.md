@@ -37,7 +37,7 @@ The bottom line has three sections, left to right, with a thin divider between t
 - **Shield**: bars showing how many hits the Probe can still take.
 - **Pods**: one outline per pod you can carry, filled with the pod's shell when you take one.
 - **Partner**: the mibi with you on a teal ring, with its name if there is room.
-- **The three counters**: Energy, Data and Essence. They count up with a flash when you gain something, even when it happens out of sight.
+- **The three counters**: Energy, Data and Essence. They count up with a flash when you gain something, even when it happens out of sight. Nothing goes in by itself: you take it with ✓, and a full hold (20 of each) takes nothing and leaves it where it lies.
 - **The turn clock**: a small sun and "Turn 1", "Turn 2"…, the world turn. It starts at Turn 1 on your first expedition and flashes when the world turns.
 - **Battery and radio**: the Companion's own power and connection.
 
@@ -217,7 +217,7 @@ You can carry up to 20 of each. Essence never turns into Energy.
 | Material | Where it comes from | What it buys |
 | --- | --- | --- |
 | **Energy** | Storm-charged stones (+2, or +3 at the peak) and warm stones (+1) | Pins (1), lighting a beacon (1), lighting or relighting an outpost (1), mending at an outpost (1 a bar), Shield patches (3 a bar), growing a mibi (2), mending the Shield at the Station (1 a bar), the tier 2 Probe (12) |
-| **Data** | Creature moments you cause (+1, or +2 for a first) | Identifying a pod (1), studying a window (2), each change when you shape a mibi (2), the tier 2 Probe (4) |
+| **Data** | Creature moments you cause (+1, or +2 for a first); strike marks you read (up to 2 / 4 / 6 / 8 a trip) | Identifying a pod (1), studying a window (2), each change when you shape a mibi (2), the tier 2 Probe (4) |
 | **Essence** | Dew (+1), pressing fruit (+2), tufts of fur (+1), returning a pod to the wild (+1) | Growing a mibi (4) |
 
 ## 8. Ending an expedition: the sealed bay and the Station
@@ -331,6 +331,6 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 
 **Shelter** from stray strikes: overhang, cave, lit outpost (within 3 tiles). Not trees, not wood cells on the map. A fog bank is calm: no strikes inside.
 
-**Gains**: storm stone +2 (+3 at the peak) · warm stone +1 · dew +1 Essence · pressed fruit +2 Essence · tuft +1 Essence · a creature moment +1 Data (+2 the first time).
+**Gains**: storm stone +2 (+3 at the peak) · warm stone +1 · dew +1 Essence · pressed fruit +2 Essence · tuft +1 Essence · a creature moment +1 Data (+2 the first time) · reading a strike mark tops the trip's Data up to 2 / 4 / 6 / 8, by the highest tier you entered. Everything is taken by a press; a full hold takes nothing.
 
 **Odds**: stray strike per action in the open under rain: 2 bolts 1 in 20 (5%), 3 bolts 1 in 10 (10%), never two hits within six actions, and the first hit of a pass is a warned strike. None under an overhang, in a cave, beside a lit outpost or in a fog bank; trees give no protection. In play the screen says only "stray strikes can hit you in the open" (strong) and "strikes more likely" (peak); the exact odds are here and on the Probe screen. Shield: 3 bars (tier 1), 4 bars (tier 2). A break seals nothing: the pods fall where it broke (skull on the map) and carried materials are lost.

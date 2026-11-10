@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Species frames on the real 114-pair authoring catalogue.
 
-Reads the catalogue and resolves every genome through the generator workbench's own
-resolver (v1/prototype/generator-workbench, catalogue6 / innate profile), so every
+Kept as a record: the v1 generator workbench it ran against has been retired, so this
+script no longer runs. It read the catalogue and resolved every genome through that
+workbench's own resolver (catalogue6 / innate profile), so every
 locus id, allele, guard and "switched off" state below comes from the real code.
 Writes species-<id>.json beside this file and prints the counts. The file names keep the
 earlier working ids (hopper, puffcap, glowtail); the owner-approved species names (Loika,
@@ -21,7 +22,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
-WORKBENCH = REPO / "v1/prototype/generator-workbench"
+WORKBENCH = REPO / "v1/prototype/retired-workbench"  # folder removed
 SCHEMA = "mb-species-frame/1"
 SAMPLES = int(os.environ.get("FRAME_SAMPLES", 200))  # random individuals per species, each built by the real resolver
 

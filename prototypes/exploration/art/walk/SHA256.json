@@ -18,7 +18,6 @@
  "edge-ramp-side-26.png": "90bd01c7109e65135f0621a1ef4b0cc9f080a090f677ec29b5bd4f300b2e2510",
  "edge-ramp-side-48.png": "11f506a5e6a1cd041b76287ea6a3c1062b87aac03cf655fa93cb379dfc3db545",
  "edge-ramp-side-72.png": "7a0e0214c51553330aa386c253039c11cc43bfa5abd78cd7fb442c59c9dbc9c7",
- "icon-shimmer-16.png": "7e65d4445680867b619921feea80864dabcef0743a5a6684aa362559e1b636cc",
  "map-tex-beach-26.png": "620eed6754dc07c9b4e5983a0b71399bb0b6943d7d9315ba86dd81c48789bee5",
  "map-tex-beach-48.png": "f0f10b0a116ca6a6ab678e75b6ebf4086df82a857661a5c13dfd89b5ffeeb983",
  "map-tex-beach-72.png": "8613b32899441d1aa0e2671025d7f4da7cf86b200e75b0d03c31676c2404f754",
@@ -63,18 +62,5 @@
  "mark-windstep-been-26.png": "36a682b5650d1f89103843d3043ce1419e48a2d603486d6c3add65aea9291226",
  "mark-windstep-found-12.png": "05ad4cc9b5c5aac4e2ddab2da32dd3ca05d484238255cd7f7bfcf9232b45ebd1",
  "mark-windstep-found-18.png": "0b64bb1b1e1ebea7660a06d59c13d5f14cd48adbccff74864abcb7eea980fa89",
- "mark-windstep-found-26.png": "00fff57cc44af0cd6cf2dc62882da24ed7d92848955cfd90e64cc215ceee9852",
- "spot-notice-16x22.png": "22f76bc7cbbe98c85ee09779af54a39ab4466891fea017f0c54df4be35926dd3",
- "spring-puddle-24-spark0.png": "32fc58b9d33a6fe3c975b240c4fc5c06f666c0d01534fc5b9dcf44cb945ce462",
- "spring-puddle-24-spark1.png": "35d2c598602208a43952f7aabee613dfd69f4225157c093282869fa2acd4c7b5",
- "spring-puddle-24-spark2.png": "0680ca273992582260bf35aaa42c6197dd26a75228f3ac894de0e371563734df",
- "spring-puddle-48-spark0.png": "41f58341e43d5e62eb124be592e284631ac6d0392ca84fc4b555c46f3150da4d",
- "spring-puddle-48-spark1.png": "268e296ffb2ac30f1d594483179039cfbd4488175c065f72bc305a5e09496787",
- "spring-puddle-48-spark2.png": "88eb5a215cdf23c073ced593383b678f45efa726c87bf3127f5ebc960d0382b6",
- "spring-puddle-map4-spark0.png": "13028d5c0a89da313961d074ca923ae95cf5e1d60b93476b4f84ad35a05baa55",
- "spring-puddle-map4-spark1.png": "5ff86ac8d226e8245da3b843931beb5c5ad5a4e31c32b8e268be9317d94032cb",
- "spring-puddle-map4-spark2.png": "faf86c4e381c9c429b3724ed801133797de2d58c7f7821630823c5f33947bbe8",
- "spring-puddle-map7-spark0.png": "cf4949c5227d9999abcbaf150d7116210ec7dad83962b2d779c284a9c2195b75",
- "spring-puddle-map7-spark1.png": "6518f019bff5f6e13f265c4690df85996714c8610ddbe095773f10b9190a09ed",
- "spring-puddle-map7-spark2.png": "3db68f399cdde2ce89f6bd2097062aa399c00252e4b26e63fd077f30c67afac5"
+ "mark-windstep-found-26.png": "00fff57cc44af0cd6cf2dc62882da24ed7d92848955cfd90e64cc215ceee9852"
 }

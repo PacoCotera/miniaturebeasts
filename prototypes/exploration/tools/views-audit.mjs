@@ -1,8 +1,7 @@
 // The views audit (owner, 2026-11-08: "the map generation is not consistent across its different zoom levels"): the world has ONE truth for each edge of a cell
-// (open, stair, cliff, scree or bank, water, the map's end) and the map, the reach view and the cell itself must all draw it. This compares the world's edge with what the cell's
-// layout actually draws and lets the explorer cross, for every cell of a world, and counts the mismatches by kind.
-//   node prototypes/exploration/tools/views-audit.mjs [seedFrom seedTo] [--gens 6,2]       the table (a sweep of seeds 1-200 takes a minute or two)
-// auditPage(page, G) audits the world mounted on a page (generator 6: baked places); auditGenerated(G, seed) audits generator 2 and 5 worlds' generated places.
+// (open, stair, cliff, scree or bank, water, the map's end) and the map, the reach view and the cell itself must all show it. This compares the world's edge with what a cell holds, for every cell of a
+// world, and counts the mismatches by kind. Generator 7 (the page's): auditGen7, on the cell's IR; the generated places of the frozen generators 2 and 5: auditGenerated.
+//   node prototypes/exploration/tools/views-audit-run.mjs [seedFrom seedTo] [--gens 7,2]       the table (a sweep of seeds 1-200 builds 200 realms: allow an hour, or run it in shards)
 import { MW, MH, T, T_BLOCK, L, TERR, sideKind } from "../src/world.mjs";
 
 export const SIDES = ["up", "down", "left", "right"];
@@ -65,15 +64,33 @@ export function tally(t, mm, tag, info) {
   for (const k of mm) { t.bad++; const key = k + " [" + tag + "]"; t.byKind[key] = (t.byKind[key] || 0) + 1; (t.examples[key] = t.examples[key] || []).length < 3 && t.examples[key].push(info); }
 }
 
-// Generator 6 on a page: baked places (and generated fords). `page` is a makePage; the world is remounted per seed and biome.
-export function auditPage(page, seed, biome, t) {
-  page.run(`(() => { G = worldOf(${seed}, 6, ${JSON.stringify(biome)}); S.seed = ${seed}; S.gen = 6; layoutCache.clear(); startExpedition('weather', G.spawns[0]); S.exp.range = 99; })()`);
-  const G = page.run("G");
-  for (const c of placeCells(G)) {
-    const lay = page.run(`(() => { const l = layout('${c}'); applyLines(l); return l; })()`), tag = lay.baked ? "baked" : "generated";
-    t.cells++;
-    if (lay.baked && !(lay.heart && lay.heart.path && lay.heart.path.length)) tally(t, ["cell: heart not reachable from the way in"], tag, `seed ${seed} ${biome} cell ${c} (${lay.baked.id})`);
-    for (const dir of SIDES) tally(t, sideMismatches(G, lay, c, dir), tag, `seed ${seed} ${biome} cell ${c} ${dir} (${lay.baked ? lay.baked.id : "gen2"})`);
+// Generator 7 on the generator's IR: the world's truth for each side of a land cell (the map's edge kind) against the ways in the cell holds. The cell's terrain is the land itself, so the views
+// agree when an open or stair side has a way in, and a cliff, water or map-end side has none. A side on a region's border is checked against the realm (the region beyond is the same land), and a
+// side the map cuts at a region's border is left out. Returns nothing; it counts into `t`.
+const DIR_OF = { up: "N", down: "S", left: "W", right: "E" };
+export function auditGen7(seed, t, { realm7, cellIR, softGround, bankEdges, ATLAS }) {
+  const R = realm7(seed);
+  for (const G of R.regions) {
+    G.soft = G.soft || softGround(G, seed); G.banks = G.banks || bankEdges(G, seed);
+    const [ax, ay] = G.slot;
+    for (const c of placeCells(G)) {
+      const X = ax * MW + (c % MW), Y = ay * MH + ((c / MW) | 0), ir = cellIR(seed, X, Y); t.cells++;
+      for (const dir of SIDES) {
+        const w = worldSide(G, c, dir), at = DIR_OF[dir], has = ir.openings.some(o => o.side === at), tag = "gen7", info = `seed ${seed} slot ${ax},${ay} cell ${c} ${dir}`;
+        const [dx, dy] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[dir], x = (c % MW) + dx, y = ((c / MW) | 0) + dy;
+        if ((x < 0 || y < 0 || x >= MW || y >= MH)) {   // a region's border: the realm decides, except at the map's own end
+          const nx = ax + (x < 0 ? -1 : x >= MW ? 1 : 0), ny = ay + (y < 0 ? -1 : y >= MH ? 1 : 0);
+          if (nx < 0 || ny < 0 || nx >= ATLAS || ny >= ATLAS) { tally(t, has ? ["mapend: opening"] : [], tag, info); }
+          continue;
+        }
+        const out = [];
+        if (w === "open" && !has) out.push("open: no opening");
+        else if (w === "stair" && !has) out.push("stair: no opening");
+        else if ((w === "cliff" || w === "scree" || w === "bank") && has && w === "cliff") out.push("cliff: opening");
+        else if (w === "water" && has && G.land[c] !== L.WATER) out.push("water: opening");
+        tally(t, out, tag, info);
+      }
+    }
   }
 }
 

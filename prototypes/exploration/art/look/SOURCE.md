@@ -1,4 +1,4 @@
-The look view's marks: you are here (still and two pulse frames), the heart marks, and the takeables (two frames and a still each).
+The look view's marks: you are here (still and two pulse frames), and the takeables (the heart marks went with the hearts) (two frames and a still each).
 Signed by the art desk: mibi-art commit 07cd89ed6, art-jobs/2026-11-09-you-are-here/out/ (manifest.json there names every anchor, size and timing). Copied byte for byte; never edit here, re-sign at the desk.
-The stone marks (look-heart-stone, look-take-charge-*, look-take-warm-*) are the painted stone family C: mibi-art f0b1e8c19, art-jobs/2026-11-09-stones-redo/out/ (same sizes and anchors as before). The partner marks (look-partner-*) are from mibi-art b1141c8ab, art-jobs/2026-11-09-partner-look/out/.
+The stone marks (look-take-charge-*, look-take-warm-*) are the painted stone family C: mibi-art f0b1e8c19, art-jobs/2026-11-09-stones-redo/out/ (same sizes and anchors as before). The partner marks (look-partner-*) are from mibi-art b1141c8ab, art-jobs/2026-11-09-partner-look/out/.
 The page loads every file at boot (the stone marks, which are off the core palette, as pictures; the others into palette-index buffers); SHA256.json records each file as placed; tests/look-art.test.mjs checks each against its recorded hash.

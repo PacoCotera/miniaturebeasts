@@ -38,7 +38,7 @@ Host/Origin to the fixed loopback service. Mutations require same-origin Origin;
 no CORS or arbitrary proxy destination is exposed. Workbench ingress is64KiB by default, including streamed bodies. POST
 `/genome/api/rendering/jobs` and `/genome/api/rendering/recovery` have an explicit
 2MiB exception matching the workbench server; both declared and streamed sizes
-are checked. [Rendering admission](../generator-workbench/rendering-contract.md)
+are checked. Rendering admission
 separately caps decoded source PNG bytes and validates requests. Upstream requests have a30-second deadline;
 incoming header/body and idle timeouts are finite. Static paths stay within
 the real website directory, rejecting traversal/symlink escape/directories;

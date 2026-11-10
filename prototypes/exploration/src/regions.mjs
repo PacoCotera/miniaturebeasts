@@ -124,9 +124,9 @@ export function slotBiome(seed, ax, ay, version = 1) {
   if (version < 2) return BIOMES_V1[hash(seed, "slot", ax, ay) % BIOMES_V1.length];
   return realmSlots(seed).get(ax + "," + ay);
 }
-// The generator a realm opens a new home region with: generator 5 (generator 4's ground, the life by land). Every save since the release's reset is a version 2 realm of generator 5.
+// The generator a realm opens a new home region with: generator 7 (the realm's land at the slot, the life by land). Every save since the generator 7 reset is a version 2 realm of generator 7.
 // A region keeps the generator and kind it was opened with, in its record.
-export const openGen = () => 5;
+export const openGen = () => 7;
 // A new home region's record for a free slot: the slot's kind (by the realm's kind version), the realm's generator rule, its own seed.
 export function openHome(realm, slot, { n = realm.regions.length + 1, opened = Date.now(), openedTurn = realm.turn || 0 } = {}) {
   const seed1 = realm.regions[0].seed;
@@ -242,4 +242,4 @@ export function keepPre9(store, key, raw) {
   } catch (e) { return false; }
 }
 
-export { RESET_V, RESET_FROM, resetPlan, keepPre10, keepGen5 } from "../../play/src/realm/reset.mjs";   // the release's save reset, shared with the Station (release 21b)
+export { RESET_V, RESET_FROM, resetPlan, keepPre10, keepGen, oldGenOf } from "../../play/src/realm/reset.mjs";   // the release's save reset, shared with the Station (release 21b)

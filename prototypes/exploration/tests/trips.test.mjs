@@ -43,13 +43,14 @@ const LAND = [];   // groundName is src/world.mjs's now (the page imports it): h
 // endExpedition with the world stubbed: `explored` decides the branch, worldTurn moves the counter as the page does.
 const ARRIVED = { pods: [], young: [], bloom: -1, charged: [] };   // what worldTurn hands back for the opening's pips
 function ending({ explored, trips, ex, world = { lines: [], ev: [], arrived: ARRIVED } }) {
+  ex = { cargo: { e: 0, d: 0, s: 0, pods: [] }, ...ex };
   const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [], carried: [] };
   const turned = [];
   const t = load(["endExpedition", "holdEmpty", ...TRIP], {
-    S, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3,
+    S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3,
     carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ found: explored ? 1 : 0, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { turned.push(S.expN); S.turn++; S.expN++; return world; },
+    worldTurn: () => { turned.push(S.expN); S.turn++; S.expN++; return { arrived: { pods: [], young: [], bloom: -1, charged: [] }, ...world }; },
     logEv: () => {}, transition: () => {}, save: () => {},
   });
   t.endExpedition(ex.reason || "home");
@@ -149,14 +150,7 @@ test("old saves: no trips list, an expedition without the new fields", () => {
   const t = load(TRIP, {});
   assert.deepEqual(plain(t.tripRecord({ n: 3 })), { v: 1, n: 3, partner: null, places: [], storm: false, carried: [] });
   assert.equal(t.tripsWith(undefined, t.tripRecord({ n: 3 })).length, 1);
-  // the page's load gives a save without `trips` an empty list
-  const saved = R.migrate8({ v: 8, seed: 7, gen: 6, cr: [], mibis: [], wid: "w7", retSeen: [], bay: [] }, { now: 1 }), store = { "mb-save-v8": JSON.stringify(saved) };
-  const ctx = { localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; }, removeItem: k => { delete store[k]; } },
-    SAVE_KEY: "mb-save-v8", LEGACY_KEY: "mb-save-v8-shared", COMPANION: { slot: "A" }, SAVE_V: 10, V7_KEY: "v7", OLD_SAVE_KEYS: [], migrate7: o => o, ...REGIONS,
-    layoutCache: { clear() {} }, genWorld() {}, worldOf() {}, genLife: () => ({ pods: [], cr: [] }), GENS: [6], OLD_GENS: [5], indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2, MW: 16, MH: 20 };
-  const l = load(["load", "migrateCarried", "normalizeCare", "worldFields", "idsIn", "realmOf"], ctx);
-  assert.equal(l.load(), true);
-  assert.deepEqual(plain(vm.runInContext("S.trips", l.ctx)), []);
+  // a save without `trips` is given an empty list by the page's load (worldFields: expN 1, trips []): the next test
 });
 
 test("a new world starts with no trips and expedition 1", () => {
@@ -210,7 +204,7 @@ test("End expedition while docked at the start", () => {
 
 // ?embed (the play page's frame; station-w1-x3-ready.md §3.1, C1): the screen alone, scaled to whole physical pixels.
 test("?embed shows the screen alone, fit() stands aside and the scale follows a dpr change", () => {
-  assert.ok(PAGE.includes('<title>Companion Field Test</title>\n<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>'));
+  assert.ok(PAGE.includes('<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>'));
   for (const rule of [
     "html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}",
     "html.embed body{visibility:hidden}",

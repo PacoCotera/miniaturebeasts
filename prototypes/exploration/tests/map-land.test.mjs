@@ -38,7 +38,7 @@ test("the painted land: found has no night, never been in is darker, not seen is
   const { server, url } = await serve();
   try {
     const { page, errors } = await enter(browser, url, 6);
-    await page.evaluate(() => { const m = window.__mb; m.TEST.findHeart(); m.RT.view && m.endView(); m.RT.spot = null; m.leavePatch(); });
+    await page.evaluate(() => { const m = window.__mb; m.TEST.exploreHere(); m.RT.view && m.endView(); m.RT.spot = null; m.leavePatch(); });
     await page.waitForTimeout(500);
     const r = await page.evaluate(() => {
       const m = window.__mb, q = m.reachGeom(), spec = { X0: q.s0.x - q.r, Y0: q.s0.y - q.r, w: q.size, h: q.size, cs: q.cs }, ex = m.S.exp;

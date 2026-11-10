@@ -14,4 +14,3 @@ design/proposals/ui-kit.md
 design/style-guide/station-layouts.md
 design/style-guide/station-layouts/
 design/style-guide/station-screens.md
-v1/prototype/generator-workbench/

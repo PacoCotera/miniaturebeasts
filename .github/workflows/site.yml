@@ -41,7 +41,6 @@ jobs:
             design
             hardware
             v1/native/vendor
-            v1/prototype/generator-workbench
             art/companion-48
             art/places
             art/device-buttons
@@ -120,6 +119,9 @@ jobs:
           # the Companion's 48 px place art, from where it lives: the shipping folder only (sheets, palette and manifest)
           mkdir -p _site/art/companion-48/terrain && cp -r art/companion-48/terrain/meadow _site/art/companion-48/terrain/
           printf '{"commit":"%s","short":"%s","built":"%s"}\n' "$GITHUB_SHA" "${GITHUB_SHA:0:7}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _site/build.json
+      - name: Install the exploration page's packages (the generator's noise and queue)
+        if: steps.scope.outputs.docs != 'true'
+        run: npm ci --prefix prototypes/exploration --no-audit --no-fund --silent
       - name: Bundle the pages (Vite)
         if: steps.scope.outputs.docs != 'true'
         # prototypes/vite.config.mjs bundles the Station, play and exploration pages into content-hashed chunks with modulepreload (the spec JSON and p-queue inside, the pictures and metrics hashed) and

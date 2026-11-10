@@ -8,7 +8,7 @@
 //   - ways up sit on existing straight south faces of that land, nearest the stair's port, where the region chose the stair for that face; nothing is carved (Rule 5.5);
 //   - the passes of Rule 1.4 run on a window of 5 x 7 cells round the cell, and the cell's tiles plus a one-tile apron are cut out of it;
 // Rule 1.8: every terrain boundary is drawn only by the dual grid's corner pieces; nothing here composites or overlays.
-import { hash, L, EDGE, MW, MH } from '../world.mjs';
+import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
@@ -228,7 +228,7 @@ function smoothBays(t, W, H, v) {
 const islands = S => S.islandSet || (S.islandSet = new Set(S.R.regions.flatMap(G => { const o = []; for (let c = 0; c < NC; c++) if (G.island[c]) o.push((G.slot[0] * MW + (c % MW)) * 1000 + G.slot[1] * MH + ((c / MW) | 0)); return o; })));
 // A bit of ground the walker cannot reach (a grass island the water noise left in a lake, a hollow ringed by thicket) is filled with what rings it. A body of ground that reaches the window's
 // edge, holds raised land, is large, or is a region's swim island stays.
-function fillPockets(t, W, H, gx0, gy0, island) {
+function fillPockets(t, W, H, gx0, gy0, island, gate) {
   const seen = new Uint8Array(W * H), q = new Int32Array(W * H), solid = v => v === TV.WATER || v === TV.THICKET;
   let changed = 0;
   for (let s = 0; s < W * H; s++) {
@@ -236,7 +236,7 @@ function fillPockets(t, W, H, gx0, gy0, island) {
     let n = 0, keep = false, x0 = W, x1 = 0, y0 = H, y1 = 0; q[n++] = s; seen[s] = 1;
     for (let h = 0; h < n; h++) {
       const c = q[h], x = c % W, y = (c / W) | 0;
-      if (x === 0 || y === 0 || x === W - 1 || y === H - 1 || t[c] === TV.CLIFF) keep = true;
+      if (x === 0 || y === 0 || x === W - 1 || y === H - 1 || t[c] === TV.CLIFF || (gate && gate[c])) keep = true;   // a cut gate keeps the ground it opens
       if (island.has(Math.floor((gx0 + x) / CW) * 1000 + Math.floor((gy0 + y) / CH))) keep = true;
       if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
       for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const m = Y2 * W + X2; if (!solid(t[m]) && !seen[m]) { seen[m] = 1; q[n++] = m; } }
@@ -249,6 +249,40 @@ function fillPockets(t, W, H, gx0, gy0, island) {
     changed += n;
   }
   return changed;
+}
+
+// Views agree: where the map calls the edge between two land cells open or a stair (world.mjs sideKind), the land has a way across it. When the tiles of the edge hold no run of two that walk on both sides
+// (a thicket mass, a lake), a gate 2 tiles wide is cut at the edge's port (the trail's tiles, region.mjs portOffset) and runs straight in on each side until it meets ground that walks, at most
+// GATE_DEPTH tiles; what it crosses turns to grass (raised land and deep water are never cut). It is a function of the world edge and the tiles round it, so both cells cut the same gate.
+const GATE_DEPTH = 14;
+function openGates(S, t, W, H, gx0, gy0, X, Y) {
+  const at = (gx, gy) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? -1 : t[y * W + x]; };
+  const walkAt = (gx, gy) => { const v = at(gx, gy); return v === TV.GRASS || v === TV.SAND || v === TV.PATH || v === TV.EARTH || v === TV.SCRUB || (v === TV.CLIFF && at(gx - 1, gy) === TV.CLIFF && at(gx + 1, gy) === TV.CLIFF && at(gx, gy - 1) === TV.CLIFF && at(gx, gy + 1) === TV.CLIFF); };
+  const gate = new Uint8Array(W * H);
+  const put = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; if (v === TV.CLIFF || v === TV.DEEP) return false; t[y * W + x] = TV.GRASS; gate[y * W + x] = 1; return true; };
+  const cellRegion = (cx, cy) => (cx < 0 || cy < 0 || cx >= RW || cy >= RH ? null : S.R.regions[Math.floor(cy / MH) * ATLAS + Math.floor(cx / MW)]);
+  for (let j = HY - 1; j <= HY + 1; j++) for (let i = HX - 1; i <= HX + 1; i++) {
+    const cx = X - HX + i, cy = Y - HY + j;
+    for (const [dx, dy] of [[1, 0], [0, 1]]) {
+      const nx = cx + dx, ny = cy + dy, G = cellRegion(cx, cy);
+      if (!G || G !== cellRegion(nx, ny)) continue;
+      const a = (cy % MH) * MW + (cx % MW), b = (ny % MH) * MW + (nx % MW);
+      G.soft = G.soft || softGround(G, S.seed); G.banks = G.banks || bankEdges(G, S.seed);
+      const goes = k => k === 'open' || k === 'stair';   // a stair's border is crossed on the low ground like an open one
+      if (!goes(sideKind(G, a, dx ? 'right' : 'down')) && !goes(sideKind(G, b, dx ? 'left' : 'up'))) continue;   // open from either cell's side (a ford is stepped into, not out of)
+      const len = dx ? CH : CW, base = dx ? cy * CH : cx * CW, line = dx ? nx * CW : ny * CH;   // the edge runs along `len` tiles from `base`; the first tile across it is `line`
+      const walkPair = k => dx ? walkAt(line - 1, base + k) && walkAt(line, base + k) : walkAt(base + k, line - 1) && walkAt(base + k, line);
+      let run = 0, has = false; for (let k = 0; k < len && !has; k++) { run = walkPair(k) ? run + 1 : 0; has = run >= 2; }
+      if (has) continue;
+      const off = portOffset(S.seed, G.slot[0], G.slot[1], edgeOfStep(a, b));
+      for (const side of [-1, 0]) for (let d = 0; d < GATE_DEPTH; d++) {   // side -1: back into the cell A; 0: on into the cell B
+        const pos = side === -1 ? line - 1 - d : line + d, rows = [base + off, base + off + 1];
+        if (rows.every(r => (dx ? walkAt(pos, r) : walkAt(r, pos)))) break;
+        for (const r of rows) dx ? put(pos, r) : put(r, pos);
+      }
+    }
+  }
+  return gate;
 }
 
 function windowOf(S, X, Y) {
@@ -315,8 +349,8 @@ function windowOf(S, X, Y) {
     }
   }
   // the set's pairs are all opaque (Rule 1.2-1.3): every 2 x 2 block holds at most two terrains and they must be a pair; the lesser gives way to grass. The 2 x 2 rule alternates
-  // with the legal pass (Rule 1.9), and no one-row gully stays under a raised edge
-  for (let round = 0; round < 60; round++) {
+  // with the legal pass (Rule 1.9), and no one-row gully stays under a raised edge. The gates (openGates) are cut once the land has settled, and it settles again round them.
+  const settle = gate => { for (let round = 0; round < 60; round++) {
     let changed = 0;
     { const before = t.slice(); minFeature(t, W, H, isCliff, isCliff, 4, true); for (let k = 0; k < N; k++) if (t[k] !== before[k]) changed++; }
     for (let sweep = 0, n = 1; n && sweep < 200; sweep++) {   // sweeps to a fixed point: a chain along a boundary is followed at once
@@ -336,9 +370,12 @@ function windowOf(S, X, Y) {
       changed += n;
     }
     for (let y = 0; y + 2 < H; y++) for (let x = 0; x < W; x++) if (t[y * W + x] === TV.CLIFF && t[(y + 1) * W + x] !== TV.CLIFF && t[(y + 2) * W + x] === TV.CLIFF) { t[(y + 1) * W + x] = TV.CLIFF; changed++; }
-    if (!changed) changed += fillPockets(t, W, H, gx0, gy0, islands(S));
+    if (!changed) changed += fillPockets(t, W, H, gx0, gy0, islands(S), gate);
     if (!changed) break;
-  }
+  } };
+  settle(null);
+  const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
+  if (gate.some(v => v)) settle(gate);
   return { t, W, H, gx0, gy0, wayups };
 }
 
@@ -407,7 +444,9 @@ function landOf(seed) {
   const slots = []; for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) slots.push({ ax, ay, biome: S.re.slotBiome[ay * ATLAS + ax], x0: ax * MW * CW, y0: ay * MH * CH, x1: (ax + 1) * MW * CW - 1, y1: (ay + 1) * MH * CH - 1 });
   return { T, biome, W: WTW, H: WTH, wayups: stairsOf(S).filter(st => st.wayup).map(st => st.wayup), slots };
 }
-export const decorOf = seed => { let d = DEC.get(seed); if (!d) { if (DEC.size > 3) DEC.clear(); d = createDecor(seed, landOf(seed)); DEC.set(seed, d); } return d; };
+const SITES = new Map();   // Hollow Tree sites made off the page (src/realm-worker.mjs), by seed
+export const presetHollowSites = (seed, sites) => { if (SITES.size > 3) SITES.clear(); SITES.set(seed, sites); };
+export const decorOf = seed => { let d = DEC.get(seed); if (!d) { if (DEC.size > 3) DEC.clear(); d = createDecor(seed, landOf(seed), undefined, SITES.get(seed) || null); DEC.set(seed, d); } return d; };
 export const biomeAtTile = (seed, gx, gy) => landOf(seed).biome(gx, gy);
 // the decor of the tiles x0 .. x0 + w - 1, y0 .. y0 + h - 1 as IR lists (pixels at 48 a tile, relative to the IR's own corner). A prop is in the list when its foot is within two tiles sideways or
 // three tiles below: its crown (up to three tiles above the foot, one or two either side) then hangs into the rectangle, and the neighbour draws it identically
@@ -431,7 +470,7 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null) {
   const props = d.props.concat(d.reedProps).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));   // the reeds are not read by the hold: only the land's props are
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props, decals: d.decals, canopy: [], hearts: [], clues: [],
     finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone: toneField(seed, x0, y0, w, h),
-    inner: hold ? hold.inner : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
+    inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
 }
 // the bare tiles (sand, worn earth, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)
 function bareTiles(seed, X, Y) {
