@@ -11,7 +11,7 @@
 //   traces     [{ kind: 'outpost'|'beacon', x, y }]       explorers' traces, only where the region already places them
 //   strikes    [{ x, y, age, glass, read: false }]        strike marks (section 4.7a); age = world turns since the strike, glass = storm glass lies in it (sand only)
 // No hearts, springs or clue gleams: section 4 replaces them.
-import { hash, L, MW, MH, HERD, groundName, genLife5 } from '../world.mjs';
+import { hash, L, MW, MH, HERD, groundName, genLife5, sideKind, softGround, bankEdges, canStepIn } from '../world.mjs';
 import { ATLAS, regionKinds, KIND_INFO } from '../regions.mjs';
 import { realm7, route, NC } from './region.mjs';
 import { CW, CH } from './world.mjs';
@@ -52,12 +52,17 @@ function startsOf(seed) {
   STARTS.set(seed, by); return by;
 }
 const HOSTS = new Map();
-// the cell that holds the strike mark guaranteed to a start: the cell of its 3 x 3 with the most bare ground (the start's own on a tie); bareOf(X, Y) counts it
+// the cell that holds the strike mark guaranteed to a start: the cell of its 3 x 3 with the most bare ground (the start's own on a tie); bareOf(X, Y) counts it.
+// Only a cell the Probe can walk to is named: inside the start's region, reached from the start by steps over open or ramp sides within one cell of it (the walk's own reach, no partner skill).
 function hostOf(seed, st, bareOf) {
   const key = seed + ':' + st.X + ',' + st.Y, hit = HOSTS.get(key); if (hit) return hit;
-  const R = realm7(seed), land = (X, Y) => { const G = R.regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)]; if (!G || X < 0 || Y < 0) return false; const c = (Y % MH) * MW + (X % MW); return G.land[c] !== L.WATER && !G.island[c]; };
-  let best = [st.X, st.Y], bn = land(st.X, st.Y) ? bareOf(st.X, st.Y) * 1.01 : -1;
-  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = st.X + dx, Y = st.Y + dy; if (X < 0 || Y < 0 || X >= MW * ATLAS || Y >= MH * ATLAS || (!dx && !dy) || !land(X, Y)) continue; const n = bareOf(X, Y); if (n > bn) { bn = n; best = [X, Y]; } }
+  const G = realm7(seed).regions[st.slot[1] * ATLAS + st.slot[0]], c0 = (st.Y % MH) * MW + (st.X % MW), x0 = c0 % MW, y0 = (c0 / MW) | 0;
+  const seen = new Set([c0]), q = [c0];
+  while (q.length) { const c = q.shift(), x = c % MW, y = (c / MW) | 0;
+    for (const [dir, dx, dy] of [['up', 0, -1], ['right', 1, 0], ['down', 0, 1], ['left', -1, 0]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH || Math.max(Math.abs(X - x0), Math.abs(Y - y0)) > 1) continue;
+      const d = Y * MW + X; if (seen.has(d) || G.island[d] || !canStepIn(G, c, dir)) continue; seen.add(d); q.push(d); } }
+  let best = [st.X, st.Y], bn = G.land[c0] !== L.WATER && !G.island[c0] ? bareOf(st.X, st.Y) * 1.01 : -1;
+  for (const d of seen) { if (d === c0) continue; const X = st.X + (d % MW) - x0, Y = st.Y + ((d / MW) | 0) - y0, n = bareOf(X, Y); if (G.land[d] !== L.WATER && n > bn) { bn = n; best = [X, Y]; } }
   if (HOSTS.size > 5000) HOSTS.clear();
   HOSTS.set(key, best); return best;
 }
@@ -70,7 +75,14 @@ export const isStartCell = (seed, X, Y) => startsOf(seed).has(X * 1000 + Y);
 
 // ---- the cell ----
 // a: { seed, X, Y, x0, y0, w, h, terrain, props, reedbanks, wayups, D (decor), hollow (the decor's sites), bareOf }
+// The cell holds its finds on one ground (see mainGrounds): the biggest part a way in leads to; where that part is too bare to hold two finds (a plain meadow beside a bare ridge), the next part.
 export function holdOf(a) {
+  let best = holdOn(a, 0);
+  for (let k = 1; k < best.grounds && best.finds.length < 2; k++) { const alt = holdOn(a, k); if (alt.finds.length > best.finds.length) best = alt; }
+  delete best.grounds;
+  return best;
+}
+function holdOn(a, pick) {
   const { seed, X, Y, x0, y0, w, h, terrain, props, D } = a, R = realm7(seed);
   const ax = Math.floor(X / MW), ay = Math.floor(Y / MH), G = R.regions[ay * ATLAS + ax], c = (Y % MH) * MW + (X % MW), land = G.land[c];
   const H = (...k) => hash(seed, 'gen7', 'hold', X, Y, ...k), U = (...k) => (H(...k) % 100000) / 100000;
@@ -87,6 +99,8 @@ export function holdOf(a) {
       if (!ok && from >= 0) { if (k - from >= 2) out.openings.push({ side, from, to: k - 1, at: vert ? (side === 'W' ? 1 : CW) : (side === 'N' ? 1 : CH) }); from = -1; }
     }
   }
+  // The world's truth for a side rules (views agree): no way in on a side the map calls a cliff or water, or on the map's end. A side on a region's border is the realm's: the terrain decides there.
+  if (out.openings.length) out.openings = out.openings.filter(op => !shutSide(seed, G, c, X, Y, op.side));
   const lm = a.landmarks.at.get(X + ',' + Y);
   const isLand = land !== L.WATER && !G.island[c];
   if (!isLand) return out;
@@ -98,7 +112,12 @@ export function holdOf(a) {
     const q = { x: p.tx - x0, y: p.ty - y0 };
     if (p.fam === 'trees') trees.push(q); else if (p.fam === 'rocks') rocks.push(q); else if (p.fam === 'bushes') bushes.push(q); else if (p.fam === 'landmark') hollowT.push(q);
   }
-  const free = (lx, ly) => lx >= 1 && ly >= 1 && lx <= CW && ly <= CH && !occ[ly * w + lx] && walk(lx, ly) && !lip(lx, ly);
+  // The cell's MAIN ground: the biggest part of the free ground that a way in leads to (the page floods from each opening's middle tile, as adapt7 does). Everything the cell holds lies on it, so no find,
+  // strike mark or pod slot sits in a cut-off part. A cell with no way in uses its biggest part.
+  const open = (lx, ly) => lx >= 1 && ly >= 1 && lx <= CW && ly <= CH && !occ[ly * w + lx] && walk(lx, ly) && !lip(lx, ly);
+  const gs = mainGrounds(open, out.openings), gr = gs[Math.min(pick, gs.length - 1)], main = gr ? gr.mask : new Uint8Array(CW * CH);
+  out.grounds = gs.length; if (gr) out.ground = { x: gr.x, y: gr.y };   // `ground`: a tile of the ground the cell's finds lie on (the page starts a walk there)
+  const free = (lx, ly) => lx >= 1 && ly >= 1 && lx <= CW && ly <= CH && main[(ly - 1) * CW + lx - 1] === 1;
   const within = (arr, lx, ly, r) => { let n = 0; for (const q of arr) if (Math.abs(q.x - lx) <= r && Math.abs(q.y - ly) <= r) n++; return n; };
   const nearTerr = (lx, ly, r, set) => { for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (set.has(tt(lx + dx, ly + dy))) return true; return false; };
   const WET = new Set([TV.WATER, TV.MUD, TV.DEEP]), SOLID = new Set([TV.THICKET, TV.SCRUB]);
@@ -216,6 +235,35 @@ function findCount(seed, X, Y, land, biome, walkable, supply, H) {
   return Math.max(2, Math.min(9, Math.round(v), Math.floor(walkable / 8)));
 }
 export const FIND_OFFSET = -1.1;
+
+// Is this side of the cell shut by the world's own edge kind (a cliff, water that is not the cell's own, the map's end)? c: the cell's number in its region G; X, Y: its realm cell.
+const SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' }, SIDE_STEP = { N: [0, -1], S: [0, 1], W: [-1, 0], E: [1, 0] };
+function shutSide(seed, G, c, X, Y, side) {
+  const [dx, dy] = SIDE_STEP[side], x = (c % MW) + dx, y = ((c / MW) | 0) + dy;
+  if (X + dx < 0 || Y + dy < 0 || X + dx >= MW * ATLAS || Y + dy >= MH * ATLAS) return true;
+  if (x < 0 || y < 0 || x >= MW || y >= MH) return false;
+  G.soft = G.soft || softGround(G, seed); G.banks = G.banks || bankEdges(G, seed);
+  const k = sideKind(G, c, SIDE_DIR[side]);
+  return k === 'cliff' || (k === 'water' && G.land[c] !== L.WATER);
+}
+
+
+// The grounds a cell's finds may lie on, the biggest first: the parts of open ground that an opening's middle tile lies in (the page floods from the same tiles), each as a CW x CH mask
+// (index (y - 1) * CW + x - 1) with the tile its flood began at; a cell with no way in has its parts, biggest first.
+function mainGrounds(open, openings) {
+  const id = new Int16Array(CW * CH), size = [0], at = [null], I = (x, y) => (y - 1) * CW + x - 1;
+  let n = 0;
+  const flood = (sx, sy) => {
+    const stack = [[sx, sy]]; id[I(sx, sy)] = ++n; size[n] = 0; at[n] = { x: sx, y: sy };
+    while (stack.length) { const [x, y] = stack.pop(); size[n]++;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (open(X, Y) && !id[I(X, Y)]) { id[I(X, Y)] = n; stack.push([X, Y]); } } }
+  };
+  const seeds = openings.map(op => { const mid = (op.from + op.to) >> 1; return op.side === 'N' ? [mid, 1] : op.side === 'S' ? [mid, CH] : op.side === 'W' ? [1, mid] : [CW, mid]; });
+  const ids = [];
+  for (const [x, y] of seeds) { if (!open(x, y)) continue; if (!id[I(x, y)]) flood(x, y); if (!ids.includes(id[I(x, y)])) ids.push(id[I(x, y)]); }
+  if (!ids.length) { for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) if (open(x, y) && !id[I(x, y)]) flood(x, y); for (let k = 1; k <= n; k++) ids.push(k); }
+  return ids.sort((p, q) => size[q] - size[p] || p - q).map(k => ({ x: at[k].x, y: at[k].y, mask: id.map(v => (v === k ? 1 : 0)) }));
+}
 
 function roulette(arr, u) {
   if (!arr.length) return null;

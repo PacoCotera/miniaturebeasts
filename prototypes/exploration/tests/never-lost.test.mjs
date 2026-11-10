@@ -92,12 +92,12 @@ test("a sprite that throws, or the place view throwing after its sprites, never 
   } finally { await browser.close(); server.close(); }
 });
 
-test("the keys never lock: a runaway hold is cut to 2.5 s, a reveal spot that never ends is dropped by a press, and ← opens the menu after", { skip }, async (t) => {
+test("the keys never lock: a runaway hold is cut to 2.5 s, and ← opens the menu after", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
   const { server, url } = await serve();
   try {
     const { page, ctx, errors } = await enter(browser, url, 6, true);
-    const st = () => page.evaluate(() => { const m = window.__mb, RT = m.RT; return { phase: m.S.phase, view: RT.view ? RT.view.kind : null, spot: !!RT.spot, lock: m.FX.lockUntil - performance.now() }; });
+    const st = () => page.evaluate(() => { const m = window.__mb, RT = m.RT; return { phase: m.S.phase, view: RT.view ? RT.view.kind : null, lock: m.FX.lockUntil - performance.now() }; });
     // a hold that asks for a lifetime is cut to the cap, and ← gets through once it ends
     await page.evaluate(() => { const m = window.__mb; m.FX.lockUntil = performance.now() + 1e7; });
     await page.keyboard.press("Enter"); await page.waitForTimeout(100);
@@ -107,14 +107,6 @@ test("the keys never lock: a runaway hold is cut to 2.5 s, a reveal spot that ne
     s = await st(); assert.equal(s.phase, "menu", "← opens the menu after the cap");
     await page.keyboard.press("Escape"); await page.waitForTimeout(300);
     s = await st(); assert.equal(s.phase, "patch");
-    // a reveal spot that is never drawn (so never ends) is dropped by the first press after its beat, and ← works the press after
-    await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; m.RT.spot = { at: performance.now() - 5000, key: P.key, extra: {}, drawn: false }; m.TEST.at = 0; });   // TEST.at holds spotStep, as a frame that never reaches it would
-    await page.keyboard.press("Escape"); await page.waitForTimeout(100);
-    s = await st(); assert.equal(s.spot, false, "the stale spot is dropped by a press");
-    await page.evaluate(() => { window.__mb.TEST.at = null; });
-    await page.waitForTimeout(400);
-    await page.keyboard.press("Escape"); await page.waitForTimeout(300);
-    s = await st(); assert.equal(s.phase, "menu", "and ← opens the menu");
     await page.keyboard.press("Escape"); await page.waitForTimeout(300);
     assert.deepEqual(errors, []);
     await ctx.close();

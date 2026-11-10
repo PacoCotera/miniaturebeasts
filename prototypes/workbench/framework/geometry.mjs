@@ -1,7 +1,7 @@
 // Vector helpers and the finite solid operators the rig builds bodies from. The ring solid
 // (superellipse cross-section with the ovoid, barrel and tapered longitudinal weights), the 6×12
 // ellipsoid, the eight-sided tapered segment and the thin quad sheet carry the exact v1 meshes
-// (v1/prototype/generator-workbench/compositional-vocabulary-construction.mjs `ringSolid`,
+// (the retired v1 workbench, compositional-vocabulary-construction.mjs `ringSolid`,
 // `ellipsoid`, `segment`; the sheet from the wing construction), reorganised to take an explicit
 // frame and axis. The convex-envelope test is v1's `meshEnvelope`.
 export const add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];

@@ -1,8 +1,6 @@
 # Pip genetics proof
 
-The separate [generator workbench](../generator-workbench/README.md) now consumes
-this unchanged engine through a local editor, causal projection and diagnostic
-schematic. The proof itself remains independent of game/device presentation.
+The proof remains independent of game/device presentation.
 
 This is a separate host proof for the proposed Pip genetic-content contract. It is not connected to the live app or to the older `prototype/genetics.mjs` draft, which remains in use by that experiment. Nothing here creates an individual, assigns ownership, spends resources, draws screens, calls a model, or proves hardware behavior.
 

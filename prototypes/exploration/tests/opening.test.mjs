@@ -207,7 +207,7 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
   try {
     const page = await (await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: "reduce" })).newPage();
     const errors = []; page.on("pageerror", (e) => errors.push(e.message));
-    await page.goto(`${url}?seed=14`); await page.waitForTimeout(1500);
+    await page.goto(`${url}?seed=13`); await page.waitForTimeout(1500);
     const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
     // settle: the top bar's world-turn clock flashes (amber, blinking every 150 ms) for 900 ms after the turn changes, whatever the motion setting: the returning shot waits that out so the bar holds still
     // and a loaded machine paints late: the shot is the first one that two captures 250 ms apart agree on
@@ -226,9 +226,12 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
     await page.evaluate(() => { const m = window.__mb, S = m.S, mk = (id, name, sp, o) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: 0, mem: null, habitsDone: [] }, o);
       S.turn = 5; S.expN = 5; S.known = [0, 1, 2]; S.mibis = [mk(1, "Pip", 0), mk(2, "Moss", 1), mk(3, "Dot", 2, { grownTurn: null, born: 4 })]; S.carried = [1, 2, 3]; S.lead = 1;
       S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.report = { lines: ["A storm charged stones in the wood."], n: 4 };
-      const s0 = m.G.spawns[0]; S.ui.lastPos = s0; const qx = s0 % m.MW, qy = Math.floor(s0 / m.MW); let k = 0;
+      const s0 = m.G.spawns[0]; S.ui.lastPos = s0; const qx = s0 % m.MW, qy = Math.floor(s0 / m.MW), land = [];
       for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const x = qx + dx, y = qy + dy; if (x < 0 || y < 0 || x >= m.MW || y >= m.MH) continue; const c = y * m.MW + x; S.revealed[c] = 1; if (Math.abs(dx) > 2 || Math.abs(dy) > 2) continue; S.visited[c] = 1;
-        if (m.passable(c) && m.G.land[c] !== m.L.WATER) { if (k < 4) S.called[c] = 1; else if (k < 7) S.veil[String(c)] = [1]; k++; } } });
+        if (m.passable(c) && m.G.land[c] !== m.L.WATER) land.push(c); }
+      // a mark stands only at a landmark (the land holds few): the first found place and the first been-into one are cells that have one
+      const lm = land.filter(c => m.layout(String(c)).landmark), rest = land.filter(c => !lm.includes(c)), order = lm.length > 1 ? [lm[0], ...rest.slice(0, 3), lm[1], ...rest.slice(3), ...lm.slice(2)] : land;
+      order.forEach((c, k) => { if (k < 4) S.called[c] = 1; else if (k < 7) S.veil[String(c)] = [1]; }); });
     const ret = await shot(1500); golden("opening-returning.png", ret);
     const cs = await page.evaluate(() => window.__mb.openFrame().cs); assert.equal(cs, 52, "tier 1: the reach fits at 52");
     // B3: Deep ground focused (the ringed burrow, Moss in front), and the partner focused

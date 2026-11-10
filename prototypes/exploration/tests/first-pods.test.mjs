@@ -543,7 +543,7 @@ test("R2.4 the pod reaches the crate with its genome, shed and of, through take,
   assert.deepEqual(plain(p.run("S.exp.cargo.pods[0].genome")), GENOME, "take");
   p.run("dropPods(S.exp, {})");
   const dropped = plain(p.run("S.pods.find(q => q.how === 'shed')")); assert.equal(dropped.shed, 7); assert.equal(dropped.of, "Dot"); assert.deepEqual(dropped.genome, GENOME);
-  p.run("S.exp.cargo.pods = []; S.exp.patch.x = 4; takePod(S.pods.find(q => q.how === 'shed')); S.exp.stats.hearts = 1; endExpedition('sent');");
+  p.run("S.exp.cargo.pods = []; S.exp.patch.x = 4; takePod(S.pods.find(q => q.how === 'shed')); S.exp.entered = [S.exp.pos]; endExpedition('sent');");
   const crate = p.S.bay.at(-1); assert.ok(crate, "sealed");
   const c = plain(crate.pods[0]); assert.equal(c.shed, 7); assert.equal(c.of, "Dot"); assert.deepEqual(c.genome, GENOME);
   assert.equal(p.run("podTagOf({ how: 'shed', of: 'Dot' })"), "of Dot's line");

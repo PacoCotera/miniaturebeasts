@@ -10,7 +10,6 @@ game is redesigned. It is not the design: the authoritative design lives in
 | Folder | What it is | State |
 | --- | --- | --- |
 | `native/` | C17 + LVGL host simulator of the three devices (Companion, Station, Caddy) sharing one process, plus ESP32-S3 compile harnesses for the Companion and Caddy UIs | Builds and passes its checks. Plays one narrow loop: square-by-square map, finite pickups, sealed cargo, once-only Station acceptance, saved research, creation, incubation, reveal, resident visit |
-| `prototype/generator-workbench/` | Browser genome-authoring workbench with optional image rendering | Works as a tool. Generated creature art is not accepted |
 | `prototype/` (other) | Small fixtures and experiments: genetics proof, transfer, generation, platform gateway | Supporting code for the above |
 | `website/` | The previous public site | Superseded; will be rebuilt |
 | `design/` | Art the simulator and workbench build from (Pip sprites, core art, source studies) | Build inputs only, not accepted art direction |

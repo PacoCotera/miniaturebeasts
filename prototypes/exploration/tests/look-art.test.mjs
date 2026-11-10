@@ -11,10 +11,10 @@ const DIR = new URL("../art/look/", import.meta.url);
 const sha = (b) => createHash("sha256").update(b).digest("hex");
 const files = readdirSync(DIR).filter((f) => f.endsWith(".png")).sort();
 const HASHES = JSON.parse(readFileSync(new URL("SHA256.json", DIR), "utf8"));
-const isStone = (f) => /^(look-heart-stone|look-take-(charge|warm)-)/.test(f), isPartner = (f) => f.startsWith("look-partner-");
+const isStone = (f) => /^look-take-(charge|warm)-/.test(f), isPartner = (f) => f.startsWith("look-partner-");
 
 test("every placed file equals its recorded hash (copied byte for byte from the desk's signed commits)", () => {
-  assert.equal(files.length, 28 + 40, "the files are placed: " + files.length);
+  assert.equal(files.length, 24 + 40, "the files are placed: " + files.length);
   assert.deepEqual(Object.keys(HASHES).sort(), files);
   for (const f of files) assert.equal(sha(readFileSync(new URL(f, DIR))), HASHES[f], f);
 });
@@ -27,7 +27,7 @@ test("the page's slots and the files are the same set, on the core palette (the 
     for (let i = 0; i < f.width * f.height; i++) { const a = f.data[i * 4 + 3]; assert.ok(a === 0 || a === 255, n + ": partial alpha " + a);
       if (a && !isStone(n)) assert.ok(core.has([f.data[i * 4], f.data[i * 4 + 1], f.data[i * 4 + 2]].join()), n + ": a pixel off the core palette at " + i); }
     if (isPartner(n)) { assert.equal(f.height, n.endsWith("-juv") ? 18 : 20, n + " height"); continue; }
-    const kind = n.startsWith("you-here") ? "you" : n.startsWith("look-take") ? "take" : n.slice("look-heart-".length);
+    const kind = n.startsWith("you-here") ? "you" : "take";
     assert.deepEqual([f.width, f.height], size[kind].slice(0, 2), n + " size");
   }
 });
@@ -36,7 +36,7 @@ test("the page draws each mark as the file, its anchor on the tile's bottom cent
   const p = makePage({ console: "silent", els: true, canvas: true, raf: 1 }), rgb = p.run("RGB"), W = p.run("SCR_W"), size = JSON.parse(JSON.stringify(p.run("LOOK_SIZE")));
   for (const [n, f] of Object.entries(LOOK_ART)) {
     if (isStone(n)) { assert.ok(p.run(`STONE_PIECES.has('${n}')`), n + " is kept as a picture"); continue; }   // drawn from a canvas, off the core palette: checked by stone-art.test.mjs
-    const partner = isPartner(n), kind = partner ? "partner" : n.startsWith("you-here") ? "you" : n.startsWith("look-take") ? "take" : n.slice("look-heart-".length);
+    const partner = isPartner(n), kind = partner ? "partner" : n.startsWith("you-here") ? "you" : "take";
     const [ax, ay] = partner ? [f.width >> 1, f.height - 1] : size[kind].slice(2);
     p.run("scr.px().fill(-1)"); p.run(`lookMark('${n}', '${kind}', 200, 300, 24)`);
     const px = p.run("scr").px(), x0 = 200 - ax, y0 = 300 + 12 - ay;
@@ -59,11 +59,10 @@ test("all twenty kinds have an adult and a young partner mark, and the species i
   }
 });
 
-test("no stand-in ring is left in the look view: the explorer, the partner, the heart and the takeables come from the desk's files", () => {
-  const body = PAGE.slice(PAGE.indexOf("function drawWhole("), PAGE.indexOf("// ---------- The spring's tell, one painter for every view"));
+test("no stand-in ring is left in the look view: the explorer, the partner and the takeables come from the desk's files", () => {
+  const at = PAGE.indexOf("function drawWhole("), body = PAGE.slice(at, PAGE.indexOf("\nfunction ", at + 10));
   assert.doesNotMatch(body, /circ\(e\.x/, "no code explorer");
   assert.doesNotMatch(body, /circ\(m\.x, m\.y/, "no code partner ring");
-  assert.doesNotMatch(body, /circ\(q\.x, q\.y, 1[024]/, "no code heart ring");
   assert.doesNotMatch(body, /dashRing\(r\.x/, "no code take rings");
-  assert.match(body, /lookMark\(`look-take-/); assert.match(body, /lookMark\('look-heart-'/); assert.match(body, /lookMark\(motion\(\) \? 'you-here-pulse-'/); assert.match(body, /lookMark\(partnerMark\(/);
+  assert.match(body, /lookMark\(`look-take-/); assert.match(body, /lookMark\(motion\(\) \? 'you-here-pulse-'/); assert.match(body, /lookMark\(partnerMark\(/);
 });

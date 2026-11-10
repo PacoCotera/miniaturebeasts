@@ -27,8 +27,8 @@ const STATE = `(() => { const u = {}, s = S; for (const k of ["seed", "gen", "wi
   "skulls", "lastStorm", "known", "found", "met", "firsts", "mibis", "carried", "lead", "tier", "shield", "deepRead", "bay", "hold", "exp", "report", "log", "hist", "totalActions", "walkTurn", "phase"]) if (s[k] !== undefined) u[k] = s[k];
   u.lastPos = s.ui && s.ui.lastPos; return JSON.parse(JSON.stringify(u)); })()`;
 
-export function runBot({ seed = 7, gen = 5, expeditions = 20, mibis = 0, dock = 0, stopMid = false } = {}) {
-  const p = makePage({ console: "silent", date: FIXED_DATE });
+export function runBot({ seed = 7, gen = 7, expeditions = 20, mibis = 0, dock = 0, stopMid = false } = {}) {
+  const p = makePage({ console: "silent", date: FIXED_DATE, gen });
   let x = (seed * 2654435761 + gen * 40503) >>> 0;
   const rng = n => { x = (Math.imul(x, 1664525) + 1013904223) >>> 0; return (x >>> 8) % n; };   // the bot's own: it never touches the page's draws
   p.run(`newWorld(${seed}, ${gen})`);
@@ -49,7 +49,7 @@ export function runBot({ seed = 7, gen = 5, expeditions = 20, mibis = 0, dock = 
   // in a place: a Call, some steps and presses on what is faced, a second Call, then Leave
   const inPlace = () => {
     key("call");
-    p.run("TEST.findHeart()");   // a Call no longer counts a place explored, its heart does: the bot's walk finds it (C16 will walk there for real). A walk that only revisits found places finds nothing new and seals nothing, so the world turns less often than once per expedition.
+    p.run("TEST.exploreHere()");   // a Call does not count a place explored, walking most of it does: the bot walks a few steps and Calls, so the place is counted walked here (it is what makes the walk turn the world)
     for (let i = 0, n = 5 + rng(6); i < n && phase() === "patch"; i++) { key(DIRS[rng(4)]); if (rng(3) === 0 && phase() === "patch") key("confirm"); }
     if (phase() === "patch") key("call");
     for (let guard = 0; phase() === "patch" && guard < 6; guard++) {
@@ -112,54 +112,53 @@ export function summary(s) {
     bay: s.bay.length, hold: s.hold ? { e: s.hold.e, d: s.hold.d, s: s.hold.s, pods: s.hold.pods.length } : null, mibis: s.mibis.length, carried: s.carried.length, known: s.known.length, exp: s.exp ? s.exp.n : null };
 }
 
-// ---- Pacing (walk slice C16, W§9): a bot that walks to the tell and the heart of generator 6's places and measures the walk. Pure play through the page's keys, calm weather (no storm, no fog bank). ----
-// A visit is one place: the arrival (the action count on entering), the tell (the first action at which the heart's tell shows through the veil, within TELL_R of the explorer),
-// the heart (found), the whole place (the heart found and every thing the screen offers taken: the Call at the heart lifts what lies round it, the reveal lists the rest).
-// Its policy: Call on arrival, walk to the heart, dismiss the reveal (free), Call at the heart, take every shown thing once, leave; the next place is the nearest cell whose heart is not found,
-// rings out from the start. After the last place it walks home along the cells it came by. An action is the page's own count (ex.actions): a Call, a step in a place or on the map, a ✓.
+// ---- Pacing (walk slice C16, W§9; generator 7): a bot that walks places, takes what they show and measures the walk. Pure play through the page's keys, calm weather (no storm, no fog bank). ----
+// A visit is one place: a Call on arrival, then the middle and each quarter of the place with a Call at each, taking every thing the screen offers (pods, charged and warm stones, dew, tufts, and a
+// ✓ on each strike mark: the Data comes by a reading), then leaving. The next place is the nearest cell not yet entered, rings out from the start. After the last place it walks home along the
+// cells it came by. An action is the page's own count (ex.actions): a Call, a step in a place or on the map, a ✓.
 export function paceRun(seed, { places = 1, verbose = false, calm = true } = {}) {
   const p = newPage(seed, { calm }), w = makeWalker(p, { verbose, tag: "pace " + seed }), { key, phase, acts } = w;
-  const visits = [], tellNow = () => p.run("(() => { const P = S.exp.patch, h = heartOf(P.key); return !!h && tellShows(h, P); })()");
-  const reveal = () => { if (p.run("!!RT.view")) key("confirm"); };   // a press ends the arrival look or the reveal and is consumed: no action
-  const visit = () => {
-    reveal();
-    const arrive = acts(), info = p.run("(() => { const lay = layout(S.exp.patch.key), h = heartOf(S.exp.patch.key); return { id: lay.baked ? lay.baked.id : 'generated', cell: lay.cell, kind: h.kind, path: h.path.length, from: Math.abs(h.x - S.exp.patch.x) + Math.abs(h.y - S.exp.patch.y) }; })()");
-    const v = { ...info, tell: null, heart: null, whole: null, taken: 0, calls: 0 }, since = () => acts() - arrive;
-    const note = () => { if (v.tell == null && tellNow()) v.tell = since() - v.calls; if (v.heart == null && w.heartInfo().found) v.heart = since(); };
-    note(); key("call"); v.calls++; note();
-    for (let i = 0; i < 80 && phase() === "patch" && !w.heartInfo().found; i++) { const h = w.heartInfo(), before = acts(); w.walk(h.x, h.y, false, 1); note(); if (acts() === before) break; }   // one step at a time, so the tell and the find are timed
-    reveal();
-    if (v.heart != null && phase() === "patch") {
-      const h = w.heartInfo(); w.walk(h.x, h.y, false, 12); key("call"); v.calls++;
-      const tried = new Set();
-      for (let g = 0; g < 40 && phase() === "patch"; g++) {
-        const it = w.items().find((i) => !tried.has(i.k + i.x + "," + i.y)); if (!it) break;
-        tried.add(it.k + it.x + "," + it.y);
-        if (!w.walk(it.x, it.y, false, 40)) continue;
-        const before = w.itemCount(); key(w.facing(it.x, it.y)); key("confirm");
-        if (p.S.ui && p.S.ui.swap) key("back");
-        if (w.itemCount() < before) v.taken++;
-      }
-      v.whole = since();
+  const visits = [];
+  const takeAll = (v) => {
+    const tried = new Set();
+    for (let g = 0; g < 40 && phase() === "patch"; g++) {
+      const it = w.items().find((i) => !tried.has(i.k + i.x + "," + i.y)); if (!it) break;
+      tried.add(it.k + it.x + "," + it.y);
+      if (!w.walk(it.x, it.y, false, 40)) continue;
+      const before = w.itemCount(); key(w.facing(it.x, it.y)); key("confirm");
+      if (p.S.ui && p.S.ui.swap) key("back");
+      if (w.itemCount() < before) { v.taken++; if (it.k === "strike") v.readings++; }
     }
-    w.leave(); visits.push(v);
-    if (verbose) console.log(`  [${seed}] ${v.id} ${v.kind}: tell ${v.tell} heart ${v.heart} whole ${v.whole} (path ${v.path}, taken ${v.taken})`);
+  };
+  const visit = () => {
+    if (p.run("!!RT.view")) key("confirm");   // a press ends the arrival look and is consumed: no action
+    const arrive = acts(), v = { cell: p.run("layout(S.exp.patch.key).cell"), land: p.run("layout(S.exp.patch.key).name"), taken: 0, readings: 0, calls: 0, whole: null }, since = () => acts() - arrive;
+    const lay = p.run("(() => { const l = layout(S.exp.patch.key); return { w: l.w, h: l.h }; })()");
+    for (const [fx, fy] of [[.5, .5], [.25, .3], [.75, .3], [.25, .75], [.75, .75]]) {
+      if (phase() !== "patch") break;
+      w.walk(Math.round(lay.w * fx), Math.round(lay.h * fy), true, 40); key("call"); v.calls++; takeAll(v);
+    }
+    v.whole = since(); w.leave(); visits.push(v);
+    if (verbose) console.log(`  [${seed}] cell ${v.cell} ${v.land}: whole ${v.whole}, taken ${v.taken}, readings ${v.readings}`);
   };
   key("confirm"); key("confirm");   // Weather, the first glint
   const start = p.S.exp.pos; let mapSteps = 0;
-  for (let n = 0; n < places && phase() === "map"; n++) {
-    const way = w.road(w.unfound()); if (!way) break;
+  key("confirm"); if (phase() === "patch") visit();   // the start cell's own place first
+  for (let n = 1; n < places && phase() === "map"; n++) {
+    const way = w.road(w.unvisited()); if (!way) break;
     const a = acts(); w.steps(way); mapSteps += acts() - a;
     key("confirm"); if (phase() !== "patch") break;
     visit();
   }
+  if (phase() === "patch") w.leave();
   const a = acts(), home = w.wayHome(); if (home) w.steps(home); mapSteps += acts() - a;
-  return { seed, places: visits.length, total: acts(), mapSteps, home: p.S.exp.pos === start, cargo: w.cargo(), visits };
+  const fieldD = p.run("S.exp.dField || 0"), actD = p.run("S.exp.dAct || 0");
+  return { seed, places: visits.length, total: acts(), mapSteps, home: p.S.exp.pos === start, cargo: w.cargo(), fieldD, actD, visits };
 }
 export const PACE_SEEDS = [7, 13, 42];
 
 const GOLDEN = new URL("../tests/realm-run.golden.json", import.meta.url);
-export const RUN = { seed: 7, gen: 5, expeditions: 20, mibis: 0, dock: 0 };   // the golden run
+export const RUN = { seed: 7, gen: 7, expeditions: 20, mibis: 0, dock: 0 };   // the golden run
 
 if (import.meta.url === new URL(process.argv[1], "file:").href) {
   const a = process.argv.slice(2), arg = (k, d) => { const i = a.indexOf("--" + k); return i < 0 ? d : +a[i + 1]; };
@@ -168,7 +167,7 @@ if (import.meta.url === new URL(process.argv[1], "file:").href) {
     const si = a.indexOf("--seeds"), seeds = si < 0 ? PACE_SEEDS : a[si + 1].split(",").map(Number), verbose = a.includes("--verbose");
     for (const seed of seeds) for (const [name, places] of [["3-minute", 1], ["15-minute", 4]]) {
       const r = paceRun(seed, { places, verbose, calm: !a.includes("--storm") }), f = (k) => r.visits.map((v) => v[k]).join("/");
-      console.log(`seed ${seed} ${name}: ${r.total} actions (${r.mapSteps} on the map), ${r.places} places, home ${r.home}; carries ${r.cargo.e}E ${r.cargo.d}D ${r.cargo.s}S ${r.cargo.pods}p; tell ${f("tell")}, heart ${f("heart")}, whole place ${f("whole")}; kinds ${f("kind")}; ${f("id")}`);
+      console.log(`seed ${seed} ${name}: ${r.total} actions (${r.mapSteps} on the map), ${r.places} places, home ${r.home}; carries ${r.cargo.e}E ${r.cargo.d}D (${r.fieldD} from strikes, ${r.actD} from creatures) ${r.cargo.s}S ${r.cargo.pods}p; whole place ${f("whole")}; readings ${f("readings")}, taken ${f("taken")}; cells ${f("cell")}`);
     }
     process.exit(0);
   }

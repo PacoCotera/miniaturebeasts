@@ -17,7 +17,7 @@ const BAND_TILE = new Set([T.WATER, T.DEEP, T.ISLE, T.REEDS, T.SAND, T.SCREE, T.
 export const sideXY = (dir, k, depth, w, h) => ({ x: dir === 'left' ? depth : dir === 'right' ? w - 1 - depth : k, y: dir === 'up' ? depth : dir === 'down' ? h - 1 - depth : k });
 
 // The tiles of the place's biggest dry stretch, from `walk0` (1 where the terrain and the template's props leave a tile free): where a stair, crossing or new opening may lead to.
-function mainStretch(walk0, w, h, heart) {
+function mainStretch(walk0, w, h) {
   const lab = new Int32Array(w * h).fill(-1), size = []; let best = -1;
   for (let s = 0; s < w * h; s++) {
     if (!walk0[s] || lab[s] >= 0) continue;
@@ -26,26 +26,23 @@ function mainStretch(walk0, w, h, heart) {
       for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = Y * w + X; if (walk0[j] && lab[j] < 0) { lab[j] = id; st.push(j); } } }
   }
   for (let k = 0; k < size.length; k++) if (best < 0 || size[k] > size[best]) best = k;
-  const hi = heart ? heart.y * w + heart.x : -1; if (hi >= 0 && lab[hi] >= 0) best = lab[hi];
   return i => lab[i] === best;
 }
 
-// walk0: Uint8Array(w * h), 1 where the template's ground and props leave a tile free (the adapter builds it); heart: the template's heart.
-export function shapeEdges(G, seed, cell, place, ts, walk0, heart) {
+// walk0: Uint8Array(w * h), 1 where the template's ground and props leave a tile free (the adapter builds it).
+export function shapeEdges(G, seed, cell, place, ts, walk0) {
   const w = place.w, h = place.h, NP = w * h, I = (x, y) => y * w + x, inb = (x, y) => x >= 0 && y >= 0 && x < w && y < h;
   const tilesE = new Uint8Array(NP).fill(T.GRASS), terr = new Uint8Array(NP), tmask = new Uint8Array(NP);
   const opening = {}; for (const o of place.openings) opening[o.side] = o;
   const lenOf = d => d === 'up' || d === 'down' ? w : h;
-  const main = walk0 ? mainStretch(walk0, w, h, heart) : () => true;
+  const main = walk0 ? mainStretch(walk0, w, h) : () => true;
   // A stair, crossing or gap starts at the template's opening (or the middle, by seed) and moves along the side until the ground behind it (depth `d`) is dry stretch both tiles wide.
   const led = (dir, k, d) => { for (const kk of [k, k + 1]) for (let dd = d - 2; dd <= d; dd++) { const p = sideXY(dir, kk, dd, w, h); if (!inb(p.x, p.y) || !main(I(p.x, p.y))) return false; } return true; };
   const place2 = (dir, len, want, d) => { for (let o = 0; o < len; o++) for (const k of o ? [want + o, want - o] : [want]) if (k >= 3 && k <= len - 5 && led(dir, k, d)) return k; return want; };
   const wantAt = (dir, ei, len) => { const o = opening[SIDE_OF[dir]]; return o ? o.from + ((o.to - o.from - 1) >> 1) : Math.max(3, Math.min(len - 5, stairPos(seed, ei, len))); };   // on the template's opening
   const at = (dir, ei, len) => place2(dir, len, wantAt(dir, ei, len), 4);
   const atCross = (dir, ei, len) => place2(dir, len, wantAt(dir, ei, len), (!(G.soft && G.soft.scree[ei]) && G.banks && G.banks[ei] ? BANK_IN : 0) + 4);
-  // the swimmer's side is as deep as the place has room for: never over the heart (its depth in from that side)
-  const hd = heart && cell === G.swim ? (G.swimDir === 'up' ? heart.y : G.swimDir === 'down' ? h - 1 - heart.y : G.swimDir === 'left' ? heart.x : w - 1 - heart.x) : 5;
-  const { stairs, cross } = edgeLayer(G, seed, cell, { w, h, tiles: tilesE, terr, tmask, stairAt: at, crossAt: atCross, waterDepth: { min: 2, span: 1 }, swimDepth: { min: Math.max(3, Math.min(5, hd)), span: 1 } });
+  const { stairs, cross } = edgeLayer(G, seed, cell, { w, h, tiles: tilesE, terr, tmask, stairAt: at, crossAt: atCross, waterDepth: { min: 2, span: 1 }, swimDepth: { min: 5, span: 1 } });
   const R = new Uint8Array(NP), rim = [];
   for (let i = 0; i < NP; i++) if (terr[i] || tilesE[i] !== T.GRASS) { R[i] = 1; rim.push(i); }
   // which sides carry a band that replaces the tree wall (a bare shadow strip does not)

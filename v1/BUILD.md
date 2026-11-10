@@ -13,7 +13,7 @@ complete physical kit.
 | Station | Linux x86-64 executable with GCC/CMake/Ninja; Raspberry Pi4 reference | ARM build, HDMI/input adapters and board performance. |
 | Companion | [ESP32-S3 shared-UI headless compile/link target](native/companion/README.md) | Runtime allocation/profile, panel/input/game/save/radio adapters and board proof. |
 | Caddy | [ESP32-S3 shared Dock UI headless target](native/caddy/README.md), four-gray host frames | Physical panel/printer/input/charging, storage and radio. |
-| Genome/art authoring | Guided host workspace, versioned source/replay, explicit Google API rendering and retained original prompts/images | Partial consumers, broad anatomy, faithful masters, animation/sharing and game integration; OpenAI unconfigured. [Evidence](prototype/generator-workbench/evidence/api-rendering/README.md). |
+| Genome/art authoring | Guided host workspace, versioned source/replay, explicit Google API rendering and retained original prompts/images | Partial consumers, broad anatomy, faithful masters, animation/sharing and game integration; OpenAI unconfigured. The workbench has been retired. |
 | Other host studies | [Isolated experiments](prototype/README.md) and legacy nRF Probe scaffold | These do not form another integrated game or current portable firmware. |
 | Cloud/mobile | Optional global-service roles and mobile fallback | Production services, authentication, synchronization and mobile implementation. |
 | Website | Product introduction under `website/` | Separate from game clients and physical-kit proof. |
@@ -33,8 +33,7 @@ sidecars outside release bundles and back them up together. The
 deployment changelog separates hosting and native activation.
 
 Hosting `/`, `/genome/` and `/sandbox/` does not replace the native game binary or
-reset saves. The [guided authoring proof](prototype/generator-workbench/evidence/guided-authoring/README.md)
-records its separate host behavior. Status identifies implementation
+reset saves. Status identifies implementation
 and delivery evidence; buildability does not settle open product designs.
 
 Before hardware investment, the [connected software proof](specs/devices.md#software-proof-before-hardware-investment)

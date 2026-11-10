@@ -229,7 +229,7 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 
 // ---- The expedition: outings, notches, the trip ----
 function ending(S, ex, reason = "home") {
-  const t = vm.createContext({ console, S, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 16,
+  const t = vm.createContext({ console, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 16,
     reachCounts: () => ({ found: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
     worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
   const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
@@ -258,9 +258,9 @@ const notchExp = (calls, o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], ca
   abUsed: 1, pt: { id: 1 }, tripPlaces: ["meadow"] }, o);
 const notchSave = () => save({ carried: [1], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [] });
 const NOTCH_LINE = "Dot gains a skill notch";
-test("notch: a bonded partner digs, makes no Call, End expedition: notches unchanged, no notch line", () => {
+test("notch: a bonded partner digs, enters no place, End expedition: notches unchanged, no notch line", () => {
   const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 1;
-  S.exp = notchExp(0); ending(S, S.exp, "home");
+  S.exp = notchExp(0, { entered: [] }); ending(S, S.exp, "home");
   assert.equal(dot.notches, 1); assert.ok(S.report.waited, "nothing explored");
   assert.ok(!S.report.lines.includes(NOTCH_LINE)); assert.equal(S.report.notch, null, "no notch row");
 });
@@ -700,14 +700,15 @@ test("End expedition, the hold-empty branch (an old save): main's line, and no y
 test("End expedition after a break: 'Docking mends the Probe for free.'", () => {
   assert.ok(sealed({ reason: "break", dropped: 0, lost: [] }, []).at("Docking mends the Probe for free."));
 });
-test("Cargo's preview predicts End: the hold plus the yield still to come, always a seal when an explored walk has room", () => {
+test("Cargo's preview predicts End: what the hold seals; an empty hold seals nothing", () => {
   const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealedWords", "numWord", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
-    vm.createContext({ S: { exp: { cargo, stats: { hearts: 1 }, shield: 3, smax: 3, dField }, bay }, BAY: 3, CAP: 20, walkYield: () => yld, NUM_WORD: ["no", "one", "two", "three"] }));
-  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), ["Seals the supplies · crate 1 of 3", "The Station opens it when you dock"], "an empty hold still seals the walk's Data");
+    vm.createContext({ S: { exp: { cargo, entered: [0], stats: { hearts: 1 }, shield: 3, smax: 3, dField }, bay }, WORDS: { waits: "Nothing explored · the world waits" }, BAY: 3, CAP: 20, walkYield: () => yld, NUM_WORD: ["no", "one", "two", "three"] }));
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), [], "an empty hold seals nothing (Data comes only from readings and creature acts): no line");
   assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods + supplies · crate 1 of 3", "pods only in the hold: pods and supplies");
   assert.equal(run({ e: 1, d: 2, s: 0, pods: [1] }, [{}])[0], "Seals one pod + supplies · crate 2 of 3");
-  assert.equal(run({ e: 0, d: 6, s: 0, pods: [] }, [], 6, 6)[0], "Seals the supplies · crate 1 of 3", "the yield already in the hold");
-  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])), ["Bay full · your finds stay in the hold", "dock to free it"], "bay full, hold empty: the bay-full lines");
+  assert.equal(run({ e: 0, d: 6, s: 0, pods: [] }, [], 6, 6)[0], "Seals the supplies · crate 1 of 3", "the Data already in the hold");
+  assert.deepEqual(plain(run({ e: 0, d: 1, s: 0, pods: [] }, [{}, {}, {}])), ["Bay full · your finds stay in the hold", "dock to free it"], "bay full, something in the hold: the bay-full lines");
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])), [], "bay full, hold empty: nothing to keep, no line");
   assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [], 0)), [], "an old save with no yield and no hold: no line");
   for (const o of [run({ e: 0, d: 0, s: 0, pods: [] }), run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])]) assert.ok(!o.some(l => /no crate|you still earn/.test(l)));
   assert.doesNotMatch(source("sealPreview"), /no crate|you still earn/);
@@ -880,7 +881,7 @@ test("X1 7: a returned S05 pod keeps its species and genome seed through every r
   assert.deepEqual(plain(back()), [{ sp: -1, species: "S05", gs: 12345 }, { sp: 0 }], "the field pod is the same individual; an older record keeps today's bytes (no species, no gs)");
   assert.ok(ST.dockKey(st, p.sv()).lifted); p.putSt(st); p.run("save()");
   p.run("S.phase = 'setup'"); p.key("confirm"); p.key("confirm"); assert.ok(p.S.exp); p.key("confirm"); assert.equal(p.S.phase, "patch");
-  p.run("TEST.findHeart()"); p.pass(2000);   // the heart is found: the place counts as explored, so the expedition seals a crate
+  p.run("TEST.exploreHere()"); p.pass(2000);   // the heart is found: the place counts as explored, so the expedition seals a crate
   const pod = "S.pods.find(q => q.species === 'S05')", held = () => p.run("S.exp.cargo.pods.map(q => ({ id: q.id, species: q.species, gs: q.gs }))");
   // take
   p.run(`takePod(${pod})`); assert.deepEqual(plain(held()).map(q => [q.species, q.gs]), [["S05", 12345]], "take");
@@ -1024,7 +1025,7 @@ test("X26 §5.5: one set-out message names the rider, once per expedition; no Di
 });
 
 test("X26 §5.6: endExpedition gives the rider +1 outing and its mem, no notch; the trip's partner is null and carried holds Dot", () => {
-  const p = X26.world([dot({ bonded: true })], [1]); p.setOut(); p.key("confirm"); p.run("TEST.findHeart()"); p.pass(2000);
+  const p = X26.world([dot({ bonded: true })], [1]); p.setOut(); p.key("confirm"); p.run("TEST.exploreHere()"); p.pass(2000);
   p.run("S.exp.abUsed = 1; endExpedition('sent');");
   const m = p.S.mibis[0]; assert.equal(m.outings, 1); assert.ok(m.mem, "its memory: " + m.mem); assert.equal(m.notches, 0, "no notch");
   const tr = p.S.trips.at(-1); assert.equal(tr.partner, null); assert.deepEqual(plain(tr.carried), [1]);

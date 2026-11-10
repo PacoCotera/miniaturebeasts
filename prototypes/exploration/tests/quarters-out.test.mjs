@@ -35,14 +35,14 @@ test("no quarter is drawn on the reach view or the full map, whatever the veil l
   }
 });
 
-test("the reach line counts places found, not explored, and the world turn never veils a place again", () => {
+test("the reach line counts places explored, and the world turn never veils a place again", () => {
   const f = fixture(), run = f.run;
-  assert.match(run("reachLine()"), /^Found 0 of \d+/);
-  assert.doesNotMatch(run("reachLine()"), /xplored|urvey/);
-  // lift a whole place, find its heart, and see the count and the dot move
-  run("S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff); TEST.findHeart();");
+  assert.match(run("reachLine()"), /^Explored 0 of \d+/);
+  assert.doesNotMatch(run("reachLine()"), /urvey|found/i);
+  // lift a whole place, walk it, and see the count and the dot move
+  run("S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff); TEST.exploreHere();");
   assert.ok(run("explored(S.exp.pos)"), "the heart is found: the dot fills");
-  assert.match(run("reachLine()"), /^Found 1 of \d+/);
+  assert.match(run("reachLine()"), /^Explored 1 of \d+/);
   // a world turn with a storm everywhere and new arrivals: every lifted veil stays lifted
   const key = run("S.exp.patch.key"), before = JSON.stringify(plain(run("S.veil")));
   run("worldTurn({ trail: [], storm: Array.from(G.comp).map((v, c) => v ? c : -1).filter(c => c >= 0) })");

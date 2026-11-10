@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Companion Field Test</title>
+<script type="importmap">{"imports":{"fastnoise-lite":"./node_modules/fastnoise-lite/FastNoiseLite.js","flatqueue":"./node_modules/flatqueue/index.js","idb-keyval":"./node_modules/idb-keyval/dist/index.js"}}</script>
 <script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
 <script>if (new URLSearchParams(location.search).has("raw")) document.documentElement.classList.add("raw");</script>
 <meta name="description" content="Miniature Beasts exploration rough playable on a simulated Companion screen: 450×600 pixels at 1:1, a fixed 51-colour palette, the world map, living patches, storms, partners and two gates.">
@@ -193,9 +194,8 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Leave" in a place, "← End expedition" on the start cell or a lit outpost, "← Mibis", "← close"). In the field it opens the menu: Leave (in a place) or End expedition on top, then Wait, Probe, Cargo, Mibis.</li>
         <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. On Mibis and a mibi's own screen it calls the mibi with you, which answers..</li>
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
-        <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. Nothing puts the veil back.</li>
-        <li>The dots top left are your reach, one per cell: a dot fills once you have found what that place keeps; your cell is framed.</li>
-        <li>Find what a place holds and the whole place shows itself; its mark goes on your map.</li>
+        <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. Nothing puts the veil back. On high ground you see further: it lifts 6 tiles around you.</li>
+        <li>The dots top left are your reach, one per cell: a dot fills once you have walked most of that place; your cell is framed.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
         <li>Up to three mibis are <b>with you</b> in the Companion; the others are at home at the Station. The partner joins the Probe: the lead if it is grown, otherwise the first grown mibi with you. While docked, ✓ <b>Take</b> a mibi at home or <b>Leave</b> one at home on Mibis (the Companion is full at three); the Station's Vivarium can ask for a mibi too, applied at the dock.</li>
         <li>Between expeditions the Companion shows a mibi with you, large. ))) and it answers; ✓ <b>Walk together</b> once per world turn, undocked, with all of them (a moment together, no Data), then ✓ <b>Tend</b> each one once a day (once a minute with Playtest waits on). Three Tends earn the bond; a bonded juvenile grows up with care. The pad looks at the others; ← goes up to Mibis.</li>
@@ -207,9 +207,9 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
       <ol>
         <li>On an expedition the map shows your reach large, with the whole world small in the corner; "Full map" in the menu switches to the whole map (and "Reach view" back).</li>
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
-        <li>Go down into a place and Call. The answer says which way to walk; when you find what the place keeps, its dot fills.</li>
+        <li>Go down into a place and walk it. Call lifts the veil around you and shows what is there; once you have walked most of a place, its dot fills.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
-        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it: each creature pays 1 Data for feeding it and 1 for a settle, once a trip, shown on its line before you act, up to 8 a trip (sometimes a pod too). An expedition that fills a dot also brings home 2 / 4 / 6 / 8 Data by the highest tier it entered (meadow and pond edge 2, wood and rock field 6, the cave 8), none if the Probe breaks, when you end the expedition.</li>
+        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it: each creature pays 1 Data for feeding it and 1 for a settle, once a trip, shown on its line before you act, up to 8 a trip (sometimes a pod too). Data also comes from strike marks, dark glassy streaks where lightning went into the ground: face one and ✓ Read the strike mark. Strikes bring up to 2 / 4 / 6 / 8 Data a trip, by the highest tier you entered (meadow and pond edge 2, wood and rock field 6, the cave 8); one reading in a place of that tier is enough.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
@@ -254,19 +254,20 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn, templateFor, TEMPLATES6 } from "./src/world.mjs";
-import { fillPlace6 } from "./src/fill6.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { genWorld7, layout7 as layout7In, reviveLayers } from "./src/world7.mjs";
+import { readyRealm } from "./src/realm-store.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen5, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { pickHeart, heartPath, heartSeen, tellShows, tellOn, springClues, HEART_TEXT, HEART_FOUND_R, TELL_R, ANSWER_ACTIONS, SPRING_ESSENCE, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, FOG_NOT_BEEN, FOG_BEEN, TELL_RANK } from "./src/hearts.mjs";
+import { WORDS } from "./src/words.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
-import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames } from "./src/walk-data.mjs";
+import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 import { readOptions } from "./src/options.mjs";
-const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot, a baked place
+const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -320,7 +321,7 @@ const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'ford', 'cliff']
 // random id kept under mb-companion-<slot> (the play page's second Companion is slot B, ?companion=B), and stored with
 // the first write. The single shared save of earlier builds (LEGACY_KEY) moves under Companion A's key with its first
 // write once it has loaded; bytes this page cannot load stay where they are and open read-only, as before.
-const OLD_GENS = [5].filter(g => !GENS.includes(g));   // generator 5 stays frozen in world.mjs for its goldens; a save of it is reset, not played
+const OLD_GENS = [5, 6].filter(g => !GENS.includes(g));   // a save of an older generator is reset, not played: its bytes are kept under <key>.gen<N>
 let RESET_CARRY = null;   // set by load() when the save found was reset (or the Station reset first); the new realm takes it (newRealm)
 const LEGACY_KEY = 'mb-save-v8', SAVE_V = 10, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
 let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
@@ -418,7 +419,7 @@ let MIBI_NAMES = []; import('../play/src/names.mjs').then(m => { MIBI_NAMES = m.
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
 const PIN_TEXT = { burrow: 'too narrow', water: 'needs a swimmer', soft: 'needs a rambler', bank: 'needs a digger', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
-const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', sh: 'water glints', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'too narrow', water: 'fast water', soft: 'needs a rambler', bank: 'needs a digger', deep: 'deep ?' };
+const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'too narrow', water: 'fast water', soft: 'needs a rambler', bank: 'needs a digger', deep: 'deep ?' };
 const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'A beacon: light it for 1 Energy to reveal the land around', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: 'An ' + DEPOT_NAME + ': light it for 1 Energy to end an expedition, mend and shelter there',
   pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow burrow · too narrow to follow, until a Tuikis digs it out', water: 'Fast water · needs a swimmer', soft: 'Muddy water or loose scree · a rambler can cross it', bank: 'Earth bank · a digger can dig a way up or down', deep:'Deep ? · a tier 2 Probe can read it' };
 
@@ -431,18 +432,16 @@ const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 const TEST = { calm: false, at: null, clock: null, boom: 0,
   paint: (x, y) => { resetCanvas(); g.fillStyle = '#ff00ff'; g.fillRect(x, y, 4, 4); },   // test hook only: a magenta mark on a clean canvas, which the next whole frame must paint over   // boom: 1 makes one sprite throw, 2 makes the place view throw after its sprites (a test that no throw loses the explorer or the bars)
    // test hook only: start expeditions without a storm, for measuring calm Energy; at: the reveal's clock held at this many ms (null: the real one), so its frames can be still pictures
-  // test hook only: the place's heart is found, as by walking up to it (the explorer's tile is restored); what a test that once made a Call to count the place explored now does
-  // test hook only: the place's heart made of `kind` (at the same tile), unfound, the explorer `back` steps from it on the way to it, the veil lifted round the explorer
-  tellStill(kind, back) { const P = S.exp.patch, h0 = heartOf(P.key); if (!h0) return null; const end = h0.path[h0.path.length - 1];
-    S.cells = {}; layoutCache.clear(); S.veil = {}; S.called = {}; RT.key = null; RT.pl = null; RT.ca = null; { const lay = layout(P.key); lay.heart = { x: end.x, y: end.y, kind, reachBy: null, ...heartPath(lay, end.x, end.y) }; }
-    const h = heartOf(P.key), at = h.path[Math.max(0, h.path.length - 1 - back)]; P.x = at.x; P.y = at.y; walkLift(); return { x: h.x, y: h.y, clues: h.clues.map(q => ({ x: q.x, y: q.y })) }; },
-  findHeart(near) { const P = S.exp.patch, h = heartOf(P.key); if (!h || !h.path.length) return false; const end = h.path[near ? Math.max(0, h.path.length - 1 - near) : h.path.length - 1], sx = P.x, sy = P.y; P.x = end.x; P.y = end.y; walkLift(); if (!near) { P.x = sx; P.y = sy; } return heartFound(layout(P.key).cell); } };
+  // test hook only: the place is walked: its veil is lifted everywhere and it counts as explored (what walking most of it does)
+  exploreHere() { const P = S.exp.patch, lay = layout(P.key); S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); checkWalked(); return walkedCell(lay.cell); } };
 let G = null;     // static world generated from the seed (never saved)
 let S = null;     // everything that changes (saved)
 
 // The world with its overlays: soft ground (wades, scree) and earth banks, pure functions of the world and its seed, attached here and never by genWorld (the goldens stay).
-function worldOf(seed, gen, biome) { const g = genWorld(seed, gen, biome); g.soft = softGround(g, seed); g.banks = bankEdges(g, seed); return g; }
+function worldOf(seed, gen, biome, slot) { const g = gen === 7 ? genWorld7(seed, slot || [2, 2]) : genWorld(seed, gen, biome); g.soft = softGround(g, seed); g.banks = bankEdges(g, seed); return g; }
 // What the partner can cross (the partner only: a rider has no ability). Tuliko: mud and scree, and a ring more reach; Rupar: earth banks, dug at the first crossing of a walk.
+// A generator 7 region is the realm's land at its slot, so it is made from the realm's seed (region 1's), not the region's own.
+const worldOfRegion = R => worldOf(R.gen === 7 ? S.regions[0].seed : R.seed, R.gen, R.biome, R.slot);
 function abIs(ab) { const pt = S && S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === ab; }
 function canSure() { return abIs('sure'); }
 function canBank() { return abIs('bank'); }
@@ -467,7 +466,10 @@ function firstPods(seed, cell, pods) {
   const ok = c => podSite(c, buried());
   const pick = (pools, id, sp) => { const pool = pools.find(a => a.length); if (pool) { const c = R.pick(pool); out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); } };
   const d1 = reach.filter(c => dist(c) === 1);
-  if (!buried().some(p => p.sp === 0 && d1.includes(+p.k))) { const e = d1.filter(ok);
+  // pod A lies in the start's own place when it holds a pod slot (the generator gives every start one: hold.mjs, "a start's guarantees"), so the first Call there can lift it; else at distance 1 as before
+  const here = PL.ready && G.gen === 7 ? layout(String(cell)) : null;
+  if (here && (here.podSlots || []).length && !buried().some(p => p.sp === 0 && +p.k === cell)) out.push({ id: 'fa', k: String(cell), x: -1, y: -1, sp: 0, h: 1, bur: 1, g: groundName(G.land[cell], false), how: 'ground' });
+  else if (!buried().some(p => p.sp === 0 && d1.includes(+p.k))) { const e = d1.filter(ok);
     pick([e.filter(c => G.land[c] === L.MEADOW || G.land[c] === L.POND), e.filter(c => !G.glow.includes(c)), e], 'fa', 0); }
   if (buried().filter(p => reach.includes(+p.k)).length < 2) { const e = reach.filter(c => dist(c) === 2 && ok(c));
     pick([e.filter(c => G.land[c] === L.ROCK || G.land[c] === L.WOOD), e], 'fb', 1); }
@@ -492,48 +494,36 @@ function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state 
 
 // ===================== 4. Patch layouts (pure: seed + cell) =====================
 const layoutCache = new Map();
-// Baked places (place foundation C7): the dev switch ?place=<id> plays a baked place (prototypes/places/baked) in every land cell of the world.
-const BAKED = { ready: false, view: null, adapt: null };
-async function loadBakedPlace() {   // the modules load on demand, so the page without ?place= never touches them
+// Generator 7's tile set and pieces (loaded once at boot; the tests give them at once as window.__places).
+// PL.ctx is what a cell is baked with in the page (src/bake7.mjs: the tile set, the terrain table, the dual grid's layer descriptors); PL.View draws one baked cell (a page without it draws the layout's tiles).
+// A cell's view is made on first use and kept in a small LRU (PL_VIEWS_MAX), so memory stays flat however far the walk goes.
+const PL = { ready: false, ts: null, terrains: null, desc: null, ctx: null, View: null, mk: null, views: new Map(), haze: null };
+const PL_VIEWS_MAX = 8, SET7 = 'ninja-test';
+async function loadPlaces() {
   try {
-    const id = OPT.place; if (!id) return;
+    if (window.__places) { Object.assign(PL, window.__places); PL.ready = true; return; }
     const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
-    const pm = await import(base + 'src/page.mjs'), am = await import(base + 'src/adapter.mjs'), { place, ts } = await pm.loadBaked(bytes, base, id);
-    const terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
-    const ox = (PW - place.w) >> 1, oy = (PH - place.h) >> 1, mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-    BAKED.view = new pm.BakedView(ts, place, { core: RGB.slice(0, 48), night: C.night, ox, oy, mkCanvas: mk, haze: PL6.haze });
-    BAKED.adapt = key => am.adaptPlace(place, ts, terrains, { key, cell: +key });
-    BAKED.ready = true; layoutCache.clear(); RT.key = null;
-  } catch (e) { console.warn('the baked place did not load', e); }
-}
-// Generator 6's places (place foundation C14): the four templates and their mirrors, baked, loaded once at boot (the tests give them at once as window.__places6).
-// PL6.places: baked id -> the place; PL6.adapt builds a layout from one; PL6.View draws one (a page without it draws the layout's tiles).
-const PL6 = { ready: false, places: new Map(), ts: null, terrains: null, adapt: null, View: null, mk: null, views: new Map(), haze: null };
-async function loadPlaces6() {
-  try {
-    if (window.__places6) { Object.assign(PL6, window.__places6); PL6.ready = true; return; }
-    const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
-    const pm = await import(base + 'src/page.mjs'), am = await import(base + 'src/adapter.mjs'), rd = await import(base + 'src/format/read.mjs');
-    const ids = Object.values(TEMPLATES6).flatMap(b => [b, b + '~x']), places = await Promise.all(ids.map(async id => rd.readPlace(await bytes(base + 'baked/' + id + '.mbplace'))));
-    PL6.ts = rd.readTileSet(await bytes(base + 'baked/' + places[0].set + '.mbtiles'));
-    PL6.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
-    ids.forEach((id, i) => PL6.places.set(id, places[i]));
-    PL6.adapt = am.adaptPlace; PL6.View = pm.BakedView; PL6.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-    PL6.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
+    const pm = await import(base + 'src/page.mjs'), rd = await import(base + 'src/format/read.mjs');
+    PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles'));
+    PL.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
+    PL.desc = reviveLayers(JSON.parse(new TextDecoder().decode(await bytes(new URL('./art/gen7/layers.json', location.href).href))));
+    PL.ctx = { ts: PL.ts, terrains: PL.terrains, desc: PL.desc };
+    PL.View = pm.BakedView; PL.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+    PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadHazeKit(base, bytes);
-    PL6.ready = true; layoutCache.clear(); RT.key = null;
+    PL.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); }
 }
 // The art desk's range haze (places/haze/, signed in mibi-art 9fa531bba; SOURCE.md there): nine wash sheets, the 8-colour ramp and the 21 remap tables. The kit is built once and
-// handed to every place view (PL6.haze); a view without it draws no haze.
+// handed to every place view (PL.haze); a view without it draws no haze.
 async function loadHazeKit(base, bytes) {
   if (typeof Image === 'undefined') return;
   try {
     const hm = await import(base + 'src/haze.mjs'), dir = base + 'haze/', files = {};
-    await Promise.all(hm.hazeFileNames().map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL6.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+    await Promise.all(hm.hazeFileNames().map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
       files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = dir + n + '.png'; })));
     const json = async n => JSON.parse(new TextDecoder().decode(await bytes(dir + n)));
-    PL6.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'), PL6.ts.palette.length);
+    PL.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'), PL.ts.palette.length);
   } catch (e) { console.warn('the range haze did not load', e); }
 }
 // The art desk's quartz stone family (art/stone/, signed in mibi-art ccbb3bb17; SOURCE.md there) and the look view's three stone marks (art/look/, same commit). The stones' colours are not all on the
@@ -544,21 +534,21 @@ const STONE_COLOURS = [], STONE_PIECES = new Map();
 // the screen colour at each index (the core 47 from the page, then the set's own) and the tile set's tables by name (storm, dark2, fog, fade, dark). Null until the places have loaded.
 const PLACE_LEVELS = [null, 'storm', 'dark2', 'fog', 'fade'], PT = { ts: null, rgb: null, tabs: null };
 function placeTables() {
-  const ts = PL6.ts || (BAKED.view && BAKED.view.ts); if (!ts) return null;
+  const ts = PL.ts; if (!ts) return null;
   if (PT.ts !== ts) { PT.ts = ts; PT.rgb = RGB.slice(0, 48).map(c => c.slice()); ts.palette.forEach(c => PT.rgb.push([(c >> 16) & 255, (c >> 8) & 255, c & 255])); PT.tabs = Object.fromEntries(ts.lightTables.map(r => [r.name, r.map])); }
   return PT;
 }
 const STONE_FILES = ['tall', 'small'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
-const STONE_LOOK = new Set(['look-heart-stone', ...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
+const STONE_LOOK = new Set([...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
 function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
-  const mk = (w, h) => PL6.mk ? PL6.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }), prop = dy !== undefined;
+  const mk = (w, h) => PL.mk ? PL.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }), prop = dy !== undefined;
   const seen = new Set(STONE_COLOURS.map(q => q.join())), keep = (w, h, data, dx, dy, key) => {
     let c = null; const tinted = new Map();   // the canvas is made when first drawn; a prop's tinted ones (storm, fog, fade) by table set and number
     const plain = () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; };
     // canvas(rm, flip, chk, veil) as a palette buffer's: chk thins the picture to a checkerboard (a crown or roof the explorer stands under), veil is the one-step-darker night dot of an unseen tile
     STONE_PIECES.set(key, { w, h, dx, dy, canvas: (rm, flip, chk, veil) => {
       const pt = prop && (rm || veil) ? placeTables() : null, lut = pt && rm ? pt.tabs[PLACE_LEVELS[rm]] : null;   // a prop (given a foot offset) takes the places' own light tables (storm, dark2, fog, fade, dark), the ones its place's ground takes
-      if (!lut && !(prop && (chk || veil))) return plain();   // only a prop takes the tables
+      if (!lut && !(prop && (chk || veil || flip))) return plain();   // only a prop takes the tables
       const tk = (flip ? 4 : 0) + (chk ? 2 : 0) + (veil ? 1 : 0) + (rm || 0) * 8 + (pt ? 64 : 0); let tc = tinted.get(tk); if (tc) return tc;
       tc = mk(w, h); const tg = tc.getContext('2d'), im = tg.createImageData(w, h), near = new Map();   // each colour takes its nearest palette colour's entry in the table
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const o = (y * w + (flip ? w - 1 - x : x)) * 4, p = (y * w + x) * 4; if (!data[o + 3] || (chk && (x + y) % 2)) continue;
@@ -569,7 +559,8 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
         const rgb = pt.rgb[c]; im.data[p] = rgb[0]; im.data[p + 1] = rgb[1]; im.data[p + 2] = rgb[2]; im.data[p + 3] = 255; }
       tg.putImageData(im, 0, 0); tinted.set(tk, tc); return tc; } }); };
   for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] && !seen.has(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2])) { seen.add(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2]); STONE_COLOURS.push([f.data[o], f.data[o + 1], f.data[o + 2]]); } }
-  keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? dy || 0 : 32 - f.height, name);
+  const bush = look && name.startsWith('bush-');   // a bush's foot is its file's bottom centre (the manifest's anchor), set on the tile's bottom centre (16, 31): the file's own size decides, so a resize needs no code change
+  keep(f.width, f.height, f.data, bush ? 16 - (f.width >> 1) : look ? 0 : (32 - f.width) >> 1, bush ? 32 - f.height : look ? dy || 0 : 32 - f.height, name);
   const ups = (name.startsWith('stone-small-') && name.endsWith('@16')) || name === 'prop-fruit' || name.startsWith('icon-') ? [2] : name.startsWith('pod-walk-') ? [2, 3] : [];   // doubled (and tripled), for a sign, a card or a tray: each pixel a whole block
   for (const k of ups) {
     const W = f.width * k, H = f.height * k, d = new Uint8ClampedArray(W * H * 4); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) for (let c = 0; c < 4; c++) d[(y * W + x) * 4 + c] = f.data[((Math.floor(y / k)) * f.width + Math.floor(x / k)) * 4 + c];
@@ -578,11 +569,11 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
-const PROP_DY = { 'bush-full-32': -4, 'bush-bare-32': -4, 'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+const PROP_DY = { 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full-40': 0, 'bush-full-40-m': 0, 'bush-bare-40': 0, 'bush-bare-40-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (16 x 20) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
   ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
     'pod-walk-16x20-bone', 'pod-walk-16x20-lime', 'pod-walk-16x20-ice', 'pod-walk-16x20-sand', 'pod-walk-16x20-sprout', 'pod-walk-16x20-lavender', 'canopy-legacy', 'roof-legacy'].map(n => [n, 0])) };
-const PROP_FILES = Object.keys(PROP_DY);
+const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
 const PROP_SIZE = { 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-16x20-' + s, [16, 20]])) };
@@ -603,7 +594,7 @@ async function loadStoneArt() {
       stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/stone/', location.href).href + n + '.png'; })));
   } catch (e) { console.warn('the stones did not load', e); }
 }
-// The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks, the spring's puddles, the shimmer sign,
+// The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks,
 // the "!" notice card and the Curious bubble. Every file is loaded at boot and read into a palette-index buffer (every pixel is on the core palette), so the fog, storm and night tables
 // act on it as on any sprite. walkPB(name) is that buffer; until the files are in, a named empty one (nothing is drawn in code).
 const WALK_KINDS = ['windstep', 'reedpool', 'splitstone', 'hollowtree'], WALK_TEX = ['meadow', 'wood', 'rock', 'pondrim', 'beach', 'foam', 'water'], WALK_CS = [72, 48, 26];
@@ -611,8 +602,7 @@ const WALK_FILES = [
   ...WALK_KINDS.flatMap(k => ['found', 'been'].flatMap(s => [26, 18, 12].map(n => `mark-${k}-${s}-${n}`))),
   ...WALK_TEX.flatMap(t => WALK_CS.map(c => `map-tex-${t}-${c}`)),
   ...['cliff-face', 'cliff-lip-h', 'cliff-lip-v', 'cliff-side', 'ramp', 'ramp-side'].flatMap(e => WALK_CS.map(c => `edge-${e}-${c}`)),
-  ...['48', '24', 'map7', 'map4'].flatMap(k => [0, 1, 2].map(s => `spring-puddle-${k}-spark${s}`)),
-  'icon-shimmer-16', 'spot-notice-16x22', 'bubble-curious-11x13'];
+  'bubble-curious-11x13'];
 const ART_DONE = { walk: false, open: false };   // each art load has settled (loaded or failed): the opening paints its land once, after both, not once per arrival
 const WART = { pb: new Map(), empty: new Map(), ready: false };
 function walkPB(name, w = 1, h = 1) {
@@ -632,13 +622,13 @@ function walkRead(files) {   // { name: { width, height, data (RGBA) } } to pale
 // The look view's marks (art/look/, signed in mibi-art 07cd89ed6; SOURCE.md there): you are here (a still and two pulse frames), the heart marks, and the takeables (two frames and a still each).
 // look-heart-stone, look-take-charge and look-take-warm are PLACEHOLDERS (a flat grey stone) until the owner picks a stone look: the slots are named, so a swap is files only.
 // Each is drawn 1:1 with its anchor on the tile's bottom centre.
-const LOOK_TAKE = ['pod', 'fruit', 'dew', 'tuft', 'beacon', 'charge', 'warm'], LOOK_HEART = ['spring', 'nest', 'moment', 'stone'];
+const LOOK_TAKE = ['pod', 'fruit', 'dew', 'tuft', 'beacon', 'charge', 'warm'];
 // The partner as itself in the whole-place view (art/look/look-partner-*, signed in mibi-art b1141c8ab, all twenty kinds): adult 18 px tall, young 16, anchor at the foot, bottom centre (x = width >> 1, y = height - 1).
 // PARTNER_FILE: the species index (as SPECIES) to the desk's kind number (the page's order puts Tuikis before Untuva).
 const PARTNER_FILE = ['S01', 'S03', 'S02', ...Array.from({ length: 17 }, (_, i) => 'S' + String(i + 4).padStart(2, '0'))];
 const partnerMark = (sp, young) => 'look-partner-' + PARTNER_FILE[sp] + (young ? '-juv' : '');
-const LOOK_FILES = [...PARTNER_FILE.flatMap(k => ['', '-juv'].map(j => 'look-partner-' + k + j)), 'you-here-still', 'you-here-pulse-1', 'you-here-pulse-2', ...LOOK_HEART.map(k => 'look-heart-' + k), ...LOOK_TAKE.flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))];
-const LOOK_SIZE = { you: [24, 30, 12, 30], spring: [22, 18, 11, 17], nest: [22, 18, 11, 17], moment: [20, 16, 10, 15], stone: [18, 25, 9, 24], take: [26, 26, 11, 25] };   // w, h, anchor x, anchor y
+const LOOK_FILES = [...PARTNER_FILE.flatMap(k => ['', '-juv'].map(j => 'look-partner-' + k + j)), 'you-here-still', 'you-here-pulse-1', 'you-here-pulse-2', ...LOOK_TAKE.flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))];
+const LOOK_SIZE = { you: [24, 30, 12, 30], take: [26, 26, 11, 25] };   // w, h, anchor x, anchor y
 function lookMark(name, kind, x, y, T) {   // anchor on the tile's bottom centre: (x, y) is the tile's centre, T the tile size
   if (kind === 'partner') { const pb = walkPB(name); blit(pb, x - (pb.w >> 1), y + T / 2 - (pb.h - 1)); return; }
   const [w, h, ax, ay] = LOOK_SIZE[kind]; blit(STONE_PIECES.get(name) || walkPB(name, w, h), x - ax, y + T / 2 - ay);
@@ -653,23 +643,19 @@ async function loadWalkArt() {
     walkRead(files);
   } catch (e) { console.warn('the walk art did not load', e); } finally { ART_DONE.walk = true; }
 }
-// The view that draws a baked layout: the dev switch's one, or the generator 6 place's own (made on first use; each place's props and ground are cached in it).
+// The view that draws a baked layout: the cell's own (made on first use, the last PL_VIEWS_MAX kept; each cell's props and ground are cached in it).
 function bakedView(lay) {
   if (!lay || !lay.baked) return null;
-  if (BAKED.view) return BAKED.view;
-  let v = PL6.views.get(lay.baked.id);
-  if (!v && PL6.View) { v = new PL6.View(PL6.ts, PL6.places.get(lay.baked.id), { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL6.mk, ring: PL6.ring || null, haze: PL6.haze }); PL6.views.set(lay.baked.id, v); }
+  let v = PL.views.get(lay.baked.id);
+  if (v) { PL.views.delete(lay.baked.id); PL.views.set(lay.baked.id, v); }
+  else if (PL.View) { v = new PL.View(PL.ts, lay.baked.place, { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL.mk, ring: PL.ring || null, haze: PL.haze }); PL.views.set(lay.baked.id, v);
+    while (PL.views.size > PL_VIEWS_MAX) PL.views.delete(PL.views.keys().next().value); }
   return v || null;
 }
-const bakedColours = () => (BAKED.view ? BAKED.view.paletteRgb() : [...PL6.views.values()].flatMap(v => v.paletteRgb())).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
-function layout6(key) {   // a generator 6 land cell's place: its template, built through the adapter with the seeded fills; null for a ford (generated) or while the places load
-  const t = templateFor(G, S.seed, +key), place = t && PL6.places.get(t.id); if (!place) return null;
-  return PL6.adapt(place, PL6.ts, PL6.terrains, { key, cell: +key, pw: place.w, ph: place.h, seed: S.seed, G, fill: fillPlace6(G, S.seed, +key, place), closed: closedSidesOf(+key) });
-}
-function layout(key) {
+const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
+function layout(key) {   // a land cell's layout from the generator (cached); a stand-in while the tile set loads
   let lay = layoutCache.get(key);
-  if (!lay && BAKED.ready && key[0] !== 'c') { lay = BAKED.adapt(key); layoutCache.set(key, lay); }
-  if (!lay && G.gen >= 6 && key[0] !== 'c' && PL6.ready) { lay = layout6(key); if (lay) layoutCache.set(key, lay); }
+  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key); addStrikeFeats(lay); layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
@@ -684,7 +670,7 @@ const WARM = { queue: [], first: null, firstDir: null, sig: '', cb: 0, cold: nul
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
 function warmReady(key) {   // nothing left to build for this cell (a generated place, a cave and the test pages have no baked view to warm)
   const lay = layout(key); if (!lay.baked || lay.cave) return true;
-  const bk = BAKED.view || PL6.views.get(lay.baked.id); return PL6.View || BAKED.view ? !!bk && warmOf(bk).st >= WARM_DONE && !(lay.rim && ART48.ready && !lay.rimWarm) : true;
+  const bk = PL.views.get(lay.baked.id); return PL.View ? !!bk && warmOf(bk).st >= WARM_DONE && !(lay.rim && ART48.ready && !lay.rimWarm) : true;
 }
 // The arrival look's picture of a place (the whole place at its veil, as a canvas): kept by place and veil in a small LRU, so the warmed one is drawn at once and a new one is built once.
 const WARM_WHOLE_MAX = 6, WHOLE = new Map();
@@ -723,7 +709,7 @@ function wholeFor(lay, bk) {
 }
 // Where the pawn will most likely stand on arriving, and the veil the walk's first lift would leave there (null: not a first arrival, so no arrival look to warm).
 function arrivalRows(key, dir) {
-  const lay = layout(key); if (lay.cave || !lay.baked || S.veil[key] || heartFound(lay.cell)) return null;
+  const lay = layout(key); if (lay.cave || !lay.baked || S.veil[key] || walkedCell(lay.cell)) return null;
   const e = entryPoint(lay, key, dir || null, true); if (!e) return null;
   const rows = new Array(lay.h).fill(0); liftFlood(lay, rows, e.x, e.y); return rows;
 }
@@ -746,7 +732,7 @@ function primeWindow(lay, bk, key, dir) {
   const cam = bk.camera(bk.newCam(), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
   bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));
   hazeSync(lay); const hz = hazeLevels(lay); bk.setHaze(hz && hz.lv, hz ? hz.id : '', lay.baked.id);
-  const g = PL6.mk(SCR_W, VIEW_H).getContext('2d'); warmOf(bk).fk = bk.cache.frameKey(motion() ? NOW : 0);
+  const g = PL.mk(SCR_W, VIEW_H).getContext('2d'); warmOf(bk).fk = bk.cache.frameKey(motion() ? NOW : 0);
   bk.drawGround(g, 0, 0, { x: cam.x - bk.ox * 48, y: cam.y - bk.oy * 48, w: SCR_W, h: VIEW_H }, motion() ? NOW : 0, bk.lightFor({ veiled: (x, y) => !un(x, y), foggedFar: () => false, level: () => lvl }, key));
   return true;
 }
@@ -782,7 +768,7 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
 }
 // The cells one step can reach from here, the one faced first and then by how near the pawn is to that edge; on the map, the cell the next Confirm goes down into comes first.
 function warmTargets() {
-  const ex = S && S.exp; if (!ex || RT.readOnly || !(S.phase === 'map' || S.phase === 'patch') || !(PL6.View || BAKED.view)) return [];
+  const ex = S && S.exp; if (!ex || RT.readOnly || !(S.phase === 'map' || S.phase === 'patch') || !PL.View) return [];
   const P = ex.patch, lay = P && !P.key.startsWith('c') ? layout(P.key) : null, out = [];
   if (!P && S.phase === 'map') out.push({ key: String(ex.pos), dir: ex.lastDir || null });
   if (P && P.key.startsWith('c')) return out;
@@ -905,14 +891,14 @@ const SIGN_LINE = {
 
   storm: dir => 'More bolts, more strikes · ' + (dir > 0 ? '▶ east' : '◀ west'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
   pod: 'Pods open at the Station', full: 'Hold full · a new pod is a choice',bank: 'If the Probe breaks, you lose your finds', fog: 'Fog · creatures calm, sight short',
-  muffled: 'The fog muffles your Call', fruit: 'Feed it, or press on a stone or tree', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
-  tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog',
+  muffled: 'The fog muffles your Call', fruit: WORDS.fruitSign, putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
+  tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog', strike: WORDS.strike.sign,
   bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
   untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
 // the first sighting of each map sign: its Probe name (the line on the card is the same one)
-const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', sh: 'Shimmer · water nearby', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
+const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
   beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'Mud or scree · needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · the Probe upgrade reads it' };
-const SIGN_TILE_OF = { pod: 'pod', t: 'tracks', b: 'beat', sh: 'shimmer', k: 'bolt', kw: 'hollow', beacon: 'beacon', skull: 'skull', depot: 'outpost', burrow: 'gate', water: 'gate', soft: 'gate', bank: 'gate', deep: 'gate' };
+const SIGN_TILE_OF = { pod: 'pod', t: 'tracks', b: 'beat', k: 'bolt', kw: 'hollow', beacon: 'beacon', skull: 'skull', depot: 'outpost', burrow: 'gate', water: 'gate', soft: 'gate', bank: 'gate', deep: 'gate' };
 const SIGN = {};
 { const add = (id, key, pri, tile, pic, line, o) => { SIGN[id] = Object.assign({ id, key, also: [], pri, tile, pic, line: typeof line === 'function' ? line : () => line }, o); };
   add('shield', 'shield', 3, 'shield', 'shield', SIGN_LINE.shield);
@@ -935,17 +921,18 @@ const SIGN = {};
   add('warm', 'warmstone', 1, 'warm', 'warm', SIGN_LINE.warm);
   add('tuft', 'tuft', 1, 'tuft', 'tuft', SIGN_LINE.tuft);
   add('press', 'press', 1, 'press', 'fruit', SIGN_LINE.press);
+  add('strike', 'strike', 1, 'strike', 'm:k', SIGN_LINE.strike);
   add('dew', 'fogdew', 1, 'dew', 'drop', SIGN_LINE.dew);
   add('untuva', 'cmp.hint.untuvaMeal', 2, 'untuva', 'untuva', SIGN_LINE.untuva);
   add('calmkeep', 'calmkeep', 2, 'partner', 'partner', SIGN_LINE.calmkeep);
-  for (const k of ['pod', 't', 'b', 'sh', 'k', 'kw', 'beacon', 'skull', 'depot', 'burrow', 'water', 'soft', 'bank', 'deep']) add('m:' + k, 'sign:' + k, k === 'depot' || k === 'beacon' ? 3 : 1, SIGN_TILE_OF[k], 'm:' + k, SIGN_NAME_LINE[k]); }
+  for (const k of ['pod', 't', 'b', 'k', 'kw', 'beacon', 'skull', 'depot', 'burrow', 'water', 'soft', 'bank', 'deep']) add('m:' + k, 'sign:' + k, k === 'depot' || k === 'beacon' ? 3 : 1, SIGN_TILE_OF[k], 'm:' + k, SIGN_NAME_LINE[k]); }
 const SIGN_RANK = Object.keys(SIGN);   // table order, hazards first
 const signRank = id => SIGN_RANK.indexOf(id);
 // The Probe's tiles: the line on focus (name · gist, then the name alone), the picture, and the flags that mean it was met.
 const TILES = [
   ['tracks', 'Tracks · creatures here', 'Tracks', 'm:t', ['sign:t']],
   ['beat', 'Slow beat · often a pod', 'Slow beat', 'm:b', ['sign:b']],
-  ['shimmer', 'Shimmer · water nearby', 'Shimmer', 'm:sh', ['sign:sh']],
+  ['strike', WORDS.strike.tile, WORDS.strike.tileShort, 'm:k', []],
   ['bolt', 'Bolt · a charged stone', 'Bolt', 'm:k', ['sign:k']],
   ['hollow', 'Hollow bolt · warm stone', 'Hollow bolt', 'm:kw', ['sign:kw']],
   ['storm', 'Storm · seek shelter', 'Storm', 'storm', []],
@@ -1252,7 +1239,7 @@ const newWorld = newRealm;   // the name the tests and the page's buttons call
 function mountRegion(id) {
   unmount(S); const R = mount(S, id);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; RT.mp = null; RT.key = null; mapCv = null;
-  G = worldOf(R.seed, R.gen, R.biome); indexCreatures();   // the region's own kind (generators before 4 have none)
+  G = worldOfRegion(R); indexCreatures();   // the region's own kind
   catchUp(R);
 }
 // A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
@@ -1332,7 +1319,7 @@ function load() {
     const plan = resetPlan(raw, SAVE_V, OLD_GENS);   // (a v10 realm of generator 5 only is reset too: the world is new at generator 6) what to do with what is found: play it, reset it (a v8 or v9 save), keep it read-only (newer, unreadable)
     if (plan.action === 'newer') return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
     if (plan.action === 'reset') {   // the release's reset: the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
-      if (!(plan.gen ? keepGen5 : keepPre10)(localStorage, own, raw)) return 'broken';   // a generator reset keeps its own copy (<key>.gen5): the .pre10 of the earlier reset stays what it was
+      if (!(plan.gen ? keepGen(localStorage, own, raw, oldGenOf(raw)) : keepPre10(localStorage, own, raw))) return 'broken';   // a generator reset keeps its own copy (<key>.gen6, or .gen5): the .pre10 of the earlier reset stays what it was
       if (SAVE_KEY === LEGACY_KEY) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) { } }   // the shared old save is kept in the copy: it must not be found and reset again
       RESET_CARRY = { resetFrom: plan.from }; dropOld(); return false;
     }
@@ -1353,7 +1340,7 @@ function load() {
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = worldOf(S.seed, gen, S.regions.find(r => r.id === S.here).biome);   // the mounted region's kind
+    layoutCache.clear(); G = worldOfRegion(S.regions.find(r => r.id === S.here));   // the mounted region's kind
     if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
@@ -1412,6 +1399,36 @@ function fs(key, id) { const c = S.cells[key]; return (c && c[id]) || {}; }
 function setFS(key, id, patch) { const c = S.cells[key] || (S.cells[key] = {}); c[id] = Object.assign(c[id] || {}, patch); }
 function featPos(key, f) { if (f.kind === 's') { const st = fs(key, f.id); if (st.moved) return { x: st.x, y: st.y }; } return f; }
 function cupFull(key, f) { const s = fs(key, f.id); return s.full != null ? s.full : !!f.full; }
+// ---------- Strike marks (scheme 4.7): the land's record of lightning, read for Data ----------
+// A strike mark is a dark glassy streak where lightning went into bare ground (nothing burns). The generator places them (lay.strikes, with an age in world turns) and each world turn's storm
+// adds fresh ones (S.cells[key]['sf...'], kept with the cell). A mark fades STRIKE_FADE turns after the strike. Reading one is a press: it tops the trip's field Data up to the yield of the
+// highest tier entered (walkYield), once a mark, and takes nothing from the land. Words: src/words.mjs.
+const STRIKE_FADE = 12;   // [tune] world turns a mark stays on the land
+const strikeFaded = f => S.turn - f.born >= STRIKE_FADE;
+const strikeIsRead = (key, f) => fs(key, f.id).read != null;
+function addStrikeFeats(lay) {   // the generated marks, and the fresh ones the cell has kept
+  for (const m of lay.strikes || []) lay.feats.push({ id: m.id, kind: 'q', x: m.x, y: m.y, born: -m.age, glass: m.glass });
+  const c = S.cells[lay.key]; if (c) for (const id of Object.keys(c)) if (c[id].fresh) lay.feats.push({ id, kind: 'q', x: c[id].x, y: c[id].y, born: c[id].born, glass: false });
+}
+// What a press on a strike mark would add to the hold now: the trip's yield less the Data from strikes so far, and the hold's room. 0: a press is refused.
+function strikeGain(ex) { return Math.max(0, Math.min(walkYield(ex) - (ex.dField || 0), CAP - ex.cargo.d)); }
+function readStrike(f) {
+  const ex = S.exp, key = ex.patch.key, want = walkYield(ex), put = strikeGain(ex);
+  if (!put) { FX.bumpAt = NOW; fxMsg(want - (ex.dField || 0) <= 0 ? WORDS.strike.full(want) : MAT.d + ' ' + ex.cargo.d + ' of ' + CAP + ' · ' + WORDS.holdsNoMore, 2); return; }   // a refused press spends nothing and the mark stays unread
+  const got = addMat('d', put, f.x, f.y); ex.dField = (ex.dField || 0) + got; ex.stats.readings = (ex.stats.readings || 0) + 1;
+  setFS(key, f.id, { read: S.turn });
+  fxSign('strike'); fxMsg(WORDS.strike.after(ex.dField, want), 2); logEv('Read a strike mark · +' + got + ' Data (' + ex.dField + ' of ' + want + ' from strikes)');
+  advance('patch', { noise: 'act' });
+}
+// Fresh marks from the turn's storm: one in each cell the storm struck on the map, on a bare tile if the place has one.
+function freshStrike(key, lay, t, rng) {
+  const W = lay.baked.place.w, bare = new Set([3, 5, 7]), taken = new Set(lay.feats.map(f => f.y * lay.w + f.x));   // sand, path, earth
+  const pool = [], any = [];
+  for (let i = 0; i < lay.w * lay.h; i++) { if (!lay.reach[i] || taken.has(i) || T_BLOCK[lay.tiles[i]]) continue; any.push(i); if (bare.has(lay.baked.place.terrain[((i / lay.w | 0) + 1) * W + (i % lay.w) + 1])) pool.push(i); }
+  const list = pool.length ? pool : any; if (!list.length) return false;
+  const i = rng.pick(list), id = 'sf' + t, x = i % lay.w, y = (i / lay.w) | 0;
+  setFS(key, id, { x, y, born: t, fresh: 1 }); lay.feats.push({ id, kind: 'q', x, y, born: t, glass: false }); return true;
+}
 // A stone's storm charge (+2 or +3, from lightning), kept until drawn.
 function stormCharge(key, f) { const s = fs(key, f.id); return s.ch != null ? s.ch : (f.ch || 0); }
 // Warm: chosen afresh each world turn among the stones in reach without storm charge, so it never piles up.
@@ -1504,58 +1521,44 @@ function unveil(key, cx, cy, r) {
 }
 // Walking lifts the veil in a short circle around the pawn (like the cave light); Call still sweeps much further.
 // Whatever is lifted stays lifted, and nothing puts it back.
-const WALK_R = 4;
 function walkLift() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
   const lay = layout(P.key), v = S.veil[P.key] || (S.veil[P.key] = new Array(lay.h).fill(0));
-  liftFlood(lay, v, P.x, P.y);
-  checkHeart();
+  liftFlood(lay, v, P.x, P.y, lay.raisedFn && lay.raisedFn(P.x, P.y) ? WALK_R_HIGH : WALK_R);   // height lets you see further: plain seeing, six tiles on raised land
+  checkWalked();
 }
 // a small flood from the pawn through open ground: it lifts the first blocking tile it meets (a shore, a trunk)
 // but never what lies behind it, so it doesn't see across water or cliff
-function liftFlood(lay, v, px, py) {
+function liftFlood(lay, v, px, py, r = WALK_R) {
   const lw = lay.w, lh = lay.h, tiles = lay.tiles, seen = new Set([py * lw + px]), q = [[px, py]];
   for (let h = 0; h < q.length; h++) { const [x, y] = q[h]; v[y] = (v[y] | (1 << x)) >>> 0; if (h && T_BLOCK[tiles[y * lw + x]]) continue;
     for (const [dx, dy] of Object.values(DIRS)) { const X = x + dx, Y = y + dy, k = Y * lw + X;
-      if (X < 0 || Y < 0 || X >= lw || Y >= lh || seen.has(k) || (X - px) ** 2 + (Y - py) ** 2 > (WALK_R + .3) ** 2) continue; seen.add(k); q.push([X, Y]); } }
+      if (X < 0 || Y < 0 || X >= lw || Y >= lh || seen.has(k) || (X - px) ** 2 + (Y - py) ** 2 > (r + .3) ** 2) continue; seen.add(k); q.push([X, Y]); } }
 }
 function stoneSeen(key, f) { return key[0] === 'c' ? !!fs(key, f.id).sn : unveiled(key, f.x, f.y); }
-// A place is explored when its heart is found (S.called keeps that mark; "called at least once" retired): the reach dot fills then.
+// A place is explored when you have walked most of it (checkWalked): the reach dot fills then.
 function explored(c) { return !!S.visited[c] && !!(S.called && S.called[c]); }
-// ---------- Hearts (walk slice W§2-W§3; "heart" is a design word, no player string says it) ----------
-// One heart per place, picked once and kept in the place's feature state (so it is the same after a reload, whatever has been taken since).
-const heartFound = c => !!(S.called && S.called[c]);
-function heartOf(key) {
-  if (key[0] === 'c' || (G.gen || 1) < 5) return null;   // the older generators are frozen: no hearts there (they are played only by tests)
-  if (G.gen >= 6 && !PL6.ready && templateFor(G, S.seed, +key)) return null;   // the places are still loading: a generated stand-in must not pick (and keep) a heart
-  const lay = layout(key); if (lay.heart !== undefined) return lay.heart;
-  const st = fs(key, 'heart'); let h = null;
-  if (st.kind) h = { x: st.x, y: st.y, kind: st.kind, reachBy: null, ...heartPath(lay, st.x, st.y) };
-  else { const anchors = { pods: S.pods.filter(p => p.k === key && p.x >= 0).map(p => ({ x: p.x, y: p.y })), stones: lay.feats.filter(f => f.kind === 'k').map(f => ({ x: f.x, y: f.y })) };
-    h = pickHeart(lay, S.seed, anchors); if (h) setFS(key, 'heart', { x: h.x, y: h.y, kind: h.kind }); }
-  return (lay.heart = h);
-}
+// ---------- Explored places (generator 7: nothing in a place is picked by the page; the land holds what it holds) ----------
+// A place is explored when you have walked most of it: its veil is lifted over EXPLORED_SHARE of its walkable ground (S.called keeps that mark). The reach dot fills quietly then:
+// no card, no sound, nothing paid. Checked after every lift (walkLift, the Call).
+const EXPLORED_SHARE = .6;   // [tune]
+const walkedCell = c => !!(S.called && S.called[c]);
 const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
-const placeLand = lay => cap1(G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land]);
-function heartDir(P, h) { const dx = h.x - P.x, dy = h.y - P.y; return Math.max(Math.abs(dx), Math.abs(dy)) <= 1 ? null : dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))); }
-// Found = unveiled and within 4 tiles. Paid once: the field yield (the expedition's tier, topped up) and the dot fills. Checked after every lift.
-function checkHeart() {
+const placeLand = lay => cap1(placeName(lay));
+function checkWalked() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
-  const lay = layout(P.key), c = lay.cell; if (heartFound(c)) return;
-  const h = heartOf(P.key); if (!h || !heartSeen(h, P, (x, y) => unveiled(P.key, x, y))) return;
-  (S.called = S.called || {})[c] = 1; ex.stats.hearts = (ex.stats.hearts || 0) + 1;
-  const want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top, h.x, h.y) : 0; ex.dField = (ex.dField || 0) + got;
-  logEv('Found a place · ' + h.kind + (got ? ' · +' + got + ' Data' : ''));
-  fxMsg((h.kind === 'moment' ? momentLine(lay, h) : HEART_TEXT.foundMsg[h.kind]) + (got ? ' · +' + got + ' Data' : ''), 3);
-  pickTells(ex);
-  { const bk = bakedView(lay); if (bk && !lay.cave) { S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); startView('reveal', lay); } }   // the reveal: the whole place's veil is lifted (W§4); the spot and the Found card show over the walking view (the view never changes on a find)
+  const lay = layout(P.key), c = lay.cell; if (walkedCell(c)) return;
+  const v = S.veil[P.key]; if (!v) return;
+  if (lay.walkN == null) { lay.walkN = 0; for (let i = 0; i < lay.reach.length; i++) if (lay.reach[i]) lay.walkN++; }
+  let seen = 0; for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) if (lay.reach[y * lay.w + x] && ((v[y] >>> x) & 1)) seen++;
+  if (!lay.walkN || seen < EXPLORED_SHARE * lay.walkN) return;
+  (S.called = S.called || {})[c] = 1; ex.stats.explored = (ex.stats.explored || 0) + 1; logEv('Explored a place');
 }
-// ---------- Seeing the place (walk slice W§4): the arrival look, Look over the place, the reveal ----------
-// All three draw the whole place at 24 px from the baked place's half-scale render (places/src/page.mjs). They are views over a place (RT.view, never saved);
+// ---------- Seeing the place (walk slice W§4): the arrival look and Look over the place ----------
+// Both draw the whole place at 24 px from the baked place's half-scale render (places/src/page.mjs). They are views over a place (RT.view, never saved);
 // a press is consumed by them and never reaches the walking view; they spend no action. Only a baked place has them (a generated place has no 24 px picture).
-// The reveal in two beats (owner 2026-11-09: finding something never changes the view): the spot in the walking view (SPOT_MS), then the Found card held over it until ✓ or ←.
-const SPOT_MS = 600, ARRIVE_HOLD_MS = 1200, ARRIVE_STEP_MS = 120;   // [tune]
-const VIEW_TEXT = { look: 'Look around', go: 'Go on', close: 'Close', found: 'Found' };   // [copy]
+const ARRIVE_HOLD_MS = 1200, ARRIVE_STEP_MS = 120;   // [tune]
+const VIEW_TEXT = { look: 'Look around', close: 'Close' };   // [copy]
 function placeVeil(lay, rows) {   // rows: the veil as it would stand (the warmed arrival picture's guess); else the place's own
   const bk = bakedView(lay), { w, h } = bk.place, o = new Uint8Array(w * h), vbl = rows ? veilable(lay) : null;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x + bk.ox, py = y + bk.oy;
@@ -1564,23 +1567,10 @@ function placeVeil(lay, rows) {   // rows: the veil as it would stand (the warme
 function startView(kind, lay, extra) {
   if (!lay || lay.cave || !bakedView(lay)) return false;
   stopRepeat();
-  if (kind === 'reveal') {   // the spot, in the walking view; the card joins it after the beat (spotStep). Input is consumed from this moment to the hold.
-    RT.spot = { at: NOW, key: lay.key, extra: extra || {}, drawn: false, held: false }; lockInput(motion() ? SPOT_MS : 0); return true; }
   RT.view = { kind, key: lay.key, at: NOW, ...(extra || {}) };
   return true;
 }
 function endView() { RT.view = null; transition(); }
-// The reveal's spot that outlived its beat (it was never drawn, so it never ended): dropped at the next press, with the lock (the find and the lifted veil are already recorded).
-function cancelBeat() { RT.spot = null; FX.lockUntil = 0; transition(); }
-// The spot holds the Found card after SPOT_MS (reduced motion: after the one frame that shows the still ring). Found on arrival (spot.skip): the card at once.
-function spotStep() {
-  const sp = RT.spot; if (!sp || sp.held) return;
-  const P = S.exp && S.exp.patch; if (!P || P.key !== sp.key) { RT.spot = null; return; }
-  if (TEST.at != null || (!sp.skip && !(motion() ? NOW - sp.at >= SPOT_MS : sp.drawn))) return;
-  sp.held = true; FX.lockUntil = 0;
-}
-// A press while the Found card is held: ✓ or ← closes it (consumed, no action spent), an arrow blinks the line.
-function spotPress(k) { if (k === 'confirm' || k === 'back') { RT.spot = null; transition(); } else RT.blink = NOW; }
 const lookable = () => { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const lay = layout(P.key); return !lay.cave && !!bakedView(lay); };
 // A press while a view is up: consumed. Arrival: any press skips to the walking view; look: ← (or ✓) closes.
 function viewPress(k) {
@@ -1589,100 +1579,35 @@ function viewPress(k) {
   else if (v.kind === 'peek') return;   // the peek lasts as long as Call is held; other presses are consumed
   else if (k === 'back' || k === 'confirm') endView();
 }
-function revealLine(lay, h) { return h.kind === 'moment' ? momentLine(lay, h) : HEART_TEXT.foundMsg[h.kind]; }
 // ---------- Place marks (the map's key for place kinds: the art desk's marks) ----------
 // One mark per kind of place, one landmark each: meadow Windstep, wood the Hollow Tree, rock the Split Stone, pond the Reedpool. state 'found': full colour; 'been': the slate silhouette
 // (ink kept). size: 26 (the reach view, tier 1 and the reveal's card), 18 (tier 2), 12 (the full map).
 const MARK_SIZES = [26, 18, 12];
 const MARK_OF = { [L.MEADOW]: 'windstep', [L.POND]: 'reedpool', [L.ROCK]: 'splitstone', [L.WOOD]: 'hollowtree' };
+const LM_MARK = { windstep: 'windstep', 'hollow-tree': 'hollowtree', 'split-stone': 'splitstone', reedpool: 'reedpool' };   // the map mark of each landmark kind
 function placeMark(land, state, size = 26) { return walkPB(`mark-${MARK_OF[land] || MARK_OF[L.POND]}-${state}-${size}`, size, size); }
 // The mark of a place's land, at its real spot's size for a reach view cell (cs 72: 26 px, cs 48: 18 px) or the full map's 26 px cell (12 px).
 const markSizeFor = cs => cs >= 72 ? 26 : cs >= 48 ? 18 : 12;
-// A moment heart: a creature of the template's species (or, where the template names none, one of the region's kinds that lives on this ground) at the heart's spot.
-function momentSpecies(lay, h) {
-  const names = (h.species || []).map(n => n.toLowerCase());
-  const byName = SPECIES.findIndex(s => s.name && names.includes(s.name.toLowerCase()));
-  if (byName >= 0) return byName;
-  const k = hereKinds().filter(q => q.hab.includes(lay.land));
-  return k.length ? k[hash(S.seed, 'momsp', lay.cell) % k.length].sp : 0;
+// The place's part of the bottom line, after its name: "a pod north · 2 more to take", "3 to take", "explored · a pod north · 2 more to take", "explored · nothing left to take", and when nothing is in sight,
+// "nothing in sight to take". Nothing is promised that the land does not show. The words are src/words.mjs's.
+function placeLine(lay, P, noKinds) {
+  const c = lay.cell, n = leftTotal(c), done = walkedCell(c);
+  if (!n) return done ? WORDS.explored + ' · ' + WORDS.left : WORDS.nothingSeen;
+  const near = noKinds ? null : nearestTake(c, P), take = near ? near + (n > 1 ? ' · ' + WORDS.moreN(n - 1) : '') : WORDS.leftN(n);   // the full form names the nearest takeable and its way, then how many more
+  return done ? WORDS.explored + ' · ' + take : take;
 }
-const momentLine = (lay, h) => (h.species && h.species.length && h.line) || HEART_TEXT.momentAny(spOf(momentSpecies(lay, h)).name);
-// The spring pays once, when you step onto it: Essence, never refilled.
-function springStep() {
-  const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
-  const h = heartOf(P.key); if (!h || h.kind !== 'spring' || P.x !== h.x || P.y !== h.y || fs(P.key, 'heart').drunk) return;
-  if (ex.cargo.s >= CAP) { fxMsg(HEART_TEXT.spring.full, 2); return; }
-  setFS(P.key, 'heart', { drunk: 1 }); const got = addMat('s', SPRING_ESSENCE, h.x, h.y); fxMsg(HEART_TEXT.spring.drink(got), 2); logEv('Drank at a spring · +' + got + ' Essence');
-}
-// The place's line in the bottom line: "found · 2 to take: pod · fruit", "found · nothing left to take", "a slow beat", "something here to find".
-function heartLine(lay, P, noKinds) {
-  const st = heartState(lay, P); if (!st.found) return st.short;
-  const c = lay.cell, n = leftTotal(c); if (!n) return st.short + ' · ' + HEART_TEXT.left;
-  const near = noKinds ? null : nearestTake(c, P);   // the full form names the nearest takeable and its way, then how many more
-  return near ? st.short + ' · ' + near + (n > 1 ? ' · ' + HEART_TEXT.moreN(n - 1) : '') : st.short + ' · ' + HEART_TEXT.leftN(n);
-}
-// The Call's report leads with the heart, then what is there to take, each with its direction:
-//   not found: "A slow beat, south-west · a pod north";  found: "Meadow · found · a pod north, fruit west"  or  "Meadow · found · nothing left to take".
-function callReport(lay, P, tellIn) {
-  const h = heartOf(lay.key), left = leftPhrase(lay.cell, P, 44);
-  if (!h) return left || HEART_TEXT.left;   // a frozen older generator has no heart: just what is there to take
-  if (heartFound(lay.cell)) return placeLand(lay) + ' · ' + HEART_TEXT.found + ' · ' + (left || HEART_TEXT.left);
-  let lead = HEART_TEXT.farther;
-  if (h && tellIn) { const dir = heartDir(P, h) || HEART_TEXT.hereWord, stoneQuiet = h.kind === 'stone' && !lay.feats.some(f => f.kind === 'k' && f.x === h.x && f.y === h.y && stormCharge(lay.key, f) > 0);
-    lead = HEART_TEXT.call[stoneQuiet ? 'quiet' : h.kind](dir); }
-  return lead + (left ? ' · ' + left : '');
-}
-// The state in words for the bottom line and the Call's report, never the old survey words: found, or the tell if it is in sight or was called, or that there is something to find.
-function heartState(lay, P) {
-  const c = lay.cell, h = heartOf(lay.key); if (!h) return { short: HEART_TEXT.found, found: true };
-  if (heartFound(c)) return { short: HEART_TEXT.found, found: true };
-  const known = tellOn(h, P) || unveiled(lay.key, h.x, h.y);
-  return { short: known ? HEART_TEXT.tell[h.kind] : HEART_TEXT.unknown, found: false };
-}
-// The map's tell of a place's heart (W§7): the sign a seen, unfound place shows: shimmer (spring), beat (a pod), bolt (a charged stone).
-// A quiet stone has no sign. Whether it is seen is the caller's: heartTellKind knows nothing of the map, heartTell adds "seen".
-function heartTellKind(c) {
-  if (!passable(c) || G.land[c] === L.WATER || !G.comp[c] || heartFound(c) || gatedCell(c)) return null;
-  const key = String(c), h = heartOf(key); if (!h) return null;
-  if (h.kind === 'spring') return 'sh';
-  if (h.kind === 'nest') return 'b';
-  if (h.kind === 'moment') return 't';
-  if (h.kind === 'stone') return layout(key).feats.some(f => f.kind === 'k' && f.x === h.x && f.y === h.y && stormCharge(key, f) > 0) ? 'k' : null;
-  return null;
-}
-const heartTell = c => S.revealed[c] ? heartTellKind(c) : null;
-// The map shows one tell sign per kind besides your own cell's: the nearest seen, unfound, in-reach place of that kind (the map design, one sign per kind).
-// A pick is kept while it stays valid (so a sign never hops as you walk) and is made again, nearest first, only when it is not; ties go to the lower cell.
-// ex.tellPick = { t, b, k, sh } holds a cell or -1; pickTells is called at set-out, after a map step and after a find, and again whenever a sign is read (a fog bank or a storm that changes a cell's validity is met there).
-function tellPickValid(ex, kind, c) { return c >= 0 && c !== ex.pos && ex.reach.includes(c) && !!S.revealed[c] && !inFog(c) && heartTell(c) === kind; }
-function tellPicks(ex) {   // pure: the picks as they stand, with an invalid one made again (not stored)
-  const pick = { t: -1, b: -1, k: -1, sh: -1, ...(ex.tellPick || {}) };
-  for (const kind of TELL_RANK) { if (tellPickValid(ex, kind, pick[kind])) continue;
-    let best = -1, bd = 1e9; for (const c of ex.reach) { if (!tellPickValid(ex, kind, c)) continue; const d = cdist(c, ex.pos); if (d < bd || (d === bd && c < best)) { bd = d; best = c; } }
-    pick[kind] = best; }
-  return pick;
-}
-function pickTells(ex) { if (ex) ex.tellPick = tellPicks(ex); }
-// The tells the map shows now: your own cell's (if unfound), then each kind's pick. Drawing never writes the save.
-function shownTells() {
-  const ex = S.exp; if (!ex) return []; const pick = tellPicks(ex), out = [], own = ex.reach.includes(ex.pos) ? heartTell(ex.pos) : null;
-  if (own && !inFog(ex.pos)) out.push({ c: ex.pos, kind: own, own: true });
-  for (const kind of TELL_RANK) if (pick[kind] >= 0) out.push({ c: pick[kind], kind });
-  return out;
-}
-// The nearest picked sign other than your own cell's, from the pawn's cell (ties: paw, beat, bolt, shimmer): { c, kind, dir } or null.
-function nearestTell() {
-  const ex = S.exp; if (!ex) return null; const p = cxy(ex.pos); let best = null;
-  for (const t of shownTells()) { if (t.own) continue; const d = cdist(t.c, ex.pos);
-    if (!best || d < best.d || (d === best.d && TELL_RANK.indexOf(t.kind) < TELL_RANK.indexOf(best.kind))) best = { c: t.c, kind: t.kind, d }; }
-  if (!best) return null;
-  const q = cxy(best.c), dx = q.x - p.x, dy = q.y - p.y;
-  return { c: best.c, kind: best.kind, dir: dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy)) || 1) };
+// The shortest form: the state alone.
+const placeState = lay => walkedCell(lay.cell) ? WORDS.explored : WORDS.nothingSeen;
+// The Call's report: the place and what is there to take, each with its direction: "Meadow · explored · a pod north, fruit west", or "A pod north, a strike mark west" before the place is explored.
+function callReport(lay, P) {
+  const left = leftPhrase(lay.cell, P, 44);
+  if (walkedCell(lay.cell)) return placeLand(lay) + ' · ' + WORDS.explored + ' · ' + (left || WORDS.left);
+  return left ? cap1(left) : WORDS.callNone;
 }
 // The fog over a place on the map: 2 you have never been into it, 1 you have been in and not found it, 0 found, not a place, or not seen.
 function fogState(c) {
   if (!S.revealed[c] || !passable(c) || G.land[c] === L.WATER || (G.gen && !G.comp[c])) return 0;
-  if (heartFound(c)) return 0;
+  if (walkedCell(c)) return 0;
   return S.veil[String(c)] ? 1 : 2;
 }
 // A reach-view cell's light table: a place never been into is one step darker (the dark table, solid: dots over the level tint's pale greens read grey on a phone, lead 2026-11-08);
@@ -1696,26 +1621,18 @@ function fogDots(x, y, cs, level) {
   blit(art('fogd' + cs + ':' + level + ':' + (x & 3) + ':' + (y & 3), () => { const pb = new PB(cs, cs);
     for (let j = 0; j < cs; j++) for (let i = 0; i < cs; i++) if (BAYER[(((y + j) & 3) << 2) + ((x + i) & 3)] < level) pb.set(i, j, C.night); return pb; }), x, y);
 }
-// The band under the reach view (W§7): the place you stand in ("Meadow · found · 1 pod waits there"), then the nearest tell ("Tracks in the wood, north-east").
-// The tell comes as a list of forms, longest first (the caller takes the first that fits).
+// The band under the reach view: the place you stand in ("Meadow · explored · 1 pod waits there", "Meadow · not explored yet"). The words are src/words.mjs's.
 function bandCell() {
-  const ex = S.exp, c = ex.pos, B = HEART_TEXT.band, name = cap1(landWord(c));
-  if (gatedCell(c)) return name;
-  if (!S.visited[c] || !passable(c)) return name;
-  if (heartFound(c)) { const n = leftTotal(c), pods = leftCounts(c).pod;
-    return name + ' · ' + HEART_TEXT.found + (pods ? ' · ' + B.podWaits(pods) : n ? ' · ' + HEART_TEXT.leftN(n) : ''); }
-  const k = heartTell(c);
-  return name + ' · ' + (k ? B.tell[k].toLowerCase() : B.unfound);
-}
-function bandTell() {
-  const t = nearestTell(); if (!t) return [];
-  const B = HEART_TEXT.band, word = B.tell[t.kind];
-  const forms = [B.tellFull(word, LAND_NAME[G.land[t.c]], t.dir), B.tellShort(word, t.dir)]; forms.kind = t.kind; return forms;   // the sign's own glyph leads the line on the band
+  const ex = S.exp, c = ex.pos, B = WORDS.band, name = cap1(landWord(c));
+  if (gatedCell(c) || !S.visited[c] || !passable(c)) return name;
+  if (walkedCell(c)) { const n = leftTotal(c), pods = leftCounts(c).pod;
+    return name + ' · ' + WORDS.explored + (pods ? ' · ' + B.podWaits(pods) : n ? ' · ' + WORDS.leftN(n) : ''); }
+  return name + ' · ' + B.unexplored;
 }
 // What can still be taken in a place, counting only what you can see (unveiled): the pips on the map and
 // the tail of a Call's report ("1 dew, 1 fruit left").
 // leftItemsAll is everything left (fruit and unlit beacons too), for the pacing bot only; leftItems is the finds: pod, charge, warm, dew, tuft.
-const FINDS = ['pod', 'charge', 'warm', 'dew', 'tuft'];
+const FINDS = ['pod', 'charge', 'warm', 'dew', 'tuft', 'strike'];
 function leftItems(c) { return leftItemsAll(c).filter(i => FINDS.includes(i.k)); }
 function leftItemsAll(c) {
   const out = []; if (!passable(c)) return out;
@@ -1723,15 +1640,16 @@ function leftItemsAll(c) {
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
   for (const f of layout(key).feats) { if (!see(f.x, f.y)) continue;
     if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
+    if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && strikeGain(S.exp) > 0) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once the trip's strikes are full
     if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'beacon', x: f.x, y: f.y }); }
   if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
   return out;
 }
-function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, tuft: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
+function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, tuft: 0, strike: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
 function leftTotal(c) { const n = leftCounts(c); return Object.values(n).reduce((a, b) => a + b, 0); }
 function pipsOf(c) { return Math.min(3, leftTotal(c)); }
 // What is left, each kind with the way to its nearest one from where you stand: "a pod east, a warm stone north-west".
-const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], tuft: ['a tuft', 'tufts'] };   // [copy]
+const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], tuft: ['a tuft', 'tufts'], strike: WORDS.strike.left };   // [copy]
 // The way to one takeable from where you stand: " close by", " west", " in the cave".
 function wayTo(near, P) { const dx = near.x - P.x, dy = near.y - P.y;
   return near.cave ? ' in the cave' : cheb(near, P) <= 2 ? ' close by' : ' ' + (dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))) || 'close by'); }
@@ -1796,11 +1714,11 @@ function reachBehind() {
 function reachCounts() { if (!S.exp) return Object.assign(cellCounts([]), { gated: 0, soft: 0, bank: 0 }); const cells = S.exp.reach.filter(c => !gatedCell(c)); return Object.assign(cellCounts(cells), { gated: S.exp.reach.length - cells.length }, reachBehind()); }
 const gatedTail = rc => rc.gated ? ' · ' + rc.gated + ' gated' : '';
 const behindTail = rc => (rc.soft ? ' · ' + rc.soft + (rc.soft === 1 ? ' needs a rambler' : ' need a rambler') : '') + (rc.bank ? ' · ' + rc.bank + (rc.bank === 1 ? ' needs a digger' : ' need a digger') : '');
-function reachLine() { const rc = reachCounts(), tail = gatedTail(rc) + behindTail(rc); return HEART_TEXT.reachLine(rc.found, rc.total, tail); }
+function reachLine() { const rc = reachCounts(), tail = gatedTail(rc) + behindTail(rc); return WORDS.reachLine(rc.found, rc.total, tail); }
 // A place counts as finished when its heart is found and no pod lies buried.
 const buriedIn = c => S.pods.filter(p => p.k === String(c) && p.h).length;
 const placeDone = c => explored(c) && !buriedIn(c);   // the heart is found and no pod lies buried
-const TAKE_WORD = { pod: 'pod', charge: 'charge', warm: 'warm stone', dew: 'dew', tuft: 'tuft' };
+const TAKE_WORD = { pod: 'pod', charge: 'charge', warm: 'warm stone', dew: 'dew', tuft: 'tuft', strike: WORDS.strike.take };
 function takeKinds(c) { const n = leftCounts(c); return Object.keys(TAKE_WORD).filter(k => n[k]).map(k => TAKE_WORD[k]); }
 // A found place with nothing to take: ← leaves in one press (unless a Tuikis is settling and Wait matters).
 function doneEmpty() {
@@ -1866,18 +1784,6 @@ function ensureCharge(ex) {
   stones.sort((a, b) => (a.w > 12) - (b.w > 12) || a.d - b.d || a.w - b.w || a.c - b.c);
   if (stones.length) { const o = stones[0]; setFS(o.key, o.f.id, { ws: S.turn }); ex.stats.preCharged = 1; }
 }
-// The start guarantee for tells (W§7): every expedition starts with at least one unfound heart's tell sign within one cell of the start (the Energy guarantee
-// below stays). Springs and a pod's beat show on their own; when the cells beside the start hold only quiet stones, the sun strikes the nearest one (a charged
-// stone is the bolt's tell, +2 Energy for whoever draws it), so a start never lacks a sign. It runs before ensureCharge, which then counts the struck stone.
-function ensureTell(ex) {
-  const p = cxy(ex.start), reach = new Set(ex.reach), near = [];
-  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const n = y * MW + x; if (reach.has(n) && passable(n) && G.land[n] !== L.WATER && G.comp[n]) near.push(n); }
-  ex.stats.tellStruck = 0;
-  if ((G.gen || 1) < 5 || near.some(n => heartTellKind(n))) return;
-  near.sort((a, b) => cdist(a, ex.start) - cdist(b, ex.start) || a - b);
-  for (const n of near) { const key = String(n), h = heartOf(key); if (!h || h.kind !== 'stone' || heartFound(n)) continue;
-    const f = layout(key).feats.find(q => q.kind === 'k' && q.x === h.x && q.y === h.y); if (f) { setFS(key, f.id, { ch: 2 }); ex.stats.tellStruck = 1; return; } }
-}
 function startExpedition(type, cell) {
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
   if (firstPlacement()) S.pods.push(...firstPods(S.seed, cell, S.pods));   // a new world's first expedition: two pods in reach (X2)
@@ -1901,7 +1807,7 @@ function startExpedition(type, cell) {
   const ex = S.exp; ex.hadStorm = !!storm; S.hold = null;   // unsealed finds ride along in the hold
   revealAround(cell, 1); S.visited[cell] = 1;
   ex.reach = reachCells(cell, ex.range);
-  ensureTell(ex); chooseWarm(ex); ensureCharge(ex); pickTells(ex);
+  chooseWarm(ex); ensureCharge(ex);
   const p = cxy(cell);
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : rd ? ' · ' + CARE_TEXT.riderMenu(rd.name) : '') + ' · tier ' + S.tier + (ex.range > tier.range ? ' · one ring further' : ''));
   meet('flag');   // the map's cell line says "End expedition here" with its flag: no card, the flag joins the Probe
@@ -1987,7 +1893,7 @@ function mapStep(dir) {
   noteSure(ex.pos, dir, c);
   if (G.level && G.level[c] < G.level[ex.pos] && (edgeKind(ex.pos, dir) === EDGE.RAMP || softKind(ex.pos, dir) === 'scree')) fieldHabit('hop-down');   // a step down across a stair or a scree edge
   ex.pos = c; ex.lastDir = dir; S.visited[c] = 1; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
-  advance('map'); if (S.exp === ex) pickTells(ex);
+  advance('map');
 }
 // Call on the map: pin your cell for 1 Energy, or remove your own pin for free. Gate pins stay free and automatic.
 function callMap() {
@@ -2006,7 +1912,7 @@ function curLay() { return layout(S.exp.patch.key); }
 function curLayOr() { return S.exp && S.exp.patch ? curLay() : { w: PW, h: PH }; }   // the cues and the view test may ask with no place open: the standard size
 function curLive() { return S.exp.live[S.exp.patch.key]; }
 function featAt(lay, key, x, y) {
-  for (const f of lay.feats) { if (DECOR.includes(f.kind)) continue; const p = featPos(key, f); if (p.x === x && p.y === y) return f; }
+  for (const f of lay.feats) { if (DECOR.includes(f.kind) || (f.kind === 'q' && strikeFaded(f))) continue; const p = featPos(key, f); if (p.x === x && p.y === y) return f; }
   return null;
 }
 function podAt(key, x, y, hiddenToo) { return S.pods.find(p => p.k === key && p.x === x && p.y === y && (hiddenToo || !p.h)); }
@@ -2036,12 +1942,11 @@ function freeSpot(key, R, avoid, pred, box) {   // box: { x, y, w, h } the tries
   }
   return null;
 }
-// A generator 6 place's find slots for a pod: the first free one (the slots whose roll came up pod, then the others), so the first pods land where the template put its finds.
-// The first pods of a new world (fa, fb) take the free slot nearest the heart: the walk to the tell and the Call there lift them, so the first walk always holds a pod (C16, loop audit 3.18).
-function findSlotFor(lay, key, pod) {
+// A generator 7 place's find slots for a pod: the free slot nearest where you first come in (ent), so the first Call there lifts it (the slots whose roll came up pod are the IR's, all on the cell's main ground).
+function findSlotFor(lay, key, pod, ent) {
   const free = (lay.podSlots || []).filter(s => { const i = s.y * lay.w + s.x;
     return lay.reach[i] && !NOSTAND(lay.tiles[i]) && !occupant(key, s.x, s.y) && !podAt(key, s.x, s.y, true) && !lay.feats.some(f => f.x === s.x && f.y === s.y); });
-  if (pod && (pod.id === 'fa' || pod.id === 'fb') && lay.heart && free.length) { const h = lay.heart, d = s => Math.hypot(s.x - h.x, s.y - h.y); return free.reduce((b, s) => d(s) < d(b) ? s : b); }
+  if (free.length) { const h = ent || lay.spawnPt, d = s => Math.hypot(s.x - h.x, s.y - h.y); return free.reduce((b, s) => d(s) < d(b) ? s : b); }   // the slot nearest where you first come in, so the first Call there lifts the pod (a pod set earlier by the walk keeps its own place)
   return free.length ? { x: free[0].x, y: free[0].y } : null;
 }
 function ensureLive(key) {
@@ -2049,18 +1954,9 @@ function ensureLive(key) {
   const lay = layout(key), R = makeRng(hash(S.seed, 'live', key, ex.n));
   const live = { key, cr: [], fr: [], tf: [], strike: null, seen: {}, fid: 1, pt: null, rainOn: 0, stormShed: {}, calmShed: 0, noted: {} };
   ex.live[key] = live;
-  // A moment heart: its creature is at the heart's spot (first, so nothing else is placed there), ready for its act, and goes back there when it has been startled
-  if (lay.heart && lay.heart.kind === 'moment') {
-    const sp = momentSpecies(lay, lay.heart), open = !T_BLOCK[lay.tiles[lay.heart.y * lay.w + lay.heart.x]], at = open ? lay.heart : lay.heart.path[lay.heart.path.length - 1] || lay.heart;   // a heart on a landmark's stone: the ground beside it
-    live.cr.push({ id: 900000 + lay.cell, sp, x: at.x, y: at.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: .3, face: 1, ready: true, home: { x: at.x, y: at.y }, stub: { s: 0 } });
-  }
   // Buried pods lie 3–6 tiles from where you first come in, so the first Call can find them.
   const ent = lay.cave ? { x: 14, y: 27 } : entryPoint(lay, key, ex.lastDir);
-  // A generator 6 place with a nest heart holds its pod (two one time in five) at the heart, once: the heart is found by walking up to it, the pod is the reward.
-  if (lay.heartPods && lay.heart && !fs(key, 'heart').hp) { setFS(key, 'heart', { hp: 1 }); const kinds = hereKinds();
-    for (let i = 0; i < lay.heartPods; i++) { const s = i === 0 ? { x: lay.heart.x, y: lay.heart.y } : freeAround(key, lay.heart.x, lay.heart.y, null); if (!s || !kinds.length) continue;
-      S.pods.push({ id: 'n' + (S.nextId++), k: key, x: s.x, y: s.y, sp: R.pick(kinds).sp, h: 1, bur: 1, g: groundName(lay.land, false), how: 'ground' }); } }
-  for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = findSlotFor(lay, key, p) || freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
+  for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = findSlotFor(lay, key, p, ent) || freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
     if (s) { p.x = s.x; p.y = s.y; if (p.how === 'shed') { fxGlint(s.x, s.y); logEv('A pod of ' + p.of + "'s line"); } } else { S.pods.splice(S.pods.indexOf(p), 1); logEv('A pod had no room in this place and was dropped'); } }
   const nests = lay.feats.filter(f => f.kind === 'e');
   const mates = S.cr.filter(w => w.c === lay.cell && !!w.cv === lay.cave).map(w => w.id).sort((a, b) => a - b);   // the cell's creatures by id: they share the template's spawn areas round robin (walk content B6)
@@ -2096,9 +1992,10 @@ function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most
   const tx = dir === 'right' ? 0 : dir === 'left' ? lay.w - 1 : lay.w / 2, ty = dir === 'down' ? 0 : dir === 'up' ? lay.h - 1 : dir ? lay.h / 2 : lay.h - 3;
   let best = null, bd = 1e9; const sq = !!G.gen;   // generator 2 places: squared distance, ties by tile index
   // a baked place has the tiles no crown hangs over (lay.clear): the explorer arrives on one of them, the nearest to the way in, never hidden under a canopy (C16); with none, any
+  const want = lay.compOfSide ? (dir ? lay.compOfSide[{ up: 'S', down: 'N', left: 'E', right: 'W' }[dir]] : null) ?? lay.mainComp : 0;   // a generator 7 cell: you start on the ground the way you came in by leads to
   for (let pass = lay.clear ? 0 : 1; pass < 2 && !best; pass++)
     for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) {
-      if (!lay.reach[y * lay.w + x] || occ(x, y) || (pass === 0 && !lay.clear[y * lay.w + x])) continue;
+      if (!lay.reach[y * lay.w + x] || occ(x, y) || (pass === 0 && !lay.clear[y * lay.w + x]) || (want && lay.compId[y * lay.w + x] !== want)) continue;
       const d = sq ? (x - tx) ** 2 + (y - ty) ** 2 : Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = { x, y }; }
     }
   return best || lay.spawnPt;
@@ -2114,15 +2011,14 @@ function enterPatch() {
   const ex = S.exp, key = String(ex.pos), lay = layout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
-  RT.spot = null; RT.view = null;
-  const firstEntry = !lay.cave && !S.veil[key] && !heartFound(lay.cell);   // the arrival look: the first time in a place, and never at a found one
+  RT.view = null;
+  const firstEntry = !lay.cave && !S.veil[key] && !walkedCell(lay.cell);   // the arrival look: the first time in a place, and never at a found one
   const e = entryPoint(lay, key, ex.lastDir);
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
   WARM.cold = TEST.clock == null && TEST.at == null && !warmReady(key) ? { key, at: NOW, signed: false } : null;   // not warm yet: the rest is built a step a frame (warmLanding)
-  if (RT.spot) RT.spot.skip = true;   // found on arrival: the Found card at once, no spot beat
-  else if (firstEntry) startView('arrival', lay);
+  if (firstEntry) startView('arrival', lay);
   if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
   fxHint('backplace', '← opens the menu · Leave is first', 2);
   save();
@@ -2172,7 +2068,7 @@ function patchStep(dir, mode) {
     else if (o.type !== 'tile' && o.type !== 'cr' && !unveiled(key, x, y)) fxMsg('Something is there under the veil · ))) Call to see');
     return;
   }
-  P.x = x; P.y = y; walkLift(); springStep(); lineWords(layout(key), P);
+  P.x = x; P.y = y; walkLift(); lineWords(layout(key), P);
   advance('patch', { noise: mode, moved: true });
 }
 // The refusal at a steep edge (a cliff between two levels), on the map, in the reach view and at a place's border.
@@ -2197,17 +2093,6 @@ function crossReason(a, dir) {
 // this list anyway still blocks its tiles). The range follows ex.range, so the
 // tier and a Tuliko along move the line. The line stands LINE_DEPTH tiles in from the place's edge (the band's inner face); the tiles between it and the edge are blocked.
 const LINE_DEPTH = 3, SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' };
-// Walk B8: the sides of a cell the land refuses outright (wide water, a cliff, fast water, the map's edge: crossReason's answer without the Probe's range or a partner), the same
-// whatever the tier. The adapter draws each one's opening as its closed look (a thicket, blocked) and never arrives at it; the range line is another thing and moves with the tier.
-function closedSidesOf(cell) {
-  const out = new Set();
-  for (const [side, dir] of Object.entries(SIDE_DIR)) {
-    const c = stepCell(cell, dir); if (c < 0) { out.add(side); continue; }
-    if (edgeKind(cell, dir) === EDGE.CLIFF) { if (!softKind(cell, dir)) out.add(side); continue; }
-    if ((!passable(c) || G.island[c]) && softKind(cell, dir) !== 'wade') out.add(side);
-  }
-  return out;
-}
 function openingKind(lay, o) {
   const why = crossReason(lay.cell, SIDE_DIR[o.side]);
   if (!why) return { kind: 'open', text: '' };
@@ -2219,7 +2104,7 @@ function lineCells(lay, o, whole) {
   const { w, h } = lay.baked, out = [], k0 = whole ? 0 : o.from, k1 = whole ? (o.side === 'N' || o.side === 'S' ? w : h) - 1 : o.to;
   for (let d = 0; d < LINE_DEPTH; d++) for (let k = k0; k <= k1; k++) {
     const x = o.side === 'W' ? d : o.side === 'E' ? w - 1 - d : k, y = o.side === 'N' ? d : o.side === 'S' ? h - 1 - d : k;
-    out.push({ x: x + lay.baked.ox, y: y + lay.baked.oy, d });
+    const X = x + lay.baked.ox, Y = y + lay.baked.oy; if (X >= 0 && Y >= 0 && X < lay.w && Y < lay.h) out.push({ x: X, y: Y, d });   // a generator 7 cell's apron lies outside the page's cell
   }
   return out;
 }
@@ -2398,8 +2283,10 @@ function patchAction() {
     switch (ft.kind) {
       case 'b': if (bushFull(key, ft)) return { label: ft.tree ? 'Shake the tree' : 'Shake the bush', run: () => shakeBush(ft) }; break;
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
-      case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : 'Collect dew', run: () => takeDew(ft) }; break;
+      case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : WORDS.takeDew, run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
+      case 'q': if (!strikeFaded(ft) && !strikeIsRead(key, ft)) { const g = strikeGain(ex), m = walkYield(ex);   // the press says what it adds, or that the trip's strikes are full, before it is made
+          return { label: WORDS.strike.read, ctx: g ? [WORDS.strike.ctx(g), WORDS.strike.ctxShort(g)] : [WORDS.strike.capCtx(m), WORDS.strike.capShort(m)], run: () => readStrike(ft) }; } break;
       case 'h': { const st = fs(key, ft.id), left = outpostLeft(key, ft), relight = !!st.lightT;
         if (!left) { const lbl = relight ? (S.ui.depotArm ? 'Confirm: light, 1 Energy' : 'Relight · 1 Energy') : 'Light ' + DEPOT_NAME + ' · 1 Energy', ctx = relight ? cap(DEPOT_NAME) + ' · dark' : 'end here, mend and shelter';
           return ex.cargo.e >= PRICE.depot ? { label: lbl, ctx, run: () => lightDepot(ft, relight) }
@@ -2422,8 +2309,8 @@ function patchAction() {
   if (fruit) {
     if (!o) return { label: 'Put down the fruit', run: () => putDown(f) };
     const pk = pressOn(lay, o, f);   // fruit is pressed only on a stone, a rock or a tree trunk; anything else that blocks says so and spends nothing
-    if (pk) return { label: pk === 'tree' ? 'Press the fruit on the tree' : 'Press fruit on the stone', run: () => pressFruit(f) };   // [copy]
-    return { label: 'Press on a stone', dim: true, run: () => { FX.bumpAt = NOW; fxMsg('Fruit presses on stone or rock · or put it down', 2); } };   // [copy]
+    if (pk) return { label: pk === 'tree' ? WORDS.press.tree : WORDS.press.stone, run: () => pressFruit(f) };   // [copy]
+    return { label: WORDS.press.dim, dim: true, run: () => { FX.bumpAt = NOW; fxMsg(WORDS.press.bump, 2); } };   // [copy]
   }
   return NOTHING;
 }
@@ -2445,11 +2332,11 @@ function freeAround(key, x, y, prefer) {
 }
 // Materials carried cap at 20 each. Returns how much was taken.
 const MAT = { e: 'Energy', d: 'Data', s: 'Essence' };
-function addMat(k, n, x, y) {
+function addMat(k, n, x, y, keeps) {   // keeps: what the source keeps when part of a take did not fit ('the stone keeps the rest')
   const ex = S.exp, got = Math.max(0, Math.min(n, CAP - ex.cargo[k]));
   ex.cargo[k] += got; ex.supAt[k] = ex.actions + 1;
   if (x != null) fxFloat(x, y, '+' + got, { e: 'energy', d: 'data', s: 'essence' }[k]);
-  if (got < n) fxMsg(MAT[k] + ' full · the Probe carries 20', 2);
+  if (got < n) fxMsg(WORDS.full(MAT[k], CAP, keeps), 2);
   return got;
 }
 // Who eats fruit here, said when one drops: "A fruit drops · Untuvas eat these".
@@ -2504,13 +2391,13 @@ function pickUp(fr) {
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
 function pressFruit(at) {   // at: the stone or tree pressed on (the +2 floats up from it); the explorer's own tile when called without
   const ex = S.exp, P = at || ex.patch;
-  if (CAP - ex.cargo.s < 2) { fxMsg('Not enough room for Essence · the fruit stays in your hands', 2); return; }   // pressing would waste the fruit
+  if (CAP - ex.cargo.s < 2) { fxMsg(WORDS.pressNoRoom(ex.cargo.s, CAP), 2); return; }   // pressing would waste the fruit
   ex.carry = null;
   const got = addMat('s', 2, P.x, P.y); fxSign('press');
   advance('patch', { noise: 'act' });
 }
 function takeTuft(tf) {
-  if (S.exp.cargo.s >= CAP) { fxMsg('Essence full · the tuft stays where it is', 2); return; }   // a full hold takes nothing and no turn passes
+  if (S.exp.cargo.s >= CAP) { fxMsg(WORDS.refuse.tuft(CAP), 2); return; }   // a full hold takes nothing and no turn passes
   const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxSign('tuft'); advance('patch', { noise: 'act' }); }
 function pushSlab(f) {
   const ex = S.exp, key = ex.patch.key, { w: lw, h: lh } = layout(key), pos = featPos(key, f), [dx, dy] = DIRS[ex.patch.dir], tx = pos.x + dx, ty = pos.y + dy;
@@ -2534,12 +2421,12 @@ function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), 
     const o = occupant(key, sx, sy, 'player'); return !o || o.type === 'pt' || o.type === 'cr' || (P && P.key === key && P.x === sx && P.y === sy); }); }
 function takeDew(f) {
   const ex = S.exp;
-  if (ex.cargo.s >= CAP) { fxMsg('Essence full · the cup keeps its dew', 2); return; }   // a full hold takes nothing: the cup stays full and no turn passes
+  if (ex.cargo.s >= CAP) { fxMsg(WORDS.refuse.dew(CAP), 2); return; }   // a full hold takes nothing: the cup stays full and no turn passes
   setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); fieldHabit('dew-find'); advance('patch', { noise: 'act' }); }
 function takeCharge(f) {
   const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f);
-  if (ex.cargo.e >= CAP) { fxMsg('Energy full · the stone keeps its charge', 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
-  const got = addMat('e', ch, f.x, f.y);
+  if (ex.cargo.e >= CAP) { fxMsg(WORDS.refuse.charge(CAP), 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
+  const got = addMat('e', ch, f.x, f.y, WORDS.stoneKeeps);
   if (storm > 0) setFS(key, f.id, { ch: ch - got, wt: S.turn }); else { setFS(key, f.id, { wt: S.turn }); ex.stats.warm = (ex.stats.warm || 0) + got; fxSign('warm'); }
   advance('patch', { noise: 'act' });
 }
@@ -2648,12 +2535,10 @@ function callPlace() {
     if (f.kind === 'g' && !burrowOpen()) fxGlint(f.x, f.y, 350);
   }
   let lifted = null;
-  if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); checkHeart(); }
+  if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); checkWalked(); }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach, key, lifted };   // the ring sweeps out over 300 ms and the veil lifts as it passes
   FX.cue = { key, at: NOW, until: ex.actions + 3, r: reach, finds: cue };   // the finds' edge tabs, for the 3 actions after the Call
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
-  const heart = lay.cave ? null : heartOf(key), wasFound = heart && heartFound(lay.cell), tellIn = heart && !wasFound && inCall(P, heart.x, heart.y, reach);
-  if (tellIn) ex.answerUntil = ex.actions + ANSWER_ACTIONS + 1;   // every tell inside the ring answers for 3 actions (the Call's own action counts)
   logEv('Call' + (found ? ' · found ' + found : ''));
   // the partner answers: a digger near the burrow digs it
   const g = lay.feats.find(f => f.kind === 'g'), digNow = g && !burrowOpen() && canDig() && cheb(P, g) <= 3;
@@ -2665,7 +2550,7 @@ function callPlace() {
     const lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
     if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); cue.push({ x: lp.x, y: lp.y }); }   // a pod still lying here glints again, so a beat always leads somewhere
     for (const q of S.pods) if (q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y)) q.out = 1;   // announced pods keep the dotted outline until taken
-    fxMsg(callReport(lay, P, tellIn), found ? 1 : 2);
+    fxMsg(callReport(lay, P), found ? 1 : 2);
   }
   if (digNow && !ex.ending) dig();
 }
@@ -3089,7 +2974,7 @@ function needText(e, s, d, full) {
   return (full ? 'costs ' + full + ' · ' : '') + 'short ' + parts.join(' + ');
 }
 const holdEmpty = h => !h || (!h.e && !h.d && !h.s && !(h.pods && h.pods.length));
-const exploredAny = ex => (ex.stats.hearts || 0) > 0;   // explored this expedition = a heart found in some place (earlier trips don't count; a Call alone pays nothing)
+const exploredAny = ex => (ex.entered || []).length > 0;   // the walk turns the world when it entered at least one place (or dug a bank): a walk that went into no place changes nothing
 // The trips the Station reads at the dock (top-level `trips` in the save): one record per expedition that turned the world,
 // oldest first, the last 40 kept. The expedition gathers its kinds of place (ex.tripPlaces) and whether a storm was over
 // the Probe (ex.tripStorm) as it goes; both are optional, so an expedition saved before them still ends cleanly. `carried` is
@@ -3105,9 +2990,8 @@ function sealedWords(h, join, alone) { const n = h.pods ? h.pods.length : 0; ret
 // The Cargo screen's preview of what End expedition will do.
 function sealPreview() {
   const ex = S.exp, out = [];
-  if (!exploredAny(ex) && !(ex.dug && ex.dug.length)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
-  // what End will seal: the hold plus the field yield still to come (End adds it before it seals)
-  const h = Object.assign({}, ex.cargo), top = Math.max(0, walkYield(ex) - (ex.dField || 0)); h.d = Math.min(CAP, (h.d || 0) + top);
+  if (!exploredAny(ex) && !(ex.dug && ex.dug.length)) { out.push(WORDS.waits); out.push('your finds stay in the hold'); return out; }
+  const h = Object.assign({}, ex.cargo);   // what End will seal: the hold as it is (Data comes only from readings and creature acts)
   if (holdEmpty(h)) { /* nothing to seal (only a save from before places had a tier): no line */ }
   else if (S.bay.length >= BAY) { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); }
   else { out.push('Seals ' + sealedWords(h, ' + ', 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
@@ -3140,10 +3024,10 @@ function endExpedition(reason) {
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
       if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notch = { id: w.id, name: w.name, sp: w.sp }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.found, of: rc.total };
-  if (explored && !broke) {   // the field yield: the expedition earns its tier's Data; moments brought part of it in early, the rest arrives now
-    const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
-    rep.yield = { tier, data: want + (ex.dAct || 0), moments: ex.moments.length, early: ex.dAct || 0, late: got };
-    logEv('Field yield · ' + want + ' Data field yield · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · plus ' + (ex.dAct || 0) + ' from creature acts'); }
+  if (explored && !broke) {   // what the walk brought in: Data from strike marks (read by a press) and from creature acts; nothing is added here
+    const tier = walkTier(ex);
+    rep.yield = { tier, data: (ex.dField || 0) + (ex.dAct || 0), moments: ex.moments.length, early: ex.dAct || 0, late: ex.dField || 0 };
+    logEv('Walk Data · ' + (ex.dField || 0) + ' from strike marks · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · plus ' + (ex.dAct || 0) + ' from creature acts'); }
   for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
   if (ex.carry === 'fruit') ex.carry = null;
   if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
@@ -3155,7 +3039,7 @@ function endExpedition(reason) {
   if (S.hist.length > 40) S.hist.shift();
   if (!explored && !(ex.dug && ex.dug.length)) {   // nothing explored (and no bank dug: a dug bank shifts back, so that walk turns the world): nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
-    S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
+    S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
   const turned = worldTurn(pending), worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
@@ -3168,7 +3052,7 @@ function endExpedition(reason) {
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
-  S.phase = 'sealed'; transition(); save();
+  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save();   // a line from the walk does not linger over the sealed screen
 }
 // The Walk: once per world turn, undocked, between expeditions, with every mibi with you together.
 const canWalk = () => !S.exp && S.carried.length > 0 && !isDocked() && S.walkTurn !== S.turn;
@@ -3278,6 +3162,7 @@ function regionTurn(R, t, pending, farFromPlayer) {
       if (f.kind === 'u') setFS(key, f.id, { full: true });
     }
     if (hit) charged.push(c);
+    if (G.gen === 7) freshStrike(key, lay, t, rng);   // the strike leaves its mark on the ground (it fades STRIKE_FADE turns on)
   }
   // A bloom passes through somewhere the player wasn't; bare bushes bear fruit again.
   const far = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && farFromPlayer(c)) far.push(c);
@@ -3763,7 +3648,7 @@ function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y+
 function podArt(shell, s) { const n = 'pod-walk-16x20-' + shell; return propPiece((s || 1) > 1 ? n + 'x' + s : n); }
 // The walk props are the art desk's painted files (art/props/, see PROP_FILES): no prop is drawn in code.
 const FRUIT = () => propPiece('prop-fruit'), FRUIT2 = () => propPiece('prop-fruitx2');
-function bushArt(full, fr) { return propPiece(full ? 'bush-full-32' : 'bush-bare-32'); }
+function bushArt(full, f) { return propPiece((full ? 'bush-full-40' : 'bush-bare-40') + (hash('bush', f.id) % 2 ? '-m' : '')); }   // plain or mirrored copy by the feature's id: the same one full and bare
 const SLAB = () => propPiece('prop-slab');
 // Beacon: a stone post with a lamp cage. Unlit the cage is dark; lit, a small flame burns (2 frames).
 // Depot: a small hut with a mast; its lamp is dark until lit, then it glows (2 frames).
@@ -4174,7 +4059,6 @@ const ICON = {
   beat: (fr) => art('i-beat' + fr, () => { const pb = new PB(23, 17); pb.ell(11.5, 8.5, 3, 3, C.pink, { sh: [C.blush, C.magenta] });
     for (const r of fr ? [6, 9.5] : [6.5, 10.5]) for (let a = -.9; a <= .9; a += .06) { pb.set(11.5 + Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); pb.set(11.5 - Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); }
     pb.outline(() => C.wine); return pb; }),
-  shimmer: () => walkPB('icon-shimmer-16', 16, 16),   // a spring's tell on the map: the art desk's shimmer sign
   pin: () => art('i-pin', () => { const pb = new PB(16, 22); pb.rect(2, 1, 2, 20, C.bone); pb.poly([[4, 1], [15, 5.5], [4, 10]], C.orange); pb.poly([[4, 6], [15, 5.5], [4, 10]], C.rust); pb.ell(3, 20, 3, 1.5, C.slate); pb.outline(() => C.void); return pb; }),
   flag: () => art('i-flag', () => { const pb = new PB(13, 20); pb.rect(1, 1, 2, 19, C.bone); pb.poly([[3, 1], [12, 4.5], [3, 8]], C.orange); pb.rect(3, 2, 6, 1, C.amber); pb.outline(); return pb; }),
   skull: () => art('i-skull', () => { const pb = new PB(14, 14); pb.ell(7, 6, 6, 5.5, C.bone); pb.rect(4, 10, 6, 3, C.bone); pb.ell(4.5, 6, 1.6, 1.8, C.void); pb.ell(9.5, 6, 1.6, 1.8, C.void); pb.rect(6, 9, 2, 1, C.void); pb.rect(5, 12, 1, 1, C.void); pb.rect(8, 12, 1, 1, C.void); pb.outline(); return pb; }),
@@ -4669,8 +4553,6 @@ function mapSigns() {
   // Energy the Probe has found stays marked until drawn, found place or not: solid bolt for storm charge, hollow for warm
   if (S.exp) for (const c of S.exp.reach) { const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
     if (S.visited[c] && passable(c) && leftItems(c).some(i => i.k === 'pod' && !i.cave)) add(c, 'pod', 9); }   // a pod you saw and left behind
-  // each seen, unfound place in reach shows its heart's tell (shimmer, beat, bolt) until the heart is found; a fog bank hides it like any sign
-  if (S.exp) for (const t of shownTells()) add(t.c, t.kind, 9);
   for (const k in S.signs) { const c = +k, s = S.signs[k], age = S.turn - s.t; if (age > 1) continue; const rm = age ? 4 : 0;
     if (s.d && !S.deepRead) add(c, 'deep', 9, { rm }); if (s.g) add(c, 'burrow', 9, { rm }); if (hide(c)) continue; if (s.b) add(c, 'b', 5, { rm }); if (s.k) add(c, 'k', 4, { rm });
     if (s.tr.some(sp => !S.known.includes(sp))) add(c, 't', 3, { rm }); }
@@ -4686,7 +4568,6 @@ function drawSign(kind, s, px, py, fr) {
   if (kind === 'pod') { blit(podArt('bone', 1), px + 1, py + 1, s.rm); return; }
   if (kind === 't') { const col = s.sp != null ? spOf(s.sp).col.body : 'bone'; blit(ICON.paw(col), px + 2, py + 15, s.rm); blit(ICON.paw(col), px + 8, py + 9, s.rm); }
   else if (kind === 'b') blit(ICON.beat(s.rm ? 0 : fr), px + 2, py, s.rm);
-  else if (kind === 'sh') blit(ICON.shimmer(), px + 5, py + 5, s.rm);
   else if (kind === 'k') blit(ICON.bolt(), px + 13, py + 2, s.rm);
   else if (kind === 'kw') blit(ICON.boltHollow(), px + 11, py + 1);
   else if (kind === 'deep') blit(BADGE(), px + 4, py + 4, s.rm);
@@ -4733,7 +4614,6 @@ function signSprite(kind, s, fr, big) {
     case 'pod': return podArt('bone', 1);   // 16×20, always 1×
     case 't': return sc('paw' + (s.sp != null ? spOf(s.sp).col.body : 'bone'), ICON.paw(s.sp != null ? spOf(s.sp).col.body : 'bone'));
     case 'b': return ICON.beat(fr);
-    case 'sh': return sc('shimmer', ICON.shimmer());
     case 'k': return sc('bolt', ICON.bolt());
     case 'kw': return sc('boltH', ICON.boltHollow());
     case 'pin': return ICON.pin();
@@ -4822,24 +4702,16 @@ function* landPaint(spec, sliced) {
 // (fx, fy): the spot as fractions of the cell. Returns { mk, x, y } for a cell at (cx, cy) of size cs, or null.
 function cellMark(c, cx, cy, cs, size, open) {   // open: the opening screen draws them between expeditions
   if ((!S.exp && !open) || !S.revealed[c] || !passable(c) || G.land[c] === L.WATER) return null;
-  const found = heartFound(c), been = !!S.veil[String(c)]; if (!found && !been) return null;
-  const lay = layout(String(c)), bk = !lay.cave && bakedView(lay); if (!bk) return null;
-  const lm = (bk.place.landmarks && bk.place.landmarks[0]) || { x: bk.place.w / 2, y: bk.place.h / 2 }, mk = placeMark(G.land[c], found ? 'found' : 'been', size), pad = 2;
-  return { mk, x: Math.round(Math.max(cx + pad, Math.min(cx + cs - mk.w - pad, cx + (lm.x + .5) / bk.place.w * cs - mk.w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - mk.h - pad, cy + (lm.y + .5) / bk.place.h * cs - mk.h / 2))) };
+  const found = walkedCell(c), been = !!S.veil[String(c)]; if (!found && !been) return null;
+  const lay = layout(String(c)), bk = lay.baked; if (!bk || !lay.landmark) return null;   // a mark stands only at a landmark: the land holds few
+  const lm = { x: lay.landmark.x - bk.ox, y: lay.landmark.y - bk.oy }, mk = walkPB(`mark-${LM_MARK[lay.landmark.kind]}-${found ? 'found' : 'been'}-${size}`, size, size), pad = 2;
+  return { mk, x: Math.round(Math.max(cx + pad, Math.min(cx + cs - mk.w - pad, cx + (lm.x + .5) / bk.w * cs - mk.w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - mk.h - pad, cy + (lm.y + .5) / bk.h * cs - mk.h / 2))) };
 }
 // A sign's spot in its cell: at the heart's spot in the place (the others beside it), not in corner slots.
 function cellSignAt(c, cx, cy, cs, w, h, n) {
-  const lay = layout(String(c)), bk = !lay.cave && bakedView(lay), hh = bk && heartOf(String(c)), pad = 2;
-  const fx = (hh ? (hh.x - bk.ox + .5) / bk.place.w : .5) + n * .3, fy = hh ? (hh.y - bk.oy + .5) / bk.place.h : .5;
+  const pad = 2, fx = .5 + n * .3, fy = .5;
   return { x: Math.round(Math.max(cx + pad, Math.min(cx + cs - w - pad, cx + fx * cs - w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - h - pad, cy + fy * cs - h / 2))) };
 }
-// The spring's tell on a map cell at (x, y), cs px wide: the same puddles on the same clue tiles as the walking view, where those tiles lie in the cell. False for a cell with no spring.
-function mapPuddleSpots(c, x, y, cs) {   // where they lie, and their scale: null for a cell with no spring
-  const key = String(c), lay = layout(key), h = heartOf(key); if (!h || h.kind !== 'spring') return null;
-  const bk = !lay.cave && bakedView(lay), w = bk ? bk.place.w : lay.w, ht = bk ? bk.place.h : lay.h, ox = bk ? bk.ox : 0, oy = bk ? bk.oy : 0, tw = cs / w, th = cs / ht;
-  return { h, sc: Math.max(.2, cs / 180), at: q => { const sp = puddleSpot(q, Math.min(tw, th) / 48); return { x: x + (q.x - ox) * tw + sp.x, y: y + (q.y - oy) * th + sp.y }; } };
-}
-function mapPuddles(c, x, y, cs) { const m = mapPuddleSpots(c, x, y, cs); if (!m) return false; paintCluePuddles(m.h, m.at, m.sc, false); return true; }
 function drawReachView(t) {
   if (S.exp.beaconView || S.ui.mapFull) { drawMap('map', t); return; }   // the whole map, when chosen in the menu (it stays chosen)
   ensureMap();
@@ -4868,7 +4740,7 @@ function drawReachView(t) {
     const c = Y * MW + X; if (!S.revealed[c]) continue;
     const list = (signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind));
     const small = q.big && c === ex.pos;   // on the pawn's own cell at tier 1 the outpost and the burrow sign draw at 1×, clear of the pawn
-    let n = 0; for (const sg of list.slice(0, 4)) { if (sg.kind === 'sh' && mapPuddles(c, x, y, q.cs)) { n++; continue; }   // the spring's tell: its puddles on its clue tiles, no icon
+    let n = 0; for (const sg of list.slice(0, 4)) { 
       const a = signSprite(sg.kind, sg, fr, q.big && !(small && (sg.kind === 'depot' || sg.kind === 'burrow'))); if (!a) continue;
       const p = passable(c) && G.land[c] !== L.WATER ? cellSignAt(c, x, y, q.cs, a.w, a.h, n) : { x: x + ((q.cs - a.w) >> 1) + n * 6, y: y + ((q.cs - a.h) >> 1) }; blit(a, p.x, p.y, sg.rm || 0); n++; }
     if (c === ex.start) { const a = q.big ? up2('flag', ICON.flag()) : ICON.flag(), onOwn = c === ex.pos, pad = 2;
@@ -4893,12 +4765,8 @@ function drawReachView(t) {
     const lines = wrapText(FX.msg, tw - 16, 2).slice(0, Math.min(q.big ? 5 : 3, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20))), h = lines.length * 20 + 12;
     panel(8, by, tw + 4, h, C.ink, C.amber); lines.forEach((l, i) => text(l, 16, by + 6 + i * 20, C.bone)); RT.msgInBand = true; }
   else { // the place you stand in, the nearest tell with its way, then the way home (W§7); the tell may wrap to a second row when the band has room (tier 1)
-    const c0 = ex.pos, nm = S.visited[c0] && passable(c0) && layout(String(c0)).name || '', bc = bandCell(), first = nm && (S.veil[String(c0)] || heartFound(c0)) ? bc.replace(/^[^·]+/, nm + ' ') : bc;   // once you have been in, line 1 names the place under the pawn ("Windstep · water glints")
+    const c0 = ex.pos, first = bandCell();   // line 1 names the place under the pawn (its landmark's name once you have been in)
     let ry = by + 4; text(cutLine(first, tw, 2), 12, ry, C.bone); ry += 24;
-    const tf = bandTell();
-    if (tf.length) { const tw2 = tw - 18, rows = q.big ? wrapText(tf[0], tw2, 2).slice(0, 2) : [tf.find(t => textW(t, 2) <= tw2) || clipText(tf[tf.length - 1], tw2, 2)], gl = signSprite(tf.kind, {}, fr, false);
-      if (gl) blit(gl, 12, ry + 8 - (gl.h >> 1));   // the glyph at 1x, as line 3 starts with the flag
-      for (const r of rows) { text(r, 30, ry, C.mist); ry += 24; } }
     blit(ICON.flag(), 12, ry - 2); text(clipText(canSend() ? 'End expedition here' : sendHint(), tw - 20, 2), 30, ry, C.bone); }
   drawInset(ix, iy, t, u);
 }
@@ -5047,7 +4915,7 @@ function drawMap(mode, t) {
     blit(art('g2hole', () => { const pb = new PB(CELL, CELL + 4), clip = { clip: (X, Y) => Y < CELL + 4 };   // local origin (px, py - CELL)
       pb.ell(13, CELL + 4, 7, 15, C.bark, clip); pb.ell(13, CELL + 5, 5, 13, C.void, clip); return pb; }), px, py - CELL, rmOf(G.gate)); }
   for (const e of signs) { const { x, y } = cxy(e.c), px = ox + x * CELL, py = oy + y * CELL;
-    for (const s of e.list) if (s.kind === 'sh' && mapPuddles(e.c, px, py, CELL)) continue; else if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
+    for (const s of e.list) if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
   if (burrowOpen() && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
   // storm band: rain, edges, a lightning mark and the direction it travels
   if (bx1 > bx0 && preview) {
@@ -5193,8 +5061,7 @@ function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.
   const P = S.exp.patch, ts = v.ts;
   if (!RT.ca || RT.ca.p !== P) RT.ca = { p: P, s: bk.newCam() };
   const st = live ? RT.ca.s : Object.assign({}, RT.ca.s), tile = live ? { x: P.x, y: P.y } : { x: Math.round(px / ts), y: Math.round(py / ts) };
-  const hh = RT.spot && RT.spot.key === lay.key ? heartOf(lay.key) : null;
-  return bk.camera(st, { w: v.w, h: v.h }, tile, NOW, motion(), hh);
+  return bk.camera(st, { w: v.w, h: v.h }, tile, NOW, motion(), null);
 }
 // The whole place at 24 px (RT.view: 'arrival' under its veil, 'look' as seen so far). A find draws no whole view: its spot and card stand over the walking view (drawPatch).
 function drawWhole(t) {
@@ -5203,7 +5070,7 @@ function drawWhole(t) {
   const lay = layout(v.key), bk = bakedView(lay), live = curLive();
   if (!bk) { RT.view = null; return; }
   const T = bk.wholeSize();   // 16 for a place larger than 18 x 22 (the kit's own pixel), 24 for today's places
-  const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * T, H = bk.place.h * T, ox = (SCR_W - W) >> 1, oy = VIEW_Y + ((VIEW_H - H) >> 1), h = heartOf(v.key);
+  const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * T, H = bk.place.h * T, ox = (SCR_W - W) >> 1, oy = VIEW_Y + ((VIEW_H - H) >> 1);
   const tp = (x, y) => ({ x: ox + (x - bk.ox) * T + T / 2, y: oy + (y - bk.oy) * T + T / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   v.cv = v.cv || wholeFor(lay, bk); const cv = v.cv;
@@ -5217,50 +5084,14 @@ function drawWhole(t) {
   }
   if (v.kind === 'arrival' && !motion() && el >= ARRIVE_HOLD_MS) { endView(); return; }
   g.drawImage(cv, ox, oy);
-  const found = heartFound(lay.cell), cardUp = h && v.kind === 'look' && found;   // Look over a found place shows the same card as the find does
-  // the marks, drawn in this order: what is still there to take, the heart, then the partner as its kind, then you on top (the desk's look-view art)
+  const found = walkedCell(lay.cell);
+  // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
   const marks = () => {
-    if (cardUp || v.kind === 'peek') for (const it of leftItems(lay.cell).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still'; lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
-    if (cardUp) { const q = tp(h.x, h.y); lookMark('look-heart-' + h.kind, h.kind, q.x, q.y, T); }   // the heart, through the dissolve and the hold
+    if ((v.kind === 'look' && found) || v.kind === 'peek') for (const it of leftItems(lay.cell).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still'; lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
     if (live && live.pt && S.exp.pt) { const m = tp(live.pt.x, live.pt.y), pm = mibiById(S.exp.pt.id); lookMark(partnerMark(S.exp.pt.sp, !!pm && !isAdult(pm)), 'partner', m.x, m.y, T); }   // the partner as its kind, under the you-mark
     { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, T); }
   };
-  // the heart's tell, through the veil (the arrival look and Look show it)
-  if (h && !found && (v.kind === 'arrival' || tellOn(h, P) || unveiled(v.key, h.x, h.y))) {
-    const q = tp(h.x, h.y);
-    if (h.kind === 'moment') { const pa = up2('paw:cream', ICON.paw('cream')); for (const c of h.clues) { const r = tp(c.x, c.y); blit(pa, r.x - (pa.w >> 1), r.y - (pa.h >> 1)); } }   // 2×: a paw at 1× is 8 px on a 24 px tile
-    else if (h.kind === 'stone') blit(ICON.bolt('yellow'), q.x - 6, q.y - 14);
-    else { if (h.kind === 'spring') paintCluePuddles(h, c => { const t = tp(c.x, c.y), sp = puddleSpot(c, T / 48); return { x: t.x - T / 2 + sp.x, y: t.y - T / 2 + sp.y }; }, T / 48, false);   // the same puddles on the same clue tiles as the walking view
-      dashRing(q.x, q.y, 9, h.kind === 'spring' ? C.aqua : C.cream); }
-  }
   marks();
-  if (cardUp) foundCard(lay, h, VIEW_Y + 8);
-}
-// The Found card (over the marks in Look, over the walking view at a find): the kicker, the name (3×) and the heart's line. y: its top.
-function foundCard(lay, h, y) {
-  const line = revealLine(lay, h), lines = wrapText(line, SCR_W - 48, 2), bh = 22 + 30 + lines.length * 20 + 12, mk = placeMark(G.land[lay.cell], 'found', 26);   // the place's mark, the same one the map wears
-  panel(12, y, SCR_W - 24, bh, C.ink, C.amber);
-  blit(mk, 26, y + 8);
-  text(VIEW_TEXT.found, 26 + mk.w + 8, y + 12, C.amber, 2);
-  text(lay.name || '', SCR_W / 2, y + 8 + 26, C.cream, 3, 'center'); lines.forEach((l, i) => text(l, SCR_W / 2, y + 8 + 26 + 30 + i * 20, C.bone, 2, 'center'));
-  return bh;
-}
-// ---------- The spring's tell, one painter for every view ----------
-// A puddle on each clue tile (springClues in src/hearts.mjs, world tiles) and a sparkle running along the line toward the spring. sc scales the picture: 1 on a 48 px tile.
-const sparkRun = (n, answering) => motion() ? Math.floor(NOW / (answering ? 110 : 170)) % (n + 4) : -1;   // the puddle the sparkle is on (n + 4: a pause of four steps); -1 in reduced motion
-const sparkAt = (run, i) => run === i ? 2 : run < 0 ? 1 : 0;   // 2 the running sparkle (white), 1 the still sparkle of reduced motion (cream), 0 none
-function puddleSpot(q, sc = 1) { const hs = hash(31, 'dew', q.x, q.y); return { x: Math.round((10 + (hs % 12)) * sc), y: Math.round((22 + ((hs >>> 6) % 10)) * sc) }; }   // its place in the tile comes from a hash: the line does not look ruled
-// The art desk's puddle frames (art/walk/, spring-puddle-<scale>-spark<n>): scale 48 for a 48 px tile or larger, 24 for the whole place at 24, map7 for a map cell at 72, map4 below; each is
-// blitted at (x0, y0) plus its own offset. spark: 0 none, 1 the still sparkle (reduced motion), 2 the running one.
-const PUDDLE_AT = { 48: -11, 24: -5, map7: -3, map4: -3 };
-function paintPuddle(x0, y0, sc, spark) {
-  const k = sc >= 1 ? '48' : sc >= .5 ? '24' : sc >= .35 ? 'map7' : 'map4';
-  blit(walkPB(`spring-puddle-${k}-spark${spark}`), x0, y0 + PUDDLE_AT[k]);
-}
-// The same tell on a view that shows the whole place or a map cell: the puddles on the clue tiles, each where its tile lies in the picture (at(q): the puddle's top left), at scale sc.
-function paintCluePuddles(heart, at, sc, answering) {
-  const cl = springClues(heart), run = sparkRun(cl.length, answering);
-  cl.forEach((q, i) => { const p = at(q); paintPuddle(Math.round(p.x), Math.round(p.y), sc, sparkAt(run, i)); });
 }
 // The canvas state a frame starts from: no clip, no transform, no pending save, sharp pixels. A frame that threw half way (a save with no restore) can never leave a clip behind.
 function resetCanvas() { while (gDepth > 0) g.restore(); g.setTransform(1, 0, 0, 1, 0, 0); g.imageSmoothingEnabled = false; }
@@ -5387,7 +5218,7 @@ function drawPatchBody(t) {
     items.push({ y: f.y * ts + 2, d: () => blit(art('hglint', () => { const pb = new PB(2, 2); pb.rect(0, 0, 2, 2, C.yellow); return pb; }), SX(f.x * ts) + 15, SY(f.y * ts) + 22, spriteRm(f.x, f.y)) });
   for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     const rm = spriteRm(p.x, p.y); let a;
-    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
+    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), f); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
       a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, motion() ? blinkFr : -1, 1, 0, f.id === 'kh') : stoneArt(stormCharge(P.key, f) > 0, false, motion() ? Math.floor(NOW / 300) % 2 : 0, 0, 0, f.id === 'kh'); }   // the heart's stone is the tall one, a field stone the small one
@@ -5396,6 +5227,9 @@ function drawPatchBody(t) {
     const takeable = f.kind === 'b' ? bushFull(P.key, f) : f.kind === 'u' ? cupFull(P.key, f) : f.kind === 'k' ? (lay.cave ? stoneCharge(P.key, f) > 0 : stormCharge(P.key, f) > 0) : false;
     if (bk && takeable) aboveCrowns.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) });
     else items.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) }); }
+  // a landmark's own piece (art/props: the Windstep's lone tree, the Reedpool's island stone), drawn at its tile once the tile is seen; the tree stands on its foot, the stone in the middle of the tile
+  { const lm = lay.landmark, name = lm && LM_PIECE[lm.kind], pc = name && propPiece(name);
+    if (pc && pc.w > 1 && see(lm.x, lm.y)) { const x = lm.x * ts, y = lm.y * ts, low = lm.kind === 'windstep'; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + (low ? ts - pc.h : (ts - pc.h) >> 1), spriteRm(lm.x, lm.y)) }); } }
 
   for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, spriteRm(f.x, f.y)) }); }
   for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16, spriteRm(f.x, f.y)) }); }
@@ -5446,28 +5280,21 @@ function drawPatchBody(t) {
     // a find your Call or partner turned up stays outlined until you take it
     if (p.out) { const o2 = fr ? 0 : 1; for (let k = 2; k < ts - 2; k += 4) { R(W(x + k), H(y + 1 + o2), 2, 2, C.cream); R(W(x + k), H(y + ts - 3 - o2), 2, 2, C.cream); R(W(x + 1 + o2), H(y + k), 2, 2, C.cream); R(W(x + ts - 3 - o2), H(y + k), 2, 2, C.cream); } }
     blit(podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), spriteRm(p.x, p.y)); }
-  // the heart's tell shows through the veil within 6 tiles; a Call makes it answer for 3 actions; once the heart is found it stops
-  if (!lay.cave) { const hh = heartOf(P.key);
-    if (hh && !heartFound(lay.cell) && tellOn(hh, P)) {
-      const ans = ex.actions < (ex.answerUntil || 0), fa = motion() ? Math.floor(t * (ans ? 4 : 2)) % 2 : 0, hx = hh.x * ts, hy = hh.y * ts;
-      if (hh.kind === 'spring') {   // a line of greener grass along the path and a two-frame glint, brighter when it answers
-        { // the clue tiles' puddles (one list, springClues, for every view and every kind of place; the old light-table shimmer is gone): a sparkle runs along the line toward the spring, one puddle per 170 ms (110 ms while it answers), then a 4-step pause; reduced motion: every puddle wears a still sparkle
-          const cl = springClues(hh), run = sparkRun(cl.length, ans);
-          cl.forEach((q, i) => { if (!vis2(q.x * ts, q.y * ts) || T_BLOCK[lay.tiles[q.y * lay.w + q.x]] !== 0) return;
-            const sc = ts / 48, sp = puddleSpot(q, sc); paintPuddle(W(q.x * ts) + sp.x, H(q.y * ts) + sp.y, sc, sparkAt(run, i)); }); }
-        if (vis2(hx, hy)) { circ(W(hx) + (ts >> 1), H(hy) + (ts >> 1), (ans ? 14 : 10) + fa * 2, ans ? C.mint : C.aqua, true); R(W(hx) + 12 + fa * 16, H(hy) + 10 + fa * 14, 4, 4, C.white); R(W(hx) + 30 - fa * 14, H(hy) + 30 - fa * 8, 3, 3, C.cream); } }
-      else if (hh.kind === 'stone') { if (vis2(hx, hy)) blit(ICON.bolt(fa || ans ? 'cream' : 'yellow'), W(hx) + (ts >> 1) - 6, H(hy) - 8); }   // the bolt over the stone
-      else if (hh.kind === 'moment') { const pa = ICON.paw(ans ? 'cream' : 'bone'); for (const q of hh.clues) if (vis2(q.x * ts, q.y * ts)) blit(pa, W(q.x * ts) + ((ts - pa.w) >> 1), H(q.y * ts) + ((ts - pa.h) >> 1)); }   // prints: a paw on each clue point (brighter when a Call answers)
-      else if (vis2(hx, hy)) circ(W(hx) + (ts >> 1), H(hy) + (ts >> 1), (ans ? 11 : 9) + fa * 3, ans ? C.amber : C.cream, true);   // the slow beat: a ring that swells and falls (faster when it answers)
-    }
-    // the take marks: a charged storm stone keeps its bolt for as long as it holds a charge (the unfound heart's own bolt is drawn above)
-    const heartBolt = hh && hh.kind === 'stone' && !heartFound(lay.cell) && tellOn(hh, P);
-    for (const f of lay.feats) { if (f.kind !== 'k' || stormCharge(P.key, f) <= 0 || (heartBolt && f.x === hh.x && f.y === hh.y)) continue;
+  // the take marks: a charged storm stone keeps its bolt for as long as it holds a charge; a strike mark stands in the art desk's slot with the Probe's glint on it while unread (kit light)
+  if (!lay.cave) {
+    for (const f of lay.feats) { if (f.kind !== 'k' || stormCharge(P.key, f) <= 0) continue;
       const x = f.x * ts, y = f.y * ts; if (!vis2(x, y) || !see(f.x, f.y)) continue;
       blit(ICON.bolt(motion() && Math.floor(t * 2) % 2 ? 'cream' : 'yellow'), W(x) + (ts >> 1) - 6, H(y) - 8); }
-    // once the heart is found, every takeable still in view glints: the sparkle for 400 ms every 1.6 s, staggered by position; none under reduced motion
-    if (hh && heartFound(lay.cell) && motion()) {
-      for (const it of leftItems(lay.cell)) { if (it.cave || !vis2(it.x * ts, it.y * ts)) continue;
+    for (const f of lay.feats) { if (f.kind !== 'q' || strikeFaded(f)) continue;
+      const x = f.x * ts, y = f.y * ts; if (!vis2(x, y) || !see(f.x, f.y)) continue;
+      // the unread mark (two frames that alternate) and the read mark: a dark glassy fused streak, nothing burns (art/props, the art desk's strike mark); each lies one way or its mirror, by its place
+      const read = strikeIsRead(P.key, f), pc = propPiece(read ? 'strike-mark-read' : 'strike-mark-unread-' + (motion() && Math.floor((NOW + hash(f.x, f.y, 3) % 1000) / 500) % 2 ? 2 : 1));
+      if (pc.w > 1) blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + ((ts - pc.h) >> 1), spriteRm(f.x, f.y), hash(f.x, f.y, 9) % 2 === 1);
+      if (f.glass && !read) { const sh = propPiece('storm-glass-shard'); if (sh.w > 1) blit(sh, SX(x) + ((ts - sh.w) >> 1), SY(y) + ((ts - sh.h) >> 1) + 6, spriteRm(f.x, f.y)); }   // storm glass lies in a mark on sand: its picture, sand base and all
+      if (!read && motion() && (NOW + hash(f.x, f.y, 5) % 1600) % 1600 < 400) { const a = sparkArt(false); blit(a, W(x + (ts >> 1)) - Math.floor(a.w / 2), H(y + (ts >> 1) - 4) - Math.floor(a.h / 2)); } }
+    // once the place is explored, every takeable still in view glints: the sparkle for 400 ms every 1.6 s, staggered by position; none under reduced motion
+    if (walkedCell(lay.cell) && motion()) {
+      for (const it of leftItems(lay.cell)) { if (it.cave || it.k === 'strike' || !vis2(it.x * ts, it.y * ts)) continue;
         if ((NOW + hash(it.x, it.y, 7) % 1600) % 1600 >= 400) continue;
         const a = sparkArt(false); blit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); } } }
   // what Confirm will act on
@@ -5499,12 +5326,6 @@ function drawPatchBody(t) {
   if (fogged) { const d = motion() ? Math.floor(t * 9) : 0, pl = RT.plScr, keep = (sightR(lay) + 1.5) * ts;   // drifting texture on the fogged area only, never over what you see
     for (let i = 0; i < 6; i++) { const h = hash(9, i), px = ((h % 600) + d * (1 + i % 2)) % 600 - 96, py = VIEW_Y + 20 + (h >>> 12) % 460;
       if (pl && Math.max(Math.abs(px + 48 - pl.x) - 48, 0) ** 2 + Math.max(Math.abs(py + 24 - pl.y) - 24, 0) ** 2 < keep * keep) continue; blit(puffArt(i % 2 ? 3 : 2), px, py); } }
-  if (RT.spot && RT.spot.key === P.key) {   // the reveal's spot: two amber rings swell out of the heart's tile (one still ring in reduced motion), a "!" card stands over the explorer
-    const sp = RT.spot, hh = heartOf(P.key), el = TEST.at != null ? TEST.at : NOW - sp.at; sp.drawn = true;
-    if (hh) { const hx = W(hh.x * ts) + (ts >> 1), hy = H(hh.y * ts) + (ts >> 1);
-      for (const d of motion() ? [0, 300] : [0]) { const e = el - d; if (motion() && e < 0) continue; const r = motion() ? 12 + Math.round(Math.min(1, e / 300) * 26) : 24; circ(hx, hy, r + 2, C.ink); circ(hx, hy, r, C.amber); } }
-    if (!sp.held) blit(walkPB('spot-notice-16x22', 16, 22), Math.round(RT.plScr.x) - 8, Math.round(RT.plScr.y) - 52);   // the art desk's "!" card over the explorer
-    else if (hh) { const lay0 = layout(P.key), hy = H(hh.y * ts) + (ts >> 1), top = hy > VIEW_Y + VIEW_H / 2; foundCard(lay0, hh, top ? VIEW_Y + 8 : VIEW_Y + VIEW_H - 112); } }   // held: the Found card over the walking view, on the side away from the heart's rings
   g.restore(); RT.remap = REMAP;
 }
 // Which half of its tween a thing is in while it moves (0 or 1), or -1 when it is not moving: motion on, now inside the tween's duration, the target differing from the start.
@@ -5909,7 +5730,7 @@ function warnPicPlace(x0, y0, a) {
   for (const h of live.holes || []) if (here(h.x, h.y)) blit(freshHoleArt(1, HOLE_BARE[h.g]), x0 + HOLE_DX, y0);   // the Rupar's fresh hole
   for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
     let art;
-    if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
+    if (f.kind === 'b') art = bushArt(bushFull(a.key, f), f); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
     else if (f.kind === 'u') art = cupArt(cupFull(a.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, -1, 1, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0, 0, 1); }
     blit(art, x0, y0); }
@@ -5951,7 +5772,7 @@ const PIC = {
   tuft: (x, y) => cen2('tuft', ICON.tuft(), x, y), drop: (x, y) => cen2('drop', DROP(), x, y),
   untuva: (x, y, known) => cen(known ? creatureArt(2, 'idle', 0) : silhouette(2), x, y),
   partner: (x, y, sp) => cen(creatureArt(sgSp(sp), 'idle', 0), x, y),
-  'm:t': (x, y) => cen2('paws', PAWS(), x, y), 'm:b': (x, y) => cen(ICON.beat(0), x, y), 'm:sh': (x, y) => cen2('shimmer', ICON.shimmer(), x, y), 'm:k': (x, y) => cen2('bolt', ICON.bolt(), x, y), 'm:kw': (x, y) => cen2('boltH', ICON.boltHollow(), x, y),
+  'm:t': (x, y) => cen2('paws', PAWS(), x, y), 'm:b': (x, y) => cen(ICON.beat(0), x, y), 'm:k': (x, y) => cen2('bolt', ICON.bolt(), x, y), 'm:kw': (x, y) => cen2('boltH', ICON.boltHollow(), x, y),
   'm:pin': (x, y) => cen(ICON.pin(), x, y),   // 1×: at 2× it is 44 px high
   'm:beacon': (x, y) => { blit(ICON.beacon(0), x + 3, y + 5); blit(ICON.beacon(1, 0), x + 17, y + 5); },
   'm:depot': (x, y) => cen(ICON.depot(3, 0), x, y), 'm:skull': (x, y) => cen2('skull', ICON.skull(), x, y),
@@ -6086,7 +5907,7 @@ function drawOpenWay(q, t, fr) {
 }
 // The land in the frame: the built painting cropped to it, the place marks, the signs, the start flag, the lights of a first walk, the lost plates and the docked band. Drawn only: nothing here reveals a cell.
 function drawOpenLand(t, fr) {
-  const ready = !(G.gen >= 6) || PL6.ready || BAKED.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
+  const ready = !(G.gen >= 6) || PL.ready, q = openFrame(), { WX, WY, WW, WH, cs } = q, inF = (x, y, w, h) => x >= WX && y >= WY && x + w <= WX + WW && y + h <= WY + WH;
   if (!(ART_DONE.walk && ART_DONE.open)) return;   // one paint, once the art has settled (a painting costs hundreds of ms: never once per arriving file)
   const cv = openPainting({ X0: q.X0, Y0: q.Y0, w: WW + cs, h: WH + cs, cs, glimpse: q.glimpse, mist: q.first && OPEN_ART.ready ? (motion() ? Math.floor(t / 0.9) % 2 : 2) : null }); if (!cv) return;   // made over a few frames: the screen shows its panel until then
   g.drawImage(cv, WX - q.ox, WY - q.oy, WW, WH, WX, WY, WW, WH);
@@ -6095,7 +5916,7 @@ function drawOpenLand(t, fr) {
     const c = Y * MW + X, p = q.at(c); if (!ready || !S.revealed[c]) continue;
     const m = cellMark(c, p.x, p.y, cs, ms, true); if (m && inF(m.x, m.y, m.mk.w, m.mk.h)) blit(m.mk, m.x, m.y);
     const list = (signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind)); let n = 0;
-    for (const sg of list.slice(0, 4)) { if (sg.kind === 'sh' && inF(p.x, p.y, cs, cs) && mapPuddles(c, p.x, p.y, cs)) { n++; continue; }
+    for (const sg of list.slice(0, 4)) { 
       const a = signSprite(sg.kind, sg, fr, false); if (!a) continue;
       const s = passable(c) && G.land[c] !== L.WATER ? cellSignAt(c, p.x, p.y, cs, a.w, a.h, n) : { x: p.x + ((cs - a.w) >> 1) + n * 6, y: p.y + ((cs - a.h) >> 1) };
       if (inF(s.x, s.y, a.w, a.h)) blit(a, s.x, s.y); n++; }
@@ -6311,7 +6132,7 @@ function drawCargo(t) {
     reachDots(24, 214, ex.range); text('Reach', 24 + (ex.range * 2 + 1) * 8 - 2 + 10, 214, C.mist);   // how many places in reach have their heart found, as in the Probe
     if (canSend()) { card(95, 268, 260, 50, true, true); R(98, 271, 254, 44, C.orange); text('End expedition', SCR_W / 2, 282, C.bone, 3, 'center'); }
     else { card(95, 268, 260, 50, false, false); text('End expedition', SCR_W / 2, 276, C.mist, 3, 'center'); text(sendHint(), SCR_W / 2, 300, C.fog, 2, 'center'); }
-    { const l = sealPreview()[0]; R(40, 338, 4, 4, C.orange); text(clipText(l, 384, 2), 54, 332, C.bone); }
+    { const l = sealPreview()[0]; if (l) { R(40, 338, 4, 4, C.orange); text(clipText(l, 384, 2), 54, 332, C.bone); } }   // an empty hold seals nothing: no line
     text('The sealed bay', 24, 406, C.mist); drawBay(24, 428);
   } else {
     const h = S.hold || { e: 0, d: 0, s: 0, pods: [] };   // between expeditions: the hold, the pods and the sealed bay, nothing else (the bay line is the bottom line's)
@@ -6665,17 +6486,20 @@ function placeReason(c) {
   if (G.gen && passable(c) && !G.comp[c]) return 'No stairs out · can’t start';   // generator 2's sealed plateau (the fallback's)
   return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
 }
-const SIGN_ORDER = ['skull', 'depot', 'b', 'sh', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'soft', 'bank', 'deep'];
+const SIGN_ORDER = ['skull', 'depot', 'b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'soft', 'bank', 'deep'];
 function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.list : [];
   return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? DEPOT_NAME + (q.lit ? ' · lit ' + q.lit + ' turn' + (q.lit === 1 ? '' : 's') : ' (dark)') : q.kind === 'beacon' ? 'beacon' + (q.lit ? ' (lit)' : ' (unlit)') : SIGN_NAME[q.kind]); }
+// A place's name: its landmark's, as editorial wrote it, once you have been in; else the land's words (the IR's pond is the pond edge, its rock the rock field).
+const placeName = lay => lay.landmark && S.veil[lay.key] ? lay.landmark.name : G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land];
 function landWord(c) {
   if (G.land[c] === L.WATER) return G.ford[c] ? 'ford' : G.soft && G.soft.wade[c] ? 'muddy water' : nextToIsland(c) ? 'fast water' : 'wide water';
+  if (G.gen === 7 && S.veil[String(c)] && passable(c) && PL.ready) { const nm = layout(String(c)).landmark; if (nm) return nm.name; }
   return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : ''); }
 function cellWords(c) { const w = signWords(c); return landWord(c) + (w.length ? ' · ' + w.join(', ') : ''); }
 function aheadCell() { const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[ex.face || 'down'], x = p.x + dx, y = p.y + dy; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; }
 // The map's middle part: the cell you're on and the one you face, shortest forms last.
 function mapContext() {
-  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · burrow too narrow' : S.visited[ex.pos] && passable(ex.pos) && heartFound(ex.pos) ? ' · ' + HEART_TEXT.found : ''), hs = signWords(ex.pos), a = aheadCell();
+  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · burrow too narrow' : S.visited[ex.pos] && passable(ex.pos) && walkedCell(ex.pos) ? ' · ' + WORDS.explored : ''), hs = signWords(ex.pos), a = aheadCell();
   const toTake = c => S.visited[c] && passable(c) && leftTotal(c) ? ' · ' + leftTotal(c) + ' to take' : '';
   // the edge you face, named even when the cell beyond is fog (your own four edges always show): a steep edge or stairs
   const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, ex.face || 'down') : EDGE.OPEN;
@@ -6757,16 +6581,14 @@ function lineBase() {
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? [base + wx, base + ' · storm preview', base] : wx.slice(3), 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
       return L1('Go down', mapContext(), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
-    case 'patch': { if (RT.spot && RT.spot.held) return Object.assign(L1(VIEW_TEXT.go, '', ''), { hot: !!RT.blink && NOW - RT.blink < 480 && Math.floor((NOW - RT.blink) / 120) % 2 === 0 });   // the Found card held over the walking view: its own line
+    case 'patch': {
       if (RT.view) { const v = RT.view; return v.kind === 'look' ? L1('', '', VIEW_TEXT.close) : L1('', '', ''); }   // a view over the place: its own line
       const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
       const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
       const P = S.exp.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
-      // the heart state in words, drawn one step brighter (after the \x01 mark); the kinds drop first, then the place name, then the count
-      // the heart's state leads the middle (found, or the tell, or "something here to find"); the place type drops first, the count last, the state never
-      const sv = '\x01' + heartLine(lay, P), svN = '\x01' + heartLine(lay, P, true), land = (G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land]) + ' · ';
-      let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + heartState(lay, P).short];
+      const sv = '\x01' + placeLine(lay, P), svN = '\x01' + placeLine(lay, P, true), land = placeName(lay) + ' · ';
+      let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
       if (S.ui.swap) { const sw = swapState(); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
@@ -6805,6 +6627,7 @@ function render(t) {
   finally { resetCanvas(); RT.remap = REMAP; vctx.drawImage(scr, 0, 0); }
 }
 function renderFrame(t) {
+  if (RT.making) { drawMaking(); vctx.drawImage(scr, 0, 0); return; }   // a world is being made off the page
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.plScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
@@ -6814,7 +6637,7 @@ function renderFrame(t) {
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
     case 'patch': if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
-      spotStep(); if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); } drawHUD(); drawSwap(); break;   // a view over the place (arrival look, Look, the reveal) has the whole view
+      if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); } drawHUD(); drawSwap(); break;   // a view over the place (arrival look, Look, the reveal) has the whole view
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
     case 'cargo': drawCargo(t); break;
@@ -6827,7 +6650,7 @@ function renderFrame(t) {
   hitFrame();
   { const wa = NOW - (FX.waitAt || -1e9); if (wa >= 0 && wa < 220 && motion() && S.exp) { const by = VIEW_Y + Math.round(wa / 220 * (VIEW_H - 24)); ditherFill(0, by, SCR_W, 24, 'cream', 3); ditherFill(0, by + 6, SCR_W, 12, 'cream', 5); } }   // Wait's ripple
   drawLine(lineFor());
-  if (!((RT.view || (RT.spot && RT.spot.held)) && S.phase === 'patch')) drawMessage();
+  if (!(RT.view && S.phase === 'patch')) drawMessage();
   const ta = NOW - FX.transAt; if (ta < 200 && ta >= 0 && motion()) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 16 - Math.floor(ta / 200 * 16));
 }
 function frame(t) {
@@ -6896,6 +6719,7 @@ function refuseFrozen() {
   const held = FX.held || []; FX.notes = []; fxMsg(FX.dockSaid ? DOCK_TEXT.again : DOCK_TEXT.first, 3); FX.held = held; FX.dockSaid = 1;   // held notes wait for the first action after Lift
 }
 function act(k, mode) {
+  if (RT.making) return;   // a world is being made off the page: the page says so and waits
   if (RT.readOnly) { actReadOnly(k); return; }   // a save that cannot be shown: the one way out is a new world, the old save kept
   if (RT.notice) { actNotice(k); return; }
   const refused = frozenRefuses(k);
@@ -6905,7 +6729,6 @@ function act(k, mode) {
   if (S.exp && S.exp.caveDue) digDone();   // a dug burrow's entry still due completes before the press (a press inside the lock is ignored, as before)
   if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
-  if (RT.spot && S.phase === 'patch') { if (RT.spot.held) spotPress(k); else if (NOW - RT.spot.at > SPOT_MS + 1500) cancelBeat(); return; }   // the reveal's spot takes every press; its held card only ✓ or ← closes (an unheld spot is never longer than its beat: one that never gets drawn is dropped)
   if (RT.view && S.phase === 'patch') { viewPress(k); return; }   // a view over the place (arrival look, Look) takes the press: consumed, never queued, no action spent
   if (k === 'call' && !['setup', 'map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
   if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; if (FX.notes.length) composeMsg(); }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
@@ -6954,7 +6777,7 @@ function act(k, mode) {
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
         else if (id === 'worldmap') { S.phase = 'worldmap'; transition(); }
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
-        else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); }
+        else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorldLive(); }
           else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
         else { S.phase = id; S.ui.nw = 0; S.ui.rSel = carriedMibis().length ? 1 : 0; S.ui.rFrom = 'menu'; } }   // Mibis from the menu: the first mibi with you
       else if (k === 'back') S.phase = S.ui.from || 'setup';
@@ -6995,7 +6818,7 @@ function act(k, mode) {
     case 'newworld':
       if (k === 'up' || k === 'down') S.ui.nw = k === 'down' ? 1 : 0;
       else if (k === 'back') S.phase = 'menu';
-      else if (k === 'confirm') { if (S.ui.nw === 1) { newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); } else S.phase = 'menu'; }
+      else if (k === 'confirm') { if (S.ui.nw === 1) newWorldLive(); else S.phase = 'menu'; }
       break;
     case 'sealed':   // Expedition ended, the short screen: ✓ Next expedition (the expedition choice; it starts only undocked)
       if (k === 'confirm') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
@@ -7017,7 +6840,7 @@ function stopRepeat() { clearTimeout(repeat.timer); repeat.timer = null; repeat.
 const PEEK_MS = 400;   // [tune]
 const peek = { timer: null, on: false, held: false };
 function peekable() {
-  return !RT.readOnly && !RT.notice && S && S.phase === 'patch' && !RT.view && !RT.spot && !RT.notice && !RT.readOnly && !(S.ui && S.ui.swap) && !(S.exp && S.exp.beaconView) && NOW >= FX.lockUntil && !frozenRefuses('call') && lookable();
+  return !RT.readOnly && !RT.notice && S && S.phase === 'patch' && !RT.view && !RT.notice && !RT.readOnly && !(S.ui && S.ui.swap) && !(S.exp && S.exp.beaconView) && NOW >= FX.lockUntil && !frozenRefuses('call') && lookable();
 }
 function peekStart() {
   peek.timer = null;
@@ -7155,7 +6978,7 @@ showDevStep();
 function yieldText() {
   const ex = S.exp, r = S.report;
   if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data at the expedition\'s end · ' + (ex.dAct || 0) + ' of ' + CREATURE_CEIL + ' in from ' + ex.moments.length + ' creature act' + (ex.moments.length === 1 ? '' : 's') : 'no place entered yet') + ' | ladder ' + dataLadder(); }
-  if (S.phase === 'sealed' && r && r.yield) return 'last expedition: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' creature act' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' at the expedition\'s end | ladder ' + dataLadder();
+  if (S.phase === 'sealed' && r && r.yield) return 'last expedition: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' creature act' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' from strike marks | ladder ' + dataLadder();
   return 'ladder ' + dataLadder() + ' by tier (starter / early / mid / late)';
 }
 (function buildPalette() {
@@ -7177,7 +7000,7 @@ function mapCounts() {
 // The heart of the cell you are in, and the reach count (the observer's line).
 function heartText() {
   const ex = S.exp; if (!ex) return '–';
-  const c = ex.patch ? layout(ex.patch.key).cell : ex.pos, st = passable(c) && S.visited[c] ? (heartFound(c) ? 'found' : 'not found') : 'not visited';
+  const c = ex.patch ? layout(ex.patch.key).cell : ex.pos, st = passable(c) && S.visited[c] ? (walkedCell(c) ? 'explored' : 'not explored') : 'not visited';
   const calls = ex.callsAt && ex.callsAt[c] || 0;
   return 'here: ' + st + ' · ' + calls + ' Call' + (calls === 1 ? '' : 's') + ' | ' + reachLine();
 }
@@ -7263,6 +7086,29 @@ function actNotice(k) {
   if (k !== 'confirm') { FX.bumpAt = NOW; return; }
   RT.notice = false; S.resetSeen = 1; save();
 }
+// A new world's realm takes seconds to make: it is made in a Web Worker (src/realm-store.mjs), the page stays live and shows the loading line (the Probe reading the land). A realm made before
+// (it is kept in the browser per seed) is back at once. Without a Worker (the test sandbox) the world is made on the spot, as it always was.
+const randomSeed = () => Math.floor(Math.random() * 4294967295) >>> 0;
+// The worker runs in the bundled page (the build puts the packages inside it). The page served from the source tree (the dev checks, the goldens, the journeys) has an import map the worker cannot read, so it
+// makes the realm on its own thread as it always did.
+const OFF_PAGE = typeof Worker !== 'undefined' && !(document.querySelector && document.querySelector('script[type="importmap"]'));
+function drawMaking() {
+  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
+  viewBg();
+  text(LAND_COMING, 225, 289, C.bone, 2, 'center');
+  drawLine({ ok: '', ctx: '', back: '' });
+}
+function newWorldLive() {
+  const seed = urlSeed() ?? randomSeed(), done = () => { RT.making = false; newWorld(seed); RT.mp = null; RT.key = null; mapCv = null; transition(); };
+  if (!OFF_PAGE) { done(); return; }
+  RT.making = true; RT.makingAt = performance.now();
+  readyRealm(seed, RT.makeTimes = {}).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.makeMs = performance.now() - RT.makingAt; done(); });
+}
+// The seed of the realm a saved game plays (generator 7), read from the save without loading it; null for no save, another generator, or a save that cannot be read.
+function savedRealmSeed() {
+  try { const raw = localStorage.getItem(SAVE_KEY) ?? (COMPANION.slot === 'A' ? localStorage.getItem(LEGACY_KEY) : null), s = raw && JSON.parse(raw), r = s && Array.isArray(s.regions) && s.regions[0];
+    return r && r.gen === 7 && typeof r.seed === 'number' ? r.seed : null; } catch (e) { return null; }
+}
 function drawNewer() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
@@ -7281,16 +7127,16 @@ function actReadOnly(k) {
       localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept'); } }
   catch (e) { RT.armNew = 0; FX.bumpAt = NOW; return; }   // it cannot be kept: nothing changes
   RT.readOnly = false; RT.broken = false; RT.armNew = 0; const note = document.getElementById('resetNote'); if (note) note.hidden = true;
-  newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition();
+  newWorldLive();
 }
-const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
+function boot(seed) {
+const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(seed ?? urlSeed());
 if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
 const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
 loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
 loadMomentArt();   // the art desk's painted stands for the care moments
-loadPlaces6();   // generator 6's places (the four templates and their mirrors)
-loadBakedPlace();   // ?place=<id>: a baked place instead of the generated ones (dev switch)
+loadPlaces();   // the places kit: the tile set, the terrain layers and the range haze that generator 7's cells are drawn with
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
@@ -7324,11 +7170,16 @@ try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catc
 if (OPT.dev) setObserver(true);   // the Developer tools option opens the Observer, the page's developer panel
 fit();
 requestAnimationFrame(frame);
+}
+// Start. With a Worker the realm is made (or read back) off the page first, and the loading line shows meanwhile; a saved game of another generator, or none, is a new world with the seed chosen here so its realm can be made at once.
+{ const saved = savedRealmSeed(), seed = saved ?? urlSeed() ?? randomSeed();
+  if (!OFF_PAGE) boot(null);
+  else { RT.making = true; drawMaking(); vctx.drawImage(scr, 0, 0); readyRealm(seed, RT.makeTimes = {}).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { press, release, PEEK_MS, enterPatch, leavePatch, WARM, WHOLE, ARR, WARM_WHOLE_MAX, PL6, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, WARM, WHOLE, ARR, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
-  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, heartOf, springClues, mapPuddleSpots: (c, x, y, cs) => { const m = mapPuddleSpots(c, x, y, cs); return m && { sc: m.sc, spots: springClues(m.h).map(q => m.at(q)) }; }, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, shownTells, fogState, pickTells, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
+  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
