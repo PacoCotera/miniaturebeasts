@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import { fixture, plain } from "./walk-fixture.mjs";
-import { FOG_NOT_BEEN, FOG_BEEN } from "../src/hearts.mjs";
+import { FOG_NOT_BEEN, FOG_BEEN } from "../src/walk-data.mjs";
 
 // the screen rectangle of a reach-view cell
 const RECT = `(c => { const q = reachGeom(), p = cxy(c); return { x: q.dx + (p.x - (q.s0.x - q.r)) * q.cs, y: q.dy + (p.y - (q.s0.y - q.r)) * q.cs, cs: q.cs }; })`;

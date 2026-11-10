@@ -74,12 +74,12 @@ test("purity, by source: no page state, DOM, storage, clock, randomness, drawing
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
 });
 
-test("unknown generators are refused; the module knows generators 1 to 6, the page plays generator 6 only, and new worlds take generator 6", () => {
-  assert.throws(() => W.genWorld(1, 7), RangeError);
+test("unknown generators are refused; the module knows generators 1 to 5, the page plays generator 7 only, and new worlds take generator 7", () => {
+  assert.throws(() => W.genWorld(1, 6), RangeError); assert.throws(() => W.genWorld(1, 7), RangeError);
   assert.throws(() => W.genWorld(1, 0), RangeError);
   assert.deepEqual(W.GENS, [7]);
   assert.equal(W.genWorld(1, 2).gen, 2);
-  assert.equal(W.genWorld(1, 3).gen, 3); assert.equal(W.genWorld(1, 4).gen, 4); assert.equal(W.genWorld(1, 5).gen, 5); assert.equal(W.genWorld(1, 6).gen, 6);
+  assert.equal(W.genWorld(1, 3).gen, 3); assert.equal(W.genWorld(1, 4).gen, 4); assert.equal(W.genWorld(1, 5).gen, 5);
   assert.equal(W.NEW_GEN, 7);
 });
 
@@ -117,7 +117,7 @@ test("a world of generator 2 (asked for by a test; players have them in saves) w
 
 test("a save from a generator the page does not play (a newer one, or 1 to 4) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
   const realm = (o) => JSON.stringify(R.migrate8({ ...o, v: 8 }, { now: 1793664000000 }));   // the fixture as a v10 realm (a flat v8 save is reset: reset.test.mjs)
-  const raw = realm(Object.assign(FIXTURE(), { gen: 7 })), writes = [];
+  const raw = realm(Object.assign(FIXTURE(), { gen: 8 })), writes = [];
   const old = { "mb-exploration-v1": "{}", "mb-exploration-v6": "{}" };   // the saves before v7 stay too: read-only boot removes nothing
   const store = new Proxy({ "mb-save-v8": raw, ...old }, { set: (o, k, v) => { writes.push(k); o[k] = v; return true; }, deleteProperty: (o, k) => { writes.push(k); delete o[k]; return true; } });
   const p = page(store);
@@ -1557,26 +1557,26 @@ test("start-pick header at T10: 'Expedition N' and the note, unclipped up to Exp
   assert.doesNotMatch(PAGE, /dotted: storm start/);
 });
 
-test("bottom line in a place: the heart's state leads the middle and is never dropped; the place name goes before the take kinds; after a Call it stays with Wait · Leave", () => {
+test("bottom line in a place: the place's state leads the middle and is never dropped; the place name goes before the take kinds; after a Call it stays with Wait · Leave", () => {
   const p = inPlace(); p.run("FX.hintNote = null;");   // the first-place control hint would lead the middle; this test is about the usual words
-  p.run("S.called[curLay().cell] = 1; leftItems = () => [{ k: 'charge', x: S.exp.patch.x + 4, y: S.exp.patch.y }, { k: 'warm', x: S.exp.patch.x + 6, y: S.exp.patch.y }];");   // the heart is found; two takeables, a charge the nearer
+  p.run("TEST.exploreHere(); leftItems = () => [{ k: 'charge', x: S.exp.patch.x + 4, y: S.exp.patch.y }, { k: 'warm', x: S.exp.patch.x + 6, y: S.exp.patch.y }];");   // the place is walked; two takeables, a charge the nearer
   const land = p.run("LAND_NAME[curLay().land]"), L = p.run("lineFor()");
   assert.equal(L.ok, "Wait"); assert.equal(L.back, "Leave");
-  const sv = p.run("heartLine(curLay(), S.exp.patch)"), svN = p.run("heartLine(curLay(), S.exp.patch, true)"), short = p.run("heartState(curLay(), S.exp.patch).short");
-  assert.match(sv, /^found · a charged stone (east|close by|[a-z-]+) · 1 more to take$/, "the nearest takeable and its way, then how many more: " + sv); assert.equal(svN, "found · 2 to take"); assert.equal(short, "found");
+  const sv = p.run("placeLine(curLay(), S.exp.patch)"), svN = p.run("placeLine(curLay(), S.exp.patch, true)"), short = p.run("placeState(curLay())");
+  assert.match(sv, /^explored · a charged stone (east|close by|[a-z-]+) · 1 more to take$/, "the nearest takeable and its way, then how many more: " + sv); assert.equal(svN, "explored · 2 to take"); assert.equal(short, "explored");
   assert.deepEqual(JSON.parse(JSON.stringify(L.ctx)).map(c => c.replace("\x01", "")).map(c => c.replace(/ · (lull|overcast)$/, "")), [land + " · " + sv, land + " · " + svN, svN, short]);
   // the state is in every candidate, so it can never be the part that goes
-  for (const c of JSON.parse(JSON.stringify(L.ctx))) assert.match(c, /found/);
-  // before the heart is found: the tell or "something here to find", in every candidate too
-  p.run("S.called = {};"); const L0 = p.run("lineFor()");
-  for (const c of JSON.parse(JSON.stringify(L0.ctx))) assert.match(c, /something here to find|a slow beat|water glints in the grass|a struck stone/, c);
-  p.run("S.called[curLay().cell] = 1;");
+  for (const c of JSON.parse(JSON.stringify(L.ctx))) assert.match(c, /explored/);
+  // before the place is walked: only what is there to take, and "nothing in sight to take" when nothing is
+  p.run("S.called = {}; S.veil[curLay().key] = new Array(curLay().h).fill(0);"); const L0 = p.run("lineFor()");
+  for (const c of JSON.parse(JSON.stringify(L0.ctx))) assert.doesNotMatch(c, /explored/, c);
+  p.run("TEST.exploreHere();");
   // after a Call, drawn: the name and the count stay (the kinds drop first when they do not fit)
   p.key("call"); p.run("S.phase = 'patch'; FX.msg = '';");
   const L2 = p.run("lineFor()"); assert.equal(L2.ok, "Wait");
   p.run("curLay().land = 0"); p.rec("text"); p.clear(); p.run("drawLine(lineFor())");
   const said = p.calls("text").map(c => c.a[0]).join("|");
-  assert.match(said, /\|meadow · \|found · 2 to take/, "the place name stays: " + said);
+  assert.match(said, /\|meadow · \|explored · 2 to take/, "the place name stays: " + said);
   // and whatever the land, a candidate with the name is drawn whenever it fits
   for (let k = 0; k < 4; k++) { p.run(`curLay().land = ${k}`); const c = p.run("lineFor().ctx[1]").replace("\x01", ""), fits = p.run(`textWT(${JSON.stringify(c)}, 2)`) <= 291;
     p.clear(); p.run("drawLine(lineFor())"); const d = p.calls("text").map(c => c.a[0]).join("");
@@ -1653,13 +1653,13 @@ test("the Call sign never joins another message; it is spent only when it is dra
 });
 
 test("walk B2: after the find the band names the nearest takeable and its way, then how many more (1, 2 and 4 takeables); nothing left says so", () => {
-  const p = inPlace(); p.run("FX.hintNote = null; S.called[curLay().cell] = 1;");
+  const p = inPlace(); p.run("FX.hintNote = null; TEST.exploreHere();");
   const items = n => `leftItems = () => [${[0, 1, 2, 3].slice(0, n).map(k => `{ k: ['dew', 'pod', 'tuft', 'charge'][${k}], x: S.exp.patch.x - 4 - ${k}, y: S.exp.patch.y }`).join(", ")}];`;
-  p.run(items(1)); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west");
-  p.run(items(2)); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west · 1 more to take");
-  p.run(items(4)); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west · 3 more to take");
-  assert.equal(p.run("heartLine(curLay(), S.exp.patch, true)"), "found · 4 to take", "the short form keeps the count");
-  p.run("leftItems = () => [];"); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · nothing left to take");
+  p.run(items(1)); assert.equal(p.run("placeLine(curLay(), S.exp.patch)"), "explored · a full cup west");
+  p.run(items(2)); assert.equal(p.run("placeLine(curLay(), S.exp.patch)"), "explored · a full cup west · 1 more to take");
+  p.run(items(4)); assert.equal(p.run("placeLine(curLay(), S.exp.patch)"), "explored · a full cup west · 3 more to take");
+  assert.equal(p.run("placeLine(curLay(), S.exp.patch, true)"), "explored · 4 to take", "the short form keeps the count");
+  p.run("leftItems = () => [];"); assert.equal(p.run("placeLine(curLay(), S.exp.patch)"), "explored · nothing left to take");
 });
 
 test("fruit in hand: ✓ presses only on a stone, a rock or a tree; anything else that blocks is dimmed and spends nothing; a free tile puts it down", () => {
@@ -1668,7 +1668,7 @@ test("fruit in hand: ✓ presses only on a stone, a rock or a tree; anything els
   const lab = () => p.run("(() => { const a = patchAction(); return { label: a.label, dim: !!a.dim }; })()");
   const act = () => ({ label: lab().label, dim: lab().dim });   // the page runs in another realm: copy the plain object over
   const ess = () => p.run("S.exp.cargo.s"), acts = () => p.run("S.exp.actions");
-  assert.equal(p.run("SIGN_LINE.fruit"), "Feed it, or press on a stone or tree");
+  assert.equal(p.run("SIGN_LINE.fruit"), "Feed · press on stone or tree");
   assert.deepEqual(act(), { label: "Put down the fruit", dim: false }, "a free tile: put it down");
   // a plain storm stone: press, +2 Essence, one action
   p.run("globalThis.OCC = { type: 'feat', f: { kind: 'k', id: 'kx', x: 3, y: 3 } };");
@@ -1681,30 +1681,30 @@ test("fruit in hand: ✓ presses only on a stone, a rock or a tree; anything els
   p.run("stormCharge = () => 0;");
   // a trunk: the tree takes the press
   p.run("globalThis.OCC = { type: 'tile', t: T.TRUNK };");
-  assert.deepEqual(act(), { label: "Press the fruit on the tree", dim: false });
+  assert.deepEqual(act(), { label: "Press fruit on the tree", dim: false });
   // a cliff face is stone; rock that is not in the press mask (a bush, a thicket) is dimmed and does nothing
   p.run("globalThis.OCC = { type: 'tile', t: T.FACE };"); assert.equal(act().label, "Press fruit on the stone");
   p.run("globalThis.OCC = { type: 'tile', t: T.ROCK };");
-  assert.deepEqual(act(), { label: "Press on a stone", dim: true });
+  assert.deepEqual(act(), { label: "Press on a stone or tree", dim: true });
   const e1 = ess(), a1 = acts(); p.run("patchAction().run()");
   assert.equal(ess(), e1); assert.equal(acts(), a1, "no action spent"); assert.equal(p.run("S.exp.carry"), "fruit", "the fruit stays in hand");
-  assert.equal(p.run("FX.notes.some(n => n.text === 'Fruit presses on stone or rock · or put it down')"), true, "the bump line");
+  assert.equal(p.run("FX.notes.some(n => n.text === 'Press fruit on a stone or tree · or put it down')"), true, "the bump line");
   // the mask names the rest: a boulder tile is stone, a tree prop's trunk is a tree, T.ROCK itself says nothing
   p.run("(() => { const f = frontOf(S.exp.patch), lay = curLay(); lay.press = new Uint8Array(lay.w * lay.h); lay.press[f.y * lay.w + f.x] = 1; })()");
   assert.equal(act().label, "Press fruit on the stone");
   p.run("(() => { const f = frontOf(S.exp.patch), lay = curLay(); lay.press[f.y * lay.w + f.x] = 2; })()");
-  assert.equal(act().label, "Press the fruit on the tree");
+  assert.equal(act().label, "Press fruit on the tree");
 });
 
 test("finds: fruit and an unlit beacon are not takes; a place with a full cup reads 1 to take, and is done once the cup is taken", () => {
-  const p = inPlace(); p.run("FX.hintNote = null; S.called[curLay().cell] = 1; S.found.push('heart:' + curLay().cell); S.pods = S.pods.filter(q => q.k !== S.exp.patch.key);");
+  const p = inPlace(); p.run("FX.hintNote = null; TEST.exploreHere(); S.pods = S.pods.filter(q => q.k !== S.exp.patch.key);");
   const at = (k, dx) => `{ k: '${k}', x: S.exp.patch.x - ${dx}, y: S.exp.patch.y }`;
   p.run(`leftItemsAll = () => [${at('fruit', 3)}, ${at('fruit', 4)}, ${at('beacon', 5)}, ${at('dew', 6)}];`);
-  assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · a full cup west", "only the cup counts");
+  assert.equal(p.run("placeLine(curLay(), S.exp.patch)"), "explored · a full cup west", "only the cup counts");
   assert.equal(p.run("leftTotal(curLay().cell)"), 1);
   assert.equal(p.run("doneEmpty()"), false);
   p.run(`leftItemsAll = () => [${at('fruit', 3)}, ${at('beacon', 5)}];`);
   assert.equal(p.run("leftTotal(curLay().cell)"), 0);
-  assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · nothing left to take");
+  assert.equal(p.run("placeLine(curLay(), S.exp.patch)"), "explored · nothing left to take");
   assert.equal(p.run("doneEmpty()"), true);
 });

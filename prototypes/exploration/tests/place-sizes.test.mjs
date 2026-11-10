@@ -5,7 +5,6 @@ import assert from "node:assert/strict";
 import { fixture, plain } from "./walk-fixture.mjs";
 import { makePage } from "./page-harness.mjs";
 import { viewOf, camAt } from "../src/view.mjs";
-import { HEART_TEXT } from "../src/hearts.mjs";
 
 const W = 18, H = 22;
 
@@ -74,25 +73,11 @@ test("edges on an 18×22 place: x 17 and y 21 are the last tiles; one more leave
   assert.deepEqual(e, [{ x: 9, y: 21 }, { x: 0, y: 11 }, { x: 17, y: 11 }, { x: 9, y: 0 }]);
 });
 
-test("the veil words on an 18×22 place: the heart's state leads, a veiled stone says so, the Call report points the way", () => {
-  const f = small({ feats: "[{ id: 'k1', kind: 'k', x: 9, y: 17, ch: 0 }]" }), run = f.run;
-  const key = run("S.exp.patch.key"), heart = plain(run("heartOf(S.exp.patch.key)"));
-  assert.ok(heart && heart.x >= 2 && heart.x < W - 2 && heart.y >= 2 && heart.y < H - 2, "the heart lies inside the 18×22 place: " + JSON.stringify(heart));
-  assert.ok(heart.path.every(q => q.x >= 0 && q.x < W && q.y >= 0 && q.y < H), "its path stays inside");
-  assert.equal(run("layout(S.exp.patch.key).heart === heartOf(S.exp.patch.key)"), true);
-  // before it is found the line says so in words; after the walking lift reaches it, it says found
-  const before = run("heartLine(curLay(), S.exp.patch)"); assert.doesNotMatch(before, /found ·|^found/); assert.ok(!/surveyed|heart|nest/i.test(before), before);
-  run(`S.exp.patch.x = ${heart.path[heart.path.length - 1].x}; S.exp.patch.y = ${heart.path[heart.path.length - 1].y}; walkLift();`);
-  assert.equal(run("heartFound(S.exp.pos)"), true, "walking up to it finds it, as on the 28×32 places");
-  assert.match(run("heartLine(curLay(), S.exp.patch)"), /^found/);
+test("the veil words on an 18×22 place: a veiled stone says so until a Call lifts it", () => {
   // a stone on a veiled tile reads "Veiled · Call to see" until a Call lifts it
   const g = small({ feats: "[{ id: 'k1', kind: 'k', x: 9, y: 11, ch: 0 }]" });
   g.run("S.exp.patch.x = 9; S.exp.patch.y = 12; S.exp.patch.dir = 'up'; S.veil[S.exp.patch.key] = new Array(" + H + ").fill(0);");
   assert.equal(g.run("patchAction().label"), "Veiled · Call to see");
   g.run("unveilRound(S.exp.patch.key, 9, 12, 7)");
   assert.notEqual(g.run("patchAction().label"), "Veiled · Call to see");
-  // the Call report on the small place leads with the heart's direction or "nothing answers"
-  const h = small(); h.run("S.found.push('callintro'); FX.notes = []; callPlace()");
-  assert.match(h.run("FX.msg"), /answers|glints|beat|stone|found/i, h.run("FX.msg"));
-  assert.equal(HEART_TEXT.farther, "Nothing answers here · walk on");
 });

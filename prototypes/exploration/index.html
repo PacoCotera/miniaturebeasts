@@ -6124,7 +6124,7 @@ function drawCargo(t) {
     reachDots(24, 214, ex.range); text('Reach', 24 + (ex.range * 2 + 1) * 8 - 2 + 10, 214, C.mist);   // how many places in reach have their heart found, as in the Probe
     if (canSend()) { card(95, 268, 260, 50, true, true); R(98, 271, 254, 44, C.orange); text('End expedition', SCR_W / 2, 282, C.bone, 3, 'center'); }
     else { card(95, 268, 260, 50, false, false); text('End expedition', SCR_W / 2, 276, C.mist, 3, 'center'); text(sendHint(), SCR_W / 2, 300, C.fog, 2, 'center'); }
-    { const l = sealPreview()[0]; R(40, 338, 4, 4, C.orange); text(clipText(l, 384, 2), 54, 332, C.bone); }
+    { const l = sealPreview()[0]; if (l) { R(40, 338, 4, 4, C.orange); text(clipText(l, 384, 2), 54, 332, C.bone); } }   // an empty hold seals nothing: no line
     text('The sealed bay', 24, 406, C.mist); drawBay(24, 428);
   } else {
     const h = S.hold || { e: 0, d: 0, s: 0, pods: [] };   // between expeditions: the hold, the pods and the sealed bay, nothing else (the bay line is the bottom line's)
@@ -7081,6 +7081,9 @@ function actNotice(k) {
 // A new world's realm takes seconds to make: it is made in a Web Worker (src/realm-store.mjs), the page stays live and shows the loading line (the Probe reading the land). A realm made before
 // (it is kept in the browser per seed) is back at once. Without a Worker (the test sandbox) the world is made on the spot, as it always was.
 const randomSeed = () => Math.floor(Math.random() * 4294967295) >>> 0;
+// The worker runs in the bundled page (the build puts the packages inside it). The page served from the source tree (the dev checks, the goldens, the journeys) has an import map the worker cannot read, so it
+// makes the realm on its own thread as it always did.
+const OFF_PAGE = typeof Worker !== 'undefined' && !(document.querySelector && document.querySelector('script[type="importmap"]'));
 function drawMaking() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
@@ -7089,7 +7092,7 @@ function drawMaking() {
 }
 function newWorldLive() {
   const seed = urlSeed() ?? randomSeed(), done = () => { RT.making = false; newWorld(seed); RT.mp = null; RT.key = null; mapCv = null; transition(); };
-  if (typeof Worker === 'undefined') { done(); return; }
+  if (!OFF_PAGE) { done(); return; }
   RT.making = true; RT.makingAt = performance.now();
   readyRealm(seed, RT.makeTimes = {}).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.makeMs = performance.now() - RT.makingAt; done(); });
 }
@@ -7162,7 +7165,7 @@ requestAnimationFrame(frame);
 }
 // Start. With a Worker the realm is made (or read back) off the page first, and the loading line shows meanwhile; a saved game of another generator, or none, is a new world with the seed chosen here so its realm can be made at once.
 { const saved = savedRealmSeed(), seed = saved ?? urlSeed() ?? randomSeed();
-  if (typeof Worker === 'undefined') boot(null);
+  if (!OFF_PAGE) boot(null);
   else { RT.making = true; drawMaking(); vctx.drawImage(scr, 0, 0); readyRealm(seed, RT.makeTimes = {}).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, WARM, WHOLE, ARR, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
