@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   host-proof:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, mb-dev]   # the dev server (owner 2026-11-10); its system packages are installed there once
     timeout-minutes: 5
     steps:
       - name: Check out tested revision
