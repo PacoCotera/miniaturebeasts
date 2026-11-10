@@ -14,7 +14,7 @@
   "scale": 3,
   "half": "derived",
   "desk": true,
-  "palettePin": ["#141b1b","#17331f","#4e484a","#584b46","#7b473c","#6e5038","#954625","#56634d","#965340","#82603f","#965746","#4a7f4b","#5f7160","#a16240","#9a7453","#b36f3c","#a26a83","#8e7c73","#d4683b","#74a334","#bd7959","#e46d3a","#b08a63","#8d977f","#a8a129","#d3865f","#d78b4a","#bc84b5","#b3957f","#c69469","#79b8ce","#adbc3a","#d6a46f","#c9b28c","#f1ae41","#d2b37d","#b6beb0","#ffad5d","#71ddee","#eecf9b","#ffcb8d","#ffe166","#ffffff","#28432d","#36603a","#3f9cc0","#2e7aa3","#93a332","#e8ad75","#bccb4f","#5f7fd0","#c96b9c","#9cc4f4","#f4a3c8"],
+  "palettePin": ["#141b1b","#17331f","#4e484a","#584b46","#7b473c","#6e5038","#954625","#56634d","#965340","#82603f","#965746","#4a7f4b","#5f7160","#a16240","#9a7453","#b36f3c","#a26a83","#8e7c73","#d4683b","#74a334","#bd7959","#e46d3a","#b08a63","#8d977f","#a8a129","#d3865f","#d78b4a","#bc84b5","#b3957f","#c69469","#79b8ce","#adbc3a","#d6a46f","#c9b28c","#f1ae41","#d2b37d","#b6beb0","#ffad5d","#71ddee","#eecf9b","#ffcb8d","#ffe166","#ffffff","#28432d","#36603a","#3f9cc0","#2e7aa3","#93a332","#e8ad75","#bccb4f","#5f7fd0","#c96b9c","#9cc4f4","#f4a3c8","#2f5233"],
   "corePalette": "art/companion-48/terrain/meadow/meadow-palette.json",
   "notes": [
     "Every picture is the art desk's, read from the pinned desk commit by tools/desk-art.mjs (the pebbles and lily pads are the water bits, art/desk 3323aa85d).",

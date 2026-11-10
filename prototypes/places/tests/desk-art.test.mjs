@@ -17,20 +17,19 @@ const img = (n) => decodePng(readFileSync(path.join(dir, n)));
 test('every placed desk file equals the recorded hash, names its signed commit and its source in the desk', () => {
   const names = Object.keys(desk);
   assert.ok(names.length > 60, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['633e4d641', '86d239e96', 'abb33a65b']);
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['3323aa85d', '633e4d641', '704373a58', '86d239e96']);
   for (const [n, d] of Object.entries(desk)) {
     assert.equal(createHash('sha256').update(readFileSync(path.join(dir, n))).digest('hex'), d.sha256, n);
     assert.ok(d.from.startsWith('art-jobs/'), n + ' names a source in the desk: ' + d.from);
   }
 });
 
-test('every map picture is in the new map palette: no pastel colour is left but the way-up pieces the desk has not re-issued, and the kit pebbles and lily pad', () => {
-  const OLD_ALLOWED = new Set(['wayup-cliff-grass.png', 'wayup-cliff-sand.png']);
+test('every map picture is in the new map palette: no pastel colour is left', () => {
+  // two files carry one colour the palette table does not list: the scrub ground (SCRUB_GROUND: the grass's value, drier and yellower, made for the map) and the sand way-up's one painted sand tone (signed as is)
+  const ALLOWED = (n) => (n.startsWith('over-scrub') ? [SCRUB_GROUND] : n === 'wayup-cliff-sand.png' ? ['#dfd387'] : []);
   for (const n of Object.keys(desk)) {
-    if (OLD_ALLOWED.has(n)) continue;
     const im = img(n), r = recolour(im);
-    // the scrub ground is the one colour made for the map (SCRUB_GROUND: the grass's value, drier and yellower), not in the desk's palette
-    assert.deepEqual(n.startsWith('over-scrub') ? r.left.filter((c) => c !== SCRUB_GROUND) : r.left, [], n + ' holds colours outside the map palette');
+    assert.deepEqual(r.left.filter((c) => !ALLOWED(n).includes(c)), [], n + ' holds colours outside the map palette');
     // the reed sprites are painted in the new reed ramp; their cattail heads are mapped to the applied ramp (#664330, #7c5a3d): the desk's old browns are gone
     if (n.startsWith('reed-')) { for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) assert.ok(![0x6f4a37, 0x8a6444].includes((im.data[i] << 16) | (im.data[i + 1] << 8) | im.data[i + 2]), n + ' still holds an old cattail brown'); continue; }    assert.deepEqual(Buffer.from(r.data), Buffer.from(im.data), n + ' still holds a colour of the old palette');
   }

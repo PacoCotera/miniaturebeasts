@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPng, decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
-import { computeTables, TABLE_NAMES } from '../src/lighttables.mjs';
+import { computeTables, family, TABLE_NAMES } from '../src/lighttables.mjs';
 import { deskArt, deskLayers } from './desk-art.mjs';
 import { PALETTE } from './recolour.mjs';
 
@@ -151,9 +151,13 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   // the leaf ramp of the tree crowns, bushes and shrubs (the map palette's leaf_hi, leaf, leaf_dk, leaf_line): at night no lighter than the grass
   const crowns = ['leaf_hi', 'leaf', 'leaf_dk', 'leaf_line'].map((n) => sorted.indexOf(PALETTE.map[n][1].slice(1))).filter((k) => k >= 0).map((k) => CORE_COLOURS + k);
   // the stone ramp (rock_hi, rock, rock_dk, rock_line and the cliff's three stone steps): at night all dark grey
+  // plus every colour the rock, boulder and split-stone pictures hold (rock-1.png is both boulders), outlines included, but not the moss and leaves (green) or the earth steps the terrain shares
   const stoneHex = [...['rock_hi', 'rock', 'rock_dk', 'rock_line'].map((n) => PALETTE.map[n][1]), ...['cliff_stone_hi', 'cliff_stone', 'cliff_stone_dk'].map((n) => PALETTE.extra[n][1])];
-  const stone = stoneHex.map((h) => sorted.indexOf(h.slice(1))).filter((k) => k >= 0).map((k) => CORE_COLOURS + k);
-  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone });
+  const shared = new Set(['earth_hi', 'earth_line'].map((n) => PALETTE.map[n][1].slice(1)));
+  if (desk) for (const f of ['rock-1.png', 'split-stone.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) { if (!im.data[i + 3]) continue; const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]); if (!shared.has(h) && family(unhex(h)) !== 'green') stoneHex.push('#' + h); } }
+  const stone = [...new Set(stoneHex.map((h) => sorted.indexOf(h.slice(1))).filter((k) => k >= 0).map((k) => CORE_COLOURS + k))];
+  const stoneHi = [sorted.indexOf(PALETTE.map.rock_hi[1].slice(1))].filter((k) => k >= 0).map((k) => CORE_COLOURS + k);
+  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi });
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
 

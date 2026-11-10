@@ -55,7 +55,9 @@ const lumOf = (c) => 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2];
 
 // At night every stone colour and its outline go to this dark grey (art director 2026-11-09).
 export const STONE_NIGHT = [0x4e, 0x48, 0x4a];
-// opts.ground: palette indices of the plain grass fill's colours; opts.tone: of the sunlit tone patch; opts.crowns: of the tree, bush and shrub leaf ramp; opts.stone: of the rocks and cliff stone (all core-and-set indices).
+// The rock's highlight alone goes one step lighter (art director 2026-11-09 23:1x), so a rock keeps one step of form in the dark.
+export const STONE_HI_NIGHT = [0x58, 0x4b, 0x46];
+// opts.ground: palette indices of the plain grass fill's colours; opts.tone: of the sunlit tone patch; opts.crowns: of the tree, bush and shrub leaf ramp; opts.stone: of the rocks, boulders and cliff stone, outlines included; opts.stoneHi: of the rock's highlight, which alone goes one step lighter (all core-and-set indices).
 export function computeTables(coreRgb, setRgb, opts = {}) {
   const cand = [];
   for (let i = 1; i < coreRgb.length; i++) cand.push([i, coreRgb[i]]);
@@ -71,7 +73,7 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
   };
   const pools = {};
   for (const f of ['green', 'teal', 'blue', 'warm', 'grey']) pools[f] = cand.filter(([, rgb]) => family(rgb) === f);
-  const ground = new Set(opts.ground || []), tone = new Set(opts.tone || []), crowns = new Set(opts.crowns || []), stone = new Set(opts.stone || []);
+  const ground = new Set(opts.ground || []), tone = new Set(opts.tone || []), crowns = new Set(opts.crowns || []), stone = new Set(opts.stone || []), stoneHi = new Set(opts.stoneHi || []);
   const used = coreRgb.length + setRgb.length;
   const tables = {};
   for (const name of TABLE_NAMES) {
@@ -83,7 +85,7 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
       // the sunlit tone: at most one small step above the night grass and low in saturation (art director 2026-11-09: no glowing patches); the step is weighed with the saturation
       let bs = Infinity; for (const [i, rgb] of pools.green) { const l = lumOf(rgb); if (l > lim) { const s = (Math.max(...rgb) - Math.min(...rgb)) / Math.max(...rgb), score = (l - lim) + 60 * s; if (score < bs) { bs = score; up = i; } } }
     }
-    const stoneTo = night && stone.size ? nearest(STONE_NIGHT, pools.grey) : -1;
+    const stoneTo = night && stone.size ? nearest(STONE_NIGHT, pools.grey) : -1, stoneHiTo = night && stoneHi.size ? nearest(STONE_HI_NIGHT, pools.grey) : -1;
     // the other greens keep their order against the grass: a green darker than the plain grass (the scrub, the reeds, the shades) goes to a green darker than the night grass, a lighter one to one at least as light
     const darkGreens = pools.green.filter(([, c]) => lumOf(c) < lim), lightGreens = pools.green.filter(([, c]) => lumOf(c) >= lim);
     for (let i = 0; i < 256; i++) {
@@ -91,6 +93,7 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
       if (i >= used) { map[i] = i; continue; }
       const rgb = rgbAt(i), t = TRANSFORMS[name](rgb), f = night ? family(rgb) : null;
       if (!night || !f) map[i] = nearest(t);
+      else if (stoneHi.has(i) && stoneHiTo > 0) map[i] = stoneHiTo;
       else if (stone.has(i) && stoneTo > 0) map[i] = stoneTo;
       else if (tone.has(i) && up >= 0 && f === 'green') map[i] = up;
       else if (crowns.has(i) && f === 'green') map[i] = nearest(t, pools.green.filter(([, c]) => lumOf(c) <= lim));

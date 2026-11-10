@@ -18,7 +18,7 @@ const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
 const DC = '633e4d641';   // mibi-art art/desk: the map palette (f1a9fe54e), the decor, the reeds, the grass flecks and the hollow tree and split stone
 const APPLIED = 'art-jobs/2026-11-10-art-recolour-map-palette/out/applied';
 const applied = (job, sub) => ({ commit: DC, dir: `${APPLIED}/${job}/out${sub ? '/' + sub : ''}` });
-export const WAYUP = { commit: '1158b9710', dir: 'art-jobs/2026-11-10-art-paint-wayup/out' };   // the way-up pieces (art director signed 2026-11-09 22:1x), 48 x 32, in the map palette
+export const WAYUP = { commit: '704373a58', dir: `${APPLIED}/art-paint-wayup/out` };   // the way-up pieces (art director signed 2026-11-09 22:1x; the applied copies, art/desk 704373a58), 48 x 32, in the map palette; the sand one keeps its one painted sand tone #dfd387
 // the map look (art director route A): tree and bush from style test 3, rock, tufts and flowers from the style test's route A props (not re-issued: the colour map is applied), shrubs and scrub from the thicket job
 export const TEST3 = applied('art-style-test-3', 'tiles'), ROUTE_A = { commit: DC, dir: 'art-jobs/2026-11-10-art-style-test/out/route-a/props', recolour: true };
 export const SAND = applied('art-paint-terrain-sand', ''), MEADOW1 = applied('art-paint-terrain-meadow', ''), MEADOW2 = MEADOW1, THICKET = applied('art-paint-terrain-thicket', 'tiles');

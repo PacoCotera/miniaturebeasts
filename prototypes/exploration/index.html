@@ -540,6 +540,14 @@ async function loadHazeKit(base, bytes) {
 // core palette (the quartz ramp, the warm glow): each file is kept as a canvas the page blits as it blits a sprite (dx, dy put a 48 px stone's foot where a 32 px sprite's foot stood), and its colours
 // join the screen's allowed set. A 16 px small stone is also kept doubled (32 x 32) for a sign or a card.
 const STONE_COLOURS = [], STONE_PIECES = new Map();
+// The places' light tables, the one set the walk's props read (a prop in a dark, stormy or foggy place goes through the table its place's ground goes through, so the walk and the places never disagree):
+// the screen colour at each index (the core 47 from the page, then the set's own) and the tile set's tables by name (storm, dark2, fog, fade, dark). Null until the places have loaded.
+const PLACE_LEVELS = [null, 'storm', 'dark2', 'fog', 'fade'], PT = { ts: null, rgb: null, tabs: null };
+function placeTables() {
+  const ts = PL6.ts || (BAKED.view && BAKED.view.ts); if (!ts) return null;
+  if (PT.ts !== ts) { PT.ts = ts; PT.rgb = RGB.slice(0, 48).map(c => c.slice()); ts.palette.forEach(c => PT.rgb.push([(c >> 16) & 255, (c >> 8) & 255, c & 255])); PT.tabs = Object.fromEntries(ts.lightTables.map(r => [r.name, r.map])); }
+  return PT;
+}
 const STONE_FILES = ['tall', 'small'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
 const STONE_LOOK = new Set(['look-heart-stone', ...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
 function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
@@ -549,15 +557,16 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
     const plain = () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; };
     // canvas(rm, flip, chk, veil) as a palette buffer's: chk thins the picture to a checkerboard (a crown or roof the explorer stands under), veil is the one-step-darker night dot of an unseen tile
     STONE_PIECES.set(key, { w, h, dx, dy, canvas: (rm, flip, chk, veil) => {
-      const lut = prop && rm ? RT.remap[rm] : null; if (!lut && !(prop && (chk || veil))) return plain();   // only a prop (given a foot offset) takes the tables
-      const tk = RT.remap.id * 100 + (rm || 0) * 8 + (flip ? 4 : 0) + (chk ? 2 : 0) + (veil ? 1 : 0); let tc = tinted.get(tk); if (tc) return tc;
+      const pt = prop && (rm || veil) ? placeTables() : null, lut = pt && rm ? pt.tabs[PLACE_LEVELS[rm]] : null;   // a prop (given a foot offset) takes the places' own light tables (storm, dark2, fog, fade, dark), the ones its place's ground takes
+      if (!lut && !(prop && (chk || veil))) return plain();   // only a prop takes the tables
+      const tk = (flip ? 4 : 0) + (chk ? 2 : 0) + (veil ? 1 : 0) + (rm || 0) * 8 + (pt ? 64 : 0); let tc = tinted.get(tk); if (tc) return tc;
       tc = mk(w, h); const tg = tc.getContext('2d'), im = tg.createImageData(w, h), near = new Map();   // each colour takes its nearest palette colour's entry in the table
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const o = (y * w + (flip ? w - 1 - x : x)) * 4, p = (y * w + x) * 4; if (!data[o + 3] || (chk && (x + y) % 2)) continue;
-        if (!lut && !veil) { im.data[p] = data[o]; im.data[p + 1] = data[o + 1]; im.data[p + 2] = data[o + 2]; im.data[p + 3] = 255; continue; }   // a thinned picture with no table keeps its own colours
+        if (!lut && !(veil && pt)) { im.data[p] = data[o]; im.data[p + 1] = data[o + 1]; im.data[p + 2] = data[o + 2]; im.data[p + 3] = 255; continue; }   // a thinned picture with no table keeps its own colours
         const k = data[o] << 16 | data[o + 1] << 8 | data[o + 2]; let n = near.get(k);
-        if (n === undefined) { let bd = 1e9; n = 0; for (let j = 0; j < RGB.length; j++) { const q = RGB[j], d = (q[0] - data[o]) ** 2 + (q[1] - data[o + 1]) ** 2 + (q[2] - data[o + 2]) ** 2; if (d < bd) { bd = d; n = j; } } near.set(k, n); }
-        let c = lut ? lut[n] : n; if (veil) c = BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
-        const rgb = RGB[c]; im.data[p] = rgb[0]; im.data[p + 1] = rgb[1]; im.data[p + 2] = rgb[2]; im.data[p + 3] = 255; }
+        if (n === undefined) { let bd = 1e9; n = 0; for (let j = 1; j < pt.rgb.length; j++) { const q = pt.rgb[j], d = (q[0] - data[o]) ** 2 + (q[1] - data[o + 1]) ** 2 + (q[2] - data[o + 2]) ** 2; if (d < bd) { bd = d; n = j; } } near.set(k, n); }
+        let c = lut ? lut[n] : n; if (veil) c = BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : pt.tabs.dark[c];
+        const rgb = pt.rgb[c]; im.data[p] = rgb[0]; im.data[p + 1] = rgb[1]; im.data[p + 2] = rgb[2]; im.data[p + 3] = 255; }
       tg.putImageData(im, 0, 0); tinted.set(tk, tc); return tc; } }); };
   for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] && !seen.has(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2])) { seen.add(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2]); STONE_COLOURS.push([f.data[o], f.data[o + 1], f.data[o + 2]]); } }
   keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? dy || 0 : 32 - f.height, name);
