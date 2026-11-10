@@ -42,7 +42,7 @@ export function corners(terrain, w, h, i, j) {
   return [cell(terrain, w, h, i - 1, j - 1), cell(terrain, w, h, i, j - 1), cell(terrain, w, h, i - 1, j), cell(terrain, w, h, i, j)];
 }
 
-// ---- The dual grid by terrain (terrain layers; place design: terrain-layers-design final.md, section 2) ----
+// ---- The dual grid by terrain (one layer per terrain) ----
 // One fill per terrain plus one transparent 16-slot layer per upper terrain, drawn in terrain.json z order. A tile code of a terrain layer is
 //   FILL_CODE + k      the k-th fill variant of the terrain (the lowest terrain of the tile),
 //   KIND_STRIDE * kind + m   the over sheet of the terrain's `kind`-th kind, slot m = 1..14, or FULL_BASE + v for the v-th all-upper variant (a terrain with a ground).

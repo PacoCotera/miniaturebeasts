@@ -1,4 +1,4 @@
-// C3: the dual grid by terrain (place design A2; terrain layers: terrain-layers-design final.md section 2).
+// The dual grid by terrain, one layer per terrain.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { corners, cell, EMPTY, FULL_BASE, NW, NE, SW, SE, terrainLayers, packDepth, splitCode, FILL_CODE, KIND_STRIDE } from '../src/dualgrid.mjs';
@@ -23,7 +23,7 @@ test('clamp: cells outside the place read as the nearest edge cell, so the borde
 const T10 = ['deep', 'water', 'earth', 'sand', 'mud', 'path', 'grass', 'scrub', 'thicket', 'cliff'].map((id, z) => ({ id, value: z + 1, z }));
 const TV = Object.fromEntries(T10.map((t) => [t.id, t.value]));
 const set = (ids) => new Set(ids.map((i) => TV[i]));
-// the kinds of the design's set.json (final.md 1.2); scrub is drawn as grass until its layer is signed
+// the kinds of the terrain set; scrub is drawn as grass until its layer is signed
 const LAYERS = {
   deep: { fillCount: 1, kinds: [] },
   water: { fillCount: 1, kinds: [{ kind: 'step', lowers: set(['deep']), fullCount: 0 }] },

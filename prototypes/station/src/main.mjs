@@ -105,8 +105,7 @@ function updateCaddy() {
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
   dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
-  const crates = !d && c.canDock && c.crates > 0, title = !c.canDock ? "The Companion has no world yet" : d ? "Lift the Companion" : crates ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion";   // copy: station-copy-w1-polish A1
-  dockCtl.setAttribute("aria-disabled", String(!c.canDock)); dockCtl.setAttribute("aria-label", d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion");
+  const crates = !d && c.canDock && c.crates > 0, title = !c.canDock ? "The Companion has no world yet" : d ? "Lift the Companion" : crates ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion";  dockCtl.setAttribute("aria-disabled", String(!c.canDock)); dockCtl.setAttribute("aria-label", d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion");
   if (!c.canDock) dockCtl.setAttribute("aria-description", title); else dockCtl.removeAttribute("aria-description");
   dockCtl.title = title;
   dockDot.hidden = !(!d && c.canDock && c.crates > 0); dockCtl.classList.toggle("is-pressed", c.pending);
