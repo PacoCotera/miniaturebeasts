@@ -109,8 +109,10 @@ for (const seed of [7, 13, 42]) {
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
         if (!ir.tone[y * w + x]) continue;
         tone++;
-        assert.ok(x >= 1 && y >= 1 && x < w - 1 && y < h - 1 || ir.terrain[y * w + x] === TV.GRASS, 'a tone tile on the apron ring is grass');
-        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 >= 0 && Y2 >= 0 && X2 < w && Y2 < h) assert.equal(ir.terrain[Y2 * w + X2], TV.GRASS, `tone at ${x},${y} of ${seed}:${X},${Y} has no grass at ${X2},${Y2}`); }
+        const v = ir.terrain[y * w + x];
+        assert.ok(v === TV.GRASS || v === TV.CLIFF, 'tone sits on grass or the raised top');
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 >= 0 && Y2 >= 0 && X2 < w && Y2 < h) assert.equal(ir.terrain[Y2 * w + X2], v, `tone at ${x},${y} of ${seed}:${X},${Y} has another terrain at ${X2},${Y2}`); }
+        if (v === TV.CLIFF && y + 2 < h) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && x + dx < w) assert.equal(ir.terrain[(y + 2) * w + x + dx], TV.CLIFF, 'raised-top tone has raised ground two rows below');
       }
       bakeIR(ir);   // the bake refuses a tone corner on a tile that is not all grass
     }
