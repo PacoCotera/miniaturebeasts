@@ -33,8 +33,11 @@ test("on every land cell of three worlds no opening stands on a side the land re
 // Walk fixes (owner's notes of 2026-11-10, 14-15 and 25-32): over 200 places at tier 1 (so range hazes stand) no thing the explorer can act on lies where the explorer cannot walk to it, a bush or a mark
 // is never under a crown or on a blocking tile, decor keeps its gap round every find, and the walk and the hold-Call (whole place) view read one uncovered set.
 const CHECK = `(() => {
-  const bad = [], key = String(__C__); S.exp.pos = __C__; enterPatch(); if (RT.view) endView();
-  const lay = layout(key), W = lay.w, H = lay.h, N = W * H, lc = lay.lines ? lay.lines.cells : new Map(), blocked = i => T_BLOCK[lay.tiles[i]] || lc.has(i);
+  const bad = [], key = String(__C__), r0 = S.exp.range; S.exp.pos = __C__;
+  S.exp.range = r0 + 1; enterPatch(); if (RT.view) endView(); leavePatch(); S.exp.range = r0; S.exp.pos = __C__;   // the last visit led one ring further (a Tuliko along): the layout is cached for those open sides
+  enterPatch(); if (RT.view) endView();
+  const lay = layout(key); if (lay.shutSig !== shutSig(key)) bad.push('the cached layout was made for other open sides: ' + lay.shutSig + ' / ' + shutSig(key));
+  const W = lay.w, H = lay.h, N = W * H, lc = lay.lines ? lay.lines.cells : new Map(), blocked = i => T_BLOCK[lay.tiles[i]] || lc.has(i);
   const seen = new Uint8Array(N), q = [];   // a walk from the entries over open ground (the haze and closed bands do not walk)
   for (const o of lay.openings) for (let k = o.from - 1; k <= o.to - 1; k++) { const x = o.side === 'W' ? 0 : o.side === 'E' ? W - 1 : k, y = o.side === 'N' ? 0 : o.side === 'S' ? H - 1 : k, i = y * W + x; if (!seen[i] && !blocked(i)) { seen[i] = 1; q.push(i); } }
   { const i = lay.spawnPt.y * W + lay.spawnPt.x; if (!seen[i] && !blocked(i)) { seen[i] = 1; q.push(i); } }

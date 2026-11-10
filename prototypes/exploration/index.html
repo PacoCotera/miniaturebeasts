@@ -662,9 +662,17 @@ function bakedView(lay) {
   return v || null;
 }
 const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
+// The sides of a cell that are shut now (past the range or closed), as a string: the reachable-only placement of a layout was made against this.
+const shutSig = key => ['N', 'S', 'W', 'E'].map(side => (S.exp && crossReason(+key, SIDE_DIR[side]) ? side : '')).join('');
+// On entering a place, a cached layout made for other open sides (a Tuliko led the last visit and not this one: one ring less of reach) is made again, so nothing to act on lies in the haze.
+function freshLayout(key) {
+  const lay = layoutCache.get(key);
+  if (lay && lay.shutSig != null && !lay.cave && lay.shutSig !== shutSig(key)) layoutCache.delete(key);
+  return layout(key);
+}
 function layout(key) {   // a land cell's layout from the generator (cached); a stand-in while the tile set loads
   let lay = layoutCache.get(key);
-  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side])); addStrikeFeats(lay); layoutCache.set(key, lay); }
+  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side])); lay.shutSig = shutSig(key); addStrikeFeats(lay); layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
@@ -2030,7 +2038,7 @@ function enterPatch() {
   const t0 = nowMs(); try { enterPatchBuilt(); } finally { const t1 = nowMs(); if (t1 - t0 >= STALL_MS) { STALL.from = t0; STALL.to = t1; } }
 }
 function enterPatchBuilt() {
-  const ex = S.exp, key = String(ex.pos), lay = layout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
+  const ex = S.exp, key = String(ex.pos), lay = freshLayout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.view = null;
