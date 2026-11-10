@@ -1,11 +1,12 @@
 // Generator 7 for the page: the region as the page's world, and a cell as the page's layout. The page imports this one module (the test harness binds a page's `./src/<name>.mjs` imports).
 //   genWorld7(seed, slot)        the region of slot [ax, ay] of the realm of `seed` (src/gen7/region.mjs), the page's G
 //   cellWorldXY(slot, cell)      the realm cell [X, Y] of a region cell
-//   layout7(ctx, G, seed, slot, key)   the page's layout of a land cell: its IR, baked in the page, adapted. ctx: { ts, terrains, pairs }
+//   layout7(ctx, G, seed, slot, key)   the page's layout of a land cell: its IR, baked in the page, adapted. ctx: { ts, terrains, desc }
 import { genRegion7, realm7 } from './gen7/region.mjs';
 import { cellIR, raisedAt, CW, CH } from './gen7/place.mjs';
 import { MW, MH } from './world.mjs';
-import { bakeCell } from './bake7.mjs';
+import { bakeCell, reviveLayers } from './bake7.mjs';
+export { reviveLayers };
 import { adaptCell } from './adapt7.mjs';
 
 export { realm7 };

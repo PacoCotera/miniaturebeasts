@@ -1,9 +1,8 @@
-// Generator 7: a cell's IR to the baked place, in the page. The same steps as places/src/bake/build.mjs buildPlace (dual grid, open edges, ground patches, the block mask, the records), without
-// that module's imports of the LDtk reader (Ajv, node:fs), which a browser cannot load; tests/gen7-bake.test.mjs holds the two equal on sample cells. The pair descriptors come from
-// art/gen7/pairs.json (tools/gen7-pairs.mjs), the tile set from the baked .mbtiles. Pure: no page state.
-import { dualGrid, EMPTY, FULL_BASE, EMPTY_BASE } from '../../places/src/dualgrid.mjs';
+// Generator 7: a cell's IR to the baked place, in the page. The same steps as places/src/bake/build.mjs buildPlace (the dual grid by terrain layers, open edges, depth-packed ground, the block mask,
+// the records), without that module's imports of the LDtk reader (Ajv, node:fs), which a browser cannot load; tests/gen7-bake.test.mjs holds the two equal on sample cells. The layer descriptors
+// come from art/gen7/layers.json (tools/gen7-layers.mjs), the tile set from the baked .mbtiles. Pure: no page state.
+import { terrainLayers, packDepth, EMPTY, FILL_CODE, splitCode } from '../../places/src/dualgrid.mjs';
 import { ALT_CODE, applyOpenEdges, cliffInfo } from '../../places/src/bake/openedges.mjs';
-import { applyGroundMix } from '../../places/src/bake/groundmix.mjs';
 
 export const FIND_KINDS = ['pod', 'fruit', 'dew', 'stone', 'material'];
 const FORMAT_VERSION = 1;
@@ -18,27 +17,31 @@ function footprintCells(ir, ts) {
   }
   return cells;
 }
-function layersToTileIds(dg, tileset) {
-  return dg.layers.map(l => ({
-    pair: l.pair,
-    tiles: Uint16Array.from(l.tiles, c => {
-      if (c === EMPTY) return 0xFFFF;
-      const p = tileset.pairs[l.pair];
-      if (c >= ALT_CODE) return tileset.pairs[(c - ALT_CODE) >> 4].tiles[(c - ALT_CODE) & 15];
-      if (c < FULL_BASE) return p.tiles[c];
-      if (c < EMPTY_BASE) return p.fullVariants[c - FULL_BASE];
-      return p.emptyVariants[c - EMPTY_BASE];
-    }),
-  }));
+// the tile ids of the dual grid's layers (build.mjs layersToTileIds)
+function layersToTileIds(dg, ts, desc) {
+  return dg.layers.map(l => {
+    const d = l.tone ? null : desc.layers.get(l.terrain);
+    return {
+      tiles: Uint16Array.from(l.tiles, c => {
+        if (c === EMPTY) return 0xFFFF;
+        if (l.tone) return ts.pairs[desc.tone.row].tiles[c];
+        if (c >= FILL_CODE) return ts.pairs[d.fillRow].fullVariants[c - FILL_CODE];
+        if (c >= ALT_CODE) return ts.pairs[(c - ALT_CODE) >> 4].tiles[(c - ALT_CODE) & 15];
+        const s = splitCode(c), row = ts.pairs[d.kinds[s.kind].rows.over];
+        return s.full !== undefined ? row.fullVariants[s.full] : row.tiles[s.slot];
+      }),
+    };
+  });
 }
+// art/gen7/layers.json's { layers: [[value, descriptor]], tone } as the dual grid takes it (the lowers back to Sets)
+export const reviveLayers = j => ({ layers: new Map(j.layers.map(([v, l]) => [v, { ...l, kinds: l.kinds.map(k => ({ ...k, lowers: new Set(k.lowers) })) }])), tone: j.tone });
 
-// ctx: { terrains, ts (the baked tile set), pairs (art/gen7/pairs.json's list) }. Returns the Place object the page reads (not serialised).
+// ctx: { terrains, ts (the baked tile set), desc (reviveLayers' output) }. Returns the Place object the page reads (not serialised).
 export function bakeCell(ir, ctx) {
-  const { terrains, ts, pairs } = ctx;
-  const dg = dualGrid({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin }, terrains, pairs);
-  applyOpenEdges(dg, ir, terrains, pairs);
-  const ground = layersToTileIds(dg, ts);
-  if (ir.groundMix) applyGroundMix({ ground }, ir.groundMix, ts);
+  const { terrains, ts, desc } = ctx;
+  const dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone }, terrains, desc.layers, desc.tone);
+  applyOpenEdges(dg, ir, terrains, desc.layers);
+  const ground = packDepth(layersToTileIds(dg, ts, desc), dg.w1, dg.h1).map(tiles => ({ tiles }));
   const index = (group, kind) => spriteFor(ts, group, kind).index;
   const placed = group => p => ({ kind: index(group, p.kind), x: p.x, y: p.y, sortY: p.sortY });
   const playOf = new Map(terrains.map(t => [t.value, t.play]));

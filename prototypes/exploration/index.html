@@ -255,7 +255,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { genWorld7, layout7 as layout7In } from "./src/world7.mjs";
+import { genWorld7, layout7 as layout7In, reviveLayers } from "./src/world7.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
@@ -505,9 +505,9 @@ async function loadBakedPlace() {   // the modules load on demand, so the page w
   } catch (e) { console.warn('the baked place did not load', e); }
 }
 // Generator 7's tile set and pieces (loaded once at boot; the tests give them at once as window.__places).
-// PL.ctx is what a cell is baked with in the page (src/bake7.mjs: the tile set, the terrain table, the dual grid's pair descriptors); PL.View draws one baked cell (a page without it draws the layout's tiles).
+// PL.ctx is what a cell is baked with in the page (src/bake7.mjs: the tile set, the terrain table, the dual grid's layer descriptors); PL.View draws one baked cell (a page without it draws the layout's tiles).
 // A cell's view is made on first use and kept in a small LRU (PL_VIEWS_MAX), so memory stays flat however far the walk goes.
-const PL = { ready: false, ts: null, terrains: null, pairs: null, ctx: null, View: null, mk: null, views: new Map(), haze: null };
+const PL = { ready: false, ts: null, terrains: null, desc: null, ctx: null, View: null, mk: null, views: new Map(), haze: null };
 const PL_VIEWS_MAX = 8, SET7 = 'ninja-test';
 async function loadPlaces() {
   try {
@@ -516,8 +516,8 @@ async function loadPlaces() {
     const pm = await import(base + 'src/page.mjs'), rd = await import(base + 'src/format/read.mjs');
     PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles'));
     PL.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
-    PL.pairs = JSON.parse(new TextDecoder().decode(await bytes(new URL('./art/gen7/pairs.json', location.href).href))).pairs;
-    PL.ctx = { ts: PL.ts, terrains: PL.terrains, pairs: PL.pairs };
+    PL.desc = reviveLayers(JSON.parse(new TextDecoder().decode(await bytes(new URL('./art/gen7/layers.json', location.href).href))));
+    PL.ctx = { ts: PL.ts, terrains: PL.terrains, desc: PL.desc };
     PL.View = pm.BakedView; PL.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
     PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadHazeKit(base, bytes);

@@ -21,8 +21,8 @@ const { readTileSet } = await import("../../places/src/format/read.mjs");
 const fileBytes = (name) => new Uint8Array(readFileSync(new URL(name, BAKED_DIR)));
 export const PLACES = (() => {
   const ts = readTileSet(fileBytes("ninja-test.mbtiles")), terrains = JSON.parse(readFileSync(new URL("terrain.json", BAKED_DIR), "utf8")).terrains;
-  const pairs = JSON.parse(readFileSync(new URL("../art/gen7/pairs.json", import.meta.url), "utf8")).pairs;
-  return { ts, terrains, pairs, ctx: { ts, terrains, pairs } };
+  const desc = MODS.world7.reviveLayers(JSON.parse(readFileSync(new URL("../art/gen7/layers.json", import.meta.url), "utf8")));
+  return { ts, terrains, desc, ctx: { ts, terrains, desc } };
 })();
 
 // The art desk's walk art (art/walk/), decoded at once as a browser loads it at boot: { name: { width, height, data (RGBA) } }.
