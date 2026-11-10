@@ -147,7 +147,7 @@ All positions are IR tiles (the cell's own tiles are 1 to 24 by 1 to 28; the apr
   see" and spends nothing (**Built**). The cave has its own darkness instead
   (**Built**).
 - **Walking lifts a short line of sight** through open ground; **Call lifts
-  more**; what is lifted stays lifted (**Decided**). Walking lifts about 4 tiles (6 on raised land: height lets you see further),
+  more**; what is lifted stays lifted. Walking lifts about 4 tiles (6 on raised land: height lets you see further),
   a Call a circle of 11 (6 in a fog bank) for one action; only Call hears what is
   buried and makes creatures react (**Built**).
 - **Quarters.** A place has four quarters. A quarter is **surveyed** when every
