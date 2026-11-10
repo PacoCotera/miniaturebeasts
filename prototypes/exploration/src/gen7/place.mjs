@@ -354,18 +354,37 @@ export function groundMix(seed, x0, y0, w1, h1) {
   return out;
 }
 
+// grass tone (terrain layers): the lipless tone layer over plain grass, in patches of a few tiles from the same noise field as the ground patches (about 3 to 8 tiles a patch). A tile carries tone only when
+// the 3 x 3 tiles round it are all grass, so every dual tile that touches a tone corner is wholly grass: tone never meets a lip or an edge. Returns 0/1 per tile of an area whose first tile is world (x0, y0).
+const TONE_AT = 0.1;
+export function toneField(seed, x0, y0, w, h) {
+  const n = ctxOf(seed).nG, T = worldTiles(seed), out = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const gx = x0 + x, gy = y0 + y;
+    if (n(gx, gy) <= TONE_AT) continue;
+    let all = true;
+    for (let dy = -1; dy <= 1 && all; dy++) for (let dx = -1; dx <= 1; dx++) if (T(gx + dx, gy + dy) !== TV.GRASS) { all = false; break; }
+    if (all) out[y * w + x] = 1;
+  }
+  return out;
+}
+
 // ---- props and decor (G3, decor.mjs): a function of world tiles, so a cell and its neighbour draw the same props ----
 // The land the decor reads: the terrain of any world tile (through the cells' own passes), the biome of the region slot it lies in, every way up, and the atlas slots.
 const DEC = new Map();
-function landOf(seed) {
-  const S = ctxOf(seed), cc = new Map();
+// the terrain of any world tile (through the cells' own passes); beyond the world it is thicket
+function worldTiles(seed) {
+  const cc = new Map();
   let lx = -1, ly = -1, lt = null;
-  const T = (gx, gy) => {
+  return (gx, gy) => {
     if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH) return TV.THICKET;
     const X = (gx / CW) | 0, Y = (gy / CH) | 0;
     if (X !== lx || Y !== ly) { const k = Y * RW + X; let t = cc.get(k); if (!t) { if (cc.size > 400) cc.clear(); t = cellTerrain(seed, X, Y).terrain; cc.set(k, t); } lt = t; lx = X; ly = Y; }
     return lt[(gy - Y * CH + 1) * (CW + 2) + gx - X * CW + 1];
   };
+}
+function landOf(seed) {
+  const S = ctxOf(seed), T = worldTiles(seed);
   const biome = (gx, gy) => S.re.slotBiome[((clamp((gy / CH) | 0, 0, RH - 1) / MH) | 0) * ATLAS + ((clamp((gx / CW) | 0, 0, RW - 1) / MW) | 0)];
   const slots = []; for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) slots.push({ ax, ay, biome: S.re.slotBiome[ay * ATLAS + ax], x0: ax * MW * CW, y0: ay * MH * CH, x1: (ax + 1) * MW * CW - 1, y1: (ay + 1) * MH * CH - 1 });
   return { T, biome, W: WTW, H: WTH, wayups: stairsOf(S).filter(st => st.wayup).map(st => st.wayup), slots };
@@ -390,7 +409,7 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null) {
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
   const hold = cell ? holdOf({ seed, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props: d.props, decals: d.decals, canopy: [], hearts: [], clues: [],
-    finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, groundMix: groundMix(seed, x0, y0, w + 1, h + 1),
+    finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, groundMix: groundMix(seed, x0, y0, w + 1, h + 1), tone: toneField(seed, x0, y0, w, h),
     inner: hold ? hold.inner : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
 }
 // the bare tiles (sand, worn earth, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)

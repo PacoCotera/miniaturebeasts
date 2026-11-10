@@ -98,6 +98,27 @@ test('a cell is the same land whatever else was made before it, and its picture 
   for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) { const c = cellTerrain(13, 35 + i, 47 + j); for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) assert.equal(win.terrain[(j * CH + y) * win.w + i * CW + x], c.terrain[(y + 1) * c.w + x + 1]); }
 });
 
+// L3 (terrain layers): the grass tone is on grass tiles whose 3 x 3 is all grass, in patches, and a cell and its neighbour agree on the tiles they share
+for (const seed of [7, 13, 42]) {
+  test(`seed ${seed}: tone sits only on grass with grass all round it`, () => {
+    let tone = 0, cells = 0;
+    for (const [X, Y] of [[36, 48], [37, 48], [20, 30], [50, 70], [10, 90], [60, 20], [40, 40], [41, 40]]) {
+      const ir = cellIR(seed, X, Y), { w, h } = ir; cells++;
+      assert.equal(ir.tone.length, w * h);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        if (!ir.tone[y * w + x]) continue;
+        tone++;
+        assert.ok(x >= 1 && y >= 1 && x < w - 1 && y < h - 1 || ir.terrain[y * w + x] === TV.GRASS, 'a tone tile on the apron ring is grass');
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 >= 0 && Y2 >= 0 && X2 < w && Y2 < h) assert.equal(ir.terrain[Y2 * w + X2], TV.GRASS, `tone at ${x},${y} of ${seed}:${X},${Y} has no grass at ${X2},${Y2}`); }
+      }
+      bakeIR(ir);   // the bake refuses a tone corner on a tile that is not all grass
+    }
+    assert.ok(tone > 50, 'tone tiles over the sampled cells of seed ' + seed + ': ' + tone);
+    const a = cellIR(seed, 36, 48), b = cellIR(seed, 37, 48);   // the east neighbour: the two columns of apron and edge tiles they share are the same tiles
+    for (let y = 0; y < a.h; y++) for (let k = 0; k < 2; k++) assert.equal(a.tone[y * a.w + a.w - 2 + k], b.tone[y * b.w + k], `tone agrees across the border at row ${y}`);
+  });
+}
+
 test('the pair table is the set\'s: raised land meets only grass', () => {
   for (const [a, b] of [[TV.CLIFF, TV.WATER], [TV.CLIFF, TV.PATH], [TV.CLIFF, TV.THICKET], [TV.CLIFF, TV.SCRUB], [TV.CLIFF, TV.EARTH], [TV.THICKET, TV.SCRUB], [TV.PATH, TV.SAND], [TV.PATH, TV.WATER]]) assert.ok(!pairOk(a, b), a + '|' + b);
   for (const [a, b] of [[TV.GRASS, TV.CLIFF], [TV.GRASS, TV.WATER], [TV.GRASS, TV.PATH], [TV.WATER, TV.SAND], [TV.GRASS, TV.THICKET], [TV.SAND, TV.SCRUB]]) assert.ok(pairOk(a, b), a + '|' + b);
