@@ -356,15 +356,20 @@ export function cellTerrain(seed, X, Y) {
 }
 
 // grass tone (terrain layers, ground patches of Rule 1.6): the lipless tone layer over plain grass, in patches of a few tiles from a noise field at world position (about 3 to 8 tiles a patch), never a per-tile repeat. A tile carries tone only when
-// the 3 x 3 tiles round it are all grass, so every dual tile that touches a tone corner is wholly grass: tone never meets a lip or an edge. Returns 0/1 per tile of an area whose first tile is world (x0, y0).
+// the 3 x 3 tiles round it are all grass (or all raised top, with the cells two rows below raised too: terrain-layers-c), so every dual tile that touches a tone corner is wholly one ground: tone never meets a lip, a face or an edge.
+// Returns 0/1 per tile of an area whose first tile is world (x0, y0).
 const TONE_AT = 0.1;
 export function toneField(seed, x0, y0, w, h) {
   const n = ctxOf(seed).nG, T = worldTiles(seed), out = new Uint8Array(w * h);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const gx = x0 + x, gy = y0 + y;
     if (n(gx, gy) <= TONE_AT) continue;
+    const v = T(gx, gy);
+    if (v !== TV.GRASS && v !== TV.CLIFF) continue;
     let all = true;
-    for (let dy = -1; dy <= 1 && all; dy++) for (let dx = -1; dx <= 1; dx++) if (T(gx + dx, gy + dy) !== TV.GRASS) { all = false; break; }
+    for (let dy = -1; dy <= 1 && all; dy++) for (let dx = -1; dx <= 1; dx++) if (T(gx + dx, gy + dy) !== v) { all = false; break; }
+    // the raised top (cliff terrain) takes tone by the same rule and one more: the three cells two rows below are raised too, so every dual tile the tone touches is the plain top, never a face or a way up
+    if (all && v === TV.CLIFF) for (let dx = -1; dx <= 1; dx++) if (T(gx + dx, gy + 2) !== TV.CLIFF) { all = false; break; }
     if (all) out[y * w + x] = 1;
   }
   return out;

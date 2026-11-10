@@ -10,13 +10,13 @@
 //     cannot reach its smallest size (a grove of 4) is dropped whole, leaving a clearing;
 //   - kinds come in an order (trees, rocks, stumps, bushes, tall-grass sweeps); a later kind never stands on a tile an earlier kind holds. Each tile's answer is a function of the world.
 // Where props stand: never on a tile beside water, thicket or the cliff's lip (so a prop never closes a gap), never beside a trail, never at a way up, never near the Hollow Tree's clearing, and only
-// on a plain tile (the tile and its eight neighbours one terrain: one full cell clear of every lip, shore and edge). Tufts, flowers and clumps sit wholly inside a plain cell too. Scrub shrubs (when the desk
-// signs them) will go sparsely inside scrub cells, off edges: scrub is drawn as grass until then and holds no prop or decal.
+// on a plain tile (the tile and its eight neighbours one terrain: one full cell clear of every lip, shore and edge). Tufts, flowers and clumps sit wholly inside a plain cell too. Scrub shrubs (the desk's
+// shrub-1..4) stand sparsely inside scrub patches, a full cell off every scrub edge, never touching each other; scrub holds no other prop or decal.
 // Raised land's top is dressed like the low ground of its biome by the same scatter. Decals (tufts, flowers, clumps) follow the art desk's meadow density on every grass tile.
 import { noiseField } from './world.mjs';
 
 export const TERR = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
-const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET } = TERR;
+const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET, SCRUB } = TERR;
 
 // ---- the table (variety scheme section 2; where it gives no number, the pick is marked and listed in the report) ----
 // trees/rocks/bushes: { B: block size in tiles, used: share of blocks that hold a cluster, size: [min, max] trees, keep: smallest size kept }, stumps: { B, used }, sweeps: as trees (tall grass).
@@ -47,13 +47,17 @@ export const TUFTS = ['tuft-fan', 'tuft-lean', 'tuft-small'];
 export const FLOWERS = ['flower-daisy', 'flower-buttercup', 'flower-daisy-pair', 'flower-blue-pair', 'flower-pink-three'];
 export const DECOR_RULE = { tufts: 0.25, flowers: 0.15, clumps: 1 / 40 };
 const DRIFT = [[1, 1], [-1, 1], [2, 0], [-2, 1], [0, 2], [1, -1]];
+// the scrub shrubs (the desk's shrub-1..4, mibi-art 34a8dc49c): on the inside of a scrub patch only, never on neighbouring tiles (a shrub is 15 px in a 16 px tile, so two in a row would touch); at this raw rate about
+// one in three of the scrub tiles a shrub may stand on holds one (one in two is a checkerboard, a lattice)
+export const SHRUBS = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4'];
+const P_SHRUB = 0.9;
 const P_CLUMP = 0.04, P_FLOWER_SEED = 0.083, P_TUFT = 0.302;   // raw rates after the exclusions (a clump keeps 7 x 7 to itself: about 1 in 65 tiles), tuned on seeds 7, 13 and 42 to the rule above
 
 // ---- integer hashing by position ----
 const mix = h => { h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return h >>> 0; };
 const H = (seed, tag, x, y, z = 0) => { let h = Math.imul(seed | 0, 0x9e3779b1) ^ Math.imul(tag, 0x85ebca6b); h = mix(h ^ Math.imul(x | 0, 0xc2b2ae35)); h = mix(h ^ Math.imul(y | 0, 0x27d4eb2f)); return mix(h ^ Math.imul(z | 0, 0x165667b1)); };
 const U = (seed, tag, x, y, z) => H(seed, tag, x, y, z) / 4294967296;
-const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000 };
+const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000, SHRUB: 1010 };
 const key = (x, y) => y * 8192 + x;
 const CS = 16;                                           // coarse cells of the seed index, in tiles
 const sizeRange = P => P.size || [1, 1];
@@ -235,6 +239,18 @@ export function createDecor(seed, land) {
   }
   function memberOf(fi, x, y) { const s = owner(fi, x, y); if (!s) return null; return cluster(fi, s).set.get(key(x, y)) || null; }
 
+  // ---- scrub shrubs: a scrub tile whose 3 x 3 is all scrub (a full cell off every scrub edge) may hold one by hash; of two candidates on neighbouring tiles (side by side) the lower hash wins, so none ever touch ----
+  const shrubCand = (x, y) => inMap(x, y) && T(x, y) === SCRUB && U(seed, TAG.SHRUB, x, y) < P_SHRUB && plain(x, y);
+  const shrubAt = (x, y) => {
+    if (!shrubCand(x, y)) return false;
+    const u = U(seed, TAG.SHRUB + 1, x, y);
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const a = x + dx, b = y + dy;
+      if (shrubCand(a, b)) { const v = U(seed, TAG.SHRUB + 1, a, b); if (v < u || (v === u && (b < y || (b === y && a < x)))) return false; }
+    }
+    return true;
+  };
+
   // ---- the props of a rectangle of tiles: { kind, x, y } in world tiles (the foot tile), sorted by foot row, column, kind ----
   function propsIn(x0, y0, x1, y1) {
     const out = [], R = 9;
@@ -247,6 +263,7 @@ export function createDecor(seed, land) {
         }
       }
     }
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (shrubAt(x, y)) out.push({ kind: SHRUBS[H(seed, TAG.SHRUB + 2, x, y) % SHRUBS.length], x, y, fam: 'shrubs', cluster: -2 });
     for (const h of hollowSites()) if (h.x >= x0 && h.x <= x1 && h.y >= y0 && h.y <= y1) out.push({ kind: HOLLOW, x: h.x, y: h.y, fam: 'landmark', cluster: -1 });
     return out.sort((a, b) => a.y - b.y || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));
   }
