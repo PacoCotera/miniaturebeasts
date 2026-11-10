@@ -26,7 +26,7 @@ for (const kind of ["storm", "warm"]) {
     run("takeCharge(T.f)");
     const after = state(run);
     assert.deepEqual(after, before, "the stone, the hold and the turn count are untouched");
-    assert.match(run("FX.msg"), /Energy full/, "it says so");
+    assert.match(run("FX.msg"), /Energy 20 of 20 · the stone keeps its charge/, "it says so");
   });
   test(`a ${kind} stone still discharges into a hold with room`, () => {
     const run = setup(kind, 10), before = state(run);

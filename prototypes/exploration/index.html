@@ -711,7 +711,7 @@ function wholeFor(lay, bk) {
 function arrivalRows(key, dir) {
   const lay = layout(key); if (lay.cave || !lay.baked || S.veil[key] || walkedCell(lay.cell)) return null;
   const e = entryPoint(lay, key, dir || null, true); if (!e) return null;
-  const rows = new Array(lay.h).fill(0); liftFlood(lay, rows, e.x, e.y); return rows;
+  const rows = new Array(lay.h).fill(0); liftFlood(lay, rows, e.x, e.y, walkRadius(lay, e.x, e.y)); return rows;
 }
 const ARR = new Map();   // cell + way in -> the arrival picture's progress
 const LIT = new Map();   // cell -> the veil its light state was last warmed for
@@ -1524,9 +1524,10 @@ function unveil(key, cx, cy, r) {
 function walkLift() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
   const lay = layout(P.key), v = S.veil[P.key] || (S.veil[P.key] = new Array(lay.h).fill(0));
-  liftFlood(lay, v, P.x, P.y, lay.raisedFn && lay.raisedFn(P.x, P.y) ? WALK_R_HIGH : WALK_R);   // height lets you see further: plain seeing, six tiles on raised land
+  liftFlood(lay, v, P.x, P.y, walkRadius(lay, P.x, P.y));
   checkWalked();
 }
+const walkRadius = (lay, x, y) => lay.raisedFn && lay.raisedFn(x, y) ? WALK_R_HIGH : WALK_R;   // height lets you see further: plain seeing, six tiles on raised land (the arrival picture warmed ahead lifts the same)
 // a small flood from the pawn through open ground: it lifts the first blocking tile it meets (a shore, a trunk)
 // but never what lies behind it, so it doesn't see across water or cliff
 function liftFlood(lay, v, px, py, r = WALK_R) {
