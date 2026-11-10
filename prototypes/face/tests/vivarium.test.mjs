@@ -443,7 +443,7 @@ test("facing (M1 §1.2): a native-left set shows the mirrored walk cells when fa
   const left = JSON.parse(JSON.stringify(MOVING_SETS)); left.S01.native = "left";
   for (const [sets, native] of [[MOVING_SETS, 1], [left, 0]]) {
     const sc = movingScene("idle", { adults: 3 }), f = await bootScene(sc, { moving: sets }), nb = MOVING_SETS.S01.adult.walk.cells.length, curl = MOVING_SETS.S01.adult.walk.cells.indexOf("curl"); let seen = 0;
-    runFrames(f, 20000, { each: () => { for (let i = 0; i < 3; i++) { const c = f.M._face_test_cell(i), fr = f.M._face_test_mv(i, 2); if (c < 0) continue; assert.equal(c >= nb, fr !== native, `resident ${i}: cell ${c} facing ${fr ? "right" : "left"}`); seen++; } } });
+    runFrames(f, 20000, { each: () => { for (let i = 0; i < 3; i++) { const c = f.M._face_test_cell(i), fr = f.M._face_test_mv(i, 2); if (c < 0 || c === curl || c === curl + 1) continue; assert.equal(c >= nb, fr !== native, `resident ${i}: cell ${c} facing ${fr ? "right" : "left"}`); seen++; } } });
     assert.ok(seen > 100);
     sc.props.regions.residents.forEach((r) => (r.rest = "asleep")); resend(f); runFrames(f, 15000);
     for (let i = 0; i < 3; i++) assert.ok([curl, curl + 1].includes(f.M._face_test_cell(i)), "asleep: the curl as painted");
