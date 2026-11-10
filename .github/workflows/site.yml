@@ -24,7 +24,7 @@ jobs:
     # Chromium's libraries) are installed once on the server, so the install lines below run only on a GitHub machine. Never for a pull request from a fork.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, mb-dev]
-    timeout-minutes: 60   # (raised 2026-11-10 with the Station rules step) measured 29 minutes with the browser checks (2026-10-28); a pull request now runs the build, smoke and node tests (about 11), a manual run all of them
+    timeout-minutes: 60   # measured 29 minutes with the browser checks (2026-10-28); the node tests are the `rules` job now, beside this one; a manual run runs all the browser checks
     steps:
       - uses: actions/checkout@v4
         with:
@@ -88,7 +88,8 @@ jobs:
         id: emsdk
         run: echo "version=$(cat prototypes/face/emsdk.version)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4
-        if: steps.scope.outputs.docs != 'true'
+        # On the dev server ~/emsdk stays between runs and is shared by the runners, and the `rules` shards compile with it while this job does: a cache restore would write over files in use. So the cache is for GitHub's machines only.
+        if: steps.scope.outputs.docs != 'true' && runner.environment != 'self-hosted'
         with:
           path: ~/emsdk
           key: emsdk-${{ steps.emsdk.outputs.version }}-ubuntu-24.04
@@ -96,12 +97,13 @@ jobs:
         if: steps.scope.outputs.docs != 'true'
         # Build time and sizes are printed in the log. The face is built before the site is assembled so that
         # prototypes/face/dist travels with the sandbox bundle.
+        # FACE_BUILD_DIR: the build's own folder in this job's temp, as the `rules` job has, so jobs on the same machine never share /tmp/mb-face-build.
         run: |
           set -euo pipefail
           if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y -q ninja-build bc >/dev/null; fi
           if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
           (cd "$HOME/emsdk" && ./emsdk install "${{ steps.emsdk.outputs.version }}" >/dev/null && ./emsdk activate "${{ steps.emsdk.outputs.version }}" >/dev/null)
-          EMSDK="$HOME/emsdk" prototypes/face/build.sh all
+          FACE_BUILD_DIR="$RUNNER_TEMP/face-build" EMSDK="$HOME/emsdk" prototypes/face/build.sh all
       - name: Assemble the site
         if: steps.scope.outputs.docs != 'true'
         run: |
@@ -178,14 +180,7 @@ jobs:
           npm ci --prefix prototypes/places --no-audit --no-fund
           npm ci --prefix prototypes/exploration --no-audit --no-fund
           node prototypes/places/tools/bake.mjs --check
-      - name: Station rules (node tests)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        timeout-minutes: 45   # measured 15-23 (2026-11-10, dev server shared with builders); the limit only catches a hung run (MB_CI_FAST: they run in full locally before every merge)
-        # The Station's rules and the Caddy service in Node, and the other prototypes' tests.
-        # The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
-        run: |
-          set -euo pipefail
-          MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/places/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
+      # The Station's rules (the node tests) are the `rules` job below, in four shards beside this job.
       - name: Site server (the studio login, deploy.sh, the Caddyfile)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
         timeout-minutes: 5
@@ -317,3 +312,112 @@ jobs:
           git add -A
           git commit -qm "Sandbox mirror of ${GITHUB_SHA:0:7}"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+
+  rules:
+    # The Station's rules and the Caddy service in Node, and the other prototypes' tests, in four shards on the four dev runners, side by side with `build` (it does not wait for them).
+    # One step of `build` ran them all in one `node --test`: 29 minutes on release 2026-11-10a (PR #287; the limit is 60). Measured per file on the dev server (2026-11-10, four files at a time):
+    # the 236 files add up to about 50 minutes of one core, and the machine has 12; gen7-world (19 minutes, all of it generating 200 realms before the first test), views-agree (9) and gen7-place (9) were split
+    # into files of 3 to 5 minutes (gen7-world-s*, views-agree-seed*, gen7-place-decor). Measured with the four shards at once on the dev server (2026-11-10): 9.7 to 11.5 minutes each, the face build included.
+    # The check names are `rules (1/4)` to `rules (4/4)`; the merge rule requires them with `build`.
+    # Scope: the same rule as `build`'s scope step (copied: the build's thirty steps read steps.scope.outputs, and a shared job would make `build` wait for it). Documents only: every step is skipped and the job still ends green;
+    # a push to main runs no tests (main only receives pull requests that passed them); a pull request runs these when .github/ci-filter.sh says tests=true; a manual run runs them.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, mb-dev]
+    timeout-minutes: 30   # the limit only catches a hung run; MB_CI_FAST: the full set runs locally before every merge
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    name: rules (${{ matrix.shard }}/4)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+          # The same list as `build` (the tests read the same folders). A new folder a test reads is added in both.
+          sparse-checkout: |
+            .github
+            website
+            prototypes
+            ops
+            design
+            hardware
+            v1/native/vendor
+            art/companion-48
+            art/places
+            art/device-buttons
+            art/station-masters
+            art/retro-diffusion-trial
+      - name: Scope (documents only, or no tests needed, skips the shard)
+        id: scope
+        run: |
+          set -u
+          result=docs=false
+          filter='tests=true'
+          case $GITHUB_EVENT_NAME in
+            push) filter='tests=false' ;;
+            pull_request)
+              if list=$(git diff --name-status --no-renames HEAD^1 HEAD); then
+                result=$(printf '%s\n' "$list" | sh .github/docs-only.sh) || result=docs=false
+              fi
+              if names=$(git diff --name-only --no-renames HEAD^1 HEAD); then
+                filter=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || filter='tests=true'
+              fi ;;
+          esac
+          echo "$result" >> "$GITHUB_OUTPUT"
+          echo "$filter" | grep '^tests=' >> "$GITHUB_OUTPUT"
+          echo "Shard ${{ matrix.shard }}/4: docs-only $result; $(echo "$filter" | grep '^tests=')" >> "$GITHUB_STEP_SUMMARY"
+      - name: Emscripten SDK (pinned in prototypes/face/emsdk.version)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        id: emsdk
+        run: echo "version=$(cat prototypes/face/emsdk.version)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        # GitHub's machines only, as in `build`: ~/emsdk stays on the dev server and is shared by the runners.
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true' && runner.environment != 'self-hosted'
+        with:
+          path: ~/emsdk
+          key: emsdk-${{ steps.emsdk.outputs.version }}-ubuntu-24.04
+      - name: Build the Station's face (the tests read its dist folder, the fonts' metrics and the node build)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        # The same commands as in `build`. Measured 90 s on the dev server (2026-11-10): the one cost of a shard that the single step did not have.
+        run: |
+          set -euo pipefail
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y -q ninja-build bc >/dev/null; fi
+          if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
+          (cd "$HOME/emsdk" && ./emsdk install "${{ steps.emsdk.outputs.version }}" >/dev/null && ./emsdk activate "${{ steps.emsdk.outputs.version }}" >/dev/null)
+          FACE_BUILD_DIR="$RUNNER_TEMP/face-build" EMSDK="$HOME/emsdk" prototypes/face/build.sh all
+      - name: Install the pages' packages (vite, p-queue)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        # The same install as in ops/sandbox/bundle-pages.sh, whose packages the tests import.
+        run: npm ci --prefix prototypes --no-audit --no-fund --silent
+      - name: Places toolchain (pinned flatc, npm ci)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        timeout-minutes: 5
+        # The same commands as `build`'s Places toolchain step, without the bake check (that stays in `build`).
+        run: |
+          set -euo pipefail
+          sh prototypes/places/tools/get-flatc.sh "$RUNNER_TEMP/flatc"
+          echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
+          npm ci --prefix prototypes/places --no-audit --no-fund
+          npm ci --prefix prototypes/exploration --no-audit --no-fund
+      - name: Playwright's Chromium (cached by the Playwright version)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pw
+          key: playwright-1.56.1-chromium-ubuntu-24.04-${{ runner.arch }}
+      - name: Install Playwright and its Chromium
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        # As in the smoke step of `build` (the key above moves with playwright@1.56.1).
+        run: |
+          set -euo pipefail
+          npm --prefix "$RUNNER_TEMP" install --silent playwright@1.56.1
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null; fi
+          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
+      - name: Station rules (node tests, shard ${{ matrix.shard }} of 4)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        # Today's file list, unchanged, split by node over four. The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
+        # A file that takes long is split by its tests into several files, as exploration/tests/views-agree (one file a seed) and gen7-place (the decor test apart), so no one file holds a shard up.
+        run: |
+          set -euo pipefail
+          MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test --test-shard=${{ matrix.shard }}/4 prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/places/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs

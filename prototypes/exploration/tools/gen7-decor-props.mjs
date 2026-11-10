@@ -1,4 +1,4 @@
-// Generator 7, chunk G3: the numbers of the props and decor over every cell of a seed (80 x 100 cells). Used by tests/gen7-place.test.mjs; run alone to print them:
+// Generator 7, chunk G3: the numbers of the props and decor over every cell of a seed (80 x 100 cells). Used by tests/gen7-place-decor.test.mjs; run alone to print them:
 //   node tools/gen7-decor-props.mjs 13
 // Counted: grove sizes by biome, outcrops of one colour, the grove-lattice rule per cell, reed banks on shores only, decor per 10 grass tiles in border rows and in the interior, no crown near the
 // Hollow Tree, a prop near a cell border the same from both cells, props per 100 tiles by biome against the table, and what the props block that the terrain alone did not.

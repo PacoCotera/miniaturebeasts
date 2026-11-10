@@ -204,7 +204,7 @@ Top-down, one land: every value is a function of the realm seed and a world posi
 
 `joinSouth` (world.mjs) in one line: where a level zone could only be left across a north, east or west cliff, it takes the level of the land round it (a hollow is filled, a stranded plateau lowered), because only south-facing stairs carry a way up. Raised land is flat on top: water, thicket and trails are drawn on the low ground only, so a window that falls inside a plateau shows bare meadow.
 
-- Tests: `tests/gen7-world.test.mjs` (golden vectors `tests/gen7-vectors.json` for seeds 7, 13 and 42, written by `tools/gen7-vectors.mjs <out.json>`; checks over seeds 1-200 and every biome; land shares within 5 points of the targets; borders agree; trails and ports).
+- Tests: `tests/gen7-world.test.mjs` (golden vectors `tests/gen7-vectors.json` for seeds 7, 13 and 42, written by `tools/gen7-vectors.mjs <out.json>`; the fields; the order a region is opened in) and `tests/gen7-world-s1-50.test.mjs` to `-s151-200` (checks over seeds 1-200 in four files of 50 seeds, `gen7-world-seeds.mjs`, and every biome; land shares within 5 points of the targets; borders agree; trails and ports).
 
 ### The place layer (world generation, G2; terrain and the dual grid only)
 
@@ -233,7 +233,7 @@ Pure, no page state: every prop and decal is a function of the realm seed and a 
 - **Where props stand**: on grass, and on the raised land's top exactly as on low ground; never on or beside water, thicket or the cliff's lip (so a prop never closes a gap), never beside a trail, never at a way up or the three rows round it. Nothing is laid within a tile of a lip.
 - **Decor** (the art desk's meadow rule, mibi-art 5734abc5): on every grass tile and on raised land's top, border rows and interior alike, by world position: per 10 tiles 2.5 tufts and 1.5 flowers (in drifts of 1-3), an accent clump about 1 in 65 tiles and never within 4 of another. Grass flecks (six tiny decals the art director kept) on a tile in two or three that holds no tuft or flower, not within a tile of a prop. Pebbles on sand, lily pads on open water.
 - **The Hollow Tree** (`hollowSites`): one in each Woods or Tallwood region, on a clearing of plain grass 9 x 7 with no path, wall or lip; no crown of any tree and no other prop within two tiles of it. The worn earth under it is terrain and belongs to G5 (landmarks).
-- Tests: `tests/gen7-place.test.mjs` (the G3 cases, numbers from `tools/gen7-decor-props.mjs <seed>`): grove sizes, one colour an outcrop, the grove-lattice rule, reed banks on shores, decor per 10 grass tiles in border rows and interior, no crown near the Hollow Tree, a prop near a border the same from both cells, props per 100 tiles by biome within 20% of the table.
+- Tests: `tests/gen7-place-decor.test.mjs` (the G3 cases, numbers from `tools/gen7-decor-props.mjs <seed>`): grove sizes, one colour an outcrop, the grove-lattice rule, reed banks on shores, decor per 10 grass tiles in border rows and interior, no crown near the Hollow Tree, a prop near a border the same from both cells, props per 100 tiles by biome within 20% of the table.
 
 ## Pacing and the first trip (walk slice, C16)
 
