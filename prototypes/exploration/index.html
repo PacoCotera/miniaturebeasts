@@ -5271,7 +5271,7 @@ function drawWhole(t) {
   const found = heartFound(lay.cell), cardUp = h && v.kind === 'look' && found;   // Look over a found place shows the same card as the find does
   // the marks, drawn in this order: what is still there to take, the heart, then the partner as its kind, then you on top (the desk's look-view art)
   const marks = () => {
-    if (cardUp) for (const it of leftItems(lay.cell)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still'; lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
+    if (cardUp || v.kind === 'peek') for (const it of leftItems(lay.cell).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still'; lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
     if (cardUp) { const q = tp(h.x, h.y); lookMark('look-heart-' + h.kind, h.kind, q.x, q.y, T); }   // the heart, through the dissolve and the hold
     if (live && live.pt && S.exp.pt) { const m = tp(live.pt.x, live.pt.y), pm = mibiById(S.exp.pt.id); lookMark(partnerMark(S.exp.pt.sp, !!pm && !isAdult(pm)), 'partner', m.x, m.y, T); }   // the partner as its kind, under the you-mark
     { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, T); }

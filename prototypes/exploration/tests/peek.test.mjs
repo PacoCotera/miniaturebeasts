@@ -4,7 +4,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodePng } from "../../places/src/png.mjs";
@@ -81,6 +81,64 @@ test("a short press is Call, fired on release; the keyboard holds the same way",
     s = await st(page); assert.equal(s.view, null); assert.equal(s.calls, s1.calls, "no Call after a hold"); assert.equal(s.actions, s1.actions);
     await page.keyboard.down("c"); await page.waitForTimeout(100); await page.keyboard.up("c"); await page.waitForTimeout(100);
     assert.equal((await st(page)).calls, s1.calls + 1, "a short key press is a Call");
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); server.close(); }
+});
+
+// The staged scene (seed 7's first place): the lower half uncovered; returns the tiles used. `what`: which of pod, tuft, fruit, buried to lay.
+const stage = (page, what) => page.evaluate((what) => {
+  const m = window.__mb, S = m.S, P = S.exp.patch, key = P.key, lay = m.layout(key), live = S.exp.live[key];
+  const veil = S.veil[key] = S.veil[key] || new Array(lay.h).fill(0);
+  for (let y = 13; y < lay.h; y++) veil[y] = 0x0fffffff;
+  const free = (x, y) => x > 0 && y > 0 && x < lay.w - 1 && y < lay.h - 1 && lay.reach[y * lay.w + x] && !m.occupant(key, x, y) && !(P.x === x && P.y === y);
+  const near = (x0, y0) => { for (let r = 0; r < 8; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r && free(x0 + dx, y0 + dy)) return { x: x0 + dx, y: y0 + dy }; return null; };
+  const pod = near(17, 18), tuft = near(8, 21), fruit = near(15, 22), buried = near(6, 16);
+  if (what.includes("pod")) S.pods.push({ id: "mock:pod", k: key, x: pod.x, y: pod.y, sp: 0, h: 0, g: "meadow", how: "mock" });
+  if (what.includes("buried")) S.pods.push({ id: "mock:buried", k: key, x: buried.x, y: buried.y, sp: 0, h: 1, g: "meadow", how: "mock" });
+  if (what.includes("tuft")) live.tf.push({ id: 900, x: tuft.x, y: tuft.y });
+  if (what.includes("fruit")) live.fr.push({ id: live.fid++, x: fruit.x, y: fruit.y });
+  S.called[lay.cell] = 1;
+  return { pod, tuft, fruit, buried };
+}, what);
+const heldShot = async (page) => {
+  await page.evaluate(() => window.__mb.press("call")); await page.waitForTimeout(700);
+  const img = await still(page);
+  await page.evaluate(() => window.__mb.release("call")); await page.waitForTimeout(150);
+  return img;
+};
+const diffBox = (a, b) => { let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;
+  for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) { const i = (y * a.w + x) * 4; if (a.data[i] !== b.data[i] || a.data[i + 1] !== b.data[i + 1] || a.data[i + 2] !== b.data[i + 2]) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); } }
+  return x1 < 0 ? null : { x0, y0, x1, y1, w: x1 - x0 + 1, h: y1 - y0 + 1 }; };
+
+test("hold Call marks the finds: a pod and a tuft get a take mark; a fruit and a buried pod get none; the walk after is pixel-equal; the golden", { skip }, async (t) => {
+  let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
+  const { server, url } = await serve();
+  try {
+    const { page, errors } = await enter(browser, url, 7, false);
+    await stage(page, []);   // the lower half uncovered, nothing laid
+    const walk0 = await page.waitForTimeout(100).then(() => still(page));
+    const base = await heldShot(page);
+    assert.ok(same(await still(page), walk0), "release: the walk, pixel-equal");
+    // fruit on the ground and a buried pod: no mark, the peek is unchanged
+    await stage(page, ["fruit", "buried"]);
+    const noMark = await heldShot(page);
+    assert.ok(same(noMark, base), "a fruit and a buried pod draw nothing in the peek");
+    // a pod: a mark that fits one 26 x 26 box
+    await stage(page, ["pod"]);
+    const withPod = await heldShot(page);
+    const box = diffBox(base, withPod); assert.ok(box, "the pod has a mark"); assert.ok(box.w <= 26 && box.h <= 26, "the mark is one small icon, got " + JSON.stringify(box));
+    // a tuft too: a second, separate mark
+    await stage(page, ["tuft"]);
+    const full = await heldShot(page);
+    assert.ok(diffBox(withPod, full), "the tuft has a mark");
+    // the golden: the full scene held (reduced motion, seed 7)
+    const file = path.join(root, "prototypes/exploration/tests/golden/peek-finds.png");
+    const buf = Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64");
+    await page.evaluate(() => window.__mb.press("call")); await page.waitForTimeout(700);
+    const held = Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64");
+    await page.evaluate(() => window.__mb.release("call")); await page.waitForTimeout(150);
+    if (process.env.UPDATE_GOLDEN || !existsSync(file)) writeFileSync(file, held);
+    else assert.ok(same(decodePng(readFileSync(file)), decodePng(held)), "peek-finds.png differs from the golden");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
 });
