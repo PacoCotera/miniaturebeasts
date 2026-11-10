@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Companion Field Test</title>
-<script type="importmap">{"imports":{"fastnoise-lite":"./node_modules/fastnoise-lite/FastNoiseLite.js","flatqueue":"./node_modules/flatqueue/index.js"}}</script>
+<script type="importmap">{"imports":{"fastnoise-lite":"./node_modules/fastnoise-lite/FastNoiseLite.js","flatqueue":"./node_modules/flatqueue/index.js","idb-keyval":"./node_modules/idb-keyval/dist/index.js"}}</script>
 <script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
 <script>if (new URLSearchParams(location.search).has("raw")) document.documentElement.classList.add("raw");</script>
 <meta name="description" content="Miniature Beasts exploration rough playable on a simulated Companion screen: 450×600 pixels at 1:1, a fixed 51-colour palette, the world map, living patches, storms, partners and two gates.">
@@ -256,6 +256,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { genWorld7, layout7 as layout7In, reviveLayers } from "./src/world7.mjs";
+import { readyRealm } from "./src/realm-store.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
@@ -3035,7 +3036,7 @@ function endExpedition(reason) {
   if (S.hist.length > 40) S.hist.shift();
   if (!explored && !(ex.dug && ex.dug.length)) {   // nothing explored (and no bank dug: a dug bank shifts back, so that walk turns the world): nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
-    S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
+    S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
   const turned = worldTurn(pending), worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
@@ -3048,7 +3049,7 @@ function endExpedition(reason) {
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
-  S.phase = 'sealed'; transition(); save();
+  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save();   // a line from the walk does not linger over the sealed screen
 }
 // The Walk: once per world turn, undocked, between expeditions, with every mibi with you together.
 const canWalk = () => !S.exp && S.carried.length > 0 && !isDocked() && S.walkTurn !== S.turn;
@@ -6618,6 +6619,7 @@ function render(t) {
   finally { resetCanvas(); RT.remap = REMAP; vctx.drawImage(scr, 0, 0); }
 }
 function renderFrame(t) {
+  if (RT.making) { drawMaking(); vctx.drawImage(scr, 0, 0); return; }   // a world is being made off the page
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.plScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
@@ -6709,6 +6711,7 @@ function refuseFrozen() {
   const held = FX.held || []; FX.notes = []; fxMsg(FX.dockSaid ? DOCK_TEXT.again : DOCK_TEXT.first, 3); FX.held = held; FX.dockSaid = 1;   // held notes wait for the first action after Lift
 }
 function act(k, mode) {
+  if (RT.making) return;   // a world is being made off the page: the page says so and waits
   if (RT.readOnly) { actReadOnly(k); return; }   // a save that cannot be shown: the one way out is a new world, the old save kept
   if (RT.notice) { actNotice(k); return; }
   const refused = frozenRefuses(k);
@@ -6766,7 +6769,7 @@ function act(k, mode) {
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
         else if (id === 'worldmap') { S.phase = 'worldmap'; transition(); }
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
-        else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); }
+        else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorldLive(); }
           else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
         else { S.phase = id; S.ui.nw = 0; S.ui.rSel = carriedMibis().length ? 1 : 0; S.ui.rFrom = 'menu'; } }   // Mibis from the menu: the first mibi with you
       else if (k === 'back') S.phase = S.ui.from || 'setup';
@@ -6807,7 +6810,7 @@ function act(k, mode) {
     case 'newworld':
       if (k === 'up' || k === 'down') S.ui.nw = k === 'down' ? 1 : 0;
       else if (k === 'back') S.phase = 'menu';
-      else if (k === 'confirm') { if (S.ui.nw === 1) { newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); } else S.phase = 'menu'; }
+      else if (k === 'confirm') { if (S.ui.nw === 1) newWorldLive(); else S.phase = 'menu'; }
       break;
     case 'sealed':   // Expedition ended, the short screen: ✓ Next expedition (the expedition choice; it starts only undocked)
       if (k === 'confirm') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
@@ -7075,6 +7078,26 @@ function actNotice(k) {
   if (k !== 'confirm') { FX.bumpAt = NOW; return; }
   RT.notice = false; S.resetSeen = 1; save();
 }
+// A new world's realm takes seconds to make: it is made in a Web Worker (src/realm-store.mjs), the page stays live and shows the loading line (the Probe reading the land). A realm made before
+// (it is kept in the browser per seed) is back at once. Without a Worker (the test sandbox) the world is made on the spot, as it always was.
+const randomSeed = () => Math.floor(Math.random() * 4294967295) >>> 0;
+function drawMaking() {
+  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
+  viewBg();
+  text(LAND_COMING, 225, 289, C.bone, 2, 'center');
+  drawLine({ ok: '', ctx: '', back: '' });
+}
+function newWorldLive() {
+  const seed = urlSeed() ?? randomSeed(), done = () => { RT.making = false; newWorld(seed); RT.mp = null; RT.key = null; mapCv = null; transition(); };
+  if (typeof Worker === 'undefined') { done(); return; }
+  RT.making = true; RT.makingAt = performance.now();
+  readyRealm(seed, RT.makeTimes = {}).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.makeMs = performance.now() - RT.makingAt; done(); });
+}
+// The seed of the realm a saved game plays (generator 7), read from the save without loading it; null for no save, another generator, or a save that cannot be read.
+function savedRealmSeed() {
+  try { const raw = localStorage.getItem(SAVE_KEY) ?? (COMPANION.slot === 'A' ? localStorage.getItem(LEGACY_KEY) : null), s = raw && JSON.parse(raw), r = s && Array.isArray(s.regions) && s.regions[0];
+    return r && r.gen === 7 && typeof r.seed === 'number' ? r.seed : null; } catch (e) { return null; }
+}
 function drawNewer() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
@@ -7093,9 +7116,10 @@ function actReadOnly(k) {
       localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept'); } }
   catch (e) { RT.armNew = 0; FX.bumpAt = NOW; return; }   // it cannot be kept: nothing changes
   RT.readOnly = false; RT.broken = false; RT.armNew = 0; const note = document.getElementById('resetNote'); if (note) note.hidden = true;
-  newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition();
+  newWorldLive();
 }
-const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
+function boot(seed) {
+const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(seed ?? urlSeed());
 if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
 const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
@@ -7135,6 +7159,11 @@ try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catc
 if (OPT.dev) setObserver(true);   // the Developer tools option opens the Observer, the page's developer panel
 fit();
 requestAnimationFrame(frame);
+}
+// Start. With a Worker the realm is made (or read back) off the page first, and the loading line shows meanwhile; a saved game of another generator, or none, is a new world with the seed chosen here so its realm can be made at once.
+{ const saved = savedRealmSeed(), seed = saved ?? urlSeed() ?? randomSeed();
+  if (typeof Worker === 'undefined') boot(null);
+  else { RT.making = true; drawMaking(); vctx.drawImage(scr, 0, 0); readyRealm(seed, RT.makeTimes = {}).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, WARM, WHOLE, ARR, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,

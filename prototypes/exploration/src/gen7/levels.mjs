@@ -40,7 +40,7 @@ export function tileFields(seed, X, Y) {
     c.x = gx; c.y = gy; S.warp.DomainWrap(c); detail[k] = S.det.GetNoise(c.x, c.y);
   }
   const out = { height, wild, rock, detail };
-  if (S.cells.size > 1500) S.cells.clear();
+  if (S.cells.size > 3000) S.cells.clear();
   S.cells.set(key, out); return out;
 }
 
@@ -97,7 +97,7 @@ function qCell(L, X, Y) {
     }
     q[k] = s;
   }
-  if (L.q.size > 1500) L.q.clear();
+  if (L.q.size > 3000) L.q.clear();
   L.q.set(key, q); return q;
 }
 

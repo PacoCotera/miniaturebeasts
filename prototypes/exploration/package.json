@@ -5,9 +5,12 @@
   "description": "Miniature Beasts exploration prototype: the Generator 7 world and region layers use these two libraries; everything else in this folder has no dependencies",
   "type": "module",
   "license": "AGPL-3.0-only",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
     "fastnoise-lite": "1.1.1",
-    "flatqueue": "3.1.0"
+    "flatqueue": "3.1.0",
+    "idb-keyval": "6.3.0"
   }
 }

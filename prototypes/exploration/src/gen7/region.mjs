@@ -241,6 +241,11 @@ function checkRegion(G, biome) {
 // change into the neighbours' border cells by position, so the borders still agree. Rounds repeat until every region passes (or ROUNDS is spent).
 export const ROUNDS = 64;   // was 24: with stairs only where a south-facing face exists, two marsh regions of seeds 1-200 (62 and 173) needed more draws
 const cache = new Map();
+// The realm made elsewhere (a Web Worker, or the page's store) is put in the cache, so the page never makes it on its own thread. REALM_REV names this generator's output: it changes with any
+// change that moves a realm (a stored realm of another revision is never used).
+export const REALM_REV = 1;
+export const hasRealm7 = seed => cache.has(seed);
+export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); cache.set(seed, R); }
 export function realm7(seed) {
   if (cache.has(seed)) return cache.get(seed);
   const tries = new Uint8Array(ATLAS * ATLAS); let out = null;
