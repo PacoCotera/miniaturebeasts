@@ -355,14 +355,14 @@
     "sha256": "e77303138b3884fe500cd20eb1cce0d967c313549e50df94c6fdd7dfa2eb336c"
   },
   "wayup-cliff-grass.png": {
-    "commit": "1158b9710",
-    "from": "art-jobs/2026-11-10-art-paint-wayup/out/wayup-cliff-grass.png keyed",
+    "commit": "704373a58",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-wayup/out/wayup-cliff-grass.png keyed",
     "sha256": "e65c16493ff3bbafcfabde2055f3ae5d0c1472a113edc677365b3f3d7158ffb5"
   },
   "wayup-cliff-sand.png": {
-    "commit": "1158b9710",
-    "from": "art-jobs/2026-11-10-art-paint-wayup/out/wayup-cliff-sand.png keyed",
-    "sha256": "068bd9ba80f7436d3daa21d4e6bec304fd3f9256a45d33ca3d24e8438186de9b"
+    "commit": "704373a58",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-wayup/out/wayup-cliff-sand.png keyed",
+    "sha256": "7fcc105bc2aec8e250a9ae90591b23f8ec755f2286abbace54bf48557689ec11"
   },
   "tone-grass.png": {
     "commit": "633e4d641",
