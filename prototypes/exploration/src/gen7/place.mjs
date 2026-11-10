@@ -14,6 +14,8 @@ import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
 import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, WTW, WTH } from './levels.mjs';
 import { createDecor } from './decor.mjs';
+import { holdOf } from './hold.mjs';
+import { landmarksOf } from './landmarks.mjs';
 
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
 // the pairs the set draws (art/places/terrain.json values): every 2 x 2 block of logic tiles holds at most two terrains, and they are one of these
@@ -383,15 +385,24 @@ function decorIR(seed, x0, y0, w, h) {
 }
 
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
-function irOf(seed, id, x0, y0, w, h, terrain, wayups) {
+function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null) {
   const d = decorIR(seed, x0, y0, w, h);
-  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props: d.props, decals: d.decals, canopy: [], hearts: [], clues: [], finds: [], landmarks: [],
-    openings: [], spawns: [], wayups, reedbanks: d.reedbanks, groundMix: groundMix(seed, x0, y0, w + 1, h + 1) };
+  // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
+  const hold = cell ? holdOf({ seed, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
+  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props: d.props, decals: d.decals, canopy: [], hearts: [], clues: [],
+    finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, groundMix: groundMix(seed, x0, y0, w + 1, h + 1),
+    inner: hold ? hold.inner : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
+}
+// the bare tiles (sand, worn earth, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)
+function bareTiles(seed, X, Y) {
+  const c = cellTerrain(seed, X, Y); let n = 0;
+  for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) { const t = c.terrain[y * c.w + x]; if (t === TV.SAND || t === TV.EARTH || t === TV.PATH || t === TV.CLIFF) n++; }
+  return n;
 }
 // One cell for the bake: terrain with its one-tile apron.
 export function cellIR(seed, X, Y) {
   const c = cellTerrain(seed, X, Y);
-  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })));
+  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y]);
 }
 // A block of nx x ny cells as one picture (for the goldens): each cell's own tiles, side by side, with no apron. Equal to baking each cell with its apron.
 export function windowIR(seed, X0, Y0, nx, ny) {

@@ -51,7 +51,7 @@ export function buildPlace(ir, ctx) {
     decals: ir.decals.map(placed('decal')), props: ir.props.map(placed('prop')), canopy: ir.canopy.map(placed('canopy')),
     heart: { x: heart.x, y: heart.y, kinds: heart.kinds, species: heart.species, revealLine: heart.revealLine, reachBy: heart.reachBy },
     clues: ir.clues, finds: ir.finds.map((f) => ({ x: f.x, y: f.y, kinds: f.kinds.map((k) => FIND_KINDS.indexOf(k)), chance: f.chance })),
-    landmarks: ir.landmarks.map((l) => ({ prop: index('prop', l.prop), x: l.x, y: l.y, label: l.label })),
+    landmarks: ir.landmarks.filter((l) => l.prop && spriteFor(tileset, 'prop', l.prop)).map((l) => ({ prop: index('prop', l.prop), x: l.x, y: l.y, label: l.label })),   // a generated cell's landmark whose prop has no signed art yet is an empty slot (its IR entry names it), not a baked record
     openings: ir.openings.map((o) => ({ side: o.side, from: o.from, to: o.to })),
     spawns: ir.spawns.map((s) => ({ x: s.x, y: s.y, w: s.w, h: s.h, species: s.species, count: s.count })),
     blockMask: block,
