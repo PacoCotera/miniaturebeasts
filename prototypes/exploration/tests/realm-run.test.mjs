@@ -1,5 +1,5 @@
 // The realm work's yardstick: a fixed-policy bot plays whole expeditions on the
-// page (tools/realm-run.mjs, a new realm: generator 5); its digest after 20 expeditions is recorded in realm-run.golden.json, and the three played v8 saves are what the
+// page (tools/realm-run.mjs, a new realm: generator 7); its digest after 20 expeditions is recorded in realm-run.golden.json, and the three played v8 saves are what the
 // same tool leaves behind (the release resets them: each is kept whole in .pre10 and a new realm starts).
 //   node --test prototypes/exploration/tests/realm-run.test.mjs      to rewrite the golden: node prototypes/exploration/tools/realm-run.mjs --record
 import { test } from "node:test";
@@ -25,8 +25,8 @@ test("1. the golden run: twice over, the same digest, and the one on file", () =
   assert.equal(a.digest, GOLDEN.digest);
   assert.deepEqual(a.steps, GOLDEN.steps, "expedition by expedition");
   assert.deepEqual(a.summary, GOLDEN.summary);
-  assert.equal(GOLDEN.expeditions, 20); assert.equal(GOLDEN.gen, 5); assert.equal(GOLDEN.seed, 7);
-  // 20 expeditions; the world turns only after a walk that found a heart, and the random walk often revisits found places (C9), so fewer turns than expeditions
+  assert.equal(GOLDEN.expeditions, 20); assert.equal(GOLDEN.gen, 7); assert.equal(GOLDEN.seed, 7);
+  // 20 expeditions; the world turns only after a walk that entered a place; the bot does in every expedition, so a turn each
   assert.equal(a.page.S.turn, GOLDEN.summary.turn); assert.ok(GOLDEN.summary.turn >= 8 && GOLDEN.summary.turn <= 20, "turns " + GOLDEN.summary.turn);
 });
 

@@ -2105,17 +2105,6 @@ function crossReason(a, dir) {
 // this list anyway still blocks its tiles). The range follows ex.range, so the
 // tier and a Tuliko along move the line. The line stands LINE_DEPTH tiles in from the place's edge (the band's inner face); the tiles between it and the edge are blocked.
 const LINE_DEPTH = 3, SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' };
-// Walk B8: the sides of a cell the land refuses outright (wide water, a cliff, fast water, the map's edge: crossReason's answer without the Probe's range or a partner), the same
-// whatever the tier. The adapter draws each one's opening as its closed look (a thicket, blocked) and never arrives at it; the range line is another thing and moves with the tier.
-function closedSidesOf(cell) {
-  const out = new Set();
-  for (const [side, dir] of Object.entries(SIDE_DIR)) {
-    const c = stepCell(cell, dir); if (c < 0) { out.add(side); continue; }
-    if (edgeKind(cell, dir) === EDGE.CLIFF) { if (!softKind(cell, dir)) out.add(side); continue; }
-    if ((!passable(c) || G.island[c]) && softKind(cell, dir) !== 'wade') out.add(side);
-  }
-  return out;
-}
 function openingKind(lay, o) {
   const why = crossReason(lay.cell, SIDE_DIR[o.side]);
   if (!why) return { kind: 'open', text: '' };

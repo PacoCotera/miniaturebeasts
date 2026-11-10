@@ -26,7 +26,7 @@ const url = `http://127.0.0.1:${server.address().port}/prototypes/exploration/in
 const browser = await chromium.launch();
 const errors = [];
 async function open(init) {
-  const ctx = await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: "reduce" });
+  const ctx = await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: "no-preference" });
   if (init) await ctx.addInitScript(init);
   const page = await ctx.newPage(); page.on("pageerror", (e) => errors.push(e.message));
   await page.goto(url); await page.waitForFunction(() => window.__mb && window.__mb.PL && window.__mb.PL.ready, null, { timeout: 120000 });
@@ -57,9 +57,9 @@ console.log("mark", JSON.stringify(mk));
 if (mk) {
   await page.evaluate((o) => { const m = window.__mb; if (m.S.exp.patch) m.leavePatch(); m.S.exp.pos = o.c; m.S.exp.start = o.c; m.enterPatch(); const P = m.S.exp.patch, lay = m.layout(P.key); m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff);
     const free = [[0, 1, "up"], [0, -1, "down"], [1, 0, "left"], [-1, 0, "right"]].find(([dx, dy]) => { const x = o.x + dx, y = o.y + dy; return x >= 0 && y >= 0 && x < lay.w && y < lay.h && lay.reach[y * lay.w + x]; });
-    P.x = o.x + free[0]; P.y = o.y + free[1]; P.dir = free[2]; m.walkLift(); }, mk);
-  await settle(page, 1200); await save(page, "3a-strike-mark-before.png");
-  await page.evaluate(() => window.__mb.act("confirm")); await settle(page, 900); await save(page, "3b-strike-mark-after.png");
+    P.x = o.x + free[0]; P.y = o.y + free[1]; P.dir = free[2]; m.walkLift(); if (m.RT.view) m.endView(); }, mk);
+  await settle(page, 600); for (let i = 1; i <= 5; i++) { await save(page, `3a-strike-mark-before-${i}.png`); await settle(page, 330); }
+  await page.evaluate(() => window.__mb.act("confirm")); await settle(page, 900); await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); }); await save(page, "3b-strike-mark-after.png");
   // ---- the full hold: Data at 20, the next mark refused ----
   await page.evaluate(() => { const m = window.__mb; m.S.exp.cargo.e = 20; m.S.exp.cargo.s = 20; m.S.exp.cargo.d = 20; const P = m.S.exp.patch, lay = m.layout(P.key); const st = lay.feats.find((f) => f.kind === "k"); if (st) { m.setFS(P.key, st.id, { ch: 2 }); P.x = st.x; P.y = Math.min(lay.h - 1, st.y + 1); P.dir = "up"; } });
   await settle(page, 500); await page.evaluate(() => window.__mb.act("confirm")); await settle(page, 700); await save(page, "4-full-hold-refusal.png");

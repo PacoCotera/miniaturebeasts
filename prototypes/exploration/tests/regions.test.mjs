@@ -349,9 +349,9 @@ test("11. seeds and ids: region 1 keeps the realm's seed and its pod ids; region
 });
 
 test("11b. generators: 3 is the herd floor, 4 is the biomes, 5 is life by land, 6 is the composed places; new realms take 6 and the page plays only 6", () => {
-  assert.equal(W.NEW_GEN, 6); assert.deepEqual(W.GENS, [6]);
+  assert.equal(W.NEW_GEN, 7); assert.deepEqual(W.GENS, [7]);
   assert.equal(W.genWorld(7, 3).gen, 3, "generator 3 is the herd floor on generator 2's ground");
-  assert.ok(W.GENS.includes(6), "the page knows the one generator it plays");
+  assert.ok(W.GENS.includes(7), "the page knows the one generator it plays");
   const second = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 6, opened: 1 });
   assert.notEqual(R.realmStatus({ v: 10, regions: [second] }), "newer", "a realm that holds a generator 6 region is playable");
   const later = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 7, opened: 1 });
