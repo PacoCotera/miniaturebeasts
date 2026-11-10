@@ -9,8 +9,8 @@ test("the field pod is the art desk's painted pod, one file per ground, whatever
   const grounds = p.run("Object.keys(POD_SHELL)");
   assert.ok(grounds.length >= 5);
   for (const g of grounds) for (const s of [1, 2, 3]) {
-    const d = p.run(`(() => { const a = podArt(POD_SHELL[${JSON.stringify(g)}], ${s}), b = podArt(POD_SHELL[${JSON.stringify(g)}], ${s}, 2); return { w: a.w, h: a.h, same: a === b, loaded: !!STONE_PIECES.get('pod-walk-16x20-' + POD_SHELL[${JSON.stringify(g)}]) }; })()`);
-    assert.deepEqual([d.w, d.h, d.same, d.loaded], [16 * s, 20 * s, true, true], `${g} ${s}x`);
+    const d = p.run(`(() => { const a = podArt(POD_SHELL[${JSON.stringify(g)}], ${s}), b = podArt(POD_SHELL[${JSON.stringify(g)}], ${s}, 2); return { w: a.w, h: a.h, same: a === b, loaded: !!STONE_PIECES.get('pod-walk-' + POD_SHELL[${JSON.stringify(g)}]) }; })()`);
+    assert.deepEqual([d.w, d.h, d.same, d.loaded], [12 * s, 14 * s, true, true], `${g} ${s}x`);
   }
 });
 

@@ -399,6 +399,7 @@ export function cellTerrain(seed, X, Y) {
 // The numbers (the noise field and its threshold, the clear block, the largest patch) are art/places/map-rules.json `tone`.
 export function toneField(seed, x0, y0, w, h) {
   const TONE_AT = RULES.tone.noise.threshold, TONE_CLEAR = RULES.tone.clear, TONE_PATCH_MAX = RULES.tone.patchMax;
+  if (RULES.tone.enabled === false) return new Uint8Array(w * h);   // map-rules.json `tone.enabled`: false lays no patch (no sunlit patch is drawn)
   const S = ctxOf(seed), n = S.nG, T = worldTiles(seed), out = new Uint8Array(w * h), memo = S.toneMemo || (S.toneMemo = new Map()), K = (x, y) => y * 8192 + x;
   // a tile that may carry tone: grass (or the raised top) with the whole 5 x 5 block round it that same ground, so a full cell is clear of every edge (path, water, sand, cliff, thicket, scrub); on the raised
   // top the three cells two rows below are in that block, so every dual tile the tone touches is the plain top, never a face or a way up

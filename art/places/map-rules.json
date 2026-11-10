@@ -33,6 +33,7 @@
     }
   },
   "meadow": {
+    "noOverlap": true,
     "target": { "tufts": 0.125, "flowers": 0.075, "clumps": 0.025 },
     "tuft": { "chance": 0.151 },
     "flower": { "chance": 0.042, "reach": 2, "drift": [[1, 1], [-1, 1], [2, 0], [-2, 1], [0, 2], [1, -1]], "sameKind": 0.7 },
@@ -64,6 +65,7 @@
     "water": { "within": 2, "count": { "min": 3, "max": 5 } }
   },
   "tone": {
+    "enabled": false,
     "noise": { "scale": 0.2, "octaves": 2, "threshold": 0.45 },
     "clear": 2,
     "patchMax": 160

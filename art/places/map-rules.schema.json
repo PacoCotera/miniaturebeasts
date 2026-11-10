@@ -72,6 +72,7 @@
     "meadow": {
       "type": "object", "additionalProperties": false, "required": ["target", "tuft", "flower", "clump", "fleck"],
       "properties": {
+        "noOverlap": { "description": "When true the scatter drops a meadow piece (tuft, flower, clump, fleck) whole if its picture's rectangle overlaps another piece's, a prop's or another meadow piece's; the piece with the lower hash goes", "type": "boolean" },
         "target": { "description": "The desk's rule as a share of open tiles; the raw chances below are tuned to it (not read by the generator)", "type": "object", "additionalProperties": false, "required": ["tufts", "flowers", "clumps"], "properties": { "tufts": { "$ref": "#/definitions/chance" }, "flowers": { "$ref": "#/definitions/chance" }, "clumps": { "$ref": "#/definitions/chance" } } },
         "tuft": { "type": "object", "additionalProperties": false, "required": ["chance"], "properties": { "chance": { "$ref": "#/definitions/chance" } } },
         "flower": {
@@ -125,6 +126,7 @@
       "description": "The sunlit grass tone: patches of the noise above the threshold, kept whole or dropped whole; every tile needs the block of `clear` cells round it to be one ground",
       "type": "object", "additionalProperties": false, "required": ["noise", "clear", "patchMax"],
       "properties": {
+        "enabled": { "description": "When false the scatter lays no tone patch (no sunlit patch is drawn); the numbers below stay for when it is switched on", "type": "boolean" },
         "noise": { "allOf": [{ "$ref": "#/definitions/noise" }, { "type": "object", "required": ["threshold"] }] },
         "clear": { "$ref": "#/definitions/cells" },
         "patchMax": { "description": "A patch larger than this many tiles is dropped", "type": "integer", "minimum": 1, "maximum": 2000 }

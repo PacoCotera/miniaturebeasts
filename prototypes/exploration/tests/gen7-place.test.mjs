@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
 import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, decorOf, toneField, worldTiles } from '../src/gen7/place.mjs';
 import { bakeIR } from '../tools/gen7-render.mjs';
+import { RULES } from '../src/gen7/rules.mjs';
 
 // The whole-world proofs take about five minutes a seed. A pull request into main (MB_CI_FAST=1) runs seed 7 and seeds 1-5 only; the full set runs locally before every merge.
 const FAST = process.env.MB_CI_FAST === '1';
@@ -73,7 +74,7 @@ for (const seed of [7, 13, 42]) {
       }
       bakeIR(ir);   // the bake refuses a tone corner on a tile that is not all grass
     }
-    assert.ok(tone > 50, 'tone tiles over the sampled cells of seed ' + seed + ': ' + tone);
+    assert.ok(RULES.tone.enabled === false ? tone === 0 : tone > 50, 'tone tiles over the sampled cells of seed ' + seed + ': ' + tone);
     const a = cellIR(seed, 36, 48), b = cellIR(seed, 37, 48);   // the east neighbour: the two columns of apron and edge tiles they share are the same tiles
     for (let y = 0; y < a.h; y++) for (let k = 0; k < 2; k++) assert.equal(a.tone[y * a.w + a.w - 2 + k], b.tone[y * b.w + k], `tone agrees across the border at row ${y}`);
   });
@@ -109,7 +110,7 @@ test('seeds 1-50: reed clumps stand on the shore and in the shallows (never on d
   assert.equal(notShallow, 0, 'every in-water clump is on shallow water');
   assert.equal(farFromLand, 0, 'every in-water clump is within two tiles of land');
   assert.equal(shoreNoWater, 0, 'every shore clump has water beside its tile');
-  assert.ok(patchTiles > 500, 'tone tiles: ' + patchTiles);
+  assert.ok(RULES.tone.enabled === false ? patchTiles === 0 : patchTiles > 500, 'tone tiles: ' + patchTiles);
   assert.equal(patchNear, 0, 'no tone patch pixel within a cell of another ground');
 });
 

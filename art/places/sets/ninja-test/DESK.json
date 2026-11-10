@@ -1,198 +1,692 @@
 {
   "tree-trunk.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-style-test-3/out/tiles/tree.png rows 32..40 (trunk and shadow, a crop)",
-    "sha256": "74da341ff65765baa909ba002558cc8b28fe0db5ff8dd6f66719d0c96fb24e66"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tree-trunk.png",
+    "size": [
+      134,
+      25
+    ],
+    "foot": [
+      67,
+      24
+    ],
+    "sha256": "ffd4f155328d43688f1eeb433d0b297a76239b9db44a9717fc67c35fac6a712a"
   },
   "tree-crown.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-style-test-3/out/tiles/tree.png rows 0..31 (crown, a crop)",
-    "sha256": "45b257f959c3601c64694c383ab081207a89e8968f2c18e1c9cceac5a67aca40"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tree-crown.png",
+    "size": [
+      134,
+      107
+    ],
+    "foot": [
+      67,
+      131
+    ],
+    "sha256": "a9195328a6567dc7ac965bdc918264041358ee2ac6a67693c247f99fe94c2fb1"
   },
-  "bush.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-style-test-3/out/tiles/bush.png",
-    "sha256": "ee0ae720038dfefbacf7bc83f3fb96bf60e1b904344f0e618985fe28fc6752ba"
+  "bush-round.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/bush-round.png",
+    "size": [
+      20,
+      16
+    ],
+    "foot": [
+      10,
+      15
+    ],
+    "sha256": "a04a6a02de56e4f1cdaf9f579f6b901edd6163a08a6ff9e02dbe779807daa732"
   },
-  "rock-1.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-style-test/out/route-a/props/rock-1.png recoloured",
-    "sha256": "57236fc859bda9834e8ea32296675c2965d75ec844750f461d38bacb290b0a56"
+  "rock.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/rock.png",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "c1b63c0b7069e55b9e1cd24a055a24eb9abd5fea56966316f27f90d55af431b8"
   },
-  "tufts-1.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-style-test/out/route-a/props/tufts-1.png recoloured",
-    "sha256": "2d157fccd1e7640756016c843135183c067f217f5e8c03a729c13fe5e769896e"
-  },
-  "tufts-2.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-style-test/out/route-a/props/tufts-2.png recoloured",
-    "sha256": "6b6ee2abef3c33bd5b36b6aa91d56c781650bb4d48b2b63046028733993c1277"
-  },
-  "tufts-3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-style-test/out/route-a/props/tufts-3.png recoloured",
-    "sha256": "d65aaeb4a5749f4006f1618977519d9aa364dc199da18361e16d066156a6c12a"
-  },
-  "clump-tall-26.png": {
-    "commit": "86d239e96",
-    "from": "art-jobs/2026-11-10-art-paint-tall-clump/out/clump-tall-26.png",
-    "sha256": "56e85d60265dcd7a502e3ea557820fcf0267e9ec5a37c74412bea4eb31ee7bf4"
-  },
-  "clump-tall-26-mirror.png": {
-    "commit": "86d239e96",
-    "from": "art-jobs/2026-11-10-art-paint-tall-clump/out/clump-tall-26-mirror.png",
-    "sha256": "557b6804872d15814d15327788af90e0ef7f762eb6af170b7d04dd0957b5fb8b"
-  },
-  "clump-tall-17.png": {
-    "commit": "86d239e96",
-    "from": "art-jobs/2026-11-10-art-paint-tall-clump/out/clump-tall-17.png",
-    "sha256": "457a77db1ae98b3900db92e9f8638202015f1e8675e7b26cec5a2e745cec359f"
-  },
-  "clump-tall-17-mirror.png": {
-    "commit": "86d239e96",
-    "from": "art-jobs/2026-11-10-art-paint-tall-clump/out/clump-tall-17-mirror.png",
-    "sha256": "435cf87d011989460a782a623543f19caef90c1731f1d32908fda8e46f18bf3d"
-  },
-  "flowers-1.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-style-test/out/route-a/props/flowers-1.png recoloured",
-    "sha256": "9f39d1a32a162ae3da2ae8f00788279640f2aba9d185740d5ef08ac1b30ff31a"
-  },
-  "flowers-2.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-style-test/out/route-a/props/flowers-2.png recoloured",
-    "sha256": "ba47276ee9a029dc829062e3a4e2a8e8efc1bb4c5930f81910bd123cb9e79040"
-  },
-  "flowers-3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-style-test/out/route-a/props/flowers-3.png recoloured",
-    "sha256": "e92921eb75dae63f87c2c385cfbed01ef3aec9a3df942044d000caa1d5d9e382"
-  },
-  "flowers-blue-pair.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-map-decor/out/props/flowers-blue-pair.png area-reduced 32x28 to 24x22, pixel-snapped",
-    "sha256": "980a79743f1dce911936b9e0355efb0d6579e9c28ea01349a025ed923669e2d7"
-  },
-  "stump-1.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-map-decor/out/props/stump-1.png",
-    "sha256": "0c1f2c24df51ebce4d87ec54f78cf577e5b3b4c81315ecb685772251d922462e"
+  "stump.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/stump.png",
+    "size": [
+      14,
+      13
+    ],
+    "foot": [
+      7,
+      12
+    ],
+    "sha256": "94d02af02077168eeb02e9ecb811c3523428f0fc86af0ccbdd90ff44356d4c1c"
   },
   "hollow-tree.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-hollow-tree-split-stone/out/hollow-tree-1b-tree1b-1.png recoloured",
-    "sha256": "a03e7ce838492edd9db330fd9acb2dd69f0e533b77300b4876b7f71aa675fc47"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/hollow-tree.png",
+    "size": [
+      171,
+      160
+    ],
+    "foot": [
+      85,
+      159
+    ],
+    "sha256": "160e939f3761b2c22cdae202810e57c7b0abbcbbc2817a3b88d6e6e996982b68"
   },
   "split-stone.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-hollow-tree-split-stone/out/split-stone-p2.png recoloured",
-    "sha256": "7d49c262b6168324585dcaf1919dadd73b31a6858fd39e49b8b7cca6718c50d1"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/split-stone.png",
+    "size": [
+      60,
+      46
+    ],
+    "foot": [
+      30,
+      45
+    ],
+    "sha256": "cb91a4092ee67a063b450856b7476f7764aaecfe1a4f6cc248d251e00716e8b1"
   },
   "shrub-1.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/shrub-1.png",
-    "sha256": "1a95788f17bfdc9a69d1fb107eafcd72e83a082f111bf1686e36e8525a6b61fc"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/shrub-1.png",
+    "size": [
+      15,
+      13
+    ],
+    "foot": [
+      7,
+      12
+    ],
+    "sha256": "703674b6a21480166320bf9d292f3d138ac9c05049c75626e73330763c249609"
   },
   "shrub-2.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/shrub-2.png",
-    "sha256": "e6c6eb9213ef2c314df8ea66bd895ee8497f9745fc4a14df0b3c14041f379fd2"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/shrub-2.png",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "e6b16395d14b2ed2adcbcc667f67ca43217ec0fcd36a8e020fad0b71921bceb0"
   },
   "shrub-3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/shrub-3.png",
-    "sha256": "61ead3155cd2b168f2c2dba5b426f2d3ad2110f22daa72f2f0aa535d2747b671"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/shrub-3.png",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "dc9d0e21879023f12fd64e8bafac10f33009193729951197dd27cdf943c27abf"
   },
   "shrub-4.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-thicket/out/tiles/shrub-4.png",
-    "sha256": "4cd864eb0893dff9e2a9f5c1ce5eb6c97f8d62b8edc0ccf3f24c541ec5ed07f0"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/shrub-4.png",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "2f94a0e16acc8648393ae6e156a519b7438767cd4af0e103a4d98b0c64ee0859"
   },
-  "fleck-00-blades3-dark.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-grass-flecks/out/flecks/fleck-00-blades3-dark.png",
-    "sha256": "aad4d8ac113a15ecc31330afcf96cb33fb1256f29d0d59d4e96bbf21f238b3a9"
+  "tufts-2.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-2.png",
+    "size": [
+      10,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "b25c3446a7fe91bc3d7e0cced8cf9011136c38fcf2c93b8011bf22904486be6e"
   },
-  "fleck-01-blades4-dark.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-grass-flecks/out/flecks/fleck-01-blades4-dark.png",
-    "sha256": "870e8b15959dcd496222f0de2b40ece701ffb906cf723b6237826dc195df111f"
+  "tufts-2-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-2-m.png",
+    "size": [
+      10,
+      9
+    ],
+    "foot": [
+      4,
+      8
+    ],
+    "sha256": "6e460d1164516710b8a475397a38d4d5ee978cc63a29b91b5e0b7cb0698eea29"
   },
-  "fleck-02-blade1-dark.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-grass-flecks/out/flecks/fleck-02-blade1-dark.png",
-    "sha256": "926cfd960e77bd9fa04c2392fd5483e0923d1c098c7b6d50e6f613829f142efb"
+  "tufts-3.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-3.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "7f27549fbc227b5a377a6efe1fc00f85e162b26efdbfa2e0474803a1fbb2a8ce"
   },
-  "fleck-03-pair-pale.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-grass-flecks/out/flecks/fleck-03-pair-pale.png",
-    "sha256": "b69350faab11313b30ac7badc0b67a852b08bdaf9f25268f6baa9cd478412dbe"
+  "tufts-3-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-3-m.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "7a681b1695b26e38465b07f49c9673db265709a21f5ea4fd267593f679ac6876"
   },
-  "fleck-04-tuft-pale.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-grass-flecks/out/flecks/fleck-04-tuft-pale.png",
-    "sha256": "95621ec1de9fd02b96fc3da7925f5a3f332b6ce3e10ddb58875b212a509f8539"
+  "tufts-1.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/tufts-1.png",
+    "size": [
+      9,
+      9
+    ],
+    "foot": [
+      4,
+      8
+    ],
+    "sha256": "abc984049e585d929c8c1ff044dedf0316dfca1abd3a0a09be364d90a9c0e3e9"
   },
-  "fleck-07-sprout-pale.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-grass-flecks/out/flecks/fleck-07-sprout-pale.png",
-    "sha256": "175820503c17c28b6bcb46af247c8db6e8918ec831068294e989abcd1ec960bd"
+  "flowers-1.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/flowers-1.png",
+    "size": [
+      11,
+      12
+    ],
+    "foot": [
+      5,
+      11
+    ],
+    "sha256": "13cdc17256ff82672b18696ea2b8c0002898417ec2b29ebe5ca0966959c5e85d"
+  },
+  "flowers-2.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/flowers-2.png",
+    "size": [
+      11,
+      12
+    ],
+    "foot": [
+      5,
+      11
+    ],
+    "sha256": "518060458ce9b41fc787b87d37b07dd1bffb76eabad702f70218d4d1895d8cb0"
+  },
+  "flowers-3.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/flowers-3.png",
+    "size": [
+      11,
+      12
+    ],
+    "foot": [
+      5,
+      11
+    ],
+    "sha256": "aa06d9f2abadc00a742e6c7c801c950cdf556d5c5a12937d561887b858cb54a0"
+  },
+  "flowers-blue-pair.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/flowers-blue-pair.png",
+    "size": [
+      14,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "0b90dd50bd649ad2f26de7d1dc3009468b3bfad1977b9ccae853effe18138f75"
+  },
+  "clump-tall.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/clump-tall.png",
+    "size": [
+      15,
+      19
+    ],
+    "foot": [
+      7,
+      18
+    ],
+    "sha256": "7d0917c6b5b82df6f956039519a43194f28cc938b852108c3e283d7170fd5a21"
+  },
+  "clump-tall-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/clump-tall-m.png",
+    "size": [
+      15,
+      19
+    ],
+    "foot": [
+      7,
+      18
+    ],
+    "sha256": "cf5410d15bc90e2ff8065f1967ed00b98922c3cce80f59e44adbc625e8233f19"
+  },
+  "clump-tall-s.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/clump-tall-s.png",
+    "size": [
+      14,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "3c3928e4d1b7a98024b5b9a52d89dccfd2fabbb30f0ecbe000464a00869f5e3f"
+  },
+  "clump-tall-s-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/clump-tall-s-m.png",
+    "size": [
+      14,
+      12
+    ],
+    "foot": [
+      6,
+      11
+    ],
+    "sha256": "a02080e739a0e6f46e723aba6a3cb4cf6cc852f6d543fe9711c2f11fbf36ffae"
   },
   "pebbles-a.png": {
-    "commit": "3323aa85d",
-    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/pebbles-a.png",
-    "sha256": "1ca1d61a4b344f5154076945641e8af9158b4310248c9bda6636b5925100f6c4"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/pebbles-a.png",
+    "size": [
+      8,
+      6
+    ],
+    "foot": [
+      4,
+      5
+    ],
+    "sha256": "53139e0b2e6be7d38e5ab87f69567c4483e90c2bf5b1bca7469ec321aac166fa"
   },
   "pebbles-b.png": {
-    "commit": "3323aa85d",
-    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/pebbles-b.png",
-    "sha256": "5c3f298ababbe12dac23fbcb1afb9adf74f75b08f51807d8353d2eef77868a64"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/pebbles-b.png",
+    "size": [
+      9,
+      8
+    ],
+    "foot": [
+      4,
+      7
+    ],
+    "sha256": "8b365cad3334f2c79d153a8d62f77a786280ef93640215b473de8921f747a0bb"
   },
   "pebbles-c.png": {
-    "commit": "3323aa85d",
-    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/pebbles-c.png",
-    "sha256": "0279f4d933d35457dcab29e1620352382f6c031dbe1bdc6e44e7c6b9381ab369"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/pebbles-c.png",
+    "size": [
+      9,
+      7
+    ],
+    "foot": [
+      4,
+      6
+    ],
+    "sha256": "262c7f4f9ebed71fba2528b1c303cb0d65ef7064c06845b77bd219955b4011d9"
   },
   "lily-pad.png": {
-    "commit": "3323aa85d",
-    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/lily-pad.png",
-    "sha256": "3a29e5909c5ff3383346c0d4b99ea0afd27ad509187e515e02ea4cb09f29154c"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/lily-pad.png",
+    "size": [
+      12,
+      10
+    ],
+    "foot": [
+      6,
+      9
+    ],
+    "sha256": "dbcdf60d2e080fd3963d3d2b9e63cb4db97a286e6dd5e992af021cf0709ca158"
   },
   "lily-pad-flower.png": {
-    "commit": "3323aa85d",
-    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/lily-pad-flower.png",
-    "sha256": "7884fe8e61169728038ce8ca20ed4696e7712be903176661ed49d10bc5ca4ca1"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/lily-pad-flower.png",
+    "size": [
+      14,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "1f5bf7f4d6952a7ae3ad4eb7499adb7665a22570072fe1fdaf8d366b41cf06cc"
+  },
+  "fleck-0.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-0.png",
+    "size": [
+      9,
+      6
+    ],
+    "foot": [
+      4,
+      5
+    ],
+    "sha256": "aad4d8ac113a15ecc31330afcf96cb33fb1256f29d0d59d4e96bbf21f238b3a9"
+  },
+  "fleck-0-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-0-m.png",
+    "size": [
+      9,
+      6
+    ],
+    "foot": [
+      4,
+      5
+    ],
+    "sha256": "fc2a9eb67add91cccfa43942788a6a10be3a033943dc39eaed5815b77f7cf87e"
+  },
+  "fleck-1.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-1.png",
+    "size": [
+      6,
+      5
+    ],
+    "foot": [
+      3,
+      4
+    ],
+    "sha256": "870e8b15959dcd496222f0de2b40ece701ffb906cf723b6237826dc195df111f"
+  },
+  "fleck-1-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-1-m.png",
+    "size": [
+      6,
+      5
+    ],
+    "foot": [
+      2,
+      4
+    ],
+    "sha256": "b8d10775a2f4275ec781a262cdf71b89e2647fe612dac10a2e5096624bfeb079"
+  },
+  "fleck-2.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-2.png",
+    "size": [
+      3,
+      7
+    ],
+    "foot": [
+      1,
+      6
+    ],
+    "sha256": "926cfd960e77bd9fa04c2392fd5483e0923d1c098c7b6d50e6f613829f142efb"
+  },
+  "fleck-2-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-2-m.png",
+    "size": [
+      3,
+      7
+    ],
+    "foot": [
+      1,
+      6
+    ],
+    "sha256": "6d3e4336a98322f7dc7e569b961c350d26547ebefa83278e3cbfbc487bc92b79"
+  },
+  "fleck-3.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-3.png",
+    "size": [
+      7,
+      7
+    ],
+    "foot": [
+      3,
+      6
+    ],
+    "sha256": "b69350faab11313b30ac7badc0b67a852b08bdaf9f25268f6baa9cd478412dbe"
+  },
+  "fleck-3-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-3-m.png",
+    "size": [
+      7,
+      7
+    ],
+    "foot": [
+      3,
+      6
+    ],
+    "sha256": "bd4c36a25e17dbb0c4b22faa488c60b578829a629db39defc54dc54f0a16b5db"
+  },
+  "fleck-4.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-4.png",
+    "size": [
+      7,
+      6
+    ],
+    "foot": [
+      3,
+      5
+    ],
+    "sha256": "95621ec1de9fd02b96fc3da7925f5a3f332b6ce3e10ddb58875b212a509f8539"
+  },
+  "fleck-4-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-4-m.png",
+    "size": [
+      7,
+      6
+    ],
+    "foot": [
+      3,
+      5
+    ],
+    "sha256": "88a561007bb2f67a1d3e457830f36e0e258d2e2f97e7e6bd1f25de132d7ff52f"
+  },
+  "fleck-5.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-5.png",
+    "size": [
+      6,
+      7
+    ],
+    "foot": [
+      3,
+      6
+    ],
+    "sha256": "175820503c17c28b6bcb46af247c8db6e8918ec831068294e989abcd1ec960bd"
+  },
+  "fleck-5-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/fleck-5-m.png",
+    "size": [
+      6,
+      7
+    ],
+    "foot": [
+      2,
+      6
+    ],
+    "sha256": "2b99557b038fbba2ef91c020293050c70ddb324209f0cefa5dbb078f6a3267f9"
   },
   "reed-shore-1.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-1.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
-    "sha256": "0f4ac3c94b8ab57b9e3cee83f7b57f3236bd8951e08f7d82ec991fbc696d79de"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-shore-1.png",
+    "size": [
+      12,
+      26
+    ],
+    "foot": [
+      6,
+      25
+    ],
+    "sha256": "5805f2b95105ee25db3f5e636ab6f78adaa072bc10628653e498ff9806189a7e"
   },
-  "reed-shore-3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-3.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
-    "sha256": "5ef0741ed38cb4b56bfd12ca2974303f7e438c71e7258e683e362d6ef44abf3c"
+  "reed-shore-1-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-shore-1-m.png",
+    "size": [
+      12,
+      26
+    ],
+    "foot": [
+      5,
+      25
+    ],
+    "sha256": "8ab3ccc4c0ed134dd2fea6a662025f7ab5fb9694338b4a56016690ff47ef0c56"
   },
   "reed-shore-2.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-2.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
-    "sha256": "c379cdfc91e7aecbb8da07a98392239d0d22fac1654b93da1df9f4e98bb57ea4"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-shore-2.png",
+    "size": [
+      13,
+      25
+    ],
+    "foot": [
+      6,
+      24
+    ],
+    "sha256": "cbc72a28929f52ff755c976cb189ed05cd5f7bb7fb08adf37c72a80617d09459"
+  },
+  "reed-shore-2-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-shore-2-m.png",
+    "size": [
+      13,
+      25
+    ],
+    "foot": [
+      6,
+      24
+    ],
+    "sha256": "6515ccc2f36ed52ed2f540602854c90b32ccb86c60b7a9af3aab015061c5fd7d"
+  },
+  "reed-shore-3.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-shore-3.png",
+    "size": [
+      13,
+      26
+    ],
+    "foot": [
+      6,
+      25
+    ],
+    "sha256": "d7f3c12bcb721aeef842c9aadd828859246b339d2e21ae272c61ec555af5ed65"
+  },
+  "reed-shore-3-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-shore-3-m.png",
+    "size": [
+      13,
+      26
+    ],
+    "foot": [
+      6,
+      25
+    ],
+    "sha256": "790ef44d81983ec26a3ac16671f9c9b17b79b3398eb141b2d2c5c9392c2118f4"
   },
   "reed-shore-4.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-4.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
-    "sha256": "fee5c29e68cb8b8ef12da61e633848e81ce08a791be2ac6775452d94e2d7e8a4"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-shore-4.png",
+    "size": [
+      14,
+      26
+    ],
+    "foot": [
+      7,
+      25
+    ],
+    "sha256": "b6535e6de49e859551e2fdb5576ea0cd4251848140f11aa57d1e93d999f11fb4"
+  },
+  "reed-shore-4-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-shore-4-m.png",
+    "size": [
+      14,
+      26
+    ],
+    "foot": [
+      6,
+      25
+    ],
+    "sha256": "685973d92e6292edb24f02c624cf245667fdc64fc4b3ff42975d4c5dc4badff3"
   },
   "reed-water-1.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/water-1.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
-    "sha256": "566abffe8b8a0af4d0a2c0fd5a95b8669d27b5d2f0e1150be2b26c0a9b72dabb"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-water-1.png",
+    "size": [
+      14,
+      23
+    ],
+    "foot": [
+      7,
+      22
+    ],
+    "sha256": "5a48906291395c8be5f4242f4ab8ebd5738e00beb248d0934b721c6c8f020f04"
+  },
+  "reed-water-1-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-water-1-m.png",
+    "size": [
+      14,
+      23
+    ],
+    "foot": [
+      6,
+      22
+    ],
+    "sha256": "6b2cfd805b1fc47a2b996b80165b3c85cd56cf8ebab4166a9429a3cbcee342ed"
   },
   "reed-water-2.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/water-2.png cattail browns (#6f4a37 to #664330, #8a6444 to #7c5a3d)",
-    "sha256": "f7b91f0562b3bd1828126ec5c04cf62787d36cfa2ff7ada357294a9de93273ea"
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-water-2.png",
+    "size": [
+      13,
+      24
+    ],
+    "foot": [
+      6,
+      23
+    ],
+    "sha256": "ee34db55e6639c7281826235ebfad3be35ec2f0c10a8669b7b8ed5e8d57821a5"
+  },
+  "reed-water-2-m.png": {
+    "commit": "75f1ff195",
+    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/reed-water-2-m.png",
+    "size": [
+      13,
+      24
+    ],
+    "foot": [
+      6,
+      23
+    ],
+    "sha256": "abb69e86e9b1438874a7ffe965b9da445ff996ec618284d5be8f7c9dc2a25dd3"
   },
   "fill-deep.png": {
     "commit": "633e4d641",

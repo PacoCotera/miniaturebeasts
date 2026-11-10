@@ -16,6 +16,11 @@
 import { noiseField } from './world.mjs';
 import { reedClumps } from './reeds.mjs';
 import { RULES } from './rules.mjs';
+import SPRITES from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };   // the sprites' sizes and feet (every sprite is drawn at 1x), read by the no-overlap rule
+
+// a sprite's rectangle on the 48 px world frame, from the point its foot stands on: [left, top, width, height]; null for a kind the set does not hold
+const spriteRect = (s, ax, ay) => (s ? [ax - s.anchor[0], ay - s.anchor[1], s.rect[2], s.rect[3]] : null);
+const overlaps = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
 
 export const TERR = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
 const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET, SCRUB } = TERR;
@@ -51,7 +56,7 @@ export const SHRUBS = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4'];
 const mix = h => { h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return h >>> 0; };
 const H = (seed, tag, x, y, z = 0) => { let h = Math.imul(seed | 0, 0x9e3779b1) ^ Math.imul(tag, 0x85ebca6b); h = mix(h ^ Math.imul(x | 0, 0xc2b2ae35)); h = mix(h ^ Math.imul(y | 0, 0x27d4eb2f)); return mix(h ^ Math.imul(z | 0, 0x165667b1)); };
 const U = (seed, tag, x, y, z) => H(seed, tag, x, y, z) / 4294967296;
-const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000, SHRUB: 1010, REEDB: 1020, FLECK: 1030 };
+const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000, SHRUB: 1010, REEDB: 1020, FLECK: 1030, OVERLAP: 1040 };
 const key = (x, y) => y * 8192 + x;
 const CS = 16;                                           // coarse cells of the seed index, in tiles
 const sizeRange = P => P.size || [1, 1];
@@ -315,7 +320,32 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   };
   const openWater = (x, y) => { for (let dy = -WA.padClear; dy <= WA.padClear; dy++) for (let dx = -WA.padClear; dx <= WA.padClear; dx++) if (T(x + dx, y + dy) !== WATER) return false; return true; };
   // the decals of a rectangle of tiles: { kind, x, y (tile), dx, dy (master pixels inside the tile) }
+  // With meadow.noOverlap a meadow piece is dropped whole when its picture's rectangle (the set's size and foot, at 1x, on the 48 px tile) overlaps another meadow piece's or a prop's: the one with the lower hash goes
+  // (a prop always wins). Decided from the neighbours within a tile (a piece is under 48 px wide) and the props round the area, so a cell and its neighbour keep the same pieces.
   function decalsIn(x0, y0, x1, y1, props) {
+    if (!MD.noOverlap) return decalsRaw(x0, y0, x1, y1, props);
+    const cand = decalsRaw(x0 - 1, y0 - 1, x1 + 1, y1 + 1, props), at = new Map(), rects = cand.map(d => {
+      const ax = d.mx === undefined ? d.x * 48 + 24 + 3 * d.dx : d.x * 48 + d.mx, ay = d.my === undefined ? d.y * 48 + 47 + 3 * d.dy : d.y * 48 + d.my;
+      return spriteRect(SPRITES.decals[d.kind], ax, ay);
+    });
+    cand.forEach((d, i) => { const k = key(d.x, d.y), l = at.get(k); l ? l.push(i) : at.set(k, [i]); });
+    const walls = [];
+    for (const p of propsIn(x0 - 4, y0 - 2, x1 + 4, y1 + 5)) { const r = spriteRect(SPRITES.props[p.kind], p.x * 48 + 24, p.y * 48 + 47); if (r) walls.push(r); }
+    const prio = i => H(seed, TAG.OVERLAP, cand[i].x, cand[i].y);
+    const out = [];
+    cand.forEach((d, i) => {
+      if (d.x < x0 || d.x > x1 || d.y < y0 || d.y > y1) return;
+      const r = rects[i]; if (!r) { out.push(d); return; }
+      if (walls.some(w => overlaps(r, w))) return;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) for (const j of at.get(key(d.x + dx, d.y + dy)) || []) {
+        if (j === i || !rects[j] || !overlaps(r, rects[j])) continue;
+        const a = prio(i), b = prio(j); if (b > a || (b === a && j < i)) return;   // the other has the higher hash (ties: the earlier in the list): this one is dropped
+      }
+      out.push(d);
+    });
+    return out;
+  }
+  function decalsRaw(x0, y0, x1, y1, props) {
     const FL = MD.fleck, occ = new Set(), nearProp = new Set();   // nearProp: within 1 tile (2 above) of a prop's foot tile, where no fleck lies
     for (const p of props || propsIn(x0 - 1, y0 - 1, x1 + 1, y1 + 2)) {
       for (const [a, b] of footprint(p)) occ.add(key(a, b));
