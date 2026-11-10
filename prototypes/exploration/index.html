@@ -863,7 +863,7 @@ const SIGN_LINE = {
 
   storm: dir => 'More bolts, more strikes · ' + (dir > 0 ? '▶ east' : '◀ west'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
   pod: 'Pods open at the Station', full: 'Hold full · a new pod is a choice',bank: 'If the Probe breaks, you lose your finds', fog: 'Fog · creatures calm, sight short',
-  muffled: 'The fog muffles your Call', fruit: 'Put it down near a creature', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
+  muffled: 'The fog muffles your Call', fruit: 'Feed it, or press on a stone or tree', putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
   tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog',
   bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
   untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
@@ -925,7 +925,7 @@ const TILES = [
   ['podsopen', 'Pods · the Station opens', 'Pods', 'pod', []],
   ['full', 'Full hold · you choose', 'Full hold', 'full', []],
   ['bank', 'Crate · end to seal finds', 'Crate', 'bank', []],
-  ['fruit', 'Fruit · set it down', 'Fruit', 'fruit', []],
+  ['fruit', 'Fruit · feed or press', 'Fruit', 'fruit', []],
   ['bubN', 'Noticed · stop or it runs', 'Noticed', 'bub!', []],
   ['bubQ', 'Curious · it comes', 'Curious', 'bub?', []],
   ['bubF', 'Wants fruit · put it down', 'Wants fruit', 'bubf', []],
@@ -2377,8 +2377,23 @@ function patchAction() {
       case 'n': if (canDig() && !burrowOpen()) return { label: 'Ask ' + ex.pt.name + ' to dig', run: holeHint }; break;
     }
   }
-  if (fruit) return o ? { label: 'Press the fruit', run: pressFruit } : { label: 'Put down the fruit', run: () => putDown(f) };
+  if (fruit) {
+    if (!o) return { label: 'Put down the fruit', run: () => putDown(f) };
+    const pk = pressOn(lay, o, f);   // fruit is pressed only on a stone, a rock or a tree trunk; anything else that blocks says so and spends nothing
+    if (pk) return { label: pk === 'tree' ? 'Press the fruit on the tree' : 'Press fruit on the stone', run: () => pressFruit(f) };   // [copy]
+    return { label: 'Press on a stone', dim: true, run: () => { FX.bumpAt = NOW; fxMsg('Fruit presses on stone or rock · or put it down', 2); } };   // [copy]
+  }
   return NOTHING;
+}
+// What the facing tile offers a fruit to be pressed on: 'stone' (a storm stone, a stone prop, a cliff face, a cave wall), 'tree' (a trunk, a fruit tree), or null.
+// Never read from T.ROCK: the adapter stamps it on every blocking prop, bush and closed side. The mask is lay.press (1 stone, 2 tree).
+function pressOn(lay, o, f) {
+  if (o.type === 'feat') return o.f.kind === 'k' ? 'stone' : o.f.kind === 'b' && o.f.tree ? 'tree' : null;
+  if (o.type !== 'tile') return null;
+  if (o.t === T.FACE || o.t === T.CWALL) return 'stone';
+  if (o.t === T.TRUNK) return 'tree';
+  const m = lay.press ? lay.press[f.y * lay.w + f.x] : 0;
+  return m === 1 ? 'stone' : m === 2 ? 'tree' : null;
 }
 function freeAround(key, x, y, prefer) {
   const lw = layout(key).w, ds = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
@@ -2445,8 +2460,8 @@ function pickUp(fr) {
   advance('patch', { noise: 'act' });
 }
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
-function pressFruit() {
-  const ex = S.exp, P = ex.patch;
+function pressFruit(at) {   // at: the stone or tree pressed on (the +2 floats up from it); the explorer's own tile when called without
+  const ex = S.exp, P = at || ex.patch;
   if (CAP - ex.cargo.s < 2) { fxMsg('Not enough room for Essence · the fruit stays in your hands', 2); return; }   // pressing would waste the fruit
   ex.carry = null;
   const got = addMat('s', 2, P.x, P.y); fxSign('press');

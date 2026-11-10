@@ -37,7 +37,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   const pw = o.pw || PW, ph = o.ph || PH, w = place.w, h = place.h;
   const ox = (pw - w) >> 1, oy = (ph - h) >> 1, NP = pw * ph, I = (x, y) => (y + oy) * pw + x + ox;
   const tileOf = new Map(terrains.map((t) => [t.value, T[t.T]]));
-  const tiles = new Uint8Array(NP).fill(T.ROCK), press = new Uint8Array(NP);   // press: 1 where fruit may be pressed (a stone prop, blocked cliff, a tree's trunk); never read from T.ROCK
+  const tiles = new Uint8Array(NP).fill(T.ROCK), press = new Uint8Array(NP);   // press: where fruit may be pressed: 1 a stone prop or blocked cliff, 2 a tree's trunk, 0 nowhere (never read from T.ROCK)
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) tiles[I(x, y)] = tileOf.get(place.terrain[y * w + x]) ?? T.GRASS;
   // what the bake blocks beyond the terrain's own play: the cliff's lip and face (the open edges); thicket, scrub, water and prop footprints already map to blocked tiles
   const cliffV = (terrains.find((t) => t.id === 'cliff') || {}).value;
@@ -57,7 +57,7 @@ export function adaptPlace(place, ts, terrains, o = {}) {
     if (s.kind === 'tall-grass' && !s.footprint.length) { if (tiles[I(cx, cy)] === T.GRASS) tiles[I(cx, cy)] = T.TALL; continue; }
     for (let i = 0; i + 1 < s.footprint.length; i += 2) {
       const x = cx + s.footprint[i], y = cy + s.footprint[i + 1];
-      if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind) || String(s.kind).startsWith('tree-')) press[I(x, y)] = 1; }
+      if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }
     }
   }
   if (sh) for (const i of sh.rim) { if (sh.terr[i] !== TERR.SHADOW) tiles[i] = sh.tilesE[i]; }   // the bands, stairs and crossings stand over the ground and the trees

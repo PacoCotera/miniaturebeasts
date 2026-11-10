@@ -56,7 +56,7 @@ test('the press mask (lay.press) marks a boulder and a tree trunk, never a bush'
   const tileOf = (p) => (Math.floor(p.y / 48) + lay.baked.oy) * PW + Math.floor(p.x / 48) + lay.baked.ox;
   const rock = place.props.find((p) => ts.sprites[p.kind].kind === 'boulder-brown'), tree = place.props.find((p) => ts.sprites[p.kind].kind === 'tree-broad');
   const bush = place.props.find((p) => String(ts.sprites[p.kind].kind).startsWith('bush'));
-  assert.equal(lay.press[tileOf(rock)], 1); assert.equal(lay.press[tileOf(tree)], 1);
+  assert.equal(lay.press[tileOf(rock)], 1); assert.equal(lay.press[tileOf(tree)], 2);
   if (bush) { assert.equal(T_BLOCK[lay.tiles[tileOf(bush)]], 1); assert.equal(lay.press[tileOf(bush)], 0, 'a bush blocks, but is not pressed on'); }
   assert.equal(lay.press[0], 0, 'the padding rock all round is not stone either');
 });

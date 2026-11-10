@@ -1661,6 +1661,40 @@ test("walk B2: after the find the band names the nearest takeable and its way, t
   p.run("leftItems = () => [];"); assert.equal(p.run("heartLine(curLay(), S.exp.patch)"), "found · nothing left to take");
 });
 
+test("fruit in hand: ✓ presses only on a stone, a rock or a tree; anything else that blocks is dimmed and spends nothing; a free tile puts it down", () => {
+  const p = inPlace();
+  p.run("S.exp.carry = 'fruit'; S.exp.cargo.s = 0; unveiled = () => true; stoneSeen = () => true; stormCharge = () => 0; stoneWarm = () => false; occupant = () => globalThis.OCC; curLay().press = null; globalThis.OCC = null;");
+  const lab = () => p.run("(() => { const a = patchAction(); return { label: a.label, dim: !!a.dim }; })()");
+  const act = () => ({ label: lab().label, dim: lab().dim });   // the page runs in another realm: copy the plain object over
+  const ess = () => p.run("S.exp.cargo.s"), acts = () => p.run("S.exp.actions");
+  assert.equal(p.run("SIGN_LINE.fruit"), "Feed it, or press on a stone or tree");
+  assert.deepEqual(act(), { label: "Put down the fruit", dim: false }, "a free tile: put it down");
+  // a plain storm stone: press, +2 Essence, one action
+  p.run("globalThis.OCC = { type: 'feat', f: { kind: 'k', id: 'kx', x: 3, y: 3 } };");
+  assert.deepEqual(act(), { label: "Press fruit on the stone", dim: false });
+  const a0 = acts(); p.run("patchAction().run()");
+  assert.equal(ess(), 2); assert.equal(acts(), a0 + 1); assert.equal(p.run("S.exp.carry"), null, "the fruit is spent");
+  // a charged stone gives its charge first
+  p.run("S.exp.carry = 'fruit'; stormCharge = () => 1;");
+  assert.equal(act().label, "Take the charge");
+  p.run("stormCharge = () => 0;");
+  // a trunk: the tree takes the press
+  p.run("globalThis.OCC = { type: 'tile', t: T.TRUNK };");
+  assert.deepEqual(act(), { label: "Press the fruit on the tree", dim: false });
+  // a cliff face is stone; rock that is not in the press mask (a bush, a thicket) is dimmed and does nothing
+  p.run("globalThis.OCC = { type: 'tile', t: T.FACE };"); assert.equal(act().label, "Press fruit on the stone");
+  p.run("globalThis.OCC = { type: 'tile', t: T.ROCK };");
+  assert.deepEqual(act(), { label: "Press on a stone", dim: true });
+  const e1 = ess(), a1 = acts(); p.run("patchAction().run()");
+  assert.equal(ess(), e1); assert.equal(acts(), a1, "no action spent"); assert.equal(p.run("S.exp.carry"), "fruit", "the fruit stays in hand");
+  assert.equal(p.run("FX.notes.some(n => n.text === 'Fruit presses on stone or rock · or put it down')"), true, "the bump line");
+  // the mask names the rest: a boulder tile is stone, a tree prop's trunk is a tree, T.ROCK itself says nothing
+  p.run("(() => { const f = frontOf(S.exp.patch), lay = curLay(); lay.press = new Uint8Array(lay.w * lay.h); lay.press[f.y * lay.w + f.x] = 1; })()");
+  assert.equal(act().label, "Press fruit on the stone");
+  p.run("(() => { const f = frontOf(S.exp.patch), lay = curLay(); lay.press[f.y * lay.w + f.x] = 2; })()");
+  assert.equal(act().label, "Press the fruit on the tree");
+});
+
 test("finds: fruit and an unlit beacon are not takes; a place with a full cup reads 1 to take, and is done once the cup is taken", () => {
   const p = inPlace(); p.run("FX.hintNote = null; S.called[curLay().cell] = 1; S.found.push('heart:' + curLay().cell); S.pods = S.pods.filter(q => q.k !== S.exp.patch.key);");
   const at = (k, dx) => `{ k: '${k}', x: S.exp.patch.x - ${dx}, y: S.exp.patch.y }`;

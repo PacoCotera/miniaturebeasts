@@ -108,7 +108,8 @@ A place has four quarters. A quarter is **surveyed** when every tile in it is un
 | A fruit | **Pick up the fruit** (you carry one at a time). |
 | A creature, with fruit in hand | **Offer fruit** (see Creatures). |
 | Open ground, with fruit in hand | **Put down the fruit**. |
-| A rock or bush, with fruit in hand | **Press the fruit**: +2 Essence. |
+| A stone, a rock or a tree, with fruit in hand | **Press fruit on the stone** / **Press the fruit on the tree**: +2 Essence. |
+| Anything else that blocks (a bush, thicket, water), with fruit in hand | "Press on a stone" (dimmed): nothing spends and the fruit stays in hand. |
 | A full dew cup | **Collect dew**: +1 Essence. |
 | A tuft of fur | **Pick up the tuft**: +1 Essence. |
 | A charged or warm stone | **Take the charge**: Energy. |
