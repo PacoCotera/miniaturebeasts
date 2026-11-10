@@ -92,7 +92,7 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
       if (files.some((q) => !q.f)) throw new Error(`${room}: the chip ${pictureId(r.chip.file, "day")} is missing`);
       if (files.some((q) => q.f.w !== cw || q.f.h !== ch)) throw new Error(`${room}: a chip file is not ${cw}×${ch}`);
       chip = `room-${room}-chip-{light}-${cw}x${ch}`; for (const { l, f } of files) add(room, pictureId(chip, l), f, signed[l].idle); }
-    const out = { base: pic.base, near: pic.near, chip, preview: prior?.rooms?.[room]?.preview ?? null, ...(prior?.rooms?.[room]?.dusk ? { dusk: prior.rooms[room].dusk } : {}) };   // dusk: "unregistered" stays until the room's dusk is repainted in register (room-steps.mjs)
+    const out = { base: pic.base, near: pic.near, chip, preview: prior?.rooms?.[room]?.preview ?? null, ...(prior?.rooms?.[room]?.duskFallback ? { duskFallback: prior.rooms[room].duskFallback } : {}) };   // duskFallback stays until those pictures' dusk is re-cut (room-steps.mjs)
     const lv = r.levels.map((L) => ({ id: L.id, x: L.profile.x, top: L.profile.top_painting, bottom: L.bottom_painting, keepOuts: [] }));
     if (lv[0]?.id !== "main") throw new Error(`${room}: the first level must be main`);
     const byId = (id) => lv.find((L) => L.id === id) ?? (() => { throw new Error(`${room}: no level ${id}`); })();

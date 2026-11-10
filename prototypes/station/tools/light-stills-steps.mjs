@@ -14,5 +14,5 @@ for (const room of ROOMS.order) {
   for (const [name, t] of [["@L50", "09:50"], ["@L65", "10:05"]]) rooms[room][name] = stepMix(at(t).key, room, ROOMS);
 }
 const hours = {};
-for (const t of ["03:00", "07:00", "10:05", "10:35", "13:35", "17:15", "19:30"]) { const L = at(t); hours[t] = { key: L.key, mood: L.mood, resident: gainOfKey(L.key) ?? [1, 1, 1], rooms: Object.fromEntries(ROOMS.order.map((r) => [r, stepMix(L.key, r, ROOMS) ?? { a: L.base, b: L.base, w: 0, gain: L.gain }])) }; }
-console.log(JSON.stringify({ rooms, hours, unregistered: ROOMS.order.filter((r) => ROOMS.rooms[r].dusk === "unregistered") }));
+for (const t of ["03:00", "07:00", "09:50", "10:05", "10:35", "13:35", "17:15", "19:30"]) { const L = at(t); hours[t] = { key: L.key, mood: L.mood, resident: gainOfKey(L.key) ?? [1, 1, 1], rooms: Object.fromEntries(ROOMS.order.map((r) => [r, stepMix(L.key, r, ROOMS) ?? { a: L.base, b: L.base, w: 0, gain: L.gain }])) }; }
+console.log(JSON.stringify({ rooms, hours, duskFallback: Object.fromEntries(ROOMS.order.filter((r) => ROOMS.rooms[r].duskFallback).map((r) => [r, ROOMS.rooms[r].duskFallback])) }));

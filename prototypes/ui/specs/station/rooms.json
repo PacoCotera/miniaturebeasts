@@ -8,7 +8,6 @@
  "order": ["roots", "reeds", "boulders", "ferns"],
  "rooms": {
   "roots": {
-   "dusk": "unregistered",
    "base": "room-roots-idle-{light}-1024x568",
    "near": "room-roots-near-{light}-544x408",
    "chip": "room-roots-chip-{light}-128x32",
@@ -98,7 +97,7 @@
    "ambient": []
   },
   "reeds": {
-   "dusk": "unregistered",
+   "duskFallback": ["band", "chip", "move", "rail"],
    "base": "room-reeds-idle-{light}-1024x568",
    "near": "room-reeds-near-{light}-544x408",
    "chip": "room-reeds-chip-{light}-128x32",

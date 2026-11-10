@@ -83,9 +83,9 @@ for room in STEPS["rooms"]:
     small = [(k, k, v) for k, v in pieces.items() if k not in ("idle", "near")]
     if small: sheet(room, small, f"{room}-pieces.png")
 
-# the Vivarium's window (rows 120..560 of the idle painting) at seven times of day, three adult residents graded by the step
+# the Vivarium's window (rows 120..560 of the idle painting) at eight times of day, three adult residents graded by the step
 for t, H in STEPS["hours"].items():
-    for room in ("roots", "ferns"):
+    for room in ("roots", "reeds", "ferns"):
         s = H["rooms"][room]
         bg = mix(load(room_file(room, "idle", s["a"], "1024x568")), load(room_file(room, "idle", s["b"], "1024x568")), s["w"], s["gain"])
         im = Image.fromarray(bg, "RGBA")

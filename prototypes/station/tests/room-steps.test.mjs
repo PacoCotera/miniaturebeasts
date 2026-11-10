@@ -19,14 +19,16 @@ test("every view asks the same ids: at 10:05 the cloud step, across 20:30-22:30 
   for (let i = 0; i < 4; i++) { const q = roomIds(i, cloud); assert.ok(q.base.includes(`-${cloud}-`) && q.near.includes(`-${cloud}-`) && STEP_ID.test(q.base), q.base); }
   for (let m = 20 * 60 + 30; m <= 22 * 60 + 30; m += 5) assert.equal(roomIds(0, at(`${Math.floor(m / 60)}:${m % 60}`).key).base, "room-roots-idle-night-1024x568", `at ${m}`);
 });
-test("Roots and Reeds never mix dusk in the loop; Boulders do (day 60 + dusk 40)", () => {
+test("every room mixes dusk in the loop (day 60 + dusk 40), Roots and Reeds too", () => {
   const key = at("09:50").key;
-  for (const room of ["roots", "reeds"]) { const m = stepMix(key, room, ROOMS); assert.deepEqual([m.a, m.b, m.w], ["day", "day", 0], room); assert.ok(m.gain[2] < 0.95, "the warm gain alone"); }
-  const b = stepMix(key, "boulders", ROOMS); assert.deepEqual([b.a, b.b], ["day", "dusk"]); assert.ok(Math.abs(b.w - 0.4) < 1e-9);
+  for (const room of ["roots", "reeds", "boulders", "ferns"]) { const m = stepMix(key, room, ROOMS, "idle"); assert.deepEqual([m.a, m.b], ["day", "dusk"], room); assert.ok(Math.abs(m.w - 0.4) < 1e-9, room); }
 });
-test("on the real clock an unregistered room swaps (the larger painting whole), a registered one mixes", () => {
-  const key = at("17:15").key, r = stepMix(key, "roots", ROOMS), f = stepMix(key, "ferns", ROOMS);
-  assert.equal(r.w, 0); assert.equal(f.a, "day"); assert.equal(f.b, "dusk"); assert.ok(Math.abs(f.w - 0.5) < 1e-9);
+test("only the four Reeds band/chip/move/rail swap (the larger picture whole); everything else mixes", () => {
+  const key = at("17:15").key, f = stepMix(key, "roots", ROOMS, "idle");
+  assert.equal(f.a, "day"); assert.equal(f.b, "dusk"); assert.ok(Math.abs(f.w - 0.5) < 1e-9);
+  for (const part of ["band", "chip", "move", "rail"]) { assert.equal(stepMix(key, "reeds", ROOMS, part).w, 0, part); assert.equal(stepMix(key, "roots", ROOMS, part).w, 0.5, part); }
+  for (const part of ["idle", "near", "raincup"]) assert.equal(stepMix(key, "reeds", ROOMS, part).w, 0.5, part);
+  const loop = stepMix(at("09:50").key, "reeds", ROOMS, "band"); assert.deepEqual([loop.a, loop.b, loop.w], ["day", "day", 0]); assert.ok(loop.gain[2] < 0.95);
 });
 test("a step picture is mixGrade of the two paintings, an empty slot until they are placed", () => {
   const key = at("09:50").key, px = (v) => ({ w: 4, h: 2, rgba: () => new Uint8ClampedArray(32).map((_, i) => (i % 4 === 3 ? 255 : v + i)) });
