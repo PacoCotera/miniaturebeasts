@@ -38,26 +38,39 @@ export function extendTables(tables, coreRgb, setRgb, first, extraRgb) {
   return tables;
 }
 
-export function computeTables(coreRgb, setRgb) {
+// A green: more green than red and than blue. The night table sends the grass-tone colours to a green only (terrain-layers-c: they went to brown).
+export const isGreen = (rgb) => rgb[1] > rgb[0] && rgb[1] > rgb[2];
+export const GREEN_ONLY_TABLES = ['dark2'];
+
+// opts.greenOnly: palette indices (core and set colours) whose target in GREEN_ONLY_TABLES is the nearest green among the candidates, not the nearest colour.
+export function computeTables(coreRgb, setRgb, opts = {}) {
   const cand = [];
   for (let i = 1; i < coreRgb.length; i++) cand.push([i, coreRgb[i]]);
   setRgb.forEach((rgb, k) => cand.push([coreRgb.length + k, rgb]));
-  const nearest = (c) => {
+  const greenOnly = new Set(opts.greenOnly || []);
+  const nearest = (c, pool = cand) => {
     let best = -1, bd = Infinity;
-    for (const [i, rgb] of cand) {
+    for (const [i, rgb] of pool) {
       const d = (rgb[0] - c[0]) ** 2 + (rgb[1] - c[1]) ** 2 + (rgb[2] - c[2]) ** 2;
       if (d < bd) { bd = d; best = i; }
     }
     return best;
   };
+  const rgbAt = (i) => (i < coreRgb.length ? coreRgb[i] : setRgb[i - coreRgb.length]);
+  // opts.greenKeep: indices of the plain ground colour (the grass fill): the greens they go to are left out of the pool, so the tone stays a patch beside it
+  const greenPool = (name) => {
+    const keep = new Set((opts.greenKeep || []).map((i) => nearest(TRANSFORMS[name](rgbAt(i)))));
+    return cand.filter(([i, rgb]) => isGreen(rgb) && !keep.has(i));
+  };
   const used = coreRgb.length + setRgb.length;
   const tables = {};
   for (const name of TABLE_NAMES) {
     const map = new Array(256);
+    const pool = GREEN_ONLY_TABLES.includes(name) ? greenPool(name) : null;
     for (let i = 0; i < 256; i++) {
       if (i === 0) map[i] = 0;
       else if (i >= used) map[i] = i;
-      else map[i] = nearest(TRANSFORMS[name](i < coreRgb.length ? coreRgb[i] : setRgb[i - coreRgb.length]));
+      else map[i] = nearest(TRANSFORMS[name](rgbAt(i)), pool && greenOnly.has(i) ? pool : cand);
     }
     tables[name] = map;
   }

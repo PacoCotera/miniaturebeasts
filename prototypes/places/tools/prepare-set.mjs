@@ -136,7 +136,15 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     throw new Error(`the source has ${sorted.length} colours, over the ${PALETTE_MAX} the contract allows; add the pinned pngquant step to the recipe`);
   }
   const core = JSON.parse(readFileSync(path.join(root, recipe.corePalette), 'utf8')).entries.slice(0, CORE_COLOURS).map((e) => unhex(e.hex.slice(1)));
-  const tables = computeTables(core, sorted.map(unhex));
+  // the grass-tone colours go to a green at night (lighttables GREEN_ONLY_TABLES), not to the nearest colour (which was a brown); the grass over sheets share that colour, which is grass too
+  const toneImg = images.get(deskTerrain && deskTerrain.tone ? deskTerrain.tone.sheets[0] : '');
+  const toneColours = new Set();
+  if (toneImg) for (let i = 0; i < toneImg.data.length; i += 4) if (toneImg.data[i + 3]) toneColours.add(hex(toneImg.data[i], toneImg.data[i + 1], toneImg.data[i + 2]));
+  const greenOnly = sorted.map((c, k) => (toneColours.has(c) ? CORE_COLOURS + k : -1)).filter((i) => i >= 0);
+  const fillImg = images.get('fill-grass.png');
+  const greenKeep = [];
+  if (fillImg) for (let i = 0; i < fillImg.data.length; i += 4) { const k = sorted.indexOf(hex(fillImg.data[i], fillImg.data[i + 1], fillImg.data[i + 2])); if (fillImg.data[i + 3] && k >= 0 && !greenKeep.includes(CORE_COLOURS + k)) greenKeep.push(CORE_COLOURS + k); }
+  const tables = computeTables(core, sorted.map(unhex), { greenOnly, greenKeep });
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
 
