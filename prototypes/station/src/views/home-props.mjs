@@ -11,7 +11,8 @@ import { layeredStand, standPictureId, standFigure, standVariant, curlFactor, cu
 import { keyToken } from "../looks.mjs";
 import { sceneFactor, sittingKindScale, SCENE_OF_VIEW } from "../scale.mjs";
 import { goalWords } from "./goal-words.mjs";
-export { lightOf } from "../light-curve.mjs";   // the light of a moment (the day-cycle curve), where the views and the host look for it
+import { lightOf } from "../light-curve.mjs";
+export { lightOf };   // the light of a moment (the day-cycle curve), where the views and the host look for it
 import { readyCrates, bayState } from "../sitting.mjs";
 import { roomRegion, roomData, shownRoom, bedOf } from "./room-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
@@ -155,6 +156,14 @@ export function restOf(here, time, rules) {
   for (const r of here) { const { settle, wake } = flips[r.id], t = ((time % 86400) + 86400) % 86400; out[r.id] = (settle <= wake ? t >= settle && t < wake : t >= settle || t < wake) ? "asleep" : "awake"; }   // asleep from the settle flip to the wake flip, wrapping midnight
   return out;
 }
+// The rhythm band of a moment (pure; no clock): { max, sun, loop }. max: the travelling ceiling (vivarium.json rules.day); sun: the sun rest ({ max, stages }) or null; loop: the number of the day loop the time is in, or -1 on the real clock.
+// The real clock's bands are by time of day; inside the day loop the light's mood names the band (cloud, full sun), so a retuned loop moves them with it; a loop band without max keeps the real band's ceiling at that time. No rules.day: max null, no sun.
+export function bandOf(time, curve, rules) {
+  const D = rules?.day; if (!D) return { max: null, sun: null, loop: -1 };
+  const t = ((time % 86400) + 86400) % 86400, real = D.real.reduce((m, [at, max]) => (secOf(at) <= t ? max : m), D.real[0][1]);
+  const L = lightOf(t, curve), band = (L.mood && D.loop?.[L.mood]) || {}, C = curve.loop, from = secOf(C.from), to = secOf(C.to), ts = Math.floor(t / 60 / curve.step) * curve.step * 60, inLoop = ts >= from && ts <= to;   // lightOf takes the time at the curve's step
+  return { max: band.max ?? real, sun: band.sun ?? null, loop: inLoop ? Math.min(Math.floor((ts - from) / (C.minutes * 60)), Math.round((to - from) / (C.minutes * 60)) - 1) : -1 };
+}
 // ---- R4b: who is shown and who rests (the game designer's the R4b rest rules; vivarium.json rules.show) ----
 // Is a resident's sleep group in its night at `time` (seconds of the day; rules: vivarium.json rules): from rules.rest.settle[group] to wake[group], wrapping midnight (the group's phase, not the mibi's own flip, so the ranking does not churn across the 30 minute window).
 export function nightOf(r, time, rules) {
@@ -233,12 +242,25 @@ export function livingOf(m, R, req, ph, L) {
     if (hash(mb.id) % 100 < rules.show.curl.pct[p.stage] && curled < curlMax) { curled++; p.restAt = "curl"; if (curl) { p.curl = req(curl.request); p.curlFigure = curl.figure; } }
     else p.restAt = "out";
   }
+  // the rhythm bands (rules.day): the travelling ceiling for the face, and in full sun a nap in place for at most sun.max residents. The sun rest is an override here, never in restOf: sleep stays on the real clock (the wall and the close view never call a sun-rester asleep).
+  const band = rules?.day && L?.curve && m.time != null ? bandOf(m.time, L.curve, rules) : null;
+  if (band?.sun && band.sun.max > 0) {
+    const awake = () => residents.filter((p) => p.shown !== false && p.rest !== "asleep").length, pct = rules.show.curl.pct;
+    const cands = residents.filter((p) => p.shown !== false && p.rest === "awake" && rest?.[p.id] === "awake" && band.sun.stages.includes(p.stage) && p.id !== String(ui.focus) && p.id !== String(ui.meet) && hash(+p.id) % 100 < pct[p.stage]
+      && (p.moving ? !!movingProp(here.find((q) => String(q.id) === p.id), p.stage, req, m, ["nap"]) : !!curlOfMibi(st, here.find((q) => String(q.id) === p.id), R.bed.sleepers.ink.max, sizeOf(here.find((q) => String(q.id) === p.id)), settings, m.light ?? "day", m.view ?? "home")));
+    cands.sort((a, b) => hash(+a.id * 8 + band.loop) - hash(+b.id * 8 + band.loop) || a.id.localeCompare(b.id));
+    for (const p of cands.slice(0, band.sun.max)) {
+      if (awake() < 2) break;
+      p.rest = "asleep";
+      if (!p.moving) { const c = curlOfMibi(st, here.find((q) => String(q.id) === p.id), R.bed.sleepers.ink.max, sizeOf(here.find((q) => String(q.id) === p.id)), settings, m.light ?? "day", m.view ?? "home"); p.curl = req(c.request); p.curlFigure = c.figure; }
+    }
+  }
   const bed = !hasBed ? null : {   // the bed is the room's: Roots has one, the other rooms none (the rooms design); the nappers' alone
     state: sleepers.length ? "resting" : "empty",
     picture: bedOf(req, room, m.light),   // the bed of the light, in every state
     sleepers,
   };
-  return { residents, sleepers, bed, resters };
+  return { residents, sleepers, bed, resters, ...(band?.max != null ? { travel: { max: band.max } } : {}) };
 }
 
 // ---- Home: the top bar's words, the line, the two windows and the four stations ----
@@ -282,7 +304,7 @@ function glassOf(m, spec, frame, housed, requests) {
   if (meet != null && residents.some((p) => p.id === meet)) glass.tag = meet;
   const out = housed.slice().sort((a, b) => a.bay - b.bay).find((mb) => S.isAway(st, sv, mb));
   if (out) { const size = AWAY_PLACE, p = mibiPictureOf(st, out, size, settings, light, "home"), fig = figureOf(st, out, size, settings, "home"); glass.away = { picture: mibiReq(req, st, out, size, settings, light, "home"), figure: fig ?? [0, 0, ...p.size] }; }
-  return { glass, residents, room: region };
+  return { glass, residents, room: region, travel: lw.travel };
 }
 
 // m: { st, sv, settings, docked, ui, focus: id | null, time (seconds of the day), date { y, m, d }, now (ms), place, spec home.json, frame frame.json }
@@ -323,7 +345,7 @@ export function homeBuild(m, spec, frame) {
   const targets = ["vivarium", "library", "pods", "incubator", "companion", "bay", ...(settings.realmSleep ? ["settings"] : [])].map((id) => ({ id, group: id }));
   const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
   const line = lineOf(m, spec, frame, { cur, needs, docked, companion });
-  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: lib.region, glass: living.glass, room: living.room, residents: living.residents, pods, incubator, companion, bay };
+  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: lib.region, glass: living.glass, room: living.room, residents: living.residents, ...(living.travel ? { travel: living.travel } : {}), pods, incubator, companion, bay };
   return { props: { state: "home", regions, focus: { cur, targets } }, requests, needs, targets };
 }
 
