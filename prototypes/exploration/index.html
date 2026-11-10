@@ -574,7 +574,9 @@ const PROP_DY = { 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark
   'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (16 x 20) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
   ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
-    'pod-walk-16x20-bone', 'pod-walk-16x20-lime', 'pod-walk-16x20-ice', 'pod-walk-16x20-sand', 'pod-walk-16x20-sprout', 'pod-walk-16x20-lavender', 'canopy-legacy', 'roof-legacy'].map(n => [n, 0])) };
+    'pod-walk-16x20-bone', 'pod-walk-16x20-lime', 'pod-walk-16x20-ice', 'pod-walk-16x20-sand', 'pod-walk-16x20-sprout', 'pod-walk-16x20-lavender', 'canopy-legacy', 'roof-legacy',
+    // the explorer: nine 32 x 32 frames, feet on row 30 (mibi-art 9c1bf9ece), blitted at the cell's top-left as the code-drawn one was
+    ...['down-0', 'down-1', 'up-0', 'up-1', 'left-0', 'left-1', 'creep-down', 'creep-up', 'creep-left'].map(n => 'pawn-' + n)].map(n => [n, 0])) };
 const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
 const PROP_SIZE = { 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
@@ -3613,35 +3615,12 @@ function standIn(n) { return art('stand' + n, () => { const pb = new PB(n, n), e
 // A mibi's picture at s× (1 field, 2 cards): the signed token (an unlisted pose shows the idle), each pixel a whole block above 1×.
 function creatureArt(sp, pose, fr, s, juv) { const t = tokenOf(sp, pose, fr, juv) || tokenOf(sp, 'idle', 0, juv); return (s || 1) === 1 ? t : upArt('tk' + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), t, s); }
 
-// The pawn: a small explorer in a hooded orange wetsuit, cream face opening, dark belt with a lantern at the hip.
-// Rounded torso: narrow shoulders, a waist under the chest, a round hip line; walk frames lift one leg and swing the arms.
+// The explorer is the art desk's painted pawn (art/props/pawn-*, nine 32 x 32 frames signed in mibi-art 9c1bf9ece: stand and step per view, three creeps; feet on row 30, one shared scale, drawn at 1x).
+// Right is the left frame mirrored at draw time. A prop, so the night, fog and storm tables act on it as on the walk props. No explorer is drawn in code.
 function playerArt(dir, pose, fr) {
-  return art('pl' + dir + pose + fr, () => {
-    const pb = new PB(32, 32), E = (x, y, rx, ry, c, sh) => pb.ell(x, y, rx, ry, C[c], sh ? { sh: sh.map(n => C[n]) } : undefined), R = (x, y, w, h, c) => pb.rect(x, y, w, h, C[c]);
-    const creep = pose === 'creep', low = creep ? 2 : 0, side = dir === 'left' || dir === 'right', d = side ? 'left' : dir, f = fr ? 1 : 0, SUIT = ['amber', 'rust'];
-    // legs and boots
-    const ly = 24 + low, lh = creep ? 4 : 6;
-    if (!side) { const o = creep ? 1 : 0; R(12 - o, ly - f, 3, lh, 'orange'); R(17 + o, ly - 1 + f, 3, lh, 'orange'); R(12 - o, ly - f + lh - 2, 3, 2, 'slate'); R(17 + o, ly - 1 + f + lh - 2, 3, 2, 'slate'); }
-    else if (f) { R(14, ly, 4, lh, 'orange'); R(13, ly + lh - 2, 5, 2, 'slate'); }
-    else { R(11, ly, 3, lh - 1, 'orange'); R(18, ly, 3, lh, 'orange'); R(10, ly + lh - 3, 4, 2, 'slate'); R(17, ly + lh - 2, 4, 2, 'slate'); }
-    // arms (front and back views): narrow shoulders, swinging against the legs, dark gloves
-    const ay = 16 + low;
-    if (!side) { R(10, ay + 1 + f, 2, 5 - f, 'rust'); R(20, ay + 2 - f, 2, 4 + f, 'rust'); R(11, ay, 1, 2, 'rust'); R(20, ay, 1, 2, 'rust'); R(10, ay + 5, 2, 2, 'slate'); R(20, ay + 5, 2, 2, 'slate'); }   // sleeves in shadow, so the round torso reads
-    // torso: round chest, a waist, a round hip line
-    E(16, 23.6 + low, 3.9, 2.1, 'orange', SUIT);
-    E(16, 18 + low, 3.9, 3.9, 'orange', SUIT); R(13, 20 + low, 6, 2, 'orange');
-    if (d === 'down') R(15, 16 + low, 2, 4, 'cream');
-    R(13, 21 + low, 6, 2, 'soil'); if (d === 'down') R(15, 21 + low, 2, 2, 'gold');                       // belt
-    const gx = d === 'down' ? 18 : d === 'up' ? 11 : 17; R(gx, 22 + low, 3, 3, 'amber'); R(gx + 1, 23 + low, 1, 1, 'cream');   // the lantern at the hip
-    if (side) { if (f) { R(15, ay, 3, 6, 'orange'); R(15, ay + 5, 3, 2, 'slate'); } else { R(14, ay, 3, 3, 'orange'); R(12, ay + 3, 3, 3, 'orange'); R(11, ay + 5, 3, 2, 'slate'); } }
-    // the hood and the face
-    E(16, 10 + low, 5.6, 5.4, 'orange', SUIT);
-    if (d === 'down') { E(16, 11 + low, 4.2, 3.8, 'cream'); E(16, 11 + low, 3.4, 3.2, 'blush', ['bone', 'peach']); R(14, 10 + low, 1, 2, 'void'); R(17, 10 + low, 1, 2, 'void'); }
-    if (side) { E(13, 11 + low, 3, 3.4, 'cream'); E(12.6, 11 + low, 2.4, 2.8, 'blush', ['bone', 'peach']); R(11, 10 + low, 1, 2, 'void'); }
-    if (d === 'up') R(15, 6 + low, 2, 8, 'rust');                                                        // hood seam
-    pb.outline(n => n === C.slate ? C.void : shade(n, 2));
-    return dir === 'right' ? flipPB(pb) : pb;
-  });
+  const side = dir === 'left' || dir === 'right', v = side ? 'left' : dir === 'up' ? 'up' : 'down', f = fr ? 1 : 0;
+  const p = propPiece('pawn-' + (pose === 'creep' ? 'creep-' + v : v + '-' + f));
+  return dir === 'right' ? { w: p.w, h: p.h, dx: p.dx, dy: p.dy, canvas: (rm, flip, chk, veil) => p.canvas(rm, !flip, chk, veil) } : p;   // a fresh wrapper each call, so a slot that has since filled is read
 }
 function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) o.p[y * pb.w + x] = pb.p[y * pb.w + pb.w - 1 - x]; return o; }
 
@@ -5230,7 +5209,7 @@ function drawPatchBody(t) {
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
   const heroDraw = () => {
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
-    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)));
+    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)), spriteRm(P.x, P.y));   // through the places' light tables like the walk props
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); };
   items.push({ y: RT.pl.y + 5, hero: true, d: heroDraw });
   if (TEST.boom === 1) items.push({ y: -1e9, d: () => { throw new Error('test: a sprite throws'); } });   // test hook only: an item that throws before everything else
