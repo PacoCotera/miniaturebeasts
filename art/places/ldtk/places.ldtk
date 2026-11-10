@@ -1538,6 +1538,26 @@
 						"id": "split-stone",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "shrub-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-4",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,

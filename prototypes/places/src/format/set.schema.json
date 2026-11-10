@@ -39,6 +39,7 @@
       "description": "the lipless tone layer of one terrain: 16 slots, drawn last over uniform tiles of `of`; it has no fill",
       "properties": {
         "of": { "type": "string", "description": "terrain id" },
+        "also": { "type": "array", "items": { "type": "string" }, "description": "further terrain ids that may carry tone: the raised top (cliff), where the generator also keeps the cell two rows below raised, so tone never lands on a face" },
         "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid per animation frame" }
       }
     },

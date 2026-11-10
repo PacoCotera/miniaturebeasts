@@ -106,7 +106,8 @@ export function terrainLayers(level, terrains, layers, tone = null) {
     if (toneLayer) {
       const tm = (toneAt(i - 1, j - 1) ? NW : 0) | (toneAt(i, j - 1) ? NE : 0) | (toneAt(i - 1, j) ? SW : 0) | (toneAt(i, j) ? SE : 0);
       if (tm) {
-        if (!cs.every((c) => c === tone.of)) throw new DualGridError('tone-ground', `${id}: ${cellName(i, j)}: tone on a tile that is not all ${byValue.get(tone.of).id}`, { level: id, cell: { i, j } });
+        const onTone = [tone.of, ...(tone.also || [])];   // a tone tile is wholly one terrain that carries tone (grass, or the raised top)
+        if (!onTone.includes(cs[0]) || !cs.every((c) => c === cs[0])) throw new DualGridError('tone-ground', `${id}: ${cellName(i, j)}: tone on a tile that is not all ${onTone.map((v) => byValue.get(v).id).join(' or ')}`, { level: id, cell: { i, j } });
         toneLayer[idx] = tm;
       }
     }

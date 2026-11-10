@@ -115,5 +115,5 @@ export function layerDescriptors(loaded, terrains) {
       ground: l.ground === undefined ? undefined : val(l.ground, `${id} ground`), drawAs: l.drawAs === undefined ? undefined : val(l.drawAs, `${id} drawAs`),
     });
   }
-  return { layers, tone: set.tone ? { of: val(set.tone.of, 'tone'), row: at((x) => x.type === 'tone') } : null };
+  return { layers, tone: set.tone ? { of: val(set.tone.of, 'tone'), also: (set.tone.also || []).map((x) => val(x, 'tone also')), row: at((x) => x.type === 'tone') } : null };
 }

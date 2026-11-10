@@ -89,7 +89,9 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
 
   // sprites
   const items = [];
-  const groups = { props: recipe.props || {}, decals: { ...(recipe.decals || {}), ...Object.fromEntries(Object.entries(desk ? desk.decals : {}).map(([n, image]) => [n, { image, rect: [0, 0, image.w, image.h], anchor: [8, 15] }])) }, canopy: recipe.canopy || {} };
+  // a desk piece replaces the recipe's kit sprite of the same name (the names stay, so places and the generator are unchanged)
+  const fromDesk = (o) => Object.fromEntries(Object.entries(o || {}).map(([n, d]) => [n, { ...d, rect: [0, 0, d.image.w, d.image.h] }]));
+  const groups = { props: { ...(recipe.props || {}), ...fromDesk(desk && desk.props) }, decals: { ...(recipe.decals || {}), ...fromDesk(desk && desk.decals) }, canopy: { ...(recipe.canopy || {}), ...fromDesk(desk && desk.canopy) } };
   const spriteImg = {};
   for (const [g, defs] of Object.entries(groups)) {
     for (const [name, d] of Object.entries(defs)) {
