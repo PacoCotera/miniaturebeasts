@@ -1665,6 +1665,11 @@
 						"tileRect": null
 					},
 					{
+						"id": "lily-pad-flower",
+						"color": 0,
+						"tileRect": null
+					},
+					{
 						"id": "flower-daisy",
 						"color": 0,
 						"tileRect": null

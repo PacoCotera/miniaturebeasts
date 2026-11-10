@@ -163,7 +163,7 @@
       "canopy": "tree-broad-crown"
     },
     "tree-autumn": {
-      "rect": [184, 123, 36, 9],
+      "rect": [216, 123, 36, 9],
       "anchor": [18, 5],
       "footprint": [[0, 0]],
       "canopy": "tree-autumn-crown"
@@ -184,12 +184,12 @@
       "footprint": [[0, 0]]
     },
     "boulder-brown": {
-      "rect": [144, 98, 22, 16],
+      "rect": [146, 98, 22, 16],
       "anchor": [11, 15],
       "footprint": [[0, 0]]
     },
     "boulder-grey": {
-      "rect": [167, 98, 22, 16],
+      "rect": [169, 98, 22, 16],
       "anchor": [11, 15],
       "footprint": [[0, 0]]
     },
@@ -234,17 +234,17 @@
       "footprint": [[0, 0]]
     },
     "shrub-2": {
-      "rect": [136, 123, 15, 12],
+      "rect": [153, 123, 15, 12],
       "anchor": [7, 11],
       "footprint": [[0, 0]]
     },
     "shrub-3": {
-      "rect": [152, 123, 15, 12],
+      "rect": [169, 123, 15, 12],
       "anchor": [7, 11],
       "footprint": [[0, 0]]
     },
     "shrub-4": {
-      "rect": [168, 123, 15, 12],
+      "rect": [185, 123, 15, 12],
       "anchor": [7, 11],
       "footprint": [[0, 0]]
     },
@@ -310,22 +310,6 @@
     }
   },
   "decals": {
-    "pebbles-a": {
-      "rect": [212, 98, 14, 14],
-      "anchor": [7, 7]
-    },
-    "pebbles-b": {
-      "rect": [0, 123, 15, 13],
-      "anchor": [7, 6]
-    },
-    "pebbles-c": {
-      "rect": [227, 98, 16, 14],
-      "anchor": [8, 7]
-    },
-    "lily-pad": {
-      "rect": [127, 98, 16, 16],
-      "anchor": [8, 8]
-    },
     "tuft-fan": {
       "rect": [29, 123, 12, 13],
       "anchor": [6, 12]
@@ -343,7 +327,7 @@
       "anchor": [6, 12]
     },
     "clump-tall": {
-      "rect": [244, 98, 12, 13],
+      "rect": [231, 98, 12, 13],
       "anchor": [6, 12]
     },
     "flower-daisy": {
@@ -351,7 +335,7 @@
       "anchor": [8, 23]
     },
     "flower-buttercup": {
-      "rect": [190, 98, 21, 15],
+      "rect": [192, 98, 21, 15],
       "anchor": [10, 14]
     },
     "flower-daisy-pair": {
@@ -413,6 +397,26 @@
     "fleck-5m": {
       "rect": [68, 137, 6, 7],
       "anchor": [2, 6]
+    },
+    "pebbles-a": {
+      "rect": [201, 123, 14, 10],
+      "anchor": [7, 5]
+    },
+    "pebbles-b": {
+      "rect": [0, 123, 15, 13],
+      "anchor": [7, 6]
+    },
+    "pebbles-c": {
+      "rect": [136, 123, 16, 12],
+      "anchor": [8, 6]
+    },
+    "lily-pad": {
+      "rect": [214, 98, 16, 14],
+      "anchor": [8, 7]
+    },
+    "lily-pad-flower": {
+      "rect": [127, 98, 18, 16],
+      "anchor": [9, 8]
     }
   },
   "canopy": {

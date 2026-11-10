@@ -170,6 +170,7 @@ test('prepare-set refuses a recipe whose source names the Zelda-like set (fixtur
   writePng(path.join(root, 'zelda-like-armm1998', 'Overworld.png'), img);
   const recipe = JSON.parse(readFileSync(path.join(setDir, 'recipe.json'), 'utf8'));
   for (const k of Object.keys(recipe.sources)) recipe.sources[k] = 'zelda-like-armm1998/Overworld.png';
+  recipe.decals = { probe: { sheet: 'nature', rect: [0, 0, 16, 16], anchor: [8, 8] } };   // the set draws no kit picture now: the fixture brings one to read the source
   assert.throws(() => prepareSet(recipe, { tilesetsRoot: root }), /Zelda-like/);
 });
 
@@ -182,6 +183,7 @@ test('prepare-set: a source with more than 208 colours stops and says so (fixtur
   writeFileSync(path.join(root, 'ninja-adventure', 'LICENSE.txt'), 'CC0 1.0 Universal\n');
   const recipe = JSON.parse(readFileSync(path.join(setDir, 'recipe.json'), 'utf8'));
   for (const k of Object.keys(recipe.sources)) recipe.sources[k] = 'ninja-adventure/a.png';
+  recipe.decals = { probe: { sheet: 'nature', rect: [0, 0, 256, 256], anchor: [8, 8] } };   // the set draws no kit picture now: the fixture brings one to read the source
   delete recipe.desk;   // the fixture's own source only: the desk's pinned art lives outside this repo (absent in CI)
   assert.throws(() => prepareSet(recipe, { tilesetsRoot: root }), /over the 208/);
 });

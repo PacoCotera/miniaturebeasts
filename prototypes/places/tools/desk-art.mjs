@@ -1,7 +1,8 @@
 // The art desk's signed pieces that prepare-set adds to the set when the recipe says `"desk": true`. Files are read from the pinned desk commit (git show), never the desk's live folder, copied
 // byte for byte (or, where the desk has not re-issued a piece in the map palette, with the desk's own colour map applied, tools/recolour.mjs), and listed with their sha256 in the set's DESK.json.
 //   Map palette (art director, mibi-art f1a9fe54e; commit 633e4d641 carries it): every map picture is the desk's recoloured copy in art-jobs/2026-11-10-art-recolour-map-palette/out/applied/<job>/<same path>.
-//   Open edges (mibi-art abb33a65b, art-jobs/2026-11-09-open-edges/out/): the way-up pieces of the cliff (the kit's opaque 3 x 2 sheets, wayup-cliff-grass and wayup-cliff-sand); the desk has not re-issued them.
+//   Way up (mibi-art 1158b9710, art-jobs/2026-11-10-art-paint-wayup/out/): the way-up pieces of the cliff, wayup-cliff-grass and wayup-cliff-sand, painted in the map palette.
+//   Water bits (mibi-art 3323aa85d): the pebbles and the lily pads.
 //   Map decor (art director route A and the map-decor job): the tree, bush, rock, tufts, flowers, stump of the signed map look (see deskArt); the kit's names stay in the set and draw these pieces, so the
 //   hand-set places and the generator need no new names.
 import { execFileSync } from 'node:child_process';
@@ -17,7 +18,7 @@ const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
 const DC = '633e4d641';   // mibi-art art/desk: the map palette (f1a9fe54e), the decor, the reeds, the grass flecks and the hollow tree and split stone
 const APPLIED = 'art-jobs/2026-11-10-art-recolour-map-palette/out/applied';
 const applied = (job, sub) => ({ commit: DC, dir: `${APPLIED}/${job}/out${sub ? '/' + sub : ''}` });
-export const EDGES = { commit: 'abb33a65b', dir: 'art-jobs/2026-11-09-open-edges/out' };
+export const WAYUP = { commit: '1158b9710', dir: 'art-jobs/2026-11-10-art-paint-wayup/out' };   // the way-up pieces (art director signed 2026-11-09 22:1x), 48 x 32, in the map palette
 // the map look (art director route A): tree and bush from style test 3, rock, tufts and flowers from the style test's route A props (not re-issued: the colour map is applied), shrubs and scrub from the thicket job
 export const TEST3 = applied('art-style-test-3', 'tiles'), ROUTE_A = { commit: DC, dir: 'art-jobs/2026-11-10-art-style-test/out/route-a/props', recolour: true };
 export const SAND = applied('art-paint-terrain-sand', ''), MEADOW1 = applied('art-paint-terrain-meadow', ''), MEADOW2 = MEADOW1, THICKET = applied('art-paint-terrain-thicket', 'tiles');
@@ -25,6 +26,9 @@ export const CLIFF3 = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-terrain-
 export const SCRUBJOB = applied('art-paint-terrain-thicket', 'tiles'), RIPPLE = applied('art-paint-water-ripple', 'tiles');
 // the map-decor job (stump, blue flowers: the desk's applied copies), the hollow tree and split stone (not re-issued: colour map), the grass flecks and the reeds (painted in the new palette)
 export const MAPDECOR = applied('art-paint-map-decor', 'props'), HOLLOW = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-hollow-tree-split-stone/out', recolour: true };
+// the water bits (art director signed 2026-11-09 21:05, art/desk 3323aa85d): pebbles-a/b/c and the lily pad, and the pad with a flower (a variant the generator picks about one in four)
+export const WATERBITS = { commit: '3323aa85d', dir: 'art-jobs/2026-11-10-art-paint-water-bits/out/props' };
+export const WATERBIT_NAMES = ['pebbles-a', 'pebbles-b', 'pebbles-c', 'lily-pad', 'lily-pad-flower'];
 export const FLECKS = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-grass-flecks/out/flecks' }, REEDS = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-reeds/out/reeds' };
 // the flecks the art director keeps (single blades, pale pairs, 2-blade flicks; boards/briefs/art-paint-grass-flecks.md): 00 blades3-dark, 01 blades4-dark, 02 blade1-dark, 03 pair-pale, 04 tuft-pale, 07 sprout-pale
 export const FLECK_FILES = ['fleck-00-blades3-dark', 'fleck-01-blades4-dark', 'fleck-02-blade1-dark', 'fleck-03-pair-pale', 'fleck-04-tuft-pale', 'fleck-07-sprout-pale'];
@@ -122,7 +126,7 @@ export function deskLayers() {
       over: [{
         kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass'], sheets: [recut('over-cliff.png', 'over-cliff.png')],
         tall: { 1: [recut('over-cliff~s1.png', 'over-cliff~s1.png')], 2: [recut('over-cliff~s2.png', 'over-cliff~s2.png')], 3: ['over-cliff~s3.png', 'over-cliff-face2~s3.png', 'over-cliff-face3~s3.png'].map((n) => recut(n, n)) },
-        wayup: { grass: place(EDGES, 'wayup-cliff-grass.png', 'wayup-cliff-grass.png'), sand: place(EDGES, 'wayup-cliff-sand.png', 'wayup-cliff-sand.png') },
+        wayup: { grass: keyed(WAYUP, 'wayup-cliff-grass.png', 'wayup-cliff-grass.png'), sand: keyed(WAYUP, 'wayup-cliff-sand.png', 'wayup-cliff-sand.png') },   // keyed as the cliff sheets are (the soft cast shade made transparent, art director ruling 2026-11-09)
       }],
     },
   };
@@ -184,6 +188,8 @@ export function deskArt() {
     decals[`fleck-${k}`] = { image: im, anchor: [im.w >> 1, im.h - 1] };
     decals[`fleck-${k}m`] = { image: mirror(im), anchor: [(im.w - 1) - (im.w >> 1), im.h - 1] };
   });
+  // the water bits: the kit's names stay (lily-pad-flower is the one new name, a variant of the pad); the anchor is the centre of the picture, as the kit's was of its own
+  for (const n of WATERBIT_NAMES) { const im = place(WATERBITS, `${n}.png`, `${n}.png`); decals[n] = { image: im, anchor: [im.w >> 1, im.h >> 1] }; }
   // the reed sprites (phase 3b): the foot point is the desk's anchor (manifest.json)
   const manifest = JSON.parse(show({ commit: DC, dir: 'art-jobs/2026-11-10-art-paint-reeds/out' }, 'manifest.json'));
   const reedDefs = { ...manifest.sprites, ...manifest.extras };

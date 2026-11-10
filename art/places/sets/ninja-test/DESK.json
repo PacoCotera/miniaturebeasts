@@ -119,6 +119,31 @@
     "from": "art-jobs/2026-11-10-art-paint-grass-flecks/out/flecks/fleck-07-sprout-pale.png",
     "sha256": "175820503c17c28b6bcb46af247c8db6e8918ec831068294e989abcd1ec960bd"
   },
+  "pebbles-a.png": {
+    "commit": "3323aa85d",
+    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/pebbles-a.png",
+    "sha256": "1ca1d61a4b344f5154076945641e8af9158b4310248c9bda6636b5925100f6c4"
+  },
+  "pebbles-b.png": {
+    "commit": "3323aa85d",
+    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/pebbles-b.png",
+    "sha256": "5c3f298ababbe12dac23fbcb1afb9adf74f75b08f51807d8353d2eef77868a64"
+  },
+  "pebbles-c.png": {
+    "commit": "3323aa85d",
+    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/pebbles-c.png",
+    "sha256": "0279f4d933d35457dcab29e1620352382f6c031dbe1bdc6e44e7c6b9381ab369"
+  },
+  "lily-pad.png": {
+    "commit": "3323aa85d",
+    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/lily-pad.png",
+    "sha256": "3a29e5909c5ff3383346c0d4b99ea0afd27ad509187e515e02ea4cb09f29154c"
+  },
+  "lily-pad-flower.png": {
+    "commit": "3323aa85d",
+    "from": "art-jobs/2026-11-10-art-paint-water-bits/out/props/lily-pad-flower.png",
+    "sha256": "7884fe8e61169728038ce8ca20ed4696e7712be903176661ed49d10bc5ca4ca1"
+  },
   "reed-shore-1.png": {
     "commit": "633e4d641",
     "from": "art-jobs/2026-11-10-art-paint-reeds/out/reeds/shore-1.png",
@@ -310,14 +335,14 @@
     "sha256": "e77303138b3884fe500cd20eb1cce0d967c313549e50df94c6fdd7dfa2eb336c"
   },
   "wayup-cliff-grass.png": {
-    "commit": "abb33a65b",
-    "from": "art-jobs/2026-11-09-open-edges/out/wayup-cliff-grass.png",
-    "sha256": "9c9fc4223eb19f03269e1ad3cb0e30327cfd5278ba8a1bbd667595a7159f8a75"
+    "commit": "1158b9710",
+    "from": "art-jobs/2026-11-10-art-paint-wayup/out/wayup-cliff-grass.png keyed",
+    "sha256": "e65c16493ff3bbafcfabde2055f3ae5d0c1472a113edc677365b3f3d7158ffb5"
   },
   "wayup-cliff-sand.png": {
-    "commit": "abb33a65b",
-    "from": "art-jobs/2026-11-09-open-edges/out/wayup-cliff-sand.png",
-    "sha256": "b04f1aabea8982226152bd760bc925332b0cdc72744673927fb0c9870a96fa68"
+    "commit": "1158b9710",
+    "from": "art-jobs/2026-11-10-art-paint-wayup/out/wayup-cliff-sand.png keyed",
+    "sha256": "068bd9ba80f7436d3daa21d4e6bec304fd3f9256a45d33ca3d24e8438186de9b"
   },
   "tone-grass.png": {
     "commit": "633e4d641",

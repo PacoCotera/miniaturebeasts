@@ -338,7 +338,7 @@ export function createDecor(seed, land, rules = RULES) {
         if (U(seed, TAG.PEB, x, y) < (TABLE[biome(x, y)] || TABLE.mixed).pebbles) kind = ['pebbles-a', 'pebbles-b', 'pebbles-c'][H(seed, TAG.PEB + 1, x, y) % 3];
       } else if (t === WATER) {
         const pr = (TABLE[biome(x, y)] || TABLE.mixed).pads;
-        if (pr && U(seed, TAG.PAD, x, y) < pr && openWater(x, y)) kind = 'lily-pad';
+        if (pr && U(seed, TAG.PAD, x, y) < pr && openWater(x, y)) kind = U(seed, TAG.PAD + 1, x, y) < 0.25 ? 'lily-pad-flower' : 'lily-pad';   // about one pad in four carries the flower (the signed variant)
       }
       if (!kind) continue;
       const tall = kind.startsWith('flower') || kind.startsWith('tuft') || kind === 'clump-tall';

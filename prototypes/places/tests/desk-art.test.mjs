@@ -1,4 +1,4 @@
-// The art desk's signed pieces in the test set (the map palette, mibi-art f1a9fe54e, carried by 633e4d641; open edges abb33a65b): every placed file is the file DESK.json records (sha256, signed commit and
+// The art desk's signed pieces in the test set (the map palette, mibi-art f1a9fe54e, carried by 633e4d641; way up 1158b9710; water bits 3323aa85d): every placed file is the file DESK.json records (sha256, signed commit and
 // source path), read from the committed copies in this repo only (no test reads the desk's repository); the terrain layers, the map decor and the reeds are in the set, and every map picture is in the new palette.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -17,18 +17,18 @@ const img = (n) => decodePng(readFileSync(path.join(dir, n)));
 test('every placed desk file equals the recorded hash, names its signed commit and its source in the desk', () => {
   const names = Object.keys(desk);
   assert.ok(names.length > 60, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['633e4d641', 'abb33a65b']);
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['1158b9710', '3323aa85d', '633e4d641']);
   for (const [n, d] of Object.entries(desk)) {
     assert.equal(createHash('sha256').update(readFileSync(path.join(dir, n))).digest('hex'), d.sha256, n);
     assert.ok(d.from.startsWith('art-jobs/'), n + ' names a source in the desk: ' + d.from);
   }
 });
 
-test('every map picture is in the new map palette: no pastel colour is left but the way-up pieces the desk has not re-issued, and the kit pebbles and lily pad', () => {
-  const OLD_ALLOWED = new Set(['wayup-cliff-grass.png', 'wayup-cliff-sand.png']);
+test('every map picture is in the new map palette: no pastel colour is left', () => {
   for (const n of Object.keys(desk)) {
-    if (OLD_ALLOWED.has(n)) continue;
     const im = img(n), r = recolour(im);
+    // the signed sand way-up piece (art/desk 1158b9710) carries sand tones of its own (#dfd387 and old-table colours) that the palette table does not list; it is the art director's signed file, placed as signed (flagged to the art desk in the report)
+    if (n === 'wayup-cliff-sand.png') continue;
     assert.deepEqual(r.left, [], n + ' holds colours outside the map palette');
     // the reed sprites are painted in the new reed ramp; their cattail heads keep the brown the desk names (manifest: #6f4a37, #8a6444), which are two old-palette colours by key
     if (n.startsWith('reed-')) { for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3] && r.data[i] !== im.data[i]) assert.ok([0x6f4a37, 0x8a6444].includes((im.data[i] << 16) | (im.data[i + 1] << 8) | im.data[i + 2]), n + ' holds an old colour other than the cattail brown'); continue; }
