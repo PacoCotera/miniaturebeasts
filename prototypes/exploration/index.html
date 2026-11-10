@@ -547,26 +547,36 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
   const seen = new Set(STONE_COLOURS.map(q => q.join())), keep = (w, h, data, dx, dy, key) => {
     let c = null; const tinted = new Map();   // the canvas is made when first drawn; a prop's tinted ones (storm, fog, fade) by table set and number
     const plain = () => { if (!c) { c = mk(w, h); const cg = c.getContext('2d'), im = cg.createImageData(w, h); im.data.set(data); cg.putImageData(im, 0, 0); } return c; };
-    STONE_PIECES.set(key, { w, h, dx, dy, canvas: (rm) => {
-      const lut = prop && rm ? RT.remap[rm] : null; if (!lut) return plain();   // only a prop (given a foot offset) takes the tables
-      const tk = RT.remap.id * 10 + rm; let tc = tinted.get(tk); if (tc) return tc;
+    // canvas(rm, flip, chk, veil) as a palette buffer's: chk thins the picture to a checkerboard (a crown or roof the explorer stands under), veil is the one-step-darker night dot of an unseen tile
+    STONE_PIECES.set(key, { w, h, dx, dy, canvas: (rm, flip, chk, veil) => {
+      const lut = prop && rm ? RT.remap[rm] : null; if (!lut && !(prop && (chk || veil))) return plain();   // only a prop (given a foot offset) takes the tables
+      const tk = RT.remap.id * 100 + (rm || 0) * 8 + (flip ? 4 : 0) + (chk ? 2 : 0) + (veil ? 1 : 0); let tc = tinted.get(tk); if (tc) return tc;
       tc = mk(w, h); const tg = tc.getContext('2d'), im = tg.createImageData(w, h), near = new Map();   // each colour takes its nearest palette colour's entry in the table
-      for (let i = 0; i < w * h; i++) { const o = i * 4; if (!data[o + 3]) continue; const k = data[o] << 16 | data[o + 1] << 8 | data[o + 2]; let n = near.get(k);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const o = (y * w + (flip ? w - 1 - x : x)) * 4, p = (y * w + x) * 4; if (!data[o + 3] || (chk && (x + y) % 2)) continue;
+        if (!lut && !veil) { im.data[p] = data[o]; im.data[p + 1] = data[o + 1]; im.data[p + 2] = data[o + 2]; im.data[p + 3] = 255; continue; }   // a thinned picture with no table keeps its own colours
+        const k = data[o] << 16 | data[o + 1] << 8 | data[o + 2]; let n = near.get(k);
         if (n === undefined) { let bd = 1e9; n = 0; for (let j = 0; j < RGB.length; j++) { const q = RGB[j], d = (q[0] - data[o]) ** 2 + (q[1] - data[o + 1]) ** 2 + (q[2] - data[o + 2]) ** 2; if (d < bd) { bd = d; n = j; } } near.set(k, n); }
-        const rgb = RGB[lut[n]]; im.data[o] = rgb[0]; im.data[o + 1] = rgb[1]; im.data[o + 2] = rgb[2]; im.data[o + 3] = 255; }
+        let c = lut ? lut[n] : n; if (veil) c = BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
+        const rgb = RGB[c]; im.data[p] = rgb[0]; im.data[p + 1] = rgb[1]; im.data[p + 2] = rgb[2]; im.data[p + 3] = 255; }
       tg.putImageData(im, 0, 0); tinted.set(tk, tc); return tc; } }); };
   for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] && !seen.has(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2])) { seen.add(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2]); STONE_COLOURS.push([f.data[o], f.data[o + 1], f.data[o + 2]]); } }
   keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? dy || 0 : 32 - f.height, name);
-  if ((name.startsWith('stone-small-') && name.endsWith('@16')) || name === 'prop-fruit') {   // doubled, for a sign or a card
-    const W = f.width * 2, H = f.height * 2, d = new Uint8ClampedArray(W * H * 4); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) for (let k = 0; k < 4; k++) d[(y * W + x) * 4 + k] = f.data[((y >> 1) * f.width + (x >> 1)) * 4 + k];
-    keep(W, H, d, 0, 0, name + 'x2'); }
+  const ups = (name.startsWith('stone-small-') && name.endsWith('@16')) || name === 'prop-fruit' || name.startsWith('icon-') ? [2] : name.startsWith('pod-walk-') ? [2, 3] : [];   // doubled (and tripled), for a sign, a card or a tray: each pixel a whole block
+  for (const k of ups) {
+    const W = f.width * k, H = f.height * k, d = new Uint8ClampedArray(W * H * 4); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) for (let c = 0; c < 4; c++) d[(y * W + x) * 4 + c] = f.data[((Math.floor(y / k)) * f.width + Math.floor(x / k)) * 4 + c];
+    keep(W, H, d, 0, 0, name + 'x' + k); }
 }
 // The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
-const PROP_DY = { 'bush-full-32': -4, 'bush-bare-32': -4, 'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2 };
+const PROP_DY = { 'bush-full-32': -4, 'bush-bare-32': -4, 'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+  // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (16 x 20) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
+  ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
+    'pod-walk-16x20-bone', 'pod-walk-16x20-lime', 'pod-walk-16x20-ice', 'pod-walk-16x20-sand', 'pod-walk-16x20-sprout', 'pod-walk-16x20-lavender', 'canopy-legacy', 'roof-legacy'].map(n => [n, 0])) };
 const PROP_FILES = Object.keys(PROP_DY);
-const PROP_SIZE = { 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32] };
+const PROP_SIZE = { 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
+  ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
+  ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-16x20-' + s, [16, 20]])) };
 const propPiece = name => STONE_PIECES.get(name) || walkPB(name, ...(PROP_SIZE[name] || [32, 32]));   // a named empty slot until the art is in: nothing is drawn
 async function loadPropArt() {
   try {
@@ -3740,44 +3750,17 @@ function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y+
 
 // ---------- Small items and features ----------
 // Pods: shell colour from the ground and a dark outline so they read on grass and in shade. An unread pod shows nothing of its kind.
-function podArt(shell, s) {
-  return art('pod' + shell + (s || 1), () => {
-    s = s || 1; const pb = new PB(16 * s, 20 * s), c = C[shell], P = (x, y, w, h, col) => pb.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), col);
-    pb.ell(8 * s, 10.5 * s, 5.8 * s, 7.8 * s, c, { sh: [lite(c), shade(c)] });
-    for (let i = -4; i <= 4; i++) P(8 + i, 12 + (Math.abs(i) > 3 ? 0 : 1), 1, 1, shade(c));
-    P(5, 6, 1, 2, C.white);
-    pb.outline(() => C.ink); return pb;
-  });
-}
+// The pod is the art desk's painted walk pod, one file per shell (art/props/pod-walk-16x20-<shell>, signed in mibi-art e48cee90a); s = 2 or 3 is the same picture, each pixel a whole block. No pod is drawn in code.
+function podArt(shell, s) { const n = 'pod-walk-16x20-' + shell; return propPiece((s || 1) > 1 ? n + 'x' + s : n); }
 // The walk props are the art desk's painted files (art/props/, see PROP_FILES): no prop is drawn in code.
 const FRUIT = () => propPiece('prop-fruit'), FRUIT2 = () => propPiece('prop-fruitx2');
 function bushArt(full, fr) { return propPiece(full ? 'bush-full-32' : 'bush-bare-32'); }
 const SLAB = () => propPiece('prop-slab');
 // Beacon: a stone post with a lamp cage. Unlit the cage is dark; lit, a small flame burns (2 frames).
 // Depot: a small hut with a mast; its lamp is dark until lit, then it glows (2 frames).
-function depotArt(lit, fr) {   // lit: turns of light left (0 dark, 1 ember, 2 half, 3 full)
-  return art('depot' + lit + (lit ? fr : 0), () => { const pb = new PB(32, 32);
-    pb.ell(15, 28, 13, 3, C.stone);
-    pb.rect(4, 17, 18, 11, C.bark); pb.rect(4, 17, 18, 2, C.clay); pb.poly([[2, 18], [13, 9], [24, 18]], C.rust); pb.poly([[13, 9], [24, 18], [20, 18]], C.wine);
-    pb.rect(11, 21, 5, 7, C.soil); pb.rect(6, 20, 3, 3, lit ? C.amber : C.night);
-    pb.rect(26, 4, 2, 24, C.stone); pb.rect(26, 4, 1, 24, C.rockL); pb.rect(23, 1, 8, 1, C.soil); pb.rect(24, 2, 6, 4, lit ? C.amber : C.night); pb.rect(23, 6, 8, 1, C.soil);
-    pb.outline();
-    if (lit) { const h = [0, 3, 6, 9][lit], w = [0, 2, 3, 4][lit], t = fr ? 1 : 0;   // the flame above the lamp: its size is the light left
-      pb.ell(27, 6 - h / 2, w / 2 + .3, h / 2 + .4 + t * .3, C.orange); if (lit > 1) pb.ell(27, 6.5 - h / 3, w / 3 + .2, h / 3, C.yellow); if (lit > 2) pb.set(27, 4 - t, C.cream); }
-    return pb; });
-}
-function beaconArt(lit, fr) {
-  return art('beacon' + (lit ? 1 : 0) + (lit ? fr : 0), () => { const pb = new PB(32, 32);
-    pb.ell(16, 28, 9, 2.6, C.stone); pb.rect(12, 25, 8, 3, C.rock); pb.rect(12, 25, 8, 1, C.rockL);           // footing
-    pb.rect(13, 12, 6, 14, C.rock); pb.rect(13, 12, 2, 14, C.rockL); pb.rect(17, 12, 2, 14, C.stone);          // the post
-    pb.rect(11, 11, 10, 2, C.soil); pb.rect(11, 2, 10, 1, C.soil); pb.rect(12, 1, 8, 1, C.bark);              // cage floor and roof
-    pb.rect(12, 3, 8, 8, lit ? C.wine : C.night);                                                            // inside the cage
-    if (lit) { const t = fr ? 1 : 0; pb.ell(16, 8 - t * .5, 3, 3.6 + t * .5, C.orange); pb.ell(16, 8.5 - t * .5, 2, 2.6 + t * .4, C.amber); pb.ell(16, 9, 1, 1.4 + t * .4, C.cream); }
-    for (const x of [11, 15, 20]) pb.rect(x, 3, 1, 8, C.soil);                                                 // cage bars
-    pb.outline();
-    if (lit) for (const [x, y] of fr ? [[9, 4], [23, 6], [10, 10]] : [[8, 6], [22, 3], [22, 10]]) pb.set(x, y, C.cream);   // glow
-    return pb; });
-}
+// Depot and beacon are the art desk's painted files (art/props/walk-depot-*, walk-beacon-*, signed in mibi-art e48cee90a); no hut or post is drawn in code.
+function depotArt(lit, fr) { return propPiece('walk-depot-' + ['dark', 'ember', 'half', 'full'][lit | 0]); }   // lit: turns of light left (0 dark, 1 ember, 2 half, 3 full); the desk painted one full frame, so the flicker frames share it
+function beaconArt(lit, fr) { return propPiece(lit ? 'walk-beacon-lit' : 'walk-beacon-unlit'); }
 function cupArt(full, cave) {
   return art('cup' + full + cave, () => { const pb = new PB(32, 32);
     if (cave) { pb.ell(16, 20, 11, 6.5, C.stone, { sh: [C.mist, C.slate] }); pb.ell(16, 19, 8, 3.5, C.night); if (full) pb.ell(16, 19.5, 7.5, 3, C.aqua, { sh: [C.mint, C.teal] }); }
@@ -3829,18 +3812,10 @@ function burrowArt(open) { return art('burrow' + open, () => { const pb = new PB
   if (open) { pb.rect(15, 24, 2, 2, C.yellow); pb.set(14, 25, C.gold); pb.set(17, 25, C.gold); }
   else { pb.rect(12, 29, 8, 3, C.clay); pb.rect(13, 28, 6, 1, C.sand); }
   return pb; }); }
-function canopyArt(chk) { return art('canopy' + chk, () => { const pb = new PB(88, 76);
-  const blobs = [[44, 40, 34, 28], [26, 34, 17, 15], [62, 34, 17, 15], [44, 20, 20, 15], [30, 52, 16, 12], [58, 52, 16, 12]];
-  for (const [x, y, rx, ry] of blobs) pb.ell(x, y, rx, ry, C.leaf, { sh: [C.grass, C.forest] });
-  for (const [x, y, r] of [[34, 22, 5], [52, 18, 4], [24, 32, 4], [44, 30, 6], [62, 28, 4]]) pb.ell(x, y, r, r * .8, C.sprout, { sh: [C.lime, C.grass] });
-  pb.outline(() => C.pine);
-  if (chk) for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) if ((x + y) % 2) pb.p[y * pb.w + x] = -1;
-  return pb; }); }
-function roofArt(chk) { return art('roof' + chk, () => { const pb = new PB(104, 22);
-  pb.poly([[2, 2], [102, 2], [98, 18], [6, 18]], C.rock); pb.poly([[2, 2], [102, 2], [101, 7], [3, 7]], C.rockL); pb.rect(6, 16, 92, 2, C.stone);
-  pb.outline(() => C.slate);
-  if (chk) for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) if ((x + y) % 2) pb.p[y * pb.w + x] = -1;
-  return pb; }); }
+// The legacy path's crown and roof are the art desk's painted pieces (art/props/canopy-legacy 88 x 76 and roof-legacy 104 x 22, mibi-art 1158b9710); the thinned look (an explorer under it) is the same picture on a checkerboard.
+const thinnedPiece = (name, chk) => { const p = propPiece(name); return chk ? { w: p.w, h: p.h, canvas: (rm, flip, c, veil) => p.canvas(rm, flip, true, veil) } : p; };
+function canopyArt(chk) { return thinnedPiece('canopy-legacy', chk); }
+function roofArt(chk) { return thinnedPiece('roof-legacy', chk); }
 // The partner's marker: a 2 px teal ring under its feet (wild creatures never get one). Small copy for the HUD token.
 // The partner's marker: a 2 px bright teal ring with a 1 px dark outline (wild creatures never get one). Small copy for the HUD token.
 const ringArt = (key, w, h, lit, dark) => art(key, () => { const pb = new PB(w, h), cx = w / 2, cy = h / 2; lit = lit ?? C.aqua; dark = dark ?? C.tealD;
@@ -4178,12 +4153,7 @@ const ICON = {
   essence: () => art('i-ess', () => { const pb = new PB(14, 14); pb.ell(7, 7, 6.6, 6.6, C.grass, { sh: [C.lime, C.leaf] }); pb.rect(4, 3, 2, 2, C.white); return pb; }),
   // The same bolt with its inside left open (the ground shows through): a found warm stone.
   // A beacon: a tall stone post with a lamp cage on top; the cage dark until lit, then a flame (2 frames).
-  beacon: (lit, fr) => art('i-beacon' + (lit ? 1 : 0) + (lit && fr ? 1 : 0), () => { const pb = new PB(12, 22), t = lit && fr ? 1 : 0;
-    pb.rect(2, 20, 8, 2, C.rock); pb.rect(4, 8, 4, 12, C.rock); pb.rect(4, 8, 1, 12, C.rockL); pb.rect(7, 8, 1, 12, C.stone);   // footing and post
-    pb.rect(1, 7, 10, 1, C.soil); pb.rect(1, 1, 10, 1, C.soil); pb.rect(2, 0, 8, 1, C.bark);                                      // cage floor and roof
-    pb.rect(2, 2, 8, 5, lit ? C.wine : C.night); if (lit) { pb.ell(6, 4.6 - t * .4, 2.4, 2.4 + t * .4, C.orange); pb.ell(6, 5, 1.4, 1.6, C.yellow); pb.set(6 - t, 5, C.cream); }
-    for (const x of [1, 6, 10]) pb.rect(x, 2, 1, 5, C.soil);                                                                   // bars
-    pb.outline(); return pb; }),
+  beacon: (lit, fr) => propPiece(lit ? 'icon-beacon-lit' : 'icon-beacon-unlit'),   // the art desk's painted map icon (12 x 22, mibi-art e48cee90a)
   boltHollow: () => art('i-boltH', () => { const a = new PB(14, 17); a.poly([[9, 0], [0, 10], [6, 10], [3, 17], [14, 6], [8, 6], [12, 0]], C.yellow); const pb = new PB(14, 17);   // a little fatter than the bolt, so the open inside reads
     const inA = (x, y) => a.get(x, y) >= 0;
     for (let y = 0; y < 17; y++) for (let x = 0; x < 14; x++) if (inA(x, y)) pb.set(x, y, inA(x - 1, y) && inA(x + 1, y) && inA(x, y - 1) && inA(x, y + 1) ? C.ink : C.yellow);   // a yellow rim, dark inside
@@ -4200,13 +4170,7 @@ const ICON = {
   flag: () => art('i-flag', () => { const pb = new PB(13, 20); pb.rect(1, 1, 2, 19, C.bone); pb.poly([[3, 1], [12, 4.5], [3, 8]], C.orange); pb.rect(3, 2, 6, 1, C.amber); pb.outline(); return pb; }),
   skull: () => art('i-skull', () => { const pb = new PB(14, 14); pb.ell(7, 6, 6, 5.5, C.bone); pb.rect(4, 10, 6, 3, C.bone); pb.ell(4.5, 6, 1.6, 1.8, C.void); pb.ell(9.5, 6, 1.6, 1.8, C.void); pb.rect(6, 9, 2, 1, C.void); pb.rect(5, 12, 1, 1, C.void); pb.rect(8, 12, 1, 1, C.void); pb.outline(); return pb; }),
   // An outpost: a hut with a lamp post beside it; the lamp dark until lit, then a flame whose size is the light left.
-  depot: (lit, fr) => art('i-depot' + (lit | 0) + (lit && fr ? 1 : 0), () => { const L = lit | 0, t = L && fr ? 1 : 0, pb = new PB(20, 22);
-    pb.rect(1, 13, 11, 8, C.bark); pb.rect(1, 13, 11, 1, C.clay); pb.poly([[-0.5, 13.5], [6.5, 7], [13.5, 13.5]], C.rust); pb.poly([[6.5, 7], [13.5, 13.5], [10.5, 13.5]], C.wine);   // hut and roof
-    pb.rect(5, 16, 3, 5, C.soil); pb.rect(2, 15, 2, 2, L ? C.amber : C.night);                                                 // door and window
-    pb.rect(15, 8, 2, 13, C.stone); pb.rect(15, 8, 1, 13, C.rockL); pb.rect(13, 20, 6, 1, C.rock);                              // the lamp post
-    pb.rect(13, 7, 6, 1, C.soil); pb.rect(13, 3, 6, 1, C.soil); pb.rect(14, 4, 4, 3, L ? C.amber : C.night); pb.rect(13, 4, 1, 3, C.soil); pb.rect(18, 4, 1, 3, C.soil);   // lamp cage
-    if (L) { const h = [0, 2, 3, 4][L] + t; pb.ell(16, 3.2 - h / 2, [0, 1, 1.5, 2][L] + .3, h / 2 + .3, C.orange); if (L > 1) pb.ell(16, 3.4 - h / 3, .9, h / 3, C.yellow); if (L > 2) pb.set(16, 1 - t, C.cream); }
-    pb.outline(); return pb; }),
+  depot: (lit, fr) => propPiece('icon-depot-' + ['dark', 'ember', 'half', 'full'][lit | 0]),   // the art desk's painted map icon (20 x 22, mibi-art e48cee90a), four states
   start: () => art('i-start', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 5.4, 5.4, C.bone, { clip: (x, y) => Math.hypot(x + .5 - 5.5, y + .5 - 5.5) > 3.8 }); return pb; }),
   arrow: (dir) => art('i-arr' + dir, () => { const pb = new PB(9, 13); pb.poly([[0, 0], [9, 6.5], [0, 13]], C.yellow); pb.outline(() => C.rust); return dir < 0 ? flipPB(pb) : pb; }),
   tri: () => art('i-tri', () => { const pb = new PB(8, 12); pb.poly([[0, 0], [8, 6], [0, 12]], C.orange); return pb; }),
@@ -4766,8 +4730,8 @@ function signSprite(kind, s, fr, big) {
     case 'pin': return ICON.pin();
     case 'flag': return ICON.flag();
     case 'skull': return sc('skull', ICON.skull());
-    case 'depot': return sc('depot' + (s.lit | 0) + (s.lit && fr ? 1 : 0), ICON.depot(s.lit, fr));
-    case 'beacon': return sc('beacon' + (s.lit ? 1 : 0) + (s.lit && fr ? 1 : 0), ICON.beacon(s.lit, fr));
+    case 'depot': return k === 2 ? propPiece('icon-depot-' + ['dark', 'ember', 'half', 'full'][s.lit | 0] + 'x2') : ICON.depot(s.lit, fr);   // the painted icon, each pixel a whole block at 2x
+    case 'beacon': return k === 2 ? propPiece((s.lit ? 'icon-beacon-lit' : 'icon-beacon-unlit') + 'x2') : ICON.beacon(s.lit, fr);
     case 'burrow': return sc('burrow', ICON.burrow(0));
     case 'water': return sc('wave', ICON.wave());
     case 'soft': return sc('mud', ICON.mud());

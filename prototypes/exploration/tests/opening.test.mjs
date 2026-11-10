@@ -144,12 +144,11 @@ test("B3: Weather draws the storm on the land (the edge chip when outside the fr
   let n = 0; for (let i = 4; i < ring.cs - 4; i++) { const v = px[ring.y * W + ring.x + i]; if (v === ring.a) n++; } assert.ok(n > ring.cs - 12, "the amber ring on the burrow's cell: " + n);
 });
 
-test("the two signed art pieces are registered; the desk's pod stands on the partner ring at (8, 458), its foot (48, 92); the built pod plays only until the files are in", () => {
+test("the two signed art pieces are registered; the desk's pod stands on the partner ring at (8, 458), its foot (48, 92)", () => {
   const p = opening(), reg = plain(p.run("CARE_ASSETS.filter(a => /^c-open-/.test(a.id))"));
   assert.deepEqual(reg.map(a => [a.id, a.w, a.h, a.status]), [["c-open-night", 192, 192, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
   assert.equal(p.run("OPEN_ART.ready"), true, "the art read at boot");
   draw(p); assert.equal(p.run("OPEN_ART.pod.length"), 3); assert.equal(p.run("OPEN_ART.pod[2].w"), 96);
-  const q = opening(); q.run("OPEN_ART.ready = false;"); draw(q); const b = stands(q, q.run("podArt('bone', 3)"), 32, 488); assert.ok(b.bad === 0, "without the files: the built pod at 3x");
 });
 
 // ---- B2: the land in the frame ----
