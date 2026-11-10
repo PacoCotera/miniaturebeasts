@@ -30,7 +30,7 @@ export const MAPDECOR = applied('art-paint-map-decor', 'props'), HOLLOW = { comm
 export const WATERBITS = { commit: '3323aa85d', dir: 'art-jobs/2026-11-10-art-paint-water-bits/out/props' };
 export const WATERBIT_NAMES = ['pebbles-a', 'pebbles-b', 'pebbles-c', 'lily-pad', 'lily-pad-flower'];
 export const FLECKS = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-grass-flecks/out/flecks' }, REEDS = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-reeds/out/reeds' };
-// the flecks the art director keeps (single blades, pale pairs, 2-blade flicks; boards/briefs/art-paint-grass-flecks.md): 00 blades3-dark, 01 blades4-dark, 02 blade1-dark, 03 pair-pale, 04 tuft-pale, 07 sprout-pale
+// the flecks the art director keeps (single blades, pale pairs, 2-blade flicks): 00 blades3-dark, 01 blades4-dark, 02 blade1-dark, 03 pair-pale, 04 tuft-pale, 07 sprout-pale
 export const FLECK_FILES = ['fleck-00-blades3-dark', 'fleck-01-blades4-dark', 'fleck-02-blade1-dark', 'fleck-03-pair-pale', 'fleck-04-tuft-pale', 'fleck-07-sprout-pale'];
 export const FLECK_NAMES = FLECK_FILES.map((_, k) => `fleck-${k}`);
 // reed sprites (the desk's phase 3b, manifest.json "sprites"): the four marked for use, and the optional ones the scatter rule picks from
@@ -165,7 +165,7 @@ export function deskLayers() {
       }],
     },
   };
-  // the tone layer: the desk's signed lipless grass tone, one colour map (its dark #5e9357 to the sunlit #82b266, art director ruling 2026-11-09 20:4x: a patch is lighter than the grass, never a hollow), 0 MXN
+  // the tone layer: the desk's signed lipless grass tone, one colour map (its dark #5e9357 to the sunlit #82b266: a patch is lighter than the grass, never a hollow)
   const toneImg = mapColour(decodePng(show(MEADOW1, 'layers/grass-tone.png')), SUNLIT_FROM, SUNLIT);
   const tone = { of: 'grass', also: ['cliff'], sheets: [rec(MEADOW1, 'tone-grass.png', `${MEADOW1.dir}/layers/grass-tone.png sunlit (${SUNLIT_FROM} to ${SUNLIT})`, Buffer.from(encodePng(toneImg)))] };
   const images = new Map([...files].map(([n, b]) => [n, decodePng(b)]));

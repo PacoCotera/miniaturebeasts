@@ -1,4 +1,4 @@
-// The reed beds (art desk art-paint-reeds, phase 3b, scatter-rule.md): where the reed sprites stand along a stretch of shore. Pure and integer: no clock, no Math.random.
+// The reed beds: where the reed sprites stand along a stretch of shore. Pure and integer: no clock, no Math.random.
 // Used by the generator (exploration/src/gen7/decor.mjs, on world tiles) and by the bake for a hand-set place's ReedBank area, so there is one rule. The numbers are art/places/map-rules.json `reeds`.
 //   Land is grass or sand (the terrain values of art/places/terrain.json); the shore is a land tile with a shallow-water side. Positions are native sprite pixels (16 to a tile) in the frame of T.
 //   Shore clumps: for every land tile of the stretch and each side that touches water, walk the edge from 0..3 px and set a clump every 8..12 px, so neighbours overlap; the base is jittered along the

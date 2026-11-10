@@ -1,4 +1,4 @@
-// Parsed from editorial's landmark-names.md by tools/gen7-landmark-names.mjs; do not edit by hand.
+// Parsed from the landmark names list (a markdown file) by tools/gen7-landmark-names.mjs; do not edit by hand.
 export const LANDMARK_NAMES = {
  "windstep": [
   "Windstep",

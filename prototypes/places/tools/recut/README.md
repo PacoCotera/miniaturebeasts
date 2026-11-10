@@ -1,9 +1,9 @@
-# Cliff wall re-cut (terrain-layers-c, art director ruling 2026-11-09)
+# Cliff wall re-cut
 
 The cliff sheets the art desk signed (mibi-art c335654cc, `art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/`) carried two flaws once the soft shade was keyed away:
 opaque specks left by the dither band beyond the east wall (and under the face), and a column of five pale pixels inside the west wall at the face's south-west foot.
 
-These sheets are the same job's cut, run again from the same painted island and the same windows (`source/cut.py` of that job), 0 MXN, no pixel drawn. The thin side walls, the small square top corners and the face windows are as signed. Three changes, all in `keyed()`:
+These sheets are the earlier cut, run again from the same painted island and the same windows (`source/cut.py`), no pixel drawn. The thin side walls, the small square top corners and the face windows are as signed. Three changes, all in `keyed()`:
 
 - every opaque piece apart from the island (4-connected, under 10 px) is keyed out of the keyed island before the tiles are cut;
 - the c3 island's east wall has nothing beyond its outer outline: the opaque dither pixels in the three columns past it (47 pixels) are keyed out too;
