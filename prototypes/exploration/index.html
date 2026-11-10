@@ -538,6 +538,8 @@ function placeTables() {
   if (PT.ts !== ts) { PT.ts = ts; PT.rgb = RGB.slice(0, 48).map(c => c.slice()); ts.palette.forEach(c => PT.rgb.push([(c >> 16) & 255, (c >> 8) & 255, c & 255])); PT.tabs = Object.fromEntries(ts.lightTables.map(r => [r.name, r.map])); }
   return PT;
 }
+// The warm top of a warm stone goes to a dark warm in the storm and at night; the amber veins of a charged stone keep one lit step (the stone itself takes the places' grey-blue stone tones, lighttables STONE_TONES).
+const STONE_DIM = new Map([[0xfad58d, 0x9a7453], [0xdfb877, 0x82603f], [0xfff2d0, 0xb08a63], [0xfdf0dc, 0xb08a63], [0xf1ae41, 0xb36f3c], [0xffe166, 0xe9a73c], [0xfff4c2, 0xe9a73c]]);
 const STONE_FILES = ['tall', 'small'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
 const STONE_LOOK = new Set([...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
 function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
@@ -554,6 +556,8 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const o = (y * w + (flip ? w - 1 - x : x)) * 4, p = (y * w + x) * 4; if (!data[o + 3] || (chk && (x + y) % 2)) continue;
         if (!lut && !(veil && pt)) { im.data[p] = data[o]; im.data[p + 1] = data[o + 1]; im.data[p + 2] = data[o + 2]; im.data[p + 3] = 255; continue; }   // a thinned picture with no table keeps its own colours
         const k = data[o] << 16 | data[o + 1] << 8 | data[o + 2]; let n = near.get(k);
+        const dim = lut && !veil && (rm === 1 || rm === 2) ? STONE_DIM.get(k) : null;   // the storm's and the night's own colour for a stone's warm top and amber veins
+        if (dim) { im.data[p] = dim >> 16; im.data[p + 1] = dim >> 8 & 255; im.data[p + 2] = dim & 255; im.data[p + 3] = 255; continue; }
         if (n === undefined) { let bd = 1e9; n = 0; for (let j = 1; j < pt.rgb.length; j++) { const q = pt.rgb[j], d = (q[0] - data[o]) ** 2 + (q[1] - data[o + 1]) ** 2 + (q[2] - data[o + 2]) ** 2; if (d < bd) { bd = d; n = j; } } near.set(k, n); }
         let c = lut ? lut[n] : n; if (veil) c = BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : pt.tabs.dark[c];
         const rgb = pt.rgb[c]; im.data[p] = rgb[0]; im.data[p + 1] = rgb[1]; im.data[p + 2] = rgb[2]; im.data[p + 3] = 255; }
@@ -593,10 +597,10 @@ async function loadPropArt() {
 }
 async function loadStoneArt() {
   try {
-    if (window.__stoneArt) { for (const [n, f] of Object.entries(window.__stoneArt)) stonePut(n, f); return; }   // the tests give them at once, decoded
+    if (window.__stoneArt) { for (const [n, f] of Object.entries(window.__stoneArt)) stonePut(n, f, false, 0); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     await Promise.all(STONE_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/stone/', location.href).href + n + '.png'; })));
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, false, 0); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/stone/', location.href).href + n + '.png'; })));
   } catch (e) { console.warn('the stones did not load', e); }
 }
 // The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks,
