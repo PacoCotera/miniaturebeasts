@@ -45,8 +45,28 @@ The bake also takes the IR of a generated place (`prototypes/exploration/src/gen
 - Reed beds (the desk's art-paint-reeds, scatter-rule.md): reed clumps are props with no footprint (`reed-shore-1..4`, `reed-water-1..2`, each with an `m` mirrored copy) laid by `prototypes/exploration/src/gen7/reeds.mjs`: along every shore tile of a stretch, a clump each 8..12 px so neighbours overlap with a ragged base, and 3..5 clumps per stretch in the shallows (shallow water within two tiles of land, never deep). The generator lays them on world tiles (`decor.mjs` `reedClumpsIn`, stretches are its 4 x 4 blocks); the bake lays them in a hand-set place's ReedBank areas (`build.mjs` `reedProps`).
 - Grass flecks (the desk's art-paint-grass-flecks): six tiny decals on open grass (`fleck-0..5` and mirrored `m`), about one tile in 2.5, placed by `decor.mjs` by the desk's rule.
 - With `origin`, the full-tile variants and the scrub variants are picked by `hash32('', world x, world y)` instead of the place id, so a tile is the same in every place that shows it. IR without `origin` (the LDtk places) keeps the place-id hash.
-- `tone`: 0 or 1 per tile (the sunlit grass-tone layer), from a noise field at world position, in patches (8-connected blobs of the noise above `TONE_AT`) kept whole or dropped whole: every tile of a patch needs the 5 x 5 block round it to be all grass (or all raised top), so a full cell is clear of every edge (path, water, sand, cliff, thicket, scrub); a patch that would come closer is dropped, never clipped. The tone is one step lighter than the grass. The old swirl patches (`groundMix`) are gone: the tone layer replaces them.
+- `tone`: 0 or 1 per tile (the sunlit grass-tone layer), from a noise field at world position, in patches (8-connected blobs of the noise above `tone.noise.threshold` in the map rules) kept whole or dropped whole: every tile of a patch needs the 5 x 5 block round it to be all grass (or all raised top), so a full cell is clear of every edge (path, water, sand, cliff, thicket, scrub); a patch that would come closer is dropped, never clipped. The tone is one step lighter than the grass. The old swirl patches (`groundMix`) are gone: the tone layer replaces them.
 - The cliff is the art desk's cliff job (mibi-art c335654cc: over-cliff, its tall sheets s1..s3 with the two extra faces at s3, the top flat grass), listed in `DESK.json` and pinned in `tools/desk-art.mjs`.
+
+## Map rules
+
+`art/places/map-rules.json` holds every number and neighbourhood size behind the map's dressing: what stands where, how thick, how far from an edge. The art director owns it; the generator (`exploration/src/gen7/decor.mjs`, `place.mjs`, `reeds.mjs`) reads it through `gen7/rules.mjs` and keeps none of them in code. `map-rules.schema.json` checks it (`tests/map-rules.test.mjs`). Field names follow LDtk's auto-rules where one exists: `chance` (0..1), `clear` (cells; the pattern is `2 * clear + 1` across), `noise` (`scale`, `octaves`, `threshold`).
+
+| Field | What it does |
+| --- | --- |
+| `biomes.<id>` | The biome table. Per family (`trees`, `rocks`, `stumps`, `bushes`, `sweeps`): `B` block size in tiles, `used` share of blocks holding a cluster, `size` [smallest, largest] members, `keep` smallest size kept (smaller is dropped whole), `minD2` least squared distance between members. Per biome: `reeds` share of shore stretches with a reed bed, `pads` lily pads, `broad` share of broad-leaf groves, `pebbles` share of sand tiles. The order of the biomes is part of the seeds. |
+| `props.clear` | Plain-tile radius: a prop, shrub or meadow decal needs the tile and every tile this near to be one terrain (1 = a full cell off every edge, shore and lip). |
+| `props.groves` | How clusters grow: the grove `noise` and how far it swings `used` (`usedSwing`), `reach` of a claim (`base` + `perSize` x size), `touchD2` the farthest next member by family, `minD2` default spacing, `bisector` border kept between two claims, `otherKindShare`, `greyRockShare`. |
+| `props.wayZone` | Cells kept clear round a way up (`left`, `right`, `up`, `down` from its rectangle). |
+| `props.hollow` | The Hollow Tree: `clearing` of plain grass its site needs, and `keepOff` the other props keep from it (`tree` for crowns, `other`). |
+| `meadow.tuft`, `.flower`, `.clump` | `chance` of each per open tile after the exclusions. Flowers: `reach` and `drift` offsets of a drift, `sameKind` share. Clumps: `apart` cells kept to themselves. `meadow.target` is the desk's rule in plain shares (a note; not read). |
+| `meadow.fleck` | The grass flecks: `chance`, pixel `margin` in the tile, `sizes` of the six looks, `clearOfProps` cells round a prop's foot where none lies. |
+| `shrubs.smallPatchMax` | A scrub patch of at most this many tiles with no inner tile still takes one shrub. |
+| `water.padClear` | A lily pad needs this many cells of water round it. |
+| `reeds` | `stretch` side in tiles of a reed-bed stretch, `reach` of a reed beyond the area asked for. `shore`: `startSteps`, `spacing` (`min` + 0..`spread`-1 px), `jitter` and `rag` in px, `looks` with their `share`. `water`: `within` (in-water clumps stand on shallow water this near land) and `count` per stretch. |
+| `tone` | The sunlit grass tone: `noise` (`threshold` is the level above which a patch grows), `clear` cells that must be one ground round every tile, `patchMax` tiles beyond which a patch is dropped. |
+
+To see a change: edit the file, then `node prototypes/exploration/tools/gen7-goldens.mjs <out dir>` writes the seven stills (day and night windows, three straddling frames) and look at them at 1x beside `prototypes/exploration/tests/golden/gen7-g3/`. A kept change re-records those goldens (`MB_UPDATE_GOLDENS=1`) after the art director has looked at each. The test `map-rules.test.mjs` shows the other way: a copy of the file with `props.clear` 2 instead of 1 moves the props off the ring beside a shore.
 
 ## Run
 

@@ -14,6 +14,7 @@ import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
 import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, WTW, WTH } from './levels.mjs';
 import { createDecor } from './decor.mjs';
+import { RULES } from './rules.mjs';
 import { holdOf } from './hold.mjs';
 import { landmarksOf } from './landmarks.mjs';
 
@@ -55,7 +56,7 @@ function ctxOf(seed) {
     }
   }
   S.nF = noiseField(seed, 't-forest', 1 / 10, 'FBm', 2); S.nW = noiseField(seed, 't-wet', 1 / 12, 'FBm', 2); S.nR = noiseField(seed, 't-rock', 1 / 9, 'FBm', 2);
-  S.nS = noiseField(seed, 't-scrub', 1 / 5, 'FBm', 1); S.nP = noiseField(seed, 'trail-wobble', 1 / 6, 'FBm', 2); S.nG = noiseField(seed, 'ground-mix', 1 / 5, 'FBm', 2);
+  S.nS = noiseField(seed, 't-scrub', 1 / 5, 'FBm', 1); S.nP = noiseField(seed, 'trail-wobble', 1 / 6, 'FBm', 2); S.nG = noiseField(seed, 'ground-mix', RULES.tone.noise.scale, 'FBm', RULES.tone.noise.octaves);
   if (CTX.size > 3) CTX.clear();
   CTX.set(seed, S); return S;
 }
@@ -358,8 +359,9 @@ export function cellTerrain(seed, X, Y) {
 // grass tone (terrain layers, ground patches of Rule 1.6): the lipless tone layer over plain grass, in patches of a few tiles from a noise field at world position (about 3 to 8 tiles a patch), never a per-tile repeat. A tile carries tone only when
 // the 3 x 3 tiles round it are all grass (or all raised top, with the cells two rows below raised too: terrain-layers-c), so every dual tile that touches a tone corner is wholly one ground: tone never meets a lip, a face or an edge.
 // Returns 0/1 per tile of an area whose first tile is world (x0, y0).
-export const TONE_AT = 0.45, TONE_CLEAR = 2, TONE_PATCH_MAX = 160;
+// The numbers (the noise field and its threshold, the clear block, the largest patch) are art/places/map-rules.json `tone`.
 export function toneField(seed, x0, y0, w, h) {
+  const TONE_AT = RULES.tone.noise.threshold, TONE_CLEAR = RULES.tone.clear, TONE_PATCH_MAX = RULES.tone.patchMax;
   const S = ctxOf(seed), n = S.nG, T = worldTiles(seed), out = new Uint8Array(w * h), memo = S.toneMemo || (S.toneMemo = new Map()), K = (x, y) => y * 8192 + x;
   // a tile that may carry tone: grass (or the raised top) with the whole 5 x 5 block round it that same ground, so a full cell is clear of every edge (path, water, sand, cliff, thicket, scrub); on the raised
   // top the three cells two rows below are in that block, so every dual tile the tone touches is the plain top, never a face or a way up
@@ -414,7 +416,7 @@ function decorIR(seed, x0, y0, w, h) {
   const placed = (kind, p) => ({ kind, x: p.x, y: p.y, sortY: p.y, cx: Math.floor(p.x / 48), cy: Math.floor(p.y / 48) });
   for (const p of D.propsIn(x0 - 2, y0, x0 + w + 1, y0 + h + 2)) props.push({ ...placed(p.kind, at(p.x, p.y)), tx: p.x, ty: p.y, fam: p.fam, cluster: p.cluster });
   for (const d of D.decalsIn(x0, y0, x0 + w - 1, y0 + h - 1)) decals.push({ ...placed(d.kind, d.mx === undefined ? at(d.x, d.y, d.dx, d.dy) : { x: (d.x - x0) * 48 + d.mx, y: (d.y - y0) * 48 + d.my }), tx: d.x, ty: d.y });   // a fleck sits by its own pixel offset
-  const reedbanks = D.reedsIn(x0, y0, x0 + w, y0 + h).map(r => ({ x: 4 * r.bx - x0, y: 4 * r.by - y0, w: 3, h: 3 }));
+  const SS = RULES.reeds.stretch, reedbanks = D.reedsIn(x0, y0, x0 + w, y0 + h).map(r => ({ x: SS * r.bx - x0, y: SS * r.by - y0, w: 3, h: 3 }));
   // the reed beds: props with no footprint (they sort with the walkers and block nothing), at the reed's foot, 3 master pixels to a native one
   const reedProps = D.reedClumpsIn(x0, y0, x0 + w - 1, y0 + h - 1).map(c => { const x = (c.px - x0 * 16) * 3, y = (c.py - y0 * 16) * 3; return { ...placed(c.kind, { x, y }), tx: c.tx, ty: c.ty, fam: 'reeds', cluster: -3 }; });
   const byPos = (a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0);

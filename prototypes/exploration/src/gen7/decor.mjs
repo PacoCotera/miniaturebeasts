@@ -15,6 +15,7 @@
 // Raised land's top is dressed like the low ground of its biome by the same scatter. Decals (tufts, flowers, clumps) follow the art desk's meadow density on every grass tile.
 import { noiseField } from './world.mjs';
 import { reedClumps } from './reeds.mjs';
+import { RULES } from './rules.mjs';
 
 export const TERR = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
 const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET, SCRUB } = TERR;
@@ -23,17 +24,7 @@ const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET, SCRUB } = TERR;
 // trees/rocks/bushes: { B: block size in tiles, used: share of blocks that hold a cluster, size: [min, max] trees, keep: smallest size kept }, stumps: { B, used }, sweeps: as trees (tall grass).
 // reeds: share of 4 x 4 stretches of shore with the reed-bank look. pads: lily pads, share of open-water tiles. broad: share of groves of the broad kind (the rest autumn).
 export const FAMS = ['trees', 'rocks', 'stumps', 'bushes', 'sweeps'];
-export const TABLE = {
-  mixed:    { trees: { B: 7, used: 0.30, size: [1, 2] }, bushes: { B: 8, used: 0.40, size: [1, 2] }, rocks: { B: 10, used: 0.15, size: [3, 5] }, sweeps: { B: 6, used: 0.60, size: [3, 6] }, reeds: 0.65, pads: 0, broad: 0.5, pebbles: 0.04 },
-  downs:    { trees: { B: 9, used: 0.16, size: [1, 2] }, bushes: { B: 10, used: 0.30, size: [1, 2] }, rocks: { B: 9, used: 0.35, size: [2, 4] }, sweeps: { B: 6, used: 0.30, size: [3, 6] }, reeds: 0.65, pads: 0, broad: 0.5, pebbles: 0.04 },
-  woods:    { trees: { B: 6, used: 0.85, size: [4, 8], keep: 4, minD2: 2 }, bushes: { B: 8, used: 0.30, size: [1, 2] }, stumps: { B: 7, used: 0.25 }, rocks: { B: 12, used: 0.10, size: [3, 5] }, reeds: 0.65, pads: 0, broad: 0.5, pebbles: 0.03 },
-  tallwood: { trees: { B: 5, used: 0.95, size: [6, 10], keep: 6, minD2: 1 }, bushes: { B: 10, used: 0.15, size: [1, 2] }, stumps: { B: 7, used: 0.35 }, rocks: { B: 14, used: 0.08, size: [3, 5] }, reeds: 0.65, pads: 0, broad: 0.9, pebbles: 0.03 },
-  thickets: { trees: { B: 12, used: 0.05, size: [1, 2] }, bushes: { B: 5, used: 0.55, size: [1, 2] }, rocks: { B: 14, used: 0.10, size: [3, 5] }, sweeps: { B: 8, used: 0.30, size: [3, 6] }, reeds: 0.65, pads: 0, broad: 0.5, pebbles: 0.05 },
-  marsh:    { trees: { B: 10, used: 0.12, size: [1, 2] }, bushes: { B: 10, used: 0.20, size: [1, 2] }, sweeps: { B: 6, used: 0.60, size: [3, 6] }, reeds: 0.90, pads: 0.04, broad: 0.5, pebbles: 0.03 },
-  meres:    { trees: { B: 8, used: 0.30, size: [1, 3] }, bushes: { B: 10, used: 0.20, size: [1, 2] }, sweeps: { B: 8, used: 0.30, size: [3, 6] }, reeds: 0.35, pads: 0.02, broad: 0.5, pebbles: 0.06 },
-  fells:    { trees: { B: 11, used: 0.12, size: [1, 2] }, rocks: { B: 8, used: 0.55, size: [3, 5] }, reeds: 0.65, pads: 0, broad: 0.5, pebbles: 0.12 },
-  tarns:    { trees: { B: 12, used: 0.05, size: [1, 2] }, rocks: { B: 9, used: 0.45, size: [2, 4] }, reeds: 0.80, pads: 0, broad: 0.5, pebbles: 0.10 },
-};
+export const TABLE = RULES.biomes;
 export const BIOME_IDS = Object.keys(TABLE);
 // props per 100 tiles a table row asks for (on tiles where the kind may stand)
 export const expectedPer100 = (biome, fam) => { const P = TABLE[biome][fam]; if (!P) return 0; const m = P.size ? (P.size[0] + P.size[1]) / 2 : 1; return 100 * P.used * m / (P.B * P.B); };
@@ -48,14 +39,12 @@ export const HOLLOW = 'tree-hollow';
 // the desk's meadow decor rule (mibi-art 5734abc5): per 10 open tiles 2.5 tufts and 1.5 flowers, mostly in loose drifts of 2-3, an accent clump at most 1 in 40 tiles and 4 tiles from another
 export const TUFTS = ['tuft-fan', 'tuft-lean', 'tuft-small'];
 export const FLOWERS = ['flower-daisy', 'flower-buttercup', 'flower-daisy-pair', 'flower-blue-pair', 'flower-pink-three'];
-export const DECOR_RULE = { tufts: 0.25, flowers: 0.15, clumps: 1 / 40 };
-const DRIFT = [[1, 1], [-1, 1], [2, 0], [-2, 1], [0, 2], [1, -1]];
+export const DECOR_RULE = RULES.meadow.target;
 // the scrub shrubs (the desk's shrub-1..4, mibi-art 34a8dc49c): on the inside of a scrub patch only, never on neighbouring tiles (a shrub is 15 px in a 16 px tile, so two in a row would touch); at this raw rate about
 // one in three of the scrub tiles a shrub may stand on holds one (one in two is a checkerboard, a lattice)
 export const SHRUBS = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4'];
 // the grass flecks (art director signed: single blades, pale pairs, 2-blade flicks; mibi-art 633e4d641, out/scatter-rule.md): tiny texture on open grass, about one tile in 2.5, one a tile, in its tile with a pixel's margin
-export const FLECK_SIZES = [[9, 6], [6, 5], [3, 7], [7, 7], [7, 6], [6, 7]], P_FLECK = 0.4;
-const P_CLUMP = 0.04, P_FLOWER_SEED = 0.083, P_TUFT = 0.302;   // raw rates after the exclusions (a clump keeps 7 x 7 to itself: about 1 in 65 tiles), tuned on seeds 7, 13 and 42 to the rule above
+// All the numbers of the rules above (the table, the raw rates of tufts, flowers, clumps and flecks, the neighbourhood sizes, the hollow tree's clearing) are in art/places/map-rules.json.
 
 // ---- integer hashing by position ----
 const mix = h => { h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return h >>> 0; };
@@ -68,14 +57,18 @@ const sizeRange = P => P.size || [1, 1];
 
 // land: { T(gx, gy) terrain value (outside the map: thicket), biome(gx, gy) biome id, W, H (world tiles), wayups: [{ x, y, w, h }] (all of them),
 //         slots: [{ ax, ay, biome, x0, y0, x1, y1 }] (the atlas slots in world tiles) }
-export function createDecor(seed, land) {
-  const { T, biome } = land, nG = noiseField(seed, 'g3-grove', 1 / 18, 'FBm', 2);
+// rules: the map rules (art/places/map-rules.json); a changed copy shows what a change does
+export function createDecor(seed, land, rules = RULES) {
+  const { T, biome } = land, TABLE = rules.biomes, BIOME_IDS = Object.keys(TABLE);
+  const { props: PR, meadow: MD, shrubs: SH, water: WA, reeds: RE } = rules, GV = PR.groves, HO = PR.hollow, CLEAR = PR.clear;
+  const nG = noiseField(seed, 'g3-grove', GV.noise.scale, 'FBm', GV.noise.octaves);
   const inMap = (x, y) => x >= 0 && y >= 0 && x < land.W && y < land.H;
   // ---- way ups: the cells under them (the lip does not block there) and the zone kept clear round them
   const wayCell = new Set(), wayZone = new Set();
   for (const a of land.wayups) {
     for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) wayCell.add(key(x, y));
-    for (let y = a.y - 3; y <= a.y + a.h + 3; y++) for (let x = a.x - 1; x <= a.x + a.w; x++) wayZone.add(key(x, y));
+    const WZ = PR.wayZone;
+    for (let y = a.y - WZ.up; y <= a.y + a.h - 1 + WZ.down; y++) for (let x = a.x - WZ.left; x <= a.x + a.w - 1 + WZ.right; x++) wayZone.add(key(x, y));
   }
   // ---- tile classes: solid (water, thicket, the cliff's lip), path
   const cls = new Map();
@@ -93,7 +86,7 @@ export function createDecor(seed, land) {
   const plain = (x, y) => {
     const k = key(x, y), hit = plainMemo.get(k); if (hit !== undefined) return hit;
     const t = T(x, y); let ok = true;
-    for (let dy = -1; dy <= 1 && ok; dy++) for (let dx = -1; dx <= 1; dx++) if (T(x + dx, y + dy) !== t) { ok = false; break; }
+    for (let dy = -CLEAR; dy <= CLEAR && ok; dy++) for (let dx = -CLEAR; dx <= CLEAR; dx++) if (T(x + dx, y + dy) !== t) { ok = false; break; }
     if (plainMemo.size > 600000) plainMemo.clear();
     plainMemo.set(k, ok); return ok;
   };
@@ -102,7 +95,7 @@ export function createDecor(seed, land) {
 
   // ---- the Hollow Tree: a site in each region of Woods or Tallwood, on a clearing of plain grass (nothing is drawn on the terrain here: the clearing is the absence of props) ----
   let sites = null;
-  const clearing = (x, y) => { for (let dy = -4; dy <= 2; dy++) for (let dx = -4; dx <= 4; dx++) { if (T(x + dx, y + dy) !== GRASS || flags(x + dx, y + dy) !== 0) return false; } return true; };
+  const CL = HO.clearing, clearing = (x, y) => { for (let dy = -CL.up; dy <= CL.down; dy++) for (let dx = -CL.left; dx <= CL.right; dx++) { if (T(x + dx, y + dy) !== GRASS || flags(x + dx, y + dy) !== 0) return false; } return true; };
   const hollowSites = () => {
     if (sites) return sites;
     sites = [];
@@ -121,15 +114,16 @@ export function createDecor(seed, land) {
   };
   // the tiles other props keep off: the hollow tree's footprint (5 x 2) and two tiles round it; a crown (3 wide, 3 up) must keep two tiles from the tree's own box
   const hollowNear = (x, y, tree) => {
+    const B = tree ? HO.keepOff.tree : HO.keepOff.other;
     for (const h of hollowSites()) {
-      if (tree ? (x >= h.x - 5 && x <= h.x + 5 && y >= h.y - 3 && y <= h.y + 5) : (x >= h.x - 4 && x <= h.x + 4 && y >= h.y - 3 && y <= h.y + 2)) return true;
+      if (x >= h.x - B.left && x <= h.x + B.right && y >= h.y - B.up && y <= h.y + B.down) return true;
     }
     return false;
   };
 
   // ---- seeds ----
   const seedMemo = FAMS.map(() => new Map());
-  const usedAt = (P, b, x, y) => Math.min(1, Math.max(0, P.used * (1 + 0.5 * nG(x, y))));
+  const usedAt = (P, b, x, y) => Math.min(1, Math.max(0, P.used * (1 + GV.usedSwing * nG(x, y))));
   function seedsIn(fi, cx, cy) {
     const memo = seedMemo[fi], ck = cy * 4096 + cx, hit = memo.get(ck); if (hit) return hit;
     const fam = FAMS[fi], out = [], x0 = cx * CS, y0 = cy * CS;
@@ -141,10 +135,10 @@ export function createDecor(seed, land) {
         if (Math.floor(px / CS) !== cx || Math.floor(py / CS) !== cy || !inMap(px, py)) continue;
         if (U(seed, TAG.USE + fi, bx, by, bi) >= usedAt(P, b, px, py)) continue;
         if (biome(px + (H(seed, TAG.JIT + fi, bx, by, bi) % 13) - 6, py + (H(seed, TAG.JIT + fi + 10, bx, by, bi) % 13) - 6) !== b) continue;
-        const [lo, hi] = sizeRange(P), size = lo + (H(seed, TAG.SIZE + fi, bx, by, bi) % (hi - lo + 1)), rmax = 2.5 + 0.45 * size;
+        const [lo, hi] = sizeRange(P), size = lo + (H(seed, TAG.SIZE + fi, bx, by, bi) % (hi - lo + 1)), rmax = GV.reach.base + GV.reach.perSize * size;
         let kind = null;
         if (fam === 'trees') kind = U(seed, TAG.KIND, bx, by, bi) < (TABLE[b].broad ?? 0.5) ? KINDS.broad : KINDS.autumn;
-        else if (fam === 'rocks') kind = U(seed, TAG.KIND, bx, by, bi) < 0.5 ? KINDS.greyRock : KINDS.brownRock;
+        else if (fam === 'rocks') kind = U(seed, TAG.KIND, bx, by, bi) < GV.greyRockShare ? KINDS.greyRock : KINDS.brownRock;
         out.push({ fi, x: px, y: py, size, rmax, rmax2: rmax * rmax, kind, b, P, k: (fi * 16 + bi) * 1e9 + by * 40000 + bx, h });
       }
     });
@@ -164,7 +158,7 @@ export function createDecor(seed, land) {
       for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) for (const s of seedsIn(fi, cx + dx, cy + dy)) {
         if (s === best) continue;
         const d = (s.x - x) * (s.x - x) + (s.y - y) * (s.y - y), len = Math.hypot(s.x - best.x, s.y - best.y);
-        if ((d - bd) / (2 * len) < 0.75) return null;
+        if ((d - bd) / (2 * len) < GV.bisector) return null;
       }
     }
     return best;
@@ -204,7 +198,7 @@ export function createDecor(seed, land) {
   const clusterMemo = FAMS.map(() => new Map());
   function cluster(fi, s) {
     const memo = clusterMemo[fi], hit = memo.get(s.k); if (hit) return hit;
-    const members = [], set = new Map(), P = s.P, keep = P.keep || 1, touch2 = fi === 0 ? 9 : fi === 1 ? 5 : fi === 3 ? 5 : 2, minD2 = P.minD2 || 4;
+    const members = [], set = new Map(), P = s.P, keep = P.keep || 1, touch2 = GV.touchD2[FAMS[fi]], minD2 = P.minD2 || GV.minD2;
     const ok = (x, y) => owner(fi, x, y, fi !== 4) === s && stands(fi, x, y) && !earlier(fi, x, y);
     const add = (x, y) => { const j = members.length, m = { x, y, kind: memberKind(fi, s, x, y) }; members.push(m); set.set(key(x, y), m.kind); return j; };
     // the first member is the seed's own tile (a seed on water, thicket or beside a wall holds no cluster: a grove thins toward a shore instead of crowding onto it)
@@ -235,7 +229,7 @@ export function createDecor(seed, land) {
   }
   // a stump has no cluster: its seed tile (or the nearest) is it
   function memberKind(fi, s, x, y) {
-    if (fi === 0) return U(seed, TAG.MEM, x, y, s.h) < 1 / 7 ? (s.kind === KINDS.broad ? KINDS.autumn : KINDS.broad) : s.kind;   // about one tree in seven of the other kind
+    if (fi === 0) return U(seed, TAG.MEM, x, y, s.h) < GV.otherKindShare ? (s.kind === KINDS.broad ? KINDS.autumn : KINDS.broad) : s.kind;   // about one tree in seven of the other kind
     if (fi === 1) return s.kind;                                                                                                   // one colour an outcrop
     if (fi === 2) return KINDS.stump;
     if (fi === 3) return KINDS.bushes[H(seed, TAG.MEM, x, y, s.h) % 3];
@@ -263,12 +257,12 @@ export function createDecor(seed, land) {
     const k = key(x, y), hit = patchMemo.get(k); if (hit !== undefined) return hit;
     const seen = new Map([[k, 1]]), q = [[x, y]];
     let eligible = false;
-    for (let h = 0; h < q.length && q.length <= 80; h++) {
+    for (let h = 0; h < q.length && q.length <= SH.smallPatchMax; h++) {
       const [px, py] = q[h]; if (shrubCand(px, py)) eligible = true;
       for (const [dx, dy] of SIDE4) { const a = px + dx, b = py + dy; if (inMap(a, b) && T(a, b) === SCRUB && !seen.has(key(a, b))) { seen.set(key(a, b), 1); q.push([a, b]); } }
     }
     let pick = null;
-    if (!eligible && q.length <= 80) for (const [a, b] of q) if (!pick || before(a, b, pick[0], pick[1])) pick = [a, b];
+    if (!eligible && q.length <= SH.smallPatchMax) for (const [a, b] of q) if (!pick || before(a, b, pick[0], pick[1])) pick = [a, b];
     for (const [a, b] of q) patchMemo.set(key(a, b), pick && pick[0] === a && pick[1] === b);
     if (patchMemo.size > 400000) patchMemo.clear();
     return patchMemo.get(k);
@@ -297,17 +291,18 @@ export function createDecor(seed, land) {
   // ---- decals: the desk's meadow density on every grass tile (and raised land's top), pebbles on sand, lily pads on open water ----
   // (the cliff's face is drawn over the tile below the lip and its rim over the tile above, so nothing is laid within a tile of a lip)
   const grassTile = (x, y) => { const t = T(x, y); return inMap(x, y) && (t === GRASS || t === CLIFF) && plain(x, y) && !near9(x, y, 4); };
-  const clumpRaw = (x, y) => U(seed, TAG.CLUMP, x, y) < P_CLUMP;
+  const clumpRaw = (x, y) => U(seed, TAG.CLUMP, x, y) < MD.clump.chance;
   const clumpAt = (x, y) => {
-    if (!clumpRaw(x, y)) return false; const u = U(seed, TAG.CLUMP + 1, x, y);
-    for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { if (!dx && !dy) continue; const a = x + dx, b = y + dy; if (clumpRaw(a, b)) { const v = U(seed, TAG.CLUMP + 1, a, b); if (v < u || (v === u && (b < y || (b === y && a < x)))) return false; } }
+    if (!clumpRaw(x, y)) return false; const u = U(seed, TAG.CLUMP + 1, x, y), CA = MD.clump.apart;
+    for (let dy = -CA; dy <= CA; dy++) for (let dx = -CA; dx <= CA; dx++) { if (!dx && !dy) continue; const a = x + dx, b = y + dy; if (clumpRaw(a, b)) { const v = U(seed, TAG.CLUMP + 1, a, b); if (v < u || (v === u && (b < y || (b === y && a < x)))) return false; } }
     return true;
   };
   // the flower drift a tile belongs to: seeds within 2 tiles, the lowest hash wins; a drift is its seed and 0, 1 or 2 more tiles by the desk's offsets
   const flowerAt = (x, y) => {
     let best = null, bh = Infinity;
-    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
-      const sx = x - dx, sy = y - dy, f = H(seed, TAG.FLOWER, sx, sy); if (f / 4294967296 >= P_FLOWER_SEED) continue;
+    const FR = MD.flower.reach, DRIFT = MD.flower.drift;
+    for (let dy = -FR; dy <= FR; dy++) for (let dx = -FR; dx <= FR; dx++) {
+      const sx = x - dx, sy = y - dy, f = H(seed, TAG.FLOWER, sx, sy); if (f / 4294967296 >= MD.flower.chance) continue;
       const more = f % 3 === 0 ? 0 : 1 + (f >>> 4) % 2; let member = !dx && !dy;
       for (let m = 0; m < more && !member; m++) { const o = DRIFT[(f % 3 + m) % DRIFT.length]; if (o[0] === dx && o[1] === dy) member = true; }
       if (!member) continue;
@@ -315,15 +310,15 @@ export function createDecor(seed, land) {
     }
     if (!best) return null;
     const base = FLOWERS[H(seed, TAG.FLKIND, best.sx, best.sy) % FLOWERS.length];
-    return best.seedTile || U(seed, TAG.FLKIND + 1, x, y) < 0.7 ? base : FLOWERS[(H(seed, TAG.FLKIND + 2, x, y) >>> 3) % FLOWERS.length];
+    return best.seedTile || U(seed, TAG.FLKIND + 1, x, y) < MD.flower.sameKind ? base : FLOWERS[(H(seed, TAG.FLKIND + 2, x, y) >>> 3) % FLOWERS.length];
   };
-  const openWater = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (T(x + dx, y + dy) !== WATER) return false; return true; };
+  const openWater = (x, y) => { for (let dy = -WA.padClear; dy <= WA.padClear; dy++) for (let dx = -WA.padClear; dx <= WA.padClear; dx++) if (T(x + dx, y + dy) !== WATER) return false; return true; };
   // the decals of a rectangle of tiles: { kind, x, y (tile), dx, dy (master pixels inside the tile) }
   function decalsIn(x0, y0, x1, y1, props) {
-    const occ = new Set(), nearProp = new Set();   // nearProp: within 1 tile (2 above) of a prop's foot tile, where no fleck lies
+    const FL = MD.fleck, occ = new Set(), nearProp = new Set();   // nearProp: within 1 tile (2 above) of a prop's foot tile, where no fleck lies
     for (const p of props || propsIn(x0 - 1, y0 - 1, x1 + 1, y1 + 2)) {
       for (const [a, b] of footprint(p)) occ.add(key(a, b));
-      for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 1; dx++) nearProp.add(key(p.x + dx, p.y + dy));
+      for (let dy = -FL.clearOfProps.up; dy <= FL.clearOfProps.down; dy++) for (let dx = -FL.clearOfProps.left; dx <= FL.clearOfProps.right; dx++) nearProp.add(key(p.x + dx, p.y + dy));
     }
     const out = [];
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
@@ -332,10 +327,10 @@ export function createDecor(seed, land) {
       if (t === GRASS || t === CLIFF) {
         if (!grassTile(x, y) || occ.has(key(x, y))) continue;
         if (clumpAt(x, y)) kind = 'clump-tall';
-        else { kind = flowerAt(x, y); if (!kind && U(seed, TAG.TUFT, x, y) < P_TUFT) kind = TUFTS[H(seed, TAG.TUFTKIND, x, y) % 3]; }
-        if (!kind && !nearProp.has(key(x, y)) && U(seed, TAG.FLECK, x, y) <= P_FLECK) {   // a fleck: its kind, mirror and place in the tile by the desk's rule
-          const f = Math.floor(U(seed, TAG.FLECK + 1, x, y) * FLECK_SIZES.length), [fw, fh] = FLECK_SIZES[f], m = U(seed, TAG.FLECK + 2, x, y) < 0.5;
-          const px = 1 + Math.floor(U(seed, TAG.FLECK + 3, x, y) * (14 - fw)), py = 1 + Math.floor(U(seed, TAG.FLECK + 4, x, y) * (14 - fh)), ax = m ? (fw - 1) - (fw >> 1) : fw >> 1;
+        else { kind = flowerAt(x, y); if (!kind && U(seed, TAG.TUFT, x, y) < MD.tuft.chance) kind = TUFTS[H(seed, TAG.TUFTKIND, x, y) % 3]; }
+        if (!kind && !nearProp.has(key(x, y)) && U(seed, TAG.FLECK, x, y) <= FL.chance) {   // a fleck: its kind, mirror and place in the tile by the desk's rule
+          const f = Math.floor(U(seed, TAG.FLECK + 1, x, y) * FL.sizes.length), [fw, fh] = FL.sizes[f], m = U(seed, TAG.FLECK + 2, x, y) < 0.5, room = 16 - 2 * FL.margin;
+          const px = FL.margin + Math.floor(U(seed, TAG.FLECK + 3, x, y) * (room - fw)), py = FL.margin + Math.floor(U(seed, TAG.FLECK + 4, x, y) * (room - fh)), ax = m ? (fw - 1) - (fw >> 1) : fw >> 1;
           out.push({ kind: `fleck-${f}${m ? 'm' : ''}`, x, y, dx: 0, dy: 0, mx: 3 * (px + ax), my: 3 * (py + fh - 1) });   // the sprite's own pixel grid: its anchor pixel at (px + ax, py + fh - 1) in the tile
           continue;
         }
@@ -357,12 +352,13 @@ export function createDecor(seed, land) {
     let w = false, g = false; for (const [a, b] of [[x - 1, y - 1], [x, y - 1], [x - 1, y], [x, y]]) { const t = T(a, b); if (t === WATER) w = true; else if (t === GRASS || t === SAND) g = true; else return false; }
     return w && g;
   };
-  const stretchHasShore = (bx, by) => { for (let y = by * 4; y < by * 4 + 4; y++) for (let x = bx * 4; x < bx * 4 + 4; x++) if (shoreCorner(x, y)) return true; return false; };
+  const SS = RE.stretch;
+  const stretchHasShore = (bx, by) => { for (let y = by * SS; y < by * SS + SS; y++) for (let x = bx * SS; x < bx * SS + SS; x++) if (shoreCorner(x, y)) return true; return false; };
   // the stretches of a rectangle of dual tiles: [{ bx, by }] (a stretch is the dual tiles 4bx .. 4bx+3, 4by .. 4by+3)
   function reedsIn(x0, y0, x1, y1) {
     const out = [];
-    for (let by = Math.floor(y0 / 4); by <= Math.floor(y1 / 4); by++) for (let bx = Math.floor(x0 / 4); bx <= Math.floor(x1 / 4); bx++) {
-      const cx = bx * 4 + 2, cy = by * 4 + 2; if (!inMap(cx, cy)) continue;
+    for (let by = Math.floor(y0 / SS); by <= Math.floor(y1 / SS); by++) for (let bx = Math.floor(x0 / SS); bx <= Math.floor(x1 / SS); bx++) {
+      const cx = bx * SS + SS / 2, cy = by * SS + SS / 2; if (!inMap(cx, cy)) continue;
       if (U(seed, TAG.REED, bx, by) >= (TABLE[biome(cx, cy)] || TABLE.mixed).reeds) continue;
       if (stretchHasShore(bx, by)) out.push({ bx, by });
     }
@@ -373,10 +369,10 @@ export function createDecor(seed, land) {
   const reedH = (x, y, z) => U(seed, TAG.REEDB, x, y, z);
   function reedClumpsIn(x0, y0, x1, y1) {
     const out = [];
-    for (const r of reedsIn(x0 - 4, y0 - 4, x1 + 4, y1 + 4)) {   // the dual-tile range of reedsIn: stretches are 4 x 4 tiles at 4bx, 4by; a clump may stand a tile off its own stretch
-      for (const c of reedClumps(T, reedH, { x0: 4 * r.bx, y0: 4 * r.by, x1: 4 * r.bx + 3, y1: 4 * r.by + 3 })) {
+    for (const r of reedsIn(x0 - SS, y0 - SS, x1 + SS, y1 + SS)) {   // the dual-tile range of reedsIn: stretches are SS x SS tiles at SS * bx, SS * by; a clump may stand a tile off its own stretch
+      for (const c of reedClumps(T, reedH, { x0: SS * r.bx, y0: SS * r.by, x1: SS * r.bx + SS - 1, y1: SS * r.by + SS - 1 }, rules)) {
         const tx = Math.floor(c.x / 16), ty = Math.floor(c.y / 16);
-        if (tx < x0 - 2 || tx > x1 + 2 || ty < y0 || ty > y1 + 3) continue;   // as propsIn: within two tiles sideways, three below
+        if (tx < x0 - RE.reach.side || tx > x1 + RE.reach.side || ty < y0 - RE.reach.above || ty > y1 + RE.reach.below) continue;   // as propsIn: within two tiles sideways, three below
         out.push({ kind: `reed-${c.sprite}${c.mirror ? 'm' : ''}`, tx, ty, px: c.x, py: c.y, water: c.water });
       }
     }
