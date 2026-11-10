@@ -559,7 +559,8 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
         const rgb = pt.rgb[c]; im.data[p] = rgb[0]; im.data[p + 1] = rgb[1]; im.data[p + 2] = rgb[2]; im.data[p + 3] = 255; }
       tg.putImageData(im, 0, 0); tinted.set(tk, tc); return tc; } }); };
   for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] && !seen.has(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2])) { seen.add(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2]); STONE_COLOURS.push([f.data[o], f.data[o + 1], f.data[o + 2]]); } }
-  keep(f.width, f.height, f.data, look ? 0 : (32 - f.width) >> 1, look ? dy || 0 : 32 - f.height, name);
+  const bush = look && name.startsWith('bush-');   // a bush's foot is its file's bottom centre (the manifest's anchor), set on the tile's bottom centre (16, 31): the file's own size decides, so a resize needs no code change
+  keep(f.width, f.height, f.data, bush ? 16 - (f.width >> 1) : look ? 0 : (32 - f.width) >> 1, bush ? 32 - f.height : look ? dy || 0 : 32 - f.height, name);
   const ups = (name.startsWith('stone-small-') && name.endsWith('@16')) || name === 'prop-fruit' || name.startsWith('icon-') ? [2] : name.startsWith('pod-walk-') ? [2, 3] : [];   // doubled (and tripled), for a sign, a card or a tray: each pixel a whole block
   for (const k of ups) {
     const W = f.width * k, H = f.height * k, d = new Uint8ClampedArray(W * H * 4); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) for (let c = 0; c < 4; c++) d[(y * W + x) * 4 + c] = f.data[((Math.floor(y / k)) * f.width + Math.floor(x / k)) * 4 + c];
@@ -568,12 +569,11 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
-const PROP_DY = { 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full-32': -4, 'bush-bare-32': -4, 'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+const PROP_DY = { 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full-40': 0, 'bush-full-40-m': 0, 'bush-bare-40': 0, 'bush-bare-40-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (16 x 20) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
   ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
     'pod-walk-16x20-bone', 'pod-walk-16x20-lime', 'pod-walk-16x20-ice', 'pod-walk-16x20-sand', 'pod-walk-16x20-sprout', 'pod-walk-16x20-lavender', 'canopy-legacy', 'roof-legacy'].map(n => [n, 0])) };
-const PROP_FILES = Object.keys(PROP_DY);
-const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
+const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
 const PROP_SIZE = { 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-16x20-' + s, [16, 20]])) };
@@ -3648,7 +3648,7 @@ function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y+
 function podArt(shell, s) { const n = 'pod-walk-16x20-' + shell; return propPiece((s || 1) > 1 ? n + 'x' + s : n); }
 // The walk props are the art desk's painted files (art/props/, see PROP_FILES): no prop is drawn in code.
 const FRUIT = () => propPiece('prop-fruit'), FRUIT2 = () => propPiece('prop-fruitx2');
-function bushArt(full, fr) { return propPiece(full ? 'bush-full-32' : 'bush-bare-32'); }
+function bushArt(full, f) { return propPiece((full ? 'bush-full-40' : 'bush-bare-40') + (hash('bush', f.id) % 2 ? '-m' : '')); }   // plain or mirrored copy by the feature's id: the same one full and bare
 const SLAB = () => propPiece('prop-slab');
 // Beacon: a stone post with a lamp cage. Unlit the cage is dark; lit, a small flame burns (2 frames).
 // Depot: a small hut with a mast; its lamp is dark until lit, then it glows (2 frames).
@@ -5218,7 +5218,7 @@ function drawPatchBody(t) {
     items.push({ y: f.y * ts + 2, d: () => blit(art('hglint', () => { const pb = new PB(2, 2); pb.rect(0, 0, 2, 2, C.yellow); return pb; }), SX(f.x * ts) + 15, SY(f.y * ts) + 22, spriteRm(f.x, f.y)) });
   for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     const rm = spriteRm(p.x, p.y); let a;
-    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
+    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), f); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
       a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, motion() ? blinkFr : -1, 1, 0, f.id === 'kh') : stoneArt(stormCharge(P.key, f) > 0, false, motion() ? Math.floor(NOW / 300) % 2 : 0, 0, 0, f.id === 'kh'); }   // the heart's stone is the tall one, a field stone the small one
@@ -5730,7 +5730,7 @@ function warnPicPlace(x0, y0, a) {
   for (const h of live.holes || []) if (here(h.x, h.y)) blit(freshHoleArt(1, HOLE_BARE[h.g]), x0 + HOLE_DX, y0);   // the Rupar's fresh hole
   for (const f of lay.feats) { if (f.tree || !'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
     let art;
-    if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
+    if (f.kind === 'b') art = bushArt(bushFull(a.key, f), f); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
     else if (f.kind === 'u') art = cupArt(cupFull(a.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, -1, 1, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0, 0, 1); }
     blit(art, x0, y0); }
