@@ -3,7 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { lightOf } from "../src/views/home-props.mjs";
+import { lightOf, restOf } from "../src/views/home-props.mjs";
 
 const C = JSON.parse(readFileSync(new URL("../../ui/specs/station/frame.json", import.meta.url), "utf8")).light.curve;
 const at = (hhmm) => { const [h, m] = hhmm.split(":").map(Number); return lightOf((h * 60 + m) * 60, C); };
@@ -40,6 +40,12 @@ test("real clock keys: pure lights keep their names, the rest are @HHMM", () => 
   assert.equal(at("21:00").key, "night"); assert.equal(at("06:30").key, "dawn"); assert.equal(at("18:15").key, "dusk");
   assert.equal(at("05:45").key, "@0545"); assert.equal(at("19:30").key, "@1930"); assert.equal(at("03:00").key, "@0300");
   assert.deepEqual(at("03:00").gain, C.gains.deep); assert.equal(at("03:00").base, "night");
+});
+test("the Time of day options: 03:00 is deep night with everyone asleep, 10:00 is already the cloud", () => {
+  const VIV = JSON.parse(readFileSync(new URL("../../ui/specs/station/vivarium.json", import.meta.url), "utf8"));
+  assert.equal(at("03:00").base, "night"); assert.deepEqual(at("03:00").gain, C.gains.deep); assert.equal(at("10:00").mood, "cloud");
+  const here = [{ id: "a", seed: 1, species: "S01", stage: "adult" }, { id: "b", seed: 2, species: "S02", stage: "juvenile" }, { id: "c", seed: 3, species: "S03", stage: "elder" }];
+  const rest = restOf(here, 3 * 3600, VIV.rules.rest); assert.ok(Object.values(rest).every((v) => v === "asleep"), JSON.stringify(rest));
 });
 test("20:30-22:30 stays night, 24:00 wraps to deep", () => {
   for (const { min, L } of steps.filter((s) => s.min >= 1230 && s.min <= 1350)) assert.equal(L.key, "night", `at ${min}`);
