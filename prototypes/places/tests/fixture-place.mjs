@@ -1,6 +1,7 @@
 // A fixture place for the format tests: 18 x 22 cells, a sand-ringed pond, a path, a few props, a heart, a clue, finds and openings, on the ninja-test set.
-import { dualGrid, EMPTY, FULL_BASE, EMPTY_BASE } from '../src/dualgrid.mjs';
-import { dualPairs } from '../src/setload.mjs';
+import { terrainLayers, packDepth } from '../src/dualgrid.mjs';
+import { layerDescriptors } from '../src/setload.mjs';
+import { layersToTileIds } from '../src/bake/build.mjs';
 
 export const W = 18, H = 22;
 
@@ -16,23 +17,9 @@ export function fixtureTerrain(terrains) {
   return t;
 }
 
-// layers (dual grid, local codes) -> tile ids of the set's pair tables
-export function layersToTileIds(dg, tileset) {
-  return dg.layers.map((l) => ({
-    pair: l.pair,
-    tiles: Uint16Array.from(l.tiles, (c) => {
-      if (c === EMPTY) return 0xFFFF;
-      const p = tileset.pairs[l.pair];
-      if (c < FULL_BASE) return p.tiles[c];
-      if (c < EMPTY_BASE) return p.fullVariants[c - FULL_BASE];
-      return p.emptyVariants[c - EMPTY_BASE];
-    }),
-  }));
-}
-
 export function fixturePlace(loaded, tileset, terrains) {
   const terrain = fixtureTerrain(terrains);
-  const dg = dualGrid({ id: 'fixture', w: W, h: H, terrain }, terrains, dualPairs(loaded));
+  const desc = layerDescriptors(loaded, terrains), dg = terrainLayers({ id: 'fixture', w: W, h: H, terrain }, terrains, desc.layers, desc.tone);
   const spriteIndex = (kind) => { const i = tileset.sprites.findIndex((s) => s.kind === kind); if (i < 0) throw new Error('no sprite ' + kind); return i; };
   const at = (cx, cy) => ({ x: cx * 48 + 24, y: cy * 48 + 47, sortY: cy * 48 + 47 });
   const prop = (kind, cx, cy) => ({ kind: spriteIndex(kind), ...at(cx, cy) });
@@ -41,7 +28,7 @@ export function fixturePlace(loaded, tileset, terrains) {
   for (let i = 0; i < W * H; i++) if (play[terrain[i]] === 'block') block[i >> 3] |= 1 << (i & 7);
   return {
     id: 'fixture', formatVersion: 1, set: tileset.id, w: W, h: H, type: 'pond', names: ['Reedpool', 'Pondside'], mirrorOf: '',
-    terrain, ground: layersToTileIds(dg, tileset),
+    terrain, ground: packDepth(layersToTileIds(dg, tileset, desc), dg.w1, dg.h1).map((tiles) => ({ tiles })),
     decals: [prop('pebbles-a', 3, 16), prop('flower-daisy', 9, 4)],
     props: [prop('tree-broad', 3, 3), prop('boulder-brown', 10, 15), prop('bush-big', 15, 6)],
     canopy: [],

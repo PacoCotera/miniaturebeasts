@@ -1,4 +1,4 @@
-// Generator 7: a place's IR through the places bake (dual grid, open edges, ground patches) and the places renderer, at 16 or 48 px a tile. No compositing and no overlays: what this draws is
+// Generator 7: a place's IR through the places bake (dual grid by terrain, open edges, tone) and the places renderer, at 16 or 48 px a tile. No compositing and no overlays: what this draws is
 // what the bake gives (scheme Rule 1.8). The bake's context loads the committed test set once.
 import { readFileSync } from 'node:fs';
 import { paths, loadSets } from '../../places/src/bake/bake.mjs';
@@ -11,9 +11,9 @@ let CTX = null;
 export function bakeCtx() {
   if (CTX) return CTX;
   const terrains = JSON.parse(readFileSync(P.terrain, 'utf8')).terrains;
-  const { sets, pairsOf, errors } = loadSets(P, terrains, ['ninja-test']);
+  const { sets, layersOf, errors } = loadSets(P, terrains, ['ninja-test']);
   if (errors.length) throw new Error(errors.join('\n'));
-  return (CTX = { terrains, sets, pairsOf });
+  return (CTX = { terrains, sets, layersOf });
 }
 // Bakes an IR; returns { place } or throws with the bake's messages.
 export function bakeIR(ir) {

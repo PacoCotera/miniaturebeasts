@@ -63,7 +63,7 @@ export function writePlace(pl) {
   const names = strVec(b, pl.names, (bb, v) => G.Place.createNamesVector(bb, v));
   const mirrorOf = b.createString(pl.mirrorOf || '');
   const terrain = G.Place.createTerrainVector(b, pl.terrain);
-  const ground = tableVec(b, pl.ground, (bb, l) => G.Layer.createLayer(bb, l.pair, G.Layer.createTilesVector(bb, l.tiles)), (bb, v) => G.Place.createGroundVector(bb, v));
+  const ground = tableVec(b, pl.ground, (bb, l) => G.Layer.createLayer(bb, G.Layer.createTilesVector(bb, l.tiles)), (bb, v) => G.Place.createGroundVector(bb, v));
   const decals = tableVec(b, pl.decals, placed, (bb, v) => G.Place.createDecalsVector(bb, v));
   const props = tableVec(b, pl.props, placed, (bb, v) => G.Place.createPropsVector(bb, v));
   const canopy = tableVec(b, pl.canopy, placed, (bb, v) => G.Place.createCanopyVector(bb, v));

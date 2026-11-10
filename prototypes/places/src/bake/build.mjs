@@ -1,41 +1,42 @@
 // IR -> the Place object that format/write.mjs serialises (place design A1.4 steps 5 and 6), and the golden picture of a baked place.
-import { dualGrid, DualGridError, EMPTY, FULL_BASE, EMPTY_BASE } from '../dualgrid.mjs';
+import { terrainLayers, packDepth, DualGridError, EMPTY, FILL_CODE, splitCode } from '../dualgrid.mjs';
 import { indexedToRgba } from '../indexed.mjs';
 import { renderView } from '../ground.mjs';
 import { FORMAT_VERSION } from '../format/write.mjs';
 import { BakeError, FIND_KINDS } from './ldtk.mjs';
 import { footprintCells, spriteFor } from './rules.mjs';
 import { ALT_CODE, applyOpenEdges, cliffInfo } from './openedges.mjs';
-import { applyGroundMix } from './groundmix.mjs';
 
-export function layersToTileIds(dg, tileset) {
-  return dg.layers.map((l) => ({
-    pair: l.pair,
-    tiles: Uint16Array.from(l.tiles, (c) => {
-      if (c === EMPTY) return 0xFFFF;
-      const p = tileset.pairs[l.pair];
-      if (c >= ALT_CODE) return tileset.pairs[(c - ALT_CODE) >> 4].tiles[(c - ALT_CODE) & 15];   // the cliff's tall tiles, the way up, a variant or the reed look
-      if (c < FULL_BASE) return p.tiles[c];
-      if (c < EMPTY_BASE) return p.fullVariants[c - FULL_BASE];
-      return p.emptyVariants[c - EMPTY_BASE];
-    }),
-  }));
+// dg: terrainLayers' output after applyOpenEdges; tileset: the baked tile set; desc: setload.layerDescriptors' { layers, tone }. Returns [{ tiles: Uint16Array of tile ids }] in draw order (0xFFFF draws nothing).
+export function layersToTileIds(dg, tileset, desc) {
+  return dg.layers.map((l) => {
+    const d = l.tone ? null : desc.layers.get(l.terrain);
+    return {
+      tiles: Uint16Array.from(l.tiles, (c) => {
+        if (c === EMPTY) return 0xFFFF;
+        if (l.tone) return tileset.pairs[desc.tone.row].tiles[c];                                   // the tone layer: the code is the corner mask
+        if (c >= FILL_CODE) return tileset.pairs[d.fillRow].fullVariants[c - FILL_CODE];             // the terrain's fill
+        if (c >= ALT_CODE) return tileset.pairs[(c - ALT_CODE) >> 4].tiles[(c - ALT_CODE) & 15];   // the cliff's tall tiles, the way up, a variant or the reed look
+        const s = splitCode(c), row = tileset.pairs[d.kinds[s.kind].rows.over];
+        return s.full !== undefined ? row.fullVariants[s.full] : row.tiles[s.slot];
+      }),
+    };
+  });
 }
 
-// ctx: { terrains, sets: Map(id -> baked tile set), pairsOf: Map(id -> dual-grid pair descriptors) }. Returns { place } or { errors }.
+// ctx: { terrains, sets: Map(id -> baked tile set), layersOf: Map(id -> setload.layerDescriptors) }. Returns { place } or { errors }.
 export function buildPlace(ir, ctx) {
-  const tileset = ctx.sets.get(ir.tileset);
+  const tileset = ctx.sets.get(ir.tileset), desc = ctx.layersOf.get(ir.tileset);
   let dg;
   try {
-    dg = dualGrid({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin }, ctx.terrains, ctx.pairsOf.get(ir.tileset));
-    applyOpenEdges(dg, ir, ctx.terrains, ctx.pairsOf.get(ir.tileset));
+    dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone }, ctx.terrains, desc.layers, desc.tone);
+    applyOpenEdges(dg, ir, ctx.terrains, desc.layers);
   } catch (e) {
     if (!(e instanceof DualGridError)) throw e;
     const cell = e.cell && e.cell.i !== undefined ? { x: Math.min(e.cell.i, ir.w - 1), y: Math.min(e.cell.j, ir.h - 1) } : e.cell || null;
     return { errors: [new BakeError(ir.id, e.rule, e.message.replace(/^[^:]*: /, ''))].map((b) => Object.assign(b, { cell })) };
   }
-  const ground = layersToTileIds(dg, tileset);
-  if (ir.groundMix) applyGroundMix({ ground }, ir.groundMix, tileset);
+  const ground = packDepth(layersToTileIds(dg, tileset, desc), dg.w1, dg.h1).map((tiles) => ({ tiles }));   // the k-th piece drawn on every dual tile in layer k
   const index = (group, kind) => spriteFor(tileset, group, kind).index;
   const placed = (group) => (p) => ({ kind: index(group, p.kind), x: p.x, y: p.y, sortY: p.sortY });
   const playOf = new Map(ctx.terrains.map((t) => [t.value, t.play]));

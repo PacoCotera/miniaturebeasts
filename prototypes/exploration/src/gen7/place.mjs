@@ -346,15 +346,7 @@ export function cellTerrain(seed, X, Y) {
   CELLS.set(key, out); return out;
 }
 
-// ground patches (Rule 1.6): the choice of the set's plain or one of its two swirl ground tiles for a full tile, by a noise field at world position
-// (about 3 to 8 tiles a patch), never a per-tile repeat. Returns 0, 1 or 2 per dual tile of an area whose first dual tile is at world (x0, y0).
-export function groundMix(seed, x0, y0, w1, h1) {
-  const n = ctxOf(seed).nG, out = new Uint8Array(w1 * h1);
-  for (let j = 0; j < h1; j++) for (let i = 0; i < w1; i++) { const v = n(x0 + i, y0 + j); out[j * w1 + i] = v < -0.18 ? 0 : v < 0.22 ? 1 : 2; }
-  return out;
-}
-
-// grass tone (terrain layers): the lipless tone layer over plain grass, in patches of a few tiles from the same noise field as the ground patches (about 3 to 8 tiles a patch). A tile carries tone only when
+// grass tone (terrain layers, ground patches of Rule 1.6): the lipless tone layer over plain grass, in patches of a few tiles from a noise field at world position (about 3 to 8 tiles a patch), never a per-tile repeat. A tile carries tone only when
 // the 3 x 3 tiles round it are all grass, so every dual tile that touches a tone corner is wholly grass: tone never meets a lip or an edge. Returns 0/1 per tile of an area whose first tile is world (x0, y0).
 const TONE_AT = 0.1;
 export function toneField(seed, x0, y0, w, h) {
@@ -409,7 +401,7 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null) {
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
   const hold = cell ? holdOf({ seed, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props: d.props, decals: d.decals, canopy: [], hearts: [], clues: [],
-    finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, groundMix: groundMix(seed, x0, y0, w + 1, h + 1), tone: toneField(seed, x0, y0, w, h),
+    finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone: toneField(seed, x0, y0, w, h),
     inner: hold ? hold.inner : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
 }
 // the bare tiles (sand, worn earth, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)

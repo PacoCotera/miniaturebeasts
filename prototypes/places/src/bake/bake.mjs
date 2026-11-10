@@ -3,7 +3,7 @@
 import { readFileSync, existsSync, mkdirSync, writeFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
-import { loadSet, validateSetJson, dualPairs, ALLOWED_SPDX } from '../setload.mjs';
+import { loadSet, validateSetJson, layerDescriptors, ALLOWED_SPDX } from '../setload.mjs';
 import { bakeTileSet } from '../bakeset.mjs';
 import { writeTileSet, writePlace } from '../format/write.mjs';
 import { decodePng, encodePng } from '../png.mjs';
@@ -25,17 +25,17 @@ export function paths(placesDir) {
 
 // Loads and checks every set (contract, licence), bakes each to its tile set object.
 export function loadSets(P, terrains, ids) {
-  const sets = new Map(), pairsOf = new Map(), loadedOf = new Map(), errors = [];
+  const sets = new Map(), layersOf = new Map(), loadedOf = new Map(), errors = [];
   for (const id of ids || listSetIds(P.sets)) {
     const loaded = loadSet(path.join(P.sets, id));
     const bad = validateSetJson(loaded.set);
     if (bad.length) { errors.push(`set ${id}: ${bad.join('; ')}`); continue; }
     if (!ALLOWED_SPDX.includes(loaded.set.licence.spdx)) { errors.push(`set ${id}: licence ${loaded.set.licence.spdx} is not allowed (${ALLOWED_SPDX.join(', ')})`); continue; }
     sets.set(id, bakeTileSet(loaded, terrains));
-    pairsOf.set(id, dualPairs(loaded));
+    layersOf.set(id, layerDescriptors(loaded, terrains));
     loadedOf.set(id, loaded);
   }
-  return { sets, pairsOf, loadedOf, errors };
+  return { sets, layersOf, loadedOf, errors };
 }
 
 // Returns { files: Map(path relative to prototypes/places -> { bytes } | { img }), errors: [string], places: [{id, ...}] }.
@@ -44,11 +44,11 @@ export function bakeAll(P, { only } = {}) {
   const errors = [];
   const files = new Map();
   const terrains = JSON.parse(readFileSync(P.terrain, 'utf8')).terrains;
-  const { sets, pairsOf, loadedOf, errors: setErrors } = loadSets(P, terrains);
+  const { sets, layersOf, loadedOf, errors: setErrors } = loadSets(P, terrains);
   errors.push(...setErrors);
   const { project, levels } = loadProject(P.project, P.schema);
   errors.push(...checkDefs(project, terrains, [...loadedOf.values()]));
-  const ctx = { terrains, sets, pairsOf };
+  const ctx = { terrains, sets, layersOf };
   const index = { formatVersion: 1, sets: [], places: [] };
 
   for (const [id, ts] of sets) {

@@ -15,7 +15,7 @@ import { T_BLOCK } from '../../exploration/src/world.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url)), placesDir = path.join(here, '..'), P = paths(placesDir);
 const terrains = JSON.parse(readFileSync(P.terrain, 'utf8')).terrains, V = Object.fromEntries(terrains.map((t) => [t.id, t.value]));
-const { sets, pairsOf } = loadSets(P, terrains), ctx = { terrains, sets, pairsOf };
+const { sets, layersOf } = loadSets(P, terrains), ctx = { terrains, sets, layersOf };
 const { levels } = loadProject(P.project, P.schema);
 const ts = readTileSet(new Uint8Array(readFileSync(path.join(placesDir, 'baked', 'ninja-test.mbtiles'))));
 const IDS = ['Windstep', 'HollowTree', 'SplitStone', 'Reedpool'];

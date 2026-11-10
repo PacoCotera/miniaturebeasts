@@ -5,7 +5,7 @@ import { readFileSync, mkdtempSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadSet, dualPairs, extraEntries } from '../src/setload.mjs';
+import { loadSet, layerRows } from '../src/setload.mjs';
 import { bakeTileSet, halve } from '../src/bakeset.mjs';
 import { writeTileSet, writePlace, FORMAT_VERSION } from '../src/format/write.mjs';
 import { readTileSet, readPlace } from '../src/format/read.mjs';
@@ -42,7 +42,15 @@ test('a tile set written and read back is the same, field by field', () => {
   assert.equal(back.atlas48.length, back.atlas24.length * 4, 'one 24 px tile for every 48 px tile');
   assert.equal(back.lightTables.length, 7);
   assert.equal(back.licence.spdx, 'CC0-1.0');
-  assert.ok(back.pairs.length === loaded.set.pairs.length + extraEntries(loaded.set).length && back.pairs.every((p, k) => p.tiles.length === (k >= loaded.set.pairs.length && extraEntries(loaded.set)[k - loaded.set.pairs.length].kind === 'wayup' ? 6 : 16)));   // the main pairs, then the cliff's tall sheets, the scrub's variants, the way-up pieces and the reed looks
+  // the rows: per terrain its fill (no tiles) and over kinds (16 tiles, slot 0 empty), then the cliff faces, the variants, the way-up pieces (6 tiles) and the reed looks, then the tone
+  const rows = layerRows(loaded.set);
+  assert.equal(back.pairs.length, rows.length);
+  back.pairs.forEach((p, k) => {
+    const want = rows[k].type === 'fill' ? 0 : rows[k].type === 'wayup' ? 6 : 16;
+    assert.equal(p.tiles.length, want, `row ${k} (${rows[k].type} ${rows[k].terrain})`);
+    if (want === 16) assert.equal(p.tiles[0], 0xFFFF, `row ${k}: slot 0 is empty`);
+    if (rows[k].type === 'fill') assert.ok(p.fullVariants.length >= 1, `row ${k}: a fill has variants`);
+  });
 });
 
 test('a place written and read back is the same, field by field', () => {
@@ -134,27 +142,28 @@ test('sprites: the RLE stream of every frame decodes to its pixels, 48 px and 24
   assert.deepEqual(tree.anchor48, [72, 39]);
 });
 
-test('seam test 1 at 24 px: edge signatures hold on the derived tiles of every pair', () => {
+// The 24 px half of the layer seam proof (seams.test.mjs has the 48 px half): per (terrain, kind, lower), the composite of the lower's fill and the kind's tile, read from the baked tile set's derived tiles.
+// Like the 48 px half it does not hold for the desk's organic shores (art director ruling 2026-11-09: seams accepted as organic, no edge forcing at the bake), so it reports and does not fail.
+test('seam test 1 at 24 px: every (terrain, kind, lower) has one boundary line per edge state on the derived tiles', { todo: 'the signed layers carry organic edges, accepted (art director 2026-11-09)' }, () => {
   const back = readTileSet(writeTileSet(tileset));
   const pal = paletteOf(loaded.palette);
-  const size = 24;
-  const slotImg = (slot) => {
-    const img = newImage(size, size);
-    for (let i = 0; i < size * size; i++) {
-      const v = back.atlas24[slot * size * size + i];
-      if (v === 0) continue;
-      const c = pal.rgb[v];
-      img.data[i * 4] = c[0]; img.data[i * 4 + 1] = c[1]; img.data[i * 4 + 2] = c[2]; img.data[i * 4 + 3] = 255;
-    }
-    return img;
-  };
-  for (const [k, p] of back.pairs.slice(0, loaded.set.pairs.length).entries()) {
-    if (loaded.set.pairs[k].tall) continue;   // a tall face is held to the block rule (seams.test.mjs), not the one-line-per-edge-state proof
-    const nFrames = Math.max(...p.tiles.map((id) => back.tiles[id].frames.length));
-    const frames = Array.from({ length: nFrames }, (_, f) => p.tiles.map((id) => { const fr = back.tiles[id].frames; return slotImg(fr[f % fr.length]); }));
-    const variants = p.fullVariants.map((id) => slotImg(back.tiles[id].frames[0]));
-    const failures = edgeSignatureFailures(frames, variants);
-    assert.deepEqual(failures, [], `pair ${p.lower}|${p.upper}:\n${failures.join('\n')}`);
+  const size = 24, rows = layerRows(loaded.set);
+  const slotPx = (id) => back.atlas24.subarray(back.tiles[id].frames[0] * size * size, (back.tiles[id].frames[0] + 1) * size * size);
+  const flat = (id) => { const img = newImage(size, size); const px = slotPx(id); for (let i = 0; i < size * size; i++) { const c = pal.rgb[px[i]]; img.data.set([c[0], c[1], c[2], 255], i * 4); } return img; };
+  const fillRow = (t) => back.pairs[rows.findIndex((r) => r.type === 'fill' && r.terrain === t)];
+  const bad = [];
+  for (const [id, l] of Object.entries(loaded.set.layers)) for (const k of l.over || []) for (const lower of k.lowers) {
+    if (!loaded.set.layers[lower].fill) continue;   // scrub is drawn as grass: it has no fill of its own
+    const row = back.pairs[rows.findIndex((r) => r.type === 'over' && r.terrain === id && r.kind === k.kind)], under = flat(fillRow(lower).fullVariants[0]), own = fillRow(id).fullVariants.map(flat);
+    const tiles = row.tiles.map((tid, n) => {
+      if (n === 0) return under;
+      if (n === 15) return own[0];
+      const img = { w: size, h: size, data: new Uint8Array(under.data) }, px = slotPx(tid);
+      for (let i = 0; i < size * size; i++) if (px[i] !== 0) { const c = pal.rgb[px[i]]; img.data.set([c[0], c[1], c[2], 255], i * 4); }
+      return img;
+    });
+    const failures = edgeSignatureFailures([tiles], own);
+    if (failures.length) bad.push(`${id}/${k.kind} over ${lower}: ${failures.length} edge lines differ`);
   }
-  assert.equal(dualPairs(loaded).length, loaded.set.pairs.length);
+  assert.deepEqual(bad, []);
 });

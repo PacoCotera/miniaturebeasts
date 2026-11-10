@@ -4,7 +4,7 @@
 import { createHash } from 'node:crypto';
 import { crop, scaleNearest } from './png.mjs';
 import { paletteOf, indexImage } from './indexed.mjs';
-import { pairTiles, fullVariants, sheetTiles, extraEntries } from './setload.mjs';
+import { fillTiles, layerTiles, kindFullTiles, layerRows, sheetTiles } from './setload.mjs';
 import { encodeRle } from './blit.mjs';
 import { FORMAT_VERSION } from './format/write.mjs';
 import { TABLE_NAMES } from './lighttables.mjs';
@@ -65,23 +65,31 @@ export function bakeTileSet(loaded, terrains) {
     return tileKey.get(key);
   };
 
-  const pairs = set.pairs.map((p) => {
-    const frames = p.sheets.map((_, f) => pairTiles(loaded, p, f, true).map(slotFor));
-    const tiles = Array.from({ length: 16 }, (_, k) => tileId(frames.map((f) => f[k]), p.frameMs || 0));
-    const fullIds = fullVariants(loaded, p, true).map((img) => tileId([slotFor(img)], 0));
-    if (!valueOf.has(p.lower) || !valueOf.has(p.upper)) throw new Error(`pair ${p.id}: terrain ${!valueOf.has(p.lower) ? p.lower : p.upper} is not in terrain.json`);
-    return { lower: valueOf.get(p.lower), upper: valueOf.get(p.upper), mode: p.mode, tiles, fullVariants: fullIds, emptyVariants: [] };
+  // The rows of the tile set (setload.layerRows order): per terrain its fill row and one row per over kind, then the extras (cliff faces, scrub variants, way-up pieces, reed looks), then the tone row.
+  // A fill row holds the fill variants (animated when the fill has frames); an over row holds 16 tile ids by corner index with slot 0 empty (0xFFFF) and the all-upper variants when the terrain has a ground.
+  const val = (id, where) => { if (!valueOf.has(id)) throw new Error(`${where}: terrain ${id} is not in terrain.json`); return valueOf.get(id); };
+  const layers = set.layers || {}, EMPTY_TILE = 0xFFFF;
+  const sixteen = (frames, frameMs) => Array.from({ length: 16 }, (_, k) => (k === 0 ? EMPTY_TILE : tileId(frames.map((f) => f[k]), frameMs)));
+  const pairs = layerRows(set).map((r) => {
+    const T = r.terrain === 'tone' ? val(set.tone.of, 'tone') : val(r.terrain, 'layers');
+    const kind = r.kind === undefined ? null : layers[r.terrain].over.find((k) => k.kind === r.kind);
+    if (r.type === 'fill') {
+      const frames = r.sheets.map((_, f) => fillTiles(loaded, r.terrain, f, true).map(slotFor)), ms = layers[r.terrain].fill.frameMs || 0;
+      return { lower: T, upper: T, mode: 'opaque', tiles: [], fullVariants: frames[0].map((_, v) => tileId(frames.map((f) => f[v]), ms)), emptyVariants: [] };
+    }
+    if (r.type === 'over') {
+      const frames = r.sheets.map((_, f) => layerTiles(loaded, r.terrain, r.kind, f, true).map(slotFor));
+      return { lower: 0, upper: T, mode: 'over', tiles: sixteen(frames, kind.frameMs || 0), fullVariants: kindFullTiles(loaded, r.terrain, r.kind, true).map((img) => tileId([slotFor(img)], 0)), emptyVariants: [] };
+    }
+    if (r.type === 'tone') {
+      const frames = r.sheets.map((_, f) => layerTiles(loaded, 'tone', 0, f, true).map(slotFor));
+      return { lower: 0, upper: T, mode: 'over', tiles: sixteen(frames, set.tone.frameMs || 0), fullVariants: [], emptyVariants: [] };
+    }
+    if (r.type === 'wayup') return { lower: 0, upper: T, mode: 'over', tiles: sheetTiles(loaded, r.sheets[0], true).map((img) => tileId([slotFor(img)], 0)), fullVariants: [], emptyVariants: [] };
+    // tall, variant, look: 16-slot sheets sharing the kind's edge lines (a look is animated like its kind)
+    const frames = r.sheets.map((sh) => sheetTiles(loaded, sh, true).map(slotFor));
+    return { lower: 0, upper: T, mode: 'over', tiles: sixteen(frames, r.type === 'look' ? kind.frameMs || 0 : 0), fullVariants: [], emptyVariants: [] };
   });
-
-  // the extra entries (the cliff's tall sheets, the scrub's variants, the way-up piece, the reed bank's looks): pairs listed after the main ones, in setload.extraEntries order,
-  // that no layer names: the bake takes their tile ids where the level asks for them
-  const mainFor = new Map(set.pairs.map((p) => [p.id, p]));
-  for (const e of extraEntries(set)) {
-    const main = mainFor.get(e.pair), tilesOf = (sheet) => sheetTiles(loaded, sheet, true);
-    if (e.kind === 'wayup') { pairs.push({ lower: valueOf.get(main.lower), upper: valueOf.get(main.upper), mode: main.mode, tiles: tilesOf(e.sheets[0]).map((img) => tileId([slotFor(img)], 0)), fullVariants: [], emptyVariants: [] }); continue; }
-    const frames = e.sheets.map((sh) => tilesOf(sh).map(slotFor));
-    pairs.push({ lower: valueOf.get(main.lower), upper: valueOf.get(main.upper), mode: main.mode, tiles: Array.from({ length: 16 }, (_, k) => tileId(frames.map((f) => f[k]), e.kind === 'look' ? main.frameMs || 0 : 0)), fullVariants: [], emptyVariants: [] });
-  }
 
   const atlas48 = new Uint8Array(slots48.length * S * S);
   const atlas24 = new Uint8Array(slots48.length * 24 * 24);

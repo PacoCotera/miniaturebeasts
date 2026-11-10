@@ -25,7 +25,7 @@ export function readTileSet(bytes) {
     tiles: list(ts.tilesLength(), (i) => { const t = ts.tiles(i); return { frames: Array.from(t.framesArray()), frameMs: t.frameMs() }; }),
     pairs: list(ts.pairsLength(), (i) => {
       const p = ts.pairs(i);
-      return { lower: p.lower(), upper: p.upper(), mode: name(G.PairMode, p.mode()), tiles: Array.from(p.tilesArray()), fullVariants: Array.from(p.fullVariantsArray() || []), emptyVariants: Array.from(p.emptyVariantsArray() || []) };
+      return { lower: p.lower(), upper: p.upper(), mode: name(G.PairMode, p.mode()), tiles: Array.from(p.tilesArray() || []), fullVariants: Array.from(p.fullVariantsArray() || []), emptyVariants: Array.from(p.emptyVariantsArray() || []) };
     }),
     sprites: list(ts.spritesLength(), (i) => {
       const s = ts.sprites(i);
@@ -50,7 +50,7 @@ export function readPlace(bytes) {
     id: pl.id(), formatVersion: pl.formatVersion(), set: pl.set(), w: pl.w(), h: pl.h(), type: name(G.PlaceType, pl.type()),
     names: list(pl.namesLength(), (i) => pl.names(i)), mirrorOf: pl.mirrorOf(),
     terrain: u8(pl.terrainArray()),
-    ground: list(pl.groundLength(), (i) => { const l = pl.ground(i); return { pair: l.pair(), tiles: l.tilesArray() }; }),
+    ground: list(pl.groundLength(), (i) => { const l = pl.ground(i); return { tiles: l.tilesArray() }; }),
     decals: placed(pl.decalsLength(), (i) => pl.decals(i)), props: placed(pl.propsLength(), (i) => pl.props(i)), canopy: placed(pl.canopyLength(), (i) => pl.canopy(i)),
     heart: {
       x: h.x(), y: h.y(), kinds: list(h.kindsLength(), (i) => name(G.HeartKind, h.kinds(i))), species: list(h.speciesLength(), (i) => h.species(i)),
