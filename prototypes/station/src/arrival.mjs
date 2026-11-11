@@ -2,6 +2,7 @@
 // holding a species new to the player, the Probe's plates and the mend, the mibis who came home (care merged, or asked to come home) and who leaves (asked to go). It never shows what is inside a crate.
 import * as S from "./state.mjs";
 import { speciesId } from "./genome.mjs";
+import { neverStoredPod } from "./cargo-run.mjs";
 
 // The species a crate holds that the player has not identified yet: a crate "holds a new species" when one of its pods is of a species outside `knownIds` (state.mjs: identify records the species there).
 export const holdsNewSpecies = (st, c) => (c.pods || []).some((q) => { const sp = q.species ?? speciesId(q.sp); return sp && !st.knownIds.includes(sp); });
@@ -14,6 +15,8 @@ export function arrivalOf(st, sv, r, max = 3) {
   const leaving = ids([...new Set(pending.filter((q) => q.op === "add").map((q) => q.id))]).filter((id) => !back.includes(id));
   return {
     crates: crates.length, shown, newCrates: crates.slice(0, shown).map((c) => holdsNewSpecies(st, c)),
+    podCrates: crates.slice(0, shown).map((c) => (c.pods || []).length > 0),   // the beat ring (canon: a sleeping life's slow beat through the wood), never which kind
+    firstPod: neverStoredPod(st) && crates.some((c) => (c.pods || []).length > 0),
     plates: { max: pr ? pr.smax : 0, whole: pr ? Math.max(0, pr.shield - mended) : 0, mended },
     broke: !!(r && r.mend && r.mend.broke), back, leaving,
     habits: ((r && r.habits) || []).filter((q) => { const m = S.mibiById(st, q.id); return m && !m.released; }),   // the field habits recorded at this dock, once each, for the plate after the show

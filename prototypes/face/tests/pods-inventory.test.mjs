@@ -14,6 +14,7 @@ import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { setFrames, frameOf, podGenome } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import { podsProps } from "../../station/src/views/pods-props.mjs";
+import { storeBuild } from "../../station/src/views/store-props.mjs";
 import { dialSize } from "../../station/src/dial-picture.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
@@ -110,4 +111,56 @@ test("the 200 ms scroll: the cabinet's wipe from the old first row to the new dr
   f.frame((f.t += 100)); assert.ok(y() > y0 && y() < y0 + pitch, "halfway it is between"); f.frame((f.t += 150)); frames(f); assert.equal(y(), y0, "at the end in its place");
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
   const g = await start(b, { motion: false }); g.send({ t: "event", kind: "wipe", target: "cabinet", ms: 200, hold: 0, from: 4, to: 5 }); g.frame((g.t += 1)); assert.equal(g.nodeBox(id)?.box?.[1], y0, "a cut with motion off");
+});
+
+// ---- the store (store.json; screens/store.c): the bench pod's Data store, the teaser and the chapter page, drawn by the face ----
+const storeSpec = J("store"), storeSchema = J("store.props");
+const storeModel = (read, d) => { const st = S.freshSt("w1", 1, 1000); S.normalize(st); const p = S.seedPodFromGenome(st, podGenome(frameOf("S01"), 1234), settings, 1000).pod; S.skipIdentify(st, p); S.putOnBench(st, p); st.readEver = true; st.d = 60; for (const c of read) S.read(st, p, c, settings); st.d = d; return { st, p }; };
+const storeScenes = () => {
+  const bench = storeModel(["coat"], 15), seg = (o) => storeBuild({ ...o.m, settings, docked: false }, storeSpec);
+  bench.p.store = { d: 9, ms: 0 };
+  const two = storeModel(["coat", "face", "shape"], 15), chap = storeModel(["coat", "face"], 15);
+  return {
+    "the bench, the panel on the amount": seg({ m: { st: bench.st, ui: { view: "bench", amount: 4, f: "put" } } }),
+    "the bench, the ring on the bar": seg({ m: { st: bench.st, ui: { view: "bench", f: "bar", i: 0 } } }),
+    "the teaser": seg({ m: { st: two.st, ui: { view: "teaser", teaser: { chapters: [{ id: "face", firsts: 2 }, { id: "shape", firsts: 2 }] } } } }),
+    "a chapter page": seg({ m: { st: chap.st, ui: { view: "chapter", chapter: "face", show: ["shape"] } } }),
+  };
+};
+const storeStart = async (b, motion = false) => {
+  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["store", storeSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0, f.errors().join("; "));
+  for (const px of [14, 15, 16, 20, 28]) for (const id of ["energy", "data", "essence"]) f.handleOf(`icon:${id}:${px}`, withPolicy((i) => standIn(i, [px, px])));
+  f.t = 1000; f.motion = motion;
+  assert.equal(f.props({ screen: "store", ...b.props, motion, frame: { ...frameProps(b.line), top: { screen: "store", title: "Research", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: false, withMibi: null } } } }), 0, f.errors().join("; ")); frames(f); return f;
+};
+const storeSceneList = built ? storeScenes() : {};
+test("the face draws the store's four scenes: no error, no refused node, inside the object budget, every word at 14 px or more and inside the stage", { skip }, async () => {
+  for (const [name, b] of Object.entries(storeSceneList)) {
+    const f = await storeStart(b), lg = logOf(f); assert.deepEqual(f.errors(), [], name); assert.equal(f.refused(), 0, name);
+    assert.ok((lg.objects ?? 0) < 1024, name + ": the object budget"); for (const t of lg.type ?? []) { assert.ok((t.px % 1000) >= 14, `${name}: ${t.text} at ${t.px} px`); if (/^(pod|store|reading|put|teaser|chapter|rows|promise|part|row|key)/.test(t.region ?? "")) assert.ok(t.cap >= 40 && t.base <= 562 && t.x >= 0 && t.x + t.w <= 1024, `${name}: "${t.text}" at ${t.x},${t.cap} leaves the stage`); }
+  }
+});
+test("the store's put-in panel holds the amount between its arrows, the bar's parts sit on its rectangle and the ring is on the panel or the bar; words stay inside their panel", { skip }, async () => {
+  const R = storeSpec.regions, b = storeSceneList["the bench, the panel on the amount"], f = await storeStart(b), lg = logOf(f), reg = (id, layer) => (lg.regions ?? []).filter((r) => r.id === id && (!layer || r.layer === layer));
+  const inside = (x, r) => x[0] >= r[0] && x[1] >= r[1] && x[0] + x[2] <= r[0] + r[2] && x[1] + x[3] <= r[1] + r[3];
+  for (const t of (lg.type ?? []).filter((x) => x.region === "put")) assert.ok(inside([t.x, t.cap, t.w, t.base - t.cap], R.put.rect), `the panel's words "${t.text}" leave it`);
+  assert.ok(reg("put", "chrome").length >= 1, "the panel is drawn");
+  for (const t of (lg.type ?? []).filter((x) => x.region === "store.bar")) assert.ok(t.x >= R.store.bar.rect[0] && t.x + t.w <= R.store.bar.rect[0] + R.store.bar.rect[2], `"${t.text}" leaves the bar's width`);
+  const ring = reg("focus"); assert.equal(ring.length, 1); const box = R.put.rect; assert.deepEqual(ring[0].rect, [box[0] - 5, box[1] - 5, box[2] + 10, box[3] + 10]);
+  const g = logOf(await storeStart(storeSceneList["the bench, the ring on the bar"])), rg = (g.regions ?? []).filter((r) => r.id === "focus"); assert.equal(rg.length, 1); assert.deepEqual(rg[0].rect, [R.store.bar.rect[0] - 5, R.store.bar.rect[1] - 5, R.store.bar.rect[2] + 10, R.store.bar.rect[3] + 10]);
+  const t = logOf(await storeStart(storeSceneList["the teaser"])), rt = (t.regions ?? []).filter((r) => r.id === "focus"); assert.equal(rt.length, 1, "the teaser's ring is on its card"); const c = (logOf(await storeStart(storeSceneList["a chapter page"])).regions ?? []).filter((r) => r.id === "focus"); assert.equal(c.length, 0, "the chapter page has no ring");
+});
+test("every vector of the store's spec is played on the face: ◀ ▶ on the panel and the bar say a step and the ring stays; ▲ ▼ move it between them; the teaser's ring stays; ✓ and ← are intents on the target", { skip }, async () => {
+  const scene = { put: "the bench, the panel on the amount", bar: "the bench, the ring on the bar", go: "the teaser" };
+  for (const v of storeSpec.focus.vectors) {
+    const f = await storeStart(storeSceneList[scene[v.from]]), before = f.hash(); f.key(v.key); const out = said(f);
+    if (v.intent === "confirm") { assert.deepEqual(out.map((m) => [m.t, m.screen, m.target, m.verb]), [["intent", "store", v.from, "confirm"]], `${v.from} ✓`); continue; }
+    if (v.intent) { assert.deepEqual(out.map((m) => [m.t, m.screen, m.target, m.verb]), [["intent", "store", v.from, v.intent]], `${v.from} ${v.key}`); assert.equal(f.hash(), before, "a step redraws nothing: the host sends the new amount"); continue; }
+    if (v.to === v.from) assert.deepEqual(out, [], `${v.from} ${v.key} stays`); else assert.deepEqual(out.map((m) => [m.t, m.screen, m.target]), [["focus", "store", v.to]], `${v.from} ${v.key}`);
+  }
+  const f = await storeStart(storeSceneList["a chapter page"]); f.key("confirm"); assert.deepEqual(said(f).map((m) => [m.screen, m.verb]), [["store", "confirm"]], "the chapter page says ✓ with no target"); f.key("back"); assert.deepEqual(said(f).map((m) => [m.screen, m.verb]), [["store", "back"]]);
+});
+test("the store's props validate against store.props.json's required keys and name no prop it does not list", () => {
+  for (const [name, b] of Object.entries(storeSceneList)) { const req = storeSchema.required; for (const k of req) assert.ok(k in b.props, `${name}: ${k}`); for (const k of Object.keys(b.props.regions)) assert.ok(k in storeSchema.properties.regions.properties, `${name}: ${k} is a prop`); assert.ok(["bench", "teaser", "chapter"].includes(b.props.state), name); }
 });

@@ -133,7 +133,7 @@ test("a cross between different frame versions is refused with a readable reason
   assert.ok(ids(loika).some((id) => !ids(f5).includes(id)), "version 6 carries loci the older genomes lack: the draw used to read them");
   for (const [x, y] of [[4, 5], [4, 6], [5, 6]]) for (const [p, q] of [[x, y], [y, x]]) for (const fv of [4, 5, 6]) {
     const run = () => cross(frames[fv], { id: 1, genome: g[p] }, { id: 2, genome: g[q] }, { rng: rng("c"), kinship: 0 });
-    assert.throws(run, (e) => e instanceof Error && !(e instanceof TypeError) && e.message.includes(`born on frame version ${p}`) && e.message.includes(`version ${q}`) && /same version/.test(e.message), `${p} x ${q} under frame ${fv}`);
+    assert.throws(run, (e) => e instanceof Error && !(e instanceof TypeError) && e.message.includes(`made on frame version ${p}`) && e.message.includes(`version ${q}`) && /same version/.test(e.message), `${p} x ${q} under frame ${fv}`);
   }
   assert.throws(() => cross(loika, { id: 1, genome: g[4] }, { id: 2, genome: sampleIndividual(f4, rng("x4b")) }), /frame version 4, which lacks 6 loci/, "naming the loci the genome lacks");
 });

@@ -122,11 +122,10 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
   const n = ch.traits.length, want = st.wish[sid] || {};
   if (o.at === "detail") return { ...base, ...detailOf(m, spec, req, p, fr, ch, clamp(ui.trait ?? 0, 0, n - 1)), form: "detail" };
   if (!o.isRead) {   // unread: the "?" discs on the ghost of the first look, the template chips, the price key and the line beside it
-    const [r, rc, rch] = RADII[Math.min(4, n)], cost = S.readCost(st, p, ch.id, settings) ?? 0, short = st.d < cost, pressed = false;
+    const [r, rc, rch] = RADII[Math.min(4, n)];
     const plates = ch.traits.map((t) => ({ trait: t.name, kind: "", shown: { pic: discReq(req, sid, t, ch, 2 * r, { q: true, look: templateOf(st, fr, t)[0] || null }), caption: "" }, carried: { pic: discReq(req, sid, t, ch, 2 * rc, { q: true, carried: true }), caption: "" },
       chips: templateOf(st, fr, t).map((look, i) => discReq(req, sid, t, ch, 2 * rch, t.nature === "doing" || glyphOf(t) !== "bar" ? { glyph: `${glyphOf(t)}${i}`, alpha: 0.92 } : { look: look || null, alpha: 0.92 })) }));   // the drawn template glyphs: gaits, amounts, Build, Haunch, Topline, Eyes
-    return { ...base, form: "unread", plates, key: { price: String(cost), state: short ? "dim" : pressed ? "pressed" : "lit", pic: slot(req, `reading-key-${short ? "dim" : pressed ? "pressed" : "lit"}-104x49`, [104, 49]), diamond: dataIcon(req, 16) },
-      beside: o.sprout ? { sprout: slot(req, "reading-sprout-20x18", [20, 18]), text: Sg.sprout } : { sprout: "", text: short ? Sg.dataGrows : "" } };
+    return { ...base, form: "unread", plates, beside: o.sprout ? { sprout: slot(req, "reading-sprout-20x18", [20, 18]), text: Sg.sprout } : { sprout: "", text: "" } };   // no price key: a chapter is read from the pod's Data store (views/store-props.mjs)
   }
   // read: the pair on each plate (shown over carried), the captions, the trait and its kind line; the reward chip after a read that paid for a new look
   const [r, rc] = READ_R[Math.min(4, n)];
@@ -180,7 +179,7 @@ function lineOf(m, spec, out, p, ch, o) {
   if (o.at === "stamp") return { ok: null, back: out.name, subject: "", need: "" };
   if (o.at === "detail") return { ok: null, back: ch.name, subject: "", need: "" };
   if (o.sealed) return { ok: null, back, subject: "", need: "" };
-  if (o.at === "right" && !o.isRead) { const short = R.key?.state === "dim"; return short ? { ok: null, back, subject: "", need: fill(Sg.needs, { n: R.key.price, have: m.st.d }) } : { ok: fill(Sg.read, { chapter: ch.name }), price: "◆ " + R.key.price, back, subject: "", need: "" }; }
+  if (o.at === "right" && !o.isRead) return { ok: null, back, subject: "", need: "" };
   if (o.at === "right" && o.isRead) { const i = clamp(m.ui.plate ?? 0, 0, ch.traits.length - 1); return { ok: fill(Sg.closer, { trait: ch.traits[i].name }), back, subject: "", need: "" }; }
   return { ok: fill(Sg.open, { chapter: ch.name }), back, subject: "", need: "" };
 }
@@ -189,6 +188,6 @@ function targetsOf(out, o) {
   if (o.reading || o.moment) return [{ id: "hold", group: "hold" }];
   if (o.at === "stamp") return [{ id: "stamp", group: "stamp" }];
   if (o.at === "detail") return [{ id: "trait", group: "trait" }];
-  if (o.at === "right") return o.isRead ? out.right.plates.map((_, i) => ({ id: "plate." + i, group: "plate", index: i })) : [{ id: "key", group: "key" }];
+  if (o.at === "right" && o.isRead) return out.right.plates.map((_, i) => ({ id: "plate." + i, group: "plate", index: i }));
   return [{ id: "rail", group: "rail" }];
 }

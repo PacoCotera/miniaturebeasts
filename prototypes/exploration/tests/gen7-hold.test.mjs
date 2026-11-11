@@ -43,7 +43,7 @@ for (const seed of SEEDS) {
         if (f.x < 1 || f.y < 1 || f.x > 24 || f.y > 28) bad.push(at + ' find outside the cell');
       }
       if (new Set(ir.finds.map(f => f.x + ',' + f.y)).size !== ir.finds.length) bad.push(at + ' two finds on one tile');
-      for (const m of ir.strikes) { if (m.glass && ir.terrain[m.y * ir.w + m.x] !== 3) bad.push(at + ' storm glass off sand'); if (m.read !== false || !(m.age >= 0)) bad.push(at + ' strike shape'); }
+      for (const m of ir.strikes) { if (m.glass && ![3, 14].includes(ir.terrain[m.y * ir.w + m.x])) bad.push(at + ' storm glass off sand or scree'); if (m.read !== false || !(m.age >= 0)) bad.push(at + ' strike shape'); }
       const lm = lms.at.get(X + ',' + Y); if (lm && (ir.landmarks.length !== 1 || ir.names[0] !== lm.name)) bad.push(at + ' landmark missing');
       if (!lm && ir.landmarks.length) bad.push(at + ' landmark not in the realm list');
     }

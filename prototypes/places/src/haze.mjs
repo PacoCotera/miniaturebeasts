@@ -11,7 +11,10 @@ export const hazeFileNames = () => [1, 2, 3].flatMap((L) => ['', '~v1', '~v2'].m
 // files: { name: { width, height, data (RGBA) } } for the nine sheets; remap: haze-remap.json; ramp: haze-ramp.json
 // setLen: how many colours the tile set's palette holds (indices 48..). The desk keyed its tables to the whole set (99 colours at 48..146, order in haze-remap.json) and put the ramp after it
 // (haze-ramp.json firstIndex, 147..154); nothing is shifted here.
-export function hazeKit(files, remap, ramp, setLen = 99) {
+// The set may hold more colours than the desk keyed (the walk's signed 1x sprites bring their own, set after the keyed ones: the palette pins the keyed 99 in their order). Then the ramp moves up after the whole
+// set (every table answer that is a ramp index moves with it), and each colour beyond the keyed ones takes the table entries of the nearest keyed colour (the rule the page gives a prop's colour): `palette`, the
+// set's colours as 0xRRGGBB, is needed for that.
+export function hazeKit(files, remap, ramp, setLen = 99, palette = null) {
   // a pixel's kind is its layer and its alpha step (the colour is the layer's own; a browser's canvas premultiplies low alphas, so the colour is not read back)
   const kindOf = new Map(remap.kinds.map((k) => [k.key[1] + ':' + k.rgba[3], k.key]));
   const tiles = [1, 2, 3].map((L) => ['', '~v1', '~v2'].map((v) => {
@@ -29,17 +32,22 @@ export function hazeKit(files, remap, ramp, setLen = 99) {
       return t;
     });
   }));
-  const first = remap.firstIndex;
-  if (ramp.firstIndex !== first + setLen || remap.order.length !== setLen + ramp.count) throw new Error(`haze tables are keyed to ${ramp.firstIndex - first} set colours, the tile set holds ${setLen}`);
+  const first = remap.firstIndex, keyed = ramp.firstIndex - first, grow = setLen - keyed;
+  if (remap.order.length !== keyed + ramp.count || grow < 0 || (grow > 0 && !palette)) throw new Error(`haze tables are keyed to ${keyed} set colours, the tile set holds ${setLen}`);
+  const toRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const setRgb = grow ? palette.map((c) => [(c >> 16) & 255, (c >> 8) & 255, c & 255]) : remap.order.slice(0, setLen).map(toRgb);
+  // the keyed colour nearest each added colour (by RGB), and a table answer moved up when it is a ramp index
+  const near = Array.from({ length: grow }, (_, k) => { let best = 0, bd = Infinity; for (let p = 0; p < keyed; p++) { const q = setRgb[p], c = setRgb[keyed + k], d = (q[0] - c[0]) ** 2 + (q[1] - c[1]) ** 2 + (q[2] - c[2]) ** 2; if (d < bd) { bd = d; best = p; } } return best; });
+  const move = (to) => (to >= ramp.firstIndex ? to + grow : to);
   const tables = [1, 2, 3].map((L) => [null, ...Array.from({ length: 7 }, (_, s) => {
     const row = remap.tables[`L${L}.${s + 1}`], t = Uint8Array.from({ length: 256 }, (_, i) => i);
-    row.forEach((to, p) => { t[first + p] = to; });
+    row.forEach((to, p) => { t[first + (p >= keyed ? p + grow : p)] = move(to); });
+    near.forEach((p, k) => { t[first + keyed + k] = move(row[p]); });
     return t;
   })]);
-  const toRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-  // extra: the colours the tables can answer with beyond the tile set's palette: the ramp colours, at the ramp file's own firstIndex
-  const extra = { first: ramp.firstIndex, rgb: ramp.colours.map(toRgb) };
-  return { tiles, tables, ramp: extra, extra, setRgb: remap.order.slice(0, setLen).map(toRgb) };
+  // extra: the colours the tables can answer with beyond the tile set's palette: the ramp colours, just after the set's colours
+  const extra = { first: first + setLen, rgb: ramp.colours.map(toRgb) };
+  return { tiles, tables, ramp: extra, extra, setRgb };
 }
 
 // FNV-1a over the place's id, the layer and the dual tile (the desk's h32): which of the three lumps a dual tile wears.

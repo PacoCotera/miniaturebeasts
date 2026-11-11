@@ -5,8 +5,9 @@
 import { T, T_BLOCK, L, hash } from './world.mjs';
 
 export const INNER = { w: 24, h: 28 };
-const PRESS_PROPS = ['boulder-grey', 'boulder-brown', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
-const CROWN_MARGIN = 6;   // pixels at 48 px round a crown's box that still count as under it
+const PRESS_PROPS = ['boulder-grey', 'boulder-brown', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-big', 'rock-big-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
+const RING_DEPTH = 2;   // tiles in from a side the range haze or a closed side's thicket takes (the page's LINE_DEPTH 3 counts the apron)
+const CROWN_MARGIN = 6;  // pixels at 48 px round a crown's box that still count as under it
 const SIDE_STEP = { N: 'up', S: 'down', W: 'left', E: 'right' };
 export const sideDir = s => SIDE_STEP[s];
 
@@ -67,8 +68,30 @@ export function adaptCell(place, ir, ts, terrains, o) {
   // finds: a pod is a slot (the world's pods take them), the rest are the page's features. A find nobody could stand beside is dropped.
   const KIND = { fruit: 'b', dew: 'u', stone: 'k', material: 'n' }, count = {}, next = k => (count[k] = (count[k] ?? -1) + 1);
   const feats = [], podSlots = [], finds = [];
+  // Everything the player can act on stands on a tile reachable on foot from the cell's ways in, outside the band the range haze and the closed sides' thicket take (o.shut(side): the page says the
+  // side is past the Probe's range or closed), and a bush or a mark also off every crown. A thing on a tile that fails is moved to the nearest that passes, or not placed (notes 14, 15, 26-31).
+  const ring = new Uint8Array(NP);
+  if (o.shut) for (const side of ['N', 'S', 'W', 'E']) if (openings.some(op => op.side === side) && o.shut(side))
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if ((side === 'N' && y < RING_DEPTH) || (side === 'S' && y >= h - RING_DEPTH) || (side === 'W' && x < RING_DEPTH) || (side === 'E' && x >= w - RING_DEPTH)) ring[I(x, y)] = 1;
+  // the ground walked on from the ways in that are open (a shut side's ways in lead nowhere now)
+  const live = new Uint8Array(NP), lq = [];
+  for (const op of openings) if (!(o.shut && o.shut(op.side))) for (const pt of runPts(op)) { const i = I(pt.x, pt.y); if (walks(pt.x, pt.y) && !live[i]) { live[i] = 1; lq.push(i); } }
+  for (let h2 = 0; h2 < lq.length; h2++) { const i = lq[h2], x = i % w, y = (i / w) | 0;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!live[j] && !ring[j] && !T_BLOCK[tiles[j]]) { live[j] = 1; lq.push(j); } } }
+  const ground = lq.length ? live : reach;   // a cell with no way in open now keeps the ground its ways in lead to
+  const used = new Set();
+  const okAt = (x, y, bare) => x >= 0 && y >= 0 && x < w && y < h && ground[I(x, y)] && !ring[I(x, y)] && !T_BLOCK[tiles[I(x, y)]] && !used.has(I(x, y)) && (!bare || clear[I(x, y)]);
+  const settle = (x, y, bare) => {
+    for (let r = 0; r <= 8; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+      if (Math.max(Math.abs(dx), Math.abs(dy)) !== r || !okAt(x + dx, y + dy, bare)) continue;
+      used.add(I(x + dx, y + dy)); return { x: x + dx, y: y + dy };
+    }
+    return null;
+  };
+  if (ir.landmarks[0]) used.add(I(ir.landmarks[0].x - 1, ir.landmarks[0].y - 1));
   ir.finds.forEach((f, i) => {
-    const x = f.x - 1, y = f.y - 1, what = f.kinds[0]; if (x < 0 || y < 0 || x >= w || y >= h || !nextTo(x, y)) return;
+    const what = f.kinds[0], at0 = { x: f.x - 1, y: f.y - 1 }, at = f.what === 'pearl' ? (nextTo(at0.x, at0.y) ? at0 : null) : settle(at0.x, at0.y, what === 'fruit'); if (!at || at.x < 0 || at.y < 0 || at.x >= w || at.y >= h) return;
+    const x = at.x, y = at.y;
     finds.push({ x, y, what, i });
     if (what === 'pod') { podSlots.push({ x, y, on: true, forced: !!f.forced, herd: f.herd }); return; }
     if (f.what === 'pearl') return;   // the pearl has no picture or press yet: an empty slot in the IR
@@ -83,11 +106,19 @@ export function adaptCell(place, ir, ts, terrains, o) {
   for (const s of specials) {   // the burrow and the deep stone: on reachable ground, far from the way in, by seed
     let best = null, bs = -1;
     for (let i = 0; i < NP; i++) { const sx = i % w, sy = (i / w) | 0;
-      if (!reach[i] || taken.has(i) || Math.abs(sx - spawnPt.x) + Math.abs(sy - spawnPt.y) < 6 || !nextTo(sx, sy)) continue;
+      if (!ground[i] || ring[i] || taken.has(i) || Math.abs(sx - spawnPt.x) + Math.abs(sy - spawnPt.y) < 6 || !nextTo(sx, sy)) continue;
       if (podSlots.some(f => f.x === sx && f.y === sy)) continue;
       const sc = hash(o.seed, 'special7', o.cell, s.id, sx, sy); if (sc > bs) { bs = sc; best = { x: sx, y: sy }; } }
     if (best) { feats.push({ ...s, ...best }); taken.add(best.y * w + best.x); }
   }
+  for (const s of specials) { const f = feats.find(q => q.id === s.id); if (f) used.add(I(f.x, f.y)); }
+  // strike marks: ground decals, on open walkable ground off every crown (note 29), and on a tile no find holds
+  const strikes = ir.strikes.map((m, i) => { const at = settle(m.x - 1, m.y - 1, true); return at ? { id: 'm' + i, x: at.x, y: at.y, age: m.age, glass: !!m.glass } : null; }).filter(Boolean);
+  // decor keeps a one-tile gap round a find, and none stands on the foot of one below it that its picture would cover (notes 8, 25, 32)
+  const gap = [...finds.filter(f => f.what !== 'pearl'), ...strikes].map(f => [f.x, f.y]);
+  const keepDecal = d => { const dx = Math.floor(d.x / 48) - 1, dy = Math.floor(d.y / 48) - 1; return !gap.some(([gx, gy]) => Math.abs(dx - gx) <= 1 && dy - gy >= -1 && dy - gy <= 2); };
+  place.decals = place.decals.filter(keepDecal);
+  const decalNear = (x, y) => place.decals.some(d => Math.abs(Math.floor(d.x / 48) - 1 - x) <= 1 && Math.floor(d.y / 48) - 1 - y >= -1 && Math.floor(d.y / 48) - 1 - y <= 2);   // a tile (a fruit about to fall) whose picture some decor would cover
   const lm = ir.landmarks[0] || null;
   const lay = {
     key: o.key, cell: o.cell, cave: false, land: o.land, base: T.GRASS, tiles, shelter: new Uint8Array(NP), feats, terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt,
@@ -95,7 +126,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
     baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, heart: null,
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
-    strikes: ir.strikes.map((m, i) => ({ id: 'm' + i, x: m.x - 1, y: m.y - 1, age: m.age, glass: !!m.glass })).filter(m => m.x >= 0 && m.y >= 0 && m.x < w && m.y < h),
+    strikes, decalNear,
     signs: ir.signs, traces: ir.traces.map(t => ({ kind: t.kind, x: t.x - 1, y: t.y - 1 })),
   };
   if (G && G.land[o.cell] === L.WOOD) lay.base = T.DARK; else if (G && G.land[o.cell] === L.ROCK) lay.base = T.SAND;

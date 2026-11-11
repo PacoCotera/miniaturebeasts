@@ -3,7 +3,7 @@
 export const WORDS = {
   // where you are (bottom line, Call report, band, map line, Probe tile)
   explored: 'explored', left: 'nothing left to take', leftN: n => n + ' to take', moreN: n => n + ' more to take',
-  nothingSeen: 'nothing in sight to take', callNone: 'Nothing in sight to take · walk on',
+  nothingSeen: 'nothing in sight to take',
   band: { unexplored: 'not explored yet', podWaits: n => n === 1 ? '1 pod waits there' : n + ' pods wait there' },
   reachLine: (n, total, tail) => 'Explored ' + n + ' of ' + total + (tail || ' in reach'), worldLine: (n, all) => 'Explored ' + n + ' of ' + all + ' places',
   // taking things (✓ labels, at most 24 characters)

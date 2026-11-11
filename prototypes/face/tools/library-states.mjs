@@ -23,15 +23,16 @@ const MID = (w, bare, seen, mid, arg) => {
   for (const [id, k] of [["S01", 0.4], ["S02", 0.15], ["S03", 0.3], ["S07", 0.2], ["S09", 0.4], ["S12", 0.25]]) S.fillGuide(id, k);
   const t = Object.keys(st.guide.S03)[0], tl = Object.keys(st.guide.S01)[0]; st.wish = { S03: { [t]: st.guide.S03[t][0] } }; if (arg?.loikaWish) st.wish.S01 = { [tl]: st.guide.S01[tl][0] }; seen();   // the wish on the Tuikis (alone); in one scene on the Loika too (beside its face chip)
 };
-const MID_EXPECT = { found: ["S01", "S02", "S03", "S07", "S09", "S12"], met: ["S04", "S05", "S10", "S14"], wish: ["S03"], face: ["S01"] };
+const GOAL = "Find a Loika pod";   // the Station goal the host puts in the bottom line's middle slot (first-ten-front)
+const MID_EXPECT ={ found: ["S01", "S02", "S03", "S07", "S09", "S12"], met: ["S04", "S05", "S10", "S14"], wish: ["S03"], face: ["S01"] };
 const L1 = {
-  "l1-first": { l1: null, cur: "cell.S01", subject: "", expect: { found: [], met: ["S01"] }, set: (w, bare, seen) => { const st = window.__st.ST; bare(); st.metIds = ["S01"]; seen(); } },
-  "l1-mid": { l1: "S01", cur: "cell.S01", subject: "", expect: { ...MID_EXPECT, wish: ["S01", "S03"] }, set: MID, arg: { loikaWish: true } },
+  "l1-first": { l1: null, cur: "cell.S01", subject: "Go out with the Companion", expect: { found: [], met: ["S01"] }, set: (w, bare, seen) => { const st = window.__st.ST; bare(); st.metIds = ["S01"]; seen(); } },
+  "l1-mid": { l1: "S01", cur: "cell.S01", subject: GOAL, expect: { ...MID_EXPECT, wish: ["S01", "S03"] }, set: MID, arg: { loikaWish: true } },
   "l1-new": { l1: "S02", cur: "cell.S02", subject: "Three new looks", expect: { found: ["S01", "S02", "S03"], met: ["S05"], glint: ["S02", "S03"] }, set: (w, bare, seen) => {
     const S = window.__st, st = S.ST; w.adults(1); bare(); st.knownIds = ["S02", "S03"]; st.metIds = ["S05"]; S.fillGuide("S01", 0.4); S.fillGuide("S02", 0.3); S.fillGuide("S03", 0.3); seen();   // the Loika's guide filled, and seen: nothing new for it
     const drop = (id, n) => { for (const t of Object.keys(st.libSeen[id] ?? {})) while (n > 0 && st.libSeen[id][t].length > 1) { st.libSeen[id][t].pop(); n--; } };   // looks found since the record: the last found of the traits with more than one
     drop("S02", 2); drop("S03", 1); } },
-  "l1-roomkey": { l1: "S09", cur: "cell.S09", subject: "", via: "room", expect: MID_EXPECT, set: MID },
+  "l1-roomkey": { l1: "S09", cur: "cell.S09", subject: GOAL, via: "room", expect: MID_EXPECT, set: MID },
   "l1-dither": { l1: "S12", cur: "cell.S03", via: "bezel", timed: 90, expect: { found: MID_EXPECT.found, met: MID_EXPECT.met }, set: MID },
 };
 
@@ -91,7 +92,7 @@ async function assertL3(page, name, sc, fail) {
     const T = p.regions.tree, P = p.regions.panel; must(p.state === sc.zoom, `the state is ${p.state}, not ${sc.zoom}`); must(p.focus.cur === (sc.bud ? "node.bud" : "node." + sc.ids[sc.ring]), `the ring is on ${p.focus.cur}, not ${sc.ring}`);
     if (sc.cam) must(JSON.stringify(T.cam) === JSON.stringify(sc.cam), `the camera is ${T.cam}, not ${sc.cam}`);
     must(T.slots.length > 0 && T.slots.every((s) => s.picture), "every slot names its picture"); must(T.slots.some((s) => s.id === p.focus.cur), "the ring's node is in a slot");
-    must(p.frame.line.ok === sc.ok && p.frame.line.subject === (sc.subject ?? "") && p.frame.line.back === sc.back, "the line " + JSON.stringify(p.frame.line)); must(p.frame.top.readout.text === "Loika family", "the readout");
+    must(p.frame.line.ok === sc.ok && p.frame.line.subject === (sc.subject ?? GOAL) && p.frame.line.back === sc.back, "the line " + JSON.stringify(p.frame.line)); must(p.frame.top.readout.text === "Loika family", "the readout");
     must(sc.bud ? P.rows.name === "Loika bud" && P.rows.portraitSlot && P.rows.portrait === "rackpod:S01" && /^stamp:S01-[0-9a-f]+:[a-z,-]*:\d+:k16$/.test(P.rows.stamp.picture) : P.rows.name === sc.ring && /^face:\d+:64(:faded)?$/.test(P.rows.portrait) && /^stamp:S01-[0-9a-f]+:[a-z,-]*:\d+:k16$/.test(P.rows.stamp.picture), "the rows of " + sc.ring + " " + JSON.stringify([P.rows.name, P.rows.portrait, P.rows.stamp.picture]));
     if (sc.parents) must(JSON.stringify(P.rows.parents.map((q) => q.name)) === JSON.stringify(sc.parents), "the parents " + JSON.stringify(P.rows.parents));
     must(!!P.ov.picture === !!sc.inset && (!sc.inset || /^lineage-mini-S01-[0-9a-f]{8}$/.test(P.ov.picture)), `the overview ${P.ov.picture || "none"}`);

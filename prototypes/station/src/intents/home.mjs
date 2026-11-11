@@ -5,6 +5,7 @@ import { homeNeeds, librarySpecies } from "../views/home-props.mjs";
 import { intent as incubatorIntent } from "./incubator.mjs";
 import { openAt } from "./library.mjs";
 import { openInventory, researchKey } from "./pods.mjs";
+import { openStore } from "./store.mjs";
 
 // Pods from Home and the Bay: the inventory, the ring on the pod named (the newest from the Bay), else where it was left; Home's Pods station is the Research key's two faces.
 export const toPods = (h, id = null) => openInventory(h, { from: "home", pod: id != null && S.podById(h.st, id) ? id : null });
@@ -16,6 +17,7 @@ const toLibrary = (h) => openAt(h, librarySpecies(h.st, h.settings));   // Level
 export function doNeed(h, nd) {
   if (!nd) return;
   if (nd.act === "cargo") { h.goto("cargo"); if (nd.key === "crates") openBay(h); }   // the crates need: ✓ Open the bay goes through Cargo on the same key (decision panel spec, cut 1)
+  else if (nd.act === "store") openStore(h, "home", { reveal: true });   // chapters read while the Companion was out: the bench, the teaser, then the chapters one by one
   else if (nd.act === "incubator") { h.goto("incubator"); if (nd.key === "budReady") incubatorIntent(h, "room", "confirm"); }   // the bud-ready need: ✓ Open the bud, the hatch on the same key (cut 2); a growing bud only looks
   else if (nd.act === "meet") { toVivarium(h, h.ui.meet); }
   else if (nd.act === "cross") { h.ui.hab.id = nd.id; h.ui.hab.f = "cross"; h.goto("habitat"); }   // the pair need: ✓ opens the first up close with the ring on Cross (its ✓ opens the Cross screen)

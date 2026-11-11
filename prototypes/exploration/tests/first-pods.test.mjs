@@ -9,7 +9,8 @@ import { makePage } from "./page-harness.mjs";
 import * as W from "../src/world.mjs";
 
 
-const page = (store = {}) => makePage({ store, gen: 6 });   // generator 6: the composed places (the first pods land in the template's find slots)
+// generator 6: the composed places (the first pods land in the template's find slots). The first pod is home, so the signs and hints of these suites show (the first walk holds them: the tests at the end of this file)
+const page = (store = {}) => { const p = makePage({ store, gen: 6 }); p.run("RT.caddy = { podHome: true }"); return p; };
 const plain = x => JSON.parse(JSON.stringify(x));
 const buried = p => p.h === 1 && p.bur === 1;
 const SEEDS = Array.from({ length: 1000 }, (_, i) => i + 1);
@@ -266,7 +267,7 @@ test("the Probe: no legend rows and no odds; the signs met are pictures in the o
   p.key("right"); assert.equal(p.run("lineCtx(lineFor()).r"), "Flag · your start");
   p.key("down"); assert.equal(p.run("S.ui.pf"), 1, "no row below: the focus stays");
   p.key("left"); p.key("left"); assert.equal(p.run("S.ui.pf"), 0);
-  assert.ok(p.run("TILES.length") === 34 && p.run("TILES.every(t => PIC[t.pic])"));
+  assert.ok(p.run("TILES.length") === 33 && p.run("TILES.every(t => PIC[t.pic])"));
   for (const t of p.run("TILES")) { const n = typeof t.name === "function" ? t.name() : t.name; assert.ok(p.run("textWT")(n, 2) <= 205 && !/%|\d/.test(n.replace("tier 2", "")), n); }
   p.key("back"); assert.equal(p.S.phase, "menu");
 });
@@ -304,7 +305,7 @@ test("control hints lead the bottom line's middle and are spent once it shows th
   p.key("left"); p.key("right");   // an action on the map
   assert.ok(p.S.found.includes("callmap"), "spent when shown");
   assert.ok(p.run("textWT('CALL here drops a pin', 2)") <= 190, "the signed short form fits the map's middle");
-  p.key("confirm"); if (p.S.phase === "patch") { assert.ok(p.S.found.includes("backplace")); assert.ok(!/Leave is first/.test(p.run("FX.msg")), "not in the message box"); }
+  p.key("confirm"); if (p.S.phase === "patch") { assert.ok(!p.S.found.includes("backplace"), "the menu hint is gone"); assert.ok(!/Leave is first/.test(p.run("FX.msg") + p.run("lineCtx(lineFor()).r")), "nowhere"); }
 });
 
 test("the Probe's storm tile leads with the exact odds in words derived from STRAY, with no digit or percentage; hazard signs are priority 3", () => {
@@ -547,4 +548,55 @@ test("R2.4 the pod reaches the crate with its genome, shed and of, through take,
   const crate = p.S.bay.at(-1); assert.ok(crate, "sealed");
   const c = plain(crate.pods[0]); assert.equal(c.shed, 7); assert.equal(c.of, "Dot"); assert.deepEqual(c.genome, GENOME);
   assert.equal(p.run("podTagOf({ how: 'shed', of: 'Dot' })"), "of Dot's line");
+});
+
+// ---- the first ten minutes, the walk side (design-first-ten B2 to B5): in this file, not a new suite ----
+const unhomed = () => { const p = makePage({ store: {}, gen: 6 }); p.run("newWorld(3); TEST.calm = true;"); return p; };
+test("the first walk: one teaching line per deed, signs and hints held unspent, the goal line F1 to F3; home, the signs show and the Station's goal takes the line", () => {
+  const p = unhomed();
+  assert.equal(p.run("firstWalk()"), true);
+  assert.equal(p.run("teachStep()"), "Press ✓ to set out");
+  assert.equal(p.run("goalLine()"), "Find a pod · bring it home");
+  p.run("startExpedition('weather', G.spawns[0]); enterPatch();");
+  assert.equal(p.run("teachStep()"), "Press ))) to Call · buried finds show");
+  p.run("S.exp.callsAt = { [curLay().cell]: 1 };");
+  assert.equal(p.run("teachStep()"), "Walk to the glint · ✓ takes the pod");
+  p.run("S.exp.cargo.pods.push({ id: 1, sp: 0, g: 'bone' });");
+  assert.ok(["A charged stone · ✓ takes its Energy", "← then End · your finds go in a crate"].includes(p.run("teachStep()")));
+  assert.equal(p.run("goalLine()"), "Bring it home · your flag");
+  p.run("S.exp.cargo.pods = []; FX.notes = []; FX.msg = ''; fxSign('call'); fxSign('bubbleNotice'); fxHint('callmap', 'CALL here drops a pin', 1);");
+  assert.equal(p.run("FX.msg"), "", "no sign shows");
+  assert.equal(p.run("FX.hintNote"), null, "no hint is set");
+  assert.ok(!p.S.found.includes("callintro") && !p.S.found.includes("callmap"), "nothing is spent");
+  p.run("fxSign('shield');");
+  assert.equal(p.run("FX.sign && FX.sign.sign"), "shield", "a hazard sign still shows");
+  p.run("RT.caddy = { podHome: true, goal: { text: 'Open the crate · your first pod is inside' } }; FX.notes = []; FX.msg = ''; fxSign('call');");
+  assert.equal(p.run("firstWalk()"), false);
+  assert.equal(p.run("FX.sign && FX.sign.sign"), "call", "the held sign shows after the first pod is home");
+  assert.equal(p.run("goalLine()"), "Open the crate · your first pod is inside");
+  p.run("FX.notes = []; FX.msg = ''; fxMsg('one', 2); fxMsg('two', 2);");
+  assert.equal(p.run("FX.msg"), "one", "a second note never joins the first");
+});
+test("the ✓ word on the walk is an act, Keep still or Face the thing; never Wait; Face turns the explorer and moves nothing", () => {
+  const p = unhomed();
+  p.run("startExpedition('weather', G.spawns[0]); enterPatch(); S.exp.callsAt = { [curLay().cell]: 1 };");
+  const here = () => p.run("[S.exp.patch.x, S.exp.patch.y, S.exp.actions].join()");
+  p.run("(() => { const P = S.exp.patch; for (const d of ['up', 'down', 'left', 'right']) { P.dir = d; const f = frontOf(P); curLive().cr = curLive().cr.filter(c => c.x !== f.x || c.y !== f.y); } })()");
+  const labels = [];
+  for (const d of ["up", "right", "down", "left"]) { p.run(`S.exp.patch.dir = '${d}'`); labels.push(p.run("patchAction().label")); }
+  assert.ok(labels.every(l => l !== "Wait"), labels.join());
+  const face = labels.find(l => /^Face the /.test(l));
+  if (face) { const before = here(); p.run("patchAction().run()"); assert.equal(here(), before, "the explorer does not move and no action is spent"); }
+  p.run("(() => { const P = S.exp.patch; curLive().cr.push({ id: 9998, sp: 0, x: P.x + 3, y: P.y, st: 'alert', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: .5, face: 1, ready: false }); })()");
+  p.run("S.exp.patch.dir = 'up'");
+  if (p.run("(() => { const f = frontOf(S.exp.patch); return !occupant(S.exp.patch.key, f.x, f.y, 'player'); })()")) assert.equal(p.run("patchAction().label"), "Keep still");
+});
+test("an empty walk points on: the first walk names the pod the game knows, from the flag", () => {
+  const p = unhomed();
+  p.run("startExpedition('weather', G.spawns[0]);");
+  const lead = plain(p.run("emptyLead(S.exp.start)"));
+  assert.ok(lead && lead.pod && lead.first && typeof lead.land === "string", JSON.stringify(lead));
+  p.run("RT.caddy = { podHome: true }; S.pods.forEach(q => { q.h = 1; });");
+  const later = plain(p.run("emptyLead(S.exp.start)"));
+  assert.ok(later && !later.first, "after the first walk it names a found pod, a beat, or the nearest wood or rock");
 });

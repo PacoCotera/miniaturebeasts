@@ -2,7 +2,7 @@
 // Also the 24 px derivation: each 48 px tile reduced by 2 x 2 blocks, keeping the most frequent palette index in each block, ties to the darker
 // colour (so outlines survive); a block of sprite pixels is transparent unless at least half of its pixels are opaque.
 import { createHash } from 'node:crypto';
-import { crop, scaleNearest } from './png.mjs';
+import { crop } from './png.mjs';
 import { paletteOf, indexImage } from './indexed.mjs';
 import { fillTiles, layerTiles, kindFullTiles, layerRows, sheetTiles } from './setload.mjs';
 import { encodeRle } from './blit.mjs';
@@ -107,7 +107,7 @@ export function bakeTileSet(loaded, terrains) {
     const f48 = [], f24 = [];
     let w48 = 0, h48 = 0, w24 = 0, h24 = 0;
     for (let k = 0; k < frames; k++) {
-      const big = scaleNearest(crop(sheet, x + k * w, y, w, h), set.scale);
+      const big = crop(sheet, x + k * w, y, w, h);   // a sprite is drawn at 1x, one art pixel to one screen pixel (only the terrain tiles are scaled to 48)
       const px = indexImage(big, pal);
       const small = halve(px, big.w, big.h, pal);
       w48 = big.w; h48 = big.h; w24 = small.w; h24 = small.h;
@@ -116,7 +116,7 @@ export function bakeTileSet(loaded, terrains) {
       rle48.push(r48); rle24.push(r24);
       off48 += r48.length; off24 += r24.length;
     }
-    const ax = s.anchor[0] * set.scale, ay = s.anchor[1] * set.scale;
+    const ax = s.anchor[0], ay = s.anchor[1];
     return {
       kind, group, w48, h48, w24, h24, anchor48: [ax, ay], anchor24: [Math.round(ax / 2), Math.round(ay / 2)],
       footprint: (s.footprint || []).flat(), frames48: f48, frames24: f24, frameMs: s.frameMs || 0,

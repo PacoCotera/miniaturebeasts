@@ -145,6 +145,7 @@ static void draw(void) {
     else if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { home_hidden(); bench_words(); }
     else if (strcmp(screen, "sitting") == 0 && spec_has("sitting") && spec_len("props", "regions") >= 0) { home_hidden(); sitting_words(); }
     else if (strcmp(screen, "settings") == 0 && spec_has("settings") && spec_len("props", "regions") >= 0) { home_hidden(); settings_words(); }
+    else if (strcmp(screen, "store") == 0 && spec_has("store") && spec_len("props", "regions") >= 0) { home_hidden(); store_words(); }
     else if (strcmp(screen, "cross") == 0 && spec_has("cross") && spec_len("props", "regions") >= 0) { home_hidden(); cross_words(); }
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
     else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); if (!incubate_open()) create_words(); }
@@ -209,6 +210,7 @@ void screens_key(int code) {
   if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { bench_key(code); return; }
   if (strcmp(screen, "sitting") == 0 && spec_has("sitting") && spec_len("props", "regions") >= 0) { sitting_key(code); return; }
   if (strcmp(screen, "settings") == 0 && spec_has("settings") && spec_len("props", "regions") >= 0) { settings_key(code); return; }
+  if (strcmp(screen, "store") == 0 && spec_has("store") && spec_len("props", "regions") >= 0) { store_key(code); return; }
   if (strcmp(screen, "cross") == 0 && spec_has("cross") && spec_len("props", "regions") >= 0) { cross_key(code); return; }
   if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { cargo_key(code); return; }
   if (strcmp(screen, "create") == 0 && spec_has("create") && spec_len("props", "regions") >= 0) { create_key(code); return; }

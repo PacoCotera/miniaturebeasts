@@ -139,7 +139,7 @@ test('sprites: the RLE stream of every frame decodes to its pixels, 48 px and 24
   const tree = back.sprites.find((s) => s.kind === 'tree-broad');
   assert.ok(tree.canopy >= 0 && back.sprites[tree.canopy].group === 'canopy');
   assert.deepEqual(tree.footprint, [0, 0]);
-  assert.deepEqual(tree.anchor48, [54, 15]);
+  assert.deepEqual(tree.anchor48, [67, 24], 'a sprite is baked at 1x: the trunk piece (134 x 25) with the foot the manifest names');
 });
 
 // The 24 px half of the layer seam proof (seams.test.mjs has the 48 px half): per (terrain, kind, lower), the composite of the lower's fill and the kind's tile, read from the baked tile set's derived tiles.

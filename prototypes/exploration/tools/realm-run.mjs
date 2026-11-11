@@ -64,7 +64,8 @@ export function runBot({ seed = 7, gen = 7, expeditions = 20, mibis = 0, dock = 
     if ((dock && n % dock === 0) || S().shield <= 0) atStation();
     if (phase() === "sealed") key("confirm");
     while (phase() === "report" || phase() === "menu") key("back");
-    key("confirm"); key("confirm");   // Weather, the first start offered
+    // Weather, then the first start offered: two presses from the expedition choice; after an empty walk the sealed screen's ✓ ("Back to the pod") opens the start pick at once, so one is left
+    for (let g = 0; g < 2 && !S().exp; g++) key("confirm");
     if (!S().exp) throw new Error("expedition " + n + " did not start (phase " + phase() + ")");
     const start = pos();
     const budget = mid ? 40 : 16 + (n * 7) % 23;

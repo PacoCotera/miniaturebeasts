@@ -16,9 +16,15 @@
 import { noiseField } from './world.mjs';
 import { reedClumps } from './reeds.mjs';
 import { RULES } from './rules.mjs';
+import SPRITES from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };   // the sprites' sizes and feet (every sprite is drawn at 1x), read by the no-overlap rule
 
-export const TERR = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
-const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET, SCRUB } = TERR;
+// a sprite's rectangle on the 48 px world frame, from the point its foot stands on: [left, top, width, height]; null for a kind the set does not hold
+const spriteRect = (s, ax, ay) => (s ? [ax - s.anchor[0], ay - s.anchor[1], s.rect[2], s.rect[3]] : null);
+const overlaps = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
+
+export const TERR = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
+const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET, SCRUB, LITTER, DRY, TURF, SCREE } = TERR;
+const OPEN = t => t === GRASS || t === DRY || t === TURF;   // the open low ground a prop may stand on (the biome grounds are patches of it)
 
 // ---- the table (variety scheme section 2; where it gives no number, the pick is marked and listed in the report) ----
 // trees/rocks/bushes: { B: block size in tiles, used: share of blocks that hold a cluster, size: [min, max] trees, keep: smallest size kept }, stumps: { B, used }, sweeps: as trees (tall grass).
@@ -31,16 +37,20 @@ export const expectedPer100 = (biome, fam) => { const P = TABLE[biome][fam]; if 
 
 // the sweeps of tall grass are still pictures now: the signed tufts-2 and tufts-3, each as it is and mirrored (art director: mirrored at random, no new paint)
 export const SWEEPS = ['tall-grass', 'tall-grass-b', 'tall-grass-m', 'tall-grass-bm'];
-const KINDS = { broad: 'tree-broad', autumn: 'tree-autumn', greyRock: 'boulder-grey', brownRock: 'boulder-brown', bushes: ['bush-big', 'bush-round', 'bush-small'], stump: 'stump', hollow: 'tree-hollow' };
+// the three signed boulder shapes and their mirrors (the art director's rock family, mibi-art ffa823829): an outcrop's rocks each take a shape by the rule's shares (props.groves.rockShapes) and a mirror by hash
+const ROCK_SHAPES = ['rock-a', 'rock-b', 'rock-big'];
+const KINDS = { broad: 'tree-broad', autumn: 'tree-autumn', bushes: ['bush-big', 'bush-round', 'bush-small'], stump: 'stump', hollow: 'tree-hollow' };
 export const TREE_KINDS = [KINDS.broad, KINDS.autumn];
-export const ROCK_KINDS = [KINDS.greyRock, KINDS.brownRock];
+export const ROCK_KINDS = ROCK_SHAPES.flatMap(s => [s, `${s}-m`]);
 export const BUSH_KINDS = KINDS.bushes;
 export const HOLLOW = 'tree-hollow';
-// the desk's meadow decor rule (mibi-art 5734abc5): per 10 open tiles 2.5 tufts and 1.5 flowers, mostly in loose drifts of 2-3, an accent clump at most 1 in 40 tiles and 4 tiles from another
-export const TUFTS = ['tuft-fan', 'tuft-lean', 'tuft-small'];
-export const CLUMP_KINDS = ['clump-tall', 'clump-tall-m', 'clump-tall-s', 'clump-tall-sm'];   // the four signed tall clumps (26 and 17 rows, each mirrored), one by hash
-export const FLOWERS = ['flower-daisy', 'flower-buttercup', 'flower-daisy-pair', 'flower-blue-pair', 'flower-pink-three'];
-export const DECOR_RULE = RULES.meadow.target;
+// the meadow scatter's plants (the art director's quiet-ground rule, art/places/map-rules.json meadow.scatter): a kind of the rule is one or more slots of the set, each drawn in three sizes (young, middle, grown) and mirrored;
+// the set's names are sc-<slot>[-young|-grown][-m]; the six grass flecks keep their own names (fleck-0 .. fleck-5, mirrored fleck-0m ..), one size
+export const SCATTER_SLOTS = {
+  'flower-pink': ['flowers-1'], 'flower-white': ['flowers-2'], 'flower-yellow': ['flowers-3'], 'flower-blue': ['flowers-blue-pair'],
+  tuft: ['tufts-1', 'tufts-2', 'tufts-3'], clump: ['clump-tall', 'clump-tall-s'], shrub: ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4'], bush: ['bush-round'],
+};
+export const isScatterPlant = kind => kind.startsWith('sc-') || /^fleck-\d/.test(kind);
 // the scrub shrubs (the desk's shrub-1..4, mibi-art 34a8dc49c): on the inside of a scrub patch only, never on neighbouring tiles (a shrub is 15 px in a 16 px tile, so two in a row would touch); at this raw rate about
 // one in three of the scrub tiles a shrub may stand on holds one (one in two is a checkerboard, a lattice)
 export const SHRUBS = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4'];
@@ -51,7 +61,7 @@ export const SHRUBS = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4'];
 const mix = h => { h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return h >>> 0; };
 const H = (seed, tag, x, y, z = 0) => { let h = Math.imul(seed | 0, 0x9e3779b1) ^ Math.imul(tag, 0x85ebca6b); h = mix(h ^ Math.imul(x | 0, 0xc2b2ae35)); h = mix(h ^ Math.imul(y | 0, 0x27d4eb2f)); return mix(h ^ Math.imul(z | 0, 0x165667b1)); };
 const U = (seed, tag, x, y, z) => H(seed, tag, x, y, z) / 4294967296;
-const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000, SHRUB: 1010, REEDB: 1020, FLECK: 1030 };
+const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000, SHRUB: 1010, REEDB: 1020, FLECK: 1030, OVERLAP: 1040, ROCK: 1050, SC: 1060, GROUND: 1100 };
 const key = (x, y) => y * 8192 + x;
 const CS = 16;                                           // coarse cells of the seed index, in tiles
 const sizeRange = P => P.size || [1, 1];
@@ -96,7 +106,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
 
   // ---- the Hollow Tree: a site in each region of Woods or Tallwood, on a clearing of plain grass (nothing is drawn on the terrain here: the clearing is the absence of props) ----
   let sites = presetSites;   // the Hollow Tree sites may be given (made off the page by src/realm-worker.mjs): a list of { x, y, slot }
-  const CL = HO.clearing, clearing = (x, y) => { for (let dy = -CL.up; dy <= CL.down; dy++) for (let dx = -CL.left; dx <= CL.right; dx++) { if (T(x + dx, y + dy) !== GRASS || flags(x + dx, y + dy) !== 0) return false; } return true; };
+  const CL = HO.clearing, clearing = (x, y) => { for (let dy = -CL.up; dy <= CL.down; dy++) for (let dx = -CL.left; dx <= CL.right; dx++) { { const tt = T(x + dx, y + dy); if ((!OPEN(tt) && tt !== LITTER) || flags(x + dx, y + dy) !== 0) return false; } } return true; };
   const hollowSites = () => {
     if (sites) return sites;
     sites = [];
@@ -139,7 +149,6 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
         const [lo, hi] = sizeRange(P), size = lo + (H(seed, TAG.SIZE + fi, bx, by, bi) % (hi - lo + 1)), rmax = GV.reach.base + GV.reach.perSize * size;
         let kind = null;
         if (fam === 'trees') kind = U(seed, TAG.KIND, bx, by, bi) < (TABLE[b].broad ?? 0.5) ? KINDS.broad : KINDS.autumn;
-        else if (fam === 'rocks') kind = U(seed, TAG.KIND, bx, by, bi) < GV.greyRockShare ? KINDS.greyRock : KINDS.brownRock;
         out.push({ fi, x: px, y: py, size, rmax, rmax2: rmax * rmax, kind, b, P, k: (fi * 16 + bi) * 1e9 + by * 40000 + bx, h });
       }
     });
@@ -169,8 +178,8 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const stands = (fi, x, y) => {
     if (!inMap(x, y)) return false;
     const t = T(x, y);
-    if (fi === 4) return (t === GRASS || t === CLIFF) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
-    if (!(t === GRASS || t === CLIFF || (fi === 1 && t === SAND))) return false;
+    if (fi === 4) return (OPEN(t) || t === CLIFF) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
+    if (!(OPEN(t) || t === LITTER || t === CLIFF || (fi === 1 && (t === SAND || t === SCREE)))) return false;
     return plain(x, y) && !near9(x, y, 1) && !near9(x, y, 2) && !wayZone.has(key(x, y)) && !hollowNear(x, y, fi === 0);
   };
   // a tile an earlier kind holds, or (for a prop that blocks) one beside it: no two props that block ever touch, even at a corner, so a ring of them cannot close a gap
@@ -231,7 +240,11 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   // a stump has no cluster: its seed tile (or the nearest) is it
   function memberKind(fi, s, x, y) {
     if (fi === 0) return U(seed, TAG.MEM, x, y, s.h) < GV.otherKindShare ? (s.kind === KINDS.broad ? KINDS.autumn : KINDS.broad) : s.kind;   // about one tree in seven of the other kind
-    if (fi === 1) return s.kind;                                                                                                   // one colour an outcrop
+    if (fi === 1) {                                                                                                                // each rock of an outcrop: a shape by the rule's shares, a mirror by hash
+      const u = U(seed, TAG.ROCK, x, y, s.h), sh = GV.rockShapes; let c = 0, shape = ROCK_SHAPES[ROCK_SHAPES.length - 1];
+      for (const n of ROCK_SHAPES) { c += sh[n]; if (u < c) { shape = n; break; } }
+      return H(seed, TAG.ROCK + 1, x, y, s.h) & 1 ? `${shape}-m` : shape;
+    }
     if (fi === 2) return KINDS.stump;
     if (fi === 3) return KINDS.bushes[H(seed, TAG.MEM, x, y, s.h) % 3];
     return SWEEPS[H(seed, TAG.MEM + 1, x, y, s.h) % SWEEPS.length];
@@ -270,6 +283,33 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   };
   const shrubAt = (x, y) => inMap(x, y) && T(x, y) === SCRUB && (bigShrub(x, y) || smallPatchShrub(x, y));
 
+  // ---- the decor of the biome grounds (map-rules.json `ground`, the art director's per-100 values): leaf litter, dry grass, short turf and scree each take pieces on their plain tiles (a full cell clear of every edge) ----
+  // One draw a tile picks at most one entry (by the entries' rates in order); of two candidates beside each other, corners too, the lower hash wins, so none ever touch (a greedy choice, a function of the world alone).
+  // A rock entry (`prop`) is a prop that blocks its tile and also keeps clear of every other prop (it never stands beside one, so it can close no gap); the rest are flat decals that block nothing.
+  const GROUND_OF = { [LITTER]: 'litter', [DRY]: 'drygrass', [TURF]: 'turf', [SCREE]: 'scree' }, GD = rules.ground || {};
+  const NB8 = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]], gCand = new Map(), gTake = new Map();
+  const gEntry = (x, y) => {   // the entry the tile's draw falls in, or null (also null where the tile may hold none)
+    const k = key(x, y), hit = gCand.get(k); if (hit !== undefined) return hit;
+    let r = null;
+    const G = inMap(x, y) ? GD[GROUND_OF[T(x, y)]] : null;
+    if (G && G.entries.length && plain(x, y) && !wayZone.has(k) && !hollowNear(x, y, false)) {
+      let u = U(seed, TAG.GROUND, x, y), c = 0;
+      for (const e of G.entries) { c += e.per100 / 100 * (e.scale || G.drawScale); if (u < c) { r = e; break; } }
+      if (r && r.prop && earlier(5, x, y)) r = null;   // a rock keeps off every other prop
+    }
+    if (gCand.size > 600000) gCand.clear();
+    gCand.set(k, r); return r;
+  };
+  const gBefore = (a, b, x, y) => { const v = U(seed, TAG.GROUND + 1, a, b), u = U(seed, TAG.GROUND + 1, x, y); return v < u || (v === u && (b < y || (b === y && a < x))); };
+  const groundAt = (x, y) => {   // the entry a tile takes, or null
+    const e = gEntry(x, y); if (!e) return null;
+    const k = key(x, y), hit = gTake.get(k); if (hit !== undefined) return hit ? e : null;
+    let ok = true;
+    for (const [dx, dy] of NB8) { const a = x + dx, b = y + dy; if (gEntry(a, b) && gBefore(a, b, x, y) && groundAt(a, b)) { ok = false; break; } }
+    if (gTake.size > 600000) gTake.clear();
+    gTake.set(k, ok); return ok ? e : null;
+  };
+
   // ---- the props of a rectangle of tiles: { kind, x, y } in world tiles (the foot tile), sorted by foot row, column, kind ----
   function propsIn(x0, y0, x1, y1) {
     const out = [], R = 9;
@@ -283,6 +323,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
       }
     }
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (shrubAt(x, y)) out.push({ kind: SHRUBS[H(seed, TAG.SHRUB + 2, x, y) % SHRUBS.length], x, y, fam: 'shrubs', cluster: -2 });
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { const e = groundAt(x, y); if (e && e.prop) out.push({ kind: e.kinds[H(seed, TAG.GROUND + 2, x, y) % e.kinds.length], x, y, fam: 'ground', cluster: -4 }); }
     for (const h of hollowSites()) if (h.x >= x0 && h.x <= x1 && h.y >= y0 && h.y <= y1) out.push({ kind: HOLLOW, x: h.x, y: h.y, fam: 'landmark', cluster: -1 });
     return out.sort((a, b) => a.y - b.y || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));
   }
@@ -292,58 +333,160 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   // ---- decals: the desk's meadow density on every grass tile (and raised land's top), pebbles on sand, lily pads on open water ----
   // (the cliff's face is drawn over the tile below the lip and its rim over the tile above, so nothing is laid within a tile of a lip)
   const grassTile = (x, y) => { const t = T(x, y); return inMap(x, y) && (t === GRASS || t === CLIFF) && plain(x, y) && !near9(x, y, 4); };
-  const clumpRaw = (x, y) => U(seed, TAG.CLUMP, x, y) < MD.clump.chance;
-  const clumpAt = (x, y) => {
-    if (!clumpRaw(x, y)) return false; const u = U(seed, TAG.CLUMP + 1, x, y), CA = MD.clump.apart;
-    for (let dy = -CA; dy <= CA; dy++) for (let dx = -CA; dx <= CA; dx++) { if (!dx && !dy) continue; const a = x + dx, b = y + dy; if (clumpRaw(a, b)) { const v = U(seed, TAG.CLUMP + 1, a, b); if (v < u || (v === u && (b < y || (b === y && a < x)))) return false; } }
-    return true;
-  };
-  // the flower drift a tile belongs to: seeds within 2 tiles, the lowest hash wins; a drift is its seed and 0, 1 or 2 more tiles by the desk's offsets
-  const flowerAt = (x, y) => {
-    let best = null, bh = Infinity;
-    const FR = MD.flower.reach, DRIFT = MD.flower.drift;
-    for (let dy = -FR; dy <= FR; dy++) for (let dx = -FR; dx <= FR; dx++) {
-      const sx = x - dx, sy = y - dy, f = H(seed, TAG.FLOWER, sx, sy); if (f / 4294967296 >= MD.flower.chance) continue;
-      const more = f % 3 === 0 ? 0 : 1 + (f >>> 4) % 2; let member = !dx && !dy;
-      for (let m = 0; m < more && !member; m++) { const o = DRIFT[(f % 3 + m) % DRIFT.length]; if (o[0] === dx && o[1] === dy) member = true; }
-      if (!member) continue;
-      if (f < bh) { bh = f; best = { sx, sy, f, seedTile: !dx && !dy }; }
-    }
-    if (!best) return null;
-    const base = FLOWERS[H(seed, TAG.FLKIND, best.sx, best.sy) % FLOWERS.length];
-    return best.seedTile || U(seed, TAG.FLKIND + 1, x, y) < MD.flower.sameKind ? base : FLOWERS[(H(seed, TAG.FLKIND + 2, x, y) >>> 3) % FLOWERS.length];
-  };
   const openWater = (x, y) => { for (let dy = -WA.padClear; dy <= WA.padClear; dy++) for (let dx = -WA.padClear; dx <= WA.padClear; dx++) if (T(x + dx, y + dy) !== WATER) return false; return true; };
-  // the decals of a rectangle of tiles: { kind, x, y (tile), dx, dy (master pixels inside the tile) }
-  function decalsIn(x0, y0, x1, y1, props) {
-    const FL = MD.fleck, occ = new Set(), nearProp = new Set();   // nearProp: within 1 tile (2 above) of a prop's foot tile, where no fleck lies
-    for (const p of props || propsIn(x0 - 1, y0 - 1, x1 + 1, y1 + 2)) {
-      for (const [a, b] of footprint(p)) occ.add(key(a, b));
-      for (let dy = -FL.clearOfProps.up; dy <= FL.clearOfProps.down; dy++) for (let dx = -FL.clearOfProps.left; dx <= FL.clearOfProps.right; dx++) nearProp.add(key(p.x + dx, p.y + dy));
+
+  // ---- the meadow scatter (the art director's quiet-ground rule, map-rules.json meadow.scatter) ----
+  // One noise field on the world's 16 px master cells (a world tile is 3 x 3 of them; every picture is drawn at 1x on the 48 px frame, so a cell is 16 px on the screen): its top `patchShare` is the patch zone, a patch
+  // is the basin of one peak of the field (the same peak from every cell of it, so the same in every view); a patch has one dominant kind (from the peak's hash), thins from its centre (the field at the cell, scaled
+  // between the zone's threshold and its own peak) to its edge, and its pieces grow from young at the edge to grown at the centre. Between patches a thin open scatter of single tufts and flecks.
+  // Pieces never overlap: each takes the first of up to four places in its cell whose foot box (0.7 of its width by a quarter of its height, one pixel clear) meets no piece of a higher hash and no prop's picture;
+  // a piece's fate depends only on higher-hash pieces round it, so a cell and its neighbour keep the same pieces (the answer is a function of the world alone).
+  const SC = MD.scatter, CELL = 16, PER = 3;
+  const scField = noiseField(seed, 'g3-meadow', 1 / SC.noiseScale, 'FBm', SC.noiseOctaves);
+  const ck = (cx, cy) => cy * 262144 + cx;   // a cell's key (cell columns stay under 262144)
+  const fMemo = new Map();
+  const fAt = (cx, cy) => { const k = ck(cx, cy), hit = fMemo.get(k); if (hit !== undefined) return hit; const v = scField(cx, cy); if (fMemo.size > 400000) fMemo.clear(); fMemo.set(k, v); return v; };
+  let zoneAt = null;   // the field's level above which a cell is in a patch, and the level of the highest peaks: quantiles of an even sample of the map's cells (the place's cells)
+  const levels = () => {
+    if (zoneAt) return zoneAt;
+    const W3 = Math.max(land.W, 1) * PER, H3 = Math.max(land.H, 1) * PER, step = Math.max(1, Math.ceil(Math.sqrt((W3 * H3) / 12000))), vals = [];
+    for (let y = 0; y < H3; y += step) for (let x = 0; x < W3; x += step) vals.push(scField(x, y));
+    vals.sort((a, b) => a - b);
+    const q = p => vals[Math.min(vals.length - 1, Math.max(0, Math.floor(p * vals.length)))];
+    return (zoneAt = { thr: q(1 - SC.patchShare), top: q(0.995) });
+  };
+  const peakMemo = new Map();
+  const NB = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
+  const peakOf = (cx, cy) => {   // the cell's patch: the peak the steepest climb from it ends on (ties to the first of the eight neighbours)
+    const hit = peakMemo.get(ck(cx, cy)); if (hit) return hit;
+    const path = []; let x = cx, y = cy;
+    for (let n = 0; n < 60; n++) {
+      const known = peakMemo.get(ck(x, y)); if (known) { path.forEach(([a, b]) => peakMemo.set(ck(a, b), known)); return known; }
+      path.push([x, y]);
+      let bx = x, by = y, bv = fAt(x, y);
+      for (const [dx, dy] of NB) { const v = fAt(x + dx, y + dy); if (v > bv) { bv = v; bx = x + dx; by = y + dy; } }
+      if (bx === x && by === y) break;
+      x = bx; y = by;
     }
+    const peak = { x, y, v: fAt(x, y) };
+    if (peakMemo.size > 400000) peakMemo.clear();
+    path.forEach(([a, b]) => peakMemo.set(ck(a, b), peak));
+    return peak;
+  };
+  const pickOf = (table, u) => { let t = 0, last = null; for (const k in table) { if (typeof table[k] !== 'number') continue; t += table[k]; last = k; if (u < t) return k; } return last; };
+  const SCU = (salt, cx, cy, k = 0) => U(seed, TAG.SC + salt, cx, cy, k);
+  // a sprite of a kind in a step: the set's name and its rect and anchor
+  const sprite = name => SPRITES.decals[name];
+  const scName = (kind, step, u, m) => {
+    if (kind === 'fleck') { const f = Math.floor(u * 6); return `fleck-${f}${m ? 'm' : ''}`; }
+    const slots = SCATTER_SLOTS[kind];
+    return `sc-${slots[Math.floor(u * slots.length)]}${step === 'mid' ? '' : '-' + step}${m ? '-m' : ''}`;
+  };
+  // the foot box of a sprite whose foot stands at (fx, fy): [x, y, w, h]
+  const footBox = (s, fx, fy) => { const bw = Math.max(5, Math.floor(s.rect[2] * 0.7)), bh = Math.max(3, Math.floor(s.rect[3] * 0.25)); return [fx - (bw >> 1), fy - bh + 1, bw, bh]; };
+  const grown = (r, d) => [r[0] - d, r[1] - d, r[2] + 2 * d, r[3] + 2 * d];
+  // the pieces a cell holds before the no-overlap rule: [{ cx, cy, k, name, tries: [[fx, fy], ..], prio }]; none in a cell whose tile is not plain grass
+  function cellPieces(cx, cy, tileOk) {
+    const tx = Math.floor(cx / PER), ty = Math.floor(cy / PER);
+    if (!tileOk(tx, ty)) return [];
+    const { thr, top } = levels(), peak = peakOf(cx, cy), f = fAt(cx, cy), inz = f > thr && peak.v > thr;
+    const w = inz ? Math.min(1, Math.max(0, (f - thr) / Math.max(peak.v - thr, 1e-6))) : 0, PD = SC.patchDensity;
+    const lam = inz ? PD.edge + (PD.peak - PD.edge) * w : SC.openDensity;
+    let n = Math.floor(lam); if (SCU(1, cx, cy) < lam - n) n++;
+    const out = [], dom = inz ? pickOf(SC.dominants, U(seed, TAG.SC + 2, peak.x, peak.y)) : null;
+    for (let k = 0; k < n; k++) {
+      let kind, step;
+      if (inz) {
+        kind = SCU(3, cx, cy, k) < SC.dominantShare ? dom : pickOf(SC.mixed, SCU(4, cx, cy, k));
+        if (SCU(5, cx, cy, k) > SC.kindKeep[kind]) continue;   // the big kinds thin out: a share of their draws is dropped
+        const v = w + (SCU(6, cx, cy, k) - 0.5) * SC.steps.jitter;
+        step = v > SC.steps.grownAbove ? 'grown' : v < SC.steps.youngBelow ? 'young' : 'mid';
+      } else {
+        kind = SCU(7, cx, cy, k) < SC.openKinds.tuft ? 'tuft' : 'fleck';
+        step = SCU(8, cx, cy, k) < 0.55 ? 'young' : 'mid';
+      }
+      const name = scName(kind, step, SCU(9, cx, cy, k), SCU(10, cx, cy, k) < 0.5), s = sprite(name);
+      if (!s) continue;
+      const jit = SC.standJitter.kinds.includes(kind) ? SC.standJitter.amountTiles * CELL : 0, tries = [];
+      for (let t = 0; t < 4; t++) {
+        let fx = cx * CELL + 1 + Math.floor(SCU(11 + 4 * t, cx, cy, k) * 14), fy = cy * CELL + 4 + Math.floor(SCU(12 + 4 * t, cx, cy, k) * 12);
+        if (jit) { fx += Math.round((SCU(13 + 4 * t, cx, cy, k) - 0.5) * 2 * jit); fy += Math.round((SCU(14 + 4 * t, cx, cy, k) - 0.5) * 2 * jit); }
+        tries.push([fx, fy]);
+      }
+      out.push({ cx, cy, k, name, s, tries, prio: H(seed, TAG.SC + 40, cx, cy, k) });
+    }
+    return out;
+  }
+  // the scatter of a rectangle of tiles: the pieces whose foot lies in it. tileOk(tx, ty): a tile that may hold meadow; walls: the rectangles of the props round the area (a piece never meets one)
+  function scatterIn(x0, y0, x1, y1, tileOk, walls) {
+    const cells = new Map(), res = new Map();
+    const piecesOf = (cx, cy) => { const k = ck(cx, cy), hit = cells.get(k); if (hit) return hit; const v = cellPieces(cx, cy, tileOk); cells.set(k, v); return v; };
+    const wallNear = c => { const r = [c.cx * CELL - CELL, c.cy * CELL - CELL, 3 * CELL, 3 * CELL]; return walls.some(wl => overlaps(r, wl)); };
+    const wallOk = new Map();
+    const cellFree = c => { const k = ck(c.cx, c.cy); let v = wallOk.get(k); if (v === undefined) { v = !wallNear(c); wallOk.set(k, v); } return v; };
+    const before = (a, b) => a.prio < b.prio || (a.prio === b.prio && (a.cy < b.cy || (a.cy === b.cy && (a.cx < b.cx || (a.cx === b.cx && a.k < b.k)))));
+    // the place a piece takes: the first of its four whose foot box (a pixel clear) meets no accepted piece of a higher hash, and whose picture meets no prop; -1 when none
+    const resolve = c => {
+      const key3 = ck(c.cx, c.cy) * 8 + c.k, hit = res.get(key3); if (hit !== undefined) return hit;
+      res.set(key3, -1);   // a piece's fate reads only pieces before it, so no cycle; the guard is for safety
+      let take = -1;
+      if (!cellFree(c)) { res.set(key3, -1); return -1; }
+      for (let t = 0; t < 4 && take < 0; t++) {
+        const [fx, fy] = c.tries[t];
+        if (!tileOk(Math.floor(fx / 48), Math.floor(fy / 48))) continue;   // a jittered foot never leaves plain grass
+        const pic =[fx - c.s.anchor[0], fy - c.s.anchor[1], c.s.rect[2], c.s.rect[3]];
+        if (MD.noOverlap) {
+          if (walls.some(wl => overlaps(pic, wl))) continue;
+          const mine = grown(footBox(c.s, fx, fy), 1); let blocked = false;
+          for (let dy = -2; dy <= 2 && !blocked; dy++) for (let dx = -2; dx <= 2 && !blocked; dx++) for (const o of piecesOf(c.cx + dx, c.cy + dy)) {
+            if (o === c || !before(o, c)) continue;
+            const r = resolve(o); if (r < 0) continue;
+            if (overlaps(mine, footBox(o.s, o.tries[r][0], o.tries[r][1]))) { blocked = true; break; }
+          }
+          if (blocked) continue;
+        }
+        take = t;
+      }
+      res.set(key3, take); return take;
+    };
     const out = [];
+    for (let cy = y0 * PER - 2; cy <= y1 * PER + PER + 1; cy++) for (let cx = x0 * PER - 2; cx <= x1 * PER + PER + 1; cx++) {
+      for (const c of piecesOf(cx, cy)) {
+        const t = resolve(c); if (t < 0) continue;
+        const [fx, fy] = c.tries[t], tx = Math.floor(fx / 48), ty = Math.floor(fy / 48);
+        if (tx < x0 || tx > x1 || ty < y0 || ty > y1) continue;
+        out.push({ kind: c.name, x: tx, y: ty, dx: 0, dy: 0, mx: fx - tx * 48, my: fy - ty * 48 });
+      }
+    }
+    return out;
+  }
+  // the decals of a rectangle of tiles: { kind, x, y (the foot's tile), dx, dy, mx, my (the foot's pixel in the tile's 48 px frame) }: the meadow scatter on grass, pebbles on sand, lily pads on open water.
+  // A prop always wins: no decal meets a prop's picture (meadow.noOverlap); the scatter keeps its own foot boxes apart.
+  function decalsIn(x0, y0, x1, y1) {
+    const occ = new Set(), walls = [];
+    for (const p of propsIn(x0 - 4, y0 - 4, x1 + 4, y1 + 5)) { for (const [a, b] of footprint(p)) occ.add(key(a, b)); const r = spriteRect(SPRITES.props[p.kind], p.x * 48 + 24, p.y * 48 + 47); if (r) walls.push(r); }
+    const tileOk = (x, y) => inMap(x, y) && (T(x, y) === GRASS || T(x, y) === CLIFF) && grassTile(x, y) && !occ.has(key(x, y));
+    const out = scatterIn(x0, y0, x1, y1, tileOk, MD.noOverlap ? walls : []);
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {   // the ground decor: a flat piece in its tile, wholly inside it (a pixel's margin), never meeting a prop's picture
+      const e = groundAt(x, y); if (!e || e.prop) continue;
+      const kind = e.kinds[H(seed, TAG.GROUND + 2, x, y) % e.kinds.length], s = SPRITES.decals[kind]; if (!s) continue;
+      const w = s.rect[2], h = s.rect[3], ax = s.anchor[0], ay = s.anchor[1];
+      const mx = ax + 1 + H(seed, TAG.GROUND + 3, x, y) % Math.max(1, 46 - w + 1), my = ay + 1 + H(seed, TAG.GROUND + 4, x, y) % Math.max(1, 46 - h + 1);
+      if (MD.noOverlap && walls.some(wl => overlaps([x * 48 + mx - ax, y * 48 + my - ay, w, h], wl))) continue;
+      out.push({ kind, x, y, dx: 0, dy: 0, mx, my });
+    }
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       if (!inMap(x, y)) continue;
       const t = T(x, y); let kind = null;
-      if (t === GRASS || t === CLIFF) {
-        if (!grassTile(x, y) || occ.has(key(x, y))) continue;
-        if (clumpAt(x, y)) kind = CLUMP_KINDS[H(seed, TAG.CLUMP + 2, x, y) % CLUMP_KINDS.length];
-        else { kind = flowerAt(x, y); if (!kind && U(seed, TAG.TUFT, x, y) < MD.tuft.chance) kind = TUFTS[H(seed, TAG.TUFTKIND, x, y) % 3]; }
-        if (!kind && !nearProp.has(key(x, y)) && U(seed, TAG.FLECK, x, y) <= FL.chance) {   // a fleck: its kind, mirror and place in the tile by the desk's rule
-          const f = Math.floor(U(seed, TAG.FLECK + 1, x, y) * FL.sizes.length), [fw, fh] = FL.sizes[f], m = U(seed, TAG.FLECK + 2, x, y) < 0.5, room = 16 - 2 * FL.margin;
-          const px = FL.margin + Math.floor(U(seed, TAG.FLECK + 3, x, y) * (room - fw)), py = FL.margin + Math.floor(U(seed, TAG.FLECK + 4, x, y) * (room - fh)), ax = m ? (fw - 1) - (fw >> 1) : fw >> 1;
-          out.push({ kind: `fleck-${f}${m ? 'm' : ''}`, x, y, dx: 0, dy: 0, mx: 3 * (px + ax), my: 3 * (py + fh - 1) });   // the sprite's own pixel grid: its anchor pixel at (px + ax, py + fh - 1) in the tile
-          continue;
-        }
-      } else if (t === SAND && !occ.has(key(x, y)) && !lip(x, y)) {
+      if ((t === SAND || t === SCREE) && !occ.has(key(x, y)) && !lip(x, y)) {
         if (U(seed, TAG.PEB, x, y) < (TABLE[biome(x, y)] || TABLE.mixed).pebbles) kind = ['pebbles-a', 'pebbles-b', 'pebbles-c'][H(seed, TAG.PEB + 1, x, y) % 3];
       } else if (t === WATER) {
         const pr = (TABLE[biome(x, y)] || TABLE.mixed).pads;
         if (pr && U(seed, TAG.PAD, x, y) < pr && openWater(x, y)) kind = U(seed, TAG.PAD + 1, x, y) < 0.25 ? 'lily-pad-flower' : 'lily-pad';   // about one pad in four carries the flower (the signed variant)
       }
       if (!kind) continue;
-      const tall = kind.startsWith('flower') || kind.startsWith('tuft') || kind.startsWith('clump-tall');
-      out.push({ kind, x, y, dx: tall ? (H(seed, TAG.NUDGE, x, y) % 7) - 3 : 0, dy: tall ? -(H(seed, TAG.NUDGE + 1, x, y) % 4) : 0 });
+      if (MD.noOverlap) { const r = spriteRect(SPRITES.decals[kind], x * 48 + 24, y * 48 + 47); if (r && walls.some(w => overlaps(r, w))) continue; }
+      out.push({ kind, x, y, dx: 0, dy: 0 });
     }
     return out;
   }

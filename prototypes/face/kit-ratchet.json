@@ -20,6 +20,7 @@
     "screens": 1,
     "settings": 0,
     "sitting": 0,
+    "store": 0,
     "vivarium": 0,
     "wall": 0
   },
@@ -44,6 +45,7 @@
     "screens": 2,
     "settings": 0,
     "sitting": 4,
+    "store": 0,
     "vivarium": 0,
     "wall": 0
   },

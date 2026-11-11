@@ -17,8 +17,8 @@ import { realm7, route, NC } from './region.mjs';
 import { CW, CH } from './world.mjs';
 import { landmarksOf, LM_PROP, LM_SLOT } from './landmarks.mjs';
 
-const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
-const WALKT = new Uint8Array(12); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.EARTH, TV.SCRUB]) WALKT[t] = 1;
+const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
+const WALKT = new Uint8Array(16); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB]) WALKT[t] = 1;
 export const FIND_MEAN = 5.5;                                            // finds a place, the realm's average (today's templates)
 const KIND_SHARE = { pod: 1.35, fruit: 0.9, dew: 1.1, stone: 1.1, material: 0.35 };   // today's template mix, with 0.7 cups a cell from the spring's budget added to dew below
 const SPRING_CUPS = 0.7;
@@ -131,11 +131,11 @@ function holdOn(a, pick) {
   for (const [lx, ly] of tiles) {
     const t = tt(lx, ly), wet = nearTerr(lx, ly, 2, WET), reed = nearReed(lx, ly), shade = within(trees, lx, ly, 3) >= 3, nearRock = within(rocks, lx, ly, 2) > 0;
     if (wet || reed || shade) add('dew', lx, ly, (wet ? 1 : 0) + (reed ? 1 : 0) + (shade ? 0.5 : 0));
-    if (t === TV.SAND && !wet) add("stone", lx, ly, 1.5); else if (nearRock) add('stone', lx, ly, 1); else if (t === TV.CLIFF) add('stone', lx, ly, 0.4);
-    const slab = within(rocks, lx, ly, 1) > 0, roots = within(trees, lx, ly, 1) > 0 && within(trees, lx, ly, 3) >= 3, burrow = nearTerr(lx, ly, 1, SOLID) && t !== TV.SAND;
+    if ((t === TV.SAND || t === TV.SCREE) && !wet) add("stone", lx, ly, 1.5); else if (nearRock) add('stone', lx, ly, 1); else if (t === TV.CLIFF) add('stone', lx, ly, 0.4);
+    const slab = within(rocks, lx, ly, 1) > 0, roots = within(trees, lx, ly, 1) > 0 && within(trees, lx, ly, 3) >= 3, burrow = nearTerr(lx, ly, 1, SOLID) && t !== TV.SAND && t !== TV.SCREE;
     if (slab || roots || burrow) add('pod', lx, ly, (slab ? 1.5 : 0) + (roots ? 1 : 0) + (burrow ? 0.7 : 0));
     if (within(hollowT, lx, ly, 4) > 0 || (within(trees, lx, ly, 1) > 0 && within(trees, lx, ly, 3) >= 3)) add('material', lx, ly, 1);
-    if (t === TV.SAND || t === TV.EARTH || t === TV.PATH || t === TV.CLIFF) bare.push([lx, ly, t]);
+    if (t === TV.SAND || t === TV.SCREE || t === TV.LITTER || t === TV.PATH || t === TV.CLIFF) bare.push([lx, ly, t]);
   }
   // ---- the landmark ----
   let lmTile = null;
@@ -143,7 +143,7 @@ function holdOn(a, pick) {
     const cx = 12.5, cy = 14.5, near = pred => { let best = null, bd = 1e9; for (const [lx, ly] of tiles) if (pred(lx, ly)) { const d = (lx - cx) ** 2 + (ly - cy) ** 2; if (d < bd) { bd = d; best = [lx, ly]; } } return best; };
     if (lm.kind === 'hollow-tree' && lm.tile) lmTile = [lm.tile.x - x0, lm.tile.y - y0];
     else if (lm.kind === 'windstep') { const wu = a.wayups.map(q => ({ ...q, d: (q.x - cx) ** 2 + (q.y - cy) ** 2 })).sort((p, q) => p.d - q.d)[0]; lmTile = wu && free(wu.x + (wu.w >> 1), wu.y - 2) ? [wu.x + (wu.w >> 1), wu.y - 2] : near(() => true); }
-    else if (lm.kind === 'split-stone') lmTile = near((lx, ly) => tt(lx, ly) === TV.SAND) || near(() => true);
+    else if (lm.kind === 'split-stone') lmTile = near((lx, ly) => tt(lx, ly) === TV.SAND || tt(lx, ly) === TV.SCREE) || near(() => true);
     else lmTile = near((lx, ly) => nearTerr(lx, ly, 1, WET)) || near(() => true);
     if (lmTile) out.landmarks.push({ kind: lm.kind, name: lm.name, label: lm.name, prop: LM_PROP[lm.kind], slot: LM_SLOT[lm.kind], x: lmTile[0], y: lmTile[1] });
   }
@@ -222,7 +222,7 @@ function holdOn(a, pick) {
   const markPool = bare.length ? bare.map(([x, y, t]) => ({ x, y, t, wt: 1 })) : tiles.map(([x, y]) => ({ x, y, t: tt(x, y), wt: 1 }));
   for (let i = 0; i < Math.min(nm, 2); i++) {
     const t = roulette(markPool.filter(p => out.strikes.every(s => Math.abs(s.x - p.x) + Math.abs(s.y - p.y) >= 4) && out.finds.every(f => f.x !== p.x || f.y !== p.y) && (!lmTile || p.x !== lmTile[0] || p.y !== lmTile[1])), U('strike', i));
-    if (t) out.strikes.push({ x: t.x, y: t.y, age: H('age', i) % STRIKE_START_AGE, glass: t.t === TV.SAND && H('glass', i) % 100 < STRIKE_GLASS_PCT, read: false });
+    if (t) out.strikes.push({ x: t.x, y: t.y, age: H('age', i) % STRIKE_START_AGE, glass: (t.t === TV.SAND || t.t === TV.SCREE) && H('glass', i) % 100 < STRIKE_GLASS_PCT, read: false });
   }
   return out;
 }

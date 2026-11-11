@@ -8,7 +8,7 @@ import { returnNow } from "./habitat.mjs";
 import { fitNow } from "./bench.mjs";
 import { addRoomNow, returnFromCard } from "./vivarium.mjs";
 import { growNow } from "./incubator.mjs";
-import { later, openFromArrival } from "./arrival.mjs";
+
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const model = (h) => ({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: h.settings.jump, now: h.now() });
@@ -48,7 +48,7 @@ export function intent(h, target, verb) {
     if (verb === "confirm" && target === "card.grow") { S.logEv(h.st, "Decision panel · Open now | Wait · Open now"); closePanel(h); growNow(h); }
     return;
   }
-  if (verb === "back") { closePanel(h); if (ui.id === "dock") later(h); return; }   // ← on the dock arrival's strip is Later
+  if (verb === "back") { closePanel(h); return; }
   if (verb !== "confirm") return;
   const cards = cardsOf(model(h), h.specs.panel, h.specs.frame, []), card = cards.find((c) => "card." + c.id === target); if (!card) return;
   if (card.dim) { h.say(fill(h.specs.pods.strings.needMore, { icons: card.short })); return; }   // short of materials: the warn words, nothing spent
@@ -60,8 +60,6 @@ export function intent(h, target, verb) {
   else if (card.act === "addRoomHere") addRoomHere(h);
   else if (card.act === "make") makeRoom(h);
   else if (card.act === "growNow") growNow(h);
-  else if (card.act === "open") openFromArrival(h);
-  else if (card.act === "later") later(h);
   else if (card.act === "return") (ui.screen === "vivarium" ? returnFromCard : returnNow)(h);   // only a mibi's release opens a panel: letting a pod go asks on the button's own face   // Keep is the way out: the panel closes, the screen is as before
 }
 // The hold ring is full on the Return card (frame.json hold; host: confirm:held): the mibi goes back to the wild, as the old second ✓ did. Any other card does nothing here.

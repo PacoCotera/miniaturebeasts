@@ -63,15 +63,15 @@ async function open(width, height, { dsf = 1, motion = false, query = "?test", o
   await st().evaluate(() => window.__st.ready); await mb().waitForFunction(() => window.__mb && window.__mb.S, null, { timeout: 30000 }); await page.waitForTimeout(600);
   return { ctx, page, st, mb };
 }
-// the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the strip (Open now | Later) with the ring on Open now; ▶ then ✓ is Later
+// the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the choice (no card; the bottom line reads ✓ Open the crate and ← Later, the ring on a crate that holds a pod); ← is Later
 const later = async (page, st, what, back, empty = false) => {
   if (empty) {   // C docks with an empty bay: the show has no choice, so a key skips it and it closes on the screen the player was on
     await page.waitForTimeout(1000); await page.keyboard.press("Enter"); await page.waitForTimeout(800); await back(); return;
   }
   await page.waitForTimeout(3600);   // one crate: the show holds 3200 ms
-  await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
-  eq(await st().evaluate(() => [window.__st.props?.overlay?.form, window.__st.props?.overlay?.focus?.cur]), ["strip", "card.open"], what + ": after the show the strip, the ring on Open now");
-  await page.keyboard.press("ArrowRight"); await page.waitForTimeout(200); await page.keyboard.press("Enter"); await page.waitForTimeout(800);
+  await st().waitForFunction(() => window.__st.props?.regions?.arrival?.phase === "choice", null, { timeout: 15000 }).catch(() => {});
+  eq(await st().evaluate(() => [window.__st.props?.regions?.arrival?.phase, window.__st.props?.overlay ?? null]), ["choice", null], what + ": after the show the choice stands: no card, ✓ Open the crate and ← Later");
+  await page.keyboard.press("Escape"); await page.waitForTimeout(800);   // ← Later
   await back();
 };
 const box = async (page, sel) => { const b = await page.locator(sel).boundingBox(); return [b.x, b.y, b.width, b.height]; };
@@ -98,8 +98,10 @@ const pixel = async (page, x, y) => { const p = rd(await page.screenshot({ clip:
 const state = (page) => page.evaluate(() => ({ owner: __play.owner, caddy: __play.caddy, tier: __play.tier, seat: __play.seatOff, word: document.getElementById("dockWord").textContent, mark: document.getElementById("dockMark").getAttribute("src"), dot: !document.getElementById("dockDot").hidden, live: document.getElementById("live").textContent, active: document.activeElement && document.activeElement.id }));
 const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, { recursive: true }), page.screenshot({ path: path.join(img, name), clip: rect ?? { x: 0, y: 0, width: page.viewportSize().width, height: page.viewportSize().height } })) : null;
 
+// JOURNEY_ONLY=ST runs the Stack sections alone (first-ten-front: the sections the front door and the Dock key touch)
+const ONLY = process.env.JOURNEY_ONLY;
 // ---- A. layout at 1× (viewport 1920 × 1080) ----
-{
+if (!ONLY) {
   const { ctx, page, st, mb } = await open(1920, 1080);
   eq(await page.evaluate(() => __play.tier), "row", "A: the layout at 1920 × 1080");
   eq(await box(page, "#fStation"), [195, 64, 1024, 600], "A: the Station frame"); eq(await box(page, "#fCompanion"), [1259, 64, 450, 600], "A: the Companion frame");
@@ -126,7 +128,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
 }
 
 // ---- B. the dock round trip (viewport 1920 × 1080, one crate aboard) ----
-{
+if (!ONLY) {
   const { ctx, page, st, mb } = await open(1920, 1080, { query: "?test&seed=3" });
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
   let s = await state(page);
@@ -185,7 +187,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
 }
 
 // ---- C. the narrow tier (viewport 1000 × 800) ----
-{
+if (!ONLY) {
   const { ctx, page, st, mb } = await open(1000, 800);
   const vis = (id) => page.evaluate((i) => getComputedStyle(document.getElementById(i)).visibility, id);
   eq(await page.evaluate(() => __play.tier), "narrow", "C: the tier");
@@ -266,8 +268,8 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   expect(sameImage(sImg, sCap), "S: the Station frame is pixel-equal to its capture");
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(500);
   await clip(page, "play-stack-720.png");
-  await page.click("#dockCtl"); await page.waitForTimeout(700);
-  eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "S: the control docks once");
+  await page.click("#dockKey"); await page.waitForTimeout(700);
+  eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "S: the Dock key docks once");
   await page.click("#tabCompanion"); await page.waitForTimeout(400);
   const cb2 = await box(page, "#fCompanion"); eq([cb2[2], cb2[3]], [450, 600], "S: the Companion frame is 1:1");
   const cImg = rd(await page.screenshot({ clip: { x: cb2[0], y: cb2[1], width: 450, height: 600 } })), cCap = dataPng(await mb().evaluate(() => window.__mb.capture()));
@@ -277,6 +279,26 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await clip(page, "play-stack-720-companion.png");
   await ctx.close();
 }
+
+{
+  // FD. the front door on a laptop (first-ten-front A1, A2): a new player (no pod home) sees the Companion on top with the Station as one asleep strip, the Dock key quiet; the first dock that brings a pod turns the page to the Station
+  const { ctx, page, st, mb } = await open(1440, 900, { query: "?test&new&seed=3" });
+  const sleep = () => page.evaluate(() => ({ owner: __play.owner, strip: !document.getElementById("asleepStrip").classList.contains("hidden"), stVis: getComputedStyle(document.getElementById("shStation")).visibility, tabs: [tabCompanion.getBoundingClientRect().left < tabStation.getBoundingClientRect().left, tabStation.textContent], dock: { text: document.getElementById("dockWord").textContent, quiet: document.getElementById("dockKey").classList.contains("quiet"), lit: document.getElementById("dockKey").classList.contains("lit") }, bar: !!document.getElementById("dockCtl") }));
+  const a0 = await sleep();
+  eq([a0.owner, a0.strip, a0.stVis, a0.tabs, a0.bar], ["companion", true, "hidden", [true, "Station · asleep"], false], "FD: a new player opens on the Companion, the Station asleep (a strip, its tab says so), no Dock control in the bar");
+  eq([a0.dock.quiet, a0.dock.lit, a0.dock.text], [true, false, "Dock · after the walk"], "FD: the Dock key is quiet before the walk");
+  { const c = await box(page, "#shCompanion"), t = await box(page, "#asleepStrip"), d = await box(page, "#dockKey"); expect(c[1] < 100 && t[0] >= c[0] + c[2] && d[0] >= c[0] + c[2], "FD: the Companion is on top, the strip and the Dock key stand beside it " + JSON.stringify([c, t, d])); }
+  await clip(page, "play-first-laptop.png");
+  await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(600);
+  await page.keyboard.press("Shift+D"); await page.waitForTimeout(900);
+  eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "FD: the dock took");
+  const a1 = await sleep(); eq([a1.owner, a1.strip, a1.stVis, a1.tabs[1], a1.dock.text], ["station", false, "visible", "Station", "Docked · Lift to go out"], "FD: the first dock that brings a pod turns the page to the Station by itself; the key reads Docked · Lift to go out");
+  await clip(page, "play-first-laptop-docked.png");
+  await page.click("#dockKey"); await page.waitForTimeout(900);
+  eq([await st().evaluate(() => window.__st.ST.dock.docked), await page.evaluate(() => __play.owner)], [false, "companion"], "FD: the Dock key lifts again, the Companion has the keys");
+  await ctx.close();
+}
+if (ONLY) { await browser.close(); server.close(); await caddyStop(); rmSync(caddyData, { recursive: true, force: true }); if (errors.length) fails.push(...errors); console.log(fails.length ? `\nplay journey (${ONLY}) FAILED: ${fails.length}` : `\nplay journey (${ONLY}) ok`); process.exit(fails.length ? 1 : 0); }
 
 // ---- M. the layouts and the key minimums, measured (the ruling's checks) ----
 const SIZES = [[1280, 720, 1, "stack"], [1440, 900, 1, "stack"], [1920, 1080, 1, "row"], [2560, 1440, 1, "row"], [1440, 900, 1.25, "stack"], [1440, 900, 1.75, "stack"]];
@@ -531,8 +553,8 @@ async function zBad(page, sel, W, z, capture) {
   // 3. the crate sealed in the Bay, nothing accepted, the supplies unmoved
   let now = await ST(); eq([now.accepted.includes(crate?.id), now.e, now.d, now.s], [false, before.e, before.d, before.s], "P3: the crate waits sealed; nothing accepted, the supplies unmoved");
   // 4. open it: the supplies tick, the pods land, the Companion's crate mark clears, the face changes once to C3 with the ledger's new numbers
-  await page.waitForTimeout(3600); await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
-  await page.keyboard.press("Enter");   // Open now
+  await page.waitForTimeout(3600); await st().waitForFunction(() => window.__st.props?.regions?.arrival?.phase === "choice", null, { timeout: 15000 }).catch(() => {});
+  await page.keyboard.press("Enter");   // ✓ Open the crate
   const opened = await st().waitForFunction((id) => window.__st.ST.accepted.includes(id), crate?.id, { timeout: 20000 }).then(() => true, () => false); expect(opened, "P4: the crate is accepted at its opening");
   const c3 = await waitFace("C3", 12000); expect(c3, "P4: the face reads C3");
   now = await ST(); f = await face();

@@ -40,7 +40,7 @@ const SCENES = {
   "a fresh world: no Probe, away": { docked: false, noProbe: true },
   "docked, tier 2, the switch off, the ring on the plates": { tier: 2, shield: 3, f: "plates" },
 };
-const frameProps = (line = {}, over = {}) => ({ top: { screen: "bench", title: "Probe", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Home", need: "", ...line }, plate: { text: "" }, ...over });
+const frameProps = (line = {}, over = {}) => ({ top: { screen: "bench", title: "Companion", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Home", need: "", ...line }, plate: { text: "" }, ...over });
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, [w, h]) { const dd = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { dd[i * 4] = 70 + (k & 127); dd[i * 4 + 1] = 70 + ((k >> 7) & 127); dd[i * 4 + 2] = 70 + ((k >> 14) & 127); dd[i * 4 + 3] = 255; } return { w, h, data: dd }; }
 async function start(b, { motion = true, t0 = 1000, fixedLine = false, over = {} } = {}) {   // fixedLine: the frame's bottom line stays as it was, so a refresh is the bench's own (the architect's ceilings are the bench's objects)

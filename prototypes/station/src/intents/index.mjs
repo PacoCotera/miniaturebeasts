@@ -14,8 +14,9 @@ import * as panel from "./panel.mjs";
 import * as sitting from "./sitting.mjs";
 import * as settings from "./settings.mjs";
 import * as cross from "./cross.mjs";
+import * as store from "./store.mjs";
 
-export const INTENTS = { frame, home, cargo, incubator, library, "library.species": library.species, "library.family": library.family, habitat, namer, vivarium, create, pods, bench, panel, sitting, settings, cross };
+export const INTENTS = { frame, home, cargo, incubator, library, "library.species": library.species, "library.family": library.family, habitat, namer, vivarium, create, pods, bench, panel, sitting, settings, cross, store };
 // A face intent { screen, target, verb } (all that is on the wire) to its screen's function; the frame's verbs (the room keys and the wake) are the same on every screen. The Dock key is not a face verb: the host calls frame.dock(h).
 export function dispatch(h, { screen, target, verb }) {
   if (h.ui.answer) {   // Call's answer: ← puts it away and does nothing else; ✓ or a colour key puts it away and then acts as usual (the pad's moves and steps leave it on)

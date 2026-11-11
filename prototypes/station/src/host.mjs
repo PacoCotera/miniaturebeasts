@@ -12,6 +12,7 @@ import { podsProps, podPic } from "./views/pods-props.mjs";
 import { req as reqOf } from "./views/requests.mjs";
 import { cuesOf, originWord, answerOf, setMetrics as setCarryMetrics } from "./carry.mjs";
 import { capLine } from "./views/words.mjs";
+import { goalWords } from "./views/goal-words.mjs";
 import { homeBuild, mibiPictureOf, mibiReq, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
 import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs";
 setLibrary(libraryOf);   // Home's Library module: the specimen of the species with something found (build spec 4.2)
@@ -27,6 +28,7 @@ import { namerBuild } from "./views/namer-props.mjs";
 import { panelBuild } from "./views/panel-props.mjs";
 import { benchBuild } from "./views/bench-props.mjs";
 import { settingsBuild, SLEEP_INDEX_KEY } from "./views/settings-props.mjs";
+import { storeBuild } from "./views/store-props.mjs";
 import { crossBuild } from "./views/cross-props.mjs";
 import { libraryBuild, speciesBuild, sheetAhead, familyBuild } from "./views/library-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
@@ -191,6 +193,10 @@ export function settingsBody() {
   return settingsBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), companion: c ? { name: c.name ?? "Companion", since: c.at, keyed: !!c.pub && !c.pubMismatch } : null, sleeping: kept, ui: UI.settings }, SPECS.settings);
 }
 
+// ---- The store ----
+// The bench pod's Data store, the reveal of what it read while the Companion was out and the chapter page (store.json): null with no identified pod on the bench; the screen's state is the UI's (UI.store), the store and the looks the rules'.
+export function storeBody() { return UI.store ? storeBuild({ st: G.st, settings: G.settings, ui: UI.store, docked: docked() }, SPECS.store) : null; }
+
 // ---- Cross ----
 // The splice (cross.json): the pair, the forecast of what the player has read, one chapter or all; the screen's state is the UI's (UI.cross), the pair and the forecast the rules'. The ring is the one target (the partner), a stepper.
 // Null with no visit (a developer's jump), or when the mibi is gone: the screen leaves for the mibi up close.
@@ -244,11 +250,8 @@ export function familyBody() {
 // ---- Cargo ----
 // The bay, the crate opening and the end: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
 export function cargoBody() {
-  const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow(), now: Date.now() }, SPECS.cargo, SPECS.home, SPECS.frame, SPECS.sitting), pn = UI.panel, a = UI.cargo.arrival;
-  if (pn && pn.screen === "cargo" && UI.cargo.state === "arrival" && a && a.phase === "choice") {   // the dock arrival's choice: the strip's props ride on Cargo's (an overlay) and its bottom line is built from the focused card
-    const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
-    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
-  } else if (pn && pn.screen === "cargo") UI.panel = null;
+  const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow(), now: Date.now() }, SPECS.cargo, SPECS.home, SPECS.frame, SPECS.sitting), pn = UI.panel;
+  if (pn && pn.screen === "cargo") UI.panel = null;   // the arrival's choice has no card: its bottom line is cargoBuild's
   return body;
 }
 
@@ -326,8 +329,9 @@ export function screenProps(plate) {
   if (screen === "library.family" && !fam) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // no found species shown: as any screen not built
   if (screen === "sitting" && !UI.sit) { goScreen("habitat"); return screenProps(plate); }   // no visit to show: one mibi up close
   const crs = screen === "cross" ? crossBody() : null; if (screen === "cross" && !crs) { goScreen(S.mibiById(G.st, UI.hab.id) ? "habitat" : "vivarium"); return screenProps(plate); }   // no visit to show (or the mibi is gone): one mibi up close
+  const sto = screen === "store" ? storeBody() : null; if (screen === "store" && !sto) { goScreen("home"); return screenProps(plate); }   // no pod on the bench to show: Home
   const sat = screen === "sitting" ? sittingBody(light) : null; if (screen === "sitting" && !sat) { UI.sit = null; goScreen("habitat"); return screenProps(plate); }
-  const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : screen === "settings" ? settingsBody() : screen === "cross" ? crs : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : screen === "settings" ? settingsBody() : screen === "store" ? sto : screen === "cross" ? crs : podsBody(), reqs = [...body.requests, ...iconRequests()];
   const fl = UI.flight ? flightRequest(UI.flight.sub) : null; if (fl) reqs.push(...fl.requests);   // the carry's flight picture goes to the face with this screen's
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = [...droppedPictures()];   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
@@ -342,10 +346,16 @@ export function screenProps(plate) {
   const line = { ...body.line }; if (line.need == null) line.need = need().text;
   if (UI.keep && holdOn()) { line.subject = SPECS.frame.strings.keep; const kc = SPECS.frame.regions.marks.roomCue?.confirm; if (kc && assetEntry(kc)) ids.add(kc); }   // F5b: ✓ was let go early: "Keep holding [✓ cap]" in the middle slot for hold.keepMs
   { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) { line.keys = cues; for (const c of cues) { const id = SPECS.frame.regions.marks.roomCue?.[c.room]; if (id && assetEntry(id)) ids.add(id); } } if (UI.teach && cues.some((c) => c.key === UI.teach.key)) line.subject = SPECS.frame.strings.teach[UI.teach.key]; }   // the first time a key has a cue its line stands in the middle slot (intents/frame.mjs teachTick)   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
+  { const gl = goalNow(); if (gl && (!line.subject || (screen === "cargo" && gl.step === "openBay"))) line.subject = gl.text; }   // the goal on every room: the middle slot, where the screen has no line of its own there; the Bay's crate line gives way to "open the crate" while a crate waits
   { const back = originWord({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (back && line.back) line.back = back; }   // after a carry ← goes back to where it started: the way back names that place
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
   return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl, ...(fl ? { flight: { pic: fl.id, room: UI.flight.room } } : {}), ...answerPart(line) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
+}
+// The goal now (first-ten-front A3): goalKey's aim and step in words, for the header's middle slot on every room and for the dock state the Companion reads. null when the ladder is empty.
+export function goalNow() {
+  const g = S.goalKey(G.st, G.sv, G.settings), w = g && goalWords(g, docked(), SPECS.frame);
+  return w ? { aim: g.key, step: g.step.key, text: w.text, icons: w.icons || "" } : null;
 }
 let homeCapsUp = false;   // Home's key caps are on the face (they are dropped when another screen's props go out)
 let shownLight = null;  // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
@@ -450,6 +460,7 @@ export function onFaceMessage(h, m) {
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
     if (m.screen === "settings") { if (UI.screen === "settings") INTENTS.settings.focus(h, m.target); return; }
+    if (m.screen === "store") { if (UI.screen === "store") INTENTS.store.focus(h, m.target); return; }
     if (m.screen === "cross") return;   // the pad is a stepper: the ring never moves
     if (m.screen === "library") { if (UI.screen === "library") INTENTS.library.focus(h, m.target); return; }
     if (m.screen === "sitting") { if (UI.screen === "sitting") INTENTS.sitting.focus(h, m.target); return; }

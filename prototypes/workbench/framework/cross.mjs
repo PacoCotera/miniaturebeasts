@@ -175,9 +175,9 @@ const versionOf = (g) => g.frameVersion ?? FRAME_VERSION;
 function missingLoci(frame, g) { return frame.loci.filter((l) => !Array.isArray(g.loci?.[l.id]) || g.loci[l.id].length !== 2).map((l) => l.id); }
 function refuseMissing(frame, g, who) {
   const missing = missingLoci(frame, g);
-  if (missing.length) throw new Error(`${frame.species.name} ${who} was born on frame version ${versionOf(g)}, which lacks ${missing.length === 1 ? missing[0] : `${missing.length} loci (${missing.slice(0, 3).join(", ")}${missing.length > 3 ? ", ..." : ""})`} of version ${frameVersionOf(frame)}: it cannot be bred with this frame`);
+  if (missing.length) throw new Error(`${frame.species.name} ${who} was made on frame version ${versionOf(g)}, which lacks ${missing.length === 1 ? missing[0] : `${missing.length} loci (${missing.slice(0, 3).join(", ")}${missing.length > 3 ? ", ..." : ""})`} of version ${frameVersionOf(frame)}: it cannot be bred with this frame`);
 }
-export const versionRefusal = (frame, a, b) => (versionOf(a) !== versionOf(b) ? `${frame.species.name} born on frame version ${versionOf(a)} cannot be crossed with one born on version ${versionOf(b)}: a cross needs two of the same version` : null);
+export const versionRefusal = (frame, a, b) => (versionOf(a) !== versionOf(b) ? `${frame.species.name} made on frame version ${versionOf(a)} cannot be crossed with one made on version ${versionOf(b)}: a cross needs two of the same version` : null);
 function refuse(frame, x, y, lookup = () => null) {
   const a = genomeOf(x), b = genomeOf(y);
   if (a.species !== frame.species.id || b.species !== frame.species.id) throw new Error("a cross needs two of the same species");

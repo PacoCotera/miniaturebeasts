@@ -1,11 +1,9 @@
-// The `crop` picture request (pictures.mjs, T-20261016-161): a window of a placed master taken 1:1, never scaled, transparent where the window passes the master's edge; the dock arrival's cards use it
-// for their crates (frame.json regions.panel.strip.picture.crops). A master that is not placed leaves a labelled stand-in of the window's size.
+// The `crop` picture request (pictures.mjs, T-20261016-161): a window of a placed master taken 1:1, never scaled, transparent where the window passes the master's edge; a picture that shows a window of a master asks for it. A master that is not placed leaves a labelled stand-in of the window's size.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { registerPictures } from "../src/pictures.mjs";
 import { placeMaster, asset, dropAsset, assetEntry } from "../../ui/assets.mjs";
-import { dockCards } from "../src/views/panel-props.mjs";
 
 const J = (f) => JSON.parse(readFileSync(new URL("../../ui/specs/station/" + f, import.meta.url), "utf8")), frame = J("frame.json"), panel = J("panel.json");
 // a master whose every pixel names its place: R = x mod 256, G = y mod 256, B = 7, A = 255 (a hole at (0, 0) for the edge check is not needed: the edge is the window's)
@@ -27,11 +25,3 @@ test("a master that is not placed (or at another size) leaves a stand-in of the 
   const e = assetEntry("t-crop-none"); assert.equal(e.status, "placeholder"); assert.deepEqual([e.w, e.h], [12, 9]); assert.equal(asset("t-crop-none").w, 12); dropAsset("t-crop-none");
 });
 
-test("the dock strip's two cards ask for 96 × 96 windows named by frame.json: the open crate's well and rim, the whole sealed crate sitting", () => {
-  const requests = [], cards = dockCards({ ui: { cargo: { arrival: { crates: 2 } } } }, panel, frame, requests), C = frame.regions.panel.strip.picture;
-  assert.deepEqual(C.size, [96, 96]); assert.equal(requests.length, 2); assert.ok(requests.every((r) => r.kind === "crop" && r.size[0] === 96 && r.size[1] === 96));
-  assert.deepEqual(requests.map((r) => [r.master, r.of, r.at]), [["crate-open-432x272", [432, 272], [150, 110]], ["crate-sitting-80x56", [80, 56], [-8, -20]]]);
-  assert.deepEqual(cards.map((c) => c.picture), requests.map((r) => r.id));
-  const [o, s] = requests; assert.ok(o.at[0] >= 0 && o.at[1] >= 0 && o.at[0] + 96 <= 432 && o.at[1] + 96 <= 272, "the open window lies inside its master: no transparent edge");
-  assert.ok(-s.at[0] >= 0 && -s.at[1] >= 0 && -s.at[0] + 80 <= 96 && -s.at[1] + 56 <= 96, "the sealed crate (80 × 56) lies whole inside its window, at (−at)");
-});

@@ -16,9 +16,10 @@ const placed = readdirSync(DIR).filter((f) => f.endsWith(".png") || f.endsWith("
 const HASHES = JSON.parse(readFileSync(new URL("SHA256.json", DIR), "utf8"));
 const files = Object.fromEntries(hazeFileNames().map((n) => [n, decodePNG(readFileSync(new URL(n + ".png", DIR)))]));
 const remap = JSON.parse(readFileSync(new URL("haze-remap.json", DIR), "utf8")), ramp = JSON.parse(readFileSync(new URL("haze-ramp.json", DIR), "utf8"));
-const SETLEN = readTileSet(new Uint8Array(readFileSync(new URL("../baked/ninja-test.mbtiles", import.meta.url)))).palette.length;   // the set holds the kit's 43, the open edges' 7 and the decor's colours
-const kit = hazeKit(files, remap, ramp, SETLEN);
-const RAMP0 = ramp.firstIndex, NR = ramp.count;   // the ramp's length comes from haze-ramp.json
+const SET = readTileSet(new Uint8Array(readFileSync(new URL("../baked/ninja-test.mbtiles", import.meta.url))));
+const SETLEN = SET.palette.length;   // the set holds the 99 colours the desk keyed (the kit's 43, the open edges' 7 and the map palette's), then the walk's signed sprites' own colours
+const kit = hazeKit(files, remap, ramp, SETLEN, SET.palette);
+const KEYED = ramp.firstIndex - remap.firstIndex, RAMP0 = 48 + SETLEN, NR = ramp.count;   // the ramp's length comes from haze-ramp.json; it moves up after the set's colours
 
 test("every placed file equals the desk's file byte for byte (and its recorded hash)", () => {
   assert.deepEqual(Object.keys(HASHES).sort(), placed);
@@ -35,8 +36,11 @@ test("the desk's hash: the lump a dual tile wears", () => {
 });
 
 test("the kit: the ramp follows the set's palette, 21 tables, and a table only ever answers with a palette or ramp index", () => {
-  assert.equal(RAMP0, 147); assert.equal(kit.ramp.first, RAMP0); assert.equal(kit.ramp.rgb.length, NR); assert.equal(NR, 8); assert.equal(kit.extra.first, 48 + SETLEN); assert.equal(kit.extra.rgb.length, NR, "the ramp, after the set's colours");
-  assert.equal(SETLEN, 99);
+  assert.equal(ramp.firstIndex, 147); assert.equal(KEYED, 99); assert.equal(kit.ramp.first, RAMP0); assert.equal(kit.ramp.rgb.length, NR); assert.equal(NR, 8); assert.equal(kit.extra.first, 48 + SETLEN); assert.equal(kit.extra.rgb.length, NR, "the ramp, after the set's colours");
+  assert.ok(SETLEN >= KEYED, "the set keeps the desk's keyed colours, in their order, and adds its own after them");
+  assert.deepEqual(SET.palette.slice(0, KEYED).map((c) => "#" + c.toString(16).padStart(6, "0")), remap.order.slice(0, KEYED));
+  // a colour added after the keyed ones takes the table entries of the keyed colour nearest it
+  for (let L = 0; L < 3; L++) for (let s = 1; s <= 7; s++) for (let i = 48 + KEYED; i < 48 + SETLEN; i++) assert.ok(kit.tables[L][s][i] >= 48, `added colour L${L + 1}.${s}[${i}]`);
   assert.deepEqual(kit.setRgb, ts.palette.map((c) => [(c >> 16) & 255, (c >> 8) & 255, c & 255]), "the tables are keyed to the tile set's whole palette, in its order");
   const ok = new Set(Array.from({ length: SETLEN + NR }, (_, k) => 48 + k));
   for (let L = 0; L < 3; L++) for (let s = 1; s <= 7; s++) for (let i = 48; i < 48 + SETLEN; i++) assert.ok(ok.has(kit.tables[L][s][i]), `L${L + 1}.${s}[${i}]`);

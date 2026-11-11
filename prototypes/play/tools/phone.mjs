@@ -1,6 +1,6 @@
 // The play page on a phone (owner 2026-11-09): Playwright device emulation with touch at 412 × 915, 390 × 844 (portrait) and 915 × 412 (landscape).
 // Each device is checked whole (its canvas, shell, tray and keys inside the viewport), the bar in one row with no overlap, every touch target at least 44 CSS px, the d-pad a cross,
-// a tap on every on-screen key sending that key, the Options panel carrying the Dock control and the note, the turn hint once.
+// a tap on every on-screen key sending that key, the Dock key under the keys (quiet before a walk), a new player on the Companion with the Station's tab asleep, the Options panel with no Dock row and no one-device note, the turn hint once.
 //   node prototypes/play/tools/phone.mjs            (PW_DIR=/path/with/node_modules/playwright; PHONE_SHOTS=dir writes the stills)
 import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync, mkdirSync } from "node:fs";
@@ -43,9 +43,10 @@ const KEYCODES = { Left: "ArrowLeft", Up: "ArrowUp", Down: "ArrowDown", Right: "
 
 for (const [W, H, dsf] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625]]) {
   const portrait = H > W, tag0 = `${W}×${H}@${dsf}`;
-  const { ctx, page, st, mb } = await open(W, H, dsf);
+  const { ctx, page, st, mb } = await open(W, H, dsf, { query: "?test&new" });   // `new`: a new player, the Station asleep (test pages otherwise keep the Station awake)
   eq(await page.evaluate(() => [__play.phone, matchMedia("(pointer: coarse)").matches]), [true, true], tag0 + ": the page knows it is on a phone");
-  eq(await page.evaluate(() => __play.owner), portrait ? "companion" : "station", tag0 + ": the default device (a portrait phone opens on the Companion)");
+  eq(await page.evaluate(() => __play.owner), "companion", tag0 + ": a new player (no pod home yet) opens on the Companion, upright or turned");
+  eq(await page.evaluate(() => [tabCompanion.getBoundingClientRect().left < tabStation.getBoundingClientRect().left, tabStation.textContent]), [true, "Station · asleep"], tag0 + ": the tabs read Companion | Station · asleep");
   // the bar: one row, no overlap, only the device switch and Options, every control at least 44
   const barBoxes = await page.evaluate(() => [...document.querySelectorAll("#bar > *")].filter((e) => getComputedStyle(e).display !== "none" && e.id !== "live").map((e) => { const r = e.getBoundingClientRect(); return { id: e.id, l: r.left, t: r.top, r: r.right, b: r.bottom, w: r.width, h: r.height, text: e.textContent }; }));
   eq(barBoxes.map((b) => b.id), ["tabStation", "tabCompanion", "optionsBtn"], tag0 + ": the bar shows the device switch and Options only");
@@ -87,6 +88,11 @@ for (const [W, H, dsf] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625]])
       if (dev === "companion") expect(Math.abs((K.Call.t + K.Call.b) / 2 - (K.Left.t + K.Left.b) / 2) < 1.5, tag + ": Call, ←, ✓ on the D-pad's middle line");
       else expect(K.Home.t > K.Down.b - 1 && K.Home.l < K.Down.l, tag + ": the room keys in a row under the D-pad");
     }
+    // the Dock key: on screen, a 44 target, clear of the tray; quiet before the first walk's crate
+    const dk = await page.evaluate(() => { const e = document.getElementById("dockKey"), r = e.getBoundingClientRect(); return { l: r.left, t: r.top, r: r.right, b: r.bottom, w: r.width, h: r.height, shown: getComputedStyle(e).display !== "none", text: e.textContent, quiet: e.classList.contains("quiet") }; });
+    expect(dk.shown && dk.h >= 44 - 1e-6 && dk.w >= 44 && inside(dk, W, H), tag + ": the Dock key is on screen and a 44 target " + JSON.stringify(dk));
+    expect(!overlaps(dk, m.tray) || !portrait, tag + ": the Dock key sits clear of the tray");
+    expect(dk.quiet && /^Dock|^⇧?D?ock/.test(dk.text.trim()), tag + ": the Dock key is quiet before a walk " + JSON.stringify(dk.text));
     if (shots) await page.screenshot({ path: path.join(shots, `phone-${W}x${H}-${dev}.png`) });
 
     // a tap on each on-screen key sends that key (down, then up) to its device
@@ -103,10 +109,10 @@ for (const [W, H, dsf] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625]])
   await tapKey("Library"); const s1 = await st().evaluate(() => window.__st.UI.screen); eq(s1, "library", tag0 + ": the Library key opens the Library (it was " + s0 + ")");
   await tapKey("Home"); eq(await st().evaluate(() => window.__st.UI.screen), "home", tag0 + ": the Home key goes Home");
 
-  // Options: the Dock control and the note live in the panel on a phone
+  // Options: no Dock row and no one-device note any more (the Dock key is under the keys)
   await page.touchscreen.tap(...(await page.evaluate(() => { const r = document.getElementById("optionsBtn").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }))); await page.waitForTimeout(500);
   const op = await page.evaluate(() => { const p = document.querySelector(".op-panel"), r = p && p.getBoundingClientRect(), d = document.getElementById("optionsDock"); return { open: !!p, inView: !!r && r.left >= 0 && r.right <= innerWidth && r.top >= 0 && r.bottom <= innerHeight, text: p ? p.textContent : "", dock: d ? d.getBoundingClientRect().height : 0, btns: p ? [...p.querySelectorAll("button,[role=switch],[role=combobox]")].map((b) => b.getBoundingClientRect().height) : [] }; });
-  expect(op.open && op.inView && /One device at a time/.test(op.text) && /Dock the Companion|Lift the Companion/.test(op.text) && op.dock >= 44, tag0 + ": Options holds the one-device note and the Dock control, on screen " + JSON.stringify({ ...op, text: op.text.slice(0, 60) }));
+  expect(op.open && op.inView && !/One device at a time/.test(op.text) && !/Dock the Companion|Lift the Companion/.test(op.text) && op.dock === 0 && /Playtest waits/.test(op.text), tag0 + ": Options has no Dock row and no one-device note, and still holds Playtest waits, on screen " + JSON.stringify({ ...op, text: op.text.slice(0, 60) }));
   await page.keyboard.press("Escape"); await page.waitForTimeout(300);
   await ctx.close();
 }

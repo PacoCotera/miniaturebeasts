@@ -44,7 +44,7 @@ export function departures(log, spec, frame, state = "bay", opts = {}) {
   for (const id of ["waiting", "waiting.pod", "waitingMore"]) for (const r of regions.filter((x) => x.id === id)) must(within(r.rect, R.waiting.rect), `${id} ${r.rect} is not on the mat ${R.waiting.rect}`);
   must(art("waiting").some((r) => eq(r.rect, R.waiting.rect)), "the mat is drawn at its rect in every state");
   // the display row: the open crate's contents inside the display rectangle, only in the opening; the portrait's painting may leave
-  for (const id of ["display", "displayAmount"]) for (const r of regions.filter((x) => x.id === id)) must(within(r.rect, R.display.rect), `${id} ${r.rect} leaves the display ${R.display.rect}`);
+  for (const id of ["display", "displayAmount"]) for (const r of regions.filter((x) => x.id === id)) must(within(r.rect, R.display.rect) || within(r.rect, R.inside.rect), `${id} ${r.rect} leaves the display ${R.display.rect} and the inside view ${R.inside.rect}`);   // the portrait crate keeps its display; an ordinary crate opens inside (regions.inside)
   for (const r of got("portrait")) must(state === "opening", "the portrait crate's painting shows only in the opening");
   // what travels: inside the bay, but the materials end at the top bar's icons (the bar covers the screen above y 40) and the portrait leaves
   for (const r of got("travel")) must(within(r.rect, [-16, -64, 1056, 616]), `what travels ${r.rect} leaves the travel rectangle ${R.travel.rect} by more than the spec's targets do (16 px at the sides, up to the top bar's icons)`);
