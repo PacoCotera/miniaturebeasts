@@ -208,11 +208,11 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "bench/bench", "card": "bench-L5-8", "verdict": "fault", "from": "owner card bench-L5-8, marked fault: almost aligned: the centre (y) and the container's 310 and 304.5, 5.5 → 0",
-    "expect": [
-     { "rule": "L5", "part": "b", "container": "opening", "node": "cradle", "other": "opening centre (y)", "mark": "owner", "why": "marked a fault by the owner: almost aligned: the centre (y) and the container's 310 and 304.5, 5.5 → 0 in the reviewed run" }
+  { "state": "bench/bench", "card": "bench-L5-8", "verdict": "fault", "fixed": "the bench's signed Companion paintings (c2fb4931f, golden retaken in 51e4e29c4)", "from": "owner card bench-L5-8, marked fault: almost aligned: the centre (y) and the container's 310 and 304.5, 5.5 → 0",
+    "expect": [],
+    "clear": [
+     { "rule": "L5", "part": "b", "container": "opening", "node": "cradle", "other": "opening centre (y)", "mark": "owner", "why": "fixed: with the signed Companion paintings the opening's centre and the cradle's centre are one row (the finding was 5.5 px in the reviewed run); the verdict stays the owner's fault" }
     ],
-    "clear": [],
     "pending": [] },
   { "state": "bench/bench", "card": "bench-L6-2", "verdict": "fault", "from": "owner card bench-L6-2, marked fault: an empty 177 x 128, 0.57 → 0.25",
     "expect": [
