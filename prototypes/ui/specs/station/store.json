@@ -6,7 +6,7 @@
   "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening; painted, columns, groups, slots and bleed are UI/UX's with the AD"
  },
  "device": "station",
- "spec": "tools/credit-runner/runs/design-station-pods/scheme.md sections 2 and 3 (pictures 1, 2 and 3)",
+ "spec": "the Station pods design scheme, sections 2 and 3 (pictures 1, 2 and 3)",
  "frame": "frame.json",
  "status": "The pod on the bench reads from its Data store while the Companion is out. Three states on one screen: the bench (the store's bar, the reading line and the Put-in panel), the teaser (the chapters read while the Companion was out, counted, before the show) and the chapter page (one read chapter: its close-up slot, each look with its picture slot, plain name and mark, the promises, FIRST TIME SEEN). Opened from the reading room on an unread chapter and from Home's notice.",
  "note": "The one home of the store screen's numbers. Rectangles are [x, y, w, h] at 1x on 1024 x 600 and every picture is drawn 1:1. Panels, bars, marks and pills are the face's own rect primitives, palette-exact; the words are the frame's type roles. Every player line is a placeholder for the copywriter. Art is signed pictures placed by id: the pod's painting, each chapter's close-up and the two promise chips (crown-leaf-crest, markings-pale-patches, 40 x 50, left of the card's words); the look pictures of the rows are named empty slots (store-roll-...). RARE waits for the game designer's cut: nothing draws it.",
