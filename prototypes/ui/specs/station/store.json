@@ -1,0 +1,174 @@
+{
+ "screen": "store",
+ "layout": {
+  "stage": "field",
+  "opening": [0, 40, 1024, 522],
+  "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening; painted, columns, groups, slots and bleed are UI/UX's with the AD"
+ },
+ "device": "station",
+ "spec": "tools/credit-runner/runs/design-station-pods/scheme.md sections 2 and 3 (pictures 1, 2 and 3)",
+ "frame": "frame.json",
+ "status": "The pod on the bench reads from its Data store while the Companion is out. Three states on one screen: the bench (the store's bar, the reading line and the Put-in panel), the teaser (the chapters read while the Companion was out, counted, before the show) and the chapter page (one read chapter: its close-up slot, each look with its picture slot, plain name and mark, the promises, FIRST TIME SEEN). Opened from the reading room on an unread chapter and from Home's notice.",
+ "note": "The one home of the store screen's numbers. Rectangles are [x, y, w, h] at 1x on 1024 x 600 and every picture is drawn 1:1. Panels, bars, marks and pills are the face's own rect primitives, palette-exact; the words are the frame's type roles. Every player line is a placeholder for the copywriter. Art is named empty slots: the pod's painting and each chapter's close-up (the art director's crops), and the look pictures are Create's own roll masters. RARE waits for the game designer's cut: nothing draws it.",
+ "states": ["bench", "teaser", "chapter"],
+ "initial": "bench",
+ "stateRule": "bench: the left column (the pod), the store (its label, heading, bar and the chapter names and prices under it), the reading line and, while Data can still be put in, the Put-in panel. teaser: the same left column and store over a card that counts what was read. chapter: the close-up and the page's words on the left, the looks in the middle, the promises on the right. Every region keeps its nodes in every state; a region a state does not show has no size.",
+ "regions": {
+  "stage": {
+   "rect": [0, 40, 1024, 522],
+   "component": "frame",
+   "part": "stage",
+   "fill": "frame.json colours.stageGround"
+  },
+  "pod": {
+   "art": {"id": "store-pod-200x200", "rect": [49, 93, 200, 200], "note": "[art] the pod's painting as it stands on the bench; an empty slot until the art director's crop is placed"},
+   "name": {"at": [49, 308], "role": "name"},
+   "why": {"at": [49, 352], "width": 232, "role": "quiet", "max": 3},
+   "fresh": {"at": [49, 424], "role": "figure.changed"}
+  },
+  "store": {
+   "label": {"at": [301, 93], "role": "eyebrow"},
+   "head": {"at": [301, 118], "role": "figure"},
+   "bar": {"rect": [299, 152, 684, 48], "edge": "bone", "ground": "night", "gap": 2, "min": 80, "pad": 2, "note": "one bar, one part per chapter, each as wide as its price (at least min), in book order"},
+   "name": {"y": 208, "role": "label"},
+   "price": {"y": 228, "role": "small.quiet"},
+   "colours": {"read": "mint", "waiting": "fog", "adding": "orange", "addingStripe": "amber", "empty": "night", "divider": "ink", "tick": "ink"},
+   "stripe": {"on": 3, "off": 3}
+  },
+  "reading": {
+   "line": {"at": [301, 262], "role": "figure"},
+   "sub": {"at": [301, 290], "role": "quiet"},
+   "rule": {"rect": [301, 252, 680, 1], "colour": "slate"}
+  },
+  "put": {
+   "rect": [302, 374, 679, 98],
+   "radius": 8,
+   "fill": "panel",
+   "edge": "orange",
+   "bevel": "bevel",
+   "head": {"at": [18, 10], "role": "quiet"},
+   "arrow": {"size": 22, "left": [28, 44], "right": [154, 44], "colour": "orange", "dim": "slate"},
+   "amount": {"icon": [58, 52], "at": [84, 40], "role": "name", "note": "the Data icon is 16 px (the icon set has no 28 px one): the figure is the name role beside it"},
+   "fills": {"at": [208, 32], "role": "heading"},
+   "more": {"at": [208, 58], "role": "quiet"},
+   "cap": {"at": [208, 76], "role": "quiet"},
+   "ground": "panel"
+  },
+  "teaser": {
+   "rect": [301, 341, 680, 180],
+   "radius": 8,
+   "fill": "panel",
+   "edge": "hairline",
+   "bevel": "bevel",
+   "eyebrow": {"y": 44, "role": "eyebrow"},
+   "names": {"y": 72, "role": "name"},
+   "firsts": {"y": 126, "role": "new"},
+   "ground": "panel"
+  },
+  "chapter": {
+   "closeup": {"rect": [25, 65, 252, 252], "note": "[art] the close-up of this pod's mibi-to-be at the chapter's part: read-closeup-<chapter>, 252 x 252, the art director's crop of the pod's painting; empty until then"},
+   "eyebrow": {"at": [25, 332], "role": "eyebrow"},
+   "name": {"at": [25, 354], "role": "name"},
+   "sub": {"at": [25, 398], "width": 244, "role": "body", "max": 3},
+   "key": {"y": 474, "pitch": 24, "mark": 33, "text": 62, "role": "quiet"},
+   "rows": {"x": 301, "y": 62, "pitch": 82, "pic": [128, 72], "text": 445, "eyebrowRole": "eyebrow", "nameRole": "name", "lineRole": "quiet", "max": 6, "pill": {"h": 20, "gap": 8, "radius": 10, "role": "label.open", "first": "sprout"}},
+   "mark": {"d": 12, "gap": 4, "colour": "fog"},
+   "promise": {"x": 744, "y": 62, "w": 262, "h": 96, "pitch": 104, "pad": 12, "max": 4, "role": "quiet", "strong": "body", "edge": "amber", "dash": [4, 4]}
+  },
+  "plate": {"note": "the frame's message plate"}
+ },
+ "focus": {
+  "initial": "put",
+  "fallback": "none",
+  "graph": {
+   "put": {"stepper": ["left", "right"], "up": "bar", "down": "none"},
+   "bar": {"stepper": ["left", "right"], "up": "none", "down": "put"},
+   "go": {"stepper": ["left", "right", "up", "down"]}
+  },
+  "targets": {
+   "put": {"group": "put", "shape": {"rect": 8}, "box": "regions.put.rect", "lift": 0},
+   "bar": {"group": "bar", "shape": {"rect": 4}, "box": "regions.store.bar.rect", "lift": 0},
+   "go": {"group": "go", "shape": {"rect": 8}, "box": "regions.teaser.rect", "lift": 0}
+  },
+  "stepper": "◀ ▶ say step:left and step:right on the ring's target (the Put-in panel: the amount; the bar: the chapter under the ring); the ring stays. ▲ ▼ move the ring between the panel and the bar. On the teaser and the chapter page the one target says ✓ and ←.",
+  "vectors": [
+   {"from": "put", "key": "left", "intent": "step:left", "to": "put"},
+   {"from": "put", "key": "right", "intent": "step:right", "to": "put"},
+   {"from": "put", "key": "up", "to": "bar"},
+   {"from": "put", "key": "down", "to": "put"},
+   {"from": "put", "key": "confirm", "intent": "confirm", "to": "put"},
+   {"from": "bar", "key": "left", "intent": "step:left", "to": "bar"},
+   {"from": "bar", "key": "right", "intent": "step:right", "to": "bar"},
+   {"from": "bar", "key": "down", "to": "put"},
+   {"from": "bar", "key": "up", "to": "bar"},
+   {"from": "go", "key": "left", "intent": "step:left", "to": "go"},
+   {"from": "go", "key": "confirm", "intent": "confirm", "to": "go"}
+  ]
+ },
+ "keys": {
+  "pad": "focus.graph",
+  "confirm": "bench: on the Put-in panel, puts the amount in; on the bar, opens a read chapter's page. teaser: starts the show. chapter: the next chapter of the show, else the bench",
+  "back": "bench: the reading room (or Home). teaser and chapter: the bench (skips the show)",
+  "room": "as everywhere (frame.json navigation.roomKeys)"
+ },
+ "bottomLine": {
+  "ok": "Put in (bench), See them (teaser: Open {chapter}), Next chapter (chapter)",
+  "subject": "bench: More or less",
+  "back": "strings.back"
+ },
+ "strings": {
+  "title": "Research",
+  "back": "Back",
+  "label": "Data store",
+  "podNoun": "{Species} pod",
+  "fresh": "kept fresh on the bench",
+  "head": "Holds ◆ {d} · reads {names}",
+  "headEmpty": "Empty · {chapter} needs ◆ {n}",
+  "headNone": "Holds ◆ {d}",
+  "headDone": "Every chapter is read",
+  "and": " and ",
+  "or": ", ",
+  "reading": {
+   "next": "Reading {chapter} next · about {n} min",
+   "nextShort": "Reading {chapter} next · a moment",
+   "waits": "{chapter} needs ◆ {n} to start",
+   "done": "Every chapter of this pod is read",
+   "sub": "Reads while your Companion is out. Nothing is lost while you are away."
+  },
+  "put": {
+   "head": "Put in data · you have ◆ {have}",
+   "fills": "fills {chapter}",
+   "reaches": "reaches into {chapter}",
+   "more": "◆ {n} more reads the rest",
+   "rest": "that reads the rest",
+   "cap": "at most ◆ {max}: what is left to read",
+   "none": "Nothing in your pocket to put in"
+  },
+  "teaser": {
+   "eyebrow": "Read while you were out",
+   "firsts": "★ {n} firsts for you",
+   "firstsOne": "★ 1 first for you",
+   "none": "Nothing new to you in these",
+   "join": " · "
+  },
+  "chapter": {
+   "eyebrow": "{Species} pod · chapter {i} of {n}",
+   "sub": "{k} of {m} looks are new to your field guide.",
+   "subNone": "None of these looks is new to your field guide.",
+   "pass": {"one": "shows if one parent gives it", "both": "shows only if both parents give it", "mix": "mixes: babies land in between"},
+   "first": "FIRST TIME SEEN",
+   "hides": "Hides {look} · both parents give it",
+   "could": "A {look} baby could happen.",
+   "doing": "Changes by crossing"
+  },
+  "open": "Open {chapter}",
+  "next": "Next chapter",
+  "see": "See them",
+  "skip": "The chapters",
+  "putIn": "Put in",
+  "moreLess": "More or less"
+ },
+ "colours": {
+  "ground": "ground"
+ }
+}

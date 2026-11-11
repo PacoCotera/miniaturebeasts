@@ -21,6 +21,7 @@ import { capLine } from "../src/views/words.mjs";
 import { listOf } from "../src/views/pods-props.mjs";
 import { cardsOf } from "../src/views/panel-props.mjs";
 import { openInventory } from "../src/intents/pods.mjs";
+import { openStore } from "../src/intents/store.mjs";
 import { incubateNow } from "../src/intents/create.mjs";
 import { lineageOf, camFromOffset, panFor } from "../src/lineage.mjs";
 import { buildLineage } from "./fixtures/lineage.mjs";
@@ -43,7 +44,7 @@ const openInv = (h) => { h.ui.screen = "pods"; openInventory(h, { from: "home" }
 const chapters = (id) => frameOf(id).chapters.map((c) => c.id);
 
 test("every screen with intents has a module, and a face intent reaches it; the frame's verbs are the same on every screen", () => {
-  assert.deepEqual(Object.keys(INTENTS).sort(), ["bench", "cargo", "create", "cross", "frame", "habitat", "home", "incubator", "library", "library.family", "library.species", "namer", "panel", "pods", "settings", "sitting", "vivarium"]);
+  assert.deepEqual(Object.keys(INTENTS).sort(), ["bench", "cargo", "create", "cross", "frame", "habitat", "home", "incubator", "library", "library.family", "library.species", "namer", "panel", "pods", "settings", "sitting", "store", "vivarium"]);
   const st = world(), h = host(st); h.ui.screen = "library";
   dispatch(h, { screen: "library", target: "x", verb: "room:home" }); assert.deepEqual(h.went, ["home"]); assert.equal(h.ui.home.f, "room");
 });
@@ -440,15 +441,36 @@ test("Pods, the reading screen (ux-reading-v2.md §2.6): Identify on the key; �
   const n = chapters("S01").length; h.ui.pods.lane = 0;
   INTENTS.pods.intent(h, "rail", "step:left"); assert.equal(h.ui.pods.lane, 0, "no wrap"); assert.ok(h.played.some((e) => e.kind === "wipe" && e.target === "nudge"), "the stop nudges");
   INTENTS.pods.intent(h, "rail", "step:right"); assert.equal(h.ui.pods.lane, 1); h.ui.pods.lane = 0;
-  const d0 = st.d; INTENTS.pods.intent(h, "rail", "confirm"); assert.deepEqual([h.ui.pods.at, h.ui.pods.focus.cur, st.d], ["right", "key", d0], "an unread chapter: the ring on the price key, nothing spent");
-  INTENTS.pods.intent(h, "key", "confirm"); assert.deepEqual(a.read, [chapters("S01")[0]]); assert.ok(st.d < d0, "the read spends on the press"); assert.ok(h.played.some((e) => e.kind === "read" && e.cut === true && e.ms === 800)); assert.equal(h.ui.pods.focus.cur, "hold");
-  INTENTS.pods.intent(h, "hold", "step:down"); assert.deepEqual([h.ui.pods.reading, h.ui.pods.focus.cur, h.ui.pods.at], [null, "plate.0", "right"], "a key cuts the read to its end and does nothing else");
+  const d0 = st.d; INTENTS.pods.intent(h, "rail", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.store.view, h.ui.store.from, st.d, a.read.length], ["store", "bench", "room", d0, 0], "an unread chapter opens the pod's Data store: nothing is read or spent by a press");
+  h.went.length = 0; INTENTS.store.intent(h, "put", "back"); assert.deepEqual(h.went, ["pods"], "← from the store is the reading room"); h.ui.screen = "pods"; h.ui.pods.at = "rail";
+  S.read(st, a, chapters("S01")[0], settings); h.ui.pods.lane = 0; INTENTS.pods.intent(h, "rail", "confirm"); assert.deepEqual([h.ui.pods.at, h.ui.pods.focus.cur], ["right", "plate.0"], "a read chapter: the ring crosses to its plates");
   INTENTS.pods.intent(h, "plate.0", "confirm"); assert.deepEqual([h.ui.pods.at, h.ui.pods.focus.cur], ["detail", "trait"]); INTENTS.pods.intent(h, "trait", "step:down"); assert.equal(h.ui.pods.trait, 1); INTENTS.pods.intent(h, "trait", "step:down"); assert.equal(h.ui.pods.trait, Math.min(1, frameOfS01().chapters[0].traits.length - 1));
   INTENTS.pods.intent(h, "trait", "back"); assert.deepEqual([h.ui.pods.at, h.ui.pods.focus.cur], ["right", "plate.1"], "← in the detail: the pod level, the ring on the trait's plate");
   INTENTS.pods.intent(h, "plate.1", "step:left"); assert.deepEqual([h.ui.pods.at, h.ui.pods.focus.cur], ["rail", "rail"], "◀ back to the rail");
   INTENTS.pods.intent(h, "rail", "step:up"); assert.equal(h.ui.pods.at, "stamp", "▲ shows the stamp, once taught"); INTENTS.pods.intent(h, "stamp", "back"); assert.equal(h.ui.pods.at, "rail");
   INTENTS.pods.intent(h, "rail", "back"); assert.deepEqual([h.ui.pods.view, h.ui.pods.focus.cur], ["inventory", "card.0"], "← on the pod level: the inventory, the ring on this pod's card"); void n;
-  st.d = 0; S.putOnBench(st, a); INTENTS.frame.roomKey(h, "research"); h.ui.pods.lane = 1; INTENTS.pods.intent(h, "rail", "confirm"); const before = a.read.length; INTENTS.pods.intent(h, "key", "confirm"); assert.equal(a.read.length, before, "not enough Data: nothing spent"); assert.ok(h.played.some((e) => e.target === "keyShake"), "the key shakes");
+});
+test("the store: ◀ ▶ change the amount by one inside 1 and what fits, ✓ puts it in (never past what is left to read), the bar's ✓ opens a read chapter's page, ← steps back; the first read ever is free and opens its page", () => {
+  const st = world(), a = pod(st, "S01", [], 5), h = host(st); S.putOnBench(st, a); st.readEver = true; st.d = 9; h.ui.screen = "pods";
+  const left = S.storeLeft(st, a, settings), max = Math.min(9, left);
+  assert.equal(openStore(h, "room"), true); const u = h.ui.store; assert.deepEqual([u.view, h.went.at(-1)], ["bench", "store"]);
+  INTENTS.store.intent(h, "put", "step:left"); assert.equal(u.amount, max - 1, "◀ one less"); INTENTS.store.intent(h, "put", "step:right"); INTENTS.store.intent(h, "put", "step:right"); assert.equal(u.amount, max, "▶ never past what fits");
+  for (let i = 0; i < max + 3; i++) INTENTS.store.intent(h, "put", "step:left"); assert.equal(u.amount, 1, "◀ never below one");
+  INTENTS.store.intent(h, "put", "step:right"); INTENTS.store.intent(h, "put", "confirm"); assert.deepEqual([a.store.d, st.d, u.amount], [2, 7, undefined], "✓ puts the amount in and the panel starts again at the most that fits"); assert.ok(h.played.some((e) => e.kind === "tick" && e.target === "d"));
+  st.d = 99; INTENTS.store.intent(h, "put", "confirm"); assert.equal(a.store.d, S.readQueue(st, a, settings).reduce((n, c) => n + c.cost, 0), "a deposit never passes what is left to read"); assert.equal(S.storeLeft(st, a, settings), 0);
+  assert.equal(u.f, "bar", "with nothing left to read the ring is on the bar");
+  S.read(st, a, chapters("S01")[0], settings); INTENTS.store.intent(h, "bar", "step:left"); INTENTS.store.intent(h, "bar", "confirm"); assert.deepEqual([u.view, u.chapter], ["chapter", chapters("S01")[0]], "✓ on a read chapter opens its page");
+  INTENTS.store.intent(h, "", "back"); assert.equal(u.view, "bench", "← on a page is the bench"); h.went.length = 0; INTENTS.store.intent(h, "bar", "back"); assert.deepEqual(h.went, ["pods"]);
+  const b = pod(st, "S01", [], 6); S.putOnBench(st, b); st.readEver = false; st.d = 0; h.went.length = 0; openStore(h, "room"); assert.deepEqual([b.read.length, h.ui.store.view, h.ui.store.chapter], [1, "chapter", chapters("S01")[0]], "the first chapter ever reads at once, free, in front of the player");
+});
+test("the store's reveal from Home: the chapters read while the Companion was out make a teaser, ✓ starts the show page by page, ← skips it to the bench; nothing read, no reveal", () => {
+  const st = world(), a = pod(st, "S01", [], 5), h = host(st); S.putOnBench(st, a); st.readEver = true;
+  st.readHome = [{ pod: a.id, species: "S01", chapters: [{ id: chapters("S01")[0], firsts: 1 }, { id: chapters("S01")[1], firsts: 2 }] }]; a.read = [chapters("S01")[0], chapters("S01")[1]];
+  assert.equal(S.need(st, h.sv, settings, {}, 0).act, "store"); openStore(h, "home", { reveal: true }); const u = h.ui.store; assert.deepEqual([u.view, u.show.length, st.readHome.length, u.from], ["teaser", 2, 0, "home"], "the notice is taken as the reveal opens");
+  INTENTS.store.intent(h, "go", "confirm"); assert.deepEqual([u.view, u.chapter, u.show.length], ["chapter", chapters("S01")[0], 1]);
+  INTENTS.store.intent(h, "", "confirm"); assert.deepEqual([u.view, u.chapter, u.show.length], ["chapter", chapters("S01")[1], 0]); INTENTS.store.intent(h, "", "confirm"); assert.equal(u.view, "bench", "past the last page: the bench");
+  st.readHome = [{ pod: a.id, species: "S01", chapters: [{ id: chapters("S01")[0], firsts: 0 }] }]; openStore(h, "home", { reveal: true }); INTENTS.store.intent(h, "go", "back"); assert.deepEqual([h.ui.store.view, h.ui.store.show.length], ["bench", 0], "← skips the show");
+  openStore(h, "home", { reveal: true }); assert.equal(h.ui.store.view, "bench", "nothing read: no teaser"); h.went.length = 0; INTENTS.store.intent(h, "bar", "back"); assert.deepEqual(h.went, ["home"], "← goes back to where it opened");
 });
 const frameOfS01 = () => frameOf("S01");
 

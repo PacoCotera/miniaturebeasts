@@ -141,10 +141,10 @@ test("the reading screen (ux-reading-v2.md): the ground, the chamber of its plac
   ident(st); const rb = body(model(st, { view: "room", lane: 0 }, "rail")), r = rb.props.regions.read, chamberOf = (b) => b.requests.find((q) => q.id === b.props.regions.read.chamber);
   assert.deepEqual([r.base, r.glyph, r.name], ["reading-ground-1024x522", "reading-podline-26x32", "Loika"]); { const q = chamberOf(rb); assert.deepEqual([q.place, q.hand, q.part, q.outline, q.read], ["overview", "coat", "", true, []], "the overview, Coat tinted and outlined (no part masks: the S01 and S03 cuts are retired, release 21a)"); }
   assert.deepEqual(r.rail.lanes.map((l) => [l.id, l.n, l.state]), [["coat", 2, "unread"], ["face", 3, "unread"], ["movement", 1, "unread"], ["stamina", 1, "unread"]]); assert.equal(r.rail.hand, 0); assert.equal(r.rail.trait, -1);
-  assert.equal(r.right.form, "unread"); assert.equal(r.right.plates.length, 2); assert.equal(r.right.key.price, "2"); assert.equal(r.right.chapter.name, "Coat");
+  assert.equal(r.right.form, "unread"); assert.equal(r.right.plates.length, 2); assert.equal(r.right.key, undefined, "no price key: a chapter is read from the pod's store"); assert.equal(r.right.chapter.name, "Coat");
   assert.equal(chamberOf(body(model(st, { view: "room", lane: 1, at: "right" }, "key"))).place, "close", "Face open: the close place");
   const mb = body(model(st, { view: "room", lane: 2 }, "rail")), mv = mb.props.regions.read; assert.equal(mv.right.beside.text, "free when it grows", "the sprout beside the key of the chapter growing teaches"); assert.deepEqual([chamberOf(mb).hand, chamberOf(mb).part], ["movement", ""], "Movement: the whole body (no part masks since release 21a)");
-  st.d = 1; const short = body(model(st, { view: "room", lane: 0, at: "right" }, "key")); assert.equal(short.props.regions.read.right.key.state, "dim"); assert.deepEqual([short.line.ok, short.line.need], [null, "needs ◆ 2 · you have ◆ 1"], "the reason in the need role, never a greyed verb"); assert.equal(short.props.regions.read.right.beside.text, "Data comes as your mibis grow");
+  st.d = 1; const short = body(model(st, { view: "room", lane: 0, at: "rail" }, "rail")); assert.equal(short.props.regions.read.right.key, undefined); assert.deepEqual([short.line.ok, short.line.need], ["Open Coat", ""], "an unread chapter offers no press: the store reads it"); assert.equal(short.props.regions.read.right.beside.text, "");
   st.d = 40; read(st, 0, 1); const rd = body(model(st, { view: "room", lane: 0, at: "right", plate: 0 }, "plate.0"));
   assert.equal(rd.props.regions.read.right.form, "read"); assert.ok(rd.props.regions.read.right.plates.every((p) => p.shown.caption && p.kind), "the read form: captions and kind lines"); assert.equal(rd.line.ok, "Closer look at Colour");
   const dt = body(model(st, { view: "room", lane: 0, at: "detail", trait: 0 }, "trait")); assert.equal(dt.props.regions.read.right.form, "detail"); assert.equal(dt.props.regions.read.rail.trait, 0); assert.equal(dt.line.back, "Coat"); assert.equal(dt.line.ok, null);
@@ -323,4 +323,39 @@ test("the bottom line: ✓ does the verb on the pod (its button's own words), a 
   assert.equal(line("card.0", { verb: "grow", fixed: true }).ok, "Grow it"); assert.equal(line("card.0", { verb: "bring", fixed: true, choosing: true }).ok, "Bring onto the bench");
   assert.equal(line("card.0", { verb: "letgo", waits: true }).subject, "A new pod needs room");
   for (const [name, m] of SCENES) { const l = body(m).line; assert.ok(l && typeof l.need === "string", name + ": the line always has its own need"); }
+});
+
+// ---- the store (store.json; views/store-props.mjs): the bench pod's Data store, the teaser and the chapter page ----
+import { storeBuild, storeParts, putMax } from "../src/views/store-props.mjs";
+const storeSpec = J("store.json"), storeSchema = J("store.props.json");
+const benched = (d = 15) => { const st = ident(home(1)); const p = st.tray[0]; S.putOnBench(st, p); st.d = d; return { st, p }; };
+const sb = (st, ui = {}) => storeBuild({ st, settings, ui, docked: false }, storeSpec);
+test("the store's props: one part a chapter in book order with its price and state (read, waiting, adding, empty); the level reaches the chapter; nothing names a rectangle or a colour", () => {
+  const { st, p } = benched(15), parts = storeParts(st, p, settings), fr = frameOf("S01"), all = parts.reduce((n, c) => n + c.price, 0);
+  assert.deepEqual(parts.map((c) => c.id), fr.chapters.filter((c) => !c.sealed).map((c) => c.id), "the open chapters in book order"); assert.ok(parts.every((c) => c.price > 0 && !c.read));
+  assert.equal(putMax(st, p, settings), Math.min(15, all), "the panel starts at the most that fits: the pocket or what is left");
+  const r = sb(st, { view: "bench", f: "put" }); assert.equal(r.props.state, "bench"); assert.deepEqual(r.props.focus, { cur: "put", targets: [{ id: "put", group: "put" }, { id: "bar", group: "bar" }] });
+  assert.equal(r.props.regions.put.amount, Math.min(15, all)); assert.deepEqual(r.props.regions.store.parts.map((c) => c.id), parts.map((c) => c.id)); assert.equal(r.props.regions.store.parts[0].state, "adding", "nothing stored yet: the Data being added is the first part");
+  assert.ok(!/"(rect|rects|x|y|w|h|colour|color)":/.test(JSON.stringify(r.props)), "names no rectangle and no colour"); assert.deepEqual(r.line.ok && [r.line.ok, r.line.price], ["Put in", "◆ " + r.props.regions.put.amount]);
+  const sp = Object.keys(storeSchema.properties.regions.properties).sort(), has = Object.keys(r.props.regions).sort(); for (const k of has) assert.ok(sp.includes(k), "a prop the schema names: " + k);
+  p.store = { d: parts[0].price, ms: 0 }; st.d = 2; const w = sb(st, { view: "bench", amount: 1 }); assert.equal(w.props.regions.store.parts[0].state, "waiting"); assert.match(w.props.regions.store.head, new RegExp("^Holds ◆ " + parts[0].price + " · reads " + parts[0].name));
+  assert.match(w.props.regions.reading.line, new RegExp("^Reading " + parts[0].name + " next")); assert.equal(w.props.regions.put.amount, 1, "◀ ▶ amounts clamp to 1 and what fits"); assert.equal(sb(st, { view: "bench", amount: 99 }).props.regions.put.amount, 2);
+  p.store = { d: 0, ms: 0 }; assert.match(sb(st, { view: "bench" }).props.regions.reading.line, new RegExp("^" + parts[0].name + " needs ◆ " + parts[0].price + " to start"));
+});
+test("the store's put-in panel is absent with nothing left to read, is empty-handed with nothing in the pocket, and the amount never passes what is left", () => {
+  const { st, p } = benched(0), q = S.readQueue(st, p, settings); assert.equal(sb(st, { view: "bench" }).props.regions.put.amount, 0); assert.equal(sb(st, { view: "bench" }).props.regions.put.cap, storeSpec.strings.put.none); assert.equal(sb(st, { view: "bench" }).line.ok, null);
+  st.d = 99; p.store = { d: q.reduce((n, c) => n + c.cost, 0), ms: 0 }; const full = sb(st, { view: "bench" }); assert.equal(full.props.regions.put, undefined, "everything is paid for"); assert.deepEqual(full.props.focus.targets, [{ id: "bar", group: "bar" }]);
+  assert.equal(sb(st, { view: "bench" }).props.regions.store.parts.every((c) => c.state === "waiting"), true);
+});
+test("the store's teaser counts what was read while out and names the chapters; the chapter page has the close-up slot, a row for every trait with its picture slot and mark, the promises of hidden looks, FIRST TIME SEEN and the key; RARE is not drawn", () => {
+  const { st, p } = benched(60); read(st, 0, 3); st.d = 0; const fr = frameOf("S01"), ids = p.read.slice();
+  const t = sb(st, { view: "teaser", teaser: { chapters: [{ id: ids[1], firsts: 2 }, { id: ids[2], firsts: 1 }] } }); assert.equal(t.props.state, "teaser");
+  assert.equal(t.props.regions.teaser.names, fr.chapters.find((c) => c.id === ids[1]).name + " · " + fr.chapters.find((c) => c.id === ids[2]).name); assert.equal(t.props.regions.teaser.firsts, "★ 3 firsts for you"); assert.deepEqual(t.props.focus, { cur: "go", targets: [{ id: "go", group: "go" }] });
+  assert.equal(t.props.regions.put, undefined); assert.ok(t.props.regions.store.parts.some((c) => c.state === "read")); assert.equal(sb(st, { view: "teaser", teaser: { chapters: [{ id: ids[0], firsts: 0 }] } }).props.regions.teaser.firsts, storeSpec.strings.teaser.none);
+  const ch = fr.chapters.find((c) => c.id === ids[1]), c = sb(st, { view: "chapter", chapter: ids[1], show: [ids[2]] }); assert.equal(c.props.state, "chapter"); const R = c.props.regions.chapter;
+  assert.equal(R.closeup, "read-closeup-" + ids[1]); assert.equal(R.rows.length, ch.traits.length); assert.deepEqual(R.rows.map((x) => x.trait), ch.traits.map((x) => x.name)); assert.ok(R.rows.every((x) => /^roll-S01-.*-128x72$/.test(x.pic)), "each look's picture is Create's own roll master");
+  assert.ok(R.rows.every((x) => ["one", "both", "mix", ""].includes(x.mark) && x.line)); assert.deepEqual(R.key.map((k) => k.mark), ["one", "both", "mix"]); assert.ok(!JSON.stringify(c.props).includes("rare"), "RARE waits for the game designer's cut");
+  assert.deepEqual(c.props.focus, { cur: "", targets: [] }); assert.equal(c.line.ok, storeSpec.strings.next, "more of the show to come: Next chapter"); assert.equal(sb(st, { view: "chapter", chapter: ids[1], show: [] }).line.ok, null);
+  p.first = [ch.traits[0].id]; assert.equal(sb(st, { view: "chapter", chapter: ids[1] }).props.regions.chapter.rows[0].first, true, "FIRST TIME SEEN from p.first"); assert.match(sb(st, { view: "chapter", chapter: ids[1] }).props.regions.chapter.sub, /^1 of \d+ looks are new/);
+  assert.equal(sb(S.freshSt("w1", 1, 1000), { view: "bench" }), null, "no pod on the bench: nothing to show");
 });

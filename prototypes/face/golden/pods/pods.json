@@ -86,35 +86,31 @@
    "png": "pods-inventory-reading-dials.png"
   },
   "read, Loika fresh, Coat in hand": {
-   "hash": "7680f618",
+   "hash": "aac24e49",
    "png": "pods-read-loika-fresh-coat-in-hand.png"
   },
   "read, Face open, unread": {
-   "hash": "23177ffa",
+   "hash": "6258def5",
    "png": "pods-read-face-open-unread.png"
   },
   "read, Coat read, Face in hand": {
-   "hash": "c5a8b322",
+   "hash": "e7427daf",
    "png": "pods-read-coat-read-face-in-hand.png"
   },
   "read, Face after the read": {
-   "hash": "fadebeeb",
+   "hash": "a4622980",
    "png": "pods-read-face-after-the-read.png"
   },
   "read, the Crown detail": {
-   "hash": "fee60cae",
+   "hash": "881cb817",
    "png": "pods-read-the-crown-detail.png"
   },
   "read, Movement in hand, the sprout": {
-   "hash": "72449f81",
+   "hash": "9f07612f",
    "png": "pods-read-movement-in-hand-the-sprout.png"
   },
-  "read, not enough Data": {
-   "hash": "f709c2c3",
-   "png": "pods-read-not-enough-data.png"
-  },
   "read, Tuikis, Shape in hand": {
-   "hash": "ec9dd3a0",
+   "hash": "eb285211",
    "png": "pods-read-tuikis-shape-in-hand.png"
   },
   "read, a sealed chapter, the pod's reason": {
@@ -124,10 +120,6 @@
   "read, a sealed pod, Identify": {
    "hash": "45631f56",
    "png": "pods-read-a-sealed-pod-identify.png"
-  },
-  "read, the stamp moment": {
-   "hash": "332e26e7",
-   "png": "pods-read-the-stamp-moment.png"
   },
   "read, the stamp view": {
    "hash": "5d448dec",

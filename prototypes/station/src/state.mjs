@@ -755,9 +755,16 @@ export function waitsForPlace(st, settings) {
   const c = growCost(st, {}, settings); return canPay(st, c.e, 0, c.s);
 }
 // portraits: the ready portraits (sitting.mjs readyCrates), docked or away; counted apart from the walk crates, and with walk crates too the notice names both (strings.needs.crates.withPortrait).
+// The chapters read at the last docks and not yet shown (st.readHome): { n (the chapters), Species (the first pod's kind, cased), species } or null. The notice that opens the bench's reveal.
+export function readHomeNeed(st) {
+  const rows = readHomeFacts(st); if (!rows.length) return null;
+  const n = rows.reduce((a, r) => a + r.chapters.length, 0), sp = rows[0].species, fr = sp && frameOf(sp);
+  return n ? { n, species: sp, name: fr ? fr.species.name : "unknown", Species: cap(fr ? fr.species.name : "unknown") } : null;
+}
 export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0) {
   const cs = bayCrates(st, sv), N = NEEDS;
   if (docked(st) && cs.length) return { text: portraits ? (cs.length === 1 ? needLine(N.crates.withPortrait.noticeOne) : needLine(N.crates.withPortrait.notice, { count: countWord(cs.length, 3) })) : counted(N.crates, cs.length, 3), act: "bay", label: needLine(N.crates.label) };
+  { const rh = readHomeNeed(st); if (rh) return { text: rh.n === 1 ? needLine(N.readHome.noticeOne, { Species: rh.Species }) : needLine(N.readHome.notice, { N: countWord(rh.n, 6), Species: rh.Species }), act: "store", label: needLine(N.readHome.label) }; }   // chapters read while the Companion was out: after the crates
   if (waitsForPlace(st, settings)) { const add = !addRoomBlock(st, settings); return { text: needLine(N.full.notice), act: "vivarium", ring: add ? "room.new" : "resident", label: needLine(add ? N.full.labelAdd : N.full.labelMake) }; }
   if (budReady(st, settings)) return { text: needLine(N.budReady.notice), act: "inc", label: needLine(N.budReady.label) };
   if (portraits) return { text: needLine(N.portrait.notice), act: "bay", label: needLine(N.portrait.label) };
@@ -787,6 +794,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0
 export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrates = false) {
   const cs = bayCrates(st, sv), art = (w) => aAn(w).split(" ")[0];
   if (!afterCrates && docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
+  { const rh = readHomeNeed(st); if (rh) return { key: "readHome", n: rh.n, max: 6, species: rh.name, act: "store" }; }   // chapters read while the Companion was out: after the crates, before anything else (Home's line carries the kind's name: views/home-props.mjs homeNeeds)
   if (waitsForPlace(st, settings)) return { key: "full", act: "vivarium", ring: addRoomBlock(st, settings) ? "resident" : "room.new" };   // no place is free and something waits for one: add a room (the ring on the new room) or make room (the ring on a resident)
   if (budReady(st, settings)) return { key: "budReady", act: "incubator" };
   const drying = dryingNext(st); if (drying.length) return { key: "drying", n: drying.length, max: 6, act: "pods" };   // the only warning away from Pods before a pod is lost
@@ -872,7 +880,10 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
     for (const p of st.tray) { if (!p.idd || speciesOf(p) !== sp) continue; const fr = frameOf(sp); if (!fr) continue;
       for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; const cost = readCost(st, p, ch.id, settings); if (cost == null) continue; cand.push({ pod: p, chapter: ch.id, glint: glint(st, p, ch.id), cost }); } }
     cand.sort((a, b) => (b.glint ? 1 : 0) - (a.glint ? 1 : 0) || a.cost - b.cost);
-    if (cand[0]) { const c = cand[0]; return st.d >= c.cost ? { key: "read", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
+    if (cand[0]) {   // a chapter is read from the pod's store: put Data in (the pocket), or go out while the store holds its price
+      const c = cand[0], held = c.pod.store ? c.pod.store.d | 0 : 0;
+      if (held >= c.cost && onBench(st, c.pod)) return { key: "goOut" };
+      return st.d > 0 || held ? { key: "put", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
     if (docked(st) && cs.length) return { key: "openBay" };
     const fresh = st.tray.find((p) => !p.idd && speciesOf(p) === sp);
     if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: sp } : short(0, c, 0); }
@@ -941,7 +952,7 @@ function stepSpendWarn(st, sv, settings, price, act, doors) {
      const both = { e: grow.e, d: ident.d + grow.d, s: grow.s }; next = canPay(st, both.e, both.d, both.s) ? both : ident; who = { species: step.species }; }
   else if (step.key === "grow") { if (act.key === "grow" && act.pod && speciesOf(act.pod) === step.species) return null; next = grow; who = { species: step.species }; }
   else if (step.key === "cross") { if (act.key === "cross") return null; next = crossCost(settings); who = { name: g.names[0] }; }
-  else if (step.key === "read" && g.key === "guide") { if (act.key === "read" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; }
+  else if (step.key === "put") { if (act.key === "put" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; key = "read"; }   // the guide's step: Data into the pod's store (the same warning as the price of its next chapter)
   else if (step.key === "read") { const m = g.key === "readChild" || g.key === "guide" ? st.mibis.find((x) => x.name === step.name && !x.released) : null; if (!m) return null; if (act.key === "read" && act.mibi && act.mibi.id === m.id) return null;
     const fr = frameFor(m), ch = fr && fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)); if (!ch) return null; next = { e: 0, d: mibiReadCost(st, m, ch.id, settings) || 0, s: 0 }; who = { name: m.name }; }
   else if (step.key === "fit") { if (act.key === "fit") return null; next = { e: price_(PRICE.tier2E, settings), d: price_(PRICE.tier2D, settings), s: 0 }; who = {}; }

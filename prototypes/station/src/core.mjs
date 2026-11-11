@@ -37,6 +37,7 @@ import benchSpec from "../../ui/specs/station/bench.json" with { type: "json" };
 import crossSpec from "../../ui/specs/station/cross.json" with { type: "json" };
 import sittingSpec from "../../ui/specs/station/sitting.json" with { type: "json" };
 import settingsSpec from "../../ui/specs/station/settings.json" with { type: "json" };
+import storeSpec from "../../ui/specs/station/store.json" with { type: "json" };
 import roomsSpecJson from "../../ui/specs/station/rooms.json" with { type: "json" };
 import movingIndexJson from "../../ui/specs/station/moving/index.json" with { type: "json" };
 import standSizesJson from "../../ui/specs/station/stand-sizes.json" with { type: "json" };
@@ -61,7 +62,7 @@ const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]
 // The spec files the face takes (frame, pods, home, cargo, create, incubator, vivarium, habitat, namer, library, bench, cross (the rack pod reads its pigment chips), sitting and settings), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 // Every fetch starts at once and follows the server's headers (no-cache plus ETag: a revalidation, a 304 when nothing changed): the specs, the moving sets, the rooms, metrics, stand sizes, the pod sprites and (once the rooms spec says
 // which room is shown) the masters. What must keep an order keeps it in the code after the fetches: the specs are set in their list order (the face is sent them in that order), and the pod sprites register after the masters placed theirs.
-const SPEC_KEYS = ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross", "sitting", "settings"], SPEC_JSON = { frame: frameSpec, pods: podsSpec, home: homeSpec, cargo: cargoSpec, create: createSpec, incubator: incubatorSpec, vivarium: vivariumSpec, habitat: habitatSpec, namer: namerSpec, panel: panelSpec, library: librarySpec, bench: benchSpec, cross: crossSpec, sitting: sittingSpec, settings: settingsSpec };
+const SPEC_KEYS = ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross", "sitting", "settings", "store"], SPEC_JSON = { frame: frameSpec, pods: podsSpec, home: homeSpec, cargo: cargoSpec, create: createSpec, incubator: incubatorSpec, vivarium: vivariumSpec, habitat: habitatSpec, namer: namerSpec, panel: panelSpec, library: librarySpec, bench: benchSpec, cross: crossSpec, sitting: sittingSpec, settings: settingsSpec, store: storeSpec };
 const lightNow = (frame) => G.settings.light ?? lightOf(stationSeconds(), frame.light.curve).key;   // the light on: a painting name or a step key of the curve, as the host takes it (createHost's `light`)
 export async function bootAssets({ test = false, onProgress = null } = {}) {   // onProgress(done, total): the boot pictures' bytes placed, for the page's load bar
   const getJSON = async (u) => (await fetch(u)).json();

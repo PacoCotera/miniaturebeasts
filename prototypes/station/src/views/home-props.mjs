@@ -273,6 +273,7 @@ export const clockWords = (secs) => { const h = Math.floor(secs / 3600) % 24, mm
 export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const out = [], cs = S.bayCrates(st, sv), art = (w) => S.aAn(w).split(" ")[0];
   if (S.docked(st) && cs.length) out.push({ key: "crates", n: cs.length, max: 3, act: "cargo" });
+  const rh = S.readHomeNeed(st); if (rh) out.push({ key: "readHome", n: rh.n, max: 6, species: rh.name, act: "store" });   // chapters read while the Companion was out, after the crates: ✓ opens the bench's reveal
   const full = S.waitsForPlace(st, settings);
   if (full) out.push({ key: "full", act: "vivarium", ring: S.addRoomBlock(st, settings) ? "resident" : "room.new" });   // no place is free and something waits for one: ahead of the bud and of a pod that could be incubated
   if (!full && S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });

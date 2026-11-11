@@ -88,7 +88,12 @@ test("the top bar's words: the date as Sat 17 Oct and the clock as 24 hours from
 
 test("the needs hold in the spec's order: crates, a full Vivarium, the bud, a pod that dries out next turn, a portrait, a new mibi to meet, new pods, glinting pods, pods waiting for a well, a pod that could be incubated; a soft need is not a need", () => {
   const needs = (st, sv, ui = {}) => homeNeeds(st, sv, settings, ui, Date.now() + 1000).map((n) => n.key), sc = scenes();
-  assert.deepEqual(spec.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "pair", "newPods", "glints", "waitingPods", "couldGrow"]);
+  assert.deepEqual(spec.strings.line.order, ["crates", "readHome", "full", "budReady", "drying", "portrait", "meet", "pair", "newPods", "glints", "waitingPods", "couldGrow"]);
+  { const w = scenes().crates, rh = [{ pod: "p", species: "S01", chapters: [{ id: "coat", firsts: 1 }, { id: "face", firsts: 0 }] }]; w.st.readHome = rh;   // the chapters read while the Companion was out come after the crates and before the rest
+    assert.deepEqual(needs(w.st, w.sv).slice(0, 2), ["crates", "readHome"]); assert.deepEqual(homeNeeds(w.st, w.sv, settings, {}, Date.now() + 1000)[1], { key: "readHome", n: 2, max: 6, species: frameOf("S01").species.name, act: "store" });
+    const W = { strings: { needs: spec.strings.line.needs } };   // Home's own table (the line); Cargo's notice has a shorter one
+    assert.equal(wordsOf({ key: "readHome", n: 2, max: 6, species: "Loika" }, W).notice, "two chapters of the Loika pod read while you were out"); assert.equal(wordsOf({ key: "readHome", n: 1, max: 6, species: "Loika" }, W).action, "See what the pod read"); assert.equal(wordsOf({ key: "readHome", n: 2, max: 6, species: "Loika" }, spec).notice, "two chapters read while out", "Cargo's notice is the short one");
+    assert.equal(S.need(w.st, w.sv, settings, {}, 0).act, "bay", "the frame's notice keeps the crates first"); w.st.bay = []; }
   assert.deepEqual(needs(sc.empty.st, sc.empty.sv), []); assert.deepEqual(needs(sc.crates.st, sc.crates.sv), ["crates", "pair"]); assert.deepEqual(needs(sc.crates.st, { ...sc.crates.sv, bay: [] }), ["pair"]); assert.deepEqual(needs(sc.away.st, sc.away.sv), ["pair"], "away: the crates are not in the bay (two others at home could cross)");
   assert.deepEqual(needs(sc.waiting.st, sc.waiting.sv), ["waitingPods"]); assert.deepEqual(needs(sc.portrait.st, sc.portrait.sv), ["crates", "portrait", "pair"]);
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); st.waiting.push({ id: "w" }); pod(st, "S01", 5, false);
@@ -282,7 +287,7 @@ test("the goal away reads the aim, and growUp counts the walks in words", () => 
 test("goalWords: a name too wide falls back to the nameless sibling of the four keys that have one; the other keys have none", () => {
   const face = (goal, docked = true) => goalWords(goal, docked, frameSpec);
   assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: true, step: { key: "goOut" } }), { text: "Dot grows with care", icons: "", plain: "The young mibi grows with care" });
-  assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "read", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }), { text: `Read ${frameOf("S01").chapters[0].name} on the Loika pod`, icons: "", plain: "" }, "the guide's read has no name, so no nameless sibling");
+  assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "put", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }), { text: "Put Data in the Loika pod", icons: "", plain: "" }, "the guide's step puts Data in a pod and has no name, so no nameless sibling");
   assert.equal(face({ key: "guide", species: "S01", step: { key: "findPod", species: "S01" } }, false).text, "Find a Loika pod", "away, a findPod step reads its own words, not the aim");
   assert.deepEqual(face({ key: "readChild", name: "Dot", step: { key: "read", name: "Dot" } }), { text: "Read Dot's chapters", icons: "", plain: "Read the new mibi's chapters" });
   assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, false).plain, "Walks grow the pair up");
