@@ -56,8 +56,10 @@
    "cargo-rack-992x168",
    "cargo-store-shadow-48x14",
    "cargo-store-shadow-72x21",
+   "crate-inside-992x480",
    "crate-lifting-256x200",
    "crate-open-432x272",
+   "crate-open-done-230x176",
    "crate-sealed-256x176",
    "crate-sealed-256x176-done",
    "crate-shadow-256x24",
@@ -87,6 +89,8 @@
    "icon-cross-16",
    "icon-shield-16",
    "icon-wait-16",
+   "nest-rim-184x44",
+   "nest-rim-hold-184x44",
    "panel-chip-40x20",
    "panel-contact-shadow-128x16",
    "panel-veil-1024x522",
@@ -94,6 +98,7 @@
    "pod-well-unknown",
    "pods-hatch-open-160x260",
    "ring-hatch-80x56",
+   "seal-broken-112x56",
    "well-lit-64x64"
   ],
   "create": [
