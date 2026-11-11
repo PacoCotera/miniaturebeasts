@@ -505,6 +505,7 @@ window.addEventListener("message", (e) => {
   if (e.source !== frames.station.contentWindow || m.t !== "mb-caddy") return;
   if (sw.quiet) return;   // the Station quiet: its link is down, the page hears nothing from it
   heard = m; heardAt = now(); inflight = 0;
+  try { frames.companion.contentWindow.postMessage({ t: "mb-caddy", podHome: m.podHome, goal: m.goal }, location.origin); } catch { /* reloading */ }   // the Companion hears the Station's pod-home and goal too
   if (NEWBIE && typeof m.podHome === "boolean" && m.podHome !== podHome) {   // the Station's word on "first pod home" (its save): the page wakes the Station, or lets it sleep again
     const known = podHome; podHome = m.podHome; saveHome(podHome);
     if (podHome && owner === "companion" && (!known && (!homeHeard || seatedNow()))) setOwner("station", { focus: false }); else layout();
