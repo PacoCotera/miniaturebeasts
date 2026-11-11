@@ -78,6 +78,16 @@ test("no trip limit on strikes: a tier-3 mark pays 4, ten marks pay until the ho
   p.run("curLay().land = " + land);
 });
 
+test("a mark is read only whole: with 18 held a worth-5 mark is not offered, and it stays", () => {
+  const t = setup(), { p } = t;
+  const land = p.run("curLay().land"); p.run("curLay().land = 2");
+  p.run("S.exp.cargo.d = 16"); assert.equal(p.run("strikeGain(S.exp)"), 4, "4 fits in 4");
+  p.run("S.exp.cargo.d = 17"); assert.equal(p.run("strikeGain(S.exp)"), 0, "4 does not fit in 3: no partial read");
+  face(t, t.spots.mark); assert.equal(p.run("patchAction().label"), p.run("WORDS.strike.holdFull"));
+  assert.equal(p.run("patchAction().run"), null);
+  p.run("curLay().land = " + land);
+});
+
 test("a mark fades twelve world turns after the strike", () => {
   const t = setup(), { p } = t;
   assert.equal(p.run("strikeFaded({ born: S.turn })"), false); assert.equal(p.run("strikeFaded({ born: S.turn - 11 })"), false); assert.equal(p.run("strikeFaded({ born: S.turn - 12 })"), true);

@@ -293,10 +293,12 @@ test("Cargo shows the hold as pictures: no 'empty', no cap below 16, no explored
   p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
   const said = () => p.run("__t = []; drawCargo(0); __t.join('|')");
   let t = said();
-  assert.ok(!/empty|\/20|Explored|creature moment|In the hold/.test(t), t);
-  p.run("S.exp.cargo.e = 16;"); assert.ok(said().includes("/20"), "the cap shows from 16");
+  assert.ok(!/empty|Explored|creature moment|In the hold/.test(t), t);
+  const caps = s => s.split("of 20").length - 1;
+  assert.equal(caps(t), 1, "Data always shows its cap; Energy and Essence do not below 16");
+  p.run("S.exp.cargo.e = 16;"); assert.equal(caps(said()), 2, "the Energy cap shows from 16, in the same form");
   p.run("S.exp = null; S.phase = 'cargo'; S.hold = { e: 0, d: 0, s: 0, pods: [] };"); t = said();
-  assert.ok(!/empty|\/20|In the hold/.test(t), t);
+  assert.ok(!/empty|In the hold/.test(t), t);
 });
 
 test("control hints lead the bottom line's middle and are spent once it shows them", () => {

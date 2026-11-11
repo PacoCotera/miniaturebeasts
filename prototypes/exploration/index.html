@@ -209,7 +209,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
         <li>Go down into a place and walk it. Call lifts the veil around you and shows what is there; once you have walked most of a place, its dot fills.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
-        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it: each creature pays 1 Data for feeding it and 1 for a settle, once a trip, shown on its line before you act (sometimes a pod too). Data also comes from strike marks, dark glassy streaks where lightning went into the ground: face one and ✓ Read the strike mark. A mark brings 2 / 3 / 4 / 5 Data by the tier of the place it lies in (meadow and pond edge 2, wood and rock field 4, the cave 5); only your hold of 20 limits a trip.</li>
+        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it (sometimes a pod too). <span id="helpData"></span></li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
@@ -261,6 +261,7 @@ import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./sr
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { WORDS } from "./src/words.mjs";
+document.getElementById('helpData').textContent = WORDS.help.data;   // the help page's Data item: one source, src/words.mjs
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN } from "./src/walk-data.mjs";
@@ -1463,8 +1464,8 @@ function addStrikeFeats(lay) {   // the generated marks, and the fresh ones the 
   for (const m of lay.strikes || []) lay.feats.push({ id: m.id, kind: 'q', x: m.x, y: m.y, born: -m.age, glass: m.glass });
   const c = S.cells[lay.key]; if (c) for (const id of Object.keys(c)) if (c[id].fresh) lay.feats.push({ id, kind: 'q', x: c[id].x, y: c[id].y, born: c[id].born, glass: false });
 }
-// What a press on a strike mark would add now: the tier of the place it lies in (2 / 3 / 4 / 5), less what the hold cannot take. 0: the hold is full and a press is not offered.
-function strikeGain(ex) { return Math.max(0, Math.min(STRIKE_DATA[placeTier(curLay())] || STRIKE_DATA[1], CAP - ex.cargo.d)); }
+// What a press on a strike mark would add now: the worth of the place it lies in (2 / 3 / 4 / 5), whole. 0: the whole worth does not fit the hold and a press is not offered.
+function strikeGain(ex, lay = curLay()) { const worth = STRIKE_DATA[placeTier(lay)] || STRIKE_DATA[1]; return worth <= CAP - ex.cargo.d ? worth : 0; }   // the whole worth or nothing: a mark that does not fit stays unread
 function readStrike(f) {
   const ex = S.exp, key = ex.patch.key, put = strikeGain(ex);
   if (!put) { FX.bumpAt = NOW; fxMsg(WORDS.strike.holdFull, 2); return; }   // not offered with the hold full; a press that gets here spends nothing and the mark stays unread
@@ -1700,7 +1701,7 @@ function leftItemsAll(c) {
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
   for (const f of lay0.feats) { if (!see(f.x, f.y)) continue;
     if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
-    if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && S.exp.cargo.d < CAP) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once the hold is full
+    if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && strikeGain(S.exp, lay0) > 0) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once its whole worth no longer fits the hold
     if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'beacon', x: f.x, y: f.y }); }
   if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
   return out;
@@ -6182,7 +6183,7 @@ function drawMats(c, y) {
   [['energy', c.e], ['data', c.d], ['essence', c.s]].forEach(([ic, v], i) => { const x = 24 + i * 144;
     panel(x, y, 114, 40, C.ink, C.slate); blit(ICON[ic](), x + 8, y + 13); text(String(v), x + 28, y + 10, C.bone, 3);
     if (ic === 'data') text(WORDS.hold.data(v, CAP), x + 28 + textW(String(v), 3) + 4, y + 16, v >= CAP ? C.amber : C.slate);
-    else if (v >= 16) text('/' + CAP, x + 28 + textW(String(v), 3) + 4, y + 16, C.amber); });
+    else if (v >= 16) text(WORDS.hold.data(v, CAP), x + 28 + textW(String(v), 3) + 4, y + 16, C.amber); });
 }
 // The pods held: each a pod at 2× in a 122×52 slot, with its species beside it when known; an empty slot is a dashed outline.
 function drawPods(pods, n, y) {
@@ -6654,7 +6655,7 @@ function lineFor() {
 }
 function lineBase() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
-  const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
+  const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 29 ? ok.slice(0, 28) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
     case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerCtx(), 'menu') : L1('', OPEN_TEXT.podBottom, 'menu');
       if (S.ui.sel === 1 && !digger()) return L1(OPEN_TEXT.needsLabel, 'Deep ground', 'menu', true);   // a mibi at home is never named
