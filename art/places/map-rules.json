@@ -59,7 +59,6 @@
     ] },
     "turf": { "drawScale": 2.1, "entries": [
       { "name": "wind tuft", "kinds": ["tuft-wind", "tuft-wind-m"], "per100": 5 },
-      { "name": "heather", "kinds": ["shrub-heather", "shrub-heather-m"], "per100": 3 },
       { "name": "rock", "kinds": ["rock-turf", "rock-turf-m"], "per100": 1, "scale": 3.0, "prop": true }
     ] },
     "scree": { "drawScale": 2.0, "entries": [
