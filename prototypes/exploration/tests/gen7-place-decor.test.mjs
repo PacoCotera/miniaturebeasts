@@ -45,6 +45,8 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
     check(s.hollowCrownNear === 0, 'no crown or prop within two tiles of the Hollow Tree: ' + JSON.stringify(s.hollowAt));
     check(s.seamProps > 100 && s.seamMismatch === 0, `a prop near a border is the same from both cells: ${s.seamMismatch} of ${s.seamProps} differ ${JSON.stringify(s.seamAt)}`);
     check(s.stranded <= 1, 'props strand no walkable tile (the scrub shrubs\' greedy no-touching choice can leave one scrub tile with a shrub on each of its four sides: seed 7 cell 1,59, tile 18,17; at most 1 stands): ' + JSON.stringify(s.strandedAt));
+    // raised scrub tops hold shrubs by the same greedy choice (amendment L), so the same lone tile ringed by four of them can occur there; a few in a seed, never a way blocked
+    check(s.strandedRaised <= 20, 'lone tiles ringed by shrubs on raised scrub tops: ' + s.strandedRaised);
     // per biome, props per 100 tiles where the kind may stand, within 20% of the table (a biome that has a region on this seed)
     for (const [b, o] of Object.entries(s.perBiome)) for (const [fam, v] of Object.entries(o)) {
       if (v.table * v.tiles / 100 < 300) continue;   // a kind with fewer than 300 expected props on this seed is noise: one in a hundred is 10%, and 20% is two of them

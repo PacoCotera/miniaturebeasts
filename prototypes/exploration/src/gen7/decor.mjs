@@ -71,6 +71,7 @@ const sizeRange = P => P.size || [1, 1];
 // rules: the map rules (art/places/map-rules.json); a changed copy shows what a change does
 export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const { T, biome } = land, TABLE = rules.biomes, BIOME_IDS = Object.keys(TABLE);
+  const G = land.G || ((x, y) => { const t = T(x, y); return t === CLIFF ? GRASS : t; });   // the ground a tile stands on: a raised tile's top (amendment L), else its terrain. Raised land gets the props and decor of its top's ground, as the low ground of that kind does
   const { props: PR, meadow: MD, shrubs: SH, water: WA, reeds: RE } = rules, GV = PR.groves, HO = PR.hollow, CLEAR = PR.clear;
   const nG = noiseField(seed, 'g3-grove', GV.noise.scale, 'FBm', GV.noise.octaves);
   const inMap = (x, y) => x >= 0 && y >= 0 && x < land.W && y < land.H;
@@ -94,10 +95,11 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   // a plain tile: it and its eight neighbours are one terrain, so no edge, shore or lip is drawn on it or beside it (the art director, 2026-11-09: props keep one full cell clear of every lip, shore and
   // edge; tufts sit wholly inside a plain cell; only decor made for an edge, the shore pebbles and the reed banks, sits on one)
   const plainMemo = new Map();
+  const kindAt = (x, y) => { const t = T(x, y); return t === CLIFF ? 100 + G(x, y) : t; };   // a raised tile is told by its top, so a plain tile has one ground under it
   const plain = (x, y) => {
     const k = key(x, y), hit = plainMemo.get(k); if (hit !== undefined) return hit;
-    const t = T(x, y); let ok = true;
-    for (let dy = -CLEAR; dy <= CLEAR && ok; dy++) for (let dx = -CLEAR; dx <= CLEAR; dx++) if (T(x + dx, y + dy) !== t) { ok = false; break; }
+    const t = kindAt(x, y); let ok = true;
+    for (let dy = -CLEAR; dy <= CLEAR && ok; dy++) for (let dx = -CLEAR; dx <= CLEAR; dx++) if (kindAt(x + dx, y + dy) !== t) { ok = false; break; }
     if (plainMemo.size > 600000) plainMemo.clear();
     plainMemo.set(k, ok); return ok;
   };
@@ -177,9 +179,9 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   // ---- where each kind may stand ----
   const stands = (fi, x, y) => {
     if (!inMap(x, y)) return false;
-    const t = T(x, y);
-    if (fi === 4) return (OPEN(t) || t === CLIFF) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
-    if (!(OPEN(t) || t === LITTER || t === CLIFF || (fi === 1 && (t === SAND || t === SCREE)))) return false;
+    const t = G(x, y);
+    if (fi === 4) return OPEN(t) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
+    if (!(OPEN(t) || t === LITTER || (fi === 1 && (t === SAND || t === SCREE)))) return false;
     return plain(x, y) && !near9(x, y, 1) && !near9(x, y, 2) && !wayZone.has(key(x, y)) && !hollowNear(x, y, fi === 0);
   };
   // a tile an earlier kind holds, or (for a prop that blocks) one beside it: no two props that block ever touch, even at a corner, so a ring of them cannot close a gap
@@ -256,7 +258,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   // of per-tile hashes (a greedy maximal choice, never an even lattice, a checkerboard at most), the answer a function of the world alone. A patch with no eligible tile (1 or 2 cells across) takes one shrub
   // on its lowest-hash tile.
   const SIDE4 = [[1, 0], [-1, 0], [0, 1], [0, -1]], shrubMemo = new Map(), patchMemo = new Map();
-  const shrubCand = (x, y) => inMap(x, y) && T(x, y) === SCRUB && plain(x, y);
+  const shrubCand = (x, y) => inMap(x, y) && G(x, y) === SCRUB && plain(x, y);
   const prio = (x, y) => U(seed, TAG.SHRUB + 1, x, y);
   const before = (a, b, x, y) => { const v = prio(a, b), u = prio(x, y); return v < u || (v === u && (b < y || (b === y && a < x))); };
   const bigShrub = (x, y) => {   // an eligible tile: taken when no side neighbour that comes before it in the order is taken
@@ -273,7 +275,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     let eligible = false;
     for (let h = 0; h < q.length && q.length <= SH.smallPatchMax; h++) {
       const [px, py] = q[h]; if (shrubCand(px, py)) eligible = true;
-      for (const [dx, dy] of SIDE4) { const a = px + dx, b = py + dy; if (inMap(a, b) && T(a, b) === SCRUB && !seen.has(key(a, b))) { seen.set(key(a, b), 1); q.push([a, b]); } }
+      for (const [dx, dy] of SIDE4) { const a = px + dx, b = py + dy; if (inMap(a, b) && G(a, b) === SCRUB && !seen.has(key(a, b))) { seen.set(key(a, b), 1); q.push([a, b]); } }
     }
     let pick = null;
     if (!eligible && q.length <= SH.smallPatchMax) for (const [a, b] of q) if (!pick || before(a, b, pick[0], pick[1])) pick = [a, b];
@@ -281,7 +283,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     if (patchMemo.size > 400000) patchMemo.clear();
     return patchMemo.get(k);
   };
-  const shrubAt = (x, y) => inMap(x, y) && T(x, y) === SCRUB && (bigShrub(x, y) || smallPatchShrub(x, y));
+  const shrubAt = (x, y) => inMap(x, y) && G(x, y) === SCRUB && !near9(x, y, 4) && (bigShrub(x, y) || smallPatchShrub(x, y));
 
   // ---- the decor of the biome grounds (map-rules.json `ground`, the art director's per-100 values): leaf litter, dry grass, short turf and scree each take pieces on their plain tiles (a full cell clear of every edge) ----
   // One draw a tile picks at most one entry (by the entries' rates in order); of two candidates beside each other, corners too, the lower hash wins, so none ever touch (a greedy choice, a function of the world alone).
@@ -291,10 +293,10 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const gEntry = (x, y) => {   // the entry the tile's draw falls in, or null (also null where the tile may hold none)
     const k = key(x, y), hit = gCand.get(k); if (hit !== undefined) return hit;
     let r = null;
-    const G = inMap(x, y) ? GD[GROUND_OF[T(x, y)]] : null;
-    if (G && G.entries.length && plain(x, y) && !wayZone.has(k) && !hollowNear(x, y, false)) {
+    const GR = inMap(x, y) ? GD[GROUND_OF[G(x, y)]] : null;
+    if (GR && GR.entries.length && plain(x, y) && !wayZone.has(k) && !hollowNear(x, y, false)) {
       let u = U(seed, TAG.GROUND, x, y), c = 0;
-      for (const e of G.entries) { c += e.per100 / 100 * (e.scale || G.drawScale); if (u < c) { r = e; break; } }
+      for (const e of GR.entries) { c += e.per100 / 100 * (e.scale || GR.drawScale); if (u < c) { r = e; break; } }
       if (r && r.prop && earlier(5, x, y)) r = null;   // a rock keeps off every other prop
     }
     if (gCand.size > 600000) gCand.clear();
@@ -332,7 +334,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
 
   // ---- decals: the desk's meadow density on every grass tile (and raised land's top), pebbles on sand, lily pads on open water ----
   // (the cliff's face is drawn over the tile below the lip and its rim over the tile above, so nothing is laid within a tile of a lip)
-  const grassTile = (x, y) => { const t = T(x, y); return inMap(x, y) && (t === GRASS || t === CLIFF) && plain(x, y) && !near9(x, y, 4); };
+  const grassTile = (x, y) => { const t = G(x, y); return inMap(x, y) && t === GRASS && plain(x, y) && !near9(x, y, 4); };
   const openWater = (x, y) => { for (let dy = -WA.padClear; dy <= WA.padClear; dy++) for (let dx = -WA.padClear; dx <= WA.padClear; dx++) if (T(x + dx, y + dy) !== WATER) return false; return true; };
 
   // ---- the meadow scatter (the art director's quiet-ground rule, map-rules.json meadow.scatter) ----
@@ -465,7 +467,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   function decalsIn(x0, y0, x1, y1) {
     const occ = new Set(), walls = [];
     for (const p of propsIn(x0 - 4, y0 - 4, x1 + 4, y1 + 5)) { for (const [a, b] of footprint(p)) occ.add(key(a, b)); const r = spriteRect(SPRITES.props[p.kind], p.x * 48 + 24, p.y * 48 + 47); if (r) walls.push(r); }
-    const tileOk = (x, y) => inMap(x, y) && (T(x, y) === GRASS || T(x, y) === CLIFF) && grassTile(x, y) && !occ.has(key(x, y));
+    const tileOk = (x, y) => inMap(x, y) && G(x, y) === GRASS && grassTile(x, y) && !occ.has(key(x, y));
     const out = scatterIn(x0, y0, x1, y1, tileOk, MD.noOverlap ? walls : []);
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {   // the ground decor: a flat piece in its tile, wholly inside it (a pixel's margin), never meeting a prop's picture
       const e = groundAt(x, y); if (!e || e.prop) continue;
@@ -477,7 +479,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     }
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       if (!inMap(x, y)) continue;
-      const t = T(x, y); let kind = null;
+      const t = G(x, y); let kind = null;
       if ((t === SAND || t === SCREE) && !occ.has(key(x, y)) && !lip(x, y)) {
         if (U(seed, TAG.PEB, x, y) < (TABLE[biome(x, y)] || TABLE.mixed).pebbles) kind = ['pebbles-a', 'pebbles-b', 'pebbles-c'][H(seed, TAG.PEB + 1, x, y) % 3];
       } else if (t === WATER) {

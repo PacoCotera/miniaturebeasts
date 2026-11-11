@@ -2060,45 +2060,45 @@
     "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff.png#15 recut recoloured",
     "sha256": "8fae7fd5a3858d0620be2d9309177ccc246fabc9fb26070105cf1d08efc71479"
   },
-  "over-cliff.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "8d0172b0780b4133a0afd6361dd5f4190196b0e34c91a13b8320bb01514892a7"
+  "over-cliff-open.png": {
+    "commit": "d85bcb82c",
+    "from": "art-jobs/2026-11-11-art-recut-cliff-open/out/tiles/over-cliff-open.png keyed",
+    "sha256": "5853681187338323f638f952e3f1b38cf99dfbbb83c6d9999d560888afe13565"
   },
-  "over-cliff~s1.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff~s1.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "d5083fc7bc6820d84c1e921bd9e28cd9508e9d315954fb704b760ce8f2e4fe81"
+  "over-cliff-open~s1.png": {
+    "commit": "d85bcb82c",
+    "from": "art-jobs/2026-11-11-art-recut-cliff-open/out/tiles/over-cliff-open~s1.png keyed",
+    "sha256": "32670523ff0fa06a44b6fa2cf8f6dc47c97c14657f10eeef49369a78af12c402"
   },
-  "over-cliff~s2.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff~s2.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "0ff411645574f152ea3a0e310e104ab140638e9c99ab60e003ef0bca4cb1f00d"
+  "over-cliff-open~s2.png": {
+    "commit": "d85bcb82c",
+    "from": "art-jobs/2026-11-11-art-recut-cliff-open/out/tiles/over-cliff-open~s2.png keyed",
+    "sha256": "3950be96053203c4b623896d420ff1465576f0fed4c5f934d9b6299769272ad0"
   },
-  "over-cliff~s3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff~s3.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "b00c485fb7f12a0009e192a3fa206b94568b918addb991dc0d5fc1a9fde29116"
+  "over-cliff-open~s3.png": {
+    "commit": "d85bcb82c",
+    "from": "art-jobs/2026-11-11-art-recut-cliff-open/out/tiles/over-cliff-open~s3.png keyed",
+    "sha256": "47ec11f415c62b0e8a5a4aac1ed4255dffa7b3ed31bfb85688bec8bbf51b1424"
   },
-  "over-cliff-face2~s3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff-face2~s3.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "a95b0a102fd5763901cecae2c16fab984d8cee039d41301931ea8e23e0a1c548"
+  "over-cliff-open-face2~s3.png": {
+    "commit": "d85bcb82c",
+    "from": "art-jobs/2026-11-11-art-recut-cliff-open/out/tiles/over-cliff-open-face2~s3.png keyed",
+    "sha256": "36a6732330b66fbed23d5d2008090d7c019b6cc9798ca4aa1a9a6eff81da6608"
   },
-  "over-cliff-face3~s3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff-face3~s3.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "e77303138b3884fe500cd20eb1cce0d967c313549e50df94c6fdd7dfa2eb336c"
+  "over-cliff-open-face3~s3.png": {
+    "commit": "d85bcb82c",
+    "from": "art-jobs/2026-11-11-art-recut-cliff-open/out/tiles/over-cliff-open-face3~s3.png keyed",
+    "sha256": "06e27db9d54fb698cd8d963ea588e317057c52fabdc026ba0ab782622257097c"
   },
-  "wayup-cliff-grass.png": {
-    "commit": "704373a58",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-wayup/out/wayup-cliff-grass.png keyed",
-    "sha256": "e65c16493ff3bbafcfabde2055f3ae5d0c1472a113edc677365b3f3d7158ffb5"
+  "wayup-cliff-open-grass.png": {
+    "commit": "d85bcb82c",
+    "from": "art-jobs/2026-11-11-art-recut-cliff-open/out/wayup/wayup-cliff-open-grass.png keyed",
+    "sha256": "8f48749e9b750f7e75dec1dff967e7d811edfe7487c23dc33a89da62ab254b1e"
   },
-  "wayup-cliff-sand.png": {
-    "commit": "704373a58",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-wayup/out/wayup-cliff-sand.png keyed",
-    "sha256": "7fcc105bc2aec8e250a9ae90591b23f8ec755f2286abbace54bf48557689ec11"
+  "wayup-cliff-open-sand.png": {
+    "commit": "d85bcb82c",
+    "from": "art-jobs/2026-11-11-art-recut-cliff-open/out/wayup/wayup-cliff-open-sand.png keyed",
+    "sha256": "53e25a11b8b803b2ad64dee16126e0118f46bfabc4370dd69774d9d502a2935e"
   },
   "tone-grass.png": {
     "commit": "633e4d641",

@@ -17,7 +17,7 @@ const img = (n) => decodePng(readFileSync(path.join(dir, n)));
 test('every placed desk file equals the recorded hash, names its signed commit and its source in the desk', () => {
   const names = Object.keys(desk);
   assert.ok(names.length > 60, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['633e4d641', '704373a58', '75f1ff195', '8c0ddc470', 'a6d2e0be4', 'cc712a83e', 'ffa823829']);
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['633e4d641', '75f1ff195', '8c0ddc470', 'a6d2e0be4', 'cc712a83e', 'd85bcb82c', 'ffa823829']);
   for (const [n, d] of Object.entries(desk)) {
     assert.equal(createHash('sha256').update(readFileSync(path.join(dir, n))).digest('hex'), d.sha256, n);
     assert.ok(d.from.startsWith('art-jobs/'), n + ' names a source in the desk: ' + d.from);
@@ -26,7 +26,7 @@ test('every placed desk file equals the recorded hash, names its signed commit a
 
 test('every map picture is in the new map palette: no pastel colour is left', () => {
   // two files carry one colour the palette table does not list: the scrub ground (SCRUB_GROUND: the grass's value, drier and yellower, made for the map) and the sand way-up's one painted sand tone (signed as is)
-  const ALLOWED = (n) => (n.startsWith('over-scrub') ? [SCRUB_GROUND] : n === 'wayup-cliff-sand.png' ? ['#dfd387'] : []);
+  const ALLOWED = (n) => (n.startsWith('over-scrub') ? [SCRUB_GROUND] : n === 'wayup-cliff-open-sand.png' ? ['#dfd387'] : []);
   for (const n of Object.keys(desk)) {
     if (['75f1ff195', '8c0ddc470', 'a6d2e0be4', 'cc712a83e', 'ffa823829'].includes(desk[n].commit)) continue;   // the biome grounds (8c0ddc470), the biome decor (a6d2e0be4) and the walk's sprites are the art director's signed bytes in their own colours (mb-74), never recoloured; the set's palette holds them (prepare-set checks the limit)
     const im = img(n), r = recolour(im);
@@ -75,15 +75,14 @@ test('the biome grounds are the art director\'s signed skins (8c0ddc470): the ov
   assert.deepEqual(set.layers.thicket.over[0].lowers.filter((x) => ['drygrass', 'turf', 'scree'].includes(x)), ['drygrass', 'turf', 'scree'], 'the thicket rim lies over the biome grounds it meets');
 });
 
-test('the cliff sheets are the re-cut ones in the map palette: the placed file is the recut sheet (tools/recut) recoloured with the soft shade keyed', () => {
-  const recutDir = path.join(here, '..', 'tools', 'recut');
-  let n = 0;
-  for (const [name, d] of Object.entries(desk)) {
-    if (!d.from.includes(' recut (')) continue;
-    n++;
-    assert.deepEqual(img(name).data, keyShade(recolour(decodePng(readFileSync(path.join(recutDir, name))))).data, name);
-  }
-  assert.ok(n >= 6);
+test('the cliff sheets are the open-top cut (art director signed, d85bcb82c): ten sheets, soft shade keyed, the plain sheet\'s slot 15 open', () => {
+  const open = Object.entries(desk).filter(([, d]) => d.commit === 'd85bcb82c');
+  assert.equal(open.length, 8);
+  for (const [name, d] of open) { assert.ok(name.includes('cliff-open'), name); assert.match(d.from, /^art-jobs\/2026-11-11-art-recut-cliff-open\/out\/(tiles|wayup)\/.* keyed$/, name); }
+  const k = set.layers.cliff.over[0];
+  assert.deepEqual([k.sheets[0], k.tall['1'][0], k.tall['2'][0], ...k.tall['3'], k.wayup.grass, k.wayup.sand].sort(), open.map(([n]) => n).sort());
+  const s15 = crop(img('over-cliff-open.png'), 48, 48, 16, 16);
+  for (let i = 3; i < s15.data.length; i += 4) assert.equal(s15.data[i], 0, 'the plain sheet\'s all-cliff tile is open: the ground under the raised tile shows');
 });
 
 test('the tone layer is the sunlit step: one colour, lighter than the grass fill, no dark patch', () => {

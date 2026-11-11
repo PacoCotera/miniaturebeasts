@@ -56,7 +56,9 @@ export function splitCode(c) {
   return m >= FULL_BASE ? { kind, full: m - FULL_BASE } : { kind, slot: m };
 }
 
-// level:    { id, w, h, terrain: Uint8Array(w*h), tone?: Uint8Array(w*h) of 0/1, origin? }
+// level:    { id, w, h, terrain: Uint8Array(w*h), tone?: Uint8Array(w*h) of 0/1, origin?, top?: Uint8Array(w*h) }
+//           `top` is the ground under each raised (cliff) cell, a terrain value (0 = grass, and what a level with no `top` has): a cliff corner brings that ground into the tile's stack, and the cliff
+//           layer is drawn last (its sheets have an open top), so a tile of four cliff corners that is no face keeps the top ground alone.
 // terrains: [{ id, value, z }]
 // layers:   Map or object keyed by terrain VALUE -> { fillCount, kinds: [{ kind, lowers: Set(values), fullCount }], ground?: value, drawAs?: value } (setload.layerDescriptors)
 // tone:     null, or { of: value } the terrain whose cells may carry tone; level.tone marks them. The tone layer is drawn last, at mask = the tone corners.
@@ -80,18 +82,26 @@ export function terrainLayers(level, terrains, layers, tone = null) {
   const toneLayer = tone ? new Uint16Array(w1 * h1).fill(EMPTY) : null;
   const toneAt = (x, y) => (level.tone ? level.tone[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] : 0);
 
+  const grass = (terrains.find((t) => t.id === 'grass') || {}).value, cliff0 = terrains.find((t) => t.id === 'cliff');
+  const cliff = cliff0 && grass !== undefined && lay.has(cliff0.value) && lay.has(grass) ? cliff0 : null;   // a set with a raised land: its top is a ground of its own (grass where the level names none)
+  const topOf = (x, y) => (level.top ? level.top[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] : 0) || grass;   // 0 = grass
+  const noLayer = (r, i, j) => new DualGridError('no-layer', `${id}: ${cellName(i, j)}: the set has no layer for ${byValue.get(r).id}`, { level: id, cell: { i, j } });
+
   for (let j = 0; j < h1; j++) for (let i = 0; i < w1; i++) {
-    const cs = corners(terrain, w, h, i, j).map((v) => { const r = resolve(v); if (!lay.has(r)) throw new DualGridError('no-layer', `${id}: ${cellName(i, j)}: the set has no layer for ${byValue.get(r).id}`, { level: id, cell: { i, j } }); return r; });
-    const present = new Set(cs);
+    const cs = corners(terrain, w, h, i, j).map((v) => { const r = resolve(v); if (!lay.has(r)) throw noLayer(r, i, j); return r; });
+    // the ground each corner stands on: its own terrain, or under a raised corner the cell's top ground
+    const gs = cliff ? cs.map((v, k) => { if (v !== cliff.value) return v; const r = resolve(topOf(i - 1 + (k & 1), j - 1 + (k >> 1))); if (!lay.has(r)) throw noLayer(r, i, j); return r; }) : cs;
+    const present = new Set(gs);
+    if (cliff) for (const v of cs) present.add(v);
     for (const v of [...present]) for (let g = lay.get(v).ground, n = 0; g !== undefined && n < 8; g = lay.get(g)?.ground, n++) present.add(g);
     const order = [...present].sort((a, b) => z(a) - z(b));
     const idx = j * w1 + i;
     const B = order[0], fill = lay.get(B);
     layerOf(B)[idx] = FILL_CODE + (vh(i, j) % Math.max(1, fill.fillCount || 1));
     for (const T of order.slice(1)) {
-      const d = lay.get(T), zT = z(T);
+      const d = lay.get(T), zT = z(T), ec = cliff && T === cliff.value ? cs : gs;   // every layer but the cliff's reads the corners as the ground they stand on
       let mask = 0;
-      [NW, NE, SW, SE].forEach((bit, k) => { if (z(cs[k]) >= zT) mask |= bit; });
+      [NW, NE, SW, SE].forEach((bit, k) => { if (z(ec[k]) >= zT) mask |= bit; });
       if (mask === 0) continue;
       if (mask === 15) {
         const full = d.kinds.findIndex((k) => k.fullCount > 0);
@@ -100,7 +110,7 @@ export function terrainLayers(level, terrains, layers, tone = null) {
         layerOf(T)[idx] = KIND_STRIDE * kind + FULL_BASE + (vh(i, j) % Math.max(1, d.kinds[kind].fullCount || 1));
         continue;
       }
-      const lowers = cs.filter((c) => z(c) < zT);
+      const lowers = ec.filter((c) => z(c) < zT);
       for (const c of lowers) if (!d.kinds.some((k) => k.lowers.has(c))) throw new DualGridError('no-edge', `${id}: ${cellName(i, j)}: ${byValue.get(T).id} has no edge over ${byValue.get(c).id}`, { level: id, cell: { i, j }, terrains: [byValue.get(c).id, byValue.get(T).id] });
       const kind = d.kinds.findIndex((k) => lowers.some((c) => k.lowers.has(c)));
       layerOf(T)[idx] = KIND_STRIDE * kind + mask;
@@ -108,8 +118,8 @@ export function terrainLayers(level, terrains, layers, tone = null) {
     if (toneLayer) {
       const tm = (toneAt(i - 1, j - 1) ? NW : 0) | (toneAt(i, j - 1) ? NE : 0) | (toneAt(i - 1, j) ? SW : 0) | (toneAt(i, j) ? SE : 0);
       if (tm) {
-        const onTone = [tone.of, ...(tone.also || [])];   // a tone tile is wholly one terrain that carries tone (grass, or the raised top)
-        if (!onTone.includes(cs[0]) || !cs.every((c) => c === cs[0])) throw new DualGridError('tone-ground', `${id}: ${cellName(i, j)}: tone on a tile that is not all ${onTone.map((v) => byValue.get(v).id).join(' or ')}`, { level: id, cell: { i, j } });
+        const onTone = cliff ? [tone.of] : [tone.of, ...(tone.also || [])];   // a tone tile is wholly one terrain that carries tone (grass, or the raised top); with a `top`, wholly grass ground
+        if (!onTone.includes(gs[0]) || !gs.every((c) => c === gs[0]) || !cs.every((c) => c === cs[0])) throw new DualGridError('tone-ground', `${id}: ${cellName(i, j)}: tone on a tile that is not all ${onTone.map((v) => byValue.get(v).id).join(' or ')}`, { level: id, cell: { i, j } });
         toneLayer[idx] = tm;
       }
     }

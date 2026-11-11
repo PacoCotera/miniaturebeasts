@@ -22,7 +22,10 @@ import { landmarksOf } from './landmarks.mjs';
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
 // the pairs the set draws (art/places/terrain.json values): a terrain meets another only as one of these (the set's `lowers`); every 2 x 2 block of logic tiles holds at most three terrains (terrain layers),
 // and every two of them are such a pair
-const PAIRS = new Set(['2|6', '2|3', '3|6', '5|6', '2|4', '6|8', '6|9', '6|10', '3|9', '3|10', '1|2', '6|11', '3|11', '9|11', '6|12', '9|12', '10|12', '6|13', '9|13', '10|13', '6|14', '3|14', '9|14', '10|14', '2|14', '11|12', '11|13', '11|14', '10|11', '12|13', '12|14', '13|14']);   // sand-raised ('3|8') is in the set but the generator never uses it: a raised region that meets both grass and sand is drawn two ways, which the bake refuses
+const PAIRS = new Set(['2|6', '2|3', '3|6', '5|6', '2|4', '6|8', '6|9', '6|10', '3|9', '3|10', '1|2', '6|11', '3|11', '9|11', '6|12', '9|12', '10|12', '6|13', '9|13', '10|13', '6|14', '3|14', '9|14', '10|14', '2|14', '11|12', '11|13', '11|14', '10|11', '12|13', '12|14', '13|14', '8|11', '8|12', '8|13', '8|14']);   // sand-raised ('3|8') is in the set but the generator never uses it: a raised region that meets both grass and sand is drawn two ways, which the bake refuses
+// the low grounds the cliff's face meets with no grass between (the cliff layer's `lowers`, art/places/sets/ninja-test/set.json, besides grass): the biome grounds. Terrain the cliff has no edge over (water, mud, scrub, thicket, sand)
+// keeps one tile of grass between it and the rim, made on its side
+const CLIFF_LOWERS = new Set([TV.LITTER, TV.DRY, TV.TURF, TV.SCREE]);
 // who gives way to grass when a 2 x 2 block breaks the table: the lesser first; raised land is never cut (round 4), the others yield to it
 const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 11: 5, 3: 4, 14: 4, 10: 3, 12: 2, 13: 2, 6: 0 };
 export const pairOk = (a, b) => PAIRS.has(a < b ? a + '|' + b : b + '|' + a);
@@ -321,6 +324,7 @@ function windowOf(S, X, Y) {
       const wide = Math.max(1, Math.min(3, Math.round(shoreOf[i] * (0.45 + 0.55 * (0.5 + 0.5 * S.nS(gx0 + (i % W), gy0 + ((i / W) | 0)))))));
       if (dist[i] <= wide && (t[i] === TV.GRASS || t[i] === TV.LITTER || t[i] === TV.DRY || t[i] === TV.TURF || t[i] === TV.SCREE)) t[i] = TV.SAND; } }
   majority(t, W, H, 2); minFeature(t, W, H);
+  const recipe = t.slice();   // the biome's ground at every tile, low or not: what a raised tile's top takes (topsOf)
   // raised land from the levels: every tile on a level above the lowest; water lies only on the low ground
   const raised = new Uint8Array(N);
   const LVL = levelsOf(S.re);
@@ -328,7 +332,7 @@ function windowOf(S, X, Y) {
   // the cliff's outline is the blocks' outline and nothing else bites into it: terrain the cliff has no pair with keeps one tile of grass between it and the rim, made on its side
   { const near = new Uint8Array(N);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (raised[y * W + x]) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 >= 0 && Y2 >= 0 && X2 < W && Y2 < H) near[Y2 * W + X2] = 1; }
-    for (let i = 0; i < N; i++) if (near[i] && !raised[i] && t[i] !== TV.GRASS) t[i] = TV.GRASS; }   // sand too: a sand-grass edge reaching the rim would be a three-terrain corner, and the legal pass would eat the sand along the whole rim
+    for (let i = 0; i < N; i++) if (near[i] && !raised[i] && t[i] !== TV.GRASS && !CLIFF_LOWERS.has(t[i])) t[i] = TV.GRASS; }   // sand too: a sand-grass edge reaching the rim would be a three-terrain corner, and the legal pass would eat the sand along the whole rim
   const isCliff = v => v === TV.CLIFF;
   minFeature(t, W, H, isCliff, isCliff);
   // ways up (Rule 1.5): the stairs' faces were found on the block land; nothing is carved. Kept when they touch the window
@@ -395,7 +399,35 @@ function windowOf(S, X, Y) {
   settle(null);
   const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
   if (gate.some(v => v)) settle(gate);
-  return { t, W, H, gx0, gy0, wayups };
+  return { t, W, H, gx0, gy0, wayups, top: topsOf(t, recipe, W, H) };
+}
+
+// ---- the ground under raised land (amendment L): a raised tile's top is the biome's recipe ground there ----
+// `t` is the settled terrain (raised land is CLIFF), `recipe` the ground the recipe laid before the levels were cut. Returns a W x H array: on a raised tile its top ground (0 = grass), 0 elsewhere.
+// Tops take flat grounds only; water, deep, mud, path and thicket stay on the low ground (a raised tile that would hold one is grass). The cliff sheets have an open top, so the top ground shows right up to the
+// lip. Then every 2 x 2 block of the ground (a raised tile counted as its top) holds at most three terrains and every two are a pair the set draws (blockOk), the lesser top giving way to grass.
+const TOPS = new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SAND, TV.SCRUB]);
+export function topsOf(t, recipe, W, H) {
+  const top = new Uint8Array(W * H);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = y * W + x; if (t[i] === TV.CLIFF && recipe[i] !== TV.GRASS && TOPS.has(recipe[i])) top[i] = recipe[i];
+  }
+  const e = k => (t[k] === TV.CLIFF ? top[k] || TV.GRASS : t[k]);
+  for (let sweep = 0, n = 1; n && sweep < 50; sweep++) {
+    n = 0;
+    for (let j = 1; j < H; j++) for (let i = 1; i < W; i++) {
+      const k = j * W + i, idx = [k - W - 1, k - W, k - 1, k], vals = [...new Set(idx.map(e))];
+      if (vals.length === 1) continue;
+      // a tile where the cliff layer is drawn (raised and low corners together) is at most four layers deep: three grounds, scrub counting the grass it lies over, and the cliff
+      const mixed = idx.some(c => t[c] === TV.CLIFF) && idx.some(c => t[c] !== TV.CLIFF), deep = new Set(vals.includes(TV.SCRUB) ? [...vals, TV.GRASS] : vals).size;
+      if (blockOk(vals) && !(mixed && deep > 3)) continue;
+      const lift = idx.filter(c => t[c] === TV.CLIFF && top[c]).sort((a, b) => KEEP[top[a]] - KEEP[top[b]]);
+      if (!lift.length) continue;
+      const drop = top[lift[0]];
+      for (const c of lift) if (top[c] === drop) { top[c] = 0; n++; }
+    }
+  }
+  return top;
 }
 
 // ---- a cell with its apron ----
@@ -403,11 +435,11 @@ function windowOf(S, X, Y) {
 const CELLS = new Map();
 export function cellTerrain(seed, X, Y) {
   const key = seed + ':' + X + ',' + Y, hit = CELLS.get(key); if (hit) return hit;
-  const S = ctxOf(seed), win = windowOf(S, X, Y), w = CW + 2, h = CH + 2, terrain = new Uint8Array(w * h), ox = HX * CW - 1, oy = HY * CH - 1;
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) terrain[y * w + x] = win.t[(oy + y) * win.W + ox + x];
+  const S = ctxOf(seed), win = windowOf(S, X, Y), w = CW + 2, h = CH + 2, terrain = new Uint8Array(w * h), top = new Uint8Array(w * h), ox = HX * CW - 1, oy = HY * CH - 1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { terrain[y * w + x] = win.t[(oy + y) * win.W + ox + x]; top[y * w + x] = win.top[(oy + y) * win.W + ox + x]; }
   const x0 = X * CW - 1, y0 = Y * CH - 1;
   const wayups = win.wayups.filter(a => a.x + 3 > x0 && a.x - 1 < x0 + w && a.y + 2 > y0 && a.y < y0 + h).map(a => ({ x: a.x, y: a.y, w: a.w, h: a.h }));   // in world tiles
-  const out = { x0, y0, w, h, terrain, wayups };
+  const out = { x0, y0, w, h, terrain, top, wayups };
   if (CELLS.size > 4000) CELLS.clear();
   CELLS.set(key, out); return out;
 }
@@ -419,7 +451,8 @@ export function cellTerrain(seed, X, Y) {
 export function toneField(seed, x0, y0, w, h) {
   const TONE_AT = RULES.tone.noise.threshold, TONE_CLEAR = RULES.tone.clear, TONE_PATCH_MAX = RULES.tone.patchMax;
   if (RULES.tone.enabled === false) return new Uint8Array(w * h);   // map-rules.json `tone.enabled`: false lays no patch (no sunlit patch is drawn)
-  const S = ctxOf(seed), n = S.nG, T = worldTiles(seed), out = new Uint8Array(w * h), memo = S.toneMemo || (S.toneMemo = new Map()), K = (x, y) => y * 8192 + x;
+  const RAISED_GRASS = 100 + TV.GRASS, T0 = worldTiles(seed), P0 = worldReader(seed, 'top', 0), T = (gx, gy) => { const v = T0(gx, gy); return v === TV.CLIFF ? 100 + (P0(gx, gy) || TV.GRASS) : v; };   // a raised tile is told by its top, so tone lies only on a grass top and never across a lip
+  const S = ctxOf(seed), n = S.nG, out = new Uint8Array(w * h), memo = S.toneMemo || (S.toneMemo = new Map()), K = (x, y) => y * 8192 + x;
   // a tile that may carry tone: grass (or the raised top) with the whole 5 x 5 block round it that same ground, so a full cell is clear of every edge (path, water, sand, cliff, thicket, scrub); on the raised
   // top the three cells two rows below are in that block, so every dual tile the tone touches is the plain top, never a face or a way up
   const clear = (gx, gy, v) => { for (let dy = -TONE_CLEAR; dy <= TONE_CLEAR; dy++) for (let dx = -TONE_CLEAR; dx <= TONE_CLEAR; dx++) if (T(gx + dx, gy + dy) !== v) return false; return true; };
@@ -427,7 +460,7 @@ export function toneField(seed, x0, y0, w, h) {
   const patchOk = (gx, gy) => {
     const k = K(gx, gy), hit = memo.get(k); if (hit !== undefined) return hit;
     const v = T(gx, gy), seen = new Set([k]), q = [[gx, gy]];
-    let ok = (v === TV.GRASS || v === TV.CLIFF);
+    let ok = (v === TV.GRASS || v === RAISED_GRASS);
     for (let i = 0; i < q.length && ok; i++) {
       const [px, py] = q[i];
       if (T(px, py) !== v || !clear(px, py, v) || q.length > TONE_PATCH_MAX) { ok = false; break; }
@@ -448,13 +481,19 @@ export function toneField(seed, x0, y0, w, h) {
 // The land the decor reads: the terrain of any world tile (through the cells' own passes), the biome of the region slot it lies in, every way up, and the atlas slots.
 const DEC = new Map();
 // the terrain of any world tile (through the cells' own passes); beyond the world it is thicket
-export function worldTiles(seed) {
+export function worldTiles(seed) { return worldReader(seed, 'terrain', TV.THICKET); }
+// the ground of any world tile: the top of a raised tile (grass where it holds none), else the terrain itself
+export function worldGround(seed) {
+  const T = worldTiles(seed), P = worldReader(seed, 'top', 0);
+  return (gx, gy) => { const v = T(gx, gy); return v === TV.CLIFF ? P(gx, gy) || TV.GRASS : v; };
+}
+function worldReader(seed, field, beyond) {
   const cc = new Map();
   let lx = -1, ly = -1, lt = null;
   return (gx, gy) => {
-    if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH) return TV.THICKET;
+    if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH) return beyond;
     const X = (gx / CW) | 0, Y = (gy / CH) | 0;
-    if (X !== lx || Y !== ly) { const k = Y * RW + X; let t = cc.get(k); if (!t) { if (cc.size > 400) cc.clear(); t = cellTerrain(seed, X, Y).terrain; cc.set(k, t); } lt = t; lx = X; ly = Y; }
+    if (X !== lx || Y !== ly) { const k = Y * RW + X; let t = cc.get(k); if (!t) { if (cc.size > 400) cc.clear(); t = cellTerrain(seed, X, Y)[field]; cc.set(k, t); } lt = t; lx = X; ly = Y; }
     return lt[(gy - Y * CH + 1) * (CW + 2) + gx - X * CW + 1];
   };
 }
@@ -462,7 +501,7 @@ function landOf(seed) {
   const S = ctxOf(seed), T = worldTiles(seed);
   const biome = (gx, gy) => S.re.slotBiome[((clamp((gy / CH) | 0, 0, RH - 1) / MH) | 0) * ATLAS + ((clamp((gx / CW) | 0, 0, RW - 1) / MW) | 0)];
   const slots = []; for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) slots.push({ ax, ay, biome: S.re.slotBiome[ay * ATLAS + ax], x0: ax * MW * CW, y0: ay * MH * CH, x1: (ax + 1) * MW * CW - 1, y1: (ay + 1) * MH * CH - 1 });
-  return { T, biome, W: WTW, H: WTH, wayups: stairsOf(S).filter(st => st.wayup).map(st => st.wayup), slots };
+  return { T, G: worldGround(seed), biome, W: WTW, H: WTH, wayups: stairsOf(S).filter(st => st.wayup).map(st => st.wayup), slots };
 }
 const SITES = new Map();   // Hollow Tree sites made off the page (src/realm-worker.mjs), by seed
 export const presetHollowSites = (seed, sites) => { if (SITES.size > 3) SITES.clear(); SITES.set(seed, sites); };
@@ -483,12 +522,13 @@ function decorIR(seed, x0, y0, w, h) {
 }
 
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
-function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null) {
+function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null) {
   const d = decorIR(seed, x0, y0, w, h);
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
   const hold = cell ? holdOf({ seed, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
   const props = d.props.concat(d.reedProps).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));   // the reeds are not read by the hold: only the land's props are
-  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, props, decals: d.decals, canopy: [], hearts: [], clues: [],
+  // `top`: the ground under each raised tile, only when some raised tile holds a ground other than grass (all grass draws as a place with none)
+  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
     finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone: toneField(seed, x0, y0, w, h),
     inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
 }
@@ -501,16 +541,16 @@ function bareTiles(seed, X, Y) {
 // One cell for the bake: terrain with its one-tile apron.
 export function cellIR(seed, X, Y) {
   const c = cellTerrain(seed, X, Y);
-  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y]);
+  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y], c.top);
 }
 // A block of nx x ny cells as one picture (for the goldens): each cell's own tiles, side by side, with no apron. Equal to baking each cell with its apron.
 export function windowIR(seed, X0, Y0, nx, ny) {
-  const w = nx * CW, h = ny * CH, terrain = new Uint8Array(w * h), x0 = X0 * CW, y0 = Y0 * CH, seen = new Set(), wayups = [];
+  const w = nx * CW, h = ny * CH, terrain = new Uint8Array(w * h), top = new Uint8Array(w * h), x0 = X0 * CW, y0 = Y0 * CH, seen = new Set(), wayups = [];
   for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
     const c = cellTerrain(seed, X0 + i, Y0 + j);
-    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) terrain[(j * CH + y) * w + i * CW + x] = c.terrain[(y + 1) * c.w + x + 1];
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { terrain[(j * CH + y) * w + i * CW + x] = c.terrain[(y + 1) * c.w + x + 1]; top[(j * CH + y) * w + i * CW + x] = c.top[(y + 1) * c.w + x + 1]; }
     for (const a of c.wayups) { const k = a.x + ',' + a.y; if (!seen.has(k)) { seen.add(k); wayups.push({ x: a.x - x0, y: a.y - y0, w: a.w, h: a.h }); } }
   }
-  return irOf(seed, `g7-window-${X0}-${Y0}`, x0, y0, w, h, terrain, wayups.filter(a => a.x - 1 >= 0 && a.x + a.w + 1 <= w && a.y >= 0 && a.y + 2 <= h));
+  return irOf(seed, `g7-window-${X0}-${Y0}`, x0, y0, w, h, terrain, wayups.filter(a => a.x - 1 >= 0 && a.x + a.w + 1 <= w && a.y >= 0 && a.y + 2 <= h), null, top);
 }
 export { CW, CH, RW, RH };

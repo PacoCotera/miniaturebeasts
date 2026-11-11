@@ -84,3 +84,29 @@ test('the bake picks the cliff\'s tall tiles, the way up and the reed look: bake
   for (const type of ['tall', 'wayup', 'variant']) assert.ok([...ids].some((id) => from(type).has(id)), `some baked tiles are from the ${type} rows (${ts.pairs.length} rows in the set)`);
   assert.ok(ALT_CODE > 255);
 });
+
+// Amendment L: a raised tile stands on its own ground (the place's `top`); the cliff sheets are cut open, the cliff layer draws the lip and face only
+test('raised ground: a litter top draws litter, a lip tile draws the cliff layer over it, and a place with no top bakes as one whose top is grass', () => {
+  const ir = irOf(), ts = sets.get(ir.tileset), d = layersOf.get(ir.tileset), isCliff = (x, y) => x >= 0 && y >= 0 && x < W && y < H && ir.terrain[y * W + x] === V.cliff;
+  const top = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) if (ir.terrain[i] === V.cliff) top[i] = V.litter;
+  const withTop = buildPlace({ ...ir, top }, ctx).place, none = buildPlace(ir, ctx).place, zeros = buildPlace({ ...ir, top: new Uint8Array(W * H) }, ctx).place;
+  const at = (p, i, j) => p.ground.map((l) => l.tiles[j * (W + 1) + i]).filter((t) => t !== 0xFFFF);
+  assert.deepEqual(none.ground.map((l) => Array.from(l.tiles)), zeros.ground.map((l) => Array.from(l.tiles)), 'no top is a top of grass everywhere');
+  assert.equal(none.top.length, 0, 'a place with no top writes none');
+  assert.equal(withTop.top.length, W * H);
+  const litterFill = new Set(ts.pairs[d.layers.get(V.litter).fillRow].fullVariants), cliffTiles = new Set(Array.from(ts.pairs[d.layers.get(V.cliff).kinds[0].rows.over].tiles));
+  let inner = null, lip = null;
+  for (let j = 1; j < H; j++) for (let i = 1; i < W; i++) {
+    const c = [[i - 1, j - 1], [i, j - 1], [i - 1, j], [i, j]].map(([x, y]) => isCliff(x, y)), below = [[i - 1, j + 1], [i, j + 1]].map(([x, y]) => isCliff(x, y));
+    if (c.every(Boolean) && below.every(Boolean) && !inner) inner = [i, j];
+    if (c.some(Boolean) && !c.every(Boolean) && !lip && j > 1 && c[2] === c[0] && c[3] === c[1]) lip = [i, j];   // a straight edge of the plateau
+  }
+  assert.ok(inner && lip, 'Windstep has a plateau with an inside and an edge');
+  const inside = at(withTop, ...inner), plain = at(none, ...inner);
+  assert.ok(inside.some((t) => litterFill.has(t)), 'the inside of a raised top is litter');
+  assert.ok(!inside.some((t) => cliffTiles.has(t)) && !plain.some((t) => cliffTiles.has(t)), 'no cliff piece draws on the inside of a raised top');
+  assert.equal(plain.some((t) => litterFill.has(t)), false);
+  const edge = at(withTop, ...lip);
+  assert.ok(edge.some((t) => cliffTiles.has(t)), 'a lip tile draws the cliff layer');
+  assert.ok(cliffTiles.has(edge[edge.length - 1]), 'the cliff layer is drawn last, over the top ground');
+});

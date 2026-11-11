@@ -39,5 +39,6 @@ export function fixturePlace(loaded, tileset, terrains) {
     openings: [{ side: 'N', from: 7, to: 10 }, { side: 'S', from: 7, to: 10 }],
     spawns: [{ x: 2, y: 2, w: 4, h: 3, species: ['frog'], count: 2 }],
     blockMask: block,
+    top: Uint8Array.from({ length: W * H }, (_, i) => (i % 7 === 0 ? 11 : 0)),   // a round trip value for the format (the fixture holds no raised land)
   };
 }

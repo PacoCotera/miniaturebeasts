@@ -183,16 +183,16 @@
       "over": [
         {
           "kind": "bank",
-          "lowers": ["earth", "sand", "path", "grass"],
-          "sheets": ["over-cliff.png"],
+          "lowers": ["earth", "sand", "path", "grass", "litter", "drygrass", "turf", "scree"],
+          "sheets": ["over-cliff-open.png"],
           "tall": {
-            "1": ["over-cliff~s1.png"],
-            "2": ["over-cliff~s2.png"],
-            "3": ["over-cliff~s3.png", "over-cliff-face2~s3.png", "over-cliff-face3~s3.png"]
+            "1": ["over-cliff-open~s1.png"],
+            "2": ["over-cliff-open~s2.png"],
+            "3": ["over-cliff-open~s3.png", "over-cliff-open-face2~s3.png", "over-cliff-open-face3~s3.png"]
           },
           "wayup": {
-            "grass": "wayup-cliff-grass.png",
-            "sand": "wayup-cliff-sand.png"
+            "grass": "wayup-cliff-open-grass.png",
+            "sand": "wayup-cliff-open-sand.png"
           }
         }
       ]

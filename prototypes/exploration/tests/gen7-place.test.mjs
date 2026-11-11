@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
-import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround } from '../src/gen7/place.mjs';
 import { bakeIR } from '../tools/gen7-render.mjs';
 import { RULES } from '../src/gen7/rules.mjs';
 import { recipeAt, GROUND, BLEND } from '../src/gen7/ground.mjs';
@@ -121,7 +121,7 @@ test('seeds 1-50: reed clumps stand on the shore and in the shallows (never on d
 
 test('scrub shrubs never touch, take the most the rule allows, and every patch of one or two cells has one', () => {
   for (const seed of [7, 13, 42]) {
-    const D = decorOf(seed), T = worldTiles(seed);
+    const D = decorOf(seed), T = worldGround(seed);   // a raised tile is its top's ground: scrub on a raised top holds shrubs as on the low ground
     let eligible = 0, taken = 0, small = 0, smallWith = 0;
     const scrubCells = [];   // up to six cells of the seed that hold scrub shrubs (found on a coarse grid of cells)
     for (let Y = 15; Y < 90 && scrubCells.length < 6; Y += 2) for (let X = 15; X < 70 && scrubCells.length < 6; X += 2) if (D.propsIn(X * CW, Y * CH, X * CW + CW - 1, Y * CH + CH - 1).filter(p => p.fam === 'shrubs').length >= 4) scrubCells.push([X, Y]);
@@ -134,13 +134,14 @@ test('scrub shrubs never touch, take the most the rule allows, and every patch o
       const seen = new Set();
       for (let y = 2; y < CH - 2; y++) for (let x = 2; x < CW - 2; x++) {
         const k = (x0 + x) + ',' + (y0 + y); if (seen.has(k) || T(x0 + x, y0 + y) !== TV.SCRUB) continue;
-        const q = [[x0 + x, y0 + y]]; seen.add(k); let any = false, inside = true, has = false;
+        const q = [[x0 + x, y0 + y]]; seen.add(k); let any = false, inside = true, has = false, lip = false;
         for (let i = 0; i < q.length; i++) {
-          const [a, b] = q[i]; if (D.plain(a, b)) any = true; if (shrubs.has(a + ',' + b)) has = true;
+          const [a, b] = q[i]; if (D.plain(a, b)) any = true; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (D.flags(a + dx, b + dy) & 4) lip = true; if (shrubs.has(a + ',' + b)) has = true;
           if (a < x0 + 2 || a > x0 + CW - 3 || b < y0 + 2 || b > y0 + CH - 3) inside = false;
           for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const kk = (a + dx) + ',' + (b + dy); if (!seen.has(kk) && T(a + dx, b + dy) === TV.SCRUB) { seen.add(kk); q.push([a + dx, b + dy]); } }
         }
-        if (!any && inside) { small++; if (has) smallWith++; }
+        if (!any && inside && !lip) { small++;   // (a patch on or beside the cliff's lip holds none: nothing is laid within a tile of a lip)
+          if (has) smallWith++; }
       }
     }
     console.log(`# seed ${seed}: ${taken} shrubs on ${eligible} eligible scrub tiles (${(100 * taken / Math.max(1, eligible)).toFixed(0)}%); small patches ${smallWith} of ${small} hold one`);
@@ -157,9 +158,38 @@ test('a 2 x 2 block holds at most three terrains and every two are a pair of the
   assert.ok(blockOk([TV.GRASS]) && blockOk([TV.WATER, TV.GRASS]));
 });
 
-test('the pair table is the set\'s: raised land meets only grass', () => {
+test('the pair table is the set\'s: raised land meets grass and the biome grounds (the cliff layer\'s lowers), nothing else', () => {
   for (const [a, b] of [[TV.CLIFF, TV.WATER], [TV.CLIFF, TV.PATH], [TV.CLIFF, TV.THICKET], [TV.CLIFF, TV.SCRUB], [TV.CLIFF, TV.EARTH], [TV.THICKET, TV.SCRUB], [TV.PATH, TV.SAND], [TV.PATH, TV.WATER]]) assert.ok(!pairOk(a, b), a + '|' + b);
-  for (const [a, b] of [[TV.GRASS, TV.CLIFF], [TV.GRASS, TV.WATER], [TV.GRASS, TV.PATH], [TV.WATER, TV.SAND], [TV.GRASS, TV.THICKET], [TV.SAND, TV.SCRUB]]) assert.ok(pairOk(a, b), a + '|' + b);
+  for (const [a, b] of [[TV.GRASS, TV.CLIFF], [TV.GRASS, TV.WATER], [TV.GRASS, TV.PATH], [TV.WATER, TV.SAND], [TV.GRASS, TV.THICKET], [TV.SAND, TV.SCRUB], [TV.CLIFF, TV.LITTER], [TV.CLIFF, TV.DRY], [TV.CLIFF, TV.TURF], [TV.CLIFF, TV.SCREE]]) assert.ok(pairOk(a, b), a + '|' + b);
+});
+
+// Amendment L: a raised tile stands on its biome's ground (the IR's `top`). On the tiles of a slot's own recipe (BLEND tiles clear of a slot edge) each biome's signature skin is on raised tops in a share
+// that follows the low ground's: at least 40% of it where the low ground holds 30% or more. Raised land is rockier than low land (the same elevation field that lifts it feeds the rock field), so scree
+// is over-represented on tops and the grass of the low ground, a forced ring beside raised land, is under-represented: the table is logged, not held to 20% per skin.
+const SIGNATURE = { downs: 'turf', woods: 'litter', tallwood: 'litter', thickets: 'dry', fells: 'scree' };
+const SKIN = { [TV.GRASS]: 'grass', [TV.LITTER]: 'litter', [TV.DRY]: 'dry', [TV.TURF]: 'turf', [TV.SCREE]: 'scree', [TV.SAND]: 'sand', [TV.SCRUB]: 'scrub' };
+test('raised tops carry their biome\'s ground: the signature skin of each biome is on tops in a share that follows the low ground\'s, and tops are no longer all grass', { timeout: 1800000 }, () => {
+  for (const seed of FAST ? [7] : [7, 13, 42]) {
+    const sb = slotBiomes(seed), SW = MW * CW, SH = MH * CH, inner = (g, len) => { const f = g % len; return f >= BLEND && len - f > BLEND; }, by = {};
+    for (let Y = 2; Y < RH - 2; Y += 10) for (let X = 2; X < RW - 2; X += 8) {
+      const c = cellTerrain(seed, X, Y);
+      for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) {
+        const gx = X * CW + x - 1, gy = Y * CH + y - 1; if (!inner(gx, SW) || !inner(gy, SH)) continue;
+        const o = (by[sb[Math.floor(gy / SH) * ATLAS + Math.floor(gx / SW)]] ||= { low: {}, top: {}, nl: 0, nt: 0 }), v = c.terrain[y * c.w + x];
+        if (v === TV.CLIFF) { const n = SKIN[c.top[y * c.w + x] || TV.GRASS]; o.top[n] = (o.top[n] || 0) + 1; o.nt++; } else if (SKIN[v]) { o.low[SKIN[v]] = (o.low[SKIN[v]] || 0) + 1; o.nl++; }
+      }
+    }
+    let nonGrassTops = 0, topTiles = 0;
+    for (const [b, o] of Object.entries(by)) {
+      const table = {}; for (const n of new Set([...Object.keys(o.low), ...Object.keys(o.top)])) table[n] = [+((o.low[n] || 0) / o.nl).toFixed(3), +((o.top[n] || 0) / o.nt).toFixed(3)];
+      console.log(`# seed ${seed} ${b}: low ${o.nl} tiles, raised tops ${o.nt} tiles; share of each skin [low, top] ${JSON.stringify(table)}`);
+      for (const [n, k] of Object.entries(o.top)) { topTiles += k; if (n !== 'grass') nonGrassTops += k; }
+      const sig = SIGNATURE[b]; if (!sig || o.nl < 1500 || o.nt < 1500) continue;
+      const low = (o.low[sig] || 0) / o.nl, top = (o.top[sig] || 0) / o.nt;
+      if (low >= 0.3) assert.ok(top >= 0.4 * low, `seed ${seed} ${b}: ${sig} is ${top.toFixed(3)} of the raised tops against ${low.toFixed(3)} of the low ground`);
+    }
+    assert.ok(nonGrassTops > 0.3 * topTiles, `seed ${seed}: ${nonGrassTops} of ${topTiles} raised tiles hold a ground other than grass`);
+  }
 });
 
 // V2, the biome ground (src/gen7/ground.mjs): a biome's recipe is the same on both sides of every cell edge; it changes only over the BLEND tiles either side of a slot's edge, and by no more in a tile

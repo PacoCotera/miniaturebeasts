@@ -45,7 +45,7 @@ the Station the pod is identified and hatches; then the world turns once.
   winding clearings of dry grass; Marsh is
   a net of wide channels and pools; Lakes and Highpools have a sand shore all round every body of
   water; Cliffs are scree flats between the shelves. One biome thins into the next over a dozen
-  tiles, never on a place's edge. Raised land keeps its meadow top for now.
+  tiles, never on a place's edge. Raised land stands on its biome's ground too: leaf litter on a raised wood, scree on a raised rock field.
 - **Height and edges.** The land has three height levels, and neighbouring
   cells differ by at most one. Where two cells meet at different
   heights the edge between them is a cliff, which blocks, or a stair, which is

@@ -58,9 +58,25 @@ test('terrain layers corner B: cliff / grass / path draws path fill, grass 14 (f
   assert.deepEqual(splitCode(at(r, 'cliff', 1, 2)), { kind: 0, slot: 12 });
   const d = packDepth(r.layers, r.w1, r.h1);
   assert.equal(d.filter((l) => l[2 * r.w1 + 1] !== EMPTY).length, 3);
-  // above it: four cliff corners, the cliff fill alone (the tall face is openedges' job)
+  // above it: four cliff corners, the grass the raised tile stands on (a level with no `top` has grass) under the cliff fill, which the bake blanks (the tall face is openedges' job)
+  assert.ok(splitCode(at(r, 'grass', 1, 1)).fill < 5, 'a grass fill variant');
   assert.equal(splitCode(at(r, 'cliff', 1, 1)).fill, 0);
-  assert.equal(r.layers.filter((l) => l.tiles[1 * r.w1 + 1] !== EMPTY).length, 1);
+  assert.equal(r.layers.filter((l) => l.tiles[1 * r.w1 + 1] !== EMPTY).length, 2);
+});
+
+test('terrain layers: a raised tile stands on its top ground: a litter top is drawn under the cliff, over the grass it meets, and a corner without a top reads as grass', () => {
+  const TOPS = { ...LAYERS, litter: { fillCount: 1, kinds: [{ kind: 'flat', lowers: set(['grass']), fullCount: 0 }] } };
+  const T11 = [...T10, { id: 'litter', value: 11, z: 9.5 }];
+  const lay = new Map([...toMap(TOPS), [11, TOPS.litter]]);
+  const rows = ['cccc', 'cccc', 'cccc', 'gggg'], terrain = Uint8Array.from(rows.join('').split('').map((c) => (c === 'c' ? TV.cliff : TV.grass)));
+  const top = new Uint8Array(16); for (const k of [5, 6, 9, 10]) top[k] = 11;   // litter on the inner 2 x 2
+  const r = terrainLayers({ id: 'T', w: 4, h: 4, terrain, top }, T11, lay), litter = r.layers.find((l) => l.terrain === 11);
+  assert.equal(litter.tiles[2 * r.w1 + 2], FILL_CODE, 'the dual tile between the four litter tops is litter fill');
+  assert.ok(splitCode(litter.tiles[1 * r.w1 + 1]).slot > 0 && splitCode(litter.tiles[1 * r.w1 + 1]).slot < 15, 'litter edge over the grass top at the 2 x 2 block\'s corner');
+  assert.equal(r.layers.find((l) => l.terrain === TV.cliff).tiles[2 * r.w1 + 2], FILL_CODE, 'the cliff layer still has its fill code there: openedges blanks it');
+  const plain = terrainLayers({ id: 'T', w: 4, h: 4, terrain }, T11, lay);
+  assert.equal(plain.layers.find((l) => l.terrain === 11), undefined, 'no top: no litter');
+  assert.equal(packDepth(r.layers, r.w1, r.h1).length <= 4, true);
 });
 
 test('terrain layers: bank wins over flat when one tile holds lowers of both kinds', () => {
