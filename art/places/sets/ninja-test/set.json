@@ -104,12 +104,60 @@
         }
       ]
     },
+    "litter": {
+      "fill": {
+        "sheets": ["fill-litter.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["sand", "grass"],
+          "sheets": ["over-litter.png"]
+        }
+      ]
+    },
+    "drygrass": {
+      "fill": {
+        "sheets": ["fill-drygrass.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["grass", "litter"],
+          "sheets": ["over-drygrass.png"]
+        }
+      ]
+    },
+    "turf": {
+      "fill": {
+        "sheets": ["fill-turf.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["grass", "litter", "drygrass"],
+          "sheets": ["over-turf.png"]
+        }
+      ]
+    },
+    "scree": {
+      "fill": {
+        "sheets": ["fill-scree.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["water", "sand", "grass", "litter", "drygrass", "turf"],
+          "sheets": ["over-scree.png"]
+        }
+      ]
+    },
     "scrub": {
       "ground": "grass",
       "over": [
         {
           "kind": "flat",
-          "lowers": ["earth", "sand", "mud", "path", "grass"],
+          "lowers": ["earth", "sand", "mud", "path", "grass", "litter", "drygrass", "turf", "scree"],
           "sheets": ["over-scrub.png"],
           "full": "over-scrub-full.png",
           "variants": ["over-scrub~v1.png", "over-scrub~v2.png", "over-scrub~v3.png"]
@@ -123,7 +171,7 @@
       "over": [
         {
           "kind": "rim",
-          "lowers": ["earth", "sand", "mud", "path", "grass", "scrub"],
+          "lowers": ["earth", "sand", "mud", "path", "grass", "drygrass", "turf", "scree", "scrub"],
           "sheets": ["over-thicket.png"]
         }
       ]

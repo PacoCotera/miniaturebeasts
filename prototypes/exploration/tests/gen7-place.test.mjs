@@ -186,7 +186,7 @@ test('the biome recipe never changes on a cell edge: it blends over a few tiles 
 });
 
 // The map's land kind and the walk's ground agree (owner note 20: "expecting a stony biome, it was the same grassland again"). For every land cell of seeds 7, 13 and 42 whose middle 8 x 8 tiles are low
-// ground (raised land's top is the meadow ground until the layered edges, amendment L): a water cell's middle is water (a ford is shallows: any), a pond cell's holds a fifth of water, a rock cell's is stony (sand), a wood cell's is wood
+// ground (raised land's top is the meadow ground until the layered edges, amendment L): a water cell's middle is water (a ford is shallows: any), a pond cell's holds a fifth of water, a rock cell's is stony (scree), a wood cell's is wood
 // ground (floor, scrub or thicket), a meadow cell's is open ground you can walk (grass or the wood floor). Water and pond hold in every cell; the others in all but 2 in 100 (a rock cell whose middle is a path or a stair's foot).
 test('the map\'s land kind and the walk\'s ground agree in the middle of every cell of seeds 7, 13 and 42', { timeout: 1800000 }, () => {
   for (const seed of [7, 13, 42]) {
@@ -198,7 +198,7 @@ test('the map\'s land kind and the walk\'s ground agree in the middle of every c
         const X = ax * MW + (c % MW), Y = ay * MH + ((c / MW) | 0), t = cellTerrain(seed, X, Y), n = {}; let low = 0, raised = 0;
         for (let y = (CH >> 1) - 3; y < (CH >> 1) + 5; y++) for (let x = (CW >> 1) - 3; x < (CW >> 1) + 5; x++) { const v = t.terrain[(y + 1) * t.w + x + 1]; if (v === TV.CLIFF) { raised++; continue; } low++; n[v] = (n[v] || 0) + 1; }
         if (raised) continue;
-        const f = k => (n[TV[k]] || 0) / low, ok = lab === 'WATER' ? (G.ford[c] || f('WATER') >= 0.15) : lab === 'POND' ? f('WATER') >= 0.2 : lab === 'ROCK' ? f('SAND') >= 0.1 : lab === 'WOOD' ? f('EARTH') + f('THICKET') + f('SCRUB') >= 0.1 : f('GRASS') + f('EARTH') >= 0.2;
+        const f = k => (n[TV[k]] || 0) / low, ok = lab === 'WATER' ? (G.ford[c] || f('WATER') >= 0.15) : lab === 'POND' ? f('WATER') >= 0.2 : lab === 'ROCK' ? f('SCREE') + f('SAND') >= 0.1 : lab === 'WOOD' ? f('LITTER') + f('THICKET') + f('SCRUB') >= 0.1 : f('GRASS') + f('LITTER') + f('DRY') + f('TURF') >= 0.2;
         seen[lab][0]++; if (!ok) { seen[lab][1]++; if (bad.length < 8) bad.push(`${lab} ${X},${Y}`); }
       }
     }

@@ -288,6 +288,34 @@
 						"color": "#93A332",
 						"tile": null,
 						"groupUid": 0
+					},
+					{
+						"value": 11,
+						"identifier": "litter",
+						"color": "#8A6A3C",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 12,
+						"identifier": "drygrass",
+						"color": "#B8A85A",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 13,
+						"identifier": "turf",
+						"color": "#7FAE5E",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 14,
+						"identifier": "scree",
+						"color": "#A9A39A",
+						"tile": null,
+						"groupUid": 0
 					}
 				],
 				"intGridValuesGroups": [],
@@ -1670,62 +1698,12 @@
 				"uid": 106,
 				"values": [
 					{
-						"id": "pebbles-a",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "pebbles-b",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "pebbles-c",
+						"id": "tuft-fan",
 						"color": 0,
 						"tileRect": null
 					},
 					{
 						"id": "tuft",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "lily-pad",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "lily-pad-flower",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "flower-daisy",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "flower-buttercup",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "flower-daisy-pair",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "flower-blue-pair",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "flower-pink-three",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "tuft-fan",
 						"color": 0,
 						"tileRect": null
 					},
@@ -1736,6 +1714,31 @@
 					},
 					{
 						"id": "tuft-small",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-pink-three",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-daisy",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-daisy-pair",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-buttercup",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "flower-blue-pair",
 						"color": 0,
 						"tileRect": null
 					},
@@ -1756,6 +1759,31 @@
 					},
 					{
 						"id": "clump-tall-sm",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "pebbles-a",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "pebbles-b",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "pebbles-c",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "lily-pad",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "lily-pad-flower",
 						"color": 0,
 						"tileRect": null
 					},

@@ -34,6 +34,16 @@ export const BOULDERS = ['rock-a', 'rock-b', 'rock-big'];
 export const SAND = applied('art-paint-terrain-sand', ''), MEADOW1 = applied('art-paint-terrain-meadow', ''), MEADOW2 = MEADOW1, THICKET = applied('art-paint-terrain-thicket', 'tiles');
 export const CLIFF3 = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles' };   // the cliff sheets are the re-cut ones (tools/recut); the commit and folder are the label of their source
 export const SCRUBJOB = applied('art-paint-terrain-thicket', 'tiles'), RIPPLE = applied('art-paint-water-ripple', 'tiles');
+// the biome grounds (art director, mibi-art art/desk 8c0ddc470, art-jobs/2026-11-10-art-biome-<family>/out/tiles/): leaf litter (Woods, Tallwood), dry grass (Thickets), short turf (Hills), scree (Cliffs, Highpools).
+// Each is a 64 x 64 corner sheet over the grass and three 16 x 16 fills (v0, v1 and the rare detail v2), the desk's files byte for byte; the over sheet's name is the manifest's (dry grass: the phase 2 sheet).
+export const BIOME_COMMIT = '8c0ddc470';
+export const BIOMES = {
+  litter: { job: 'leaflitter', stem: 'leaflitter', over: 'over-leaflitter.png' },
+  drygrass: { job: 'drygrass', stem: 'drygrass', over: 'over-drygrass-p2.png' },
+  turf: { job: 'turf', stem: 'turf', over: 'over-turf.png' },
+  scree: { job: 'scree', stem: 'scree', over: 'over-scree.png' },
+};
+export const biomeDir = (b) => ({ commit: BIOME_COMMIT, dir: `art-jobs/2026-11-10-art-biome-${BIOMES[b].job}/out/tiles` });
 export const SUNLIT ='#82b266';   // the map palette's `grass`, one sunlit step above the grass base #74a65d: the grass tone patches
 export const SUNLIT_FROM = '#5e9357';
 // the scrub ground (the desk's olive #589054, darker than the grass #74a65d, read as a hollow): the same value as the grass (luminance 143), drier and yellower (hue 80 degrees against the grass's 99)
@@ -80,6 +90,15 @@ export function deskLayers() {
     srcs.forEach((s, v) => paste(out, decodePng(show(c, s)), v * T, 0));
     return rec(c, as, srcs.map((s) => `${c.dir}/${s}`).join(' + '), Buffer.from(encodePng(out)));
   };
+  // a biome ground: the fill is a strip of eight 16 x 16 tiles (v0 and v1 alternate, the rare detail v2 once: the dual grid picks a variant by hash, so v2 is one fill in eight), the over sheet the desk's file
+  const BIOME_STRIP = [0, 1, 0, 1, 0, 1, 0, 2];
+  const biome = (b, lowers) => {
+    const c = biomeDir(b), s = BIOMES[b].stem, vs = ['', '~v1', '~v2'].map((v) => `fill-${s}${v}.png`), out = newImage(BIOME_STRIP.length * T, T);
+    BIOME_STRIP.forEach((v, k) => paste(out, decodePng(show(c, vs[v])), k * T, 0));
+    const fill = rec(c, `fill-${b}.png`, vs.map((v) => `${c.dir}/${v}`).join(' + ') + ` as the strip ${BIOME_STRIP.join(' ')} (layout)`, Buffer.from(encodePng(out)));
+    return { fill: { sheets: [fill] }, over: [{ kind: 'flat', lowers, sheets: [place(c, BIOMES[b].over, `over-${b}.png`)] }] };
+  };
+  const ON = ['earth', 'sand', 'mud', 'path', 'grass'], ABOVE = ['litter', 'drygrass', 'turf', 'scree'];
   const layers = {
     deep: { fill: { sheets: [fillFrom(SAND, 'sets/pair-deep-water.png', 'fill-deep.png')] } },
     water: { fill: { sheets: [frameStrip(RIPPLE, 0, 'fill-water.png'), ...[1, 2, 3].map((f) => frameStrip(RIPPLE, f, `fill-water@${f}.png`))], frameMs: 250 }, over: [{ kind: 'step', lowers: ['deep'], sheets: [place(SAND, 'layers/water-over.png', 'over-water.png')] }] },
@@ -100,18 +119,23 @@ export function deskLayers() {
         { kind: 'flat', lowers: ['earth', 'sand', 'mud', 'path'], sheets: [place(MEADOW2, 'layers/grass-flat.png', 'over-grass-flat.png')] },
       ],
     },
+    // the biome grounds, each a flat patch over the grass (and the other low ground)
+    litter: biome('litter', ['sand', 'grass']),
+    drygrass: biome('drygrass', ['grass', 'litter']),
+    turf: biome('turf', ['grass', 'litter', 'drygrass']),
+    scree: biome('scree', ['water', 'sand', 'grass', 'litter', 'drygrass', 'turf']),
     // scrub (mibi-art 34a8dc49c): the olive flat ground over the grass beneath it (its paint has gaps; the grass fill shows through), three variants of the sheet and the slot-15 strip
     scrub: {
       ground: 'grass',
       over: [{
-        kind: 'flat', lowers: ['earth', 'sand', 'mud', 'path', 'grass'], sheets: [scrubPlace('over-scrub.png', 'over-scrub.png')],
+        kind: 'flat', lowers: [...ON, ...ABOVE], sheets: [scrubPlace('over-scrub.png', 'over-scrub.png')],
         full: scrubPlace('over-scrub-full.png', 'over-scrub-full.png'),
         variants: ['~v1', '~v2', '~v3'].map((v) => scrubPlace(`over-scrub${v}.png`, `over-scrub${v}.png`)),
       }],
     },
     thicket: {
       fill: { sheets: [place(THICKET, 'over-thicket-full.png', 'fill-thicket.png')] },
-      over: [{ kind: 'rim', lowers: ['earth', 'sand', 'mud', 'path', 'grass', 'scrub'], sheets: [keyed(THICKET, 'over-thicket.png', 'over-thicket.png')] }],
+      over: [{ kind: 'rim', lowers: [...ON, ...ABOVE.slice(1), 'scrub'], sheets: [keyed(THICKET, 'over-thicket.png', 'over-thicket.png')] }],
     },
     cliff: {
       fill: { sheets: [rec(CLIFF3, 'fill-cliff.png', `${CLIFF3.dir}/over-cliff.png#15 recut recoloured`, Buffer.from(encodePng(slot15(keyShade(recutImg('over-cliff.png'))))))] },

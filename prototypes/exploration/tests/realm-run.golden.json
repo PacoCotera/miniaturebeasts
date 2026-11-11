@@ -6,8 +6,8 @@
  "mibis": 0,
  "dock": 0,
  "stopMid": false,
- "presses": 2993,
- "digest": "a56da5bbe24179221aa125b1ff8618c104563edfdbcc5cce3f2409ad4dc29977",
+ "presses": 2992,
+ "digest": "50d39a7d596be66e535f50d649b43742fcd5825df7b218a85043779e3bc7560f",
  "steps": [
   {
    "n": 1,
@@ -21,133 +21,133 @@
    "presses": 296,
    "turn": 2,
    "bay": 0,
-   "d": "ad83ad92ad664f0a"
+   "d": "b604870e7a1aa924"
   },
   {
    "n": 3,
    "presses": 578,
    "turn": 3,
    "bay": 0,
-   "d": "5efe364e8c8c8a2a"
+   "d": "e59453360ca7fcea"
   },
   {
    "n": 4,
    "presses": 671,
    "turn": 4,
    "bay": 0,
-   "d": "a2e7350494f4d82a"
+   "d": "6e905b7e584a93f0"
   },
   {
    "n": 5,
    "presses": 806,
    "turn": 5,
    "bay": 0,
-   "d": "df22768a6594f288"
+   "d": "62e39eed1454192b"
   },
   {
    "n": 6,
    "presses": 1023,
    "turn": 6,
    "bay": 0,
-   "d": "f000c940f507e9c6"
+   "d": "85e08df65ba5fd0f"
   },
   {
    "n": 7,
    "presses": 1126,
    "turn": 7,
    "bay": 0,
-   "d": "a26bddb8d2f17581"
+   "d": "b7742a96024a1300"
   },
   {
    "n": 8,
    "presses": 1160,
    "turn": 8,
    "bay": 0,
-   "d": "327b39c790c61b08"
+   "d": "bcdffe5c06521d29"
   },
   {
    "n": 9,
    "presses": 1432,
    "turn": 9,
    "bay": 0,
-   "d": "340824584eb0ad6a"
+   "d": "b1e6d7bd782414e0"
   },
   {
    "n": 10,
    "presses": 1500,
    "turn": 10,
    "bay": 0,
-   "d": "12e5e7ca6b74929f"
+   "d": "b04d8ae472f0b64b"
   },
   {
    "n": 11,
    "presses": 1610,
    "turn": 11,
    "bay": 0,
-   "d": "4126982bd9a92d81"
+   "d": "de7e418ffa38403d"
   },
   {
    "n": 12,
    "presses": 1767,
    "turn": 12,
    "bay": 0,
-   "d": "62a9919ee870621c"
+   "d": "fe7814dfb9881958"
   },
   {
    "n": 13,
-   "presses": 2053,
+   "presses": 2052,
    "turn": 13,
    "bay": 1,
-   "d": "feaecd53d63d1351"
+   "d": "d3bb4ffa5bfdbab9"
   },
   {
    "n": 14,
-   "presses": 2171,
+   "presses": 2170,
    "turn": 14,
    "bay": 1,
-   "d": "41042d2f63f31bbf"
+   "d": "a56b8f1d155dae28"
   },
   {
    "n": 15,
-   "presses": 2326,
+   "presses": 2325,
    "turn": 15,
    "bay": 1,
-   "d": "cd55e0beaa306a38"
+   "d": "d5bc8b4324526ea8"
   },
   {
    "n": 16,
-   "presses": 2376,
+   "presses": 2375,
    "turn": 16,
    "bay": 1,
-   "d": "d4bb092f91a09ee5"
+   "d": "4dd1e4f6c62a2973"
   },
   {
    "n": 17,
-   "presses": 2461,
+   "presses": 2460,
    "turn": 17,
    "bay": 0,
-   "d": "99679831e0331ce9"
+   "d": "634a9e4f1354cdd6"
   },
   {
    "n": 18,
-   "presses": 2634,
+   "presses": 2633,
    "turn": 18,
    "bay": 0,
-   "d": "86046fdf966617c8"
+   "d": "6441d0d2db9c4e1a"
   },
   {
    "n": 19,
-   "presses": 2874,
+   "presses": 2873,
    "turn": 19,
    "bay": 0,
-   "d": "bddb30e5680343aa"
+   "d": "020f144161daa237"
   },
   {
    "n": 20,
-   "presses": 2993,
+   "presses": 2992,
    "turn": 20,
    "bay": 0,
-   "d": "a56da5bbe2417922"
+   "d": "50d39a7d596be66e"
   }
  ],
  "summary": {
@@ -157,7 +157,7 @@
   "revealed": 143,
   "visited": 36,
   "called": 32,
-  "pods": 64,
+  "pods": 65,
   "creatures": 781,
   "bay": 0,
   "hold": null,
