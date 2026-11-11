@@ -181,13 +181,15 @@ test("a crate opens: sealed, lifting from 0 (a cut), done when its length is up;
   at(L[0] + L[1] + 1); assert.deepEqual(f.errors(), []);
 });
 const I600 = STEPS.inside, INS = R.inside;
-test("the inside view (an ordinary crate, its first 600 ms): the picture covers the bay (16, 56, 992 × 480) with the broken seal at its corner; the first pod lies in the nest, the next ones either side of it (right, then left), every pod has a contact shadow; the pods carry the glint of a new species", { skip }, async () => {
+test("the inside view (an ordinary crate, its first 600 ms): the picture covers the bay (16, 56, 992 × 480) with the broken seal at its corner; the first pod lies in the nest, the next ones either side of it (right, then left), every pod has a contact shadow; the first pod's base is under the nest's rim layer; no glint", { skip }, async () => {
   const { f, at } = await opening({ ...OPEN, podsEach: 3, finds: [], newSpecies: true }); const I = INS.rect;
   at(100); assert.deepEqual(nb(f, "inside"), I, "the picture covers the bay"); assert.deepEqual(nb(f, "inside.seal"), [I[0] + INS.seal.at[0], I[1] + INS.seal.at[1], 112, 56]);
-  const p = [0, 1, 2].map((j) => nb(f, `d.pod.${j}`)); assert.deepEqual(p[0], [I[0] + INS.pod.at[0], I[1] + INS.pod.at[1], 88, 112], "the first pod in the nest");
-  assert.deepEqual(p[1], [p[0][0] + INS.pod.side[0], p[0][1] + INS.pod.side[1], 88, 112], "the second on its right, touching the nest"); assert.deepEqual(p[2], [p[0][0] - INS.pod.side[0], p[0][1] + INS.pod.side[1], 88, 112], "the third on its left");
-  for (let j = 0; j < 3; j++) { const s = nb(f, `d.pod.${j}.s`); assert.ok(s && s[2] === INS.shadow.pod[0] && s[3] === INS.shadow.pod[1], "a contact shadow under pod " + j); assert.equal(f.nodeOpa(`d.pod.${j}.s`), INS.shadow.alpha, "at about 30%"); assert.ok(s[1] + s[3] / 2 > p[j][1] + 100, "at its feet"); }
-  assert.deepEqual(nb(f, "d.pod.0.g"), [p[0][0] + INS.pod.glint[0], p[0][1] + INS.pod.glint[1], 12, 12], "the glint on a new species");
+  const p = [0, 1, 2].map((j) => nb(f, `d.pod.${j}`)), [sw, sh] = INS.pod.sideSize; assert.deepEqual(p[0], [I[0] + INS.pod.at[0], I[1] + INS.pod.at[1], 88, 112], "the first pod in the nest");
+  assert.deepEqual(p[1], [I[0] + INS.pod.sides[0][0], I[1] + INS.pod.sides[0][1], sw, sh], "the second, the 0.8x pod, on the right of the nest"); assert.deepEqual(p[2], [I[0] + INS.pod.sides[1][0], I[1] + INS.pod.sides[1][1], sw, sh], "the third on its left");
+  assert.deepEqual([sw, sh], [70, 90], "0.8 of 88 x 112"); assert.ok(p[1][0] < I[0] + INS.pod.at[0] + 88 + 200 && p[1][0] > p[0][0] + 88, "right of the nest"); assert.ok(p[2][0] + sw < p[0][0], "left of the nest");
+  for (let j = 0; j < 3; j++) { const s = nb(f, `d.pod.${j}.s`), sz = j ? INS.shadow.side : INS.shadow.pod; assert.ok(s && s[2] === sz[0] && s[3] === sz[1], "a contact shadow under pod " + j); assert.equal(f.nodeOpa(`d.pod.${j}.s`), INS.shadow.alpha, "at about 30%"); assert.ok(s[1] + s[3] / 2 > p[j][1] + p[j][3] - 12, "at its feet"); }
+  assert.equal(nb(f, "d.pod.0.g"), null, "no glint on a new species"); assert.equal(nb(f, "d.pod.1.g"), null);
+  assert.deepEqual(nb(f, "inside.rim"), [I[0] + INS.pod.rim.at[0], I[1] + INS.pod.rim.at[1], ...INS.pod.rim.size], "the nest's front rim arc stands over the first pod's base");
 });
 test("the inside view: the supplies stand in their pockets with a contact shadow and their amounts; the finds stand at 32 px in the bottom pocket beside the supply (left of it, then right of its amount, a fourth a row up), each with the shadow; no dither, no veil on an ordinary crate", { skip }, async () => {
   const { f, at } = await opening({ crates: 1, open: true, podsEach: 1, finds: ["crystal", "pearl", "shard"] }); const I = INS.rect; at(100);
@@ -220,8 +222,9 @@ test("the hatch cuts open as the inside view ends (600) for a crate with a pod o
   at(I - 10); const from = [0, 1, 2].map((j) => nb(f, `d.pod.${j}`).slice(0, 2)); assert.ok(nb(f, "hatch.ring"), "the hatch is shut during the inside view"); assert.equal(nb(f, "t.pod.0.t"), null, "nothing travels before 600");
   at(I + 10); assert.ok(pixelIs(f, 100, 300, "pods-hatch-open-160x260") || nb(f, "hatch")[2] === 160, "open from 600"); assert.equal(nb(f, "hatch.ring"), null, "the ring is on the shut hatch only");
   for (const [j, lt] of [[0, I + 10], [0, I + 300], [0, I + 599], [1, I + 200], [2, I + 450]]) {
-    at(lt); const to = wellCentre(c.pods[j].well).map((v, i) => v - [44, 90][i]), e = ease((lt - I) * 1000 / 600), box = nb(f, `t.pod.${j}.t`);
-    assert.deepEqual(box, [lerp(from[j][0], to[0], e), lerp(from[j][1], to[1], e), 88, 112], `pod ${j} at ${lt}`);
+    const sz = j ? R.inside.pod.sideSize : [88, 112];   // the first pod is the full pod, the others the 0.8x pod; the feet meet the stored pod's (40 x 48 at (-20, -26))
+    at(lt); const to = wellCentre(c.pods[j].well).map((v, i) => v - [sz[0] / 2, sz[1] - 22][i]), e = ease((lt - I) * 1000 / 600), box = nb(f, `t.pod.${j}.t`);
+    assert.deepEqual(box, [lerp(from[j][0], to[0], e), lerp(from[j][1], to[1], e), sz[0], sz[1]], `pod ${j} at ${lt}`);
   }
   at(L + 5); assert.deepEqual(f.errors(), []);
 });

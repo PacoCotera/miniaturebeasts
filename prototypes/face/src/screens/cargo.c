@@ -177,9 +177,12 @@ static void layout_inside(int k) {
   int rc[4]; v_srect(C, "regions.inside.rect", rc);
   int np = crate_np(k), nf = crate_nf(k), nm = crate_nm(k); nE = 0;
   int pw = v_sk(C, "regions.inside.pod.size", 0), ph = v_sk(C, "regions.inside.pod.size", 1);
-  for (int j = 0; j < np && nE < MAXEL; j++) {   /* the first pod sits in the nest; the others nestle in the moss either side of it, right then left, touching it */
-    el_t *e = &E[nE++]; memset(e, 0, sizeof *e); e->kind = 0; e->idx = j; int side = j == 0 ? 0 : (j % 2 ? 1 : -1), n = (j + 1) / 2;
-    e->x = rc[0] + v_sk(C, "regions.inside.pod.at", 0) + side * n * v_sk(C, "regions.inside.pod.side", 0); e->y = rc[1] + v_sk(C, "regions.inside.pod.at", 1) + (side ? v_sk(C, "regions.inside.pod.side", 1) : 0); e->w = pw; e->h = ph; }
+  for (int j = 0; j < np && nE < MAXEL; j++) {   /* the first pod sits in the nest; the others are the 0.8x pod in the moss either side of it, right then left, touching it (sm = a side pod), a further one stepping outward */
+    el_t *e = &E[nE++]; memset(e, 0, sizeof *e); e->kind = 0; e->idx = j;
+    if (j == 0) { e->x = rc[0] + v_sk(C, "regions.inside.pod.at", 0); e->y = rc[1] + v_sk(C, "regions.inside.pod.at", 1); e->w = pw; e->h = ph; continue; }
+    int s = (j - 1) % 2, n = (j - 1) / 2, step = n * v_si(C, "regions.inside.pod.pitch", 72); const char *sp = s ? "regions.inside.pod.sides.1" : "regions.inside.pod.sides.0";
+    e->sm = 1; e->w = v_sk(C, "regions.inside.pod.sideSize", 0); e->h = v_sk(C, "regions.inside.pod.sideSize", 1);
+    e->x = rc[0] + v_sk(C, sp, 0) + (s ? -step : step); e->y = rc[1] + v_sk(C, sp, 1); }
   int fw = v_sk(C, "regions.inside.finds.size", 0), fh = v_sk(C, "regions.inside.finds.size", 1), fn = spec_len(C, "regions.inside.finds.slots");
   for (int f = 0; f < nf && nE < MAXEL; f++) {   /* the finds stand in the bottom pocket beside its supply, from the slots; past the last slot a row up */
     el_t *e = &E[nE++]; memset(e, 0, sizeof *e); int sl = fn > 0 ? f % fn : 0, row = fn > 0 ? f / fn : 0; e->kind = 1; e->idx = f;
@@ -231,7 +234,6 @@ static void build_display(void) {
   }
   layout_inside(g_cur);
   int ins = crate_inside(g_cur), over = g_lt >= ins, hold = v_pbool(v_fmt("%s.hold", K), 0) && !over, rc[4]; v_srect(C, "regions.inside.rect", rc);
-  char gl[96]; str_of("regions.opening.glint", gl, sizeof gl);
   v_region("display", LAYER_ART); v_name("display");
   if (!over) {   /* the close look into the open crate covers the bay; the seal lies broken at its corner */
     nat("inside", v_pstr("regions.inside.picture"), rc[0], rc[1]);
@@ -257,9 +259,11 @@ static void build_display(void) {
   v_region("insidePod", LAYER_CHROME); v_name("inside.pod");
   for (int i = 0; i < nE; i++) {   /* the pods, over the veil */
     el_t *e = &E[i]; if (e->kind != 0) continue; char id[64]; int ph3 = phase(g_lt, pod_start(g_cur, e->idx)); if (ph3 != 0) continue;
-    snprintf(id, sizeof id, "d.pod.%d.s", e->idx); soft_shadow(id, e->x + e->w / 2, e->y + e->h - 8, v_sk(C, "regions.inside.shadow.pod", 0), v_sk(C, "regions.inside.shadow.pod", 1));
-    snprintf(id, sizeof id, "d.pod.%d", e->idx); v_sprite(id, v_pstr(v_fmt("%s.pods.%d.big", K, e->idx)), e->x, e->y, e->w, e->h);
-    if (v_pbool(v_fmt("%s.pods.%d.isNew", K, e->idx), 0) && *gl) { snprintf(id, sizeof id, "d.pod.%d.g", e->idx); int gs[2]; if (v_asset_size(gl, gs) >= 0) v_sprite(id, gl, e->x + v_sk(C, "regions.inside.pod.glint", 0), e->y + v_sk(C, "regions.inside.pod.glint", 1), gs[0], gs[1]); }
+    const char *sh = e->sm ? "regions.inside.shadow.side" : "regions.inside.shadow.pod";
+    snprintf(id, sizeof id, "d.pod.%d.s", e->idx); soft_shadow(id, e->x + e->w / 2, e->y + e->h - (e->sm ? 6 : 8), v_sk(C, sh, 0), v_sk(C, sh, 1));
+    snprintf(id, sizeof id, "d.pod.%d", e->idx); v_sprite(id, v_pstr(v_fmt("%s.pods.%d.%s", K, e->idx, e->sm ? "side" : "big")), e->x, e->y, e->w, e->h);
+    if (e->idx == 0) {   /* the nest's front rim arc, cut from the inside picture, over the pod's base: the pod sits in the nest (the held view's copy has the overlay baked in) */
+      v_sprite("inside.rim", v_pstr(hold ? "regions.inside.rimHold" : "regions.inside.rim"), rc[0] + v_sk(C, "regions.inside.pod.rim.at", 0), rc[1] + v_sk(C, "regions.inside.pod.rim.at", 1), v_sk(C, "regions.inside.pod.rim.size", 0), v_sk(C, "regions.inside.pod.rim.size", 1)); }
   }
   if (hold) {
     int cx = rc[0] + v_sk(C, "regions.inside.card.rect", 0), cy = rc[1] + v_sk(C, "regions.inside.card.rect", 1), cw = v_sk(C, "regions.inside.card.rect", 2), ch = v_sk(C, "regions.inside.card.rect", 3); char ops[120];
@@ -291,7 +295,7 @@ static void build_travel(void) {
       if (well >= 0) { int c[2]; well_centre(well, c); sx = c[0] + v_sk(C, "regions.hatch.wells.pod.at", 0); sy = c[1] + v_sk(C, "regions.hatch.wells.pod.at", 1); }
       else { int idx = mat < 3 ? mat : 2; int cnt = mat + 1; sx = wait_x(idx, cnt); sy = v_si(C, "regions.waiting.pods.top", 434); }
       snprintf(id, sizeof id, "t.pod.%d", j);
-      fly(id, v_pstr(v_fmt("%s.pods.%d.big", K, j)), e->w, e->h, e->x, e->y, v_pstr(v_fmt("%s.pods.%d.small", K, j)), sx, sy, pw, ph, ph3, pod_start(g_cur, j));
+      fly(id, v_pstr(v_fmt("%s.pods.%d.%s", K, j, e->sm ? "side" : "big")), e->w, e->h, e->x, e->y, v_pstr(v_fmt("%s.pods.%d.small", K, j)), sx, sy, pw, ph, ph3, pod_start(g_cur, j));
     } else if (e->kind == 1) {
       int f = e->idx, ph3 = phase(g_lt, find_start(g_cur, f)); if (ph3 != 1 && ph3 != 2) continue;
       int slotn = v_pint(v_fmt("%s.finds.%d.slot", K, f), 0), fb[4]; find_box(slotn, fb); snprintf(id, sizeof id, "t.find.%d", f);

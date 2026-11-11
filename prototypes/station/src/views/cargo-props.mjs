@@ -32,6 +32,7 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
   const sizeOfSlice = (id) => id.match(/(\d+)x(\d+)(?:-done)?$/).slice(1, 3).map(Number);
   const pic = (id) => slot(id, sizeOfSlice(id));
   const podPic = (q, size) => { const sp = shellSpecies(st, q); return req({ kind: "pod", id: `pod:${sp ?? "-"}:${q.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size }); };
+  const sidePic = (q, size) => { const sp = shellSpecies(st, q); return req({ kind: "podside", id: `podside:${sp ?? "-"}:${q.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size }); };   // the collection pod reduced once to `size` (the 0.8x pod beside the nest)
   const wait = (n) => plural(n, Sg.subjects.waitingOne, fill(Sg.subjects.waiting, { count: spelled(n) }));
   const notice = () => { const a = S.needKey(st, sv, settings, m.ui, true), w = a && { ...a, module: home.strings.needs[a.key]?.module }; return wordsOf(w, home).notice; };
   const props = { state, berths: 3, sittingCrate: null, regions: {}, focus: { cur: "room", targets: [] } };
@@ -93,14 +94,13 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
       return {
         kind: it.kind, berth, inside: it.inside || 0, hold: !!it.hold,
         mats: it.mats.map((mt) => ({ name: mt.name, amount: "+" + mt.amount, big: pic(`cargo-${mt.name}-72x96`), small: pic(`cargo-${mt.name}-48x64`) })),
-        pods: it.pods.map((p) => ({ big: podPic(p.rec, bigSize), small: podPic(p.rec, wellSize), well: p.well >= 0 ? Math.max(0, p.well - off) : -1, mat: p.mat, isNew: !!p.isNew })),
+        pods: it.pods.map((p) => ({ big: podPic(p.rec, bigSize), side: sidePic(p.rec, R.inside.pod.sideSize), small: podPic(p.rec, wellSize), well: p.well >= 0 ? Math.max(0, p.well - off) : -1, mat: p.mat, isNew: !!p.isNew })),
         finds: fs,
         portrait: it.kind === "sitting" ? { frame: props.sittingCrate.frame, picture: props.sittingCrate.picture } : null,
       };
     });
     regions.opening = { crate: c.crate, at: c.at, base: state === "end" ? items.length : run.base, starts: state === "end" ? [] : run.starts, lens: state === "end" ? [] : run.lens, crates: items };
-    if (state === "opening") regions.inside = { picture: slot(R.inside.slice, R.inside.rect.slice(2), "the crate-inside master (art director, art-paint-crate-set)"), seal: slot(R.inside.seal.slice, R.inside.seal.size), card: Sg.inside.card };
-    if (state === "opening") Object.assign(regions.opening, { glint: req({ kind: "star", id: "star:12" }) });
+    if (state === "opening") regions.inside = { picture: slot(R.inside.slice, R.inside.rect.slice(2), "the crate-inside master (art director, art-paint-crate-set)"), seal: slot(R.inside.seal.slice, R.inside.seal.size), rim: slot(R.inside.pod.rim.slice, R.inside.pod.rim.size), rimHold: slot(R.inside.pod.rim.hold, R.inside.pod.rim.size), card: Sg.inside.card };
   }
 
   // ---- the line: the action, the subject, the notice and the way back of the state (cargo.json line) ----

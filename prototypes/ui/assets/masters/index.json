@@ -4703,6 +4703,8 @@
   "vivarium-near-dusk-544x408": {"group":"vivarium","w":544,"h":408,"bytes":369432,"sha":"8a9b4495341a"},
   "vivarium-near-night-544x408": {"group":"vivarium","w":544,"h":408,"bytes":313062,"sha":"d04bfcb69af2"},
   "well-lit-64x64": {"group":"pods","w":64,"h":64,"bytes":962,"sha":"c5c68ef595a5"},
-  "wish-mark-12": {"group":"pods","w":12,"h":12,"bytes":110,"sha":"bb28471fb060"}
+  "wish-mark-12": {"group":"pods","w":12,"h":12,"bytes":110,"sha":"bb28471fb060"},
+  "nest-rim-184x44": {"group":"pods","w":184,"h":44,"bytes":15396,"sha":"7f44e612ba87"},
+  "nest-rim-hold-184x44": {"group":"pods","w":184,"h":44,"bytes":11960,"sha":"46a78fdb902e"}
  }
 }

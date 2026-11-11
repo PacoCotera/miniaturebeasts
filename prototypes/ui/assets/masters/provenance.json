@@ -4600,6 +4600,8 @@
   "vivarium-near-dusk-544x408": {"sha256":"8a9b4495341a866c12e5532dcc1336db40fd3b517add3136be7883791dd346c1","signed":"art director, near Vivarium verdict (57490118)","squeezed":"oxipng 10.2.1 -o 4 --strip safe"},
   "vivarium-near-night-544x408": {"sha256":"d04bfcb69af243d688dc48585e8fef98d48987511179638a1c534f084f9a9978","signed":"art director, verdict (night pair grade)","squeezed":"oxipng 10.2.1 -o 4 --strip safe"},
   "well-lit-64x64": {"sha256":"c5c68ef595a52897ae9044d2f11648256817c285b1dd1ee94286ae85073f5fae","signed":"cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures","squeezed":"oxipng 10.2.1 -o 4 --strip safe"},
-  "wish-mark-12": {"sha256":"bb28471fb0603f7e8aed1bfa0be68b0f3fc515cd508fbe272eea293208106e32","signed":"AD 2026-10-23 23:53, b00a8b17","squeezed":"oxipng 10.2.1 -o 4 --strip safe"}
+  "wish-mark-12": {"sha256":"bb28471fb0603f7e8aed1bfa0be68b0f3fc515cd508fbe272eea293208106e32","signed":"AD 2026-10-23 23:53, b00a8b17","squeezed":"oxipng 10.2.1 -o 4 --strip safe"},
+  "nest-rim-184x44": {"sha256":"7f44e612ba87ac9d9c85813406e50714f8b76ebd235b2713ddcdb906032d1490","signed":"derived from the art director's crate-inside-992x480: the nest's front rim arc cut out (x 396, y 252, 184 x 44; the moss outside the hollow, alpha ramped 0 to 1 over radius 84 to 94 round (487, 181), a 6 px soft top); no new paint; the art director signs"},
+  "nest-rim-hold-184x44": {"sha256":"46a78fdb902ee9d3d3b5c74b5be9051afd599cbff7599f11b7c22afeb91cc3c6","signed":"nest-rim-184x44 with the held view's flat overlay (void at 140 of 255) baked in, so the rim matches the dimmed moss under the overlay; no new paint; the art director signs"}
  }
 }

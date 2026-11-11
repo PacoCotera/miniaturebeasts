@@ -50,31 +50,31 @@
    "png": "cargo-end-portrait.png"
   },
   "cargo-opening-0": {
-   "hash": "190c3ba9",
+   "hash": "9400d552",
    "png": "cargo-opening-0.png"
   },
   "cargo-opening-inside": {
-   "hash": "8e2a36e2",
+   "hash": "8a084659",
    "png": "cargo-opening-inside.png"
   },
   "cargo-opening-after": {
-   "hash": "9b8914d0",
+   "hash": "bc13b93b",
    "png": "cargo-opening-after.png"
   },
   "cargo-opening-pod": {
-   "hash": "e7e6e9a1",
+   "hash": "9d3c76a3",
    "png": "cargo-opening-pod.png"
   },
   "cargo-opening-mat": {
-   "hash": "ed60d35c",
+   "hash": "c77bc9e5",
    "png": "cargo-opening-mat.png"
   },
   "cargo-opening-find": {
-   "hash": "779131fa",
+   "hash": "deadd982",
    "png": "cargo-opening-find.png"
   },
   "cargo-opening-swap": {
-   "hash": "a1cc2010",
+   "hash": "84db0231",
    "png": "cargo-opening-swap.png"
   },
   "cargo-opening-done": {
@@ -82,11 +82,11 @@
    "png": "cargo-opening-done.png"
   },
   "cargo-opening-three": {
-   "hash": "c561639f",
+   "hash": "fe1cc895",
    "png": "cargo-opening-three.png"
   },
   "cargo-opening-three-second": {
-   "hash": "03ba4699",
+   "hash": "3264d76e",
    "png": "cargo-opening-three-second.png"
   },
   "cargo-opening-portrait": {
@@ -110,15 +110,15 @@
    "png": "cargo-arrival-empty-trip.png"
   },
   "cargo-opening-first-pod": {
-   "hash": "196f51e3",
+   "hash": "37c9f21a",
    "png": "cargo-opening-first-pod.png"
   },
   "cargo-opening-first-pod-later": {
-   "hash": "196f51e3",
+   "hash": "37c9f21a",
    "png": "cargo-opening-first-pod-later.png"
   },
   "cargo-opening-first-pod-taken": {
-   "hash": "3ac604d0",
+   "hash": "debe4ef9",
    "png": "cargo-opening-first-pod-taken.png"
   },
   "cargo-opening-skip": {
