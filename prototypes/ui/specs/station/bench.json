@@ -3,22 +3,22 @@
  "layout": { "stage": "bezel", "opening": [64, 77, 890, 455], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "device": "station",
  "section": "probe",
- "level": "the bench, the section's one level: it holds one Probe, so its whole is that one item",
+ "level": "the bench, the section's one level: it holds the Companion, its sensors (the Probe), so its whole is that one item",
  "spec": "design/style-guide/station-layouts.md#probe-bench",
  "frame": "frame.json",
  "status": "The layout spec for the Probe section, the bench, slot P (the Probe bench) of lvgl-switch.md §3, on the LVGL face, opened from Home's Probe module and taking the whole stage: every drawn region names its word or composition, the states docked and away, the bench's focus as data, the events, the bottom line and the strings. Fix 5: the group inside the floor, modules sized to their contents, the plates on their strip. Rework: the Probe stands upright in its cradle, as it is held, on three columns (this spec, regions.cradle, strip, plates, switch, slot and bench.tools)",
  "wireframes": ["design/style-guide/station-layouts/11-bench.png", "design/style-guide/station-layouts/11b-bench-armed.png", "design/style-guide/station-layouts/11c-bench-away.png", "design/style-guide/station-layouts/11d-bench-tier2.png", "design/style-guide/station-layouts/11e-bench-nav.png"],
- "note": "The one home of the Probe bench numbers, transcribed from station-layouts.md (Probe bench) and its wireframes 11-bench.svg to 11e-bench-nav.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. The bench is the one screen whose subject is a machine: the Probe in its cradle at the left with its Shield plates under it, the mend switch and the upgrade slot in a column at the right. The live screen id is `bench`; its place in frame.json navigation is `probe`.",
- "purpose": "Keep the Probe ready for the next expedition: see from the plates alone how whole its Shield is, mend a plate, set whether the dock mends every plate, and fit the upgrade, seeing what it adds. Reads first: the Probe; then its plates",
+ "note": "The one home of the Probe bench numbers, transcribed from station-layouts.md (Probe bench) and its wireframes 11-bench.svg to 11e-bench-nav.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. The bench is the one screen whose subject is a machine: the Companion in its cradle at the left, its sensors (the Probe) in the band across its top under the Shield's cover, with its Shield plates under it, the mend switch and the upgrade slot in a column at the right. The live screen id is `bench`; its place in frame.json navigation is `probe`.",
+ "purpose": "Keep the Companion, its sensors (the Probe), ready for the next expedition: see from the plates alone how whole its Shield is, mend a plate, set whether the dock mends every plate, and fit the Probe upgrade, seeing what it adds. Reads first: the Companion; then its plates",
  "notes": {
   "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. The mend, the switch's slide and the install are cuts to their ends. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts.",
-  "subject": "the Probe standing upright in its cradle, as it is held, large, is the spotlight, with the device's field tools beside it; its Shield plates under it read the Shield's state with no words. The Probe as the project's Probe art draws it, never a needle",
+  "subject": "the Companion standing upright in its cradle, as it is held, large, is the spotlight, with its field tools beside it; its sensors (the Probe) sit in one band across its top under the Shield's cover, one piece with no plates on it, and the plate strip under it is the only place that reads the Shield's state, with no words. The Companion as Home draws it, never a needle, never a separate device",
   "light": "the device's warm daylight, one soft key light from the top left, as on every section; the Probe the brightest object. No lab: no cool light, no glass, no clean-room machine",
   "group": "three columns inside the floor (x 66–955), margins 18–19, one bottom line y 520: the Probe standing upright in its cradle (40, 96, 288 × 432), the tools zone with the plates' strip under it (368, 96, 208 × 352; the plates' box 368, 464, 208 × 64), the column of two modules (624, 96, 312 wide)",
   "plates": "the tier's count of plates, never a ghost for a plate the tier does not have (as on Home's Probe module); one table of places a tier, keyed by the tier, centred on the plates' axis 472; one sprite a place; the tier's strip under them in both states (fix 5 P3)",
   "column": "two modules (Home's `module` build, with a lamp): the mend switch, then the upgrade slot. The switch is a standing choice, so it is set at any time; the slot needs the Probe docked",
   "amber": "nothing on the bench is amber: a worn plate or an affordable upgrade is a choice, not a need. The lamps are `well` (on, ready) or `off`, the frame's marks.lamp12",
-  "away": "while the Probe is out with the Companion the cradle shows empty, so the Probe reads as out, never missing; no plates are drawn; the tier's strip shows its empty slots, as the empty cradle does (fix 5 P3)"
+  "away": "while the Companion is out with you the cradle shows empty, so the Companion reads as out, never missing; no plates are drawn; the tier's strip shows its empty slots, as the empty cradle does (fix 5 P3)"
  },
  "rules": {
   "used": [],
@@ -29,13 +29,13 @@
  "composed": { "docked": { "main": "cradle", "rect": [40, 96, 288, 432] }, "away": { "main": "cradle", "rect": [40, 96, 288, 432], "picture": "bench-cradle-upright-empty-288x432" } },
  "states": ["docked", "away"],
  "initial": "by the save: the Companion docked, docked; else away",
- "stateRule": "docked: the Probe in its cradle with its plates; tier 1 or tier 2 is a prop of this state (regions.plates.tier, regions.slot.state). away: the Probe out with the Companion; the cradle empty, no plates. A region with `inStates` exists only in those states",
+ "stateRule": "docked: the Companion in its cradle with its plates; tier 1 or tier 2 (the Probe upgrade fitted) is a prop of this state (regions.plates.tier, regions.slot.state). away: the Companion out with you; the cradle empty, no plates. A region with `inStates` exists only in those states",
  "regions": {
   "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-probe", "note": "the section's ground: the work tray, field tools and small gauges in the device's housing and light (room-bench-stage-probe, signed)", "tools": [368, 96, 208, 352], "keepClear": { "cradle": [40, 96, 288, 432], "plates": [364, 458, 216, 72], "column": [620, 90, 320, 432] }, "recut": "the stage recut under the same id: the gauge, the screwdriver and the wrench lifted into the tools zone (368, 96, 208, 352), the floor repainted, a dock cable under the tools" },
   "cradle": {
    "rect": [40, 96, 288, 432], "component": "specimen", "focal": true, "axis": 184,
    "pictures": { "tier1": "bench-probe-upright-t1-288x432", "tier2": "bench-probe-upright-t2-288x432", "away": "bench-cradle-upright-empty-288x432" },
-   "inkTop": 4, "ink": [44, 4, 232, 420], "note": "the Probe standing upright in its cradle, as it is held, one painted picture a tier; away, the empty cradle. The slice keeps rows 0 to 3 empty, as Home's cradle does; ink is the slice-relative visible ink. Its silhouette is the art director's, inside this box"
+   "inkTop": 4, "ink": [44, 4, 232, 420], "note": "the Companion standing upright in its cradle, as it is held, one painted picture a tier (the second has the Probe upgrade's larger sensor head seated on the band); away, the empty cradle. The slice keeps rows 0 to 3 empty, as Home's cradle does; ink is the slice-relative visible ink. Its silhouette is the art director's, inside this box"
   },
   "strip": { "rect": [376, 472, 192, 48], "build": "shieldPlates", "part": "strip", "axis": 472, "byTier": { "1": [400, 472, 144, 48], "2": [376, 472, 192, 48] }, "slices": { "1": "bench-plate-strip-t1-144x48", "2": "bench-plate-strip-t2-192x48" }, "rule": "the tier's strip in both states, under the plates; away its slots show empty; it cuts t1 → t2 at the install's 300 (fix 5 P3)" },
   "plates": {
@@ -143,11 +143,11 @@
   "lamp": { "off": "frame.json regions.marks.lamp12.off", "on": "frame.json regions.marks.lamp12.well" }
  },
  "masters": {
-  "note": "every master the bench names, at the size it is shown; none is drawn by the build. No new id; the stage and the three Probe pictures follow the Probe section's look: the work tray in daylight, the Probe standing upright in its cradle, as it is held, never a needle, never a lab",
+  "note": "every master the bench names, at the size it is shown; none is drawn by the build. No new id; the stage and the three cradle pictures follow the bench's look: the work tray in daylight, the Companion standing upright in its cradle, as it is held, never a needle, never a lab",
   "list": ["room-bench-stage-probe 1024×522", "bench-probe-upright-t1-288x432", "bench-probe-upright-t2-288x432", "bench-cradle-upright-empty-288x432 (rows 0 to 3 empty)", "bench-plate-whole-32x32", "bench-plate-gone-32x32", "bench-plate-strip-t1-144x48", "bench-plate-strip-t2-192x48", "bench-switch-track-off-80x40", "bench-switch-track-on-80x40", "bench-switch-knob-40x40", "mark-dock-24x24", "icon-shield-16 (shared with Cargo's report)", "icon-shield-16-new", "icon-shield-gone-16", "icon-pod-16 (shared with Cargo's report)", "icon-pod-16-new", "bench-socket-160", "bench-part-t2-dim-128", "bench-part-t2-ready-128", "bench-part-t2-fitted-128", "bench-reach-t2-40", "bench-reach-t2-40-new", "bench-deep-t2-40", "bench-deep-t2-40-new", "home-lamp-sprout-12x12, home-lamp-hairline-12x12 (signed, placed)"]
  },
  "strings": {
-  "title": "Probe",
+  "title": "Companion",
   "back": "Home",
   "modules": { "switch": "Mend", "slot": "Upgrade" },
   "mend": "Mend a plate",
@@ -162,7 +162,7 @@
   "fit": "Fit the upgrade",
   "adds": "the Probe reaches further",
   "short": "needs more {icons}",
-  "dockFirst": "dock the Probe first",
+  "dockFirst": "dock the Companion first",
   "fitted": "the upgrade is fitted",
   "note": "today's words in the frame's zones (station-layouts.md, The frame); the string table's words replace them"
  },

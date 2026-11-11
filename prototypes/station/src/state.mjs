@@ -399,7 +399,7 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const habits = [], home = mergeCare(st, sv, habits);
   const n = bayCrates(st, sv).length;
   logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
-  return { ok: true, docked: true, home, habits, dried, reading, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
+  return { ok: true, docked: true, home, habits, dried, reading, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the shield is mended free" : "Docked · the bay is empty" };
 }
 // The world's events a crate carries (the Companion's `world.ev`, specs/world-events.md): [kind, place, who, n]. The kinds the Companion says; a kind or a shape this Station does not know is skipped, never an error.
 export const WORLD_EV_KINDS = ["grown", "elder", "lampLow", "lampOut", "shift", "herd", "storm", "fruit", "stirring", "young", "quiet"];
@@ -720,7 +720,7 @@ export const tier2Ready = (st, settings = DEFAULT_SETTINGS) => docked(st) && !!s
 export function installTier2(st, settings = DEFAULT_SETTINGS) {
   if (!tier2Ready(st, settings)) return { ok: false }; st.e -= price(PRICE.tier2E, settings); st.d -= price(PRICE.tier2D, settings);
   st.probe = { shield: TIER[2].shield, smax: TIER[2].shield, tier: 2, seq: st.probe.seq + 1 };
-  logEv(st, "Probe tier 2 installed"); return { ok: true, msg: "Probe tier 2 · " + TIER2_GAINS.map((g) => g.text).join(", ") };
+  logEv(st, "the Probe upgrade is fitted"); return { ok: true, msg: "the Probe upgrade is fitted · " + TIER2_GAINS.map((g) => g.text).join(", ") };
 }
 // The bud: M2 grows it; for now a migrated bud only reports ready when its minutes have passed.
 export const budProgress = (st, settings = DEFAULT_SETTINGS, now = Date.now()) => { const B = st.bud; if (!B) return 0; if (B.early) return 1; const scale = settings.budScale === "instant" ? 1e9 : settings.budScale || 1; return clamp(((now - B.start) * scale) / (B.minutes * 60000), 0, 1); };
