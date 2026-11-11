@@ -56,6 +56,9 @@ export const BIOME_DECALS = {
   turf: ['tuft-wind', 'tuft-wind-m', 'shrub-heather', 'shrub-heather-m'],
 };
 export const BIOME_ROCKS = { turf: ['rock-turf', 'rock-turf-m'] };
+// what blocks (owner notes 6 and 7): only stone and wood as high as the explorer's shoulder. The low stones and the stump are stepped over, the bushes and shrubs pushed through: no footprint. The boulder (rock-big), the split stone and the trunks stay.
+export const STEP_OVER = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-big', 'bush-round', 'bush-small', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'boulder-grey', 'boulder-brown', 'stump'];
+export const STONE_DECALS = ['rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-turf', 'rock-turf-m'];
 // Held back by the set's palette (208 colours, 171 pinned or in use, the pieces above take the last 37): shrub-thorn-b (+10 colours), clump-seed (+10), dry-rock (+5). Each is a signed piece with its own straw tones
 // outside the map palette; the art desk can snap them to it (or free colours) and they join by adding their names here.
 export const SUNLIT ='#82b266';   // the map palette's `grass`, one sunlit step above the grass base #74a65d: the grass tone patches
@@ -253,11 +256,12 @@ export function deskArt() {
     const p = piece(key);
     if (n === 'tree-hollow') props[n] = { ...p, footprint: [[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0], [-1, -1], [0, -1], [1, -1]] };   // footprints as the kit's
     else if (n === 'split-stone') props[n] = { ...p, footprint: [[-1, 0], [0, 0], [1, 0], [-1, -1], [0, -1], [1, -1]] };
-    else props[n] = { ...p, footprint: [[0, 0]] };
+    else props[n] = { ...p, footprint: STEP_OVER.includes(n) ? [] : [[0, 0]] };   // the low stones, the stump and the bushes block nothing: stepped over, pushed through (owner notes 6 and 7)
   }
   // The tall tree (leaf litter job, tree-tall-crown and tree-tall-trunk) is NOT placed: the pieces are full-colour paint (1412 and 339 colours) and the set's palette holds 208; fitting them would mean recolouring
   // the signed art, which is the art desk's call. Named empty slot: tree-tall (Tallwood, about one grove tree in three).
-  for (const k of Object.values(BIOME_ROCKS).flat()) props[k] = { ...piece(k), footprint: [[0, 0]] };
+  for (const k of Object.values(BIOME_ROCKS).flat()) props[k] = { ...piece(k), footprint: [] };
+  for (const k of STONE_DECALS) decals[k] = { ...piece(k) };   // the low stones are also ground decals: the scatter lays them walk-over (art/places/map-rules.json ground)
   for (const k of Object.values(BIOME_DECALS).flat()) decals[k] = { ...piece(k) };
   for (const [n, key] of Object.entries(DECOR_SOURCES.sweeps)) props[n] = { ...piece(key), footprint: [] };   // sweeps of tall grass block nothing
   for (const [n, key] of Object.entries(DECOR_SOURCES.decals)) decals[n] = { ...piece(key) };

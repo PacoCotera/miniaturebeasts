@@ -29,7 +29,7 @@ export function closedLooks(place, terrains) {
 }
 
 // The props fruit may be pressed on, besides every tree's trunk (never a bush, thicket, reed or crown).
-export const PRESS_PROPS = ['boulder-grey', 'boulder-brown', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-big', 'rock-big-m', 'split-stone'];
+export const PRESS_PROPS = ['rock-big', 'rock-big-m', 'split-stone'];
 // terrains: art/places/terrain.json's list. o: { key, cell, pw, ph, closed } (closed: the sides the land refuses, 'N' 'S' 'W' 'E').
 export function adaptPlace(place, ts, terrains, o = {}) {
   const pw = o.pw || PW, ph = o.ph || PH, w = place.w, h = place.h;

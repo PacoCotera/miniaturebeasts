@@ -5354,6 +5354,7 @@ function drawPatchBody(t) {
     blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)), spriteRm(P.x, P.y));   // through the places' light tables like the walk props
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); };
   items.push({ y: RT.pl.y + 5, hero: true, d: heroDraw });
+  if (bk && ts === 48) { const fi = bk.feetItem(g, bOrg, bclk, { x: P.x, y: P.y }, (x, y) => tileLight(x, y), RT.pl.y + 5); if (fi) items.push(fi); }   // standing in a plant: its lower part over the explorer's feet
   if (TEST.boom === 1) items.push({ y: -1e9, d: () => { throw new Error('test: a sprite throws'); } });   // test hook only: an item that throws before everything else
   if (bk) items.push(...bk.propItems(g, bOrg, bclk, (x, y) => see(x, y), (x, y) => tileLight(x, y), lay.cut));
   if (ts === 48 && bk && lay.rim && ART48.ready) { const rs = lay.rimSet || (lay.rimSet = new Set(lay.rim)); for (const s2 of layers48(lay, fr).sprites) if (rs.has(s2.ty * lay.w + s2.tx) && vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) }); }   // the rim's reeds, as a generated place's

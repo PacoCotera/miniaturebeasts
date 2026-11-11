@@ -37,8 +37,8 @@ export const expectedPer100 = (biome, fam) => { const P = TABLE[biome][fam]; if 
 
 // the sweeps of tall grass are still pictures now: the signed tufts-2 and tufts-3, each as it is and mirrored (art director: mirrored at random, no new paint)
 export const SWEEPS = ['tall-grass', 'tall-grass-b', 'tall-grass-m', 'tall-grass-bm'];
-// the three signed boulder shapes and their mirrors (the art director's rock family, mibi-art ffa823829): an outcrop's rocks each take a shape by the rule's shares (props.groves.rockShapes) and a mirror by hash
-const ROCK_SHAPES = ['rock-a', 'rock-b', 'rock-big'];
+// the boulder shapes and their mirrors: an outcrop's rocks each take a shape by the rule's shares (props.groves.rockShapes) and a mirror by hash
+const ROCK_SHAPES = Object.keys(RULES.props.groves.rockShapes);   // boulders only (the small stones are ground decals, stepped over; art/places/map-rules.json)
 const KINDS = { broad: 'tree-broad', autumn: 'tree-autumn', bushes: ['bush-big', 'bush-round', 'bush-small'], stump: 'stump', hollow: 'tree-hollow' };
 export const TREE_KINDS = [KINDS.broad, KINDS.autumn];
 export const ROCK_KINDS = ROCK_SHAPES.flatMap(s => [s, `${s}-m`]);

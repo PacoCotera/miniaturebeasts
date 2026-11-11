@@ -5,7 +5,7 @@
 import { T, T_BLOCK, L, hash } from './world.mjs';
 
 export const INNER = { w: 24, h: 28 };
-const PRESS_PROPS = ['boulder-grey', 'boulder-brown', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-big', 'rock-big-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
+const PRESS_PROPS = ['rock-big', 'rock-big-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
 const RING_DEPTH = 2;   // tiles in from a side the range haze or a closed side's thicket takes (the page's LINE_DEPTH 3 counts the apron)
 const CROWN_MARGIN = 6;  // pixels at 48 px round a crown's box that still count as under it
 const SIDE_STEP = { N: 'up', S: 'down', W: 'left', E: 'right' };

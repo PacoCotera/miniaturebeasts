@@ -19,6 +19,8 @@ export async function loadBaked(fetchBytes, base, id) {
   return { place, ts };
 }
 
+const PLANT_PIECE = /^(sc-|shrub|bush|clump|tuft|flower|dry-tufts)/;   // the set's plant pieces (decals and props): walked through, at any height
+const FEET_MIN_H48 = 12, FEET_SHARE = 0.5;   // a plant 12 px tall or more (the sprites are in screen pixels) covers the explorer's feet: its lower half is drawn again over them
 const same = (a, b) => { if (!a || a.length !== b.length) return false; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; };
 
 // core: the page's core colours [[r, g, b]] for indices 0..47 (the set's own colours come from the tile set); night: the veil dots' colour index.
@@ -159,6 +161,19 @@ export class BakedView {
       items.push({ y: this.oy * 48 + p.sortY - 43, d: () => g.drawImage(this.spriteCanvas(p.kind, frame, lv, null, undefined, at), org.x + p.x - s.anchor48[0], org.y + p.y - s.anchor48[1]) });
     }
     return items;
+  }
+
+  // Walking through a plant: while the explorer stands in a plant 12 px or taller (a meadow decal, a bush or shrub prop), the lower part of that plant's own picture is drawn again over the explorer's feet.
+  // Nothing new is drawn: it is the painted sprite, cropped. tile: the explorer's tile in page cells; returns one sorted-list item (just after the explorer) or null.
+  feetItem(g, org, clockMs, tile, level, heroY) {
+    const cx = tile.x - this.ox, cy = tile.y - this.oy, lv = level(tile.x, tile.y), found = [];
+    for (const p of this.place.decals) if (Math.floor(p.x / 48) === cx && Math.floor(p.y / 48) === cy) found.push(p);
+    for (const p of this.place.props) if (Math.floor(p.x / 48) === cx && Math.floor(p.y / 48) === cy) found.push(p);
+    const plants = found.filter((p) => { const s = this.ts.sprites[p.kind]; return s && s.h48 >= FEET_MIN_H48 && PLANT_PIECE.test(s.kind) &&!(s.footprint && s.footprint.length); });
+    if (!plants.length) return null;
+    return { y: heroY + 0.5, d: () => { for (const p of plants) {
+      const s = this.ts.sprites[p.kind], cv = this.spriteCanvas(p.kind, 0, lv, null, undefined, null), k = Math.max(1, Math.round(s.h48 * FEET_SHARE));
+      g.drawImage(cv, 0, s.h48 - k, s.w48, k, org.x + p.x - s.anchor48[0], org.y + p.y - s.anchor48[1] + s.h48 - k, s.w48, k); } } };
   }
 
   // Pass 4: every crown over everything, dithered away in a disc round each pawn. pawns: [{ x, y }] page pixels of a pawn's centre.

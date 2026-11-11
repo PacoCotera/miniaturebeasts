@@ -2366,6 +2366,36 @@
 						"id": "shrub-heather-m",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "rock-a",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-a-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-b",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-b-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-turf",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-turf-m",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,
