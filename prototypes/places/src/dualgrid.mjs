@@ -94,7 +94,9 @@ export function terrainLayers(level, terrains, layers, tone = null) {
       [NW, NE, SW, SE].forEach((bit, k) => { if (z(cs[k]) >= zT) mask |= bit; });
       if (mask === 0) continue;
       if (mask === 15) {
-        const kind = Math.max(0, d.kinds.findIndex((k) => k.fullCount > 0));
+        const full = d.kinds.findIndex((k) => k.fullCount > 0);
+        if (full < 0 && d.fillCount > 0) { layerOf(T)[idx] = FILL_CODE + (vh(i, j) % d.fillCount); continue; }   // a layer with a fill and no all-upper sheet, over a ground another layer brings in (scrub's grass): its fill covers the tile
+        const kind = Math.max(0, full);
         layerOf(T)[idx] = KIND_STRIDE * kind + FULL_BASE + (vh(i, j) % Math.max(1, d.kinds[kind].fullCount || 1));
         continue;
       }

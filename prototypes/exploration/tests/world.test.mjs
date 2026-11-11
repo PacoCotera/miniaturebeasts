@@ -39,6 +39,7 @@ function page(store = {}, search, opts = {}) {
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
   run = loadPage(ctx, opts.script || SCRIPT);
+  try { run("RT.caddy = { podHome: true }"); } catch (e) { /* a variant script without the page's state */ }   // the first pod is home: the first walk's held signs, teaching line and goal band are tested in first-pods.test.mjs
   return { run, store, els, ctx, clock, KEY: run("SAVE_KEY"), rgbTable };
 }
 const withoutMemo = w => { const o = { ...w }; delete o.beacons; delete o.depots; return o; };
@@ -1011,8 +1012,8 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
 // The painted walk props (640a62182: crowns, bushes, pods, depot, beacon; off the core palette) are shown on these pages (paint): the place32, gen1 and corner frames re-hashed with the signed crown and bush in place of the code-drawn ones, looked at 1x; the cave, the reach view and the stair frame hold none and are unchanged.
 // Walk art wired (mibi-art ce97d1c19): the reach view (the cave frame is one too, phase map) wears the desk's terrain tiles, marks and edge pieces: re-hashed, looked at 1x against the desk's sheet-walk-art-map.png.
-const MAIN_FRAMES = { cave: 3929618603, place32: 1737998333, map: 1979486713 };   // map re-hashed on the generator 7 branch (G4d): the reach view's dots fill by walking, not by a heart found   // C15 (and the lead 11-08: never been is the dark table, no dots): the cave frame is the reach view too (phase map) and the map the reach view: both re-captured when the fog dots came in (the pending outline went); place32 is main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
-const GOLDEN48 = { faceStair: 1781723947, gen1: 1534171451, corner: 3448831437 };   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
+const MAIN_FRAMES = { cave: 774528619, place32: 2552280051, map: 4252329497 };   // place32 re-hashed when the signed biome decor landed on the grounds (072bc124d: the set's palette and the decor rules); (cave, place32 and map re-hashed in first-ten B3/B2: the ✓ word is "Face the …" / "Keep still" for "Wait", and the removed "← opens the menu · Leave is first" hint no longer leads the map's middle)   // map re-hashed on the generator 7 branch (G4d): the reach view's dots fill by walking, not by a heart found   // C15 (and the lead 11-08: never been is the dark table, no dots): the cave frame is the reach view too (phase map) and the map the reach view: both re-captured when the fog dots came in (the pending outline went); place32 is main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
+const GOLDEN48 = { faceStair: 1027480584, gen1: 3853171050, corner: 4214454553 };   // re-hashed in first-ten B3 (the ✓ word "Wait" is now "Face the …" / "Keep still");   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y, paint = false) {
   const p = page48(seed, undefined, undefined, paint);
   p.run(`layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; G = genWorld(${seed}, 1); S = worldFields(${seed}, 1); const life = genLife(${seed}); S.cr = life.cr; S.pods = life.pods; indexCreatures();
@@ -1033,7 +1034,7 @@ test("golden frames at 48: a place with a south face and a stair, a generator 1 
     gen1: fnv(frame48(place48g1(7, 65, 14, 24, true))),
     corner: fnv(frame48(place48(7, 176, 1, 1, "", undefined, true))),
   };
-  for (const [k, v] of Object.entries(got)) assert.equal(v, GOLDEN48[k], k + " " + v);
+  assert.deepEqual(got, GOLDEN48);
 });
 
 test("the warned-tile card in a 48 px place shows the cell's sprite box (columns 8–39, rows 16–47): the 48 px tile, the stone at the card's origin, the place's tables left as found", () => {
@@ -1561,7 +1562,7 @@ test("bottom line in a place: the place's state leads the middle and is never dr
   const p = inPlace(); p.run("FX.hintNote = null;");   // the first-place control hint would lead the middle; this test is about the usual words
   p.run("TEST.exploreHere(); leftItems = () => [{ k: 'charge', x: S.exp.patch.x + 4, y: S.exp.patch.y }, { k: 'warm', x: S.exp.patch.x + 6, y: S.exp.patch.y }];");   // the place is walked; two takeables, a charge the nearer
   const land = p.run("LAND_NAME[curLay().land]"), L = p.run("lineFor()");
-  assert.equal(L.ok, "Wait"); assert.equal(L.back, "Leave");
+  assert.match(L.ok, /^(Face the |Keep still)/, "facing nothing the ✓ word turns toward the next thing or keeps still, never Wait"); assert.equal(L.back, "Leave");
   const sv = p.run("placeLine(curLay(), S.exp.patch)"), svN = p.run("placeLine(curLay(), S.exp.patch, true)"), short = p.run("placeState(curLay())");
   assert.match(sv, /^explored · a charged stone (east|close by|[a-z-]+) · 1 more to take$/, "the nearest takeable and its way, then how many more: " + sv); assert.equal(svN, "explored · 2 to take"); assert.equal(short, "explored");
   assert.deepEqual(JSON.parse(JSON.stringify(L.ctx)).map(c => c.replace("\x01", "")).map(c => c.replace(/ · (lull|overcast)$/, "")), [land + " · " + sv, land + " · " + svN, svN, short]);
@@ -1573,12 +1574,12 @@ test("bottom line in a place: the place's state leads the middle and is never dr
   p.run("TEST.exploreHere();");
   // after a Call, drawn: the name and the count stay (the kinds drop first when they do not fit)
   p.key("call"); p.run("S.phase = 'patch'; FX.msg = '';");
-  const L2 = p.run("lineFor()"); assert.equal(L2.ok, "Wait");
+  const L2 = p.run("lineFor()"); assert.match(L2.ok, /^(Face the |Keep still)/);
   p.run("curLay().land = 0"); p.rec("text"); p.clear(); p.run("drawLine(lineFor())");
   const said = p.calls("text").map(c => c.a[0]).join("|");
   assert.match(said, /\|meadow · \|explored · 2 to take/, "the place name stays: " + said);
   // and whatever the land, a candidate with the name is drawn whenever it fits
-  for (let k = 0; k < 4; k++) { p.run(`curLay().land = ${k}`); const c = p.run("lineFor().ctx[1]").replace("\x01", ""), fits = p.run(`textWT(${JSON.stringify(c)}, 2)`) <= 291;
+  for (let k = 0; k < 4; k++) { p.run(`curLay().land = ${k}`); const c = p.run("lineFor().ctx[1]").replace("\x01", ""), fits = p.run(`textWT(${JSON.stringify(c)}, 2)`) <= p.run("lineCtx(lineFor()).avail");   // the room left of the ✓ word (it was 291 beside "Wait")
     p.clear(); p.run("drawLine(lineFor())"); const d = p.calls("text").map(c => c.a[0]).join("");
     assert.equal(d.includes(p.run(`LAND_NAME[${k}]`)), fits, `${p.run(`LAND_NAME[${k}]`)}: the name drawn iff "${c}" fits`); }
 });

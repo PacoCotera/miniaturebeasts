@@ -27,10 +27,12 @@ export function sides(dev, areaH) {
   return { A, LW: 3 * A + 16, RW: 80 };
 }
 
-export const areaHeight = (portrait, H) => H - PHONE_BAR - (portrait ? 2 : 1) * PHONE_PAD;   // landscape keeps only the top pad: the screen may stand on the window's bottom edge, which a turned phone has no spare height for
+export const DOCK_KEY_H = 44, DOCK_KEY_GAP = 8;   // the Dock key under a portrait Companion's tray: its height and the gap above it
+export const dockReserve = (dev, portrait) => (portrait ? DOCK_KEY_H + DOCK_KEY_GAP : 0);   // both devices: a docked Companion is lifted from either
+export const areaHeight = (portrait, H, reserve = 0) => H - PHONE_BAR - (portrait ? 2 : 1) * PHONE_PAD - reserve;   // landscape keeps only the top pad: the screen may stand on the window's bottom edge, which a turned phone has no spare height for; `reserve`: height kept for the Dock key
 // z for a device in a W × H window at dpr: the area under the bar, a pad round it
 export function phoneFit(dev, W, H, dpr) {
-  const portrait = isPortrait(W, H), areaW = W - 2 * PHONE_PAD, areaH = areaHeight(portrait, H), lp = SHELL_W_LP[dev];
+  const portrait = isPortrait(W, H), areaW = W - 2 * PHONE_PAD, areaH = areaHeight(portrait, H, dockReserve(dev, portrait)), lp = SHELL_W_LP[dev];
   let zw, zh;
   if (portrait) { zw = (areaW * dpr) / lp; zh = ((areaH - trayMin(dev)) * dpr) / SHELL_H_LP; }
   else { const s = sides(dev, areaH); zw = ((areaW - s.LW - s.RW - 16) * dpr) / lp; zh = (areaH * dpr) / SHELL_H_LP; }

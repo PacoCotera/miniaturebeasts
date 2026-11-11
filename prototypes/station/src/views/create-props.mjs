@@ -19,6 +19,8 @@ import { fill, spell, plural } from "./words.mjs";
 import { req as reqOf } from "./requests.mjs";
 
 const slug = (x) => String(x ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+// The id of a look's picture master (one per look of a trait of a kind, 128 x 72): Create's roll and the store's chapter page both place it.
+export const rollId = (species, traitName, look) => `roll-${species}-${slug(traitName)}${look == null ? "" : "-" + slug(look)}-128x72`;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 
 // The traits a pod can be shaped on: the read ones, in chapter order, with their chapter (the ring order of ◀ ▶).
@@ -56,7 +58,7 @@ export function createBuild(m, spec, pods) {
 
   // the roll: three pictures (as the pod is, only the first copy, only the second copy) or one; the chosen one ringed
   if (list.length) {
-    const opts = S.rollOptions(p, cur.t.id), rolls = opts.length > 1, pic = (look) => slot(req, `roll-${S.speciesOf(p)}-${slug(cur.t.name)}${look == null ? "" : "-" + slug(look)}-128x72`, [0, 0, ...R.roll.picture.size], "the roll picture master (cut from the painting)");
+    const opts = S.rollOptions(p, cur.t.id), rolls = opts.length > 1, pic = (look) => slot(req, rollId(S.speciesOf(p), cur.t.name, look), [0, 0, ...R.roll.picture.size], "the roll picture master (cut from the painting)");
     const chosen = rolls ? (cr.choices[cur.t.id] || 0) : 0, clash = cr.clash.includes(cur.t.id);
     const pictures = rolls ? opts.map((o) => pic(o.look)) : [pic(cur.t.nature === "doing" ? null : traitState(fr, cur.t, genome).shows)];
     regions.roll = { form: rolls ? "roll" : "single", chosen, clash, pictures, notches: rolls, shown: !grown };   // grow: every node kept with no size (shown false), the pictures stay requested (fix 5 C7)   // the notches are the words' chrome, drawn only while the trait rolls

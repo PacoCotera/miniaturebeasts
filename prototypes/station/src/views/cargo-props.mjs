@@ -32,6 +32,7 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
   const sizeOfSlice = (id) => id.match(/(\d+)x(\d+)(?:-done)?$/).slice(1, 3).map(Number);
   const pic = (id) => slot(id, sizeOfSlice(id));
   const podPic = (q, size) => { const sp = shellSpecies(st, q); return req({ kind: "pod", id: `pod:${sp ?? "-"}:${q.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size }); };
+  const sidePic = (q, size) => { const sp = shellSpecies(st, q); return req({ kind: "podside", id: `podside:${sp ?? "-"}:${q.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size }); };   // the collection pod reduced once to `size` (the 0.8x pod beside the nest)
   const wait = (n) => plural(n, Sg.subjects.waitingOne, fill(Sg.subjects.waiting, { count: spelled(n) }));
   const notice = () => { const a = S.needKey(st, sv, settings, m.ui, true), w = a && { ...a, module: home.strings.needs[a.key]?.module }; return wordsOf(w, home).notice; };
   const props = { state, berths: 3, sittingCrate: null, regions: {}, focus: { cur: "room", targets: [] } };
@@ -44,9 +45,8 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
     dock.rack = { insert: slot(R.dockRack.slice, R.dockRack.rect.slice(2)), wells: Array.from({ length: slots }, (_, i) => { const q = i < rackN ? st.tray[i] : null; return { pod: q ? podPic(q, podSize) : "" }; }) };
     props.regions = { dockBay: dock.bay, dockCrates: dock.crates, dockRack: dock.rack, arrival: arrivalRegion(m, spec, ph, slot, req) };
     const a = c.arrival, n = a.crates;
-    const AS = Sg.arrival.subjects, nums = walkCrates(st, sv, docked).map((x) => x.n), named = n > 0 && nums.length === n && nums.every((x) => Number.isInteger(x));   // the crates' own expedition numbers, when every crate has one (8a)
-    const crateWords = named ? (n === 1 ? fill(AS.crateOf, { n: nums[0] }) : fill(AS.cratesOf, { count: spelled(n), a: Math.min(...nums), b: Math.max(...nums) })) : plural(n, AS.cratesOne, fill(AS.crates, { count: spelled(n) }));
-    const line = a.phase === "show" ? { ok: m.ui.skip ? Sg.arrival.skip : null, back: null, subject: n ? crateWords : AS.empty, need: "" } :{ ok: null, back: null, subject: "", need: "" };   // the choice's line is the panel's (host.mjs cargoBody)
+    const AS = Sg.arrival.subjects, crateWords = plural(n, AS.cratesOne, fill(AS.crates, { count: spelled(n) }));
+    const line = a.phase === "show" ? { ok: m.ui.skip ? Sg.arrival.skip : null, back: null, subject: n ? crateWords : AS.empty, need: "" } : { ok: n ? Sg.arrival.open : null, back: Sg.arrival.later, subject: a.firstPod ? Sg.arrival.firstPod : "", need: "" };   // the choice has no card: the line names ✓ and ← (cargo.json line.arrival.choice)
     return { props, line, requests, need: null };
   }
 
@@ -55,16 +55,16 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
   const sitting = state === "bay" ? ready.find((e) => e.kind === "sitting") : run && run.items.find((it) => it.kind === "sitting");
   const four = !!sitting; props.berths = four ? 4 : 3;
   const geo = four ? B.four : B.three, nWalk = 3;
-  const berthOf = (k) => ({ crate: "", shadow: "", lifting: "", done: "", k: -1, kind: "walk", ...(k || {}) });
+  const berthOf = (k) => ({ crate: "", shadow: "", lifting: "", done: "", k: -1, kind: "walk", beat: false, ...(k || {}) });
   const berths = Array.from({ length: props.berths }, () => berthOf());
   const walkPics = () => ({ crate: pic(geo.sealed.slice), lifting: pic(geo.lifting.slice), done: pic(geo.done.slice), shadow: slot(geo.shadow.slice, geo.shadow.size) });
   const sitPics = () => ({ crate: pic(B.four.portrait.sealed), lifting: pic(B.four.lifting.slice), done: pic(B.four.portrait.done), shadow: slot(B.four.shadow.slice, B.four.shadow.size), kind: "sitting" });
   if (state === "bay") {
-    ready.filter((e) => e.kind === "walk").slice(0, nWalk).forEach((e, i) => { berths[i] = berthOf({ ...walkPics(), k: -1 }); });
+    ready.filter((e) => e.kind === "walk").slice(0, nWalk).forEach((e, i) => { berths[i] = berthOf({ ...walkPics(), k: -1, beat: (e.c.pods || []).length > 0 }); });
     if (sitting) berths[3] = berthOf(sitPics());
   } else {
     let w = 0;
-    run.items.forEach((it, k) => { if (it.kind === "sitting") berths[3] = berthOf({ ...sitPics(), k }); else if (w < nWalk) berths[w++] = berthOf({ ...walkPics(), k }); });
+    run.items.forEach((it, k) => { if (it.kind === "sitting") berths[3] = berthOf({ ...sitPics(), k }); else if (w < nWalk) berths[w++] = berthOf({ ...walkPics(), k, beat: it.pods.length > 0 }); });
   }
   if (sitting) {
     const mb = state === "bay" ? S.mibiById(st, sitting.sc.mibiId) : S.mibiById(st, sitting.portrait.mibi), dg = state === "bay" ? (mb && mb.portrait && mb.portrait.digest) : sitting.portrait.digest;
@@ -89,25 +89,25 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
   if (state === "opening" || state === "end") {
     let slotN = 0;
     const items = run.items.map((it, k) => {
-      const fs = it.finds.map((kind) => ({ kind, big: pic(`find-${kind}-112x112`), small: pic(`find-${kind}-16x16`), slot: slotN++ })), berth = berths.findIndex((b) => b.k === k);
-      if (state === "end" || k < run.base) return { kind: it.kind, berth, mats: [], pods: [], finds: fs.map((f) => ({ kind: f.kind, big: "", small: f.small, slot: f.slot })), portrait: null };   // done: what the strip and the berths keep
+      const fs = it.finds.map((kind) => ({ kind, big: pic(`find-${kind}-112x112`), small: pic(`find-${kind}-16x16`), inside: pic(`find-${kind}-32x32`), slot: slotN++ })), berth = berths.findIndex((b) => b.k === k);
+      if (state === "end" || k < run.base) return { kind: it.kind, berth, inside: 0, hold: false, mats: [], pods: [], finds: fs.map((f) => ({ kind: f.kind, big: "", small: f.small, slot: f.slot })), portrait: null };   // done: what the strip and the berths keep
       return {
-        kind: it.kind, berth,
+        kind: it.kind, berth, inside: it.inside || 0, hold: !!it.hold,
         mats: it.mats.map((mt) => ({ name: mt.name, amount: "+" + mt.amount, big: pic(`cargo-${mt.name}-72x96`), small: pic(`cargo-${mt.name}-48x64`) })),
-        pods: it.pods.map((p) => ({ big: podPic(p.rec, bigSize), small: podPic(p.rec, wellSize), well: p.well >= 0 ? Math.max(0, p.well - off) : -1, mat: p.mat, isNew: !!p.isNew })),
+        pods: it.pods.map((p) => ({ big: podPic(p.rec, bigSize), side: sidePic(p.rec, R.inside.pod.sideSize), small: podPic(p.rec, wellSize), well: p.well >= 0 ? Math.max(0, p.well - off) : -1, mat: p.mat, isNew: !!p.isNew })),
         finds: fs,
         portrait: it.kind === "sitting" ? { frame: props.sittingCrate.frame, picture: props.sittingCrate.picture } : null,
       };
     });
     regions.opening = { crate: c.crate, at: c.at, base: state === "end" ? items.length : run.base, starts: state === "end" ? [] : run.starts, lens: state === "end" ? [] : run.lens, crates: items };
-    if (state === "opening") Object.assign(regions.opening, { shadowBig: slot(R.display.material.big.shadow.slice, R.display.material.big.shadow.size), shadowSmall: slot(R.display.material.small.shadow.slice, R.display.material.small.shadow.size), glint: req({ kind: "star", id: "star:12" }) });
+    if (state === "opening") regions.inside = { picture: slot(R.inside.slice, R.inside.rect.slice(2), "the crate-inside master (art director, art-paint-crate-set)"), seal: slot(R.inside.seal.slice, R.inside.seal.size), rim: slot(R.inside.pod.rim.slice, R.inside.pod.rim.size), rimHold: slot(R.inside.pod.rim.hold, R.inside.pod.rim.size), card: Sg.inside.card };
   }
 
   // ---- the line: the action, the subject, the notice and the way back of the state (cargo.json line) ----
   let line, need = null;
   const waitingNow = state === "bay" ? st.waiting.length : state === "end" ? run.plan.sim.waiting.length : run.pre.waiting.length + run.items.reduce((a, it) => a + it.st.mat.size, 0);
   const came = run ? run.items.some((it) => it.pods.some((p) => p.well >= 0)) : false, nPods = run ? run.items.reduce((a, it) => a + it.pods.filter((p) => p.well >= 0).length, 0) : 0;
-  if (state === "opening") line = { ok: m.ui.skip ? Sg.skip : null, back: "Home", subject: waitingNow > run.pre.waiting.length ? wait(waitingNow) : "", need: "" };
+  if (state === "opening") line = { ok: run.items[c.crate]?.hold ? Sg.inside.take : m.ui.skip ? Sg.skip : null, back: "Home", subject: waitingNow > run.pre.waiting.length ? wait(waitingNow) : "", need: "" };
   else if (state === "end") line = { ok: endPortrait(st, run, sittingSpec) && Sg.end?.confirm ? Sg.end.confirm : came ? plural(nPods, Sg.newPods.one, Sg.newPods.few) : waitingNow ? Sg.newPods.few : null, back: "Home", subject: waitingNow ? wait(waitingNow) : "", need: "" };   // keys.confirm.end: the portrait first, then Look at the pods (a pod came, or the rack is full)
   else { const n = ready.length; line = { ok: n ? plural(n, Sg.openOne, Sg.open) : st.waiting.length ? Sg.newPods.few : null, back: "Home", subject: st.waiting.length ? wait(st.waiting.length) : "", need: notice() }; }
   return { props, line, requests, need };
@@ -121,8 +121,7 @@ function arrivalRegion(m, spec, ph, slot, req) {
   const plates = a.plates, words = plates.mended ? fill(Sg.mended, { "n in words": spell(plates.mended) }) : "";
   return {
     phase: a.phase, at: c.at ?? 0, ribbon: a.broke ? Sg.broken : Sg.ribbon,
-    apron: slot(A.apron.slice, A.apron.rect.slice(2)), light: slot(A.light.slice, A.light.rect.slice(2)),
-    glint: a.newCrates.some(Boolean) ? slot(A.crates.glint.slice, A.crates.glint.size) : "", glints: a.newCrates,
+    apron: slot(A.apron.slice, A.apron.rect.slice(2)), beats: a.podCrates ?? [],
     mibis, plates: { icon: ph(A.band.probe.icon, A.band.probe.size), max: plates.max, whole: plates.whole, mended: plates.mended, words },
     leaving: { mark: faces.length ? slot(A.band.leaving.mark, A.band.leaving.markSize) : "", faces },
   };

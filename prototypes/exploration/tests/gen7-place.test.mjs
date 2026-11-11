@@ -4,10 +4,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
-import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, decorOf, toneField, worldTiles } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles } from '../src/gen7/place.mjs';
 import { bakeIR } from '../tools/gen7-render.mjs';
-import { decorProps } from '../tools/gen7-decor-props.mjs';
-import { TABLE } from '../src/gen7/decor.mjs';
+import { RULES } from '../src/gen7/rules.mjs';
+import { recipeAt, GROUND, BLEND } from '../src/gen7/ground.mjs';
+import { slotBiomes } from '../src/gen7/world.mjs';
+import { genRegion7 } from '../src/gen7/region.mjs';
+import { ATLAS } from '../src/regions.mjs';
+import { MW, MH, L } from '../src/world.mjs';
 
 // The whole-world proofs take about five minutes a seed. A pull request into main (MB_CI_FAST=1) runs seed 7 and seeds 1-5 only; the full set runs locally before every merge.
 const FAST = process.env.MB_CI_FAST === '1';
@@ -40,55 +44,11 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
     assert.ok(s.unreachedTiles * 100 < 2 * s.walkableTiles, 'reach: ' + s.unreachedTiles + ' of ' + s.walkableTiles + ' walkable tiles not reached');
     assert.equal(s.pathUnreached + s.piecesUnreached, 0, 'trails, ports and set pieces never sit on unreached land: ' + JSON.stringify(s.needAt));
     assert.equal(s.bakeFails, 0, s.bakeMessages.join('\n'));
-    assert.ok(s.bandWalkable * 100 < s.bandTiles, 'the map\'s end is shut: ' + s.bandWalkable + ' of ' + s.bandTiles + ' end tiles walk (a river\'s mouth)');
+    assert.ok(s.bandWalkable * 100 < 1.5 * s.bandTiles, 'the map\'s end is shut: ' + s.bandWalkable + ' of ' + s.bandTiles + ' end tiles walk (a river\'s mouth, a gate shaft that ends in the band)');
   });
 }
 
-// G3: props and decor on world coordinates (decor.mjs). Numbers from tools/gen7-decor-props.mjs; every cell of the seed. Every check is collected and asserted together, so one run shows them all.
-for (const seed of FAST ? [7] : [7, 13, 42]) {
-  test(`seed ${seed}: props and decor hold the scheme's scatter rules in every cell`, { timeout: 1800000 }, () => {
-    const s = decorProps(seed), bad = [], check = (ok, msg) => { if (!ok) bad.push(msg); };
-    console.log(`# seed ${seed} decor: ${JSON.stringify({ ...s, groveHist: undefined })}\n# grove sizes (all biomes) ${JSON.stringify(s.groveHist)}`);
-    check(s.cells === 8000, 'cells ' + s.cells);
-    // groves: Woods 4-8 touching crowns, Tallwood 6-10; the others by the table (lone trees, pairs)
-    for (const b of Object.keys(s.groveHistByBiome)) {
-      const [lo, hi] = TABLE[b].trees.size, off = Object.keys(s.groveHistByBiome[b]).map(Number).filter(n => n < lo || n > hi);
-      check(off.length === 0, `grove sizes in ${b} are ${lo}-${hi}: ` + JSON.stringify(s.groveHistByBiome[b]));
-    }
-    check(s.outcropMixed === 0, 'one colour an outcrop: ' + s.outcropMixed + ' mixed');
-    check(s.outcrops > 100, 'outcrops: ' + s.outcrops);
-    // the places bake's grove-lattice rule, grove clause: in a cell of 12 or more trees and boulders at least 40% of them touch another (crowns within 2.3 tiles). It holds in all but a
-    // few cells in a thousand (a meadow cell whose 12 are singles and pairs); its other two clauses (spacing varies by 0.35, two trees stand alone) are those of a hand-made place of a few
-    // groves and do not hold on generated cells (counted in the log, see the report)
-    check(s.latticeCells > 500, 'cells with 12 or more trees and boulders: ' + s.latticeCells);
-    check(s.latticeFails * 200 <= s.latticeCells, `the grove clause of the grove-lattice rule holds in ${s.latticeCells - s.latticeFails} of ${s.latticeCells} cells: ` + JSON.stringify(s.latticeAt));
-    check(s.reedOffShore === 0, 'every reed bank holds a shore: ' + s.reedOffShore);
-    check(s.reedBanks > 100, 'reed banks: ' + s.reedBanks);
-    check(s.onWall + s.onPath + s.onLip === 0, 'no prop on or beside water, thicket, lip or trail');
-    check(s.propOnEdge + s.decalOnEdge === 0, 'every prop, tuft, flower and clump on a plain tile, one full cell clear of every lip, shore and edge: ' + JSON.stringify(s.edgeAt));
-    // decor per 10 grass tiles, interior and border rows alike, within the desk's rule
-    const per10 = (n, d) => 10 * n / d, T = s.tiles, I = { el: T.eligible - T.bEligible, tu: T.tufts - T.bTufts, fl: T.flowers - T.bFlowers, cl: T.clumps - T.bClumps };
-    for (const [name, el, tu, fl, cl] of [['interior', I.el, I.tu, I.fl, I.cl], ['border rows', T.bEligible, T.bTufts, T.bFlowers, T.bClumps]]) {
-      // halved from the desk's 2.5 and 1.5 (art director, map decor B: open meadow was carpeted); the numbers live in art/places/map-rules.json
-      check(per10(tu, el) > 1.1 && per10(tu, el) < 1.6, `${name}: tufts per 10 grass tiles ${per10(tu, el).toFixed(2)} (rule 1.25)`);
-      check(per10(fl, el) > 0.6 && per10(fl, el) < 0.95, `${name}: flowers per 10 grass tiles ${per10(fl, el).toFixed(2)} (rule 0.75)`);
-      check(per10(cl, el) <= 10 / 40, `${name}: clumps per 10 grass tiles ${per10(cl, el).toFixed(3)} (at most 1 in 40)`);
-      check(per10(el - tu - fl - cl, el) >= 5.5, `${name}: bare ${per10(el - tu - fl - cl, el).toFixed(2)} of 10 (about 6)`);
-    }
-    check(s.cellTuftBad === 0, 'tufts in every large cell within 0.5-2.5 per 10: ' + JSON.stringify(s.tuftAt));
-    // the Hollow Tree
-    check(s.hollow >= 3, 'hollow trees: ' + s.hollow);
-    check(s.hollowCrownNear === 0, 'no crown or prop within two tiles of the Hollow Tree: ' + JSON.stringify(s.hollowAt));
-    check(s.seamProps > 100 && s.seamMismatch === 0, `a prop near a border is the same from both cells: ${s.seamMismatch} of ${s.seamProps} differ ${JSON.stringify(s.seamAt)}`);
-    check(s.stranded === 0, 'props strand no walkable tile: ' + JSON.stringify(s.strandedAt));
-    // per biome, props per 100 tiles where the kind may stand, within 20% of the table (a biome that has a region on this seed)
-    for (const [b, o] of Object.entries(s.perBiome)) for (const [fam, v] of Object.entries(o)) {
-      if (v.table * v.tiles / 100 < 300) continue;   // a kind with fewer than 300 expected props on this seed is noise: one in a hundred is 10%, and 20% is two of them
-      check(Math.abs(v.per100 - v.table) <= 0.2 * v.table, `${b} ${fam}: ${v.per100} per 100 tiles, table ${v.table}`);
-    }
-    assert.deepEqual(bad, []);
-  });
-}
+// G3, props and decor on world coordinates: gen7-place-decor.test.mjs (its own file, so the CI shards can share the time).
 
 test('a cell is the same land whatever else was made before it, and its picture is one bake', () => {
   const a = cellTerrain(13, 36, 48), again = cellTerrain(13, 36, 48);
@@ -119,7 +79,7 @@ for (const seed of [7, 13, 42]) {
       }
       bakeIR(ir);   // the bake refuses a tone corner on a tile that is not all grass
     }
-    assert.ok(tone > 50, 'tone tiles over the sampled cells of seed ' + seed + ': ' + tone);
+    assert.ok(RULES.tone.enabled === false ? tone === 0 : tone > 50, 'tone tiles over the sampled cells of seed ' + seed + ': ' + tone);
     const a = cellIR(seed, 36, 48), b = cellIR(seed, 37, 48);   // the east neighbour: the two columns of apron and edge tiles they share are the same tiles
     for (let y = 0; y < a.h; y++) for (let k = 0; k < 2; k++) assert.equal(a.tone[y * a.w + a.w - 2 + k], b.tone[y * b.w + k], `tone agrees across the border at row ${y}`);
   });
@@ -155,7 +115,7 @@ test('seeds 1-50: reed clumps stand on the shore and in the shallows (never on d
   assert.equal(notShallow, 0, 'every in-water clump is on shallow water');
   assert.equal(farFromLand, 0, 'every in-water clump is within two tiles of land');
   assert.equal(shoreNoWater, 0, 'every shore clump has water beside its tile');
-  assert.ok(patchTiles > 500, 'tone tiles: ' + patchTiles);
+  assert.ok(RULES.tone.enabled === false ? patchTiles === 0 : patchTiles > 500, 'tone tiles: ' + patchTiles);
   assert.equal(patchNear, 0, 'no tone patch pixel within a cell of another ground');
 });
 
@@ -200,4 +160,50 @@ test('a 2 x 2 block holds at most three terrains and every two are a pair of the
 test('the pair table is the set\'s: raised land meets only grass', () => {
   for (const [a, b] of [[TV.CLIFF, TV.WATER], [TV.CLIFF, TV.PATH], [TV.CLIFF, TV.THICKET], [TV.CLIFF, TV.SCRUB], [TV.CLIFF, TV.EARTH], [TV.THICKET, TV.SCRUB], [TV.PATH, TV.SAND], [TV.PATH, TV.WATER]]) assert.ok(!pairOk(a, b), a + '|' + b);
   for (const [a, b] of [[TV.GRASS, TV.CLIFF], [TV.GRASS, TV.WATER], [TV.GRASS, TV.PATH], [TV.WATER, TV.SAND], [TV.GRASS, TV.THICKET], [TV.SAND, TV.SCRUB]]) assert.ok(pairOk(a, b), a + '|' + b);
+});
+
+// V2, the biome ground (src/gen7/ground.mjs): a biome's recipe is the same on both sides of every cell edge; it changes only over the BLEND tiles either side of a slot's edge, and by no more in a tile
+// than the whole difference between two recipes spread over those 2 x BLEND tiles.
+test('the biome recipe never changes on a cell edge: it blends over a few tiles at a slot edge and is one value inside a slot', () => {
+  const nearEdge = (g, len) => { const f = g % len; return f < BLEND || len - f <= BLEND; }, STEP = 3 / (2 * BLEND) + 1e-9;   // 3: the widest difference between two recipes' numbers
+  const diff = (r0, r1) => { let d = 0; for (const k of Object.keys(r0)) d = Math.max(d, Math.abs(r0[k] - r1[k])); return d; };
+  for (const seed of [7, 13, 42]) {
+    const sb = slotBiomes(seed), slotAt = (a, b) => sb[b * ATLAS + a], SW = MW * CW, SH = MH * CH;
+    let cellEdges = 0, blended = 0;
+    for (let gy = 0; gy < RH * CH; gy += 7) for (let gx = 1; gx < RW * CW; gx++) {
+      const d = diff(recipeAt(slotAt, ATLAS, SW, SH, gx - 1, gy), recipeAt(slotAt, ATLAS, SW, SH, gx, gy));
+      if (gx % CW === 0) cellEdges++;
+      if (!nearEdge(gx, SW) && !nearEdge(gx - 1, SW)) assert.equal(d, 0, `seed ${seed}: the recipe changes at tile ${gx},${gy}, inside a slot`); else if (d > 0) blended++;
+      assert.ok(d <= STEP, `seed ${seed}: the recipe jumps ${d} at tile ${gx},${gy}`);
+    }
+    for (let gx = 0; gx < RW * CW; gx += 7) for (let gy = 1; gy < RH * CH; gy++) {
+      const d = diff(recipeAt(slotAt, ATLAS, SW, SH, gx, gy - 1), recipeAt(slotAt, ATLAS, SW, SH, gx, gy));
+      if (!nearEdge(gy, SH) && !nearEdge(gy - 1, SH)) assert.equal(d, 0, `seed ${seed}: the recipe changes at tile ${gx},${gy}, inside a slot`);
+      assert.ok(d <= STEP, `seed ${seed}: the recipe jumps ${d} at tile ${gx},${gy}`);
+    }
+    assert.ok(cellEdges > 1000 && blended > 100, `seed ${seed}: ${cellEdges} cell edges read, ${blended} blended tiles`);
+  }
+});
+
+// The map's land kind and the walk's ground agree (owner note 20: "expecting a stony biome, it was the same grassland again"). For every land cell of seeds 7, 13 and 42 whose middle 8 x 8 tiles are low
+// ground (raised land's top is the meadow ground until the layered edges, amendment L): a water cell's middle is water (a ford is shallows: any), a pond cell's holds a fifth of water, a rock cell's is stony (scree), a wood cell's is wood
+// ground (floor, scrub or thicket), a meadow cell's is open ground you can walk (grass or the wood floor). Water and pond hold in every cell; the others in all but 2 in 100 (a rock cell whose middle is a path or a stair's foot).
+test('the map\'s land kind and the walk\'s ground agree in the middle of every cell of seeds 7, 13 and 42', { timeout: 1800000 }, () => {
+  for (const seed of FAST ? [7] : [7, 13, 42]) {   // about five minutes a seed: a pull request (MB_CI_FAST=1) runs seed 7, as the proofs above do
+    const seen = { WATER: [0, 0], POND: [0, 0], ROCK: [0, 0], WOOD: [0, 0], MEADOW: [0, 0] }, bad = [];
+    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) {
+      const G = genRegion7(seed, ax, ay);
+      for (let c = 0; c < MW * MH; c++) {
+        const lab = Object.keys(L).find(k => L[k] === G.land[c]); if (!seen[lab]) continue;
+        const X = ax * MW + (c % MW), Y = ay * MH + ((c / MW) | 0), t = cellTerrain(seed, X, Y), n = {}; let low = 0, raised = 0;
+        for (let y = (CH >> 1) - 3; y < (CH >> 1) + 5; y++) for (let x = (CW >> 1) - 3; x < (CW >> 1) + 5; x++) { const v = t.terrain[(y + 1) * t.w + x + 1]; if (v === TV.CLIFF) { raised++; continue; } low++; n[v] = (n[v] || 0) + 1; }
+        if (raised) continue;
+        const f = k => (n[TV[k]] || 0) / low, ok = lab === 'WATER' ? (G.ford[c] || f('WATER') >= 0.15) : lab === 'POND' ? f('WATER') >= 0.2 : lab === 'ROCK' ? f('SCREE') + f('SAND') >= 0.1 : lab === 'WOOD' ? f('LITTER') + f('THICKET') + f('SCRUB') >= 0.1 : f('GRASS') + f('LITTER') + f('DRY') + f('TURF') >= 0.2;
+        seen[lab][0]++; if (!ok) { seen[lab][1]++; if (bad.length < 8) bad.push(`${lab} ${X},${Y}`); }
+      }
+    }
+    console.log(`# seed ${seed}: map and walk disagree (cells read / disagree): ${JSON.stringify(seen)}`);
+    for (const lab of ['WATER', 'POND']) assert.equal(seen[lab][1], 0, `seed ${seed}: ${lab} cells whose middle is not that ground: ${bad}`);
+    for (const lab of ['ROCK', 'WOOD', 'MEADOW']) assert.ok(seen[lab][0] > 50 && seen[lab][1] * 50 <= seen[lab][0], `seed ${seed}: ${lab} cells whose middle is not that ground: ${seen[lab]} ${bad}`);
+  }
 });

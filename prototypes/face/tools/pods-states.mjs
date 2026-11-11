@@ -44,19 +44,16 @@ export async function podsStates(visit) {
     // ---- the reading screen v2 (the reading screen spec: the six signed states, then §2.6's and §2.7's) ----
     const R = (o) => ({ view: "room", bench: 0, ...o });
     await scene([["S01", 51, 1, 0], ["S01", 52, 1, 0]], { rich: true, e: 11, d: 11, s: 17 }); await to(R({ focus: "rail", lane: 0, at: "rail" })); await at("read, Loika fresh, Coat in hand", { view: "room", focus: "rail" });
-    await to(R({ focus: "key", lane: 1, at: "right" })); await at("read, Face open, unread", { view: "room", focus: "key" });
+    await to(R({ focus: "rail", lane: 1, at: "rail" })); await at("read, Face open, unread", { view: "room", focus: "rail" });   // an unread chapter has no price key: it is read from the pod's store (store.json)
     // the signed states of Face (the UI/UX decision of 2026-10-30, M2): a goal on Crown (the carried bare head), Face already read on another Loika (so this pod's Face lane glints and its leaf crest is a look new to the collection), the stamp taught
     await scene([["S01", 53, 1, 1], ["S01", 3, 1, 2]], { rich: true, e: 11, d: 11, s: 17, mate: "S01", fresh: true, taught: true, wish: { S01: { crown: "bare head" } } }); await to(R({ focus: "rail", lane: 1, at: "rail" })); await at("read, Coat read, Face in hand", { view: "room", focus: "rail" });
-    await to(R({ focus: "key", lane: 1, at: "right" })); await key("confirm"); await page.waitForTimeout(1000); await at("read, Face after the read", { view: "room", focus: "plate.0" });
+    await scene([["S01", 53, 1, 2], ["S01", 3, 1, 2]], { rich: true, e: 11, d: 11, s: 17, mate: "S01", fresh: true, taught: true, wish: { S01: { crown: "bare head" } } }); await to(R({ focus: "plate.0", lane: 1, at: "right", plate: 0 })); await at("read, Face after the read", { view: "room", focus: "plate.0" });   // Face read from the store: the scene reads it, no press
     await key("confirm"); await page.waitForTimeout(300); await at("read, the Crown detail", { view: "room", focus: "trait" });
     await scene([["S01", 54, 1, 2], ["S01", 52, 1, 1]], { rich: true, e: 11, d: 11, s: 17 }); await to(R({ focus: "rail", lane: 4, at: "rail" })); await at("read, Movement in hand, the sprout", { view: "room", focus: "rail" });
-    // Data below the price (M1): the key dim, the reason in the foot, "Data comes as your mibis grow" beside it
-    await scene([["S01", 55, 1, 0], ["S01", 52, 1, 1]], { rich: true, d: 0 }); await to(R({ focus: "key", lane: 0, at: "right" })); await at("read, not enough Data", { view: "room", focus: "key" });
     await scene([["S03", 61, 1, 2], ["S03", 62, 1, 1]], { rich: true, e: 11, d: 11, s: 17 }); await to(R({ focus: "rail", lane: 2, at: "rail" })); await at("read, Tuikis, Shape in hand", { view: "room", focus: "rail" });
     await scene([["S02", 71, 1, 3], ["S02", 72, 1, 1]], { rich: true, why: "a new species", seal: ["S02", "character"] }); await to(R({ focus: "rail", lane: 5, at: "rail" })); await at("read, a sealed chapter, the pod's reason", { view: "room", focus: "rail" });
     await scene([["S01", 81, 0, 0]]); await to(R({ focus: "key" })); await at("read, a sealed pod, Identify", { view: "room", focus: "key" });
-    await scene([["S01", 91, 1, 0]], { firstRead: true }); await to(R({ focus: "key", lane: 0, at: "right" })); await key("confirm"); await page.waitForTimeout(2600); await at("read, the stamp moment", { view: "room", focus: "hold" });
-    await key("back"); await page.waitForTimeout(600); await to(R({ focus: "rail", lane: 0, at: "rail" })); await key("up"); await page.waitForTimeout(800); await at("read, the stamp view", { view: "room", focus: "stamp" });
+    await scene([["S01", 91, 1, 1]], { taught: true }); await to(R({ focus: "rail", lane: 0, at: "rail" })); await key("up"); await page.waitForTimeout(800); await at("read, the stamp view", { view: "room", focus: "stamp" });
     await scene([["S01", 92, 1, 2], ["S01", 93, 1, 1]], { rich: true });     await to({ view: "inventory", focus: "card.0", cmp: 1 }); await at("compare", { screen: "pods", cmp: true });
     // the Compare rails' cases (the UI/UX decision of 2026-10-30, item 10): B, ▼ to a chapter that is the same with the difference in another; D, nothing read on both; a kin whose unread lane glints (the bracket on it)
     await scene([["S01", 92, 1, 2], ["S01", 96, 1, 2]], { rich: true }); await to({ view: "inventory", focus: "card.0", cmp: 1 }); await key("down"); await at("compare, the next chapter the same", { screen: "pods", cmp: true });

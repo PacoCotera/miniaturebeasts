@@ -6,6 +6,8 @@ art/companion-48/species/
 art/companion-48/terrain/
 art/places/
 art/device-buttons/caps/
+# the coat masters tool (prototypes/ui/tools/coat-masters.mjs) and its test name the configuration folder tools/cfg/ and its S09 sheets
+tools/cfg/
 art/station-masters/pods/motion/proof/
 THIRD_PARTY_NOTICES.md
 design/proposals/genome-fluffy.md

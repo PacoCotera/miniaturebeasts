@@ -20,12 +20,13 @@
     "screens": 1,
     "settings": 0,
     "sitting": 0,
+    "store": 0,
     "vivarium": 0,
     "wall": 0
   },
   "text": {
     "bench": 0,
-    "cargo": 9,
+    "cargo": 0,
     "create": 10,
     "cross": 0,
     "habitat": 5,
@@ -44,6 +45,7 @@
     "screens": 2,
     "settings": 0,
     "sitting": 4,
+    "store": 0,
     "vivarium": 0,
     "wall": 0
   },

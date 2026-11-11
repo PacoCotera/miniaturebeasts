@@ -20,8 +20,6 @@
 #define F "frame"
 #define RP "regions.panel"
 #define MAXCARDS 3
-/* the strip form (frame.json regions.panel.strip; specs/station-dock-arrival-spec.md, the strip form): the dock arrival's choice, two cards in a plate under what they are about, no title, picture or veil */
-static int strip(void) { return strcmp(v_pstr("overlay.form"), "strip") == 0; }
 /* the Incubate | Keep shaping form (T-20261016-222; build spec section 6a; panel.json `incubate`): two bezels over the device ground, each with a header (the verb; Incubate's price and the founder's pod) and a window: the sealed capsule with this founder's pod, and Create as it stood when it was left (the face's snapshot) */
 static int incubate_form(void) { return strcmp(v_pstr("overlay.form"), "incubate") == 0; }
 static int hatchnow_form(void) { return strcmp(v_pstr("overlay.form"), "hatchnow") == 0; }   /* the Hatch now | Wait form: the same frame (bezels, windows, header, focus) as the Incubate form, with the Incubator's day looks in the windows */
@@ -29,7 +27,6 @@ static int hatchnow_form(void) { return strcmp(v_pstr("overlay.form"), "hatchnow
 static int ncards(void) { int n = v_plen("overlay.regions.cards"); return n < 0 ? 0 : n > MAXCARDS ? MAXCARDS : n; }
 static void card_rect(int i, int n, int r[4]) {
   if (incubate_form() || hatchnow_form()) { v_srect(PN, v_fmt("incubate.%s", i == 0 ? "bezels.incubate" : "bezels.keep"), r); (void)n; return; }
-  if (strip()) { layout_list_pitch(F, RP ".strip.cards", n, i, r); return; }   /* the strip's two cards, then the panel's one to three: the spec's forms */
   layout_list_pitch(F, RP ".cards", n, i, r);
 }
 static const char *card_id(int i) { return v_pstr(v_fmt("overlay.regions.cards.%d.id", i)); }
@@ -122,27 +119,6 @@ static void build_ring(int n) {
     v_region("focus", LAYER_CHROME); word_focusRing("focus", "panel", "focus.targets.card", box); return;
   }
 }
-/* the strip: the plate (the code-drawn ground and edge while no master is placed), then each card: its well, its 96 × 96 picture, the name, the costs and the one line */
-static void build_strip(int n) {
-  int r[4]; v_srect(F, RP ".strip.rect", r); char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", v_token(F, v_scol_or(F, RP ".ground", "bone"))); snprintf(edge, sizeof edge, "%s", v_token(F, v_scol_or(F, RP ".edge", "bone")));
-  char bev[24], shade[24]; snprintf(bev, sizeof bev, "%s", v_token(F, v_scol_or(F, RP ".bevel", ""))); snprintf(shade, sizeof shade, "%s", v_token(F, v_scol_or(F, RP ".strip.cards.shade", "")));
-  v_region("panel", LAYER_CHROME); kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, bev[0] ? bev : NULL, 0);
-  const char *cur = v_focus_cur_at("overlay.focus.cur");
-  for (int i = 0; i < n; i++) {
-    int c[4]; card_rect(i, n, c); int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), tx = c[0] + v_sk(F, RP ".strip.name.at", 0), maxw = v_si(F, RP ".strip.line.max", 252);
-    char well[24], wedge[24]; snprintf(well, sizeof well, "%s", v_token(F, v_scol_or(F, RP ".cards.well", "bone"))); snprintf(wedge, sizeof wedge, "%s", v_token(F, v_scol_or(F, RP ".cards.edge", "bone")));
-    v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge, shade[0] ? shade : NULL, 0);
-    { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pw = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0);
-      v_name("cardPictures"); v_slot_at(v_fmt("card.%d.picture", i), pic, NULL, c[0] + v_sk(F, RP ".strip.picture.at", 0), c[1] + v_sk(F, RP ".strip.picture.at", 1), pw, ph, pw > 0 && ph > 0, c[0], c[1]); }
-    char g[24]; snprintf(g, sizeof g, "%s", v_sstr(F, RP ".ground"));   /* the strip's words stand on its ground (the cards are its code-drawn wells) */
-    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); char role[24], fit[V_STR]; snprintf(role, sizeof role, "%s", v_sstr(F, dim ? RP ".strip.name.roleDim" : RP ".strip.name.role")); v_role_clip(t, maxw, role, fit, sizeof fit); int ny = c[1] + v_sk(F, RP ".strip.name.at", 1);
-      v_region("cardText", LAYER_TYPE); v_say(v_fmt("card.%d.name", i), fit, tx, ny, V_ANCHOR_LINE, role, g, V_ALIGN_LEFT); }
-    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); char role[24], fit[V_STR]; snprintf(role, sizeof role, "%s", v_sstr(F, dim ? RP ".strip.line.roleDim" : RP ".strip.line.role")); v_role_clip(t, maxw, role, fit, sizeof fit);
-      v_region("cardText", LAYER_TYPE); v_say(v_fmt("card.%d.line", i), fit, tx, c[1] + v_sk(F, RP ".strip.line.at", 1), V_ANCHOR_LINE, role, g, V_ALIGN_LEFT); }
-    (void)cur;
-  }
-}
-
 /* ---- the Incubate | Keep shaping form ---- */
 /* a bezel: fill `panel`, radius 10, a 1 px `hairline` edge, the bevel (a 1 px `fog` line at y + 1 from x + 10 to x + w - 10) */
 static void build_bezel(int i, const int r[4], const char *verb) {
@@ -243,7 +219,6 @@ void panel_words(void) {
   int n = ncards(); if (n <= 0) { v_error("word decisionPanel: a panel has at least one card"); return; }
   if (incubate_form()) { build_incubate(); return; }
   if (hatchnow_form()) { build_hatchnow(); return; }
-  if (strip()) { build_strip(n); build_ring(n); return; }
   build_veil(); build_plate(); build_title();
   const char *cur = v_focus_cur_at("overlay.focus.cur");
   for (int i = 0; i < n; i++) build_card(i, n, strcmp(cur, v_fmt("card.%s", card_id(i))) == 0);

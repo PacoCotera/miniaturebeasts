@@ -7,6 +7,7 @@ import { listOf, trayOf, findOf, compareKin, podsBuild, verbsOf, takeOf } from "
 import { recommendedLane, sealedShut } from "../views/reading-props.mjs";
 import { fill } from "../views/words.mjs";
 import { openCreate } from "./create.mjs";
+import { openStore } from "./store.mjs";
 
 export const FLASH_MS = 3000, SCROLL_MS = 200;
 const SORTS = ["use", "species", "arrival", "drying"];
@@ -229,7 +230,6 @@ function readIntent(h, target, verb) {
     if (verb === "back") return backToInventory(h);
     if (verb === "step:left") return moveTo(h, () => { p.at = "rail"; p.focus.set("rail"); });   // ◀ back to the rail, the specimen back to the overview
     if (verb !== "confirm") return;
-    if (target === "key") return readChapter(h, q, ch);
     if (target && target.startsWith("plate.")) return moveTo(h, () => { p.trait = +target.slice(6); p.at = "detail"; p.focus.set("trait"); });   // the detail
     return;
   }
@@ -242,17 +242,8 @@ function readIntent(h, target, verb) {
   }
   if (verb === "step:up") { if (!st.stampTaught) return; p.at = "stamp"; p.focus.set("stamp"); h.play({ kind: "moment", target: "view", ms: Math.round(MOMENT_MS / 2), hold: 0 }); return; }   // ▲ shows the stamp, once taught
   if (verb !== "confirm" || sealed) return;   // a sealed lane gives no ✓: nothing happens
-  moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set(isRead ? "plate.0" : "key"); });   // the chapter opens: the ring crosses to the right frame (Face dithers to the close place)
-}
-// The read, one press (§2.6, 4): ◆ ticks down on the press frame, the key shows pressed, the lamp lights; the sweep, the tag fill and the discs run 0 to 600 ms and end by 800. Not enough Data: the key shakes, nothing spent.
-function readChapter(h, q, ch) {
-  const p = pods(h), before = q.read.slice(), first = !h.st.readEver, r = S.read(h.st, q, ch.id, h.settings);
-  if (!r.ok) { if (!r.again) h.play({ kind: "wipe", target: "keyShake", ms: SHAKE_MS, hold: 0 }); return; }
-  if (r.cost) h.play({ kind: "tick", target: "d", ms: 300 });
-  h.save(); p.plate = 0;
-  if (!motionOn(h)) { p.at = "right"; p.focus.set("plate.0"); if (first && !h.st.stampTaught) startMoment(h, q.id, ch.id); return; }   // with reduced motion the read is a cut
-  p.reading = { pod: q.id, chapter: ch.id, read: before, until: h.now() + READ_MS, reward: r.reward ?? 0, cost: r.cost, moment: first && !h.st.stampTaught };
-  p.focus.set("hold"); h.play({ kind: "read", target: "read", ms: READ_MS, hold: 0, cut: true }); h.at(READ_MS, () => { if (p.reading && p.reading.pod === q.id) endRead(h); });
+  if (!isRead) return openStore(h, "room");   // an unread chapter is read from the pod's Data store (the bench: put Data in, it reads while the Companion is out)
+  moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("plate.0"); });   // the chapter opens: the ring crosses to the right frame (Face dithers to the close place)
 }
 
 // ---- Compare ----

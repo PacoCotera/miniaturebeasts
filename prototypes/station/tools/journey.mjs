@@ -26,6 +26,8 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
+// JOURNEY_SMALL=1 (the release check): one play-through of the Station: the fixture, a crate carried home and opened (Dock), Pods' reading room (identify, read, Compare), Create, Grow and the Incubator's hatch; then the face, text and request checks at the end. The full journey (the other sections) is run by a builder for what they changed.
+const SMALL = !!process.env.JOURNEY_SMALL;
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown", ".wasm": "application/wasm" };
 // The Caddy service in mock mode beside the static server (station-build.md §5), its calls proxied under /caddy-api/ as the sandbox server's web server does.
 loadCaddyFrames();
@@ -58,7 +60,7 @@ page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resourc
 const external = []; page.on("request", (r) => { if (!r.url().startsWith(`http://127.0.0.1:`)) external.push(r.url()); });
 mkdirSync(path.join(here, "../img"), { recursive: true });
 // Every screenshot point records what the layer checks read (tools/checks.mjs): the face's log, its palette readings on passes 1 and 2, and for the points that name it the frame's pixels (for the ink).
-const checks = { shots: [], textApiCalls: 0 };
+const checks = { shots: [], textApiCalls: 0, small: SMALL };
 const record = async (name, ink) => {
   const check = await page.evaluate(() => window.__st.check()), snap = await page.evaluate(() => window.__st.snapshot({ capture: false }));
   if (check.log) { const order = (list) => (list ?? []).map((r) => [JSON.stringify(r), r]).sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0).map((e) => e[1]); check.log.type = order(check.log.type); check.log.regions = order(check.log.regions); }
@@ -147,13 +149,13 @@ stepOf("home-dock-arrival"); await hpress("dock", 300);
 s = await st(); expect(s.dock.docked, "docked");
 { const p = await props(), u = await ui(), holding = await page.evaluate(() => window.__st.holding()), events = (await page.evaluate(() => window.__st.face.stats.events)) - events0;
   expect(events >= 1 && holding && u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "show" && p.frame.line.ok === "Skip", `home-dock-arrival: the dock plays the arrival over Home: Cargo's bay in its show (${events} events), input held, ✓ Skip: ` + JSON.stringify([u.screen, p.state, p.frame.line.ok, holding]));
-  expect(p.regions.arrival.glints.length === 2 && p.regions.arrival.plates.max > 0 && p.regions.dockCrates.places.length === 2, "home-dock-arrival: two crates, the Probe's plates: " + JSON.stringify(p.regions.arrival)); }
+  expect(p.regions.arrival.plates.max > 0 && p.regions.dockCrates.places.length === 2, "home-dock-arrival: two crates, the Probe's plates: " + JSON.stringify(p.regions.arrival)); }
 await page.waitForTimeout(1800); await frameShot("cargo-arrival-show", true);
 await hpress("confirm", 400);   // any key skips the show to its choice
 { const p = await props(), u = await ui();
-  expect(u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "choice" && p.overlay?.form === "strip" && p.overlay.focus.cur === "card.open" && p.frame.line.ok === "Open now" && p.frame.line.subject === "Two crates to open" && !(await page.evaluate(() => window.__st.holding())), "home-dock-arrival: the show cuts to the choice: the strip, the ring on Open now: " + JSON.stringify([p.overlay?.focus, p.frame.line])); }
+  expect(u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "choice" && !p.overlay && p.frame.line.ok === "Open the crate" && p.frame.line.back === "Later" && !(await page.evaluate(() => window.__st.holding())), "home-dock-arrival: the show cuts to the choice: no card, the bottom line names ✓ Open the crate and ← Later (arrival A): " + JSON.stringify([p.overlay, p.frame.line])); }
 await frameShot("cargo-arrival-choice", true);
-await hpress("right", 200); { const p = await props(); expect(p.overlay.focus.cur === "card.later" && p.frame.line.ok === "Later" && p.frame.line.subject === "They wait while docked", "home-dock-arrival: ▶ is Later: " + JSON.stringify(p.frame.line)); }
+await hpress("right", 200); { const p = await props(); expect(p.regions.arrival.phase === "choice" && !p.overlay && p.frame.line.back === "Later", "home-dock-arrival: the pad does nothing on the choice: " + JSON.stringify(p.frame.line)); }
 await hpress("back", 600);   // ← is Later: the dither back to Home, as it was
 { const p = await props(), l = await line(), u = await ui();
   expect(u.screen === "home" && u.home === "room", "home-dock-arrival: Later is Home with the ring on the room: " + JSON.stringify(u));
@@ -169,7 +171,7 @@ await page.waitForTimeout(900); await frameShot("home-docked", true);
   expect((await line()).ok === "Open the Bay", "home-bay: the line names the verb: " + JSON.stringify(await line()));
   u = await hpress("confirm", 500); expect(u.screen === "cargo", "home-bay: ✓ on the Bay station opens Cargo: " + JSON.stringify(u));
   let p = await props(), l = p.frame.line; expect(p.screen === "cargo" && p.state === "bay" && p.berths === 3 && p.regions.berths.list.filter((b) => b.crate).length === 2 && JSON.stringify(p.focus) === JSON.stringify({ cur: "room", targets: [] }), "home-bay: the bay, three berths, two sealed crates, the ring on nothing: " + JSON.stringify([p.state, p.berths, p.regions.berths.list.map((b) => !!b.crate), p.focus]));
-  expect(l.ok === "Open them all" && l.subject === "" && l.back === "Home", "home-bay: ✓ Open them all, ← Home: " + JSON.stringify(l));
+  expect(l.ok === "Open them all" && l.subject === "Open the Bay" && l.back === "Home", "home-bay: ✓ Open them all, ← Home: " + JSON.stringify(l));
   u = await hpress("down", 200); expect(u.screen === "cargo", "home-bay: the pad does nothing in the bay: " + JSON.stringify(u));
   u = await hpress("back", 500); expect(u.screen === "home" && u.home === "bay", "home-bay: ← is Home with the ring on the Bay station: " + JSON.stringify(u));
   u = await hpress("confirm", 500); expect(u.screen === "cargo", "home-bay: ✓ on the Bay station opens Cargo again: " + JSON.stringify(u));
@@ -202,7 +204,7 @@ await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => 
   u = await hpress("right"); expect(u.home === "library", "home-pad: the Library has nothing to its right: " + u.home);
   u = await hpress("down"); expect(u.home === "bay", "home-pad: ▼ from the Library is the Bay: " + u.home);
   u = await hpress("left"); expect(u.home === "companion", "home-pad: ◀ from the Bay is the Companion: " + u.home);
-  expect(/Probe bench$/.test((await line()).ok ?? "") || (await line()).subject === "the Companion is on a trip", "home-pad: the Companion's line: " + JSON.stringify(await line()));
+  expect(/Go to the Companion$/.test((await line()).ok ?? "") || (await line()).subject === "the Companion is on a trip", "home-pad: the Companion's line: " + JSON.stringify(await line()));
   u = await hpress("left"); expect(u.home === "incubator", "home-pad: ◀ from the Companion is the Incubator: " + u.home);
   u = await hpress("left"); expect(u.home === "pods", "home-pad: ◀ from the Incubator is Pods: " + u.home);
   u = await hpress("left"); expect(u.home === "pods", "home-pad: Pods has nothing to its left: " + u.home);
@@ -282,20 +284,15 @@ await frameShot("page-identified");
   { const p = await props(); expect(p.state === "nothingRead" && p.frame.line.back === "Loika" && p.frame.line.ok === "Incubate", "Create opens on nothing read and its way back names the pod: " + JSON.stringify([p.state, p.frame.line])); }
   await press("back", 400); const to = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create, card: window.__st.UI.pods.panelPod }));
   expect(to.screen === "pods" && to.view === "inventory" && to.card === loika.id, "← from Create is the inventory on the pod's card, where Grow it was pressed: " + JSON.stringify(to)); }
-// 4. read Coat (the fixture spent the free read): ✓ on the rail opens the chapter and never spends, the ring on the key; Read Coat ◆ 2 is the one press that spends; then Face ◆ 3; a second Loika's Face costs 1
+// 4. the chapters. The paid per-chapter Read press is gone (the store, bd8eaa22f: Data is put in a pod's store and its chapters read while the Companion is out; the rules are in the store's own tests): ✓ on an unread lane opens the Put-in panel and spends nothing,
+// ← closes it; the journey then reads Coat and Face through the page's own hook and keeps what the reading screen shows of a read pod (plates, the detail, the stamp's mask)
 await podsAt({ view: "room", bench: loika.id, lane: 0, at: "rail", focus: "rail" });
 const d0 = (await st()).d;
-await press("confirm", 300); expect((await focusNow()) === "key" && (await atNow()) === "right" && (await st()).d === d0, "✓ on an unread lane opens the chapter, the ring on its key, nothing spent");
-l = await line(); expect(l.ok === "Read Coat" && l.price === "◆ 3", "Coat costs 3 Data (its three traits, Tint, Shade and Markings): " + JSON.stringify(l));
-await press("confirm", 200); expect(!!(await page.evaluate(() => window.__st.UI.pods.reading)) || (await focusNow()) === "plate.0", "the read runs (800 ms, any key cuts it)");
-await page.waitForTimeout(900);
-s = await st(); expect(s.tray.find((p) => p.id === loika.id).read.includes("coat") && s.d === d0 - 3, "Coat read for 3 Data");
+await press("confirm", 300); l = await line(); expect(l.ok === "Put in" && l.back === "Back" && (await st()).d === d0, "✓ on an unread lane opens the Put-in panel, nothing spent: " + JSON.stringify(l));
+await press("back", 300); expect((await st()).d === d0, "← closes the Put-in panel, nothing spent");
+await page.evaluate((id) => window.__st.readSome(id, 2), loika.id); await page.waitForTimeout(300);
+s = await st(); expect(s.tray.find((p) => p.id === loika.id).read.includes("coat") && s.tray.find((p) => p.id === loika.id).read.length === 2, "Coat and Face are read");
 expect(s.tray.find((p) => p.id === loika.id).first !== undefined, "the first-shown looks are saved on the pod at read time");
-expect((await focusNow()) === "plate.0" && !(await page.evaluate(() => window.__st.UI.pods.reading)), "the read ends with the ring on the first plate");
-await podsAt({ view: "room", bench: loika.id, lane: 1, at: "rail", focus: "rail" }); await press("confirm", 300);
-l = await line(); expect(l.ok === "Read Face" && l.price === "◆ 5", "Face costs 5 Data (Iris, Attitude, Eye size, Eye spacing, Eyes): " + JSON.stringify(l));
-await press("confirm", 900);
-s = await st(); expect(s.d === d0 - 8, "Face read for 5 Data");
 await podsAt({ view: "room", bench: loika.id, lane: 1, at: "right", plate: 0, focus: "plate.0" });
 await frameShot("page-read");
 // the art layer is on the palette exactly (pass 2 of the face's test mode); the type is the face's own
@@ -308,13 +305,9 @@ const sg = await page.evaluate((id) => window.__st.stampGenome(id), loika.id);
 const dec = decode({ width: img.width, height: img.height, data: new Uint8ClampedArray(img.data) });
 expect(dec.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, dec.stamps[0].genome), "the drawn stamp decodes to the genome");
 expect(dec.stamps.length === 1 && dec.stamps[0].genome.read.join() === "Coat,Face", "the stamp's mask: Coat and Face read");
-// the second Loika: identify (◆ 1), its Face costs 2 (half of three, rounded up)
+// the second Loika: identify (◆ 1), then its Face is read through the hook (the paid per-chapter press is gone, bd8eaa22f)
 await podsAt({ view: "room", bench: loika2.id, focus: "key" }); await press("confirm", 500);
-await podsAt({ view: "room", bench: loika2.id, lane: 1, at: "rail", focus: "rail" }); await press("confirm", 300);
-l = await line(); expect(l.ok == null && l.need === "Needs ◆ 3 · you have ◆ 1", "a second Loika's Face costs 3 (half of five, rounded up), and one Data is not enough: " + JSON.stringify(l));
-await page.evaluate(() => { window.__st.ST.d += 4; }); await podsAt({ view: "room", bench: loika2.id, lane: 1, at: "rail", focus: "rail" }); await press("confirm", 300);
-l = await line(); expect(l.ok === "Read Face" && l.price === "◆ 3", "with the Data, a second Loika's Face reads for 3: " + JSON.stringify(l));
-await press("confirm", 900);
+await page.evaluate((id) => window.__st.readSome(id, 2), loika2.id); await page.waitForTimeout(300);
 // 5. Compare: from the second Loika's card, the panel's Compare, ✓; ← lands back on the card's Compare
 s = await st();
 await toBand(loika2.id, "compare");
@@ -352,6 +345,7 @@ await page.evaluate((id) => window.__st.skipRead(id), coatSix.id); await podsAt(
 await letGoAll(untuva.id);
 s = await st(); expect(!s.tray.some((p) => p.id === untuva.id) && s.readingPod !== untuva.id, "the Untuva let go: it leaves the bench");
 expect(s.tray.length === 4, "four pods: " + s.tray.length);
+if (!SMALL) {
 // P2. Compare with one, two, four and five traits (no chapter of version 8 has six); each pair a fresh crate of two pods, read whole by the developer, compared from the inventory, and let go after
 const compareShot = async (species, seed, ci, name, grid) => {
   await page.evaluate(([sp, sd]) => { window.__st.seedCrate(sp, 2, sd); window.__st.openBay(); }, [species, seed]); await page.waitForTimeout(300);
@@ -387,6 +381,7 @@ const s0 = s.s;
 if (tuikis) { await letGoAll(tuikis.id);
   s = await st(); expect(s.s === s0 && !s.tray.some((p) => p.id === tuikis.id) && s.returned.at(-1).id === tuikis.id, "let go, paying nothing"); }
 else fail("no Tuikis pod to let go");
+}   // end of the sections JOURNEY_SMALL leaves out (P2, 6)
 // R1. Create (slot R, journey-create.json): Grow it on the read Loika opens Create on the face; ◀ ▶ walk the read traits, ▲ ▼ roll a look (+1 Data), the line reads the price and the leaves; a room key drops the unpaid choices; ✓ Grows: the stamp prints, the
 // code appears, the pod travels, input held 1080 ms, then the Incubator (a jump: ← there reads Home)
 await press("research", 300);
@@ -409,7 +404,7 @@ await hpressC("down", 300);
 { const crPod = await page.evaluate(() => window.__st.UI.create.podId);   // a colour key on Create carries the ring's chapter (a peek, ← returns); Home forgets the unpaid choices; coming back starts fresh
   expect((await page.evaluate(() => Object.keys(window.__st.UI.create.choices).length)) === 1, "a choice is made and unpaid");
   await page.evaluate((id) => { window.__st.ST.readingPod = id; }, crPod);   // the pod being grown is on the bench, so the Research key's first face is the reading screen
-  await hpressC("research", 400); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: !!window.__st.UI.create, choices: Object.keys(window.__st.UI.create?.choices ?? {}).length }));
+  await hpressC("research", 900); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: !!window.__st.UI.create, choices: Object.keys(window.__st.UI.create?.choices ?? {}).length }));
   expect(at.screen === "pods" && at.view === "room" && at.create && at.choices === 1, "the Research key on Create carries the ring's chapter to the reading room, a peek: the unpaid choice stays: " + JSON.stringify(at));
   await hpressC("back", 400); { const bk = await page.evaluate(() => ({ screen: window.__st.UI.screen, choices: Object.keys(window.__st.UI.create?.choices ?? {}).length })); expect(bk.screen === "create" && bk.choices === 1, "← after a carry goes back to Create with the choice as it was: " + JSON.stringify(bk)); }
   await hpressC("home", 400); { const hm = await page.evaluate(() => ({ screen: window.__st.UI.screen, create: window.__st.UI.create })); expect(hm.screen === "home" && hm.create === null, "Home drops the unpaid choices (a room key that carries nothing does as well): " + JSON.stringify(hm)); }
@@ -438,7 +433,7 @@ expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on t
 // Create's journey on the face, held to prototypes/face/golden/journey-create.json (gate check 5): the keys and what the face said, the screen and the choices after each
 { const file = path.resolve(here, "../../face/golden/journey-create.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("create-"))), json = JSON.stringify({ _note: "Create's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
-  else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-create.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
+  else if (SMALL) { /* the full journey holds this golden */ } else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-create.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
   console.log(`create steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
 // Grow paints nothing (decisions 10-11 14:17): the mibi is drawn from its layers, nothing joins the outbox and no job reaches the Caddy service
 s = await st(); expect(s.outbox.length === 0, "Grow leaves the outbox empty: " + JSON.stringify(s.outbox));
@@ -508,8 +503,9 @@ await hpressI("back", 400);
 // The Incubator's journey on the face, held to prototypes/face/golden/journey-incubator.json (gate check 5): the keys and what the face said, the screen and the choices after each
 { const file = path.resolve(here, "../../face/golden/journey-incubator.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("incubator-"))), json = JSON.stringify({ _note: "The Incubator's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
-  else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-incubator.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
+  else if (SMALL) { /* the full journey holds this golden */ } else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-incubator.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
   console.log(`incubator steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
+if (!SMALL) {
 // fill the room: Grow is refused before payment; return a mibi frees a place (no Essence)
 await page.evaluate(() => window.__st.seedAdults("S01", 77, 6));
 s = await st(); expect(s.mibis.filter((m) => !m.released).length === 8, "eight places taken");
@@ -854,8 +850,9 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   await toHome( 300);
   await page.evaluate(() => window.__st.seedCrate("S01", 1, 4242));
   await loop("dock", "the Dock key docks and the arrival plays over Home", () => window.__st.ST.dock.docked && window.__st.props?.state === "arrival");
-  await loop("confirm", "any key skips the show to the choice", () => window.__st.props?.overlay?.form === "strip");
-  await loop("confirm", "✓ Open now on the strip opens the crate and the end shows (T-50 cut 1; the opening holds input)", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "end");
+  await loop("confirm", "any key skips the show to the choice (no card: the bottom line names ✓ Open the crate and ← Later)", () => window.__st.props?.regions?.arrival?.phase === "choice");
+  await loop("confirm", "✓ Open the crate opens the close look into it (arrival B); the first pod the Station has stored holds the view", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "opening");
+  await loop("confirm", "✓ Take the pod ends the look: the pod, the supplies and the finds leave and the end shows", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "end");
   await loop("confirm", "✓ on the end lands on Pods", () => window.__st.UI.screen === "pods");
   await loop("confirm", "✓ on the new pod's card opens the reading screen on it in one press (Read, the caller's verb), the ring on the key", () => window.__st.props?.state === "read" && window.__st.UI.pods.focus.cur === "key");
   await loop("confirm", "✓ Identify, the ring on the rail", () => window.__st.UI.pods.focus.cur === "rail");
@@ -910,7 +907,7 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   r = await lpress("back", 400); expect(r.u.screen === "library" && r.ring === "cell.S01", "library-l2: ← is Level 1 on the Loika: " + r.ring);
   r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "cell.S04", "library-l1: the ring back on the Hiljan: " + r.ring);
   r = await lpress("back", 500); expect(r.u.screen === "home" && r.u.home === "library", "library-l1: ← on Level 1 is Home with the ring on the Library bezel: " + JSON.stringify([r.u.screen, r.u.home]));
-  r = await lpress("library", 500); expect(r.u.screen === "library" && r.ring === "cell.S04" && r.p.frame.line.subject === "" && !r.p.regions.cells.some((c) => c.glint), "library-l1: the Library key lands where the ring was left, and the species whose Level 2 was shown were recorded as seen: nothing glints: " + JSON.stringify([r.ring, r.p.frame.line.subject]));
+  r = await lpress("library", 500); expect(r.u.screen === "library" && r.ring === "cell.S04" && r.p.frame.line.subject === "Find a Loika pod" && !r.p.regions.cells.some((c) => c.glint), "library-l1: the Library key lands where the ring was left (the middle slot says the Station's goal, as on every room: first-ten-front), and the species whose Level 2 was shown were recorded as seen: nothing glints: " + JSON.stringify([r.ring, r.p.frame.line.subject]));
   await page.evaluate(() => { const S = window.__st, m = S.ST.mibis.find((x) => (x.species ?? "S01") === "S01" && !x.released); S.UI.hab.id = m.id; S.UI.hab.f = "species"; S.goto("habitat"); }); await page.waitForTimeout(500);
   { const p = await props(); expect(p.screen === "habitat" && p.focus.cur === "species" && p.frame.line.ok === "Open the guide", "library-l1: the card's species word: ✓ Open the guide: " + JSON.stringify([p.screen, p.focus.cur, p.frame.line])); }
   r = await lpress("confirm", 500); expect(r.u.screen === "library.species" && r.p.frame.top.readout?.text === "Loika" && r.ring === "chapter.coat", "library-l2: ✓ Open the guide opens Level 2 of that species: " + JSON.stringify([r.u.screen, r.ring, r.p.frame.top.readout]));
@@ -920,6 +917,7 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) { const a = want[id] ?? [], b = steps[id] ?? [], i = [...Array(Math.max(a.length, b.length)).keys()].find((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k])); fail(`journey-library.json: step ${id} differs from the golden at action ${i} (golden ${a.length} actions, now ${b.length}): golden ${JSON.stringify(a[i])?.slice(0, 400)} · now ${JSON.stringify(b[i])?.slice(0, 400)}`); }; }
   console.log(`library steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
+}   // end of the sections JOURNEY_SMALL leaves out (the full room, 13, M4, 7, 8, the Library)
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
 if (checks.textApiCalls !== 0) { errors.push("the page called the canvas text API " + checks.textApiCalls + " times"); console.error("FAIL text API calls " + checks.textApiCalls); }
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
@@ -929,7 +927,7 @@ await assertFace("the fresh world");
 // or the player would wait for it (the page loads a screen's group before it draws the screen, and fetches a miss on demand). A screen the journey never showed is not checked.
 { const used = await page.evaluate(() => window.__st.used()), mroot = path.join(root, "ui/assets/masters"), index = readIndex(mroot), groups = readGroups(mroot);
   if (process.env.STATION_WRITE_GROUPS) { const g = mergeGroups(groups, used, index); writeGroups(mroot, g); console.log("wrote groups.json: " + Object.entries(g.screens).map(([k, v]) => `${k} ${v.length} (${(groupBytes(v, index) / 1e6).toFixed(1)} MB)`).join(" · ")); }
-  else { const miss = missingFrom(groups, used, index); for (const m of miss) fail("a master a screen used is not in groups.json: " + m); console.log(`masters used per screen: ${Object.entries(used).map(([k, v]) => k + " " + v.length).join(" · ")}; ${miss.length} not in groups.json`); } }
+  else if (!SMALL) { const miss = missingFrom(groups, used, index); for (const m of miss) fail("a master a screen used is not in groups.json: " + m); console.log(`masters used per screen: ${Object.entries(used).map(([k, v]) => k + " " + v.length).join(" · ")}; ${miss.length} not in groups.json`); } }
 const checksFile = process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
 writeFileSync(checksFile, JSON.stringify(checks));
 console.log("recorded " + checks.shots.length + " screenshot points for the layer checks in " + checksFile);

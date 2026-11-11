@@ -23,23 +23,24 @@
     ],
     "screen": "cargo",
     "focus": "room",
-    "ok": "Open now",
-    "subject": "Two crates to open",
+    "ok": "Open the crate",
+    "subject": "Open the Bay",
     "idle": false
    },
    {
     "key": "right",
     "said": [
      {
-      "t": "focus",
-      "screen": "panel",
-      "target": "card.later"
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "pad"
      }
     ],
     "screen": "cargo",
     "focus": "room",
-    "ok": "Later",
-    "subject": "They wait while docked",
+    "ok": "Open the crate",
+    "subject": "Open the Bay",
     "idle": false
    },
    {
@@ -47,8 +48,8 @@
     "said": [
      {
       "t": "intent",
-      "screen": "panel",
-      "target": "card.later",
+      "screen": "cargo",
+      "target": "room",
       "verb": "back"
      }
     ],
@@ -138,7 +139,7 @@
     ],
     "screen": "home",
     "focus": "companion",
-    "ok": "Go to the Probe bench",
+    "ok": "Go to the Companion",
     "subject": "",
     "idle": false
    },
@@ -170,7 +171,7 @@
     "screen": "cargo",
     "focus": "bay",
     "ok": "Open them all",
-    "subject": "",
+    "subject": "Open the Bay",
     "idle": false
    },
    {
@@ -179,7 +180,7 @@
     "screen": "cargo",
     "focus": "bay",
     "ok": "Open them all",
-    "subject": "",
+    "subject": "Open the Bay",
     "idle": false
    },
    {
@@ -211,7 +212,7 @@
     "screen": "cargo",
     "focus": "bay",
     "ok": "Open them all",
-    "subject": "",
+    "subject": "Open the Bay",
     "idle": false
    },
    {
@@ -227,7 +228,7 @@
     "screen": "cargo",
     "focus": "bay",
     "ok": "Skip",
-    "subject": "",
+    "subject": "Open the Bay",
     "idle": false
    },
    {
@@ -236,7 +237,7 @@
     "screen": "cargo",
     "focus": "bay",
     "ok": "Skip",
-    "subject": "",
+    "subject": "Open the Bay",
     "idle": false
    },
    {
@@ -356,7 +357,7 @@
     ],
     "screen": "home",
     "focus": "companion",
-    "ok": "Go to the Probe bench",
+    "ok": "Go to the Companion",
     "subject": "",
     "idle": false
    },
@@ -533,7 +534,7 @@
     "screen": "cargo",
     "focus": "bay",
     "ok": null,
-    "subject": "",
+    "subject": "Identify the Loika pod",
     "idle": false
    },
    {
@@ -580,7 +581,7 @@
     ],
     "screen": "home",
     "focus": "companion",
-    "ok": "Go to the Probe bench",
+    "ok": "Go to the Companion",
     "subject": "",
     "idle": false
    },

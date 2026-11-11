@@ -37,7 +37,8 @@ const server = createServer((req, res) => {
     const up = http.request({ host: "127.0.0.1", port: caddyPort, path: req.url, method: req.method, headers: req.headers }, (r2) => { res.writeHead(r2.statusCode, r2.headers); r2.pipe(res); });
     up.on("error", () => { if (!res.headersSent) res.writeHead(502); res.end(); }); req.pipe(up); return;
   }
-  let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/"));
+  const rel = decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/");
+  let p = path.join(root, rel); if (!existsSync(p)) p = path.join(path.resolve(root, ".."), rel);   // a path outside prototypes resolves in the repository: the Companion imports the map rules from there (the bundle inlines them)
   if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
   if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
   res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream", "cache-control": "no-cache" }); res.end(readFileSync(p));
@@ -63,15 +64,15 @@ async function open(width, height, { dsf = 1, motion = false, query = "?test", o
   await st().evaluate(() => window.__st.ready); await mb().waitForFunction(() => window.__mb && window.__mb.S, null, { timeout: 30000 }); await page.waitForTimeout(600);
   return { ctx, page, st, mb };
 }
-// the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the strip (Open now | Later) with the ring on Open now; ▶ then ✓ is Later
+// the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the choice (no card; the bottom line reads ✓ Open the crate and ← Later, the ring on a crate that holds a pod); ← is Later
 const later = async (page, st, what, back, empty = false) => {
   if (empty) {   // C docks with an empty bay: the show has no choice, so a key skips it and it closes on the screen the player was on
     await page.waitForTimeout(1000); await page.keyboard.press("Enter"); await page.waitForTimeout(800); await back(); return;
   }
   await page.waitForTimeout(3600);   // one crate: the show holds 3200 ms
-  await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
-  eq(await st().evaluate(() => [window.__st.props?.overlay?.form, window.__st.props?.overlay?.focus?.cur]), ["strip", "card.open"], what + ": after the show the strip, the ring on Open now");
-  await page.keyboard.press("ArrowRight"); await page.waitForTimeout(200); await page.keyboard.press("Enter"); await page.waitForTimeout(800);
+  await st().waitForFunction(() => window.__st.props?.regions?.arrival?.phase === "choice", null, { timeout: 15000 }).catch(() => {});
+  eq(await st().evaluate(() => [window.__st.props?.regions?.arrival?.phase, window.__st.props?.overlay ?? null]), ["choice", null], what + ": after the show the choice stands: no card, ✓ Open the crate and ← Later");
+  await page.keyboard.press("Escape"); await page.waitForTimeout(800);   // ← Later
   await back();
 };
 const box = async (page, sel) => { const b = await page.locator(sel).boundingBox(); return [b.x, b.y, b.width, b.height]; };
@@ -95,15 +96,17 @@ async function frameBad(page, cdp, sel, W, capture) {
   return bad;
 }
 const pixel = async (page, x, y) => { const p = rd(await page.screenshot({ clip: { x, y, width: 1, height: 1 } })); return [...p.data.slice(0, 3)]; };
-const state = (page) => page.evaluate(() => ({ owner: __play.owner, caddy: __play.caddy, tier: __play.tier, seat: __play.seatOff, word: document.getElementById("dockWord").textContent, mark: document.getElementById("dockMark").getAttribute("src"), dot: !document.getElementById("dockDot").hidden, live: document.getElementById("live").textContent, active: document.activeElement && document.activeElement.id }));
+const state = (page) => page.evaluate(() => ({ owner: __play.owner, caddy: __play.caddy, tier: __play.tier, seat: __play.seatOff, word: document.getElementById("dockWord").textContent, mark: document.getElementById("dockMark").getAttribute("src"), dot: document.getElementById("dockKey").classList.contains("lit"), live: document.getElementById("live").textContent, active: document.activeElement && document.activeElement.id }));
 const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, { recursive: true }), page.screenshot({ path: path.join(img, name), clip: rect ?? { x: 0, y: 0, width: page.viewportSize().width, height: page.viewportSize().height } })) : null;
 
+// JOURNEY_ONLY=ST runs the Stack sections alone (first-ten-front: the sections the front door and the Dock key touch)
+const ONLY = process.env.JOURNEY_ONLY;
 // ---- A. layout at 1× (viewport 1920 × 1080) ----
-{
+if (!ONLY) {
   const { ctx, page, st, mb } = await open(1920, 1080);
   eq(await page.evaluate(() => __play.tier), "row", "A: the layout at 1920 × 1080");
   eq(await box(page, "#fStation"), [195, 64, 1024, 600], "A: the Station frame"); eq(await box(page, "#fCompanion"), [1259, 64, 450, 600], "A: the Companion frame");
-  eq(await box(page, "#dockCtl"), [1484, 0, 168, 40], "A: the control"); eq(await box(page, "#cradle"), [1251, 744, 466, 28], "A: the cradle"); eq(await box(page, "#lamp"), [1263, 760, 8, 8], "A: the lamp");
+  eq(await box(page, "#dockKey"), [1251, 784, 466, 44], "A: the Dock key (first-ten-front A2: one key replaces the bar's control; under the Companion's cradle when the Station is awake)"); eq(await box(page, "#cradle"), [1251, 744, 466, 28], "A: the cradle"); eq(await box(page, "#lamp"), [1263, 760, 8, 8], "A: the lamp");
   eq([await box(page, "#shStation"), await box(page, "#rowStation"), await box(page, "#shCompanion"), await box(page, "#rowCompanion")], [[187, 56, 1040, 616], [187, 672, 1040, 72], [1251, 56, 466, 616], [1251, 672, 466, 72]], "A: the shells and their joined trays");
   eq(await page.evaluate(() => [getComputedStyle(document.getElementById("fBench")).display, !!document.getElementById("fBench").getAttribute("src")]), ["none", false], "A: the workbench is hidden and not loaded");
   const sImg = rd(await page.screenshot({ clip: { x: 195, y: 64, width: 1024, height: 600 } })), sCap = dataPng(await st().evaluate(() => window.__st.capture()));
@@ -126,12 +129,12 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
 }
 
 // ---- B. the dock round trip (viewport 1920 × 1080, one crate aboard) ----
-{
-  const { ctx, page, st, mb } = await open(1920, 1080, { query: "?test&seed=3" });
+if (!ONLY) {
+  const { ctx, page, st, mb } = await open(1920, 1080, { query: "?test&seed=1" });   // seed 1: the Companion's start has a free step to the right (seed 3's world has water there since generator 7)
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
   let s = await state(page);
   await lampIs(page, "stone", "B1");
-  eq([s.word, s.mark.includes("outline"), s.dot, s.caddy.docked, s.caddy.crates], ["Dock", true, true, false, 1], "B1: away: Dock, the outline mark, the amber dot");
+  eq([s.word, s.mark.includes("outline"), s.dot, s.caddy.docked, s.caddy.crates], ["Dock the Companion", true, true, false, 1], "B1: away with a crate: Dock the Companion, the outline mark, the key lit (the amber pulse stands for the old dot)");
   await st().evaluate(() => window.__st.act("research")); await page.waitForTimeout(300);   // the Station on Pods
   eq(await st().evaluate(() => window.__st.UI.screen), "pods", "B2: the Station is on Pods");
   await page.mouse.click(1300, 300); await page.waitForTimeout(200);   // a click inside the Companion frame gives it the keys
@@ -150,7 +153,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   s = await state(page);
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "B2: the Caddy is docked within 600 ms");
   eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.props?.state]), ["cargo", "arrival"], "B2: the dock plays the arrival over the screen the player is on: Cargo's arrival");
-  eq([s.word, s.mark.includes("solid"), s.dot], ["Lift", true, false], "B2: the control reads Lift with the solid mark and no dot");
+  eq([s.word, s.mark.includes("solid"), s.dot], ["Docked · Lift to go out", true, false], "B2: the key reads Docked · Lift to go out with the solid mark, not lit");
   await lampIs(page, "mint", "B2");
   near((await box(page, "#fCompanion"))[1], 72, "B2: the Companion frame is at y 72 (seated)");
   eq(await page.evaluate(() => { const t = document.getElementById("rowCompanion").getBoundingClientRect(); const e = document.elementFromPoint(t.left + 3, t.top + 2); return e && e.closest("#rowCompanion") ? "tray" : e && e.id; }), "tray", "B2: seated, the tray draws over the shell (only the shell's bottom border goes under it)");
@@ -162,7 +165,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq(await st().evaluate(() => window.__st.UI.screen), "pods", "B3: the keys are the Station's: R shows Pods");
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600); s = await state(page);
   eq(await st().evaluate(() => [window.__st.ST.dock.docked, window.__st.UI.screen]), [false, "pods"], "B4: lifted, and the Station stays on Pods");
-  eq([s.word, s.mark.includes("outline")], ["Dock", true], "B4: the control reads Dock again"); near((await box(page, "#fCompanion"))[1], 64, "B4: the Companion frame is back at y 64");
+  eq([s.word, s.mark.includes("outline")], ["Dock the Companion", true], "B4: the key reads Dock the Companion again (the crate is still aboard: lit)"); near((await box(page, "#fCompanion"))[1], 64, "B4: the Companion frame is back at y 64");
   await lampIs(page, "stone", "B4"); eq(s.active, "fCompanion", "B4: the Companion has the keys"); eq(s.live, "Companion lifted", "B4: the live region");
   // B5: Create keeps the player where they are, with the plate
   await st().evaluate(() => { const S = window.__st; S.seedPod("S01", 3); const p = S.ST.tray.at(-1); S.readSome(p.id, 1); S.openCreate(p.id); }); await page.waitForTimeout(400);
@@ -185,7 +188,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
 }
 
 // ---- C. the narrow tier (viewport 1000 × 800) ----
-{
+if (!ONLY) {
   const { ctx, page, st, mb } = await open(1000, 800);
   const vis = (id) => page.evaluate((i) => getComputedStyle(document.getElementById(i)).visibility, id);
   eq(await page.evaluate(() => __play.tier), "narrow", "C: the tier");
@@ -196,15 +199,16 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
   eq([await vis("shStation"), await vis("shCompanion")], ["visible", "hidden"], "C: Dock shows the Station");
   eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.ST.dock.docked]), ["cargo", true], "C: Dock shows the Station: the arrival on Cargo, docked");
-  expect(/^Caddy: Companion home/.test(await page.evaluate(() => document.getElementById("note").textContent)), "C: narrow has no Caddy block: the bar's note says the Caddy's lines"); eq(await page.evaluate(() => document.getElementById("caddySheet").classList.contains("hidden")), true, "C: no Caddy block in narrow");
+  expect(/^Dock: Companion home/.test(await page.evaluate(() => document.getElementById("note").textContent)), "C: narrow has no Caddy block: the bar note says the Dock lines (6f8e972eb: no Caddy on the pages)"); eq(await page.evaluate(() => document.getElementById("caddySheet").classList.contains("hidden")), true, "C: no Caddy block in narrow");
   await later(page, st, "C", async () => eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.UI.home.f]), ["home", "room"], "C: after the arrival, the screen is Home with the ring on the room"), true);
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
   eq([await vis("shStation"), await vis("shCompanion"), await st().evaluate(() => window.__st.ST.dock.docked)], ["hidden", "visible", false], "C: Lift shows the Companion");
   // the bench is hidden in narrow too: no tab, no sheet, the stage stays live
   eq(await page.evaluate(() => [getComputedStyle(document.getElementById("tabBench")).display, document.getElementById("stage").hasAttribute("inert")]), ["none", false], "C: no Bench tab, the stage is live");
   const ctls = await page.evaluate(() => [...document.querySelectorAll("#bar .ctl:not(.hidden)")].map((c) => { const r = c.getBoundingClientRect(); return [c.id, r.width, r.height]; }));
-  expect(ctls.length >= 4 && ctls.every((c) => c[2] === 40), "C: every control in the bar is 40 tall " + JSON.stringify(ctls)); const dk = ctls.find((c) => c[0] === "dockCtl"); expect(dk && dk[1] >= 40 && dk[2] >= 40, "C: the icon Dock is at least 40 × 40");
+  expect(ctls.length >= 3 && ctls.every((c) => c[2] === 40), "C: every control in the bar is 40 tall " + JSON.stringify(ctls));   // the Dock moved out of the bar into its own key (first-ten-front A2)
   await page.click("#tabCompanion"); await page.waitForTimeout(300);
+  { const dk = await box(page, "#dockKey"); expect(dk[2] >= 40 && dk[3] >= 40, "C: the Dock key is at least 40 × 40 on the Companion's tab " + JSON.stringify(dk)); }
   eq(await page.evaluate(() => [__play.owner, document.getElementById("stage").hasAttribute("inert"), document.getElementById("note").classList.contains("hidden")]), ["companion", false, false], "C: the Companion tab has the keys and the note shows");
   // the hidden frame's storage path: the Station is hidden, a crate arrives, the control's dot changes within 600 ms
   eq((await state(page)).dot, false, "C: no dot before the crate");
@@ -266,8 +270,8 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   expect(sameImage(sImg, sCap), "S: the Station frame is pixel-equal to its capture");
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(500);
   await clip(page, "play-stack-720.png");
-  await page.click("#dockCtl"); await page.waitForTimeout(700);
-  eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "S: the control docks once");
+  await page.click("#dockKey"); await page.waitForTimeout(700);
+  eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "S: the Dock key docks once");
   await page.click("#tabCompanion"); await page.waitForTimeout(400);
   const cb2 = await box(page, "#fCompanion"); eq([cb2[2], cb2[3]], [450, 600], "S: the Companion frame is 1:1");
   const cImg = rd(await page.screenshot({ clip: { x: cb2[0], y: cb2[1], width: 450, height: 600 } })), cCap = dataPng(await mb().evaluate(() => window.__mb.capture()));
@@ -277,6 +281,26 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await clip(page, "play-stack-720-companion.png");
   await ctx.close();
 }
+
+{
+  // FD. the front door on a laptop (first-ten-front A1, A2): a new player (no pod home) sees the Companion on top with the Station as one asleep strip, the Dock key quiet; the first dock that brings a pod turns the page to the Station
+  const { ctx, page, st, mb } = await open(1440, 900, { query: "?test&new&seed=3" });
+  const sleep = () => page.evaluate(() => ({ owner: __play.owner, strip: !document.getElementById("asleepStrip").classList.contains("hidden"), stVis: getComputedStyle(document.getElementById("shStation")).visibility, tabs: [tabCompanion.getBoundingClientRect().left < tabStation.getBoundingClientRect().left, tabStation.textContent], dock: { text: document.getElementById("dockWord").textContent, quiet: document.getElementById("dockKey").classList.contains("quiet"), lit: document.getElementById("dockKey").classList.contains("lit") }, bar: !!document.getElementById("dockCtl") }));
+  const a0 = await sleep();
+  eq([a0.owner, a0.strip, a0.stVis, a0.tabs, a0.bar], ["companion", true, "hidden", [true, "Station · asleep"], false], "FD: a new player opens on the Companion, the Station asleep (a strip, its tab says so), no Dock control in the bar");
+  eq([a0.dock.quiet, a0.dock.lit, a0.dock.text], [true, false, "Dock · after the walk"], "FD: the Dock key is quiet before the walk");
+  { const c = await box(page, "#shCompanion"), t = await box(page, "#asleepStrip"), d = await box(page, "#dockKey"); expect(c[1] < 100 && t[0] >= c[0] + c[2] && d[0] >= c[0] + c[2], "FD: the Companion is on top, the strip and the Dock key stand beside it " + JSON.stringify([c, t, d])); }
+  await clip(page, "play-first-laptop.png");
+  await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(600);
+  await page.keyboard.press("Shift+D"); await page.waitForTimeout(900);
+  eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "FD: the dock took");
+  const a1 = await sleep(); eq([a1.owner, a1.strip, a1.stVis, a1.tabs[1], a1.dock.text], ["station", false, "visible", "Station", "Docked · Lift to go out"], "FD: the first dock that brings a pod turns the page to the Station by itself; the key reads Docked · Lift to go out");
+  await clip(page, "play-first-laptop-docked.png");
+  await page.click("#dockKey"); await page.waitForTimeout(900);
+  eq([await st().evaluate(() => window.__st.ST.dock.docked), await page.evaluate(() => __play.owner)], [false, "companion"], "FD: the Dock key lifts again, the Companion has the keys");
+  await ctx.close();
+}
+if (ONLY) { await browser.close(); server.close(); await caddyStop(); rmSync(caddyData, { recursive: true, force: true }); if (errors.length) fails.push(...errors); console.log(fails.length ? `\nplay journey (${ONLY}) FAILED: ${fails.length}` : `\nplay journey (${ONLY}) ok`); process.exit(fails.length ? 1 : 0); }
 
 // ---- M. the layouts and the key minimums, measured (the ruling's checks) ----
 const SIZES = [[1280, 720, 1, "stack"], [1440, 900, 1, "stack"], [1920, 1080, 1, "row"], [2560, 1440, 1, "row"], [1440, 900, 1.25, "stack"], [1440, 900, 1.75, "stack"]];
@@ -291,7 +315,7 @@ const MIN = { Left: 22, Up: 22, Down: 22, Right: 22, Home: 56, Vivarium: 56, Pod
       return { tier: __play.tier, dpr: devicePixelRatio, marks: [...document.querySelectorAll(".k.room img")].map((i) => { const b = i.getBoundingClientRect(), kb = i.parentElement.getBoundingClientRect(); return { w: b.width, h: b.height, dx: (b.left + b.width / 2) - (kb.left + kb.width / 2), dy: (b.top + b.height / 2) - (kb.top + kb.height / 2), px: getComputedStyle(i).imageRendering }; }),
         keys: [...document.querySelectorAll(".k")].map((k) => { const b = k.getBoundingClientRect(), t = k.parentElement.getBoundingClientRect(); return { dev: k.closest("#rowStation") ? "station" : "companion", name: k.getAttribute("aria-label"), w: b.width, h: b.height, l: b.left - t.left, r: t.right - b.right, top: b.top - t.top, bot: t.bottom - b.bottom }; }),
         trays: { station: r("#rowStation"), companion: r("#rowCompanion") }, shells: { station: r("#shStation"), companion: r("#shCompanion") }, rows: __play.geom.rows,
-        bar: { height: r("#bar")[3], tabs: [r("#tabStation"), r("#tabCompanion")], dock: r("#dockCtl"), keysBtn: r("#keysBtn") }, sw: stage.scrollWidth, cw: stage.clientWidth, sh: stage.scrollHeight, ch: stage.clientHeight, caddy: r("#caddySheet"), cradle: r("#cradle"), inner: [innerWidth, innerHeight] };
+        bar: { height: r("#bar")[3], tabs: [r("#tabStation"), r("#tabCompanion")], dock: r("#dockKey"), keysBtn: r("#keysBtn") }, sw: stage.scrollWidth, cw: stage.clientWidth, sh: stage.scrollHeight, ch: stage.clientHeight, caddy: r("#caddySheet"), cradle: r("#cradle"), inner: [innerWidth, innerHeight] };
     });
     const e = 1 / m.dpr + 1e-6;   // a CSS px size is whole physical pixels: never more than one device pixel over the minimum
     eq(m.tier, layout, tag + ": the layout");
@@ -312,7 +336,7 @@ const MIN = { Left: 22, Up: 22, Down: 22, Right: 22, Home: 56, Vivarium: 56, Pod
     for (const d of ["station", "companion"]) { near(m.trays[d][2], m.shells[d][2], tag + ": the " + d + " tray is as wide as its shell", 1 / 64 + 0.01); near(m.trays[d][3], 72 * m.rows[d], tag + ": the " + d + " tray is 72 CSS px a row", 1 / 64 + 0.01); }
     near(m.trays.station[1], m.shells.station[1] + m.shells.station[3], tag + ": the Station tray is joined to its shell", 1 / 64 + 0.01);
     expect(m.keys.every((kk) => kk.l >= -0.01 && kk.r >= -0.01), tag + ": no row overflows its tray");
-    expect(m.bar.height === 40 && m.bar.tabs.every((t) => t[3] >= 40 && t[3] <= 40 + e && t[2] >= 120) && m.bar.dock[3] >= 40 && m.bar.dock[3] <= 40 + e && m.bar.dock[2] >= 168 && m.bar.keysBtn[3] >= 40, `${tag}: the bar's controls are 40 tall, tabs ≥ 120 wide, Dock ≥ 168 wide (${JSON.stringify(m.bar)})`);
+    expect(m.bar.height === 40 && m.bar.tabs.every((t) => t[3] >= 40 && t[3] <= 40 + e && t[2] >= 120) && m.bar.dock[3] >= 44 - 1e-6 && m.bar.dock[2] >= 72 && m.bar.keysBtn[3] >= 40, `${tag}: the bar's controls are 40 tall, tabs ≥ 120 wide, the Dock key (no longer in the bar) ≥ 44 tall and 72 wide (${JSON.stringify(m.bar)})`);
     // never cut: nothing scrolls sideways, and both shells and the Caddy's block lie wholly across the page
     expect(m.sw <= m.cw, `${tag}: the page does not scroll sideways (${m.sw} of ${m.cw})`);
     const geom = await page.evaluate(() => __play.geom);
@@ -341,11 +365,13 @@ async function zBad(page, sel, W, z, capture) {
 }
 {
   const { ctx, page, st, mb } = await open(1920, 1080, { query: "?seed=3" });
+  await st().evaluate(() => window.__st.seedPod("S01", 3)); await page.waitForTimeout(1200);   // a pod is home: the page is no longer the new player's (the Station asleep beside the Companion, first-ten-front) and the Station shows as the row has always had it
+  await page.click("#tabStation"); await page.waitForTimeout(300);   // the keys on the Station, as the page has always opened: at z 2 the stack scrolls to the device that has them
   const zs = () => page.evaluate(() => [__play.tier, __play.z, __play.fit, localStorage.getItem("mb-play-z"), document.getElementById("zFit").textContent]);
   eq(await zs(), ["row", 1, true, null, "fit ×1"], "Z: fit at 1920 × 1080 (1×) is the Row at z 1");
   eq(await box(page, "#fStation"), [195, 64, 1024, 600], "Z: at fit the Station frame is where ?test has it");
-  const ctl = await page.evaluate(() => ["zDown", "zFit", "zUp", "keysBtn", "dockCtl"].map((i) => { const b = document.getElementById(i).getBoundingClientRect(); return [i, b.left, b.width, b.height, getComputedStyle(document.getElementById(i)).display]; }));
-  expect(ctl.every((c) => c[3] === 40 && c[4] !== "none") && ctl[2][1] + ctl[2][2] <= 1920 - 160 && ctl[3][1] + ctl[3][2] <= ctl[0][1] && ctl[4][1] + ctl[4][2] <= ctl[3][1], "Z: the size control shows beside Keys ?, 40 tall, clear of Keys and the Dock " + JSON.stringify(ctl));
+  const ctl = await page.evaluate(() => ["zDown", "zFit", "zUp", "keysBtn"].map((i) => { const b = document.getElementById(i).getBoundingClientRect(); return [i, b.left, b.width, b.height, getComputedStyle(document.getElementById(i)).display]; }));
+  expect(ctl.every((c) => c[3] === 40 && c[4] !== "none") && ctl[2][1] + ctl[2][2] <= 1920 - 160 && ctl[3][1] + ctl[3][2] <= ctl[0][1], "Z: the size control shows beside Keys ?, 40 tall, clear of Keys (the Dock is its own key now) " + JSON.stringify(ctl));
   const stampAt = () => page.evaluate(() => { const s = document.getElementById("stamp"), b = s.getBoundingClientRect(), g = __play.geom, st = document.getElementById("stage").getBoundingClientRect(), sc = document.getElementById("stage").scrollTop, lows = ["shStation", "rowStation", "shCompanion", "rowCompanion", "cradle", "caddySheet"].map((i) => document.getElementById(i).getBoundingClientRect()).map((r) => r.bottom); return { text: s.textContent, display: getComputedStyle(s).display, top: b.top, bottom: b.bottom, lowest: Math.max(...lows), pageBottom: st.top + g.height - sc, textW: s.scrollWidth }; });
   let sa = await stampAt();
   eq([sa.text, sa.display], ["build local", "block"], "Z: the build stamp shows (no build.json here: build local)");
@@ -391,15 +417,17 @@ async function zBad(page, sel, W, z, capture) {
   const world = (page) => page.evaluate(() => { const k = Object.keys(localStorage).find((x) => x.startsWith("mb-save-v8@")); return k ? JSON.parse(localStorage.getItem(k)).wid : null; });
   const settled = (page) => page.waitForFunction(() => window.__play && window.__play.frames.station.contentWindow && window.__play.frames.station.contentWindow.__st, null, { timeout: 30000 }).then(() => page.waitForTimeout(800));
   const { ctx, page, st } = await open(1920, 1080, { query: "" });
-  eq(await st().evaluate(() => { const s = window.__st.settings; return [s.playtest, s.sittingWait, s.budScale, s.adultTurns]; }), [undefined, "hours", 1, 2], "PT: with nothing set the game's own settings stand");
+  eq(await st().evaluate(() => { const s = window.__st.settings; return [s.playtest, s.sittingWait, s.budScale, s.adultTurns]; }), [true, "minute", 10, 1], "PT: with nothing set Playtest waits is on (first-ten-front: on by default) and the Station holds the preset");
   eq(await page.evaluate(() => document.getElementById("devBtn").classList.contains("hidden")), true, "PT: the dev button is hidden with Developer tools off");
-  const ob = await page.evaluate(() => { const b = document.getElementById("optionsBtn").getBoundingClientRect(), c = document.getElementById("companionCtl").getBoundingClientRect(), d = document.getElementById("dockCtl").getBoundingClientRect(); return { h: b.height, left: b.left, right: b.right, top: b.top, cr: c.right, dl: d.left, corner: document.getElementById("optionsBtn").classList.contains("corner") }; });
-  expect(ob.h === 40 && !ob.corner && ob.top === 0 && ob.left >= ob.cr && ob.right <= ob.dl, "PT: Options is in the bar, 40 tall, clear of the Companion control and the Dock " + JSON.stringify(ob));
+  const ob = await page.evaluate(() => { const b = document.getElementById("optionsBtn").getBoundingClientRect(), c = document.getElementById("companionCtl").getBoundingClientRect(); return { h: b.height, left: b.left, right: b.right, top: b.top, cr: c.right, dl: innerWidth, corner: document.getElementById("optionsBtn").classList.contains("corner") }; });
+  expect(ob.h === 40 && !ob.corner && ob.top === 0 && ob.left >= ob.cr && ob.right <= ob.dl, "PT: Options is in the bar, 40 tall, clear of the Companion control and inside the bar (the Dock is its own key, first-ten-front A2) " + JSON.stringify(ob));
   expect(!(await page.evaluate(() => document.getElementById("startFresh"))), "PT: Start fresh left the bar");
   await page.click("#optionsBtn"); await page.locator(".op-panel").waitFor();
   await clip(page, "play-options.png");
   await page.getByRole("switch", { name: "Playtest waits" }).click();
-  eq(await page.evaluate(() => JSON.parse(localStorage.getItem("mb-options")).playtest), true, "PT: the panel stores Playtest waits");
+  eq(await page.evaluate(() => JSON.parse(localStorage.getItem("mb-options")).playtest), false, "PT: the panel stores Playtest waits off (it starts on)");
+  await page.getByRole("switch", { name: "Playtest waits" }).click();
+  eq(await page.evaluate(() => JSON.parse(localStorage.getItem("mb-options")).playtest), true, "PT: and on again");
   await page.waitForFunction(() => Object.keys(localStorage).some((x) => x.startsWith("mb-save-v8@")), null, { timeout: 15000 }).catch(() => {});
   const w0 = await world(page); expect(!!w0, "PT: this browser holds a world");
   await page.click("#optionsFresh"); await page.getByRole("button", { name: "Cancel" }).click(); await page.waitForTimeout(400);
@@ -434,7 +462,7 @@ async function zBad(page, sel, W, z, capture) {
   eq([away.marks.companion, away.marks.station, away.lamp.companion, away.lamp.stationDot], ["lifted", "seated", "off", "warm"], "K: the Station sits in its cradle (its lamp a dim warm white), the Companion's is empty and dark");
   eq([...new Set(await page.evaluate(() => __play.caddySheet.pixels()))].sort((a, b) => a - b), [0, 255], "K: the panel holds ink and paper only");
   await page.waitForFunction(() => !__play.caddySheet.busy, null, { timeout: 60000 });   // the boot's full refresh (4 s, drawn at 2/3) has ended and the panel is idle (the scheduler's own busy flag): the seat then waits the partial's 0.8 s alone, not what is left of the full
-  const before = (await sheet()).log.length, t0 = Date.now(); await page.click("#dockCtl");
+  const before = (await sheet()).log.length, t0 = Date.now(); await page.click("#dockKey");
   await page.waitForFunction(() => __play.caddySheet.id === "C2", null, { timeout: 60000 });
   const k = await sheet(); eq([k.lines.l1, k.lines.l2, k.crates], ["Companion home", "one crate", 1], "K: its lines read the docked state, with one crate icon");
   const op = k.ops.filter((o) => o.kind === "partial" && o.id === "C2").at(-1), drawnAt = k.log.filter((l) => l.kind === "partial" && l.id === "C2").at(-1)?.at;   // the scheduler's decision and the picture's draw, each stamped when it happened: the lag is the panel's, not the machine's
@@ -474,7 +502,7 @@ async function zBad(page, sel, W, z, capture) {
   const id = await mb().evaluate(() => { const S = window.__mb.S, id = "x" + S.wid + "-1"; S.bay.push({ id, n: 1, turn: S.turn, at: Date.now(), e: 3, d: 2, s: 3, pods: [{ id: "q1", sp: 0, g: "meadow", how: "shake", gs: 987654321, k: null }], met: [0], explored: 5, of: 20, lines: [] }); return id; });
   await st().evaluate(() => window.__st.addMaterials(0, 0, 0)); await page.waitForTimeout(600);   // the Station writes its save; the storage event makes the Companion save its bay, and the Station reads it
   expect((await stored()).bay.some((c) => c.id === id), "B8: the stored save's bay holds the crate"); eq((await state(page)).caddy.crates, 1, "B8: the control hears one crate"); eq((await state(page)).dot, true, "B8: the dot shows");
-  await page.click("#dockCtl"); await page.waitForTimeout(700); eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "B8: docked");
+  await page.click("#dockKey"); await page.waitForTimeout(700); eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "B8: docked");
   await st().evaluate(() => window.__st.openBay()); await page.waitForTimeout(600);
   eq(await mb().evaluate(() => window.__mb.S.bay.length), 0, "B8: the Companion's bay is empty"); eq((await stored()).bay.length, 0, "B8: and the stored bay too");
   eq(await st().evaluate((i) => [window.__st.ST.accepted.includes(i), window.__st.ST.tray.some((p) => p.id === i + ":q1")], id), [true, true], "B8: the Station accepted the crate and its pod is in a well");
@@ -482,19 +510,17 @@ async function zBad(page, sel, W, z, capture) {
   await ctx.close();
 }
 
-// ---- U. the Lift button (owner 2026-11-09): beside the Companion's D-pad while it is seated, a key tall, the bar's own lift; the keys go to the Companion (fresh context, 1920 × 1080) ----
+// ---- U. the Lift (owner 2026-11-09; first-ten-front A2 made it the one Dock / Lift key under the Companion's cradle): while seated the key reads Docked · Lift to go out and lifts; the keys go to the Companion (fresh context, 1920 × 1080) ----
 {
   const { ctx, page, st, mb } = await open(1920, 1080);
-  const shown = () => page.evaluate(() => { const b = document.getElementById("undockBtn"), r = b.getBoundingClientRect(); return { vis: !b.classList.contains("hidden") && r.width > 0, box: [r.left, r.top, r.width, r.height], tray: (({ left, top, width, height }) => [left, top, width, height])(document.getElementById("rowCompanion").getBoundingClientRect()) }; });
-  eq((await shown()).vis, false, "U: no Lift button while the Companion is lifted");
-  await page.click("#dockCtl"); await page.waitForTimeout(900);
+  const keyWord = () => page.evaluate(() => document.getElementById("dockWord").textContent);
+  eq(await keyWord(), "Dock · after the walk", "U: lifted and nothing aboard, the key is quiet");
+  await page.click("#dockKey"); await page.waitForTimeout(900);
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "U: seated");
-  const u = await shown(); eq(u.vis, true, "U: the Lift button shows while seated");
-  expect(u.box[3] === 56 && u.box[2] >= 64 && u.box[1] >= u.tray[1] && u.box[1] + u.box[3] <= u.tray[1] + u.tray[3] && u.box[0] >= u.tray[0] + u.tray[2], "U: a key tall, level with the Companion's tray and beside it " + JSON.stringify(u));
-  if (process.env.UNDOCK_SHOT) await page.screenshot({ path: process.env.UNDOCK_SHOT, clip: { x: u.tray[0] - 20, y: u.tray[1] - 640, width: 640, height: 760 } });
-  await page.click("#undockBtn"); await page.waitForTimeout(900);
-  eq(await st().evaluate(() => window.__st.ST.dock.docked), false, "U: Lift lifts the Companion");
-  eq((await shown()).vis, false, "U: and the button hides");
+  eq(await keyWord(), "Docked · Lift to go out", "U: the key says how to go out while seated");
+  await page.click("#dockKey"); await page.waitForTimeout(900);
+  eq(await st().evaluate(() => window.__st.ST.dock.docked), false, "U: the key lifts the Companion");
+  eq(await keyWord(), "Dock · after the walk", "U: and is quiet again");
   eq(await page.evaluate(() => document.activeElement && document.activeElement.id), "fCompanion", "U: the keys go to the Companion");
   await ctx.close();
 }
@@ -510,8 +536,8 @@ async function zBad(page, sel, W, z, capture) {
   await page.mouse.click(1300, 300); await page.waitForTimeout(200);
   await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "place"); await page.waitForTimeout(700);
   await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "map"); await page.waitForTimeout(400);
-  // the exploring itself is stood in for: a heart found in a place (a Call alone no longer counts a place explored) and its finds in the hold (two supplies and a pod), as a walk would leave them
-  await mb().evaluate(() => { const ex = window.__mb.S.exp; ex.stats.calls = 1; ex.stats.hearts = 1; ex.cargo.e += 3; ex.cargo.d += 2; ex.cargo.s += 1; ex.cargo.pods.push({ id: "q9", sp: 0, g: "meadow", how: "shake", gs: 987654321, k: null }); });
+  // the exploring itself is stood in for: a place entered (the walk turns the world when it entered one; the hearts are out, generator 7) and its finds in the hold (two supplies and a pod), as a walk would leave them
+  await mb().evaluate(() => { const ex = window.__mb.S.exp; ex.stats.calls = 1; (ex.entered ||= []).push(ex.pos); ex.cargo.e += 3; ex.cargo.d += 2; ex.cargo.s += 1; ex.cargo.pods.push({ id: "q9", sp: 0, g: "meadow", how: "shake", gs: 987654321, k: null }); });
   await page.keyboard.press("Escape"); await page.waitForTimeout(400); await page.keyboard.press("Enter"); await page.waitForTimeout(600);   // the menu: End expedition on top
   if ((await mb().evaluate(() => window.__mb.S.phase)) === "cargo") { await page.keyboard.press("Enter"); await page.waitForTimeout(600); }   // Cargo: ✓ End expedition seals the crate
   const sealed = await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.bay.length === 1, null, { timeout: 5000 }).then(() => true, () => false);
@@ -531,9 +557,10 @@ async function zBad(page, sel, W, z, capture) {
   // 3. the crate sealed in the Bay, nothing accepted, the supplies unmoved
   let now = await ST(); eq([now.accepted.includes(crate?.id), now.e, now.d, now.s], [false, before.e, before.d, before.s], "P3: the crate waits sealed; nothing accepted, the supplies unmoved");
   // 4. open it: the supplies tick, the pods land, the Companion's crate mark clears, the face changes once to C3 with the ledger's new numbers
-  await page.waitForTimeout(3600); await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
-  await page.keyboard.press("Enter");   // Open now
+  await page.waitForTimeout(3600); await st().waitForFunction(() => window.__st.props?.regions?.arrival?.phase === "choice", null, { timeout: 15000 }).catch(() => {});
+  await page.keyboard.press("Enter");   // ✓ Open the crate
   const opened = await st().waitForFunction((id) => window.__st.ST.accepted.includes(id), crate?.id, { timeout: 20000 }).then(() => true, () => false); expect(opened, "P4: the crate is accepted at its opening");
+  await page.waitForTimeout(800); if (await st().evaluate(() => window.__st.props?.state === "opening" && window.__st.props?.regions?.opening?.crates?.[0]?.hold)) await page.keyboard.press("Enter");   // the first pod the Station stores holds the view: ✓ Take the pod (arrival B)
   const c3 = await waitFace("C3", 12000); expect(c3, "P4: the face reads C3");
   now = await ST(); f = await face();
   expect(now.e - before.e >= crate.e && now.d - before.d >= crate.d && now.s - before.s >= crate.s, "P4: Energy, Data and Essence tick (" + [now.e - before.e, now.d - before.d, now.s - before.s] + " for a crate of " + [crate.e, crate.d, crate.s] + ")");
@@ -596,15 +623,15 @@ async function zBad(page, sel, W, z, capture) {
   await page.click("#companionCtl"); await page.waitForFunction(() => { const m = window.__play.frames.companion.contentWindow.__mb; return m && m.S && m.COMPANION.slot === "B"; }, null, { timeout: 30000 }); await page.waitForTimeout(800);
   const b = await who(); expect(b.id !== a.id && b.wid !== a.wid, "CB: Companion B has its own id and world");
   eq(await st().evaluate(() => window.__st.ST.wid), wA, "CB: until B docks, the Station keeps A's world");
-  await page.click("#dockCtl"); await page.waitForTimeout(1200);
+  await page.click("#dockKey"); await page.waitForTimeout(1200);
   eq(await st().evaluate(() => [window.__st.ST.wid, window.__st.ST.dock.docked, window.__st.companion?.name]), [b.wid, true, "Companion B"], "CB: B docked: the Station shows B's world");
   await page.waitForFunction(() => __play.caddySheet.lines?.stamp === "Companion B", null, { timeout: 3000 }).catch(() => {});
   eq((await page.evaluate(() => [__play.caddySheet.lines?.stamp, __play.dock.world])), ["Companion B", b.wid], "CB: the Caddy face names Companion B, in B's world");
   eq(await page.evaluate(() => document.getElementById("companionCtl").getAttribute("aria-disabled")), "true", "CB: no switch while seated");
-  await page.keyboard.press("Enter"); await page.waitForTimeout(800); await page.click("#dockCtl"); await page.waitForTimeout(900);
+  await page.keyboard.press("Enter"); await page.waitForTimeout(800); await page.click("#dockKey"); await page.waitForTimeout(900);
   await page.click("#companionCtl"); await page.waitForFunction(() => { const m = window.__play.frames.companion.contentWindow.__mb; return m && m.S && m.COMPANION.slot === "A"; }, null, { timeout: 30000 }); await page.waitForTimeout(800);
   eq((await who()).id, a.id, "CB: Companion A is the same Companion");
-  await page.click("#dockCtl"); await page.waitForTimeout(1200);
+  await page.click("#dockKey"); await page.waitForTimeout(1200);
   eq(await st().evaluate(() => [window.__st.ST.wid, window.__st.ST.e, window.__st.companion?.name]), [wA, eA, "Companion A"], "CB: A docked: the Station is back on A's world, as it was");
   await ctx.close();
 }

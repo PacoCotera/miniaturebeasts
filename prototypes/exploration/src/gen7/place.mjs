@@ -15,15 +15,16 @@ import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
 import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, WTW, WTH } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { RULES } from './rules.mjs';
+import { recipeAt, SAND_AT } from './ground.mjs';
 import { holdOf } from './hold.mjs';
 import { landmarksOf } from './landmarks.mjs';
 
-export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
+export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
 // the pairs the set draws (art/places/terrain.json values): a terrain meets another only as one of these (the set's `lowers`); every 2 x 2 block of logic tiles holds at most three terrains (terrain layers),
 // and every two of them are such a pair
-const PAIRS = new Set(['2|6', '2|3', '3|6', '5|6', '2|4', '6|7', '3|7', '6|8', '6|9', '6|10', '3|9', '3|10', '1|2']);   // sand-raised ('3|8') is in the set but the generator never uses it: a raised region that meets both grass and sand is drawn two ways, which the bake refuses
+const PAIRS = new Set(['2|6', '2|3', '3|6', '5|6', '2|4', '6|8', '6|9', '6|10', '3|9', '3|10', '1|2', '6|11', '3|11', '9|11', '6|12', '9|12', '10|12', '6|13', '9|13', '10|13', '6|14', '3|14', '9|14', '10|14', '2|14', '11|12', '11|13', '11|14', '10|11', '12|13', '12|14', '13|14']);   // sand-raised ('3|8') is in the set but the generator never uses it: a raised region that meets both grass and sand is drawn two ways, which the bake refuses
 // who gives way to grass when a 2 x 2 block breaks the table: the lesser first; raised land is never cut (round 4), the others yield to it
-const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 7: 5, 3: 4, 10: 3, 6: 0 };
+const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 11: 5, 3: 4, 14: 4, 10: 3, 12: 2, 13: 2, 6: 0 };
 export const pairOk = (a, b) => PAIRS.has(a < b ? a + '|' + b : b + '|' + a);
 // the terrains of one 2 x 2 block (an iterable of values, repeats allowed): at most three distinct, every two a legal pair
 export function blockOk(values) {
@@ -33,8 +34,9 @@ export function blockOk(values) {
   return true;
 }
 
+const LITTER_NONE = 1.5;               // a litterAt at or above this lays no leaf litter
 const CLOSE = 4;                      // the map's end: the last 4 tiles close the land; raised land keeps three more tiles of grass from them (levels.mjs RAISE_OFF)
-const WIN_X = 5, WIN_Y = 7, HX = (WIN_X - 1) / 2, HY = (WIN_Y - 1) / 2;   // the window the passes run on, in cells: the cell and two cells each side (three above and below, where a chain of conversions runs farthest), so what an edge of the window does stays clear of the cell
+const WIN_X = 7, WIN_Y = 9, HX = (WIN_X - 1) / 2, HY = (WIN_Y - 1) / 2;   // the window the passes run on, in cells: the cell and two cells each side (three above and below, where a chain of conversions runs farthest), so what an edge of the window does stays clear of the cell
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const WATER_CLOSE = new Set(['marsh', 'meres', 'tarns']);   // these biomes close the map with water, the others with a thicket mass
 
@@ -51,12 +53,12 @@ function ctxOf(seed) {
       S.landC[w] = land; S.lvC[w] = G.level[c];
       // the cell values the place reads (the region's label keeps the picture and the map in step)
       S.forestC[w] = land === L.WOOD ? Math.max(F, 0.86) : land === L.MEADOW ? Math.min(F * 0.75, 0.46) : land === L.ROCK ? 0.32 : land === L.POND ? 0.42 : 0;
-      S.wetC[w] = land === L.WATER ? (G.ford[c] ? 0.8 : 1.05) : land === L.POND ? 0.56 : 0.12 + 0.12 * M;
-      S.rockC[w] = land === L.ROCK ? 0.9 : Math.min(K, 0.4) * 0.6;
+      S.wetC[w] = land === L.WATER ? (G.ford[c] ? 0.8 : 1.05) : land === L.POND ? 0.88 : 0.12 + 0.12 * M;
+      S.rockC[w] = land === L.ROCK ? 1.05 : Math.min(K, 0.4) * 0.6;
     }
   }
   S.nF = noiseField(seed, 't-forest', 1 / 10, 'FBm', 2); S.nW = noiseField(seed, 't-wet', 1 / 12, 'FBm', 2); S.nR = noiseField(seed, 't-rock', 1 / 9, 'FBm', 2);
-  S.nS = noiseField(seed, 't-scrub', 1 / 5, 'FBm', 1); S.nP = noiseField(seed, 'trail-wobble', 1 / 6, 'FBm', 2); S.nG = noiseField(seed, 'ground-mix', RULES.tone.noise.scale, 'FBm', RULES.tone.noise.octaves);
+  S.nS = noiseField(seed, 't-scrub', 1 / 5, 'FBm', 1); S.nP = noiseField(seed, 'trail-wobble', 1 / 6, 'FBm', 2); S.nE = noiseField(seed, 't-floor', 1 / 8, 'FBm', 2); S.nD = noiseField(seed, 't-dry', 1 / 9, 'FBm', 2); S.nC = noiseField(seed, 't-chan', 1 / 14, 'FBm', 1); S.nM = noiseField(seed, 't-chan-gap', 1 / 11, 'FBm', 2); S.nG = noiseField(seed, 'ground-mix', RULES.tone.noise.scale, 'FBm', RULES.tone.noise.octaves);
   if (CTX.size > 3) CTX.clear();
   CTX.set(seed, S); return S;
 }
@@ -66,21 +68,24 @@ const closeWater = (S, gx, gy) => WATER_CLOSE.has(S.re.slotBiome[((clamp(Math.fl
 // the tile fields of one cell (24 x 28 values each), from the world's fields at tile scale
 function chunk(S, X, Y) {
   const key = (X + 8) * 1000 + (Y + 8), hit = S.chunks.get(key); if (hit) return hit;
-  const n = CW * CH, forest = new Float32Array(n), rock = new Float32Array(n), wet = new Float32Array(n), scrub = new Float32Array(n), f = tileFields(S.seed, X, Y);   // the fields of each tile, sampled once for the levels and for this
+  const n = CW * CH, forest = new Float32Array(n), rock = new Float32Array(n), wet = new Float32Array(n), scrub = new Float32Array(n), push = new Float32Array(n), f = tileFields(S.seed, X, Y), land = S.landC[cellIdx(X, Y)];   // the fields of each tile, sampled once for the levels and for this
   const bil = (A, i00, i10, i01, i11, a, b) => A[i00] * (1 - a) * (1 - b) + A[i10] * a * (1 - b) + A[i01] * (1 - a) * b + A[i11] * a * b;
   for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
     const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx;
     const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
     const i00 = cellIdx(X0, Y0), i10 = cellIdx(X0 + 1, Y0), i01 = cellIdx(X0, Y0 + 1), i11 = cellIdx(X0 + 1, Y0 + 1);
     forest[k] = 0.55 * f.wild[k] + 0.45 * bil(S.forestC, i00, i10, i01, i11, a, b) + 0.12 * S.nF(gx, gy);
-    rock[k] = 0.5 * f.rock[k] + 0.5 * bil(S.rockC, i00, i10, i01, i11, a, b) + 0.12 * S.nR(gx, gy);
+    rock[k] = 0.3 * f.rock[k] + 0.7 * bil(S.rockC, i00, i10, i01, i11, a, b) + 0.12 * S.nR(gx, gy);
     wet[k] = bil(S.wetC, i00, i10, i01, i11, a, b) + 0.22 * S.nW(gx, gy);
     scrub[k] = S.nS(gx, gy);
+    // the map's land kind shows at the cell's middle whatever its neighbours are: a rock cell is stony and a wood cell has its floor there (a bump that falls to nothing before the cell's edge, so no seam)
+    const bump = Math.max(0, 1 - Math.hypot((tx - (CW - 1) / 2) / 9, (ty - (CH - 1) / 2) / 10));
+    if (land === L.ROCK) rock[k] += 0.5 * bump; else if (land === L.WOOD) push[k] = 0.5 * bump;
     if (Math.min(gx, gy, WTW - 1 - gx, WTH - 1 - gy) < CLOSE) {   // the map's end: the land closes itself over the last four tiles (Rule 4.4)
-      rock[k] = 0; if (closeWater(S, gx, gy)) { wet[k] = 2; forest[k] = 0; } else { forest[k] = 2; wet[k] = 0; }
+      rock[k] = 0; push[k] = 0; if (closeWater(S, gx, gy)) { wet[k] = 2; forest[k] = 0; } else { forest[k] = 2; wet[k] = 0; }
     }
   }
-  const out = { forest, rock, wet, scrub };
+  const out = { forest, rock, wet, scrub, push };
   if (S.chunks.size > 600) S.chunks.clear();
   S.chunks.set(key, out); return out;
 }
@@ -132,21 +137,21 @@ function portTiles(S, t, p, q) {
 
 // ---- the passes on a window ----
 function majority(a, W, H, passes) {
-  const cnt = new Int16Array(12);
+  const cnt = new Int16Array(16);
   for (let p = 0; p < passes; p++) {
     const src = a.slice();
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       cnt.fill(0);
       for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (!dx && !dy) continue; cnt[src[clamp(y + dy, 0, H - 1) * W + clamp(x + dx, 0, W - 1)]]++; }
       const own = src[y * W + x]; let best = own, bc = cnt[own];
-      for (let v = 1; v < 12; v++) if (cnt[v] > bc) { best = v; bc = cnt[v]; }
+      for (let v = 1; v < 16; v++) if (cnt[v] > bc) { best = v; bc = cnt[v]; }
       if (bc >= 5 && cnt[own] <= 2) a[y * W + x] = best;
     }
   }
 }
 // minimum feature size 2 x 2 (Rule 1.9): a tile that belongs to no 2 x 2 block of its own terrain takes the most common terrain among its four neighbours
 function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8, toGrass = false) {
-  const cnt = new Int16Array(12), at = (src, x, y) => src[clamp(y, 0, H - 1) * W + clamp(x, 0, W - 1)];
+  const cnt = new Int16Array(16), at = (src, x, y) => src[clamp(y, 0, H - 1) * W + clamp(x, 0, W - 1)];
   for (let p = 0; p < passes; p++) {
     const src = a.slice(); let changed = 0;
     for (const gp of toGrass ? [false, true] : [false]) {   // stray tiles of other terrains first, bits of grass only when none is left (so a strip of grass is never widened into what is about to go)
@@ -159,7 +164,7 @@ function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8
       if (ok) continue;
       if (toGrass && v === TV.GRASS) {   // a bit of grass with no 2 x 2 block: it joins the terrain round it when that is legal and gives it a 2 x 2 block; else it gets a 2 x 2 block of grass of its own
         cnt.fill(0); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const u = at(a, x + dx, y + dy); if (u !== v && !never(u)) cnt[u]++; }
-        let best = -1, bc = 0; for (let u = 1; u < 12; u++) if (cnt[u] > bc) { best = u; bc = cnt[u]; }
+        let best = -1, bc = 0; for (let u = 1; u < 16; u++) if (cnt[u] > bc) { best = u; bc = cnt[u]; }
         if (best >= 0) {
           a[y * W + x] = best;
           let legal = true, own = false;
@@ -182,7 +187,7 @@ function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8
         continue;
       }
       cnt.fill(0); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const u = at(src, x + dx, y + dy); if (u !== v && !never(u)) cnt[u]++; }
-      let best = -1, bc = 0; for (let u = 1; u < 12; u++) if (cnt[u] > bc) { best = u; bc = cnt[u]; }
+      let best = -1, bc = 0; for (let u = 1; u < 16; u++) if (cnt[u] > bc) { best = u; bc = cnt[u]; }
       if (toGrass && v !== TV.GRASS) best = TV.GRASS;   // in the alternation with the legal pass a stray tile of another terrain only ever turns to grass, so the two passes end
       if (best >= 0) { a[y * W + x] = best; changed++; }
     }
@@ -257,7 +262,7 @@ function fillPockets(t, W, H, gx0, gy0, island, gate) {
 const GATE_DEPTH = 14;
 function openGates(S, t, W, H, gx0, gy0, X, Y) {
   const at = (gx, gy) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? -1 : t[y * W + x]; };
-  const walkAt = (gx, gy) => { const v = at(gx, gy); return v === TV.GRASS || v === TV.SAND || v === TV.PATH || v === TV.EARTH || v === TV.SCRUB || (v === TV.CLIFF && at(gx - 1, gy) === TV.CLIFF && at(gx + 1, gy) === TV.CLIFF && at(gx, gy - 1) === TV.CLIFF && at(gx, gy + 1) === TV.CLIFF); };
+  const walkAt = (gx, gy) => { const v = at(gx, gy); return v === TV.GRASS || v === TV.SAND || v === TV.PATH || v >= TV.LITTER || v === TV.SCRUB || (v === TV.CLIFF && at(gx - 1, gy) === TV.CLIFF && at(gx + 1, gy) === TV.CLIFF && at(gx, gy - 1) === TV.CLIFF && at(gx, gy + 1) === TV.CLIFF); };
   const gate = new Uint8Array(W * H);
   const put = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; if (v === TV.CLIFF || v === TV.DEEP) return false; t[y * W + x] = TV.GRASS; gate[y * W + x] = 1; return true; };
   const cellRegion = (cx, cy) => (cx < 0 || cy < 0 || cx >= RW || cy >= RH ? null : S.R.regions[Math.floor(cy / MH) * ATLAS + Math.floor(cx / MW)]);
@@ -287,20 +292,34 @@ function openGates(S, t, W, H, gx0, gy0, X, Y) {
 
 function windowOf(S, X, Y) {
   const W = WIN_X * CW, H = WIN_Y * CH, gx0 = (X - HX) * CW, gy0 = (Y - HY) * CH, N = W * H, seed = S.seed;
-  const t = new Uint8Array(N).fill(TV.GRASS), forest = new Float32Array(N), rock = new Float32Array(N), wet = new Float32Array(N), scrub = new Float32Array(N);
+  const t = new Uint8Array(N).fill(TV.GRASS), forest = new Float32Array(N), rock = new Float32Array(N), wet = new Float32Array(N), scrub = new Float32Array(N), push = new Float32Array(N);
   for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) {
     const c = chunk(S, X - HX + i, Y - HY + j);
-    for (let ty = 0; ty < CH; ty++) { const o = (j * CH + ty) * W + i * CW, k = ty * CW; for (let tx = 0; tx < CW; tx++) { forest[o + tx] = c.forest[k + tx]; rock[o + tx] = c.rock[k + tx]; wet[o + tx] = c.wet[k + tx]; scrub[o + tx] = c.scrub[k + tx]; } }
+    for (let ty = 0; ty < CH; ty++) { const o = (j * CH + ty) * W + i * CW, k = ty * CW; for (let tx = 0; tx < CW; tx++) { forest[o + tx] = c.forest[k + tx]; rock[o + tx] = c.rock[k + tx]; wet[o + tx] = c.wet[k + tx]; scrub[o + tx] = c.scrub[k + tx]; push[o + tx] = c.push[k + tx]; } }
   }
-  // ground from the fields: sand, then scrub, then thicket, then water (the thicket's rim breaks into scrub clumps)
+  // ground from the fields by the biome's recipe (ground.mjs, blended over the borders between biomes): sand, then the wood floor, then scrub, then thicket, then water (the thicket's rim breaks into scrub clumps)
+  const slotAt = (a, b) => S.re.slotBiome[clamp(b, 0, ATLAS - 1) * ATLAS + clamp(a, 0, ATLAS - 1)], shoreOf = new Float32Array(N);
   for (let i = 0; i < N; i++) {
-    if (rock[i] > 0.62) t[i] = TV.SAND;
-    if (forest[i] > 0.68 && forest[i] <= 0.8 && scrub[i] > 0.15) t[i] = TV.SCRUB;
-    if (forest[i] > 0.8) t[i] = TV.THICKET;
-    if (wet[i] > 0.7) t[i] = TV.WATER;
+    const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), r = recipeAt(slotAt, ATLAS, MW * CW, MH * CH, gx, gy);
+    if (rock[i] + r.rockAdd > SAND_AT) t[i] = TV.SCREE;
+    else if (r.litterAt < LITTER_NONE && forest[i] + 0.35 * S.nE(gx, gy) + push[i] > r.litterAt) t[i] = TV.LITTER;
+    else if (r.dry > 0 || r.turf > 0) { const u = 0.5 + 0.5 * S.nD(gx, gy); if (u < r.dry) t[i] = TV.DRY; else if (1 - u < r.turf) t[i] = TV.TURF; }
+    if (forest[i] > r.scrubAt && forest[i] <= r.thicketAt && scrub[i] > r.scrubNoise && t[i] !== TV.DRY && t[i] !== TV.TURF) t[i] = TV.SCRUB;   // a scrub patch is darker than dry grass and turf and would read as a hole on them: none lies on them (art director 2026-11-10)
+    if (forest[i] > r.thicketAt) t[i] = TV.THICKET;
+    if (wet[i] > r.waterAt || (r.chan > 0.005 && Math.abs(S.nC(gx, gy)) < r.chan && S.nM(gx, gy) > r.mask)) t[i] = TV.WATER;
+    shoreOf[i] = r.shore;
   }
   dropPools(t, W, H);
   smoothBays(t, W, H, TV.WATER); smoothBays(t, W, H, TV.THICKET);   // the art director, b and c: no bay, strip or block under 3 tiles wide, so shores and thickets do not read as walls
+  // a sand shore round every body of water in the Lakes and the Highpools, 1 to 3 tiles wide by noise (rule 4: one shore kind all round, so a beach is never partway along a shore)
+  { const dist = new Int8Array(N).fill(99), q = [];
+    for (let i = 0; i < N; i++) if (t[i] === TV.WATER) { dist[i] = 0; q.push(i); }
+    for (let h = 0; h < q.length; h++) { const i = q[h], x = i % W, y = (i / W) | 0; if (dist[i] >= 3) continue;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const j = Y2 * W + X2; if (dist[j] > dist[i] + 1) { dist[j] = dist[i] + 1; q.push(j); } } }
+    for (let i = 0; i < N; i++) { if (t[i] === TV.SCREE && dist[i] <= 2) { t[i] = TV.SAND; continue; }   // scree meets water only as sand: the rock field's own shore, as the sand it was before had
+      if (!shoreOf[i] || dist[i] === 0 || dist[i] > 3) continue;
+      const wide = Math.max(1, Math.min(3, Math.round(shoreOf[i] * (0.45 + 0.55 * (0.5 + 0.5 * S.nS(gx0 + (i % W), gy0 + ((i / W) | 0)))))));
+      if (dist[i] <= wide && (t[i] === TV.GRASS || t[i] === TV.LITTER || t[i] === TV.DRY || t[i] === TV.TURF || t[i] === TV.SCREE)) t[i] = TV.SAND; } }
   majority(t, W, H, 2); minFeature(t, W, H);
   // raised land from the levels: every tile on a level above the lowest; water lies only on the low ground
   const raised = new Uint8Array(N);
@@ -324,7 +343,7 @@ function windowOf(S, X, Y) {
   // so path never meets anything but grass
   const tr = trailsOf(S), ground = t.slice(), blocked = new Uint8Array(N), rough = new Uint8Array(N);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let hard = x < 1 || y < 1 || x + 2 >= W || y + 2 >= H, soft = 0; for (let dy = -1; dy <= 2 && !hard; dy++) for (let dx = -1; dx <= 2; dx++) { const v = t[(y + dy) * W + x + dx]; if (v === TV.WATER || v === TV.THICKET || v === TV.CLIFF) { hard = true; break; } if (v !== TV.GRASS) soft = 1; } blocked[y * W + x] = hard ? 1 : 0; rough[y * W + x] = soft; }
-  const paint = (x, y) => { for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 2; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush && v !== TV.WATER && v !== TV.THICKET && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v === TV.EARTH)) t[k] = TV.GRASS; } };
+  const paint = (x, y) => { for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 2; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush && v !== TV.WATER && v !== TV.THICKET && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v >= TV.LITTER)) t[k] = TV.GRASS; } };
   const stairBy = new Map(); for (const st of stairsOf(S)) stairBy.set(st.A[0] * 1000 + st.A[1] + (st.south ? 's' : 'e'), st);
   for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) {
     const cx = X - HX + i, cy = Y - HY + j, hits = tr.by.get(cx * 1000 + cy); if (!hits) continue;
@@ -399,6 +418,7 @@ export function cellTerrain(seed, X, Y) {
 // The numbers (the noise field and its threshold, the clear block, the largest patch) are art/places/map-rules.json `tone`.
 export function toneField(seed, x0, y0, w, h) {
   const TONE_AT = RULES.tone.noise.threshold, TONE_CLEAR = RULES.tone.clear, TONE_PATCH_MAX = RULES.tone.patchMax;
+  if (RULES.tone.enabled === false) return new Uint8Array(w * h);   // map-rules.json `tone.enabled`: false lays no patch (no sunlit patch is drawn)
   const S = ctxOf(seed), n = S.nG, T = worldTiles(seed), out = new Uint8Array(w * h), memo = S.toneMemo || (S.toneMemo = new Map()), K = (x, y) => y * 8192 + x;
   // a tile that may carry tone: grass (or the raised top) with the whole 5 x 5 block round it that same ground, so a full cell is clear of every edge (path, water, sand, cliff, thicket, scrub); on the raised
   // top the three cells two rows below are in that block, so every dual tile the tone touches is the plain top, never a face or a way up
@@ -472,10 +492,10 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null) {
     finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone: toneField(seed, x0, y0, w, h),
     inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
 }
-// the bare tiles (sand, worn earth, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)
+// the bare tiles (sand, scree, leaf litter, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)
 function bareTiles(seed, X, Y) {
   const c = cellTerrain(seed, X, Y); let n = 0;
-  for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) { const t = c.terrain[y * c.w + x]; if (t === TV.SAND || t === TV.EARTH || t === TV.PATH || t === TV.CLIFF) n++; }
+  for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) { const t = c.terrain[y * c.w + x]; if (t === TV.SAND || t === TV.SCREE || t === TV.LITTER || t === TV.PATH || t === TV.CLIFF) n++; }
   return n;
 }
 // One cell for the bake: terrain with its one-tile apron.

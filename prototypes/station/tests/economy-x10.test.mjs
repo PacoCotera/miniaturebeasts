@@ -113,7 +113,7 @@ test("the guide rung names the first living species with an incomplete guide and
   const r = S.seedPodFromGenome(st, podGenome(frameOf("S04"), 7), settings, 1000); assert.equal(r.ok, true);
   g = S.goalKey(st, sv0()); assert.equal(g.step.key, "identify"); assert.equal(g.step.species, "S04");
   const pod = st.tray.find((p) => S.speciesOf(p) === "S04"); S.skipIdentify(st, pod);
-  g = S.goalKey(st, sv0()); assert.equal(g.step.key, "read"); assert.equal(g.step.pod, pod.id); assert.ok(frameOf("S04").chapters.some((c) => c.id === g.step.chapter));
+  g = S.goalKey(st, sv0()); assert.equal(g.step.key, "put", "a chapter is read from the pod's store: the step is to put Data in"); assert.equal(g.step.pod, pod.id); assert.ok(frameOf("S04").chapters.some((c) => c.id === g.step.chapter));
   st.readEver = true; st.d = 0; const cost = S.readCost(st, pod, g.step.chapter, settings); g = S.goalKey(st, sv0());
   assert.ok(cost > 0, "the first read ever is free; after it a read costs"); assert.equal(g.step.key, "short"); assert.equal(g.step.icons, "◆");
   fillGuide(st, "S04"); assert.equal(S.goalKey(st, sv0()).key, "rack", "every guide complete, a pod still in the rack: the rack rung");

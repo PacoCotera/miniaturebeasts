@@ -104,12 +104,60 @@
         }
       ]
     },
+    "drygrass": {
+      "fill": {
+        "sheets": ["fill-drygrass.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["grass"],
+          "sheets": ["over-drygrass.png"]
+        }
+      ]
+    },
+    "turf": {
+      "fill": {
+        "sheets": ["fill-turf.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["grass", "drygrass"],
+          "sheets": ["over-turf.png"]
+        }
+      ]
+    },
+    "litter": {
+      "fill": {
+        "sheets": ["fill-litter.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["sand", "grass", "drygrass", "turf"],
+          "sheets": ["over-litter.png"]
+        }
+      ]
+    },
+    "scree": {
+      "fill": {
+        "sheets": ["fill-scree.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["water", "sand", "grass", "litter", "drygrass", "turf"],
+          "sheets": ["over-scree.png"]
+        }
+      ]
+    },
     "scrub": {
       "ground": "grass",
       "over": [
         {
           "kind": "flat",
-          "lowers": ["earth", "sand", "mud", "path", "grass"],
+          "lowers": ["earth", "sand", "mud", "path", "grass", "litter", "drygrass", "turf", "scree"],
           "sheets": ["over-scrub.png"],
           "full": "over-scrub-full.png",
           "variants": ["over-scrub~v1.png", "over-scrub~v2.png", "over-scrub~v3.png"]
@@ -123,7 +171,7 @@
       "over": [
         {
           "kind": "rim",
-          "lowers": ["earth", "sand", "mud", "path", "grass", "scrub"],
+          "lowers": ["earth", "sand", "mud", "path", "grass", "litter", "drygrass", "turf", "scree", "scrub"],
           "sheets": ["over-thicket.png"]
         }
       ]
@@ -157,288 +205,736 @@
   },
   "props": {
     "tree-broad": {
-      "rect": [68, 140, 36, 9],
-      "anchor": [18, 5],
+      "rect": [0, 404, 134, 25],
+      "anchor": [67, 24],
       "footprint": [[0, 0]],
       "canopy": "tree-broad-crown"
     },
     "tree-autumn": {
-      "rect": [31, 140, 36, 9],
-      "anchor": [18, 5],
+      "rect": [58, 377, 134, 25],
+      "anchor": [67, 24],
       "footprint": [[0, 0]],
       "canopy": "tree-autumn-crown"
     },
     "bush-big": {
-      "rect": [19, 98, 24, 24],
-      "anchor": [12, 22],
+      "rect": [212, 451, 20, 16],
+      "anchor": [10, 15],
       "footprint": [[0, 0]]
     },
     "bush-round": {
-      "rect": [44, 98, 24, 24],
-      "anchor": [12, 22],
+      "rect": [233, 451, 20, 16],
+      "anchor": [10, 15],
       "footprint": [[0, 0]]
     },
     "bush-small": {
-      "rect": [69, 98, 24, 24],
-      "anchor": [12, 22],
+      "rect": [0, 470, 20, 16],
+      "anchor": [10, 15],
       "footprint": [[0, 0]]
     },
     "boulder-brown": {
-      "rect": [232, 98, 22, 16],
-      "anchor": [11, 15],
+      "rect": [62, 487, 13, 14],
+      "anchor": [6, 13],
       "footprint": [[0, 0]]
     },
     "boulder-grey": {
-      "rect": [0, 123, 22, 16],
-      "anchor": [11, 15],
+      "rect": [0, 516, 15, 12],
+      "anchor": [7, 11],
       "footprint": [[0, 0]]
     },
     "stump": {
-      "rect": [94, 98, 26, 24],
-      "anchor": [12, 23],
+      "rect": [0, 502, 14, 13],
+      "anchor": [7, 12],
       "footprint": [[0, 0]]
     },
-    "tall-grass": {
-      "rect": [146, 123, 12, 13],
-      "anchor": [6, 12],
-      "footprint": []
+    "rock-a": {
+      "rect": [16, 516, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
     },
-    "tall-grass-b": {
-      "rect": [159, 123, 12, 13],
-      "anchor": [6, 12],
-      "footprint": []
+    "rock-a-m": {
+      "rect": [32, 516, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
     },
-    "tall-grass-m": {
-      "rect": [185, 123, 12, 13],
-      "anchor": [5, 12],
-      "footprint": []
+    "rock-b": {
+      "rect": [76, 487, 13, 14],
+      "anchor": [6, 13],
+      "footprint": [[0, 0]]
     },
-    "tall-grass-bm": {
-      "rect": [172, 123, 12, 13],
-      "anchor": [5, 12],
-      "footprint": []
+    "rock-b-m": {
+      "rect": [90, 487, 13, 14],
+      "anchor": [6, 13],
+      "footprint": [[0, 0]]
+    },
+    "rock-big": {
+      "rect": [0, 451, 24, 18],
+      "anchor": [12, 17],
+      "footprint": [[0, 0]]
+    },
+    "rock-big-m": {
+      "rect": [25, 451, 24, 18],
+      "anchor": [11, 17],
+      "footprint": [[0, 0]]
     },
     "tree-hollow": {
-      "rect": [0, 0, 64, 64],
-      "anchor": [32, 63],
+      "rect": [0, 0, 171, 160],
+      "anchor": [85, 159],
       "footprint": [[-2, 0],  [-1, 0],  [0, 0],  [1, 0],  [2, 0],  [-1, -1],  [0, -1],  [1, -1]]
     },
     "split-stone": {
-      "rect": [65, 0, 61, 44],
-      "anchor": [30, 43],
+      "rect": [135, 269, 60, 46],
+      "anchor": [30, 45],
       "footprint": [[-1, 0],  [0, 0],  [1, 0],  [-1, -1],  [0, -1],  [1, -1]]
     },
     "shrub-1": {
-      "rect": [130, 123, 15, 13],
+      "rect": [228, 487, 15, 13],
       "anchor": [7, 12],
       "footprint": [[0, 0]]
     },
     "shrub-2": {
-      "rect": [215, 123, 15, 12],
+      "rect": [80, 516, 15, 12],
       "anchor": [7, 11],
       "footprint": [[0, 0]]
     },
     "shrub-3": {
-      "rect": [231, 123, 15, 12],
+      "rect": [96, 516, 15, 12],
       "anchor": [7, 11],
       "footprint": [[0, 0]]
     },
     "shrub-4": {
-      "rect": [0, 140, 15, 12],
+      "rect": [112, 516, 15, 12],
       "anchor": [7, 11],
       "footprint": [[0, 0]]
     },
+    "rock-turf": {
+      "rect": [48, 516, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
+    },
+    "rock-turf-m": {
+      "rect": [64, 516, 15, 12],
+      "anchor": [7, 11],
+      "footprint": [[0, 0]]
+    },
+    "tall-grass": {
+      "rect": [123, 529, 11, 10],
+      "anchor": [5, 9],
+      "footprint": []
+    },
+    "tall-grass-m": {
+      "rect": [161, 529, 11, 10],
+      "anchor": [5, 9],
+      "footprint": []
+    },
+    "tall-grass-b": {
+      "rect": [135, 529, 12, 10],
+      "anchor": [6, 9],
+      "footprint": []
+    },
+    "tall-grass-bm": {
+      "rect": [148, 529, 12, 10],
+      "anchor": [5, 9],
+      "footprint": []
+    },
     "reed-shore-1": {
-      "rect": [161, 0, 16, 33],
-      "anchor": [8, 33],
+      "rect": [196, 269, 12, 26],
+      "anchor": [6, 25],
       "footprint": []
     },
     "reed-shore-1m": {
-      "rect": [178, 0, 16, 33],
-      "anchor": [7, 33],
-      "footprint": []
-    },
-    "reed-shore-3": {
-      "rect": [127, 0, 16, 34],
-      "anchor": [8, 34],
-      "footprint": []
-    },
-    "reed-shore-3m": {
-      "rect": [144, 0, 16, 34],
-      "anchor": [7, 34],
+      "rect": [209, 269, 12, 26],
+      "anchor": [5, 25],
       "footprint": []
     },
     "reed-shore-2": {
-      "rect": [74, 65, 17, 32],
-      "anchor": [8, 32],
+      "rect": [30, 377, 13, 25],
+      "anchor": [6, 24],
       "footprint": []
     },
     "reed-shore-2m": {
-      "rect": [92, 65, 17, 32],
-      "anchor": [8, 32],
+      "rect": [44, 377, 13, 25],
+      "anchor": [6, 24],
+      "footprint": []
+    },
+    "reed-shore-3": {
+      "rect": [222, 269, 13, 26],
+      "anchor": [6, 25],
+      "footprint": []
+    },
+    "reed-shore-3m": {
+      "rect": [236, 269, 13, 26],
+      "anchor": [6, 25],
       "footprint": []
     },
     "reed-shore-4": {
-      "rect": [195, 0, 17, 33],
-      "anchor": [8, 33],
+      "rect": [0, 377, 14, 26],
+      "anchor": [7, 25],
       "footprint": []
     },
     "reed-shore-4m": {
-      "rect": [213, 0, 17, 33],
-      "anchor": [8, 33],
+      "rect": [15, 377, 14, 26],
+      "anchor": [6, 25],
       "footprint": []
     },
     "reed-water-1": {
-      "rect": [146, 65, 17, 29],
-      "anchor": [8, 26],
+      "rect": [201, 404, 14, 23],
+      "anchor": [7, 22],
       "footprint": []
     },
     "reed-water-1m": {
-      "rect": [164, 65, 17, 29],
-      "anchor": [8, 26],
+      "rect": [216, 404, 14, 23],
+      "anchor": [6, 22],
       "footprint": []
     },
     "reed-water-2": {
-      "rect": [110, 65, 17, 30],
-      "anchor": [8, 27],
+      "rect": [173, 404, 13, 24],
+      "anchor": [6, 23],
       "footprint": []
     },
     "reed-water-2m": {
-      "rect": [128, 65, 17, 30],
-      "anchor": [8, 27],
+      "rect": [187, 404, 13, 24],
+      "anchor": [6, 23],
       "footprint": []
     }
   },
   "decals": {
+    "leaf-loose-0": {
+      "rect": [49, 550, 4, 5],
+      "anchor": [2, 4]
+    },
+    "leaf-loose-1": {
+      "rect": [54, 550, 3, 4],
+      "anchor": [1, 3]
+    },
+    "leaf-loose-2": {
+      "rect": [60, 550, 4, 2],
+      "anchor": [2, 1]
+    },
+    "leaf-loose-3": {
+      "rect": [68, 550, 4, 1],
+      "anchor": [2, 0]
+    },
+    "leaf-loose-4": {
+      "rect": [65, 550, 2, 2],
+      "anchor": [1, 1]
+    },
+    "leaf-loose-5": {
+      "rect": [58, 550, 1, 3],
+      "anchor": [0, 2]
+    },
+    "dry-tufts-1": {
+      "rect": [173, 529, 9, 9],
+      "anchor": [4, 8]
+    },
+    "dry-tufts-2": {
+      "rect": [193, 529, 10, 9],
+      "anchor": [5, 8]
+    },
+    "dry-tufts-3": {
+      "rect": [215, 529, 11, 9],
+      "anchor": [5, 8]
+    },
+    "dry-tufts-1-m": {
+      "rect": [183, 529, 9, 9],
+      "anchor": [4, 8]
+    },
+    "dry-tufts-2-m": {
+      "rect": [204, 529, 10, 9],
+      "anchor": [4, 8]
+    },
+    "dry-tufts-3-m": {
+      "rect": [227, 529, 11, 9],
+      "anchor": [5, 8]
+    },
+    "shrub-thorn-a": {
+      "rect": [218, 502, 14, 12],
+      "anchor": [7, 11]
+    },
+    "shrub-thorn-a-m": {
+      "rect": [233, 502, 14, 12],
+      "anchor": [6, 11]
+    },
+    "tuft-wind": {
+      "rect": [128, 516, 14, 11],
+      "anchor": [7, 10]
+    },
+    "tuft-wind-m": {
+      "rect": [143, 516, 14, 11],
+      "anchor": [6, 10]
+    },
+    "shrub-heather": {
+      "rect": [108, 540, 12, 9],
+      "anchor": [6, 8]
+    },
+    "shrub-heather-m": {
+      "rect": [121, 540, 12, 9],
+      "anchor": [5, 8]
+    },
     "tuft-fan": {
-      "rect": [91, 123, 12, 13],
-      "anchor": [6, 12]
-    },
-    "tuft-lean": {
-      "rect": [104, 123, 12, 13],
-      "anchor": [6, 12]
-    },
-    "tuft-small": {
-      "rect": [117, 123, 12, 13],
-      "anchor": [6, 12]
+      "rect": [86, 529, 11, 10],
+      "anchor": [5, 9]
     },
     "tuft": {
-      "rect": [78, 123, 12, 13],
-      "anchor": [6, 12]
+      "rect": [74, 529, 11, 10],
+      "anchor": [5, 9]
     },
-    "clump-tall": {
-      "rect": [182, 65, 20, 26],
-      "anchor": [10, 25]
+    "tuft-lean": {
+      "rect": [98, 529, 11, 10],
+      "anchor": [5, 9]
     },
-    "clump-tall-m": {
-      "rect": [203, 65, 20, 26],
-      "anchor": [10, 25]
-    },
-    "clump-tall-s": {
-      "rect": [171, 98, 20, 17],
-      "anchor": [10, 16]
-    },
-    "clump-tall-sm": {
-      "rect": [192, 98, 20, 17],
-      "anchor": [10, 16]
-    },
-    "flower-daisy": {
-      "rect": [224, 65, 18, 24],
-      "anchor": [8, 23]
-    },
-    "flower-buttercup": {
-      "rect": [23, 123, 21, 15],
-      "anchor": [10, 14]
-    },
-    "flower-daisy-pair": {
-      "rect": [0, 98, 18, 24],
-      "anchor": [8, 23]
-    },
-    "flower-blue-pair": {
-      "rect": [121, 98, 24, 22],
-      "anchor": [11, 21]
+    "tuft-small": {
+      "rect": [110, 529, 12, 10],
+      "anchor": [6, 9]
     },
     "flower-pink-three": {
-      "rect": [146, 98, 24, 22],
-      "anchor": [11, 21]
+      "rect": [158, 470, 13, 14],
+      "anchor": [6, 13]
+    },
+    "flower-daisy": {
+      "rect": [130, 470, 13, 14],
+      "anchor": [6, 13]
+    },
+    "flower-daisy-pair": {
+      "rect": [144, 470, 13, 14],
+      "anchor": [6, 13]
+    },
+    "flower-buttercup": {
+      "rect": [116, 470, 13, 14],
+      "anchor": [6, 13]
+    },
+    "flower-blue-pair": {
+      "rect": [99, 470, 16, 14],
+      "anchor": [8, 13]
+    },
+    "clump-tall": {
+      "rect": [26, 430, 15, 19],
+      "anchor": [7, 18]
+    },
+    "clump-tall-m": {
+      "rect": [42, 430, 15, 19],
+      "anchor": [7, 18]
+    },
+    "clump-tall-s": {
+      "rect": [15, 502, 14, 12],
+      "anchor": [7, 11]
+    },
+    "clump-tall-sm": {
+      "rect": [30, 502, 14, 12],
+      "anchor": [6, 11]
+    },
+    "pebbles-a": {
+      "rect": [26, 550, 8, 6],
+      "anchor": [4, 5]
+    },
+    "pebbles-b": {
+      "rect": [134, 540, 9, 8],
+      "anchor": [4, 7]
+    },
+    "pebbles-c": {
+      "rect": [182, 540, 9, 7],
+      "anchor": [4, 6]
+    },
+    "lily-pad": {
+      "rect": [158, 516, 12, 10],
+      "anchor": [6, 9]
+    },
+    "lily-pad-flower": {
+      "rect": [45, 502, 14, 12],
+      "anchor": [7, 11]
     },
     "fleck-0": {
-      "rect": [143, 140, 9, 6],
+      "rect": [242, 540, 9, 6],
       "anchor": [4, 5]
     },
     "fleck-0m": {
-      "rect": [153, 140, 9, 6],
+      "rect": [0, 550, 9, 6],
       "anchor": [4, 5]
     },
     "fleck-1": {
-      "rect": [179, 140, 6, 5],
+      "rect": [35, 550, 6, 5],
       "anchor": [3, 4]
     },
     "fleck-1m": {
-      "rect": [186, 140, 6, 5],
+      "rect": [42, 550, 6, 5],
       "anchor": [2, 4]
     },
     "fleck-2": {
-      "rect": [105, 140, 3, 7],
+      "rect": [144, 540, 3, 7],
       "anchor": [1, 6]
     },
     "fleck-2m": {
-      "rect": [109, 140, 3, 7],
+      "rect": [148, 540, 3, 7],
       "anchor": [1, 6]
     },
     "fleck-3": {
-      "rect": [113, 140, 7, 7],
+      "rect": [152, 540, 7, 7],
       "anchor": [3, 6]
     },
     "fleck-3m": {
-      "rect": [121, 140, 7, 7],
+      "rect": [160, 540, 7, 7],
       "anchor": [3, 6]
     },
     "fleck-4": {
-      "rect": [163, 140, 7, 6],
+      "rect": [10, 550, 7, 6],
       "anchor": [3, 5]
     },
     "fleck-4m": {
-      "rect": [171, 140, 7, 6],
+      "rect": [18, 550, 7, 6],
       "anchor": [3, 5]
     },
     "fleck-5": {
-      "rect": [129, 140, 6, 7],
+      "rect": [168, 540, 6, 7],
       "anchor": [3, 6]
     },
     "fleck-5m": {
-      "rect": [136, 140, 6, 7],
+      "rect": [175, 540, 6, 7],
       "anchor": [2, 6]
     },
-    "pebbles-a": {
-      "rect": [16, 140, 14, 10],
-      "anchor": [7, 5]
+    "sc-flowers-1": {
+      "rect": [196, 470, 13, 14],
+      "anchor": [6, 13]
     },
-    "pebbles-b": {
-      "rect": [62, 123, 15, 13],
-      "anchor": [7, 6]
+    "sc-flowers-1-m": {
+      "rect": [210, 470, 13, 14],
+      "anchor": [6, 13]
     },
-    "pebbles-c": {
-      "rect": [198, 123, 16, 12],
-      "anchor": [8, 6]
+    "sc-flowers-1-young": {
+      "rect": [171, 516, 9, 10],
+      "anchor": [4, 9]
     },
-    "lily-pad": {
-      "rect": [45, 123, 16, 14],
-      "anchor": [8, 7]
+    "sc-flowers-1-young-m": {
+      "rect": [181, 516, 9, 10],
+      "anchor": [4, 9]
     },
-    "lily-pad-flower": {
-      "rect": [213, 98, 18, 16],
-      "anchor": [9, 8]
+    "sc-flowers-1-grown": {
+      "rect": [90, 430, 17, 18],
+      "anchor": [8, 17]
+    },
+    "sc-flowers-1-grown-m": {
+      "rect": [108, 430, 17, 18],
+      "anchor": [8, 17]
+    },
+    "sc-flowers-2": {
+      "rect": [224, 470, 13, 14],
+      "anchor": [6, 13]
+    },
+    "sc-flowers-2-m": {
+      "rect": [238, 470, 13, 14],
+      "anchor": [6, 13]
+    },
+    "sc-flowers-2-young": {
+      "rect": [191, 516, 9, 10],
+      "anchor": [4, 9]
+    },
+    "sc-flowers-2-young-m": {
+      "rect": [201, 516, 9, 10],
+      "anchor": [4, 9]
+    },
+    "sc-flowers-2-grown": {
+      "rect": [126, 430, 17, 18],
+      "anchor": [8, 17]
+    },
+    "sc-flowers-2-grown-m": {
+      "rect": [144, 430, 17, 18],
+      "anchor": [8, 17]
+    },
+    "sc-flowers-3": {
+      "rect": [0, 487, 13, 14],
+      "anchor": [6, 13]
+    },
+    "sc-flowers-3-m": {
+      "rect": [14, 487, 13, 14],
+      "anchor": [6, 13]
+    },
+    "sc-flowers-3-young": {
+      "rect": [211, 516, 9, 10],
+      "anchor": [4, 9]
+    },
+    "sc-flowers-3-young-m": {
+      "rect": [221, 516, 9, 10],
+      "anchor": [4, 9]
+    },
+    "sc-flowers-3-grown": {
+      "rect": [162, 430, 16, 18],
+      "anchor": [8, 17]
+    },
+    "sc-flowers-3-grown-m": {
+      "rect": [179, 430, 16, 18],
+      "anchor": [7, 17]
+    },
+    "sc-flowers-blue-pair": {
+      "rect": [28, 487, 16, 14],
+      "anchor": [8, 13]
+    },
+    "sc-flowers-blue-pair-m": {
+      "rect": [45, 487, 16, 14],
+      "anchor": [7, 13]
+    },
+    "sc-flowers-blue-pair-young": {
+      "rect": [231, 516, 11, 10],
+      "anchor": [5, 9]
+    },
+    "sc-flowers-blue-pair-young-m": {
+      "rect": [243, 516, 11, 10],
+      "anchor": [5, 9]
+    },
+    "sc-flowers-blue-pair-grown": {
+      "rect": [196, 430, 21, 18],
+      "anchor": [10, 17]
+    },
+    "sc-flowers-blue-pair-grown-m": {
+      "rect": [218, 430, 21, 18],
+      "anchor": [10, 17]
+    },
+    "sc-tufts-1": {
+      "rect": [0, 529, 11, 10],
+      "anchor": [5, 9]
+    },
+    "sc-tufts-1-m": {
+      "rect": [12, 529, 11, 10],
+      "anchor": [5, 9]
+    },
+    "sc-tufts-1-young": {
+      "rect": [192, 540, 7, 7],
+      "anchor": [3, 6]
+    },
+    "sc-tufts-1-young-m": {
+      "rect": [200, 540, 7, 7],
+      "anchor": [3, 6]
+    },
+    "sc-tufts-1-grown": {
+      "rect": [136, 487, 14, 13],
+      "anchor": [7, 12]
+    },
+    "sc-tufts-1-grown-m": {
+      "rect": [151, 487, 14, 13],
+      "anchor": [6, 12]
+    },
+    "sc-tufts-2": {
+      "rect": [24, 529, 11, 10],
+      "anchor": [5, 9]
+    },
+    "sc-tufts-2-m": {
+      "rect": [36, 529, 11, 10],
+      "anchor": [5, 9]
+    },
+    "sc-tufts-2-young": {
+      "rect": [208, 540, 7, 7],
+      "anchor": [3, 6]
+    },
+    "sc-tufts-2-young-m": {
+      "rect": [216, 540, 7, 7],
+      "anchor": [3, 6]
+    },
+    "sc-tufts-2-grown": {
+      "rect": [166, 487, 14, 13],
+      "anchor": [7, 12]
+    },
+    "sc-tufts-2-grown-m": {
+      "rect": [181, 487, 14, 13],
+      "anchor": [6, 12]
+    },
+    "sc-tufts-3": {
+      "rect": [48, 529, 12, 10],
+      "anchor": [6, 9]
+    },
+    "sc-tufts-3-m": {
+      "rect": [61, 529, 12, 10],
+      "anchor": [5, 9]
+    },
+    "sc-tufts-3-young": {
+      "rect": [224, 540, 8, 7],
+      "anchor": [4, 6]
+    },
+    "sc-tufts-3-young-m": {
+      "rect": [233, 540, 8, 7],
+      "anchor": [3, 6]
+    },
+    "sc-tufts-3-grown": {
+      "rect": [196, 487, 15, 13],
+      "anchor": [7, 12]
+    },
+    "sc-tufts-3-grown-m": {
+      "rect": [212, 487, 15, 13],
+      "anchor": [7, 12]
+    },
+    "sc-clump-tall": {
+      "rect": [58, 430, 15, 19],
+      "anchor": [7, 18]
+    },
+    "sc-clump-tall-m": {
+      "rect": [74, 430, 15, 19],
+      "anchor": [7, 18]
+    },
+    "sc-clump-tall-young": {
+      "rect": [172, 470, 11, 14],
+      "anchor": [5, 13]
+    },
+    "sc-clump-tall-young-m": {
+      "rect": [184, 470, 11, 14],
+      "anchor": [5, 13]
+    },
+    "sc-clump-tall-grown": {
+      "rect": [135, 404, 18, 24],
+      "anchor": [9, 23]
+    },
+    "sc-clump-tall-grown-m": {
+      "rect": [154, 404, 18, 24],
+      "anchor": [8, 23]
+    },
+    "sc-clump-tall-s": {
+      "rect": [92, 502, 14, 12],
+      "anchor": [7, 11]
+    },
+    "sc-clump-tall-s-m": {
+      "rect": [107, 502, 14, 12],
+      "anchor": [6, 11]
+    },
+    "sc-clump-tall-s-young": {
+      "rect": [239, 529, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-clump-tall-s-young-m": {
+      "rect": [0, 540, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-clump-tall-s-grown": {
+      "rect": [21, 470, 18, 15],
+      "anchor": [9, 14]
+    },
+    "sc-clump-tall-s-grown-m": {
+      "rect": [40, 470, 18, 15],
+      "anchor": [8, 14]
+    },
+    "sc-shrub-1": {
+      "rect": [104, 487, 15, 13],
+      "anchor": [7, 12]
+    },
+    "sc-shrub-1-m": {
+      "rect": [120, 487, 15, 13],
+      "anchor": [7, 12]
+    },
+    "sc-shrub-1-young": {
+      "rect": [12, 540, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-shrub-1-young-m": {
+      "rect": [24, 540, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-shrub-1-grown": {
+      "rect": [92, 451, 19, 16],
+      "anchor": [9, 15]
+    },
+    "sc-shrub-1-grown-m": {
+      "rect": [112, 451, 19, 16],
+      "anchor": [9, 15]
+    },
+    "sc-shrub-2": {
+      "rect": [122, 502, 15, 12],
+      "anchor": [7, 11]
+    },
+    "sc-shrub-2-m": {
+      "rect": [138, 502, 15, 12],
+      "anchor": [7, 11]
+    },
+    "sc-shrub-2-young": {
+      "rect": [36, 540, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-shrub-2-young-m": {
+      "rect": [48, 540, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-shrub-2-grown": {
+      "rect": [132, 451, 19, 16],
+      "anchor": [9, 15]
+    },
+    "sc-shrub-2-grown-m": {
+      "rect": [152, 451, 19, 16],
+      "anchor": [9, 15]
+    },
+    "sc-shrub-3": {
+      "rect": [154, 502, 15, 12],
+      "anchor": [7, 11]
+    },
+    "sc-shrub-3-m": {
+      "rect": [170, 502, 15, 12],
+      "anchor": [7, 11]
+    },
+    "sc-shrub-3-young": {
+      "rect": [60, 540, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-shrub-3-young-m": {
+      "rect": [72, 540, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-shrub-3-grown": {
+      "rect": [172, 451, 19, 16],
+      "anchor": [9, 15]
+    },
+    "sc-shrub-3-grown-m": {
+      "rect": [192, 451, 19, 16],
+      "anchor": [9, 15]
+    },
+    "sc-shrub-4": {
+      "rect": [186, 502, 15, 12],
+      "anchor": [7, 11]
+    },
+    "sc-shrub-4-m": {
+      "rect": [202, 502, 15, 12],
+      "anchor": [7, 11]
+    },
+    "sc-shrub-4-young": {
+      "rect": [84, 540, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-shrub-4-young-m": {
+      "rect": [96, 540, 11, 9],
+      "anchor": [5, 8]
+    },
+    "sc-shrub-4-grown": {
+      "rect": [59, 470, 19, 15],
+      "anchor": [9, 14]
+    },
+    "sc-shrub-4-grown-m": {
+      "rect": [79, 470, 19, 15],
+      "anchor": [9, 14]
+    },
+    "sc-bush-round": {
+      "rect": [50, 451, 20, 16],
+      "anchor": [10, 15]
+    },
+    "sc-bush-round-m": {
+      "rect": [71, 451, 20, 16],
+      "anchor": [9, 15]
+    },
+    "sc-bush-round-young": {
+      "rect": [60, 502, 15, 12],
+      "anchor": [7, 11]
+    },
+    "sc-bush-round-young-m": {
+      "rect": [76, 502, 15, 12],
+      "anchor": [7, 11]
+    },
+    "sc-bush-round-grown": {
+      "rect": [231, 404, 25, 20],
+      "anchor": [12, 19]
+    },
+    "sc-bush-round-grown-m": {
+      "rect": [0, 430, 25, 20],
+      "anchor": [12, 19]
     }
   },
   "canopy": {
     "tree-broad-crown": {
-      "rect": [37, 65, 36, 32],
-      "anchor": [18, 37]
+      "rect": [0, 269, 134, 107],
+      "anchor": [67, 131]
     },
     "tree-autumn-crown": {
-      "rect": [0, 65, 36, 32],
-      "anchor": [18, 37]
+      "rect": [0, 161, 134, 107],
+      "anchor": [67, 131]
     }
   }
 }

@@ -147,3 +147,77 @@ test("the mini rail on a species with a sealed chapter: an inlay with no colour 
   r = miniRail(p, settings); assert.deepEqual([r.lock, r.lanes.filter((l) => l.state !== "sealed").every((l) => l.state === "read"), r.lanes.at(-1).state], [true, true, "sealed"], "every open page read: all lit, the shut one stays an inlay, the lock stays beside it");
   assert.equal(miniRail(p, { ...settings, sealedOpen: true }).lock, false, "opened: no lock");
 });
+
+// ---- the pod's store: Data put in, read while the Companion is out (the pods-reading scheme §2) ----
+const benched = (n = 2) => { const { sv, st } = home(n); const p = st.tray[0]; S.skipIdentify(st, p); S.putOnBench(st, p); st.readEver = true; st.d = 100; return { sv, st, p }; };
+const price = (st, p, settings2 = settings) => S.readQueue(st, p, settings2).map((c) => c.cost);
+
+test("deposit: only on the bench pod, never more than the pocket, never more than is left to read", () => {
+  const { st, p } = benched(); const all = price(st, p).reduce((a, b) => a + b, 0), other = st.tray[1]; S.skipIdentify(st, other);
+  assert.equal(S.deposit(st, other, 3, settings).ok, false, "a pod off the bench takes none");
+  assert.deepEqual([S.deposit(st, p, 4, settings).put, st.d, p.store.d], [4, 96, 4]);
+  assert.equal(S.deposit(st, p, 999, settings).put, all - 4, "the rest of the price and no more"); assert.equal(p.store.d, all); assert.equal(st.d, 100 - all);
+  assert.equal(S.storeLeft(st, p, settings), 0); assert.equal(S.deposit(st, p, 1, settings).ok, false, "nothing left to read, nothing goes in");
+});
+
+test("deposit is limited by the pocket", () => {
+  const { st, p } = benched(); st.d = 3; assert.deepEqual([S.deposit(st, p, 50, settings).put, st.d, p.store.d], [3, 0, 3]);
+});
+
+test("tickReading: whole chapters only, partial time kept, out-time sums across outings", () => {
+  const { st, p } = benched(); const [c1, c2] = price(st, p); S.deposit(st, p, c1 + c2, settings);
+  assert.deepEqual(S.tickReading(st, 6 * 60000, settings).read, [], "six minutes read nothing"); assert.equal(p.store.ms, 6 * 60000);
+  let r = S.tickReading(st, 4 * 60000, settings); assert.equal(r.read.length, 1, "a 6 and a 4 minute outing read one chapter"); assert.equal(p.store.d, c2); assert.equal(p.store.ms, 0);
+  r = S.tickReading(st, 25 * 60000, settings); assert.equal(r.read.length, 1, "only what the store holds"); assert.equal(p.store.d, 0); assert.equal(p.store.ms, 0, "time while the store is short is not banked");
+  assert.equal(p.read.length, 2); assert.equal(st.d, 100 - c1 - c2, "the pocket paid once, at the deposit");
+});
+
+test("tickReading: a long outing reads several chapters at once; a backwards clock counts as zero", () => {
+  const { st, p } = benched(); const q = price(st, p); S.deposit(st, p, q[0] + q[1] + q[2], settings);
+  assert.deepEqual(S.tickReading(st, -90 * 60000, settings).read, [], "backwards is zero"); assert.deepEqual(S.tickReading(st, NaN, settings).read, []); assert.equal(p.store.ms, 0);
+  assert.equal(S.tickReading(st, 25 * 60000, settings).read.length, 2, "twenty-five minutes: two whole chapters, five minutes kept"); assert.equal(p.store.ms, 5 * 60000);
+});
+
+test("tickReading: the developer timer scales it; the first chapter ever is free and reads at once", () => {
+  const { st, p } = benched(); const x10 = { ...settings, budScale: 10 }; S.deposit(st, p, price(st, p, x10)[0], x10);
+  assert.equal(S.tickReading(st, 60000, x10).read.length, 1, "×10: one minute reads a chapter"); assert.equal(S.readNeedMs({ ...settings, budScale: "instant" }), 0);
+  const f = benched(); f.st.readEver = false; f.st.d = 0; const r = S.tickReading(f.st, 0, settings);
+  assert.deepEqual([r.read.length, r.read[0].cost, f.st.readEver, f.p.read.length], [1, 0, true, 1], "the first chapter ever, free, no waiting, no Data");
+  assert.equal(S.tickReading(f.st, 0, settings).read.length, 0, "the next one is priced and waits");
+});
+
+test("tickReading reads through read()'s bookkeeping: p.first, the guide and the half price on a later pod", () => {
+  const { st, p } = benched(); const c = S.readQueue(st, p, settings)[0]; S.deposit(st, p, c.cost, settings); const r = S.tickReading(st, S.READ_MS, settings).read[0];
+  assert.equal(r.id, c.id); assert.ok(st.readOnce[S.speciesOf(p)].includes(c.id), "read-once kept");
+  const q = st.tray[1]; S.skipIdentify(st, q); S.putOnBench(st, q); assert.ok(S.readQueue(st, q, settings)[0].cost <= Math.ceil(c.cost) && S.readQueue(st, q, settings)[0].cost >= 1, "half price (rounded up) on a later pod of the kind");
+  const twin = S.readQueue(st, q, settings).find((x) => x.id === c.id); assert.equal(twin.cost, Math.ceil(frameOf(S.speciesOf(q)).chapters.find((x) => x.id === c.id).traits.length / 2));
+});
+
+test("the store's Data comes back whole: let go, grown, and the bench swap", () => {
+  let { st, p } = benched(); S.deposit(st, p, 7, settings); assert.equal(st.d, 93);
+  assert.equal(S.returnPod(st, p).ok, true); assert.equal(st.d, 100, "let go: whole"); assert.equal(p.store, undefined);
+  ({ st, p } = benched()); S.deposit(st, p, 5, settings); const other = st.tray[1]; S.skipIdentify(st, other); S.putOnBench(st, other);
+  assert.equal(st.d, 100, "swap: the old pod's store is back"); assert.equal(p.store, undefined);
+  ({ st, p } = benched()); for (const c of frameOf(S.speciesOf(p)).chapters) if (!c.sealed) S.read(st, p, c.id, settings); st.d = 100; st.e = 50; st.s = 50;
+  const q = st.tray[1]; S.skipIdentify(st, q); S.putOnBench(st, q); S.deposit(st, q, 4, settings); const before = st.d; const g = S.grow(st, q, {}, settings); if (g.ok) assert.equal(st.d, before + 4 - S.growCost(st, {}, settings).d, "grown: the store came back before the grow's own price");
+  assert.equal(q.store, undefined);
+});
+
+test("a save: a store off the bench goes back to the pocket on load", () => {
+  const { st, p } = benched(); S.deposit(st, p, 6, settings); const other = st.tray[1]; other.store = { d: 3, ms: 0 }; const d0 = st.d;
+  S.normalize(st); assert.equal(other.store, undefined); assert.equal(st.d, d0 + 3); assert.equal(p.store.d, 6);
+});
+
+test("out-time at the dock: lift to seat, summed across outings, a backwards clock is zero, the chapters owed finish at the dock", () => {
+  const { sv, st, p } = benched(); const q = price(st, p); S.deposit(st, p, q[0] + q[1], settings);
+  sv.turn = 3; sv.bay = [];
+  S.dockKey(st, sv, settings, 10 * 60000);   // lift (the Companion was seated at home)
+  assert.equal(st.dock.docked, false);
+  let d = S.dockKey(st, sv, settings, 10 * 60000 + 6 * 60000); assert.deepEqual(d.reading.read, [], "a six-minute outing"); assert.equal(p.store.ms, 6 * 60000);
+  S.dockKey(st, sv, settings, 20 * 60000);
+  d = S.dockKey(st, sv, settings, 24 * 60000); assert.equal(d.reading.read.length, 1, "six and four minutes: one chapter, at the dock"); assert.equal(st.readHome.length, 1);
+  assert.deepEqual(S.readHomeFacts(st)[0].chapters.map((c) => c.id), [S.readQueue(st, p, settings).length ? p.read[0] : null]);
+  S.dockKey(st, sv, settings, 30 * 60000);
+  d = S.dockKey(st, sv, settings, 5 * 60000); assert.deepEqual(d.reading.read, [], "a clock gone back counts zero"); assert.equal(p.store.ms, 0);
+  assert.equal(S.takeReadHome(st).length, 1); assert.deepEqual(st.readHome, []);
+});

@@ -273,6 +273,7 @@ export const clockWords = (secs) => { const h = Math.floor(secs / 3600) % 24, mm
 export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const out = [], cs = S.bayCrates(st, sv), art = (w) => S.aAn(w).split(" ")[0];
   if (S.docked(st) && cs.length) out.push({ key: "crates", n: cs.length, max: 3, act: "cargo" });
+  const rh = S.readHomeNeed(st); if (rh) out.push({ key: "readHome", n: rh.n, max: 6, species: rh.name, act: "store" });   // chapters read while the Companion was out, after the crates: ✓ opens the bench's reveal
   const full = S.waitsForPlace(st, settings);
   if (full) out.push({ key: "full", act: "vivarium", ring: S.addRoomBlock(st, settings) ? "resident" : "room.new" });   // no place is free and something waits for one: ahead of the bud and of a pod that could be incubated
   if (!full && S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
@@ -366,8 +367,6 @@ function lineWords(m, spec, frame, v) {
     // the pair need (two names) is the line's first need and alone: as the second it could pass the zone's width with long names, so it waits until it leads
     const needs = v.needs.filter((nd, i) => nd.key !== "pair" || i === 0), lead = needs[0]?.key === "pair" ? needs.slice(0, 1) : needs.slice(0, spec.regions.line.needs);
     if (lead.length) return { needs: lead.map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : w.notice; }) };
-    const callLine = frame.strings.teach?.call;   // the first day teaches Call (the controls scheme; the host's m.callTeach): its line takes the goal's place until Call is first pressed
-    if (callLine && m.callTeach) return { goal: { text: callLine, icons: "", plain: callLine } };
     const goal = S.goalKey(m.st, m.sv, m.settings), g = goal && goalWords(goal, !!m.docked, frame);
     return g ? { goal: g } : {};
   }

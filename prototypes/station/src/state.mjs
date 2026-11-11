@@ -158,6 +158,8 @@ export function normalize(st, now = Date.now()) {
   for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed", "sheds", "dried"]) if (!Array.isArray(st[k])) st[k] = [];
   if (st.waiting.length) { st.tray.push(...st.waiting); st.waiting = []; }   /* no rack: the pods that waited on the mat are at home with the rest, in the order they came (additive, no schema bump) */
   if (st.readingPod === undefined || (st.readingPod != null && !st.tray.some((p) => p.id === st.readingPod))) st.readingPod = null;   /* the pod on the reading-room bench (additive) */
+  if (!Array.isArray(st.readHome)) st.readHome = [];   /* chapters read at the last docks, waiting for the Home notice and the reveal (additive, no schema bump) */
+  for (const p of st.tray) if (p.store && (st.readingPod !== p.id || !Number.isFinite(p.store.d) || p.store.d < 0)) { if (Number.isFinite(p.store.d) && p.store.d > 0) st.d += p.store.d | 0; delete p.store; } else if (p.store) p.store.ms = Math.max(0, +p.store.ms || 0);   /* a store only lives on the bench pod: any other (or a broken one) goes back to the pocket (additive, no schema bump) */
   st.outbox = st.outbox.filter((o) => o.sitting);   /* the Caddy is called only for the sitting's portrait: an old Grow or Cross entry never goes (additive, no schema bump) */
   if (st.welcomePending) { st.owed.unshift({ key: null, at: 0, source: "welcome" }); st.welcomeGiven = true; }   /* an older save kept the waiting welcome as a flag: it joins the queue, first as it was (additive, no schema bump) */
   delete st.welcomePending;
@@ -384,7 +386,10 @@ export function mergeCare(st, sv, seen = null) {   // seen: if given, each habit
 export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!hasWorld(sv) && !st.devBay.length && !st.devWorld) return { ok: false, msg: "The Companion has no world yet: set out with it first" };
   if (docked(st)) { st.dock = { docked: false, at: now }; logEv(st, "Companion lifted"); return { ok: true, lifted: true, msg: "Lifted · the Companion can set out" }; }
+  const outMs = Math.max(0, now - (st.dock && Number.isFinite(st.dock.at) ? st.dock.at : now));   // the out-time of this outing: from the lift to the seat, a backwards clock counts as zero
   st.dock = { docked: true, at: now }; st.dockN = (st.dockN || 0) + 1;
+  const reading = tickReading(st, outMs, settings);   // the bench pod reads for it: the chapters owed finish here, at the dock
+  if (reading.read.length) { st.readHome = st.readHome || []; st.readHome.push({ pod: reading.pod, species: speciesOf(benchPod(st)), chapters: reading.read.map((r) => ({ id: r.id, firsts: r.newLooks.length })) }); }
   st.turn = Math.max(st.turn, (sv && sv.turn) || 0); const dried = dryPods(st);
   const pr = probeNow(st, sv), broke = pr.shield <= 0, floor = Math.min(DOCK_MEND_FLOOR, pr.smax);
   let sh = pr.shield, free = 0; if (broke) { free = pr.smax; sh = pr.smax; } else if (sh < floor) { free = floor - sh; sh = floor; }
@@ -394,7 +399,7 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const habits = [], home = mergeCare(st, sv, habits);
   const n = bayCrates(st, sv).length;
   logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
-  return { ok: true, docked: true, home, habits, dried, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
+  return { ok: true, docked: true, home, habits, dried, reading, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the shield is mended free" : "Docked · the bay is empty" };
 }
 // The world's events a crate carries (the Companion's `world.ev`, specs/world-events.md): [kind, place, who, n]. The kinds the Companion says; a kind or a shape this Station does not know is skipped, never an error.
 export const WORLD_EV_KINDS = ["grown", "elder", "lampLow", "lampOut", "shift", "herd", "storm", "fruit", "stirring", "young", "quiet"];
@@ -517,8 +522,13 @@ export function readBlock(st, p, chapterId, settings = DEFAULT_SETTINGS) {
 }
 export function read(st, p, chapterId, settings = DEFAULT_SETTINGS) {
   const b = readBlock(st, p, chapterId, settings); if (b) return { ok: false, msg: "Read " + chapterOf(frameFor(p), chapterId)?.name + " · " + b }; if (b === null) return { ok: false, again: true };
-  const fr = frameFor(p), ch = chapterOf(fr, chapterId), cost = readCost(st, p, chapterId, settings), first = !st.readEver;
-  st.d -= cost; st.readEver = true; p.read.push(chapterId);
+  const cost = readCost(st, p, chapterId, settings); st.d -= cost;
+  return applyRead(st, p, chapterId, cost);
+}
+// The bookkeeping of a read, whoever pays for it (the pocket in read(), the pod's store in tickReading): the chapter turns read, the species' read-once and the guide take its looks, p.first marks the traits it showed first.
+function applyRead(st, p, chapterId, cost) {
+  const fr = frameFor(p), ch = chapterOf(fr, chapterId), first = !st.readEver;
+  st.readEver = true; p.read.push(chapterId);
   const once = st.readOnce[fr.species.id] || (st.readOnce[fr.species.id] = []); if (!once.includes(chapterId)) once.push(chapterId);
   p.first = p.first || [];
   const looks = chapterLooks(fr, ch, p.genome), newLooks = [];
@@ -526,6 +536,46 @@ export function read(st, p, chapterId, settings = DEFAULT_SETTINGS) {
   logEv(st, "Read " + fr.species.name + " " + ch.name + " on " + p.id + (first ? " · free (the first read ever)" : cost ? " · −" + cost + " Data" : " · free") + (newLooks.length ? " · new: " + newLooks.join(", ") : ""));
   return { ok: true, cost, first, chapter: ch, newLooks };
 }
+// --- the pod's store: Data put in, read while the Companion is out (the pods-reading scheme §2) -------------------------------------
+// The bench pod's data cartridge: p.store { d: the Data inside, ms: the out-time already spent on the chapter being read }. A chapter's price leaves the store only when that chapter is read.
+export const READ_MS = 10 * 60000;   // out-time one chapter takes, the same for every chapter; the developer timer (budScale) and the playtest preset scale it like the bud's wait
+export const readNeedMs = (settings = DEFAULT_SETTINGS) => (settings.budScale === "instant" ? 0 : Math.round(READ_MS / (settings.budScale || 1)));
+const unreadOpen = (p, settings) => { const fr = frameFor(p); return fr && p.idd ? fr.chapters.filter((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)) : []; };
+// The chapters still to read, in book order, with their price: [{ id, name, cost }].
+export function readQueue(st, p, settings = DEFAULT_SETTINGS) { return unreadOpen(p, settings).map((c) => ({ id: c.id, name: c.name, cost: readCost(st, p, c.id, settings) ?? 0 })); }
+// What a deposit can still add: the unread chapters' whole price less what the store holds. 0 for a pod that is not on the bench.
+export function storeLeft(st, p, settings = DEFAULT_SETTINGS) { if (!onBench(st, p)) return 0; return Math.max(0, readQueue(st, p, settings).reduce((a, c) => a + c.cost, 0) - ((p.store && p.store.d) | 0)); }
+// Put n Data into the bench pod's store: never more than the pocket holds, never more than is left to read.
+export function deposit(st, p, n, settings = DEFAULT_SETTINGS) {
+  if (!p || !p.idd || !onBench(st, p)) return { ok: false };
+  const put = Math.min(Math.max(0, Math.floor(+n) || 0), st.d, storeLeft(st, p, settings)); if (!put) return { ok: false, put: 0 };
+  p.store = p.store || { d: 0, ms: 0 }; p.store.d += put; st.d -= put;
+  logEv(st, "Put " + put + " Data in the " + spName(p) + " pod");
+  return { ok: true, put };
+}
+// Out-time reads the bench pod: outMs more milliseconds of the Companion being out. The next chapter starts when the store holds its whole price and takes READ_MS of out-time; whole chapters are read through the same bookkeeping as read(), the part-way time is kept in
+// p.store.ms, and time passing while the store is short is not banked. The first chapter ever is free and reads at once. A backwards clock (a negative or unusable outMs) counts as zero. Returns { pod, read: [{ id, cost, newLooks }] }.
+export function tickReading(st, outMs, settings = DEFAULT_SETTINGS) {
+  const p = benchPod(st), out = { pod: p ? p.id : null, read: [] };
+  if (!p || !p.idd) return out;
+  const add = outMs > 0 && Number.isFinite(outMs) ? outMs : 0, need = readNeedMs(settings);
+  if (!p.store) { if (st.readEver) return out; p.store = { d: 0, ms: 0 }; }
+  const s = p.store; s.ms += add;
+  for (;;) {
+    const c = readQueue(st, p, settings)[0]; if (!c) { s.ms = 0; break; }
+    const free = !st.readEver;
+    if (s.d < c.cost) { s.ms = 0; break; }
+    if (!free && s.ms < need) break;
+    if (!free) s.ms -= need;
+    s.d -= c.cost; const r = applyRead(st, p, c.id, c.cost); out.read.push({ id: c.id, cost: c.cost, newLooks: r.newLooks });
+  }
+  return out;
+}
+// The chapters read while the Companion was out, waiting for Home's notice and the reveal: [{ pod, species, chapters: [{ id, firsts }] }]. The teaser counts the firsts; takeReadHome empties the list once the reveal has played.
+export const readHomeFacts = (st) => (st.readHome || []).map((r) => ({ ...r, firsts: r.chapters.reduce((a, c) => a + c.firsts, 0) }));
+export const takeReadHome = (st) => { const out = readHomeFacts(st); st.readHome = []; return out; };
+// The Data in a pod's store goes back to the pocket whole (it leaves the bench by growing, letting go or a swap).
+function returnStore(st, p) { if (p && p.store) { st.d += p.store.d | 0; delete p.store; } }
 // A glint: this chapter of the species has been read on some pod, this pod's chapter is unread, and this pod
 // carries a look not yet seen in that species. It says "new here", never what.
 export function glint(st, p, chapterId) {
@@ -575,7 +625,7 @@ export function letGoGuard(st, p) {
   return null;
 }
 // A pod leaves home (grown, let go): off the bench if it was there.
-function leavePod(st, p) { st.tray = st.tray.filter((q) => q !== p); if (st.readingPod === p.id) st.readingPod = null; delete p.keep; }
+function leavePod(st, p) { st.tray = st.tray.filter((q) => q !== p); if (st.readingPod === p.id) st.readingPod = null; delete p.keep; returnStore(st, p); }
 
 // --- freshness: a pod dries POD_LIFE world turns after it comes home, gently -----------------------------------------
 // Turns left: the bench pod's are kept (p.keep) while it sits there; any other pod's run down with the world turn. 0 or less is dried.
@@ -620,7 +670,7 @@ export function putOnBench(st, p) {
   if (!p || !st.tray.includes(p)) return { ok: false };
   if (st.readingPod === p.id) return { ok: true, again: true };
   const old = st.tray.find((q) => q.id === st.readingPod);
-  if (old) { old.dryAt = (st.turn | 0) + (old.keep ?? POD_LIFE); delete old.keep; }
+  if (old) { old.dryAt = (st.turn | 0) + (old.keep ?? POD_LIFE); delete old.keep; returnStore(st, old); }
   p.keep = Math.max(1, turnsLeft(st, p)); st.readingPod = p.id;
   return { ok: true, old: old ? old.id : null };
 }
@@ -670,7 +720,7 @@ export const tier2Ready = (st, settings = DEFAULT_SETTINGS) => docked(st) && !!s
 export function installTier2(st, settings = DEFAULT_SETTINGS) {
   if (!tier2Ready(st, settings)) return { ok: false }; st.e -= price(PRICE.tier2E, settings); st.d -= price(PRICE.tier2D, settings);
   st.probe = { shield: TIER[2].shield, smax: TIER[2].shield, tier: 2, seq: st.probe.seq + 1 };
-  logEv(st, "Probe tier 2 installed"); return { ok: true, msg: "Probe tier 2 · " + TIER2_GAINS.map((g) => g.text).join(", ") };
+  logEv(st, "the Probe upgrade is fitted"); return { ok: true, msg: "the Probe upgrade is fitted · " + TIER2_GAINS.map((g) => g.text).join(", ") };
 }
 // The bud: M2 grows it; for now a migrated bud only reports ready when its minutes have passed.
 export const budProgress = (st, settings = DEFAULT_SETTINGS, now = Date.now()) => { const B = st.bud; if (!B) return 0; if (B.early) return 1; const scale = settings.budScale === "instant" ? 1e9 : settings.budScale || 1; return clamp(((now - B.start) * scale) / (B.minutes * 60000), 0, 1); };
@@ -705,9 +755,16 @@ export function waitsForPlace(st, settings) {
   const c = growCost(st, {}, settings); return canPay(st, c.e, 0, c.s);
 }
 // portraits: the ready portraits (sitting.mjs readyCrates), docked or away; counted apart from the walk crates, and with walk crates too the notice names both (strings.needs.crates.withPortrait).
+// The chapters read at the last docks and not yet shown (st.readHome): { n (the chapters), Species (the first pod's kind, cased), species } or null. The notice that opens the bench's reveal.
+export function readHomeNeed(st) {
+  const rows = readHomeFacts(st); if (!rows.length) return null;
+  const n = rows.reduce((a, r) => a + r.chapters.length, 0), sp = rows[0].species, fr = sp && frameOf(sp);
+  return n ? { n, species: sp, name: fr ? fr.species.name : "unknown", Species: cap(fr ? fr.species.name : "unknown") } : null;
+}
 export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0) {
   const cs = bayCrates(st, sv), N = NEEDS;
   if (docked(st) && cs.length) return { text: portraits ? (cs.length === 1 ? needLine(N.crates.withPortrait.noticeOne) : needLine(N.crates.withPortrait.notice, { count: countWord(cs.length, 3) })) : counted(N.crates, cs.length, 3), act: "bay", label: needLine(N.crates.label) };
+  { const rh = readHomeNeed(st); if (rh) return { text: rh.n === 1 ? needLine(N.readHome.noticeOne, { Species: rh.Species }) : needLine(N.readHome.notice, { N: countWord(rh.n, 6), Species: rh.Species }), act: "store", label: needLine(N.readHome.label) }; }   // chapters read while the Companion was out: after the crates
   if (waitsForPlace(st, settings)) { const add = !addRoomBlock(st, settings); return { text: needLine(N.full.notice), act: "vivarium", ring: add ? "room.new" : "resident", label: needLine(add ? N.full.labelAdd : N.full.labelMake) }; }
   if (budReady(st, settings)) return { text: needLine(N.budReady.notice), act: "inc", label: needLine(N.budReady.label) };
   if (portraits) return { text: needLine(N.portrait.notice), act: "bay", label: needLine(N.portrait.label) };
@@ -737,6 +794,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0
 export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrates = false) {
   const cs = bayCrates(st, sv), art = (w) => aAn(w).split(" ")[0];
   if (!afterCrates && docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
+  { const rh = readHomeNeed(st); if (rh) return { key: "readHome", n: rh.n, max: 6, species: rh.name, act: "store" }; }   // chapters read while the Companion was out: after the crates, before anything else (Home's line carries the kind's name: views/home-props.mjs homeNeeds)
   if (waitsForPlace(st, settings)) return { key: "full", act: "vivarium", ring: addRoomBlock(st, settings) ? "resident" : "room.new" };   // no place is free and something waits for one: add a room (the ring on the new room) or make room (the ring on a resident)
   if (budReady(st, settings)) return { key: "budReady", act: "incubator" };
   const drying = dryingNext(st); if (drying.length) return { key: "drying", n: drying.length, max: 6, act: "pods" };   // the only warning away from Pods before a pod is lost
@@ -822,7 +880,10 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
     for (const p of st.tray) { if (!p.idd || speciesOf(p) !== sp) continue; const fr = frameOf(sp); if (!fr) continue;
       for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; const cost = readCost(st, p, ch.id, settings); if (cost == null) continue; cand.push({ pod: p, chapter: ch.id, glint: glint(st, p, ch.id), cost }); } }
     cand.sort((a, b) => (b.glint ? 1 : 0) - (a.glint ? 1 : 0) || a.cost - b.cost);
-    if (cand[0]) { const c = cand[0]; return st.d >= c.cost ? { key: "read", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
+    if (cand[0]) {   // a chapter is read from the pod's store: put Data in (the pocket), or go out while the store holds its price
+      const c = cand[0], held = c.pod.store ? c.pod.store.d | 0 : 0;
+      if (held >= c.cost && onBench(st, c.pod)) return { key: "goOut" };
+      return st.d > 0 || held ? { key: "put", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
     if (docked(st) && cs.length) return { key: "openBay" };
     const fresh = st.tray.find((p) => !p.idd && speciesOf(p) === sp);
     if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: sp } : short(0, c, 0); }
@@ -891,7 +952,7 @@ function stepSpendWarn(st, sv, settings, price, act, doors) {
      const both = { e: grow.e, d: ident.d + grow.d, s: grow.s }; next = canPay(st, both.e, both.d, both.s) ? both : ident; who = { species: step.species }; }
   else if (step.key === "grow") { if (act.key === "grow" && act.pod && speciesOf(act.pod) === step.species) return null; next = grow; who = { species: step.species }; }
   else if (step.key === "cross") { if (act.key === "cross") return null; next = crossCost(settings); who = { name: g.names[0] }; }
-  else if (step.key === "read" && g.key === "guide") { if (act.key === "read" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; }
+  else if (step.key === "put") { if (act.key === "put" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; key = "read"; }   // the guide's step: Data into the pod's store (the same warning as the price of its next chapter)
   else if (step.key === "read") { const m = g.key === "readChild" || g.key === "guide" ? st.mibis.find((x) => x.name === step.name && !x.released) : null; if (!m) return null; if (act.key === "read" && act.mibi && act.mibi.id === m.id) return null;
     const fr = frameFor(m), ch = fr && fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)); if (!ch) return null; next = { e: 0, d: mibiReadCost(st, m, ch.id, settings) || 0, s: 0 }; who = { name: m.name }; }
   else if (step.key === "fit") { if (act.key === "fit") return null; next = { e: price_(PRICE.tier2E, settings), d: price_(PRICE.tier2D, settings), s: 0 }; who = {}; }

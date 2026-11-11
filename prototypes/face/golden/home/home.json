@@ -6,7 +6,7 @@
    "png": "home-fresh.png"
   },
   "home-teach-call": {
-   "hash": "eafb6578",
+   "hash": "6211d33b",
    "png": "home-teach-call.png"
   },
   "home-rest-goal": {
@@ -14,75 +14,75 @@
    "png": "home-rest-goal.png"
   },
   "home-rest-needs": {
-   "hash": "1112a160",
+   "hash": "ff86cd1e",
    "png": "home-rest-needs.png"
   },
   "home-focus-vivarium": {
-   "hash": "763eca4c",
+   "hash": "ebaf4002",
    "png": "home-focus-vivarium.png"
   },
   "home-focus-library": {
-   "hash": "60b007dc",
+   "hash": "b004d832",
    "png": "home-focus-library.png"
   },
   "home-focus-pods": {
-   "hash": "76b214a1",
+   "hash": "2a1ff017",
    "png": "home-focus-pods.png"
   },
   "home-focus-incubator": {
-   "hash": "4535bb84",
+   "hash": "7c104e7a",
    "png": "home-focus-incubator.png"
   },
   "home-focus-companion": {
-   "hash": "99ee213b",
+   "hash": "ebd8c93f",
    "png": "home-focus-companion.png"
   },
   "home-focus-companion-away": {
-   "hash": "b7b11db1",
+   "hash": "55093bea",
    "png": "home-focus-companion-away.png"
   },
   "home-focus-bay": {
-   "hash": "35e41824",
+   "hash": "0b36547f",
    "png": "home-focus-bay.png"
   },
   "home-focus-companion-nosleep": {
-   "hash": "09dd5c9a",
+   "hash": "0a9a1b1f",
    "png": "home-focus-companion-nosleep.png"
   },
   "home-focus-settings": {
-   "hash": "50d699d9",
+   "hash": "4466bde6",
    "png": "home-focus-settings.png"
   },
   "home-vivarium-all-home": {
-   "hash": "c148945f",
+   "hash": "fb5067db",
    "png": "home-vivarium-all-home.png"
   },
   "home-vivarium-some-away": {
-   "hash": "a204ef16",
+   "hash": "2db7b676",
    "png": "home-vivarium-some-away.png"
   },
   "home-window-dawn": {
-   "hash": "1ec0a741",
+   "hash": "a37b0540",
    "png": "home-window-dawn.png"
   },
   "home-window-dusk": {
-   "hash": "b34879c5",
+   "hash": "29ad76b6",
    "png": "home-window-dusk.png"
   },
   "home-window-night": {
-   "hash": "ebb635e2",
+   "hash": "d5839844",
    "png": "home-window-night.png"
   },
   "home-window-five-of-eight": {
-   "hash": "b275f95c",
+   "hash": "d2cdb2e0",
    "png": "home-window-five-of-eight.png"
   },
   "home-room-reeds": {
-   "hash": "edfd621f",
+   "hash": "ec8bcb72",
    "png": "home-room-reeds.png"
   },
   "home-event-tag": {
-   "hash": "f107bce4",
+   "hash": "e304ec4d",
    "png": "home-event-tag.png"
   },
   "home-vivarium-none-home": {
@@ -90,71 +90,71 @@
    "png": "home-vivarium-none-home.png"
   },
   "home-incubator-empty": {
-   "hash": "563a4b98",
+   "hash": "3e5a83fd",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-can": {
-   "hash": "3f5ba0a3",
+   "hash": "193b3b1e",
    "png": "home-incubator-can.png"
   },
   "home-incubator-growing": {
-   "hash": "da781913",
+   "hash": "f61c34da",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-half": {
-   "hash": "20a9dc04",
+   "hash": "eb107ce9",
    "png": "home-incubator-half.png"
   },
   "home-incubator-ready": {
-   "hash": "8bc27b2e",
+   "hash": "449f112b",
    "png": "home-incubator-ready.png"
   },
   "home-bay-waiting": {
-   "hash": "18f4a848",
+   "hash": "9acde888",
    "png": "home-bay-waiting.png"
   },
   "home-bay-portrait": {
-   "hash": "c265a4c7",
+   "hash": "c594078e",
    "png": "home-bay-portrait.png"
   },
   "home-companion-docked": {
-   "hash": "40c2a363",
+   "hash": "c9dd8919",
    "png": "home-companion-docked.png"
   },
   "home-companion-away": {
-   "hash": "d3f09277",
+   "hash": "eb3e9124",
    "png": "home-companion-away.png"
   },
   "home-pods-empty": {
-   "hash": "563a4b98",
+   "hash": "3e5a83fd",
    "png": "home-pods-empty.png"
   },
   "home-pods-full": {
-   "hash": "f977f87c",
+   "hash": "d39cc0e9",
    "png": "home-pods-full.png"
   },
   "home-library-0-new": {
-   "hash": "e6cadaa4",
+   "hash": "4bb71e4c",
    "png": "home-library-0-new.png"
   },
   "home-library-3-new": {
-   "hash": "42d9c391",
+   "hash": "9e4a069d",
    "png": "home-library-3-new.png"
   },
   "home-library-focused": {
-   "hash": "7b6b7c24",
+   "hash": "c7233dd8",
    "png": "home-library-focused.png"
   },
   "home-need-pair": {
-   "hash": "7c5d67f1",
+   "hash": "3ad18890",
    "png": "home-need-pair.png"
   },
   "home-need-pair-short": {
-   "hash": "9d39baf2",
+   "hash": "359ccf7f",
    "png": "home-need-pair-short.png"
   },
   "home-full-bud": {
-   "hash": "f51df329",
+   "hash": "64a751c5",
    "png": "home-full-bud.png"
   }
  }

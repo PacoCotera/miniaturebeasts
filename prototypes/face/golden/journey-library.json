@@ -540,7 +540,7 @@
     "state": "all",
     "focus": "cell.S04",
     "ok": "Open Hiljan",
-    "subject": "",
+    "subject": "Find a Loika pod",
     "back": "Home"
    },
    {
@@ -574,7 +574,7 @@
     "state": "all",
     "focus": "cell.S01",
     "ok": "Open Loika",
-    "subject": "",
+    "subject": "Find a Loika pod",
     "back": "Home"
    },
    {

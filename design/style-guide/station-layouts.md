@@ -1823,7 +1823,7 @@ Where the build departs from this layout is listed in `habitat.json` and `vivari
 
 ## Probe bench
 
-The Probe section: the one screen whose subject is a machine, the Probe standing upright in its cradle, as it is held. Home's Probe module opens it, and it takes the whole stage with the frame kept; its title is Probe, under the Research mark, and ← goes Home with the ring on the Probe module.
+The Probe section: the one screen whose subject is a machine, the Companion standing upright in its cradle, as it is held; its sensors (the Probe) sit in one band across its top, under the Shield's cover. The Probe is the Companion's own sensors, never a separate device. Home's Companion module opens it, and it takes the whole stage with the frame kept; its title is Companion, under the Research mark, and ← goes Home with the ring on the Probe module.
 
 **As a section, the layout stands.** A section comes closer level by level from the whole to one item; the Probe section holds one item, the Probe, so its whole is that item and it has one level. A closer level (one plate, the part) would show nothing the bench does not already show at its size: the plates read whole or gone at 32×32, and the upgrade's adds are pictures in its module. Its regions, states, focus, events and words below are unchanged. What changes is its look, to the Station's one device: the work tray in the device's daylight, the Probe lying on it being mended among field tools and small gauges, never a lab and never a needle (the Station world brief). Its masters keep their ids and sizes; their brief follows that look (`bench.json` `masters`). Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
 
@@ -1855,7 +1855,7 @@ The Probe bench is where the player keeps the Probe ready for the next expeditio
 
 | Element | Why it is here |
 | --- | --- |
-| **The Probe on its work tray**, in its cradle, large | The subject: the device the Companion carries out, being mended |
+| **The Companion on its work tray**, in its cradle, large | The subject: the Companion, whose sensors (the Probe) go out with it, being mended |
 | **The Shield plates**, standing under it in their strip | The Shield's state with no words: whole or gone, the tier's count; the tier's painted foam strip holds them in both states, and away it shows its empty slots (fix 5 P3) |
 | **The Mend module**: the switch, a picture of what it means (the dock, then the plates it leaves whole), a lamp | The standing choice: the dock mends every plate at its price, or two free |
 | **The Upgrade module**: the socket, the part, what it adds as pictures, a lamp | The upgrade: whether it can be fitted, and what it brings |
@@ -1867,7 +1867,7 @@ The Probe bench is where the player keeps the Probe ready for the next expeditio
 
 **Reading order:**
 
-1. **The Probe standing upright in its cradle**, in the left column, on the axis x 184.
+1. **The Companion standing upright in its cradle**, in the left column, on the axis x 184.
 2. **The plates** on their strip, in the middle column under the tools zone.
 3. **The Mend module**, top right.
 4. **The Upgrade module** under it.
@@ -1877,7 +1877,7 @@ Three columns on the floor (x 66 to 955, y 77 to 538): the cradle (40, 96, 288 �
 ### 4. Art direction
 
 - **Room:** the device's work tray: the Probe stands upright in its cradle, as it is held, with the field tools and small gauges beside it in the tools zone, in the device's matte housing and warm daylight, one soft key light from the top left, as on every section; the Probe is the brightest object. No lab: no cool light, glass or clean-room machine.
-- **The Probe** is the same device the Companion draws, as the project's Probe art draws it, never a needle, painted at the bench's size, one picture a tier. Away, the cradle on the tray is drawn empty, so the Probe reads as out, never missing.
+- **The Companion** is drawn as Home draws it, never a needle, painted at the bench's size, one picture a tier: the sensor band under a plain cover on top (no plates on the cover; the plate strip is the only place that shows the Shield's state), and in the second tier the Probe upgrade's larger sensor head seated on the band. Away, the cradle on the tray is drawn empty, so the Companion reads as out, never missing.
 - **Plates** read as the Companion's Shield plates: white when whole, an outline when gone.
 - **No amber:** a worn plate or an affordable upgrade is a choice, not a need. The lamps are on (`home-lamp-sprout-12x12`) or off (`home-lamp-hairline-12x12`).
 
@@ -1892,7 +1892,7 @@ Three columns on the floor (x 66 to 955, y 77 to 538): the cradle (40, 96, 288 �
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| **Cradle (focal)** | 40, 96, 288, 432 | The Probe standing upright in its cradle, as it is held, one painted picture a tier; away, the empty cradle. Axis x 184; first ink at y 100, ink box (44, 4, 232, 420) in the slice |
+| **Cradle (focal)** | 40, 96, 288, 432 | The Companion standing upright in its cradle, as it is held, one painted picture a tier; away, the empty cradle. Axis x 184; first ink at y 100, ink box (44, 4, 232, 420) in the slice |
 | Plate strip | tier 1: 400, 472, 144, 48; tier 2: 376, 472, 192, 48 (axis y 472) | `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48`, painted, in both states, under the plates, centred on the axis with 8 px of strip a side; away its slots show empty; it cuts t1 → t2 at the install's 300 |
 | Plates | 368, 464, 208, 64 | Plates 32×32 at y 480, centred in the region, on a 48 pitch: tier 1 at x 408, 456, 504; tier 2 at 384, 432, 480, 528; centred on x 472; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
 | Mend module | 624, 96, 312, 128 | Word at (16, 12), lamp at (284, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16` 16×16 from (152, 68) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16`; on, all whole |
@@ -1922,7 +1922,7 @@ Rings (4 px out, 2 px lift): plates 364, 458, 216, 72; switch 620, 90, 320, 136;
 | Pad | Moves the ring by the bench's focus (below) |
 | ✓ on the plates | A plate gone: `✓ Mend a plate   ⚡ 1`, the context "one plate to mend": the first gone plate from the left seats (300 ms, held). Short: the frame's dimmed cap; ✓ says “needs more ⚡” on the message plate, nothing spent. Every plate whole: no ✓ cap, "every plate whole" |
 | ✓ on the switch | `✓ Switch on` or `✓ Switch off`, no price: the knob slides from x 16 to 56 (200 ms), the picture's plates and the lamp change; the context "two free, the rest ⚡ 1 each" (on; "the dock mends all, free" when a plate costs nothing) or "the dock mends two, free" (off). Set at any time, docked or away |
-| ✓ ✓ on the slot | Docked, tier 1, affordable: `✓ Fit the upgrade   ⚡ 12 ◆ 4`, "the Probe reaches further": the first ✓ arms (the part lifts 8 px, `Again: fit the upgrade`), the second fits it (900 ms, held). Short: the dimmed cap; ✓ says “needs more ⚡ ◆” (what is short), nothing spent. Away: no ✓ cap, "dock the Probe first". Fitted: no ✓ cap, "the upgrade is fitted" |
+| ✓ ✓ on the slot | Docked, tier 1, affordable: `✓ Fit the upgrade   ⚡ 12 ◆ 4`, "the Probe reaches further": the first ✓ arms (the part lifts 8 px, `Again: fit the upgrade`), the second fits it (900 ms, held). Short: the dimmed cap; ✓ says “needs more ⚡ ◆” (what is short), nothing spent. Away: no ✓ cap, "dock the Companion first". Fitted: no ✓ cap, "the upgrade is fitted" |
 | Any key but ✓ | Clears the arm |
 | ← | Home, the ring on the Probe module |
 
@@ -1939,8 +1939,8 @@ Rings (4 px out, 2 px lift): plates 364, 458, 216, 72; switch 620, 90, 320, 136;
 
 ### The bench's states and events
 
-- **Docked:** the Probe in its cradle with the tier's plates. The tier and the slot's arm are props of this state.
-- **Away:** the Probe is out with the Companion: the cradle empty, no plates, the slot dim; the switch still works.
+- **Docked:** the Companion in its cradle with the tier's plates. The tier and the slot's arm are props of this state.
+- **Away:** the Companion is out with you: the cradle empty, no plates, the slot dim; the switch still works.
 
 | Event | Hold | What plays |
 | --- | --- | --- |

@@ -4,7 +4,6 @@
 // Docked mid-decision (a decision panel, the namer, Create or Cross open) the arrival waits: the plate says so for 2000 ms and the show plays after the player's next screen change.
 import * as S from "../state.mjs";
 import { arrivalOf } from "../arrival.mjs";
-import { openPanel } from "./panel.mjs";
 import { openBay } from "./cargo.mjs";
 
 // The screens whose open work the arrival never interrupts (frame.json navigation.dock): Home and Cargo are in `stays` for navigation only.
@@ -23,7 +22,6 @@ export function timesOf(spec, a) {
   for (let i = 0; i < a.shown; i++) beats.push(A.crates.at + A.crates.stagger * i, A.crates.at + A.crates.stagger * i + A.crates.ms);
   for (let i = 0; i < Math.min(a.back.length, 3); i++) beats.push(M.at + M.each * i, M.at + M.each * i + M.dither.ms, M.at + M.each * i + M.dither.ms + M.hop.ms);
   for (let k = 0; k < a.plates.mended; k++) beats.push(A.band.probe.mend.at + A.band.probe.mend.each * k);
-  for (let k = 0; k < 4; k++) beats.push(A.light.at + A.light.each * k);
   return { end, ms: end, hold: end, beats: [...new Set(beats)].filter((t) => t < end).sort((x, y) => x - y), skip: ev.skip === true };
 }
 
@@ -48,9 +46,11 @@ export function startShow(h, r, over) {
 export function finish(h) {
   const c = h.ui.cargo, a = c.arrival; if (!a || c.state !== "arrival" || a.phase !== "show") return;
   if (!a.choice) { later(h); habitPlates(h, a); return; }
-  a.phase = "choice"; c.at = h.specs.cargo.regions.arrival.end.at;
-  openPanel(h, "cargo", "dock"); habitPlates(h, a);
+  a.phase = "choice"; c.at = h.specs.cargo.regions.arrival.end.at;   // no card: the bottom line names ✓ Open the crate and ← Later
+  if (h.motion ? h.motion() : true) h.play({ kind: "arrival", target: "beat", ms: BEAT_MS, hold: 0 });   // the choice waits: a clock for the beat ring on a crate that holds a pod, not a hold
+  habitPlates(h, a);
 }
+const BEAT_MS = 20000;
 // The field habits the Companion's mibis did on the walk: once, after the show, the home watch's own plate ("{name} is seen {habit}"), no new words. At most two at a time.
 export function habitPlates(h, a) {
   if (!(a.habits || []).length) return;
@@ -60,10 +60,16 @@ export function habitPlates(h, a) {
 }
 // Any key during the show (reduced motion, or after the face's hold ended): the show cuts to its end.
 export function skipShow(h) { const a = h.ui.cargo.arrival; if (a && a.phase === "show") finish(h); }
+// A key on the arrival: in the show any key skips to the choice; at the choice ✓ opens the crates (the opening runs) and ← is Later (the pad and a room key's own work are the frame's).
+export function arrivalKey(h, verb) {
+  const a = h.ui.cargo.arrival; if (!a) return;
+  if (a.phase === "show") { finish(h); return; }
+  if (verb === "confirm") openFromArrival(h); else if (verb === "back") later(h);
+}
 
 // The arrival is over without going anywhere (a room key, a screen change): Cargo is as it was.
 export function endArrival(h) {
-  const c = h.ui.cargo; if (c.state === "arrival") { c.state = "bay"; c.arrival = null; c.at = 0; } if (h.ui.panel?.id === "dock") h.ui.panel = null;
+  const c = h.ui.cargo; if (c.state === "arrival") { c.state = "bay"; c.arrival = null; c.at = 0; }
 }
 // Later: back to the screen the arrival came over, as it was (a dither); on Cargo itself the bay shows as a cut.
 export function later(h) {

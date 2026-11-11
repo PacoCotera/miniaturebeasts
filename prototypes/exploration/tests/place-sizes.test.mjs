@@ -50,7 +50,7 @@ test("Call lift on an 18×22 place: the round of 7 tiles, clipped; a veiled tile
   assert.ok(!lifted(f).has(0 * W + 0), "(0,0) is 20 tiles away");
   // and the page's own Call: it lifts the same round and reports the way to what is found
   const g = small(); g.run("callPlace()");
-  assert.ok(g.run("FX.msg").length > 0);
+  assert.ok(!/Nothing in sight/.test(g.run("FX.msg")), "a Call that finds nothing says nothing (the ✓ word points on)");
   assert.equal(g.run("S.veil[S.exp.patch.key].length"), H);
 });
 

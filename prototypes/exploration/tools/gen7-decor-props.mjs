@@ -1,9 +1,9 @@
-// Generator 7, chunk G3: the numbers of the props and decor over every cell of a seed (80 x 100 cells). Used by tests/gen7-place.test.mjs; run alone to print them:
+// Generator 7, chunk G3: the numbers of the props and decor over every cell of a seed (80 x 100 cells). Used by tests/gen7-place-decor.test.mjs; run alone to print them:
 //   node tools/gen7-decor-props.mjs 13
-// Counted: grove sizes by biome, outcrops of one colour, the grove-lattice rule per cell, reed banks on shores only, decor per 10 grass tiles in border rows and in the interior, no crown near the
+// Counted: grove sizes by biome, the boulder shapes of the outcrops, the grove-lattice rule per cell, reed banks on shores only, the meadow scatter per grass tile in border rows and in the interior, no crown near the
 // Hollow Tree, a prop near a cell border the same from both cells, props per 100 tiles by biome against the table, and what the props block that the terrain alone did not.
 import { cellTerrain, decorOf, cellIR, biomeAtTile, TV, CW, CH, RW, RH } from '../src/gen7/place.mjs';
-import { TABLE, FAMS, BIOME_IDS, expectedPer100, HOLLOW, TUFTS, FLOWERS, TREE_KINDS, ROCK_KINDS } from '../src/gen7/decor.mjs';
+import { TABLE, FAMS, BIOME_IDS, expectedPer100, HOLLOW, TREE_KINDS, ROCK_KINDS, isScatterPlant } from '../src/gen7/decor.mjs';
 import { groveStats, GROVE } from '../../places/src/bake/rules.mjs';
 import { MW, MH } from '../src/world.mjs';
 
@@ -14,8 +14,8 @@ const hist = (o, k) => { o[k] = (o[k] || 0) + 1; };
 
 export function decorProps(seed, { every = 1 } = {}) {
   const t0 = Date.now(), D = decorOf(seed);
-  const st = { cells: 0, groveHist: {}, groveHistByBiome: {}, outcropMixed: 0, outcrops: 0, latticeCells: 0, latticeFails: 0, latticeAt: [], latticeDense: 0, latticeWood: 0, latticeOpen: 0, latticeOpenFails: 0, latticeWhy: { touching: 0, cv: 0, lone: 0 }, latticeWhyDense: { cv: 0, lone: 0 },
-    reedBanks: 0, reedOffShore: 0, reedProps: 0, tiles: { eligible: 0, tufts: 0, flowers: 0, clumps: 0, bEligible: 0, bTufts: 0, bFlowers: 0, bClumps: 0 }, cellTuftBad: 0, cellFlowerBad: 0, tuftAt: [],
+  const st = { cells: 0, groveHist: {}, groveHistByBiome: {}, rockKinds: {}, outcrops: 0, latticeCells: 0, latticeFails: 0, latticeAt: [], latticeDense: 0, latticeWood: 0, latticeOpen: 0, latticeOpenFails: 0, latticeWhy: { touching: 0, cv: 0, lone: 0 }, latticeWhyDense: { cv: 0, lone: 0 },
+    reedBanks: 0, reedOffShore: 0, reedProps: 0, tiles: { eligible: 0, bEligible: 0 }, scatter: { pieces: 0, flecks: 0, young: 0, mid: 0, grown: 0, bPieces: 0, perCell: [], kinds: {} },
     hollow: 0, hollowCrownNear: 0, hollowAt: [], seamProps: 0, seamMismatch: 0, seamAt: [], stranded: 0, strandedCells: 0, strandedAt: [], onWall: 0, onPath: 0, onWay: 0, onLip: 0, noKind: 0, propOnEdge: 0, decalOnEdge: 0, edgeAt: [],
     perBiome: {}, ms: 0 };
   const groups = new Map();   // cluster -> { fam, biome, n, kinds }
@@ -29,6 +29,7 @@ export function decorProps(seed, { every = 1 } = {}) {
       if (p.cluster >= 0) { const g = groups.get(p.fam + ':' + p.cluster) || { fam: p.fam, biome: biomeOfK(p.cluster), n: 0, kinds: new Set() }; g.n++; g.kinds.add(p.kind); groups.set(p.fam + ':' + p.cluster, g); }
       if (p.fam === 'trees' || p.fam === 'rocks') trees.push({ kind: p.kind, cx: p.x - x0, cy: p.y - y0 });
       if (p.kind === 'reeds') st.reedProps++;
+      if (p.fam === 'rocks') st.rockKinds[p.kind] = (st.rockKinds[p.kind] || 0) + 1;
       if (p.kind === HOLLOW) { st.hollow++; if (st.hollowAt.length < 4) st.hollowAt.push([p.x, p.y]); }
       // props stand where props may: not on or beside water, thicket, lip, path; not at a way up
       if (p.fam !== 'sweeps' && p.fam !== 'landmark') { const f = D.flags(p.x, p.y); if (f & 1) st.onWall++; if (f & 2) st.onPath++; if (f & 4) st.onLip++; }
@@ -52,22 +53,23 @@ export function decorProps(seed, { every = 1 } = {}) {
     // decor per 10 grass tiles
     { const occ = new Set(); for (const p of D.propsIn(x0 - 1, y0 - 1, x1 + 1, y1 + 1)) for (const [a, b] of D.footprint(p)) occ.add(a + ',' + b);
       const dec = D.decalsIn(x0, y0, x1, y1), by = new Map(dec.map(d => [d.x + ',' + d.y, d.kind]));
-      let el = 0, tu = 0, fl = 0, cl = 0;
+      let el = 0;
       for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
         if (!D.grassTile(x, y) || occ.has(x + ',' + y)) continue;
-        const border = x - x0 < 2 || y - y0 < 2 || x1 - x < 2 || y1 - y < 2, k = by.get(x + ',' + y);
+        const border = x - x0 < 2 || y - y0 < 2 || x1 - x < 2 || y1 - y < 2;
         el++; st.tiles.eligible++; if (border) st.tiles.bEligible++;
-        if (k && TUFTS.includes(k)) { tu++; st.tiles.tufts++; if (border) st.tiles.bTufts++; }
-        else if (k && FLOWERS.includes(k)) { fl++; st.tiles.flowers++; if (border) st.tiles.bFlowers++; }
-        else if (k && k.startsWith('clump-tall')) { cl++; st.tiles.clumps++; if (border) st.tiles.bClumps++; }
       }
+      // the meadow scatter: every piece (kind, size by the name's suffix), flecks apart; a piece a cell lies in counts once (its foot's tile)
+      { const S = st.scatter; let n = 0;
+        for (const d of dec) { if (!isScatterPlant(d.kind)) continue; n++; S.pieces++; const b = d.x - x0 < 2 || d.y - y0 < 2 || x1 - d.x < 2 || y1 - d.y < 2; if (b) S.bPieces++;
+          if (d.kind.startsWith('fleck-')) S.flecks++; else { S[/-young(-m)?$/.test(d.kind) ? 'young' : /-grown(-m)?$/.test(d.kind) ? 'grown' : 'mid']++; const slot = d.kind.replace(/^sc-/, '').replace(/-(young|grown)/, '').replace(/-m$/, ''); S.kinds[slot] = (S.kinds[slot] || 0) + 1; } }
+        if (el >= 250) S.perCell.push(+(n / (el * 9)).toFixed(3)); }
       // the art director's scatter rule: every prop's foot tile and every tuft, flower and clump sits on a plain tile (the tile and its eight neighbours one terrain)
       { const ct = cellTerrain(seed, X, Y), at = (x, y) => ct.terrain[(y - y0 + 1) * ct.w + (x - x0 + 1)];
         const plain = (x, y) => { const v = at(x, y); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (at(x + dx, y + dy) !== v) return false; return true; };
         // (the scrub shrubs have their own rule, tests/gen7-place.test.mjs: a shrub of a patch one or two cells across stands on the patch's own edge)
         for (const p of props) if (p.fam !== 'landmark' && p.fam !== 'shrubs' && !plain(p.x, p.y)) { st.propOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['prop', p.kind, p.x, p.y]); }
-        for (const d of dec) if ((TUFTS.includes(d.kind) || FLOWERS.includes(d.kind) || d.kind.startsWith('clump-tall') || d.kind.startsWith('fleck-')) && !plain(d.x, d.y)) { st.decalOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['decal', d.kind, d.x, d.y]); } }
-      if (el >= 250) { if (tu * 10 / el < 0.5 || tu * 10 / el > 2.5) { st.cellTuftBad++; if (st.tuftAt.length < 4) st.tuftAt.push([X, Y, +(tu * 10 / el).toFixed(2), el]); } if (fl * 10 / el < 0.35 || fl * 10 / el > 1.2) st.cellFlowerBad++; }
+        for (const d of dec) if (isScatterPlant(d.kind) && !plain(d.x, d.y)) { st.decalOnEdge++; if (st.edgeAt.length < 4) st.edgeAt.push(['decal', d.kind, d.x, d.y]); } }
     }
     // reed banks only on shores
     { const ir = cellIR(seed, X, Y);
@@ -90,7 +92,7 @@ export function decorProps(seed, { every = 1 } = {}) {
   // groves by size and biome; outcrops by colour
   for (const g of groups.values()) {
     if (g.fam === 'trees') { hist(st.groveHist, g.n); const b = (st.groveHistByBiome[g.biome] ||= {}); hist(b, g.n); }
-    if (g.fam === 'rocks') { st.outcrops++; if (g.kinds.size > 1) st.outcropMixed++; }
+    if (g.fam === 'rocks') st.outcrops++;
   }
   // the Hollow Tree: no crown within two tiles (a crown is 3 wide and 3 up from its foot; two tiles round the tree's own box), no other prop within two tiles
   for (const h of D.hollowSites()) {
@@ -108,7 +110,8 @@ export function decorProps(seed, { every = 1 } = {}) {
     const inB = p => p.tx >= b.origin.x - 2 && p.tx <= b.origin.x + b.w + 1 && p.ty >= b.origin.y && p.ty <= b.origin.y + b.h + 2, inA = p => p.tx >= a.origin.x - 2 && p.tx <= a.origin.x + a.w + 1 && p.ty >= a.origin.y && p.ty <= a.origin.y + a.h + 2;
     const key = p => p.kind + ',' + p.tx + ',' + p.ty + ',' + (p.x + a.origin.x * 48) + ',' + (p.y + a.origin.y * 48);
     const keyB = p => p.kind + ',' + p.tx + ',' + p.ty + ',' + (p.x + b.origin.x * 48) + ',' + (p.y + b.origin.y * 48);
-    const sa = new Set(a.props.filter(inB).map(key)), sb = new Set(b.props.filter(inA).map(keyB));
+    const rectB = p => p.tx >= b.origin.x && p.tx < b.origin.x + b.w && p.ty >= b.origin.y && p.ty < b.origin.y + b.h, rectA = p => p.tx >= a.origin.x && p.tx < a.origin.x + a.w && p.ty >= a.origin.y && p.ty < a.origin.y + a.h;   // a decal is its foot tile's: the pieces both cells hold
+    const sa = new Set([...a.props.filter(inB).map(key), ...a.decals.filter(rectB).map(key)]), sb = new Set([...b.props.filter(inA).map(keyB), ...b.decals.filter(rectA).map(keyB)]);   // the meadow pieces too: a piece near a border is the same from both cells
     st.seamProps += sa.size;
     for (const k of sa) if (!sb.has(k)) { st.seamMismatch++; if (st.seamAt.length < 4) st.seamAt.push([X, Y, dx, dy, k]); }
     for (const k of sb) if (!sa.has(k)) { st.seamMismatch++; if (st.seamAt.length < 4) st.seamAt.push([X, Y, dx, dy, k]); }

@@ -129,6 +129,11 @@ export function registerPictures(reqs, env) {
         const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
         put(r.id, r.size[0], r.size[1], "the opened pod's layers", () => (layersPlaced(r.cls) ? podFromLayers(r.cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false, frame?.taxonomy?.clan ?? null) : new PB(r.size[0], r.size[1])), layersPlaced(r.cls) ? { status: podStatus(r.cls) } : {}); break;
       }
+      case "podside": {   // the pod beside the nest in the inside view: the renderer's collection pod (88 x 112) reduced once to 0.8x (70 x 90), the same Lanczos reduction as podicon, scale only
+        const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR(), [w, h] = r.size;
+        const unknown = !r.species && r.state === "sealed" && masterAt("pod-collection-unknown", 88, 112);   // the unknown pod is the signed master itself, as the full-size pod is
+        put(r.id, w, h, "the collection pod's layers", () => { if (!unknown && !layersPlaced("collection")) return new PB(w, h); const big = unknown ? assetOf("pod-collection-unknown") : podFromLayers("collection", pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, r.state === "sealed", frame?.taxonomy?.clan ?? null), px = fitDown(big.rgba(), big.w, big.h, w, h); return { w, h, rgba: () => px }; }); break;
+      }
       case "podicon": {   // the founder's pod in the Incubate panel's price (build spec 6a.2): the renderer's collection pod (88 x 112) reduced once to 16 x 20 in the logic process
         const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR(), [w, h] = r.size;
         put(r.id, w, h, "the collection pod's layers", () => { if (!layersPlaced("collection")) return new PB(w, h); const big = podFromLayers("collection", pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false, frame?.taxonomy?.clan ?? null), px = fitDown(big.rgba(), big.w, big.h, w, h); return { w, h, rgba: () => px }; }); break;

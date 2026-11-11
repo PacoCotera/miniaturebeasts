@@ -79,6 +79,11 @@ void sitting_key(int code);
 void settings_words(void);
 int settings_focus(focus_target_t *out, int cap);
 void settings_key(int code);
+
+/* The store screen (screens/store.c): its words, the targets as they drew them, its keys */
+void store_words(void);
+int store_focus(focus_target_t *out, int cap);
+void store_key(int code);
 /* Cross (screens/cross.c): the splice, the overview or one chapter, the partner on the ring; its words, the targets as they drew them, its keys */
 void cross_words(void);
 int cross_focus(focus_target_t *out, int cap);
