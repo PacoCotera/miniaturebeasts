@@ -71,9 +71,8 @@ jobs:
           station=true
           testpage=true'
               fi
-              # The browser checks (the Station and test page journeys, the face, layer and golden checks, the layout check) run locally before every
-              # merge into station-gate; a pull request into main runs the build, the smoke check and the node tests (the owner, 2026-10-28). A manual run runs all.
-              filter=$(printf '%s\n' "$filter" | sed -e 's/^station=.*/station=false/' -e 's/^testpage=.*/testpage=false/') ;;
+              # The browser checks are the `browser` job below (owner, 2026-11-10: the one full run on the release pull request includes them).
+              : ;;
           esac
           echo "$result" >> "$GITHUB_OUTPUT"
           echo "$filter" >> "$GITHUB_OUTPUT"
@@ -199,19 +198,6 @@ jobs:
           fi
           caddy version
           python3 -m unittest discover -s ops/sandbox/tests -v
-      - name: Station journey
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
-        timeout-minutes: 10   # measured about 4 minutes
-        # The Station's browser journey on the face with the service in mock mode beside it (a fixture save, a seeded pod, dock, the crates opened, Pods by keys, the rules of the screens that are
-        # not built yet through their intents, Grow and Cross painting nothing, every not-built screen, Idle); station-build.md §5.
-        # The milestones whose screens are not on the face are listed from prototypes/station/tools/journey-pending/ on every run.
-        # The play page's journey (prototypes/play/tools/journey.mjs) is not run here: the play page stays published.
-        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
-      - name: Test page journey
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.testpage == 'true'
-        timeout-minutes: 12   # measured about 5 minutes
-        # The test page's journey (prototypes/test/tools/journey.mjs): every region at the proof sizes against the signed numbers, the menu, the switch, the dock, F and the full-screen view, the pixel rule and the safe-area override.
-        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/test/tools/journey.mjs
       - name: Placed masters match their index
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
         # Every master placed in prototypes/ui/assets/masters (by ui/tools/place-masters.mjs) is checked against its index entry: file present, size, SHA-256.
@@ -225,53 +211,6 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/lvfc" lv_font_conv@1.5.3
           sh prototypes/face/tools/bake-fonts.sh "$RUNNER_TEMP/lvfc/node_modules/.bin/lv_font_conv"
           git diff --exit-code -- prototypes/face/src/fonts
-      - name: Station face in a browser (LVGL)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
-        # The Station page boots the WebAssembly face and draws nothing else: LVGL 9.6.0, a 1024×600 display, keys in, the same pixels as
-        # the native Linux build; the load time, the size on the wire and the cost of a full-frame copy (CPU throttled
-        # 4× as a phone's stand-in) are printed.
-        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/face-check.mjs
-      - name: Station layer table in a browser (LVGL)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
-        # Pods in each of its states and Home at each of its capture points on the Station page itself (the face in test mode, ?test): the pixels outside the palette on pass 1 (chrome)
-        # and pass 2 (chrome and art) read 0, Home's regions have no departure from home.json and its budgets are printed, painted masters showing only on pass 3 (the art director's layer table); a page error, a render error or an error the face sent fails it.
-        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/layer-check.mjs
-      - name: Pods and Home goldens (LVGL)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
-        # Each of Pods' states and Home's capture points drawn by the page's own face (the C words on the page's own pictures; Home with reduced motion, its two timed points on a virtual clock): the framebuffer hash against prototypes/face/golden/pods/pods.json and prototypes/face/golden/home/home.json.
-        # With --logs, the face's log and the props facts of each golden's frame are written for the layout check (outside the tree).
-        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --check --logs "$RUNNER_TEMP/layout-logs"
-      - name: Layout check (report mode)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
-        # Rules L0 to L11 (ui/specs/layout.mjs) over every golden's log: the index (JSON and Markdown, every finding) and the review set (one card per screen and rule, the worst
-        # instance of each kind), with the cards' overlays only. Report mode: it fails only on a
-        # finding of a rule frame.json layout.enforced lists for its screen, an unused exception, a malformed layout block, or L0 on an enforced screen.
-        run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs" --out "$RUNNER_TEMP/layout-check" --overlays review
-      - name: Goldens' states with the longest names (LVGL)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
-        # Every golden state drawn again with each mibi named by the widest names of the live list (play/src/names.mjs longestNames, ranked by the 16 px font's advances), for the long-names text fit below: nothing is written into the tree and no hash is compared (the goldens pin the archived short names).
-        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --long-names --logs "$RUNNER_TEMP/layout-logs-long"
-      - name: Layout check (long names)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
-        # The text fit (overruns, ui/specs/layout.mjs) over those logs: a name that outruns the plate it is drawn on fails the run; the list is <out>/long-names.md and .json.
-        run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs-long" --long-names --out "$RUNNER_TEMP/layout-check/long-names"
-      - name: Layout check output
-        if: always() && steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: layout-check
-          path: ${{ runner.temp }}/layout-check
-          if-no-files-found: ignore
-          retention-days: 14
-      - name: Station layer checks
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
-        # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):
-        # the chrome and art layers at exactly 0 off-palette pixels; the face's log (every string Inter at 16, 20 or 28 px,
-        # none refused, no error, no canvas text call); every drawn region's box against its spec file; the stamp label
-        # at 120 and the rail's tab count against the frame; where each frame region's ink lies against the spec.
-        run: |
-          set -euo pipefail
-          node prototypes/station/tools/checks.mjs
       - name: Publish the tested bundle as a release
         if: github.ref == 'refs/heads/main' && steps.scope.outputs.docs != 'true'
         env:
@@ -421,3 +360,134 @@ jobs:
         run: |
           set -euo pipefail
           MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test --test-shard=${{ matrix.shard }}/4 prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/places/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
+
+  browser:
+    # The browser checks, in four parallel shards on the dev runners beside `build` and `rules` (owner 2026-11-10: the one full run on the release pull request includes the Station, play page and face checks; no nightly run).
+    # They moved here out of `build`, where they ran in one line (about 15 minutes of the 29 measured on 2026-10-28). The check names are `browser (station)`, `browser (face)`, `browser (testpage)` and `browser (play)`; the merge rule requires them with `build` and `rules (1/4)` to `rules (4/4)`.
+    # Scope: as `rules`: documents only, or no browser check needed (.github/ci-filter.sh), skips every step and the job still ends green; a push to main runs none; a manual run runs all.
+    # The tools are on the dev server once: Playwright 1.56 with its Chromium in /home/mb/pw156, the Emscripten SDK in ~/emsdk (shared by the runners).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, mb-dev]
+    timeout-minutes: 30   # the limit only catches a hung run
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [station, face, testpage, play]
+    name: browser (${{ matrix.shard }})
+    env:
+      EMSDK: /home/mb/emsdk
+      PW_DIR: /home/mb/pw156
+      PLAYWRIGHT_BROWSERS_PATH: /home/mb/pw156/browsers
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+          # The same list as `build` and `rules` (the checks read the same folders).
+          sparse-checkout: |
+            .github
+            website
+            prototypes
+            ops
+            design
+            hardware
+            v1/native/vendor
+            art/companion-48
+            art/places
+            art/device-buttons
+            art/station-masters
+            art/retro-diffusion-trial
+      - name: Scope (documents only, or this shard not needed, skips it)
+        id: scope
+        run: |
+          set -u
+          result=docs=false
+          filter='run=true'
+          case $GITHUB_EVENT_NAME in
+            push) filter='run=false' ;;
+            pull_request)
+              if list=$(git diff --name-status --no-renames HEAD^1 HEAD); then
+                result=$(printf '%s\n' "$list" | sh .github/docs-only.sh) || result=docs=false
+              fi
+              if names=$(git diff --name-only --no-renames HEAD^1 HEAD); then
+                all=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || all='station=true
+          testpage=true'
+                case ${{ matrix.shard }} in
+                  station|face) filter=run=$(echo "$all" | sed -n 's/^station=//p') ;;
+                  testpage) filter=run=$(echo "$all" | sed -n 's/^testpage=//p') ;;
+                  play) filter=run=$(echo "$all" | sed -n 's/^tests=//p') ;;
+                esac
+              fi ;;
+          esac
+          echo "$result" >> "$GITHUB_OUTPUT"
+          echo "$filter" >> "$GITHUB_OUTPUT"
+          echo "Shard ${{ matrix.shard }}: docs-only $result; $filter" >> "$GITHUB_STEP_SUMMARY"
+      - name: Build the Station's face (the checks read its dist folder)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
+        # The same command as in `build` and `rules`.
+        run: |
+          set -euo pipefail
+          FACE_BUILD_DIR="$RUNNER_TEMP/face-build" prototypes/face/build.sh all
+      - name: Install the pages' packages (vite, p-queue)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
+        run: npm ci --prefix prototypes --no-audit --no-fund --silent
+      - name: Places toolchain (pinned flatc, npm ci)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          sh prototypes/places/tools/get-flatc.sh "$RUNNER_TEMP/flatc"
+          echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
+          npm ci --prefix prototypes/places --no-audit --no-fund
+          npm ci --prefix prototypes/exploration --no-audit --no-fund
+      - name: Station journey
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'station'
+        timeout-minutes: 10   # measured about 4 minutes
+        # The Station's browser journey on the face with the service in mock mode beside it; station-build.md §5.
+        run: node prototypes/station/tools/journey.mjs
+      - name: Station layer checks
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'station'
+        # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6).
+        run: node prototypes/station/tools/checks.mjs
+      - name: Station face in a browser (LVGL)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
+        # The Station page boots the WebAssembly face and draws nothing else: load time, size on the wire and the cost of a full-frame copy are printed.
+        run: node prototypes/face/tools/face-check.mjs
+      - name: Station layer table in a browser (LVGL)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
+        # Pods and Home at each state: the pixels outside the palette on pass 1 and pass 2 read 0, Home's regions and budgets.
+        run: node prototypes/face/tools/layer-check.mjs
+      - name: Pods and Home goldens (LVGL)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
+        # The framebuffer hash of each state against prototypes/face/golden; with --logs the face's log and props facts are written for the layout check (outside the tree).
+        run: node prototypes/face/tools/goldens.mjs --check --logs "$RUNNER_TEMP/layout-logs"
+      - name: Layout check (report mode)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
+        # Rules L0 to L11 (ui/specs/layout.mjs) over every golden's log; fails only on a finding of a rule frame.json layout.enforced lists, an unused exception, a malformed layout block, or L0 on an enforced screen.
+        run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs" --out "$RUNNER_TEMP/layout-check" --overlays review
+      - name: Goldens' states with the longest names (LVGL)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
+        # Every golden state drawn again with the widest names of the live list; nothing is written into the tree and no hash is compared.
+        run: node prototypes/face/tools/goldens.mjs --long-names --logs "$RUNNER_TEMP/layout-logs-long"
+      - name: Layout check (long names)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
+        # The text fit over those logs: a name that outruns the plate it is drawn on fails the run.
+        run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs-long" --long-names --out "$RUNNER_TEMP/layout-check/long-names"
+      - name: Layout check output
+        if: always() && steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: layout-check
+          path: ${{ runner.temp }}/layout-check
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Test page journey
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'testpage'
+        timeout-minutes: 12   # measured about 5 minutes
+        # The test page's journey: every region at the proof sizes against the signed numbers, the menu, the switch, the dock, F and the full-screen view, the pixel rule and the safe-area override.
+        run: node prototypes/test/tools/journey.mjs
+      - name: Play page journey
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'play'
+        timeout-minutes: 20   # not yet measured in this job
+        # The play page's journey (prototypes/play/tools/journey.mjs), phone test included.
+        run: node prototypes/play/tools/journey.mjs
