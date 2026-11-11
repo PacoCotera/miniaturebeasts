@@ -18,7 +18,8 @@ const here = path.dirname(fileURLToPath(import.meta.url)), root = path.resolve(h
 const SHOTS = process.env.TP_SHOTS || null; if (SHOTS) mkdirSync(SHOTS, { recursive: true });
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown", ".wasm": "application/wasm", ".ttf": "font/ttf", ".svg": "image/svg+xml", ".webmanifest": "application/manifest+json" };
 const server = createServer((req, res) => {
-  let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/"));
+  const rel = decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/");
+  let p = path.join(rel.startsWith("/art/") ? path.resolve(root, "..") : root, rel);   // /art/ is the repository's art folder: the Companion imports art/places/map-rules.json from outside prototypes (the bundle inlines it)
   if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
   if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
   res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream", "cache-control": "no-cache" }); res.end(readFileSync(p));
