@@ -6,160 +6,160 @@
  "mibis": 0,
  "dock": 0,
  "stopMid": false,
- "presses": 2992,
- "digest": "7d36050f490bd396bd8a043fb3a5d9b72584d7e460fe6850bd3919e0499342c5",
+ "presses": 2865,
+ "digest": "abe7efa9b7b71a5634bee8bdf68edae927134a5aa36b3e6c6ae8a8263c4bc943",
  "steps": [
   {
    "n": 1,
    "presses": 129,
    "turn": 1,
    "bay": 0,
-   "d": "08c8832a26ad6d91"
+   "d": "57504bf868155991"
   },
   {
    "n": 2,
-   "presses": 296,
+   "presses": 295,
    "turn": 2,
    "bay": 0,
-   "d": "b604870e7a1aa924"
+   "d": "c08e3fa1e2bbed66"
   },
   {
    "n": 3,
-   "presses": 578,
+   "presses": 576,
    "turn": 3,
    "bay": 0,
-   "d": "e59453360ca7fcea"
+   "d": "4f770252b6f7482e"
   },
   {
    "n": 4,
-   "presses": 671,
+   "presses": 668,
    "turn": 4,
    "bay": 0,
-   "d": "6e905b7e584a93f0"
+   "d": "d2df970310a03890"
   },
   {
    "n": 5,
-   "presses": 806,
+   "presses": 802,
    "turn": 5,
    "bay": 0,
-   "d": "62e39eed1454192b"
+   "d": "9c455e2dcadf8ff0"
   },
   {
    "n": 6,
-   "presses": 1023,
+   "presses": 1018,
    "turn": 6,
    "bay": 0,
-   "d": "85e08df65ba5fd0f"
+   "d": "fc82eb9198187d5d"
   },
   {
    "n": 7,
-   "presses": 1126,
+   "presses": 1120,
    "turn": 7,
    "bay": 0,
-   "d": "b7742a96024a1300"
+   "d": "1c7cbcdf5b089395"
   },
   {
    "n": 8,
-   "presses": 1160,
+   "presses": 1158,
    "turn": 8,
    "bay": 0,
-   "d": "bcdffe5c06521d29"
+   "d": "ac06d6b891dc818d"
   },
   {
    "n": 9,
-   "presses": 1432,
+   "presses": 1430,
    "turn": 9,
    "bay": 0,
-   "d": "b1e6d7bd782414e0"
+   "d": "54b1df42bf510004"
   },
   {
    "n": 10,
-   "presses": 1500,
+   "presses": 1498,
    "turn": 10,
    "bay": 0,
-   "d": "b04d8ae472f0b64b"
+   "d": "8b01b677ec45cb2d"
   },
   {
    "n": 11,
-   "presses": 1610,
+   "presses": 1548,
    "turn": 11,
    "bay": 0,
-   "d": "de7e418ffa38403d"
+   "d": "a296016a40ab0d65"
   },
   {
    "n": 12,
-   "presses": 1767,
+   "presses": 1723,
    "turn": 12,
-   "bay": 0,
-   "d": "c4c071a9d04aaf21"
+   "bay": 1,
+   "d": "7f67807e72266705"
   },
   {
    "n": 13,
-   "presses": 2052,
+   "presses": 1915,
    "turn": 13,
    "bay": 1,
-   "d": "2bcb90ea066162b6"
+   "d": "0251dfcbf31582f4"
   },
   {
    "n": 14,
-   "presses": 2170,
+   "presses": 2031,
    "turn": 14,
    "bay": 1,
-   "d": "c30559ea67ff7719"
+   "d": "1218780e97d5017f"
   },
   {
    "n": 15,
-   "presses": 2325,
+   "presses": 2140,
    "turn": 15,
    "bay": 1,
-   "d": "556912fd0f739f89"
+   "d": "c2384af5b665ba97"
   },
   {
    "n": 16,
-   "presses": 2375,
+   "presses": 2300,
    "turn": 16,
    "bay": 1,
-   "d": "44ea935c1de72d2d"
+   "d": "a6149099291b2734"
   },
   {
    "n": 17,
-   "presses": 2460,
+   "presses": 2400,
    "turn": 17,
-   "bay": 0,
-   "d": "a08e4b8455ec8fdc"
+   "bay": 1,
+   "d": "960f29513830d885"
   },
   {
    "n": 18,
-   "presses": 2633,
+   "presses": 2547,
    "turn": 18,
-   "bay": 0,
-   "d": "84ced7ccbc4fd633"
+   "bay": 1,
+   "d": "b701cdfe27f80241"
   },
   {
    "n": 19,
-   "presses": 2873,
+   "presses": 2786,
    "turn": 19,
-   "bay": 0,
-   "d": "ada471410751391a"
+   "bay": 1,
+   "d": "42a2b971c21c96a4"
   },
   {
    "n": 20,
-   "presses": 2992,
+   "presses": 2865,
    "turn": 20,
-   "bay": 0,
-   "d": "7d36050f490bd396"
+   "bay": 1,
+   "d": "abe7efa9b7b71a56"
   }
  ],
  "summary": {
   "turn": 20,
   "expN": 21,
   "gen": 7,
-  "revealed": 143,
-  "visited": 36,
-  "called": 32,
-  "pods": 65,
-  "creatures": 781,
-  "bay": 0,
+  "revealed": 135,
+  "visited": 24,
+  "called": 24,
+  "pods": 66,
+  "creatures": 780,
+  "bay": 1,
   "hold": null,
   "mibis": 0,
   "carried": 0,
