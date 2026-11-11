@@ -1046,7 +1046,8 @@ const LOCK_MAX = 2500;   // no hold on the keys lasts longer than this, whatever
 function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + Math.min(ms, LOCK_MAX)); }
 // A crossing is a camera slide of one screen in the walking direction (owner walk note 18): the last picture of the place left slides out, the new place slides in, input is locked for its length.
 const SLIDE_MS = 300;
-function viewSnapshot() { const cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H; const c = cv.getContext('2d'); c.drawImage(scr, 0, VIEW_Y, SCR_W, VIEW_H, 0, 0, SCR_W, VIEW_H); if (goalBandOn()) c.clearRect(0, 0, SCR_W, GOAL_BAND_H); return cv; }   // the goal band is drawn once, by drawGoalBand over the slide, never inside the sliding layer
+// The place's picture sits below the goal band (the band's rows hold no picture), so the sliding layer is the view below the band: nothing of the band, and no empty band rows, travels with it.
+function viewSnapshot() { const gb = goalBandOn() ? GOAL_BAND_H : 0, cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H - gb; cv.gb = gb; const c = cv.getContext('2d'); c.drawImage(scr, 0, VIEW_Y + gb, SCR_W, VIEW_H - gb, 0, 0, SCR_W, VIEW_H - gb); return cv; }   // the goal band is drawn once, by drawGoalBand over the slide, never inside the sliding layer
 // The place's own picture (before the goal band, the message and the bottom line go over it) is kept each frame the explorer stands within a tile of an edge: that is what slides out.
 function keepEdgeView() {
   const P = S.exp && S.exp.patch; if (!P || !motion()) return;
@@ -1059,10 +1060,12 @@ function drawSlide() {
   const sl = FX.slide; if (!sl) return;
   if (!motion() || NOW - sl.at >= SLIDE_MS) { FX.slide = null; return; }
   const p = slideP(sl), nw = viewSnapshot(), W = SCR_W, H = VIEW_H;
-  g.save(); g.beginPath(); g.rect(0, VIEW_Y, W, H); g.clip();
-  g.fillStyle = HEX[C.ink]; g.fillRect(0, VIEW_Y, W, H);   // nothing of the frame under the slide shows through the cleared band rows
-  g.drawImage(sl.snap, Math.round(-sl.dx * p * W), VIEW_Y + Math.round(-sl.dy * p * H));
-  g.drawImage(nw, Math.round(sl.dx * (1 - p) * W), VIEW_Y + Math.round(sl.dy * (1 - p) * H));
+  const top = VIEW_Y + nw.gb;   // the slide runs below the goal band; the band itself stays where it is
+  g.save(); g.beginPath(); g.rect(0, top, W, H - nw.gb); g.clip();
+  g.fillStyle = HEX[C.ink]; g.fillRect(0, top, W, H - nw.gb);
+  const Hs = H - nw.gb;   // the layers travel the height they slide in, so no gap opens between them
+  g.drawImage(sl.snap, Math.round(-sl.dx * p * W), top + Math.round(-sl.dy * p * Hs));
+  g.drawImage(nw, Math.round(sl.dx * (1 - p) * W), top + Math.round(sl.dy * (1 - p) * Hs));
   g.restore();
 }
 function transition() { FX.transAt = NOW; lockInput(160); if (typeof stopRepeat === 'function') stopRepeat(); } // a held direction never carries across scales
