@@ -115,7 +115,7 @@ test("places: the kinds entered, each once, only the five", () => {
 });
 
 test("entering a place or the cave adds its kind", () => {
-  assert.match(source("enterPatch"), /tripPlace\(ex, groundName\(G\.land\[ex\.pos\], false\)\)/);
+  assert.match(source("enterPatchBuilt"), /tripPlace\(ex, groundName\(G\.land\[ex\.pos\], false\)\)/);
   assert.match(source("enterCave"), /tripPlace\(ex, 'cave'\)/);
   assert.match(source("advance"), /tripStormTick\(ex\)/);
 });
