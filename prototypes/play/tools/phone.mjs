@@ -13,7 +13,8 @@ const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, 
 const here = path.dirname(fileURLToPath(import.meta.url)), root = path.resolve(here, "../..");
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown", ".wasm": "application/wasm", ".ttf": "font/ttf", ".svg": "image/svg+xml" };
 const server = createServer((req, res) => {
-  let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/"));
+  const rel = decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/");
+  let p = path.join(root, rel); if (!existsSync(p)) p = path.join(path.resolve(root, ".."), rel);   // a path outside prototypes resolves in the repository: the Companion imports the map rules from there (the bundle inlines them)
   if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
   if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
   res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream", "cache-control": "no-cache" }); res.end(readFileSync(p));
