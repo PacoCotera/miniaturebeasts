@@ -29,4 +29,4 @@ Checked and unchanged: idle, home, habitat (`--check`: goldens match). No other 
 - The old cold mark (the frost species dotted disc) is still used elsewhere as mark-species-frost-24x24; untouched.
 
 ## Last commit
-See `git -C /home/mb/mb/wt-glyphs log -1` (hash below).
+4f260d27e (this report was amended into the working tree after it; the report text itself is unchanged by the hash line).
