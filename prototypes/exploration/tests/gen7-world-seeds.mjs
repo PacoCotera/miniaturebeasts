@@ -26,6 +26,7 @@ export function regionChecks(lo, hi) {
     for (const { G } of all) {   // the checks' own numbers, read back from the data
       let dry = 0, main = 0, walk = 0; const lv = [0, 0];   // one raised level: 0 and 1
       for (let c = 0; c < NC; c++) { walk += G.comp[c]; if (G.land[c] !== L.WATER && !G.island[c]) { dry++; main += G.comp[c]; lv[G.level[c]]++; } }
+      const lost = G.lost || 0; dry += lost; main += lost; walk += lost; lv[0] += lost;   // a rim region keeps the credit for the border ring the coast took
       assert.ok(main * 100 >= 70 * dry && walk >= 260 && lv.every(n => n * 100 >= 10 * dry) && G.cross.length >= 1);
     }
   });

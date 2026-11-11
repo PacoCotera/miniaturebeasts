@@ -13,7 +13,10 @@ import { RW, RH, CW, CH, fieldsAt } from './world.mjs';
 
 export { CW, CH };
 export const WTW = RW * CW, WTH = RH * CH;                // the realm in tiles
-export const RAISE_OFF = 7;                                // the map's end: raised land keeps seven tiles of grass from the realm's rim (the closing band is four)
+export const RAISE_OFF = 12;                               // the coast: raised land begins at least twelve tiles in from the border line (the inner face of the realm's outer ring of cells, which is water)
+export const BORDER_X = CW, BORDER_Y = CH;                 // the border ring is one cell deep: its width in tiles on the west and east, its height on the north and south
+// the tiles from the border line to the tile (gx, gy): 0 on the first walkable tile, negative inside the border ring and beyond the realm
+export const inlandOf = (gx, gy) => Math.min(gx - BORDER_X, WTW - 1 - BORDER_X - gx, gy - BORDER_Y, WTH - 1 - BORDER_Y - gy);
 const SIGMA = 6, FLAT = 5, DETAIL = 0.02, MARGIN = 0.05, KILL = FLAT + 3.2 * SIGMA, MIN_FEATURE = 4;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const N = CW * CH;
@@ -51,14 +54,15 @@ export function levelsOf(realm) {
   L = { realm, seed: realm.seed, q: new Map(), cells: new Map(), wayups: new Map(), pull: new Map() };
   LEVELS.set(realm, L); return L;
 }
+export const forgetLevels = realm => LEVELS.delete(realm);   // the realm's cells changed (the coast): its tile levels are read again
 const cellIdx = (X, Y) => clamp(Y, 0, RH - 1) * RW + clamp(X, 0, RW - 1);
 const inRealm = (X, Y) => X >= 0 && Y >= 0 && X < RW && Y < RH;
 
 // The pull's anchors round a cell: the centre of each cell near it, and the middle of each edge between two of them that have one level. An anchor pulls only as much as the field
 // needs: by the amount the field's own height at that spot falls short of the cell's level (with a small margin), so where the field already agrees nothing is added.
-// the map's end: the raised land fades out over the last RIM tiles (a straight cliff cut along the realm's rim would be a long wall), so it tapers like any land
+// the coast: the raised land fades out over the last RIM tiles to the border line (a straight cliff cut along the coast would be a long wall), so it tapers like any land
 const RIM = 22, RIM_PULL = 0.35;
-const rimBias = (px, py) => { const d = Math.min(px, py, WTW - px, WTH - py); return d >= RIM ? 0 : -RIM_PULL * Math.min(1, (RIM - d) / (RIM - RAISE_OFF)); };
+const rimBias = (px, py) => { const d = Math.min(px - BORDER_X, WTW - BORDER_X - px, py - BORDER_Y, WTH - BORDER_Y - py); return d >= RIM ? 0 : -RIM_PULL * Math.min(1, (RIM - d) / (RIM - RAISE_OFF)); };
 function anchorStrength(L, key, u, v, e0, sign, px, py) {
   let s = L.pull.get(key); if (s !== undefined) return s;
   const S = seedCtx(L.seed), base = S.at(u, v).height - e0 + rimBias(px, py);
@@ -179,8 +183,8 @@ export function tileLevel(L, gx, gy) {
   const X = Math.floor(gx / CW), Y = Math.floor(gy / CH);
   return levelCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW];
 }
-// raised land: level 1, and at least RAISE_OFF tiles from the realm's rim
-export const raised = (L, gx, gy) => Math.min(gx, gy, WTW - 1 - gx, WTH - 1 - gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
+// raised land: level 1, and at least RAISE_OFF tiles from the border line
+export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
 
 // ---- the way up: on a straight south-facing face, nearest the stair's port ----
 // The stair on the edge between the cell A = (ax, ay) and the cell south of it, A being the higher. A way up is 2 tiles wide with one tile each side; the face runs straight at

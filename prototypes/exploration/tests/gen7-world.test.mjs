@@ -27,7 +27,9 @@ test('the fields are functions of the realm seed and a world position', () => {
 test('a region is its place, not its turn: the same whenever and in whatever order it is opened', () => {
   for (const seed of [7, 13, 42]) {
     const R = realm7(seed);
-    for (const [ax, ay] of [[4, 4], [0, 0], [2, 2], [3, 1]]) {   // rebuilt from the realm's attempt numbers alone, out of order
+    // rebuilt from the realm's attempt numbers alone, out of order, on a realm with no coast: the nine inner regions are as they were before the coast (the coast is laid after the checks and only
+    // remakes the sixteen on the rim), which is the guard that the land, once made, is kept
+    for (const [ax, ay] of [[1, 1], [2, 2], [3, 1], [1, 3], [3, 3]]) {
       const G = regionAt(buildRealm(seed, R.realm.tries), ax, ay);
       assert.deepEqual(vectorOf(G), vectorOf(R.regions[ay * ATLAS + ax]), seed + ' ' + ax + ',' + ay);
     }

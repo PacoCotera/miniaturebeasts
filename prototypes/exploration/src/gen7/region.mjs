@@ -6,8 +6,8 @@
 import FlatQueue from 'flatqueue';
 import { hash, makeRng, MW, MH, L, EDGE, G2, WALK_MIN, BIOME_GROUND, cdist, cxy, cheb, passableIn, canStepIn, edgeIndex } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
-import { buildRealm, RW, CW, CH, NB8, isSaddle, levelZones } from './world.mjs';
-import { levelsOf, findWayup } from './levels.mjs';
+import { buildRealm, RW, RH, CW, CH, NB8, isSaddle, levelZones } from './world.mjs';
+import { levelsOf, findWayup, forgetLevels } from './levels.mjs';
 
 export const NC = MW * MH;
 export const STRANDED_MAX_PCT = 6;   // the most a region's dry land that no stair with a way up reaches (a pocket across a river that ends on a north-facing wall), in percent
@@ -64,9 +64,10 @@ function trailsOf(G) {
 }
 
 // ---- one region ----
-export function regionAt(realm, ax, ay) {
+// `pt` is a piece attempt: a rim region made again with its coast draws its pieces afresh when the first draw leaves it short of a start or a gate (the land and `tries` stay as they are)
+export function regionAt(realm, ax, ay, pt = 0) {
   const seed = realm.seed, s = ay * ATLAS + ax, t = realm.tries[s], biome = realm.slotBiome[s], B = BIOME_GROUND[biome] || null;
-  const s0 = hash(seed, 'gen7', 'piece', ax, ay, t), RGn = tag => makeRng(hash(s0, tag));
+  const s0 = pt ? hash(seed, 'gen7', 'piece', ax, ay, t, pt) : hash(seed, 'gen7', 'piece', ax, ay, t), RGn = tag => makeRng(hash(s0, tag));
   const wc = c => (ay * MH + ((c / MW) | 0)) * RW + ax * MW + (c % MW);   // a region cell's realm index
   const land = new Uint8Array(NC), ford = new Uint8Array(NC), island = new Uint8Array(NC), level = new Uint8Array(NC), wk = new Uint8Array(NC), edge = new Uint8Array(2 * NC);
   for (let c = 0; c < NC; c++) { const w = wc(c); land[c] = realm.land[w]; ford[c] = realm.ford[w]; level[c] = realm.level[w]; wk[c] = realm.wkind[w]; }
@@ -161,7 +162,11 @@ export function regionAt(realm, ax, ay) {
       for (let h = 0; h < qu.length; h++) { const u = qu[h], ux = u % MW, uy = (u / MW) | 0; for (const [dir, dx, dy] of SIDES) { const X = ux + dx, Y = uy + dy; if (!inRegion(X, Y)) continue; const d = Y * MW + X;
         if (seen[d] || !canStepIn(Gp, u, dir) || island[d] || Math.max(Math.abs(X - x), Math.abs(Y - ((c / MW) | 0))) > 2) continue; seen[d] = 1; qu.push(d); } }
       return qu.length >= G2.START_REACH; };
-    const sc = []; for (let c = 0; c < NC; c++) if (ok(c)) sc.push(c);
+    let sc = []; for (let c = 0; c < NC; c++) if (ok(c)) sc.push(c);
+    if (realm.coast) {   // starts keep clear of the coast: 3 cells from the border cells (2 where fewer than 5 are left); a region off the rim never loses one, so its draws are the same
+      const gap = c => { const w = wc(c), x = w % RW, y = (w / RW) | 0; return Math.min(x, y, RW - 1 - x, RH - 1 - y); };
+      const far = sc.filter(c => gap(c) >= 3); sc = far.length >= 5 ? far : sc.filter(c => gap(c) >= 2);
+    }
     const near = sc.filter(c => cdist(c, gate) >= 2 && cdist(c, gate) <= 4);
     if (near.length) spawns.push(near[RS.int(near.length)]);
     const sh = sc.slice(); for (let i = sh.length - 1; i > 0; i--) { const j = RS.int(i + 1), v = sh[i]; sh[i] = sh[j]; sh[j] = v; }
@@ -182,7 +187,7 @@ export function regionAt(realm, ax, ay) {
     for (const { c } of dc) { if (dset.size >= 6) break; const p = cxy(c); if ([...dset].every(d => cheb(p, cxy(d)) >= 5)) dset.add(c); }
   }
   const G = { seed, slot: [ax, ay], biome, gen: 7, attempt: t, land, ford, island, level, edge, cross, comp, gate, mouth, deep, swim, swimDir, spawns, glow, wk, wbody,
-    beacons: { seed, set: bset }, depots: { seed, set: dset } };
+    beacons: { seed, set: bset }, depots: { seed, set: dset }, coast: Uint8Array.from({ length: NC }, (_, c) => (realm.coast ? realm.coast[wc(c)] : 0)) };   // coast: the cells of the realm's border ring (wide water, never walked)
   // trails with ports; a stair's port is its way up
   G.trails = trailsOf(G);
   const ports = new Map();
@@ -216,11 +221,11 @@ function checkRegion(G, biome) {
   const lv = G.level, land = G.land, comp = G.comp, bad = [];
   for (let c = 0; c < NC; c++) { const x = c % MW, y = (c / MW) | 0;
     for (const [dx, dy] of NB8) { const X = x + dx, Y = y + dy; if (!inRegion(X, Y)) continue; const n = Y * MW + X;
-      if (Math.abs(lv[c] - lv[n]) > 1) bad.push('step'); if (land[c] === L.WATER && lv[n] !== 0) bad.push('ring'); }
+      if (Math.abs(lv[c] - lv[n]) > 1) bad.push('step'); if (land[c] === L.WATER && !G.coast[c] && lv[n] !== 0) bad.push('ring'); }   // the coast's water has no raised land within twelve tiles of it (levels.mjs RAISE_OFF)
     if (land[c] === L.WATER && lv[c] !== 0) bad.push('ring');
     if (x < MW - 1 && y < MH - 1 && isSaddle(lv, c, MW)) bad.push('saddle'); }
   for (let Y = 0; Y <= MH; Y++) for (let X = 0; X <= MW; X++) { let ranks = 0;
-    for (let dy = -1; dy <= 0; dy++) for (let dx = -1; dx <= 0; dx++) { const x = X + dx, y = Y + dy; if (!inRegion(x, y)) continue; const c = y * MW + x; ranks |= 1 << (land[c] === L.WATER ? 0 : 1 + lv[c]); }
+    for (let dy = -1; dy <= 0; dy++) for (let dx = -1; dx <= 0; dx++) { const x = X + dx, y = Y + dy; if (!inRegion(x, y)) continue; const c = y * MW + x; ranks |= 1 << (land[c] === L.WATER && !G.coast[c] ? 0 : 1 + lv[c]); }   // the coast's water ranks as the low ground it stands on
     if (((ranks & 1) + ((ranks >> 1) & 1) + ((ranks >> 2) & 1) + ((ranks >> 3) & 1)) > 2) bad.push('corner'); }
   if (!(G.gate >= 0)) bad.push('gate');
   if (G.spawns.length !== 5 || !(G.gate >= 0 && cdist(G.spawns[0], G.gate) >= 2 && cdist(G.spawns[0], G.gate) <= 4)) bad.push('spawns');
@@ -228,6 +233,8 @@ function checkRegion(G, biome) {
   if (!inComp(G.deep) || !G.spawns.every(inComp) || !G.glow.every(inComp) || (G.swim >= 0 && !inComp(G.swim)) || ![...G.beacons.set].every(inComp) || G.depots.set.size !== 6 || ![...G.depots.set].every(inComp)) bad.push('comp');
   let dryN = 0, dryComp = 0, walk = 0; const per = [0, 0];
   for (let c = 0; c < NC; c++) { walk += comp[c]; if (land[c] !== L.WATER && !G.island[c]) { dryN++; if (comp[c]) dryComp++; per[lv[c]]++; } }
+  // the coast took the border ring (G.coast): those cells count as the land they were, so a region on the rim is held to the same bar as one off it (they are water now, on every map and in the walk)
+  { let lost = 0; for (let c = 0; c < NC; c++) lost += G.coast[c]; dryN += lost; dryComp += lost; walk += lost; per[0] += lost; G.lost = lost; }
   if (dryComp * 100 < G2.MIN_COMP_PCT * dryN) bad.push('compShare');
   if (walk < WALK_MIN) bad.push('walk');
   if (per.some(n => n * 100 < G2.MIN_SHARE_PCT * dryN)) bad.push('share');
@@ -239,11 +246,31 @@ function checkRegion(G, biome) {
 // ---- the realm: attempts until every region passes ----
 // A region that fails is re-drawn with the next attempt number; the attempt only moves that slot's own parameters and its piece draws, and the blend carries the
 // change into the neighbours' border cells by position, so the borders still agree. Rounds repeat until every region passes (or ROUNDS is spent).
+// ---- the coast: the realm's border ring is wide water ----
+// The outermost ring of the realm's cells (one cell deep: 356 of 8,000) is water nobody crosses; the ring inside it is low ground. It is laid AFTER every region has passed its checks, so no region is
+// drawn again, `tries` stay as the checks left them and the nine inner regions (and every seam between regions) are as they were. Only the sixteen regions on the rim are made again, from the realm with its
+// coast: the same hashes, so the land away from the rim is the same.
+const LAND_SHAPE = ['walk', 'ways', 'compShare', 'share'];
+function coastOf(out) {
+  const { realm } = out, coast = new Uint8Array(RW * RH);
+  for (let y = 0; y < RH; y++) for (let x = 0; x < RW; x++) {
+    const c = y * RW + x;
+    if (x === 0 || y === 0 || x === RW - 1 || y === RH - 1) { coast[c] = 1; realm.land[c] = L.WATER; realm.wkind[c] = 2; realm.ford[c] = 0; realm.level[c] = 0; }
+  }
+  realm.coast = coast;
+  forgetLevels(realm);
+  for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) if (ax === 0 || ay === 0 || ax === ATLAS - 1 || ay === ATLAS - 1) {
+    let G = regionAt(realm, ax, ay);
+    for (let pt = 1; pt < 12 && G.fails.length; pt++) { const H = regionAt(realm, ax, ay, pt); if (H.fails.length < G.fails.length) G = H; }
+    G.fails = G.fails.filter(f => !LAND_SHAPE.includes(f));   // the region passed these before the coast took its ring; what the ring cuts off is not drawn again (that would move the neighbours)
+    out.regions[ay * ATLAS + ax] = G;
+  }
+}
 export const ROUNDS = 64;   // was 24: with stairs only where a south-facing face exists, two marsh regions of seeds 1-200 (62 and 173) needed more draws
 const cache = new Map();
 // The realm made elsewhere (a Web Worker, or the page's store) is put in the cache, so the page never makes it on its own thread. REALM_REV names this generator's output: it changes with any
 // change that moves a realm (a stored realm of another revision is never used).
-export const REALM_REV = 1;
+export const REALM_REV = 2;   // 2: the coast (the border ring is water), the shore band, and the overview raster of every region
 export const hasRealm7 = seed => cache.has(seed);
 export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); cache.set(seed, R); }
 export function realm7(seed) {
@@ -256,6 +283,7 @@ export function realm7(seed) {
     const bad = regions.filter(r => r.fails.length); if (!bad.length) break;
     for (const r of bad) tries[r.slot[1] * ATLAS + r.slot[0]]++;
   }
+  coastOf(out);
   if (cache.size > 6) cache.clear();
   cache.set(seed, out); return out;
 }

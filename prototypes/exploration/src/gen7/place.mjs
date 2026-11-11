@@ -12,7 +12,7 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, WTW, WTH } from './levels.mjs';
+import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, inlandOf, WTW, WTH } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { RULES } from './rules.mjs';
 import { recipeAt, SAND_AT } from './ground.mjs';
@@ -38,10 +38,11 @@ export function blockOk(values) {
 }
 
 const LITTER_NONE = 1.5;               // a litterAt at or above this lays no leaf litter
-const CLOSE = 4;                      // the map's end: the last 4 tiles close the land; raised land keeps three more tiles of grass from them (levels.mjs RAISE_OFF)
+// The coast: the realm's border ring of cells is wide water, and the first tiles inside it are a shore laid whole in windowOf, from the border line (levels.mjs inlandOf) inwards:
+// deep water 1-2 tiles, water to a waterline 4-6 tiles in, beach 2-3 tiles, then a strip of grass 4 tiles; no thicket, scrub, litter or raised land in the band (raised land begins at RAISE_OFF)
+const COAST_REACH = 14;
 const WIN_X = 7, WIN_Y = 9, HX = (WIN_X - 1) / 2, HY = (WIN_Y - 1) / 2;   // the window the passes run on, in cells: the cell and two cells each side (three above and below, where a chain of conversions runs farthest), so what an edge of the window does stays clear of the cell
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
-const WATER_CLOSE = new Set(['marsh', 'meres', 'tarns']);   // these biomes close the map with water, the others with a thicket mass
 
 // ---- per seed: cell values, the level blocks, stairs and trails ----
 const CTX = new Map();
@@ -66,7 +67,6 @@ function ctxOf(seed) {
   CTX.set(seed, S); return S;
 }
 const cellIdx = (X, Y) => clamp(Y, 0, RH - 1) * RW + clamp(X, 0, RW - 1);
-const closeWater = (S, gx, gy) => WATER_CLOSE.has(S.re.slotBiome[((clamp(Math.floor(gy / CH), 0, RH - 1) / MH) | 0) * ATLAS + ((clamp(Math.floor(gx / CW), 0, RW - 1) / MW) | 0)]);
 
 // the tile fields of one cell (24 x 28 values each), from the world's fields at tile scale
 function chunk(S, X, Y) {
@@ -84,9 +84,7 @@ function chunk(S, X, Y) {
     // the map's land kind shows at the cell's middle whatever its neighbours are: a rock cell is stony and a wood cell has its floor there (a bump that falls to nothing before the cell's edge, so no seam)
     const bump = Math.max(0, 1 - Math.hypot((tx - (CW - 1) / 2) / 9, (ty - (CH - 1) / 2) / 10));
     if (land === L.ROCK) rock[k] += 0.5 * bump; else if (land === L.WOOD) push[k] = 0.5 * bump;
-    if (Math.min(gx, gy, WTW - 1 - gx, WTH - 1 - gy) < CLOSE) {   // the map's end: the land closes itself over the last four tiles (Rule 4.4)
-      rock[k] = 0; push[k] = 0; if (closeWater(S, gx, gy)) { wet[k] = 2; forest[k] = 0; } else { forest[k] = 2; wet[k] = 0; }
-    }
+    if (inlandOf(gx, gy) < COAST_REACH) { rock[k] = 0; push[k] = 0; forest[k] = 0; wet[k] = 0; }   // the coast band is laid whole in windowOf: the fields give it plain ground
   }
   const out = { forest, rock, wet, scrub, push };
   if (S.chunks.size > 600) S.chunks.clear();
@@ -267,7 +265,7 @@ function openGates(S, t, W, H, gx0, gy0, X, Y) {
   const at = (gx, gy) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? -1 : t[y * W + x]; };
   const walkAt = (gx, gy) => { const v = at(gx, gy); return v === TV.GRASS || v === TV.SAND || v === TV.PATH || v >= TV.LITTER || v === TV.SCRUB || (v === TV.CLIFF && at(gx - 1, gy) === TV.CLIFF && at(gx + 1, gy) === TV.CLIFF && at(gx, gy - 1) === TV.CLIFF && at(gx, gy + 1) === TV.CLIFF); };
   const gate = new Uint8Array(W * H);
-  const put = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; if (v === TV.CLIFF || v === TV.DEEP) return false; t[y * W + x] = TV.GRASS; gate[y * W + x] = 1; return true; };
+  const put = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; if (v === TV.CLIFF || v === TV.DEEP || inlandOf(gx, gy) < COAST_REACH) return false; t[y * W + x] = TV.GRASS; gate[y * W + x] = 1; return true; };
   const cellRegion = (cx, cy) => (cx < 0 || cy < 0 || cx >= RW || cy >= RH ? null : S.R.regions[Math.floor(cy / MH) * ATLAS + Math.floor(cx / MW)]);
   for (let j = HY - 1; j <= HY + 1; j++) for (let i = HX - 1; i <= HX + 1; i++) {
     const cx = X - HX + i, cy = Y - HY + j;
@@ -324,6 +322,11 @@ function windowOf(S, X, Y) {
       const wide = Math.max(1, Math.min(3, Math.round(shoreOf[i] * (0.45 + 0.55 * (0.5 + 0.5 * S.nS(gx0 + (i % W), gy0 + ((i / W) | 0)))))));
       if (dist[i] <= wide && (t[i] === TV.GRASS || t[i] === TV.LITTER || t[i] === TV.DRY || t[i] === TV.TURF || t[i] === TV.SCREE)) t[i] = TV.SAND; } }
   majority(t, W, H, 2); minFeature(t, W, H);
+  for (let i = 0; i < N; i++) {   // the coast band (see COAST_REACH): a function of the world tile alone, so a place and its neighbour lay the same shore
+    const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), d = inlandOf(gx, gy); if (d >= COAST_REACH) continue;
+    const wl = 4 + Math.floor(3 * clamp(0.5 + 0.5 * S.nC(gx, gy), 0, 0.999)), deepEnd = S.nM(gx, gy) > 0 ? 2 : 1, beach = S.nD(gx, gy) > 0 ? 3 : 2;
+    t[i] = d < deepEnd ? TV.DEEP : d < wl ? TV.WATER : d < wl + beach ? TV.SAND : d < wl + beach + 4 ? TV.GRASS : t[i];
+  }
   const recipe = t.slice();   // the biome's ground at every tile, low or not: what a raised tile's top takes (topsOf)
   // raised land from the levels: every tile on a level above the lowest; water lies only on the low ground
   const raised = new Uint8Array(N);
