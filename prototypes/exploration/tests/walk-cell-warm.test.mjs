@@ -66,7 +66,6 @@ test("a step into a warmed cell: its first frame comes at once, and the neighbou
     const warmMs = rows.slice(1).filter((r) => r.warm).map((r) => r.ms).sort((a, b) => a - b), med = warmMs[warmMs.length >> 1];
     assert.ok(med <= WARM_BAR, `warm first frame, median ${med.toFixed(0)} ms at 4x (bar ${WARM_BAR}): ${warmMs.map((v) => v.toFixed(0))}`);
     assert.ok(Math.max(...warmMs) <= COLD_BAR, "no warm step took a cold step's time: " + warmMs.map((v) => v.toFixed(0)));
-    assert.ok(rows.slice(1).some((r) => r.hit > 0), "a first arrival's whole-place picture was warmed ahead and drawn");
     assert.ok(rows.slice(1).every((r) => !r.cold), "a warm cell is not finished behind the transition");
   } finally { await browser.close(); server.close(); }
 });
@@ -132,16 +131,121 @@ test("input during warming still moves the pawn, and a cell that comes up cold s
   } finally { await browser.close(); server.close(); }
 });
 
+// Crossing (owner walk note 18): walking off a place's edge through a way through slides one screen and never zooms out to the whole place.
+const ACROSS = `async () => {
+  const m = window.__mb, raf = () => new Promise((q) => requestAnimationFrame(q)), wait = (ms) => new Promise((q) => setTimeout(q, ms));
+  if (m.S.phase === "map") { m.act("confirm"); await wait(300); }
+  for (let tries = 0; tries < 12; tries++) {
+    const P = m.S.exp.patch, lay = m.layout(P.key), bk = lay.baked;
+    const o = bk && (lay.openings || []).find((q) => m.openingKind(lay, q).kind === "open");
+    if (o) {
+      const dir = { N: "up", S: "down", W: "left", E: "right" }[o.side], k = Math.floor((o.from + o.to) / 2);
+      P.x = o.side === "W" ? 0 : o.side === "E" ? lay.w - 1 : k + bk.ox; P.y = o.side === "N" ? 0 : o.side === "S" ? lay.h - 1 : k + bk.oy;
+      const pos0 = m.S.exp.pos, ts0 = m.RT.ts; m.act(dir, "creep"); await raf();
+      const out = { crossed: m.S.exp.pos !== pos0, phase: m.S.phase, view: !!m.RT.view, slide: m.FX.slide ? { dx: m.FX.slide.dx, dy: m.FX.slide.dy } : null, dir, locked: m.FX.lockUntil - performance.now(), ts: m.RT.ts === ts0 };
+      await wait(m.SLIDE_MS + 150); out.after = { slide: !!m.FX.slide, ts: m.RT.ts === ts0 }; return out;
+    }
+    const dirs = ["up", "right", "down", "left"].filter((d) => m.canStep(m.S.exp.pos, d)); m.leavePatch(); m.act(dirs[tries % dirs.length]); await wait(200); m.act("confirm"); await wait(300);
+  }
+  return null;
+}`;
+test("a crossing is a one-screen slide into the next place: no map step, no zoom-out, input locked for the slide", { skip }, async () => {
+  const { server, url } = await serve(), browser = await chromium.launch();
+  try {
+    const { page, errors } = await onMap(browser, url, 7, 1);
+    await page.evaluate(() => { window.__mb.act("confirm"); });
+    await page.waitForTimeout(800);
+    const r = await page.evaluate(`(${ACROSS})()`);
+    assert.deepEqual(errors, []);
+    assert.ok(r, "a place with a way through was found");
+    assert.ok(r.crossed && r.phase === "patch", "one press crossed and the walk went straight into the next place: " + JSON.stringify(r));
+    assert.equal(r.view, false, "no whole-place picture on entry: " + JSON.stringify(r));
+    assert.ok(r.slide && ((r.slide.dx !== 0) !== (r.slide.dy !== 0)), "a slide runs in the walking direction: " + JSON.stringify(r));
+    assert.ok(r.locked > 100, "input is locked for the slide: " + JSON.stringify(r));
+    assert.ok(r.ts && r.after.ts && !r.after.slide, "the scale never changes and the slide ends: " + JSON.stringify(r));
+  } finally { await browser.close(); server.close(); }
+});
+
+test("keys pressed during a stall are dropped; a direction still held walks on, one let go is gone", { skip }, async () => {
+  const { server, url } = await serve(), browser = await chromium.launch();
+  try {
+    const { page, errors } = await onMap(browser, url, 7, 1);
+    await page.evaluate(() => { window.__mb.act("confirm"); });
+    await page.waitForTimeout(800);
+    const run = async (letGo) => {
+      await page.waitForTimeout(500);   // the walk before has stopped
+      await page.evaluate(() => { const m = window.__mb, t0 = performance.now(); m.STALL.from = t0; m.STALL.to = t0 + 400; m.FX.lockUntil = 0; window.__at = { x: m.S.exp.patch.x, y: m.S.exp.patch.y }; window.__t0 = t0; });
+      const busy = page.evaluate(() => { const t = performance.now(); while (performance.now() - t < 350); });   // the page is frozen: the key arrives meanwhile
+      await page.waitForTimeout(60);
+      await page.keyboard.down("ArrowRight"); if (letGo) await page.keyboard.up("ArrowRight");
+      await busy; await page.waitForTimeout(40);
+      const during = await page.evaluate(() => ({ at: { x: window.__mb.S.exp.patch.x, y: window.__mb.S.exp.patch.y }, was: window.__at, held: window.__mb.HELD.slice() }));
+      await page.waitForTimeout(700);
+      const after = await page.evaluate(() => ({ at: { x: window.__mb.S.exp.patch.x, y: window.__mb.S.exp.patch.y } }));
+      await page.keyboard.up("ArrowRight").catch(() => {});
+      return { during, after };
+    };
+    const held = await run(false), gone = await run(true);
+    assert.deepEqual(errors, []);
+    assert.deepEqual(held.during.held, ["right"], "the held key is still known: " + JSON.stringify(held));
+    assert.notDeepEqual(held.after.at, held.during.was, "a key still held when the lock ended walks on: " + JSON.stringify(held));
+    assert.deepEqual(gone.after.at, gone.during.was, "a key let go before the end of the stall is not replayed: " + JSON.stringify(gone));
+  } finally { await browser.close(); server.close(); }
+});
+
+test("an unready place shows its paper sketch and says nothing before 1.5 s", { skip }, async () => {
+  const { server, url } = await serve(), browser = await chromium.launch();
+  try {
+    const { page, errors } = await onMap(browser, url, 42);
+    await page.evaluate(`(${STEP})({ settle: 0, first: true })`);
+    await page.waitForTimeout(400);
+    const r = await page.evaluate(async () => {
+      const m = window.__mb, P = m.S.exp.patch, raf = () => new Promise((q) => requestAnimationFrame(q)), bk = m.bakedView(m.layout(P.key));
+      if (!bk) return { nobaked: true };
+      bk.warm = { st: 0, kinds: null, i: 0 }; bk.cache.key = null; bk.cache.frames.clear(); bk.half.key = null; bk.sprites.clear();
+      m.WARM.cold = { key: P.key, at: performance.now(), signed: false };
+      let sketched = false, words = 0;
+      for (let i = 0; i < 400 && m.WARM.cold; i++) { await raf(); if (m.WARM.cold && m.WARM.cold.sketched) sketched = true; if (m.msg === m.LAND_COMING) words++; }
+      return { sketched, words, sign: m.WARM_SIGN_MS };
+    });
+    assert.deepEqual(errors, []);
+    if (r.nobaked) return;
+    assert.equal(r.sign, 1500, "the line waits 1.5 s");
+    assert.ok(r.sketched, "the sketch stood while the land was built: " + JSON.stringify(r));
+    assert.equal(r.words, 0, "no words before 1.5 s: " + JSON.stringify(r));
+  } finally { await browser.close(); server.close(); }
+});
+
+// Nothing to take, strike or step on lies in the wash or past a band (owner walk notes 14, 26-28), on three seeds.
+for (const seed of [7, 13, 42]) test(`nothing interactive lies in the wash or past a band, seed ${seed}`, { skip }, async () => {
+  const { server, url } = await serve(), browser = await chromium.launch();
+  try {
+    const { page, errors } = await onMap(browser, url, seed, 1);
+    const bad = await page.evaluate(() => {
+      const m = window.__mb, out = [];
+      for (let c = 0; c < m.MW * m.MH; c++) {
+        if (!m.passable(c)) continue;
+        const key = String(c), lay = m.layout(key); if (!lay.baked || lay.cave) continue;
+        m.applyLines(lay); const cells = lay.lines ? lay.lines.cells : new Map();
+        for (const f of lay.feats) if ("kqujbsk".includes(f.kind) && cells.has(f.y * lay.w + f.x)) out.push(["feat", key, f.kind, f.x, f.y]);
+        for (const p of m.S.pods) if (p.k === key && p.x >= 0 && cells.has(p.y * lay.w + p.x)) out.push(["pod", key, p.x, p.y]);
+      }
+      return out;
+    });
+    assert.deepEqual(errors, []);
+    assert.deepEqual(bad, [], "interactive things past a band or in the wash");
+  } finally { await browser.close(); server.close(); }
+});
+
 test("what warming keeps stays bounded however far the walk goes", { skip }, async () => {
   const { server, url } = await serve(), browser = await chromium.launch();
   try {
     const { page, errors } = await onMap(browser, url, 5, 2);
     await page.evaluate(`(${STEP})({ settle: 0, first: true })`);
     for (let i = 0; i < 24; i++) await page.evaluate(`(${STEP})({ settle: 300, first: false })`);
-    const k = await page.evaluate(() => { const m = window.__mb; return { whole: m.WHOLE.size, wholeMax: m.WARM_WHOLE_MAX, arr: m.ARR.size, ring: m.PL.ring ? m.PL.ring.list.length : 0, ringMax: m.PL.ring ? m.PL.ring.max : 0, views: m.PL.views.size, queue: m.WARM.queue.length }; });
+    const k = await page.evaluate(() => { const m = window.__mb; return { whole: m.WHOLE.size, wholeMax: m.WARM_WHOLE_MAX, ring: m.PL.ring ? m.PL.ring.list.length : 0, ringMax: m.PL.ring ? m.PL.ring.max : 0, views: m.PL.views.size, queue: m.WARM.queue.length }; });
     assert.deepEqual(errors, []);
-    assert.ok(k.whole <= k.wholeMax, "arrival pictures: " + JSON.stringify(k));
-    assert.ok(k.arr <= 12, "arrival progress: " + JSON.stringify(k));
+    assert.ok(k.whole <= k.wholeMax, "whole-place pictures: " + JSON.stringify(k));
     assert.ok(k.ring <= k.ringMax && k.ringMax === 16, "ground frames: " + JSON.stringify(k));
     assert.ok(k.views <= 8, "views: " + JSON.stringify(k));
   } finally { await browser.close(); server.close(); }

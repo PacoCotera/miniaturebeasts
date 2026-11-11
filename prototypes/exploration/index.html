@@ -674,10 +674,10 @@ function layout(key) {   // a land cell's layout from the generator (cached); a 
 // ---------- Warming the next cells (no freeze at a cell boundary) ----------
 // A step into a cell used to build that place's pictures on the spot: the baked view, its ground (at 48 px and for the whole-place picture) and the sprite canvases of its props.
 // Now the cells a step can reach are warmed in idle time, the one faced first, a small step at a time (never more than one step when the page is busy); a cell entered before it is
-// warm is finished a step a frame behind the transition, the controls live, and past WARM_SIGN_MS a calm line says the land is coming. The pictures live in the place's view
+// warm is finished a step a frame behind the transition, the controls live, its paper sketch stands meanwhile, and past WARM_SIGN_MS (1.5 s) a calm line says the land is coming. The pictures live in the place's view
 // (one per template, at most eight), so memory stays flat however far the walk goes.
 const LAND_COMING = 'The Probe is reading the land';
-const WARM_SIGN_MS = 150, WARM_DONE = 3, RIM_STEP_MS = 3, WARM_EAGER_MS = 10;
+const WARM_SIGN_MS = 1500, WARM_DONE = 3, RIM_STEP_MS = 3, WARM_EAGER_MS = 10;
 const WARM = { queue: [], first: null, firstDir: null, sig: '', cb: 0, cold: null, steps: 0, hit: 0, miss: 0 };   // hit, miss: the arrival pictures found warm, and built on the spot
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
 function warmReady(key) {   // nothing left to build for this cell (a generated place, a cave and the test pages have no baked view to warm)
@@ -719,13 +719,6 @@ function wholeFor(lay, bk) {
   if (cv) { WHOLE.delete(key); WHOLE.set(key, cv); WARM.hit++; return cv; }
   WARM.miss++; cv = wholeCanvas(lay, bk, bk.overviewBuf(veil, 0, lay.cut), veil); wholePut(key, cv); return cv;
 }
-// Where the pawn will most likely stand on arriving, and the veil the walk's first lift would leave there (null: not a first arrival, so no arrival look to warm).
-function arrivalRows(key, dir) {
-  const lay = layout(key); if (lay.cave || !lay.baked || S.veil[key] || walkedCell(lay.cell)) return null;
-  const e = entryPoint(lay, key, dir || null, true); if (!e) return null;
-  const rows = new Array(lay.h).fill(0); liftFlood(lay, rows, e.x, e.y, walkRadius(lay, e.x, e.y)); return rows;
-}
-const ARR = new Map();   // cell + way in -> the arrival picture's progress
 const LIT = new Map();   // cell -> the veil its light state was last warmed for
 function warmLightLevel(lay) {   // the one clear-light level the whole place takes (1 under a storm cover, else 0), or null when the frame must work it out (fog bank, a storm's edge)
   if (lay.cave || inFog(lay.cell)) return null;
@@ -771,12 +764,7 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
     const lvl = warmLightLevel(lay); if (lvl != null) { bk.prepareLight(bk.lightFor({ veiled: (x, y) => !unveiled(key, x, y), foggedFar: () => false, level: () => lvl }, key)); return true; } }
   if (dir === undefined) return false;
   if (vs && WARM.first === key && w.win !== key + '|' + dir) { w.win = key + '|' + dir; if (primeWindow(lay, bk, key, dir)) return true; }   // a place walked before opens on its walking view (no arrival look): its ground window is drawn ahead
-  const id = key + '|' + dir; let a = ARR.get(id);
-  if (!a) { a = { st: 0, rows: arrivalRows(key, dir) }; if (!a.rows) a.st = 9; ARR.set(id, a); while (ARR.size > 12) ARR.delete(ARR.keys().next().value); }
-  if (a.st === 0) { const veil = placeVeil(lay, a.rows); a.wk = wholeKeyOf(lay, veil); if (WHOLE.has(a.wk)) a.st = 9; else { a.veil = veil; a.it = bk.overviewSteps(veil, 0, lay.cut); a.st = 1; } }
-  else if (a.st === 1) { const r = a.it.next(); if (r.done) { a.buf = r.value; a.st = 2; } }
-  else if (a.st === 2) { wholePut(a.wk, wholeCanvas(lay, bk, a.buf, a.veil)); a.buf = a.it = a.veil = null; a.st = 9; }
-  return a.st < 9;
+  return false;
 }
 // The cells one step can reach from here, the one faced first and then by how near the pawn is to that edge; on the map, the cell the next Confirm goes down into comes first.
 function warmTargets() {
@@ -785,7 +773,8 @@ function warmTargets() {
   if (!P && S.phase === 'map') out.push({ key: String(ex.pos), dir: ex.lastDir || null });
   if (P && P.key.startsWith('c')) return out;
   const edge = d => !lay ? 0 : d === 'up' ? P.y : d === 'down' ? lay.h - 1 - P.y : d === 'left' ? P.x : lay.w - 1 - P.x, face = (P && P.dir) || ex.face || ex.lastDir;
-  for (const d of Object.keys(DIRS).sort((a, b) => (b === face) - (a === face) || edge(a) - edge(b))) {
+  const way = d => !!lay && !!lay.openings && lay.openings.some(o => SIDE_DIR[o.side] === d && openingKind(lay, o).kind === 'open');   // a visible way through: its neighbour is warmed before the rest
+  for (const d of Object.keys(DIRS).sort((a, b) => way(b) - way(a) || (b === face) - (a === face) || edge(a) - edge(b))) {
     const c = stepCell(ex.pos, d); if (c < 0 || !inRange(c) || !canStep(ex.pos, d)) continue; out.push({ key: String(c), dir: d }); }
   return out;
 }
@@ -815,10 +804,36 @@ function warmLanding() {
   if (!c || !P || P.key !== c.key) { WARM.cold = null; return false; }
   const t0 = performance.now(); let more = true;
   try { while (more && performance.now() - t0 < 8) more = warmStep(c.key); } catch (e) { more = false; console.warn('landing failed', e); }
-  if (!more) { WARM.cold = null; FX.notes = FX.notes.filter(n => n.text !== LAND_COMING); composeMsg(); if (RT.view && RT.view.kind === 'arrival') RT.view.at = NOW; return false; }
+  if (!more) { WARM.cold = null; FX.notes = FX.notes.filter(n => n.text !== LAND_COMING); composeMsg(); if (motion() && c.sketched) FX.inkIn = { at: NOW }; return false; }
   if (!c.signed && NOW - c.at > WARM_SIGN_MS) { c.signed = true; fxMsg(LAND_COMING, 4); }   // 4: above the signs' 3, so a sign on arrival (the Call's) waits, unspent, for its next moment
-  R(0, VIEW_Y, SCR_W, VIEW_H, C.void); if (c.signed && RT.view) drawMessage();   // (with no view up the frame draws the message itself)
+  c.sketched = true; drawSketch(); drawSlide();   // the paper sketch stands where the land will be; the crossing slide, if one runs, carries it in
   return true;
+}
+// The unready place: its paper sketch (the fog's hatch, the map's ink), with the Probe ring pulsing where the explorer stands. The land inks in from the explorer outward when it is ready.
+// [art] slot: sketch-hatch-grain (the paper grain of the hatch; the art director rules whether this code hatch is kept or painted).
+const INK_IN_MS = 300;
+let SKETCH = null;
+function sketchCanvas() {   // whole pixels only (the screen holds palette colours, nothing blended): paper, a diagonal hatch, the place's outline in ink
+  if (SKETCH) return SKETCH;
+  const cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H; const c = cv.getContext('2d');
+  c.fillStyle = HEX[C.paper]; c.fillRect(0, 0, SCR_W, VIEW_H);
+  c.fillStyle = HEX[C.sand]; for (let y = 0; y < VIEW_H; y++) for (let x = (6 - (y % 6)) % 6; x < SCR_W; x += 6) c.fillRect(x, y, 1, 1);
+  c.fillStyle = HEX[C.bark]; for (let x = 10; x < SCR_W - 10; x += 10) { c.fillRect(x, 10, 6, 2); c.fillRect(x, VIEW_H - 12, 6, 2); } for (let y = 10; y < VIEW_H - 10; y += 10) { c.fillRect(10, y, 2, 6); c.fillRect(SCR_W - 12, y, 2, 6); }
+  SKETCH = cv; return cv;
+}
+function drawSketch() {
+  g.drawImage(sketchCanvas(), 0, VIEW_Y);
+  if (motion()) { const r = 10 + Math.floor((NOW / 40) % 20), cx = SCR_W >> 1, cy = VIEW_Y + (VIEW_H >> 1); R(cx - r, cy - r, 2 * r + 1, 2, C.bark); R(cx - r, cy + r, 2 * r + 1, 2, C.bark); R(cx - r, cy - r, 2, 2 * r + 1, C.bark); R(cx + r, cy - r, 2, 2 * r + 1, C.bark); }
+}
+// The ink-in: for INK_IN_MS the sketch is drawn over the ready place with a disc cut out of it (row by row, hard edged) that grows from the explorer outward.
+function drawInkIn() {
+  const k = FX.inkIn; if (!k) return;
+  if (!motion() || NOW - k.at >= INK_IN_MS) { FX.inkIn = null; return; }
+  const cx = RT.plScr ? RT.plScr.x : SCR_W >> 1, cy = RT.plScr ? RT.plScr.y - VIEW_Y : VIEW_H >> 1, far = Math.hypot(Math.max(cx, SCR_W - cx), Math.max(cy, VIEW_H - cy)), r = far * (NOW - k.at) / INK_IN_MS;
+  const cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H; const c = cv.getContext('2d');
+  c.drawImage(sketchCanvas(), 0, 0);
+  for (let y = 0; y < VIEW_H; y++) { const dy = y - cy, h2 = r * r - dy * dy; if (h2 > 0) { const dx = Math.floor(Math.sqrt(h2)); c.clearRect(Math.round(cx) - dx, y, 2 * dx + 1, 1); } }
+  g.drawImage(cv, 0, VIEW_Y);
 }
 
 
@@ -1033,6 +1048,26 @@ function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW 
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
 const LOCK_MAX = 2500;   // no hold on the keys lasts longer than this, whatever asked for it: input never locks for good
 function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + Math.min(ms, LOCK_MAX)); }
+// A crossing is a camera slide of one screen in the walking direction (owner walk note 18): the last picture of the place left slides out, the new place slides in, input is locked for its length.
+const SLIDE_MS = 300;
+function viewSnapshot() { const cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H; const c = cv.getContext('2d'); c.drawImage(scr, 0, VIEW_Y, SCR_W, VIEW_H, 0, 0, SCR_W, VIEW_H); return cv; }
+// The place's own picture (before the goal band, the message and the bottom line go over it) is kept each frame the explorer stands within a tile of an edge: that is what slides out.
+function keepEdgeView() {
+  const P = S.exp && S.exp.patch; if (!P || !motion()) return;
+  const lay = layout(P.key); if (P.x > 1 && P.y > 1 && P.x < lay.w - 2 && P.y < lay.h - 2) { FX.edgeView = null; return; }
+  FX.edgeView = { snap: viewSnapshot(), key: P.key };
+}
+function slideP(sl) { const p = clamp((NOW - sl.at) / SLIDE_MS, 0, 1); return 1 - (1 - p) * (1 - p); }   // ease-out
+// After the new place's frame is on the screen: the screen's view band is moved by the slide (the old picture leaves the way the explorer walks, the new one comes in behind it).
+function drawSlide() {
+  const sl = FX.slide; if (!sl) return;
+  if (!motion() || NOW - sl.at >= SLIDE_MS) { FX.slide = null; return; }
+  const p = slideP(sl), nw = viewSnapshot(), W = SCR_W, H = VIEW_H;
+  g.save(); g.beginPath(); g.rect(0, VIEW_Y, W, H); g.clip();
+  g.drawImage(sl.snap, Math.round(-sl.dx * p * W), VIEW_Y + Math.round(-sl.dy * p * H));
+  g.drawImage(nw, Math.round(sl.dx * (1 - p) * W), VIEW_Y + Math.round(sl.dy * (1 - p) * H));
+  g.restore();
+}
 function transition() { FX.transAt = NOW; lockInput(160); if (typeof stopRepeat === 'function') stopRepeat(); } // a held direction never carries across scales
 
 let crById = new Map();
@@ -1612,7 +1647,6 @@ function checkWalked() {
 // ---------- Seeing the place (walk slice W§4): the arrival look and Look over the place ----------
 // Both draw the whole place at 24 px from the baked place's half-scale render (places/src/page.mjs). They are views over a place (RT.view, never saved);
 // a press is consumed by them and never reaches the walking view; they spend no action. Only a baked place has them (a generated place has no 24 px picture).
-const ARRIVE_HOLD_MS = 1200, ARRIVE_STEP_MS = 120;   // [tune]
 const VIEW_TEXT = { look: 'Look around', close: 'Close' };   // [copy]
 function placeVeil(lay, rows) {   // rows: the veil as it would stand (the warmed arrival picture's guess); else the place's own
   const bk = lay.baked, { w, h } = bk.place, o = new Uint8Array(w * h), vbl = rows ? veilable(lay) : null;
@@ -1628,11 +1662,10 @@ function startView(kind, lay, extra) {
 }
 function endView() { RT.view = null; transition(); }
 const lookable = () => { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const lay = layout(P.key); return !lay.cave && !!bakedView(lay); };
-// A press while a view is up: consumed. Arrival: any press skips to the walking view; look: ← (or ✓) closes.
+// A press while a view is up: consumed. Look: ← (or ✓) closes.
 function viewPress(k) {
   const v = RT.view;
-  if (v.kind === 'arrival') endView();
-  else if (v.kind === 'peek') return;   // the peek lasts as long as Call is held; other presses are consumed
+  if (v.kind === 'peek') return;   // the peek lasts as long as Call is held; other presses are consumed
   else if (k === 'back' || k === 'confirm') endView();
 }
 // ---------- Place marks (the map's key for place kinds: the art desk's marks) ----------
@@ -2069,23 +2102,21 @@ function placePartnerNear(key, P) {
   }
 }
 // A place that takes long to build freezes the page; key presses made meanwhile queue in the browser and would all run in a rush afterwards. They are dropped (STALL: the window they were made in).
-const STALL_MS = 120, STALL = { from: 0, to: 0 };
+const STALL_MS = 120, STALL = { from: 0, to: 0 }, RESUME_GRACE_MS = 80;   // the grace: the key-ups the freeze held back arrive before a held direction walks on
 const nowMs = () => typeof performance !== 'undefined' ? performance.now() : Date.now();
 function enterPatch() {
-  const t0 = nowMs(); try { enterPatchBuilt(); } finally { const t1 = nowMs(); if (t1 - t0 >= STALL_MS) { STALL.from = t0; STALL.to = t1; } }
+  const t0 = nowMs(); try { enterPatchBuilt(); } finally { const t1 = nowMs(); if (t1 - t0 >= STALL_MS) { STALL.from = t0; STALL.to = t1; FX.resume = true; FX.resumeAt = t1 + RESUME_GRACE_MS; } }
 }
 function enterPatchBuilt() {
   const ex = S.exp, key = String(ex.pos), lay = freshLayout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.view = null;
-  const firstEntry = !lay.cave && !S.veil[key] && !walkedCell(lay.cell);   // the arrival look: the first time in a place, and never at a found one
   const e = entryPoint(lay, key, ex.lastDir);
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
   WARM.cold = TEST.clock == null && TEST.at == null && !warmReady(key) ? { key, at: NOW, signed: false } : null;   // not warm yet: the rest is built a step a frame (warmLanding)
-  if (firstEntry) startView('arrival', lay);
   if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
   save();
 }
@@ -2193,7 +2224,12 @@ function applyLines(lay) {
     for (const c of cells) { const i = c.y * lay.w + c.x; if (T_BLOCK[lay.tiles[i]]) continue; lay.lineSaved.push([i, lay.tiles[i]]); lay.tiles[i] = T.ROCK; lay.lines.cells.set(i, { kind: k.kind, text: k.text }); }
   }
   lay.lines.id = lay.lines.patches.map(p => p.x + ',' + p.y).join(';');
+  // Nothing to take, strike or read lies in the wash or past a band (owner walk notes 14, 26-28): such a thing waits out of the place's list while its tile is under a line, and comes back when the line draws back.
+  if (lay.lineFeats && lay.lineFeats.length) { lay.feats.push(...lay.lineFeats); lay.lineFeats = []; }
+  const held = lay.feats.filter(f => LINE_FEATS.includes(f.kind) && lay.lines.cells.has(f.y * lay.w + f.x));
+  if (held.length) { lay.lineFeats = held; lay.feats = lay.feats.filter(f => !held.includes(f)); }
 }
+const LINE_FEATS = 'kqujbs';   // the stones, strike marks, cups, bushes, beacon and slabs of a place: the things a press can act on
 // The range haze (the art desk's, places/haze/): past the Probe's range the land washes out into a pale mist along the whole side, LINE_DEPTH cells deep, densest at the edge (level 3 - d).
 // The place view takes the level grid (BakedView.setHaze) and draws it through the desk's remap tables. It stands still and never moves toward the player. When the reach grows it draws back
 // 3, 2, 1, gone at HAZE_STEP_MS a step before its cells open; when it shrinks it lays the same way; reduced motion is a cut.
@@ -2288,10 +2324,16 @@ function crossEdge(dir) {
     if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(EDGE_REFUSAL_CLIFF); return; } }
   if (edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
     if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(EDGE_REFUSAL_CLIFF); return; } }
-  ex.patch = null; S.phase = 'map'; recordSigns(ex.pos); transition();
+  const snap = motion() ? (FX.edgeView && FX.edgeView.key === ex.patch.key ? FX.edgeView.snap : viewSnapshot()) : null, from = ex.pos;
+  ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
   ex.stats.crossings = (ex.stats.crossings || 0) + 1;
   mapStep(dir);
-  fxHint('edgewalk', 'Next cell · ✓ goes down', 2);
+  // The map is not shown on a crossing: the walk goes straight into the next place under a one-screen slide, and the explorer keeps walking.
+  if (S.phase === 'map' && S.exp && S.exp.pos === c && c !== from && !S.exp.ending) {
+    enterPatch();
+    FX.transAt = -1e9; FX.resume = true;   // no fade: the slide covers the change
+    if (snap) { FX.slide = { at: NOW, dx: DIRS[dir][0], dy: DIRS[dir][1], snap }; lockInput(SLIDE_MS); }
+  }
 }
 // A soft tile in a place, refused without the partner that crosses it (the shape of swimBump): the pin goes on the place's cell.
 function softBump(t) {
@@ -4466,13 +4508,11 @@ function buildMapPB() {
   return pb;
 }
 // Fog: one continuous cloud layer for the whole map (dithered noise), shown only over unseen cells.
-function buildFogPB(seed) {
-  const pb = new PB(MW * CELL, MH * CELL), s1 = hash(seed, 'fogn'), s2 = hash(seed, 'fogm');
-  for (let y = 0; y < MH * CELL; y += 2) for (let x = 0; x < MW * CELL; x += 2) {
-    const v = fbm(s1, x / 30, y / 30, 1.6) * .75 + noise2(s2, x / 9, y / 9, 1) * .25;
-    for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) { const X = x + dx, Y = y + dy, b = BAYER[(Y & 3) * 4 + (X & 3)] / 16;
-      pb.p[Y * pb.w + X] = v > .66 + b * .1 ? C.stone : v > .5 + b * .14 ? C.slate : v > .4 + b * .1 ? (((X + Y) & 1) ? C.night : C.slate) : C.night; }
-  }
+function buildFogPB(seed) {   // the unknown: paper hatch (diagonal ink strokes on the paper) in place of the black dither; [art] slot hatch-grain (the art director rules code hatch or painted)
+  const pb = new PB(MW * CELL, MH * CELL), s1 = hash(seed, 'fogn');
+  for (let Y = 0; Y < MH * CELL; Y++) for (let X = 0; X < MW * CELL; X++) {
+    const k = (X + Y) % 6, grain = noise2(s1, X / 5, Y / 5, 1) > .7;
+    pb.p[Y * pb.w + X] = k === 0 ? C.clay : k === 1 ? C.sand : grain ? C.sand : C.paper; }
   return pb;
 }
 function fogCellArt(v) { return art('fog' + v, () => { const pb = new PB(CELL, CELL), R = makeRng(hash('fog', v)); pb.rect(0, 0, CELL, CELL, C.night);
@@ -4481,7 +4521,7 @@ function fogCellArt(v) { return art('fog' + v, () => { const pb = new PB(CELL, C
 function fogEdgeArt(m) { return art('fe' + m, () => { const pb = new PB(CELL, CELL);
   for (let y = 0; y < CELL; y++) for (let x = 0; x < CELL; x++) {
     const d = Math.min(m & 1 ? y : 99, m & 2 ? CELL - 1 - x : 99, m & 4 ? CELL - 1 - y : 99, m & 8 ? x : 99);
-    if (d === 0 || (d === 1 && (x + y) % 2 === 0) || (d === 2 && (x % 2 === 0 && y % 2 === 0))) pb.set(x, y, C.night); }
+    if (d === 0 || (d === 1 && (x + y) % 2 === 0) || (d === 2 && (x % 2 === 0 && y % 2 === 0))) pb.set(x, y, C.bark); }
   return pb; }); }
 // Ordered-dither overlays (Bayer 4×4): the only way this screen shows "partly see-through".
 const BAYER = BAYER4;
@@ -5123,7 +5163,7 @@ function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.
   const st = live ? RT.ca.s : Object.assign({}, RT.ca.s), tile = live ? { x: P.x, y: P.y } : { x: Math.round(px / ts), y: Math.round(py / ts) };
   return bk.camera(st, { w: v.w, h: v.h }, tile, NOW, motion(), null);
 }
-// The whole place at 24 px (RT.view: 'arrival' under its veil, 'look' as seen so far). A find draws no whole view: its spot and card stand over the walking view (drawPatch).
+// The whole place at 24 px (RT.view: 'look' as seen so far, 'peek' while Call is held). A find draws no whole view: its spot and card stand over the walking view (drawPatch).
 function drawWhole(t) {
   const v = RT.view, P = S.exp && S.exp.patch;
   if (!P || P.key !== v.key) { RT.view = null; return; }
@@ -5134,15 +5174,6 @@ function drawWhole(t) {
   const tp = (x, y) => ({ x: ox + (x - bk.ox) * T + T / 2, y: oy + (y - bk.oy) * T + T / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   v.cv = v.cv || wholeFor(lay, bk); const cv = v.cv;
-  // the arrival look: the hold, then two stepped frames panning toward the arrival tile (the walking view's 2× scale), then the walking view
-  if (v.kind === 'arrival' && motion() && el >= ARRIVE_HOLD_MS) {
-    const n = Math.floor((el - ARRIVE_HOLD_MS) / ARRIVE_STEP_MS);
-    if (n >= 2) { endView(); return; }
-    const k = n ? .75 : .5, s = 1 + k, a = { x: (P.x - bk.ox + .5) * T, y: (P.y - bk.oy + .5) * T }, sw = SCR_W / s, sh = VIEW_H / s;
-    const cx = W / 2 + (a.x - W / 2) * k, cy = H / 2 + (a.y - H / 2) * k, sx = Math.max(0, Math.min(W - sw, cx - sw / 2)), sy = Math.max(0, Math.min(H - sh, cy - sh / 2));
-    g.drawImage(cv, Math.round(sx), Math.round(sy), Math.round(sw), Math.round(sh), 0, VIEW_Y, SCR_W, VIEW_H); return;
-  }
-  if (v.kind === 'arrival' && !motion() && el >= ARRIVE_HOLD_MS) { endView(); return; }
   g.drawImage(cv, ox, oy);
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
@@ -5472,7 +5503,56 @@ function tabPointer(t) { const { cx, cy } = t;
 function tabRect(t) { const r = { x: t.cx - 11, y: t.cy - 11, w: 22, h: 22 };
   if (t.side === 'E') r.w += 3; else if (t.side === 'W') { r.x -= 3; r.w += 3; } else if (t.side === 'N') { r.y -= 3; r.h += 3; } else r.h += 3; return r; }
 // After drawPatch, before the message box: the tabs, clipped to the view. A tab's fill flashes cream for 160 ms when it first shows.
+// The edge look on the walk (owner walk notes 4, 13, 14, 16, 26-28; one vocabulary with the map, in the map's ink):
+//   can't go yet (the Probe's reach): a dashed ink line on the haze, along the side's inner face;
+//   a way through: two threshold marks across the gap and, within 3 tiles, a paper tab naming the place next door once the Probe has read it (note 19: the hint).
+// [art] slots: way-through-path-end-<land>, way-through-mark (the worn path and the two threshold marks), until painted the marks are ink strokes (UI).
+// [copy] placeholders (the copywriter places them): the tab 'Wood →' form, REACH_LINE_TEXT, PROBE_READING_TEXT.
+const REACH_LINE_TEXT = 'Probe reach', PROBE_READING_TEXT = 'the Probe is reading the land', TAB_NEAR = 3;
+function edgeSides(lay, P) {   // each opening of a baked place with its side in page tiles: [{ o, k, x0, y0, x1, y1 }] (the opening's span on the place's edge, whole side for a range line)
+  const bk = lay.baked; if (!bk || lay.cave || !lay.openings) return [];
+  const out = [];
+  for (const o of lay.openings) { const k = openingKind(lay, o), whole = k.kind === 'range'; if (k.kind !== 'open' && !whole) continue;
+    const a = whole ? 0 : o.from, b = whole ? (o.side === 'N' || o.side === 'S' ? bk.w : bk.h) - 1 : o.to;
+    const ns = o.side === 'N' || o.side === 'S', a0 = a + (ns ? bk.ox : bk.oy), a1 = b + 1 + (ns ? bk.ox : bk.oy);   // along the side, in the place's tiles; the side itself is the place's own edge (the baked apron lies outside it)
+    out.push({ o, k, x0: ns ? a0 : o.side === 'W' ? 0 : lay.w, x1: ns ? a1 : o.side === 'W' ? 0 : lay.w, y0: !ns ? a0 : o.side === 'N' ? 0 : lay.h, y1: !ns ? a1 : o.side === 'N' ? 0 : lay.h }); }
+  return out;
+}
+function drawEdgeLook(t) {
+  const ex = S.exp, P = ex && ex.patch, pl = RT.plScr; if (!P || !pl || !RT.ts) return;
+  const lay = layout(P.key), ts = RT.ts, sx = tx => pl.x + (tx - P.x - .5) * ts, sy = ty => pl.y + (ty - P.y - .5) * ts;   // a page tile edge on the screen (pl: the explorer's tile centre)
+  for (const e of edgeSides(lay, P)) {
+    const dir = SIDE_DIR[e.o.side], vertical = e.o.side === 'W' || e.o.side === 'E';
+    if (e.k.kind === 'range') {   // the dashed reach line: LINE_DEPTH tiles in from the edge, along the whole side
+      const bk = lay.baked, face = e.o.side === 'N' ? bk.oy + LINE_DEPTH : e.o.side === 'S' ? bk.oy + bk.h - LINE_DEPTH : e.o.side === 'W' ? bk.ox + LINE_DEPTH : bk.ox + bk.w - LINE_DEPTH;   // the band's inner face
+      const ax = vertical ? sx(face) : sx(e.x0), ay = vertical ? sy(e.y0) : sy(face), bx = vertical ? ax : sx(e.x1), by = vertical ? sy(e.y1) : ay;
+      clipView(); const x0 = Math.round(Math.min(ax, bx)), y0 = Math.round(Math.min(ay, by)), len = Math.round(vertical ? Math.abs(by - ay) : Math.abs(bx - ax));
+      for (let d = 0; d < len; d += 14) { if (vertical) R(x0 - 1, y0 + d, 2, Math.min(8, len - d), C.bark); else R(x0 + d, y0 - 1, Math.min(8, len - d), 2, C.bark); }   // whole pixels only: the screen holds palette colours, nothing blended
+      g.restore();
+      continue; }
+    // a way through: two threshold marks across the gap on the edge tiles, and the tab
+    const c = stepCell(lay.cell, dir); if (c < 0) continue;
+    const near = e.o.side === 'N' ? P.y - e.y0 : e.o.side === 'S' ? e.y0 - 1 - P.y : e.o.side === 'W' ? P.x - e.x0 : e.x0 - 1 - P.x;
+    const mx = vertical ? sx(e.x0) : null, my = vertical ? null : sy(e.y0);
+    clipView();
+    for (const end of [0, 1]) {
+      if (vertical) { const y = Math.round(end ? sy(e.y1) : sy(e.y0)), x = Math.round(mx), x0 = e.o.side === 'W' ? x : x - 12; R(x0, y - 3, 12, 6, C.paper); R(x0 + 1, y - 2, 10, 4, C.bark); }   // a mark: ink on a paper edge, so it reads on wood and on grass
+      else { const x = Math.round(end ? sx(e.x1) : sx(e.x0)), y = Math.round(my), y0 = e.o.side === 'N' ? y : y - 12; R(x - 3, y0, 6, 12, C.paper); R(x - 2, y0 + 1, 4, 10, C.bark); } }
+    g.restore();
+    if (near <= TAB_NEAR && warmReady(String(c))) {   // the hint: the Probe has read the neighbour, so its land is named
+      const name = groundName(G.land[c], false), word = (name ? name.charAt(0).toUpperCase() + name.slice(1) : '') + ' →', w = textW(word, 2) + 10;
+      const cx = vertical ? sx(e.x0) : (sx(e.x0) + sx(e.x1)) / 2, cy = vertical ? (sy(e.y0) + sy(e.y1)) / 2 : sy(e.y0);
+      const px = clamp(Math.round(cx - w / 2) + (e.o.side === 'W' ? w / 2 + 6 : e.o.side === 'E' ? -w / 2 - 6 : 0), 4, SCR_W - w - 4), py = clamp(Math.round(cy - 10) + (e.o.side === 'N' ? 14 : e.o.side === 'S' ? -14 : 0), VIEW_Y + 4, VIEW_Y + VIEW_H - 24);
+      panel(px, py, w, 20, C.paper, C.bark); text(word, px + 5, py + 3, C.soil); }
+  }
+}
+// The Probe's pulse in the top bar while the neighbours are read ahead (note 19): a small ring in the map's ink that breathes; [art] slot probe-pulse.
+function drawProbePulse(x, y) {
+  const r = motion() ? 3 + Math.floor((NOW / 150) % 4) : 5;
+  R(x - r, y - r, 2 * r + 1, 1, C.sand); R(x - r, y + r, 2 * r + 1, 1, C.sand); R(x - r, y - r, 1, 2 * r + 1, C.sand); R(x + r, y - r, 1, 2 * r + 1, C.sand); R(x - 1, y - 1, 3, 3, C.paper);   // a square pulse frame (palette pixels)
+}
 function drawEdgeCues(t) {
+  drawEdgeLook(t);
   const tabs = edgeTabs(), seen = RT.tabSeen || (RT.tabSeen = new Map()), keep = new Set();
   clipView();
   for (const tb of tabs) { const k = tb.kind + tb.id, col = C[TAB.border[tb.kind]]; keep.add(k); if (!seen.has(k)) seen.set(k, NOW);
@@ -5621,6 +5701,7 @@ function drawHUD() {
   const lvl = 0, fogW = 0, stormW = 0;   // conditions (storm, fog bank) live on the bottom line now
   let rx = drawStatus(SCR_W - 6) - 2;
   rx -= countersW(ex.cargo); drawCounters(rx, ex.cargo, 'x'); rx -= 6;
+  if (S.phase === 'patch' && WARM.queue.length && !WARM.cold && !document.hidden && TEST.clock == null && TEST.at == null) { drawProbePulse(rx - 8, 16); rx -= 18; }   // the Probe is reading the next places (note 19; words: PROBE_READING_TEXT, placed by the copywriter)
   // docked mid-expedition: the chip after the pods and crate count (the crate count gives way when it would not fit); the partner moves after it
   const chipW = fieldFrozen() ? textW(DOCK_TEXT.chip, 2) + 16 : 0, crateW = S.bay.length ? 19 + textW(String(S.bay.length), 2) + 6 : 0;
   if (S.bay.length && !(chipW && x + crateW + chipW > rx - 4)) x = drawCrateCount(x);
@@ -6724,7 +6805,7 @@ function renderFrame(t) {
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
     case 'patch': if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
-      if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); } drawHUD(); drawSwap(); break;   // a view over the place (arrival look, Look, the reveal) has the whole view
+      if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); keepEdgeView(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
     case 'cargo': drawCargo(t); break;
@@ -6745,7 +6826,7 @@ function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  try { warmTick(); } catch (e) { if (RT.err++ < 3) console.error(e); }
+  try { warmTick(); resumeHeld(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
@@ -6961,15 +7042,25 @@ document.querySelectorAll('.key').forEach(btn => {
   const k = btn.dataset.key;
   btn.addEventListener('pointerdown', e => {
     e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch (_) { }
-    btn.classList.add('is-down'); press(k);
+    btn.classList.add('is-down'); heldDown(k); press(k);
   });
-  const up = () => { if (!btn.classList.contains('is-down')) return; btn.classList.remove('is-down'); release(k); };
+  const up = () => { if (!btn.classList.contains('is-down')) return; btn.classList.remove('is-down'); heldUp(k); release(k); };
   btn.addEventListener('pointerup', up); btn.addEventListener('pointercancel', up); btn.addEventListener('lostpointercapture', up);
   btn.addEventListener('click', e => e.preventDefault());
 });
 deviceEl.addEventListener('contextmenu', e => e.preventDefault());
 ['touchstart', 'touchmove', 'gesturestart', 'gesturechange', 'dblclick'].forEach(type => deviceEl.addEventListener(type, e => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
 
+// The directions that are down now, in the order they went down (a press dropped during a stall is still down until its key comes up): after a stall or a crossing slide, only a
+// direction still held walks on; presses made meanwhile and let go are gone (owner walk note 12).
+const HELD = [];
+function heldDown(k) { if (k in DIRS) { const i = HELD.indexOf(k); if (i >= 0) HELD.splice(i, 1); HELD.push(k); } }
+function heldUp(k) { const i = HELD.indexOf(k); if (i >= 0) HELD.splice(i, 1); }
+function resumeHeld() {   // each frame, once the lock is over: a held direction walks on after a crossing or a stall; nothing else is replayed
+  if (!FX.resume || NOW < FX.lockUntil || nowMs() < (FX.resumeAt || 0)) return;
+  FX.resume = false;
+  if (S && S.phase === 'patch' && !RT.view && !RT.readOnly && HELD.length && !repeat.dir) press(HELD[HELD.length - 1]);
+}
 const KEYMAP = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', KeyW: 'up', KeyS: 'down', KeyA: 'left', KeyD: 'right',
   Enter: 'confirm', NumpadEnter: 'confirm', Space: 'confirm', Escape: 'back', Backspace: 'back', KeyC: 'call' };
 const KEYMAP2 = { w: 'up', s: 'down', a: 'left', d: 'right', W: 'up', S: 'down', A: 'left', D: 'right', ' ': 'confirm', Enter: 'confirm', Escape: 'back', Backspace: 'back', c: 'call', C: 'call' };
@@ -6977,7 +7068,8 @@ function keyOf(e) { return KEYMAP[e.code] || KEYMAP2[e.key] || KEYMAP[e.key] || 
 window.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = keyOf(e); if (!k) return;
-  if (e.timeStamp > STALL.from && e.timeStamp < STALL.to) { e.preventDefault(); return; }   // made while a place was being built: dropped, not replayed
+  if (!e.repeat) heldDown(k);
+  if (e.timeStamp > STALL.from && e.timeStamp < STALL.to) { e.preventDefault(); FX.resume = true; FX.resumeAt = nowMs() + RESUME_GRACE_MS; return; }   // made while a place was being built: dropped, not replayed; if it is still held when the lock ends it walks on
   const inPanel = e.target && e.target.closest && e.target.closest('.panel');
   if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;   // the developer field keeps its keys
   if (e.target && e.target.tagName === 'TEXTAREA') e.target.blur();   // the notes box gives the keys back to the game (copying uses Ctrl/⌘)
@@ -6989,9 +7081,9 @@ window.addEventListener('keydown', e => {
 window.addEventListener('keyup', e => {
   const k = keyOf(e); if (!k) return;
   const b = document.querySelector(`.key[data-key="${k}"]`); if (b) b.classList.remove('is-down');
-  release(k);
+  heldUp(k); release(k);
 });
-window.addEventListener('blur', () => { stopRepeat(); if (peek.held) { peek.held = false; peekEnd(); } document.querySelectorAll('.key.is-down').forEach(b => b.classList.remove('is-down')); });
+window.addEventListener('blur', () => { stopRepeat(); HELD.length = 0; if (peek.held) { peek.held = false; peekEnd(); } document.querySelectorAll('.key.is-down').forEach(b => b.classList.remove('is-down')); });
 
 // ===================== 17. Page: fit, build footer, observer =====================
 const fitEl = document.getElementById('deviceFit');
@@ -7261,7 +7353,7 @@ requestAnimationFrame(frame);
   if (!OFF_PAGE) boot(null);
   else { RT.making = true; drawMaking(); vctx.drawImage(scr, 0, 0); readyRealm(seed, RT.makeTimes = {}).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, WARM, WHOLE, ARR, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,

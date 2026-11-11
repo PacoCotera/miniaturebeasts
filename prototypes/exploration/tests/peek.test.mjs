@@ -32,7 +32,7 @@ async function enter(browser, url, seed, motion) {
   await page.goto(`${url}?seed=${seed}`); await page.waitForTimeout(1200);
   await page.evaluate(() => { window.__mb.TEST.calm = true; });
   for (let i = 0; i < 3; i++) { await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(350); }
-  for (const k of ["confirm", "up", "up", "call"]) { await page.evaluate((k) => window.__mb.act(k), k); await page.waitForTimeout(350); }
+  for (const k of ["confirm", "up", "call"]) { await page.evaluate((k) => window.__mb.act(k), k); await page.waitForTimeout(350); }
   await page.waitForTimeout(700);
   return { page, errors };
 }
