@@ -45,7 +45,8 @@ iframe{border:0; display:block; background:var(--void)}
 #dockKey[aria-disabled="true"]:hover{border-color:var(--hairline)}
 #asleepStrip{position:absolute; display:flex; align-items:center; gap:10px; padding:0 12px; background:var(--bar); border:calc(var(--f) * 1px) solid var(--hairline); border-radius:8px; color:var(--mist); font-size:12px; line-height:16px; z-index:3}
 #asleepStrip b{font-weight:500; color:var(--fog)}
-#asleepStrip .art-slot{flex:none; width:24px; height:24px}
+#asleepStrip .art-slot{flex:none; width:24px; height:24px; display:flex; align-items:center; justify-content:center}
+#asleepStrip .art-slot img{width:24px; height:16px; image-rendering:pixelated}
 #note{position:absolute; color:var(--mist); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; z-index:21}
 #live{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 .hidden{display:none !important}
@@ -192,7 +193,7 @@ body.phone iframe{image-rendering:pixelated}
   <!-- the Dock / Lift key (first-ten-front A2): in the Companion's tray area; quiet, lit or docked. [art] its mark: today's frame-companion-outline-16x24 until the art director rules -->
   <button type="button" class="ctl" id="dockKey" aria-label="Dock the Companion" title="Dock the Companion"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="word" id="dockWord">Dock · after the walk</span><span class="hint" id="dockHint">⇧D</span></button>
   <!-- the asleep Station (A1): until the first pod is home the Station is this one strip beside the Companion. [art] slot station-asleep-24 (the mark; empty until the art director rules) -->
-  <div id="asleepStrip" class="hidden" role="status"><span class="art-slot" data-art="station-asleep-24"></span><span class="aw"><b>Station · asleep</b><br>It wakes when your first pod comes home.</span></div>
+  <div id="asleepStrip" class="hidden" role="status"><span class="art-slot" data-art="station-asleep-24"><img src="../ui/assets/masters/pods/mark-asleep-24x16.png" alt=""></span><span class="aw"><b>Station · asleep</b><br>It wakes when your first pod comes home.</span></div>
   <div id="caddySheet" aria-label="The dock's screen" role="img"><canvas id="caddyView" width="792" height="272"></canvas></div>
   <div id="caddyLamps" aria-label="The dock's cradle lamps"><div class="cl"><span>Companion cradle</span><i id="lampCompanion"></i></div><div class="cl"><span>Station cradle</span><i id="lampStation"></i></div></div>
   <div id="caddyPrint" class="hidden" role="group" aria-labelledby="printHead"><img id="printImg" alt="Your recovery key, as the dock printed it"><div id="printText"><p id="printHead">The dock printed your recovery key</p><p id="printNote">Keep the paper somewhere safe. The dock prints it only once.</p><button type="button" id="printTaken">I have it</button><p id="printStatus" role="status"></p></div></div>
