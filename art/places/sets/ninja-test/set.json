@@ -104,18 +104,6 @@
         }
       ]
     },
-    "litter": {
-      "fill": {
-        "sheets": ["fill-litter.png"]
-      },
-      "over": [
-        {
-          "kind": "flat",
-          "lowers": ["sand", "grass"],
-          "sheets": ["over-litter.png"]
-        }
-      ]
-    },
     "drygrass": {
       "fill": {
         "sheets": ["fill-drygrass.png"]
@@ -123,7 +111,7 @@
       "over": [
         {
           "kind": "flat",
-          "lowers": ["grass", "litter"],
+          "lowers": ["grass"],
           "sheets": ["over-drygrass.png"]
         }
       ]
@@ -135,8 +123,20 @@
       "over": [
         {
           "kind": "flat",
-          "lowers": ["grass", "litter", "drygrass"],
+          "lowers": ["grass", "drygrass"],
           "sheets": ["over-turf.png"]
+        }
+      ]
+    },
+    "litter": {
+      "fill": {
+        "sheets": ["fill-litter.png"]
+      },
+      "over": [
+        {
+          "kind": "flat",
+          "lowers": ["sand", "grass", "drygrass", "turf"],
+          "sheets": ["over-litter.png"]
         }
       ]
     },
@@ -171,7 +171,7 @@
       "over": [
         {
           "kind": "rim",
-          "lowers": ["earth", "sand", "mud", "path", "grass", "drygrass", "turf", "scree", "scrub"],
+          "lowers": ["earth", "sand", "mud", "path", "grass", "litter", "drygrass", "turf", "scree", "scrub"],
           "sheets": ["over-thicket.png"]
         }
       ]

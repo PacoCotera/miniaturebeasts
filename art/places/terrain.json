@@ -12,9 +12,9 @@
     { "id": "cliff", "name": "Cliff (raised land)", "value": 8, "z": 13, "play": "cliff", "T": "GRASS", "editorColour": "#8d977f" },
     { "id": "thicket", "name": "Dense thicket", "value": 9, "z": 12, "play": "block", "T": "ROCK", "editorColour": "#36603a" },
     { "id": "scrub", "name": "Low scrub", "value": 10, "z": 11, "play": "walk", "T": "GRASS", "editorColour": "#93a332" },
-    { "id": "litter", "name": "Leaf litter", "value": 11, "z": 7, "play": "walk", "T": "GRASS", "editorColour": "#8a6a3c" },
-    { "id": "drygrass", "name": "Dry grass", "value": 12, "z": 8, "play": "walk", "T": "GRASS", "editorColour": "#b8a85a" },
-    { "id": "turf", "name": "Short turf", "value": 13, "z": 9, "play": "walk", "T": "GRASS", "editorColour": "#7fae5e" },
+    { "id": "litter", "name": "Leaf litter", "value": 11, "z": 9, "play": "walk", "T": "GRASS", "editorColour": "#8a6a3c" },
+    { "id": "drygrass", "name": "Dry grass", "value": 12, "z": 7, "play": "walk", "T": "GRASS", "editorColour": "#b8a85a" },
+    { "id": "turf", "name": "Short turf", "value": 13, "z": 8, "play": "walk", "T": "GRASS", "editorColour": "#7fae5e" },
     { "id": "scree", "name": "Scree", "value": 14, "z": 10, "play": "walk", "T": "SAND", "editorColour": "#a9a39a" }
   ]
 }

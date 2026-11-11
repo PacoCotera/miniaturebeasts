@@ -120,9 +120,10 @@ export function deskLayers() {
       ],
     },
     // the biome grounds, each a flat patch over the grass (and the other low ground)
-    litter: biome('litter', ['sand', 'grass']),
-    drygrass: biome('drygrass', ['grass', 'litter']),
-    turf: biome('turf', ['grass', 'litter', 'drygrass']),
+    // draw order: dry grass, turf, then litter (the litter's frayed edge lies over them), then scree
+    drygrass: biome('drygrass', ['grass']),
+    turf: biome('turf', ['grass', 'drygrass']),
+    litter: biome('litter', ['sand', 'grass', 'drygrass', 'turf']),
     scree: biome('scree', ['water', 'sand', 'grass', 'litter', 'drygrass', 'turf']),
     // scrub (mibi-art 34a8dc49c): the olive flat ground over the grass beneath it (its paint has gaps; the grass fill shows through), three variants of the sheet and the slot-15 strip
     scrub: {
@@ -135,7 +136,7 @@ export function deskLayers() {
     },
     thicket: {
       fill: { sheets: [place(THICKET, 'over-thicket-full.png', 'fill-thicket.png')] },
-      over: [{ kind: 'rim', lowers: [...ON, ...ABOVE.slice(1), 'scrub'], sheets: [keyed(THICKET, 'over-thicket.png', 'over-thicket.png')] }],
+      over: [{ kind: 'rim', lowers: [...ON, ...ABOVE, 'scrub'], sheets: [keyed(THICKET, 'over-thicket.png', 'over-thicket.png')] }],
     },
     cliff: {
       fill: { sheets: [rec(CLIFF3, 'fill-cliff.png', `${CLIFF3.dir}/over-cliff.png#15 recut recoloured`, Buffer.from(encodePng(slot15(keyShade(recutImg('over-cliff.png'))))))] },

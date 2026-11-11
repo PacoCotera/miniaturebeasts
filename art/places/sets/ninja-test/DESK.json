@@ -1701,16 +1701,6 @@
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-meadow/out/layers/grass-flat.png",
     "sha256": "185a7e7f130c5a36b32406969be915c804f2a23f1a53cc26d12057c8c1d70b55"
   },
-  "fill-litter.png": {
-    "commit": "8c0ddc470",
-    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/fill-leaflitter.png + art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/fill-leaflitter~v1.png + art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/fill-leaflitter~v2.png as the strip 0 1 0 1 0 1 0 2 (layout)",
-    "sha256": "449c17f6e87daae0ec1a7361033dbd3351985e2bc0ce48657e5db638704b6f32"
-  },
-  "over-litter.png": {
-    "commit": "8c0ddc470",
-    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/over-leaflitter.png",
-    "sha256": "d375cb083d123f8cd184ff8af20e8924690022cd26922579d2f0106ad96827b1"
-  },
   "fill-drygrass.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass.png + art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass~v1.png + art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass~v2.png as the strip 0 1 0 1 0 1 0 2 (layout)",
@@ -1730,6 +1720,16 @@
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-turf/out/tiles/over-turf.png",
     "sha256": "61fef102c67961dff610c01517862b794ac78c88179ebc21fa5d9bd9751b1580"
+  },
+  "fill-litter.png": {
+    "commit": "8c0ddc470",
+    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/fill-leaflitter.png + art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/fill-leaflitter~v1.png + art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/fill-leaflitter~v2.png as the strip 0 1 0 1 0 1 0 2 (layout)",
+    "sha256": "449c17f6e87daae0ec1a7361033dbd3351985e2bc0ce48657e5db638704b6f32"
+  },
+  "over-litter.png": {
+    "commit": "8c0ddc470",
+    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/over-leaflitter.png",
+    "sha256": "d375cb083d123f8cd184ff8af20e8924690022cd26922579d2f0106ad96827b1"
   },
   "fill-scree.png": {
     "commit": "8c0ddc470",

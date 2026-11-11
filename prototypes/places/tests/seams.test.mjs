@@ -42,7 +42,7 @@ const layerCases = () => Object.entries(loaded.set.layers).flatMap(([id, l]) => 
 for (const sc of SCALES) {
   test(`terrain layers at ${sc.name} px: the composite of every (terrain, kind, lower) equals its golden`, () => {
     const cases = layerCases();
-    assert.equal(cases.length, 52);
+    assert.equal(cases.length, 53);
     for (const c of cases) {
       const { tiles } = layerComposites(c.id, c.ki, c.lower, sc.scaled);
       const r = compareGolden(path.join(places, 'golden', 'seams', `ninja-test-${c.id}-${c.kind}-over-${c.lower}-${sc.name}.png`), cornerSheet(tiles));

@@ -51,7 +51,7 @@ test('the terrain layers are signed pieces: every layer file is recorded, fills 
   assert.equal(set.layers.deep.fill.sheets.length, 1, 'deep water stays still');
   assert.match(from('fill-deep.png'), /sets\/pair-deep-water\.png#15$/);
   assert.equal(desk['fill-earth.png'].from.includes('#'), false, 'the earth fill is the desk\'s own strip');
-  assert.deepEqual(Object.keys(set.layers), ['deep', 'water', 'earth', 'sand', 'mud', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree', 'scrub', 'thicket', 'cliff']);
+  assert.deepEqual(Object.keys(set.layers), ['deep', 'water', 'earth', 'sand', 'mud', 'path', 'grass', 'drygrass', 'turf', 'litter', 'scree', 'scrub', 'thicket', 'cliff']);
   assert.equal(set.layers.scrub.ground, 'grass');
   assert.deepEqual(set.layers.scrub.over[0].variants, ['over-scrub~v1.png', 'over-scrub~v2.png', 'over-scrub~v3.png']);
   assert.match(from('fill-cliff.png'), /over-cliff\.png#15 recut recoloured$/);

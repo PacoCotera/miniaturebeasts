@@ -7,7 +7,7 @@
  "dock": 0,
  "stopMid": false,
  "presses": 2992,
- "digest": "50d39a7d596be66e535f50d649b43742fcd5825df7b218a85043779e3bc7560f",
+ "digest": "a1afa2a25a999bc5b265b6b0e2952cad9b9f1a938cd159a31636d5d5df632928",
  "steps": [
   {
    "n": 1,
@@ -91,63 +91,63 @@
    "presses": 1767,
    "turn": 12,
    "bay": 0,
-   "d": "fe7814dfb9881958"
+   "d": "c4c071a9d04aaf21"
   },
   {
    "n": 13,
    "presses": 2052,
    "turn": 13,
    "bay": 1,
-   "d": "d3bb4ffa5bfdbab9"
+   "d": "2bcb90ea066162b6"
   },
   {
    "n": 14,
    "presses": 2170,
    "turn": 14,
    "bay": 1,
-   "d": "a56b8f1d155dae28"
+   "d": "c30559ea67ff7719"
   },
   {
    "n": 15,
    "presses": 2325,
    "turn": 15,
    "bay": 1,
-   "d": "d5bc8b4324526ea8"
+   "d": "556912fd0f739f89"
   },
   {
    "n": 16,
    "presses": 2375,
    "turn": 16,
    "bay": 1,
-   "d": "4dd1e4f6c62a2973"
+   "d": "44ea935c1de72d2d"
   },
   {
    "n": 17,
    "presses": 2460,
    "turn": 17,
    "bay": 0,
-   "d": "634a9e4f1354cdd6"
+   "d": "a08e4b8455ec8fdc"
   },
   {
    "n": 18,
    "presses": 2633,
    "turn": 18,
    "bay": 0,
-   "d": "6441d0d2db9c4e1a"
+   "d": "84ced7ccbc4fd633"
   },
   {
    "n": 19,
    "presses": 2873,
    "turn": 19,
    "bay": 0,
-   "d": "020f144161daa237"
+   "d": "7de5f8977d2c94bb"
   },
   {
    "n": 20,
    "presses": 2992,
    "turn": 20,
    "bay": 0,
-   "d": "50d39a7d596be66e"
+   "d": "a1afa2a25a999bc5"
   }
  ],
  "summary": {

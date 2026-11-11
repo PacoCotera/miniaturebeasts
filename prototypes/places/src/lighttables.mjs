@@ -52,6 +52,10 @@ export function family(rgb) {
   return null;
 }
 const lumOf = (c) => 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2];
+const sat = (c) => (Math.max(...c) - Math.min(...c)) / Math.max(...c, 1);
+// a pale, low-saturation yellow-warm colour: sand, dry grass (not the oranges, browns and reds, nor the bright yellows)
+const khaki = (c) => lumOf(c) >= 100 && sat(c) <= 0.5 && c[1] >= 0.85 * c[0];
+const muted = (t) => { const g = lumOf(t); return [t[0] + (g - t[0]) * 0.5, t[1] + (g - t[1]) * 0.5, t[2] + (g - t[2]) * 0.5]; };
 
 // The signed rock family (the grey body, outlines and highlights) in the dark: a moonlit grey-blue ramp of three steps, so a stone and a boulder keep their form without glowing on the dark ground.
 // dark2 is the night (art director 2026-11-10: #474d55, highlight #555c64); storm is the storm's dim light, a touch brighter since its ground is.
@@ -93,7 +97,11 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
     const tones = STONE_TONES[name], coolGrey = candAll.filter(([, c]) => Math.max(...c) - Math.min(...c) <= 45 && c[2] >= c[0] - 4 && c[1] <= c[2] + 4), ramp = (c) => nearest(c, coolGrey.length ? coolGrey : candAll);   // the quiet cool colours: neutral greys and blue-greys, never a green or a warm grey
     const stoneTo = tones && stone.size ? ramp(tones.mid) : -1, stoneHiTo = tones && stoneHi.size ? ramp(tones.hi) : -1, stoneLineTo = tones && stoneLine.size ? ramp(tones.line) : -1;
     // the other greens keep their order against the grass: a green darker than the plain grass (the scrub, the reeds, the shades) goes to a green darker than the night grass, a lighter one to one at least as light
-    const darkGreens = pools.green.filter(([, c]) => lumOf(c) < lim), lightGreens = pools.green.filter(([, c]) => lumOf(c) >= lim);
+    // dry grass, sand and the pale warm colours (yellow-khaki, low in saturation) go to a dark olive-khaki of low saturation, never brick red; the scree's warm greys to a dark neutral grey (art director 2026-11-10 23:08)
+    const khakiPool = cand.filter(([, c]) => sat(c) >= 0.2 && sat(c) <= 0.4 && lumOf(c) >= 45 && lumOf(c) <= 105 && c[0] >= 0.85 * c[1] && c[1] > c[2] * 1.1 && c[1] >= c[0]);
+    const warmGreyPool = cand.filter(([, c]) => family(c) === 'grey' && c[0] <= c[2] + 4 && lumOf(c) >= 50 && lumOf(c) <= 95);
+    const warmGreyTo = warmGreyPool.length ? 1 : -1;
+    const darkGreens =pools.green.filter(([, c]) => lumOf(c) < lim), lightGreens = pools.green.filter(([, c]) => lumOf(c) >= lim);
     for (let i = 0; i < 256; i++) {
       if (i === 0) { map[i] = 0; continue; }
       if (i >= used) { map[i] = i; continue; }
@@ -102,6 +110,8 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
       else if (tones && stoneLine.has(i) && stoneLineTo > 0) map[i] = stoneLineTo;
       else if (tones && stone.has(i) && stoneTo > 0) map[i] = stoneTo;
       else if (!night || !f) map[i] = nearest(t);
+      else if (f === 'warm' && khakiPool.length && khaki(rgb)) map[i] = nearest(muted(t), khakiPool);
+      else if (f === 'grey' && rgb[0] > rgb[2] + 8 && warmGreyTo > 0) { const x = lumOf(rgb) * 0.55; map[i] = nearest([x, x + 2, x], warmGreyPool); }
       else if (tone.has(i) && up >= 0 && f === 'green') map[i] = up;
       else if (crowns.has(i) && f === 'green') map[i] = nearest(t, pools.green.filter(([, c]) => lumOf(c) <= lim));
       else if (f === 'green' && ground.size && !ground.has(i)) { const pool = lumOf(rgb) < groundLum ? darkGreens : lightGreens; map[i] = nearest(t, pool.length ? pool : pools.green); }
