@@ -366,11 +366,13 @@ function reveal(d, cut) {
 }
 
 // ---- who has the keys ----
-function giveKeys(d) { const fr = frames[d]; try { fr.focus(); fr.contentWindow && fr.contentWindow.focus(); } catch { /* not loaded yet */ } }
+let keyHolder = null;   // the device the keys last went to: the page never scrolls away from it
+function giveKeys(d) { keyHolder = d; const fr = frames[d]; try { fr.focus(); fr.contentWindow && fr.contentWindow.focus(); } catch { /* not loaded yet */ } }
 function setOwner(d, opts = {}) {
   const focus = opts.focus !== false, changed = d !== owner;
-  if (!changed && !opts.force) { if (opts.reveal) reveal(d); if (focus) giveKeys(d); return; }
-  owner = d; layout(); if (changed || opts.reveal) reveal(d); if (focus) giveKeys(d);
+  const shown = focus ? d : keyHolder || d;   // a page-made switch (the Station waking) leaves the keys where they are, so the page keeps the device the keys act on in view
+  if (!changed && !opts.force) { if (opts.reveal) reveal(shown); if (focus) giveKeys(d); return; }
+  owner = d; layout(); if (changed || opts.reveal) reveal(shown); if (focus) giveKeys(d);
 }
 const order = ["station", "companion"];
 const cycle = (dir) => setOwner(order[(order.indexOf(owner) + dir + order.length) % order.length], { reveal: true });
