@@ -68,10 +68,12 @@ function pickBorder(seeds, biome) {
 if (process.argv[2]) {
   mkdirSync(process.argv[2], { recursive: true });
   // each biome of the grounds swap, as the player names it: a place on low ground and one at a border with the next biome, each by day, at night and in a storm (the walk's own light levels 0, 2 and 1)
+  // optional narrowing: argv[3] biomes (woods,thickets,...), argv[4] lights (day,night,storm), argv[5] places (low,border); with none, every biome in both places and all three lights
   const seeds = [7, 13, 42], report = [], NAMES = { woods: 'woods', tallwood: 'tallwood', thickets: 'thickets', downs: 'hills', fells: 'cliffs', tarns: 'highpools' }, LIGHTS = [['day', 0], ['night', 2], ['storm', 1]];
-  for (const biome of Object.keys(NAMES)) for (const [where, p] of [['low', pick(biome, seeds)], ['border', pickBorder(seeds, biome)]]) {
+  const only = (i) => (process.argv[i] ? process.argv[i].split(',') : null), pickB = only(3), pickL = only(4), pickW = only(5);
+  for (const biome of Object.keys(NAMES).filter((b) => !pickB || pickB.includes(b))) for (const [where, p] of [['low', pick(biome, seeds)], ['border', pickBorder(seeds, biome)]].filter(([w]) => !pickW || pickW.includes(w))) {
     if (!p) { report.push(`${biome} ${where}: none on seeds ${seeds}`); continue; }
-    for (const [light, level] of LIGHTS) {
+    for (const [light, level] of LIGHTS.filter(([l]) => !pickL || pickL.includes(l))) {
       const name = `${NAMES[biome]}-${where}-${light}-seed${p.seed}-cells${p.X}-${p.Y}-48px.png`;
       writeFileSync(process.argv[2] + '/' + name, encodePng(renderIR(p.ir, 48, frameAt(p.ir, p.tx, p.ty), { level }).img));
       report.push(name + (where === 'border' ? `  ${p.a} / ${p.b}` : `  raised ${p.raised}  signature ${p.sig}`));

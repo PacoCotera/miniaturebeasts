@@ -61,7 +61,7 @@ export const SHRUBS = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4'];
 const mix = h => { h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return h >>> 0; };
 const H = (seed, tag, x, y, z = 0) => { let h = Math.imul(seed | 0, 0x9e3779b1) ^ Math.imul(tag, 0x85ebca6b); h = mix(h ^ Math.imul(x | 0, 0xc2b2ae35)); h = mix(h ^ Math.imul(y | 0, 0x27d4eb2f)); return mix(h ^ Math.imul(z | 0, 0x165667b1)); };
 const U = (seed, tag, x, y, z) => H(seed, tag, x, y, z) / 4294967296;
-const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000, SHRUB: 1010, REEDB: 1020, FLECK: 1030, OVERLAP: 1040, ROCK: 1050, SC: 1060 };
+const TAG = { SEED: 100, POS: 200, JIT: 300, GROW: 400, SIZE: 500, KIND: 600, USE: 700, HOLLOW: 800, CLUMP: 900, FLOWER: 910, FLKIND: 920, FLOFF: 930, TUFT: 940, TUFTKIND: 950, NUDGE: 960, REED: 970, PAD: 980, PEB: 990, MEM: 1000, SHRUB: 1010, REEDB: 1020, FLECK: 1030, OVERLAP: 1040, ROCK: 1050, SC: 1060, GROUND: 1100 };
 const key = (x, y) => y * 8192 + x;
 const CS = 16;                                           // coarse cells of the seed index, in tiles
 const sizeRange = P => P.size || [1, 1];
@@ -283,6 +283,33 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   };
   const shrubAt = (x, y) => inMap(x, y) && T(x, y) === SCRUB && (bigShrub(x, y) || smallPatchShrub(x, y));
 
+  // ---- the decor of the biome grounds (map-rules.json `ground`, the art director's per-100 values): leaf litter, dry grass, short turf and scree each take pieces on their plain tiles (a full cell clear of every edge) ----
+  // One draw a tile picks at most one entry (by the entries' rates in order); of two candidates beside each other, corners too, the lower hash wins, so none ever touch (a greedy choice, a function of the world alone).
+  // A rock entry (`prop`) is a prop that blocks its tile and also keeps clear of every other prop (it never stands beside one, so it can close no gap); the rest are flat decals that block nothing.
+  const GROUND_OF = { [LITTER]: 'litter', [DRY]: 'drygrass', [TURF]: 'turf', [SCREE]: 'scree' }, GD = rules.ground || {};
+  const NB8 = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]], gCand = new Map(), gTake = new Map();
+  const gEntry = (x, y) => {   // the entry the tile's draw falls in, or null (also null where the tile may hold none)
+    const k = key(x, y), hit = gCand.get(k); if (hit !== undefined) return hit;
+    let r = null;
+    const G = inMap(x, y) ? GD[GROUND_OF[T(x, y)]] : null;
+    if (G && G.entries.length && plain(x, y) && !wayZone.has(k) && !hollowNear(x, y, false)) {
+      let u = U(seed, TAG.GROUND, x, y), c = 0;
+      for (const e of G.entries) { c += e.per100 / 100 * (e.scale || G.drawScale); if (u < c) { r = e; break; } }
+      if (r && r.prop && earlier(5, x, y)) r = null;   // a rock keeps off every other prop
+    }
+    if (gCand.size > 600000) gCand.clear();
+    gCand.set(k, r); return r;
+  };
+  const gBefore = (a, b, x, y) => { const v = U(seed, TAG.GROUND + 1, a, b), u = U(seed, TAG.GROUND + 1, x, y); return v < u || (v === u && (b < y || (b === y && a < x))); };
+  const groundAt = (x, y) => {   // the entry a tile takes, or null
+    const e = gEntry(x, y); if (!e) return null;
+    const k = key(x, y), hit = gTake.get(k); if (hit !== undefined) return hit ? e : null;
+    let ok = true;
+    for (const [dx, dy] of NB8) { const a = x + dx, b = y + dy; if (gEntry(a, b) && gBefore(a, b, x, y) && groundAt(a, b)) { ok = false; break; } }
+    if (gTake.size > 600000) gTake.clear();
+    gTake.set(k, ok); return ok ? e : null;
+  };
+
   // ---- the props of a rectangle of tiles: { kind, x, y } in world tiles (the foot tile), sorted by foot row, column, kind ----
   function propsIn(x0, y0, x1, y1) {
     const out = [], R = 9;
@@ -296,6 +323,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
       }
     }
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (shrubAt(x, y)) out.push({ kind: SHRUBS[H(seed, TAG.SHRUB + 2, x, y) % SHRUBS.length], x, y, fam: 'shrubs', cluster: -2 });
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { const e = groundAt(x, y); if (e && e.prop) out.push({ kind: e.kinds[H(seed, TAG.GROUND + 2, x, y) % e.kinds.length], x, y, fam: 'ground', cluster: -4 }); }
     for (const h of hollowSites()) if (h.x >= x0 && h.x <= x1 && h.y >= y0 && h.y <= y1) out.push({ kind: HOLLOW, x: h.x, y: h.y, fam: 'landmark', cluster: -1 });
     return out.sort((a, b) => a.y - b.y || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));
   }
@@ -439,6 +467,14 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     for (const p of propsIn(x0 - 4, y0 - 4, x1 + 4, y1 + 5)) { for (const [a, b] of footprint(p)) occ.add(key(a, b)); const r = spriteRect(SPRITES.props[p.kind], p.x * 48 + 24, p.y * 48 + 47); if (r) walls.push(r); }
     const tileOk = (x, y) => inMap(x, y) && (T(x, y) === GRASS || T(x, y) === CLIFF) && grassTile(x, y) && !occ.has(key(x, y));
     const out = scatterIn(x0, y0, x1, y1, tileOk, MD.noOverlap ? walls : []);
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {   // the ground decor: a flat piece in its tile, wholly inside it (a pixel's margin), never meeting a prop's picture
+      const e = groundAt(x, y); if (!e || e.prop) continue;
+      const kind = e.kinds[H(seed, TAG.GROUND + 2, x, y) % e.kinds.length], s = SPRITES.decals[kind]; if (!s) continue;
+      const w = s.rect[2], h = s.rect[3], ax = s.anchor[0], ay = s.anchor[1];
+      const mx = ax + 1 + H(seed, TAG.GROUND + 3, x, y) % Math.max(1, 46 - w + 1), my = ay + 1 + H(seed, TAG.GROUND + 4, x, y) % Math.max(1, 46 - h + 1);
+      if (MD.noOverlap && walls.some(wl => overlaps([x * 48 + mx - ax, y * 48 + my - ay, w, h], wl))) continue;
+      out.push({ kind, x, y, dx: 0, dy: 0, mx, my });
+    }
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       if (!inMap(x, y)) continue;
       const t = T(x, y); let kind = null;

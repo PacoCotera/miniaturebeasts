@@ -44,6 +44,17 @@ export const BIOMES = {
   scree: { job: 'scree', stem: 'scree', over: 'over-scree.png' },
 };
 export const biomeDir = (b) => ({ commit: BIOME_COMMIT, dir: `art-jobs/2026-11-10-art-biome-${BIOMES[b].job}/out/tiles` });
+// the biome decor (art director, mibi-art art/desk a6d2e0be4, art-jobs/2026-11-10-art-biome-<job>/out/p2/manifest.json, signed 2026-11-10): the files byte for byte; a piece's mirror is the manifest's own `mirror` file
+// (named <piece>-m here), its foot flipped across the picture. Lichen and the cushion plant (scree) are not painted yet, and the tall tree is full-colour (over the palette): named empty slots, nothing is placed for them.
+export const BIOME_DECOR = { commit: 'a6d2e0be4', jobs: { leaflitter: 'art-jobs/2026-11-10-art-biome-leaflitter/out/p2', drygrass: 'art-jobs/2026-11-10-art-biome-drygrass/out/p2', turf: 'art-jobs/2026-11-10-art-biome-turf/out/p2' } };
+export const BIOME_DECALS = {
+  leaflitter: ['leaf-loose-0', 'leaf-loose-1', 'leaf-loose-2', 'leaf-loose-3', 'leaf-loose-4', 'leaf-loose-5'],
+  drygrass: ['dry-tufts-1', 'dry-tufts-2', 'dry-tufts-3', 'dry-tufts-1-m', 'dry-tufts-2-m', 'dry-tufts-3-m', 'shrub-thorn-a', 'shrub-thorn-a-m'],
+  turf: ['tuft-wind', 'tuft-wind-m', 'shrub-heather', 'shrub-heather-m'],
+};
+export const BIOME_ROCKS = { turf: ['rock-turf', 'rock-turf-m'] };
+// Held back by the set's palette (208 colours, 171 pinned or in use, the pieces above take the last 37): shrub-thorn-b (+10 colours), clump-seed (+10), dry-rock (+5). Each is a signed piece with its own straw tones
+// outside the map palette; the art desk can snap them to it (or free colours) and they join by adding their names here.
 export const SUNLIT ='#82b266';   // the map palette's `grass`, one sunlit step above the grass base #74a65d: the grass tone patches
 export const SUNLIT_FROM = '#5e9357';
 // the scrub ground (the desk's olive #589054, darker than the grass #74a65d, read as a hollow): the same value as the grass (luminance 143), drier and yellower (hue 80 degrees against the grass's 99)
@@ -184,7 +195,18 @@ export function deskArt() {
   const man = { p3: JSON.parse(show(P3, 'manifest.json')), steps: JSON.parse(show(STEPS, 'manifest.json')), rocks: JSON.parse(show(ROCKS, 'manifest.json')) };
   const sha = (b) => createHash('sha256').update(b).digest('hex');
   // where a desk file lives: a step (young, grown) in the steps folder, the nine re-cut flowers and tufts in p3, the boulders in the rock family, every other piece in p2
+  const bman = Object.fromEntries(Object.entries(BIOME_DECOR.jobs).map(([j, dir]) => [j, { S: { commit: BIOME_DECOR.commit, dir }, m: JSON.parse(show({ commit: BIOME_DECOR.commit, dir }, 'manifest.json')) }]));
+  const biomeEntry = (key) => {   // a biome decor piece by name; a -m name is the manifest's own mirror file with the foot flipped across the picture
+    const mir = key.endsWith('-m'), base = mir ? key.slice(0, -2) : key;
+    for (const { S, m } of Object.values(bman)) {
+      const r = m[base]; if (!r || !r.size) continue;
+      if (mir && !r.mirror) return null;
+      return { S, m: { size: r.size, foot: mir ? [r.size[0] - 1 - r.foot[0], r.foot[1]] : r.foot }, path: path.posix.basename(mir ? r.mirror : r.file) };
+    }
+    return null;
+  };
   const entryOf = (key) => {
+    const be = biomeEntry(key); if (be) return be;
     if (man.steps[key]) return { S: STEPS, m: man.steps[key], path: path.posix.basename(man.steps[key].file) };
     if (P3_KEYS.includes(key)) return { S: P3, m: man.p3[key], path: path.posix.basename(man.p3[key].file) };
     if (manifest[key]) return { S: P2, m: manifest[key], path: path.posix.basename(manifest[key].file) };
@@ -227,6 +249,10 @@ export function deskArt() {
     else if (n === 'split-stone') props[n] = { ...p, footprint: [[-1, 0], [0, 0], [1, 0], [-1, -1], [0, -1], [1, -1]] };
     else props[n] = { ...p, footprint: [[0, 0]] };
   }
+  // The tall tree (leaf litter job, tree-tall-crown and tree-tall-trunk) is NOT placed: the pieces are full-colour paint (1412 and 339 colours) and the set's palette holds 208; fitting them would mean recolouring
+  // the signed art, which is the art desk's call. Named empty slot: tree-tall (Tallwood, about one grove tree in three).
+  for (const k of Object.values(BIOME_ROCKS).flat()) props[k] = { ...piece(k), footprint: [[0, 0]] };
+  for (const k of Object.values(BIOME_DECALS).flat()) decals[k] = { ...piece(k) };
   for (const [n, key] of Object.entries(DECOR_SOURCES.sweeps)) props[n] = { ...piece(key), footprint: [] };   // sweeps of tall grass block nothing
   for (const [n, key] of Object.entries(DECOR_SOURCES.decals)) decals[n] = { ...piece(key) };
   for (const [n, key] of Object.entries(DECOR_SOURCES.reeds)) props[n] = { ...piece(key), footprint: [] };   // a prop with no footprint: it sorts with the walkers and blocks nothing

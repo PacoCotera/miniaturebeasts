@@ -207,6 +207,266 @@
     ],
     "sha256": "2f94a0e16acc8648393ae6e156a519b7438767cd4af0e103a4d98b0c64ee0859"
   },
+  "rock-turf.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-turf/out/p2/rock-turf.png",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "0b4e6f691505d6f738b746af9520b571151fba9ab5c74b6cc1eb73b5ebeecbef"
+  },
+  "rock-turf-m.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-turf/out/p2/rock-turf-m.png",
+    "size": [
+      15,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "f2afc6e5a8f689ae56b1e15404a165dde2d916c782de15d93f278adf5d1a038a"
+  },
+  "leaf-loose-0.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/p2/leaf-loose-0.png",
+    "size": [
+      4,
+      5
+    ],
+    "foot": [
+      2,
+      4
+    ],
+    "sha256": "85e91fc0cb1352ce02e0dc2e168e365706eb3d76268c2729129fb7ee73636b7a"
+  },
+  "leaf-loose-1.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/p2/leaf-loose-1.png",
+    "size": [
+      3,
+      4
+    ],
+    "foot": [
+      1,
+      3
+    ],
+    "sha256": "f9b98cc0ba755894385f87697cebc02225c14b1bb2362a560b07411ed60ea7a8"
+  },
+  "leaf-loose-2.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/p2/leaf-loose-2.png",
+    "size": [
+      4,
+      2
+    ],
+    "foot": [
+      2,
+      1
+    ],
+    "sha256": "1b115a11bc4f785ba48d7746fc051f61651c72cebe453c6677de5211eedb66a3"
+  },
+  "leaf-loose-3.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/p2/leaf-loose-3.png",
+    "size": [
+      4,
+      1
+    ],
+    "foot": [
+      2,
+      0
+    ],
+    "sha256": "1f09b4312f71379288400fa5e250ee24cdc0c73182efdc0da6e3897344f493ec"
+  },
+  "leaf-loose-4.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/p2/leaf-loose-4.png",
+    "size": [
+      2,
+      2
+    ],
+    "foot": [
+      1,
+      1
+    ],
+    "sha256": "d206d6a0f616eb3db4247f1bc0ce4975c906ccbf41b8f1676748d3e412898dec"
+  },
+  "leaf-loose-5.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/p2/leaf-loose-5.png",
+    "size": [
+      1,
+      3
+    ],
+    "foot": [
+      0,
+      2
+    ],
+    "sha256": "b8ab1facaff7f4c75c07b1da3ee076134b705a7a171a11a9e1ec4bb64d6e997b"
+  },
+  "dry-tufts-1.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-drygrass/out/p2/dry-tufts-1.png",
+    "size": [
+      9,
+      9
+    ],
+    "foot": [
+      4,
+      8
+    ],
+    "sha256": "0236540c74d08eb2b1cb07edfd6c7d3eac451752754a8cbaa4c649cfaf43b7e2"
+  },
+  "dry-tufts-2.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-drygrass/out/p2/dry-tufts-2.png",
+    "size": [
+      10,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "e56b59207b6f043f8c65181254fd66b3566e7cb88ece1478a1faa758c747c853"
+  },
+  "dry-tufts-3.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-drygrass/out/p2/dry-tufts-3.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "8258125a2253c4a06ccdf41c3cd75163097a63d6881aa000272d32f73c6239f9"
+  },
+  "dry-tufts-1-m.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-drygrass/out/p2/dry-tufts-1-m.png",
+    "size": [
+      9,
+      9
+    ],
+    "foot": [
+      4,
+      8
+    ],
+    "sha256": "3d817e6de3a6ff767f7ff1cbd18b1f51edfdb9d1b454eab6d51236ea44684794"
+  },
+  "dry-tufts-2-m.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-drygrass/out/p2/dry-tufts-2-m.png",
+    "size": [
+      10,
+      9
+    ],
+    "foot": [
+      4,
+      8
+    ],
+    "sha256": "b9486fc270da04054d9735b737882cb3045b9f811ca6ad252777ab4af86b349c"
+  },
+  "dry-tufts-3-m.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-drygrass/out/p2/dry-tufts-3-m.png",
+    "size": [
+      11,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "6f49cb17c1dbb70f5449246c057c2f2624ac80a71f2de851be4720a8b4d0b875"
+  },
+  "shrub-thorn-a.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-drygrass/out/p2/shrub-thorn-a.png",
+    "size": [
+      14,
+      12
+    ],
+    "foot": [
+      7,
+      11
+    ],
+    "sha256": "216fbdd4c6a38b90b48e76760fb3bf6a7583caf095671b5fc28663e251904965"
+  },
+  "shrub-thorn-a-m.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-drygrass/out/p2/shrub-thorn-a-m.png",
+    "size": [
+      14,
+      12
+    ],
+    "foot": [
+      6,
+      11
+    ],
+    "sha256": "ded6593b3788e9f022d256ed84b03256c9b606838c0044db9e213ec158546f07"
+  },
+  "tuft-wind.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-turf/out/p2/tuft-wind.png",
+    "size": [
+      14,
+      11
+    ],
+    "foot": [
+      7,
+      10
+    ],
+    "sha256": "1219f1188d26a23d1e8908756383521784aea1df0fa15f8565f035c006b320bb"
+  },
+  "tuft-wind-m.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-turf/out/p2/tuft-wind-m.png",
+    "size": [
+      14,
+      11
+    ],
+    "foot": [
+      6,
+      10
+    ],
+    "sha256": "0136fee6055793c2f748467bf73e9e8a35f974e6554205be2f43d2d24183dfc2"
+  },
+  "shrub-heather.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-turf/out/p2/shrub-heather.png",
+    "size": [
+      12,
+      9
+    ],
+    "foot": [
+      6,
+      8
+    ],
+    "sha256": "444199e6af1fd16cebbd0fbd3a425ed75944e32a37fb54fcd0239acf9cab26d7"
+  },
+  "shrub-heather-m.png": {
+    "commit": "a6d2e0be4",
+    "from": "art-jobs/2026-11-10-art-biome-turf/out/p2/shrub-heather-m.png",
+    "size": [
+      12,
+      9
+    ],
+    "foot": [
+      5,
+      8
+    ],
+    "sha256": "85e9496b6cc1b253f7abbdbb6b33b6035003015a99bc6a7d3af23783e6c24e43"
+  },
   "tufts-2.png": {
     "commit": "cc712a83e",
     "from": "art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/tufts-2.png",

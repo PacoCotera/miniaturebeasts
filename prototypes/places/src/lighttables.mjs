@@ -63,7 +63,7 @@ export const STONE_TONES = {
   dark2: { line: [0x34, 0x38, 0x40], mid: [0x47, 0x4d, 0x55], hi: [0x55, 0x5c, 0x64] },
   storm: { line: [0x3e, 0x44, 0x4e], mid: [0x5a, 0x64, 0x70], hi: [0x6c, 0x76, 0x82] },
 };
-// opts.ground: palette indices of the plain grass fill's colours; opts.tone: of the sunlit tone patch; opts.crowns: of the tree, bush and shrub leaf ramp; opts.stone: of the rocks, boulders and cliff stone, outlines included; opts.stoneHi: of the rock's two lightest greys, which go one step lighter; opts.stoneLine: of its outlines, which go one step darker (all core-and-set indices).
+// opts.bank, opts.bankTo: the bank earth and the trunk brown it takes at night (below). opts.ground: palette indices of the plain grass fill's colours; opts.tone: of the sunlit tone patch; opts.crowns: of the tree, bush and shrub leaf ramp; opts.stone: of the rocks, boulders and cliff stone, outlines included; opts.stoneHi: of the rock's two lightest greys, which go one step lighter; opts.stoneLine: of its outlines, which go one step darker (all core-and-set indices).
 export function computeTables(coreRgb, setRgb, opts = {}) {
   const cand = [];
   for (let i = 1; i < coreRgb.length; i++) cand.push([i, coreRgb[i]]);
@@ -83,6 +83,7 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
   const pools = {};
   for (const f of ['green', 'teal', 'blue', 'warm', 'grey']) pools[f] = cand.filter(([, rgb]) => family(rgb) === f);
   const ground = new Set(opts.ground || []), tone = new Set(opts.tone || []), crowns = new Set(opts.crowns || []), stone = new Set(opts.stone || []), stoneHi = new Set(opts.stoneHi || []), stoneLine = new Set(opts.stoneLine || []);
+  const bank = new Set(opts.bank || []), bankTo = opts.bankTo ?? -1;   // opts.bank: palette indices of the bank earth (the earth sheets' colours no other sheet uses); opts.bankTo: the night colour they take
   const used = coreRgb.length + setRgb.length;
   const tables = {};
   for (const name of TABLE_NAMES) {
@@ -109,6 +110,7 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
       if (tones && stoneHi.has(i) && stoneHiTo > 0) map[i] = stoneHiTo;
       else if (tones && stoneLine.has(i) && stoneLineTo > 0) map[i] = stoneLineTo;
       else if (tones && stone.has(i) && stoneTo > 0) map[i] = stoneTo;
+      else if (night && bank.has(i) && bankTo > 0) map[i] = bankTo;   // the thin earth band at the water's edge: the darkest low-saturation trunk brown, never a rust red (art director 2026-11-11)
       else if (!night || !f) map[i] = nearest(t);
       else if (f === 'warm' && khakiPool.length && khaki(rgb)) map[i] = nearest(muted(t), khakiPool);
       else if (f === 'grey' && rgb[0] > rgb[2] + 8 && warmGreyTo > 0) { const x = lumOf(rgb) * 0.55; map[i] = nearest([x, x + 2, x], warmGreyPool); }

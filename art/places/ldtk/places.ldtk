@@ -1686,6 +1686,16 @@
 						"id": "rock-big-m",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "rock-turf",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-turf-m",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,
@@ -2264,6 +2274,96 @@
 					},
 					{
 						"id": "sc-bush-round-grown-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-0",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-4",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-5",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-1-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-2-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-3-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-thorn-a",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-thorn-a-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tuft-wind",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tuft-wind-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-heather",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-heather-m",
 						"color": 0,
 						"tileRect": null
 					}

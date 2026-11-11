@@ -161,7 +161,15 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   if (desk) for (const f of ['rock-a.png', 'rock-b.png', 'rock-big.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) deskGrey.add(hex(im.data[i], im.data[i + 1], im.data[i + 2])); }
   const greyIdx = (pred) => [...deskGrey].filter((h) => stone.includes(CORE_COLOURS + sorted.indexOf(h)) && pred(lum(h))).map((h) => CORE_COLOURS + sorted.indexOf(h));
   const stoneHi = greyIdx((l) => l >= 160), stoneLine = greyIdx((l) => l < 70);
-  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine });
+  // the bank earth: the thin earth band at the water's edge (the sand and earth sheets' edge tone, #d2b06f by day). At night the nearest-colour step sent it to #664330, which reads rust red (art director 2026-11-11):
+  // it takes the darkest low-saturation brown the palette has (hue 25 to 35 degrees, saturation at most 0.5, the trunk browns' family) instead. A table entry only, no sheet is repainted.
+  const BANK_EARTH = 'd2b06f';
+  const hue = (h) => { const [r, g, b] = unhex(h), mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn || 1; const x = mx === r ? ((g - b) / d + 6) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; return x * 60; };
+  const satOf = (h) => { const c = unhex(h); return (Math.max(...c) - Math.min(...c)) / Math.max(...c, 1); };
+  const trunkBrowns = sorted.filter((h) => hue(h) >= 25 && hue(h) <= 35 && satOf(h) <= 0.5).sort((a, b) => lum(a) - lum(b));
+  const bank = sorted.indexOf(BANK_EARTH) >= 0 ? [CORE_COLOURS + sorted.indexOf(BANK_EARTH)] : [];
+  const bankTo = trunkBrowns.length ? CORE_COLOURS + sorted.indexOf(trunkBrowns[0]) : -1;
+  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo });
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
 

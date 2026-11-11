@@ -49,6 +49,23 @@
       "steps": { "grownAbove": 0.62, "youngBelow": 0.30, "jitter": 0.5 }
     }
   },
+  "ground": {
+    "litter": { "drawScale": 2.8, "entries": [
+      { "name": "loose leaves", "kinds": ["leaf-loose-0", "leaf-loose-1", "leaf-loose-2", "leaf-loose-3", "leaf-loose-4", "leaf-loose-5"], "per100": 4 }
+    ] },
+    "drygrass": { "drawScale": 2.1, "entries": [
+      { "name": "dry tufts", "kinds": ["dry-tufts-1", "dry-tufts-2", "dry-tufts-3", "dry-tufts-1-m", "dry-tufts-2-m", "dry-tufts-3-m"], "per100": 6 },
+      { "name": "thorn shrub", "kinds": ["shrub-thorn-a", "shrub-thorn-a-m"], "per100": 2 }
+    ] },
+    "turf": { "drawScale": 2.1, "entries": [
+      { "name": "wind tuft", "kinds": ["tuft-wind", "tuft-wind-m"], "per100": 5 },
+      { "name": "heather", "kinds": ["shrub-heather", "shrub-heather-m"], "per100": 3 },
+      { "name": "rock", "kinds": ["rock-turf", "rock-turf-m"], "per100": 1, "scale": 3.0, "prop": true }
+    ] },
+    "scree": { "drawScale": 2.0, "entries": [
+      { "name": "rocks", "kinds": ["rock-a", "rock-a-m", "rock-b", "rock-b-m", "rock-big", "rock-big-m"], "per100": 2, "prop": true }
+    ] }
+  },
   "shrubs": { "smallPatchMax": 80 },
   "water": { "padClear": 1 },
   "reeds": {

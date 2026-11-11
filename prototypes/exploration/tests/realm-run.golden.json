@@ -7,7 +7,7 @@
  "dock": 0,
  "stopMid": false,
  "presses": 2992,
- "digest": "a1afa2a25a999bc5b265b6b0e2952cad9b9f1a938cd159a31636d5d5df632928",
+ "digest": "7d36050f490bd396bd8a043fb3a5d9b72584d7e460fe6850bd3919e0499342c5",
  "steps": [
   {
    "n": 1,
@@ -140,14 +140,14 @@
    "presses": 2873,
    "turn": 19,
    "bay": 0,
-   "d": "7de5f8977d2c94bb"
+   "d": "ada471410751391a"
   },
   {
    "n": 20,
    "presses": 2992,
    "turn": 20,
    "bay": 0,
-   "d": "a1afa2a25a999bc5"
+   "d": "7d36050f490bd396"
   }
  ],
  "summary": {

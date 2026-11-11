@@ -6,6 +6,13 @@
   "required": ["version", "biomes", "props", "meadow", "shrubs", "water", "reeds", "tone"],
   "definitions": {
     "chance": { "type": "number", "minimum": 0, "maximum": 1 },
+    "groundDecor": {
+      "type": "object", "additionalProperties": false, "required": ["drawScale", "entries"],
+      "properties": {
+        "drawScale": { "description": "The tile draw's rate is per100 / 100 times this: only plain tiles hold a piece and no two pieces touch, so a draw at the plain value would place fewer than per100 per 100 tiles of the ground; measured on seed 7 so the placed count is per100", "type": "number", "minimum": 1, "maximum": 5 },
+        "entries": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["name", "kinds", "per100"], "properties": { "name": { "type": "string" }, "kinds": { "type": "array", "minItems": 1, "items": { "type": "string" } }, "per100": { "type": "number", "minimum": 0, "maximum": 50 }, "scale": { "description": "Replaces the ground's drawScale for this entry (rocks lose more tiles to the keep-off rule)", "type": "number", "minimum": 1, "maximum": 5 }, "prop": { "type": "boolean" } } } }
+      }
+    },
     "cells": { "type": "integer", "minimum": 0, "maximum": 12 },
     "box": {
       "description": "A rectangle of cells round a tile, counted from it: left, right, up, down",
@@ -92,6 +99,13 @@
             "steps": { "description": "A piece's size: the field's rank w in the patch (0 at the edge, 1 at the centre) plus a jitter of +-jitter/2; above grownAbove it is grown, below youngBelow young, else the signed middle piece", "type": "object", "additionalProperties": false, "required": ["grownAbove", "youngBelow", "jitter"], "properties": { "grownAbove": { "$ref": "#/definitions/chance" }, "youngBelow": { "$ref": "#/definitions/chance" }, "jitter": { "type": "number", "minimum": 0, "maximum": 1 } } }
           }
         }
+      }
+    },
+    "ground": {
+      "description": "The decor of the biome grounds (art director 2026-11-10): for each ground (litter, drygrass, turf, scree) a list of kinds; per100 is the pieces asked for per 100 tiles of that ground, counted on its tiles that are plain (a full cell clear of every edge, shore and lip); a piece lies in its tile with no piece beside it, not even at a corner. prop: a rock that blocks its tile (a prop, by the same keep-off rules as the outcrops); otherwise a flat decal that blocks nothing",
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "litter": { "$ref": "#/definitions/groundDecor" }, "drygrass": { "$ref": "#/definitions/groundDecor" }, "turf": { "$ref": "#/definitions/groundDecor" }, "scree": { "$ref": "#/definitions/groundDecor" }
       }
     },
     "shrubs": { "type": "object", "additionalProperties": false, "required": ["smallPatchMax"], "properties": { "smallPatchMax": { "description": "A scrub patch of at most this many tiles with no tile a full cell off its edge still takes one shrub", "type": "integer", "minimum": 1, "maximum": 400 } } },
