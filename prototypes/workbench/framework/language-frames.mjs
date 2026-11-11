@@ -51,7 +51,7 @@ export const LAYOUT_POOL = ["bands", "patches", "saddle", "gradient", "back-spot
 // The Markings trait reads the layout, not the switch (release 21a): plain (the switch off), then the five layouts. Words OWED to the copywriter.
 export const MARKINGS_LOOKS = ["plain", "back-spots", "saddle", "gradient", "bands", "patches"].map((l) => LAYOUT_WORD[l]);
 // Tint's two ends by land: the way the colour moves 12 degrees either side of the land's own (the copywriter, 6 Nov 2026)
-export const TINT_ENDS = { mixed: ["redder", "yellower"], woods: ["redder", "yellower"], tallwood: ["yellower", "greener"], thickets: ["bluer", "redder"], fells: ["redder", "yellower"], downs: ["bluer", "pinker"], marsh: ["yellower", "greener"], tarns: ["greener", "bluer"], meres: ["greener", "bluer"] };
+export const TINT_ENDS = { all: ["redder", "yellower"], mixed: ["redder", "yellower"], woods: ["redder", "yellower"], tallwood: ["yellower", "greener"], thickets: ["bluer", "redder"], fells: ["redder", "yellower"], downs: ["bluer", "pinker"], marsh: ["yellower", "greener"], tarns: ["greener", "bluer"], meres: ["greener", "bluer"] };
 
 // Records locked at a neutral value in every language frame (the value is the one the language allows).
 const NEUTRAL = {

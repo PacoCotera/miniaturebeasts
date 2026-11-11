@@ -14,7 +14,7 @@ export const SPECIES_NAMES = { S01: "Loika", S02: "Untuva", S03: "Tuikis", S04: 
 export const CLAN_NAMES = { C01: "Lophessa", C02: "Kausida", C03: "Stilbera", C04: "Lathreta", C05: "Dasyla", C06: "Prosopa", C07: "Aulaka", C08: "Kremnion", C09: "Aithria", C10: "Kolymba", C11: "Thyreka", C12: "Graptoma", C13: "Lepidos", C14: "Kapnis", C15: "Phyllaxa", C16: "Brontelas" };
 
 import { proportionPairs } from "./proportions.mjs";
-import { LANGUAGE, kindOf, landOf, familyOf, hexToOklch } from "./language.mjs";
+import { LANGUAGE, ALL_LANDS, kindLands, kindOf, landOf, familyOf, hexToOklch } from "./language.mjs";
 import { BODY_PIGMENTS, SECOND_PIGMENTS } from "./catalogue.mjs";
 
 const sw = (...ids) => Object.fromEntries(ids.map((id) => [id, "on"]));
@@ -297,6 +297,7 @@ const withoutResembles = ({ resembles, ...rest }) => rest;
 // The copywriter's words (6 Nov 2026) for the frame's feature line and the describe line that used to name a real animal. A signature type that opens with "the" drops it after "its".
 export const OWED = {
   "roster.feature": "a {family} body, with its {signature}",
+  "land.all": "",   // [copy] the habitat word of a kind in every land (the Loika); empty until the copywriter writes it
   "describe.type-line": "It looks just as its species should: {feature}.",
 };
 export const featureOf = (fam, k) => OWED["roster.feature"].replace("{family}", fam.name).replace("{signature}", k.signature.type.replace(/^the /, ""));
@@ -313,7 +314,7 @@ const nearestPigment = (table, hex) => {
 export function languageFields(id, clan, species) {
   const k = kindOf(LANGUAGE, id);
   if (!k) return null;
-  const land = landOf(LANGUAGE, k.land), fam = familyOf(LANGUAGE, k.family);
+  const everyLand = k.land === ALL_LANDS, land = everyLand ? null : landOf(LANGUAGE, k.land), fam = familyOf(LANGUAGE, k.family);   // a kind in every land owns its colours (an anchor) and takes none from a land
   const feature = featureOf(fam, k);
   const owns = LANGUAGE.exceptions.some((e) => e.kind === id && e.check === "coat.land");   // an anchor keeps its own colours
   // features: the face (eyes), the parts the family says it has, the socket of the signature; an anchor keeps what its signed exceptions cover
@@ -330,16 +331,16 @@ export function languageFields(id, clan, species) {
   const anchor = owns ? clan.anchor : nearestPigment(BODY_PIGMENTS, land.body.hex);
   const second = owns ? clan.second : nearestPigment(SECOND_PIGMENTS, land.marking.hex);
   const podPair = owns ? null : [{ pigment: anchor, hex: land.body.hex }, { pigment: nearestPigment(SECOND_PIGMENTS, land.accent.hex), hex: land.accent.hex }];
-  return { feature, features, finish, anchor, second, podPair, habitat: land.word };
+  return { feature, features, finish, anchor, second, podPair, habitat: everyLand ? OWED["land.all"] : land.word };
 }
 
 // What the registry says of a roster species: its land (the game's biome id), the land's player word and its family. The
 // registry is the one source; `habitat` in the row above is the older text the frames before the language carry, never read for
 // where a kind lives. A species the registry has no kind for (none today) has no land.
 export function landAndFamily(id, reg = LANGUAGE) {
-  const k = kindOf(reg, id), land = k?.land ? landOf(reg, k.land) : null;
-  return { land: k?.land ?? null, landName: land?.word ?? null, family: k?.family ?? null };
+  const k = kindOf(reg, id), land = k?.land && k.land !== ALL_LANDS ? landOf(reg, k.land) : null;
+  return { land: k?.land ?? null, landName: k?.land === ALL_LANDS ? OWED["land.all"] : land?.word ?? null, family: k?.family ?? null };
 }
 
 // The kinds that live on each land, in species order: the realm's kind draw reads this (regions.mjs BIOME_KINDS).
-export const kindsOnLand = (landId, reg = LANGUAGE) => reg.kinds.filter((k) => !k.template && k.land === landId).map((k) => k.id);
+export const kindsOnLand = (landId, reg = LANGUAGE) => reg.kinds.filter((k) => !k.template && kindLands(reg, k).includes(landId)).map((k) => k.id);
