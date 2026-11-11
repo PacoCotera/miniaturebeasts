@@ -158,19 +158,20 @@ static void build_waiting(void) {
     v_name("waiting.pod"); natslot(v_fmt("waiting.shadow.%d", i), shadow, x + sdx, top + sdy, p3[i] >= 2);
     v_slot(v_fmt("waiting.pod.%d", i), v_pstr(v_fmt("regions.waiting.pods.%d.pod", i)), NULL, x, top, pw, ph, shown);
   }
-  { char more[16] = ""; int px = v_si(C, "regions.waiting.pods.more.px", 16);
+  { char more[16] = "";
     if (present > 3) snprintf(more, sizeof more, "+%d", present - 3);
     v_region("waitingMore", LAYER_TYPE);
-    v_line_at("waiting.more", more, v_si(C, "regions.waiting.pods.more.right", 180), v_si(C, "regions.waiting.pods.more.centreY", 458), V_ANCHOR_MID, px, v_scol(C, "colours.display.more"), V_ALIGN_RIGHT); }
+    v_say("waiting.more", more, v_si(C, "regions.waiting.pods.more.right", 180), v_si(C, "regions.waiting.pods.more.centreY", 458), V_ANCHOR_MID, "quiet", "pane", V_ALIGN_RIGHT); }   /* 16 px fog: the quiet role on a pane */
 }
 
 /* ---- the inside view: an ordinary crate opens on one close look into it (cargo.json regions.inside, events.opening.order). The pod lies in the nest, the supplies in their pockets, the finds on the moss. The view lasts the crate's
    `inside` ms (held, under a veil with one card, for the first pod the Station has ever stored: the host sends no clock then and ✓ ends it). What is not yet on its way stays where it lay, over the bay, until its start.
    The portrait crate keeps its own display (build_display). ---- */
-typedef struct { int kind, idx, x, y, w, h, ax, ay, apx, sm; char amt[16]; } el_t;   /* kind: 0 a pod, 1 a find, 2 a supply; sm: a supply in its small picture */
+typedef struct { int kind, idx, x, y, w, h, ax, ay, apx, sm; char amt[16]; } el_t;   /* kind: 0 a pod, 1 a find, 2 a supply; sm: a supply in its small picture; (ax, ay): where its amount stands, ay the line's middle */
 #define MAXEL 32
 static el_t E[MAXEL]; static int nE;
 static int fpx(int px) { return px >= 28 ? 28 : px >= 20 ? 20 : 16; }   /* the face sets Inter at 16, 20 and 28: 22 is read as 20, 13 as 16 */
+static const char *bone_role(int px) { return px >= 28 ? "name" : px >= 20 ? "heading" : "label"; }   /* the role that sets bone words at the size fpx gives (SB28, M20, R16) */
 static int mat_ph(int k, int lt, int q) { int s = mat_start(k, q); if (lt < s) return 0; if (!g_motion) return 3; if (lt < s + S.travel) return 1; return 3; }   /* 0 where it lay, 1 travelling to the bar, 3 gone */
 static void layout_inside(int k) {
   char K[48]; snprintf(K, sizeof K, "regions.opening.crates.%d", k);
@@ -192,14 +193,15 @@ static void layout_inside(int k) {
     char sz[16] = ""; spec_str(C, v_fmt("regions.inside.supplies.pockets.%d.size", q), sz, (int)sizeof sz); e->sm = strcmp(sz, "small") == 0;
     e->kind = 2; e->idx = q; e->w = v_sk(C, e->sm ? "regions.display.material.small.size" : "regions.display.material.big.size", 0); e->h = v_sk(C, e->sm ? "regions.display.material.small.size" : "regions.display.material.big.size", 1);
     e->x = rc[0] + pr[0] + (pr[2] - e->w) / 2; e->y = rc[1] + pr[1] + (pr[3] - e->h) / 2; e->apx = fpx(v_si(C, e->sm ? "regions.display.material.small.px" : "regions.display.material.big.px", 22));
-    snprintf(e->amt, sizeof e->amt, "%s", v_pstr(v_fmt("%s.mats.%d.amount", K, q))); e->ax = e->x + e->w + 8; e->ay = v_cap_top(e->y + e->h / 2, V_ANCHOR_MID, e->apx);
+    snprintf(e->amt, sizeof e->amt, "%s", v_pstr(v_fmt("%s.mats.%d.amount", K, q))); e->ax = e->x + e->w + 8; e->ay = e->y + e->h / 2;
   }
 }
 /* A picture of the portrait crate's display: it rises by the 180 ms dither, in its own box (v_dither_window from clear), the plain picture after; reduced motion is a cut at 200. */
 static void dpic(const char *id, const char *asset, int x, int y, int w, int h, int show) {
   if (!show) return;
-  if (g_motion && g_lt < S.display + S.dither) { int level = (g_lt - S.display) * 16 / S.dither; v_sprite_hidden(id, asset, x, y); char d[112]; snprintf(d, sizeof d, "%s.d", id); if (level > 0) v_dither_window(d, NULL, 0, 0, asset, 0, 0, level, x, y, w, h); }
-  else v_sprite(id, asset, x, y, w, h);
+  int rising = g_motion && g_lt < S.display + S.dither;
+  v_slot(id, asset, NULL, x, y, w, h, !rising);   /* the picture, or its node of no size while the dither rises over it */
+  if (rising) { int level = (g_lt - S.display) * 16 / S.dither; char d[112]; snprintf(d, sizeof d, "%s.d", id); if (level > 0) v_dither_window(d, NULL, 0, 0, asset, 0, 0, level, x, y, w, h); }
 }
 static void dpic_nat(const char *id, const char *asset, int x, int y, int show) { int sz[2]; if (v_asset_size(asset, sz) < 0) return; dpic(id, asset, x, y, sz[0], sz[1], show); }
 static int mat_index(const char *name) { return !strcmp(name, "energy") ? 0 : !strcmp(name, "data") ? 1 : 2; }
@@ -248,7 +250,7 @@ static void build_display(void) {
       if (show) { char sid[64]; snprintf(sid, sizeof sid, "d.mat.%d.s", e->idx); soft_shadow(sid, e->x + e->w / 2, e->y + e->h - 3, e->w * v_sk(C, "regions.inside.shadow.mat", 0) / 100, v_sk(C, "regions.inside.shadow.mat", 1)); }
       if (show) v_sprite(id, v_pstr(v_fmt("%s.mats.%d.%s", K, e->idx, e->sm ? "small" : "big")), e->x, e->y, e->w, e->h);
       v_region("displayAmount", LAYER_TYPE); snprintf(id, sizeof id, "d.mat.%d.a", e->idx);
-      v_text(id, show && !hold ? e->amt : "", e->ax, e->ay, show && !hold ? v_measure(e->amt, e->apx) : 0, e->apx, v_scol(C, "colours.display.amount"));
+      v_say(id, show && !hold ? e->amt : "", e->ax, e->ay, V_ANCHOR_MID, bone_role(e->apx), "pane", V_ALIGN_LEFT);
       v_region("display", LAYER_ART);
     }
   }
@@ -269,10 +271,10 @@ static void build_display(void) {
     int cx = rc[0] + v_sk(C, "regions.inside.card.rect", 0), cy = rc[1] + v_sk(C, "regions.inside.card.rect", 1), cw = v_sk(C, "regions.inside.card.rect", 2), ch = v_sk(C, "regions.inside.card.rect", 3); char ops[120];
     snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,6,\"%s\",\"%s\"]]", cw, ch, v_scol(C, "colours.inside.card.fill"), v_scol(C, "colours.inside.card.edge"));
     v_region("insideCard", LAYER_CHROME); v_name("inside.card"); v_composed("inside.card", cx, cy, cw, ch, ops);
-    const char *t = v_pstr("regions.inside.card.title"), *l = v_pstr("regions.inside.card.line"); int tpx = fpx(v_si(C, "regions.inside.card.title.px", 20)), lpx = fpx(v_si(C, "regions.inside.card.line.px", 16));
-    v_region("insideCardText", LAYER_TYPE);
-    v_text("inside.card.t", t, cx + v_sk(C, "regions.inside.card.title.at", 0), v_cap_top(cy + v_sk(C, "regions.inside.card.title.at", 1), V_ANCHOR_MID, tpx), v_measure(t, tpx), tpx, v_scol(C, "colours.inside.card.title"));
-    v_text("inside.card.l", l, cx + v_sk(C, "regions.inside.card.line.at", 0), v_cap_top(cy + v_sk(C, "regions.inside.card.line.at", 1), V_ANCHOR_MID, lpx), v_measure(l, lpx), lpx, v_scol(C, "colours.inside.card.line"));
+    const char *t = v_pstr("regions.inside.card.title"), *l = v_pstr("regions.inside.card.line");
+    v_region("insideCardText", LAYER_TYPE);   /* the title at 20 px in bone (heading), the line at 16 px in fog (quiet) */
+    v_say("inside.card.t", t, cx + v_sk(C, "regions.inside.card.title.at", 0), cy + v_sk(C, "regions.inside.card.title.at", 1), V_ANCHOR_MID, "heading", "pane", V_ALIGN_LEFT);
+    v_say("inside.card.l", l, cx + v_sk(C, "regions.inside.card.line.at", 0), cy + v_sk(C, "regions.inside.card.line.at", 1), V_ANCHOR_MID, "quiet", "pane", V_ALIGN_LEFT);
   }
 }
 /* ---- what travels: the pods to their wells or the mat, then the supplies to the top bar's icons, then the finds to the strip ---- */
@@ -364,7 +366,7 @@ static void build_mibis(int t) {
     int r[4]; v_srect(C, v_fmt(ARR ".mibis.byCount.%d.%d", n, i), r); const char *pic = v_pstr(v_fmt(ARR ".mibis.%d", i)); int e = t - (at + each * i);
     int motion = v_pbool("motion", 1), lift = 0; if (motion && e >= dms && e < dms + hop) for (int q = 0; q < nl; q++) if (e - dms >= spec_int(C, v_fmt(ARR ".mibis.hop.lift.%d.0", q), 1 << 30)) lift = spec_int(C, v_fmt(ARR ".mibis.hop.lift.%d.1", q), 0);
     int level = e < 0 ? 0 : e * levels / dms, done = motion ? e >= dms : e >= 0, dithering = motion && e >= 0 && e < dms && level > 0;   /* with reduced motion a mibi appears as a cut at its time, no dither and no hop; a dither at level 0 draws nothing, so it is not drawn */
-    v_name("mibis"); v_sprite_hidden(v_fmt("mibi.%d.d", i), pic, r[0], r[1]);
+    v_name("mibis"); v_slot(v_fmt("mibi.%d.d", i), pic, NULL, r[0], r[1], r[2], r[3], 0);
     if (dithering) { v_dither_window(v_fmt("mibi.%d.d", i), "", 0, 0, pic, 0, 0, level, r[0], r[1], r[2], r[3]); }
     v_slot(v_fmt("mibi.%d", i), pic, NULL, r[0], r[1] - lift, r[2], r[3], done);
   }
@@ -374,7 +376,7 @@ static void leaving_face(int i, const int b[4], void *ctx) { (void)ctx; v_name("
 typedef struct { const char *icon; int shown; int last[4]; } probe_t;
 static void probe_plate(int i, const int b[4], void *ctx) { probe_t *p = ctx; v_name("band.probe"); v_slot(v_fmt("band.plate.%d", i), p->icon, NULL, b[0], b[1], b[2], b[3], i < p->shown); memcpy(p->last, b, sizeof p->last); }
 static void build_band(int t) {
-  int from = v_si(C, ARR ".band.probe.from", 1500), mend = v_si(C, ARR ".band.probe.mend.at", 2500), meach = v_si(C, ARR ".band.probe.mend.each", 120), wpx = v_si(C, ARR ".band.probe.words.px", 16), gap = v_si(C, ARR ".band.probe.words.gap", 8);
+  int from = v_si(C, ARR ".band.probe.from", 1500), mend = v_si(C, ARR ".band.probe.mend.at", 2500), meach = v_si(C, ARR ".band.probe.mend.each", 120), gap = v_si(C, ARR ".band.probe.words.gap", 8);
   int whole = v_pint(ARR ".plates.whole", 0), mended = v_pint(ARR ".plates.mended", 0); const char *icon = v_pstr(ARR ".plates.icon");
   if (t >= from) {
     int shownN = whole; for (int j = 0; j < mended; j++) if (t >= mend + meach * j) shownN = whole + j + 1;
@@ -382,7 +384,7 @@ static void build_band(int t) {
     v_region("arrivalBand", LAYER_ART);
     int ok = kit_tiles(C, ARR ".band.probe", n, probe_plate, &pr, NULL) >= 0;   /* the plates on the probe's form (the spec holds one for each count it can reach); a count none holds draws nothing */
     const char *words = v_pstr(ARR ".plates.words");
-    if (*words && ok && n > 0) { v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_run("band.words", words, pr.last[0] + pr.last[2] + gap, v_cap_in(pr.last[1], pr.last[3], wpx), wpx, v_token("frame", "subject"), V_ALIGN_LEFT); }   /* the words stand a gap after the last plate */
+    if (*words && ok && n > 0) { v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_say_run("band.words", words, pr.last[0] + pr.last[2] + gap, v_role_cap_in(pr.last[1], pr.last[3], "quiet"), "quiet", "field", V_ALIGN_LEFT); }   /* the words stand a gap after the last plate */
   }
   int nf = v_plen(ARR ".leaving.faces"); if (nf > 3) nf = 3;
   if (nf > 0 && t >= v_si(C, ARR ".band.leaving.from", 1500)) {
@@ -396,8 +398,8 @@ static void build_arrival(int choice) {
   int t = choice ? 1 << 20 : arrival_time();
   build_dockBay();
   if (!choice) { int r[4]; v_srect(C, ARR ".apron.rect", r); v_region("apron", LAYER_ART); v_name("apron"); v_sprite("apron", v_pstr(ARR ".apron"), r[0], r[1], r[2], r[3]); }
-  { int r[4]; v_srect(C, "regions.dockRibbon.rect", r); const char *words = v_pstr(ARR ".ribbon"); int rpx = v_si(C, "regions.dockRibbon.px", 20), rpad = v_si(C, "regions.dockRibbon.pad", 16), rib = v_si(C, ARR ".crates.at", 500);
-    int w = layout_plate_width(C, "regions.dockRibbon", v_measure(words, rpx)); r[0] = 512 - w / 2; r[2] = w;
+  { int r[4]; v_srect(C, "regions.dockRibbon.rect", r); const char *words = v_pstr(ARR ".ribbon"); int rpad = v_si(C, "regions.dockRibbon.pad", 16), rib = v_si(C, ARR ".crates.at", 500);
+    int w = layout_plate_width(C, "regions.dockRibbon", v_role_width(words, "heading")); r[0] = 512 - w / 2; r[2] = w;
     v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= rib ? words : "", rpad, v_scol(C, "colours.ribbon.fill"), v_scol(C, "colours.ribbon.edge"), NULL); }
   build_crates_arrival(t);
   if (!choice) build_mibis(t);
