@@ -30,6 +30,20 @@ test("on every land cell of three worlds no opening stands on a side the land re
   assert.ok(cells > 100 && shut > 0, `${cells} cells, ${shut} refused sides seen`);
 });
 
+// Owner 2026-11-11 17:41: within an expedition a place keeps the same wild mibis at the spots they had when you left, across a trip to the map and back; they change only when a world turn passes.
+test("leaving a place and coming back in the same turn gives the same mibis, the same kinds at the same spots", () => {
+  const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(7); TEST.calm = true; S.tier = 2; startExpedition('weather', G.spawns[0]);`);
+  const cell = p.run(`(() => { for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || G.land[c] === L.WATER || !S.cr.some(w => w.c === c)) continue; S.exp.pos = c; enterPatch(); if (RT.view) endView(); if (ensureLive(String(c)).cr.length) return c; leavePatch(); } return -1; })()`);
+  assert.ok(cell >= 0, "a place with wild mibis");
+  const snap = () => p.run(`JSON.stringify(ensureLive('${cell}').cr.map(c => [c.id, c.sp, c.x, c.y]))`);
+  p.run(`for (let i = 0; i < 4; i++) advance('patch', { noise: 'creep', moved: false });`);
+  const left = snap();
+  p.run(`leavePatch(); enterPatch(); if (RT.view) endView();`);
+  assert.equal(snap(), left, "the same kinds at the same spots after the trip to the map and back");
+  p.run(`leavePatch(); S.exp.pos = G.spawns[0]; enterPatch(); if (RT.view) endView(); leavePatch(); S.exp.pos = ${cell}; enterPatch(); if (RT.view) endView();`);
+  assert.equal(snap(), left, "and after a visit to another place");
+});
+
 // Walk fixes (owner's notes of 2026-11-10, 14-15 and 25-32): over 200 places at tier 1 (so range hazes stand) no thing the explorer can act on lies where the explorer cannot walk to it, a bush or a mark
 // is never under a crown or on a blocking tile, decor keeps its gap round every find, and the walk and the hold-Call (whole place) view read one uncovered set.
 const CHECK = `(() => {
