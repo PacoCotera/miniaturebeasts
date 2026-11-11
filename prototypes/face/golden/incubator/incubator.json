@@ -18,11 +18,11 @@
    "png": "incubator-ready.png"
   },
   "incubator-panel-grownow": {
-   "hash": "0874d1e4",
+   "hash": "b62b3338",
    "png": "incubator-panel-grownow.png"
   },
   "incubator-panel-wait": {
-   "hash": "700d21aa",
+   "hash": "58c6b8ae",
    "png": "incubator-panel-wait.png"
   },
   "incubator-growing-half": {
@@ -50,7 +50,7 @@
    "png": "incubator-empty-settling.png"
   },
   "incubator-panel-full": {
-   "hash": "e08acf27",
+   "hash": "78d6f147",
    "png": "incubator-panel-full.png"
   },
   "incubator-incubate-100": {
@@ -62,31 +62,31 @@
    "png": "incubator-incubate-1290.png"
   },
   "incubator-hatch-300": {
-   "hash": "c71d61e1",
+   "hash": "4f200fc9",
    "png": "incubator-hatch-300.png"
   },
   "incubator-hatch-650": {
-   "hash": "c172c7b8",
+   "hash": "77695428",
    "png": "incubator-hatch-650.png"
   },
   "incubator-hatch-1000": {
-   "hash": "c172c7b8",
+   "hash": "77695428",
    "png": "incubator-hatch-1000.png"
   },
   "incubator-hatch-1090": {
-   "hash": "ceaa4861",
+   "hash": "39b28649",
    "png": "incubator-hatch-1090.png"
   },
   "incubator-hatch-1400": {
-   "hash": "8eb9daf3",
+   "hash": "5cd1b5ef",
    "png": "incubator-hatch-1400.png"
   },
   "incubator-hatch-1500": {
-   "hash": "d1d44327",
+   "hash": "b30db7c3",
    "png": "incubator-hatch-1500.png"
   },
   "incubator-hatch-2000": {
-   "hash": "84131536",
+   "hash": "2828ecd2",
    "png": "incubator-hatch-2000.png"
   },
   "incubator-growNow-0": {
@@ -106,7 +106,7 @@
    "png": "incubator-grownow-500.png"
   },
   "incubator-panel-dither-90": {
-   "hash": "40b61e07",
+   "hash": "c4b9b9e7",
    "png": "incubator-panel-dither-90.png"
   },
   "incubator-panel-grownow-200": {
@@ -114,7 +114,7 @@
    "png": "incubator-panel-grownow-200.png"
   },
   "incubator-full-pressed": {
-   "hash": "4a8522e9",
+   "hash": "f893fecd",
    "png": "incubator-full-pressed.png"
   },
   "incubator-hatch-skip": {

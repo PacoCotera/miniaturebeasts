@@ -34,15 +34,15 @@
    "png": "pods-inventory-filtered.png"
   },
   "inventory, the filter tray": {
-   "hash": "8bc551f0",
+   "hash": "f193bd91",
    "png": "pods-inventory-the-filter-tray.png"
   },
   "inventory, no matches": {
-   "hash": "2cc4efb7",
+   "hash": "f2f830b2",
    "png": "pods-inventory-no-matches.png"
   },
   "inventory, find": {
-   "hash": "f933b6db",
+   "hash": "153e2afe",
    "png": "pods-inventory-find.png"
   },
   "inventory, drying": {
@@ -62,7 +62,7 @@
    "png": "pods-inventory-let-go-the-hold-ring-on-the-pod.png"
   },
   "inventory, from the Incubator: Grow, the only verb": {
-   "hash": "3fd9c74c",
+   "hash": "28dc24e1",
    "png": "pods-inventory-from-the-incubator-grow-the-only-verb.png"
   },
   "inventory, grow while busy": {
@@ -78,7 +78,7 @@
    "png": "pods-inventory-call-the-pods-that-need-you-answer-a-tag-over-each-key.png"
   },
   "inventory, forty pods": {
-   "hash": "8343583c",
+   "hash": "bbdb906d",
    "png": "pods-inventory-forty-pods.png"
   },
   "inventory, reading dials": {
@@ -86,43 +86,43 @@
    "png": "pods-inventory-reading-dials.png"
   },
   "read, Loika fresh, Coat in hand": {
-   "hash": "aac24e49",
+   "hash": "d30da13c",
    "png": "pods-read-loika-fresh-coat-in-hand.png"
   },
   "read, Face open, unread": {
-   "hash": "6258def5",
+   "hash": "5ed266a0",
    "png": "pods-read-face-open-unread.png"
   },
   "read, Coat read, Face in hand": {
-   "hash": "e7427daf",
+   "hash": "8093e6f2",
    "png": "pods-read-coat-read-face-in-hand.png"
   },
   "read, Face after the read": {
-   "hash": "a4622980",
+   "hash": "4c0f1de5",
    "png": "pods-read-face-after-the-read.png"
   },
   "read, the Crown detail": {
-   "hash": "881cb817",
+   "hash": "657d1366",
    "png": "pods-read-the-crown-detail.png"
   },
   "read, Movement in hand, the sprout": {
-   "hash": "9f07612f",
+   "hash": "9aa8af1a",
    "png": "pods-read-movement-in-hand-the-sprout.png"
   },
   "read, Tuikis, Shape in hand": {
-   "hash": "eb285211",
+   "hash": "72fc4d05",
    "png": "pods-read-tuikis-shape-in-hand.png"
   },
   "read, a sealed chapter, the pod's reason": {
-   "hash": "e5e166fe",
+   "hash": "4013f482",
    "png": "pods-read-a-sealed-chapter-the-pod-s-reason.png"
   },
   "read, a sealed pod, Identify": {
-   "hash": "45631f56",
+   "hash": "bc533802",
    "png": "pods-read-a-sealed-pod-identify.png"
   },
   "read, the stamp view": {
-   "hash": "5d448dec",
+   "hash": "1bb9b5c1",
    "png": "pods-read-the-stamp-view.png"
   },
   "compare": {
