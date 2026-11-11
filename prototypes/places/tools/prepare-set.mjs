@@ -212,7 +212,15 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   const isStoneTone = (h) => Object.values(STONE_TONES).some((t) => Object.values(t).some((v) => hex(v[0], v[1], v[2]) === h));
   const coolPale = sorted.filter((h) => { const [r, g, b] = unhex(h); return !isStoneTone(h) && b >= r + 12 && g >= r + 4 && g <= b && satOf(h) <= 0.27 && lum(h) >= 100 && lum(h) <= 160; }).sort((a, b) => lum(a) - lum(b));
   const glintTo = coolPale.slice(0, 2).map((h) => CORE_COLOURS + sorted.indexOf(h));
-  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunk, trunkTo: bankTo, glint, glintTo });
+  // two low-saturation browns for the trunk at night (art director 2026-11-11, 1b): the shade side (the two darker trunk colours) takes the dull taupe-brown #584b46, the lit side (the two lighter) the bank's brown #6e5038; the litter's orange specks take #584b46 too
+  const NIGHT_SHADE = '584b46', NIGHT_LIT = '6e5038';
+  const palIdx = (h) => (sorted.indexOf(h) >= 0 ? CORE_COLOURS + sorted.indexOf(h) : -1);
+  const trunkByLum = [...trunk].sort((a, b) => lum(sorted[a - CORE_COLOURS]) - lum(sorted[b - CORE_COLOURS]));
+  const trunkShade = trunkByLum.slice(0, Math.ceil(trunkByLum.length / 2)), trunkLit = trunkByLum.slice(Math.ceil(trunkByLum.length / 2));
+  const litter = [];
+  const litterImg = images.get('fill-litter.png');
+  if (litterImg) { const im = litterImg; for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) { const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]), c = unhex(h), k = palIdx(h); if (k >= 0 && family(c) === 'warm' && !litter.includes(k)) litter.push(k); } }
+  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunkShade, trunkLit, trunkShadeTo: palIdx(NIGHT_SHADE), trunkLitTo: palIdx(NIGHT_LIT), litter, litterTo: palIdx(NIGHT_SHADE), glint, glintTo });
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
 

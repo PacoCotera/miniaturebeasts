@@ -84,7 +84,8 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
   for (const f of ['green', 'teal', 'blue', 'warm', 'grey']) pools[f] = cand.filter(([, rgb]) => family(rgb) === f);
   const ground = new Set(opts.ground || []), tone = new Set(opts.tone || []), crowns = new Set(opts.crowns || []), stone = new Set(opts.stone || []), stoneHi = new Set(opts.stoneHi || []), stoneLine = new Set(opts.stoneLine || []);
   const bank = new Set(opts.bank || []), bankTo = opts.bankTo ?? -1;   // opts.bank: palette indices of the bank earth (the earth sheets' colours no other sheet uses); opts.bankTo: the night colour they take
-  const trunk = new Set(opts.trunk || []), trunkTo = opts.trunkTo ?? -1;   // opts.trunk: palette indices of the tree trunk's browns; opts.trunkTo: the low-saturation brown they take at night
+  const trunkLit = new Set(opts.trunkLit || []), trunkShade = new Set(opts.trunkShade || []), trunkLitTo = opts.trunkLitTo ?? -1, trunkShadeTo = opts.trunkShadeTo ?? -1;   // opts.trunkShade / opts.trunkLit: palette indices of the tree trunk's two darker and two lighter browns; opts.trunkShadeTo / opts.trunkLitTo: the two low-saturation browns they take at night, so the trunk keeps its form steps
+  const litter = new Set(opts.litter || []), litterTo = opts.litterTo ?? -1;   // opts.litter: palette indices of the woods litter's orange specks; opts.litterTo: the dull brown they take at night
   const glint = opts.glint || [], glintTo = opts.glintTo || [];   // opts.glint: the water ripple's glint colours, darker first; opts.glintTo: the cool pale grey-blues they take at night, in the same order
   const used = coreRgb.length + setRgb.length;
   const tables = {};
@@ -113,7 +114,9 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
       else if (tones && stoneLine.has(i) && stoneLineTo > 0) map[i] = stoneLineTo;
       else if (tones && stone.has(i) && stoneTo > 0) map[i] = stoneTo;
       else if (night && bank.has(i) && bankTo > 0) map[i] = bankTo;   // the thin earth band at the water's edge: the darkest low-saturation trunk brown, never a rust red (art director 2026-11-11)
-      else if (night && trunk.has(i) && trunkTo > 0) map[i] = trunkTo;   // the tree trunk at night: the darkest low-saturation trunk brown, no red cast (art director 2026-11-11)
+      else if (night && trunkShade.has(i) && trunkShadeTo > 0) map[i] = trunkShadeTo;   // the tree trunk's shade side at night: a dark low-saturation brown, no red cast (art director 2026-11-11)
+      else if (night && trunkLit.has(i) && trunkLitTo > 0) map[i] = trunkLitTo;   // its lit side: a lighter low-saturation brown, so the trunk keeps its form steps (art director 2026-11-11)
+      else if (night && litter.has(i) && litterTo > 0) map[i] = litterTo;   // the woods litter's orange specks at night: a dull brown (art director 2026-11-11)
       else if (night && glint.includes(i) && glintTo.length) map[i] = glintTo[Math.min(glint.indexOf(i), glintTo.length - 1)];   // the ripple's glints at night: a cool pale grey-blue, never pink or mauve (art director 2026-11-11)
       else if (!night || !f) map[i] = nearest(t);
       else if (f === 'warm' && khakiPool.length && khaki(rgb)) map[i] = nearest(muted(t), khakiPool);
