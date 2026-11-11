@@ -140,6 +140,7 @@ static void teaser_card(void) {
 static void chapter_page(void) {
   int c[4]; v_srect(S, "regions.chapter.closeup.rect", c); char asset[V_STR]; ps("regions.chapter.closeup", asset);
   v_name("closeup"); v_slot("closeup", asset, asset, c[0], c[1], c[2], c[3], 1);
+  v_region("closeup.plate", LAYER_TYPE); kit_windowFrame("closeup.plate", c[0], c[1], c[2], c[3], v_si(S, "regions.chapter.closeup.radius", 8), v_scol(S, "regions.chapter.closeup.ground"), v_scol(S, "regions.chapter.closeup.edge"));   /* the crop reads as a frame: corners cut to the page ground, a 1 px edge */
   v_region("chapter", LAYER_TYPE);
   char eb[V_STR], nm[V_STR], sub[V_STR], buf[V_STR * 3]; ps("regions.chapter.eyebrow", eb); ps("regions.chapter.name", nm); ps("regions.chapter.sub", sub); upper(eb);
   v_say("chapter.eyebrow", eb, v_sk(S, "regions.chapter.eyebrow.at", 0), v_sk(S, "regions.chapter.eyebrow.at", 1), V_ANCHOR_LINE, v_sstr(S, "regions.chapter.eyebrow.role"), "ground", V_ALIGN_LEFT);

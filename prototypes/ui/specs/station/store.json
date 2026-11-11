@@ -66,7 +66,7 @@
    "ground": "panel"
   },
   "chapter": {
-   "closeup": {"rect": [25, 65, 252, 252], "note": "[art] the close-up of this pod's mibi-to-be at the chapter's part: read-closeup-<chapter>, 252 x 252, the art director's signed crop of the pod's painting"},
+   "closeup": {"rect": [25, 65, 252, 252], "radius": 8, "ground": "ground", "edge": "hairline", "note": "[art] the close-up of this pod's mibi-to-be at the chapter's part: read-closeup-<chapter>, 252 x 252, the art director's signed crop of the pod's painting"},
    "eyebrow": {"at": [25, 332], "role": "eyebrow"},
    "name": {"at": [25, 354], "role": "name"},
    "sub": {"at": [25, 398], "width": 244, "role": "body", "max": 3},
