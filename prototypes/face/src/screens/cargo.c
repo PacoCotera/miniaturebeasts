@@ -61,16 +61,17 @@ static int crate_nm(int k) { return v_plen(v_fmt("regions.opening.crates.%d.mats
 static int crate_inside(int k) { return v_pint(v_fmt("regions.opening.crates.%d.inside", k), 0); }   /* ms of the inside view; 0 for the portrait crate and once the first pod's hold is released */
 /* the order of an ordinary crate (cargo.json events.opening.order): inside, then the pods, then the supplies, then the finds; the host's cargo-run.mjs has the same three */
 static int pod_start(int k, int j) { return crate_inside(k) + S.pods + S.podEach * j; }
-static int mat_start(int k, int q) { return crate_inside(k) + S.pods + S.podEach * crate_np(k) + S.matEach * q; }
-static int find_start(int k, int f) { return crate_inside(k) + S.pods + S.podEach * crate_np(k) + S.matEach * crate_nm(k) + S.podEach * f; }
+static int mat_start(int k, int q) { return crate_inside(k) + S.pods + S.matEach * q; }
+static int find_start(int k, int f) { return crate_inside(k) + S.pods + S.podEach * f; }
 /* an item of crate k that went (a pod, a supply's picture, a find) from its start s: its phase now */
 static int item_phase(int k, int s) { if (g_state != 1 || k < g_cur) return 3; if (k > g_cur) return 0; return phase(g_lt, s); }
 static int any_pod_came(void) { for (int i = 0, n = v_plen("regions.hatch.wells"); i < n; i++) if (v_pint(v_fmt("regions.hatch.wells.%d.from.crate", i), -1) >= 0) return 1; return 0; }
 
 /* ---- the beat ring (cargo.json regions.inside.beat): on a sealed crate that holds a pod, the walk's beat sign (a rounded outline in two sizes, a frameMs each, the first with reduced motion); a code-drawn component.
    (x, y, w, h) is the crate's painted box; the ring stands round it. ---- */
+static int g_ring_still;   /* the dock show: the ring stands at its first size (the show has its own movement: the crates, the mibis); it pulses from the choice on */
 static void beat_ring(const char *id, int x, int y, int w, int h) {
-  int frames = v_si(C, "regions.inside.beat.frames", 2), ms = v_si(C, "regions.inside.beat.frameMs", 500), f = g_motion && ms > 0 ? (int)((anim_now() / (uint32_t)ms) % (uint32_t)frames) : 0;
+  int frames = v_si(C, "regions.inside.beat.frames", 2), ms = v_si(C, "regions.inside.beat.frameMs", 500), f = g_motion && !g_ring_still && ms > 0 ? (int)((anim_now() / (uint32_t)ms) % (uint32_t)frames) : 0;
   int g = v_sk(C, "regions.inside.beat.grow", f), r = v_si(C, "regions.inside.beat.radius", 12), bw = w + 2 * g, bh = h + 2 * g; char ops[160];
   snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"],[\"rrect\",1,1,%d,%d,%d,\"\",\"%s\"]]", bw, bh, r, v_scol(C, "colours.inside.beat"), bw - 2, bh - 2, r > 0 ? r - 1 : 0, v_scol(C, "colours.inside.beat"));
   v_region("beat", LAYER_CHROME); v_name("beat"); v_composed(id, x - g, y - g, bw, bh, ops);
@@ -175,10 +176,14 @@ static void layout_inside(int k) {
   char K[48]; snprintf(K, sizeof K, "regions.opening.crates.%d", k);
   int rc[4]; v_srect(C, "regions.inside.rect", rc);
   int np = crate_np(k), nf = crate_nf(k), nm = crate_nm(k); nE = 0;
-  int pw = v_sk(C, "regions.inside.pod.size", 0), ph = v_sk(C, "regions.inside.pod.size", 1), total = np * pw + (np > 1 ? (np - 1) * 8 : 0), x0 = rc[0] + v_sk(C, "regions.inside.pod.at", 0) + pw / 2 - total / 2;
-  for (int j = 0; j < np && nE < MAXEL; j++) { el_t *e = &E[nE++]; memset(e, 0, sizeof *e); e->kind = 0; e->idx = j; e->x = x0 + j * (pw + 8); e->y = rc[1] + v_sk(C, "regions.inside.pod.at", 1); e->w = pw; e->h = ph; }
-  int fw = v_sk(C, "regions.inside.finds.size", 0), fh = v_sk(C, "regions.inside.finds.size", 1);
-  for (int f = 0; f < nf && nE < MAXEL; f++) { el_t *e = &E[nE++]; memset(e, 0, sizeof *e); e->kind = 1; e->idx = f; e->x = rc[0] + v_sk(C, "regions.inside.finds.first", 0) + v_sk(C, "regions.inside.finds.pitch", 0) * f; e->y = rc[1] + v_sk(C, "regions.inside.finds.first", 1) + v_sk(C, "regions.inside.finds.pitch", 1) * f; e->w = fw; e->h = fh; }
+  int pw = v_sk(C, "regions.inside.pod.size", 0), ph = v_sk(C, "regions.inside.pod.size", 1);
+  for (int j = 0; j < np && nE < MAXEL; j++) {   /* the first pod sits in the nest; the others nestle in the moss either side of it, right then left, touching it */
+    el_t *e = &E[nE++]; memset(e, 0, sizeof *e); e->kind = 0; e->idx = j; int side = j == 0 ? 0 : (j % 2 ? 1 : -1), n = (j + 1) / 2;
+    e->x = rc[0] + v_sk(C, "regions.inside.pod.at", 0) + side * n * v_sk(C, "regions.inside.pod.side", 0); e->y = rc[1] + v_sk(C, "regions.inside.pod.at", 1) + (side ? v_sk(C, "regions.inside.pod.side", 1) : 0); e->w = pw; e->h = ph; }
+  int fw = v_sk(C, "regions.inside.finds.size", 0), fh = v_sk(C, "regions.inside.finds.size", 1), fn = spec_len(C, "regions.inside.finds.slots");
+  for (int f = 0; f < nf && nE < MAXEL; f++) {   /* the finds stand in the bottom pocket beside its supply, from the slots; past the last slot a row up */
+    el_t *e = &E[nE++]; memset(e, 0, sizeof *e); int sl = fn > 0 ? f % fn : 0, row = fn > 0 ? f / fn : 0; e->kind = 1; e->idx = f;
+    e->x = rc[0] + v_sk(C, v_fmt("regions.inside.finds.slots.%d", sl), 0); e->y = rc[1] + v_sk(C, v_fmt("regions.inside.finds.slots.%d", sl), 1) - row * v_si(C, "regions.inside.finds.rowUp", 34); e->w = fw; e->h = fh; }
   for (int q = 0; q < nm && q < 3 && nE < MAXEL; q++) {
     el_t *e = &E[nE++]; memset(e, 0, sizeof *e); int pr[4]; v_srect(C, v_fmt("regions.inside.supplies.pockets.%d.rect", q), pr);
     char sz[16] = ""; spec_str(C, v_fmt("regions.inside.supplies.pockets.%d.size", q), sz, (int)sizeof sz); e->sm = strcmp(sz, "small") == 0;
@@ -195,12 +200,10 @@ static void dpic(const char *id, const char *asset, int x, int y, int w, int h, 
 }
 static void dpic_nat(const char *id, const char *asset, int x, int y, int show) { int sz[2]; if (v_asset_size(asset, sz) < 0) return; dpic(id, asset, x, y, sz[0], sz[1], show); }
 static int mat_index(const char *name) { return !strcmp(name, "energy") ? 0 : !strcmp(name, "data") ? 1 : 2; }
-/* the held view's veil: a Bayer lattice of `level` of 16 (whole pixels, no opacity) */
-static void veil_ops(char *ops, size_t cap, int w, int h, int level, const char *colour) {
-  static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
-  int n = snprintf(ops, cap, "[[\"lattice\",0,0,%d,%d,4,[", w, h);
-  for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, cap - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
-  snprintf(ops + n, cap - (size_t)n, "],\"%s\"]]", colour);
+/* a soft contact shadow (regions.inside.shadow): a dark ellipse, colours.inside.shadow, at about 30% opacity, w x h with its centre at (cx, cy); a code-drawn component */
+static void soft_shadow(const char *id, int cx, int cy, int w, int h) {
+  char ops[96]; snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"\"]]", w, h, h / 2, v_scol(C, "colours.inside.shadow"));
+  prim_sprite_opa(v_si(C, "regions.inside.shadow.alpha", 77)); v_composed(id, cx - w / 2, cy - h / 2, w, h, ops);
 }
 
 /* a pod or a find in flight, from where it lay to where it stays; once there it swaps size: the travel picture dithers out and the stored picture dithers in, two nodes on one level clock (the architect's ruling) */
@@ -236,9 +239,11 @@ static void build_display(void) {
   }
   for (int i = 0; i < nE; i++) {   /* the supplies and the finds (under the veil when held); each shows until its own step */
     el_t *e = &E[i]; char id[64];
-    if (e->kind == 1) { int ph3 = phase(g_lt, find_start(g_cur, e->idx)); snprintf(id, sizeof id, "d.find.%d", e->idx); if (ph3 == 0) v_sprite(id, v_pstr(v_fmt("%s.finds.%d.small", K, e->idx)), e->x, e->y, e->w, e->h); }
+    if (e->kind == 1) { int ph3 = phase(g_lt, find_start(g_cur, e->idx)); snprintf(id, sizeof id, "d.find.%d", e->idx);
+      if (ph3 == 0) { char sid[64]; snprintf(sid, sizeof sid, "d.find.%d.s", e->idx); soft_shadow(sid, e->x + e->w / 2, e->y + e->h - 2, v_sk(C, "regions.inside.shadow.find", 0), v_sk(C, "regions.inside.shadow.find", 1)); v_sprite(id, v_pstr(v_fmt("%s.finds.%d.inside", K, e->idx)), e->x, e->y, e->w, e->h); } }
     else if (e->kind == 2) {
       int ph3 = mat_ph(g_cur, g_lt, e->idx), show = ph3 == 0; snprintf(id, sizeof id, "d.mat.%d", e->idx);
+      if (show) { char sid[64]; snprintf(sid, sizeof sid, "d.mat.%d.s", e->idx); soft_shadow(sid, e->x + e->w / 2, e->y + e->h - 3, e->w * v_sk(C, "regions.inside.shadow.mat", 0) / 100, v_sk(C, "regions.inside.shadow.mat", 1)); }
       if (show) v_sprite(id, v_pstr(v_fmt("%s.mats.%d.%s", K, e->idx, e->sm ? "small" : "big")), e->x, e->y, e->w, e->h);
       v_region("displayAmount", LAYER_TYPE); snprintf(id, sizeof id, "d.mat.%d.a", e->idx);
       v_text(id, show && !hold ? e->amt : "", e->ax, e->ay, show && !hold ? v_measure(e->amt, e->apx) : 0, e->apx, v_scol(C, "colours.display.amount"));
@@ -246,14 +251,15 @@ static void build_display(void) {
     }
   }
   if (hold) {   /* the first pod: everything dims but the pod, one card, ✓ Take the pod */
-    char ops[320]; veil_ops(ops, sizeof ops, rc[2], rc[3], v_si(C, "regions.inside.veil.level", 9), v_scol(C, "colours.inside.veil"));
-    v_region("insideVeil", LAYER_CHROME); v_name("inside.veil"); v_composed("inside.veil", rc[0], rc[1], rc[2], rc[3], ops);
+    char ops[96]; snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,0,\"%s\",\"\"]]", rc[2], rc[3], v_scol(C, "colours.inside.veil"));   /* a flat dark overlay, no dither */
+    v_region("insideVeil", LAYER_CHROME); v_name("inside.veil"); prim_sprite_opa(v_si(C, "regions.inside.veil.alpha", 140)); v_composed("inside.veil", rc[0], rc[1], rc[2], rc[3], ops);
   }
   v_region("insidePod", LAYER_CHROME); v_name("inside.pod");
   for (int i = 0; i < nE; i++) {   /* the pods, over the veil */
     el_t *e = &E[i]; if (e->kind != 0) continue; char id[64]; int ph3 = phase(g_lt, pod_start(g_cur, e->idx)); if (ph3 != 0) continue;
+    snprintf(id, sizeof id, "d.pod.%d.s", e->idx); soft_shadow(id, e->x + e->w / 2, e->y + e->h - 8, v_sk(C, "regions.inside.shadow.pod", 0), v_sk(C, "regions.inside.shadow.pod", 1));
     snprintf(id, sizeof id, "d.pod.%d", e->idx); v_sprite(id, v_pstr(v_fmt("%s.pods.%d.big", K, e->idx)), e->x, e->y, e->w, e->h);
-    if (v_pbool(v_fmt("%s.pods.%d.isNew", K, e->idx), 0) && *gl) { snprintf(id, sizeof id, "d.pod.%d.g", e->idx); dpic_nat(id, gl, e->x + v_sk(C, "regions.inside.pod.glint", 0), e->y + v_sk(C, "regions.inside.pod.glint", 1), 1); }
+    if (v_pbool(v_fmt("%s.pods.%d.isNew", K, e->idx), 0) && *gl) { snprintf(id, sizeof id, "d.pod.%d.g", e->idx); int gs[2]; if (v_asset_size(gl, gs) >= 0) v_sprite(id, gl, e->x + v_sk(C, "regions.inside.pod.glint", 0), e->y + v_sk(C, "regions.inside.pod.glint", 1), gs[0], gs[1]); }
   }
   if (hold) {
     int cx = rc[0] + v_sk(C, "regions.inside.card.rect", 0), cy = rc[1] + v_sk(C, "regions.inside.card.rect", 1), cw = v_sk(C, "regions.inside.card.rect", 2), ch = v_sk(C, "regions.inside.card.rect", 3); char ops[120];
@@ -289,7 +295,7 @@ static void build_travel(void) {
     } else if (e->kind == 1) {
       int f = e->idx, ph3 = phase(g_lt, find_start(g_cur, f)); if (ph3 != 1 && ph3 != 2) continue;
       int slotn = v_pint(v_fmt("%s.finds.%d.slot", K, f), 0), fb[4]; find_box(slotn, fb); snprintf(id, sizeof id, "t.find.%d", f);
-      fly(id, v_pstr(v_fmt("%s.finds.%d.small", K, f)), e->w, e->h, e->x, e->y, v_pstr(v_fmt("%s.finds.%d.small", K, f)), fb[0], fb[1], fb[2], fb[3], ph3, find_start(g_cur, f));
+      fly(id, v_pstr(v_fmt("%s.finds.%d.inside", K, f)), e->w, e->h, e->x, e->y, v_pstr(v_fmt("%s.finds.%d.small", K, f)), fb[0], fb[1], fb[2], fb[3], ph3, find_start(g_cur, f));
     }
   }
 }
@@ -312,7 +318,7 @@ static void build_dockRack(void) {
 
 /* ---- the dock arrival (cargo.json regions.arrival, events.show; specs/station-dock-arrival-spec.md, amended T-67 and T-112) ----
    The show is the face's own clock (the event arrival/show) or, with reduced motion, the host's stage (regions.arrival.at); a show that has ended (no event, motion on) is its final frame: every beat done.
-   bay, apron (the rack's place during the show), ribbon from 500, the link light in four cuts, the crates sliding in from the left with their shadows and glints, the mibis who came home (dither in, one hop), the band in the bay's
+   bay, apron (the rack's place during the show), ribbon from 500, the crates sliding in from the left with their shadows, the mibis who came home (dither in, one hop), the band in the bay's
    top corners (the Probe's plates, who leaves). At the choice (phase choice) the rack stands and the strip (panel.json, form strip) is the overlay. */
 #define ARR "regions.arrival"
 static int arrival_time(void) {
@@ -320,11 +326,11 @@ static int arrival_time(void) {
   if (v_pbool("motion", 1)) { if (anim_get(ANIM_ARRIVAL, "show", &t)) return t.elapsed; return 1 << 20; }   /* an ended show is its last frame */
   return v_pint(ARR ".at", 0);
 }
-/* the crates slide in from x −256: crate i from 500 + 333 i over 400 ms, whole pixels, clipped to the bay's inside; its shadow from the frame it has landed; its glint (a crate holding a new species) from its landing */
+/* the crates slide in from x −256: crate i from 500 + 333 i over 400 ms, whole pixels, clipped to the bay's inside; its shadow from the frame it has landed*/
 static void build_crates_arrival(int t) {
   int n = v_plen("regions.dockCrates.places"), max = v_si(C, "regions.dockCrates.max", 3), in[4]; if (n > max) n = max; v_srect(C, "regions.dockBay.inside", in);
-  const char *shadow = v_pstr("regions.dockCrates.shadow"), *glint = v_pstr(ARR ".glint"); int sx = v_sk(C, "regions.dockCrates.shadow.at", 0), sy = v_sk(C, "regions.dockCrates.shadow.at", 1), sw = v_sk(C, "regions.dockCrates.shadow.size", 0), sh = v_sk(C, "regions.dockCrates.shadow.size", 1);
-  int at = v_si(C, ARR ".crates.at", 500), stagger = v_si(C, ARR ".crates.stagger", 333), ms = v_si(C, ARR ".crates.ms", 400), from = v_si(C, ARR ".crates.fromX", -256), gx = v_sk(C, ARR ".crates.glint.at", 0), gy = v_sk(C, ARR ".crates.glint.at", 1), gw = v_sk(C, ARR ".crates.glint.size", 0), gh = v_sk(C, ARR ".crates.glint.size", 1);
+  const char *shadow = v_pstr("regions.dockCrates.shadow"); int sx = v_sk(C, "regions.dockCrates.shadow.at", 0), sy = v_sk(C, "regions.dockCrates.shadow.at", 1), sw = v_sk(C, "regions.dockCrates.shadow.size", 0), sh = v_sk(C, "regions.dockCrates.shadow.size", 1);
+  int at = v_si(C, ARR ".crates.at", 500), stagger = v_si(C, ARR ".crates.stagger", 333), ms = v_si(C, ARR ".crates.ms", 400), from = v_si(C, ARR ".crates.fromX", -256);
   int xs[8], shown[8], landed[8], sent = 0;
   for (int i = 0; i < n; i++) {
     int r[4]; v_srect(C, v_fmt("regions.dockCrates.byCount.%d.%d", n, i), r); int e = t - (at + i * stagger); shown[i] = e >= 0; landed[i] = e >= ms; xs[i] = r[0];
@@ -339,18 +345,11 @@ static void build_crates_arrival(int t) {
     v_name("crates"); v_slot(v_fmt("crates.%d.shadow", i), shadow, NULL, r[0] + sx, r[1] + sy, sw, sh, landed[i]);
     v_slot(v_fmt("crates.%d", i), v_pstr(v_fmt("regions.dockCrates.places.%d", i)), NULL, xs[i], r[1], r[2], r[3], shown[i]);
   }
+  g_ring_still = !strcmp(v_pstr(ARR ".phase"), "show");
   for (int i = 0; i < n; i++) if (landed[i] && v_pbool(v_fmt(ARR ".beats.%d", i), 0)) {   /* a landed crate that holds a pod beats: the ring round the crate */
     int r[4]; v_srect(C, v_fmt("regions.dockCrates.byCount.%d.%d", n, i), r); beat_ring(v_fmt("crates.%d.beat", i), r[0] + v_sk(C, "regions.inside.beat.box.three", 0), r[1] + v_sk(C, "regions.inside.beat.box.three", 1), v_sk(C, "regions.inside.beat.box.three", 2), v_sk(C, "regions.inside.beat.box.three", 3));
   }
-  for (int i = 0; i < n; i++) if (v_pbool(v_fmt(ARR ".glints.%d", i), 0) && *glint) { int r[4]; v_srect(C, v_fmt("regions.dockCrates.byCount.%d.%d", n, i), r); v_region("arrivalGlint", LAYER_ART); v_name("glint"); v_slot(v_fmt("glint.%d", i), glint, NULL, r[0] + gx, r[1] + gy, gw, gh, t >= at + i * stagger + ms); }
-}
-/* the link light: step k (0 to 3) shows the first (k + 1) × 244 px of the picture from 500 + 100 k, each a cut */
-static void build_light(int t) {
-  int r[4]; v_srect(C, ARR ".light.rect", r); int at = v_si(C, ARR ".light.at", 500), each = v_si(C, ARR ".light.each", 100), steps = v_si(C, ARR ".light.steps", 4), px = v_si(C, ARR ".light.stepPx", 244);
-  int k = t < at ? -1 : (t - at) / each; if (k >= steps) k = steps - 1; int w = k < 0 ? 1 : (k + 1) * px; if (w > r[2]) w = r[2];
-  const char *pic = v_pstr(ARR ".light"); if (!has(pic)) return;
-  v_region("arrivalLight", LAYER_ART); v_name("light"); v_clip_box("light.clip", r[0], r[1], w, r[3], 1);
-  v_slot("light", pic, NULL, r[0], r[1], r[2], r[3], k >= 0);
+  g_ring_still = 0;
 }
 /* the mibis who came home: carried order, left to right, in front of the crates; mibi i dithers in at 1600 + 500 i over 300 ms, then one hop by the hatch's table (a cut each, whole pixels) */
 static void build_mibis(int t) {
@@ -396,7 +395,6 @@ static void build_arrival(int choice) {
   { int r[4]; v_srect(C, "regions.dockRibbon.rect", r); const char *words = v_pstr(ARR ".ribbon"); int rpx = v_si(C, "regions.dockRibbon.px", 20), rpad = v_si(C, "regions.dockRibbon.pad", 16), rib = v_si(C, ARR ".crates.at", 500);
     int w = layout_plate_width(C, "regions.dockRibbon", v_measure(words, rpx)); r[0] = 512 - w / 2; r[2] = w;
     v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= rib ? words : "", rpad, v_scol(C, "colours.ribbon.fill"), v_scol(C, "colours.ribbon.edge"), NULL); }
-  build_light(t);
   build_crates_arrival(t);
   if (!choice) build_mibis(t);
   build_band(t);

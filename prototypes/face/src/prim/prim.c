@@ -428,8 +428,8 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   /* the clip's bookkeeping comes first: a node sent while a clip is open counts against it whether or not it is drawn, so a refused child never leaves the next root node inside the clip;
      a refused clip refuses the children it announced. A clip does not hold a clip. */
   uint32_t parent = 0; lv_obj_t *pobj = lv_screen_active(); int ox = 0, oy = 0, in_clip = 0;
-  if (g_dry) { g_dry_n++; if (kind == FN_TEXT) { g_trole[0] = 0; g_tground[0] = 0; } if (kind == FN_SPRITE) g_sopa = 255; return; }   /* the dry run: counted, never sent */
-#define REFUSE() do { g_unknown++; if (kind == FN_CLIP && !in_clip) { g_clip_left = a > 0 ? a : 0; g_clip_id = 0; } if (kind == FN_TEXT) { g_trole[0] = 0; g_tground[0] = 0; } if (kind == FN_SPRITE) g_sopa = 255; return; } while (0)
+  if (g_dry) { g_dry_n++; if (kind == FN_TEXT) { g_trole[0] = 0; g_tground[0] = 0; } if (kind == FN_SPRITE || kind == FN_COMPOSED) g_sopa = 255; return; }   /* the dry run: counted, never sent */
+#define REFUSE() do { g_unknown++; if (kind == FN_CLIP && !in_clip) { g_clip_left = a > 0 ? a : 0; g_clip_id = 0; } if (kind == FN_TEXT) { g_trole[0] = 0; g_tground[0] = 0; } if (kind == FN_SPRITE || kind == FN_COMPOSED) g_sopa = 255; return; } while (0)
   if (g_clip_left > 0) {
     in_clip = 1; g_clip_left--;
     node_t *c = g_clip_id ? find_node(g_clip_id) : NULL;
@@ -453,7 +453,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   }
   node_t *n = &g_o[i]; lv_obj_t *o = n->obj; { int dup = n->seen; n->seen = 1; if (!dup) g_seq[g_nseq++] = id; } n->layer = g_layer; n->region = g_region; n->run = g_run; n->hold = g_hold;
   if ((kind == FN_SPRITE || kind == FN_NINE) && a >= 0 && a < MAX_ASSET && g_a[a].layer) n->layer = g_a[a].layer;   /* a picture takes its layer from its asset (lvgl-switch.md §2.1); words choose a layer only for rects, text and composed pictures */
-  if (kind == FN_SPRITE) { int opa = g_sopa; g_sopa = 255; if (n->fresh || n->opa != opa) { lv_obj_set_style_image_opa(o, (lv_opa_t)opa, 0); n->opa = opa; } }   /* the opacity is the next sprite node's only */
+  if (kind == FN_SPRITE || kind == FN_COMPOSED) { int opa = g_sopa; g_sopa = 255; if (n->fresh || n->opa != opa) { lv_obj_set_style_image_opa(o, (lv_opa_t)opa, 0); n->opa = opa; } }   /* the opacity is the next sprite node's only */
   int px = x - ox, py = y - oy;
   if (kind == FN_TEXT) {
     snprintf(n->role, sizeof n->role, "%s", g_trole); snprintf(n->ground, sizeof n->ground, "%s", g_tground); g_trole[0] = 0; g_tground[0] = 0;   /* the tag is the next text node's only */

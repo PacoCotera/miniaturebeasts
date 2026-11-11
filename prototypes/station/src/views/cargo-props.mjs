@@ -88,7 +88,7 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
   if (state === "opening" || state === "end") {
     let slotN = 0;
     const items = run.items.map((it, k) => {
-      const fs = it.finds.map((kind) => ({ kind, big: pic(`find-${kind}-112x112`), small: pic(`find-${kind}-16x16`), slot: slotN++ })), berth = berths.findIndex((b) => b.k === k);
+      const fs = it.finds.map((kind) => ({ kind, big: pic(`find-${kind}-112x112`), small: pic(`find-${kind}-16x16`), inside: pic(`find-${kind}-32x32`), slot: slotN++ })), berth = berths.findIndex((b) => b.k === k);
       if (state === "end" || k < run.base) return { kind: it.kind, berth, inside: 0, hold: false, mats: [], pods: [], finds: fs.map((f) => ({ kind: f.kind, big: "", small: f.small, slot: f.slot })), portrait: null };   // done: what the strip and the berths keep
       return {
         kind: it.kind, berth, inside: it.inside || 0, hold: !!it.hold,
@@ -100,7 +100,7 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
     });
     regions.opening = { crate: c.crate, at: c.at, base: state === "end" ? items.length : run.base, starts: state === "end" ? [] : run.starts, lens: state === "end" ? [] : run.lens, crates: items };
     if (state === "opening") regions.inside = { picture: slot(R.inside.slice, R.inside.rect.slice(2), "the crate-inside master (art director, art-paint-crate-set)"), seal: slot(R.inside.seal.slice, R.inside.seal.size), card: Sg.inside.card };
-    if (state === "opening") Object.assign(regions.opening, { shadowBig: slot(R.display.material.big.shadow.slice, R.display.material.big.shadow.size), shadowSmall: slot(R.display.material.small.shadow.slice, R.display.material.small.shadow.size), glint: req({ kind: "star", id: "star:12" }) });
+    if (state === "opening") Object.assign(regions.opening, { glint: req({ kind: "star", id: "star:12" }) });
   }
 
   // ---- the line: the action, the subject, the notice and the way back of the state (cargo.json line) ----
@@ -121,8 +121,7 @@ function arrivalRegion(m, spec, ph, slot, req) {
   const plates = a.plates, words = plates.mended ? fill(Sg.mended, { "n in words": spell(plates.mended) }) : "";
   return {
     phase: a.phase, at: c.at ?? 0, ribbon: a.broke ? Sg.broken : Sg.ribbon,
-    apron: slot(A.apron.slice, A.apron.rect.slice(2)), light: slot(A.light.slice, A.light.rect.slice(2)),
-    glint: a.newCrates.some(Boolean) ? slot(A.crates.glint.slice, A.crates.glint.size) : "", glints: a.newCrates, beats: a.podCrates ?? [],
+    apron: slot(A.apron.slice, A.apron.rect.slice(2)), beats: a.podCrates ?? [],
     mibis, plates: { icon: ph(A.band.probe.icon, A.band.probe.size), max: plates.max, whole: plates.whole, mended: plates.mended, words },
     leaving: { mark: faces.length ? slot(A.band.leaving.mark, A.band.leaving.markSize) : "", faces },
   };

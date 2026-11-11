@@ -200,9 +200,9 @@
   },
   "form": {
    "enum": [
-    "strip"
+    "incubate", "hatchnow"
    ],
-   "description": "the strip form (the dock arrival's choice): no title, no veil, drawn under what it is about"
+   "description": "the two-card forms drawn on their own frame: Incubate | Keep shaping, Hatch now | Wait"
   }
  }
 }

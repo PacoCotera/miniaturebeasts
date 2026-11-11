@@ -45,12 +45,12 @@ test("arrivalOf: the crates in the bay (the first three drawn), the one holding 
   assert.deepEqual([b.back, b.leaving].map((x) => x.length), [2, 1], "a Bring asked and a mibi that walked come home; a Take asked leaves"); void ms;
   assert.equal(arrivalOf(world({ crates: 0 }).st, world({ crates: 0 }).sv, w.r).crates, 0);
 });
-test("the props of the show: validate against cargo.props.json, name no rectangle, carry the ribbon (the broken line when the Probe broke), the glints, the mibis at 304 × 312 in carried order, the plates and the leaving faces", () => {
+test("the props of the show: validate against cargo.props.json, name no rectangle, carry the ribbon (the broken line when the Probe broke), the mibis at 304 × 312 in carried order, the plates and the leaving faces", () => {
   const w = world({ reqs: [{ op: "home", id: 1 }, { op: "home", id: 2 }, { op: "add", id: 3 }] }), a = { ...arrivalOf(w.st, w.sv, w.r), phase: "show", from: "home", choice: true }, b = build(w, a);
   assert.equal(b.props.state, "arrival"); assert.deepEqual(validate(b.props, schema, schema), [], "the props validate");
-  const R = b.props.regions.arrival; assert.equal(R.ribbon, cargo.strings.arrival.ribbon); assert.deepEqual(R.glints, [false, true]); assert.equal(R.mibis.length, 2); assert.ok(R.mibis.every((id) => /^mibi-adult-S01-304x312|^mibi:/.test(id) || id.includes("304x312") || id.includes("mibi")), R.mibis.join());
+  const R = b.props.regions.arrival; assert.equal(R.ribbon, cargo.strings.arrival.ribbon); assert.equal(R.mibis.length, 2); assert.ok(R.mibis.every((id) => /^mibi-adult-S01-304x312|^mibi:/.test(id) || id.includes("304x312") || id.includes("mibi")), R.mibis.join());
   assert.equal(R.plates.max, 3); assert.equal(R.plates.whole, 1); assert.equal(R.plates.mended, 1); assert.equal(R.plates.words, "one mended, free"); assert.equal(R.leaving.faces.length, 1); assert.equal(R.leaving.faces[0], "face-S01-24"); assert.equal(R.leaving.mark, "mark-out-16");
-  assert.equal(R.apron, "cargo-bay-apron-992x180"); assert.equal(R.light, "cargo-link-light-976x8"); assert.equal(R.glint, "glint-star-12x12"); assert.equal(R.phase, "show");
+  assert.equal(R.apron, "cargo-bay-apron-992x180"); assert.equal(R.phase, "show");
   assert.ok(!JSON.stringify(b.props).match(/"rect"/), "no rectangle in the props"); assert.equal(b.props.regions.dockCrates.places.length, 2);
   { const wp = world({ crates: 2 }); wp.st.sittingCrates.push({ id: "sit1", mibiId: wp.st.mibis[0].id, pose: "calm", place: "wood", start: 0, source: "dev", painted: true, opened: false }); const p = build(wp, { ...arrivalOf(wp.st, wp.sv, wp.r), phase: "show", from: "home", choice: true });
     assert.equal(p.props.regions.dockCrates.places.length, 2, "a ready portrait never rides the dock arrival: the walk crates only"); assert.ok(p.props.regions.dockCrates.places.every((id) => /^crate-sealed-/.test(id)), p.props.regions.dockCrates.places.join()); assert.ok(!/portrait|sitting/i.test(JSON.stringify(p.props.regions.dockCrates))); }
@@ -75,11 +75,11 @@ test("the choice has no card: ✓ Open the crate, ← Later in the bottom line, 
   assert.deepEqual(validate(b.props, schema, schema), [], "the props validate");
   const e = world({ crates: 1, reqs: [] }); e.sv.bay[0].pods = []; assert.deepEqual(arrivalOf(e.st, e.sv, e.r).podCrates, [false], "a crate with no pod does not beat");
 });
-test("the beats' times come from the spec: the link light, the crates' stagger, the mibis' dither and hop, the mend, the end at 3500 (an empty trip closes at 2500)", () => {
+test("the beats' times come from the spec: the crates' stagger, the mibis' dither and hop, the mend, the end at 3500 (an empty trip closes at 2500)", () => {
   const w = world({ reqs: [] }), a = { ...arrivalOf(w.st, w.sv, w.r), back: [1, 2, 3] }, T = timesOf(cargo, a);
-  assert.equal(T.end, 3500); assert.equal(T.hold, 3500); assert.ok(T.skip); for (const t of [500, 600, 700, 800, 833, 1166, 1500, 1600, 2100, 2600, 2500]) assert.ok(T.beats.includes(t) || t === 1166 || t === 833, "beat " + t);
+  assert.equal(T.end, 3500); assert.equal(T.hold, 3500); assert.ok(T.skip); for (const t of [500, 833, 1166, 1500, 1600, 2100, 2600, 2500]) assert.ok(T.beats.includes(t) || t === 1166 || t === 833, "beat " + t);
   assert.ok(T.beats.every((t) => t < 3500), "every beat before the end"); assert.equal(timesOf(cargo, { ...a, crates: 0, shown: 0 }).end, 2500, "no choice: the arrival closes by itself at 2500");
-  assert.equal(A.crates.stagger, 333); assert.equal(A.light.steps * A.light.stepPx, 976); assert.deepEqual(A.mibis.byCount["3"].map((r) => r[0]), [32, 360, 688]); assert.ok(A.mibis.byCount["1"][0][0] + A.mibis.byCount["1"][0][2] / 2 === 512, "one mibi centred on 512");
+  assert.equal(A.crates.stagger, 333); assert.deepEqual(A.mibis.byCount["3"].map((r) => r[0]), [32, 360, 688]); assert.ok(A.mibis.byCount["1"][0][0] + A.mibis.byCount["1"][0][2] / 2 === 512, "one mibi centred on 512");
   assert.equal(A.mibis.hop.ms, 175); assert.equal(A.end.at, 3500); assert.equal(A.mibis.at + A.mibis.each * 2 + A.mibis.dither.ms + A.mibis.hop.ms <= 3500, true, "the third mibi's hop ends before the show's end");
 });
 test("every string of the show at its longest, measured: the ribbon (words + 32 ≤ 608), the band's words (≤ 160), the strip's names and lines (≤ 252), the plates (≤ 608), at the spec's sizes and words", () => {

@@ -63,15 +63,15 @@ async function open(width, height, { dsf = 1, motion = false, query = "?test", o
   await st().evaluate(() => window.__st.ready); await mb().waitForFunction(() => window.__mb && window.__mb.S, null, { timeout: 30000 }); await page.waitForTimeout(600);
   return { ctx, page, st, mb };
 }
-// the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the strip (Open now | Later) with the ring on Open now; ▶ then ✓ is Later
+// the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the choice (no card; the bottom line reads ✓ Open the crate and ← Later, the ring on a crate that holds a pod); ← is Later
 const later = async (page, st, what, back, empty = false) => {
   if (empty) {   // C docks with an empty bay: the show has no choice, so a key skips it and it closes on the screen the player was on
     await page.waitForTimeout(1000); await page.keyboard.press("Enter"); await page.waitForTimeout(800); await back(); return;
   }
   await page.waitForTimeout(3600);   // one crate: the show holds 3200 ms
-  await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
-  eq(await st().evaluate(() => [window.__st.props?.overlay?.form, window.__st.props?.overlay?.focus?.cur]), ["strip", "card.open"], what + ": after the show the strip, the ring on Open now");
-  await page.keyboard.press("ArrowRight"); await page.waitForTimeout(200); await page.keyboard.press("Enter"); await page.waitForTimeout(800);
+  await st().waitForFunction(() => window.__st.props?.regions?.arrival?.phase === "choice", null, { timeout: 15000 }).catch(() => {});
+  eq(await st().evaluate(() => [window.__st.props?.regions?.arrival?.phase, window.__st.props?.overlay ?? null]), ["choice", null], what + ": after the show the choice stands: no card, ✓ Open the crate and ← Later");
+  await page.keyboard.press("Escape"); await page.waitForTimeout(800);   // ← Later
   await back();
 };
 const box = async (page, sel) => { const b = await page.locator(sel).boundingBox(); return [b.x, b.y, b.width, b.height]; };
@@ -553,8 +553,8 @@ async function zBad(page, sel, W, z, capture) {
   // 3. the crate sealed in the Bay, nothing accepted, the supplies unmoved
   let now = await ST(); eq([now.accepted.includes(crate?.id), now.e, now.d, now.s], [false, before.e, before.d, before.s], "P3: the crate waits sealed; nothing accepted, the supplies unmoved");
   // 4. open it: the supplies tick, the pods land, the Companion's crate mark clears, the face changes once to C3 with the ledger's new numbers
-  await page.waitForTimeout(3600); await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
-  await page.keyboard.press("Enter");   // Open now
+  await page.waitForTimeout(3600); await st().waitForFunction(() => window.__st.props?.regions?.arrival?.phase === "choice", null, { timeout: 15000 }).catch(() => {});
+  await page.keyboard.press("Enter");   // ✓ Open the crate
   const opened = await st().waitForFunction((id) => window.__st.ST.accepted.includes(id), crate?.id, { timeout: 20000 }).then(() => true, () => false); expect(opened, "P4: the crate is accepted at its opening");
   const c3 = await waitFace("C3", 12000); expect(c3, "P4: the face reads C3");
   now = await ST(); f = await face();

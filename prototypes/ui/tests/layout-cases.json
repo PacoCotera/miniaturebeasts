@@ -245,12 +245,6 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "cargo/cargo-arrival-choice", "card": "cargo-L11-1", "verdict": "fault", "from": "owner card cargo-L11-1, marked fault: a lone mark: no text within 8 px on its rows, 2 → 24",
-    "expect": [
-     { "rule": "L11", "container": "bay", "node": "glint", "mark": "owner", "why": "marked a fault by the owner: a lone mark: no text within 8 px on its rows, 2 → 24 in the reviewed run" }
-    ],
-    "clear": [],
-    "pending": [] },
   { "state": "cargo/cargo-arrival-2200", "card": "cargo-L3-1", "verdict": "fault", "from": "owner card cargo-L3-1, marked fault: crowding, 0 → 16",
     "expect": [
      { "rule": "L3", "part": "a", "container": "opening", "node": "bay", "other": "apron", "mark": "owner", "why": "marked a fault by the owner: crowding, 0 → 16 in the reviewed run" }

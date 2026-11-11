@@ -28,8 +28,8 @@ export const findsOf = (c) => (Array.isArray(c.finds) ? c.finds.filter((k) => FI
 // The order of an ordinary crate (cargo.json events.opening.order): inside for I = it.inside ms, then the pods, then the supplies, then the finds. The face has the same three starts (screens/cargo.c).
 export const insideOf = (it) => it.inside || 0;
 export const podAt = (steps, it, j) => insideOf(it) + steps.pods + steps.podEach * j;
-export const matAt = (steps, it, q) => insideOf(it) + steps.pods + steps.podEach * it.pods.length + steps.materialEach * q;
-export const findAt = (steps, it, f) => insideOf(it) + steps.pods + steps.podEach * it.pods.length + steps.materialEach * it.mats.length + steps.podEach * f;
+export const matAt = (steps, it, q) => insideOf(it) + steps.pods + steps.materialEach * q;
+export const findAt = (steps, it, f) => insideOf(it) + steps.pods + steps.podEach * f;
 export function lengthOf(steps, it) {
   if (it.kind === "sitting") return steps.portrait + steps.travel + steps.tail;
   const np = it.pods.length, nm = it.mats.length, nf = it.finds.length;

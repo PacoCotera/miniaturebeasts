@@ -22,7 +22,6 @@ export function timesOf(spec, a) {
   for (let i = 0; i < a.shown; i++) beats.push(A.crates.at + A.crates.stagger * i, A.crates.at + A.crates.stagger * i + A.crates.ms);
   for (let i = 0; i < Math.min(a.back.length, 3); i++) beats.push(M.at + M.each * i, M.at + M.each * i + M.dither.ms, M.at + M.each * i + M.dither.ms + M.hop.ms);
   for (let k = 0; k < a.plates.mended; k++) beats.push(A.band.probe.mend.at + A.band.probe.mend.each * k);
-  for (let k = 0; k < 4; k++) beats.push(A.light.at + A.light.each * k);
   return { end, ms: end, hold: end, beats: [...new Set(beats)].filter((t) => t < end).sort((x, y) => x - y), skip: ev.skip === true };
 }
 

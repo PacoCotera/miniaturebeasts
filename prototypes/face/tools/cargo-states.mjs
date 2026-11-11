@@ -49,11 +49,11 @@ const SCENES = {
 };
 // one crate opening (two free wells, a third pod for the mat, a find), at the instants of its steps: motion on, the face's own clock ("at 0" is the first frame, 1 ms in: the crate lifting in its berth)
 const ONE = (w) => { w.adults(2); w.pods(4); w.crates(1, 3, { finds: ["pearl"] }); };
-const STEPS = { "opening-0": 1, "opening-inside": 590, "opening-after": 700, "opening-pod": 1000, "opening-swap": 1500, "opening-mat": 2100, "opening-find": 2500, "opening-done": 3200 };   // the inside view to 600, the pods from 800 (300 apart), the supplies from 1700, the finds from 2150, the end 3230
+const STEPS = { "opening-0": 1, "opening-inside": 590, "opening-after": 700, "opening-pod": 900, "opening-mat": 1000, "opening-find": 1100, "opening-swap": 1300, "opening-done": 1600 };   // the inside view to 600, then the pods, the supplies and the finds all leave at once (600 to 1200), the swap 1200 to 1380, the end 1680
 // three crates (a pod in flight in the first; the second lifting with the first done), then with a portrait crate in: its painting rising and on its way
 const THREE_WALK = (w) => { w.adults(2); w.pods(1); w.crates(3, 2); };
 const THREE = (w) => { w.adults(2); w.pods(1); w.crates(3, 2); w.crateSitting(false); };
-const MANY = { "opening-three": [THREE_WALK, 2000], "opening-three-second": [THREE_WALK, 2600 + 2000], "opening-portrait": [THREE, 3 * 2600 + 400], "opening-portrait-travel": [THREE, 3 * 2600 + 1000] };
+const MANY = { "opening-three": [THREE_WALK, 1000], "opening-three-second": [THREE_WALK, 1680 + 1000], "opening-portrait": [THREE, 3 * 1680 + 400], "opening-portrait-travel": [THREE, 3 * 1680 + 1000] };
 // the dock arrival (T-20261016-48, -58, -112), on Cargo itself (no transition), from the Dock: two crates (one holding a species new to the player, S02), two mibis asked home, one asked to go, the Probe a plate short (mended free);
 // `arrival-2200` is the show with two arrivals, `arrival-choice` the rack and the bottom line (no card), `arrival-empty-trip` the empty trip's ribbon and band before it closes by itself.
 const TIMED = {
