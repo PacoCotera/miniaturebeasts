@@ -7,7 +7,7 @@
 // Only the newest few worlds are kept (KEEP): a realm is about 0.3 MB.
 import { get, set, del } from 'idb-keyval';
 import { REALM_REV, hasRealm7, setRealm7 } from './gen7/region.mjs';
-import { presetHollowSites } from './gen7/place.mjs';
+import { presetHollowSites, presetOverview, hasOverview } from './gen7/place.mjs';
 
 const KEEP = 3, INDEX = 'realm7:index', keyOf = seed => `realm7:${REALM_REV}:${seed}`;
 
@@ -42,5 +42,26 @@ export async function readyRealm(seed, times = {}) {
       await set(INDEX, next.slice(0, KEEP));
     } catch (e) { /* the realm is kept for this visit only */ }
   }
+  return 'worker';
+}
+
+// A region's overview (place.mjs overviewOf: one byte a tile, 215 KB), the land every map is drawn from. Kept in IndexedDB beside the realm (about fifteen seconds to make, in the worker, so the page stays free);
+// until it is there the maps keep to the cell labels. Returns 'cached', 'stored', 'worker' or 'page' (no worker: the maps keep to the labels).
+const overKey = (seed, slot) => `over7:${REALM_REV}:${seed}:${slot[0]},${slot[1]}`;
+export async function readyOverview(seed, slot) {
+  if (hasOverview(seed, slot[0], slot[1])) return 'cached';
+  const idb = typeof indexedDB !== 'undefined';
+  if (idb) { try { const hit = await get(overKey(seed, slot)); if (hit && hit.length) { presetOverview(seed, slot[0], slot[1], hit); return 'stored'; } } catch (e) { /* made again */ } }
+  if (typeof Worker === 'undefined') return 'page';
+  const bytes = await new Promise((resolve, reject) => {
+    const w = new Worker(new URL('./realm-worker.mjs', import.meta.url), { type: 'module' });
+    const end = (f, v) => { w.terminate(); f(v); };
+    w.onmessage = e => (e.data && e.data.overview ? end(resolve, e.data.overview) : end(reject, new Error((e.data && e.data.error) || 'the overview was not made')));
+    w.onerror = e => end(reject, new Error((e && e.message) || 'the overview worker failed'));
+    w.postMessage({ seed, slot });
+  }).catch(() => null);
+  if (!bytes) return 'page';
+  presetOverview(seed, slot[0], slot[1], bytes);
+  if (idb) { try { await set(overKey(seed, slot), bytes); } catch (e) { /* kept for this visit only */ } }
   return 'worker';
 }

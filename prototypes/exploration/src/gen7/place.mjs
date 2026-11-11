@@ -40,7 +40,7 @@ export function blockOk(values) {
 const LITTER_NONE = 1.5;               // a litterAt at or above this lays no leaf litter
 // The coast: the realm's border ring of cells is wide water, and the first tiles inside it are a shore laid whole in windowOf, from the border line (levels.mjs inlandOf) inwards:
 // deep water 1-2 tiles, water to a waterline 4-6 tiles in, beach 2-3 tiles, then a strip of grass 4 tiles; no thicket, scrub, litter or raised land in the band (raised land begins at RAISE_OFF)
-const COAST_REACH = 14;
+export const COAST_REACH = 14;
 const WIN_X = 7, WIN_Y = 9, HX = (WIN_X - 1) / 2, HY = (WIN_Y - 1) / 2;   // the window the passes run on, in cells: the cell and two cells each side (three above and below, where a chain of conversions runs farthest), so what an edge of the window does stays clear of the cell
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 
@@ -556,4 +556,24 @@ export function windowIR(seed, X0, Y0, nx, ny) {
   }
   return irOf(seed, `g7-window-${X0}-${Y0}`, x0, y0, w, h, terrain, wayups.filter(a => a.x - 1 >= 0 && a.x + a.w + 1 <= w && a.y >= 0 && a.y + 2 <= h), null, top);
 }
+// ---- the overview of a region: one byte a world tile, the one land every map view is shrunk from ----
+// The region's 16 x 20 cells as (16 * 24) x (20 * 28) tiles, row by row: the low three bits are the ground class (OV below), bit 3 says the tile is raised land. It reads the settled world tiles
+// (worldTiles / worldGround), the very land the walk draws, so a map pixel is the class of the tile under it and no map view needs the cell labels for land.
+export const OV = { GRASS: 0, SAND: 1, WATER: 2, DEEP: 3, WOOD: 4, THICKET: 5, ROCK: 6, PATH: 7, RAISED: 8 };
+const OV_OF = []; OV_OF[TV.SAND] = OV.SAND; OV_OF[TV.WATER] = OV.WATER; OV_OF[TV.DEEP] = OV.DEEP; OV_OF[TV.LITTER] = OV.WOOD; OV_OF[TV.THICKET] = OV.THICKET; OV_OF[TV.SCREE] = OV.ROCK; OV_OF[TV.PATH] = OV.PATH;
+export const OVW = MW * CW, OVH = MH * CH;
+const OVERVIEWS = new Map();
+export function overviewOf(seed, ax, ay) {
+  const key = seed + ':' + ax + ',' + ay, hit = OVERVIEWS.get(key); if (hit) return hit;
+  const T = worldTiles(seed), Gd = worldGround(seed), out = new Uint8Array(OVW * OVH), x0 = ax * OVW, y0 = ay * OVH;
+  for (let y = 0; y < OVH; y++) for (let x = 0; x < OVW; x++) {
+    const gx = x0 + x, gy = y0 + y, raisedTile = T(gx, gy) === TV.CLIFF;
+    out[y * OVW + x] = (OV_OF[Gd(gx, gy)] || OV.GRASS) | (raisedTile ? OV.RAISED : 0);
+  }
+  if (OVERVIEWS.size > 6) OVERVIEWS.clear();
+  OVERVIEWS.set(key, out); return out;
+}
+// an overview made elsewhere (the realm worker, or the page's store) is put in the cache
+export const presetOverview = (seed, ax, ay, bytes) => { if (OVERVIEWS.size > 6) OVERVIEWS.clear(); OVERVIEWS.set(seed + ':' + ax + ',' + ay, bytes); };
+export const hasOverview = (seed, ax, ay) => OVERVIEWS.has(seed + ':' + ax + ',' + ay);
 export { CW, CH, RW, RH };

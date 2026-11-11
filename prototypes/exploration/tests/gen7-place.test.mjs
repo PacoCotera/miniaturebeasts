@@ -4,7 +4,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
-import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround, overviewOf, OV, OVW, COAST_REACH } from '../src/gen7/place.mjs';
+import { inlandOf, RAISE_OFF } from '../src/gen7/levels.mjs';
+import { realm7 } from '../src/gen7/region.mjs';
 import { bakeIR } from '../tools/gen7-render.mjs';
 import { RULES } from '../src/gen7/rules.mjs';
 import { recipeAt, GROUND, BLEND } from '../src/gen7/ground.mjs';
@@ -236,4 +238,32 @@ test('the map\'s land kind and the walk\'s ground agree in the middle of every c
     for (const lab of ['WATER', 'POND']) assert.equal(seen[lab][1], 0, `seed ${seed}: ${lab} cells whose middle is not that ground: ${bad}`);
     for (const lab of ['ROCK', 'WOOD', 'MEADOW']) assert.ok(seen[lab][0] > 50 && seen[lab][1] * 50 <= seen[lab][0], `seed ${seed}: ${lab} cells whose middle is not that ground: ${seen[lab]} ${bad}`);
   }
+});
+
+// The coast: the realm's border ring is water, the shore band lies in the first tiles inside it, and no raised land comes within RAISE_OFF tiles of the border line.
+test('seed 7: the coast is deep water at the border line, then water, beach and a strip of grass; nothing raised near it; the nine inner regions have no coast', () => {
+  const seed = 7, R = realm7(seed), T = worldTiles(seed), G = worldGround(seed);
+  for (const g of R.regions) { const rim = g.slot[0] === 0 || g.slot[1] === 0 || g.slot[0] === ATLAS - 1 || g.slot[1] === ATLAS - 1, n = g.coast.reduce((a, b) => a + b, 0); assert.equal(n > 0, rim, 'coast cells only in rim regions ' + g.slot); }
+  let water = 0, beach = 0, grass = 0, raisedNear = 0;
+  for (let gy = 0; gy < RH * CH; gy += 3) for (const gx of [CW - 1, CW, CW + 1, CW + 6, CW + 9, CW + 12]) {   // along the west coast, at tiles from the border line: -1, 0, 1, 6, 9, 12
+    const d = inlandOf(gx, gy), v = T(gx, gy);
+    if (d < 0) assert.equal(v, TV.DEEP, 'the border ring is deep water');
+    if (d === 6 || d === 9) { if (v === TV.WATER) water++; else if (v === TV.SAND) beach++; else if (v === TV.GRASS) grass++; }
+    if (d < RAISE_OFF && v === TV.CLIFF) raisedNear++;
+  }
+  assert.equal(raisedNear, 0, 'no raised land within RAISE_OFF tiles of the border line');
+  assert.ok(water + beach + grass > 0 && beach > 0 && grass > 0, `the band holds beach and grass at 6-9 tiles: ${water}/${beach}/${grass}`);
+});
+
+// One land at every zoom (F1): the region's overview is the class of the world tile under each of its tiles, and the raised bit is the tile being raised land; two cells side by side share their edge.
+test('seed 7: the overview of a region reads the world tiles (class and raised), 0 differing tiles on a sample, and cells meet at their edges', { timeout: 900000 }, () => {
+  const seed = 7, ax = 2, ay = 2, ov = overviewOf(seed, ax, ay), T = worldTiles(seed), Gd = worldGround(seed);
+  const cls = v => (v === TV.SAND ? OV.SAND : v === TV.WATER ? OV.WATER : v === TV.DEEP ? OV.DEEP : v === TV.LITTER ? OV.WOOD : v === TV.THICKET ? OV.THICKET : v === TV.SCREE ? OV.ROCK : v === TV.PATH ? OV.PATH : OV.GRASS);
+  let diff = 0, n = 0;
+  for (let y = 0; y < ov.length / OVW; y += 7) for (let x = 0; x < OVW; x += 5) {
+    const gx = ax * OVW + x, gy = ay * (ov.length / OVW) + y, want = cls(Gd(gx, gy)) | (T(gx, gy) === TV.CLIFF ? OV.RAISED : 0); n++;
+    if (ov[y * OVW + x] !== want) diff++;
+  }
+  assert.ok(n > 3000); assert.equal(diff, 0, 'tiles whose overview byte differs from the world tile under it');
+  for (let c = 1; c < MW; c++) for (const y of [3, 100, 250]) assert.equal(ov[y * OVW + c * CW - 1], cls(Gd(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y)) | (T(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y) === TV.CLIFF ? OV.RAISED : 0));
 });
