@@ -9,7 +9,7 @@
  "spec": "tools/credit-runner/runs/design-station-pods/scheme.md sections 2 and 3 (pictures 1, 2 and 3)",
  "frame": "frame.json",
  "status": "The pod on the bench reads from its Data store while the Companion is out. Three states on one screen: the bench (the store's bar, the reading line and the Put-in panel), the teaser (the chapters read while the Companion was out, counted, before the show) and the chapter page (one read chapter: its close-up slot, each look with its picture slot, plain name and mark, the promises, FIRST TIME SEEN). Opened from the reading room on an unread chapter and from Home's notice.",
- "note": "The one home of the store screen's numbers. Rectangles are [x, y, w, h] at 1x on 1024 x 600 and every picture is drawn 1:1. Panels, bars, marks and pills are the face's own rect primitives, palette-exact; the words are the frame's type roles. Every player line is a placeholder for the copywriter. Art is named empty slots: the pod's painting and each chapter's close-up (the art director's crops), and the look pictures are Create's own roll masters. RARE waits for the game designer's cut: nothing draws it.",
+ "note": "The one home of the store screen's numbers. Rectangles are [x, y, w, h] at 1x on 1024 x 600 and every picture is drawn 1:1. Panels, bars, marks and pills are the face's own rect primitives, palette-exact; the words are the frame's type roles. Every player line is a placeholder for the copywriter. Art is signed pictures placed by id: the pod's painting, each chapter's close-up and the two promise chips (crown-leaf-crest, markings-pale-patches, 40 x 50, left of the card's words); the look pictures of the rows are named empty slots (store-roll-...). RARE waits for the game designer's cut: nothing draws it.",
  "states": ["bench", "teaser", "chapter"],
  "initial": "bench",
  "stateRule": "bench: the left column (the pod), the store (its label, heading, bar and the chapter names and prices under it), the reading line and, while Data can still be put in, the Put-in panel. teaser: the same left column and store over a card that counts what was read. chapter: the close-up and the page's words on the left, the looks in the middle, the promises on the right. Every region keeps its nodes in every state; a region a state does not show has no size.",
@@ -21,7 +21,7 @@
    "fill": "frame.json colours.stageGround"
   },
   "pod": {
-   "art": {"id": "store-pod-200x200", "rect": [49, 93, 200, 200], "note": "[art] the pod's painting as it stands on the bench; an empty slot until the art director's crop is placed"},
+   "art": {"id": "store-pod-200x200", "rect": [49, 93, 200, 200], "note": "the pod's painting as it stands on the bench (the art director's signed crop)"},
    "name": {"at": [49, 308], "role": "name"},
    "why": {"at": [49, 352], "width": 232, "role": "quiet", "max": 3},
    "fresh": {"at": [49, 424], "role": "figure.changed"}
@@ -66,14 +66,14 @@
    "ground": "panel"
   },
   "chapter": {
-   "closeup": {"rect": [25, 65, 252, 252], "note": "[art] the close-up of this pod's mibi-to-be at the chapter's part: read-closeup-<chapter>, 252 x 252, the art director's crop of the pod's painting; empty until then"},
+   "closeup": {"rect": [25, 65, 252, 252], "note": "[art] the close-up of this pod's mibi-to-be at the chapter's part: read-closeup-<chapter>, 252 x 252, the art director's signed crop of the pod's painting"},
    "eyebrow": {"at": [25, 332], "role": "eyebrow"},
    "name": {"at": [25, 354], "role": "name"},
    "sub": {"at": [25, 398], "width": 244, "role": "body", "max": 3},
    "key": {"y": 450, "pitch": 24, "mark": 33, "text": 61, "role": "quiet"},
    "rows": {"x": 301, "y": 62, "pitch": 82, "pic": [128, 72], "text": 445, "eyebrowRole": "eyebrow", "nameRole": "name", "lineRole": "quiet", "max": 6, "pill": {"h": 20, "gap": 8, "radius": 10, "role": "label.open", "first": "sprout"}},
    "mark": {"d": 5, "gap": 2, "col": 20, "textGap": 8, "colour": "fog"},
-   "promise": {"x": 744, "y": 62, "w": 262, "h": 96, "pitch": 104, "pad": 12, "max": 4, "role": "quiet", "strong": "body", "edge": "amber", "dash": [4, 4]}
+   "promise": {"x": 744, "y": 62, "w": 262, "h": 96, "pitch": 104, "pad": 12, "max": 4, "role": "quiet", "strong": "body", "edge": "amber", "dash": [4, 4], "chip": [40, 50], "chipGap": 12}
   },
   "plate": {"note": "the frame's message plate"}
  },

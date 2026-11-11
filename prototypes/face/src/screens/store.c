@@ -181,8 +181,11 @@ static void chapter_page(void) {
     kit_hairline(v_fmt("%s.top", id), px, y, cw, edge, 0, dash); kit_hairline(v_fmt("%s.bottom", id), px, y + chh - 1, cw, edge, 0, dash);
     kit_hairline(v_fmt("%s.left", id), px, y, chh, edge, 1, dash); kit_hairline(v_fmt("%s.right", id), px + cw - 1, y, chh, edge, 1, dash);
     char l1[V_STR], l2[V_STR], b1[V_STR * 3], b2[V_STR * 3]; ps(v_fmt("regions.chapter.promises.%d.line", k), l1); ps(v_fmt("regions.chapter.promises.%d.strong", k), l2);
-    v_region("promise", LAYER_TYPE);   /* text only: a promise's look picture waits for a chip-sized master (the roll's are 128 x 72) */
-    int tx2 = px + pad, tw = cw - 2 * pad, ty = y + pad;
+    char chip[V_STR]; ps(v_fmt("regions.chapter.promises.%d.pic", k), chip);   /* a signed chip where one names the look; the other cards are text only */
+    int chw = v_sk(S, "regions.chapter.promise.chip", 0), chg = v_si(S, "regions.chapter.promise.chipGap", 12), chpic = *chip ? chw + chg : 0;
+    v_name("promise"); v_slot(v_fmt("%s.pic", id), chip, chip, px + pad, y + pad, *chip ? chw : 0, *chip ? v_sk(S, "regions.chapter.promise.chip", 1) : 0, 1);   /* the node stays when there is no chip, with no size */
+    v_region("promise", LAYER_TYPE);
+    int tx2 = px + pad + chpic, tw = cw - 2 * pad - chpic, ty = y + pad;
     const char *r1 = v_sstr(S, "regions.chapter.promise.role"), *r2 = v_sstr(S, "regions.chapter.promise.strong"); char ra[40], rb[40]; snprintf(ra, sizeof ra, "%s", r1); snprintf(rb, sizeof rb, "%s", r2);
     int n1 = v_role_wrap(l1, tw, ra, b1, sizeof b1, 2); const char *q = b1;
     for (int j = 0; j < n1; j++) { v_say(v_fmt("%s.l1.%d", id, j), q, tx2, ty, V_ANCHOR_LINE, ra, "ground", V_ALIGN_LEFT); ty += v_role_pitch(ra); q += strlen(q) + 1; }

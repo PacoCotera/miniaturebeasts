@@ -2,27 +2,27 @@
  "_note": "The store screen: the bench (the Put-in panel on an amount, the ring on the bar, everything paid), the teaser that counts the chapters read while the Companion was out, and the chapter page (the close-up slot, the looks with their marks, FIRST TIME SEEN, the key, the promises): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "store-bench": {
-   "hash": "57f7c39c",
+   "hash": "23b384e8",
    "png": "store-bench.png"
   },
   "store-bench-bar": {
-   "hash": "732628f8",
+   "hash": "39e973a8",
    "png": "store-bench-bar.png"
   },
   "store-bench-paid": {
-   "hash": "bfe125b6",
+   "hash": "d8d77756",
    "png": "store-bench-paid.png"
   },
   "store-teaser": {
-   "hash": "4bbaed94",
+   "hash": "ac26adcc",
    "png": "store-teaser.png"
   },
   "store-chapter": {
-   "hash": "cedf2710",
+   "hash": "1ffd8d94",
    "png": "store-chapter.png"
   },
   "store-chapter-last": {
-   "hash": "eaed834c",
+   "hash": "62ee8d80",
    "png": "store-chapter-last.png"
   }
  }

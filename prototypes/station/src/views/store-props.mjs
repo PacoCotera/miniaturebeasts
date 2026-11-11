@@ -12,6 +12,8 @@ const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const KIND_MARK = { only: "one", hides: "both", blend: "mix", asleep: "both" };
 // A look that shows together with another is written as a pair of looks with a comma (genome.mjs LINE_LOOKS.pairSep): the other is the rest of the pair. null for any other look. Never "one" or "both".
 const togetherOther = (s) => { const i = String(s.shows ?? "").indexOf(", "); return i > 0 ? String(s.shows).slice(i + 2) : null; };
+// The signed chips (40 x 50) of the promise cards, by the hidden look they name.
+const CHIPS = { "leaf crest": "chip-crown-leaf-crest-40x50", "pale patches": "chip-markings-pale-patches-40x50" };
 const NAMES =(list, Sg) => list.length <= 1 ? list.join("") : list.slice(0, -1).join(Sg.or) + Sg.and + list[list.length - 1];
 
 // What the Put-in panel can take now: never more than the pocket, never more than is left to read.
@@ -61,9 +63,9 @@ export function storeBuild(m, spec) {
   } else {
     const ch = fr.chapters.find((c) => c.id === ui.chapter) ?? fr.chapters.find((c) => p.read.includes(c.id)), k = Math.max(0, fr.chapters.indexOf(ch));
     const rows = ch.traits.map((t) => { const s = traitState(fr, t, p.genome), doing = !!s.doing, other = doing ? null : togetherOther(s), mark = doing ? "" : other ? "together" : KIND_MARK[traitKind(fr, t)] ?? "both";
-      return { trait: t.name, look: capLine(String(s.shows ?? "")), pic: slot(rollId(sid, t.name, doing ? null : s.shows), [128, 72]), mark, line: doing ? Sg.chapter.doing : other ? fill(Sg.chapter.pass.together, { other }) : Sg.chapter.pass[mark], first: !!(p.first && p.first.includes(t.id)) }; });   // RARE waits for the game designer's cut: nothing here draws it
+      return { trait: t.name, look: capLine(String(s.shows ?? "")), pic: slot(`store-${rollId(sid, t.name, doing ? null : s.shows)}`, [128, 72]), mark, line: doing ? Sg.chapter.doing : other ? fill(Sg.chapter.pass.together, { other }) : Sg.chapter.pass[mark], first: !!(p.first && p.first.includes(t.id)) }; });   // RARE waits for the game designer's cut: nothing here draws it
     const promises = ch.traits.map((t) => ({ s: traitState(fr, t, p.genome), kind: traitKind(fr, t) })).filter(({ s, kind }) => s.kind === "hides" && kind === "hides" && s.hides != null && !s.doing && !togetherOther(s)).slice(0, 4)   // only a hidden look makes a promise: a blend, and a look that shows together, make none (their marks say so)
-      .map(({ s }) => ({ line: fill(Sg.chapter.hides, { look: s.hides }), strong: Sg.chapter.could }));
+      .map(({ s }) => ({ line: fill(Sg.chapter.hides, { look: s.hides }), strong: Sg.chapter.could, ...(CHIPS[s.hides] ? { pic: slot(CHIPS[s.hides], [40, 50]) } : {}) }));   // a chip only where a signed one names that look; every other card stays text
     const firstsHere = rows.filter((r) => r.first).length;
     regions.chapter = { first: Sg.chapter.first, closeup: slot(`read-closeup-${ch.id}`, [252, 252]), eyebrow: fill(Sg.chapter.eyebrow, { Species, i: k + 1, n: fr.chapters.length }), name: ch.name,
       sub: firstsHere ? fill(Sg.chapter.sub, { k: firstsHere, m: rows.length }) : Sg.chapter.subNone, rows, promises, key: ["one", "both", "mix", "together"].map((mark) => ({ mark, text: Sg.chapter.pass[mark === "together" ? "togetherKey" : mark] })) };

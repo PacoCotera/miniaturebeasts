@@ -3,7 +3,7 @@
  "$defs": {
   "part": {"type": "object", "required": ["id", "name", "price", "state"], "additionalProperties": false, "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}, "price": {"type": "integer", "minimum": 0}, "state": {"enum": ["read", "waiting", "adding", "empty"]}, "cur": {"type": "boolean"}}},
   "row": {"type": "object", "required": ["trait", "look", "pic", "mark", "line", "first"], "additionalProperties": false, "properties": {"trait": {"type": "string"}, "look": {"type": "string"}, "pic": {"type": "string"}, "mark": {"enum": ["one", "both", "mix", "together", ""]}, "line": {"type": "string"}, "first": {"type": "boolean"}}},
-  "promise": {"type": "object", "required": ["strong", "line"], "additionalProperties": false, "properties": {"strong": {"type": "string"}, "line": {"type": "string"}}},
+  "promise": {"type": "object", "required": ["strong", "line"], "additionalProperties": false, "properties": {"strong": {"type": "string"}, "line": {"type": "string"}, "pic": {"type": "string"}}},
   "key": {"type": "object", "required": ["mark", "text"], "additionalProperties": false, "properties": {"mark": {"enum": ["one", "both", "mix", "together"]}, "text": {"type": "string"}}},
   "target": {"type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": {"id": {"enum": ["put", "bar", "go"]}, "group": {"enum": ["put", "bar", "go"]}}}
  },
