@@ -91,7 +91,7 @@ test("F1: the Hiljan's grab is one message, the grab line first, then +1 Data, w
   assert.ok(!/ate your fruit/.test(all), all);
   const grab = f.msgs().findIndex(m => /^All at once, the Hiljan grabs the fruit$/.test(m)), data = f.msgs().findIndex(m => m === "+1 Data");
   assert.ok(grab >= 0 && data > grab, all);
-  assert.match(line, /All at once, the Hiljan grabs the fruit · \+1 Data/, "one message, in that order");
+  assert.equal(line, "+1 Data", "one line at a time: the grab line, then the Data on the next action, never joined");
 });
 
 test("F2: no why after a grab; a new species still shows its why", () => {

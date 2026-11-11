@@ -193,7 +193,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange button: <b>Confirm</b>. It does exactly what the bottom line says after ✓.</li>
         <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Leave" in a place, "← End expedition" on the start cell or a lit outpost, "← Mibis", "← close"). In the field it opens the menu: Leave (in a place) or End expedition on top, then Wait, Probe, Cargo, Mibis.</li>
         <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. On Mibis and a mibi's own screen it calls the mibi with you, which answers..</li>
-        <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
+        <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ turns you toward the next thing to find (it never moves you), or says Keep still while a creature has noticed you or is settling, which waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
         <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. Nothing puts the veil back. On high ground you see further: it lifts 6 tiles around you.</li>
         <li>The dots top left are your reach, one per cell: a dot fills once you have walked most of that place; your cell is framed.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
@@ -866,15 +866,16 @@ function composeMsg() {
   const n = FX.notes.slice().sort((a, b) => b.pri - a.pri); let out = ''; FX.held = []; FX.sign = null;
   // A sign (one picture, one line) stands alone: it never joins another sign or a note. The best sign shows when no plain note
   // outranks it; the other signs keep their flags unspent and come again at their own next trigger, and plain notes wait one action.
-  const sg = n.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign))[0], plain = n.filter(x => !x.sign);
+  // (first ten minutes) before the first pod is home no first-sighting sign or one-time line shows or is spent, a hazard sign apart; each comes at its own trigger after
+  const keep = firstWalk() ? n.filter(x => !x.once || (x.sign && FIRST_HAZARD.includes(x.sign))) : n;
+  const sg = keep.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign))[0], plain = keep.filter(x => !x.sign);
   if (sg && !plain.some(x => x.pri > sg.pri)) { FX.sign = sg; FX.msg = sg.text; for (const x of plain) if (!x.once) FX.held.push(x); return; }
-  for (const x of plain) { if (out.includes(x.text)) continue; if (out && x.once && !plain[0].once) continue;   // a one-time line never joins a plain note: it waits, unspent, for its own action
-    const t = out ? out + ' · ' + x.text : x.text;
-    if (out && (typeof wrapText !== 'function' || wrapText(t, 400, 2).length > 2)) { if (!x.once) FX.held.push(x); continue; } out = t; }   // shown on the next action instead
+  // one line at a time: a second note never joins the first with " · "; it waits for the next action (the one-time lines wait, unspent, for their own trigger)
+  for (const x of plain) { if (out.includes(x.text)) continue; if (out) { if (!x.once) FX.held.push(x); continue; } out = x.text; }
   FX.msg = out;
 }
 // A control hint says which key does what: it goes to the bottom line's middle for one action, and is spent once the line shows it.
-function fxHint(key, text, pri) { if (!S.found.includes(key)) FX.hintNote = { key, text, pri }; }
+function fxHint(key, text, pri) { if (!S.found.includes(key) && !firstWalk()) FX.hintNote = { key, text, pri }; }   // held, unspent, until the first pod is home
 function firstTime(k) { if (S.found.includes(k)) return false; S.found.push(k); return true; }
 // One-time lines: the flag is spent only if the line is still in the message box when the action ends
 // (a higher-priority note can push it out of the 78 characters). local: once per expedition instead of ever.
@@ -897,6 +898,49 @@ function settleOnce() {
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once);
     if (n.sign) { const k = 'met:' + SIGN[n.sign].tile; if (!S.found.includes(k)) S.found.push(k); } }
 }
+// ===================== The first ten minutes, the walk side (scheme design-first-ten §4, §5, §7) =====================
+// [copy] placeholders: the copywriter picks the final words. All the player strings of the first walk are in this one table.
+const FIRST_TEXT = {
+  goal: { find: 'Find a pod · bring it home', home: 'Bring it home · your flag', dock: 'Dock the Companion · the pod goes home' },   // F1, F2, F3
+  teach: { setOut: 'Press ✓ to set out', place: 'Start at a glint · ✓ starts there', go: 'Go down · ✓ enters the place', call: 'Press ))) to Call · buried finds show', pod: 'Walk to the glint · ✓ takes the pod',
+    stone: 'A charged stone · ✓ takes its Energy', end: '← then End · your finds go in a crate', dock: 'Dock: the key below' },
+  face: { still: 'Keep still', beat: 'Face the beat', pod: 'Face the pod', stone: 'Face the stone', flag: 'Face the flag' },   // the ✓ words on the walk, facing nothing
+  empty: { head: 'Your pod still waits', later: 'A pod waits', look: 'Still looking', rock: 'Pods sleep in woods and rock', where: (land, dir) => 'In the ' + land + ', ' + (dir ? dir + ' of your flag' : 'at your flag') + '.',
+    start: 'Start there and press ))) Call.', back: 'Back to the pod' },
+};
+const GOAL_MARK = { slot: 'goal-mark-12', w: 12 };   // [art] the goal line's mark, an empty named slot: the art director's piece fills it (nothing is drawn in it)
+const FIRST_HAZARD = ['shield', 'warn', 'storm', 'shelter'];   // the signs that still show on the first walk: a hit, a strike, a storm
+// "First pod home": the play page's word (the Station's `podHome` in its dock state), else the Station's part of the save. A mibi on the Companion counts too.
+function firstHome() {
+  if (RT.caddy && typeof RT.caddy.podHome === 'boolean') return RT.caddy.podHome;
+  if (S.mibis && S.mibis.length) return true;
+  const st = stPart(); return !!st && ((st.tray || []).length > 0 || (st.waiting || []).length > 0 || !!st.bud || (st.mibis || []).length > 0);
+}
+const firstWalk = () => !!S && !(RT && RT.readOnly) && !firstHome();
+// The one teaching line due now on the first walk, or '' (each line waits for its deed; the Station's goal takes over once the pod is home).
+function teachStep() {
+  const T = FIRST_TEXT.teach, ex = S.exp;
+  if (isDocked() || RT.view || (S.phase === 'patch' && S.ui.swap)) return '';
+  if (!ex) return S.phase === 'setup' ? (S.bay.length ? T.dock : T.setOut) : S.phase === 'sealed' && S.bay.length ? T.dock : '';
+  if (S.phase === 'place') return T.place;
+  if (S.phase === 'map') return T.go;
+  const P = S.phase === 'patch' ? ex.patch : null; if (!P) return '';
+  if (!ex.cargo.pods.length) return ex.callsAt && ex.callsAt[layout(P.key).cell] ? T.pod : T.call;
+  if (!ex.cargo.e && layout(P.key).feats.some(f => f.kind === 'k' && stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f))) return T.stone;
+  return T.end;
+}
+// The teaching line takes the message box whenever no real note or sign holds it; an action clears it and the next frame sets the next one.
+function teachFill() {
+  if (FX.msg && FX.msg !== FX.teachMsg) return;
+  const t = firstWalk() ? teachStep() : ''; FX.msg = t; FX.teachMsg = t; FX.sign = null;
+}
+// The goal line: F1-F3 before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
+function goalLine() {
+  if (!S || RT.readOnly) return '';
+  if (firstWalk()) { const G1 = FIRST_TEXT.goal, ex = S.exp;
+    return ex ? (ex.cargo.pods.length ? G1.home : G1.find) : S.bay.length || (S.phase === 'sealed' && S.report && S.report.sealed) ? G1.dock : G1.find; }
+  const g = RT.caddy && RT.caddy.goal; return g ? (typeof g === 'string' ? g : g.text || '') : '';
+}
 // ===================== Signs: one picture and one line, found again on the Probe =====================
 // key: the once-flag (an old save keeps its flags); also: other flags that count as seen; tile: its place on the Probe (met-order grid).
 // Priority is the old once-line's (a merged sign takes the highest of its lines; every hazard sign is 3, so the hazard order decides). Then the order below.
@@ -907,7 +951,7 @@ const SIGN_LINE = {
   call: 'Call lifts the veil: finds show', shield: 'Plate lost · lose them all and the Probe breaks',   // [copy] placeholder: the copywriter has the final word (owner 11-08: "no plates, Probe breaks" read as "the Probe is broken")
 
   storm: dir => 'More bolts, more strikes · ' + (dir > 0 ? '▶ east' : '◀ west'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
-  pod: 'Pods open at the Station', full: 'Hold full · a new pod is a choice',bank: 'If the Probe breaks, you lose your finds', fog: 'Fog · creatures calm, sight short',
+  full: 'Hold full · a new pod is a choice',bank: 'If the Probe breaks, you lose your finds', fog: 'Fog · creatures calm, sight short',
   muffled: 'The fog muffles your Call', fruit: WORDS.fruitSign, putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
   tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog', strike: WORDS.strike.sign,
   bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
@@ -924,7 +968,6 @@ const SIGN = {};
   add('warn', 'warn', 3, 'warned', 'warn', SIGN_LINE.warn, { also: ['warnMap'] });
   add('storm', 'hudstorm', 3, 'storm', 'storm', SIGN_LINE.storm, { also: ['stormdir', 'oddsPeak'] });
   add('call', 'callintro', 3, 'call', 'call', SIGN_LINE.call, { also: ['callplace'] });
-  add('pod', 'firstpod', 3, 'podsopen', 'pod', SIGN_LINE.pod);
   add('full', 'holdfull', 3, 'full', 'full', SIGN_LINE.full, { local: true });
   add('fog', 'fogbank', 2, 'fogbank', 'fog', SIGN_LINE.fog, { also: ['hudfog'] });
   add('muffled', 'muffled', 3, 'fogbank', 'fog', SIGN_LINE.muffled);
@@ -968,7 +1011,6 @@ const TILES = [
   ['call', 'Call · hold to look around', 'Call', 'call', []],
   ['shield', 'Shield · each plate a hit', 'Shield', 'shield', []],
   ['shelter', 'Shelter · never trees', 'Shelter', 'shelter', []],
-  ['podsopen', 'Pods · the Station opens', 'Pods', 'pod', []],
   ['full', 'Full hold · you choose', 'Full hold', 'full', []],
   ['bank', 'Crate · end to seal finds', 'Crate', 'bank', []],
   ['fruit', 'Fruit · feed or press', 'Fruit', 'fruit', []],
@@ -1621,7 +1663,7 @@ const placeState = lay => walkedCell(lay.cell) ? WORDS.explored : WORDS.nothingS
 function callReport(lay, P) {
   const left = leftPhrase(lay.cell, P, 44);
   if (walkedCell(lay.cell)) return placeLand(lay) + ' · ' + WORDS.explored + ' · ' + (left || WORDS.left);
-  return left ? cap1(left) : WORDS.callNone;
+  return left ? cap1(left) : '';   // nothing in sight: no line (the ✓ word, "Face the …", points on)
 }
 // The fog over a place on the map: 2 you have never been into it, 1 you have been in and not found it, 0 found, not a place, or not seen.
 function fogState(c) {
@@ -2050,7 +2092,6 @@ function enterPatchBuilt() {
   WARM.cold = TEST.clock == null && TEST.at == null && !warmReady(key) ? { key, at: NOW, signed: false } : null;   // not warm yet: the rest is built a step a frame (warmLanding)
   if (firstEntry) startView('arrival', lay);
   if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
-  fxHint('backplace', '← opens the menu · Leave is first', 2);
   save();
 }
 // The skull clears only when you go down into the place that holds the lost pods.
@@ -2290,7 +2331,28 @@ function holeHint() {
 }
 // What Confirm will do right now in the place: { label, run, ctx? }. Facing nothing it waits.
 // Facing nothing to act on, Confirm waits one action (the same Wait as the menu's, with its cue and report).
-const NOTHING = { label: 'Wait', run: () => waitTick('patch') };
+// The ✓ word never just says "Wait" (first-ten B3): something in front → its act; a creature near that has noticed you or is settling → "Keep still"
+// (today's Wait, under the name of what it does); otherwise "Face the {next thing}", which turns the explorer toward it and pulses its glint once.
+const NOTHING = { label: FIRST_TEXT.face.still, run: () => waitTick('patch') };
+function nextThing(P, lay) {
+  const ex = S.exp, key = P.key, at = (x, y) => ({ x, y, d: Math.abs(x - P.x) + Math.abs(y - P.y) }), nearest = a => a.sort((p, q) => p.d - q.d)[0] || null;
+  if (!ex.cargo.pods.length) {   // finding a pod: the one in view, else the beat (a buried pod, shown by the first walk or by the map's slow beat)
+    const pods = S.pods.filter(p => p.k === key && p.x >= 0), seen = nearest(pods.filter(p => !p.h && unveiled(key, p.x, p.y)).map(p => ({ kind: 'pod', ...at(p.x, p.y) })));
+    if (seen) return seen;
+    if (firstWalk() || signsAt(lay.cell).includes('b')) { const b = nearest(pods.filter(p => p.h).map(p => ({ kind: 'beat', ...at(p.x, p.y) }))); if (b) return b; } }
+  if (!ex.cargo.e) { const st = nearest(lay.feats.filter(f => f.kind === 'k' && stoneCharge(key, f) > 0 && stoneSeen(key, f)).map(f => ({ kind: 'stone', ...at(f.x, f.y) }))); if (st) return st; }
+  if (!canSend()) { const b = nearestSend(), p = cxy(ex.pos), q = cxy(b.c), dx = q.x - p.x, dy = q.y - p.y; if (dx || dy) return { kind: 'flag', x: P.x + dx, y: P.y + dy, d: 0 }; }
+  return null;
+}
+function faceThing(P, t) {
+  const dx = t.x - P.x, dy = t.y - P.y; if (dx || dy) P.dir = Math.abs(dx) >= Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : (dy < 0 ? 'up' : 'down');
+  if (t.kind !== 'flag') fxGlint(t.x, t.y, 0);   // the one glint pulse; the explorer does not move and no action is spent
+}
+function idleAct(P, lay) {
+  const near = curLive().cr.some(c => { if (c.hide || !inSight(c.x, c.y)) return false; const b = bubbleOf(c, S.exp.carry); return b === '!' || b === '…'; });
+  const t = near ? null : nextThing(P, lay);
+  return t ? { label: FIRST_TEXT.face[t.kind], face: 1, run: () => faceThing(P, t) } : NOTHING;
+}
 let ACT_AT = null;   // the tile patchAction last read (the faced tile, or the one stood on): where the amber brackets stand
 function patchAction() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive();
@@ -2314,7 +2376,7 @@ function patchAction() {
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
   if (o && o.type === 'tuft') return { label: 'Pick up the tuft', run: () => takeTuft(o.tf) };
   if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? SWAP_TEXT.swapTitle : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
-  if (o && o.type === 'pt') return NOTHING;
+  if (o && o.type === 'pt') return idleAct(P, lay);
   if (o && o.type === 'tile' && o.t === T.DEEP) return { label: 'Needs a swimmer', run: swimBump };
   if (o && o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE) && !canSure()) return { label: 'Needs a rambler', run: () => softBump(o.t) };   // says why ✓ does nothing, as deep water does
   if (o && o.type === 'tile' && o.t === T.BANK && !canBank()) return { label: 'Needs a digger', run: () => softBump(o.t) };
@@ -2354,7 +2416,7 @@ function patchAction() {
     if (pk) return { label: pk === 'tree' ? WORDS.press.tree : WORDS.press.stone, run: () => pressFruit(f) };   // [copy]
     return { label: WORDS.press.dim, dim: true, run: () => { FX.bumpAt = NOW; fxMsg(WORDS.press.bump, 2); } };   // [copy]
   }
-  return NOTHING;
+  return idleAct(P, lay);
 }
 // What the facing tile offers a fruit to be pressed on: 'stone' (a storm stone, a stone prop, a cliff face, a cave wall), 'tree' (a trunk, a fruit tree), or null.
 // Never read from T.ROCK: the adapter stamps it on every blocking prop, bush and closed side. The mask is lay.press (1 stone, 2 tree).
@@ -2523,8 +2585,7 @@ function takePod(p, leave) {
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
-  if (!S.found.includes('firstpod')) fxSign('pod', p);
-  else if (!out && ex.cargo.pods.length >= ex.hold) fxSign('full');
+  if (!out && ex.cargo.pods.length >= ex.hold) fxSign('full');   // ("Pods open at the Station" is gone: the goal line says it)
   advance('patch', { noise: 'act' });
 }
 function calmRadius(X) { return X.ptElder ? 8 : 4; }
@@ -2593,7 +2654,7 @@ function callPlace() {
     const lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
     if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); cue.push({ x: lp.x, y: lp.y }); }   // a pod still lying here glints again, so a beat always leads somewhere
     for (const q of S.pods) if (q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y)) q.out = 1;   // announced pods keep the dotted outline until taken
-    fxMsg(callReport(lay, P), found ? 1 : 2);
+    { const rep = callReport(lay, P); if (rep) fxMsg(rep, found ? 1 : 2); }
   }
   if (digNow && !ex.ending) dig();
 }
@@ -3088,7 +3149,7 @@ function endExpedition(reason) {
   const turned = worldTurn(pending), worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
   { const a = turned.arrived; rep.news = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] }; }   // where it happened: the opening puts a pip on these cells until the next set-out
   if (!broke) {
-    if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
+    if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n, ...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
         pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
@@ -3096,6 +3157,19 @@ function endExpedition(reason) {
   }
   S.exp = null; S.report = rep;
   S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save();   // a line from the walk does not linger over the sealed screen
+}
+// Where the next try lies, said at the end of a walk that found no pod, from the flag: the first walk names the pod the game knows; later walks the nearest cell with a pod found and
+// left or a slow beat; with none known, the nearest wood or rock (pods sleep in woods and rock, never in open meadow). { cell, land, dir, first, pod } or null.
+function emptyLead(flag) {
+  if (flag == null) return null;
+  const f = cxy(flag), first = firstWalk(), seen = new Set(), pick = (cells, pod) => {
+    let best = null; for (const c of cells) { const q = cxy(c), d = Math.hypot(q.x - f.x, q.y - f.y); if (!best || d < best.d) best = { c, d, dx: q.x - f.x, dy: q.y - f.y }; }
+    return best && { cell: best.c, land: LAND_NAME[G.land[best.c]], dir: best.d ? dirWord(best.dx, best.dy, best.d) : null, first, pod }; };
+  for (const p of S.pods) if (/^\d+$/.test(String(p.k)) && (first || !p.h)) seen.add(+p.k);
+  let r = seen.size ? pick(seen, true) : null;
+  if (!r && !first) { const beats = []; for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && signsAt(c).includes('b')) beats.push(c); r = beats.length ? pick(beats, true) : null; }
+  if (!r) { const rock = []; for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && (G.land[c] === L.WOOD || G.land[c] === L.ROCK)) rock.push(c); r = rock.length ? pick(rock, false) : null; }
+  return r;
 }
 // The Walk: once per world turn, undocked, between expeditions, with every mibi with you together.
 const canWalk = () => !S.exp && S.carried.length > 0 && !isDocked() && S.walkTurn !== S.turn;
@@ -5301,7 +5375,7 @@ function drawPatchBody(t) {
         const a = sparkArt(false); blit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); } } }
   // what Confirm will act on
   const act = patchAction();
-  if (act.run && act !== NOTHING) { const f = ACT_AT || frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
+  if (act.run && act !== NOTHING && !act.face) { const f = ACT_AT || frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
   // the strike warning: a tile glows one action before lightning hits it
   if (live.strike) { const x = W(live.strike.x * ts), y = H(live.strike.y * ts), col = fr ? C.cream : C.yellow;
     R(x, y, ts, 2, col); R(x, y + ts - 2, ts, 2, col); R(x, y, 2, ts, col); R(x + ts - 2, y, 2, ts, col); RT.litScr = { x, y, w: ts, h: ts }; }   // strike warned: the tile's outline only
@@ -5569,8 +5643,19 @@ function drawHUD() {
 function drawTop(title, right, cs) {
   R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
   text(title, 10, 9, C.bone); const rx = drawCallSlot(cs, drawStatus(SCR_W - 6));
-  if (right) text(clipText(right, rx - 30 - textW(title), 2), rx, 9, C.mist, 2, 'right');
+  if (right) { const room = rx - 30 - textW(title), r = Array.isArray(right) ? right.find(s => textW(s, 2) <= room) || right[right.length - 1] : right; text(clipText(r, room, 2), rx, 9, C.mist, 2, 'right'); }
   return rx;
+}
+// The goal line (first-ten B4): the Companion's top band, on the walk screens F1-F3 before the first pod is home, then the Station's goal. On the opening and the ended-card it
+// takes the top bar's right side (the long form, then the part before the first " · "); on the map and in a place it is a band under the top bar.
+const GOAL_BAND_H = 24;
+const goalForms = () => { const g = goalLine(); return g ? [g, g.split(' · ')[0]] : ''; };
+const goalBandOn = () => !!S && (S.phase === 'map' || (S.phase === 'patch' && !S.ui.swap && !RT.view)) && !!S.exp && !S.exp.beaconView && !S.ui.mapFull && !!goalLine();
+function drawGoalBand() {
+  if (!goalBandOn()) return;
+  const y = VIEW_Y, g = goalLine(); R(0, y, SCR_W, GOAL_BAND_H, C.ink); R(0, y + GOAL_BAND_H - 1, SCR_W, 1, C.night);
+  // GOAL_MARK.slot (goal-mark-12): the mark's place, left empty for the art director's piece
+  text(clipText(g, SCR_W - 16 - GOAL_MARK.w - 8, 2), 8 + GOAL_MARK.w + 8, y + 4, C.bone);
 }
 // The bottom line: [✓ what Confirm does · ← where Back goes] | where you are | conditions.
 // Confirm and Back are never dropped; the middle shrinks, trying shorter forms, then dropping tail words.
@@ -5642,10 +5727,12 @@ function msgGeom() {
     w = sign ? 60 + Math.max(...lines.map(l => textW(l, 2))) : Math.max(...lines.map(l => textW(l, 2))) + 26, h = sign ? 48 : lines.length * 20 + 12;
   // the cell's foot is the player's centre + 20 at 32 px, + 24 at 48
   // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
+  const TOP = VIEW_Y + 8 + (goalBandOn() ? GOAL_BAND_H : 0);   // the goal line's band keeps the top of the view
   const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, lit = RT.litScr && sign && sign.sign === 'warn' ? RT.litScr : null,   // a warning card never covers the lit tile
-    y = (pl ? pl.y + (RT.ts === 48 ? 24 : 20) > low : RT.focusFoot != null && RT.focusFoot >= low) || (lit && lit.y + lit.h >= low && lit.x < x + w && lit.x + lit.w > x) ? VIEW_Y + 8 : low;
+    y = (pl ? pl.y + (RT.ts === 48 ? 24 : 20) > low : RT.focusFoot != null && RT.focusFoot >= low) || (lit && lit.y + lit.h >= low && lit.x < x + w && lit.x + lit.w > x) ? TOP : low;
   const hits = yy => (RT.softScr || []).some(r => r.x < x + w && r.x + r.w > x && r.y < yy + h && r.y + r.h > yy);   // a box never sits on the mud, scree or bank tiles of the place: it takes the other end if that is clear
-  if (hits(y) && !hits(y === low ? VIEW_Y + 8 : low)) return { sign, lines, w, h, x, y: y === low ? VIEW_Y + 8 : low };
+  if (S.phase === 'setup') return { sign, lines, w, h, x, y: 388 - h };   // the opening: just above the tabs, clear of the partner card's words
+  if (hits(y) && !hits(y === low ? TOP : low)) return { sign, lines, w, h, x, y: y === low ? TOP : low };
   return { sign, lines, w, h, x, y };
 }
 function drawMessage() {
@@ -5795,7 +5882,6 @@ const silhouette = sp => art('sil' + sp, () => { const a = tokenOf(sp, 'idle', 0
   return pb; });
 // [copy] The opening screen's words: placeholders for the copywriter, all in this one table (a change of wording never touches code).
 const OPEN_TEXT = {
-  dark: 'Signs in the dark · start at one',   // the first-time line under the land
   stormEast: 'storm ◀ west', stormWest: 'storm ▶ east', chargeStones: 'storms charge stones',   // the Weather tab's line (where the storm starts; the first time)
   digs: n => n + ' digs', needsTuikis: 'needs a Tuikis',   // the Deep ground tab's line
   firstWalk: 'Your first walk', firstFind: 'Find a pod and bring it home.', firstGrows: 'The Station grows it.',   // the first-time partner place
@@ -5939,12 +6025,12 @@ function drawOpenLand(t, fr) {
 }
 function drawSetup(t) {
   viewBg();
-  drawTop('Expedition ' + S.expN, '');
+  drawTop('Expedition ' + S.expN, goalForms());
   const fr = motion() ? Math.floor(t * 2) % 2 : 0, first = firstPlacement(), F = OPEN_FRAME;
   // 1. the land you know
   panel(F.x, F.y, F.w, F.h, C.ink, C.night); drawOpenLand(t, fr);
   // 2. one line of what changed: the world turn's first line (the Station's dock line takes the message box); the first time what the lights are; a generator 1 world's hint
-  { const rl = S.report && S.report.lines && S.report.lines[0], flat = !rl && S.phase === 'setup' && !S.exp && (S.gen == null ? 1 : S.gen) === 1, line = rl || (flat ? OPEN_TEXT.flat : first ? OPEN_TEXT.dark : '');
+  { const rl = S.report && S.report.lines && S.report.lines[0], flat = !rl && S.phase === 'setup' && !S.exp && (S.gen == null ? 1 : S.gen) === 1, line = rl || (flat ? OPEN_TEXT.flat : '');
     if (line) { R(14, 371, 6, 6, C.orange); text(clipText(line, 410, 2), 28, 365, flat ? C.sand : C.bone); } }
   // 3. the way out: two tabs under the land (Weather alone and full width until Deep ground is met)
   const dig = digger(), showDeep = deepShown(), sel = S.ui.sel === 1 && !showDeep ? 0 : S.ui.sel, start = S.ui.lastPos != null ? S.ui.lastPos : null, storm = start != null ? stormFor(start) : null;
@@ -6437,7 +6523,7 @@ function drawNewWorld() {
 // Expedition ended: the hold sealed into the bay (or why not), the world turn, and the way on. The Station opens the crates
 // only when the Companion is docked (the Station page).
 function drawSealed(t) {
-  const r = S.report; viewBg(); drawTop(r ? 'Expedition ' + r.n + ' ended' : 'Expedition ended', '');
+  const r = S.report; viewBg(); drawTop(r ? 'Expedition ' + r.n + ' ended' : 'Expedition ended', goalForms());
   if (!r) return;
   // every line below is clipped at 410 px, so nothing passes x 432; `last` is the outcome block's last 2× line
   let y = 46, last = 46;
@@ -6449,7 +6535,10 @@ function drawSealed(t) {
   else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; L('The world waits · nothing is sealed.', C.fog); L('Your finds stay in the hold.', C.fog); y += 10; }
   else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; L('Expedition ' + r.n + ' · ' + sealedWords(r.sealed, ' and ', 'supplies'), C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); else y += 2; }
   else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; L('Your finds stay in the hold, unsealed.', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); L('A break would lose them.', C.fog); y += 10; }
-  else { text(clipText('Hold empty', 410, 3), 22, y, C.bone, 3); y += 34; L('Nothing to seal this time.', C.fog); y += 10; }
+  else { const E = FIRST_TEXT.empty, ld = r.lead;   // an empty walk: one headline and one line that point on, never "nothing"
+    text(clipText(!ld ? E.look : ld.pod ? (ld.first ? E.head : E.later) : E.rock, 410, 3), 22, y, C.bone, 3); y += 34;
+    if (ld) { L(E.where(ld.land, ld.dir), C.fog); if (ld.pod) L(E.start, C.fog); } else L(E.rock + '.', C.fog);
+    y += 10; }
   // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
   if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, the new one sliding in
@@ -6457,8 +6546,11 @@ function drawSealed(t) {
   for (let i = 0; i < BAY; i++) { const c = S.bay[i], isNew = r.sealed && c && c.id === r.sealed.id; crateIcon(24 + i * 140, y + (isNew ? Math.round((1 - slide) * -40) : 0), c, 130); }
   y += 84;
   const dk = isDocked();   // docked: the Companion is in the Caddy, and the crates are ready for the Station
-  text(clipText(S.bay.length ? (dk ? DOCK_TEXT.bay(S.bay.length) : bayLine()) : 'The bay is empty', 410, 2), 22, y, S.bay.length ? C.amber : C.stone); y += 24;
-  text(clipText(dk ? (S.bay.length ? DOCK_TEXT.sealed : DOCK_TEXT.sealedEmpty) : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
+  if (S.bay.length) {   // an empty bay says nothing ("The bay is empty" and "Nothing to transfer" are gone)
+    text(clipText(dk ? DOCK_TEXT.bay(S.bay.length) : bayLine(), 410, 2), 22, y, C.amber); y += 24;
+    text(clipText(dk ? DOCK_TEXT.sealed : 'The Station opens them when you dock', 410, 2), 22, y, C.mist); y += 34; }
+  else if (dk) { text(clipText(DOCK_TEXT.sealedEmpty, 410, 2), 22, y, C.mist); y += 34; }
+  else y += 10;
   if (!r.waited) drawTurnLines(r, y);
 }
 function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' creature act' + (q.moments === 1 ? '' : 's'); }
@@ -6618,7 +6710,7 @@ function lineBase() {
       return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, 'Mibis', !canSwap() || S.carried.length >= CARRY_MAX); }
     case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
     case 'worldmap': return L1('', 'the whole map', 'close');
-    case 'sealed': { const r = S.report, blk = startBlock(); return L1('Next expedition', blk ? (isDocked() ? 'docked · lift to explore' : 'the Probe is broken') : bayLine() || (r && r.kept ? 'finds in the hold' : ''), 'menu', !!blk); }
+    case 'sealed': { const r = S.report, blk = startBlock(); return L1(r && r.empty && r.lead && !blk ? FIRST_TEXT.empty.back : 'Next expedition', blk ? (isDocked() ? 'docked · lift to explore' : 'the Probe is broken') : bayLine() || (r && r.kept ? 'finds in the hold' : ''), 'menu', !!blk); }
   }
   return L1('', '', '');
 }
@@ -6633,6 +6725,7 @@ function renderFrame(t) {
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.plScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
+  teachFill();
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
@@ -6649,6 +6742,7 @@ function renderFrame(t) {
     case 'worldmap': drawMap('map', t); drawTop('Full map', 'world turn ' + wTurn()); break;
     case 'sealed': drawSealed(t); break;
   }
+  drawGoalBand();
   hitFrame();
   { const wa = NOW - (FX.waitAt || -1e9); if (wa >= 0 && wa < 220 && motion() && S.exp) { const by = VIEW_Y + Math.round(wa / 220 * (VIEW_H - 24)); ditherFill(0, by, SCR_W, 24, 'cream', 3); ditherFill(0, by + 6, SCR_W, 12, 'cream', 5); } }   // Wait's ripple
   drawLine(lineFor());
@@ -6823,7 +6917,9 @@ function act(k, mode) {
       else if (k === 'confirm') { if (S.ui.nw === 1) newWorldLive(); else S.phase = 'menu'; }
       break;
     case 'sealed':   // Expedition ended, the short screen: ✓ Next expedition (the expedition choice; it starts only undocked)
-      if (k === 'confirm') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
+      if (k === 'confirm') { const ld = S.report && S.report.empty && S.report.lead;
+        if (ld && !startBlock()) { S.ui.sel = 0; S.ui.lastPos = ld.cell; chooseType(); }   // "Back to the pod": the start pick opens on that cell
+        else { S.phase = 'setup'; S.ui.sel = 0; transition(); } }
       else if (k === 'back') openMenu();
       break;
   }
@@ -6932,6 +7028,7 @@ if (SHELL) {
     else if (m.t === 'mb-lift') SLEEP.seat(false);   // the cradle is empty: no request is answered (and an unsigned lock lets go)
     else if (m.t === 'mb-sleep' && !shellSilent) SLEEP.handle(m).then(a => { try { SHELL.postMessage({ t: 'mb-sleep-ack', nonce: m.nonce, op: m.op, ...a }, location.origin); } catch (e) { } });
     else if (m.t === 'mb-silent') { shellSilent = !!m.on; if (!shellSilent) tellShell(true); }
+    else if (m.t === 'mb-caddy') RT.caddy = { podHome: typeof m.podHome === 'boolean' ? m.podHome : undefined, goal: m.goal || null };   // the Station's dock state, passed on by the play page (first-ten): "first pod home" and the Station's goal
   });
   const beat = () => { tellShell(false); setTimeout(beat, 250); }; beat();
 }

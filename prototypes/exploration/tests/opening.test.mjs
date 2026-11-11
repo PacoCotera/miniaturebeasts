@@ -39,7 +39,7 @@ test("B1: a fresh world draws one tab and the pod, its three lines and the dark 
   const p = opening(), t = said(p);
   assert.ok(t.includes("Weather") && !t.includes("Deep ground"), "Weather alone: " + t);
   assert.deepEqual(t.filter(s => /^(Your first walk|Find a pod and bring it home\.|The Station grows it\.)$/.test(s)), ["Your first walk", "Find a pod and bring it home.", "The Station grows it."]);
-  assert.ok(t.includes("Signs in the dark · start at one"), "the first-time line");
+  assert.ok(!t.some(s => /Signs in the dark/.test(s)), "the first-time line is gone: the teaching line says it");
   assert.ok(t.includes("storms charge stones"), "the Weather tab's first-time line");
   for (const s of t) assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Your world|last start|hatch|egg|born|No partner/i.test(s), "no such line: " + s);
   assert.equal(p.run("OPEN_TEXT.firstGrows"), "The Station grows it.");

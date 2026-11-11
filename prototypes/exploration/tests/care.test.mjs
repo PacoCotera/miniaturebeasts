@@ -231,7 +231,7 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 function ending(S, ex, reason = "home") {
   const t = vm.createContext({ console, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 16,
     reachCounts: () => ({ found: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
+    worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {}, emptyLead: () => null });
   const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
   vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
 }
@@ -542,7 +542,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   const said = [], noop = () => {}, id = x => x;
   const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 16, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs out narrow burrows" }],
-    FX: {}, shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
+    FX: {}, goalForms: () => "", shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
     panel: noop, card: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, firstPlacement: () => true, drawOpenLand: () => {}, stormFor: () => ({ dir: 1 }), brackets: noop, ringArt: noop, upArt: noop, silhouette: noop, podArt: noop, OPEN_ART: { ready: false }, G: { gate: 0 }, STAGE_WORD: {},
     OPEN_TEXT: { dark: "dark", stormEast: "e", stormWest: "w", chargeStones: "charge", digs: n => n + " digs", needsTuikis: "needs a Tuikis", firstWalk: "first", firstFind: "find", firstGrows: "grows", flat: "flat", docked: "docked" },
     CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
@@ -644,8 +644,9 @@ function sealed(rep, lines, bay = 1) {
     NUM_WORD: ["no", "one", "two", "three"], C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x,
     text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
     bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" } });
+  ctx.goalForms = () => "";
   const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "numWord", "sealedWords"];
-  vm.runInContext(names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
+  vm.runInContext(PAGE.match(/^const FIRST_TEXT = [^]*?\n\};/m)[0] + "\n" + names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
   return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
 }
 test("End expedition: the notch is its own row under the outcome's last 2× line, the crates move down 28, no world line repeats it", () => {
@@ -691,11 +692,11 @@ test("End expedition, Sealed: the trip line is built from what was sealed (pods 
   assert.ok(sealed({ sealed: { id: "c0", pods: [1, 2], d: 4 } }, []).at("Expedition 4 · two pods and supplies"), "two pods and supplies");
   assert.ok(!sealed({ sealed: { id: "c0", pods: [1], d: 1 } }, []).said.some(q => /what you carried|no pods/.test(q.str)), "never the old words");
 });
-test("End expedition, the hold-empty branch (an old save): main's line, and no yield line even when one is passed", () => {
-  const d = sealed({ empty: true, yield: { data: 0, tier: 0, moments: 0 } }, []);
-  assert.ok(d.at("Nothing to seal this time."), "main's line");
-  assert.ok(!d.said.some(q => /Data ·|No crate|crate this time/.test(q.str)), "no yield line, no new string");
-  assert.equal(d.crates[0].y, 114, "the crates stay where they were");
+test("End expedition, the hold-empty branch: the direction card, never the four nothings, and no yield line even when one is passed", () => {
+  const d = sealed({ empty: true, lead: { cell: 0, land: "wood", dir: "north", first: true, pod: true }, yield: { data: 0, tier: 0, moments: 0 } }, []);
+  assert.ok(d.at("Your pod still waits") && d.at("In the wood, north of your flag.") && d.at("Start there and press ))) Call."), "the direction card");
+  assert.ok(!d.said.some(q => /Hold empty|Nothing to seal|bay is empty|Nothing to transfer|Data ·|No crate|crate this time/.test(q.str)), "no nothing, no yield line");
+  assert.equal(d.crates[0].y, 138, "the card is a headline and two lines: the crates sit one line lower");
 });
 test("End expedition after a break: 'Docking mends the Probe for free.'", () => {
   assert.ok(sealed({ reason: "break", dropped: 0, lost: [] }, []).at("Docking mends the Probe for free."));
