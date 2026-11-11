@@ -100,8 +100,10 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y -q ninja-build bc >/dev/null; fi
+          exec 9>"$HOME/.emsdk.lock"; flock 9   # the dev server shares ~/emsdk between jobs: one setup at a time (two activates at once lost .emscripten)
           if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
           (cd "$HOME/emsdk" && ./emsdk install "${{ steps.emsdk.outputs.version }}" >/dev/null && ./emsdk activate "${{ steps.emsdk.outputs.version }}" >/dev/null)
+          flock -u 9
           FACE_BUILD_DIR="$RUNNER_TEMP/face-build" EMSDK="$HOME/emsdk" prototypes/face/build.sh all
       - name: Assemble the site
         if: steps.scope.outputs.docs != 'true'
@@ -322,8 +324,10 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y -q ninja-build bc >/dev/null; fi
+          exec 9>"$HOME/.emsdk.lock"; flock 9   # the dev server shares ~/emsdk between jobs: one setup at a time (two activates at once lost .emscripten)
           if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
           (cd "$HOME/emsdk" && ./emsdk install "${{ steps.emsdk.outputs.version }}" >/dev/null && ./emsdk activate "${{ steps.emsdk.outputs.version }}" >/dev/null)
+          flock -u 9
           FACE_BUILD_DIR="$RUNNER_TEMP/face-build" EMSDK="$HOME/emsdk" prototypes/face/build.sh all
       - name: Install the pages' packages (vite, p-queue)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
@@ -424,8 +428,10 @@ jobs:
         # The same commands as in `rules`.
         run: |
           set -euo pipefail
+          exec 9>"$HOME/.emsdk.lock"; flock 9   # the dev server shares ~/emsdk between jobs: one setup at a time (two activates at once lost .emscripten)
           if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
           (cd "$HOME/emsdk" && ./emsdk install "$(cat "$GITHUB_WORKSPACE/prototypes/face/emsdk.version")" >/dev/null && ./emsdk activate "$(cat "$GITHUB_WORKSPACE/prototypes/face/emsdk.version")" >/dev/null)
+          flock -u 9
           FACE_BUILD_DIR="$RUNNER_TEMP/face-build" EMSDK="$HOME/emsdk" prototypes/face/build.sh all
       - name: Install the pages' packages (vite, p-queue)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
