@@ -21,7 +21,7 @@
    16
   ],
   "src": "source/marks.py",
-  "sha256": "b2e9f425a9a96648b14617f5b4696eed4e281ee6e97f451ef2d1ddf541031750"
+  "sha256": "12f036cb869202b5446fee07f24903a7bd79a8048451e3ed774ab5de6e3a0d41"
  },
  "mark-companion-outline-16": {
   "size": [
@@ -45,7 +45,7 @@
    16
   ],
   "src": "source/marks.py",
-  "sha256": "057da2b83673b2af20f10aaeec6d2a4c0b65bb4ca2bf539ef9fda5ec406cec4e"
+  "sha256": "cfc8de27278091a67b56a7bf990e5fc296e1797f44e28079c83c84562313d823"
  },
  "mark-heart-16": {
   "size": [

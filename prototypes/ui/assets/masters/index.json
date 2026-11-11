@@ -513,11 +513,11 @@
   "mark-clan-C14-24x24": {"group":"pods","w":24,"h":24,"bytes":146,"sha":"5b9d7643f0ec"},
   "mark-clan-C15-24x24": {"group":"pods","w":24,"h":24,"bytes":146,"sha":"6f644224c14c"},
   "mark-clan-C16-24x24": {"group":"pods","w":24,"h":24,"bytes":165,"sha":"906edd9edcf3"},
-  "mark-cold-16": {"group":"collection","w":16,"h":16,"bytes":177,"sha":"e04f962fd203","status":"new"},
+  "mark-cold-16": {"group":"collection","w":16,"h":16,"bytes":163,"sha":"12f036cb8692","status":"new"},
   "mark-companion-outline-16": {"group":"collection","w":16,"h":16,"bytes":109,"sha":"0b6c1cf5196e","status":"new"},
   "mark-companion-solid-16": {"group":"collection","w":16,"h":16,"bytes":122,"sha":"5d3e88bdaa58","status":"new"},
   "mark-dock-24x24": {"group":"pods","w":24,"h":24,"bytes":866,"sha":"c867103fe99d"},
-  "mark-elder-16": {"group":"collection","w":16,"h":16,"bytes":98,"sha":"b8d35d649d36","status":"new"},
+  "mark-elder-16": {"group":"collection","w":16,"h":16,"bytes":141,"sha":"cfc8de272780","status":"new"},
   "mark-first-16x16": {"group":"pods","w":16,"h":16,"bytes":147,"sha":"b2b3b00ed063"},
   "mark-guide-16": {"group":"pods","w":16,"h":16,"bytes":508,"sha":"23329c26a29a"},
   "mark-heart-16": {"group":"collection","w":16,"h":16,"bytes":150,"sha":"134eea6aec9c","status":"new"},
@@ -2792,6 +2792,8 @@
   "mibi-juvenile-S20-yellower-light-hop-down-304x312": {"group":"pods","w":304,"h":312,"bytes":50604,"sha":"cf0d09d8f957"},
   "nest-208x48": {"group":"pods","w":208,"h":48,"bytes":15769,"sha":"e4bfd90bff4c"},
   "nest-front-208x48": {"group":"pods","w":208,"h":48,"bytes":15043,"sha":"2653a7f672ea"},
+  "nest-rim-184x44": {"group":"pods","w":184,"h":44,"bytes":15396,"sha":"7f44e612ba87"},
+  "nest-rim-hold-184x44": {"group":"pods","w":184,"h":44,"bytes":11960,"sha":"46a78fdb902e"},
   "notch-skill-16x24": {"group":"pods","w":16,"h":24,"bytes":120,"sha":"779cfb0314ed"},
   "page-mark-new-10": {"group":"pods","w":6,"h":6,"bytes":90,"sha":"ab6f48e5fa8a"},
   "page-pane-256x440": {"group":"pods","w":256,"h":440,"bytes":2359,"sha":"42f2cd5ec0ad","slice":[64,64,16,16],"tile":32},
@@ -4703,8 +4705,6 @@
   "vivarium-near-dusk-544x408": {"group":"vivarium","w":544,"h":408,"bytes":369432,"sha":"8a9b4495341a"},
   "vivarium-near-night-544x408": {"group":"vivarium","w":544,"h":408,"bytes":313062,"sha":"d04bfcb69af2"},
   "well-lit-64x64": {"group":"pods","w":64,"h":64,"bytes":962,"sha":"c5c68ef595a5"},
-  "wish-mark-12": {"group":"pods","w":12,"h":12,"bytes":110,"sha":"bb28471fb060"},
-  "nest-rim-184x44": {"group":"pods","w":184,"h":44,"bytes":15396,"sha":"7f44e612ba87"},
-  "nest-rim-hold-184x44": {"group":"pods","w":184,"h":44,"bytes":11960,"sha":"46a78fdb902e"}
+  "wish-mark-12": {"group":"pods","w":12,"h":12,"bytes":110,"sha":"bb28471fb060"}
  }
 }
