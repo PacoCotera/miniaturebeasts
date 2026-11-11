@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPng, decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
-import { computeTables, family, TABLE_NAMES } from '../src/lighttables.mjs';
+import { computeTables, family, STONE_TONES, TABLE_NAMES } from '../src/lighttables.mjs';
 import { deskArt, deskLayers } from './desk-art.mjs';
 import { PALETTE } from './recolour.mjs';
 
@@ -201,7 +201,18 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   const trunkBrowns = sorted.filter((h) => hue(h) >= 25 && hue(h) <= 35 && satOf(h) <= 0.5).sort((a, b) => lum(a) - lum(b));
   const bank = sorted.indexOf(BANK_EARTH) >= 0 ? [CORE_COLOURS + sorted.indexOf(BANK_EARTH)] : [];
   const bankTo = trunkBrowns.length ? CORE_COLOURS + sorted.indexOf(trunkBrowns[0]) : -1;
-  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo });
+  // the tree trunk's browns (every colour of the signed trunk piece): at night they too take the bank's low-saturation brown, not the nearest colour (a rust red, art director 2026-11-11)
+  const trunk = [];
+  if (desk && desk.files.get('tree-trunk.png')) { const im = decodePng(desk.files.get('tree-trunk.png')); for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) { const k = sorted.indexOf(hex(im.data[i], im.data[i + 1], im.data[i + 2])); if (k >= 0 && !trunk.includes(CORE_COLOURS + k)) trunk.push(CORE_COLOURS + k); } }
+  // the water ripple's glints (the colours of the water fill that are not its base, darker first): at night a cool pale grey-blue of the set (blue over green over red, low saturation, mid-light), the two lightest steps of that run, never the pink or mauve the nearest-colour step gave
+  const waterImg = images.get('fill-water.png'), waterCount = new Map();
+  if (waterImg) for (let i = 0; i < waterImg.data.length; i += 4) if (waterImg.data[i + 3]) { const h = hex(waterImg.data[i], waterImg.data[i + 1], waterImg.data[i + 2]); waterCount.set(h, (waterCount.get(h) || 0) + 1); }
+  const waterBase = [...waterCount].sort((a, b) => b[1] - a[1])[0];
+  const glint = [...waterCount.keys()].filter((h) => h !== (waterBase && waterBase[0])).sort((a, b) => lum(a) - lum(b)).map((h) => CORE_COLOURS + sorted.indexOf(h));
+  const isStoneTone = (h) => Object.values(STONE_TONES).some((t) => Object.values(t).some((v) => hex(v[0], v[1], v[2]) === h));
+  const coolPale = sorted.filter((h) => { const [r, g, b] = unhex(h); return !isStoneTone(h) && b >= r + 12 && g >= r + 4 && g <= b && satOf(h) <= 0.27 && lum(h) >= 100 && lum(h) <= 160; }).sort((a, b) => lum(a) - lum(b));
+  const glintTo = coolPale.slice(0, 2).map((h) => CORE_COLOURS + sorted.indexOf(h));
+  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunk, trunkTo: bankTo, glint, glintTo });
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
 
