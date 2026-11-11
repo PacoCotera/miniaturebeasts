@@ -248,7 +248,7 @@ test("a sign never joins another sign or a note; the one that loses keeps its fl
   assert.ok(p.S.found.includes("met:flag"), "the flag joins the Probe silently");
   p.run("FX.notes = []; FX.sign = null; fxSign('call'); fxSign('storm', 1); fxSign('fog'); fxMsg('A plain note', 1);");
   assert.equal(p.run("FX.sign.sign"), "storm", "priority 3 ties break to the hazards first");
-  assert.equal(p.run("FX.msg"), "More bolts, more strikes · ▶ east", "no join");
+  assert.equal(p.run("FX.msg"), "More bolts, more strikes · moving east ▶", "no join");
   assert.ok(p.run("FX.held.some(n => n.text === 'A plain note')"), "a plain note waits one action");
   p.run("settleOnce();");
   assert.ok(p.S.found.includes("hudstorm") && !p.S.found.includes("callintro") && !p.S.found.includes("fogbank"), "only the shown sign is spent");
@@ -562,7 +562,7 @@ test("the first walk: one teaching line per deed, signs and hints held unspent, 
   p.run("startExpedition('weather', G.spawns[0]); enterPatch();");
   assert.equal(p.run("teachStep()"), "Press ))) to Call · buried finds show");
   p.run("S.exp.callsAt = { [curLay().cell]: 1 };");
-  assert.equal(p.run("teachStep()"), "Walk to the glint · ✓ takes the pod");
+  assert.equal(p.run("teachStep()"), "Go to the glint · ✓ takes the pod");
   p.run("S.exp.cargo.pods.push({ id: 1, sp: 0, g: 'bone' });");
   assert.ok(["A charged stone · ✓ takes its Energy", "← then End · your finds go in a crate"].includes(p.run("teachStep()")));
   assert.equal(p.run("goalLine()"), "Bring it home · your flag");
@@ -572,10 +572,10 @@ test("the first walk: one teaching line per deed, signs and hints held unspent, 
   assert.ok(!p.S.found.includes("callintro") && !p.S.found.includes("callmap"), "nothing is spent");
   p.run("fxSign('shield');");
   assert.equal(p.run("FX.sign && FX.sign.sign"), "shield", "a hazard sign still shows");
-  p.run("RT.caddy = { podHome: true, goal: { text: 'Open the crate · your first pod is inside' } }; FX.notes = []; FX.msg = ''; fxSign('call');");
+  p.run("RT.caddy = { podHome: true, goal: { text: 'Open the crate · your first pod is inside', companion: { text: 'Find a first pod' } } }; FX.notes = []; FX.msg = ''; fxSign('call');");
   assert.equal(p.run("firstWalk()"), false);
   assert.equal(p.run("FX.sign && FX.sign.sign"), "call", "the held sign shows after the first pod is home");
-  assert.equal(p.run("goalLine()"), "Open the crate · your first pod is inside");
+  assert.equal(p.run("goalLine()"), "Find a first pod", "the Station's Companion part"); p.run("RT.caddy.goal.companion = null"); assert.equal(p.run("goalLine()"), "", "a Station step gives the Companion no line"); assert.equal(p.run("goalBandOn()"), false, "and no band");
   p.run("FX.notes = []; FX.msg = ''; fxMsg('one', 2); fxMsg('two', 2);");
   assert.equal(p.run("FX.msg"), "one", "a second note never joins the first");
 });
