@@ -16,7 +16,7 @@
     "state": "growing",
     "ok": "Open now",
     "price": null,
-    "subject": ""
+    "subject": "Fit the Probe upgrade"
    },
    {
     "key": "back",
@@ -48,7 +48,7 @@
     "state": "growing",
     "ok": "Open now",
     "price": null,
-    "subject": ""
+    "subject": "Fit the Probe upgrade"
    },
    {
     "key": "confirm",
@@ -115,13 +115,13 @@
     "state": "inventory",
     "ok": "Grow it",
     "price": null,
-    "subject": ""
+    "subject": "Fit the Probe upgrade"
    },
    {
     "screen": "pods",
     "view": "inventory",
     "sort": "use",
-    "focus": "card.2",
+    "focus": "card.0",
     "verb": "grow"
    },
    {
@@ -130,7 +130,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "card.2",
+      "target": "card.0",
       "verb": "back"
      }
     ],

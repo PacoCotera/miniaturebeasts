@@ -53,10 +53,10 @@ test("the Probe bench: the switch's plates and what the upgrade adds, inside the
   for (const k of ["pods", "plates"]) { const L = b.slot.adds[k]; assert.equal(most(L), L.count); holds(L, [L.count], "adds " + k); assert.deepEqual(L.forms.row.first.slice(2), L.icon);
     for (let i = 0; i < L.count; i++) assert.ok(inside(listPitch(L, L.count, i), b.slot.rect), `adds ${k} ${i} inside the slot`); }
 });
-test("the decision panel: one to three cards at the widths the spec's limits name, and the strip's two", () => {
-  const P = S("frame").regions.panel, C = P.cards, T = P.strip.cards;
+test("the decision panel: one to three cards at the widths the spec's limits name (the dock's strip of two went with the arrival's choice card, 255a1b7c5)", () => {
+  const P = S("frame").regions.panel, C = P.cards;
   assert.equal(most(C), C.max); for (let n = 1; n <= C.max; n++) { holds(C, [n], "cards"); assert.equal(listPitch(C, n, 0)[2], P.limits[n].card, "the width the spec's limits name"); }
-  refuses(C, C.max + 1, "cards"); assert.equal(most(T), T.max); holds(T, range(1, T.max), "strip cards"); refuses(T, T.max + 1, "strip cards");
+  refuses(C, C.max + 1, "cards");
 });
 test("the name tags' plates and Cargo's dock ribbon: bounds that are multiples of the step, and the ribbon's most its rect's width", () => {
   for (const f of ["home", "vivarium", "habitat"]) {

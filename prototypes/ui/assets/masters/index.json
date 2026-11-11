@@ -124,7 +124,7 @@
   "bench-switch-knob-40x40": {"group":"pods","w":40,"h":40,"bytes":2535,"sha":"93bd813a26a1"},
   "bench-switch-track-off-80x40": {"group":"pods","w":80,"h":40,"bytes":2612,"sha":"a85dccd97947"},
   "bench-switch-track-on-80x40": {"group":"pods","w":80,"h":40,"bytes":2716,"sha":"d0e9627ebf6a"},
-  "berth-crate-26x24": {"group":"pods","w":26,"h":24,"bytes":1900,"sha":"530da27b8b61"},
+  "berth-crate-26x24": {"group":"pods","w":26,"h":24,"bytes":866,"sha":"e26bc9d41e67"},
   "berth-edge-190x294": {"group":"pods","w":190,"h":294,"bytes":205,"sha":"72ed1bd7d9c7"},
   "berth-edge-258x294": {"group":"pods","w":258,"h":294,"bytes":230,"sha":"dbc0a77f0d61"},
   "berth-gilt-198x302": {"group":"pods","w":198,"h":302,"bytes":253,"sha":"2d03c136ecce"},

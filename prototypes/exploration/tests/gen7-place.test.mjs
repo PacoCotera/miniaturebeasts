@@ -189,7 +189,7 @@ test('the biome recipe never changes on a cell edge: it blends over a few tiles 
 // ground (raised land's top is the meadow ground until the layered edges, amendment L): a water cell's middle is water (a ford is shallows: any), a pond cell's holds a fifth of water, a rock cell's is stony (scree), a wood cell's is wood
 // ground (floor, scrub or thicket), a meadow cell's is open ground you can walk (grass or the wood floor). Water and pond hold in every cell; the others in all but 2 in 100 (a rock cell whose middle is a path or a stair's foot).
 test('the map\'s land kind and the walk\'s ground agree in the middle of every cell of seeds 7, 13 and 42', { timeout: 1800000 }, () => {
-  for (const seed of [7, 13, 42]) {
+  for (const seed of FAST ? [7] : [7, 13, 42]) {   // about five minutes a seed: a pull request (MB_CI_FAST=1) runs seed 7, as the proofs above do
     const seen = { WATER: [0, 0], POND: [0, 0], ROCK: [0, 0], WOOD: [0, 0], MEADOW: [0, 0] }, bad = [];
     for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) {
       const G = genRegion7(seed, ax, ay);

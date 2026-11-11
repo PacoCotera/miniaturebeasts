@@ -25,6 +25,7 @@ async function serve() {
 }
 async function enter(browser, url, seed) {
   const page = await (await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: "reduce" })).newPage();
+  if (process.env.MB_CI_FAST === "1") page.setDefaultTimeout(90000);   // CI runs several jobs on one machine: the page open gets 90 s, not the default 30
   const errors = []; page.on("pageerror", (e) => errors.push(e.message));
   await page.goto(`${url}?seed=${seed}`); await page.waitForTimeout(1200);
   await page.evaluate(() => { window.__mb.TEST.calm = true; });

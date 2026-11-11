@@ -84,7 +84,7 @@
     },
     "ok": "Open Coat",
     "price": null,
-    "subject": ""
+    "subject": "Incubate the Loika pod"
    },
    {
     "key": "back",
@@ -203,7 +203,7 @@
     "ring": "card.incubate",
     "ok": "Incubate",
     "e": 29,
-    "d": 19,
+    "d": 18,
     "s": 41
    },
    {

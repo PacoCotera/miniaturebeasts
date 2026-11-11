@@ -1,5 +1,6 @@
 {
  "screen": "cross",
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 522], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1: the 15 cross states' logs, the top bar 0-40 and the bottom line from 562, the field between them, no bezel); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#cross-the-splice",
  "frame": "frame.json",

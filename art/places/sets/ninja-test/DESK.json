@@ -23,7 +23,8 @@
       67,
       131
     ],
-    "sha256": "a9195328a6567dc7ac965bdc918264041358ee2ac6a67693c247f99fe94c2fb1"
+    "sha256": "69b21c2ec671e5e6f5efb4633a402933fd608787f1c13e131c2d94c440a986a7",
+    "merged": true
   },
   "bush-round.png": {
     "commit": "75f1ff195",
@@ -140,7 +141,8 @@
       85,
       159
     ],
-    "sha256": "160e939f3761b2c22cdae202810e57c7b0abbcbbc2817a3b88d6e6e996982b68"
+    "sha256": "c74d01bd8f6c2895743f3417df37fd6cf1dd69920de220e611b345dbf844b2f3",
+    "merged": true
   },
   "split-stone.png": {
     "commit": "75f1ff195",
@@ -153,7 +155,8 @@
       30,
       45
     ],
-    "sha256": "cb91a4092ee67a063b450856b7476f7764aaecfe1a4f6cc248d251e00716e8b1"
+    "sha256": "95357317bd476f31381c0c4e96e3a48e477ad5d1f375aacf0383f4f3c44cf2d6",
+    "merged": true
   },
   "shrub-1.png": {
     "commit": "75f1ff195",
@@ -322,7 +325,8 @@
       4,
       8
     ],
-    "sha256": "0236540c74d08eb2b1cb07edfd6c7d3eac451752754a8cbaa4c649cfaf43b7e2"
+    "sha256": "f3ff33c6667d6a8552ecb0c390420a7ad2821622d84a55f8bc501b4d296619dd",
+    "merged": true
   },
   "dry-tufts-2.png": {
     "commit": "a6d2e0be4",
@@ -335,7 +339,8 @@
       5,
       8
     ],
-    "sha256": "e56b59207b6f043f8c65181254fd66b3566e7cb88ece1478a1faa758c747c853"
+    "sha256": "e44b2d038389c37585f2465fd5c8867a60f50d30a607be357cfdfe70f5529f47",
+    "merged": true
   },
   "dry-tufts-3.png": {
     "commit": "a6d2e0be4",
@@ -348,7 +353,8 @@
       5,
       8
     ],
-    "sha256": "8258125a2253c4a06ccdf41c3cd75163097a63d6881aa000272d32f73c6239f9"
+    "sha256": "6d95b84ebda7c8da3b8aceeeb255bfe0d7cdc442b0461b68c738e6c49067e2e3",
+    "merged": true
   },
   "dry-tufts-1-m.png": {
     "commit": "a6d2e0be4",
@@ -361,7 +367,8 @@
       4,
       8
     ],
-    "sha256": "3d817e6de3a6ff767f7ff1cbd18b1f51edfdb9d1b454eab6d51236ea44684794"
+    "sha256": "e44d37a60405aed3d67d3380739ee3f1403e5cabc2b0100321e6a576f8034dd8",
+    "merged": true
   },
   "dry-tufts-2-m.png": {
     "commit": "a6d2e0be4",
@@ -374,7 +381,8 @@
       4,
       8
     ],
-    "sha256": "b9486fc270da04054d9735b737882cb3045b9f811ca6ad252777ab4af86b349c"
+    "sha256": "bbd37a8977c70002a88fed230676799c96552743404bc10daea5863b67b34b69",
+    "merged": true
   },
   "dry-tufts-3-m.png": {
     "commit": "a6d2e0be4",
@@ -387,7 +395,8 @@
       5,
       8
     ],
-    "sha256": "6f49cb17c1dbb70f5449246c057c2f2624ac80a71f2de851be4720a8b4d0b875"
+    "sha256": "bbad0b0af04d7a385c56b126727db81ab46fc5b3b6e07f39be67e45118a0222b",
+    "merged": true
   },
   "shrub-thorn-a.png": {
     "commit": "a6d2e0be4",
@@ -400,7 +409,8 @@
       7,
       11
     ],
-    "sha256": "216fbdd4c6a38b90b48e76760fb3bf6a7583caf095671b5fc28663e251904965"
+    "sha256": "a6fb9db197d24db36d4d3209fe9b1d8e1777be22c892760222c9e28fad18503b",
+    "merged": true
   },
   "shrub-thorn-a-m.png": {
     "commit": "a6d2e0be4",
@@ -413,7 +423,8 @@
       6,
       11
     ],
-    "sha256": "ded6593b3788e9f022d256ed84b03256c9b606838c0044db9e213ec158546f07"
+    "sha256": "a9607a710159284dddd89f72e7c406f9aa97bc3dc2241303afc59665899579e2",
+    "merged": true
   },
   "tuft-wind.png": {
     "commit": "a6d2e0be4",
@@ -452,7 +463,8 @@
       6,
       8
     ],
-    "sha256": "444199e6af1fd16cebbd0fbd3a425ed75944e32a37fb54fcd0239acf9cab26d7"
+    "sha256": "dcecc38f04f34728d60cb1b292defc67fa900eedf34561074d943b9cea4224af",
+    "merged": true
   },
   "shrub-heather-m.png": {
     "commit": "a6d2e0be4",
@@ -465,7 +477,8 @@
       5,
       8
     ],
-    "sha256": "85e9496b6cc1b253f7abbdbb6b33b6035003015a99bc6a7d3af23783e6c24e43"
+    "sha256": "0f4fffcc23e56fa7cfc49ff6f8deff638e339780fe505cf457dd7691de2d6559",
+    "merged": true
   },
   "tufts-2.png": {
     "commit": "cc712a83e",
@@ -1964,12 +1977,14 @@
   "fill-drygrass.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass.png + art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass~v1.png + art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass~v2.png as the strip 0 1 0 1 0 1 0 2 (layout)",
-    "sha256": "a7160541b6dd211afed2977e8797f0d3d7e6a8e185538094f01752b1f1714e16"
+    "sha256": "31a1bd810dae3e5eaaf0b4cafc15fc129775d5a5edbd365f4a677b7920f801ba",
+    "merged": true
   },
   "over-drygrass.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-drygrass/out/tiles/over-drygrass-p2.png",
-    "sha256": "660c958b70c17ebb63d454efcc3785cc10d4a5476788f798428f62bce2c07392"
+    "sha256": "316b564e3fda06496eb37e5b4b2d41589b6bc48a52d71638db3c9b9ddd4cccd3",
+    "merged": true
   },
   "fill-turf.png": {
     "commit": "8c0ddc470",
@@ -1984,22 +1999,26 @@
   "fill-litter.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/fill-leaflitter.png + art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/fill-leaflitter~v1.png + art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/fill-leaflitter~v2.png as the strip 0 1 0 1 0 1 0 2 (layout)",
-    "sha256": "449c17f6e87daae0ec1a7361033dbd3351985e2bc0ce48657e5db638704b6f32"
+    "sha256": "78eba4d94d178d5da4fbbdbfe2d350cc9e719dfd851ddb52ffe93bf921c75c16",
+    "merged": true
   },
   "over-litter.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-leaflitter/out/tiles/over-leaflitter.png",
-    "sha256": "d375cb083d123f8cd184ff8af20e8924690022cd26922579d2f0106ad96827b1"
+    "sha256": "513eadc9552cc1bfd85842877fbb6ba3e92aa59023318b2699edbc110bc5b270",
+    "merged": true
   },
   "fill-scree.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-scree/out/tiles/fill-scree.png + art-jobs/2026-11-10-art-biome-scree/out/tiles/fill-scree~v1.png + art-jobs/2026-11-10-art-biome-scree/out/tiles/fill-scree~v2.png as the strip 0 1 0 1 0 1 0 2 (layout)",
-    "sha256": "156c6a00d959b217c6a34dd3ffcae22ef134c2631f6815270b3fe86f7cf1a77a"
+    "sha256": "ea87b0cab5f25a143dfc3189362afc0947d196e1f5252ee8d1bd9eccc59a088b",
+    "merged": true
   },
   "over-scree.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-scree/out/tiles/over-scree.png",
-    "sha256": "76442fb887782c08e6580807b90218db150ad7707377e7437fd32504fced471b"
+    "sha256": "3c20301ab029728f48b4ce3dc878ea1f8f20c8fc78ceb528274f963e1e2517d3",
+    "merged": true
   },
   "over-scrub.png": {
     "commit": "633e4d641",
