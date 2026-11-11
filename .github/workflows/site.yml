@@ -365,7 +365,8 @@ jobs:
     # The browser checks, in four parallel shards on the dev runners beside `build` and `rules` (owner 2026-11-10: the one full run on the release pull request includes the Station, play page and face checks; no nightly run).
     # They moved here out of `build`, where they ran in one line (about 15 minutes of the 29 measured on 2026-10-28). The check names are `browser (station)`, `browser (face)`, `browser (testpage)` and `browser (play)`; the merge rule requires them with `build` and `rules (1/4)` to `rules (4/4)`.
     # Scope: as `rules`: documents only, or no browser check needed (.github/ci-filter.sh), skips every step and the job still ends green; a push to main runs none; a manual run runs all.
-    # The tools are on the dev server once: Playwright 1.56 with its Chromium in /home/mb/pw156, the Emscripten SDK in ~/emsdk (shared by the runners).
+    # The tools are set up as the `rules` shards do, in places the runner's user can read: the Emscripten SDK in the runner's own ~/emsdk (cloned and installed on first use, shared by its runs), Playwright 1.56.1 and its Chromium under $RUNNER_TEMP/pw. Nothing is read from /home/mb.
+    # A browser that cannot start fails the step: every step runs with set -e and the checks throw when chromium.launch fails; no step here turns that into a skip.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, mb-dev]
     timeout-minutes: 30   # the limit only catches a hung run
@@ -374,10 +375,6 @@ jobs:
       matrix:
         shard: [station, face, testpage, play]
     name: browser (${{ matrix.shard }})
-    env:
-      EMSDK: /home/mb/emsdk
-      PW_DIR: /home/mb/pw156
-      PLAYWRIGHT_BROWSERS_PATH: /home/mb/pw156/browsers
     steps:
       - uses: actions/checkout@v4
         with:
@@ -424,13 +421,31 @@ jobs:
           echo "Shard ${{ matrix.shard }}: docs-only $result; $filter" >> "$GITHUB_STEP_SUMMARY"
       - name: Build the Station's face (the checks read its dist folder)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
-        # The same command as in `build` and `rules`.
+        # The same commands as in `rules`.
         run: |
           set -euo pipefail
-          FACE_BUILD_DIR="$RUNNER_TEMP/face-build" prototypes/face/build.sh all
+          if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
+          (cd "$HOME/emsdk" && ./emsdk install "$(cat "$GITHUB_WORKSPACE/prototypes/face/emsdk.version")" >/dev/null && ./emsdk activate "$(cat "$GITHUB_WORKSPACE/prototypes/face/emsdk.version")" >/dev/null)
+          FACE_BUILD_DIR="$RUNNER_TEMP/face-build" EMSDK="$HOME/emsdk" prototypes/face/build.sh all
       - name: Install the pages' packages (vite, p-queue)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
         run: npm ci --prefix prototypes --no-audit --no-fund --silent
+      - name: Playwright's Chromium (cached by the Playwright version)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pw
+          key: playwright-1.56.1-chromium-ubuntu-24.04-${{ runner.arch }}
+      - name: Install Playwright and its Chromium
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
+        # As in `rules`; the checks find it through PW_DIR and PLAYWRIGHT_BROWSERS_PATH, set for the steps after this one.
+        run: |
+          set -euo pipefail
+          npm --prefix "$RUNNER_TEMP" install --silent playwright@1.56.1
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null; fi
+          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
+          echo "PW_DIR=$RUNNER_TEMP" >> "$GITHUB_ENV"
+          echo "PLAYWRIGHT_BROWSERS_PATH=$RUNNER_TEMP/pw" >> "$GITHUB_ENV"
       - name: Places toolchain (pinned flatc, npm ci)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
         timeout-minutes: 5
