@@ -70,9 +70,9 @@
    "eyebrow": {"at": [25, 332], "role": "eyebrow"},
    "name": {"at": [25, 354], "role": "name"},
    "sub": {"at": [25, 398], "width": 244, "role": "body", "max": 3},
-   "key": {"y": 450, "pitch": 24, "mark": 33, "text": 62, "role": "quiet"},
+   "key": {"y": 450, "pitch": 24, "mark": 33, "text": 61, "role": "quiet"},
    "rows": {"x": 301, "y": 62, "pitch": 82, "pic": [128, 72], "text": 445, "eyebrowRole": "eyebrow", "nameRole": "name", "lineRole": "quiet", "max": 6, "pill": {"h": 20, "gap": 8, "radius": 10, "role": "label.open", "first": "sprout"}},
-   "mark": {"d": 12, "gap": 4, "colour": "fog"},
+   "mark": {"d": 5, "gap": 2, "col": 20, "textGap": 8, "colour": "fog"},
    "promise": {"x": 744, "y": 62, "w": 262, "h": 96, "pitch": 104, "pad": 12, "max": 4, "role": "quiet", "strong": "body", "edge": "amber", "dash": [4, 4]}
   },
   "plate": {"note": "the frame's message plate"}

@@ -30,10 +30,13 @@ static void arrow(const char *id, int x, int y, int size, int dir, const char *c
   snprintf(ops + n, sizeof ops - (size_t)n, "]"); v_composed(id, x, y, w, size, ops);
 }
 /* one of the three marks of how a look passes on: ● (one), ●● (both), ◐ (mix), d px each; returns its width */
-static int mark_width(const char *kind, int d, int gap) { return strcmp(kind, "both") == 0 ? 2 * d + gap : d; }
+static int mark_width(const char *kind, int d, int gap) { return strcmp(kind, "both") == 0 ? 2 * d + gap : strcmp(kind, "together") == 0 ? d + (d + 1) / 2 : d; }
 static void mark(const char *id, const char *kind, int x, int y, int d, int gap, const char *col) {
   char ops[1400]; int n, w = mark_width(kind, d, gap);
-  if (strcmp(kind, "together") == 0) { v_slot(id, "mark-together", "mark-together", x, y, d, d, 1); return; }   /* [art] mark-together: the fourth mark, d x d, the art director's; empty until then */
+  if (strcmp(kind, "together") == 0) {   /* a code-drawn UI glyph: two overlapping dots in the key grey */
+    n = snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"],[\"rrect\",%d,0,%d,%d,%d,\"%s\",\"%s\"]]", d, d, d / 2, col, col, w - d, d, d, d / 2, col, col);
+    (void)n; v_composed(id, x, y, w, d, ops); return;
+  }
   if (strcmp(kind, "mix") == 0) {
     n = snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]", d, d, d / 2, col);
     for (int r = 0; r < d; r++) { int dy2 = 2 * r + 1 - d, dx = isq(d * d - dy2 * dy2) / 2; if (dx < 1) continue; n += snprintf(ops + n, sizeof ops - (size_t)n, ",[\"h\",%d,%d,%d,\"%s\"]", d / 2 - dx, r, dx, col); }
@@ -143,12 +146,12 @@ static void chapter_page(void) {
   v_say("chapter.name", nm, v_sk(S, "regions.chapter.name.at", 0), v_sk(S, "regions.chapter.name.at", 1), V_ANCHOR_LINE, v_sstr(S, "regions.chapter.name.role"), "ground", V_ALIGN_LEFT);
   { char role[40]; snprintf(role, sizeof role, "%s", v_sstr(S, "regions.chapter.sub.role")); int x = v_sk(S, "regions.chapter.sub.at", 0), y = v_sk(S, "regions.chapter.sub.at", 1), n = v_role_wrap(sub, v_si(S, "regions.chapter.sub.width", 244), role, buf, sizeof buf, v_si(S, "regions.chapter.sub.max", 3)); const char *q = buf;
     for (int k = 0; k < n; k++) { v_say(v_fmt("chapter.sub.%d", k), q, x, y, V_ANCHOR_LINE, role, "ground", V_ALIGN_LEFT); y += v_role_pitch(role); q += strlen(q) + 1; } }
-  int md = v_si(S, "regions.chapter.mark.d", 12), mg = v_si(S, "regions.chapter.mark.gap", 4); char mcol[24]; snprintf(mcol, sizeof mcol, "%s", v_sstr(S, "regions.chapter.mark.colour"));
+  int md = v_si(S, "regions.chapter.mark.d", 5), mg = v_si(S, "regions.chapter.mark.gap", 2), mcw = v_si(S, "regions.chapter.mark.col", 20), mtg = v_si(S, "regions.chapter.mark.textGap", 8); char mcol[24]; snprintf(mcol, sizeof mcol, "%s", v_sstr(S, "regions.chapter.mark.colour"));
   for (int i = 0; i < 4; i++) {   /* the key to the marks, always on the page */
     char kind[12], text[V_STR]; ps(v_fmt("regions.chapter.key.%d.mark", i), kind); ps(v_fmt("regions.chapter.key.%d.text", i), text);
     int y = v_si(S, "regions.chapter.key.y", 450) + i * v_si(S, "regions.chapter.key.pitch", 24);
-    v_region("chapter.key", LAYER_CHROME); mark(v_fmt("key.%d.mark", i), kind, v_si(S, "regions.chapter.key.mark", 33), y + 4, md, mg, mcol);
-    v_region("chapter.key", LAYER_TYPE); v_say(v_fmt("key.%d.text", i), text, v_si(S, "regions.chapter.key.text", 62), y, V_ANCHOR_LINE, v_sstr(S, "regions.chapter.key.role"), "ground", V_ALIGN_LEFT);
+    v_region("chapter.key", LAYER_CHROME); mark(v_fmt("key.%d.mark", i), kind, v_si(S, "regions.chapter.key.mark", 33) + (mcw - mark_width(kind, md, mg)) / 2, y + 8, md, mg, mcol);
+    v_region("chapter.key", LAYER_TYPE); v_say(v_fmt("key.%d.text", i), text, v_si(S, "regions.chapter.key.mark", 33) + mcw + mtg, y, V_ANCHOR_LINE, v_sstr(S, "regions.chapter.key.role"), "ground", V_ALIGN_LEFT);
   }
   int rx = v_si(S, "regions.chapter.rows.x", 301), ry = v_si(S, "regions.chapter.rows.y", 62), pitch = v_si(S, "regions.chapter.rows.pitch", 82), tx = v_si(S, "regions.chapter.rows.text", 445), pw = v_sk(S, "regions.chapter.rows.pic", 0), ph = v_sk(S, "regions.chapter.rows.pic", 1);
   int n = v_plen("regions.chapter.rows"), most = v_si(S, "regions.chapter.rows.max", 6); if (n > most) n = most;
@@ -165,9 +168,9 @@ static void chapter_page(void) {
       v_region("rows", LAYER_CHROME); v_composed(v_fmt("row.%d.pill", i), tx + w + pg, y, first ? pwid : 0, first ? ph2 : 0, first ? v_fmt("[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"]]", pwid, ph2, v_si(S, "regions.chapter.rows.pill.radius", 10), v_sstr(S, "regions.chapter.rows.pill.first"), v_sstr(S, "regions.chapter.rows.pill.first")) : "[]");
       v_region("rows", LAYER_TYPE); v_say_in(v_fmt("row.%d.pill.text", i), first ? ft : "", tx + w + pg, pwid, y + 1, V_ANCHOR_LINE, v_sstr(S, "regions.chapter.rows.pill.role"), "ground"); }
     v_say(v_fmt("row.%d.look", i), look, tx, y + 18, V_ANCHOR_LINE, v_sstr(S, "regions.chapter.rows.nameRole"), "ground", V_ALIGN_LEFT);
-    int mw = *mk ? mark_width(mk, md, mg) : 0;
-    v_region("rows", LAYER_CHROME); if (*mk) mark(v_fmt("row.%d.mark", i), mk, tx, y + 58, md, mg, mcol); else v_composed(v_fmt("row.%d.mark", i), tx, y + 58, 0, 0, "[]");
-    v_region("rows", LAYER_TYPE); v_say(v_fmt("row.%d.line", i), line, tx + (mw ? mw + 8 : 0), y + 54, V_ANCHOR_LINE, v_sstr(S, "regions.chapter.rows.lineRole"), "ground", V_ALIGN_LEFT);
+    int mw = *mk ? mcw : 0;
+    v_region("rows", LAYER_CHROME); if (*mk) mark(v_fmt("row.%d.mark", i), mk, tx + (mcw - mark_width(mk, md, mg)) / 2, y + 62, md, mg, mcol); else v_composed(v_fmt("row.%d.mark", i), tx, y + 58, 0, 0, "[]");
+    v_region("rows", LAYER_TYPE); v_say(v_fmt("row.%d.line", i), line, tx + (mw ? mw + mtg : 0), y + 54, V_ANCHOR_LINE, v_sstr(S, "regions.chapter.rows.lineRole"), "ground", V_ALIGN_LEFT);
   }
   int px = v_si(S, "regions.chapter.promise.x", 678), py = v_si(S, "regions.chapter.promise.y", 62), cw = v_si(S, "regions.chapter.promise.w", 328), chh = v_si(S, "regions.chapter.promise.h", 96), cp = v_si(S, "regions.chapter.promise.pitch", 104), pad = v_si(S, "regions.chapter.promise.pad", 8);
   int np = v_plen("regions.chapter.promises"), pmax = v_si(S, "regions.chapter.promise.max", 4); if (np > pmax) np = pmax;
