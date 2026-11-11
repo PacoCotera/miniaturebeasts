@@ -2,9 +2,9 @@
  "$comment": "The props of the store screen (store.json): what views/store-props.mjs gives the face, beside the frame's. Props name what, never where: the pod's words, the store's parts with their state, the reading line, the Put-in panel's words and arrows, the teaser's words, the chapter page's rows, promises and key, and the focus targets by id; no rectangle, no colour, no measure. A picture the host has not sent is an empty slot.",
  "$defs": {
   "part": {"type": "object", "required": ["id", "name", "price", "state"], "additionalProperties": false, "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}, "price": {"type": "integer", "minimum": 0}, "state": {"enum": ["read", "waiting", "adding", "empty"]}, "cur": {"type": "boolean"}}},
-  "row": {"type": "object", "required": ["trait", "look", "pic", "mark", "line", "first"], "additionalProperties": false, "properties": {"trait": {"type": "string"}, "look": {"type": "string"}, "pic": {"type": "string"}, "mark": {"enum": ["one", "both", "mix", ""]}, "line": {"type": "string"}, "first": {"type": "boolean"}}},
+  "row": {"type": "object", "required": ["trait", "look", "pic", "mark", "line", "first"], "additionalProperties": false, "properties": {"trait": {"type": "string"}, "look": {"type": "string"}, "pic": {"type": "string"}, "mark": {"enum": ["one", "both", "mix", "together", ""]}, "line": {"type": "string"}, "first": {"type": "boolean"}}},
   "promise": {"type": "object", "required": ["strong", "line"], "additionalProperties": false, "properties": {"strong": {"type": "string"}, "line": {"type": "string"}}},
-  "key": {"type": "object", "required": ["mark", "text"], "additionalProperties": false, "properties": {"mark": {"enum": ["one", "both", "mix"]}, "text": {"type": "string"}}},
+  "key": {"type": "object", "required": ["mark", "text"], "additionalProperties": false, "properties": {"mark": {"enum": ["one", "both", "mix", "together"]}, "text": {"type": "string"}}},
   "target": {"type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": {"id": {"enum": ["put", "bar", "go"]}, "group": {"enum": ["put", "bar", "go"]}}}
  },
  "type": "object",
@@ -22,7 +22,7 @@
     "reading": {"type": "object", "required": ["line", "sub"], "additionalProperties": false, "properties": {"line": {"type": "string"}, "sub": {"type": "string"}}},
     "put": {"type": "object", "required": ["head", "amount", "fills", "more", "cap", "less", "greater"], "additionalProperties": false, "properties": {"head": {"type": "string"}, "amount": {"type": "integer", "minimum": 0}, "fills": {"type": "string"}, "more": {"type": "string"}, "cap": {"type": "string"}, "less": {"type": "boolean"}, "greater": {"type": "boolean"}}},
     "teaser": {"type": "object", "required": ["eyebrow", "names", "firsts"], "additionalProperties": false, "properties": {"eyebrow": {"type": "string"}, "names": {"type": "string"}, "firsts": {"type": "string"}}},
-    "chapter": {"type": "object", "required": ["first", "closeup", "eyebrow", "name", "sub", "rows", "promises", "key"], "additionalProperties": false, "properties": {"first": {"type": "string"}, "closeup": {"type": "string"}, "eyebrow": {"type": "string"}, "name": {"type": "string"}, "sub": {"type": "string"}, "rows": {"type": "array", "minItems": 1, "maxItems": 6, "items": {"$ref": "row"}}, "promises": {"type": "array", "maxItems": 4, "items": {"$ref": "promise"}}, "key": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "key"}}}}
+    "chapter": {"type": "object", "required": ["first", "closeup", "eyebrow", "name", "sub", "rows", "promises", "key"], "additionalProperties": false, "properties": {"first": {"type": "string"}, "closeup": {"type": "string"}, "eyebrow": {"type": "string"}, "name": {"type": "string"}, "sub": {"type": "string"}, "rows": {"type": "array", "minItems": 1, "maxItems": 6, "items": {"$ref": "row"}}, "promises": {"type": "array", "maxItems": 4, "items": {"$ref": "promise"}}, "key": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "key"}}}}
    }
   },
   "focus": {

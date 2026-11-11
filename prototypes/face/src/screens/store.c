@@ -33,6 +33,7 @@ static void arrow(const char *id, int x, int y, int size, int dir, const char *c
 static int mark_width(const char *kind, int d, int gap) { return strcmp(kind, "both") == 0 ? 2 * d + gap : d; }
 static void mark(const char *id, const char *kind, int x, int y, int d, int gap, const char *col) {
   char ops[1400]; int n, w = mark_width(kind, d, gap);
+  if (strcmp(kind, "together") == 0) { v_slot(id, "mark-together", "mark-together", x, y, d, d, 1); return; }   /* [art] mark-together: the fourth mark, d x d, the art director's; empty until then */
   if (strcmp(kind, "mix") == 0) {
     n = snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]", d, d, d / 2, col);
     for (int r = 0; r < d; r++) { int dy2 = 2 * r + 1 - d, dx = isq(d * d - dy2 * dy2) / 2; if (dx < 1) continue; n += snprintf(ops + n, sizeof ops - (size_t)n, ",[\"h\",%d,%d,%d,\"%s\"]", d / 2 - dx, r, dx, col); }
@@ -143,16 +144,16 @@ static void chapter_page(void) {
   { char role[40]; snprintf(role, sizeof role, "%s", v_sstr(S, "regions.chapter.sub.role")); int x = v_sk(S, "regions.chapter.sub.at", 0), y = v_sk(S, "regions.chapter.sub.at", 1), n = v_role_wrap(sub, v_si(S, "regions.chapter.sub.width", 244), role, buf, sizeof buf, v_si(S, "regions.chapter.sub.max", 3)); const char *q = buf;
     for (int k = 0; k < n; k++) { v_say(v_fmt("chapter.sub.%d", k), q, x, y, V_ANCHOR_LINE, role, "ground", V_ALIGN_LEFT); y += v_role_pitch(role); q += strlen(q) + 1; } }
   int md = v_si(S, "regions.chapter.mark.d", 12), mg = v_si(S, "regions.chapter.mark.gap", 4); char mcol[24]; snprintf(mcol, sizeof mcol, "%s", v_sstr(S, "regions.chapter.mark.colour"));
-  for (int i = 0; i < 3; i++) {   /* the key to the marks, always on the page */
-    char kind[8], text[V_STR]; ps(v_fmt("regions.chapter.key.%d.mark", i), kind); ps(v_fmt("regions.chapter.key.%d.text", i), text);
-    int y = v_si(S, "regions.chapter.key.y", 474) + i * v_si(S, "regions.chapter.key.pitch", 24);
+  for (int i = 0; i < 4; i++) {   /* the key to the marks, always on the page */
+    char kind[12], text[V_STR]; ps(v_fmt("regions.chapter.key.%d.mark", i), kind); ps(v_fmt("regions.chapter.key.%d.text", i), text);
+    int y = v_si(S, "regions.chapter.key.y", 450) + i * v_si(S, "regions.chapter.key.pitch", 24);
     v_region("chapter.key", LAYER_CHROME); mark(v_fmt("key.%d.mark", i), kind, v_si(S, "regions.chapter.key.mark", 33), y + 4, md, mg, mcol);
-    v_region("chapter.key", LAYER_TYPE); v_say(v_fmt("key.%d.text", i), text, v_si(S, "regions.chapter.key.text", 62) + (strcmp(kind, "both") == 0 ? md + mg : 0), y, V_ANCHOR_LINE, v_sstr(S, "regions.chapter.key.role"), "ground", V_ALIGN_LEFT);
+    v_region("chapter.key", LAYER_TYPE); v_say(v_fmt("key.%d.text", i), text, v_si(S, "regions.chapter.key.text", 62), y, V_ANCHOR_LINE, v_sstr(S, "regions.chapter.key.role"), "ground", V_ALIGN_LEFT);
   }
   int rx = v_si(S, "regions.chapter.rows.x", 301), ry = v_si(S, "regions.chapter.rows.y", 62), pitch = v_si(S, "regions.chapter.rows.pitch", 82), tx = v_si(S, "regions.chapter.rows.text", 445), pw = v_sk(S, "regions.chapter.rows.pic", 0), ph = v_sk(S, "regions.chapter.rows.pic", 1);
   int n = v_plen("regions.chapter.rows"), most = v_si(S, "regions.chapter.rows.max", 6); if (n > most) n = most;
   for (int i = 0; i < n; i++) {
-    char tr[V_STR], look[V_STR], pic[V_STR], mk[8], line[V_STR]; ps(v_fmt("regions.chapter.rows.%d.trait", i), tr); ps(v_fmt("regions.chapter.rows.%d.look", i), look); ps(v_fmt("regions.chapter.rows.%d.pic", i), pic);
+    char tr[V_STR], look[V_STR], pic[V_STR], mk[12], line[V_STR]; ps(v_fmt("regions.chapter.rows.%d.trait", i), tr); ps(v_fmt("regions.chapter.rows.%d.look", i), look); ps(v_fmt("regions.chapter.rows.%d.pic", i), pic);
     ps(v_fmt("regions.chapter.rows.%d.mark", i), mk); ps(v_fmt("regions.chapter.rows.%d.line", i), line); upper(tr);
     int y = ry + i * pitch, first = v_pbool(v_fmt("regions.chapter.rows.%d.first", i), 0);
     v_name("rows"); v_slot(v_fmt("row.%d.pic", i), pic, pic, rx, y, pw, ph, 1);
