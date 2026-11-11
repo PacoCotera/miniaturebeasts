@@ -3393,6 +3393,7 @@ const LEVEL_LIGHT = LIGHT.map((l, c) => [C.orange, C.amber, C.white].includes(l)
 const DARK2 = DARK.map(i => DARK[i]);
 const LIGHT_GRASS = PALETTE.map((_, i) => i), DARK_GRASS = PALETTE.map((_, i) => i);   // the level tone's grass-only steps: identity until a biome palette marks its grass
 const TINT = LEVEL_LIGHT.map((l, c) => c === C.lime ? c : l);   // the level tint's step: LEVEL_LIGHT capped at lime, so green never steps on to cream
+const WOOD_DARK = DARK.slice(); WOOD_DARK[C.pine] = C.pine; WOOD_DARK[C.forest] = C.forest; WOOD_DARK[C.soil] = C.soil;   // the painted wood's dark on the map: its ground (pine) and trunk stubs (soil) would step down to ink, the colour of the unseen land and of the fog's hatch, so the ground, the stubs and the crown's base keep their colours and only the highlights step down
 const SHADE_LUT = DARK.slice(); SHADE_LUT[C.pine] = C.pine;   // the Shade's step: one value darker, the tuft bases stay pine so the green never goes black
 function tintLevel(pb, x0, y0, w, h, lv) { for (let k = 0; k < lv; k++) for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const v = pb.get(x, y); if (v >= 0) pb.set(x, y, TINT[v]); } }
 // The sage three (48-50) joined the first 48 later: a mixed colour of the first 48 still lands on the first 48 (so no fog, fade or wash table
@@ -4773,7 +4774,7 @@ function* landPaint(spec, sliced) {
     if (c < 0) { put(y * N + x, C.void); continue; }
     if (mist && !seen(c)) { u[y * N + x] = mist[0][spec.mist][(wy % OPEN_TILE) * OPEN_TILE + (wx % OPEN_TILE)]; continue; }
     if (!seen(c)) { const c2 = cellOf(wx + 4 * k, wy + 3 * k), edge = c2 >= 0 && seen(c2); put(y * N + x, edge ? (b < 8 ? C.night : C.ink) : (b < 3 ? C.night : C.ink)); continue; }
-    let land = landOf(c), col;
+    let land = landOf(c), col, wood = false;
     const lx = (wx - (c % MW) * cs) / cs, ly = (wy - ((c / MW) | 0) * cs) / cs;
     // near water: a beach on the land side, foam on the water side
     const nearW = (d) => { for (const [ox, oy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) { const c3 = cellOf(wx + ox, wy + oy); if (c3 >= 0 && seen(c3) && (landOf(c3) === L.WATER) !== (land === L.WATER)) return true; } return false; };
@@ -4782,14 +4783,14 @@ function* landPaint(spec, sliced) {
     if (col == null) {
       if (land === L.WATER) col = nearW(3 * k) ? tile('foam', wx, wy) : tile('water', wx, wy);
       else if (nearW(2 * k)) col = tile('beach', wx, wy);
-      else if (land === L.WOOD) col = tile('wood', wx, wy);
+      else if (land === L.WOOD) { col = tile('wood', wx, wy); wood = true; }
       else if (land === L.ROCK) col = tile('rock', wx, wy);
       else if (land === L.CLIFF) col = (wy % 5 === 0) ? C.stone : C.slate;
       else col = tile('meadow', wx, wy);
     }
     // the storm's dark over the cells it covers, then the fog states on the same soft borders
     const fs = fogOf(c);
-    if (fs === 2 || (ex && ex.storm && stormCovers(c % MW))) col = DARK[col];
+    if (fs === 2 || (ex && ex.storm && stormCovers(c % MW))) col = wood ? WOOD_DARK[col] : DARK[col];   // the wood's ground stays the wood's ground in the dark (one step down on the crowns): never the ink the unseen land is drawn in
     if (fs === 2) { if (b < FOGV.n) col = C.night; } else if (fs === 1 && b < FOGV.b) col = C.night;
     put(y * N + x, col);
   } }
