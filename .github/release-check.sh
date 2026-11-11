@@ -14,7 +14,7 @@ step() {
   "$@"
   echo "== $name: $(( $(date +%s) - t )) s"
 }
-step "Companion: the first expedition (a fresh world, a pod and the Data)" node prototypes/exploration/tools/first-trip-bot.mjs --from 1 --to 1
+step "Companion: the first expedition (a fresh world, a pod and the Data, then End: the packing screen with the crate)" node prototypes/exploration/tools/first-trip-bot.mjs --from 1 --to 1 --end
 step "Station: the journey (a crate carried home and opened, Pods, Create, Grow, the hatch)" env JOURNEY_SMALL=1 node prototypes/station/tools/journey.mjs
 step "Station: the layer checks (the palette, the type, the regions)" node prototypes/station/tools/checks.mjs
 step "Play page: the dock round trip" env JOURNEY_ONLY=ST node prototypes/play/tools/journey.mjs
