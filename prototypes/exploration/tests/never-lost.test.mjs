@@ -34,7 +34,6 @@ async function enter(browser, url, seed, motion) {
     CanvasRenderingContext2D.prototype.drawImage = function (img, x, y, ...r) { if (img && img.width === 32 && img.height === 32 && typeof x === "number" && window.__mb) window.__spr.push([x, y, window.__mb.RT.frameN]); return orig.call(this, img, x, y, ...r); };
   });
   const page = await ctx.newPage();
-  if (process.env.MB_CI_FAST === "1") page.setDefaultTimeout(90000);   // CI runs several jobs on one machine: the page open gets 90 s, not the default 30
   const errors = [], logged = []; page.on("pageerror", (e) => errors.push(e.message)); page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) logged.push(m.text()); });
   await page.goto(`${url}?seed=${seed}`); await page.waitForTimeout(1200);
   await page.evaluate(() => { window.__mb.TEST.calm = true; });

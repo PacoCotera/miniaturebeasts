@@ -363,7 +363,7 @@ jobs:
         # A file that takes long is split by its tests into several files, as exploration/tests/views-agree (one file a seed) and gen7-place (the decor test apart), so no one file holds a shard up.
         run: |
           set -euo pipefail
-          MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test --test-shard=${{ matrix.shard }}/4 prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/places/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
+          MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --import ./.github/ci-load.mjs --test --test-shard=${{ matrix.shard }}/4 prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/places/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
 
   browser:
     # The browser checks, in four parallel shards on the dev runners beside `build` and `rules` (owner 2026-11-10: the one full run on the release pull request includes the Station, play page and face checks; no nightly run).

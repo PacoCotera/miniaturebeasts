@@ -206,7 +206,6 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
   const url = `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html`;
   try {
     const page = await (await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: "reduce" })).newPage();
-    if (process.env.MB_CI_FAST === "1") page.setDefaultTimeout(90000);   // CI runs several jobs on one machine: the page open gets 90 s, not the default 30
     const errors = []; page.on("pageerror", (e) => errors.push(e.message));
     await page.goto(`${url}?seed=13`); await page.waitForTimeout(1500);
     const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
