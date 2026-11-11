@@ -444,7 +444,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
 // and at the dock for what the mibi with the player did on the walk; a place is recorded once for every place the mibi entered while with the player (`recordWalk`, at the dock).
 export const WATCH_MS = 60000;   // the default of settings.watchMs
 // A habit only seen in the field: the bench's watch never records it (calm is felt, not watched); it is recorded at the dock from the habits the Companion's mibi did (mergeCare).
-export const FIELD_ONLY_HABITS = ["calm", "tiptoe", "stone-sense", "slab-lift", "break-through", "bank-dig", "high-look", "ride-current", "pod-carry", "dew-find", "find-hug", "fog-lift", "root-down", "catch-strike", "beacon-sit", "wind-stream", "wave-hello", "hop-down"];
+export const FIELD_ONLY_HABITS = ["calm", "tiptoe", "stone-sense", "slab-lift", "break-through", "bank-dig", "high-look", "ride-current", "pod-carry", "dew-find", "find-hug", "fog-lift", "fog-wait", "catch-strike", "beacon-sit", "wind-stream", "wave-hello", "hop-down"];
 export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
 // The places a mibi has been: where its pod came from, and every place it walked to.
 // A founder keeps its pod's place first, then the walk order; a bred mibi's places are only the ones it walked to (its "from.g" is its parent's).
