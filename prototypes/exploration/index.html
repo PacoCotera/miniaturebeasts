@@ -898,7 +898,7 @@ function settleOnce() {
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once);
     if (n.sign) { const k = 'met:' + SIGN[n.sign].tile; if (!S.found.includes(k)) S.found.push(k); } }
 }
-// ===================== The first ten minutes, the walk side (scheme design-first-ten §4, §5, §7) =====================
+// ===================== The first ten minutes, the walk side =====================
 // [copy] placeholders: the copywriter picks the final words. All the player strings of the first walk are in this one table.
 const FIRST_TEXT = {
   goal: { find: 'Find a pod · bring it home', home: 'Bring it home · your flag', dock: 'Dock the Companion · the pod goes home' },   // F1, F2, F3
