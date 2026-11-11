@@ -6543,8 +6543,9 @@ function drawSealed(t) {
   if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, the new one sliding in
   const age = NOW - FX.transAt, slide = motion() ? clamp((age - 200) / 500, 0, 1) : 1;
-  for (let i = 0; i < BAY; i++) { const c = S.bay[i], isNew = r.sealed && c && c.id === r.sealed.id; crateIcon(24 + i * 140, y + (isNew ? Math.round((1 - slide) * -40) : 0), c, 130); }
-  y += 84;
+  if (S.bay.length) {   // an empty bay draws no row of empty dashed slots
+    for (let i = 0; i < BAY; i++) { const c = S.bay[i], isNew = r.sealed && c && c.id === r.sealed.id; crateIcon(24 + i * 140, y + (isNew ? Math.round((1 - slide) * -40) : 0), c, 130); }
+    y += 84; }
   const dk = isDocked();   // docked: the Companion is in the Caddy, and the crates are ready for the Station
   if (S.bay.length) {   // an empty bay says nothing ("The bay is empty" and "Nothing to transfer" are gone)
     text(clipText(dk ? DOCK_TEXT.bay(S.bay.length) : bayLine(), 410, 2), 22, y, C.amber); y += 24;
